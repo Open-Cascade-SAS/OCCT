@@ -40,36 +40,37 @@ StepToTopoDS_MakeTransformed::StepToTopoDS_MakeTransformed() {}
 
 //=================================================================================================
 
-Standard_Boolean StepToTopoDS_MakeTransformed::Compute(
-  const Handle(StepGeom_Axis2Placement3d)& Origin,
-  const Handle(StepGeom_Axis2Placement3d)& Target,
-  const StepData_Factors&                  theLocalFactors)
+bool StepToTopoDS_MakeTransformed::Compute(const occ::handle<StepGeom_Axis2Placement3d>& Origin,
+                                           const occ::handle<StepGeom_Axis2Placement3d>& Target,
+                                           const StepData_Factors& theLocalFactors)
 {
   theTrsf = gp_Trsf(); // reinit
   if (Origin.IsNull() || Target.IsNull())
-    return Standard_False;
+    return false;
 
   // sln 23.10.2001 : If the directions have not been created do nothing.
-  Handle(Geom_Axis2Placement) theOrig = StepToGeom::MakeAxis2Placement(Origin, theLocalFactors);
+  occ::handle<Geom_Axis2Placement> theOrig =
+    StepToGeom::MakeAxis2Placement(Origin, theLocalFactors);
   if (theOrig.IsNull())
-    return Standard_False;
-  Handle(Geom_Axis2Placement) theTarg = StepToGeom::MakeAxis2Placement(Target, theLocalFactors);
+    return false;
+  occ::handle<Geom_Axis2Placement> theTarg =
+    StepToGeom::MakeAxis2Placement(Target, theLocalFactors);
   if (theTarg.IsNull())
-    return Standard_False;
+    return false;
 
   const gp_Ax3 ax3Orig(theOrig->Ax2());
   const gp_Ax3 ax3Targ(theTarg->Ax2());
 
   //  ne pas se tromper de sens !
   theTrsf.SetTransformation(ax3Targ, ax3Orig);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepToTopoDS_MakeTransformed::Compute(
-  const Handle(StepGeom_CartesianTransformationOperator3d)& Operator,
-  const StepData_Factors&                                   theLocalFactors)
+bool StepToTopoDS_MakeTransformed::Compute(
+  const occ::handle<StepGeom_CartesianTransformationOperator3d>& Operator,
+  const StepData_Factors&                                        theLocalFactors)
 {
   return StepToGeom::MakeTransformation3d(Operator, theTrsf, theLocalFactors);
 }
@@ -83,22 +84,22 @@ const gp_Trsf& StepToTopoDS_MakeTransformed::Transformation() const
 
 //=================================================================================================
 
-Standard_Boolean StepToTopoDS_MakeTransformed::Transform(TopoDS_Shape& shape) const
+bool StepToTopoDS_MakeTransformed::Transform(TopoDS_Shape& shape) const
 {
   if (theTrsf.Form() == gp_Identity)
-    return Standard_False;
+    return false;
   TopLoc_Location theLoc(theTrsf);
   shape.Move(theLoc);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 TopoDS_Shape StepToTopoDS_MakeTransformed::TranslateMappedItem(
-  const Handle(StepRepr_MappedItem)&       mapit,
-  const Handle(Transfer_TransientProcess)& TP,
-  const StepData_Factors&                  theLocalFactors,
-  const Message_ProgressRange&             theProgress)
+  const occ::handle<StepRepr_MappedItem>&       mapit,
+  const occ::handle<Transfer_TransientProcess>& TP,
+  const StepData_Factors&                       theLocalFactors,
+  const Message_ProgressRange&                  theProgress)
 {
   TopoDS_Shape theResult;
 
@@ -106,15 +107,15 @@ TopoDS_Shape StepToTopoDS_MakeTransformed::TranslateMappedItem(
   //  1/ Ax2 dans Source et comme Target  : passage de Source a Target
   //  2/ CartesianOperator3d comme Target : on applique
 
-  Handle(StepGeom_Axis2Placement3d) Origin =
-    Handle(StepGeom_Axis2Placement3d)::DownCast(mapit->MappingSource()->MappingOrigin());
-  Handle(StepGeom_Axis2Placement3d) Target =
-    Handle(StepGeom_Axis2Placement3d)::DownCast(mapit->MappingTarget());
+  occ::handle<StepGeom_Axis2Placement3d> Origin =
+    occ::down_cast<StepGeom_Axis2Placement3d>(mapit->MappingSource()->MappingOrigin());
+  occ::handle<StepGeom_Axis2Placement3d> Target =
+    occ::down_cast<StepGeom_Axis2Placement3d>(mapit->MappingTarget());
 
-  Handle(StepGeom_CartesianTransformationOperator3d) CartOp =
-    Handle(StepGeom_CartesianTransformationOperator3d)::DownCast(mapit->MappingTarget());
+  occ::handle<StepGeom_CartesianTransformationOperator3d> CartOp =
+    occ::down_cast<StepGeom_CartesianTransformationOperator3d>(mapit->MappingTarget());
 
-  Standard_Boolean ok = Standard_False;
+  bool ok = false;
   if (!Origin.IsNull() && !Target.IsNull())
     ok = Compute(Origin, Target, theLocalFactors);
   else if (!CartOp.IsNull())
@@ -124,11 +125,11 @@ TopoDS_Shape StepToTopoDS_MakeTransformed::TranslateMappedItem(
     TP->AddWarning(mapit, "Mapped Item, case not recognized, location ignored");
 
   //  La Shape, et la mise en position
-  Handle(StepRepr_Representation) maprep = mapit->MappingSource()->MappedRepresentation();
-  Handle(Transfer_Binder)         binder = TP->Find(maprep);
+  occ::handle<StepRepr_Representation> maprep = mapit->MappingSource()->MappedRepresentation();
+  occ::handle<Transfer_Binder>         binder = TP->Find(maprep);
   if (binder.IsNull())
     binder = TP->Transferring(maprep, theProgress);
-  Handle(TransferBRep_ShapeBinder) shbinder = Handle(TransferBRep_ShapeBinder)::DownCast(binder);
+  occ::handle<TransferBRep_ShapeBinder> shbinder = occ::down_cast<TransferBRep_ShapeBinder>(binder);
   if (shbinder.IsNull())
     TP->AddWarning(mapit, "No Shape Produced");
   else

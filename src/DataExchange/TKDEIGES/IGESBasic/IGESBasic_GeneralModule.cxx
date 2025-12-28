@@ -49,7 +49,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -61,9 +61,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_GeneralModule, IGESData_GeneralModule)
 //  the method TypeNumber from this Protocol
 IGESBasic_GeneralModule::IGESBasic_GeneralModule() {}
 
-void IGESBasic_GeneralModule::OwnSharedCase(const Standard_Integer             CN,
-                                            const Handle(IGESData_IGESEntity)& ent,
-                                            Interface_EntityIterator&          iter) const
+void IGESBasic_GeneralModule::OwnSharedCase(const int                               CN,
+                                            const occ::handle<IGESData_IGESEntity>& ent,
+                                            Interface_EntityIterator&               iter) const
 {
   switch (CN)
   {
@@ -201,8 +201,8 @@ void IGESBasic_GeneralModule::OwnSharedCase(const Standard_Integer             C
 }
 
 IGESData_DirChecker IGESBasic_GeneralModule::DirChecker(
-  const Standard_Integer             CN,
-  const Handle(IGESData_IGESEntity)& ent) const
+  const int                               CN,
+  const occ::handle<IGESData_IGESEntity>& ent) const
 {
   switch (CN)
   {
@@ -324,10 +324,10 @@ IGESData_DirChecker IGESBasic_GeneralModule::DirChecker(
   return IGESData_DirChecker(); // by default, no specific criterium
 }
 
-void IGESBasic_GeneralModule::OwnCheckCase(const Standard_Integer             CN,
-                                           const Handle(IGESData_IGESEntity)& ent,
-                                           const Interface_ShareTool&         shares,
-                                           Handle(Interface_Check)&           ach) const
+void IGESBasic_GeneralModule::OwnCheckCase(const int                               CN,
+                                           const occ::handle<IGESData_IGESEntity>& ent,
+                                           const Interface_ShareTool&              shares,
+                                           occ::handle<Interface_Check>&           ach) const
 {
   switch (CN)
   {
@@ -464,8 +464,7 @@ void IGESBasic_GeneralModule::OwnCheckCase(const Standard_Integer             CN
   }
 }
 
-Standard_Boolean IGESBasic_GeneralModule::NewVoid(const Standard_Integer      CN,
-                                                  Handle(Standard_Transient)& ent) const
+bool IGESBasic_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const
 {
   switch (CN)
   {
@@ -518,15 +517,15 @@ Standard_Boolean IGESBasic_GeneralModule::NewVoid(const Standard_Integer      CN
       ent = new IGESBasic_SubfigureDef;
       break;
     default:
-      return Standard_False; // by default, Failure on Recognize
+      return false; // by default, Failure on Recognize
   }
-  return Standard_True;
+  return true;
 }
 
-void IGESBasic_GeneralModule::OwnCopyCase(const Standard_Integer             CN,
-                                          const Handle(IGESData_IGESEntity)& entfrom,
-                                          const Handle(IGESData_IGESEntity)& entto,
-                                          Interface_CopyTool&                TC) const
+void IGESBasic_GeneralModule::OwnCopyCase(const int                               CN,
+                                          const occ::handle<IGESData_IGESEntity>& entfrom,
+                                          const occ::handle<IGESData_IGESEntity>& entto,
+                                          Interface_CopyTool&                     TC) const
 {
   switch (CN)
   {
@@ -647,9 +646,9 @@ void IGESBasic_GeneralModule::OwnCopyCase(const Standard_Integer             CN,
   }
 }
 
-Standard_Integer IGESBasic_GeneralModule::CategoryNumber(const Standard_Integer CN,
-                                                         const Handle(Standard_Transient)&,
-                                                         const Interface_ShareTool&) const
+int IGESBasic_GeneralModule::CategoryNumber(const int CN,
+                                            const occ::handle<Standard_Transient>&,
+                                            const Interface_ShareTool&) const
 {
   if (CN == 10 || CN == 11)
     return Interface_Category::Number("Auxiliary");

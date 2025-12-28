@@ -20,10 +20,10 @@
 
 RWStepGeom_RWOffsetSurface::RWStepGeom_RWOffsetSurface() {}
 
-void RWStepGeom_RWOffsetSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepGeom_OffsetSurface)&  ent) const
+void RWStepGeom_RWOffsetSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                                   num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepGeom_OffsetSurface>&  ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,26 +33,26 @@ void RWStepGeom_RWOffsetSurface::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : basisSurface ---
 
-  Handle(StepGeom_Surface) aBasisSurface;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Surface> aBasisSurface;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "basis_surface", ach, STANDARD_TYPE(StepGeom_Surface), aBasisSurface);
 
   // --- own field : distance ---
 
-  Standard_Real aDistance;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aDistance;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "distance", ach, aDistance);
 
   // --- own field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadLogical(num, 4, "self_intersect", ach, aSelfIntersect);
 
   //--- Initialisation of the read entity ---
@@ -60,8 +60,8 @@ void RWStepGeom_RWOffsetSurface::ReadStep(const Handle(StepData_StepReaderData)&
   ent->Init(aName, aBasisSurface, aDistance, aSelfIntersect);
 }
 
-void RWStepGeom_RWOffsetSurface::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepGeom_OffsetSurface)& ent) const
+void RWStepGeom_RWOffsetSurface::WriteStep(StepData_StepWriter&                       SW,
+                                           const occ::handle<StepGeom_OffsetSurface>& ent) const
 {
 
   // --- inherited field name ---
@@ -81,8 +81,8 @@ void RWStepGeom_RWOffsetSurface::WriteStep(StepData_StepWriter&                 
   SW.SendLogical(ent->SelfIntersect());
 }
 
-void RWStepGeom_RWOffsetSurface::Share(const Handle(StepGeom_OffsetSurface)& ent,
-                                       Interface_EntityIterator&             iter) const
+void RWStepGeom_RWOffsetSurface::Share(const occ::handle<StepGeom_OffsetSurface>& ent,
+                                       Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->BasisSurface());

@@ -23,9 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESBasic_AssocGroupType;
-DEFINE_STANDARD_HANDLE(IGESBasic_AssocGroupType, IGESData_IGESEntity)
-
 //! defines AssocGroupType, Type <406> Form <23>
 //! in package IGESBasic
 //! Used to assign an unambiguous identification to a Group
@@ -41,26 +38,25 @@ public:
   //! - nbDataFields : number of parameter data fields = 2
   //! - aType        : type of attached associativity
   //! - aName        : identifier of associativity of type AType
-  Standard_EXPORT void Init(const Standard_Integer                  nbDataFields,
-                            const Standard_Integer                  aType,
-                            const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void Init(const int                                    nbDataFields,
+                            const int                                    aType,
+                            const occ::handle<TCollection_HAsciiString>& aName);
 
   //! returns the number of parameter data fields, always = 2
-  Standard_EXPORT Standard_Integer NbData() const;
+  Standard_EXPORT int NbData() const;
 
   //! returns the type of attached associativity
-  Standard_EXPORT Standard_Integer AssocType() const;
+  Standard_EXPORT int AssocType() const;
 
   //! returns identifier of instance of specified associativity
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_AssocGroupType, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbData;
-  Standard_Integer                 theType;
-  Handle(TCollection_HAsciiString) theName;
+  int                                   theNbData;
+  int                                   theType;
+  occ::handle<TCollection_HAsciiString> theName;
 };
 
 #endif // _IGESBasic_AssocGroupType_HeaderFile

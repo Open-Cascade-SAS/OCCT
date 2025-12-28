@@ -24,13 +24,14 @@ StepGeom_SuParameters::StepGeom_SuParameters() {}
 
 //=================================================================================================
 
-void StepGeom_SuParameters::Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                 const Standard_Real                     theA,
-                                 const Standard_Real                     theAlpha,
-                                 const Standard_Real                     theB,
-                                 const Standard_Real                     theBeta,
-                                 const Standard_Real                     theC,
-                                 const Standard_Real                     theGamma)
+void StepGeom_SuParameters::Init(
+  const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+  const double                                 theA,
+  const double                                 theAlpha,
+  const double                                 theB,
+  const double                                 theBeta,
+  const double                                 theC,
+  const double                                 theGamma)
 {
   StepGeom_GeometricRepresentationItem::Init(theRepresentationItem_Name);
 
@@ -49,84 +50,84 @@ void StepGeom_SuParameters::Init(const Handle(TCollection_HAsciiString)& theRepr
 
 //=================================================================================================
 
-Standard_Real StepGeom_SuParameters::A() const
+double StepGeom_SuParameters::A() const
 {
   return myA;
 }
 
 //=================================================================================================
 
-void StepGeom_SuParameters::SetA(const Standard_Real theA)
+void StepGeom_SuParameters::SetA(const double theA)
 {
   myA = theA;
 }
 
 //=================================================================================================
 
-Standard_Real StepGeom_SuParameters::Alpha() const
+double StepGeom_SuParameters::Alpha() const
 {
   return myAlpha;
 }
 
 //=================================================================================================
 
-void StepGeom_SuParameters::SetAlpha(const Standard_Real theAlpha)
+void StepGeom_SuParameters::SetAlpha(const double theAlpha)
 {
   myAlpha = theAlpha;
 }
 
 //=================================================================================================
 
-Standard_Real StepGeom_SuParameters::B() const
+double StepGeom_SuParameters::B() const
 {
   return myB;
 }
 
 //=================================================================================================
 
-void StepGeom_SuParameters::SetB(const Standard_Real theB)
+void StepGeom_SuParameters::SetB(const double theB)
 {
   myB = theB;
 }
 
 //=================================================================================================
 
-Standard_Real StepGeom_SuParameters::Beta() const
+double StepGeom_SuParameters::Beta() const
 {
   return myBeta;
 }
 
 //=================================================================================================
 
-void StepGeom_SuParameters::SetBeta(const Standard_Real theBeta)
+void StepGeom_SuParameters::SetBeta(const double theBeta)
 {
   myBeta = theBeta;
 }
 
 //=================================================================================================
 
-Standard_Real StepGeom_SuParameters::C() const
+double StepGeom_SuParameters::C() const
 {
   return myC;
 }
 
 //=================================================================================================
 
-void StepGeom_SuParameters::SetC(const Standard_Real theC)
+void StepGeom_SuParameters::SetC(const double theC)
 {
   myC = theC;
 }
 
 //=================================================================================================
 
-Standard_Real StepGeom_SuParameters::Gamma() const
+double StepGeom_SuParameters::Gamma() const
 {
   return myGamma;
 }
 
 //=================================================================================================
 
-void StepGeom_SuParameters::SetGamma(const Standard_Real theGamma)
+void StepGeom_SuParameters::SetGamma(const double theGamma)
 {
   myGamma = theGamma;
 }

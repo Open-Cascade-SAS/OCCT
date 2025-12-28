@@ -28,11 +28,11 @@ StepDimTol_UnequallyDisposedGeometricTolerance::StepDimTol_UnequallyDisposedGeom
 //=================================================================================================
 
 void StepDimTol_UnequallyDisposedGeometricTolerance::Init(
-  const Handle(TCollection_HAsciiString)&        theName,
-  const Handle(TCollection_HAsciiString)&        theDescription,
-  const Handle(Standard_Transient)&              theMagnitude,
-  const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
-  const Handle(StepBasic_LengthMeasureWithUnit)& theDisplacement)
+  const occ::handle<TCollection_HAsciiString>&        theName,
+  const occ::handle<TCollection_HAsciiString>&        theDescription,
+  const occ::handle<Standard_Transient>&              theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&          theTolerancedShapeAspect,
+  const occ::handle<StepBasic_LengthMeasureWithUnit>& theDisplacement)
 {
   StepDimTol_GeometricTolerance::Init(theName,
                                       theDescription,

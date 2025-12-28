@@ -28,12 +28,12 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRTest_DrawableEdgeTool, Draw_Drawable3D)
 
 //=================================================================================================
 
-HLRTest_DrawableEdgeTool::HLRTest_DrawableEdgeTool(const Handle(HLRBRep_Algo)& Alg,
-                                                   const Standard_Boolean      Visible,
-                                                   const Standard_Boolean      IsoLine,
-                                                   const Standard_Boolean      Rg1Line,
-                                                   const Standard_Boolean      RgNLine,
-                                                   const Standard_Integer      ViewId)
+HLRTest_DrawableEdgeTool::HLRTest_DrawableEdgeTool(const occ::handle<HLRBRep_Algo>& Alg,
+                                                   const bool                       Visible,
+                                                   const bool                       IsoLine,
+                                                   const bool                       Rg1Line,
+                                                   const bool                       RgNLine,
+                                                   const int                        ViewId)
     : myAlgo(Alg),
       myVisible(Visible),
       myIsoLine(IsoLine),
@@ -58,20 +58,20 @@ void HLRTest_DrawableEdgeTool::DrawOn(Draw_Display& D) const
 
 //=================================================================================================
 
-void HLRTest_DrawableEdgeTool::InternalDraw(Draw_Display& D, const Standard_Integer typ) const
+void HLRTest_DrawableEdgeTool::InternalDraw(Draw_Display& D, const int typ) const
 {
-  Handle(HLRBRep_Data) DS = myAlgo->DataStructure();
+  occ::handle<HLRBRep_Data> DS = myAlgo->DataStructure();
 
   if (!DS.IsNull())
   {
-    //    Standard_Real sta,end;
-    //    Standard_ShortReal tolsta,tolend;
-    //    Standard_Integer ie,v1,v2,e1,e2,f1,f2;
-    Standard_Integer  ie, e2;
-    Standard_Integer  iCB = 1;
-    Standard_Integer  nCB = myAlgo->NbShapes();
-    Standard_Integer  ne  = DS->NbEdges();
-    Standard_Integer  nf  = DS->NbFaces();
+    //    double sta,end;
+    //    float tolsta,tolend;
+    //    int ie,v1,v2,e1,e2,f1,f2;
+    int               ie, e2;
+    int               iCB = 1;
+    int               nCB = myAlgo->NbShapes();
+    int               ne  = DS->NbEdges();
+    int               nf  = DS->NbFaces();
     HLRBRep_EdgeData* ed  = &(DS->EDataArray().ChangeValue(0));
     ed++;
     e2 = 0;
@@ -79,13 +79,13 @@ void HLRTest_DrawableEdgeTool::InternalDraw(Draw_Display& D, const Standard_Inte
     for (ie = 1; ie <= ne; ie++)
     {
       if (ed->Selected() && !ed->Vertical())
-        ed->Used(Standard_False);
+        ed->Used(false);
       else
-        ed->Used(Standard_True);
+        ed->Used(true);
       ed++;
     }
 
-    for (Standard_Integer iface = 1; iface <= nf; iface++)
+    for (int iface = 1; iface <= nf; iface++)
       DrawFace(D, typ, nCB, iface, e2, iCB, DS);
 
     if (typ >= 3)
@@ -95,12 +95,12 @@ void HLRTest_DrawableEdgeTool::InternalDraw(Draw_Display& D, const Standard_Inte
       HLRBRep_EdgeData* anEdgeData = &(DS->EDataArray().ChangeValue(0));
       anEdgeData++;
 
-      for (Standard_Integer i = 1; i <= ne; i++)
+      for (int i = 1; i <= ne; i++)
       {
         if (!anEdgeData->Used())
         {
-          DrawEdge(D, Standard_False, typ, nCB, i, e2, iCB, *anEdgeData);
-          anEdgeData->Used(Standard_True);
+          DrawEdge(D, false, typ, nCB, i, e2, iCB, *anEdgeData);
+          anEdgeData->Used(true);
         }
         anEdgeData++;
       }
@@ -110,26 +110,26 @@ void HLRTest_DrawableEdgeTool::InternalDraw(Draw_Display& D, const Standard_Inte
 
 //=================================================================================================
 
-void HLRTest_DrawableEdgeTool::DrawFace(Draw_Display&          D,
-                                        const Standard_Integer typ,
-                                        const Standard_Integer nCB,
-                                        const Standard_Integer iface,
-                                        Standard_Integer&      e2,
-                                        Standard_Integer&      iCB,
-                                        Handle(HLRBRep_Data)&  DS) const
+void HLRTest_DrawableEdgeTool::DrawFace(Draw_Display&              D,
+                                        const int                  typ,
+                                        const int                  nCB,
+                                        const int                  iface,
+                                        int&                       e2,
+                                        int&                       iCB,
+                                        occ::handle<HLRBRep_Data>& DS) const
 {
   HLRBRep_FaceIterator Itf;
 
   for (Itf.InitEdge(DS->FDataArray().ChangeValue(iface)); Itf.MoreEdge(); Itf.NextEdge())
   {
-    Standard_Integer  ie  = Itf.Edge();
+    int               ie  = Itf.Edge();
     HLRBRep_EdgeData& edf = DS->EDataArray().ChangeValue(ie);
     if (!edf.Used())
     {
-      Standard_Boolean todraw;
+      bool todraw;
       if ((!myRg1Line && !Itf.OutLine() && edf.Rg1Line())
           || (!myRgNLine && !Itf.OutLine() && edf.RgNLine()))
-        todraw = Standard_False;
+        todraw = false;
       else if (typ == 1)
         todraw = Itf.IsoLine();
       else if (typ == 2)
@@ -137,31 +137,31 @@ void HLRTest_DrawableEdgeTool::DrawFace(Draw_Display&          D,
       else
         todraw = !(Itf.IsoLine() || (Itf.OutLine() || Itf.Internal()));
       if (todraw)
-        DrawEdge(D, Standard_True, typ, nCB, ie, e2, iCB, edf);
-      edf.Used(Standard_True);
+        DrawEdge(D, true, typ, nCB, ie, e2, iCB, edf);
+      edf.Used(true);
     }
   }
 }
 
 //=================================================================================================
 
-void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&          D,
-                                        const Standard_Boolean inFace,
-                                        const Standard_Integer typ,
-                                        const Standard_Integer nCB,
-                                        const Standard_Integer ie,
-                                        Standard_Integer&      e2,
-                                        Standard_Integer&      iCB,
-                                        HLRBRep_EdgeData&      ed) const
+void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&     D,
+                                        const bool        inFace,
+                                        const int         typ,
+                                        const int         nCB,
+                                        const int         ie,
+                                        int&              e2,
+                                        int&              iCB,
+                                        HLRBRep_EdgeData& ed) const
 {
-  Standard_Boolean todraw = Standard_True;
+  bool todraw = true;
   if (!inFace && ((!myRg1Line && ed.Rg1Line()) || (!myRgNLine && ed.RgNLine())))
-    todraw = Standard_False;
+    todraw = false;
   if (todraw)
   {
-    Standard_Real        sta, end;
-    Standard_ShortReal   tolsta, tolend;
-    Standard_Integer     v1, v2, e1, f1, f2;
+    double               sta, end;
+    float                tolsta, tolend;
+    int                  v1, v2, e1, f1, f2;
     HLRAlgo_EdgeIterator It;
     if (myVisible)
     {
@@ -170,7 +170,7 @@ void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&          D,
       {
         HLRBRep_ShapeBounds& ShB = myAlgo->ShapeBounds(iCB);
         ShB.Bounds(v1, v2, e1, e2, f1, f2);
-        Handle(HLRTest_ShapeData) ShData = Handle(HLRTest_ShapeData)::DownCast(ShB.ShapeData());
+        occ::handle<HLRTest_ShapeData> ShData = occ::down_cast<HLRTest_ShapeData>(ShB.ShapeData());
         if (typ == 1)
           D.SetColor(ShData->VisibleIsoColor());
         else if (typ == 2)
@@ -188,10 +188,10 @@ void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&          D,
         D.MoveTo(ec.Value3D(sta));
         if (ec.GetType() != GeomAbs_Line)
         {
-          Standard_Integer nbPnt = 100;
-          Standard_Real    step  = (end - sta) / (nbPnt + 1);
+          int    nbPnt = 100;
+          double step  = (end - sta) / (nbPnt + 1);
 
-          for (Standard_Integer i = 1; i <= nbPnt; i++)
+          for (int i = 1; i <= nbPnt; i++)
           {
             sta += step;
             D.DrawTo(ec.Value3D(sta));
@@ -207,7 +207,7 @@ void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&          D,
       {
         HLRBRep_ShapeBounds& ShB = myAlgo->ShapeBounds(iCB);
         ShB.Bounds(v1, v2, e1, e2, f1, f2);
-        Handle(HLRTest_ShapeData) ShData = Handle(HLRTest_ShapeData)::DownCast(ShB.ShapeData());
+        occ::handle<HLRTest_ShapeData> ShData = occ::down_cast<HLRTest_ShapeData>(ShB.ShapeData());
         if (typ == 1)
           D.SetColor(ShData->HiddenIsoColor());
         else if (typ == 2)
@@ -225,10 +225,10 @@ void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&          D,
         D.MoveTo(ec.Value3D(sta));
         if (ec.GetType() != GeomAbs_Line)
         {
-          Standard_Integer nbPnt = 100;
-          Standard_Real    step  = (end - sta) / (nbPnt + 1);
+          int    nbPnt = 100;
+          double step  = (end - sta) / (nbPnt + 1);
 
-          for (Standard_Integer i = 1; i <= nbPnt; i++)
+          for (int i = 1; i <= nbPnt; i++)
           {
             sta += step;
             D.DrawTo(ec.Value3D(sta));

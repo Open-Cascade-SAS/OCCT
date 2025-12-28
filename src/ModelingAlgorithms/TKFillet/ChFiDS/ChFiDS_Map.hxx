@@ -21,10 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Boolean.hxx>
-#include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
 
 //! Encapsulation of IndexedDataMapOfShapeListOfShape.
@@ -42,22 +44,22 @@ public:
                             const TopAbs_ShapeEnum T1,
                             const TopAbs_ShapeEnum T2);
 
-  Standard_EXPORT Standard_Boolean Contains(const TopoDS_Shape& S) const;
+  Standard_EXPORT bool Contains(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT const TopTools_ListOfShape& FindFromKey(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& FindFromKey(const TopoDS_Shape& S) const;
 
-  const TopTools_ListOfShape& operator()(const TopoDS_Shape& S) const { return FindFromKey(S); }
-
-  Standard_EXPORT const TopTools_ListOfShape& FindFromIndex(const Standard_Integer I) const;
-
-  const TopTools_ListOfShape& operator()(const Standard_Integer I) const
+  const NCollection_List<TopoDS_Shape>& operator()(const TopoDS_Shape& S) const
   {
-    return FindFromIndex(I);
+    return FindFromKey(S);
   }
 
-protected:
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& FindFromIndex(const int I) const;
+
+  const NCollection_List<TopoDS_Shape>& operator()(const int I) const { return FindFromIndex(I); }
+
 private:
-  TopTools_IndexedDataMapOfShapeListOfShape myMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myMap;
 };
 
 #endif // _ChFiDS_Map_HeaderFile

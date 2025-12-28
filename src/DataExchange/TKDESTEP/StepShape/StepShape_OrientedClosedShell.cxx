@@ -18,49 +18,51 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedClosedShell, StepShape_ClosedShell)
 
 StepShape_OrientedClosedShell::StepShape_OrientedClosedShell() {}
 
-void StepShape_OrientedClosedShell::Init(const Handle(TCollection_HAsciiString)& aName,
-                                         const Handle(StepShape_ClosedShell)& aClosedShellElement,
-                                         const Standard_Boolean               aOrientation)
+void StepShape_OrientedClosedShell::Init(
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const occ::handle<StepShape_ClosedShell>&    aClosedShellElement,
+  const bool                                   aOrientation)
 {
   // --- classe own fields ---
   closedShellElement = aClosedShellElement;
   orientation        = aOrientation;
   // --- classe inherited fields ---
-  Handle(StepShape_HArray1OfFace) aCfsFaces;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> aCfsFaces;
   aCfsFaces.Nullify();
   StepShape_ConnectedFaceSet::Init(aName, aCfsFaces);
 }
 
 void StepShape_OrientedClosedShell::SetClosedShellElement(
-  const Handle(StepShape_ClosedShell)& aClosedShellElement)
+  const occ::handle<StepShape_ClosedShell>& aClosedShellElement)
 {
   closedShellElement = aClosedShellElement;
 }
 
-Handle(StepShape_ClosedShell) StepShape_OrientedClosedShell::ClosedShellElement() const
+occ::handle<StepShape_ClosedShell> StepShape_OrientedClosedShell::ClosedShellElement() const
 {
   return closedShellElement;
 }
 
-void StepShape_OrientedClosedShell::SetOrientation(const Standard_Boolean aOrientation)
+void StepShape_OrientedClosedShell::SetOrientation(const bool aOrientation)
 {
   orientation = aOrientation;
 }
 
-Standard_Boolean StepShape_OrientedClosedShell::Orientation() const
+bool StepShape_OrientedClosedShell::Orientation() const
 {
   return orientation;
 }
 
 void StepShape_OrientedClosedShell::SetCfsFaces(
-  const Handle(StepShape_HArray1OfFace)& /*aCfsFaces*/)
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& /*aCfsFaces*/)
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
   std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 }
 
-Handle(StepShape_HArray1OfFace) StepShape_OrientedClosedShell::CfsFaces() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> StepShape_OrientedClosedShell::
+  CfsFaces() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
@@ -68,8 +70,7 @@ Handle(StepShape_HArray1OfFace) StepShape_OrientedClosedShell::CfsFaces() const
   return closedShellElement->CfsFaces();
 }
 
-Handle(StepShape_Face) StepShape_OrientedClosedShell::CfsFacesValue(
-  const Standard_Integer num) const
+occ::handle<StepShape_Face> StepShape_OrientedClosedShell::CfsFacesValue(const int num) const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
@@ -77,7 +78,7 @@ Handle(StepShape_Face) StepShape_OrientedClosedShell::CfsFacesValue(
   return closedShellElement->CfsFacesValue(num);
 }
 
-Standard_Integer StepShape_OrientedClosedShell::NbCfsFaces() const
+int StepShape_OrientedClosedShell::NbCfsFaces() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote

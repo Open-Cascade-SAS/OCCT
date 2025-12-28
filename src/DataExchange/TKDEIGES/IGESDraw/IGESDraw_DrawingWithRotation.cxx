@@ -24,7 +24,7 @@
 #include <IGESDraw_View.hxx>
 #include <IGESGraph_DrawingSize.hxx>
 #include <IGESGraph_DrawingUnits.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Type.hxx>
 
@@ -32,12 +32,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_DrawingWithRotation, IGESData_IGESEntity)
 
 IGESDraw_DrawingWithRotation::IGESDraw_DrawingWithRotation() {}
 
-void IGESDraw_DrawingWithRotation::Init(const Handle(IGESDraw_HArray1OfViewKindEntity)& allViews,
-                                        const Handle(TColgp_HArray1OfXY)&    allViewOrigins,
-                                        const Handle(TColStd_HArray1OfReal)& allOrientationAngles,
-                                        const Handle(IGESData_HArray1OfIGESEntity)& allAnnotations)
+void IGESDraw_DrawingWithRotation::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+  const occ::handle<NCollection_HArray1<gp_XY>>&                                allViewOrigins,
+  const occ::handle<NCollection_HArray1<double>>&                           allOrientationAngles,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAnnotations)
 {
-  Standard_Integer Len = allViews->Length();
+  int Len = allViews->Length();
   if (allViews->Lower() != 1 || (allViewOrigins->Lower() != 1 || allViewOrigins->Length() != Len)
       || (allOrientationAngles->Lower() != 1 || allOrientationAngles->Length() != Len))
     throw Standard_DimensionMismatch("IGESDraw_DrawingWithRotation : Init");
@@ -52,47 +53,44 @@ void IGESDraw_DrawingWithRotation::Init(const Handle(IGESDraw_HArray1OfViewKindE
   InitTypeAndForm(404, 1);
 }
 
-Standard_Integer IGESDraw_DrawingWithRotation::NbViews() const
+int IGESDraw_DrawingWithRotation::NbViews() const
 {
   return (theViews->Length());
 }
 
-Handle(IGESData_ViewKindEntity) IGESDraw_DrawingWithRotation::ViewItem(
-  const Standard_Integer Index) const
+occ::handle<IGESData_ViewKindEntity> IGESDraw_DrawingWithRotation::ViewItem(const int Index) const
 {
   return (theViews->Value(Index));
 }
 
-gp_Pnt2d IGESDraw_DrawingWithRotation::ViewOrigin(const Standard_Integer Index) const
+gp_Pnt2d IGESDraw_DrawingWithRotation::ViewOrigin(const int Index) const
 {
   return (gp_Pnt2d(theViewOrigins->Value(Index)));
 }
 
-Standard_Real IGESDraw_DrawingWithRotation::OrientationAngle(const Standard_Integer Index) const
+double IGESDraw_DrawingWithRotation::OrientationAngle(const int Index) const
 {
   return (theOrientationAngles->Value(Index));
 }
 
-Standard_Integer IGESDraw_DrawingWithRotation::NbAnnotations() const
+int IGESDraw_DrawingWithRotation::NbAnnotations() const
 {
   return (theAnnotations.IsNull() ? 0 : theAnnotations->Length());
 }
 
-Handle(IGESData_IGESEntity) IGESDraw_DrawingWithRotation::Annotation(
-  const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESDraw_DrawingWithRotation::Annotation(const int Index) const
 {
   return (theAnnotations->Value(Index));
 }
 
-gp_XY IGESDraw_DrawingWithRotation::ViewToDrawing(const Standard_Integer NumView,
-                                                  const gp_XYZ&          ViewCoords) const
+gp_XY IGESDraw_DrawingWithRotation::ViewToDrawing(const int NumView, const gp_XYZ& ViewCoords) const
 {
-  gp_XY         thisOrigin     = theViewOrigins->Value(NumView);
-  Standard_Real XOrigin        = thisOrigin.X();
-  Standard_Real YOrigin        = thisOrigin.Y();
-  Standard_Real theScaleFactor = 0.;
+  gp_XY  thisOrigin     = theViewOrigins->Value(NumView);
+  double XOrigin        = thisOrigin.X();
+  double YOrigin        = thisOrigin.Y();
+  double theScaleFactor = 0.;
 
-  Handle(IGESData_ViewKindEntity) tempView = theViews->Value(NumView);
+  occ::handle<IGESData_ViewKindEntity> tempView = theViews->Value(NumView);
   if (tempView->IsKind(STANDARD_TYPE(IGESDraw_View)))
   {
     DeclareAndCast(IGESDraw_View, thisView, tempView);
@@ -104,40 +102,40 @@ gp_XY IGESDraw_DrawingWithRotation::ViewToDrawing(const Standard_Integer NumView
     theScaleFactor = thisView->ScaleFactor();
   }
 
-  Standard_Real XV = ViewCoords.X();
-  Standard_Real YV = ViewCoords.Y();
+  double XV = ViewCoords.X();
+  double YV = ViewCoords.Y();
 
-  Standard_Real theta = theOrientationAngles->Value(NumView);
+  double theta = theOrientationAngles->Value(NumView);
 
-  Standard_Real XD = XOrigin + theScaleFactor * (XV * std::cos(theta) - YV * std::sin(theta));
-  Standard_Real YD = YOrigin + theScaleFactor * (XV * std::sin(theta) + YV * std::cos(theta));
+  double XD = XOrigin + theScaleFactor * (XV * std::cos(theta) - YV * std::sin(theta));
+  double YD = YOrigin + theScaleFactor * (XV * std::sin(theta) + YV * std::cos(theta));
 
   return (gp_XY(XD, YD));
 }
 
-Standard_Boolean IGESDraw_DrawingWithRotation::DrawingUnit(Standard_Real& val) const
+bool IGESDraw_DrawingWithRotation::DrawingUnit(double& val) const
 {
-  val                           = 0.;
-  Handle(Standard_Type) typunit = STANDARD_TYPE(IGESGraph_DrawingUnits);
+  val                                = 0.;
+  occ::handle<Standard_Type> typunit = STANDARD_TYPE(IGESGraph_DrawingUnits);
   if (NbTypedProperties(typunit) != 1)
-    return Standard_False;
+    return false;
   DeclareAndCast(IGESGraph_DrawingUnits, units, TypedProperty(typunit));
   if (units.IsNull())
-    return Standard_False;
+    return false;
   val = units->UnitValue();
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IGESDraw_DrawingWithRotation::DrawingSize(Standard_Real& X, Standard_Real& Y) const
+bool IGESDraw_DrawingWithRotation::DrawingSize(double& X, double& Y) const
 {
-  X = Y                         = 0.;
-  Handle(Standard_Type) typsize = STANDARD_TYPE(IGESGraph_DrawingSize);
+  X = Y                              = 0.;
+  occ::handle<Standard_Type> typsize = STANDARD_TYPE(IGESGraph_DrawingSize);
   if (NbTypedProperties(typsize) != 1)
-    return Standard_False;
+    return false;
   DeclareAndCast(IGESGraph_DrawingSize, size, TypedProperty(typsize));
   if (size.IsNull())
-    return Standard_False;
+    return false;
   X = size->XSize();
   Y = size->YSize();
-  return Standard_True;
+  return true;
 }

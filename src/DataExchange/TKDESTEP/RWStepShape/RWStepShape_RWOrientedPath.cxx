@@ -20,10 +20,10 @@
 
 RWStepShape_RWOrientedPath::RWStepShape_RWOrientedPath() {}
 
-void RWStepShape_RWOrientedPath::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepShape_OrientedPath)&  ent) const
+void RWStepShape_RWOrientedPath::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                                   num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepShape_OrientedPath>&  ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,25 +33,25 @@ void RWStepShape_RWOrientedPath::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : edgeList ---
   // --- this field is redefined ---
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-  data->CheckDerived(num, 2, "edge_list", ach, Standard_False);
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
+  data->CheckDerived(num, 2, "edge_list", ach, false);
 
   // --- own field : pathElement ---
 
-  Handle(StepShape_EdgeLoop) aPathElement;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepShape_EdgeLoop> aPathElement;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "path_element", ach, STANDARD_TYPE(StepShape_EdgeLoop), aPathElement);
 
   // --- own field : orientation ---
 
-  Standard_Boolean aOrientation;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  bool aOrientation;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadBoolean(num, 4, "orientation", ach, aOrientation);
 
   //--- Initialisation of the read entity ---
@@ -59,8 +59,8 @@ void RWStepShape_RWOrientedPath::ReadStep(const Handle(StepData_StepReaderData)&
   ent->Init(aName, aPathElement, aOrientation);
 }
 
-void RWStepShape_RWOrientedPath::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepShape_OrientedPath)& ent) const
+void RWStepShape_RWOrientedPath::WriteStep(StepData_StepWriter&                       SW,
+                                           const occ::handle<StepShape_OrientedPath>& ent) const
 {
 
   // --- inherited field name ---
@@ -80,8 +80,8 @@ void RWStepShape_RWOrientedPath::WriteStep(StepData_StepWriter&                 
   SW.SendBoolean(ent->Orientation());
 }
 
-void RWStepShape_RWOrientedPath::Share(const Handle(StepShape_OrientedPath)& ent,
-                                       Interface_EntityIterator&             iter) const
+void RWStepShape_RWOrientedPath::Share(const occ::handle<StepShape_OrientedPath>& ent,
+                                       Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->PathElement());

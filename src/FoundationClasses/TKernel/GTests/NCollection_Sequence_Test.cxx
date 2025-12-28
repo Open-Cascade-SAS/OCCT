@@ -14,7 +14,6 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <TColStd_SequenceOfReal.hxx>
 
 #include <gtest/gtest.h>
 #include <algorithm>
@@ -22,7 +21,7 @@
 #include <random>
 
 // Basic test type for the Sequence
-typedef Standard_Integer ItemType;
+typedef int ItemType;
 
 // Custom class for testing complex types in the Sequence
 class TestClass
@@ -330,8 +329,8 @@ TEST(NCollection_SequenceTest, ComplexTypeSequence)
 TEST(NCollection_SequenceTest, AllocatorTest)
 {
   // Test with custom allocator
-  Handle(NCollection_BaseAllocator) aAlloc = new NCollection_IncAllocator();
-  NCollection_Sequence<ItemType>    aSeq(aAlloc);
+  occ::handle<NCollection_BaseAllocator> aAlloc = new NCollection_IncAllocator();
+  NCollection_Sequence<ItemType>         aSeq(aAlloc);
 
   aSeq.Append(10);
   aSeq.Append(20);
@@ -343,7 +342,7 @@ TEST(NCollection_SequenceTest, AllocatorTest)
   EXPECT_EQ(aSeq(3), 30);
 
   // Test Clear with new allocator
-  Handle(NCollection_BaseAllocator) aAlloc2 = new NCollection_IncAllocator();
+  occ::handle<NCollection_BaseAllocator> aAlloc2 = new NCollection_IncAllocator();
   aSeq.Clear(aAlloc2);
   EXPECT_TRUE(aSeq.IsEmpty());
 
@@ -380,14 +379,14 @@ TEST(NCollection_SequenceTest, MoveOperations)
 
 TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_MinMax)
 {
-  NCollection_Sequence<Standard_Integer> aSequence;
-  std::list<Standard_Integer>            aStdList;
+  NCollection_Sequence<int> aSequence;
+  std::list<int>            aStdList;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
-  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = aDistribution(aGenerator);
+    int aVal = aDistribution(aGenerator);
     aSequence.Append(aVal);
     aStdList.push_back(aVal);
   }
@@ -404,20 +403,20 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_MinMax)
 
 TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Replace)
 {
-  NCollection_Sequence<Standard_Integer> aSequence;
-  std::list<Standard_Integer>            aStdList;
+  NCollection_Sequence<int> aSequence;
+  std::list<int>            aStdList;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
-  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = aDistribution(aGenerator);
+    int aVal = aDistribution(aGenerator);
     aSequence.Append(aVal);
     aStdList.push_back(aVal);
   }
 
-  Standard_Integer aTargetValue = aStdList.back();
-  Standard_Integer aNewValue    = -1;
+  int aTargetValue = aStdList.back();
+  int aNewValue    = -1;
 
   std::replace(aSequence.begin(), aSequence.end(), aTargetValue, aNewValue);
   std::replace(aStdList.begin(), aStdList.end(), aTargetValue, aNewValue);
@@ -427,10 +426,10 @@ TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Replace)
 
 TEST(NCollection_SequenceTest, STLAlgorithmCompatibility_Reverse)
 {
-  NCollection_Sequence<Standard_Integer> aSequence;
-  std::list<Standard_Integer>            aStdList;
+  NCollection_Sequence<int> aSequence;
+  std::list<int>            aStdList;
 
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
     aSequence.Append(anIdx);
     aStdList.push_back(anIdx);
@@ -448,14 +447,14 @@ TEST(NCollection_SequenceTest, OCC26448_PrependEmptySequence)
   // This test verifies that prepending an empty sequence doesn't affect the target sequence
 
   // Test with NCollection_Sequence
-  NCollection_Sequence<Standard_Real> aNSeq1, aNSeq2;
+  NCollection_Sequence<double> aNSeq1, aNSeq2;
   aNSeq1.Append(11.);
   aNSeq1.Prepend(aNSeq2); // Prepend empty sequence
   EXPECT_EQ(aNSeq1.Size(), 1);
   EXPECT_DOUBLE_EQ(aNSeq1.First(), 11.0);
 
-  // Test with TColStd_SequenceOfReal
-  TColStd_SequenceOfReal aTSeq1, aTSeq2;
+  // Test with NCollection_Sequence<double>
+  NCollection_Sequence<double> aTSeq1, aTSeq2;
   aTSeq1.Append(11.);
   aTSeq1.Prepend(aTSeq2); // Prepend empty sequence
   EXPECT_EQ(aTSeq1.Size(), 1);

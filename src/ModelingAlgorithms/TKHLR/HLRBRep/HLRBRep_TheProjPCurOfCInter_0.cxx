@@ -23,15 +23,15 @@
 #include <gp_Pnt2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
 
-Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr& C,
-                                                         const gp_Pnt2d&         P,
-                                                         const Standard_Real     LowParameter,
-                                                         const Standard_Real     HighParameter,
-                                                         const Standard_Real)
+double HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr& C,
+                                                  const gp_Pnt2d&         P,
+                                                  const double            LowParameter,
+                                                  const double            HighParameter,
+                                                  const double)
 {
-  Standard_Real     theparam, defaultparam;
-  Standard_Integer  NbPts   = HLRBRep_CurveTool::NbSamples(C);
-  Standard_Real     theEpsX = HLRBRep_CurveTool::EpsX(C);
+  double            theparam, defaultparam;
+  int               NbPts   = HLRBRep_CurveTool::NbSamples(C);
+  double            theEpsX = HLRBRep_CurveTool::EpsX(C);
   Extrema_POnCurv2d POnC;
 
   HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter::Locate(P,
@@ -43,14 +43,14 @@ Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr&
   defaultparam = POnC.Parameter();
   HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter Loc(P, C, defaultparam, theEpsX);
 
-  if (Loc.IsDone() == Standard_False)
+  if (Loc.IsDone() == false)
   {
     //-- cout<<"\n Erreur dans LocateExtPC "<<endl;
     theparam = defaultparam;
   }
   else
   {
-    if (Loc.IsMin() == Standard_False)
+    if (Loc.IsMin() == false)
     {
       //-- cout<<"\n Erreur dans LocateExtPC (Maximum trouve) "<<endl;
       theparam = defaultparam;
@@ -63,12 +63,12 @@ Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr&
   return theparam;
 }
 
-Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr& C,
-                                                         const gp_Pnt2d&         P,
-                                                         const Standard_Real     Tol)
+double HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr& C,
+                                                  const gp_Pnt2d&         P,
+                                                  const double            Tol)
 {
 
-  Standard_Real theParam;
+  double theParam;
   theParam = FindParameter(C,
                            P,
                            HLRBRep_CurveTool::FirstParameter(C),

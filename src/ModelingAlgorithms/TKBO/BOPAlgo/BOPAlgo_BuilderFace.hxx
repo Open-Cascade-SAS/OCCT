@@ -41,7 +41,7 @@ public:
   Standard_EXPORT BOPAlgo_BuilderFace();
   Standard_EXPORT virtual ~BOPAlgo_BuilderFace();
 
-  Standard_EXPORT BOPAlgo_BuilderFace(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPAlgo_BuilderFace(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Sets the face generatix
   Standard_EXPORT void SetFace(const TopoDS_Face& theFace);
@@ -51,7 +51,7 @@ public:
 
   //! Performs the algorithm
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
@@ -59,26 +59,23 @@ protected:
   //! Collect the edges that
   //! a) are internal
   //! b) are the same and have different orientation
-  Standard_EXPORT virtual void PerformShapesToAvoid(const Message_ProgressRange& theRange)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformShapesToAvoid(const Message_ProgressRange& theRange) override;
 
   //! Build draft wires
   //! a)myLoops - draft wires that consist of
   //! boundary edges
   //! b)myLoopsInternal - draft wires that contains
   //! inner edges
-  Standard_EXPORT virtual void PerformLoops(const Message_ProgressRange& theRange)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformLoops(const Message_ProgressRange& theRange) override;
 
   //! Build draft faces that contains boundary edges
-  Standard_EXPORT virtual void PerformAreas(const Message_ProgressRange& theRange)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformAreas(const Message_ProgressRange& theRange) override;
 
   //! Build finalized faces with internals
-  Standard_EXPORT virtual void PerformInternalShapes(const Message_ProgressRange& theRange)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformInternalShapes(
+    const Message_ProgressRange& theRange) override;
 
-  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckData() override;
 
 protected:
   TopoDS_Face        myFace;

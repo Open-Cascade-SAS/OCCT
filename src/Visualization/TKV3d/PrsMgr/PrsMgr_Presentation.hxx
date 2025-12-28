@@ -24,8 +24,6 @@ class PrsMgr_PresentableObject;
 class Graphic3d_Camera;
 class Prs3d_Drawer;
 
-DEFINE_STANDARD_HANDLE(PrsMgr_Presentation, Graphic3d_Structure)
-
 class PrsMgr_Presentation : public Graphic3d_Structure
 {
   DEFINE_STANDARD_RTTIEXT(PrsMgr_Presentation, Graphic3d_Structure)
@@ -40,74 +38,70 @@ public:
   Prs3d_Presentation* Presentation() { return this; }
 
   //! returns the PresentationManager in which the presentation has been created.
-  const Handle(PrsMgr_PresentationManager)& PresentationManager() const
+  const occ::handle<PrsMgr_PresentationManager>& PresentationManager() const
   {
     return myPresentationManager;
   }
 
-  void SetUpdateStatus(const Standard_Boolean theUpdateStatus)
-  {
-    myMustBeUpdated = theUpdateStatus;
-  }
+  void SetUpdateStatus(const bool theUpdateStatus) { myMustBeUpdated = theUpdateStatus; }
 
-  Standard_Boolean MustBeUpdated() const { return myMustBeUpdated; }
+  bool MustBeUpdated() const { return myMustBeUpdated; }
 
   //! Return display mode index.
-  Standard_Integer Mode() const { return myMode; }
+  int Mode() const { return myMode; }
 
   //! Display structure.
-  Standard_EXPORT virtual void Display() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Display() override;
 
   //! Remove structure.
-  Standard_EXPORT virtual void Erase() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Erase() override;
 
   //! Highlight structure.
-  Standard_EXPORT void Highlight(const Handle(Prs3d_Drawer)& theStyle);
+  Standard_EXPORT void Highlight(const occ::handle<Prs3d_Drawer>& theStyle);
 
   //! Unhighlight structure.
   Standard_EXPORT void Unhighlight();
 
   //! Return TRUE if structure has been displayed and in no hidden state.
-  virtual Standard_Boolean IsDisplayed() const Standard_OVERRIDE
+  virtual bool IsDisplayed() const override
   {
     return base_type::IsDisplayed() && base_type::IsVisible();
   }
 
   //! removes the whole content of the presentation.
   //! Does not remove the other connected presentations.
-  Standard_EXPORT virtual void Clear(const Standard_Boolean theWithDestruction = Standard_True)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear(const bool theWithDestruction = true) override;
 
   //! Compute structure using presentation manager.
-  Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute() override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Main constructor.
   Standard_EXPORT PrsMgr_Presentation(
-    const Handle(PrsMgr_PresentationManager)& thePresentationManager,
-    const Handle(PrsMgr_PresentableObject)&   thePresentableObject,
-    const Standard_Integer                    theMode);
+    const occ::handle<PrsMgr_PresentationManager>& thePresentationManager,
+    const occ::handle<PrsMgr_PresentableObject>&   thePresentableObject,
+    const int                                      theMode);
 
   //! Displays myStructure.
-  Standard_EXPORT void display(const Standard_Boolean theIsHighlight);
+  Standard_EXPORT void display(const bool theIsHighlight);
 
-  Standard_EXPORT virtual void computeHLR(const Handle(Graphic3d_Camera)& theProjector,
-                                          Handle(Graphic3d_Structure)&    theGivenStruct)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void computeHLR(
+    const occ::handle<Graphic3d_Camera>& theProjector,
+    occ::handle<Graphic3d_Structure>&    theGivenStruct) override;
 
-  Standard_EXPORT virtual void RecomputeTransformation(const Handle(Graphic3d_Camera)& theProjector)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void RecomputeTransformation(
+    const occ::handle<Graphic3d_Camera>& theProjector) override;
 
 protected:
-  Handle(PrsMgr_PresentationManager) myPresentationManager;
-  PrsMgr_PresentableObject*          myPresentableObject;
-  Standard_Integer                   myBeforeHighlightState;
-  Standard_Integer                   myMode;
-  Standard_Boolean                   myMustBeUpdated;
+  occ::handle<PrsMgr_PresentationManager> myPresentationManager;
+  PrsMgr_PresentableObject*               myPresentableObject;
+  int                                     myBeforeHighlightState;
+  int                                     myMode;
+  bool                                    myMustBeUpdated;
 };
 
 #endif // _PrsMgr_Presentation_HeaderFile

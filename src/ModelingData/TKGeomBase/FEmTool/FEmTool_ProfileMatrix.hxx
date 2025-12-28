@@ -19,17 +19,13 @@
 
 #include <Standard.hxx>
 
-#include <TColStd_Array2OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <FEmTool_SparseMatrix.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <FEmTool_SparseMatrix.hxx>
+#include <Standard_Real.hxx>
 #include <math_Vector.hxx>
-
-class FEmTool_ProfileMatrix;
-DEFINE_STANDARD_HANDLE(FEmTool_ProfileMatrix, FEmTool_SparseMatrix)
 
 //! Symmetric Sparse ProfileMatrix useful for 1D Finite
 //! Element methods
@@ -37,42 +33,40 @@ class FEmTool_ProfileMatrix : public FEmTool_SparseMatrix
 {
 
 public:
-  Standard_EXPORT FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& FirstIndexes);
+  Standard_EXPORT FEmTool_ProfileMatrix(const NCollection_Array1<int>& FirstIndexes);
 
-  Standard_EXPORT void Init(const Standard_Real Value) Standard_OVERRIDE;
+  Standard_EXPORT void Init(const double Value) override;
 
-  Standard_EXPORT Standard_Real& ChangeValue(const Standard_Integer I,
-                                             const Standard_Integer J) Standard_OVERRIDE;
+  Standard_EXPORT double& ChangeValue(const int I, const int J) override;
 
   //! To make a Factorization of <me>
-  Standard_EXPORT Standard_Boolean Decompose() Standard_OVERRIDE;
+  Standard_EXPORT bool Decompose() override;
 
   //! Direct Solve of AX = B
-  Standard_EXPORT void Solve(const math_Vector& B, math_Vector& X) const Standard_OVERRIDE;
+  Standard_EXPORT void Solve(const math_Vector& B, math_Vector& X) const override;
 
   //! Make Preparation to iterative solve
-  Standard_EXPORT Standard_Boolean Prepare() Standard_OVERRIDE;
+  Standard_EXPORT bool Prepare() override;
 
   //! Iterative solve of AX = B
-  Standard_EXPORT void Solve(const math_Vector&     B,
-                             const math_Vector&     Init,
-                             math_Vector&           X,
-                             math_Vector&           Residual,
-                             const Standard_Real    Tolerance    = 1.0e-8,
-                             const Standard_Integer NbIterations = 50) const Standard_OVERRIDE;
+  Standard_EXPORT void Solve(const math_Vector& B,
+                             const math_Vector& Init,
+                             math_Vector&       X,
+                             math_Vector&       Residual,
+                             const double       Tolerance    = 1.0e-8,
+                             const int          NbIterations = 50) const override;
 
   //! returns the product of a SparseMatrix by a vector.
   //! An exception is raised if the dimensions are different
-  Standard_EXPORT void Multiplied(const math_Vector& X, math_Vector& MX) const Standard_OVERRIDE;
+  Standard_EXPORT void Multiplied(const math_Vector& X, math_Vector& MX) const override;
 
   //! returns the row range of a matrix.
-  Standard_EXPORT Standard_Integer RowNumber() const Standard_OVERRIDE;
+  Standard_EXPORT int RowNumber() const override;
 
   //! returns the column range of the matrix.
-  Standard_EXPORT Standard_Integer ColNumber() const Standard_OVERRIDE;
+  Standard_EXPORT int ColNumber() const override;
 
-  Standard_EXPORT Standard_Boolean IsInProfile(const Standard_Integer i,
-                                               const Standard_Integer j) const;
+  Standard_EXPORT bool IsInProfile(const int i, const int j) const;
 
   Standard_EXPORT void OutM() const;
 
@@ -80,13 +74,12 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(FEmTool_ProfileMatrix, FEmTool_SparseMatrix)
 
-protected:
 private:
-  TColStd_Array2OfInteger          profile;
-  Handle(TColStd_HArray1OfReal)    ProfileMatrix;
-  Handle(TColStd_HArray1OfReal)    SMatrix;
-  Handle(TColStd_HArray1OfInteger) NextCoeff;
-  Standard_Boolean                 IsDecomp;
+  NCollection_Array2<int>                  profile;
+  occ::handle<NCollection_HArray1<double>> ProfileMatrix;
+  occ::handle<NCollection_HArray1<double>> SMatrix;
+  occ::handle<NCollection_HArray1<int>>    NextCoeff;
+  bool                                     IsDecomp;
 };
 
 #endif // _FEmTool_ProfileMatrix_HeaderFile

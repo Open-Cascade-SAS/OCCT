@@ -52,7 +52,7 @@ public:
                             const gp_Pln&      thePlane);
 
   //! Calculates a fillet.
-  Standard_EXPORT Standard_Boolean Perform(const Standard_Real radius);
+  Standard_EXPORT bool Perform(const double radius);
 
   //! Retrieves a result (fillet and shrinked neighbours).
   Standard_EXPORT const TopoDS_Edge& Result(TopoDS_Edge& e1, TopoDS_Edge& e2);
@@ -64,32 +64,32 @@ private:
   //     point on the 1st segment (xstart, ystart)
   //     point on the 2nd segment (xend, yend)
   //     is the arc of fillet clockwise (cw = true) or counterclockwise (cw = false).
-  Standard_Boolean SegmentFilletSegment(const Standard_Real radius,
-                                        Standard_Real&      xc,
-                                        Standard_Real&      yc,
-                                        Standard_Boolean&   cw,
-                                        Standard_Real&      start,
-                                        Standard_Real&      end);
+  bool SegmentFilletSegment(const double radius,
+                            double&      xc,
+                            double&      yc,
+                            bool&        cw,
+                            double&      start,
+                            double&      end);
 
   // A function constructs a fillet between a segment and an arc.
-  Standard_Boolean SegmentFilletArc(const Standard_Real radius,
-                                    Standard_Real&      xc,
-                                    Standard_Real&      yc,
-                                    Standard_Boolean&   cw,
-                                    Standard_Real&      start,
-                                    Standard_Real&      end,
-                                    Standard_Real&      xend,
-                                    Standard_Real&      yend);
+  bool SegmentFilletArc(const double radius,
+                        double&      xc,
+                        double&      yc,
+                        bool&        cw,
+                        double&      start,
+                        double&      end,
+                        double&      xend,
+                        double&      yend);
 
   // A function constructs a fillet between an arc and a segment.
-  Standard_Boolean ArcFilletSegment(const Standard_Real radius,
-                                    Standard_Real&      xc,
-                                    Standard_Real&      yc,
-                                    Standard_Boolean&   cw,
-                                    Standard_Real&      start,
-                                    Standard_Real&      end,
-                                    Standard_Real&      xstart,
-                                    Standard_Real&      ystart);
+  bool ArcFilletSegment(const double radius,
+                        double&      xc,
+                        double&      yc,
+                        bool&        cw,
+                        double&      start,
+                        double&      end,
+                        double&      xstart,
+                        double&      ystart);
 
   // WW5 method to compute fillet: arc - arc.
   // It returns a constructed fillet definition:
@@ -97,42 +97,42 @@ private:
   //     shrinking parameter of the 1st circle (start)
   //     shrinking parameter of the 2nd circle (end)
   //     if the arc of fillet clockwise (cw = true) or counterclockwise (cw = false).
-  Standard_Boolean ArcFilletArc(const Standard_Real radius,
-                                Standard_Real&      xc,
-                                Standard_Real&      yc,
-                                Standard_Boolean&   cw,
-                                Standard_Real&      start,
-                                Standard_Real&      end);
+  bool ArcFilletArc(const double radius,
+                    double&      xc,
+                    double&      yc,
+                    bool&        cw,
+                    double&      start,
+                    double&      end);
 
   // Cuts intersecting edges of a contour.
-  Standard_Boolean Cut(const gp_Pln& plane, TopoDS_Edge& e1, TopoDS_Edge& e2);
+  bool Cut(const gp_Pln& plane, TopoDS_Edge& e1, TopoDS_Edge& e2);
 
   // Plane.
   gp_Pln plane;
 
   // Left neighbour.
-  TopoDS_Edge      e1;
-  Standard_Boolean segment1;
-  Standard_Real    x11;
-  Standard_Real    y11;
-  Standard_Real    x12;
-  Standard_Real    y12;
-  Standard_Real    xc1;
-  Standard_Real    yc1;
-  Standard_Real    radius1;
-  Standard_Boolean cw1;
+  TopoDS_Edge e1;
+  bool        segment1;
+  double      x11;
+  double      y11;
+  double      x12;
+  double      y12;
+  double      xc1;
+  double      yc1;
+  double      radius1;
+  bool        cw1;
 
   // Right neighbour.
-  TopoDS_Edge      e2;
-  Standard_Boolean segment2;
-  Standard_Real    x21;
-  Standard_Real    y21;
-  Standard_Real    x22;
-  Standard_Real    y22;
-  Standard_Real    xc2;
-  Standard_Real    yc2;
-  Standard_Real    radius2;
-  Standard_Boolean cw2;
+  TopoDS_Edge e2;
+  bool        segment2;
+  double      x21;
+  double      y21;
+  double      x22;
+  double      y22;
+  double      xc2;
+  double      yc2;
+  double      radius2;
+  bool        cw2;
 
   // Fillet (result).
   TopoDS_Edge fillet;

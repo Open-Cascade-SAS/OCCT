@@ -23,9 +23,11 @@
 
 #include <TopoDS_Shape.hxx>
 #include <gp_Ax1.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 class Geom_Curve;
 
 //! Defines a prism (using Prism from BRepSweep)
@@ -39,21 +41,17 @@ public:
 
   Standard_EXPORT LocOpe_Revol(const TopoDS_Shape& Base,
                                const gp_Ax1&       Axis,
-                               const Standard_Real Angle,
-                               const Standard_Real angledec);
+                               const double        Angle,
+                               const double        angledec);
 
-  Standard_EXPORT LocOpe_Revol(const TopoDS_Shape& Base,
-                               const gp_Ax1&       Axis,
-                               const Standard_Real Angle);
+  Standard_EXPORT LocOpe_Revol(const TopoDS_Shape& Base, const gp_Ax1& Axis, const double Angle);
 
   Standard_EXPORT void Perform(const TopoDS_Shape& Base,
                                const gp_Ax1&       Axis,
-                               const Standard_Real Angle,
-                               const Standard_Real angledec);
+                               const double        Angle,
+                               const double        angledec);
 
-  Standard_EXPORT void Perform(const TopoDS_Shape& Base,
-                               const gp_Ax1&       Axis,
-                               const Standard_Real Angle);
+  Standard_EXPORT void Perform(const TopoDS_Shape& Base, const gp_Ax1& Axis, const double Angle);
 
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
 
@@ -61,26 +59,25 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  Standard_EXPORT const TopTools_ListOfShape& Shapes(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Shapes(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT void Curves(TColGeom_SequenceOfCurve& SCurves) const;
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& SCurves) const;
 
-  Standard_EXPORT Handle(Geom_Curve) BarycCurve() const;
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve() const;
 
-protected:
 private:
   Standard_EXPORT void IntPerf();
 
-  TopoDS_Shape                       myBase;
-  gp_Ax1                             myAxis;
-  Standard_Real                      myAngle;
-  Standard_Real                      myAngTra;
-  Standard_Boolean                   myIsTrans;
-  Standard_Boolean                   myDone;
-  TopoDS_Shape                       myRes;
-  TopoDS_Shape                       myFirstShape;
-  TopoDS_Shape                       myLastShape;
-  TopTools_DataMapOfShapeListOfShape myMap;
+  TopoDS_Shape myBase;
+  gp_Ax1       myAxis;
+  double       myAngle;
+  double       myAngTra;
+  bool         myIsTrans;
+  bool         myDone;
+  TopoDS_Shape myRes;
+  TopoDS_Shape myFirstShape;
+  TopoDS_Shape myLastShape;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _LocOpe_Revol_HeaderFile

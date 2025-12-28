@@ -31,7 +31,7 @@
 Standard_EXPORT void FUN_draw(const TopoDS_Shape& s);
 Standard_EXPORT void FUN_draw(const gp_Pnt& p);
 Standard_EXPORT void FUN_draw(const gp_Pnt2d& p);
-Standard_EXPORT void FUN_draw(const Handle(Geom2d_Curve) c, const Standard_Real dpar);
+Standard_EXPORT void FUN_draw(const occ::handle<Geom2d_Curve> c, const double dpar);
 Standard_EXPORT void FUN_draw(const gp_Pnt& p, const gp_Dir& v);
 Standard_EXPORT void FUN_draw(const gp_Pnt& p, const gp_Vec& v);
 Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa, const gp_Pnt& p);
@@ -40,16 +40,19 @@ Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa,
                                    const gp_Dir&                  d);
 Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa, const TopoDS_Shape& s);
 Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa,
-                                   const Handle(Geom_Curve)&      C,
-                                   const Standard_Real&           f,
-                                   const Standard_Real&           l);
-Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa, const Handle(Geom_Curve)& C);
-Standard_EXPORT void FUN_DrawMap(const TopTools_DataMapOfShapeListOfShape& DataforDegenEd);
+                                   const occ::handle<Geom_Curve>& C,
+                                   const double&                  f,
+                                   const double&                  l);
+Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa,
+                                   const occ::handle<Geom_Curve>& C);
+Standard_EXPORT void FUN_DrawMap(
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    DataforDegenEd);
 Standard_EXPORT void FUN_draw2de(const TopoDS_Shape& ed, const TopoDS_Shape& fa);
-Standard_EXPORT void FUN_draw2d(const Standard_Real& par,
-                                const TopoDS_Edge&   E,
-                                const TopoDS_Edge&   Eref,
-                                const TopoDS_Face&   Fref);
+Standard_EXPORT void FUN_draw2d(const double&      par,
+                                const TopoDS_Edge& E,
+                                const TopoDS_Edge& Eref,
+                                const TopoDS_Face& Fref);
 
 #endif
 // DRAW

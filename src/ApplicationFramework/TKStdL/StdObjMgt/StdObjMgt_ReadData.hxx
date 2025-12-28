@@ -46,32 +46,32 @@ public:
     ObjectSentry& operator=(const ObjectSentry&);
   };
 
-  Standard_EXPORT StdObjMgt_ReadData(const Handle(Storage_BaseDriver)& theDriver,
-                                     const Standard_Integer            theNumberOfObjects);
+  Standard_EXPORT StdObjMgt_ReadData(const occ::handle<Storage_BaseDriver>& theDriver,
+                                     const int                              theNumberOfObjects);
 
   template <class Instantiator>
-  void CreatePersistentObject(const Standard_Integer theRef, Instantiator theInstantiator)
+  void CreatePersistentObject(const int theRef, Instantiator theInstantiator)
   {
     myPersistentObjects(theRef) = theInstantiator();
   }
 
-  Standard_EXPORT void ReadPersistentObject(const Standard_Integer theRef);
+  Standard_EXPORT void ReadPersistentObject(const int theRef);
 
-  Handle(StdObjMgt_Persistent) PersistentObject(const Standard_Integer theRef) const
+  occ::handle<StdObjMgt_Persistent> PersistentObject(const int theRef) const
   {
     return myPersistentObjects(theRef);
   }
 
-  Standard_EXPORT Handle(StdObjMgt_Persistent) ReadReference();
+  Standard_EXPORT occ::handle<StdObjMgt_Persistent> ReadReference();
 
   template <class Persistent>
-  StdObjMgt_ReadData& operator>>(Handle(Persistent)& theTarget)
+  StdObjMgt_ReadData& operator>>(occ::handle<Persistent>& theTarget)
   {
-    theTarget = Handle(Persistent)::DownCast(ReadReference());
+    theTarget = occ::down_cast<Persistent>(ReadReference());
     return *this;
   }
 
-  StdObjMgt_ReadData& operator>>(Handle(StdObjMgt_Persistent)& theTarget)
+  StdObjMgt_ReadData& operator>>(occ::handle<StdObjMgt_Persistent>& theTarget)
   {
     theTarget = ReadReference();
     return *this;
@@ -84,21 +84,21 @@ public:
     return *this;
   }
 
-  StdObjMgt_ReadData& operator>>(Standard_Character& theValue) { return ReadValue(theValue); }
+  StdObjMgt_ReadData& operator>>(char& theValue) { return ReadValue(theValue); }
 
-  StdObjMgt_ReadData& operator>>(Standard_ExtCharacter& theValue) { return ReadValue(theValue); }
+  StdObjMgt_ReadData& operator>>(char16_t& theValue) { return ReadValue(theValue); }
 
-  StdObjMgt_ReadData& operator>>(Standard_Integer& theValue) { return ReadValue(theValue); }
+  StdObjMgt_ReadData& operator>>(int& theValue) { return ReadValue(theValue); }
 
-  StdObjMgt_ReadData& operator>>(Standard_Boolean& theValue) { return ReadValue(theValue); }
+  StdObjMgt_ReadData& operator>>(bool& theValue) { return ReadValue(theValue); }
 
-  StdObjMgt_ReadData& operator>>(Standard_Real& theValue) { return ReadValue(theValue); }
+  StdObjMgt_ReadData& operator>>(double& theValue) { return ReadValue(theValue); }
 
-  StdObjMgt_ReadData& operator>>(Standard_ShortReal& theValue) { return ReadValue(theValue); }
+  StdObjMgt_ReadData& operator>>(float& theValue) { return ReadValue(theValue); }
 
 private:
-  Handle(Storage_BaseDriver)                       myDriver;
-  NCollection_Array1<Handle(StdObjMgt_Persistent)> myPersistentObjects;
+  occ::handle<Storage_BaseDriver>                       myDriver;
+  NCollection_Array1<occ::handle<StdObjMgt_Persistent>> myPersistentObjects;
 };
 
 Standard_EXPORT StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData,

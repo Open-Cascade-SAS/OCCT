@@ -28,17 +28,17 @@ RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::
 }
 
 void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::ReadStep(
-  const Handle(StepData_StepReaderData)&                                           data,
-  const Standard_Integer                                                           num0,
-  Handle(Interface_Check)&                                                         ach,
-  const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent) const
+  const occ::handle<StepData_StepReaderData>&                                           data,
+  const int                                                                             num0,
+  occ::handle<Interface_Check>&                                                         ach,
+  const occ::handle<StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem>& ent) const
 {
 
   //  Complex Entity : MeasureReprItem + QualifiedreprItem : so, add ReprItem
 
   //  --- Instance of plex component : MeasureReprItem
 
-  Standard_Integer num = 0;
+  int num = 0;
   data->NamedForComplex("MEASURE_REPRESENTATION_ITEM", "MSRPIT", num0, num, ach);
 
   // --- Number of Parameter Control ---
@@ -47,7 +47,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
     return;
 
   // --- inherited from measure_with_unit : value_component ---
-  Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 1, "value_component", ach, mvc);
 
   // --- inherited from measure_with_unit : unit_component ---
@@ -65,13 +65,13 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
 
   // --- own field : qualifiers ---
 
-  Handle(StepShape_HArray1OfValueQualifier) quals;
-  Standard_Integer                          nsub1;
+  occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> quals;
+  int                                                        nsub1;
   if (data->ReadSubList(num, 1, "qualifiers", ach, nsub1))
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
-    quals                = new StepShape_HArray1OfValueQualifier(1, nb1);
-    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    int nb1 = data->NbParams(nsub1);
+    quals   = new NCollection_HArray1<StepShape_ValueQualifier>(1, nb1);
+    for (int i1 = 1; i1 <= nb1; i1++)
     {
       StepShape_ValueQualifier VQ;
       if (data->ReadEntity(nsub1, i1, "qualifier", ach, VQ))
@@ -88,7 +88,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
 
   // --- inherited field from this component : name ---
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   //--- Initialisation of the read entity ---
@@ -97,8 +97,8 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
 }
 
 void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::WriteStep(
-  StepData_StepWriter&                                                             SW,
-  const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent) const
+  StepData_StepWriter&                                                                  SW,
+  const occ::handle<StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem>& ent) const
 {
   //  Complex Entity : MeasureReprItem + QualifiedreprItem : so, add ReprItem
 
@@ -117,7 +117,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Writ
   SW.StartEntity("QUALIFIED_REPRESENTATION_ITEM");
 
   // --- own field : qualifiers ---
-  Standard_Integer i, nbq = ent->NbQualifiers();
+  int i, nbq = ent->NbQualifiers();
   SW.OpenSub();
   for (i = 1; i <= nbq; i++)
     SW.Send(ent->QualifiersValue(i).Value());
@@ -133,12 +133,12 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Writ
 }
 
 void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Share(
-  const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent,
-  Interface_EntityIterator&                                                        iter) const
+  const occ::handle<StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem>& ent,
+  Interface_EntityIterator&                                                             iter) const
 {
   iter.AddItem(ent->Measure()->UnitComponent().Value());
 
-  Standard_Integer i, nbq = ent->NbQualifiers();
+  int i, nbq = ent->NbQualifiers();
   for (i = 1; i <= nbq; i++)
     iter.AddItem(ent->QualifiersValue(i).Value());
 }

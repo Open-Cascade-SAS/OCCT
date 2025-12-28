@@ -20,26 +20,29 @@
 #include <TopoDS_Wire.hxx>
 #include <TopOpeBRepBuild_Tools2d.hxx>
 #include <TopOpeBRepBuild_VertexInfo.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 #include <stdio.h>
-static void BuildPath(const TopoDS_Vertex&                             myVertex0,
-                      const TopoDS_Edge&                               myEdge,
-                      const TopoDS_Vertex&                             myVertex,
-                      const Standard_Integer                           aNbEdges,
-                      TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo& M,
-                      Standard_Integer                                 anEdgesCount,
-                      Standard_Integer&                                aBreakFlag,
-                      TopTools_ListOfShape&                            myResList);
+static void BuildPath(
+  const TopoDS_Vertex& myVertex0,
+  const TopoDS_Edge&   myEdge,
+  const TopoDS_Vertex& myVertex,
+  const int            aNbEdges,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher>& M,
+  int                             anEdgesCount,
+  int&                            aBreakFlag,
+  NCollection_List<TopoDS_Shape>& myResList);
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Tools2d::Path(const TopoDS_Wire& aWire, TopTools_ListOfShape& aResList)
+void TopOpeBRepBuild_Tools2d::Path(const TopoDS_Wire&              aWire,
+                                   NCollection_List<TopoDS_Shape>& aResList)
 {
-  Standard_Integer     anEdgesCount = 0, aNbEdges = 0, aBreakFlag = 0;
-  TopTools_ListOfShape myResList;
-  TopoDS_Vertex        myVertex, myVertex0;
-  TopoDS_Edge          myEdge, aNullEdge;
+  int                            anEdgesCount = 0, aNbEdges = 0, aBreakFlag = 0;
+  NCollection_List<TopoDS_Shape> myResList;
+  TopoDS_Vertex                  myVertex, myVertex0;
+  TopoDS_Edge                    myEdge, aNullEdge;
 
   TopExp_Explorer ex(aWire, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
@@ -47,7 +50,7 @@ void TopOpeBRepBuild_Tools2d::Path(const TopoDS_Wire& aWire, TopTools_ListOfShap
 
   myResList.Clear();
 
-  TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo M;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher> M;
   TopOpeBRepBuild_Tools2d::MakeMapOfShapeVertexInfo(aWire, M);
 
   myEdge    = aNullEdge;
@@ -62,18 +65,19 @@ void TopOpeBRepBuild_Tools2d::Path(const TopoDS_Wire& aWire, TopTools_ListOfShap
 
 //=================================================================================================
 
-void BuildPath(const TopoDS_Vertex&                             myVertex0,
-               const TopoDS_Edge&                               myInputEdge,
-               const TopoDS_Vertex&                             myInputVertex,
-               const Standard_Integer                           aNbEdges,
-               TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo& M,
-               Standard_Integer                                 anEdgesCount,
-               Standard_Integer&                                aBreakFlag,
-               TopTools_ListOfShape&                            myResList)
+void BuildPath(
+  const TopoDS_Vertex& myVertex0,
+  const TopoDS_Edge&   myInputEdge,
+  const TopoDS_Vertex& myInputVertex,
+  const int            aNbEdges,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher>& M,
+  int                             anEdgesCount,
+  int&                            aBreakFlag,
+  NCollection_List<TopoDS_Shape>& myResList)
 {
-  Standard_Integer j = 1, aFoundOut, aNbCases, stopFlag = 0;
-  TopoDS_Edge      myEdge;
-  TopoDS_Vertex    myVertex;
+  int           j = 1, aFoundOut, aNbCases, stopFlag = 0;
+  TopoDS_Edge   myEdge;
+  TopoDS_Vertex myVertex;
 
   if (aBreakFlag == 1)
     return;
@@ -150,8 +154,8 @@ void BuildPath(const TopoDS_Vertex&                             myVertex0,
 //=================================================================================================
 
 void TopOpeBRepBuild_Tools2d::MakeMapOfShapeVertexInfo(
-  const TopoDS_Wire&                               aWire,
-  TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo& M)
+  const TopoDS_Wire& aWire,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher>& M)
 {
   TopOpeBRepBuild_VertexInfo empty;
   TopExp_Explorer            exa(aWire, TopAbs_EDGE);
@@ -162,7 +166,7 @@ void TopOpeBRepBuild_Tools2d::MakeMapOfShapeVertexInfo(
     for (; exs.More(); exs.Next())
     {
       const TopoDS_Vertex& aVertex = TopoDS::Vertex(exs.Current());
-      Standard_Integer     index   = M.FindIndex(aVertex);
+      int                  index   = M.FindIndex(aVertex);
       if (!index)
         index = M.Add(aVertex, empty);
 
@@ -176,19 +180,19 @@ void TopOpeBRepBuild_Tools2d::MakeMapOfShapeVertexInfo(
     }
   }
 
-  Standard_Integer i, aNb;
+  int i, aNb;
   aNb = M.Extent();
   for (i = 1; i <= aNb; i++)
   {
-    TopOpeBRepBuild_VertexInfo&               aVInfo   = M(i);
-    const TopTools_IndexedMapOfOrientedShape& EdgesIn  = aVInfo.EdgesIn();
-    const TopTools_IndexedMapOfOrientedShape& EdgesOut = aVInfo.EdgesOut();
-    Standard_Integer                          aNbEdgesIn, aNbEdgesOut;
+    TopOpeBRepBuild_VertexInfo&                 aVInfo   = M(i);
+    const NCollection_IndexedMap<TopoDS_Shape>& EdgesIn  = aVInfo.EdgesIn();
+    const NCollection_IndexedMap<TopoDS_Shape>& EdgesOut = aVInfo.EdgesOut();
+    int                                         aNbEdgesIn, aNbEdgesOut;
     aNbEdgesIn  = EdgesIn.Extent();
     aNbEdgesOut = EdgesOut.Extent();
     if (aNbEdgesIn != 1 && aNbEdgesOut != 1)
     {
-      aVInfo.SetSmart(Standard_True);
+      aVInfo.SetSmart(true);
     }
   }
 }
@@ -196,20 +200,22 @@ void TopOpeBRepBuild_Tools2d::MakeMapOfShapeVertexInfo(
 //=================================================================================================
 
 void TopOpeBRepBuild_Tools2d::DumpMapOfShapeVertexInfo(
-  const TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo& M)
+  const NCollection_IndexedDataMap<TopoDS_Shape,
+                                   TopOpeBRepBuild_VertexInfo,
+                                   TopTools_ShapeMapHasher>& M)
 {
-  Standard_Integer i, aNb;
+  int i, aNb;
   aNb = M.Extent();
   for (i = 1; i <= aNb; i++)
   {
     const TopOpeBRepBuild_VertexInfo& aVInfo = M(i);
 
     printf(" Vert.#%d, ", i);
-    const TopTools_ListOfShape& aList = aVInfo.ListPassed();
+    const NCollection_List<TopoDS_Shape>& aList = aVInfo.ListPassed();
 
     if (aList.Extent())
     {
-      TopTools_ListIteratorOfListOfShape anIt(aList);
+      NCollection_List<TopoDS_Shape>::Iterator anIt(aList);
       for (; anIt.More(); anIt.Next())
       {
         printf("pass,");

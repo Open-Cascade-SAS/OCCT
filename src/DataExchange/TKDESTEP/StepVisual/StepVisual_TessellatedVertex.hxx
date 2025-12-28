@@ -24,8 +24,6 @@
 #include <StepVisual_CoordinatesList.hxx>
 #include <StepShape_VertexPoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedVertex, StepVisual_TessellatedStructuredItem)
-
 //! Representation of STEP entity TessellatedVertex
 class StepVisual_TessellatedVertex : public StepVisual_TessellatedStructuredItem
 {
@@ -35,40 +33,42 @@ public:
   Standard_EXPORT StepVisual_TessellatedVertex();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-                            const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                            const Standard_Boolean                    theHasTopologicalLink,
-                            const Handle(StepShape_VertexPoint)&      theTopologicalLink,
-                            const Standard_Integer                    thePointIndex);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+                            const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+                            const bool                                     theHasTopologicalLink,
+                            const occ::handle<StepShape_VertexPoint>&      theTopologicalLink,
+                            const int                                      thePointIndex);
 
   //! Returns field Coordinates
-  Standard_EXPORT Handle(StepVisual_CoordinatesList) Coordinates() const;
+  Standard_EXPORT occ::handle<StepVisual_CoordinatesList> Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates);
+  Standard_EXPORT void SetCoordinates(
+    const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
 
   //! Returns field TopologicalLink
-  Standard_EXPORT Handle(StepShape_VertexPoint) TopologicalLink() const;
+  Standard_EXPORT occ::handle<StepShape_VertexPoint> TopologicalLink() const;
 
   //! Sets field TopologicalLink
-  Standard_EXPORT void SetTopologicalLink(const Handle(StepShape_VertexPoint)& theTopologicalLink);
+  Standard_EXPORT void SetTopologicalLink(
+    const occ::handle<StepShape_VertexPoint>& theTopologicalLink);
 
   //! Returns True if optional field TopologicalLink is defined
-  Standard_EXPORT Standard_Boolean HasTopologicalLink() const;
+  Standard_EXPORT bool HasTopologicalLink() const;
 
   //! Returns field PointIndex
-  Standard_EXPORT Standard_Integer PointIndex() const;
+  Standard_EXPORT int PointIndex() const;
 
   //! Sets field PointIndex
-  Standard_EXPORT void SetPointIndex(const Standard_Integer thePointIndex);
+  Standard_EXPORT void SetPointIndex(const int thePointIndex);
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedVertex, StepVisual_TessellatedStructuredItem)
 
 private:
-  Handle(StepVisual_CoordinatesList) myCoordinates;
-  Handle(StepShape_VertexPoint)      myTopologicalLink; //!< optional
-  Standard_Integer                   myPointIndex;
-  Standard_Boolean                   myHasTopologicalLink; //!< flag "is TopologicalLink defined"
+  occ::handle<StepVisual_CoordinatesList> myCoordinates;
+  occ::handle<StepShape_VertexPoint>      myTopologicalLink; //!< optional
+  int                                     myPointIndex;
+  bool myHasTopologicalLink; //!< flag "is TopologicalLink defined"
 };
 
 #endif // _StepVisual_TessellatedVertex_HeaderFile_

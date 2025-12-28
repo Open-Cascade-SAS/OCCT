@@ -20,9 +20,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-class StepRepr_RealRepresentationItem;
-DEFINE_STANDARD_HANDLE(StepRepr_RealRepresentationItem, StepRepr_RepresentationItem)
-
 class StepRepr_RealRepresentationItem : public StepRepr_RepresentationItem
 {
 
@@ -30,17 +27,17 @@ public:
   //! Returns a RealRepresentationItem
   Standard_EXPORT StepRepr_RealRepresentationItem();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
-                            const Standard_Real                     theValue);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
+                            const double                                 theValue);
 
-  inline void SetValue(const Standard_Real theValue) { value = theValue; }
+  inline void SetValue(const double theValue) { value = theValue; }
 
-  inline Standard_Real Value() const { return value; }
+  inline double Value() const { return value; }
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_RealRepresentationItem, StepRepr_RepresentationItem)
 
 private:
-  Standard_Real value;
+  double value;
 };
 
 #endif // _StepRepr_RealRepresentationItem_HeaderFile

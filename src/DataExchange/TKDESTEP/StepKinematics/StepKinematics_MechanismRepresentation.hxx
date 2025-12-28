@@ -21,11 +21,11 @@
 #include <StepRepr_Representation.hxx>
 
 #include <TCollection_HAsciiString.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 #include <StepKinematics_KinematicTopologyRepresentationSelect.hxx>
-
-DEFINE_STANDARD_HANDLE(StepKinematics_MechanismRepresentation, StepRepr_Representation)
 
 //! Representation of STEP entity MechanismRepresentation
 class StepKinematics_MechanismRepresentation : public StepRepr_Representation
@@ -36,9 +36,10 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                     theRepresentation_Name,
-    const Handle(StepRepr_HArray1OfRepresentationItem)&         theRepresentation_Items,
-    const Handle(StepRepr_RepresentationContext)&               theRepresentation_ContextOfItems,
+    const occ::handle<TCollection_HAsciiString>& theRepresentation_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
+                                                                theRepresentation_Items,
+    const occ::handle<StepRepr_RepresentationContext>&          theRepresentation_ContextOfItems,
     const StepKinematics_KinematicTopologyRepresentationSelect& theRepresentedTopology);
 
   //! Returns field RepresentedTopology

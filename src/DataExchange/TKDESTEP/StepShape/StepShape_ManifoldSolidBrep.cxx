@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ManifoldSolidBrep, StepShape_SolidModel)
 
 StepShape_ManifoldSolidBrep::StepShape_ManifoldSolidBrep() {}
 
-void StepShape_ManifoldSolidBrep::Init(const Handle(TCollection_HAsciiString)& aName,
-                                       const Handle(StepShape_ClosedShell)&    aOuter)
+void StepShape_ManifoldSolidBrep::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                       const occ::handle<StepShape_ClosedShell>&    aOuter)
 {
   // --- classe own fields ---
   outer = aOuter;
@@ -29,8 +29,8 @@ void StepShape_ManifoldSolidBrep::Init(const Handle(TCollection_HAsciiString)& a
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_ManifoldSolidBrep::Init(const Handle(TCollection_HAsciiString)&   aName,
-                                       const Handle(StepShape_ConnectedFaceSet)& aOuter)
+void StepShape_ManifoldSolidBrep::Init(const occ::handle<TCollection_HAsciiString>&   aName,
+                                       const occ::handle<StepShape_ConnectedFaceSet>& aOuter)
 {
   // --- classe own fields ---
   outer = aOuter;
@@ -38,12 +38,12 @@ void StepShape_ManifoldSolidBrep::Init(const Handle(TCollection_HAsciiString)&  
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_ManifoldSolidBrep::SetOuter(const Handle(StepShape_ConnectedFaceSet)& aOuter)
+void StepShape_ManifoldSolidBrep::SetOuter(const occ::handle<StepShape_ConnectedFaceSet>& aOuter)
 {
   outer = aOuter;
 }
 
-Handle(StepShape_ConnectedFaceSet) StepShape_ManifoldSolidBrep::Outer() const
+occ::handle<StepShape_ConnectedFaceSet> StepShape_ManifoldSolidBrep::Outer() const
 {
   return outer;
 }

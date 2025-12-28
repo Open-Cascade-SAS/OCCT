@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileDescription, Standard_Transient)
 HeaderSection_FileDescription::HeaderSection_FileDescription() {}
 
 void HeaderSection_FileDescription::Init(
-  const Handle(Interface_HArray1OfHAsciiString)& aDescription,
-  const Handle(TCollection_HAsciiString)&        aImplementationLevel)
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription,
+  const occ::handle<TCollection_HAsciiString>& aImplementationLevel)
 {
   // --- class own fields ---
   description         = aDescription;
@@ -29,23 +29,24 @@ void HeaderSection_FileDescription::Init(
 }
 
 void HeaderSection_FileDescription::SetDescription(
-  const Handle(Interface_HArray1OfHAsciiString)& aDescription)
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription)
 {
   description = aDescription;
 }
 
-Handle(Interface_HArray1OfHAsciiString) HeaderSection_FileDescription::Description() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
+  HeaderSection_FileDescription::Description() const
 {
   return description;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileDescription::DescriptionValue(
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileDescription::DescriptionValue(
+  const int num) const
 {
   return description->Value(num);
 }
 
-Standard_Integer HeaderSection_FileDescription::NbDescription() const
+int HeaderSection_FileDescription::NbDescription() const
 {
   if (description.IsNull())
     return 0;
@@ -53,12 +54,12 @@ Standard_Integer HeaderSection_FileDescription::NbDescription() const
 }
 
 void HeaderSection_FileDescription::SetImplementationLevel(
-  const Handle(TCollection_HAsciiString)& aImplementationLevel)
+  const occ::handle<TCollection_HAsciiString>& aImplementationLevel)
 {
   implementationLevel = aImplementationLevel;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileDescription::ImplementationLevel() const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileDescription::ImplementationLevel() const
 {
   return implementationLevel;
 }

@@ -17,7 +17,15 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_PrimitiveTypes.hxx>
+#include <stddef.h>
+#include <stdlib.h>
+#include <Standard_Macro.hxx>
+#include <Standard_Boolean.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Real.hxx>
+#include <Standard_Character.hxx>
+#include <Standard_ExtCharacter.hxx>
+#include <Standard_CString.hxx>
 
 #include <atomic>
 
@@ -71,21 +79,20 @@ public:
   Standard_EXPORT virtual const opencascade::handle<Standard_Type>& DynamicType() const;
 
   //! Returns a true value if this is an instance of Type.
-  Standard_EXPORT Standard_Boolean
-    IsInstance(const opencascade::handle<Standard_Type>& theType) const;
+  Standard_EXPORT bool IsInstance(const opencascade::handle<Standard_Type>& theType) const;
 
   //! Returns a true value if this is an instance of TypeName.
-  Standard_EXPORT Standard_Boolean IsInstance(const Standard_CString theTypeName) const;
+  Standard_EXPORT bool IsInstance(const char* theTypeName) const;
 
   //! Returns true if this is an instance of Type or an
   //! instance of any class that inherits from Type.
   //! Note that multiple inheritance is not supported by OCCT RTTI mechanism.
-  Standard_EXPORT Standard_Boolean IsKind(const opencascade::handle<Standard_Type>& theType) const;
+  Standard_EXPORT bool IsKind(const opencascade::handle<Standard_Type>& theType) const;
 
   //! Returns true if this is an instance of TypeName or an
   //! instance of any class that inherits from TypeName.
   //! Note that multiple inheritance is not supported by OCCT RTTI mechanism.
-  Standard_EXPORT Standard_Boolean IsKind(const Standard_CString theTypeName) const;
+  Standard_EXPORT bool IsKind(const char* theTypeName) const;
 
   //! Returns non-const pointer to this object (like const_cast).
   //! For protection against creating handle to objects allocated in stack
@@ -97,14 +104,14 @@ public:
   //!@name Reference counting, for use by handle<>
 
   //! Get the reference counter of this object
-  inline Standard_Integer GetRefCount() const noexcept { return myRefCount_; }
+  inline int GetRefCount() const noexcept { return myRefCount_; }
 
   //! Increments the reference counter of this object
   inline void IncrementRefCounter() noexcept { myRefCount_.operator++(); }
 
   //! Decrements the reference counter of this object;
   //! returns the decremented value
-  inline Standard_Integer DecrementRefCounter() noexcept { return myRefCount_.operator--(); }
+  inline int DecrementRefCounter() noexcept { return myRefCount_.operator--(); }
 
   //! Memory deallocator for transient classes
   virtual void Delete() const { delete this; }
@@ -116,10 +123,6 @@ private:
   std::atomic_int myRefCount_;
 };
 
-//! Definition of Handle_Standard_Transient as typedef for compatibility
-
-Standard_DEPRECATED("This typedef will be removed right after 7.9 release. Use Handle(T) directly "
-                    "instead.")
-typedef opencascade::handle<Standard_Transient> Handle_Standard_Transient;
+//! Definition of opencascade::handle<Standard_Transient> as typedef for compatibility
 
 #endif

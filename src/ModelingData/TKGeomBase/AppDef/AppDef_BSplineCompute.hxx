@@ -23,15 +23,13 @@
 
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <Approx_ParametrizationType.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
 #include <Standard_Real.hxx>
 #include <AppParCurves_Constraint.hxx>
 #include <math_Vector.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 class AppDef_MultiLine;
 class AppDef_MyLineTool;
 class AppDef_MyBSplGradientOfBSplineCompute;
@@ -62,14 +60,14 @@ public:
   //! default.
   Standard_EXPORT AppDef_BSplineCompute(
     const AppDef_MultiLine&          Line,
-    const Standard_Integer           degreemin       = 4,
-    const Standard_Integer           degreemax       = 8,
-    const Standard_Real              Tolerance3d     = 1.0e-3,
-    const Standard_Real              Tolerance2d     = 1.0e-6,
-    const Standard_Integer           NbIterations    = 5,
-    const Standard_Boolean           cutting         = Standard_True,
+    const int                        degreemin       = 4,
+    const int                        degreemax       = 8,
+    const double                     Tolerance3d     = 1.0e-3,
+    const double                     Tolerance2d     = 1.0e-6,
+    const int                        NbIterations    = 5,
+    const bool                       cutting         = true,
     const Approx_ParametrizationType parametrization = Approx_ChordLength,
-    const Standard_Boolean           Squares         = Standard_False);
+    const bool                       Squares         = false);
 
   //! The MultiLine <Line> will be approximated until tolerances
   //! will be reached.
@@ -79,48 +77,48 @@ public:
   //! no iteration at all.
   Standard_EXPORT AppDef_BSplineCompute(const AppDef_MultiLine& Line,
                                         const math_Vector&      Parameters,
-                                        const Standard_Integer  degreemin    = 4,
-                                        const Standard_Integer  degreemax    = 8,
-                                        const Standard_Real     Tolerance3d  = 1.0e-03,
-                                        const Standard_Real     Tolerance2d  = 1.0e-06,
-                                        const Standard_Integer  NbIterations = 5,
-                                        const Standard_Boolean  cutting      = Standard_True,
-                                        const Standard_Boolean  Squares      = Standard_False);
+                                        const int               degreemin    = 4,
+                                        const int               degreemax    = 8,
+                                        const double            Tolerance3d  = 1.0e-03,
+                                        const double            Tolerance2d  = 1.0e-06,
+                                        const int               NbIterations = 5,
+                                        const bool              cutting      = true,
+                                        const bool              Squares      = false);
 
   //! Initializes the fields of the algorithm.
-  Standard_EXPORT AppDef_BSplineCompute(const math_Vector&     Parameters,
-                                        const Standard_Integer degreemin    = 4,
-                                        const Standard_Integer degreemax    = 8,
-                                        const Standard_Real    Tolerance3d  = 1.0e-03,
-                                        const Standard_Real    Tolerance2d  = 1.0e-06,
-                                        const Standard_Integer NbIterations = 5,
-                                        const Standard_Boolean cutting      = Standard_True,
-                                        const Standard_Boolean Squares      = Standard_False);
+  Standard_EXPORT AppDef_BSplineCompute(const math_Vector& Parameters,
+                                        const int          degreemin    = 4,
+                                        const int          degreemax    = 8,
+                                        const double       Tolerance3d  = 1.0e-03,
+                                        const double       Tolerance2d  = 1.0e-06,
+                                        const int          NbIterations = 5,
+                                        const bool         cutting      = true,
+                                        const bool         Squares      = false);
 
   //! Initializes the fields of the algorithm.
   Standard_EXPORT AppDef_BSplineCompute(
-    const Standard_Integer           degreemin       = 4,
-    const Standard_Integer           degreemax       = 8,
-    const Standard_Real              Tolerance3d     = 1.0e-03,
-    const Standard_Real              Tolerance2d     = 1.0e-06,
-    const Standard_Integer           NbIterations    = 5,
-    const Standard_Boolean           cutting         = Standard_True,
+    const int                        degreemin       = 4,
+    const int                        degreemax       = 8,
+    const double                     Tolerance3d     = 1.0e-03,
+    const double                     Tolerance2d     = 1.0e-06,
+    const int                        NbIterations    = 5,
+    const bool                       cutting         = true,
     const Approx_ParametrizationType parametrization = Approx_ChordLength,
-    const Standard_Boolean           Squares         = Standard_False);
+    const bool                       Squares         = false);
 
   //! Constructs an interpolation of the MultiLine <Line>
   //! The result will be a C2 curve of degree 3.
   Standard_EXPORT void Interpol(const AppDef_MultiLine& Line);
 
   //! Initializes the fields of the algorithm.
-  Standard_EXPORT void Init(const Standard_Integer           degreemin       = 4,
-                            const Standard_Integer           degreemax       = 8,
-                            const Standard_Real              Tolerance3d     = 1.0e-03,
-                            const Standard_Real              Tolerance2d     = 1.0e-06,
-                            const Standard_Integer           NbIterations    = 5,
-                            const Standard_Boolean           cutting         = Standard_True,
+  Standard_EXPORT void Init(const int                        degreemin       = 4,
+                            const int                        degreemax       = 8,
+                            const double                     Tolerance3d     = 1.0e-03,
+                            const double                     Tolerance2d     = 1.0e-06,
+                            const int                        NbIterations    = 5,
+                            const bool                       cutting         = true,
                             const Approx_ParametrizationType parametrization = Approx_ChordLength,
-                            const Standard_Boolean           Squares         = Standard_False);
+                            const bool                       Squares         = false);
 
   //! runs the algorithm after having initialized the fields.
   Standard_EXPORT void Perform(const AppDef_MultiLine& Line);
@@ -132,45 +130,43 @@ public:
   //! The approximation will be done with the
   //! set of knots <Knots>. The multiplicities will be set
   //! with the degree and the desired continuity.
-  Standard_EXPORT void SetKnots(const TColStd_Array1OfReal& Knots);
+  Standard_EXPORT void SetKnots(const NCollection_Array1<double>& Knots);
 
   //! The approximation will be done with the
   //! set of knots <Knots> and the multiplicities <Mults>.
-  Standard_EXPORT void SetKnotsAndMultiplicities(const TColStd_Array1OfReal&    Knots,
-                                                 const TColStd_Array1OfInteger& Mults);
+  Standard_EXPORT void SetKnotsAndMultiplicities(const NCollection_Array1<double>& Knots,
+                                                 const NCollection_Array1<int>&    Mults);
 
   //! changes the degrees of the approximation.
-  Standard_EXPORT void SetDegrees(const Standard_Integer degreemin,
-                                  const Standard_Integer degreemax);
+  Standard_EXPORT void SetDegrees(const int degreemin, const int degreemax);
 
   //! Changes the tolerances of the approximation.
-  Standard_EXPORT void SetTolerances(const Standard_Real Tolerance3d,
-                                     const Standard_Real Tolerance2d);
+  Standard_EXPORT void SetTolerances(const double Tolerance3d, const double Tolerance2d);
 
   //! sets the continuity of the spline.
   //! if C = 2, the spline will be C2.
-  Standard_EXPORT void SetContinuity(const Standard_Integer C);
+  Standard_EXPORT void SetContinuity(const int C);
 
   //! changes the first and the last constraint points.
   Standard_EXPORT void SetConstraints(const AppParCurves_Constraint firstC,
                                       const AppParCurves_Constraint lastC);
 
   //! Sets periodic flag.
-  //! If thePeriodic = Standard_True, algorithm tries to build periodic
+  //! If thePeriodic = true, algorithm tries to build periodic
   //! multicurve using corresponding C1 boundary condition for first and last multipoints.
   //! Multiline must be closed.
-  Standard_EXPORT void SetPeriodic(const Standard_Boolean thePeriodic);
+  Standard_EXPORT void SetPeriodic(const bool thePeriodic);
 
   //! returns False if at a moment of the approximation,
   //! the status NoApproximation has been sent by the user
   //! when more points were needed.
-  Standard_EXPORT Standard_Boolean IsAllApproximated() const;
+  Standard_EXPORT bool IsAllApproximated() const;
 
   //! returns False if the status NoPointsAdded has been sent.
-  Standard_EXPORT Standard_Boolean IsToleranceReached() const;
+  Standard_EXPORT bool IsToleranceReached() const;
 
   //! returns the tolerances 2d and 3d of the MultiBSpCurve.
-  Standard_EXPORT void Error(Standard_Real& tol3d, Standard_Real& tol2d) const;
+  Standard_EXPORT void Error(double& tol3d, double& tol2d) const;
 
   //! returns the result of the approximation.
   Standard_EXPORT const AppParCurves_MultiBSpCurve& Value() const;
@@ -180,84 +176,83 @@ public:
 
   //! returns the new parameters of the approximation
   //! corresponding to the points of the MultiBSpCurve.
-  Standard_EXPORT const TColStd_Array1OfReal& Parameters() const;
+  Standard_EXPORT const NCollection_Array1<double>& Parameters() const;
 
-protected:
 private:
   //! is internally used in the algorithm.
-  Standard_EXPORT Standard_Boolean Compute(const AppDef_MultiLine&     Line,
-                                           const Standard_Integer      fpt,
-                                           const Standard_Integer      lpt,
-                                           math_Vector&                Para,
-                                           const TColStd_Array1OfReal& Knots,
-                                           TColStd_Array1OfInteger&    Mults);
+  Standard_EXPORT bool Compute(const AppDef_MultiLine&           Line,
+                               const int                         fpt,
+                               const int                         lpt,
+                               math_Vector&                      Para,
+                               const NCollection_Array1<double>& Knots,
+                               NCollection_Array1<int>&          Mults);
 
   //! is internally used in the algorithm.
-  Standard_EXPORT Standard_Boolean ComputeCurve(const AppDef_MultiLine& Line,
-                                                const Standard_Integer  firspt,
-                                                const Standard_Integer  lastpt);
+  Standard_EXPORT bool ComputeCurve(const AppDef_MultiLine& Line,
+                                    const int               firspt,
+                                    const int               lastpt);
 
   //! computes new parameters between firstP and lastP.
   Standard_EXPORT void Parameters(const AppDef_MultiLine& Line,
-                                  const Standard_Integer  firstP,
-                                  const Standard_Integer  LastP,
+                                  const int               firstP,
+                                  const int               LastP,
                                   math_Vector&            TheParameters) const;
 
-  Standard_EXPORT Standard_Real SearchFirstLambda(const AppDef_MultiLine&     Line,
-                                                  const math_Vector&          Para,
-                                                  const TColStd_Array1OfReal& Knots,
-                                                  const math_Vector&          V,
-                                                  const Standard_Integer      index) const;
+  Standard_EXPORT double SearchFirstLambda(const AppDef_MultiLine&           Line,
+                                           const math_Vector&                Para,
+                                           const NCollection_Array1<double>& Knots,
+                                           const math_Vector&                V,
+                                           const int                         index) const;
 
-  Standard_EXPORT Standard_Real SearchLastLambda(const AppDef_MultiLine&     Line,
-                                                 const math_Vector&          Para,
-                                                 const TColStd_Array1OfReal& Knots,
-                                                 const math_Vector&          V,
-                                                 const Standard_Integer      index) const;
+  Standard_EXPORT double SearchLastLambda(const AppDef_MultiLine&           Line,
+                                          const math_Vector&                Para,
+                                          const NCollection_Array1<double>& Knots,
+                                          const math_Vector&                V,
+                                          const int                         index) const;
 
   Standard_EXPORT void TangencyVector(const AppDef_MultiLine&        Line,
                                       const AppParCurves_MultiCurve& C,
-                                      const Standard_Real            U,
+                                      const double                   U,
                                       math_Vector&                   V) const;
 
   Standard_EXPORT void FirstTangencyVector(const AppDef_MultiLine& Line,
-                                           const Standard_Integer  index,
+                                           const int               index,
                                            math_Vector&            V) const;
 
   Standard_EXPORT void LastTangencyVector(const AppDef_MultiLine& Line,
-                                          const Standard_Integer  index,
+                                          const int               index,
                                           math_Vector&            V) const;
 
   Standard_EXPORT void FindRealConstraints(const AppDef_MultiLine& Line);
 
-  AppParCurves_MultiBSpCurve                     TheMultiBSpCurve;
-  Standard_Boolean                               alldone;
-  Standard_Boolean                               tolreached;
-  Approx_ParametrizationType                     Par;
-  Handle(TColStd_HArray1OfReal)                  myParameters;
-  Handle(TColStd_HArray1OfReal)                  myfirstParam;
-  Handle(TColStd_HArray1OfReal)                  myknots;
-  Handle(TColStd_HArray1OfInteger)               mymults;
-  Standard_Boolean                               myhasknots;
-  Standard_Boolean                               myhasmults;
-  Handle(AppParCurves_HArray1OfConstraintCouple) myConstraints;
-  Standard_Integer                               mydegremin;
-  Standard_Integer                               mydegremax;
-  Standard_Real                                  mytol3d;
-  Standard_Real                                  mytol2d;
-  Standard_Real                                  currenttol3d;
-  Standard_Real                                  currenttol2d;
-  Standard_Boolean                               mycut;
-  Standard_Boolean                               mysquares;
-  Standard_Integer                               myitermax;
-  AppParCurves_Constraint                        myfirstC;
-  AppParCurves_Constraint                        mylastC;
-  AppParCurves_Constraint                        realfirstC;
-  AppParCurves_Constraint                        reallastC;
-  Standard_Integer                               mycont;
-  Standard_Real                                  mylambda1;
-  Standard_Real                                  mylambda2;
-  Standard_Boolean                               myPeriodic;
+  AppParCurves_MultiBSpCurve                                      TheMultiBSpCurve;
+  bool                                                            alldone;
+  bool                                                            tolreached;
+  Approx_ParametrizationType                                      Par;
+  occ::handle<NCollection_HArray1<double>>                        myParameters;
+  occ::handle<NCollection_HArray1<double>>                        myfirstParam;
+  occ::handle<NCollection_HArray1<double>>                        myknots;
+  occ::handle<NCollection_HArray1<int>>                           mymults;
+  bool                                                            myhasknots;
+  bool                                                            myhasmults;
+  occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>> myConstraints;
+  int                                                             mydegremin;
+  int                                                             mydegremax;
+  double                                                          mytol3d;
+  double                                                          mytol2d;
+  double                                                          currenttol3d;
+  double                                                          currenttol2d;
+  bool                                                            mycut;
+  bool                                                            mysquares;
+  int                                                             myitermax;
+  AppParCurves_Constraint                                         myfirstC;
+  AppParCurves_Constraint                                         mylastC;
+  AppParCurves_Constraint                                         realfirstC;
+  AppParCurves_Constraint                                         reallastC;
+  int                                                             mycont;
+  double                                                          mylambda1;
+  double                                                          mylambda2;
+  bool                                                            myPeriodic;
 };
 
 #endif // _AppDef_BSplineCompute_HeaderFile

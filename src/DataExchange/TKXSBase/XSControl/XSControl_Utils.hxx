@@ -24,12 +24,13 @@
 #include <Standard_CString.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <TColStd_HSequenceOfHExtendedString.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
 class Standard_Transient;
 class TCollection_HAsciiString;
 class TCollection_AsciiString;
@@ -59,16 +60,16 @@ public:
 
   //! Just prints a line into the current Trace File. This allows to
   //! better characterise the various trace outputs, as desired.
-  Standard_EXPORT void TraceLine(const Standard_CString line) const;
+  Standard_EXPORT void TraceLine(const char* line) const;
 
   //! Just prints a line or a set of lines into the current Trace
   //! File. <lines> can be a HAscii/ExtendedString (produces a print
   //! without ending line) or a HSequence or HArray1 Of ..
   //! (one new line per item)
-  Standard_EXPORT void TraceLines(const Handle(Standard_Transient)& lines) const;
+  Standard_EXPORT void TraceLines(const occ::handle<Standard_Transient>& lines) const;
 
-  Standard_EXPORT Standard_Boolean IsKind(const Handle(Standard_Transient)& item,
-                                          const Handle(Standard_Type)&      what) const;
+  Standard_EXPORT bool IsKind(const occ::handle<Standard_Transient>& item,
+                              const occ::handle<Standard_Type>&      what) const;
 
   //! Returns the name of the dynamic type of an object, i.e. :
   //! If it is a Type, its Name
@@ -76,83 +77,88 @@ public:
   //! If it is Null, an empty string
   //! If <nopk> is False (D), gives complete name
   //! If <nopk> is True, returns class name without package
-  Standard_EXPORT Standard_CString TypeName(const Handle(Standard_Transient)& item,
-                                            const Standard_Boolean nopk = Standard_False) const;
+  Standard_EXPORT const char* TypeName(const occ::handle<Standard_Transient>& item,
+                                       const bool                             nopk = false) const;
 
-  Standard_EXPORT Handle(Standard_Transient) TraValue(const Handle(Standard_Transient)& list,
-                                                      const Standard_Integer            num) const;
+  Standard_EXPORT occ::handle<Standard_Transient> TraValue(
+    const occ::handle<Standard_Transient>& list,
+    const int                              num) const;
 
-  Standard_EXPORT Handle(TColStd_HSequenceOfTransient) NewSeqTra() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> NewSeqTra()
+    const;
 
-  Standard_EXPORT void AppendTra(const Handle(TColStd_HSequenceOfTransient)& seqval,
-                                 const Handle(Standard_Transient)&           traval) const;
+  Standard_EXPORT void AppendTra(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& seqval,
+    const occ::handle<Standard_Transient>&                                     traval) const;
 
-  Standard_EXPORT Standard_CString DateString(const Standard_Integer yy,
-                                              const Standard_Integer mm,
-                                              const Standard_Integer dd,
-                                              const Standard_Integer hh,
-                                              const Standard_Integer mn,
-                                              const Standard_Integer ss) const;
+  Standard_EXPORT const char* DateString(const int yy,
+                                         const int mm,
+                                         const int dd,
+                                         const int hh,
+                                         const int mn,
+                                         const int ss) const;
 
-  Standard_EXPORT void DateValues(const Standard_CString text,
-                                  Standard_Integer&      yy,
-                                  Standard_Integer&      mm,
-                                  Standard_Integer&      dd,
-                                  Standard_Integer&      hh,
-                                  Standard_Integer&      mn,
-                                  Standard_Integer&      ss) const;
+  Standard_EXPORT void DateValues(const char* text,
+                                  int&        yy,
+                                  int&        mm,
+                                  int&        dd,
+                                  int&        hh,
+                                  int&        mn,
+                                  int&        ss) const;
 
-  Standard_EXPORT Standard_CString ToCString(const Handle(TCollection_HAsciiString)& strval) const;
+  Standard_EXPORT const char* ToCString(const occ::handle<TCollection_HAsciiString>& strval) const;
 
-  Standard_EXPORT Standard_CString ToCString(const TCollection_AsciiString& strval) const;
+  Standard_EXPORT const char* ToCString(const TCollection_AsciiString& strval) const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) ToHString(const Standard_CString strcon) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ToHString(const char* strcon) const;
 
-  Standard_EXPORT TCollection_AsciiString ToAString(const Standard_CString strcon) const;
+  Standard_EXPORT TCollection_AsciiString ToAString(const char* strcon) const;
 
-  Standard_EXPORT Standard_ExtString
-    ToEString(const Handle(TCollection_HExtendedString)& strval) const;
+  Standard_EXPORT const char16_t* ToEString(
+    const occ::handle<TCollection_HExtendedString>& strval) const;
 
-  Standard_EXPORT Standard_ExtString ToEString(const TCollection_ExtendedString& strval) const;
+  Standard_EXPORT const char16_t* ToEString(const TCollection_ExtendedString& strval) const;
 
-  Standard_EXPORT Handle(TCollection_HExtendedString) ToHString(
-    const Standard_ExtString strcon) const;
+  Standard_EXPORT occ::handle<TCollection_HExtendedString> ToHString(const char16_t* strcon) const;
 
-  Standard_EXPORT TCollection_ExtendedString ToXString(const Standard_ExtString strcon) const;
+  Standard_EXPORT TCollection_ExtendedString ToXString(const char16_t* strcon) const;
 
-  Standard_EXPORT Standard_ExtString AsciiToExtended(const Standard_CString str) const;
+  Standard_EXPORT const char16_t* AsciiToExtended(const char* str) const;
 
-  Standard_EXPORT Standard_Boolean IsAscii(const Standard_ExtString str) const;
+  Standard_EXPORT bool IsAscii(const char16_t* str) const;
 
-  Standard_EXPORT Standard_CString ExtendedToAscii(const Standard_ExtString str) const;
+  Standard_EXPORT const char* ExtendedToAscii(const char16_t* str) const;
 
-  Standard_EXPORT Standard_CString CStrValue(const Handle(Standard_Transient)& list,
-                                             const Standard_Integer            num) const;
+  Standard_EXPORT const char* CStrValue(const occ::handle<Standard_Transient>& list,
+                                        const int                              num) const;
 
-  Standard_EXPORT Standard_ExtString EStrValue(const Handle(Standard_Transient)& list,
-                                               const Standard_Integer            num) const;
+  Standard_EXPORT const char16_t* EStrValue(const occ::handle<Standard_Transient>& list,
+                                            const int                              num) const;
 
-  Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) NewSeqCStr() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+                  NewSeqCStr() const;
 
-  Standard_EXPORT void AppendCStr(const Handle(TColStd_HSequenceOfHAsciiString)& seqval,
-                                  const Standard_CString                         strval) const;
+  Standard_EXPORT void AppendCStr(
+    const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& seqval,
+    const char*                                                                      strval) const;
 
-  Standard_EXPORT Handle(TColStd_HSequenceOfHExtendedString) NewSeqEStr() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>
+                  NewSeqEStr() const;
 
-  Standard_EXPORT void AppendEStr(const Handle(TColStd_HSequenceOfHExtendedString)& seqval,
-                                  const Standard_ExtString                          strval) const;
+  Standard_EXPORT void AppendEStr(
+    const occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>& seqval,
+    const char16_t* strval) const;
 
   //! Converts a list of Shapes to a Compound (a kind of Shape)
   Standard_EXPORT TopoDS_Shape
-    CompoundFromSeq(const Handle(TopTools_HSequenceOfShape)& seqval) const;
+    CompoundFromSeq(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval) const;
 
   //! Returns the type of a Shape : true type if <compound> is False
   //! If <compound> is True and <shape> is a Compound, iterates on
   //! its items. If all are of the same type, returns this type.
   //! Else, returns COMPOUND. If it is empty, returns SHAPE
   //! For a Null Shape, returns SHAPE
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType(const TopoDS_Shape&    shape,
-                                             const Standard_Boolean compound) const;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType(const TopoDS_Shape& shape, const bool compound) const;
 
   //! From a Shape, builds a Compound as follows :
   //! explores it level by level
@@ -165,41 +171,39 @@ public:
   //! items directly contained in a Compound
   Standard_EXPORT TopoDS_Shape SortedCompound(const TopoDS_Shape&    shape,
                                               const TopAbs_ShapeEnum type,
-                                              const Standard_Boolean explore,
-                                              const Standard_Boolean compound) const;
+                                              const bool             explore,
+                                              const bool             compound) const;
 
-  Standard_EXPORT TopoDS_Shape ShapeValue(const Handle(TopTools_HSequenceOfShape)& seqv,
-                                          const Standard_Integer                   num) const;
+  Standard_EXPORT TopoDS_Shape
+    ShapeValue(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqv, const int num) const;
 
-  Standard_EXPORT Handle(TopTools_HSequenceOfShape) NewSeqShape() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TopoDS_Shape>> NewSeqShape() const;
 
-  Standard_EXPORT void AppendShape(const Handle(TopTools_HSequenceOfShape)& seqv,
-                                   const TopoDS_Shape&                      shape) const;
+  Standard_EXPORT void AppendShape(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqv,
+                                   const TopoDS_Shape& shape) const;
 
   //! Creates a Transient Object from a Shape : it is either a Binder
   //! (used by functions which require a Transient but can process
   //! a Shape, such as viewing functions) or a HShape (according to hs)
   //! Default is a HShape
-  Standard_EXPORT Handle(Standard_Transient) ShapeBinder(
-    const TopoDS_Shape&    shape,
-    const Standard_Boolean hs = Standard_True) const;
+  Standard_EXPORT occ::handle<Standard_Transient> ShapeBinder(const TopoDS_Shape& shape,
+                                                              const bool          hs = true) const;
 
   //! From a Transient, returns a Shape.
   //! In fact, recognizes ShapeBinder ShapeMapper and HShape
-  Standard_EXPORT TopoDS_Shape BinderShape(const Handle(Standard_Transient)& tr) const;
+  Standard_EXPORT TopoDS_Shape BinderShape(const occ::handle<Standard_Transient>& tr) const;
 
-  Standard_EXPORT Standard_Integer SeqLength(const Handle(Standard_Transient)& list) const;
+  Standard_EXPORT int SeqLength(const occ::handle<Standard_Transient>& list) const;
 
-  Standard_EXPORT Handle(Standard_Transient) SeqToArr(const Handle(Standard_Transient)& seq,
-                                                      const Standard_Integer first = 1) const;
+  Standard_EXPORT occ::handle<Standard_Transient> SeqToArr(
+    const occ::handle<Standard_Transient>& seq,
+    const int                              first = 1) const;
 
-  Standard_EXPORT Handle(Standard_Transient) ArrToSeq(const Handle(Standard_Transient)& arr) const;
+  Standard_EXPORT occ::handle<Standard_Transient> ArrToSeq(
+    const occ::handle<Standard_Transient>& arr) const;
 
-  Standard_EXPORT Standard_Integer SeqIntValue(const Handle(TColStd_HSequenceOfInteger)& list,
-                                               const Standard_Integer                    num) const;
-
-protected:
-private:
+  Standard_EXPORT int SeqIntValue(const occ::handle<NCollection_HSequence<int>>& list,
+                                  const int                                      num) const;
 };
 
 #endif // _XSControl_Utils_HeaderFile

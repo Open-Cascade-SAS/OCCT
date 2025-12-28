@@ -26,14 +26,14 @@ StepKinematics_LinearFlexibleAndPinionPair::StepKinematics_LinearFlexibleAndPini
 //=================================================================================================
 
 void StepKinematics_LinearFlexibleAndPinionPair::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Real                          thePinionRadius)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                                        hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const double                                      thePinionRadius)
 {
   StepKinematics_LowOrderKinematicPairWithMotionCoupling::Init(
     theRepresentationItem_Name,
@@ -49,15 +49,14 @@ void StepKinematics_LinearFlexibleAndPinionPair::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LinearFlexibleAndPinionPair::PinionRadius() const
+double StepKinematics_LinearFlexibleAndPinionPair::PinionRadius() const
 {
   return myPinionRadius;
 }
 
 //=================================================================================================
 
-void StepKinematics_LinearFlexibleAndPinionPair::SetPinionRadius(
-  const Standard_Real thePinionRadius)
+void StepKinematics_LinearFlexibleAndPinionPair::SetPinionRadius(const double thePinionRadius)
 {
   myPinionRadius = thePinionRadius;
 }

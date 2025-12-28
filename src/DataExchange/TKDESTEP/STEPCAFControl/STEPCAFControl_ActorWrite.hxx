@@ -19,12 +19,11 @@
 #include <Standard.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <STEPControl_ActorWrite.hxx>
 class TopoDS_Shape;
-
-class STEPCAFControl_ActorWrite;
-DEFINE_STANDARD_HANDLE(STEPCAFControl_ActorWrite, STEPControl_ActorWrite)
 
 //! Extends ActorWrite from STEPControl by analysis of
 //! whether shape is assembly (based on information from DECAF)
@@ -36,13 +35,13 @@ public:
 
   //! Check whether shape S is assembly
   //! Returns True if shape is registered in assemblies map
-  Standard_EXPORT virtual Standard_Boolean IsAssembly(const Handle(StepData_StepModel)& theModel,
-                                                      TopoDS_Shape& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsAssembly(const occ::handle<StepData_StepModel>& theModel,
+                                          TopoDS_Shape&                          S) const override;
 
   //! Set standard mode of work
   //! In standard mode Actor (default) behaves exactly as its
   //! ancestor, also map is cleared
-  Standard_EXPORT void SetStdMode(const Standard_Boolean stdmode = Standard_True);
+  Standard_EXPORT void SetStdMode(const bool stdmode = true);
 
   //! Clears map of shapes registered as assemblies
   Standard_EXPORT void ClearMap();
@@ -53,10 +52,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(STEPCAFControl_ActorWrite, STEPControl_ActorWrite)
 
-protected:
 private:
-  Standard_Boolean    myStdMode;
-  TopTools_MapOfShape myMap;
+  bool                                                   myStdMode;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _STEPCAFControl_ActorWrite_HeaderFile

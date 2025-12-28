@@ -24,14 +24,14 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ObjectRole, Standard_Transient)
 
 StepBasic_ObjectRole::StepBasic_ObjectRole()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
-void StepBasic_ObjectRole::Init(const Handle(TCollection_HAsciiString)& aName,
-                                const Standard_Boolean                  hasDescription,
-                                const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_ObjectRole::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                const bool                                   hasDescription,
+                                const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 
   theName = aName;
@@ -47,35 +47,35 @@ void StepBasic_ObjectRole::Init(const Handle(TCollection_HAsciiString)& aName,
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ObjectRole::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_ObjectRole::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_ObjectRole::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_ObjectRole::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ObjectRole::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_ObjectRole::Description() const
 {
   return theDescription;
 }
 
 //=================================================================================================
 
-void StepBasic_ObjectRole::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_ObjectRole::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_ObjectRole::HasDescription() const
+bool StepBasic_ObjectRole::HasDescription() const
 {
   return defDescription;
 }

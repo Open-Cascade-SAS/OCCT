@@ -27,64 +27,65 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "nameguid")
 //=================================================================================================
 
 XmlMDataStd_GenericExtStringDriver::XmlMDataStd_GenericExtStringDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_GenericExtStringDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_GenericExtStringDriver::NewEmpty() const
 {
-  return Handle(TDF_Attribute)(); // this attribute can not be created
+  return occ::handle<TDF_Attribute>(); // this attribute can not be created
 }
 
 //=================================================================================================
 
-Handle(Standard_Type) XmlMDataStd_GenericExtStringDriver::SourceType() const
+occ::handle<Standard_Type> XmlMDataStd_GenericExtStringDriver::SourceType() const
 {
   return Standard_Type::Instance<TDataStd_GenericExtString>();
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMDataStd_GenericExtStringDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                           const Handle(TDF_Attribute)& theTarget,
-                                                           XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_GenericExtStringDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
+                                               XmlObjMgt_RRelocationTable&) const
 {
   if (!theTarget.IsNull())
   {
     TCollection_ExtendedString aString;
     if (XmlObjMgt::GetExtendedString(theSource, aString))
     {
-      Handle(TDataStd_GenericExtString)::DownCast(theTarget)->Set(aString);
+      occ::down_cast<TDataStd_GenericExtString>(theTarget)->Set(aString);
       const XmlObjMgt_Element& anElement = theSource;
       XmlObjMgt_DOMString      aGUIDStr  = anElement.getAttribute(::AttributeIDString());
       if (aGUIDStr.Type() != XmlObjMgt_DOMString::LDOM_NULL)
       { // user defined GUID case
-        Standard_GUID aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString()));
-        Handle(TDataStd_GenericExtString)::DownCast(theTarget)->SetID(aGUID);
+        Standard_GUID aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString()));
+        occ::down_cast<TDataStd_GenericExtString>(theTarget)->SetID(aGUID);
       }
-      return Standard_True;
+      return true;
     }
   }
   myMessageDriver->Send("error retrieving ExtendedString for type TDataStd_GenericExtString",
                         Message_Fail);
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void XmlMDataStd_GenericExtStringDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                               XmlObjMgt_Persistent&        theTarget,
+void XmlMDataStd_GenericExtStringDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                               XmlObjMgt_Persistent&             theTarget,
                                                XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_GenericExtString) aStr = Handle(TDataStd_GenericExtString)::DownCast(theSource);
+  occ::handle<TDataStd_GenericExtString> aStr =
+    occ::down_cast<TDataStd_GenericExtString>(theSource);
   if (aStr.IsNull())
     return;
   XmlObjMgt::SetExtendedString(theTarget, aStr->Get());
   // convert GUID
-  Standard_Character  aGuidStr[Standard_GUID_SIZE_ALLOC];
+  char                aGuidStr[Standard_GUID_SIZE_ALLOC];
   Standard_PCharacter pGuidStr = aGuidStr;
   aStr->ID().ToCString(pGuidStr);
   theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

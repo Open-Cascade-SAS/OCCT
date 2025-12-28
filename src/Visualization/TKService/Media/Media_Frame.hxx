@@ -15,7 +15,8 @@
 #ifndef _Media_Frame_HeaderFile
 #define _Media_Frame_HeaderFile
 
-#include <Graphic3d_Vec2.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
 #include <Image_PixMap.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -35,8 +36,8 @@ public:
   Standard_EXPORT static int FormatOcct2FFmpeg(Image_Format theFormat);
 
   //! Swap AVFrame* within two frames.
-  Standard_EXPORT static void Swap(const Handle(Media_Frame)& theFrame1,
-                                   const Handle(Media_Frame)& theFrame2);
+  Standard_EXPORT static void Swap(const occ::handle<Media_Frame>& theFrame1,
+                                   const occ::handle<Media_Frame>& theFrame2);
 
 public:
   //! Empty constructor
@@ -52,7 +53,7 @@ public:
   Standard_EXPORT void Unref();
 
   //! Return image dimensions.
-  Graphic3d_Vec2i Size() const { return Graphic3d_Vec2i(SizeX(), SizeY()); }
+  NCollection_Vec2<int> Size() const { return NCollection_Vec2<int>(SizeX(), SizeY()); }
 
   //! Return image width.
   Standard_EXPORT int SizeX() const;
@@ -101,7 +102,7 @@ public:
 
 public:
   //! Wrap allocated image pixmap.
-  Standard_EXPORT bool InitWrapper(const Handle(Image_PixMap)& thePixMap);
+  Standard_EXPORT bool InitWrapper(const occ::handle<Image_PixMap>& thePixMap);
 
 protected:
   AVFrame* myFrame;      //!< frame

@@ -27,8 +27,7 @@ StepRepr_ConfigurationDesignItem::StepRepr_ConfigurationDesignItem() {}
 
 //=================================================================================================
 
-Standard_Integer StepRepr_ConfigurationDesignItem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepRepr_ConfigurationDesignItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -41,15 +40,15 @@ Standard_Integer StepRepr_ConfigurationDesignItem::CaseNum(
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepRepr_ConfigurationDesignItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepRepr_ConfigurationDesignItem::ProductDefinition() const
 {
-  return Handle(StepBasic_ProductDefinition)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinition>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepRepr_ConfigurationDesignItem::
+occ::handle<StepBasic_ProductDefinitionFormation> StepRepr_ConfigurationDesignItem::
   ProductDefinitionFormation() const
 {
-  return Handle(StepBasic_ProductDefinitionFormation)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinitionFormation>(Value());
 }

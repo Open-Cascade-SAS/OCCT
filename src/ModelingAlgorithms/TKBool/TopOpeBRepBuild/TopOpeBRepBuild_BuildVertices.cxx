@@ -22,11 +22,11 @@
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::BuildVertices(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+void TopOpeBRepBuild_Builder::BuildVertices(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
-  Standard_Integer iP, n = HDS->NbPoints();
+  int iP, n = HDS->NbPoints();
 
-  myNewVertices = new TopTools_HArray1OfShape(0, n);
+  myNewVertices = new NCollection_HArray1<TopoDS_Shape>(0, n);
 
   for (iP = 1; iP <= n; iP++)
   {

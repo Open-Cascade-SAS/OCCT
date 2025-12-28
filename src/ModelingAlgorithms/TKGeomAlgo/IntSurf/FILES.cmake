@@ -15,8 +15,7 @@ set(OCCT_IntSurf_FILES
   IntSurf_LineOn2S.cxx
   IntSurf_LineOn2S.hxx
   IntSurf_LineOn2S.lxx
-  IntSurf_ListIteratorOfListOfPntOn2S.hxx
-  IntSurf_ListOfPntOn2S.hxx
+
   IntSurf_PathPoint.cxx
   IntSurf_PathPoint.hxx
   IntSurf_PathPoint.lxx
@@ -31,10 +30,7 @@ set(OCCT_IntSurf_FILES
   IntSurf_QuadricTool.cxx
   IntSurf_QuadricTool.hxx
   IntSurf_QuadricTool.lxx
-  IntSurf_SequenceOfCouple.hxx
-  IntSurf_SequenceOfInteriorPoint.hxx
-  IntSurf_SequenceOfPathPoint.hxx
-  IntSurf_SequenceOfPntOn2S.hxx
+
   IntSurf_Situation.hxx
   IntSurf_Transition.cxx
   IntSurf_Transition.hxx

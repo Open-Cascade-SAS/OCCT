@@ -23,7 +23,9 @@
 
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class Standard_Transient;
 class IFSelect_WorkSession;
 class IFSelect_Dispatch;
@@ -43,14 +45,14 @@ public:
   //! name can be a label or a number (in alphanumeric),
   //! it is searched by NumberFromLabel from WorkSession.
   //! If <name> doesn't match en entity, a Null Handle is returned
-  Standard_EXPORT static Handle(Standard_Transient) GiveEntity(
-    const Handle(IFSelect_WorkSession)& WS,
-    const Standard_CString              name = "");
+  Standard_EXPORT static occ::handle<Standard_Transient> GiveEntity(
+    const occ::handle<IFSelect_WorkSession>& WS,
+    const char*                              name = "");
 
   //! Same as GetEntity, but returns the number in the model of the
   //! entity. Returns 0 for null handle
-  Standard_EXPORT static Standard_Integer GiveEntityNumber(const Handle(IFSelect_WorkSession)& WS,
-                                                           const Standard_CString name = "");
+  Standard_EXPORT static int GiveEntityNumber(const occ::handle<IFSelect_WorkSession>& WS,
+                                              const char*                              name = "");
 
   //! Computes a List of entities from a WorkSession and two idents,
   //! first and second, as follows :
@@ -61,10 +63,10 @@ public:
   //! standard result of this selection from the list computed
   //! with <second> (an entity or a selection)
   //! If <second> is erroneous, it is ignored
-  Standard_EXPORT static Handle(TColStd_HSequenceOfTransient) GiveList(
-    const Handle(IFSelect_WorkSession)& WS,
-    const Standard_CString              first  = "",
-    const Standard_CString              second = "");
+  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+    GiveList(const occ::handle<IFSelect_WorkSession>& WS,
+             const char*                              first  = "",
+             const char*                              second = "");
 
   //! Evaluates and returns a Dispatch, from data of a WorkSession
   //! if <mode> is False, searches for exact name of Dispatch in WS
@@ -73,10 +75,10 @@ public:
   //! The parameter can be: an integer for DispPerCount or DispPerFiles
   //! or the name of a Signature for DispPerSignature
   //! Returns Null Handle if not found not well evaluated
-  Standard_EXPORT static Handle(IFSelect_Dispatch) GiveDispatch(
-    const Handle(IFSelect_WorkSession)& WS,
-    const Standard_CString              name,
-    const Standard_Boolean              mode = Standard_True);
+  Standard_EXPORT static occ::handle<IFSelect_Dispatch> GiveDispatch(
+    const occ::handle<IFSelect_WorkSession>& WS,
+    const char*                              name,
+    const bool                               mode = true);
 
   //! Defines and loads all basic functions (as ActFunc)
   Standard_EXPORT static void Init();

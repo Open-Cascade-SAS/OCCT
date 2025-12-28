@@ -17,25 +17,26 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AttribBuffer, Graphic3d_Buffer)
 
 //=================================================================================================
 
-Graphic3d_AttribBuffer::Graphic3d_AttribBuffer(const Handle(NCollection_BaseAllocator)& theAlloc)
+Graphic3d_AttribBuffer::Graphic3d_AttribBuffer(
+  const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : Graphic3d_Buffer(theAlloc),
-      myIsInterleaved(Standard_True),
-      myIsMutable(Standard_False)
+      myIsInterleaved(true),
+      myIsMutable(false)
 {
 }
 
 //=================================================================================================
 
-bool Graphic3d_AttribBuffer::Init(const Standard_Integer     theNbElems,
+bool Graphic3d_AttribBuffer::Init(const int                  theNbElems,
                                   const Graphic3d_Attribute* theAttribs,
-                                  const Standard_Integer     theNbAttribs)
+                                  const int                  theNbAttribs)
 {
   if (!Graphic3d_Buffer::Init(theNbElems, theAttribs, theNbAttribs))
   {
     return false;
   }
 
-  if (mySize > (Standard_Size)IntegerLast() && myIsMutable)
+  if (mySize > (size_t)IntegerLast() && myIsMutable)
   {
     throw Standard_OutOfRange("Graphic3d_AttribBuffer::Init(), Mutable flag cannot be used for "
                               "buffer exceeding 32-bit address space");
@@ -45,9 +46,9 @@ bool Graphic3d_AttribBuffer::Init(const Standard_Integer     theNbElems,
 
 //=================================================================================================
 
-void Graphic3d_AttribBuffer::SetMutable(Standard_Boolean theMutable)
+void Graphic3d_AttribBuffer::SetMutable(bool theMutable)
 {
-  if (mySize > (Standard_Size)IntegerLast() && theMutable)
+  if (mySize > (size_t)IntegerLast() && theMutable)
   {
     throw Standard_OutOfRange("Graphic3d_AttribBuffer::SetMutable(), Mutable flag cannot be used "
                               "for buffer exceeding 32-bit address space");
@@ -57,7 +58,7 @@ void Graphic3d_AttribBuffer::SetMutable(Standard_Boolean theMutable)
 
 //=================================================================================================
 
-void Graphic3d_AttribBuffer::SetInterleaved(Standard_Boolean theIsInterleaved)
+void Graphic3d_AttribBuffer::SetInterleaved(bool theIsInterleaved)
 {
   if (NbMaxElements() != 0)
   {
@@ -71,7 +72,7 @@ void Graphic3d_AttribBuffer::SetInterleaved(Standard_Boolean theIsInterleaved)
 
 void Graphic3d_AttribBuffer::invalidate(const Graphic3d_BufferRange& theRange)
 {
-  if (mySize > (Standard_Size)IntegerLast())
+  if (mySize > (size_t)IntegerLast())
   {
     throw Standard_OutOfRange(
       "Graphic3d_Buffer::Invalidate() cannot be used for buffer exceeding 32-bit address space");
@@ -84,18 +85,18 @@ void Graphic3d_AttribBuffer::invalidate(const Graphic3d_BufferRange& theRange)
 
 void Graphic3d_AttribBuffer::Invalidate()
 {
-  if (mySize > (Standard_Size)IntegerLast())
+  if (mySize > (size_t)IntegerLast())
   {
     throw Standard_OutOfRange("Graphic3d_AttribBuffer::Invalidate() cannot be used for buffer "
                               "exceeding 32-bit address space");
   }
 
-  invalidate(Graphic3d_BufferRange(0, (Standard_Integer)mySize));
+  invalidate(Graphic3d_BufferRange(0, (int)mySize));
 }
 
 //=================================================================================================
 
-void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex)
+void Graphic3d_AttribBuffer::Invalidate(int theAttributeIndex)
 {
   Standard_OutOfRange_Raise_if(theAttributeIndex < 0 || theAttributeIndex >= NbAttributes,
                                "Graphic3d_AttribBuffer::Invalidate()");
@@ -105,12 +106,12 @@ void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex)
     return;
   }
 
-  Graphic3d_BufferRange  aRange;
-  const Standard_Integer aNbMaxVerts = NbMaxElements();
-  for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+  Graphic3d_BufferRange aRange;
+  const int             aNbMaxVerts = NbMaxElements();
+  for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
   {
     const Graphic3d_Attribute& anAttrib       = Attribute(anAttribIter);
-    const Standard_Integer     anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
+    const int                  anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
     if (anAttribIter == theAttributeIndex)
     {
       aRange.Length = anAttribStride * aNbMaxVerts;
@@ -124,9 +125,9 @@ void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex)
 
 //=================================================================================================
 
-void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex,
-                                        Standard_Integer theVertexLower,
-                                        Standard_Integer theVertexUpper)
+void Graphic3d_AttribBuffer::Invalidate(int theAttributeIndex,
+                                        int theVertexLower,
+                                        int theVertexUpper)
 {
   Standard_OutOfRange_Raise_if(theAttributeIndex < 0 || theAttributeIndex >= NbAttributes
                                  || theVertexLower < 0 || theVertexLower > theVertexUpper
@@ -138,12 +139,12 @@ void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex,
     return;
   }
 
-  Graphic3d_BufferRange  aRange;
-  const Standard_Integer aNbMaxVerts = NbMaxElements();
-  for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+  Graphic3d_BufferRange aRange;
+  const int             aNbMaxVerts = NbMaxElements();
+  for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
   {
     const Graphic3d_Attribute& anAttrib       = Attribute(anAttribIter);
-    const Standard_Integer     anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
+    const int                  anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
     if (anAttribIter == theAttributeIndex)
     {
       aRange.Start += anAttribStride * theVertexLower;
@@ -158,8 +159,7 @@ void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex,
 
 //=================================================================================================
 
-void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theVertexLower,
-                                        Standard_Integer theVertexUpper)
+void Graphic3d_AttribBuffer::Invalidate(int theVertexLower, int theVertexUpper)
 {
   Standard_OutOfRange_Raise_if(theVertexLower < 0 || theVertexLower > theVertexUpper
                                  || theVertexUpper >= NbMaxElements(),
@@ -171,7 +171,7 @@ void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theVertexLower,
     return;
   }
 
-  for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+  for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
   {
     Invalidate(anAttribIter, theVertexLower, theVertexUpper);
   }

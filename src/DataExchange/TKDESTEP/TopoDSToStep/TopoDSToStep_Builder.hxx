@@ -42,30 +42,29 @@ public:
   Standard_EXPORT TopoDSToStep_Builder();
 
   Standard_EXPORT TopoDSToStep_Builder(
-    const TopoDS_Shape&                   S,
-    TopoDSToStep_Tool&                    T,
-    const Handle(Transfer_FinderProcess)& FP,
-    const Standard_Integer                theTessellatedGeomParam,
-    const StepData_Factors&               theLocalFactors = StepData_Factors(),
-    const Message_ProgressRange&          theProgress     = Message_ProgressRange());
+    const TopoDS_Shape&                        S,
+    TopoDSToStep_Tool&                         T,
+    const occ::handle<Transfer_FinderProcess>& FP,
+    const int                                  theTessellatedGeomParam,
+    const StepData_Factors&                    theLocalFactors = StepData_Factors(),
+    const Message_ProgressRange&               theProgress     = Message_ProgressRange());
 
-  Standard_EXPORT void Init(const TopoDS_Shape&                   S,
-                            TopoDSToStep_Tool&                    T,
-                            const Handle(Transfer_FinderProcess)& FP,
-                            const Standard_Integer                theTessellatedGeomParam,
+  Standard_EXPORT void Init(const TopoDS_Shape&                        S,
+                            TopoDSToStep_Tool&                         T,
+                            const occ::handle<Transfer_FinderProcess>& FP,
+                            const int                                  theTessellatedGeomParam,
                             const StepData_Factors&      theLocalFactors = StepData_Factors(),
                             const Message_ProgressRange& theProgress     = Message_ProgressRange());
 
   Standard_EXPORT TopoDSToStep_BuilderError Error() const;
 
-  Standard_EXPORT const Handle(StepShape_TopologicalRepresentationItem)& Value() const;
-  Standard_EXPORT const Handle(StepVisual_TessellatedItem)&              TessellatedValue() const;
+  Standard_EXPORT const occ::handle<StepShape_TopologicalRepresentationItem>& Value() const;
+  Standard_EXPORT const occ::handle<StepVisual_TessellatedItem>& TessellatedValue() const;
 
-protected:
 private:
-  Handle(StepShape_TopologicalRepresentationItem) myResult;
-  Handle(StepVisual_TessellatedItem)              myTessellatedResult;
-  TopoDSToStep_BuilderError                       myError;
+  occ::handle<StepShape_TopologicalRepresentationItem> myResult;
+  occ::handle<StepVisual_TessellatedItem>              myTessellatedResult;
+  TopoDSToStep_BuilderError                            myError;
 };
 
 #endif // _TopoDSToStep_Builder_HeaderFile

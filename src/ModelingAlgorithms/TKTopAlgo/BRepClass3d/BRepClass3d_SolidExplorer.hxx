@@ -19,11 +19,12 @@
 
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepClass3d_BndBoxTree.hxx>
-#include <BRepClass3d_MapOfInter.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopAbs_State.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 class gp_Pnt;
 class TopoDS_Face;
@@ -48,80 +49,76 @@ public:
   Standard_EXPORT void InitShape(const TopoDS_Shape& S);
 
   //! Should return True if P outside of bounding vol. of the shape
-  Standard_EXPORT virtual Standard_Boolean Reject(const gp_Pnt& P) const;
+  Standard_EXPORT virtual bool Reject(const gp_Pnt& P) const;
 
   //! compute a point P in the face F. Param is a Real in
   //! ]0,1[ and is used to initialise the algorithm. For
   //! different values , different points are returned.
-  Standard_EXPORT static Standard_Boolean FindAPointInTheFace(const TopoDS_Face& F,
-                                                              gp_Pnt&            P,
-                                                              Standard_Real&     Param);
+  Standard_EXPORT static bool FindAPointInTheFace(const TopoDS_Face& F, gp_Pnt& P, double& Param);
 
-  Standard_EXPORT static Standard_Boolean FindAPointInTheFace(const TopoDS_Face& F,
-                                                              gp_Pnt&            P,
-                                                              Standard_Real&     u,
-                                                              Standard_Real&     v,
-                                                              Standard_Real&     Param);
-
-  Standard_EXPORT static Standard_Boolean FindAPointInTheFace(const TopoDS_Face& F,
-                                                              gp_Pnt&            P,
-                                                              Standard_Real&     u,
-                                                              Standard_Real&     v,
-                                                              Standard_Real&     Param,
-                                                              gp_Vec&            theVecD1U,
-                                                              gp_Vec&            theVecD1V);
-
-  Standard_EXPORT static Standard_Boolean FindAPointInTheFace(const TopoDS_Face& F,
-                                                              gp_Pnt&            P,
-                                                              Standard_Real&     u,
-                                                              Standard_Real&     v);
-
-  Standard_EXPORT static Standard_Boolean FindAPointInTheFace(const TopoDS_Face& F, gp_Pnt& P);
-
-  Standard_EXPORT static Standard_Boolean FindAPointInTheFace(const TopoDS_Face& F,
-                                                              Standard_Real&     u,
-                                                              Standard_Real&     v);
-
-  Standard_EXPORT Standard_Boolean PointInTheFace(const TopoDS_Face& F,
+  Standard_EXPORT static bool FindAPointInTheFace(const TopoDS_Face& F,
                                                   gp_Pnt&            P,
-                                                  Standard_Real&     u,
-                                                  Standard_Real&     v,
-                                                  Standard_Real&     Param,
-                                                  Standard_Integer&  Index) const;
+                                                  double&            u,
+                                                  double&            v,
+                                                  double&            Param);
 
-  Standard_EXPORT Standard_Boolean PointInTheFace(const TopoDS_Face&                 F,
-                                                  gp_Pnt&                            P,
-                                                  Standard_Real&                     u,
-                                                  Standard_Real&                     v,
-                                                  Standard_Real&                     Param,
-                                                  Standard_Integer&                  Index,
-                                                  const Handle(BRepAdaptor_Surface)& surf,
-                                                  const Standard_Real                u1,
-                                                  const Standard_Real                v1,
-                                                  const Standard_Real                u2,
-                                                  const Standard_Real                v2) const;
+  Standard_EXPORT static bool FindAPointInTheFace(const TopoDS_Face& F,
+                                                  gp_Pnt&            P,
+                                                  double&            u,
+                                                  double&            v,
+                                                  double&            Param,
+                                                  gp_Vec&            theVecD1U,
+                                                  gp_Vec&            theVecD1V);
+
+  Standard_EXPORT static bool FindAPointInTheFace(const TopoDS_Face& F,
+                                                  gp_Pnt&            P,
+                                                  double&            u,
+                                                  double&            v);
+
+  Standard_EXPORT static bool FindAPointInTheFace(const TopoDS_Face& F, gp_Pnt& P);
+
+  Standard_EXPORT static bool FindAPointInTheFace(const TopoDS_Face& F, double& u, double& v);
+
+  Standard_EXPORT bool PointInTheFace(const TopoDS_Face& F,
+                                      gp_Pnt&            P,
+                                      double&            u,
+                                      double&            v,
+                                      double&            Param,
+                                      int&               Index) const;
+
+  Standard_EXPORT bool PointInTheFace(const TopoDS_Face&                      F,
+                                      gp_Pnt&                                 P,
+                                      double&                                 u,
+                                      double&                                 v,
+                                      double&                                 Param,
+                                      int&                                    Index,
+                                      const occ::handle<BRepAdaptor_Surface>& surf,
+                                      const double                            u1,
+                                      const double                            v1,
+                                      const double                            u2,
+                                      const double                            v2) const;
 
   //! <Index> gives point index to search from and returns
   //! point index of succeseful search
-  Standard_EXPORT Standard_Boolean PointInTheFace(const TopoDS_Face&                 F,
-                                                  gp_Pnt&                            P,
-                                                  Standard_Real&                     u,
-                                                  Standard_Real&                     v,
-                                                  Standard_Real&                     Param,
-                                                  Standard_Integer&                  Index,
-                                                  const Handle(BRepAdaptor_Surface)& surf,
-                                                  const Standard_Real                u1,
-                                                  const Standard_Real                v1,
-                                                  const Standard_Real                u2,
-                                                  const Standard_Real                v2,
-                                                  gp_Vec&                            theVecD1U,
-                                                  gp_Vec& theVecD1V) const;
+  Standard_EXPORT bool PointInTheFace(const TopoDS_Face&                      F,
+                                      gp_Pnt&                                 P,
+                                      double&                                 u,
+                                      double&                                 v,
+                                      double&                                 Param,
+                                      int&                                    Index,
+                                      const occ::handle<BRepAdaptor_Surface>& surf,
+                                      const double                            u1,
+                                      const double                            v1,
+                                      const double                            u2,
+                                      const double                            v2,
+                                      gp_Vec&                                 theVecD1U,
+                                      gp_Vec&                                 theVecD1V) const;
 
   //! Starts an exploration of the shells.
   Standard_EXPORT void InitShell();
 
   //! Returns True if there is a current shell.
-  Standard_EXPORT Standard_Boolean MoreShell() const;
+  Standard_EXPORT bool MoreShell() const;
 
   //! Sets the explorer to the next shell.
   Standard_EXPORT void NextShell();
@@ -130,13 +127,13 @@ public:
   Standard_EXPORT TopoDS_Shell CurrentShell() const;
 
   //! Returns True if the Shell is rejected.
-  Standard_EXPORT virtual Standard_Boolean RejectShell(const gp_Lin& L) const;
+  Standard_EXPORT virtual bool RejectShell(const gp_Lin& L) const;
 
   //! Starts an exploration of the faces of the current shell.
   Standard_EXPORT void InitFace();
 
   //! Returns True if current face in current shell.
-  Standard_EXPORT Standard_Boolean MoreFace() const;
+  Standard_EXPORT bool MoreFace() const;
 
   //! Sets the explorer to the next Face of the current shell.
   Standard_EXPORT void NextFace();
@@ -145,12 +142,12 @@ public:
   Standard_EXPORT TopoDS_Face CurrentFace() const;
 
   //! returns True if the face is rejected.
-  Standard_EXPORT virtual Standard_Boolean RejectFace(const gp_Lin& L) const;
+  Standard_EXPORT virtual bool RejectFace(const gp_Lin& L) const;
 
   //! Returns in <L>, <Par> a segment having at least
   //! one intersection with the shape boundary to
   //! compute intersections.
-  Standard_EXPORT Standard_Integer Segment(const gp_Pnt& P, gp_Lin& L, Standard_Real& Par);
+  Standard_EXPORT int Segment(const gp_Pnt& P, gp_Lin& L, double& Par);
 
   //! Returns in <L>, <Par> a segment having at least
   //! one intersection with the shape boundary to
@@ -160,26 +157,29 @@ public:
   //! point to a point of the first face of the shape.
   //! The Second Call provide a line to the second face
   //! and so on.
-  Standard_EXPORT Standard_Integer OtherSegment(const gp_Pnt& P, gp_Lin& L, Standard_Real& Par);
+  Standard_EXPORT int OtherSegment(const gp_Pnt& P, gp_Lin& L, double& Par);
 
   //! Returns the index of face for which
   //! last segment is calculated.
-  Standard_EXPORT Standard_Integer GetFaceSegmentIndex() const;
+  Standard_EXPORT int GetFaceSegmentIndex() const;
 
-  Standard_EXPORT virtual void DumpSegment(const gp_Pnt&       P,
-                                           const gp_Lin&       L,
-                                           const Standard_Real Par,
-                                           const TopAbs_State  S) const;
+  Standard_EXPORT virtual void DumpSegment(const gp_Pnt&      P,
+                                           const gp_Lin&      L,
+                                           const double       Par,
+                                           const TopAbs_State S) const;
 
   Standard_EXPORT const TopoDS_Shape& GetShape() const;
 
   Standard_EXPORT IntCurvesFace_Intersector& Intersector(const TopoDS_Face& F) const;
 
   //! Return UB-tree instance which is used for edge / vertex checks.
-  const BRepClass3d_BndBoxTree& GetTree() { return myTree; }
+  const NCollection_UBTree<int, Bnd_Box>& GetTree() { return myTree; }
 
   //! Return edge/vertices map for current shape.
-  const TopTools_IndexedMapOfShape& GetMapEV() { return myMapEV; }
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& GetMapEV()
+  {
+    return myMapEV;
+  }
 
   Standard_EXPORT void Destroy();
 
@@ -187,20 +187,20 @@ private:
   Standard_EXPORT BRepClass3d_SolidExplorer(const BRepClass3d_SolidExplorer& Oth);
 
 protected:
-  Standard_EXPORT TopAbs_State ClassifyUVPoint(const IntCurvesFace_Intersector&   theIntersector,
-                                               const Handle(BRepAdaptor_Surface)& theSurf,
-                                               const gp_Pnt2d&                    theP2d) const;
+  Standard_EXPORT TopAbs_State ClassifyUVPoint(const IntCurvesFace_Intersector& theIntersector,
+                                               const occ::handle<BRepAdaptor_Surface>& theSurf,
+                                               const gp_Pnt2d& theP2d) const;
 
 private:
-  TopoDS_Shape               myShape;
-  Standard_Boolean           myReject;
-  Standard_Integer           myFirstFace;
-  Standard_Real              myParamOnEdge;
-  TopExp_Explorer            myShellExplorer;
-  TopExp_Explorer            myFaceExplorer;
-  BRepClass3d_MapOfInter     myMapOfInter;
-  BRepClass3d_BndBoxTree     myTree;
-  TopTools_IndexedMapOfShape myMapEV;
+  TopoDS_Shape                                                      myShape;
+  bool                                                              myReject;
+  int                                                               myFirstFace;
+  double                                                            myParamOnEdge;
+  TopExp_Explorer                                                   myShellExplorer;
+  TopExp_Explorer                                                   myFaceExplorer;
+  NCollection_DataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> myMapOfInter;
+  NCollection_UBTree<int, Bnd_Box>                                  myTree;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>     myMapEV;
 };
 
 #endif // _BRepClass3d_SolidExplorer_HeaderFile

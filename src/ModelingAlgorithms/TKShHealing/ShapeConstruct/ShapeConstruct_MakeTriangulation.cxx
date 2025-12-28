@@ -23,28 +23,30 @@
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Wire.hxx>
 #include <ShapeConstruct_MakeTriangulation.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_HSequence.hxx>
 
 //=================================================================================================
 
-Standard_Boolean IsRightContour(const TColgp_SequenceOfPnt& pts, const Standard_Real prec)
+bool IsRightContour(const NCollection_Sequence<gp_Pnt>& pts, const double prec)
 {
-  Standard_Integer len = pts.Length();
+  int len = pts.Length();
   if (len < 4)
-    return Standard_True;
+    return true;
 
-  TColgp_Array1OfPnt thePts(1, len);
-  Standard_Integer   i; // svv Jan11 2000 : porting on DEC
+  NCollection_Array1<gp_Pnt> thePts(1, len);
+  int                        i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= len; i++)
     thePts(i) = pts(i);
 
@@ -66,34 +68,34 @@ Standard_Boolean IsRightContour(const TColgp_SequenceOfPnt& pts, const Standard_
       for (i = 1; i <= len; i++)
         center += thePts(i).XYZ();
       center /= len;
-      gp_Pnt             pc(center);
-      gp_Dir             pd(Norm);
-      gp_Pln             pl(pc, pd);
-      Handle(Geom_Plane) thePlane = new Geom_Plane(pl);
+      gp_Pnt                  pc(center);
+      gp_Dir                  pd(Norm);
+      gp_Pln                  pl(pc, pd);
+      occ::handle<Geom_Plane> thePlane = new Geom_Plane(pl);
 
       BRep_Builder B;
       TopoDS_Face  theFace;
       B.MakeFace(theFace, thePlane, Precision::Confusion());
       TopoDS_Wire theWire = mkPoly.Wire();
       B.Add(theFace, theWire);
-      Handle(ShapeAnalysis_Wire) saw = new ShapeAnalysis_Wire(theWire, theFace, prec);
+      occ::handle<ShapeAnalysis_Wire> saw = new ShapeAnalysis_Wire(theWire, theFace, prec);
       return !saw->CheckSelfIntersection();
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-gp_Vec MeanNormal(const TColgp_Array1OfPnt& pts)
+gp_Vec MeanNormal(const NCollection_Array1<gp_Pnt>& pts)
 {
-  Standard_Integer len = pts.Length();
+  int len = pts.Length();
   if (len < 3)
     return gp_Vec(0, 0, 0);
 
-  Standard_Integer i;
-  gp_XYZ           theCenter(0, 0, 0);
+  int    i;
+  gp_XYZ theCenter(0, 0, 0);
   for (i = 1; i <= len; i++)
     theCenter += pts(i).XYZ();
   theCenter /= len;
@@ -111,13 +113,14 @@ gp_Vec MeanNormal(const TColgp_Array1OfPnt& pts)
 
 //=================================================================================================
 
-ShapeConstruct_MakeTriangulation::ShapeConstruct_MakeTriangulation(const TColgp_Array1OfPnt& pnts,
-                                                                   const Standard_Real       prec)
+ShapeConstruct_MakeTriangulation::ShapeConstruct_MakeTriangulation(
+  const NCollection_Array1<gp_Pnt>& pnts,
+  const double                      prec)
 {
   myPrecision = (prec > 0.0) ? prec : Precision::Confusion();
   // Make polygonal wire from points
   BRepBuilderAPI_MakePolygon mkPoly;
-  for (Standard_Integer i = pnts.Lower(); i <= pnts.Upper(); i++)
+  for (int i = pnts.Lower(); i <= pnts.Upper(); i++)
     mkPoly.Add(pnts(i));
   mkPoly.Close();
   mkPoly.Build();
@@ -130,8 +133,8 @@ ShapeConstruct_MakeTriangulation::ShapeConstruct_MakeTriangulation(const TColgp_
 
 //=================================================================================================
 
-ShapeConstruct_MakeTriangulation::ShapeConstruct_MakeTriangulation(const TopoDS_Wire&  wire,
-                                                                   const Standard_Real prec)
+ShapeConstruct_MakeTriangulation::ShapeConstruct_MakeTriangulation(const TopoDS_Wire& wire,
+                                                                   const double       prec)
 {
   myPrecision = (prec > 0.0) ? prec : Precision::Confusion();
   myWire      = wire;
@@ -152,7 +155,7 @@ void ShapeConstruct_MakeTriangulation::Build(const Message_ProgressRange& /*theR
 
 //=================================================================================================
 
-Standard_Boolean ShapeConstruct_MakeTriangulation::IsDone() const
+bool ShapeConstruct_MakeTriangulation::IsDone() const
 {
   return (!myShape.IsNull());
 }
@@ -162,10 +165,11 @@ Standard_Boolean ShapeConstruct_MakeTriangulation::IsDone() const
 void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
 {
   // Fill sequence of edges
-  Handle(TopTools_HSequenceOfShape) theEdges = new TopTools_HSequenceOfShape;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> theEdges =
+    new NCollection_HSequence<TopoDS_Shape>;
   for (TopoDS_Iterator ite(wire); ite.More(); ite.Next())
     theEdges->Append(ite.Value());
-  Standard_Integer NbEdges = theEdges->Length();
+  int NbEdges = theEdges->Length();
 
   if (NbEdges < 4)
     AddFacet(wire);
@@ -173,9 +177,9 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
   {
 
     // Fill array of end points
-    ShapeAnalysis_Edge          sae;
-    Handle(TColgp_HArray1OfPnt) theAPnt = new TColgp_HArray1OfPnt(1, NbEdges);
-    for (Standard_Integer i = 1; i <= NbEdges; i++)
+    ShapeAnalysis_Edge                       sae;
+    occ::handle<NCollection_HArray1<gp_Pnt>> theAPnt = new NCollection_HArray1<gp_Pnt>(1, NbEdges);
+    for (int i = 1; i <= NbEdges; i++)
       theAPnt->SetValue(i, BRep_Tool::Pnt(sae.FirstVertex(TopoDS::Edge(theEdges->Value(i)))));
 
     TopoDS_Wire theNewWire;
@@ -188,9 +192,9 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
     {
 
       // Current contour is not planar - triangulate
-      TColStd_SequenceOfInteger theSegments;
-      Standard_Integer          cindex = 1, seqFlag = 1;
-      TColStd_Array1OfInteger   llimits(1, 2), rlimits(1, 2);
+      NCollection_Sequence<int> theSegments;
+      int                       cindex = 1, seqFlag = 1;
+      NCollection_Array1<int>   llimits(1, 2), rlimits(1, 2);
       llimits.Init(NbEdges + 1);
       rlimits.Init(0);
 
@@ -199,8 +203,8 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
       {
 
         // Set up limits for current sequence
-        Standard_Integer llimit = llimits(seqFlag);
-        Standard_Integer rlimit = rlimits(seqFlag);
+        int llimit = llimits(seqFlag);
+        int rlimit = rlimits(seqFlag);
         if (rlimit <= llimit)
           rlimit += NbEdges;
 
@@ -208,17 +212,17 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
         if ((rlimit - llimit) > (NbEdges - 2))
           break;
 
-        TColgp_SequenceOfPnt theSPnt;
+        NCollection_Sequence<gp_Pnt> theSPnt;
 
         // Add 3 points of minimal facet
-        Standard_Integer lindex = (cindex == 1 ? NbEdges : cindex - 1);
-        Standard_Integer rindex = (cindex == NbEdges ? 1 : cindex + 1);
+        int lindex = (cindex == 1 ? NbEdges : cindex - 1);
+        int rindex = (cindex == NbEdges ? 1 : cindex + 1);
         theSPnt.Append(theAPnt->Value(lindex));
         theSPnt.Append(theAPnt->Value(cindex));
         theSPnt.Append(theAPnt->Value(rindex));
 
         // Try prepending points
-        Standard_Boolean isGood = Standard_True;
+        bool isGood = true;
         while (isGood)
         {
           cindex = (lindex == 1 ? NbEdges : lindex - 1);
@@ -227,11 +231,11 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
             AddFacet(wire);
             return;
           }
-          Standard_Integer cid = cindex;
+          int cid = cindex;
           if (rlimit > NbEdges && cid <= llimit)
             cid += NbEdges;
           if (cid > llimit && cid < rlimit)
-            isGood = Standard_False;
+            isGood = false;
           if (isGood)
           {
             theSPnt.Prepend(theAPnt->Value(cindex));
@@ -244,7 +248,7 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
         }
 
         // Try appending points
-        isGood = Standard_True;
+        isGood = true;
         while (isGood)
         {
           cindex = (rindex == NbEdges ? 1 : rindex + 1);
@@ -253,11 +257,11 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
             AddFacet(wire);
             return;
           }
-          Standard_Integer cid = cindex;
+          int cid = cindex;
           if (rlimit > NbEdges && cid <= llimit)
             cid += NbEdges;
           if (cid > llimit && cid < rlimit)
-            isGood = Standard_False;
+            isGood = false;
           if (isGood)
           {
             theSPnt.Append(theAPnt->Value(cindex));
@@ -288,17 +292,17 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
       {
         gp_Vec theBaseNorm = MeanNormal(theAPnt->Array1());
         // Identify sequence of matching facets
-        Standard_Integer len = cindex / 2, lindex, rindex, seqlen, j;
-        Standard_Real    theC, theC1 = 0.0, theC2 = 0.0;
-        Standard_Integer ii; // svv Jan11 2000 : porting on DEC
-                             // skl : change "i" to "ii"
+        int    len = cindex / 2, lindex, rindex, seqlen, j;
+        double theC, theC1 = 0.0, theC2 = 0.0;
+        int    ii; // svv Jan11 2000 : porting on DEC
+                   // skl : change "i" to "ii"
         for (ii = 0; ii < len; ii++)
         {
           // Compute normal collinearity for facet
           lindex = theSegments(ii * 2 + 1);
           rindex = theSegments(ii * 2 + 2);
           seqlen = ((rindex > lindex) ? rindex - lindex + 1 : NbEdges - lindex + rindex + 1);
-          TColgp_Array1OfPnt theArr(1, seqlen);
+          NCollection_Array1<gp_Pnt> theArr(1, seqlen);
           for (j = 1; j <= seqlen; j++)
           {
             theArr(j) = theAPnt->Value(lindex);
@@ -312,7 +316,7 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
           else
             theC1 += theC;
         }
-        Standard_Integer best1 = ((theC1 > theC2) ? 0 : 2);
+        int best1 = ((theC1 > theC2) ? 0 : 2);
 
         // Add "best" planar facets
         BRep_Builder B;
@@ -320,9 +324,9 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
         TopoDS_Edge  theLEdge, theSLEdge;
         len = cindex / 4;
         // Check for special case - 1 shared line
-        Standard_Boolean special = (len == 2 && theSegments(best1 + 1) == theSegments(4 + best1 + 2)
-                                    && theSegments(best1 + 2) == theSegments(4 + best1 + 1));
-        Standard_Integer pindex  = theSegments((len - 1) * 4 + best1 + 2);
+        bool special = (len == 2 && theSegments(best1 + 1) == theSegments(4 + best1 + 2)
+                        && theSegments(best1 + 2) == theSegments(4 + best1 + 1));
+        int  pindex  = theSegments((len - 1) * 4 + best1 + 2);
         for (ii = 0; ii < len; ii++)
         {
           lindex = theSegments(ii * 4 + best1 + 1);
@@ -345,7 +349,7 @@ void ShapeConstruct_MakeTriangulation::Triangulate(const TopoDS_Wire& wire)
           // Create new facet wire
           B.MakeWire(theFacetWire);
           B.Add(theFacetWire, theLEdge.Reversed());
-          Standard_Integer cur_edge = lindex;
+          int cur_edge = lindex;
           while (cur_edge != rindex)
           {
             TopoDS_Edge theNEdge = TopoDS::Edge(theEdges->Value(cur_edge));
@@ -396,17 +400,17 @@ void ShapeConstruct_MakeTriangulation::AddFacet(const TopoDS_Wire& wire)
     return;
 
   // Fill sequence of points
-  ShapeAnalysis_Edge   sae;
-  TColgp_SequenceOfPnt pts;
+  ShapeAnalysis_Edge           sae;
+  NCollection_Sequence<gp_Pnt> pts;
   for (TopoDS_Iterator ite(wire); ite.More(); ite.Next())
     pts.Append(BRep_Tool::Pnt(sae.FirstVertex(TopoDS::Edge(ite.Value()))));
-  Standard_Integer i, nbp = pts.Length();
+  int i, nbp = pts.Length();
   if (nbp < 3)
     return;
 
   // Create mean plane
-  Standard_Real cMod, maxMod = 0.0;
-  gp_XYZ        maxVec, Normal(0, 0, 0);
+  double cMod, maxMod = 0.0;
+  gp_XYZ maxVec, Normal(0, 0, 0);
   for (i = 1; i <= nbp; i++)
   {
     gp_XYZ vb(pts(i).XYZ());
@@ -442,8 +446,8 @@ void ShapeConstruct_MakeTriangulation::AddFacet(const TopoDS_Wire& wire)
       Normal = gp_XYZ(1, 0, 0);
   }
 
-  gp_Pln             Pln(pts(1), gp_Dir(Normal));
-  Handle(Geom_Plane) thePlane = new Geom_Plane(Pln);
+  gp_Pln                  Pln(pts(1), gp_Dir(Normal));
+  occ::handle<Geom_Plane> thePlane = new Geom_Plane(Pln);
 
   // Mean plane created - build face
   BRep_Builder B;

@@ -16,7 +16,8 @@
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
 #include <Storage_Schema.hxx>
-#include <TColStd_MapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Map.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
@@ -40,9 +41,9 @@ IMPLEMENT_DOMSTRING(LabelString, "label")
 // #define DATATYPE_MIGRATION_DEB
 //=================================================================================================
 
-static TColStd_MapOfTransient& UnsuppTypesMap()
+static NCollection_Map<occ::handle<Standard_Transient>>& UnsuppTypesMap()
 {
-  static TColStd_MapOfTransient anUnsuppTypes;
+  static NCollection_Map<occ::handle<Standard_Transient>> anUnsuppTypes;
   return anUnsuppTypes;
 }
 
@@ -50,25 +51,25 @@ static TColStd_MapOfTransient& UnsuppTypesMap()
 // function : FromTo
 // purpose  : Paste transient data into DOM_Element
 //=======================================================================
-void XmlMDF::FromTo(const Handle(TDF_Data)&            theData,
-                    XmlObjMgt_Element&                 theElement,
-                    XmlObjMgt_SRelocationTable&        theRelocTable,
-                    const Handle(XmlMDF_ADriverTable)& theDrivers,
-                    const Message_ProgressRange&       theRange)
+void XmlMDF::FromTo(const occ::handle<TDF_Data>&            theData,
+                    XmlObjMgt_Element&                      theElement,
+                    XmlObjMgt_SRelocationTable&             theRelocTable,
+                    const occ::handle<XmlMDF_ADriverTable>& theDrivers,
+                    const Message_ProgressRange&            theRange)
 {
   UnsuppTypesMap().Clear();
-  //  Standard_Integer count =
+  //  int count =
   WriteSubTree(theData->Root(), theElement, theRelocTable, theDrivers, theRange);
   UnsuppTypesMap().Clear();
 }
 
 //=================================================================================================
 
-Standard_Integer XmlMDF::WriteSubTree(const TDF_Label&                   theLabel,
-                                      XmlObjMgt_Element&                 theElement,
-                                      XmlObjMgt_SRelocationTable&        theRelocTable,
-                                      const Handle(XmlMDF_ADriverTable)& theDrivers,
-                                      const Message_ProgressRange&       theRange)
+int XmlMDF::WriteSubTree(const TDF_Label&                        theLabel,
+                         XmlObjMgt_Element&                      theElement,
+                         XmlObjMgt_SRelocationTable&             theRelocTable,
+                         const occ::handle<XmlMDF_ADriverTable>& theDrivers,
+                         const Message_ProgressRange&            theRange)
 {
   XmlObjMgt_Document aDoc = theElement.getOwnerDocument();
 
@@ -76,26 +77,26 @@ Standard_Integer XmlMDF::WriteSubTree(const TDF_Label&                   theLabe
   XmlObjMgt_Element aLabElem = aDoc.createElement(::LabelString());
 
   // write attributes
-  Standard_Integer      count = 0;
+  int                   count = 0;
   TDF_AttributeIterator itr1(theLabel);
   for (; itr1.More(); itr1.Next())
   {
-    const Handle(TDF_Attribute)& tAtt  = itr1.Value();
-    const Handle(Standard_Type)& aType = tAtt->DynamicType();
-    Handle(XmlMDF_ADriver)       aDriver;
+    const occ::handle<TDF_Attribute>& tAtt  = itr1.Value();
+    const occ::handle<Standard_Type>& aType = tAtt->DynamicType();
+    occ::handle<XmlMDF_ADriver>       aDriver;
     if (theDrivers->GetDriver(aType, aDriver))
     {
       count++;
 
       //    Add source to relocation table
-      Standard_Integer anId = theRelocTable.Add(tAtt);
+      int anId = theRelocTable.Add(tAtt);
 
       //    Create DOM data item
       XmlObjMgt_Persistent pAtt;
       // In the document version 8 the attribute TPrsStd_AISPresentation
       // was replaced by TDataXtd_Presentation. Therefore, for old versions
       // we write old name of the attribute (TPrsStd_AISPresentation).
-      Standard_CString typeName = aDriver->TypeName().ToCString();
+      const char* typeName = aDriver->TypeName().ToCString();
       if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
             < TDocStd_FormatVersion_VERSION_8
           && strcmp(typeName, "TDataXtd_Presentation") == 0)
@@ -118,7 +119,7 @@ Standard_Integer XmlMDF::WriteSubTree(const TDF_Label&                   theLabe
 
   // write sub-labels
   TDF_ChildIterator itr2(theLabel);
-  Standard_Real     child_count = 0;
+  double            child_count = 0;
   for (; itr2.More(); ++child_count, itr2.Next())
   {
   }
@@ -144,17 +145,17 @@ Standard_Integer XmlMDF::WriteSubTree(const TDF_Label&                   theLabe
 // function : FromTo
 // purpose  : Paste data from DOM_Element into transient document
 //=======================================================================
-Standard_Boolean XmlMDF::FromTo(const XmlObjMgt_Element&           theElement,
-                                Handle(TDF_Data)&                  theData,
-                                XmlObjMgt_RRelocationTable&        theRelocTable,
-                                const Handle(XmlMDF_ADriverTable)& theDrivers,
-                                const Message_ProgressRange&       theRange)
+bool XmlMDF::FromTo(const XmlObjMgt_Element&                theElement,
+                    occ::handle<TDF_Data>&                  theData,
+                    XmlObjMgt_RRelocationTable&             theRelocTable,
+                    const occ::handle<XmlMDF_ADriverTable>& theDrivers,
+                    const Message_ProgressRange&            theRange)
 {
-  TDF_Label          aRootLab = theData->Root();
-  XmlMDF_MapOfDriver aDriverMap;
+  TDF_Label aRootLab = theData->Root();
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<XmlMDF_ADriver>> aDriverMap;
   theDrivers->CreateDrvMap(aDriverMap);
 
-  Standard_Integer count = 0;
+  int count = 0;
 
   LDOM_Node         theNode = theElement.getFirstChild();
   XmlObjMgt_Element anElem  = (const XmlObjMgt_Element&)theNode;
@@ -162,11 +163,10 @@ Standard_Boolean XmlMDF::FromTo(const XmlObjMgt_Element&           theElement,
   {
     if (anElem.getNodeName().equals(::LabelString()))
     {
-      Standard_Integer subcount =
-        ReadSubTree(anElem, aRootLab, theRelocTable, aDriverMap, theRange);
+      int subcount = ReadSubTree(anElem, aRootLab, theRelocTable, aDriverMap, theRange);
       // check for error
       if (subcount < 0)
-        return Standard_False;
+        return false;
 
       (void)count; // unused but set for debug
       count += subcount;
@@ -176,19 +176,20 @@ Standard_Boolean XmlMDF::FromTo(const XmlObjMgt_Element&           theElement,
     anElem             = (const XmlObjMgt_Element&)theNode1;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer XmlMDF::ReadSubTree(const XmlObjMgt_Element&     theElement,
-                                     const TDF_Label&             theLabel,
-                                     XmlObjMgt_RRelocationTable&  theRelocTable,
-                                     const XmlMDF_MapOfDriver&    theDriverMap,
-                                     const Message_ProgressRange& theRange)
+int XmlMDF::ReadSubTree(
+  const XmlObjMgt_Element&                                                         theElement,
+  const TDF_Label&                                                                 theLabel,
+  XmlObjMgt_RRelocationTable&                                                      theRelocTable,
+  const NCollection_DataMap<TCollection_AsciiString, occ::handle<XmlMDF_ADriver>>& theDriverMap,
+  const Message_ProgressRange&                                                     theRange)
 {
   // Extraction of the driver subset.
-  Standard_Integer count = 0;
+  int count = 0;
 
   // XmlObjMgt_Element anElem = (const XmlObjMgt_Element &) theElement.getFirstChild();
   LDOM_Node             theNode = theElement.getFirstChild();
@@ -201,7 +202,7 @@ Standard_Integer XmlMDF::ReadSubTree(const XmlObjMgt_Element&     theElement,
       if (anElem.getNodeName().equals(::LabelString()))
       {
         // read tag
-        Standard_Integer    tag;
+        int                 tag;
         XmlObjMgt_DOMString aTag(anElem.getAttribute(::TagString()));
         if (!aTag.GetInteger(tag))
         {
@@ -211,11 +212,10 @@ Standard_Integer XmlMDF::ReadSubTree(const XmlObjMgt_Element&     theElement,
           return -1;
         }
         // create label
-        TDF_Label aLab = theLabel.FindChild(tag, Standard_True);
+        TDF_Label aLab = theLabel.FindChild(tag, true);
 
         // read sub-tree
-        Standard_Integer subcount =
-          ReadSubTree(anElem, aLab, theRelocTable, theDriverMap, aPS.Next());
+        int subcount = ReadSubTree(anElem, aLab, theRelocTable, theDriverMap, aPS.Next());
         // check for error
         if (subcount == -1)
           return -1;
@@ -243,9 +243,9 @@ Standard_Integer XmlMDF::ReadSubTree(const XmlObjMgt_Element&     theElement,
         if (theDriverMap.IsBound(aName))
         {
           count++;
-          const Handle(XmlMDF_ADriver)& driver = theDriverMap.Find(aName);
-          XmlObjMgt_Persistent          pAtt(anElem);
-          Standard_Integer              anID = pAtt.Id();
+          const occ::handle<XmlMDF_ADriver>& driver = theDriverMap.Find(aName);
+          XmlObjMgt_Persistent               pAtt(anElem);
+          int                                anID = pAtt.Id();
           if (anID <= 0)
           { // check for ID validity
             TCollection_ExtendedString anErrorMessage =
@@ -253,10 +253,10 @@ Standard_Integer XmlMDF::ReadSubTree(const XmlObjMgt_Element&     theElement,
             driver->myMessageDriver->Send(anErrorMessage, Message_Fail);
             return -1;
           }
-          Handle(TDF_Attribute) tAtt;
-          Standard_Boolean      isBound = theRelocTable.IsBound(anID);
+          occ::handle<TDF_Attribute> tAtt;
+          bool                       isBound = theRelocTable.IsBound(anID);
           if (isBound)
-            tAtt = Handle(TDF_Attribute)::DownCast(theRelocTable.Find(anID));
+            tAtt = occ::down_cast<TDF_Attribute>(theRelocTable.Find(anID));
           else
             tAtt = driver->NewEmpty();
 
@@ -290,7 +290,7 @@ Standard_Integer XmlMDF::ReadSubTree(const XmlObjMgt_Element&     theElement,
                                             + "failure reading attribute " + aName,
                                           Message_Warning);
           }
-          else if (isBound == Standard_False)
+          else if (isBound == false)
             theRelocTable.Bind(anID, tAtt);
         }
 #ifdef OCCT_DEBUG
@@ -321,8 +321,8 @@ Standard_Integer XmlMDF::ReadSubTree(const XmlObjMgt_Element&     theElement,
 
 //=================================================================================================
 
-void XmlMDF::AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                        const Handle(Message_Messenger)&   aMessageDriver)
+void XmlMDF::AddDrivers(const occ::handle<XmlMDF_ADriverTable>& aDriverTable,
+                        const occ::handle<Message_Messenger>&   aMessageDriver)
 {
   aDriverTable->AddDriver(new XmlMDF_TagSourceDriver(aMessageDriver));
   aDriverTable->AddDriver(new XmlMDF_ReferenceDriver(aMessageDriver));

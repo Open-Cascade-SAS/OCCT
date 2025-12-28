@@ -29,7 +29,7 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomConvert_ConvType.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 class gp_Pln;
 class gp_Cone;
@@ -62,7 +62,7 @@ public:
   const TopoDS_Shape& GetShape() const { return myShape; }
 
   //! Returns deviation between input geometry entity and analytical entity
-  Standard_Real GetGap() const { return myGap; }
+  double GetGap() const { return myGap; }
 
   //! Returns status of operation.
   //! Current meaning of possible values of status:
@@ -73,104 +73,104 @@ public:
   //! when current staue is equal 0.
   //! If after any operation status != 0, it is necessary to set it 0 by method ClearStatus()
   //! before calling other operation.
-  Standard_Integer GetStatus() const { return myStatus; }
+  int GetStatus() const { return myStatus; }
 
   //! Returns status to be equal 0.
   void ClearStatus() { myStatus = 0; }
 
   //! Returns true if the underlined surface can be represent by plane with tolerance theTol
   //! and sets in thePln the result plane.
-  Standard_EXPORT Standard_Boolean IsPlane(const Standard_Real theTol, gp_Pln& thePln);
+  Standard_EXPORT bool IsPlane(const double theTol, gp_Pln& thePln);
 
   //! Returns true if the underlined surface can be represent by cylindrical one with tolerance
   //! theTol and sets in theCyl the result cylinrical surface.
-  Standard_EXPORT Standard_Boolean IsCylinder(const Standard_Real theTol, gp_Cylinder& theCyl);
+  Standard_EXPORT bool IsCylinder(const double theTol, gp_Cylinder& theCyl);
 
   //! Returns true if the underlined surface can be represent by conical one with tolerance theTol
   //! and sets in theCone the result conical surface.
-  Standard_EXPORT Standard_Boolean IsCone(const Standard_Real theTol, gp_Cone& theCone);
+  Standard_EXPORT bool IsCone(const double theTol, gp_Cone& theCone);
 
   //! Returns true if the underlined surface can be represent by spherical one with tolerance theTol
   //! and sets in theSphere the result spherical surface.
-  Standard_EXPORT Standard_Boolean IsSphere(const Standard_Real theTol, gp_Sphere& theSphere);
+  Standard_EXPORT bool IsSphere(const double theTol, gp_Sphere& theSphere);
 
   //! Returns true if the underlined curve can be represent by line with tolerance theTol
   //! and sets in theLin the result line.
-  Standard_EXPORT Standard_Boolean IsLine(const Standard_Real theTol, gp_Lin& theLin);
+  Standard_EXPORT bool IsLine(const double theTol, gp_Lin& theLin);
 
   //! Returns true if the underlined curve can be represent by circle with tolerance theTol
   //! and sets in theCirc the result circle.
-  Standard_EXPORT Standard_Boolean IsCircle(const Standard_Real theTol, gp_Circ& theCirc);
+  Standard_EXPORT bool IsCircle(const double theTol, gp_Circ& theCirc);
 
   //! Returns true if the underlined curve can be represent by ellipse with tolerance theTol
   //! and sets in theCirc the result ellipse.
-  Standard_EXPORT Standard_Boolean IsEllipse(const Standard_Real theTol, gp_Elips& theElips);
+  Standard_EXPORT bool IsEllipse(const double theTol, gp_Elips& theElips);
 
 private:
-  Standard_Boolean IsElementarySurf(const GeomAbs_SurfaceType theTarget,
-                                    const Standard_Real       theTol,
-                                    gp_Ax3&                   thePos,
-                                    TColStd_Array1OfReal&     theParams);
+  bool IsElementarySurf(const GeomAbs_SurfaceType   theTarget,
+                        const double                theTol,
+                        gp_Ax3&                     thePos,
+                        NCollection_Array1<double>& theParams);
 
-  Standard_Boolean IsConic(const GeomAbs_CurveType theTarget,
-                           const Standard_Real     theTol,
-                           gp_Ax2&                 thePos,
-                           TColStd_Array1OfReal&   theParams);
+  bool IsConic(const GeomAbs_CurveType     theTarget,
+               const double                theTol,
+               gp_Ax2&                     thePos,
+               NCollection_Array1<double>& theParams);
 
-  static Handle(Geom_Surface) GetSurface(const TopoDS_Face&         theFace,
-                                         const Standard_Real        theTol,
-                                         const GeomConvert_ConvType theType,
-                                         const GeomAbs_SurfaceType  theTarget,
-                                         Standard_Real&             theGap,
-                                         Standard_Integer&          theStatus);
+  static occ::handle<Geom_Surface> GetSurface(const TopoDS_Face&         theFace,
+                                              const double               theTol,
+                                              const GeomConvert_ConvType theType,
+                                              const GeomAbs_SurfaceType  theTarget,
+                                              double&                    theGap,
+                                              int&                       theStatus);
 
-  static Handle(Geom_Surface) GetSurface(const TopoDS_Shell&        theShell,
-                                         const Standard_Real        theTol,
-                                         const GeomConvert_ConvType theType,
-                                         const GeomAbs_SurfaceType  theTarget,
-                                         Standard_Real&             theGap,
-                                         Standard_Integer&          theStatus);
+  static occ::handle<Geom_Surface> GetSurface(const TopoDS_Shell&        theShell,
+                                              const double               theTol,
+                                              const GeomConvert_ConvType theType,
+                                              const GeomAbs_SurfaceType  theTarget,
+                                              double&                    theGap,
+                                              int&                       theStatus);
 
-  static Handle(Geom_Surface) GetSurface(const TopoDS_Edge&         theEdge,
-                                         const Standard_Real        theTol,
-                                         const GeomConvert_ConvType theType,
-                                         const GeomAbs_SurfaceType  theTarget,
-                                         gp_Ax3&                    thePos,
-                                         TColStd_Array1OfReal&      theParams,
-                                         Standard_Real&             theGap,
-                                         Standard_Integer&          theStatus);
+  static occ::handle<Geom_Surface> GetSurface(const TopoDS_Edge&          theEdge,
+                                              const double                theTol,
+                                              const GeomConvert_ConvType  theType,
+                                              const GeomAbs_SurfaceType   theTarget,
+                                              gp_Ax3&                     thePos,
+                                              NCollection_Array1<double>& theParams,
+                                              double&                     theGap,
+                                              int&                        theStatus);
 
-  static Handle(Geom_Surface) GetSurface(const TopoDS_Wire&         theWire,
-                                         const Standard_Real        theTol,
-                                         const GeomConvert_ConvType theType,
-                                         const GeomAbs_SurfaceType  theTarget,
-                                         gp_Ax3&                    thePos,
-                                         TColStd_Array1OfReal&      theParams,
-                                         Standard_Real&             theGap,
-                                         Standard_Integer&          theStatus);
+  static occ::handle<Geom_Surface> GetSurface(const TopoDS_Wire&          theWire,
+                                              const double                theTol,
+                                              const GeomConvert_ConvType  theType,
+                                              const GeomAbs_SurfaceType   theTarget,
+                                              gp_Ax3&                     thePos,
+                                              NCollection_Array1<double>& theParams,
+                                              double&                     theGap,
+                                              int&                        theStatus);
 
-  static Handle(Geom_Curve) GetCurve(const TopoDS_Edge&         theEdge,
-                                     const Standard_Real        theTol,
-                                     const GeomConvert_ConvType theType,
-                                     const GeomAbs_CurveType    theTarget,
-                                     Standard_Real&             theGap,
-                                     Standard_Integer&          theStatus);
+  static occ::handle<Geom_Curve> GetCurve(const TopoDS_Edge&         theEdge,
+                                          const double               theTol,
+                                          const GeomConvert_ConvType theType,
+                                          const GeomAbs_CurveType    theTarget,
+                                          double&                    theGap,
+                                          int&                       theStatus);
 
-  static Standard_Boolean GetSurfaceByLS(const TopoDS_Wire&        theWire,
-                                         const Standard_Real       theTol,
-                                         const GeomAbs_SurfaceType theTarget,
-                                         gp_Ax3&                   thePos,
-                                         TColStd_Array1OfReal&     theParams,
-                                         Standard_Real&            theGap,
-                                         Standard_Integer&         theStatus);
+  static bool GetSurfaceByLS(const TopoDS_Wire&          theWire,
+                             const double                theTol,
+                             const GeomAbs_SurfaceType   theTarget,
+                             gp_Ax3&                     thePos,
+                             NCollection_Array1<double>& theParams,
+                             double&                     theGap,
+                             int&                        theStatus);
 
   void Init(const TopoDS_Shape& theShape);
 
 private:
   TopoDS_Shape     myShape;
   TopAbs_ShapeEnum mySType;
-  Standard_Real    myGap;
-  Standard_Integer myStatus;
+  double           myGap;
+  int              myStatus;
 };
 
 #endif // _ShapeAnalysis_CanonicalRecognition_HeaderFile

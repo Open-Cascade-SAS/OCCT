@@ -23,7 +23,8 @@
 
 #include <TopOpeBRepBuild_AreaBuilder.hxx>
 #include <Standard_Boolean.hxx>
-#include <TopOpeBRepBuild_ListOfLoop.hxx>
+#include <TopOpeBRepBuild_Loop.hxx>
+#include <NCollection_List.hxx>
 class TopOpeBRepBuild_PaveSet;
 class TopOpeBRepBuild_PaveClassifier;
 class TopOpeBRepBuild_LoopSet;
@@ -41,36 +42,33 @@ public:
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT TopOpeBRepBuild_Area1dBuilder(TopOpeBRepBuild_PaveSet&        LS,
                                                 TopOpeBRepBuild_PaveClassifier& LC,
-                                                const Standard_Boolean ForceClass = Standard_False);
+                                                const bool                      ForceClass = false);
 
   //! Sets a Area1dBuilder to find the areas of
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT virtual void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                TopOpeBRepBuild_LoopClassifier& LC,
-                                               const Standard_Boolean ForceClass = Standard_False)
-    Standard_OVERRIDE;
+                                               const bool ForceClass = false) override;
 
-  Standard_EXPORT virtual void ADD_Loop_TO_LISTOFLoop(const Handle(TopOpeBRepBuild_Loop)& L,
-                                                      TopOpeBRepBuild_ListOfLoop&         LOL,
-                                                      const Standard_Address s = NULL) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void ADD_Loop_TO_LISTOFLoop(
+    const occ::handle<TopOpeBRepBuild_Loop>&             L,
+    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL,
+    void* const                                          s = NULL) const override;
 
   Standard_EXPORT virtual void REM_Loop_FROM_LISTOFLoop(
-    TopOpeBRepBuild_ListIteratorOfListOfLoop& ITLOL,
-    TopOpeBRepBuild_ListOfLoop&               LOL,
-    const Standard_Address                    s = NULL) const Standard_OVERRIDE;
+    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator& ITLOL,
+    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&           LOL,
+    void* const                                                    s = NULL) const override;
 
-  Standard_EXPORT virtual void ADD_LISTOFLoop_TO_LISTOFLoop(TopOpeBRepBuild_ListOfLoop& LOL1,
-                                                            TopOpeBRepBuild_ListOfLoop& LOL2,
-                                                            const Standard_Address      s  = NULL,
-                                                            const Standard_Address      s1 = NULL,
-                                                            const Standard_Address s2 = NULL) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void ADD_LISTOFLoop_TO_LISTOFLoop(
+    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL1,
+    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL2,
+    void* const                                          s  = NULL,
+    void* const                                          s1 = NULL,
+    void* const                                          s2 = NULL) const override;
 
-  Standard_EXPORT static void DumpList(const TopOpeBRepBuild_ListOfLoop& L);
-
-protected:
-private:
+  Standard_EXPORT static void DumpList(
+    const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& L);
 };
 
 #endif // _TopOpeBRepBuild_Area1dBuilder_HeaderFile

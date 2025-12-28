@@ -40,9 +40,7 @@ Poly_CoherentTriangle::Poly_CoherentTriangle()
 
 //=================================================================================================
 
-Poly_CoherentTriangle::Poly_CoherentTriangle(const Standard_Integer iNode0,
-                                             const Standard_Integer iNode1,
-                                             const Standard_Integer iNode2)
+Poly_CoherentTriangle::Poly_CoherentTriangle(const int iNode0, const int iNode1, const int iNode2)
     : myNConnections(0)
 {
   myNodes[0]            = iNode0;
@@ -61,11 +59,10 @@ Poly_CoherentTriangle::Poly_CoherentTriangle(const Standard_Integer iNode0,
 
 //=================================================================================================
 
-Standard_Boolean Poly_CoherentTriangle::SetConnection(const Standard_Integer iConn,
-                                                      Poly_CoherentTriangle& theTr)
+bool Poly_CoherentTriangle::SetConnection(const int iConn, Poly_CoherentTriangle& theTr)
 {
-  Standard_Boolean              aResult(Standard_False);
-  static const Standard_Integer II[] = {2, 0, 1, 2, 0};
+  bool             aResult(false);
+  static const int II[] = {2, 0, 1, 2, 0};
 
   if (theTr.Node(0) == myNodes[II[iConn + 2]])
   {
@@ -79,7 +76,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(const Standard_Integer iCo
       theTr.myNodesOnConnected[1] = myNodes[iConn];
       theTr.mypConnected[1]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
   }
   else if (theTr.Node(1) == myNodes[II[iConn + 2]])
@@ -94,7 +91,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(const Standard_Integer iCo
       theTr.myNodesOnConnected[2] = myNodes[iConn];
       theTr.mypConnected[2]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
   }
   else if (theTr.Node(2) == myNodes[II[iConn + 2]])
@@ -109,7 +106,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(const Standard_Integer iCo
       theTr.myNodesOnConnected[0] = myNodes[iConn];
       theTr.mypConnected[0]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
   }
   return aResult;
@@ -117,9 +114,9 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(const Standard_Integer iCo
 
 //=================================================================================================
 
-Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& theTr)
+bool Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& theTr)
 {
-  Standard_Boolean aResult(Standard_False);
+  bool aResult(false);
   if (myNodes[0] == theTr.Node(0))
   {
     if (myNodes[1] == theTr.Node(2) && mypConnected[2] != &theTr)
@@ -132,7 +129,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
       theTr.myNodesOnConnected[1] = myNodes[2];
       theTr.mypConnected[1]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
     else if (myNodes[2] == theTr.Node(1) && mypConnected[1] != &theTr)
     {
@@ -144,7 +141,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
       theTr.myNodesOnConnected[2] = myNodes[1];
       theTr.mypConnected[2]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
   }
   else if (myNodes[0] == theTr.Node(1))
@@ -159,7 +156,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
       theTr.myNodesOnConnected[2] = myNodes[2];
       theTr.mypConnected[2]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
     else if (myNodes[2] == theTr.Node(2) && mypConnected[1] != &theTr)
     {
@@ -171,7 +168,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
       theTr.myNodesOnConnected[0] = myNodes[1];
       theTr.mypConnected[0]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
   }
   else if (myNodes[0] == theTr.Node(2))
@@ -186,7 +183,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
       theTr.myNodesOnConnected[0] = myNodes[2];
       theTr.mypConnected[0]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
     else if (myNodes[2] == theTr.Node(0) && mypConnected[1] != &theTr)
     {
@@ -198,7 +195,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
       theTr.myNodesOnConnected[1] = myNodes[1];
       theTr.mypConnected[1]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
   }
   else if (mypConnected[0] != &theTr)
@@ -213,7 +210,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
       theTr.myNodesOnConnected[1] = myNodes[0];
       theTr.mypConnected[1]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
     else if (myNodes[1] == theTr.Node(2) && myNodes[2] == theTr.Node(1))
     {
@@ -225,7 +222,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
       theTr.myNodesOnConnected[0] = myNodes[0];
       theTr.mypConnected[0]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
     else if (myNodes[1] == theTr.Node(1) && myNodes[2] == theTr.Node(0))
     {
@@ -237,7 +234,7 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
       theTr.myNodesOnConnected[2] = myNodes[0];
       theTr.mypConnected[2]       = this;
       theTr.myNConnections++;
-      aResult = Standard_True;
+      aResult = true;
     }
   }
   return aResult;
@@ -245,12 +242,12 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& the
 
 //=================================================================================================
 
-void Poly_CoherentTriangle::RemoveConnection(const Standard_Integer iConn)
+void Poly_CoherentTriangle::RemoveConnection(const int iConn)
 {
   Poly_CoherentTriangle* pConnectedTri = const_cast<Poly_CoherentTriangle*>(mypConnected[iConn]);
   if (pConnectedTri)
   {
-    Standard_Integer iConn1(0);
+    int iConn1(0);
     if (pConnectedTri->mypConnected[0] != this)
     {
       if (pConnectedTri->mypConnected[1] == this)
@@ -272,9 +269,9 @@ void Poly_CoherentTriangle::RemoveConnection(const Standard_Integer iConn)
 
 //=================================================================================================
 
-Standard_Boolean Poly_CoherentTriangle::RemoveConnection(Poly_CoherentTriangle& theTri)
+bool Poly_CoherentTriangle::RemoveConnection(Poly_CoherentTriangle& theTri)
 {
-  const Standard_Integer iConn = FindConnection(theTri);
+  const int iConn = FindConnection(theTri);
   if (iConn >= 0)
     RemoveConnection(iConn);
   return (iConn >= 0);
@@ -282,9 +279,9 @@ Standard_Boolean Poly_CoherentTriangle::RemoveConnection(Poly_CoherentTriangle& 
 
 //=================================================================================================
 
-Standard_Integer Poly_CoherentTriangle::FindConnection(const Poly_CoherentTriangle& theTri) const
+int Poly_CoherentTriangle::FindConnection(const Poly_CoherentTriangle& theTri) const
 {
-  Standard_Integer aResult;
+  int aResult;
   if (mypConnected[0] == &theTri)
     aResult = 0;
   else if (mypConnected[1] == &theTri)

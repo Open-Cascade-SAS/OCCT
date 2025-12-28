@@ -36,24 +36,24 @@ class BlendFunc_Corde
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BlendFunc_Corde(const Handle(Adaptor3d_Surface)& S,
-                                  const Handle(Adaptor3d_Curve)&   CGuide);
+  Standard_EXPORT BlendFunc_Corde(const occ::handle<Adaptor3d_Surface>& S,
+                                  const occ::handle<Adaptor3d_Curve>&   CGuide);
 
-  Standard_EXPORT void SetParam(const Standard_Real Param);
+  Standard_EXPORT void SetParam(const double Param);
 
-  Standard_EXPORT void SetDist(const Standard_Real Dist);
+  Standard_EXPORT void SetDist(const double Dist);
 
   //! computes the values <F> of the Function for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
   Standard_EXPORT const gp_Pnt& PointOnS() const;
 
@@ -65,7 +65,7 @@ public:
 
   //! Returns True when it is not possible to compute
   //! the tangent vectors at PointOnS.
-  Standard_EXPORT Standard_Boolean IsTangencyPoint() const;
+  Standard_EXPORT bool IsTangencyPoint() const;
 
   //! Returns the tangent vector at PointOnS, in 3d space.
   Standard_EXPORT const gp_Vec& TangentOnS() const;
@@ -80,24 +80,23 @@ public:
 
   //! Returns False if Sol is not solution else returns
   //! True and updates the fields tgs and tg2d
-  Standard_EXPORT Standard_Boolean IsSolution(const math_Vector& Sol, const Standard_Real Tol);
+  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol);
 
-protected:
 private:
-  Handle(Adaptor3d_Surface) surf;
-  Handle(Adaptor3d_Curve)   guide;
-  gp_Pnt                    pts;
-  gp_Pnt2d                  pt2d;
-  Standard_Real             dis;
-  Standard_Real             normtg;
-  Standard_Real             theD;
-  gp_Pnt                    ptgui;
-  gp_Vec                    nplan;
-  gp_Vec                    d1gui;
-  gp_Vec                    d2gui;
-  gp_Vec                    tgs;
-  gp_Vec2d                  tg2d;
-  Standard_Boolean          istangent;
+  occ::handle<Adaptor3d_Surface> surf;
+  occ::handle<Adaptor3d_Curve>   guide;
+  gp_Pnt                         pts;
+  gp_Pnt2d                       pt2d;
+  double                         dis;
+  double                         normtg;
+  double                         theD;
+  gp_Pnt                         ptgui;
+  gp_Vec                         nplan;
+  gp_Vec                         d1gui;
+  gp_Vec                         d2gui;
+  gp_Vec                         tgs;
+  gp_Vec2d                       tg2d;
+  bool                           istangent;
 };
 
 #endif // _BlendFunc_Corde_HeaderFile

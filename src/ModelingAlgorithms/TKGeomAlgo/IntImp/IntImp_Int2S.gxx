@@ -24,12 +24,12 @@
 #include <Standard_ConstructionError.hxx>
 #include <Precision.hxx>
 
-IntImp_Int2S::IntImp_Int2S(const ThePSurface&  surf1,
-                           const ThePSurface&  surf2,
-                           const Standard_Real TolTangency)
-    : done(Standard_True),
-      empty(Standard_True),
-      tangent(Standard_False),
+IntImp_Int2S::IntImp_Int2S(const ThePSurface& surf1,
+                           const ThePSurface& surf2,
+                           const double       TolTangency)
+    : done(true),
+      empty(true),
+      tangent(false),
       myZerParFunc(surf1, surf2),
       tol(TolTangency * TolTangency)
 {
@@ -50,12 +50,12 @@ IntImp_Int2S::IntImp_Int2S(const ThePSurface&  surf1,
   vres2 = ThePSurfaceTool::VResolution(surf2, Precision::Confusion());
 }
 
-IntImp_Int2S::IntImp_Int2S(const TColStd_Array1OfReal& Param,
-                           const ThePSurface&          surf1,
-                           const ThePSurface&          surf2,
-                           const Standard_Real         TolTangency)
-    : done(Standard_True),
-      empty(Standard_True),
+IntImp_Int2S::IntImp_Int2S(const NCollection_Array1<double>& Param,
+                           const ThePSurface&                surf1,
+                           const ThePSurface&                surf2,
+                           const double                      TolTangency)
+    : done(true),
+      empty(true),
       myZerParFunc(surf1, surf2),
       tol(TolTangency * TolTangency)
 {
@@ -78,15 +78,15 @@ IntImp_Int2S::IntImp_Int2S(const TColStd_Array1OfReal& Param,
   Perform(Param, Rsnld);
 }
 
-IntImp_ConstIsoparametric IntImp_Int2S::Perform(const TColStd_Array1OfReal&     Param,
-                                                math_FunctionSetRoot&           Rsnld,
-                                                const IntImp_ConstIsoparametric ChoixIso)
+IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>& Param,
+                                                math_FunctionSetRoot&             Rsnld,
+                                                const IntImp_ConstIsoparametric   ChoixIso)
 {
-  Standard_Real BornInfBuf[3] = {}, BornSupBuf[3] = {}, ToleranceBuf[3] = {}, UVapBuf[3] = {};
-  Standard_Real UvresBuf[4] = {};
-  math_Vector   BornInf(BornInfBuf, 1, 3), BornSup(BornSupBuf, 1, 3), Tolerance(ToleranceBuf, 1, 3),
+  double      BornInfBuf[3] = {}, BornSupBuf[3] = {}, ToleranceBuf[3] = {}, UVapBuf[3] = {};
+  double      UvresBuf[4] = {};
+  math_Vector BornInf(BornInfBuf, 1, 3), BornSup(BornSupBuf, 1, 3), Tolerance(ToleranceBuf, 1, 3),
     UVap(UVapBuf, 1, 3);
-  TColStd_Array1OfReal Uvres(UvresBuf[0], 1, 4);
+  NCollection_Array1<double> Uvres(UvresBuf[0], 1, 4);
 
   IntImp_ConstIsoparametric BestChoix;
 
@@ -100,7 +100,7 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const TColStd_Array1OfReal&     
     { // distance des 2 points
       // dans la tolerance
       Rsnld.Root(UVap);
-      empty   = Standard_False;
+      empty   = false;
       tangent = myZerParFunc.IsTangent(UVap, Uvres, BestChoix);
       pint.SetValue(myZerParFunc.Point(), Uvres(1), Uvres(2), Uvres(3), Uvres(4));
       if (!tangent)
@@ -112,29 +112,29 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const TColStd_Array1OfReal&     
     }
     else
     {
-      empty = Standard_True;
+      empty = true;
     }
   }
   else
   {
-    empty = Standard_True;
+    empty = true;
   }
   return BestChoix;
 }
 
-IntImp_ConstIsoparametric IntImp_Int2S::Perform(const TColStd_Array1OfReal& Param,
-                                                math_FunctionSetRoot&       Rsnld)
+IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>& Param,
+                                                math_FunctionSetRoot&             Rsnld)
 {
-  gp_Vec                    DPUV[4];
-  gp_Pnt                    P1, P2;
-  Standard_Real             Epsuv[4];
-  Standard_Real             DuvBuf[4];
-  TColStd_Array1OfReal      Duv(DuvBuf[0], 1, 4);
-  Standard_Real             UVd[4], UVf[4];
-  IntImp_ConstIsoparametric ChoixIso[4];
-  IntImp_ConstIsoparametric BestChoix = ChoixRef(0);
-  const ThePSurface&        Caro1     = myZerParFunc.AuxillarSurface1();
-  const ThePSurface&        Caro2     = myZerParFunc.AuxillarSurface2();
+  gp_Vec                     DPUV[4];
+  gp_Pnt                     P1, P2;
+  double                     Epsuv[4];
+  double                     DuvBuf[4];
+  NCollection_Array1<double> Duv(DuvBuf[0], 1, 4);
+  double                     UVd[4], UVf[4];
+  IntImp_ConstIsoparametric  ChoixIso[4];
+  IntImp_ConstIsoparametric  BestChoix = ChoixRef(0);
+  const ThePSurface&         Caro1     = myZerParFunc.AuxillarSurface1();
+  const ThePSurface&         Caro2     = myZerParFunc.AuxillarSurface2();
 
   ThePSurfaceTool::D1(Caro1, Param(1), Param(2), P1, DPUV[0], DPUV[1]);
   ThePSurfaceTool::D1(Caro2, Param(3), Param(4), P2, DPUV[2], DPUV[3]);
@@ -145,16 +145,16 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const TColStd_Array1OfReal& Para
   Epsuv[2] = ThePSurfaceTool::UResolution(Caro2, Precision::Confusion());
   Epsuv[3] = ThePSurfaceTool::VResolution(Caro2, Precision::Confusion());
 
-  for (Standard_Integer j = 0; j <= 3; j++)
+  for (int j = 0; j <= 3; j++)
     UVd[j] = Param(j + 1);
 
-  empty = Standard_True;
+  empty = true;
 
-  Standard_Boolean Tangent = IntImp_ComputeTangence(DPUV, Epsuv, UVd, ChoixIso);
+  bool Tangent = IntImp_ComputeTangence(DPUV, Epsuv, UVd, ChoixIso);
   if (Tangent)
     return BestChoix;
 
-  Standard_Integer          i            = 0;
+  int                       i            = 0;
   IntImp_ConstIsoparametric CurrentChoix = BestChoix; //-- Modif 17 Mai 93
 
   while (empty && i <= 3)
@@ -180,7 +180,7 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const TColStd_Array1OfReal& Para
     UVf[2] = ub1; //-- ThePSurfaceTool::UIntervalLast(Caro2);
     UVf[3] = vb1; //-- ThePSurfaceTool::VIntervalLast(Caro2);
 
-    Standard_Integer Nc, Iiso;
+    int Nc, Iiso;
     if (Duv(1) <= UVd[0] - Epsuv[0])
     {
       Duv(1) = UVd[0];
@@ -231,7 +231,7 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const TColStd_Array1OfReal& Para
     }
     else
       return BestChoix; // on a gagne
-    empty     = Standard_True;
+    empty     = true;
     BestChoix = ChoixRef(Iiso); // en attendant
     BestChoix = Perform(Duv, Rsnld, BestChoix);
     if (!empty)
@@ -255,7 +255,7 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const TColStd_Array1OfReal& Para
       else
         return BestChoix;
 
-      empty = Standard_True;
+      empty = true;
 
       if (Nc == 4)
         Nc = 0;

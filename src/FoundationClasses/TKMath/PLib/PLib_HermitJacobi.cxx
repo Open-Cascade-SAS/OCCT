@@ -25,17 +25,17 @@ namespace
 {
 // W coefficients for C0 continuity (NivConstr = 0, DegreeH = 1)
 // W(t) = (1 - t^2)
-constexpr Standard_Real WCoeff_C0[3] = {1.0, 0.0, -1.0};
+constexpr double WCoeff_C0[3] = {1.0, 0.0, -1.0};
 
 // W coefficients for C1 continuity (NivConstr = 1, DegreeH = 3)
 // W(t) = (1 - t^2)^2 = 1 - 2t^2 + t^4
-constexpr Standard_Real WCoeff_C1[5] = {1.0, 0.0, -2.0, 0.0, 1.0};
+constexpr double WCoeff_C1[5] = {1.0, 0.0, -2.0, 0.0, 1.0};
 
 // W coefficients for C2 continuity (NivConstr = 2, DegreeH = 5)
 // W(t) = (1 - t^2)^3 = 1 - 3t^2 + 3t^4 - t^6
-constexpr Standard_Real WCoeff_C2[7] = {1.0, 0.0, -3.0, 0.0, 3.0, 0.0, -1.0};
+constexpr double WCoeff_C2[7] = {1.0, 0.0, -3.0, 0.0, 3.0, 0.0, -1.0};
 
-inline const Standard_Real& GetWCoefficients(const Standard_Integer theNivConstr)
+inline const double& GetWCoefficients(const int theNivConstr)
 {
   switch (theNivConstr)
   {
@@ -80,7 +80,7 @@ const math_Matrix& GetHermiteMatrix_C2()
   return aMatrix;
 }
 
-inline const math_Matrix& GetHermiteMatrix(const Standard_Integer theNivConstr)
+inline const math_Matrix& GetHermiteMatrix(const int theNivConstr)
 {
   switch (theNivConstr)
   {
@@ -98,57 +98,56 @@ inline const math_Matrix& GetHermiteMatrix(const Standard_Integer theNivConstr)
 
 //=================================================================================================
 
-PLib_HermitJacobi::PLib_HermitJacobi(const Standard_Integer WorkDegree,
-                                     const GeomAbs_Shape    ConstraintOrder)
+PLib_HermitJacobi::PLib_HermitJacobi(const int WorkDegree, const GeomAbs_Shape ConstraintOrder)
     : myJacobi(WorkDegree, ConstraintOrder)
 {
 }
 
 //=================================================================================================
 
-Standard_Real PLib_HermitJacobi::MaxError(const Standard_Integer Dimension,
-                                          Standard_Real&         HermJacCoeff,
-                                          const Standard_Integer NewDegree) const
+double PLib_HermitJacobi::MaxError(const int Dimension,
+                                   double&   HermJacCoeff,
+                                   const int NewDegree) const
 {
   return myJacobi.MaxError(Dimension, HermJacCoeff, NewDegree);
 }
 
 //=================================================================================================
 
-void PLib_HermitJacobi::ReduceDegree(const Standard_Integer Dimension,
-                                     const Standard_Integer MaxDegree,
-                                     const Standard_Real    Tol,
-                                     Standard_Real&         HermJacCoeff,
-                                     Standard_Integer&      NewDegree,
-                                     Standard_Real&         MaxError) const
+void PLib_HermitJacobi::ReduceDegree(const int    Dimension,
+                                     const int    MaxDegree,
+                                     const double Tol,
+                                     double&      HermJacCoeff,
+                                     int&         NewDegree,
+                                     double&      MaxError) const
 {
   myJacobi.ReduceDegree(Dimension, MaxDegree, Tol, HermJacCoeff, NewDegree, MaxError);
 }
 
 //=================================================================================================
 
-Standard_Real PLib_HermitJacobi::AverageError(const Standard_Integer Dimension,
-                                              Standard_Real&         HermJacCoeff,
-                                              const Standard_Integer NewDegree) const
+double PLib_HermitJacobi::AverageError(const int Dimension,
+                                       double&   HermJacCoeff,
+                                       const int NewDegree) const
 {
   return myJacobi.AverageError(Dimension, HermJacCoeff, NewDegree);
 }
 
 //=================================================================================================
 
-void PLib_HermitJacobi::ToCoefficients(const Standard_Integer      Dimension,
-                                       const Standard_Integer      Degree,
-                                       const TColStd_Array1OfReal& HermJacCoeff,
-                                       TColStd_Array1OfReal&       Coefficients) const
+void PLib_HermitJacobi::ToCoefficients(const int                         Dimension,
+                                       const int                         Degree,
+                                       const NCollection_Array1<double>& HermJacCoeff,
+                                       NCollection_Array1<double>&       Coefficients) const
 {
-  Standard_Integer i, k, idim, i1, i2;
-  Standard_Real    h1, h2;
-  Standard_Integer aNivConstr = this->NivConstr(), aDegreeH = 2 * aNivConstr + 1;
-  Standard_Integer ibegHJC = HermJacCoeff.Lower(), kdim;
+  int    i, k, idim, i1, i2;
+  double h1, h2;
+  int    aNivConstr = this->NivConstr(), aDegreeH = 2 * aNivConstr + 1;
+  int    ibegHJC = HermJacCoeff.Lower(), kdim;
 
   const math_Matrix& aHermiteMatrix = GetHermiteMatrix(aNivConstr);
 
-  TColStd_Array1OfReal AuxCoeff(0, (Degree + 1) * Dimension - 1);
+  NCollection_Array1<double> AuxCoeff(0, (Degree + 1) * Dimension - 1);
   AuxCoeff.Init(0.);
 
   for (k = 0; k <= aDegreeH; k++)
@@ -177,8 +176,8 @@ void PLib_HermitJacobi::ToCoefficients(const Standard_Integer      Dimension,
     myJacobi.ToCoefficients(Dimension, Degree, AuxCoeff, Coefficients);
   else
   {
-    Standard_Integer ibegC = Coefficients.Lower();
-    kdim                   = (Degree + 1) * Dimension;
+    int ibegC = Coefficients.Lower();
+    kdim      = (Degree + 1) * Dimension;
     for (k = 0; k < kdim; k++)
       Coefficients(ibegC + k) = AuxCoeff(k);
   }
@@ -189,31 +188,31 @@ void PLib_HermitJacobi::ToCoefficients(const Standard_Integer      Dimension,
 // purpose  : common part of D0,D1,D2,D3 (FORTRAN subroutine MPOBAS)
 //=======================================================================
 
-void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
-                              const Standard_Real    U,
-                              TColStd_Array1OfReal&  BasisValue,
-                              TColStd_Array1OfReal&  BasisD1,
-                              TColStd_Array1OfReal&  BasisD2,
-                              TColStd_Array1OfReal&  BasisD3) const
+void PLib_HermitJacobi::D0123(const int                   NDeriv,
+                              const double                U,
+                              NCollection_Array1<double>& BasisValue,
+                              NCollection_Array1<double>& BasisD1,
+                              NCollection_Array1<double>& BasisD2,
+                              NCollection_Array1<double>& BasisD3) const
 {
-  NCollection_LocalArray<Standard_Real> jac0(4 * 20);
-  NCollection_LocalArray<Standard_Real> jac1(4 * 20);
-  NCollection_LocalArray<Standard_Real> jac2(4 * 20);
-  NCollection_LocalArray<Standard_Real> jac3(4 * 20);
-  NCollection_LocalArray<Standard_Real> wvalues(4);
+  NCollection_LocalArray<double> jac0(4 * 20);
+  NCollection_LocalArray<double> jac1(4 * 20);
+  NCollection_LocalArray<double> jac2(4 * 20);
+  NCollection_LocalArray<double> jac3(4 * 20);
+  NCollection_LocalArray<double> wvalues(4);
 
-  Standard_Integer i, j;
-  Standard_Integer aNivConstr = this->NivConstr(), aWorkDegree = this->WorkDegree(),
-                   aDegreeH = 2 * aNivConstr + 1;
-  Standard_Integer ibeg0 = BasisValue.Lower(), ibeg1 = BasisD1.Lower(), ibeg2 = BasisD2.Lower(),
-                   ibeg3      = BasisD3.Lower();
-  Standard_Integer aJacDegree = aWorkDegree - aDegreeH - 1;
-  Standard_Real    W0;
+  int i, j;
+  int aNivConstr = this->NivConstr(), aWorkDegree = this->WorkDegree(),
+      aDegreeH = 2 * aNivConstr + 1;
+  int ibeg0 = BasisValue.Lower(), ibeg1 = BasisD1.Lower(), ibeg2 = BasisD2.Lower(),
+      ibeg3         = BasisD3.Lower();
+  int    aJacDegree = aWorkDegree - aDegreeH - 1;
+  double W0;
 
   const math_Matrix& aHermiteMatrix = GetHermiteMatrix(aNivConstr);
 
-  TColStd_Array1OfReal JacValue0(jac0[0], 0, std::max(0, aJacDegree));
-  TColStd_Array1OfReal WValues(wvalues[0], 0, NDeriv);
+  NCollection_Array1<double> JacValue0(jac0[0], 0, std::max(0, aJacDegree));
+  NCollection_Array1<double> WValues(wvalues[0], 0, NDeriv);
   WValues.Init(0.);
 
   // Evaluation des polynomes d'hermite
@@ -244,26 +243,26 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
         myJacobi.D0(U, JacValue0);
         break;
       case 1: {
-        TColStd_Array1OfReal JacValue1(jac1[0], 0, aJacDegree);
+        NCollection_Array1<double> JacValue1(jac1[0], 0, aJacDegree);
         myJacobi.D1(U, JacValue0, JacValue1);
         break;
       }
       case 2: {
-        TColStd_Array1OfReal JacValue1(jac1[0], 0, aJacDegree);
-        TColStd_Array1OfReal JacValue2(jac2[0], 0, aJacDegree);
+        NCollection_Array1<double> JacValue1(jac1[0], 0, aJacDegree);
+        NCollection_Array1<double> JacValue2(jac2[0], 0, aJacDegree);
         myJacobi.D2(U, JacValue0, JacValue1, JacValue2);
         break;
       }
       case 3: {
-        TColStd_Array1OfReal JacValue1(jac1[0], 0, aJacDegree);
-        TColStd_Array1OfReal JacValue2(jac2[0], 0, aJacDegree);
-        TColStd_Array1OfReal JacValue3(jac3[0], 0, aJacDegree);
+        NCollection_Array1<double> JacValue1(jac1[0], 0, aJacDegree);
+        NCollection_Array1<double> JacValue2(jac2[0], 0, aJacDegree);
+        NCollection_Array1<double> JacValue3(jac3[0], 0, aJacDegree);
         myJacobi.D3(U, JacValue0, JacValue1, JacValue2, JacValue3);
       }
     }
 
     // Evaluation de W(t)
-    const Standard_Real& aWCoeff = GetWCoefficients(aNivConstr);
+    const double& aWCoeff = GetWCoefficients(aNivConstr);
     if (NDeriv == 0)
       PLib::NoDerivativeEvalPolynomial(U, aDegreeH + 1, 1, aDegreeH + 1, aWCoeff, WValues(0));
     else
@@ -284,7 +283,7 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
   // Evaluation a l'ordre 1
   if (NDeriv >= 1)
   {
-    Standard_Real W1 = WValues(1);
+    double W1 = WValues(1);
     for (i = 0; i <= aDegreeH; i++)
     {
       BasisD1(ibeg1 + i) = HermitValues(i, 1);
@@ -296,7 +295,7 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
     // Evaluation a l'ordre 2
     if (NDeriv >= 2)
     {
-      Standard_Real W2 = WValues(2);
+      double W2 = WValues(2);
       for (i = 0; i <= aDegreeH; i++)
       {
         BasisD2(ibeg2 + i) = HermitValues(i, 2);
@@ -309,7 +308,7 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
       // Evaluation a l'ordre 3
       if (NDeriv == 3)
       {
-        Standard_Real W3 = WValues(3);
+        double W3 = WValues(3);
         for (i = 0; i <= aDegreeH; i++)
         {
           BasisD3(ibeg3 + i) = HermitValues(i, 3);
@@ -325,37 +324,37 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
 
 //=================================================================================================
 
-void PLib_HermitJacobi::D0(const Standard_Real U, TColStd_Array1OfReal& BasisValue) const
+void PLib_HermitJacobi::D0(const double U, NCollection_Array1<double>& BasisValue) const
 {
   D0123(0, U, BasisValue, BasisValue, BasisValue, BasisValue);
 }
 
 //=================================================================================================
 
-void PLib_HermitJacobi::D1(const Standard_Real   U,
-                           TColStd_Array1OfReal& BasisValue,
-                           TColStd_Array1OfReal& BasisD1) const
+void PLib_HermitJacobi::D1(const double                U,
+                           NCollection_Array1<double>& BasisValue,
+                           NCollection_Array1<double>& BasisD1) const
 {
   D0123(1, U, BasisValue, BasisD1, BasisD1, BasisD1);
 }
 
 //=================================================================================================
 
-void PLib_HermitJacobi::D2(const Standard_Real   U,
-                           TColStd_Array1OfReal& BasisValue,
-                           TColStd_Array1OfReal& BasisD1,
-                           TColStd_Array1OfReal& BasisD2) const
+void PLib_HermitJacobi::D2(const double                U,
+                           NCollection_Array1<double>& BasisValue,
+                           NCollection_Array1<double>& BasisD1,
+                           NCollection_Array1<double>& BasisD2) const
 {
   D0123(2, U, BasisValue, BasisD1, BasisD2, BasisD2);
 }
 
 //=================================================================================================
 
-void PLib_HermitJacobi::D3(const Standard_Real   U,
-                           TColStd_Array1OfReal& BasisValue,
-                           TColStd_Array1OfReal& BasisD1,
-                           TColStd_Array1OfReal& BasisD2,
-                           TColStd_Array1OfReal& BasisD3) const
+void PLib_HermitJacobi::D3(const double                U,
+                           NCollection_Array1<double>& BasisValue,
+                           NCollection_Array1<double>& BasisD1,
+                           NCollection_Array1<double>& BasisD2,
+                           NCollection_Array1<double>& BasisD3) const
 {
   D0123(3, U, BasisValue, BasisD1, BasisD2, BasisD3);
 }

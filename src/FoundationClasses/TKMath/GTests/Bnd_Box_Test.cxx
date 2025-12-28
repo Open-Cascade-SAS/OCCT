@@ -47,7 +47,7 @@ TEST(Bnd_BoxTest, PointConstructor)
   EXPECT_FALSE(aBox.IsVoid()) << "Box constructed with points should not be void";
   EXPECT_FALSE(aBox.IsWhole()) << "Box constructed with points should not be whole";
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(1.0, aXmin) << "Xmin should match constructor input";
@@ -71,7 +71,7 @@ TEST(Bnd_BoxTest, SetWithPoint)
 
   EXPECT_FALSE(aBox.IsVoid()) << "Box should not be void after Set";
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(1.5, aXmin) << "Point coordinates should set both min and max";
@@ -103,7 +103,7 @@ TEST(Bnd_BoxTest, UpdateWithBounds)
 
   EXPECT_FALSE(aBox.IsVoid()) << "Box should not be void after Update";
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(1.0, aXmin) << "Update should set correct bounds";
@@ -121,7 +121,7 @@ TEST(Bnd_BoxTest, UpdateWithPoint)
   // First point establishes the box
   aBox.Update(1.0, 2.0, 3.0);
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(1.0, aXmin) << "First point should set both min and max";
@@ -145,7 +145,7 @@ TEST(Bnd_BoxTest, UpdateExpansion)
   // Update with bounds that expand the box
   aBox.Update(-1.0, -1.0, -1.0, 2.0, 2.0, 2.0);
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(-1.0, aXmin) << "Box should expand to include new bounds";
@@ -282,8 +282,8 @@ TEST(Bnd_BoxTest, TransformationIdentity)
   gp_Trsf anIdentity;
   Bnd_Box aTransformed = aBox.Transformed(anIdentity);
 
-  Standard_Real aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1;
-  Standard_Real aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
+  double aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1;
+  double aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
 
   aBox.Get(aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1);
   aTransformed.Get(aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2);
@@ -307,7 +307,7 @@ TEST(Bnd_BoxTest, TransformationTranslation)
 
   Bnd_Box aTransformed = aBox.Transformed(aTranslation);
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aTransformed.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(2.0, aXmin) << "Translation should shift coordinates";
@@ -345,7 +345,7 @@ TEST(Bnd_BoxTest, AddBox)
 
   aBox1.Add(aBox2);
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox1.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   // Get() returns bounds including gap, so expect gap-adjusted values
@@ -366,7 +366,7 @@ TEST(Bnd_BoxTest, AddVoidBox)
   Bnd_Box aVoidBox;
   aBox.Add(aVoidBox);
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(1.0, aXmin) << "Adding void box should not change original";
@@ -383,7 +383,7 @@ TEST(Bnd_BoxTest, AddToVoidBox)
 
   EXPECT_FALSE(aVoidBox.IsVoid()) << "Adding to void box should make it non-void";
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aVoidBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(1.0, aXmin) << "Should adopt added box's bounds";
@@ -398,7 +398,7 @@ TEST(Bnd_BoxTest, AddPoint)
   gp_Pnt aPnt(2.0, -1.0, 0.5);
   aBox.Add(aPnt);
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(0.0, aXmin) << "Box should expand to include point";
@@ -546,14 +546,14 @@ TEST(Bnd_BoxTest, Distance)
   Bnd_Box aBox2;
   aBox2.Update(2.0, 0.0, 0.0, 3.0, 1.0, 1.0); // 1 unit away in X direction
 
-  Standard_Real aDistance = aBox1.Distance(aBox2);
+  double aDistance = aBox1.Distance(aBox2);
   EXPECT_DOUBLE_EQ(1.0, aDistance) << "Distance between separated boxes should be 1.0";
 
   // Overlapping boxes
   Bnd_Box anOverlappingBox;
   anOverlappingBox.Update(0.5, 0.5, 0.5, 1.5, 1.5, 1.5);
 
-  Standard_Real anOverlapDistance = aBox1.Distance(anOverlappingBox);
+  double anOverlapDistance = aBox1.Distance(anOverlappingBox);
   EXPECT_DOUBLE_EQ(0.0, anOverlapDistance) << "Distance between overlapping boxes should be 0.0";
 }
 
@@ -621,7 +621,7 @@ TEST(Bnd_BoxTest, EdgeCases)
   Bnd_Box aBox;
 
   // Test with very large numbers
-  const Standard_Real aLargeValue = 1e10;
+  const double aLargeValue = 1e10;
   aBox.Update(-aLargeValue, -aLargeValue, -aLargeValue, aLargeValue, aLargeValue, aLargeValue);
 
   EXPECT_FALSE(aBox.IsVoid()) << "Box with large values should be valid";
@@ -762,7 +762,7 @@ TEST(Bnd_BoxTest, UpdateExpandsCorrectly)
   // Start with a point
   aBox.Update(1.0, 1.0, 1.0);
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   EXPECT_DOUBLE_EQ(1.0, aXmin) << "Point should create degenerate box";
@@ -792,14 +792,14 @@ TEST(Bnd_BoxTest, DumpJsonAndInitFromJson)
   // Try to deserialize
   std::stringstream anIStream(aJsonStr);
   Bnd_Box           aDeserializedBox;
-  Standard_Integer  aStreamPos = 1;
+  int               aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedBox.InitFromJson(anIStream, aStreamPos))
     << "Deserialization should succeed with proper JSON format";
 
   // Verify the deserialized box matches the original
-  Standard_Real aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1;
-  Standard_Real aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
+  double aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1;
+  double aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
 
   aBox.Get(aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1);
   aDeserializedBox.Get(aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2);
@@ -825,11 +825,11 @@ TEST(Bnd_BoxTest, OCC16485_CumulativeEnlargeTolerance)
   // Create points with X coordinate varying from 0 to 1000
   // and compute cumulative bounding box by adding boxes for all the
   // points, enlarged on tolerance
-  const Standard_Real    aTol    = 1e-3;
-  const Standard_Integer aNbStep = 1000;
-  Bnd_Box                aBox;
+  const double aTol    = 1e-3;
+  const int    aNbStep = 1000;
+  Bnd_Box      aBox;
 
-  for (Standard_Integer i = 0; i <= aNbStep; i++)
+  for (int i = 0; i <= aNbStep; i++)
   {
     gp_Pnt  aP(i, 0., 0.);
     Bnd_Box aB;
@@ -839,7 +839,7 @@ TEST(Bnd_BoxTest, OCC16485_CumulativeEnlargeTolerance)
     aBox = aB; // This was causing XMin to grow each time (regression)
   }
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   // Verify that Xmin is approximately -tolerance (not growing with iterations)

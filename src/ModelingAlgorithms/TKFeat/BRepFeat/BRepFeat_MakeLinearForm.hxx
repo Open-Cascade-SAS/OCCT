@@ -22,8 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Vec.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BRepFeat_RibSlot.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Curve;
@@ -64,13 +66,13 @@ public:
   //! setting 0 in case of the groove
   //! -   adding matter with Boolean fusion using the
   //! setting 1 in case of the rib.
-  BRepFeat_MakeLinearForm(const TopoDS_Shape&       Sbase,
-                          const TopoDS_Wire&        W,
-                          const Handle(Geom_Plane)& P,
-                          const gp_Vec&             Direction,
-                          const gp_Vec&             Direction1,
-                          const Standard_Integer    Fuse,
-                          const Standard_Boolean    Modify);
+  BRepFeat_MakeLinearForm(const TopoDS_Shape&            Sbase,
+                          const TopoDS_Wire&             W,
+                          const occ::handle<Geom_Plane>& P,
+                          const gp_Vec&                  Direction,
+                          const gp_Vec&                  Direction1,
+                          const int                      Fuse,
+                          const bool                     Modify);
 
   //! Initializes this construction algorithm.
   //! A contour W, a shape Sbase and a plane P are
@@ -83,13 +85,13 @@ public:
   //! 0 in case of the groove
   //! -   adding matter with Boolean fusion using the setting 1
   //! in case of the rib.
-  Standard_EXPORT void Init(const TopoDS_Shape&       Sbase,
-                            const TopoDS_Wire&        W,
-                            const Handle(Geom_Plane)& P,
-                            const gp_Vec&             Direction,
-                            const gp_Vec&             Direction1,
-                            const Standard_Integer    Fuse,
-                            const Standard_Boolean    Modify);
+  Standard_EXPORT void Init(const TopoDS_Shape&            Sbase,
+                            const TopoDS_Wire&             W,
+                            const occ::handle<Geom_Plane>& P,
+                            const gp_Vec&                  Direction,
+                            const gp_Vec&                  Direction1,
+                            const int                      Fuse,
+                            const bool                     Modify);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>.
@@ -109,24 +111,24 @@ public:
   //! The setting is provided by a flag, flag, which can be set
   //! to from and/or until. The third semantic possibility above
   //! is selected by showing both from and until at the same time.
-  Standard_EXPORT void TransformShapeFU(const Standard_Integer flag);
+  Standard_EXPORT void TransformShapeFU(const int flag);
 
-  Standard_EXPORT Standard_Boolean Propagate(TopTools_ListOfShape& L,
-                                             const TopoDS_Face&    F,
-                                             const gp_Pnt&         FPoint,
-                                             const gp_Pnt&         LPoint,
-                                             Standard_Boolean&     falseside);
+  Standard_EXPORT bool Propagate(NCollection_List<TopoDS_Shape>& L,
+                                 const TopoDS_Face&              F,
+                                 const gp_Pnt&                   FPoint,
+                                 const gp_Pnt&                   LPoint,
+                                 bool&                           falseside);
 
-protected:
 private:
-  Handle(Geom_Curve)                 myCrv;
-  gp_Vec                             myDir;
-  gp_Vec                             myDir1;
-  Handle(Geom_Plane)                 myPln;
-  Standard_Real                      myBnd;
-  TopTools_DataMapOfShapeListOfShape mySlface;
-  TopTools_ListOfShape               myListOfEdges;
-  Standard_Real                      myTol;
+  occ::handle<Geom_Curve> myCrv;
+  gp_Vec                  myDir;
+  gp_Vec                  myDir1;
+  occ::handle<Geom_Plane> myPln;
+  double                  myBnd;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                 mySlface;
+  NCollection_List<TopoDS_Shape> myListOfEdges;
+  double                         myTol;
 };
 
 #include <BRepFeat_MakeLinearForm.lxx>

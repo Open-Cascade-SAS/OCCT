@@ -51,7 +51,7 @@
 #include <IGESSolid_ToroidalSurface.hxx>
 #include <IGESToBRep_BasicSurface.hxx>
 #include <IGESToBRep_CurveAndSurface.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Message_Msg.hxx>
 #include <Precision.hxx>
 #include <ShapeAlgo.hxx>
@@ -59,11 +59,11 @@
 #include <ShapeConstruct_Curve.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
 
 //: 36
 // S3767
@@ -72,23 +72,22 @@
 // function : CheckBSplineSurface
 // purpose  : Check coincidede knots. Check whether knots are in ascending
 //            order and difference between values of weights more than 1000.
-//            Send corresponding messages. The function returns Standard_False
-//            if surface can not be created, Standard_True otherwise.
+//            Send corresponding messages. The function returns false
+//            if surface can not be created, true otherwise.
 //=======================================================================
-static Standard_Boolean checkBSplineSurface(
-  IGESToBRep_BasicSurface*               theSurface,
-  const Handle(IGESGeom_BSplineSurface)& theBSplineSurface,
-  TColStd_Array1OfReal&                  SUKnots,
-  TColStd_Array1OfReal&                  SVKnots,
-  const TColStd_Array2OfReal&            SWeights)
+static bool checkBSplineSurface(IGESToBRep_BasicSurface*                    theSurface,
+                                const occ::handle<IGESGeom_BSplineSurface>& theBSplineSurface,
+                                NCollection_Array1<double>&                 SUKnots,
+                                NCollection_Array1<double>&                 SVKnots,
+                                const NCollection_Array2<double>&           SWeights)
 {
   // check whether difference between values of weights more than 1000.
   if (!theBSplineSurface->IsPolynomial())
   {
-    Standard_Real aMinValue = SWeights.Value(SWeights.LowerRow(), SWeights.LowerCol());
-    Standard_Real aMaxValue = SWeights.Value(SWeights.LowerRow(), SWeights.LowerCol());
-    for (Standard_Integer i = SWeights.LowerRow(); i <= SWeights.UpperRow(); i++)
-      for (Standard_Integer j = SWeights.LowerCol(); j <= SWeights.UpperCol(); j++)
+    double aMinValue = SWeights.Value(SWeights.LowerRow(), SWeights.LowerCol());
+    double aMaxValue = SWeights.Value(SWeights.LowerRow(), SWeights.LowerCol());
+    for (int i = SWeights.LowerRow(); i <= SWeights.UpperRow(); i++)
+      for (int j = SWeights.LowerCol(); j <= SWeights.UpperCol(); j++)
       {
         if (SWeights.Value(i, j) < aMinValue)
           aMinValue = SWeights.Value(i, j);
@@ -103,23 +102,23 @@ static Standard_Boolean checkBSplineSurface(
       }
   }
 
-  Standard_Boolean aResult = Standard_True;
+  bool aResult = true;
 
   // check whether knots are in ascending order.
-  Standard_Boolean aWrongOrder = Standard_False;
-  Standard_Integer i;
+  bool aWrongOrder = false;
+  int  i;
   for (i = SUKnots.Lower(); (i < SUKnots.Upper()) && (!aWrongOrder); i++)
     if (SUKnots.Value(i + 1) < SUKnots.Value(i))
-      aWrongOrder = Standard_True;
+      aWrongOrder = true;
   for (i = SVKnots.Lower(); (i < SVKnots.Upper()) && (!aWrongOrder); i++)
     if (SVKnots.Value(i + 1) < SVKnots.Value(i))
-      aWrongOrder = Standard_True;
+      aWrongOrder = true;
 
   if (aWrongOrder)
   {
     Message_Msg msg1373("IGES_1373"); // FAIL - Knots are not in ascending order
     theSurface->SendFail(theBSplineSurface, msg1373);
-    aResult = Standard_False;
+    aResult = false;
   }
 
   // Fix coincided knots
@@ -137,7 +136,7 @@ static Standard_Boolean checkBSplineSurface(
 IGESToBRep_BasicSurface::IGESToBRep_BasicSurface()
     : IGESToBRep_CurveAndSurface()
 {
-  SetModeTransfer(Standard_False);
+  SetModeTransfer(false);
 }
 
 //=================================================================================================
@@ -149,12 +148,12 @@ IGESToBRep_BasicSurface::IGESToBRep_BasicSurface(const IGESToBRep_CurveAndSurfac
 
 //=================================================================================================
 
-IGESToBRep_BasicSurface::IGESToBRep_BasicSurface(const Standard_Real    eps,
-                                                 const Standard_Real    epsCoeff,
-                                                 const Standard_Real    epsGeom,
-                                                 const Standard_Boolean mode,
-                                                 const Standard_Boolean modeapprox,
-                                                 const Standard_Boolean optimized)
+IGESToBRep_BasicSurface::IGESToBRep_BasicSurface(const double eps,
+                                                 const double epsCoeff,
+                                                 const double epsGeom,
+                                                 const bool   mode,
+                                                 const bool   modeapprox,
+                                                 const bool   optimized)
     : IGESToBRep_CurveAndSurface(eps, epsCoeff, epsGeom, mode, modeapprox, optimized)
 {
 }
@@ -164,10 +163,10 @@ IGESToBRep_BasicSurface::IGESToBRep_BasicSurface(const Standard_Real    eps,
 // Purpose : Choice of the right transfer method
 //=============================================
 
-Handle(Geom_Surface) IGESToBRep_BasicSurface::TransferBasicSurface(
-  const Handle(IGESData_IGESEntity)& start)
+occ::handle<Geom_Surface> IGESToBRep_BasicSurface::TransferBasicSurface(
+  const occ::handle<IGESData_IGESEntity>& start)
 {
-  Handle(Geom_Surface) resurf;
+  occ::handle<Geom_Surface> resurf;
   if (start.IsNull())
   {
     Message_Msg msg1005("IGES_1005");
@@ -243,10 +242,10 @@ Handle(Geom_Surface) IGESToBRep_BasicSurface::TransferBasicSurface(
 
 //=================================================================================================
 
-Handle(Geom_Plane) IGESToBRep_BasicSurface::TransferPlaneSurface(
-  const Handle(IGESSolid_PlaneSurface)& start)
+occ::handle<Geom_Plane> IGESToBRep_BasicSurface::TransferPlaneSurface(
+  const occ::handle<IGESSolid_PlaneSurface>& start)
 {
-  Handle(Geom_Plane) res;
+  occ::handle<Geom_Plane> res;
   if (start.IsNull())
   {
     Message_Msg msg1005("IGES_1005");
@@ -254,10 +253,10 @@ Handle(Geom_Plane) IGESToBRep_BasicSurface::TransferPlaneSurface(
     return res;
   }
 
-  gp_Pln                     pln;
-  Standard_Boolean           Param = start->IsParametrised();
-  Handle(IGESGeom_Point)     Point = start->LocationPoint();
-  Handle(IGESGeom_Direction) Dir   = start->Normal();
+  gp_Pln                          pln;
+  bool                            Param = start->IsParametrised();
+  occ::handle<IGESGeom_Point>     Point = start->LocationPoint();
+  occ::handle<IGESGeom_Direction> Dir   = start->Normal();
 
   if (Point.IsNull())
   {
@@ -282,9 +281,9 @@ Handle(Geom_Plane) IGESToBRep_BasicSurface::TransferPlaneSurface(
   }
   else
   {
-    Handle(IGESGeom_Direction) refdir = start->ReferenceDir();
-    gp_Dir                     Dirgp  = gp_Dir(refdir->Value());
-    pln                               = gp_Pln(gp_Ax3(Pt, Normale, Dirgp));
+    occ::handle<IGESGeom_Direction> refdir = start->ReferenceDir();
+    gp_Dir                          Dirgp  = gp_Dir(refdir->Value());
+    pln                                    = gp_Pln(gp_Ax3(Pt, Normale, Dirgp));
   }
 
   return new Geom_Plane(pln);
@@ -292,10 +291,10 @@ Handle(Geom_Plane) IGESToBRep_BasicSurface::TransferPlaneSurface(
 
 //=================================================================================================
 
-Handle(Geom_CylindricalSurface) IGESToBRep_BasicSurface::TransferRigthCylindricalSurface(
-  const Handle(IGESSolid_CylindricalSurface)& start)
+occ::handle<Geom_CylindricalSurface> IGESToBRep_BasicSurface::TransferRigthCylindricalSurface(
+  const occ::handle<IGESSolid_CylindricalSurface>& start)
 {
-  Handle(Geom_CylindricalSurface) res;
+  occ::handle<Geom_CylindricalSurface> res;
   if (start.IsNull())
   {
     Message_Msg msg1005("IGES_1005");
@@ -303,10 +302,10 @@ Handle(Geom_CylindricalSurface) IGESToBRep_BasicSurface::TransferRigthCylindrica
     return res;
   }
 
-  Standard_Boolean           Param  = start->IsParametrised();
-  Handle(IGESGeom_Point)     Point  = start->LocationPoint();
-  Handle(IGESGeom_Direction) Axis   = start->Axis();
-  Standard_Real              radius = start->Radius();
+  bool                            Param  = start->IsParametrised();
+  occ::handle<IGESGeom_Point>     Point  = start->LocationPoint();
+  occ::handle<IGESGeom_Direction> Axis   = start->Axis();
+  double                          radius = start->Radius();
 
   if (Point.IsNull())
   {
@@ -334,9 +333,9 @@ Handle(Geom_CylindricalSurface) IGESToBRep_BasicSurface::TransferRigthCylindrica
     ax3 = gp_Ax3(Pt, ax);
   else
   {
-    Handle(IGESGeom_Direction) refdir = start->ReferenceDir();
-    gp_Dir                     Dir    = gp_Dir(refdir->Value());
-    gp_Dir                     vc     = Dir ^ ax;
+    occ::handle<IGESGeom_Direction> refdir = start->ReferenceDir();
+    gp_Dir                          Dir    = gp_Dir(refdir->Value());
+    gp_Dir                          vc     = Dir ^ ax;
     if (vc.XYZ().Modulus() < Precision::Confusion())
     {
 
@@ -350,10 +349,10 @@ Handle(Geom_CylindricalSurface) IGESToBRep_BasicSurface::TransferRigthCylindrica
 
 //=================================================================================================
 
-Handle(Geom_ConicalSurface) IGESToBRep_BasicSurface::TransferRigthConicalSurface(
-  const Handle(IGESSolid_ConicalSurface)& start)
+occ::handle<Geom_ConicalSurface> IGESToBRep_BasicSurface::TransferRigthConicalSurface(
+  const occ::handle<IGESSolid_ConicalSurface>& start)
 {
-  Handle(Geom_ConicalSurface) res;
+  occ::handle<Geom_ConicalSurface> res;
   if (start.IsNull())
   {
     Message_Msg msg1005("IGES_1005");
@@ -361,11 +360,11 @@ Handle(Geom_ConicalSurface) IGESToBRep_BasicSurface::TransferRigthConicalSurface
     return res;
   }
 
-  Standard_Boolean           Param  = start->IsParametrised();
-  Handle(IGESGeom_Point)     Point  = start->LocationPoint();
-  Handle(IGESGeom_Direction) Axis   = start->Axis();
-  Standard_Real              radius = start->Radius();
-  Standard_Real              angle  = start->SemiAngle() / 180. * M_PI;
+  bool                            Param  = start->IsParametrised();
+  occ::handle<IGESGeom_Point>     Point  = start->LocationPoint();
+  occ::handle<IGESGeom_Direction> Axis   = start->Axis();
+  double                          radius = start->Radius();
+  double                          angle  = start->SemiAngle() / 180. * M_PI;
 
   if (Point.IsNull())
   {
@@ -399,9 +398,9 @@ Handle(Geom_ConicalSurface) IGESToBRep_BasicSurface::TransferRigthConicalSurface
     ax3 = gp_Ax3(Pt, ax);
   else
   {
-    Handle(IGESGeom_Direction) refdir = start->ReferenceDir();
-    gp_Dir                     Dir    = gp_Dir(refdir->Value());
-    gp_Dir                     vc     = Dir ^ ax;
+    occ::handle<IGESGeom_Direction> refdir = start->ReferenceDir();
+    gp_Dir                          Dir    = gp_Dir(refdir->Value());
+    gp_Dir                          vc     = Dir ^ ax;
     if (vc.XYZ().Modulus() < Precision::Confusion())
     {
 
@@ -414,10 +413,10 @@ Handle(Geom_ConicalSurface) IGESToBRep_BasicSurface::TransferRigthConicalSurface
 
 //=================================================================================================
 
-Handle(Geom_SphericalSurface) IGESToBRep_BasicSurface::TransferSphericalSurface(
-  const Handle(IGESSolid_SphericalSurface)& start)
+occ::handle<Geom_SphericalSurface> IGESToBRep_BasicSurface::TransferSphericalSurface(
+  const occ::handle<IGESSolid_SphericalSurface>& start)
 {
-  Handle(Geom_SphericalSurface) res;
+  occ::handle<Geom_SphericalSurface> res;
   if (start.IsNull())
   {
     Message_Msg msg1005("IGES_1005");
@@ -425,10 +424,10 @@ Handle(Geom_SphericalSurface) IGESToBRep_BasicSurface::TransferSphericalSurface(
     return res;
   }
 
-  Standard_Boolean           Param  = start->IsParametrised();
-  Handle(IGESGeom_Point)     Point  = start->Center();
-  Handle(IGESGeom_Direction) Axis   = start->Axis();
-  Standard_Real              radius = start->Radius();
+  bool                            Param  = start->IsParametrised();
+  occ::handle<IGESGeom_Point>     Point  = start->Center();
+  occ::handle<IGESGeom_Direction> Axis   = start->Axis();
+  double                          radius = start->Radius();
 
   if (Point.IsNull())
   {
@@ -457,9 +456,9 @@ Handle(Geom_SphericalSurface) IGESToBRep_BasicSurface::TransferSphericalSurface(
     ax3 = gp_Ax3(Pt, ax);
   else
   {
-    Handle(IGESGeom_Direction) refdir = start->ReferenceDir();
-    gp_Dir                     Dir    = gp_Dir(refdir->Value());
-    gp_Dir                     vc     = Dir ^ ax;
+    occ::handle<IGESGeom_Direction> refdir = start->ReferenceDir();
+    gp_Dir                          Dir    = gp_Dir(refdir->Value());
+    gp_Dir                          vc     = Dir ^ ax;
     if (vc.XYZ().Modulus() < Precision::Confusion())
     {
 
@@ -472,10 +471,10 @@ Handle(Geom_SphericalSurface) IGESToBRep_BasicSurface::TransferSphericalSurface(
 
 //=================================================================================================
 
-Handle(Geom_ToroidalSurface) IGESToBRep_BasicSurface::TransferToroidalSurface(
-  const Handle(IGESSolid_ToroidalSurface)& start)
+occ::handle<Geom_ToroidalSurface> IGESToBRep_BasicSurface::TransferToroidalSurface(
+  const occ::handle<IGESSolid_ToroidalSurface>& start)
 {
-  Handle(Geom_ToroidalSurface) res;
+  occ::handle<Geom_ToroidalSurface> res;
   if (start.IsNull())
   {
     Message_Msg msg1005("IGES_1005");
@@ -483,11 +482,11 @@ Handle(Geom_ToroidalSurface) IGESToBRep_BasicSurface::TransferToroidalSurface(
     return res;
   }
 
-  Standard_Boolean           Param = start->IsParametrised();
-  Handle(IGESGeom_Point)     Point = start->Center();
-  Handle(IGESGeom_Direction) Axis  = start->Axis();
-  Standard_Real              major = start->MajorRadius();
-  Standard_Real              minor = start->MinorRadius();
+  bool                            Param = start->IsParametrised();
+  occ::handle<IGESGeom_Point>     Point = start->Center();
+  occ::handle<IGESGeom_Direction> Axis  = start->Axis();
+  double                          major = start->MajorRadius();
+  double                          minor = start->MinorRadius();
 
   if (Point.IsNull())
   {
@@ -516,9 +515,9 @@ Handle(Geom_ToroidalSurface) IGESToBRep_BasicSurface::TransferToroidalSurface(
     ax3 = gp_Ax3(Pt, ax);
   else
   {
-    Handle(IGESGeom_Direction) refdir = start->ReferenceDir();
-    gp_Dir                     Dir    = gp_Dir(refdir->Value());
-    gp_Dir                     vc     = Dir ^ ax;
+    occ::handle<IGESGeom_Direction> refdir = start->ReferenceDir();
+    gp_Dir                          Dir    = gp_Dir(refdir->Value());
+    gp_Dir                          vc     = Dir ^ ax;
     if (vc.XYZ().Modulus() < Precision::Confusion())
     {
 
@@ -531,10 +530,10 @@ Handle(Geom_ToroidalSurface) IGESToBRep_BasicSurface::TransferToroidalSurface(
 
 //=================================================================================================
 
-Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferSplineSurface(
-  const Handle(IGESGeom_SplineSurface)& start)
+occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferSplineSurface(
+  const occ::handle<IGESGeom_SplineSurface>& start)
 {
-  Handle(Geom_BSplineSurface) resconv;
+  occ::handle<Geom_BSplineSurface> resconv;
   if (start.IsNull())
   {
     Message_Msg msg1005("IGES_1005");
@@ -542,10 +541,10 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferSplineSurface(
     return resconv;
   }
 
-  Standard_Real epscoef = GetEpsCoeff();
-  Standard_Real epsgeom = GetEpsGeom();
+  double epscoef = GetEpsCoeff();
+  double epsgeom = GetEpsGeom();
 
-  Standard_Integer result = IGESConvGeom::SplineSurfaceFromIGES(start, epscoef, epsgeom, resconv);
+  int result = IGESConvGeom::SplineSurfaceFromIGES(start, epscoef, epsgeom, resconv);
 
   switch (result)
   {
@@ -579,10 +578,10 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferSplineSurface(
 
 //=================================================================================================
 
-Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
-  const Handle(IGESGeom_BSplineSurface)& start)
+occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface(
+  const occ::handle<IGESGeom_BSplineSurface>& start)
 {
-  Handle(Geom_BSplineSurface) res;
+  occ::handle<Geom_BSplineSurface> res;
   if (start.IsNull())
   {
     Message_Msg msg1005("IGES_1005");
@@ -590,8 +589,8 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     return res;
   }
 
-  Standard_Integer DegreeU = start->DegreeU();
-  Standard_Integer DegreeV = start->DegreeV();
+  int DegreeU = start->DegreeU();
+  int DegreeV = start->DegreeV();
   if ((DegreeU <= 0) || (DegreeU > Geom_BSplineSurface::MaxDegree()) || (DegreeV <= 0)
       || (DegreeV > Geom_BSplineSurface::MaxDegree()))
   {
@@ -604,8 +603,8 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   //  Filling poles array :
   //  =====================
 
-  Standard_Integer NbPolesU    = start->NbPolesU();
-  Standard_Integer newNbPolesU = NbPolesU;
+  int NbPolesU    = start->NbPolesU();
+  int newNbPolesU = NbPolesU;
   if (NbPolesU < 2)
   {
     Message_Msg msg1195("IGES_1195");
@@ -614,8 +613,8 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     return res;
   }
 
-  Standard_Integer NbPolesV    = start->NbPolesV();
-  Standard_Integer newNbPolesV = NbPolesV;
+  int NbPolesV    = start->NbPolesV();
+  int newNbPolesV = NbPolesV;
   if (NbPolesV < 2)
   {
     Message_Msg msg1195("IGES_1195");
@@ -623,10 +622,10 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     return res;
   }
 
-  TColgp_Array2OfPnt Pole(1, NbPolesU, 1, NbPolesV);
-  Standard_Integer   UIndex = Pole.LowerRow();
-  Standard_Integer   VIndex = Pole.LowerCol();
-  Standard_Integer   i, j; // szv#4:S4163:12Mar99 k unused
+  NCollection_Array2<gp_Pnt> Pole(1, NbPolesU, 1, NbPolesV);
+  int                        UIndex = Pole.LowerRow();
+  int                        VIndex = Pole.LowerCol();
+  int                        i, j; // szv#4:S4163:12Mar99 k unused
 
   if (!GetModeTransfer() && start->HasTransf())
     for (i = 0; i <= start->UpperIndexU(); i++)
@@ -648,9 +647,9 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   //  KNOTS & MULTIPLICITIES for U :
   //  ==============================
 
-  Standard_Integer        NbUKnots = start->NbKnotsU();
-  TColStd_Array1OfReal    TempUKnot(1, NbUKnots);
-  TColStd_Array1OfInteger TempUMult(1, NbUKnots);
+  int                        NbUKnots = start->NbKnotsU();
+  NCollection_Array1<double> TempUKnot(1, NbUKnots);
+  NCollection_Array1<int>    TempUMult(1, NbUKnots);
   TempUMult.Init(1);
 
   UIndex = TempUKnot.Lower();
@@ -664,8 +663,8 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   for (i = 1 - DegreeU; i < NbUKnots - DegreeU; i++)
   {
 
-    Standard_Real UKnot1 = start->KnotU(i);
-    Standard_Real UKnot2 = start->KnotU(i - 1);
+    double UKnot1 = start->KnotU(i);
+    double UKnot2 = start->KnotU(i - 1);
 
     if (std::abs(UKnot1 - UKnot2) <= Epsilon(UKnot2))
       TempUMult.SetValue(UIndex, TempUMult.Value(UIndex) + 1);
@@ -677,18 +676,18 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   //  filled :
   //  =======================================================================
 
-  TColStd_Array1OfReal    UKnot(1, UIndex);
-  TColStd_Array1OfInteger UMult(1, UIndex);
+  NCollection_Array1<double> UKnot(1, UIndex);
+  NCollection_Array1<int>    UMult(1, UIndex);
 
-  Standard_Integer SumOfUMult = 0;
+  int SumOfUMult = 0;
 
-  TColStd_SequenceOfInteger SeqIndexU;
-  Standard_Integer          DelIndexU;
-  Standard_Integer          OldSumOfUMult = 0;
+  NCollection_Sequence<int> SeqIndexU;
+  int                       DelIndexU;
+  int                       OldSumOfUMult = 0;
   for (i = 1; i <= UIndex; i++)
   { //: k5 abv 25 Dec 98: cycle modified
-    Standard_Integer aMult   = TempUMult.Value(i);
-    Standard_Integer maxMult = (i == 1 || i == UIndex ? DegreeU + 1 : DegreeU);
+    int aMult   = TempUMult.Value(i);
+    int maxMult = (i == 1 || i == UIndex ? DegreeU + 1 : DegreeU);
     if (aMult > maxMult)
     {
       Message_Msg msg1200("IGES_1200");
@@ -720,9 +719,9 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   //  KNOTS & MULTIPLICITIES for V :
   //  ==============================
 
-  Standard_Integer        NbVKnots = start->NbKnotsV();
-  TColStd_Array1OfReal    TempVKnot(1, NbVKnots);
-  TColStd_Array1OfInteger TempVMult(1, NbVKnots);
+  int                        NbVKnots = start->NbKnotsV();
+  NCollection_Array1<double> TempVKnot(1, NbVKnots);
+  NCollection_Array1<int>    TempVMult(1, NbVKnots);
   TempVMult.Init(1);
 
   VIndex = TempVKnot.Lower();
@@ -736,8 +735,8 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   for (i = 1 - DegreeV; i < NbVKnots - DegreeV; i++)
   {
 
-    Standard_Real VKnot1 = start->KnotV(i);
-    Standard_Real VKnot2 = start->KnotV(i - 1);
+    double VKnot1 = start->KnotV(i);
+    double VKnot2 = start->KnotV(i - 1);
 
     if (std::abs(VKnot1 - VKnot2) <= Epsilon(VKnot2))
       TempVMult.SetValue(VIndex, TempVMult.Value(VIndex) + 1);
@@ -749,18 +748,18 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   //  filled :
   //  =======================================================================
 
-  TColStd_Array1OfReal    VKnot(1, VIndex);
-  TColStd_Array1OfInteger VMult(1, VIndex);
+  NCollection_Array1<double> VKnot(1, VIndex);
+  NCollection_Array1<int>    VMult(1, VIndex);
 
-  Standard_Integer SumOfVMult = 0;
+  int SumOfVMult = 0;
 
-  TColStd_SequenceOfInteger SeqIndexV;
-  Standard_Integer          DelIndexV;
-  Standard_Integer          OldSumOfVMult = 0;
+  NCollection_Sequence<int> SeqIndexV;
+  int                       DelIndexV;
+  int                       OldSumOfVMult = 0;
   for (i = 1; i <= VIndex; i++)
   { //: k5 abv 25 Dec 98: cycle modified
-    Standard_Integer aMult   = TempVMult.Value(i);
-    Standard_Integer maxMult = (i == 1 || i == VIndex ? DegreeV + 1 : DegreeV);
+    int aMult   = TempVMult.Value(i);
+    int maxMult = (i == 1 || i == VIndex ? DegreeV + 1 : DegreeV);
     if (aMult > maxMult)
     {
       Message_Msg msg1200("IGES_1200"); // #61 rln 05.01.99
@@ -791,9 +790,9 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   }
 
   // Update of the poles array
-  TColgp_Array2OfPnt        Poles(1, newNbPolesU, 1, newNbPolesV);
-  TColStd_SequenceOfInteger PoleUInd;
-  TColStd_SequenceOfInteger PoleVInd;
+  NCollection_Array2<gp_Pnt> Poles(1, newNbPolesU, 1, newNbPolesV);
+  NCollection_Sequence<int>  PoleUInd;
+  NCollection_Sequence<int>  PoleVInd;
   for (i = 1; i <= NbPolesU; i++)
     PoleUInd.Append(i);
   for (i = 1; i <= NbPolesV; i++)
@@ -805,8 +804,8 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   {
     if (newNbPolesU < NbPolesU)
     {
-      Standard_Integer Offset = 0;
-      for (Standard_Integer itab = 1; itab <= SeqIndexU.Length(); itab++)
+      int Offset = 0;
+      for (int itab = 1; itab <= SeqIndexU.Length(); itab++)
       {
         DelIndexU = SeqIndexU.Value(itab) - Offset;
         PoleUInd.Remove(DelIndexU);
@@ -815,16 +814,16 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     }
     if (newNbPolesV < NbPolesV)
     {
-      Standard_Integer Offset = 0;
-      for (Standard_Integer itab = 1; itab <= SeqIndexV.Length(); itab++)
+      int Offset = 0;
+      for (int itab = 1; itab <= SeqIndexV.Length(); itab++)
       {
         DelIndexV = SeqIndexV.Value(itab) - Offset;
         PoleVInd.Remove(DelIndexV);
         Offset++;
       }
     }
-    Standard_Integer nbUseq = PoleUInd.Length();
-    Standard_Integer nbVseq = PoleVInd.Length();
+    int nbUseq = PoleUInd.Length();
+    int nbVseq = PoleVInd.Length();
     if ((nbUseq == newNbPolesU) && (nbVseq == newNbPolesV))
     {
       for (i = 1; i <= newNbPolesU; i++)
@@ -877,7 +876,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   if (start->IsPolynomial())
   {
     // sln 29.12.2001 OCC90 : If surface can not be created do nothing
-    TColStd_Array2OfReal Weight(1, 1, 1, 1);
+    NCollection_Array2<double> Weight(1, 1, 1, 1);
     if (!checkBSplineSurface(this, start, UKnot, VKnot, Weight))
       return res;
     res = new Geom_BSplineSurface(Poles, UKnot, VKnot, UMult, VMult, DegreeU, DegreeV);
@@ -885,11 +884,11 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
 
   else
   {
-    TColStd_Array2OfReal PoleWeight(1, NbPolesU, 1, NbPolesV);
-    Standard_Boolean     polynomial      = Standard_True;
-    Standard_Real        WeightReference = start->Weight(0, 0);
-    Standard_Integer     WeightRow       = PoleWeight.LowerRow();
-    Standard_Integer     WeightCol       = PoleWeight.LowerCol();
+    NCollection_Array2<double> PoleWeight(1, NbPolesU, 1, NbPolesV);
+    bool                       polynomial      = true;
+    double                     WeightReference = start->Weight(0, 0);
+    int                        WeightRow       = PoleWeight.LowerRow();
+    int                        WeightCol       = PoleWeight.LowerCol();
 
     for (i = 0; i <= start->UpperIndexU(); i++)
     {
@@ -898,7 +897,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
         polynomial = (std::abs(start->Weight(i, j) - WeightReference) <= Epsilon(WeightReference))
                      && polynomial;
         //: 39 by abv 15.12.97
-        Standard_Real weight = start->Weight(i, j);
+        double weight = start->Weight(i, j);
         if (weight < Precision::PConfusion())
         {
           Message_Msg msg1215("IGES_1215");
@@ -913,18 +912,18 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     }
     if (polynomial)
     {
-      Message_Msg            msg1220("IGES_1220");
-      const Standard_CString surface("surface");
+      Message_Msg msg1220("IGES_1220");
+      const char* surface("surface");
       msg1220.Arg(surface);
       SendWarning(start, msg1220);
     }
     // Update of the Weight array during multiplicity correction
-    TColStd_Array2OfReal Weight(1, newNbPolesU, 1, newNbPolesV);
+    NCollection_Array2<double> Weight(1, newNbPolesU, 1, newNbPolesV);
     UIndex = Weight.LowerRow();
     VIndex = Weight.LowerCol();
     if ((newNbPolesU < NbPolesU) || (newNbPolesV < NbPolesV))
     {
-      // Standard_Integer indj = 1; //szv#4:S4163:12Mar99 unused
+      // int indj = 1; //szv#4:S4163:12Mar99 unused
       for (i = 1; i <= newNbPolesU; i++)
       {
         for (j = 1; j <= newNbPolesV; j++)
@@ -953,18 +952,18 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   //  Checking C2 and C1 continuity :
   //  ===============================
 
-  Standard_Integer icont = GetContinuity();
-  // Standard_Boolean isC1 = Standard_True, isC2 = Standard_True; //szv#4:S4163:12Mar99 not needed
+  int icont = GetContinuity();
+  // bool isC1 = true, isC2 = true; //szv#4:S4163:12Mar99 not needed
 
-  i                           = res->LastUKnotIndex();
-  Standard_Integer FirstIndex = res->FirstUKnotIndex();
+  i              = res->LastUKnotIndex();
+  int FirstIndex = res->FirstUKnotIndex();
   while (--i >= FirstIndex + 1)
   {
     if (icont >= 2)
     {
       if (!res->RemoveUKnot(i, DegreeU - 2, GetEpsGeom()))
       {
-        // isC2 = Standard_False; //szv#4:S4163:12Mar99 not needed
+        // isC2 = false; //szv#4:S4163:12Mar99 not needed
         res->RemoveUKnot(i, DegreeU - 1, GetEpsGeom()); // szv#4:S4163:12Mar99 `isC1=` not needed
       }
       else
@@ -980,7 +979,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
     {
       if (!res->RemoveVKnot(i, DegreeV - 2, GetEpsGeom()))
       {
-        // isC2 = Standard_False; //szv#4:S4163:12Mar99 not needed
+        // isC2 = false; //szv#4:S4163:12Mar99 not needed
         res->RemoveVKnot(i, DegreeV - 1, GetEpsGeom()); // szv#4:S4163:12Mar99 `isC1=` not needed
       }
       else
@@ -991,13 +990,13 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
   //: h7 abv 14 Jul 98: ims010.igs 2519: closed periodic surface should be forced
   // else some wires which can lie over the seam will be incorrect
   //: l1 abv 6 Jan 99: USA60022 243: force periodicity on any closed surface
-  Standard_Boolean isUPeriodic = (start->IsClosedU() && (start->IsPeriodicU() || res->IsUClosed()));
-  Standard_Boolean isVPeriodic = (start->IsClosedV() && (start->IsPeriodicV() || res->IsVClosed()));
+  bool isUPeriodic = (start->IsClosedU() && (start->IsPeriodicU() || res->IsUClosed()));
+  bool isVPeriodic = (start->IsClosedV() && (start->IsPeriodicV() || res->IsVClosed()));
   //: k0 abv 16 Dec 98: use ShapeCustom
   if (isUPeriodic || isVPeriodic)
   {
-    Handle(Geom_BSplineSurface) periodicSurf =
-      Handle(Geom_BSplineSurface)::DownCast(ShapeAlgo::AlgoContainer()->ConvertToPeriodic(res));
+    occ::handle<Geom_BSplineSurface> periodicSurf =
+      occ::down_cast<Geom_BSplineSurface>(ShapeAlgo::AlgoContainer()->ConvertToPeriodic(res));
     if (!periodicSurf.IsNull())
     { //: p6 abv 26 Feb 99: && periodicSurf != res ) {
       // #75 rln 11.03.99: using message mechanism
@@ -1014,13 +1013,13 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
 // szv#4:S4163:12Mar99 function never referenced
 /*
 static void DeletePoleRow
-  (const TColgp_Array2OfPnt& Poles,
-   const Standard_Integer    Index,
-         TColgp_Array2OfPnt& NewPoles)
+  (const NCollection_Array2<gp_Pnt>& Poles,
+   const int    Index,
+         NCollection_Array2<gp_Pnt>& NewPoles)
 {
-  Standard_Integer Offset = 0;
-  Standard_Integer ColIndex;
-  Standard_Integer RowIndex = NewPoles.LowerRow();
+  int Offset = 0;
+  int ColIndex;
+  int RowIndex = NewPoles.LowerRow();
   while (RowIndex <= NewPoles.UpperRow()) {
     ColIndex = NewPoles.LowerCol();
     if (RowIndex == Index)  Offset = 1;
@@ -1038,13 +1037,13 @@ static void DeletePoleRow
 // szv#4:S4163:12Mar99 function never referenced
 /*
 static void DeletePoleCol
-  (const TColgp_Array2OfPnt& Poles,
-   const Standard_Integer    Index,
-         TColgp_Array2OfPnt& NewPoles)
+  (const NCollection_Array2<gp_Pnt>& Poles,
+   const int    Index,
+         NCollection_Array2<gp_Pnt>& NewPoles)
 {
-  Standard_Integer Offset = 0;
-  Standard_Integer RowIndex;
-  Standard_Integer ColIndex = NewPoles.LowerCol();
+  int Offset = 0;
+  int RowIndex;
+  int ColIndex = NewPoles.LowerCol();
   while (ColIndex <= NewPoles.UpperCol()) {
     RowIndex = NewPoles.LowerRow();
     if (ColIndex == Index)  Offset = 1;

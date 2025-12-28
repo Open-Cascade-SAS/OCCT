@@ -35,26 +35,24 @@ public:
   Standard_EXPORT Extrema_GlobOptFuncConicS(const Adaptor3d_Surface* S);
 
   Standard_EXPORT Extrema_GlobOptFuncConicS(const Adaptor3d_Surface* S,
-                                            const Standard_Real      theUf,
-                                            const Standard_Real      theUl,
-                                            const Standard_Real      theVf,
-                                            const Standard_Real      theVl);
+                                            const double             theUf,
+                                            const double             theUl,
+                                            const double             theVf,
+                                            const double             theVl);
 
-  Standard_EXPORT void LoadConic(const Adaptor3d_Curve* S,
-                                 const Standard_Real    theTf,
-                                 const Standard_Real    theTl);
+  Standard_EXPORT void LoadConic(const Adaptor3d_Curve* S, const double theTf, const double theTl);
 
-  Standard_EXPORT virtual Standard_Integer NbVariables() const;
+  Standard_EXPORT virtual int NbVariables() const;
 
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF);
+  Standard_EXPORT virtual bool Value(const math_Vector& theX, double& theF);
 
   //! Parameter of conic for point on surface defined by theUV
-  Standard_EXPORT Standard_Real ConicParameter(const math_Vector& theUV) const;
+  Standard_EXPORT double ConicParameter(const math_Vector& theUV) const;
 
 private:
-  Standard_Boolean checkInputData(const math_Vector& X, Standard_Real& su, Standard_Real& sv);
+  bool checkInputData(const math_Vector& X, double& su, double& sv);
 
-  void value(Standard_Real su, Standard_Real sv, Standard_Real& F);
+  void value(double su, double sv, double& F);
 
   const Adaptor3d_Curve*   myC;
   const Adaptor3d_Surface* myS;
@@ -67,12 +65,12 @@ private:
   gp_Pnt                   myCPf;
   gp_Pnt                   myCPl;
   // Boundaries
-  Standard_Real myTf;
-  Standard_Real myTl;
-  Standard_Real myUf;
-  Standard_Real myUl;
-  Standard_Real myVf;
-  Standard_Real myVl;
+  double myTf;
+  double myTl;
+  double myUf;
+  double myUl;
+  double myVf;
+  double myVl;
 };
 
 #endif

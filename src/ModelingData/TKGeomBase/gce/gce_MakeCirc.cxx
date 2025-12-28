@@ -49,7 +49,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
   //=========================================================================
   //   Traitement.                                                          +
   //=========================================================================
-  Standard_Real dist1, dist2, dist3, aResolution;
+  double dist1, dist2, dist3, aResolution;
   //
   aResolution = gp::Resolution();
   //
@@ -70,7 +70,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
     return;
   }
   //
-  Standard_Real x1, y1, z1, x2, y2, z2, x3, y3, z3;
+  double x1, y1, z1, x2, y2, z2, x3, y3, z3;
   //
   P1.Coord(x1, y1, z1);
   P2.Coord(x2, y2, z2);
@@ -100,8 +100,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
   dir = VDir2.Crossed(Dir3);
   gp_Lin L2(gp_Pnt((P3.XYZ() + P2.XYZ()) / 2.), dir);
 
-  constexpr Standard_Real Tol = Precision::PConfusion();
-  Extrema_ExtElC          distmin(L1, L2, Tol);
+  constexpr double Tol = Precision::PConfusion();
+  Extrema_ExtElC   distmin(L1, L2, Tol);
 
   if (!distmin.IsDone())
   {
@@ -109,7 +109,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
   }
   else
   {
-    Standard_Integer nbext;
+    int nbext;
     //
     //
     if (distmin.IsParallel())
@@ -126,10 +126,10 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
     }
     else
     {
-      Standard_Real    TheDist = RealLast();
-      gp_Pnt           pInt, pon1, pon2;
-      Standard_Integer i = 1;
-      Extrema_POnCurv  Pon1, Pon2;
+      double          TheDist = RealLast();
+      gp_Pnt          pInt, pon1, pon2;
+      int             i = 1;
+      Extrema_POnCurv Pon1, Pon2;
       while (i <= nbext)
       {
         if (distmin.SquareDistance(i) < TheDist)
@@ -169,7 +169,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
 
 //=================================================================================================
 
-gce_MakeCirc::gce_MakeCirc(const gp_Ax2& A2, const Standard_Real Radius)
+gce_MakeCirc::gce_MakeCirc(const gp_Ax2& A2, const double Radius)
 {
   if (Radius < 0.)
   {
@@ -186,7 +186,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Ax2& A2, const Standard_Real Radius)
 //   Creation d un gp_Circ par son centre <Center>, son plan <Plane> et   +
 //   son rayon <Radius>.                                                  +
 //=========================================================================
-gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pln& Plane, const Standard_Real Radius)
+gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pln& Plane, const double Radius)
 {
   gce_MakeCirc C = gce_MakeCirc(Center, Plane.Position().Direction(), Radius);
   TheCirc        = C.Value();
@@ -198,7 +198,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pln& Plane, const Stan
 // purpose  : Creation d un gp_Circ par son centre <Center>,
 // sa normale <Norm> et son rayon <Radius>.
 //=======================================================================
-gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const Standard_Real Radius)
+gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const double Radius)
 {
   if (Radius < 0.)
   {
@@ -206,13 +206,13 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const Stand
   }
   else
   {
-    Standard_Real A    = Norm.X();
-    Standard_Real B    = Norm.Y();
-    Standard_Real C    = Norm.Z();
-    Standard_Real Aabs = std::abs(A);
-    Standard_Real Babs = std::abs(B);
-    Standard_Real Cabs = std::abs(C);
-    gp_Ax2        Pos;
+    double A    = Norm.X();
+    double B    = Norm.Y();
+    double C    = Norm.Z();
+    double Aabs = std::abs(A);
+    double Babs = std::abs(B);
+    double Cabs = std::abs(C);
+    gp_Ax2 Pos;
 
     //=========================================================================
     //  pour determiner l'axe X :                                             +
@@ -264,7 +264,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const Stand
 // purpose  :  Creation d un gp_Circ par son centre <Center>,
 // sa normale <Ptaxis> et  son rayon <Radius>
 //=======================================================================
-gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const Standard_Real Radius)
+gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const double Radius)
 {
   if (Radius < 0.)
   {
@@ -278,13 +278,13 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const Sta
     }
     else
     {
-      Standard_Real A    = Ptaxis.X() - Center.X();
-      Standard_Real B    = Ptaxis.Y() - Center.Y();
-      Standard_Real C    = Ptaxis.Z() - Center.Z();
-      Standard_Real Aabs = std::abs(A);
-      Standard_Real Babs = std::abs(B);
-      Standard_Real Cabs = std::abs(C);
-      gp_Ax2        Pos;
+      double A    = Ptaxis.X() - Center.X();
+      double B    = Ptaxis.Y() - Center.Y();
+      double C    = Ptaxis.Z() - Center.Z();
+      double Aabs = std::abs(A);
+      double Babs = std::abs(B);
+      double Cabs = std::abs(C);
+      gp_Ax2 Pos;
 
       //=========================================================================
       //  pour determiner l'axe X :                                             +
@@ -337,7 +337,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const Sta
 // function : gce_MakeCirc
 // purpose  : Creation d un gp_Circ par son axe <Axis> et son rayon <Radius>.
 //=======================================================================
-gce_MakeCirc::gce_MakeCirc(const gp_Ax1& Axis, const Standard_Real Radius)
+gce_MakeCirc::gce_MakeCirc(const gp_Ax1& Axis, const double Radius)
 {
   if (Radius < 0.)
   {
@@ -345,15 +345,15 @@ gce_MakeCirc::gce_MakeCirc(const gp_Ax1& Axis, const Standard_Real Radius)
   }
   else
   {
-    gp_Dir        Norm(Axis.Direction());
-    gp_Pnt        Center(Axis.Location());
-    Standard_Real A    = Norm.X();
-    Standard_Real B    = Norm.Y();
-    Standard_Real C    = Norm.Z();
-    Standard_Real Aabs = std::abs(A);
-    Standard_Real Babs = std::abs(B);
-    Standard_Real Cabs = std::abs(C);
-    gp_Ax2        Pos;
+    gp_Dir Norm(Axis.Direction());
+    gp_Pnt Center(Axis.Location());
+    double A    = Norm.X();
+    double B    = Norm.Y();
+    double C    = Norm.Z();
+    double Aabs = std::abs(A);
+    double Babs = std::abs(B);
+    double Cabs = std::abs(C);
+    gp_Ax2 Pos;
 
     //=========================================================================
     //  pour determiner l'axe X :                                             +
@@ -405,9 +405,9 @@ gce_MakeCirc::gce_MakeCirc(const gp_Ax1& Axis, const Standard_Real Radius)
 // purpose  : Creation d un gp_Circ concentrique a un autre gp_circ a une distance +
 //   donnee.
 //=======================================================================
-gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ, const Standard_Real Dist)
+gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ, const double Dist)
 {
-  Standard_Real Rad = Circ.Radius() + Dist;
+  double Rad = Circ.Radius() + Dist;
   if (Rad < 0.)
   {
     TheError = gce_NegativeRadius;
@@ -426,9 +426,9 @@ gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ, const Standard_Real Dist)
 //=======================================================================
 gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ, const gp_Pnt& P)
 {
-  Standard_Real Rad = gp_Lin(Circ.Axis()).Distance(P);
-  TheCirc           = gp_Circ(Circ.Position(), Rad);
-  TheError          = gce_Done;
+  double Rad = gp_Lin(Circ.Axis()).Distance(P);
+  TheCirc    = gp_Circ(Circ.Position(), Rad);
+  TheError   = gce_Done;
 }
 
 //=================================================================================================

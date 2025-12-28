@@ -41,30 +41,30 @@
 
 //=================================================================================================
 
-Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
-                                         const Standard_Real         Offset,
-                                         BRepOffset_Status&          theStatus,
-                                         Standard_Boolean            allowC0)
+occ::handle<Geom_Surface> BRepOffset::Surface(const occ::handle<Geom_Surface>& Surface,
+                                              const double                     Offset,
+                                              BRepOffset_Status&               theStatus,
+                                              bool                             allowC0)
 {
-  constexpr Standard_Real Tol = Precision::Confusion();
+  constexpr double Tol = Precision::Confusion();
 
   theStatus = BRepOffset_Good;
-  Handle(Geom_Surface) Result;
+  occ::handle<Geom_Surface> Result;
 
-  Handle(Standard_Type) TheType = Surface->DynamicType();
+  occ::handle<Standard_Type> TheType = Surface->DynamicType();
 
   if (TheType == STANDARD_TYPE(Geom_Plane))
   {
-    Handle(Geom_Plane) P = Handle(Geom_Plane)::DownCast(Surface);
-    gp_Vec             T = P->Position().XDirection() ^ P->Position().YDirection();
+    occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(Surface);
+    gp_Vec                  T = P->Position().XDirection() ^ P->Position().YDirection();
     T *= Offset;
-    Result = Handle(Geom_Plane)::DownCast(P->Translated(T));
+    Result = occ::down_cast<Geom_Plane>(P->Translated(T));
   }
   else if (TheType == STANDARD_TYPE(Geom_CylindricalSurface))
   {
-    Handle(Geom_CylindricalSurface) C      = Handle(Geom_CylindricalSurface)::DownCast(Surface);
-    Standard_Real                   Radius = C->Radius();
-    gp_Ax3                          Axis   = C->Position();
+    occ::handle<Geom_CylindricalSurface> C      = occ::down_cast<Geom_CylindricalSurface>(Surface);
+    double                               Radius = C->Radius();
+    gp_Ax3                               Axis   = C->Position();
     if (Axis.Direct())
       Radius += Offset;
     else
@@ -86,10 +86,10 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
   }
   else if (TheType == STANDARD_TYPE(Geom_ConicalSurface))
   {
-    Handle(Geom_ConicalSurface) C      = Handle(Geom_ConicalSurface)::DownCast(Surface);
-    Standard_Real               Alpha  = C->SemiAngle();
-    Standard_Real               Radius = C->RefRadius() + Offset * std::cos(Alpha);
-    gp_Ax3                      Axis   = C->Position();
+    occ::handle<Geom_ConicalSurface> C      = occ::down_cast<Geom_ConicalSurface>(Surface);
+    double                           Alpha  = C->SemiAngle();
+    double                           Radius = C->RefRadius() + Offset * std::cos(Alpha);
+    gp_Ax3                           Axis   = C->Position();
     if (Radius >= 0.)
     {
       gp_Vec Z(Axis.Direction());
@@ -109,9 +109,9 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
   }
   else if (TheType == STANDARD_TYPE(Geom_SphericalSurface))
   {
-    Handle(Geom_SphericalSurface) S      = Handle(Geom_SphericalSurface)::DownCast(Surface);
-    Standard_Real                 Radius = S->Radius();
-    gp_Ax3                        Axis   = S->Position();
+    occ::handle<Geom_SphericalSurface> S      = occ::down_cast<Geom_SphericalSurface>(Surface);
+    double                             Radius = S->Radius();
+    gp_Ax3                             Axis   = S->Position();
     if (Axis.Direct())
       Radius += Offset;
     else
@@ -134,10 +134,10 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
   }
   else if (TheType == STANDARD_TYPE(Geom_ToroidalSurface))
   {
-    Handle(Geom_ToroidalSurface) S           = Handle(Geom_ToroidalSurface)::DownCast(Surface);
-    Standard_Real                MajorRadius = S->MajorRadius();
-    Standard_Real                MinorRadius = S->MinorRadius();
-    gp_Ax3                       Axis        = S->Position();
+    occ::handle<Geom_ToroidalSurface> S           = occ::down_cast<Geom_ToroidalSurface>(Surface);
+    double                            MajorRadius = S->MajorRadius();
+    double                            MinorRadius = S->MinorRadius();
+    gp_Ax3                            Axis        = S->Position();
     if (MinorRadius < MajorRadius)
     { // A FINIR
       if (Axis.Direct())
@@ -169,12 +169,13 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
   }
   else if (TheType == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    Handle(Geom_RectangularTrimmedSurface) S =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(Surface);
-    Standard_Real U1, U2, V1, V2;
+    occ::handle<Geom_RectangularTrimmedSurface> S =
+      occ::down_cast<Geom_RectangularTrimmedSurface>(Surface);
+    double U1, U2, V1, V2;
     S->Bounds(U1, U2, V1, V2);
-    Handle(Geom_Surface) Off = BRepOffset::Surface(S->BasisSurface(), Offset, theStatus, allowC0);
-    Result                   = new Geom_RectangularTrimmedSurface(Off, U1, U2, V1, V2);
+    occ::handle<Geom_Surface> Off =
+      BRepOffset::Surface(S->BasisSurface(), Offset, theStatus, allowC0);
+    Result = new Geom_RectangularTrimmedSurface(Off, U1, U2, V1, V2);
   }
   else if (TheType == STANDARD_TYPE(Geom_OffsetSurface))
   {
@@ -190,12 +191,13 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
 
 //=================================================================================================
 
-Handle(Geom_Surface) BRepOffset::CollapseSingularities(const Handle(Geom_Surface)& theSurface,
-                                                       const TopoDS_Face&          theFace,
-                                                       Standard_Real               thePrecision)
+occ::handle<Geom_Surface> BRepOffset::CollapseSingularities(
+  const occ::handle<Geom_Surface>& theSurface,
+  const TopoDS_Face&               theFace,
+  double                           thePrecision)
 {
   // check surface type to see if it can be processed
-  Handle(Standard_Type) aType = theSurface->DynamicType();
+  occ::handle<Standard_Type> aType = theSurface->DynamicType();
   if (aType != STANDARD_TYPE(Geom_BSplineSurface))
   {
     // for the moment, only bspline surfaces are treated;
@@ -204,8 +206,8 @@ Handle(Geom_Surface) BRepOffset::CollapseSingularities(const Handle(Geom_Surface
   }
 
   // find singularities (vertices of degenerated edges)
-  NCollection_List<gp_Pnt>        aDegenPnt;
-  NCollection_List<Standard_Real> aDegenTol;
+  NCollection_List<gp_Pnt> aDegenPnt;
+  NCollection_List<double> aDegenTol;
   for (TopExp_Explorer anExp(theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
   {
     TopoDS_Edge anEdge = TopoDS::Edge(anExp.Current());
@@ -227,27 +229,21 @@ Handle(Geom_Surface) BRepOffset::CollapseSingularities(const Handle(Geom_Surface
   // iterate by sides of the surface
   if (aType == STANDARD_TYPE(Geom_BSplineSurface))
   {
-    Handle(Geom_BSplineSurface) aBSpline = Handle(Geom_BSplineSurface)::DownCast(theSurface);
-    const TColgp_Array2OfPnt&   aPoles   = aBSpline->Poles();
+    occ::handle<Geom_BSplineSurface>  aBSpline = occ::down_cast<Geom_BSplineSurface>(theSurface);
+    const NCollection_Array2<gp_Pnt>& aPoles   = aBSpline->Poles();
 
-    Handle(Geom_BSplineSurface) aCopy;
+    occ::handle<Geom_BSplineSurface> aCopy;
 
     // iterate by sides: {U=0; V=0; U=1; V=1}
-    Standard_Integer RowStart[4] = {aPoles.LowerRow(),
-                                    aPoles.LowerRow(),
-                                    aPoles.UpperRow(),
-                                    aPoles.LowerRow()};
-    Standard_Integer ColStart[4] = {aPoles.LowerCol(),
-                                    aPoles.LowerCol(),
-                                    aPoles.LowerCol(),
-                                    aPoles.UpperCol()};
-    Standard_Integer RowStep[4]  = {0, 1, 0, 1};
-    Standard_Integer ColStep[4]  = {1, 0, 1, 0};
-    Standard_Integer NbSteps[4]  = {aPoles.RowLength(),
-                                    aPoles.ColLength(),
-                                    aPoles.RowLength(),
-                                    aPoles.ColLength()};
-    for (Standard_Integer iSide = 0; iSide < 4; iSide++)
+    int RowStart[4] = {aPoles.LowerRow(), aPoles.LowerRow(), aPoles.UpperRow(), aPoles.LowerRow()};
+    int ColStart[4] = {aPoles.LowerCol(), aPoles.LowerCol(), aPoles.LowerCol(), aPoles.UpperCol()};
+    int RowStep[4]  = {0, 1, 0, 1};
+    int ColStep[4]  = {1, 0, 1, 0};
+    int NbSteps[4]  = {aPoles.RowLength(),
+                       aPoles.ColLength(),
+                       aPoles.RowLength(),
+                       aPoles.ColLength()};
+    for (int iSide = 0; iSide < 4; iSide++)
     {
       // compute center of gravity of side poles
       gp_XYZ aSum;
@@ -260,34 +256,34 @@ Handle(Geom_Surface) BRepOffset::CollapseSingularities(const Handle(Geom_Surface
       gp_Pnt aCenter(aSum / NbSteps[iSide]);
 
       // determine if all poles of the side fit into:
-      Standard_Boolean isCollapsed = Standard_True; // aCenter precisely (with gp::Resolution())
-      Standard_Boolean isSingular  = Standard_True; // aCenter with thePrecision
-                                                    // clang-format off
-      NCollection_LocalArray<Standard_Boolean,4> isDegenerated (aDegenPnt.Extent()); // degenerated vertex
-                                                    // clang-format on
+      bool isCollapsed = true; // aCenter precisely (with gp::Resolution())
+      bool isSingular  = true; // aCenter with thePrecision
+                               // clang-format off
+      NCollection_LocalArray<bool,4> isDegenerated (aDegenPnt.Extent()); // degenerated vertex
+                                                                       // clang-format on
       for (size_t iDegen = 0; iDegen < isDegenerated.Size(); ++iDegen)
-        isDegenerated[iDegen] = Standard_True;
+        isDegenerated[iDegen] = true;
       for (int iPole = 0; iPole < NbSteps[iSide]; iPole++)
       {
         const gp_Pnt& aPole = aPoles(RowStart[iSide] + iPole * RowStep[iSide],
                                      ColStart[iSide] + iPole * ColStep[iSide]);
 
         // distance from CG
-        Standard_Real aDistCG = aCenter.Distance(aPole);
+        double aDistCG = aCenter.Distance(aPole);
         if (aDistCG > gp::Resolution())
-          isCollapsed = Standard_False;
+          isCollapsed = false;
         if (aDistCG > thePrecision)
-          isSingular = Standard_False;
+          isSingular = false;
 
         // distances from degenerated points
-        NCollection_List<gp_Pnt>::Iterator        aDegPntIt(aDegenPnt);
-        NCollection_List<Standard_Real>::Iterator aDegTolIt(aDegenTol);
+        NCollection_List<gp_Pnt>::Iterator aDegPntIt(aDegenPnt);
+        NCollection_List<double>::Iterator aDegTolIt(aDegenTol);
         for (size_t iDegen = 0; iDegen < isDegenerated.Size();
              aDegPntIt.Next(), aDegTolIt.Next(), ++iDegen)
         {
           if (isDegenerated[iDegen] && aDegPntIt.Value().Distance(aPole) >= aDegTolIt.Value())
           {
-            isDegenerated[iDegen] = Standard_False;
+            isDegenerated[iDegen] = false;
           }
         }
       }
@@ -300,9 +296,9 @@ Handle(Geom_Surface) BRepOffset::CollapseSingularities(const Handle(Geom_Surface
       // or if it fits into one (and only one) degenerated point
       if (!isSingular)
       {
-        Standard_Integer                          aNbFit = 0;
-        NCollection_List<gp_Pnt>::Iterator        aDegPntIt(aDegenPnt);
-        NCollection_List<Standard_Real>::Iterator aDegTolIt(aDegenTol);
+        int                                aNbFit = 0;
+        NCollection_List<gp_Pnt>::Iterator aDegPntIt(aDegenPnt);
+        NCollection_List<double>::Iterator aDegTolIt(aDegenTol);
         for (size_t iDegen = 0; iDegen < isDegenerated.Size(); ++iDegen)
         {
           if (isDegenerated[iDegen])
@@ -330,7 +326,7 @@ Handle(Geom_Surface) BRepOffset::CollapseSingularities(const Handle(Geom_Surface
       {
         if (aCopy.IsNull())
         {
-          aCopy = Handle(Geom_BSplineSurface)::DownCast(theSurface->Copy());
+          aCopy = occ::down_cast<Geom_BSplineSurface>(theSurface->Copy());
         }
         for (int iPole = 0; iPole < NbSteps[iSide]; iPole++)
         {

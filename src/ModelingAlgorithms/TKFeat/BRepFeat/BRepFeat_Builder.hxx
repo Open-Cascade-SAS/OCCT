@@ -21,9 +21,11 @@
 
 #include <BOPAlgo_BOP.hxx>
 #include <Standard_Integer.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Map.hxx>
 class TopoDS_Shape;
 class TopoDS_Face;
 
@@ -51,7 +53,7 @@ public:
   Standard_EXPORT virtual ~BRepFeat_Builder();
 
   //! Clears internal fields and arguments.
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Initializes the object of local boolean operation.
   Standard_EXPORT void Init(const TopoDS_Shape& theShape);
@@ -61,21 +63,21 @@ public:
 
   //! Sets the operation of local boolean operation.
   //! If theFuse = 0 than the operation is CUT, otherwise FUSE.
-  Standard_EXPORT void SetOperation(const Standard_Integer theFuse);
+  Standard_EXPORT void SetOperation(const int theFuse);
 
   //! Sets the operation of local boolean operation.
   //! If theFlag = TRUE it means that no selection of parts
   //! of the tool is needed, t.e. no second part. In that case
   //! if theFuse = 0 than operation is COMMON, otherwise CUT21.
   //! If theFlag = FALSE SetOperation(theFuse) function is called.
-  Standard_EXPORT void SetOperation(const Standard_Integer theFuse, const Standard_Boolean theFlag);
+  Standard_EXPORT void SetOperation(const int theFuse, const bool theFlag);
 
   //! Collects parts of the tool.
-  Standard_EXPORT void PartsOfTool(TopTools_ListOfShape& theLT);
+  Standard_EXPORT void PartsOfTool(NCollection_List<TopoDS_Shape>& theLT);
 
   //! Initializes parts of the tool for second step of algorithm.
   //! Collects shapes and all sub-shapes into myShapes map.
-  Standard_EXPORT void KeepParts(const TopTools_ListOfShape& theIm);
+  Standard_EXPORT void KeepParts(const NCollection_List<TopoDS_Shape>& theIm);
 
   //! Adds shape theS and all its sub-shapes into myShapes map.
   Standard_EXPORT void KeepPart(const TopoDS_Shape& theS);
@@ -89,10 +91,11 @@ public:
   Standard_EXPORT void RebuildFaces();
 
   //! Rebuilds edges in accordance with the kept parts of the tool.
-  Standard_EXPORT void RebuildEdge(const TopoDS_Shape&        theE,
-                                   const TopoDS_Face&         theF,
-                                   const TopTools_MapOfShape& theME,
-                                   TopTools_ListOfShape&      aLEIm);
+  Standard_EXPORT void RebuildEdge(
+    const TopoDS_Shape&                                           theE,
+    const TopoDS_Face&                                            theF,
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theME,
+    NCollection_List<TopoDS_Shape>&                               aLEIm);
 
   //! Collects the images of the object, that contains in
   //! the images of the tool.
@@ -102,26 +105,25 @@ public:
   Standard_EXPORT void FillRemoved();
 
   //! Adds the shape S and its sub-shapes into myRemoved map.
-  Standard_EXPORT void FillRemoved(const TopoDS_Shape& theS, TopTools_MapOfShape& theM);
+  Standard_EXPORT void FillRemoved(const TopoDS_Shape&                                     theS,
+                                   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theM);
 
 protected:
   //! Prepares builder of local operation.
-  Standard_EXPORT virtual void Prepare() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Prepare() override;
 
   //! Function is redefined to avoid the usage of removed faces.
-  Standard_EXPORT virtual void FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids,
-                                             const Message_ProgressRange&  theRange)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void FillIn3DParts(
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
+    const Message_ProgressRange&                                              theRange) override;
 
   //! Avoid the check for open solids and always use the splits
   //! of solids for building the result shape.
-  virtual Standard_Boolean CheckArgsForOpenSolid() Standard_OVERRIDE { return Standard_False; }
+  virtual bool CheckArgsForOpenSolid() override { return false; }
 
-  TopTools_MapOfShape myShapes;
-  TopTools_MapOfShape myRemoved;
-  Standard_Integer    myFuse;
-
-private:
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myShapes;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myRemoved;
+  int                                                    myFuse;
 };
 
 #endif // _BRepFeat_Builder_HeaderFile

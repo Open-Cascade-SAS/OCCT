@@ -68,29 +68,29 @@ ShapeFix_Edge::ShapeFix_Edge()
 
 //=================================================================================================
 
-Handle(ShapeConstruct_ProjectCurveOnSurface) ShapeFix_Edge::Projector()
+occ::handle<ShapeConstruct_ProjectCurveOnSurface> ShapeFix_Edge::Projector()
 {
   return myProjector;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixRemovePCurve(const TopoDS_Edge& edge, const TopoDS_Face& face)
+bool ShapeFix_Edge::FixRemovePCurve(const TopoDS_Edge& edge, const TopoDS_Face& face)
 {
-  TopLoc_Location             L;
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(face, L);
+  TopLoc_Location                  L;
+  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(face, L);
   return FixRemovePCurve(edge, S, L);
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixRemovePCurve(const TopoDS_Edge&          edge,
-                                                const Handle(Geom_Surface)& surface,
-                                                const TopLoc_Location&      location)
+bool ShapeFix_Edge::FixRemovePCurve(const TopoDS_Edge&               edge,
+                                    const occ::handle<Geom_Surface>& surface,
+                                    const TopLoc_Location&           location)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   ShapeAnalysis_Edge EA;
-  Standard_Boolean   result = EA.CheckVerticesWithPCurve(edge, surface, location);
+  bool               result = EA.CheckVerticesWithPCurve(edge, surface, location);
   if (result)
     ShapeBuild_Edge().RemovePCurve(edge, surface, location);
   return result;
@@ -98,11 +98,11 @@ Standard_Boolean ShapeFix_Edge::FixRemovePCurve(const TopoDS_Edge&          edge
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixRemoveCurve3d(const TopoDS_Edge& edge)
+bool ShapeFix_Edge::FixRemoveCurve3d(const TopoDS_Edge& edge)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   ShapeAnalysis_Edge EA;
-  Standard_Boolean   result = EA.CheckVerticesWithCurve3d(edge);
+  bool               result = EA.CheckVerticesWithCurve3d(edge);
   if (result)
     ShapeBuild_Edge().RemoveCurve3d(edge);
   return result;
@@ -110,44 +110,44 @@ Standard_Boolean ShapeFix_Edge::FixRemoveCurve3d(const TopoDS_Edge& edge)
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&     edge,
-                                             const TopoDS_Face&     face,
-                                             const Standard_Boolean isSeam,
-                                             const Standard_Real    prec)
+bool ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge& edge,
+                                 const TopoDS_Face& face,
+                                 const bool         isSeam,
+                                 const double       prec)
 {
-  TopLoc_Location             L;
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(face, L);
+  TopLoc_Location                  L;
+  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(face, L);
   return FixAddPCurve(edge, S, L, isSeam, prec);
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&          edge,
-                                             const Handle(Geom_Surface)& surface,
-                                             const TopLoc_Location&      location,
-                                             const Standard_Boolean      isSeam,
-                                             const Standard_Real         prec)
+bool ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&               edge,
+                                 const occ::handle<Geom_Surface>& surface,
+                                 const TopLoc_Location&           location,
+                                 const bool                       isSeam,
+                                 const double                     prec)
 {
-  Handle(Geom_Surface) aTransSurf = surface;
+  occ::handle<Geom_Surface> aTransSurf = surface;
   if (!location.IsIdentity())
   {
     gp_Trsf aTrsf(location);
-    aTransSurf = Handle(Geom_Surface)::DownCast(surface->Transformed(aTrsf));
+    aTransSurf = occ::down_cast<Geom_Surface>(surface->Transformed(aTrsf));
   }
-  Handle(ShapeAnalysis_Surface) sas = new ShapeAnalysis_Surface(aTransSurf);
+  occ::handle<ShapeAnalysis_Surface> sas = new ShapeAnalysis_Surface(aTransSurf);
   return FixAddPCurve(edge, surface, location, isSeam, sas, prec);
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                   edge,
-                                             const TopoDS_Face&                   face,
-                                             const Standard_Boolean               isSeam,
-                                             const Handle(ShapeAnalysis_Surface)& surfana,
-                                             const Standard_Real                  prec)
+bool ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                        edge,
+                                 const TopoDS_Face&                        face,
+                                 const bool                                isSeam,
+                                 const occ::handle<ShapeAnalysis_Surface>& surfana,
+                                 const double                              prec)
 {
-  TopLoc_Location             L;
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(face, L);
+  TopLoc_Location                  L;
+  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(face, L);
   return FixAddPCurve(edge, S, L, isSeam, surfana, prec);
 }
 
@@ -164,22 +164,22 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                 
 // if a surface is periodic the whole contour may be shifted (e.g. ProSTEP,
 // file ug_exhaust-A.stp entity #284920)
 
-static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
-                                            Handle(Geom2d_Curve)&       aC2d,
-                                            const Standard_Real&        aTol)
+static occ::handle<Geom2d_Curve> TranslatePCurve(const occ::handle<Geom_Surface>& aSurf,
+                                                 occ::handle<Geom2d_Curve>&       aC2d,
+                                                 const double&                    aTol)
 {
-  Standard_Real uf, ul, vf, vl;
+  double uf, ul, vf, vl;
   aSurf->Bounds(uf, ul, vf, vl);
 
   // case of a line
-  Handle(Geom2d_Line) theL2d = Handle(Geom2d_Line)::DownCast(aC2d);
+  occ::handle<Geom2d_Line> theL2d = occ::down_cast<Geom2d_Line>(aC2d);
   if (!theL2d.IsNull())
   {
     gp_Pnt2d theLoc = theL2d->Location();
     gp_Dir2d theDir = theL2d->Direction();
 
-    gp_Pnt2d            newLoc;
-    Handle(Geom2d_Line) theNewL2d = theL2d;
+    gp_Pnt2d                 newLoc;
+    occ::handle<Geom2d_Line> theNewL2d = theL2d;
 
     // case UClosed
     if (std::abs(theDir.X()) <= aTol && std::abs(theDir.Y()) >= aTol)
@@ -196,7 +196,7 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
         (std::abs(theDir.Y()) >= aTol)) {
           // on translate en ul
           gp_Pnt2d newLoc(ul, theLoc.Y());
-          Handle(Geom2d_Line) theNewL2d = new Geom2d_Line(newLoc, theDir);
+          occ::handle<Geom2d_Line> theNewL2d = new Geom2d_Line(newLoc, theDir);
           return theNewL2d;
         }
         // cas UClosed and line in U = ULast
@@ -205,7 +205,7 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
         (std::abs(theDir.Y()) >= aTol)) {
           // on translate en uf
           gp_Pnt2d newLoc(uf, theLoc.Y());
-          Handle(Geom2d_Line) theNewL2d = new Geom2d_Line(newLoc, theDir);
+          occ::handle<Geom2d_Line> theNewL2d = new Geom2d_Line(newLoc, theDir);
           return theNewL2d;
         }
     */
@@ -224,7 +224,7 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
         (std::abs(theDir.Y()) <= aTol)) {
           // on translate en vl
           gp_Pnt2d newLoc(theLoc.X(), vl);
-          Handle(Geom2d_Line) theNewL2d = new Geom2d_Line(newLoc, theDir);
+          occ::handle<Geom2d_Line> theNewL2d = new Geom2d_Line(newLoc, theDir);
           return theNewL2d;
         }
         // cas VClosed and line in V = VLast
@@ -233,7 +233,7 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
         (std::abs(theDir.Y()) <= aTol)) {
           // on translate en vf
           gp_Pnt2d newLoc(theLoc.X(), vf);
-          Handle(Geom2d_Line) theNewL2d = new Geom2d_Line(newLoc, theDir);
+          occ::handle<Geom2d_Line> theNewL2d = new Geom2d_Line(newLoc, theDir);
           return theNewL2d;
         }
     */
@@ -246,7 +246,7 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
   else
   {
     // case of BSpline curve
-    Handle(Geom2d_BSplineCurve) aBC = Handle(Geom2d_BSplineCurve)::DownCast(aC2d);
+    occ::handle<Geom2d_BSplineCurve> aBC = occ::down_cast<Geom2d_BSplineCurve>(aC2d);
     if (aBC.IsNull())
     {
 #ifdef OCCT_DEBUG
@@ -254,13 +254,13 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
 #endif
       return aC2d;
     }
-    Handle(Geom2d_BSplineCurve) newC       = Handle(Geom2d_BSplineCurve)::DownCast(aBC->Copy());
-    gp_Pnt2d                    FirstPoint = aBC->StartPoint();
-    gp_Pnt2d                    LastPoint  = aBC->EndPoint();
-    gp_Vec2d                    theVector(FirstPoint, LastPoint);
-    gp_Pnt2d                    p00(uf, vf), p01(uf, vl), p10(ul, vf);
-    gp_Vec2d                    VectIsoUF(p00, p01);
-    gp_Vec2d                    VectIsoVF(p00, p10);
+    occ::handle<Geom2d_BSplineCurve> newC       = occ::down_cast<Geom2d_BSplineCurve>(aBC->Copy());
+    gp_Pnt2d                         FirstPoint = aBC->StartPoint();
+    gp_Pnt2d                         LastPoint  = aBC->EndPoint();
+    gp_Vec2d                         theVector(FirstPoint, LastPoint);
+    gp_Pnt2d                         p00(uf, vf), p01(uf, vl), p10(ul, vf);
+    gp_Vec2d                         VectIsoUF(p00, p01);
+    gp_Vec2d                         VectIsoVF(p00, p10);
 
     gp_Trsf2d T;
     if (theVector.IsParallel(VectIsoUF, aTol))
@@ -312,41 +312,41 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
 // (concerning seam edges) or BRepLib::SameParameter() (concerning call
 // to GeomLib::SameRange() with 3d tolerance)
 
-static void TempSameRange(const TopoDS_Edge& AnEdge, const Standard_Real Tolerance)
+static void TempSameRange(const TopoDS_Edge& AnEdge, const double Tolerance)
 {
-  BRep_ListIteratorOfListOfCurveRepresentation an_Iterator(
-    (*((Handle(BRep_TEdge)*)&AnEdge.TShape()))->ChangeCurves());
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator an_Iterator(
+    (*((occ::handle<BRep_TEdge>*)&AnEdge.TShape()))->ChangeCurves());
 
-  Handle(Geom2d_Curve) Curve2dPtr, NewCurve2dPtr;
-  Handle(Geom2d_Curve) Curve2dPtr2, NewCurve2dPtr2;
-  TopLoc_Location      LocalLoc;
+  occ::handle<Geom2d_Curve> Curve2dPtr, NewCurve2dPtr;
+  occ::handle<Geom2d_Curve> Curve2dPtr2, NewCurve2dPtr2;
+  TopLoc_Location           LocalLoc;
 
-  // Standard_Boolean  IsSameRange = Standard_True //skl
-  Standard_Boolean    first_time_in = Standard_True, has_curve, has_closed_curve;
-  Handle(BRep_GCurve) geometric_representation_ptr;
-  Standard_Real       first, current_first, last, current_last;
+  // bool  IsSameRange = true //skl
+  bool                     first_time_in = true, has_curve, has_closed_curve;
+  occ::handle<BRep_GCurve> geometric_representation_ptr;
+  double                   first, current_first, last, current_last;
 
-  const Handle(Geom_Curve) C = BRep_Tool::Curve(AnEdge, LocalLoc, current_first, current_last);
+  const occ::handle<Geom_Curve> C = BRep_Tool::Curve(AnEdge, LocalLoc, current_first, current_last);
   if (!C.IsNull())
-    first_time_in = Standard_False;
+    first_time_in = false;
 
   while (an_Iterator.More())
   {
-    geometric_representation_ptr = Handle(BRep_GCurve)::DownCast(an_Iterator.Value());
+    geometric_representation_ptr = occ::down_cast<BRep_GCurve>(an_Iterator.Value());
     if (!geometric_representation_ptr.IsNull())
     {
-      has_closed_curve = has_curve = Standard_False;
+      has_closed_curve = has_curve = false;
       first                        = geometric_representation_ptr->First();
       last                         = geometric_representation_ptr->Last();
       if (geometric_representation_ptr->IsCurveOnSurface())
       {
         Curve2dPtr = geometric_representation_ptr->PCurve();
-        has_curve  = Standard_True;
+        has_curve  = true;
       }
       if (geometric_representation_ptr->IsCurveOnClosedSurface())
       {
         Curve2dPtr2      = geometric_representation_ptr->PCurve2();
-        has_closed_curve = Standard_True;
+        has_closed_curve = true;
       }
       if (has_curve || has_closed_curve)
       {
@@ -354,14 +354,14 @@ static void TempSameRange(const TopoDS_Edge& AnEdge, const Standard_Real Toleran
         {
           current_first = first;
           current_last  = last;
-          first_time_in = Standard_False;
+          first_time_in = false;
         }
 
         if (std::abs(first - current_first) > Precision::PConfusion()
             || //: b8 abv 20 Feb 98: Confusion -> PConfusion
             std::abs(last - current_last) > Precision::PConfusion())
-        {                                            //: b8
-          Standard_Real oldFirst = 0., oldLast = 0.; // skl
+        {                                     //: b8
+          double oldFirst = 0., oldLast = 0.; // skl
           if (has_curve)
           {
             // pdn 20.05.99 Work around
@@ -370,22 +370,22 @@ static void TempSameRange(const TopoDS_Edge& AnEdge, const Standard_Real Toleran
             // 15.11.2002 PTV OCC966
             if (ShapeAnalysis_Curve::IsPeriodic(Curve2dPtr))
             {
-              Handle(Geom2d_TrimmedCurve) tc =
+              occ::handle<Geom2d_TrimmedCurve> tc =
                 new Geom2d_TrimmedCurve(Curve2dPtr, oldFirst, oldLast);
-              Standard_Real shift = tc->FirstParameter() - oldFirst;
+              double shift = tc->FirstParameter() - oldFirst;
               oldFirst += shift;
               oldLast += shift;
             }
             // pdn 30.06.2000 work around on beziers
-            Standard_Real oldFirstCurve1 = oldFirst, oldLastCurve1 = oldLast;
+            double oldFirstCurve1 = oldFirst, oldLastCurve1 = oldLast;
             if (Curve2dPtr->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
             {
 
-              constexpr Standard_Real preci = Precision::PConfusion();
+              constexpr double preci = Precision::PConfusion();
               if (std::abs(oldFirst) > preci || std::abs(oldLast - 1) > preci)
               {
-                Handle(Geom2d_BezierCurve) bezier =
-                  Handle(Geom2d_BezierCurve)::DownCast(Curve2dPtr->Copy());
+                occ::handle<Geom2d_BezierCurve> bezier =
+                  occ::down_cast<Geom2d_BezierCurve>(Curve2dPtr->Copy());
                 bezier->Segment(oldFirst, oldLast);
                 Curve2dPtr = bezier;
               }
@@ -405,16 +405,16 @@ static void TempSameRange(const TopoDS_Edge& AnEdge, const Standard_Real Toleran
           if (has_closed_curve)
           {
 
-            Standard_Real oldFirstCurve2 = oldFirst, oldLastCurve2 = oldLast;
+            double oldFirstCurve2 = oldFirst, oldLastCurve2 = oldLast;
 
             if (Curve2dPtr2->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
             {
 
-              constexpr Standard_Real preci = Precision::PConfusion();
+              constexpr double preci = Precision::PConfusion();
               if (std::abs(oldFirst) > preci || std::abs(oldLast - 1) > preci)
               {
-                Handle(Geom2d_BezierCurve) bezier =
-                  Handle(Geom2d_BezierCurve)::DownCast(Curve2dPtr2->Copy());
+                occ::handle<Geom2d_BezierCurve> bezier =
+                  occ::down_cast<Geom2d_BezierCurve>(Curve2dPtr2->Copy());
                 bezier->Segment(oldFirst, oldLast);
                 Curve2dPtr2 = bezier;
               }
@@ -438,61 +438,61 @@ static void TempSameRange(const TopoDS_Edge& AnEdge, const Standard_Real Toleran
   }
   BRep_Builder B;
   B.Range(TopoDS::Edge(AnEdge), current_first, current_last);
-  B.SameRange(AnEdge, Standard_True);
+  B.SameRange(AnEdge, true);
 }
 
 //=======================================================================
 // function : FixAddPCurve
 //=======================================================================
 
-Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                   edge,
-                                             const Handle(Geom_Surface)&          surf,
-                                             const TopLoc_Location&               location,
-                                             const Standard_Boolean               isSeam,
-                                             const Handle(ShapeAnalysis_Surface)& sas,
-                                             const Standard_Real                  prec)
+bool ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                        edge,
+                                 const occ::handle<Geom_Surface>&          surf,
+                                 const TopLoc_Location&                    location,
+                                 const bool                                isSeam,
+                                 const occ::handle<ShapeAnalysis_Surface>& sas,
+                                 const double                              prec)
 {
   ShapeAnalysis_Edge sae;
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if ((!isSeam && sae.HasPCurve(edge, surf, location))
       || (isSeam && sae.IsSeam(edge, surf, location)))
-    return Standard_False;
+    return false;
 
   // PCurve on Plane not computed
   if (surf->IsKind(STANDARD_TYPE(Geom_Plane)))
-    return Standard_False;
+    return false;
 
-  //  Standard_Real step = 0;
+  //  double step = 0;
   try
   {
     OCC_CATCH_SIGNALS
-    Standard_Real First, Last;
+    double First, Last;
 
     BRep_Builder B;
 
-    Standard_Real      preci = (prec > 0. ? prec : BRep_Tool::Tolerance(edge));
-    Handle(Geom_Curve) c3d   = BRep_Tool::Curve(edge, /*Loc,*/ First, Last);
-    //  Handle(Geom_Curve) c3d = BRep_Tool::Curve(E, First, Last);
+    double                  preci = (prec > 0. ? prec : BRep_Tool::Tolerance(edge));
+    occ::handle<Geom_Curve> c3d   = BRep_Tool::Curve(edge, /*Loc,*/ First, Last);
+    //  occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(E, First, Last);
     if (c3d.IsNull())
     {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
-      return Standard_False;
+      return false;
     }
 
     // Trim the curve to avoid problem  ??
-    //    c3d = Handle(Geom_Curve)::DownCast(c3d->Transformed(Loc.Transformation()));
-    //    Handle(Geom_TrimmedCurve) theTrimmed = new Geom_TrimmedCurve(c3d, First, Last);
+    //    c3d = occ::down_cast<Geom_Curve>(c3d->Transformed(Loc.Transformation()));
+    //    occ::handle<Geom_TrimmedCurve> theTrimmed = new Geom_TrimmedCurve(c3d, First, Last);
     //    c3d = theTrimmed;
 
     //    step = 1;
 
     //  A present, on projette
     //  stat : 0 pas pu faire, 1 analytique, 2 approx
-    Handle(Geom2d_Curve) c2d;
-    Standard_Real        a1, b1;
+    occ::handle<Geom2d_Curve> c2d;
+    double                    a1, b1;
     if (!sae.HasPCurve(edge, surf, location))
     {
-      Standard_Real TolFirst = -1, TolLast = -1;
+      double        TolFirst = -1, TolLast = -1;
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(edge, V1, V2);
       if (!V1.IsNull())
@@ -510,7 +510,7 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                 
     }
     else
     {
-      sae.PCurve(edge, surf, location, c2d, a1, b1, Standard_False);
+      sae.PCurve(edge, surf, location, c2d, a1, b1, false);
     }
 
     //    step = 2;
@@ -519,11 +519,11 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                 
     {
       // On ne sait pas laquelle est Forward. Au PIF. La geometrie Forward
       // sera mise a jour dans ComputeWire
-      Handle(Geom2d_Curve) c2d2 = Handle(Geom2d_Curve)::DownCast(c2d->Copy());
+      occ::handle<Geom2d_Curve> c2d2 = occ::down_cast<Geom2d_Curve>(c2d->Copy());
       //  ATTENTION : TranslatePCurve reconstruit une Line // bords, en
       //  intuitant U ou V ...
       //  Ici, on exploite les infos deja connues
-      Standard_Real uf, ul, vf, vl;
+      double uf, ul, vf, vl;
       surf->Bounds(uf, ul, vf, vl);
       // #4 rln 19/02/98 ProSTEP ug_exhaust-A.stp entity #284920 (toroidal surface)
       // #13 rln 17/03/98 (updating fix #4) call to TranslatePCurve in the case
@@ -560,10 +560,10 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                 
     //    step = 3;
     if (myProjector->Status(ShapeExtend_DONE3))
     {
-      Standard_Real G3dCFirst = c3d->FirstParameter();
-      Standard_Real G3dCLast  = c3d->LastParameter();
+      double G3dCFirst = c3d->FirstParameter();
+      double G3dCLast  = c3d->LastParameter();
       B.UpdateEdge(edge, c3d, 0.);
-      B.Range(edge, G3dCFirst, G3dCLast, Standard_True);
+      B.Range(edge, G3dCFirst, G3dCLast, true);
     }
   } // end try
   catch (Standard_Failure const& anException)
@@ -578,32 +578,32 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                 
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
   }
   myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixAddCurve3d(const TopoDS_Edge& edge)
+bool ShapeFix_Edge::FixAddCurve3d(const TopoDS_Edge& edge)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   ShapeAnalysis_Edge EA;
   if (BRep_Tool::Degenerated(edge) || EA.HasCurve3d(edge))
-    return Standard_False;
+    return false;
   if (!BRep_Tool::SameRange(edge))
     TempSameRange(edge, Precision::PConfusion());
 
   if (!ShapeBuild_Edge().BuildCurve3d(edge))
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
-    return Standard_False;
+    return false;
   }
   myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge, const TopoDS_Face& face)
+bool ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge, const TopoDS_Face& face)
 {
   myStatus                      = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   TopoDS_Edge        anEdgeCopy = edge;
@@ -613,9 +613,9 @@ Standard_Boolean ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge, cons
     anEdgeCopy = TopoDS::Edge(Context()->Apply(edge));
   }
 
-  Standard_Real toler1, toler2;
+  double toler1, toler2;
   if (!sae.CheckVertexTolerance(anEdgeCopy, face, toler1, toler2))
-    return Standard_False;
+    return false;
   if (sae.Status(ShapeExtend_DONE1))
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   if (sae.Status(ShapeExtend_DONE2))
@@ -633,12 +633,12 @@ Standard_Boolean ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge, cons
     B.UpdateVertex(V1, toler1);
     B.UpdateVertex(V2, toler2);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge)
+bool ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge)
 {
   myStatus                      = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   TopoDS_Edge        anEdgeCopy = edge;
@@ -647,9 +647,9 @@ Standard_Boolean ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge)
   {
     anEdgeCopy = TopoDS::Edge(Context()->Apply(edge));
   }
-  Standard_Real toler1, toler2;
+  double toler1, toler2;
   if (!sae.CheckVertexTolerance(anEdgeCopy, toler1, toler2))
-    return Standard_False;
+    return false;
   if (sae.Status(ShapeExtend_DONE1))
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   if (sae.Status(ShapeExtend_DONE2))
@@ -667,23 +667,23 @@ Standard_Boolean ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge)
     B.UpdateVertex(V1, toler1);
     B.UpdateVertex(V2, toler2);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixReversed2d(const TopoDS_Edge& edge, const TopoDS_Face& face)
+bool ShapeFix_Edge::FixReversed2d(const TopoDS_Edge& edge, const TopoDS_Face& face)
 {
-  TopLoc_Location             L;
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(face, L);
+  TopLoc_Location                  L;
+  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(face, L);
   return FixReversed2d(edge, S, L);
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixReversed2d(const TopoDS_Edge&          edge,
-                                              const Handle(Geom_Surface)& surface,
-                                              const TopLoc_Location&      location)
+bool ShapeFix_Edge::FixReversed2d(const TopoDS_Edge&               edge,
+                                  const occ::handle<Geom_Surface>& surface,
+                                  const TopLoc_Location&           location)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
@@ -694,13 +694,13 @@ Standard_Boolean ShapeFix_Edge::FixReversed2d(const TopoDS_Edge&          edge,
   if (EA.Status(ShapeExtend_FAIL2))
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
   if (!EA.Status(ShapeExtend_DONE))
-    return Standard_False;
+    return false;
 
-  Handle(Geom2d_Curve) c2d;
-  Standard_Real        f, l;
-  EA.PCurve(edge, surface, location, c2d, f, l, Standard_False);
+  occ::handle<Geom2d_Curve> c2d;
+  double                    f, l;
+  EA.PCurve(edge, surface, location, c2d, f, l, false);
   // #46 rln 01.12.98 buc40130, entity 272 (4-th curve)
-  Standard_Real newf = c2d->ReversedParameter(l), newl = c2d->ReversedParameter(f);
+  double newf = c2d->ReversedParameter(l), newl = c2d->ReversedParameter(f);
   c2d->Reverse();
   BRep_Builder B;
   // will break seams!  B.UpdateEdge (edge, c2d, surface, location, Precision::Confusion());
@@ -708,21 +708,20 @@ Standard_Boolean ShapeFix_Edge::FixReversed2d(const TopoDS_Edge&          edge,
   // #51 rln 15.12.98 pro6562 entity 2788
   // Because of numerical accuracy the range on B-Splines (moreover, on any curve!)
   // the range is changed
-  Standard_Real first, last;
+  double first, last;
   BRep_Tool::Range(edge, first, last);
   if (first != newf || last != newl)
   {
-    B.SameRange(edge, Standard_False);
-    B.SameParameter(edge, Standard_False);
+    B.SameRange(edge, false);
+    B.SameParameter(edge, false);
   }
   myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
-                                                 const Standard_Real tolerance)
+bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge, const double tolerance)
 {
   TopoDS_Face anEmptyFace;
   return FixSameParameter(edge, anEmptyFace, tolerance);
@@ -730,9 +729,9 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
-                                                 const TopoDS_Face&  face,
-                                                 const Standard_Real tolerance)
+bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
+                                     const TopoDS_Face& face,
+                                     const double       tolerance)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
@@ -741,8 +740,8 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
     BRep_Builder B;
     if (!BRep_Tool::SameRange(edge))
       TempSameRange(edge, Precision::PConfusion());
-    B.SameParameter(edge, Standard_True);
-    return Standard_False;
+    B.SameParameter(edge, true);
+    return false;
   }
 
   ShapeFix_ShapeTolerance SFST;
@@ -752,11 +751,11 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
   TopoDS_Edge   copyedge;
   TopoDS_Vertex V1    = sae.FirstVertex(edge);
   TopoDS_Vertex V2    = sae.LastVertex(edge);
-  Standard_Real TolFV = (V1.IsNull() ? 0.0 : BRep_Tool::Tolerance(V1));
-  Standard_Real TolLV = (V2.IsNull() ? 0.0 : BRep_Tool::Tolerance(V2));
-  Standard_Real tol   = BRep_Tool::Tolerance(edge);
+  double        TolFV = (V1.IsNull() ? 0.0 : BRep_Tool::Tolerance(V1));
+  double        TolLV = (V2.IsNull() ? 0.0 : BRep_Tool::Tolerance(V2));
+  double        tol   = BRep_Tool::Tolerance(edge);
 
-  Standard_Boolean wasSP = BRep_Tool::SameParameter(edge), SP = Standard_False;
+  bool wasSP = BRep_Tool::SameParameter(edge), SP = false;
   {
     try
     {
@@ -769,15 +768,15 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
       {
         // create copyedge as copy of edge with the same vertices and copy of pcurves on the same
         // surface(s)
-        copyedge = ShapeBuild_Edge().Copy(edge, Standard_False);
-        B.SameParameter(copyedge, Standard_False);
+        copyedge = ShapeBuild_Edge().Copy(edge, false);
+        B.SameParameter(copyedge, false);
         // ShapeBuild_Edge::Copy() may change 3D curve range (if it's outside of its period).
         // In this case pcurves in BRepLib::SameParameter() will be changed as well
         // and later ShapeBuild_Edge::CopyPCurves() will copy pcurves keeping original range.
         // To prevent this discrepancy we enforce original 3D range.
-        Standard_Real aF, aL;
+        double aF, aL;
         BRep_Tool::Range(edge, aF, aL);
-        B.Range(copyedge, aF, aL, Standard_True); // only 3D
+        B.Range(copyedge, aF, aL, true); // only 3D
         BRepLib::SameParameter(copyedge, (tolerance >= Precision::Confusion() ? tolerance : tol));
         SP = BRep_Tool::SameParameter(copyedge);
         if (!SP)
@@ -797,8 +796,8 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
   }
 
   // compute deviation on the original pcurves
-  Standard_Real maxdev;
-  B.SameParameter(edge, Standard_True);
+  double maxdev;
+  B.SameParameter(edge, true);
 
   // Should check all pcurves in case of non-sameparametrization input.
   TopoDS_Face aFace = face;
@@ -815,7 +814,7 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
   // if BRepLib was OK, compare and select the best variant
   if (SP)
   {
-    Standard_Real BRLTol = BRep_Tool::Tolerance(copyedge), BRLDev;
+    double BRLTol = BRep_Tool::Tolerance(copyedge), BRLDev;
     sae.CheckSameParameter(copyedge, BRLDev);
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
     if (BRLTol < BRLDev)
@@ -854,21 +853,21 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge&  edge,
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Edge::Status(const ShapeExtend_Status status) const
+bool ShapeFix_Edge::Status(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatus, status);
 }
 
 //=================================================================================================
 
-Handle(ShapeBuild_ReShape) ShapeFix_Edge::Context() const
+occ::handle<ShapeBuild_ReShape> ShapeFix_Edge::Context() const
 {
   return myContext;
 }
 
 //=================================================================================================
 
-void ShapeFix_Edge::SetContext(const Handle(ShapeBuild_ReShape)& context)
+void ShapeFix_Edge::SetContext(const occ::handle<ShapeBuild_ReShape>& context)
 {
   myContext = context;
 }

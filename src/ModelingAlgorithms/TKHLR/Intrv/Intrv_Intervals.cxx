@@ -67,7 +67,7 @@ void Intrv_Intervals::Intersect(const Intrv_Intervals& Tool)
 
 void Intrv_Intervals::Subtract(const Intrv_Interval& Tool)
 {
-  Standard_Integer index = 1;
+  int index = 1;
 
   while (index <= myInter.Length())
   {
@@ -125,7 +125,7 @@ void Intrv_Intervals::Subtract(const Intrv_Interval& Tool)
 
 void Intrv_Intervals::Subtract(const Intrv_Intervals& Tool)
 {
-  Standard_Integer index;
+  int index;
   for (index = 1; index <= Tool.myInter.Length(); index++)
     Subtract(Tool.myInter(index));
 }
@@ -134,9 +134,9 @@ void Intrv_Intervals::Subtract(const Intrv_Intervals& Tool)
 
 void Intrv_Intervals::Unite(const Intrv_Interval& Tool)
 {
-  Standard_Boolean Inserted = Standard_False;
-  Intrv_Interval   Tins(Tool);
-  Standard_Integer index = 1;
+  bool           Inserted = false;
+  Intrv_Interval Tins(Tool);
+  int            index = 1;
 
   while (index <= myInter.Length())
   {
@@ -145,14 +145,14 @@ void Intrv_Intervals::Unite(const Intrv_Interval& Tool)
     {
 
       case Intrv_Before:
-        Inserted = Standard_True;
+        Inserted = true;
         myInter.InsertBefore(index, Tins); // inserer avant et
         index = myInter.Length();          // sortir
         break;
 
       case Intrv_JustBefore:
       case Intrv_OverlappingAtStart:
-        Inserted = Standard_True;
+        Inserted = true;
         myInter(index).SetStart(Tins.Start(), Tins.TolStart()); // changer le debut
         index = myInter.Length();                               // sortir
         break;
@@ -160,11 +160,11 @@ void Intrv_Intervals::Unite(const Intrv_Interval& Tool)
       case Intrv_Similar:
         Tins.FuseAtStart(myInter(index).Start(),
                          myInter(index).TolStart()); // modifier le debut
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case Intrv_JustEnclosingAtEnd:
         Tins.FuseAtEnd(myInter(index).End(),
                        myInter(index).TolEnd()); // modifier la fin
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case Intrv_Enclosing:
         myInter.Remove(index); // detruire et
         index--;               // continuer
@@ -180,7 +180,7 @@ void Intrv_Intervals::Unite(const Intrv_Interval& Tool)
         break;
 
       case Intrv_JustOverlappingAtStart:
-        Inserted = Standard_True;
+        Inserted = true;
         myInter(index).FuseAtStart(Tins.Start(), Tins.TolStart()); // modifier le debut
         index = myInter.Length();                                  // sortir
         break;
@@ -193,7 +193,7 @@ void Intrv_Intervals::Unite(const Intrv_Interval& Tool)
         break;
 
       case Intrv_Inside:
-        Inserted = Standard_True;
+        Inserted = true;
         index    = myInter.Length(); // sortir
         break;
 
@@ -218,7 +218,7 @@ void Intrv_Intervals::Unite(const Intrv_Interval& Tool)
 
 void Intrv_Intervals::Unite(const Intrv_Intervals& Tool)
 {
-  Standard_Integer index;
+  int index;
   for (index = 1; index <= Tool.myInter.Length(); index++)
     Unite(Tool.myInter(index));
 }

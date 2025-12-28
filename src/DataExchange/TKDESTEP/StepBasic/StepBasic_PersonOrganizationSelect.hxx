@@ -41,19 +41,16 @@ public:
   //! 2 -> Organization
   //! 3 -> PersonAndOrganization
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Person (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Person) Person() const;
+  Standard_EXPORT occ::handle<StepBasic_Person> Person() const;
 
   //! returns Value as a Organization (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Organization) Organization() const;
+  Standard_EXPORT occ::handle<StepBasic_Organization> Organization() const;
 
   //! returns Value as a PersonAndOrganization (Null if another type)
-  Standard_EXPORT Handle(StepBasic_PersonAndOrganization) PersonAndOrganization() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganization> PersonAndOrganization() const;
 };
 
 #endif // _StepBasic_PersonOrganizationSelect_HeaderFile

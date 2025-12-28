@@ -29,10 +29,10 @@ RWStepRepr_RWStructuralResponseProperty::RWStepRepr_RWStructuralResponseProperty
 //=================================================================================================
 
 void RWStepRepr_RWStructuralResponseProperty::ReadStep(
-  const Handle(StepData_StepReaderData)&             data,
-  const Standard_Integer                             num,
-  Handle(Interface_Check)&                           ach,
-  const Handle(StepRepr_StructuralResponseProperty)& ent) const
+  const occ::handle<StepData_StepReaderData>&             data,
+  const int                                               num,
+  occ::handle<Interface_Check>&                           ach,
+  const occ::handle<StepRepr_StructuralResponseProperty>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "structural_response_property"))
@@ -40,10 +40,10 @@ void RWStepRepr_RWStructuralResponseProperty::ReadStep(
 
   // Inherited fields of PropertyDefinition
 
-  Handle(TCollection_HAsciiString) aPropertyDefinition_Name;
+  occ::handle<TCollection_HAsciiString> aPropertyDefinition_Name;
   data->ReadString(num, 1, "property_definition.name", ach, aPropertyDefinition_Name);
 
-  Handle(TCollection_HAsciiString) aPropertyDefinition_Description;
+  occ::handle<TCollection_HAsciiString> aPropertyDefinition_Description;
   data->ReadString(num, 2, "property_definition.description", ach, aPropertyDefinition_Description);
 
   StepRepr_CharacterizedDefinition aPropertyDefinition_Definition;
@@ -51,7 +51,7 @@ void RWStepRepr_RWStructuralResponseProperty::ReadStep(
 
   // Initialize entity
   ent->Init(aPropertyDefinition_Name,
-            Standard_True,
+            true,
             aPropertyDefinition_Description,
             aPropertyDefinition_Definition);
 }
@@ -59,8 +59,8 @@ void RWStepRepr_RWStructuralResponseProperty::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWStructuralResponseProperty::WriteStep(
-  StepData_StepWriter&                               SW,
-  const Handle(StepRepr_StructuralResponseProperty)& ent) const
+  StepData_StepWriter&                                    SW,
+  const occ::handle<StepRepr_StructuralResponseProperty>& ent) const
 {
 
   // Inherited fields of PropertyDefinition
@@ -75,8 +75,8 @@ void RWStepRepr_RWStructuralResponseProperty::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWStructuralResponseProperty::Share(
-  const Handle(StepRepr_StructuralResponseProperty)& ent,
-  Interface_EntityIterator&                          iter) const
+  const occ::handle<StepRepr_StructuralResponseProperty>& ent,
+  Interface_EntityIterator&                               iter) const
 {
 
   // Inherited fields of PropertyDefinition

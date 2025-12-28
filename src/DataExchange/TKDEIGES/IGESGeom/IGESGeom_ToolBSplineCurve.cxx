@@ -32,8 +32,8 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // MGE 29/07/98
 //=================================================================================================
@@ -42,8 +42,8 @@ IGESGeom_ToolBSplineCurve::IGESGeom_ToolBSplineCurve() {}
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve)& ent,
-                                              const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESGeom_ToolBSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_BSplineCurve>& ent,
+                                              const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                               IGESData_ParamReader& PR) const
 {
   // MGE 29/07/98
@@ -56,23 +56,23 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve
   Message_Msg Msg103("XSTEP_103");
   //========================================
 
-  Standard_Integer              anIndex, aDegree;
-  Standard_Boolean              aPlanar, aClosed, aPolynomial, aPeriodic;
-  Standard_Real                 aUmin, aUmax, normX, normY, normZ;
-  gp_XYZ                        aNorm(0., 0., 0.);
-  Handle(TColStd_HArray1OfReal) allKnots;
-  Handle(TColStd_HArray1OfReal) allWeights;
-  Handle(TColgp_HArray1OfXYZ)   allPoles;
+  int                                      anIndex, aDegree;
+  bool                                     aPlanar, aClosed, aPolynomial, aPeriodic;
+  double                                   aUmin, aUmax, normX, normY, normZ;
+  gp_XYZ                                   aNorm(0., 0., 0.);
+  occ::handle<NCollection_HArray1<double>> allKnots;
+  occ::handle<NCollection_HArray1<double>> allWeights;
+  occ::handle<NCollection_HArray1<gp_XYZ>> allPoles;
 
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  // bool st; //szv#4:S4163:12Mar99 moved down
 
   // st = PR.ReadInteger(PR.Current(), Msg97, anIndex); //szv#4:S4163:12Mar99 moved in if
   // st = PR.ReadInteger(PR.Current(), "Upper Index Of Sum", anIndex);
 
   // szv#4:S4163:12Mar99 optimized
   /*if (st && anIndex >= 0) {
-    allPoles   = new TColgp_HArray1OfXYZ(0, anIndex);
-    // allWeights = new TColStd_HArray1OfReal(1, anIndex+1);  done by ReadReals
+    allPoles   = new NCollection_HArray1<gp_XYZ>(0, anIndex);
+    // allWeights = new NCollection_HArray1<double>(1, anIndex+1);  done by ReadReals
   }
 
   if (st && anIndex < 0)
@@ -90,8 +90,8 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve
     }
     else
     {
-      allPoles = new TColgp_HArray1OfXYZ(0, anIndex);
-      // allWeights = new TColStd_HArray1OfReal(1, anIndex+1);  done by ReadReals
+      allPoles = new NCollection_HArray1<gp_XYZ>(0, anIndex);
+      // allWeights = new NCollection_HArray1<double>(1, anIndex+1);  done by ReadReals
     }
   }
   else
@@ -102,7 +102,7 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve
 
   // st = PR.ReadInteger(PR.Current(), Msg98, aDegree); //szv#4:S4163:12Mar99 moved in if
   //  if (st && ! allWeights.IsNull() )   done by ReadReals
-  //    allKnots = new TColStd_HArray1OfReal(-aDegree, anIndex+1);
+  //    allKnots = new NCollection_HArray1<double>(-aDegree, anIndex+1);
   if (!PR.ReadInteger(PR.Current(), aDegree))
   {
     aDegree = 0; // szv#4:S4163:12Mar99 `st=` not needed
@@ -120,7 +120,7 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve
   // st = PR.ReadBoolean(PR.Current(), "Rational/Polynomial Flag", aPolynomial);
   // st = PR.ReadBoolean(PR.Current(), "NonPeriodic/Periodic Flag", aPeriodic);
 
-  Standard_Integer nbKnots = anIndex + aDegree + 2;
+  int nbKnots = anIndex + aDegree + 2;
   // Reading all the knot sequences
 
   // clang-format off
@@ -137,7 +137,7 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve
       //st = PR.ReadReals(PR.CurrentList(anIndex+1), "Weights", allWeights,0);
     // clang-format on
 
-    for (Standard_Integer I = 0; I <= anIndex; I++)
+    for (int I = 0; I <= anIndex; I++)
     {
       gp_XYZ tempPole;
       // st = PR.ReadXYZ(PR.CurrentList(1, 3), Msg105, tempPole); //szv#4:S4163:12Mar99 moved down
@@ -161,7 +161,7 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve
     st = PR.ReadReal(PR.Current(), "Starting Parameter Value", aUmin);
     st = PR.ReadReal(PR.Current(), "Ending Parameter Value", aUmax);
   */
-  Standard_Boolean st = Standard_False;
+  bool st = false;
   if (PR.DefinedElseSkip())
   {
     st = PR.ReadReal(PR.Current(), normX);
@@ -218,13 +218,13 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineCurve::WriteOwnParams(const Handle(IGESGeom_BSplineCurve)& ent,
-                                               IGESData_IGESWriter&                 IW) const
+void IGESGeom_ToolBSplineCurve::WriteOwnParams(const occ::handle<IGESGeom_BSplineCurve>& ent,
+                                               IGESData_IGESWriter&                      IW) const
 {
-  Standard_Integer low, up;
-  Standard_Integer I;
-  Standard_Integer index  = ent->UpperIndex();
-  Standard_Integer degree = ent->Degree();
+  int low, up;
+  int I;
+  int index  = ent->UpperIndex();
+  int degree = ent->Degree();
   IW.Send(index);
   IW.Send(degree);
   IW.SendBoolean(ent->IsPlanar());
@@ -257,25 +257,25 @@ void IGESGeom_ToolBSplineCurve::WriteOwnParams(const Handle(IGESGeom_BSplineCurv
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineCurve::OwnShared(const Handle(IGESGeom_BSplineCurve)& /* ent */,
+void IGESGeom_ToolBSplineCurve::OwnShared(const occ::handle<IGESGeom_BSplineCurve>& /* ent */,
                                           Interface_EntityIterator& /* iter */) const
 {
 }
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineCurve::OwnCopy(const Handle(IGESGeom_BSplineCurve)& another,
-                                        const Handle(IGESGeom_BSplineCurve)& ent,
+void IGESGeom_ToolBSplineCurve::OwnCopy(const occ::handle<IGESGeom_BSplineCurve>& another,
+                                        const occ::handle<IGESGeom_BSplineCurve>& ent,
                                         Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer              I;
-  Standard_Integer              low, up;
-  Standard_Integer              anIndex, aDegree;
-  Standard_Boolean              aPlanar, aClosed, aPolynomial, aPeriodic;
-  Handle(TColStd_HArray1OfReal) allKnots, allWeights;
-  Handle(TColgp_HArray1OfXYZ)   allPoles;
-  Standard_Real                 aUmin, aUmax;
-  gp_XYZ                        aNorm;
+  int                                      I;
+  int                                      low, up;
+  int                                      anIndex, aDegree;
+  bool                                     aPlanar, aClosed, aPolynomial, aPeriodic;
+  occ::handle<NCollection_HArray1<double>> allKnots, allWeights;
+  occ::handle<NCollection_HArray1<gp_XYZ>> allPoles;
+  double                                   aUmin, aUmax;
+  gp_XYZ                                   aNorm;
 
   anIndex     = another->UpperIndex();
   aDegree     = another->Degree();
@@ -284,21 +284,21 @@ void IGESGeom_ToolBSplineCurve::OwnCopy(const Handle(IGESGeom_BSplineCurve)& ano
   aPolynomial = another->IsPolynomial();
   aPeriodic   = another->IsPeriodic();
 
-  allKnots = new TColStd_HArray1OfReal(-aDegree, anIndex + 1);
+  allKnots = new NCollection_HArray1<double>(-aDegree, anIndex + 1);
 
   low = -aDegree;
   up  = anIndex + 1;
   for (I = low; I <= up; I++)
     allKnots->SetValue(I, another->Knot(I));
 
-  allWeights = new TColStd_HArray1OfReal(0, anIndex);
+  allWeights = new NCollection_HArray1<double>(0, anIndex);
 
   low = 0;
   up  = anIndex;
   for (I = low; I <= up; I++)
     allWeights->SetValue(I, another->Weight(I));
 
-  allPoles = new TColgp_HArray1OfXYZ(0, anIndex);
+  allPoles = new NCollection_HArray1<gp_XYZ>(0, anIndex);
 
   for (I = low; I <= up; I++)
     allPoles->SetValue(I, (another->Pole(I)).XYZ());
@@ -324,7 +324,7 @@ void IGESGeom_ToolBSplineCurve::OwnCopy(const Handle(IGESGeom_BSplineCurve)& ano
 //=================================================================================================
 
 IGESData_DirChecker IGESGeom_ToolBSplineCurve::DirChecker(
-  const Handle(IGESGeom_BSplineCurve)& /* ent */) const
+  const occ::handle<IGESGeom_BSplineCurve>& /* ent */) const
 {
   IGESData_DirChecker DC(126, 0, 5);
   DC.Structure(IGESData_DefVoid);
@@ -337,9 +337,9 @@ IGESData_DirChecker IGESGeom_ToolBSplineCurve::DirChecker(
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineCurve::OwnCheck(const Handle(IGESGeom_BSplineCurve)& ent,
+void IGESGeom_ToolBSplineCurve::OwnCheck(const occ::handle<IGESGeom_BSplineCurve>& ent,
                                          const Interface_ShareTool&,
-                                         Handle(Interface_Check)& ach) const
+                                         occ::handle<Interface_Check>& ach) const
 {
   // MGE 29/07/98
   // Building of messages
@@ -348,8 +348,8 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const Handle(IGESGeom_BSplineCurve)& en
   // Message_Msg Msg109("XSTEP_109");
   //========================================
 
-  Standard_Real eps = 1.E-04; // Test tolerance ??
-                              //  Standard_Real norm = ent->Normal().SquareModulus();
+  double eps = 1.E-04; // Test tolerance ??
+                       //  double norm = ent->Normal().SquareModulus();
 
   // modified by rln 17/12/97 check of flag PROP2 according to IGES Standard
   // It is possible to compare V(0) and V(1) only if StartingParameter = FirstKnot
@@ -357,20 +357,20 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const Handle(IGESGeom_BSplineCurve)& en
   // The fail is replaced with warning because it is not a serious problem
   // if (ent->UMin() == ent->Knot(-ent->Degree()        ) &&
   //   ent->UMax() == ent->Knot( ent->UpperIndex() + 1)   ) {
-  //   Standard_Real udif = ent->UMax() - ent->UMin();
+  //   double udif = ent->UMax() - ent->UMin();
   //   if (udif < 0) udif = -udif;
-  //     Standard_Real udif = ent->Pole(0).SquareDistance (ent->Pole(ent->UpperIndex()));
+  //     double udif = ent->Pole(0).SquareDistance (ent->Pole(ent->UpperIndex()));
   //    if (udif <  eps * eps && !ent->IsClosed())
   //      ach.AddWarning("V(0) == V(1) for an Open Curve (PROP2 = 0)");
   //    if (udif >= eps * eps &&  ent->IsClosed())
   //      ach.AddWarning("V(0) != V(1) for a Closed Curve (PROP2 = 1)");
   // }
 
-  Standard_Integer lower = 0;
-  Standard_Integer upper = ent->UpperIndex();
-  Standard_Boolean Flag  = Standard_True;
+  int  lower = 0;
+  int  upper = ent->UpperIndex();
+  bool Flag  = true;
 
-  Standard_Integer I; // svv Jan 11 2000 : porting on DEC
+  int I; // svv Jan 11 2000 : porting on DEC
   for (I = 0; ((I < upper) && (Flag)); I++)
     Flag &= (ent->Weight(I) > 0);
 
@@ -380,23 +380,23 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const Handle(IGESGeom_BSplineCurve)& en
     ach->SendFail(Msg104);
   }
 
-  Flag                  = Standard_True;
-  Standard_Real tempVal = ent->Weight(lower);
+  Flag           = true;
+  double tempVal = ent->Weight(lower);
 
   for (I = lower; ((I < upper) && (Flag)); I++)
     Flag &= (ent->Weight(I) == tempVal);
   /*
-    if (Flag && !ent->IsPolynomial(Standard_True))
+    if (Flag && !ent->IsPolynomial(true))
       ach.AddWarning("All weights equal & PROP3 != 1 (Curve Not Polynomial)");
-    if (!Flag && ent->IsPolynomial(Standard_True))
+    if (!Flag && ent->IsPolynomial(true))
       ach.AddWarning("All weights not equal & PROP3 != 0 (Curve Not Rational)");
   */
 
   if (ent->IsPlanar())
   {
-    gp_XYZ        aNorm  = ent->Normal();
-    Standard_Real epsn   = eps * 10.; // Tolerance ?? ici large
-    Standard_Real normod = aNorm.SquareModulus();
+    gp_XYZ aNorm  = ent->Normal();
+    double epsn   = eps * 10.; // Tolerance ?? ici large
+    double normod = aNorm.SquareModulus();
     if (normod < epsn)
     {
       Message_Msg Msg109("XSTEP_109");
@@ -407,18 +407,18 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const Handle(IGESGeom_BSplineCurve)& en
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineCurve::OwnDump(const Handle(IGESGeom_BSplineCurve)& ent,
+void IGESGeom_ToolBSplineCurve::OwnDump(const occ::handle<IGESGeom_BSplineCurve>& ent,
                                         const IGESData_IGESDumper& /* dumper */,
-                                        Standard_OStream&      S,
-                                        const Standard_Integer level) const
+                                        Standard_OStream& S,
+                                        const int         level) const
 {
-  Standard_Integer upind = ent->UpperIndex();
+  int upind = ent->UpperIndex();
   S << "BSplineCurve from IGESGeom\n"
     << "Sum UpperIndex : " << upind << "   Degree : " << ent->Degree() << "  "
     << (ent->IsPlanar() ? "Planar" : "NonPlanar") << "\n"
     << (ent->IsClosed() ? "Closed" : "Open") << "  "
     << (ent->IsPeriodic() ? "Periodic" : "NonPeriodic") << "  " // #54 rln 24.12.98 CCI60005
-    << (ent->IsPolynomial(Standard_True) ? "Polynomial" : "Rational") << "\nKnots : ";
+    << (ent->IsPolynomial(true) ? "Polynomial" : "Rational") << "\nKnots : ";
   IGESData_DumpVals(S, level, -ent->Degree(), upind + 1, ent->Knot);
   S << "\nWeights : ";
   IGESData_DumpVals(S, level, 0, upind, ent->Weight);

@@ -184,11 +184,11 @@ private:
 
 //=================================================================================================
 
-Standard_Boolean Standard::StackTrace(char*     theBuffer,
-                                      const int theBufferSize,
-                                      const int theNbTraces = 10,
-                                      void*     theContext,
-                                      const int theNbTopSkip)
+bool Standard::StackTrace(char*     theBuffer,
+                          const int theBufferSize,
+                          const int theNbTraces = 10,
+                          void*     theContext,
+                          const int theNbTopSkip)
 {
   (void)theContext;
   if (theBufferSize < 1 || theNbTraces < 1 || theBuffer == NULL || theNbTopSkip < 0)

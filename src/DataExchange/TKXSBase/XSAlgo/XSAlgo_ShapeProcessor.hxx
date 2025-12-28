@@ -17,7 +17,9 @@
 #include <DE_ShapeFixParameters.hxx>
 #include <ShapeProcess.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
@@ -64,19 +66,19 @@ public:
   //! Get the context of the last processing.
   //! Only valid after the ProcessShape() method was called.
   //! @return Shape context.
-  Handle(ShapeProcess_ShapeContext) GetContext() { return myContext; }
+  occ::handle<ShapeProcess_ShapeContext> GetContext() { return myContext; }
 
   //! Merge the results of the shape processing with the transfer process.
   //! @param theTransientProcess Transfer process to merge with.
   //! @param theFirstTPItemIndex Index of the first item in the transfer process to merge with.
   Standard_EXPORT void MergeTransferInfo(
-    const Handle(Transfer_TransientProcess)& theTransientProcess,
-    const Standard_Integer                   theFirstTPItemIndex) const;
+    const occ::handle<Transfer_TransientProcess>& theTransientProcess,
+    const int                                     theFirstTPItemIndex) const;
 
   //! Merge the results of the shape processing with the finder process.
   //! @param theFinderProcess Finder process to merge with.
   Standard_EXPORT void MergeTransferInfo(
-    const Handle(Transfer_FinderProcess)& theFinderProcess) const;
+    const occ::handle<Transfer_FinderProcess>& theFinderProcess) const;
 
   //! Check quality of pcurve of the edge on the given face, and correct it if necessary.
   //! @param theEdge Edge to check.
@@ -84,10 +86,10 @@ public:
   //! @param thePrecision Precision to use for checking.
   //! @param theIsSeam Flag indicating whether the edge is a seam edge.
   //! @return True if the pcurve was corrected, false if it was dropped.
-  Standard_EXPORT static Standard_Boolean CheckPCurve(const TopoDS_Edge&     theEdge,
-                                                      const TopoDS_Face&     theFace,
-                                                      const Standard_Real    thePrecision,
-                                                      const Standard_Boolean theIsSeam);
+  Standard_EXPORT static bool CheckPCurve(const TopoDS_Edge& theEdge,
+                                          const TopoDS_Face& theFace,
+                                          const double       thePrecision,
+                                          const bool         theIsSeam);
 
   //! Reads the parameter map from and operation flags from the file specified in static interface.
   //! @param theFileResourceName Name of the parameter in interface static that contains the name
@@ -165,10 +167,11 @@ public:
   //! @param theFirstTPItemIndex Index of the first item in the transfer process to merge with.
   //! @param theMessages Messages to add.
   Standard_EXPORT static void MergeShapeTransferInfo(
-    const Handle(Transfer_TransientProcess)& theFinderProcess,
-    const TopTools_DataMapOfShapeShape&      theModifiedShapesMap,
-    const Standard_Integer                   theFirstTPItemIndex,
-    Handle(ShapeExtend_MsgRegistrator)       theMessages);
+    const occ::handle<Transfer_TransientProcess>& theFinderProcess,
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+                                            theModifiedShapesMap,
+    const int                               theFirstTPItemIndex,
+    occ::handle<ShapeExtend_MsgRegistrator> theMessages);
 
   //! Merge the results of the shape processing with the transfer process.
   //! @param theTransientProcess Transfer process to merge with.
@@ -176,9 +179,10 @@ public:
   //! @param theFirstTPItemIndex Index of the first item in the transfer process to merge with.
   //! @param theMessages Messages to add.
   Standard_EXPORT static void MergeShapeTransferInfo(
-    const Handle(Transfer_FinderProcess)& theTransientProcess,
-    const TopTools_DataMapOfShapeShape&   theModifiedShapesMap,
-    Handle(ShapeExtend_MsgRegistrator)    theMessages);
+    const occ::handle<Transfer_FinderProcess>& theTransientProcess,
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+                                            theModifiedShapesMap,
+    occ::handle<ShapeExtend_MsgRegistrator> theMessages);
 
 private:
   //! Initialize the context with the specified shape.
@@ -189,9 +193,9 @@ private:
   //! @param theMessages Container with messages.
   //! @param theShape Shape to get messages from.
   //! @param theBinder Transfer binder to add messages to.
-  static void addMessages(const Handle(ShapeExtend_MsgRegistrator)& theMessages,
-                          const TopoDS_Shape&                       theShape,
-                          Handle(Transfer_Binder)&                  theBinder);
+  static void addMessages(const occ::handle<ShapeExtend_MsgRegistrator>& theMessages,
+                          const TopoDS_Shape&                            theShape,
+                          occ::handle<Transfer_Binder>&                  theBinder);
 
   //! Create a new edge with the same geometry as the source edge.
   //! @param theSourceEdge Source edge.
@@ -199,8 +203,8 @@ private:
   static TopoDS_Edge MakeEdgeOnCurve(const TopoDS_Edge& aSourceEdge);
 
 private:
-  ParameterMap                      myParameters; //!< Parameters to be used in the processing.
-  Handle(ShapeProcess_ShapeContext) myContext;    //!< Shape context.
+  ParameterMap                           myParameters; //!< Parameters to be used in the processing.
+  occ::handle<ShapeProcess_ShapeContext> myContext;    //!< Shape context.
 };
 
 #endif // _XSAlgo_ShapeProcessor_HeaderFile

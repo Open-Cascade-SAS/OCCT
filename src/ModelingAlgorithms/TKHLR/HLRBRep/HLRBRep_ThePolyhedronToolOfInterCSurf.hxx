@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Bnd_Box.hxx>
-#include <Bnd_HArray1OfBox.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
 #include <HLRBRep_ThePolyhedronOfInterCSurf.hxx>
 
@@ -39,20 +40,20 @@ public:
 
   //! Give the array of boxes. The box <n> corresponding
   //! to the triangle <n>.
-  static const Handle(Bnd_HArray1OfBox)& ComponentsBounding(
+  static const occ::handle<NCollection_HArray1<Bnd_Box>>& ComponentsBounding(
     const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh)
   {
     return thePolyh.ComponentsBounding();
   }
 
   //! Give the tolerance of the polygon.
-  static Standard_Real DeflectionOverEstimation(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh)
+  static double DeflectionOverEstimation(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh)
   {
     return thePolyh.DeflectionOverEstimation();
   }
 
   //! Give the number of triangles in this polyhedral surface.
-  static Standard_Integer NbTriangles(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh)
+  static int NbTriangles(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh)
   {
     return thePolyh.NbTriangles();
   }
@@ -60,17 +61,16 @@ public:
   //! Give the indices of the 3 points of the triangle of
   //! address Index in the PolyhedronTool.
   static void Triangle(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh,
-                       const Standard_Integer                   Index,
-                       Standard_Integer&                        P1,
-                       Standard_Integer&                        P2,
-                       Standard_Integer&                        P3)
+                       const int                                Index,
+                       int&                                     P1,
+                       int&                                     P2,
+                       int&                                     P3)
   {
     thePolyh.Triangle(Index, P1, P2, P3);
   }
 
   //! Give the point of index i in the polyhedral surface.
-  static const gp_Pnt& Point(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh,
-                             const Standard_Integer                   Index)
+  static const gp_Pnt& Point(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh, const int Index)
   {
     return thePolyh.Point(Index);
   }
@@ -81,12 +81,12 @@ public:
   //! When we are on a free edge TriCon==0 but the function return
   //! the value of the triangle in the other side of Pivot on the free edge.
   //! Used to turn around a vertex.
-  static Standard_Integer TriConnex(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh,
-                                    const Standard_Integer                   Triang,
-                                    const Standard_Integer                   Pivot,
-                                    const Standard_Integer                   Pedge,
-                                    Standard_Integer&                        TriCon,
-                                    Standard_Integer&                        OtherP)
+  static int TriConnex(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh,
+                       const int                                Triang,
+                       const int                                Pivot,
+                       const int                                Pedge,
+                       int&                                     TriCon,
+                       int&                                     OtherP)
   {
     return thePolyh.TriConnex(Triang, Pivot, Pedge, TriCon, OtherP);
   }
@@ -94,15 +94,15 @@ public:
   //! This method returns true if the edge based on points with
   //! indices Index1 and Index2 represents a boundary edge.
   //! It is necessary to take into account the boundary deflection for this edge.
-  static Standard_Boolean IsOnBound(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh,
-                                    const Standard_Integer                   Index1,
-                                    const Standard_Integer                   Index2)
+  static bool IsOnBound(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh,
+                        const int                                Index1,
+                        const int                                Index2)
   {
     return thePolyh.IsOnBound(Index1, Index2);
   }
 
   //! This method returns a border deflection of the polyhedron.
-  static Standard_Real GetBorderDeflection(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh)
+  static double GetBorderDeflection(const HLRBRep_ThePolyhedronOfInterCSurf& thePolyh)
   {
     return thePolyh.GetBorderDeflection();
   }

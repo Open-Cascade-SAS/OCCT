@@ -26,9 +26,7 @@ protected:
   void TearDown() override {}
 
   // Helper to compare floating point values
-  bool IsNear(Standard_Real theValue1,
-              Standard_Real theValue2,
-              Standard_Real theTolerance = 0.001) const
+  bool IsNear(double theValue1, double theValue2, double theTolerance = 0.001) const
   {
     return std::abs(theValue1 - theValue2) < theTolerance;
   }
@@ -62,9 +60,9 @@ TEST_F(Quantity_ColorTest, ConstexprGetters)
   const Quantity_Color aColor(0.3, 0.5, 0.7, Quantity_TOC_RGB);
 
   // These should work at compile-time with constexpr
-  Standard_Real aR = aColor.Red();
-  Standard_Real aG = aColor.Green();
-  Standard_Real aB = aColor.Blue();
+  double aR = aColor.Red();
+  double aG = aColor.Green();
+  double aB = aColor.Blue();
 
   EXPECT_TRUE(IsNear(0.3, aR));
   EXPECT_TRUE(IsNear(0.5, aG));
@@ -96,10 +94,10 @@ TEST_F(Quantity_ColorTest, DistanceCalculation)
   Quantity_Color aColor2(0.3, 0.4, 0.0, Quantity_TOC_RGB);
 
   // Distance should be sqrt(0.3^2 + 0.4^2) = sqrt(0.09 + 0.16) = sqrt(0.25) = 0.5
-  Standard_Real aDist = aColor1.Distance(aColor2);
+  double aDist = aColor1.Distance(aColor2);
   EXPECT_TRUE(IsNear(0.5, aDist));
 
-  Standard_Real aSquareDist = aColor1.SquareDistance(aColor2);
+  double aSquareDist = aColor1.SquareDistance(aColor2);
   EXPECT_TRUE(IsNear(0.25, aSquareDist));
 }
 
@@ -187,12 +185,12 @@ TEST_F(Quantity_ColorTest, DeltaE2000_Calculation)
   Quantity_Color aColor1(0.5, 0.6, 0.7, Quantity_TOC_RGB);
   Quantity_Color aColor2(0.5, 0.6, 0.7, Quantity_TOC_RGB);
 
-  Standard_Real aDeltaE = aColor1.DeltaE2000(aColor2);
+  double aDeltaE = aColor1.DeltaE2000(aColor2);
   EXPECT_TRUE(IsNear(0.0, aDeltaE, 0.01));
 
   // Different colors should have non-zero DeltaE
   Quantity_Color aColor3(0.3, 0.4, 0.5, Quantity_TOC_RGB);
-  Standard_Real  aDeltaE2 = aColor1.DeltaE2000(aColor3);
+  double         aDeltaE2 = aColor1.DeltaE2000(aColor3);
   EXPECT_GT(aDeltaE2, 0.0);
 }
 
@@ -238,9 +236,9 @@ TEST_F(Quantity_ColorTest, HLS_Extraction)
   Quantity_Color aRed(Quantity_NOC_RED);
 
   // For pure red, hue should be ~0, saturation should be 1, lightness should be 1
-  Standard_Real aHue   = aRed.Hue();
-  Standard_Real aLight = aRed.Light();
-  Standard_Real aSat   = aRed.Saturation();
+  double aHue   = aRed.Hue();
+  double aLight = aRed.Light();
+  double aSat   = aRed.Saturation();
 
   EXPECT_TRUE(IsNear(0.0, aHue, 5.0) || IsNear(360.0, aHue, 5.0)); // Hue wraps around
   EXPECT_TRUE(IsNear(1.0, aLight, 0.01));
@@ -250,7 +248,7 @@ TEST_F(Quantity_ColorTest, HLS_Extraction)
 // Test thread-safety of Epsilon getter/setter
 TEST_F(Quantity_ColorTest, EpsilonThreadSafety)
 {
-  Standard_Real aOriginalEpsilon = Quantity_Color::Epsilon();
+  double aOriginalEpsilon = Quantity_Color::Epsilon();
 
   // Set new epsilon
   Quantity_Color::SetEpsilon(0.0002);
@@ -264,10 +262,10 @@ TEST_F(Quantity_ColorTest, EpsilonThreadSafety)
 // Test color name string conversion
 TEST_F(Quantity_ColorTest, ColorNameString)
 {
-  Standard_CString aRedName = Quantity_Color::StringName(Quantity_NOC_RED);
+  const char* aRedName = Quantity_Color::StringName(Quantity_NOC_RED);
   EXPECT_STREQ("RED", aRedName);
 
-  Standard_CString aBlueName = Quantity_Color::StringName(Quantity_NOC_BLUE);
+  const char* aBlueName = Quantity_Color::StringName(Quantity_NOC_BLUE);
   EXPECT_STREQ("BLUE", aBlueName);
 }
 

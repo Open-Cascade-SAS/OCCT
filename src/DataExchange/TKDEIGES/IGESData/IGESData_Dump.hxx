@@ -74,7 +74,7 @@
 //        (Entities with Type/Form, XY/XYZ with Transformed equivalents)
 
 //  IGESData_DumpListVal(S,Lower,Upper,Item)   Item can be Real,Integer,
-//                more generally, any type having operator << to Handle(Message_Messenger)
+//                more generally, any type having operator << to occ::handle<Message_Messenger>
 //  IGESData_DumpListXY(S,Lower,Upper,Item)    Item : XY without Transformation
 //  IGESData_DumpListXYZ(S,Lower,Upper,Item)   Item : XYZ without Transf
 
@@ -173,38 +173,38 @@
 
 #define IGESData_DumpListVal(S, lower, upper, item)                                                \
   {                                                                                                \
-    Standard_Integer lo = lower;                                                                   \
-    Standard_Integer up = upper;                                                                   \
+    int lo = lower;                                                                                \
+    int up = upper;                                                                                \
     IGESData_DumpListHeader(S, lo, up);                                                            \
     S << " :";                                                                                     \
-    for (Standard_Integer iopa = lo; iopa <= up; iopa++)                                           \
+    for (int iopa = lo; iopa <= up; iopa++)                                                        \
       S << " " << item(iopa);                                                                      \
   }
 
 #define IGESData_DumpListXY(S, lower, upper, item)                                                 \
   {                                                                                                \
-    Standard_Integer lo = lower;                                                                   \
-    Standard_Integer up = upper;                                                                   \
+    int lo = lower;                                                                                \
+    int up = upper;                                                                                \
     IGESData_DumpListHeader(S, lo, up);                                                            \
     S << " :";                                                                                     \
-    for (Standard_Integer iopa = lo; iopa <= up; iopa++)                                           \
+    for (int iopa = lo; iopa <= up; iopa++)                                                        \
       IGESData_DumpXY(S, item(iopa));                                                              \
   }
 
 #define IGESData_DumpListXYZ(S, lower, upper, item)                                                \
   {                                                                                                \
-    Standard_Integer lo = lower;                                                                   \
-    Standard_Integer up = upper;                                                                   \
+    int lo = lower;                                                                                \
+    int up = upper;                                                                                \
     IGESData_DumpListHeader(S, lo, up);                                                            \
     S << " :";                                                                                     \
-    for (Standard_Integer iopa = lo; iopa <= up; iopa++)                                           \
+    for (int iopa = lo; iopa <= up; iopa++)                                                        \
       IGESData_DumpXYZ(S, item(iopa));                                                             \
   }
 
 #define IGESData_DumpVals(S, Level, lower, upper, item)                                            \
   {                                                                                                \
-    Standard_Integer lo = lower;                                                                   \
-    Standard_Integer up = upper;                                                                   \
+    int lo = lower;                                                                                \
+    int up = upper;                                                                                \
     IGESData_DumpListHeader(S, lo, up);                                                            \
     if (lo > up)                                                                                   \
     {                                                                                              \
@@ -214,15 +214,15 @@
     else if (Level > 0)                                                                            \
     {                                                                                              \
       S << " :";                                                                                   \
-      for (Standard_Integer iopa = lo; iopa <= up; iopa++)                                         \
+      for (int iopa = lo; iopa <= up; iopa++)                                                      \
         S << " " << item(iopa);                                                                    \
     }                                                                                              \
   }
 
 #define IGESData_DumpListXYL(S, Level, lower, upper, item, Trsf)                                   \
   {                                                                                                \
-    Standard_Integer lo = lower;                                                                   \
-    Standard_Integer up = upper;                                                                   \
+    int lo = lower;                                                                                \
+    int up = upper;                                                                                \
     IGESData_DumpListHeader(S, lo, up);                                                            \
     if (lo > up)                                                                                   \
     {                                                                                              \
@@ -232,7 +232,7 @@
     else if (Level > 0)                                                                            \
     {                                                                                              \
       S << " :";                                                                                   \
-      for (Standard_Integer iopa = lo; iopa <= up; iopa++)                                         \
+      for (int iopa = lo; iopa <= up; iopa++)                                                      \
         IGESData_DumpXY(S, item(iopa));                                                            \
       if (Trsf.Form() != gp_Identity)                                                              \
       {                                                                                            \
@@ -240,7 +240,7 @@
         if (Level == 5)                                                                            \
           S << " [ask level > 5]";                                                                 \
         else                                                                                       \
-          for (Standard_Integer jopa = lo; jopa <= up; jopa++)                                     \
+          for (int jopa = lo; jopa <= up; jopa++)                                                  \
             IGESData_DumpXYT(S, item(jopa), Trsf);                                                 \
       }                                                                                            \
     }                                                                                              \
@@ -248,8 +248,8 @@
 
 #define IGESData_DumpListXYLZ(S, Level, lower, upper, item, Trsf, Z)                               \
   {                                                                                                \
-    Standard_Integer lo = lower;                                                                   \
-    Standard_Integer up = upper;                                                                   \
+    int lo = lower;                                                                                \
+    int up = upper;                                                                                \
     IGESData_DumpListHeader(S, lo, up);                                                            \
     if (lo > up)                                                                                   \
     {                                                                                              \
@@ -259,7 +259,7 @@
     else if (Level > 0)                                                                            \
     {                                                                                              \
       S << " :";                                                                                   \
-      for (Standard_Integer iopa = lo; iopa <= up; iopa++)                                         \
+      for (int iopa = lo; iopa <= up; iopa++)                                                      \
         IGESData_DumpXY(S, item(iopa));                                                            \
       if (Trsf.Form() != gp_Identity)                                                              \
       {                                                                                            \
@@ -267,7 +267,7 @@
         if (Level == 5)                                                                            \
           S << " [ask level > 5]";                                                                 \
         else                                                                                       \
-          for (Standard_Integer jopa = lo; jopa <= up; jopa++)                                     \
+          for (int jopa = lo; jopa <= up; jopa++)                                                  \
             IGESData_DumpXYTZ(S, item(jopa), Trsf, Z);                                             \
       }                                                                                            \
     }                                                                                              \
@@ -275,8 +275,8 @@
 
 #define IGESData_DumpListXYZL(S, Level, lower, upper, item, Trsf)                                  \
   {                                                                                                \
-    Standard_Integer lo = lower;                                                                   \
-    Standard_Integer up = upper;                                                                   \
+    int lo = lower;                                                                                \
+    int up = upper;                                                                                \
     IGESData_DumpListHeader(S, lo, up);                                                            \
     if (lo > up)                                                                                   \
     {                                                                                              \
@@ -286,7 +286,7 @@
     else if (Level > 0)                                                                            \
     {                                                                                              \
       S << " :";                                                                                   \
-      for (Standard_Integer iopa = lo; iopa <= up; iopa++)                                         \
+      for (int iopa = lo; iopa <= up; iopa++)                                                      \
         IGESData_DumpXYZ(S, item(iopa));                                                           \
       if (Trsf.Form() != gp_Identity)                                                              \
       {                                                                                            \
@@ -294,7 +294,7 @@
         if (Level == 5)                                                                            \
           S << " [ask level > 5]";                                                                 \
         else                                                                                       \
-          for (Standard_Integer jopa = lo; jopa <= up; jopa++)                                     \
+          for (int jopa = lo; jopa <= up; jopa++)                                                  \
             IGESData_DumpXYZT(S, item(jopa), Trsf);                                                \
       }                                                                                            \
     }                                                                                              \
@@ -302,8 +302,8 @@
 
 #define IGESData_DumpStrings(S, Level, lower, upper, item)                                         \
   {                                                                                                \
-    Standard_Integer lo = lower;                                                                   \
-    Standard_Integer up = upper;                                                                   \
+    int lo = lower;                                                                                \
+    int up = upper;                                                                                \
     IGESData_DumpListHeader(S, lo, up);                                                            \
     if (lo > up)                                                                                   \
     {                                                                                              \
@@ -313,7 +313,7 @@
     else if (Level > 0)                                                                            \
     {                                                                                              \
       S << " :";                                                                                   \
-      for (Standard_Integer iopa = lo; iopa <= up; iopa++)                                         \
+      for (int iopa = lo; iopa <= up; iopa++)                                                      \
       {                                                                                            \
         S << "\n[" << Interface_MSG::Blanks(iopa, 3) << iopa << "]:\"" << item(iopa)->String()     \
           << '"';                                                                                  \
@@ -324,8 +324,8 @@
 
 #define IGESData_DumpEntities(S, dumper, Level, lower, upper, item)                                \
   {                                                                                                \
-    Standard_Integer lo = lower;                                                                   \
-    Standard_Integer up = upper;                                                                   \
+    int lo = lower;                                                                                \
+    int up = upper;                                                                                \
     IGESData_DumpListHeader(S, lo, up);                                                            \
     if (lo > up)                                                                                   \
     {                                                                                              \
@@ -335,7 +335,7 @@
     else if (Level > 0)                                                                            \
     {                                                                                              \
       S << " :";                                                                                   \
-      for (Standard_Integer iopa = lo; iopa <= up; iopa++)                                         \
+      for (int iopa = lo; iopa <= up; iopa++)                                                      \
       {                                                                                            \
         if (Level == 5)                                                                            \
         {                                                                                          \

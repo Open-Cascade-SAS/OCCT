@@ -27,7 +27,7 @@ public:
 
   //! Default constructor
   BRepLib_CheckCurveOnSurface()
-      : myIsParallel(Standard_False)
+      : myIsParallel(false)
   {
   }
 
@@ -39,17 +39,17 @@ public:
   Standard_EXPORT void Init(const TopoDS_Edge& theEdge, const TopoDS_Face& theFace);
 
   //! Performs the calculation
-  //! If myIsParallel == Standard_True then computation will be performed in parallel.
+  //! If myIsParallel == true then computation will be performed in parallel.
   Standard_EXPORT void Perform();
 
   //! Returns true if the max distance has been found
-  Standard_Boolean IsDone() const { return myCOnSurfGeom.ErrorStatus() == 0; }
+  bool IsDone() const { return myCOnSurfGeom.ErrorStatus() == 0; }
 
   //! Sets parallel flag
-  void SetParallel(const Standard_Boolean theIsParallel) { myIsParallel = theIsParallel; }
+  void SetParallel(const bool theIsParallel) { myIsParallel = theIsParallel; }
 
   //! Returns true if parallel flag is set
-  Standard_Boolean IsParallel() { return myIsParallel; }
+  bool IsParallel() { return myIsParallel; }
 
   //! Returns error status
   //! The possible values are:
@@ -57,25 +57,25 @@ public:
   //! 1 - null curve or surface or 2d curve;
   //! 2 - invalid parametric range;
   //! 3 - error in calculations.
-  Standard_Integer ErrorStatus() const { return myCOnSurfGeom.ErrorStatus(); }
+  int ErrorStatus() const { return myCOnSurfGeom.ErrorStatus(); }
 
   //! Returns max distance
-  Standard_Real MaxDistance() const { return myCOnSurfGeom.MaxDistance(); }
+  double MaxDistance() const { return myCOnSurfGeom.MaxDistance(); }
 
   //! Returns parameter in which the distance is maximal
-  Standard_Real MaxParameter() const { return myCOnSurfGeom.MaxParameter(); }
+  double MaxParameter() const { return myCOnSurfGeom.MaxParameter(); }
 
 protected:
   //! Computes the max distance for the 3d curve of <myCOnSurfGeom>
   //! and 2d curve <theCurveOnSurface>
-  //! If isMultiThread == Standard_True then computation will be performed in parallel.
-  Standard_EXPORT void Compute(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface);
+  //! If isMultiThread == true then computation will be performed in parallel.
+  Standard_EXPORT void Compute(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface);
 
 private:
-  GeomLib_CheckCurveOnSurface      myCOnSurfGeom;
-  Handle(Adaptor3d_CurveOnSurface) myAdaptorCurveOnSurface;
-  Handle(Adaptor3d_CurveOnSurface) myAdaptorCurveOnSurface2;
-  Standard_Boolean                 myIsParallel;
+  GeomLib_CheckCurveOnSurface           myCOnSurfGeom;
+  occ::handle<Adaptor3d_CurveOnSurface> myAdaptorCurveOnSurface;
+  occ::handle<Adaptor3d_CurveOnSurface> myAdaptorCurveOnSurface2;
+  bool                                  myIsParallel;
 };
 
 #endif // _BRepLib_CheckCurveOnSurface_HeaderFile

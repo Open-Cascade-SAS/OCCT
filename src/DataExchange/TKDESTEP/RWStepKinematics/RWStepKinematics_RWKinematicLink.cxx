@@ -29,10 +29,10 @@ RWStepKinematics_RWKinematicLink::RWStepKinematics_RWKinematicLink() {}
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicLink::ReadStep(
-  const Handle(StepData_StepReaderData)&      theData,
-  const Standard_Integer                      theNum,
-  Handle(Interface_Check)&                    theArch,
-  const Handle(StepKinematics_KinematicLink)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&      theData,
+  const int                                        theNum,
+  occ::handle<Interface_Check>&                    theArch,
+  const occ::handle<StepKinematics_KinematicLink>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 1, theArch, "kinematic_link"))
@@ -40,7 +40,7 @@ void RWStepKinematics_RWKinematicLink::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Initialize entity
@@ -50,8 +50,8 @@ void RWStepKinematics_RWKinematicLink::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicLink::WriteStep(
-  StepData_StepWriter&                        theSW,
-  const Handle(StepKinematics_KinematicLink)& theEnt) const
+  StepData_StepWriter&                             theSW,
+  const occ::handle<StepKinematics_KinematicLink>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -61,8 +61,9 @@ void RWStepKinematics_RWKinematicLink::WriteStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWKinematicLink::Share(const Handle(StepKinematics_KinematicLink)& /*theEnt*/,
-                                             Interface_EntityIterator& /*iter*/) const
+void RWStepKinematics_RWKinematicLink::Share(
+  const occ::handle<StepKinematics_KinematicLink>& /*theEnt*/,
+  Interface_EntityIterator& /*iter*/) const
 {
 
   // Inherited fields of RepresentationItem

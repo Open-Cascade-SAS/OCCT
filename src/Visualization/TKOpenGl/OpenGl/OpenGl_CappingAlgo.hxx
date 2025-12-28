@@ -29,8 +29,8 @@ public:
   //! Depth buffer must be generated for the passed groups.
   //! @param[in] theWorkspace  the GL workspace, context state
   //! @param[in] theStructure  the structure to be capped
-  Standard_EXPORT static void RenderCapping(const Handle(OpenGl_Workspace)& theWorkspace,
-                                            const OpenGl_Structure&         theStructure);
+  Standard_EXPORT static void RenderCapping(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                            const OpenGl_Structure&              theStructure);
 };
 
 #endif

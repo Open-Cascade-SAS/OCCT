@@ -19,8 +19,6 @@
 
 #include <PrsDim_Relation.hxx>
 
-DEFINE_STANDARD_HANDLE(PrsDim_PerpendicularRelation, PrsDim_Relation)
-
 //! A framework to display constraints of perpendicularity
 //! between two or more interactive datums. These
 //! datums can be edges or faces.
@@ -35,9 +33,9 @@ public:
   //! aPlane is the plane of reference to show and test the
   //! perpendicular relation between two shapes, at least
   //! one of which has a revolved surface.
-  Standard_EXPORT PrsDim_PerpendicularRelation(const TopoDS_Shape&       aFShape,
-                                               const TopoDS_Shape&       aSShape,
-                                               const Handle(Geom_Plane)& aPlane);
+  Standard_EXPORT PrsDim_PerpendicularRelation(const TopoDS_Shape&            aFShape,
+                                               const TopoDS_Shape&            aSShape,
+                                               const occ::handle<Geom_Plane>& aPlane);
 
   //! Constructs an object to display constraints of
   //! perpendicularity on shapes.
@@ -47,18 +45,18 @@ public:
                                                const TopoDS_Shape& aSShape);
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
   Standard_EXPORT void ComputeTwoFacesPerpendicular(
-    const Handle(Prs3d_Presentation)& aPresentation);
+    const occ::handle<Prs3d_Presentation>& aPresentation);
 
   Standard_EXPORT void ComputeTwoEdgesPerpendicular(
-    const Handle(Prs3d_Presentation)& aPresentation);
+    const occ::handle<Prs3d_Presentation>& aPresentation);
 
 private:
   gp_Pnt myFAttach;

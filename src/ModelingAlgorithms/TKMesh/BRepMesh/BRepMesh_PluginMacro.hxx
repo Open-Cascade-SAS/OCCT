@@ -19,16 +19,16 @@
 #define DISCRETPLUGIN(name)                                                                        \
   extern "C"                                                                                       \
   {                                                                                                \
-    Standard_EXPORT Standard_Integer DISCRETALGO(const TopoDS_Shape&,                              \
-                                                 const Standard_Real,                              \
-                                                 const Standard_Real,                              \
-                                                 BRepMesh_DiscretRoot*&);                          \
+    Standard_EXPORT int DISCRETALGO(const TopoDS_Shape&,                                           \
+                                    const double,                                                  \
+                                    const double,                                                  \
+                                    BRepMesh_DiscretRoot*&);                                       \
   }                                                                                                \
                                                                                                    \
-  Standard_Integer DISCRETALGO(const TopoDS_Shape&    theShape,                                    \
-                               const Standard_Real    theLinDeflection,                            \
-                               const Standard_Real    theAngDeflection,                            \
-                               BRepMesh_DiscretRoot*& theAlgo)                                     \
+  int DISCRETALGO(const TopoDS_Shape&    theShape,                                                 \
+                  const double           theLinDeflection,                                         \
+                  const double           theAngDeflection,                                         \
+                  BRepMesh_DiscretRoot*& theAlgo)                                                  \
   {                                                                                                \
     return name::Discret(theShape, theLinDeflection, theAngDeflection, theAlgo);                   \
   }

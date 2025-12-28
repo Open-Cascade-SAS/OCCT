@@ -30,48 +30,49 @@ CDF_MetaDataDriver::CDF_MetaDataDriver() {}
 
 //=================================================================================================
 
-Standard_Boolean CDF_MetaDataDriver::HasVersion(const TCollection_ExtendedString&,
-                                                const TCollection_ExtendedString&)
+bool CDF_MetaDataDriver::HasVersion(const TCollection_ExtendedString&,
+                                    const TCollection_ExtendedString&)
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 //=================================================================================================
 
-Standard_Boolean CDF_MetaDataDriver::HasVersionCapability()
+bool CDF_MetaDataDriver::HasVersionCapability()
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void CDF_MetaDataDriver::CreateDependsOn(const Handle(CDM_MetaData)&, const Handle(CDM_MetaData)&)
-{
-}
-
-//=================================================================================================
-
-void CDF_MetaDataDriver::CreateReference(const Handle(CDM_MetaData)&,
-                                         const Handle(CDM_MetaData)&,
-                                         const Standard_Integer,
-                                         const Standard_Integer)
+void CDF_MetaDataDriver::CreateDependsOn(const occ::handle<CDM_MetaData>&,
+                                         const occ::handle<CDM_MetaData>&)
 {
 }
 
 //=================================================================================================
 
-Handle(PCDM_ReferenceIterator) CDF_MetaDataDriver::ReferenceIterator(
-  const Handle(Message_Messenger)& theMessageDriver)
+void CDF_MetaDataDriver::CreateReference(const occ::handle<CDM_MetaData>&,
+                                         const occ::handle<CDM_MetaData>&,
+                                         const int,
+                                         const int)
+{
+}
+
+//=================================================================================================
+
+occ::handle<PCDM_ReferenceIterator> CDF_MetaDataDriver::ReferenceIterator(
+  const occ::handle<Message_Messenger>& theMessageDriver)
 {
   return new PCDM_ReferenceIterator(theMessageDriver);
 }
 
 //=================================================================================================
 
-Standard_Boolean CDF_MetaDataDriver::Find(const TCollection_ExtendedString& aFolder,
-                                          const TCollection_ExtendedString& aName)
+bool CDF_MetaDataDriver::Find(const TCollection_ExtendedString& aFolder,
+                              const TCollection_ExtendedString& aName)
 {
   TCollection_ExtendedString aVersion;
   return Find(aFolder, aName, aVersion);
@@ -79,8 +80,8 @@ Standard_Boolean CDF_MetaDataDriver::Find(const TCollection_ExtendedString& aFol
 
 //=================================================================================================
 
-Handle(CDM_MetaData) CDF_MetaDataDriver::MetaData(const TCollection_ExtendedString& aFolder,
-                                                  const TCollection_ExtendedString& aName)
+occ::handle<CDM_MetaData> CDF_MetaDataDriver::MetaData(const TCollection_ExtendedString& aFolder,
+                                                       const TCollection_ExtendedString& aName)
 {
   TCollection_ExtendedString aVersion;
   return MetaData(aFolder, aName, aVersion);
@@ -88,14 +89,15 @@ Handle(CDM_MetaData) CDF_MetaDataDriver::MetaData(const TCollection_ExtendedStri
 
 //=================================================================================================
 
-Handle(CDM_MetaData) CDF_MetaDataDriver::LastVersion(const Handle(CDM_MetaData)& aMetaData)
+occ::handle<CDM_MetaData> CDF_MetaDataDriver::LastVersion(
+  const occ::handle<CDM_MetaData>& aMetaData)
 {
   return aMetaData;
 }
 
 //=================================================================================================
 
-TCollection_ExtendedString CDF_MetaDataDriver::SetName(const Handle(CDM_Document)&,
+TCollection_ExtendedString CDF_MetaDataDriver::SetName(const occ::handle<CDM_Document>&,
                                                        const TCollection_ExtendedString& aName)
 {
   return aName;

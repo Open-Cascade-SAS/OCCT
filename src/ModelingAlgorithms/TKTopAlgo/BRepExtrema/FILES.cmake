@@ -17,7 +17,7 @@ set(OCCT_BRepExtrema_FILES
   BRepExtrema_ExtPC.hxx
   BRepExtrema_ExtPF.cxx
   BRepExtrema_ExtPF.hxx
-  BRepExtrema_MapOfIntegerPackedMapOfInteger.hxx
+
   BRepExtrema_OverlapTool.cxx
   BRepExtrema_OverlapTool.hxx
   BRepExtrema_Poly.cxx
@@ -28,7 +28,7 @@ set(OCCT_BRepExtrema_FILES
   BRepExtrema_ProximityDistTool.hxx
   BRepExtrema_SelfIntersection.cxx
   BRepExtrema_SelfIntersection.hxx
-  BRepExtrema_SeqOfSolution.hxx
+
   BRepExtrema_ShapeProximity.cxx
   BRepExtrema_ShapeProximity.hxx
   BRepExtrema_SolutionElem.hxx

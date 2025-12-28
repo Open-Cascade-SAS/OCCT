@@ -38,27 +38,26 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_Edge3dInterferenceTool();
 
-  Standard_EXPORT void InitPointVertex(const Standard_Integer IsVertex, const TopoDS_Shape& VonOO);
+  Standard_EXPORT void InitPointVertex(const int IsVertex, const TopoDS_Shape& VonOO);
 
-  Standard_EXPORT void Init(const TopoDS_Shape&                      Eref,
-                            const TopoDS_Shape&                      E,
-                            const TopoDS_Shape&                      F,
-                            const Handle(TopOpeBRepDS_Interference)& I);
+  Standard_EXPORT void Init(const TopoDS_Shape&                           Eref,
+                            const TopoDS_Shape&                           E,
+                            const TopoDS_Shape&                           F,
+                            const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT void Add(const TopoDS_Shape&                      Eref,
-                           const TopoDS_Shape&                      E,
-                           const TopoDS_Shape&                      F,
-                           const Handle(TopOpeBRepDS_Interference)& I);
+  Standard_EXPORT void Add(const TopoDS_Shape&                           Eref,
+                           const TopoDS_Shape&                           E,
+                           const TopoDS_Shape&                           F,
+                           const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT void Transition(const Handle(TopOpeBRepDS_Interference)& I) const;
+  Standard_EXPORT void Transition(const occ::handle<TopOpeBRepDS_Interference>& I) const;
 
-protected:
 private:
-  Standard_Integer           myFaceOriented;
+  int                        myFaceOriented;
   TopTrans_SurfaceTransition myTool;
-  Standard_Real              myTole;
-  Standard_Boolean           myrefdef;
-  Standard_Integer           myIsVertex;
+  double                     myTole;
+  bool                       myrefdef;
+  int                        myIsVertex;
   TopoDS_Shape               myVonOO;
   gp_Pnt                     myP3d;
   gp_Dir                     myTgtref;

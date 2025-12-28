@@ -37,15 +37,15 @@
 #include <ElSLib.hxx>
 
 // Compute the flag: CW || CCW
-static Standard_Boolean isCW(const BRepAdaptor_Curve& AC)
+static bool isCW(const BRepAdaptor_Curve& AC)
 {
-  const Standard_Real f      = AC.FirstParameter();
-  const Standard_Real l      = AC.LastParameter();
-  Handle(Geom_Circle) circle = Handle(Geom_Circle)::DownCast(AC.Curve().Curve());
-  gp_Pnt              start  = AC.Value(f);
-  gp_Pnt              end    = AC.Value(l);
-  gp_Pnt              center = AC.Circle().Location();
-  gp_Ax3              plane  = AC.Circle().Position();
+  const double             f      = AC.FirstParameter();
+  const double             l      = AC.LastParameter();
+  occ::handle<Geom_Circle> circle = occ::down_cast<Geom_Circle>(AC.Curve().Curve());
+  gp_Pnt                   start  = AC.Value(f);
+  gp_Pnt                   end    = AC.Value(l);
+  gp_Pnt                   center = AC.Circle().Location();
+  gp_Ax3                   plane  = AC.Circle().Position();
 
   // Get point on circle at half angle
   gp_Pnt m;
@@ -60,17 +60,17 @@ static Standard_Boolean isCW(const BRepAdaptor_Curve& AC)
   while (enda < 0.0)
     enda += 2.0 * M_PI;
 
-  Standard_Boolean is_cw = middlea > enda ? Standard_True : Standard_False;
+  bool is_cw = middlea > enda ? true : false;
   return is_cw;
 }
 
 // Equality of points computed through square distance between the points.
-static Standard_Boolean IsEqual(const gp_Pnt& p1, const gp_Pnt& p2)
+static bool IsEqual(const gp_Pnt& p1, const gp_Pnt& p2)
 {
   return p1.SquareDistance(p2) < Precision::SquareConfusion();
 }
 
-static Standard_Boolean IsEqual(const gp_Pnt2d& p1, const gp_Pnt2d& p2)
+static bool IsEqual(const gp_Pnt2d& p1, const gp_Pnt2d& p2)
 {
   return p1.SquareDistance(p2) < Precision::SquareConfusion();
 }
@@ -78,7 +78,7 @@ static Standard_Boolean IsEqual(const gp_Pnt2d& p1, const gp_Pnt2d& p2)
 // An empty constructor.
 // Use the method Init() to initialize the class.
 ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo()
-    : segment1(Standard_False),
+    : segment1(false),
       x11(0.0),
       y11(0.0),
       x12(0.0),
@@ -86,8 +86,8 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo()
       xc1(0.0),
       yc1(0.0),
       radius1(0.0),
-      cw1(Standard_False),
-      segment2(Standard_False),
+      cw1(false),
+      segment2(false),
       x21(0.0),
       y21(0.0),
       x22(0.0),
@@ -95,7 +95,7 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo()
       xc2(0.0),
       yc2(0.0),
       radius2(0.0),
-      cw2(Standard_False)
+      cw2(false)
 {
 }
 
@@ -105,7 +105,7 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo()
 // - arc of circle.
 ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo(const TopoDS_Wire& theWire, const gp_Pln& thePlane)
     : plane(thePlane),
-      segment1(Standard_False),
+      segment1(false),
       x11(0.0),
       y11(0.0),
       x12(0.0),
@@ -113,8 +113,8 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo(const TopoDS_Wire& theWire, const gp_
       xc1(0.0),
       yc1(0.0),
       radius1(0.0),
-      cw1(Standard_False),
-      segment2(Standard_False),
+      cw1(false),
+      segment2(false),
       x21(0.0),
       y21(0.0),
       x22(0.0),
@@ -122,7 +122,7 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo(const TopoDS_Wire& theWire, const gp_
       xc2(0.0),
       yc2(0.0),
       radius2(0.0),
-      cw2(Standard_False)
+      cw2(false)
 {
   Init(theWire, thePlane);
 }
@@ -135,7 +135,7 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo(const TopoDS_Edge& theEdge1,
                                            const TopoDS_Edge& theEdge2,
                                            const gp_Pln&      thePlane)
     : plane(thePlane),
-      segment1(Standard_False),
+      segment1(false),
       x11(0.0),
       y11(0.0),
       x12(0.0),
@@ -143,8 +143,8 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo(const TopoDS_Edge& theEdge1,
       xc1(0.0),
       yc1(0.0),
       radius1(0.0),
-      cw1(Standard_False),
-      segment2(Standard_False),
+      cw1(false),
+      segment2(false),
       x21(0.0),
       y21(0.0),
       x22(0.0),
@@ -152,7 +152,7 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo(const TopoDS_Edge& theEdge1,
       xc2(0.0),
       yc2(0.0),
       radius2(0.0),
-      cw2(Standard_False)
+      cw2(false)
 {
   // Make a wire consisting of two edges.
   Init(theEdge1, theEdge2, thePlane);
@@ -180,7 +180,7 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Wire& theWire, const gp_Pln& thePla
     throw Standard_TypeMismatch("A segment or an arc of circle is expected.");
 
   TopoDS_Vertex v1, v2;
-  TopExp::Vertices(e1, v1, v2, Standard_True);
+  TopExp::Vertices(e1, v1, v2, true);
   if (v1.IsNull() || v2.IsNull())
     throw Standard_Failure("An infinite edge.");
 
@@ -209,7 +209,7 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Wire& theWire, const gp_Pln& thePla
   if (AC2.GetType() != GeomAbs_Line && AC2.GetType() != GeomAbs_Circle)
     throw Standard_TypeMismatch("A segment or an arc of circle is expected.");
 
-  TopExp::Vertices(e2, v1, v2, Standard_True);
+  TopExp::Vertices(e2, v1, v2, true);
   if (v1.IsNull() || v2.IsNull())
     throw Standard_Failure("An infinite edge.");
 
@@ -243,8 +243,8 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Edge& theEdge1,
 
   // Get common point.
   TopoDS_Vertex v11, v12, v21, v22;
-  TopExp::Vertices(theEdge1, v11, v12, Standard_True);
-  TopExp::Vertices(theEdge2, v21, v22, Standard_True);
+  TopExp::Vertices(theEdge1, v11, v12, true);
+  TopExp::Vertices(theEdge2, v21, v22, true);
   if (v11.IsNull() || v12.IsNull() || v21.IsNull() || v22.IsNull())
     throw Standard_Failure("An infinite edge.");
 
@@ -266,11 +266,11 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Edge& theEdge1,
     throw Standard_Failure("The edges have no common point.");
 
   // Reverse the edges in case of need (to construct a wire).
-  Standard_Boolean is1stReversed(Standard_False), is2ndReversed(Standard_False);
+  bool is1stReversed(false), is2ndReversed(false);
   if (IsEqual(pcommon, p11))
-    is1stReversed = Standard_True;
+    is1stReversed = true;
   else if (IsEqual(pcommon, p22))
-    is2ndReversed = Standard_True;
+    is2ndReversed = true;
 
   // Make a wire.
   BRepBuilderAPI_MakeWire mkWire;
@@ -290,24 +290,24 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Edge& theEdge1,
 }
 
 // Calculates a fillet.
-Standard_Boolean ChFi2d_AnaFilletAlgo::Perform(const Standard_Real radius)
+bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
 {
-  Standard_Boolean bRet(false);
+  bool bRet(false);
   if (e1.IsNull() || e2.IsNull() || radius < Precision::Confusion())
   {
     return bRet;
   }
 
   // Fillet definition.
-  Standard_Real    xc = 0.0, yc = 0.0;
-  Standard_Real    start = 0.0, end = 0.0;             // parameters on neighbours
-  Standard_Real    xstart = DBL_MAX, ystart = DBL_MAX; // point on left neighbour
-  Standard_Real    xend = DBL_MAX, yend = DBL_MAX;     // point on right neighbour
-  Standard_Boolean cw = Standard_False;
+  double xc = 0.0, yc = 0.0;
+  double start = 0.0, end = 0.0;             // parameters on neighbours
+  double xstart = DBL_MAX, ystart = DBL_MAX; // point on left neighbour
+  double xend = DBL_MAX, yend = DBL_MAX;     // point on right neighbour
+  bool   cw = false;
 
   // Analytical algorithm works for non-intersecting arcs only.
   // Check arcs on self-intersection.
-  Standard_Boolean isCut(Standard_False);
+  bool isCut(false);
   if (!segment1 || !segment2)
   {
     BRepBuilderAPI_MakeWire mkWire(e1, e2);
@@ -319,13 +319,13 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::Perform(const Standard_Real radius)
       {
         const TopoDS_Face& F = mkFace.Face();
         ShapeAnalysis_Wire analyzer(W, F, Precision::Confusion());
-        if (analyzer.CheckSelfIntersection() == Standard_True)
+        if (analyzer.CheckSelfIntersection() == true)
         {
           // Cut the edges at the point of intersection.
-          isCut = Standard_True;
+          isCut = true;
           if (!Cut(plane, e1, e2))
           {
-            return Standard_False;
+            return false;
           }
         }
       }
@@ -352,10 +352,10 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::Perform(const Standard_Real radius)
   }
 
   if (!bRet)
-    return Standard_False;
+    return false;
 
   // Invert the fillet for left-handed plane.
-  if (plane.Position().Direct() == Standard_False)
+  if (plane.Position().Direct() == false)
     cw = !cw;
 
   // Construct a fillet.
@@ -365,15 +365,15 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::Perform(const Standard_Real radius)
   gp_Circ       circ(gp_Ax2(center, cw ? -normal : normal), radius);
 
   // Fillet may only shrink a neighbour edge, it can't prolongate it.
-  const Standard_Real delta1 = AC1.LastParameter() - AC1.FirstParameter();
-  const Standard_Real delta2 = AC2.LastParameter() - AC2.FirstParameter();
+  const double delta1 = AC1.LastParameter() - AC1.FirstParameter();
+  const double delta2 = AC2.LastParameter() - AC2.FirstParameter();
   if (!isCut && (start > delta1 || end > delta2))
   {
     // Check a case when a neighbour edge almost disappears:
     // try to reduce the fillet radius for a little (1.e-5 mm).
-    const Standard_Real little = 100.0 * Precision::Confusion();
-    const Standard_Real d1     = fabs(start - delta1);
-    const Standard_Real d2     = fabs(end - delta2);
+    const double little = 100.0 * Precision::Confusion();
+    const double d1     = fabs(start - delta1);
+    const double d2     = fabs(end - delta2);
     if (d1 < little || d2 < little)
     {
       if (segment1 && segment2)
@@ -395,7 +395,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::Perform(const Standard_Real radius)
       if (bRet)
       {
         // Invert the fillet for left-handed planes.
-        if (plane.Position().Direct() == Standard_False)
+        if (plane.Position().Direct() == false)
           cw = !cw;
 
         // Make the circle again.
@@ -405,12 +405,12 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::Perform(const Standard_Real radius)
       }
       else
       {
-        return Standard_False;
+        return false;
       }
     }
     else
     {
-      return Standard_False;
+      return false;
     }
   }
   if (bRet)
@@ -526,12 +526,12 @@ const TopoDS_Edge& ChFi2d_AnaFilletAlgo::Result(TopoDS_Edge& theE1, TopoDS_Edge&
 //     point on the 1st segment (xstart, ystart)
 //     point on the 2nd segment (xend, yend)
 //     is the arc of fillet clockwise (cw = true) or counterclockwise (cw = false).
-Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletSegment(const Standard_Real radius,
-                                                            Standard_Real&      xc,
-                                                            Standard_Real&      yc,
-                                                            Standard_Boolean&   cw,
-                                                            Standard_Real&      start,
-                                                            Standard_Real&      end)
+bool ChFi2d_AnaFilletAlgo::SegmentFilletSegment(const double radius,
+                                                double&      xc,
+                                                double&      yc,
+                                                bool&        cw,
+                                                double&      start,
+                                                double&      end)
 {
   // Make normalized vectors at p12.
   gp_Pnt2d p11(x11, y11);
@@ -541,7 +541,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletSegment(const Standard_Real 
   // Check length of segments.
   if (IsEqual(p12, p11) || IsEqual(p12, p22))
   {
-    return Standard_False;
+    return false;
   }
 
   // Make vectors.
@@ -555,16 +555,16 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletSegment(const Standard_Real 
 
   // Check bisectrissa.
   if (bisec.SquareMagnitude() < Precision::SquareConfusion())
-    return Standard_False;
+    return false;
 
   // Normalize the bisectrissa.
   bisec.Normalize();
 
   // Angle at bisectrissa.
-  Standard_Real beta = v1.Angle(bisec);
+  double beta = v1.Angle(bisec);
 
   // Length along the bisectrissa till the center of fillet.
-  Standard_Real L = radius / sin(fabs(beta));
+  double L = radius / sin(fabs(beta));
 
   // Center point of fillet.
   gp_Pnt2d pc = p12.Translated(L * bisec);
@@ -576,18 +576,18 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletSegment(const Standard_Real 
 
   // Orientation of fillet.
   cw = beta > 0.0;
-  return Standard_True;
+  return true;
 }
 
 // A function constructs a fillet between a segment and an arc.
-Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletArc(const Standard_Real radius,
-                                                        Standard_Real&      xc,
-                                                        Standard_Real&      yc,
-                                                        Standard_Boolean&   cw,
-                                                        Standard_Real&      start,
-                                                        Standard_Real&      end,
-                                                        Standard_Real&      xend,
-                                                        Standard_Real&      yend)
+bool ChFi2d_AnaFilletAlgo::SegmentFilletArc(const double radius,
+                                            double&      xc,
+                                            double&      yc,
+                                            bool&        cw,
+                                            double&      start,
+                                            double&      end,
+                                            double&      xend,
+                                            double&      yend)
 {
   // Make a line parallel to the segment at the side of center point of fillet.
   // This side may be defined through making a bisectrissa for vectors at p12 (or p21).
@@ -599,7 +599,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletArc(const Standard_Real radi
 
   // Check length of segment.
   if (p11.SquareDistance(p12) < gp::Resolution())
-    return Standard_False;
+    return false;
 
   // Make 2D vectors.
   gp_Vec2d v1(p12, p11);
@@ -613,9 +613,9 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletArc(const Standard_Real radi
 
   // If vectors coincide (segment and arc are tangent),
   // the algorithm doesn't work...
-  Standard_Real angle = v1.Angle(v2);
+  double angle = v1.Angle(v2);
   if (fabs(angle) < Precision::Angular())
-    return Standard_False;
+    return false;
 
   // Make a bissectrisa of vectors at p12.
   v2.Normalize();
@@ -625,7 +625,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletArc(const Standard_Real radi
   // If segment and arc look in opposite direction,
   // no fillet is possible.
   if (bisec.SquareMagnitude() < gp::Resolution())
-    return Standard_False;
+    return false;
 
   // Define an appropriate point to choose center of fillet.
   bisec.Normalize();
@@ -650,17 +650,17 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletArc(const Standard_Real radi
   // Calculate intersection of the line and the circle.
   IntAna2d_AnaIntersection intersector(line, circ);
   if (!intersector.IsDone() || !intersector.NbPoints())
-    return Standard_False;
+    return false;
 
   // Find center point of fillet.
-  Standard_Integer i;
-  Standard_Real    minDist = DBL_MAX;
+  int    i;
+  double minDist = DBL_MAX;
   for (i = 1; i <= intersector.NbPoints(); ++i)
   {
     const IntAna2d_IntPoint& intp = intersector.Point(i);
     const gp_Pnt2d&          p    = intp.Value();
 
-    Standard_Real d = nearl.Distance(p);
+    double d = nearl.Distance(p);
     if (d < minDist)
     {
       minDist = d;
@@ -669,10 +669,10 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletArc(const Standard_Real radi
   }
 
   // Shrink of segment.
-  gp_Pnt2d            pc(xc, yc);
-  Standard_Real       L2  = pc.SquareDistance(p12);
-  const Standard_Real Rf2 = radius * radius;
-  start                   = sqrt(L2 - Rf2);
+  gp_Pnt2d     pc(xc, yc);
+  double       L2  = pc.SquareDistance(p12);
+  const double Rf2 = radius * radius;
+  start            = sqrt(L2 - Rf2);
 
   // Shrink of arc.
   gp_Vec2d pcc(pc2, pc);
@@ -686,7 +686,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletArc(const Standard_Real radi
   circ.SetRadius(radius2);
   intersector.Perform(line, circ);
   if (!intersector.IsDone() || !intersector.NbPoints())
-    return Standard_False;
+    return false;
 
   xend = DBL_MAX;
   yend = DBL_MAX;
@@ -695,7 +695,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletArc(const Standard_Real radi
     const IntAna2d_IntPoint& intp = intersector.Point(i);
     const gp_Pnt2d&          p    = intp.Value();
 
-    const Standard_Real d2 = p.SquareDistance(pc);
+    const double d2 = p.SquareDistance(pc);
     if (fabs(d2 - Rf2) < Precision::Confusion())
     {
       p.Coord(xend, yend);
@@ -706,18 +706,18 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::SegmentFilletArc(const Standard_Real radi
   // Orientation of the fillet.
   angle = v1.Angle(v2);
   cw    = angle > 0.0;
-  return Standard_True;
+  return true;
 }
 
 // A function constructs a fillet between an arc and a segment.
-Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radius,
-                                                        Standard_Real&      xc,
-                                                        Standard_Real&      yc,
-                                                        Standard_Boolean&   cw,
-                                                        Standard_Real&      start,
-                                                        Standard_Real&      end,
-                                                        Standard_Real&      xstart,
-                                                        Standard_Real&      ystart)
+bool ChFi2d_AnaFilletAlgo::ArcFilletSegment(const double radius,
+                                            double&      xc,
+                                            double&      yc,
+                                            bool&        cw,
+                                            double&      start,
+                                            double&      end,
+                                            double&      xstart,
+                                            double&      ystart)
 {
   // Make a line parallel to the segment at the side of center point of fillet.
   // This side may be defined through making a bisectrissa for vectors at p12 (or p21).
@@ -729,7 +729,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
 
   // Check length of segment.
   if (p12.SquareDistance(p22) < gp::Resolution())
-    return Standard_False;
+    return false;
 
   // Make 2D vectors.
   gp_Vec2d v1(p12, pc1);
@@ -743,9 +743,9 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
 
   // If vectors coincide (segment and arc are tangent),
   // the algorithm doesn't work...
-  Standard_Real angle = v1.Angle(v2);
+  double angle = v1.Angle(v2);
   if (fabs(angle) < Precision::Angular())
-    return Standard_False;
+    return false;
 
   // Make a bisectrissa of vectors at p12.
   v1.Normalize();
@@ -755,7 +755,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
   // If segment and arc look in opposite direction,
   // no fillet is possible.
   if (bisec.SquareMagnitude() < gp::Resolution())
-    return Standard_False;
+    return false;
 
   // Define an appropriate point to choose center of fillet.
   bisec.Normalize();
@@ -780,17 +780,17 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
   // Calculate intersection of the line and the big circle.
   IntAna2d_AnaIntersection intersector(line, circ);
   if (!intersector.IsDone() || !intersector.NbPoints())
-    return Standard_False;
+    return false;
 
   // Find center point of fillet.
-  Standard_Integer i;
-  Standard_Real    minDist = DBL_MAX;
+  int    i;
+  double minDist = DBL_MAX;
   for (i = 1; i <= intersector.NbPoints(); ++i)
   {
     const IntAna2d_IntPoint& intp = intersector.Point(i);
     const gp_Pnt2d&          p    = intp.Value();
 
-    Standard_Real d = nearLine.Distance(p);
+    double d = nearLine.Distance(p);
     if (d < minDist)
     {
       minDist = d;
@@ -799,10 +799,10 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
   }
 
   // Shrink of segment.
-  gp_Pnt2d            pc(xc, yc);
-  Standard_Real       L2  = pc.SquareDistance(p12);
-  const Standard_Real Rf2 = radius * radius;
-  end                     = sqrt(L2 - Rf2);
+  gp_Pnt2d     pc(xc, yc);
+  double       L2  = pc.SquareDistance(p12);
+  const double Rf2 = radius * radius;
+  end              = sqrt(L2 - Rf2);
 
   // Shrink of arc.
   gp_Vec2d pcc(pc1, pc);
@@ -816,7 +816,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
   circ.SetRadius(radius1);
   intersector.Perform(line, circ);
   if (!intersector.IsDone() || !intersector.NbPoints())
-    return Standard_False;
+    return false;
 
   xstart = DBL_MAX;
   ystart = DBL_MAX;
@@ -825,7 +825,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
     const IntAna2d_IntPoint& intp = intersector.Point(i);
     const gp_Pnt2d&          p    = intp.Value();
 
-    const Standard_Real d2 = p.SquareDistance(pc);
+    const double d2 = p.SquareDistance(pc);
     if (fabs(d2 - Rf2) < Precision::SquareConfusion())
     {
       p.Coord(xstart, ystart);
@@ -836,7 +836,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
   // Orientation of the fillet.
   angle = v2.Angle(v1);
   cw    = angle < 0.0;
-  return Standard_True;
+  return true;
 }
 
 // WW5 method to compute fillet: arc - arc.
@@ -845,12 +845,12 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
 //     shrinking parameter of the 1st circle (start)
 //     shrinking parameter of the 2nd circle (end)
 //     if the arc of fillet clockwise (cw = true) or counterclockwise (cw = false).
-Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletArc(const Standard_Real radius,
-                                                    Standard_Real&      xc,
-                                                    Standard_Real&      yc,
-                                                    Standard_Boolean&   cw,
-                                                    Standard_Real&      start,
-                                                    Standard_Real&      end)
+bool ChFi2d_AnaFilletAlgo::ArcFilletArc(const double radius,
+                                        double&      xc,
+                                        double&      yc,
+                                        bool&        cw,
+                                        double&      start,
+                                        double&      end)
 {
   // Make points.
   const gp_Pnt2d pc1(xc1, yc1);
@@ -876,7 +876,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletArc(const Standard_Real radius,
   v2.Normalize();
   gp_Vec2d bisec = 0.5 * (v1 + v2);
   if (bisec.SquareMagnitude() < gp::Resolution())
-    return Standard_False;
+    return false;
 
   const gp_Pnt2d checkp = p12.Translated(radius * bisec);
   const gp_Lin2d checkl(p12, bisec);
@@ -898,17 +898,17 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletArc(const Standard_Real radius,
   // and choose the one closer to the "check" point.
   IntAna2d_AnaIntersection intersector(c1, c2);
   if (!intersector.IsDone() || !intersector.NbPoints())
-    return Standard_False;
+    return false;
 
   // Find center point of fillet.
-  gp_Pnt2d      pc;
-  Standard_Real minDist = DBL_MAX;
+  gp_Pnt2d pc;
+  double   minDist = DBL_MAX;
   for (int i = 1; i <= intersector.NbPoints(); ++i)
   {
     const IntAna2d_IntPoint& intp = intersector.Point(i);
     const gp_Pnt2d&          p    = intp.Value();
 
-    Standard_Real d = checkp.SquareDistance(p);
+    double d = checkp.SquareDistance(p);
     if (d < minDist)
     {
       minDist = d;
@@ -918,7 +918,7 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletArc(const Standard_Real radius,
   pc.Coord(xc, yc);
 
   // Orientation of fillet.
-  Standard_Real angle = v1.Angle(v2);
+  double angle = v1.Angle(v2);
   if (fabs(angle) < Precision::Angular())
   {
     angle = gp_Vec2d(pc, pc1).Angle(gp_Vec2d(pc, pc2));
@@ -932,34 +932,32 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletArc(const Standard_Real radius,
   // Shrinking of circles.
   start = fabs(gp_Vec2d(pc1, p12).Angle(gp_Vec2d(pc1, pc)));
   end   = fabs(gp_Vec2d(pc2, p12).Angle(gp_Vec2d(pc2, pc)));
-  return Standard_True;
+  return true;
 }
 
 // Cuts intersecting edges of a contour.
-Standard_Boolean ChFi2d_AnaFilletAlgo::Cut(const gp_Pln& thePlane,
-                                           TopoDS_Edge&  theE1,
-                                           TopoDS_Edge&  theE2)
+bool ChFi2d_AnaFilletAlgo::Cut(const gp_Pln& thePlane, TopoDS_Edge& theE1, TopoDS_Edge& theE2)
 {
   gp_Pnt                    p;
-  Standard_Boolean          found(Standard_False);
-  Standard_Real             param1 = 0.0, param2 = 0.0;
-  Standard_Real             f1, l1, f2, l2;
-  Handle(Geom_Curve)        c1 = BRep_Tool::Curve(theE1, f1, l1);
-  Handle(Geom_Curve)        c2 = BRep_Tool::Curve(theE2, f2, l2);
+  bool                      found(false);
+  double                    param1 = 0.0, param2 = 0.0;
+  double                    f1, l1, f2, l2;
+  occ::handle<Geom_Curve>   c1 = BRep_Tool::Curve(theE1, f1, l1);
+  occ::handle<Geom_Curve>   c2 = BRep_Tool::Curve(theE2, f2, l2);
   GeomAPI_ExtremaCurveCurve extrema(c1, c2, f1, l1, f2, l2);
   if (extrema.NbExtrema())
   {
-    Standard_Integer i, nb = extrema.NbExtrema();
+    int i, nb = extrema.NbExtrema();
     for (i = 1; i <= nb; ++i)
     {
-      const Standard_Real d = extrema.Distance(i);
+      const double d = extrema.Distance(i);
       if (d < Precision::Confusion())
       {
         extrema.Parameters(i, param1, param2);
         if (fabs(l1 - param1) > Precision::Confusion()
             && fabs(f2 - param2) > Precision::Confusion())
         {
-          found = Standard_True;
+          found = true;
           extrema.Points(i, p, p);
           break;
         }
@@ -983,9 +981,9 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::Cut(const gp_Pln& thePlane,
         p2d.Coord(x12, y12);
         x21 = x12;
         y21 = y12;
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }

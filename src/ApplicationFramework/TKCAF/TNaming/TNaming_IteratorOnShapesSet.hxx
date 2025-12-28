@@ -21,7 +21,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+
+#include <TopTools_ShapeMapHasher.hxx>
+
+#include <NCollection_Map.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_NoMoreObject;
 class Standard_NoSuchObject;
@@ -42,16 +46,15 @@ public:
 
   //! Returns True if there is a current Item in
   //! the iteration.
-  Standard_Boolean More() const;
+  bool More() const;
 
   //! Move to the next Item
   void Next();
 
   const TopoDS_Shape& Value() const;
 
-protected:
 private:
-  TopTools_MapIteratorOfMapOfShape myIt;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator myIt;
 };
 
 #include <TNaming_IteratorOnShapesSet.lxx>

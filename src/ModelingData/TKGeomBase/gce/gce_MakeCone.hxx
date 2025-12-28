@@ -51,9 +51,7 @@ public:
   //! the cone.
   //! If Radius is lower than 0.0 the status is "
   //! If Ang < Resolution from gp or Ang >= (PI/2) - Resolution.
-  Standard_EXPORT gce_MakeCone(const gp_Ax2&       A2,
-                               const Standard_Real Ang,
-                               const Standard_Real Radius);
+  Standard_EXPORT gce_MakeCone(const gp_Ax2& A2, const double Ang, const double Radius);
 
   //! Makes a Cone from gp <TheCone> coaxial to another
   //! Cone <Cone> and passing through a Pnt <Point>.
@@ -62,7 +60,7 @@ public:
   //! Makes a Cone from gp <TheCone> coaxial to another
   //! Cone <Cone> at the distance <Dist> which can
   //! be greater or lower than zero.
-  Standard_EXPORT gce_MakeCone(const gp_Cone& Cone, const Standard_Real Dist);
+  Standard_EXPORT gce_MakeCone(const gp_Cone& Cone, const double Dist);
 
   //! Makes a Cone from gp <TheCone> by four points <P1>,
   //! <P2>,<P3> and <P4>.
@@ -132,10 +130,10 @@ public:
   //! -   the vector joining P1 to P2 is perpendicular to the line joining P3 to P4,
   //! -   the vector joining P1 to P2 is perpendicular to Axis, or
   //! -   P1, P2, P3, and P4 are collinear.
-  Standard_EXPORT gce_MakeCone(const gp_Pnt&       P1,
-                               const gp_Pnt&       P2,
-                               const Standard_Real R1,
-                               const Standard_Real R2);
+  Standard_EXPORT gce_MakeCone(const gp_Pnt& P1,
+                               const gp_Pnt& P2,
+                               const double  R1,
+                               const double  R2);
 
   //! Returns the constructed cone.
   //! Exceptions StdFail_NotDone if no cone is constructed.
@@ -144,7 +142,6 @@ public:
   Standard_EXPORT const gp_Cone& Operator() const;
   Standard_EXPORT                operator gp_Cone() const;
 
-protected:
 private:
   gp_Cone TheCone;
 };

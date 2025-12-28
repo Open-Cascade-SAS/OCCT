@@ -23,22 +23,21 @@ Interface_GraphContent::Interface_GraphContent(const Interface_Graph& agraph)
   GetFromGraph(agraph);
 }
 
-Interface_GraphContent::Interface_GraphContent(const Interface_Graph& agraph,
-                                               const Standard_Integer stat)
+Interface_GraphContent::Interface_GraphContent(const Interface_Graph& agraph, const int stat)
 {
   GetFromGraph(agraph, stat);
 }
 
-Interface_GraphContent::Interface_GraphContent(const Interface_Graph&            agraph,
-                                               const Handle(Standard_Transient)& ent)
+Interface_GraphContent::Interface_GraphContent(const Interface_Graph&                 agraph,
+                                               const occ::handle<Standard_Transient>& ent)
 {
   Interface_EntityIterator list = agraph.Shareds(ent);
-  Standard_Integer         nb   = list.NbEntities();
+  int                      nb   = list.NbEntities();
   if (nb == 0)
     return; // Liste redefinie a VIDE
   for (; list.More(); list.Next())
   {
-    const Handle(Standard_Transient)& curent = list.Value();
+    const occ::handle<Standard_Transient>& curent = list.Value();
     if (agraph.IsPresent(agraph.EntityNumber(curent)))
       GetOneItem(curent);
   }
@@ -46,19 +45,18 @@ Interface_GraphContent::Interface_GraphContent(const Interface_Graph&           
 
 void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph)
 {
-  Standard_Integer nb = agraph.Size();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = agraph.Size();
+  for (int i = 1; i <= nb; i++)
   {
     if (agraph.IsPresent(i))
       GetOneItem(agraph.Entity(i));
   }
 }
 
-void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph,
-                                          const Standard_Integer stat)
+void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph, const int stat)
 {
-  Standard_Integer nb = agraph.Size();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = agraph.Size();
+  for (int i = 1; i <= nb; i++)
   {
     if (agraph.IsPresent(i) && agraph.Status(i) == stat)
       GetOneItem(agraph.Entity(i));

@@ -21,19 +21,21 @@
 #include <gp_Vec.hxx>
 #include <PLib.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <math_Vector.hxx>
 
 GeomFill_PolynomialConvertor::GeomFill_PolynomialConvertor()
     : Ordre(8),
-      myinit(Standard_False),
+      myinit(false),
       BH(1, Ordre, 1, Ordre)
 {
 }
 
-Standard_Boolean GeomFill_PolynomialConvertor::Initialized() const
+bool GeomFill_PolynomialConvertor::Initialized() const
 {
   return myinit;
 }
@@ -42,14 +44,16 @@ void GeomFill_PolynomialConvertor::Init()
 {
   if (myinit)
     return; // On n'initialise qu'une fois
-  Standard_Integer              ii, jj;
-  Standard_Real                 terme;
-  math_Matrix                   H(1, Ordre, 1, Ordre), B(1, Ordre, 1, Ordre);
-  Handle(TColStd_HArray1OfReal) Coeffs    = new (TColStd_HArray1OfReal)(1, Ordre * Ordre),
-                                TrueInter = new (TColStd_HArray1OfReal)(1, 2);
+  int                                      ii, jj;
+  double                                   terme;
+  math_Matrix                              H(1, Ordre, 1, Ordre), B(1, Ordre, 1, Ordre);
+  occ::handle<NCollection_HArray1<double>> Coeffs =
+                                             new (NCollection_HArray1<double>)(1, Ordre * Ordre),
+                                           TrueInter = new (NCollection_HArray1<double>)(1, 2);
 
-  Handle(TColStd_HArray2OfReal) Poles1d = new (TColStd_HArray2OfReal)(1, Ordre, 1, Ordre),
-                                Inter   = new (TColStd_HArray2OfReal)(1, 1, 1, 2);
+  occ::handle<NCollection_HArray2<double>> Poles1d =
+                                             new (NCollection_HArray2<double>)(1, Ordre, 1, Ordre),
+                                           Inter = new (NCollection_HArray2<double>)(1, 1, 1, 2);
 
   // Calcul de B
   Inter->SetValue(1, 1, -1);
@@ -64,7 +68,7 @@ void GeomFill_PolynomialConvertor::Init()
   }
 
   // Convertion ancienne formules
-  Handle(TColStd_HArray1OfInteger) Ncf = new (TColStd_HArray1OfInteger)(1, 1);
+  occ::handle<NCollection_HArray1<int>> Ncf = new (NCollection_HArray1<int>)(1, 1);
   Ncf->Init(Ordre);
 
   Convert_CompPolynomialToPoles AConverter(1, 1, 8, 8, Ncf, Coeffs, Inter, TrueInter);
@@ -98,18 +102,18 @@ void GeomFill_PolynomialConvertor::Init()
   BH = B * H;
 }
 
-void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
-                                           const gp_Pnt&       Center,
-                                           const gp_Vec&       Dir,
-                                           const Standard_Real Angle,
-                                           TColgp_Array1OfPnt& Poles) const
+void GeomFill_PolynomialConvertor::Section(const gp_Pnt&               FirstPnt,
+                                           const gp_Pnt&               Center,
+                                           const gp_Vec&               Dir,
+                                           const double                Angle,
+                                           NCollection_Array1<gp_Pnt>& Poles) const
 {
-  math_Vector      Vx(1, Ordre), Vy(1, Ordre);
-  math_Vector      Px(1, Ordre), Py(1, Ordre);
-  Standard_Integer ii;
-  Standard_Real    Cos_b = std::cos(Angle), Sin_b = std::sin(Angle);
-  Standard_Real    beta, beta2, beta3;
-  gp_Vec           V1(Center, FirstPnt), V2;
+  math_Vector Vx(1, Ordre), Vy(1, Ordre);
+  math_Vector Px(1, Ordre), Py(1, Ordre);
+  int         ii;
+  double      Cos_b = std::cos(Angle), Sin_b = std::sin(Angle);
+  double      beta, beta2, beta3;
+  gp_Vec      V1(Center, FirstPnt), V2;
   V2    = Dir ^ V1;
   beta  = Angle / 2;
   beta2 = beta * beta;
@@ -149,23 +153,23 @@ void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
   }
 }
 
-void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
-                                           const gp_Vec&       DFirstPnt,
-                                           const gp_Pnt&       Center,
-                                           const gp_Vec&       DCenter,
-                                           const gp_Vec&       Dir,
-                                           const gp_Vec&       DDir,
-                                           const Standard_Real Angle,
-                                           const Standard_Real DAngle,
-                                           TColgp_Array1OfPnt& Poles,
-                                           TColgp_Array1OfVec& DPoles) const
+void GeomFill_PolynomialConvertor::Section(const gp_Pnt&               FirstPnt,
+                                           const gp_Vec&               DFirstPnt,
+                                           const gp_Pnt&               Center,
+                                           const gp_Vec&               DCenter,
+                                           const gp_Vec&               Dir,
+                                           const gp_Vec&               DDir,
+                                           const double                Angle,
+                                           const double                DAngle,
+                                           NCollection_Array1<gp_Pnt>& Poles,
+                                           NCollection_Array1<gp_Vec>& DPoles) const
 {
-  math_Vector      Vx(1, Ordre), Vy(1, Ordre), DVx(1, Ordre), DVy(1, Ordre);
-  math_Vector      Px(1, Ordre), Py(1, Ordre), DPx(1, Ordre), DPy(1, Ordre);
-  Standard_Integer ii;
-  Standard_Real    Cos_b = std::cos(Angle), Sin_b = std::sin(Angle);
-  Standard_Real    beta, beta2, beta3, bprim;
-  gp_Vec           V1(Center, FirstPnt), V1Prim, V2;
+  math_Vector Vx(1, Ordre), Vy(1, Ordre), DVx(1, Ordre), DVy(1, Ordre);
+  math_Vector Px(1, Ordre), Py(1, Ordre), DPx(1, Ordre), DPy(1, Ordre);
+  int         ii;
+  double      Cos_b = std::cos(Angle), Sin_b = std::sin(Angle);
+  double      beta, beta2, beta3, bprim;
+  gp_Vec      V1(Center, FirstPnt), V1Prim, V2;
   V2    = Dir ^ V1;
   beta  = Angle / 2;
   bprim = DAngle / 2;
@@ -196,7 +200,7 @@ void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
   Vx(8) = beta3 * Sin_b;
   Vy(8) = -beta3 * Cos_b;
 
-  Standard_Real b_bprim = bprim * beta, b2_bprim = bprim * beta2;
+  double b_bprim = bprim * beta, b2_bprim = bprim * beta2;
   DVx(1) = 0;
   DVy(1) = 0;
   DVx(2) = 0;
@@ -233,31 +237,31 @@ void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
   }
 }
 
-void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
-                                           const gp_Vec&       DFirstPnt,
-                                           const gp_Vec&       D2FirstPnt,
-                                           const gp_Pnt&       Center,
-                                           const gp_Vec&       DCenter,
-                                           const gp_Vec&       D2Center,
-                                           const gp_Vec&       Dir,
-                                           const gp_Vec&       DDir,
-                                           const gp_Vec&       D2Dir,
-                                           const Standard_Real Angle,
-                                           const Standard_Real DAngle,
-                                           const Standard_Real D2Angle,
-                                           TColgp_Array1OfPnt& Poles,
-                                           TColgp_Array1OfVec& DPoles,
-                                           TColgp_Array1OfVec& D2Poles) const
+void GeomFill_PolynomialConvertor::Section(const gp_Pnt&               FirstPnt,
+                                           const gp_Vec&               DFirstPnt,
+                                           const gp_Vec&               D2FirstPnt,
+                                           const gp_Pnt&               Center,
+                                           const gp_Vec&               DCenter,
+                                           const gp_Vec&               D2Center,
+                                           const gp_Vec&               Dir,
+                                           const gp_Vec&               DDir,
+                                           const gp_Vec&               D2Dir,
+                                           const double                Angle,
+                                           const double                DAngle,
+                                           const double                D2Angle,
+                                           NCollection_Array1<gp_Pnt>& Poles,
+                                           NCollection_Array1<gp_Vec>& DPoles,
+                                           NCollection_Array1<gp_Vec>& D2Poles) const
 {
   math_Vector Vx(1, Ordre), Vy(1, Ordre), DVx(1, Ordre), DVy(1, Ordre), D2Vx(1, Ordre),
     D2Vy(1, Ordre);
   math_Vector Px(1, Ordre), Py(1, Ordre), DPx(1, Ordre), DPy(1, Ordre), D2Px(1, Ordre),
     D2Py(1, Ordre);
 
-  Standard_Integer ii;
-  Standard_Real    aux, Cos_b = std::cos(Angle), Sin_b = std::sin(Angle);
-  Standard_Real    beta, beta2, beta3, bprim, bprim2, bsecn;
-  gp_Vec           V1(Center, FirstPnt), V1Prim, V1Secn, V2;
+  int    ii;
+  double aux, Cos_b = std::cos(Angle), Sin_b = std::sin(Angle);
+  double beta, beta2, beta3, bprim, bprim2, bsecn;
+  gp_Vec V1(Center, FirstPnt), V1Prim, V1Secn, V2;
   V2     = Dir ^ V1;
   beta   = Angle / 2;
   bprim  = DAngle / 2;
@@ -298,7 +302,7 @@ void GeomFill_PolynomialConvertor::Section(const gp_Pnt&       FirstPnt,
   Vx(8) = beta3 * Sin_b;
   Vy(8) = -beta3 * Cos_b;
 
-  Standard_Real b_bprim = bprim * beta, b2_bprim = bprim * beta2, b_bsecn = bsecn * beta;
+  double b_bprim = bprim * beta, b2_bprim = bprim * beta2, b_bsecn = bsecn * beta;
   DVx(1) = 0;
   DVy(1) = 0;
   DVx(2) = 0;

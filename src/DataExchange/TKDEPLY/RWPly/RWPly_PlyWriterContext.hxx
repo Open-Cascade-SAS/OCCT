@@ -14,10 +14,18 @@
 #ifndef _RWPly_PlyWriterContext_HeaderFiler
 #define _RWPly_PlyWriterContext_HeaderFiler
 
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+
+#include <Standard_TypeDef.hxx>
+
+#include <NCollection_Vec3.hxx>
+
+#include <NCollection_Vec4.hxx>
+
+#include <NCollection_Mat4.hxx>
 #include <gp_Pnt.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_IndexedDataMapOfStringString.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 #include <memory>
 
@@ -78,43 +86,45 @@ public: //! @name writing into file
   //! @param[in] theNbNodes number of vertex nodes
   //! @param[in] theNbElems number of mesh elements
   //! @param[in] theFileInfo optional comments
-  Standard_EXPORT bool WriteHeader(const Standard_Integer                      theNbNodes,
-                                   const Standard_Integer                      theNbElems,
-                                   const TColStd_IndexedDataMapOfStringString& theFileInfo);
+  Standard_EXPORT bool WriteHeader(
+    const int theNbNodes,
+    const int theNbElems,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>&
+      theFileInfo);
 
   //! Write single point with all attributes.
   //! @param[in] thePoint 3D point coordinates
   //! @param[in] theNorm  surface normal direction at the point
   //! @param[in] theUV    surface/texture UV coordinates
   //! @param[in] theColor RGB color values
-  Standard_EXPORT bool WriteVertex(const gp_Pnt&           thePoint,
-                                   const Graphic3d_Vec3&   theNorm,
-                                   const Graphic3d_Vec2&   theUV,
-                                   const Graphic3d_Vec4ub& theColor);
+  Standard_EXPORT bool WriteVertex(const gp_Pnt&                    thePoint,
+                                   const NCollection_Vec3<float>&   theNorm,
+                                   const NCollection_Vec2<float>&   theUV,
+                                   const NCollection_Vec4<uint8_t>& theColor);
 
   //! Return number of written vertices.
-  Standard_Integer NbWrittenVertices() const { return myNbVerts; }
+  int NbWrittenVertices() const { return myNbVerts; }
 
   //! Return vertex offset to be applied to element indices; 0 by default.
-  Standard_Integer VertexOffset() const { return myVertOffset; }
+  int VertexOffset() const { return myVertOffset; }
 
   //! Set vertex offset to be applied to element indices.
-  void SetVertexOffset(Standard_Integer theOffset) { myVertOffset = theOffset; }
+  void SetVertexOffset(int theOffset) { myVertOffset = theOffset; }
 
   //! Return surface id to write with element; 0 by default.
-  Standard_Integer SurfaceId() const { return mySurfId; }
+  int SurfaceId() const { return mySurfId; }
 
   //! Set surface id to write with element.
-  void SetSurfaceId(Standard_Integer theSurfId) { mySurfId = theSurfId; }
+  void SetSurfaceId(int theSurfId) { mySurfId = theSurfId; }
 
   //! Writing a triangle.
-  Standard_EXPORT bool WriteTriangle(const Graphic3d_Vec3i& theTri);
+  Standard_EXPORT bool WriteTriangle(const NCollection_Vec3<int>& theTri);
 
   //! Writing a quad.
-  Standard_EXPORT bool WriteQuad(const Graphic3d_Vec4i& theQuad);
+  Standard_EXPORT bool WriteQuad(const NCollection_Vec4<int>& theQuad);
 
   //! Return number of written elements.
-  Standard_Integer NbWrittenElements() const { return myNbElems; }
+  int NbWrittenElements() const { return myNbElems; }
 
   //! Correctly close the file.
   //! @return FALSE in case of writing error
@@ -123,12 +133,12 @@ public: //! @name writing into file
 private:
   std::shared_ptr<std::ostream> myStream;
   TCollection_AsciiString       myName;
-  Standard_Integer              myNbHeaderVerts;
-  Standard_Integer              myNbHeaderElems;
-  Standard_Integer              myNbVerts;
-  Standard_Integer              myNbElems;
-  Standard_Integer              mySurfId;
-  Standard_Integer              myVertOffset;
+  int                           myNbHeaderVerts;
+  int                           myNbHeaderElems;
+  int                           myNbVerts;
+  int                           myNbElems;
+  int                           mySurfId;
+  int                           myVertOffset;
   bool                          myIsDoublePrec;
   bool                          myHasNormals;
   bool                          myHasColors;

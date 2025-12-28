@@ -16,7 +16,11 @@
 #define _Graphic3d_TransformUtils_HeaderFile
 
 #include <gp_Trsf.hxx>
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
+#include <NCollection_Vec3.hxx>
+#include <NCollection_Vec4.hxx>
+#include <NCollection_Mat4.hxx>
 
 //! Helper class that implements transformation matrix functionality.
 namespace Graphic3d_TransformUtils
@@ -27,15 +31,15 @@ struct MatrixType
 };
 
 template <>
-struct MatrixType<Standard_Real>
+struct MatrixType<double>
 {
-  typedef Graphic3d_Mat4d Mat4;
+  typedef NCollection_Mat4<double> Mat4;
 };
 
 template <>
-struct MatrixType<Standard_ShortReal>
+struct MatrixType<float>
 {
-  typedef Graphic3d_Mat4 Mat4;
+  typedef NCollection_Mat4<float> Mat4;
 };
 
 template <class T>
@@ -44,22 +48,22 @@ struct VectorType
 };
 
 template <>
-struct VectorType<Standard_Real>
+struct VectorType<double>
 {
-  typedef Graphic3d_Vec2d Vec2;
-  typedef Graphic3d_Vec3d Vec3;
-  typedef Graphic3d_Vec4d Vec4;
+  typedef NCollection_Vec2<double> Vec2;
+  typedef NCollection_Vec3<double> Vec3;
+  typedef NCollection_Vec4<double> Vec4;
 };
 
 template <>
-struct VectorType<Standard_ShortReal>
+struct VectorType<float>
 {
-  typedef Graphic3d_Vec2 Vec2;
-  typedef Graphic3d_Vec3 Vec3;
-  typedef Graphic3d_Vec4 Vec4;
+  typedef NCollection_Vec2<float> Vec2;
+  typedef NCollection_Vec3<float> Vec3;
+  typedef NCollection_Vec4<float> Vec4;
 };
 
-//! Converts gp_Trsf to Graphic3d_Mat4.
+//! Converts gp_Trsf to NCollection_Mat4<float>.
 template <class T>
 static void Convert(const gp_Trsf& theTransformation, typename MatrixType<T>::Mat4& theOut);
 
@@ -83,27 +87,27 @@ static void Ortho2D(typename MatrixType<T>::Mat4& theOut,
 
 //! Maps object coordinates to window coordinates.
 template <class T>
-static Standard_Boolean Project(const T                             theObjX,
-                                const T                             theObjY,
-                                const T                             theObjZ,
-                                const typename MatrixType<T>::Mat4& theModViewMat,
-                                const typename MatrixType<T>::Mat4& theProjectMat,
-                                const Standard_Integer              theViewport[4],
-                                T&                                  theWinX,
-                                T&                                  theWinY,
-                                T&                                  theWinZ);
+static bool Project(const T                             theObjX,
+                    const T                             theObjY,
+                    const T                             theObjZ,
+                    const typename MatrixType<T>::Mat4& theModViewMat,
+                    const typename MatrixType<T>::Mat4& theProjectMat,
+                    const int                           theViewport[4],
+                    T&                                  theWinX,
+                    T&                                  theWinY,
+                    T&                                  theWinZ);
 
 //! Maps window coordinates to object coordinates.
 template <class T>
-static Standard_Boolean UnProject(const T                             theWinX,
-                                  const T                             theWinY,
-                                  const T                             theWinZ,
-                                  const typename MatrixType<T>::Mat4& theModViewMat,
-                                  const typename MatrixType<T>::Mat4& theProjectMat,
-                                  const Standard_Integer              theViewport[4],
-                                  T&                                  theObjX,
-                                  T&                                  theObjY,
-                                  T&                                  theObjZ);
+static bool UnProject(const T                             theWinX,
+                      const T                             theWinY,
+                      const T                             theWinZ,
+                      const typename MatrixType<T>::Mat4& theModViewMat,
+                      const typename MatrixType<T>::Mat4& theProjectMat,
+                      const int                           theViewport[4],
+                      T&                                  theObjX,
+                      T&                                  theObjY,
+                      T&                                  theObjZ);
 
 //! Constructs a 4x4 rotation matrix.
 template <class T>
@@ -123,11 +127,11 @@ static void Translate(typename MatrixType<T>::Mat4& theOut, T theX, T theY, T th
 
 //! Returns scaling factor from 3x3 affine matrix.
 template <class T>
-static Standard_Real ScaleFactor(const NCollection_Mat4<T>& theMatrix)
+static double ScaleFactor(const NCollection_Mat4<T>& theMatrix)
 {
   // The determinant of the matrix should give the scale factor (cubed).
   const T aDeterminant = theMatrix.DeterminantMat3();
-  return std::pow(static_cast<Standard_Real>(aDeterminant), 1.0 / 3.0);
+  return std::pow(static_cast<double>(aDeterminant), 1.0 / 3.0);
 }
 } // namespace Graphic3d_TransformUtils
 
@@ -232,13 +236,13 @@ void Graphic3d_TransformUtils::ConstructRotate(typename MatrixType<T>::Mat4& the
   const T aSin = std::sin(theA * static_cast<T>(M_PI / 180.0));
   const T aCos = std::cos(theA * static_cast<T>(M_PI / 180.0));
 
-  const Standard_Boolean isOnlyX =
+  const bool isOnlyX =
     (theX != static_cast<T>(0.0)) && (theY == static_cast<T>(0.0)) && (theZ == static_cast<T>(0.0));
 
-  const Standard_Boolean isOnlyY =
+  const bool isOnlyY =
     (theX == static_cast<T>(0.0)) && (theY != static_cast<T>(0.0)) && (theZ == static_cast<T>(0.0));
 
-  const Standard_Boolean isOnlyZ =
+  const bool isOnlyZ =
     (theX == static_cast<T>(0.0)) && (theY == static_cast<T>(0.0)) && (theZ != static_cast<T>(0.0));
 
   if (isOnlyX) // Rotation only around X.
@@ -383,16 +387,15 @@ void Graphic3d_TransformUtils::Ortho2D(typename MatrixType<T>::Mat4& theOut,
 // purpose  : Maps object coordinates to window coordinates
 // =======================================================================
 template <class T>
-static Standard_Boolean Graphic3d_TransformUtils::Project(
-  const T                             theObjX,
-  const T                             theObjY,
-  const T                             theObjZ,
-  const typename MatrixType<T>::Mat4& theModViewMat,
-  const typename MatrixType<T>::Mat4& theProjectMat,
-  const Standard_Integer              theViewport[4],
-  T&                                  theWinX,
-  T&                                  theWinY,
-  T&                                  theWinZ)
+static bool Graphic3d_TransformUtils::Project(const T                             theObjX,
+                                              const T                             theObjY,
+                                              const T                             theObjZ,
+                                              const typename MatrixType<T>::Mat4& theModViewMat,
+                                              const typename MatrixType<T>::Mat4& theProjectMat,
+                                              const int                           theViewport[4],
+                                              T&                                  theWinX,
+                                              T&                                  theWinY,
+                                              T&                                  theWinZ)
 {
   typename VectorType<T>::Vec4 anIn(theObjX, theObjY, theObjZ, static_cast<T>(1.0));
 
@@ -400,7 +403,7 @@ static Standard_Boolean Graphic3d_TransformUtils::Project(
 
   if (anOut.w() == static_cast<T>(0.0))
   {
-    return Standard_False;
+    return false;
   }
 
   anOut.w() = static_cast<T>(1.0) / anOut.w();
@@ -422,7 +425,7 @@ static Standard_Boolean Graphic3d_TransformUtils::Project(
   theWinY = anOut.y();
   theWinZ = anOut.z();
 
-  return Standard_True;
+  return true;
 }
 
 // =======================================================================
@@ -430,22 +433,21 @@ static Standard_Boolean Graphic3d_TransformUtils::Project(
 // purpose  : Maps window coordinates to object coordinates
 // =======================================================================
 template <class T>
-static Standard_Boolean Graphic3d_TransformUtils::UnProject(
-  const T                             theWinX,
-  const T                             theWinY,
-  const T                             theWinZ,
-  const typename MatrixType<T>::Mat4& theModViewMat,
-  const typename MatrixType<T>::Mat4& theProjectMat,
-  const Standard_Integer              theViewport[4],
-  T&                                  theObjX,
-  T&                                  theObjY,
-  T&                                  theObjZ)
+static bool Graphic3d_TransformUtils::UnProject(const T                             theWinX,
+                                                const T                             theWinY,
+                                                const T                             theWinZ,
+                                                const typename MatrixType<T>::Mat4& theModViewMat,
+                                                const typename MatrixType<T>::Mat4& theProjectMat,
+                                                const int                           theViewport[4],
+                                                T&                                  theObjX,
+                                                T&                                  theObjY,
+                                                T&                                  theObjZ)
 {
   typename MatrixType<T>::Mat4 anUnviewMat;
 
   if (!(theProjectMat * theModViewMat).Inverted(anUnviewMat))
   {
-    return Standard_False;
+    return false;
   }
 
   typename VectorType<T>::Vec4 anIn(theWinX, theWinY, theWinZ, static_cast<T>(1.0));
@@ -463,7 +465,7 @@ static Standard_Boolean Graphic3d_TransformUtils::UnProject(
 
   if (anOut.w() == static_cast<T>(0.0))
   {
-    return Standard_False;
+    return false;
   }
 
   anOut.w() = static_cast<T>(1.0) / anOut.w();
@@ -476,7 +478,7 @@ static Standard_Boolean Graphic3d_TransformUtils::UnProject(
   theObjY = anOut.y();
   theObjZ = anOut.z();
 
-  return Standard_True;
+  return true;
 }
 
 #endif // _Graphic3d_TransformUtils_HeaderFile

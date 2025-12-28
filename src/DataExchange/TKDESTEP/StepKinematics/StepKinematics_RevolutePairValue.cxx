@@ -25,9 +25,9 @@ StepKinematics_RevolutePairValue::StepKinematics_RevolutePairValue() {}
 //=================================================================================================
 
 void StepKinematics_RevolutePairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Standard_Real                         theActualRotation)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const double                                     theActualRotation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -36,14 +36,14 @@ void StepKinematics_RevolutePairValue::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_RevolutePairValue::ActualRotation() const
+double StepKinematics_RevolutePairValue::ActualRotation() const
 {
   return myActualRotation;
 }
 
 //=================================================================================================
 
-void StepKinematics_RevolutePairValue::SetActualRotation(const Standard_Real theActualRotation)
+void StepKinematics_RevolutePairValue::SetActualRotation(const double theActualRotation)
 {
   myActualRotation = theActualRotation;
 }

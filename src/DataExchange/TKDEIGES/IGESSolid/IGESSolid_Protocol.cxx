@@ -45,18 +45,18 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Protocol, IGESData_Protocol)
 
 IGESSolid_Protocol::IGESSolid_Protocol() {}
 
-Standard_Integer IGESSolid_Protocol::NbResources() const
+int IGESSolid_Protocol::NbResources() const
 {
   return 1;
 }
 
-Handle(Interface_Protocol) IGESSolid_Protocol::Resource(const Standard_Integer /*num*/) const
+occ::handle<Interface_Protocol> IGESSolid_Protocol::Resource(const int /*num*/) const
 {
-  Handle(Interface_Protocol) res = IGESGeom::Protocol();
+  occ::handle<Interface_Protocol> res = IGESGeom::Protocol();
   return res;
 }
 
-Standard_Integer IGESSolid_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
+int IGESSolid_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESSolid_Block))
     return 1;

@@ -28,9 +28,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-class IFSelect_SelectRoots;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectRoots, IFSelect_SelectExtract)
-
 //! A SelectRoots sorts the Entities which are local roots of a
 //! set of Entities (not shared by other Entities inside this set,
 //! even if they are shared by other Entities outside it)
@@ -45,23 +42,22 @@ public:
   //! It is redefined for a purpose of efficiency:
   //! calling a Sort routine for each Entity would cost more resources
   //! than to work in once using a Map RootResult takes in account the Direct status.
-  Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual Interface_EntityIterator RootResult(
+    const Interface_Graph& G) const override;
 
   //! Returns always True, because RootResult has done work
-  Standard_EXPORT Standard_Boolean
-    Sort(const Standard_Integer                  rank,
-         const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT bool Sort(const int                                    rank,
+                            const occ::handle<Standard_Transient>&       ent,
+                            const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : "Local Root Entities"
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectRoots, IFSelect_SelectExtract)
 
 protected:
   //! Returns True, because RootResult assures uniqueness
-  Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool HasUniqueResult() const override;
 };
 
 #endif // _IFSelect_SelectRoots_HeaderFile

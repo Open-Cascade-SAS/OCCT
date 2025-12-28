@@ -25,9 +25,6 @@
 class gp_Dir;
 class gp_Pnt;
 
-class Geom_AxisPlacement;
-DEFINE_STANDARD_HANDLE(Geom_AxisPlacement, Geom_Geometry)
-
 //! The abstract class AxisPlacement describes the
 //! common behavior of positioning systems in 3D space,
 //! such as axis or coordinate systems.
@@ -85,7 +82,7 @@ public:
   //! Computes the angular value, in radians, between the
   //! "main Direction" of this positioning system and that
   //! of positioning system Other. The result is a value between 0 and Pi.
-  Standard_EXPORT Standard_Real Angle(const Handle(Geom_AxisPlacement)& Other) const;
+  Standard_EXPORT double Angle(const occ::handle<Geom_AxisPlacement>& Other) const;
 
   //! Returns the main axis of the axis placement.
   //! For an "Axis2placement" it is the main axis (Location, Direction ).
@@ -102,8 +99,6 @@ public:
 
 protected:
   gp_Ax1 axis;
-
-private:
 };
 
 #endif // _Geom_AxisPlacement_HeaderFile

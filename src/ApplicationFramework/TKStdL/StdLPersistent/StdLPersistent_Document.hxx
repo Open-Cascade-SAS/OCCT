@@ -30,13 +30,14 @@ public:
   Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const;
 
   //! Returns persistent type name
-  virtual Standard_CString PName() const { return "PDocStd_Document"; }
+  virtual const char* PName() const { return "PDocStd_Document"; }
 
   //! Import transient document from the persistent data.
-  Standard_EXPORT virtual void ImportDocument(const Handle(TDocStd_Document)& theDocument) const;
+  Standard_EXPORT virtual void ImportDocument(
+    const occ::handle<TDocStd_Document>& theDocument) const;
 
 private:
-  Handle(StdLPersistent_Data) myData;
+  occ::handle<StdLPersistent_Data> myData;
 };
 
 #endif

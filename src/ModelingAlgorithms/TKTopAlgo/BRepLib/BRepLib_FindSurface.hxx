@@ -60,10 +60,10 @@ public:
   //! If <OnlyClosed> is true, then S should be a wire
   //! and the existing surface, on which wire S is not
   //! closed in 2D, will be ignored.
-  Standard_EXPORT BRepLib_FindSurface(const TopoDS_Shape&    S,
-                                      const Standard_Real    Tol        = -1,
-                                      const Standard_Boolean OnlyPlane  = Standard_False,
-                                      const Standard_Boolean OnlyClosed = Standard_False);
+  Standard_EXPORT BRepLib_FindSurface(const TopoDS_Shape& S,
+                                      const double        Tol        = -1,
+                                      const bool          OnlyPlane  = false,
+                                      const bool          OnlyClosed = false);
 
   //! Computes the Surface from the edges of <S> with the
   //! given tolerance.
@@ -73,30 +73,29 @@ public:
   //! If <OnlyClosed> is true, then S should be a wire
   //! and the existing surface, on which wire S is not
   //! closed in 2D, will be ignored.
-  Standard_EXPORT void Init(const TopoDS_Shape&    S,
-                            const Standard_Real    Tol        = -1,
-                            const Standard_Boolean OnlyPlane  = Standard_False,
-                            const Standard_Boolean OnlyClosed = Standard_False);
+  Standard_EXPORT void Init(const TopoDS_Shape& S,
+                            const double        Tol        = -1,
+                            const bool          OnlyPlane  = false,
+                            const bool          OnlyClosed = false);
 
-  Standard_EXPORT Standard_Boolean Found() const;
+  Standard_EXPORT bool Found() const;
 
-  Standard_EXPORT Handle(Geom_Surface) Surface() const;
+  Standard_EXPORT occ::handle<Geom_Surface> Surface() const;
 
-  Standard_EXPORT Standard_Real Tolerance() const;
+  Standard_EXPORT double Tolerance() const;
 
-  Standard_EXPORT Standard_Real ToleranceReached() const;
+  Standard_EXPORT double ToleranceReached() const;
 
-  Standard_EXPORT Standard_Boolean Existed() const;
+  Standard_EXPORT bool Existed() const;
 
   Standard_EXPORT TopLoc_Location Location() const;
 
-protected:
 private:
-  Handle(Geom_Surface) mySurface;
-  Standard_Real        myTolerance;
-  Standard_Real        myTolReached;
-  Standard_Boolean     isExisted;
-  TopLoc_Location      myLocation;
+  occ::handle<Geom_Surface> mySurface;
+  double                    myTolerance;
+  double                    myTolReached;
+  bool                      isExisted;
+  TopLoc_Location           myLocation;
 };
 
 #endif // _BRepLib_FindSurface_HeaderFile

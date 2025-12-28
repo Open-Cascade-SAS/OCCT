@@ -22,16 +22,13 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>
 
-class IVtkOCC_SelectableObject;
-DEFINE_STANDARD_HANDLE(IVtkOCC_SelectableObject, SelectMgr_SelectableObject)
-
 // -----------------------------------------------------------------------------
 //! @class IVtkOCC_SelectableObject
 //! @brief Class with selection primitives used by OCCT selection algorithm.
 class IVtkOCC_SelectableObject : public SelectMgr_SelectableObject
 {
 public:
-  typedef Handle(IVtkOCC_SelectableObject) Handle;
+  typedef occ::handle<IVtkOCC_SelectableObject> Handle;
 
   //! Constructs a selectable object initialized by the given shape
   //! @param[in]  theShape Selectable shape
@@ -50,7 +47,7 @@ public:
   const IVtkOCC_Shape::Handle& GetShape() const { return myShape; };
 
   //! Returns bounding box of object
-  Standard_EXPORT virtual void BoundingBox(Bnd_Box& theBndBox) Standard_OVERRIDE;
+  Standard_EXPORT virtual void BoundingBox(Bnd_Box& theBndBox) override;
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_SelectableObject, SelectMgr_SelectableObject)
 
@@ -59,13 +56,13 @@ private:
   //! Inspired by AIS_Shape::ComputeSelection() from OCCT 6.5.1
   //! @param[in]  selection container for sensitive primitives
   //! @param[in]  mode Selection mode
-  virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                const Standard_Integer             theMode) Standard_OVERRIDE;
+  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                const int                               theMode) override;
 
   //! Dummy.
-  virtual void Compute(const Handle(PrsMgr_PresentationManager)&,
-                       const Handle(Prs3d_Presentation)&,
-                       const Standard_Integer) Standard_OVERRIDE
+  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                       const occ::handle<Prs3d_Presentation>&,
+                       const int) override
   {
   }
 

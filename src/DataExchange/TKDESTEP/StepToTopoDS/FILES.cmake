@@ -7,14 +7,7 @@ set(OCCT_StepToTopoDS_FILES
   StepToTopoDS_Builder.cxx
   StepToTopoDS_Builder.hxx
   StepToTopoDS_BuilderError.hxx
-  StepToTopoDS_DataMapIteratorOfDataMapOfRI.hxx
-  StepToTopoDS_DataMapIteratorOfDataMapOfRINames.hxx
-  StepToTopoDS_DataMapIteratorOfDataMapOfTRI.hxx
-  StepToTopoDS_DataMapIteratorOfPointEdgeMap.hxx
-  StepToTopoDS_DataMapIteratorOfPointVertexMap.hxx
-  StepToTopoDS_DataMapOfRI.hxx
-  StepToTopoDS_DataMapOfRINames.hxx
-  StepToTopoDS_DataMapOfTRI.hxx
+
   StepToTopoDS_GeometricTool.cxx
   StepToTopoDS_GeometricTool.hxx
   StepToTopoDS_GeometricToolError.hxx
@@ -22,10 +15,10 @@ set(OCCT_StepToTopoDS_FILES
   StepToTopoDS_MakeTransformed.hxx
   StepToTopoDS_NMTool.cxx
   StepToTopoDS_NMTool.hxx
-  StepToTopoDS_PointEdgeMap.hxx
+
   StepToTopoDS_PointPair.cxx
   StepToTopoDS_PointPair.hxx
-  StepToTopoDS_PointVertexMap.hxx
+
   StepToTopoDS_Root.cxx
   StepToTopoDS_Root.hxx
   StepToTopoDS_Root.lxx

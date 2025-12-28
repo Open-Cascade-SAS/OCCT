@@ -30,12 +30,12 @@
 
 IGESGraph_ToolPick::IGESGraph_ToolPick() {}
 
-void IGESGraph_ToolPick::ReadOwnParams(const Handle(IGESGraph_Pick)& ent,
-                                       const Handle(IGESData_IGESReaderData)& /*IR*/,
+void IGESGraph_ToolPick::ReadOwnParams(const occ::handle<IGESGraph_Pick>& ent,
+                                       const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                        IGESData_ParamReader& PR) const
 {
-  Standard_Integer nbPropertyValues;
-  Standard_Integer pickStatus;
+  int nbPropertyValues;
+  int pickStatus;
 
   // Reading nbPropertyValues(Integer)
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues);
@@ -52,34 +52,34 @@ void IGESGraph_ToolPick::ReadOwnParams(const Handle(IGESGraph_Pick)& ent,
   ent->Init(nbPropertyValues, pickStatus);
 }
 
-void IGESGraph_ToolPick::WriteOwnParams(const Handle(IGESGraph_Pick)& ent,
-                                        IGESData_IGESWriter&          IW) const
+void IGESGraph_ToolPick::WriteOwnParams(const occ::handle<IGESGraph_Pick>& ent,
+                                        IGESData_IGESWriter&               IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->PickFlag());
 }
 
-void IGESGraph_ToolPick::OwnShared(const Handle(IGESGraph_Pick)& /*ent*/,
+void IGESGraph_ToolPick::OwnShared(const occ::handle<IGESGraph_Pick>& /*ent*/,
                                    Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESGraph_ToolPick::OwnCopy(const Handle(IGESGraph_Pick)& another,
-                                 const Handle(IGESGraph_Pick)& ent,
+void IGESGraph_ToolPick::OwnCopy(const occ::handle<IGESGraph_Pick>& another,
+                                 const occ::handle<IGESGraph_Pick>& ent,
                                  Interface_CopyTool& /*TC*/) const
 {
   ent->Init(1, another->PickFlag());
 }
 
-Standard_Boolean IGESGraph_ToolPick::OwnCorrect(const Handle(IGESGraph_Pick)& ent) const
+bool IGESGraph_ToolPick::OwnCorrect(const occ::handle<IGESGraph_Pick>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 1);
+  bool res = (ent->NbPropertyValues() != 1);
   if (res)
     ent->Init(1, ent->PickFlag()); // nbpropertyvalues=1
   return res;
 }
 
-IGESData_DirChecker IGESGraph_ToolPick::DirChecker(const Handle(IGESGraph_Pick)& /*ent*/) const
+IGESData_DirChecker IGESGraph_ToolPick::DirChecker(const occ::handle<IGESGraph_Pick>& /*ent*/) const
 {
   IGESData_DirChecker DC(406, 21);
   DC.Structure(IGESData_DefVoid);
@@ -92,9 +92,9 @@ IGESData_DirChecker IGESGraph_ToolPick::DirChecker(const Handle(IGESGraph_Pick)&
   return DC;
 }
 
-void IGESGraph_ToolPick::OwnCheck(const Handle(IGESGraph_Pick)& ent,
+void IGESGraph_ToolPick::OwnCheck(const occ::handle<IGESGraph_Pick>& ent,
                                   const Interface_ShareTool&,
-                                  Handle(Interface_Check)& ach) const
+                                  occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 1)
     ach->AddFail("No. of Property values : Value != 1");
@@ -102,10 +102,10 @@ void IGESGraph_ToolPick::OwnCheck(const Handle(IGESGraph_Pick)& ent,
     ach->AddFail("Pick Flag : Value != 0/1");
 }
 
-void IGESGraph_ToolPick::OwnDump(const Handle(IGESGraph_Pick)& ent,
+void IGESGraph_ToolPick::OwnDump(const occ::handle<IGESGraph_Pick>& ent,
                                  const IGESData_IGESDumper& /*dumper*/,
                                  Standard_OStream& S,
-                                 const Standard_Integer /*level*/) const
+                                 const int /*level*/) const
 {
   S << "IGESGraph_Pick\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"

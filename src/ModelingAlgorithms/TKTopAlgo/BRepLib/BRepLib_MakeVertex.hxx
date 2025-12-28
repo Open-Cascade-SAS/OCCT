@@ -34,9 +34,6 @@ public:
 
   Standard_EXPORT const TopoDS_Vertex& Vertex();
   Standard_EXPORT                      operator TopoDS_Vertex();
-
-protected:
-private:
 };
 
 #endif // _BRepLib_MakeVertex_HeaderFile

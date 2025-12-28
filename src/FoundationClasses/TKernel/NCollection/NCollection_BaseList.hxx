@@ -30,7 +30,7 @@
 #include <NCollection_ListNode.hxx>
 
 typedef void (*NCollection_DelListNode)(NCollection_ListNode*,
-                                        Handle(NCollection_BaseAllocator)& theAl);
+                                        occ::handle<NCollection_BaseAllocator>& theAl);
 
 // ********************************************************** BaseList class
 class NCollection_BaseList
@@ -69,16 +69,13 @@ public:
     void Initialize(const NCollection_BaseList& theList) noexcept { Init(theList); }
 
     // ******** More
-    Standard_Boolean More(void) const noexcept { return (myCurrent != NULL); }
+    bool More(void) const noexcept { return (myCurrent != NULL); }
 
     // ******** Comparison operator
-    Standard_Boolean operator==(const Iterator& theIt) const noexcept
-    {
-      return myCurrent == theIt.myCurrent;
-    }
+    bool operator==(const Iterator& theIt) const noexcept { return myCurrent == theIt.myCurrent; }
 
     //! Performs comparison of two iterators
-    Standard_Boolean IsEqual(const Iterator& theOther) const noexcept { return *this == theOther; }
+    bool IsEqual(const Iterator& theOther) const noexcept { return *this == theOther; }
 
   protected:
     void Init(const NCollection_BaseList& theList, NCollection_ListNode* const thePrev) noexcept
@@ -97,15 +94,15 @@ public:
   // ---------- PUBLIC METHODS ------------
   // ******** Extent
   // Purpose: Returns the number of nodes in the list
-  Standard_Integer Extent(void) const noexcept { return myLength; }
+  int Extent(void) const noexcept { return myLength; }
 
   // ******** IsEmpty
   // Purpose: Query if the list is empty
-  Standard_Boolean IsEmpty(void) const noexcept { return (myFirst == NULL); }
+  bool IsEmpty(void) const noexcept { return (myFirst == NULL); }
 
   // ******** Allocator
   //! Returns attached allocator
-  const Handle(NCollection_BaseAllocator)& Allocator() const noexcept { return myAllocator; }
+  const occ::handle<NCollection_BaseAllocator>& Allocator() const noexcept { return myAllocator; }
 
   // ******** Destructor
   // Purpose: defines virtual interface
@@ -116,7 +113,7 @@ protected:
 
   // ******** Constructor
   // Purpose: Initializes an empty list
-  NCollection_BaseList(const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
+  NCollection_BaseList(const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
       : myFirst(NULL),
         myLast(NULL),
         myLength(0)
@@ -192,10 +189,10 @@ protected:
 
 protected:
   // ------------ PROTECTED FIELDS ------------
-  Handle(NCollection_BaseAllocator) myAllocator;
-  NCollection_ListNode*             myFirst;  // Pointer to the head
-  NCollection_ListNode*             myLast;   // Pointer to the tail
-  Standard_Integer                  myLength; // Actual length
+  occ::handle<NCollection_BaseAllocator> myAllocator;
+  NCollection_ListNode*                  myFirst;  // Pointer to the head
+  NCollection_ListNode*                  myLast;   // Pointer to the tail
+  int                                    myLength; // Actual length
 
   // ------------ FRIEND CLASSES ------------
   friend class Iterator;

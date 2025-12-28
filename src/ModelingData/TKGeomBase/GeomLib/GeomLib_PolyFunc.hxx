@@ -35,25 +35,20 @@ public:
   //! computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X,
-                                                 Standard_Real&      F) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Value(const double X, double& F) override;
 
   //! computes the derivative <D> of the function
   //! for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Derivative(const Standard_Real X,
-                                                      Standard_Real&      D) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Derivative(const double X, double& D) override;
 
   //! computes the value <F> and the derivative <D> of the
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Values(const Standard_Real X,
-                                                  Standard_Real&      F,
-                                                  Standard_Real&      D) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Values(const double X, double& F, double& D) override;
 
-protected:
 private:
   math_Vector myCoeffs;
 };

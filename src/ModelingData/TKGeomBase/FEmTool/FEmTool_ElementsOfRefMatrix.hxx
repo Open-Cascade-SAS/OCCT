@@ -38,15 +38,14 @@ class FEmTool_ElementsOfRefMatrix : public math_FunctionSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT FEmTool_ElementsOfRefMatrix(const PLib_HermitJacobi& TheBase,
-                                              const Standard_Integer   DerOrder);
+  Standard_EXPORT FEmTool_ElementsOfRefMatrix(const PLib_HermitJacobi& TheBase, const int DerOrder);
 
   //! returns the number of variables of the function.
   //! It is supposed that NbVariables = 1.
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
   //! computes the values <F> of the functions for the
   //! variable <X>.
@@ -55,13 +54,12 @@ public:
   //! F contains results only for i<=j in following order:
   //! P0*P0, P0*P1, P0*P2... P1*P1, P1*P2,... (upper triangle of
   //! matrix {PiPj})
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
-protected:
 private:
   PLib_HermitJacobi myBase;
-  Standard_Integer  myDerOrder;
-  Standard_Integer  myNbEquations;
+  int               myDerOrder;
+  int               myNbEquations;
 };
 
 #endif // _FEmTool_ElementsOfRefMatrix_HeaderFile

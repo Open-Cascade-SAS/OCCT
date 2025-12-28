@@ -23,10 +23,10 @@
 
 RWStepShape_RWBooleanResult::RWStepShape_RWBooleanResult() {}
 
-void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepShape_BooleanResult)& ent) const
+void RWStepShape_RWBooleanResult::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                                   num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepShape_BooleanResult>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -36,8 +36,8 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : operator ---
@@ -45,7 +45,7 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
   StepShape_BooleanOperator aOperator = StepShape_boDifference;
   if (data->ParamType(num, 2) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 2);
+    const char* text = data->ParamCValue(num, 2);
     if (!RWStepShape_RWBooleanOperator::ConvertToEnum(text, aOperator))
     {
       ach->AddFail("Enumeration boolean_operator has not an allowed value");
@@ -74,10 +74,10 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
   // block, ...
 
   // StepShape_BooleanOperand aFirstOperand;
-  // Standard_Boolean stat3;
+  // bool stat3;
   // stat3 = data->ReadEntity(num,3,"first_operand",ach,aFirstOperand);
-  Handle(StepShape_SolidModel) aSolidModel1;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepShape_SolidModel> aSolidModel1;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "first_operand", ach, STANDARD_TYPE(StepShape_SolidModel), aSolidModel1);
   StepShape_BooleanOperand aFirstOperand;
   aFirstOperand.SetSolidModel(aSolidModel1);
@@ -85,10 +85,10 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
   // --- own field : secondOperand ---
 
   // StepShape_BooleanOperand aSecondOperand;
-  // Standard_Boolean stat4;
+  // bool stat4;
   // stat4 = data->ReadEntity(num,4,"second_operand",ach,aSecondOperand);
-  Handle(StepShape_SolidModel) aSolidModel2;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  occ::handle<StepShape_SolidModel> aSolidModel2;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data
     ->ReadEntity(num, 4, "second_operand", ach, STANDARD_TYPE(StepShape_SolidModel), aSolidModel2);
 
@@ -100,8 +100,8 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
   ent->Init(aName, aOperator, aFirstOperand, aSecondOperand);
 }
 
-void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepShape_BooleanResult)& ent) const
+void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                        SW,
+                                            const occ::handle<StepShape_BooleanResult>& ent) const
 {
 
   // --- inherited field name ---
@@ -125,8 +125,8 @@ void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                
   SW.Send(ent->SecondOperand().SolidModel());
 }
 
-void RWStepShape_RWBooleanResult::Share(const Handle(StepShape_BooleanResult)& ent,
-                                        Interface_EntityIterator&              iter) const
+void RWStepShape_RWBooleanResult::Share(const occ::handle<StepShape_BooleanResult>& ent,
+                                        Interface_EntityIterator&                   iter) const
 {
 
   // idem

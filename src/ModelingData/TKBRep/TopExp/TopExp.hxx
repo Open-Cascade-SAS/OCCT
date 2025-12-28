@@ -21,9 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_Map.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <Standard_Boolean.hxx>
 
@@ -51,9 +54,10 @@ public:
   //! of type <T>.
   //!
   //! Warning: The map is not cleared at first.
-  Standard_EXPORT static void MapShapes(const TopoDS_Shape&         S,
-                                        const TopAbs_ShapeEnum      T,
-                                        TopTools_IndexedMapOfShape& M);
+  Standard_EXPORT static void MapShapes(
+    const TopoDS_Shape&                                            S,
+    const TopAbs_ShapeEnum                                         T,
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& M);
 
   //! Stores in the map <M> all the sub-shapes of <S>.
   //! - If cumOri is true, the function composes all
@@ -61,10 +65,11 @@ public:
   //! - If cumLoc is true, the function multiplies all
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
-  Standard_EXPORT static void MapShapes(const TopoDS_Shape&         S,
-                                        TopTools_IndexedMapOfShape& M,
-                                        const Standard_Boolean      cumOri = Standard_True,
-                                        const Standard_Boolean      cumLoc = Standard_True);
+  Standard_EXPORT static void MapShapes(
+    const TopoDS_Shape&                                            S,
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& M,
+    const bool                                                     cumOri = true,
+    const bool                                                     cumLoc = true);
 
   //! Stores in the map <M> all the sub-shapes of <S>.
   //! - If cumOri is true, the function composes all
@@ -72,20 +77,23 @@ public:
   //! - If cumLoc is true, the function multiplies all
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
-  Standard_EXPORT static void MapShapes(const TopoDS_Shape&    S,
-                                        TopTools_MapOfShape&   M,
-                                        const Standard_Boolean cumOri = Standard_True,
-                                        const Standard_Boolean cumLoc = Standard_True);
+  Standard_EXPORT static void MapShapes(const TopoDS_Shape&                                     S,
+                                        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& M,
+                                        const bool cumOri = true,
+                                        const bool cumLoc = true);
 
   //! Stores in the map <M> all the subshape of <S> of
   //! type <TS> for each one append to the list all
   //! the ancestors of type <TA>. For example map all
   //! the edges and bind the list of faces.
   //! Warning: The map is not cleared at first.
-  Standard_EXPORT static void MapShapesAndAncestors(const TopoDS_Shape&                        S,
-                                                    const TopAbs_ShapeEnum                     TS,
-                                                    const TopAbs_ShapeEnum                     TA,
-                                                    TopTools_IndexedDataMapOfShapeListOfShape& M);
+  Standard_EXPORT static void MapShapesAndAncestors(
+    const TopoDS_Shape&                                  S,
+    const TopAbs_ShapeEnum                               TS,
+    const TopAbs_ShapeEnum                               TA,
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>& M);
 
   //! Stores in the map <M> all the subshape of <S> of
   //! type <TS> for each one append to the list all
@@ -94,31 +102,31 @@ public:
   //! useOrientation = True : taking account the ancestor orientation
   //! Warning: The map is not cleared at first.
   Standard_EXPORT static void MapShapesAndUniqueAncestors(
-    const TopoDS_Shape&                        S,
-    const TopAbs_ShapeEnum                     TS,
-    const TopAbs_ShapeEnum                     TA,
-    TopTools_IndexedDataMapOfShapeListOfShape& M,
-    const Standard_Boolean                     useOrientation = Standard_False);
+    const TopoDS_Shape&                                  S,
+    const TopAbs_ShapeEnum                               TS,
+    const TopAbs_ShapeEnum                               TA,
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>& M,
+    const bool                                           useOrientation = false);
 
   //! Returns the Vertex of orientation FORWARD in E. If
   //! there is none returns a Null Shape.
   //! CumOri = True : taking account the edge orientation
-  Standard_EXPORT static TopoDS_Vertex FirstVertex(const TopoDS_Edge&     E,
-                                                   const Standard_Boolean CumOri = Standard_False);
+  Standard_EXPORT static TopoDS_Vertex FirstVertex(const TopoDS_Edge& E, const bool CumOri = false);
 
   //! Returns the Vertex of orientation REVERSED in E. If
   //! there is none returns a Null Shape.
   //! CumOri = True : taking account the edge orientation
-  Standard_EXPORT static TopoDS_Vertex LastVertex(const TopoDS_Edge&     E,
-                                                  const Standard_Boolean CumOri = Standard_False);
+  Standard_EXPORT static TopoDS_Vertex LastVertex(const TopoDS_Edge& E, const bool CumOri = false);
 
   //! Returns in Vfirst, Vlast the FORWARD and REVERSED
   //! vertices of the edge <E>. May be null shapes.
   //! CumOri = True : taking account the edge orientation
-  Standard_EXPORT static void Vertices(const TopoDS_Edge&     E,
-                                       TopoDS_Vertex&         Vfirst,
-                                       TopoDS_Vertex&         Vlast,
-                                       const Standard_Boolean CumOri = Standard_False);
+  Standard_EXPORT static void Vertices(const TopoDS_Edge& E,
+                                       TopoDS_Vertex&     Vfirst,
+                                       TopoDS_Vertex&     Vlast,
+                                       const bool         CumOri = false);
 
   //! Returns in Vfirst, Vlast the first and last
   //! vertices of the open wire <W>. May be null shapes.
@@ -134,9 +142,9 @@ public:
   //! <E1,E2>, returns True if this vertex exists.
   //!
   //! Warning: <V> has sense only if the value <True> is returned
-  Standard_EXPORT static Standard_Boolean CommonVertex(const TopoDS_Edge& E1,
-                                                       const TopoDS_Edge& E2,
-                                                       TopoDS_Vertex&     V);
+  Standard_EXPORT static bool CommonVertex(const TopoDS_Edge& E1,
+                                           const TopoDS_Edge& E2,
+                                           TopoDS_Vertex&     V);
 };
 
 #endif // _TopExp_HeaderFile

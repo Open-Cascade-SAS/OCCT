@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <StepDimTol_GeometricToleranceTarget.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepShape_DimensionalLocation.hxx>
 #include <StepShape_DimensionalSize.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
@@ -26,8 +26,7 @@ StepDimTol_GeometricToleranceTarget::StepDimTol_GeometricToleranceTarget() {}
 
 //=================================================================================================
 
-Standard_Integer StepDimTol_GeometricToleranceTarget::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepDimTol_GeometricToleranceTarget::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -42,24 +41,24 @@ Standard_Integer StepDimTol_GeometricToleranceTarget::CaseNum(
   return 0;
 }
 
-Handle(StepShape_DimensionalLocation) StepDimTol_GeometricToleranceTarget::DimensionalLocation()
-  const
+occ::handle<StepShape_DimensionalLocation> StepDimTol_GeometricToleranceTarget::
+  DimensionalLocation() const
 {
   return GetCasted(StepShape_DimensionalLocation, Value());
 }
 
-Handle(StepShape_DimensionalSize) StepDimTol_GeometricToleranceTarget::DimensionalSize() const
+occ::handle<StepShape_DimensionalSize> StepDimTol_GeometricToleranceTarget::DimensionalSize() const
 {
   return GetCasted(StepShape_DimensionalSize, Value());
 }
 
-Handle(StepRepr_ProductDefinitionShape) StepDimTol_GeometricToleranceTarget::
+occ::handle<StepRepr_ProductDefinitionShape> StepDimTol_GeometricToleranceTarget::
   ProductDefinitionShape() const
 {
   return GetCasted(StepRepr_ProductDefinitionShape, Value());
 }
 
-Handle(StepRepr_ShapeAspect) StepDimTol_GeometricToleranceTarget::ShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepDimTol_GeometricToleranceTarget::ShapeAspect() const
 {
   return GetCasted(StepRepr_ShapeAspect, Value());
 }

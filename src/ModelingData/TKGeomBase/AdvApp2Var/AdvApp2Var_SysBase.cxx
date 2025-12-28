@@ -1914,7 +1914,7 @@ int mcrcomm_(integer* kop, integer* noct, intptr_t* iadr, integer* ier)
         itab[(i__ << 2) - 4] = *noct / 8 + 1;
         itab[(i__ << 2) - 3] = ipre;
         itab[(i__ << 2) - 2] = *noct;
-        *iadr = reinterpret_cast<intptr_t>(&dtab[static_cast<Standard_Integer>(ipre) - 1]);
+        *iadr                = reinterpret_cast<intptr_t>(&dtab[static_cast<int>(ipre) - 1]);
         itab[(i__ << 2) - 1] = *iadr;
         goto L9900;
       }

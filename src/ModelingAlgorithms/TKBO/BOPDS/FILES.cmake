@@ -7,20 +7,13 @@ set(OCCT_BOPDS_FILES
   BOPDS_CoupleOfPaveBlocks.hxx
   BOPDS_Curve.hxx
   BOPDS_Curve.lxx
-  BOPDS_DataMapOfIntegerListOfPaveBlock.hxx
-  BOPDS_DataMapOfPaveBlockCommonBlock.hxx
-  BOPDS_DataMapOfPaveBlockListOfInteger.hxx
-  BOPDS_DataMapOfPaveBlockListOfPaveBlock.hxx
-  BOPDS_DataMapOfShapeCoupleOfPaveBlocks.hxx
+
   BOPDS_DS.cxx
   BOPDS_DS.hxx
   BOPDS_DS.lxx
   BOPDS_FaceInfo.hxx
   BOPDS_FaceInfo.lxx
-  BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx
-  BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock.hxx
-  BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks.hxx
-  BOPDS_IndexedMapOfPaveBlock.hxx
+
   BOPDS_IndexRange.cxx
   BOPDS_IndexRange.hxx
   BOPDS_IndexRange.lxx
@@ -29,11 +22,9 @@ set(OCCT_BOPDS_FILES
   BOPDS_Iterator.hxx
   BOPDS_IteratorSI.cxx
   BOPDS_IteratorSI.hxx
-  BOPDS_ListOfPave.hxx
+
   BOPDS_ListOfPaveBlock.hxx
-  BOPDS_MapOfCommonBlock.hxx
-  BOPDS_MapOfPave.hxx
-  BOPDS_MapOfPaveBlock.hxx
+
   BOPDS_Pave.cxx
   BOPDS_Pave.hxx
   BOPDS_Pave.lxx
@@ -51,25 +42,7 @@ set(OCCT_BOPDS_FILES
   BOPDS_SubIterator.hxx
   BOPDS_Tools.hxx
   BOPDS_Tools.lxx
-  BOPDS_VectorOfCurve.hxx
-  BOPDS_VectorOfFaceInfo.hxx
-  BOPDS_VectorOfIndexRange.hxx
-  BOPDS_VectorOfInterfEE.hxx
-  BOPDS_VectorOfInterfEF.hxx
-  BOPDS_VectorOfInterfEZ.hxx
-  BOPDS_VectorOfInterfFF.hxx
-  BOPDS_VectorOfInterfFZ.hxx
-  BOPDS_VectorOfInterfVE.hxx
-  BOPDS_VectorOfInterfVF.hxx
-  BOPDS_VectorOfInterfVV.hxx
-  BOPDS_VectorOfInterfVZ.hxx
-  BOPDS_VectorOfInterfZZ.hxx
-  BOPDS_VectorOfListOfPaveBlock.hxx
-  BOPDS_VectorOfPave.hxx
-  BOPDS_VectorOfPoint.hxx
-  BOPDS_VectorOfShapeInfo.hxx
+
   BOPDS_Pair.hxx
-  BOPDS_MapOfPair.hxx
-  BOPDS_VectorOfPair.hxx
-  BOPDS_VectorOfVectorOfPair.hxx
+
 )

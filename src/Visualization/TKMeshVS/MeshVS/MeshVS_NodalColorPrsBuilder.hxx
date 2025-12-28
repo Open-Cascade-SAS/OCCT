@@ -16,24 +16,21 @@
 #ifndef _MeshVS_NodalColorPrsBuilder_HeaderFile
 #define _MeshVS_NodalColorPrsBuilder_HeaderFile
 
-#include <MeshVS_DataMapOfIntegerColor.hxx>
-#include <Aspect_SequenceOfColor.hxx>
-#include <TColStd_DataMapOfIntegerReal.hxx>
+#include <Standard_Integer.hxx>
 #include <Quantity_Color.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Sequence.hxx>
 #include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_BuilderPriority.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <MeshVS_HArray1OfSequenceOfInteger.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class MeshVS_Mesh;
 class MeshVS_DataSource;
 class Graphic3d_Texture2D;
 class Graphic3d_ArrayOfPrimitives;
-
-DEFINE_STANDARD_HANDLE(MeshVS_NodalColorPrsBuilder, MeshVS_PrsBuilder)
 
 //! This class provides methods to create presentation of nodes with assigned color.
 //! There are two ways of presentation building
@@ -53,47 +50,46 @@ class MeshVS_NodalColorPrsBuilder : public MeshVS_PrsBuilder
 
 public:
   Standard_EXPORT MeshVS_NodalColorPrsBuilder(
-    const Handle(MeshVS_Mesh)&       Parent,
-    const MeshVS_DisplayModeFlags&   Flags    = MeshVS_DMF_NodalColorDataPrs,
-    const Handle(MeshVS_DataSource)& DS       = 0,
-    const Standard_Integer           Id       = -1,
-    const MeshVS_BuilderPriority&    Priority = MeshVS_BP_NodalColor);
+    const occ::handle<MeshVS_Mesh>&       Parent,
+    const MeshVS_DisplayModeFlags&        Flags    = MeshVS_DMF_NodalColorDataPrs,
+    const occ::handle<MeshVS_DataSource>& DS       = 0,
+    const int                             Id       = -1,
+    const MeshVS_BuilderPriority&         Priority = MeshVS_BP_NodalColor);
 
   //! Builds presentation of nodes with assigned color.
-  Standard_EXPORT virtual void Build(const Handle(Prs3d_Presentation)& Prs,
-                                     const TColStd_PackedMapOfInteger& IDs,
-                                     TColStd_PackedMapOfInteger&       IDsToExclude,
-                                     const Standard_Boolean            IsElement,
-                                     const Standard_Integer DisplayMode) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
+                                     const TColStd_PackedMapOfInteger&      IDs,
+                                     TColStd_PackedMapOfInteger&            IDsToExclude,
+                                     const bool                             IsElement,
+                                     const int DisplayMode) const override;
 
   //! Returns map of colors assigned to nodes.
-  Standard_EXPORT const MeshVS_DataMapOfIntegerColor& GetColors() const;
+  Standard_EXPORT const NCollection_DataMap<int, Quantity_Color>& GetColors() const;
 
   //! Sets map of colors assigned to nodes.
-  Standard_EXPORT void SetColors(const MeshVS_DataMapOfIntegerColor& Map);
+  Standard_EXPORT void SetColors(const NCollection_DataMap<int, Quantity_Color>& Map);
 
   //! Returns true, if map isn't empty
-  Standard_EXPORT Standard_Boolean HasColors() const;
+  Standard_EXPORT bool HasColors() const;
 
   //! Returns color assigned to single node
-  Standard_EXPORT Standard_Boolean GetColor(const Standard_Integer ID,
-                                            Quantity_Color&        theColor) const;
+  Standard_EXPORT bool GetColor(const int ID, Quantity_Color& theColor) const;
 
   //! Sets color assigned to single node
-  Standard_EXPORT void SetColor(const Standard_Integer ID, const Quantity_Color& theColor);
+  Standard_EXPORT void SetColor(const int ID, const Quantity_Color& theColor);
 
   //! Specify whether texture must be used to build presentation
-  Standard_EXPORT void UseTexture(const Standard_Boolean theToUse);
+  Standard_EXPORT void UseTexture(const bool theToUse);
 
   //! Verify whether texture is used to build presentation
-  Standard_EXPORT Standard_Boolean IsUseTexture() const;
+  Standard_EXPORT bool IsUseTexture() const;
 
   //! Set colors to be used for texrture presentation
   //! theColors - colors for valid coordinates (laying in range [0, 1])
-  Standard_EXPORT void SetColorMap(const Aspect_SequenceOfColor& theColors);
+  Standard_EXPORT void SetColorMap(const NCollection_Sequence<Quantity_Color>& theColors);
 
   //! Return colors used for texrture presentation
-  Standard_EXPORT const Aspect_SequenceOfColor& GetColorMap() const;
+  Standard_EXPORT const NCollection_Sequence<Quantity_Color>& GetColorMap() const;
 
   //! Set color representing invalid texture coordinate
   //! (laying outside range [0, 1])
@@ -104,39 +100,39 @@ public:
   Standard_EXPORT Quantity_Color GetInvalidColor() const;
 
   //! Specify correspondence between node IDs and texture coordinates (range [0, 1])
-  Standard_EXPORT void SetTextureCoords(const TColStd_DataMapOfIntegerReal& theMap);
+  Standard_EXPORT void SetTextureCoords(const NCollection_DataMap<int, double>& theMap);
 
   //! Get correspondence between node IDs and texture coordinates (range [0, 1])
-  Standard_EXPORT const TColStd_DataMapOfIntegerReal& GetTextureCoords() const;
+  Standard_EXPORT const NCollection_DataMap<int, double>& GetTextureCoords() const;
 
   //! Specify correspondence between node ID and texture coordinate (range [0, 1])
-  Standard_EXPORT void SetTextureCoord(const Standard_Integer theID, const Standard_Real theCoord);
+  Standard_EXPORT void SetTextureCoord(const int theID, const double theCoord);
 
   //! Return correspondence between node IDs and texture coordinate (range [0, 1])
-  Standard_EXPORT Standard_Real GetTextureCoord(const Standard_Integer theID);
+  Standard_EXPORT double GetTextureCoord(const int theID);
 
   //! Add to array polygons or polylines representing volume
-  Standard_EXPORT void AddVolumePrs(const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo,
-                                    const TColStd_Array1OfInteger&                   theNodes,
-                                    const TColStd_Array1OfReal&                      theCoords,
-                                    const Handle(Graphic3d_ArrayOfPrimitives)&       theArray,
-                                    const Standard_Boolean                           theIsShaded,
-                                    const Standard_Integer                           theNbColors,
-                                    const Standard_Integer                           theNbTexColors,
-                                    const Standard_Real theColorRatio) const;
+  Standard_EXPORT void AddVolumePrs(
+    const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theTopo,
+    const NCollection_Array1<int>&                                     theNodes,
+    const NCollection_Array1<double>&                                  theCoords,
+    const occ::handle<Graphic3d_ArrayOfPrimitives>&                    theArray,
+    const bool                                                         theIsShaded,
+    const int                                                          theNbColors,
+    const int                                                          theNbTexColors,
+    const double                                                       theColorRatio) const;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_NodalColorPrsBuilder, MeshVS_PrsBuilder)
 
-protected:
 private:
   //! Create texture in accordance with myTextureColorMap
-  Standard_EXPORT Handle(Graphic3d_Texture2D) CreateTexture() const;
+  Standard_EXPORT occ::handle<Graphic3d_Texture2D> CreateTexture() const;
 
-  MeshVS_DataMapOfIntegerColor myNodeColorMap;
-  Standard_Boolean             myUseTexture;
-  Aspect_SequenceOfColor       myTextureColorMap;
-  TColStd_DataMapOfIntegerReal myTextureCoords;
-  Quantity_Color               myInvalidColor;
+  NCollection_DataMap<int, Quantity_Color> myNodeColorMap;
+  bool                                     myUseTexture;
+  NCollection_Sequence<Quantity_Color>     myTextureColorMap;
+  NCollection_DataMap<int, double>         myTextureCoords;
+  Quantity_Color                           myInvalidColor;
 };
 
 #endif // _MeshVS_NodalColorPrsBuilder_HeaderFile

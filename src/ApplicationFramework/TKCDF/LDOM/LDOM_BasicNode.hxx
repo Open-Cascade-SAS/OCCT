@@ -29,7 +29,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
 public:
-  Standard_Boolean isNull() const { return myNodeType == LDOM_Node::UNKNOWN; }
+  bool isNull() const { return myNodeType == LDOM_Node::UNKNOWN; }
 
   LDOM_Node::NodeType getNodeType() const { return myNodeType; }
 

@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_AppliedOrganizationAssignment.hxx>
 #include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
@@ -32,7 +32,7 @@
 
 StepAP214_OrganizationItem::StepAP214_OrganizationItem() {}
 
-Standard_Integer StepAP214_OrganizationItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP214_OrganizationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -69,18 +69,18 @@ Standard_Integer StepAP214_OrganizationItem::CaseNum(const Handle(Standard_Trans
   return 0;
 }
 
-Handle(StepAP214_AppliedOrganizationAssignment) StepAP214_OrganizationItem::
+occ::handle<StepAP214_AppliedOrganizationAssignment> StepAP214_OrganizationItem::
   AppliedOrganizationAssignment() const
 {
   return GetCasted(StepAP214_AppliedOrganizationAssignment, Value());
 }
 
-Handle(StepBasic_Approval) StepAP214_OrganizationItem::Approval() const
+occ::handle<StepBasic_Approval> StepAP214_OrganizationItem::Approval() const
 {
   return GetCasted(StepBasic_Approval, Value());
 }
 
-Handle(StepAP214_AppliedSecurityClassificationAssignment) StepAP214_OrganizationItem::
+occ::handle<StepAP214_AppliedSecurityClassificationAssignment> StepAP214_OrganizationItem::
   AppliedSecurityClassificationAssignment() const
 {
   return GetCasted(StepAP214_AppliedSecurityClassificationAssignment, Value());

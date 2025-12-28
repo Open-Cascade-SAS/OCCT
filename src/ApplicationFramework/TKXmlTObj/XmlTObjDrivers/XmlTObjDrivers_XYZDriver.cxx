@@ -33,7 +33,7 @@ IMPLEMENT_DOMSTRING(CoordZ, "Z")
 //=================================================================================================
 
 XmlTObjDrivers_XYZDriver::XmlTObjDrivers_XYZDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : XmlMDF_ADriver(theMessageDriver, NULL)
 {
 }
@@ -43,7 +43,7 @@ XmlTObjDrivers_XYZDriver::XmlTObjDrivers_XYZDriver(
 // purpose  : Creates a new attribute
 //=======================================================================
 
-Handle(TDF_Attribute) XmlTObjDrivers_XYZDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlTObjDrivers_XYZDriver::NewEmpty() const
 {
   return new TObj_TXYZ;
 }
@@ -55,9 +55,9 @@ Handle(TDF_Attribute) XmlTObjDrivers_XYZDriver::NewEmpty() const
 //           <aRelocTable> to keep the sharings.
 //=======================================================================
 
-Standard_Boolean XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&  Source,
-                                                 const Handle(TDF_Attribute)& Target,
-                                                 XmlObjMgt_RRelocationTable& /*RelocTable*/) const
+bool XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&       Source,
+                                     const occ::handle<TDF_Attribute>& Target,
+                                     XmlObjMgt_RRelocationTable& /*RelocTable*/) const
 {
   const XmlObjMgt_Element& anElement = Source;
 
@@ -67,30 +67,30 @@ Standard_Boolean XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&  So
   TCollection_AsciiString CoordZ = anElement.getAttribute(::CoordZ());
 
   // creating gp_XYZ
-  gp_XYZ           aXYZ;
-  Standard_CString aStr;
-  Standard_Real    aCoord;
+  gp_XYZ      aXYZ;
+  const char* aStr;
+  double      aCoord;
 
   aStr = CoordX.ToCString();
   if (!XmlObjMgt::GetReal(aStr, aCoord))
-    return Standard_False;
+    return false;
   aXYZ.SetX(aCoord);
 
   aStr = CoordY.ToCString();
   if (!XmlObjMgt::GetReal(aStr, aCoord))
-    return Standard_False;
+    return false;
   aXYZ.SetY(aCoord);
 
   aStr = CoordZ.ToCString();
   if (!XmlObjMgt::GetReal(aStr, aCoord))
-    return Standard_False;
+    return false;
   aXYZ.SetZ(aCoord);
 
   // setting gp_XYZ
-  Handle(TObj_TXYZ) aTarget = Handle(TObj_TXYZ)::DownCast(Target);
+  occ::handle<TObj_TXYZ> aTarget = occ::down_cast<TObj_TXYZ>(Target);
   aTarget->Set(aXYZ);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -102,11 +102,11 @@ Standard_Boolean XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&  So
 //           as entry in model-container
 //=======================================================================
 
-void XmlTObjDrivers_XYZDriver::Paste(const Handle(TDF_Attribute)& Source,
-                                     XmlObjMgt_Persistent&        Target,
+void XmlTObjDrivers_XYZDriver::Paste(const occ::handle<TDF_Attribute>& Source,
+                                     XmlObjMgt_Persistent&             Target,
                                      XmlObjMgt_SRelocationTable& /*RelocTable*/) const
 {
-  Handle(TObj_TXYZ) aSource = Handle(TObj_TXYZ)::DownCast(Source);
+  occ::handle<TObj_TXYZ> aSource = occ::down_cast<TObj_TXYZ>(Source);
 
   if (aSource.IsNull())
     return;

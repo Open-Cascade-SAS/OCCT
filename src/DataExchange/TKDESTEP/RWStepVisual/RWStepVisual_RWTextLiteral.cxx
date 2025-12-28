@@ -23,10 +23,10 @@
 
 RWStepVisual_RWTextLiteral::RWStepVisual_RWTextLiteral() {}
 
-void RWStepVisual_RWTextLiteral::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepVisual_TextLiteral)&  ent) const
+void RWStepVisual_RWTextLiteral::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                                   num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepVisual_TextLiteral>&  ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -36,26 +36,26 @@ void RWStepVisual_RWTextLiteral::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : literal ---
 
-  Handle(TCollection_HAsciiString) aLiteral;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aLiteral;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num, 2, "literal", ach, aLiteral);
 
   // --- own field : placement ---
 
   StepGeom_Axis2Placement aPlacement;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "placement", ach, aPlacement);
 
   // --- own field : alignment ---
 
-  Handle(TCollection_HAsciiString) aAlignment;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  occ::handle<TCollection_HAsciiString> aAlignment;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadString(num, 4, "alignment", ach, aAlignment);
 
   // --- own field : path ---
@@ -63,7 +63,7 @@ void RWStepVisual_RWTextLiteral::ReadStep(const Handle(StepData_StepReaderData)&
   StepVisual_TextPath aPath = StepVisual_tpUp;
   if (data->ParamType(num, 5) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 5);
+    const char* text = data->ParamCValue(num, 5);
     if (!RWStepVisual_RWTextPath::ConvertToEnum(text, aPath))
     {
       ach->AddFail("Enumeration text_path has not an allowed value");
@@ -75,7 +75,7 @@ void RWStepVisual_RWTextLiteral::ReadStep(const Handle(StepData_StepReaderData)&
   // --- own field : font ---
 
   StepVisual_FontSelect aFont;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat6 =` not needed
   data->ReadEntity(num, 6, "font", ach, aFont);
 
   //--- Initialisation of the read entity ---
@@ -83,8 +83,8 @@ void RWStepVisual_RWTextLiteral::ReadStep(const Handle(StepData_StepReaderData)&
   ent->Init(aName, aLiteral, aPlacement, aAlignment, aPath, aFont);
 }
 
-void RWStepVisual_RWTextLiteral::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepVisual_TextLiteral)& ent) const
+void RWStepVisual_RWTextLiteral::WriteStep(StepData_StepWriter&                       SW,
+                                           const occ::handle<StepVisual_TextLiteral>& ent) const
 {
 
   // --- inherited field name ---
@@ -112,8 +112,8 @@ void RWStepVisual_RWTextLiteral::WriteStep(StepData_StepWriter&                 
   SW.Send(ent->Font().Value());
 }
 
-void RWStepVisual_RWTextLiteral::Share(const Handle(StepVisual_TextLiteral)& ent,
-                                       Interface_EntityIterator&             iter) const
+void RWStepVisual_RWTextLiteral::Share(const occ::handle<StepVisual_TextLiteral>& ent,
+                                       Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->Placement().Value());

@@ -41,19 +41,17 @@ public:
   //! 2 -> PreDefinedCurveFont
   //! 3 -> ExternallyDefinedCurveFont
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a CurveStyleFont (Null if another type)
-  Standard_EXPORT Handle(StepVisual_CurveStyleFont) CurveStyleFont() const;
+  Standard_EXPORT occ::handle<StepVisual_CurveStyleFont> CurveStyleFont() const;
 
   //! returns Value as a PreDefinedCurveFont (Null if another type)
-  Standard_EXPORT Handle(StepVisual_PreDefinedCurveFont) PreDefinedCurveFont() const;
+  Standard_EXPORT occ::handle<StepVisual_PreDefinedCurveFont> PreDefinedCurveFont() const;
 
   //! returns Value as a ExternallyDefinedCurveFont (Null if another type)
-  Standard_EXPORT Handle(StepVisual_ExternallyDefinedCurveFont) ExternallyDefinedCurveFont() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepVisual_ExternallyDefinedCurveFont> ExternallyDefinedCurveFont()
+    const;
 };
 
 #endif // _StepVisual_CurveStyleFontSelect_HeaderFile

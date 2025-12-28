@@ -27,14 +27,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntegerArrayDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_IntegerArrayDriver::BinMDataStd_IntegerArrayDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_IntegerArray)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_IntegerArrayDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_IntegerArrayDriver::NewEmpty() const
 {
   return new TDataStd_IntegerArray();
 }
@@ -44,30 +44,29 @@ Handle(TDF_Attribute) BinMDataStd_IntegerArrayDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataStd_IntegerArrayDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_IntegerArrayDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                           const occ::handle<TDF_Attribute>& theTarget,
+                                           BinObjMgt_RRelocationTable&       theRelocTable) const
 {
-  Standard_Integer aFirstInd, aLastInd;
+  int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
-    return Standard_False;
-  const Standard_Integer aLength = aLastInd - aFirstInd + 1;
+    return false;
+  const int aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
-    return Standard_False;
+    return false;
 
-  const Handle(TDataStd_IntegerArray) anAtt = Handle(TDataStd_IntegerArray)::DownCast(theTarget);
+  const occ::handle<TDataStd_IntegerArray> anAtt = occ::down_cast<TDataStd_IntegerArray>(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
-  TColStd_Array1OfInteger& aTargetArray = anAtt->Array()->ChangeArray1();
+  NCollection_Array1<int>& aTargetArray = anAtt->Array()->ChangeArray1();
   if (!theSource.GetIntArray(&aTargetArray(aFirstInd), aLength))
-    return Standard_False;
-  Standard_Boolean aDelta(Standard_False);
+    return false;
+  bool aDelta(false);
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_3)
   {
-    Standard_Byte aDeltaValue;
+    uint8_t aDeltaValue;
     if (!(theSource >> aDeltaValue))
-      return Standard_False;
+      return false;
     else
       aDelta = (aDeltaValue != 0);
   }
@@ -80,7 +79,7 @@ Standard_Boolean BinMDataStd_IntegerArrayDriver::Paste(
   BinMDataStd::SetAttributeID(theSource,
                               anAtt,
                               theRelocTable.GetHeaderData()->StorageVersion().IntegerValue());
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -88,19 +87,20 @@ Standard_Boolean BinMDataStd_IntegerArrayDriver::Paste(
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_IntegerArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                           BinObjMgt_Persistent&        theTarget,
-                                           BinObjMgt_SRelocationTable&) const
+void BinMDataStd_IntegerArrayDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDataStd_IntegerArray)  anAtt        = Handle(TDataStd_IntegerArray)::DownCast(theSource);
-  const TColStd_Array1OfInteger& aSourceArray = anAtt->Array()->Array1();
-  const Standard_Integer         aFirstInd    = aSourceArray.Lower();
-  const Standard_Integer         aLastInd     = aSourceArray.Upper();
-  const Standard_Integer         aLength      = aLastInd - aFirstInd + 1;
+  occ::handle<TDataStd_IntegerArray> anAtt = occ::down_cast<TDataStd_IntegerArray>(theSource);
+  const NCollection_Array1<int>&     aSourceArray = anAtt->Array()->Array1();
+  const int                          aFirstInd    = aSourceArray.Lower();
+  const int                          aLastInd     = aSourceArray.Upper();
+  const int                          aLength      = aLastInd - aFirstInd + 1;
   theTarget << aFirstInd << aLastInd;
-  Standard_Integer* aPtr = (Standard_Integer*)&aSourceArray(aFirstInd);
+  int* aPtr = (int*)&aSourceArray(aFirstInd);
   theTarget.PutIntArray(aPtr, aLength);
-  theTarget << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
+  theTarget << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_IntegerArray::GetID())

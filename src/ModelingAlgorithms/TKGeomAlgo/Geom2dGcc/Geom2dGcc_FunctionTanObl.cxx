@@ -27,39 +27,37 @@ Geom2dGcc_FunctionTanObl::Geom2dGcc_FunctionTanObl(const Geom2dAdaptor_Curve& C,
   TheDirection = Dir;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanObl::Value(const Standard_Real X, Standard_Real& Fval)
+bool Geom2dGcc_FunctionTanObl::Value(const double X, double& Fval)
 {
   gp_Pnt2d Point;
   gp_Vec2d Vect;
   Geom2dGcc_CurveTool::D1(TheCurv, X, Point, Vect);
-  Standard_Real NormeD1 = Vect.Magnitude();
-  Fval                  = TheDirection.XY().Crossed(Vect.XY()) / NormeD1;
-  return Standard_True;
+  double NormeD1 = Vect.Magnitude();
+  Fval           = TheDirection.XY().Crossed(Vect.XY()) / NormeD1;
+  return true;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanObl::Derivative(const Standard_Real X, Standard_Real& Deriv)
+bool Geom2dGcc_FunctionTanObl::Derivative(const double X, double& Deriv)
 {
   gp_Pnt2d Point;
   gp_Vec2d Vec1;
   gp_Vec2d Vec2;
   Geom2dGcc_CurveTool::D2(TheCurv, X, Point, Vec1, Vec2);
-  Standard_Real NormeD1 = Vec1.Magnitude();
-  Deriv                 = TheDirection.XY().Crossed(Vec2.XY()) / NormeD1
+  double NormeD1 = Vec1.Magnitude();
+  Deriv          = TheDirection.XY().Crossed(Vec2.XY()) / NormeD1
           - Vec1.XY().Dot(Vec2.XY()) * TheDirection.XY().Crossed(Vec1.XY()) / NormeD1;
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanObl::Values(const Standard_Real X,
-                                                  Standard_Real&      Fval,
-                                                  Standard_Real&      Deriv)
+bool Geom2dGcc_FunctionTanObl::Values(const double X, double& Fval, double& Deriv)
 {
   gp_Pnt2d Point;
   gp_Vec2d Vec1;
   gp_Vec2d Vec2;
   Geom2dGcc_CurveTool::D2(TheCurv, X, Point, Vec1, Vec2);
-  Standard_Real NormeD1 = Vec1.Magnitude();
-  Fval                  = TheDirection.XY().Crossed(Vec1.XY()) / NormeD1;
-  Deriv                 = TheDirection.XY().Crossed(Vec2.XY()) / NormeD1
+  double NormeD1 = Vec1.Magnitude();
+  Fval           = TheDirection.XY().Crossed(Vec1.XY()) / NormeD1;
+  Deriv          = TheDirection.XY().Crossed(Vec2.XY()) / NormeD1
           - Vec1.XY().Dot(Vec2.XY()) * TheDirection.XY().Crossed(Vec1.XY()) / NormeD1;
-  return Standard_True;
+  return true;
 }

@@ -39,37 +39,37 @@ public:
   void SetCompressedFormat(Image_CompressedFormat theFormat) { myFormat = theFormat; }
 
   //! Return raw (compressed) data.
-  const Handle(NCollection_Buffer)& FaceData() const { return myFaceData; }
+  const occ::handle<NCollection_Buffer>& FaceData() const { return myFaceData; }
 
   //! Set raw (compressed) data.
-  void SetFaceData(const Handle(NCollection_Buffer)& theBuffer) { myFaceData = theBuffer; }
+  void SetFaceData(const occ::handle<NCollection_Buffer>& theBuffer) { myFaceData = theBuffer; }
 
   //! Return Array of mipmap sizes, including base level.
-  const NCollection_Array1<Standard_Integer>& MipMaps() const { return myMipMaps; }
+  const NCollection_Array1<int>& MipMaps() const { return myMipMaps; }
 
   //! Return Array of mipmap sizes, including base level.
-  NCollection_Array1<Standard_Integer>& ChangeMipMaps() { return myMipMaps; }
+  NCollection_Array1<int>& ChangeMipMaps() { return myMipMaps; }
 
   //! Return TRUE if complete mip map level set (up to 1x1 resolution).
-  Standard_Boolean IsCompleteMipMapSet() const { return myIsCompleteMips; }
+  bool IsCompleteMipMapSet() const { return myIsCompleteMips; }
 
   //! Set if complete mip map level set (up to 1x1 resolution).
-  void SetCompleteMipMapSet(Standard_Boolean theIsComplete) { myIsCompleteMips = theIsComplete; }
+  void SetCompleteMipMapSet(bool theIsComplete) { myIsCompleteMips = theIsComplete; }
 
   //! Return surface length in bytes.
-  Standard_Size FaceBytes() const { return myFaceBytes; }
+  size_t FaceBytes() const { return myFaceBytes; }
 
   //! Set surface length in bytes.
-  void SetFaceBytes(Standard_Size theSize) { myFaceBytes = theSize; }
+  void SetFaceBytes(size_t theSize) { myFaceBytes = theSize; }
 
   //! Return surface width.
-  Standard_Integer SizeX() const { return mySizeX; }
+  int SizeX() const { return mySizeX; }
 
   //! Return surface height.
-  Standard_Integer SizeY() const { return mySizeY; }
+  int SizeY() const { return mySizeY; }
 
   //! Set surface width x height.
-  void SetSize(Standard_Integer theSizeX, Standard_Integer theSizeY)
+  void SetSize(int theSizeX, int theSizeY)
   {
     mySizeX = theSizeX;
     mySizeY = theSizeY;
@@ -79,10 +79,10 @@ public:
   bool IsTopDown() const { return true; }
 
   //! Return number of faces in the file; should be 6 for cubemap.
-  Standard_Integer NbFaces() const { return myNbFaces; }
+  int NbFaces() const { return myNbFaces; }
 
   //! Set number of faces in the file.
-  void SetNbFaces(Standard_Integer theSize) { myNbFaces = theSize; }
+  void SetNbFaces(int theSize) { myNbFaces = theSize; }
 
 public:
   //! Empty constructor.
@@ -98,16 +98,16 @@ public:
   }
 
 protected:
-  NCollection_Array1<Standard_Integer> myMipMaps;   //!< Array of mipmap sizes, including base level
-  Handle(NCollection_Buffer)           myFaceData;  //!< raw compressed data
-  Standard_Size                        myFaceBytes; //!< surface length in bytes
-  Standard_Integer                     myNbFaces;   //!< number of faces in the file
-  Standard_Integer                     mySizeX;     //!< surface width
-  Standard_Integer                     mySizeY;     //!< surface height
-  Image_Format                         myBaseFormat; //!< base (uncompressed) pixel format
-  Image_CompressedFormat               myFormat;     //!< compressed format
+  NCollection_Array1<int>         myMipMaps;    //!< Array of mipmap sizes, including base level
+  occ::handle<NCollection_Buffer> myFaceData;   //!< raw compressed data
+  size_t                          myFaceBytes;  //!< surface length in bytes
+  int                             myNbFaces;    //!< number of faces in the file
+  int                             mySizeX;      //!< surface width
+  int                             mySizeY;      //!< surface height
+  Image_Format                    myBaseFormat; //!< base (uncompressed) pixel format
+  Image_CompressedFormat          myFormat;     //!< compressed format
   // clang-format off
-  Standard_Boolean           myIsCompleteMips;    //!< flag indicating complete mip map level set (up to 1x1 resolution)
+  bool           myIsCompleteMips;    //!< flag indicating complete mip map level set (up to 1x1 resolution)
   // clang-format on
 };
 

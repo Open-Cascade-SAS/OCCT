@@ -32,16 +32,13 @@ public:
   //! creates with a Graph, and will analyse :
   //! whole True  : all the contents of the Model
   //! whole False : sub-parts which will be given later
-  Standard_EXPORT IFGraph_SCRoots(const Interface_Graph& agraph, const Standard_Boolean whole);
+  Standard_EXPORT IFGraph_SCRoots(const Interface_Graph& agraph, const bool whole);
 
   //! creates from a StrongComponants which was already computed
   Standard_EXPORT IFGraph_SCRoots(IFGraph_StrongComponants& subparts);
 
   //! does the computation
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
-
-protected:
-private:
+  Standard_EXPORT virtual void Evaluate() override;
 };
 
 #endif // _IFGraph_SCRoots_HeaderFile

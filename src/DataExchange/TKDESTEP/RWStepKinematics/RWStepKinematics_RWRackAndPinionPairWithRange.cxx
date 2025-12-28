@@ -33,10 +33,10 @@ RWStepKinematics_RWRackAndPinionPairWithRange::RWStepKinematics_RWRackAndPinionP
 //=================================================================================================
 
 void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
-  const Handle(StepData_StepReaderData)&                   theData,
-  const Standard_Integer                                   theNum,
-  Handle(Interface_Check)&                                 theArch,
-  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                   theData,
+  const int                                                     theNum,
+  occ::handle<Interface_Check>&                                 theArch,
+  const occ::handle<StepKinematics_RackAndPinionPairWithRange>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 9, theArch, "rack_and_pinion_pair_with_range"))
@@ -44,20 +44,20 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -68,11 +68,11 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -80,7 +80,7 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -90,7 +90,7 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -100,7 +100,7 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
 
   // Inherited fields of RackAndPinionPair
 
-  Standard_Real aRackAndPinionPair_PinionRadius;
+  double aRackAndPinionPair_PinionRadius;
   theData->ReadReal(theNum,
                     7,
                     "rack_and_pinion_pair.pinion_radius",
@@ -109,8 +109,8 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
 
   // Own fields of RackAndPinionPairWithRange
 
-  Standard_Real    aLowerLimitRackDisplacement;
-  Standard_Boolean hasLowerLimitRackDisplacement = Standard_True;
+  double aLowerLimitRackDisplacement;
+  bool   hasLowerLimitRackDisplacement = true;
   if (theData->IsParamDefined(theNum, 8))
   {
     theData->ReadReal(theNum,
@@ -121,12 +121,12 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
   }
   else
   {
-    hasLowerLimitRackDisplacement = Standard_False;
+    hasLowerLimitRackDisplacement = false;
     aLowerLimitRackDisplacement   = 0;
   }
 
-  Standard_Real    aUpperLimitRackDisplacement;
-  Standard_Boolean hasUpperLimitRackDisplacement = Standard_True;
+  double aUpperLimitRackDisplacement;
+  bool   hasUpperLimitRackDisplacement = true;
   if (theData->IsParamDefined(theNum, 9))
   {
     theData->ReadReal(theNum,
@@ -137,7 +137,7 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
   }
   else
   {
-    hasUpperLimitRackDisplacement = Standard_False;
+    hasUpperLimitRackDisplacement = false;
     aUpperLimitRackDisplacement   = 0;
   }
 
@@ -159,8 +159,8 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRackAndPinionPairWithRange::WriteStep(
-  StepData_StepWriter&                                     theSW,
-  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt) const
+  StepData_StepWriter&                                          theSW,
+  const occ::handle<StepKinematics_RackAndPinionPairWithRange>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -210,8 +210,8 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRackAndPinionPairWithRange::Share(
-  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt,
-  Interface_EntityIterator&                                iter) const
+  const occ::handle<StepKinematics_RackAndPinionPairWithRange>& theEnt,
+  Interface_EntityIterator&                                     iter) const
 {
 
   // Inherited fields of RepresentationItem

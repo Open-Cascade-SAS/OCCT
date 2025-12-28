@@ -30,29 +30,30 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 
 IGESDimen_ToolNewDimensionedGeometry::IGESDimen_ToolNewDimensionedGeometry() {}
 
 void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
-  const Handle(IGESDimen_NewDimensionedGeometry)& ent,
-  const Handle(IGESData_IGESReaderData)&          IR,
-  IGESData_ParamReader&                           PR) const
+  const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
+  const occ::handle<IGESData_IGESReaderData>&          IR,
+  IGESData_ParamReader&                                PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer                     i, num;
-  Standard_Integer                     tempNbDimens;
-  Standard_Integer                     tempDimOrientFlag;
-  Standard_Real                        tempAngle;
-  Handle(IGESData_IGESEntity)          tempDimen;
-  Handle(IGESData_HArray1OfIGESEntity) tempGeomEnts;
-  Handle(TColStd_HArray1OfInteger)     tempDimLocFlags;
-  Handle(TColgp_HArray1OfXYZ)          tempPoints;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  int                                                                i, num;
+  int                                                                tempNbDimens;
+  int                                                                tempDimOrientFlag;
+  double                                                             tempAngle;
+  occ::handle<IGESData_IGESEntity>                                   tempDimen;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeomEnts;
+  occ::handle<NCollection_HArray1<int>>                              tempDimLocFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                           tempPoints;
 
   if (PR.DefinedElseSkip())
     // clang-format off
@@ -61,12 +62,12 @@ void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
   else
     tempNbDimens = 1;
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of Geometries", num);
+  bool st = PR.ReadInteger(PR.Current(), "Number of Geometries", num);
   if (st && num > 0)
   {
-    tempGeomEnts    = new IGESData_HArray1OfIGESEntity(1, num);
-    tempDimLocFlags = new TColStd_HArray1OfInteger(1, num);
-    tempPoints      = new TColgp_HArray1OfXYZ(1, num);
+    tempGeomEnts    = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+    tempDimLocFlags = new NCollection_HArray1<int>(1, num);
+    tempPoints      = new NCollection_HArray1<gp_XYZ>(1, num);
   }
   else
     PR.AddFail("Number of Geometries: Not Positive");
@@ -79,13 +80,13 @@ void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
   if (!tempGeomEnts.IsNull())
     for (i = 1; i <= num; i++)
     {
-      Handle(IGESData_IGESEntity) tempEnt;
+      occ::handle<IGESData_IGESEntity> tempEnt;
       // szv#4:S4163:12Mar99 `st=` not needed
       // clang-format off
 	PR.ReadEntity(IR, PR.Current(), "Geometry Entity", tempEnt, (i == num)); // The last one may be Null
 	tempGeomEnts->SetValue(i, tempEnt);
 
-	Standard_Integer tempInt;
+	int tempInt;
 	PR.ReadInteger(PR.Current(), "Dimension Location Flag", tempInt); //szv#4:S4163:12Mar99 `st=` not needed
       // clang-format on
       tempDimLocFlags->SetValue(i, tempInt);
@@ -106,10 +107,10 @@ void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
 }
 
 void IGESDimen_ToolNewDimensionedGeometry::WriteOwnParams(
-  const Handle(IGESDimen_NewDimensionedGeometry)& ent,
-  IGESData_IGESWriter&                            IW) const
+  const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
+  IGESData_IGESWriter&                                 IW) const
 {
-  Standard_Integer i, num;
+  int i, num;
   IW.Send(ent->NbDimensions());
   IW.Send(ent->NbGeometries());
   IW.Send(ent->DimensionEntity());
@@ -126,31 +127,32 @@ void IGESDimen_ToolNewDimensionedGeometry::WriteOwnParams(
 }
 
 void IGESDimen_ToolNewDimensionedGeometry::OwnShared(
-  const Handle(IGESDimen_NewDimensionedGeometry)& ent,
-  Interface_EntityIterator&                       iter) const
+  const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
+  Interface_EntityIterator&                            iter) const
 {
-  Standard_Integer i, num;
+  int i, num;
   iter.GetOneItem(ent->DimensionEntity());
   for (num = ent->NbGeometries(), i = 1; i <= num; i++)
     iter.GetOneItem(ent->GeometryEntity(i));
 }
 
 void IGESDimen_ToolNewDimensionedGeometry::OwnCopy(
-  const Handle(IGESDimen_NewDimensionedGeometry)& another,
-  const Handle(IGESDimen_NewDimensionedGeometry)& ent,
-  Interface_CopyTool&                             TC) const
+  const occ::handle<IGESDimen_NewDimensionedGeometry>& another,
+  const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
+  Interface_CopyTool&                                  TC) const
 {
-  Standard_Integer num               = another->NbGeometries();
-  Standard_Integer tempNbDimens      = another->NbDimensions();
-  Standard_Integer tempDimOrientFlag = another->DimensionOrientationFlag();
-  Standard_Real    tempAngle         = another->AngleValue();
+  int    num               = another->NbGeometries();
+  int    tempNbDimens      = another->NbDimensions();
+  int    tempDimOrientFlag = another->DimensionOrientationFlag();
+  double tempAngle         = another->AngleValue();
   DeclareAndCast(IGESData_IGESEntity, tempDimen, TC.Transferred(another->DimensionEntity()));
 
-  Handle(IGESData_HArray1OfIGESEntity) tempGeomEnts    = new IGESData_HArray1OfIGESEntity(1, num);
-  Handle(TColStd_HArray1OfInteger)     tempDimLocFlags = new TColStd_HArray1OfInteger(1, num);
-  Handle(TColgp_HArray1OfXYZ)          tempPoints      = new TColgp_HArray1OfXYZ(1, num);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeomEnts =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  occ::handle<NCollection_HArray1<int>>    tempDimLocFlags = new NCollection_HArray1<int>(1, num);
+  occ::handle<NCollection_HArray1<gp_XYZ>> tempPoints = new NCollection_HArray1<gp_XYZ>(1, num);
 
-  for (Standard_Integer i = 1; i <= num; i++)
+  for (int i = 1; i <= num; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, tempEnt, TC.Transferred(another->GeometryEntity(i)));
     tempGeomEnts->SetValue(i, tempEnt);
@@ -166,24 +168,25 @@ void IGESDimen_ToolNewDimensionedGeometry::OwnCopy(
             tempPoints);
 }
 
-Standard_Boolean IGESDimen_ToolNewDimensionedGeometry::OwnCorrect(
-  const Handle(IGESDimen_NewDimensionedGeometry)& ent) const
+bool IGESDimen_ToolNewDimensionedGeometry::OwnCorrect(
+  const occ::handle<IGESDimen_NewDimensionedGeometry>& ent) const
 {
-  Standard_Boolean res = ent->HasTransf();
+  bool res = ent->HasTransf();
   if (res)
   {
-    Handle(IGESData_TransfEntity) nultransf;
+    occ::handle<IGESData_TransfEntity> nultransf;
     ent->InitTransf(nultransf);
   }
   if (ent->NbDimensions() == 1)
     return res;
   //   Force NbDimensions = 1 -> reconstruct
-  Standard_Integer                     nb              = ent->NbGeometries();
-  Handle(IGESData_HArray1OfIGESEntity) tempGeomEnts    = new IGESData_HArray1OfIGESEntity(1, nb);
-  Handle(TColStd_HArray1OfInteger)     tempDimLocFlags = new TColStd_HArray1OfInteger(1, nb);
-  Handle(TColgp_HArray1OfXYZ)          tempPoints      = new TColgp_HArray1OfXYZ(1, nb);
+  int                                                                nb = ent->NbGeometries();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeomEnts =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+  occ::handle<NCollection_HArray1<int>>    tempDimLocFlags = new NCollection_HArray1<int>(1, nb);
+  occ::handle<NCollection_HArray1<gp_XYZ>> tempPoints      = new NCollection_HArray1<gp_XYZ>(1, nb);
 
-  for (Standard_Integer i = 1; i <= nb; i++)
+  for (int i = 1; i <= nb; i++)
   {
     tempGeomEnts->SetValue(i, ent->GeometryEntity(i));
     tempDimLocFlags->SetValue(i, ent->DimensionLocationFlag(i));
@@ -196,11 +199,11 @@ Standard_Boolean IGESDimen_ToolNewDimensionedGeometry::OwnCorrect(
             tempGeomEnts,
             tempDimLocFlags,
             tempPoints);
-  return Standard_True;
+  return true;
 }
 
 IGESData_DirChecker IGESDimen_ToolNewDimensionedGeometry::DirChecker(
-  const Handle(IGESDimen_NewDimensionedGeometry)& /* ent */) const
+  const occ::handle<IGESDimen_NewDimensionedGeometry>& /* ent */) const
 {
   IGESData_DirChecker DC(402, 21);
   DC.Structure(IGESData_DefVoid);
@@ -216,9 +219,9 @@ IGESData_DirChecker IGESDimen_ToolNewDimensionedGeometry::DirChecker(
 }
 
 void IGESDimen_ToolNewDimensionedGeometry::OwnCheck(
-  const Handle(IGESDimen_NewDimensionedGeometry)& ent,
+  const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
   const Interface_ShareTool&,
-  Handle(Interface_Check)& ach) const
+  occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbDimensions() != 1)
     ach->AddFail("Number of Dimensions != 1");
@@ -227,12 +230,12 @@ void IGESDimen_ToolNewDimensionedGeometry::OwnCheck(
 }
 
 void IGESDimen_ToolNewDimensionedGeometry::OwnDump(
-  const Handle(IGESDimen_NewDimensionedGeometry)& ent,
-  const IGESData_IGESDumper&                      dumper,
-  Standard_OStream&                               S,
-  const Standard_Integer                          level) const
+  const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
+  const IGESData_IGESDumper&                           dumper,
+  Standard_OStream&                                    S,
+  const int                                            level) const
 {
-  Standard_Integer i, num, sublevel = (level > 4) ? 1 : 0;
+  int i, num, sublevel = (level > 4) ? 1 : 0;
   S << "IGESDimen_NewDimensionedGeometry\n"
     << "Number of Dimensions : " << ent->NbDimensions() << "\n"
     << "Dimension Entity : ";

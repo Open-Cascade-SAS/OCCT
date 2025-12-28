@@ -26,10 +26,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidOfRevolution, IGESData_IGESEntity)
 
 IGESSolid_SolidOfRevolution::IGESSolid_SolidOfRevolution() {}
 
-void IGESSolid_SolidOfRevolution::Init(const Handle(IGESData_IGESEntity)& aCurve,
-                                       const Standard_Real                Fract,
-                                       const gp_XYZ&                      AxisPnt,
-                                       const gp_XYZ&                      Direction)
+void IGESSolid_SolidOfRevolution::Init(const occ::handle<IGESData_IGESEntity>& aCurve,
+                                       const double                            Fract,
+                                       const gp_XYZ&                           AxisPnt,
+                                       const gp_XYZ&                           Direction)
 {
   theCurve     = aCurve;
   theFraction  = Fract;     // default 1.0
@@ -39,22 +39,22 @@ void IGESSolid_SolidOfRevolution::Init(const Handle(IGESData_IGESEntity)& aCurve
   // Form 0 : Curve closed to Axis;   Form 1 : Curve closed to itself
 }
 
-void IGESSolid_SolidOfRevolution::SetClosedToAxis(const Standard_Boolean F)
+void IGESSolid_SolidOfRevolution::SetClosedToAxis(const bool F)
 {
   InitTypeAndForm(162, (F ? 0 : 1));
 }
 
-Standard_Boolean IGESSolid_SolidOfRevolution::IsClosedToAxis() const
+bool IGESSolid_SolidOfRevolution::IsClosedToAxis() const
 {
   return (FormNumber() == 0);
 }
 
-Handle(IGESData_IGESEntity) IGESSolid_SolidOfRevolution::Curve() const
+occ::handle<IGESData_IGESEntity> IGESSolid_SolidOfRevolution::Curve() const
 {
   return theCurve;
 }
 
-Standard_Real IGESSolid_SolidOfRevolution::Fraction() const
+double IGESSolid_SolidOfRevolution::Fraction() const
 {
   return theFraction;
 }

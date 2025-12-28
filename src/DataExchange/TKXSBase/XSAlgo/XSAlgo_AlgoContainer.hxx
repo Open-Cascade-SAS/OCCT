@@ -31,9 +31,6 @@ class TopoDS_Face;
 class Transfer_TransientProcess;
 class Transfer_FinderProcess;
 
-class XSAlgo_AlgoContainer;
-DEFINE_STANDARD_HANDLE(XSAlgo_AlgoContainer, Standard_Transient)
-
 class XSAlgo_AlgoContainer : public Standard_Transient
 {
 public:
@@ -57,34 +54,34 @@ public:
   //! @param[in] theDetailingLevel the lowest shape type to be processed, lower shapes are ignored
   //! @return the processed shape
   Standard_EXPORT virtual TopoDS_Shape ProcessShape(
-    const TopoDS_Shape&          theShape,
-    const Standard_Real          thePrec,
-    const Standard_Real          theMaxTol,
-    const Standard_CString       thePrscfile,
-    const Standard_CString       thePseq,
-    Handle(Standard_Transient)&  theInfo,
-    const Message_ProgressRange& theProgress       = Message_ProgressRange(),
-    const Standard_Boolean       theNonManifold    = Standard_False,
-    const TopAbs_ShapeEnum       theDetailingLevel = TopAbs_VERTEX) const;
+    const TopoDS_Shape&              theShape,
+    const double                     thePrec,
+    const double                     theMaxTol,
+    const char*                      thePrscfile,
+    const char*                      thePseq,
+    occ::handle<Standard_Transient>& theInfo,
+    const Message_ProgressRange&     theProgress       = Message_ProgressRange(),
+    const bool                       theNonManifold    = false,
+    const TopAbs_ShapeEnum           theDetailingLevel = TopAbs_VERTEX) const;
 
   //! Checks quality of pcurve of the edge on the given face,
   //! and corrects it if necessary.
-  Standard_EXPORT virtual Standard_Boolean CheckPCurve(const TopoDS_Edge&     theEdge,
-                                                       const TopoDS_Face&     theFace,
-                                                       const Standard_Real    thePrecision,
-                                                       const Standard_Boolean theIsSeam) const;
+  Standard_EXPORT virtual bool CheckPCurve(const TopoDS_Edge& theEdge,
+                                           const TopoDS_Face& theFace,
+                                           const double       thePrecision,
+                                           const bool         theIsSeam) const;
 
-  Standard_EXPORT virtual void MergeTransferInfo(const Handle(Transfer_TransientProcess)& TP,
-                                                 const Handle(Standard_Transient)&        info,
-                                                 const Standard_Integer startTPitem = 1) const;
+  Standard_EXPORT virtual void MergeTransferInfo(const occ::handle<Transfer_TransientProcess>& TP,
+                                                 const occ::handle<Standard_Transient>&        info,
+                                                 const int startTPitem = 1) const;
 
   //! Updates translation map (TP or FP) with information
   //! resulting from ShapeProcessing
   //! Parameter startTPitem can be used for optimisation, to
   //! restrict modifications to entities stored in TP starting
   //! from item startTPitem
-  Standard_EXPORT virtual void MergeTransferInfo(const Handle(Transfer_FinderProcess)& FP,
-                                                 const Handle(Standard_Transient)&     info) const;
+  Standard_EXPORT virtual void MergeTransferInfo(const occ::handle<Transfer_FinderProcess>& FP,
+                                                 const occ::handle<Standard_Transient>& info) const;
 
   DEFINE_STANDARD_RTTIEXT(XSAlgo_AlgoContainer, Standard_Transient)
 };

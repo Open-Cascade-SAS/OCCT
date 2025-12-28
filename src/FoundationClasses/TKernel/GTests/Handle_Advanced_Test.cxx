@@ -40,7 +40,6 @@ public:
   virtual Standard_Transient* Clone() const { return new TransientRoot; }
   DEFINE_STANDARD_RTTI_INLINE(TransientRoot, Standard_Transient)
 };
-DEFINE_STANDARD_HANDLE(TransientRoot, Standard_Transient)
 
 // Auxiliary macros to create hierarchy of classes
 #define QA_DEFINECLASS(theClass, theParent)                                                        \
@@ -129,7 +128,7 @@ public:
   ~QATimer()
   {
     Stop();
-    Standard_Real aTime = 0.0;
+    double aTime = 0.0;
     switch (myFormat)
     {
       case Seconds:
@@ -164,16 +163,16 @@ protected:
 
 TEST_F(HandleAdvancedTest, CompilerSpecificBehavior)
 {
-  Handle(TransientRoot) aRoot = new TransientRoot();
+  occ::handle<TransientRoot> aRoot = new TransientRoot();
   EXPECT_FALSE(aRoot.IsNull());
 
-  const Handle(TransientRoot)& aConstRoot = aRoot;
+  const occ::handle<TransientRoot>& aConstRoot = aRoot;
   (void)aConstRoot; // Avoid unused variable warning
-  Handle(Standard_Transient) aTransient = aRoot;
+  occ::handle<Standard_Transient> aTransient = aRoot;
 
   // Test passing handle as reference to base class
   // This tests template argument deduction and inheritance
-  auto testFunction = [](const Handle(Standard_Transient)& theObj) -> bool {
+  auto testFunction = [](const occ::handle<Standard_Transient>& theObj) -> bool {
     return !theObj.IsNull();
   };
 
@@ -184,29 +183,29 @@ TEST_F(HandleAdvancedTest, CompilerSpecificBehavior)
   || (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3)
 
   // Test overload resolution with handles
-  auto testOverload1 = [](const Handle(Standard_Transient)&) -> int { return 1; };
-  auto testOverload2 = [](const Handle(TransientRoot)&) -> int { return 2; };
+  auto testOverload1 = [](const occ::handle<Standard_Transient>&) -> int { return 1; };
+  auto testOverload2 = [](const occ::handle<TransientRoot>&) -> int { return 2; };
 
   // More specific overload should be chosen
   EXPECT_EQ(2, testOverload2(aRoot));
   EXPECT_EQ(1, testOverload1(aTransient));
 #endif
 
-  const Handle(Standard_Transient)& aTransient2 = aRoot; // cast to base const ref
+  const occ::handle<Standard_Transient>& aTransient2 = aRoot; // cast to base const ref
   CHECK_HANDLE(!aTransient2.IsNull(), "cast to base class const reference");
 }
 
 TEST_F(HandleAdvancedTest, DeepHierarchyRTTI)
 {
   // Test RTTI with deep inheritance hierarchy
-  Handle(Standard_Type) aType00 = STANDARD_TYPE(QaClass00_50);
-  Handle(Standard_Type) aType10 = STANDARD_TYPE(QaClass10_50);
-  Handle(Standard_Type) aType20 = STANDARD_TYPE(QaClass20_50);
-  Handle(Standard_Type) aType30 = STANDARD_TYPE(QaClass30_50);
-  Handle(Standard_Type) aType40 = STANDARD_TYPE(QaClass40_50);
-  Handle(Standard_Type) aType50 = STANDARD_TYPE(QaClass50_50);
+  occ::handle<Standard_Type> aType00 = STANDARD_TYPE(QaClass00_50);
+  occ::handle<Standard_Type> aType10 = STANDARD_TYPE(QaClass10_50);
+  occ::handle<Standard_Type> aType20 = STANDARD_TYPE(QaClass20_50);
+  occ::handle<Standard_Type> aType30 = STANDARD_TYPE(QaClass30_50);
+  occ::handle<Standard_Type> aType40 = STANDARD_TYPE(QaClass40_50);
+  occ::handle<Standard_Type> aType50 = STANDARD_TYPE(QaClass50_50);
 
-  Handle(QaClass00_50) aHandle = new QaClass40_50();
+  occ::handle<QaClass00_50> aHandle = new QaClass40_50();
 
   // Test type name
   EXPECT_STREQ("QaClass40_50", aHandle->DynamicType()->Name());
@@ -238,7 +237,7 @@ TEST_F(HandleAdvancedTest, DeepHierarchyRTTI)
 
 TEST_F(HandleAdvancedTest, TypeInfoCompatibility)
 {
-  Handle(QaClass40_50) aHandle = new QaClass40_50();
+  occ::handle<QaClass40_50> aHandle = new QaClass40_50();
 
 #ifdef __cpp_rtti
   // Test C++ RTTI compatibility
@@ -284,7 +283,7 @@ TEST_F(HandleAdvancedTest, TypeInfoCompatibility)
 TEST_F(HandleAdvancedTest, AllocatorHandlePerformance)
 {
   // Test performance aspects of handle operations with different allocators
-  Handle(NCollection_BaseAllocator) aBasePtr = new NCollection_IncAllocator();
+  occ::handle<NCollection_BaseAllocator> aBasePtr = new NCollection_IncAllocator();
   EXPECT_FALSE(aBasePtr.IsNull());
 
   // Test casting performance with allocator hierarchy
@@ -292,8 +291,8 @@ TEST_F(HandleAdvancedTest, AllocatorHandlePerformance)
     QATimer aTimer("IncAllocator DownCast", QATimer::Microseconds);
     for (int i = 0; i < 1000; ++i)
     {
-      Handle(NCollection_IncAllocator) anIncAlloc =
-        Handle(NCollection_IncAllocator)::DownCast(aBasePtr);
+      occ::handle<NCollection_IncAllocator> anIncAlloc =
+        occ::down_cast<NCollection_IncAllocator>(aBasePtr);
       EXPECT_FALSE(anIncAlloc.IsNull());
     }
   }
@@ -303,8 +302,8 @@ TEST_F(HandleAdvancedTest, AllocatorHandlePerformance)
     QATimer aTimer("Failed HeapAllocator DownCast", QATimer::Microseconds);
     for (int i = 0; i < 1000; ++i)
     {
-      Handle(NCollection_HeapAllocator) aHeapAlloc =
-        Handle(NCollection_HeapAllocator)::DownCast(aBasePtr);
+      occ::handle<NCollection_HeapAllocator> aHeapAlloc =
+        occ::down_cast<NCollection_HeapAllocator>(aBasePtr);
       EXPECT_TRUE(aHeapAlloc.IsNull());
     }
   }
@@ -313,7 +312,7 @@ TEST_F(HandleAdvancedTest, AllocatorHandlePerformance)
 TEST_F(HandleAdvancedTest, HandleArrayOperations)
 {
   // Test handle operations with arrays and containers
-  std::vector<Handle(QaClass00_50)> aHandleVector;
+  std::vector<occ::handle<QaClass00_50>> aHandleVector;
 
   // Fill with different types in the hierarchy
   aHandleVector.push_back(new QaClass00_50());
@@ -333,24 +332,24 @@ TEST_F(HandleAdvancedTest, HandleArrayOperations)
     EXPECT_TRUE(aHandleVector[i]->IsKind("QaClass00_50"));
 
     // Test dynamic casting
-    Handle(QaClass00_50) aCast = aHandleVector[i];
+    occ::handle<QaClass00_50> aCast = aHandleVector[i];
     EXPECT_FALSE(aCast.IsNull());
     EXPECT_EQ(aHandleVector[i].get(), aCast.get());
   }
 
   // Test specific type casting
-  Handle(QaClass40_50) aSpecific = Handle(QaClass40_50)::DownCast(aHandleVector[4]);
+  occ::handle<QaClass40_50> aSpecific = occ::down_cast<QaClass40_50>(aHandleVector[4]);
   EXPECT_FALSE(aSpecific.IsNull());
 
   // This should fail - trying to cast parent to child
-  Handle(QaClass40_50) aFailedCast = Handle(QaClass40_50)::DownCast(aHandleVector[0]);
+  occ::handle<QaClass40_50> aFailedCast = occ::down_cast<QaClass40_50>(aHandleVector[0]);
   EXPECT_TRUE(aFailedCast.IsNull());
 }
 
 TEST_F(HandleAdvancedTest, ConstHandleOperations)
 {
-  Handle(QaClass30_50)        aNonConstHandle = new QaClass30_50();
-  const Handle(QaClass30_50)& aConstHandle    = aNonConstHandle;
+  occ::handle<QaClass30_50>        aNonConstHandle = new QaClass30_50();
+  const occ::handle<QaClass30_50>& aConstHandle    = aNonConstHandle;
 
   // Test const correctness
   EXPECT_EQ(aNonConstHandle.get(), aConstHandle.get());
@@ -362,8 +361,8 @@ TEST_F(HandleAdvancedTest, ConstHandleOperations)
   EXPECT_EQ(aConstPtr, aNonConstPtr);
 
   // Test const casting to base types
-  const Handle(QaClass00_50)& aConstBase    = aConstHandle;
-  Handle(QaClass00_50)        aNonConstBase = aNonConstHandle;
+  const occ::handle<QaClass00_50>& aConstBase    = aConstHandle;
+  occ::handle<QaClass00_50>        aNonConstBase = aNonConstHandle;
 
   EXPECT_EQ(aConstBase.get(), aNonConstBase.get());
 
@@ -379,8 +378,8 @@ TEST_F(HandleAdvancedTest, WeakReferenceSimulation)
   QaClass20_50* aRawPtr = nullptr;
 
   {
-    Handle(QaClass20_50) aHandle = new QaClass20_50();
-    aRawPtr                      = aHandle.get();
+    occ::handle<QaClass20_50> aHandle = new QaClass20_50();
+    aRawPtr                           = aHandle.get();
 
     EXPECT_NE(nullptr, aRawPtr);
 
@@ -395,8 +394,8 @@ TEST_F(HandleAdvancedTest, WeakReferenceSimulation)
 
   // Create multiple new handles to ensure we get different objects
   // (Memory allocator might reuse the same location, so we create several)
-  std::vector<Handle(QaClass20_50)> aHandles;
-  bool                              aFoundDifferent = false;
+  std::vector<occ::handle<QaClass20_50>> aHandles;
+  bool                                   aFoundDifferent = false;
 
   for (int i = 0; i < 10 && !aFoundDifferent; ++i)
   {

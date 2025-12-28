@@ -19,10 +19,10 @@
 RWStepBasic_RWWeekOfYearAndDayDate::RWStepBasic_RWWeekOfYearAndDayDate() {}
 
 void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepBasic_WeekOfYearAndDayDate)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepBasic_WeekOfYearAndDayDate>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -32,28 +32,28 @@ void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
 
   // --- inherited field : yearComponent ---
 
-  Standard_Integer aYearComponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  int aYearComponent;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadInteger(num, 1, "year_component", ach, aYearComponent);
 
   // --- own field : weekComponent ---
 
-  Standard_Integer aWeekComponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  int aWeekComponent;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadInteger(num, 2, "week_component", ach, aWeekComponent);
 
   // --- own field : dayComponent ---
 
-  Standard_Integer aDayComponent;
-  Standard_Boolean hasAdayComponent = Standard_True;
+  int  aDayComponent;
+  bool hasAdayComponent = true;
   if (data->IsParamDefined(num, 3))
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat3 =` not needed
     data->ReadInteger(num, 3, "day_component", ach, aDayComponent);
   }
   else
   {
-    hasAdayComponent = Standard_False;
+    hasAdayComponent = false;
     aDayComponent    = 0;
   }
 
@@ -63,8 +63,8 @@ void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
 }
 
 void RWStepBasic_RWWeekOfYearAndDayDate::WriteStep(
-  StepData_StepWriter&                          SW,
-  const Handle(StepBasic_WeekOfYearAndDayDate)& ent) const
+  StepData_StepWriter&                               SW,
+  const occ::handle<StepBasic_WeekOfYearAndDayDate>& ent) const
 {
 
   // --- inherited field yearComponent ---
@@ -77,7 +77,7 @@ void RWStepBasic_RWWeekOfYearAndDayDate::WriteStep(
 
   // --- own field : dayComponent ---
 
-  Standard_Boolean hasAdayComponent = ent->HasDayComponent();
+  bool hasAdayComponent = ent->HasDayComponent();
   if (hasAdayComponent)
   {
     SW.Send(ent->DayComponent());

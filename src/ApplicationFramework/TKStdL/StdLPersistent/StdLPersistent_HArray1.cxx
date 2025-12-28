@@ -19,16 +19,16 @@
 //=======================================================================
 void StdLPersistent_HArray1::base::Read(StdObjMgt_ReadData& theReadData)
 {
-  Standard_Integer aLowerBound, anUpperBound;
+  int aLowerBound, anUpperBound;
   theReadData >> aLowerBound >> anUpperBound;
   createArray(aLowerBound, anUpperBound);
 
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Integer aSize;
+  int aSize;
   theReadData >> aSize;
 
-  for (Standard_Integer i = aLowerBound; i <= anUpperBound; i++)
+  for (int i = aLowerBound; i <= anUpperBound; i++)
     readValue(theReadData, i);
 }
 
@@ -38,14 +38,14 @@ void StdLPersistent_HArray1::base::Read(StdObjMgt_ReadData& theReadData)
 //=======================================================================
 void StdLPersistent_HArray1::base::Write(StdObjMgt_WriteData& theWriteData) const
 {
-  Standard_Integer aLowerBound = lowerBound(), anUpperBound = upperBound();
+  int aLowerBound = lowerBound(), anUpperBound = upperBound();
   theWriteData << aLowerBound << anUpperBound;
 
   StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
-  Standard_Integer aSize = anUpperBound - aLowerBound + 1;
+  int aSize = anUpperBound - aLowerBound + 1;
   theWriteData << aSize;
 
-  for (Standard_Integer i = aLowerBound; i <= anUpperBound; i++)
+  for (int i = aLowerBound; i <= anUpperBound; i++)
     writeValue(theWriteData, i);
 }

@@ -18,8 +18,9 @@
 #include <GProp_PEquation.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Surface.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <TopoDS_Face.hxx>
 
 //=================================================================================================
@@ -34,8 +35,8 @@ HLRBRep_Surface::HLRBRep_Surface()
 
 void HLRBRep_Surface::Surface(const TopoDS_Face& F)
 {
-  // mySurf.Initialize(F,Standard_False);
-  mySurf.Initialize(F, Standard_True);
+  // mySurf.Initialize(F,false);
+  mySurf.Initialize(F, true);
   GeomAbs_SurfaceType typ = HLRBRep_BSurfaceTool::GetType(mySurf);
   switch (typ)
   {
@@ -66,16 +67,16 @@ void HLRBRep_Surface::Surface(const TopoDS_Face& F)
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_Surface::SideRowsOfPoles(const Standard_Real    tol,
-                                                  const Standard_Integer nbuPoles,
-                                                  const Standard_Integer nbvPoles,
-                                                  TColgp_Array2OfPnt&    Pnt) const
+bool HLRBRep_Surface::SideRowsOfPoles(const double                tol,
+                                      const int                   nbuPoles,
+                                      const int                   nbvPoles,
+                                      NCollection_Array2<gp_Pnt>& Pnt) const
 {
-  Standard_Integer iu, iv;
-  Standard_Real    x0, y0, x, y, z;
-  Standard_Boolean result;
-  Standard_Real    tole = (Standard_Real)tol;
-  const gp_Trsf&   T    = myProj->Transformation();
+  int            iu, iv;
+  double         x0, y0, x, y, z;
+  bool           result;
+  double         tole = (double)tol;
+  const gp_Trsf& T    = myProj->Transformation();
 
   for (iu = 1; iu <= nbuPoles; iu++)
   {
@@ -83,7 +84,7 @@ Standard_Boolean HLRBRep_Surface::SideRowsOfPoles(const Standard_Real    tol,
     for (iv = 1; iv <= nbvPoles; iv++)
       Pnt(iu, iv).Transform(T);
   }
-  result = Standard_True;
+  result = true;
 
   for (iu = 1; iu <= nbuPoles && result; iu++)
   { // Side iso u ?
@@ -97,7 +98,7 @@ Standard_Boolean HLRBRep_Surface::SideRowsOfPoles(const Standard_Real    tol,
   }
   if (result)
     return result;
-  result = Standard_True;
+  result = true;
 
   for (iv = 1; iv <= nbvPoles && result; iv++)
   { // Side iso v ?
@@ -113,8 +114,8 @@ Standard_Boolean HLRBRep_Surface::SideRowsOfPoles(const Standard_Real    tol,
     return result;
 
   // Are the Poles in a Side Plane ?
-  TColgp_Array1OfPnt p(1, nbuPoles * nbvPoles);
-  Standard_Integer   i = 0;
+  NCollection_Array1<gp_Pnt> p(1, nbuPoles * nbvPoles);
+  int                        i = 0;
 
   for (iu = 1; iu <= nbuPoles; iu++)
   {
@@ -126,7 +127,7 @@ Standard_Boolean HLRBRep_Surface::SideRowsOfPoles(const Standard_Real    tol,
     }
   }
 
-  GProp_PEquation Pl(p, (Standard_Real)tol);
+  GProp_PEquation Pl(p, (double)tol);
   if (Pl.IsPlanar())
     result = std::abs(Pl.Plane().Axis().Direction().Z()) < 0.0001;
 
@@ -135,11 +136,11 @@ Standard_Boolean HLRBRep_Surface::SideRowsOfPoles(const Standard_Real    tol,
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_Surface::IsSide(const Standard_Real tolF, const Standard_Real toler) const
+bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
 {
-  gp_Pnt        Pt;
-  gp_Vec        D;
-  Standard_Real r;
+  gp_Pnt Pt;
+  gp_Vec D;
+  double r;
 
   if (myType == GeomAbs_Plane)
   {
@@ -160,7 +161,7 @@ Standard_Boolean HLRBRep_Surface::IsSide(const Standard_Real tolF, const Standar
   else if (myType == GeomAbs_Cylinder)
   {
     if (myProj->Perspective())
-      return Standard_False;
+      return false;
     gp_Cylinder Cyl = HLRBRep_BSurfaceTool::Cylinder(mySurf);
     gp_Ax1      A   = Cyl.Axis();
     D               = A.Direction();
@@ -171,53 +172,51 @@ Standard_Boolean HLRBRep_Surface::IsSide(const Standard_Real tolF, const Standar
   else if (myType == GeomAbs_Cone)
   {
     if (!myProj->Perspective())
-      return Standard_False;
+      return false;
     gp_Cone Con = HLRBRep_BSurfaceTool::Cone(mySurf);
     Pt          = Con.Apex();
     Pt.Transform(myProj->Transformation());
-    Standard_Real tol = 0.001;
+    double tol = 0.001;
     return Pt.IsEqual(gp_Pnt(0, 0, myProj->Focus()), tol);
   }
   else if (myType == GeomAbs_BezierSurface)
   {
     if (myProj->Perspective())
-      return Standard_False;
-    Standard_Integer   nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
-    Standard_Integer   nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
-    TColgp_Array2OfPnt Pnt(1, nu, 1, nv);
+      return false;
+    int                        nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
+    int                        nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
+    NCollection_Array2<gp_Pnt> Pnt(1, nu, 1, nv);
     HLRBRep_BSurfaceTool::Bezier(mySurf)->Poles(Pnt);
     return SideRowsOfPoles(tolF, nu, nv, Pnt);
   }
   else if (myType == GeomAbs_BSplineSurface)
   {
     if (myProj->Perspective())
-      return Standard_False;
-    Standard_Integer     nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
-    Standard_Integer     nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
-    TColgp_Array2OfPnt   Pnt(1, nu, 1, nv);
-    TColStd_Array2OfReal W(1, nu, 1, nv);
+      return false;
+    int                        nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
+    int                        nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
+    NCollection_Array2<gp_Pnt> Pnt(1, nu, 1, nv);
+    NCollection_Array2<double> W(1, nu, 1, nv);
     HLRBRep_BSurfaceTool::BSpline(mySurf)->Poles(Pnt);
     HLRBRep_BSurfaceTool::BSpline(mySurf)->Weights(W);
     return SideRowsOfPoles(tolF, nu, nv, Pnt);
   }
   else
-    return Standard_False;
+    return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_Surface::IsAbove(const Standard_Boolean back,
-                                          const HLRBRep_Curve*   A,
-                                          const Standard_Real    tol) const
+bool HLRBRep_Surface::IsAbove(const bool back, const HLRBRep_Curve* A, const double tol) const
 {
-  Standard_Boolean planar = (myType == GeomAbs_Plane);
+  bool planar = (myType == GeomAbs_Plane);
   if (planar)
   {
-    gp_Pln        Pl = Plane();
-    Standard_Real a, b, c, d;
+    gp_Pln Pl = Plane();
+    double a, b, c, d;
     Pl.Coefficients(a, b, c, d);
-    Standard_Real u, u1, u2, dd, x, y, z;
-    gp_Pnt        P;
+    double u, u1, u2, dd, x, y, z;
+    gp_Pnt P;
     u1 = A->Parameter3d(A->FirstParameter());
     u2 = A->Parameter3d(A->LastParameter());
     u  = u1;
@@ -227,12 +226,12 @@ Standard_Boolean HLRBRep_Surface::IsAbove(const Standard_Boolean back,
     if (back)
       dd = -dd;
     if (dd < -tol)
-      return Standard_False;
+      return false;
     if (A->GetType() != GeomAbs_Line)
     {
-      Standard_Integer nbPnt = 30;
-      Standard_Real    step  = (u2 - u1) / (nbPnt + 1);
-      for (Standard_Integer i = 1; i <= nbPnt; i++)
+      int    nbPnt = 30;
+      double step  = (u2 - u1) / (nbPnt + 1);
+      for (int i = 1; i <= nbPnt; i++)
       {
         u += step;
         A->D0(u, P);
@@ -241,7 +240,7 @@ Standard_Boolean HLRBRep_Surface::IsAbove(const Standard_Boolean back,
         if (back)
           dd = -dd;
         if (dd < -tol)
-          return Standard_False;
+          return false;
       }
     }
     u = u2;
@@ -251,16 +250,16 @@ Standard_Boolean HLRBRep_Surface::IsAbove(const Standard_Boolean back,
     if (back)
       dd = -dd;
     if (dd < -tol)
-      return Standard_False;
-    return Standard_True;
+      return false;
+    return true;
   }
   else
-    return Standard_False;
+    return false;
 }
 
 //=================================================================================================
 
-gp_Pnt HLRBRep_Surface::Value(const Standard_Real U, const Standard_Real V) const
+gp_Pnt HLRBRep_Surface::Value(const double U, const double V) const
 {
   gp_Pnt P;
   D0(U, V, P);

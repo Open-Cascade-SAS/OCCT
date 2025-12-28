@@ -20,14 +20,17 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Draft_IndexedDataMapOfFaceFaceInfo.hxx>
-#include <Draft_IndexedDataMapOfEdgeEdgeInfo.hxx>
-#include <Draft_IndexedDataMapOfVertexVertexInfo.hxx>
+#include <TopoDS_Face.hxx>
+#include <Draft_FaceInfo.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Edge.hxx>
+#include <Draft_EdgeInfo.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <Draft_VertexInfo.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Draft_ErrorStatus.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
 #include <BRepTools_Modification.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
@@ -40,9 +43,6 @@ class Geom_Curve;
 class TopoDS_Vertex;
 class gp_Pnt;
 class Geom2d_Curve;
-
-class Draft_Modification;
-DEFINE_STANDARD_HANDLE(Draft_Modification, BRepTools_Modification)
 
 class Draft_Modification : public BRepTools_Modification
 {
@@ -60,21 +60,21 @@ public:
   //! modification to its neighbour faces if they are
   //! tangent. If an error occurs, will return False and
   //! ProblematicShape will return the "bad" face.
-  Standard_EXPORT Standard_Boolean Add(const TopoDS_Face&     F,
-                                       const gp_Dir&          Direction,
-                                       const Standard_Real    Angle,
-                                       const gp_Pln&          NeutralPlane,
-                                       const Standard_Boolean Flag = Standard_True);
+  Standard_EXPORT bool Add(const TopoDS_Face& F,
+                           const gp_Dir&      Direction,
+                           const double       Angle,
+                           const gp_Pln&      NeutralPlane,
+                           const bool         Flag = true);
 
   //! Removes the face F and the neighbour faces if they
   //! are tangent. It will be necessary to call this
-  //! method if the method Add returns Standard_False,
+  //! method if the method Add returns false,
   //! to unset ProblematicFace.
   Standard_EXPORT void Remove(const TopoDS_Face& F);
 
   //! Performs the draft angle modification and sets the
   //! value returned by the method IsDone. If an error
-  //! occurs, IsDone will return Standard_False, and an
+  //! occurs, IsDone will return false, and an
   //! error status will be given by the method Error,
   //! and the shape on which the problem appeared will
   //! be given by ProblematicShape
@@ -83,7 +83,7 @@ public:
   //! Returns True if Perform has been successfully
   //! called. Otherwise more information can be obtained
   //! using the methods Error() and ProblematicShape().
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   Standard_EXPORT Draft_ErrorStatus Error() const;
 
@@ -93,78 +93,76 @@ public:
 
   //! Returns all the faces which have been added
   //! together with the face <F>.
-  Standard_EXPORT const TopTools_ListOfShape& ConnectedFaces(const TopoDS_Face& F);
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ConnectedFaces(const TopoDS_Face& F);
 
   //! Returns all the faces on which a modification has
   //! been given.
-  Standard_EXPORT const TopTools_ListOfShape& ModifiedFaces();
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ModifiedFaces();
 
-  //! Returns Standard_True if the face <F> has been
+  //! Returns true if the face <F> has been
   //! modified. In this case, <S> is the new geometric
   //! support of the face, <L> the new location, <Tol>
   //! the new tolerance.<RevWires> has to be set to
-  //! Standard_True when the modification reverses the
+  //! true when the modification reverses the
   //! normal of the surface. (the wires have to be
   //! reversed). <RevFace> has to be set to
-  //! Standard_True if the orientation of the modified
+  //! true if the orientation of the modified
   //! face changes in the shells which contain it. Here
-  //! it will be set to Standard_False.
+  //! it will be set to false.
   //!
-  //! Otherwise, returns Standard_False, and <S>, <L>,
+  //! Otherwise, returns false, and <S>, <L>,
   //! <Tol> , <RevWires> ,<RevFace> are not significant.
-  Standard_EXPORT Standard_Boolean NewSurface(const TopoDS_Face&    F,
-                                              Handle(Geom_Surface)& S,
-                                              TopLoc_Location&      L,
-                                              Standard_Real&        Tol,
-                                              Standard_Boolean&     RevWires,
-                                              Standard_Boolean&     RevFace) Standard_OVERRIDE;
+  Standard_EXPORT bool NewSurface(const TopoDS_Face&         F,
+                                  occ::handle<Geom_Surface>& S,
+                                  TopLoc_Location&           L,
+                                  double&                    Tol,
+                                  bool&                      RevWires,
+                                  bool&                      RevFace) override;
 
-  //! Returns Standard_True if the edge <E> has been
+  //! Returns true if the edge <E> has been
   //! modified. In this case, <C> is the new geometric
   //! support of the edge, <L> the new location, <Tol>
   //! the new tolerance. Otherwise, returns
-  //! Standard_False, and <C>, <L>, <Tol> are not
+  //! false, and <C>, <L>, <Tol> are not
   //! significant.
-  Standard_EXPORT Standard_Boolean NewCurve(const TopoDS_Edge&  E,
-                                            Handle(Geom_Curve)& C,
-                                            TopLoc_Location&    L,
-                                            Standard_Real&      Tol) Standard_OVERRIDE;
+  Standard_EXPORT bool NewCurve(const TopoDS_Edge&       E,
+                                occ::handle<Geom_Curve>& C,
+                                TopLoc_Location&         L,
+                                double&                  Tol) override;
 
-  //! Returns Standard_True if the vertex <V> has been
+  //! Returns true if the vertex <V> has been
   //! modified. In this case, <P> is the new geometric
   //! support of the vertex, <Tol> the new tolerance.
-  //! Otherwise, returns Standard_False, and <P>, <Tol>
+  //! Otherwise, returns false, and <P>, <Tol>
   //! are not significant.
-  Standard_EXPORT Standard_Boolean NewPoint(const TopoDS_Vertex& V,
-                                            gp_Pnt&              P,
-                                            Standard_Real&       Tol) Standard_OVERRIDE;
+  Standard_EXPORT bool NewPoint(const TopoDS_Vertex& V, gp_Pnt& P, double& Tol) override;
 
-  //! Returns Standard_True if the edge <E> has a new
+  //! Returns true if the edge <E> has a new
   //! curve on surface on the face <F>.In this case, <C>
   //! is the new geometric support of the edge, <L> the
   //! new location, <Tol> the new tolerance.
   //!
-  //! Otherwise, returns Standard_False, and <C>, <L>,
+  //! Otherwise, returns false, and <C>, <L>,
   //! <Tol> are not significant.
   //!
   //! <NewE> is the new edge created from <E>. <NewF>
   //! is the new face created from <F>. They may be useful.
-  Standard_EXPORT Standard_Boolean NewCurve2d(const TopoDS_Edge&    E,
-                                              const TopoDS_Face&    F,
-                                              const TopoDS_Edge&    NewE,
-                                              const TopoDS_Face&    NewF,
-                                              Handle(Geom2d_Curve)& C,
-                                              Standard_Real&        Tol) Standard_OVERRIDE;
+  Standard_EXPORT bool NewCurve2d(const TopoDS_Edge&         E,
+                                  const TopoDS_Face&         F,
+                                  const TopoDS_Edge&         NewE,
+                                  const TopoDS_Face&         NewF,
+                                  occ::handle<Geom2d_Curve>& C,
+                                  double&                    Tol) override;
 
-  //! Returns Standard_True if the Vertex <V> has a new
+  //! Returns true if the Vertex <V> has a new
   //! parameter on the edge <E>. In this case, <P> is
   //! the parameter, <Tol> the new tolerance.
-  //! Otherwise, returns Standard_False, and <P>, <Tol>
+  //! Otherwise, returns false, and <P>, <Tol>
   //! are not significant.
-  Standard_EXPORT Standard_Boolean NewParameter(const TopoDS_Vertex& V,
-                                                const TopoDS_Edge&   E,
-                                                Standard_Real&       P,
-                                                Standard_Real&       Tol) Standard_OVERRIDE;
+  Standard_EXPORT bool NewParameter(const TopoDS_Vertex& V,
+                                    const TopoDS_Edge&   E,
+                                    double&              P,
+                                    double&              Tol) override;
 
   //! Returns the continuity of <NewE> between <NewF1>
   //! and <NewF2>.
@@ -177,44 +175,44 @@ public:
                                            const TopoDS_Face& F2,
                                            const TopoDS_Edge& NewE,
                                            const TopoDS_Face& NewF1,
-                                           const TopoDS_Face& NewF2) Standard_OVERRIDE;
+                                           const TopoDS_Face& NewF2) override;
 
   DEFINE_STANDARD_RTTIEXT(Draft_Modification, BRepTools_Modification)
 
-protected:
 private:
-  Standard_EXPORT Standard_Boolean InternalAdd(const TopoDS_Face&     F,
-                                               const gp_Dir&          Direction,
-                                               const Standard_Real    Angle,
-                                               const gp_Pln&          NeutralPlane,
-                                               const Standard_Boolean Flag = Standard_True);
+  Standard_EXPORT bool InternalAdd(const TopoDS_Face& F,
+                                   const gp_Dir&      Direction,
+                                   const double       Angle,
+                                   const gp_Pln&      NeutralPlane,
+                                   const bool         Flag = true);
 
-  Standard_EXPORT Standard_Boolean Propagate();
+  Standard_EXPORT bool Propagate();
 
-  Standard_EXPORT Handle(Geom_Curve) NewCurve(const Handle(Geom_Curve)&   C,
-                                              const Handle(Geom_Surface)& S,
-                                              const TopAbs_Orientation    OriS,
-                                              const gp_Dir&               Direction,
-                                              const Standard_Real         Angle,
-                                              const gp_Pln&               NeutralPlane,
-                                              const Standard_Boolean      Flag = Standard_True);
+  Standard_EXPORT occ::handle<Geom_Curve> NewCurve(const occ::handle<Geom_Curve>&   C,
+                                                   const occ::handle<Geom_Surface>& S,
+                                                   const TopAbs_Orientation         OriS,
+                                                   const gp_Dir&                    Direction,
+                                                   const double                     Angle,
+                                                   const gp_Pln&                    NeutralPlane,
+                                                   const bool                       Flag = true);
 
-  Standard_EXPORT Handle(Geom_Surface) NewSurface(const Handle(Geom_Surface)& S,
-                                                  const TopAbs_Orientation    OriS,
-                                                  const gp_Dir&               Direction,
-                                                  const Standard_Real         Angle,
-                                                  const gp_Pln&               NeutralPlane);
+  Standard_EXPORT occ::handle<Geom_Surface> NewSurface(const occ::handle<Geom_Surface>& S,
+                                                       const TopAbs_Orientation         OriS,
+                                                       const gp_Dir&                    Direction,
+                                                       const double                     Angle,
+                                                       const gp_Pln& NeutralPlane);
 
-  Draft_IndexedDataMapOfFaceFaceInfo        myFMap;
-  Draft_IndexedDataMapOfEdgeEdgeInfo        myEMap;
-  Draft_IndexedDataMapOfVertexVertexInfo    myVMap;
-  Standard_Boolean                          myComp;
-  TopoDS_Shape                              myShape;
-  TopoDS_Shape                              badShape;
-  Draft_ErrorStatus                         errStat;
-  TopoDS_Face                               curFace;
-  TopTools_ListOfShape                      conneF;
-  TopTools_IndexedDataMapOfShapeListOfShape myEFMap;
+  NCollection_IndexedDataMap<TopoDS_Face, Draft_FaceInfo, TopTools_ShapeMapHasher>     myFMap;
+  NCollection_IndexedDataMap<TopoDS_Edge, Draft_EdgeInfo, TopTools_ShapeMapHasher>     myEMap;
+  NCollection_IndexedDataMap<TopoDS_Vertex, Draft_VertexInfo, TopTools_ShapeMapHasher> myVMap;
+  bool                                                                                 myComp;
+  TopoDS_Shape                                                                         myShape;
+  TopoDS_Shape                                                                         badShape;
+  Draft_ErrorStatus                                                                    errStat;
+  TopoDS_Face                                                                          curFace;
+  NCollection_List<TopoDS_Shape>                                                       conneF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myEFMap;
 };
 
 #endif // _Draft_Modification_HeaderFile

@@ -24,43 +24,42 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESData_Protocol, Interface_Protocol)
 
 IGESData_Protocol::IGESData_Protocol() {}
 
-Standard_Integer IGESData_Protocol::NbResources() const
+int IGESData_Protocol::NbResources() const
 {
   return 0;
 }
 
-Handle(Interface_Protocol) IGESData_Protocol::Resource(const Standard_Integer /*num*/) const
+occ::handle<Interface_Protocol> IGESData_Protocol::Resource(const int /*num*/) const
 {
-  Handle(Interface_Protocol) nulpro;
+  occ::handle<Interface_Protocol> nulpro;
   return nulpro;
 }
 
 //  TypeNumber : Here, we recognize UndefinedEntity (someone has to)
 
-Standard_Integer IGESData_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
+int IGESData_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype->SubType(STANDARD_TYPE(IGESData_UndefinedEntity)))
     return 1;
   return 0;
 }
 
-Handle(Interface_InterfaceModel) IGESData_Protocol::NewModel() const
+occ::handle<Interface_InterfaceModel> IGESData_Protocol::NewModel() const
 {
   return new IGESData_IGESModel;
 }
 
-Standard_Boolean IGESData_Protocol::IsSuitableModel(
-  const Handle(Interface_InterfaceModel)& model) const
+bool IGESData_Protocol::IsSuitableModel(const occ::handle<Interface_InterfaceModel>& model) const
 {
   return model->IsKind(STANDARD_TYPE(IGESData_IGESModel));
 }
 
-Handle(Standard_Transient) IGESData_Protocol::UnknownEntity() const
+occ::handle<Standard_Transient> IGESData_Protocol::UnknownEntity() const
 {
   return new IGESData_UndefinedEntity;
 }
 
-Standard_Boolean IGESData_Protocol::IsUnknownEntity(const Handle(Standard_Transient)& ent) const
+bool IGESData_Protocol::IsUnknownEntity(const occ::handle<Standard_Transient>& ent) const
 {
   return ent->IsKind(STANDARD_TYPE(IGESData_UndefinedEntity));
 }

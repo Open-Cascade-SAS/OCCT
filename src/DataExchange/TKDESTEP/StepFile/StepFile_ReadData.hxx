@@ -163,18 +163,16 @@ public:
   //! * 1 - clear pages of records and arguments
   //! * 2 - clear pages of characters
   //! * 3 - clear all data
-  void ClearRecorder(const Standard_Integer theMode);
+  void ClearRecorder(const int theMode);
 
   //! Returns a value of fields of current argument
-  Standard_Boolean GetArgDescription(Interface_ParamType* theType, char** theValue);
+  bool GetArgDescription(Interface_ParamType* theType, char** theValue);
 
   //! Returns a value of all file counters
-  void GetFileNbR(Standard_Integer* theNbHead,
-                  Standard_Integer* theNbRec,
-                  Standard_Integer* theNbPage);
+  void GetFileNbR(int* theNbHead, int* theNbRec, int* theNbPage);
 
   //! Returns a value of fields of current record
-  Standard_Boolean GetRecordDescription(char** theIdent, char** theType, int* theNbArg);
+  bool GetRecordDescription(char** theIdent, char** theType, int* theNbArg);
 
   //! Initializes the record type with myResText
   void RecordTypeText();
@@ -199,22 +197,22 @@ public:
   //! 0 - don't print descriptions
   //! 1 - print only descriptions of record
   //! 2 - print descriptions of records and its arguments
-  void SetModePrint(const Standard_Integer theMode);
+  void SetModePrint(const int theMode);
 
   //! Returns mode print
-  Standard_Integer GetModePrint() const;
+  int GetModePrint() const;
 
   //! Returns number of records
-  Standard_Integer GetNbRecord() const;
+  int GetNbRecord() const;
 
   //! Adds an error message
-  void AddError(Standard_CString theErrorMessage);
+  void AddError(const char* theErrorMessage);
 
   //! Transfers error messages to checker
-  Standard_Boolean ErrorHandle(const Handle(Interface_Check)& theCheck) const;
+  bool ErrorHandle(const occ::handle<Interface_Check>& theCheck) const;
 
   //! Returns the message of the last error
-  Standard_CString GetLastError() const;
+  const char* GetLastError() const;
 
 private:
   //! Prepare text to analyze
@@ -236,14 +234,14 @@ private:
 private:
   NCollection_IncAllocator myTextAlloc;  //!< Allocator for store text
   NCollection_IncAllocator myOtherAlloc; //!< Allocator for internal tools
-  Standard_Integer         myModePrint;  //!< Control print output (for call from yacc)
-  Standard_Integer         myNbRec;      //!< Total number of data records read
-  Standard_Integer         myNbHead;     //!< Number of records taken by the Header
-  Standard_Integer         myNbPar;      //!< Total number of parameters read
-  Standard_Integer         myYaRec;      //!< Presence record already created (after 1 Ident)
-  Standard_Integer         myNumSub;     //!< Number of current sublist
+  int                      myModePrint;  //!< Control print output (for call from yacc)
+  int                      myNbRec;      //!< Total number of data records read
+  int                      myNbHead;     //!< Number of records taken by the Header
+  int                      myNbPar;      //!< Total number of parameters read
+  int                      myYaRec;      //!< Presence record already created (after 1 Ident)
+  int                      myNumSub;     //!< Number of current sublist
                                          // clang-format off
-  Standard_Boolean myErrorArg;   //!< Control of error argument (true - error argument was created)
+  bool myErrorArg;   //!< Control of error argument (true - error argument was created)
   char* myResText;               //!< Text value written by Flex and passed to Bison to create record
                                          // clang-format on
   char*               myCurrType;        //!< Type of last record read

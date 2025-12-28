@@ -25,10 +25,10 @@ RWStepVisual_RWMechanicalDesignGeometricPresentationArea::
 }
 
 void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::ReadStep(
-  const Handle(StepData_StepReaderData)&                              data,
-  const Standard_Integer                                              num,
-  Handle(Interface_Check)&                                            ach,
-  const Handle(StepVisual_MechanicalDesignGeometricPresentationArea)& ent) const
+  const occ::handle<StepData_StepReaderData>&                              data,
+  const int                                                                num,
+  occ::handle<Interface_Check>&                                            ach,
+  const occ::handle<StepVisual_MechanicalDesignGeometricPresentationArea>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -38,22 +38,22 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::ReadStep(
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : items ---
 
-  Handle(StepRepr_HArray1OfRepresentationItem) aItems;
-  Handle(StepRepr_RepresentationItem)          anent2;
-  Standard_Integer                             nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aItems;
+  occ::handle<StepRepr_RepresentationItem>                                   anent2;
+  int                                                                        nsub2;
   if (data->ReadSubList(num, 2, "items", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aItems               = new StepRepr_HArray1OfRepresentationItem(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aItems  = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2,
                            i2,
                            "representation_item",
@@ -66,8 +66,8 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::ReadStep(
 
   // --- inherited field : contextOfItems ---
 
-  Handle(StepRepr_RepresentationContext) aContextOfItems;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepRepr_RepresentationContext> aContextOfItems;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num,
                    3,
                    "context_of_items",
@@ -81,8 +81,8 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::ReadStep(
 }
 
 void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::WriteStep(
-  StepData_StepWriter&                                                SW,
-  const Handle(StepVisual_MechanicalDesignGeometricPresentationArea)& ent) const
+  StepData_StepWriter&                                                     SW,
+  const occ::handle<StepVisual_MechanicalDesignGeometricPresentationArea>& ent) const
 {
 
   // --- inherited field name ---
@@ -92,7 +92,7 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::WriteStep(
   // --- inherited field items ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbItems(); i2++)
+  for (int i2 = 1; i2 <= ent->NbItems(); i2++)
   {
     SW.Send(ent->ItemsValue(i2));
   }
@@ -104,12 +104,12 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::WriteStep(
 }
 
 void RWStepVisual_RWMechanicalDesignGeometricPresentationArea::Share(
-  const Handle(StepVisual_MechanicalDesignGeometricPresentationArea)& ent,
-  Interface_EntityIterator&                                           iter) const
+  const occ::handle<StepVisual_MechanicalDesignGeometricPresentationArea>& ent,
+  Interface_EntityIterator&                                                iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbItems();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbItems();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->ItemsValue(is1));
   }

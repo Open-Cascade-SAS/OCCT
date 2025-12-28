@@ -35,34 +35,33 @@ public:
 
   Standard_EXPORT GeomFill_CornerState();
 
-  Standard_EXPORT Standard_Real Gap() const;
+  Standard_EXPORT double Gap() const;
 
-  Standard_EXPORT void Gap(const Standard_Real G);
+  Standard_EXPORT void Gap(const double G);
 
-  Standard_EXPORT Standard_Real TgtAng() const;
+  Standard_EXPORT double TgtAng() const;
 
-  Standard_EXPORT void TgtAng(const Standard_Real Ang);
+  Standard_EXPORT void TgtAng(const double Ang);
 
-  Standard_EXPORT Standard_Boolean HasConstraint() const;
+  Standard_EXPORT bool HasConstraint() const;
 
   Standard_EXPORT void Constraint();
 
-  Standard_EXPORT Standard_Real NorAng() const;
+  Standard_EXPORT double NorAng() const;
 
-  Standard_EXPORT void NorAng(const Standard_Real Ang);
+  Standard_EXPORT void NorAng(const double Ang);
 
-  Standard_EXPORT Standard_Boolean IsToKill(Standard_Real& Scal) const;
+  Standard_EXPORT bool IsToKill(double& Scal) const;
 
-  Standard_EXPORT void DoKill(const Standard_Real Scal);
+  Standard_EXPORT void DoKill(const double Scal);
 
-protected:
 private:
-  Standard_Real    gap;
-  Standard_Real    tgtang;
-  Standard_Boolean isconstrained;
-  Standard_Real    norang;
-  Standard_Real    scal;
-  Standard_Boolean coonscnd;
+  double gap;
+  double tgtang;
+  bool   isconstrained;
+  double norang;
+  double scal;
+  bool   coonscnd;
 };
 
 #endif // _GeomFill_CornerState_HeaderFile

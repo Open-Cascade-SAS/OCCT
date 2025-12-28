@@ -43,7 +43,7 @@ public:
   Standard_EXPORT void SetP2(const IntTools_PntOnFace& aP2);
 
   //! Modifier
-  Standard_EXPORT void SetValid(const Standard_Boolean bF);
+  Standard_EXPORT void SetValid(const bool bF);
 
   //! Selector
   Standard_EXPORT const IntTools_PntOnFace& P1() const;
@@ -52,11 +52,10 @@ public:
   Standard_EXPORT const IntTools_PntOnFace& P2() const;
 
   //! Selector
-  Standard_EXPORT Standard_Boolean IsValid() const;
+  Standard_EXPORT bool IsValid() const;
 
-protected:
 private:
-  Standard_Boolean   myIsValid;
+  bool               myIsValid;
   IntTools_PntOnFace myPnt1;
   IntTools_PntOnFace myPnt2;
 };

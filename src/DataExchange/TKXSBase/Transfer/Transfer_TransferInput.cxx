@@ -12,9 +12,11 @@
 // commercial license or contractual agreement.
 
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Protocol.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <Transfer_IteratorOfProcessForFinder.hxx>
 #include <Transfer_IteratorOfProcessForTransient.hxx>
@@ -35,7 +37,7 @@ Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferItera
   Interface_EntityIterator iter;
   for (list.Start(); list.More(); list.Next())
   {
-    const Handle(Transfer_Binder)& binder = list.Value();
+    const occ::handle<Transfer_Binder>& binder = list.Value();
     if (binder.IsNull())
       continue;
     if (binder->IsKind(STANDARD_TYPE(Transfer_VoidBinder)))
@@ -51,11 +53,12 @@ Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferItera
     }
     else if (!multi.IsNull())
     {
-      Handle(TColStd_HSequenceOfTransient) mulres = multi->MultipleResult();
-      Standard_Integer                     nbres  = 0;
+      occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> mulres =
+        multi->MultipleResult();
+      int nbres = 0;
       if (!mulres.IsNull())
         nbres = mulres->Length();
-      for (Standard_Integer i = 1; i <= nbres; i++)
+      for (int i = 1; i <= nbres; i++)
         iter.AddItem(mulres->Value(i));
     }
     else
@@ -65,18 +68,18 @@ Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferItera
   return iter;
 }
 
-void Transfer_TransferInput::FillModel(const Handle(Transfer_TransientProcess)& proc,
-                                       const Handle(Interface_InterfaceModel)&  amodel) const
+void Transfer_TransferInput::FillModel(const occ::handle<Transfer_TransientProcess>& proc,
+                                       const occ::handle<Interface_InterfaceModel>&  amodel) const
 {
   Transfer_TransferIterator list = proc->CompleteResult();
   Interface_EntityIterator  iter = Entities(list);
   amodel->GetFromTransfer(iter);
 }
 
-void Transfer_TransferInput::FillModel(const Handle(Transfer_TransientProcess)& proc,
-                                       const Handle(Interface_InterfaceModel)&  amodel,
-                                       const Handle(Interface_Protocol)&        proto,
-                                       const Standard_Boolean                   roots) const
+void Transfer_TransferInput::FillModel(const occ::handle<Transfer_TransientProcess>& proc,
+                                       const occ::handle<Interface_InterfaceModel>&  amodel,
+                                       const occ::handle<Interface_Protocol>&        proto,
+                                       const bool                                    roots) const
 {
   Transfer_TransferIterator list;
   if (roots)
@@ -88,18 +91,18 @@ void Transfer_TransferInput::FillModel(const Handle(Transfer_TransientProcess)& 
     amodel->AddWithRefs(iter.Value(), proto);
 }
 
-void Transfer_TransferInput::FillModel(const Handle(Transfer_FinderProcess)&   proc,
-                                       const Handle(Interface_InterfaceModel)& amodel) const
+void Transfer_TransferInput::FillModel(const occ::handle<Transfer_FinderProcess>&   proc,
+                                       const occ::handle<Interface_InterfaceModel>& amodel) const
 {
   Transfer_TransferIterator list = proc->CompleteResult();
   Interface_EntityIterator  iter = Entities(list);
   amodel->GetFromTransfer(iter);
 }
 
-void Transfer_TransferInput::FillModel(const Handle(Transfer_FinderProcess)&   proc,
-                                       const Handle(Interface_InterfaceModel)& amodel,
-                                       const Handle(Interface_Protocol)&       proto,
-                                       const Standard_Boolean                  roots) const
+void Transfer_TransferInput::FillModel(const occ::handle<Transfer_FinderProcess>&   proc,
+                                       const occ::handle<Interface_InterfaceModel>& amodel,
+                                       const occ::handle<Interface_Protocol>&       proto,
+                                       const bool                                   roots) const
 {
   Transfer_TransferIterator list;
   if (roots)

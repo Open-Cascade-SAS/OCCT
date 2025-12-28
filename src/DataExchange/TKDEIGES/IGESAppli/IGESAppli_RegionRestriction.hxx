@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESAppli_RegionRestriction;
-DEFINE_STANDARD_HANDLE(IGESAppli_RegionRestriction, IGESData_IGESEntity)
-
 //! defines RegionRestriction, Type <406> Form <2>
 //! in package IGESAppli
 //! Defines regions to set an application's restriction
@@ -41,34 +38,33 @@ public:
   //! - aViasRest  : Electrical Vias restriction
   //! - aCompoRest : Electrical components restriction
   //! - aCktRest   : Electrical circuitry restriction
-  Standard_EXPORT void Init(const Standard_Integer nbPropVal,
-                            const Standard_Integer aViasRest,
-                            const Standard_Integer aCompoRest,
-                            const Standard_Integer aCktRest);
+  Standard_EXPORT void Init(const int nbPropVal,
+                            const int aViasRest,
+                            const int aCompoRest,
+                            const int aCktRest);
 
   //! is always 3
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the Electrical vias restriction
   //! is 0, 1 or 2
-  Standard_EXPORT Standard_Integer ElectricalViasRestriction() const;
+  Standard_EXPORT int ElectricalViasRestriction() const;
 
   //! returns the Electrical components restriction
   //! is 0, 1 or 2
-  Standard_EXPORT Standard_Integer ElectricalComponentRestriction() const;
+  Standard_EXPORT int ElectricalComponentRestriction() const;
 
   //! returns the Electrical circuitry restriction
   //! is 0, 1 or 2
-  Standard_EXPORT Standard_Integer ElectricalCktRestriction() const;
+  Standard_EXPORT int ElectricalCktRestriction() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_RegionRestriction, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Integer theElectViasRestrict;
-  Standard_Integer theElectCompRestrict;
-  Standard_Integer theElectCktRestrict;
+  int theNbPropertyValues;
+  int theElectViasRestrict;
+  int theElectCompRestrict;
+  int theElectCktRestrict;
 };
 
 #endif // _IGESAppli_RegionRestriction_HeaderFile

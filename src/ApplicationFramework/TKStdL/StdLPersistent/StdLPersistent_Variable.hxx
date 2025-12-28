@@ -24,7 +24,7 @@ class StdLPersistent_Variable : public StdObjMgt_Attribute<TDataStd_Variable>
 public:
   //! Empty constructor.
   StdLPersistent_Variable()
-      : myIsConstant(Standard_False)
+      : myIsConstant(false)
   {
   }
 
@@ -44,10 +44,10 @@ public:
   }
 
   //! Returns persistent type name
-  inline Standard_CString PName() const { return "PDataStd_Variable"; }
+  inline const char* PName() const { return "PDataStd_Variable"; }
 
   //! Import transient attribute from the persistent data.
-  void Import(const Handle(TDataStd_Variable)& theAttribute) const
+  void Import(const occ::handle<TDataStd_Variable>& theAttribute) const
   {
     theAttribute->Constant(myIsConstant);
     if (myUnit)
@@ -55,7 +55,7 @@ public:
   }
 
 private:
-  Standard_Boolean                      myIsConstant;
+  bool                                  myIsConstant;
   Handle(StdLPersistent_HString::Ascii) myUnit;
 };
 

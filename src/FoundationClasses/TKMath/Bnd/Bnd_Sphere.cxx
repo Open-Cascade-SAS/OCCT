@@ -16,57 +16,55 @@
 Bnd_Sphere::Bnd_Sphere()
     : myCenter(0., 0., 0.),
       myRadius(0.),
-      myIsValid(Standard_False),
+      myIsValid(false),
       myU(0),
       myV(0)
 {
 }
 
-Bnd_Sphere::Bnd_Sphere(const gp_XYZ&          theCenter,
-                       const Standard_Real    theRadius,
-                       const Standard_Integer theU,
-                       const Standard_Integer theV)
+Bnd_Sphere::Bnd_Sphere(const gp_XYZ& theCenter,
+                       const double  theRadius,
+                       const int     theU,
+                       const int     theV)
     : myCenter(theCenter),
       myRadius(theRadius),
-      myIsValid(Standard_False),
+      myIsValid(false),
       myU(theU),
       myV(theV)
 {
 }
 
-void Bnd_Sphere::SquareDistances(const gp_XYZ&  theXYZ,
-                                 Standard_Real& theMin,
-                                 Standard_Real& theMax) const
+void Bnd_Sphere::SquareDistances(const gp_XYZ& theXYZ, double& theMin, double& theMax) const
 {
   theMax = (theXYZ - myCenter).SquareModulus();
   theMin = (theMax - myRadius < 0 ? 0.0 : theMax - myRadius * myRadius);
   theMax += myRadius * myRadius;
 }
 
-void Bnd_Sphere::Distances(const gp_XYZ& theXYZ, Standard_Real& theMin, Standard_Real& theMax) const
+void Bnd_Sphere::Distances(const gp_XYZ& theXYZ, double& theMin, double& theMax) const
 {
   theMax = (theXYZ - myCenter).Modulus();
   theMin = (theMax - myRadius < 0 ? 0.0 : theMax - myRadius);
   theMax += myRadius;
 }
 
-Standard_Boolean Bnd_Sphere::Project(const gp_XYZ&     theNode,
-                                     gp_XYZ&           theProjNode,
-                                     Standard_Real&    theDist,
-                                     Standard_Boolean& theInside) const
+bool Bnd_Sphere::Project(const gp_XYZ& theNode,
+                         gp_XYZ&       theProjNode,
+                         double&       theDist,
+                         bool&         theInside) const
 {
   theProjNode = myCenter;
   theDist     = (theNode - theProjNode).Modulus();
-  theInside   = Standard_True;
-  return Standard_True;
+  theInside   = true;
+  return true;
 }
 
-Standard_Real Bnd_Sphere::Distance(const gp_XYZ& theNode) const
+double Bnd_Sphere::Distance(const gp_XYZ& theNode) const
 {
   return (theNode - myCenter).Modulus();
 }
 
-Standard_Real Bnd_Sphere::SquareDistance(const gp_XYZ& theNode) const
+double Bnd_Sphere::SquareDistance(const gp_XYZ& theNode) const
 {
   return (theNode - myCenter).SquareModulus();
 }
@@ -80,7 +78,7 @@ void Bnd_Sphere::Add(const Bnd_Sphere& theOther)
     return;
   }
 
-  const Standard_Real aDist = (myCenter - theOther.myCenter).Modulus();
+  const double aDist = (myCenter - theOther.myCenter).Modulus();
   if (myRadius + aDist <= theOther.myRadius)
   {
     // the other sphere is larger and encloses this
@@ -92,31 +90,31 @@ void Bnd_Sphere::Add(const Bnd_Sphere& theOther)
     return; // this sphere encloses other
 
   // expansion
-  const Standard_Real dfR          = (aDist + myRadius + theOther.myRadius) * 0.5;
-  const Standard_Real aParamOnDiam = (dfR - myRadius) / aDist;
-  myCenter  = myCenter * (1.0 - aParamOnDiam) + theOther.myCenter * aParamOnDiam;
-  myRadius  = dfR;
-  myIsValid = Standard_False;
+  const double dfR          = (aDist + myRadius + theOther.myRadius) * 0.5;
+  const double aParamOnDiam = (dfR - myRadius) / aDist;
+  myCenter                  = myCenter * (1.0 - aParamOnDiam) + theOther.myCenter * aParamOnDiam;
+  myRadius                  = dfR;
+  myIsValid                 = false;
 }
 
-Standard_Boolean Bnd_Sphere::IsOut(const Bnd_Sphere& theOther) const
+bool Bnd_Sphere::IsOut(const Bnd_Sphere& theOther) const
 {
   return (myCenter - theOther.myCenter).SquareModulus()
          > (myRadius + theOther.myRadius) * (myRadius + theOther.myRadius);
 }
 
-Standard_Boolean Bnd_Sphere::IsOut(const gp_XYZ& theXYZ, Standard_Real& theMaxDist) const
+bool Bnd_Sphere::IsOut(const gp_XYZ& theXYZ, double& theMaxDist) const
 {
-  Standard_Real aCurMinDist, aCurMaxDist;
+  double aCurMinDist, aCurMaxDist;
   Distances(theXYZ, aCurMinDist, aCurMaxDist);
   if (aCurMinDist > theMaxDist)
-    return Standard_True;
+    return true;
   if (myIsValid && aCurMaxDist < theMaxDist)
     theMaxDist = aCurMaxDist;
-  return Standard_False;
+  return false;
 }
 
-Standard_Real Bnd_Sphere::SquareExtent() const
+double Bnd_Sphere::SquareExtent() const
 {
   return 4 * myRadius * myRadius;
 }

@@ -19,9 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductContext, StepBasic_ApplicationContex
 
 StepBasic_ProductContext::StepBasic_ProductContext() {}
 
-void StepBasic_ProductContext::Init(const Handle(TCollection_HAsciiString)&     aName,
-                                    const Handle(StepBasic_ApplicationContext)& aFrameOfReference,
-                                    const Handle(TCollection_HAsciiString)&     aDisciplineType)
+void StepBasic_ProductContext::Init(
+  const occ::handle<TCollection_HAsciiString>&     aName,
+  const occ::handle<StepBasic_ApplicationContext>& aFrameOfReference,
+  const occ::handle<TCollection_HAsciiString>&     aDisciplineType)
 {
   // --- classe own fields ---
   disciplineType = aDisciplineType;
@@ -30,12 +31,12 @@ void StepBasic_ProductContext::Init(const Handle(TCollection_HAsciiString)&     
 }
 
 void StepBasic_ProductContext::SetDisciplineType(
-  const Handle(TCollection_HAsciiString)& aDisciplineType)
+  const occ::handle<TCollection_HAsciiString>& aDisciplineType)
 {
   disciplineType = aDisciplineType;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ProductContext::DisciplineType() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductContext::DisciplineType() const
 {
   return disciplineType;
 }

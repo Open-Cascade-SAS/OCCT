@@ -18,7 +18,7 @@
 #define _GeomInt_LineConstructor_HeaderFile
 
 #include <GeomAdaptor_Surface.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 
 class Adaptor3d_TopolTool;
 class IntPatch_Line;
@@ -34,34 +34,34 @@ public:
 
   //! Initializes me by two surfaces and corresponding
   //! tools which represent boundaries of surfaces
-  void Load(const Handle(Adaptor3d_TopolTool)& D1,
-            const Handle(Adaptor3d_TopolTool)& D2,
-            const Handle(GeomAdaptor_Surface)& S1,
-            const Handle(GeomAdaptor_Surface)& S2);
+  void Load(const occ::handle<Adaptor3d_TopolTool>& D1,
+            const occ::handle<Adaptor3d_TopolTool>& D2,
+            const occ::handle<GeomAdaptor_Surface>& S1,
+            const occ::handle<GeomAdaptor_Surface>& S2);
 
   //! Splits line
-  Standard_EXPORT void Perform(const Handle(IntPatch_Line)& L);
+  Standard_EXPORT void Perform(const occ::handle<IntPatch_Line>& L);
 
   //! Returns True if splitting was successful
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns number of splits
-  Standard_Integer NbParts() const;
+  int NbParts() const;
 
   //! Return first and last parameters
   //! for given index of split
-  void Part(const Standard_Integer I, Standard_Real& WFirst, Standard_Real& WLast) const;
+  void Part(const int I, double& WFirst, double& WLast) const;
 
 protected:
-  Standard_EXPORT void TreatCircle(const Handle(IntPatch_Line)& aLine, const Standard_Real aTol);
+  Standard_EXPORT void TreatCircle(const occ::handle<IntPatch_Line>& aLine, const double aTol);
 
 private:
-  Standard_Boolean            done;
-  TColStd_SequenceOfReal      seqp;
-  Handle(Adaptor3d_TopolTool) myDom1;
-  Handle(Adaptor3d_TopolTool) myDom2;
-  Handle(GeomAdaptor_Surface) myHS1;
-  Handle(GeomAdaptor_Surface) myHS2;
+  bool                             done;
+  NCollection_Sequence<double>     seqp;
+  occ::handle<Adaptor3d_TopolTool> myDom1;
+  occ::handle<Adaptor3d_TopolTool> myDom2;
+  occ::handle<GeomAdaptor_Surface> myHS1;
+  occ::handle<GeomAdaptor_Surface> myHS2;
 };
 
 #include <GeomInt_LineConstructor.lxx>

@@ -20,7 +20,6 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 //! @brief Batch evaluator for offset curve grid points.
 //!
@@ -42,7 +41,7 @@ public:
 
   //! Constructor with geometry.
   //! @param theOffset the offset curve geometry to evaluate
-  GeomGridEval_OffsetCurve(const Handle(Geom_OffsetCurve)& theOffset)
+  GeomGridEval_OffsetCurve(const occ::handle<Geom_OffsetCurve>& theOffset)
       : myGeom(theOffset),
         myOffset(0.0)
   {
@@ -61,28 +60,28 @@ public:
   GeomGridEval_OffsetCurve& operator=(GeomGridEval_OffsetCurve&&)      = delete;
 
   //! Returns the geometry handle.
-  const Handle(Geom_OffsetCurve)& Geometry() const { return myGeom; }
+  const occ::handle<Geom_OffsetCurve>& Geometry() const { return myGeom; }
 
   //! Evaluate all grid points.
   //! @param theParams array of parameter values
   //! @return array of evaluated points (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first derivative.
   //! @param theParams array of parameter values
   //! @return array of CurveD1 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first and second derivatives.
   //! @param theParams array of parameter values
   //! @return array of CurveD2 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with derivatives up to third order.
   //! Uses GeomAdaptor_Curve::D3 for evaluation.
@@ -90,7 +89,7 @@ public:
   //! @return array of CurveD3 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate Nth derivative at all grid points.
   //! For orders 1-3, reuses EvaluateGridD1/D2/D3.
@@ -98,14 +97,15 @@ public:
   //! @param theParams array of parameter values
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theParams,
-                                                            int                         theN) const;
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theParams,
+    int                               theN) const;
 
 private:
-  Handle(Geom_OffsetCurve) myGeom;
-  Handle(Geom_Curve)       myBasis;
-  double                   myOffset;
-  gp_Dir                   myDirection;
+  occ::handle<Geom_OffsetCurve> myGeom;
+  occ::handle<Geom_Curve>       myBasis;
+  double                        myOffset;
+  gp_Dir                        myDirection;
 };
 
 #endif // _GeomGridEval_OffsetCurve_HeaderFile

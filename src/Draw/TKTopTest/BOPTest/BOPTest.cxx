@@ -34,10 +34,10 @@
 
 void BOPTest::AllCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   //
   BOPTest::BOPCommands(theCommands);
   BOPTest::CheckCommands(theCommands);
@@ -59,11 +59,11 @@ void BOPTest::AllCommands(Draw_Interpretor& theCommands)
 
 void BOPTest::Factory(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean FactoryDone = Standard_False;
+  static bool FactoryDone = false;
   if (FactoryDone)
     return;
 
-  FactoryDone = Standard_True;
+  FactoryDone = true;
 
   DBRep::BasicCommands(theCommands);
   GeomliteTest::AllCommands(theCommands);
@@ -79,7 +79,7 @@ DPLUGIN(BOPTest)
 
 //=================================================================================================
 
-void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
+void BOPTest::ReportAlerts(const occ::handle<Message_Report>& theReport)
 {
   // first report warnings, then errors
   Message_Gravity            anAlertTypes[2] = {Message_Warning, Message_Fail};
@@ -87,12 +87,13 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
   for (int iGravity = 0; iGravity < 2; iGravity++)
   {
     // report shapes for the same type of alert together
-    NCollection_Map<Handle(Standard_Transient)> aPassedTypes;
-    const Message_ListOfAlert& aList = theReport->GetAlerts(anAlertTypes[iGravity]);
-    for (Message_ListOfAlert::Iterator aIt(aList); aIt.More(); aIt.Next())
+    NCollection_Map<occ::handle<Standard_Transient>>    aPassedTypes;
+    const NCollection_List<occ::handle<Message_Alert>>& aList =
+      theReport->GetAlerts(anAlertTypes[iGravity]);
+    for (NCollection_List<occ::handle<Message_Alert>>::Iterator aIt(aList); aIt.More(); aIt.Next())
     {
       // check that this type of warnings has not yet been processed
-      const Handle(Standard_Type)& aType = aIt.Value()->DynamicType();
+      const occ::handle<Standard_Type>& aType = aIt.Value()->DynamicType();
       if (!aPassedTypes.Add(aType))
         continue;
 
@@ -104,11 +105,12 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
       if (BOPTest_Objects::DrawWarnShapes())
       {
         TCollection_AsciiString aShapeList;
-        Standard_Integer        aNbShapes = 0;
-        for (Message_ListOfAlert::Iterator aIt2(aIt); aIt2.More(); aIt2.Next())
+        int                     aNbShapes = 0;
+        for (NCollection_List<occ::handle<Message_Alert>>::Iterator aIt2(aIt); aIt2.More();
+             aIt2.Next())
         {
-          Handle(TopoDS_AlertWithShape) aShapeAlert =
-            Handle(TopoDS_AlertWithShape)::DownCast(aIt2.Value());
+          occ::handle<TopoDS_AlertWithShape> aShapeAlert =
+            occ::down_cast<TopoDS_AlertWithShape>(aIt2.Value());
 
           if (!aShapeAlert.IsNull() && (aType == aShapeAlert->DynamicType())
               && !aShapeAlert->GetShape().IsNull())
@@ -135,7 +137,7 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
 
 //=================================================================================================
 
-BOPAlgo_Operation BOPTest::GetOperationType(const Standard_CString theOp)
+BOPAlgo_Operation BOPTest::GetOperationType(const char* theOp)
 {
   TCollection_AsciiString anOp(theOp);
   anOp.LowerCase();
@@ -143,7 +145,7 @@ BOPAlgo_Operation BOPTest::GetOperationType(const Standard_CString theOp)
   if (anOp.IsIntegerValue())
   {
     // Check if the given value satisfies the enumeration.
-    Standard_Integer iOp = anOp.IntegerValue();
+    int iOp = anOp.IntegerValue();
     if (iOp >= 0 && iOp <= 4)
     {
       return static_cast<BOPAlgo_Operation>(iOp);

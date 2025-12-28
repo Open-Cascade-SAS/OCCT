@@ -31,9 +31,6 @@ class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
 
-class Geom_Line;
-DEFINE_STANDARD_HANDLE(Geom_Line, Geom_Curve)
-
 //! Describes an infinite line.
 //! A line is defined and positioned in space with an axis
 //! (gp_Ax1 object) which gives it an origin and a unit vector.
@@ -81,65 +78,61 @@ public:
 
   //! Changes the orientation of this line. As a result, the
   //! unit vector of the positioning axis of this line is reversed.
-  Standard_EXPORT void Reverse() Standard_OVERRIDE;
+  Standard_EXPORT void Reverse() override;
 
   //! Computes the parameter on the reversed line for the
   //! point of parameter U on this line.
   //! For a line, the returned value is -U.
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT double ReversedParameter(const double U) const override;
 
   //! Returns the value of the first parameter of this
-  //! line. This is Standard_Real::RealFirst().
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+  //! line. This is double::RealFirst().
+  Standard_EXPORT double FirstParameter() const override;
 
   //! Returns the value of the last parameter of this
-  //! line. This is Standard_Real::RealLast().
-  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
+  //! line. This is double::RealLast().
+  Standard_EXPORT double LastParameter() const override;
 
   //! returns False
-  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsClosed() const override;
 
   //! returns False
-  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsPeriodic() const override;
 
   //! Returns GeomAbs_CN, which is the global continuity of any line.
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! returns True.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT bool IsCN(const int N) const override;
 
   //! Returns in P the point of parameter U.
   //! P (U) = O + U * Dir where O is the "Location" point of the
   //! line and Dir the direction of the line.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
 
   //! Returns the point P of parameter u and the first derivative V1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2. V2 is a vector with null magnitude
   //! for a line.
-  Standard_EXPORT void D2(const Standard_Real U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2) const Standard_OVERRIDE;
+  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
   //! V2 and V3 are vectors with null magnitude for a line.
-  Standard_EXPORT void D3(const Standard_Real U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2,
-                          gp_Vec&             V3) const Standard_OVERRIDE;
+  Standard_EXPORT void D3(const double U,
+                          gp_Pnt&      P,
+                          gp_Vec&      V1,
+                          gp_Vec&      V2,
+                          gp_Vec&      V3) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const Standard_Real    U,
-                            const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
 
   //! Applies the transformation T to this line.
-  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) override;
 
   //! Returns the parameter on the transformed curve for
   //! the transform of the point of parameter U on <me>.
@@ -151,9 +144,8 @@ public:
   //! me->Value(U).Transformed(T)
   //!
   //! This methods returns <U> * T.ScaleFactor()
-  Standard_EXPORT virtual Standard_Real TransformedParameter(const Standard_Real U,
-                                                             const gp_Trsf&      T) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double TransformedParameter(const double   U,
+                                                      const gp_Trsf& T) const override;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -166,19 +158,17 @@ public:
   //! Value(U).Transformed(T)
   //!
   //! This methods returns T.ScaleFactor()
-  Standard_EXPORT virtual Standard_Real ParametricTransformation(const gp_Trsf& T) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Creates a new object which is a copy of this line.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Line, Geom_Curve)
 
-protected:
 private:
   gp_Ax1 pos;
 };

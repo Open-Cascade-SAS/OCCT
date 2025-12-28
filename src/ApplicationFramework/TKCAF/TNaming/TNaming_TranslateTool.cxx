@@ -21,11 +21,11 @@
 #include <BRep_CurveOnSurface.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListOfPointRepresentation.hxx>
+#include <BRep_PointRepresentation.hxx>
+#include <NCollection_List.hxx>
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
 #include <BRep_PointOnSurface.hxx>
-#include <BRep_PointRepresentation.hxx>
 #include <BRep_Polygon3D.hxx>
 #include <BRep_PolygonOnClosedSurface.hxx>
 #include <BRep_PolygonOnClosedTriangulation.hxx>
@@ -126,12 +126,14 @@ void TNaming_TranslateTool::MakeCompound(TopoDS_Shape& S) const
 // Update methods
 //=================================================================================================
 
-void TNaming_TranslateTool::UpdateVertex(const TopoDS_Shape&                         S1,
-                                         TopoDS_Shape&                               S2,
-                                         TColStd_IndexedDataMapOfTransientTransient& aMap) const
+void TNaming_TranslateTool::UpdateVertex(
+  const TopoDS_Shape& S1,
+  TopoDS_Shape&       S2,
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>&
+    aMap) const
 {
-  const Handle(BRep_TVertex)& TTV1 = *((Handle(BRep_TVertex)*)&(S1.TShape()));
-  const Handle(BRep_TVertex)& TTV2 = *((Handle(BRep_TVertex)*)&(S2.TShape()));
+  const occ::handle<BRep_TVertex>& TTV1 = *((occ::handle<BRep_TVertex>*)&(S1.TShape()));
+  const occ::handle<BRep_TVertex>& TTV2 = *((occ::handle<BRep_TVertex>*)&(S2.TShape()));
 
   // Point
   TTV2->Pnt(TTV1->Pnt());
@@ -140,20 +142,20 @@ void TNaming_TranslateTool::UpdateVertex(const TopoDS_Shape&                    
   TTV2->Tolerance(TTV1->Tolerance());
 
   // Representations
-  BRep_ListIteratorOfListOfPointRepresentation itpr(TTV1->Points());
+  NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr(TTV1->Points());
   //  std::cout << "Vertex List Extent = "<<  TTV1->Points().Extent()<< std::endl;//  == 0 ???
-  BRep_ListOfPointRepresentation& lpr = TTV2->ChangePoints();
+  NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr = TTV2->ChangePoints();
   lpr.Clear();
 
   while (itpr.More())
   {
 
-    const Handle(BRep_PointRepresentation)& PR1 = itpr.Value();
-    Handle(BRep_PointRepresentation)        PR2;
+    const occ::handle<BRep_PointRepresentation>& PR1 = itpr.Value();
+    occ::handle<BRep_PointRepresentation>        PR2;
 
     if (PR1->IsPointOnCurve())
     { // pointOnCurve (1)
-      Handle(BRep_PointOnCurve) OC =
+      occ::handle<BRep_PointOnCurve> OC =
         new BRep_PointOnCurve(PR1->Parameter(), // the same geometry
                               PR1->Curve(),     // the same geometry
                               TNaming_CopyShape::Translate(PR1->Location(), aMap));
@@ -163,7 +165,7 @@ void TNaming_TranslateTool::UpdateVertex(const TopoDS_Shape&                    
     else if (PR1->IsPointOnCurveOnSurface())
     { // PointOnCurveOnSurface (2)
 
-      Handle(BRep_PointOnCurveOnSurface) OCS =
+      occ::handle<BRep_PointOnCurveOnSurface> OCS =
         new BRep_PointOnCurveOnSurface(PR1->Parameter(),
                                        PR1->PCurve(),
                                        PR1->Surface(),
@@ -174,7 +176,7 @@ void TNaming_TranslateTool::UpdateVertex(const TopoDS_Shape&                    
     else if (PR1->IsPointOnSurface())
     { // PointOnSurface (3)
 
-      Handle(BRep_PointOnSurface) OS =
+      occ::handle<BRep_PointOnSurface> OS =
         new BRep_PointOnSurface(PR1->Parameter(),
                                 PR1->Parameter2(),
                                 PR1->Surface(),
@@ -195,12 +197,14 @@ void TNaming_TranslateTool::UpdateVertex(const TopoDS_Shape&                    
 // purpose  : Transient->Transient
 //=======================================================================
 
-void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                         S1,
-                                       TopoDS_Shape&                               S2,
-                                       TColStd_IndexedDataMapOfTransientTransient& aMap) const
+void TNaming_TranslateTool::UpdateEdge(
+  const TopoDS_Shape& S1,
+  TopoDS_Shape&       S2,
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>&
+    aMap) const
 {
-  const Handle(BRep_TEdge)& TTE1 = *((Handle(BRep_TEdge)*)&(S1.TShape()));
-  const Handle(BRep_TEdge)& TTE2 = *((Handle(BRep_TEdge)*)&(S2.TShape()));
+  const occ::handle<BRep_TEdge>& TTE1 = *((occ::handle<BRep_TEdge>*)&(S1.TShape()));
+  const occ::handle<BRep_TEdge>& TTE2 = *((occ::handle<BRep_TEdge>*)&(S2.TShape()));
   // tolerance TopLoc_Location
   TTE2->Tolerance(TTE1->Tolerance());
 
@@ -214,19 +218,19 @@ void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                      
   TTE2->Degenerated(TTE1->Degenerated());
 
   // Representations
-  BRep_ListIteratorOfListOfCurveRepresentation itcr(TTE1->Curves());
-  BRep_ListOfCurveRepresentation&              lcr = TTE2->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TTE1->Curves());
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          lcr = TTE2->ChangeCurves();
   lcr.Clear();
 
-  Handle(BRep_GCurve) GC;
-  Standard_Real       f, l;
+  occ::handle<BRep_GCurve> GC;
+  double                   f, l;
   while (itcr.More())
   {
 
-    const Handle(BRep_CurveRepresentation)& CR = itcr.Value();
-    Handle(BRep_CurveRepresentation)        CR2;
+    const occ::handle<BRep_CurveRepresentation>& CR = itcr.Value();
+    occ::handle<BRep_CurveRepresentation>        CR2;
 
-    GC = Handle(BRep_GCurve)::DownCast(CR);
+    GC = occ::down_cast<BRep_GCurve>(CR);
     if (!GC.IsNull())
     { // (1)
       GC->Range(f, l);
@@ -234,7 +238,7 @@ void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                      
       if (CR->IsCurve3D())
       {
 
-        CR2 = (Handle(BRep_Curve3D)::DownCast(GC))->Copy();
+        CR2 = (occ::down_cast<BRep_Curve3D>(GC))->Copy();
       }
 
       // CurveRepresentation is CurveOnSurface - (1b)
@@ -245,24 +249,24 @@ void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                      
         { // -(1b1) -if not closed surface
 
           // CurveRepresentation is a PBRep_CurveOnSurface
-          CR2 = (Handle(BRep_CurveOnSurface)::DownCast(GC))->Copy();
+          CR2 = (occ::down_cast<BRep_CurveOnSurface>(GC))->Copy();
         }
 
         else
         {
           // CurveRepresentation is CurveOnClosedSurface -(1b2)
-          CR2 = (Handle(BRep_CurveOnClosedSurface)::DownCast(GC))->Copy();
+          CR2 = (occ::down_cast<BRep_CurveOnClosedSurface>(GC))->Copy();
         }
       }
 
-      (Handle(BRep_GCurve)::DownCast(CR2))->SetRange(f, l);
+      (occ::down_cast<BRep_GCurve>(CR2))->SetRange(f, l);
     }
 
     // CurveRepresentation is CurveOn2Surfaces (2:)
     else if (CR->IsRegularity())
     {
 
-      CR2                = (Handle(BRep_CurveOn2Surfaces)::DownCast(CR))->Copy();
+      CR2                = (occ::down_cast<BRep_CurveOn2Surfaces>(CR))->Copy();
       TopLoc_Location L2 = TNaming_CopyShape::Translate(CR->Location2(), aMap);
       CR2->Location(L2);
     }
@@ -274,7 +278,7 @@ void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                      
     else if (CR->IsPolygon3D())
     {
 
-      CR2 = (Handle(BRep_Polygon3D)::DownCast(CR))->Copy();
+      CR2 = (occ::down_cast<BRep_Polygon3D>(CR))->Copy();
     }
 
     // CurveRepresentation is PolygonOnSurface - (3b)
@@ -285,14 +289,14 @@ void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                      
       if (CR->IsPolygonOnClosedSurface())
       {
 
-        CR2 = (Handle(BRep_PolygonOnClosedSurface)::DownCast(CR))->Copy();
+        CR2 = (occ::down_cast<BRep_PolygonOnClosedSurface>(CR))->Copy();
       }
 
       // CurveRepresentation is PolygonOnSurface -  (3b2)
       else
       {
 
-        CR2 = (Handle(BRep_PolygonOnSurface)::DownCast(CR))->Copy();
+        CR2 = (occ::down_cast<BRep_PolygonOnSurface>(CR))->Copy();
       }
     }
 
@@ -304,14 +308,14 @@ void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                      
       if (CR->IsPolygonOnClosedTriangulation())
       { // (3c1)
 
-        CR2 = (Handle(BRep_PolygonOnClosedTriangulation)::DownCast(CR))->Copy();
+        CR2 = (occ::down_cast<BRep_PolygonOnClosedTriangulation>(CR))->Copy();
       }
 
       // CurveRepresentation is PolygonOnTriangulation - (3c2)
       else
       {
 
-        CR2 = (Handle(BRep_PolygonOnTriangulation)::DownCast(CR))->Copy();
+        CR2 = (occ::down_cast<BRep_PolygonOnTriangulation>(CR))->Copy();
       }
     }
     //    }
@@ -340,12 +344,14 @@ void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                      
 // purpose  : Transient->Transient
 //=======================================================================
 
-void TNaming_TranslateTool::UpdateFace(const TopoDS_Shape&                         S1,
-                                       TopoDS_Shape&                               S2,
-                                       TColStd_IndexedDataMapOfTransientTransient& aMap) const
+void TNaming_TranslateTool::UpdateFace(
+  const TopoDS_Shape& S1,
+  TopoDS_Shape&       S2,
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>&
+    aMap) const
 {
-  const Handle(BRep_TFace)& TTF1 = *((Handle(BRep_TFace)*)&(S1.TShape()));
-  const Handle(BRep_TFace)& TTF2 = *((Handle(BRep_TFace)*)&(S2.TShape()));
+  const occ::handle<BRep_TFace>& TTF1 = *((occ::handle<BRep_TFace>*)&(S1.TShape()));
+  const occ::handle<BRep_TFace>& TTF2 = *((occ::handle<BRep_TFace>*)&(S2.TShape()));
 
   // natural restriction
   TTF2->NaturalRestriction(TTF1->NaturalRestriction());

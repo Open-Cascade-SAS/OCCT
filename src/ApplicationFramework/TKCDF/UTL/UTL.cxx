@@ -29,7 +29,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
 
-TCollection_ExtendedString UTL::xgetenv(const Standard_CString aCString)
+TCollection_ExtendedString UTL::xgetenv(const char* aCString)
 {
   TCollection_ExtendedString x;
   OSD_Environment            theEnv(aCString);
@@ -49,14 +49,15 @@ TCollection_ExtendedString UTL::Extension(const TCollection_ExtendedString& aFil
   return TCollection_ExtendedString(theExtension);
 }
 
-Storage_Error UTL::OpenFile(const Handle(Storage_BaseDriver)& aDriver,
-                            const TCollection_ExtendedString& aFileName,
-                            const Storage_OpenMode            aMode)
+Storage_Error UTL::OpenFile(const occ::handle<Storage_BaseDriver>& aDriver,
+                            const TCollection_ExtendedString&      aFileName,
+                            const Storage_OpenMode                 aMode)
 {
   return aDriver->Open(TCollection_AsciiString(aFileName), aMode);
 }
 
-void UTL::AddToUserInfo(const Handle(Storage_Data)& aData, const TCollection_ExtendedString& anInfo)
+void UTL::AddToUserInfo(const occ::handle<Storage_Data>&  aData,
+                        const TCollection_ExtendedString& anInfo)
 {
   aData->AddToUserInfo(TCollection_AsciiString(anInfo));
 }
@@ -109,34 +110,33 @@ Standard_GUID UTL::GUID(const TCollection_ExtendedString& anXString)
   return Standard_GUID(TCollection_AsciiString(anXString, '?').ToCString());
 }
 
-Standard_Boolean UTL::Find(const Handle(Resource_Manager)&   aResourceManager,
-                           const TCollection_ExtendedString& aResourceName)
+bool UTL::Find(const occ::handle<Resource_Manager>& aResourceManager,
+               const TCollection_ExtendedString&    aResourceName)
 {
   return aResourceManager->Find(TCollection_AsciiString(aResourceName).ToCString());
 }
 
-TCollection_ExtendedString UTL::Value(const Handle(Resource_Manager)&   aResourceManager,
-                                      const TCollection_ExtendedString& aResourceName)
+TCollection_ExtendedString UTL::Value(const occ::handle<Resource_Manager>& aResourceManager,
+                                      const TCollection_ExtendedString&    aResourceName)
 {
   TCollection_AsciiString aResourceNameU(aResourceName);
-  return TCollection_ExtendedString(aResourceManager->Value(aResourceNameU.ToCString()),
-                                    Standard_True);
+  return TCollection_ExtendedString(aResourceManager->Value(aResourceNameU.ToCString()), true);
 }
 
-Standard_Integer UTL::IntegerValue(const TCollection_ExtendedString& anExtendedString)
+int UTL::IntegerValue(const TCollection_ExtendedString& anExtendedString)
 {
   TCollection_AsciiString a(anExtendedString);
   return a.IntegerValue();
 }
 
-Standard_CString UTL::CString(const TCollection_ExtendedString& anExtendedString)
+const char* UTL::CString(const TCollection_ExtendedString& anExtendedString)
 {
   static TCollection_AsciiString theValue;
   theValue = TCollection_AsciiString(anExtendedString);
   return theValue.ToCString();
 }
 
-Standard_Boolean UTL::IsReadOnly(const TCollection_ExtendedString& aFileName)
+bool UTL::IsReadOnly(const TCollection_ExtendedString& aFileName)
 {
   switch (OSD_File(UTL::Path(aFileName)).Protection().User())
   {
@@ -147,8 +147,8 @@ Standard_Boolean UTL::IsReadOnly(const TCollection_ExtendedString& aFileName)
     case OSD_RWD:
     case OSD_WXD:
     case OSD_RWXD:
-      return Standard_False;
+      return false;
     default:
-      return Standard_True;
+      return true;
   }
 }

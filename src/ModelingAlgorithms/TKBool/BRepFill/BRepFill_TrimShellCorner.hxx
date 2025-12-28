@@ -23,10 +23,13 @@
 #include <BRepFill_TransitionStyle.hxx>
 #include <gp_Ax2.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_HArray2OfShape.hxx>
-#include <TopTools_HArray1OfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BOPDS_PDS.hxx>
 
 //! Trims sets of faces in the corner to make proper parts of pipe
@@ -41,58 +44,59 @@ public:
   //! theIntersectPointCrossDirection : prev path direction at the origin point of theAxeOfBisPlane
   //! cross next path direction at the origin point of theAxeOfBisPlane. used when EE has more than
   //! one vertices
-  Standard_EXPORT BRepFill_TrimShellCorner(const Handle(TopTools_HArray2OfShape)& theFaces,
-                                           const BRepFill_TransitionStyle         theTransition,
-                                           const gp_Ax2&                          theAxeOfBisPlane,
-                                           const gp_Vec& theIntPointCrossDir);
+  Standard_EXPORT BRepFill_TrimShellCorner(
+    const occ::handle<NCollection_HArray2<TopoDS_Shape>>& theFaces,
+    const BRepFill_TransitionStyle                        theTransition,
+    const gp_Ax2&                                         theAxeOfBisPlane,
+    const gp_Vec&                                         theIntPointCrossDir);
 
-  Standard_EXPORT void AddBounds(const Handle(TopTools_HArray2OfShape)& Bounds);
+  Standard_EXPORT void AddBounds(const occ::handle<NCollection_HArray2<TopoDS_Shape>>& Bounds);
 
-  Standard_EXPORT void AddUEdges(const Handle(TopTools_HArray2OfShape)& theUEdges);
+  Standard_EXPORT void AddUEdges(const occ::handle<NCollection_HArray2<TopoDS_Shape>>& theUEdges);
 
-  Standard_EXPORT void AddVEdges(const Handle(TopTools_HArray2OfShape)& theVEdges,
-                                 const Standard_Integer                 theIndex);
+  Standard_EXPORT void AddVEdges(const occ::handle<NCollection_HArray2<TopoDS_Shape>>& theVEdges,
+                                 const int                                             theIndex);
 
   Standard_EXPORT void Perform();
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Boolean HasSection() const;
+  Standard_EXPORT bool HasSection() const;
 
-  Standard_EXPORT void Modified(const TopoDS_Shape& S, TopTools_ListOfShape& theModified);
+  Standard_EXPORT void Modified(const TopoDS_Shape& S, NCollection_List<TopoDS_Shape>& theModified);
 
-protected:
 private:
-  Standard_Boolean MakeFacesSec(const Standard_Integer theIndex,
-                                const BOPDS_PDS&       theDS,
-                                const Standard_Integer theFaceIndex1,
-                                const Standard_Integer theFaceIndex2,
-                                const Standard_Integer theSSInterfIndex);
+  bool MakeFacesSec(const int        theIndex,
+                    const BOPDS_PDS& theDS,
+                    const int        theFaceIndex1,
+                    const int        theFaceIndex2,
+                    const int        theSSInterfIndex);
 
-  Standard_Boolean MakeFacesNonSec(const Standard_Integer theIndex,
-                                   const BOPDS_PDS&       theDS,
-                                   const Standard_Integer theFaceIndex1,
-                                   const Standard_Integer theFaceIndex2);
+  bool MakeFacesNonSec(const int        theIndex,
+                       const BOPDS_PDS& theDS,
+                       const int        theFaceIndex1,
+                       const int        theFaceIndex2);
 
-  Standard_Boolean ChooseSection(const TopoDS_Shape&  Comp,
-                                 const TopoDS_Vertex& theFirstVertex,
-                                 const TopoDS_Vertex& theLastVertex,
-                                 TopoDS_Shape&        resWire,
-                                 gp_Pln&              resPlane,
-                                 Standard_Boolean&    IsSingular);
+  bool ChooseSection(const TopoDS_Shape&  Comp,
+                     const TopoDS_Vertex& theFirstVertex,
+                     const TopoDS_Vertex& theLastVertex,
+                     TopoDS_Shape&        resWire,
+                     gp_Pln&              resPlane,
+                     bool&                IsSingular);
 
-  BRepFill_TransitionStyle           myTransition;
-  gp_Ax2                             myAxeOfBisPlane;
-  gp_Vec                             myIntPointCrossDir;
-  TopoDS_Shape                       myShape1;
-  TopoDS_Shape                       myShape2;
-  Handle(TopTools_HArray2OfShape)    myBounds;
-  Handle(TopTools_HArray2OfShape)    myUEdges;
-  Handle(TopTools_HArray1OfShape)    myVEdges;
-  Handle(TopTools_HArray2OfShape)    myFaces;
-  Standard_Boolean                   myDone;
-  Standard_Boolean                   myHasSection;
-  TopTools_DataMapOfShapeListOfShape myHistMap;
+  BRepFill_TransitionStyle                       myTransition;
+  gp_Ax2                                         myAxeOfBisPlane;
+  gp_Vec                                         myIntPointCrossDir;
+  TopoDS_Shape                                   myShape1;
+  TopoDS_Shape                                   myShape2;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>> myBounds;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>> myUEdges;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> myVEdges;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>> myFaces;
+  bool                                           myDone;
+  bool                                           myHasSection;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myHistMap;
 };
 
 #endif // _BRepFill_TrimShellCorner_HeaderFile

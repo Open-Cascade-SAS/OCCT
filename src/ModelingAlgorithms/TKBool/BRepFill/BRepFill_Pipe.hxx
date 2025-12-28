@@ -24,9 +24,12 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Trsf.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomFill_Trihedron.hxx>
@@ -53,12 +56,12 @@ public:
   Standard_EXPORT BRepFill_Pipe(const TopoDS_Wire&       Spine,
                                 const TopoDS_Shape&      Profile,
                                 const GeomFill_Trihedron aMode         = GeomFill_IsCorrectedFrenet,
-                                const Standard_Boolean   ForceApproxC1 = Standard_False,
-                                const Standard_Boolean   GeneratePartCase = Standard_False);
+                                const bool               ForceApproxC1 = false,
+                                const bool               GeneratePartCase = false);
 
-  Standard_EXPORT void Perform(const TopoDS_Wire&     Spine,
-                               const TopoDS_Shape&    Profile,
-                               const Standard_Boolean GeneratePartCase = Standard_False);
+  Standard_EXPORT void Perform(const TopoDS_Wire&  Spine,
+                               const TopoDS_Shape& Profile,
+                               const bool          GeneratePartCase = false);
 
   Standard_EXPORT const TopoDS_Shape& Spine() const;
 
@@ -66,7 +69,7 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  Standard_EXPORT Standard_Real ErrorOnSurface() const;
+  Standard_EXPORT double ErrorOnSurface() const;
 
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
 
@@ -74,7 +77,7 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT void Generated(const TopoDS_Shape& S, TopTools_ListOfShape& L);
+  Standard_EXPORT void Generated(const TopoDS_Shape& S, NCollection_List<TopoDS_Shape>& L);
 
   //! Returns the face created from an edge of the spine
   //! and an edge of the profile.
@@ -96,7 +99,6 @@ public:
   //! if the <Spine> is undefined
   Standard_EXPORT TopoDS_Wire PipeLine(const gp_Pnt& Point);
 
-protected:
 private:
   //! Auxiliary recursive method used to build the result.
   Standard_EXPORT TopoDS_Shape MakeShape(const TopoDS_Shape& S,
@@ -105,42 +107,44 @@ private:
                                          const TopoDS_Shape& LastShape);
 
   //! Auxiliary recursive method used to find the edge's index
-  Standard_EXPORT Standard_Integer FindEdge(const TopoDS_Shape& S,
-                                            const TopoDS_Edge&  E,
-                                            Standard_Integer&   Init) const;
+  Standard_EXPORT int FindEdge(const TopoDS_Shape& S, const TopoDS_Edge& E, int& Init) const;
 
-  Standard_EXPORT Standard_Integer FindVertex(const TopoDS_Shape&  S,
-                                              const TopoDS_Vertex& V,
-                                              Standard_Integer&    Init) const;
+  Standard_EXPORT int FindVertex(const TopoDS_Shape& S, const TopoDS_Vertex& V, int& Init) const;
 
   Standard_EXPORT void DefineRealSegmax();
 
-  Standard_EXPORT void RebuildTopOrBottomFace(const TopoDS_Shape&    aFace,
-                                              const Standard_Boolean IsTop) const;
+  Standard_EXPORT void RebuildTopOrBottomFace(const TopoDS_Shape& aFace, const bool IsTop) const;
 
   Standard_EXPORT void BuildHistory(const BRepFill_Sweep& theSweep, const TopoDS_Shape& theSection);
 
-  TopoDS_Wire                           mySpine;
-  TopoDS_Shape                          myProfile;
-  TopoDS_Shape                          myShape;
-  gp_Trsf                               myTrsf;
-  Handle(BRepFill_LocationLaw)          myLoc;
-  Handle(TopTools_HArray2OfShape)       mySections;
-  Handle(TopTools_HArray2OfShape)       myFaces;
-  Handle(TopTools_HArray2OfShape)       myEdges;
-  TopTools_MapOfShape                   myReversedEdges;
-  BRepFill_DataMapOfShapeHArray2OfShape myTapes;
-  BRepFill_DataMapOfShapeHArray2OfShape myRails;
-  Standard_Integer                      myCurIndexOfSectionEdge;
-  TopoDS_Shape                          myFirst;
-  TopoDS_Shape                          myLast;
-  TopTools_DataMapOfShapeListOfShape    myGenMap;
-  Standard_Integer                      myDegmax;
-  Standard_Integer                      mySegmax;
-  GeomAbs_Shape                         myContinuity;
-  GeomFill_Trihedron                    myMode;
-  Standard_Boolean                      myForceApproxC1;
-  Standard_Real                         myErrorOnSurf;
+  TopoDS_Wire                                            mySpine;
+  TopoDS_Shape                                           myProfile;
+  TopoDS_Shape                                           myShape;
+  gp_Trsf                                                myTrsf;
+  occ::handle<BRepFill_LocationLaw>                      myLoc;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>>         mySections;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>>         myFaces;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>>         myEdges;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myReversedEdges;
+  NCollection_DataMap<TopoDS_Shape,
+                      occ::handle<NCollection_HArray2<TopoDS_Shape>>,
+                      TopTools_ShapeMapHasher>
+    myTapes;
+  NCollection_DataMap<TopoDS_Shape,
+                      occ::handle<NCollection_HArray2<TopoDS_Shape>>,
+                      TopTools_ShapeMapHasher>
+               myRails;
+  int          myCurIndexOfSectionEdge;
+  TopoDS_Shape myFirst;
+  TopoDS_Shape myLast;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                     myGenMap;
+  int                myDegmax;
+  int                mySegmax;
+  GeomAbs_Shape      myContinuity;
+  GeomFill_Trihedron myMode;
+  bool               myForceApproxC1;
+  double             myErrorOnSurf;
 };
 
 #endif // _BRepFill_Pipe_HeaderFile

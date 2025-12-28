@@ -18,16 +18,13 @@
 #include <Standard.hxx>
 
 #include <Bnd_Box.hxx>
-#include <BOPDS_ListOfPave.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <NCollection_List.hxx>
 #include <BOPDS_Pave.hxx>
+#include <BOPDS_ListOfPaveBlock.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <TColStd_MapOfInteger.hxx>
-
-class BOPDS_PaveBlock;
-DEFINE_STANDARD_HANDLE(BOPDS_PaveBlock, Standard_Transient)
+#include <NCollection_Map.hxx>
 
 //! The class BOPDS_PaveBlock is to store
 //! the information about pave block on an edge.
@@ -41,7 +38,7 @@ public:
 
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
-  Standard_EXPORT BOPDS_PaveBlock(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPDS_PaveBlock(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Modifier
   //! Sets the first pave <thePave>
@@ -61,54 +58,54 @@ public:
 
   //! Modifier
   //! Sets the index of edge of pave block <theEdge>
-  Standard_EXPORT void SetEdge(const Standard_Integer theEdge);
+  Standard_EXPORT void SetEdge(const int theEdge);
 
   //! Selector
   //! Returns the index of edge of pave block
-  Standard_EXPORT Standard_Integer Edge() const;
+  Standard_EXPORT int Edge() const;
 
   //! Query
   //! Returns true if the pave block has edge
-  Standard_EXPORT Standard_Boolean HasEdge() const;
+  Standard_EXPORT bool HasEdge() const;
 
   //! Query
   //! Returns true if the pave block has edge
   //! Returns the index of edge <theEdge>
-  Standard_EXPORT Standard_Boolean HasEdge(Standard_Integer& theEdge) const;
+  Standard_EXPORT bool HasEdge(int& theEdge) const;
 
   //! Modifier
   //! Sets the index of original edge
   //! of the pave block <theEdge>
-  Standard_EXPORT void SetOriginalEdge(const Standard_Integer theEdge);
+  Standard_EXPORT void SetOriginalEdge(const int theEdge);
 
   //! Selector
   //! Returns the index of original edge of pave block
-  Standard_EXPORT Standard_Integer OriginalEdge() const;
+  Standard_EXPORT int OriginalEdge() const;
 
   //! Query
   //! Returns true if the edge is equal to the original edge
   //! of the pave block
-  Standard_EXPORT Standard_Boolean IsSplitEdge() const;
+  Standard_EXPORT bool IsSplitEdge() const;
 
   //! Selector
   //! Returns the parametric range <theT1,theT2>
   //! of the pave block
-  Standard_EXPORT void Range(Standard_Real& theT1, Standard_Real& theT2) const;
+  Standard_EXPORT void Range(double& theT1, double& theT2) const;
 
   //! Query
   //! Returns true if the pave block has pave indices
   //! that equal to the pave indices of the pave block
   //! <theOther>
-  Standard_EXPORT Standard_Boolean HasSameBounds(const Handle(BOPDS_PaveBlock)& theOther) const;
+  Standard_EXPORT bool HasSameBounds(const occ::handle<BOPDS_PaveBlock>& theOther) const;
 
   //! Selector
   //! Returns the pave indices <theIndex1,theIndex2>
   //! of the pave block
-  Standard_EXPORT void Indices(Standard_Integer& theIndex1, Standard_Integer& theIndex2) const;
+  Standard_EXPORT void Indices(int& theIndex1, int& theIndex2) const;
 
   //! Query
   //! Returns true if the pave block contains extra paves
-  Standard_EXPORT Standard_Boolean IsToUpdate() const;
+  Standard_EXPORT bool IsToUpdate() const;
 
   //! Modifier
   //! Appends extra paves <thePave>
@@ -120,81 +117,79 @@ public:
 
   //! Modifier
   //! Removes a pave with the given vertex number from extra paves
-  Standard_EXPORT void RemoveExtPave(const Standard_Integer theVertNum);
+  Standard_EXPORT void RemoveExtPave(const int theVertNum);
 
   //! Selector
   //! Returns the extra paves
-  Standard_EXPORT const BOPDS_ListOfPave& ExtPaves() const;
+  Standard_EXPORT const NCollection_List<BOPDS_Pave>& ExtPaves() const;
 
   //! Selector / Modifier
   //! Returns the extra paves
-  Standard_EXPORT BOPDS_ListOfPave& ChangeExtPaves();
+  Standard_EXPORT NCollection_List<BOPDS_Pave>& ChangeExtPaves();
 
   //! Modifier
   //! Updates the pave block. The extra paves are used
   //! to create new pave blocks <theLPB>.
   //! <theFlag> - if true, the first and second
   //! pave are used to produce new pave blocks.
-  Standard_EXPORT void Update(BOPDS_ListOfPaveBlock& theLPB,
-                              const Standard_Boolean theFlag = Standard_True);
+  Standard_EXPORT void Update(NCollection_List<occ::handle<BOPDS_PaveBlock>>& theLPB,
+                              const bool                                      theFlag = true);
 
   //! Query
   //! Returns true if the extra paves contain the pave
   //! with given value of the parameter <thePrm>
   //! <theTol>  - the value of the tolerance to compare
   //! <theInd>  - index of the found pave
-  Standard_EXPORT Standard_Boolean ContainsParameter(const Standard_Real thePrm,
-                                                     const Standard_Real theTol,
-                                                     Standard_Integer&   theInd) const;
+  Standard_EXPORT bool ContainsParameter(const double thePrm,
+                                         const double theTol,
+                                         int&         theInd) const;
 
   //! Modifier
   //! Sets the shrunk data for the pave block
   //! <theTS1>, <theTS2> - shrunk range
   //! <theBox> - the bounding box
   //! <theIsSplittable> - defines whether the edge can be split
-  Standard_EXPORT void SetShrunkData(const Standard_Real    theTS1,
-                                     const Standard_Real    theTS2,
-                                     const Bnd_Box&         theBox,
-                                     const Standard_Boolean theIsSplittable);
+  Standard_EXPORT void SetShrunkData(const double   theTS1,
+                                     const double   theTS2,
+                                     const Bnd_Box& theBox,
+                                     const bool     theIsSplittable);
 
   //! Selector
   //! Returns the shrunk data for the pave block
   //! <theTS1>, <theTS2> - shrunk range
   //! <theBox> - the bounding box
   //! <theIsSplittable> - defines whether the edge can be split
-  Standard_EXPORT void ShrunkData(Standard_Real&    theTS1,
-                                  Standard_Real&    theTS2,
-                                  Bnd_Box&          theBox,
-                                  Standard_Boolean& theIsSplittable) const;
+  Standard_EXPORT void ShrunkData(double&  theTS1,
+                                  double&  theTS2,
+                                  Bnd_Box& theBox,
+                                  bool&    theIsSplittable) const;
 
   //! Query
   //! Returns true if the pave block contains
   //! the shrunk data
-  Standard_EXPORT Standard_Boolean HasShrunkData() const;
+  Standard_EXPORT bool HasShrunkData() const;
 
   Standard_EXPORT void Dump() const;
 
   //! Query
   //! Returns FALSE if the pave block has a too short
   //! shrunk range and cannot be split, otherwise returns TRUE
-  Standard_Boolean IsSplittable() const { return myIsSplittable; }
+  bool IsSplittable() const { return myIsSplittable; }
 
   DEFINE_STANDARD_RTTIEXT(BOPDS_PaveBlock, Standard_Transient)
 
 protected:
-  Handle(NCollection_BaseAllocator) myAllocator;
-  Standard_Integer                  myEdge;
-  Standard_Integer                  myOriginalEdge;
-  BOPDS_Pave                        myPave1;
-  BOPDS_Pave                        myPave2;
-  BOPDS_ListOfPave                  myExtPaves;
-  Standard_Real                     myTS1;
-  Standard_Real                     myTS2;
-  Bnd_Box                           myShrunkBox;
-  TColStd_MapOfInteger              myMFence;
-  Standard_Boolean                  myIsSplittable;
-
-private:
+  occ::handle<NCollection_BaseAllocator> myAllocator;
+  int                                    myEdge;
+  int                                    myOriginalEdge;
+  BOPDS_Pave                             myPave1;
+  BOPDS_Pave                             myPave2;
+  NCollection_List<BOPDS_Pave>           myExtPaves;
+  double                                 myTS1;
+  double                                 myTS2;
+  Bnd_Box                                myShrunkBox;
+  NCollection_Map<int>                   myMFence;
+  bool                                   myIsSplittable;
 };
 
 #endif // _BOPDS_PaveBlock_HeaderFile

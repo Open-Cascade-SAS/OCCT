@@ -16,37 +16,37 @@
 
 #include <Standard_DomainError.hxx>
 
-inline void Contap_Point::SetValue(const gp_Pnt& Pt, const Standard_Real U, const Standard_Real V)
+inline void Contap_Point::SetValue(const gp_Pnt& Pt, const double U, const double V)
 {
   pt         = Pt;
   uparam     = U;
   vparam     = V;
-  onarc      = Standard_False;
-  isvtx      = Standard_False;
-  ismult     = Standard_False;
-  myInternal = Standard_False;
+  onarc      = false;
+  isvtx      = false;
+  ismult     = false;
+  myInternal = false;
 }
 
-inline void Contap_Point::SetParameter(const Standard_Real Para)
+inline void Contap_Point::SetParameter(const double Para)
 {
 
   paraline = Para;
 }
 
-inline void Contap_Point::SetVertex(const Handle(Adaptor3d_HVertex)& V)
+inline void Contap_Point::SetVertex(const occ::handle<Adaptor3d_HVertex>& V)
 {
 
-  isvtx = Standard_True;
+  isvtx = true;
   vtx   = V;
 }
 
-inline void Contap_Point::SetArc(const Handle(Adaptor2d_Curve2d)& A,
-                                 const Standard_Real              Param,
-                                 const IntSurf_Transition&        TLine,
-                                 const IntSurf_Transition&        TArc)
+inline void Contap_Point::SetArc(const occ::handle<Adaptor2d_Curve2d>& A,
+                                 const double                          Param,
+                                 const IntSurf_Transition&             TLine,
+                                 const IntSurf_Transition&             TArc)
 {
 
-  onarc   = Standard_True;
+  onarc   = true;
   arc     = A;
   prmarc  = Param;
   traline = TLine;
@@ -55,20 +55,20 @@ inline void Contap_Point::SetArc(const Handle(Adaptor2d_Curve2d)& A,
 
 inline void Contap_Point::SetMultiple()
 {
-  ismult = Standard_True;
+  ismult = true;
 }
 
 inline void Contap_Point::SetInternal()
 {
-  myInternal = Standard_True;
+  myInternal = true;
 }
 
-inline Standard_Boolean Contap_Point::IsMultiple() const
+inline bool Contap_Point::IsMultiple() const
 {
   return ismult;
 }
 
-inline Standard_Boolean Contap_Point::IsInternal() const
+inline bool Contap_Point::IsInternal() const
 {
   return myInternal;
 }
@@ -79,25 +79,25 @@ inline const gp_Pnt& Contap_Point::Value() const
   return pt;
 }
 
-inline Standard_Real Contap_Point::ParameterOnLine() const
+inline double Contap_Point::ParameterOnLine() const
 {
 
   return paraline;
 }
 
-inline void Contap_Point::Parameters(Standard_Real& U1, Standard_Real& V1) const
+inline void Contap_Point::Parameters(double& U1, double& V1) const
 {
 
   U1 = uparam;
   V1 = vparam;
 }
 
-inline Standard_Boolean Contap_Point::IsOnArc() const
+inline bool Contap_Point::IsOnArc() const
 {
   return onarc;
 }
 
-inline const Handle(Adaptor2d_Curve2d)& Contap_Point::Arc() const
+inline const occ::handle<Adaptor2d_Curve2d>& Contap_Point::Arc() const
 {
 
   if (!onarc)
@@ -127,7 +127,7 @@ inline const IntSurf_Transition& Contap_Point::TransitionOnArc() const
   return traarc;
 }
 
-inline Standard_Real Contap_Point::ParameterOnArc() const
+inline double Contap_Point::ParameterOnArc() const
 {
 
   if (!onarc)
@@ -137,12 +137,12 @@ inline Standard_Real Contap_Point::ParameterOnArc() const
   return prmarc;
 }
 
-inline Standard_Boolean Contap_Point::IsVertex() const
+inline bool Contap_Point::IsVertex() const
 {
   return isvtx;
 }
 
-inline const Handle(Adaptor3d_HVertex)& Contap_Point::Vertex() const
+inline const occ::handle<Adaptor3d_HVertex>& Contap_Point::Vertex() const
 {
 
   if (!isvtx)

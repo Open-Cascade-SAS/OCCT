@@ -31,7 +31,8 @@
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -39,11 +40,11 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
-static Standard_Boolean FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
+static bool FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
 {
   // discredisation of the external contour and computing the center of gravity
 
@@ -51,25 +52,25 @@ static Standard_Boolean FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
   wireExp.Init(face, TopAbs_WIRE);
   if (!wireExp.More())
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Integer     npoints, nptt = 21;
-  TColgp_Array1OfPnt2d points(1, nptt);
-  Standard_Real        area = 0., xcent = 0., ycent = 0.;
-  TopExp_Explorer      edgeExp;
+  int                          npoints, nptt = 21;
+  NCollection_Array1<gp_Pnt2d> points(1, nptt);
+  double                       area = 0., xcent = 0., ycent = 0.;
+  TopExp_Explorer              edgeExp;
 
   for (edgeExp.Init(wireExp.Current(), TopAbs_EDGE); edgeExp.More(); edgeExp.Next())
   {
     // discretize the 2d curve
-    Standard_Real        first, last;
-    Handle(Geom2d_Curve) c2d =
+    double                    first, last;
+    occ::handle<Geom2d_Curve> c2d =
       BRep_Tool::CurveOnSurface(TopoDS::Edge(edgeExp.Current()), face, first, last);
     if (TopoDS::Edge(edgeExp.Current()).Orientation() == TopAbs_REVERSED)
     {
-      Standard_Real change = first;
-      first                = last;
-      last                 = change;
+      double change = first;
+      first         = last;
+      last          = change;
     }
     if (c2d->DynamicType() == STANDARD_TYPE(Geom2d_Line))
     {
@@ -79,10 +80,10 @@ static Standard_Boolean FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
     }
     else
     {
-      Standard_Real deltaT, t;
+      double deltaT, t;
       npoints = nptt;
       deltaT  = (last - first) / (nptt - 1);
-      for (Standard_Integer i = 1; i <= nptt; i++)
+      for (int i = 1; i <= nptt; i++)
       {
         if (i == 1)
         {
@@ -102,8 +103,8 @@ static Standard_Boolean FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
 
     // compute the contribution to the center of gravity
 
-    Standard_Real h, c, d;
-    for (Standard_Integer i = 1; i <= npoints - 1; i++)
+    double h, c, d;
+    for (int i = 1; i <= npoints - 1; i++)
     {
 
       h = 0.5 * (points(i).Y() + points(i + 1).Y());
@@ -118,7 +119,7 @@ static Standard_Boolean FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
   if (std::abs(area) < gp::Resolution())
   {
     pt2d.SetCoord(points(1).X(), points(1).Y());
-    return Standard_False;
+    return false;
   }
 
   pt2d.SetCoord(xcent / area, ycent / area);
@@ -132,49 +133,46 @@ static Standard_Boolean FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
     // try to find a point on face
     pt2d = points(1);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean ComputeDir(const TopoDS_Shape&    shape,
-                                   gp_Pnt&                pt,
-                                   gp_Dir&                dir,
-                                   const Standard_Integer mode)
+static bool ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir& dir, const int mode)
 {
   TopLoc_Location loc;
   if (shape.ShapeType() == TopAbs_EDGE)
   {
-    Standard_Real      first, last;
-    Handle(Geom_Curve) curv0 = BRep_Tool::Curve(TopoDS::Edge(shape), loc, first, last);
-    Handle(Geom_Curve) curve = Handle(Geom_Curve)::DownCast(curv0->Copy());
+    double                  first, last;
+    occ::handle<Geom_Curve> curv0 = BRep_Tool::Curve(TopoDS::Edge(shape), loc, first, last);
+    occ::handle<Geom_Curve> curve = occ::down_cast<Geom_Curve>(curv0->Copy());
     curve->Transform(loc.Transformation());
     GeomLProp_CLProps lProps(curve, 1, gp::Resolution());
     lProps.SetParameter((mode == 0) ? last : first);
     if (!lProps.IsTangentDefined())
-      return Standard_False;
+      return false;
     pt = lProps.Value();
     lProps.Tangent(dir);
   }
   else if (shape.ShapeType() == TopAbs_FACE)
   {
-    gp_Pnt2d             pt2d;
-    Handle(Geom_Surface) surface = BRep_Tool::Surface(TopoDS::Face(shape));
+    gp_Pnt2d                  pt2d;
+    occ::handle<Geom_Surface> surface = BRep_Tool::Surface(TopoDS::Face(shape));
     if (BRep_Tool::NaturalRestriction(TopoDS::Face(shape)))
     {
-      Standard_Real u1, u2, v1, v2;
+      double u1, u2, v1, v2;
       surface->Bounds(u1, u2, v1, v2);
       pt2d.SetCoord((u1 + u2) * 0.5, (v1 + v2) * 0.5);
     }
     else
     {
       if (!FindPointOnFace(TopoDS::Face(shape), pt2d))
-        return Standard_False;
+        return false;
     }
 
     GeomLProp_SLProps lProps(surface, pt2d.X(), pt2d.Y(), 1, gp::Resolution());
     if (!lProps.IsNormalDefined())
-      return Standard_False;
+      return false;
 
     pt  = lProps.Value();
     dir = lProps.Normal();
@@ -184,15 +182,15 @@ static Standard_Boolean ComputeDir(const TopoDS_Shape&    shape,
   {
     dir.Reverse();
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
-                                      const Handle(Prs3d_Drawer)&       drawer,
-                                      const TopoDS_Shape&               shape,
-                                      const Standard_Integer            mode)
+void DsgPrs_ShapeDirPresentation::Add(const occ::handle<Prs3d_Presentation>& prs,
+                                      const occ::handle<Prs3d_Drawer>&       drawer,
+                                      const TopoDS_Shape&                    shape,
+                                      const int                              mode)
 
 {
   if ((mode != 0) && (mode != 1))
@@ -214,9 +212,9 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
   }
   else if (shape.ShapeType() == TopAbs_WIRE)
   {
-    TopTools_ListOfShape   aList;
-    Standard_Integer       nb = 0;
-    BRepTools_WireExplorer anExp;
+    NCollection_List<TopoDS_Shape> aList;
+    int                            nb = 0;
+    BRepTools_WireExplorer         anExp;
     for (anExp.Init(TopoDS::Wire(shape)); anExp.More(); anExp.Next())
     {
       const TopoDS_Edge& edge = anExp.Current();
@@ -241,8 +239,8 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
   {
     TopExp_Explorer faceExp;
 
-    TopTools_ListOfShape aList;
-    Standard_Integer     nb = 0;
+    NCollection_List<TopoDS_Shape> aList;
+    int                            nb = 0;
     for (faceExp.Init(shape, TopAbs_FACE); faceExp.More(); faceExp.Next())
     {
       nb++;
@@ -256,11 +254,11 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
     ComputeDir(face, pt, dir, mode);
   }
 
-  Standard_Real c[6];
+  double c[6];
   box.Get(c[0], c[1], c[2], c[3], c[4], c[5]);
 
-  gp_Pnt        ptmin(c[0], c[1], c[2]), ptmax(c[3], c[4], c[5]);
-  Standard_Real leng = ptmin.Distance(ptmax) / 3.;
+  gp_Pnt ptmin(c[0], c[1], c[2]), ptmax(c[3], c[4], c[5]);
+  double leng = ptmin.Distance(ptmax) / 3.;
   // mei 19/09/96 extrusion infinie -> taille fixe
   if (leng >= 20000.)
     leng = 50;
@@ -269,7 +267,7 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
 
   prs->CurrentGroup()->SetPrimitivesAspect(drawer->LineAspect()->Aspect());
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(pt);
   aPrims->AddVertex(pt2);
   prs->CurrentGroup()->AddPrimitiveArray(aPrims);

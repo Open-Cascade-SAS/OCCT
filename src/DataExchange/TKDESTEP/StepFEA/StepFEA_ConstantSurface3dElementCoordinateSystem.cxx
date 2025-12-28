@@ -30,9 +30,9 @@ StepFEA_ConstantSurface3dElementCoordinateSystem::StepFEA_ConstantSurface3dEleme
 //=================================================================================================
 
 void StepFEA_ConstantSurface3dElementCoordinateSystem::Init(
-  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-  const Standard_Integer                  aAxis,
-  const Standard_Real                     aAngle)
+  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+  const int                                    aAxis,
+  const double                                 aAngle)
 {
   StepFEA_FeaRepresentationItem::Init(aRepresentationItem_Name);
 
@@ -43,28 +43,28 @@ void StepFEA_ConstantSurface3dElementCoordinateSystem::Init(
 
 //=================================================================================================
 
-Standard_Integer StepFEA_ConstantSurface3dElementCoordinateSystem::Axis() const
+int StepFEA_ConstantSurface3dElementCoordinateSystem::Axis() const
 {
   return theAxis;
 }
 
 //=================================================================================================
 
-void StepFEA_ConstantSurface3dElementCoordinateSystem::SetAxis(const Standard_Integer aAxis)
+void StepFEA_ConstantSurface3dElementCoordinateSystem::SetAxis(const int aAxis)
 {
   theAxis = aAxis;
 }
 
 //=================================================================================================
 
-Standard_Real StepFEA_ConstantSurface3dElementCoordinateSystem::Angle() const
+double StepFEA_ConstantSurface3dElementCoordinateSystem::Angle() const
 {
   return theAngle;
 }
 
 //=================================================================================================
 
-void StepFEA_ConstantSurface3dElementCoordinateSystem::SetAngle(const Standard_Real aAngle)
+void StepFEA_ConstantSurface3dElementCoordinateSystem::SetAngle(const double aAngle)
 {
   theAngle = aAngle;
 }

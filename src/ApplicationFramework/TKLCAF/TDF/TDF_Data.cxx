@@ -33,8 +33,6 @@
 #include <TDF_LabelNode.hxx>
 #include <TDF_Tool.hxx>
 
-typedef NCollection_Array1<Handle(TDF_AttributeDelta)> TDF_Array1OfAttributeIDelta;
-
 IMPLEMENT_STANDARD_RTTIEXT(TDF_Data, Standard_Transient)
 
 #undef DEB_DELTA_CREATION
@@ -47,7 +45,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_Data, Standard_Transient)
     if (!myTransaction)                                                                            \
     {                                                                                              \
       TCollection_AsciiString entry;                                                               \
-      for (TDF_ChildIterator itr(Root(), Standard_True); itr.More(); itr.Next())                   \
+      for (TDF_ChildIterator itr(Root(), true); itr.More(); itr.Next())                            \
       {                                                                                            \
         const TDF_LabelNode* lnp = itr.Value().myLabelNode;                                        \
         if (lnp->AttributesModified() || lnp->MayBeModified())                                     \
@@ -93,14 +91,14 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_Data, Standard_Transient)
 TDF_Data::TDF_Data()
     : myTransaction(0),
       myNbTouchedAtt(0),
-      myNotUndoMode(Standard_True),
+      myNotUndoMode(true),
       myTime(0),
-      myAllowModification(Standard_True),
-      myAccessByEntries(Standard_False)
+      myAllowModification(true),
+      myAccessByEntries(false)
 {
-  const Handle(NCollection_IncAllocator) anIncAllocator = new NCollection_IncAllocator(16000);
-  myLabelNodeAllocator                                  = anIncAllocator;
-  myRoot                                                = new (anIncAllocator) TDF_LabelNode(this);
+  const occ::handle<NCollection_IncAllocator> anIncAllocator = new NCollection_IncAllocator(16000);
+  myLabelNodeAllocator                                       = anIncAllocator;
+  myRoot = new (anIncAllocator) TDF_LabelNode(this);
 }
 
 //=======================================================================
@@ -116,8 +114,8 @@ void TDF_Data::Destroy()
   // it may call backup.
   while (!myRoot->FirstAttribute().IsNull())
   {
-    static Handle(TDF_Attribute) anEmpty;
-    Handle(TDF_Attribute)        aFirst = myRoot->FirstAttribute();
+    static occ::handle<TDF_Attribute> anEmpty;
+    occ::handle<TDF_Attribute>        aFirst = myRoot->FirstAttribute();
     myRoot->RemoveAttribute(anEmpty, aFirst);
   }
   myAccessByEntriesTable.Clear();
@@ -127,7 +125,7 @@ void TDF_Data::Destroy()
 
 //=================================================================================================
 
-Standard_Integer TDF_Data::OpenTransaction()
+int TDF_Data::OpenTransaction()
 {
   myTimes.Prepend(myTime);
   return ++myTransaction;
@@ -138,9 +136,9 @@ Standard_Integer TDF_Data::OpenTransaction()
 // purpose  : Commits the current transaction.
 //=======================================================================
 
-Handle(TDF_Delta) TDF_Data::CommitTransaction(const Standard_Boolean withDelta)
+occ::handle<TDF_Delta> TDF_Data::CommitTransaction(const bool withDelta)
 {
-  Handle(TDF_Delta) delta;
+  occ::handle<TDF_Delta> delta;
   if (myTransaction > 0)
   {
     if (withDelta)
@@ -190,15 +188,15 @@ Handle(TDF_Delta) TDF_Data::CommitTransaction(const Standard_Boolean withDelta)
 //           the given transaction index.
 //=======================================================================
 
-Handle(TDF_Delta) TDF_Data::CommitUntilTransaction(const Standard_Integer untilTransaction,
-                                                   const Standard_Boolean withDelta)
+occ::handle<TDF_Delta> TDF_Data::CommitUntilTransaction(const int  untilTransaction,
+                                                        const bool withDelta)
 {
-  Handle(TDF_Delta) delta;
+  occ::handle<TDF_Delta> delta;
   if ((untilTransaction > 0) && (myTransaction >= untilTransaction))
   {
     while (myTransaction > untilTransaction)
     {
-      delta = TDF_Data::CommitTransaction(Standard_False);
+      delta = TDF_Data::CommitTransaction(false);
     }
     delta = TDF_Data::CommitTransaction(withDelta);
   }
@@ -210,29 +208,29 @@ Handle(TDF_Delta) TDF_Data::CommitUntilTransaction(const Standard_Integer untilT
 // purpose  : Recursive method used to implement the commit action.
 //=======================================================================
 
-Standard_Integer TDF_Data::CommitTransaction(const TDF_Label&         aLabel,
-                                             const Handle(TDF_Delta)& aDelta,
-                                             const Standard_Boolean   withDelta)
+int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
+                                const occ::handle<TDF_Delta>& aDelta,
+                                const bool                    withDelta)
 {
-  aLabel.myLabelNode->MayBeModified(Standard_False);
-  Standard_Integer nbTouchedAtt = 0;
+  aLabel.myLabelNode->MayBeModified(false);
+  int nbTouchedAtt = 0;
 #ifdef TDF_DATA_COMMIT_OPTIMIZED
-  Standard_Boolean attMod = aLabel.myLabelNode->AttributesModified();
+  bool attMod = aLabel.myLabelNode->AttributesModified();
 #else
-  Standard_Boolean attMod = Standard_True;
+  bool attMod = true;
 #endif
 
   if (attMod)
   {
-    Handle(TDF_Attribute) lastAtt;
-    Handle(TDF_Attribute) backupAtt;
-    Standard_Boolean      currentIsRemoved = Standard_False;
-    attMod                                 = Standard_False;
+    occ::handle<TDF_Attribute> lastAtt;
+    occ::handle<TDF_Attribute> backupAtt;
+    bool                       currentIsRemoved = false;
+    attMod                                      = false;
 
-    TDF_AttributeIterator itr1(aLabel, Standard_False);
+    TDF_AttributeIterator itr1(aLabel, false);
     while (itr1.More())
     {
-      Handle(TDF_Attribute) aPtrCurrentAtt = itr1.Value();
+      occ::handle<TDF_Attribute> aPtrCurrentAtt = itr1.Value();
       itr1.Next();
       //      currentAtt = itr1.Value();
 
@@ -251,7 +249,7 @@ Standard_Integer TDF_Data::CommitTransaction(const TDF_Label&         aLabel,
         {
           if (aPtrCurrentAtt->mySavedTransaction >= aPtrCurrentAtt->myTransaction)
           {
-            const Handle(TDF_Attribute)& currentAtt = aPtrCurrentAtt;
+            const occ::handle<TDF_Attribute>& currentAtt = aPtrCurrentAtt;
             // Collision with a not forgotten version.
             if (backupAtt.IsNull())
             {
@@ -259,8 +257,8 @@ Standard_Integer TDF_Data::CommitTransaction(const TDF_Label&         aLabel,
               if (myNotUndoMode)
                 currentAtt->BeforeRemoval();
               aLabel.myLabelNode->RemoveAttribute(lastAtt, currentAtt);
-              currentIsRemoved = Standard_True;
-              attMod           = Standard_True;
+              currentIsRemoved = true;
+              attMod           = true;
             }
             else
             {
@@ -277,7 +275,7 @@ Standard_Integer TDF_Data::CommitTransaction(const TDF_Label&         aLabel,
                 if (myNotUndoMode)
                   currentAtt->BeforeRemoval();
                 aLabel.myLabelNode->RemoveAttribute(lastAtt, currentAtt);
-                currentIsRemoved = Standard_True;
+                currentIsRemoved = true;
               }
               else
               {
@@ -285,7 +283,7 @@ Standard_Integer TDF_Data::CommitTransaction(const TDF_Label&         aLabel,
                 // if (myNotUndoMode) currentAtt->BeforeForget();
                 currentAtt->Forget(myTransaction - 1);
                 TDF_Data_DeltaCreation("Forget(1)", currentAtt->DeltaOnForget());
-                attMod = Standard_True;
+                attMod = true;
               }
             }
           }
@@ -323,7 +321,7 @@ Standard_Integer TDF_Data::CommitTransaction(const TDF_Label&         aLabel,
         attMod = attMod || (aPtrCurrentAtt->myTransaction > 0);
 
       if (currentIsRemoved)
-        currentIsRemoved = Standard_False;
+        currentIsRemoved = false;
       else
         lastAtt = aPtrCurrentAtt;
     }
@@ -351,7 +349,7 @@ Standard_Integer TDF_Data::CommitTransaction(const TDF_Label&         aLabel,
 void TDF_Data::AbortTransaction()
 {
   if (myTransaction > 0)
-    Undo(TDF_Data::CommitTransaction(Standard_True), Standard_False);
+    Undo(TDF_Data::CommitTransaction(true), false);
   TDF_Data_DebugModified("New ABORT");
 }
 
@@ -360,32 +358,32 @@ void TDF_Data::AbortTransaction()
 // purpose  : Aborts the transactions until AND including the given index.
 //=======================================================================
 
-void TDF_Data::AbortUntilTransaction(const Standard_Integer untilTransaction)
+void TDF_Data::AbortUntilTransaction(const int untilTransaction)
 {
   if (untilTransaction > 0)
-    Undo(TDF_Data::CommitUntilTransaction(untilTransaction, Standard_True), Standard_False);
+    Undo(TDF_Data::CommitUntilTransaction(untilTransaction, true), false);
 }
 
 //=================================================================================================
 
-Standard_Boolean TDF_Data::IsApplicable(const Handle(TDF_Delta)& aDelta) const
+bool TDF_Data::IsApplicable(const occ::handle<TDF_Delta>& aDelta) const
 {
   return !aDelta.IsNull() && aDelta->IsApplicable(myTime);
 }
 
 //=================================================================================================
 
-void TDF_Data::FixOrder(const Handle(TDF_Delta)& theDelta)
+void TDF_Data::FixOrder(const occ::handle<TDF_Delta>& theDelta)
 {
   // make all OnRemoval (which will cause addition of the attribute) are in the end
   // to do not put two attributes with the same GUID at one label during undo/redo
-  TDF_AttributeDeltaList anOrderedList;
+  NCollection_List<occ::handle<TDF_AttributeDelta>> anOrderedList;
 
-  const TDF_AttributeDeltaList&        attList = theDelta->AttributeDeltas();
-  TDF_ListIteratorOfAttributeDeltaList anIt(attList);
+  const NCollection_List<occ::handle<TDF_AttributeDelta>>&    attList = theDelta->AttributeDeltas();
+  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anIt(attList);
   for (; anIt.More(); anIt.Next())
   { // append not-removal
-    Handle(TDF_AttributeDelta) attDelta = anIt.Value();
+    occ::handle<TDF_AttributeDelta> attDelta = anIt.Value();
     if (!attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
     {
       anOrderedList.Append(attDelta);
@@ -393,7 +391,7 @@ void TDF_Data::FixOrder(const Handle(TDF_Delta)& theDelta)
   }
   for (anIt.Initialize(attList); anIt.More(); anIt.Next())
   { // append removal
-    Handle(TDF_AttributeDelta) attDelta = anIt.Value();
+    occ::handle<TDF_AttributeDelta> attDelta = anIt.Value();
     if (attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
     {
       anOrderedList.Append(attDelta);
@@ -407,9 +405,9 @@ void TDF_Data::FixOrder(const Handle(TDF_Delta)& theDelta)
 // purpose  : Applies a delta to undo  actions.
 //=======================================================================
 
-Handle(TDF_Delta) TDF_Data::Undo(const Handle(TDF_Delta)& aDelta, const Standard_Boolean withDelta)
+occ::handle<TDF_Delta> TDF_Data::Undo(const occ::handle<TDF_Delta>& aDelta, const bool withDelta)
 {
-  Handle(TDF_Delta) newDelta;
+  occ::handle<TDF_Delta> newDelta;
   if (!aDelta.IsNull())
   {
     if (aDelta->IsApplicable(myTime))
@@ -420,14 +418,14 @@ Handle(TDF_Delta) TDF_Data::Undo(const Handle(TDF_Delta)& aDelta, const Standard
       std::cout << "TDF_Data::Undo applies this delta:" << std::endl;
       aDelta->Dump(std::cout);
 #endif
-      aDelta->BeforeOrAfterApply(Standard_True);
-      myNotUndoMode = Standard_False;
+      aDelta->BeforeOrAfterApply(true);
+      myNotUndoMode = false;
       FixOrder(aDelta);
       aDelta->Apply();
-      myNotUndoMode = Standard_True;
+      myNotUndoMode = true;
       if (withDelta)
       {
-        newDelta = CommitTransaction(Standard_True);
+        newDelta = CommitTransaction(true);
         newDelta->Validity(aDelta->EndTime(), aDelta->BeginTime());
 #ifdef OCCT_DEBUG_DELTA
         std::cout
@@ -436,7 +434,7 @@ Handle(TDF_Delta) TDF_Data::Undo(const Handle(TDF_Delta)& aDelta, const Standard
 #endif
       }
       myTime = aDelta->BeginTime();
-      aDelta->BeforeOrAfterApply(Standard_False);
+      aDelta->BeforeOrAfterApply(false);
     }
   }
   return newDelta;
@@ -444,7 +442,7 @@ Handle(TDF_Delta) TDF_Data::Undo(const Handle(TDF_Delta)& aDelta, const Standard
 
 //=================================================================================================
 
-void TDF_Data::SetAccessByEntries(const Standard_Boolean aSet)
+void TDF_Data::SetAccessByEntries(const bool aSet)
 {
   myAccessByEntries = aSet;
 
@@ -457,7 +455,7 @@ void TDF_Data::SetAccessByEntries(const Standard_Boolean aSet)
     myAccessByEntriesTable.Bind(anEntry, myRoot);
 
     // Add all other labels.
-    TDF_ChildIterator itr(myRoot, Standard_True);
+    TDF_ChildIterator itr(myRoot, true);
     for (; itr.More(); itr.Next())
     {
       const TDF_Label aLabel = itr.Value();
@@ -488,7 +486,7 @@ Standard_OStream& TDF_Data::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDF_Data::DumpJson(Standard_OStream& theOStream, Standard_Integer /*theDepth*/) const
+void TDF_Data::DumpJson(Standard_OStream& theOStream, int /*theDepth*/) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -500,9 +498,9 @@ void TDF_Data::DumpJson(Standard_OStream& theOStream, Standard_Integer /*theDept
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myNbTouchedAtt)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myNotUndoMode)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTime)
-  for (TColStd_ListOfInteger::Iterator aTimeIt(myTimes); aTimeIt.More(); aTimeIt.Next())
+  for (NCollection_List<int>::Iterator aTimeIt(myTimes); aTimeIt.More(); aTimeIt.Next())
   {
-    const Standard_Integer aTime = aTimeIt.Value();
+    const int aTime = aTimeIt.Value();
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aTime)
   }
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAllowModification)

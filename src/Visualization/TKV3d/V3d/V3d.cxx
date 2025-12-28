@@ -23,7 +23,7 @@
 
 namespace
 {
-static Standard_CString V3d_Table_PrintTypeOfOrientation[26] = {
+static const char* V3d_Table_PrintTypeOfOrientation[26] = {
   "XPOS",         "YPOS",         "ZPOS",         "XNEG",         "YNEG",         "ZNEG",
   "XPOSYPOS",     "XPOSZPOS",     "XPOSZPOS",     "XNEGYNEG",     "XNEGYPOS",     "XNEGZNEG",
   "XNEGZPOS",     "YNEGZNEG",     "YNEGZPOS",     "XPOSYNEG",     "XPOSZNEG",     "YPOSZNEG",
@@ -31,19 +31,19 @@ static Standard_CString V3d_Table_PrintTypeOfOrientation[26] = {
   "XNEGYNEGZPOS", "XNEGYNEGZNEG"};
 }
 
-void V3d::ArrowOfRadius(const Handle(Graphic3d_Group)& garrow,
-                        const Standard_Real            X0,
-                        const Standard_Real            Y0,
-                        const Standard_Real            Z0,
-                        const Standard_Real            Dx,
-                        const Standard_Real            Dy,
-                        const Standard_Real            Dz,
-                        const Standard_Real            Alpha,
-                        const Standard_Real            Lng)
+void V3d::ArrowOfRadius(const occ::handle<Graphic3d_Group>& garrow,
+                        const double                        X0,
+                        const double                        Y0,
+                        const double                        Z0,
+                        const double                        Dx,
+                        const double                        Dy,
+                        const double                        Dz,
+                        const double                        Alpha,
+                        const double                        Lng)
 {
-  Standard_Real          Xc, Yc, Zc, Xi, Yi, Zi, Xj, Yj, Zj;
-  Standard_Real          Xn, Yn, Zn, X, Y, Z, X1 = 0., Y1 = 0., Z1 = 0., Norme;
-  const Standard_Integer NbPoints = 10;
+  double    Xc, Yc, Zc, Xi, Yi, Zi, Xj, Yj, Zj;
+  double    Xn, Yn, Zn, X, Y, Z, X1 = 0., Y1 = 0., Z1 = 0., Norme;
+  const int NbPoints = 10;
 
   //      Centre du cercle base de la fleche :
   Xc = X0 - Dx * Lng;
@@ -72,15 +72,15 @@ void V3d::ArrowOfRadius(const Handle(Graphic3d_Group)& garrow,
   Yj = Dz * Xi - Dx * Zi;
   Zj = Dx * Yi - Dy * Xi;
 
-  Handle(Graphic3d_ArrayOfPolylines) aPrims =
+  occ::handle<Graphic3d_ArrayOfPolylines> aPrims =
     new Graphic3d_ArrayOfPolylines(3 * NbPoints, NbPoints);
 
-  Standard_Integer    i;
-  const Standard_Real Tg = std::tan(Alpha);
+  int          i;
+  const double Tg = std::tan(Alpha);
   for (i = 1; i <= NbPoints; i++)
   {
-    const Standard_Real cosinus = std::cos(2. * M_PI / NbPoints * (i - 1));
-    const Standard_Real sinus   = std::sin(2. * M_PI / NbPoints * (i - 1));
+    const double cosinus = std::cos(2. * M_PI / NbPoints * (i - 1));
+    const double sinus   = std::sin(2. * M_PI / NbPoints * (i - 1));
 
     X = Xc + (cosinus * Xi + sinus * Xj) * Lng * Tg;
     Y = Yc + (cosinus * Yi + sinus * Yj) * Lng * Tg;
@@ -101,19 +101,19 @@ void V3d::ArrowOfRadius(const Handle(Graphic3d_Group)& garrow,
   garrow->AddPrimitiveArray(aPrims);
 }
 
-void V3d::CircleInPlane(const Handle(Graphic3d_Group)& gcircle,
-                        const Standard_Real            X0,
-                        const Standard_Real            Y0,
-                        const Standard_Real            Z0,
-                        const Standard_Real            DX,
-                        const Standard_Real            DY,
-                        const Standard_Real            DZ,
-                        const Standard_Real            Rayon)
+void V3d::CircleInPlane(const occ::handle<Graphic3d_Group>& gcircle,
+                        const double                        X0,
+                        const double                        Y0,
+                        const double                        Z0,
+                        const double                        DX,
+                        const double                        DY,
+                        const double                        DZ,
+                        const double                        Rayon)
 {
-  Standard_Real Norme = std::sqrt(DX * DX + DY * DY + DZ * DZ);
+  double Norme = std::sqrt(DX * DX + DY * DY + DZ * DZ);
   if (Norme >= 0.0001)
   {
-    Standard_Real VX, VY, VZ, X, Y, Z, Xn, Yn, Zn, Xi, Yi, Zi, Xj, Yj, Zj;
+    double VX, VY, VZ, X, Y, Z, Xn, Yn, Zn, Xi, Yi, Zi, Xj, Yj, Zj;
 
     VX = DX / Norme;
     VY = DY / Norme;
@@ -140,16 +140,16 @@ void V3d::CircleInPlane(const Handle(Graphic3d_Group)& gcircle,
     Yj = VZ * Xi - VX * Zi;
     Zj = VX * Yi - VY * Xi;
 
-    const Standard_Integer             NFACES = 30;
-    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(NFACES + 1);
+    const int                               NFACES = 30;
+    occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(NFACES + 1);
 
-    Standard_Integer    i      = 0;
-    Standard_Real       Alpha  = 0.;
-    const Standard_Real Dalpha = 2. * M_PI / NFACES;
+    int          i      = 0;
+    double       Alpha  = 0.;
+    const double Dalpha = 2. * M_PI / NFACES;
     for (; i <= NFACES; i++, Alpha += Dalpha)
     {
-      const Standard_Real cosinus = std::cos(Alpha);
-      const Standard_Real sinus   = std::sin(Alpha);
+      const double cosinus = std::cos(Alpha);
+      const double sinus   = std::sin(Alpha);
 
       X = X0 + (cosinus * Xi + sinus * Xj) * Rayon;
       Y = Y0 + (cosinus * Yi + sinus * Yj) * Rayon;
@@ -161,8 +161,8 @@ void V3d::CircleInPlane(const Handle(Graphic3d_Group)& gcircle,
   }
 }
 
-void V3d::SwitchViewsinWindow(const Handle(V3d_View)& aPreviousView,
-                              const Handle(V3d_View)& aNextView)
+void V3d::SwitchViewsinWindow(const occ::handle<V3d_View>& aPreviousView,
+                              const occ::handle<V3d_View>& aNextView)
 {
   aPreviousView->Viewer()->SetViewOff(aPreviousView);
   if (!aNextView->IfWindow())
@@ -172,26 +172,25 @@ void V3d::SwitchViewsinWindow(const Handle(V3d_View)& aPreviousView,
 
 //=================================================================================================
 
-Standard_CString V3d::TypeOfOrientationToString(V3d_TypeOfOrientation theType)
+const char* V3d::TypeOfOrientationToString(V3d_TypeOfOrientation theType)
 {
   return V3d_Table_PrintTypeOfOrientation[theType];
 }
 
 //=================================================================================================
 
-Standard_Boolean V3d::TypeOfOrientationFromString(Standard_CString       theTypeString,
-                                                  V3d_TypeOfOrientation& theType)
+bool V3d::TypeOfOrientationFromString(const char* theTypeString, V3d_TypeOfOrientation& theType)
 {
   TCollection_AsciiString aName(theTypeString);
   aName.UpperCase();
-  for (Standard_Integer aTypeIter = 0; aTypeIter <= V3d_XnegYnegZneg; ++aTypeIter)
+  for (int aTypeIter = 0; aTypeIter <= V3d_XnegYnegZneg; ++aTypeIter)
   {
-    Standard_CString aTypeName = V3d_Table_PrintTypeOfOrientation[aTypeIter];
+    const char* aTypeName = V3d_Table_PrintTypeOfOrientation[aTypeIter];
     if (aName == aTypeName)
     {
       theType = V3d_TypeOfOrientation(aTypeIter);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }

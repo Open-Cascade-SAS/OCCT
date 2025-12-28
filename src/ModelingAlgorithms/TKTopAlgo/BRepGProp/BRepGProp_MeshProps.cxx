@@ -28,11 +28,11 @@
 //           of triangle p1, p2, p3
 //           relatively point Apex
 //=======================================================================
-static void CalculateElSProps(const Standard_Real x,
-                              const Standard_Real y,
-                              const Standard_Real z,
-                              const Standard_Real ds,
-                              Standard_Real*      GProps)
+static void CalculateElSProps(const double x,
+                              const double y,
+                              const double z,
+                              const double ds,
+                              double*      GProps)
 {
   // GProps[0] = Volume
   //  Static moments of inertia.
@@ -41,7 +41,7 @@ static void CalculateElSProps(const Standard_Real x,
   // GProps[4] = Ixx, GProps[5] = Iyy, GProps[6] = Izz,
   // GProps[7] = Ixy, aGProps[8] = Ixz, GProps[9] = Iyz,
   //
-  Standard_Real x2, y2, z2;
+  double x2, y2, z2;
   x2 = x * x;
   y2 = y * y;
   z2 = z * z;
@@ -64,13 +64,13 @@ static void CalculateElSProps(const Standard_Real x,
 // purpose  : Calculate one Gauss point for volume properties of pyramid,
 //           based on triangle p1, p2, p3 with apex Apex
 //=======================================================================
-static void CalculateElVProps(const Standard_Real x,
-                              const Standard_Real y,
-                              const Standard_Real z,
-                              const Standard_Real dv,
-                              Standard_Real*      GProps)
+static void CalculateElVProps(const double x,
+                              const double y,
+                              const double z,
+                              const double dv,
+                              double*      GProps)
 {
-  Standard_Real x2, y2, z2;
+  double x2, y2, z2;
   x2 = x * x;
   y2 = y * y;
   z2 = z * z;
@@ -78,7 +78,7 @@ static void CalculateElVProps(const Standard_Real x,
   GProps[1] += 0.25 * x * dv; // Ix
   GProps[2] += 0.25 * y * dv; // Iy
   GProps[3] += 0.25 * z * dv; // Iz
-  Standard_Real dv1 = 0.2 * dv;
+  double dv1 = 0.2 * dv;
   GProps[7] += x * y * dv1;     // Ixy
   GProps[8] += x * z * dv1;     // Ixz
   GProps[9] += y * z * dv1;     // Iyz
@@ -93,14 +93,14 @@ static void CalculateElVProps(const Standard_Real x,
 //           or volume properties of pyramid, based on triangle
 //           p1, p2, p3 with apex Apex by Gauss integration over triangle area.
 //=======================================================================
-void BRepGProp_MeshProps::CalculateProps(const gp_Pnt&          p1,
-                                         const gp_Pnt&          p2,
-                                         const gp_Pnt&          p3,
-                                         const gp_Pnt&          Apex,
-                                         const Standard_Boolean isVolume,
-                                         Standard_Real          GProps[10],
-                                         const Standard_Integer NbGaussPoints,
-                                         const Standard_Real*   GaussPnts)
+void BRepGProp_MeshProps::CalculateProps(const gp_Pnt& p1,
+                                         const gp_Pnt& p2,
+                                         const gp_Pnt& p3,
+                                         const gp_Pnt& Apex,
+                                         const bool    isVolume,
+                                         double        GProps[10],
+                                         const int     NbGaussPoints,
+                                         const double* GaussPnts)
 {
   // GProps[0] = Volume
   //  Static moments of inertia.
@@ -111,10 +111,10 @@ void BRepGProp_MeshProps::CalculateProps(const gp_Pnt&          p1,
   //
 
   // Define plane and coordinates of triangle nodes on plane
-  gp_Vec        aV12(p2, p1);
-  gp_Vec        aV23(p3, p2);
-  gp_Vec        aNorm = aV12 ^ aV23;
-  Standard_Real aDet  = aNorm.Magnitude();
+  gp_Vec aV12(p2, p1);
+  gp_Vec aV23(p3, p2);
+  gp_Vec aNorm = aV12 ^ aV23;
+  double aDet  = aNorm.Magnitude();
   if (aDet <= gp::Resolution())
   {
     return;
@@ -124,21 +124,21 @@ void BRepGProp_MeshProps::CalculateProps(const gp_Pnt&          p1,
   gp_Dir aDN(aNorm);
   gp_Ax3 aPosPln(aPC, aDN);
   // Coordinates of nodes on plane
-  Standard_Real x1, y1, x2, y2, x3, y3;
+  double x1, y1, x2, y2, x3, y3;
   ElSLib::PlaneParameters(aPosPln, p1, x1, y1);
   ElSLib::PlaneParameters(aPosPln, p2, x2, y2);
   ElSLib::PlaneParameters(aPosPln, p3, x3, y3);
   //
-  Standard_Real    l1, l2; // barycentriche coordinates
-  Standard_Real    x, y, z;
-  Standard_Real    w; // weight
-  Standard_Integer i;
+  double l1, l2; // barycentriche coordinates
+  double x, y, z;
+  double w; // weight
+  int    i;
   for (i = 0; i < NbGaussPoints; ++i)
   {
-    Standard_Integer ind = 3 * i;
-    l1                   = GaussPnts[ind];
-    l2                   = GaussPnts[ind + 1];
-    w                    = GaussPnts[ind + 2];
+    int ind = 3 * i;
+    l1      = GaussPnts[ind];
+    l2      = GaussPnts[ind + 1];
+    w       = GaussPnts[ind + 2];
     w *= aDet;
     x         = l1 * (x1 - x3) + l2 * (x2 - x3) + x3;
     y         = l1 * (y1 - y3) + l2 * (y2 - y3) + y3;
@@ -149,15 +149,15 @@ void BRepGProp_MeshProps::CalculateProps(const gp_Pnt&          p1,
     //
     if (isVolume)
     {
-      Standard_Real xn = aDN.X() * w;
-      Standard_Real yn = aDN.Y() * w;
-      Standard_Real zn = aDN.Z() * w;
-      Standard_Real dv = x * xn + y * yn + z * zn;
+      double xn = aDN.X() * w;
+      double yn = aDN.Y() * w;
+      double zn = aDN.Z() * w;
+      double dv = x * xn + y * yn + z * zn;
       CalculateElVProps(x, y, z, dv, GProps);
     }
     else
     {
-      Standard_Real ds = w;
+      double ds = w;
       CalculateElSProps(x, y, z, ds, GProps);
     }
   }
@@ -165,9 +165,9 @@ void BRepGProp_MeshProps::CalculateProps(const gp_Pnt&          p1,
 
 //=================================================================================================
 
-void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
-                                  const TopLoc_Location&            theLoc,
-                                  const TopAbs_Orientation          theOri)
+void BRepGProp_MeshProps::Perform(const occ::handle<Poly_Triangulation>& theMesh,
+                                  const TopLoc_Location&                 theLoc,
+                                  const TopAbs_Orientation               theOri)
 {
   if (theMesh.IsNull() || theMesh->NbNodes() == 0 || theMesh->NbTriangles() == 0)
   {
@@ -181,18 +181,18 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
   {
     const gp_Trsf& aTr = theLoc.Transformation();
     //
-    Standard_Boolean isToCopy = aTr.ScaleFactor() * aTr.HVectorialPart().Determinant() < 0.
-                                || std::abs(std::abs(aTr.ScaleFactor()) - 1.) > gp::Resolution();
+    bool isToCopy = aTr.ScaleFactor() * aTr.HVectorialPart().Determinant() < 0.
+                    || std::abs(std::abs(aTr.ScaleFactor()) - 1.) > gp::Resolution();
     if (isToCopy)
     {
-      Handle(Poly_Triangulation) aCopy =
+      occ::handle<Poly_Triangulation> aCopy =
         new Poly_Triangulation(theMesh->NbNodes(), theMesh->NbTriangles(), false);
-      TColgp_Array1OfPnt aNodes(1, theMesh->NbNodes());
-      for (Standard_Integer i = 1; i <= theMesh->NbNodes(); ++i)
+      NCollection_Array1<gp_Pnt> aNodes(1, theMesh->NbNodes());
+      for (int i = 1; i <= theMesh->NbNodes(); ++i)
       {
         aCopy->SetNode(i, theMesh->Node(i).Transformed(aTr));
       }
-      for (Standard_Integer i = 1; i <= theMesh->NbTriangles(); ++i)
+      for (int i = 1; i <= theMesh->NbTriangles(); ++i)
       {
         aCopy->SetTriangle(i, theMesh->Triangle(i));
       }
@@ -236,8 +236,8 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
 
 //=================================================================================================
 
-void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
-                                  const TopAbs_Orientation          theOri)
+void BRepGProp_MeshProps::Perform(const occ::handle<Poly_Triangulation>& theMesh,
+                                  const TopAbs_Orientation               theOri)
 {
   if (theMesh.IsNull() || theMesh->NbNodes() == 0 || theMesh->NbTriangles() == 0)
   {
@@ -245,20 +245,20 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
   }
   //
   // Gauss points for barycentriche coordinates
-  static const Standard_Real GPtsWg[] = {1. / 6.,
-                                         1. / 6.,
-                                         1. / 6., /*3 points*/
-                                         2. / 3.,
-                                         1. / 6.,
-                                         1. / 6.,
-                                         1. / 6.,
-                                         2. / 3.,
-                                         1. / 6.};
+  static const double GPtsWg[] = {1. / 6.,
+                                  1. / 6.,
+                                  1. / 6., /*3 points*/
+                                  2. / 3.,
+                                  1. / 6.,
+                                  1. / 6.,
+                                  1. / 6.,
+                                  2. / 3.,
+                                  1. / 6.};
   //
-  Standard_Integer aNbGaussPoints = 3;
+  int aNbGaussPoints = 3;
 
   // Array to store global properties
-  Standard_Real aGProps[10] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0};
+  double aGProps[10] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0};
   // aGProps[0] = Volume
   //  Static moments of inertia.
   // aGProps[1] = Ix, aGProps[2] = Iy, aGProps[3] = Iz
@@ -266,9 +266,9 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
   // aGProps[4] = Ixx, aGProps[5] = Iyy, aGProps[6] = Izz,
   // aGProps[7] = Ixy, aGProps[8] = Ixz, aGProps[9] = Iyz,
 
-  Standard_Boolean isVolume = myType == Vinert;
-  Standard_Integer n1, n2, n3; // node indices
-  for (Standard_Integer i = 1; i <= theMesh->NbTriangles(); ++i)
+  bool isVolume = myType == Vinert;
+  int  n1, n2, n3; // node indices
+  for (int i = 1; i <= theMesh->NbTriangles(); ++i)
   {
     const Poly_Triangle aTri = theMesh->Triangle(i);
     aTri.Get(n1, n2, n3);

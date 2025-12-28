@@ -27,14 +27,14 @@ StepFEA_DegreeOfFreedom::StepFEA_DegreeOfFreedom() {}
 
 //=================================================================================================
 
-Standard_Integer StepFEA_DegreeOfFreedom::CaseNum(const Handle(Standard_Transient)& /*ent*/) const
+int StepFEA_DegreeOfFreedom::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer StepFEA_DegreeOfFreedom::CaseMem(const Handle(StepData_SelectMember)& ent) const
+int StepFEA_DegreeOfFreedom::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -48,7 +48,7 @@ Standard_Integer StepFEA_DegreeOfFreedom::CaseMem(const Handle(StepData_SelectMe
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepFEA_DegreeOfFreedom::NewMember() const
+occ::handle<StepData_SelectMember> StepFEA_DegreeOfFreedom::NewMember() const
 {
   return new StepFEA_DegreeOfFreedomMember;
 }
@@ -58,31 +58,31 @@ Handle(StepData_SelectMember) StepFEA_DegreeOfFreedom::NewMember() const
 void StepFEA_DegreeOfFreedom::SetEnumeratedDegreeOfFreedom(
   const StepFEA_EnumeratedDegreeOfFreedom val)
 {
-  Handle(StepFEA_DegreeOfFreedomMember) SelMem =
-    Handle(StepFEA_DegreeOfFreedomMember)::DownCast(Value());
+  occ::handle<StepFEA_DegreeOfFreedomMember> SelMem =
+    occ::down_cast<StepFEA_DegreeOfFreedomMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ENUMERATED_DEGREE_OF_FREEDOM");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((Standard_Integer)val);
+  SelMem->SetEnum((int)val);
 }
 
 //=================================================================================================
 
 StepFEA_EnumeratedDegreeOfFreedom StepFEA_DegreeOfFreedom::EnumeratedDegreeOfFreedom() const
 {
-  Handle(StepFEA_DegreeOfFreedomMember) SelMem =
-    Handle(StepFEA_DegreeOfFreedomMember)::DownCast(Value());
+  occ::handle<StepFEA_DegreeOfFreedomMember> SelMem =
+    occ::down_cast<StepFEA_DegreeOfFreedomMember>(Value());
   if (SelMem.IsNull())
     return StepFEA_XTranslation;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ENUMERATED_DEGREE_OF_FREEDOM");
   if (name->IsDifferent(nameitem))
     return StepFEA_XTranslation;
-  Standard_Integer                  numit = SelMem->Enum();
+  int                               numit = SelMem->Enum();
   StepFEA_EnumeratedDegreeOfFreedom val;
   switch (numit)
   {
@@ -106,13 +106,13 @@ StepFEA_EnumeratedDegreeOfFreedom StepFEA_DegreeOfFreedom::EnumeratedDegreeOfFre
 //=================================================================================================
 
 void StepFEA_DegreeOfFreedom::SetApplicationDefinedDegreeOfFreedom(
-  const Handle(TCollection_HAsciiString)& val)
+  const occ::handle<TCollection_HAsciiString>& val)
 {
-  Handle(StepFEA_DegreeOfFreedomMember) SelMem =
-    Handle(StepFEA_DegreeOfFreedomMember)::DownCast(Value());
+  occ::handle<StepFEA_DegreeOfFreedomMember> SelMem =
+    occ::down_cast<StepFEA_DegreeOfFreedomMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("APPLICATION_DEFINED_DEGREE_OF_FREEDOM");
   SelMem->SetName(name->ToCString());
   SelMem->SetString(val->ToCString());
@@ -120,19 +120,20 @@ void StepFEA_DegreeOfFreedom::SetApplicationDefinedDegreeOfFreedom(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepFEA_DegreeOfFreedom::ApplicationDefinedDegreeOfFreedom() const
+occ::handle<TCollection_HAsciiString> StepFEA_DegreeOfFreedom::ApplicationDefinedDegreeOfFreedom()
+  const
 {
-  Handle(StepFEA_DegreeOfFreedomMember) SelMem =
-    Handle(StepFEA_DegreeOfFreedomMember)::DownCast(Value());
+  occ::handle<StepFEA_DegreeOfFreedomMember> SelMem =
+    occ::down_cast<StepFEA_DegreeOfFreedomMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("APPLICATION_DEFINED_DEGREE_OF_FREEDOM");
   if (name->IsDifferent(nameitem))
     return 0;
-  Handle(TCollection_HAsciiString) val = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;
 }

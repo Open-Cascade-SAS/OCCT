@@ -63,17 +63,17 @@ public:
   //! Warning
   //! Use the function NbExtrema to obtain the number
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT Geom2dAPI_ExtremaCurveCurve(const Handle(Geom2d_Curve)& C1,
-                                              const Handle(Geom2d_Curve)& C2,
-                                              const Standard_Real         U1min,
-                                              const Standard_Real         U1max,
-                                              const Standard_Real         U2min,
-                                              const Standard_Real         U2max);
+  Standard_EXPORT Geom2dAPI_ExtremaCurveCurve(const occ::handle<Geom2d_Curve>& C1,
+                                              const occ::handle<Geom2d_Curve>& C2,
+                                              const double                     U1min,
+                                              const double                     U1max,
+                                              const double                     U2min,
+                                              const double                     U2max);
 
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT Standard_Integer NbExtrema() const;
-  Standard_EXPORT                  operator Standard_Integer() const;
+  Standard_EXPORT int NbExtrema() const;
+  Standard_EXPORT     operator int() const;
 
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the
@@ -82,7 +82,7 @@ public:
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Points(const Standard_Integer Index, gp_Pnt2d& P1, gp_Pnt2d& P2) const;
+  Standard_EXPORT void Points(const int Index, gp_Pnt2d& P1, gp_Pnt2d& P2) const;
 
   //! Returns the parameters U1 of the point on the first
   //! curve and U2 of the point on the second curve, which
@@ -92,9 +92,7 @@ public:
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters(const Standard_Integer Index,
-                                  Standard_Real&         U1,
-                                  Standard_Real&         U2) const;
+  Standard_EXPORT void Parameters(const int Index, double& U1, double& U2) const;
 
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
@@ -102,7 +100,7 @@ public:
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT Standard_Real Distance(const Standard_Integer Index) const;
+  Standard_EXPORT double Distance(const int Index) const;
 
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the shortest
@@ -115,20 +113,19 @@ public:
   //! are the ends of the shortest extremum computed by this algorithm.
   //! Exceptions
   //! StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void LowerDistanceParameters(Standard_Real& U1, Standard_Real& U2) const;
+  Standard_EXPORT void LowerDistanceParameters(double& U1, double& U2) const;
 
   //! Computes the distance between the end points of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT Standard_Real LowerDistance() const;
-  Standard_EXPORT               operator Standard_Real() const;
+  Standard_EXPORT double LowerDistance() const;
+  Standard_EXPORT        operator double() const;
 
   const Extrema_ExtCC2d& Extrema() const;
 
-protected:
 private:
-  Standard_Boolean    myIsDone;
-  Standard_Integer    myIndex;
+  bool                myIsDone;
+  int                 myIndex;
   Extrema_ExtCC2d     myExtCC;
   Geom2dAdaptor_Curve myC1;
   Geom2dAdaptor_Curve myC2;

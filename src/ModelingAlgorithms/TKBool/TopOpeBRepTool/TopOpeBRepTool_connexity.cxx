@@ -15,7 +15,21 @@
 // commercial license or contractual agreement.
 
 #include <TopOpeBRepTool_connexity.hxx>
-#include <TopOpeBRepTool_define.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
 #define M_FORWARD(sta) (sta == TopAbs_FORWARD)
@@ -58,9 +72,9 @@ const TopoDS_Shape& TopOpeBRepTool_connexity::Key() const
   return theKey;
 }
 
-/*static Standard_Integer FUN_toI(const TopAbs_Orientation& O)
+/*static int FUN_toI(const TopAbs_Orientation& O)
 {
-  Standard_Integer Index = 0;
+  int Index = 0;
   if      (O == TopAbs_FORWARD)  Index = 1;
   else if (O == TopAbs_REVERSED) Index = 2;
   else if (O == TopAbs_INTERNAL) Index = 3;
@@ -70,8 +84,7 @@ const TopoDS_Shape& TopOpeBRepTool_connexity::Key() const
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepTool_connexity::Item(const Standard_Integer OriKey,
-                                                TopTools_ListOfShape&  Item) const
+int TopOpeBRepTool_connexity::Item(const int OriKey, NCollection_List<TopoDS_Shape>& Item) const
 {
   Item.Clear();
   Item = theItems(OriKey);
@@ -80,12 +93,12 @@ Standard_Integer TopOpeBRepTool_connexity::Item(const Standard_Integer OriKey,
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepTool_connexity::AllItems(TopTools_ListOfShape& Item) const
+int TopOpeBRepTool_connexity::AllItems(NCollection_List<TopoDS_Shape>& Item) const
 {
   Item.Clear();
-  for (Standard_Integer i = 1; i <= 4; i++)
+  for (int i = 1; i <= 4; i++)
   {
-    TopTools_ListOfShape copy;
+    NCollection_List<TopoDS_Shape> copy;
     copy.Assign(theItems.Value(i));
     Item.Append(copy);
   }
@@ -94,96 +107,94 @@ Standard_Integer TopOpeBRepTool_connexity::AllItems(TopTools_ListOfShape& Item) 
 
 //=================================================================================================
 
-void TopOpeBRepTool_connexity::AddItem(const Standard_Integer      OriKey,
-                                       const TopTools_ListOfShape& Item)
+void TopOpeBRepTool_connexity::AddItem(const int OriKey, const NCollection_List<TopoDS_Shape>& Item)
 {
-  TopTools_ListOfShape copy;
+  NCollection_List<TopoDS_Shape> copy;
   copy.Assign(Item);
   theItems(OriKey).Append(copy);
 }
 
-void TopOpeBRepTool_connexity::AddItem(const Standard_Integer OriKey, const TopoDS_Shape& Item)
+void TopOpeBRepTool_connexity::AddItem(const int OriKey, const TopoDS_Shape& Item)
 {
-  TopTools_ListOfShape copy;
+  NCollection_List<TopoDS_Shape> copy;
   copy.Append(Item);
   theItems(OriKey).Append(copy);
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_connexity::RemoveItem(const Standard_Integer OriKey,
-                                                      const TopoDS_Shape&    Item)
+bool TopOpeBRepTool_connexity::RemoveItem(const int OriKey, const TopoDS_Shape& Item)
 {
-  TopTools_ListOfShape&              item = theItems.ChangeValue(OriKey);
-  TopTools_ListIteratorOfListOfShape it(item);
+  NCollection_List<TopoDS_Shape>&          item = theItems.ChangeValue(OriKey);
+  NCollection_List<TopoDS_Shape>::Iterator it(item);
   while (it.More())
   {
     if (it.Value().IsEqual(Item))
     {
       item.Remove(it);
-      return Standard_True;
+      return true;
     }
     else
       it.Next();
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_connexity::RemoveItem(const TopoDS_Shape& Item)
+bool TopOpeBRepTool_connexity::RemoveItem(const TopoDS_Shape& Item)
 {
-  Standard_Boolean removed = Standard_False;
-  for (Standard_Integer i = 1; i <= 5; i++)
+  bool removed = false;
+  for (int i = 1; i <= 5; i++)
   {
-    Standard_Boolean found = RemoveItem(i, Item);
+    bool found = RemoveItem(i, Item);
     if (found)
-      removed = Standard_True;
+      removed = true;
   }
   return removed;
 }
 
 //=================================================================================================
 
-TopTools_ListOfShape& TopOpeBRepTool_connexity::ChangeItem(const Standard_Integer OriKey)
+NCollection_List<TopoDS_Shape>& TopOpeBRepTool_connexity::ChangeItem(const int OriKey)
 {
   return theItems.ChangeValue(OriKey);
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_connexity::IsMultiple() const
+bool TopOpeBRepTool_connexity::IsMultiple() const
 {
-  TopTools_ListOfShape lfound;
-  Standard_Integer     nkeyitem = Item(FORWARD, lfound);
+  NCollection_List<TopoDS_Shape> lfound;
+  int                            nkeyitem = Item(FORWARD, lfound);
   //  nkeyRitem += Item(INTERNAL,lfound); NOT VALID
   // if key is vertex : key appears F in closing E, only one time
   nkeyitem += Item(CLOSING, lfound);
-  Standard_Boolean multiple = (nkeyitem > 1);
+  bool multiple = (nkeyitem > 1);
   return multiple;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_connexity::IsFaulty() const
+bool TopOpeBRepTool_connexity::IsFaulty() const
 {
-  TopTools_ListOfShape lfound;
-  Standard_Integer     nkeyRintem = Item(FORWARD, lfound);
-  Standard_Integer     nkeyFitem  = Item(REVERSED, lfound);
-  Standard_Boolean     faulty     = (nkeyRintem != nkeyFitem);
+  NCollection_List<TopoDS_Shape> lfound;
+  int                            nkeyRintem = Item(FORWARD, lfound);
+  int                            nkeyFitem  = Item(REVERSED, lfound);
+  bool                           faulty     = (nkeyRintem != nkeyFitem);
   return faulty;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepTool_connexity::IsInternal(TopTools_ListOfShape& Item) const
+int TopOpeBRepTool_connexity::IsInternal(NCollection_List<TopoDS_Shape>& Item) const
 {
   Item.Clear();
 
   // all subshapes of INTERNAL(EXTERNAL) are oriented INTERNAL(EXTERNAL)
-  TopTools_ListOfShape lINT;
+  NCollection_List<TopoDS_Shape> lINT;
   lINT.Assign(theItems.Value(INTERNAL));
-  TopTools_ListIteratorOfListOfShape it1(lINT);
+  NCollection_List<TopoDS_Shape>::Iterator it1(lINT);
   while (it1.More())
   {
     const TopoDS_Shape& item1 = it1.Value();
@@ -193,16 +204,16 @@ Standard_Integer TopOpeBRepTool_connexity::IsInternal(TopTools_ListOfShape& Item
       it1.Next();
       continue;
     }
-    Standard_Integer oKey1 = TopOpeBRepTool_TOOL::OriinSor(theKey, item1.Oriented(TopAbs_FORWARD));
+    int oKey1 = TopOpeBRepTool_TOOL::OriinSor(theKey, item1.Oriented(TopAbs_FORWARD));
     if (oKey1 != INTERNAL)
       lINT.Remove(it1);
     else
       it1.Next();
   }
 
-  TopTools_ListOfShape lEXT;
+  NCollection_List<TopoDS_Shape> lEXT;
   lEXT.Assign(theItems.Value(EXTERNAL));
-  TopTools_ListIteratorOfListOfShape it2(lEXT);
+  NCollection_List<TopoDS_Shape>::Iterator it2(lEXT);
   while (it2.More())
   {
     const TopoDS_Shape& item2 = it2.Value();
@@ -212,7 +223,7 @@ Standard_Integer TopOpeBRepTool_connexity::IsInternal(TopTools_ListOfShape& Item
       it2.Next();
       continue;
     }
-    Standard_Integer oKey2 = TopOpeBRepTool_TOOL::OriinSor(theKey, item2.Oriented(TopAbs_FORWARD));
+    int oKey2 = TopOpeBRepTool_TOOL::OriinSor(theKey, item2.Oriented(TopAbs_FORWARD));
     if (oKey2 == INTERNAL)
       lINT.Append(item2);
     it2.Next();

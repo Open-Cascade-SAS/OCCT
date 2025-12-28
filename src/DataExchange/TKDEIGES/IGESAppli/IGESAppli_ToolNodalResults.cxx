@@ -16,9 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_HArray1OfNode.hxx>
-#include <IGESAppli_NodalResults.hxx>
 #include <IGESAppli_Node.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESAppli_NodalResults.hxx>
 #include <IGESAppli_ToolNodalResults.hxx>
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_IGESDumper.hxx>
@@ -29,26 +30,27 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 IGESAppli_ToolNodalResults::IGESAppli_ToolNodalResults() {}
 
-void IGESAppli_ToolNodalResults::ReadOwnParams(const Handle(IGESAppli_NodalResults)&  ent,
-                                               const Handle(IGESData_IGESReaderData)& IR,
-                                               IGESData_ParamReader&                  PR) const
+void IGESAppli_ToolNodalResults::ReadOwnParams(const occ::handle<IGESAppli_NodalResults>&  ent,
+                                               const occ::handle<IGESData_IGESReaderData>& IR,
+                                               IGESData_ParamReader&                       PR) const
 {
-  Standard_Integer tempSubCaseNum = 0;
-  Standard_Real    tempTime;
-  Standard_Integer nbval   = 0;
-  Standard_Integer nbnodes = 0;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Handle(IGESDimen_GeneralNote)    tempNote;
-  Handle(TColStd_HArray2OfReal)    tempData;
-  Handle(IGESAppli_HArray1OfNode)  tempNodes;
-  Handle(TColStd_HArray1OfInteger) tempNodeIdentifiers;
+  int    tempSubCaseNum = 0;
+  double tempTime;
+  int    nbval   = 0;
+  int    nbnodes = 0;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  occ::handle<IGESDimen_GeneralNote>                            tempNote;
+  occ::handle<NCollection_HArray2<double>>                      tempData;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>> tempNodes;
+  occ::handle<NCollection_HArray1<int>>                         tempNodeIdentifiers;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadEntity(IR,
@@ -58,18 +60,18 @@ void IGESAppli_ToolNodalResults::ReadOwnParams(const Handle(IGESAppli_NodalResul
                 tempNote);
   PR.ReadInteger(PR.Current(), "Subcase number", tempSubCaseNum);
   PR.ReadReal(PR.Current(), "Analysis time used", tempTime);
-  Standard_Boolean tempFlag = PR.ReadInteger(PR.Current(), "No. of values", nbval);
+  bool tempFlag = PR.ReadInteger(PR.Current(), "No. of values", nbval);
   // szv#4:S4163:12Mar99 moved in if
   if (PR.ReadInteger(PR.Current(), "No. of nodes", nbnodes))
   {
-    tempData            = new TColStd_HArray2OfReal(1, nbnodes, 1, nbval);
-    tempNodes           = new IGESAppli_HArray1OfNode(1, nbnodes);
-    tempNodeIdentifiers = new TColStd_HArray1OfInteger(1, nbnodes);
-    for (Standard_Integer i = 1; i <= nbnodes; i++)
+    tempData            = new NCollection_HArray2<double>(1, nbnodes, 1, nbval);
+    tempNodes           = new NCollection_HArray1<occ::handle<IGESAppli_Node>>(1, nbnodes);
+    tempNodeIdentifiers = new NCollection_HArray1<int>(1, nbnodes);
+    for (int i = 1; i <= nbnodes; i++)
     {
-      Standard_Integer aitem;
+      int aitem;
       // Check  whether nbval properly read or not.
-      Handle(IGESAppli_Node) aNode;
+      occ::handle<IGESAppli_Node> aNode;
 
       if (PR.ReadInteger(PR.Current(), "Node no. identifier", aitem))
         tempNodeIdentifiers->SetValue(i, aitem);
@@ -77,9 +79,9 @@ void IGESAppli_ToolNodalResults::ReadOwnParams(const Handle(IGESAppli_NodalResul
         tempNodes->SetValue(i, aNode);
       if (tempFlag)
         // Check  whether nbval properly read or not.
-        for (Standard_Integer j = 1; j <= nbval; j++)
+        for (int j = 1; j <= nbval; j++)
         {
-          Standard_Real aval;
+          double aval;
           if (PR.ReadReal(PR.Current(), "Value", aval))
             tempData->SetValue(i, j, aval);
         }
@@ -89,54 +91,56 @@ void IGESAppli_ToolNodalResults::ReadOwnParams(const Handle(IGESAppli_NodalResul
   ent->Init(tempNote, tempSubCaseNum, tempTime, tempNodeIdentifiers, tempNodes, tempData);
 }
 
-void IGESAppli_ToolNodalResults::WriteOwnParams(const Handle(IGESAppli_NodalResults)& ent,
-                                                IGESData_IGESWriter&                  IW) const
+void IGESAppli_ToolNodalResults::WriteOwnParams(const occ::handle<IGESAppli_NodalResults>& ent,
+                                                IGESData_IGESWriter&                       IW) const
 {
-  Standard_Integer nbnodes = ent->NbNodes();
-  Standard_Integer nbdata  = ent->NbData();
+  int nbnodes = ent->NbNodes();
+  int nbdata  = ent->NbData();
   IW.Send(ent->Note());
   IW.Send(ent->SubCaseNumber());
   IW.Send(ent->Time());
   IW.Send(nbdata);
   IW.Send(nbnodes);
-  for (Standard_Integer i = 1; i <= nbnodes; i++)
+  for (int i = 1; i <= nbnodes; i++)
   {
     IW.Send(ent->NodeIdentifier(i));
     IW.Send(ent->Node(i));
-    for (Standard_Integer j = 1; j <= nbdata; j++)
+    for (int j = 1; j <= nbdata; j++)
       IW.Send(ent->Data(i, j));
   }
 }
 
-void IGESAppli_ToolNodalResults::OwnShared(const Handle(IGESAppli_NodalResults)& ent,
-                                           Interface_EntityIterator&             iter) const
+void IGESAppli_ToolNodalResults::OwnShared(const occ::handle<IGESAppli_NodalResults>& ent,
+                                           Interface_EntityIterator&                  iter) const
 {
-  Standard_Integer nbnodes = ent->NbNodes();
+  int nbnodes = ent->NbNodes();
   iter.GetOneItem(ent->Note());
-  for (Standard_Integer i = 1; i <= nbnodes; i++)
+  for (int i = 1; i <= nbnodes; i++)
     iter.GetOneItem(ent->Node(i));
 }
 
-void IGESAppli_ToolNodalResults::OwnCopy(const Handle(IGESAppli_NodalResults)& another,
-                                         const Handle(IGESAppli_NodalResults)& ent,
-                                         Interface_CopyTool&                   TC) const
+void IGESAppli_ToolNodalResults::OwnCopy(const occ::handle<IGESAppli_NodalResults>& another,
+                                         const occ::handle<IGESAppli_NodalResults>& ent,
+                                         Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, aNote, TC.Transferred(another->Note()));
-  Standard_Integer                 aSubCaseNum      = another->SubCaseNumber();
-  Standard_Real                    aTime            = another->Time();
-  Standard_Integer                 nbnodes          = another->NbNodes();
-  Standard_Integer                 nbval            = another->NbData();
-  Handle(TColStd_HArray1OfInteger) aNodeIdentifiers = new TColStd_HArray1OfInteger(1, nbnodes);
-  Handle(IGESAppli_HArray1OfNode)  aNodes           = new IGESAppli_HArray1OfNode(1, nbnodes);
-  Handle(TColStd_HArray2OfReal)    aData = new TColStd_HArray2OfReal(1, nbnodes, 1, nbval);
+  int                                   aSubCaseNum      = another->SubCaseNumber();
+  double                                aTime            = another->Time();
+  int                                   nbnodes          = another->NbNodes();
+  int                                   nbval            = another->NbData();
+  occ::handle<NCollection_HArray1<int>> aNodeIdentifiers = new NCollection_HArray1<int>(1, nbnodes);
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>> aNodes =
+    new NCollection_HArray1<occ::handle<IGESAppli_Node>>(1, nbnodes);
+  occ::handle<NCollection_HArray2<double>> aData =
+    new NCollection_HArray2<double>(1, nbnodes, 1, nbval);
 
-  for (Standard_Integer i = 1; i <= nbnodes; i++)
+  for (int i = 1; i <= nbnodes; i++)
   {
-    Standard_Integer aItem = another->NodeIdentifier(i);
+    int aItem = another->NodeIdentifier(i);
     aNodeIdentifiers->SetValue(i, aItem);
     DeclareAndCast(IGESAppli_Node, anentity, TC.Transferred(another->Node(i)));
     aNodes->SetValue(i, anentity);
-    for (Standard_Integer j = 1; j <= nbval; j++)
+    for (int j = 1; j <= nbval; j++)
       aData->SetValue(i, j, another->Data(i, j));
   }
 
@@ -145,7 +149,7 @@ void IGESAppli_ToolNodalResults::OwnCopy(const Handle(IGESAppli_NodalResults)& a
 }
 
 IGESData_DirChecker IGESAppli_ToolNodalResults::DirChecker(
-  const Handle(IGESAppli_NodalResults)& /* ent */) const
+  const occ::handle<IGESAppli_NodalResults>& /* ent */) const
 {
   IGESData_DirChecker DC(146, 0, 34); // Type = 146 Form No. = 0 to 34
   DC.Structure(IGESData_DefVoid);
@@ -158,154 +162,154 @@ IGESData_DirChecker IGESAppli_ToolNodalResults::DirChecker(
   return DC;
 }
 
-void IGESAppli_ToolNodalResults::OwnCheck(const Handle(IGESAppli_NodalResults)& ent,
+void IGESAppli_ToolNodalResults::OwnCheck(const occ::handle<IGESAppli_NodalResults>& ent,
                                           const Interface_ShareTool&,
-                                          Handle(Interface_Check)& ach) const
+                                          occ::handle<Interface_Check>& ach) const
 {
-  Standard_Integer FormNum = ent->FormNumber();
-  Standard_Integer nv      = ent->NbData();
-  Standard_Boolean OK      = Standard_True;
+  int  FormNum = ent->FormNumber();
+  int  nv      = ent->NbData();
+  bool OK      = true;
   switch (FormNum)
   {
     case 0:
       if (nv < 0)
-        OK = Standard_False;
+        OK = false;
       break;
     case 1:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 2:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 3:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 4:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 5:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 6:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 7:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 8:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 9:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 10:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 11:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 12:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 13:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 14:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 15:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 16:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 17:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 18:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 19:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 20:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 21:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 22:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 23:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 24:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 25:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 26:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 27:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 28:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 29:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 30:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 31:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 32:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 33:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 34:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     default:
       ach->AddFail("Incorrect Form Number");
@@ -315,13 +319,13 @@ void IGESAppli_ToolNodalResults::OwnCheck(const Handle(IGESAppli_NodalResults)& 
     ach->AddFail("Incorrect count of real values in array V for FEM node");
 }
 
-void IGESAppli_ToolNodalResults::OwnDump(const Handle(IGESAppli_NodalResults)& ent,
-                                         const IGESData_IGESDumper&            dumper,
-                                         Standard_OStream&                     S,
-                                         const Standard_Integer                level) const
+void IGESAppli_ToolNodalResults::OwnDump(const occ::handle<IGESAppli_NodalResults>& ent,
+                                         const IGESData_IGESDumper&                 dumper,
+                                         Standard_OStream&                          S,
+                                         const int                                  level) const
 {
-  //  Standard_Integer nbnodes = ent->NbNodes();
-  //  Standard_Integer nbdata  = ent->NbData ();
+  //  int nbnodes = ent->NbNodes();
+  //  int nbdata  = ent->NbData ();
   S << "IGESAppli_NodalResults\n";
 
   S << "General Note : ";
@@ -340,7 +344,7 @@ void IGESAppli_ToolNodalResults::OwnDump(const Handle(IGESAppli_NodalResults)& e
   S << "\n";
   if (level > 4)
   {
-    for (Standard_Integer i = 1; i <= ent->NbNodes(); i++)
+    for (int i = 1; i <= ent->NbNodes(); i++)
     {
       S << "[" << i << "]: ";
       S << "NodeIdentifier : " << ent->NodeIdentifier(i) << "  ";
@@ -350,7 +354,7 @@ void IGESAppli_ToolNodalResults::OwnDump(const Handle(IGESAppli_NodalResults)& e
       if (level < 6)
         continue;
       S << "Data : [ ";
-      for (Standard_Integer j = 1; j <= ent->NbData(); j++)
+      for (int j = 1; j <= ent->NbData(); j++)
         S << "  " << ent->Data(i, j);
       S << " ]\n";
     }

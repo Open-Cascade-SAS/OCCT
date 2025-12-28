@@ -19,9 +19,6 @@
 
 #include <TDataStd_Expression.hxx>
 
-class TDataStd_Relation;
-DEFINE_STANDARD_HANDLE(TDataStd_Relation, TDataStd_Expression)
-
 //! Relation attribute.
 //! ==================
 //!
@@ -41,7 +38,7 @@ public:
   //! Find, or create, an Relation attribute.
   //! Real methods
   //! ============
-  Standard_EXPORT static Handle(TDataStd_Relation) Set(const TDF_Label& label);
+  Standard_EXPORT static occ::handle<TDataStd_Relation> Set(const TDF_Label& label);
 
   Standard_EXPORT TDataStd_Relation();
 
@@ -49,13 +46,13 @@ public:
 
   Standard_EXPORT const TCollection_ExtendedString& GetRelation() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_Relation, TDataStd_Expression)
 };

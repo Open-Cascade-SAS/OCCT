@@ -50,22 +50,19 @@ class PrsDim_Relation : public AIS_InteractiveObject
 public:
   //! Allows you to provide settings for the color theColor
   //! of the lines representing the relation between the two shapes.
-  Standard_EXPORT void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
 
   //! Allows you to remove settings for the color of the
   //! lines representing the relation between the two shapes.
-  Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT void UnsetColor() override;
 
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
-  {
-    return AIS_KindOfInteractive_Relation;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Relation; }
 
   //! Indicates that the type of dimension is unknown.
   virtual PrsDim_KindOfDimension KindOfDimension() const { return PrsDim_KOD_NONE; }
 
   //! Returns true if the interactive object is movable.
-  virtual Standard_Boolean IsMovable() const { return Standard_False; }
+  virtual bool IsMovable() const { return false; }
 
   const TopoDS_Shape& FirstShape() const { return myFShape; }
 
@@ -78,31 +75,31 @@ public:
   //! relative to the first.
   virtual void SetSecondShape(const TopoDS_Shape& aSShape) { mySShape = aSShape; }
 
-  void SetBndBox(const Standard_Real theXmin,
-                 const Standard_Real theYmin,
-                 const Standard_Real theZmin,
-                 const Standard_Real theXmax,
-                 const Standard_Real theYmax,
-                 const Standard_Real theZmax)
+  void SetBndBox(const double theXmin,
+                 const double theYmin,
+                 const double theZmin,
+                 const double theXmax,
+                 const double theYmax,
+                 const double theZmax)
   {
     myBndBox.Update(theXmin, theYmin, theZmin, theXmax, theYmax, theZmax);
-    myIsSetBndBox = Standard_True;
+    myIsSetBndBox = true;
   }
 
-  void UnsetBndBox() { myIsSetBndBox = Standard_False; }
+  void UnsetBndBox() { myIsSetBndBox = false; }
 
   //! Returns the plane.
-  const Handle(Geom_Plane)& Plane() const { return myPlane; }
+  const occ::handle<Geom_Plane>& Plane() const { return myPlane; }
 
   //! Allows you to set the plane thePlane. This is used to
   //! define relations and dimensions in several daughter classes.
-  void SetPlane(const Handle(Geom_Plane)& thePlane) { myPlane = thePlane; }
+  void SetPlane(const occ::handle<Geom_Plane>& thePlane) { myPlane = thePlane; }
 
   //! Returns the value of each object in the relation.
-  Standard_Real Value() const { return myVal; }
+  double Value() const { return myVal; }
 
   //! Allows you to provide settings for the value theVal for each object in the relation.
-  void SetValue(const Standard_Real theVal) { myVal = theVal; }
+  void SetValue(const double theVal) { myVal = theVal; }
 
   //! Returns the position set using SetPosition.
   const gp_Pnt& Position() const { return myPosition; }
@@ -112,7 +109,7 @@ public:
   void SetPosition(const gp_Pnt& thePosition)
   {
     myPosition          = thePosition;
-    myAutomaticPosition = Standard_False;
+    myAutomaticPosition = false;
   }
 
   //! Returns settings for text aspect.
@@ -123,14 +120,14 @@ public:
 
   //! Returns the value for the size of the arrow identifying
   //! the relation between the two shapes.
-  Standard_Real ArrowSize() const { return myArrowSize; }
+  double ArrowSize() const { return myArrowSize; }
 
   //! Allows you to provide settings for the size of the
   //! arrow theArrowSize identifying the relation between the two shapes.
-  void SetArrowSize(const Standard_Real theArrowSize)
+  void SetArrowSize(const double theArrowSize)
   {
     myArrowSize          = theArrowSize;
-    myArrowSizeIsDefined = Standard_True;
+    myArrowSizeIsDefined = true;
   }
 
   //! Returns the value of the symbol presentation. This will be one of:
@@ -154,10 +151,10 @@ public:
   //! -   0 - there is no connection to a shape;
   //! -   1 - there is a connection to the first shape;
   //! -   2 - there is a connection to the second shape.
-  void SetExtShape(const Standard_Integer theIndex) { myExtShape = theIndex; }
+  void SetExtShape(const int theIndex) { myExtShape = theIndex; }
 
   //! Returns the status index of the extension shape.
-  Standard_Integer ExtShape() const { return myExtShape; }
+  int ExtShape() const { return myExtShape; }
 
   //! Returns true if the display mode aMode is accepted
   //! for the Interactive Objects in the relation.
@@ -173,14 +170,11 @@ public:
   //! aWidth   : Real                 from Standard = 2;
   //! aProjTOL : TypeOfLine           from Aspect   = Aspect_TOL_DASH;
   //! aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT)
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
-  {
-    return theMode == 0;
-  }
+  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
-  void SetAutomaticPosition(const Standard_Boolean theStatus) { myAutomaticPosition = theStatus; }
+  void SetAutomaticPosition(const bool theStatus) { myAutomaticPosition = theStatus; }
 
-  Standard_Boolean AutomaticPosition() const { return myAutomaticPosition; }
+  bool AutomaticPosition() const { return myAutomaticPosition; }
 
 protected:
   Standard_EXPORT PrsDim_Relation(
@@ -192,53 +186,51 @@ protected:
   //! The presentation includes settings for color aColor,
   //! type - aProjTOL and aCallTOL -   and width of line, aWidth.
   Standard_EXPORT void ComputeProjEdgePresentation(
-    const Handle(Prs3d_Presentation)& aPres,
-    const TopoDS_Edge&                anEdge,
-    const Handle(Geom_Curve)&         ProjCurve,
-    const gp_Pnt&                     FirstP,
-    const gp_Pnt&                     LastP,
-    const Quantity_NameOfColor        aColor   = Quantity_NOC_PURPLE,
-    const Standard_Real               aWidth   = 2,
-    const Aspect_TypeOfLine           aProjTOL = Aspect_TOL_DASH,
-    const Aspect_TypeOfLine           aCallTOL = Aspect_TOL_DOT) const;
+    const occ::handle<Prs3d_Presentation>& aPres,
+    const TopoDS_Edge&                     anEdge,
+    const occ::handle<Geom_Curve>&         ProjCurve,
+    const gp_Pnt&                          FirstP,
+    const gp_Pnt&                          LastP,
+    const Quantity_NameOfColor             aColor   = Quantity_NOC_PURPLE,
+    const double                           aWidth   = 2,
+    const Aspect_TypeOfLine                aProjTOL = Aspect_TOL_DASH,
+    const Aspect_TypeOfLine                aCallTOL = Aspect_TOL_DOT) const;
 
   //! Calculates the presentation aPres of the vertex
   //! aVertex and the point it defines, ProjPoint.
   //! The presentation includes settings for color aColor,
   //! type - aProjTOM and aCallTOL -   and width of line, aWidth.
   Standard_EXPORT void ComputeProjVertexPresentation(
-    const Handle(Prs3d_Presentation)& aPres,
-    const TopoDS_Vertex&              aVertex,
-    const gp_Pnt&                     ProjPoint,
-    const Quantity_NameOfColor        aColor   = Quantity_NOC_PURPLE,
-    const Standard_Real               aWidth   = 2,
-    const Aspect_TypeOfMarker         aProjTOM = Aspect_TOM_PLUS,
-    const Aspect_TypeOfLine           aCallTOL = Aspect_TOL_DOT) const;
+    const occ::handle<Prs3d_Presentation>& aPres,
+    const TopoDS_Vertex&                   aVertex,
+    const gp_Pnt&                          ProjPoint,
+    const Quantity_NameOfColor             aColor   = Quantity_NOC_PURPLE,
+    const double                           aWidth   = 2,
+    const Aspect_TypeOfMarker              aProjTOM = Aspect_TOM_PLUS,
+    const Aspect_TypeOfLine                aCallTOL = Aspect_TOL_DOT) const;
 
 protected:
   TopoDS_Shape               myFShape;
   TopoDS_Shape               mySShape;
-  Handle(Geom_Plane)         myPlane;
-  Standard_Real              myVal;
+  occ::handle<Geom_Plane>    myPlane;
+  double                     myVal;
   gp_Pnt                     myPosition;
   TCollection_ExtendedString myText;
-  Standard_Real              myArrowSize;
-  Standard_Boolean           myAutomaticPosition;
+  double                     myArrowSize;
+  bool                       myAutomaticPosition;
   DsgPrs_ArrowSide           mySymbolPrs;
-  Standard_Integer           myExtShape;
+  int                        myExtShape;
   gp_Pln                     myFirstPlane;
   gp_Pln                     mySecondPlane;
-  Handle(Geom_Surface)       myFirstBasisSurf;
-  Handle(Geom_Surface)       mySecondBasisSurf;
+  occ::handle<Geom_Surface>  myFirstBasisSurf;
+  occ::handle<Geom_Surface>  mySecondBasisSurf;
   PrsDim_KindOfSurface       myFirstSurfType;
   PrsDim_KindOfSurface       mySecondSurfType;
-  Standard_Real              myFirstOffset;
-  Standard_Real              mySecondOffset;
+  double                     myFirstOffset;
+  double                     mySecondOffset;
   Bnd_Box                    myBndBox;
-  Standard_Boolean           myIsSetBndBox;
-  Standard_Boolean           myArrowSizeIsDefined;
+  bool                       myIsSetBndBox;
+  bool                       myArrowSizeIsDefined;
 };
-
-DEFINE_STANDARD_HANDLE(PrsDim_Relation, AIS_InteractiveObject)
 
 #endif // _AIS_Relation_HeaderFile

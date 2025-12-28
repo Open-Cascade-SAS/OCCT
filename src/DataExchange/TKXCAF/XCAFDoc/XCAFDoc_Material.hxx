@@ -26,9 +26,6 @@ class Standard_GUID;
 class TDF_Label;
 class TDF_RelocationTable;
 
-class XCAFDoc_Material;
-DEFINE_STANDARD_HANDLE(XCAFDoc_Material, TDF_Attribute)
-
 //! attribute to store material
 class XCAFDoc_Material : public TDF_Attribute
 {
@@ -38,52 +35,51 @@ public:
 
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  Standard_EXPORT static Handle(XCAFDoc_Material) Set(
-    const TDF_Label&                        label,
-    const Handle(TCollection_HAsciiString)& aName,
-    const Handle(TCollection_HAsciiString)& aDescription,
-    const Standard_Real                     aDensity,
-    const Handle(TCollection_HAsciiString)& aDensName,
-    const Handle(TCollection_HAsciiString)& aDensValType);
+  Standard_EXPORT static occ::handle<XCAFDoc_Material> Set(
+    const TDF_Label&                             label,
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const occ::handle<TCollection_HAsciiString>& aDescription,
+    const double                                 aDensity,
+    const occ::handle<TCollection_HAsciiString>& aDensName,
+    const occ::handle<TCollection_HAsciiString>& aDensValType);
 
-  Standard_EXPORT void Set(const Handle(TCollection_HAsciiString)& aName,
-                           const Handle(TCollection_HAsciiString)& aDescription,
-                           const Standard_Real                     aDensity,
-                           const Handle(TCollection_HAsciiString)& aDensName,
-                           const Handle(TCollection_HAsciiString)& aDensValType);
+  Standard_EXPORT void Set(const occ::handle<TCollection_HAsciiString>& aName,
+                           const occ::handle<TCollection_HAsciiString>& aDescription,
+                           const double                                 aDensity,
+                           const occ::handle<TCollection_HAsciiString>& aDensName,
+                           const occ::handle<TCollection_HAsciiString>& aDensValType);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> GetName() const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetDescription() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> GetDescription() const;
 
-  Standard_EXPORT Standard_Real GetDensity() const;
+  Standard_EXPORT double GetDensity() const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetDensName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> GetDensName() const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetDensValType() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> GetDensValType() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_Material, TDF_Attribute)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) myName;
-  Handle(TCollection_HAsciiString) myDescription;
-  Standard_Real                    myDensity;
-  Handle(TCollection_HAsciiString) myDensName;
-  Handle(TCollection_HAsciiString) myDensValType;
+  occ::handle<TCollection_HAsciiString> myName;
+  occ::handle<TCollection_HAsciiString> myDescription;
+  double                                myDensity;
+  occ::handle<TCollection_HAsciiString> myDensName;
+  occ::handle<TCollection_HAsciiString> myDensValType;
 };
 
 #endif // _XCAFDoc_Material_HeaderFile

@@ -23,17 +23,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedVertex, StepVisual_TessellatedS
 StepVisual_TessellatedVertex::StepVisual_TessellatedVertex()
 {
   myPointIndex         = 0;
-  myHasTopologicalLink = Standard_False;
+  myHasTopologicalLink = false;
 }
 
 //=================================================================================================
 
 void StepVisual_TessellatedVertex::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theCoordinates,
-  const Standard_Boolean                    theHasTopologicalLink,
-  const Handle(StepShape_VertexPoint)&      theTopologicalLink,
-  const Standard_Integer                    thePointIndex)
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+  const bool                                     theHasTopologicalLink,
+  const occ::handle<StepShape_VertexPoint>&      theTopologicalLink,
+  const int                                      thePointIndex)
 {
   StepVisual_TessellatedStructuredItem::Init(theRepresentationItem_Name);
 
@@ -54,7 +54,7 @@ void StepVisual_TessellatedVertex::Init(
 
 //=================================================================================================
 
-Handle(StepVisual_CoordinatesList) StepVisual_TessellatedVertex::Coordinates() const
+occ::handle<StepVisual_CoordinatesList> StepVisual_TessellatedVertex::Coordinates() const
 {
   return myCoordinates;
 }
@@ -62,14 +62,14 @@ Handle(StepVisual_CoordinatesList) StepVisual_TessellatedVertex::Coordinates() c
 //=================================================================================================
 
 void StepVisual_TessellatedVertex::SetCoordinates(
-  const Handle(StepVisual_CoordinatesList)& theCoordinates)
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates)
 {
   myCoordinates = theCoordinates;
 }
 
 //=================================================================================================
 
-Handle(StepShape_VertexPoint) StepVisual_TessellatedVertex::TopologicalLink() const
+occ::handle<StepShape_VertexPoint> StepVisual_TessellatedVertex::TopologicalLink() const
 {
   return myTopologicalLink;
 }
@@ -77,28 +77,28 @@ Handle(StepShape_VertexPoint) StepVisual_TessellatedVertex::TopologicalLink() co
 //=================================================================================================
 
 void StepVisual_TessellatedVertex::SetTopologicalLink(
-  const Handle(StepShape_VertexPoint)& theTopologicalLink)
+  const occ::handle<StepShape_VertexPoint>& theTopologicalLink)
 {
   myTopologicalLink = theTopologicalLink;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedVertex::HasTopologicalLink() const
+bool StepVisual_TessellatedVertex::HasTopologicalLink() const
 {
   return myHasTopologicalLink;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedVertex::PointIndex() const
+int StepVisual_TessellatedVertex::PointIndex() const
 {
   return myPointIndex;
 }
 
 //=================================================================================================
 
-void StepVisual_TessellatedVertex::SetPointIndex(const Standard_Integer thePointIndex)
+void StepVisual_TessellatedVertex::SetPointIndex(const int thePointIndex)
 {
   myPointIndex = thePointIndex;
 }

@@ -34,46 +34,44 @@ public:
 
   //! Modifier
   //! Sets the index of vertex <theIndex>
-  void SetIndex(const Standard_Integer theIndex);
+  void SetIndex(const int theIndex);
 
   //! Selector
   //! Returns the index of vertex
-  Standard_Integer Index() const;
+  int Index() const;
 
   //! Modifier
   //! Sets the parameter of vertex <theParameter>
-  void SetParameter(const Standard_Real theParameter);
+  void SetParameter(const double theParameter);
 
   //! Selector
   //! Returns the parameter of vertex
-  Standard_Real Parameter() const;
+  double Parameter() const;
 
   //! Selector
   //! Returns the index of vertex <theIndex>
   //! Returns the parameter of vertex <theParameter>
-  void Contents(Standard_Integer& theIndex, Standard_Real& theParameter) const;
+  void Contents(int& theIndex, double& theParameter) const;
 
   //! Query
   //! Returns true if the parameter of this is less
   //! than the parameter of <theOther>
-  Standard_Boolean IsLess(const BOPDS_Pave& theOther) const;
+  bool IsLess(const BOPDS_Pave& theOther) const;
 
-  Standard_Boolean operator<(const BOPDS_Pave& theOther) const { return IsLess(theOther); }
+  bool operator<(const BOPDS_Pave& theOther) const { return IsLess(theOther); }
 
   //! Query
   //! Returns true if the parameter of this is equal
   //! to the parameter of <theOther>
-  Standard_Boolean IsEqual(const BOPDS_Pave& theOther) const;
+  bool IsEqual(const BOPDS_Pave& theOther) const;
 
-  Standard_Boolean operator==(const BOPDS_Pave& theOther) const { return IsEqual(theOther); }
+  bool operator==(const BOPDS_Pave& theOther) const { return IsEqual(theOther); }
 
   Standard_EXPORT void Dump() const;
 
 protected:
-  Standard_Integer myIndex;
-  Standard_Real    myParameter;
-
-private:
+  int    myIndex;
+  double myParameter;
 };
 
 namespace std

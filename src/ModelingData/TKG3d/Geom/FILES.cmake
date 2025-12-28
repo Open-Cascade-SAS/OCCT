@@ -43,7 +43,7 @@ set(OCCT_Geom_FILES
   Geom_Ellipse.hxx
   Geom_Geometry.cxx
   Geom_Geometry.hxx
-  Geom_HSequenceOfBSplineSurface.hxx
+
   Geom_Hyperbola.cxx
   Geom_Hyperbola.hxx
   Geom_Line.cxx
@@ -65,7 +65,7 @@ set(OCCT_Geom_FILES
   Geom_RectangularTrimmedSurface.cxx
   Geom_RectangularTrimmedSurface.hxx
   Geom_RevolutionUtils.pxx
-  Geom_SequenceOfBSplineSurface.hxx
+
   Geom_SphericalSurface.cxx
   Geom_SphericalSurface.hxx
   Geom_Surface.cxx

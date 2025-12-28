@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-TopOpeBRepDS_Reducer::TopOpeBRepDS_Reducer(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+TopOpeBRepDS_Reducer::TopOpeBRepDS_Reducer(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
     : myHDS(HDS)
 {
 }
@@ -36,7 +36,9 @@ void TopOpeBRepDS_Reducer::ProcessEdgeInterferences()
 //=================================================================================================
 
 void TopOpeBRepDS_Reducer::ProcessFaceInterferences(
-  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& M)
+  const NCollection_DataMap<TopoDS_Shape,
+                            TopOpeBRepDS_ListOfShapeOn1State,
+                            TopTools_ShapeMapHasher>& M)
 {
   // modified by NIZHNY-MZV  Tue Nov 16 16:12:15 1999
   // FUN_ds_FEIGb1TO0(myHDS,M); //xpu250199

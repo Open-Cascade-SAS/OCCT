@@ -13,33 +13,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_Array1OfValueAndWeight.hxx>
+#include <math_ValueAndWeight.hxx>
+#include <NCollection_Array1.hxx>
 #include <math_ComputeKronrodPointsAndWeights.hxx>
 #include <math_EigenValuesSearcher.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 #include <algorithm>
 
-math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
-  const Standard_Integer Number)
+math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const int Number)
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
 
   try
   {
-    Standard_Integer i, j;
-    Standard_Integer a2NP1 = 2 * Number + 1;
+    int i, j;
+    int a2NP1 = 2 * Number + 1;
 
-    myPoints  = new TColStd_HArray1OfReal(1, a2NP1);
-    myWeights = new TColStd_HArray1OfReal(1, a2NP1);
+    myPoints  = new NCollection_HArray1<double>(1, a2NP1);
+    myWeights = new NCollection_HArray1<double>(1, a2NP1);
 
-    TColStd_Array1OfReal aDiag(1, a2NP1);
-    TColStd_Array1OfReal aSubDiag(1, a2NP1);
+    NCollection_Array1<double> aDiag(1, a2NP1);
+    NCollection_Array1<double> aSubDiag(1, a2NP1);
 
     // Initialize symmetric tridiagonal matrix.
-    Standard_Integer n         = Number;
-    Standard_Integer aKronrodN = 2 * Number + 1;
-    Standard_Integer a3KN2p1   = std::min(3 * (Number + 1) / 2 + 1, aKronrodN);
+    int n         = Number;
+    int aKronrodN = 2 * Number + 1;
+    int a3KN2p1   = std::min(3 * (Number + 1) / 2 + 1, aKronrodN);
     for (i = 1; i <= a3KN2p1; i++)
     {
       aDiag(i) = 0.;
@@ -48,8 +48,8 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
         aSubDiag(i) = 0.;
       else
       {
-        Standard_Integer sqrIm1 = (i - 1) * (i - 1);
-        aSubDiag(i)             = sqrIm1 / (4. * sqrIm1 - 1);
+        int sqrIm1  = (i - 1) * (i - 1);
+        aSubDiag(i) = sqrIm1 / (4. * sqrIm1 - 1);
       }
     }
 
@@ -63,11 +63,11 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
     // by design. Memory corruption is avoided by moving pointer `s` to the
     // next element and saving original pointer into `ss` for the proper memory
     // releasing. Similarly, `t` and `tt` are addressed.
-    Standard_Integer aNd2 = Number / 2;
-    Standard_Real*   s    = new Standard_Real[aNd2 + 2];
-    Standard_Real*   t    = new Standard_Real[aNd2 + 2];
-    Standard_Real*   ss   = s++;
-    Standard_Real*   tt   = t++;
+    int     aNd2 = Number / 2;
+    double* s    = new double[aNd2 + 2];
+    double* t    = new double[aNd2 + 2];
+    double* ss   = s++;
+    double* tt   = t++;
 
     for (i = -1; i <= aNd2; i++)
     {
@@ -76,21 +76,21 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
     }
 
     // Generation of Jacobi-Kronrod matrix.
-    Standard_Real* aa = new Standard_Real[a2NP1 + 1];
-    Standard_Real* bb = new Standard_Real[a2NP1 + 1];
+    double* aa = new double[a2NP1 + 1];
+    double* bb = new double[a2NP1 + 1];
     for (i = 1; i <= a2NP1; i++)
     {
       aa[i] = aDiag(i);
       bb[i] = aSubDiag(i);
     }
-    Standard_Real*   ptrtmp;
-    Standard_Real    u;
-    Standard_Integer m;
-    Standard_Integer k;
-    Standard_Integer l;
+    double* ptrtmp;
+    double  u;
+    int     m;
+    int     k;
+    int     l;
 
-    Standard_Real* a = aa + 1;
-    Standard_Real* b = bb + 1;
+    double* a = aa + 1;
+    double* b = bb + 1;
 
     // Eastward phase.
     t[0] = b[Number + 1];
@@ -164,12 +164,12 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
 
     if (EVsearch.IsDone())
     {
-      math_Array1OfValueAndWeight VWarray(1, a2NP1);
+      NCollection_Array1<math_ValueAndWeight> VWarray(1, a2NP1);
       for (i = 1; i <= a2NP1; i++)
       {
-        math_Vector   anEigenVector = EVsearch.EigenVector(i);
-        Standard_Real aWeight       = anEigenVector(1);
-        aWeight                     = 2. * aWeight * aWeight;
+        math_Vector anEigenVector = EVsearch.EigenVector(i);
+        double      aWeight       = anEigenVector(1);
+        aWeight                   = 2. * aWeight * aWeight;
         math_ValueAndWeight EVW(EVsearch.EigenValue(i), aWeight);
         VWarray(i) = EVW;
       }
@@ -181,7 +181,7 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
         myPoints->ChangeValue(i)  = VWarray(i).Value();
         myWeights->ChangeValue(i) = VWarray(i).Weight();
       }
-      myIsDone = Standard_True;
+      myIsDone = true;
     }
   }
   catch (Standard_Failure const&)
@@ -189,16 +189,16 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(
   }
 }
 
-Standard_Boolean math_ComputeKronrodPointsAndWeights::IsDone() const
+bool math_ComputeKronrodPointsAndWeights::IsDone() const
 {
   return myIsDone;
 }
 
 math_Vector math_ComputeKronrodPointsAndWeights::Points() const
 {
-  Standard_Integer Number = myPoints->Length();
-  math_Vector      thePoints(1, Number);
-  for (Standard_Integer i = 1; i <= Number; i++)
+  int         Number = myPoints->Length();
+  math_Vector thePoints(1, Number);
+  for (int i = 1; i <= Number; i++)
     thePoints(i) = myPoints->Value(i);
 
   return thePoints;
@@ -206,9 +206,9 @@ math_Vector math_ComputeKronrodPointsAndWeights::Points() const
 
 math_Vector math_ComputeKronrodPointsAndWeights::Weights() const
 {
-  Standard_Integer Number = myWeights->Length();
-  math_Vector      theWeights(1, Number);
-  for (Standard_Integer i = 1; i <= Number; i++)
+  int         Number = myWeights->Length();
+  math_Vector theWeights(1, Number);
+  for (int i = 1; i <= Number; i++)
     theWeights(i) = myWeights->Value(i);
 
   return theWeights;

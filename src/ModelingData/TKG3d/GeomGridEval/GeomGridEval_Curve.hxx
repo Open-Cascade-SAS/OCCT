@@ -30,7 +30,6 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 #include <variant>
 
@@ -98,7 +97,7 @@ public:
 
   //! Initialize from geometry handle (auto-detects curve type).
   //! @param theCurve geometry to evaluate
-  Standard_EXPORT void Initialize(const Handle(Geom_Curve)& theCurve);
+  Standard_EXPORT void Initialize(const occ::handle<Geom_Curve>& theCurve);
 
   //! Returns true if properly initialized.
   Standard_EXPORT bool IsInitialized() const;
@@ -107,32 +106,33 @@ public:
   //! @param theParams array of parameter values
   //! @return array of 3D points (1-based indexing)
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate grid points with first derivative.
   //! @param theParams array of parameter values
   //! @return array of CurveD1 (1-based indexing)
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate grid points with first and second derivatives.
   //! @param theParams array of parameter values
   //! @return array of CurveD2 (1-based indexing)
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate grid points with first, second, and third derivatives.
   //! @param theParams array of parameter values
   //! @return array of CurveD3 (1-based indexing)
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate Nth derivative at all grid points.
   //! @param theParams array of parameter values
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theParams,
-                                                            int                         theN) const;
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theParams,
+    int                               theN) const;
 
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }

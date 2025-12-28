@@ -25,59 +25,55 @@ Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(const Plate_PinpointC
                                                            const gp_XYZ&                   coeff)
 
 {
-  myPPC  = new Plate_HArray1OfPinpointConstraint(1, 1);
-  myCoef = new TColgp_HArray2OfXYZ(1, 1, 1, 1);
+  myPPC  = new NCollection_HArray1<Plate_PinpointConstraint>(1, 1);
+  myCoef = new NCollection_HArray2<gp_XYZ>(1, 1, 1, 1);
 
   myPPC->ChangeValue(1)     = PPC1;
   myCoef->ChangeValue(1, 1) = coeff;
 }
 
 Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(
-  const Plate_Array1OfPinpointConstraint& thePPC,
-  const TColgp_Array1OfXYZ&               theCoeff)
+  const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
+  const NCollection_Array1<gp_XYZ>&                   theCoeff)
 {
   if (theCoeff.Length() != thePPC.Length())
     throw Standard_DimensionMismatch();
-  myPPC  = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
-  myCoef = new TColgp_HArray2OfXYZ(1, 1, 1, theCoeff.Length());
+  myPPC  = new NCollection_HArray1<Plate_PinpointConstraint>(1, thePPC.Length());
+  myCoef = new NCollection_HArray2<gp_XYZ>(1, 1, 1, theCoeff.Length());
 
   myPPC->ChangeArray1() = thePPC;
-  for (Standard_Integer i = 1; i <= theCoeff.Length(); i++)
+  for (int i = 1; i <= theCoeff.Length(); i++)
   {
     myCoef->ChangeValue(1, i) = theCoeff(i + theCoeff.Lower() - 1);
   }
 }
 
 Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(
-  const Plate_Array1OfPinpointConstraint& thePPC,
-  const TColgp_Array2OfXYZ&               theCoeff)
+  const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
+  const NCollection_Array2<gp_XYZ>&                   theCoeff)
 {
   if (theCoeff.RowLength() != thePPC.Length())
     throw Standard_DimensionMismatch();
-  myPPC  = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
-  myCoef = new TColgp_HArray2OfXYZ(1, theCoeff.ColLength(), 1, theCoeff.RowLength());
+  myPPC  = new NCollection_HArray1<Plate_PinpointConstraint>(1, thePPC.Length());
+  myCoef = new NCollection_HArray2<gp_XYZ>(1, theCoeff.ColLength(), 1, theCoeff.RowLength());
 
   myPPC->ChangeArray1()  = thePPC;
   myCoef->ChangeArray2() = theCoeff;
 }
 
-Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(const Standard_Integer ColLen,
-                                                           const Standard_Integer RowLen)
+Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(const int ColLen, const int RowLen)
 {
-  myPPC  = new Plate_HArray1OfPinpointConstraint(1, RowLen);
-  myCoef = new TColgp_HArray2OfXYZ(1, ColLen, 1, RowLen);
+  myPPC  = new NCollection_HArray1<Plate_PinpointConstraint>(1, RowLen);
+  myCoef = new NCollection_HArray2<gp_XYZ>(1, ColLen, 1, RowLen);
   myCoef->Init(gp_XYZ(0., 0., 0.));
 }
 
-void Plate_LinearScalarConstraint::SetPPC(const Standard_Integer          Index,
-                                          const Plate_PinpointConstraint& Value)
+void Plate_LinearScalarConstraint::SetPPC(const int Index, const Plate_PinpointConstraint& Value)
 {
   myPPC->ChangeValue(Index) = Value;
 }
 
-void Plate_LinearScalarConstraint::SetCoeff(const Standard_Integer Row,
-                                            const Standard_Integer Col,
-                                            const gp_XYZ&          Value)
+void Plate_LinearScalarConstraint::SetCoeff(const int Row, const int Col, const gp_XYZ& Value)
 {
   myCoef->ChangeValue(Row, Col) = Value;
 }

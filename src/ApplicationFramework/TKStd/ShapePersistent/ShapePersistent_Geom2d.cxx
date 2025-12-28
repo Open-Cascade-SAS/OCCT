@@ -23,7 +23,7 @@
 // Direction
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom2d::Direction, Geom2d_Direction, gp_Dir2d>::PName() const
 {
   return "PGeom2d_Direction";
@@ -33,7 +33,7 @@ template <>
 void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Direction, Geom2d_Direction, gp_Dir2d>::
   Write(StdObjMgt_WriteData& theWriteData) const
 {
-  Handle(Geom2d_Direction) aMyGeom = Handle(Geom2d_Direction)::DownCast(myTransient);
+  occ::handle<Geom2d_Direction> aMyGeom = occ::down_cast<Geom2d_Direction>(myTransient);
   theWriteData << aMyGeom->Dir2d();
 }
 
@@ -41,9 +41,9 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Direction, Geom2d_Di
 // VectorWithMagnitude
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
-                                                Geom2d_VectorWithMagnitude,
-                                                gp_Vec2d>::PName() const
+const char* ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
+                                           Geom2d_VectorWithMagnitude,
+                                           gp_Vec2d>::PName() const
 {
   return "PGeom2d_VectorWithMagnitude";
 }
@@ -53,8 +53,8 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
                                     Geom2d_VectorWithMagnitude,
                                     gp_Vec2d>::Write(StdObjMgt_WriteData& theWriteData) const
 {
-  Handle(Geom2d_VectorWithMagnitude) aMyGeom =
-    Handle(Geom2d_VectorWithMagnitude)::DownCast(myTransient);
+  occ::handle<Geom2d_VectorWithMagnitude> aMyGeom =
+    occ::down_cast<Geom2d_VectorWithMagnitude>(myTransient);
   theWriteData << aMyGeom->Vec2d();
 }
 
@@ -62,7 +62,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
 // AxisPlacement
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom2d::AxisPlacement, Geom2d_AxisPlacement, gp_Ax2d>::PName() const
 {
   return "PGeom2d_AxisPlacement";
@@ -73,7 +73,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::AxisPlacement,
                                     Geom2d_AxisPlacement,
                                     gp_Ax2d>::Write(StdObjMgt_WriteData& theWriteData) const
 {
-  Handle(Geom2d_AxisPlacement) aMyGeom = Handle(Geom2d_AxisPlacement)::DownCast(myTransient);
+  occ::handle<Geom2d_AxisPlacement> aMyGeom = occ::down_cast<Geom2d_AxisPlacement>(myTransient);
   write(theWriteData, aMyGeom->Ax2d());
 }
 
@@ -81,7 +81,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::AxisPlacement,
 // Transformation
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom2d::Transformation, Geom2d_Transformation, gp_Trsf2d>::PName() const
 {
   return "PGeom2d_Transformation";
@@ -107,8 +107,8 @@ void ShapePersistent_Geom2d::instance<ShapePersistent_Geom2d::Transformation,
 //=======================================================================
 
 Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d::Translate(
-  const Handle(Geom2d_Curve)&       theCurve,
-  StdObjMgt_TransientPersistentMap& theMap)
+  const occ::handle<Geom2d_Curve>&                                                         theCurve,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom2d::Curve) aPC;
   if (!theCurve.IsNull())
@@ -117,55 +117,51 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d::Translate(
       aPC = Handle(ShapePersistent_Geom2d::Curve)::DownCast(theMap.Find(theCurve));
     else
     {
-      Handle(Standard_Type) aCT = theCurve->DynamicType();
+      occ::handle<Standard_Type> aCT = theCurve->DynamicType();
       if (aCT == STANDARD_TYPE(Geom2d_Line))
       {
         aPC =
-          ShapePersistent_Geom2d_Curve::Translate(Handle(Geom2d_Line)::DownCast(theCurve), theMap);
+          ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_Line>(theCurve), theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_Circle))
       {
-        aPC = ShapePersistent_Geom2d_Curve::Translate(Handle(Geom2d_Circle)::DownCast(theCurve),
-                                                      theMap);
+        aPC =
+          ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_Circle>(theCurve), theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_Ellipse))
       {
-        aPC = ShapePersistent_Geom2d_Curve::Translate(Handle(Geom2d_Ellipse)::DownCast(theCurve),
-                                                      theMap);
+        aPC =
+          ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_Ellipse>(theCurve), theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_Hyperbola))
       {
-        aPC = ShapePersistent_Geom2d_Curve::Translate(Handle(Geom2d_Hyperbola)::DownCast(theCurve),
+        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_Hyperbola>(theCurve),
                                                       theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_Parabola))
       {
-        aPC = ShapePersistent_Geom2d_Curve::Translate(Handle(Geom2d_Parabola)::DownCast(theCurve),
+        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_Parabola>(theCurve),
                                                       theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_BezierCurve))
       {
-        aPC =
-          ShapePersistent_Geom2d_Curve::Translate(Handle(Geom2d_BezierCurve)::DownCast(theCurve),
-                                                  theMap);
+        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_BezierCurve>(theCurve),
+                                                      theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_BSplineCurve))
       {
-        aPC =
-          ShapePersistent_Geom2d_Curve::Translate(Handle(Geom2d_BSplineCurve)::DownCast(theCurve),
-                                                  theMap);
+        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_BSplineCurve>(theCurve),
+                                                      theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_TrimmedCurve))
       {
-        aPC =
-          ShapePersistent_Geom2d_Curve::Translate(Handle(Geom2d_TrimmedCurve)::DownCast(theCurve),
-                                                  theMap);
+        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_TrimmedCurve>(theCurve),
+                                                      theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_OffsetCurve))
       {
-        aPC =
-          ShapePersistent_Geom2d_Curve::Translate(Handle(Geom2d_OffsetCurve)::DownCast(theCurve),
-                                                  theMap);
+        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_OffsetCurve>(theCurve),
+                                                      theMap);
       }
       else
       {

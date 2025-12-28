@@ -52,23 +52,21 @@ public:
   Standard_EXPORT Extrema_FuncPSDist(const Adaptor3d_Surface& theS, const gp_Pnt& theP);
 
   //! Number of variables.
-  Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT int NbVariables() const override;
 
   //! Value.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F) Standard_OVERRIDE;
+  Standard_EXPORT bool Value(const math_Vector& X, double& F) override;
 
   //! Gradient.
-  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) Standard_OVERRIDE;
+  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override;
 
   //! Value and gradient.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X,
-                                          Standard_Real&     F,
-                                          math_Vector&       G) Standard_OVERRIDE;
+  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override;
 
 private:
   //! Check point is inside of the surface parameter space.
   //! Returns true if inside and false otherwise.
-  Standard_Boolean IsInside(const math_Vector& X);
+  bool IsInside(const math_Vector& X);
 
   const Extrema_FuncPSDist& operator=(const Extrema_FuncPSDist&);
   Extrema_FuncPSDist(const Extrema_FuncPSDist&);

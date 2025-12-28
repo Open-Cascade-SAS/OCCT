@@ -48,22 +48,22 @@ public:
   }
 
   //! Returns persistent type name
-  inline Standard_CString PName() const { return "PDataXtd_PatternStd"; }
+  inline const char* PName() const { return "PDataXtd_PatternStd"; }
 
   //! Import transient attribute from the persistent data.
-  void Import(const Handle(TDataXtd_PatternStd)& theAttribute) const;
+  void Import(const occ::handle<TDataXtd_PatternStd>& theAttribute) const;
 
 private:
-  Standard_Integer             mySignature;
-  Standard_Boolean             myAxis1Reversed;
-  Standard_Boolean             myAxis2Reversed;
-  Handle(StdObjMgt_Persistent) myAxis1;
-  Handle(StdObjMgt_Persistent) myAxis2;
-  Handle(StdObjMgt_Persistent) myValue1;
-  Handle(StdObjMgt_Persistent) myValue2;
-  Handle(StdObjMgt_Persistent) myNb1;
-  Handle(StdObjMgt_Persistent) myNb2;
-  Handle(StdObjMgt_Persistent) myMirror;
+  int                               mySignature;
+  bool                              myAxis1Reversed;
+  bool                              myAxis2Reversed;
+  occ::handle<StdObjMgt_Persistent> myAxis1;
+  occ::handle<StdObjMgt_Persistent> myAxis2;
+  occ::handle<StdObjMgt_Persistent> myValue1;
+  occ::handle<StdObjMgt_Persistent> myValue2;
+  occ::handle<StdObjMgt_Persistent> myNb1;
+  occ::handle<StdObjMgt_Persistent> myNb2;
+  occ::handle<StdObjMgt_Persistent> myMirror;
 };
 
 #endif

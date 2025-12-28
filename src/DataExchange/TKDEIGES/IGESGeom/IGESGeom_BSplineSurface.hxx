@@ -21,14 +21,13 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColgp_HArray2OfXYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_XYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
-
-class IGESGeom_BSplineSurface;
-DEFINE_STANDARD_HANDLE(IGESGeom_BSplineSurface, IGESData_IGESEntity)
 
 //! defines IGESBSplineSurface, Type <128> Form <0-9>
 //! in package IGESGeom
@@ -60,133 +59,129 @@ public:
   //! - aVmin                : Starting value of V direction
   //! - aVmax                : Ending value of V direction
   //! raises exception if allWeights & allPoles are not of same size.
-  Standard_EXPORT void Init(const Standard_Integer               anIndexU,
-                            const Standard_Integer               anIndexV,
-                            const Standard_Integer               aDegU,
-                            const Standard_Integer               aDegV,
-                            const Standard_Boolean               aCloseU,
-                            const Standard_Boolean               aCloseV,
-                            const Standard_Boolean               aPolynom,
-                            const Standard_Boolean               aPeriodU,
-                            const Standard_Boolean               aPeriodV,
-                            const Handle(TColStd_HArray1OfReal)& allKnotsU,
-                            const Handle(TColStd_HArray1OfReal)& allKnotsV,
-                            const Handle(TColStd_HArray2OfReal)& allWeights,
-                            const Handle(TColgp_HArray2OfXYZ)&   allPoles,
-                            const Standard_Real                  aUmin,
-                            const Standard_Real                  aUmax,
-                            const Standard_Real                  aVmin,
-                            const Standard_Real                  aVmax);
+  Standard_EXPORT void Init(const int                                       anIndexU,
+                            const int                                       anIndexV,
+                            const int                                       aDegU,
+                            const int                                       aDegV,
+                            const bool                                      aCloseU,
+                            const bool                                      aCloseV,
+                            const bool                                      aPolynom,
+                            const bool                                      aPeriodU,
+                            const bool                                      aPeriodV,
+                            const occ::handle<NCollection_HArray1<double>>& allKnotsU,
+                            const occ::handle<NCollection_HArray1<double>>& allKnotsV,
+                            const occ::handle<NCollection_HArray2<double>>& allWeights,
+                            const occ::handle<NCollection_HArray2<gp_XYZ>>& allPoles,
+                            const double                                    aUmin,
+                            const double                                    aUmax,
+                            const double                                    aVmin,
+                            const double                                    aVmax);
 
   //! Changes FormNumber (indicates the Shape of the Surface)
   //! Error if not in range [0-9]
-  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+  Standard_EXPORT void SetFormNumber(const int form);
 
   //! returns the upper index of the first sum (U)
-  Standard_EXPORT Standard_Integer UpperIndexU() const;
+  Standard_EXPORT int UpperIndexU() const;
 
   //! returns the upper index of the second sum (V)
-  Standard_EXPORT Standard_Integer UpperIndexV() const;
+  Standard_EXPORT int UpperIndexV() const;
 
   //! returns degree of first set of basis functions
-  Standard_EXPORT Standard_Integer DegreeU() const;
+  Standard_EXPORT int DegreeU() const;
 
   //! returns degree of second set of basis functions
-  Standard_EXPORT Standard_Integer DegreeV() const;
+  Standard_EXPORT int DegreeV() const;
 
   //! True if closed in U direction else False
-  Standard_EXPORT Standard_Boolean IsClosedU() const;
+  Standard_EXPORT bool IsClosedU() const;
 
   //! True if closed in V direction else False
-  Standard_EXPORT Standard_Boolean IsClosedV() const;
+  Standard_EXPORT bool IsClosedV() const;
 
   //! True if polynomial, False if rational
   //! <flag> False (D) : computed from Weights
   //! <flag> True : recorded
-  Standard_EXPORT Standard_Boolean IsPolynomial(const Standard_Boolean flag = Standard_False) const;
+  Standard_EXPORT bool IsPolynomial(const bool flag = false) const;
 
   //! True if periodic in U direction else False
-  Standard_EXPORT Standard_Boolean IsPeriodicU() const;
+  Standard_EXPORT bool IsPeriodicU() const;
 
   //! True if periodic in V direction else False
-  Standard_EXPORT Standard_Boolean IsPeriodicV() const;
+  Standard_EXPORT bool IsPeriodicV() const;
 
   //! returns number of knots in U direction
   //! KnotsU are numbered from -DegreeU
-  Standard_EXPORT Standard_Integer NbKnotsU() const;
+  Standard_EXPORT int NbKnotsU() const;
 
   //! returns number of knots in V direction
   //! KnotsV are numbered from -DegreeV
-  Standard_EXPORT Standard_Integer NbKnotsV() const;
+  Standard_EXPORT int NbKnotsV() const;
 
   //! returns the value of knot referred to by anIndex in U direction
   //! raises exception if
   //! anIndex < -DegreeU() or anIndex > (NbKnotsU() - DegreeU())
-  Standard_EXPORT Standard_Real KnotU(const Standard_Integer anIndex) const;
+  Standard_EXPORT double KnotU(const int anIndex) const;
 
   //! returns the value of knot referred to by anIndex in V direction
   //! raises exception if
   //! anIndex < -DegreeV() or anIndex > (NbKnotsV() - DegreeV())
-  Standard_EXPORT Standard_Real KnotV(const Standard_Integer anIndex) const;
+  Standard_EXPORT double KnotV(const int anIndex) const;
 
   //! returns number of poles in U direction
-  Standard_EXPORT Standard_Integer NbPolesU() const;
+  Standard_EXPORT int NbPolesU() const;
 
   //! returns number of poles in V direction
-  Standard_EXPORT Standard_Integer NbPolesV() const;
+  Standard_EXPORT int NbPolesV() const;
 
   //! returns the weight referred to by anIndex1, anIndex2
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbPolesU()
   //! or if anIndex2 <= 0 or anIndex2 > NbPolesV()
-  Standard_EXPORT Standard_Real Weight(const Standard_Integer anIndex1,
-                                       const Standard_Integer anIndex2) const;
+  Standard_EXPORT double Weight(const int anIndex1, const int anIndex2) const;
 
   //! returns the control point referenced by anIndex1, anIndex2
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbPolesU()
   //! or if anIndex2 <= 0 or anIndex2 > NbPolesV()
-  Standard_EXPORT gp_Pnt Pole(const Standard_Integer anIndex1,
-                              const Standard_Integer anIndex2) const;
+  Standard_EXPORT gp_Pnt Pole(const int anIndex1, const int anIndex2) const;
 
   //! returns the control point referenced by anIndex1, anIndex2
   //! after applying the Transf.Matrix
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbPolesU()
   //! or if anIndex2 <= 0 or anIndex2 > NbPolesV()
-  Standard_EXPORT gp_Pnt TransformedPole(const Standard_Integer anIndex1,
-                                         const Standard_Integer anIndex2) const;
+  Standard_EXPORT gp_Pnt TransformedPole(const int anIndex1, const int anIndex2) const;
 
   //! returns starting value in the U direction
-  Standard_EXPORT Standard_Real UMin() const;
+  Standard_EXPORT double UMin() const;
 
   //! returns ending value in the U direction
-  Standard_EXPORT Standard_Real UMax() const;
+  Standard_EXPORT double UMax() const;
 
   //! returns starting value in the V direction
-  Standard_EXPORT Standard_Real VMin() const;
+  Standard_EXPORT double VMin() const;
 
   //! returns ending value in the V direction
-  Standard_EXPORT Standard_Real VMax() const;
+  Standard_EXPORT double VMax() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_BSplineSurface, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer              theIndexU;
-  Standard_Integer              theIndexV;
-  Standard_Integer              theDegreeU;
-  Standard_Integer              theDegreeV;
-  Standard_Boolean              isClosedU;
-  Standard_Boolean              isClosedV;
-  Standard_Boolean              isPolynomial;
-  Standard_Boolean              isPeriodicU;
-  Standard_Boolean              isPeriodicV;
-  Handle(TColStd_HArray1OfReal) theKnotsU;
-  Handle(TColStd_HArray1OfReal) theKnotsV;
-  Handle(TColStd_HArray2OfReal) theWeights;
-  Handle(TColgp_HArray2OfXYZ)   thePoles;
-  Standard_Real                 theUmin;
-  Standard_Real                 theUmax;
-  Standard_Real                 theVmin;
-  Standard_Real                 theVmax;
+  int                                      theIndexU;
+  int                                      theIndexV;
+  int                                      theDegreeU;
+  int                                      theDegreeV;
+  bool                                     isClosedU;
+  bool                                     isClosedV;
+  bool                                     isPolynomial;
+  bool                                     isPeriodicU;
+  bool                                     isPeriodicV;
+  occ::handle<NCollection_HArray1<double>> theKnotsU;
+  occ::handle<NCollection_HArray1<double>> theKnotsV;
+  occ::handle<NCollection_HArray2<double>> theWeights;
+  occ::handle<NCollection_HArray2<gp_XYZ>> thePoles;
+  double                                   theUmin;
+  double                                   theUmax;
+  double                                   theVmin;
+  double                                   theVmax;
 };
 
 #endif // _IGESGeom_BSplineSurface_HeaderFile

@@ -24,11 +24,12 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <TColgp_SequenceOfAx1.hxx>
+#include <gp_Ax1.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_CurveType.hxx>
 class ChFiDS_SurfData;
 class gp_Ax1;
@@ -41,8 +42,6 @@ class gp_Parab;
 class Geom_BezierCurve;
 class Geom_BSplineCurve;
 
-DEFINE_STANDARD_HANDLE(ChFiDS_ElSpine, Adaptor3d_Curve)
-
 //! Elementary Spine for cheminements and approximations.
 class ChFiDS_ElSpine : public Adaptor3d_Curve
 {
@@ -51,77 +50,74 @@ public:
   Standard_EXPORT ChFiDS_ElSpine();
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
-  Standard_EXPORT virtual Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double FirstParameter() const override;
 
-  Standard_EXPORT virtual Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double LastParameter() const override;
 
-  Standard_EXPORT Standard_Real GetSavedFirstParameter() const;
+  Standard_EXPORT double GetSavedFirstParameter() const;
 
-  Standard_EXPORT Standard_Real GetSavedLastParameter() const;
+  Standard_EXPORT double GetSavedLastParameter() const;
 
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
-  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
+  Standard_EXPORT int NbIntervals(const GeomAbs_Shape S) const override;
 
-  Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
-                                 const GeomAbs_Shape   S) const Standard_OVERRIDE;
+  Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
+                                 const GeomAbs_Shape         S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
-  Standard_EXPORT virtual Handle(Adaptor3d_Curve) Trim(const Standard_Real First,
-                                                       const Standard_Real Last,
-                                                       const Standard_Real Tol) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> Trim(const double First,
+                                                            const double Last,
+                                                            const double Tol) const override;
 
-  Standard_EXPORT virtual Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
+  Standard_EXPORT virtual double Resolution(const double R3d) const override;
 
-  Standard_EXPORT virtual GeomAbs_CurveType GetType() const Standard_OVERRIDE;
+  Standard_EXPORT virtual GeomAbs_CurveType GetType() const override;
 
-  Standard_EXPORT virtual Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsPeriodic() const override;
 
-  Standard_EXPORT void SetPeriodic(const Standard_Boolean I);
+  Standard_EXPORT void SetPeriodic(const bool I);
 
-  Standard_EXPORT virtual Standard_Real Period() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double Period() const override;
 
-  Standard_EXPORT virtual gp_Pnt Value(const Standard_Real AbsC) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt Value(const double AbsC) const override;
 
-  Standard_EXPORT virtual void D0(const Standard_Real AbsC, gp_Pnt& P) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void D0(const double AbsC, gp_Pnt& P) const override;
 
-  Standard_EXPORT virtual void D1(const Standard_Real AbsC,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void D1(const double AbsC, gp_Pnt& P, gp_Vec& V1) const override;
 
-  Standard_EXPORT virtual void D2(const Standard_Real AbsC,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1,
-                                  gp_Vec&             V2) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void D2(const double AbsC,
+                                  gp_Pnt&      P,
+                                  gp_Vec&      V1,
+                                  gp_Vec&      V2) const override;
 
-  Standard_EXPORT virtual void D3(const Standard_Real AbsC,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1,
-                                  gp_Vec&             V2,
-                                  gp_Vec&             V3) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void D3(const double AbsC,
+                                  gp_Pnt&      P,
+                                  gp_Vec&      V1,
+                                  gp_Vec&      V2,
+                                  gp_Vec&      V3) const override;
 
-  Standard_EXPORT void FirstParameter(const Standard_Real P);
+  Standard_EXPORT void FirstParameter(const double P);
 
-  Standard_EXPORT void LastParameter(const Standard_Real P);
+  Standard_EXPORT void LastParameter(const double P);
 
   Standard_EXPORT void SaveFirstParameter();
 
   Standard_EXPORT void SaveLastParameter();
 
-  Standard_EXPORT void SetOrigin(const Standard_Real O);
+  Standard_EXPORT void SetOrigin(const double O);
 
   Standard_EXPORT void FirstPointAndTgt(gp_Pnt& P, gp_Vec& T) const;
 
   Standard_EXPORT void LastPointAndTgt(gp_Pnt& P, gp_Vec& T) const;
 
-  Standard_EXPORT Standard_Integer NbVertices() const;
+  Standard_EXPORT int NbVertices() const;
 
-  Standard_EXPORT const gp_Ax1& VertexWithTangent(const Standard_Integer Index) const;
+  Standard_EXPORT const gp_Ax1& VertexWithTangent(const int Index) const;
 
   Standard_EXPORT void SetFirstPointAndTgt(const gp_Pnt& P, const gp_Vec& T);
 
@@ -129,45 +125,45 @@ public:
 
   Standard_EXPORT void AddVertexWithTangent(const gp_Ax1& anAx1);
 
-  Standard_EXPORT void SetCurve(const Handle(Geom_Curve)& C);
+  Standard_EXPORT void SetCurve(const occ::handle<Geom_Curve>& C);
 
-  Standard_EXPORT const Handle(ChFiDS_SurfData)& Previous() const;
+  Standard_EXPORT const occ::handle<ChFiDS_SurfData>& Previous() const;
 
-  Standard_EXPORT Handle(ChFiDS_SurfData)& ChangePrevious();
+  Standard_EXPORT occ::handle<ChFiDS_SurfData>& ChangePrevious();
 
-  Standard_EXPORT const Handle(ChFiDS_SurfData)& Next() const;
+  Standard_EXPORT const occ::handle<ChFiDS_SurfData>& Next() const;
 
-  Standard_EXPORT Handle(ChFiDS_SurfData)& ChangeNext();
+  Standard_EXPORT occ::handle<ChFiDS_SurfData>& ChangeNext();
 
-  Standard_EXPORT gp_Lin Line() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Lin Line() const override;
 
-  Standard_EXPORT gp_Circ Circle() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Circ Circle() const override;
 
-  Standard_EXPORT gp_Elips Ellipse() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Elips Ellipse() const override;
 
-  Standard_EXPORT gp_Hypr Hyperbola() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Hypr Hyperbola() const override;
 
-  Standard_EXPORT gp_Parab Parabola() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Parab Parabola() const override;
 
-  Standard_EXPORT Handle(Geom_BezierCurve) Bezier() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_BezierCurve> Bezier() const override;
 
-  Standard_EXPORT Handle(Geom_BSplineCurve) BSpline() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_BSplineCurve> BSpline() const override;
 
 private:
-  GeomAdaptor_Curve       curve;
-  gp_Pnt                  ptfirst;
-  gp_Pnt                  ptlast;
-  gp_Vec                  tgfirst;
-  gp_Vec                  tglast;
-  TColgp_SequenceOfAx1    VerticesWithTangents;
-  Handle(ChFiDS_SurfData) previous;
-  Handle(ChFiDS_SurfData) next;
-  Standard_Real           pfirst;
-  Standard_Real           plast;
-  Standard_Real           period;
-  Standard_Boolean        periodic;
-  Standard_Real           pfirstsav;
-  Standard_Real           plastsav;
+  GeomAdaptor_Curve            curve;
+  gp_Pnt                       ptfirst;
+  gp_Pnt                       ptlast;
+  gp_Vec                       tgfirst;
+  gp_Vec                       tglast;
+  NCollection_Sequence<gp_Ax1> VerticesWithTangents;
+  occ::handle<ChFiDS_SurfData> previous;
+  occ::handle<ChFiDS_SurfData> next;
+  double                       pfirst;
+  double                       plast;
+  double                       period;
+  bool                         periodic;
+  double                       pfirstsav;
+  double                       plastsav;
 };
 
 #endif // _ChFiDS_ElSpine_HeaderFile

@@ -24,21 +24,22 @@ SelectMgr_OrFilter::SelectMgr_OrFilter() {}
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_OrFilter::IsOk(const Handle(SelectMgr_EntityOwner)& theObj) const
+bool SelectMgr_OrFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& theObj) const
 {
   if (myFilters.IsEmpty())
   {
-    return Standard_True;
+    return true;
   }
 
-  for (SelectMgr_ListIteratorOfListOfFilter aFilterIter(myFilters); aFilterIter.More();
+  for (NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator aFilterIter(myFilters);
+       aFilterIter.More();
        aFilterIter.Next())
   {
     if (aFilterIter.Value()->IsOk(theObj))
     {
-      return Standard_True;
+      return true;
     }
   }
 
-  return Standard_False;
+  return false;
 }

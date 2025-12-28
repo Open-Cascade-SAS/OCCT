@@ -40,9 +40,9 @@ const Standard_GUID& TDataStd_Variable::GetID()
 
 //=================================================================================================
 
-Handle(TDataStd_Variable) TDataStd_Variable::Set(const TDF_Label& L)
+occ::handle<TDataStd_Variable> TDataStd_Variable::Set(const TDF_Label& L)
 {
-  Handle(TDataStd_Variable) A;
+  occ::handle<TDataStd_Variable> A;
   if (!L.FindAttribute(TDataStd_Variable::GetID(), A))
   {
     A = new TDataStd_Variable();
@@ -54,7 +54,7 @@ Handle(TDataStd_Variable) TDataStd_Variable::Set(const TDF_Label& L)
 //=================================================================================================
 
 TDataStd_Variable::TDataStd_Variable()
-    : isConstant(Standard_False),
+    : isConstant(false),
       myUnit("SCALAR")
 {
 }
@@ -70,7 +70,7 @@ void TDataStd_Variable::Name(const TCollection_ExtendedString& string)
 
 const TCollection_ExtendedString& TDataStd_Variable::Name() const
 {
-  Handle(TDataStd_Name) N;
+  occ::handle<TDataStd_Name> N;
   if (!Label().FindAttribute(TDataStd_Name::GetID(), N))
   {
     throw Standard_DomainError("TDataStd_Variable::Name : invalid model");
@@ -80,16 +80,16 @@ const TCollection_ExtendedString& TDataStd_Variable::Name() const
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_Variable::IsValued() const
+bool TDataStd_Variable::IsValued() const
 {
   return (Label().IsAttribute(TDataStd_Real::GetID()));
 }
 
 //=================================================================================================
 
-Handle(TDataStd_Real) TDataStd_Variable::Real() const
+occ::handle<TDataStd_Real> TDataStd_Variable::Real() const
 {
-  Handle(TDataStd_Real) R;
+  occ::handle<TDataStd_Real> R;
   if (!Label().FindAttribute(TDataStd_Real::GetID(), R))
   {
     throw Standard_DomainError("TDataStd_Variable::Real : invalid model");
@@ -99,32 +99,32 @@ Handle(TDataStd_Real) TDataStd_Variable::Real() const
 
 //=================================================================================================
 
-void TDataStd_Variable::Set(const Standard_Real value) const
+void TDataStd_Variable::Set(const double value) const
 {
-  Handle(TDataStd_Real) R = TDataStd_Real::Set(Label(), value);
+  occ::handle<TDataStd_Real> R = TDataStd_Real::Set(Label(), value);
 }
 
 //=================================================================================================
 
-void TDataStd_Variable::Set(const Standard_Real value, const TDataStd_RealEnum dimension) const
+void TDataStd_Variable::Set(const double value, const TDataStd_RealEnum dimension) const
 {
   if (!IsValued())
   {
-    Handle(TDataStd_Real)                 R = TDataStd_Real::Set(Label(), value);
+    occ::handle<TDataStd_Real>            R = TDataStd_Real::Set(Label(), value);
     Standard_DISABLE_DEPRECATION_WARNINGS R->SetDimension(dimension);
     Standard_ENABLE_DEPRECATION_WARNINGS
   }
   else
   {
-    Handle(TDataStd_Real) R = TDataStd_Real::Set(Label(), value);
+    occ::handle<TDataStd_Real> R = TDataStd_Real::Set(Label(), value);
   }
 }
 
 //=================================================================================================
 
-Standard_Real TDataStd_Variable::Get() const
+double TDataStd_Variable::Get() const
 {
-  Handle(TDataStd_Real) R;
+  occ::handle<TDataStd_Real> R;
   if (!Label().FindAttribute(TDataStd_Real::GetID(), R))
   {
     throw Standard_DomainError("TDataStd_Variable::Get : invalid model");
@@ -134,16 +134,16 @@ Standard_Real TDataStd_Variable::Get() const
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_Variable::IsAssigned() const
+bool TDataStd_Variable::IsAssigned() const
 {
   return (Label().IsAttribute(TDataStd_Expression::GetID()));
 }
 
 //=================================================================================================
 
-Handle(TDataStd_Expression) TDataStd_Variable::Assign() const
+occ::handle<TDataStd_Expression> TDataStd_Variable::Assign() const
 {
-  Handle(TDataStd_Expression) E = TDataStd_Expression::Set(Label());
+  occ::handle<TDataStd_Expression> E = TDataStd_Expression::Set(Label());
   return E;
 }
 
@@ -151,7 +151,7 @@ Handle(TDataStd_Expression) TDataStd_Variable::Assign() const
 
 void TDataStd_Variable::Desassign() const
 {
-  Handle(TDataStd_Expression) E;
+  occ::handle<TDataStd_Expression> E;
   if (!Label().FindAttribute(TDataStd_Expression::GetID(), E))
   {
     throw Standard_DomainError("TDataStd_Variable::Deassign");
@@ -161,9 +161,9 @@ void TDataStd_Variable::Desassign() const
 
 //=================================================================================================
 
-Handle(TDataStd_Expression) TDataStd_Variable::Expression() const
+occ::handle<TDataStd_Expression> TDataStd_Variable::Expression() const
 {
-  Handle(TDataStd_Expression) E;
+  occ::handle<TDataStd_Expression> E;
   if (!Label().FindAttribute(TDataStd_Expression::GetID(), E))
   {
     throw Standard_DomainError("TDataStd_Variable::GetExpression");
@@ -173,21 +173,21 @@ Handle(TDataStd_Expression) TDataStd_Variable::Expression() const
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_Variable::IsCaptured() const
+bool TDataStd_Variable::IsCaptured() const
 {
   return Real()->IsCaptured();
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_Variable::IsConstant() const
+bool TDataStd_Variable::IsConstant() const
 {
   return isConstant;
 }
 
 //=================================================================================================
 
-void TDataStd_Variable::Constant(const Standard_Boolean status)
+void TDataStd_Variable::Constant(const bool status)
 {
   // OCC2932 correction
   if (isConstant == status)
@@ -225,35 +225,35 @@ const Standard_GUID& TDataStd_Variable::ID() const
 
 //=================================================================================================
 
-void TDataStd_Variable::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_Variable::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  Handle(TDataStd_Variable) V = Handle(TDataStd_Variable)::DownCast(With);
-  isConstant                  = V->IsConstant();
-  myUnit                      = V->Unit();
+  occ::handle<TDataStd_Variable> V = occ::down_cast<TDataStd_Variable>(With);
+  isConstant                       = V->IsConstant();
+  myUnit                           = V->Unit();
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_Variable::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_Variable::NewEmpty() const
 {
   return new TDataStd_Variable();
 }
 
 //=================================================================================================
 
-void TDataStd_Variable::Paste(const Handle(TDF_Attribute)& Into,
-                              const Handle(TDF_RelocationTable)& /*RT*/) const
+void TDataStd_Variable::Paste(const occ::handle<TDF_Attribute>& Into,
+                              const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
-  Handle(TDataStd_Variable) V = Handle(TDataStd_Variable)::DownCast(Into);
+  occ::handle<TDataStd_Variable> V = occ::down_cast<TDataStd_Variable>(Into);
   V->Constant(isConstant);
   V->Unit(myUnit);
 }
 
 //=================================================================================================
 
-void TDataStd_Variable::References(const Handle(TDF_DataSet)& DS) const
+void TDataStd_Variable::References(const occ::handle<TDF_DataSet>& DS) const
 {
-  Handle(TDataStd_Name) N;
+  occ::handle<TDataStd_Name> N;
   if (Label().FindAttribute(TDataStd_Name::GetID(), N))
   {
     DS->AddAttribute(N);
@@ -270,7 +270,7 @@ Standard_OStream& TDataStd_Variable::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_Variable::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_Variable::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -25,8 +25,6 @@
 #include <StepKinematics_KinematicJoint.hxx>
 #include <StepKinematics_ActuatedDirection.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_ActuatedKinematicPair, StepKinematics_KinematicPair)
-
 //! Representation of STEP entity ActuatedKinematicPair
 class StepKinematics_ActuatedKinematicPair : public StepKinematics_KinematicPair
 {
@@ -36,67 +34,67 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Standard_Boolean                       hasTX,
-    const StepKinematics_ActuatedDirection       theTX,
-    const Standard_Boolean                       hasTY,
-    const StepKinematics_ActuatedDirection       theTY,
-    const Standard_Boolean                       hasTZ,
-    const StepKinematics_ActuatedDirection       theTZ,
-    const Standard_Boolean                       hasRX,
-    const StepKinematics_ActuatedDirection       theRX,
-    const Standard_Boolean                       hasRY,
-    const StepKinematics_ActuatedDirection       theRY,
-    const Standard_Boolean                       hasRZ,
-    const StepKinematics_ActuatedDirection       theRZ);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                                        hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const bool                                        hasTX,
+    const StepKinematics_ActuatedDirection            theTX,
+    const bool                                        hasTY,
+    const StepKinematics_ActuatedDirection            theTY,
+    const bool                                        hasTZ,
+    const StepKinematics_ActuatedDirection            theTZ,
+    const bool                                        hasRX,
+    const StepKinematics_ActuatedDirection            theRX,
+    const bool                                        hasRY,
+    const StepKinematics_ActuatedDirection            theRY,
+    const bool                                        hasRZ,
+    const StepKinematics_ActuatedDirection            theRZ);
 
   //! Returns field TX
   Standard_EXPORT StepKinematics_ActuatedDirection TX() const;
   //! Sets field TX
   Standard_EXPORT void SetTX(const StepKinematics_ActuatedDirection theTX);
   //! Returns True if optional field TX is defined
-  Standard_EXPORT Standard_Boolean HasTX() const;
+  Standard_EXPORT bool HasTX() const;
 
   //! Returns field TY
   Standard_EXPORT StepKinematics_ActuatedDirection TY() const;
   //! Sets field TY
   Standard_EXPORT void SetTY(const StepKinematics_ActuatedDirection theTY);
   //! Returns True if optional field TY is defined
-  Standard_EXPORT Standard_Boolean HasTY() const;
+  Standard_EXPORT bool HasTY() const;
 
   //! Returns field TZ
   Standard_EXPORT StepKinematics_ActuatedDirection TZ() const;
   //! Sets field TZ
   Standard_EXPORT void SetTZ(const StepKinematics_ActuatedDirection theTZ);
   //! Returns True if optional field TZ is defined
-  Standard_EXPORT Standard_Boolean HasTZ() const;
+  Standard_EXPORT bool HasTZ() const;
 
   //! Returns field RX
   Standard_EXPORT StepKinematics_ActuatedDirection RX() const;
   //! Sets field RX
   Standard_EXPORT void SetRX(const StepKinematics_ActuatedDirection theRX);
   //! Returns True if optional field RX is defined
-  Standard_EXPORT Standard_Boolean HasRX() const;
+  Standard_EXPORT bool HasRX() const;
 
   //! Returns field RY
   Standard_EXPORT StepKinematics_ActuatedDirection RY() const;
   //! Sets field RY
   Standard_EXPORT void SetRY(const StepKinematics_ActuatedDirection theRY);
   //! Returns True if optional field RY is defined
-  Standard_EXPORT Standard_Boolean HasRY() const;
+  Standard_EXPORT bool HasRY() const;
 
   //! Returns field RZ
   Standard_EXPORT StepKinematics_ActuatedDirection RZ() const;
   //! Sets field RZ
   Standard_EXPORT void SetRZ(const StepKinematics_ActuatedDirection theRZ);
   //! Returns True if optional field RZ is defined
-  Standard_EXPORT Standard_Boolean HasRZ() const;
+  Standard_EXPORT bool HasRZ() const;
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_ActuatedKinematicPair, StepKinematics_KinematicPair)
 
@@ -107,11 +105,11 @@ private:
   StepKinematics_ActuatedDirection myRX;  //!< optional
   StepKinematics_ActuatedDirection myRY;  //!< optional
   StepKinematics_ActuatedDirection myRZ;  //!< optional
-  Standard_Boolean                 defTX; //!< flag "is TX defined"
-  Standard_Boolean                 defTY; //!< flag "is TY defined"
-  Standard_Boolean                 defTZ; //!< flag "is TZ defined"
-  Standard_Boolean                 defRX; //!< flag "is RX defined"
-  Standard_Boolean                 defRY; //!< flag "is RY defined"
-  Standard_Boolean                 defRZ; //!< flag "is RZ defined"
+  bool                             defTX; //!< flag "is TX defined"
+  bool                             defTY; //!< flag "is TY defined"
+  bool                             defTZ; //!< flag "is TZ defined"
+  bool                             defRX; //!< flag "is RX defined"
+  bool                             defRY; //!< flag "is RY defined"
+  bool                             defRZ; //!< flag "is RZ defined"
 };
 #endif // _StepKinematics_ActuatedKinematicPair_HeaderFile_

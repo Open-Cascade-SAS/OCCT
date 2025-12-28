@@ -29,10 +29,10 @@ void TopOpeBRep_traceSIFF::Reset()
   mybrep1    = "";
   mybrep2    = "";
   myfilename = "";
-  myopen     = Standard_False;
+  myopen     = false;
 }
 
-void TopOpeBRep_traceSIFF::Set(const Standard_Boolean b, Standard_Integer n, char** a)
+void TopOpeBRep_traceSIFF::Set(const bool b, int n, char** a)
 {
   if (n < 3 || !b || a == NULL)
   {
@@ -53,13 +53,13 @@ void TopOpeBRep_traceSIFF::Set(const TCollection_AsciiString& brep1,
   myfilename = filename;
 }
 
-TCollection_AsciiString TopOpeBRep_traceSIFF::Name1(const Standard_Integer I) const
+TCollection_AsciiString TopOpeBRep_traceSIFF::Name1(const int I) const
 {
   TCollection_AsciiString s = mybrep1 + "_" + I;
   return s;
 }
 
-TCollection_AsciiString TopOpeBRep_traceSIFF::Name2(const Standard_Integer I) const
+TCollection_AsciiString TopOpeBRep_traceSIFF::Name2(const int I) const
 {
   TCollection_AsciiString s = mybrep2 + "_" + I;
   return s;
@@ -70,13 +70,13 @@ const TCollection_AsciiString& TopOpeBRep_traceSIFF::File() const
   return myfilename;
 }
 
-Standard_Boolean TopOpeBRep_traceSIFF::Start(const TCollection_AsciiString& s, Standard_OStream& OS)
+bool TopOpeBRep_traceSIFF::Start(const TCollection_AsciiString& s, Standard_OStream& OS)
 {
-  Standard_CString cs = myfilename.ToCString();
-  myopen              = Standard_True;
+  const char* cs = myfilename.ToCString();
+  myopen         = true;
   if (!myfilebuf.open(cs, std::ios::out))
   {
-    myopen = Standard_False;
+    myopen = false;
   }
   if (!myopen)
   {
@@ -91,7 +91,7 @@ Standard_Boolean TopOpeBRep_traceSIFF::Start(const TCollection_AsciiString& s, S
   return myopen;
 }
 
-void TopOpeBRep_traceSIFF::Add(const Standard_Integer I1, const Standard_Integer I2)
+void TopOpeBRep_traceSIFF::Add(const int I1, const int I2)
 {
   if (!myopen)
   {
@@ -113,21 +113,21 @@ void TopOpeBRep_traceSIFF::End(const TCollection_AsciiString& s, Standard_OStrea
   {
     OS << s << myfilename << std::endl;
   }
-  myopen = Standard_False;
+  myopen = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 TopOpeBRep_traceSIFF SIFF;
 
-Standard_EXPORT void TopOpeBRep_SettraceSIFF(const Standard_Boolean b, Standard_Integer n, char** a)
+Standard_EXPORT void TopOpeBRep_SettraceSIFF(const bool b, int n, char** a)
 {
   SIFF.Set(b, n, a);
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSIFF()
+Standard_EXPORT bool TopOpeBRep_GettraceSIFF()
 {
-  Standard_Boolean b = (SIFF.File().Length() != 0);
+  bool b = (SIFF.File().Length() != 0);
   return b;
 }
 

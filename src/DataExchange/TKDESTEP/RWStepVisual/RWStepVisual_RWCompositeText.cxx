@@ -17,15 +17,16 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CompositeText.hxx>
-#include <StepVisual_HArray1OfTextOrCharacter.hxx>
 #include <StepVisual_TextOrCharacter.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 RWStepVisual_RWCompositeText::RWStepVisual_RWCompositeText() {}
 
-void RWStepVisual_RWCompositeText::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepVisual_CompositeText)& ent) const
+void RWStepVisual_RWCompositeText::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                                    num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepVisual_CompositeText>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,23 +36,23 @@ void RWStepVisual_RWCompositeText::ReadStep(const Handle(StepData_StepReaderData
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : collectedText ---
 
-  Handle(StepVisual_HArray1OfTextOrCharacter) aCollectedText;
-  StepVisual_TextOrCharacter                  aCollectedTextItem;
-  Standard_Integer                            nsub2;
-  nsub2 = data->SubListNumber(num, 2, Standard_False);
+  occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> aCollectedText;
+  StepVisual_TextOrCharacter                                   aCollectedTextItem;
+  int                                                          nsub2;
+  nsub2 = data->SubListNumber(num, 2, false);
   if (nsub2 != 0)
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aCollectedText       = new StepVisual_HArray1OfTextOrCharacter(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2        = data->NbParams(nsub2);
+    aCollectedText = new NCollection_HArray1<StepVisual_TextOrCharacter>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "collected_text", ach, aCollectedTextItem))
         aCollectedText->SetValue(i2, aCollectedTextItem);
     }
@@ -66,8 +67,8 @@ void RWStepVisual_RWCompositeText::ReadStep(const Handle(StepData_StepReaderData
   ent->Init(aName, aCollectedText);
 }
 
-void RWStepVisual_RWCompositeText::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepVisual_CompositeText)& ent) const
+void RWStepVisual_RWCompositeText::WriteStep(StepData_StepWriter&                         SW,
+                                             const occ::handle<StepVisual_CompositeText>& ent) const
 {
 
   // --- inherited field name ---
@@ -77,19 +78,19 @@ void RWStepVisual_RWCompositeText::WriteStep(StepData_StepWriter&               
   // --- own field : collectedText ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbCollectedText(); i2++)
+  for (int i2 = 1; i2 <= ent->NbCollectedText(); i2++)
   {
     SW.Send(ent->CollectedTextValue(i2).Value());
   }
   SW.CloseSub();
 }
 
-void RWStepVisual_RWCompositeText::Share(const Handle(StepVisual_CompositeText)& ent,
-                                         Interface_EntityIterator&               iter) const
+void RWStepVisual_RWCompositeText::Share(const occ::handle<StepVisual_CompositeText>& ent,
+                                         Interface_EntityIterator&                    iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbCollectedText();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbCollectedText();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->CollectedTextValue(is1).Value());
   }

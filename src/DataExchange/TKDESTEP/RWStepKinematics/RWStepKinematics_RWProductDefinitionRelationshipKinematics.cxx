@@ -33,10 +33,10 @@ RWStepKinematics_RWProductDefinitionRelationshipKinematics::
 //=================================================================================================
 
 void RWStepKinematics_RWProductDefinitionRelationshipKinematics::ReadStep(
-  const Handle(StepData_StepReaderData)&                                theData,
-  const Standard_Integer                                                theNum,
-  Handle(Interface_Check)&                                              theArch,
-  const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                                theData,
+  const int                                                                  theNum,
+  occ::handle<Interface_Check>&                                              theArch,
+  const occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "product_definition_relationship_kinematics"))
@@ -44,11 +44,11 @@ void RWStepKinematics_RWProductDefinitionRelationshipKinematics::ReadStep(
 
   // Inherited fields of PropertyDefinition
 
-  Handle(TCollection_HAsciiString) aPropertyDefinition_Name;
+  occ::handle<TCollection_HAsciiString> aPropertyDefinition_Name;
   theData->ReadString(theNum, 1, "property_definition.name", theArch, aPropertyDefinition_Name);
 
-  Handle(TCollection_HAsciiString) aPropertyDefinition_Description;
-  Standard_Boolean                 hasPropertyDefinition_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aPropertyDefinition_Description;
+  bool                                  hasPropertyDefinition_Description = true;
   if (theData->IsParamDefined(theNum, 2))
   {
     theData->ReadString(theNum,
@@ -59,7 +59,7 @@ void RWStepKinematics_RWProductDefinitionRelationshipKinematics::ReadStep(
   }
   else
   {
-    hasPropertyDefinition_Description = Standard_False;
+    hasPropertyDefinition_Description = false;
     aPropertyDefinition_Description.Nullify();
   }
 
@@ -80,8 +80,8 @@ void RWStepKinematics_RWProductDefinitionRelationshipKinematics::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWProductDefinitionRelationshipKinematics::WriteStep(
-  StepData_StepWriter&                                                  theSW,
-  const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)& theEnt) const
+  StepData_StepWriter&                                                       theSW,
+  const occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>& theEnt) const
 {
 
   // Own fields of PropertyDefinition
@@ -101,8 +101,8 @@ void RWStepKinematics_RWProductDefinitionRelationshipKinematics::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWProductDefinitionRelationshipKinematics::Share(
-  const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)& theEnt,
-  Interface_EntityIterator&                                             iter) const
+  const occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>& theEnt,
+  Interface_EntityIterator&                                                  iter) const
 {
 
   // Inherited fields of PropertyDefinition

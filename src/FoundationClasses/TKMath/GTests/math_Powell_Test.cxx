@@ -36,14 +36,14 @@ class QuadraticFunction : public math_MultipleVarFunction
 public:
   QuadraticFunction() {}
 
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& X, Standard_Real& F) override
+  bool Value(const math_Vector& X, double& F) override
   {
-    Standard_Real x = X(1) - 1.0;
-    Standard_Real y = X(2) - 2.0;
-    F               = x * x + y * y;
-    return Standard_True;
+    double x = X(1) - 1.0;
+    double y = X(2) - 2.0;
+    F        = x * x + y * y;
+    return true;
   }
 };
 
@@ -54,16 +54,16 @@ class RosenbrockFunction : public math_MultipleVarFunction
 public:
   RosenbrockFunction() {}
 
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& X, Standard_Real& F) override
+  bool Value(const math_Vector& X, double& F) override
   {
-    Standard_Real x     = X(1);
-    Standard_Real y     = X(2);
-    Standard_Real term1 = y - x * x;
-    Standard_Real term2 = 1.0 - x;
-    F                   = 100.0 * term1 * term1 + term2 * term2;
-    return Standard_True;
+    double x     = X(1);
+    double y     = X(2);
+    double term1 = y - x * x;
+    double term2 = 1.0 - x;
+    F            = 100.0 * term1 * term1 + term2 * term2;
+    return true;
   }
 };
 
@@ -74,13 +74,13 @@ class Simple1DFunction : public math_MultipleVarFunction
 public:
   Simple1DFunction() {}
 
-  Standard_Integer NbVariables() const override { return 1; }
+  int NbVariables() const override { return 1; }
 
-  Standard_Boolean Value(const math_Vector& X, Standard_Real& F) override
+  bool Value(const math_Vector& X, double& F) override
   {
-    Standard_Real x = X(1) - 3.0;
-    F               = x * x;
-    return Standard_True;
+    double x = X(1) - 3.0;
+    F        = x * x;
+    return true;
   }
 };
 
@@ -88,25 +88,25 @@ public:
 class MultiDimensionalQuadratic : public math_MultipleVarFunction
 {
 private:
-  Standard_Integer myN;
+  int myN;
 
 public:
-  MultiDimensionalQuadratic(Standard_Integer n)
+  MultiDimensionalQuadratic(int n)
       : myN(n)
   {
   }
 
-  Standard_Integer NbVariables() const override { return myN; }
+  int NbVariables() const override { return myN; }
 
-  Standard_Boolean Value(const math_Vector& X, Standard_Real& F) override
+  bool Value(const math_Vector& X, double& F) override
   {
     F = 0.0;
-    for (Standard_Integer i = 1; i <= myN; i++)
+    for (int i = 1; i <= myN; i++)
     {
-      Standard_Real diff = X(i) - static_cast<Standard_Real>(i);
+      double diff = X(i) - static_cast<double>(i);
       F += diff * diff;
     }
-    return Standard_True;
+    return true;
   }
 };
 
@@ -132,7 +132,7 @@ TEST(MathPowellTest, SimpleQuadraticFunction)
   EXPECT_TRUE(aPowell.IsDone()) << "Powell should converge for simple quadratic function";
 
   const math_Vector& aLocation = aPowell.Location();
-  Standard_Real      aMinimum  = aPowell.Minimum();
+  double             aMinimum  = aPowell.Minimum();
 
   EXPECT_NEAR(aLocation(1), 1.0, 1.0e-6) << "Optimal X coordinate";
   EXPECT_NEAR(aLocation(2), 2.0, 1.0e-6) << "Optimal Y coordinate";
@@ -199,9 +199,9 @@ TEST(MathPowellTest, HigherDimensionalOptimization)
 
   // Identity matrix for initial directions
   math_Matrix aDirections(1, 4, 1, 4);
-  for (Standard_Integer i = 1; i <= 4; i++)
+  for (int i = 1; i <= 4; i++)
   {
-    for (Standard_Integer j = 1; j <= 4; j++)
+    for (int j = 1; j <= 4; j++)
     {
       aDirections(i, j) = (i == j) ? 1.0 : 0.0;
     }
@@ -288,14 +288,14 @@ TEST(MathPowellTest, ToleranceSettings)
   aPowell1.Perform(aFunc, aStartPoint, aDirections);
   EXPECT_TRUE(aPowell1.IsDone()) << "Should converge with loose tolerance";
 
-  Standard_Integer aIterationsLoose = aPowell1.NbIterations();
+  int aIterationsLoose = aPowell1.NbIterations();
 
   // Tight tolerance
   math_Powell aPowell2(aFunc, 1.0e-10, 100);
   aPowell2.Perform(aFunc, aStartPoint, aDirections);
   EXPECT_TRUE(aPowell2.IsDone()) << "Should converge with tight tolerance";
 
-  Standard_Integer aIterationsTight = aPowell2.NbIterations();
+  int aIterationsTight = aPowell2.NbIterations();
 
   // Tighter tolerance usually requires more iterations
   EXPECT_GE(aIterationsTight, aIterationsLoose)

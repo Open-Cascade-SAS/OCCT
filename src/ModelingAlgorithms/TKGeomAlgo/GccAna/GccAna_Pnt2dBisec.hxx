@@ -41,20 +41,19 @@ public:
   Standard_EXPORT GccAna_Pnt2dBisec(const gp_Pnt2d& Point1, const gp_Pnt2d& Point2);
 
   //! Returns true (this construction algorithm never fails).
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns true if this algorithm has a solution, i.e. if the
   //! two points are not coincident.
-  Standard_EXPORT Standard_Boolean HasSolution() const;
+  Standard_EXPORT bool HasSolution() const;
 
   //! Returns a line, representing the solution computed by this algorithm.
   Standard_EXPORT gp_Lin2d ThisSolution() const;
 
-protected:
 private:
-  Standard_Boolean WellDone;
-  Standard_Boolean HasSol;
-  gp_Lin2d         linsol;
+  bool     WellDone;
+  bool     HasSol;
+  gp_Lin2d linsol;
 };
 
 #endif // _GccAna_Pnt2dBisec_HeaderFile

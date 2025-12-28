@@ -26,8 +26,8 @@ StepRepr_RepresentationOrRepresentationReference::StepRepr_RepresentationOrRepre
 
 //=================================================================================================
 
-Standard_Integer StepRepr_RepresentationOrRepresentationReference::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepRepr_RepresentationOrRepresentationReference::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -40,16 +40,16 @@ Standard_Integer StepRepr_RepresentationOrRepresentationReference::CaseNum(
 
 //=================================================================================================
 
-Handle(StepRepr_Representation) StepRepr_RepresentationOrRepresentationReference::Representation()
-  const
+occ::handle<StepRepr_Representation> StepRepr_RepresentationOrRepresentationReference::
+  Representation() const
 {
-  return Handle(StepRepr_Representation)::DownCast(Value());
+  return occ::down_cast<StepRepr_Representation>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_RepresentationReference) StepRepr_RepresentationOrRepresentationReference::
+occ::handle<StepRepr_RepresentationReference> StepRepr_RepresentationOrRepresentationReference::
   RepresentationReference() const
 {
-  return Handle(StepRepr_RepresentationReference)::DownCast(Value());
+  return occ::down_cast<StepRepr_RepresentationReference>(Value());
 }

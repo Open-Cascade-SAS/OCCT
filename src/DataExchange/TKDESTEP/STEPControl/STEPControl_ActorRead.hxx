@@ -24,8 +24,10 @@
 #include <StepToTopoDS_NMTool.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Standard_Integer.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <Message_ProgressRange.hxx>
 #include <Interface_InterfaceModel.hxx>
 
@@ -51,9 +53,6 @@ class StepRepr_ConstructiveGeometryRepresentationRelationship;
 class StepRepr_MechanicalDesignAndDraughtingRelationship;
 class StepData_StepModel;
 
-class STEPControl_ActorRead;
-DEFINE_STANDARD_HANDLE(STEPControl_ActorRead, Transfer_ActorOfTransientProcess)
-
 //! This class performs the transfer of an Entity from
 //! AP214 and AP203, either Geometric or Topologic.
 //!
@@ -63,59 +62,57 @@ class STEPControl_ActorRead : public Transfer_ActorOfTransientProcess
 {
 
 public:
-  Standard_EXPORT STEPControl_ActorRead(const Handle(Interface_InterfaceModel)& theModel);
+  Standard_EXPORT STEPControl_ActorRead(const occ::handle<Interface_InterfaceModel>& theModel);
 
-  Standard_EXPORT virtual Standard_Boolean Recognize(const Handle(Standard_Transient)& start)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Recognize(const occ::handle<Standard_Transient>& start) override;
 
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
-    const Handle(Standard_Transient)&        start,
-    const Handle(Transfer_TransientProcess)& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
+    const occ::handle<Standard_Transient>&        start,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    const Message_ProgressRange&                  theProgress = Message_ProgressRange()) override;
 
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root
   //! shape
-  Standard_EXPORT Handle(Transfer_Binder) TransferShape(
-    const Handle(Standard_Transient)&        start,
-    const Handle(Transfer_TransientProcess)& TP,
-    const StepData_Factors&                  theLocalFactors = StepData_Factors(),
-    const Standard_Boolean                   isManifold      = Standard_True,
-    const Standard_Boolean                   theUseTrsf      = Standard_False,
-    const Message_ProgressRange&             theProgress     = Message_ProgressRange());
+  Standard_EXPORT occ::handle<Transfer_Binder> TransferShape(
+    const occ::handle<Standard_Transient>&        start,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    const StepData_Factors&                       theLocalFactors = StepData_Factors(),
+    const bool                                    isManifold      = true,
+    const bool                                    theUseTrsf      = false,
+    const Message_ProgressRange&                  theProgress     = Message_ProgressRange());
 
   //! set units and tolerances context by given ShapeRepresentation
-  Standard_EXPORT void PrepareUnits(const Handle(StepRepr_Representation)&   rep,
-                                    const Handle(Transfer_TransientProcess)& TP,
-                                    StepData_Factors&                        theLocalFactors);
+  Standard_EXPORT void PrepareUnits(const occ::handle<StepRepr_Representation>&   rep,
+                                    const occ::handle<Transfer_TransientProcess>& TP,
+                                    StepData_Factors&                             theLocalFactors);
 
   //! reset units and tolerances context to default
   //! (mm, radians, read.precision.val, etc.)
-  Standard_EXPORT void ResetUnits(Handle(StepData_StepModel)& theModel,
-                                  StepData_Factors&           theLocalFactors);
+  Standard_EXPORT void ResetUnits(occ::handle<StepData_StepModel>& theModel,
+                                  StepData_Factors&                theLocalFactors);
 
   //! Set model
-  Standard_EXPORT void SetModel(const Handle(Interface_InterfaceModel)& theModel);
+  Standard_EXPORT void SetModel(const occ::handle<Interface_InterfaceModel>& theModel);
 
   //! Computes transformation defined by two axis placements (in MAPPED_ITEM
   //! or ITEM_DEFINED_TRANSFORMATION) taking into account their
   //! representation contexts (i.e. units, which may be different)
   //! Returns True if transformation is computed and is not an identity.
-  Standard_EXPORT Standard_Boolean
-    ComputeTransformation(const Handle(StepGeom_Axis2Placement3d)& Origin,
-                          const Handle(StepGeom_Axis2Placement3d)& Target,
-                          const Handle(StepRepr_Representation)&   OrigContext,
-                          const Handle(StepRepr_Representation)&   TargContext,
-                          const Handle(Transfer_TransientProcess)& TP,
-                          gp_Trsf&                                 Trsf,
-                          const StepData_Factors& theLocalFactors = StepData_Factors());
+  Standard_EXPORT bool ComputeTransformation(
+    const occ::handle<StepGeom_Axis2Placement3d>& Origin,
+    const occ::handle<StepGeom_Axis2Placement3d>& Target,
+    const occ::handle<StepRepr_Representation>&   OrigContext,
+    const occ::handle<StepRepr_Representation>&   TargContext,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    gp_Trsf&                                      Trsf,
+    const StepData_Factors&                       theLocalFactors = StepData_Factors());
 
   //! Computes transformation defined by given
   //! REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION
-  Standard_EXPORT Standard_Boolean
-    ComputeSRRWT(const Handle(StepRepr_RepresentationRelationship)& SRR,
-                 const Handle(Transfer_TransientProcess)&           TP,
-                 gp_Trsf&                                           Trsf,
-                 const StepData_Factors& theLocalFactors = StepData_Factors());
+  Standard_EXPORT bool ComputeSRRWT(const occ::handle<StepRepr_RepresentationRelationship>& SRR,
+                                    const occ::handle<Transfer_TransientProcess>&           TP,
+                                    gp_Trsf&                                                Trsf,
+                                    const StepData_Factors& theLocalFactors = StepData_Factors());
 
   DEFINE_STANDARD_RTTIEXT(STEPControl_ActorRead, Transfer_ActorOfTransientProcess)
 
@@ -123,113 +120,115 @@ protected:
   //! Transfers product definition entity
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root
   //! shape
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepBasic_ProductDefinition)& PD,
-    const Handle(Transfer_TransientProcess)&   TP,
-    const StepData_Factors&                    theLocalFactors = StepData_Factors(),
-    const Standard_Boolean                     theUseTrsf      = Standard_False,
-    const Message_ProgressRange&               theProgress     = Message_ProgressRange());
+  Standard_EXPORT occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepBasic_ProductDefinition>& PD,
+    const occ::handle<Transfer_TransientProcess>&   TP,
+    const StepData_Factors&                         theLocalFactors = StepData_Factors(),
+    const bool                                      theUseTrsf      = false,
+    const Message_ProgressRange&                    theProgress     = Message_ProgressRange());
 
   //! Transfers next assembly usage occurrence entity
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepRepr_NextAssemblyUsageOccurrence)& NAUO,
-    const Handle(Transfer_TransientProcess)&            TP,
-    const StepData_Factors&                             theLocalFactors = StepData_Factors(),
-    const Message_ProgressRange&                        theProgress     = Message_ProgressRange());
+  Standard_EXPORT occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& NAUO,
+    const occ::handle<Transfer_TransientProcess>&            TP,
+    const StepData_Factors&                                  theLocalFactors = StepData_Factors(),
+    const Message_ProgressRange&                             theProgress = Message_ProgressRange());
 
   //! Transfers shape representation entity
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root
   //! shape
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepShape_ShapeRepresentation)& sr,
-    const Handle(Transfer_TransientProcess)&     TP,
-    const StepData_Factors&                      theLocalFactors,
-    Standard_Boolean&                            isBound,
-    const Standard_Boolean                       theUseTrsf  = Standard_False,
-    const Message_ProgressRange&                 theProgress = Message_ProgressRange());
+  Standard_EXPORT occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepShape_ShapeRepresentation>& sr,
+    const occ::handle<Transfer_TransientProcess>&     TP,
+    const StepData_Factors&                           theLocalFactors,
+    bool&                                             isBound,
+    const bool                                        theUseTrsf  = false,
+    const Message_ProgressRange&                      theProgress = Message_ProgressRange());
 
   //! Transfers context dependent shape representation entity
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepShape_ContextDependentShapeRepresentation)& CDSR,
-    const Handle(Transfer_TransientProcess)&                     TP,
+  Standard_EXPORT occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepShape_ContextDependentShapeRepresentation>& CDSR,
+    const occ::handle<Transfer_TransientProcess>&                     TP,
     const StepData_Factors&      theLocalFactors = StepData_Factors(),
     const Message_ProgressRange& theProgress     = Message_ProgressRange());
 
   //! Transfers shape representation relationship entity
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root
   //! shape
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepRepr_ShapeRepresentationRelationship)& und,
-    const Handle(Transfer_TransientProcess)&                TP,
-    const StepData_Factors&                                 theLocalFactors,
-    const Standard_Integer                                  nbrep       = 0,
-    const Standard_Boolean                                  theUseTrsf  = Standard_False,
-    const Message_ProgressRange&                            theProgress = Message_ProgressRange());
+  Standard_EXPORT occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepRepr_ShapeRepresentationRelationship>& und,
+    const occ::handle<Transfer_TransientProcess>&                TP,
+    const StepData_Factors&                                      theLocalFactors,
+    const int                                                    nbrep      = 0,
+    const bool                                                   theUseTrsf = false,
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers geometric representation item entity such as ManifoldSolidBRep ,...etc
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepGeom_GeometricRepresentationItem)& git,
-    const Handle(Transfer_TransientProcess)&            TP,
-    const StepData_Factors&                             theLocalFactors,
-    const Standard_Boolean                              isManifold,
-    const Message_ProgressRange&                        theProgress);
+  Standard_EXPORT occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepGeom_GeometricRepresentationItem>& git,
+    const occ::handle<Transfer_TransientProcess>&            TP,
+    const StepData_Factors&                                  theLocalFactors,
+    const bool                                               isManifold,
+    const Message_ProgressRange&                             theProgress);
 
   //! Transfers mapped item
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepRepr_MappedItem)&       mapit,
-    const Handle(Transfer_TransientProcess)& TP,
-    const StepData_Factors&                  theLocalFactors,
-    const Message_ProgressRange&             theProgress);
+  Standard_EXPORT occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepRepr_MappedItem>&       mapit,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    const StepData_Factors&                       theLocalFactors,
+    const Message_ProgressRange&                  theProgress);
 
   //! Transfers FaceSurface entity
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepShape_FaceSurface)&     fs,
-    const Handle(Transfer_TransientProcess)& TP,
-    const StepData_Factors&                  theLocalFactors,
-    const Message_ProgressRange&             theProgress);
+  Standard_EXPORT occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepShape_FaceSurface>&     fs,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    const StepData_Factors&                       theLocalFactors,
+    const Message_ProgressRange&                  theProgress);
 
-  Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& theCGRR,
-    const Handle(Transfer_TransientProcess)&                               theTP,
+  occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepRepr_ConstructiveGeometryRepresentationRelationship>& theCGRR,
+    const occ::handle<Transfer_TransientProcess>&                               theTP,
     const StepData_Factors& theLocalFactors = StepData_Factors());
 
   //! Transfers MechanicalDesignAndDraughtingRelationship entity
-  Handle(TransferBRep_ShapeBinder) TransferEntity(
-    const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theMDADR,
-    const Handle(Transfer_TransientProcess)&                          theTP,
-    const StepData_Factors&                                           theLocalFactors,
-    const Message_ProgressRange&                                      theProgress);
+  occ::handle<TransferBRep_ShapeBinder> TransferEntity(
+    const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theMDADR,
+    const occ::handle<Transfer_TransientProcess>&                          theTP,
+    const StepData_Factors&                                                theLocalFactors,
+    const Message_ProgressRange&                                           theProgress);
 
   //! Translates file by old way when CDSR are roots.
   //! Acts only if "read.step.product_mode" is equal Off.
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) OldWay(
-    const Handle(Standard_Transient)&        start,
-    const Handle(Transfer_TransientProcess)& TP,
-    const Message_ProgressRange&             theProgress);
+  Standard_EXPORT occ::handle<TransferBRep_ShapeBinder> OldWay(
+    const occ::handle<Standard_Transient>&        start,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    const Message_ProgressRange&                  theProgress);
 
 private:
-  Standard_EXPORT TopoDS_Shell closeIDEASShell(const TopoDS_Shell&         shell,
-                                               const TopTools_ListOfShape& closingShells);
+  Standard_EXPORT TopoDS_Shell closeIDEASShell(const TopoDS_Shell&                   shell,
+                                               const NCollection_List<TopoDS_Shape>& closingShells);
 
   Standard_EXPORT void computeIDEASClosings(
-    const TopoDS_Compound&                     comp,
-    TopTools_IndexedDataMapOfShapeListOfShape& shellClosingMap);
+    const TopoDS_Compound&                               comp,
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>& shellClosingMap);
 
   Standard_EXPORT TopoDS_Shape
-    TransferRelatedSRR(const Handle(Transfer_TransientProcess)&     theTP,
-                       const Handle(StepShape_ShapeRepresentation)& theRep,
-                       const Standard_Boolean                       theUseTrsf,
-                       const Standard_Boolean                       theReadConstructiveGeomRR,
-                       const StepData_Factors&                      theLocalFactors,
-                       TopoDS_Compound&                             theCund,
-                       Message_ProgressScope&                       thePS);
+    TransferRelatedSRR(const occ::handle<Transfer_TransientProcess>&     theTP,
+                       const occ::handle<StepShape_ShapeRepresentation>& theRep,
+                       const bool                                        theUseTrsf,
+                       const bool                                        theReadConstructiveGeomRR,
+                       const StepData_Factors&                           theLocalFactors,
+                       TopoDS_Compound&                                  theCund,
+                       Message_ProgressScope&                            thePS);
 
 private:
-  StepToTopoDS_NMTool              myNMTool;
-  Standard_Real                    myPrecision;
-  Standard_Real                    myMaxTol;
-  Handle(StepRepr_Representation)  mySRContext;
-  Handle(Interface_InterfaceModel) myModel;
+  StepToTopoDS_NMTool                   myNMTool;
+  double                                myPrecision;
+  double                                myMaxTol;
+  occ::handle<StepRepr_Representation>  mySRContext;
+  occ::handle<Interface_InterfaceModel> myModel;
 };
 
 #endif // _STEPControl_ActorRead_HeaderFile

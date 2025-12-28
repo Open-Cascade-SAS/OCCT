@@ -45,8 +45,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Adds the attribute storage drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers(const Handle(BinMDF_ADriverTable)& aDriverTable,
-                                         const Handle(Message_Messenger)&   aMsgDrv);
+  Standard_EXPORT static void AddDrivers(const occ::handle<BinMDF_ADriverTable>& aDriverTable,
+                                         const occ::handle<Message_Messenger>&   aMsgDrv);
 };
 
 #endif // _BinMDF_HeaderFile

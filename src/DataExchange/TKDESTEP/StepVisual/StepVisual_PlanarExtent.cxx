@@ -18,9 +18,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PlanarExtent, StepGeom_GeometricRepresenta
 
 StepVisual_PlanarExtent::StepVisual_PlanarExtent() {}
 
-void StepVisual_PlanarExtent::Init(const Handle(TCollection_HAsciiString)& aName,
-                                   const Standard_Real                     aSizeInX,
-                                   const Standard_Real                     aSizeInY)
+void StepVisual_PlanarExtent::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                   const double                                 aSizeInX,
+                                   const double                                 aSizeInY)
 {
   // --- classe own fields ---
   sizeInX = aSizeInX;
@@ -29,22 +29,22 @@ void StepVisual_PlanarExtent::Init(const Handle(TCollection_HAsciiString)& aName
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepVisual_PlanarExtent::SetSizeInX(const Standard_Real aSizeInX)
+void StepVisual_PlanarExtent::SetSizeInX(const double aSizeInX)
 {
   sizeInX = aSizeInX;
 }
 
-Standard_Real StepVisual_PlanarExtent::SizeInX() const
+double StepVisual_PlanarExtent::SizeInX() const
 {
   return sizeInX;
 }
 
-void StepVisual_PlanarExtent::SetSizeInY(const Standard_Real aSizeInY)
+void StepVisual_PlanarExtent::SetSizeInY(const double aSizeInY)
 {
   sizeInY = aSizeInY;
 }
 
-Standard_Real StepVisual_PlanarExtent::SizeInY() const
+double StepVisual_PlanarExtent::SizeInY() const
 {
   return sizeInY;
 }

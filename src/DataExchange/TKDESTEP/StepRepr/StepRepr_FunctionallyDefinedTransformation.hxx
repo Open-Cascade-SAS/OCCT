@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-class StepRepr_FunctionallyDefinedTransformation;
-DEFINE_STANDARD_HANDLE(StepRepr_FunctionallyDefinedTransformation, Standard_Transient)
-
 class StepRepr_FunctionallyDefinedTransformation : public Standard_Transient
 {
 
@@ -33,23 +30,22 @@ public:
   //! Returns a FunctionallyDefinedTransformation
   Standard_EXPORT StepRepr_FunctionallyDefinedTransformation();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_FunctionallyDefinedTransformation, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) name;
-  Handle(TCollection_HAsciiString) description;
+  occ::handle<TCollection_HAsciiString> name;
+  occ::handle<TCollection_HAsciiString> description;
 };
 
 #endif // _StepRepr_FunctionallyDefinedTransformation_HeaderFile

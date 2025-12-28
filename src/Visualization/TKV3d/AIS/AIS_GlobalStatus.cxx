@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_GlobalStatus, Standard_Transient)
 
 AIS_GlobalStatus::AIS_GlobalStatus()
     : myDispMode(0),
-      myIsHilit(Standard_False),
-      mySubInt(Standard_False)
+      myIsHilit(false),
+      mySubInt(false)
 {
 }

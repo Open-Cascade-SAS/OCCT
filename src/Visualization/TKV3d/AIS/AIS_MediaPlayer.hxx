@@ -39,15 +39,17 @@ public:
   }
 
   //! Open specified file.
-  Standard_EXPORT void OpenInput(const TCollection_AsciiString& thePath,
-                                 Standard_Boolean               theToWait);
+  Standard_EXPORT void OpenInput(const TCollection_AsciiString& thePath, bool theToWait);
 
   //! Display new frame.
-  Standard_EXPORT bool PresentFrame(const Graphic3d_Vec2i& theLeftCorner,
-                                    const Graphic3d_Vec2i& theMaxSize);
+  Standard_EXPORT bool PresentFrame(const NCollection_Vec2<int>& theLeftCorner,
+                                    const NCollection_Vec2<int>& theMaxSize);
 
   //! Return player context.
-  const Handle(Media_PlayerContext)& PlayerContext() const { return myFramePair->PlayerContext(); }
+  const occ::handle<Media_PlayerContext>& PlayerContext() const
+  {
+    return myFramePair->PlayerContext();
+  }
 
   //! Switch playback state.
   Standard_EXPORT void PlayPause();
@@ -65,31 +67,28 @@ public:
   //! @name AIS_InteractiveObject interface
 protected:
   //! Accept only display mode 0.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
-  {
-    return theMode == 0;
-  }
+  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Compute presentation.
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
   //! Compute selection
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
 protected:
   //! Update frame size.
-  Standard_EXPORT bool updateSize(const Graphic3d_Vec2i& theLeftCorner,
-                                  const Graphic3d_Vec2i& theMaxSize);
+  Standard_EXPORT bool updateSize(const NCollection_Vec2<int>& theLeftCorner,
+                                  const NCollection_Vec2<int>& theMaxSize);
 
 protected:
-  Handle(Graphic3d_MediaTextureSet)  myFramePair;
-  Handle(Graphic3d_AspectFillArea3d) myFrameAspect;
-  Graphic3d_Vec2i                    myFrameBottomLeft;
-  Graphic3d_Vec2i                    myFrameSize;
-  bool                               myToClosePlayer;
+  occ::handle<Graphic3d_MediaTextureSet>  myFramePair;
+  occ::handle<Graphic3d_AspectFillArea3d> myFrameAspect;
+  NCollection_Vec2<int>                   myFrameBottomLeft;
+  NCollection_Vec2<int>                   myFrameSize;
+  bool                                    myToClosePlayer;
 };
 
 #endif // _AIS_MediaPlayer_HeaderFile

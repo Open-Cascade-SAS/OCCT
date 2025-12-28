@@ -24,10 +24,6 @@
 #include <StepFEA_FeaRepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-class StepFEA_ParametricSurface3dElementCoordinateSystem;
-DEFINE_STANDARD_HANDLE(StepFEA_ParametricSurface3dElementCoordinateSystem,
-                       StepFEA_FeaRepresentationItem)
-
 //! Representation of STEP entity ParametricSurface3dElementCoordinateSystem
 class StepFEA_ParametricSurface3dElementCoordinateSystem : public StepFEA_FeaRepresentationItem
 {
@@ -37,29 +33,28 @@ public:
   Standard_EXPORT StepFEA_ParametricSurface3dElementCoordinateSystem();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-                            const Standard_Integer                  aAxis,
-                            const Standard_Real                     aAngle);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+                            const int                                    aAxis,
+                            const double                                 aAngle);
 
   //! Returns field Axis
-  Standard_EXPORT Standard_Integer Axis() const;
+  Standard_EXPORT int Axis() const;
 
   //! Set field Axis
-  Standard_EXPORT void SetAxis(const Standard_Integer Axis);
+  Standard_EXPORT void SetAxis(const int Axis);
 
   //! Returns field Angle
-  Standard_EXPORT Standard_Real Angle() const;
+  Standard_EXPORT double Angle() const;
 
   //! Set field Angle
-  Standard_EXPORT void SetAngle(const Standard_Real Angle);
+  Standard_EXPORT void SetAngle(const double Angle);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_ParametricSurface3dElementCoordinateSystem,
                           StepFEA_FeaRepresentationItem)
 
-protected:
 private:
-  Standard_Integer theAxis;
-  Standard_Real    theAngle;
+  int    theAxis;
+  double theAngle;
 };
 
 #endif // _StepFEA_ParametricSurface3dElementCoordinateSystem_HeaderFile

@@ -16,31 +16,27 @@
 #include <math_GaussSingleIntegration.hxx>
 #include <Standard_DomainError.hxx>
 
-void CPnts_MyRootFunction::Init(const CPnts_RealFunction& F,
-                                const Standard_Address    D,
-                                const Standard_Integer    Order)
+void CPnts_MyRootFunction::Init(const CPnts_RealFunction& F, void* const D, const int Order)
 {
   myFunction.Init(F, D);
   myOrder = Order;
 }
 
-void CPnts_MyRootFunction::Init(const Standard_Real X0, const Standard_Real L)
+void CPnts_MyRootFunction::Init(const double X0, const double L)
 {
   myX0  = X0;
   myL   = L;
   myTol = -1; // to suppress the tolerance
 }
 
-void CPnts_MyRootFunction::Init(const Standard_Real X0,
-                                const Standard_Real L,
-                                const Standard_Real Tol)
+void CPnts_MyRootFunction::Init(const double X0, const double L, const double Tol)
 {
   myX0  = X0;
   myL   = L;
   myTol = Tol;
 }
 
-Standard_Boolean CPnts_MyRootFunction::Value(const Standard_Real X, Standard_Real& F)
+bool CPnts_MyRootFunction::Value(const double X, double& F)
 {
   math_GaussSingleIntegration Length;
 
@@ -52,22 +48,20 @@ Standard_Boolean CPnts_MyRootFunction::Value(const Standard_Real X, Standard_Rea
   if (Length.IsDone())
   {
     F = Length.Value() - myL;
-    return Standard_True;
+    return true;
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 }
 
-Standard_Boolean CPnts_MyRootFunction::Derivative(const Standard_Real X, Standard_Real& Df)
+bool CPnts_MyRootFunction::Derivative(const double X, double& Df)
 {
   return myFunction.Value(X, Df);
 }
 
-Standard_Boolean CPnts_MyRootFunction::Values(const Standard_Real X,
-                                              Standard_Real&      F,
-                                              Standard_Real&      Df)
+bool CPnts_MyRootFunction::Values(const double X, double& F, double& Df)
 {
   math_GaussSingleIntegration Length;
 
@@ -83,6 +77,6 @@ Standard_Boolean CPnts_MyRootFunction::Values(const Standard_Real X,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 }

@@ -17,10 +17,10 @@
 #include <StepToTopoDS.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-Handle(TCollection_HAsciiString) StepToTopoDS::DecodeBuilderError(
+occ::handle<TCollection_HAsciiString> StepToTopoDS::DecodeBuilderError(
   const StepToTopoDS_BuilderError Error)
 {
-  Handle(TCollection_HAsciiString) mess;
+  occ::handle<TCollection_HAsciiString> mess;
   switch (Error)
   {
     case StepToTopoDS_BuilderDone: {
@@ -35,10 +35,10 @@ Handle(TCollection_HAsciiString) StepToTopoDS::DecodeBuilderError(
   return mess;
 }
 
-Handle(TCollection_HAsciiString) StepToTopoDS::DecodeShellError(
+occ::handle<TCollection_HAsciiString> StepToTopoDS::DecodeShellError(
   const StepToTopoDS_TranslateShellError Error)
 {
-  Handle(TCollection_HAsciiString) mess;
+  occ::handle<TCollection_HAsciiString> mess;
   switch (Error)
   {
     case StepToTopoDS_TranslateShellDone: {
@@ -53,10 +53,10 @@ Handle(TCollection_HAsciiString) StepToTopoDS::DecodeShellError(
   return mess;
 }
 
-Handle(TCollection_HAsciiString) StepToTopoDS::DecodeFaceError(
+occ::handle<TCollection_HAsciiString> StepToTopoDS::DecodeFaceError(
   const StepToTopoDS_TranslateFaceError Error)
 {
-  Handle(TCollection_HAsciiString) mess;
+  occ::handle<TCollection_HAsciiString> mess;
   switch (Error)
   {
     case StepToTopoDS_TranslateFaceDone: {
@@ -71,10 +71,10 @@ Handle(TCollection_HAsciiString) StepToTopoDS::DecodeFaceError(
   return mess;
 }
 
-Handle(TCollection_HAsciiString) StepToTopoDS::DecodeEdgeError(
+occ::handle<TCollection_HAsciiString> StepToTopoDS::DecodeEdgeError(
   const StepToTopoDS_TranslateEdgeError Error)
 {
-  Handle(TCollection_HAsciiString) mess;
+  occ::handle<TCollection_HAsciiString> mess;
   switch (Error)
   {
     case StepToTopoDS_TranslateEdgeDone: {
@@ -89,10 +89,10 @@ Handle(TCollection_HAsciiString) StepToTopoDS::DecodeEdgeError(
   return mess;
 }
 
-Handle(TCollection_HAsciiString) StepToTopoDS::DecodeVertexError(
+occ::handle<TCollection_HAsciiString> StepToTopoDS::DecodeVertexError(
   const StepToTopoDS_TranslateVertexError Error)
 {
-  Handle(TCollection_HAsciiString) mess;
+  occ::handle<TCollection_HAsciiString> mess;
   switch (Error)
   {
     case StepToTopoDS_TranslateVertexDone: {
@@ -107,10 +107,10 @@ Handle(TCollection_HAsciiString) StepToTopoDS::DecodeVertexError(
   return mess;
 }
 
-Handle(TCollection_HAsciiString) StepToTopoDS::DecodeVertexLoopError(
+occ::handle<TCollection_HAsciiString> StepToTopoDS::DecodeVertexLoopError(
   const StepToTopoDS_TranslateVertexLoopError Error)
 {
-  Handle(TCollection_HAsciiString) mess;
+  occ::handle<TCollection_HAsciiString> mess;
   switch (Error)
   {
     case StepToTopoDS_TranslateVertexLoopDone: {
@@ -125,10 +125,10 @@ Handle(TCollection_HAsciiString) StepToTopoDS::DecodeVertexLoopError(
   return mess;
 }
 
-Handle(TCollection_HAsciiString) StepToTopoDS::DecodePolyLoopError(
+occ::handle<TCollection_HAsciiString> StepToTopoDS::DecodePolyLoopError(
   const StepToTopoDS_TranslatePolyLoopError Error)
 {
-  Handle(TCollection_HAsciiString) mess;
+  occ::handle<TCollection_HAsciiString> mess;
   switch (Error)
   {
     case StepToTopoDS_TranslatePolyLoopDone: {
@@ -143,33 +143,34 @@ Handle(TCollection_HAsciiString) StepToTopoDS::DecodePolyLoopError(
   return mess;
 }
 
-Standard_CString StepToTopoDS::DecodeGeometricToolError(const StepToTopoDS_GeometricToolError Error)
+const char* StepToTopoDS::DecodeGeometricToolError(const StepToTopoDS_GeometricToolError Error)
 {
-  Standard_CString mess = "";
+  const char* mess = "";
   switch (Error)
   {
     case StepToTopoDS_GeometricToolDone: {
-      mess = Standard_CString(" Geometric Tool is done");
+      mess = static_cast<const char*>(" Geometric Tool is done");
       break;
     }
     case StepToTopoDS_GeometricToolIsDegenerated: {
-      mess = Standard_CString(" an Edge is degenerated");
+      mess = static_cast<const char*>(" an Edge is degenerated");
       break;
     }
     case StepToTopoDS_GeometricToolHasNoPCurve: {
-      mess = Standard_CString(" SurfaceCurve does not contain a PCurve lying on the BasisSurface");
+      mess = static_cast<const char*>(
+        " SurfaceCurve does not contain a PCurve lying on the BasisSurface");
       break;
     }
     case StepToTopoDS_GeometricToolWrong3dParameters: {
-      mess = Standard_CString(" the update of 3D-Parameters failed");
+      mess = static_cast<const char*>(" the update of 3D-Parameters failed");
       break;
     }
     case StepToTopoDS_GeometricToolNoProjectiOnCurve: {
-      mess = Standard_CString(" the projection of a VertexPoint on the curve3d failed");
+      mess = static_cast<const char*>(" the projection of a VertexPoint on the curve3d failed");
       break;
     }
     case StepToTopoDS_GeometricToolOther: {
-      mess = Standard_CString(" GeometricTool failed");
+      mess = static_cast<const char*>(" GeometricTool failed");
       break;
     }
   }

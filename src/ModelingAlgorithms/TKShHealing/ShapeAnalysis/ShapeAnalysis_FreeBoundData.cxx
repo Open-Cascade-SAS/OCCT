@@ -18,7 +18,9 @@
 #include <Standard_Type.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_FreeBoundData, Standard_Transient)
 
@@ -26,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_FreeBoundData, Standard_Transient)
 
 ShapeAnalysis_FreeBoundData::ShapeAnalysis_FreeBoundData()
 {
-  myNotches = new TopTools_HSequenceOfShape();
+  myNotches = new NCollection_HSequence<TopoDS_Shape>();
   Clear();
 }
 
@@ -37,7 +39,7 @@ ShapeAnalysis_FreeBoundData::ShapeAnalysis_FreeBoundData()
 
 ShapeAnalysis_FreeBoundData::ShapeAnalysis_FreeBoundData(const TopoDS_Wire& freebound)
 {
-  myNotches = new TopTools_HSequenceOfShape();
+  myNotches = new NCollection_HSequence<TopoDS_Shape>();
   Clear();
   SetFreeBound(freebound);
 }
@@ -62,7 +64,7 @@ void ShapeAnalysis_FreeBoundData::Clear()
 // purpose  : Adds notch on free bound with its maximum width
 //=======================================================================
 
-void ShapeAnalysis_FreeBoundData::AddNotch(const TopoDS_Wire& notch, const Standard_Real width)
+void ShapeAnalysis_FreeBoundData::AddNotch(const TopoDS_Wire& notch, const double width)
 {
   if (myNotchesParams.IsBound(notch))
     return;
@@ -76,7 +78,7 @@ void ShapeAnalysis_FreeBoundData::AddNotch(const TopoDS_Wire& notch, const Stand
 //    	     on the contour
 //=======================================================================
 
-Standard_Real ShapeAnalysis_FreeBoundData::NotchWidth(const Standard_Integer index) const
+double ShapeAnalysis_FreeBoundData::NotchWidth(const int index) const
 {
   TopoDS_Wire wire = TopoDS::Wire(myNotches->Value(index));
   return myNotchesParams.Find(wire);
@@ -88,7 +90,7 @@ Standard_Real ShapeAnalysis_FreeBoundData::NotchWidth(const Standard_Integer ind
 //    	     on the contour
 //=======================================================================
 
-Standard_Real ShapeAnalysis_FreeBoundData::NotchWidth(const TopoDS_Wire& notch) const
+double ShapeAnalysis_FreeBoundData::NotchWidth(const TopoDS_Wire& notch) const
 {
   return myNotchesParams.Find(notch);
 }

@@ -22,10 +22,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Standard_Type, Standard_Transient)
 
-Standard_Type::Standard_Type(const char*                  theSystemName,
-                             const char*                  theName,
-                             Standard_Size                theSize,
-                             const Handle(Standard_Type)& theParent)
+Standard_Type::Standard_Type(const char*                       theSystemName,
+                             const char*                       theName,
+                             size_t                            theSize,
+                             const occ::handle<Standard_Type>& theParent)
     : mySystemName(theSystemName),
       myName(theName),
       mySize(theSize),
@@ -33,7 +33,7 @@ Standard_Type::Standard_Type(const char*                  theSystemName,
 {
 }
 
-Standard_Boolean Standard_Type::SubType(const Handle(Standard_Type)& theOther) const
+bool Standard_Type::SubType(const occ::handle<Standard_Type>& theOther) const
 {
   if (theOther.IsNull())
   {
@@ -51,7 +51,7 @@ Standard_Boolean Standard_Type::SubType(const Handle(Standard_Type)& theOther) c
   return false;
 }
 
-Standard_Boolean Standard_Type::SubType(const Standard_CString theName) const
+bool Standard_Type::SubType(const char* theName) const
 {
   if (!theName)
   {
@@ -71,7 +71,7 @@ Standard_Boolean Standard_Type::SubType(const Standard_CString theName) const
 
 void Standard_Type::Print(Standard_OStream& AStream) const
 {
-  AStream << std::hex << (Standard_Address)this << " : " << std::dec << myName;
+  AStream << std::hex << (void*)this << " : " << std::dec << myName;
 }
 
 //============================================================================
@@ -83,19 +83,19 @@ namespace
 
 struct typeNameHasher
 {
-  size_t operator()(const Standard_CString theType) const noexcept
+  size_t operator()(const char* theType) const noexcept
   {
     const int aLen = static_cast<int>(strlen(theType));
     return opencascade::hashBytes(theType, aLen);
   }
 
-  bool operator()(const Standard_CString theType1, const Standard_CString theType2) const noexcept
+  bool operator()(const char* theType1, const char* theType2) const noexcept
   {
     return strcmp(theType1, theType2) == 0;
   }
 };
 
-using registry_type = NCollection_DataMap<Standard_CString, Standard_Type*, typeNameHasher>;
+using registry_type = NCollection_DataMap<const char*, Standard_Type*, typeNameHasher>;
 
 // Registry is made static in the function to ensure that it gets
 // initialized by the time of first access
@@ -106,13 +106,13 @@ registry_type& GetRegistry()
 }
 
 // To initialize theRegistry map as soon as possible to be destroyed the latest
-Handle(Standard_Type) theType = STANDARD_TYPE(Standard_Transient);
+occ::handle<Standard_Type> theType = STANDARD_TYPE(Standard_Transient);
 } // namespace
 
-Standard_Type* Standard_Type::Register(const std::type_info&        theInfo,
-                                       const char*                  theName,
-                                       Standard_Size                theSize,
-                                       const Handle(Standard_Type)& theParent)
+Standard_Type* Standard_Type::Register(const std::type_info&             theInfo,
+                                       const char*                       theName,
+                                       size_t                            theSize,
+                                       const occ::handle<Standard_Type>& theParent)
 {
   // Access to registry is protected by mutex; it should not happen often because
   // instances are cached by Standard_Type::Instance() (one per binary module)
@@ -128,8 +128,8 @@ Standard_Type* Standard_Type::Register(const std::type_info&        theInfo,
   }
 
   // Calculate sizes for deep copies
-  const Standard_Size anInfoNameLen = strlen(theInfo.name()) + 1;
-  const Standard_Size aNameLen      = strlen(theName) + 1;
+  const size_t anInfoNameLen = strlen(theInfo.name()) + 1;
+  const size_t aNameLen      = strlen(theName) + 1;
 
   // Allocate memory block for Standard_Type and the two strings
   char* aMemoryBlock =

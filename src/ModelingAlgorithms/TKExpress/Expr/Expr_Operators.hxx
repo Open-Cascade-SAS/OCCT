@@ -25,42 +25,45 @@
 #include <Expr_Product.hxx>
 #include <Expr_Division.hxx>
 
-Standard_EXPORT Handle(Expr_Sum) operator+(const Handle(Expr_GeneralExpression)& x,
-                                           const Handle(Expr_GeneralExpression)& y);
+Standard_EXPORT occ::handle<Expr_Sum> operator+(const occ::handle<Expr_GeneralExpression>& x,
+                                                const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT Handle(Expr_Sum) operator+(const Standard_Real                   x,
-                                           const Handle(Expr_GeneralExpression)& y);
+Standard_EXPORT occ::handle<Expr_Sum> operator+(const double                               x,
+                                                const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT Handle(Expr_Sum) operator+(const Handle(Expr_GeneralExpression)& x,
-                                           const Standard_Real                   y);
+Standard_EXPORT occ::handle<Expr_Sum> operator+(const occ::handle<Expr_GeneralExpression>& x,
+                                                const double                               y);
 
-Standard_EXPORT Handle(Expr_Difference) operator-(const Handle(Expr_GeneralExpression)& x,
-                                                  const Handle(Expr_GeneralExpression)& y);
+Standard_EXPORT occ::handle<Expr_Difference> operator-(
+  const occ::handle<Expr_GeneralExpression>& x,
+  const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT Handle(Expr_Difference) operator-(const Standard_Real                   x,
-                                                  const Handle(Expr_GeneralExpression)& y);
+Standard_EXPORT occ::handle<Expr_Difference> operator-(
+  const double                               x,
+  const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT Handle(Expr_Difference) operator-(const Handle(Expr_GeneralExpression)& x,
-                                                  const Standard_Real                   y);
+Standard_EXPORT occ::handle<Expr_Difference> operator-(const occ::handle<Expr_GeneralExpression>& x,
+                                                       const double y);
 
-Standard_EXPORT Handle(Expr_UnaryMinus) operator-(const Handle(Expr_GeneralExpression)& x);
+Standard_EXPORT occ::handle<Expr_UnaryMinus> operator-(
+  const occ::handle<Expr_GeneralExpression>& x);
 
-Standard_EXPORT Handle(Expr_Product) operator*(const Handle(Expr_GeneralExpression)& x,
-                                               const Handle(Expr_GeneralExpression)& y);
+Standard_EXPORT occ::handle<Expr_Product> operator*(const occ::handle<Expr_GeneralExpression>& x,
+                                                    const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT Handle(Expr_Product) operator*(const Standard_Real                   x,
-                                               const Handle(Expr_GeneralExpression)& y);
+Standard_EXPORT occ::handle<Expr_Product> operator*(const double                               x,
+                                                    const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT Handle(Expr_Product) operator*(const Handle(Expr_GeneralExpression)& x,
-                                               const Standard_Real                   y);
+Standard_EXPORT occ::handle<Expr_Product> operator*(const occ::handle<Expr_GeneralExpression>& x,
+                                                    const double                               y);
 
-Standard_EXPORT Handle(Expr_Division) operator/(const Handle(Expr_GeneralExpression)& x,
-                                                const Handle(Expr_GeneralExpression)& y);
+Standard_EXPORT occ::handle<Expr_Division> operator/(const occ::handle<Expr_GeneralExpression>& x,
+                                                     const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT Handle(Expr_Division) operator/(const Standard_Real                   x,
-                                                const Handle(Expr_GeneralExpression)& y);
+Standard_EXPORT occ::handle<Expr_Division> operator/(const double                               x,
+                                                     const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT Handle(Expr_Division) operator/(const Handle(Expr_GeneralExpression)& x,
-                                                const Standard_Real                   y);
+Standard_EXPORT occ::handle<Expr_Division> operator/(const occ::handle<Expr_GeneralExpression>& x,
+                                                     const double                               y);
 
 #endif

@@ -21,8 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <IntCurveSurface_Intersection.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
 
 class Bnd_BoundSortBox;
 class Bnd_Box;
@@ -186,25 +187,25 @@ protected:
                                      HLRBRep_Surface* theSurface);
 
 private:
-  Standard_EXPORT void DoSurface(HLRBRep_Surface*    theSurface,
-                                 const double        theU0,
-                                 const double        theU1,
-                                 const double        theV0,
-                                 const double        theV1,
-                                 TColgp_Array2OfPnt& thePntsOnSurface,
-                                 Bnd_Box&            theBoxSurface,
-                                 double&             theGap);
+  Standard_EXPORT void DoSurface(HLRBRep_Surface*            theSurface,
+                                 const double                theU0,
+                                 const double                theU1,
+                                 const double                theV0,
+                                 const double                theV1,
+                                 NCollection_Array2<gp_Pnt>& thePntsOnSurface,
+                                 Bnd_Box&                    theBoxSurface,
+                                 double&                     theGap);
 
-  Standard_EXPORT void DoNewBounds(HLRBRep_Surface*            theSurface,
-                                   const double                theU0,
-                                   const double                theU1,
-                                   const double                theV0,
-                                   const double                theV1,
-                                   const TColgp_Array2OfPnt&   thePntsOnSurface,
-                                   const TColStd_Array1OfReal& theX,
-                                   const TColStd_Array1OfReal& theY,
-                                   const TColStd_Array1OfReal& theZ,
-                                   TColStd_Array1OfReal&       theBounds);
+  Standard_EXPORT void DoNewBounds(HLRBRep_Surface*                  theSurface,
+                                   const double                      theU0,
+                                   const double                      theU1,
+                                   const double                      theV0,
+                                   const double                      theV1,
+                                   const NCollection_Array2<gp_Pnt>& thePntsOnSurface,
+                                   const NCollection_Array1<double>& theX,
+                                   const NCollection_Array1<double>& theY,
+                                   const NCollection_Array1<double>& theZ,
+                                   NCollection_Array1<double>&       theBounds);
 };
 
 #endif // _HLRBRep_InterCSurf_HeaderFile

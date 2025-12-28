@@ -24,9 +24,6 @@
 #include <SelectMgr_Filter.hxx>
 class SelectMgr_EntityOwner;
 
-class AIS_TypeFilter;
-DEFINE_STANDARD_HANDLE(AIS_TypeFilter, SelectMgr_Filter)
-
 //! Selects Interactive Objects through their types. The
 //! filter questions each Interactive Object in local context
 //! to determine whether it has an non-null owner, and if
@@ -60,15 +57,12 @@ public:
   //! Returns False if the transient is not an Interactive
   //! Object, or if the type of the Interactive Object is not
   //! the same as that stored in the filter.
-  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_TypeFilter, SelectMgr_Filter)
 
 protected:
   AIS_KindOfInteractive myKind;
-
-private:
 };
 
 #endif // _AIS_TypeFilter_HeaderFile

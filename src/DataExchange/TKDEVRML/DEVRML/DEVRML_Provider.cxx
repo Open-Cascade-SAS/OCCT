@@ -31,28 +31,28 @@ IMPLEMENT_STANDARD_RTTIEXT(DEVRML_Provider, DE_Provider)
 namespace
 {
 // Helper function to validate configuration node and downcast
-static Handle(DEVRML_ConfigurationNode) ValidateConfigurationNode(
-  const Handle(DE_ConfigurationNode)& theNode,
-  const TCollection_AsciiString&      theContext)
+static occ::handle<DEVRML_ConfigurationNode> ValidateConfigurationNode(
+  const occ::handle<DE_ConfigurationNode>& theNode,
+  const TCollection_AsciiString&           theContext)
 {
   if (!DE_ValidationUtils::ValidateConfigurationNode(theNode,
                                                      STANDARD_TYPE(DEVRML_ConfigurationNode),
                                                      theContext))
   {
-    return Handle(DEVRML_ConfigurationNode)();
+    return occ::handle<DEVRML_ConfigurationNode>();
   }
-  return Handle(DEVRML_ConfigurationNode)::DownCast(theNode);
+  return occ::down_cast<DEVRML_ConfigurationNode>(theNode);
 }
 
 // Static function to handle VrmlData_Scene status errors
-static Standard_Boolean HandleVrmlSceneStatus(const VrmlData_Scene&          theScene,
-                                              const TCollection_AsciiString& theContext)
+static bool HandleVrmlSceneStatus(const VrmlData_Scene&          theScene,
+                                  const TCollection_AsciiString& theContext)
 {
   const char* aStr = nullptr;
   switch (theScene.Status())
   {
     case VrmlData_StatusOK:
-      return Standard_True;
+      return true;
     case VrmlData_EmptyData:
       aStr = "EmptyData";
       break;
@@ -112,18 +112,18 @@ static Standard_Boolean HandleVrmlSceneStatus(const VrmlData_Scene&          the
   {
     Message::SendFail() << "Error in the DEVRML_Provider during " << theContext
                         << ": ++ VRML Error: " << aStr << " in line " << theScene.GetLineError();
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 // Static function to calculate scaling factor
-static Standard_Real CalculateScalingFactor(const Handle(TDocStd_Document)&         theDocument,
-                                            const Handle(DEVRML_ConfigurationNode)& theNode,
-                                            const TCollection_AsciiString&          theContext)
+static double CalculateScalingFactor(const occ::handle<TDocStd_Document>&         theDocument,
+                                     const occ::handle<DEVRML_ConfigurationNode>& theNode,
+                                     const TCollection_AsciiString&               theContext)
 {
-  Standard_Real aScaling       = 1.;
-  Standard_Real aScaleFactorMM = 1.;
+  double aScaling       = 1.;
+  double aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
                                           aScaleFactorMM,
                                           UnitsMethods_LengthUnit_Millimeter))
@@ -164,11 +164,11 @@ static TCollection_AsciiString ExtractVrmlDirectory(const TCollection_AsciiStrin
 }
 
 // Static function to process VRML scene from stream and extract shape
-static Standard_Boolean ProcessVrmlScene(Standard_IStream&                       theStream,
-                                         const Handle(DEVRML_ConfigurationNode)& theNode,
-                                         const TCollection_AsciiString&          theVrmlDir,
-                                         TopoDS_Shape&                           theShape,
-                                         const TCollection_AsciiString&          theContext)
+static bool ProcessVrmlScene(Standard_IStream&                            theStream,
+                             const occ::handle<DEVRML_ConfigurationNode>& theNode,
+                             const TCollection_AsciiString&               theVrmlDir,
+                             TopoDS_Shape&                                theShape,
+                             const TCollection_AsciiString&               theContext)
 {
   VrmlData_Scene aScene;
   aScene.SetLinearScale(theNode->GlobalParameters.LengthUnit);
@@ -178,21 +178,21 @@ static Standard_Boolean ProcessVrmlScene(Standard_IStream&                      
 
   if (!HandleVrmlSceneStatus(aScene, theContext))
   {
-    return Standard_False;
+    return false;
   }
 
   if (aScene.Status() == VrmlData_StatusOK)
   {
-    VrmlData_DataMapOfShapeAppearance aShapeAppMap;
-    TopoDS_Shape                      aShape = aScene.GetShape(aShapeAppMap);
-    theShape                                 = aShape;
+    NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>> aShapeAppMap;
+    TopoDS_Shape aShape = aScene.GetShape(aShapeAppMap);
+    theShape            = aShape;
 
     // Verify that a valid shape was extracted
     if (theShape.IsNull())
     {
       Message::SendFail() << "Error in the DEVRML_Provider during " << theContext
                           << ": VRML scene processed successfully but no geometry was extracted";
-      return Standard_False;
+      return false;
     }
   }
   else
@@ -200,10 +200,10 @@ static Standard_Boolean ProcessVrmlScene(Standard_IStream&                      
     // Scene status was not OK but HandleVrmlSceneStatus didn't catch it
     Message::SendFail() << "Error in the DEVRML_Provider during " << theContext
                         << ": VRML scene status is not OK but no specific error was reported";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 } // namespace
 
@@ -213,17 +213,17 @@ DEVRML_Provider::DEVRML_Provider() {}
 
 //=================================================================================================
 
-DEVRML_Provider::DEVRML_Provider(const Handle(DE_ConfigurationNode)& theNode)
+DEVRML_Provider::DEVRML_Provider(const occ::handle<DE_ConfigurationNode>& theNode)
     : DE_Provider(theNode)
 {
 }
 
 //=================================================================================================
 
-bool DEVRML_Provider::Read(const TCollection_AsciiString&  thePath,
-                           const Handle(TDocStd_Document)& theDocument,
-                           Handle(XSControl_WorkSession)&  theWS,
-                           const Message_ProgressRange&    theProgress)
+bool DEVRML_Provider::Read(const TCollection_AsciiString&       thePath,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           occ::handle<XSControl_WorkSession>&  theWS,
+                           const Message_ProgressRange&         theProgress)
 {
   (void)theWS;
   return Read(thePath, theDocument, theProgress);
@@ -231,10 +231,10 @@ bool DEVRML_Provider::Read(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
-                            const Handle(TDocStd_Document)& theDocument,
-                            Handle(XSControl_WorkSession)&  theWS,
-                            const Message_ProgressRange&    theProgress)
+bool DEVRML_Provider::Write(const TCollection_AsciiString&       thePath,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const Message_ProgressRange&         theProgress)
 {
   (void)theWS;
   return Write(thePath, theDocument, theProgress);
@@ -242,16 +242,16 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Read(const TCollection_AsciiString&  thePath,
-                           const Handle(TDocStd_Document)& theDocument,
-                           const Message_ProgressRange&    theProgress)
+bool DEVRML_Provider::Read(const TCollection_AsciiString&       thePath,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           const Message_ProgressRange&         theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext))
   {
     return false;
   }
-  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aContext);
+  occ::handle<DEVRML_ConfigurationNode> aNode = ValidateConfigurationNode(GetNode(), aContext);
   if (aNode.IsNull())
   {
     return false;
@@ -284,9 +284,9 @@ bool DEVRML_Provider::Read(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
-                            const Handle(TDocStd_Document)& theDocument,
-                            const Message_ProgressRange&    theProgress)
+bool DEVRML_Provider::Write(const TCollection_AsciiString&       thePath,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            const Message_ProgressRange&         theProgress)
 {
   (void)theProgress;
   TCollection_AsciiString aContext = "writing the file ";
@@ -296,7 +296,7 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
     return false;
   }
 
-  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aContext);
+  occ::handle<DEVRML_ConfigurationNode> aNode = ValidateConfigurationNode(GetNode(), aContext);
   if (aNode.IsNull())
   {
     return false;
@@ -306,7 +306,7 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
   aWriter.SetRepresentation(
     static_cast<VrmlAPI_RepresentationOfShape>(aNode->InternalParameters.WriteRepresentationType));
 
-  Standard_Real aScaling = CalculateScalingFactor(theDocument, aNode, aContext);
+  double aScaling = CalculateScalingFactor(theDocument, aNode, aContext);
   if (!aWriter.WriteDoc(theDocument, thePath.ToCString(), aScaling))
   {
     Message::SendFail() << "Error in the DEVRML_Provider during wtiting the file " << thePath
@@ -319,10 +319,10 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Read(const TCollection_AsciiString& thePath,
-                           TopoDS_Shape&                  theShape,
-                           Handle(XSControl_WorkSession)& theWS,
-                           const Message_ProgressRange&   theProgress)
+bool DEVRML_Provider::Read(const TCollection_AsciiString&      thePath,
+                           TopoDS_Shape&                       theShape,
+                           occ::handle<XSControl_WorkSession>& theWS,
+                           const Message_ProgressRange&        theProgress)
 {
   (void)theWS;
   return Read(thePath, theShape, theProgress);
@@ -330,10 +330,10 @@ bool DEVRML_Provider::Read(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Write(const TCollection_AsciiString& thePath,
-                            const TopoDS_Shape&            theShape,
-                            Handle(XSControl_WorkSession)& theWS,
-                            const Message_ProgressRange&   theProgress)
+bool DEVRML_Provider::Write(const TCollection_AsciiString&      thePath,
+                            const TopoDS_Shape&                 theShape,
+                            occ::handle<XSControl_WorkSession>& theWS,
+                            const Message_ProgressRange&        theProgress)
 {
   (void)theWS;
   return Write(thePath, theShape, theProgress);
@@ -348,7 +348,7 @@ bool DEVRML_Provider::Read(const TCollection_AsciiString& thePath,
   (void)theProgress;
   TCollection_AsciiString aContext = "reading the file ";
   aContext += thePath;
-  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aContext);
+  occ::handle<DEVRML_ConfigurationNode> aNode = ValidateConfigurationNode(GetNode(), aContext);
   if (aNode.IsNull())
   {
     return false;
@@ -374,18 +374,18 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString& thePath,
                             const TopoDS_Shape&            theShape,
                             const Message_ProgressRange&   theProgress)
 {
-  Handle(TDocStd_Document)  aDoc    = new TDocStd_Document("BinXCAF");
-  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  occ::handle<TDocStd_Document>  aDoc    = new TDocStd_Document("BinXCAF");
+  occ::handle<XCAFDoc_ShapeTool> aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
   aShTool->AddShape(theShape);
   return Write(thePath, aDoc, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                 theStreams,
-                                       const Handle(TDocStd_Document)& theDocument,
-                                       Handle(XSControl_WorkSession)&  theWS,
-                                       const Message_ProgressRange&    theProgress)
+bool DEVRML_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           occ::handle<XSControl_WorkSession>&  theWS,
+                           const Message_ProgressRange&         theProgress)
 {
   (void)theWS;
   return Read(theStreams, theDocument, theProgress);
@@ -393,10 +393,10 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                 theStream
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                theStreams,
-                                        const Handle(TDocStd_Document)& theDocument,
-                                        Handle(XSControl_WorkSession)&  theWS,
-                                        const Message_ProgressRange&    theProgress)
+bool DEVRML_Provider::Write(WriteStreamList&                     theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const Message_ProgressRange&         theProgress)
 {
   (void)theWS;
   return Write(theStreams, theDocument, theProgress);
@@ -404,10 +404,10 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                theStrea
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                theStreams,
-                                       TopoDS_Shape&                  theShape,
-                                       Handle(XSControl_WorkSession)& theWS,
-                                       const Message_ProgressRange&   theProgress)
+bool DEVRML_Provider::Read(ReadStreamList&                     theStreams,
+                           TopoDS_Shape&                       theShape,
+                           occ::handle<XSControl_WorkSession>& theWS,
+                           const Message_ProgressRange&        theProgress)
 {
   (void)theWS;
   return Read(theStreams, theShape, theProgress);
@@ -415,10 +415,10 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                theStreams
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Write(WriteStreamList&               theStreams,
-                                        const TopoDS_Shape&            theShape,
-                                        Handle(XSControl_WorkSession)& theWS,
-                                        const Message_ProgressRange&   theProgress)
+bool DEVRML_Provider::Write(WriteStreamList&                    theStreams,
+                            const TopoDS_Shape&                 theShape,
+                            occ::handle<XSControl_WorkSession>& theWS,
+                            const Message_ProgressRange&        theProgress)
 {
   (void)theWS;
   return Write(theStreams, theShape, theProgress);
@@ -426,61 +426,61 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&               theStream
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                 theStreams,
-                                       const Handle(TDocStd_Document)& theDocument,
-                                       const Message_ProgressRange&    theProgress)
+bool DEVRML_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           const Message_ProgressRange&         theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString        aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
-    return Standard_False;
+    return false;
   }
 
   TopoDS_Shape aShape;
   if (!Read(theStreams, aShape, theProgress))
   {
-    return Standard_False;
+    return false;
   }
 
-  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aShapeTool->AddShape(aShape);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                theStreams,
-                                        const Handle(TDocStd_Document)& theDocument,
-                                        const Message_ProgressRange&    theProgress)
+bool DEVRML_Provider::Write(WriteStreamList&                     theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            const Message_ProgressRange&         theProgress)
 {
   (void)theProgress;
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString        aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
-    return Standard_False;
+    return false;
   }
 
-  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aFullContext);
+  occ::handle<DEVRML_ConfigurationNode> aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Real aScaling = CalculateScalingFactor(theDocument, aNode, aContext);
+  double aScaling = CalculateScalingFactor(theDocument, aNode, aContext);
 
   // Use VrmlAPI_Writer with stream support
   VrmlAPI_Writer aWriter;
@@ -493,33 +493,33 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                theStrea
   {
     Message::SendFail() << "Error in the DEVRML_Provider during " << aContext
                         << ": WriteDoc operation failed";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(ReadStreamList&              theStreams,
-                                       TopoDS_Shape&                theShape,
-                                       const Message_ProgressRange& theProgress)
+bool DEVRML_Provider::Read(ReadStreamList&              theStreams,
+                           TopoDS_Shape&                theShape,
+                           const Message_ProgressRange& theProgress)
 {
   (void)theProgress;
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
   Standard_IStream&              aStream   = theStreams.First().Stream;
 
-  TCollection_AsciiString          aFullContext = aContext + " " + aFirstKey;
-  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aFullContext);
+  TCollection_AsciiString               aFullContext = aContext + " " + aFirstKey;
+  occ::handle<DEVRML_ConfigurationNode> aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   return ProcessVrmlScene(aStream, aNode, ".", theShape, aContext);
@@ -527,23 +527,23 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamList&              theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Write(WriteStreamList&             theStreams,
-                                        const TopoDS_Shape&          theShape,
-                                        const Message_ProgressRange& theProgress)
+bool DEVRML_Provider::Write(WriteStreamList&             theStreams,
+                            const TopoDS_Shape&          theShape,
+                            const Message_ProgressRange& theProgress)
 {
   (void)theProgress;
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
-    return Standard_False;
+    return false;
   }
 
-  const TCollection_AsciiString&   aFirstKey    = theStreams.First().Path;
-  TCollection_AsciiString          aFullContext = aContext + " " + aFirstKey;
-  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aFullContext);
+  const TCollection_AsciiString&        aFirstKey    = theStreams.First().Path;
+  TCollection_AsciiString               aFullContext = aContext + " " + aFirstKey;
+  occ::handle<DEVRML_ConfigurationNode> aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   // Use VrmlAPI_Writer with stream support
@@ -557,10 +557,10 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&             theStreams,
   {
     Message::SendFail() << "Error in the DEVRML_Provider during " << aContext
                         << ": Write operation failed";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================

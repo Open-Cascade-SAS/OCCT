@@ -32,7 +32,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
@@ -44,9 +44,9 @@ IGESGeom_ToolOffsetCurve::IGESGeom_ToolOffsetCurve() {}
 
 //=================================================================================================
 
-void IGESGeom_ToolOffsetCurve::ReadOwnParams(const Handle(IGESGeom_OffsetCurve)&    ent,
-                                             const Handle(IGESData_IGESReaderData)& IR,
-                                             IGESData_ParamReader&                  PR) const
+void IGESGeom_ToolOffsetCurve::ReadOwnParams(const occ::handle<IGESGeom_OffsetCurve>&    ent,
+                                             const occ::handle<IGESData_IGESReaderData>& IR,
+                                             IGESData_ParamReader&                       PR) const
 {
   // MGE 30/07/98
   // Building of messages
@@ -54,14 +54,14 @@ void IGESGeom_ToolOffsetCurve::ReadOwnParams(const Handle(IGESGeom_OffsetCurve)&
   Message_Msg Msg121("XSTEP_121");
   //========================================
 
-  Standard_Integer            anOffsetType, aFunctionCoord, aTaperedOffsetType;
-  Standard_Real               offDistance1, offDistance2;
-  Standard_Real               arcLength1, arcLength2, anOffsetParam, anotherOffsetParam;
-  gp_XYZ                      aNormalVec;
-  Handle(IGESData_IGESEntity) aBaseCurve;
-  Handle(IGESData_IGESEntity) aFunction;
-  IGESData_Status             aStatus;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  int                              anOffsetType, aFunctionCoord, aTaperedOffsetType;
+  double                           offDistance1, offDistance2;
+  double                           arcLength1, arcLength2, anOffsetParam, anotherOffsetParam;
+  gp_XYZ                           aNormalVec;
+  occ::handle<IGESData_IGESEntity> aBaseCurve;
+  occ::handle<IGESData_IGESEntity> aFunction;
+  IGESData_Status                  aStatus;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // Reading the curve entity to be offset
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, aBaseCurve))
@@ -96,7 +96,7 @@ void IGESGeom_ToolOffsetCurve::ReadOwnParams(const Handle(IGESGeom_OffsetCurve)&
   // st = PR.ReadInteger(PR.Current(), "Offset Distance Flag", anOffsetType);
 
   // Reading the curve entity describing the offset as a function, can be Null
-  if (!PR.ReadEntity(IR, PR.Current(), aStatus, aFunction, Standard_True))
+  if (!PR.ReadEntity(IR, PR.Current(), aStatus, aFunction, true))
   {
     Message_Msg Msg112("XSTEP_112");
     switch (aStatus)
@@ -119,7 +119,7 @@ void IGESGeom_ToolOffsetCurve::ReadOwnParams(const Handle(IGESGeom_OffsetCurve)&
   } // szv#4:S4163:12Mar99 `st=` not needed
   /*
     st = PR.ReadEntity(IR, PR.Current(), "Curve whose coordinate describes the offset", aFunction,
-    Standard_True);
+    true);
   */
 
   // Reading the coordinate describing the offset as a function
@@ -211,8 +211,8 @@ void IGESGeom_ToolOffsetCurve::ReadOwnParams(const Handle(IGESGeom_OffsetCurve)&
 
 //=================================================================================================
 
-void IGESGeom_ToolOffsetCurve::WriteOwnParams(const Handle(IGESGeom_OffsetCurve)& ent,
-                                              IGESData_IGESWriter&                IW) const
+void IGESGeom_ToolOffsetCurve::WriteOwnParams(const occ::handle<IGESGeom_OffsetCurve>& ent,
+                                              IGESData_IGESWriter&                     IW) const
 {
   IW.Send(ent->BaseCurve());
   IW.Send(ent->OffsetType());
@@ -234,8 +234,8 @@ void IGESGeom_ToolOffsetCurve::WriteOwnParams(const Handle(IGESGeom_OffsetCurve)
 
 //=================================================================================================
 
-void IGESGeom_ToolOffsetCurve::OwnShared(const Handle(IGESGeom_OffsetCurve)& ent,
-                                         Interface_EntityIterator&           iter) const
+void IGESGeom_ToolOffsetCurve::OwnShared(const occ::handle<IGESGeom_OffsetCurve>& ent,
+                                         Interface_EntityIterator&                iter) const
 {
   iter.GetOneItem(ent->BaseCurve());
   iter.GetOneItem(ent->Function());
@@ -243,13 +243,13 @@ void IGESGeom_ToolOffsetCurve::OwnShared(const Handle(IGESGeom_OffsetCurve)& ent
 
 //=================================================================================================
 
-void IGESGeom_ToolOffsetCurve::OwnCopy(const Handle(IGESGeom_OffsetCurve)& another,
-                                       const Handle(IGESGeom_OffsetCurve)& ent,
-                                       Interface_CopyTool&                 TC) const
+void IGESGeom_ToolOffsetCurve::OwnCopy(const occ::handle<IGESGeom_OffsetCurve>& another,
+                                       const occ::handle<IGESGeom_OffsetCurve>& ent,
+                                       Interface_CopyTool&                      TC) const
 {
-  Standard_Integer anOffsetType, aFunctionCoord, aTaperedOffsetType;
-  Standard_Real    offDistance1, offDistance2;
-  Standard_Real    arcLength1, arcLength2, anOffsetParam1, anOffsetParam2;
+  int    anOffsetType, aFunctionCoord, aTaperedOffsetType;
+  double offDistance1, offDistance2;
+  double arcLength1, arcLength2, anOffsetParam1, anOffsetParam2;
 
   DeclareAndCast(IGESData_IGESEntity, aBaseCurve, TC.Transferred(another->BaseCurve()));
   anOffsetType = another->OffsetType();
@@ -280,13 +280,13 @@ void IGESGeom_ToolOffsetCurve::OwnCopy(const Handle(IGESGeom_OffsetCurve)& anoth
 
 //=================================================================================================
 
-Standard_Boolean IGESGeom_ToolOffsetCurve::OwnCorrect(const Handle(IGESGeom_OffsetCurve)& ent) const
+bool IGESGeom_ToolOffsetCurve::OwnCorrect(const occ::handle<IGESGeom_OffsetCurve>& ent) const
 {
   if (ent->OffsetType() == 3)
-    return Standard_False;
-  Handle(IGESData_IGESEntity) func = ent->Function();
+    return false;
+  occ::handle<IGESData_IGESEntity> func = ent->Function();
   if (func.IsNull())
-    return Standard_False;
+    return false;
   //  OffsetType != 3 : reconstruct with Null Offset Function
   func.Nullify();
   ent->Init(ent->BaseCurve(),
@@ -301,13 +301,13 @@ Standard_Boolean IGESGeom_ToolOffsetCurve::OwnCorrect(const Handle(IGESGeom_Offs
             ent->NormalVector().XYZ(),
             ent->StartParameter(),
             ent->EndParameter());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 IGESData_DirChecker IGESGeom_ToolOffsetCurve::DirChecker(
-  const Handle(IGESGeom_OffsetCurve)& /* ent */) const
+  const occ::handle<IGESGeom_OffsetCurve>& /* ent */) const
 {
   IGESData_DirChecker DC(130, 0);
   DC.Structure(IGESData_DefVoid);
@@ -320,9 +320,9 @@ IGESData_DirChecker IGESGeom_ToolOffsetCurve::DirChecker(
 
 //=================================================================================================
 
-void IGESGeom_ToolOffsetCurve::OwnCheck(const Handle(IGESGeom_OffsetCurve)& ent,
+void IGESGeom_ToolOffsetCurve::OwnCheck(const occ::handle<IGESGeom_OffsetCurve>& ent,
                                         const Interface_ShareTool&,
-                                        Handle(Interface_Check)& ach) const
+                                        occ::handle<Interface_Check>& ach) const
 {
   // MGE 30/07/98
   // Building of messages
@@ -331,7 +331,7 @@ void IGESGeom_ToolOffsetCurve::OwnCheck(const Handle(IGESGeom_OffsetCurve)& ent,
   // Message_Msg Msg114("XSTEP_114");
   //========================================
 
-  Standard_Integer ot = ent->OffsetType();
+  int ot = ent->OffsetType();
   if (ot < 1 || ot > 3)
   {
     Message_Msg Msg111("XSTEP_111");
@@ -352,12 +352,12 @@ void IGESGeom_ToolOffsetCurve::OwnCheck(const Handle(IGESGeom_OffsetCurve)& ent,
 
 //=================================================================================================
 
-void IGESGeom_ToolOffsetCurve::OwnDump(const Handle(IGESGeom_OffsetCurve)& ent,
-                                       const IGESData_IGESDumper&          dumper,
-                                       Standard_OStream&                   S,
-                                       const Standard_Integer              level) const
+void IGESGeom_ToolOffsetCurve::OwnDump(const occ::handle<IGESGeom_OffsetCurve>& ent,
+                                       const IGESData_IGESDumper&               dumper,
+                                       Standard_OStream&                        S,
+                                       const int                                level) const
 {
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "IGESGeom_OffsetCurve\n"
     << "The curve to be offset     :\n";

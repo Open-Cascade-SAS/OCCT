@@ -18,7 +18,7 @@
 
 #include <Standard.hxx>
 
-#include <TDataStd_ListOfByte.hxx>
+#include <NCollection_List.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
@@ -26,9 +26,6 @@
 
 class TDF_Label;
 class TDF_RelocationTable;
-
-class TDataStd_BooleanList;
-DEFINE_STANDARD_HANDLE(TDataStd_BooleanList, TDF_Attribute)
 
 //! Contains a list of bolleans.
 class TDataStd_BooleanList : public TDF_Attribute
@@ -41,72 +38,69 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Finds or creates a list of boolean values attribute.
-  Standard_EXPORT static Handle(TDataStd_BooleanList) Set(const TDF_Label& label);
+  Standard_EXPORT static occ::handle<TDataStd_BooleanList> Set(const TDF_Label& label);
 
   //! Finds or creates a list of boolean values attribute with explicit user defined <guid>.
-  Standard_EXPORT static Handle(TDataStd_BooleanList) Set(const TDF_Label&     label,
-                                                          const Standard_GUID& theGuid);
+  Standard_EXPORT static occ::handle<TDataStd_BooleanList> Set(const TDF_Label&     label,
+                                                               const Standard_GUID& theGuid);
 
   Standard_EXPORT TDataStd_BooleanList();
 
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_EXPORT bool IsEmpty() const;
 
-  Standard_EXPORT Standard_Integer Extent() const;
+  Standard_EXPORT int Extent() const;
 
-  Standard_EXPORT void Prepend(const Standard_Boolean value);
+  Standard_EXPORT void Prepend(const bool value);
 
-  Standard_EXPORT void Append(const Standard_Boolean value);
+  Standard_EXPORT void Append(const bool value);
 
   Standard_EXPORT void Clear();
 
-  Standard_EXPORT Standard_Boolean First() const;
+  Standard_EXPORT bool First() const;
 
-  Standard_EXPORT Standard_Boolean Last() const;
+  Standard_EXPORT bool Last() const;
 
   //! 1 - means TRUE,
   //! 0 - means FALSE.
-  Standard_EXPORT const TDataStd_ListOfByte& List() const;
+  Standard_EXPORT const NCollection_List<uint8_t>& List() const;
 
   //! Inserts the <value> before the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT Standard_Boolean InsertBefore(const Standard_Integer index,
-                                                const Standard_Boolean before_value);
+  Standard_EXPORT bool InsertBefore(const int index, const bool before_value);
 
   //! Inserts the <value> after the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT Standard_Boolean InsertAfter(const Standard_Integer index,
-                                               const Standard_Boolean after_value);
+  Standard_EXPORT bool InsertAfter(const int index, const bool after_value);
 
   //! Removes a value at <index> position.
-  Standard_EXPORT Standard_Boolean Remove(const Standard_Integer index);
+  Standard_EXPORT bool Remove(const int index);
 
   //! Sets the explicit GUID (user defined) for the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& theGuid) Standard_OVERRIDE;
+  Standard_EXPORT void SetID(const Standard_GUID& theGuid) override;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() Standard_OVERRIDE;
+  Standard_EXPORT void SetID() override;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_BooleanList, TDF_Attribute)
 
-protected:
 private:
-  TDataStd_ListOfByte myList;
-  Standard_GUID       myID;
+  NCollection_List<uint8_t> myList;
+  Standard_GUID             myID;
 };
 
 #endif // _TDataStd_BooleanList_HeaderFile

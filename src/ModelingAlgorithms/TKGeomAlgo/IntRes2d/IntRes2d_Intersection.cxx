@@ -18,25 +18,24 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_Position.hxx>
-#include <IntRes2d_SequenceOfIntersectionSegment.hxx>
+#include <NCollection_Sequence.hxx>
 #include <StdFail_NotDone.hxx>
 
 #define PARAMEQUAL(a, b) (std::abs((a) - (b)) < (1e-8))
 
 static void InternalVerifyPosition(IntRes2d_Transition& T1,
                                    IntRes2d_Transition& T2,
-                                   const Standard_Real  PParamOnFirst,
-                                   const Standard_Real  PParamOnSecond,
-                                   const Standard_Real  FirstParam1,
-                                   const Standard_Real  LastParam1,
-                                   const Standard_Real  FirstParam2,
-                                   const Standard_Real  LastParam2);
+                                   const double         PParamOnFirst,
+                                   const double         PParamOnSecond,
+                                   const double         FirstParam1,
+                                   const double         LastParam1,
+                                   const double         FirstParam2,
+                                   const double         LastParam2);
 
 //----------------------------------------------------------------------
-static Standard_Boolean TransitionEqual(const IntRes2d_Transition& T1,
-                                        const IntRes2d_Transition& T2);
+static bool TransitionEqual(const IntRes2d_Transition& T1, const IntRes2d_Transition& T2);
 
-Standard_Boolean TransitionEqual(const IntRes2d_Transition& T1, const IntRes2d_Transition& T2)
+bool TransitionEqual(const IntRes2d_Transition& T1, const IntRes2d_Transition& T2)
 {
 
   if (T1.PositionOnCurve() == T2.PositionOnCurve())
@@ -51,36 +50,36 @@ Standard_Boolean TransitionEqual(const IntRes2d_Transition& T1, const IntRes2d_T
           {
             if (T1.IsOpposite() == T2.IsOpposite())
             {
-              return (Standard_True);
+              return (true);
             }
           }
         }
       }
       else
       {
-        return (Standard_True);
+        return (true);
       }
     }
   }
-  return (Standard_False);
+  return (false);
 }
 
 void IntRes2d_Intersection::Insert(const IntRes2d_IntersectionPoint& Pnt)
 {
-  Standard_Integer n = lpnt.Length();
+  int n = lpnt.Length();
   if (n == 0)
   {
     lpnt.Append(Pnt);
   }
   else
   {
-    Standard_Real    u = Pnt.ParamOnFirst();
-    Standard_Integer i = 1;
-    Standard_Integer b = n + 1;
+    double u = Pnt.ParamOnFirst();
+    int    i = 1;
+    int    b = n + 1;
     while (i <= n)
     {
       const IntRes2d_IntersectionPoint& Pnti = lpnt(i);
-      Standard_Real                     ui   = Pnti.ParamOnFirst();
+      double                            ui   = Pnti.ParamOnFirst();
       if (ui >= u)
       {
         b = i;
@@ -115,12 +114,12 @@ void IntRes2d_Intersection::Insert(const IntRes2d_IntersectionPoint& Pnt)
 
 void IntRes2d_Intersection::SetValues(const IntRes2d_Intersection& Other)
 {
-  Standard_Integer i;
+  int i;
   if (Other.done)
   {
     lseg.Clear();
     lpnt.Clear();
-    Standard_Integer N = Other.lpnt.Length();
+    int N = Other.lpnt.Length();
     for (i = 1; i <= N; i++)
     {
       lpnt.Append(Other.lpnt(i));
@@ -134,11 +133,11 @@ void IntRes2d_Intersection::SetValues(const IntRes2d_Intersection& Other)
     // lpnt=Other.lpnt;  Pose des problemes
     // lseg=Other.lseg;  pour des objets composites
     //-----------------------
-    done = Standard_True;
+    done = true;
   }
   else
   {
-    done = Standard_False;
+    done = false;
   }
 }
 
@@ -181,23 +180,23 @@ void IntRes2d_Intersection::SetValues(const IntRes2d_Intersection& Other)
 //--  and FirstParam2, EndParam2
 //--
 void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
-                                   const Standard_Real          FirstParam1,
-                                   const Standard_Real          LastParam1,
-                                   const Standard_Real          FirstParam2,
-                                   const Standard_Real          LastParam2)
+                                   const double                 FirstParam1,
+                                   const double                 LastParam1,
+                                   const double                 FirstParam2,
+                                   const double                 LastParam2)
 {
 
   if (Other.done)
   {
     //-- Verification of the Position of the IntersectionPoints
-    Standard_Integer n = Other.lpnt.Length();
-    Standard_Integer i;
+    int n = Other.lpnt.Length();
+    int i;
     for (i = 1; i <= n; i++)
     {
 
       const IntRes2d_IntersectionPoint& P              = Other.lpnt(i);
-      Standard_Real                     PParamOnFirst  = P.ParamOnFirst();
-      Standard_Real                     PParamOnSecond = P.ParamOnSecond();
+      double                            PParamOnFirst  = P.ParamOnFirst();
+      double                            PParamOnSecond = P.ParamOnSecond();
       IntRes2d_Transition               T1             = P.TransitionOfFirst();
       IntRes2d_Transition               T2             = P.TransitionOfSecond();
       gp_Pnt2d                          Pt             = P.Value();
@@ -211,8 +210,7 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
                              FirstParam2,
                              LastParam2);
 
-      this->Insert(
-        IntRes2d_IntersectionPoint(Pt, PParamOnFirst, PParamOnSecond, T1, T2, Standard_False));
+      this->Insert(IntRes2d_IntersectionPoint(Pt, PParamOnFirst, PParamOnSecond, T1, T2, false));
     }
 
     //--------------------------------------------------
@@ -220,17 +218,17 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
     //-- (we assume that a composite curve is always bounded)
     //-- (a segment has always a FirstPoint and a LastPoint)
     //--------------------------------------------------
-    n                              = Other.lseg.Length();
-    Standard_Real SegModif_P1First = 0, SegModif_P1Second = 0;
-    Standard_Real SegModif_P2First = 0, SegModif_P2Second = 0;
+    n                       = Other.lseg.Length();
+    double SegModif_P1First = 0, SegModif_P1Second = 0;
+    double SegModif_P2First = 0, SegModif_P2Second = 0;
 
     for (i = 1; i <= n; i++)
     {
 
       const IntRes2d_IntersectionPoint& P1 = Other.lseg(i).FirstPoint();
 
-      Standard_Real       P1PParamOnFirst  = P1.ParamOnFirst();
-      Standard_Real       P1PParamOnSecond = P1.ParamOnSecond();
+      double              P1PParamOnFirst  = P1.ParamOnFirst();
+      double              P1PParamOnSecond = P1.ParamOnSecond();
       IntRes2d_Transition P1T1             = P1.TransitionOfFirst();
       IntRes2d_Transition P1T2             = P1.TransitionOfSecond();
       const gp_Pnt2d&     P1Pt             = P1.Value();
@@ -246,13 +244,13 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
 
       const IntRes2d_IntersectionPoint& P2 = Other.lseg(i).LastPoint();
 
-      Standard_Real       P2PParamOnFirst  = P2.ParamOnFirst();
-      Standard_Real       P2PParamOnSecond = P2.ParamOnSecond();
+      double              P2PParamOnFirst  = P2.ParamOnFirst();
+      double              P2PParamOnSecond = P2.ParamOnSecond();
       IntRes2d_Transition P2T1             = P2.TransitionOfFirst();
       IntRes2d_Transition P2T2             = P2.TransitionOfSecond();
       const gp_Pnt2d&     P2Pt             = P2.Value();
 
-      Standard_Boolean Opposite = Other.lseg(i).IsOpposite();
+      bool Opposite = Other.lseg(i).IsOpposite();
 
       InternalVerifyPosition(P2T1,
                              P2T2,
@@ -265,19 +263,19 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
 
       //-- Loop on the previous segments
       //--
-      Standard_Integer an             = lseg.Length();
-      Standard_Boolean NotYetModified = Standard_True;
+      int  an             = lseg.Length();
+      bool NotYetModified = true;
 
-      for (Standard_Integer j = 1; (j <= an) && (NotYetModified); j++)
+      for (int j = 1; (j <= an) && (NotYetModified); j++)
       {
 
         const IntRes2d_IntersectionPoint& AnP1               = lseg(j).FirstPoint();
-        Standard_Real                     AnP1PParamOnFirst  = AnP1.ParamOnFirst();
-        Standard_Real                     AnP1PParamOnSecond = AnP1.ParamOnSecond();
+        double                            AnP1PParamOnFirst  = AnP1.ParamOnFirst();
+        double                            AnP1PParamOnSecond = AnP1.ParamOnSecond();
 
         const IntRes2d_IntersectionPoint& AnP2               = lseg(j).LastPoint();
-        Standard_Real                     AnP2PParamOnFirst  = AnP2.ParamOnFirst();
-        Standard_Real                     AnP2PParamOnSecond = AnP2.ParamOnSecond();
+        double                            AnP2PParamOnFirst  = AnP2.ParamOnFirst();
+        double                            AnP2PParamOnSecond = AnP2.ParamOnSecond();
 
         if (Opposite == lseg(j).IsOpposite())
         {
@@ -288,8 +286,8 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
           if (PARAMEQUAL(P1PParamOnFirst, AnP2PParamOnFirst)
               && PARAMEQUAL(P1PParamOnSecond, AnP2PParamOnSecond))
           {
-            NotYetModified    = Standard_False;
-            lseg(j)           = IntRes2d_IntersectionSegment(AnP1, P2, Opposite, Standard_False);
+            NotYetModified    = false;
+            lseg(j)           = IntRes2d_IntersectionSegment(AnP1, P2, Opposite, false);
             SegModif_P1First  = AnP1PParamOnFirst;
             SegModif_P1Second = AnP1PParamOnSecond;
             SegModif_P2First  = P2PParamOnFirst;
@@ -302,8 +300,8 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
           else if (PARAMEQUAL(P2PParamOnFirst, AnP1PParamOnFirst)
                    && PARAMEQUAL(P2PParamOnSecond, AnP1PParamOnSecond))
           {
-            NotYetModified    = Standard_False;
-            lseg(j)           = IntRes2d_IntersectionSegment(P1, AnP2, Opposite, Standard_False);
+            NotYetModified    = false;
+            lseg(j)           = IntRes2d_IntersectionSegment(P1, AnP2, Opposite, false);
             SegModif_P1First  = P1PParamOnFirst;
             SegModif_P1Second = P1PParamOnSecond;
             SegModif_P2First  = AnP2PParamOnFirst;
@@ -316,8 +314,8 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
           if (PARAMEQUAL(P1PParamOnFirst, AnP1PParamOnFirst)
               && PARAMEQUAL(P1PParamOnSecond, AnP1PParamOnSecond))
           {
-            NotYetModified    = Standard_False;
-            lseg(j)           = IntRes2d_IntersectionSegment(AnP2, P2, Opposite, Standard_False);
+            NotYetModified    = false;
+            lseg(j)           = IntRes2d_IntersectionSegment(AnP2, P2, Opposite, false);
             SegModif_P1First  = P2PParamOnFirst;
             SegModif_P1Second = P2PParamOnSecond;
             SegModif_P2First  = AnP2PParamOnFirst;
@@ -330,8 +328,8 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
           else if (PARAMEQUAL(P2PParamOnFirst, AnP2PParamOnFirst)
                    && PARAMEQUAL(P2PParamOnSecond, AnP2PParamOnSecond))
           {
-            NotYetModified    = Standard_False;
-            lseg(j)           = IntRes2d_IntersectionSegment(P1, AnP1, Opposite, Standard_False);
+            NotYetModified    = false;
+            lseg(j)           = IntRes2d_IntersectionSegment(P1, AnP1, Opposite, false);
             SegModif_P1First  = P1PParamOnFirst;
             SegModif_P1Second = P1PParamOnSecond;
             SegModif_P2First  = AnP1PParamOnFirst;
@@ -341,20 +339,11 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
       }
       if (NotYetModified)
       {
-        this->Append(IntRes2d_IntersectionSegment(IntRes2d_IntersectionPoint(P1Pt,
-                                                                             P1PParamOnFirst,
-                                                                             P1PParamOnSecond,
-                                                                             P1T1,
-                                                                             P1T2,
-                                                                             Standard_False),
-                                                  IntRes2d_IntersectionPoint(P2Pt,
-                                                                             P2PParamOnFirst,
-                                                                             P2PParamOnSecond,
-                                                                             P2T1,
-                                                                             P2T2,
-                                                                             Standard_False),
-                                                  Opposite,
-                                                  Standard_False));
+        this->Append(IntRes2d_IntersectionSegment(
+          IntRes2d_IntersectionPoint(P1Pt, P1PParamOnFirst, P1PParamOnSecond, P1T1, P1T2, false),
+          IntRes2d_IntersectionPoint(P2Pt, P2PParamOnFirst, P2PParamOnSecond, P2T1, P2T2, false),
+          Opposite,
+          false));
 
       } //-- if(NotYetModified)
       else
@@ -362,11 +351,11 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
         //--------------------------------------------------------------
         //-- Are some Existing Points in this segment ?
         //--------------------------------------------------------------
-        Standard_Integer rnbpts = lpnt.Length();
-        for (Standard_Integer rp = 1; (rp <= rnbpts) && (rp >= 1); rp++)
+        int rnbpts = lpnt.Length();
+        for (int rp = 1; (rp <= rnbpts) && (rp >= 1); rp++)
         {
-          Standard_Real PonFirst  = lpnt(rp).ParamOnFirst();
-          Standard_Real PonSecond = lpnt(rp).ParamOnSecond();
+          double PonFirst  = lpnt(rp).ParamOnFirst();
+          double PonSecond = lpnt(rp).ParamOnSecond();
 
           if (((PonFirst >= SegModif_P1First && PonFirst <= SegModif_P2First)
                || (PonFirst <= SegModif_P1First && PonFirst >= SegModif_P2First))
@@ -377,7 +366,7 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
             rp--;
             rnbpts--;
           }
-        } //-- for(Standard_Integer rp=1; (rp<=rnbpts)&&(rp>=1); rp++)
+        } //-- for(int rp=1; (rp<=rnbpts)&&(rp>=1); rp++)
       }
     }
     //--------------------------------------------------
@@ -385,11 +374,11 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
     //-- Example : Points which lie in a segment.
     //--------------------------------------------------
 
-    done = Standard_True;
+    done = true;
   }
   else
   {
-    done = Standard_False;
+    done = false;
   }
 }
 
@@ -398,9 +387,9 @@ void IntRes2d_Intersection::Append(const IntRes2d_Intersection& Other,
 #define DEBUGPOSITION 0
 
 #if DEBUGPOSITION
-void AffPosition(IntRes2d_Transition& T, const Standard_Real u, const char* Texte);
+void AffPosition(IntRes2d_Transition& T, const double u, const char* Texte);
 
-void AffPosition(IntRes2d_Transition& T, const Standard_Real u, const char* Texte)
+void AffPosition(IntRes2d_Transition& T, const double u, const char* Texte)
 {
   if (T.PositionOnCurve() == IntRes2d_End)
   {
@@ -419,12 +408,12 @@ void AffPosition(IntRes2d_Transition& T, const Standard_Real u, const char* Text
 
 void InternalVerifyPosition(IntRes2d_Transition& T1,
                             IntRes2d_Transition& T2,
-                            const Standard_Real  PParamOnFirst,
-                            const Standard_Real  PParamOnSecond,
-                            const Standard_Real  FirstParam1,
-                            const Standard_Real  LastParam1,
-                            const Standard_Real  FirstParam2,
-                            const Standard_Real  LastParam2)
+                            const double         PParamOnFirst,
+                            const double         PParamOnSecond,
+                            const double         FirstParam1,
+                            const double         LastParam1,
+                            const double         FirstParam2,
+                            const double         LastParam2)
 {
 #if DEBUGPOSITION
   AffPosition(T1, PParamOnFirst, " Point 1 ");

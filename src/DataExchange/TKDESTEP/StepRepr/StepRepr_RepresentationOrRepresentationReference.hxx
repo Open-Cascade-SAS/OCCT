@@ -40,13 +40,12 @@ public:
   //! Recognizes a kind of RepresentationOrRepresentationReference select type
   //! -- 1 -> Representation
   //! -- 2 -> RepresentationReference
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Representation (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
   //! Returns Value as RepresentationReference (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_RepresentationReference) RepresentationReference() const;
+  Standard_EXPORT occ::handle<StepRepr_RepresentationReference> RepresentationReference() const;
 };
 #endif // _StepRepr_RepresentationOrRepresentationReference_HeaderFile

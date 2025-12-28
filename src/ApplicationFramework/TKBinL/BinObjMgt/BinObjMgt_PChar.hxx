@@ -18,6 +18,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-typedef Standard_Character* BinObjMgt_PChar;
+typedef char* BinObjMgt_PChar;
 
 #endif

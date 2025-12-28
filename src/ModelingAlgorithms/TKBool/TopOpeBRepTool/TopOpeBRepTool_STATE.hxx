@@ -30,20 +30,20 @@ class TopOpeBRepTool_STATE
 {
 
 public:
-  TopOpeBRepTool_STATE(const char* name, const Standard_Boolean b = Standard_False);
-  void             Set(const Standard_Boolean b);
-  void             Set(const TopAbs_State S, const Standard_Boolean b);
-  void             Set(const Standard_Boolean b, Standard_Integer n, char** a);
-  Standard_Boolean Get(const TopAbs_State S);
+  TopOpeBRepTool_STATE(const char* name, const bool b = false);
+  void Set(const bool b);
+  void Set(const TopAbs_State S, const bool b);
+  void Set(const bool b, int n, char** a);
+  bool Get(const TopAbs_State S);
 
-  Standard_Boolean Get() { return myonetrue; }
+  bool Get() { return myonetrue; }
 
   void Print();
 
 private:
-  Standard_Boolean myin, myout, myon, myunknown;
-  Standard_Boolean myonetrue;
-  char             myname[100];
+  bool myin, myout, myon, myunknown;
+  bool myonetrue;
+  char myname[100];
 };
 
 #endif /* OCCT_DEBUG */

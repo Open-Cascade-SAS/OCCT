@@ -21,10 +21,10 @@
 RWStepShape_RWPlusMinusTolerance::RWStepShape_RWPlusMinusTolerance() {}
 
 void RWStepShape_RWPlusMinusTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepShape_PlusMinusTolerance)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                                        num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepShape_PlusMinusTolerance>& ent) const
 {
   // --- Number of Parameter Control ---
 
@@ -47,15 +47,15 @@ void RWStepShape_RWPlusMinusTolerance::ReadStep(
 }
 
 void RWStepShape_RWPlusMinusTolerance::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepShape_PlusMinusTolerance)& ent) const
+  StepData_StepWriter&                             SW,
+  const occ::handle<StepShape_PlusMinusTolerance>& ent) const
 {
   SW.Send(ent->Range().Value());
   SW.Send(ent->TolerancedDimension().Value());
 }
 
-void RWStepShape_RWPlusMinusTolerance::Share(const Handle(StepShape_PlusMinusTolerance)& ent,
-                                             Interface_EntityIterator&                   iter) const
+void RWStepShape_RWPlusMinusTolerance::Share(const occ::handle<StepShape_PlusMinusTolerance>& ent,
+                                             Interface_EntityIterator& iter) const
 {
   iter.AddItem(ent->Range().Value());
   iter.AddItem(ent->TolerancedDimension().Value());

@@ -24,14 +24,12 @@
 #include <gp_Hypr2d.hxx>
 #include <Precision.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
-void IntCurve_IntCurveCurveGen::Perform(const TheCurve&     C,
-                                        const Standard_Real TolConf,
-                                        const Standard_Real Tol)
+void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C, const double TolConf, const double Tol)
 {
   IntRes2d_Domain D1;
-  Standard_Real   TolDomain = Tol;
+  double          TolDomain = Tol;
   if (Tol < TolConf)
     TolDomain = TolConf;
   GeomAbs_CurveType typ = TheCurveTool::GetType(C);
@@ -43,15 +41,15 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&     C,
     case GeomAbs_Hyperbola:
     case GeomAbs_Line:
       ResetFields();
-      done = Standard_True;
+      done = true;
       return;
 
     default: {
-      Standard_Real paraminf = TheCurveTool::FirstParameter(C);
-      Standard_Real paramsup = TheCurveTool::LastParameter(C);
+      double paraminf = TheCurveTool::FirstParameter(C);
+      double paramsup = TheCurveTool::LastParameter(C);
       if (Precision::IsInfinite(paraminf) && Precision::IsInfinite(paramsup))
       {
-        done = Standard_False;
+        done = false;
         return;
       }
       //
@@ -70,7 +68,7 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&     C,
         else
         {
           //--        paraminf------------...
-          D1.SetValues(TheCurveTool::Value(C, paraminf), paraminf, TolDomain, Standard_True);
+          D1.SetValues(TheCurveTool::Value(C, paraminf), paraminf, TolDomain, true);
         }
       }
       else
@@ -78,22 +76,22 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&     C,
         if (paramsup < Precision::Infinite())
         {
           //--    ...-----------------paramsup
-          D1.SetValues(TheCurveTool::Value(C, paramsup), paramsup, TolDomain, Standard_False);
+          D1.SetValues(TheCurveTool::Value(C, paramsup), paramsup, TolDomain, false);
         }
       }
       this->ResetFields();
-      intcurvcurv.SetReversedParameters(Standard_False);
+      intcurvcurv.SetReversedParameters(false);
       intcurvcurv.Perform(C, D1, TolConf, Tol);
       this->SetValues(intcurvcurv);
-      done = Standard_True;
+      done = true;
     }
   }
 }
 
 void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C,
                                         const IntRes2d_Domain& D,
-                                        const Standard_Real    TolConf,
-                                        const Standard_Real    Tol)
+                                        const double           TolConf,
+                                        const double           Tol)
 {
   GeomAbs_CurveType typ = TheCurveTool::GetType(C);
   switch (typ)
@@ -104,23 +102,23 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C,
     case GeomAbs_Hyperbola:
     case GeomAbs_Line:
       ResetFields();
-      done = Standard_True;
+      done = true;
       return;
 
     default: {
       this->ResetFields();
-      intcurvcurv.SetReversedParameters(Standard_False);
+      intcurvcurv.SetReversedParameters(false);
       intcurvcurv.Perform(C, D, TolConf, Tol);
       this->SetValues(intcurvcurv);
-      done = Standard_True;
+      done = true;
     }
   }
 }
 
 //=================================================================================================
 
-IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve&     C1,
-                                                         const Standard_Real TolDomain) const
+IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve& C1,
+                                                         const double    TolDomain) const
 {
   IntRes2d_Domain D1;
 
@@ -134,8 +132,8 @@ IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve&     C1,
       //-- if the curve is a trimmed curve, first and last parameters
       //-- will be the parameters used to build the domain
       //--
-      Standard_Real firstparameter = TheCurveTool::FirstParameter(C1);
-      Standard_Real lastparameter  = TheCurveTool::LastParameter(C1);
+      double firstparameter = TheCurveTool::FirstParameter(C1);
+      double lastparameter  = TheCurveTool::LastParameter(C1);
 
       gp_Pnt2d P1(TheCurveTool::Value(C1, firstparameter));
       gp_Pnt2d P2(TheCurveTool::Value(C1, lastparameter));
@@ -144,8 +142,8 @@ IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve&     C1,
       break;
     }
     default: {
-      Standard_Real paraminf = TheCurveTool::FirstParameter(C1);
-      Standard_Real paramsup = TheCurveTool::LastParameter(C1);
+      double paraminf = TheCurveTool::FirstParameter(C1);
+      double paramsup = TheCurveTool::LastParameter(C1);
       if (paraminf > -Precision::Infinite())
       {
         if (paramsup < Precision::Infinite())
@@ -161,7 +159,7 @@ IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve&     C1,
         else
         {
           //--        paraminf------------...
-          D1.SetValues(TheCurveTool::Value(C1, paraminf), paraminf, TolDomain, Standard_True);
+          D1.SetValues(TheCurveTool::Value(C1, paraminf), paraminf, TolDomain, true);
         }
       }
       else
@@ -169,7 +167,7 @@ IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve&     C1,
         if (paramsup < Precision::Infinite())
         {
           //--    ...-----------------paramsup
-          D1.SetValues(TheCurveTool::Value(C1, paramsup), paramsup, TolDomain, Standard_False);
+          D1.SetValues(TheCurveTool::Value(C1, paramsup), paramsup, TolDomain, false);
         }
       }
       break;
@@ -185,11 +183,11 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
                                         const IntRes2d_Domain& D1,
                                         const TheCurve&        C2,
                                         const IntRes2d_Domain& D2,
-                                        const Standard_Real    TolConf,
-                                        const Standard_Real    Tol)
+                                        const double           TolConf,
+                                        const double           Tol)
 {
   this->ResetFields();
-  Standard_Integer nbi1 = TheCurveTool::NbIntervals(C1);
+  int nbi1 = TheCurveTool::NbIntervals(C1);
   if (nbi1 > 1)
   {
     param1inf = TheCurveTool::FirstParameter(C1);
@@ -200,7 +198,7 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
     param1inf = (D1.HasFirstPoint()) ? (D1.FirstParameter()) : -Precision::Infinite();
     param1sup = (D1.HasLastPoint()) ? (D1.LastParameter()) : Precision::Infinite();
   }
-  Standard_Integer nbi2 = TheCurveTool::NbIntervals(C2);
+  int nbi2 = TheCurveTool::NbIntervals(C2);
   if (nbi2 > 1)
   {
     param2inf = TheCurveTool::FirstParameter(C2);
@@ -213,28 +211,16 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
   }
   if (nbi1 > 1 || nbi2 > 1)
   {
-    TColStd_Array1OfReal Tab1(1, nbi1 + 1);
-    TColStd_Array1OfReal Tab2(1, nbi2 + 1);
+    NCollection_Array1<double> Tab1(1, nbi1 + 1);
+    NCollection_Array1<double> Tab2(1, nbi2 + 1);
     TheCurveTool::Intervals(C1, Tab1);
     TheCurveTool::Intervals(C2, Tab2);
-    InternalCompositePerform(C1,
-                             D1,
-                             1,
-                             nbi1,
-                             Tab1,
-                             C2,
-                             D2,
-                             1,
-                             nbi2,
-                             Tab2,
-                             TolConf,
-                             Tol,
-                             Standard_True);
+    InternalCompositePerform(C1, D1, 1, nbi1, Tab1, C2, D2, 1, nbi2, Tab2, TolConf, Tol, true);
     return;
   }
   else
   {
-    InternalPerform(C1, D1, C2, D2, TolConf, Tol, Standard_False);
+    InternalPerform(C1, D1, C2, D2, TolConf, Tol, false);
   }
 }
 
@@ -250,9 +236,9 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
                                                 const IntRes2d_Domain& D1,
                                                 const TheCurve&        C2,
                                                 const IntRes2d_Domain& D2,
-                                                const Standard_Real    TolConf,
-                                                const Standard_Real    Tol,
-                                                const Standard_Boolean Composite)
+                                                const double           TolConf,
+                                                const double           Tol,
+                                                const bool             Composite)
 {
 
   GeomAbs_CurveType typ1 = TheCurveTool::GetType(C1);
@@ -264,7 +250,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
       switch (typ2)
       {
         case GeomAbs_Line: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi.Perform(TheCurveTool::Line(C1), D1, TheCurveTool::Line(C2), D2, TolConf, Tol);
           if (Composite)
           {
@@ -278,7 +264,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Circle: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Line(C1), D1, TheCurveTool::Circle(C2), D2, TolConf, Tol);
           if (Composite)
@@ -293,7 +279,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Ellipse: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Line(C1), D1, TheCurveTool::Ellipse(C2), D2, TolConf, Tol);
           if (Composite)
@@ -308,7 +294,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Parabola: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Line(C1), D1, TheCurveTool::Parabola(C2), D2, TolConf, Tol);
           if (Composite)
@@ -323,7 +309,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Hyperbola: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Line(C1), D1, TheCurveTool::Hyperbola(C2), D2, TolConf, Tol);
           if (Composite)
@@ -339,7 +325,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         default: {
-          intconicurv.SetReversedParameters(Standard_False);
+          intconicurv.SetReversedParameters(false);
           intconicurv.Perform(TheCurveTool::Line(C1), D1, C2, D2, TolConf, Tol);
           if (Composite)
           {
@@ -358,7 +344,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
       switch (typ2)
       {
         case GeomAbs_Line: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
           intconiconi
             .Perform(TheCurveTool::Line(C2), D2, TheCurveTool::Circle(C1), D1, TolConf, Tol);
           if (Composite)
@@ -373,7 +359,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Circle: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Circle(C1), D1, TheCurveTool::Circle(C2), D2, TolConf, Tol);
           if (Composite)
@@ -388,7 +374,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Ellipse: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Circle(C1), D1, TheCurveTool::Ellipse(C2), D2, TolConf, Tol);
           if (Composite)
@@ -403,7 +389,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Parabola: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Circle(C1), D1, TheCurveTool::Parabola(C2), D2, TolConf, Tol);
           if (Composite)
@@ -418,7 +404,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Hyperbola: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Circle(C1), D1, TheCurveTool::Hyperbola(C2), D2, TolConf, Tol);
           if (Composite)
@@ -433,7 +419,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         default: {
-          intconicurv.SetReversedParameters(Standard_False);
+          intconicurv.SetReversedParameters(false);
           intconicurv.Perform(TheCurveTool::Circle(C1), D1, C2, D2, TolConf, Tol);
           if (Composite)
           {
@@ -453,7 +439,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
       switch (typ2)
       {
         case GeomAbs_Line: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
           intconiconi
             .Perform(TheCurveTool::Line(C2), D2, TheCurveTool::Ellipse(C1), D1, TolConf, Tol);
 
@@ -469,7 +455,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Circle: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
 
           intconiconi
             .Perform(TheCurveTool::Circle(C2), D2, TheCurveTool::Ellipse(C1), D1, TolConf, Tol);
@@ -485,7 +471,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Ellipse: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Ellipse(C1), D1, TheCurveTool::Ellipse(C2), D2, TolConf, Tol);
           if (Composite)
@@ -500,7 +486,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Parabola: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Ellipse(C1), D1, TheCurveTool::Parabola(C2), D2, TolConf, Tol);
           if (Composite)
@@ -515,7 +501,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Hyperbola: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Ellipse(C1), D1, TheCurveTool::Hyperbola(C2), D2, TolConf, Tol);
           if (Composite)
@@ -530,7 +516,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         default: {
-          intconicurv.SetReversedParameters(Standard_False);
+          intconicurv.SetReversedParameters(false);
           intconicurv.Perform(TheCurveTool::Ellipse(C1), D1, C2, D2, TolConf, Tol);
           if (Composite)
           {
@@ -549,7 +535,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
       switch (typ2)
       {
         case GeomAbs_Line: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
           intconiconi
             .Perform(TheCurveTool::Line(C2), D2, TheCurveTool::Parabola(C1), D1, TolConf, Tol);
           if (Composite)
@@ -564,7 +550,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Circle: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
           intconiconi
             .Perform(TheCurveTool::Circle(C2), D2, TheCurveTool::Parabola(C1), D1, TolConf, Tol);
           if (Composite)
@@ -579,7 +565,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Ellipse: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
           intconiconi
             .Perform(TheCurveTool::Ellipse(C2), D2, TheCurveTool::Parabola(C1), D1, TolConf, Tol);
           if (Composite)
@@ -594,7 +580,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Parabola: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Parabola(C1), D1, TheCurveTool::Parabola(C2), D2, TolConf, Tol);
           if (Composite)
@@ -609,7 +595,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Hyperbola: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi
             .Perform(TheCurveTool::Parabola(C1), D1, TheCurveTool::Hyperbola(C2), D2, TolConf, Tol);
           if (Composite)
@@ -624,7 +610,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         default: {
-          intconicurv.SetReversedParameters(Standard_False);
+          intconicurv.SetReversedParameters(false);
           intconicurv.Perform(TheCurveTool::Parabola(C1), D1, C2, D2, TolConf, Tol);
           if (Composite)
           {
@@ -643,7 +629,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
       switch (typ2)
       {
         case GeomAbs_Line: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
           intconiconi
             .Perform(TheCurveTool::Line(C2), D2, TheCurveTool::Hyperbola(C1), D1, TolConf, Tol);
           if (Composite)
@@ -658,7 +644,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Circle: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
           intconiconi
             .Perform(TheCurveTool::Circle(C2), D2, TheCurveTool::Hyperbola(C1), D1, TolConf, Tol);
           if (Composite)
@@ -673,7 +659,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Ellipse: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
           intconiconi
             .Perform(TheCurveTool::Ellipse(C2), D2, TheCurveTool::Hyperbola(C1), D1, TolConf, Tol);
           if (Composite)
@@ -688,7 +674,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Parabola: {
-          intconiconi.SetReversedParameters(Standard_True);
+          intconiconi.SetReversedParameters(true);
           intconiconi
             .Perform(TheCurveTool::Parabola(C2), D2, TheCurveTool::Hyperbola(C1), D1, TolConf, Tol);
           if (Composite)
@@ -703,7 +689,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Hyperbola: {
-          intconiconi.SetReversedParameters(Standard_False);
+          intconiconi.SetReversedParameters(false);
           intconiconi.Perform(TheCurveTool::Hyperbola(C1),
                               D1,
                               TheCurveTool::Hyperbola(C2),
@@ -722,7 +708,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         default: {
-          intconicurv.SetReversedParameters(Standard_False);
+          intconicurv.SetReversedParameters(false);
           intconicurv.Perform(TheCurveTool::Hyperbola(C1), D1, C2, D2, TolConf, Tol);
           if (Composite)
           {
@@ -741,7 +727,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
       switch (typ2)
       {
         case GeomAbs_Line: {
-          intconicurv.SetReversedParameters(Standard_True);
+          intconicurv.SetReversedParameters(true);
           intconicurv.Perform(TheCurveTool::Line(C2), D2, C1, D1, TolConf, Tol);
           if (Composite)
           {
@@ -755,7 +741,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Circle: {
-          intconicurv.SetReversedParameters(Standard_True);
+          intconicurv.SetReversedParameters(true);
           intconicurv.Perform(TheCurveTool::Circle(C2), D2, C1, D1, TolConf, Tol);
           if (Composite)
           {
@@ -769,7 +755,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Ellipse: {
-          intconicurv.SetReversedParameters(Standard_True);
+          intconicurv.SetReversedParameters(true);
           intconicurv.Perform(TheCurveTool::Ellipse(C2), D2, C1, D1, TolConf, Tol);
           if (Composite)
           {
@@ -783,7 +769,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Parabola: {
-          intconicurv.SetReversedParameters(Standard_True);
+          intconicurv.SetReversedParameters(true);
           intconicurv.Perform(TheCurveTool::Parabola(C2), D2, C1, D1, TolConf, Tol);
           if (Composite)
           {
@@ -797,7 +783,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         case GeomAbs_Hyperbola: {
-          intconicurv.SetReversedParameters(Standard_True);
+          intconicurv.SetReversedParameters(true);
           intconicurv.Perform(TheCurveTool::Hyperbola(C2), D2, C1, D1, TolConf, Tol);
           if (Composite)
           {
@@ -811,7 +797,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         break;
 
         default: {
-          intcurvcurv.SetReversedParameters(Standard_False);
+          intcurvcurv.SetReversedParameters(false);
           intcurvcurv.Perform(C1, D1, C2, D2, TolConf, Tol);
           if (Composite)
           {
@@ -821,7 +807,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
           {
             this->SetValues(intcurvcurv);
           }
-          done = Standard_True;
+          done = true;
         }
         break;
       }
@@ -829,18 +815,19 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
   }
 }
 
-void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const Standard_Integer NbInterC1,
-                                                                  const TheCurve&        C1,
-                                                                  const Standard_Integer NumInterC1,
-                                                                  const TColStd_Array1OfReal& Tab1,
-                                                                  const IntRes2d_Domain&      D1,
-                                                                  const Standard_Integer NbInterC2,
-                                                                  const TheCurve&        C2,
-                                                                  const Standard_Integer NumInterC2,
-                                                                  const TColStd_Array1OfReal& Tab2,
-                                                                  const IntRes2d_Domain&      D2,
-                                                                  const Standard_Real TolConf,
-                                                                  const Standard_Real Tol)
+void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(
+  const int                         NbInterC1,
+  const TheCurve&                   C1,
+  const int                         NumInterC1,
+  const NCollection_Array1<double>& Tab1,
+  const IntRes2d_Domain&            D1,
+  const int                         NbInterC2,
+  const TheCurve&                   C2,
+  const int                         NumInterC2,
+  const NCollection_Array1<double>& Tab2,
+  const IntRes2d_Domain&            D2,
+  const double                      TolConf,
+  const double                      Tol)
 {
 
   if (NumInterC2 > NbInterC2)
@@ -852,8 +839,8 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const Standard
   //----------------------------------------------------------------------
   //-- Creation du domaine associe a la portion de C1
   //----------------------------------------------------------------------
-  Standard_Boolean DomainIsOK = Standard_True;
-  Standard_Real    ParamInf, ParamSup;
+  bool   DomainIsOK = true;
+  double ParamInf, ParamSup;
 
   if (NbInterC1 > 1)
   {
@@ -862,7 +849,7 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const Standard
     //-- Verification : Domaine Inclu dans Intervalle de Definition
     //--------------------------------------------------------------
 
-    Standard_Real u;
+    double u;
 
     u = D1.FirstParameter();
     if (ParamInf < u)
@@ -887,7 +874,7 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const Standard
     }
     else
     {
-      DomainIsOK = Standard_False;
+      DomainIsOK = false;
     }
   }
   else
@@ -905,7 +892,7 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const Standard
     //-- Verification : Domaine Inclu dans Intervalle de Definition
     //--------------------------------------------------------------
 
-    Standard_Real u;
+    double u;
 
     u = D2.FirstParameter();
     if (ParamInf < u)
@@ -930,7 +917,7 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const Standard
     }
     else
     {
-      DomainIsOK = Standard_False;
+      DomainIsOK = false;
     }
   }
   else
@@ -940,32 +927,32 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(const Standard
 
   if (DomainIsOK)
   {
-    InternalPerform(C2, DomainC2NumInter, C1, DomainC1NumInter, TolConf, Tol, Standard_True);
+    InternalPerform(C2, DomainC2NumInter, C1, DomainC1NumInter, TolConf, Tol, true);
   }
 }
 
 //-- C1 ou C2 sont des courbes composites
 //--
 
-void IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve&             C1,
-                                                         const IntRes2d_Domain&      D1,
-                                                         const Standard_Integer      XXXNumInterC1,
-                                                         const Standard_Integer      NbInterC1,
-                                                         const TColStd_Array1OfReal& Tab1,
-                                                         const TheCurve&             C2,
-                                                         const IntRes2d_Domain&      D2,
-                                                         const Standard_Integer      XXXNumInterC2,
-                                                         const Standard_Integer      NbInterC2,
-                                                         const TColStd_Array1OfReal& Tab2,
-                                                         const Standard_Real         TolConf,
-                                                         const Standard_Real         Tol,
-                                                         const Standard_Boolean      RecursOnC2)
+void IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve&        C1,
+                                                         const IntRes2d_Domain& D1,
+                                                         const int              XXXNumInterC1,
+                                                         const int              NbInterC1,
+                                                         const NCollection_Array1<double>& Tab1,
+                                                         const TheCurve&                   C2,
+                                                         const IntRes2d_Domain&            D2,
+                                                         const int XXXNumInterC2,
+                                                         const int NbInterC2,
+                                                         const NCollection_Array1<double>& Tab2,
+                                                         const double                      TolConf,
+                                                         const double                      Tol,
+                                                         const bool RecursOnC2)
 {
 
-  Standard_Integer NumInterC2 = XXXNumInterC2;
-  Standard_Integer NumInterC1 = XXXNumInterC1;
+  int NumInterC2 = XXXNumInterC2;
+  int NumInterC1 = XXXNumInterC1;
 
-  //  Standard_Boolean Arret=Standard_False;
+  //  bool Arret=false;
 
   if (NumInterC2 > NbInterC2)
     return;
@@ -987,13 +974,13 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve&        
     return;
   }
 
-  for (Standard_Integer i = NumInterC1; i <= NbInterC1; i++)
+  for (int i = NumInterC1; i <= NbInterC1; i++)
   {
     NumInterC1 = i;
     /*
       InternalCompositePerform(C2,D2,NumInterC2,NbInterC2,Tab2,
             C1,D1,NumInterC1,NbInterC1,Tab1,
-            TolConf,Tol,Standard_False);
+            TolConf,Tol,false);
     */
 
     InternalCompositePerform_noRecurs(NbInterC2,
@@ -1027,20 +1014,20 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve&        
                              Tab2,
                              TolConf,
                              Tol,
-                             Standard_True);
+                             true);
   }
 }
 
 //=================================================================================================
 
-void IntCurve_IntCurveCurveGen::SetMinNbSamples(const Standard_Integer theMinNbSamples)
+void IntCurve_IntCurveCurveGen::SetMinNbSamples(const int theMinNbSamples)
 {
   intcurvcurv.SetMinNbSamples(theMinNbSamples);
 }
 
 //=================================================================================================
 
-Standard_Integer IntCurve_IntCurveCurveGen::GetMinNbSamples() const
+int IntCurve_IntCurveCurveGen::GetMinNbSamples() const
 {
   return intcurvcurv.GetMinNbSamples();
 }

@@ -90,21 +90,21 @@ static const unsigned int myPredefinedPatterns[Aspect_HS_NB][32] = {
 
 namespace
 {
-static std::atomic<Standard_Integer> THE_HATCH_STYLE_COUNTER(Aspect_HS_NB - 1);
+static std::atomic<int> THE_HATCH_STYLE_COUNTER(Aspect_HS_NB - 1);
 }
 
 //=================================================================================================
 
-Graphic3d_HatchStyle::Graphic3d_HatchStyle(const Handle(Image_PixMap)& thePattern)
+Graphic3d_HatchStyle::Graphic3d_HatchStyle(const occ::handle<Image_PixMap>& thePattern)
 {
   Standard_ProgramError_Raise_if(thePattern.IsNull(), "Null pointer to a hatch pattern image");
   Standard_ProgramError_Raise_if(thePattern->SizeX() != 32 || thePattern->SizeY() != 32
                                    || thePattern->Format() != Image_Format_Gray,
                                  "Hatch pattern must be a 32*32 bitmap (Image_Format_Gray format)");
 
-  const Standard_Size                      aByteSize   = thePattern->SizeBytes();
-  const Handle(NCollection_BaseAllocator)& anAllocator = Image_PixMap::DefaultAllocator();
-  myPattern                                            = new NCollection_Buffer(anAllocator);
+  const size_t                                  aByteSize   = thePattern->SizeBytes();
+  const occ::handle<NCollection_BaseAllocator>& anAllocator = Image_PixMap::DefaultAllocator();
+  myPattern                                                 = new NCollection_Buffer(anAllocator);
   myPattern->Allocate(aByteSize);
   std::memcpy(myPattern->ChangeData(), thePattern->Data(), aByteSize);
 
@@ -113,17 +113,17 @@ Graphic3d_HatchStyle::Graphic3d_HatchStyle(const Handle(Image_PixMap)& thePatter
 
 //=================================================================================================
 
-const Standard_Byte* Graphic3d_HatchStyle::Pattern() const
+const uint8_t* Graphic3d_HatchStyle::Pattern() const
 {
   return !myPattern.IsNull()
            ? myPattern->Data()
-           : (myHatchType < Aspect_HS_NB ? (const Standard_Byte*)myPredefinedPatterns[myHatchType]
+           : (myHatchType < Aspect_HS_NB ? (const uint8_t*)myPredefinedPatterns[myHatchType]
                                          : NULL);
 }
 
 //=================================================================================================
 
-void Graphic3d_HatchStyle::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_HatchStyle::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

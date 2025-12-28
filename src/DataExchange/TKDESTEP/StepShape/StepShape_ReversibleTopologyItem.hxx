@@ -47,28 +47,25 @@ public:
   //! 5 -> ClosedShell
   //! 6 -> OpenShell
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Edge (Null if another type)
-  Standard_EXPORT Handle(StepShape_Edge) Edge() const;
+  Standard_EXPORT occ::handle<StepShape_Edge> Edge() const;
 
   //! returns Value as a Path (Null if another type)
-  Standard_EXPORT Handle(StepShape_Path) Path() const;
+  Standard_EXPORT occ::handle<StepShape_Path> Path() const;
 
   //! returns Value as a Face (Null if another type)
-  Standard_EXPORT Handle(StepShape_Face) Face() const;
+  Standard_EXPORT occ::handle<StepShape_Face> Face() const;
 
   //! returns Value as a FaceBound (Null if another type)
-  Standard_EXPORT Handle(StepShape_FaceBound) FaceBound() const;
+  Standard_EXPORT occ::handle<StepShape_FaceBound> FaceBound() const;
 
   //! returns Value as a ClosedShell (Null if another type)
-  Standard_EXPORT Handle(StepShape_ClosedShell) ClosedShell() const;
+  Standard_EXPORT occ::handle<StepShape_ClosedShell> ClosedShell() const;
 
   //! returns Value as a OpenShell (Null if another type)
-  Standard_EXPORT Handle(StepShape_OpenShell) OpenShell() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepShape_OpenShell> OpenShell() const;
 };
 
 #endif // _StepShape_ReversibleTopologyItem_HeaderFile

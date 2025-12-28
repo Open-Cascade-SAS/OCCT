@@ -26,31 +26,32 @@
 #include <Adaptor3d_TopolTool.hxx>
 #include <IntPatch_ArcFunction.hxx>
 #include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
-#include <IntPatch_SequenceOfPathPointOfTheSOnBounds.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IntPatch_TheSegmentOfTheSOnBounds.hxx>
-#include <IntPatch_SequenceOfSegmentOfTheSOnBounds.hxx>
 
-#define TheVertex Handle(Adaptor3d_HVertex)
+#define TheVertex occ::handle<Adaptor3d_HVertex>
 #define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_Curve2d)
+#define TheArc occ::handle<Adaptor2d_Curve2d>
 #define TheArc_hxx <Adaptor2d_Curve2d.hxx>
 #define TheArcTool IntPatch_HCurve2dTool
 #define TheArcTool_hxx <IntPatch_HCurve2dTool.hxx>
 #define TheSOBTool IntPatch_HInterTool
 #define TheSOBTool_hxx <IntPatch_HInterTool.hxx>
-#define Handle_TheTopolTool Handle(Adaptor3d_TopolTool)
+#define Handle_TheTopolTool occ::handle<Adaptor3d_TopolTool>
 #define TheTopolTool Adaptor3d_TopolTool
 #define TheTopolTool_hxx <Adaptor3d_TopolTool.hxx>
 #define TheFunction IntPatch_ArcFunction
 #define TheFunction_hxx <IntPatch_ArcFunction.hxx>
 #define IntStart_ThePathPoint IntPatch_ThePathPointOfTheSOnBounds
 #define IntStart_ThePathPoint_hxx <IntPatch_ThePathPointOfTheSOnBounds.hxx>
-#define IntStart_SequenceOfPathPoint IntPatch_SequenceOfPathPointOfTheSOnBounds
-#define IntStart_SequenceOfPathPoint_hxx <IntPatch_SequenceOfPathPointOfTheSOnBounds.hxx>
+#define IntStart_SequenceOfPathPoint NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds>
+#define IntStart_SequenceOfPathPoint_hxx                                                           \
+  <NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds>.hxx>
 #define IntStart_TheSegment IntPatch_TheSegmentOfTheSOnBounds
 #define IntStart_TheSegment_hxx <IntPatch_TheSegmentOfTheSOnBounds.hxx>
-#define IntStart_SequenceOfSegment IntPatch_SequenceOfSegmentOfTheSOnBounds
-#define IntStart_SequenceOfSegment_hxx <IntPatch_SequenceOfSegmentOfTheSOnBounds.hxx>
+#define IntStart_SequenceOfSegment NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>
+#define IntStart_SequenceOfSegment_hxx                                                             \
+  <NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>.hxx>
 #define IntStart_SearchOnBoundaries IntPatch_TheSOnBounds
 #define IntStart_SearchOnBoundaries_hxx <IntPatch_TheSOnBounds.hxx>
 #include <IntStart_SearchOnBoundaries.gxx>

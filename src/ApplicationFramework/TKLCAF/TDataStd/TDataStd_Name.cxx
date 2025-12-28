@@ -31,11 +31,11 @@ const Standard_GUID& TDataStd_Name::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_Name) SetAttr(const TDF_Label&                  label,
-                                     const TCollection_ExtendedString& theString,
-                                     const Standard_GUID&              theGuid)
+static occ::handle<TDataStd_Name> SetAttr(const TDF_Label&                  label,
+                                          const TCollection_ExtendedString& theString,
+                                          const Standard_GUID&              theGuid)
 {
-  Handle(TDataStd_Name) N;
+  occ::handle<TDataStd_Name> N;
   if (!label.FindAttribute(theGuid, N))
   {
     N = new TDataStd_Name();
@@ -48,8 +48,8 @@ static Handle(TDataStd_Name) SetAttr(const TDF_Label&                  label,
 
 //=================================================================================================
 
-Handle(TDataStd_Name) TDataStd_Name::Set(const TDF_Label&                  label,
-                                         const TCollection_ExtendedString& theString)
+occ::handle<TDataStd_Name> TDataStd_Name::Set(const TDF_Label&                  label,
+                                              const TCollection_ExtendedString& theString)
 {
   return SetAttr(label, theString, GetID());
 }
@@ -59,9 +59,9 @@ Handle(TDataStd_Name) TDataStd_Name::Set(const TDF_Label&                  label
 // purpose  : Set user defined attribute
 //=======================================================================
 
-Handle(TDataStd_Name) TDataStd_Name::Set(const TDF_Label&                  label,
-                                         const Standard_GUID&              theGuid,
-                                         const TCollection_ExtendedString& theString)
+occ::handle<TDataStd_Name> TDataStd_Name::Set(const TDF_Label&                  label,
+                                              const Standard_GUID&              theGuid,
+                                              const TCollection_ExtendedString& theString)
 {
   return SetAttr(label, theString, theGuid);
 }
@@ -110,7 +110,7 @@ Standard_OStream& TDataStd_Name::Dump(Standard_OStream& anOS) const
 {
   TDF_Attribute::Dump(anOS);
   anOS << " Name=|" << myString << "|";
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid << std::endl;
   return anOS;

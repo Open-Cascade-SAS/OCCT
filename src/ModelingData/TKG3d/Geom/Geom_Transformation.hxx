@@ -24,8 +24,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
-DEFINE_STANDARD_HANDLE(Geom_Transformation, Standard_Transient)
-
 //! Describes how to construct the following elementary transformations
 //! - translations,
 //! - rotations,
@@ -89,17 +87,11 @@ public:
   //! Makes the transformation into a rotation.
   //! A1 is the axis rotation and Ang is the angular value
   //! of the rotation in radians.
-  void SetRotation(const gp_Ax1& theA1, const Standard_Real theAng)
-  {
-    gpTrsf.SetRotation(theA1, theAng);
-  }
+  void SetRotation(const gp_Ax1& theA1, const double theAng) { gpTrsf.SetRotation(theA1, theAng); }
 
   //! Makes the transformation into a scale. P is the center of
   //! the scale and S is the scaling value.
-  void SetScale(const gp_Pnt& thePnt, const Standard_Real theScale)
-  {
-    gpTrsf.SetScale(thePnt, theScale);
-  }
+  void SetScale(const gp_Pnt& thePnt, const double theScale) { gpTrsf.SetScale(thePnt, theScale); }
 
   //! Makes a transformation allowing passage from the coordinate
   //! system "FromSystem1" to the coordinate system "ToSystem2".
@@ -141,14 +133,14 @@ public:
   //! Checks whether this transformation is an indirect
   //! transformation: returns true if the determinant of the
   //! matrix of the vectorial part of the transformation is less than 0.
-  Standard_Boolean IsNegative() const { return gpTrsf.IsNegative(); }
+  bool IsNegative() const { return gpTrsf.IsNegative(); }
 
   //! Returns the nature of this transformation as a value
   //! of the gp_TrsfForm enumeration.
   gp_TrsfForm Form() const { return gpTrsf.Form(); }
 
   //! Returns the scale value of the transformation.
-  Standard_Real ScaleFactor() const { return gpTrsf.ScaleFactor(); }
+  double ScaleFactor() const { return gpTrsf.ScaleFactor(); }
 
   //! Returns a non transient copy of <me>.
   const gp_Trsf& Trsf() const { return gpTrsf; }
@@ -157,10 +149,7 @@ public:
   //! It is a 3 rows X 4 columns matrix.
   //!
   //! Raised if Row < 1 or Row > 3 or Col < 1 or Col > 4
-  Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const
-  {
-    return gpTrsf.Value(theRow, theCol);
-  }
+  double Value(const int theRow, const int theCol) const { return gpTrsf.Value(theRow, theCol); }
 
   //! Raised if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from
@@ -170,17 +159,20 @@ public:
   //! Raised if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from
   //! package gp.
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Transformation) Inverted() const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Transformation> Inverted() const;
 
   //! Computes the transformation composed with Other and <me>.
   //! <me> * Other.
   //! Returns a new transformation
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Transformation) Multiplied(
-    const Handle(Geom_Transformation)& Other) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Transformation> Multiplied(
+    const occ::handle<Geom_Transformation>& Other) const;
 
   //! Computes the transformation composed with Other and <me> .
   //! <me> = <me> * Other.
-  void Multiply(const Handle(Geom_Transformation)& theOther) { gpTrsf.Multiply(theOther->Trsf()); }
+  void Multiply(const occ::handle<Geom_Transformation>& theOther)
+  {
+    gpTrsf.Multiply(theOther->Trsf());
+  }
 
   //! Computes the following composition of transformations
   //! if N > 0  <me> * <me> * .......* <me>.
@@ -188,27 +180,26 @@ public:
   //! if N < 0  <me>.Invert() * .........* <me>.Invert()
   //!
   //! Raised if N < 0 and if the transformation is not inversible
-  void Power(const Standard_Integer N) { gpTrsf.Power(N); }
+  void Power(const int N) { gpTrsf.Power(N); }
 
   //! Raised if N < 0 and if the transformation is not inversible
-  Standard_EXPORT Handle(Geom_Transformation) Powered(const Standard_Integer N) const;
+  Standard_EXPORT occ::handle<Geom_Transformation> Powered(const int N) const;
 
   //! Computes the matrix of the transformation composed with
   //! <me> and Other. <me> = Other * <me>
-  Standard_EXPORT void PreMultiply(const Handle(Geom_Transformation)& Other);
+  Standard_EXPORT void PreMultiply(const occ::handle<Geom_Transformation>& Other);
 
   //! Applies the transformation <me> to the triplet {X, Y, Z}.
-  void Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
+  void Transforms(double& theX, double& theY, double& theZ) const
   {
     gpTrsf.Transforms(theX, theY, theZ);
   }
 
   //! Creates a new object which is a copy of this transformation.
-  Standard_EXPORT Handle(Geom_Transformation) Copy() const;
+  Standard_EXPORT occ::handle<Geom_Transformation> Copy() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   gp_Trsf gpTrsf;

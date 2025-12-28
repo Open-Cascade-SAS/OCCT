@@ -25,8 +25,8 @@
 
 Extrema_ExtSS::Extrema_ExtSS()
     : myS2(NULL),
-      myDone(Standard_False),
-      myIsPar(Standard_False),
+      myDone(false),
+      myIsPar(false),
       myuinf1(0.0),
       myusup1(0.0),
       myvinf1(0.0),
@@ -43,8 +43,8 @@ Extrema_ExtSS::Extrema_ExtSS()
 
 Extrema_ExtSS::Extrema_ExtSS(const Adaptor3d_Surface& S1,
                              const Adaptor3d_Surface& S2,
-                             const Standard_Real      TolS1,
-                             const Standard_Real      TolS2)
+                             const double             TolS1,
+                             const double             TolS2)
 
 {
   Initialize(S2,
@@ -64,16 +64,16 @@ Extrema_ExtSS::Extrema_ExtSS(const Adaptor3d_Surface& S1,
 
 Extrema_ExtSS::Extrema_ExtSS(const Adaptor3d_Surface& S1,
                              const Adaptor3d_Surface& S2,
-                             const Standard_Real      Uinf1,
-                             const Standard_Real      Usup1,
-                             const Standard_Real      Vinf1,
-                             const Standard_Real      Vsup1,
-                             const Standard_Real      Uinf2,
-                             const Standard_Real      Usup2,
-                             const Standard_Real      Vinf2,
-                             const Standard_Real      Vsup2,
-                             const Standard_Real      TolS1,
-                             const Standard_Real      TolS2)
+                             const double             Uinf1,
+                             const double             Usup1,
+                             const double             Vinf1,
+                             const double             Vsup1,
+                             const double             Uinf2,
+                             const double             Usup2,
+                             const double             Vinf2,
+                             const double             Vsup2,
+                             const double             TolS1,
+                             const double             TolS2)
 
 {
   Initialize(S2, Uinf2, Usup2, Vinf2, Vsup2, TolS2);
@@ -81,14 +81,14 @@ Extrema_ExtSS::Extrema_ExtSS(const Adaptor3d_Surface& S1,
 }
 
 void Extrema_ExtSS::Initialize(const Adaptor3d_Surface& S2,
-                               const Standard_Real      Uinf2,
-                               const Standard_Real      Usup2,
-                               const Standard_Real      Vinf2,
-                               const Standard_Real      Vsup2,
-                               const Standard_Real      TolS2)
+                               const double             Uinf2,
+                               const double             Usup2,
+                               const double             Vinf2,
+                               const double             Vsup2,
+                               const double             TolS2)
 {
   myS2    = &S2;
-  myIsPar = Standard_False;
+  myIsPar = false;
   myuinf2 = Uinf2;
   myusup2 = Usup2;
   myvinf2 = Vinf2;
@@ -98,11 +98,11 @@ void Extrema_ExtSS::Initialize(const Adaptor3d_Surface& S2,
 }
 
 void Extrema_ExtSS::Perform(const Adaptor3d_Surface& S1,
-                            const Standard_Real      Uinf1,
-                            const Standard_Real      Usup1,
-                            const Standard_Real      Vinf1,
-                            const Standard_Real      Vsup1,
-                            const Standard_Real      TolS1)
+                            const double             Uinf1,
+                            const double             Usup1,
+                            const double             Vinf1,
+                            const double             Vsup1,
+                            const double             TolS1)
 {
   myuinf1 = Uinf1;
   myusup1 = Usup1;
@@ -112,9 +112,9 @@ void Extrema_ExtSS::Perform(const Adaptor3d_Surface& S1,
   myPOnS1.Clear();
   myPOnS2.Clear();
   mySqDist.Clear();
-  Standard_Integer       i;
-  GeomAbs_SurfaceType    myS1type = S1.GetType();
-  const Standard_Integer NbU = 20, NbV = 20;
+  int                 i;
+  GeomAbs_SurfaceType myS1type = S1.GetType();
+  const int           NbU = 20, NbV = 20;
 
   switch (myS1type)
   {
@@ -132,10 +132,10 @@ void Extrema_ExtSS::Perform(const Adaptor3d_Surface& S1,
           myDone = Ext.IsDone();
           if (myDone)
           {
-            Standard_Integer NbExt = Ext.NbExt();
-            Standard_Real    U1, V1, U2, V2;
-            Extrema_POnSurf  PS1;
-            Extrema_POnSurf  PS2;
+            int             NbExt = Ext.NbExt();
+            double          U1, V1, U2, V2;
+            Extrema_POnSurf PS1;
+            Extrema_POnSurf PS2;
             for (i = 1; i <= NbExt; i++)
             {
               PS1 = Ext.PointOnS1(i);
@@ -173,10 +173,10 @@ void Extrema_ExtSS::Perform(const Adaptor3d_Surface& S1,
       myDone = Ext.IsDone();
       if (myDone)
       {
-        Standard_Integer NbExt = Ext.NbExt();
-        Standard_Real    U1, V1, U2, V2;
-        Extrema_POnSurf  PS1;
-        Extrema_POnSurf  PS2;
+        int             NbExt = Ext.NbExt();
+        double          U1, V1, U2, V2;
+        Extrema_POnSurf PS1;
+        Extrema_POnSurf PS2;
         for (i = 1; i <= NbExt; i++)
         {
           PS1 = Ext.PointOnS1(i);
@@ -217,10 +217,10 @@ void Extrema_ExtSS::Perform(const Adaptor3d_Surface& S1,
     }
     else
     {
-      Standard_Integer NbExt = myExtElSS.NbExt();
-      Standard_Real    U1, V1, U2, V2;
-      Extrema_POnSurf  PS1;
-      Extrema_POnSurf  PS2;
+      int             NbExt = myExtElSS.NbExt();
+      double          U1, V1, U2, V2;
+      Extrema_POnSurf PS1;
+      Extrema_POnSurf PS2;
       for (i = 1; i <= NbExt; i++)
       {
         myExtElSS.Points(i, PS1, PS2);
@@ -239,19 +239,19 @@ void Extrema_ExtSS::Perform(const Adaptor3d_Surface& S1,
   }
 }
 
-Standard_Boolean Extrema_ExtSS::IsDone() const
+bool Extrema_ExtSS::IsDone() const
 {
   return myDone;
 }
 
-Standard_Boolean Extrema_ExtSS::IsParallel() const
+bool Extrema_ExtSS::IsParallel() const
 {
   if (!IsDone())
     throw StdFail_NotDone();
   return myIsPar;
 }
 
-Standard_Real Extrema_ExtSS::SquareDistance(const Standard_Integer N) const
+double Extrema_ExtSS::SquareDistance(const int N) const
 {
   if (N < 1 || N > NbExt())
   {
@@ -261,14 +261,14 @@ Standard_Real Extrema_ExtSS::SquareDistance(const Standard_Integer N) const
   return mySqDist.Value(N);
 }
 
-Standard_Integer Extrema_ExtSS::NbExt() const
+int Extrema_ExtSS::NbExt() const
 {
   if (!IsDone())
     throw StdFail_NotDone();
   return mySqDist.Length();
 }
 
-void Extrema_ExtSS::Points(const Standard_Integer N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const
+void Extrema_ExtSS::Points(const int N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const
 {
   if (N < 1 || N > NbExt())
   {

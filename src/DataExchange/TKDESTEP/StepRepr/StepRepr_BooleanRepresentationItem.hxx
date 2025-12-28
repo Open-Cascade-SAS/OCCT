@@ -20,26 +20,23 @@
 #include <StepRepr_RepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-class StepRepr_BooleanRepresentationItem;
-DEFINE_STANDARD_HANDLE(StepRepr_BooleanRepresentationItem, StepRepr_RepresentationItem)
-
 class StepRepr_BooleanRepresentationItem : public StepRepr_RepresentationItem
 {
 public:
   //! Returns a BooleanRepresentationItem
   Standard_EXPORT StepRepr_BooleanRepresentationItem();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
-                            const Standard_Boolean                  theValue);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
+                            const bool                                   theValue);
 
-  inline void SetValue(const Standard_Boolean theValue) { value = theValue; }
+  inline void SetValue(const bool theValue) { value = theValue; }
 
-  inline Standard_Boolean Value() const { return value; }
+  inline bool Value() const { return value; }
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_BooleanRepresentationItem, StepRepr_RepresentationItem)
 
 private:
-  Standard_Boolean value;
+  bool value;
 };
 
 #endif // _StepRepr_BooleanRepresentationItem_HeaderFile

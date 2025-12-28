@@ -23,9 +23,8 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Real.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <IntCurvesFace_Intersector.hxx>
@@ -44,7 +43,7 @@ public:
 
   Standard_EXPORT IntCurvesFace_ShapeIntersector();
 
-  Standard_EXPORT void Load(const TopoDS_Shape& Sh, const Standard_Real Tol);
+  Standard_EXPORT void Load(const TopoDS_Shape& Sh, const double Tol);
 
   //! Perform the intersection between the
   //! segment L and the loaded shape.
@@ -54,7 +53,7 @@ public:
   //!
   //! For an infinite line PInf and PSup can be
   //! +/- RealLast.
-  Standard_EXPORT void Perform(const gp_Lin& L, const Standard_Real PInf, const Standard_Real PSup);
+  Standard_EXPORT void Perform(const gp_Lin& L, const double PInf, const double PSup);
 
   //! Perform the intersection between the
   //! segment L and the loaded shape.
@@ -64,58 +63,56 @@ public:
   //!
   //! For an infinite line PInf and PSup can be
   //! +/- RealLast.
-  Standard_EXPORT void PerformNearest(const gp_Lin&       L,
-                                      const Standard_Real PInf,
-                                      const Standard_Real PSup);
+  Standard_EXPORT void PerformNearest(const gp_Lin& L, const double PInf, const double PSup);
 
   //! same method for a HCurve from Adaptor3d.
   //! PInf an PSup can also be -INF and +INF.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)& HCu,
-                               const Standard_Real            PInf,
-                               const Standard_Real            PSup);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>& HCu,
+                               const double                        PInf,
+                               const double                        PSup);
 
   //! True when the intersection has been computed.
-  Standard_Boolean IsDone() const { return myIsDone; }
+  bool IsDone() const { return myIsDone; }
 
   //! Returns the number of the intersection points
-  Standard_Integer NbPnt() const { return myIndexPt.Length(); }
+  int NbPnt() const { return myIndexPt.Length(); }
 
   //! Returns the U parameter of the ith intersection point
   //! on the surface.
-  Standard_Real UParameter(const Standard_Integer I) const
+  double UParameter(const int I) const
   {
-    Handle(IntCurvesFace_Intersector) anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
+    occ::handle<IntCurvesFace_Intersector> anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
     return anIntAdaptor->UParameter(myIndexIntPnt(myIndexPt(I)));
   }
 
   //! Returns the V parameter of the ith intersection point
   //! on the surface.
-  Standard_Real VParameter(const Standard_Integer I) const
+  double VParameter(const int I) const
   {
-    Handle(IntCurvesFace_Intersector) anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
+    occ::handle<IntCurvesFace_Intersector> anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
     return anIntAdaptor->VParameter(myIndexIntPnt(myIndexPt(I)));
   }
 
   //! Returns the parameter of the ith intersection point
   //! on the line.
-  Standard_Real WParameter(const Standard_Integer I) const
+  double WParameter(const int I) const
   {
-    Handle(IntCurvesFace_Intersector) anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
+    occ::handle<IntCurvesFace_Intersector> anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
     return anIntAdaptor->WParameter(myIndexIntPnt(myIndexPt(I)));
   }
 
   //! Returns the geometric point of the ith intersection
   //! between the line and the surface.
-  const gp_Pnt& Pnt(const Standard_Integer I) const
+  const gp_Pnt& Pnt(const int I) const
   {
-    Handle(IntCurvesFace_Intersector) anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
+    occ::handle<IntCurvesFace_Intersector> anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
     return anIntAdaptor->Pnt(myIndexIntPnt(myIndexPt(I)));
   }
 
   //! Returns the ith transition of the line on the surface.
-  IntCurveSurface_TransitionOnCurve Transition(const Standard_Integer I) const
+  IntCurveSurface_TransitionOnCurve Transition(const int I) const
   {
-    Handle(IntCurvesFace_Intersector) anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
+    occ::handle<IntCurvesFace_Intersector> anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
     return anIntAdaptor->Transition(myIndexIntPnt(myIndexPt(I)));
   }
 
@@ -124,17 +121,17 @@ public:
   //! ( the point is in the face)
   //! or TopAbs_ON
   //! ( the point is on a boundary of the face).
-  TopAbs_State State(const Standard_Integer I) const
+  TopAbs_State State(const int I) const
   {
-    Handle(IntCurvesFace_Intersector) anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
+    occ::handle<IntCurvesFace_Intersector> anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
     return anIntAdaptor->State(myIndexIntPnt(myIndexPt(I)));
   }
 
   //! Returns the significant face used to determine
   //! the intersection.
-  const TopoDS_Face& Face(const Standard_Integer I) const
+  const TopoDS_Face& Face(const int I) const
   {
-    Handle(IntCurvesFace_Intersector) anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
+    occ::handle<IntCurvesFace_Intersector> anIntAdaptor = myIntersector(myIndexFace(myIndexPt(I)));
     return anIntAdaptor->Face();
   }
 
@@ -145,15 +142,15 @@ public:
   Standard_EXPORT virtual ~IntCurvesFace_ShapeIntersector();
 
 private:
-  Standard_Boolean                                        myIsDone;
-  Standard_Integer                                        myNbFaces;
-  TColStd_Array1OfInteger                                 myPtrNums;
-  TColStd_Array1OfInteger                                 myPtrIndexNums;
-  NCollection_Sequence<Handle(IntCurvesFace_Intersector)> myIntersector;
-  TColStd_SequenceOfInteger                               myIndexPt;
-  TColStd_SequenceOfInteger                               myIndexFace;
-  TColStd_SequenceOfInteger                               myIndexIntPnt;
-  TColStd_SequenceOfReal                                  myIndexPar;
+  bool                                                         myIsDone;
+  int                                                          myNbFaces;
+  NCollection_Array1<int>                                      myPtrNums;
+  NCollection_Array1<int>                                      myPtrIndexNums;
+  NCollection_Sequence<occ::handle<IntCurvesFace_Intersector>> myIntersector;
+  NCollection_Sequence<int>                                    myIndexPt;
+  NCollection_Sequence<int>                                    myIndexFace;
+  NCollection_Sequence<int>                                    myIndexIntPnt;
+  NCollection_Sequence<double>                                 myIndexPar;
 };
 
 #endif // _IntCurvesFace_ShapeIntersector_HeaderFile

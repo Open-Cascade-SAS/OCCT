@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Transfer_HSequenceOfFinder.hxx>
+#include <Transfer_Finder.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Transfer_TransferIterator.hxx>
 
 class Standard_NoSuchObject;
@@ -39,37 +41,37 @@ public:
   //! Creates an empty Iterator
   //! if withstarts is True, each Binder to be iterated will
   //! be associated to its corresponding Starting Object
-  Standard_EXPORT Transfer_IteratorOfProcessForFinder(const Standard_Boolean withstarts);
+  Standard_EXPORT Transfer_IteratorOfProcessForFinder(const bool withstarts);
 
   //! Adds a Binder to the iteration list (construction)
   //! with no corresponding Starting Object
   //! (note that Result is brought by Binder)
-  Standard_EXPORT void Add(const Handle(Transfer_Binder)& binder);
+  Standard_EXPORT void Add(const occ::handle<Transfer_Binder>& binder);
 
   //! Adds a Binder to the iteration list, associated with
   //! its corresponding Starting Object "start"
   //! Starting Object is ignored if not required at
   //! Creation time
-  Standard_EXPORT void Add(const Handle(Transfer_Binder)& binder,
-                           const Handle(Transfer_Finder)& start);
+  Standard_EXPORT void Add(const occ::handle<Transfer_Binder>& binder,
+                           const occ::handle<Transfer_Finder>& start);
 
   //! After having added all items, keeps or rejects items
   //! which are attached to starting data given by <only>
   //! <keep> = True (D) : keeps. <keep> = False : rejects
   //! Does nothing if <withstarts> was False
-  Standard_EXPORT void Filter(const Handle(Transfer_HSequenceOfFinder)& list,
-                              const Standard_Boolean                    keep = Standard_True);
+  Standard_EXPORT void Filter(
+    const occ::handle<NCollection_HSequence<occ::handle<Transfer_Finder>>>& list,
+    const bool                                                              keep = true);
 
   //! Returns True if Starting Object is available
   //! (defined at Creation Time)
-  Standard_EXPORT Standard_Boolean HasStarting() const;
+  Standard_EXPORT bool HasStarting() const;
 
   //! Returns corresponding Starting Object
-  Standard_EXPORT const Handle(Transfer_Finder)& Starting() const;
+  Standard_EXPORT const occ::handle<Transfer_Finder>& Starting() const;
 
-protected:
 private:
-  Handle(Transfer_HSequenceOfFinder) thestarts;
+  occ::handle<NCollection_HSequence<occ::handle<Transfer_Finder>>> thestarts;
 };
 
 #endif // _Transfer_IteratorOfProcessForFinder_HeaderFile

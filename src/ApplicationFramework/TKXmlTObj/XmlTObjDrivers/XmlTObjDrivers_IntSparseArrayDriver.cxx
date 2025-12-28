@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_IntSparseArrayDriver, XmlMDF_ADriver)
 //=================================================================================================
 
 XmlTObjDrivers_IntSparseArrayDriver::XmlTObjDrivers_IntSparseArrayDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : XmlMDF_ADriver(theMessageDriver, NULL)
 {
 }
@@ -40,7 +40,7 @@ XmlTObjDrivers_IntSparseArrayDriver::XmlTObjDrivers_IntSparseArrayDriver(
 // purpose  : Creates a new attribute
 //=======================================================================
 
-Handle(TDF_Attribute) XmlTObjDrivers_IntSparseArrayDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlTObjDrivers_IntSparseArrayDriver::NewEmpty() const
 {
   return new TObj_TIntSparseArray;
 }
@@ -51,15 +51,15 @@ Handle(TDF_Attribute) XmlTObjDrivers_IntSparseArrayDriver::NewEmpty() const
 //           into <theTarget>.
 //=======================================================================
 
-Standard_Boolean XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                            const Handle(TDF_Attribute)& theTarget,
-                                                            XmlObjMgt_RRelocationTable&) const
+bool XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
+                                                XmlObjMgt_RRelocationTable&) const
 {
-  const XmlObjMgt_Element&     anElement = theSource;
-  Handle(TObj_TIntSparseArray) aTarget   = Handle(TObj_TIntSparseArray)::DownCast(theTarget);
+  const XmlObjMgt_Element&          anElement = theSource;
+  occ::handle<TObj_TIntSparseArray> aTarget   = occ::down_cast<TObj_TIntSparseArray>(theTarget);
 
   // get pairs (ID, value) while ID != 0
-  Standard_Integer        i = 1;
+  int                     i = 1;
   TCollection_AsciiString anItemID;
   TCollection_AsciiString anIdStr = TCollection_AsciiString(ITEM_ID) + TCollection_AsciiString(i);
   anItemID                        = anElement.getAttribute(anIdStr.ToCString());
@@ -71,13 +71,13 @@ Standard_Boolean XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Pers
     if (anItemValue.IsIntegerValue())
     {
       // store the value in the target array
-      aTarget->SetDoBackup(Standard_False);
+      aTarget->SetDoBackup(false);
       aTarget->SetValue(anItemID.IntegerValue(), anItemValue.IntegerValue());
-      aTarget->SetDoBackup(Standard_True);
+      aTarget->SetDoBackup(true);
     }
     i++;
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -86,25 +86,25 @@ Standard_Boolean XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Pers
 //           into <theTarget>
 //=======================================================================
 
-void XmlTObjDrivers_IntSparseArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                                XmlObjMgt_Persistent&        theTarget,
+void XmlTObjDrivers_IntSparseArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                                XmlObjMgt_Persistent&             theTarget,
                                                 XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TObj_TIntSparseArray) aSource = Handle(TObj_TIntSparseArray)::DownCast(theSource);
+  occ::handle<TObj_TIntSparseArray> aSource = occ::down_cast<TObj_TIntSparseArray>(theSource);
 
   // put only non-null values as pairs (ID, value)
   // terminate the list by ID=0
   TObj_TIntSparseArray::Iterator anIt = aSource->GetIterator();
-  Standard_Integer               i    = 1;
+  int                            i    = 1;
   for (; anIt.More(); anIt.Next())
   {
-    Standard_Integer aValue = anIt.Value();
+    int aValue = anIt.Value();
     if (aValue == 0)
       continue;
     TCollection_AsciiString anIdStr = TCollection_AsciiString(ITEM_ID) + TCollection_AsciiString(i);
     TCollection_AsciiString aStrIndex =
       TCollection_AsciiString(ITEM_VALUE) + TCollection_AsciiString(i);
-    theTarget.Element().setAttribute(anIdStr.ToCString(), (Standard_Integer)anIt.Index());
+    theTarget.Element().setAttribute(anIdStr.ToCString(), (int)anIt.Index());
     theTarget.Element().setAttribute(aStrIndex.ToCString(), anIt.Value());
     i++;
   }

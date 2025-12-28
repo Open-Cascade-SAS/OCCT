@@ -22,16 +22,16 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedWire, StepVisual_TessellatedIte
 
 StepVisual_TessellatedWire::StepVisual_TessellatedWire()
 {
-  myHasGeometricModelLink = Standard_False;
+  myHasGeometricModelLink = false;
 }
 
 //=================================================================================================
 
 void StepVisual_TessellatedWire::Init(
-  const Handle(TCollection_HAsciiString)&                    theRepresentationItem_Name,
-  const Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex)& theItems,
-  const Standard_Boolean                                     theHasGeometricModelLink,
-  const StepVisual_PathOrCompositeCurve&                     theGeometricModelLink)
+  const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+  const occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>>& theItems,
+  const bool                             theHasGeometricModelLink,
+  const StepVisual_PathOrCompositeCurve& theGeometricModelLink)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -50,7 +50,8 @@ void StepVisual_TessellatedWire::Init(
 
 //=================================================================================================
 
-Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex) StepVisual_TessellatedWire::Items() const
+occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>> StepVisual_TessellatedWire::
+  Items() const
 {
   return myItems;
 }
@@ -58,14 +59,14 @@ Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex) StepVisual_TessellatedWire::
 //=================================================================================================
 
 void StepVisual_TessellatedWire::SetItems(
-  const Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex)& theItems)
+  const occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>>& theItems)
 {
   myItems = theItems;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedWire::NbItems() const
+int StepVisual_TessellatedWire::NbItems() const
 {
   if (myItems.IsNull())
   {
@@ -77,7 +78,7 @@ Standard_Integer StepVisual_TessellatedWire::NbItems() const
 //=================================================================================================
 
 const StepVisual_TessellatedEdgeOrVertex& StepVisual_TessellatedWire::ItemsValue(
-  const Standard_Integer theNum) const
+  const int theNum) const
 {
   return myItems->Value(theNum);
 }
@@ -99,7 +100,7 @@ void StepVisual_TessellatedWire::SetGeometricModelLink(
 
 //=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedWire::HasGeometricModelLink() const
+bool StepVisual_TessellatedWire::HasGeometricModelLink() const
 {
   return myHasGeometricModelLink;
 }

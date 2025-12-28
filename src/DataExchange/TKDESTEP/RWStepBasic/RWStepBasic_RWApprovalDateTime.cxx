@@ -21,10 +21,11 @@
 
 RWStepBasic_RWApprovalDateTime::RWStepBasic_RWApprovalDateTime() {}
 
-void RWStepBasic_RWApprovalDateTime::ReadStep(const Handle(StepData_StepReaderData)&    data,
-                                              const Standard_Integer                    num,
-                                              Handle(Interface_Check)&                  ach,
-                                              const Handle(StepBasic_ApprovalDateTime)& ent) const
+void RWStepBasic_RWApprovalDateTime::ReadStep(
+  const occ::handle<StepData_StepReaderData>&    data,
+  const int                                      num,
+  occ::handle<Interface_Check>&                  ach,
+  const occ::handle<StepBasic_ApprovalDateTime>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,10 +36,10 @@ void RWStepBasic_RWApprovalDateTime::ReadStep(const Handle(StepData_StepReaderDa
   // --- own fields
 
   StepBasic_DateTimeSelect dts;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "date_time", ach, dts);
 
-  Handle(StepBasic_Approval) ap;
+  occ::handle<StepBasic_Approval> ap;
   // szv#4:S4163:12Mar99 `stat1 =` not needed
   data->ReadEntity(num, 2, "dated_approval", ach, STANDARD_TYPE(StepBasic_Approval), ap);
 
@@ -47,8 +48,9 @@ void RWStepBasic_RWApprovalDateTime::ReadStep(const Handle(StepData_StepReaderDa
   ent->Init(dts, ap);
 }
 
-void RWStepBasic_RWApprovalDateTime::WriteStep(StepData_StepWriter&                      SW,
-                                               const Handle(StepBasic_ApprovalDateTime)& ent) const
+void RWStepBasic_RWApprovalDateTime::WriteStep(
+  StepData_StepWriter&                           SW,
+  const occ::handle<StepBasic_ApprovalDateTime>& ent) const
 {
 
   // --- own field : dimensions ---
@@ -57,8 +59,8 @@ void RWStepBasic_RWApprovalDateTime::WriteStep(StepData_StepWriter&             
   SW.Send(ent->DatedApproval());
 }
 
-void RWStepBasic_RWApprovalDateTime::Share(const Handle(StepBasic_ApprovalDateTime)& ent,
-                                           Interface_EntityIterator&                 iter) const
+void RWStepBasic_RWApprovalDateTime::Share(const occ::handle<StepBasic_ApprovalDateTime>& ent,
+                                           Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->DateTime().Value());

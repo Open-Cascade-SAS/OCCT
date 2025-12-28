@@ -41,7 +41,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Chamf3dDimension, PrsDim_Relation)
 //=================================================================================================
 
 PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&               aFShape,
-                                                 const Standard_Real               aVal,
+                                                 const double                      aVal,
                                                  const TCollection_ExtendedString& aText)
     : PrsDim_Relation()
 {
@@ -49,7 +49,7 @@ PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&            
   myVal               = aVal;
   myText              = aText;
   mySymbolPrs         = DsgPrs_AS_LASTAR;
-  myAutomaticPosition = Standard_True;
+  myAutomaticPosition = true;
 
   myArrowSize = myVal / 100.;
 }
@@ -57,11 +57,11 @@ PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&            
 //=================================================================================================
 
 PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&               aFShape,
-                                                 const Standard_Real               aVal,
+                                                 const double                      aVal,
                                                  const TCollection_ExtendedString& aText,
                                                  const gp_Pnt&                     aPosition,
                                                  const DsgPrs_ArrowSide            aSymbolPrs,
-                                                 const Standard_Real               anArrowSize)
+                                                 const double                      anArrowSize)
     : PrsDim_Relation()
 {
   myFShape    = aFShape;
@@ -70,28 +70,28 @@ PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&            
   myPosition  = aPosition;
   mySymbolPrs = aSymbolPrs;
   SetArrowSize(anArrowSize);
-  myAutomaticPosition = Standard_False;
+  myAutomaticPosition = false;
 }
 
 //=================================================================================================
 
-void PrsDim_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                      const Handle(Prs3d_Presentation)& aPresentation,
-                                      const Standard_Integer)
+void PrsDim_Chamf3dDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                      const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const int)
 {
   //----------------------------
   // Calcul du centre de la face
   //----------------------------
   BRepAdaptor_Surface surfAlgo(TopoDS::Face(myFShape));
-  Standard_Real       uFirst, uLast, vFirst, vLast;
-  uFirst             = surfAlgo.FirstUParameter();
-  uLast              = surfAlgo.LastUParameter();
-  vFirst             = surfAlgo.FirstVParameter();
-  vLast              = surfAlgo.LastVParameter();
-  Standard_Real uMoy = (uFirst + uLast) / 2;
-  Standard_Real vMoy = (vFirst + vLast) / 2;
-  gp_Pnt        apos;
-  gp_Vec        d1u, d1v;
+  double              uFirst, uLast, vFirst, vLast;
+  uFirst      = surfAlgo.FirstUParameter();
+  uLast       = surfAlgo.LastUParameter();
+  vFirst      = surfAlgo.FirstVParameter();
+  vLast       = surfAlgo.LastVParameter();
+  double uMoy = (uFirst + uLast) / 2;
+  double vMoy = (vFirst + vLast) / 2;
+  gp_Pnt apos;
+  gp_Vec d1u, d1v;
   surfAlgo.D1(uMoy, vMoy, apos, d1u, d1v);
   myPntAttach = apos;
 
@@ -116,9 +116,9 @@ void PrsDim_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
   else
   {
 
-    Handle(Geom_Line) dimLin    = new Geom_Line(myPntAttach, myDir);
-    Standard_Real     parcurpos = ElCLib::Parameter(dimLin->Lin(), myPosition);
-    curpos                      = ElCLib::Value(parcurpos, dimLin->Lin());
+    occ::handle<Geom_Line> dimLin    = new Geom_Line(myPntAttach, myDir);
+    double                 parcurpos = ElCLib::Parameter(dimLin->Lin(), myPosition);
+    curpos                           = ElCLib::Value(parcurpos, dimLin->Lin());
 
     if (curpos.Distance(myPntAttach) < 5.)
     {
@@ -129,8 +129,8 @@ void PrsDim_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
     myPosition = curpos;
   }
 
-  Handle(Prs3d_DimensionAspect) la  = myDrawer->DimensionAspect();
-  Handle(Prs3d_ArrowAspect)     arr = la->ArrowAspect();
+  occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
 
   //-------------------------------------------------
   // Calcul de la boite englobante du component pour
@@ -138,7 +138,7 @@ void PrsDim_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
   //-------------------------------------------------
   if (!myArrowSizeIsDefined)
   {
-    Standard_Real arrsize = myArrowSize;
+    double arrsize = myArrowSize;
     if ((myVal / 4) < arrsize)
       arrsize = myVal / 4;
     if (arrsize > 30.)
@@ -160,22 +160,22 @@ void PrsDim_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void PrsDim_Chamf3dDimension::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                               const Standard_Integer)
+void PrsDim_Chamf3dDimension::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                               const int)
 {
-  Handle(SelectMgr_EntityOwner)     own = new SelectMgr_EntityOwner(this, 7);
-  Handle(Select3D_SensitiveSegment) seg =
+  occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
+  occ::handle<Select3D_SensitiveSegment> seg =
     new Select3D_SensitiveSegment(own, myPntAttach, myPosition);
   aSelection->Add(seg);
 
   // Text
-  Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
-  Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
-                                                                myPosition.X(),
-                                                                myPosition.Y(),
-                                                                myPosition.Z(),
-                                                                myPosition.X() + size,
-                                                                myPosition.Y() + size,
-                                                                myPosition.Z() + size);
+  double                             size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+  occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
+                                                                     myPosition.X(),
+                                                                     myPosition.Y(),
+                                                                     myPosition.Z(),
+                                                                     myPosition.X() + size,
+                                                                     myPosition.Y() + size,
+                                                                     myPosition.Z() + size);
   aSelection->Add(box);
 }

@@ -22,8 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColGeom_Array2OfBezierSurface.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
 class Geom_BSplineSurface;
 class Geom_BezierSurface;
 
@@ -56,7 +57,7 @@ public:
   //! construct each individual Bezier surface (or all Bezier surfaces).
   //! Note: ParametricTolerance is not used.
   Standard_EXPORT GeomConvert_BSplineSurfaceToBezierSurface(
-    const Handle(Geom_BSplineSurface)& BasisSurface);
+    const occ::handle<Geom_BSplineSurface>& BasisSurface);
 
   //! Computes all the data needed to convert
   //! the patch of the BSpline surface BasisSurface
@@ -83,12 +84,12 @@ public:
   //! Raised if U2 - U1 <= ParametricTolerance or
   //! V2 - V1 <= ParametricTolerance.
   Standard_EXPORT GeomConvert_BSplineSurfaceToBezierSurface(
-    const Handle(Geom_BSplineSurface)& BasisSurface,
-    const Standard_Real                U1,
-    const Standard_Real                U2,
-    const Standard_Real                V1,
-    const Standard_Real                V2,
-    const Standard_Real                ParametricTolerance);
+    const occ::handle<Geom_BSplineSurface>& BasisSurface,
+    const double                            U1,
+    const double                            U2,
+    const double                            V1,
+    const double                            V2,
+    const double                            ParametricTolerance);
 
   //! Constructs and returns the Bezier surface of indices
   //! (UIndex, VIndex) to the patch grid computed on the
@@ -113,8 +114,7 @@ public:
   //! of columns in the patch grid computed on the
   //! BSpline surface analyzed by this algorithm (as
   //! returned by the function NbVPatches).
-  Standard_EXPORT Handle(Geom_BezierSurface) Patch(const Standard_Integer UIndex,
-                                                   const Standard_Integer VIndex);
+  Standard_EXPORT occ::handle<Geom_BezierSurface> Patch(const int UIndex, const int VIndex);
 
   //! Constructs all the Bezier surfaces whose data is
   //! computed by this algorithm, and loads them into the Surfaces table.
@@ -139,19 +139,19 @@ public:
   //! v parametric direction of the patch grid computed
   //! on the BSpline surface, analyzed by this algorithm
   //! (as given by the function NbVPatches) as column bounds.
-  Standard_EXPORT void Patches(TColGeom_Array2OfBezierSurface& Surfaces);
+  Standard_EXPORT void Patches(NCollection_Array2<occ::handle<Geom_BezierSurface>>& Surfaces);
 
   //! This methode returns the bspline's u-knots associated to
   //! the converted Patches
   //! Raised if the length of Curves is not equal to
   //! NbUPatches + 1
-  Standard_EXPORT void UKnots(TColStd_Array1OfReal& TKnots) const;
+  Standard_EXPORT void UKnots(NCollection_Array1<double>& TKnots) const;
 
   //! This methode returns the bspline's v-knots associated to
   //! the converted Patches
   //! Raised if the length of Curves is not equal to
   //! NbVPatches + 1
-  Standard_EXPORT void VKnots(TColStd_Array1OfReal& TKnots) const;
+  Standard_EXPORT void VKnots(NCollection_Array1<double>& TKnots) const;
 
   //! Returns the number of Bezier surfaces in the U direction.
   //! If at the creation time you have decomposed the basis Surface
@@ -161,7 +161,7 @@ public:
   //! If you have decomposed the whole basis B-spline surface the
   //! number of Bezier surfaces NbUPatches is equal to the number of
   //! UKnots less one.
-  Standard_EXPORT Standard_Integer NbUPatches() const;
+  Standard_EXPORT int NbUPatches() const;
 
   //! Returns the number of Bezier surfaces in the V direction.
   //! If at the creation time you have decomposed the basis surface
@@ -171,11 +171,10 @@ public:
   //! If you have decomposed the whole basis B-spline surface the
   //! number of Bezier surfaces NbVPatches is equal to the number of
   //! VKnots less one.
-  Standard_EXPORT Standard_Integer NbVPatches() const;
+  Standard_EXPORT int NbVPatches() const;
 
-protected:
 private:
-  Handle(Geom_BSplineSurface) mySurface;
+  occ::handle<Geom_BSplineSurface> mySurface;
 };
 
 #endif // _GeomConvert_BSplineSurfaceToBezierSurface_HeaderFile

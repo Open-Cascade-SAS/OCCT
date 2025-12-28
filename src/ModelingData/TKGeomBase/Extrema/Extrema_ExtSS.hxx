@@ -21,8 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <Extrema_ExtElSS.hxx>
-#include <Extrema_SequenceOfPOnSurf.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <NCollection_Sequence.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <Standard_Integer.hxx>
 class Adaptor3d_Surface;
@@ -41,77 +41,75 @@ public:
   //! It calculates all the distances between S1 and S2.
   Standard_EXPORT Extrema_ExtSS(const Adaptor3d_Surface& S1,
                                 const Adaptor3d_Surface& S2,
-                                const Standard_Real      TolS1,
-                                const Standard_Real      TolS2);
+                                const double             TolS1,
+                                const double             TolS2);
 
   //! It calculates all the distances between S1 and S2.
   Standard_EXPORT Extrema_ExtSS(const Adaptor3d_Surface& S1,
                                 const Adaptor3d_Surface& S2,
-                                const Standard_Real      Uinf1,
-                                const Standard_Real      Usup1,
-                                const Standard_Real      Vinf1,
-                                const Standard_Real      Vsup1,
-                                const Standard_Real      Uinf2,
-                                const Standard_Real      Usup2,
-                                const Standard_Real      Vinf2,
-                                const Standard_Real      Vsup2,
-                                const Standard_Real      TolS1,
-                                const Standard_Real      TolS2);
+                                const double             Uinf1,
+                                const double             Usup1,
+                                const double             Vinf1,
+                                const double             Vsup1,
+                                const double             Uinf2,
+                                const double             Usup2,
+                                const double             Vinf2,
+                                const double             Vsup2,
+                                const double             TolS1,
+                                const double             TolS2);
 
   //! Initializes the fields of the algorithm.
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& S2,
-                                  const Standard_Real      Uinf2,
-                                  const Standard_Real      Usup2,
-                                  const Standard_Real      Vinf2,
-                                  const Standard_Real      Vsup2,
-                                  const Standard_Real      TolS1);
+                                  const double             Uinf2,
+                                  const double             Usup2,
+                                  const double             Vinf2,
+                                  const double             Vsup2,
+                                  const double             TolS1);
 
   //! Computes the distances.
   //! An exception is raised if the fields have not been
   //! initialized.
   Standard_EXPORT void Perform(const Adaptor3d_Surface& S1,
-                               const Standard_Real      Uinf1,
-                               const Standard_Real      Usup1,
-                               const Standard_Real      Vinf1,
-                               const Standard_Real      Vsup1,
-                               const Standard_Real      TolS1);
+                               const double             Uinf1,
+                               const double             Usup1,
+                               const double             Vinf1,
+                               const double             Vsup1,
+                               const double             TolS1);
 
   //! Returns True if the distances are found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns True if the surfaces are parallel
-  Standard_EXPORT Standard_Boolean IsParallel() const;
+  Standard_EXPORT bool IsParallel() const;
 
   //! Returns the number of extremum distances.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Returns the value of the Nth resulting square distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
+  Standard_EXPORT double SquareDistance(const int N) const;
 
   //! Returns the point of the Nth resulting distance.
-  Standard_EXPORT void Points(const Standard_Integer N,
-                              Extrema_POnSurf&       P1,
-                              Extrema_POnSurf&       P2) const;
+  Standard_EXPORT void Points(const int N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const;
 
 private:
-  const Adaptor3d_Surface*  myS2;
-  Standard_Boolean          myDone;
-  Standard_Boolean          myIsPar;
-  Extrema_ExtElSS           myExtElSS;
-  Extrema_SequenceOfPOnSurf myPOnS1;
-  Extrema_SequenceOfPOnSurf myPOnS2;
-  Standard_Real             myuinf1;
-  Standard_Real             myusup1;
-  Standard_Real             myvinf1;
-  Standard_Real             myvsup1;
-  Standard_Real             myuinf2;
-  Standard_Real             myusup2;
-  Standard_Real             myvinf2;
-  Standard_Real             myvsup2;
-  Standard_Real             mytolS1;
-  Standard_Real             mytolS2;
-  TColStd_SequenceOfReal    mySqDist;
-  GeomAbs_SurfaceType       myStype;
+  const Adaptor3d_Surface*              myS2;
+  bool                                  myDone;
+  bool                                  myIsPar;
+  Extrema_ExtElSS                       myExtElSS;
+  NCollection_Sequence<Extrema_POnSurf> myPOnS1;
+  NCollection_Sequence<Extrema_POnSurf> myPOnS2;
+  double                                myuinf1;
+  double                                myusup1;
+  double                                myvinf1;
+  double                                myvsup1;
+  double                                myuinf2;
+  double                                myusup2;
+  double                                myvinf2;
+  double                                myvsup2;
+  double                                mytolS1;
+  double                                mytolS2;
+  NCollection_Sequence<double>          mySqDist;
+  GeomAbs_SurfaceType                   myStype;
 };
 
 #endif // _Extrema_ExtSS_HeaderFile

@@ -40,28 +40,27 @@ public:
   //! Instantiates error
   //! This is only used by OSD methods to instantiates an error code.
   //! No description is done for the programmer.
-  Standard_EXPORT void SetValue(const Standard_Integer         Errcode,
-                                const Standard_Integer         From,
+  Standard_EXPORT void SetValue(const int                      Errcode,
+                                const int                      From,
                                 const TCollection_AsciiString& Message);
 
   //! Returns an accurate error code.
   //! To test these values, you must include "OSD_ErrorList.hxx"
-  Standard_EXPORT Standard_Integer Error() const;
+  Standard_EXPORT int Error() const;
 
   //! Returns TRUE if an error occurs
   //! This is a way to test if a system call succeeded or not.
-  Standard_EXPORT Standard_Boolean Failed() const;
+  Standard_EXPORT bool Failed() const;
 
   //! Resets error counter to zero
   //! This allows the user to ignore an error (WARNING).
   Standard_EXPORT void Reset();
 
-protected:
 private:
   TCollection_AsciiString myMessage;
-  Standard_Integer        myErrno;
+  int                     myErrno;
   OSD_WhoAmI              myCode;
-  Standard_Integer        extCode{};
+  int                     extCode{};
 };
 
 #endif // _OSD_Error_HeaderFile

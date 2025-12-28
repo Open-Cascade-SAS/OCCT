@@ -26,7 +26,7 @@ StepBasic_NameAssignment::StepBasic_NameAssignment() {}
 
 //=================================================================================================
 
-void StepBasic_NameAssignment::Init(const Handle(TCollection_HAsciiString)& aAssignedName)
+void StepBasic_NameAssignment::Init(const occ::handle<TCollection_HAsciiString>& aAssignedName)
 {
 
   theAssignedName = aAssignedName;
@@ -34,7 +34,7 @@ void StepBasic_NameAssignment::Init(const Handle(TCollection_HAsciiString)& aAss
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_NameAssignment::AssignedName() const
+occ::handle<TCollection_HAsciiString> StepBasic_NameAssignment::AssignedName() const
 {
   return theAssignedName;
 }
@@ -42,7 +42,7 @@ Handle(TCollection_HAsciiString) StepBasic_NameAssignment::AssignedName() const
 //=================================================================================================
 
 void StepBasic_NameAssignment::SetAssignedName(
-  const Handle(TCollection_HAsciiString)& aAssignedName)
+  const occ::handle<TCollection_HAsciiString>& aAssignedName)
 {
   theAssignedName = aAssignedName;
 }

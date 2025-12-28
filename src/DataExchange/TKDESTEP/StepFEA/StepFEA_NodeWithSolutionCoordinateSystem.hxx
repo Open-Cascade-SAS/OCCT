@@ -21,9 +21,6 @@
 
 #include <StepFEA_Node.hxx>
 
-class StepFEA_NodeWithSolutionCoordinateSystem;
-DEFINE_STANDARD_HANDLE(StepFEA_NodeWithSolutionCoordinateSystem, StepFEA_Node)
-
 //! Representation of STEP entity NodeWithSolutionCoordinateSystem
 class StepFEA_NodeWithSolutionCoordinateSystem : public StepFEA_Node
 {
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepFEA_NodeWithSolutionCoordinateSystem();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_NodeWithSolutionCoordinateSystem, StepFEA_Node)
-
-protected:
-private:
 };
 
 #endif // _StepFEA_NodeWithSolutionCoordinateSystem_HeaderFile

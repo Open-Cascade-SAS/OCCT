@@ -14,7 +14,8 @@
 #include <gtest/gtest.h>
 
 #include <HelixGeom_BuilderHelix.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
@@ -24,7 +25,7 @@ class HelixGeom_BuilderHelix_Test : public ::testing::Test
 protected:
   void SetUp() override { myTolerance = 1.e-4; }
 
-  Standard_Real myTolerance;
+  double myTolerance;
 };
 
 TEST_F(HelixGeom_BuilderHelix_Test, SingleCoil)
@@ -34,13 +35,13 @@ TEST_F(HelixGeom_BuilderHelix_Test, SingleCoil)
   gp_Ax2 aPosition(gp_Pnt(0., 0., 0.), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   aBuilder.SetPosition(aPosition);
   aBuilder.SetTolerance(myTolerance);
-  aBuilder.SetCurveParameters(0.0, 2.0 * M_PI, 10.0, 5.0, 0.0, Standard_True);
+  aBuilder.SetCurveParameters(0.0, 2.0 * M_PI, 10.0, 5.0, 0.0, true);
 
   aBuilder.Perform();
 
   EXPECT_EQ(aBuilder.ErrorStatus(), 0);
 
-  const TColGeom_SequenceOfCurve& aCurves = aBuilder.Curves();
+  const NCollection_Sequence<occ::handle<Geom_Curve>>& aCurves = aBuilder.Curves();
   EXPECT_EQ(aCurves.Length(), 1);
 }
 
@@ -53,13 +54,13 @@ TEST_F(HelixGeom_BuilderHelix_Test, MultipleCoils)
   aBuilder.SetTolerance(myTolerance);
 
   // 3 full turns
-  aBuilder.SetCurveParameters(0.0, 6.0 * M_PI, 10.0, 5.0, 0.0, Standard_True);
+  aBuilder.SetCurveParameters(0.0, 6.0 * M_PI, 10.0, 5.0, 0.0, true);
 
   aBuilder.Perform();
 
   EXPECT_EQ(aBuilder.ErrorStatus(), 0);
 
-  const TColGeom_SequenceOfCurve& aCurves = aBuilder.Curves();
+  const NCollection_Sequence<occ::handle<Geom_Curve>>& aCurves = aBuilder.Curves();
   EXPECT_EQ(aCurves.Length(), 3); // Should split into 3 coils
 }
 
@@ -82,14 +83,14 @@ TEST_F(HelixGeom_BuilderHelix_Test, ParameterManagement)
   HelixGeom_BuilderHelix aBuilder;
 
   // Set curve parameters
-  Standard_Real    aT1 = 1.0, aT2 = 7.0, aPitch = 15.0, aRStart = 4.0, aTaperAngle = 0.2;
-  Standard_Boolean aIsClockwise = Standard_False;
+  double aT1 = 1.0, aT2 = 7.0, aPitch = 15.0, aRStart = 4.0, aTaperAngle = 0.2;
+  bool   aIsClockwise = false;
 
   aBuilder.SetCurveParameters(aT1, aT2, aPitch, aRStart, aTaperAngle, aIsClockwise);
 
   // Get parameters back
-  Standard_Real    aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out;
-  Standard_Boolean aIsClockwise_out;
+  double aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out;
+  bool   aIsClockwise_out;
 
   aBuilder
     .CurveParameters(aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out, aIsClockwise_out);

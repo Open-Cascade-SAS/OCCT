@@ -26,40 +26,33 @@
 
 class gp_Pnt2d;
 
-class BRepTopAdaptor_HVertex;
-DEFINE_STANDARD_HANDLE(BRepTopAdaptor_HVertex, Adaptor3d_HVertex)
-
 class BRepTopAdaptor_HVertex : public Adaptor3d_HVertex
 {
 
 public:
-  Standard_EXPORT BRepTopAdaptor_HVertex(const TopoDS_Vertex&               Vtx,
-                                         const Handle(BRepAdaptor_Curve2d)& Curve);
+  Standard_EXPORT BRepTopAdaptor_HVertex(const TopoDS_Vertex&                    Vtx,
+                                         const occ::handle<BRepAdaptor_Curve2d>& Curve);
 
   const TopoDS_Vertex& Vertex() const;
 
   TopoDS_Vertex& ChangeVertex();
 
-  Standard_EXPORT virtual gp_Pnt2d Value() Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt2d Value() override;
 
-  Standard_EXPORT virtual Standard_Real Parameter(const Handle(Adaptor2d_Curve2d)& C)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double Parameter(const occ::handle<Adaptor2d_Curve2d>& C) override;
 
   //! Parametric resolution (2d).
-  Standard_EXPORT virtual Standard_Real Resolution(const Handle(Adaptor2d_Curve2d)& C)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double Resolution(const occ::handle<Adaptor2d_Curve2d>& C) override;
 
-  Standard_EXPORT virtual TopAbs_Orientation Orientation() Standard_OVERRIDE;
+  Standard_EXPORT virtual TopAbs_Orientation Orientation() override;
 
-  Standard_EXPORT virtual Standard_Boolean IsSame(const Handle(Adaptor3d_HVertex)& Other)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsSame(const occ::handle<Adaptor3d_HVertex>& Other) override;
 
   DEFINE_STANDARD_RTTIEXT(BRepTopAdaptor_HVertex, Adaptor3d_HVertex)
 
-protected:
 private:
-  TopoDS_Vertex               myVtx;
-  Handle(BRepAdaptor_Curve2d) myCurve;
+  TopoDS_Vertex                    myVtx;
+  occ::handle<BRepAdaptor_Curve2d> myCurve;
 };
 
 #include <BRepTopAdaptor_HVertex.lxx>

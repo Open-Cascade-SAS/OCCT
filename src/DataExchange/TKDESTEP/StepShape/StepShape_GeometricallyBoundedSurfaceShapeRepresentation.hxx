@@ -22,10 +22,6 @@
 
 #include <StepShape_ShapeRepresentation.hxx>
 
-class StepShape_GeometricallyBoundedSurfaceShapeRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_GeometricallyBoundedSurfaceShapeRepresentation,
-                       StepShape_ShapeRepresentation)
-
 class StepShape_GeometricallyBoundedSurfaceShapeRepresentation
     : public StepShape_ShapeRepresentation
 {
@@ -36,9 +32,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_GeometricallyBoundedSurfaceShapeRepresentation,
                           StepShape_ShapeRepresentation)
-
-protected:
-private:
 };
 
 #endif // _StepShape_GeometricallyBoundedSurfaceShapeRepresentation_HeaderFile

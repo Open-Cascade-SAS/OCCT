@@ -29,10 +29,10 @@ RWStepShape_RWDimensionalLocation::RWStepShape_RWDimensionalLocation() {}
 //=================================================================================================
 
 void RWStepShape_RWDimensionalLocation::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepShape_DimensionalLocation)& ent) const
+  const occ::handle<StepData_StepReaderData>&       data,
+  const int                                         num,
+  occ::handle<Interface_Check>&                     ach,
+  const occ::handle<StepShape_DimensionalLocation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "dimensional_location"))
@@ -40,11 +40,11 @@ void RWStepShape_RWDimensionalLocation::ReadStep(
 
   // Inherited fields of ShapeAspectRelationship
 
-  Handle(TCollection_HAsciiString) aShapeAspectRelationship_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspectRelationship_Name;
   data->ReadString(num, 1, "shape_aspect_relationship.name", ach, aShapeAspectRelationship_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspectRelationship_Description;
-  Standard_Boolean                 hasShapeAspectRelationship_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aShapeAspectRelationship_Description;
+  bool                                  hasShapeAspectRelationship_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -55,10 +55,10 @@ void RWStepShape_RWDimensionalLocation::ReadStep(
   }
   else
   {
-    hasShapeAspectRelationship_Description = Standard_False;
+    hasShapeAspectRelationship_Description = false;
   }
 
-  Handle(StepRepr_ShapeAspect) aShapeAspectRelationship_RelatingShapeAspect;
+  occ::handle<StepRepr_ShapeAspect> aShapeAspectRelationship_RelatingShapeAspect;
   data->ReadEntity(num,
                    3,
                    "shape_aspect_relationship.relating_shape_aspect",
@@ -66,7 +66,7 @@ void RWStepShape_RWDimensionalLocation::ReadStep(
                    STANDARD_TYPE(StepRepr_ShapeAspect),
                    aShapeAspectRelationship_RelatingShapeAspect);
 
-  Handle(StepRepr_ShapeAspect) aShapeAspectRelationship_RelatedShapeAspect;
+  occ::handle<StepRepr_ShapeAspect> aShapeAspectRelationship_RelatedShapeAspect;
   data->ReadEntity(num,
                    4,
                    "shape_aspect_relationship.related_shape_aspect",
@@ -85,8 +85,8 @@ void RWStepShape_RWDimensionalLocation::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWDimensionalLocation::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepShape_DimensionalLocation)& ent) const
+  StepData_StepWriter&                              SW,
+  const occ::handle<StepShape_DimensionalLocation>& ent) const
 {
 
   // Inherited fields of ShapeAspectRelationship
@@ -107,7 +107,7 @@ void RWStepShape_RWDimensionalLocation::WriteStep(
 
 //=================================================================================================
 
-void RWStepShape_RWDimensionalLocation::Share(const Handle(StepShape_DimensionalLocation)& ent,
+void RWStepShape_RWDimensionalLocation::Share(const occ::handle<StepShape_DimensionalLocation>& ent,
                                               Interface_EntityIterator& iter) const
 {
 

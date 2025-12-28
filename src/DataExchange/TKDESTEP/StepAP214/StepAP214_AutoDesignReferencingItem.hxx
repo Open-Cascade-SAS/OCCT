@@ -63,40 +63,38 @@ public:
   //! 13     RepresentationRelationship from StepRepr,
   //! 14     ShapeAspect from StepRepr
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
-  Standard_EXPORT Handle(StepBasic_Approval) Approval() const;
+  Standard_EXPORT occ::handle<StepBasic_Approval> Approval() const;
 
-  Standard_EXPORT Handle(StepBasic_DocumentRelationship) DocumentRelationship() const;
+  Standard_EXPORT occ::handle<StepBasic_DocumentRelationship> DocumentRelationship() const;
 
-  Standard_EXPORT Handle(StepRepr_ExternallyDefinedRepresentation) ExternallyDefinedRepresentation()
+  Standard_EXPORT occ::handle<StepRepr_ExternallyDefinedRepresentation>
+                  ExternallyDefinedRepresentation() const;
+
+  Standard_EXPORT occ::handle<StepRepr_MappedItem> MappedItem() const;
+
+  Standard_EXPORT occ::handle<StepRepr_MaterialDesignation> MaterialDesignation() const;
+
+  Standard_EXPORT occ::handle<StepVisual_PresentationArea> PresentationArea() const;
+
+  Standard_EXPORT occ::handle<StepVisual_PresentationView> PresentationView() const;
+
+  Standard_EXPORT occ::handle<StepBasic_ProductCategory> ProductCategory() const;
+
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
+
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship>
+                  ProductDefinitionRelationship() const;
+
+  Standard_EXPORT occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;
+
+  Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
+
+  Standard_EXPORT occ::handle<StepRepr_RepresentationRelationship> RepresentationRelationship()
     const;
 
-  Standard_EXPORT Handle(StepRepr_MappedItem) MappedItem() const;
-
-  Standard_EXPORT Handle(StepRepr_MaterialDesignation) MaterialDesignation() const;
-
-  Standard_EXPORT Handle(StepVisual_PresentationArea) PresentationArea() const;
-
-  Standard_EXPORT Handle(StepVisual_PresentationView) PresentationView() const;
-
-  Standard_EXPORT Handle(StepBasic_ProductCategory) ProductCategory() const;
-
-  Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
-
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship()
-    const;
-
-  Standard_EXPORT Handle(StepRepr_PropertyDefinition) PropertyDefinition() const;
-
-  Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
-
-  Standard_EXPORT Handle(StepRepr_RepresentationRelationship) RepresentationRelationship() const;
-
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 };
 
 #endif // _StepAP214_AutoDesignReferencingItem_HeaderFile

@@ -25,25 +25,25 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Precision.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 
 //=======================================================================
 // function : OnSurface_Value
 // purpose  : Evaluate current point of the projected curve
 //=======================================================================
-static gp_Pnt OnSurface_Value(const Standard_Real            U,
-                              const Handle(Adaptor3d_Curve)& myCurve,
-                              Extrema_ExtPS*                 myExtPS)
+static gp_Pnt OnSurface_Value(const double                        U,
+                              const occ::handle<Adaptor3d_Curve>& myCurve,
+                              Extrema_ExtPS*                      myExtPS)
 {
   // Try to find the closest solution point.
   myExtPS->Perform(myCurve->Value(U));
 
-  Standard_Real    Dist2Min = RealLast();
-  Standard_Integer Index    = 0;
+  double Dist2Min = RealLast();
+  int    Index    = 0;
 
-  for (Standard_Integer i = 1; i <= myExtPS->NbExt(); i++)
+  for (int i = 1; i <= myExtPS->NbExt(); i++)
   {
     if (myExtPS->SquareDistance(i) < Dist2Min)
     {
@@ -64,13 +64,13 @@ static gp_Pnt OnSurface_Value(const Standard_Real            U,
 
 //=================================================================================================
 
-static Standard_Boolean OnSurface_D1(const Standard_Real,            // U,
-                                     gp_Pnt&,                        // P,
-                                     gp_Vec&,                        // V,
-                                     const Handle(Adaptor3d_Curve)&, //  myCurve,
-                                     Extrema_ExtPS*)                 // myExtPS)
+static bool OnSurface_D1(const double,                        // U,
+                         gp_Pnt&,                             // P,
+                         gp_Vec&,                             // V,
+                         const occ::handle<Adaptor3d_Curve>&, //  myCurve,
+                         Extrema_ExtPS*)                      // myExtPS)
 {
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -82,34 +82,34 @@ class ProjLib_OnSurface : public AppCont_Function
 
 {
 public:
-  ProjLib_OnSurface(const Handle(Adaptor3d_Curve)& C, const Handle(Adaptor3d_Surface)& S)
+  ProjLib_OnSurface(const occ::handle<Adaptor3d_Curve>& C, const occ::handle<Adaptor3d_Surface>& S)
       : myCurve(C)
   {
-    myNbPnt                     = 1;
-    myNbPnt2d                   = 0;
-    Standard_Real           U   = myCurve->FirstParameter();
-    gp_Pnt                  P   = myCurve->Value(U);
-    constexpr Standard_Real Tol = Precision::PConfusion();
-    myExtPS                     = new Extrema_ExtPS(P, *S, Tol, Tol);
+    myNbPnt              = 1;
+    myNbPnt2d            = 0;
+    double           U   = myCurve->FirstParameter();
+    gp_Pnt           P   = myCurve->Value(U);
+    constexpr double Tol = Precision::PConfusion();
+    myExtPS              = new Extrema_ExtPS(P, *S, Tol, Tol);
   }
 
   ~ProjLib_OnSurface() { delete myExtPS; }
 
-  Standard_Real FirstParameter() const { return myCurve->FirstParameter(); }
+  double FirstParameter() const { return myCurve->FirstParameter(); }
 
-  Standard_Real LastParameter() const { return myCurve->LastParameter(); }
+  double LastParameter() const { return myCurve->LastParameter(); }
 
-  Standard_Boolean Value(const Standard_Real theT,
-                         NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
-                         NCollection_Array1<gp_Pnt>& thePnt) const
+  bool Value(const double theT,
+             NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
+             NCollection_Array1<gp_Pnt>& thePnt) const
   {
     thePnt(1) = OnSurface_Value(theT, myCurve, myExtPS);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean D1(const Standard_Real theT,
-                      NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
-                      NCollection_Array1<gp_Vec>& theVec) const
+  bool D1(const double theT,
+          NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
+          NCollection_Array1<gp_Vec>& theVec) const
   {
     gp_Pnt aPnt;
     return OnSurface_D1(theT, aPnt, theVec(1), myCurve, myExtPS);
@@ -120,8 +120,8 @@ private:
   ProjLib_OnSurface& operator=(const ProjLib_OnSurface&);
 
 private:
-  Handle(Adaptor3d_Curve) myCurve;
-  Extrema_ExtPS*          myExtPS;
+  occ::handle<Adaptor3d_Curve> myCurve;
+  Extrema_ExtPS*               myExtPS;
 };
 
 //=====================================================================//
@@ -136,40 +136,40 @@ private:
 
 ProjLib_ProjectOnSurface::ProjLib_ProjectOnSurface()
     : myTolerance(0.0),
-      myIsDone(Standard_False)
+      myIsDone(false)
 {
 }
 
 //=================================================================================================
 
-ProjLib_ProjectOnSurface::ProjLib_ProjectOnSurface(const Handle(Adaptor3d_Surface)& S)
+ProjLib_ProjectOnSurface::ProjLib_ProjectOnSurface(const occ::handle<Adaptor3d_Surface>& S)
     : myTolerance(0.0),
-      myIsDone(Standard_False)
+      myIsDone(false)
 {
   mySurface = S;
 }
 
 //=================================================================================================
 
-void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Surface)& S)
+void ProjLib_ProjectOnSurface::Load(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurface = S;
-  myIsDone  = Standard_False;
+  myIsDone  = false;
 }
 
 //=================================================================================================
 
-void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Standard_Real Tolerance)
+void ProjLib_ProjectOnSurface::Load(const occ::handle<Adaptor3d_Curve>& C, const double Tolerance)
 {
   myTolerance = Tolerance;
   myCurve     = C;
-  myIsDone    = Standard_False;
+  myIsDone    = false;
   if (!mySurface.IsNull())
   {
 
     ProjLib_OnSurface F(myCurve, mySurface);
 
-    Standard_Integer Deg1, Deg2;
+    int Deg1, Deg2;
     Deg1 = 8;
     Deg2 = 8;
 
@@ -178,37 +178,37 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Stan
                             Deg2,
                             Precision::Approximation(),
                             Precision::PApproximation(),
-                            Standard_True);
-    Standard_Integer    i;
-    Standard_Integer    NbCurves = Fit.NbMultiCurves();
-    Standard_Integer    MaxDeg   = 0;
+                            true);
+    int                 i;
+    int                 NbCurves = Fit.NbMultiCurves();
+    int                 MaxDeg   = 0;
 
     // To convert the MultiCurve to BSpline, all constituent Bezier curves
     // must have the same degree -> Calculate MaxDeg
-    Standard_Integer NbPoles = 1;
+    int NbPoles = 1;
     for (i = 1; i <= NbCurves; i++)
     {
-      Standard_Integer Deg = Fit.Value(i).Degree();
-      MaxDeg               = std::max(MaxDeg, Deg);
+      int Deg = Fit.Value(i).Degree();
+      MaxDeg  = std::max(MaxDeg, Deg);
     }
     NbPoles = MaxDeg * NbCurves + 1; // Poles on the BSpline
-    TColgp_Array1OfPnt Poles(1, NbPoles);
+    NCollection_Array1<gp_Pnt> Poles(1, NbPoles);
 
-    TColgp_Array1OfPnt TempPoles(1, MaxDeg + 1); // for degree elevation
+    NCollection_Array1<gp_Pnt> TempPoles(1, MaxDeg + 1); // for degree elevation
 
-    TColStd_Array1OfReal Knots(1, NbCurves + 1); // Knots of the BSpline
+    NCollection_Array1<double> Knots(1, NbCurves + 1); // Knots of the BSpline
 
-    Standard_Integer Compt = 1;
+    int Compt = 1;
     for (i = 1; i <= Fit.NbMultiCurves(); i++)
     {
       Fit.Parameters(i, Knots(i), Knots(i + 1));
 
-      AppParCurves_MultiCurve MC = Fit.Value(i);              // Load the i-th Curve
-      TColgp_Array1OfPnt      LocalPoles(1, MC.Degree() + 1); // Get the poles
+      AppParCurves_MultiCurve    MC = Fit.Value(i);              // Load the i-th Curve
+      NCollection_Array1<gp_Pnt> LocalPoles(1, MC.Degree() + 1); // Get the poles
       MC.Curve(1, Poles);
 
       // Possible degree elevation
-      Standard_Integer Inc = MaxDeg - MC.Degree();
+      int Inc = MaxDeg - MC.Degree();
       if (Inc > 0)
       {
         BSplCLib::IncreaseDegree(Inc,
@@ -217,7 +217,7 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Stan
                                  TempPoles,
                                  BSplCLib::NoWeights());
         // update the poles of the PCurve
-        for (Standard_Integer j = 1; j <= MaxDeg + 1; j++)
+        for (int j = 1; j <= MaxDeg + 1; j++)
         {
           Poles.SetValue(Compt, TempPoles(j));
           Compt++;
@@ -226,7 +226,7 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Stan
       else
       {
         // update the poles of the PCurve
-        for (Standard_Integer j = 1; j <= MaxDeg + 1; j++)
+        for (int j = 1; j <= MaxDeg + 1; j++)
         {
           Poles.SetValue(Compt, LocalPoles(j));
           Compt++;
@@ -238,17 +238,17 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Stan
 
     // update the fields of ProjLib_Approx
 
-    Standard_Integer NbKnots = NbCurves + 1;
+    int NbKnots = NbCurves + 1;
 
-    TColStd_Array1OfInteger Mults(1, NbKnots);
+    NCollection_Array1<int> Mults(1, NbKnots);
     Mults.SetValue(1, MaxDeg + 1);
     for (i = 2; i <= NbCurves; i++)
     {
       Mults.SetValue(i, MaxDeg);
     }
     Mults.SetValue(NbKnots, MaxDeg + 1);
-    myResult = new Geom_BSplineCurve(Poles, Knots, Mults, MaxDeg, Standard_False);
-    myIsDone = Standard_True;
+    myResult = new Geom_BSplineCurve(Poles, Knots, Mults, MaxDeg, false);
+    myIsDone = true;
   }
 }
 
@@ -258,7 +258,7 @@ ProjLib_ProjectOnSurface::~ProjLib_ProjectOnSurface() {}
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) ProjLib_ProjectOnSurface::BSpline() const
+occ::handle<Geom_BSplineCurve> ProjLib_ProjectOnSurface::BSpline() const
 {
   Standard_NoSuchObject_Raise_if(!myIsDone, "ProjLib_ProjectOnSurface:BSpline");
   return myResult;

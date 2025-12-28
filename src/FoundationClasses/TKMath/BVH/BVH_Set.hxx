@@ -38,9 +38,9 @@ public:
   //! Returns AABB of the entire set of objects.
   virtual BVH_Box<T, N> Box() const
   {
-    BVH_Box<T, N>          aBox;
-    const Standard_Integer aSize = Size();
-    for (Standard_Integer anIndex = 0; anIndex < aSize; ++anIndex)
+    BVH_Box<T, N> aBox;
+    const int     aSize = Size();
+    for (int anIndex = 0; anIndex < aSize; ++anIndex)
     {
       aBox.Combine(Box(anIndex));
     }
@@ -49,16 +49,16 @@ public:
 
 public:
   //! Returns total number of objects.
-  virtual Standard_Integer Size() const = 0;
+  virtual int Size() const = 0;
 
   //! Returns AABB of the given object.
-  virtual BVH_Box<T, N> Box(const Standard_Integer theIndex) const = 0;
+  virtual BVH_Box<T, N> Box(const int theIndex) const = 0;
 
   //! Returns centroid position along the given axis.
-  virtual T Center(const Standard_Integer theIndex, const Standard_Integer theAxis) const = 0;
+  virtual T Center(const int theIndex, const int theAxis) const = 0;
 
   //! Performs transposing the two given objects in the set.
-  virtual void Swap(const Standard_Integer theIndex1, const Standard_Integer theIndex2) = 0;
+  virtual void Swap(const int theIndex1, const int theIndex2) = 0;
 };
 
 #endif // _BVH_Set_Header

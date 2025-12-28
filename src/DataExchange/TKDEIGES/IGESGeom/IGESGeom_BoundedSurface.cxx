@@ -24,9 +24,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_BoundedSurface, IGESData_IGESEntity)
 
 IGESGeom_BoundedSurface::IGESGeom_BoundedSurface() {}
 
-void IGESGeom_BoundedSurface::Init(const Standard_Integer                    aType,
-                                   const Handle(IGESData_IGESEntity)&        aSurface,
-                                   const Handle(IGESGeom_HArray1OfBoundary)& aBoundary)
+void IGESGeom_BoundedSurface::Init(
+  const int                                                               aType,
+  const occ::handle<IGESData_IGESEntity>&                                 aSurface,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_Boundary>>>& aBoundary)
 {
   if (aBoundary->Lower() != 1)
     throw Standard_DimensionMismatch("IGESGeom_BoundedSurface : Init");
@@ -36,23 +37,23 @@ void IGESGeom_BoundedSurface::Init(const Standard_Integer                    aTy
   InitTypeAndForm(143, 0);
 }
 
-Standard_Integer IGESGeom_BoundedSurface::RepresentationType() const
+int IGESGeom_BoundedSurface::RepresentationType() const
 {
   return theType;
 }
 
-Handle(IGESData_IGESEntity) IGESGeom_BoundedSurface::Surface() const
+occ::handle<IGESData_IGESEntity> IGESGeom_BoundedSurface::Surface() const
 {
   return theSurface;
 }
 
-Standard_Integer IGESGeom_BoundedSurface::NbBoundaries() const
+int IGESGeom_BoundedSurface::NbBoundaries() const
 {
 
   return (theBoundaries.IsNull() ? 0 : theBoundaries->Length());
 }
 
-Handle(IGESGeom_Boundary) IGESGeom_BoundedSurface::Boundary(const Standard_Integer Index) const
+occ::handle<IGESGeom_Boundary> IGESGeom_BoundedSurface::Boundary(const int Index) const
 {
   return theBoundaries->Value(Index);
 }

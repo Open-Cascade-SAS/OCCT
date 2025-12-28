@@ -21,7 +21,7 @@
 
 Standard_EXPORT void FBOX_Prepare()
 {
-  Handle(TopOpeBRepTool_HBoxTool) hbt = FBOX_GetHBoxTool();
+  occ::handle<TopOpeBRepTool_HBoxTool> hbt = FBOX_GetHBoxTool();
   hbt->Clear();
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceBOX())
@@ -31,9 +31,9 @@ Standard_EXPORT void FBOX_Prepare()
 #endif
 }
 
-Standard_EXPORT Handle(TopOpeBRepTool_HBoxTool) FBOX_GetHBoxTool()
+Standard_EXPORT occ::handle<TopOpeBRepTool_HBoxTool> FBOX_GetHBoxTool()
 {
-  static Handle(TopOpeBRepTool_HBoxTool) GLOBAL_TOOLBOX_hboxtool;
+  static occ::handle<TopOpeBRepTool_HBoxTool> GLOBAL_TOOLBOX_hboxtool;
   if (GLOBAL_TOOLBOX_hboxtool.IsNull())
   {
     GLOBAL_TOOLBOX_hboxtool = new TopOpeBRepTool_HBoxTool();
@@ -43,13 +43,13 @@ Standard_EXPORT Handle(TopOpeBRepTool_HBoxTool) FBOX_GetHBoxTool()
 
 Standard_EXPORT const Bnd_Box& FBOX_Box(const TopoDS_Shape& S)
 {
-  Handle(TopOpeBRepTool_HBoxTool) hbt = FBOX_GetHBoxTool();
-  const Bnd_Box&                  b   = hbt->Box(S);
+  occ::handle<TopOpeBRepTool_HBoxTool> hbt = FBOX_GetHBoxTool();
+  const Bnd_Box&                       b   = hbt->Box(S);
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceBOX())
   {
-    Standard_Integer i = hbt->Index(S);
-    Standard_Integer n = hbt->Extent();
+    int i = hbt->Index(S);
+    int n = hbt->Extent();
     std::cout << "TOOLBOX : " << i << "/" << n << std::endl;
   }
 #endif

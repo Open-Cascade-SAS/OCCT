@@ -93,7 +93,7 @@ bool IVtkTools_ShapePicker::convertDisplayToWorld(vtkRenderer* theRenderer,
     return false;
   }
 
-  for (Standard_Integer anI = 0; anI < 3; anI++)
+  for (int anI = 0; anI < 3; anI++)
   {
     theWorldCoord[anI] = aCoords[anI] / aCoords[3];
   }
@@ -232,7 +232,7 @@ void IVtkTools_ShapePicker::SetAreaSelection(bool theIsOn)
 //  Method: GetSelectionModes
 // Purpose: Get activated selection modes for a shape.
 //============================================================================
-IVtk_SelectionModeList IVtkTools_ShapePicker::GetSelectionModes(
+NCollection_List<IVtk_SelectionMode> IVtkTools_ShapePicker::GetSelectionModes(
   const IVtk_IShape::Handle& theShape) const
 {
   return myOccPickerAlgo->GetSelectionModes(theShape);
@@ -242,10 +242,11 @@ IVtk_SelectionModeList IVtkTools_ShapePicker::GetSelectionModes(
 //  Method: GetSelectionModes
 // Purpose: Get activated selection modes for a shape actor.
 //============================================================================
-IVtk_SelectionModeList IVtkTools_ShapePicker::GetSelectionModes(vtkActor* theShapeActor) const
+NCollection_List<IVtk_SelectionMode> IVtkTools_ShapePicker::GetSelectionModes(
+  vtkActor* theShapeActor) const
 {
-  IVtk_SelectionModeList aRes;
-  IVtk_IShape::Handle    aShape = IVtkTools_ShapeObject::GetOccShape(theShapeActor);
+  NCollection_List<IVtk_SelectionMode> aRes;
+  IVtk_IShape::Handle                  aShape = IVtkTools_ShapeObject::GetOccShape(theShapeActor);
   if (!aShape.IsNull())
   {
     aRes = myOccPickerAlgo->GetSelectionModes(aShape);
@@ -314,15 +315,15 @@ void IVtkTools_ShapePicker::SetSelectionMode(const IVtk_SelectionMode theMode,
 //  Method: GetPickedShapesIds
 // Purpose: Access to the list of top-level shapes picked.
 //============================================================================
-IVtk_ShapeIdList IVtkTools_ShapePicker::GetPickedShapesIds(bool theIsAll) const
+NCollection_List<IVtk_IdType> IVtkTools_ShapePicker::GetPickedShapesIds(bool theIsAll) const
 {
   if (theIsAll || myIsRectSelection)
   {
     return myOccPickerAlgo->ShapesPicked();
   }
 
-  IVtk_ShapeIdList aRes;
-  IVtk_ShapeIdList aPicked = myOccPickerAlgo->ShapesPicked();
+  NCollection_List<IVtk_IdType> aRes;
+  NCollection_List<IVtk_IdType> aPicked = myOccPickerAlgo->ShapesPicked();
   if (!aPicked.IsEmpty())
   {
     aRes.Append(aPicked.First());
@@ -356,17 +357,17 @@ void IVtkTools_ShapePicker::RemoveSelectableActor(vtkActor* theShapeActor)
 //  Method: GetPickedSubShapesIds
 // Purpose: Access to the list of sub-shapes ids picked.
 //============================================================================
-IVtk_ShapeIdList IVtkTools_ShapePicker::GetPickedSubShapesIds(const IVtk_IdType theId,
-                                                              bool              theIsAll) const
+NCollection_List<IVtk_IdType> IVtkTools_ShapePicker::GetPickedSubShapesIds(const IVtk_IdType theId,
+                                                                           bool theIsAll) const
 {
-  IVtk_ShapeIdList aRes;
+  NCollection_List<IVtk_IdType> aRes;
   if (theIsAll)
   {
     myOccPickerAlgo->SubShapesPicked(theId, aRes);
   }
   else
   {
-    IVtk_ShapeIdList aList;
+    NCollection_List<IVtk_IdType> aList;
     myOccPickerAlgo->SubShapesPicked(theId, aList);
     if (!aList.IsEmpty())
     {
@@ -383,7 +384,7 @@ IVtk_ShapeIdList IVtkTools_ShapePicker::GetPickedSubShapesIds(const IVtk_IdType 
 vtkSmartPointer<vtkActorCollection> IVtkTools_ShapePicker::GetPickedActors(bool theIsAll) const
 {
   vtkSmartPointer<vtkActorCollection> aRes  = vtkSmartPointer<vtkActorCollection>::New();
-  IVtk_ShapeIdList                    anIds = GetPickedShapesIds(theIsAll);
+  NCollection_List<IVtk_IdType>       anIds = GetPickedShapesIds(theIsAll);
   if (myRenderer.GetPointer() != NULL)
   {
     // Obtain all actors whose source shape ids are within selected ids.
@@ -399,7 +400,7 @@ vtkSmartPointer<vtkActorCollection> IVtkTools_ShapePicker::GetPickedActors(bool 
           IVtk_IShape::Handle aShape = IVtkTools_ShapeObject::GetOccShape(anActor);
           if (!aShape.IsNull())
           {
-            for (IVtk_ShapeIdList::Iterator anIt(anIds); anIt.More(); anIt.Next())
+            for (NCollection_List<IVtk_IdType>::Iterator anIt(anIds); anIt.More(); anIt.Next())
             {
               if (aShape->GetId() == anIt.Value())
               {

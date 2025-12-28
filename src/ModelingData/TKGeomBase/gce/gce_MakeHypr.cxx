@@ -29,10 +29,10 @@
 //=========================================================================
 gce_MakeHypr::gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
 {
-  gp_Dir        XAxis(gp_XYZ(S1.XYZ() - Center.XYZ()));
-  gp_Lin        L(Center, XAxis);
-  Standard_Real D = S1.Distance(Center);
-  Standard_Real d = L.Distance(S2);
+  gp_Dir XAxis(gp_XYZ(S1.XYZ() - Center.XYZ()));
+  gp_Lin L(Center, XAxis);
+  double D = S1.Distance(Center);
+  double d = L.Distance(S2);
   if (d > D)
   {
     TheError = gce_InvertAxis;
@@ -45,9 +45,7 @@ gce_MakeHypr::gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Cen
   }
 }
 
-gce_MakeHypr::gce_MakeHypr(const gp_Ax2&       A2,
-                           const Standard_Real MajorRadius,
-                           const Standard_Real MinorRadius)
+gce_MakeHypr::gce_MakeHypr(const gp_Ax2& A2, const double MajorRadius, const double MinorRadius)
 {
   if (MajorRadius < MinorRadius)
   {

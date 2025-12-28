@@ -29,26 +29,26 @@
 // Creation d'une hyperbola de prostep a partir d'une hyperbola de
 // Geom2d
 //=============================================================================
-GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const Handle(Geom2d_Hyperbola)& C,
-                                                   const StepData_Factors&         theLocalFactors)
+GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const occ::handle<Geom2d_Hyperbola>& C,
+                                                   const StepData_Factors& theLocalFactors)
 {
   gp_Hypr2d gpHyp;
   gpHyp = C->Hypr2d();
 
-  Handle(StepGeom_Hyperbola)        HStep = new StepGeom_Hyperbola;
-  StepGeom_Axis2Placement           Ax2;
-  Handle(StepGeom_Axis2Placement2d) Ax2Step;
-  Standard_Real                     majorR, minorR;
+  occ::handle<StepGeom_Hyperbola>        HStep = new StepGeom_Hyperbola;
+  StepGeom_Axis2Placement                Ax2;
+  occ::handle<StepGeom_Axis2Placement2d> Ax2Step;
+  double                                 majorR, minorR;
 
   GeomToStep_MakeAxis2Placement2d MkAxis2(gpHyp.Axis(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
   majorR  = gpHyp.MajorRadius();
   minorR  = gpHyp.MinorRadius();
   Ax2.SetValue(Ax2Step);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   HStep->Init(name, Ax2, majorR, minorR);
   theHyperbola = HStep;
-  done         = Standard_True;
+  done         = true;
 }
 
 //=============================================================================
@@ -56,34 +56,34 @@ GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const Handle(Geom2d_Hyperbola
 // Geom
 //=============================================================================
 
-GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const Handle(Geom_Hyperbola)& C,
-                                                   const StepData_Factors&       theLocalFactors)
+GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const occ::handle<Geom_Hyperbola>& C,
+                                                   const StepData_Factors& theLocalFactors)
 {
   gp_Hypr gpHyp;
   gpHyp = C->Hypr();
 
-  Handle(StepGeom_Hyperbola)        HStep = new StepGeom_Hyperbola;
-  StepGeom_Axis2Placement           Ax2;
-  Handle(StepGeom_Axis2Placement3d) Ax2Step;
-  Standard_Real                     majorR, minorR;
+  occ::handle<StepGeom_Hyperbola>        HStep = new StepGeom_Hyperbola;
+  StepGeom_Axis2Placement                Ax2;
+  occ::handle<StepGeom_Axis2Placement3d> Ax2Step;
+  double                                 majorR, minorR;
 
   GeomToStep_MakeAxis2Placement3d MkAxis2(gpHyp.Position(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
   majorR  = gpHyp.MajorRadius();
   minorR  = gpHyp.MinorRadius();
   Ax2.SetValue(Ax2Step);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Standard_Real                    fact = theLocalFactors.LengthFactor();
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
+  double                                fact = theLocalFactors.LengthFactor();
   HStep->Init(name, Ax2, majorR / fact, minorR / fact);
   theHyperbola = HStep;
-  done         = Standard_True;
+  done         = true;
 }
 
 //=============================================================================
 // return the result
 //=============================================================================
 
-const Handle(StepGeom_Hyperbola)& GeomToStep_MakeHyperbola::Value() const
+const occ::handle<StepGeom_Hyperbola>& GeomToStep_MakeHyperbola::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeHyperbola::Value() - no result");
   return theHyperbola;

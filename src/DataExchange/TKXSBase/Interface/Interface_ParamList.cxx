@@ -22,33 +22,32 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_ParamList, Standard_Transient)
 
 //=================================================================================================
 
-Interface_ParamList::Interface_ParamList(const Standard_Integer theIncrement)
+Interface_ParamList::Interface_ParamList(const int theIncrement)
     : myVector(theIncrement)
 {
 }
 
 //=================================================================================================
 
-void Interface_ParamList::SetValue(const Standard_Integer         theIndex,
-                                   const Interface_FileParameter& theValue)
+void Interface_ParamList::SetValue(const int theIndex, const Interface_FileParameter& theValue)
 {
-  Standard_Integer ind = theIndex - 1;
+  int ind = theIndex - 1;
   myVector.SetValue(ind, theValue);
 }
 
 //=================================================================================================
 
-const Interface_FileParameter& Interface_ParamList::Value(const Standard_Integer theIndex) const
+const Interface_FileParameter& Interface_ParamList::Value(const int theIndex) const
 {
-  Standard_Integer ind = theIndex - 1;
+  int ind = theIndex - 1;
   return myVector.Value(ind);
 }
 
 //=================================================================================================
 
-Interface_FileParameter& Interface_ParamList::ChangeValue(const Standard_Integer theIndex)
+Interface_FileParameter& Interface_ParamList::ChangeValue(const int theIndex)
 {
-  Standard_Integer ind = theIndex - 1;
+  int ind = theIndex - 1;
   if (ind >= myVector.Length())
   {
     Interface_FileParameter aFP;

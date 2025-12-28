@@ -24,50 +24,43 @@
 #include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
 
-class FEmTool_SparseMatrix;
-DEFINE_STANDARD_HANDLE(FEmTool_SparseMatrix, Standard_Transient)
-
 //! Sparse Matrix definition
 class FEmTool_SparseMatrix : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT virtual void Init(const Standard_Real Value) = 0;
+  Standard_EXPORT virtual void Init(const double Value) = 0;
 
-  Standard_EXPORT virtual Standard_Real& ChangeValue(const Standard_Integer I,
-                                                     const Standard_Integer J) = 0;
+  Standard_EXPORT virtual double& ChangeValue(const int I, const int J) = 0;
 
   //! To make a Factorization of <me>
-  Standard_EXPORT virtual Standard_Boolean Decompose() = 0;
+  Standard_EXPORT virtual bool Decompose() = 0;
 
   //! Direct Solve of AX = B
   Standard_EXPORT virtual void Solve(const math_Vector& B, math_Vector& X) const = 0;
 
   //! Make Preparation to iterative solve
-  Standard_EXPORT virtual Standard_Boolean Prepare() = 0;
+  Standard_EXPORT virtual bool Prepare() = 0;
 
   //! Iterative solve of AX = B
-  Standard_EXPORT virtual void Solve(const math_Vector&     B,
-                                     const math_Vector&     Init,
-                                     math_Vector&           X,
-                                     math_Vector&           Residual,
-                                     const Standard_Real    Tolerance    = 1.0e-8,
-                                     const Standard_Integer NbIterations = 50) const = 0;
+  Standard_EXPORT virtual void Solve(const math_Vector& B,
+                                     const math_Vector& Init,
+                                     math_Vector&       X,
+                                     math_Vector&       Residual,
+                                     const double       Tolerance    = 1.0e-8,
+                                     const int          NbIterations = 50) const = 0;
 
   //! returns the product of a SparseMatrix by a vector.
   //! An exception is raised if the dimensions are different
   Standard_EXPORT virtual void Multiplied(const math_Vector& X, math_Vector& MX) const = 0;
 
   //! returns the row range of a matrix.
-  Standard_EXPORT virtual Standard_Integer RowNumber() const = 0;
+  Standard_EXPORT virtual int RowNumber() const = 0;
 
   //! returns the column range of the matrix.
-  Standard_EXPORT virtual Standard_Integer ColNumber() const = 0;
+  Standard_EXPORT virtual int ColNumber() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(FEmTool_SparseMatrix, Standard_Transient)
-
-protected:
-private:
 };
 
 #endif // _FEmTool_SparseMatrix_HeaderFile

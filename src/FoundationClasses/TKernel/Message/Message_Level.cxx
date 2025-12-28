@@ -25,7 +25,7 @@
 
 Message_Level::Message_Level(const TCollection_AsciiString& theName)
 {
-  const Handle(Message_Report)& aDefaultReport = Message::DefaultReport();
+  const occ::handle<Message_Report>& aDefaultReport = Message::DefaultReport();
   if (!aDefaultReport.IsNull() && aDefaultReport->IsActiveInMessenger())
   {
     aDefaultReport->AddLevel(this, theName);
@@ -41,8 +41,8 @@ Message_Level::~Message_Level()
 
 //=================================================================================================
 
-void Message_Level::SetRootAlert(const Handle(Message_AlertExtended)& theAlert,
-                                 const Standard_Boolean               isRequiredToStart)
+void Message_Level::SetRootAlert(const occ::handle<Message_AlertExtended>& theAlert,
+                                 const bool                                isRequiredToStart)
 {
   myRootAlert = theAlert;
   if (isRequiredToStart)
@@ -53,18 +53,19 @@ void Message_Level::SetRootAlert(const Handle(Message_AlertExtended)& theAlert,
 
 //=================================================================================================
 
-Standard_Boolean Message_Level::AddAlert(const Message_Gravity        theGravity,
-                                         const Handle(Message_Alert)& theAlert)
+bool Message_Level::AddAlert(const Message_Gravity             theGravity,
+                             const occ::handle<Message_Alert>& theAlert)
 {
-  Handle(Message_AlertExtended) anAlertExtended = Handle(Message_AlertExtended)::DownCast(theAlert);
+  occ::handle<Message_AlertExtended> anAlertExtended =
+    occ::down_cast<Message_AlertExtended>(theAlert);
   if (anAlertExtended.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   // looking for the parent of the parameter alert to release the previous alert
-  Handle(Message_AlertExtended)   aRootAlert      = myRootAlert;
-  Handle(Message_CompositeAlerts) aCompositeAlert = aRootAlert->CompositeAlerts(Standard_True);
+  occ::handle<Message_AlertExtended>   aRootAlert      = myRootAlert;
+  occ::handle<Message_CompositeAlerts> aCompositeAlert = aRootAlert->CompositeAlerts(true);
 
   // update metrics of the previous alert
   Message_AttributeMeter::StopAlert(myLastAlert);
@@ -76,14 +77,14 @@ Standard_Boolean Message_Level::AddAlert(const Message_Gravity        theGravity
   // add child alert
   aCompositeAlert->AddAlert(theGravity, theAlert);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 void Message_Level::remove()
 {
-  const Handle(Message_Report)& aDefaultReport = Message::DefaultReport();
+  const occ::handle<Message_Report>& aDefaultReport = Message::DefaultReport();
   if (aDefaultReport.IsNull() || !aDefaultReport->IsActiveInMessenger())
   {
     return;

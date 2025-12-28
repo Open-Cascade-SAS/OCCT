@@ -98,7 +98,7 @@
 // resolutions any value of resolution.
 // @param theBoxesCount The number of boxes to be sorted.
 // @return The resolution of the voxel grid.
-static Standard_Integer getBnd_VoxelGridResolution(const Standard_Integer theBoxesCount)
+static int getBnd_VoxelGridResolution(const int theBoxesCount)
 {
   if (theBoxesCount > 40000)
   {
@@ -131,7 +131,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
 
 public:
-  using VectorInt = NCollection_Vector<Standard_Integer>;
+  using VectorInt = NCollection_Vector<int>;
 
 private:
   using SliceArray = NCollection_Array1<VectorInt>;
@@ -140,15 +140,14 @@ public:
   // Constructor that initializes the Bnd_VoxelGrid object with a given size.
   // @param theResolution The size of the grid in each dimension.
   // @param theExpectedBoxCount Expected number of boxes for pre-sizing vectors.
-  Bnd_VoxelGrid(const Standard_Integer theResolution, const Standard_Integer theExpectedBoxCount);
+  Bnd_VoxelGrid(const int theResolution, const int theExpectedBoxCount);
 
   // Adds a box to the voxel grid.
   // The box is defined by its minimum and maximum voxel coordinates.
   // @param theBoxIndex The index of the box to be added.
   // @param theVoxelBox An array of 6 integers representing the minimum and maximum voxel
   //                    coordinates of the box in the order: [minX, minY, minZ, maxX, maxY, maxZ].
-  void AddBox(const Standard_Integer                 theBoxIndex,
-              const std::array<Standard_Integer, 6>& theVoxelBox);
+  void AddBox(const int theBoxIndex, const std::array<int, 6>& theVoxelBox);
 
   // Returns the list of box indices that occupy the specified voxel index in the X direction.
   // In other words, the vector will contain the indices of boxes that occupy the voxels with
@@ -157,7 +156,7 @@ public:
   // @param theVoxelIndex The index of the voxel in the X direction.
   // @return A pointer to a vector of integers representing the box indices.
   //         The vector can be null if no boxes occupy the voxel.
-  const VectorInt* GetSliceX(const Standard_Integer theVoxelIndex) const;
+  const VectorInt* GetSliceX(const int theVoxelIndex) const;
 
   // Returns the list of box indices that occupy the specified voxel index in the Y direction.
   // In other words, the vector will contain the indices of boxes that occupy the voxels with
@@ -166,7 +165,7 @@ public:
   // @param theVoxelIndex The index of the voxel in the Y direction.
   // @return A pointer to a vector of integers representing the box indices.
   //         The vector can be null if no boxes occupy the voxel.
-  const VectorInt* GetSliceY(const Standard_Integer theVoxelIndex) const;
+  const VectorInt* GetSliceY(const int theVoxelIndex) const;
 
   // Returns the list of box indices that occupy the specified voxel index in the Z direction.
   // In other words, the vector will contain the indices of boxes that occupy the voxels with
@@ -175,7 +174,7 @@ public:
   // @param theVoxelIndex The index of the voxel in the Z direction.
   // @return A pointer to a vector of integers representing the box indices.
   //         The vector can be null if no boxes occupy the voxel.
-  const VectorInt* GetSliceZ(const Standard_Integer theVoxelIndex) const;
+  const VectorInt* GetSliceZ(const int theVoxelIndex) const;
 
 private:
   // Appends a slice of the voxel grid in the X direction.
@@ -184,9 +183,7 @@ private:
   // @param theVoxelIndexMin The minimum voxel index in the X direction.
   // @param theVoxelIndexMax The maximum voxel index in the X direction.
   // @param theBoxIndex The index of the box to be added.
-  void AppendSliceX(const Standard_Integer theVoxelIndexMin,
-                    const Standard_Integer theVoxelIndexMax,
-                    const Standard_Integer theBoxIndex);
+  void AppendSliceX(const int theVoxelIndexMin, const int theVoxelIndexMax, const int theBoxIndex);
 
   // Appends a slice of the voxel grid in the Y direction.
   // This method is used to store the indices of boxes that occupy a specific voxel index in the Y
@@ -194,9 +191,7 @@ private:
   // @param theVoxelIndexMin The minimum voxel index in the Y direction.
   // @param theVoxelIndexMax The maximum voxel index in the Y direction.
   // @param theBoxIndex The index of the box to be added.
-  void AppendSliceY(const Standard_Integer theVoxelIndexMin,
-                    const Standard_Integer theVoxelIndexMax,
-                    const Standard_Integer theBoxIndex);
+  void AppendSliceY(const int theVoxelIndexMin, const int theVoxelIndexMax, const int theBoxIndex);
 
   // Appends a slice of the voxel grid in the Z direction.
   // This method is used to store the indices of boxes that occupy a specific voxel index in the Z
@@ -204,31 +199,28 @@ private:
   // @param theVoxelIndexMin The minimum voxel index in the Z direction.
   // @param theVoxelIndexMax The maximum voxel index in the Z direction.
   // @param theBoxIndex The index of the box to be added.
-  void AppendSliceZ(const Standard_Integer theVoxelIndexMin,
-                    const Standard_Integer theVoxelIndexMax,
-                    const Standard_Integer theBoxIndex);
+  void AppendSliceZ(const int theVoxelIndexMin, const int theVoxelIndexMax, const int theBoxIndex);
 
 private:
-  Handle(NCollection_IncAllocator) myAllocator; //< Allocator for all vectors.
-  SliceArray                       mySlicesX;   //< Array of box indices lists for each X slice.
-  SliceArray                       mySlicesY;   //< Array of box indices lists for each Y slice.
-  SliceArray                       mySlicesZ;   //< Array of box indices lists for each Z slice.
+  occ::handle<NCollection_IncAllocator> myAllocator; //< Allocator for all vectors.
+  SliceArray                            mySlicesX; //< Array of box indices lists for each X slice.
+  SliceArray                            mySlicesY; //< Array of box indices lists for each Y slice.
+  SliceArray                            mySlicesZ; //< Array of box indices lists for each Z slice.
 };
 
 IMPLEMENT_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
 
 //==================================================================================================
 
-Bnd_VoxelGrid::Bnd_VoxelGrid(const Standard_Integer theResolution,
-                             const Standard_Integer theExpectedBoxCount)
+Bnd_VoxelGrid::Bnd_VoxelGrid(const int theResolution, const int theExpectedBoxCount)
     : myAllocator(new NCollection_IncAllocator()),
       mySlicesX(0, theResolution - 1),
       mySlicesY(0, theResolution - 1),
       mySlicesZ(0, theResolution - 1)
 {
   // Estimate boxes per slice: total boxes / resolution, with minimum of 16.
-  const Standard_Integer anIncrement = std::max(theExpectedBoxCount / theResolution, 16);
-  for (Standard_Integer i = 0; i < theResolution; ++i)
+  const int anIncrement = std::max(theExpectedBoxCount / theResolution, 16);
+  for (int i = 0; i < theResolution; ++i)
   {
     // Assign vectors with the incremental allocator for faster memory allocation.
     mySlicesX[i] = VectorInt(anIncrement, myAllocator);
@@ -239,15 +231,14 @@ Bnd_VoxelGrid::Bnd_VoxelGrid(const Standard_Integer theResolution,
 
 //==================================================================================================
 
-void Bnd_VoxelGrid::AddBox(const Standard_Integer                 theBoxIndex,
-                           const std::array<Standard_Integer, 6>& theVoxelBox)
+void Bnd_VoxelGrid::AddBox(const int theBoxIndex, const std::array<int, 6>& theVoxelBox)
 {
-  const Standard_Integer aMinVoxelX = theVoxelBox[0];
-  const Standard_Integer aMinVoxelY = theVoxelBox[1];
-  const Standard_Integer aMinVoxelZ = theVoxelBox[2];
-  const Standard_Integer aMaxVoxelX = theVoxelBox[3];
-  const Standard_Integer aMaxVoxelY = theVoxelBox[4];
-  const Standard_Integer aMaxVoxelZ = theVoxelBox[5];
+  const int aMinVoxelX = theVoxelBox[0];
+  const int aMinVoxelY = theVoxelBox[1];
+  const int aMinVoxelZ = theVoxelBox[2];
+  const int aMaxVoxelX = theVoxelBox[3];
+  const int aMaxVoxelY = theVoxelBox[4];
+  const int aMaxVoxelZ = theVoxelBox[5];
 
   AppendSliceX(aMinVoxelX, aMaxVoxelX, theBoxIndex);
   AppendSliceY(aMinVoxelY, aMaxVoxelY, theBoxIndex);
@@ -256,7 +247,7 @@ void Bnd_VoxelGrid::AddBox(const Standard_Integer                 theBoxIndex,
 
 //==================================================================================================
 
-const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceX(const Standard_Integer theVoxelIndex) const
+const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceX(const int theVoxelIndex) const
 {
   const VectorInt& aSlice = mySlicesX[theVoxelIndex];
   return aSlice.IsEmpty() ? nullptr : &aSlice;
@@ -264,7 +255,7 @@ const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceX(const Standard_Integer 
 
 //==================================================================================================
 
-const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceY(const Standard_Integer theVoxelIndex) const
+const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceY(const int theVoxelIndex) const
 {
   const VectorInt& aSlice = mySlicesY[theVoxelIndex];
   return aSlice.IsEmpty() ? nullptr : &aSlice;
@@ -272,7 +263,7 @@ const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceY(const Standard_Integer 
 
 //==================================================================================================
 
-const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceZ(const Standard_Integer theVoxelIndex) const
+const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceZ(const int theVoxelIndex) const
 {
   const VectorInt& aSlice = mySlicesZ[theVoxelIndex];
   return aSlice.IsEmpty() ? nullptr : &aSlice;
@@ -280,11 +271,11 @@ const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceZ(const Standard_Integer 
 
 //==================================================================================================
 
-void Bnd_VoxelGrid::AppendSliceX(const Standard_Integer theVoxelIndexMin,
-                                 const Standard_Integer theVoxelIndexMax,
-                                 const Standard_Integer theBoxIndex)
+void Bnd_VoxelGrid::AppendSliceX(const int theVoxelIndexMin,
+                                 const int theVoxelIndexMax,
+                                 const int theBoxIndex)
 {
-  for (Standard_Integer i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
+  for (int i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
   {
     mySlicesX[i].Append(theBoxIndex);
   }
@@ -292,11 +283,11 @@ void Bnd_VoxelGrid::AppendSliceX(const Standard_Integer theVoxelIndexMin,
 
 //==================================================================================================
 
-void Bnd_VoxelGrid::AppendSliceY(const Standard_Integer theVoxelIndexMin,
-                                 const Standard_Integer theVoxelIndexMax,
-                                 const Standard_Integer theBoxIndex)
+void Bnd_VoxelGrid::AppendSliceY(const int theVoxelIndexMin,
+                                 const int theVoxelIndexMax,
+                                 const int theBoxIndex)
 {
-  for (Standard_Integer i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
+  for (int i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
   {
     mySlicesY[i].Append(theBoxIndex);
   }
@@ -304,11 +295,11 @@ void Bnd_VoxelGrid::AppendSliceY(const Standard_Integer theVoxelIndexMin,
 
 //==================================================================================================
 
-void Bnd_VoxelGrid::AppendSliceZ(const Standard_Integer theVoxelIndexMin,
-                                 const Standard_Integer theVoxelIndexMax,
-                                 const Standard_Integer theBoxIndex)
+void Bnd_VoxelGrid::AppendSliceZ(const int theVoxelIndexMin,
+                                 const int theVoxelIndexMax,
+                                 const int theBoxIndex)
 {
-  for (Standard_Integer i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
+  for (int i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
   {
     mySlicesZ[i].Append(theBoxIndex);
   }
@@ -331,11 +322,11 @@ Bnd_BoundSortBox::Bnd_BoundSortBox()
 
 //==================================================================================================
 
-void Bnd_BoundSortBox::Initialize(const Handle(Bnd_HArray1OfBox)& theSetOfBoxes)
+void Bnd_BoundSortBox::Initialize(const occ::handle<NCollection_HArray1<Bnd_Box>>& theSetOfBoxes)
 {
   myBoxes = theSetOfBoxes;
 
-  for (Standard_Integer aBoxIndex = myBoxes->Lower(); aBoxIndex <= myBoxes->Upper(); ++aBoxIndex)
+  for (int aBoxIndex = myBoxes->Lower(); aBoxIndex <= myBoxes->Upper(); ++aBoxIndex)
   {
     const Bnd_Box& aBox = myBoxes->Value(aBoxIndex);
     if (!aBox.IsVoid())
@@ -359,8 +350,8 @@ void Bnd_BoundSortBox::Initialize(const Handle(Bnd_HArray1OfBox)& theSetOfBoxes)
 
 //==================================================================================================
 
-void Bnd_BoundSortBox::Initialize(const Bnd_Box&                  theEnclosingBox,
-                                  const Handle(Bnd_HArray1OfBox)& theSetOfBoxes)
+void Bnd_BoundSortBox::Initialize(const Bnd_Box&                                   theEnclosingBox,
+                                  const occ::handle<NCollection_HArray1<Bnd_Box>>& theSetOfBoxes)
 {
   myBoxes        = theSetOfBoxes;
   myEnclosingBox = theEnclosingBox;
@@ -379,10 +370,10 @@ void Bnd_BoundSortBox::Initialize(const Bnd_Box&                  theEnclosingBo
 
 //==================================================================================================
 
-void Bnd_BoundSortBox::Initialize(const Bnd_Box& theEnclosingBox, const Standard_Integer theNbBoxes)
+void Bnd_BoundSortBox::Initialize(const Bnd_Box& theEnclosingBox, const int theNbBoxes)
 {
   Standard_NullValue_Raise_if(theNbBoxes <= 0, "Unexpected: theNbBoxes <= 0");
-  myBoxes = new Bnd_HArray1OfBox(1, theNbBoxes);
+  myBoxes = new NCollection_HArray1<Bnd_Box>(1, theNbBoxes);
   //***>>> JCD - 04.08.2000 - Array initialization is missing...
   Bnd_Box emptyBox;
   myBoxes->Init(emptyBox);
@@ -401,7 +392,7 @@ void Bnd_BoundSortBox::Initialize(const Bnd_Box& theEnclosingBox, const Standard
 
 //==================================================================================================
 
-void Bnd_BoundSortBox::Add(const Bnd_Box& theBox, const Standard_Integer theIndex)
+void Bnd_BoundSortBox::Add(const Bnd_Box& theBox, const int theIndex)
 {
   Standard_MultiplyDefined_Raise_if(!(myBoxes->Value(theIndex).IsVoid()),
                                     " This box is already defined !");
@@ -417,7 +408,7 @@ void Bnd_BoundSortBox::Add(const Bnd_Box& theBox, const Standard_Integer theInde
 
 //==================================================================================================
 
-const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare(const Bnd_Box& theBox)
+const NCollection_List<int>& Bnd_BoundSortBox::Compare(const Bnd_Box& theBox)
 
 {
   myLastResult.Clear();
@@ -455,7 +446,7 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare(const Bnd_Box& theBox)
   constexpr uint8_t    anOccupiedXY = 0b11;
 
   // Checking the voxels along X-axis.
-  for (Standard_Integer aVoxelX = aMinVoxelX; aVoxelX <= aMaxVoxelX; ++aVoxelX)
+  for (int aVoxelX = aMinVoxelX; aVoxelX <= aMaxVoxelX; ++aVoxelX)
   {
     const Bnd_VoxelGrid::VectorInt* aBoxIndices = myVoxelGrid->GetSliceX(aVoxelX);
     if (aBoxIndices == nullptr)
@@ -470,7 +461,7 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare(const Bnd_Box& theBox)
   }
 
   // Checking the voxels along Y-axis.
-  for (Standard_Integer aVoxelY = aMinVoxelY; aVoxelY <= aMaxVoxelY; ++aVoxelY)
+  for (int aVoxelY = aMinVoxelY; aVoxelY <= aMaxVoxelY; ++aVoxelY)
   {
     const Bnd_VoxelGrid::VectorInt* aBoxIndices = myVoxelGrid->GetSliceY(aVoxelY);
     if (aBoxIndices == nullptr)
@@ -485,7 +476,7 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare(const Bnd_Box& theBox)
   }
 
   // Checking the voxels along Z-axis.
-  for (Standard_Integer aVoxelZ = aMinVoxelZ; aVoxelZ <= aMaxVoxelZ; ++aVoxelZ)
+  for (int aVoxelZ = aMinVoxelZ; aVoxelZ <= aMaxVoxelZ; ++aVoxelZ)
   {
     const Bnd_VoxelGrid::VectorInt* aBoxIndices = myVoxelGrid->GetSliceZ(aVoxelZ);
     if (aBoxIndices == nullptr)
@@ -514,11 +505,11 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare(const Bnd_Box& theBox)
 
 //==================================================================================================
 
-const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare(const gp_Pln& thePlane)
+const NCollection_List<int>& Bnd_BoundSortBox::Compare(const gp_Pln& thePlane)
 
 {
   myLastResult.Clear();
-  for (Standard_Integer aBoxIndex = myBoxes->Lower(); aBoxIndex <= myBoxes->Upper(); ++aBoxIndex)
+  for (int aBoxIndex = myBoxes->Lower(); aBoxIndex <= myBoxes->Upper(); ++aBoxIndex)
   {
     const Bnd_Box& aBox = myBoxes->Value(aBoxIndex);
     if (!aBox.IsOut(thePlane))
@@ -533,7 +524,7 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare(const gp_Pln& thePlane)
 
 void Bnd_BoundSortBox::calculateCoefficients()
 {
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   myEnclosingBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
   myCoeffX = (aXmax - aXmin == 0. ? 0. : myResolution / (aXmax - aXmin));
   myCoeffY = (aYmax - aYmin == 0. ? 0. : myResolution / (aYmax - aYmin));
@@ -554,7 +545,7 @@ void Bnd_BoundSortBox::resetVoxelGrid()
 
 void Bnd_BoundSortBox::sortBoxes()
 {
-  for (Standard_Integer aBoxIndex = myBoxes->Lower(); aBoxIndex <= myBoxes->Upper(); ++aBoxIndex)
+  for (int aBoxIndex = myBoxes->Lower(); aBoxIndex <= myBoxes->Upper(); ++aBoxIndex)
   {
     addBox(myBoxes->Value(aBoxIndex), aBoxIndex);
   }
@@ -562,12 +553,12 @@ void Bnd_BoundSortBox::sortBoxes()
 
 //==================================================================================================
 
-std::array<Standard_Integer, 6> Bnd_BoundSortBox::getBoundingVoxels(const Bnd_Box& theBox) const
+std::array<int, 6> Bnd_BoundSortBox::getBoundingVoxels(const Bnd_Box& theBox) const
 {
   // Start point of the voxel grid.
   const gp_Pnt aGridStart = myEnclosingBox.CornerMin();
 
-  Standard_Real aXMin, aYMin, aZMin, aXMax, aYMax, aZmax;
+  double aXMin, aYMin, aZMin, aXMax, aYMax, aZmax;
   theBox.Get(aXMin, aYMin, aZMin, aXMax, aYMax, aZmax);
 
   // Calculate the voxel indices for the bounding box.
@@ -588,37 +579,25 @@ std::array<Standard_Integer, 6> Bnd_BoundSortBox::getBoundingVoxels(const Bnd_Bo
   // myEnclosingBox.CornerMin() from the coordinate of the box.
   // Note: adding and substracting one to make sure that that the box is inside the
   // voxel coordinates. Just a safety measure.
-  const Standard_Integer aXMinIndex =
-    std::clamp(static_cast<Standard_Integer>((aXMin - aGridStart.X()) * myCoeffX) - 1,
-               0,
-               myResolution - 1);
-  const Standard_Integer aYMinIndex =
-    std::clamp(static_cast<Standard_Integer>((aYMin - aGridStart.Y()) * myCoeffY) - 1,
-               0,
-               myResolution - 1);
-  const Standard_Integer aZMinIndex =
-    std::clamp(static_cast<Standard_Integer>((aZMin - aGridStart.Z()) * myCoeffZ) - 1,
-               0,
-               myResolution - 1);
-  const Standard_Integer aXMaxIndex =
-    std::clamp(static_cast<Standard_Integer>((aXMax - aGridStart.X()) * myCoeffX) + 1,
-               0,
-               myResolution - 1);
-  const Standard_Integer aYMaxIndex =
-    std::clamp(static_cast<Standard_Integer>((aYMax - aGridStart.Y()) * myCoeffY) + 1,
-               0,
-               myResolution - 1);
-  const Standard_Integer aZMaxIndex =
-    std::clamp(static_cast<Standard_Integer>((aZmax - aGridStart.Z()) * myCoeffZ) + 1,
-               0,
-               myResolution - 1);
+  const int aXMinIndex =
+    std::clamp(static_cast<int>((aXMin - aGridStart.X()) * myCoeffX) - 1, 0, myResolution - 1);
+  const int aYMinIndex =
+    std::clamp(static_cast<int>((aYMin - aGridStart.Y()) * myCoeffY) - 1, 0, myResolution - 1);
+  const int aZMinIndex =
+    std::clamp(static_cast<int>((aZMin - aGridStart.Z()) * myCoeffZ) - 1, 0, myResolution - 1);
+  const int aXMaxIndex =
+    std::clamp(static_cast<int>((aXMax - aGridStart.X()) * myCoeffX) + 1, 0, myResolution - 1);
+  const int aYMaxIndex =
+    std::clamp(static_cast<int>((aYMax - aGridStart.Y()) * myCoeffY) + 1, 0, myResolution - 1);
+  const int aZMaxIndex =
+    std::clamp(static_cast<int>((aZmax - aGridStart.Z()) * myCoeffZ) + 1, 0, myResolution - 1);
 
   return {aXMinIndex, aYMinIndex, aZMinIndex, aXMaxIndex, aYMaxIndex, aZMaxIndex};
 }
 
 //==================================================================================================
 
-void Bnd_BoundSortBox::addBox(const Bnd_Box& theBox, const Standard_Integer theIndex)
+void Bnd_BoundSortBox::addBox(const Bnd_Box& theBox, const int theIndex)
 {
   if (theBox.IsVoid())
   {
@@ -628,7 +607,7 @@ void Bnd_BoundSortBox::addBox(const Bnd_Box& theBox, const Standard_Integer theI
   auto&& [aMinVoxelX, aMinVoxelY, aMinVoxelZ, aMaxVoxelX, aMaxVoxelY, aMaxVoxelZ] =
     getBoundingVoxels(theBox);
 
-  const Standard_Integer aBoxMinSide =
+  const int aBoxMinSide =
     std::min({aMaxVoxelX - aMinVoxelX, aMaxVoxelY - aMinVoxelY, aMaxVoxelZ - aMinVoxelZ});
 
   // If the box spans a significant portion of the grid,

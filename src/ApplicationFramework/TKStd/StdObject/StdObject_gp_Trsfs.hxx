@@ -57,10 +57,10 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Trsf2d
 {
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Real    aScale;
-  Standard_Integer aForm;
-  gp_Mat2d         aMat;
-  gp_XY            aLoc;
+  double   aScale;
+  int      aForm;
+  gp_Mat2d aMat;
+  gp_XY    aLoc;
 
   theReadData >> aScale >> aForm >> aMat >> aLoc;
 
@@ -78,10 +78,10 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const 
 {
   StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
-  Standard_Real    aScale = theTrsf.ScaleFactor();
-  Standard_Integer aForm  = theTrsf.Form();
-  const gp_Mat2d&  aMat   = theTrsf.HVectorialPart();
-  const gp_XY&     aLoc   = theTrsf.TranslationPart();
+  double          aScale = theTrsf.ScaleFactor();
+  int             aForm  = theTrsf.Form();
+  const gp_Mat2d& aMat   = theTrsf.HVectorialPart();
+  const gp_XY&    aLoc   = theTrsf.TranslationPart();
 
   theWriteData << aScale << aForm << aMat << aLoc;
 
@@ -92,10 +92,10 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Trsf& 
 {
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Real    aScale;
-  Standard_Integer aForm;
-  gp_Mat           aMat;
-  gp_XYZ           aLoc;
+  double aScale;
+  int    aForm;
+  gp_Mat aMat;
+  gp_XYZ aLoc;
 
   theReadData >> aScale >> aForm >> aMat >> aLoc;
 
@@ -119,10 +119,10 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const 
 {
   StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
-  Standard_Real    aScale = theTrsf.ScaleFactor();
-  Standard_Integer aForm  = theTrsf.Form();
-  const gp_Mat&    aMat   = theTrsf.HVectorialPart();
-  const gp_XYZ&    aLoc   = theTrsf.TranslationPart();
+  double        aScale = theTrsf.ScaleFactor();
+  int           aForm  = theTrsf.Form();
+  const gp_Mat& aMat   = theTrsf.HVectorialPart();
+  const gp_XYZ& aLoc   = theTrsf.TranslationPart();
 
   theWriteData << aScale << aForm << aMat << aLoc;
 

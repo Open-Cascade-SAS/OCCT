@@ -24,7 +24,7 @@
 struct Geom2dHash_ParabolaHasher
 {
   // Hashes the parabola by its position and focal length.
-  std::size_t operator()(const Handle(Geom2d_Parabola)& theParabola) const noexcept
+  std::size_t operator()(const occ::handle<Geom2d_Parabola>& theParabola) const noexcept
   {
     constexpr double aTolerance = 1e-12;
     constexpr double aFactor    = 1.0 / aTolerance;
@@ -37,8 +37,8 @@ struct Geom2dHash_ParabolaHasher
   }
 
   // Compares two parabolas by their positions and focal lengths.
-  bool operator()(const Handle(Geom2d_Parabola)& theParabola1,
-                  const Handle(Geom2d_Parabola)& theParabola2) const noexcept
+  bool operator()(const occ::handle<Geom2d_Parabola>& theParabola1,
+                  const occ::handle<Geom2d_Parabola>& theParabola2) const noexcept
   {
     constexpr double               aTolerance = 1e-12;
     const Geom2dHash_AxisPlacement anAxisHasher;

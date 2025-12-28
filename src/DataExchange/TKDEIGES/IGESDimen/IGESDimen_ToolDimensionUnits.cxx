@@ -33,18 +33,19 @@
 
 IGESDimen_ToolDimensionUnits::IGESDimen_ToolDimensionUnits() {}
 
-void IGESDimen_ToolDimensionUnits::ReadOwnParams(const Handle(IGESDimen_DimensionUnits)& ent,
-                                                 const Handle(IGESData_IGESReaderData)& /* IR */,
-                                                 IGESData_ParamReader& PR) const
+void IGESDimen_ToolDimensionUnits::ReadOwnParams(
+  const occ::handle<IGESDimen_DimensionUnits>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
+  IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer                 tempNbProps;
-  Standard_Integer                 tempSecondDimenPos;
-  Standard_Integer                 tempUnitsIndic;
-  Standard_Integer                 tempCharSet;
-  Standard_Integer                 tempFracFlag;
-  Standard_Integer                 tempPrecision;
-  Handle(TCollection_HAsciiString) tempFormatString;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int                                   tempNbProps;
+  int                                   tempSecondDimenPos;
+  int                                   tempUnitsIndic;
+  int                                   tempCharSet;
+  int                                   tempFracFlag;
+  int                                   tempPrecision;
+  occ::handle<TCollection_HAsciiString> tempFormatString;
 
   if (PR.DefinedElseSkip())
     // clang-format off
@@ -75,8 +76,8 @@ void IGESDimen_ToolDimensionUnits::ReadOwnParams(const Handle(IGESDimen_Dimensio
             tempPrecision);
 }
 
-void IGESDimen_ToolDimensionUnits::WriteOwnParams(const Handle(IGESDimen_DimensionUnits)& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+void IGESDimen_ToolDimensionUnits::WriteOwnParams(const occ::handle<IGESDimen_DimensionUnits>& ent,
+                                                  IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->SecondaryDimenPosition());
@@ -87,23 +88,23 @@ void IGESDimen_ToolDimensionUnits::WriteOwnParams(const Handle(IGESDimen_Dimensi
   IW.Send(ent->PrecisionOrDenominator());
 }
 
-void IGESDimen_ToolDimensionUnits::OwnShared(const Handle(IGESDimen_DimensionUnits)& /* ent */,
+void IGESDimen_ToolDimensionUnits::OwnShared(const occ::handle<IGESDimen_DimensionUnits>& /* ent */,
                                              Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESDimen_ToolDimensionUnits::OwnCopy(const Handle(IGESDimen_DimensionUnits)& another,
-                                           const Handle(IGESDimen_DimensionUnits)& ent,
+void IGESDimen_ToolDimensionUnits::OwnCopy(const occ::handle<IGESDimen_DimensionUnits>& another,
+                                           const occ::handle<IGESDimen_DimensionUnits>& ent,
                                            Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer                 tempNbProps        = another->NbPropertyValues();
-  Standard_Integer                 tempSecondDimenPos = another->SecondaryDimenPosition();
-  Standard_Integer                 tempUnitsIndic     = another->UnitsIndicator();
-  Standard_Integer                 tempCharSet        = another->CharacterSet();
-  Handle(TCollection_HAsciiString) tempFormatString =
+  int                                   tempNbProps        = another->NbPropertyValues();
+  int                                   tempSecondDimenPos = another->SecondaryDimenPosition();
+  int                                   tempUnitsIndic     = another->UnitsIndicator();
+  int                                   tempCharSet        = another->CharacterSet();
+  occ::handle<TCollection_HAsciiString> tempFormatString =
     new TCollection_HAsciiString(another->FormatString());
-  Standard_Integer tempFracFlag  = another->FractionFlag();
-  Standard_Integer tempPrecision = another->PrecisionOrDenominator();
+  int tempFracFlag  = another->FractionFlag();
+  int tempPrecision = another->PrecisionOrDenominator();
   ent->Init(tempNbProps,
             tempSecondDimenPos,
             tempUnitsIndic,
@@ -113,10 +114,10 @@ void IGESDimen_ToolDimensionUnits::OwnCopy(const Handle(IGESDimen_DimensionUnits
             tempPrecision);
 }
 
-Standard_Boolean IGESDimen_ToolDimensionUnits::OwnCorrect(
-  const Handle(IGESDimen_DimensionUnits)& ent) const
+bool IGESDimen_ToolDimensionUnits::OwnCorrect(
+  const occ::handle<IGESDimen_DimensionUnits>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 6);
+  bool res = (ent->NbPropertyValues() != 6);
   if (res)
     ent->Init(6,
               ent->SecondaryDimenPosition(),
@@ -129,7 +130,7 @@ Standard_Boolean IGESDimen_ToolDimensionUnits::OwnCorrect(
 }
 
 IGESData_DirChecker IGESDimen_ToolDimensionUnits::DirChecker(
-  const Handle(IGESDimen_DimensionUnits)& /* ent */) const
+  const occ::handle<IGESDimen_DimensionUnits>& /* ent */) const
 {
   IGESData_DirChecker DC(406, 28);
   DC.Structure(IGESData_DefVoid);
@@ -144,9 +145,9 @@ IGESData_DirChecker IGESDimen_ToolDimensionUnits::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolDimensionUnits::OwnCheck(const Handle(IGESDimen_DimensionUnits)& ent,
+void IGESDimen_ToolDimensionUnits::OwnCheck(const occ::handle<IGESDimen_DimensionUnits>& ent,
                                             const Interface_ShareTool&,
-                                            Handle(Interface_Check)& ach) const
+                                            occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 6)
     ach->AddFail("Number of properties != 6");
@@ -158,10 +159,10 @@ void IGESDimen_ToolDimensionUnits::OwnCheck(const Handle(IGESDimen_DimensionUnit
     ach->AddFail("Fraction Flag != 0,1");
 }
 
-void IGESDimen_ToolDimensionUnits::OwnDump(const Handle(IGESDimen_DimensionUnits)& ent,
+void IGESDimen_ToolDimensionUnits::OwnDump(const occ::handle<IGESDimen_DimensionUnits>& ent,
                                            const IGESData_IGESDumper& /* dumper */,
                                            Standard_OStream& S,
-                                           const Standard_Integer /* level */) const
+                                           const int /* level */) const
 {
   S << "IGESDimen_DimensionUnits\n"
     << "Number of property values : " << ent->NbPropertyValues() << "\n"

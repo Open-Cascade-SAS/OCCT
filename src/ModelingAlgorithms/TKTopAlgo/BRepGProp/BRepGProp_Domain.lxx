@@ -46,7 +46,7 @@ inline void BRepGProp_Domain::Init(const TopoDS_Face& F)
 // purpose  : Returns True if there is another arc of curve in the list.
 //=======================================================================
 
-inline Standard_Boolean BRepGProp_Domain::More()
+inline bool BRepGProp_Domain::More()
 {
   return myExplorer.More();
 }

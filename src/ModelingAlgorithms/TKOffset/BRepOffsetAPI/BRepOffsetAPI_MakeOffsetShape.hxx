@@ -26,7 +26,8 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <BRepOffset_Mode.hxx>
 #include <GeomAbs_JoinType.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Shape;
 
 //! Describes functions to build a shell out of a shape. The
@@ -45,8 +46,7 @@ public:
 
   //! Constructs offset shape for the given one using simple algorithm without intersections
   //! computation.
-  Standard_EXPORT void PerformBySimple(const TopoDS_Shape& theS,
-                                       const Standard_Real theOffsetValue);
+  Standard_EXPORT void PerformBySimple(const TopoDS_Shape& theS, const double theOffsetValue);
 
   //! Constructs a shape parallel to the shape S, where
   //! - S may be a face, a shell, a solid or a compound of these shape kinds;
@@ -105,13 +105,13 @@ public:
   //! geometry of S is BSpline with continuity C0.
   Standard_EXPORT void PerformByJoin(
     const TopoDS_Shape&          S,
-    const Standard_Real          Offset,
-    const Standard_Real          Tol,
+    const double                 Offset,
+    const double                 Tol,
     const BRepOffset_Mode        Mode           = BRepOffset_Skin,
-    const Standard_Boolean       Intersection   = Standard_False,
-    const Standard_Boolean       SelfInter      = Standard_False,
+    const bool                   Intersection   = false,
+    const bool                   SelfInter      = false,
     const GeomAbs_JoinType       Join           = GeomAbs_Arc,
-    const Standard_Boolean       RemoveIntEdges = Standard_False,
+    const bool                   RemoveIntEdges = false,
     const Message_ProgressRange& theRange       = Message_ProgressRange());
 
   //! Returns instance of the underlying intersection / arc algorithm.
@@ -119,18 +119,18 @@ public:
 
   //! Does nothing.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the list of shapes generated from the shape <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& S) override;
 
   //! Returns the list of shapes Modified from the shape <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+    const TopoDS_Shape& S) override;
 
   //! Returns true if the shape has been removed from the result.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
 
   //! Returns offset join type.
   Standard_EXPORT GeomAbs_JoinType GetJoinType() const;

@@ -37,7 +37,7 @@ gp_Mat2d::gp_Mat2d(const gp_XY& theCol1, const gp_XY& theCol2)
 
 //=================================================================================================
 
-void gp_Mat2d::SetCol(const Standard_Integer theCol, const gp_XY& theValue)
+void gp_Mat2d::SetCol(const int theCol, const gp_XY& theValue)
 {
   Standard_OutOfRange_Raise_if(theCol < 1 || theCol > 2, "gp_Mat2d::SetCol() - invalid index");
   if (theCol == 1)
@@ -64,7 +64,7 @@ void gp_Mat2d::SetCols(const gp_XY& theCol1, const gp_XY& theCol2)
 
 //=================================================================================================
 
-void gp_Mat2d::SetRow(const Standard_Integer theRow, const gp_XY& theValue)
+void gp_Mat2d::SetRow(const int theRow, const gp_XY& theValue)
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2, "gp_Mat2d::SetRow() - invalid index");
   if (theRow == 1)
@@ -91,7 +91,7 @@ void gp_Mat2d::SetRows(const gp_XY& theRow1, const gp_XY& theRow2)
 
 //=================================================================================================
 
-gp_XY gp_Mat2d::Column(const Standard_Integer theCol) const
+gp_XY gp_Mat2d::Column(const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theCol < 1 || theCol > 2, "gp_Mat2d::Column() - invalid index");
   if (theCol == 1)
@@ -110,7 +110,7 @@ gp_XY gp_Mat2d::Diagonal() const
 
 //=================================================================================================
 
-gp_XY gp_Mat2d::Row(const Standard_Integer theRow) const
+gp_XY gp_Mat2d::Row(const int theRow) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2, "gp_Mat2d::Row() - invalid index");
   if (theRow == 1)
@@ -124,12 +124,12 @@ gp_XY gp_Mat2d::Row(const Standard_Integer theRow) const
 
 void gp_Mat2d::Invert()
 {
-  Standard_Real aNewMat[2][2];
-  aNewMat[0][0]      = myMat[1][1];
-  aNewMat[0][1]      = -myMat[0][1];
-  aNewMat[1][0]      = -myMat[1][0];
-  aNewMat[1][1]      = myMat[0][0];
-  Standard_Real aDet = aNewMat[0][0] * aNewMat[1][1] - aNewMat[0][1] * aNewMat[1][0];
+  double aNewMat[2][2];
+  aNewMat[0][0] = myMat[1][1];
+  aNewMat[0][1] = -myMat[0][1];
+  aNewMat[1][0] = -myMat[1][0];
+  aNewMat[1][1] = myMat[0][0];
+  double aDet   = aNewMat[0][0] * aNewMat[1][1] - aNewMat[0][1] * aNewMat[1][0];
   Standard_ConstructionError_Raise_if(std::abs(aDet) <= gp::Resolution(),
                                       "gp_Mat2d::Invert() - matrix has zero determinant");
   aDet        = 1.0 / aDet;
@@ -141,7 +141,7 @@ void gp_Mat2d::Invert()
 
 //=================================================================================================
 
-void gp_Mat2d::Power(const Standard_Integer theN)
+void gp_Mat2d::Power(const int theN)
 {
   if (theN == 1)
   {
@@ -158,8 +158,8 @@ void gp_Mat2d::Power(const Standard_Integer theN)
   {
     if (theN < 0)
       Invert();
-    Standard_Integer Npower = std::abs(theN) - 1;
-    gp_Mat2d         aTemp  = *this;
+    int      Npower = std::abs(theN) - 1;
+    gp_Mat2d aTemp  = *this;
     for (;;)
     {
       if (IsOdd(Npower))

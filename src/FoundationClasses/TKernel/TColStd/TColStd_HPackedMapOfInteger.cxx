@@ -18,7 +18,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(TColStd_HPackedMapOfInteger, Standard_Transient)
 
 //! Constructor of empty map
-TColStd_HPackedMapOfInteger::TColStd_HPackedMapOfInteger(const Standard_Integer NbBuckets)
+TColStd_HPackedMapOfInteger::TColStd_HPackedMapOfInteger(const int NbBuckets)
 {
   myMap.ReSize(NbBuckets);
 }

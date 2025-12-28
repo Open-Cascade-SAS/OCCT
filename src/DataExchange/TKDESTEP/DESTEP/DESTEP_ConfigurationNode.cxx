@@ -40,7 +40,8 @@ DESTEP_ConfigurationNode::DESTEP_ConfigurationNode()
 
 //=================================================================================================
 
-DESTEP_ConfigurationNode::DESTEP_ConfigurationNode(const Handle(DESTEP_ConfigurationNode)& theNode)
+DESTEP_ConfigurationNode::DESTEP_ConfigurationNode(
+  const occ::handle<DESTEP_ConfigurationNode>& theNode)
     : DE_ShapeFixConfigurationNode(theNode),
       InternalParameters(theNode->InternalParameters)
 {
@@ -48,7 +49,7 @@ DESTEP_ConfigurationNode::DESTEP_ConfigurationNode(const Handle(DESTEP_Configura
 
 //=================================================================================================
 
-bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+bool DESTEP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& theResource)
 {
   TCollection_AsciiString aScope =
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
@@ -613,14 +614,14 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
 
 //=================================================================================================
 
-Handle(DE_ConfigurationNode) DESTEP_ConfigurationNode::Copy() const
+occ::handle<DE_ConfigurationNode> DESTEP_ConfigurationNode::Copy() const
 {
   return new DESTEP_ConfigurationNode(*this);
 }
 
 //=================================================================================================
 
-Handle(DE_Provider) DESTEP_ConfigurationNode::BuildProvider()
+occ::handle<DE_Provider> DESTEP_ConfigurationNode::BuildProvider()
 {
   return new DESTEP_Provider(this);
 }
@@ -662,9 +663,9 @@ TCollection_AsciiString DESTEP_ConfigurationNode::GetVendor() const
 
 //=================================================================================================
 
-TColStd_ListOfAsciiString DESTEP_ConfigurationNode::GetExtensions() const
+NCollection_List<TCollection_AsciiString> DESTEP_ConfigurationNode::GetExtensions() const
 {
-  TColStd_ListOfAsciiString anExt;
+  NCollection_List<TCollection_AsciiString> anExt;
   anExt.Append("stp");
   anExt.Append("step");
   anExt.Append("stpz");
@@ -673,7 +674,7 @@ TColStd_ListOfAsciiString DESTEP_ConfigurationNode::GetExtensions() const
 
 //=================================================================================================
 
-bool DESTEP_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
+bool DESTEP_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer>& theBuffer) const
 {
   if (theBuffer.IsNull() || theBuffer->Size() < 100)
   {

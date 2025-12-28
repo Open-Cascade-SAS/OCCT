@@ -30,23 +30,19 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 #include <AppParCurves_Constraint.hxx>
 #include <AppParCurves_MultiPoint.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <math_Recipes.hxx>
 
-static int FlatLength(const TColStd_Array1OfInteger& Mults)
+static int FlatLength(const NCollection_Array1<int>& Mults)
 {
 
-  Standard_Integer sum = 0;
-  for (Standard_Integer i = Mults.Lower(); i <= Mults.Upper(); i++)
+  int sum = 0;
+  for (int i = Mults.Lower(); i <= Mults.Upper(); i++)
   {
     sum += Mults.Value(i);
   }
@@ -65,10 +61,10 @@ static int FlatLength(const TColStd_Array1OfInteger& Mults)
 //              The property of correlation between Tg3d and Tg2d is used here.
 //            Therefore, only 3D-coinciding is checked.
 //=======================================================================
-static void CheckTangents(const TColgp_Array1OfPnt& theArrPt1,
-                          const TColgp_Array1OfPnt& theArrPt2,
-                          TColgp_Array1OfVec&       theArrTg3d,
-                          TColgp_Array1OfVec2d&     theArrTg2d)
+static void CheckTangents(const NCollection_Array1<gp_Pnt>& theArrPt1,
+                          const NCollection_Array1<gp_Pnt>& theArrPt2,
+                          NCollection_Array1<gp_Vec>&       theArrTg3d,
+                          NCollection_Array1<gp_Vec2d>&     theArrTg2d)
 {
   if (theArrPt1.Lower() != theArrPt2.Lower())
     return;
@@ -79,16 +75,16 @@ static void CheckTangents(const TColgp_Array1OfPnt& theArrPt1,
   if (theArrTg3d.Length() != theArrPt1.Length())
     return;
 
-  Standard_Boolean isToChangeDir = Standard_False;
+  bool isToChangeDir = false;
 
-  for (Standard_Integer i = theArrPt1.Lower(); i <= theArrPt1.Upper(); i++)
+  for (int i = theArrPt1.Lower(); i <= theArrPt1.Upper(); i++)
   {
     const gp_Vec  aV1(theArrPt1(i), theArrPt2(i));
     const gp_Vec& aV2 = theArrTg3d(i);
 
     if (aV1.Dot(aV2) < 0.0)
     {
-      isToChangeDir = Standard_True;
+      isToChangeDir = true;
       break;
     }
   }
@@ -98,12 +94,12 @@ static void CheckTangents(const TColgp_Array1OfPnt& theArrPt1,
 
   // Change directions for every 2D- and 3D-tangents
 
-  for (Standard_Integer i = theArrTg3d.Lower(); i <= theArrTg3d.Upper(); i++)
+  for (int i = theArrTg3d.Lower(); i <= theArrTg3d.Upper(); i++)
   {
     theArrTg3d(i).Reverse();
   }
 
-  for (Standard_Integer i = theArrTg2d.Lower(); i <= theArrTg2d.Upper(); i++)
+  for (int i = theArrTg2d.Lower(); i <= theArrTg2d.Upper(); i++)
   {
     theArrTg2d(i).Reverse();
   }
@@ -117,9 +113,9 @@ static void CheckTangents(const TColgp_Array1OfPnt& theArrPt1,
 //              theArrPt1 (as same as theArrPt2) is sub-set of all 2D-points in
 //            one multy-point (multy-point is union of sets of 2D- and 3D-points).
 //=======================================================================
-static void CheckTangents(const TColgp_Array1OfPnt2d& theArrPt1,
-                          const TColgp_Array1OfPnt2d& theArrPt2,
-                          TColgp_Array1OfVec2d&       theArrTg2d)
+static void CheckTangents(const NCollection_Array1<gp_Pnt2d>& theArrPt1,
+                          const NCollection_Array1<gp_Pnt2d>& theArrPt2,
+                          NCollection_Array1<gp_Vec2d>&       theArrTg2d)
 {
   if (theArrPt1.Lower() != theArrPt2.Lower())
     return;
@@ -127,7 +123,7 @@ static void CheckTangents(const TColgp_Array1OfPnt2d& theArrPt1,
   if (theArrPt1.Upper() != theArrPt2.Upper())
     return;
 
-  for (Standard_Integer i = theArrPt1.Lower(); i <= theArrPt1.Upper(); i++)
+  for (int i = theArrPt1.Lower(); i <= theArrPt1.Upper(); i++)
   {
     const gp_Vec2d  aV1(theArrPt1(i), theArrPt2(i));
     const gp_Vec2d& aV2 = theArrTg2d(i);
@@ -140,12 +136,12 @@ static void CheckTangents(const TColgp_Array1OfPnt2d& theArrPt1,
 }
 
 AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&              SSP,
-                                                   const Standard_Integer        FirstPoint,
-                                                   const Standard_Integer        LastPoint,
+                                                   const int                     FirstPoint,
+                                                   const int                     LastPoint,
                                                    const AppParCurves_Constraint FirstCons,
                                                    const AppParCurves_Constraint LastCons,
                                                    const math_Vector&            Parameters,
-                                                   const Standard_Integer        NbPol)
+                                                   const int                     NbPol)
     : SCU(NbPol),
       mypoles(1, NbPol, 1, NbBColumns(SSP)),
       A(FirstPoint, LastPoint, 1, NbPol),
@@ -171,11 +167,11 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
 }
 
 AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&              SSP,
-                                                   const Standard_Integer        FirstPoint,
-                                                   const Standard_Integer        LastPoint,
+                                                   const int                     FirstPoint,
+                                                   const int                     LastPoint,
                                                    const AppParCurves_Constraint FirstCons,
                                                    const AppParCurves_Constraint LastCons,
-                                                   const Standard_Integer        NbPol)
+                                                   const int                     NbPol)
     : SCU(NbPol),
       mypoles(1, NbPol, 1, NbBColumns(SSP)),
       A(FirstPoint, LastPoint, 1, NbPol),
@@ -199,15 +195,15 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
   Init(SSP, FirstPoint, LastPoint);
 }
 
-AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&               SSP,
-                                                   const TColStd_Array1OfReal&    Knots,
-                                                   const TColStd_Array1OfInteger& Mults,
-                                                   const Standard_Integer         FirstPoint,
-                                                   const Standard_Integer         LastPoint,
-                                                   const AppParCurves_Constraint  FirstCons,
-                                                   const AppParCurves_Constraint  LastCons,
-                                                   const math_Vector&             Parameters,
-                                                   const Standard_Integer         NbPol)
+AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&                  SSP,
+                                                   const NCollection_Array1<double>& Knots,
+                                                   const NCollection_Array1<int>&    Mults,
+                                                   const int                         FirstPoint,
+                                                   const int                         LastPoint,
+                                                   const AppParCurves_Constraint     FirstCons,
+                                                   const AppParCurves_Constraint     LastCons,
+                                                   const math_Vector&                Parameters,
+                                                   const int                         NbPol)
     : SCU(NbPol),
       mypoles(1, NbPol, 1, NbBColumns(SSP)),
       A(FirstPoint, LastPoint, 1, NbPol),
@@ -228,9 +224,9 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
 {
   FirstConstraint         = FirstCons;
   LastConstraint          = LastCons;
-  myknots                 = new TColStd_HArray1OfReal(Knots.Lower(), Knots.Upper());
+  myknots                 = new NCollection_HArray1<double>(Knots.Lower(), Knots.Upper());
   myknots->ChangeArray1() = Knots;
-  mymults                 = new TColStd_HArray1OfInteger(Mults.Lower(), Mults.Upper());
+  mymults                 = new NCollection_HArray1<int>(Mults.Lower(), Mults.Upper());
   mymults->ChangeArray1() = Mults;
   SCU.SetKnots(Knots);
   SCU.SetMultiplicities(Mults);
@@ -238,14 +234,14 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
   Perform(Parameters);
 }
 
-AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&               SSP,
-                                                   const TColStd_Array1OfReal&    Knots,
-                                                   const TColStd_Array1OfInteger& Mults,
-                                                   const Standard_Integer         FirstPoint,
-                                                   const Standard_Integer         LastPoint,
-                                                   const AppParCurves_Constraint  FirstCons,
-                                                   const AppParCurves_Constraint  LastCons,
-                                                   const Standard_Integer         NbPol)
+AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&                  SSP,
+                                                   const NCollection_Array1<double>& Knots,
+                                                   const NCollection_Array1<int>&    Mults,
+                                                   const int                         FirstPoint,
+                                                   const int                         LastPoint,
+                                                   const AppParCurves_Constraint     FirstCons,
+                                                   const AppParCurves_Constraint     LastCons,
+                                                   const int                         NbPol)
     : SCU(NbPol),
       mypoles(1, NbPol, 1, NbBColumns(SSP)),
       A(FirstPoint, LastPoint, 1, NbPol),
@@ -264,9 +260,9 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
       myindex(FirstPoint, LastPoint, 0),
       nbpoles(NbPol)
 {
-  myknots                 = new TColStd_HArray1OfReal(Knots.Lower(), Knots.Upper());
+  myknots                 = new NCollection_HArray1<double>(Knots.Lower(), Knots.Upper());
   myknots->ChangeArray1() = Knots;
-  mymults                 = new TColStd_HArray1OfInteger(Mults.Lower(), Mults.Upper());
+  mymults                 = new NCollection_HArray1<int>(Mults.Lower(), Mults.Upper());
   mymults->ChangeArray1() = Mults;
   SCU.SetKnots(Knots);
   SCU.SetMultiplicities(Mults);
@@ -275,13 +271,11 @@ AppParCurves_LeastSquare::AppParCurves_LeastSquare(const MultiLine&             
   Init(SSP, FirstPoint, LastPoint);
 }
 
-void AppParCurves_LeastSquare::Init(const MultiLine&       SSP,
-                                    const Standard_Integer FirstPoint,
-                                    const Standard_Integer LastPoint)
+void AppParCurves_LeastSquare::Init(const MultiLine& SSP, const int FirstPoint, const int LastPoint)
 {
   // Variable de controle
-  iscalculated = Standard_False;
-  isready      = Standard_True;
+  iscalculated = false;
+  isready      = true;
 
   myfirstp = FirstPoint;
   mylastp  = LastPoint;
@@ -290,7 +284,7 @@ void AppParCurves_LeastSquare::Init(const MultiLine&       SSP,
 
   // Reperage des contraintes aux extremites:
   // ========================================
-  Standard_Integer i, j, k, i2;
+  int i, j, k, i2;
 
   nbP2d = ToolLine::NbP2d(SSP);
   nbP   = ToolLine::NbP3d(SSP);
@@ -298,28 +292,28 @@ void AppParCurves_LeastSquare::Init(const MultiLine&       SSP,
   gp_Pnt2d Poi2d;
   //  gp_Vec V3d;
   //  gp_Vec2d V2d;
-  Standard_Integer mynbP2d = nbP2d, mynbP = nbP;
+  int mynbP2d = nbP2d, mynbP = nbP;
   if (nbP2d == 0)
     mynbP2d = 1;
   if (nbP == 0)
     mynbP = 1;
-  TColgp_Array1OfPnt   TabP(1, mynbP);
-  TColgp_Array1OfPnt2d TabP2d(1, mynbP2d);
-  TColgp_Array1OfVec   TabV(1, mynbP);
-  TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+  NCollection_Array1<gp_Pnt>   TabP(1, mynbP);
+  NCollection_Array1<gp_Pnt2d> TabP2d(1, mynbP2d);
+  NCollection_Array1<gp_Vec>   TabV(1, mynbP);
+  NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
   deg = nbpoles - 1;
 
   if (!mymults.IsNull())
   {
-    Standard_Integer sum = 0;
+    int sum = 0;
     for (i = mymults->Lower(); i <= mymults->Upper(); i++)
     {
       sum += mymults->Value(i);
     }
     deg = sum - nbpoles - 1;
     k   = 1;
-    Standard_Real val;
+    double val;
     for (i = myknots->Lower(); i <= myknots->Upper(); i++)
     {
       for (j = 1; j <= mymults->Value(i); j++)
@@ -496,13 +490,13 @@ void AppParCurves_LeastSquare::Init(const MultiLine&       SSP,
     }
   }
 
-  Standard_Integer Nincx = resfin - resinit + 1;
+  int Nincx = resfin - resinit + 1;
   if (Nincx < 1)
   { // Impossible d'aller plus loin
-    isready = Standard_False;
+    isready = false;
     return;
   }
-  Standard_Integer Neq = LastP - FirstP + 1;
+  int Neq = LastP - FirstP + 1;
 
   NA      = 3 * nbP + 2 * nbP2d;
   Nlignes = NA * Neq;
@@ -516,17 +510,17 @@ void AppParCurves_LeastSquare::Init(const MultiLine&       SSP,
 void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
 {
 
-  done = Standard_False;
+  done = false;
   if (!isready)
   {
     return;
   }
-  Standard_Integer i, j, k, Ci, i2, k1, k2;
-  Standard_Integer nbpol1 = nbpoles - 1, Ninc1 = Ninc - 1;
-  Standard_Real    AD1, A0;
+  int    i, j, k, Ci, i2, k1, k2;
+  int    nbpol1 = nbpoles - 1, Ninc1 = Ninc - 1;
+  double AD1, A0;
   //  gp_Pnt Pt;
   //  gp_Pnt2d Pt2d;
-  iscalculated = Standard_False;
+  iscalculated = false;
 
   // calcul de la matrice A et DA des fonctions d approximation:
   ComputeFunction(Parameters);
@@ -541,10 +535,10 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
         math_Householder HouResol(A, mypoints);
         if (!(HouResol.IsDone()))
         {
-          done = Standard_False;
+          done = false;
           return;
         }
-        done    = Standard_True;
+        done    = true;
         mypoles = HouResol.AllValues();
         return;
       }
@@ -589,10 +583,10 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
 
     // resolution:
 
-    Standard_Integer Nincx = resfin - resinit + 1;
+    int Nincx = resfin - resinit + 1;
     if (Nincx < 1)
     {
-      done = Standard_True;
+      done = true;
       return;
     }
     math_IntegerVector Index(1, Nincx);
@@ -604,7 +598,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
     MakeTAA(TheAA, mytab);
     DACTCL_Decompose(TheAA, Index);
 
-    Standard_Integer kk2;
+    int kk2;
     for (j = 1; j <= B2.ColNumber(); j++)
     {
       kk2 = 1;
@@ -622,21 +616,21 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
         i2++;
       }
     }
-    done = Standard_True;
+    done = true;
   }
 
   // ===========================================================
   // cas de tangence:
   // ===========================================================
 
-  Standard_Integer Nincx  = resfin - resinit + 1;
-  Standard_Integer deport = 0, Nincx2 = 2 * Nincx;
+  int Nincx  = resfin - resinit + 1;
+  int deport = 0, Nincx2 = 2 * Nincx;
 
   math_IntegerVector InternalIndex(1, Nincx);
   SearchIndex(InternalIndex);
   math_IntegerVector Index(1, Ninc);
 
-  Standard_Integer l = 1;
+  int l = 1;
   if (resinit <= resfin)
   {
     for (j = 0; j <= NA - 1; j++)
@@ -666,11 +660,11 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
 
   MakeTAA(TheA, myTAB);
 
-  Standard_Integer Error = DACTCL_Decompose(TheA, Index);
-  Error                  = DACTCL_Solve(TheA, myTAB, Index);
+  int Error = DACTCL_Decompose(TheA, Index);
+  Error     = DACTCL_Solve(TheA, myTAB, Index);
 
   if (!Error)
-    done = Standard_True;
+    done = true;
 
   if (FirstConstraint >= AppParCurves_TangencyPoint && LastConstraint >= AppParCurves_TangencyPoint)
   {
@@ -739,24 +733,24 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
   }
 }
 
-void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
-                                       const math_Vector&  V1t,
-                                       const math_Vector&  V2t,
-                                       const Standard_Real l1,
-                                       const Standard_Real l2)
+void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters,
+                                       const math_Vector& V1t,
+                                       const math_Vector& V2t,
+                                       const double       l1,
+                                       const double       l2)
 {
-  done = Standard_False;
+  done = false;
   if (!isready)
   {
     return;
   }
-  Standard_Integer i, lower1 = V1t.Lower(), lower2 = V2t.Lower();
-  resinit                = 3;
-  resfin                 = nbpoles - 2;
-  Standard_Integer Nincx = resfin - resinit + 1;
-  Ninc                   = NA * Nincx + 2;
-  FirstConstraint        = AppParCurves_TangencyPoint;
-  LastConstraint         = AppParCurves_TangencyPoint;
+  int i, lower1 = V1t.Lower(), lower2 = V2t.Lower();
+  resinit         = 3;
+  resfin          = nbpoles - 2;
+  int Nincx       = resfin - resinit + 1;
+  Ninc            = NA * Nincx + 2;
+  FirstConstraint = AppParCurves_TangencyPoint;
+  LastConstraint  = AppParCurves_TangencyPoint;
   for (i = 1; i <= Vec1t.Upper(); i++)
   {
     Vec1t(i) = V1t(i + lower1 - 1);
@@ -765,27 +759,27 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
   Perform(Parameters, l1, l2);
 }
 
-void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
-                                       const math_Vector&  V1t,
-                                       const math_Vector&  V2t,
-                                       const math_Vector&  V1c,
-                                       const math_Vector&  V2c,
-                                       const Standard_Real l1,
-                                       const Standard_Real l2)
+void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters,
+                                       const math_Vector& V1t,
+                                       const math_Vector& V2t,
+                                       const math_Vector& V1c,
+                                       const math_Vector& V2c,
+                                       const double       l1,
+                                       const double       l2)
 {
-  done = Standard_False;
+  done = false;
   if (!isready)
   {
     return;
   }
-  Standard_Integer i, lower1 = V1t.Lower(), lower2 = V2t.Lower();
-  Standard_Integer lowc1 = V1c.Lower(), lowc2 = V2c.Lower();
-  resinit                = 4;
-  resfin                 = nbpoles - 3;
-  Standard_Integer Nincx = resfin - resinit + 1;
-  Ninc                   = NA * Nincx + 2;
-  FirstConstraint        = AppParCurves_CurvaturePoint;
-  LastConstraint         = AppParCurves_CurvaturePoint;
+  int i, lower1 = V1t.Lower(), lower2 = V2t.Lower();
+  int lowc1 = V1c.Lower(), lowc2 = V2c.Lower();
+  resinit         = 4;
+  resfin          = nbpoles - 3;
+  int Nincx       = resfin - resinit + 1;
+  Ninc            = NA * Nincx + 2;
+  FirstConstraint = AppParCurves_CurvaturePoint;
+  LastConstraint  = AppParCurves_CurvaturePoint;
 
   for (i = 1; i <= Vec1t.Upper(); i++)
   {
@@ -797,11 +791,11 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
   Perform(Parameters, l1, l2);
 }
 
-void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
-                                       const Standard_Real l1,
-                                       const Standard_Real l2)
+void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters,
+                                       const double       l1,
+                                       const double       l2)
 {
-  done = Standard_False;
+  done = false;
   if (!isready)
   {
     return;
@@ -811,15 +805,15 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
     Perform(Parameters);
     return;
   }
-  iscalculated = Standard_False;
+  iscalculated = false;
 
   lambda1 = l1;
   lambda2 = l2;
-  Standard_Integer i, j, k, i2;
-  Standard_Real    AD0, AD1, AD2, A0, A1, A2;
+  int    i, j, k, i2;
+  double AD0, AD1, AD2, A0, A1, A2;
   //  gp_Pnt Pt, P1, P2;
   //  gp_Pnt2d Pt2d, P12d, P22d;
-  Standard_Real l11 = deg * l1, l22 = deg * l2;
+  double l11 = deg * l1, l22 = deg * l2;
 
   ComputeFunction(Parameters);
 
@@ -850,7 +844,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
 
   if (resinit > resfin)
   {
-    done = Standard_True;
+    done = true;
     return;
   }
 
@@ -1025,7 +1019,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
     }
   }
 
-  Standard_Integer Nincx = resfin - resinit + 1;
+  int Nincx = resfin - resinit + 1;
 
   math_Matrix        mytab(resinit, resfin, 1, B2.ColNumber(), 0.0);
   math_IntegerVector Index(1, Nincx);
@@ -1037,7 +1031,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
 
   DACTCL_Decompose(AA, Index);
 
-  Standard_Integer kk2;
+  int kk2;
   for (j = 1; j <= B2.ColNumber(); j++)
   {
     kk2 = 1;
@@ -1057,7 +1051,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
     }
   }
 
-  done = Standard_True;
+  done = true;
 }
 
 //=======================================================================
@@ -1068,7 +1062,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
 //            (nbP == 1) and two 2D-points (nbP2d == 2).
 //=======================================================================
 void AppParCurves_LeastSquare::Affect(const MultiLine&         SSP,
-                                      const Standard_Integer   Index,
+                                      const int                Index,
                                       AppParCurves_Constraint& Cons,
                                       math_Vector&             Vt,
                                       math_Vector&             Vc)
@@ -1077,15 +1071,15 @@ void AppParCurves_LeastSquare::Affect(const MultiLine&         SSP,
 
   if (Cons >= AppParCurves_TangencyPoint)
   {
-    Standard_Integer i, i2 = 1;
-    Standard_Boolean Ok;
-    Standard_Integer mynbP2d = nbP2d, mynbP = nbP;
+    int  i, i2 = 1;
+    bool Ok;
+    int  mynbP2d = nbP2d, mynbP = nbP;
     if (nbP2d == 0)
       mynbP2d = 1;
     if (nbP == 0)
       mynbP = 1;
-    TColgp_Array1OfVec   TabV(1, mynbP);
-    TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+    NCollection_Array1<gp_Vec>   TabV(1, mynbP);
+    NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
     if (Cons == AppParCurves_CurvaturePoint)
     {
@@ -1159,7 +1153,7 @@ void AppParCurves_LeastSquare::Affect(const MultiLine&         SSP,
 
       if (Ok)
       {
-        TColgp_Array1OfPnt anArrPts3d1(1, mynbP), anArrPts3d2(1, mynbP);
+        NCollection_Array1<gp_Pnt> anArrPts3d1(1, mynbP), anArrPts3d2(1, mynbP);
 
         if (nbP != 0)
         {
@@ -1178,7 +1172,7 @@ void AppParCurves_LeastSquare::Affect(const MultiLine&         SSP,
         }
         else if (nbP2d != 0)
         {
-          TColgp_Array1OfPnt2d anArrPts2d1(1, mynbP2d), anArrPts2d2(1, mynbP2d);
+          NCollection_Array1<gp_Pnt2d> anArrPts2d1(1, mynbP2d), anArrPts2d2(1, mynbP2d);
 
           if (Index < ToolLine::LastPoint(SSP))
           {
@@ -1210,23 +1204,23 @@ void AppParCurves_LeastSquare::Affect(const MultiLine&         SSP,
   }
 }
 
-Standard_Integer AppParCurves_LeastSquare::NbBColumns(const MultiLine& SSP) const
+int AppParCurves_LeastSquare::NbBColumns(const MultiLine& SSP) const
 {
-  Standard_Integer BCol;
+  int BCol;
   BCol = (ToolLine::NbP3d(SSP)) * 3 + (ToolLine::NbP2d(SSP)) * 2;
   return BCol;
 }
 
-void AppParCurves_LeastSquare::Error(Standard_Real& F, Standard_Real& MaxE3d, Standard_Real& MaxE2d)
+void AppParCurves_LeastSquare::Error(double& F, double& MaxE3d, double& MaxE2d)
 {
 
   if (!done)
   {
     throw StdFail_NotDone();
   }
-  Standard_Integer i, j, k, i2, indexdeb, indexfin;
-  Standard_Integer i21, i22;
-  Standard_Real    AA, BB, CC, Fi, FX, FY, FZ, AIJ;
+  int    i, j, k, i2, indexdeb, indexfin;
+  int    i21, i22;
+  double AA, BB, CC, Fi, FX, FY, FZ, AIJ;
   MaxE3d = MaxE2d = 0.0;
   F               = 0.0;
   i2              = 1;
@@ -1285,22 +1279,22 @@ void AppParCurves_LeastSquare::Error(Standard_Real& F, Standard_Real& MaxE3d, St
   MaxE2d = std::sqrt(MaxE2d);
 }
 
-void AppParCurves_LeastSquare::ErrorGradient(math_Vector&   Grad,
-                                             Standard_Real& F,
-                                             Standard_Real& MaxE3d,
-                                             Standard_Real& MaxE2d)
+void AppParCurves_LeastSquare::ErrorGradient(math_Vector& Grad,
+                                             double&      F,
+                                             double&      MaxE3d,
+                                             double&      MaxE2d)
 {
   if (!done)
   {
     throw StdFail_NotDone();
   }
-  Standard_Integer i, j, k, i2, indexdeb, indexfin;
-  Standard_Real    AA, BB, CC, Fi, FX, FY, FZ, AIJ;
-  //  Standard_Real DAIJ, DAA, DBB, DCC, Gr, gr1= 0.0, gr2= 0.0;
-  Standard_Real DAIJ, DAA, DBB, DCC, Gr;
+  int    i, j, k, i2, indexdeb, indexfin;
+  double AA, BB, CC, Fi, FX, FY, FZ, AIJ;
+  //  double DAIJ, DAA, DBB, DCC, Gr, gr1= 0.0, gr2= 0.0;
+  double DAIJ, DAA, DBB, DCC, Gr;
   MaxE3d = MaxE2d = 0.0;
-  //  Standard_Integer i21, i22, diff = (deg-1);
-  Standard_Integer i21, i22;
+  //  int i21, i22, diff = (deg-1);
+  int i21, i22;
   F  = 0.0;
   i2 = 1;
   math_Vector Px(1, nbpoles), Py(1, nbpoles), Pz(1, nbpoles);
@@ -1378,29 +1372,29 @@ const math_Matrix& AppParCurves_LeastSquare::Distance()
 {
   if (!iscalculated)
   {
-    for (Standard_Integer i = myfirstp; i <= mylastp; i++)
+    for (int i = myfirstp; i <= mylastp; i++)
     {
-      for (Standard_Integer j = 1; j <= nbP + nbP2d; j++)
+      for (int j = 1; j <= nbP + nbP2d; j++)
       {
         theError(i, j) = std::sqrt(theError(i, j));
       }
     }
-    iscalculated = Standard_True;
+    iscalculated = true;
   }
   return theError;
 }
 
-Standard_Real AppParCurves_LeastSquare::FirstLambda() const
+double AppParCurves_LeastSquare::FirstLambda() const
 {
   return lambda1;
 }
 
-Standard_Real AppParCurves_LeastSquare::LastLambda() const
+double AppParCurves_LeastSquare::LastLambda() const
 {
   return lambda2;
 }
 
-Standard_Boolean AppParCurves_LeastSquare::IsDone() const
+bool AppParCurves_LeastSquare::IsDone() const
 {
   return done;
 }
@@ -1419,10 +1413,10 @@ const AppParCurves_MultiBSpCurve& AppParCurves_LeastSquare::BSplineValue()
     throw StdFail_NotDone();
   }
 
-  Standard_Integer i, j, j2, npoints = nbP + nbP2d;
-  gp_Pnt           Pt;
-  gp_Pnt2d         Pt2d;
-  Standard_Integer ideb = resinit, ifin = resfin;
+  int      i, j, j2, npoints = nbP + nbP2d;
+  gp_Pnt   Pt;
+  gp_Pnt2d Pt2d;
+  int      ideb = resinit, ifin = resfin;
   if (ideb >= 2)
     ideb = 2;
   if (ifin <= nbpoles - 1)
@@ -1468,8 +1462,8 @@ const math_Matrix& AppParCurves_LeastSquare::DerivativeFunctionMatrix() const
   return DA;
 }
 
-Standard_Integer AppParCurves_LeastSquare::TheFirstPoint(const AppParCurves_Constraint FirstCons,
-                                                         const Standard_Integer FirstPoint) const
+int AppParCurves_LeastSquare::TheFirstPoint(const AppParCurves_Constraint FirstCons,
+                                            const int                     FirstPoint) const
 {
   if (FirstCons == AppParCurves_NoConstraint)
     return FirstPoint;
@@ -1477,8 +1471,8 @@ Standard_Integer AppParCurves_LeastSquare::TheFirstPoint(const AppParCurves_Cons
     return FirstPoint + 1;
 }
 
-Standard_Integer AppParCurves_LeastSquare::TheLastPoint(const AppParCurves_Constraint LastCons,
-                                                        const Standard_Integer LastPoint) const
+int AppParCurves_LeastSquare::TheLastPoint(const AppParCurves_Constraint LastCons,
+                                           const int                     LastPoint) const
 {
   if (LastCons == AppParCurves_NoConstraint)
     return LastPoint;
@@ -1515,13 +1509,13 @@ const math_IntegerVector& AppParCurves_LeastSquare::KIndex() const
 
 void AppParCurves_LeastSquare::MakeTAA(math_Vector& TheA, math_Vector& myTAB)
 {
-  Standard_Integer i, j, k, Ci, i2, i21, i22;
-  Standard_Real    xx = 0.0, yy = 0.0;
+  int    i, j, k, Ci, i2, i21, i22;
+  double xx = 0.0, yy = 0.0;
 
-  Standard_Integer Nincx = resfin - resinit + 1;
-  Standard_Integer Nrow, Neq = LastP - FirstP + 1;
+  int Nincx = resfin - resinit + 1;
+  int Nrow, Neq = LastP - FirstP + 1;
 
-  Standard_Integer Ninc1;
+  int Ninc1;
 
   if (FirstConstraint >= AppParCurves_TangencyPoint && LastConstraint >= AppParCurves_TangencyPoint)
   {
@@ -1530,16 +1524,16 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& TheA, math_Vector& myTAB)
   else
     Ninc1 = Ninc;
 
-  Standard_Integer myfirst = A.LowerRow();
-  Standard_Integer ix, iy, iz;
-  Standard_Integer mylast = myfirst + Nlignes - 1;
-  Standard_Integer k1;
-  Standard_Real    taf1 = 0.0, taf2 = 0.0, taf3 = 0.0, tab1 = 0.0, tab2 = 0.0;
-  Standard_Integer nb, inc, jinit, jfin, u;
-  Standard_Integer indexdeb, indexfin;
-  Standard_Integer NA1 = NA - 1;
-  Standard_Real    v1 = 0, v2 = 0, b;
-  Standard_Real    Ai2, Aid, Akj;
+  int         myfirst = A.LowerRow();
+  int         ix, iy, iz;
+  int         mylast = myfirst + Nlignes - 1;
+  int         k1;
+  double      taf1 = 0.0, taf2 = 0.0, taf3 = 0.0, tab1 = 0.0, tab2 = 0.0;
+  int         nb, inc, jinit, jfin, u;
+  int         indexdeb, indexfin;
+  int         NA1 = NA - 1;
+  double      v1 = 0, v2 = 0, b;
+  double      Ai2, Aid, Akj;
   math_Vector myB(myfirst, mylast, 0.0), myV1(myfirst, mylast, 0.0), myV2(myfirst, mylast, 0.0);
   math_Vector TheV1(1, Ninc, 0.0), TheV2(1, Ninc, 0.0);
 
@@ -1674,7 +1668,7 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& TheA, math_Vector& myTAB)
     math_Vector AA(1, Index(Nincx));
     MakeTAA(AA);
 
-    Standard_Integer kk = 1;
+    int kk = 1;
     for (k = 1; k <= NA; k++)
     {
       for (i = 1; i <= AA.Length(); i++)
@@ -1685,7 +1679,7 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& TheA, math_Vector& myTAB)
     }
   }
 
-  Standard_Integer length = TheA.Length();
+  int length = TheA.Length();
 
   if (FirstConstraint >= AppParCurves_TangencyPoint && LastConstraint >= AppParCurves_TangencyPoint)
   {
@@ -1710,11 +1704,11 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& TheA, math_Vector& myTAB)
 
 void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA, math_Matrix& myTAB)
 {
-  Standard_Integer i, j, k;
-  Standard_Integer indexdeb, indexfin, jinit, jfin;
-  Standard_Integer iinit, ifin;
-  Standard_Real    Akj;
-  math_Matrix      TheA(resinit, resfin, resinit, resfin);
+  int         i, j, k;
+  int         indexdeb, indexfin, jinit, jfin;
+  int         iinit, ifin;
+  double      Akj;
+  math_Matrix TheA(resinit, resfin, resinit, resfin);
   TheA.Init(0.0);
 
   for (k = FirstP; k <= LastP; k++)
@@ -1737,12 +1731,12 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA, math_Matrix& myTAB)
     }
   }
 
-  Standard_Integer len;
+  int len;
   if (!myknots.IsNull())
     len = myknots->Length();
   else
     len = 2;
-  Standard_Integer d, i2 = 1;
+  int d, i2 = 1;
   iinit = resinit;
   jinit = resinit;
   ifin  = std::min(resfin, deg + 1);
@@ -1768,11 +1762,11 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA, math_Matrix& myTAB)
 
 void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA)
 {
-  Standard_Integer i, j, k;
-  Standard_Integer indexdeb, indexfin, jinit, jfin;
-  Standard_Integer iinit, ifin;
-  Standard_Real    Akj;
-  math_Matrix      TheA(resinit, resfin, resinit, resfin, 0.0);
+  int         i, j, k;
+  int         indexdeb, indexfin, jinit, jfin;
+  int         iinit, ifin;
+  double      Akj;
+  math_Matrix TheA(resinit, resfin, resinit, resfin, 0.0);
 
   for (k = FirstP; k <= LastP; k++)
   {
@@ -1790,11 +1784,11 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA)
     }
   }
 
-  Standard_Integer i2 = 1;
-  iinit               = resinit;
-  jinit               = resinit;
-  ifin                = std::min(resfin, deg + 1);
-  Standard_Integer len, d;
+  int i2 = 1;
+  iinit  = resinit;
+  jinit  = resinit;
+  ifin   = std::min(resfin, deg + 1);
+  int len, d;
   if (!myknots.IsNull())
     len = myknots->Length();
   else
@@ -1821,17 +1815,17 @@ void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA)
 
 void AppParCurves_LeastSquare::SearchIndex(math_IntegerVector& Index)
 {
-  Standard_Integer iinit, jinit, ifin;
-  Standard_Integer i, j, k, d, i2 = 1;
-  Standard_Integer len;
-  Standard_Integer Nincx = resfin - resinit + 1;
-  Index(1)               = 1;
+  int iinit, jinit, ifin;
+  int i, j, k, d, i2 = 1;
+  int len;
+  int Nincx = resfin - resinit + 1;
+  Index(1)  = 1;
 
   if (myknots.IsNull())
   {
     if (resinit <= resfin)
     {
-      Standard_Integer l = 1;
+      int l = 1;
       for (i = 2; i <= Nincx; i++)
       {
         l++;

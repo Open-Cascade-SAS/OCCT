@@ -26,35 +26,36 @@
 #include <GeomLib_IsPlanarSurface.hxx>
 #include <gp_Pln.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
-static Standard_Boolean Controle(const TColgp_Array1OfPnt&   Poles,
-                                 const Standard_Real         Tol,
-                                 const Handle(Geom_Surface)& S,
-                                 gp_Pln&                     Plan)
+static bool Controle(const NCollection_Array1<gp_Pnt>& Poles,
+                     const double                      Tol,
+                     const occ::handle<Geom_Surface>&  S,
+                     gp_Pln&                           Plan)
 {
-  Standard_Boolean        IsPlan = Standard_False;
-  Standard_Real           gx, gy, gz;
-  gp_Pnt                  Bary;
-  gp_Dir                  DX, DY;
-  constexpr Standard_Real aTolSingular = Precision::Confusion();
+  bool             IsPlan = false;
+  double           gx, gy, gz;
+  gp_Pnt           Bary;
+  gp_Dir           DX, DY;
+  constexpr double aTolSingular = Precision::Confusion();
 
   GeomLib::Inertia(Poles, Bary, DX, DY, gx, gy, gz);
   if (gz < Tol && gy > aTolSingular)
   {
-    gp_Pnt        P;
-    gp_Vec        DU, DV;
-    Standard_Real umin, umax, vmin, vmax;
+    gp_Pnt P;
+    gp_Vec DU, DV;
+    double umin, umax, vmin, vmax;
     S->Bounds(umin, umax, vmin, vmax);
     S->D1((umin + umax) / 2, (vmin + vmax) / 2, P, DU, DV);
 
     if (DU.SquareMagnitude() > gp::Resolution() && DV.SquareMagnitude() > gp::Resolution())
     {
       // On prend DX le plus proche possible de DU
-      gp_Dir        du(DU);
-      Standard_Real Angle1 = du.Angle(DX);
-      Standard_Real Angle2 = du.Angle(DY);
+      gp_Dir du(DU);
+      double Angle1 = du.Angle(DX);
+      double Angle2 = du.Angle(DY);
       if (Angle1 > M_PI / 2)
         Angle1 = M_PI - Angle1;
       if (Angle2 > M_PI / 2)
@@ -73,18 +74,16 @@ static Standard_Boolean Controle(const TColgp_Array1OfPnt&   Poles,
       gp_Ax3 axe(Bary, DX ^ DY, DX);
       Plan.SetPosition(axe);
       Plan.SetLocation(Bary);
-      IsPlan = Standard_True;
+      IsPlan = true;
     }
   }
   return IsPlan;
 }
 
-static Standard_Boolean Controle(const Handle(Geom_Curve)& C,
-                                 const gp_Pln&             Plan,
-                                 const Standard_Real       Tol)
+static bool Controle(const occ::handle<Geom_Curve>& C, const gp_Pln& Plan, const double Tol)
 {
-  Standard_Boolean  B = Standard_True;
-  Standard_Integer  ii, Nb;
+  bool              B = true;
+  int               ii, Nb;
   GeomAbs_CurveType Type;
   GeomAdaptor_Curve AC(C);
   Type = AC.GetType();
@@ -119,7 +118,7 @@ static Standard_Boolean Controle(const Handle(Geom_Curve)& C,
     }
   }
 
-  Standard_Real u, du, f, l, d;
+  double u, du, f, l, d;
   f  = AC.FirstParameter();
   l  = AC.LastParameter();
   du = (l - f) / (Nb - 1);
@@ -133,8 +132,8 @@ static Standard_Boolean Controle(const Handle(Geom_Curve)& C,
   return B;
 }
 
-GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
-                                                 const Standard_Real         Tol)
+GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const occ::handle<Geom_Surface>& S,
+                                                 const double                     Tol)
 
 {
   GeomAdaptor_Surface AS(S);
@@ -145,7 +144,7 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
   switch (Type)
   {
     case GeomAbs_Plane: {
-      IsPlan = Standard_True;
+      IsPlan = true;
       myPlan = AS.Plane();
       break;
     }
@@ -153,28 +152,28 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
     case GeomAbs_Cone:
     case GeomAbs_Sphere:
     case GeomAbs_Torus: {
-      IsPlan = Standard_False;
+      IsPlan = false;
       break;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
-      Standard_Boolean Essai = Standard_True;
-      gp_Pnt           P;
-      gp_Vec           DU, DV, Dn;
-      gp_Dir           Dir = AS.AxeOfRevolution().Direction();
-      Standard_Real    Umin, Umax, Vmin, Vmax;
+      bool   Essai = true;
+      gp_Pnt P;
+      gp_Vec DU, DV, Dn;
+      gp_Dir Dir = AS.AxeOfRevolution().Direction();
+      double Umin, Umax, Vmin, Vmax;
       S->Bounds(Umin, Umax, Vmin, Vmax);
       S->D1((Umin + Umax) / 2, (Vmin + Vmax) / 2, P, DU, DV);
       if (DU.Magnitude() <= gp::Resolution() || DV.Magnitude() <= gp::Resolution())
       {
-        Standard_Real NewU = (Umin + Umax) / 2 + (Umax - Umin) * 0.1;
-        Standard_Real NewV = (Vmin + Vmax) / 2 + (Vmax - Vmin) * 0.1;
+        double NewU = (Umin + Umax) / 2 + (Umax - Umin) * 0.1;
+        double NewV = (Vmin + Vmax) / 2 + (Vmax - Vmin) * 0.1;
         S->D1(NewU, NewV, P, DU, DV);
       }
       Dn = DU ^ DV;
       if (Dn.Magnitude() > 1.e-7)
       {
-        Standard_Real angle = Dir.Angle(Dn);
+        double angle = Dir.Angle(Dn);
         if (angle > M_PI / 2)
         {
           angle = M_PI - angle;
@@ -189,28 +188,28 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
         axe.SetXDirection(DU);
         myPlan.SetPosition(axe);
         myPlan.SetLocation(P);
-        Handle(Geom_Curve) C;
+        occ::handle<Geom_Curve> C;
         C      = S->UIso(Umin);
         IsPlan = Controle(C, myPlan, Tol);
       }
       else
-        IsPlan = Standard_False;
+        IsPlan = false;
 
       break;
     }
     case GeomAbs_SurfaceOfExtrusion: {
-      Standard_Boolean Essai = Standard_False;
-      Standard_Real    Umin, Umax, Vmin, Vmax;
-      Standard_Real    norm;
-      gp_Vec           Du, Dv, Dn;
-      gp_Pnt           P;
+      bool   Essai = false;
+      double Umin, Umax, Vmin, Vmax;
+      double norm;
+      gp_Vec Du, Dv, Dn;
+      gp_Pnt P;
 
       S->Bounds(Umin, Umax, Vmin, Vmax);
       S->D1((Umin + Umax) / 2, (Vmin + Vmax) / 2, P, Du, Dv);
       if (Du.Magnitude() <= gp::Resolution() || Dv.Magnitude() <= gp::Resolution())
       {
-        Standard_Real NewU = (Umin + Umax) / 2 + (Umax - Umin) * 0.1;
-        Standard_Real NewV = (Vmin + Vmax) / 2 + (Vmax - Vmin) * 0.1;
+        double NewU = (Umin + Umax) / 2 + (Umax - Umin) * 0.1;
+        double NewV = (Vmin + Vmax) / 2 + (Vmax - Vmin) * 0.1;
         S->D1(NewU, NewV, P, Du, Dv);
       }
       Dn   = Du ^ Dv;
@@ -218,8 +217,8 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
       if (norm > 1.e-15)
       {
         Dn /= norm;
-        Standard_Real angmax = Tol / (Vmax - Vmin);
-        gp_Dir        D(Dn);
+        double angmax = Tol / (Vmax - Vmin);
+        gp_Dir D(Dn);
         Essai = (D.IsNormal(AS.Direction(), angmax));
       }
       if (Essai)
@@ -227,24 +226,24 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
         gp_Ax3 axe(P, Dn, Du);
         myPlan.SetPosition(axe);
         myPlan.SetLocation(P);
-        Handle(Geom_Curve) C;
+        occ::handle<Geom_Curve> C;
         C      = S->VIso((Vmin + Vmax) / 2);
         IsPlan = Controle(C, myPlan, Tol);
       }
       else
-        IsPlan = Standard_False;
+        IsPlan = false;
       break;
     }
 
     default: {
-      Standard_Integer NbU, NbV, ii, jj, kk;
+      int NbU, NbV, ii, jj, kk;
       NbU = 8 + 3 * AS.NbUIntervals(GeomAbs_CN);
       NbV = 8 + 3 * AS.NbVIntervals(GeomAbs_CN);
-      Standard_Real Umin, Umax, Vmin, Vmax, du, dv, U, V;
+      double Umin, Umax, Vmin, Vmax, du, dv, U, V;
       S->Bounds(Umin, Umax, Vmin, Vmax);
       du = (Umax - Umin) / (NbU - 1);
       dv = (Vmax - Vmin) / (NbV - 1);
-      TColgp_Array1OfPnt Pnts(1, NbU * NbV);
+      NCollection_Array1<gp_Pnt> Pnts(1, NbU * NbV);
       for (ii = 0, kk = 1; ii < NbU; ii++)
       {
         U = Umin + du * ii;
@@ -260,7 +259,7 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
   }
 }
 
-Standard_Boolean GeomLib_IsPlanarSurface::IsPlanar() const
+bool GeomLib_IsPlanarSurface::IsPlanar() const
 {
   return IsPlan;
 }

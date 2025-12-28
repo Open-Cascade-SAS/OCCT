@@ -14,7 +14,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_UndefinedContent.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -28,57 +28,57 @@ IMPLEMENT_STANDARD_RTTIEXT(StepData_UndefinedEntity, Standard_Transient)
 StepData_UndefinedEntity::StepData_UndefinedEntity()
 {
   thecont = new Interface_UndefinedContent;
-  thesub  = Standard_False;
+  thesub  = false;
 }
 
-StepData_UndefinedEntity::StepData_UndefinedEntity(const Standard_Boolean issub)
+StepData_UndefinedEntity::StepData_UndefinedEntity(const bool issub)
 {
   thesub  = issub;
   thecont = new Interface_UndefinedContent;
 }
 
-Handle(Interface_UndefinedContent) StepData_UndefinedEntity::UndefinedContent() const
+occ::handle<Interface_UndefinedContent> StepData_UndefinedEntity::UndefinedContent() const
 {
   return thecont;
 }
 
-Standard_Boolean StepData_UndefinedEntity::IsSub() const
+bool StepData_UndefinedEntity::IsSub() const
 {
   return thesub;
 }
 
-Standard_Boolean StepData_UndefinedEntity::IsComplex() const
+bool StepData_UndefinedEntity::IsComplex() const
 {
   return (!thenext.IsNull());
 }
 
-Handle(StepData_UndefinedEntity) StepData_UndefinedEntity::Next() const
+occ::handle<StepData_UndefinedEntity> StepData_UndefinedEntity::Next() const
 {
   return thenext;
 }
 
-Standard_CString StepData_UndefinedEntity::StepType() const
+const char* StepData_UndefinedEntity::StepType() const
 {
   if (thetype.IsNull())
     return "";
   return thetype->ToCString();
 }
 
-void StepData_UndefinedEntity::ReadRecord(const Handle(StepData_StepReaderData)& SR,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach)
+void StepData_UndefinedEntity::ReadRecord(const occ::handle<StepData_StepReaderData>& SR,
+                                          const int                                   num,
+                                          occ::handle<Interface_Check>&               ach)
 {
-  thetype             = new TCollection_HAsciiString(SR->RecordType(num));
-  Standard_Integer nb = SR->NbParams(num);
+  thetype = new TCollection_HAsciiString(SR->RecordType(num));
+  int nb  = SR->NbParams(num);
 
   thecont->Reservate(nb, 4);
-  for (Standard_Integer i = 1; i <= nb; i++)
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient)       anent;
-    Handle(TCollection_HAsciiString) hval;
-    Standard_CString                 val    = SR->ParamCValue(num, i);
-    Interface_ParamType              partyp = SR->ParamType(num, i);
-    Standard_Integer                 nume   = 0;
+    occ::handle<Standard_Transient>       anent;
+    occ::handle<TCollection_HAsciiString> hval;
+    const char*                           val    = SR->ParamCValue(num, i);
+    Interface_ParamType                   partyp = SR->ParamType(num, i);
+    int                                   nume   = 0;
     if (partyp == Interface_ParamIdent)
     {
       nume = SR->ParamNumber(num, i);
@@ -98,17 +98,17 @@ void StepData_UndefinedEntity::ReadRecord(const Handle(StepData_StepReaderData)&
     }
     else if (partyp == Interface_ParamSub)
     {
-      nume                                 = SR->ParamNumber(num, i);
-      Handle(StepData_UndefinedEntity) und = new StepData_UndefinedEntity(Standard_True);
-      anent                                = und;
+      nume                                      = SR->ParamNumber(num, i);
+      occ::handle<StepData_UndefinedEntity> und = new StepData_UndefinedEntity(true);
+      anent                                     = und;
       und->ReadRecord(SR, nume, ach);
     }
     else if (partyp == Interface_ParamText)
     {
       //    Return integre a supprimer silya
-      Standard_Integer lval = (Standard_Integer)strlen(val);
-      Standard_Integer mval = -1;
-      for (Standard_Integer j = 0; j < lval; j++)
+      int lval = (int)strlen(val);
+      int mval = -1;
+      for (int j = 0; j < lval; j++)
       {
         if (val[j] == '\n')
         {
@@ -130,7 +130,7 @@ void StepData_UndefinedEntity::ReadRecord(const Handle(StepData_StepReaderData)&
     else
       thecont->AddLiteral(partyp, hval);
   }
-  Standard_Integer nextyp = SR->NextForComplex(num);
+  int nextyp = SR->NextForComplex(num);
   if (nextyp == 0)
     return;
   thenext = new StepData_UndefinedEntity;
@@ -141,9 +141,9 @@ void StepData_UndefinedEntity::WriteParams(StepData_StepWriter& SW) const
 {
   if (!IsSub())
     SW.StartEntity(TCollection_AsciiString(StepType()));
-  Standard_Integer           nb = thecont->NbParams();
-  Handle(Standard_Transient) anent;
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int                             nb = thecont->NbParams();
+  occ::handle<Standard_Transient> anent;
+  for (int i = 1; i <= nb; i++)
   {
     Interface_ParamType partyp = thecont->ParamType(i);
     if (partyp == Interface_ParamSub)
@@ -165,14 +165,14 @@ void StepData_UndefinedEntity::WriteParams(StepData_StepWriter& SW) const
       SW.SendString(thecont->ParamValue(i)->ToCString());
   }
   //  if (IsSub()) return;
-  //  SW.NewLine(Standard_True);
+  //  SW.NewLine(true);
   if (thenext.IsNull())
     return;
   thenext->WriteParams(SW);
 }
 
-void StepData_UndefinedEntity::GetFromAnother(const Handle(StepData_UndefinedEntity)& another,
-                                              Interface_CopyTool&                     TC)
+void StepData_UndefinedEntity::GetFromAnother(const occ::handle<StepData_UndefinedEntity>& another,
+                                              Interface_CopyTool&                          TC)
 {
   //  DeclareAndCast(StepData_UndefinedEntity,another,other);
   thetype = new TCollection_HAsciiString(another->StepType());
@@ -188,7 +188,7 @@ void StepData_UndefinedEntity::GetFromAnother(const Handle(StepData_UndefinedEnt
 
 void StepData_UndefinedEntity::FillShared(Interface_EntityIterator& list) const
 {
-  Standard_Integer i, nb = thecont->NbParams();
+  int i, nb = thecont->NbParams();
   for (i = 1; i <= nb; i++)
   {
     Interface_ParamType ptype = thecont->ParamType(i);

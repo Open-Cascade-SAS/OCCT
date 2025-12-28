@@ -98,23 +98,23 @@ public:
                          Aspect_Eye             theEye) = 0;
 
   //! Return unit scale factor defined as scale factor for m (meters); 1.0 by default.
-  Standard_Real UnitFactor() const { return myUnitFactor; }
+  double UnitFactor() const { return myUnitFactor; }
 
   //! Set unit scale factor.
-  void SetUnitFactor(Standard_Real theFactor) { myUnitFactor = theFactor; }
+  void SetUnitFactor(double theFactor) { myUnitFactor = theFactor; }
 
   //! Return aspect ratio.
-  Standard_Real Aspect() const { return myAspect; }
+  double Aspect() const { return myAspect; }
 
   //! Return field of view.
-  Standard_Real FieldOfView() const { return myFieldOfView; }
+  double FieldOfView() const { return myFieldOfView; }
 
   //! Return Intra-ocular Distance (IOD); also known as Interpupillary Distance (IPD).
   //! Defined in meters by default (@sa UnitFactor()).
-  Standard_Real IOD() const { return myIod; }
+  double IOD() const { return myIod; }
 
   //! Return display frequency or 0 if unknown.
-  Standard_ShortReal DisplayFrequency() const { return myDispFreq; }
+  float DisplayFrequency() const { return myDispFreq; }
 
   //! Return projection frustum.
   //! @sa HasProjectionFrustums().
@@ -133,35 +133,35 @@ public:
   //! Return left hand orientation.
   gp_Trsf LeftHandPose() const
   {
-    const Standard_Integer aDevice = NamedTrackedDevice(Aspect_XRTrackedDeviceRole_LeftHand);
+    const int aDevice = NamedTrackedDevice(Aspect_XRTrackedDeviceRole_LeftHand);
     return aDevice != -1 ? myTrackedPoses[aDevice].Orientation : gp_Trsf();
   }
 
   //! Return right hand orientation.
   gp_Trsf RightHandPose() const
   {
-    const Standard_Integer aDevice = NamedTrackedDevice(Aspect_XRTrackedDeviceRole_RightHand);
+    const int aDevice = NamedTrackedDevice(Aspect_XRTrackedDeviceRole_RightHand);
     return aDevice != -1 ? myTrackedPoses[aDevice].Orientation : gp_Trsf();
   }
 
   //! Return number of tracked poses array.
-  const Aspect_TrackedDevicePoseArray& TrackedPoses() const { return myTrackedPoses; }
-
-  //! Return TRUE if device orientation is defined.
-  bool HasTrackedPose(Standard_Integer theDevice) const
+  const NCollection_Array1<Aspect_TrackedDevicePose>& TrackedPoses() const
   {
-    return myTrackedPoses[theDevice].IsValidPose;
+    return myTrackedPoses;
   }
 
+  //! Return TRUE if device orientation is defined.
+  bool HasTrackedPose(int theDevice) const { return myTrackedPoses[theDevice].IsValidPose; }
+
   //! Return index of tracked device of known role, or -1 if undefined.
-  virtual Standard_Integer NamedTrackedDevice(Aspect_XRTrackedDeviceRole theDevice) const = 0;
+  virtual int NamedTrackedDevice(Aspect_XRTrackedDeviceRole theDevice) const = 0;
 
   //! Load model for displaying device.
   //! @param[in] theDevice   device index
   //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
-  Handle(Graphic3d_ArrayOfTriangles) LoadRenderModel(Standard_Integer       theDevice,
-                                                     Handle(Image_Texture)& theTexture)
+  occ::handle<Graphic3d_ArrayOfTriangles> LoadRenderModel(int                         theDevice,
+                                                          occ::handle<Image_Texture>& theTexture)
   {
     return loadRenderModel(theDevice, true, theTexture);
   }
@@ -171,9 +171,9 @@ public:
   //! @param[in] theToApplyUnitFactor  flag to apply unit scale factor
   //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
-  Handle(Graphic3d_ArrayOfTriangles) LoadRenderModel(Standard_Integer       theDevice,
-                                                     Standard_Boolean       theToApplyUnitFactor,
-                                                     Handle(Image_Texture)& theTexture)
+  occ::handle<Graphic3d_ArrayOfTriangles> LoadRenderModel(int  theDevice,
+                                                          bool theToApplyUnitFactor,
+                                                          occ::handle<Image_Texture>& theTexture)
   {
     return loadRenderModel(theDevice, theToApplyUnitFactor, theTexture);
   }
@@ -181,25 +181,25 @@ public:
   //! Fetch data for digital input action (like button).
   //! @param[in] theAction  action of Aspect_XRActionType_InputDigital type
   virtual Aspect_XRDigitalActionData GetDigitalActionData(
-    const Handle(Aspect_XRAction)& theAction) const = 0;
+    const occ::handle<Aspect_XRAction>& theAction) const = 0;
 
   //! Fetch data for digital input action (like axis).
   //! @param[in] theAction  action of Aspect_XRActionType_InputAnalog type
   virtual Aspect_XRAnalogActionData GetAnalogActionData(
-    const Handle(Aspect_XRAction)& theAction) const = 0;
+    const occ::handle<Aspect_XRAction>& theAction) const = 0;
 
   //! Fetch data for pose input action (like fingertip position).
   //! The returned values will match the values returned by the last call to WaitPoses().
   //! @param[in] theAction  action of Aspect_XRActionType_InputPose type
   virtual Aspect_XRPoseActionData GetPoseActionDataForNextFrame(
-    const Handle(Aspect_XRAction)& theAction) const = 0;
+    const occ::handle<Aspect_XRAction>& theAction) const = 0;
 
   //! Trigger vibration.
-  Standard_EXPORT void TriggerHapticVibrationAction(const Handle(Aspect_XRAction)&   theAction,
-                                                    const Aspect_XRHapticActionData& theParams);
+  Standard_EXPORT void TriggerHapticVibrationAction(const occ::handle<Aspect_XRAction>& theAction,
+                                                    const Aspect_XRHapticActionData&    theParams);
 
   //! Abort vibration.
-  Standard_EXPORT void AbortHapticVibrationAction(const Handle(Aspect_XRAction)& theAction);
+  Standard_EXPORT void AbortHapticVibrationAction(const occ::handle<Aspect_XRAction>& theAction);
 
   //! Return tracking origin.
   TrackingUniverseOrigin TrackingOrigin() const { return myTrackOrigin; }
@@ -208,10 +208,10 @@ public:
   virtual void SetTrackingOrigin(TrackingUniverseOrigin theOrigin) { myTrackOrigin = theOrigin; }
 
   //! Return generic action for specific hand or NULL if undefined.
-  const Handle(Aspect_XRAction)& GenericAction(Aspect_XRTrackedDeviceRole theDevice,
-                                               Aspect_XRGenericAction     theAction) const
+  const occ::handle<Aspect_XRAction>& GenericAction(Aspect_XRTrackedDeviceRole theDevice,
+                                                    Aspect_XRGenericAction     theAction) const
   {
-    const NCollection_Array1<Handle(Aspect_XRAction)>& anActions = myRoleActions[theDevice];
+    const NCollection_Array1<occ::handle<Aspect_XRAction>>& anActions = myRoleActions[theDevice];
     return anActions[theAction];
   }
 
@@ -237,31 +237,32 @@ protected:
   //! @param[in] theToApplyUnitFactor  flag to apply unit scale factor
   //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
-  virtual Handle(Graphic3d_ArrayOfTriangles) loadRenderModel(Standard_Integer theDevice,
-                                                             Standard_Boolean theToApplyUnitFactor,
-                                                             Handle(Image_Texture)& theTexture) = 0;
+  virtual occ::handle<Graphic3d_ArrayOfTriangles> loadRenderModel(
+    int                         theDevice,
+    bool                        theToApplyUnitFactor,
+    occ::handle<Image_Texture>& theTexture) = 0;
 
   //! Trigger vibration.
-  virtual void triggerHapticVibrationAction(const Handle(Aspect_XRAction)&   theAction,
-                                            const Aspect_XRHapticActionData& theParams) = 0;
+  virtual void triggerHapticVibrationAction(const occ::handle<Aspect_XRAction>& theAction,
+                                            const Aspect_XRHapticActionData&    theParams) = 0;
 
 protected:
-  NCollection_Array1<Handle(Aspect_XRAction)>
+  NCollection_Array1<occ::handle<Aspect_XRAction>>
     // clang-format off
                                   myRoleActions[Aspect_XRTrackedDeviceRole_NB]; //!< generic actions
-  Aspect_XRActionSetMap           myActionSets;   //!< actions sets
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRActionSet>>           myActionSets;   //!< actions sets
   TrackingUniverseOrigin          myTrackOrigin;  //!< tracking origin
-  Aspect_TrackedDevicePoseArray   myTrackedPoses; //!< array of tracked poses
+  NCollection_Array1<Aspect_TrackedDevicePose>   myTrackedPoses; //!< array of tracked poses
   gp_Trsf                         myHeadPose;     //!< head orientation
   NCollection_Vec2<int>           myRendSize;     //!< viewport Width x Height for rendering into VR
   Aspect_FrustumLRBT<double>      myFrustumL;     //!< left  eye projection frustum
   Aspect_FrustumLRBT<double>      myFrustumR;     //!< right eye projection frustum
-  Standard_Real                   myUnitFactor;   //!< unit scale factor defined as scale factor for m (meters)
+  double                   myUnitFactor;   //!< unit scale factor defined as scale factor for m (meters)
   // clang-format on
-  Standard_Real      myAspect;      //!< aspect ratio
-  Standard_Real      myFieldOfView; //!< field of view
-  Standard_Real      myIod;         //!< intra-ocular distance in meters
-  Standard_ShortReal myDispFreq;    //!< display frequency
+  double myAspect;      //!< aspect ratio
+  double myFieldOfView; //!< field of view
+  double myIod;         //!< intra-ocular distance in meters
+  float  myDispFreq;    //!< display frequency
 };
 
 #endif // _Aspect_XRSession_HeaderFile

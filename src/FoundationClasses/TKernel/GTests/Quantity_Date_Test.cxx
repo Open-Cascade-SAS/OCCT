@@ -29,8 +29,8 @@ protected:
 TEST_F(Quantity_DateTest, BasicConstruction)
 {
   // Default constructor creates January 1, 1979, 00:00:00
-  Quantity_Date    aDate1;
-  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  Quantity_Date aDate1;
+  int           mm, dd, yy, hh, mn, ss, mis, mics;
   aDate1.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);    // January
@@ -154,7 +154,7 @@ TEST_F(Quantity_DateTest, SetValuesRoundTrip)
   Quantity_Date aDate;
   aDate.SetValues(3, 15, 2021, 10, 25, 30, 500, 750);
 
-  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  int mm, dd, yy, hh, mn, ss, mis, mics;
   aDate.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(3, mm);
@@ -202,7 +202,7 @@ TEST_F(Quantity_DateTest, DateDifference)
 
   Quantity_Period aPeriod = aDate2.Difference(aDate1);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod.Values(ss, mics);
 
   EXPECT_EQ(3600, ss); // 1 hour = 3600 seconds (SECONDS_PER_HOUR)
@@ -217,7 +217,7 @@ TEST_F(Quantity_DateTest, AddPeriod)
 
   Quantity_Date aNewDate = aDate.Add(aPeriod);
 
-  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  int mm, dd, yy, hh, mn, ss, mis, mics;
   aNewDate.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);
@@ -233,7 +233,7 @@ TEST_F(Quantity_DateTest, SubtractPeriod)
 
   Quantity_Date aNewDate = aDate.Subtract(aPeriod);
 
-  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  int mm, dd, yy, hh, mn, ss, mis, mics;
   aNewDate.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);
@@ -249,7 +249,7 @@ TEST_F(Quantity_DateTest, YearBoundary)
 
   Quantity_Date aNewDate = aDate.Add(aPeriod);
 
-  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  int mm, dd, yy, hh, mn, ss, mis, mics;
   aNewDate.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);    // January
@@ -268,7 +268,7 @@ TEST_F(Quantity_DateTest, LeapYearBoundary)
   Quantity_Period aPeriod1(1, 0, 0, 0, 0, 0);
   Quantity_Date   aNewDate1 = aDate1.Add(aPeriod1);
 
-  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  int mm, dd, yy, hh, mn, ss, mis, mics;
   aNewDate1.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(2, mm);
@@ -295,7 +295,7 @@ TEST_F(Quantity_DateTest, MicrosecondOverflow)
 
   Quantity_Date aNewDate = aDate.Add(aPeriod);
 
-  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  int mm, dd, yy, hh, mn, ss, mis, mics;
   aNewDate.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);
@@ -317,7 +317,7 @@ TEST_F(Quantity_DateTest, SpecificDateCalculations)
 
   Quantity_Date aDate2 = aDate1.Add(aPeriod24h);
 
-  Standard_Integer mm, dd, yy, hh, mn, ss, mis, mics;
+  int mm, dd, yy, hh, mn, ss, mis, mics;
   aDate2.Values(mm, dd, yy, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, mm);
@@ -370,7 +370,7 @@ TEST_F(Quantity_DateTest, DifferenceFromEpoch)
 
   Quantity_Period aPeriod = aEpoch.Difference(aDate);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod.Values(ss, mics);
 
   EXPECT_EQ(86400, ss); // 1 day = 86400 seconds
@@ -385,7 +385,7 @@ TEST_F(Quantity_DateTest, DifferenceWithMicrosecondUnderflow)
 
   Quantity_Period aPeriod = aDate1.Difference(aDate2);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod.Values(ss, mics);
 
   EXPECT_EQ(0, ss);
@@ -401,7 +401,7 @@ TEST_F(Quantity_DateTest, DifferenceReversed)
   // Difference should be absolute value
   Quantity_Period aPeriod = aDate1.Difference(aDate2);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod.Values(ss, mics);
 
   EXPECT_EQ(7200, ss); // 2 hours = 7200 seconds

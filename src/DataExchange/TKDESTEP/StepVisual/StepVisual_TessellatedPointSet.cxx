@@ -25,9 +25,9 @@ StepVisual_TessellatedPointSet::StepVisual_TessellatedPointSet() {}
 //=================================================================================================
 
 void StepVisual_TessellatedPointSet::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theCoordinates,
-  const Handle(TColStd_HArray1OfInteger)&   thePointList)
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+  const occ::handle<NCollection_HArray1<int>>&   thePointList)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -38,7 +38,7 @@ void StepVisual_TessellatedPointSet::Init(
 
 //=================================================================================================
 
-Handle(StepVisual_CoordinatesList) StepVisual_TessellatedPointSet::Coordinates() const
+occ::handle<StepVisual_CoordinatesList> StepVisual_TessellatedPointSet::Coordinates() const
 {
   return myCoordinates;
 }
@@ -46,14 +46,14 @@ Handle(StepVisual_CoordinatesList) StepVisual_TessellatedPointSet::Coordinates()
 //=================================================================================================
 
 void StepVisual_TessellatedPointSet::SetCoordinates(
-  const Handle(StepVisual_CoordinatesList)& theCoordinates)
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates)
 {
   myCoordinates = theCoordinates;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedPointSet::PointList() const
+occ::handle<NCollection_HArray1<int>> StepVisual_TessellatedPointSet::PointList() const
 {
   return myPointList;
 }
@@ -61,14 +61,14 @@ Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedPointSet::PointList() con
 //=================================================================================================
 
 void StepVisual_TessellatedPointSet::SetPointList(
-  const Handle(TColStd_HArray1OfInteger)& thePointList)
+  const occ::handle<NCollection_HArray1<int>>& thePointList)
 {
   myPointList = thePointList;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedPointSet::NbPointList() const
+int StepVisual_TessellatedPointSet::NbPointList() const
 {
   if (myPointList.IsNull())
   {
@@ -79,7 +79,7 @@ Standard_Integer StepVisual_TessellatedPointSet::NbPointList() const
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedPointSet::PointListValue(const Standard_Integer theNum) const
+int StepVisual_TessellatedPointSet::PointListValue(const int theNum) const
 {
   return myPointList->Value(theNum);
 }

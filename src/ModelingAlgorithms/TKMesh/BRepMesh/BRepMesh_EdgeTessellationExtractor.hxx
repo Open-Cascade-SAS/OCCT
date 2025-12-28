@@ -18,7 +18,8 @@
 
 #include <IMeshTools_CurveTessellator.hxx>
 #include <BRepMesh_EdgeParameterProvider.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopLoc_Location.hxx>
 
 //! Auxiliary class implements functionality retrieving tessellated
@@ -34,25 +35,24 @@ public:
   Standard_EXPORT virtual ~BRepMesh_EdgeTessellationExtractor();
 
   //! Returns number of tessellation points.
-  Standard_EXPORT virtual Standard_Integer PointsNb() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int PointsNb() const override;
 
   //! Returns parameters of solution with the given index.
   //! @param theIndex index of tessellation point.
   //! @param theParameter parameters on PCurve corresponded to the solution.
   //! @param thePoint tessellation point.
   //! @return True in case of valid result, false elewhere.
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Integer theIndex,
-                                                 gp_Pnt&                thePoint,
-                                                 Standard_Real&         theParameter) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Value(const int theIndex,
+                                     gp_Pnt&   thePoint,
+                                     double&   theParameter) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor, IMeshTools_CurveTessellator)
 
 private:
-  BRepMesh_EdgeParameterProvider<Handle(TColStd_HArray1OfReal)> myProvider;
-  const Poly_Triangulation*                                     myTriangulation;
-  const TColStd_Array1OfInteger*                                myIndices;
-  TopLoc_Location                                               myLoc;
+  BRepMesh_EdgeParameterProvider<occ::handle<NCollection_HArray1<double>>> myProvider;
+  const Poly_Triangulation*                                                myTriangulation;
+  const NCollection_Array1<int>*                                           myIndices;
+  TopLoc_Location                                                          myLoc;
 };
 
 #endif

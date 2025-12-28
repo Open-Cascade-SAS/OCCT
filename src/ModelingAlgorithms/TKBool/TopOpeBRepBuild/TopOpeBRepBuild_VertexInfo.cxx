@@ -13,7 +13,8 @@
 
 #include <TopoDS.hxx>
 #include <TopOpeBRepBuild_VertexInfo.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 #include <stdio.h>
 
@@ -21,7 +22,7 @@
 
 TopOpeBRepBuild_VertexInfo::TopOpeBRepBuild_VertexInfo()
 {
-  mySmart    = Standard_False;
+  mySmart    = false;
   myFoundOut = 0;
   myEdgesPassed.Clear();
 }
@@ -42,28 +43,28 @@ const TopoDS_Vertex& TopOpeBRepBuild_VertexInfo::Vertex() const
 
 //=================================================================================================
 
-void TopOpeBRepBuild_VertexInfo::SetSmart(const Standard_Boolean aFlag)
+void TopOpeBRepBuild_VertexInfo::SetSmart(const bool aFlag)
 {
   mySmart = aFlag;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_VertexInfo::Smart() const
+bool TopOpeBRepBuild_VertexInfo::Smart() const
 {
   return mySmart;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepBuild_VertexInfo::NbCases() const
+int TopOpeBRepBuild_VertexInfo::NbCases() const
 { // myCurrentIn
   return myLocalEdgesOut.Extent();
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepBuild_VertexInfo::FoundOut() const
+int TopOpeBRepBuild_VertexInfo::FoundOut() const
 {
   return myFoundOut;
 }
@@ -91,21 +92,21 @@ void TopOpeBRepBuild_VertexInfo::SetCurrentIn(const TopoDS_Edge& anE)
 
 //=================================================================================================
 
-const TopTools_IndexedMapOfOrientedShape& TopOpeBRepBuild_VertexInfo::EdgesIn() const
+const NCollection_IndexedMap<TopoDS_Shape>& TopOpeBRepBuild_VertexInfo::EdgesIn() const
 {
   return myEdgesIn;
 }
 
 //=================================================================================================
 
-const TopTools_IndexedMapOfOrientedShape& TopOpeBRepBuild_VertexInfo::EdgesOut() const
+const NCollection_IndexedMap<TopoDS_Shape>& TopOpeBRepBuild_VertexInfo::EdgesOut() const
 {
   return myEdgesOut;
 }
 
 //=================================================================================================
 
-TopTools_IndexedMapOfOrientedShape& TopOpeBRepBuild_VertexInfo::ChangeEdgesOut()
+NCollection_IndexedMap<TopoDS_Shape>& TopOpeBRepBuild_VertexInfo::ChangeEdgesOut()
 {
   return myEdgesOut;
 }
@@ -137,26 +138,26 @@ void TopOpeBRepBuild_VertexInfo::RemovePassed()
 
 //=================================================================================================
 
-const TopTools_ListOfShape& TopOpeBRepBuild_VertexInfo::ListPassed() const
+const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_VertexInfo::ListPassed() const
 {
   return myEdgesPassed;
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_VertexInfo::Prepare(const TopTools_ListOfShape& aL)
+void TopOpeBRepBuild_VertexInfo::Prepare(const NCollection_List<TopoDS_Shape>& aL)
 {
   myLocalEdgesOut.Clear();
 
-  TopTools_IndexedMapOfOrientedShape tmpMap;
+  NCollection_IndexedMap<TopoDS_Shape> tmpMap;
 
-  TopTools_ListIteratorOfListOfShape anIt(aL);
+  NCollection_List<TopoDS_Shape>::Iterator anIt(aL);
   for (; anIt.More(); anIt.Next())
   {
     tmpMap.Add(anIt.Value());
   }
 
-  Standard_Integer i = 1, nb = myEdgesOut.Extent();
+  int i = 1, nb = myEdgesOut.Extent();
   for (; i <= nb; i++)
   {
     const TopoDS_Shape& aE = myEdgesOut(i);
@@ -172,11 +173,11 @@ void TopOpeBRepBuild_VertexInfo::Prepare(const TopTools_ListOfShape& aL)
 const TopoDS_Edge& TopOpeBRepBuild_VertexInfo::CurrentOut()
 {
 
-  Standard_Integer i, aNbOut;
+  int i, aNbOut;
   aNbOut = myLocalEdgesOut.Extent();
 
-  TopTools_IndexedMapOfOrientedShape aMapPassed;
-  TopTools_ListIteratorOfListOfShape anIt(myEdgesPassed);
+  NCollection_IndexedMap<TopoDS_Shape>     aMapPassed;
+  NCollection_List<TopoDS_Shape>::Iterator anIt(myEdgesPassed);
   for (; anIt.More(); anIt.Next())
   {
     aMapPassed.Add(anIt.Value());

@@ -21,7 +21,8 @@
 
 #include <TDataStd_GenericEmpty.hxx>
 #include <Standard_Boolean.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Sequence.hxx>
 #include <XCAFDoc_ColorType.hxx>
 class XCAFDoc_ShapeTool;
 class TDF_Label;
@@ -29,9 +30,6 @@ class Standard_GUID;
 class Quantity_Color;
 class Quantity_ColorRGBA;
 class TopoDS_Shape;
-
-class XCAFDoc_ColorTool;
-DEFINE_STANDARD_HANDLE(XCAFDoc_ColorTool, TDataStd_GenericEmpty)
 
 //! Provides tools to store and retrieve attributes (colors)
 //! of TopoDS_Shape in and from TDocStd_Document
@@ -44,16 +42,16 @@ public:
   //! Returns current auto-naming mode; TRUE by default.
   //! If TRUE then for added colors the TDataStd_Name attribute will be automatically added.
   //! This setting is global.
-  Standard_EXPORT static Standard_Boolean AutoNaming();
+  Standard_EXPORT static bool AutoNaming();
 
   //! See also AutoNaming().
-  Standard_EXPORT static void SetAutoNaming(Standard_Boolean theIsAutoNaming);
+  Standard_EXPORT static void SetAutoNaming(bool theIsAutoNaming);
 
 public:
   Standard_EXPORT XCAFDoc_ColorTool();
 
   //! Creates (if not exist) ColorTool.
-  Standard_EXPORT static Handle(XCAFDoc_ColorTool) Set(const TDF_Label& L);
+  Standard_EXPORT static occ::handle<XCAFDoc_ColorTool> Set(const TDF_Label& L);
 
   Standard_EXPORT static const Standard_GUID& GetID();
 
@@ -61,31 +59,31 @@ public:
   Standard_EXPORT TDF_Label BaseLabel() const;
 
   //! Returns internal XCAFDoc_ShapeTool tool
-  Standard_EXPORT const Handle(XCAFDoc_ShapeTool)& ShapeTool();
+  Standard_EXPORT const occ::handle<XCAFDoc_ShapeTool>& ShapeTool();
 
   //! Returns True if label belongs to a colortable and
   //! is a color definition
-  Standard_EXPORT Standard_Boolean IsColor(const TDF_Label& lab) const;
+  Standard_EXPORT bool IsColor(const TDF_Label& lab) const;
 
   //! Returns color defined by label lab
   //! Returns False if the label is not in colortable
   //! or does not define a color
-  Standard_EXPORT static Standard_Boolean GetColor(const TDF_Label& lab, Quantity_Color& col);
+  Standard_EXPORT static bool GetColor(const TDF_Label& lab, Quantity_Color& col);
 
   //! Returns color defined by label lab
   //! Returns False if the label is not in colortable
   //! or does not define a color
-  Standard_EXPORT static Standard_Boolean GetColor(const TDF_Label& lab, Quantity_ColorRGBA& col);
+  Standard_EXPORT static bool GetColor(const TDF_Label& lab, Quantity_ColorRGBA& col);
 
   //! Finds a color definition in a colortable and returns
   //! its label if found
   //! Returns False if color is not found in colortable
-  Standard_EXPORT Standard_Boolean FindColor(const Quantity_Color& col, TDF_Label& lab) const;
+  Standard_EXPORT bool FindColor(const Quantity_Color& col, TDF_Label& lab) const;
 
   //! Finds a color definition in a colortable and returns
   //! its label if found
   //! Returns False if color is not found in colortable
-  Standard_EXPORT Standard_Boolean FindColor(const Quantity_ColorRGBA& col, TDF_Label& lab) const;
+  Standard_EXPORT bool FindColor(const Quantity_ColorRGBA& col, TDF_Label& lab) const;
 
   //! Finds a color definition in a colortable and returns
   //! its label if found (or Null label else)
@@ -110,7 +108,7 @@ public:
 
   //! Returns a sequence of colors currently stored
   //! in the colortable
-  Standard_EXPORT void GetColors(TDF_LabelSequence& Labels) const;
+  Standard_EXPORT void GetColors(NCollection_Sequence<TDF_Label>& Labels) const;
 
   //! Sets a link with GUID defined by <type> (see
   //! XCAFDoc::ColorRefGUID()) from label <L> to color
@@ -146,144 +144,141 @@ public:
 
   //! Returns True if label <L> has a color assignment
   //! of the type <type>
-  Standard_EXPORT Standard_Boolean IsSet(const TDF_Label& L, const XCAFDoc_ColorType type) const;
+  Standard_EXPORT bool IsSet(const TDF_Label& L, const XCAFDoc_ColorType type) const;
 
   //! Returns label with color assigned to <L> as <type>
   //! Returns False if no such color is assigned
-  Standard_EXPORT static Standard_Boolean GetColor(const TDF_Label&        L,
-                                                   const XCAFDoc_ColorType type,
-                                                   TDF_Label&              colorL);
+  Standard_EXPORT static bool GetColor(const TDF_Label&        L,
+                                       const XCAFDoc_ColorType type,
+                                       TDF_Label&              colorL);
 
   //! Returns color assigned to <L> as <type>
   //! Returns False if no such color is assigned
-  Standard_EXPORT static Standard_Boolean GetColor(const TDF_Label&        L,
-                                                   const XCAFDoc_ColorType type,
-                                                   Quantity_Color&         color);
+  Standard_EXPORT static bool GetColor(const TDF_Label&        L,
+                                       const XCAFDoc_ColorType type,
+                                       Quantity_Color&         color);
 
   //! Returns color assigned to <L> as <type>
   //! Returns False if no such color is assigned
-  Standard_EXPORT static Standard_Boolean GetColor(const TDF_Label&        L,
-                                                   const XCAFDoc_ColorType type,
-                                                   Quantity_ColorRGBA&     color);
+  Standard_EXPORT static bool GetColor(const TDF_Label&        L,
+                                       const XCAFDoc_ColorType type,
+                                       Quantity_ColorRGBA&     color);
 
   //! Sets a link with GUID defined by <type> (see
   //! XCAFDoc::ColorRefGUID()) from label <L> to color
   //! defined by <colorL>
   //! Returns False if cannot find a label for shape S
-  Standard_EXPORT Standard_Boolean SetColor(const TopoDS_Shape&     S,
-                                            const TDF_Label&        colorL,
-                                            const XCAFDoc_ColorType type);
+  Standard_EXPORT bool SetColor(const TopoDS_Shape&     S,
+                                const TDF_Label&        colorL,
+                                const XCAFDoc_ColorType type);
 
   //! Sets a link with GUID defined by <type> (see
   //! XCAFDoc::ColorRefGUID()) from label <L> to color <Color>
   //! in the colortable
   //! Adds a color as necessary
   //! Returns False if cannot find a label for shape S
-  Standard_EXPORT Standard_Boolean SetColor(const TopoDS_Shape&     S,
-                                            const Quantity_Color&   Color,
-                                            const XCAFDoc_ColorType type);
+  Standard_EXPORT bool SetColor(const TopoDS_Shape&     S,
+                                const Quantity_Color&   Color,
+                                const XCAFDoc_ColorType type);
 
   //! Sets a link with GUID defined by <type> (see
   //! XCAFDoc::ColorRefGUID()) from label <L> to color <Color>
   //! in the colortable
   //! Adds a color as necessary
   //! Returns False if cannot find a label for shape S
-  Standard_EXPORT Standard_Boolean SetColor(const TopoDS_Shape&       S,
-                                            const Quantity_ColorRGBA& Color,
-                                            const XCAFDoc_ColorType   type);
+  Standard_EXPORT bool SetColor(const TopoDS_Shape&       S,
+                                const Quantity_ColorRGBA& Color,
+                                const XCAFDoc_ColorType   type);
 
   //! Removes a link with GUID defined by <type> (see
   //! XCAFDoc::ColorRefGUID()) from label <L> to color
   //! Returns True if such link existed
-  Standard_EXPORT Standard_Boolean UnSetColor(const TopoDS_Shape& S, const XCAFDoc_ColorType type);
+  Standard_EXPORT bool UnSetColor(const TopoDS_Shape& S, const XCAFDoc_ColorType type);
 
   //! Returns True if label <L> has a color assignment
   //! of the type <type>
-  Standard_EXPORT Standard_Boolean IsSet(const TopoDS_Shape& S, const XCAFDoc_ColorType type);
+  Standard_EXPORT bool IsSet(const TopoDS_Shape& S, const XCAFDoc_ColorType type);
 
   //! Returns label with color assigned to <L> as <type>
   //! Returns False if no such color is assigned
-  Standard_EXPORT Standard_Boolean GetColor(const TopoDS_Shape&     S,
-                                            const XCAFDoc_ColorType type,
-                                            TDF_Label&              colorL);
+  Standard_EXPORT bool GetColor(const TopoDS_Shape&     S,
+                                const XCAFDoc_ColorType type,
+                                TDF_Label&              colorL);
 
   //! Returns color assigned to <L> as <type>
   //! Returns False if no such color is assigned
-  Standard_EXPORT Standard_Boolean GetColor(const TopoDS_Shape&     S,
-                                            const XCAFDoc_ColorType type,
-                                            Quantity_Color&         color);
+  Standard_EXPORT bool GetColor(const TopoDS_Shape&     S,
+                                const XCAFDoc_ColorType type,
+                                Quantity_Color&         color);
 
   //! Returns color assigned to <L> as <type>
   //! Returns False if no such color is assigned
-  Standard_EXPORT Standard_Boolean GetColor(const TopoDS_Shape&     S,
-                                            const XCAFDoc_ColorType type,
-                                            Quantity_ColorRGBA&     color);
+  Standard_EXPORT bool GetColor(const TopoDS_Shape&     S,
+                                const XCAFDoc_ColorType type,
+                                Quantity_ColorRGBA&     color);
 
   //! Return TRUE if object on this label is visible, FALSE if invisible.
-  Standard_EXPORT static Standard_Boolean IsVisible(const TDF_Label& L);
+  Standard_EXPORT static bool IsVisible(const TDF_Label& L);
 
   //! Set the visibility of object on label. Do nothing if there no any object.
   //! Set UAttribute with corresponding GUID.
-  Standard_EXPORT void SetVisibility(const TDF_Label&       shapeLabel,
-                                     const Standard_Boolean isvisible = Standard_True);
+  Standard_EXPORT void SetVisibility(const TDF_Label& shapeLabel, const bool isvisible = true);
 
   //! Return TRUE if object color defined by its Layer, FALSE if not.
-  Standard_EXPORT Standard_Boolean IsColorByLayer(const TDF_Label& L) const;
+  Standard_EXPORT bool IsColorByLayer(const TDF_Label& L) const;
 
   //! Set the Color defined by Layer flag on label. Do nothing if there no any object.
   //! Set UAttribute with corresponding GUID.
-  Standard_EXPORT void SetColorByLayer(const TDF_Label&       shapeLabel,
-                                       const Standard_Boolean isColorByLayer = Standard_False);
+  Standard_EXPORT void SetColorByLayer(const TDF_Label& shapeLabel,
+                                       const bool       isColorByLayer = false);
 
   //! Sets the color of component that styled with SHUO structure
   //! Returns FALSE if no sush component found
   //! NOTE: create SHUO structeure if it is necessary and if <isCreateSHUO>
-  Standard_EXPORT Standard_Boolean
-    SetInstanceColor(const TopoDS_Shape&     theShape,
-                     const XCAFDoc_ColorType type,
-                     const Quantity_Color&   color,
-                     const Standard_Boolean  isCreateSHUO = Standard_True);
+  Standard_EXPORT bool SetInstanceColor(const TopoDS_Shape&     theShape,
+                                        const XCAFDoc_ColorType type,
+                                        const Quantity_Color&   color,
+                                        const bool              isCreateSHUO = true);
 
   //! Sets the color of component that styled with SHUO structure
   //! Returns FALSE if no sush component found
   //! NOTE: create SHUO structeure if it is necessary and if <isCreateSHUO>
-  Standard_EXPORT Standard_Boolean
-    SetInstanceColor(const TopoDS_Shape&       theShape,
-                     const XCAFDoc_ColorType   type,
-                     const Quantity_ColorRGBA& color,
-                     const Standard_Boolean    isCreateSHUO = Standard_True);
+  Standard_EXPORT bool SetInstanceColor(const TopoDS_Shape&       theShape,
+                                        const XCAFDoc_ColorType   type,
+                                        const Quantity_ColorRGBA& color,
+                                        const bool                isCreateSHUO = true);
 
   //! Gets the color of component that styled with SHUO structure
   //! Returns FALSE if no sush component or color type
-  Standard_EXPORT Standard_Boolean GetInstanceColor(const TopoDS_Shape&     theShape,
-                                                    const XCAFDoc_ColorType type,
-                                                    Quantity_Color&         color);
+  Standard_EXPORT bool GetInstanceColor(const TopoDS_Shape&     theShape,
+                                        const XCAFDoc_ColorType type,
+                                        Quantity_Color&         color);
 
   //! Gets the color of component that styled with SHUO structure
   //! Returns FALSE if no sush component or color type
-  Standard_EXPORT Standard_Boolean GetInstanceColor(const TopoDS_Shape&     theShape,
-                                                    const XCAFDoc_ColorType type,
-                                                    Quantity_ColorRGBA&     color);
+  Standard_EXPORT bool GetInstanceColor(const TopoDS_Shape&     theShape,
+                                        const XCAFDoc_ColorType type,
+                                        Quantity_ColorRGBA&     color);
 
   //! Gets the visibility status of component that styled with SHUO structure
   //! Returns FALSE if no sush component
-  Standard_EXPORT Standard_Boolean IsInstanceVisible(const TopoDS_Shape& theShape);
+  Standard_EXPORT bool IsInstanceVisible(const TopoDS_Shape& theShape);
 
   //! Reverses order in chains of TreeNodes (from Last to First) under
   //! each Color Label since we became to use function ::Prepend()
   //! instead of ::Append() in method SetColor() for acceleration
-  Standard_EXPORT Standard_Boolean ReverseChainsOfTreeNodes();
+  Standard_EXPORT bool ReverseChainsOfTreeNodes();
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_ColorTool, TDataStd_GenericEmpty)
 
 private:
-  Handle(XCAFDoc_ShapeTool) myShapeTool;
+  occ::handle<XCAFDoc_ShapeTool> myShapeTool;
 };
 
 #endif // _XCAFDoc_ColorTool_HeaderFile

@@ -42,8 +42,8 @@ Graphic3d_TextureEnv::Graphic3d_TextureEnv(const TCollection_AsciiString& theFil
   myHasMipmaps = true;
   myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
   myParams->SetGenMode(Graphic3d_TOTM_SPHERE,
-                       Graphic3d_Vec4(1.0f, 0.0f, 0.0f, 0.0f),
-                       Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
+                       NCollection_Vec4<float>(1.0f, 0.0f, 0.0f, 0.0f),
+                       NCollection_Vec4<float>(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
 //=================================================================================================
@@ -58,21 +58,21 @@ Graphic3d_TextureEnv::Graphic3d_TextureEnv(const Graphic3d_NameOfTextureEnv theN
 
   myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
   myParams->SetGenMode(Graphic3d_TOTM_SPHERE,
-                       Graphic3d_Vec4(1.0f, 0.0f, 0.0f, 0.0f),
-                       Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
+                       NCollection_Vec4<float>(1.0f, 0.0f, 0.0f, 0.0f),
+                       NCollection_Vec4<float>(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
 //=================================================================================================
 
-Graphic3d_TextureEnv::Graphic3d_TextureEnv(const Handle(Image_PixMap)& thePixMap)
+Graphic3d_TextureEnv::Graphic3d_TextureEnv(const occ::handle<Image_PixMap>& thePixMap)
     : Graphic3d_TextureRoot(thePixMap, Graphic3d_TypeOfTexture_2D),
       myName(Graphic3d_NOT_ENV_UNKNOWN)
 {
   myHasMipmaps = true;
   myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
   myParams->SetGenMode(Graphic3d_TOTM_SPHERE,
-                       Graphic3d_Vec4(1.0f, 0.0f, 0.0f, 0.0f),
-                       Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
+                       NCollection_Vec4<float>(1.0f, 0.0f, 0.0f, 0.0f),
+                       NCollection_Vec4<float>(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
 //=================================================================================================
@@ -84,14 +84,14 @@ Graphic3d_NameOfTextureEnv Graphic3d_TextureEnv::Name() const
 
 //=================================================================================================
 
-Standard_Integer Graphic3d_TextureEnv::NumberOfTextures()
+int Graphic3d_TextureEnv::NumberOfTextures()
 {
   return sizeof(NameOfTextureEnv_to_FileName) / sizeof(char*);
 }
 
 //=================================================================================================
 
-TCollection_AsciiString Graphic3d_TextureEnv::TextureName(const Standard_Integer theRank)
+TCollection_AsciiString Graphic3d_TextureEnv::TextureName(const int theRank)
 {
   if (theRank < 1 || theRank > NumberOfTextures())
   {
@@ -99,6 +99,6 @@ TCollection_AsciiString Graphic3d_TextureEnv::TextureName(const Standard_Integer
   }
 
   TCollection_AsciiString aFileName(NameOfTextureEnv_to_FileName[theRank - 1]);
-  Standard_Integer        i = aFileName.SearchFromEnd(".");
+  int                     i = aFileName.SearchFromEnd(".");
   return aFileName.SubString(5, i - 1);
 }

@@ -12,7 +12,9 @@
 // commercial license or contractual agreement.
 
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Vrml_SFImage.hxx>
 #include <Vrml_Texture2.hxx>
 
@@ -30,10 +32,10 @@ Vrml_Texture2::Vrml_Texture2()
   myWrapT = Vrml_REPEAT;
 }
 
-Vrml_Texture2::Vrml_Texture2(const TCollection_AsciiString& aFilename,
-                             const Handle(Vrml_SFImage)&    aImage,
-                             const Vrml_Texture2Wrap        aWrapS,
-                             const Vrml_Texture2Wrap        aWrapT)
+Vrml_Texture2::Vrml_Texture2(const TCollection_AsciiString&   aFilename,
+                             const occ::handle<Vrml_SFImage>& aImage,
+                             const Vrml_Texture2Wrap          aWrapS,
+                             const Vrml_Texture2Wrap          aWrapT)
 {
   myFilename = aFilename;
   myImage    = aImage;
@@ -51,12 +53,12 @@ TCollection_AsciiString Vrml_Texture2::Filename() const
   return myFilename;
 }
 
-void Vrml_Texture2::SetImage(const Handle(Vrml_SFImage)& aImage)
+void Vrml_Texture2::SetImage(const occ::handle<Vrml_SFImage>& aImage)
 {
   myImage = aImage;
 }
 
-Handle(Vrml_SFImage) Vrml_Texture2::Image() const
+occ::handle<Vrml_SFImage> Vrml_Texture2::Image() const
 {
   return myImage;
 }
@@ -83,7 +85,7 @@ Vrml_Texture2Wrap Vrml_Texture2::WrapT() const
 
 Standard_OStream& Vrml_Texture2::Print(Standard_OStream& anOStream) const
 {
-  Standard_Integer i;
+  int i;
   anOStream << "Texture2 {\n";
 
   if (!(myFilename.IsEqual("")))
@@ -116,7 +118,7 @@ Standard_OStream& Vrml_Texture2::Print(Standard_OStream& anOStream) const
         break;
     }
 
-    if (myImage->ArrayFlag() == Standard_True)
+    if (myImage->ArrayFlag() == true)
     {
       for (i = myImage->Array()->Lower(); i <= myImage->Array()->Upper(); i++)
       {

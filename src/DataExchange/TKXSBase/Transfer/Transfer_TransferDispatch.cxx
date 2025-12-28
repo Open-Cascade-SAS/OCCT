@@ -13,7 +13,7 @@
 
 #include <Interface_GeneralLib.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Protocol.hxx>
 #include <Standard_Transient.hxx>
 #include <Transfer_DispatchControl.hxx>
@@ -21,45 +21,48 @@
 #include <Transfer_TransferDispatch.hxx>
 #include <Transfer_TransientProcess.hxx>
 
-Transfer_TransferDispatch::Transfer_TransferDispatch(const Handle(Interface_InterfaceModel)& amodel,
-                                                     const Interface_GeneralLib&             lib)
+Transfer_TransferDispatch::Transfer_TransferDispatch(
+  const occ::handle<Interface_InterfaceModel>& amodel,
+  const Interface_GeneralLib&                  lib)
     : Interface_CopyTool(amodel, lib)
 {
   SetControl(
     new Transfer_DispatchControl(amodel, new Transfer_TransientProcess(amodel->NbEntities())));
 }
 
-Transfer_TransferDispatch::Transfer_TransferDispatch(const Handle(Interface_InterfaceModel)& amodel,
-                                                     const Handle(Interface_Protocol)& protocol)
+Transfer_TransferDispatch::Transfer_TransferDispatch(
+  const occ::handle<Interface_InterfaceModel>& amodel,
+  const occ::handle<Interface_Protocol>&       protocol)
     : Interface_CopyTool(amodel, protocol)
 {
   SetControl(
     new Transfer_DispatchControl(amodel, new Transfer_TransientProcess(amodel->NbEntities())));
 }
 
-Transfer_TransferDispatch::Transfer_TransferDispatch(const Handle(Interface_InterfaceModel)& amodel)
+Transfer_TransferDispatch::Transfer_TransferDispatch(
+  const occ::handle<Interface_InterfaceModel>& amodel)
     : Interface_CopyTool(amodel)
 {
   SetControl(
     new Transfer_DispatchControl(amodel, new Transfer_TransientProcess(amodel->NbEntities())));
 }
 
-Handle(Transfer_TransientProcess) Transfer_TransferDispatch::TransientProcess() const
+occ::handle<Transfer_TransientProcess> Transfer_TransferDispatch::TransientProcess() const
 {
-  return Handle(Transfer_DispatchControl)::DownCast(Control())->TransientProcess();
+  return occ::down_cast<Transfer_DispatchControl>(Control())->TransientProcess();
 }
 
-Standard_Boolean Transfer_TransferDispatch::Copy(const Handle(Standard_Transient)& entfrom,
-                                                 Handle(Standard_Transient)&       entto,
-                                                 const Standard_Boolean            mapped,
-                                                 const Standard_Boolean            errstat)
+bool Transfer_TransferDispatch::Copy(const occ::handle<Standard_Transient>& entfrom,
+                                     occ::handle<Standard_Transient>&       entto,
+                                     const bool                             mapped,
+                                     const bool                             errstat)
 {
-  Handle(Transfer_Binder) result = TransientProcess()->Transferring(entfrom);
+  occ::handle<Transfer_Binder> result = TransientProcess()->Transferring(entfrom);
   if (result.IsNull())
     return Interface_CopyTool::Copy(entfrom, entto, mapped, errstat);
 
   if (!result->IsKind(STANDARD_TYPE(Transfer_SimpleBinderOfTransient)))
-    return Standard_False; // Produces something, but what ?
+    return false; // Produces something, but what ?
   entto = GetCasted(Transfer_SimpleBinderOfTransient, result)->Result();
-  return Standard_True;
+  return true;
 }

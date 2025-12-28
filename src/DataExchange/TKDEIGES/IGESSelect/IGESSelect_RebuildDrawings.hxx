@@ -26,9 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-class IGESSelect_RebuildDrawings;
-DEFINE_STANDARD_HANDLE(IGESSelect_RebuildDrawings, IGESSelect_ModelModifier)
-
 //! Rebuilds Drawings which were bypassed to produce new models.
 //! If a set of entities, all put into a same IGESModel, were
 //! attached to a same Drawing in the starting Model, this Modifier
@@ -47,18 +44,15 @@ public:
   Standard_EXPORT IGESSelect_RebuildDrawings();
 
   //! Specific action : Rebuilds the original Drawings
-  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
-                                  const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+                                  const occ::handle<IGESData_IGESModel>& target,
+                                  Interface_CopyTool&                    TC) const override;
 
   //! Returns a text which is
   //! "Rebuild Drawings"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_RebuildDrawings, IGESSelect_ModelModifier)
-
-protected:
-private:
 };
 
 #endif // _IGESSelect_RebuildDrawings_HeaderFile

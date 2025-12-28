@@ -45,23 +45,20 @@ public:
   //! return myElement
   Standard_EXPORT XmlObjMgt_Element& Element();
 
-  Standard_EXPORT Standard_Integer TShapeId() const;
+  Standard_EXPORT int TShapeId() const;
 
-  Standard_EXPORT Standard_Integer LocId() const;
+  Standard_EXPORT int LocId() const;
 
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
-  Standard_EXPORT void SetShape(const Standard_Integer   ID,
-                                const Standard_Integer   LocID,
-                                const TopAbs_Orientation Orient);
+  Standard_EXPORT void SetShape(const int ID, const int LocID, const TopAbs_Orientation Orient);
 
   Standard_EXPORT void SetVertex(const TopoDS_Shape& theVertex);
 
-protected:
 private:
   XmlObjMgt_Element  myElement;
-  Standard_Integer   myTShapeID;
-  Standard_Integer   myLocID;
+  int                myTShapeID;
+  int                myLocID;
   TopAbs_Orientation myOrientation;
 };
 

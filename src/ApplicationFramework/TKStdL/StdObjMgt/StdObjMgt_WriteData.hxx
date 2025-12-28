@@ -45,19 +45,20 @@ public:
     ObjectSentry& operator=(const ObjectSentry&);
   };
 
-  Standard_EXPORT StdObjMgt_WriteData(const Handle(Storage_BaseDriver)& theDriver);
+  Standard_EXPORT StdObjMgt_WriteData(const occ::handle<Storage_BaseDriver>& theDriver);
 
-  Standard_EXPORT void WritePersistentObject(const Handle(StdObjMgt_Persistent)& thePersistent);
+  Standard_EXPORT void WritePersistentObject(
+    const occ::handle<StdObjMgt_Persistent>& thePersistent);
 
   template <class Persistent>
-  StdObjMgt_WriteData& operator<<(const Handle(Persistent)& thePersistent)
+  StdObjMgt_WriteData& operator<<(const occ::handle<Persistent>& thePersistent)
   {
     myDriver->PutReference(thePersistent ? thePersistent->RefNum() : 0);
     return *this;
   }
 
   Standard_EXPORT StdObjMgt_WriteData& operator<<(
-    const Handle(StdObjMgt_Persistent)& thePersistent);
+    const occ::handle<StdObjMgt_Persistent>& thePersistent);
 
   template <class Type>
   StdObjMgt_WriteData& WriteValue(const Type& theValue)
@@ -66,29 +67,20 @@ public:
     return *this;
   }
 
-  StdObjMgt_WriteData& operator<<(const Standard_Character& theValue)
-  {
-    return WriteValue(theValue);
-  }
+  StdObjMgt_WriteData& operator<<(const char& theValue) { return WriteValue(theValue); }
 
-  StdObjMgt_WriteData& operator<<(const Standard_ExtCharacter& theValue)
-  {
-    return WriteValue(theValue);
-  }
+  StdObjMgt_WriteData& operator<<(const char16_t& theValue) { return WriteValue(theValue); }
 
-  StdObjMgt_WriteData& operator<<(const Standard_Integer& theValue) { return WriteValue(theValue); }
+  StdObjMgt_WriteData& operator<<(const int& theValue) { return WriteValue(theValue); }
 
-  StdObjMgt_WriteData& operator<<(const Standard_Boolean& theValue) { return WriteValue(theValue); }
+  StdObjMgt_WriteData& operator<<(const bool& theValue) { return WriteValue(theValue); }
 
-  StdObjMgt_WriteData& operator<<(const Standard_Real& theValue) { return WriteValue(theValue); }
+  StdObjMgt_WriteData& operator<<(const double& theValue) { return WriteValue(theValue); }
 
-  StdObjMgt_WriteData& operator<<(const Standard_ShortReal& theValue)
-  {
-    return WriteValue(theValue);
-  }
+  StdObjMgt_WriteData& operator<<(const float& theValue) { return WriteValue(theValue); }
 
 private:
-  Handle(Storage_BaseDriver) myDriver;
+  occ::handle<Storage_BaseDriver> myDriver;
 };
 
 Standard_EXPORT StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData,

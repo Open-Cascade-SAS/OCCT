@@ -20,16 +20,16 @@
 #include <gp_Trsf.hxx>
 #include <HLRAlgo_EdgeIterator.hxx>
 #include <HLRBRep_BiPoint.hxx>
-#include <HLRBRep_ListIteratorOfListOfBPoint.hxx>
+#include <NCollection_List.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
 #include <TopoDS_Shape.hxx>
 
-#define PntX1 ((Standard_Real*)Coordinates)[0]
-#define PntY1 ((Standard_Real*)Coordinates)[1]
-#define PntZ1 ((Standard_Real*)Coordinates)[2]
-#define PntX2 ((Standard_Real*)Coordinates)[3]
-#define PntY2 ((Standard_Real*)Coordinates)[4]
-#define PntZ2 ((Standard_Real*)Coordinates)[5]
+#define PntX1 ((double*)Coordinates)[0]
+#define PntY1 ((double*)Coordinates)[1]
+#define PntZ1 ((double*)Coordinates)[2]
+#define PntX2 ((double*)Coordinates)[3]
+#define PntY2 ((double*)Coordinates)[4]
+#define PntZ2 ((double*)Coordinates)[5]
 
 //=================================================================================================
 
@@ -42,29 +42,29 @@ DBRep_HideData::DBRep_HideData()
 
 //=================================================================================================
 
-void DBRep_HideData::Set(const Standard_Integer viewID,
-                         const gp_Trsf&         TProj,
-                         const Standard_Real    focal,
-                         const TopoDS_Shape&    S,
-                         const Standard_Real    ang)
+void DBRep_HideData::Set(const int           viewID,
+                         const gp_Trsf&      TProj,
+                         const double        focal,
+                         const TopoDS_Shape& S,
+                         const double        ang)
 {
   myView  = viewID;
   myTrsf  = TProj;
   myFocal = focal;
   myAngle = ang;
 
-  Handle(HLRBRep_PolyAlgo) hider = new HLRBRep_PolyAlgo(S);
+  occ::handle<HLRBRep_PolyAlgo> hider = new HLRBRep_PolyAlgo(S);
   hider->Projector(HLRAlgo_Projector(myTrsf, myFocal > 0., myFocal));
   hider->Update();
 
-  Standard_Real        sta, end, dx, dy, dz;
-  Standard_ShortReal   tolsta, tolend;
+  double               sta, end, dx, dy, dz;
+  float                tolsta, tolend;
   HLRAlgo_EdgeIterator It;
   myBiPntVis.Clear();
   myBiPntHid.Clear();
   TopoDS_Shape       Sori;
-  Standard_Boolean   reg1, regn, outl, intl;
-  Standard_Address   Coordinates;
+  bool               reg1, regn, outl, intl;
+  void*              Coordinates;
   HLRAlgo_EdgeStatus status;
 
   for (hider->InitHide(); hider->MoreHide(); hider->NextHide())
@@ -110,50 +110,50 @@ void DBRep_HideData::Set(const Standard_Integer viewID,
 
 //=================================================================================================
 
-Standard_Boolean DBRep_HideData::IsSame(const gp_Trsf& TProj, const Standard_Real focal) const
+bool DBRep_HideData::IsSame(const gp_Trsf& TProj, const double focal) const
 {
   if (focal > 0)
   {
     if (myFocal <= 0)
-      return Standard_False;
+      return false;
     if (myFocal != focal)
-      return Standard_False;
+      return false;
     const gp_XYZ& T1 = TProj.TranslationPart();
     const gp_XYZ& T2 = myTrsf.TranslationPart();
 
-    for (Standard_Integer i = 1; i <= 3; i++)
+    for (int i = 1; i <= 3; i++)
     {
       if (T1.Coord(i) != T2.Coord(i))
-        return Standard_False;
+        return false;
     }
   }
   const gp_Mat& M1 = TProj.HVectorialPart();
   const gp_Mat& M2 = myTrsf.HVectorialPart();
 
-  for (Standard_Integer i = 1; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
 
-    for (Standard_Integer j = 1; j <= 3; j++)
+    for (int j = 1; j <= 3; j++)
     {
       if (M1.Value(i, j) != M2.Value(i, j))
-        return Standard_False;
+        return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void DBRep_HideData::DrawOn(Draw_Display&          D,
-                            const Standard_Boolean withRg1,
-                            const Standard_Boolean withRgN,
-                            const Standard_Boolean withHid,
-                            const Draw_Color&      VisCol,
-                            const Draw_Color&      HidCol)
+void DBRep_HideData::DrawOn(Draw_Display&     D,
+                            const bool        withRg1,
+                            const bool        withRgN,
+                            const bool        withHid,
+                            const Draw_Color& VisCol,
+                            const Draw_Color& HidCol)
 {
-  Standard_Boolean                   firstPick = Standard_True;
-  HLRBRep_ListIteratorOfListOfBPoint It;
-  //  Standard_Boolean reg1,regn,outl;
+  bool                                        firstPick = true;
+  NCollection_List<HLRBRep_BiPoint>::Iterator It;
+  //  bool reg1,regn,outl;
 
   if (withHid)
   {
@@ -162,17 +162,17 @@ void DBRep_HideData::DrawOn(Draw_Display&          D,
     for (It.Initialize(myBiPntHid); It.More(); It.Next())
     {
       const HLRBRep_BiPoint& BP     = It.Value();
-      Standard_Boolean       todraw = Standard_True;
+      bool                   todraw = true;
       if ((!withRg1 && BP.Rg1Line() && !BP.OutLine())
           || (!withRgN && BP.RgNLine() && !BP.OutLine()))
-        todraw = Standard_False;
+        todraw = false;
       if (todraw)
       {
         D.MoveTo(BP.P1());
         D.DrawTo(BP.P2());
         if (firstPick && D.HasPicked())
         {
-          firstPick  = Standard_False;
+          firstPick  = false;
           myPickShap = BP.Shape();
         }
       }
@@ -183,16 +183,16 @@ void DBRep_HideData::DrawOn(Draw_Display&          D,
   for (It.Initialize(myBiPntVis); It.More(); It.Next())
   {
     const HLRBRep_BiPoint& BP     = It.Value();
-    Standard_Boolean       todraw = Standard_True;
+    bool                   todraw = true;
     if ((!withRg1 && BP.Rg1Line() && !BP.OutLine()) || (!withRgN && BP.RgNLine() && !BP.OutLine()))
-      todraw = Standard_False;
+      todraw = false;
     if (todraw)
     {
       D.MoveTo(BP.P1());
       D.DrawTo(BP.P2());
       if (firstPick && D.HasPicked())
       {
-        firstPick  = Standard_False;
+        firstPick  = false;
         myPickShap = BP.Shape();
       }
     }

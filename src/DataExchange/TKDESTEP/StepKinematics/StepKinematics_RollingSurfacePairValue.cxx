@@ -25,10 +25,10 @@ StepKinematics_RollingSurfacePairValue::StepKinematics_RollingSurfacePairValue()
 //=================================================================================================
 
 void StepKinematics_RollingSurfacePairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Handle(StepGeom_PointOnSurface)&      theActualPointOnSurface,
-  const Standard_Real                         theActualRotation)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface,
+  const double                                     theActualRotation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -39,7 +39,8 @@ void StepKinematics_RollingSurfacePairValue::Init(
 
 //=================================================================================================
 
-Handle(StepGeom_PointOnSurface) StepKinematics_RollingSurfacePairValue::ActualPointOnSurface() const
+occ::handle<StepGeom_PointOnSurface> StepKinematics_RollingSurfacePairValue::ActualPointOnSurface()
+  const
 {
   return myActualPointOnSurface;
 }
@@ -47,22 +48,21 @@ Handle(StepGeom_PointOnSurface) StepKinematics_RollingSurfacePairValue::ActualPo
 //=================================================================================================
 
 void StepKinematics_RollingSurfacePairValue::SetActualPointOnSurface(
-  const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface)
+  const occ::handle<StepGeom_PointOnSurface>& theActualPointOnSurface)
 {
   myActualPointOnSurface = theActualPointOnSurface;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_RollingSurfacePairValue::ActualRotation() const
+double StepKinematics_RollingSurfacePairValue::ActualRotation() const
 {
   return myActualRotation;
 }
 
 //=================================================================================================
 
-void StepKinematics_RollingSurfacePairValue::SetActualRotation(
-  const Standard_Real theActualRotation)
+void StepKinematics_RollingSurfacePairValue::SetActualRotation(const double theActualRotation)
 {
   myActualRotation = theActualRotation;
 }

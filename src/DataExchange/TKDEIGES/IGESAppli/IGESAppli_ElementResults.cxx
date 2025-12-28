@@ -31,23 +31,23 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_ElementResults, IGESData_IGESEntity)
 IGESAppli_ElementResults::IGESAppli_ElementResults() {}
 
 void IGESAppli_ElementResults::Init(
-  const Handle(IGESDimen_GeneralNote)&               aNote,
-  const Standard_Integer                             aSubCase,
-  const Standard_Real                                aTime,
-  const Standard_Integer                             nbResults,
-  const Standard_Integer                             aResRepFlag,
-  const Handle(TColStd_HArray1OfInteger)&            allElementIdents,
-  const Handle(IGESAppli_HArray1OfFiniteElement)&    allFiniteElems,
-  const Handle(TColStd_HArray1OfInteger)&            allTopTypes,
-  const Handle(TColStd_HArray1OfInteger)&            nbLayers,
-  const Handle(TColStd_HArray1OfInteger)&            allDataLayerFlags,
-  const Handle(TColStd_HArray1OfInteger)&            allnbResDataLocs,
-  const Handle(IGESBasic_HArray1OfHArray1OfInteger)& allResDataLocs,
-  const Handle(IGESBasic_HArray1OfHArray1OfReal)&    allResults) // UNFINISHED
+  const occ::handle<IGESDimen_GeneralNote>&                                     aNote,
+  const int                                                                     aSubCase,
+  const double                                                                  aTime,
+  const int                                                                     nbResults,
+  const int                                                                     aResRepFlag,
+  const occ::handle<NCollection_HArray1<int>>&                                  allElementIdents,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>>& allFiniteElems,
+  const occ::handle<NCollection_HArray1<int>>&                                  allTopTypes,
+  const occ::handle<NCollection_HArray1<int>>&                                  nbLayers,
+  const occ::handle<NCollection_HArray1<int>>&                                  allDataLayerFlags,
+  const occ::handle<NCollection_HArray1<int>>&                                  allnbResDataLocs,
+  const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>&                       allResDataLocs,
+  const occ::handle<IGESBasic_HArray1OfHArray1OfReal>& allResults) // UNFINISHED
 {
   // raises exception if sizes are not consistent, (lower = 1 too)
   // but how to check is not clear ??
-  Standard_Integer num = allElementIdents->Length();
+  int num = allElementIdents->Length();
   if (allElementIdents->Lower() != 1 || allFiniteElems->Lower() != 1
       || allFiniteElems->Upper() != num || allTopTypes->Lower() != 1 || allTopTypes->Upper() != num
       || nbLayers->Lower() != 1 || nbLayers->Upper() != num || allDataLayerFlags->Lower() != 1
@@ -55,10 +55,10 @@ void IGESAppli_ElementResults::Init(
       || allnbResDataLocs->Upper() != num || allResDataLocs->Lower() != 1
       || allResDataLocs->Upper() != num || allResults->Lower() != 1 || allResults->Upper() != num)
     throw Standard_DimensionMismatch("IGESAppli_ElementsResults : Init");
-  for (Standard_Integer i = 1; i <= num; i++)
+  for (int i = 1; i <= num; i++)
   {
-    Standard_Integer nl  = nbLayers->Value(i);
-    Standard_Integer nrl = allnbResDataLocs->Value(i);
+    int nl  = nbLayers->Value(i);
+    int nrl = allnbResDataLocs->Value(i);
     if (allResDataLocs->Value(i)->Lower() != 1 || allResDataLocs->Value(i)->Upper() != nrl)
       throw Standard_DimensionMismatch("IGESAppli_ElementsResults : DataLoc");
     if (allResults->Value(i)->Lower() != 1 || allResults->Value(i)->Upper() != nl * nrl * nbResults)
@@ -82,112 +82,108 @@ void IGESAppli_ElementResults::Init(
   // FormNumber -> Type of the Results
 }
 
-void IGESAppli_ElementResults::SetFormNumber(const Standard_Integer form)
+void IGESAppli_ElementResults::SetFormNumber(const int form)
 {
   if (form < 0 || form > 34)
     throw Standard_OutOfRange("IGESAppli_ElementResults : SetFormNumber");
   InitTypeAndForm(148, form);
 }
 
-Handle(IGESDimen_GeneralNote) IGESAppli_ElementResults::Note() const
+occ::handle<IGESDimen_GeneralNote> IGESAppli_ElementResults::Note() const
 {
   return theNote;
 }
 
-Standard_Integer IGESAppli_ElementResults::SubCaseNumber() const
+int IGESAppli_ElementResults::SubCaseNumber() const
 {
   return theSubcaseNumber;
 }
 
-Standard_Real IGESAppli_ElementResults::Time() const
+double IGESAppli_ElementResults::Time() const
 {
   return theTime;
 }
 
-Standard_Integer IGESAppli_ElementResults::NbResultValues() const
+int IGESAppli_ElementResults::NbResultValues() const
 {
   return theNbResultValues;
 }
 
-Standard_Integer IGESAppli_ElementResults::ResultReportFlag() const
+int IGESAppli_ElementResults::ResultReportFlag() const
 {
   return theResultReportFlag;
 }
 
-Standard_Integer IGESAppli_ElementResults::NbElements() const
+int IGESAppli_ElementResults::NbElements() const
 {
   return theElements->Length();
 }
 
-Standard_Integer IGESAppli_ElementResults::ElementIdentifier(const Standard_Integer Index) const
+int IGESAppli_ElementResults::ElementIdentifier(const int Index) const
 {
   return theElementIdentifiers->Value(Index);
 }
 
-Handle(IGESAppli_FiniteElement) IGESAppli_ElementResults::Element(
-  const Standard_Integer Index) const
+occ::handle<IGESAppli_FiniteElement> IGESAppli_ElementResults::Element(const int Index) const
 {
   return theElements->Value(Index);
 }
 
-Standard_Integer IGESAppli_ElementResults::ElementTopologyType(const Standard_Integer Index) const
+int IGESAppli_ElementResults::ElementTopologyType(const int Index) const
 {
   return theElementTopologyTypes->Value(Index);
 }
 
-Standard_Integer IGESAppli_ElementResults::NbLayers(const Standard_Integer Index) const
+int IGESAppli_ElementResults::NbLayers(const int Index) const
 {
   return theNbLayers->Value(Index);
 }
 
-Standard_Integer IGESAppli_ElementResults::DataLayerFlag(const Standard_Integer Index) const
+int IGESAppli_ElementResults::DataLayerFlag(const int Index) const
 {
   return theDataLayerFlags->Value(Index);
 }
 
-Standard_Integer IGESAppli_ElementResults::NbResultDataLocs(const Standard_Integer Index) const
+int IGESAppli_ElementResults::NbResultDataLocs(const int Index) const
 {
   return theNbResultDataLocs->Value(Index);
 }
 
 //  ?? VERIFIER
 
-Standard_Integer IGESAppli_ElementResults::ResultDataLoc(const Standard_Integer NElem,
-                                                         const Standard_Integer NLoc) const
+int IGESAppli_ElementResults::ResultDataLoc(const int NElem, const int NLoc) const
 {
   return theResultDataLocs->Value(NElem)->Value(NLoc);
 }
 
-Standard_Integer IGESAppli_ElementResults::NbResults(const Standard_Integer Index) const
+int IGESAppli_ElementResults::NbResults(const int Index) const
 {
   return theResultData->Value(Index)->Length();
 }
 
-Standard_Real IGESAppli_ElementResults::ResultData(const Standard_Integer NElem,
-                                                   const Standard_Integer num) const
+double IGESAppli_ElementResults::ResultData(const int NElem, const int num) const
 {
   return theResultData->Value(NElem)->Value(num);
 }
 
-Standard_Integer IGESAppli_ElementResults::ResultRank(const Standard_Integer NElem,
-                                                      const Standard_Integer NVal,
-                                                      const Standard_Integer NLay,
-                                                      const Standard_Integer NLoc) const
+int IGESAppli_ElementResults::ResultRank(const int NElem,
+                                         const int NVal,
+                                         const int NLay,
+                                         const int NLoc) const
 {
-  Standard_Integer num = NVal + theNbResultValues * (NLay + theNbLayers->Value(NElem) * NLoc);
+  int num = NVal + theNbResultValues * (NLay + theNbLayers->Value(NElem) * NLoc);
   return num;
 }
 
-Standard_Real IGESAppli_ElementResults::ResultData(const Standard_Integer NElem,
-                                                   const Standard_Integer NVal,
-                                                   const Standard_Integer NLay,
-                                                   const Standard_Integer NLoc) const
+double IGESAppli_ElementResults::ResultData(const int NElem,
+                                            const int NVal,
+                                            const int NLay,
+                                            const int NLoc) const
 {
   return theResultData->Value(NElem)->Value(ResultRank(NElem, NVal, NLay, NLoc));
 }
 
-Handle(TColStd_HArray1OfReal) IGESAppli_ElementResults::ResultList(
-  const Standard_Integer NElem) const
+occ::handle<NCollection_HArray1<double>> IGESAppli_ElementResults::ResultList(const int NElem) const
 {
   return theResultData->Value(NElem);
 }

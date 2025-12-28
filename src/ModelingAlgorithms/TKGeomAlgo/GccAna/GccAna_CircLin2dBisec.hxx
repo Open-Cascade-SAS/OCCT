@@ -46,24 +46,23 @@ public:
   Standard_EXPORT GccAna_CircLin2dBisec(const gp_Circ2d& Circle, const gp_Lin2d& Line);
 
   //! Returns true (this construction algorithm never fails).
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the number of curves, representing solutions computed by this algorithm.
-  Standard_EXPORT Standard_Integer NbSolutions() const;
+  Standard_EXPORT int NbSolutions() const;
 
   //! Returns the solution number Index and raises OutOfRange
   //! exception if Index is greater than the number of solutions
   //! Exceptions
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
-  Standard_EXPORT Handle(GccInt_Bisec) ThisSolution(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<GccInt_Bisec> ThisSolution(const int Index) const;
 
-protected:
 private:
-  Standard_Boolean WellDone;
-  Standard_Integer NbrSol;
-  gp_Circ2d        circle;
-  gp_Lin2d         line;
+  bool      WellDone;
+  int       NbrSol;
+  gp_Circ2d circle;
+  gp_Lin2d  line;
 };
 
 #endif // _GccAna_CircLin2dBisec_HeaderFile

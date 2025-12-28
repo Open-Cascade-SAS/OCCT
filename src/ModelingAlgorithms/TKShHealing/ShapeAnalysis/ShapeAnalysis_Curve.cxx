@@ -53,7 +53,7 @@
 #include <ShapeExtend_ComplexCurve.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <NCollection_Sequence.hxx>
 
 //=================================================================================================
 
@@ -80,12 +80,12 @@
 //                   is found during the iterations.
 static void ProjectOnSegments(const Adaptor3d_Curve& theCurve,
                               const gp_Pnt&          thePoint,
-                              const Standard_Integer theSegmentCount,
-                              Standard_Real&         aStartParam,
-                              Standard_Real&         anEndParam,
-                              Standard_Real&         aProjDistance,
+                              const int              theSegmentCount,
+                              double&                aStartParam,
+                              double&                anEndParam,
+                              double&                aProjDistance,
                               gp_Pnt&                aProjPoint,
-                              Standard_Real&         aProjParam)
+                              double&                aProjParam)
 {
   // We consider <nbseg> points on [uMin,uMax]
   // Which is the closest? And what is the new interval?
@@ -96,20 +96,20 @@ static void ProjectOnSegments(const Adaptor3d_Curve& theCurve,
     return; // No segments to project on
   }
 
-  const Standard_Real aParamStep     = (anEndParam - aStartParam) / theSegmentCount;
-  Standard_Real       aMinSqDistance = aProjDistance * aProjDistance;
-  Standard_Boolean    aHasChanged    = Standard_False;
-  for (Standard_Integer i = 0; i <= theSegmentCount; i++)
+  const double aParamStep     = (anEndParam - aStartParam) / theSegmentCount;
+  double       aMinSqDistance = aProjDistance * aProjDistance;
+  bool         aHasChanged    = false;
+  for (int i = 0; i <= theSegmentCount; i++)
   {
-    const Standard_Real aCurrentParam      = aStartParam + (aParamStep * i);
-    const gp_Pnt        aCurrentPoint      = theCurve.Value(aCurrentParam);
-    const Standard_Real aCurrentSqDistance = aCurrentPoint.SquareDistance(thePoint);
+    const double aCurrentParam      = aStartParam + (aParamStep * i);
+    const gp_Pnt aCurrentPoint      = theCurve.Value(aCurrentParam);
+    const double aCurrentSqDistance = aCurrentPoint.SquareDistance(thePoint);
     if (aCurrentSqDistance < aMinSqDistance)
     {
       aMinSqDistance = aCurrentSqDistance;
       aProjPoint     = aCurrentPoint;
       aProjParam     = aCurrentParam;
-      aHasChanged    = Standard_True;
+      aHasChanged    = true;
     }
   }
   if (aHasChanged)
@@ -123,15 +123,15 @@ static void ProjectOnSegments(const Adaptor3d_Curve& theCurve,
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_Curve::Project(const Handle(Geom_Curve)& C3D,
-                                           const gp_Pnt&             P3D,
-                                           const Standard_Real       preci,
-                                           gp_Pnt&                   proj,
-                                           Standard_Real&            param,
-                                           const Standard_Boolean    AdjustToEnds) const
+double ShapeAnalysis_Curve::Project(const occ::handle<Geom_Curve>& C3D,
+                                    const gp_Pnt&                  P3D,
+                                    const double                   preci,
+                                    gp_Pnt&                        proj,
+                                    double&                        param,
+                                    const bool                     AdjustToEnds) const
 {
-  Standard_Real uMin = C3D->FirstParameter();
-  Standard_Real uMax = C3D->LastParameter();
+  double uMin = C3D->FirstParameter();
+  double uMax = C3D->LastParameter();
   if (uMin < uMax)
     return Project(C3D, P3D, preci, proj, param, uMin, uMax, AdjustToEnds);
   else
@@ -140,24 +140,24 @@ Standard_Real ShapeAnalysis_Curve::Project(const Handle(Geom_Curve)& C3D,
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_Curve::Project(const Handle(Geom_Curve)& C3D,
-                                           const gp_Pnt&             P3D,
-                                           const Standard_Real       preci,
-                                           gp_Pnt&                   proj,
-                                           Standard_Real&            param,
-                                           const Standard_Real       cf,
-                                           const Standard_Real       cl,
-                                           const Standard_Boolean    AdjustToEnds) const
+double ShapeAnalysis_Curve::Project(const occ::handle<Geom_Curve>& C3D,
+                                    const gp_Pnt&                  P3D,
+                                    const double                   preci,
+                                    gp_Pnt&                        proj,
+                                    double&                        param,
+                                    const double                   cf,
+                                    const double                   cl,
+                                    const bool                     AdjustToEnds) const
 {
-  Standard_Real distmin;
-  Standard_Real uMin = (cf < cl ? cf : cl);
-  Standard_Real uMax = (cf < cl ? cl : cf);
+  double distmin;
+  double uMin = (cf < cl ? cf : cl);
+  double uMax = (cf < cl ? cl : cf);
 
   GeomAdaptor_Curve GAC(C3D, uMin, uMax);
   if (C3D->IsKind(STANDARD_TYPE(Geom_BoundedCurve)))
   {
     // clang-format off
-    Standard_Real prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
+    double prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
     // clang-format on
     gp_Pnt LowBound = GAC.Value(uMin);
     gp_Pnt HigBound = GAC.Value(uMax);
@@ -187,7 +187,7 @@ Standard_Real ShapeAnalysis_Curve::Project(const Handle(Geom_Curve)& C3D,
     // uMin = uMin - 0.1;
     // uMax = uMax + 0.1;
     //  modified by pdn on 01.07.98 after BUC60195 entity 1952 (std::min() added)
-    Standard_Real delta = std::min(GAC.Resolution(preci), (uMax - uMin) * 0.1);
+    double delta = std::min(GAC.Resolution(preci), (uMax - uMin) * 0.1);
     uMin -= delta;
     uMax += delta;
     GAC.Load(C3D, uMin, uMax);
@@ -198,24 +198,24 @@ Standard_Real ShapeAnalysis_Curve::Project(const Handle(Geom_Curve)& C3D,
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
-                                           const gp_Pnt&          P3D,
-                                           const Standard_Real    preci,
-                                           gp_Pnt&                proj,
-                                           Standard_Real&         param,
-                                           const Standard_Boolean AdjustToEnds) const
+double ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
+                                    const gp_Pnt&          P3D,
+                                    const double           preci,
+                                    gp_Pnt&                proj,
+                                    double&                param,
+                                    const bool             AdjustToEnds) const
 
 {
 
-  Standard_Real uMin = C3D.FirstParameter();
-  Standard_Real uMax = C3D.LastParameter();
+  double uMin = C3D.FirstParameter();
+  double uMax = C3D.LastParameter();
 
   if (Precision::IsInfinite(uMin) && Precision::IsInfinite(uMax))
     return ProjectAct(C3D, P3D, preci, proj, param);
 
-  Standard_Real distmin_L = Precision::Infinite(), distmin_H = Precision::Infinite();
+  double distmin_L = Precision::Infinite(), distmin_H = Precision::Infinite();
   // clang-format off
-  Standard_Real prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
+  double prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
   // clang-format on
   gp_Pnt LowBound = C3D.Value(uMin);
   gp_Pnt HigBound = C3D.Value(uMax);
@@ -236,7 +236,7 @@ Standard_Real ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
     return distmin_H;
   }
 
-  Standard_Real distProj = ProjectAct(C3D, P3D, preci, proj, param);
+  double distProj = ProjectAct(C3D, P3D, preci, proj, param);
   if (distProj < distmin_L + Precision::Confusion()
       && distProj < distmin_H + Precision::Confusion())
     return distProj;
@@ -254,31 +254,31 @@ Standard_Real ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
-                                              const gp_Pnt&          thePoint,
-                                              const Standard_Real    theTolerance,
-                                              gp_Pnt&                theProjPoint,
-                                              Standard_Real&         theProjParam) const
+double ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
+                                       const gp_Pnt&          thePoint,
+                                       const double           theTolerance,
+                                       gp_Pnt&                theProjPoint,
+                                       double&                theProjParam) const
 
 {
-  Standard_Boolean OK = Standard_False;
-  theProjParam        = 0.;
+  bool OK      = false;
+  theProjParam = 0.;
   try
   {
     OCC_CATCH_SIGNALS
-    Extrema_ExtPC    aCurveExtrema(thePoint, theCurve);
-    Standard_Real    aMinExtremaDistance = RealLast();
-    Standard_Integer aMinExtremaIndex    = 0;
+    Extrema_ExtPC aCurveExtrema(thePoint, theCurve);
+    double        aMinExtremaDistance = RealLast();
+    int           aMinExtremaIndex    = 0;
     if (aCurveExtrema.IsDone() && (aCurveExtrema.NbExt() > 0))
     {
-      for (Standard_Integer i = 1; i <= aCurveExtrema.NbExt(); i++)
+      for (int i = 1; i <= aCurveExtrema.NbExt(); i++)
       {
         if (!aCurveExtrema.IsMin(i))
         {
           continue;
         }
 
-        const Standard_Real aCurrentDistance = aCurveExtrema.SquareDistance(i);
+        const double aCurrentDistance = aCurveExtrema.SquareDistance(i);
         if (aCurrentDistance < aMinExtremaDistance)
         {
           aMinExtremaDistance = aCurrentDistance;
@@ -290,48 +290,48 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
       {
         theProjParam = (aCurveExtrema.Point(aMinExtremaIndex)).Parameter();
         theProjPoint = (aCurveExtrema.Point(aMinExtremaIndex)).Value();
-        OK           = Standard_True;
+        OK           = true;
       }
     }
   }
   catch (const Standard_Failure& anException)
   {
     (void)anException;
-    OK = Standard_False;
+    OK = false;
   }
 
   // szv#4:S4163:12Mar99 moved
-  Standard_Real    uMin            = theCurve.FirstParameter();
-  Standard_Real    uMax            = theCurve.LastParameter();
-  Standard_Boolean anIsClosedCurve = Standard_False;
-  Standard_Real    aCurvePeriod    = 0.;
+  double uMin            = theCurve.FirstParameter();
+  double uMax            = theCurve.LastParameter();
+  bool   anIsClosedCurve = false;
+  double aCurvePeriod    = 0.;
   // Distance between the point and the projection point.
-  Standard_Real aProjDistance = Precision::Infinite();
-  Standard_Real aModMin       = Precision::Infinite();
+  double aProjDistance = Precision::Infinite();
+  double aModMin       = Precision::Infinite();
 
   // Remember the computed values.
   // These values will be used in case the projection is not successful.
-  const Standard_Real aComputedParam = theProjParam;
-  const gp_Pnt        aComputedProj  = theProjPoint;
+  const double aComputedParam = theProjParam;
+  const gp_Pnt aComputedProj  = theProjPoint;
 
   // PTV 29.05.2002 remember the old solution, cause it could be better
-  Standard_Boolean anIsHaveOldSolution = Standard_False;
-  Standard_Real    anOldParam          = 0.;
-  gp_Pnt           anOldProj;
+  bool   anIsHaveOldSolution = false;
+  double anOldParam          = 0.;
+  gp_Pnt anOldProj;
   if (OK)
   {
-    anIsHaveOldSolution = Standard_True;
+    anIsHaveOldSolution = true;
     anOldProj           = theProjPoint;
     anOldParam          = theProjParam;
     aProjDistance       = theProjPoint.Distance(thePoint);
     aModMin             = aProjDistance;
     if (aProjDistance > theTolerance)
     {
-      OK = Standard_False;
+      OK = false;
     }
     if (theCurve.IsClosed())
     {
-      anIsClosedCurve = Standard_True;
+      anIsClosedCurve = true;
       aCurvePeriod    = uMax - uMin; // szv#4:S4163:12Mar99 optimized
     }
   }
@@ -360,7 +360,7 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
           theProjParam = ElCLib::Parameter(aCirc, thePoint);
           theProjPoint = ElCLib::Value(theProjParam, aCirc);
         }
-        anIsClosedCurve = Standard_True;
+        anIsClosedCurve = true;
         aCurvePeriod    = 2. * M_PI;
       }
       break;
@@ -386,7 +386,7 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
       case GeomAbs_Ellipse: {
         theProjParam    = ElCLib::Parameter(theCurve.Ellipse(), thePoint);
         theProjPoint    = ElCLib::Value(theProjParam, theCurve.Ellipse());
-        anIsClosedCurve = Standard_True;
+        anIsClosedCurve = true;
         aCurvePeriod    = 2. * M_PI;
       }
       break;
@@ -418,9 +418,9 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
                                        theTolerance /*TolU*/);
         if (aProjector.IsDone())
         {
-          theProjParam                    = aProjector.Point().Parameter();
-          theProjPoint                    = aProjector.Point().Value();
-          const Standard_Real aDistNewton = thePoint.Distance(theProjPoint);
+          theProjParam             = aProjector.Point().Parameter();
+          theProjPoint             = aProjector.Point().Value();
+          const double aDistNewton = thePoint.Distance(theProjPoint);
           if (aDistNewton < aModMin)
           {
             return aDistNewton;
@@ -438,7 +438,7 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
         // chosen to be 40, 20, 25, and 40 again. It is unknown why
         // these particular values were chosen, probably just because
         // they were found to be sufficient in practice.
-        for (const Standard_Integer aSegmentCount : {40, 20, 25, 40})
+        for (const int aSegmentCount : {40, 20, 25, 40})
         {
           ProjectOnSegments(theCurve,
                             thePoint,
@@ -477,8 +477,8 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
   if (anIsHaveOldSolution)
   {
     // PTV 29.05.2002 Compare old solution and new;
-    const Standard_Real anOldDist = anOldProj.SquareDistance(thePoint);
-    const Standard_Real aNewDist  = theProjPoint.SquareDistance(thePoint);
+    const double anOldDist = anOldProj.SquareDistance(thePoint);
+    const double aNewDist  = theProjPoint.SquareDistance(thePoint);
     if (anOldDist < aNewDist)
     {
       theProjPoint = anOldProj;
@@ -493,24 +493,24 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
 // purpose  : Newton algo for projecting point on curve (S4030)
 //=======================================================================
 
-Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real       paramPrev,
-                                               const Handle(Geom_Curve)& C3D,
-                                               const gp_Pnt&             P3D,
-                                               const Standard_Real       preci,
-                                               gp_Pnt&                   proj,
-                                               Standard_Real&            param,
-                                               const Standard_Real       cf,
-                                               const Standard_Real       cl,
-                                               const Standard_Boolean    AdjustToEnds) const
+double ShapeAnalysis_Curve::NextProject(const double                   paramPrev,
+                                        const occ::handle<Geom_Curve>& C3D,
+                                        const gp_Pnt&                  P3D,
+                                        const double                   preci,
+                                        gp_Pnt&                        proj,
+                                        double&                        param,
+                                        const double                   cf,
+                                        const double                   cl,
+                                        const bool                     AdjustToEnds) const
 {
-  Standard_Real     uMin    = (cf < cl ? cf : cl);
-  Standard_Real     uMax    = (cf < cl ? cl : cf);
-  Standard_Real     distmin = Precision::Infinite();
+  double            uMin    = (cf < cl ? cf : cl);
+  double            uMax    = (cf < cl ? cl : cf);
+  double            distmin = Precision::Infinite();
   GeomAdaptor_Curve GAC(C3D, uMin, uMax);
   if (C3D->IsKind(STANDARD_TYPE(Geom_BoundedCurve)))
   {
     // clang-format off
-    Standard_Real prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
+    double prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
     // clang-format on
     gp_Pnt LowBound = GAC.Value(uMin);
     gp_Pnt HigBound = GAC.Value(uMax);
@@ -540,7 +540,7 @@ Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real       paramPr
     // uMin = uMin - 0.1;
     // uMax = uMax + 0.1;
     //  modified by pdn on 01.07.98 after BUC60195 entity 1952 (std::min() added)
-    Standard_Real delta = std::min(GAC.Resolution(preci), (uMax - uMin) * 0.1);
+    double delta = std::min(GAC.Resolution(preci), (uMax - uMin) * 0.1);
     uMin -= delta;
     uMax += delta;
     GAC.Load(C3D, uMin, uMax);
@@ -550,15 +550,15 @@ Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real       paramPr
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real    paramPrev,
-                                               const Adaptor3d_Curve& C3D,
-                                               const gp_Pnt&          P3D,
-                                               const Standard_Real    preci,
-                                               gp_Pnt&                proj,
-                                               Standard_Real&         param) const
+double ShapeAnalysis_Curve::NextProject(const double           paramPrev,
+                                        const Adaptor3d_Curve& C3D,
+                                        const gp_Pnt&          P3D,
+                                        const double           preci,
+                                        gp_Pnt&                proj,
+                                        double&                param) const
 {
-  Standard_Real uMin = C3D.FirstParameter();
-  Standard_Real uMax = C3D.LastParameter();
+  double uMin = C3D.FirstParameter();
+  double uMax = C3D.LastParameter();
 
   Extrema_LocateExtPC aProjector(P3D, C3D, paramPrev /*U0*/, uMin, uMax, preci /*TolU*/);
   if (aProjector.IsDone())
@@ -567,7 +567,7 @@ Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real    paramPrev,
     proj  = aProjector.Point().Value();
     return P3D.Distance(proj);
   }
-  return Project(C3D, P3D, preci, proj, param, Standard_False);
+  return Project(C3D, P3D, preci, proj, param, false);
 }
 
 //=======================================================================
@@ -575,17 +575,17 @@ Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real    paramPrev,
 // purpose  : Copied from StepToTopoDS_GeometricTuul::UpdateParam3d (Aug 2001)
 //=======================================================================
 
-Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& theCurve,
-                                                    Standard_Real&            First,
-                                                    Standard_Real&            Last,
-                                                    const Standard_Real       preci) const
+bool ShapeAnalysis_Curve::ValidateRange(const occ::handle<Geom_Curve>& theCurve,
+                                        double&                        First,
+                                        double&                        Last,
+                                        const double                   preci) const
 {
   // First et/ou Last peuvent etre en dehors des bornes naturelles de la courbe.
   // On donnera alors la valeur en bout a First et/ou Last
 
-  Standard_Real cf = theCurve->FirstParameter();
-  Standard_Real cl = theCurve->LastParameter();
-  //  Standard_Real preci = BRepAPI::Precision();
+  double cf = theCurve->FirstParameter();
+  double cl = theCurve->LastParameter();
+  //  double preci = BRepAPI::Precision();
 
   if (theCurve->IsKind(STANDARD_TYPE(Geom_BoundedCurve)) && !theCurve->IsClosed())
   {
@@ -643,16 +643,16 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
         Last = cl;
       if (First > Last)
       {
-        Standard_Real tmp = First;
-        First             = Last;
-        Last              = tmp;
+        double tmp = First;
+        First      = Last;
+        Last       = tmp;
       }
     }
   }
   // The curve is closed within the 3D tolerance
   else if (theCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
+    occ::handle<Geom_BSplineCurve> aBSpline = occ::down_cast<Geom_BSplineCurve>(theCurve);
     if (aBSpline->StartPoint().Distance(aBSpline->EndPoint()) <= preci)
     {
       //: S4136	<= BRepAPI::Precision()) {
@@ -672,9 +672,9 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
       // on inverse quand meme les parametres !!!!!!
       else
       {
-        Standard_Real tmp = First;
-        First             = Last;
-        Last              = tmp;
+        double tmp = First;
+        First      = Last;
+        Last       = tmp;
       }
     }
     // abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
@@ -689,7 +689,7 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
     { // gka 10.07.1998 file PRO7656 entity 33334
       First = cf;
       Last  = cl;
-      return Standard_False;
+      return false;
     }
   }
   else
@@ -707,9 +707,9 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
       First -= Precision::PConfusion();
       Last += Precision::PConfusion();
     }
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -718,60 +718,60 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
 //=======================================================================
 
 // search for extremum using Newton
-static Standard_Integer SearchForExtremum(const Handle(Geom2d_Curve)& C2d,
-                                          const Standard_Real         First,
-                                          const Standard_Real         Last,
-                                          const gp_Vec2d&             dir,
-                                          Standard_Real&              par,
-                                          gp_Pnt2d&                   res)
+static int SearchForExtremum(const occ::handle<Geom2d_Curve>& C2d,
+                             const double                     First,
+                             const double                     Last,
+                             const gp_Vec2d&                  dir,
+                             double&                          par,
+                             gp_Pnt2d&                        res)
 {
-  Standard_Real    prevpar;
-  Standard_Integer nbOut = 0;
-  for (Standard_Integer i = 0; i < 10; i++)
+  double prevpar;
+  int    nbOut = 0;
+  for (int i = 0; i < 10; i++)
   {
     prevpar = par;
 
     gp_Vec2d D1, D2;
     C2d->D2(par, res, D1, D2);
-    Standard_Real Det = (D2 * dir);
+    double Det = (D2 * dir);
     if (std::abs(Det) < 1e-10)
-      return Standard_True;
+      return true;
 
     par -= (D1 * dir) / Det;
     if (std::abs(par - prevpar) < Precision::PConfusion())
-      return Standard_True;
+      return true;
 
     if (par < First)
     {
       if (nbOut++ > 2 || prevpar == First)
-        return Standard_False;
+        return false;
       par = First;
     }
     if (par > Last)
     {
       if (nbOut++ > 2 || prevpar == Last)
-        return Standard_False;
+        return false;
       par = Last;
     }
   }
-  return Standard_True;
+  return true;
 }
 
-void ShapeAnalysis_Curve::FillBndBox(const Handle(Geom2d_Curve)& C2d,
-                                     const Standard_Real         First,
-                                     const Standard_Real         Last,
-                                     const Standard_Integer      NPoints,
-                                     const Standard_Boolean      Exact,
-                                     Bnd_Box2d&                  Box) const
+void ShapeAnalysis_Curve::FillBndBox(const occ::handle<Geom2d_Curve>& C2d,
+                                     const double                     First,
+                                     const double                     Last,
+                                     const int                        NPoints,
+                                     const bool                       Exact,
+                                     Bnd_Box2d&                       Box) const
 {
   if (!Exact)
   {
-    Standard_Integer nseg = (NPoints < 2 ? 1 : NPoints - 1);
-    Standard_Real    step = (Last - First) / nseg;
-    for (Standard_Integer i = 0; i <= nseg; i++)
+    int    nseg = (NPoints < 2 ? 1 : NPoints - 1);
+    double step = (Last - First) / nseg;
+    for (int i = 0; i <= nseg; i++)
     {
-      Standard_Real par = First + i * step;
-      gp_Pnt2d      pnt = C2d->Value(par);
+      double   par = First + i * step;
+      gp_Pnt2d pnt = C2d->Value(par);
       Box.Add(pnt);
     }
     return;
@@ -779,29 +779,29 @@ void ShapeAnalysis_Curve::FillBndBox(const Handle(Geom2d_Curve)& C2d,
 
   // We should solve the task on intervals of C2 continuity.
   Geom2dAdaptor_Curve anAC(C2d, First, Last);
-  Standard_Integer    nbInt = anAC.NbIntervals(GeomAbs_C2);
+  int                 nbInt = anAC.NbIntervals(GeomAbs_C2);
   // If we have only 1 interval then use input NPoints parameter to get samples.
-  Standard_Integer     nbSamples = (nbInt < 2 ? NPoints - 1 : nbInt);
-  TColStd_Array1OfReal aParams(1, nbSamples + 1);
+  int                        nbSamples = (nbInt < 2 ? NPoints - 1 : nbInt);
+  NCollection_Array1<double> aParams(1, nbSamples + 1);
   if (nbSamples == nbInt)
     anAC.Intervals(aParams, GeomAbs_C2);
   else
   {
-    Standard_Real step = (Last - First) / nbSamples;
-    for (Standard_Integer i = 0; i <= nbSamples; i++)
+    double step = (Last - First) / nbSamples;
+    for (int i = 0; i <= nbSamples; i++)
       aParams(i + 1) = First + i * step;
   }
-  for (Standard_Integer i = 1; i <= nbSamples + 1; i++)
+  for (int i = 1; i <= nbSamples + 1; i++)
   {
-    Standard_Real aPar1 = aParams(i);
-    gp_Pnt2d      aPnt  = C2d->Value(aPar1);
+    double   aPar1 = aParams(i);
+    gp_Pnt2d aPnt  = C2d->Value(aPar1);
     Box.Add(aPnt);
     if (i <= nbSamples)
     {
-      Standard_Real aPar2 = aParams(i + 1);
-      Standard_Real par   = (aPar1 + aPar2) * 0.5;
-      gp_Pnt2d      pextr;
-      Standard_Real parextr = par;
+      double   aPar2 = aParams(i + 1);
+      double   par   = (aPar1 + aPar2) * 0.5;
+      gp_Pnt2d pextr;
+      double   parextr = par;
       if (SearchForExtremum(C2d, aPar1, aPar2, gp_Vec2d(1, 0), parextr, pextr))
       {
         Box.Add(pextr);
@@ -817,19 +817,19 @@ void ShapeAnalysis_Curve::FillBndBox(const Handle(Geom2d_Curve)& C2d,
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_Curve::SelectForwardSeam(const Handle(Geom2d_Curve)& C1,
-                                                        const Handle(Geom2d_Curve)& C2) const
+int ShapeAnalysis_Curve::SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
+                                           const occ::handle<Geom2d_Curve>& C2) const
 {
   //  SelectForward est destine a devenir un outil distinct
   //  Il est sans doute optimisable !
 
-  Standard_Integer theCurveIndice = 0;
+  int theCurveIndice = 0;
 
-  Handle(Geom2d_Line) L1 = Handle(Geom2d_Line)::DownCast(C1);
+  occ::handle<Geom2d_Line> L1 = occ::down_cast<Geom2d_Line>(C1);
   if (L1.IsNull())
   {
     // if we have BoundedCurve, create a line from C1
-    Handle(Geom2d_BoundedCurve) BC1 = Handle(Geom2d_BoundedCurve)::DownCast(C1);
+    occ::handle<Geom2d_BoundedCurve> BC1 = occ::down_cast<Geom2d_BoundedCurve>(C1);
     if (BC1.IsNull())
       return theCurveIndice;
     gp_Pnt2d StartBC1 = BC1->StartPoint();
@@ -840,11 +840,11 @@ Standard_Integer ShapeAnalysis_Curve::SelectForwardSeam(const Handle(Geom2d_Curv
     L1 = new Geom2d_Line(StartBC1, VecBC1);
   }
 
-  Handle(Geom2d_Line) L2 = Handle(Geom2d_Line)::DownCast(C2);
+  occ::handle<Geom2d_Line> L2 = occ::down_cast<Geom2d_Line>(C2);
   if (L2.IsNull())
   {
     // if we have BoundedCurve, creates a line from C2
-    Handle(Geom2d_BoundedCurve) BC2 = Handle(Geom2d_BoundedCurve)::DownCast(C2);
+    occ::handle<Geom2d_BoundedCurve> BC2 = occ::down_cast<Geom2d_BoundedCurve>(C2);
     if (BC2.IsNull())
       return theCurveIndice;
     gp_Pnt2d StartBC2 = BC2->StartPoint();
@@ -855,8 +855,8 @@ Standard_Integer ShapeAnalysis_Curve::SelectForwardSeam(const Handle(Geom2d_Curv
     L2 = new Geom2d_Line(StartBC2, VecBC2);
   }
 
-  Standard_Boolean UdirPos, UdirNeg, VdirPos, VdirNeg;
-  UdirPos = UdirNeg = VdirPos = VdirNeg = Standard_False;
+  bool UdirPos, UdirNeg, VdirPos, VdirNeg;
+  UdirPos = UdirNeg = VdirPos = VdirNeg = false;
 
   gp_Dir2d theDir  = L1->Direction();
   gp_Pnt2d theLoc1 = L1->Location();
@@ -864,19 +864,19 @@ Standard_Integer ShapeAnalysis_Curve::SelectForwardSeam(const Handle(Geom2d_Curv
 
   if (theDir.X() > 0.)
   {
-    UdirPos = Standard_True; // szv#4:S4163:12Mar99 Udir unused
+    UdirPos = true; // szv#4:S4163:12Mar99 Udir unused
   }
   else if (theDir.X() < 0.)
   {
-    UdirNeg = Standard_True; // szv#4:S4163:12Mar99 Udir unused
+    UdirNeg = true; // szv#4:S4163:12Mar99 Udir unused
   }
   else if (theDir.Y() > 0.)
   {
-    VdirPos = Standard_True; // szv#4:S4163:12Mar99 Vdir unused
+    VdirPos = true; // szv#4:S4163:12Mar99 Vdir unused
   }
   else if (theDir.Y() < 0.)
   {
-    VdirNeg = Standard_True; // szv#4:S4163:12Mar99 Vdir unused
+    VdirNeg = true; // szv#4:S4163:12Mar99 Vdir unused
   }
 
   if (VdirPos)
@@ -927,7 +927,7 @@ static gp_XYZ GetAnyNormal(const gp_XYZ& orig)
   else
   {
     Norm.SetCoord(orig.Z(), 0, -orig.X());
-    Standard_Real nrm = Norm.Modulus();
+    double nrm = Norm.Modulus();
     if (nrm < Precision::Confusion())
       Norm.SetCoord(0, 0, 1);
     else
@@ -938,7 +938,8 @@ static gp_XYZ GetAnyNormal(const gp_XYZ& orig)
 
 //=================================================================================================
 
-static void AppendControlPoles(TColgp_SequenceOfPnt& seq, const Handle(Geom_Curve)& curve)
+static void AppendControlPoles(NCollection_Sequence<gp_Pnt>&  seq,
+                               const occ::handle<Geom_Curve>& curve)
 {
   if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
   {
@@ -954,20 +955,20 @@ static void AppendControlPoles(TColgp_SequenceOfPnt& seq, const Handle(Geom_Curv
   else if (curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     // DeclareAndCast(Geom_TrimmedCurve, Trimmed, curve);
-    Handle(Geom_TrimmedCurve) Trimmed = Handle(Geom_TrimmedCurve)::DownCast(curve);
+    occ::handle<Geom_TrimmedCurve> Trimmed = occ::down_cast<Geom_TrimmedCurve>(curve);
     //     AppendControlPoles(seq,Trimmed->BasisCurve());
-    Handle(Geom_Curve) aBaseCrv = Trimmed->BasisCurve();
-    Standard_Boolean   done     = Standard_False;
+    occ::handle<Geom_Curve> aBaseCrv = Trimmed->BasisCurve();
+    bool                    done     = false;
     if (aBaseCrv->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
     {
       try
       {
         OCC_CATCH_SIGNALS
-        Handle(Geom_Geometry)     Ctmp = aBaseCrv->Copy();
-        Handle(Geom_BSplineCurve) bslp = Handle(Geom_BSplineCurve)::DownCast(Ctmp);
+        occ::handle<Geom_Geometry>     Ctmp = aBaseCrv->Copy();
+        occ::handle<Geom_BSplineCurve> bslp = occ::down_cast<Geom_BSplineCurve>(Ctmp);
         bslp->Segment(curve->FirstParameter(), curve->LastParameter());
         AppendControlPoles(seq, bslp);
-        done = Standard_True;
+        done = true;
       }
       catch (Standard_Failure const&)
       {
@@ -978,11 +979,11 @@ static void AppendControlPoles(TColgp_SequenceOfPnt& seq, const Handle(Geom_Curv
       try
       {
         OCC_CATCH_SIGNALS
-        Handle(Geom_Geometry)    Ctmp = aBaseCrv->Copy();
-        Handle(Geom_BezierCurve) bz   = Handle(Geom_BezierCurve)::DownCast(Ctmp);
+        occ::handle<Geom_Geometry>    Ctmp = aBaseCrv->Copy();
+        occ::handle<Geom_BezierCurve> bz   = occ::down_cast<Geom_BezierCurve>(Ctmp);
         bz->Segment(curve->FirstParameter(), curve->LastParameter());
         AppendControlPoles(seq, bz);
-        done = Standard_True;
+        done = true;
       }
       catch (Standard_Failure const&)
       {
@@ -998,7 +999,7 @@ static void AppendControlPoles(TColgp_SequenceOfPnt& seq, const Handle(Geom_Curv
   else if (curve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
   {
     // DeclareAndCast(Geom_OffsetCurve, OffsetC, curve);
-    Handle(Geom_OffsetCurve) OffsetC = Handle(Geom_OffsetCurve)::DownCast(curve);
+    occ::handle<Geom_OffsetCurve> OffsetC = occ::down_cast<Geom_OffsetCurve>(curve);
     //     AppendControlPoles(seq,OffsetC->BasisCurve());
     seq.Append(curve->Value(curve->FirstParameter()));
     seq.Append(curve->Value((curve->FirstParameter() + curve->LastParameter()) / 2.));
@@ -1007,20 +1008,20 @@ static void AppendControlPoles(TColgp_SequenceOfPnt& seq, const Handle(Geom_Curv
   else if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
     // DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
-    Handle(Geom_BSplineCurve) BSpline = Handle(Geom_BSplineCurve)::DownCast(curve);
-    TColgp_Array1OfPnt        Poles(1, BSpline->NbPoles());
+    occ::handle<Geom_BSplineCurve> BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
+    NCollection_Array1<gp_Pnt>     Poles(1, BSpline->NbPoles());
     BSpline->Poles(Poles);
-    for (Standard_Integer i = 1; i <= BSpline->NbPoles(); i++)
+    for (int i = 1; i <= BSpline->NbPoles(); i++)
       seq.Append(Poles(i));
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
     // DeclareAndCast(Geom_BezierCurve, Bezier, curve);
-    // Handle(Geom_BezierCurve) Bezier = Handle(Geom_BezierCurve)::DownCast(curve);
-    Handle(Geom_BezierCurve) Bezier = Handle(Geom_BezierCurve)::DownCast(curve);
-    TColgp_Array1OfPnt       Poles(1, Bezier->NbPoles());
+    // occ::handle<Geom_BezierCurve> Bezier = occ::down_cast<Geom_BezierCurve>(curve);
+    occ::handle<Geom_BezierCurve> Bezier = occ::down_cast<Geom_BezierCurve>(curve);
+    NCollection_Array1<gp_Pnt>    Poles(1, Bezier->NbPoles());
     Bezier->Poles(Poles);
-    for (Standard_Integer i = 1; i <= Bezier->NbPoles(); i++)
+    for (int i = 1; i <= Bezier->NbPoles(); i++)
       seq.Append(Poles(i));
   }
 }
@@ -1032,12 +1033,12 @@ static void AppendControlPoles(TColgp_SequenceOfPnt& seq, const Handle(Geom_Curv
 // purpose  : Detects if points lie in some plane and returns normal
 //=======================================================================
 
-Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const TColgp_Array1OfPnt& pnts,
-                                               gp_XYZ&                   Normal,
-                                               const Standard_Real       preci)
+bool ShapeAnalysis_Curve::IsPlanar(const NCollection_Array1<gp_Pnt>& pnts,
+                                   gp_XYZ&                           Normal,
+                                   const double                      preci)
 {
-  Standard_Real    precision = (preci > 0.0) ? preci : Precision::Confusion();
-  Standard_Boolean noNorm    = (Normal.SquareModulus() == 0);
+  double precision = (preci > 0.0) ? preci : Precision::Confusion();
+  bool   noNorm    = (Normal.SquareModulus() == 0);
 
   if (pnts.Length() < 3)
   {
@@ -1045,7 +1046,7 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const TColgp_Array1OfPnt& pnts,
     if (noNorm)
     {
       Normal = GetAnyNormal(N1);
-      return Standard_True;
+      return true;
     }
     return std::abs(N1 * Normal) < Precision::Confusion();
   }
@@ -1054,8 +1055,8 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const TColgp_Array1OfPnt& pnts,
   if (noNorm)
   {
     // define a center point
-    gp_XYZ           aCenter(0, 0, 0);
-    Standard_Integer i = 1;
+    gp_XYZ aCenter(0, 0, 0);
+    int    i = 1;
     for (; i <= pnts.Length(); i++)
       aCenter += pnts(i).XYZ();
     aCenter /= pnts.Length();
@@ -1077,16 +1078,16 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const TColgp_Array1OfPnt& pnts,
   }
 
   // check if points are linear
-  Standard_Real nrm = Normal.Modulus();
+  double nrm = Normal.Modulus();
   if (nrm < Precision::Confusion())
   {
     Normal = GetAnyNormal(aMaxDir);
-    return Standard_True;
+    return true;
   }
   Normal = Normal / nrm;
 
-  Standard_Real mind = RealLast(), maxd = -RealLast(), dev;
-  for (Standard_Integer i = 1; i <= pnts.Length(); i++)
+  double mind = RealLast(), maxd = -RealLast(), dev;
+  for (int i = 1; i <= pnts.Length(); i++)
   {
     dev = pnts(i).XYZ() * Normal;
     if (dev < mind)
@@ -1100,22 +1101,22 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const TColgp_Array1OfPnt& pnts,
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const Handle(Geom_Curve)& curve,
-                                               gp_XYZ&                   Normal,
-                                               const Standard_Real       preci)
+bool ShapeAnalysis_Curve::IsPlanar(const occ::handle<Geom_Curve>& curve,
+                                   gp_XYZ&                        Normal,
+                                   const double                   preci)
 {
-  Standard_Real    precision = (preci > 0.0) ? preci : Precision::Confusion();
-  Standard_Boolean noNorm    = (Normal.SquareModulus() == 0);
+  double precision = (preci > 0.0) ? preci : Precision::Confusion();
+  bool   noNorm    = (Normal.SquareModulus() == 0);
 
   if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
   {
     // DeclareAndCast(Geom_Line, Line, curve);
-    Handle(Geom_Line) Line = Handle(Geom_Line)::DownCast(curve);
-    gp_XYZ            N1   = Line->Position().Direction().XYZ();
+    occ::handle<Geom_Line> Line = occ::down_cast<Geom_Line>(curve);
+    gp_XYZ                 N1   = Line->Position().Direction().XYZ();
     if (noNorm)
     {
       Normal = GetAnyNormal(N1);
-      return Standard_True;
+      return true;
     }
     return std::abs(N1 * Normal) < Precision::Confusion();
   }
@@ -1123,12 +1124,12 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const Handle(Geom_Curve)& curve,
   if (curve->IsKind(STANDARD_TYPE(Geom_Conic)))
   {
     // DeclareAndCast(Geom_Conic, Conic, curve);
-    Handle(Geom_Conic) Conic = Handle(Geom_Conic)::DownCast(curve);
-    gp_XYZ             N1    = Conic->Axis().Direction().XYZ();
+    occ::handle<Geom_Conic> Conic = occ::down_cast<Geom_Conic>(curve);
+    gp_XYZ                  N1    = Conic->Axis().Direction().XYZ();
     if (noNorm)
     {
       Normal = N1;
-      return Standard_True;
+      return true;
     }
     gp_XYZ aVecMul = N1 ^ Normal;
     return aVecMul.SquareModulus() < Precision::SquareConfusion();
@@ -1137,22 +1138,22 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const Handle(Geom_Curve)& curve,
   if (curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     // DeclareAndCast(Geom_TrimmedCurve, Trimmed, curve);
-    Handle(Geom_TrimmedCurve) Trimmed = Handle(Geom_TrimmedCurve)::DownCast(curve);
+    occ::handle<Geom_TrimmedCurve> Trimmed = occ::down_cast<Geom_TrimmedCurve>(curve);
     return IsPlanar(Trimmed->BasisCurve(), Normal, precision);
   }
 
   if (curve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
   {
     // DeclareAndCast(Geom_OffsetCurve, OffsetC, curve);
-    Handle(Geom_OffsetCurve) OffsetC = Handle(Geom_OffsetCurve)::DownCast(curve);
+    occ::handle<Geom_OffsetCurve> OffsetC = occ::down_cast<Geom_OffsetCurve>(curve);
     return IsPlanar(OffsetC->BasisCurve(), Normal, precision);
   }
 
   if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
     // DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
-    Handle(Geom_BSplineCurve) BSpline = Handle(Geom_BSplineCurve)::DownCast(curve);
-    TColgp_Array1OfPnt        Poles(1, BSpline->NbPoles());
+    occ::handle<Geom_BSplineCurve> BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
+    NCollection_Array1<gp_Pnt>     Poles(1, BSpline->NbPoles());
     BSpline->Poles(Poles);
     return IsPlanar(Poles, Normal, precision);
   }
@@ -1160,8 +1161,8 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const Handle(Geom_Curve)& curve,
   if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
     // DeclareAndCast(Geom_BezierCurve, Bezier, curve);
-    Handle(Geom_BezierCurve) Bezier = Handle(Geom_BezierCurve)::DownCast(curve);
-    TColgp_Array1OfPnt       Poles(1, Bezier->NbPoles());
+    occ::handle<Geom_BezierCurve> Bezier = occ::down_cast<Geom_BezierCurve>(curve);
+    NCollection_Array1<gp_Pnt>    Poles(1, Bezier->NbPoles());
     Bezier->Poles(Poles);
     return IsPlanar(Poles, Normal, precision);
   }
@@ -1169,33 +1170,33 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar(const Handle(Geom_Curve)& curve,
   if (curve->IsKind(STANDARD_TYPE(ShapeExtend_ComplexCurve)))
   {
     // DeclareAndCast(ShapeExtend_ComplexCurve, Complex, curve);
-    Handle(ShapeExtend_ComplexCurve) Complex = Handle(ShapeExtend_ComplexCurve)::DownCast(curve);
-    TColgp_SequenceOfPnt             sequence;
-    Standard_Integer                 i; // svv Jan11 2000 : porting on DEC
+    occ::handle<ShapeExtend_ComplexCurve> Complex = occ::down_cast<ShapeExtend_ComplexCurve>(curve);
+    NCollection_Sequence<gp_Pnt>          sequence;
+    int                                   i; // svv Jan11 2000 : porting on DEC
     for (i = 1; i <= Complex->NbCurves(); i++)
       AppendControlPoles(sequence, Complex->Curve(i));
-    TColgp_Array1OfPnt Poles(1, sequence.Length());
+    NCollection_Array1<gp_Pnt> Poles(1, sequence.Length());
     for (i = 1; i <= sequence.Length(); i++)
       Poles(i) = sequence(i);
     return IsPlanar(Poles, Normal, precision);
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints(const Handle(Geom_Curve)& curve,
-                                                      const Standard_Real       first,
-                                                      const Standard_Real       last,
-                                                      TColgp_SequenceOfPnt&     seq)
+bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom_Curve>& curve,
+                                          const double                   first,
+                                          const double                   last,
+                                          NCollection_Sequence<gp_Pnt>&  seq)
 {
-  Standard_Real adelta = curve->LastParameter() - curve->FirstParameter();
+  double adelta = curve->LastParameter() - curve->FirstParameter();
   if (!adelta)
-    return Standard_False;
+    return false;
 
-  Standard_Integer aK  = (Standard_Integer)ceil((last - first) / adelta);
-  Standard_Integer nbp = 100 * aK;
+  int aK  = (int)ceil((last - first) / adelta);
+  int nbp = 100 * aK;
   if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
     nbp = 2;
   else if (curve->IsKind(STANDARD_TYPE(Geom_Circle)))
@@ -1203,7 +1204,7 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints(const Handle(Geom_Curve)& 
 
   else if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) aBspl = Handle(Geom_BSplineCurve)::DownCast(curve);
+    occ::handle<Geom_BSplineCurve> aBspl = occ::down_cast<Geom_BSplineCurve>(curve);
 
     nbp = aBspl->NbKnots() * aBspl->Degree() * aK;
     if (nbp < 2.0)
@@ -1211,55 +1212,55 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints(const Handle(Geom_Curve)& 
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
-    Handle(Geom_BezierCurve) aB = Handle(Geom_BezierCurve)::DownCast(curve);
-    nbp                         = 3 + aB->NbPoles();
+    occ::handle<Geom_BezierCurve> aB = occ::down_cast<Geom_BezierCurve>(curve);
+    nbp                              = 3 + aB->NbPoles();
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
   {
-    Handle(Geom_OffsetCurve) aC = Handle(Geom_OffsetCurve)::DownCast(curve);
+    occ::handle<Geom_OffsetCurve> aC = occ::down_cast<Geom_OffsetCurve>(curve);
     return GetSamplePoints(aC->BasisCurve(), first, last, seq);
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    Handle(Geom_TrimmedCurve) aC = Handle(Geom_TrimmedCurve)::DownCast(curve);
+    occ::handle<Geom_TrimmedCurve> aC = occ::down_cast<Geom_TrimmedCurve>(curve);
     return GetSamplePoints(aC->BasisCurve(), first, last, seq);
   }
 
   GeomAdaptor_Curve GAC(curve);
-  Standard_Real     step = (last - first) / (Standard_Real)(nbp - 1);
-  for (Standard_Integer i = 0; i < nbp - 1; ++i)
+  double            step = (last - first) / (double)(nbp - 1);
+  for (int i = 0; i < nbp - 1; ++i)
     seq.Append(GAC.Value(first + step * i));
   seq.Append(GAC.Value(last));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints(const Handle(Geom2d_Curve)& curve,
-                                                      const Standard_Real         first,
-                                                      const Standard_Real         last,
-                                                      TColgp_SequenceOfPnt2d&     seq)
+bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom2d_Curve>& curve,
+                                          const double                     first,
+                                          const double                     last,
+                                          NCollection_Sequence<gp_Pnt2d>&  seq)
 {
   //: abv 05.06.02: TUBE.stp
   // Use the same distribution of points as BRepTopAdaptor_FClass2d for consistency
   Geom2dAdaptor_Curve C(curve, first, last);
-  Standard_Integer    nbs = Geom2dInt_Geom2dCurveTool::NbSamples(C);
+  int                 nbs = Geom2dInt_Geom2dCurveTool::NbSamples(C);
   //-- Attention aux bsplines rationnelles de degree 3. (bouts de cercles entre autres)
   if (nbs > 2)
     nbs *= 4;
-  Standard_Real step = (last - first) / (Standard_Real)(nbs - 1);
-  for (Standard_Integer i = 0; i < nbs - 1; ++i)
+  double step = (last - first) / (double)(nbs - 1);
+  for (int i = 0; i < nbs - 1; ++i)
     seq.Append(C.Value(first + step * i));
   seq.Append(C.Value(last));
-  return Standard_True;
+  return true;
   /*
-    Standard_Integer i;
-    Standard_Real step;
+    int i;
+    double step;
     gp_Pnt2d Ptmp;
     if ( curve->IsKind(STANDARD_TYPE(Geom2d_Line))) {
       seq.Append(curve->Value(first));
       seq.Append(curve->Value(last));
-      return Standard_True;
+      return true;
     }
     else if(curve->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
       step = Min ( M_PI, last-first ) / 19; //:abv 05.06.02 TUBE.stp #19209...: M_PI/16
@@ -1267,16 +1268,16 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints(const Handle(Geom2d_Curve)
   //       seq.Append(curve->Value(first));
   //       seq.Append(curve->Value((last+first)/2));
   //       seq.Append(curve->Value(last));
-  //       return Standard_True;
+  //       return true;
   //     }
   //     else {
-        Standard_Real par=first;
+        double par=first;
         for(i=0; par<last; i++) {
           seq.Append(curve->Value(par));
           par += step;
         }
         seq.Append(curve->Value(last));
-        return Standard_True;
+        return true;
   //     }
     }
     else if ( curve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
@@ -1285,7 +1286,7 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints(const Handle(Geom2d_Curve)
     }
     else if ( curve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))) {
       DeclareAndCast(Geom2d_BSplineCurve, aBs, curve);
-      TColStd_SequenceOfReal aSeqParam;
+      NCollection_Sequence<double> aSeqParam;
       if(!aBs.IsNull()) {
         aSeqParam.Append(first);
         for(i=1; i<=aBs->NbKnots(); i++) {
@@ -1293,104 +1294,103 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints(const Handle(Geom2d_Curve)
             aSeqParam.Append(aBs->Knot(i));
         }
         aSeqParam.Append(last);
-        Standard_Integer NbPoints=aBs->Degree();
+        int NbPoints=aBs->Degree();
         if( (aSeqParam.Length()-1)*NbPoints>10 ) {
           for(i=1; i<aSeqParam.Length(); i++) {
-            Standard_Real FirstPar = aSeqParam.Value(i);
-            Standard_Real LastPar = aSeqParam.Value(i+1);
+            double FirstPar = aSeqParam.Value(i);
+            double LastPar = aSeqParam.Value(i+1);
             step = (LastPar-FirstPar)/NbPoints;
-            for(Standard_Integer k=0; k<NbPoints; k++ ) {
+            for(int k=0; k<NbPoints; k++ ) {
               aBs->D0(FirstPar+step*k, Ptmp);
               seq.Append(Ptmp);
             }
           }
           aBs->D0(last, Ptmp);
           seq.Append(Ptmp);
-          return Standard_True;
+          return true;
         }
         else {
           step = (last-first)/10;
-          for(Standard_Integer k=0; k<=10; k++ ) {
+          for(int k=0; k<=10; k++ ) {
             aBs->D0(first+step*k, Ptmp);
             seq.Append(Ptmp);
           }
-          return Standard_True;
+          return true;
         }
       }
     }
     else if ( curve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))  {
       DeclareAndCast(Geom2d_BezierCurve, aBz, curve);
       if(!aBz.IsNull()) {
-        Standard_Integer NbPoints=aBz->Degree();
+        int NbPoints=aBz->Degree();
         step = (last-first)/NbPoints;
-        for(Standard_Integer k=0; k<NbPoints; k++ ) {
+        for(int k=0; k<NbPoints; k++ ) {
           aBz->D0(first+step*k, Ptmp);
           seq.Append(Ptmp);
         }
         aBz->D0(last, Ptmp);
         seq.Append(Ptmp);
-        return Standard_True;
+        return true;
       }
     }
-    return Standard_False;
+    return false;
   */
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_Curve::IsClosed(const Handle(Geom_Curve)& theCurve,
-                                               const Standard_Real       preci)
+bool ShapeAnalysis_Curve::IsClosed(const occ::handle<Geom_Curve>& theCurve, const double preci)
 {
   if (theCurve->IsClosed())
-    return Standard_True;
+    return true;
 
-  Standard_Real prec = std::max(preci, Precision::Confusion());
+  double prec = std::max(preci, Precision::Confusion());
 
-  Standard_Real f, l;
+  double f, l;
   f = theCurve->FirstParameter();
   l = theCurve->LastParameter();
 
   if (Precision::IsInfinite(f) || Precision::IsInfinite(l))
-    return Standard_False;
+    return false;
 
-  Standard_Real aClosedVal = theCurve->Value(f).SquareDistance(theCurve->Value(l));
-  Standard_Real preci2     = prec * prec;
+  double aClosedVal = theCurve->Value(f).SquareDistance(theCurve->Value(l));
+  double preci2     = prec * prec;
 
   return (aClosedVal <= preci2);
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_Curve::IsPeriodic(const Handle(Geom_Curve)& theCurve)
+bool ShapeAnalysis_Curve::IsPeriodic(const occ::handle<Geom_Curve>& theCurve)
 {
   // 15.11.2002 PTV OCC966
   // remove regressions in DE tests (diva, divb, divc, toe3) in KAS:dev
   // ask IsPeriodic on BasisCurve
-  Handle(Geom_Curve) aTmpCurve = theCurve;
+  occ::handle<Geom_Curve> aTmpCurve = theCurve;
   while ((aTmpCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
          || (aTmpCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))))
   {
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
-      aTmpCurve = Handle(Geom_OffsetCurve)::DownCast(aTmpCurve)->BasisCurve();
+      aTmpCurve = occ::down_cast<Geom_OffsetCurve>(aTmpCurve)->BasisCurve();
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
-      aTmpCurve = Handle(Geom_TrimmedCurve)::DownCast(aTmpCurve)->BasisCurve();
+      aTmpCurve = occ::down_cast<Geom_TrimmedCurve>(aTmpCurve)->BasisCurve();
   }
   return aTmpCurve->IsPeriodic();
 }
 
-Standard_Boolean ShapeAnalysis_Curve::IsPeriodic(const Handle(Geom2d_Curve)& theCurve)
+bool ShapeAnalysis_Curve::IsPeriodic(const occ::handle<Geom2d_Curve>& theCurve)
 {
   // 15.11.2002 PTV OCC966
   // remove regressions in DE tests (diva, divb, divc, toe3) in KAS:dev
   // ask IsPeriodic on BasisCurve
-  Handle(Geom2d_Curve) aTmpCurve = theCurve;
+  occ::handle<Geom2d_Curve> aTmpCurve = theCurve;
   while ((aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
          || (aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))))
   {
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
-      aTmpCurve = Handle(Geom2d_OffsetCurve)::DownCast(aTmpCurve)->BasisCurve();
+      aTmpCurve = occ::down_cast<Geom2d_OffsetCurve>(aTmpCurve)->BasisCurve();
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
-      aTmpCurve = Handle(Geom2d_TrimmedCurve)::DownCast(aTmpCurve)->BasisCurve();
+      aTmpCurve = occ::down_cast<Geom2d_TrimmedCurve>(aTmpCurve)->BasisCurve();
   }
   return aTmpCurve->IsPeriodic();
 }

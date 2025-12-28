@@ -24,31 +24,31 @@ STEPConstruct_Tool::STEPConstruct_Tool() {}
 
 //=================================================================================================
 
-STEPConstruct_Tool::STEPConstruct_Tool(const Handle(XSControl_WorkSession)& WS)
+STEPConstruct_Tool::STEPConstruct_Tool(const occ::handle<XSControl_WorkSession>& WS)
 {
   SetWS(WS);
 }
 
 //=================================================================================================
 
-Standard_Boolean STEPConstruct_Tool::SetWS(const Handle(XSControl_WorkSession)& WS)
+bool STEPConstruct_Tool::SetWS(const occ::handle<XSControl_WorkSession>& WS)
 {
   myWS.Nullify();
   myTransientProcess.Nullify();
   myFinderProcess.Nullify();
 
   if (WS.IsNull())
-    return Standard_False;
+    return false;
   myWS     = WS;
   myHGraph = myWS->HGraph();
 
   // collect data on reading process
-  const Handle(XSControl_TransferReader)& TR = WS->TransferReader();
+  const occ::handle<XSControl_TransferReader>& TR = WS->TransferReader();
   if (!TR.IsNull())
     myTransientProcess = TR->TransientProcess();
 
   // collect data on writing process
-  const Handle(XSControl_TransferWriter)& TW = myWS->TransferWriter();
+  const occ::handle<XSControl_TransferWriter>& TW = myWS->TransferWriter();
   if (!TW.IsNull())
     myFinderProcess = TW->FinderProcess();
 

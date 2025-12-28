@@ -25,12 +25,12 @@
 #include <XmlMDataXtd_PresentationDriver.hxx>
 #include <XmlMDataXtd_PositionDriver.hxx>
 
-static Standard_Integer myDocumentVersion = -1;
+static int myDocumentVersion = -1;
 
 //=================================================================================================
 
-void XmlMDataXtd::AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                             const Handle(Message_Messenger)&   anMsgDrv)
+void XmlMDataXtd::AddDrivers(const occ::handle<XmlMDF_ADriverTable>& aDriverTable,
+                             const occ::handle<Message_Messenger>&   anMsgDrv)
 {
   aDriverTable->AddDriver(new XmlMDataXtd_GeometryDriver(anMsgDrv));
   aDriverTable->AddDriver(new XmlMDataXtd_ConstraintDriver(anMsgDrv));
@@ -45,7 +45,7 @@ void XmlMDataXtd::AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
 // function : SetDocumentVersion
 // purpose  : Sets current document version
 //=======================================================================
-void XmlMDataXtd::SetDocumentVersion(const Standard_Integer theVersion)
+void XmlMDataXtd::SetDocumentVersion(const int theVersion)
 {
   myDocumentVersion = theVersion;
 }
@@ -54,7 +54,7 @@ void XmlMDataXtd::SetDocumentVersion(const Standard_Integer theVersion)
 // function : DocumentVersion
 // purpose  : Retrieved document version
 //=======================================================================
-Standard_Integer XmlMDataXtd::DocumentVersion()
+int XmlMDataXtd::DocumentVersion()
 {
   return myDocumentVersion;
 }

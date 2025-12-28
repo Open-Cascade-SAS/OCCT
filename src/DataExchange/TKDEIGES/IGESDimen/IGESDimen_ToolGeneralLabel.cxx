@@ -24,27 +24,28 @@
 #include <IGESData_ParamReader.hxx>
 #include <IGESDimen_GeneralLabel.hxx>
 #include <IGESDimen_GeneralNote.hxx>
-#include <IGESDimen_HArray1OfLeaderArrow.hxx>
 #include <IGESDimen_LeaderArrow.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESDimen_ToolGeneralLabel.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
 IGESDimen_ToolGeneralLabel::IGESDimen_ToolGeneralLabel() {}
 
-void IGESDimen_ToolGeneralLabel::ReadOwnParams(const Handle(IGESDimen_GeneralLabel)&  ent,
-                                               const Handle(IGESData_IGESReaderData)& IR,
-                                               IGESData_ParamReader&                  PR) const
+void IGESDimen_ToolGeneralLabel::ReadOwnParams(const occ::handle<IGESDimen_GeneralLabel>&  ent,
+                                               const occ::handle<IGESData_IGESReaderData>& IR,
+                                               IGESData_ParamReader&                       PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  // bool st; //szv#4:S4163:12Mar99 moved down
 
-  Handle(IGESDimen_GeneralNote)          note;
-  Standard_Integer                       nbval;
-  Handle(IGESDimen_HArray1OfLeaderArrow) leaders;
+  occ::handle<IGESDimen_GeneralNote>                                   note;
+  int                                                                  nbval;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> leaders;
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -52,16 +53,16 @@ void IGESDimen_ToolGeneralLabel::ReadOwnParams(const Handle(IGESDimen_GeneralLab
                 STANDARD_TYPE(IGESDimen_GeneralNote),
                 note); // szv#4:S4163:12Mar99 `st=` not needed
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of Leaders", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "Number of Leaders", nbval);
   if (st && nbval > 0)
-    leaders = new IGESDimen_HArray1OfLeaderArrow(1, nbval);
+    leaders = new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, nbval);
   else
     PR.AddFail("Number of Leaders: Not Positive");
 
   if (!leaders.IsNull())
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
-      Handle(IGESDimen_LeaderArrow) anentity;
+      occ::handle<IGESDimen_LeaderArrow> anentity;
       // st = PR.ReadEntity(IR, PR.Current(), "Leaders",
       // STANDARD_TYPE(IGESDimen_LeaderArrow), anentity); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadEntity(IR,
@@ -76,34 +77,35 @@ void IGESDimen_ToolGeneralLabel::ReadOwnParams(const Handle(IGESDimen_GeneralLab
   ent->Init(note, leaders);
 }
 
-void IGESDimen_ToolGeneralLabel::WriteOwnParams(const Handle(IGESDimen_GeneralLabel)& ent,
-                                                IGESData_IGESWriter&                  IW) const
+void IGESDimen_ToolGeneralLabel::WriteOwnParams(const occ::handle<IGESDimen_GeneralLabel>& ent,
+                                                IGESData_IGESWriter&                       IW) const
 {
-  Standard_Integer upper = ent->NbLeaders();
+  int upper = ent->NbLeaders();
   IW.Send(ent->Note());
   IW.Send(upper);
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
     IW.Send(ent->Leader(i));
 }
 
-void IGESDimen_ToolGeneralLabel::OwnShared(const Handle(IGESDimen_GeneralLabel)& ent,
-                                           Interface_EntityIterator&             iter) const
+void IGESDimen_ToolGeneralLabel::OwnShared(const occ::handle<IGESDimen_GeneralLabel>& ent,
+                                           Interface_EntityIterator&                  iter) const
 {
-  Standard_Integer upper = ent->NbLeaders();
+  int upper = ent->NbLeaders();
   iter.GetOneItem(ent->Note());
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
     iter.GetOneItem(ent->Leader(i));
 }
 
-void IGESDimen_ToolGeneralLabel::OwnCopy(const Handle(IGESDimen_GeneralLabel)& another,
-                                         const Handle(IGESDimen_GeneralLabel)& ent,
-                                         Interface_CopyTool&                   TC) const
+void IGESDimen_ToolGeneralLabel::OwnCopy(const occ::handle<IGESDimen_GeneralLabel>& another,
+                                         const occ::handle<IGESDimen_GeneralLabel>& ent,
+                                         Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
-  Standard_Integer nbval = another->NbLeaders();
+  int nbval = another->NbLeaders();
 
-  Handle(IGESDimen_HArray1OfLeaderArrow) leaders = new IGESDimen_HArray1OfLeaderArrow(1, nbval);
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> leaders =
+    new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, nbval);
+  for (int i = 1; i <= nbval; i++)
   {
     DeclareAndCast(IGESDimen_LeaderArrow, new_ent, TC.Transferred(another->Leader(i)));
     leaders->SetValue(i, new_ent);
@@ -112,7 +114,7 @@ void IGESDimen_ToolGeneralLabel::OwnCopy(const Handle(IGESDimen_GeneralLabel)& a
 }
 
 IGESData_DirChecker IGESDimen_ToolGeneralLabel::DirChecker(
-  const Handle(IGESDimen_GeneralLabel)& /* ent */) const
+  const occ::handle<IGESDimen_GeneralLabel>& /* ent */) const
 {
   IGESData_DirChecker DC(210, 0);
   DC.Structure(IGESData_DefVoid);
@@ -123,18 +125,18 @@ IGESData_DirChecker IGESDimen_ToolGeneralLabel::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolGeneralLabel::OwnCheck(const Handle(IGESDimen_GeneralLabel)& /* ent */,
+void IGESDimen_ToolGeneralLabel::OwnCheck(const occ::handle<IGESDimen_GeneralLabel>& /* ent */,
                                           const Interface_ShareTool&,
-                                          Handle(Interface_Check)& /* ach */) const
+                                          occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESDimen_ToolGeneralLabel::OwnDump(const Handle(IGESDimen_GeneralLabel)& ent,
-                                         const IGESData_IGESDumper&            dumper,
-                                         Standard_OStream&                     S,
-                                         const Standard_Integer                level) const
+void IGESDimen_ToolGeneralLabel::OwnDump(const occ::handle<IGESDimen_GeneralLabel>& ent,
+                                         const IGESData_IGESDumper&                 dumper,
+                                         Standard_OStream&                          S,
+                                         const int                                  level) const
 {
-  Standard_Integer sublevel = (level > 4) ? 1 : 0;
+  int sublevel = (level > 4) ? 1 : 0;
 
   S << "IGESDimen_GeneralLabel\n"
     << "General Note Entity : ";

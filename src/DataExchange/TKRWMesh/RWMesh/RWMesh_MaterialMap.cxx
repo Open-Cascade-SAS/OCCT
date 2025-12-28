@@ -66,7 +66,7 @@ TCollection_AsciiString RWMesh_MaterialMap::AddMaterial(const XCAFPrs_Style& the
     if (!theStyle.Material().IsNull() && !theStyle.Material()->IsEmpty())
     {
       aCounterPtr = &aCounter;
-      Handle(TDataStd_Name) aNodeName;
+      occ::handle<TDataStd_Name> aNodeName;
       if (!theStyle.Material()->Label().IsNull()
           && theStyle.Material()->Label().FindAttribute(TDataStd_Name::GetID(), aNodeName))
       {
@@ -155,9 +155,9 @@ bool RWMesh_MaterialMap::copyFileTo(const TCollection_AsciiString& theFileSrc,
 
 //=================================================================================================
 
-bool RWMesh_MaterialMap::CopyTexture(TCollection_AsciiString&       theResTexture,
-                                     const Handle(Image_Texture)&   theTexture,
-                                     const TCollection_AsciiString& theKey)
+bool RWMesh_MaterialMap::CopyTexture(TCollection_AsciiString&          theResTexture,
+                                     const occ::handle<Image_Texture>& theTexture,
+                                     const TCollection_AsciiString&    theKey)
 {
   CreateTextureFolder();
 

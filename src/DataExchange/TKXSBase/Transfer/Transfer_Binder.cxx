@@ -32,7 +32,7 @@ Transfer_Binder::Transfer_Binder()
 
 //=================================================================================================
 
-void Transfer_Binder::Merge(const Handle(Transfer_Binder)& other)
+void Transfer_Binder::Merge(const occ::handle<Transfer_Binder>& other)
 {
   if (other.IsNull())
     return;
@@ -43,26 +43,26 @@ void Transfer_Binder::Merge(const Handle(Transfer_Binder)& other)
 
 //=================================================================================================
 
-Standard_Boolean Transfer_Binder::IsMultiple() const
+bool Transfer_Binder::IsMultiple() const
 {
   if (thenextr.IsNull())
-    return Standard_False;
+    return false;
   if (!HasResult())
     return thenextr->IsMultiple();
 
-  Handle(Transfer_Binder) next = thenextr;
+  occ::handle<Transfer_Binder> next = thenextr;
   while (!next.IsNull())
   {
     if (next->HasResult())
-      return Standard_True;
+      return true;
     next = next->NextResult();
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void Transfer_Binder::AddResult(const Handle(Transfer_Binder)& next)
+void Transfer_Binder::AddResult(const occ::handle<Transfer_Binder>& next)
 {
   if (next == this || next.IsNull())
     return;
@@ -72,7 +72,7 @@ void Transfer_Binder::AddResult(const Handle(Transfer_Binder)& next)
   else
   {
     // Modification of recursive to cycle
-    Handle(Transfer_Binder) theBinder = theendr.IsNull() ? thenextr : theendr;
+    occ::handle<Transfer_Binder> theBinder = theendr.IsNull() ? thenextr : theendr;
     while (theBinder != next)
     {
       if (theBinder->NextResult().IsNull())
@@ -89,7 +89,7 @@ void Transfer_Binder::AddResult(const Handle(Transfer_Binder)& next)
 
 //=================================================================================================
 
-void Transfer_Binder::CutResult(const Handle(Transfer_Binder)& next)
+void Transfer_Binder::CutResult(const occ::handle<Transfer_Binder>& next)
 {
   if (thenextr.IsNull())
     return;
@@ -101,7 +101,7 @@ void Transfer_Binder::CutResult(const Handle(Transfer_Binder)& next)
   // else thenextr->CutResult (next);
   else
   {
-    Handle(Transfer_Binder) currBinder = thenextr, currNext;
+    occ::handle<Transfer_Binder> currBinder = thenextr, currNext;
     while (!((currNext = currBinder->NextResult()) == next))
     {
       if (currNext.IsNull())
@@ -114,7 +114,7 @@ void Transfer_Binder::CutResult(const Handle(Transfer_Binder)& next)
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_Binder::NextResult() const
+occ::handle<Transfer_Binder> Transfer_Binder::NextResult() const
 {
   return thenextr;
 }
@@ -131,7 +131,7 @@ void Transfer_Binder::SetResultPresent()
 
 //=================================================================================================
 
-Standard_Boolean Transfer_Binder::HasResult() const
+bool Transfer_Binder::HasResult() const
 {
   return (thestatus != Transfer_StatusVoid);
 }
@@ -169,7 +169,7 @@ void Transfer_Binder::SetStatusExec(const Transfer_StatusExec stat)
 
 //=================================================================================================
 
-void Transfer_Binder::AddFail(const Standard_CString mess, const Standard_CString orig)
+void Transfer_Binder::AddFail(const char* mess, const char* orig)
 {
   theexecst = Transfer_StatusError;
   thecheck->AddFail(mess, orig);
@@ -177,7 +177,7 @@ void Transfer_Binder::AddFail(const Standard_CString mess, const Standard_CStrin
 
 //=================================================================================================
 
-void Transfer_Binder::AddWarning(const Standard_CString mess, const Standard_CString orig)
+void Transfer_Binder::AddWarning(const char* mess, const char* orig)
 {
   //  theexecst = Transfer_StatusError;
   thecheck->AddWarning(mess, orig);
@@ -185,14 +185,14 @@ void Transfer_Binder::AddWarning(const Standard_CString mess, const Standard_CSt
 
 //=================================================================================================
 
-const Handle(Interface_Check) Transfer_Binder::Check() const
+const occ::handle<Interface_Check> Transfer_Binder::Check() const
 {
   return thecheck;
 }
 
 //=================================================================================================
 
-Handle(Interface_Check) Transfer_Binder::CCheck()
+occ::handle<Interface_Check> Transfer_Binder::CCheck()
 {
   return thecheck;
 }
@@ -205,15 +205,15 @@ Transfer_Binder::~Transfer_Binder()
   // to avoid recursive destruction of the field thenextr
   if (!thenextr.IsNull())
   {
-    Handle(Transfer_Binder) aCurr = thenextr;
+    occ::handle<Transfer_Binder> aCurr = thenextr;
     theendr.Nullify();
     thenextr.Nullify();
     // we check GetRefCount in order to not destroy a chain if it belongs also
     // to another upper level chain (two chains continue at the same binder)
     while (!aCurr->thenextr.IsNull() && aCurr->thenextr->GetRefCount() == 1)
     {
-      Handle(Transfer_Binder) aPrev = aCurr;
-      aCurr                         = aCurr->thenextr;
+      occ::handle<Transfer_Binder> aPrev = aCurr;
+      aCurr                              = aCurr->thenextr;
       aPrev->thenextr.Nullify();
     }
   }

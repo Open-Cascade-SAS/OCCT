@@ -30,22 +30,22 @@ public:
   Standard_EXPORT virtual ~OpenGl_VertexBuffer();
 
   //! Return buffer target GL_ARRAY_BUFFER.
-  Standard_EXPORT virtual unsigned int GetTarget() const Standard_OVERRIDE;
+  Standard_EXPORT virtual unsigned int GetTarget() const override;
 
   //! Bind this VBO to active GLSL program.
-  Standard_EXPORT void BindVertexAttrib(const Handle(OpenGl_Context)& theGlCtx,
-                                        const unsigned int            theAttribLoc) const;
+  Standard_EXPORT void BindVertexAttrib(const occ::handle<OpenGl_Context>& theGlCtx,
+                                        const unsigned int                 theAttribLoc) const;
 
   //! Unbind any VBO from active GLSL program.
-  Standard_EXPORT void UnbindVertexAttrib(const Handle(OpenGl_Context)& theGlCtx,
-                                          const unsigned int            theAttribLoc) const;
+  Standard_EXPORT void UnbindVertexAttrib(const occ::handle<OpenGl_Context>& theGlCtx,
+                                          const unsigned int                 theAttribLoc) const;
 
   //! Bind this VBO and enable specified attribute in OpenGl_Context::ActiveProgram() or FFP.
   //! @param theGlCtx - handle to bound GL context;
   //! @param theMode  - array mode (GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, GL_COLOR_ARRAY,
   //! GL_INDEX_ARRAY, GL_TEXTURE_COORD_ARRAY).
-  void BindAttribute(const Handle(OpenGl_Context)&   theCtx,
-                     const Graphic3d_TypeOfAttribute theMode) const
+  void BindAttribute(const occ::handle<OpenGl_Context>& theCtx,
+                     const Graphic3d_TypeOfAttribute    theMode) const
   {
     if (IsValid())
     {
@@ -57,8 +57,8 @@ public:
   //! Unbind this VBO and disable specified attribute in OpenGl_Context::ActiveProgram() or FFP.
   //! @param theCtx handle to bound GL context
   //! @param theMode  array mode
-  void UnbindAttribute(const Handle(OpenGl_Context)&   theCtx,
-                       const Graphic3d_TypeOfAttribute theMode) const
+  void UnbindAttribute(const occ::handle<OpenGl_Context>& theCtx,
+                       const Graphic3d_TypeOfAttribute    theMode) const
   {
     if (IsValid())
     {
@@ -70,33 +70,33 @@ public:
 public: //! @name advanced methods
   //! Setup array pointer - either for active GLSL program OpenGl_Context::ActiveProgram()
   //! or for FFP using bindFixed() when no program bound.
-  Standard_EXPORT static void bindAttribute(const Handle(OpenGl_Context)&   theGlCtx,
-                                            const Graphic3d_TypeOfAttribute theMode,
-                                            const Standard_Integer          theNbComp,
-                                            const unsigned int              theDataType,
-                                            const Standard_Integer          theStride,
-                                            const void*                     theOffset);
+  Standard_EXPORT static void bindAttribute(const occ::handle<OpenGl_Context>& theGlCtx,
+                                            const Graphic3d_TypeOfAttribute    theMode,
+                                            const int                          theNbComp,
+                                            const unsigned int                 theDataType,
+                                            const int                          theStride,
+                                            const void*                        theOffset);
 
   //! Disable GLSL array pointer - either for active GLSL program OpenGl_Context::ActiveProgram()
   //! or for FFP using unbindFixed() when no program bound.
-  Standard_EXPORT static void unbindAttribute(const Handle(OpenGl_Context)&   theGlCtx,
-                                              const Graphic3d_TypeOfAttribute theMode);
+  Standard_EXPORT static void unbindAttribute(const occ::handle<OpenGl_Context>& theGlCtx,
+                                              const Graphic3d_TypeOfAttribute    theMode);
 
 private:
   //! Setup FFP array pointer.
-  Standard_EXPORT static void bindFixed(const Handle(OpenGl_Context)&   theGlCtx,
-                                        const Graphic3d_TypeOfAttribute theMode,
-                                        const Standard_Integer          theNbComp,
-                                        const unsigned int              theDataType,
-                                        const Standard_Integer          theStride,
-                                        const void*                     theOffset);
+  Standard_EXPORT static void bindFixed(const occ::handle<OpenGl_Context>& theGlCtx,
+                                        const Graphic3d_TypeOfAttribute    theMode,
+                                        const int                          theNbComp,
+                                        const unsigned int                 theDataType,
+                                        const int                          theStride,
+                                        const void*                        theOffset);
 
   //! Disable FFP array pointer.
-  Standard_EXPORT static void unbindFixed(const Handle(OpenGl_Context)&   theGlCtx,
-                                          const Graphic3d_TypeOfAttribute theMode);
+  Standard_EXPORT static void unbindFixed(const occ::handle<OpenGl_Context>& theGlCtx,
+                                          const Graphic3d_TypeOfAttribute    theMode);
 
   //! Disable FFP color array pointer.
-  Standard_EXPORT static void unbindFixedColor(const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT static void unbindFixedColor(const occ::handle<OpenGl_Context>& theCtx);
 
 public: //! @name methods for interleaved attributes array
   //! @return true if buffer contains per-vertex color attribute
@@ -107,18 +107,18 @@ public: //! @name methods for interleaved attributes array
 
   //! Bind all vertex attributes to active program OpenGl_Context::ActiveProgram() or for FFP.
   //! Default implementation does nothing.
-  Standard_EXPORT virtual void BindAllAttributes(const Handle(OpenGl_Context)& theGlCtx) const;
+  Standard_EXPORT virtual void BindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const;
 
   //! Bind vertex position attribute only. Default implementation does nothing.
-  Standard_EXPORT virtual void BindPositionAttribute(const Handle(OpenGl_Context)& theGlCtx) const;
+  Standard_EXPORT virtual void BindPositionAttribute(
+    const occ::handle<OpenGl_Context>& theGlCtx) const;
 
   //! Unbind all vertex attributes. Default implementation does nothing.
-  Standard_EXPORT virtual void UnbindAllAttributes(const Handle(OpenGl_Context)& theGlCtx) const;
+  Standard_EXPORT virtual void UnbindAllAttributes(
+    const occ::handle<OpenGl_Context>& theGlCtx) const;
 
 public:
   DEFINE_STANDARD_RTTIEXT(OpenGl_VertexBuffer, OpenGl_Buffer)
 };
-
-DEFINE_STANDARD_HANDLE(OpenGl_VertexBuffer, OpenGl_Buffer)
 
 #endif // _OpenGl_VertexBuffer_H__

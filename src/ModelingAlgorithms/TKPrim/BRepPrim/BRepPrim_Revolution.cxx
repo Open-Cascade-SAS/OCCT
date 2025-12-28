@@ -26,11 +26,11 @@
 
 //=================================================================================================
 
-BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2&               A,
-                                         const Standard_Real         VMin,
-                                         const Standard_Real         VMax,
-                                         const Handle(Geom_Curve)&   M,
-                                         const Handle(Geom2d_Curve)& PM)
+BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2&                    A,
+                                         const double                     VMin,
+                                         const double                     VMax,
+                                         const occ::handle<Geom_Curve>&   M,
+                                         const occ::handle<Geom2d_Curve>& PM)
     : BRepPrim_OneAxis(BRepPrim_Builder(), A, VMin, VMax),
       myMeridian(M),
       myPMeridian(PM)
@@ -39,16 +39,15 @@ BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2&               A,
 
 //=================================================================================================
 
-BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2&       A,
-                                         const Standard_Real VMin,
-                                         const Standard_Real VMax)
+BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2& A, const double VMin, const double VMax)
     : BRepPrim_OneAxis(BRepPrim_Builder(), A, VMin, VMax)
 {
 }
 
 //=================================================================================================
 
-void BRepPrim_Revolution::Meridian(const Handle(Geom_Curve)& M, const Handle(Geom2d_Curve)& PM)
+void BRepPrim_Revolution::Meridian(const occ::handle<Geom_Curve>&   M,
+                                   const occ::handle<Geom2d_Curve>& PM)
 {
   myMeridian  = M;
   myPMeridian = PM;
@@ -58,7 +57,7 @@ void BRepPrim_Revolution::Meridian(const Handle(Geom_Curve)& M, const Handle(Geo
 
 TopoDS_Face BRepPrim_Revolution::MakeEmptyLateralFace() const
 {
-  Handle(Geom_SurfaceOfRevolution) S = new Geom_SurfaceOfRevolution(myMeridian, Axes().Axis());
+  occ::handle<Geom_SurfaceOfRevolution> S = new Geom_SurfaceOfRevolution(myMeridian, Axes().Axis());
 
   TopoDS_Face F;
   myBuilder.Builder().MakeFace(F, S, Precision::Confusion());
@@ -67,11 +66,11 @@ TopoDS_Face BRepPrim_Revolution::MakeEmptyLateralFace() const
 
 //=================================================================================================
 
-TopoDS_Edge BRepPrim_Revolution::MakeEmptyMeridianEdge(const Standard_Real Ang) const
+TopoDS_Edge BRepPrim_Revolution::MakeEmptyMeridianEdge(const double Ang) const
 {
-  TopoDS_Edge        E;
-  Handle(Geom_Curve) C = Handle(Geom_Curve)::DownCast(myMeridian->Copy());
-  gp_Trsf            T;
+  TopoDS_Edge             E;
+  occ::handle<Geom_Curve> C = occ::down_cast<Geom_Curve>(myMeridian->Copy());
+  gp_Trsf                 T;
   T.SetRotation(Axes().Axis(), Ang);
   C->Transform(T);
   myBuilder.Builder().MakeEdge(E, C, Precision::Confusion());
@@ -80,7 +79,7 @@ TopoDS_Edge BRepPrim_Revolution::MakeEmptyMeridianEdge(const Standard_Real Ang) 
 
 //=================================================================================================
 
-gp_Pnt2d BRepPrim_Revolution::MeridianValue(const Standard_Real V) const
+gp_Pnt2d BRepPrim_Revolution::MeridianValue(const double V) const
 {
   return myPMeridian->Value(V);
 }

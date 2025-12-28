@@ -74,8 +74,8 @@ public:
    *   the tree filling is faster due to better utilisation of CPU L1/L2 cache.
    */
   NCollection_UBTreeFiller (UBTree& theTree,
-                            const Handle(NCollection_BaseAllocator)& theAlloc=0L,
-                            const Standard_Boolean isFullRandom = Standard_True)
+                            const occ::handle<NCollection_BaseAllocator>& theAlloc=0L,
+                            const bool isFullRandom = true)
     : myTree(theTree), mySeqPtr(256, theAlloc),
       myRandGen (5489u /* == std::mt19937::default_seed, not defined in older environments, e.g, on Debian 6.0 with GCC 4.4.5 */),
       myIsFullRandom (isFullRandom)
@@ -95,7 +95,7 @@ public:
    * @return
    *   the number of objects added to the tree.
    */
-  Standard_Integer Fill();
+  int Fill();
 
   /**
    * Remove all data from Filler, partculary if the Tree no more needed
@@ -109,7 +109,7 @@ public:
    * @return
    *   the tree size (the same value is returned by method Fill()).
    */
-  Standard_Integer CheckTree(Standard_OStream& theStream);
+  int CheckTree(Standard_OStream& theStream);
 
   /**
    * Destructor. Fills the tree with accumulated items if they have not been
@@ -130,9 +130,7 @@ private:
   // Explicitly delete assignment operator
   NCollection_UBTreeFiller& operator=(const NCollection_UBTreeFiller&) = delete;
 
-  static Standard_Real checkNode(const UBTreeNode&      theNode,
-                                 const Standard_Integer theLength,
-                                 Standard_Integer&      theNumber);
+  static double checkNode(const UBTreeNode& theNode, const int theLength, int& theNumber);
 
 private:
   // ---------- PRIVATE FIELDS ----------
@@ -140,15 +138,15 @@ private:
   UBTree&                    myTree;
   NCollection_Vector<ObjBnd> mySeqPtr;
   std::mt19937               myRandGen; //!< random number generator
-  Standard_Boolean           myIsFullRandom;
+  bool                       myIsFullRandom;
 };
 
 //=================================================================================================
 
 template <class TheObjType, class TheBndType>
-Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
+int NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
 {
-  Standard_Integer i, nbAdd = mySeqPtr.Length();
+  int i, nbAdd = mySeqPtr.Length();
   // Fisher-Yates randomization
   if (myIsFullRandom)
   {
@@ -179,15 +177,14 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
 //=================================================================================================
 
 template <class TheObjType, class TheBndType>
-Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(
-  Standard_OStream& theStream)
+int NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(Standard_OStream& theStream)
 {
-  Standard_Integer    aNumber(0);
-  const Standard_Real aLen  = checkNode(myTree.Root(), 0, aNumber);
-  const Standard_Real num   = (double)aNumber;
-  const Standard_Real aLen1 = sqrt(aLen / num);
-  const Standard_Real aLen0 = log(num) / log(2.);
-  char                buf[128];
+  int          aNumber(0);
+  const double aLen  = checkNode(myTree.Root(), 0, aNumber);
+  const double num   = (double)aNumber;
+  const double aLen1 = sqrt(aLen / num);
+  const double aLen0 = log(num) / log(2.);
+  char         buf[128];
   Sprintf(buf, "Checking UBTree:%8d leaves, balance =%7.2f", aNumber, aLen1 / aLen0);
   theStream << buf << std::endl;
   return aNumber;
@@ -196,12 +193,12 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(
 //=================================================================================================
 
 template <class TheObjType, class TheBndType>
-Standard_Real NCollection_UBTreeFiller<TheObjType, TheBndType>::checkNode(
+double NCollection_UBTreeFiller<TheObjType, TheBndType>::checkNode(
   const typename NCollection_UBTree<TheObjType, TheBndType>::TreeNode& theNode,
-  const Standard_Integer                                               theLength,
-  Standard_Integer&                                                    theNumber)
+  const int                                                            theLength,
+  int&                                                                 theNumber)
 {
-  Standard_Real aLength;
+  double aLength;
   if (!theNode.IsLeaf())
     aLength = (checkNode(theNode.Child(0), theLength + 1, theNumber)
                + checkNode(theNode.Child(1), theLength + 1, theNumber));

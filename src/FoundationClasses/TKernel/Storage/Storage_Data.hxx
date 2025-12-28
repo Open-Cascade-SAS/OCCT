@@ -22,10 +22,12 @@
 
 #include <Storage_Error.hxx>
 #include <Standard_Transient.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
-#include <Storage_HSeqOfRoot.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <Storage_Root.hxx>
+#include <NCollection_HSequence.hxx>
+#include <TCollection_AsciiString.hxx>
 class Storage_HeaderData;
 class Storage_RootData;
 class Storage_TypeData;
@@ -33,9 +35,6 @@ class Storage_InternalData;
 class TCollection_ExtendedString;
 class Standard_Persistent;
 class Storage_Root;
-
-class Storage_Data;
-DEFINE_STANDARD_HANDLE(Storage_Data, Standard_Transient)
 
 //! A picture memorizing the data stored in a
 //! container (for example, in a file).
@@ -139,18 +138,18 @@ public:
   Standard_EXPORT void AddToUserInfo(const TCollection_AsciiString& anInfo);
 
   //! return the user information
-  Standard_EXPORT const TColStd_SequenceOfAsciiString& UserInfo() const;
+  Standard_EXPORT const NCollection_Sequence<TCollection_AsciiString>& UserInfo() const;
 
   //! add <theUserInfo> to the user information
   Standard_EXPORT void AddToComments(const TCollection_ExtendedString& aComment);
 
   //! return the user information
-  Standard_EXPORT const TColStd_SequenceOfExtendedString& Comments() const;
+  Standard_EXPORT const NCollection_Sequence<TCollection_ExtendedString>& Comments() const;
 
   //! the number of persistent objects
   //! Return:
   //! the number of persistent objects readed
-  Standard_EXPORT Standard_Integer NumberOfObjects() const;
+  Standard_EXPORT int NumberOfObjects() const;
 
   //! Returns the number of root objects in this set of data.
   //! -   When preparing a storage operation, the
@@ -159,11 +158,11 @@ public:
   //! -   When retrieving an object, the result is the
   //! number of roots stored in the read container.
   //! Use the Roots function to get these roots in a sequence.
-  Standard_EXPORT Standard_Integer NumberOfRoots() const;
+  Standard_EXPORT int NumberOfRoots() const;
 
   //! add a persistent root to write. the name of the root
   //! is a driver reference number.
-  Standard_EXPORT void AddRoot(const Handle(Standard_Persistent)& anObject) const;
+  Standard_EXPORT void AddRoot(const occ::handle<Standard_Persistent>& anObject) const;
 
   //! Adds the root anObject to this set of data.
   //! The name of the root is aName if given; if not, it
@@ -172,8 +171,8 @@ public:
   //! When naming the roots, it is easier to retrieve
   //! objects by significant references rather than by
   //! references without any semantic values.
-  Standard_EXPORT void AddRoot(const TCollection_AsciiString&     aName,
-                               const Handle(Standard_Persistent)& anObject) const;
+  Standard_EXPORT void AddRoot(const TCollection_AsciiString&          aName,
+                               const occ::handle<Standard_Persistent>& anObject) const;
 
   //! Removes from this set of data the root object named aName.
   //! Warning
@@ -188,7 +187,7 @@ public:
   //! -   When retrieving an object, the sequence
   //! contains the roots stored in the container read.
   //! -   An empty sequence is returned if there is no root in this set of data.
-  Standard_EXPORT Handle(Storage_HSeqOfRoot) Roots() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>> Roots() const;
 
   //! Gives the root object whose name is aName in
   //! this set of data. The returned object is a
@@ -197,34 +196,34 @@ public:
   //! Warning
   //! A null handle is returned if there is no root object
   //! whose name is aName in this set of data.
-  Standard_EXPORT Handle(Storage_Root) Find(const TCollection_AsciiString& aName) const;
+  Standard_EXPORT occ::handle<Storage_Root> Find(const TCollection_AsciiString& aName) const;
 
-  //! returns Standard_True if <me> contains a root named <aName>
-  Standard_EXPORT Standard_Boolean IsRoot(const TCollection_AsciiString& aName) const;
+  //! returns true if <me> contains a root named <aName>
+  Standard_EXPORT bool IsRoot(const TCollection_AsciiString& aName) const;
 
   //! Returns the number of types of objects used in this set of data.
-  Standard_EXPORT Standard_Integer NumberOfTypes() const;
+  Standard_EXPORT int NumberOfTypes() const;
 
   //! Returns true if this set of data contains an object of type aName.
   //! Persistent objects from this set of data must
   //! have types which are recognized by the
   //! Storage_Schema algorithm used to store or retrieve them.
-  Standard_EXPORT Standard_Boolean IsType(const TCollection_AsciiString& aName) const;
+  Standard_EXPORT bool IsType(const TCollection_AsciiString& aName) const;
 
   //! Gives the list of types of objects used in this set of data in a sequence.
-  Standard_EXPORT Handle(TColStd_HSequenceOfAsciiString) Types() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_AsciiString>> Types() const;
 
   friend class Storage_Schema;
 
   DEFINE_STANDARD_RTTIEXT(Storage_Data, Standard_Transient)
 
-  Standard_EXPORT Handle(Storage_HeaderData) HeaderData() const;
+  Standard_EXPORT occ::handle<Storage_HeaderData> HeaderData() const;
 
-  Standard_EXPORT Handle(Storage_RootData) RootData() const;
+  Standard_EXPORT occ::handle<Storage_RootData> RootData() const;
 
-  Standard_EXPORT Handle(Storage_TypeData) TypeData() const;
+  Standard_EXPORT occ::handle<Storage_TypeData> TypeData() const;
 
-  Standard_EXPORT Handle(Storage_InternalData) InternalData() const;
+  Standard_EXPORT occ::handle<Storage_InternalData> InternalData() const;
 
   Standard_EXPORT void Clear() const;
 
@@ -233,12 +232,12 @@ private:
 
   Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  Handle(Storage_HeaderData)   myHeaderData;
-  Handle(Storage_RootData)     myRootData;
-  Handle(Storage_TypeData)     myTypeData;
-  Handle(Storage_InternalData) myInternal;
-  Storage_Error                myErrorStatus;
-  TCollection_AsciiString      myErrorStatusExt;
+  occ::handle<Storage_HeaderData>   myHeaderData;
+  occ::handle<Storage_RootData>     myRootData;
+  occ::handle<Storage_TypeData>     myTypeData;
+  occ::handle<Storage_InternalData> myInternal;
+  Storage_Error                     myErrorStatus;
+  TCollection_AsciiString           myErrorStatusExt;
 };
 
 #endif // _Storage_Data_HeaderFile

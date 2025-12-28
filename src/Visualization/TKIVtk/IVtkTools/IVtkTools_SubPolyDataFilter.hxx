@@ -35,19 +35,19 @@ public:
   vtkTypeMacro(IVtkTools_SubPolyDataFilter, vtkPolyDataAlgorithm)
 
     static IVtkTools_SubPolyDataFilter* New();
-  void PrintSelf(std::ostream& theOs, vtkIndent theIndent) Standard_OVERRIDE;
+  void PrintSelf(std::ostream& theOs, vtkIndent theIndent) override;
 
   //! Set ids to be passed through this filter.
-  void SetData(const IVtk_IdTypeMap theSet);
+  void SetData(const NCollection_Map<IVtk_IdType> theSet);
 
   //! Add ids to be passed through this filter.
-  void AddData(const IVtk_IdTypeMap theSet);
+  void AddData(const NCollection_Map<IVtk_IdType> theSet);
 
   //! Set ids to be passed through this filter.
-  void SetData(const IVtk_ShapeIdList theIds);
+  void SetData(const NCollection_List<IVtk_IdType> theIds);
 
   //! Add ids to be passed through this filter.
-  void AddData(const IVtk_ShapeIdList theIds);
+  void AddData(const NCollection_List<IVtk_IdType> theIds);
 
   //! Clear ids set to be passed through this filter.
   void Clear();
@@ -60,19 +60,17 @@ public:
 protected:
   //! @brief Filter cells according to the given set of ids.
   //! Note: Data arrays are not passed through if filtering is turned on.
-  virtual int RequestData(vtkInformation*,
-                          vtkInformationVector**,
-                          vtkInformationVector*) Standard_OVERRIDE;
+  virtual int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) override;
 
   IVtkTools_SubPolyDataFilter();
   virtual ~IVtkTools_SubPolyDataFilter();
 
 protected:
   //! Set of ids to be passed through this filter.
-  IVtk_IdTypeMap myIdsSet;
-  const char*    myIdsArrayName;
-  bool           myDoFiltering;
-  bool           myToCopyNormals;
+  NCollection_Map<IVtk_IdType> myIdsSet;
+  const char*                  myIdsArrayName;
+  bool                         myDoFiltering;
+  bool                         myToCopyNormals;
 };
 
 #ifdef _MSC_VER

@@ -28,9 +28,6 @@ class Interface_EntityIterator;
 class TCollection_AsciiString;
 class IGESData_IGESEntity;
 
-class IGESSelect_SelectBasicGeom;
-DEFINE_STANDARD_HANDLE(IGESSelect_SelectBasicGeom, IFSelect_SelectExplore)
-
 //! This selection returns the basic geometric elements
 //! contained in an IGES Entity
 //! Intended to run a "quick" transfer. I.E. :
@@ -54,35 +51,33 @@ public:
   //! mode = +2 : Returns Basic Curves 3D : as 1 but CompositeCurves
   //! are returned in detail
   //! mode = 0  : both
-  Standard_EXPORT IGESSelect_SelectBasicGeom(const Standard_Integer mode);
+  Standard_EXPORT IGESSelect_SelectBasicGeom(const int mode);
 
-  Standard_EXPORT Standard_Boolean CurvesOnly() const;
+  Standard_EXPORT bool CurvesOnly() const;
 
   //! Explores an entity, to take its contained Curves 3d
   //! Works recursively
-  Standard_EXPORT Standard_Boolean
-    Explore(const Standard_Integer            level,
-            const Handle(Standard_Transient)& ent,
-            const Interface_Graph&            G,
-            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
+  Standard_EXPORT bool Explore(const int                              level,
+                               const occ::handle<Standard_Transient>& ent,
+                               const Interface_Graph&                 G,
+                               Interface_EntityIterator&              explored) const override;
 
   //! Returns a text defining the criterium : "Curves 3d" or
   //! "Basic Geometry"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
 
   //! This method can be called from everywhere to get the curves
   //! as sub-elements of a given curve :
   //! CompositeCurve : explored lists its subs + returns True
   //! Any Curve : explored is not filled but returned is True
   //! Other : returned is False
-  Standard_EXPORT static Standard_Boolean SubCurves(const Handle(IGESData_IGESEntity)& ent,
-                                                    Interface_EntityIterator&          explored);
+  Standard_EXPORT static bool SubCurves(const occ::handle<IGESData_IGESEntity>& ent,
+                                        Interface_EntityIterator&               explored);
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBasicGeom, IFSelect_SelectExplore)
 
-protected:
 private:
-  Standard_Integer thegeom;
+  int thegeom;
 };
 
 #endif // _IGESSelect_SelectBasicGeom_HeaderFile

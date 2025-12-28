@@ -30,12 +30,12 @@
 
 //=================================================================================================
 
-Handle(StepRepr_RepresentationItem) STEPConstruct::FindEntity(
-  const Handle(Transfer_FinderProcess)& FinderProcess,
-  const TopoDS_Shape&                   Shape)
+occ::handle<StepRepr_RepresentationItem> STEPConstruct::FindEntity(
+  const occ::handle<Transfer_FinderProcess>& FinderProcess,
+  const TopoDS_Shape&                        Shape)
 {
-  Handle(StepRepr_RepresentationItem) item;
-  Handle(TransferBRep_ShapeMapper)    mapper = TransferBRep::ShapeMapper(FinderProcess, Shape);
+  occ::handle<StepRepr_RepresentationItem> item;
+  occ::handle<TransferBRep_ShapeMapper>    mapper = TransferBRep::ShapeMapper(FinderProcess, Shape);
   FinderProcess->FindTypedTransient(mapper, STANDARD_TYPE(StepRepr_RepresentationItem), item);
 #ifdef OCCT_DEBUG
   if (item.IsNull())
@@ -49,14 +49,14 @@ Handle(StepRepr_RepresentationItem) STEPConstruct::FindEntity(
 
 //=================================================================================================
 
-Handle(StepRepr_RepresentationItem) STEPConstruct::FindEntity(
-  const Handle(Transfer_FinderProcess)& FinderProcess,
-  const TopoDS_Shape&                   Shape,
-  TopLoc_Location&                      Loc)
+occ::handle<StepRepr_RepresentationItem> STEPConstruct::FindEntity(
+  const occ::handle<Transfer_FinderProcess>& FinderProcess,
+  const TopoDS_Shape&                        Shape,
+  TopLoc_Location&                           Loc)
 {
-  Handle(StepRepr_RepresentationItem) item;
-  Loc                                     = Shape.Location();
-  Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper(FinderProcess, Shape);
+  occ::handle<StepRepr_RepresentationItem> item;
+  Loc                                          = Shape.Location();
+  occ::handle<TransferBRep_ShapeMapper> mapper = TransferBRep::ShapeMapper(FinderProcess, Shape);
   if (!FinderProcess->FindTypedTransient(mapper, STANDARD_TYPE(StepRepr_RepresentationItem), item)
       && !Loc.IsIdentity())
   {
@@ -82,11 +82,12 @@ Handle(StepRepr_RepresentationItem) STEPConstruct::FindEntity(
 
 //=================================================================================================
 
-TopoDS_Shape STEPConstruct::FindShape(const Handle(Transfer_TransientProcess)&   TransientProcess,
-                                      const Handle(StepRepr_RepresentationItem)& item)
+TopoDS_Shape STEPConstruct::FindShape(
+  const occ::handle<Transfer_TransientProcess>&   TransientProcess,
+  const occ::handle<StepRepr_RepresentationItem>& item)
 {
-  TopoDS_Shape            S;
-  Handle(Transfer_Binder) binder = TransientProcess->Find(item);
+  TopoDS_Shape                 S;
+  occ::handle<Transfer_Binder> binder = TransientProcess->Find(item);
   if (!binder.IsNull() && binder->HasResult())
   {
     S = TransferBRep::ShapeResult(TransientProcess, binder);
@@ -96,31 +97,31 @@ TopoDS_Shape STEPConstruct::FindShape(const Handle(Transfer_TransientProcess)&  
 
 //=================================================================================================
 
-Standard_Boolean STEPConstruct::FindCDSR(
-  const Handle(Transfer_Binder)&                         ComponentBinder,
-  const Handle(StepShape_ShapeDefinitionRepresentation)& AssemblySDR,
-  Handle(StepShape_ContextDependentShapeRepresentation)& ComponentCDSR)
+bool STEPConstruct::FindCDSR(
+  const occ::handle<Transfer_Binder>&                         ComponentBinder,
+  const occ::handle<StepShape_ShapeDefinitionRepresentation>& AssemblySDR,
+  occ::handle<StepShape_ContextDependentShapeRepresentation>& ComponentCDSR)
 {
-  Standard_Boolean result = Standard_False;
+  bool result = false;
 
-  Handle(StepRepr_PropertyDefinition) PropD = AssemblySDR->Definition().PropertyDefinition();
+  occ::handle<StepRepr_PropertyDefinition> PropD = AssemblySDR->Definition().PropertyDefinition();
   if (!PropD.IsNull())
   {
-    Handle(StepBasic_ProductDefinition) AssemblyPD = PropD->Definition().ProductDefinition();
+    occ::handle<StepBasic_ProductDefinition> AssemblyPD = PropD->Definition().ProductDefinition();
     if (!AssemblyPD.IsNull())
     {
-      Handle(Transfer_Binder)                         binder = ComponentBinder;
-      Handle(Transfer_SimpleBinderOfTransient)        trb;
-      Handle(StepRepr_ProductDefinitionShape)         PDS;
-      Handle(StepBasic_ProductDefinitionRelationship) NAUO;
-      Handle(StepBasic_ProductDefinition)             ComponentPD;
+      occ::handle<Transfer_Binder>                         binder = ComponentBinder;
+      occ::handle<Transfer_SimpleBinderOfTransient>        trb;
+      occ::handle<StepRepr_ProductDefinitionShape>         PDS;
+      occ::handle<StepBasic_ProductDefinitionRelationship> NAUO;
+      occ::handle<StepBasic_ProductDefinition>             ComponentPD;
       while (!binder.IsNull() && !result)
       {
-        trb = Handle(Transfer_SimpleBinderOfTransient)::DownCast(binder);
+        trb = occ::down_cast<Transfer_SimpleBinderOfTransient>(binder);
         if (!trb.IsNull())
         {
           ComponentCDSR =
-            Handle(StepShape_ContextDependentShapeRepresentation)::DownCast(trb->Result());
+            occ::down_cast<StepShape_ContextDependentShapeRepresentation>(trb->Result());
           if (!ComponentCDSR.IsNull())
           {
             PDS = ComponentCDSR->RepresentedProductRelation();

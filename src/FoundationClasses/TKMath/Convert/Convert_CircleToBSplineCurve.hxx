@@ -56,12 +56,9 @@ public:
   //! Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
   Standard_EXPORT Convert_CircleToBSplineCurve(
     const gp_Circ2d&                   C,
-    const Standard_Real                U1,
-    const Standard_Real                U2,
+    const double                       U1,
+    const double                       U2,
     const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
-
-protected:
-private:
 };
 
 #endif // _Convert_CircleToBSplineCurve_HeaderFile

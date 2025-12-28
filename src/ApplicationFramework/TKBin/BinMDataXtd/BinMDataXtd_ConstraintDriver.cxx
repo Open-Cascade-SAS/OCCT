@@ -29,14 +29,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_ConstraintDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataXtd_ConstraintDriver::BinMDataXtd_ConstraintDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataXtd_ConstraintDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataXtd_ConstraintDriver::NewEmpty() const
 {
   return (new TDataXtd_Constraint());
 }
@@ -46,23 +46,22 @@ Handle(TDF_Attribute) BinMDataXtd_ConstraintDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataXtd_ConstraintDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                         const occ::handle<TDF_Attribute>& theTarget,
+                                         BinObjMgt_RRelocationTable&       theRelocTable) const
 {
-  Handle(TDataXtd_Constraint) aC = Handle(TDataXtd_Constraint)::DownCast(theTarget);
+  occ::handle<TDataXtd_Constraint> aC = occ::down_cast<TDataXtd_Constraint>(theTarget);
 
-  Standard_Integer aNb;
+  int aNb;
 
   // value
   if (!(theSource >> aNb))
-    return Standard_False;
+    return false;
   if (aNb > 0)
   {
-    Handle(TDataStd_Real) aTValue;
+    occ::handle<TDataStd_Real> aTValue;
     if (theRelocTable.IsBound(aNb))
-      aTValue = Handle(TDataStd_Real)::DownCast(theRelocTable.Find(aNb));
+      aTValue = occ::down_cast<TDataStd_Real>(theRelocTable.Find(aNb));
     else
     {
       aTValue = new TDataStd_Real;
@@ -72,19 +71,19 @@ Standard_Boolean BinMDataXtd_ConstraintDriver::Paste(
   }
 
   // geometries
-  Standard_Integer NbGeom;
+  int NbGeom;
   if (!(theSource >> NbGeom))
-    return Standard_False;
-  Standard_Integer iG = 1;
+    return false;
+  int iG = 1;
   while (iG <= NbGeom)
   {
     if (!(theSource >> aNb))
-      return Standard_False;
+      return false;
     if (aNb > 0)
     {
-      Handle(TNaming_NamedShape) aG;
+      occ::handle<TNaming_NamedShape> aG;
       if (theRelocTable.IsBound(aNb))
-        aG = Handle(TNaming_NamedShape)::DownCast(theRelocTable.Find(aNb));
+        aG = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
       else
       {
         aG = new TNaming_NamedShape;
@@ -96,12 +95,12 @@ Standard_Boolean BinMDataXtd_ConstraintDriver::Paste(
 
   // plane
   if (!(theSource >> aNb))
-    return Standard_False;
+    return false;
   if (aNb > 0)
   {
-    Handle(TNaming_NamedShape) aTPlane;
+    occ::handle<TNaming_NamedShape> aTPlane;
     if (theRelocTable.IsBound(aNb))
-      aTPlane = Handle(TNaming_NamedShape)::DownCast(theRelocTable.Find(aNb));
+      aTPlane = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
     else
     {
       aTPlane = new TNaming_NamedShape;
@@ -111,36 +110,37 @@ Standard_Boolean BinMDataXtd_ConstraintDriver::Paste(
   }
 
   // constraint type
-  Standard_Integer aType;
+  int aType;
   if (!(theSource >> aType))
-    return Standard_False;
+    return false;
   aC->SetType((TDataXtd_ConstraintEnum)aType);
 
   // flags
-  Standard_Integer flags;
+  int flags;
   if (!(theSource >> flags))
-    return Standard_False;
+    return false;
   aC->Verified((flags & 1) != 0);
   aC->Inverted((flags & 2) != 0);
   aC->Reversed((flags & 4) != 0);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataXtd_ConstraintDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                         BinObjMgt_Persistent&        theTarget,
-                                         BinObjMgt_SRelocationTable&  theRelocTable) const
+void BinMDataXtd_ConstraintDriver::Paste(
+  const occ::handle<TDF_Attribute>&                        theSource,
+  BinObjMgt_Persistent&                                    theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
 {
-  Handle(TDataXtd_Constraint) aC = Handle(TDataXtd_Constraint)::DownCast(theSource);
+  occ::handle<TDataXtd_Constraint> aC = occ::down_cast<TDataXtd_Constraint>(theSource);
 
-  Standard_Integer aNb;
+  int aNb;
 
   // value
-  Handle(TDataStd_Real) aValue = aC->GetValue();
+  occ::handle<TDataStd_Real> aValue = aC->GetValue();
   if (!aValue.IsNull())
     aNb = theRelocTable.Add(aValue); // create and/or get index
   else
@@ -148,12 +148,12 @@ void BinMDataXtd_ConstraintDriver::Paste(const Handle(TDF_Attribute)& theSource,
   theTarget << aNb;
 
   // geometries
-  Standard_Integer NbGeom = aC->NbGeometries();
+  int NbGeom = aC->NbGeometries();
   theTarget << NbGeom;
-  Standard_Integer iG;
+  int iG;
   for (iG = 1; iG <= NbGeom; iG++)
   {
-    Handle(TNaming_NamedShape) aG = aC->GetGeometry(iG);
+    occ::handle<TNaming_NamedShape> aG = aC->GetGeometry(iG);
     if (!aG.IsNull())
       aNb = theRelocTable.Add(aG);
     else
@@ -162,7 +162,7 @@ void BinMDataXtd_ConstraintDriver::Paste(const Handle(TDF_Attribute)& theSource,
   }
 
   // plane
-  Handle(TNaming_NamedShape) aTPlane = aC->GetPlane();
+  occ::handle<TNaming_NamedShape> aTPlane = aC->GetPlane();
   if (!aTPlane.IsNull())
     aNb = theRelocTable.Add(aTPlane);
   else
@@ -170,10 +170,10 @@ void BinMDataXtd_ConstraintDriver::Paste(const Handle(TDF_Attribute)& theSource,
   theTarget << aNb;
 
   // constraint type
-  theTarget << (Standard_Integer)aC->GetType();
+  theTarget << (int)aC->GetType();
 
   // flags
-  Standard_Integer flags = 0;
+  int flags = 0;
   if (aC->Verified())
     flags |= 1;
   if (aC->Inverted())

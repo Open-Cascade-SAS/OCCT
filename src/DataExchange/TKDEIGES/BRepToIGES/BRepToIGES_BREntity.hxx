@@ -44,82 +44,80 @@ public:
   Standard_EXPORT void Init();
 
   //! Set the value of "TheModel"
-  Standard_EXPORT void SetModel(const Handle(IGESData_IGESModel)& model);
+  Standard_EXPORT void SetModel(const occ::handle<IGESData_IGESModel>& model);
 
   //! Returns the value of "TheModel"
-  Standard_EXPORT Handle(IGESData_IGESModel) GetModel() const;
+  Standard_EXPORT occ::handle<IGESData_IGESModel> GetModel() const;
 
   //! Returns the value of the UnitFlag of the header of the model
   //! in meters.
-  Standard_EXPORT Standard_Real GetUnit() const;
+  Standard_EXPORT double GetUnit() const;
 
   //! Set the value of "TheMap"
-  Standard_EXPORT void SetTransferProcess(const Handle(Transfer_FinderProcess)& TP);
+  Standard_EXPORT void SetTransferProcess(const occ::handle<Transfer_FinderProcess>& TP);
 
   //! Returns the value of "TheMap"
-  Standard_EXPORT Handle(Transfer_FinderProcess) GetTransferProcess() const;
+  Standard_EXPORT occ::handle<Transfer_FinderProcess> GetTransferProcess() const;
 
   //! Returns the result of the transfert of any Shape
   //! If the transfer has failed, this member return a NullEntity.
-  Standard_EXPORT virtual Handle(IGESData_IGESEntity) TransferShape(
+  Standard_EXPORT virtual occ::handle<IGESData_IGESEntity> TransferShape(
     const TopoDS_Shape&          start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Records a new Fail message
-  Standard_EXPORT void AddFail(const TopoDS_Shape& start, const Standard_CString amess);
+  Standard_EXPORT void AddFail(const TopoDS_Shape& start, const char* amess);
 
   //! Records a new Warning message
-  Standard_EXPORT void AddWarning(const TopoDS_Shape& start, const Standard_CString amess);
+  Standard_EXPORT void AddWarning(const TopoDS_Shape& start, const char* amess);
 
   //! Records a new Fail message
-  Standard_EXPORT void AddFail(const Handle(Standard_Transient)& start,
-                               const Standard_CString            amess);
+  Standard_EXPORT void AddFail(const occ::handle<Standard_Transient>& start, const char* amess);
 
   //! Records a new Warning message
-  Standard_EXPORT void AddWarning(const Handle(Standard_Transient)& start,
-                                  const Standard_CString            amess);
+  Standard_EXPORT void AddWarning(const occ::handle<Standard_Transient>& start, const char* amess);
 
   //! Returns True if start was already treated and has a result in "TheMap"
   //! else returns False.
-  Standard_EXPORT Standard_Boolean HasShapeResult(const TopoDS_Shape& start) const;
+  Standard_EXPORT bool HasShapeResult(const TopoDS_Shape& start) const;
 
   //! Returns the result of the transfer of the Shape "start" contained
   //! in "TheMap". (if HasShapeResult is True).
-  Standard_EXPORT Handle(Standard_Transient) GetShapeResult(const TopoDS_Shape& start) const;
+  Standard_EXPORT occ::handle<Standard_Transient> GetShapeResult(const TopoDS_Shape& start) const;
 
   //! set in "TheMap" the result of the transfer of the Shape "start".
-  Standard_EXPORT void SetShapeResult(const TopoDS_Shape&               start,
-                                      const Handle(Standard_Transient)& result);
+  Standard_EXPORT void SetShapeResult(const TopoDS_Shape&                    start,
+                                      const occ::handle<Standard_Transient>& result);
 
   //! Returns True if start was already treated and has a result in "TheMap"
   //! else returns False.
-  Standard_EXPORT Standard_Boolean HasShapeResult(const Handle(Standard_Transient)& start) const;
+  Standard_EXPORT bool HasShapeResult(const occ::handle<Standard_Transient>& start) const;
 
   //! Returns the result of the transfer of the Transient "start" contained
   //! in "TheMap". (if HasShapeResult is True).
-  Standard_EXPORT Handle(Standard_Transient) GetShapeResult(
-    const Handle(Standard_Transient)& start) const;
+  Standard_EXPORT occ::handle<Standard_Transient> GetShapeResult(
+    const occ::handle<Standard_Transient>& start) const;
 
   //! set in "TheMap" the result of the transfer of the Transient "start".
-  Standard_EXPORT void SetShapeResult(const Handle(Standard_Transient)& start,
-                                      const Handle(Standard_Transient)& result);
+  Standard_EXPORT void SetShapeResult(const occ::handle<Standard_Transient>& start,
+                                      const occ::handle<Standard_Transient>& result);
 
   //! Returns mode for conversion of surfaces
   //! (value of parameter write.convertsurface.mode)
-  Standard_EXPORT Standard_Boolean GetConvertSurfaceMode() const;
+  Standard_EXPORT bool GetConvertSurfaceMode() const;
 
   //! Returns mode for writing pcurves
   //! (value of parameter write.surfacecurve.mode)
-  Standard_EXPORT Standard_Boolean GetPCurveMode() const;
+  Standard_EXPORT bool GetPCurveMode() const;
 
   Standard_EXPORT virtual ~BRepToIGES_BREntity();
 
 private:
-  Handle(IGESData_IGESModel)     TheModel;
-  Standard_Real                  TheUnitFactor;
-  Standard_Boolean               myConvSurface;
-  Standard_Boolean               myPCurveMode;
-  Handle(Transfer_FinderProcess) TheMap;
+  occ::handle<IGESData_IGESModel>     TheModel;
+  double                              TheUnitFactor;
+  bool                                myConvSurface;
+  bool                                myPCurveMode;
+  occ::handle<Transfer_FinderProcess> TheMap;
 };
 
 #endif // _BRepToIGES_BREntity_HeaderFile

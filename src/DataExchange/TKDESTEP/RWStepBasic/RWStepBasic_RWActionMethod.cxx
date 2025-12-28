@@ -28,10 +28,10 @@ RWStepBasic_RWActionMethod::RWStepBasic_RWActionMethod() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWActionMethod::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepBasic_ActionMethod)&  ent) const
+void RWStepBasic_RWActionMethod::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                                   num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepBasic_ActionMethod>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "action_method"))
@@ -39,24 +39,24 @@ void RWStepBasic_RWActionMethod::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Own fields of ActionMethod
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasDescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   else
   {
-    hasDescription = Standard_False;
+    hasDescription = false;
   }
 
-  Handle(TCollection_HAsciiString) aConsequence;
+  occ::handle<TCollection_HAsciiString> aConsequence;
   data->ReadString(num, 3, "consequence", ach, aConsequence);
 
-  Handle(TCollection_HAsciiString) aPurpose;
+  occ::handle<TCollection_HAsciiString> aPurpose;
   data->ReadString(num, 4, "purpose", ach, aPurpose);
 
   // Initialize entity
@@ -65,8 +65,8 @@ void RWStepBasic_RWActionMethod::ReadStep(const Handle(StepData_StepReaderData)&
 
 //=================================================================================================
 
-void RWStepBasic_RWActionMethod::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepBasic_ActionMethod)& ent) const
+void RWStepBasic_RWActionMethod::WriteStep(StepData_StepWriter&                       SW,
+                                           const occ::handle<StepBasic_ActionMethod>& ent) const
 {
 
   // Own fields of ActionMethod
@@ -87,7 +87,7 @@ void RWStepBasic_RWActionMethod::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepBasic_RWActionMethod::Share(const Handle(StepBasic_ActionMethod)&,
+void RWStepBasic_RWActionMethod::Share(const occ::handle<StepBasic_ActionMethod>&,
                                        Interface_EntityIterator&) const
 {
   // Own fields of ActionMethod

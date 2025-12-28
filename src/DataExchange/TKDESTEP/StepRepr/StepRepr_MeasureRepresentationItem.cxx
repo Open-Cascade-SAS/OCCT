@@ -33,9 +33,9 @@ StepRepr_MeasureRepresentationItem::StepRepr_MeasureRepresentationItem()
 //=================================================================================================
 
 void StepRepr_MeasureRepresentationItem::Init(
-  const Handle(TCollection_HAsciiString)&     aName,
-  const Handle(StepBasic_MeasureValueMember)& aValueComponent,
-  const StepBasic_Unit&                       aUnitComponent)
+  const occ::handle<TCollection_HAsciiString>&     aName,
+  const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
+  const StepBasic_Unit&                            aUnitComponent)
 {
   StepRepr_RepresentationItem::Init(aName);
   myMeasure->Init(aValueComponent, aUnitComponent);
@@ -44,14 +44,14 @@ void StepRepr_MeasureRepresentationItem::Init(
 //=================================================================================================
 
 void StepRepr_MeasureRepresentationItem::SetMeasure(
-  const Handle(StepBasic_MeasureWithUnit)& Measure)
+  const occ::handle<StepBasic_MeasureWithUnit>& Measure)
 {
   myMeasure = Measure;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_MeasureWithUnit) StepRepr_MeasureRepresentationItem::Measure() const
+occ::handle<StepBasic_MeasureWithUnit> StepRepr_MeasureRepresentationItem::Measure() const
 {
   return myMeasure;
 }

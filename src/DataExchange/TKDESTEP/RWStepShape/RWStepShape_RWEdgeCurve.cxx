@@ -36,14 +36,14 @@ namespace
 //            required type is found, returns nullptr.
 // ================================================================
 template <typename StepShapeType>
-Handle(StepShapeType) GetSharing(const Handle(Standard_Transient)& theStepEntity,
-                                 const Interface_ShareTool&        theShareTool)
+occ::handle<StepShapeType> GetSharing(const occ::handle<Standard_Transient>& theStepEntity,
+                                      const Interface_ShareTool&             theShareTool)
 {
   Interface_EntityIterator aSharedEntitiesIt = theShareTool.Sharings(theStepEntity);
-  aSharedEntitiesIt.SelectType(STANDARD_TYPE(StepShapeType), Standard_True);
+  aSharedEntitiesIt.SelectType(STANDARD_TYPE(StepShapeType), true);
   return aSharedEntitiesIt.NbEntities() == 0
-           ? Handle(StepShapeType){}
-           : Handle(StepShapeType)::DownCast(aSharedEntitiesIt.Value());
+           ? occ::handle<StepShapeType>{}
+           : occ::down_cast<StepShapeType>(aSharedEntitiesIt.Value());
 }
 
 // ================================================================
@@ -52,24 +52,24 @@ Handle(StepShapeType) GetSharing(const Handle(Standard_Transient)& theStepEntity
 //            theOrientedEdge. If face bound cannot be found,
 //            returns true (to preserve pre-refactoring behavior).
 // ================================================================
-Standard_Boolean GetFaceBoundOrientation(const Handle(StepShape_OrientedEdge)& theOrientedEdge,
-                                         const Interface_ShareTool&            theShareTool)
+bool GetFaceBoundOrientation(const occ::handle<StepShape_OrientedEdge>& theOrientedEdge,
+                             const Interface_ShareTool&                 theShareTool)
 {
   if (!theShareTool.IsShared(theOrientedEdge))
   {
-    return Standard_True;
+    return true;
   }
 
-  const Handle(StepShape_EdgeLoop) anEdgeLoop =
+  const occ::handle<StepShape_EdgeLoop> anEdgeLoop =
     GetSharing<StepShape_EdgeLoop>(theOrientedEdge, theShareTool);
   if (!theShareTool.IsShared(anEdgeLoop))
   {
-    return Standard_True;
+    return true;
   }
 
-  const Handle(StepShape_FaceBound) aFaceBound =
+  const occ::handle<StepShape_FaceBound> aFaceBound =
     GetSharing<StepShape_FaceBound>(anEdgeLoop, theShareTool);
-  return aFaceBound.IsNull() ? Standard_True : aFaceBound->Orientation();
+  return aFaceBound.IsNull() ? true : aFaceBound->Orientation();
 }
 
 // ================================================================
@@ -78,27 +78,27 @@ Standard_Boolean GetFaceBoundOrientation(const Handle(StepShape_OrientedEdge)& t
 //            are valid points of the different vertices and are
 //            equal to each other within Precision::Confusion().
 // ================================================================
-Standard_Boolean AreEndsMatch(const Handle(StepShape_EdgeCurve)& theEdgeCurve)
+bool AreEndsMatch(const occ::handle<StepShape_EdgeCurve>& theEdgeCurve)
 {
-  Handle(StepShape_VertexPoint) aStartVertex =
-    Handle(StepShape_VertexPoint)::DownCast(theEdgeCurve->EdgeStart());
-  Handle(StepShape_VertexPoint) anEndVertex =
-    Handle(StepShape_VertexPoint)::DownCast(theEdgeCurve->EdgeEnd());
+  occ::handle<StepShape_VertexPoint> aStartVertex =
+    occ::down_cast<StepShape_VertexPoint>(theEdgeCurve->EdgeStart());
+  occ::handle<StepShape_VertexPoint> anEndVertex =
+    occ::down_cast<StepShape_VertexPoint>(theEdgeCurve->EdgeEnd());
   if (aStartVertex == anEndVertex)
   {
-    return Standard_False;
+    return false;
   }
 
-  Handle(StepGeom_CartesianPoint) aStartPoint =
-    Handle(StepGeom_CartesianPoint)::DownCast(aStartVertex->VertexGeometry());
-  Handle(StepGeom_CartesianPoint) anEndPoint =
-    Handle(StepGeom_CartesianPoint)::DownCast(anEndVertex->VertexGeometry());
+  occ::handle<StepGeom_CartesianPoint> aStartPoint =
+    occ::down_cast<StepGeom_CartesianPoint>(aStartVertex->VertexGeometry());
+  occ::handle<StepGeom_CartesianPoint> anEndPoint =
+    occ::down_cast<StepGeom_CartesianPoint>(anEndVertex->VertexGeometry());
   if (aStartPoint.IsNull() || anEndPoint.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  const Standard_Real aDistance =
+  const double aDistance =
     std::sqrt((aStartPoint->CoordinatesValue(1) - anEndPoint->CoordinatesValue(1))
                 * (aStartPoint->CoordinatesValue(1) - anEndPoint->CoordinatesValue(1))
               + (aStartPoint->CoordinatesValue(2) - anEndPoint->CoordinatesValue(2))
@@ -111,10 +111,10 @@ Standard_Boolean AreEndsMatch(const Handle(StepShape_EdgeCurve)& theEdgeCurve)
 
 //=================================================================================================
 
-void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& theStepData,
-                                       const Standard_Integer                 theRecordID,
-                                       Handle(Interface_Check)&               theMessageTool,
-                                       const Handle(StepShape_EdgeCurve)&     theEdgeCurve) const
+void RWStepShape_RWEdgeCurve::ReadStep(const occ::handle<StepData_StepReaderData>& theStepData,
+                                       const int                                   theRecordID,
+                                       occ::handle<Interface_Check>&               theMessageTool,
+                                       const occ::handle<StepShape_EdgeCurve>& theEdgeCurve) const
 {
   // --- Number of Parameter Control ---
   if (!theStepData->CheckNbParams(theRecordID, 5, theMessageTool, "edge_curve"))
@@ -123,11 +123,11 @@ void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& th
   }
 
   // --- inherited field : name ---
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   theStepData->ReadString(theRecordID, 1, "name", theMessageTool, aName);
 
   // --- inherited field : edgeStart ---
-  Handle(StepShape_Vertex) anEdgeStart;
+  occ::handle<StepShape_Vertex> anEdgeStart;
   theStepData->ReadEntity(theRecordID,
                           2,
                           "edge_start",
@@ -136,7 +136,7 @@ void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& th
                           anEdgeStart);
 
   // --- inherited field : edgeEnd ---
-  Handle(StepShape_Vertex) anEdgeEnd;
+  occ::handle<StepShape_Vertex> anEdgeEnd;
   theStepData->ReadEntity(theRecordID,
                           3,
                           "edge_end",
@@ -145,7 +145,7 @@ void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& th
                           anEdgeEnd);
 
   // --- own field : edgeGeometry ---
-  Handle(StepGeom_Curve) anEdgeGeometry;
+  occ::handle<StepGeom_Curve> anEdgeGeometry;
   theStepData->ReadEntity(theRecordID,
                           4,
                           "edge_geometry",
@@ -154,7 +154,7 @@ void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& th
                           anEdgeGeometry);
 
   // --- own field : sameSense ---
-  Standard_Boolean aSameSense;
+  bool aSameSense;
   theStepData->ReadBoolean(theRecordID, 5, "same_sense", theMessageTool, aSameSense);
 
   //--- Initialisation of the read entity ---
@@ -163,8 +163,8 @@ void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& th
 
 //=================================================================================================
 
-void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&               theStepWriter,
-                                        const Handle(StepShape_EdgeCurve)& theEdgeCurve) const
+void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&                    theStepWriter,
+                                        const occ::handle<StepShape_EdgeCurve>& theEdgeCurve) const
 {
   // --- inherited field name ---
   theStepWriter.Send(theEdgeCurve->Name());
@@ -184,8 +184,8 @@ void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&               theSt
 
 //=================================================================================================
 
-void RWStepShape_RWEdgeCurve::Share(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
-                                    Interface_EntityIterator&          theSharedEntitiesIt) const
+void RWStepShape_RWEdgeCurve::Share(const occ::handle<StepShape_EdgeCurve>& theEdgeCurve,
+                                    Interface_EntityIterator& theSharedEntitiesIt) const
 {
   theSharedEntitiesIt.GetOneItem(theEdgeCurve->EdgeStart());
 
@@ -196,9 +196,9 @@ void RWStepShape_RWEdgeCurve::Share(const Handle(StepShape_EdgeCurve)& theEdgeCu
 
 //=================================================================================================
 
-void RWStepShape_RWEdgeCurve::Check(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
-                                    const Interface_ShareTool&         theShareTool,
-                                    Handle(Interface_Check)&           theMessageTool) const
+void RWStepShape_RWEdgeCurve::Check(const occ::handle<StepShape_EdgeCurve>& theEdgeCurve,
+                                    const Interface_ShareTool&              theShareTool,
+                                    occ::handle<Interface_Check>&           theMessageTool) const
 {
   // 1- First Vertex != LastVertex but First VertexPoint == Last VertexPoint
   // Remark: time consuming process but useful.
@@ -218,25 +218,23 @@ void RWStepShape_RWEdgeCurve::Check(const Handle(StepShape_EdgeCurve)& theEdgeCu
 
   // 2- Two-Manifold Topology
   Interface_EntityIterator aSharedEntitiesIt = theShareTool.Sharings(theEdgeCurve);
-  aSharedEntitiesIt.SelectType(STANDARD_TYPE(StepShape_OrientedEdge), Standard_True);
+  aSharedEntitiesIt.SelectType(STANDARD_TYPE(StepShape_OrientedEdge), true);
   if (aSharedEntitiesIt.NbEntities() != 2)
   {
     return;
   }
 
-  const Handle(StepShape_OrientedEdge) anOrientedEdge1 =
-    Handle(StepShape_OrientedEdge)::DownCast(aSharedEntitiesIt.Value());
-  const Standard_Boolean aFaceBoundOrientation1 =
-    GetFaceBoundOrientation(anOrientedEdge1, theShareTool);
-  const Standard_Boolean anIsCumulated1 = aFaceBoundOrientation1 != anOrientedEdge1->Orientation();
+  const occ::handle<StepShape_OrientedEdge> anOrientedEdge1 =
+    occ::down_cast<StepShape_OrientedEdge>(aSharedEntitiesIt.Value());
+  const bool aFaceBoundOrientation1 = GetFaceBoundOrientation(anOrientedEdge1, theShareTool);
+  const bool anIsCumulated1         = aFaceBoundOrientation1 != anOrientedEdge1->Orientation();
 
   aSharedEntitiesIt.Next();
 
-  const Handle(StepShape_OrientedEdge) anOrientedEdge2 =
-    Handle(StepShape_OrientedEdge)::DownCast(aSharedEntitiesIt.Value());
-  const Standard_Boolean aFaceBoundOrientation2 =
-    GetFaceBoundOrientation(anOrientedEdge2, theShareTool);
-  const Standard_Boolean anIsCumulated2 = aFaceBoundOrientation2 != anOrientedEdge2->Orientation();
+  const occ::handle<StepShape_OrientedEdge> anOrientedEdge2 =
+    occ::down_cast<StepShape_OrientedEdge>(aSharedEntitiesIt.Value());
+  const bool aFaceBoundOrientation2 = GetFaceBoundOrientation(anOrientedEdge2, theShareTool);
+  const bool anIsCumulated2         = aFaceBoundOrientation2 != anOrientedEdge2->Orientation();
 
   // the orientation of the OrientedEdges must be opposite
   if (anIsCumulated1 == anIsCumulated2)

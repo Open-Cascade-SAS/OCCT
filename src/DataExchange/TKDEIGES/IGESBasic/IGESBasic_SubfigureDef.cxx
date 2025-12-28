@@ -27,9 +27,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SubfigureDef, IGESData_IGESEntity)
 
 IGESBasic_SubfigureDef::IGESBasic_SubfigureDef() {}
 
-void IGESBasic_SubfigureDef::Init(const Standard_Integer                      aDepth,
-                                  const Handle(TCollection_HAsciiString)&     aName,
-                                  const Handle(IGESData_HArray1OfIGESEntity)& allAssocEntities)
+void IGESBasic_SubfigureDef::Init(
+  const int                                                                 aDepth,
+  const occ::handle<TCollection_HAsciiString>&                              aName,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAssocEntities)
 {
   if (!allAssocEntities.IsNull() && allAssocEntities->Lower() != 1)
     throw Standard_DimensionMismatch("IGESBasic_SubfigureDef : Init");
@@ -39,28 +40,27 @@ void IGESBasic_SubfigureDef::Init(const Standard_Integer                      aD
   InitTypeAndForm(308, 0);
 }
 
-Standard_Integer IGESBasic_SubfigureDef::Depth() const
+int IGESBasic_SubfigureDef::Depth() const
 {
   return theDepth;
 }
 
-Handle(TCollection_HAsciiString) IGESBasic_SubfigureDef::Name() const
+occ::handle<TCollection_HAsciiString> IGESBasic_SubfigureDef::Name() const
 {
   return theName;
 }
 
-Standard_Integer IGESBasic_SubfigureDef::NbEntities() const
+int IGESBasic_SubfigureDef::NbEntities() const
 {
   return (theAssocEntities.IsNull() ? 0 : theAssocEntities->Length());
 }
 
-Handle(IGESData_IGESEntity) IGESBasic_SubfigureDef::AssociatedEntity(
-  const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESBasic_SubfigureDef::AssociatedEntity(const int Index) const
 {
   return theAssocEntities->Value(Index);
 }
 
-Handle(Standard_Transient) IGESBasic_SubfigureDef::Value(const Standard_Integer Index) const
+occ::handle<Standard_Transient> IGESBasic_SubfigureDef::Value(const int Index) const
 {
-  return Handle(Standard_Transient)(theAssocEntities->Value(Index));
+  return occ::handle<Standard_Transient>(theAssocEntities->Value(Index));
 }

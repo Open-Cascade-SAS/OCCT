@@ -25,12 +25,13 @@ class StdSelect_Shape : public PrsMgr_PresentableObject
 {
   DEFINE_STANDARD_RTTIEXT(StdSelect_Shape, PrsMgr_PresentableObject)
 public:
-  Standard_EXPORT StdSelect_Shape(const TopoDS_Shape&         theShape,
-                                  const Handle(Prs3d_Drawer)& theDrawer = Handle(Prs3d_Drawer)());
+  Standard_EXPORT StdSelect_Shape(
+    const TopoDS_Shape&              theShape,
+    const occ::handle<Prs3d_Drawer>& theDrawer = occ::handle<Prs3d_Drawer>());
 
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
   const TopoDS_Shape& Shape() const { return mysh; }
 
@@ -38,12 +39,10 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 private:
   TopoDS_Shape mysh;
 };
-
-DEFINE_STANDARD_HANDLE(StdSelect_Shape, PrsMgr_PresentableObject)
 
 #endif // _StdSelect_Shape_HeaderFile

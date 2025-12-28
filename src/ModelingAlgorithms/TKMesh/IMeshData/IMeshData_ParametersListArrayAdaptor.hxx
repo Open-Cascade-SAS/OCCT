@@ -34,16 +34,13 @@ public:
   virtual ~IMeshData_ParametersListArrayAdaptor() {}
 
   //! Returns lower index in parameters array.
-  Standard_Integer Lower() const { return 0; }
+  int Lower() const { return 0; }
 
   //! Returns upper index in parameters array.
-  Standard_Integer Upper() const { return myParameters->ParametersNb() - 1; }
+  int Upper() const { return myParameters->ParametersNb() - 1; }
 
   //! Returns value of the given index.
-  Standard_Real Value(const Standard_Integer theIndex) const
-  {
-    return myParameters->GetParameter(theIndex);
-  }
+  double Value(const int theIndex) const { return myParameters->GetParameter(theIndex); }
 
 private:
   IMeshData_ParametersListArrayAdaptor(

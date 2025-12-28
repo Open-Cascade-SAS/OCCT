@@ -26,9 +26,6 @@ class Law_Function;
 class gp_Pnt;
 class gp_Vec;
 
-class GeomFill_BoundWithSurf;
-DEFINE_STANDARD_HANDLE(GeomFill_BoundWithSurf, GeomFill_Boundary)
-
 //! Defines a 3d curve as a boundary for a
 //! GeomFill_ConstrainedFilling algorithm.
 //! This curve is attached to an existing surface.
@@ -57,55 +54,52 @@ public:
   //! -   the services provided by a curve lying on a surface from the package Geom
   //! -   and those required of the curve by the computation algorithm which uses it.
   //! The adapted curve is created in the following way:
-  //! Handle(Geom_Surface) mySurface = ... ;
-  //! Handle(Geom2d_Curve) myParamCurve = ... ;
+  //! occ::handle<Geom_Surface> mySurface = ... ;
+  //! occ::handle<Geom2d_Curve> myParamCurve = ... ;
   //! // where myParamCurve is a 2D curve in the parametric space of the surface mySurface
-  //! Handle(GeomAdaptor_Surface)
+  //! occ::handle<GeomAdaptor_Surface>
   //! Surface = new
   //! GeomAdaptor_Surface(mySurface);
-  //! Handle(Geom2dAdaptor_Curve)
+  //! occ::handle<Geom2dAdaptor_Curve>
   //! ParamCurve = new
   //! Geom2dAdaptor_Curve(myParamCurve);
   //! CurveOnSurf = Adaptor3d_CurveOnSurface(ParamCurve,Surface);
   //! The boundary is then constructed with the CurveOnSurf object:
-  //! Standard_Real Tol = ... ;
-  //! Standard_Real TolAng = ... ;
+  //! double Tol = ... ;
+  //! double TolAng = ... ;
   //! myBoundary = GeomFill_BoundWithSurf (
   //! CurveOnSurf, Tol, TolAng );
   Standard_EXPORT GeomFill_BoundWithSurf(const Adaptor3d_CurveOnSurface& CurveOnSurf,
-                                         const Standard_Real             Tol3d,
-                                         const Standard_Real             Tolang);
+                                         const double                    Tol3d,
+                                         const double                    Tolang);
 
-  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pnt Value(const double U) const override;
 
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V) const override;
 
-  Standard_EXPORT virtual Standard_Boolean HasNormals() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool HasNormals() const override;
 
-  Standard_EXPORT virtual gp_Vec Norm(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Vec Norm(const double U) const override;
 
-  Standard_EXPORT virtual void D1Norm(const Standard_Real U,
-                                      gp_Vec&             N,
-                                      gp_Vec&             DN) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const override;
 
-  Standard_EXPORT void Reparametrize(const Standard_Real    First,
-                                     const Standard_Real    Last,
-                                     const Standard_Boolean HasDF,
-                                     const Standard_Boolean HasDL,
-                                     const Standard_Real    DF,
-                                     const Standard_Real    DL,
-                                     const Standard_Boolean Rev) Standard_OVERRIDE;
+  Standard_EXPORT void Reparametrize(const double First,
+                                     const double Last,
+                                     const bool   HasDF,
+                                     const bool   HasDL,
+                                     const double DF,
+                                     const double DL,
+                                     const bool   Rev) override;
 
-  Standard_EXPORT void Bounds(Standard_Real& First, Standard_Real& Last) const Standard_OVERRIDE;
+  Standard_EXPORT void Bounds(double& First, double& Last) const override;
 
-  Standard_EXPORT Standard_Boolean IsDegenerated() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsDegenerated() const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_BoundWithSurf, GeomFill_Boundary)
 
-protected:
 private:
-  Adaptor3d_CurveOnSurface myConS;
-  Handle(Law_Function)     myPar;
+  Adaptor3d_CurveOnSurface  myConS;
+  occ::handle<Law_Function> myPar;
 };
 
 #endif // _GeomFill_BoundWithSurf_HeaderFile

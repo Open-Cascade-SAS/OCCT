@@ -23,8 +23,8 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
-#include <MAT_DataMapOfIntegerBisector.hxx>
+#include <NCollection_DataMap.hxx>
+#include <MAT_Bisector.hxx>
 #include <Standard_Real.hxx>
 class MAT_ListOfEdge;
 class MAT_ListOfBisector;
@@ -39,7 +39,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor.
-  Standard_EXPORT MAT2d_Mat2d(const Standard_Boolean IsOpenResult = Standard_False);
+  Standard_EXPORT MAT2d_Mat2d(const bool IsOpenResult = false);
 
   Standard_EXPORT ~MAT2d_Mat2d();
 
@@ -51,56 +51,55 @@ public:
   Standard_EXPORT void CreateMatOpen(MAT2d_Tool2d& aTool);
 
   //! Returns <TRUE> if CreateMat has succeeded.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Initialize an iterator on the set of the roots
   //! of the trees of bisectors.
   Standard_EXPORT void Init();
 
   //! Return False if there is no more roots.
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   //! Move to the next root.
   Standard_EXPORT void Next();
 
   //! Returns the current root.
-  Standard_EXPORT Handle(MAT_Bisector) Bisector() const;
+  Standard_EXPORT occ::handle<MAT_Bisector> Bisector() const;
 
   //! Returns True if there are semi_infinite bisectors.
   //! So there is a tree for each semi_infinte bisector.
-  Standard_EXPORT Standard_Boolean SemiInfinite() const;
+  Standard_EXPORT bool SemiInfinite() const;
 
   //! Returns the total number of bisectors.
-  Standard_EXPORT Standard_Integer NumberOfBisectors() const;
+  Standard_EXPORT int NumberOfBisectors() const;
 
-protected:
 private:
-  Standard_EXPORT void LoadBisectorsToRemove(Standard_Integer&           noofbisectorstoremove,
-                                             const Standard_Real         distance1,
-                                             const Standard_Real         distance2,
-                                             const Handle(MAT_Bisector)& bisector1,
-                                             const Handle(MAT_Bisector)& bisector2,
-                                             const Handle(MAT_Bisector)& bisector3,
-                                             const Handle(MAT_Bisector)& bisector4);
+  Standard_EXPORT void LoadBisectorsToRemove(int&                             noofbisectorstoremove,
+                                             const double                     distance1,
+                                             const double                     distance2,
+                                             const occ::handle<MAT_Bisector>& bisector1,
+                                             const occ::handle<MAT_Bisector>& bisector2,
+                                             const occ::handle<MAT_Bisector>& bisector3,
+                                             const occ::handle<MAT_Bisector>& bisector4);
 
-  Standard_EXPORT void Intersect(MAT2d_Tool2d&               atool,
-                                 const Standard_Integer      aside,
-                                 Standard_Integer&           noofbisectorstoremove,
-                                 const Handle(MAT_Bisector)& bisector1,
-                                 const Handle(MAT_Bisector)& bisector2);
+  Standard_EXPORT void Intersect(MAT2d_Tool2d&                    atool,
+                                 const int                        aside,
+                                 int&                             noofbisectorstoremove,
+                                 const occ::handle<MAT_Bisector>& bisector1,
+                                 const occ::handle<MAT_Bisector>& bisector2);
 
-  Standard_Boolean                myIsOpenResult;
-  Standard_Integer                thenumberofbisectors;
-  Standard_Integer                thenumberofedges;
-  Standard_Boolean                semiInfinite;
-  Handle(MAT_ListOfEdge)          theedgelist;
-  Handle(MAT_ListOfEdge)          RemovedEdgesList;
-  TColStd_DataMapOfIntegerInteger typeofbisectortoremove;
-  MAT_DataMapOfIntegerBisector    bisectoronetoremove;
-  MAT_DataMapOfIntegerBisector    bisectortwotoremove;
-  MAT_DataMapOfIntegerBisector    bisectormap;
-  Handle(MAT_ListOfBisector)      roots;
-  Standard_Boolean                isDone;
+  bool                                                myIsOpenResult;
+  int                                                 thenumberofbisectors;
+  int                                                 thenumberofedges;
+  bool                                                semiInfinite;
+  occ::handle<MAT_ListOfEdge>                         theedgelist;
+  occ::handle<MAT_ListOfEdge>                         RemovedEdgesList;
+  NCollection_DataMap<int, int>                       typeofbisectortoremove;
+  NCollection_DataMap<int, occ::handle<MAT_Bisector>> bisectoronetoremove;
+  NCollection_DataMap<int, occ::handle<MAT_Bisector>> bisectortwotoremove;
+  NCollection_DataMap<int, occ::handle<MAT_Bisector>> bisectormap;
+  occ::handle<MAT_ListOfBisector>                     roots;
+  bool                                                isDone;
 };
 
 #endif // _MAT2d_Mat2d_HeaderFile

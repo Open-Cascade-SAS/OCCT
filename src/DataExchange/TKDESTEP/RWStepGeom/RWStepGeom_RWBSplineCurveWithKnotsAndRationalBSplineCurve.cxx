@@ -24,11 +24,11 @@
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <StepGeom_RationalBSplineCurve.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Integer.hxx>
 
 #include "RWStepGeom_RWBSplineCurveForm.pxx"
 #include "RWStepGeom_RWKnotType.pxx"
@@ -39,14 +39,14 @@ RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::
 }
 
 void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
-  const Handle(StepData_StepReaderData)&                               data,
-  const Standard_Integer                                               num0,
-  Handle(Interface_Check)&                                             ach,
-  const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent) const
+  const occ::handle<StepData_StepReaderData>&                               data,
+  const int                                                                 num0,
+  occ::handle<Interface_Check>&                                             ach,
+  const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>& ent) const
 {
 
   // sln 04.10.2001. BUC61003. Correction of looking for items of complex entity
-  Standard_Integer num = 0; // num0
+  int num = 0; // num0
   data->NamedForComplex("BOUNDED_CURVE", "BNDCRV", num0, num, ach);
 
   //	num = data->NextForComplex(num);
@@ -60,21 +60,21 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
     return;
   // --- field : degree ---
 
-  Standard_Integer aDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  int aDegree;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadInteger(num, 1, "degree", ach, aDegree);
   // --- field : controlPointsList ---
 
-  Handle(StepGeom_HArray1OfCartesianPoint) aControlPointsList;
-  Handle(StepGeom_CartesianPoint)          anent2;
-  Standard_Integer                         nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
+  occ::handle<StepGeom_CartesianPoint>                                   anent2;
+  int                                                                    nsub2;
   if (data->ReadSubList(num, 2, "control_points_list", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aControlPointsList   = new StepGeom_HArray1OfCartesianPoint(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2            = data->NbParams(nsub2);
+    aControlPointsList = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2,
                            i2,
                            "cartesian_point",
@@ -90,7 +90,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
   StepGeom_BSplineCurveForm aCurveForm = StepGeom_bscfPolylineForm;
   if (data->ParamType(num, 3) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 3);
+    const char* text = data->ParamCValue(num, 3);
     if (!RWStepGeom_RWBSplineCurveForm::ConvertToEnum(text, aCurveForm))
     {
       ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
@@ -101,12 +101,12 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
   // --- field : closedCurve ---
 
   StepData_Logical aClosedCurve;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadLogical(num, 4, "closed_curve", ach, aClosedCurve);
   // --- field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadLogical(num, 5, "self_intersect", ach, aSelfIntersect);
 
   //	num = data->NextForComplex(num);
@@ -121,16 +121,16 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
 
   // --- field : knotMultiplicities ---
 
-  Handle(TColStd_HArray1OfInteger) aKnotMultiplicities;
-  Standard_Integer                 aKnotMultiplicitiesItem;
-  Standard_Integer                 nsub6;
+  occ::handle<NCollection_HArray1<int>> aKnotMultiplicities;
+  int                                   aKnotMultiplicitiesItem;
+  int                                   nsub6;
   if (data->ReadSubList(num, 1, "knot_multiplicities", ach, nsub6))
   {
-    Standard_Integer nb6 = data->NbParams(nsub6);
-    aKnotMultiplicities  = new TColStd_HArray1OfInteger(1, nb6);
-    for (Standard_Integer i6 = 1; i6 <= nb6; i6++)
+    int nb6             = data->NbParams(nsub6);
+    aKnotMultiplicities = new NCollection_HArray1<int>(1, nb6);
+    for (int i6 = 1; i6 <= nb6; i6++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat6 =` not needed
       if (data->ReadInteger(nsub6, i6, "knot_multiplicities", ach, aKnotMultiplicitiesItem))
         aKnotMultiplicities->SetValue(i6, aKnotMultiplicitiesItem);
     }
@@ -138,16 +138,16 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
 
   // --- field : knots ---
 
-  Handle(TColStd_HArray1OfReal) aKnots;
-  Standard_Real                 aKnotsItem;
-  Standard_Integer              nsub7;
+  occ::handle<NCollection_HArray1<double>> aKnots;
+  double                                   aKnotsItem;
+  int                                      nsub7;
   if (data->ReadSubList(num, 2, "knots", ach, nsub7))
   {
-    Standard_Integer nb7 = data->NbParams(nsub7);
-    aKnots               = new TColStd_HArray1OfReal(1, nb7);
-    for (Standard_Integer i7 = 1; i7 <= nb7; i7++)
+    int nb7 = data->NbParams(nsub7);
+    aKnots  = new NCollection_HArray1<double>(1, nb7);
+    for (int i7 = 1; i7 <= nb7; i7++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat7 =` not needed
       if (data->ReadReal(nsub7, i7, "knots", ach, aKnotsItem))
         aKnots->SetValue(i7, aKnotsItem);
     }
@@ -158,7 +158,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
   StepGeom_KnotType aKnotSpec = StepGeom_ktUniformKnots;
   if (data->ParamType(num, 3) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 3);
+    const char* text = data->ParamCValue(num, 3);
     if (!RWStepGeom_RWKnotType::ConvertToEnum(text, aKnotSpec))
     {
       ach->AddFail("Enumeration knot_type has not an allowed value");
@@ -189,16 +189,16 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
 
   // --- field : weightsData ---
 
-  Handle(TColStd_HArray1OfReal) aWeightsData;
-  Standard_Real                 aWeightsDataItem;
-  Standard_Integer              nsub9;
+  occ::handle<NCollection_HArray1<double>> aWeightsData;
+  double                                   aWeightsDataItem;
+  int                                      nsub9;
   if (data->ReadSubList(num, 1, "weights_data", ach, nsub9))
   {
-    Standard_Integer nb9 = data->NbParams(nsub9);
-    aWeightsData         = new TColStd_HArray1OfReal(1, nb9);
-    for (Standard_Integer i9 = 1; i9 <= nb9; i9++)
+    int nb9      = data->NbParams(nsub9);
+    aWeightsData = new NCollection_HArray1<double>(1, nb9);
+    for (int i9 = 1; i9 <= nb9; i9++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat9 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat9 =` not needed
       if (data->ReadReal(nsub9, i9, "weights_data", ach, aWeightsDataItem))
         aWeightsData->SetValue(i9, aWeightsDataItem);
     }
@@ -216,8 +216,8 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
 
   // --- field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat10 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat10 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   //--- Initialisation of the red entity ---
@@ -235,8 +235,8 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
 }
 
 void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep(
-  StepData_StepWriter&                                                 SW,
-  const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent) const
+  StepData_StepWriter&                                                      SW,
+  const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>& ent) const
 {
 
   // --- Instance of plex component BoundedCurve ---
@@ -252,7 +252,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep(
   // --- field : controlPointsList ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbControlPointsList(); i2++)
+  for (int i2 = 1; i2 <= ent->NbControlPointsList(); i2++)
   {
     SW.Send(ent->ControlPointsListValue(i2));
   }
@@ -274,7 +274,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep(
   // --- field : knotMultiplicities ---
 
   SW.OpenSub();
-  for (Standard_Integer i6 = 1; i6 <= ent->NbKnotMultiplicities(); i6++)
+  for (int i6 = 1; i6 <= ent->NbKnotMultiplicities(); i6++)
   {
     SW.Send(ent->KnotMultiplicitiesValue(i6));
   }
@@ -282,7 +282,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep(
   // --- field : knots ---
 
   SW.OpenSub();
-  for (Standard_Integer i7 = 1; i7 <= ent->NbKnots(); i7++)
+  for (int i7 = 1; i7 <= ent->NbKnots(); i7++)
   {
     SW.Send(ent->KnotsValue(i7));
   }
@@ -305,7 +305,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep(
   // --- field : weightsData ---
 
   SW.OpenSub();
-  for (Standard_Integer i9 = 1; i9 <= ent->NbWeightsData(); i9++)
+  for (int i9 = 1; i9 <= ent->NbWeightsData(); i9++)
   {
     SW.Send(ent->WeightsDataValue(i9));
   }
@@ -320,27 +320,27 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep(
 }
 
 void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::Share(
-  const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent,
-  Interface_EntityIterator&                                            iter) const
+  const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>& ent,
+  Interface_EntityIterator&                                                 iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbControlPointsList();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbControlPointsList();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->ControlPointsListValue(is1));
   }
 }
 
 void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::Check(
-  const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent,
-  const Interface_ShareTool&                                           aShto,
-  Handle(Interface_Check)&                                             ach) const
+  const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>& ent,
+  const Interface_ShareTool&                                                aShto,
+  occ::handle<Interface_Check>&                                             ach) const
 {
-  const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& aRationalBSC = ent;
-  Handle(StepGeom_BSplineCurveWithKnots) aBSCWK = aRationalBSC->BSplineCurveWithKnots();
-  RWStepGeom_RWBSplineCurveWithKnots     t1;
+  const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>& aRationalBSC = ent;
+  occ::handle<StepGeom_BSplineCurveWithKnots> aBSCWK = aRationalBSC->BSplineCurveWithKnots();
+  RWStepGeom_RWBSplineCurveWithKnots          t1;
   t1.Check(aBSCWK, aShto, ach);
-  Handle(StepGeom_RationalBSplineCurve) aRBSC = aRationalBSC->RationalBSplineCurve();
-  RWStepGeom_RWRationalBSplineCurve     t2;
+  occ::handle<StepGeom_RationalBSplineCurve> aRBSC = aRationalBSC->RationalBSplineCurve();
+  RWStepGeom_RWRationalBSplineCurve          t2;
   t2.Check(aRBSC, aShto, ach);
 }

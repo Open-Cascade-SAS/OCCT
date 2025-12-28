@@ -18,32 +18,32 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_PointAspect, Standard_Transient)
 
 VrmlConverter_PointAspect::VrmlConverter_PointAspect()
 {
-  myHasMaterial = Standard_False;
+  myHasMaterial = false;
 }
 
-VrmlConverter_PointAspect::VrmlConverter_PointAspect(const Handle(Vrml_Material)& aMaterial,
-                                                     const Standard_Boolean       OnOff)
+VrmlConverter_PointAspect::VrmlConverter_PointAspect(const occ::handle<Vrml_Material>& aMaterial,
+                                                     const bool                        OnOff)
 {
   myMaterial    = aMaterial;
   myHasMaterial = OnOff;
 }
 
-void VrmlConverter_PointAspect::SetMaterial(const Handle(Vrml_Material)& aMaterial)
+void VrmlConverter_PointAspect::SetMaterial(const occ::handle<Vrml_Material>& aMaterial)
 {
   myMaterial = aMaterial;
 }
 
-Handle(Vrml_Material) VrmlConverter_PointAspect::Material() const
+occ::handle<Vrml_Material> VrmlConverter_PointAspect::Material() const
 {
   return myMaterial;
 }
 
-void VrmlConverter_PointAspect::SetHasMaterial(const Standard_Boolean OnOff)
+void VrmlConverter_PointAspect::SetHasMaterial(const bool OnOff)
 {
   myHasMaterial = OnOff;
 }
 
-Standard_Boolean VrmlConverter_PointAspect::HasMaterial() const
+bool VrmlConverter_PointAspect::HasMaterial() const
 {
   return myHasMaterial;
 }

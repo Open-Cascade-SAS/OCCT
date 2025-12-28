@@ -35,9 +35,7 @@
 // purpose  : Parses command: "qcircle name x y radius
 // [-unqualified|-enclosing|-enclosed|-outside|-noqualifier]"
 //=======================================================================
-static Standard_Integer qcurve(Draw_Interpretor&,
-                               Standard_Integer theArgsNb,
-                               const char**     theArgVec)
+static int qcurve(Draw_Interpretor&, int theArgsNb, const char** theArgVec)
 {
   if (theArgsNb < 5)
   {
@@ -45,8 +43,8 @@ static Standard_Integer qcurve(Draw_Interpretor&,
     return 1;
   }
 
-  Handle(Geom2d_Curve)    aResult2d;
-  TCollection_AsciiString aPositionType;
+  occ::handle<Geom2d_Curve> aResult2d;
+  TCollection_AsciiString   aPositionType;
   if (!strcmp(theArgVec[0], "qcircle"))
   {
     if (theArgsNb == 5 || theArgsNb == 6)
@@ -97,9 +95,7 @@ static Standard_Integer qcurve(Draw_Interpretor&,
 
 //=================================================================================================
 
-static Standard_Integer solutions(Draw_Interpretor&  theDI,
-                                  GccAna_Circ2d3Tan& theCirTan3,
-                                  const char*        theName)
+static int solutions(Draw_Interpretor& theDI, GccAna_Circ2d3Tan& theCirTan3, const char* theName)
 {
   if (!theCirTan3.IsDone())
   {
@@ -109,12 +105,12 @@ static Standard_Integer solutions(Draw_Interpretor&  theDI,
 
   TCollection_AsciiString aName = TCollection_AsciiString(theName) + "_";
   GccEnt_Position         aQualifier1, aQualifier2, aQualifier3;
-  Standard_Real           aParSol, aParArg;
+  double                  aParSol, aParArg;
   gp_Pnt2d                aPntSol;
-  for (Standard_Integer aSolId = 1; aSolId <= theCirTan3.NbSolutions(); aSolId++)
+  for (int aSolId = 1; aSolId <= theCirTan3.NbSolutions(); aSolId++)
   {
-    Handle(Geom2d_Circle)   aCircle    = new Geom2d_Circle(theCirTan3.ThisSolution(aSolId));
-    TCollection_AsciiString aSolIdName = aName;
+    occ::handle<Geom2d_Circle> aCircle    = new Geom2d_Circle(theCirTan3.ThisSolution(aSolId));
+    TCollection_AsciiString    aSolIdName = aName;
     aSolIdName += TCollection_AsciiString(aSolId);
     DrawTrSurf::Set(aSolIdName.ToCString(), aCircle);
     theCirTan3.WhichQualifier(aSolId, aQualifier1, aQualifier2, aQualifier3);
@@ -166,9 +162,7 @@ static Standard_Integer solutions(Draw_Interpretor&  theDI,
 // qcicrle3/qlin3/point3
 //                            tolerance]
 //=======================================================================
-static Standard_Integer circ2d3Tan(Draw_Interpretor& theDI,
-                                   Standard_Integer  theArgsNb,
-                                   const char**      theArgVec)
+static int circ2d3Tan(Draw_Interpretor& theDI, int theArgsNb, const char** theArgVec)
 {
   if (theArgsNb < 5)
   {
@@ -176,19 +170,19 @@ static Standard_Integer circ2d3Tan(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(GeometryTest_DrawableQualifiedCurve2d) aQCurve1 =
-    Handle(GeometryTest_DrawableQualifiedCurve2d)::DownCast(Draw::Get(theArgVec[2]));
-  Handle(GeometryTest_DrawableQualifiedCurve2d) aQCurve2 =
-    Handle(GeometryTest_DrawableQualifiedCurve2d)::DownCast(Draw::Get(theArgVec[3]));
-  Handle(GeometryTest_DrawableQualifiedCurve2d) aQCurve3 =
-    Handle(GeometryTest_DrawableQualifiedCurve2d)::DownCast(Draw::Get(theArgVec[4]));
+  occ::handle<GeometryTest_DrawableQualifiedCurve2d> aQCurve1 =
+    occ::down_cast<GeometryTest_DrawableQualifiedCurve2d>(Draw::Get(theArgVec[2]));
+  occ::handle<GeometryTest_DrawableQualifiedCurve2d> aQCurve2 =
+    occ::down_cast<GeometryTest_DrawableQualifiedCurve2d>(Draw::Get(theArgVec[3]));
+  occ::handle<GeometryTest_DrawableQualifiedCurve2d> aQCurve3 =
+    occ::down_cast<GeometryTest_DrawableQualifiedCurve2d>(Draw::Get(theArgVec[4]));
 
-  gp_Pnt2d         aPoint1, aPoint2, aPoint3;
-  Standard_Boolean anIsPoint1 = DrawTrSurf::GetPoint2d(theArgVec[2], aPoint1);
-  Standard_Boolean anIsPoint2 = DrawTrSurf::GetPoint2d(theArgVec[3], aPoint2);
-  Standard_Boolean anIsPoint3 = DrawTrSurf::GetPoint2d(theArgVec[4], aPoint3);
+  gp_Pnt2d aPoint1, aPoint2, aPoint3;
+  bool     anIsPoint1 = DrawTrSurf::GetPoint2d(theArgVec[2], aPoint1);
+  bool     anIsPoint2 = DrawTrSurf::GetPoint2d(theArgVec[3], aPoint2);
+  bool     anIsPoint3 = DrawTrSurf::GetPoint2d(theArgVec[4], aPoint3);
 
-  Standard_Real aTolerance = Precision::Confusion();
+  double aTolerance = Precision::Confusion();
   if (theArgsNb > 5)
     aTolerance = Draw::Atof(theArgVec[5]);
 
@@ -322,10 +316,10 @@ static Standard_Integer circ2d3Tan(Draw_Interpretor& theDI,
 
 void GeometryTest::CurveTanCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean aLoaded = Standard_False;
+  static bool aLoaded = false;
   if (aLoaded)
     return;
-  aLoaded = Standard_True;
+  aLoaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);
 

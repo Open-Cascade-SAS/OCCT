@@ -17,8 +17,9 @@
 //--------------------------------------------------------------------
 
 #include <IGESAppli_FiniteElement.hxx>
-#include <IGESAppli_HArray1OfNode.hxx>
 #include <IGESAppli_Node.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESAppli_ToolFiniteElement.hxx>
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
@@ -29,30 +30,30 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IGESAppli_ToolFiniteElement::IGESAppli_ToolFiniteElement() {}
 
-void IGESAppli_ToolFiniteElement::ReadOwnParams(const Handle(IGESAppli_FiniteElement)& ent,
-                                                const Handle(IGESData_IGESReaderData)& IR,
-                                                IGESData_ParamReader&                  PR) const
+void IGESAppli_ToolFiniteElement::ReadOwnParams(const occ::handle<IGESAppli_FiniteElement>& ent,
+                                                const occ::handle<IGESData_IGESReaderData>& IR,
+                                                IGESData_ParamReader& PR) const
 {
-  Standard_Integer                 tempTopology;
-  Handle(TCollection_HAsciiString) tempName;
-  Standard_Integer                 nbval = 0;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Handle(IGESAppli_HArray1OfNode) tempData;
+  int                                   tempTopology;
+  occ::handle<TCollection_HAsciiString> tempName;
+  int                                   nbval = 0;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>> tempData;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Topology type", tempTopology);
   PR.ReadInteger(PR.Current(), "No. of nodes defining element", nbval);
-  tempData = new IGESAppli_HArray1OfNode(1, nbval);
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  tempData = new NCollection_HArray1<occ::handle<IGESAppli_Node>>(1, nbval);
+  for (int i = 1; i <= nbval; i++)
   {
-    Handle(IGESAppli_Node) tempNode;
+    occ::handle<IGESAppli_Node> tempNode;
     // szv#4:S4163:12Mar99 moved in if
     if (PR.ReadEntity(IR,
                       PR.Current(),
@@ -67,34 +68,35 @@ void IGESAppli_ToolFiniteElement::ReadOwnParams(const Handle(IGESAppli_FiniteEle
   ent->Init(tempTopology, tempData, tempName);
 }
 
-void IGESAppli_ToolFiniteElement::WriteOwnParams(const Handle(IGESAppli_FiniteElement)& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+void IGESAppli_ToolFiniteElement::WriteOwnParams(const occ::handle<IGESAppli_FiniteElement>& ent,
+                                                 IGESData_IGESWriter& IW) const
 {
-  Standard_Integer upper = ent->NbNodes();
+  int upper = ent->NbNodes();
   IW.Send(ent->Topology());
   IW.Send(upper);
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
     IW.Send(ent->Node(i));
   IW.Send(ent->Name());
 }
 
-void IGESAppli_ToolFiniteElement::OwnShared(const Handle(IGESAppli_FiniteElement)& ent,
-                                            Interface_EntityIterator&              iter) const
+void IGESAppli_ToolFiniteElement::OwnShared(const occ::handle<IGESAppli_FiniteElement>& ent,
+                                            Interface_EntityIterator&                   iter) const
 {
-  Standard_Integer upper = ent->NbNodes();
-  for (Standard_Integer i = 1; i <= upper; i++)
+  int upper = ent->NbNodes();
+  for (int i = 1; i <= upper; i++)
     iter.GetOneItem(ent->Node(i));
 }
 
-void IGESAppli_ToolFiniteElement::OwnCopy(const Handle(IGESAppli_FiniteElement)& another,
-                                          const Handle(IGESAppli_FiniteElement)& ent,
-                                          Interface_CopyTool&                    TC) const
+void IGESAppli_ToolFiniteElement::OwnCopy(const occ::handle<IGESAppli_FiniteElement>& another,
+                                          const occ::handle<IGESAppli_FiniteElement>& ent,
+                                          Interface_CopyTool&                         TC) const
 {
-  Standard_Integer                 aTopology = another->Topology();
-  Handle(TCollection_HAsciiString) aName     = new TCollection_HAsciiString(another->Name());
-  Standard_Integer                 nbval     = another->NbNodes();
-  Handle(IGESAppli_HArray1OfNode)  aList     = new IGESAppli_HArray1OfNode(1, nbval);
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  int                                   aTopology = another->Topology();
+  occ::handle<TCollection_HAsciiString> aName     = new TCollection_HAsciiString(another->Name());
+  int                                   nbval     = another->NbNodes();
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>> aList =
+    new NCollection_HArray1<occ::handle<IGESAppli_Node>>(1, nbval);
+  for (int i = 1; i <= nbval; i++)
   {
     DeclareAndCast(IGESAppli_Node, aEntity, TC.Transferred(another->Node(i)));
     aList->SetValue(i, aEntity);
@@ -103,7 +105,7 @@ void IGESAppli_ToolFiniteElement::OwnCopy(const Handle(IGESAppli_FiniteElement)&
 }
 
 IGESData_DirChecker IGESAppli_ToolFiniteElement::DirChecker(
-  const Handle(IGESAppli_FiniteElement)& /* ent */) const
+  const occ::handle<IGESAppli_FiniteElement>& /* ent */) const
 {
   IGESData_DirChecker DC(136, 0); // Form no = 0 & Type = 136
   DC.Structure(IGESData_DefVoid);
@@ -117,16 +119,16 @@ IGESData_DirChecker IGESAppli_ToolFiniteElement::DirChecker(
   return DC;
 }
 
-void IGESAppli_ToolFiniteElement::OwnCheck(const Handle(IGESAppli_FiniteElement)& /* ent */,
+void IGESAppli_ToolFiniteElement::OwnCheck(const occ::handle<IGESAppli_FiniteElement>& /* ent */,
                                            const Interface_ShareTool&,
-                                           Handle(Interface_Check)& /* ach */) const
+                                           occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESAppli_ToolFiniteElement::OwnDump(const Handle(IGESAppli_FiniteElement)& ent,
-                                          const IGESData_IGESDumper&             dumper,
-                                          Standard_OStream&                      S,
-                                          const Standard_Integer                 level) const
+void IGESAppli_ToolFiniteElement::OwnDump(const occ::handle<IGESAppli_FiniteElement>& ent,
+                                          const IGESData_IGESDumper&                  dumper,
+                                          Standard_OStream&                           S,
+                                          const int                                   level) const
 {
   S << "IGESAppli_FiniteElement\n";
 

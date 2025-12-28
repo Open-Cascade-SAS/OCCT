@@ -26,16 +26,16 @@
 #include <DBRep.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-static Standard_Integer RemoveFeatures(Draw_Interpretor&, Standard_Integer, const char**);
+static int RemoveFeatures(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::RemoveFeaturesCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* group = "BOPTest commands";
   // Commands
@@ -53,9 +53,7 @@ void BOPTest::RemoveFeaturesCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer RemoveFeatures(Draw_Interpretor& theDI,
-                                Standard_Integer  theArgc,
-                                const char**      theArgv)
+int RemoveFeatures(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 4)
   {
@@ -75,7 +73,7 @@ Standard_Integer RemoveFeatures(Draw_Interpretor& theDI,
   aRF.SetShape(aShape);
 
   // Add faces to remove
-  for (Standard_Integer i = 3; i < theArgc; ++i)
+  for (int i = 3; i < theArgc; ++i)
   {
     TopoDS_Shape aF = DBRep::Get(theArgv[i]);
     if (aF.IsNull())
@@ -83,7 +81,7 @@ Standard_Integer RemoveFeatures(Draw_Interpretor& theDI,
       if (!strcmp(theArgv[i], "-parallel"))
       {
         // enable the parallel processing mode
-        aRF.SetRunParallel(Standard_True);
+        aRF.SetRunParallel(true);
       }
       else
         theDI << "Warning: " << theArgv[i] << " is a null shape. Skip it.\n";
@@ -95,7 +93,7 @@ Standard_Integer RemoveFeatures(Draw_Interpretor& theDI,
   }
 
   aRF.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI, 1);
   // Perform the removal
   aRF.Build(aProgress->Start());
 

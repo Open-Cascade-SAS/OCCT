@@ -37,16 +37,7 @@ set(OCCT_StepBasic_FILES
   StepBasic_ApprovalStatus.hxx
   StepBasic_AreaUnit.cxx
   StepBasic_AreaUnit.hxx
-  StepBasic_Array1OfApproval.hxx
-  StepBasic_Array1OfDerivedUnitElement.hxx
-  StepBasic_Array1OfDocument.hxx
-  StepBasic_Array1OfNamedUnit.hxx
-  StepBasic_Array1OfOrganization.hxx
-  StepBasic_Array1OfPerson.hxx
-  StepBasic_Array1OfProduct.hxx
-  StepBasic_Array1OfProductContext.hxx
-  StepBasic_Array1OfProductDefinition.hxx
-  StepBasic_Array1OfUncertaintyMeasureWithUnit.hxx
+
   StepBasic_CalendarDate.cxx
   StepBasic_CalendarDate.hxx
   StepBasic_Certification.cxx
@@ -149,16 +140,7 @@ set(OCCT_StepBasic_FILES
   StepBasic_GroupAssignment.hxx
   StepBasic_GroupRelationship.cxx
   StepBasic_GroupRelationship.hxx
-  StepBasic_HArray1OfApproval.hxx
-  StepBasic_HArray1OfDerivedUnitElement.hxx
-  StepBasic_HArray1OfDocument.hxx
-  StepBasic_HArray1OfNamedUnit.hxx
-  StepBasic_HArray1OfOrganization.hxx
-  StepBasic_HArray1OfPerson.hxx
-  StepBasic_HArray1OfProduct.hxx
-  StepBasic_HArray1OfProductContext.hxx
-  StepBasic_HArray1OfProductDefinition.hxx
-  StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx
+
   StepBasic_IdentificationAssignment.cxx
   StepBasic_IdentificationAssignment.hxx
   StepBasic_IdentificationRole.cxx

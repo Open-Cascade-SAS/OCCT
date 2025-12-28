@@ -31,10 +31,10 @@ RWStepFEA_RWParametricSurface3dElementCoordinateSystem::
 //=================================================================================================
 
 void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::ReadStep(
-  const Handle(StepData_StepReaderData)&                            data,
-  const Standard_Integer                                            num,
-  Handle(Interface_Check)&                                          ach,
-  const Handle(StepFEA_ParametricSurface3dElementCoordinateSystem)& ent) const
+  const occ::handle<StepData_StepReaderData>&                            data,
+  const int                                                              num,
+  occ::handle<Interface_Check>&                                          ach,
+  const occ::handle<StepFEA_ParametricSurface3dElementCoordinateSystem>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "parametric_surface3d_element_coordinate_system"))
@@ -42,15 +42,15 @@ void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of ParametricSurface3dElementCoordinateSystem
 
-  Standard_Integer aAxis;
+  int aAxis;
   data->ReadInteger(num, 2, "axis", ach, aAxis);
 
-  Standard_Real aAngle;
+  double aAngle;
   data->ReadReal(num, 3, "angle", ach, aAngle);
 
   // Initialize entity
@@ -60,8 +60,8 @@ void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::WriteStep(
-  StepData_StepWriter&                                              SW,
-  const Handle(StepFEA_ParametricSurface3dElementCoordinateSystem)& ent) const
+  StepData_StepWriter&                                                   SW,
+  const occ::handle<StepFEA_ParametricSurface3dElementCoordinateSystem>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -78,7 +78,7 @@ void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::Share(
-  const Handle(StepFEA_ParametricSurface3dElementCoordinateSystem)&,
+  const occ::handle<StepFEA_ParametricSurface3dElementCoordinateSystem>&,
   Interface_EntityIterator&) const
 {
   // Inherited fields of RepresentationItem

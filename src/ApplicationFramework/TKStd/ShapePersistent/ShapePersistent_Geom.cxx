@@ -39,60 +39,58 @@ void ShapePersistent_Geom::Geometry::PChildren(SequenceOfPersistent&) const {}
 // purpose  : Create a persistent object for a curve
 //=======================================================================
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom::Translate(
-  const Handle(Geom_Curve)&         theCurve,
-  StdObjMgt_TransientPersistentMap& theMap)
+  const occ::handle<Geom_Curve>&                                                           theCurve,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
-  Handle(Curve) aPC;
+  occ::handle<Curve> aPC;
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
-      aPC = Handle(Curve)::DownCast(theMap.Find(theCurve));
+      aPC = occ::down_cast<Curve>(theMap.Find(theCurve));
     else
     {
-      Handle(Standard_Type) aCT = theCurve->DynamicType();
+      occ::handle<Standard_Type> aCT = theCurve->DynamicType();
       if (aCT == STANDARD_TYPE(Geom_Line))
       {
-        aPC = ShapePersistent_Geom_Curve::Translate(Handle(Geom_Line)::DownCast(theCurve), theMap);
+        aPC = ShapePersistent_Geom_Curve::Translate(occ::down_cast<Geom_Line>(theCurve), theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom_Circle))
       {
-        aPC =
-          ShapePersistent_Geom_Curve::Translate(Handle(Geom_Circle)::DownCast(theCurve), theMap);
+        aPC = ShapePersistent_Geom_Curve::Translate(occ::down_cast<Geom_Circle>(theCurve), theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom_Ellipse))
       {
-        aPC =
-          ShapePersistent_Geom_Curve::Translate(Handle(Geom_Ellipse)::DownCast(theCurve), theMap);
+        aPC = ShapePersistent_Geom_Curve::Translate(occ::down_cast<Geom_Ellipse>(theCurve), theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom_Hyperbola))
       {
         aPC =
-          ShapePersistent_Geom_Curve::Translate(Handle(Geom_Hyperbola)::DownCast(theCurve), theMap);
+          ShapePersistent_Geom_Curve::Translate(occ::down_cast<Geom_Hyperbola>(theCurve), theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom_Parabola))
       {
         aPC =
-          ShapePersistent_Geom_Curve::Translate(Handle(Geom_Parabola)::DownCast(theCurve), theMap);
+          ShapePersistent_Geom_Curve::Translate(occ::down_cast<Geom_Parabola>(theCurve), theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom_BezierCurve))
       {
-        aPC = ShapePersistent_Geom_Curve::Translate(Handle(Geom_BezierCurve)::DownCast(theCurve),
-                                                    theMap);
+        aPC =
+          ShapePersistent_Geom_Curve::Translate(occ::down_cast<Geom_BezierCurve>(theCurve), theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom_BSplineCurve))
       {
-        aPC = ShapePersistent_Geom_Curve::Translate(Handle(Geom_BSplineCurve)::DownCast(theCurve),
+        aPC = ShapePersistent_Geom_Curve::Translate(occ::down_cast<Geom_BSplineCurve>(theCurve),
                                                     theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom_TrimmedCurve))
       {
-        aPC = ShapePersistent_Geom_Curve::Translate(Handle(Geom_TrimmedCurve)::DownCast(theCurve),
+        aPC = ShapePersistent_Geom_Curve::Translate(occ::down_cast<Geom_TrimmedCurve>(theCurve),
                                                     theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom_OffsetCurve))
       {
-        aPC = ShapePersistent_Geom_Curve::Translate(Handle(Geom_OffsetCurve)::DownCast(theCurve),
-                                                    theMap);
+        aPC =
+          ShapePersistent_Geom_Curve::Translate(occ::down_cast<Geom_OffsetCurve>(theCurve), theMap);
       }
       else
       {
@@ -109,78 +107,74 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom::Translate(
 // purpose  : Create a persistent object for a surface
 //=======================================================================
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom::Translate(
-  const Handle(Geom_Surface)&       theSurf,
-  StdObjMgt_TransientPersistentMap& theMap)
+  const occ::handle<Geom_Surface>&                                                         theSurf,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
-  Handle(Surface) aPS;
+  occ::handle<Surface> aPS;
   if (!theSurf.IsNull())
   {
     if (theMap.IsBound(theSurf))
-      aPS = Handle(Surface)::DownCast(theMap.Find(theSurf));
+      aPS = occ::down_cast<Surface>(theMap.Find(theSurf));
     else
     {
-      Handle(Standard_Type) aST = theSurf->DynamicType();
+      occ::handle<Standard_Type> aST = theSurf->DynamicType();
       if (aST == STANDARD_TYPE(Geom_Plane))
       {
-        aPS =
-          ShapePersistent_Geom_Surface::Translate(Handle(Geom_Plane)::DownCast(theSurf), theMap);
+        aPS = ShapePersistent_Geom_Surface::Translate(occ::down_cast<Geom_Plane>(theSurf), theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_CylindricalSurface))
       {
-        aPS = ShapePersistent_Geom_Surface::Translate(
-          Handle(Geom_CylindricalSurface)::DownCast(theSurf),
-          theMap);
+        aPS =
+          ShapePersistent_Geom_Surface::Translate(occ::down_cast<Geom_CylindricalSurface>(theSurf),
+                                                  theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_ConicalSurface))
       {
-        aPS =
-          ShapePersistent_Geom_Surface::Translate(Handle(Geom_ConicalSurface)::DownCast(theSurf),
-                                                  theMap);
+        aPS = ShapePersistent_Geom_Surface::Translate(occ::down_cast<Geom_ConicalSurface>(theSurf),
+                                                      theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_SphericalSurface))
       {
         aPS =
-          ShapePersistent_Geom_Surface::Translate(Handle(Geom_SphericalSurface)::DownCast(theSurf),
+          ShapePersistent_Geom_Surface::Translate(occ::down_cast<Geom_SphericalSurface>(theSurf),
                                                   theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_ToroidalSurface))
       {
-        aPS =
-          ShapePersistent_Geom_Surface::Translate(Handle(Geom_ToroidalSurface)::DownCast(theSurf),
-                                                  theMap);
+        aPS = ShapePersistent_Geom_Surface::Translate(occ::down_cast<Geom_ToroidalSurface>(theSurf),
+                                                      theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
       {
         aPS = ShapePersistent_Geom_Surface::Translate(
-          Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theSurf),
+          occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurf),
           theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_SurfaceOfRevolution))
       {
-        aPS = ShapePersistent_Geom_Surface::Translate(
-          Handle(Geom_SurfaceOfRevolution)::DownCast(theSurf),
-          theMap);
+        aPS =
+          ShapePersistent_Geom_Surface::Translate(occ::down_cast<Geom_SurfaceOfRevolution>(theSurf),
+                                                  theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_BezierSurface))
       {
-        aPS = ShapePersistent_Geom_Surface::Translate(Handle(Geom_BezierSurface)::DownCast(theSurf),
+        aPS = ShapePersistent_Geom_Surface::Translate(occ::down_cast<Geom_BezierSurface>(theSurf),
                                                       theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_BSplineSurface))
       {
-        aPS =
-          ShapePersistent_Geom_Surface::Translate(Handle(Geom_BSplineSurface)::DownCast(theSurf),
-                                                  theMap);
+        aPS = ShapePersistent_Geom_Surface::Translate(occ::down_cast<Geom_BSplineSurface>(theSurf),
+                                                      theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
       {
         aPS = ShapePersistent_Geom_Surface::Translate(
-          Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurf),
+          occ::down_cast<Geom_RectangularTrimmedSurface>(theSurf),
           theMap);
       }
       else if (aST == STANDARD_TYPE(Geom_OffsetSurface))
       {
-        aPS = ShapePersistent_Geom_Surface::Translate(Handle(Geom_OffsetSurface)::DownCast(theSurf),
+        aPS = ShapePersistent_Geom_Surface::Translate(occ::down_cast<Geom_OffsetSurface>(theSurf),
                                                       theMap);
       }
       else

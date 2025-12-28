@@ -21,9 +21,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Real.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <BRepFeat_StatusError.hxx>
 #include <BRepFeat_Form.hxx>
 #include <Standard_Integer.hxx>
@@ -61,12 +63,12 @@ public:
   //! operation. If it is inside the basis shape, a local
   //! operation such as glueing can be performed.
   //! Initializes the draft prism class
-  BRepFeat_MakeDPrism(const TopoDS_Shape&    Sbase,
-                      const TopoDS_Face&     Pbase,
-                      const TopoDS_Face&     Skface,
-                      const Standard_Real    Angle,
-                      const Standard_Integer Fuse,
-                      const Standard_Boolean Modify)
+  BRepFeat_MakeDPrism(const TopoDS_Shape& Sbase,
+                      const TopoDS_Face&  Pbase,
+                      const TopoDS_Face&  Skface,
+                      const double        Angle,
+                      const int           Fuse,
+                      const bool          Modify)
   {
     Init(Sbase, Pbase, Skface, Angle, Fuse, Modify);
   }
@@ -86,12 +88,12 @@ public:
   //! The sketch face Skface serves to determine the type of
   //! operation. If it is inside the basis shape, a local
   //! operation such as glueing can be performed.
-  Standard_EXPORT void Init(const TopoDS_Shape&    Sbase,
-                            const TopoDS_Face&     Pbase,
-                            const TopoDS_Face&     Skface,
-                            const Standard_Real    Angle,
-                            const Standard_Integer Fuse,
-                            const Standard_Boolean Modify);
+  Standard_EXPORT void Init(const TopoDS_Shape& Sbase,
+                            const TopoDS_Face&  Pbase,
+                            const TopoDS_Face&  Skface,
+                            const double        Angle,
+                            const int           Fuse,
+                            const bool          Modify);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>.
@@ -99,7 +101,7 @@ public:
   //! basis shape, or the edge to the prismed shape.
   Standard_EXPORT void Add(const TopoDS_Edge& E, const TopoDS_Face& OnFace);
 
-  Standard_EXPORT void Perform(const Standard_Real Height);
+  Standard_EXPORT void Perform(const double Height);
 
   Standard_EXPORT void Perform(const TopoDS_Shape& Until);
 
@@ -122,33 +124,33 @@ public:
   //! Assigns both a limiting shape, Until from
   //! TopoDS_Shape, and a height, Height at which to stop
   //! generation of the prism feature.
-  Standard_EXPORT void PerformUntilHeight(const TopoDS_Shape& Until, const Standard_Real Height);
+  Standard_EXPORT void PerformUntilHeight(const TopoDS_Shape& Until, const double Height);
 
-  Standard_EXPORT void Curves(TColGeom_SequenceOfCurve& S);
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S);
 
-  Standard_EXPORT Handle(Geom_Curve) BarycCurve();
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
 
   //! Determination of TopEdges and LatEdges.
   //! sig = 1 -> TopEdges = FirstShape of the DPrism
   //! sig = 2 -> TOpEdges = LastShape of the DPrism
-  Standard_EXPORT void BossEdges(const Standard_Integer sig);
+  Standard_EXPORT void BossEdges(const int sig);
 
   //! Returns the list of TopoDS Edges of the top of the boss.
-  Standard_EXPORT const TopTools_ListOfShape& TopEdges();
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& TopEdges();
 
   //! Returns the list of TopoDS Edges of the bottom of the boss.
-  Standard_EXPORT const TopTools_ListOfShape& LatEdges();
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& LatEdges();
 
-protected:
 private:
-  TopoDS_Face                        myPbase;
-  TopTools_DataMapOfShapeListOfShape mySlface;
-  Standard_Real                      myAngle;
-  TColGeom_SequenceOfCurve           myCurves;
-  Handle(Geom_Curve)                 myBCurve;
-  TopTools_ListOfShape               myTopEdges;
-  TopTools_ListOfShape               myLatEdges;
-  BRepFeat_StatusError               myStatusError;
+  TopoDS_Face myPbase;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                mySlface;
+  double                                        myAngle;
+  NCollection_Sequence<occ::handle<Geom_Curve>> myCurves;
+  occ::handle<Geom_Curve>                       myBCurve;
+  NCollection_List<TopoDS_Shape>                myTopEdges;
+  NCollection_List<TopoDS_Shape>                myLatEdges;
+  BRepFeat_StatusError                          myStatusError;
 };
 
 #endif // _BRepFeat_MakeDPrism_HeaderFile

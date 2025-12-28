@@ -39,7 +39,7 @@ public:
   //! Create an array of lower bound <Low> and
   //! upper bound <Up>. Range error is raised
   //! when <Up> is less than <Low>.
-  Standard_EXPORT XmlObjMgt_Array1(const Standard_Integer Low, const Standard_Integer Up);
+  Standard_EXPORT XmlObjMgt_Array1(const int Low, const int Up);
 
   //! for restoration from DOM_Element which is child of
   //! theParent:
@@ -56,25 +56,24 @@ public:
   const XmlObjMgt_Element& Element() const;
 
   //! Returns the number of elements of <me>.
-  Standard_Integer Length() const;
+  int Length() const;
 
   //! Returns the lower bound.
-  Standard_Integer Lower() const;
+  int Lower() const;
 
   //! Returns the upper bound.
-  Standard_Integer Upper() const;
+  int Upper() const;
 
   //! Set the <Index>th element of the array to <Value>.
-  Standard_EXPORT void SetValue(const Standard_Integer Index, XmlObjMgt_Element& Value);
+  Standard_EXPORT void SetValue(const int Index, XmlObjMgt_Element& Value);
 
   //! Returns the value of <Index>th element of the array.
-  Standard_EXPORT XmlObjMgt_Element Value(const Standard_Integer Index) const;
+  Standard_EXPORT XmlObjMgt_Element Value(const int Index) const;
 
-protected:
 private:
   XmlObjMgt_Element myElement;
-  Standard_Integer  myFirst;
-  Standard_Integer  myLast;
+  int               myFirst;
+  int               myLast;
 };
 
 #include <XmlObjMgt_Array1.lxx>

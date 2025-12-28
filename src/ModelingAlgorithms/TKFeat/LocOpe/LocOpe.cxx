@@ -33,19 +33,20 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 #define NECHANT 10
 
 //=================================================================================================
 
-Standard_Boolean LocOpe::Closed(const TopoDS_Wire& W, const TopoDS_Face& F)
+bool LocOpe::Closed(const TopoDS_Wire& W, const TopoDS_Face& F)
 {
   TopoDS_Vertex Vf, Vl;
   TopExp::Vertices(W, Vf, Vl);
   if (!Vf.IsSame(Vl))
   {
-    return Standard_False;
+    return false;
   }
 
   // On recherche l`edge contenant Vf FORWARD
@@ -85,9 +86,9 @@ Standard_Boolean LocOpe::Closed(const TopoDS_Wire& W, const TopoDS_Face& F)
   }
   TopoDS_Edge El = TopoDS::Edge(exp.Current());
 
-  Standard_Real        f, l;
-  gp_Pnt2d             pf, pl;
-  Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(Ef, F, f, l);
+  double                    f, l;
+  gp_Pnt2d                  pf, pl;
+  occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(Ef, F, f, l);
   if (Ef.Orientation() == TopAbs_FORWARD)
   {
     pf = C2d->Value(f);
@@ -108,14 +109,14 @@ Standard_Boolean LocOpe::Closed(const TopoDS_Wire& W, const TopoDS_Face& F)
 
   if (pf.Distance(pl) <= Precision::PConfusion(Precision::Confusion()))
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe::Closed(const TopoDS_Edge& E, const TopoDS_Face& F)
+bool LocOpe::Closed(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
   BRep_Builder B;
   TopoDS_Wire  W;
@@ -126,29 +127,27 @@ Standard_Boolean LocOpe::Closed(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 //=================================================================================================
 
-Standard_Boolean LocOpe::TgtFaces(const TopoDS_Edge& E,
-                                  const TopoDS_Face& F1,
-                                  const TopoDS_Face& F2)
+bool LocOpe::TgtFaces(const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2)
 {
-  BRepAdaptor_Surface bs(F1, Standard_False);
-  Standard_Real       u;
-  Standard_Real       ta = 0.0001;
+  BRepAdaptor_Surface bs(F1, false);
+  double              u;
+  double              ta = 0.0001;
 
   TopoDS_Edge e = E;
 
-  Handle(BRepAdaptor_Surface) HS1 = new BRepAdaptor_Surface(F1);
-  Handle(BRepAdaptor_Surface) HS2 = new BRepAdaptor_Surface(F2);
+  occ::handle<BRepAdaptor_Surface> HS1 = new BRepAdaptor_Surface(F1);
+  occ::handle<BRepAdaptor_Surface> HS2 = new BRepAdaptor_Surface(F2);
   e.Orientation(TopAbs_FORWARD);
-  Handle(BRepAdaptor_Curve2d) HC2d  = new BRepAdaptor_Curve2d();
-  Handle(BRepAdaptor_Curve2d) HC2d2 = new BRepAdaptor_Curve2d();
+  occ::handle<BRepAdaptor_Curve2d> HC2d  = new BRepAdaptor_Curve2d();
+  occ::handle<BRepAdaptor_Curve2d> HC2d2 = new BRepAdaptor_Curve2d();
   HC2d->Initialize(e, F1);
   HC2d2->Initialize(e, F2);
 
   //  Adaptor3d_CurveOnSurface C1(HC2d,HS1);
 
-  Standard_Boolean rev1 = (F1.Orientation() == TopAbs_REVERSED);
-  Standard_Boolean rev2 = (F2.Orientation() == TopAbs_REVERSED);
-  Standard_Real    f, l, eps, angmin = M_PI, angmax = -M_PI, ang;
+  bool   rev1 = (F1.Orientation() == TopAbs_REVERSED);
+  bool   rev2 = (F2.Orientation() == TopAbs_REVERSED);
+  double f, l, eps, angmin = M_PI, angmax = -M_PI, ang;
   BRep_Tool::Range(e, f, l);
 
   eps = (l - f) / 100.;
@@ -159,9 +158,9 @@ Standard_Boolean LocOpe::TgtFaces(const TopoDS_Edge& E,
   gp_Vec   du, dv;
   gp_Vec   d1, d2;
 
-  Standard_Real uu, vv;
+  double uu, vv;
 
-  Standard_Integer i;
+  int i;
   for (i = 0; i <= 20; i++)
   {
     u = f + (l - f) * i / 20;
@@ -187,16 +186,16 @@ Standard_Boolean LocOpe::TgtFaces(const TopoDS_Edge& E,
 
 //=================================================================================================
 
-void LocOpe::SampleEdges(const TopoDS_Shape& theShape, TColgp_SequenceOfPnt& theSeq)
+void LocOpe::SampleEdges(const TopoDS_Shape& theShape, NCollection_Sequence<gp_Pnt>& theSeq)
 {
   theSeq.Clear();
-  TopTools_MapOfShape theMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
 
-  TopExp_Explorer    exp(theShape, TopAbs_EDGE);
-  TopLoc_Location    Loc;
-  Handle(Geom_Curve) C;
-  Standard_Real      f, l, prm;
-  Standard_Integer   i;
+  TopExp_Explorer         exp(theShape, TopAbs_EDGE);
+  TopLoc_Location         Loc;
+  occ::handle<Geom_Curve> C;
+  double                  f, l, prm;
+  int                     i;
 
   // Computes points on edge, but does not take the extremities into account
   for (; exp.More(); exp.Next())
@@ -208,9 +207,9 @@ void LocOpe::SampleEdges(const TopoDS_Shape& theShape, TColgp_SequenceOfPnt& the
     }
     if (!BRep_Tool::Degenerated(edg))
     {
-      C                   = BRep_Tool::Curve(edg, Loc, f, l);
-      C                   = Handle(Geom_Curve)::DownCast(C->Transformed(Loc.Transformation()));
-      Standard_Real delta = (l - f) / NECHANT * 0.123456;
+      C            = BRep_Tool::Curve(edg, Loc, f, l);
+      C            = occ::down_cast<Geom_Curve>(C->Transformed(Loc.Transformation()));
+      double delta = (l - f) / NECHANT * 0.123456;
       for (i = 1; i < NECHANT; i++)
       {
         prm = delta + ((NECHANT - i) * f + i * l) / NECHANT;
@@ -230,10 +229,10 @@ void LocOpe::SampleEdges(const TopoDS_Shape& theShape, TColgp_SequenceOfPnt& the
 }
 
 /*
-Standard_Boolean LocOpe::IsInside(const TopoDS_Face& F1,
+bool LocOpe::IsInside(const TopoDS_Face& F1,
                   const TopoDS_Face& F2)
 {
-  Standard_Boolean Result = Standard_True;
+  bool Result = true;
 
   TopExp_Explorer exp1, exp2;
 
@@ -245,14 +244,14 @@ Standard_Boolean LocOpe::IsInside(const TopoDS_Face& F1,
       BRepAdaptor_Curve2d C2(e2, F2);
       Geom2dInt_GInter C;
       C.Perform(C1, C2, Precision::Confusion(), Precision::Confusion());
-      if(!C.IsEmpty()) Result = Standard_False;
-      if(Result == Standard_False) {
+      if(!C.IsEmpty()) Result = false;
+      if(Result == false) {
     for(exp3.Init(e2, TopAbs_VERTEX); exp3.More(); exp3.Next())  {
 
         }
       }
     }
-    if(Result == Standard_False) break;
+    if(Result == false) break;
   }
   return Result;
 }

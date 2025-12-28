@@ -28,10 +28,10 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_Hctxff2d, Standard_Transient)
 
 TopOpeBRep_Hctxff2d::TopOpeBRep_Hctxff2d()
 {
-  myf1surf1F_sameoriented = Standard_True;
-  myf2surf1F_sameoriented = Standard_True;
-  mySurfacesSameOriented  = Standard_False;
-  myFacesSameOriented     = Standard_False;
+  myf1surf1F_sameoriented = true;
+  myf2surf1F_sameoriented = true;
+  mySurfacesSameOriented  = false;
+  myFacesSameOriented     = false;
   myTol1                  = 0.;
   myTol2                  = 0.;
 }
@@ -40,13 +40,13 @@ TopOpeBRep_Hctxff2d::TopOpeBRep_Hctxff2d()
 
 void TopOpeBRep_Hctxff2d::SetFaces(const TopoDS_Face& F1, const TopoDS_Face& F2)
 {
-  Standard_Boolean newf1    = !F1.IsEqual(myFace1);
-  Standard_Boolean newf2    = !F2.IsEqual(myFace2);
-  Standard_Boolean yaduneuf = (newf1 || newf2);
+  bool newf1    = !F1.IsEqual(myFace1);
+  bool newf2    = !F2.IsEqual(myFace2);
+  bool yaduneuf = (newf1 || newf2);
   if (!yaduneuf)
     return;
 
-  Standard_Boolean computerestriction = Standard_False;
+  bool computerestriction = false;
   if (newf1)
   {
     if (mySurface1.IsNull())
@@ -64,16 +64,16 @@ void TopOpeBRep_Hctxff2d::SetFaces(const TopoDS_Face& F1, const TopoDS_Face& F2)
 
 //=================================================================================================
 
-void TopOpeBRep_Hctxff2d::SetHSurfaces(const Handle(BRepAdaptor_Surface)& HS1,
-                                       const Handle(BRepAdaptor_Surface)& HS2)
+void TopOpeBRep_Hctxff2d::SetHSurfaces(const occ::handle<BRepAdaptor_Surface>& HS1,
+                                       const occ::handle<BRepAdaptor_Surface>& HS2)
 {
-  Standard_Boolean newf1 = Standard_False;
-  Standard_Boolean newf2 = Standard_False;
+  bool newf1 = false;
+  bool newf2 = false;
   if (!HS1.IsNull())
     newf1 = !HS1->Face().IsEqual(myFace1);
   if (!HS2.IsNull())
     newf2 = !HS2->Face().IsEqual(myFace2);
-  Standard_Boolean yaduneuf = (newf1 || newf2);
+  bool yaduneuf = (newf1 || newf2);
   if (!yaduneuf)
     return;
 
@@ -94,11 +94,11 @@ void TopOpeBRep_Hctxff2d::SetHSurfacesPrivate()
   myFace2                 = S2.Face();
   mySurfaceType2          = S2.GetType();
 
-  mySurfacesSameOriented  = Standard_True;
-  myFacesSameOriented     = Standard_True;
-  Standard_Boolean so11   = Standard_True;
+  mySurfacesSameOriented  = true;
+  myFacesSameOriented     = true;
+  bool so11               = true;
   myf1surf1F_sameoriented = so11;
-  Standard_Boolean so21   = Standard_True;
+  bool so21               = true;
   myf2surf1F_sameoriented = so21;
 
   TopoDS_Face face1forward = myFace1;
@@ -112,7 +112,7 @@ void TopOpeBRep_Hctxff2d::SetHSurfacesPrivate()
   myFacesSameOriented    = TopOpeBRepTool_ShapeTool::FacesSameOriented(myFace1, myFace2);
 
 #ifdef OCCT_DEBUG
-  Standard_Integer DEBi = 0;
+  int DEBi = 0;
   if (DEBi)
   {
     std::cout << "TopOpeBRep_Hctxff2d::SetSurfacesPrivate : ";
@@ -139,7 +139,7 @@ void TopOpeBRep_Hctxff2d::SetHSurfacesPrivate()
 
 //=================================================================================================
 
-void TopOpeBRep_Hctxff2d::SetTolerances(const Standard_Real Tol1, const Standard_Real Tol2)
+void TopOpeBRep_Hctxff2d::SetTolerances(const double Tol1, const double Tol2)
 {
   myTol1 = Tol1;
   myTol2 = Tol2;
@@ -147,7 +147,7 @@ void TopOpeBRep_Hctxff2d::SetTolerances(const Standard_Real Tol1, const Standard
 
 //=================================================================================================
 
-void TopOpeBRep_Hctxff2d::GetTolerances(Standard_Real& Tol1, Standard_Real& Tol2) const
+void TopOpeBRep_Hctxff2d::GetTolerances(double& Tol1, double& Tol2) const
 {
   Tol1 = myTol1;
   Tol2 = myTol2;
@@ -155,15 +155,15 @@ void TopOpeBRep_Hctxff2d::GetTolerances(Standard_Real& Tol1, Standard_Real& Tol2
 
 //=================================================================================================
 
-Standard_Real TopOpeBRep_Hctxff2d::GetMaxTolerance() const
+double TopOpeBRep_Hctxff2d::GetMaxTolerance() const
 {
-  Standard_Real tol = std::max(myTol1, myTol2);
+  double tol = std::max(myTol1, myTol2);
   return tol;
 }
 
 //=================================================================================================
 
-const TopoDS_Face& TopOpeBRep_Hctxff2d::Face(const Standard_Integer Index) const
+const TopoDS_Face& TopOpeBRep_Hctxff2d::Face(const int Index) const
 {
   if (Index == 1)
     return myFace1;
@@ -175,7 +175,7 @@ const TopoDS_Face& TopOpeBRep_Hctxff2d::Face(const Standard_Integer Index) const
 
 //=================================================================================================
 
-Handle(BRepAdaptor_Surface) TopOpeBRep_Hctxff2d::HSurface(const Standard_Integer Index) const
+occ::handle<BRepAdaptor_Surface> TopOpeBRep_Hctxff2d::HSurface(const int Index) const
 {
   if (Index == 1)
     return mySurface1;
@@ -187,21 +187,21 @@ Handle(BRepAdaptor_Surface) TopOpeBRep_Hctxff2d::HSurface(const Standard_Integer
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_Hctxff2d::SurfacesSameOriented() const
+bool TopOpeBRep_Hctxff2d::SurfacesSameOriented() const
 {
   return mySurfacesSameOriented;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_Hctxff2d::FacesSameOriented() const
+bool TopOpeBRep_Hctxff2d::FacesSameOriented() const
 {
   return myFacesSameOriented;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_Hctxff2d::FaceSameOrientedWithRef(const Standard_Integer Index) const
+bool TopOpeBRep_Hctxff2d::FaceSameOrientedWithRef(const int Index) const
 {
   if (Index == 1)
     return myf1surf1F_sameoriented;

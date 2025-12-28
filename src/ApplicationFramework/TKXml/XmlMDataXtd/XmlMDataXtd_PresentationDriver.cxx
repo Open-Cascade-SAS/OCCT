@@ -37,14 +37,14 @@ IMPLEMENT_DOMSTRING(DisplayedString, "true")
 //=================================================================================================
 
 XmlMDataXtd_PresentationDriver::XmlMDataXtd_PresentationDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataXtd_PresentationDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataXtd_PresentationDriver::NewEmpty() const
 {
   return (new TDataXtd_Presentation());
 }
@@ -53,31 +53,31 @@ Handle(TDF_Attribute) XmlMDataXtd_PresentationDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                       const Handle(TDF_Attribute)& theTarget,
-                                                       XmlObjMgt_RRelocationTable&) const
+bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                           const occ::handle<TDF_Attribute>& theTarget,
+                                           XmlObjMgt_RRelocationTable&) const
 {
   TCollection_ExtendedString aMessageString;
   XmlObjMgt_DOMString        aDOMStr;
 
-  Handle(TDataXtd_Presentation) aTPrs  = Handle(TDataXtd_Presentation)::DownCast(theTarget);
-  const XmlObjMgt_Element&      anElem = theSource;
+  occ::handle<TDataXtd_Presentation> aTPrs  = occ::down_cast<TDataXtd_Presentation>(theTarget);
+  const XmlObjMgt_Element&           anElem = theSource;
 
   // convert attribute value into GUID
   aDOMStr = anElem.getAttribute(::GuidString());
   if (aDOMStr == NULL)
   {
     myMessageDriver->Send("Cannot retrieve guid string from attribute", Message_Fail);
-    return Standard_False;
+    return false;
   }
-  Standard_CString aGuidStr = (Standard_CString)aDOMStr.GetString();
+  const char* aGuidStr = (const char*)aDOMStr.GetString();
   aTPrs->SetDriverGUID(aGuidStr);
 
   // is displayed
   aDOMStr = anElem.getAttribute(::IsDisplayedString());
   aTPrs->SetDisplayed(aDOMStr != NULL);
 
-  Standard_Integer anIValue;
+  int anIValue;
 
   // color
   aDOMStr = anElem.getAttribute(::ColorString());
@@ -88,7 +88,7 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persisten
       aMessageString =
         TCollection_ExtendedString("Cannot retrieve Integer value from \"") + aDOMStr + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
 
     const Quantity_NameOfColor aNameOfColor =
@@ -109,7 +109,7 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persisten
       aMessageString =
         TCollection_ExtendedString("Cannot retrieve Integer value from \"") + aDOMStr + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     aTPrs->SetMaterialIndex(anIValue);
   }
@@ -118,7 +118,7 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persisten
     aTPrs->UnsetMaterial();
   }
 
-  Standard_Real aValue;
+  double aValue;
 
   // transparency
   aDOMStr = anElem.getAttribute(::TransparencyString());
@@ -129,7 +129,7 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persisten
       aMessageString =
         TCollection_ExtendedString("Cannot retrieve Real value from \"") + aDOMStr + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     aTPrs->SetTransparency(aValue);
   }
@@ -147,7 +147,7 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persisten
       aMessageString =
         TCollection_ExtendedString("Cannot retrieve Real value from \"") + aDOMStr + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     aTPrs->SetWidth(aValue);
   }
@@ -165,7 +165,7 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persisten
       aMessageString =
         TCollection_ExtendedString("Cannot retrieve Integer value from \"") + aDOMStr + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     aTPrs->SetMode(anIValue);
   }
@@ -174,23 +174,23 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persisten
     aTPrs->UnsetMode();
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataXtd_PresentationDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                           XmlObjMgt_Persistent&        theTarget,
+void XmlMDataXtd_PresentationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                           XmlObjMgt_Persistent&             theTarget,
                                            XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataXtd_Presentation) aTPrs = Handle(TDataXtd_Presentation)::DownCast(theSource);
+  occ::handle<TDataXtd_Presentation> aTPrs = occ::down_cast<TDataXtd_Presentation>(theSource);
   if (aTPrs.IsNull())
     return;
 
   // convert GUID into attribute value
-  Standard_Character  aGuidStr[40];
+  char                aGuidStr[40];
   Standard_PCharacter pGuidStr;
   pGuidStr = aGuidStr;
   aTPrs->GetDriverGUID().ToCString(pGuidStr);
@@ -200,7 +200,7 @@ void XmlMDataXtd_PresentationDriver::Paste(const Handle(TDF_Attribute)& theSourc
   if (aTPrs->IsDisplayed())
     theTarget.Element().setAttribute(::IsDisplayedString(), ::DisplayedString());
 
-  Standard_Integer aNb;
+  int aNb;
 
   // color
   if (aTPrs->HasOwnColor())

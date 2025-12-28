@@ -22,9 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Units_QuantitiesSequence.hxx>
-#include <Units_UnitsSequence.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
+#include <Units_Quantity.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Units_Unit.hxx>
 class Units_UnitsSystem;
 class Units_UnitsDictionary;
 class TCollection_AsciiString;
@@ -41,47 +42,47 @@ public:
 
   //! Creates a new instance of the class, initialized with
   //! the UnitsSystem <aunitssystem>.
-  Standard_EXPORT Units_Explorer(const Handle(Units_UnitsSystem)& aunitssystem);
+  Standard_EXPORT Units_Explorer(const occ::handle<Units_UnitsSystem>& aunitssystem);
 
   //! Creates a new instance of the class, initialized with
   //! the UnitsDictionary <aunitsdictionary>.
-  Standard_EXPORT Units_Explorer(const Handle(Units_UnitsDictionary)& aunitsdictionary);
+  Standard_EXPORT Units_Explorer(const occ::handle<Units_UnitsDictionary>& aunitsdictionary);
 
   //! Creates a new instance of the class, initialized with
   //! the UnitsSystem <aunitssystem> and positioned at the
   //! quantity <aquantity>.
-  Standard_EXPORT Units_Explorer(const Handle(Units_UnitsSystem)& aunitssystem,
-                                 const Standard_CString           aquantity);
+  Standard_EXPORT Units_Explorer(const occ::handle<Units_UnitsSystem>& aunitssystem,
+                                 const char*                           aquantity);
 
   //! Creates a new instance of the class, initialized with
   //! the UnitsDictionary <aunitsdictionary> and positioned
   //! at the quantity <aquantity>.
-  Standard_EXPORT Units_Explorer(const Handle(Units_UnitsDictionary)& aunitsdictionary,
-                                 const Standard_CString               aquantity);
+  Standard_EXPORT Units_Explorer(const occ::handle<Units_UnitsDictionary>& aunitsdictionary,
+                                 const char*                               aquantity);
 
   //! Initializes the instance of the class with the
   //! UnitsSystem <aunitssystem>.
-  Standard_EXPORT void Init(const Handle(Units_UnitsSystem)& aunitssystem);
+  Standard_EXPORT void Init(const occ::handle<Units_UnitsSystem>& aunitssystem);
 
   //! Initializes the instance of the class with the
   //! UnitsDictionary <aunitsdictionary>.
-  Standard_EXPORT void Init(const Handle(Units_UnitsDictionary)& aunitsdictionary);
+  Standard_EXPORT void Init(const occ::handle<Units_UnitsDictionary>& aunitsdictionary);
 
   //! Initializes the instance of the class with the
   //! UnitsSystem <aunitssystem> and positioned at the
   //! quantity <aquantity>.
-  Standard_EXPORT void Init(const Handle(Units_UnitsSystem)& aunitssystem,
-                            const Standard_CString           aquantity);
+  Standard_EXPORT void Init(const occ::handle<Units_UnitsSystem>& aunitssystem,
+                            const char*                           aquantity);
 
   //! Initializes the instance of the class with the
   //! UnitsDictionary <aunitsdictionary> and positioned at
   //! the quantity <aquantity>.
-  Standard_EXPORT void Init(const Handle(Units_UnitsDictionary)& aunitsdictionary,
-                            const Standard_CString               aquantity);
+  Standard_EXPORT void Init(const occ::handle<Units_UnitsDictionary>& aunitsdictionary,
+                            const char*                               aquantity);
 
   //! Returns True if there is another Quantity to explore,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean MoreQuantity() const;
+  Standard_EXPORT bool MoreQuantity() const;
 
   //! Sets the next Quantity current.
   Standard_EXPORT void NextQuantity();
@@ -91,7 +92,7 @@ public:
 
   //! Returns True if there is another Unit to explore,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean MoreUnit() const;
+  Standard_EXPORT bool MoreUnit() const;
 
   //! Sets the next Unit current.
   Standard_EXPORT void NextUnit();
@@ -105,15 +106,14 @@ public:
   //! If the units system to explore is the units
   //! dictionary, returns True if the current unit is the
   //! S.I. unit.
-  Standard_EXPORT Standard_Boolean IsActive() const;
+  Standard_EXPORT bool IsActive() const;
 
-protected:
 private:
-  Standard_Integer                   thecurrentquantity{};
-  Handle(Units_QuantitiesSequence)   thequantitiessequence;
-  Standard_Integer                   thecurrentunit{};
-  Handle(Units_UnitsSequence)        theunitssequence;
-  Handle(TColStd_HSequenceOfInteger) theactiveunitssequence;
+  int                                                             thecurrentquantity{};
+  occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> thequantitiessequence;
+  int                                                             thecurrentunit{};
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>     theunitssequence;
+  occ::handle<NCollection_HSequence<int>>                         theactiveunitssequence;
 };
 
 #endif // _Units_Explorer_HeaderFile

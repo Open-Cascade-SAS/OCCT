@@ -22,9 +22,6 @@
 
 #include <StepShape_ShapeRepresentation.hxx>
 
-class StepShape_ManifoldSurfaceShapeRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_ManifoldSurfaceShapeRepresentation, StepShape_ShapeRepresentation)
-
 class StepShape_ManifoldSurfaceShapeRepresentation : public StepShape_ShapeRepresentation
 {
 
@@ -34,9 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ManifoldSurfaceShapeRepresentation,
                           StepShape_ShapeRepresentation)
-
-protected:
-private:
 };
 
 #endif // _StepShape_ManifoldSurfaceShapeRepresentation_HeaderFile

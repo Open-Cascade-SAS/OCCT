@@ -20,10 +20,6 @@
 
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 
-class StepDimTol_TotalRunoutTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_TotalRunoutTolerance,
-                       StepDimTol_GeometricToleranceWithDatumReference)
-
 //! Representation of STEP entity TotalRunoutTolerance
 class StepDimTol_TotalRunoutTolerance : public StepDimTol_GeometricToleranceWithDatumReference
 {
@@ -34,9 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_TotalRunoutTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
-
-protected:
-private:
 };
 
 #endif // _StepDimTol_TotalRunoutTolerance_HeaderFile

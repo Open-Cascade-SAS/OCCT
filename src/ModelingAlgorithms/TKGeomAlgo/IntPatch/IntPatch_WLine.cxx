@@ -27,16 +27,16 @@ IMPLEMENT_STANDARD_RTTIEXT(IntPatch_WLine, IntPatch_PointLine)
 #include <Precision.hxx>
 #include <stdio.h>
 
-IntPatch_WLine::IntPatch_WLine(const Handle(IntSurf_LineOn2S)& Line,
-                               const Standard_Boolean          Tang,
-                               const IntSurf_TypeTrans         Trans1,
-                               const IntSurf_TypeTrans         Trans2)
+IntPatch_WLine::IntPatch_WLine(const occ::handle<IntSurf_LineOn2S>& Line,
+                               const bool                           Tang,
+                               const IntSurf_TypeTrans              Trans1,
+                               const IntSurf_TypeTrans              Trans2)
     : IntPatch_PointLine(Tang, Trans1, Trans2),
-      fipt(Standard_False),
-      lapt(Standard_False),
-      hasArcOnS1(Standard_False),
-      hasArcOnS2(Standard_False),
-      myIsPurgerAllowed(Standard_True),
+      fipt(false),
+      lapt(false),
+      hasArcOnS1(false),
+      hasArcOnS2(false),
+      myIsPurgerAllowed(true),
       myCreationWay(IntPatch_WLUnknown)
 {
   typ      = IntPatch_Walking;
@@ -44,16 +44,16 @@ IntPatch_WLine::IntPatch_WLine(const Handle(IntSurf_LineOn2S)& Line,
   u1period = v1period = u2period = v2period = 0.0;
 }
 
-IntPatch_WLine::IntPatch_WLine(const Handle(IntSurf_LineOn2S)& Line,
-                               const Standard_Boolean          Tang,
-                               const IntSurf_Situation         Situ1,
-                               const IntSurf_Situation         Situ2)
+IntPatch_WLine::IntPatch_WLine(const occ::handle<IntSurf_LineOn2S>& Line,
+                               const bool                           Tang,
+                               const IntSurf_Situation              Situ1,
+                               const IntSurf_Situation              Situ2)
     : IntPatch_PointLine(Tang, Situ1, Situ2),
-      fipt(Standard_False),
-      lapt(Standard_False),
-      hasArcOnS1(Standard_False),
-      hasArcOnS2(Standard_False),
-      myIsPurgerAllowed(Standard_True),
+      fipt(false),
+      lapt(false),
+      hasArcOnS1(false),
+      hasArcOnS2(false),
+      myIsPurgerAllowed(true),
       myCreationWay(IntPatch_WLUnknown)
 {
   typ      = IntPatch_Walking;
@@ -61,13 +61,13 @@ IntPatch_WLine::IntPatch_WLine(const Handle(IntSurf_LineOn2S)& Line,
   u1period = v1period = u2period = v2period = 0.0;
 }
 
-IntPatch_WLine::IntPatch_WLine(const Handle(IntSurf_LineOn2S)& Line, const Standard_Boolean Tang)
+IntPatch_WLine::IntPatch_WLine(const occ::handle<IntSurf_LineOn2S>& Line, const bool Tang)
     : IntPatch_PointLine(Tang),
-      fipt(Standard_False),
-      lapt(Standard_False),
-      hasArcOnS1(Standard_False),
-      hasArcOnS2(Standard_False),
-      myIsPurgerAllowed(Standard_True),
+      fipt(false),
+      lapt(false),
+      hasArcOnS1(false),
+      hasArcOnS2(false),
+      myIsPurgerAllowed(true),
       myCreationWay(IntPatch_WLUnknown)
 {
   typ      = IntPatch_Walking;
@@ -75,28 +75,28 @@ IntPatch_WLine::IntPatch_WLine(const Handle(IntSurf_LineOn2S)& Line, const Stand
   u1period = v1period = u2period = v2period = 0.0;
 }
 
-void IntPatch_WLine::SetPoint(const Standard_Integer Index, const IntPatch_Point& thepoint)
+void IntPatch_WLine::SetPoint(const int Index, const IntPatch_Point& thepoint)
 {
   curv->Value(Index, thepoint.PntOn2S());
 }
 
-Handle(IntSurf_LineOn2S) IntPatch_WLine::Curve() const
+occ::handle<IntSurf_LineOn2S> IntPatch_WLine::Curve() const
 {
   return (curv);
 }
 
-static void RecadreMemePeriode(Standard_Real&      u1,
-                               Standard_Real&      v1,
-                               Standard_Real&      u2,
-                               Standard_Real&      v2,
-                               const Standard_Real anu1,
-                               const Standard_Real anv1,
-                               const Standard_Real anu2,
-                               const Standard_Real anv2,
-                               const Standard_Real U1Period,
-                               const Standard_Real V1Period,
-                               const Standard_Real U2Period,
-                               const Standard_Real V2Period)
+static void RecadreMemePeriode(double&      u1,
+                               double&      v1,
+                               double&      u2,
+                               double&      v2,
+                               const double anu1,
+                               const double anv1,
+                               const double anu2,
+                               const double anv2,
+                               const double U1Period,
+                               const double V1Period,
+                               const double U2Period,
+                               const double V2Period)
 {
   if (U1Period)
   {
@@ -146,31 +146,29 @@ static void RecadreMemePeriode(Standard_Real&      u1,
 
 static void RecadreMemePeriode(IntSurf_PntOn2S&       POn2S,
                                const IntSurf_PntOn2S& RefPOn2S,
-                               const Standard_Real    up1,
-                               const Standard_Real    vp1,
-                               const Standard_Real    up2,
-                               const Standard_Real    vp2)
+                               const double           up1,
+                               const double           vp1,
+                               const double           up2,
+                               const double           vp2)
 {
-  Standard_Real u1, v1, u2, v2, pu1, pv1, pu2, pv2;
+  double u1, v1, u2, v2, pu1, pv1, pu2, pv2;
   POn2S.Parameters(u1, v1, u2, v2);
   RefPOn2S.Parameters(pu1, pv1, pu2, pv2);
   RecadreMemePeriode(u1, v1, u2, v2, pu1, pv1, pu2, pv2, up1, vp1, up2, vp2);
   POn2S.SetValue(u1, v1, u2, v2);
 }
 
-static Standard_Boolean CompareVertexAndPoint(const gp_Pnt&        V,
-                                              const gp_Pnt&        P,
-                                              const Standard_Real& Tol)
+static bool CompareVertexAndPoint(const gp_Pnt& V, const gp_Pnt& P, const double& Tol)
 {
-  const Standard_Real aSQDist = V.SquareDistance(P);
-  const Standard_Real aSQTol  = Tol * Tol;
+  const double aSQDist = V.SquareDistance(P);
+  const double aSQTol  = Tol * Tol;
   return (aSQDist <= aSQTol);
 }
 
-void IntPatch_WLine::SetPeriod(const Standard_Real pu1,
-                               const Standard_Real pv1,
-                               const Standard_Real pu2,
-                               const Standard_Real pv2)
+void IntPatch_WLine::SetPeriod(const double pu1,
+                               const double pv1,
+                               const double pu2,
+                               const double pv2)
 {
   u1period = pu1;
   v1period = pv1;
@@ -178,22 +176,22 @@ void IntPatch_WLine::SetPeriod(const Standard_Real pu1,
   v2period = pv2;
 }
 
-Standard_Real IntPatch_WLine::U1Period() const
+double IntPatch_WLine::U1Period() const
 {
   return (u1period);
 }
 
-Standard_Real IntPatch_WLine::V1Period() const
+double IntPatch_WLine::V1Period() const
 {
   return (v1period);
 }
 
-Standard_Real IntPatch_WLine::U2Period() const
+double IntPatch_WLine::U2Period() const
 {
   return (u2period);
 }
 
-Standard_Real IntPatch_WLine::V2Period() const
+double IntPatch_WLine::V2Period() const
 {
   return (v2period);
 }
@@ -225,7 +223,7 @@ Standard_Real IntPatch_WLine::V2Period() const
 //--
 //------------------------------------------------------------------------
 
-Standard_Boolean SameVtxRst(const IntPatch_Point& vtx1, const IntPatch_Point& vtx2)
+bool SameVtxRst(const IntPatch_Point& vtx1, const IntPatch_Point& vtx2)
 {
   if (vtx1.IsOnDomS1())
   {
@@ -238,24 +236,24 @@ Standard_Boolean SameVtxRst(const IntPatch_Point& vtx1, const IntPatch_Point& vt
         }
         else
         {
-          return (Standard_False);
+          return (false);
         }
       }
       else
       {
-        return (Standard_False);
+        return (false);
       }
     }
     else
     {
-      return (Standard_False);
+      return (false);
     }
   }
   else
   {
     if (vtx2.IsOnDomS1())
     {
-      return (Standard_False);
+      return (false);
     }
   }
   if (vtx1.IsOnDomS2())
@@ -269,34 +267,34 @@ Standard_Boolean SameVtxRst(const IntPatch_Point& vtx1, const IntPatch_Point& vt
         }
         else
         {
-          return (Standard_False);
+          return (false);
         }
       }
       else
       {
-        return (Standard_False);
+        return (false);
       }
     }
     else
     {
-      return (Standard_False);
+      return (false);
     }
   }
   else
   {
     if (vtx2.IsOnDomS2())
     {
-      return (Standard_False);
+      return (false);
     }
   }
-  return (Standard_True);
+  return (true);
 }
 
-static Standard_Boolean CompareVerticesOnSurf(const IntPatch_Point&  vtx1,
-                                              const IntPatch_Point&  vtx2,
-                                              const Standard_Boolean onFirst)
+static bool CompareVerticesOnSurf(const IntPatch_Point& vtx1,
+                                  const IntPatch_Point& vtx2,
+                                  const bool            onFirst)
 {
-  Standard_Real u1, v1, u2, v2, tolU, tolV;
+  double u1, v1, u2, v2, tolU, tolV;
   if (onFirst)
   {
     vtx1.ParametersOnS1(u1, v1);
@@ -312,42 +310,42 @@ static Standard_Boolean CompareVerticesOnSurf(const IntPatch_Point&  vtx1,
   return (std::abs(u1 - u2) <= tolU && std::abs(v1 - v2) <= tolV);
 }
 
-inline Standard_Boolean CompareVerticesOnS1(const IntPatch_Point& vtx1, const IntPatch_Point& vtx2)
+inline bool CompareVerticesOnS1(const IntPatch_Point& vtx1, const IntPatch_Point& vtx2)
 {
-  return CompareVerticesOnSurf(vtx1, vtx2, Standard_True);
+  return CompareVerticesOnSurf(vtx1, vtx2, true);
 }
 
-inline Standard_Boolean CompareVerticesOnS2(const IntPatch_Point& vtx1, const IntPatch_Point& vtx2)
+inline bool CompareVerticesOnS2(const IntPatch_Point& vtx1, const IntPatch_Point& vtx2)
 {
-  return CompareVerticesOnSurf(vtx1, vtx2, Standard_False);
+  return CompareVerticesOnSurf(vtx1, vtx2, false);
 }
 
-void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
+void IntPatch_WLine::ComputeVertexParameters(const double RTol)
 {
   // MSV Oct 15, 2001: use tolerance of vertex instead of RTol where
   //                   it is possible
 
-  Standard_Integer i, j, k, nbvtx, nbponline;
-  Standard_Integer indicevertexonline;
-  Standard_Real    indicevertex;
+  int    i, j, k, nbvtx, nbponline;
+  int    indicevertexonline;
+  double indicevertex;
 
-  Standard_Boolean APointDeleted = Standard_False;
+  bool APointDeleted = false;
   //----------------------------------------------------------
   //--     F i l t r e   s u r   r e s t r i c t i o n s   --
   //----------------------------------------------------------
   //-- deux vertex sur la meme restriction et seulement
   //-- sur celle ci ne doivent pas avoir le meme parametre
   //--
-  Standard_Real Tol = RTol;
-  nbvtx             = NbVertex();
+  double Tol = RTol;
+  nbvtx      = NbVertex();
 
 #if DEBUGV
   std::cout << "\n----------- avant ComputeVertexParameters -------------" << std::endl;
   for (i = 1; i <= nbvtx; i++)
   {
     Vertex(i).Dump();
-    Standard_Real polr = Vertex(i).ParameterOnLine();
-    Standard_Real pol  = (Standard_Integer)polr;
+    double polr = Vertex(i).ParameterOnLine();
+    double pol  = (int)polr;
     if (pol >= 1 && pol <= nbvtx)
     {
       std::cout << "----> IntSurf_PntOn2S : " << polr << "  Pnt (" << Vertex(pol).Value().X() << ","
@@ -362,122 +360,122 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
   //-- sur des restrictions differentes
   //--
   //-- Phase Creation de nouveaux points sur S1
-  Standard_Boolean encoreunefois;
+  bool encoreunefois;
   do
   {
     nbvtx         = NbVertex();
-    encoreunefois = Standard_False;
-    for (i = 1; i <= nbvtx && encoreunefois == Standard_False; i++)
+    encoreunefois = false;
+    for (i = 1; i <= nbvtx && encoreunefois == false; i++)
     {
       IntPatch_Point& VTXi = svtx.ChangeValue(i);
-      for (j = 1; j <= nbvtx && encoreunefois == Standard_False; j++)
+      for (j = 1; j <= nbvtx && encoreunefois == false; j++)
       {
         if (i != j)
         {
           IntPatch_Point& VTXj = svtx.ChangeValue(j);
           if (VTXi.ParameterOnLine() != VTXj.ParameterOnLine())
           {
-            Standard_Real d      = VTXi.Value().Distance(VTXj.Value());
-            Standard_Real toli   = VTXi.Tolerance();
-            Standard_Real tolj   = VTXj.Tolerance();
-            Standard_Real maxtol = std::max(toli, tolj);
+            double d      = VTXi.Value().Distance(VTXj.Value());
+            double toli   = VTXi.Tolerance();
+            double tolj   = VTXj.Tolerance();
+            double maxtol = std::max(toli, tolj);
             // MSV Oct 30, 2001: compare in 2D space also;
             //                   increase tolerances
             if (d < maxtol || CompareVerticesOnS1(VTXi, VTXj) || CompareVerticesOnS2(VTXi, VTXj))
             {
               //-- Creation Vtx (REF:S1(i)  S2(j))    (On Garde S1(i))
-              Standard_Real    newtoli = std::max(toli, tolj + d * 1.01);
-              Standard_Real    newtolj = std::max(tolj, toli + d * 1.01);
-              Standard_Boolean acreer  = Standard_False;
+              double newtoli = std::max(toli, tolj + d * 1.01);
+              double newtolj = std::max(tolj, toli + d * 1.01);
+              bool   acreer  = false;
               if (VTXi.IsOnDomS1())
               {
                 if (VTXj.IsOnDomS1())
                 {
                   if (VTXj.ArcOnS1() != VTXi.ArcOnS1())
                   {
-                    acreer = Standard_True;
+                    acreer = true;
                   }
                 }
                 else
                 {
-                  acreer = Standard_True;
+                  acreer = true;
                 }
               }
               if (acreer)
               {
                 IntPatch_Point vtx;
                 vtx = VTXj;
-                vtx.SetArc(Standard_True,
+                vtx.SetArc(true,
                            VTXi.ArcOnS1(),
                            VTXi.ParameterOnArc1(),
                            VTXi.TransitionLineArc1(),
                            VTXi.TransitionOnS1());
-                for (k = 1; encoreunefois == Standard_False && k <= nbvtx; k++)
+                for (k = 1; encoreunefois == false && k <= nbvtx; k++)
                 {
                   const IntPatch_Point& VTXk = svtx.Value(k);
                   if (SameVtxRst(VTXk, vtx))
                   {
-                    encoreunefois = Standard_True;
+                    encoreunefois = true;
                   }
                 }
-                if (encoreunefois == Standard_False)
+                if (encoreunefois == false)
                 {
                   VTXi.SetTolerance(newtoli);
                   VTXj.SetTolerance(newtolj);
                   vtx.SetTolerance(newtolj);
                   svtx.Append(vtx);
-                  encoreunefois = Standard_True;
+                  encoreunefois = true;
                 }
                 else
                 {
-                  encoreunefois = Standard_False;
+                  encoreunefois = false;
                 }
               }
               //-- -----------------------------------------------------
               //-- Creation Vtx (REF:S2(i)  S1(j))    (On Garde S2(i))
-              acreer = Standard_False;
+              acreer = false;
               if (VTXi.IsOnDomS2())
               {
                 if (VTXj.IsOnDomS2())
                 {
                   if (VTXj.ArcOnS2() != VTXi.ArcOnS2())
                   {
-                    acreer = Standard_True;
+                    acreer = true;
                   }
                 }
                 else
                 {
-                  acreer = Standard_True;
+                  acreer = true;
                 }
               }
               if (acreer)
               {
                 IntPatch_Point vtx;
                 vtx = VTXj;
-                vtx.SetArc(Standard_False,
+                vtx.SetArc(false,
                            VTXi.ArcOnS2(),
                            VTXi.ParameterOnArc2(),
                            VTXi.TransitionLineArc2(),
                            VTXi.TransitionOnS2());
-                for (k = 1; encoreunefois == Standard_False && k <= nbvtx; k++)
+                for (k = 1; encoreunefois == false && k <= nbvtx; k++)
                 {
                   const IntPatch_Point& VTXk = svtx.Value(k);
                   if (SameVtxRst(VTXk, vtx))
                   {
-                    encoreunefois = Standard_True;
+                    encoreunefois = true;
                   }
                 }
-                if (encoreunefois == Standard_False)
+                if (encoreunefois == false)
                 {
                   VTXi.SetTolerance(newtoli);
                   VTXj.SetTolerance(newtolj);
                   vtx.SetTolerance(newtolj);
                   svtx.Append(vtx);
-                  encoreunefois = Standard_True;
+                  encoreunefois = true;
                 }
                 else
                 {
-                  encoreunefois = Standard_False;
+                  encoreunefois = false;
                 }
               }
             }
@@ -491,20 +489,20 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
 
   do
   {
-    APointDeleted = Standard_False;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == Standard_False); i++)
+    APointDeleted = false;
+    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
       if (VTXi.Tolerance() > Tol)
         Tol = VTXi.Tolerance(); //-- 9 oct 97
-      if ((VTXi.IsOnDomS1() == Standard_True) && (VTXi.IsOnDomS2() == Standard_False))
+      if ((VTXi.IsOnDomS1() == true) && (VTXi.IsOnDomS2() == false))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == Standard_False); j++)
+        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS1() == Standard_True) && (VTXj.IsOnDomS2() == Standard_False))
+            if ((VTXj.IsOnDomS1() == true) && (VTXj.IsOnDomS2() == false))
             {
               if (VTXi.ParameterOnLine() == VTXj.ParameterOnLine())
               {
@@ -522,7 +520,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
                     if (indf >= j)
                       indf--;
                   }
-                  APointDeleted = Standard_True;
+                  APointDeleted = true;
                 }
               }
             }
@@ -530,22 +528,22 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
         }
       }
     }
-  } while (APointDeleted == Standard_True);
+  } while (APointDeleted == true);
 
   do
   {
-    APointDeleted = Standard_False;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == Standard_False); i++)
+    APointDeleted = false;
+    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS2() == Standard_True) && (VTXi.IsOnDomS1() == Standard_False))
+      if ((VTXi.IsOnDomS2() == true) && (VTXi.IsOnDomS1() == false))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == Standard_False); j++)
+        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS2() == Standard_True) && (VTXj.IsOnDomS1() == Standard_False))
+            if ((VTXj.IsOnDomS2() == true) && (VTXj.IsOnDomS1() == false))
             {
               if (VTXi.ParameterOnLine() == VTXj.ParameterOnLine())
               {
@@ -563,7 +561,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
                     if (indf >= j)
                       indf--;
                   }
-                  APointDeleted = Standard_True;
+                  APointDeleted = true;
                 }
               }
             }
@@ -571,22 +569,22 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
         }
       }
     }
-  } while (APointDeleted == Standard_True);
+  } while (APointDeleted == true);
 
   nbvtx     = NbVertex();
   nbponline = NbPnts();
 
   //----------------------------------------------------
   //-- On trie les Vertex
-  Standard_Boolean SortIsOK;
+  bool SortIsOK;
   do
   {
-    SortIsOK = Standard_True;
+    SortIsOK = true;
     for (i = 2; i <= nbvtx; i++)
     {
       if (svtx.Value(i - 1).ParameterOnLine() > svtx.Value(i).ParameterOnLine())
       {
-        SortIsOK = Standard_False;
+        SortIsOK = false;
         svtx.Exchange(i - 1, i);
       }
     }
@@ -594,12 +592,12 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
 
   //----------------------------------------------------
   //-- On detecte les points confondus dans la LineOn2S
-  constexpr Standard_Real dmini = Precision::SquareConfusion();
+  constexpr double dmini = Precision::SquareConfusion();
   for (i = 2; (i <= nbponline) && (nbponline > 2); i++)
   {
     const IntSurf_PntOn2S& aPnt1 = curv->Value(i - 1);
     const IntSurf_PntOn2S& aPnt2 = curv->Value(i);
-    Standard_Real          d     = (aPnt1.Value()).SquareDistance((aPnt2.Value()));
+    double                 d     = (aPnt1.Value()).SquareDistance((aPnt2.Value()));
     if (d < dmini)
     {
       curv->RemovePoint(i);
@@ -624,10 +622,10 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
   for (i = 1; i <= nbvtx; i++)
   {
     const gp_Pnt& P    = svtx.Value(i).Value();
-    Standard_Real vTol = svtx.Value(i).Tolerance();
+    double        vTol = svtx.Value(i).Tolerance();
 
     indicevertex       = svtx.Value(i).ParameterOnLine();
-    indicevertexonline = (Standard_Integer)indicevertex;
+    indicevertexonline = (int)indicevertex;
     //--------------------------------------------------
     //-- On Compare le vertex avec les points de la ligne
     //-- d indice   indicevertexOnLine-1
@@ -651,7 +649,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
           // set 3D point as the point of the vertex and 2D points as the points of the point on
           // curve.
           curv->SetPoint(1, POn2S.Value());
-          Standard_Real mu1, mv1, mu2, mv2;
+          double mu1, mv1, mu2, mv2;
           curv->Value(1).Parameters(mu1, mv1, mu2, mv2);
           svtx.ChangeValue(i).SetParameter(1);
           svtx.ChangeValue(i).SetParameters(mu1, mv1, mu2, mv2);
@@ -681,7 +679,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
         {
           if (j != 1)
           {
-            Standard_Real t = svtx.Value(j).ParameterOnLine();
+            double t = svtx.Value(j).ParameterOnLine();
             if (t > 1.0)
             {
               svtx.ChangeValue(j).SetParameter(t + 1.0);
@@ -697,10 +695,10 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
       //-- vertex(i)   ==   cheminement (indicevertexonline)
       //-- vertex(i)   ==   cheminement (indicevertexonline+1)
       //---------------------------------------------------------
-      Standard_Boolean Substitution = Standard_False;
+      bool Substitution = false;
       //-- for(k=indicevertexonline+1; !Substitution && k>=indicevertexonline-1;k--) {   avant le 9
       // oct 97
-      Standard_Real mu1, mv1, mu2, mv2;
+      double mu1, mv1, mu2, mv2;
       curv->Value(indicevertexonline).Parameters(mu1, mv1, mu2, mv2);
 
       for (k = indicevertexonline + 1; k >= indicevertexonline - 1; k--)
@@ -727,8 +725,8 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
               // set 3D point as the point of the vertex and 2D points as the points
               // of the point on curve with index <indicevertexonline>
               curv->SetPoint(k, POn2S.Value());
-              curv->SetUV(k, Standard_True, mu1, mv1);
-              curv->SetUV(k, Standard_False, mu2, mv2);
+              curv->SetUV(k, true, mu1, mv1);
+              curv->SetUV(k, false, mu2, mv2);
             }
             else
             {
@@ -737,7 +735,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
             }
             svtx.ChangeValue(i).SetParameter(k);
             svtx.ChangeValue(i).SetParameters(mu1, mv1, mu2, mv2);
-            Substitution = Standard_True;
+            Substitution = true;
           }
         }
       }
@@ -745,10 +743,10 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
       // Remove duplicating points
       if (Substitution)
       {
-        Standard_Integer ind_point;
+        int ind_point;
         for (ind_point = 2; (ind_point <= nbponline && nbponline > 1); ind_point++)
         {
-          Standard_Real d =
+          double d =
             (curv->Value(ind_point - 1).Value()).SquareDistance((curv->Value(ind_point).Value()));
           if (d < dmini)
           {
@@ -774,10 +772,10 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
 
       //--static int deb6nov98=1;    Ne resout rien (a part partiellement BUC60409)
       //--if(deb6nov98) {
-      //--Substitution=Standard_True;
+      //--Substitution=true;
       //-- }
 
-      if (Substitution == Standard_False)
+      if (Substitution == false)
       {
         //-------------------------------------------------------
         //-- On insere le point de cheminement Vertex(i)
@@ -811,8 +809,8 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
         {
           if (j != i)
           {
-            Standard_Real t = svtx.Value(j).ParameterOnLine();
-            if (t > (Standard_Real)indicevertexonline)
+            double t = svtx.Value(j).ParameterOnLine();
+            if (t > (double)indicevertexonline)
             {
               svtx.ChangeValue(j).SetParameter(t + 1.0);
             }
@@ -825,18 +823,18 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
 
   do
   {
-    APointDeleted = Standard_False;
-    for (i = 1; i <= nbvtx && (APointDeleted == Standard_False); i++)
+    APointDeleted = false;
+    for (i = 1; i <= nbvtx && (APointDeleted == false); i++)
     {
       const IntPatch_Point& VTX = svtx.Value(i);
-      for (j = 1; j <= nbvtx && (APointDeleted == Standard_False); j++)
+      for (j = 1; j <= nbvtx && (APointDeleted == false); j++)
       {
         if (i != j)
         {
           const IntPatch_Point& VTXM1 = svtx.Value(j);
 
-          Standard_Boolean kill   = Standard_False;
-          Standard_Boolean killm1 = Standard_False;
+          bool kill   = false;
+          bool killm1 = false;
           if (VTXM1.ParameterOnLine() == VTX.ParameterOnLine())
           {
             if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1())
@@ -845,15 +843,15 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
               { //-- OnS1 == OnS1
                 if (VTXM1.IsOnDomS2())
                 { //-- OnS1 == OnS1  OnS2
-                  if (VTX.IsOnDomS2() == Standard_False)
+                  if (VTX.IsOnDomS2() == false)
                   { //-- OnS1 == OnS1  OnS2 PasOnS2
-                    kill = Standard_True;
+                    kill = true;
                   }
                   else
                   {
                     if (VTXM1.ArcOnS2() == VTX.ArcOnS2())
                     { //-- OnS1 == OnS1  OnS2 == OnS2
-                      kill = Standard_True;
+                      kill = true;
                     }
                   }
                 }
@@ -861,7 +859,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
                 { //-- OnS1 == OnS1  PasOnS2
                   if (VTX.IsOnDomS2())
                   { //-- OnS1 == OnS1  PasOnS2  OnS2
-                    killm1 = Standard_True;
+                    killm1 = true;
                   }
                 }
               }
@@ -875,15 +873,15 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
                 { //-- OnS2 == OnS2
                   if (VTXM1.IsOnDomS1())
                   { //-- OnS2 == OnS2  OnS1
-                    if (VTX.IsOnDomS1() == Standard_False)
+                    if (VTX.IsOnDomS1() == false)
                     { //-- OnS2 == OnS2  OnS1 PasOnS1
-                      kill = Standard_True;
+                      kill = true;
                     }
                     else
                     {
                       if (VTXM1.ArcOnS1() == VTX.ArcOnS1())
                       { //-- OnS2 == OnS2  OnS1 == OnS1
-                        kill = Standard_True;
+                        kill = true;
                       }
                     }
                   }
@@ -891,7 +889,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
                   { //-- OnS2 == OnS2  PasOnS1
                     if (VTX.IsOnDomS1())
                     { //-- OnS2 == OnS2  PasOnS1  OnS1
-                      killm1 = Standard_True;
+                      killm1 = true;
                     }
                   }
                 }
@@ -899,13 +897,13 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
             }
             if (kill)
             {
-              APointDeleted = Standard_True;
+              APointDeleted = true;
               svtx.Remove(i);
               nbvtx--;
             }
             else if (killm1)
             {
-              APointDeleted = Standard_True;
+              APointDeleted = true;
               svtx.Remove(j);
               nbvtx--;
             }
@@ -913,28 +911,28 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
         }
       }
     }
-  } while (APointDeleted == Standard_True);
+  } while (APointDeleted == true);
 
   do
   {
-    SortIsOK = Standard_True;
+    SortIsOK = true;
     for (i = 2; i <= nbvtx && SortIsOK; i++)
     {
       const IntPatch_Point& Pim1 = svtx.Value(i - 1);
       const IntPatch_Point& Pii  = svtx.Value(i);
       if (Pim1.ParameterOnLine() == Pii.ParameterOnLine())
       {
-        if ((Pii.IsOnDomS1() == Standard_False) && (Pii.IsOnDomS2() == Standard_False))
+        if ((Pii.IsOnDomS1() == false) && (Pii.IsOnDomS2() == false))
         {
-          SortIsOK = Standard_False;
+          SortIsOK = false;
           svtx.Remove(i);
           nbvtx--;
         }
         else
         {
-          if ((Pim1.IsOnDomS1() == Standard_False) && (Pim1.IsOnDomS2() == Standard_False))
+          if ((Pim1.IsOnDomS1() == false) && (Pim1.IsOnDomS2() == false))
           {
-            SortIsOK = Standard_False;
+            SortIsOK = false;
             svtx.Remove(i - 1);
             nbvtx--;
           }
@@ -949,81 +947,81 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
   //--
   //-- Si Besoin : il faudra dedoubler les points de debut et de fin sur les periodiques ??????
 
-  Standard_Boolean bFirst = Standard_False;
-  Standard_Boolean bLast  = Standard_False;
-  nbponline               = NbPnts();
+  bool bFirst = false;
+  bool bLast  = false;
+  nbponline   = NbPnts();
   for (i = 1; i <= nbvtx; i++)
   {
-    Standard_Real pol = svtx.Value(i).ParameterOnLine();
+    double pol = svtx.Value(i).ParameterOnLine();
     if (pol == 1.0)
     {
-      bFirst = fipt = Standard_True;
+      bFirst = fipt = true;
       indf          = i;
     }
     if (pol == nbponline)
     {
-      bLast = lapt = Standard_True;
+      bLast = lapt = true;
       indl         = i;
     }
   }
-  if (bFirst == Standard_False)
+  if (bFirst == false)
   {
-    Standard_Real    pu1, pv1, pu2, pv2;
-    Standard_Boolean vtxfound = Standard_False;
-    IntPatch_Point   vtx;
+    double         pu1, pv1, pu2, pv2;
+    bool           vtxfound = false;
+    IntPatch_Point vtx;
     curv->Value(1).Parameters(pu1, pv1, pu2, pv2);
-    for (i = 1; (vtxfound == Standard_False) && (i <= nbvtx); i++)
+    for (i = 1; (vtxfound == false) && (i <= nbvtx); i++)
     {
       const IntPatch_Point& V = svtx.Value(i);
       // jgv: to avoid loops
-      // Standard_Real vTol = V.Tolerance();
+      // double vTol = V.Tolerance();
       if (CompareVertexAndPoint(V.Value(), curv->Value(1).Value(), Precision::Confusion() /*vTol*/))
       {
         vtx = V;
         vtx.SetParameters(pu1, pv1, pu2, pv2);
-        vtxfound = Standard_True;
+        vtxfound = true;
       }
     }
-    if (vtxfound == Standard_False)
+    if (vtxfound == false)
     {
-      vtx.SetValue(curv->Value(1).Value(), Tol, Standard_False);
+      vtx.SetValue(curv->Value(1).Value(), Tol, false);
       vtx.SetParameters(pu1, pv1, pu2, pv2);
     }
     vtx.SetParameter(1);
     svtx.Prepend(vtx);
     nbvtx++;
-    fipt = Standard_True;
+    fipt = true;
     indf = 1;
   }
-  if (bLast == Standard_False)
+  if (bLast == false)
   {
-    Standard_Real    pu1, pv1, pu2, pv2;
-    Standard_Boolean vtxfound = Standard_False;
-    IntPatch_Point   vtx;
+    double         pu1, pv1, pu2, pv2;
+    bool           vtxfound = false;
+    IntPatch_Point vtx;
     curv->Value(nbponline).Parameters(pu1, pv1, pu2, pv2);
-    for (i = 1; (vtxfound == Standard_False) && (i <= nbvtx); i++)
+    for (i = 1; (vtxfound == false) && (i <= nbvtx); i++)
     {
       const IntPatch_Point& V = svtx.Value(i);
       // jgv: to avoid loops
-      // Standard_Real vTol = V.Tolerance();
+      // double vTol = V.Tolerance();
       if (CompareVertexAndPoint(V.Value(),
                                 curv->Value(nbponline).Value(),
                                 Precision::Confusion() /*vTol*/))
       {
         vtx = V;
         vtx.SetParameters(pu1, pv1, pu2, pv2);
-        vtxfound = Standard_True;
+        vtxfound = true;
       }
     }
-    if (vtxfound == Standard_False)
+    if (vtxfound == false)
     {
-      vtx.SetValue(curv->Value(nbponline).Value(), Tol, Standard_False);
+      vtx.SetValue(curv->Value(nbponline).Value(), Tol, false);
       vtx.SetParameters(pu1, pv1, pu2, pv2);
     }
     vtx.SetParameter(nbponline);
     svtx.Append(vtx);
     nbvtx++;
-    lapt = Standard_True;
+    lapt = true;
     indl = nbvtx;
   }
 
@@ -1044,18 +1042,18 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
   nbvtx = NbVertex();
   do
   {
-    APointDeleted = Standard_False;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == Standard_False); i++)
+    APointDeleted = false;
+    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS1() == Standard_True) && (VTXi.IsOnDomS2() == Standard_False))
+      if ((VTXi.IsOnDomS1() == true) && (VTXi.IsOnDomS2() == false))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == Standard_False); j++)
+        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS1() == Standard_True) && (VTXj.IsOnDomS2() == Standard_False))
+            if ((VTXj.IsOnDomS1() == true) && (VTXj.IsOnDomS2() == false))
             {
               if ((VTXi.ParameterOnLine() == VTXj.ParameterOnLine() + 1)
                   || (VTXi.ParameterOnLine() == VTXj.ParameterOnLine() - 1))
@@ -1080,7 +1078,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
                         if (indf >= j)
                           indf--;
                       }
-                      APointDeleted = Standard_True;
+                      APointDeleted = true;
                     }
                   }
                 }
@@ -1094,22 +1092,22 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
 
   //-- meme traitement sur les restrictions du second shape
 
-  while (APointDeleted == Standard_True);
+  while (APointDeleted == true);
   nbvtx = NbVertex();
   do
   {
-    APointDeleted = Standard_False;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == Standard_False); i++)
+    APointDeleted = false;
+    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS1() == Standard_False) && (VTXi.IsOnDomS2() == Standard_True))
+      if ((VTXi.IsOnDomS1() == false) && (VTXi.IsOnDomS2() == true))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == Standard_False); j++)
+        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS1() == Standard_False) && (VTXj.IsOnDomS2() == Standard_True))
+            if ((VTXj.IsOnDomS1() == false) && (VTXj.IsOnDomS2() == true))
             {
               if ((VTXi.ParameterOnLine() == VTXj.ParameterOnLine() + 1)
                   || (VTXi.ParameterOnLine() == VTXj.ParameterOnLine() - 1))
@@ -1134,7 +1132,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
                         if (indf >= j)
                           indf--;
                       }
-                      APointDeleted = Standard_True;
+                      APointDeleted = true;
                     }
                   }
                 }
@@ -1144,7 +1142,7 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
         }
       }
     }
-  } while (APointDeleted == Standard_True);
+  } while (APointDeleted == true);
   //--------------------------------------------------------------
 
   //--------------------------------------------------------------
@@ -1165,12 +1163,12 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
   nbvtx = NbVertex();
   do
   {
-    SortIsOK = Standard_True;
+    SortIsOK = true;
     for (i = 2; i <= nbvtx; i++)
     {
       if (svtx.Value(i - 1).ParameterOnLine() > svtx.Value(i).ParameterOnLine())
       {
-        SortIsOK = Standard_False;
+        SortIsOK = false;
         svtx.Exchange(i - 1, i);
       }
     }
@@ -1183,8 +1181,8 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
   for (i = 1; i <= nbvtx; i++)
   {
     Vertex(i).Dump();
-    Standard_Real polr = Vertex(i).ParameterOnLine();
-    Standard_Real pol  = (Standard_Integer)polr;
+    double polr = Vertex(i).ParameterOnLine();
+    double pol  = (int)polr;
     if (pol >= 1 && pol <= nbvtx)
     {
       std::cout << "----> IntSurf_PntOn2S : " << polr << "  Pnt (" << Vertex(pol).Value().X() << ","
@@ -1195,51 +1193,51 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol)
 #endif
 }
 
-Standard_Boolean IntPatch_WLine::HasArcOnS1() const
+bool IntPatch_WLine::HasArcOnS1() const
 {
   return (hasArcOnS1);
 }
 
-void IntPatch_WLine::SetArcOnS1(const Handle(Adaptor2d_Curve2d)& A)
+void IntPatch_WLine::SetArcOnS1(const occ::handle<Adaptor2d_Curve2d>& A)
 {
-  hasArcOnS1 = Standard_True;
+  hasArcOnS1 = true;
   theArcOnS1 = A;
 }
 
-const Handle(Adaptor2d_Curve2d)& IntPatch_WLine::GetArcOnS1() const
+const occ::handle<Adaptor2d_Curve2d>& IntPatch_WLine::GetArcOnS1() const
 {
   return (theArcOnS1);
 }
 
-Standard_Boolean IntPatch_WLine::HasArcOnS2() const
+bool IntPatch_WLine::HasArcOnS2() const
 {
   return (hasArcOnS2);
 }
 
-void IntPatch_WLine::SetArcOnS2(const Handle(Adaptor2d_Curve2d)& A)
+void IntPatch_WLine::SetArcOnS2(const occ::handle<Adaptor2d_Curve2d>& A)
 {
-  hasArcOnS2 = Standard_True;
+  hasArcOnS2 = true;
   theArcOnS2 = A;
 }
 
-const Handle(Adaptor2d_Curve2d)& IntPatch_WLine::GetArcOnS2() const
+const occ::handle<Adaptor2d_Curve2d>& IntPatch_WLine::GetArcOnS2() const
 {
   return (theArcOnS2);
 }
 
-void IntPatch_WLine::Dump(const Standard_Integer theMode) const
+void IntPatch_WLine::Dump(const int theMode) const
 {
   std::cout << " ----------- D u m p    I n t P a t c h  _  W L i n e  -(begin)------" << std::endl;
-  const Standard_Integer aNbPoints = NbPnts();
-  const Standard_Integer aNbVertex = NbVertex();
+  const int aNbPoints = NbPnts();
+  const int aNbVertex = NbVertex();
 
   switch (theMode)
   {
     case 0:
       printf("Num    [X  Y  Z]     [U1  V1]   [U2  V2]\n");
-      for (Standard_Integer i = 1; i <= aNbPoints; i++)
+      for (int i = 1; i <= aNbPoints; i++)
       {
-        Standard_Real u1, v1, u2, v2;
+        double u1, v1, u2, v2;
         Point(i).Parameters(u1, v1, u2, v2);
         printf("%4d  [%+10.20f %+10.20f %+10.20f]  [%+10.20f %+10.20f]  [%+10.20f %+10.20f]\n",
                i,
@@ -1252,11 +1250,11 @@ void IntPatch_WLine::Dump(const Standard_Integer theMode) const
                v2);
       }
 
-      for (Standard_Integer i = 1; i <= aNbVertex; i++)
+      for (int i = 1; i <= aNbVertex; i++)
       {
         Vertex(i).Dump();
-        Standard_Real    polr = Vertex(i).ParameterOnLine();
-        Standard_Integer pol  = static_cast<Standard_Integer>(polr);
+        double polr = Vertex(i).ParameterOnLine();
+        int    pol  = static_cast<int>(polr);
 
         if (pol >= 1 && pol <= aNbVertex)
         {
@@ -1268,9 +1266,9 @@ void IntPatch_WLine::Dump(const Standard_Integer theMode) const
 
       break;
     case 1:
-      for (Standard_Integer i = 1; i <= aNbPoints; i++)
+      for (int i = 1; i <= aNbPoints; i++)
       {
-        Standard_Real u1, v1, u2, v2;
+        double u1, v1, u2, v2;
         Point(i).Parameters(u1, v1, u2, v2);
         printf("point p%d %+10.20f %+10.20f %+10.20f\n",
                i,
@@ -1281,18 +1279,18 @@ void IntPatch_WLine::Dump(const Standard_Integer theMode) const
 
       break;
     case 2:
-      for (Standard_Integer i = 1; i <= aNbPoints; i++)
+      for (int i = 1; i <= aNbPoints; i++)
       {
-        Standard_Real u1, v1, u2, v2;
+        double u1, v1, u2, v2;
         Point(i).Parameters(u1, v1, u2, v2);
         printf("point p%d %+10.20f %+10.20f\n", i, u1, v1);
       }
 
       break;
     default:
-      for (Standard_Integer i = 1; i <= aNbPoints; i++)
+      for (int i = 1; i <= aNbPoints; i++)
       {
-        Standard_Real u1, v1, u2, v2;
+        double u1, v1, u2, v2;
         Point(i).Parameters(u1, v1, u2, v2);
         printf("point p%d %+10.20f %+10.20f\n", i, u2, v2);
       }

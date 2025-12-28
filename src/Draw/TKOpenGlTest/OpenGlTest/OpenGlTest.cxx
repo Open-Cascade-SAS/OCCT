@@ -20,7 +20,8 @@
 
 void OpenGlTest::Factory(Draw_Interpretor& theDI)
 {
-  static const Handle(OpenGl_GraphicDriverFactory) aFactory = new OpenGl_GraphicDriverFactory();
+  static const occ::handle<OpenGl_GraphicDriverFactory> aFactory =
+    new OpenGl_GraphicDriverFactory();
   Graphic3d_GraphicDriverFactory::RegisterFactory(aFactory);
   OpenGlTest::Commands(theDI);
 #ifdef DEB

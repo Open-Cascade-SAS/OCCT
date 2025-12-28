@@ -115,7 +115,7 @@ TEST(Standard_DumpTest, gp_Pnt_DumpAndInit)
   // Deserialize
   std::stringstream anIStream(aJsonStr);
   gp_Pnt            aDeserializedPnt;
-  Standard_Integer  aStreamPos = 1;
+  int               aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedPnt.InitFromJson(anIStream, aStreamPos))
     << "Deserialization should succeed. JSON: " << aJsonStr;
@@ -155,7 +155,7 @@ TEST(Standard_DumpTest, gp_Ax3_DumpAndInit_MultipleSeparators)
   // Deserialize
   std::stringstream anIStream(aJsonStr);
   gp_Ax3            aDeserializedAxis;
-  Standard_Integer  aStreamPos = 1;
+  int               aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedAxis.InitFromJson(anIStream, aStreamPos))
     << "Deserialization should succeed. JSON: " << aJsonStr;
@@ -189,14 +189,14 @@ TEST(Standard_DumpTest, Bnd_Box_ComplexDump)
   // Deserialize
   std::stringstream anIStream(aJsonStr);
   Bnd_Box           aDeserializedBox;
-  Standard_Integer  aStreamPos = 1;
+  int               aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedBox.InitFromJson(anIStream, aStreamPos))
     << "Deserialization should succeed. JSON: " << aJsonStr;
 
   // Verify values
-  Standard_Real aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1;
-  Standard_Real aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
+  double aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1;
+  double aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
 
   aBox.Get(aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1);
   aDeserializedBox.Get(aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2);
@@ -293,7 +293,7 @@ TEST(Standard_DumpTest, VoidBoxSerialization)
   // Try to deserialize
   std::stringstream anIStream(aJsonStr);
   Bnd_Box           aDeserializedBox;
-  Standard_Integer  aStreamPos = 1;
+  int               aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedBox.InitFromJson(anIStream, aStreamPos))
     << "Should be able to deserialize void box. JSON: " << aJsonStr;

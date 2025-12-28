@@ -47,8 +47,8 @@ public:
    * @param thePB2
    *  secondt pave block
    */
-  BOPDS_CoupleOfPaveBlocks(const Handle(BOPDS_PaveBlock)& thePB1,
-                           const Handle(BOPDS_PaveBlock)& thePB2)
+  BOPDS_CoupleOfPaveBlocks(const occ::handle<BOPDS_PaveBlock>& thePB1,
+                           const occ::handle<BOPDS_PaveBlock>& thePB2)
       : myIndexInterf(-1),
         myIndex(-1),
         myTolerance(0)
@@ -68,7 +68,7 @@ public:
    * @param theIndex
    *  index
    */
-  void SetIndex(const Standard_Integer theIndex) { myIndex = theIndex; }
+  void SetIndex(const int theIndex) { myIndex = theIndex; }
 
   //
   /**
@@ -76,7 +76,7 @@ public:
    * @return
    *   index
    */
-  Standard_Integer Index() const { return myIndex; }
+  int Index() const { return myIndex; }
 
   //
   /**
@@ -84,7 +84,7 @@ public:
    * @param theIndex
    *  index of an interference
    */
-  void SetIndexInterf(const Standard_Integer theIndex) { myIndexInterf = theIndex; }
+  void SetIndexInterf(const int theIndex) { myIndexInterf = theIndex; }
 
   //
   /**
@@ -92,7 +92,7 @@ public:
    * @return
    *   index of an interference
    */
-  Standard_Integer IndexInterf() const { return myIndexInterf; }
+  int IndexInterf() const { return myIndexInterf; }
 
   //
   /**
@@ -102,7 +102,8 @@ public:
    * @param thePB2
    *  secondt pave block
    */
-  void SetPaveBlocks(const Handle(BOPDS_PaveBlock)& thePB1, const Handle(BOPDS_PaveBlock)& thePB2)
+  void SetPaveBlocks(const occ::handle<BOPDS_PaveBlock>& thePB1,
+                     const occ::handle<BOPDS_PaveBlock>& thePB2)
   {
     myPB[0] = thePB1;
     myPB[1] = thePB2;
@@ -116,7 +117,7 @@ public:
    * @param thePB2
    *  the second pave block
    */
-  void PaveBlocks(Handle(BOPDS_PaveBlock)& thePB1, Handle(BOPDS_PaveBlock)& thePB2) const
+  void PaveBlocks(occ::handle<BOPDS_PaveBlock>& thePB1, occ::handle<BOPDS_PaveBlock>& thePB2) const
   {
     thePB1 = myPB[0];
     thePB2 = myPB[1];
@@ -128,14 +129,14 @@ public:
    * @param thePB
    *  the first pave block
    */
-  void SetPaveBlock1(const Handle(BOPDS_PaveBlock)& thePB) { myPB[0] = thePB; }
+  void SetPaveBlock1(const occ::handle<BOPDS_PaveBlock>& thePB) { myPB[0] = thePB; }
 
   /**
    * Returns the first pave block
    * @return
    * the first pave block
    */
-  const Handle(BOPDS_PaveBlock)& PaveBlock1() const { return myPB[0]; }
+  const occ::handle<BOPDS_PaveBlock>& PaveBlock1() const { return myPB[0]; }
 
   //
   /**
@@ -143,7 +144,7 @@ public:
    * @param thePB
    *  the second pave block
    */
-  void SetPaveBlock2(const Handle(BOPDS_PaveBlock)& thePB) { myPB[1] = thePB; }
+  void SetPaveBlock2(const occ::handle<BOPDS_PaveBlock>& thePB) { myPB[1] = thePB; }
 
   //
   /**
@@ -151,24 +152,24 @@ public:
    * @return
    * the second pave block
    */
-  const Handle(BOPDS_PaveBlock)& PaveBlock2() const { return myPB[1]; }
+  const occ::handle<BOPDS_PaveBlock>& PaveBlock2() const { return myPB[1]; }
 
   /**
    * Sets the tolerance associated with this couple
    */
-  void SetTolerance(const Standard_Real theTol) { myTolerance = theTol; }
+  void SetTolerance(const double theTol) { myTolerance = theTol; }
 
   //
   /**
    * Returns the tolerance associated with this couple
    */
-  Standard_Real Tolerance() const { return myTolerance; }
+  double Tolerance() const { return myTolerance; }
 
 protected:
-  Standard_Integer        myIndexInterf;
-  Standard_Integer        myIndex;
-  Handle(BOPDS_PaveBlock) myPB[2];
-  Standard_Real           myTolerance;
+  int                          myIndexInterf;
+  int                          myIndex;
+  occ::handle<BOPDS_PaveBlock> myPB[2];
+  double                       myTolerance;
 };
 
 //

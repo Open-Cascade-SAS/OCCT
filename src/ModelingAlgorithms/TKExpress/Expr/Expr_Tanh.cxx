@@ -27,65 +27,66 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_Tanh, Expr_UnaryExpression)
 
-Expr_Tanh::Expr_Tanh(const Handle(Expr_GeneralExpression)& exp)
+Expr_Tanh::Expr_Tanh(const occ::handle<Expr_GeneralExpression>& exp)
 {
   CreateOperand(exp);
 }
 
-Handle(Expr_GeneralExpression) Expr_Tanh::ShallowSimplified() const
+occ::handle<Expr_GeneralExpression> Expr_Tanh::ShallowSimplified() const
 {
-  Handle(Expr_GeneralExpression) myexp = Operand();
+  occ::handle<Expr_GeneralExpression> myexp = Operand();
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
-    Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
+    occ::handle<Expr_NumericValue> myNVexp = occ::down_cast<Expr_NumericValue>(myexp);
     return new Expr_NumericValue(std::tanh(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_ArgTanh)))
   {
     return myexp->SubExpression(1);
   }
-  Handle(Expr_Tanh) me = this;
+  occ::handle<Expr_Tanh> me = this;
   return me;
 }
 
-Handle(Expr_GeneralExpression) Expr_Tanh::Copy() const
+occ::handle<Expr_GeneralExpression> Expr_Tanh::Copy() const
 {
   return new Expr_Tanh(Expr::CopyShare(Operand()));
 }
 
-Standard_Boolean Expr_Tanh::IsIdentical(const Handle(Expr_GeneralExpression)& Other) const
+bool Expr_Tanh::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const
 {
   if (Other->IsKind(STANDARD_TYPE(Expr_Tanh)))
   {
-    Handle(Expr_GeneralExpression) myexp = Operand();
+    occ::handle<Expr_GeneralExpression> myexp = Operand();
     return myexp->IsIdentical(Other->SubExpression(1));
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean Expr_Tanh::IsLinear() const
+bool Expr_Tanh::IsLinear() const
 {
   return !ContainsUnknowns();
 }
 
-Handle(Expr_GeneralExpression) Expr_Tanh::Derivative(const Handle(Expr_NamedUnknown)& X) const
+occ::handle<Expr_GeneralExpression> Expr_Tanh::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
     return new Expr_NumericValue(0.0);
   }
-  Handle(Expr_GeneralExpression) myexp    = Operand();
-  Handle(Expr_GeneralExpression) myder    = myexp->Derivative(X);
-  Handle(Expr_Cosh)              firstder = new Expr_Cosh(Expr::CopyShare(myexp));
-  Handle(Expr_Square)            sq       = new Expr_Square(firstder->ShallowSimplified());
-  Handle(Expr_Division)          resu     = myder / sq->ShallowSimplified();
+  occ::handle<Expr_GeneralExpression> myexp    = Operand();
+  occ::handle<Expr_GeneralExpression> myder    = myexp->Derivative(X);
+  occ::handle<Expr_Cosh>              firstder = new Expr_Cosh(Expr::CopyShare(myexp));
+  occ::handle<Expr_Square>            sq       = new Expr_Square(firstder->ShallowSimplified());
+  occ::handle<Expr_Division>          resu     = myder / sq->ShallowSimplified();
   return resu->ShallowSimplified();
 }
 
-Standard_Real Expr_Tanh::Evaluate(const Expr_Array1OfNamedUnknown& vars,
-                                  const TColStd_Array1OfReal&      vals) const
+double Expr_Tanh::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                           const NCollection_Array1<double>&                         vals) const
 {
-  Standard_Real val = Operand()->Evaluate(vars, vals);
+  double val = Operand()->Evaluate(vars, vals);
   return (std::exp(val) - std::exp(-val)) / (std::exp(val) + std::exp(-val));
 }
 

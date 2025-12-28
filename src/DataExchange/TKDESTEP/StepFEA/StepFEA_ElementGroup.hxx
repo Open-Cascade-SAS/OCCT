@@ -19,13 +19,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepFEA_HArray1OfElementRepresentation.hxx>
+#include <StepFEA_ElementRepresentation.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepFEA_FeaGroup.hxx>
 class TCollection_HAsciiString;
 class StepFEA_FeaModel;
-
-class StepFEA_ElementGroup;
-DEFINE_STANDARD_HANDLE(StepFEA_ElementGroup, StepFEA_FeaGroup)
 
 //! Representation of STEP entity ElementGroup
 class StepFEA_ElementGroup : public StepFEA_FeaGroup
@@ -36,22 +35,24 @@ public:
   Standard_EXPORT StepFEA_ElementGroup();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aGroup_Name,
-                            const Handle(TCollection_HAsciiString)& aGroup_Description,
-                            const Handle(StepFEA_FeaModel)&         aFeaGroup_ModelRef,
-                            const Handle(StepFEA_HArray1OfElementRepresentation)& aElements);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aGroup_Name,
+    const occ::handle<TCollection_HAsciiString>& aGroup_Description,
+    const occ::handle<StepFEA_FeaModel>&         aFeaGroup_ModelRef,
+    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>>& aElements);
 
   //! Returns field Elements
-  Standard_EXPORT Handle(StepFEA_HArray1OfElementRepresentation) Elements() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>>
+                  Elements() const;
 
   //! Set field Elements
-  Standard_EXPORT void SetElements(const Handle(StepFEA_HArray1OfElementRepresentation)& Elements);
+  Standard_EXPORT void SetElements(
+    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>>& Elements);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_ElementGroup, StepFEA_FeaGroup)
 
-protected:
 private:
-  Handle(StepFEA_HArray1OfElementRepresentation) theElements;
+  occ::handle<NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>> theElements;
 };
 
 #endif // _StepFEA_ElementGroup_HeaderFile

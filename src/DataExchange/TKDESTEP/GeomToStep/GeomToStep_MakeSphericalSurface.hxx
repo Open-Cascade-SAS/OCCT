@@ -36,14 +36,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeSphericalSurface(
-    const Handle(Geom_SphericalSurface)& CSurf,
-    const StepData_Factors&              theLocalFactors = StepData_Factors());
+    const occ::handle<Geom_SphericalSurface>& CSurf,
+    const StepData_Factors&                   theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_SphericalSurface)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_SphericalSurface>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_SphericalSurface) theSphericalSurface;
+  occ::handle<StepGeom_SphericalSurface> theSphericalSurface;
 };
 
 #endif // _GeomToStep_MakeSphericalSurface_HeaderFile

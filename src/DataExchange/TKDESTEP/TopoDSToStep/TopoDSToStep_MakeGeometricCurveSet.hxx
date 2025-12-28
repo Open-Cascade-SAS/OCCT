@@ -35,15 +35,14 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT TopoDSToStep_MakeGeometricCurveSet(
-    const TopoDS_Shape&                   SH,
-    const Handle(Transfer_FinderProcess)& FP,
-    const StepData_Factors&               theLocalFactors = StepData_Factors());
+    const TopoDS_Shape&                        SH,
+    const occ::handle<Transfer_FinderProcess>& FP,
+    const StepData_Factors&                    theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepShape_GeometricCurveSet)& Value() const;
+  Standard_EXPORT const occ::handle<StepShape_GeometricCurveSet>& Value() const;
 
-protected:
 private:
-  Handle(StepShape_GeometricCurveSet) theGeometricCurveSet;
+  occ::handle<StepShape_GeometricCurveSet> theGeometricCurveSet;
 };
 
 #endif // _TopoDSToStep_MakeGeometricCurveSet_HeaderFile

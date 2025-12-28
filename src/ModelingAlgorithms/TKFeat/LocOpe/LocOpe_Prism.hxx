@@ -23,9 +23,11 @@
 
 #include <TopoDS_Shape.hxx>
 #include <gp_Vec.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 class Geom_Curve;
 
 //! Defines a prism (using Prism from BRepSweep)
@@ -51,25 +53,24 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  Standard_EXPORT const TopTools_ListOfShape& Shapes(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Shapes(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT void Curves(TColGeom_SequenceOfCurve& SCurves) const;
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& SCurves) const;
 
-  Standard_EXPORT Handle(Geom_Curve) BarycCurve() const;
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve() const;
 
-protected:
 private:
   Standard_EXPORT void IntPerf();
 
-  TopoDS_Shape                       myBase;
-  gp_Vec                             myVec;
-  gp_Vec                             myTra;
-  Standard_Boolean                   myIsTrans;
-  Standard_Boolean                   myDone;
-  TopoDS_Shape                       myRes;
-  TopoDS_Shape                       myFirstShape;
-  TopoDS_Shape                       myLastShape;
-  TopTools_DataMapOfShapeListOfShape myMap;
+  TopoDS_Shape myBase;
+  gp_Vec       myVec;
+  gp_Vec       myTra;
+  bool         myIsTrans;
+  bool         myDone;
+  TopoDS_Shape myRes;
+  TopoDS_Shape myFirstShape;
+  TopoDS_Shape myLastShape;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _LocOpe_Prism_HeaderFile

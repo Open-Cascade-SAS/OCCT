@@ -26,9 +26,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-class IGESSelect_SignStatus;
-DEFINE_STANDARD_HANDLE(IGESSelect_SignStatus, IFSelect_Signature)
-
 //! Gives D.E. Status under the form i,j,k,l (4 figures)
 //! i for BlankStatus
 //! j for SubordinateStatus
@@ -50,21 +47,17 @@ public:
   Standard_EXPORT IGESSelect_SignStatus();
 
   //! Returns the value (see above)
-  Standard_EXPORT Standard_CString
-    Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Performs the match rule (see above)
-  Standard_EXPORT virtual Standard_Boolean Matches(const Handle(Standard_Transient)&       ent,
-                                                   const Handle(Interface_InterfaceModel)& model,
-                                                   const TCollection_AsciiString&          text,
-                                                   const Standard_Boolean exact) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Matches(const occ::handle<Standard_Transient>&       ent,
+                                       const occ::handle<Interface_InterfaceModel>& model,
+                                       const TCollection_AsciiString&               text,
+                                       const bool exact) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SignStatus, IFSelect_Signature)
-
-protected:
-private:
 };
 
 #endif // _IGESSelect_SignStatus_HeaderFile

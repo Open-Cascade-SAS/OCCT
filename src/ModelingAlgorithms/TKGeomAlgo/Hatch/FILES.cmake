@@ -10,6 +10,5 @@ set(OCCT_Hatch_FILES
   Hatch_LineForm.hxx
   Hatch_Parameter.cxx
   Hatch_Parameter.hxx
-  Hatch_SequenceOfLine.hxx
-  Hatch_SequenceOfParameter.hxx
+
 )

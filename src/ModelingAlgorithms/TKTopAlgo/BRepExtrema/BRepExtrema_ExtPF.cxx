@@ -45,16 +45,16 @@ void BRepExtrema_ExtPF::Initialize(const TopoDS_Face&    TheFace,
 {
   // cette surface doit etre en champ. Extrema ne fait
   // pas de copie et prend seulement un pointeur dessus.
-  mySurf.Initialize(TheFace, Standard_False);
+  mySurf.Initialize(TheFace, false);
 
   if (mySurf.GetType() == GeomAbs_OtherSurface)
     return; // protect against non-geometric type (e.g. triangulation)
 
-  Standard_Real Tol = std::min(BRep_Tool::Tolerance(TheFace), Precision::Confusion());
-  Standard_Real aTolU, aTolV;
+  double Tol = std::min(BRep_Tool::Tolerance(TheFace), Precision::Confusion());
+  double aTolU, aTolV;
   aTolU = std::max(mySurf.UResolution(Tol), Precision::PConfusion());
   aTolV = std::max(mySurf.VResolution(Tol), Precision::PConfusion());
-  Standard_Real U1, U2, V1, V2;
+  double U1, U2, V1, V2;
   BRepTools::UVBounds(TheFace, U1, U2, V1, V2);
   myExtPS.SetFlag(TheFlag);
   myExtPS.SetAlgo(TheAlgo);
@@ -78,9 +78,9 @@ void BRepExtrema_ExtPF::Perform(const TopoDS_Vertex& TheVertex, const TopoDS_Fac
   if (myExtPS.IsDone())
   {
     BRepClass_FaceClassifier classifier;
-    Standard_Real            U1, U2;
-    const Standard_Real      Tol = BRep_Tool::Tolerance(TheFace);
-    for (Standard_Integer i = 1; i <= myExtPS.NbExt(); i++)
+    double                   U1, U2;
+    const double             Tol = BRep_Tool::Tolerance(TheFace);
+    for (int i = 1; i <= myExtPS.NbExt(); i++)
     {
       myExtPS.Point(i).Parameter(U1, U2);
       const gp_Pnt2d Puv(U1, U2);

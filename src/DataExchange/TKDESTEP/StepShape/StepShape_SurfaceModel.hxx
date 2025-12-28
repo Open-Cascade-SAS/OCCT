@@ -38,13 +38,10 @@ public:
   //! 1 -> ShellBasedSurfaceModel
   //! 2 -> FaceBasedSurfaceModel
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a ShellBasedSurfaceModel (Null if another type)
-  Standard_EXPORT Handle(StepShape_ShellBasedSurfaceModel) ShellBasedSurfaceModel() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepShape_ShellBasedSurfaceModel> ShellBasedSurfaceModel() const;
 };
 
 #endif // _StepShape_SurfaceModel_HeaderFile

@@ -241,7 +241,7 @@ TEST(TCollection_AsciiStringTest, MemoryAllocation)
   EXPECT_EQ(4, aString1.Length());
 
   // Test allocation with different lengths
-  for (Standard_Integer anIdx = 0; anIdx <= 20; ++anIdx)
+  for (int anIdx = 0; anIdx <= 20; ++anIdx)
   {
     TCollection_AsciiString aStr(anIdx, 'A');
     EXPECT_EQ(anIdx, aStr.Length());
@@ -251,7 +251,7 @@ TEST(TCollection_AsciiStringTest, MemoryAllocation)
 TEST(TCollection_AsciiStringTest, LengthConstructor)
 {
   // Test constructor with string and maximum length
-  const Standard_CString aSourceString = "This is a very long string";
+  const char* aSourceString = "This is a very long string";
 
   TCollection_AsciiString aString1(aSourceString, 4);
   EXPECT_EQ(4, aString1.Length());
@@ -285,7 +285,7 @@ TEST(TCollection_AsciiStringTest, NumericalConstructors)
 
   // Test real constructor
   TCollection_AsciiString aRealString(3.14);
-  const Standard_CString  aRealCStr = aRealString.ToCString();
+  const char*             aRealCStr = aRealString.ToCString();
   EXPECT_TRUE(strstr(aRealCStr, "3.14") != NULL);
 }
 
@@ -333,7 +333,7 @@ TEST(TCollection_AsciiStringTest, EdgeCases)
 TEST(TCollection_AsciiStringTest, LargeStrings)
 {
   // Test with large strings to verify memory allocation
-  const Standard_Integer  aLargeSize = 1000;
+  const int               aLargeSize = 1000;
   TCollection_AsciiString aLargeString(aLargeSize, 'X');
 
   EXPECT_EQ(aLargeSize, aLargeString.Length());
@@ -344,17 +344,17 @@ TEST(TCollection_AsciiStringTest, LargeStrings)
 TEST(TCollection_AsciiStringTest, PaddingSafety)
 {
   // Test that internal padding works correctly for various lengths
-  for (Standard_Integer anIdx = 1; anIdx <= 16; ++anIdx)
+  for (int anIdx = 1; anIdx <= 16; ++anIdx)
   {
     TCollection_AsciiString aTestString(anIdx, 'A');
     EXPECT_EQ(anIdx, aTestString.Length());
 
     // Verify null termination
-    const Standard_CString aCString = aTestString.ToCString();
+    const char* aCString = aTestString.ToCString();
     EXPECT_EQ('\0', aCString[anIdx]);
 
     // Verify content
-    for (Standard_Integer aCharIdx = 0; aCharIdx < anIdx; ++aCharIdx)
+    for (int aCharIdx = 0; aCharIdx < anIdx; ++aCharIdx)
     {
       EXPECT_EQ('A', aCString[aCharIdx]);
     }
@@ -923,9 +923,9 @@ TEST(TCollection_AsciiStringTest, IsSameString_CaseSensitive)
   TCollection_AsciiString aString4("Different");
 
   // Case sensitive comparison
-  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString2, Standard_True));
-  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString3, Standard_True));
-  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString4, Standard_True));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString2, true));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString3, true));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString4, true));
 }
 
 TEST(TCollection_AsciiStringTest, IsSameString_CaseInsensitive)
@@ -936,9 +936,9 @@ TEST(TCollection_AsciiStringTest, IsSameString_CaseInsensitive)
   TCollection_AsciiString aString4("TeSt");
 
   // Case insensitive comparison
-  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString2, Standard_False));
-  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString3, Standard_False));
-  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString4, Standard_False));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString2, false));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString3, false));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aString1, aString4, false));
 }
 
 TEST(TCollection_AsciiStringTest, IsSameString_EmptyStrings)
@@ -948,9 +948,9 @@ TEST(TCollection_AsciiStringTest, IsSameString_EmptyStrings)
   TCollection_AsciiString aNonEmpty("Test");
 
   // Empty string comparisons
-  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aEmpty1, aEmpty2, Standard_True));
-  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aEmpty1, aEmpty2, Standard_False));
-  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aEmpty1, aNonEmpty, Standard_True));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aEmpty1, aEmpty2, true));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString(aEmpty1, aEmpty2, false));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aEmpty1, aNonEmpty, true));
 }
 
 TEST(TCollection_AsciiStringTest, IsSameString_DifferentLengths)
@@ -959,16 +959,16 @@ TEST(TCollection_AsciiStringTest, IsSameString_DifferentLengths)
   TCollection_AsciiString aString2("VeryLong");
 
   // Different length strings are never same
-  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString2, Standard_True));
-  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString2, Standard_False));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString2, true));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString(aString1, aString2, false));
 }
 
 TEST(TCollection_AsciiStringTest, IsSameString_WithCStrings)
 {
   // Test overload with C strings
-  EXPECT_TRUE(TCollection_AsciiString::IsSameString("Test", 4, "Test", 4, Standard_True));
-  EXPECT_FALSE(TCollection_AsciiString::IsSameString("Test", 4, "test", 4, Standard_True));
-  EXPECT_TRUE(TCollection_AsciiString::IsSameString("Test", 4, "test", 4, Standard_False));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString("Test", 4, "Test", 4, true));
+  EXPECT_FALSE(TCollection_AsciiString::IsSameString("Test", 4, "test", 4, true));
+  EXPECT_TRUE(TCollection_AsciiString::IsSameString("Test", 4, "test", 4, false));
 }
 
 // ========================================
@@ -1381,17 +1381,17 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
 
   // Build enum definition like MoniTool_TypedValue does
   aDef.AssignCat("Enum");
-  sprintf(aMess, " [in %d-%d]", 0, 1);
+  Sprintf(aMess, " [in %d-%d]", 0, 1);
   aDef.AssignCat(aMess);
 
   // Should be "Enum [in 0-1]" at this point
   EXPECT_STREQ("Enum [in 0-1]", aDef.ToCString());
 
   // Now add enum values in a loop
-  for (Standard_Integer i = 0; i <= 1; i++)
+  for (int i = 0; i <= 1; i++)
   {
     const char* anEnva = (i == 0) ? "Off" : "On";
-    sprintf(aMess, " %d:%s", i, anEnva);
+    Sprintf(aMess, " %d:%s", i, anEnva);
     aDef.AssignCat(aMess);
   }
 
@@ -1400,10 +1400,10 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
 
   // Add alpha section
   aDef.AssignCat(" , alpha: ");
-  sprintf(aMess, "On:%d ", 1);
+  Sprintf(aMess, "On:%d ", 1);
   aDef.AssignCat("On");
   aDef.AssignCat(aMess);
-  sprintf(aMess, "Off:%d ", 0);
+  Sprintf(aMess, "Off:%d ", 0);
   aDef.AssignCat("Off");
   aDef.AssignCat(aMess);
 
@@ -1438,11 +1438,11 @@ TEST(TCollection_AsciiStringTest, BUC60724_EmptyStringInitialization)
 TEST(TCollection_AsciiStringTest, BUC60773_HAsciiStringInitialization)
 {
   // Create empty HAsciiString
-  Handle(TCollection_HAsciiString) anHAscii = new TCollection_HAsciiString();
+  occ::handle<TCollection_HAsciiString> anHAscii = new TCollection_HAsciiString();
   EXPECT_FALSE(anHAscii.IsNull());
 
   // Get C string from HAsciiString
-  Standard_CString aStr = anHAscii->ToCString();
+  const char* aStr = anHAscii->ToCString();
   EXPECT_NE(nullptr, aStr);
 
   // Create AsciiString from C string
@@ -1456,11 +1456,11 @@ TEST(TCollection_AsciiStringTest, BUC60773_HAsciiStringInitialization)
 TEST(TCollection_AsciiStringTest, OCC6794_LargeConcatenation)
 {
   // Test concatenation of many small strings to verify memory handling
-  const Standard_Integer aNb = 10000; // Use a smaller number for faster test
-  const char*            aC  = "a";
+  const int   aNb = 10000; // Use a smaller number for faster test
+  const char* aC  = "a";
 
   TCollection_AsciiString anAscii;
-  for (Standard_Integer i = 1; i <= aNb; i++)
+  for (int i = 1; i <= aNb; i++)
   {
     anAscii += TCollection_AsciiString(aC);
   }
@@ -1474,27 +1474,27 @@ TEST(TCollection_AsciiStringTest, OCC11758_ComprehensiveConstructorsAndMethods)
 {
   const char* theStr = "0123456789";
 
-  for (Standard_Integer i = 0; i < 5; ++i)
+  for (int i = 0; i < 5; ++i)
   {
-    // TCollection_AsciiString(const Standard_CString astring)
+    // TCollection_AsciiString(const char* astring)
     TCollection_AsciiString a(theStr + i);
     EXPECT_STREQ(theStr + i, a.ToCString());
 
-    // TCollection_AsciiString(const Standard_CString astring, const Standard_Integer aLen)
+    // TCollection_AsciiString(const char* astring, const int aLen)
     TCollection_AsciiString b(theStr + i, 3);
     EXPECT_EQ(3, b.Length());
     EXPECT_EQ(0, strncmp(b.ToCString(), theStr + i, 3));
 
-    // TCollection_AsciiString(const Standard_Integer aValue)
+    // TCollection_AsciiString(const int aValue)
     TCollection_AsciiString c(i);
     EXPECT_TRUE(c.IsIntegerValue());
     EXPECT_EQ(i, c.IntegerValue());
 
-    // TCollection_AsciiString(const Standard_Real aValue)
+    // TCollection_AsciiString(const double aValue)
     TCollection_AsciiString d(0.1 * i);
-    EXPECT_TRUE(d.IsRealValue(Standard_True));
-    EXPECT_FALSE(TCollection_AsciiString("3.3!").IsRealValue(Standard_True));
-    EXPECT_TRUE(TCollection_AsciiString("3.3!").IsRealValue(Standard_False));
+    EXPECT_TRUE(d.IsRealValue(true));
+    EXPECT_FALSE(TCollection_AsciiString("3.3!").IsRealValue(true));
+    EXPECT_TRUE(TCollection_AsciiString("3.3!").IsRealValue(false));
     EXPECT_STREQ("3.3", TCollection_AsciiString(3.3).ToCString());
 
     // Copy constructor
@@ -1510,7 +1510,7 @@ TEST(TCollection_AsciiStringTest, OCC11758_ComprehensiveConstructorsAndMethods)
 
     // Concatenation with C string
     TCollection_AsciiString g(f, theStr);
-    EXPECT_EQ(f.Length() + (Standard_Integer)strlen(theStr), g.Length());
+    EXPECT_EQ(f.Length() + (int)strlen(theStr), g.Length());
     EXPECT_EQ(0, strncmp(g.ToCString(), f.ToCString(), f.Length()));
     EXPECT_EQ(f.Length() + 1, g.Search(theStr));
 
@@ -1526,7 +1526,7 @@ TEST(TCollection_AsciiStringTest, OCC11758_ComprehensiveConstructorsAndMethods)
     EXPECT_EQ(2, c.Search(a));
 
     // AssignCat with TCollection_AsciiString
-    Standard_Integer dl = d.Length();
+    int dl = d.Length();
     d.AssignCat(a);
     EXPECT_EQ(dl + a.Length(), d.Length());
     EXPECT_EQ(dl + 1, d.Search(a));
@@ -1546,20 +1546,20 @@ TEST(TCollection_AsciiStringTest, OCC11758_ComprehensiveConstructorsAndMethods)
     // Insert C string
     dl = d.Length();
     d.Insert(2, theStr);
-    EXPECT_EQ(dl + (Standard_Integer)strlen(theStr), d.Length());
+    EXPECT_EQ(dl + (int)strlen(theStr), d.Length());
     EXPECT_EQ(0, strncmp(d.ToCString() + 1, theStr, strlen(theStr)));
 
     // Insert char
     d = theStr;
     d.Insert(i + 1, 'i');
-    EXPECT_EQ((Standard_Integer)strlen(theStr) + 1, d.Length());
+    EXPECT_EQ((int)strlen(theStr) + 1, d.Length());
     EXPECT_EQ('i', d.Value(i + 1));
     EXPECT_STREQ(theStr + i, d.ToCString() + i + 1);
 
     // Insert TCollection_AsciiString
     d = theStr;
     d.Insert(i + 1, TCollection_AsciiString("i"));
-    EXPECT_EQ((Standard_Integer)strlen(theStr) + 1, d.Length());
+    EXPECT_EQ((int)strlen(theStr) + 1, d.Length());
     EXPECT_EQ('i', d.Value(i + 1));
     EXPECT_STREQ(theStr + i, d.ToCString() + i + 1);
 

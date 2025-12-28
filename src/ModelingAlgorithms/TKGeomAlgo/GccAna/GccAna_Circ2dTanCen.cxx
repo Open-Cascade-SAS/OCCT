@@ -41,7 +41,7 @@
 //========================================================================
 GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
                                          const gp_Pnt2d&             Pcenter,
-                                         const Standard_Real         Tolerance)
+                                         const double                Tolerance)
     :
 
       //========================================================================
@@ -56,23 +56,23 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
       pararg1(1, 2)
 {
 
-  NbrSol               = 0;
-  Standard_Real Radius = 0.0;
-  WellDone             = Standard_False;
+  NbrSol        = 0;
+  double Radius = 0.0;
+  WellDone      = false;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Dir2d         dirx(gp_Dir2d::D::X);
-  Standard_Real    Tol = std::abs(Tolerance);
-  gp_Circ2d        C1  = Qualified1.Qualified();
-  Standard_Real    R1  = C1.Radius();
-  gp_Pnt2d         center1(C1.Location());
-  Standard_Real    dist;
-  Standard_Integer signe  = 0;
-  Standard_Integer signe1 = 0;
+  gp_Dir2d  dirx(gp_Dir2d::D::X);
+  double    Tol = std::abs(Tolerance);
+  gp_Circ2d C1  = Qualified1.Qualified();
+  double    R1  = C1.Radius();
+  gp_Pnt2d  center1(C1.Location());
+  double    dist;
+  int       signe  = 0;
+  int       signe1 = 0;
 
   if (!Qualified1.IsUnqualified())
   {
@@ -87,7 +87,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
       }
       else
       {
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
     else if (Qualified1.IsEnclosing())
@@ -101,7 +101,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
       //   ===============================
       if (dist < R1 - Tol)
       {
-        WellDone = Standard_True;
+        WellDone = true;
       }
       else
       {
@@ -127,7 +127,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
         par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
         pararg1(NbrSol)   = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
       }
-      WellDone = Standard_True;
+      WellDone = true;
     }
   }
   else
@@ -137,7 +137,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
     if (dist >= gp::Resolution())
     {
       signe = 1;
-      for (Standard_Integer i = 1; i <= 2; i++)
+      for (int i = 1; i <= 2; i++)
       {
         signe = -signe;
         if (R1 - dist <= 0.)
@@ -152,7 +152,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
         NbrSol++;
         cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Pcenter, dirx), Radius);
         //       ========================================================
-        Standard_Real distcc1 = Pcenter.Distance(center1);
+        double distcc1 = Pcenter.Distance(center1);
         if (!Qualified1.IsUnqualified())
         {
           qualifier1(NbrSol) = Qualified1.Qualifier();
@@ -170,7 +170,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
           qualifier1(NbrSol) = GccEnt_enclosing;
         }
         TheSame1(NbrSol) = 0;
-        WellDone         = Standard_True;
+        WellDone         = true;
         gp_Dir2d d(Pcenter.X() - center1.X(), Pcenter.Y() - center1.Y());
         pnttg1sol(NbrSol) = gp_Pnt2d(Pcenter.XY() + signe1 * Radius * d.XY());
         par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
@@ -184,7 +184,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
       //     ==============================
       qualifier1(1)    = Qualified1.Qualifier();
       TheSame1(NbrSol) = 1;
-      WellDone         = Standard_True;
+      WellDone         = true;
     }
   }
 }
@@ -210,16 +210,16 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const gp_Lin2d& Linetan, const gp_Pnt2d
       pararg1(1, 1)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real rayon = Linetan.Distance(Pcenter);
-  cirsol(1)           = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   rayon = Linetan.Distance(Pcenter);
+  cirsol(1)      = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
   // ==================================================
-  qualifier1(1)      = GccEnt_noqualifier;
-  TheSame1(1)        = 0;
-  Standard_Real xloc = Linetan.Location().X();
-  Standard_Real yloc = Linetan.Location().Y();
-  Standard_Real xdir = Linetan.Direction().X();
-  Standard_Real ydir = Linetan.Direction().Y();
+  qualifier1(1) = GccEnt_noqualifier;
+  TheSame1(1)   = 0;
+  double xloc   = Linetan.Location().X();
+  double yloc   = Linetan.Location().Y();
+  double xdir   = Linetan.Direction().X();
+  double ydir   = Linetan.Direction().Y();
 
   if (gp_Dir2d(xloc - Pcenter.X(), yloc - Pcenter.Y()).Dot(gp_Dir2d(-ydir, xdir)) > 0.0)
   {
@@ -234,7 +234,7 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const gp_Lin2d& Linetan, const gp_Pnt2d
     pararg1(1)   = ElCLib::Parameter(Linetan, pnttg1sol(1));
   }
   NbrSol   = 1;
-  WellDone = Standard_True;
+  WellDone = true;
 }
 
 //=========================================================================
@@ -258,9 +258,9 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const gp_Pnt2d& Point1, const gp_Pnt2d&
       pararg1(1, 1)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real rayon = Point1.Distance(Pcenter);
-  cirsol(1)           = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   rayon = Point1.Distance(Pcenter);
+  cirsol(1)      = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
   // =================================================
   qualifier1(1) = GccEnt_noqualifier;
   TheSame1(1)   = 0;
@@ -268,22 +268,22 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const gp_Pnt2d& Point1, const gp_Pnt2d&
   par1sol(1)    = ElCLib::Parameter(cirsol(1), pnttg1sol(1));
   pararg1(1)    = 0.0;
   NbrSol        = 1;
-  WellDone      = Standard_True;
+  WellDone      = true;
 }
 
 //=========================================================================
 
-Standard_Boolean GccAna_Circ2dTanCen::IsDone() const
+bool GccAna_Circ2dTanCen::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer GccAna_Circ2dTanCen::NbSolutions() const
+int GccAna_Circ2dTanCen::NbSolutions() const
 {
   return NbrSol;
 }
 
-gp_Circ2d GccAna_Circ2dTanCen::ThisSolution(const Standard_Integer Index) const
+gp_Circ2d GccAna_Circ2dTanCen::ThisSolution(const int Index) const
 {
   if (Index > NbrSol || Index <= 0)
   {
@@ -292,8 +292,7 @@ gp_Circ2d GccAna_Circ2dTanCen::ThisSolution(const Standard_Integer Index) const
   return cirsol(Index);
 }
 
-void GccAna_Circ2dTanCen::WhichQualifier(const Standard_Integer Index,
-                                         GccEnt_Position&       Qualif1) const
+void GccAna_Circ2dTanCen::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -309,10 +308,10 @@ void GccAna_Circ2dTanCen::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void GccAna_Circ2dTanCen::Tangency1(const Standard_Integer Index,
-                                    Standard_Real&         ParSol,
-                                    Standard_Real&         ParArg,
-                                    gp_Pnt2d&              PntSol) const
+void GccAna_Circ2dTanCen::Tangency1(const int Index,
+                                    double&   ParSol,
+                                    double&   ParArg,
+                                    gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -337,7 +336,7 @@ void GccAna_Circ2dTanCen::Tangency1(const Standard_Integer Index,
   }
 }
 
-Standard_Boolean GccAna_Circ2dTanCen::IsTheSame1(const Standard_Integer Index) const
+bool GccAna_Circ2dTanCen::IsTheSame1(const int Index) const
 {
   if (!WellDone)
     throw StdFail_NotDone();
@@ -345,7 +344,7 @@ Standard_Boolean GccAna_Circ2dTanCen::IsTheSame1(const Standard_Integer Index) c
     throw Standard_OutOfRange();
 
   if (TheSame1(Index) == 0)
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }

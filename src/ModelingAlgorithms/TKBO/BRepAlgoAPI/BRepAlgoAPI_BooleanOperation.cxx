@@ -37,13 +37,13 @@ class BRepAlgoAPI_DumpOper
 {
 public:
   BRepAlgoAPI_DumpOper()
-      : myIsDump(Standard_False),
-        myIsDumpArgs(Standard_False),
-        myIsDumpRes(Standard_False)
+      : myIsDump(false),
+        myIsDumpArgs(false),
+        myIsDumpRes(false)
   {
     OSD_Environment         env("CSF_DEBUG_BOP");
     TCollection_AsciiString pathdump = env.Value();
-    myIsDump                         = (!pathdump.IsEmpty() ? Standard_True : Standard_False);
+    myIsDump                         = (!pathdump.IsEmpty() ? true : false);
     myPath                           = pathdump.ToCString();
   };
 
@@ -51,19 +51,19 @@ public:
   virtual ~BRepAlgoAPI_DumpOper() {};
 
   //
-  Standard_Boolean IsDump() const { return myIsDump; };
+  bool IsDump() const { return myIsDump; };
 
   //
-  void SetIsDumpArgs(const Standard_Boolean bFlag) { myIsDumpArgs = bFlag; }
+  void SetIsDumpArgs(const bool bFlag) { myIsDumpArgs = bFlag; }
 
   //
-  Standard_Boolean IsDumpArgs() const { return myIsDumpArgs; };
+  bool IsDumpArgs() const { return myIsDumpArgs; };
 
   //
-  void SetIsDumpRes(const Standard_Boolean bFlag) { myIsDumpRes = bFlag; };
+  void SetIsDumpRes(const bool bFlag) { myIsDumpRes = bFlag; };
 
   //
-  Standard_Boolean IsDumpRes() const { return myIsDumpRes; };
+  bool IsDumpRes() const { return myIsDumpRes; };
 
   //
   void Dump(const TopoDS_Shape& theShape1,
@@ -72,10 +72,10 @@ public:
             BOPAlgo_Operation   theOperation);
   //
 protected:
-  Standard_Boolean myIsDump;
-  Standard_Boolean myIsDumpArgs;
-  Standard_Boolean myIsDumpRes;
-  Standard_CString myPath;
+  bool        myIsDump;
+  bool        myIsDumpArgs;
+  bool        myIsDumpRes;
+  const char* myPath;
 };
 
 //=================================================================================================
@@ -176,8 +176,8 @@ void BRepAlgoAPI_BooleanOperation::Build(const Message_ProgressRange& theRange)
   if (myIsIntersectionNeeded)
   {
     // Combine Objects and Tools into a single list for intersection
-    TopTools_ListOfShape aLArgs = myArguments;
-    for (TopTools_ListOfShape::Iterator it(myTools); it.More(); it.Next())
+    NCollection_List<TopoDS_Shape> aLArgs = myArguments;
+    for (NCollection_List<TopoDS_Shape>::Iterator it(myTools); it.More(); it.Next())
       aLArgs.Append(it.Value());
 
     // Perform intersection
@@ -186,7 +186,7 @@ void BRepAlgoAPI_BooleanOperation::Build(const Message_ProgressRange& theRange)
     {
       if (aDumpOper.IsDump())
       {
-        aDumpOper.SetIsDumpRes(Standard_False);
+        aDumpOper.SetIsDumpRes(false);
         aDumpOper.Dump(myArguments.First(), myTools.First(), TopoDS_Shape(), myOperation);
       }
       return;
@@ -216,7 +216,7 @@ void BRepAlgoAPI_BooleanOperation::Build(const Message_ProgressRange& theRange)
 
   if (aDumpOper.IsDump())
   {
-    Standard_Boolean isDumpRes = myShape.IsNull() || !BRepAlgoAPI_Check(myShape).IsValid();
+    bool isDumpRes = myShape.IsNull() || !BRepAlgoAPI_Check(myShape).IsValid();
     aDumpOper.SetIsDumpRes(isDumpRes);
     aDumpOper.Dump(myArguments.First(), myTools.First(), myShape, myOperation);
   }
@@ -238,8 +238,8 @@ void BRepAlgoAPI_DumpOper::Dump(const TopoDS_Shape& theShape1,
   //
   TCollection_AsciiString aPath(myPath);
   aPath += "/";
-  Standard_Integer        aNumOper = 1;
-  Standard_Boolean        isExist  = Standard_True;
+  int                     aNumOper = 1;
+  bool                    isExist  = true;
   TCollection_AsciiString aFileName;
 
   while (isExist)

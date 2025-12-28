@@ -34,17 +34,17 @@ public:
   Standard_HIDDEN RWStepRepr_RWMechanicalDesignAndDraughtingRelationship();
 
   Standard_HIDDEN void ReadStep(
-    const Handle(StepData_StepReaderData)&                            theData,
-    const Standard_Integer                                            theNum,
-    Handle(Interface_Check)&                                          theAch,
-    const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt) const;
+    const occ::handle<StepData_StepReaderData>&                            theData,
+    const int                                                              theNum,
+    occ::handle<Interface_Check>&                                          theAch,
+    const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theEnt) const;
 
   Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                              theSW,
-    const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt) const;
+    StepData_StepWriter&                                                   theSW,
+    const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theEnt) const;
 
   Standard_HIDDEN void Share(
-    const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt,
-    Interface_EntityIterator&                                         theIter) const;
+    const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theEnt,
+    Interface_EntityIterator&                                              theIter) const;
 };
 #endif // _RWStepRepr_RWMechanicalDesignAndDraughtingRelationship_HeaderFile

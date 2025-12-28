@@ -23,9 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PointOnCurve, BRep_PointRepresentation)
 
 //=================================================================================================
 
-BRep_PointOnCurve::BRep_PointOnCurve(const Standard_Real       P,
-                                     const Handle(Geom_Curve)& C,
-                                     const TopLoc_Location&    L)
+BRep_PointOnCurve::BRep_PointOnCurve(const double                   P,
+                                     const occ::handle<Geom_Curve>& C,
+                                     const TopLoc_Location&         L)
     : BRep_PointRepresentation(P, L),
       myCurve(C)
 {
@@ -33,36 +33,36 @@ BRep_PointOnCurve::BRep_PointOnCurve(const Standard_Real       P,
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointOnCurve::IsPointOnCurve() const
+bool BRep_PointOnCurve::IsPointOnCurve() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointOnCurve::IsPointOnCurve(const Handle(Geom_Curve)& C,
-                                                   const TopLoc_Location&    L) const
+bool BRep_PointOnCurve::IsPointOnCurve(const occ::handle<Geom_Curve>& C,
+                                       const TopLoc_Location&         L) const
 {
   return (myCurve == C) && (Location() == L);
 }
 
 //=================================================================================================
 
-const Handle(Geom_Curve)& BRep_PointOnCurve::Curve() const
+const occ::handle<Geom_Curve>& BRep_PointOnCurve::Curve() const
 {
   return myCurve;
 }
 
 //=================================================================================================
 
-void BRep_PointOnCurve::Curve(const Handle(Geom_Curve)& C)
+void BRep_PointOnCurve::Curve(const occ::handle<Geom_Curve>& C)
 {
   myCurve = C;
 }
 
 //=================================================================================================
 
-void BRep_PointOnCurve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void BRep_PointOnCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

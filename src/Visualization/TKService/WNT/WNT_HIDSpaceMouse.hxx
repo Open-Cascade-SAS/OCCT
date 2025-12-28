@@ -15,7 +15,11 @@
 #define _WNT_HIDSpaceMouse_Header
 
 #include <Aspect_VKey.hxx>
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
+#include <NCollection_Vec3.hxx>
+#include <NCollection_Vec4.hxx>
+#include <NCollection_Mat4.hxx>
 
 //! Wrapper over Space Mouse data chunk within WM_INPUT event (known also as Raw Input in WinAPI).
 //! This class predefines specific list of supported devices, which does not depend on 3rdparty
@@ -26,7 +30,7 @@
 //!
 //! To use the class, register Raw Input device:
 //! @code
-//!  Handle(WNT_Window) theWindow;
+//!  occ::handle<WNT_Window> theWindow;
 //!  RAWINPUTDEVICE aRawInDevList[1];
 //!  RAWINPUTDEVICE& aRawSpace = aRawInDevList[0];
 //!  aRawSpace.usUsagePage = HID_USAGE_PAGE_GENERIC;
@@ -72,7 +76,7 @@
 //!    {
 //!      // process translation input
 //!      bool isIdle = true, isQuadric = true;
-//!      const Graphic3d_Vec3d aTrans = aSpaceData.Translation (isIdle, isQuadric);
+//!      const NCollection_Vec3<double> aTrans = aSpaceData.Translation (isIdle, isQuadric);
 //!      aKeys.KeyFromAxis (Aspect_VKey_NavSlideLeft, Aspect_VKey_NavSlideRight, aTimeStamp,
 //!      aTrans.x()); aKeys.KeyFromAxis (Aspect_VKey_NavForward,   Aspect_VKey_NavBackward,
 //!      aTimeStamp, aTrans.y()); aKeys.KeyFromAxis (Aspect_VKey_NavSlideUp,
@@ -98,9 +102,9 @@ public:
 
 public:
   //! Main constructor.
-  Standard_EXPORT WNT_HIDSpaceMouse(unsigned long        theProductId,
-                                    const Standard_Byte* theData,
-                                    Standard_Size        theSize);
+  Standard_EXPORT WNT_HIDSpaceMouse(unsigned long  theProductId,
+                                    const uint8_t* theData,
+                                    size_t         theSize);
 
   //! Return the raw value range.
   int16_t RawValueRange() const { return myValueRange; }
@@ -123,7 +127,7 @@ public:
   //! @return vector of 3 elements defining translation values within [-1..1] range, 0 meaning idle,
   //!         .x defining left/right slide, .y defining forward/backward and .z defining up/down
   //!         slide.
-  Standard_EXPORT Graphic3d_Vec3d Translation(bool& theIsIdle, bool theIsQuadric) const;
+  Standard_EXPORT NCollection_Vec3<double> Translation(bool& theIsIdle, bool theIsQuadric) const;
 
   //! Return TRUE if data chunk defines new rotation values.
   bool IsRotation() const
@@ -137,7 +141,7 @@ public:
   //! @param[in] theIsQuadric  flag to apply non-linear scale factor
   //! @return vector of 3 elements defining rotation values within [-1..1] range, 0 meaning idle,
   //!         .x defining tilt, .y defining roll and .z defining spin.
-  Standard_EXPORT Graphic3d_Vec3d Rotation(bool& theIsIdle, bool theIsQuadric) const;
+  Standard_EXPORT NCollection_Vec3<double> Rotation(bool& theIsIdle, bool theIsQuadric) const;
 
   //! Return TRUE for key state data chunk.
   bool IsKeyState() const { return myData[0] == SpaceRawInput_KeyState; }
@@ -151,10 +155,10 @@ public:
 private:
   //! Translate raw data chunk of 3 int16 values into normalized vec3.
   //! The values are considered within the range [-350; 350], with 0 as neutral state.
-  Graphic3d_Vec3d fromRawVec3(bool&                theIsIdle,
-                              const Standard_Byte* theData,
-                              bool                 theIsTrans,
-                              bool                 theIsQuadric) const;
+  NCollection_Vec3<double> fromRawVec3(bool&          theIsIdle,
+                                       const uint8_t* theData,
+                                       bool           theIsTrans,
+                                       bool           theIsQuadric) const;
 
   //! Data chunk type.
   enum
@@ -165,10 +169,10 @@ private:
   };
 
 private:
-  const Standard_Byte* myData;       //!< RAW data chunk
-  Standard_Size        mySize;       //!< size of RAW data chunk
-  unsigned long        myProductId;  //!< product id
-  mutable int16_t      myValueRange; //!< RAW value range
+  const uint8_t*  myData;       //!< RAW data chunk
+  size_t          mySize;       //!< size of RAW data chunk
+  unsigned long   myProductId;  //!< product id
+  mutable int16_t myValueRange; //!< RAW value range
 };
 
 #endif // _WNT_HIDSpaceMouse_Header

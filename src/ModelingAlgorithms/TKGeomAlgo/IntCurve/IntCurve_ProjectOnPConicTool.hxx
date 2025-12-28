@@ -40,9 +40,9 @@ public:
   //! no bounds are given. The research of the right parameter
   //! has to be made on the natural parametric domain of the
   //! curve.
-  Standard_EXPORT static Standard_Real FindParameter(const IntCurve_PConic& C,
-                                                     const gp_Pnt2d&        Pnt,
-                                                     const Standard_Real    Tol);
+  Standard_EXPORT static double FindParameter(const IntCurve_PConic& C,
+                                              const gp_Pnt2d&        Pnt,
+                                              const double           Tol);
 
   //! Returns the parameter V of the point on the
   //! parametric curve corresponding to the Point Pnt. The
@@ -56,14 +56,11 @@ public:
   //! given to implement a more efficient algorithm. So, it is
   //! not necessary to check that the returned value verifies
   //! LowParameter <= Value <= HighParameter.
-  Standard_EXPORT static Standard_Real FindParameter(const IntCurve_PConic& C,
-                                                     const gp_Pnt2d&        Pnt,
-                                                     const Standard_Real    LowParameter,
-                                                     const Standard_Real    HighParameter,
-                                                     const Standard_Real    Tol);
-
-protected:
-private:
+  Standard_EXPORT static double FindParameter(const IntCurve_PConic& C,
+                                              const gp_Pnt2d&        Pnt,
+                                              const double           LowParameter,
+                                              const double           HighParameter,
+                                              const double           Tol);
 };
 
 #endif // _IntCurve_ProjectOnPConicTool_HeaderFile

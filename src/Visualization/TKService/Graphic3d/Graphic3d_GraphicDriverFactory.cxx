@@ -19,16 +19,17 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriverFactory, Standard_Transient)
 
 namespace
 {
-static Graphic3d_GraphicDriverFactoryList& getDriverFactories()
+static NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& getDriverFactories()
 {
-  static Graphic3d_GraphicDriverFactoryList TheFactories;
+  static NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>> TheFactories;
   return TheFactories;
 }
 } // namespace
 
 //=================================================================================================
 
-const Graphic3d_GraphicDriverFactoryList& Graphic3d_GraphicDriverFactory::DriverFactories()
+const NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>&
+  Graphic3d_GraphicDriverFactory::DriverFactories()
 {
   return getDriverFactories();
 }
@@ -36,11 +37,11 @@ const Graphic3d_GraphicDriverFactoryList& Graphic3d_GraphicDriverFactory::Driver
 //=================================================================================================
 
 void Graphic3d_GraphicDriverFactory::RegisterFactory(
-  const Handle(Graphic3d_GraphicDriverFactory)& theFactory,
-  bool                                          theIsPreferred)
+  const occ::handle<Graphic3d_GraphicDriverFactory>& theFactory,
+  bool                                               theIsPreferred)
 {
-  const TCollection_AsciiString       aName      = theFactory->Name();
-  Graphic3d_GraphicDriverFactoryList& aFactories = getDriverFactories();
+  const TCollection_AsciiString                                  aName      = theFactory->Name();
+  NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& aFactories = getDriverFactories();
   if (theIsPreferred)
   {
     UnregisterFactory(aName);
@@ -48,7 +49,8 @@ void Graphic3d_GraphicDriverFactory::RegisterFactory(
     return;
   }
 
-  for (Graphic3d_GraphicDriverFactoryList::Iterator anIter(aFactories); anIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>::Iterator anIter(aFactories);
+       anIter.More();
        anIter.Next())
   {
     if (TCollection_AsciiString::IsSameString(anIter.Value()->Name(), aName, false))
@@ -63,8 +65,9 @@ void Graphic3d_GraphicDriverFactory::RegisterFactory(
 
 void Graphic3d_GraphicDriverFactory::UnregisterFactory(const TCollection_AsciiString& theName)
 {
-  Graphic3d_GraphicDriverFactoryList& aFactories = getDriverFactories();
-  for (Graphic3d_GraphicDriverFactoryList::Iterator anIter(aFactories); anIter.More();)
+  NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& aFactories = getDriverFactories();
+  for (NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>::Iterator anIter(aFactories);
+       anIter.More();)
   {
     if (TCollection_AsciiString::IsSameString(anIter.Value()->Name(), theName, false))
     {
@@ -79,10 +82,10 @@ void Graphic3d_GraphicDriverFactory::UnregisterFactory(const TCollection_AsciiSt
 
 //=================================================================================================
 
-Handle(Graphic3d_GraphicDriverFactory) Graphic3d_GraphicDriverFactory::DefaultDriverFactory()
+occ::handle<Graphic3d_GraphicDriverFactory> Graphic3d_GraphicDriverFactory::DefaultDriverFactory()
 {
-  const Graphic3d_GraphicDriverFactoryList& aMap = getDriverFactories();
-  return !aMap.IsEmpty() ? aMap.First() : Handle(Graphic3d_GraphicDriverFactory)();
+  const NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& aMap = getDriverFactories();
+  return !aMap.IsEmpty() ? aMap.First() : occ::handle<Graphic3d_GraphicDriverFactory>();
 }
 
 //=================================================================================================

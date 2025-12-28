@@ -30,15 +30,13 @@ class Aspect_WindowInputListener;
 class WNT_WClass;
 typedef struct tagMSG MSG;
 
-DEFINE_STANDARD_HANDLE(WNT_Window, Aspect_Window)
-
 //! This class defines Windows NT window
 class WNT_Window : public Aspect_Window
 {
   DEFINE_STANDARD_RTTIEXT(WNT_Window, Aspect_Window)
 public:
   //! Convert WInAPI virtual key (VK_ enumeration) into Aspect_VKey.
-  Standard_EXPORT static Aspect_VKey VirtualKeyFromNative(Standard_Integer theKey);
+  Standard_EXPORT static Aspect_VKey VirtualKeyFromNative(int theKey);
 
   //! Convert WPARAM from mouse event to key flags.
   Standard_EXPORT static Aspect_VKeyFlags MouseKeyFlagsFromEvent(WPARAM theKeys);
@@ -56,17 +54,17 @@ public:
   //! Creates a Window defined by his position and size in pixels from the Parent Window.
   //! Trigger: Raises WindowDefinitionError if the Position out of the Screen Space or the window
   //! creation failed.
-  Standard_EXPORT WNT_Window(const Standard_CString     theTitle,
-                             const Handle(WNT_WClass)&  theClass,
-                             const WNT_Dword&           theStyle,
-                             const Standard_Integer     thePxLeft,
-                             const Standard_Integer     thePxTop,
-                             const Standard_Integer     thePxWidth,
-                             const Standard_Integer     thePxHeight,
-                             const Quantity_NameOfColor theBackColor    = Quantity_NOC_MATRAGRAY,
-                             const Aspect_Handle        theParent       = 0,
-                             const Aspect_Handle        theMenu         = 0,
-                             const Standard_Address     theClientStruct = 0);
+  Standard_EXPORT WNT_Window(const char*                    theTitle,
+                             const occ::handle<WNT_WClass>& theClass,
+                             const WNT_Dword&               theStyle,
+                             const int                      thePxLeft,
+                             const int                      thePxTop,
+                             const int                      thePxWidth,
+                             const int                      thePxHeight,
+                             const Quantity_NameOfColor     theBackColor = Quantity_NOC_MATRAGRAY,
+                             const Aspect_Handle            theParent    = 0,
+                             const Aspect_Handle            theMenu      = 0,
+                             void* const                    theClientStruct = 0);
 
   //! Creates a Window based on the existing window handle.
   Standard_EXPORT WNT_Window(const Aspect_Handle        theHandle,
@@ -79,70 +77,60 @@ public:
   Standard_EXPORT void SetCursor(const Aspect_Handle theCursor) const;
 
   //! Opens the window <me>.
-  Standard_EXPORT virtual void Map() const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Map() const override;
 
   //! Opens a window according to the map mode.
   //! This method is specific to Windows NT.
   //! @param[in] theMapMode  can be one of SW_xxx constants defined in <windows.h>
-  Standard_EXPORT void Map(const Standard_Integer theMapMode) const;
+  Standard_EXPORT void Map(const int theMapMode) const;
 
   //! Closes the window <me>.
-  Standard_EXPORT virtual void Unmap() const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Unmap() const override;
 
   //! Applies the resizing to the window <me>.
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() override;
 
   //! Does nothing on Windows.
-  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool DoMapping() const override { return true; }
 
   //! Changes variables due to window position.
-  Standard_EXPORT void SetPos(const Standard_Integer X,
-                              const Standard_Integer Y,
-                              const Standard_Integer X1,
-                              const Standard_Integer Y1);
+  Standard_EXPORT void SetPos(const int X, const int Y, const int X1, const int Y1);
 
   //! Returns True if the window <me> is opened
   //! and False if the window is closed.
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsMapped() const override;
 
   //! Returns The Window RATIO equal to the physical
   //! WIDTH/HEIGHT dimensions.
-  Standard_EXPORT virtual Standard_Real Ratio() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double Ratio() const override;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position(Standard_Integer& X1,
-                                        Standard_Integer& Y1,
-                                        Standard_Integer& X2,
-                                        Standard_Integer& Y2) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Position(int& X1, int& Y1, int& X2, int& Y2) const override;
 
   //! Returns The Window SIZE in PIXEL
-  Standard_EXPORT virtual void Size(Standard_Integer& Width,
-                                    Standard_Integer& Height) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Size(int& Width, int& Height) const override;
 
   //! Returns native Window handle (HWND)
-  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE
-  {
-    return (Aspect_Drawable)myHWindow;
-  }
+  virtual Aspect_Drawable NativeHandle() const override { return (Aspect_Drawable)myHWindow; }
 
   //! Returns parent of native Window handle (HWND on Windows).
-  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE
+  virtual Aspect_Drawable NativeParentHandle() const override
   {
     return (Aspect_Drawable)myHParentWindow;
   }
 
   //! Returns nothing on Windows
-  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
+  virtual Aspect_FBConfig NativeFBConfig() const override { return NULL; }
 
   //! Sets window title.
-  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) override;
 
   //! Invalidate entire window content by calling InvalidateRect() WinAPI function, resulting in
   //! WM_PAINT event put into window message loop. Method can be called from non-window thread, and
   //! system will also automatically aggregate multiple events into single one.
   Standard_EXPORT virtual void InvalidateContent(
-    const Handle(Aspect_DisplayConnection)& theDisp = Handle(Aspect_DisplayConnection)())
-    Standard_OVERRIDE;
+    const occ::handle<Aspect_DisplayConnection>& theDisp =
+      occ::handle<Aspect_DisplayConnection>()) override;
 
 public:
   //! Returns the Windows NT handle of the created window <me>.
@@ -173,15 +161,15 @@ private:
   class TouchInputHelper;
 
 protected:
-  Handle(WNT_WClass)       myWClass;
-  Handle(TouchInputHelper) myTouchInputHelper;
-  Aspect_Handle            myHWindow;
-  Aspect_Handle            myHParentWindow;
-  Standard_Integer         myXLeft;
-  Standard_Integer         myYTop;
-  Standard_Integer         myXRight;
-  Standard_Integer         myYBottom;
-  Standard_Boolean         myIsForeign;
+  occ::handle<WNT_WClass>       myWClass;
+  occ::handle<TouchInputHelper> myTouchInputHelper;
+  Aspect_Handle                 myHWindow;
+  Aspect_Handle                 myHParentWindow;
+  int                           myXLeft;
+  int                           myYTop;
+  int                           myXRight;
+  int                           myYBottom;
+  bool                          myIsForeign;
 };
 
 #endif // _WIN32

@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_Face.hxx>
@@ -22,8 +22,7 @@
 
 StepShape_ReversibleTopologyItem::StepShape_ReversibleTopologyItem() {}
 
-Standard_Integer StepShape_ReversibleTopologyItem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepShape_ReversibleTopologyItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -42,32 +41,32 @@ Standard_Integer StepShape_ReversibleTopologyItem::CaseNum(
   return 0;
 }
 
-Handle(StepShape_Edge) StepShape_ReversibleTopologyItem::Edge() const
+occ::handle<StepShape_Edge> StepShape_ReversibleTopologyItem::Edge() const
 {
   return GetCasted(StepShape_Edge, Value());
 }
 
-Handle(StepShape_Path) StepShape_ReversibleTopologyItem::Path() const
+occ::handle<StepShape_Path> StepShape_ReversibleTopologyItem::Path() const
 {
   return GetCasted(StepShape_Path, Value());
 }
 
-Handle(StepShape_Face) StepShape_ReversibleTopologyItem::Face() const
+occ::handle<StepShape_Face> StepShape_ReversibleTopologyItem::Face() const
 {
   return GetCasted(StepShape_Face, Value());
 }
 
-Handle(StepShape_FaceBound) StepShape_ReversibleTopologyItem::FaceBound() const
+occ::handle<StepShape_FaceBound> StepShape_ReversibleTopologyItem::FaceBound() const
 {
   return GetCasted(StepShape_FaceBound, Value());
 }
 
-Handle(StepShape_ClosedShell) StepShape_ReversibleTopologyItem::ClosedShell() const
+occ::handle<StepShape_ClosedShell> StepShape_ReversibleTopologyItem::ClosedShell() const
 {
   return GetCasted(StepShape_ClosedShell, Value());
 }
 
-Handle(StepShape_OpenShell) StepShape_ReversibleTopologyItem::OpenShell() const
+occ::handle<StepShape_OpenShell> StepShape_ReversibleTopologyItem::OpenShell() const
 {
   return GetCasted(StepShape_OpenShell, Value());
 }

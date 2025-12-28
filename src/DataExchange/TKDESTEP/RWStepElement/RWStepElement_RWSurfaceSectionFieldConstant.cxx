@@ -29,10 +29,10 @@ RWStepElement_RWSurfaceSectionFieldConstant::RWStepElement_RWSurfaceSectionField
 //=================================================================================================
 
 void RWStepElement_RWSurfaceSectionFieldConstant::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepElement_SurfaceSectionFieldConstant)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                                   num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepElement_SurfaceSectionFieldConstant>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "surface_section_field_constant"))
@@ -40,7 +40,7 @@ void RWStepElement_RWSurfaceSectionFieldConstant::ReadStep(
 
   // Own fields of SurfaceSectionFieldConstant
 
-  Handle(StepElement_SurfaceSection) aDefinition;
+  occ::handle<StepElement_SurfaceSection> aDefinition;
   data
     ->ReadEntity(num, 1, "definition", ach, STANDARD_TYPE(StepElement_SurfaceSection), aDefinition);
 
@@ -51,8 +51,8 @@ void RWStepElement_RWSurfaceSectionFieldConstant::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWSurfaceSectionFieldConstant::WriteStep(
-  StepData_StepWriter&                                   SW,
-  const Handle(StepElement_SurfaceSectionFieldConstant)& ent) const
+  StepData_StepWriter&                                        SW,
+  const occ::handle<StepElement_SurfaceSectionFieldConstant>& ent) const
 {
 
   // Own fields of SurfaceSectionFieldConstant
@@ -63,8 +63,8 @@ void RWStepElement_RWSurfaceSectionFieldConstant::WriteStep(
 //=================================================================================================
 
 void RWStepElement_RWSurfaceSectionFieldConstant::Share(
-  const Handle(StepElement_SurfaceSectionFieldConstant)& ent,
-  Interface_EntityIterator&                              iter) const
+  const occ::handle<StepElement_SurfaceSectionFieldConstant>& ent,
+  Interface_EntityIterator&                                   iter) const
 {
 
   // Own fields of SurfaceSectionFieldConstant

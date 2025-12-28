@@ -58,7 +58,7 @@ void XCAFDoc_VisMaterial::SetCommonMaterial(const XCAFDoc_VisMaterialCommon& the
 
 //=================================================================================================
 
-void XCAFDoc_VisMaterial::SetAlphaMode(Graphic3d_AlphaMode theMode, Standard_ShortReal theCutOff)
+void XCAFDoc_VisMaterial::SetAlphaMode(Graphic3d_AlphaMode theMode, float theCutOff)
 {
   Backup();
   myAlphaMode   = theMode;
@@ -75,7 +75,7 @@ void XCAFDoc_VisMaterial::SetFaceCulling(Graphic3d_TypeOfBackfacingModel theFace
 
 //=================================================================================================
 
-void XCAFDoc_VisMaterial::Restore(const Handle(TDF_Attribute)& theWith)
+void XCAFDoc_VisMaterial::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
   XCAFDoc_VisMaterial* anOther = dynamic_cast<XCAFDoc_VisMaterial*>(theWith.get());
   myPbrMat                     = anOther->myPbrMat;
@@ -87,15 +87,15 @@ void XCAFDoc_VisMaterial::Restore(const Handle(TDF_Attribute)& theWith)
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XCAFDoc_VisMaterial::NewEmpty() const
+occ::handle<TDF_Attribute> XCAFDoc_VisMaterial::NewEmpty() const
 {
   return new XCAFDoc_VisMaterial();
 }
 
 //=================================================================================================
 
-void XCAFDoc_VisMaterial::Paste(const Handle(TDF_Attribute)& theInto,
-                                const Handle(TDF_RelocationTable)&) const
+void XCAFDoc_VisMaterial::Paste(const occ::handle<TDF_Attribute>& theInto,
+                                const occ::handle<TDF_RelocationTable>&) const
 {
   XCAFDoc_VisMaterial* anOther = dynamic_cast<XCAFDoc_VisMaterial*>(theInto.get());
   anOther->Backup();
@@ -144,7 +144,8 @@ XCAFDoc_VisMaterialCommon XCAFDoc_VisMaterial::ConvertToCommonMaterial()
   aComMat.Shininess      = 1.0f - myPbrMat.Roughness;
   if (myPbrMat.EmissiveTexture.IsNull())
   {
-    aComMat.EmissiveColor = Quantity_Color(myPbrMat.EmissiveFactor.cwiseMin(Graphic3d_Vec3(1.0f)));
+    aComMat.EmissiveColor =
+      Quantity_Color(myPbrMat.EmissiveFactor.cwiseMin(NCollection_Vec3<float>(1.0f)));
   }
   return aComMat;
 }
@@ -223,7 +224,7 @@ void XCAFDoc_VisMaterial::FillMaterialAspect(Graphic3d_MaterialAspect& theAspect
         theAspect.SetShininess(0.01f);
       }
       theAspect.SetEmissiveColor(
-        Quantity_Color(myPbrMat.EmissiveFactor.cwiseMin(Graphic3d_Vec3(1.0f))));
+        Quantity_Color(myPbrMat.EmissiveFactor.cwiseMin(NCollection_Vec3<float>(1.0f))));
     }
 
     Graphic3d_PBRMaterial aPbr;
@@ -240,7 +241,7 @@ void XCAFDoc_VisMaterial::FillMaterialAspect(Graphic3d_MaterialAspect& theAspect
 
 //=================================================================================================
 
-void XCAFDoc_VisMaterial::FillAspect(const Handle(Graphic3d_Aspects)& theAspect) const
+void XCAFDoc_VisMaterial::FillAspect(const occ::handle<Graphic3d_Aspects>& theAspect) const
 {
   if (IsEmpty())
   {
@@ -253,9 +254,9 @@ void XCAFDoc_VisMaterial::FillAspect(const Handle(Graphic3d_Aspects)& theAspect)
   theAspect->SetAlphaMode(myAlphaMode, myAlphaCutOff);
   theAspect->SetFaceCulling(myFaceCulling);
 
-  const Handle(Image_Texture)& aColorTexture =
+  const occ::handle<Image_Texture>& aColorTexture =
     !myPbrMat.BaseColorTexture.IsNull() ? myPbrMat.BaseColorTexture : myCommonMat.DiffuseTexture;
-  Standard_Integer aNbTexUnits = 0;
+  int aNbTexUnits = 0;
   if (!aColorTexture.IsNull())
   {
     ++aNbTexUnits;
@@ -281,8 +282,8 @@ void XCAFDoc_VisMaterial::FillAspect(const Handle(Graphic3d_Aspects)& theAspect)
     return;
   }
 
-  Standard_Integer             aTexIter    = 0;
-  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet(aNbTexUnits);
+  int                               aTexIter    = 0;
+  occ::handle<Graphic3d_TextureSet> aTextureSet = new Graphic3d_TextureSet(aNbTexUnits);
   if (!aColorTexture.IsNull())
   {
     aTextureSet->SetValue(aTexIter++,
@@ -319,7 +320,7 @@ void XCAFDoc_VisMaterial::FillAspect(const Handle(Graphic3d_Aspects)& theAspect)
 
 //=================================================================================================
 
-void XCAFDoc_VisMaterial::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_VisMaterial::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

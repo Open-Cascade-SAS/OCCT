@@ -22,10 +22,10 @@
 RWStepRepr_RWGlobalUncertaintyAssignedContext::RWStepRepr_RWGlobalUncertaintyAssignedContext() {}
 
 void RWStepRepr_RWGlobalUncertaintyAssignedContext::ReadStep(
-  const Handle(StepData_StepReaderData)&                   data,
-  const Standard_Integer                                   num,
-  Handle(Interface_Check)&                                 ach,
-  const Handle(StepRepr_GlobalUncertaintyAssignedContext)& ent) const
+  const occ::handle<StepData_StepReaderData>&                   data,
+  const int                                                     num,
+  occ::handle<Interface_Check>&                                 ach,
+  const occ::handle<StepRepr_GlobalUncertaintyAssignedContext>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,28 +35,29 @@ void RWStepRepr_RWGlobalUncertaintyAssignedContext::ReadStep(
 
   // --- inherited field : contextIdentifier ---
 
-  Handle(TCollection_HAsciiString) aContextIdentifier;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aContextIdentifier;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "context_identifier", ach, aContextIdentifier);
 
   // --- inherited field : contextType ---
 
-  Handle(TCollection_HAsciiString) aContextType;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aContextType;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num, 2, "context_type", ach, aContextType);
 
   // --- own field : uncertainty ---
 
-  Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit) aUncertainty;
-  Handle(StepBasic_UncertaintyMeasureWithUnit)          anent3;
-  Standard_Integer                                      nsub3;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>> aUncertainty;
+  occ::handle<StepBasic_UncertaintyMeasureWithUnit>                                   anent3;
+  int                                                                                 nsub3;
   if (data->ReadSubList(num, 3, "uncertainty", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aUncertainty         = new StepBasic_HArray1OfUncertaintyMeasureWithUnit(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aUncertainty =
+      new NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3,
                            i3,
                            "uncertainty_measure_with_unit",
@@ -73,8 +74,8 @@ void RWStepRepr_RWGlobalUncertaintyAssignedContext::ReadStep(
 }
 
 void RWStepRepr_RWGlobalUncertaintyAssignedContext::WriteStep(
-  StepData_StepWriter&                                     SW,
-  const Handle(StepRepr_GlobalUncertaintyAssignedContext)& ent) const
+  StepData_StepWriter&                                          SW,
+  const occ::handle<StepRepr_GlobalUncertaintyAssignedContext>& ent) const
 {
 
   // --- inherited field contextIdentifier ---
@@ -88,7 +89,7 @@ void RWStepRepr_RWGlobalUncertaintyAssignedContext::WriteStep(
   // --- own field : uncertainty ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbUncertainty(); i3++)
+  for (int i3 = 1; i3 <= ent->NbUncertainty(); i3++)
   {
     SW.Send(ent->UncertaintyValue(i3));
   }
@@ -96,12 +97,12 @@ void RWStepRepr_RWGlobalUncertaintyAssignedContext::WriteStep(
 }
 
 void RWStepRepr_RWGlobalUncertaintyAssignedContext::Share(
-  const Handle(StepRepr_GlobalUncertaintyAssignedContext)& ent,
-  Interface_EntityIterator&                                iter) const
+  const occ::handle<StepRepr_GlobalUncertaintyAssignedContext>& ent,
+  Interface_EntityIterator&                                     iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbUncertainty();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbUncertainty();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->UncertaintyValue(is1));
   }

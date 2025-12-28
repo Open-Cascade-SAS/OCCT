@@ -26,7 +26,7 @@
 #include <string.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Editor, Standard_Transient)
 
-IFSelect_Editor::IFSelect_Editor(const Standard_Integer nbval)
+IFSelect_Editor::IFSelect_Editor(const int nbval)
     : thenbval(nbval),
       themaxsh(0),
       themaxco(0),
@@ -39,73 +39,72 @@ IFSelect_Editor::IFSelect_Editor(const Standard_Integer nbval)
   thelists.Init(-1);
 }
 
-void IFSelect_Editor::SetNbValues(const Standard_Integer nbval)
+void IFSelect_Editor::SetNbValues(const int nbval)
 {
   if (nbval > thevalues.Upper())
     throw Standard_OutOfRange("IFSelect_Editor:SetNbValues");
   thenbval = nbval;
 }
 
-void IFSelect_Editor::SetValue(const Standard_Integer              num,
-                               const Handle(Interface_TypedValue)& typval,
-                               const Standard_CString              shortname,
-                               const IFSelect_EditValue            editmode)
+void IFSelect_Editor::SetValue(const int                                num,
+                               const occ::handle<Interface_TypedValue>& typval,
+                               const char*                              shortname,
+                               const IFSelect_EditValue                 editmode)
 {
   if (num < 1 || num > thenbval)
     return;
   TCollection_AsciiString shn(shortname);
-  Standard_Integer        lng = shn.Length();
+  int                     lng = shn.Length();
   if (lng > 0)
     thenames.Bind(shortname, num);
   if (lng > themaxsh)
     themaxsh = lng;
-  lng = (Standard_Integer)strlen(typval->Name());
+  lng = (int)strlen(typval->Name());
   if (lng > themaxco)
     themaxco = lng;
-  lng = (Standard_Integer)strlen(typval->Label());
+  lng = (int)strlen(typval->Label());
   if (lng > themaxla)
     themaxla = lng;
 
   thenames.Bind(typval->Name(), num);
-  Standard_Integer edm = (Standard_Integer)editmode;
+  int edm = (int)editmode;
   thevalues.SetValue(num, typval);
   theshorts.SetValue(num, shn);
   themodes.SetValue(num, edm);
 }
 
-void IFSelect_Editor::SetList(const Standard_Integer num, const Standard_Integer max)
+void IFSelect_Editor::SetList(const int num, const int max)
 {
   if (num < 1 || num > thenbval)
     return;
   thelists.SetValue(num, max);
 }
 
-Standard_Integer IFSelect_Editor::NbValues() const
+int IFSelect_Editor::NbValues() const
 {
   return thenbval;
 }
 
-Handle(Interface_TypedValue) IFSelect_Editor::TypedValue(const Standard_Integer num) const
+occ::handle<Interface_TypedValue> IFSelect_Editor::TypedValue(const int num) const
 {
-  return Handle(Interface_TypedValue)::DownCast(thevalues.Value(num));
+  return occ::down_cast<Interface_TypedValue>(thevalues.Value(num));
 }
 
-Standard_Boolean IFSelect_Editor::IsList(const Standard_Integer num) const
+bool IFSelect_Editor::IsList(const int num) const
 {
   if (num < 1 || num > thenbval)
-    return Standard_False;
+    return false;
   return (thelists.Value(num) >= 0);
 }
 
-Standard_Integer IFSelect_Editor::MaxList(const Standard_Integer num) const
+int IFSelect_Editor::MaxList(const int num) const
 {
   if (num < 1 || num > thenbval)
     return -1;
   return thelists.Value(num);
 }
 
-Standard_CString IFSelect_Editor::Name(const Standard_Integer num,
-                                       const Standard_Boolean isshort) const
+const char* IFSelect_Editor::Name(const int num, const bool isshort) const
 {
   if (num < 1 || num > thenbval)
     return "";
@@ -115,17 +114,17 @@ Standard_CString IFSelect_Editor::Name(const Standard_Integer num,
     return TypedValue(num)->Name();
 }
 
-IFSelect_EditValue IFSelect_Editor::EditMode(const Standard_Integer num) const
+IFSelect_EditValue IFSelect_Editor::EditMode(const int num) const
 {
   if (num < 1 || num > thenbval)
     return IFSelect_EditDynamic;
-  Standard_Integer edm = themodes.Value(num);
+  int edm = themodes.Value(num);
   return (IFSelect_EditValue)edm;
 }
 
 void IFSelect_Editor::PrintNames(Standard_OStream& S) const
 {
-  Standard_Integer i, nb = NbValues();
+  int i, nb = NbValues();
   S << "****    Editor : " << Label() << std::endl;
   S << "****    Nb Values = " << nb << "    ****    Names / Labels" << std::endl;
   S << " Num ";
@@ -135,7 +134,7 @@ void IFSelect_Editor::PrintNames(Standard_OStream& S) const
 
   for (i = 1; i <= nb; i++)
   {
-    Handle(Interface_TypedValue) tv = TypedValue(i);
+    occ::handle<Interface_TypedValue> tv = TypedValue(i);
     if (tv.IsNull())
       continue;
     S << Interface_MSG::Blanks(i, 3) << i << " ";
@@ -149,9 +148,9 @@ void IFSelect_Editor::PrintNames(Standard_OStream& S) const
   }
 }
 
-void IFSelect_Editor::PrintDefs(Standard_OStream& S, const Standard_Boolean labels) const
+void IFSelect_Editor::PrintDefs(Standard_OStream& S, const bool labels) const
 {
-  Standard_Integer i, nb = NbValues();
+  int i, nb = NbValues();
   S << "****    Editor : " << Label() << std::endl;
   S << "****    Nb Values = " << nb << "    ****    " << (labels ? "Labels" : "Names")
     << "  /  Definitions" << std::endl;
@@ -168,7 +167,7 @@ void IFSelect_Editor::PrintDefs(Standard_OStream& S, const Standard_Boolean labe
 
   for (i = 1; i <= nb; i++)
   {
-    Handle(Interface_TypedValue) tv = TypedValue(i);
+    occ::handle<Interface_TypedValue> tv = TypedValue(i);
     if (tv.IsNull())
       continue;
     S << " " << Interface_MSG::Blanks(i, 3) << i << " ";
@@ -185,7 +184,7 @@ void IFSelect_Editor::PrintDefs(Standard_OStream& S, const Standard_Boolean labe
     }
 
     S << " ";
-    Standard_Integer maxls = MaxList(i);
+    int maxls = MaxList(i);
     if (maxls == 0)
       S << " (List) ";
     else if (maxls > 0)
@@ -222,7 +221,7 @@ void IFSelect_Editor::PrintDefs(Standard_OStream& S, const Standard_Boolean labe
   }
 }
 
-Standard_Integer IFSelect_Editor::MaxNameLength(const Standard_Integer what) const
+int IFSelect_Editor::MaxNameLength(const int what) const
 {
   if (what == -1)
     return themaxsh;
@@ -233,9 +232,9 @@ Standard_Integer IFSelect_Editor::MaxNameLength(const Standard_Integer what) con
   return 0;
 }
 
-Standard_Integer IFSelect_Editor::NameNumber(const Standard_CString name) const
+int IFSelect_Editor::NameNumber(const char* name) const
 {
-  Standard_Integer res;
+  int res;
   if (thenames.Find(name, res))
     return res;
   res = atoi(name); // if it's an integer, we try it
@@ -244,43 +243,41 @@ Standard_Integer IFSelect_Editor::NameNumber(const Standard_CString name) const
   return res;
 }
 
-Handle(IFSelect_EditForm) IFSelect_Editor::Form(const Standard_Boolean readonly,
-                                                const Standard_Boolean undoable) const
+occ::handle<IFSelect_EditForm> IFSelect_Editor::Form(const bool readonly, const bool undoable) const
 {
   return new IFSelect_EditForm(this, readonly, undoable, Label().ToCString());
 }
 
-Handle(IFSelect_ListEditor) IFSelect_Editor::ListEditor(const Standard_Integer num) const
+occ::handle<IFSelect_ListEditor> IFSelect_Editor::ListEditor(const int num) const
 {
-  Handle(IFSelect_ListEditor) led;
-  Standard_Integer            max = MaxList(num);
+  occ::handle<IFSelect_ListEditor> led;
+  int                              max = MaxList(num);
   if (max < 0)
     return led;
   led = new IFSelect_ListEditor(TypedValue(num), max);
   return led;
 }
 
-Handle(TColStd_HSequenceOfHAsciiString) IFSelect_Editor::ListValue(
-  const Handle(IFSelect_EditForm)& /*form*/,
-  const Standard_Integer /*num*/) const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_Editor::
+  ListValue(const occ::handle<IFSelect_EditForm>& /*form*/, const int /*num*/) const
 {
-  Handle(TColStd_HSequenceOfHAsciiString) list;
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list;
   return list;
 }
 
-Standard_Boolean IFSelect_Editor::Update(const Handle(IFSelect_EditForm)& /*form*/,
-                                         const Standard_Integer /*num*/,
-                                         const Handle(TCollection_HAsciiString)& /*newval*/,
-                                         const Standard_Boolean /*enforce*/) const
+bool IFSelect_Editor::Update(const occ::handle<IFSelect_EditForm>& /*form*/,
+                             const int /*num*/,
+                             const occ::handle<TCollection_HAsciiString>& /*newval*/,
+                             const bool /*enforce*/) const
 {
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_Editor::UpdateList(
-  const Handle(IFSelect_EditForm)& /*form*/,
-  const Standard_Integer /*num*/,
-  const Handle(TColStd_HSequenceOfHAsciiString)& /*newval*/,
-  const Standard_Boolean /*enforce*/) const
+bool IFSelect_Editor::UpdateList(
+  const occ::handle<IFSelect_EditForm>& /*form*/,
+  const int /*num*/,
+  const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& /*newval*/,
+  const bool /*enforce*/) const
 {
-  return Standard_True;
+  return true;
 }

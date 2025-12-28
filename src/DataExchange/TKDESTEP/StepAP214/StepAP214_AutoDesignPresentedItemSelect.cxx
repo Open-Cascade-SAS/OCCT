@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_AutoDesignPresentedItemSelect.hxx>
 #include <StepBasic_DocumentRelationship.hxx>
@@ -23,8 +23,8 @@
 
 StepAP214_AutoDesignPresentedItemSelect::StepAP214_AutoDesignPresentedItemSelect() {}
 
-Standard_Integer StepAP214_AutoDesignPresentedItemSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepAP214_AutoDesignPresentedItemSelect::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -43,36 +43,36 @@ Standard_Integer StepAP214_AutoDesignPresentedItemSelect::CaseNum(
   return 0;
 }
 
-Handle(StepBasic_ProductDefinition) StepAP214_AutoDesignPresentedItemSelect::ProductDefinition()
-  const
+occ::handle<StepBasic_ProductDefinition> StepAP214_AutoDesignPresentedItemSelect::
+  ProductDefinition() const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
 
-Handle(StepBasic_ProductDefinitionRelationship) StepAP214_AutoDesignPresentedItemSelect::
+occ::handle<StepBasic_ProductDefinitionRelationship> StepAP214_AutoDesignPresentedItemSelect::
   ProductDefinitionRelationship() const
 {
   return GetCasted(StepBasic_ProductDefinitionRelationship, Value());
 }
 
-Handle(StepRepr_ProductDefinitionShape) StepAP214_AutoDesignPresentedItemSelect::
+occ::handle<StepRepr_ProductDefinitionShape> StepAP214_AutoDesignPresentedItemSelect::
   ProductDefinitionShape() const
 {
   return GetCasted(StepRepr_ProductDefinitionShape, Value());
 }
 
-Handle(StepRepr_RepresentationRelationship) StepAP214_AutoDesignPresentedItemSelect::
+occ::handle<StepRepr_RepresentationRelationship> StepAP214_AutoDesignPresentedItemSelect::
   RepresentationRelationship() const
 {
   return GetCasted(StepRepr_RepresentationRelationship, Value());
 }
 
-Handle(StepRepr_ShapeAspect) StepAP214_AutoDesignPresentedItemSelect::ShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepAP214_AutoDesignPresentedItemSelect::ShapeAspect() const
 {
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-Handle(StepBasic_DocumentRelationship) StepAP214_AutoDesignPresentedItemSelect::
+occ::handle<StepBasic_DocumentRelationship> StepAP214_AutoDesignPresentedItemSelect::
   DocumentRelationship() const
 {
   return GetCasted(StepBasic_DocumentRelationship, Value());

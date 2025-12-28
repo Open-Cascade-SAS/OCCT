@@ -33,30 +33,30 @@ GeomToIGES_GeomEntity::GeomToIGES_GeomEntity(const GeomToIGES_GeomEntity& other)
 
 //=================================================================================================
 
-void GeomToIGES_GeomEntity::SetModel(const Handle(IGESData_IGESModel)& model)
+void GeomToIGES_GeomEntity::SetModel(const occ::handle<IGESData_IGESModel>& model)
 {
-  TheModel                 = model;
-  Standard_Real unitfactor = TheModel->GlobalSection().UnitValue();
-  TheUnitFactor            = unitfactor;
+  TheModel          = model;
+  double unitfactor = TheModel->GlobalSection().UnitValue();
+  TheUnitFactor     = unitfactor;
 }
 
 //=================================================================================================
 
-Handle(IGESData_IGESModel) GeomToIGES_GeomEntity::GetModel() const
+occ::handle<IGESData_IGESModel> GeomToIGES_GeomEntity::GetModel() const
 {
   return TheModel;
 }
 
 //=================================================================================================
 
-void GeomToIGES_GeomEntity::SetUnit(const Standard_Real unit)
+void GeomToIGES_GeomEntity::SetUnit(const double unit)
 {
   TheUnitFactor = unit;
 }
 
 //=================================================================================================
 
-Standard_Real GeomToIGES_GeomEntity::GetUnit() const
+double GeomToIGES_GeomEntity::GetUnit() const
 {
   return TheUnitFactor;
 }

@@ -23,8 +23,6 @@
 
 class Geom_Surface;
 
-DEFINE_STANDARD_HANDLE(DrawTrSurf_Surface, DrawTrSurf_Drawable)
-
 //! This class defines a drawable surface.
 //! With this class you can draw a general surface from package Geom.
 class DrawTrSurf_Surface : public DrawTrSurf_Drawable
@@ -36,33 +34,33 @@ public:
   //! Just the middle isoparametric curves are drawn.
   //! The boundaries are yellow, the isoparametric curves are blues.
   //! For the discretisation 50 points are computed in each parametric direction.
-  Standard_EXPORT DrawTrSurf_Surface(const Handle(Geom_Surface)& S);
+  Standard_EXPORT DrawTrSurf_Surface(const occ::handle<Geom_Surface>& S);
 
-  Standard_EXPORT DrawTrSurf_Surface(const Handle(Geom_Surface)& S,
-                                     const Standard_Integer      Nu,
-                                     const Standard_Integer      Nv,
-                                     const Draw_Color&           BoundsColor,
-                                     const Draw_Color&           IsosColor,
-                                     const Standard_Integer      Discret,
-                                     const Standard_Real         Deflection,
-                                     const Standard_Integer      DrawMode);
+  Standard_EXPORT DrawTrSurf_Surface(const occ::handle<Geom_Surface>& S,
+                                     const int                        Nu,
+                                     const int                        Nv,
+                                     const Draw_Color&                BoundsColor,
+                                     const Draw_Color&                IsosColor,
+                                     const int                        Discret,
+                                     const double                     Deflection,
+                                     const int                        DrawMode);
 
   Draw_Color BoundsColor() const { return boundsLook; }
 
   //! rub out all the isoparametric curves.
   Standard_EXPORT virtual void ClearIsos();
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   //! Iso = True : Draw the isos, the boundaries, the UVMarker.
   //! Iso = False: Only Draw the boundary and the UVMarker.
-  Standard_EXPORT void DrawOn(Draw_Display& dis, const Standard_Boolean Iso) const;
+  Standard_EXPORT void DrawOn(Draw_Display& dis, const bool Iso) const;
 
-  Handle(Geom_Surface) GetSurface() const { return surf; }
+  occ::handle<Geom_Surface> GetSurface() const { return surf; }
 
   Draw_Color IsosColor() const { return isosLook; }
 
-  void NbIsos(Standard_Integer& theNU, Standard_Integer& theNV) const
+  void NbIsos(int& theNU, int& theNV) const
   {
     theNU = nbUIsos;
     theNV = nbVIsos;
@@ -73,30 +71,30 @@ public:
   void SetIsosColor(const Draw_Color& theColor) { isosLook = theColor; }
 
   //! change the number of isoparametric curves to be drawn.
-  virtual void ShowIsos(const Standard_Integer theNu, const Standard_Integer theNv)
+  virtual void ShowIsos(const int theNu, const int theNv)
   {
     nbUIsos = std::abs(theNu);
     nbVIsos = std::abs(theNv);
   }
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const override;
 
   //! For variable whatis command.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
 protected:
-  Handle(Geom_Surface) surf;
-  Draw_Color           boundsLook;
-  Draw_Color           isosLook;
-  Standard_Integer     nbUIsos;
-  Standard_Integer     nbVIsos;
+  occ::handle<Geom_Surface> surf;
+  Draw_Color                boundsLook;
+  Draw_Color                isosLook;
+  int                       nbUIsos;
+  int                       nbVIsos;
 };
 
 #endif // _DrawTrSurf_Surface_HeaderFile

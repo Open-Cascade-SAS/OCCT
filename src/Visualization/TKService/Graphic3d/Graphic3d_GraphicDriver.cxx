@@ -22,22 +22,23 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver, Standard_Transient)
 
 //=================================================================================================
 
-Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConnection)& theDisp)
+Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(
+  const occ::handle<Aspect_DisplayConnection>& theDisp)
     : myDisplayConnection(theDisp)
 {
   // default layers are always presented in display layer sequence and cannot be removed
   {
     Graphic3d_ZLayerSettings aSettings;
     aSettings.SetName("UNDERLAY");
-    aSettings.SetImmediate(Standard_False);
-    aSettings.SetRaytracable(Standard_False);
-    aSettings.SetEnvironmentTexture(Standard_False);
-    aSettings.SetEnableDepthTest(Standard_False);
-    aSettings.SetEnableDepthWrite(Standard_False);
-    aSettings.SetClearDepth(Standard_False);
+    aSettings.SetImmediate(false);
+    aSettings.SetRaytracable(false);
+    aSettings.SetEnvironmentTexture(false);
+    aSettings.SetEnableDepthTest(false);
+    aSettings.SetEnableDepthWrite(false);
+    aSettings.SetClearDepth(false);
     aSettings.SetPolygonOffset(Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer =
-      new Graphic3d_Layer(Graphic3d_ZLayerId_BotOSD, Handle(BVH_Builder3d)());
+    occ::handle<Graphic3d_Layer> aLayer =
+      new Graphic3d_Layer(Graphic3d_ZLayerId_BotOSD, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
     myLayerIds.Bind(aLayer->LayerId(), aLayer);
@@ -46,15 +47,15 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConn
   {
     Graphic3d_ZLayerSettings aSettings;
     aSettings.SetName("DEFAULT");
-    aSettings.SetImmediate(Standard_False);
-    aSettings.SetRaytracable(Standard_True);
-    aSettings.SetEnvironmentTexture(Standard_True);
-    aSettings.SetEnableDepthTest(Standard_True);
-    aSettings.SetEnableDepthWrite(Standard_True);
-    aSettings.SetClearDepth(Standard_False);
+    aSettings.SetImmediate(false);
+    aSettings.SetRaytracable(true);
+    aSettings.SetEnvironmentTexture(true);
+    aSettings.SetEnableDepthTest(true);
+    aSettings.SetEnableDepthWrite(true);
+    aSettings.SetClearDepth(false);
     aSettings.SetPolygonOffset(Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer =
-      new Graphic3d_Layer(Graphic3d_ZLayerId_Default, Handle(BVH_Builder3d)());
+    occ::handle<Graphic3d_Layer> aLayer =
+      new Graphic3d_Layer(Graphic3d_ZLayerId_Default, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
     myLayerIds.Bind(aLayer->LayerId(), aLayer);
@@ -63,15 +64,15 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConn
   {
     Graphic3d_ZLayerSettings aSettings;
     aSettings.SetName("TOP");
-    aSettings.SetImmediate(Standard_True);
-    aSettings.SetRaytracable(Standard_False);
-    aSettings.SetEnvironmentTexture(Standard_True);
-    aSettings.SetEnableDepthTest(Standard_True);
-    aSettings.SetEnableDepthWrite(Standard_True);
-    aSettings.SetClearDepth(Standard_False);
+    aSettings.SetImmediate(true);
+    aSettings.SetRaytracable(false);
+    aSettings.SetEnvironmentTexture(true);
+    aSettings.SetEnableDepthTest(true);
+    aSettings.SetEnableDepthWrite(true);
+    aSettings.SetClearDepth(false);
     aSettings.SetPolygonOffset(Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer =
-      new Graphic3d_Layer(Graphic3d_ZLayerId_Top, Handle(BVH_Builder3d)());
+    occ::handle<Graphic3d_Layer> aLayer =
+      new Graphic3d_Layer(Graphic3d_ZLayerId_Top, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
     myLayerIds.Bind(aLayer->LayerId(), aLayer);
@@ -80,15 +81,15 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConn
   {
     Graphic3d_ZLayerSettings aSettings;
     aSettings.SetName("TOPMOST");
-    aSettings.SetImmediate(Standard_True);
-    aSettings.SetRaytracable(Standard_False);
-    aSettings.SetEnvironmentTexture(Standard_True);
-    aSettings.SetEnableDepthTest(Standard_True);
-    aSettings.SetEnableDepthWrite(Standard_True);
-    aSettings.SetClearDepth(Standard_True);
+    aSettings.SetImmediate(true);
+    aSettings.SetRaytracable(false);
+    aSettings.SetEnvironmentTexture(true);
+    aSettings.SetEnableDepthTest(true);
+    aSettings.SetEnableDepthWrite(true);
+    aSettings.SetClearDepth(true);
     aSettings.SetPolygonOffset(Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer =
-      new Graphic3d_Layer(Graphic3d_ZLayerId_Topmost, Handle(BVH_Builder3d)());
+    occ::handle<Graphic3d_Layer> aLayer =
+      new Graphic3d_Layer(Graphic3d_ZLayerId_Topmost, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
     myLayerIds.Bind(aLayer->LayerId(), aLayer);
@@ -97,15 +98,15 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConn
   {
     Graphic3d_ZLayerSettings aSettings;
     aSettings.SetName("OVERLAY");
-    aSettings.SetImmediate(Standard_True);
-    aSettings.SetRaytracable(Standard_False);
-    aSettings.SetEnvironmentTexture(Standard_False);
-    aSettings.SetEnableDepthTest(Standard_False);
-    aSettings.SetEnableDepthWrite(Standard_False);
-    aSettings.SetClearDepth(Standard_False);
+    aSettings.SetImmediate(true);
+    aSettings.SetRaytracable(false);
+    aSettings.SetEnvironmentTexture(false);
+    aSettings.SetEnableDepthTest(false);
+    aSettings.SetEnableDepthWrite(false);
+    aSettings.SetClearDepth(false);
     aSettings.SetPolygonOffset(Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer =
-      new Graphic3d_Layer(Graphic3d_ZLayerId_TopOSD, Handle(BVH_Builder3d)());
+    occ::handle<Graphic3d_Layer> aLayer =
+      new Graphic3d_Layer(Graphic3d_ZLayerId_TopOSD, occ::handle<BVH_Builder3d>());
     aLayer->SetLayerSettings(aSettings);
     myLayers.Append(aLayer);
     myLayerIds.Bind(aLayer->LayerId(), aLayer);
@@ -114,21 +115,21 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConn
 
 //=================================================================================================
 
-const Handle(Aspect_DisplayConnection)& Graphic3d_GraphicDriver::GetDisplayConnection() const
+const occ::handle<Aspect_DisplayConnection>& Graphic3d_GraphicDriver::GetDisplayConnection() const
 {
   return myDisplayConnection;
 }
 
 //=================================================================================================
 
-Standard_Integer Graphic3d_GraphicDriver::NewIdentification()
+int Graphic3d_GraphicDriver::NewIdentification()
 {
   return myStructGenId.Next();
 }
 
 //=================================================================================================
 
-void Graphic3d_GraphicDriver::RemoveIdentification(const Standard_Integer theId)
+void Graphic3d_GraphicDriver::RemoveIdentification(const int theId)
 {
   myStructGenId.Free(theId);
 }
@@ -138,7 +139,7 @@ void Graphic3d_GraphicDriver::RemoveIdentification(const Standard_Integer theId)
 const Graphic3d_ZLayerSettings& Graphic3d_GraphicDriver::ZLayerSettings(
   const Graphic3d_ZLayerId theLayerId) const
 {
-  const Handle(Graphic3d_Layer)* aLayer = myLayerIds.Seek(theLayerId);
+  const occ::handle<Graphic3d_Layer>* aLayer = myLayerIds.Seek(theLayerId);
   if (aLayer == NULL)
   {
     throw Standard_OutOfRange(
@@ -149,15 +150,16 @@ const Graphic3d_ZLayerSettings& Graphic3d_GraphicDriver::ZLayerSettings(
 
 //=================================================================================================
 
-void Graphic3d_GraphicDriver::ZLayers(TColStd_SequenceOfInteger& theLayerSeq) const
+void Graphic3d_GraphicDriver::ZLayers(NCollection_Sequence<int>& theLayerSeq) const
 {
   theLayerSeq.Clear();
 
   // append normal layers
-  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter(myLayers); aLayerIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
+       aLayerIter.More();
        aLayerIter.Next())
   {
-    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
     if (!aLayer->IsImmediate())
     {
       theLayerSeq.Append(aLayer->LayerId());
@@ -165,10 +167,11 @@ void Graphic3d_GraphicDriver::ZLayers(TColStd_SequenceOfInteger& theLayerSeq) co
   }
 
   // append immediate layers
-  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter(myLayers); aLayerIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
+       aLayerIter.More();
        aLayerIter.Next())
   {
-    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
     if (aLayer->IsImmediate())
     {
       theLayerSeq.Append(aLayer->LayerId());
@@ -189,13 +192,14 @@ void Graphic3d_GraphicDriver::InsertLayerBefore(const Graphic3d_ZLayerId        
     !myLayerIds.IsBound(theNewLayerId),
     "Graphic3d_GraphicDriver::InsertLayerBefore, Layer with theLayerId already exists");
 
-  Handle(Graphic3d_Layer) aNewLayer = new Graphic3d_Layer(theNewLayerId, Handle(BVH_Builder3d)());
+  occ::handle<Graphic3d_Layer> aNewLayer =
+    new Graphic3d_Layer(theNewLayerId, occ::handle<BVH_Builder3d>());
   aNewLayer->SetLayerSettings(theSettings);
 
-  Handle(Graphic3d_Layer) anOtherLayer;
+  occ::handle<Graphic3d_Layer> anOtherLayer;
   if (theLayerAfter != Graphic3d_ZLayerId_UNKNOWN && myLayerIds.Find(theLayerAfter, anOtherLayer))
   {
-    for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter(myLayers);
+    for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
          aLayerIter.More();
          aLayerIter.Next())
     {
@@ -226,13 +230,14 @@ void Graphic3d_GraphicDriver::InsertLayerAfter(const Graphic3d_ZLayerId        t
     !myLayerIds.IsBound(theNewLayerId),
     "Graphic3d_GraphicDriver::InsertLayerAfter, Layer with theLayerId already exists");
 
-  Handle(Graphic3d_Layer) aNewLayer = new Graphic3d_Layer(theNewLayerId, Handle(BVH_Builder3d)());
+  occ::handle<Graphic3d_Layer> aNewLayer =
+    new Graphic3d_Layer(theNewLayerId, occ::handle<BVH_Builder3d>());
   aNewLayer->SetLayerSettings(theSettings);
 
-  Handle(Graphic3d_Layer) anOtherLayer;
+  occ::handle<Graphic3d_Layer> anOtherLayer;
   if (theLayerBefore != Graphic3d_ZLayerId_UNKNOWN && myLayerIds.Find(theLayerBefore, anOtherLayer))
   {
-    for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter(myLayers);
+    for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
          aLayerIter.More();
          aLayerIter.Next())
     {
@@ -258,7 +263,7 @@ void Graphic3d_GraphicDriver::RemoveZLayer(const Graphic3d_ZLayerId theLayerId)
                         "Graphic3d_GraphicDriver::RemoveZLayer, negative and zero IDs are reserved "
                         "and cannot be removed");
 
-  Handle(Graphic3d_Layer) aLayerDef;
+  occ::handle<Graphic3d_Layer> aLayerDef;
   myLayerIds.Find(theLayerId, aLayerDef);
   Standard_ASSERT_RAISE(
     !aLayerDef.IsNull(),
@@ -272,7 +277,7 @@ void Graphic3d_GraphicDriver::RemoveZLayer(const Graphic3d_ZLayerId theLayerId)
 void Graphic3d_GraphicDriver::SetZLayerSettings(const Graphic3d_ZLayerId        theLayerId,
                                                 const Graphic3d_ZLayerSettings& theSettings)
 {
-  Handle(Graphic3d_Layer) aLayerDef;
+  occ::handle<Graphic3d_Layer> aLayerDef;
   myLayerIds.Find(theLayerId, aLayerDef);
   Standard_ASSERT_RAISE(
     !aLayerDef.IsNull(),
@@ -282,17 +287,16 @@ void Graphic3d_GraphicDriver::SetZLayerSettings(const Graphic3d_ZLayerId        
 
 //=================================================================================================
 
-void Graphic3d_GraphicDriver::DumpJson(Standard_OStream& theOStream,
-                                       Standard_Integer  theDepth) const
+void Graphic3d_GraphicDriver::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myStructGenId)
 
-  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator anIter(myLayers); anIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator anIter(myLayers); anIter.More();
        anIter.Next())
   {
-    const Handle(Graphic3d_Layer)& aLayer = anIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = anIter.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aLayer.get())
   }
 }

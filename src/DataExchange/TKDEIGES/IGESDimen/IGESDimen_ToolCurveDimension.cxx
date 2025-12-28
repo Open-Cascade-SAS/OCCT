@@ -30,24 +30,24 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
 IGESDimen_ToolCurveDimension::IGESDimen_ToolCurveDimension() {}
 
-void IGESDimen_ToolCurveDimension::ReadOwnParams(const Handle(IGESDimen_CurveDimension)& ent,
-                                                 const Handle(IGESData_IGESReaderData)&  IR,
-                                                 IGESData_ParamReader&                   PR) const
+void IGESDimen_ToolCurveDimension::ReadOwnParams(const occ::handle<IGESDimen_CurveDimension>& ent,
+                                                 const occ::handle<IGESData_IGESReaderData>&  IR,
+                                                 IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
-  Handle(IGESDimen_GeneralNote) note;
-  Handle(IGESData_IGESEntity)   firstCurve;
-  Handle(IGESData_IGESEntity)   secondCurve;
-  Handle(IGESDimen_LeaderArrow) firstLeader;
-  Handle(IGESDimen_LeaderArrow) secondLeader;
-  Handle(IGESDimen_WitnessLine) firstWitness;
-  Handle(IGESDimen_WitnessLine) secondWitness;
+  occ::handle<IGESDimen_GeneralNote> note;
+  occ::handle<IGESData_IGESEntity>   firstCurve;
+  occ::handle<IGESData_IGESEntity>   secondCurve;
+  occ::handle<IGESDimen_LeaderArrow> firstLeader;
+  occ::handle<IGESDimen_LeaderArrow> secondLeader;
+  occ::handle<IGESDimen_WitnessLine> firstWitness;
+  occ::handle<IGESDimen_WitnessLine> secondWitness;
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -63,7 +63,7 @@ void IGESDimen_ToolCurveDimension::ReadOwnParams(const Handle(IGESDimen_CurveDim
                 PR.Current(),
                 "Second Curve Entity",
                 secondCurve,
-                Standard_True); // szv#4:S4163:12Mar99 `st=` not needed
+                true); // szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -81,18 +81,18 @@ void IGESDimen_ToolCurveDimension::ReadOwnParams(const Handle(IGESDimen_CurveDim
                 PR.Current(),
                 "First Witness Entity",
                 // clang-format off
-		 STANDARD_TYPE(IGESDimen_WitnessLine), firstWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		 STANDARD_TYPE(IGESDimen_WitnessLine), firstWitness, true); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity (IR,PR.Current(),"Second Witness Entity",
-		 STANDARD_TYPE(IGESDimen_WitnessLine), secondWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		 STANDARD_TYPE(IGESDimen_WitnessLine), secondWitness, true); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(note, firstCurve, secondCurve, firstLeader, secondLeader, firstWitness, secondWitness);
 }
 
-void IGESDimen_ToolCurveDimension::WriteOwnParams(const Handle(IGESDimen_CurveDimension)& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+void IGESDimen_ToolCurveDimension::WriteOwnParams(const occ::handle<IGESDimen_CurveDimension>& ent,
+                                                  IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Note());
   IW.Send(ent->FirstCurve());
@@ -103,8 +103,8 @@ void IGESDimen_ToolCurveDimension::WriteOwnParams(const Handle(IGESDimen_CurveDi
   IW.Send(ent->SecondWitnessLine());
 }
 
-void IGESDimen_ToolCurveDimension::OwnShared(const Handle(IGESDimen_CurveDimension)& ent,
-                                             Interface_EntityIterator&               iter) const
+void IGESDimen_ToolCurveDimension::OwnShared(const occ::handle<IGESDimen_CurveDimension>& ent,
+                                             Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Note());
   iter.GetOneItem(ent->FirstCurve());
@@ -115,9 +115,9 @@ void IGESDimen_ToolCurveDimension::OwnShared(const Handle(IGESDimen_CurveDimensi
   iter.GetOneItem(ent->SecondWitnessLine());
 }
 
-void IGESDimen_ToolCurveDimension::OwnCopy(const Handle(IGESDimen_CurveDimension)& another,
-                                           const Handle(IGESDimen_CurveDimension)& ent,
-                                           Interface_CopyTool&                     TC) const
+void IGESDimen_ToolCurveDimension::OwnCopy(const occ::handle<IGESDimen_CurveDimension>& another,
+                                           const occ::handle<IGESDimen_CurveDimension>& ent,
+                                           Interface_CopyTool&                          TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
   DeclareAndCast(IGESData_IGESEntity, firstCurve, TC.Transferred(another->FirstCurve()));
@@ -133,7 +133,7 @@ void IGESDimen_ToolCurveDimension::OwnCopy(const Handle(IGESDimen_CurveDimension
 }
 
 IGESData_DirChecker IGESDimen_ToolCurveDimension::DirChecker(
-  const Handle(IGESDimen_CurveDimension)& /*ent*/) const
+  const occ::handle<IGESDimen_CurveDimension>& /*ent*/) const
 {
   IGESData_DirChecker DC(204, 0);
   DC.Structure(IGESData_DefVoid);
@@ -144,9 +144,9 @@ IGESData_DirChecker IGESDimen_ToolCurveDimension::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolCurveDimension::OwnCheck(const Handle(IGESDimen_CurveDimension)& ent,
+void IGESDimen_ToolCurveDimension::OwnCheck(const occ::handle<IGESDimen_CurveDimension>& ent,
                                             const Interface_ShareTool&,
-                                            Handle(Interface_Check)& ach) const
+                                            occ::handle<Interface_Check>& ach) const
 {
   if (ent->HasSecondCurve())
   {
@@ -156,12 +156,12 @@ void IGESDimen_ToolCurveDimension::OwnCheck(const Handle(IGESDimen_CurveDimensio
   }
 }
 
-void IGESDimen_ToolCurveDimension::OwnDump(const Handle(IGESDimen_CurveDimension)& ent,
-                                           const IGESData_IGESDumper&              dumper,
-                                           Standard_OStream&                       S,
-                                           const Standard_Integer                  level) const
+void IGESDimen_ToolCurveDimension::OwnDump(const occ::handle<IGESDimen_CurveDimension>& ent,
+                                           const IGESData_IGESDumper&                   dumper,
+                                           Standard_OStream&                            S,
+                                           const int                                    level) const
 {
-  Standard_Integer sublevel = (level > 4) ? 1 : 0;
+  int sublevel = (level > 4) ? 1 : 0;
 
   S << "IGESDimen_CurveDimension\n"
     << "General Note Entity   : ";

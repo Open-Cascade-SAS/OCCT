@@ -29,10 +29,10 @@ RWStepRepr_RWSpecifiedHigherUsageOccurrence::RWStepRepr_RWSpecifiedHigherUsageOc
 //=================================================================================================
 
 void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepRepr_SpecifiedHigherUsageOccurrence)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                                   num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepRepr_SpecifiedHigherUsageOccurrence>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 8, ach, "specified_higher_usage_occurrence"))
@@ -40,22 +40,22 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
 
   // Inherited fields of ProductDefinitionRelationship
 
-  Handle(TCollection_HAsciiString) aProductDefinitionRelationship_Id;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Id;
   data->ReadString(num,
                    1,
                    "product_definition_relationship.id",
                    ach,
                    aProductDefinitionRelationship_Id);
 
-  Handle(TCollection_HAsciiString) aProductDefinitionRelationship_Name;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Name;
   data->ReadString(num,
                    2,
                    "product_definition_relationship.name",
                    ach,
                    aProductDefinitionRelationship_Name);
 
-  Handle(TCollection_HAsciiString) aProductDefinitionRelationship_Description;
-  Standard_Boolean                 hasProductDefinitionRelationship_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Description;
+  bool                                  hasProductDefinitionRelationship_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num,
@@ -66,7 +66,7 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
   }
   else
   {
-    hasProductDefinitionRelationship_Description = Standard_False;
+    hasProductDefinitionRelationship_Description = false;
   }
 
   StepBasic_ProductDefinitionOrReference aProductDefinitionRelationship_RelatingProductDefinition;
@@ -85,8 +85,8 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
 
   // Inherited fields of AssemblyComponentUsage
 
-  Handle(TCollection_HAsciiString) aAssemblyComponentUsage_ReferenceDesignator;
-  Standard_Boolean                 hasAssemblyComponentUsage_ReferenceDesignator = Standard_True;
+  occ::handle<TCollection_HAsciiString> aAssemblyComponentUsage_ReferenceDesignator;
+  bool                                  hasAssemblyComponentUsage_ReferenceDesignator = true;
   if (data->IsParamDefined(num, 6))
   {
     data->ReadString(num,
@@ -97,12 +97,12 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
   }
   else
   {
-    hasAssemblyComponentUsage_ReferenceDesignator = Standard_False;
+    hasAssemblyComponentUsage_ReferenceDesignator = false;
   }
 
   // Own fields of SpecifiedHigherUsageOccurrence
 
-  Handle(StepRepr_AssemblyComponentUsage) aUpperUsage;
+  occ::handle<StepRepr_AssemblyComponentUsage> aUpperUsage;
   data->ReadEntity(num,
                    7,
                    "upper_usage",
@@ -110,7 +110,7 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
                    STANDARD_TYPE(StepRepr_AssemblyComponentUsage),
                    aUpperUsage);
 
-  Handle(StepRepr_NextAssemblyUsageOccurrence) aNextUsage;
+  occ::handle<StepRepr_NextAssemblyUsageOccurrence> aNextUsage;
   data->ReadEntity(num,
                    8,
                    "next_usage",
@@ -134,8 +134,8 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWSpecifiedHigherUsageOccurrence::WriteStep(
-  StepData_StepWriter&                                   SW,
-  const Handle(StepRepr_SpecifiedHigherUsageOccurrence)& ent) const
+  StepData_StepWriter&                                        SW,
+  const occ::handle<StepRepr_SpecifiedHigherUsageOccurrence>& ent) const
 {
 
   // Inherited fields of ProductDefinitionRelationship
@@ -174,8 +174,8 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWSpecifiedHigherUsageOccurrence::Share(
-  const Handle(StepRepr_SpecifiedHigherUsageOccurrence)& ent,
-  Interface_EntityIterator&                              iter) const
+  const occ::handle<StepRepr_SpecifiedHigherUsageOccurrence>& ent,
+  Interface_EntityIterator&                                   iter) const
 {
 
   // Inherited fields of ProductDefinitionRelationship

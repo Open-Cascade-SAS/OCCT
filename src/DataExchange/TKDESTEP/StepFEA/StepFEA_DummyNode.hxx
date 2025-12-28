@@ -21,9 +21,6 @@
 
 #include <StepFEA_NodeRepresentation.hxx>
 
-class StepFEA_DummyNode;
-DEFINE_STANDARD_HANDLE(StepFEA_DummyNode, StepFEA_NodeRepresentation)
-
 //! Representation of STEP entity DummyNode
 class StepFEA_DummyNode : public StepFEA_NodeRepresentation
 {
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepFEA_DummyNode();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_DummyNode, StepFEA_NodeRepresentation)
-
-protected:
-private:
 };
 
 #endif // _StepFEA_DummyNode_HeaderFile

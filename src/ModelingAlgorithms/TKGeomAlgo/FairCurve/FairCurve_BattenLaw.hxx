@@ -35,28 +35,27 @@ public:
   //! Heigth  : the Heigth at the middle point
   //! Slope   : the geometric slope of the batten
   //! Sliding : Active Length of the batten without extension
-  Standard_EXPORT FairCurve_BattenLaw(const Standard_Real Heigth,
-                                      const Standard_Real Slope,
-                                      const Standard_Real Sliding);
+  Standard_EXPORT FairCurve_BattenLaw(const double Heigth,
+                                      const double Slope,
+                                      const double Sliding);
 
   //! Change the value of sliding
-  void SetSliding(const Standard_Real Sliding);
+  void SetSliding(const double Sliding);
 
   //! Change the value of Heigth at the middle point.
-  void SetHeigth(const Standard_Real Heigth);
+  void SetHeigth(const double Heigth);
 
   //! Change the value of the geometric slope.
-  void SetSlope(const Standard_Real Slope);
+  void SetSlope(const double Slope);
 
   //! computes the value of the heigth for the parameter T
   //! on the neutral fibber
-  virtual Standard_Boolean Value(const Standard_Real T, Standard_Real& THeigth) Standard_OVERRIDE;
+  virtual bool Value(const double T, double& THeigth) override;
 
-protected:
 private:
-  Standard_Real MiddleHeigth;
-  Standard_Real GeometricSlope;
-  Standard_Real LengthSliding;
+  double MiddleHeigth;
+  double GeometricSlope;
+  double LengthSliding;
 };
 
 #include <FairCurve_BattenLaw.lxx>

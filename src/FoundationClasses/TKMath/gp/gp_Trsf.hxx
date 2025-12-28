@@ -98,7 +98,7 @@ public:
   //! Changes the transformation into a rotation.
   //! theA1 is the rotation axis and theAng is the angular value of the
   //! rotation in radians.
-  Standard_EXPORT void SetRotation(const gp_Ax1& theA1, const Standard_Real theAng);
+  Standard_EXPORT void SetRotation(const gp_Ax1& theA1, const double theAng);
 
   //! Changes the transformation into a rotation defined by quaternion.
   //! Note that rotation is performed around origin, i.e.
@@ -111,7 +111,7 @@ public:
   //! Changes the transformation into a scale.
   //! theP is the center of the scale and theS is the scaling value.
   //! Raises ConstructionError If <theS> is null.
-  Standard_EXPORT void SetScale(const gp_Pnt& theP, const Standard_Real theS);
+  Standard_EXPORT void SetScale(const gp_Pnt& theP, const double theS);
 
   //! Modifies this transformation so that it transforms the
   //! coordinate system defined by theFromSystem1 into the
@@ -185,7 +185,7 @@ public:
 
   //! Modifies the scale factor.
   //! Raises ConstructionError If theS is null.
-  Standard_EXPORT void SetScaleFactor(const Standard_Real theS);
+  Standard_EXPORT void SetScaleFactor(const double theS);
 
   constexpr void SetForm(const gp_TrsfForm theP) noexcept { shape = theP; }
 
@@ -200,22 +200,22 @@ public:
   //! The method Value(i,j) will return aij.
   //! Raises ConstructionError if the determinant of the aij is null.
   //! The matrix is orthogonalized before future using.
-  Standard_EXPORT void SetValues(const Standard_Real a11,
-                                 const Standard_Real a12,
-                                 const Standard_Real a13,
-                                 const Standard_Real a14,
-                                 const Standard_Real a21,
-                                 const Standard_Real a22,
-                                 const Standard_Real a23,
-                                 const Standard_Real a24,
-                                 const Standard_Real a31,
-                                 const Standard_Real a32,
-                                 const Standard_Real a33,
-                                 const Standard_Real a34);
+  Standard_EXPORT void SetValues(const double a11,
+                                 const double a12,
+                                 const double a13,
+                                 const double a14,
+                                 const double a21,
+                                 const double a22,
+                                 const double a23,
+                                 const double a24,
+                                 const double a31,
+                                 const double a32,
+                                 const double a33,
+                                 const double a34);
 
   //! Returns true if the determinant of the vectorial part of
   //! this transformation is negative.
-  constexpr Standard_Boolean IsNegative() const noexcept { return (scale < 0.0); }
+  constexpr bool IsNegative() const noexcept { return (scale < 0.0); }
 
   //! Returns the nature of the transformation. It can be: an
   //! identity transformation, a rotation, a translation, a mirror
@@ -224,7 +224,7 @@ public:
   constexpr gp_TrsfForm Form() const noexcept { return shape; }
 
   //! Returns the scale factor.
-  constexpr Standard_Real ScaleFactor() const noexcept { return scale; }
+  constexpr double ScaleFactor() const noexcept { return scale; }
 
   //! Returns the translation part of the transformation's matrix
   constexpr const gp_XYZ& TranslationPart() const noexcept { return loc; }
@@ -236,7 +236,7 @@ public:
   //! Note that this rotation is defined only by the vectorial part of
   //! the transformation; generally you would need to check also the
   //! translational part to obtain the axis (gp_Ax1) of rotation.
-  Standard_EXPORT Standard_Boolean GetRotation(gp_XYZ& theAxis, Standard_Real& theAngle) const;
+  Standard_EXPORT bool GetRotation(gp_XYZ& theAxis, double& theAngle) const;
 
   //! Returns quaternion representing rotational part of the transformation.
   Standard_EXPORT gp_Quaternion GetRotation() const;
@@ -257,7 +257,7 @@ public:
   //! It is a 3 rows * 4 columns matrix.
   //! This coefficient includes the scale factor.
   //! Raises OutOfRanged if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
-  constexpr Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
+  constexpr double Value(const int theRow, const int theCol) const;
 
   Standard_EXPORT void Invert();
 
@@ -276,21 +276,21 @@ public:
   //! gp_Pnt P3 = P1.Transformed(T1);    // using T1 then T2
   //! P3.Transform(T2);                  // P3 = P2 !!!
   //! @endcode
-  Standard_NODISCARD gp_Trsf Inverted() const
+  [[nodiscard]] gp_Trsf Inverted() const
   {
     gp_Trsf aT = *this;
     aT.Invert();
     return aT;
   }
 
-  Standard_NODISCARD gp_Trsf Multiplied(const gp_Trsf& theT) const
+  [[nodiscard]] gp_Trsf Multiplied(const gp_Trsf& theT) const
   {
     gp_Trsf aTresult(*this);
     aTresult.Multiply(theT);
     return aTresult;
   }
 
-  Standard_NODISCARD gp_Trsf operator*(const gp_Trsf& theT) const { return Multiplied(theT); }
+  [[nodiscard]] gp_Trsf operator*(const gp_Trsf& theT) const { return Multiplied(theT); }
 
   //! Computes the transformation composed with <me> and theT.
   //! <me> = <me> * theT
@@ -302,7 +302,7 @@ public:
   //! <me> = theT * <me>
   Standard_EXPORT void PreMultiply(const gp_Trsf& theT);
 
-  Standard_EXPORT void Power(const Standard_Integer theN);
+  Standard_EXPORT void Power(const int theN);
 
   //! Computes the following composition of transformations
   //! <me> * <me> * .......* <me>, theN time.
@@ -311,16 +311,14 @@ public:
   //!
   //! Raises if theN < 0 and if the matrix of the transformation not
   //! inversible.
-  Standard_NODISCARD gp_Trsf Powered(const Standard_Integer theN) const
+  [[nodiscard]] gp_Trsf Powered(const int theN) const
   {
     gp_Trsf aT = *this;
     aT.Power(theN);
     return aT;
   }
 
-  constexpr void Transforms(Standard_Real& theX,
-                            Standard_Real& theY,
-                            Standard_Real& theZ) const noexcept;
+  constexpr void Transforms(double& theX, double& theY, double& theZ) const noexcept;
 
   //! Transformation of a triplet XYZ with a Trsf
   constexpr void Transforms(gp_XYZ& theCoord) const noexcept;
@@ -354,11 +352,10 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT Standard_Boolean InitFromJson(const Standard_SStream& theSStream,
-                                                Standard_Integer&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
 
   friend class gp_GTrsf;
 
@@ -367,10 +364,10 @@ protected:
   Standard_EXPORT void Orthogonalize();
 
 private:
-  Standard_Real scale;
-  gp_TrsfForm   shape;
-  gp_Mat        matrix;
-  gp_XYZ        loc;
+  double      scale;
+  gp_TrsfForm shape;
+  gp_Mat      matrix;
+  gp_XYZ      loc;
 };
 
 #include <gp_Trsf2d.hxx>
@@ -420,8 +417,7 @@ inline constexpr void gp_Trsf::SetTranslation(const gp_Pnt& theP1, const gp_Pnt&
 
 //=================================================================================================
 
-inline constexpr Standard_Real gp_Trsf::Value(const Standard_Integer theRow,
-                                              const Standard_Integer theCol) const
+inline constexpr double gp_Trsf::Value(const int theRow, const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
   if (theCol < 4)
@@ -437,9 +433,7 @@ inline constexpr Standard_Real gp_Trsf::Value(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline constexpr void gp_Trsf::Transforms(Standard_Real& theX,
-                                          Standard_Real& theY,
-                                          Standard_Real& theZ) const noexcept
+inline constexpr void gp_Trsf::Transforms(double& theX, double& theY, double& theZ) const noexcept
 {
   gp_XYZ aTriplet(theX, theY, theZ);
   aTriplet.Multiply(matrix);

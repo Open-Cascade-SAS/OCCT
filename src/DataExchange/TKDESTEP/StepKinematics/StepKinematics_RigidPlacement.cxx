@@ -24,7 +24,7 @@ StepKinematics_RigidPlacement::StepKinematics_RigidPlacement() {}
 
 //=================================================================================================
 
-Standard_Integer StepKinematics_RigidPlacement::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepKinematics_RigidPlacement::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -37,14 +37,14 @@ Standard_Integer StepKinematics_RigidPlacement::CaseNum(const Handle(Standard_Tr
 
 //=================================================================================================
 
-Handle(StepGeom_Axis2Placement3d) StepKinematics_RigidPlacement::Axis2Placement3d() const
+occ::handle<StepGeom_Axis2Placement3d> StepKinematics_RigidPlacement::Axis2Placement3d() const
 {
-  return Handle(StepGeom_Axis2Placement3d)::DownCast(Value());
+  return occ::down_cast<StepGeom_Axis2Placement3d>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepGeom_SuParameters) StepKinematics_RigidPlacement::SuParameters() const
+occ::handle<StepGeom_SuParameters> StepKinematics_RigidPlacement::SuParameters() const
 {
-  return Handle(StepGeom_SuParameters)::DownCast(Value());
+  return occ::down_cast<StepGeom_SuParameters>(Value());
 }

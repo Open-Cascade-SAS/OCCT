@@ -20,14 +20,14 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 //=================================================================================================
 
-Standard_Boolean ChFi2d::CommonVertex(const TopoDS_Edge& E1,
-                                      const TopoDS_Edge& E2,
-                                      TopoDS_Vertex&     V)
+bool ChFi2d::CommonVertex(const TopoDS_Edge& E1, const TopoDS_Edge& E2, TopoDS_Vertex& V)
 {
   TopoDS_Vertex firstVertex1, lastVertex1, firstVertex2, lastVertex2;
   TopExp::Vertices(E1, firstVertex1, lastVertex1);
@@ -36,14 +36,14 @@ Standard_Boolean ChFi2d::CommonVertex(const TopoDS_Edge& E1,
   if (firstVertex1.IsSame(firstVertex2) || firstVertex1.IsSame(lastVertex2))
   {
     V = firstVertex1;
-    return Standard_True;
+    return true;
   }
   if (lastVertex1.IsSame(firstVertex2) || lastVertex1.IsSame(lastVertex2))
   {
     V = lastVertex1;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 } // CommonVertex
 
 //=================================================================================================
@@ -53,12 +53,13 @@ ChFi2d_ConstructionError ChFi2d::FindConnectedEdges(const TopoDS_Face&   F,
                                                     TopoDS_Edge&         E1,
                                                     TopoDS_Edge&         E2)
 {
-  TopTools_IndexedDataMapOfShapeListOfShape vertexMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    vertexMap;
   TopExp::MapShapesAndAncestors(F, TopAbs_VERTEX, TopAbs_EDGE, vertexMap);
 
   if (vertexMap.Contains(V))
   {
-    TopTools_ListIteratorOfListOfShape iterator(vertexMap.FindFromKey(V));
+    NCollection_List<TopoDS_Shape>::Iterator iterator(vertexMap.FindFromKey(V));
     if (iterator.More())
     {
       E1 = TopoDS::Edge(iterator.Value());

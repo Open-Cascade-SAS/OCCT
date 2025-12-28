@@ -22,50 +22,50 @@
 void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
 {
 
-  done              = Standard_False;
-  Standard_Real d   = C1.Location().Distance(C2.Location());
-  Standard_Real R1  = C1.Radius();
-  Standard_Real R2  = C2.Radius();
-  Standard_Real sum = R1 + R2;
-  Standard_Real dif = std::abs(R1 - R2);
+  done       = false;
+  double d   = C1.Location().Distance(C2.Location());
+  double R1  = C1.Radius();
+  double R2  = C2.Radius();
+  double sum = R1 + R2;
+  double dif = std::abs(R1 - R2);
 
   if (d <= RealEpsilon())
   { // Cercle concentriques
-    para = Standard_True;
+    para = true;
     nbp  = 0;
     if (dif <= RealEpsilon())
     { // Cercles confondus
-      empt = Standard_False;
-      iden = Standard_True;
+      empt = false;
+      iden = true;
     }
     else
     { // Cercles paralleles
-      empt = Standard_True;
-      iden = Standard_False;
+      empt = true;
+      iden = false;
     }
   }
   else if ((d - sum) > Epsilon(sum))
   { // Cercles exterieurs l un a l autre
     // et No solution
-    empt = Standard_True;
-    para = Standard_False;
-    iden = Standard_False;
+    empt = true;
+    para = false;
+    iden = false;
     nbp  = 0;
   }
   else if (std::abs(d - sum) <= Epsilon(sum))
   { // Cercles exterieurs et tangents
-    empt = Standard_False;
-    para = Standard_False;
-    iden = Standard_False;
+    empt = false;
+    para = false;
+    iden = false;
     nbp  = 1;
     gp_Vec2d ax(C1.Location(), C2.Location());
     gp_Vec2d Ox1(C1.XAxis().Direction());
     gp_Vec2d Ox2(C2.XAxis().Direction());
 
-    Standard_Real XS   = (C1.Location().X() * R2 + C2.Location().X() * R1) / sum;
-    Standard_Real YS   = (C1.Location().Y() * R2 + C2.Location().Y() * R1) / sum;
-    Standard_Real ang1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
-    Standard_Real ang2 = Ox2.Angle(ax) + M_PI;
+    double XS   = (C1.Location().X() * R2 + C2.Location().X() * R1) / sum;
+    double YS   = (C1.Location().Y() * R2 + C2.Location().Y() * R1) / sum;
+    double ang1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
+    double ang2 = Ox2.Angle(ax) + M_PI;
     if (ang1 < 0)
     {
       ang1 = 2 * M_PI + ang1;
@@ -74,36 +74,36 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
   }
   else if (((sum - d) > Epsilon(sum)) && ((d - dif) > Epsilon(d + dif)))
   {
-    empt = Standard_False;
-    para = Standard_False;
-    iden = Standard_False;
+    empt = false;
+    para = false;
+    iden = false;
     nbp  = 2;
-    gp_Vec2d      ax(C1.Location(), C2.Location());
-    gp_Vec2d      Ox1(C1.XAxis().Direction());
-    gp_Vec2d      Ox2(C2.XAxis().Direction());
-    Standard_Real ref1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
-    Standard_Real ref2 = Ox2.Angle(ax); // Resultat entre -PI et +PI
+    gp_Vec2d ax(C1.Location(), C2.Location());
+    gp_Vec2d Ox1(C1.XAxis().Direction());
+    gp_Vec2d Ox2(C2.XAxis().Direction());
+    double   ref1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
+    double   ref2 = Ox2.Angle(ax); // Resultat entre -PI et +PI
 
-    Standard_Real l1 = (d * d + R1 * R1 - R2 * R2) / (2.0 * d);
+    double l1 = (d * d + R1 * R1 - R2 * R2) / (2.0 * d);
     if (R1 * R1 - l1 * l1 < 0.)
     {
       l1 = (l1 > 0 ? R1 : -R1);
     }
-    Standard_Real h = std::sqrt(R1 * R1 - l1 * l1);
+    double h = std::sqrt(R1 * R1 - l1 * l1);
 
-    Standard_Real XS1 = C1.Location().X() + l1 * ax.X() / d - h * ax.Y() / d;
-    Standard_Real YS1 = C1.Location().Y() + l1 * ax.Y() / d + h * ax.X() / d;
+    double XS1 = C1.Location().X() + l1 * ax.X() / d - h * ax.Y() / d;
+    double YS1 = C1.Location().Y() + l1 * ax.Y() / d + h * ax.X() / d;
 
-    Standard_Real XS2 = C1.Location().X() + l1 * ax.X() / d + h * ax.Y() / d;
-    Standard_Real YS2 = C1.Location().Y() + l1 * ax.Y() / d - h * ax.X() / d;
+    double XS2 = C1.Location().X() + l1 * ax.X() / d + h * ax.Y() / d;
+    double YS2 = C1.Location().Y() + l1 * ax.Y() / d - h * ax.X() / d;
 
-    Standard_Real sint1 = h / R1;
-    Standard_Real cost1 = l1 / R1;
+    double sint1 = h / R1;
+    double cost1 = l1 / R1;
 
-    Standard_Real sint2 = h / R2;
-    Standard_Real cost2 = (l1 - d) / R2;
+    double sint2 = h / R2;
+    double cost2 = (l1 - d) / R2;
 
-    Standard_Real ang1, ang2;
+    double ang1, ang2;
 
     // ang1 et ang2 correspondent aux solutions avec sinus positif
     // si l'axe de reference est l'axe des centres C1C2
@@ -133,10 +133,10 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
         ang2 = M_PI - ang2;
       }
     }
-    Standard_Real ang11 = ref1 + ang1;
-    Standard_Real ang21 = ref2 + ang2;
-    Standard_Real ang12 = ref1 - ang1;
-    Standard_Real ang22 = ref2 - ang2;
+    double ang11 = ref1 + ang1;
+    double ang21 = ref2 + ang2;
+    double ang12 = ref1 - ang1;
+    double ang22 = ref2 - ang2;
     if (ang11 < 0.)
     {
       ang11 = 2 * M_PI + ang11;
@@ -174,18 +174,18 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
   }
   else if (std::abs(d - dif) <= Epsilon(sum))
   { // Cercles tangents interieurs
-    empt = Standard_False;
-    para = Standard_False;
-    iden = Standard_False;
+    empt = false;
+    para = false;
+    iden = false;
     nbp  = 1;
     gp_Vec2d ax(C1.Location(), C2.Location());
     if (C1.Radius() < C2.Radius())
       ax.Reverse();
 
-    gp_Vec2d      Ox1(C1.XAxis().Direction());
-    gp_Vec2d      Ox2(C2.XAxis().Direction());
-    Standard_Real ang1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
-    Standard_Real ang2 = Ox2.Angle(ax);
+    gp_Vec2d Ox1(C1.XAxis().Direction());
+    gp_Vec2d Ox2(C2.XAxis().Direction());
+    double   ang1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
+    double   ang2 = Ox2.Angle(ax);
     if (ang1 < 0)
     {
       ang1 = 2 * M_PI + ang1;
@@ -194,17 +194,17 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     {
       ang2 = 2 * M_PI + ang2;
     } // On revient entre 0 et 2PI
-    Standard_Real XS = (C1.Location().X() * R2 - C2.Location().X() * R1) / (R2 - R1);
-    Standard_Real YS = (C1.Location().Y() * R2 - C2.Location().Y() * R1) / (R2 - R1);
+    double XS = (C1.Location().X() * R2 - C2.Location().X() * R1) / (R2 - R1);
+    double YS = (C1.Location().Y() * R2 - C2.Location().Y() * R1) / (R2 - R1);
     lpnt[0].SetValue(XS, YS, ang1, ang2);
   }
   else
   { // On doit avoir d<dif-Resol et d<>0 donc
     // 1 cercle dans l autre et no solution
-    empt = Standard_True;
-    para = Standard_False;
-    iden = Standard_False;
+    empt = true;
+    para = false;
+    iden = false;
     nbp  = 0;
   }
-  done = Standard_True;
+  done = true;
 }

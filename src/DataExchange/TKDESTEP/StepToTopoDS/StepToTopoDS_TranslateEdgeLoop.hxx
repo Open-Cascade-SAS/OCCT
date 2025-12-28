@@ -39,29 +39,28 @@ public:
   Standard_EXPORT StepToTopoDS_TranslateEdgeLoop();
 
   Standard_EXPORT StepToTopoDS_TranslateEdgeLoop(
-    const Handle(StepShape_FaceBound)& FB,
-    const TopoDS_Face&                 F,
-    const Handle(Geom_Surface)&        S,
-    const Handle(StepGeom_Surface)&    SS,
-    const Standard_Boolean             ss,
-    StepToTopoDS_Tool&                 T,
-    StepToTopoDS_NMTool&               NMTool,
-    const StepData_Factors&            theLocalFactors = StepData_Factors());
+    const occ::handle<StepShape_FaceBound>& FB,
+    const TopoDS_Face&                      F,
+    const occ::handle<Geom_Surface>&        S,
+    const occ::handle<StepGeom_Surface>&    SS,
+    const bool                              ss,
+    StepToTopoDS_Tool&                      T,
+    StepToTopoDS_NMTool&                    NMTool,
+    const StepData_Factors&                 theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT void Init(const Handle(StepShape_FaceBound)& FB,
-                            const TopoDS_Face&                 F,
-                            const Handle(Geom_Surface)&        S,
-                            const Handle(StepGeom_Surface)&    SS,
-                            const Standard_Boolean             ss,
-                            StepToTopoDS_Tool&                 T,
-                            StepToTopoDS_NMTool&               NMTool,
+  Standard_EXPORT void Init(const occ::handle<StepShape_FaceBound>& FB,
+                            const TopoDS_Face&                      F,
+                            const occ::handle<Geom_Surface>&        S,
+                            const occ::handle<StepGeom_Surface>&    SS,
+                            const bool                              ss,
+                            StepToTopoDS_Tool&                      T,
+                            StepToTopoDS_NMTool&                    NMTool,
                             const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const TopoDS_Shape& Value() const;
 
   Standard_EXPORT StepToTopoDS_TranslateEdgeLoopError Error() const;
 
-protected:
 private:
   StepToTopoDS_TranslateEdgeLoopError myError;
   TopoDS_Shape                        myResult;

@@ -21,7 +21,8 @@
 
 #include <Standard_Integer.hxx>
 #include <TDataXtd_Pattern.hxx>
-#include <TDataXtd_Array1OfTrsf.hxx>
+#include <gp_Trsf.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_OStream.hxx>
 class TNaming_NamedShape;
 class TDataStd_Real;
@@ -31,9 +32,6 @@ class TDF_Label;
 class TDF_Attribute;
 class TDF_RelocationTable;
 class TDF_DataSet;
-
-class TDataXtd_PatternStd;
-DEFINE_STANDARD_HANDLE(TDataXtd_PatternStd, TDataXtd_Pattern)
 
 //! to create a PatternStd
 //! (LinearPattern, CircularPattern, RectangularPattern,
@@ -45,82 +43,80 @@ public:
   Standard_EXPORT static const Standard_GUID& GetPatternID();
 
   //! Find, or create, a PatternStd attribute
-  Standard_EXPORT static Handle(TDataXtd_PatternStd) Set(const TDF_Label& label);
+  Standard_EXPORT static occ::handle<TDataXtd_PatternStd> Set(const TDF_Label& label);
 
   Standard_EXPORT TDataXtd_PatternStd();
 
-  Standard_EXPORT void Signature(const Standard_Integer signature);
+  Standard_EXPORT void Signature(const int signature);
 
-  Standard_EXPORT void Axis1(const Handle(TNaming_NamedShape)& Axis1);
+  Standard_EXPORT void Axis1(const occ::handle<TNaming_NamedShape>& Axis1);
 
-  Standard_EXPORT void Axis2(const Handle(TNaming_NamedShape)& Axis2);
+  Standard_EXPORT void Axis2(const occ::handle<TNaming_NamedShape>& Axis2);
 
-  Standard_EXPORT void Axis1Reversed(const Standard_Boolean Axis1Reversed);
+  Standard_EXPORT void Axis1Reversed(const bool Axis1Reversed);
 
-  Standard_EXPORT void Axis2Reversed(const Standard_Boolean Axis2Reversed);
+  Standard_EXPORT void Axis2Reversed(const bool Axis2Reversed);
 
-  Standard_EXPORT void Value1(const Handle(TDataStd_Real)& value);
+  Standard_EXPORT void Value1(const occ::handle<TDataStd_Real>& value);
 
-  Standard_EXPORT void Value2(const Handle(TDataStd_Real)& value);
+  Standard_EXPORT void Value2(const occ::handle<TDataStd_Real>& value);
 
-  Standard_EXPORT void NbInstances1(const Handle(TDataStd_Integer)& NbInstances1);
+  Standard_EXPORT void NbInstances1(const occ::handle<TDataStd_Integer>& NbInstances1);
 
-  Standard_EXPORT void NbInstances2(const Handle(TDataStd_Integer)& NbInstances2);
+  Standard_EXPORT void NbInstances2(const occ::handle<TDataStd_Integer>& NbInstances2);
 
-  Standard_EXPORT void Mirror(const Handle(TNaming_NamedShape)& plane);
+  Standard_EXPORT void Mirror(const occ::handle<TNaming_NamedShape>& plane);
 
-  Standard_Integer Signature() const;
+  int Signature() const;
 
-  Handle(TNaming_NamedShape) Axis1() const;
+  occ::handle<TNaming_NamedShape> Axis1() const;
 
-  Handle(TNaming_NamedShape) Axis2() const;
+  occ::handle<TNaming_NamedShape> Axis2() const;
 
-  Standard_Boolean Axis1Reversed() const;
+  bool Axis1Reversed() const;
 
-  Standard_Boolean Axis2Reversed() const;
+  bool Axis2Reversed() const;
 
-  Handle(TDataStd_Real) Value1() const;
+  occ::handle<TDataStd_Real> Value1() const;
 
-  Handle(TDataStd_Real) Value2() const;
+  occ::handle<TDataStd_Real> Value2() const;
 
-  Handle(TDataStd_Integer) NbInstances1() const;
+  occ::handle<TDataStd_Integer> NbInstances1() const;
 
-  Handle(TDataStd_Integer) NbInstances2() const;
+  occ::handle<TDataStd_Integer> NbInstances2() const;
 
-  Handle(TNaming_NamedShape) Mirror() const;
+  occ::handle<TNaming_NamedShape> Mirror() const;
 
-  Standard_EXPORT Standard_Integer NbTrsfs() const Standard_OVERRIDE;
+  Standard_EXPORT int NbTrsfs() const override;
 
-  Standard_EXPORT void ComputeTrsfs(TDataXtd_Array1OfTrsf& Trsfs) const Standard_OVERRIDE;
+  Standard_EXPORT void ComputeTrsfs(NCollection_Array1<gp_Trsf>& Trsfs) const override;
 
-  Standard_EXPORT const Standard_GUID& PatternID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& PatternID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual void References(const Handle(TDF_DataSet)& aDataSet) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataXtd_PatternStd, TDataXtd_Pattern)
 
-protected:
 private:
-  Standard_Integer           mySignature;
-  Standard_Boolean           myAxis1Reversed;
-  Standard_Boolean           myAxis2Reversed;
-  Handle(TNaming_NamedShape) myAxis1;
-  Handle(TNaming_NamedShape) myAxis2;
-  Handle(TDataStd_Real)      myValue1;
-  Handle(TDataStd_Real)      myValue2;
-  Handle(TDataStd_Integer)   myNb1;
-  Handle(TDataStd_Integer)   myNb2;
-  Handle(TNaming_NamedShape) myMirror;
+  int                             mySignature;
+  bool                            myAxis1Reversed;
+  bool                            myAxis2Reversed;
+  occ::handle<TNaming_NamedShape> myAxis1;
+  occ::handle<TNaming_NamedShape> myAxis2;
+  occ::handle<TDataStd_Real>      myValue1;
+  occ::handle<TDataStd_Real>      myValue2;
+  occ::handle<TDataStd_Integer>   myNb1;
+  occ::handle<TDataStd_Integer>   myNb2;
+  occ::handle<TNaming_NamedShape> myMirror;
 };
 
 #include <TDataXtd_PatternStd.lxx>

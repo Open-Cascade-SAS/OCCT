@@ -25,9 +25,6 @@
 class TCollection_HAsciiString;
 class StepShape_Vertex;
 
-class StepShape_OrientedEdge;
-DEFINE_STANDARD_HANDLE(StepShape_OrientedEdge, StepShape_Edge)
-
 class StepShape_OrientedEdge : public StepShape_Edge
 {
 
@@ -35,34 +32,32 @@ public:
   //! Returns a OrientedEdge
   Standard_EXPORT StepShape_OrientedEdge();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepShape_Edge)&           aEdgeElement,
-                            const Standard_Boolean                  aOrientation);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepShape_Edge>&           aEdgeElement,
+                            const bool                                   aOrientation);
 
-  Standard_EXPORT void SetEdgeElement(const Handle(StepShape_Edge)& aEdgeElement);
+  Standard_EXPORT void SetEdgeElement(const occ::handle<StepShape_Edge>& aEdgeElement);
 
-  Standard_EXPORT Handle(StepShape_Edge) EdgeElement() const;
+  Standard_EXPORT occ::handle<StepShape_Edge> EdgeElement() const;
 
-  Standard_EXPORT void SetOrientation(const Standard_Boolean aOrientation);
+  Standard_EXPORT void SetOrientation(const bool aOrientation);
 
-  Standard_EXPORT Standard_Boolean Orientation() const;
+  Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetEdgeStart(const Handle(StepShape_Vertex)& aEdgeStart)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetEdgeStart(
+    const occ::handle<StepShape_Vertex>& aEdgeStart) override;
 
-  Standard_EXPORT virtual Handle(StepShape_Vertex) EdgeStart() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepShape_Vertex> EdgeStart() const override;
 
-  Standard_EXPORT virtual void SetEdgeEnd(const Handle(StepShape_Vertex)& aEdgeEnd)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetEdgeEnd(const occ::handle<StepShape_Vertex>& aEdgeEnd) override;
 
-  Standard_EXPORT virtual Handle(StepShape_Vertex) EdgeEnd() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepShape_Vertex> EdgeEnd() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedEdge, StepShape_Edge)
 
-protected:
 private:
-  Handle(StepShape_Edge) edgeElement;
-  Standard_Boolean       orientation;
+  occ::handle<StepShape_Edge> edgeElement;
+  bool                        orientation;
 };
 
 #endif // _StepShape_OrientedEdge_HeaderFile

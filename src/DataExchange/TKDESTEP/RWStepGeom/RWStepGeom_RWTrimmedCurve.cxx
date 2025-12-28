@@ -26,10 +26,10 @@
 
 RWStepGeom_RWTrimmedCurve::RWStepGeom_RWTrimmedCurve() {}
 
-void RWStepGeom_RWTrimmedCurve::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepGeom_TrimmedCurve)&   ent) const
+void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                                   num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepGeom_TrimmedCurve>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -39,31 +39,31 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : basisCurve ---
 
-  Handle(StepGeom_Curve) aBasisCurve;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Curve> aBasisCurve;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "basis_curve", ach, STANDARD_TYPE(StepGeom_Curve), aBasisCurve);
 
   // --- own field : trim1 ---
 
-  Handle(StepGeom_CartesianPoint) aCartesianPoint;
-  // Standard_Real aParameterValue; //szv#4:S4163:12Mar99 unused
+  occ::handle<StepGeom_CartesianPoint> aCartesianPoint;
+  // double aParameterValue; //szv#4:S4163:12Mar99 unused
 
-  Handle(StepGeom_HArray1OfTrimmingSelect) aTrim1;
-  Standard_Integer                         nsub3;
+  occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>> aTrim1;
+  int                                                       nsub3;
   if (data->ReadSubList(num, 3, "trim_1", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aTrim1               = new StepGeom_HArray1OfTrimmingSelect(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aTrim1  = new NCollection_HArray1<StepGeom_TrimmingSelect>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
       StepGeom_TrimmingSelect aTrim1Item;
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat3a =` not needed
+      // szv#4:S4163:12Mar99 `bool stat3a =` not needed
       if (data->ReadEntity(nsub3, i3, "trim_1", ach, aTrim1Item))
         aTrim1->SetValue(i3, aTrim1Item);
     }
@@ -71,17 +71,17 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : trim2 ---
 
-  Handle(StepGeom_HArray1OfTrimmingSelect) aTrim2;
-  Standard_Integer                         nsub4;
+  occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>> aTrim2;
+  int                                                       nsub4;
   if (data->ReadSubList(num, 4, "trim_2", ach, nsub4))
   {
-    Standard_Integer nb4 = data->NbParams(nsub4);
-    aTrim2               = new StepGeom_HArray1OfTrimmingSelect(1, nb4);
-    for (Standard_Integer i4 = 1; i4 <= nb4; i4++)
+    int nb4 = data->NbParams(nsub4);
+    aTrim2  = new NCollection_HArray1<StepGeom_TrimmingSelect>(1, nb4);
+    for (int i4 = 1; i4 <= nb4; i4++)
     {
 
       StepGeom_TrimmingSelect aTrim2Item;
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat4a =` not needed
+      // szv#4:S4163:12Mar99 `bool stat4a =` not needed
       if (data->ReadEntity(nsub4, i4, "trim_2", ach, aTrim2Item))
         aTrim2->SetValue(i4, aTrim2Item);
     }
@@ -89,8 +89,8 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : senseAgreement ---
 
-  Standard_Boolean aSenseAgreement;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  bool aSenseAgreement;
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadBoolean(num, 5, "sense_agreement", ach, aSenseAgreement);
 
   // --- own field : masterRepresentation ---
@@ -98,7 +98,7 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const Handle(StepData_StepReaderData)& 
   StepGeom_TrimmingPreference aMasterRepresentation = StepGeom_tpCartesian;
   if (data->ParamType(num, 6) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 6);
+    const char* text = data->ParamCValue(num, 6);
     if (!RWStepGeom_RWTrimmingPreference::ConvertToEnum(text, aMasterRepresentation))
     {
       ach->AddFail("Enumeration trimming_preference has not an allowed value");
@@ -112,8 +112,8 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const Handle(StepData_StepReaderData)& 
   ent->Init(aName, aBasisCurve, aTrim1, aTrim2, aSenseAgreement, aMasterRepresentation);
 }
 
-void RWStepGeom_RWTrimmedCurve::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepGeom_TrimmedCurve)& ent) const
+void RWStepGeom_RWTrimmedCurve::WriteStep(StepData_StepWriter&                      SW,
+                                          const occ::handle<StepGeom_TrimmedCurve>& ent) const
 {
 
   // --- inherited field name ---
@@ -127,7 +127,7 @@ void RWStepGeom_RWTrimmedCurve::WriteStep(StepData_StepWriter&                 S
   // --- own field : trim1 ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbTrim1(); i2++)
+  for (int i2 = 1; i2 <= ent->NbTrim1(); i2++)
   {
     SW.Send(ent->Trim1Value(i2).Value());
   }
@@ -136,7 +136,7 @@ void RWStepGeom_RWTrimmedCurve::WriteStep(StepData_StepWriter&                 S
   // --- own field : trim2 ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbTrim2(); i3++)
+  for (int i3 = 1; i3 <= ent->NbTrim2(); i3++)
   {
     SW.Send(ent->Trim2Value(i3).Value());
   }
@@ -151,14 +151,14 @@ void RWStepGeom_RWTrimmedCurve::WriteStep(StepData_StepWriter&                 S
   SW.SendEnum(RWStepGeom_RWTrimmingPreference::ConvertToString(ent->MasterRepresentation()));
 }
 
-void RWStepGeom_RWTrimmedCurve::Share(const Handle(StepGeom_TrimmedCurve)& ent,
-                                      Interface_EntityIterator&            iter) const
+void RWStepGeom_RWTrimmedCurve::Share(const occ::handle<StepGeom_TrimmedCurve>& ent,
+                                      Interface_EntityIterator&                 iter) const
 {
 
   iter.GetOneItem(ent->BasisCurve());
 
-  Standard_Integer nbElem2 = ent->NbTrim1();
-  for (Standard_Integer is2 = 1; is2 <= nbElem2; is2++)
+  int nbElem2 = ent->NbTrim1();
+  for (int is2 = 1; is2 <= nbElem2; is2++)
   {
     if (ent->Trim1Value(is2).CaseNumber() > 0)
     {
@@ -166,8 +166,8 @@ void RWStepGeom_RWTrimmedCurve::Share(const Handle(StepGeom_TrimmedCurve)& ent,
     }
   }
 
-  Standard_Integer nbElem3 = ent->NbTrim2();
-  for (Standard_Integer is3 = 1; is3 <= nbElem3; is3++)
+  int nbElem3 = ent->NbTrim2();
+  for (int is3 = 1; is3 <= nbElem3; is3++)
   {
     if (ent->Trim2Value(is3).CaseNumber() > 0)
     {

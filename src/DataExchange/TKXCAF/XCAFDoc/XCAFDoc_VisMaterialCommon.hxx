@@ -14,7 +14,15 @@
 #ifndef _XCAFDoc_VisMaterialCommon_HeaderFile
 #define _XCAFDoc_VisMaterialCommon_HeaderFile
 
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+
+#include <Standard_TypeDef.hxx>
+
+#include <NCollection_Vec3.hxx>
+
+#include <NCollection_Vec4.hxx>
+
+#include <NCollection_Mat4.hxx>
 #include <Image_Texture.hxx>
 #include <Quantity_ColorRGBA.hxx>
 #include <Standard_Dump.hxx>
@@ -25,16 +33,16 @@ class Graphic3d_MaterialAspect;
 //! Common (obsolete) material definition.
 struct XCAFDoc_VisMaterialCommon
 {
-  Handle(Image_Texture) DiffuseTexture; //!< image defining diffuse color
-  Quantity_Color        AmbientColor;   //!< ambient  color
-  Quantity_Color        DiffuseColor;   //!< diffuse  color
-  Quantity_Color        SpecularColor;  //!< specular color
-  Quantity_Color        EmissiveColor;  //!< emission color
-  Standard_ShortReal    Shininess;      //!< shininess value
-                                        // clang-format off
-  Standard_ShortReal      Transparency;    //!< transparency value within [0, 1] range with 0 meaning opaque
-                                        // clang-format on
-  Standard_Boolean IsDefined;           //!< defined flag; TRUE by default
+  occ::handle<Image_Texture> DiffuseTexture; //!< image defining diffuse color
+  Quantity_Color             AmbientColor;   //!< ambient  color
+  Quantity_Color             DiffuseColor;   //!< diffuse  color
+  Quantity_Color             SpecularColor;  //!< specular color
+  Quantity_Color             EmissiveColor;  //!< emission color
+  float                      Shininess;      //!< shininess value
+                                             // clang-format off
+  float      Transparency;    //!< transparency value within [0, 1] range with 0 meaning opaque
+                                             // clang-format on
+  bool IsDefined;                            //!< defined flag; TRUE by default
 
   //! Empty constructor.
   XCAFDoc_VisMaterialCommon()
@@ -44,12 +52,12 @@ struct XCAFDoc_VisMaterialCommon
         EmissiveColor(0.0, 0.0, 0.0, Quantity_TOC_RGB),
         Shininess(1.0f),
         Transparency(0.0f),
-        IsDefined(Standard_True)
+        IsDefined(true)
   {
   }
 
   //! Compare two materials.
-  Standard_Boolean IsEqual(const XCAFDoc_VisMaterialCommon& theOther) const
+  bool IsEqual(const XCAFDoc_VisMaterialCommon& theOther) const
   {
     if (&theOther == this)
     {
@@ -71,7 +79,7 @@ struct XCAFDoc_VisMaterialCommon
   }
 
   //! Dumps the content of me into the stream
-  void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const
   {
     OCCT_DUMP_CLASS_BEGIN(theOStream, XCAFDoc_VisMaterialCommon)
 

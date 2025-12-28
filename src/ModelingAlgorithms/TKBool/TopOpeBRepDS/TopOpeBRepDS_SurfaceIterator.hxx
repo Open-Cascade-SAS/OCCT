@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <TopOpeBRepDS_InterferenceIterator.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
 
@@ -33,15 +34,13 @@ public:
 
   //! Creates an iterator on the Surfaces on solid
   //! described by the interferences in <L>.
-  Standard_EXPORT TopOpeBRepDS_SurfaceIterator(const TopOpeBRepDS_ListOfInterference& L);
+  Standard_EXPORT TopOpeBRepDS_SurfaceIterator(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
 
   //! Index of the surface in the data structure.
-  Standard_EXPORT Standard_Integer Current() const;
+  Standard_EXPORT int Current() const;
 
   Standard_EXPORT TopAbs_Orientation Orientation(const TopAbs_State S) const;
-
-protected:
-private:
 };
 
 #endif // _TopOpeBRepDS_SurfaceIterator_HeaderFile

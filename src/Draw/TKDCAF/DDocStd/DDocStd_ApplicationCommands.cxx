@@ -44,16 +44,14 @@ Standard_IMPORT Draw_Viewer dout;
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_ListDocuments(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
-                                              const char** /*a*/)
+static int DDocStd_ListDocuments(Draw_Interpretor& di, int nb, const char** /*a*/)
 {
   if (nb == 1)
   {
-    Handle(TDocStd_Application) A = DDocStd::GetApplication();
-    Handle(TDocStd_Document)    D;
-    Standard_Integer            nbdoc = A->NbDocuments();
-    for (Standard_Integer i = 1; i <= nbdoc; i++)
+    occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
+    occ::handle<TDocStd_Document>    D;
+    int                              nbdoc = A->NbDocuments();
+    for (int i = 1; i <= nbdoc; i++)
     {
       A->GetDocument(i, D);
       di << "document " << i;
@@ -74,15 +72,13 @@ static Standard_Integer DDocStd_ListDocuments(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_NewDocument(Draw_Interpretor& di,
-                                            Standard_Integer  nb,
-                                            const char**      a)
+static int DDocStd_NewDocument(Draw_Interpretor& di, int nb, const char** a)
 {
-  Handle(TDocStd_Document)     D;
-  Handle(DDocStd_DrawDocument) DD;
+  occ::handle<TDocStd_Document>     D;
+  occ::handle<DDocStd_DrawDocument> DD;
   if (nb == 2)
   {
-    if (!DDocStd::GetDocument(a[1], D, Standard_False))
+    if (!DDocStd::GetDocument(a[1], D, false))
     {
       D  = new TDocStd_Document("dummy");
       DD = new DDocStd_DrawDocument(D);
@@ -96,9 +92,9 @@ static Standard_Integer DDocStd_NewDocument(Draw_Interpretor& di,
   }
   if (nb == 3)
   {
-    if (!DDocStd::GetDocument(a[1], D, Standard_False))
+    if (!DDocStd::GetDocument(a[1], D, false))
     {
-      Handle(TDocStd_Application) A = DDocStd::GetApplication();
+      occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
       A->NewDocument(a[2], D);
       DD = new DDocStd_DrawDocument(D);
       TDataStd_Name::Set(D->GetData()->Root(), a[1]);
@@ -116,19 +112,19 @@ static Standard_Integer DDocStd_NewDocument(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_Open(Draw_Interpretor& di, Standard_Integer nb, const char** a)
+static int DDocStd_Open(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb >= 3)
   {
-    TCollection_ExtendedString  path(a[1], Standard_True);
-    Standard_CString            DocName = a[2];
-    Handle(TDocStd_Application) A       = DDocStd::GetApplication();
-    Handle(TDocStd_Document)    D;
-    PCDM_ReaderStatus           theStatus;
+    TCollection_ExtendedString       path(a[1], true);
+    const char*                      DocName = a[2];
+    occ::handle<TDocStd_Application> A       = DDocStd::GetApplication();
+    occ::handle<TDocStd_Document>    D;
+    PCDM_ReaderStatus                theStatus;
 
-    Standard_Boolean          anUseStream = Standard_False;
-    Handle(PCDM_ReaderFilter) aFilter     = new PCDM_ReaderFilter;
-    for (Standard_Integer i = 3; i < nb; i++)
+    bool                           anUseStream = false;
+    occ::handle<PCDM_ReaderFilter> aFilter     = new PCDM_ReaderFilter;
+    for (int i = 3; i < nb; i++)
     {
       TCollection_AsciiString anArg(a[i]);
       if (anArg == "-append")
@@ -142,7 +138,7 @@ static Standard_Integer DDocStd_Open(Draw_Interpretor& di, Standard_Integer nb, 
       else if (anArg == "-stream")
       {
         di << "standard SEEKABLE stream is used\n";
-        anUseStream = Standard_True;
+        anUseStream = true;
       }
       else if (anArg.StartsWith("-skip"))
       {
@@ -163,16 +159,16 @@ static Standard_Integer DDocStd_Open(Draw_Interpretor& di, Standard_Integer nb, 
       }
     }
 
-    if (aFilter->IsAppendMode() && !DDocStd::GetDocument(DocName, D, Standard_False))
+    if (aFilter->IsAppendMode() && !DDocStd::GetDocument(DocName, D, false))
     {
       di << "for append mode document " << DocName << " must be already created\n";
       return 1;
     }
-    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+    occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
     if (anUseStream)
     {
-      const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      std::shared_ptr<std::istream> aFileStream =
+      const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+      std::shared_ptr<std::istream>      aFileStream =
         aFileSystem->OpenIStream(path, std::ios::in | std::ios::binary);
 
       theStatus = A->Open(*aFileStream, D, aFilter, aProgress->Start());
@@ -185,7 +181,7 @@ static Standard_Integer DDocStd_Open(Draw_Interpretor& di, Standard_Integer nb, 
     {
       if (!aFilter->IsAppendMode())
       {
-        Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(D);
+        occ::handle<DDocStd_DrawDocument> DD = new DDocStd_DrawDocument(D);
         TDataStd_Name::Set(D->GetData()->Root(), DocName);
         Draw::Set(DocName, DD);
       }
@@ -234,21 +230,21 @@ static Standard_Integer DDocStd_Open(Draw_Interpretor& di, Standard_Integer nb, 
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_Save(Draw_Interpretor& di, Standard_Integer nb, const char** a)
+static int DDocStd_Save(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2)
   {
-    Handle(TDocStd_Document) D;
+    occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
       return 1;
-    Handle(TDocStd_Application) A = DDocStd::GetApplication();
+    occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
     if (!D->IsSaved())
     {
       di << "this document has never been saved\n";
       return 0;
     }
 
-    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+    occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
     A->Save(D, aProgress->Start());
     return 0;
   }
@@ -258,24 +254,24 @@ static Standard_Integer DDocStd_Save(Draw_Interpretor& di, Standard_Integer nb, 
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_SaveAs(Draw_Interpretor& di, Standard_Integer nb, const char** a)
+static int DDocStd_SaveAs(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb >= 3)
   {
-    Handle(TDocStd_Document) D;
+    occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
       return 1;
-    TCollection_ExtendedString  path(a[2], Standard_True);
-    Handle(TDocStd_Application) A = DDocStd::GetApplication();
-    PCDM_StoreStatus            theStatus;
+    TCollection_ExtendedString       path(a[2], true);
+    occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
+    PCDM_StoreStatus                 theStatus;
 
-    Standard_Boolean anUseStream(Standard_False), isSaveEmptyLabels(Standard_False);
-    for (Standard_Integer i = 3; i < nb; i++)
+    bool anUseStream(false), isSaveEmptyLabels(false);
+    for (int i = 3; i < nb; i++)
     {
       if (!strcmp(a[i], "-stream"))
       {
         di << "standard SEEKABLE stream is used\n";
-        anUseStream = Standard_True;
+        anUseStream = true;
         break;
       }
       else
@@ -285,11 +281,11 @@ static Standard_Integer DDocStd_SaveAs(Draw_Interpretor& di, Standard_Integer nb
       }
     }
 
-    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+    occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
     if (anUseStream)
     {
-      const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      std::shared_ptr<std::ostream> aFileStream =
+      const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+      std::shared_ptr<std::ostream>      aFileStream =
         aFileSystem->OpenOStream(path, std::ios::out | std::ios::binary);
       theStatus = A->SaveAs(D, *aFileStream, aProgress->Start());
     }
@@ -346,25 +342,23 @@ static Standard_Integer DDocStd_SaveAs(Draw_Interpretor& di, Standard_Integer nb
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_Close(Draw_Interpretor& theDI,
-                                      Standard_Integer  theArgNb,
-                                      const char**      theArgVec)
+static int DDocStd_Close(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   bool                                      toComplain = true;
   NCollection_List<TCollection_AsciiString> aDocNames;
-  for (Standard_Integer anArgIt = 1; anArgIt < theArgNb; ++anArgIt)
+  for (int anArgIt = 1; anArgIt < theArgNb; ++anArgIt)
   {
     const TCollection_AsciiString anArg(theArgVec[anArgIt]);
     TCollection_AsciiString       anArgCase(anArg);
     anArgCase.LowerCase();
     if (anArgCase == "*" || anArgCase == "-all" || anArgCase == "all")
     {
-      for (NCollection_Map<Handle(Draw_Drawable3D)>::Iterator anIter(Draw::Drawables());
+      for (NCollection_Map<occ::handle<Draw_Drawable3D>>::Iterator anIter(Draw::Drawables());
            anIter.More();
            anIter.Next())
       {
-        if (Handle(DDocStd_DrawDocument) aDrawDocument =
-              Handle(DDocStd_DrawDocument)::DownCast(anIter.Value()))
+        if (occ::handle<DDocStd_DrawDocument> aDrawDocument =
+              occ::down_cast<DDocStd_DrawDocument>(anIter.Value()))
         {
           aDocNames.Append(aDrawDocument->Name());
         }
@@ -390,32 +384,33 @@ static Standard_Integer DDocStd_Close(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(TDocStd_Application) aDocApp = DDocStd::GetApplication();
+  occ::handle<TDocStd_Application> aDocApp = DDocStd::GetApplication();
   for (NCollection_List<TCollection_AsciiString>::Iterator aDocNameIter(aDocNames);
        aDocNameIter.More();
        aDocNameIter.Next())
   {
-    Standard_CString         aDocName = aDocNameIter.Value().ToCString();
-    Handle(TDocStd_Document) aDoc;
+    const char*                   aDocName = aDocNameIter.Value().ToCString();
+    occ::handle<TDocStd_Document> aDoc;
     if (DDocStd::GetDocument(aDocName, aDoc, toComplain))
     {
-      TDF_Label                 aRoot = aDoc->GetData()->Root();
-      Handle(TPrsStd_AISViewer) aDocViewer;
+      TDF_Label                      aRoot = aDoc->GetData()->Root();
+      occ::handle<TPrsStd_AISViewer> aDocViewer;
       if (TPrsStd_AISViewer::Find(aRoot, aDocViewer)
           && !aDocViewer->GetInteractiveContext().IsNull())
       {
-        Handle(V3d_Viewer) aViewer = aDocViewer->GetInteractiveContext()->CurrentViewer();
-        V3d_ListOfView     aViews;
-        for (V3d_ListOfViewIterator aViewIter(
+        occ::handle<V3d_Viewer> aViewer = aDocViewer->GetInteractiveContext()->CurrentViewer();
+        NCollection_List<occ::handle<V3d_View>> aViews;
+        for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(
                aDocViewer->GetInteractiveContext()->CurrentViewer()->DefinedViewIterator());
              aViewIter.More();
              aViewIter.Next())
         {
           aViews.Append(aViewIter.Value());
         }
-        for (V3d_ListOfViewIterator aViewIter(aViews); aViewIter.More(); aViewIter.Next())
+        for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(aViews); aViewIter.More();
+             aViewIter.Next())
         {
-          Handle(V3d_View) aView = aViewIter.Value();
+          occ::handle<V3d_View> aView = aViewIter.Value();
           ViewerTest::RemoveView(aView);
         }
       }
@@ -426,24 +421,22 @@ static Standard_Integer DDocStd_Close(Draw_Interpretor& theDI,
       return 1;
     }
 
-    if (Handle(Draw_Drawable3D) aDrawable = Draw::GetExisting(aDocName))
+    if (occ::handle<Draw_Drawable3D> aDrawable = Draw::GetExisting(aDocName))
     {
       dout.RemoveDrawable(aDrawable);
     }
-    Draw::Set(aDocName, Handle(Draw_Drawable3D)());
+    Draw::Set(aDocName, occ::handle<Draw_Drawable3D>());
   }
   return 0;
 }
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_IsInSession(Draw_Interpretor& di,
-                                            Standard_Integer  nb,
-                                            const char**      a)
+static int DDocStd_IsInSession(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2)
   {
-    Handle(TDocStd_Application) A = DDocStd::GetApplication();
+    occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
     di << A->IsInSession(a[1]);
     return 0;
   }
@@ -453,7 +446,7 @@ static Standard_Integer DDocStd_IsInSession(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_OSDPath(Draw_Interpretor& di, Standard_Integer nb, const char** a)
+static int DDocStd_OSDPath(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2)
   {
@@ -473,11 +466,11 @@ static Standard_Integer DDocStd_OSDPath(Draw_Interpretor& di, Standard_Integer n
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_Path(Draw_Interpretor& di, Standard_Integer nb, const char** a)
+static int DDocStd_Path(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2)
   {
-    TDocStd_PathParser path(TCollection_ExtendedString(a[1], Standard_True));
+    TDocStd_PathParser path(TCollection_ExtendedString(a[1], true));
     di << "Trek      : " << path.Trek() << "\n";
     di << "Name      : " << path.Name() << "\n";
     di << "Extension : " << path.Extension() << "\n";
@@ -490,17 +483,15 @@ static Standard_Integer DDocStd_Path(Draw_Interpretor& di, Standard_Integer nb, 
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_AddComment(Draw_Interpretor& di,
-                                           Standard_Integer  nb,
-                                           const char**      a)
+static int DDocStd_AddComment(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 3)
   {
-    Handle(TDocStd_Document) D;
+    occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
       return 1;
-    TCollection_ExtendedString comment(a[2], Standard_True);
-    //    Handle(TDocStd_Application) A = DDocStd::GetApplication();
+    TCollection_ExtendedString comment(a[2], true);
+    //    occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
     //    A->AddComment(D,comment);
     D->AddComment(comment);
     return 0;
@@ -511,17 +502,15 @@ static Standard_Integer DDocStd_AddComment(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_PrintComments(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
-                                              const char**      a)
+static int DDocStd_PrintComments(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2)
   {
-    Handle(TDocStd_Document) D;
+    occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
       return 1;
 
-    TColStd_SequenceOfExtendedString comments;
+    NCollection_Sequence<TCollection_ExtendedString> comments;
     D->Comments(comments);
 
     for (int i = 1; i <= comments.Length(); i++)
@@ -537,9 +526,9 @@ static Standard_Integer DDocStd_PrintComments(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_StorageFormatVersion(Draw_Interpretor& theDI,
-                                                     Standard_Integer  theNbArgs,
-                                                     const char**      theArgVec)
+static int DDocStd_StorageFormatVersion(Draw_Interpretor& theDI,
+                                        int               theNbArgs,
+                                        const char**      theArgVec)
 {
   if (theNbArgs != 2 && theNbArgs != 3)
   {
@@ -547,7 +536,7 @@ static Standard_Integer DDocStd_StorageFormatVersion(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   if (!DDocStd::GetDocument(theArgVec[1], aDoc))
   {
     theDI << "Syntax error: " << theArgVec[1] << " is not a document";
@@ -560,7 +549,7 @@ static Standard_Integer DDocStd_StorageFormatVersion(Draw_Interpretor& theDI,
     return 0;
   }
 
-  Standard_Integer aVerInt = 0;
+  int aVerInt = 0;
   if (!Draw::ParseInteger(theArgVec[2], aVerInt) || aVerInt < TDocStd_FormatVersion_LOWER
       || aVerInt > TDocStd_FormatVersion_UPPER)
   {
@@ -578,10 +567,10 @@ static Standard_Integer DDocStd_StorageFormatVersion(Draw_Interpretor& theDI,
 void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "DDocStd application commands";
 

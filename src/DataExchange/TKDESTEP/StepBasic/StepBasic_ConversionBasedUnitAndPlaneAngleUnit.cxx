@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndPlaneAngleUnit,
 StepBasic_ConversionBasedUnitAndPlaneAngleUnit::StepBasic_ConversionBasedUnitAndPlaneAngleUnit() {}
 
 void StepBasic_ConversionBasedUnitAndPlaneAngleUnit::Init(
-  const Handle(StepBasic_DimensionalExponents)& aDimensions,
-  const Handle(TCollection_HAsciiString)&       aName,
-  const Handle(Standard_Transient)&             aConversionFactor)
+  const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
+  const occ::handle<TCollection_HAsciiString>&       aName,
+  const occ::handle<Standard_Transient>&             aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
@@ -37,13 +37,13 @@ void StepBasic_ConversionBasedUnitAndPlaneAngleUnit::Init(
 }
 
 void StepBasic_ConversionBasedUnitAndPlaneAngleUnit::SetPlaneAngleUnit(
-  const Handle(StepBasic_PlaneAngleUnit)& aPlaneAngleUnit)
+  const occ::handle<StepBasic_PlaneAngleUnit>& aPlaneAngleUnit)
 {
   planeAngleUnit = aPlaneAngleUnit;
 }
 
-Handle(StepBasic_PlaneAngleUnit) StepBasic_ConversionBasedUnitAndPlaneAngleUnit::PlaneAngleUnit()
-  const
+occ::handle<StepBasic_PlaneAngleUnit> StepBasic_ConversionBasedUnitAndPlaneAngleUnit::
+  PlaneAngleUnit() const
 {
   return planeAngleUnit;
 }

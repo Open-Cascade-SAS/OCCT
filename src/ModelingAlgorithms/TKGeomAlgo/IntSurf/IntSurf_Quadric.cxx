@@ -31,7 +31,7 @@ IntSurf_Quadric::IntSurf_Quadric()
       prm2(0.),
       prm3(0.),
       prm4(0.),
-      ax3direc(Standard_False)
+      ax3direc(false)
 {
 }
 
@@ -158,7 +158,7 @@ void IntSurf_Quadric::SetValue(const gp_Torus& T)
 }
 
 // ============================================================
-Standard_Real IntSurf_Quadric::Distance(const gp_Pnt& P) const
+double IntSurf_Quadric::Distance(const gp_Pnt& P) const
 {
   switch (typ)
   {
@@ -170,12 +170,12 @@ Standard_Real IntSurf_Quadric::Distance(const gp_Pnt& P) const
       return (lin.Location().Distance(P) - prm1);
     case GeomAbs_Cone: // cone
     {
-      Standard_Real dist = lin.Distance(P);
-      Standard_Real U, V;
+      double dist = lin.Distance(P);
+      double U, V;
       ElSLib::ConeParameters(ax3, prm1, prm2, P, U, V);
-      gp_Pnt        Pp    = ElSLib::ConeValue(U, V, ax3, prm1, prm2);
-      Standard_Real distp = lin.Distance(Pp);
-      dist                = (dist - distp) / prm3;
+      gp_Pnt Pp    = ElSLib::ConeValue(U, V, ax3, prm1, prm2);
+      double distp = lin.Distance(Pp);
+      dist         = (dist - distp) / prm3;
       return (dist);
     }
     case GeomAbs_Torus: // torus
@@ -189,7 +189,7 @@ Standard_Real IntSurf_Quadric::Distance(const gp_Pnt& P) const
       gp_Dir DOPp = (O.SquareDistance(Pp) < 1e-14) ? ax3.XDirection() : gp_Dir(gp_Vec(O, Pp));
       PT.SetXYZ(O.XYZ() + DOPp.XYZ() * prm1);
       //
-      Standard_Real dist = P.Distance(PT) - prm2;
+      double dist = P.Distance(PT) - prm2;
       return dist;
     }
     default: {
@@ -213,7 +213,7 @@ gp_Vec IntSurf_Quadric::Gradient(const gp_Pnt& P) const
       gp_XYZ PP(lin.Location().XYZ());
       PP.Add(ElCLib::Parameter(lin, P) * lin.Direction().XYZ());
       grad.SetXYZ(P.XYZ() - PP);
-      Standard_Real N = grad.Magnitude();
+      double N = grad.Magnitude();
       if (N > 1e-14)
       {
         grad.Divide(N);
@@ -228,7 +228,7 @@ gp_Vec IntSurf_Quadric::Gradient(const gp_Pnt& P) const
     {
       gp_XYZ PP(P.XYZ());
       grad.SetXYZ((PP - lin.Location().XYZ()));
-      Standard_Real N = grad.Magnitude();
+      double N = grad.Magnitude();
       if (N > 1e-14)
       {
         grad.Divide(N);
@@ -241,13 +241,13 @@ gp_Vec IntSurf_Quadric::Gradient(const gp_Pnt& P) const
     break;
     case GeomAbs_Cone: // cone
     {
-      Standard_Real U, V;
+      double U, V;
       ElSLib::ConeParameters(ax3, prm1, prm2, P, U, V);
       gp_Pnt Pp = ElSLib::ConeValue(U, V, ax3, prm1, prm2);
       gp_Vec D1u, D1v;
       ElSLib::ConeD1(U, V, ax3, prm1, prm2, Pp, D1u, D1v);
       grad = D1u.Crossed(D1v);
-      if (ax3direc == Standard_False)
+      if (ax3direc == false)
       {
         grad.Reverse();
       }
@@ -266,7 +266,7 @@ gp_Vec IntSurf_Quadric::Gradient(const gp_Pnt& P) const
       PT.SetXYZ(O.XYZ() + DOPp.XYZ() * prm1);
       //
       grad.SetXYZ(P.XYZ() - PT.XYZ());
-      Standard_Real N = grad.Magnitude();
+      double N = grad.Magnitude();
       if (N > 1e-14)
       {
         grad.Divide(N);
@@ -285,7 +285,7 @@ gp_Vec IntSurf_Quadric::Gradient(const gp_Pnt& P) const
 }
 
 // ============================================================
-void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, Standard_Real& Dist, gp_Vec& Grad) const
+void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, double& Dist, gp_Vec& Grad) const
 {
 
   switch (typ)
@@ -300,7 +300,7 @@ void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, Standard_Real& Dist, gp_Vec& G
       gp_XYZ PP(lin.Location().XYZ());
       PP.Add(ElCLib::Parameter(lin, P) * lin.Direction().XYZ());
       Grad.SetXYZ((P.XYZ() - PP));
-      Standard_Real N = Grad.Magnitude();
+      double N = Grad.Magnitude();
       if (N > 1e-14)
       {
         Grad.Divide(N);
@@ -315,7 +315,7 @@ void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, Standard_Real& Dist, gp_Vec& G
       Dist = lin.Location().Distance(P) - prm1;
       gp_XYZ PP(P.XYZ());
       Grad.SetXYZ((PP - lin.Location().XYZ()));
-      Standard_Real N = Grad.Magnitude();
+      double N = Grad.Magnitude();
       if (N > 1e-14)
       {
         Grad.Divide(N);
@@ -327,17 +327,17 @@ void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, Standard_Real& Dist, gp_Vec& G
     }
     break;
     case GeomAbs_Cone: {
-      Standard_Real dist = lin.Distance(P);
-      Standard_Real U, V;
-      gp_Vec        D1u, D1v;
-      gp_Pnt        Pp;
+      double dist = lin.Distance(P);
+      double U, V;
+      gp_Vec D1u, D1v;
+      gp_Pnt Pp;
       ElSLib::ConeParameters(ax3, prm1, prm2, P, U, V);
       ElSLib::ConeD1(U, V, ax3, prm1, prm2, Pp, D1u, D1v);
-      Standard_Real distp = lin.Distance(Pp);
-      dist                = (dist - distp) / prm3;
-      Dist                = dist;
-      Grad                = D1u.Crossed(D1v);
-      if (ax3direc == Standard_False)
+      double distp = lin.Distance(Pp);
+      dist         = (dist - distp) / prm3;
+      Dist         = dist;
+      Grad         = D1u.Crossed(D1v);
+      if (ax3direc == false)
       {
         Grad.Reverse();
       }
@@ -364,7 +364,7 @@ void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, Standard_Real& Dist, gp_Vec& G
       Dist = P.Distance(PT) - prm2;
       //
       Grad.SetXYZ(P.XYZ() - PT.XYZ());
-      Standard_Real N = Grad.Magnitude();
+      double N = Grad.Magnitude();
       if (N > 1e-14)
       {
         Grad.Divide(N);
@@ -382,7 +382,7 @@ void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, Standard_Real& Dist, gp_Vec& G
 }
 
 // ============================================================
-gp_Pnt IntSurf_Quadric::Value(const Standard_Real U, const Standard_Real V) const
+gp_Pnt IntSurf_Quadric::Value(const double U, const double V) const
 {
   switch (typ)
   {
@@ -408,11 +408,7 @@ gp_Pnt IntSurf_Quadric::Value(const Standard_Real U, const Standard_Real V) cons
 }
 
 // ============================================================
-void IntSurf_Quadric::D1(const Standard_Real U,
-                         const Standard_Real V,
-                         gp_Pnt&             P,
-                         gp_Vec&             D1U,
-                         gp_Vec&             D1V) const
+void IntSurf_Quadric::D1(const double U, const double V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const
 {
   switch (typ)
   {
@@ -438,10 +434,7 @@ void IntSurf_Quadric::D1(const Standard_Real U,
 }
 
 // ============================================================
-gp_Vec IntSurf_Quadric::DN(const Standard_Real    U,
-                           const Standard_Real    V,
-                           const Standard_Integer Nu,
-                           const Standard_Integer Nv) const
+gp_Vec IntSurf_Quadric::DN(const double U, const double V, const int Nu, const int Nv) const
 {
   switch (typ)
   {
@@ -466,7 +459,7 @@ gp_Vec IntSurf_Quadric::DN(const Standard_Real    U,
 }
 
 // ============================================================
-gp_Vec IntSurf_Quadric::Normale(const Standard_Real U, const Standard_Real V) const
+gp_Vec IntSurf_Quadric::Normale(const double U, const double V) const
 {
   switch (typ)
   {
@@ -537,7 +530,7 @@ gp_Vec IntSurf_Quadric::Normale(const gp_Pnt& P) const
       }
     }
     case GeomAbs_Cone: {
-      Standard_Real U, V;
+      double U, V;
       ElSLib::ConeParameters(ax3, prm1, prm2, P, U, V);
       return Normale(U, V);
     }
@@ -565,7 +558,7 @@ gp_Vec IntSurf_Quadric::Normale(const gp_Pnt& P) const
 }
 
 // ============================================================
-void IntSurf_Quadric::Parameters(const gp_Pnt& P, Standard_Real& U, Standard_Real& V) const
+void IntSurf_Quadric::Parameters(const gp_Pnt& P, double& U, double& V) const
 {
   switch (typ)
   {

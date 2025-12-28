@@ -56,7 +56,7 @@ public:
   {
     myParameters = theParameters;
 
-    Standard_Integer aStartIndex, aEndIndex;
+    int aStartIndex, aEndIndex;
     if (myIsoU)
     {
       aStartIndex = 1;
@@ -68,7 +68,7 @@ public:
       aEndIndex   = myParams->Length() - 1;
     }
 
-    for (Standard_Integer i = aStartIndex; i <= aEndIndex; ++i)
+    for (int i = aStartIndex; i <= aEndIndex; ++i)
     {
       myCurrParam = myParams->Value(i);
       myIso =
@@ -76,7 +76,7 @@ public:
 
       myPrevControlParam = myControlParams->Value(1);
       myIso->D1(myPrevControlParam, myPrevControlPnt, myPrevControlVec);
-      for (Standard_Integer j = 2; j <= myControlParams->Length();)
+      for (int j = 2; j <= myControlParams->Length();)
       {
         j += checkControlPointAndMoveOn(j);
       }
@@ -88,19 +88,19 @@ public:
 private:
   //! Checks the given control point for deviation.
   //! Returns number of steps to be used to move point iterator.
-  Standard_Integer checkControlPointAndMoveOn(const Standard_Integer theIndex)
+  int checkControlPointAndMoveOn(const int theIndex)
   {
-    Standard_Integer aMoveSteps = 0;
-    myCurrControlParam          = myControlParams->Value(theIndex);
+    int aMoveSteps     = 0;
+    myCurrControlParam = myControlParams->Value(theIndex);
     myIso->D1(myCurrControlParam, myCurrControlPnt, myCurrControlVec);
 
-    const Standard_Real aMidParam = 0.5 * (myPrevControlParam + myCurrControlParam);
-    const gp_Pnt        aMidPnt   = myIso->Value(aMidParam);
+    const double aMidParam = 0.5 * (myPrevControlParam + myCurrControlParam);
+    const gp_Pnt aMidPnt   = myIso->Value(aMidParam);
 
-    const Standard_Real aSqDist =
+    const double aSqDist =
       BRepMesh_GeomTool::SquareDeflectionOfSegment(myPrevControlPnt, myCurrControlPnt, aMidPnt);
 
-    Standard_Real anAngle = 0.0;
+    double anAngle = 0.0;
 
     if ((myPrevControlVec.SquareMagnitude() > Precision::SquareConfusion())
         && (myCurrControlVec.SquareMagnitude() > Precision::SquareConfusion()))
@@ -108,7 +108,7 @@ private:
       anAngle = myPrevControlVec.Angle(myCurrControlVec);
     }
 
-    const Standard_Real aSqMaxDeflection = myDFace->GetDeflection() * myDFace->GetDeflection();
+    const double aSqMaxDeflection = myDFace->GetDeflection() * myDFace->GetDeflection();
 
     if (((aSqDist > aSqMaxDeflection) || (anAngle > myParameters.AngleInterior))
         && aSqDist > myParameters.MinSize * myParameters.MinSize)
@@ -127,7 +127,7 @@ private:
           && myControlParams->Length() > 3 && theIndex < myControlParams->Length())
       {
         // Remove too dense points
-        const Standard_Real aTmpParam = myControlParams->Value(theIndex + 1);
+        const double aTmpParam = myControlParams->Value(theIndex + 1);
         if (checkParameterForDeflectionAndUpdateCache(aTmpParam))
         {
           ++aMoveSteps;
@@ -145,18 +145,18 @@ private:
   }
 
   //! Checks whether the given param suits specified deflection. Updates cache.
-  Standard_Boolean checkParameterForDeflectionAndUpdateCache(const Standard_Real theParam)
+  bool checkParameterForDeflectionAndUpdateCache(const double theParam)
   {
     gp_Pnt aTmpPnt;
     gp_Vec aTmpVec;
     myIso->D1(theParam, aTmpPnt, aTmpVec);
 
-    const Standard_Real aTmpMidParam = 0.5 * (myPrevControlParam + theParam);
-    const gp_Pnt        aTmpMidPnt   = myIso->Value(aTmpMidParam);
+    const double aTmpMidParam = 0.5 * (myPrevControlParam + theParam);
+    const gp_Pnt aTmpMidPnt   = myIso->Value(aTmpMidParam);
 
     // Lets check next parameter.
     // If it also fits deflection, we can remove previous parameter.
-    const Standard_Real aSqDist =
+    const double aSqDist =
       BRepMesh_GeomTool::SquareDeflectionOfSegment(myPrevControlPnt, aTmpPnt, aTmpMidPnt);
 
     if (aSqDist < myDFace->GetDeflection() * myDFace->GetDeflection())
@@ -171,7 +171,7 @@ private:
         myCurrControlParam = theParam;
         myCurrControlPnt   = aTmpPnt;
         myCurrControlVec   = aTmpVec;
-        return Standard_True;
+        return true;
       }
       else
       {
@@ -182,72 +182,72 @@ private:
       }
     }
 
-    return Standard_False;
+    return false;
   }
 
 private:
   IMeshData::IFaceHandle            myDFace;
-  Handle(Geom_Surface)              mySurface;
-  Standard_Boolean                  myIsoU;
+  occ::handle<Geom_Surface>         mySurface;
+  bool                              myIsoU;
   Handle(IMeshData::SequenceOfReal) myParams;
   Handle(IMeshData::SequenceOfReal) myControlParams;
 
   Handle(IMeshData::MapOfReal) myParamsForbiddenToRemove;
   Handle(IMeshData::MapOfReal) myControlParamsForbiddenToRemove;
 
-  Handle(NCollection_IncAllocator) myAllocator;
-  Handle(IMeshData::MapOfReal)     myControlParamsToRemove;
+  occ::handle<NCollection_IncAllocator> myAllocator;
+  Handle(IMeshData::MapOfReal)          myControlParamsToRemove;
 
   IMeshTools_Parameters                 myParameters;
   NCollection_Handle<GeomAdaptor_Curve> myIso;
 
-  Standard_Real myCurrParam;
+  double myCurrParam;
 
-  Standard_Real myCurrControlParam;
-  gp_Pnt        myCurrControlPnt;
-  gp_Vec        myCurrControlVec;
+  double myCurrControlParam;
+  gp_Pnt myCurrControlPnt;
+  gp_Vec myCurrControlVec;
 
-  Standard_Real myPrevControlParam;
-  gp_Pnt        myPrevControlPnt;
-  gp_Vec        myPrevControlVec;
+  double myPrevControlParam;
+  gp_Pnt myPrevControlPnt;
+  gp_Vec myPrevControlVec;
 };
 
 //! Adds param to map if it fits specified range.
-Standard_Boolean addParam(const Standard_Real&                           theParam,
-                          const std::pair<Standard_Real, Standard_Real>& theRange,
-                          IMeshData::IMapOfReal&                         theParams)
+bool addParam(const double&                    theParam,
+              const std::pair<double, double>& theRange,
+              IMeshData::IMapOfReal&           theParams)
 {
   if (theParam < theRange.first || theParam > theRange.second)
   {
-    return Standard_False;
+    return false;
   }
 
   theParams.Add(theParam);
-  return Standard_True;
+  return true;
 }
 
 //! Initializes parameters map using CN intervals.
-Standard_Boolean initParamsFromIntervals(const TColStd_Array1OfReal& theIntervals,
-                                         const std::pair<Standard_Real, Standard_Real>& theRange,
-                                         const Standard_Boolean isSplitIntervals,
-                                         IMeshData::IMapOfReal& theParams)
+bool initParamsFromIntervals(const NCollection_Array1<double>& theIntervals,
+                             const std::pair<double, double>&  theRange,
+                             const bool                        isSplitIntervals,
+                             IMeshData::IMapOfReal&            theParams)
 {
-  Standard_Boolean isAdded = Standard_False;
+  bool isAdded = false;
 
-  for (Standard_Integer i = theIntervals.Lower(); i <= theIntervals.Upper(); ++i)
+  for (int i = theIntervals.Lower(); i <= theIntervals.Upper(); ++i)
   {
-    const Standard_Real aStartParam = theIntervals.Value(i);
+    const double aStartParam = theIntervals.Value(i);
     if (addParam(aStartParam, theRange, theParams))
     {
-      isAdded = Standard_True;
+      isAdded = true;
     }
 
     if (isSplitIntervals && i < theIntervals.Upper())
     {
-      const Standard_Real aMidParam = (aStartParam + theIntervals.Value(i + 1)) / 2.;
+      const double aMidParam = (aStartParam + theIntervals.Value(i + 1)) / 2.;
       if (addParam(aMidParam, theRange, theParams))
       {
-        isAdded = Standard_True;
+        isAdded = true;
       }
     }
   }
@@ -258,34 +258,34 @@ Standard_Boolean initParamsFromIntervals(const TColStd_Array1OfReal& theInterval
 //! Checks whether intervals should be split.
 //! Returns true in case if it is impossible to compute normal
 //! directly on intervals, false is returned elsewhere.
-Standard_Boolean toSplitIntervals(const Handle(Geom_Surface)& theSurf,
-                                  const TColStd_Array1OfReal (&theIntervals)[2])
+bool toSplitIntervals(const occ::handle<Geom_Surface>& theSurf,
+                      const NCollection_Array1<double> (&theIntervals)[2])
 {
-  Standard_Integer aIntervalU = theIntervals[0].Lower();
+  int aIntervalU = theIntervals[0].Lower();
   for (; aIntervalU <= theIntervals[0].Upper(); ++aIntervalU)
   {
-    const Standard_Real aParamU = theIntervals[0].Value(aIntervalU);
+    const double aParamU = theIntervals[0].Value(aIntervalU);
     if (Precision::IsInfinite(aParamU))
       continue;
 
-    Standard_Integer aIntervalV = theIntervals[1].Lower();
+    int aIntervalV = theIntervals[1].Lower();
     for (; aIntervalV <= theIntervals[1].Upper(); ++aIntervalV)
     {
-      gp_Dir              aNorm;
-      const Standard_Real aParamV = theIntervals[1].Value(aIntervalV);
+      gp_Dir       aNorm;
+      const double aParamV = theIntervals[1].Value(aIntervalV);
       if (Precision::IsInfinite(aParamV))
         continue;
 
       if (GeomLib::NormEstim(theSurf, gp_Pnt2d(aParamU, aParamV), Precision::Confusion(), aNorm)
           != 0)
       {
-        return Standard_True;
+        return true;
       }
       // TODO: do not split intervals if there is no normal in the middle of interval.
     }
   }
 
-  return Standard_False;
+  return false;
 }
 } // namespace
 
@@ -298,8 +298,8 @@ void BRepMesh_NURBSRangeSplitter::AdjustRange()
 
   if (mySurfaceType == GeomAbs_BezierSurface)
   {
-    const std::pair<Standard_Real, Standard_Real>& aRangeU = GetRangeU();
-    const std::pair<Standard_Real, Standard_Real>& aRangeV = GetRangeV();
+    const std::pair<double, double>& aRangeU = GetRangeU();
+    const std::pair<double, double>& aRangeV = GetRangeV();
 
     myIsValid = !(aRangeU.first < -0.5 || aRangeU.second > 1.5 || aRangeV.first < -0.5
                   || aRangeV.second > 1.5);
@@ -316,15 +316,15 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_NURBSRangeSplitter::GenerateSurfaceNodes
     return Handle(IMeshData::ListOfPnt2d)();
   }
 
-  const std::pair<Standard_Real, Standard_Real>& aRangeU = GetRangeU();
-  const std::pair<Standard_Real, Standard_Real>& aRangeV = GetRangeV();
-  const std::pair<Standard_Real, Standard_Real>& aDelta  = GetDelta();
+  const std::pair<double, double>& aRangeU = GetRangeU();
+  const std::pair<double, double>& aRangeV = GetRangeV();
+  const std::pair<double, double>& aDelta  = GetDelta();
 
-  const Standard_Real                aDefFace = GetDFace()->GetDeflection();
-  const Handle(BRepAdaptor_Surface)& gFace    = GetSurface();
-  Handle(Geom_Surface)               aSurface = gFace->Surface().Surface();
+  const double                            aDefFace = GetDFace()->GetDeflection();
+  const occ::handle<BRepAdaptor_Surface>& gFace    = GetSurface();
+  occ::handle<Geom_Surface>               aSurface = gFace->Surface().Surface();
 
-  const Handle(NCollection_IncAllocator) aTmpAlloc =
+  const occ::handle<NCollection_IncAllocator> aTmpAlloc =
     new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
 
   const Handle(IMeshData::SequenceOfReal) aParams[2] = {
@@ -372,17 +372,17 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_NURBSRangeSplitter::GenerateSurfaceNodes
     new IMeshData::ListOfPnt2d(new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE));
 
   // insert nodes of the regular grid
-  for (Standard_Integer i = 1; i <= aParams[0]->Length(); ++i)
+  for (int i = 1; i <= aParams[0]->Length(); ++i)
   {
-    const Standard_Real aParam1 = aParams[0]->Value(i);
+    const double aParam1 = aParams[0]->Value(i);
     if (aParamsToRemove[0]->Contains(aParam1))
     {
       continue;
     }
 
-    for (Standard_Integer j = 1; j <= aParams[1]->Length(); ++j)
+    for (int j = 1; j <= aParams[1]->Length(); ++j)
     {
-      const Standard_Real aParam2 = aParams[1]->Value(j);
+      const double aParam2 = aParams[1]->Value(j);
       if (aParamsToRemove[1]->Contains(aParam2))
       {
         continue;
@@ -397,9 +397,9 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_NURBSRangeSplitter::GenerateSurfaceNodes
 
 //=================================================================================================
 
-Standard_Integer BRepMesh_NURBSRangeSplitter::getUndefinedIntervalNb(
-  const Handle(Adaptor3d_Surface)& theSurface,
-  const Standard_Boolean           isU,
+int BRepMesh_NURBSRangeSplitter::getUndefinedIntervalNb(
+  const occ::handle<Adaptor3d_Surface>& theSurface,
+  const bool                            isU,
   const GeomAbs_Shape /*theContinuity*/) const
 {
   return (isU ? theSurface->NbUPoles() : theSurface->NbVPoles()) - 1;
@@ -408,13 +408,13 @@ Standard_Integer BRepMesh_NURBSRangeSplitter::getUndefinedIntervalNb(
 //=================================================================================================
 
 void BRepMesh_NURBSRangeSplitter::getUndefinedInterval(
-  const Handle(Adaptor3d_Surface)&               theSurface,
-  const Standard_Boolean                         isU,
-  const GeomAbs_Shape                            theContinuity,
-  const std::pair<Standard_Real, Standard_Real>& theRange,
-  TColStd_Array1OfReal&                          theIntervals) const
+  const occ::handle<Adaptor3d_Surface>& theSurface,
+  const bool                            isU,
+  const GeomAbs_Shape                   theContinuity,
+  const std::pair<double, double>&      theRange,
+  NCollection_Array1<double>&           theIntervals) const
 {
-  Standard_Integer aIntervalsNb =
+  int aIntervalsNb =
     isU ? theSurface->NbUIntervals(theContinuity) : theSurface->NbVIntervals(theContinuity);
 
   if (aIntervalsNb == 1)
@@ -422,9 +422,9 @@ void BRepMesh_NURBSRangeSplitter::getUndefinedInterval(
     aIntervalsNb = getUndefinedIntervalNb(theSurface, isU, theContinuity);
     if (aIntervalsNb > 1)
     {
-      theIntervals              = TColStd_Array1OfReal(1, aIntervalsNb - 1);
-      const Standard_Real aDiff = (theRange.second - theRange.first) / aIntervalsNb;
-      for (Standard_Integer i = theIntervals.Lower(); i <= theIntervals.Upper(); ++i)
+      theIntervals       = NCollection_Array1<double>(1, aIntervalsNb - 1);
+      const double aDiff = (theRange.second - theRange.first) / aIntervalsNb;
+      for (int i = theIntervals.Lower(); i <= theIntervals.Upper(); ++i)
       {
         theIntervals.SetValue(i, theRange.first + i * aDiff);
       }
@@ -433,7 +433,7 @@ void BRepMesh_NURBSRangeSplitter::getUndefinedInterval(
 
   if (theIntervals.IsEmpty())
   {
-    theIntervals = TColStd_Array1OfReal(1, aIntervalsNb + 1);
+    theIntervals = NCollection_Array1<double>(1, aIntervalsNb + 1);
     if (isU)
     {
       theSurface->UIntervals(theIntervals, theContinuity);
@@ -447,17 +447,16 @@ void BRepMesh_NURBSRangeSplitter::getUndefinedInterval(
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_NURBSRangeSplitter::initParameters() const
+bool BRepMesh_NURBSRangeSplitter::initParameters() const
 {
-  const GeomAbs_Shape                aContinuity = GeomAbs_CN;
-  const Handle(BRepAdaptor_Surface)& aSurface    = GetSurface();
+  const GeomAbs_Shape                     aContinuity = GeomAbs_CN;
+  const occ::handle<BRepAdaptor_Surface>& aSurface    = GetSurface();
 
-  TColStd_Array1OfReal aIntervals[2];
-  getUndefinedInterval(aSurface, Standard_True, aContinuity, GetRangeU(), aIntervals[0]);
-  getUndefinedInterval(aSurface, Standard_False, aContinuity, GetRangeV(), aIntervals[1]);
+  NCollection_Array1<double> aIntervals[2];
+  getUndefinedInterval(aSurface, true, aContinuity, GetRangeU(), aIntervals[0]);
+  getUndefinedInterval(aSurface, false, aContinuity, GetRangeV(), aIntervals[1]);
 
-  const Standard_Boolean isSplitIntervals =
-    toSplitIntervals(aSurface->Surface().Surface(), aIntervals);
+  const bool isSplitIntervals = toSplitIntervals(aSurface->Surface().Surface(), aIntervals);
 
   if (!initParamsFromIntervals(aIntervals[0],
                                GetRangeU(),
@@ -466,7 +465,7 @@ Standard_Boolean BRepMesh_NURBSRangeSplitter::initParameters() const
   {
     // if (!grabParamsOfEdges (Edge_Frontier, Param_U))
     {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -477,7 +476,7 @@ Standard_Boolean BRepMesh_NURBSRangeSplitter::initParameters() const
   {
     // if (!grabParamsOfEdges (Edge_Frontier, Param_V))
     {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -486,23 +485,22 @@ Standard_Boolean BRepMesh_NURBSRangeSplitter::initParameters() const
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_NURBSRangeSplitter::grabParamsOfEdges(
-  const EdgeType         theEdgeType,
-  const Standard_Integer theParamDimensionFlag) const
+bool BRepMesh_NURBSRangeSplitter::grabParamsOfEdges(const EdgeType theEdgeType,
+                                                    const int      theParamDimensionFlag) const
 {
   if ((theParamDimensionFlag & (Param_U | Param_V)) == 0)
   {
-    return Standard_False;
+    return false;
   }
 
   const IMeshData::IFaceHandle& aDFace = GetDFace();
-  for (Standard_Integer aWireIt = 0; aWireIt < aDFace->WiresNb(); ++aWireIt)
+  for (int aWireIt = 0; aWireIt < aDFace->WiresNb(); ++aWireIt)
   {
     const IMeshData::IWireHandle& aDWire = aDFace->GetWire(aWireIt);
-    for (Standard_Integer aEdgeIt = 0; aEdgeIt < aDWire->EdgesNb(); ++aEdgeIt)
+    for (int aEdgeIt = 0; aEdgeIt < aDWire->EdgesNb(); ++aEdgeIt)
     {
       const IMeshData::IEdgePtr& aDEdge = aDWire->GetEdge(aEdgeIt);
-      for (Standard_Integer aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
+      for (int aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
       {
         const IMeshData::IPCurveHandle& aDPCurve = aDEdge->GetPCurve(aPCurveIt);
         if (aDPCurve->GetFace() == aDFace)
@@ -512,7 +510,7 @@ Standard_Boolean BRepMesh_NURBSRangeSplitter::grabParamsOfEdges(
             continue;
           }
 
-          for (Standard_Integer aPointIt = 0; aPointIt < aDPCurve->ParametersNb(); ++aPointIt)
+          for (int aPointIt = 0; aPointIt < aDPCurve->ParametersNb(); ++aPointIt)
           {
             const gp_Pnt2d& aPnt2d = aDPCurve->GetPoint(aPointIt);
             if (theParamDimensionFlag & Param_U)
@@ -530,65 +528,65 @@ Standard_Boolean BRepMesh_NURBSRangeSplitter::grabParamsOfEdges(
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::computeGrainAndFilterParameters(
-  const IMeshData::IMapOfReal&            theSourceParams,
-  const Standard_Real                     theTol2d,
-  const Standard_Real                     theRangeDiff,
-  const Standard_Real                     theDelta,
-  const IMeshTools_Parameters&            theParameters,
-  const Handle(NCollection_IncAllocator)& theAllocator) const
+  const IMeshData::IMapOfReal&                 theSourceParams,
+  const double                                 theTol2d,
+  const double                                 theRangeDiff,
+  const double                                 theDelta,
+  const IMeshTools_Parameters&                 theParameters,
+  const occ::handle<NCollection_IncAllocator>& theAllocator) const
 {
   // Sort and filter sequence of parameters
-  Standard_Real aMinDiff = Precision::PConfusion();
+  double aMinDiff = Precision::PConfusion();
   if (theDelta < 1.)
   {
     aMinDiff /= theDelta;
   }
 
-  const Handle(BRepAdaptor_Surface)& aSurface = GetSurface();
-  const Standard_Real aMinSize2d = std::max(aSurface->UResolution(theParameters.MinSize),
-                                            aSurface->VResolution(theParameters.MinSize));
+  const occ::handle<BRepAdaptor_Surface>& aSurface = GetSurface();
+  const double aMinSize2d = std::max(aSurface->UResolution(theParameters.MinSize),
+                                     aSurface->VResolution(theParameters.MinSize));
 
   aMinDiff = std::max(aMinSize2d, aMinDiff);
 
-  const Standard_Real aDiffMaxLim = 0.1 * theRangeDiff;
-  const Standard_Real aDiffMinLim = std::max(0.005 * theRangeDiff, 2. * theTol2d);
-  const Standard_Real aDiff       = std::max(aMinSize2d, std::min(aDiffMaxLim, aDiffMinLim));
+  const double aDiffMaxLim = 0.1 * theRangeDiff;
+  const double aDiffMinLim = std::max(0.005 * theRangeDiff, 2. * theTol2d);
+  const double aDiff       = std::max(aMinSize2d, std::min(aDiffMaxLim, aDiffMinLim));
   return filterParameters(theSourceParams, aMinDiff, aDiff, theAllocator);
 }
 
 //=================================================================================================
 
 Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::filterParameters(
-  const IMeshData::IMapOfReal&            theParams,
-  const Standard_Real                     theMinDist,
-  const Standard_Real                     theFilterDist,
-  const Handle(NCollection_IncAllocator)& theAllocator) const
+  const IMeshData::IMapOfReal&                 theParams,
+  const double                                 theMinDist,
+  const double                                 theFilterDist,
+  const occ::handle<NCollection_IncAllocator>& theAllocator) const
 {
   Handle(IMeshData::SequenceOfReal) aResult = new IMeshData::SequenceOfReal(theAllocator);
 
   // Sort sequence of parameters
-  const Standard_Integer anInitLen = theParams.Extent();
+  const int anInitLen = theParams.Extent();
 
   if (anInitLen < 1)
   {
     return aResult;
   }
 
-  TColStd_Array1OfReal aParamArray(1, anInitLen);
-  Standard_Integer     j;
+  NCollection_Array1<double> aParamArray(1, anInitLen);
+  int                        j;
   for (j = 1; j <= anInitLen; j++)
     aParamArray(j) = theParams(j);
 
   std::sort(aParamArray.begin(), aParamArray.end());
 
   // mandatory pre-filtering using the first (minimal) filter value
-  Standard_Integer aParamLength = 1;
+  int aParamLength = 1;
   for (j = 2; j <= anInitLen; j++)
   {
     if ((aParamArray(j) - aParamArray(aParamLength)) > theMinDist)
@@ -599,22 +597,22 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::filterParameters(
   }
 
   // perform filtering on series
-  Standard_Real    aLastAdded, aLastCandidate;
-  Standard_Boolean isCandidateDefined = Standard_False;
-  aLastAdded                          = aParamArray(1);
-  aLastCandidate                      = aLastAdded;
+  double aLastAdded, aLastCandidate;
+  bool   isCandidateDefined = false;
+  aLastAdded                = aParamArray(1);
+  aLastCandidate            = aLastAdded;
   aResult->Append(aLastAdded);
 
   for (j = 2; j < aParamLength; j++)
   {
-    Standard_Real aVal = aParamArray(j);
+    double aVal = aParamArray(j);
     if (aVal - aLastAdded > theFilterDist)
     {
       // adds the parameter
       if (isCandidateDefined)
       {
         aLastAdded         = aLastCandidate;
-        isCandidateDefined = Standard_False;
+        isCandidateDefined = false;
         j--;
       }
       else
@@ -626,7 +624,7 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::filterParameters(
     }
 
     aLastCandidate     = aVal;
-    isCandidateDefined = Standard_True;
+    isCandidateDefined = true;
   }
   aResult->Append(aParamArray(aParamLength));
 

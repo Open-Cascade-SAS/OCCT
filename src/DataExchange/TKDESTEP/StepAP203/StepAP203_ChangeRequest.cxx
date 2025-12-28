@@ -28,8 +28,9 @@ StepAP203_ChangeRequest::StepAP203_ChangeRequest() {}
 //=================================================================================================
 
 void StepAP203_ChangeRequest::Init(
-  const Handle(StepBasic_VersionedActionRequest)& aActionRequestAssignment_AssignedActionRequest,
-  const Handle(StepAP203_HArray1OfChangeRequestItem)& aItems)
+  const occ::handle<StepBasic_VersionedActionRequest>&
+    aActionRequestAssignment_AssignedActionRequest,
+  const occ::handle<NCollection_HArray1<StepAP203_ChangeRequestItem>>& aItems)
 {
   StepBasic_ActionRequestAssignment::Init(aActionRequestAssignment_AssignedActionRequest);
 
@@ -38,14 +39,15 @@ void StepAP203_ChangeRequest::Init(
 
 //=================================================================================================
 
-Handle(StepAP203_HArray1OfChangeRequestItem) StepAP203_ChangeRequest::Items() const
+occ::handle<NCollection_HArray1<StepAP203_ChangeRequestItem>> StepAP203_ChangeRequest::Items() const
 {
   return theItems;
 }
 
 //=================================================================================================
 
-void StepAP203_ChangeRequest::SetItems(const Handle(StepAP203_HArray1OfChangeRequestItem)& aItems)
+void StepAP203_ChangeRequest::SetItems(
+  const occ::handle<NCollection_HArray1<StepAP203_ChangeRequestItem>>& aItems)
 {
   theItems = aItems;
 }

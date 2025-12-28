@@ -24,9 +24,6 @@
 class StepGeom_Surface;
 class TCollection_HAsciiString;
 
-class StepShape_HalfSpaceSolid;
-DEFINE_STANDARD_HANDLE(StepShape_HalfSpaceSolid, StepGeom_GeometricRepresentationItem)
-
 class StepShape_HalfSpaceSolid : public StepGeom_GeometricRepresentationItem
 {
 
@@ -34,24 +31,23 @@ public:
   //! Returns a HalfSpaceSolid
   Standard_EXPORT StepShape_HalfSpaceSolid();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepGeom_Surface)&         aBaseSurface,
-                            const Standard_Boolean                  aAgreementFlag);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepGeom_Surface>&         aBaseSurface,
+                            const bool                                   aAgreementFlag);
 
-  Standard_EXPORT void SetBaseSurface(const Handle(StepGeom_Surface)& aBaseSurface);
+  Standard_EXPORT void SetBaseSurface(const occ::handle<StepGeom_Surface>& aBaseSurface);
 
-  Standard_EXPORT Handle(StepGeom_Surface) BaseSurface() const;
+  Standard_EXPORT occ::handle<StepGeom_Surface> BaseSurface() const;
 
-  Standard_EXPORT void SetAgreementFlag(const Standard_Boolean aAgreementFlag);
+  Standard_EXPORT void SetAgreementFlag(const bool aAgreementFlag);
 
-  Standard_EXPORT Standard_Boolean AgreementFlag() const;
+  Standard_EXPORT bool AgreementFlag() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_HalfSpaceSolid, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(StepGeom_Surface) baseSurface;
-  Standard_Boolean         agreementFlag;
+  occ::handle<StepGeom_Surface> baseSurface;
+  bool                          agreementFlag;
 };
 
 #endif // _StepShape_HalfSpaceSolid_HeaderFile

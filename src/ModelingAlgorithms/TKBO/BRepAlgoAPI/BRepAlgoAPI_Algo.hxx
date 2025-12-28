@@ -34,7 +34,7 @@ public:
 
   //! Returns a shape built by the shape construction algorithm.
   //! Does not check if the shape is built.
-  Standard_EXPORT virtual const TopoDS_Shape& Shape() Standard_OVERRIDE;
+  Standard_EXPORT virtual const TopoDS_Shape& Shape() override;
 
   // Provide access to methods of protected base class BOPAlgo_Options
   // (inherited as protected to avoid problems with SWIG wrapper)
@@ -61,9 +61,7 @@ protected:
   Standard_EXPORT virtual ~BRepAlgoAPI_Algo();
 
   //! Empty constructor
-  Standard_EXPORT BRepAlgoAPI_Algo(const Handle(NCollection_BaseAllocator)& theAllocator);
-
-private:
+  Standard_EXPORT BRepAlgoAPI_Algo(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 };
 
 #endif // _BRepAlgoAPI_Algo_HeaderFile

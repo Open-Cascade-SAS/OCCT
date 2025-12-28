@@ -49,8 +49,7 @@ public:
 
   //! Pick entities in the given point.
   //! @return Number of detected entities.
-  virtual int Pick(double theX, double theY, double theZ, vtkRenderer* theRenderer = NULL)
-    Standard_OVERRIDE;
+  virtual int Pick(double theX, double theY, double theZ, vtkRenderer* theRenderer = NULL) override;
 
   //! Pick entities in the given rectangle area.
   //! @return Number of detected entities.
@@ -74,12 +73,12 @@ public:
   //! Get activated selection modes for a shape.
   //! @param[in]  theShape a shape with activated selection mode(s)
   //! @return list of active selection modes
-  IVtk_SelectionModeList GetSelectionModes(const IVtk_IShape::Handle& theShape) const;
+  NCollection_List<IVtk_SelectionMode> GetSelectionModes(const IVtk_IShape::Handle& theShape) const;
 
   //! Get activated selection modes for a shape actor.
   //! @param[in]  theShapeActor an actor with activated selection mode(s)
   //! @return list of active selection modes
-  IVtk_SelectionModeList GetSelectionModes(vtkActor* theShapeActor) const;
+  NCollection_List<IVtk_SelectionMode> GetSelectionModes(vtkActor* theShapeActor) const;
 
   //! Turn on/off a selection mode for a shape actor.
   //! @param[in]  theShape a shape to set a selection mode for
@@ -112,14 +111,15 @@ public:
   //! @param[in]  theIsAll Get all selected shapes or just the only
   //!        top one is returned, has no effect during area selection.
   //! @return List of top-level shape IDs
-  IVtk_ShapeIdList GetPickedShapesIds(bool theIsAll = false) const;
+  NCollection_List<IVtk_IdType> GetPickedShapesIds(bool theIsAll = false) const;
 
   //! Access to the list of sub-shapes ids picked.
   //! @param[in]  theId top-level shape ID
   //! @param[in]  theIsAll Get all selected sub-shapes or just the
   //!        only top one is returned, has no effect during area selection.
   //! @return List of sub-shapes IDs
-  IVtk_ShapeIdList GetPickedSubShapesIds(const IVtk_IdType theId, bool theIsAll = false) const;
+  NCollection_List<IVtk_IdType> GetPickedSubShapesIds(const IVtk_IdType theId,
+                                                      bool              theIsAll = false) const;
 
   //! Access to the list of actors picked.
   //! @param[in]  theIsAll Get all selected actors or just the only

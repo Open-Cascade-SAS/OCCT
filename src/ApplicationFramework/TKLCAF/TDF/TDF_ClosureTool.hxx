@@ -20,8 +20,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TDF_LabelMap.hxx>
-#include <TDF_AttributeMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
+#include <TDF_Attribute.hxx>
 class TDF_DataSet;
 class TDF_IDFilter;
 class TDF_ClosureMode;
@@ -43,32 +44,31 @@ public:
 
   //! Builds the transitive closure of label and
   //! attribute sets into <aDataSet>.
-  Standard_EXPORT static void Closure(const Handle(TDF_DataSet)& aDataSet);
+  Standard_EXPORT static void Closure(const occ::handle<TDF_DataSet>& aDataSet);
 
   //! Builds the transitive closure of label and
   //! attribute sets into <aDataSet>. Uses <aFilter> to
   //! determine if an attribute has to be taken in
   //! account or not. Uses <aMode> for various way of
   //! closing.
-  Standard_EXPORT static void Closure(const Handle(TDF_DataSet)& aDataSet,
-                                      const TDF_IDFilter&        aFilter,
-                                      const TDF_ClosureMode&     aMode);
+  Standard_EXPORT static void Closure(const occ::handle<TDF_DataSet>& aDataSet,
+                                      const TDF_IDFilter&             aFilter,
+                                      const TDF_ClosureMode&          aMode);
 
   //! Builds the transitive closure of <aLabel>.
-  Standard_EXPORT static void Closure(const TDF_Label&       aLabel,
-                                      TDF_LabelMap&          aLabMap,
-                                      TDF_AttributeMap&      anAttMap,
-                                      const TDF_IDFilter&    aFilter,
-                                      const TDF_ClosureMode& aMode);
+  Standard_EXPORT static void Closure(const TDF_Label&                             aLabel,
+                                      NCollection_Map<TDF_Label>&                  aLabMap,
+                                      NCollection_Map<occ::handle<TDF_Attribute>>& anAttMap,
+                                      const TDF_IDFilter&                          aFilter,
+                                      const TDF_ClosureMode&                       aMode);
 
-protected:
 private:
   //! Adds label attributes and dependences.
-  Standard_EXPORT static void LabelAttributes(const TDF_Label&       aLabel,
-                                              TDF_LabelMap&          aLabMap,
-                                              TDF_AttributeMap&      anAttMap,
-                                              const TDF_IDFilter&    aFilter,
-                                              const TDF_ClosureMode& aMode);
+  Standard_EXPORT static void LabelAttributes(const TDF_Label&                             aLabel,
+                                              NCollection_Map<TDF_Label>&                  aLabMap,
+                                              NCollection_Map<occ::handle<TDF_Attribute>>& anAttMap,
+                                              const TDF_IDFilter&                          aFilter,
+                                              const TDF_ClosureMode&                       aMode);
 };
 
 #endif // _TDF_ClosureTool_HeaderFile

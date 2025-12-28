@@ -37,21 +37,21 @@
 #include <TopoDS_Face.hxx>
 
 // Providing consistency with intersection tolerance for the linear curves
-static Standard_Real IntersectorConfusion = Precision::PConfusion();
-static Standard_Real IntersectorTangency  = Precision::PConfusion();
-static Standard_Real HatcherConfusion2d   = 1.e-8;
-static Standard_Real HatcherConfusion3d   = 1.e-8;
+static double IntersectorConfusion = Precision::PConfusion();
+static double IntersectorTangency  = Precision::PConfusion();
+static double HatcherConfusion2d   = 1.e-8;
+static double HatcherConfusion3d   = 1.e-8;
 
 //=================================================================================================
 
-DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
-                                   const Standard_Real    Infinite,
-                                   const Standard_Integer NbIsos)
+DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace,
+                                   const double       Infinite,
+                                   const int          NbIsos)
     : Geom2dHatch_Hatcher(Geom2dHatch_Intersector(IntersectorConfusion, IntersectorTangency),
                           HatcherConfusion2d,
                           HatcherConfusion3d,
-                          Standard_True,
-                          Standard_False),
+                          true,
+                          false),
       myInfinite(Infinite),
       myUMin(0.0),
       myUMax(0.0),
@@ -72,10 +72,10 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
   //-----------------------------------------------------------------------
 
   BRepTools::UVBounds(TopologicalFace, myUMin, myUMax, myVMin, myVMax);
-  Standard_Boolean InfiniteUMin = Precision::IsNegativeInfinite(myUMin);
-  Standard_Boolean InfiniteUMax = Precision::IsPositiveInfinite(myUMax);
-  Standard_Boolean InfiniteVMin = Precision::IsNegativeInfinite(myVMin);
-  Standard_Boolean InfiniteVMax = Precision::IsPositiveInfinite(myVMax);
+  bool InfiniteUMin = Precision::IsNegativeInfinite(myUMin);
+  bool InfiniteUMax = Precision::IsPositiveInfinite(myUMax);
+  bool InfiniteVMin = Precision::IsNegativeInfinite(myVMin);
+  bool InfiniteVMax = Precision::IsPositiveInfinite(myVMax);
   if (InfiniteUMin && InfiniteUMax)
   {
     myUMin = -Infinite;
@@ -112,9 +112,9 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
   TopExp_Explorer ExpEdges;
   for (ExpEdges.Init(TopologicalFace, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next())
   {
-    const TopoDS_Edge&         TopologicalEdge = TopoDS::Edge(ExpEdges.Current());
-    Standard_Real              U1, U2;
-    const Handle(Geom2d_Curve) PCurve =
+    const TopoDS_Edge&              TopologicalEdge = TopoDS::Edge(ExpEdges.Current());
+    double                          U1, U2;
+    const occ::handle<Geom2d_Curve> PCurve =
       BRep_Tool::CurveOnSurface(TopologicalEdge, TopologicalFace, U1, U2);
 
     if (PCurve.IsNull())
@@ -142,7 +142,7 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
     {
       if (!PCurve->IsPeriodic())
       {
-        Handle(Geom2d_TrimmedCurve) TrimPCurve = Handle(Geom2d_TrimmedCurve)::DownCast(PCurve);
+        occ::handle<Geom2d_TrimmedCurve> TrimPCurve = occ::down_cast<Geom2d_TrimmedCurve>(PCurve);
         if (!TrimPCurve.IsNull())
         {
           if (TrimPCurve->BasisCurve()->FirstParameter() - U1 > Precision::PConfusion()
@@ -198,7 +198,7 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
       // if U1 and U2 coincide-->do nothing
       if (std::abs(U1 - U2) <= Precision::PConfusion())
         continue;
-      Handle(Geom2d_TrimmedCurve) TrimPCurve = new Geom2d_TrimmedCurve(PCurve, U1, U2);
+      occ::handle<Geom2d_TrimmedCurve> TrimPCurve = new Geom2d_TrimmedCurve(PCurve, U1, U2);
       anEdgePCurveMap.Add(TopologicalEdge, TrimPCurve);
     }
   }
@@ -207,8 +207,8 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
   FillGaps(TopologicalFace, anEdgePCurveMap);
 
   // Load trimmed curves to the hatcher
-  Standard_Integer aNbE = anEdgePCurveMap.Extent();
-  for (Standard_Integer iE = 1; iE <= aNbE; ++iE)
+  int aNbE = anEdgePCurveMap.Extent();
+  for (int iE = 1; iE <= aNbE; ++iE)
   {
     AddElement(Geom2dAdaptor_Curve(anEdgePCurveMap(iE)), anEdgePCurveMap.FindKey(iE).Orientation());
   }
@@ -216,17 +216,17 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
   // Loading and trimming the hatchings.
   //-----------------------------------------------------------------------
 
-  Standard_Integer IIso;
-  Standard_Real    DeltaU    = std::abs(myUMax - myUMin);
-  Standard_Real    DeltaV    = std::abs(myVMax - myVMin);
-  Standard_Real    confusion = std::min(DeltaU, DeltaV) * HatcherConfusion3d;
+  int    IIso;
+  double DeltaU    = std::abs(myUMax - myUMin);
+  double DeltaV    = std::abs(myVMax - myVMin);
+  double confusion = std::min(DeltaU, DeltaV) * HatcherConfusion3d;
   Confusion3d(confusion);
 
-  Standard_Real StepU = DeltaU / (Standard_Real)NbIsos;
+  double StepU = DeltaU / (double)NbIsos;
   if (StepU > confusion)
   {
-    Standard_Real UPrm = myUMin + StepU / 2.;
-    gp_Dir2d      Dir(gp_Dir2d::D::Y);
+    double   UPrm = myUMin + StepU / 2.;
+    gp_Dir2d Dir(gp_Dir2d::D::Y);
     for (IIso = 1; IIso <= NbIsos; IIso++)
     {
       myUPrm(IIso) = UPrm;
@@ -237,11 +237,11 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
     }
   }
 
-  Standard_Real StepV = DeltaV / (Standard_Real)NbIsos;
+  double StepV = DeltaV / (double)NbIsos;
   if (StepV > confusion)
   {
-    Standard_Real VPrm = myVMin + StepV / 2.;
-    gp_Dir2d      Dir(gp_Dir2d::D::X);
+    double   VPrm = myVMin + StepV / 2.;
+    gp_Dir2d Dir(gp_Dir2d::D::X);
     for (IIso = 1; IIso <= NbIsos; IIso++)
     {
       myVPrm(IIso) = VPrm;
@@ -261,7 +261,7 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
   myNbDom = 0;
   for (IIso = 1; IIso <= NbIsos; IIso++)
   {
-    Standard_Integer Index;
+    int Index;
 
     Index = myUInd(IIso);
     if (Index != 0)
@@ -293,16 +293,16 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
 //            of a drawable face.
 //=======================================================================
 
-void DBRep_IsoBuilder::LoadIsos(const Handle(DBRep_Face)& Face) const
+void DBRep_IsoBuilder::LoadIsos(const occ::handle<DBRep_Face>& Face) const
 {
-  Standard_Integer NumIso = 0;
+  int NumIso = 0;
 
-  for (Standard_Integer UIso = myUPrm.Lower(); UIso <= myUPrm.Upper(); UIso++)
+  for (int UIso = myUPrm.Lower(); UIso <= myUPrm.Upper(); UIso++)
   {
-    Standard_Integer UInd = myUInd.Value(UIso);
+    int UInd = myUInd.Value(UIso);
     if (UInd != 0)
     {
-      Standard_Real UPrm = myUPrm.Value(UIso);
+      double UPrm = myUPrm.Value(UIso);
       if (!IsDone(UInd))
       {
         std::cout << "DBRep_IsoBuilder:: U iso of parameter: " << UPrm;
@@ -327,14 +327,12 @@ void DBRep_IsoBuilder::LoadIsos(const Handle(DBRep_Face)& Face) const
       }
       else
       {
-        Standard_Integer NbDom = Geom2dHatch_Hatcher::NbDomains(UInd);
-        for (Standard_Integer IDom = 1; IDom <= NbDom; IDom++)
+        int NbDom = Geom2dHatch_Hatcher::NbDomains(UInd);
+        for (int IDom = 1; IDom <= NbDom; IDom++)
         {
           const HatchGen_Domain& Dom = Domain(UInd, IDom);
-          Standard_Real          V1 =
-            Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
-          Standard_Real V2 =
-            Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
+          double V1 = Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
+          double V2 = Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
           NumIso++;
           Face->Iso(NumIso, GeomAbs_IsoU, UPrm, V1, V2);
         }
@@ -342,12 +340,12 @@ void DBRep_IsoBuilder::LoadIsos(const Handle(DBRep_Face)& Face) const
     }
   }
 
-  for (Standard_Integer VIso = myVPrm.Lower(); VIso <= myVPrm.Upper(); VIso++)
+  for (int VIso = myVPrm.Lower(); VIso <= myVPrm.Upper(); VIso++)
   {
-    Standard_Integer VInd = myVInd.Value(VIso);
+    int VInd = myVInd.Value(VIso);
     if (VInd != 0)
     {
-      Standard_Real VPrm = myVPrm.Value(VIso);
+      double VPrm = myVPrm.Value(VIso);
       if (!IsDone(VInd))
       {
         std::cout << "DBRep_IsoBuilder:: V iso of parameter: " << VPrm;
@@ -372,14 +370,12 @@ void DBRep_IsoBuilder::LoadIsos(const Handle(DBRep_Face)& Face) const
       }
       else
       {
-        Standard_Integer NbDom = Geom2dHatch_Hatcher::NbDomains(VInd);
-        for (Standard_Integer IDom = 1; IDom <= NbDom; IDom++)
+        int NbDom = Geom2dHatch_Hatcher::NbDomains(VInd);
+        for (int IDom = 1; IDom <= NbDom; IDom++)
         {
           const HatchGen_Domain& Dom = Domain(VInd, IDom);
-          Standard_Real          U1 =
-            Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
-          Standard_Real U2 =
-            Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
+          double U1 = Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
+          double U2 = Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
           NumIso++;
           Face->Iso(NumIso, GeomAbs_IsoV, VPrm, U1, U2);
         }
@@ -395,7 +391,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
 
   // Get surface of the face for getting the 3D points from 2D coordinates
   // of the p-curves bounds
-  BRepAdaptor_Surface aBASurf(theFace, Standard_False);
+  BRepAdaptor_Surface aBASurf(theFace, false);
 
   // Analyze each wire of the face separately
   TopoDS_Iterator aItW(theFace);
@@ -420,7 +416,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
     {
       continue;
     }
-    Standard_Boolean SingleEdge = (aW.NbChildren() == 1);
+    bool SingleEdge = (aW.NbChildren() == 1);
 
     TopoDS_Edge aPrevEdge, aCurrEdge;
 
@@ -428,8 +424,8 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
     aCurrEdge = aWExp.Current();
 
     // Ensure analysis of the pair of first and last edges
-    TopoDS_Edge   aFirstEdge = aCurrEdge;
-    Standard_Real bStop      = Standard_False;
+    TopoDS_Edge aFirstEdge = aCurrEdge;
+    double      bStop      = false;
 
     // Iterate on all other edges
     while (!bStop)
@@ -445,23 +441,23 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
       else
       {
         aCurrEdge = aFirstEdge;
-        bStop     = Standard_True;
+        bStop     = true;
       }
 
       if (aPrevEdge.IsEqual(aCurrEdge) && !SingleEdge)
         continue;
 
       // Get p-curves
-      Handle(Geom2d_Curve)* pPC1 = theEdgePCurveMap.ChangeSeek(aPrevEdge);
-      Handle(Geom2d_Curve)* pPC2 = theEdgePCurveMap.ChangeSeek(aCurrEdge);
+      occ::handle<Geom2d_Curve>* pPC1 = theEdgePCurveMap.ChangeSeek(aPrevEdge);
+      occ::handle<Geom2d_Curve>* pPC2 = theEdgePCurveMap.ChangeSeek(aCurrEdge);
       if (!pPC1 || !pPC2)
         continue;
 
-      Handle(Geom2d_Curve)& aPrevC2d = *pPC1;
-      Handle(Geom2d_Curve)& aCurrC2d = *pPC2;
+      occ::handle<Geom2d_Curve>& aPrevC2d = *pPC1;
+      occ::handle<Geom2d_Curve>& aCurrC2d = *pPC2;
 
       // Get p-curves parameters
-      Standard_Real fp, lp, fc, lc;
+      double fp, lp, fc, lc;
       fp = aPrevC2d->FirstParameter();
       lp = aPrevC2d->LastParameter();
       fc = aCurrC2d->FirstParameter();
@@ -473,24 +469,24 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
       // parameter of the vertex on edges.
 
       // Get vertex on the previous edge
-      TopoDS_Vertex aCVOnPrev = TopExp::LastVertex(aPrevEdge, Standard_True);
+      TopoDS_Vertex aCVOnPrev = TopExp::LastVertex(aPrevEdge, true);
       if (aCVOnPrev.IsNull())
         continue;
 
       // Get parameter of the vertex on the previous edge
-      Standard_Real aTPrev = BRep_Tool::Parameter(aCVOnPrev, aPrevEdge);
+      double aTPrev = BRep_Tool::Parameter(aCVOnPrev, aPrevEdge);
       if (aTPrev < fp)
         aTPrev = fp;
       else if (aTPrev > lp)
         aTPrev = lp;
 
       // Get vertex on the current edge
-      TopoDS_Vertex aCVOnCurr = TopExp::FirstVertex(aCurrEdge, Standard_True);
+      TopoDS_Vertex aCVOnCurr = TopExp::FirstVertex(aCurrEdge, true);
       if (aCVOnCurr.IsNull() || !aCVOnPrev.IsSame(aCVOnCurr))
         continue;
 
       // Get parameter of the vertex on the current edge
-      Standard_Real aTCurr = BRep_Tool::Parameter(aCVOnCurr, aCurrEdge);
+      double aTCurr = BRep_Tool::Parameter(aCVOnCurr, aCurrEdge);
       if (aTCurr < fc)
         aTCurr = fc;
       else if (aTCurr > lc)
@@ -500,8 +496,8 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
       gp_Pnt2d aPrevP2d = aPrevC2d->Value(aTPrev), aCurrP2d = aCurrC2d->Value(aTCurr);
 
       // Check if the vertex covers these bounding points by its tolerance
-      Standard_Real aTolV2 = BRep_Tool::Tolerance(aCVOnPrev);
-      gp_Pnt        aPV    = BRep_Tool::Pnt(aCVOnPrev);
+      double aTolV2 = BRep_Tool::Tolerance(aCVOnPrev);
+      gp_Pnt aPV    = BRep_Tool::Pnt(aCVOnPrev);
       // There is no need to check the distance if the tolerance
       // of vertex is infinite (like in the test case sewing/tol_1/R2)
       if (aTolV2 < Precision::Infinite())
@@ -524,10 +520,10 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
       }
 
       // Create the segment
-      gp_Vec2d      aV2d(aPrevP2d, aCurrP2d);
-      Standard_Real aSegmLen = aV2d.Magnitude();
+      gp_Vec2d aV2d(aPrevP2d, aCurrP2d);
+      double   aSegmLen = aV2d.Magnitude();
       // Do not add too small segments
-      Standard_Boolean bAddSegment = (aSegmLen > Precision::PConfusion());
+      bool bAddSegment = (aSegmLen > Precision::PConfusion());
       // Check for periodic surfaces
       if (bAddSegment)
       {
@@ -552,7 +548,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
           // Collect intersection points
           NCollection_List<IntRes2d_IntersectionPoint> aLPInt;
           // Get bounding points from segments
-          Standard_Integer iP, aNbInt = anInter.NbSegments();
+          int iP, aNbInt = anInter.NbSegments();
           for (iP = 1; iP <= aNbInt; ++iP)
           {
             aLPInt.Append(anInter.Segment(iP).FirstPoint());
@@ -564,31 +560,31 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
             aLPInt.Append(anInter.Point(iP));
 
           // Analyze the points and find the one closest to the current vertex
-          Standard_Boolean bPointFound   = Standard_False;
-          Standard_Real    aTPrevClosest = 0., aTCurrClosest = 0.;
-          Standard_Real    aDeltaPrev = ::RealLast(), aDeltaCurr = ::RealLast();
+          bool   bPointFound   = false;
+          double aTPrevClosest = 0., aTCurrClosest = 0.;
+          double aDeltaPrev = ::RealLast(), aDeltaCurr = ::RealLast();
 
           NCollection_List<IntRes2d_IntersectionPoint>::Iterator aItLPInt(aLPInt);
           for (; aItLPInt.More(); aItLPInt.Next())
           {
             const IntRes2d_IntersectionPoint& aPnt      = aItLPInt.Value();
-            const Standard_Real               aTIntPrev = aPnt.ParamOnFirst();
-            const Standard_Real               aTIntCurr = aPnt.ParamOnSecond();
+            const double                      aTIntPrev = aPnt.ParamOnFirst();
+            const double                      aTIntCurr = aPnt.ParamOnSecond();
             // Check if the intersection point is in range
             if (aTIntPrev < fp || aTIntPrev > lp || aTIntCurr < fc || aTIntCurr > lc)
             {
               continue;
             }
 
-            Standard_Real aDelta1 = std::abs(aTIntPrev - aTPrev);
-            Standard_Real aDelta2 = std::abs(aTIntCurr - aTCurr);
+            double aDelta1 = std::abs(aTIntPrev - aTPrev);
+            double aDelta2 = std::abs(aTIntCurr - aTCurr);
             if (aDelta1 < aDeltaPrev || aDelta2 < aDeltaCurr)
             {
               aTPrevClosest = aTIntPrev;
               aTCurrClosest = aTIntCurr;
               aDeltaPrev    = aDelta1;
               aDeltaCurr    = aDelta2;
-              bPointFound   = Standard_True;
+              bPointFound   = true;
             }
           }
 
@@ -601,7 +597,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
             // And here we just need to close the gap, avoiding the trimming.
             // If the common vertex is only one, do not create the segment,
             // as we have the intersection of the edges and trimmed the 2d curves.
-            Standard_Integer aNbCV = 0;
+            int aNbCV = 0;
             for (TopoDS_Iterator it1(aPrevEdge); it1.More(); it1.Next())
             {
               for (TopoDS_Iterator it2(aCurrEdge); it2.More(); it2.Next())
@@ -612,9 +608,9 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
             }
 
             // Trim PCurves only if the intersection belongs to current parameter
-            Standard_Boolean bTrim = (aNbCV == 1
-                                      || (std::abs(aTPrev - aTPrevClosest) < (lp - fp) / 2.
-                                          || std::abs(aTCurr - aTCurrClosest) < (lc - fc) / 2.));
+            bool bTrim = (aNbCV == 1
+                          || (std::abs(aTPrev - aTPrevClosest) < (lp - fp) / 2.
+                              || std::abs(aTCurr - aTCurrClosest) < (lc - fc) / 2.));
 
             if (bTrim)
             {
@@ -623,7 +619,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
               const gp_Pnt aPOnS = aBASurf.Value(aPInt.X(), aPInt.Y());
               if (aTolV2 > Precision::Infinite() || aPOnS.SquareDistance(aPV) < aTolV2)
               {
-                Standard_Real f, l;
+                double f, l;
 
                 // Trim the curves with found parameters
 
@@ -661,7 +657,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
 
                 // Do not create the segment, as we performed the trimming
                 // to the intersection point.
-                bAddSegment = Standard_False;
+                bAddSegment = false;
               }
             }
           }
@@ -671,8 +667,8 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
       if (bAddSegment)
       {
         // Add segment to the hatcher to trim the iso-lines
-        Handle(Geom2d_Line)         aLine     = new Geom2d_Line(aPrevP2d, aV2d);
-        Handle(Geom2d_TrimmedCurve) aLineSegm = new Geom2d_TrimmedCurve(aLine, 0.0, aSegmLen);
+        occ::handle<Geom2d_Line>         aLine     = new Geom2d_Line(aPrevP2d, aV2d);
+        occ::handle<Geom2d_TrimmedCurve> aLineSegm = new Geom2d_TrimmedCurve(aLine, 0.0, aSegmLen);
         AddElement(Geom2dAdaptor_Curve(aLineSegm), TopAbs_FORWARD);
       }
     }

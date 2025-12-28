@@ -19,9 +19,9 @@
 
 //=================================================================================================
 
-Standard_Integer HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S)
+int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S)
 {
-  Standard_Integer    nbs;
+  int                 nbs;
   GeomAbs_SurfaceType typS = S.GetType();
   switch (typS)
   {
@@ -63,9 +63,9 @@ Standard_Integer HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S)
 
 //=================================================================================================
 
-Standard_Integer HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S)
+int HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S)
 {
-  Standard_Integer    nbs;
+  int                 nbs;
   GeomAbs_SurfaceType typS = S.GetType();
   switch (typS)
   {
@@ -104,17 +104,15 @@ Standard_Integer HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S)
 
 //=================================================================================================
 
-Standard_Integer HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S,
-                                                  const Standard_Real        u1,
-                                                  const Standard_Real        u2)
+int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S, const double u1, const double u2)
 {
-  Standard_Integer nbs = NbSamplesU(S);
-  Standard_Integer n   = nbs;
+  int nbs = NbSamplesU(S);
+  int n   = nbs;
   if (nbs > 10)
   {
-    Standard_Real uf = FirstUParameter(S);
-    Standard_Real ul = LastUParameter(S);
-    n *= (Standard_Integer)((u2 - u1) / (uf - ul));
+    double uf = FirstUParameter(S);
+    double ul = LastUParameter(S);
+    n *= (int)((u2 - u1) / (uf - ul));
     if (n > nbs)
       n = nbs;
     if (n < 5)
@@ -125,17 +123,15 @@ Standard_Integer HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S,
 
 //=================================================================================================
 
-Standard_Integer HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S,
-                                                  const Standard_Real        v1,
-                                                  const Standard_Real        v2)
+int HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S, const double v1, const double v2)
 {
-  Standard_Integer nbs = NbSamplesV(S);
-  Standard_Integer n   = nbs;
+  int nbs = NbSamplesV(S);
+  int n   = nbs;
   if (nbs > 10)
   {
-    Standard_Real vf = FirstVParameter(S);
-    Standard_Real vl = LastVParameter(S);
-    n *= (Standard_Integer)((v2 - v1) / (vf - vl));
+    double vf = FirstVParameter(S);
+    double vl = LastVParameter(S);
+    n *= (int)((v2 - v1) / (vf - vl));
     if (n > nbs)
       n = nbs;
     if (n < 5)

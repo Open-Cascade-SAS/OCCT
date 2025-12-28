@@ -43,26 +43,26 @@ void IVtkOCC_ShapePickerAlgo::SetView(const IVtk_IView::Handle& theView)
 
 //=================================================================================================
 
-IVtk_SelectionModeList IVtkOCC_ShapePickerAlgo::GetSelectionModes(
+NCollection_List<IVtk_SelectionMode> IVtkOCC_ShapePickerAlgo::GetSelectionModes(
   const IVtk_IShape::Handle& theShape) const
 {
   if (theShape.IsNull())
   {
-    return IVtk_SelectionModeList();
+    return NCollection_List<IVtk_SelectionMode>();
   }
 
   // Get shape implementation from shape interface.
-  Handle(IVtkOCC_Shape) aShapeImpl = Handle(IVtkOCC_Shape)::DownCast(theShape);
+  occ::handle<IVtkOCC_Shape> aShapeImpl = occ::down_cast<IVtkOCC_Shape>(theShape);
 
   // Get selectable object from the shape implementation.
-  Handle(IVtkOCC_SelectableObject) aSelObj =
-    Handle(IVtkOCC_SelectableObject)::DownCast(aShapeImpl->GetSelectableObject());
+  occ::handle<IVtkOCC_SelectableObject> aSelObj =
+    occ::down_cast<IVtkOCC_SelectableObject>(aShapeImpl->GetSelectableObject());
   if (aSelObj.IsNull())
   {
-    return IVtk_SelectionModeList();
+    return NCollection_List<IVtk_SelectionMode>();
   }
 
-  IVtk_SelectionModeList aRes;
+  NCollection_List<IVtk_SelectionMode> aRes;
   for (IVtk_SelectionMode aSelMode = SM_Shape; aSelMode <= SM_Compound;
        aSelMode                    = (IVtk_SelectionMode)(aSelMode + 1))
   {
@@ -90,11 +90,11 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode(const IVtk_IShape::Handle& theSha
   // are destroyed when shapes are deactivated...
 
   // Get shape implementation from shape interface.
-  Handle(IVtkOCC_Shape) aShapeImpl = Handle(IVtkOCC_Shape)::DownCast(theShape);
+  occ::handle<IVtkOCC_Shape> aShapeImpl = occ::down_cast<IVtkOCC_Shape>(theShape);
 
   // Get selectable object from the shape implementation.
-  Handle(IVtkOCC_SelectableObject) aSelObj =
-    Handle(IVtkOCC_SelectableObject)::DownCast(aShapeImpl->GetSelectableObject());
+  occ::handle<IVtkOCC_SelectableObject> aSelObj =
+    occ::down_cast<IVtkOCC_SelectableObject>(aShapeImpl->GetSelectableObject());
 
   if (theIsTurnOn)
   {
@@ -108,13 +108,13 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode(const IVtk_IShape::Handle& theSha
     if (!aSelObj->HasSelection(theMode))
     {
       // then create a new selection in the given mode for this object (shape).
-      Handle(SelectMgr_Selection) aNewSelection = new SelectMgr_Selection(theMode);
+      occ::handle<SelectMgr_Selection> aNewSelection = new SelectMgr_Selection(theMode);
       aSelObj->AddSelection(aNewSelection, theMode);
       myViewerSelector->AddSelectionToObject(aSelObj, aNewSelection);
     }
 
     // Update the selection for the given mode according to its status.
-    const Handle(SelectMgr_Selection)& aSel = aSelObj->Selection(theMode);
+    const occ::handle<SelectMgr_Selection>& aSel = aSelObj->Selection(theMode);
     switch (aSel->UpdateStatus())
     {
       case SelectMgr_TOU_Full: {
@@ -125,7 +125,7 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode(const IVtk_IShape::Handle& theSha
         myViewerSelector->RebuildObjectsTree();
         myViewerSelector->RebuildSensitivesTree(aSelObj);
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case SelectMgr_TOU_Partial: {
         if (aSelObj->HasTransformation())
         {
@@ -149,7 +149,7 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode(const IVtk_IShape::Handle& theSha
     {
       if (aSelObj->HasSelection(theMode))
       {
-        const Handle(SelectMgr_Selection)& aSel = aSelObj->Selection(theMode);
+        const occ::handle<SelectMgr_Selection>& aSel = aSelObj->Selection(theMode);
         myViewerSelector->Deactivate(aSel);
       }
     }
@@ -158,11 +158,12 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode(const IVtk_IShape::Handle& theSha
 
 //=================================================================================================
 
-void IVtkOCC_ShapePickerAlgo::SetSelectionMode(const IVtk_ShapePtrList& theShapes,
-                                               const IVtk_SelectionMode theMode,
-                                               const bool /*theIsTurnOn*/)
+void IVtkOCC_ShapePickerAlgo::SetSelectionMode(
+  const NCollection_List<IVtk_IShape::Handle>& theShapes,
+  const IVtk_SelectionMode                     theMode,
+  const bool /*theIsTurnOn*/)
 {
-  for (IVtk_ShapePtrList::Iterator anIt(theShapes); anIt.More(); anIt.Next())
+  for (NCollection_List<IVtk_IShape::Handle>::Iterator anIt(theShapes); anIt.More(); anIt.Next())
   {
     IVtk_IShape::Handle aShape = anIt.Value();
     SetSelectionMode(aShape, theMode);
@@ -176,7 +177,7 @@ bool IVtkOCC_ShapePickerAlgo::Pick(const double theX, const double theY)
   clearPicked();
 
   // Calling OCCT algorithm
-  myViewerSelector->Pick((Standard_Integer)theX, (Standard_Integer)theY, myView);
+  myViewerSelector->Pick((int)theX, (int)theY, myView);
 
   // Fill the results
   return processPicked();
@@ -192,11 +193,7 @@ bool IVtkOCC_ShapePickerAlgo::Pick(const double theXMin,
   clearPicked();
 
   // Calling OCCT algorithm
-  myViewerSelector->Pick((Standard_Integer)theXMin,
-                         (Standard_Integer)theYMin,
-                         (Standard_Integer)theXMax,
-                         (Standard_Integer)theYMax,
-                         myView);
+  myViewerSelector->Pick((int)theXMin, (int)theYMin, (int)theXMax, (int)theYMax, myView);
 
   // Fill the results
   return processPicked();
@@ -217,15 +214,15 @@ bool IVtkOCC_ShapePickerAlgo::Pick(double** thePoly, const int theNbPoints)
 
 //=================================================================================================
 
-const IVtk_ShapeIdList& IVtkOCC_ShapePickerAlgo::ShapesPicked() const
+const NCollection_List<IVtk_IdType>& IVtkOCC_ShapePickerAlgo::ShapesPicked() const
 {
   return myShapesPicked;
 }
 
 //=================================================================================================
 
-void IVtkOCC_ShapePickerAlgo::SubShapesPicked(const IVtk_IdType theId,
-                                              IVtk_ShapeIdList& theShapeList) const
+void IVtkOCC_ShapePickerAlgo::SubShapesPicked(const IVtk_IdType              theId,
+                                              NCollection_List<IVtk_IdType>& theShapeList) const
 {
   if (mySubShapesPicked.IsBound(theId))
   {
@@ -257,24 +254,24 @@ int IVtkOCC_ShapePickerAlgo::NbPicked()
 
 bool IVtkOCC_ShapePickerAlgo::processPicked()
 {
-  Standard_Integer aNbPicked = myViewerSelector->NbPicked();
+  int aNbPicked = myViewerSelector->NbPicked();
 
-  Handle(StdSelect_BRepOwner) anEntityOwner;
-  Handle(Message_Messenger)   anOutput = Message::DefaultMessenger();
+  occ::handle<StdSelect_BRepOwner> anEntityOwner;
+  occ::handle<Message_Messenger>   anOutput = Message::DefaultMessenger();
 
   bool isTop = true;
-  for (Standard_Integer aDetectIt = 1; aDetectIt <= aNbPicked; aDetectIt++)
+  for (int aDetectIt = 1; aDetectIt <= aNbPicked; aDetectIt++)
   {
     // ViewerSelector detects sensitive entities under the mouse
     // and for each entity returns its entity owner.
     // StdSelect_BRepOwner instance holds corresponding sub-shape (TopoDS_Shape)
     // and in general entity owners have a pointer to SelectableObject that can tell us
     // what is the top-level TopoDS_Shape.
-    anEntityOwner = Handle(StdSelect_BRepOwner)::DownCast(myViewerSelector->Picked(aDetectIt));
+    anEntityOwner = occ::down_cast<StdSelect_BRepOwner>(myViewerSelector->Picked(aDetectIt));
     if (!anEntityOwner.IsNull())
     {
-      Handle(IVtkOCC_SelectableObject) aSelectable =
-        Handle(IVtkOCC_SelectableObject)::DownCast(anEntityOwner->Selectable());
+      occ::handle<IVtkOCC_SelectableObject> aSelectable =
+        occ::down_cast<IVtkOCC_SelectableObject>(anEntityOwner->Selectable());
 
       if (aSelectable.IsNull())
       {
@@ -282,7 +279,7 @@ bool IVtkOCC_ShapePickerAlgo::processPicked()
         continue;
       }
 
-      Handle(IVtkOCC_Shape) aSelShape = aSelectable->GetShape();
+      occ::handle<IVtkOCC_Shape> aSelShape = aSelectable->GetShape();
       if (aSelShape.IsNull())
       {
         anOutput->SendAlarm() << "Error: SelectableObject with null OccShape pointer picked!";
@@ -317,7 +314,7 @@ bool IVtkOCC_ShapePickerAlgo::processPicked()
 
         if (!mySubShapesPicked.IsBound(aTopLevelId))
         {
-          const IVtk_ShapeIdList aList;
+          const NCollection_List<IVtk_IdType> aList;
           mySubShapesPicked.Bind(aTopLevelId, aList);
         }
         // Order of selected sub-shapes
@@ -337,11 +334,11 @@ void IVtkOCC_ShapePickerAlgo::RemoveSelectableObject(const IVtk_IShape::Handle& 
 {
   clearPicked();
   // Get shape implementation from shape interface.
-  Handle(IVtkOCC_Shape) aShapeImpl = Handle(IVtkOCC_Shape)::DownCast(theShape);
+  occ::handle<IVtkOCC_Shape> aShapeImpl = occ::down_cast<IVtkOCC_Shape>(theShape);
 
   // Get selectable object from the shape implementation.
-  Handle(IVtkOCC_SelectableObject) aSelObj =
-    Handle(IVtkOCC_SelectableObject)::DownCast(aShapeImpl->GetSelectableObject());
+  occ::handle<IVtkOCC_SelectableObject> aSelObj =
+    occ::down_cast<IVtkOCC_SelectableObject>(aShapeImpl->GetSelectableObject());
 
   myViewerSelector->RemoveSelectableObject(aSelObj);
   myViewerSelector->Clear();

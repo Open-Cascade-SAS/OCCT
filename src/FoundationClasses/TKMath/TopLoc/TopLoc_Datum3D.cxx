@@ -15,7 +15,10 @@
 // commercial license or contractual agreement.
 
 #include <Standard_ConstructionError.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <Standard_Type.hxx>
 #include <Standard_Dump.hxx>
 #include <TopLoc_Datum3D.hxx>
@@ -35,7 +38,7 @@ TopLoc_Datum3D::TopLoc_Datum3D(const gp_Trsf& T)
 
 //=================================================================================================
 
-void TopLoc_Datum3D::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TopLoc_Datum3D::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myTrsf)
@@ -46,8 +49,8 @@ void TopLoc_Datum3D::DumpJson(Standard_OStream& theOStream, Standard_Integer the
 void TopLoc_Datum3D::ShallowDump(Standard_OStream& S) const
 {
   S << " TopLoc_Datum3D " << (void*)this << std::endl;
-  Standard_Integer i;
-  gp_Trsf          T = myTrsf;
+  int     i;
+  gp_Trsf T = myTrsf;
   for (i = 1; i <= 3; i++)
   {
     S << "  ( " << std::setw(10) << T.Value(i, 1);

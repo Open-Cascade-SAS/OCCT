@@ -22,9 +22,6 @@
 #include <ExprIntrp_Generator.hxx>
 class TCollection_AsciiString;
 
-class ExprIntrp_GenFct;
-DEFINE_STANDARD_HANDLE(ExprIntrp_GenFct, ExprIntrp_Generator)
-
 //! Implements an interpreter for defining functions.
 //! All its functionalities can be found in class
 //! GenExp.
@@ -32,19 +29,18 @@ class ExprIntrp_GenFct : public ExprIntrp_Generator
 {
 
 public:
-  Standard_EXPORT static Handle(ExprIntrp_GenFct) Create();
+  Standard_EXPORT static occ::handle<ExprIntrp_GenFct> Create();
 
   Standard_EXPORT void Process(const TCollection_AsciiString& str);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   DEFINE_STANDARD_RTTIEXT(ExprIntrp_GenFct, ExprIntrp_Generator)
 
-protected:
 private:
   Standard_EXPORT ExprIntrp_GenFct();
 
-  Standard_Boolean done;
+  bool done;
 };
 
 #endif // _ExprIntrp_GenFct_HeaderFile

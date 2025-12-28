@@ -23,9 +23,6 @@
 
 class Graphic3d_Camera;
 
-class Graphic3d_DataStructureManager;
-DEFINE_STANDARD_HANDLE(Graphic3d_DataStructureManager, Standard_Transient)
-
 //! This class allows the definition of a manager to
 //! which the graphic objects are associated.
 //! It allows them to be globally manipulated.
@@ -39,11 +36,10 @@ protected:
   Standard_EXPORT Graphic3d_DataStructureManager();
 
   //! Returns camera object of the view.
-  virtual const Handle(Graphic3d_Camera)& Camera() const = 0;
+  virtual const occ::handle<Graphic3d_Camera>& Camera() const = 0;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 };
 
 #endif // _Graphic3d_DataStructureManager_HeaderFile

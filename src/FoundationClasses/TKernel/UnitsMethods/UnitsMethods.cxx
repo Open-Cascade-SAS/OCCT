@@ -15,11 +15,11 @@
 
 #include <TCollection_AsciiString.hxx>
 
-static Standard_Real UnitsMethods_CascadeLengthUnit = 1.;
+static double UnitsMethods_CascadeLengthUnit = 1.;
 
 //=================================================================================================
 
-Standard_Real UnitsMethods::GetCasCadeLengthUnit(const UnitsMethods_LengthUnit theBaseUnit)
+double UnitsMethods::GetCasCadeLengthUnit(const UnitsMethods_LengthUnit theBaseUnit)
 {
   return UnitsMethods_CascadeLengthUnit
          * GetLengthUnitScale(UnitsMethods_LengthUnit_Millimeter, theBaseUnit);
@@ -27,7 +27,7 @@ Standard_Real UnitsMethods::GetCasCadeLengthUnit(const UnitsMethods_LengthUnit t
 
 //=================================================================================================
 
-void UnitsMethods::SetCasCadeLengthUnit(const Standard_Real           theUnitValue,
+void UnitsMethods::SetCasCadeLengthUnit(const double                  theUnitValue,
                                         const UnitsMethods_LengthUnit theBaseUnit)
 {
   UnitsMethods_CascadeLengthUnit =
@@ -36,14 +36,14 @@ void UnitsMethods::SetCasCadeLengthUnit(const Standard_Real           theUnitVal
 
 //=================================================================================================
 
-void UnitsMethods::SetCasCadeLengthUnit(const Standard_Integer theUnit)
+void UnitsMethods::SetCasCadeLengthUnit(const int theUnit)
 {
   UnitsMethods_CascadeLengthUnit = GetLengthFactorValue(theUnit);
 }
 
 //=================================================================================================
 
-Standard_Real UnitsMethods::GetLengthFactorValue(const Standard_Integer theUnit)
+double UnitsMethods::GetLengthFactorValue(const int theUnit)
 {
   switch (theUnit)
   {
@@ -74,22 +74,22 @@ Standard_Real UnitsMethods::GetLengthFactorValue(const Standard_Integer theUnit)
 
 //=================================================================================================
 
-Standard_Real UnitsMethods::GetLengthUnitScale(const UnitsMethods_LengthUnit theFromUnit,
-                                               const UnitsMethods_LengthUnit theToUnit)
+double UnitsMethods::GetLengthUnitScale(const UnitsMethods_LengthUnit theFromUnit,
+                                        const UnitsMethods_LengthUnit theToUnit)
 {
-  Standard_Real aVal1 = GetLengthFactorValue(theFromUnit);
-  Standard_Real aVal2 = GetLengthFactorValue(theToUnit);
+  double aVal1 = GetLengthFactorValue(theFromUnit);
+  double aVal2 = GetLengthFactorValue(theToUnit);
   return aVal1 / aVal2;
 }
 
 //=================================================================================================
 
 UnitsMethods_LengthUnit UnitsMethods::GetLengthUnitByFactorValue(
-  const Standard_Real           theFactorValue,
+  const double                  theFactorValue,
   const UnitsMethods_LengthUnit theBaseUnit)
 {
-  const Standard_Real aPreci = 1.e-6;
-  const Standard_Real aValue =
+  const double aPreci = 1.e-6;
+  const double aValue =
     theFactorValue * GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Millimeter);
   if (std::abs(1. - aValue) < aPreci)
   {
@@ -136,7 +136,7 @@ UnitsMethods_LengthUnit UnitsMethods::GetLengthUnitByFactorValue(
 
 //=================================================================================================
 
-Standard_CString UnitsMethods::DumpLengthUnit(const UnitsMethods_LengthUnit theUnit)
+const char* UnitsMethods::DumpLengthUnit(const UnitsMethods_LengthUnit theUnit)
 {
   switch (theUnit)
   {
@@ -167,8 +167,8 @@ Standard_CString UnitsMethods::DumpLengthUnit(const UnitsMethods_LengthUnit theU
 
 //=================================================================================================
 
-Standard_CString UnitsMethods::DumpLengthUnit(const Standard_Real           theScaleFactor,
-                                              const UnitsMethods_LengthUnit theBaseUnit)
+const char* UnitsMethods::DumpLengthUnit(const double                  theScaleFactor,
+                                         const UnitsMethods_LengthUnit theBaseUnit)
 {
   const UnitsMethods_LengthUnit aUnit = GetLengthUnitByFactorValue(theScaleFactor, theBaseUnit);
   return DumpLengthUnit(aUnit);
@@ -176,8 +176,8 @@ Standard_CString UnitsMethods::DumpLengthUnit(const Standard_Real           theS
 
 //=================================================================================================
 
-UnitsMethods_LengthUnit UnitsMethods::LengthUnitFromString(Standard_CString       theStr,
-                                                           const Standard_Boolean theCaseSensitive)
+UnitsMethods_LengthUnit UnitsMethods::LengthUnitFromString(const char* theStr,
+                                                           const bool  theCaseSensitive)
 {
   TCollection_AsciiString aStr(theStr);
   if (!theCaseSensitive)

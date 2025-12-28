@@ -15,14 +15,14 @@
 #include <IGESGraph_DefinitionLevel.hxx>
 #include <IGESSelect_CounterOfLevelNumber.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_CounterOfLevelNumber, IFSelect_SignCounter)
 
-IGESSelect_CounterOfLevelNumber::IGESSelect_CounterOfLevelNumber(const Standard_Boolean withmap,
-                                                                 const Standard_Boolean withlist)
+IGESSelect_CounterOfLevelNumber::IGESSelect_CounterOfLevelNumber(const bool withmap,
+                                                                 const bool withlist)
     : IFSelect_SignCounter(withmap, withlist)
 {
   thehigh = thenblists = 0;
@@ -36,14 +36,15 @@ void IGESSelect_CounterOfLevelNumber::Clear()
   thehigh = thenblists = 0;
 }
 
-void IGESSelect_CounterOfLevelNumber::AddSign(const Handle(Standard_Transient)& ent,
-                                              const Handle(Interface_InterfaceModel)& /*model*/)
+void IGESSelect_CounterOfLevelNumber::AddSign(
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/)
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
     return;
   DeclareAndCast(IGESGraph_DefinitionLevel, levelist, igesent->LevelList());
-  Standard_Integer level = igesent->Level();
+  int level = igesent->Level();
   if (levelist.IsNull() && level < 0)
     return;
 
@@ -52,8 +53,8 @@ void IGESSelect_CounterOfLevelNumber::AddSign(const Handle(Standard_Transient)& 
     AddLevel(ent, level);
   else
   {
-    Standard_Integer nb = levelist->NbPropertyValues();
-    for (Standard_Integer i = 1; i <= nb; i++)
+    int nb = levelist->NbPropertyValues();
+    for (int i = 1; i <= nb; i++)
     {
       level = levelist->LevelNumber(i);
       AddLevel(ent, level);
@@ -62,8 +63,8 @@ void IGESSelect_CounterOfLevelNumber::AddSign(const Handle(Standard_Transient)& 
   }
 }
 
-void IGESSelect_CounterOfLevelNumber::AddLevel(const Handle(Standard_Transient)& ent,
-                                               const Standard_Integer            level)
+void IGESSelect_CounterOfLevelNumber::AddLevel(const occ::handle<Standard_Transient>& ent,
+                                               const int                              level)
 {
   if (level < 0)
   {
@@ -73,15 +74,15 @@ void IGESSelect_CounterOfLevelNumber::AddLevel(const Handle(Standard_Transient)&
   }
   if (thelevels.IsNull())
   {
-    thelevels = new TColStd_HArray1OfInteger(0, (level > 100 ? level : 100));
+    thelevels = new NCollection_HArray1<int>(0, (level > 100 ? level : 100));
     thelevels->Init(0);
   }
-  Standard_Integer upper = thelevels->Upper();
+  int upper = thelevels->Upper();
   if (level > upper)
   {
-    Handle(TColStd_HArray1OfInteger) levels = new TColStd_HArray1OfInteger(0, level + 100);
+    occ::handle<NCollection_HArray1<int>> levels = new NCollection_HArray1<int>(0, level + 100);
     levels->Init(0);
-    for (Standard_Integer i = 1; i <= upper; i++)
+    for (int i = 1; i <= upper; i++)
       levels->SetValue(i, thelevels->Value(i));
     thelevels = levels;
   }
@@ -97,12 +98,12 @@ void IGESSelect_CounterOfLevelNumber::AddLevel(const Handle(Standard_Transient)&
   //  }
 }
 
-Standard_Integer IGESSelect_CounterOfLevelNumber::HighestLevel() const
+int IGESSelect_CounterOfLevelNumber::HighestLevel() const
 {
   return thehigh;
 }
 
-Standard_Integer IGESSelect_CounterOfLevelNumber::NbTimesLevel(const Standard_Integer level) const
+int IGESSelect_CounterOfLevelNumber::NbTimesLevel(const int level) const
 {
   if (level < 0)
     return thenblists;
@@ -111,10 +112,10 @@ Standard_Integer IGESSelect_CounterOfLevelNumber::NbTimesLevel(const Standard_In
   return thelevels->Value(level);
 }
 
-Handle(TColStd_HSequenceOfInteger) IGESSelect_CounterOfLevelNumber::Levels() const
+occ::handle<NCollection_HSequence<int>> IGESSelect_CounterOfLevelNumber::Levels() const
 {
-  Handle(TColStd_HSequenceOfInteger) list = new TColStd_HSequenceOfInteger();
-  for (Standard_Integer i = 1; i <= thehigh; i++)
+  occ::handle<NCollection_HSequence<int>> list = new NCollection_HSequence<int>();
+  for (int i = 1; i <= thehigh; i++)
   {
     if (thelevels->Value(i) > 0)
       list->Append(i);
@@ -122,17 +123,17 @@ Handle(TColStd_HSequenceOfInteger) IGESSelect_CounterOfLevelNumber::Levels() con
   return list;
 }
 
-Handle(TCollection_HAsciiString) IGESSelect_CounterOfLevelNumber::Sign(
-  const Handle(Standard_Transient)& ent,
-  const Handle(Interface_InterfaceModel)& /*model*/) const
+occ::handle<TCollection_HAsciiString> IGESSelect_CounterOfLevelNumber::Sign(
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
-  Handle(TCollection_HAsciiString) res;
+  occ::handle<TCollection_HAsciiString> res;
   //  reprend les termes de AddSign pour la preparation (lecture du level) ...
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
     return res;
   DeclareAndCast(IGESGraph_DefinitionLevel, levelist, igesent->LevelList());
-  Standard_Integer level = igesent->Level();
+  int level = igesent->Level();
   if (levelist.IsNull() && level < 0)
     return res;
 

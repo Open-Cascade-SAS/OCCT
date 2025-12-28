@@ -31,17 +31,17 @@ DEBREP_Provider::DEBREP_Provider() {}
 
 //=================================================================================================
 
-DEBREP_Provider::DEBREP_Provider(const Handle(DE_ConfigurationNode)& theNode)
+DEBREP_Provider::DEBREP_Provider(const occ::handle<DE_ConfigurationNode>& theNode)
     : DE_Provider(theNode)
 {
 }
 
 //=================================================================================================
 
-bool DEBREP_Provider::Read(const TCollection_AsciiString&  thePath,
-                           const Handle(TDocStd_Document)& theDocument,
-                           Handle(XSControl_WorkSession)&  theWS,
-                           const Message_ProgressRange&    theProgress)
+bool DEBREP_Provider::Read(const TCollection_AsciiString&       thePath,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           occ::handle<XSControl_WorkSession>&  theWS,
+                           const Message_ProgressRange&         theProgress)
 {
   (void)theWS;
   return Read(thePath, theDocument, theProgress);
@@ -49,10 +49,10 @@ bool DEBREP_Provider::Read(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEBREP_Provider::Write(const TCollection_AsciiString&  thePath,
-                            const Handle(TDocStd_Document)& theDocument,
-                            Handle(XSControl_WorkSession)&  theWS,
-                            const Message_ProgressRange&    theProgress)
+bool DEBREP_Provider::Write(const TCollection_AsciiString&       thePath,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const Message_ProgressRange&         theProgress)
 {
   (void)theWS;
   return Write(thePath, theDocument, theProgress);
@@ -60,9 +60,9 @@ bool DEBREP_Provider::Write(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEBREP_Provider::Read(const TCollection_AsciiString&  thePath,
-                           const Handle(TDocStd_Document)& theDocument,
-                           const Message_ProgressRange&    theProgress)
+bool DEBREP_Provider::Read(const TCollection_AsciiString&       thePath,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           const Message_ProgressRange&         theProgress)
 {
   if (theDocument.IsNull())
   {
@@ -75,20 +75,20 @@ bool DEBREP_Provider::Read(const TCollection_AsciiString&  thePath,
   {
     return false;
   }
-  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool> aShTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aShTool->AddShape(aShape);
   return true;
 }
 
 //=================================================================================================
 
-bool DEBREP_Provider::Write(const TCollection_AsciiString&  thePath,
-                            const Handle(TDocStd_Document)& theDocument,
-                            const Message_ProgressRange&    theProgress)
+bool DEBREP_Provider::Write(const TCollection_AsciiString&       thePath,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            const Message_ProgressRange&         theProgress)
 {
-  TopoDS_Shape              aShape;
-  TDF_LabelSequence         aLabels;
-  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  TopoDS_Shape                    aShape;
+  NCollection_Sequence<TDF_Label> aLabels;
+  occ::handle<XCAFDoc_ShapeTool>  aSTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aSTool->GetFreeShapes(aLabels);
   if (aLabels.Length() <= 0)
   {
@@ -97,7 +97,7 @@ bool DEBREP_Provider::Write(const TCollection_AsciiString&  thePath,
     return false;
   }
 
-  Handle(DEBREP_ConfigurationNode) aNode = Handle(DEBREP_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DEBREP_ConfigurationNode> aNode = occ::down_cast<DEBREP_ConfigurationNode>(GetNode());
   if (aNode->GlobalParameters.LengthUnit != 1.0)
   {
     Message::SendWarning()
@@ -114,7 +114,7 @@ bool DEBREP_Provider::Write(const TCollection_AsciiString&  thePath,
     TopoDS_Compound aComp;
     BRep_Builder    aBuilder;
     aBuilder.MakeCompound(aComp);
-    for (Standard_Integer anIndex = 1; anIndex <= aLabels.Length(); anIndex++)
+    for (int anIndex = 1; anIndex <= aLabels.Length(); anIndex++)
     {
       TopoDS_Shape aS = aSTool->GetShape(aLabels.Value(anIndex));
       aBuilder.Add(aComp, aS);
@@ -126,10 +126,10 @@ bool DEBREP_Provider::Write(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEBREP_Provider::Read(const TCollection_AsciiString& thePath,
-                           TopoDS_Shape&                  theShape,
-                           Handle(XSControl_WorkSession)& theWS,
-                           const Message_ProgressRange&   theProgress)
+bool DEBREP_Provider::Read(const TCollection_AsciiString&      thePath,
+                           TopoDS_Shape&                       theShape,
+                           occ::handle<XSControl_WorkSession>& theWS,
+                           const Message_ProgressRange&        theProgress)
 {
   (void)theWS;
   return Read(thePath, theShape, theProgress);
@@ -137,10 +137,10 @@ bool DEBREP_Provider::Read(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-bool DEBREP_Provider::Write(const TCollection_AsciiString& thePath,
-                            const TopoDS_Shape&            theShape,
-                            Handle(XSControl_WorkSession)& theWS,
-                            const Message_ProgressRange&   theProgress)
+bool DEBREP_Provider::Write(const TCollection_AsciiString&      thePath,
+                            const TopoDS_Shape&                 theShape,
+                            occ::handle<XSControl_WorkSession>& theWS,
+                            const Message_ProgressRange&        theProgress)
 {
   (void)theWS;
   return Write(thePath, theShape, theProgress);
@@ -155,8 +155,8 @@ bool DEBREP_Provider::Read(const TCollection_AsciiString& thePath,
   bool isBinaryFormat = true;
   {
     // probe file header to recognize format
-    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    std::shared_ptr<std::istream> aFile =
+    const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+    std::shared_ptr<std::istream>      aFile =
       aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
     if (aFile.get() == NULL)
     {
@@ -210,7 +210,7 @@ bool DEBREP_Provider::Write(const TCollection_AsciiString& thePath,
                         << "\t: Incorrect or empty Configuration Node";
     return false;
   }
-  Handle(DEBREP_ConfigurationNode) aNode = Handle(DEBREP_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DEBREP_ConfigurationNode> aNode = occ::down_cast<DEBREP_ConfigurationNode>(GetNode());
   if (aNode->GlobalParameters.LengthUnit != 1.0)
   {
     Message::SendWarning()

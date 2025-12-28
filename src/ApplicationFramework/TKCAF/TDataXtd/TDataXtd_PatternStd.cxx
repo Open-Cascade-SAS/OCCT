@@ -42,9 +42,9 @@ const Standard_GUID& TDataXtd_PatternStd::GetPatternID()
 
 //=================================================================================================
 
-Handle(TDataXtd_PatternStd) TDataXtd_PatternStd::Set(const TDF_Label& L)
+occ::handle<TDataXtd_PatternStd> TDataXtd_PatternStd::Set(const TDF_Label& L)
 {
-  Handle(TDataXtd_PatternStd) A;
+  occ::handle<TDataXtd_PatternStd> A;
   if (!L.FindAttribute(TDataXtd_Pattern::GetID(), A))
   {
     A = new TDataXtd_PatternStd();
@@ -57,14 +57,14 @@ Handle(TDataXtd_PatternStd) TDataXtd_PatternStd::Set(const TDF_Label& L)
 
 TDataXtd_PatternStd::TDataXtd_PatternStd()
     : mySignature(0),
-      myAxis1Reversed(Standard_False),
-      myAxis2Reversed(Standard_False)
+      myAxis1Reversed(false),
+      myAxis2Reversed(false)
 {
 }
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Signature(const Standard_Integer signature)
+void TDataXtd_PatternStd::Signature(const int signature)
 {
   // OCC2932 correction
   if (mySignature == signature)
@@ -76,7 +76,7 @@ void TDataXtd_PatternStd::Signature(const Standard_Integer signature)
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Axis1(const Handle(TNaming_NamedShape)& Axis1)
+void TDataXtd_PatternStd::Axis1(const occ::handle<TNaming_NamedShape>& Axis1)
 {
   // OCC2932 correction
   if (!myAxis1.IsNull())
@@ -89,7 +89,7 @@ void TDataXtd_PatternStd::Axis1(const Handle(TNaming_NamedShape)& Axis1)
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Axis2(const Handle(TNaming_NamedShape)& Axis2)
+void TDataXtd_PatternStd::Axis2(const occ::handle<TNaming_NamedShape>& Axis2)
 {
   // OCC2932 correction
   if (!myAxis2.IsNull())
@@ -102,7 +102,7 @@ void TDataXtd_PatternStd::Axis2(const Handle(TNaming_NamedShape)& Axis2)
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Axis1Reversed(const Standard_Boolean Axis1Reversed)
+void TDataXtd_PatternStd::Axis1Reversed(const bool Axis1Reversed)
 {
   // OCC2932 correction
   if (myAxis1Reversed == Axis1Reversed)
@@ -114,7 +114,7 @@ void TDataXtd_PatternStd::Axis1Reversed(const Standard_Boolean Axis1Reversed)
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Axis2Reversed(const Standard_Boolean Axis2Reversed)
+void TDataXtd_PatternStd::Axis2Reversed(const bool Axis2Reversed)
 {
   // OCC2932 correction
   if (myAxis2Reversed == Axis2Reversed)
@@ -126,7 +126,7 @@ void TDataXtd_PatternStd::Axis2Reversed(const Standard_Boolean Axis2Reversed)
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Value1(const Handle(TDataStd_Real)& value)
+void TDataXtd_PatternStd::Value1(const occ::handle<TDataStd_Real>& value)
 {
   // OCC2932 correction
   if (!myValue1.IsNull())
@@ -139,7 +139,7 @@ void TDataXtd_PatternStd::Value1(const Handle(TDataStd_Real)& value)
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Value2(const Handle(TDataStd_Real)& value)
+void TDataXtd_PatternStd::Value2(const occ::handle<TDataStd_Real>& value)
 {
   // OCC2932 correction
   if (!myValue2.IsNull())
@@ -152,7 +152,7 @@ void TDataXtd_PatternStd::Value2(const Handle(TDataStd_Real)& value)
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::NbInstances1(const Handle(TDataStd_Integer)& NbInstances1)
+void TDataXtd_PatternStd::NbInstances1(const occ::handle<TDataStd_Integer>& NbInstances1)
 {
   // OCC2932 correction
   if (!myNb1.IsNull())
@@ -165,7 +165,7 @@ void TDataXtd_PatternStd::NbInstances1(const Handle(TDataStd_Integer)& NbInstanc
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::NbInstances2(const Handle(TDataStd_Integer)& NbInstances2)
+void TDataXtd_PatternStd::NbInstances2(const occ::handle<TDataStd_Integer>& NbInstances2)
 {
   // OCC2932 correction
   if (!myNb2.IsNull())
@@ -178,7 +178,7 @@ void TDataXtd_PatternStd::NbInstances2(const Handle(TDataStd_Integer)& NbInstanc
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Mirror(const Handle(TNaming_NamedShape)& plane)
+void TDataXtd_PatternStd::Mirror(const occ::handle<TNaming_NamedShape>& plane)
 {
   // OCC2932 correction
   if (!myMirror.IsNull())
@@ -193,9 +193,9 @@ void TDataXtd_PatternStd::Mirror(const Handle(TNaming_NamedShape)& plane)
 
 //=================================================================================================
 
-Standard_Integer TDataXtd_PatternStd::NbTrsfs() const
+int TDataXtd_PatternStd::NbTrsfs() const
 {
-  Standard_Integer nb = 1;
+  int nb = 1;
   if (mySignature < 5)
   {
     if (!myNb1.IsNull())
@@ -209,10 +209,10 @@ Standard_Integer TDataXtd_PatternStd::NbTrsfs() const
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::ComputeTrsfs(TDataXtd_Array1OfTrsf& Trsfs) const
+void TDataXtd_PatternStd::ComputeTrsfs(NCollection_Array1<gp_Trsf>& Trsfs) const
 {
-  Standard_Integer nb = 0;
-  gp_Trsf          trsf;
+  int     nb = 0;
+  gp_Trsf trsf;
 
   if (mySignature < 5)
   {
@@ -223,9 +223,9 @@ void TDataXtd_PatternStd::ComputeTrsfs(TDataXtd_Array1OfTrsf& Trsfs) const
     if (myAxis1Reversed)
       axis1.Reverse();
 
-    Standard_Real value1 = myValue1->Get();
+    double value1 = myValue1->Get();
 
-    for (Standard_Integer i = 2; i <= myNb1->Get(); i++)
+    for (int i = 2; i <= myNb1->Get(); i++)
     {
       if (mySignature != 2)
       {
@@ -248,9 +248,9 @@ void TDataXtd_PatternStd::ComputeTrsfs(TDataXtd_Array1OfTrsf& Trsfs) const
       if (myAxis2Reversed)
         axis2.Reverse();
 
-      Standard_Real value2 = myValue2->Get();
+      double value2 = myValue2->Get();
 
-      for (Standard_Integer j = 2; j <= myNb2->Get(); j++)
+      for (int j = 2; j <= myNb2->Get(); j++)
       {
         gp_Trsf trsf2;
         if (mySignature == 3)
@@ -265,7 +265,7 @@ void TDataXtd_PatternStd::ComputeTrsfs(TDataXtd_Array1OfTrsf& Trsfs) const
         }
 
         Trsfs(++nb) = trsf2;
-        for (Standard_Integer i = 2; i <= myNb1->Get(); i++)
+        for (int i = 2; i <= myNb1->Get(); i++)
         {
           trsf = trsf2;
           trsf.Multiply(Trsfs(i - 1));
@@ -292,9 +292,9 @@ const Standard_GUID& TDataXtd_PatternStd::PatternID() const
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Restore(const Handle(TDF_Attribute)& With)
+void TDataXtd_PatternStd::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  Handle(TDataXtd_PatternStd) PatternStd = Handle(TDataXtd_PatternStd)::DownCast(With);
+  occ::handle<TDataXtd_PatternStd> PatternStd = occ::down_cast<TDataXtd_PatternStd>(With);
 
   mySignature     = PatternStd->Signature();
   myAxis1Reversed = PatternStd->Axis1Reversed();
@@ -311,17 +311,17 @@ void TDataXtd_PatternStd::Restore(const Handle(TDF_Attribute)& With)
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataXtd_PatternStd::NewEmpty() const
+occ::handle<TDF_Attribute> TDataXtd_PatternStd::NewEmpty() const
 {
   return new TDataXtd_PatternStd();
 }
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::Paste(const Handle(TDF_Attribute)&       Into,
-                                const Handle(TDF_RelocationTable)& RT) const
+void TDataXtd_PatternStd::Paste(const occ::handle<TDF_Attribute>&       Into,
+                                const occ::handle<TDF_RelocationTable>& RT) const
 {
-  Handle(TDataXtd_PatternStd) intof = Handle(TDataXtd_PatternStd)::DownCast(Into);
+  occ::handle<TDataXtd_PatternStd> intof = occ::down_cast<TDataXtd_PatternStd>(Into);
 
   intof->Signature(mySignature);
   intof->Axis1Reversed(myAxis1Reversed);
@@ -329,9 +329,9 @@ void TDataXtd_PatternStd::Paste(const Handle(TDF_Attribute)&       Into,
 
   if (mySignature < 5)
   {
-    Handle(TNaming_NamedShape) axis;
-    Handle(TDataStd_Real)      value;
-    Handle(TDataStd_Integer)   nb;
+    occ::handle<TNaming_NamedShape> axis;
+    occ::handle<TDataStd_Real>      value;
+    occ::handle<TDataStd_Integer>   nb;
 
     RT->HasRelocation(myAxis1, axis);
     intof->Axis1(axis);
@@ -352,7 +352,7 @@ void TDataXtd_PatternStd::Paste(const Handle(TDF_Attribute)&       Into,
   }
   else
   {
-    Handle(TNaming_NamedShape) plane;
+    occ::handle<TNaming_NamedShape> plane;
     RT->HasRelocation(myMirror, plane);
     intof->Mirror(plane);
   }
@@ -360,7 +360,7 @@ void TDataXtd_PatternStd::Paste(const Handle(TDF_Attribute)&       Into,
 
 //=================================================================================================
 
-void TDataXtd_PatternStd::References(const Handle(TDF_DataSet)& aDataSet) const
+void TDataXtd_PatternStd::References(const occ::handle<TDF_DataSet>& aDataSet) const
 {
   if (mySignature < 5)
   {

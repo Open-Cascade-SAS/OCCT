@@ -21,14 +21,14 @@
 
 BRepBuilderAPI_Copy::BRepBuilderAPI_Copy()
 {
-  myModification = new BRepTools_CopyModification(Standard_True, Standard_False);
+  myModification = new BRepTools_CopyModification(true, false);
 }
 
 //=================================================================================================
 
-BRepBuilderAPI_Copy::BRepBuilderAPI_Copy(const TopoDS_Shape&    S,
-                                         const Standard_Boolean copyGeom,
-                                         const Standard_Boolean copyMesh)
+BRepBuilderAPI_Copy::BRepBuilderAPI_Copy(const TopoDS_Shape& S,
+                                         const bool          copyGeom,
+                                         const bool          copyMesh)
 {
   myModification = new BRepTools_CopyModification(copyGeom, copyMesh);
   DoModif(S);
@@ -36,9 +36,7 @@ BRepBuilderAPI_Copy::BRepBuilderAPI_Copy(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-void BRepBuilderAPI_Copy::Perform(const TopoDS_Shape&    S,
-                                  const Standard_Boolean copyGeom,
-                                  const Standard_Boolean copyMesh)
+void BRepBuilderAPI_Copy::Perform(const TopoDS_Shape& S, const bool copyGeom, const bool copyMesh)
 {
   myModification = new BRepTools_CopyModification(copyGeom, copyMesh);
   NotDone(); // on force la copie si on vient deja d`en faire une

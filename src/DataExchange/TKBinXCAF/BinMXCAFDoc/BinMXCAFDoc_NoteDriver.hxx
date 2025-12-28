@@ -21,31 +21,29 @@
 
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
 
-class BinMXCAFDoc_NoteDriver;
-DEFINE_STANDARD_HANDLE(BinMXCAFDoc_NoteDriver, BinMDF_ADriver)
-
 class BinMXCAFDoc_NoteDriver : public BinMDF_ADriver
 {
 public:
-  Standard_EXPORT Standard_Boolean
-    Paste(const BinObjMgt_Persistent&  theSource,
-          const Handle(TDF_Attribute)& theTarget,
-          BinObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       theSource,
+                             const occ::handle<TDF_Attribute>& theTarget,
+                             BinObjMgt_RRelocationTable&       theRelocTable) const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
-                             BinObjMgt_Persistent&        theTarget,
-                             BinObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(
+    const occ::handle<TDF_Attribute>&                        theSource,
+    BinObjMgt_Persistent&                                    theTarget,
+    NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_NoteDriver, BinMDF_ADriver)
 
 protected:
-  BinMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver, Standard_CString theName);
+  BinMXCAFDoc_NoteDriver(const occ::handle<Message_Messenger>& theMsgDriver, const char* theName);
 };
 
 #endif // _BinMXCAFDoc_NoteDriver_HeaderFile

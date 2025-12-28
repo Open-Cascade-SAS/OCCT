@@ -89,7 +89,7 @@ public:
 
   //! Dereference operator.
   //! @return the UTF-32 codepoint of the symbol currently pointed by iterator.
-  constexpr Standard_Utf32Char operator*() const noexcept { return myCharUtf32; }
+  constexpr char32_t operator*() const noexcept { return myCharUtf32; }
 
   //! Buffer-fetching getter.
   constexpr const Type* BufferHere() const noexcept { return myPosition; }
@@ -102,54 +102,51 @@ public:
 
   //! @return the index displacement from iterator initialization
   //!         (first symbol has index 0)
-  constexpr Standard_Integer Index() const noexcept { return myCharIndex; }
+  constexpr int Index() const noexcept { return myCharIndex; }
 
   //! @return the advance in bytes to store current symbol in UTF-8.
   //! 0 means an invalid symbol;
   //! 1-4 bytes are valid range.
-  Standard_Integer AdvanceBytesUtf8() const;
+  int AdvanceBytesUtf8() const;
 
   //! @return the advance in bytes to store current symbol in UTF-16.
   //! 0 means an invalid symbol;
   //! 2 bytes is a general case;
   //! 4 bytes for surrogate pair.
-  Standard_Integer AdvanceBytesUtf16() const;
+  int AdvanceBytesUtf16() const;
 
   //! @return the advance in bytes to store current symbol in UTF-16.
   //! 0 means an invalid symbol;
   //! 1 16-bit code unit is a general case;
   //! 2 16-bit code units for surrogate pair.
-  Standard_Integer AdvanceCodeUnitsUtf16() const;
+  int AdvanceCodeUnitsUtf16() const;
 
   //! @return the advance in bytes to store current symbol in UTF-32.
   //! Always 4 bytes (method for consistency).
-  constexpr Standard_Integer AdvanceBytesUtf32() const noexcept
-  {
-    return Standard_Integer(sizeof(Standard_Utf32Char));
-  }
+  constexpr int AdvanceBytesUtf32() const noexcept { return int(sizeof(char32_t)); }
 
   //! Fill the UTF-8 buffer within current Unicode symbol.
   //! Use method AdvanceUtf8() to allocate buffer with enough size.
   //! @param theBuffer buffer to fill
   //! @return new buffer position (for next char)
-  Standard_Utf8Char*  GetUtf8(Standard_Utf8Char* theBuffer) const;
-  Standard_Utf8UChar* GetUtf8(Standard_Utf8UChar* theBuffer) const;
+  char*          GetUtf8(char* theBuffer) const;
+  unsigned char* GetUtf8(unsigned char* theBuffer) const;
 
   //! Fill the UTF-16 buffer within current Unicode symbol.
   //! Use method AdvanceUtf16() to allocate buffer with enough size.
   //! @param theBuffer buffer to fill
   //! @return new buffer position (for next char)
-  Standard_Utf16Char* GetUtf16(Standard_Utf16Char* theBuffer) const;
+  char16_t* GetUtf16(char16_t* theBuffer) const;
 
   //! Fill the UTF-32 buffer within current Unicode symbol.
   //! Use method AdvanceUtf32() to allocate buffer with enough size.
   //! @param theBuffer buffer to fill
   //! @return new buffer position (for next char)
-  Standard_Utf32Char* GetUtf32(Standard_Utf32Char* theBuffer) const;
+  char32_t* GetUtf32(char32_t* theBuffer) const;
 
   //! @return the advance in TypeWrite chars needed to store current symbol
   template <typename TypeWrite>
-  inline Standard_Integer AdvanceBytesUtf() const
+  inline int AdvanceBytesUtf() const
   {
     return advanceBytes(static_cast<const typename CharTypeChooser<TypeWrite>::type*>(0));
   }
@@ -172,16 +169,16 @@ private:
   //!
   //! In practice this is relevant for wchar_t type:
   //! typename CharTypeChooser<wchar_t>::type resolves to
-  //! Standard_Utf16Char on Windows and to Standard_Utf32Char on Linux.
+  //! char16_t on Windows and to char32_t on Linux.
   template <typename TypeChar>
   class CharTypeChooser
       : public std::conditional<
           sizeof(TypeChar) == 1,
-          Standard_Utf8Char,
+          char,
           typename std::conditional<
             sizeof(TypeChar) == 2,
-            Standard_Utf16Char,
-            typename std::conditional<sizeof(TypeChar) == 4, Standard_Utf32Char, void>::type>::type>
+            char16_t,
+            typename std::conditional<sizeof(TypeChar) == 4, char32_t, void>::type>::type>
   {
   };
 
@@ -194,28 +191,25 @@ private:
   void readUTF16();
 
   //! Helper overload methods to dispatch reading function depending on code unit size
-  void readNext(const Standard_Utf8Char*) { readUTF8(); }
+  void readNext(const char*) { readUTF8(); }
 
-  void readNext(const Standard_Utf16Char*) { readUTF16(); }
+  void readNext(const char16_t*) { readUTF16(); }
 
-  void readNext(const Standard_Utf32Char*) noexcept { myCharUtf32 = *myPosNext++; }
+  void readNext(const char32_t*) noexcept { myCharUtf32 = *myPosNext++; }
 
   //! Helper overload methods to dispatch advance function depending on code unit size
-  Standard_Integer advanceBytes(const Standard_Utf8Char*) const { return AdvanceBytesUtf8(); }
+  int advanceBytes(const char*) const { return AdvanceBytesUtf8(); }
 
-  Standard_Integer advanceBytes(const Standard_Utf16Char*) const { return AdvanceBytesUtf16(); }
+  int advanceBytes(const char16_t*) const { return AdvanceBytesUtf16(); }
 
-  constexpr Standard_Integer advanceBytes(const Standard_Utf32Char*) const noexcept
-  {
-    return AdvanceBytesUtf32();
-  }
+  constexpr int advanceBytes(const char32_t*) const noexcept { return AdvanceBytesUtf32(); }
 
   //! Helper overload methods to dispatch getter function depending on code unit size
-  Standard_Utf8Char* getUtf(Standard_Utf8Char* theBuffer) const { return GetUtf8(theBuffer); }
+  char* getUtf(char* theBuffer) const { return GetUtf8(theBuffer); }
 
-  Standard_Utf16Char* getUtf(Standard_Utf16Char* theBuffer) const { return GetUtf16(theBuffer); }
+  char16_t* getUtf(char16_t* theBuffer) const { return GetUtf16(theBuffer); }
 
-  Standard_Utf32Char* getUtf(Standard_Utf32Char* theBuffer) const { return GetUtf32(theBuffer); }
+  char32_t* getUtf(char32_t* theBuffer) const { return GetUtf32(theBuffer); }
 
 private: //! @name unicode magic numbers
   //! The first character in a UTF-8 sequence indicates how many bytes to read (among other things).
@@ -231,7 +225,7 @@ private: //! @name unicode magic numbers
 
   //! Magic values subtracted from a buffer value during UTF-8 conversion.
   //! This table contains as many values as there might be trailing bytes in a UTF-8 sequence.
-  static constexpr Standard_Utf32Char offsetsFromUTF8[6] =
+  static constexpr char32_t offsetsFromUTF8[6] =
     {0x00000000UL, 0x00003080UL, 0x000E2080UL, 0x03C82080UL, 0xFA082080UL, 0x82082080UL};
 
   //! The first character in a UTF-8 sequence indicates how many bytes to read.
@@ -239,29 +233,24 @@ private: //! @name unicode magic numbers
     {0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
 
   // Magic numbers for UTF encoding/decoding
-  static constexpr Standard_Utf32Char UTF8_BYTE_MASK             = 0xBF;
-  static constexpr Standard_Utf32Char UTF8_BYTE_MARK             = 0x80;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_HIGH_START = 0xD800;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_HIGH_END   = 0xDBFF;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_START  = 0xDC00;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_END    = 0xDFFF;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_HIGH_SHIFT = 10;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_BASE   = 0x0010000UL;
-  static constexpr Standard_Utf32Char UTF16_SURROGATE_LOW_MASK   = 0x3FFUL;
-  static constexpr Standard_Utf32Char UTF32_MAX_BMP              = 0x0000FFFFUL;
-  static constexpr Standard_Utf32Char UTF32_MAX_LEGAL            = 0x0010FFFFUL;
+  static constexpr char32_t UTF8_BYTE_MASK             = 0xBF;
+  static constexpr char32_t UTF8_BYTE_MARK             = 0x80;
+  static constexpr char32_t UTF16_SURROGATE_HIGH_START = 0xD800;
+  static constexpr char32_t UTF16_SURROGATE_HIGH_END   = 0xDBFF;
+  static constexpr char32_t UTF16_SURROGATE_LOW_START  = 0xDC00;
+  static constexpr char32_t UTF16_SURROGATE_LOW_END    = 0xDFFF;
+  static constexpr char32_t UTF16_SURROGATE_HIGH_SHIFT = 10;
+  static constexpr char32_t UTF16_SURROGATE_LOW_BASE   = 0x0010000UL;
+  static constexpr char32_t UTF16_SURROGATE_LOW_MASK   = 0x3FFUL;
+  static constexpr char32_t UTF32_MAX_BMP              = 0x0000FFFFUL;
+  static constexpr char32_t UTF32_MAX_LEGAL            = 0x0010FFFFUL;
 
-private:                          //! @name private fields
-  const Type*        myPosition;  //!< buffer position of the first element in the current symbol
-  const Type*        myPosNext;   //!< buffer position of the first element in the next symbol
-  Standard_Integer   myCharIndex; //!< index displacement from iterator initialization
-  Standard_Utf32Char myCharUtf32; //!< Unicode symbol stored at the current buffer position
+private:                   //! @name private fields
+  const Type* myPosition;  //!< buffer position of the first element in the current symbol
+  const Type* myPosNext;   //!< buffer position of the first element in the next symbol
+  int         myCharIndex; //!< index displacement from iterator initialization
+  char32_t    myCharUtf32; //!< Unicode symbol stored at the current buffer position
 };
-
-typedef NCollection_UtfIterator<Standard_Utf8Char>  NCollection_Utf8Iter;
-typedef NCollection_UtfIterator<Standard_Utf16Char> NCollection_Utf16Iter;
-typedef NCollection_UtfIterator<Standard_Utf32Char> NCollection_Utf32Iter;
-typedef NCollection_UtfIterator<Standard_WideChar>  NCollection_UtfWideIter;
 
 // template implementation
 #include <NCollection_UtfIterator.lxx>

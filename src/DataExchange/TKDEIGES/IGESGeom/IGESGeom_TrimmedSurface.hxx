@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IGESGeom_HArray1OfCurveOnSurface.hxx>
+#include <IGESGeom_CurveOnSurface.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class IGESGeom_CurveOnSurface;
-
-class IGESGeom_TrimmedSurface;
-DEFINE_STANDARD_HANDLE(IGESGeom_TrimmedSurface, IGESData_IGESEntity)
 
 //! defines IGESTrimmedSurface, Type <144> Form <0>
 //! in package IGESGeom
@@ -54,40 +53,40 @@ public:
   //! - anOuter   : Closed curve which constitutes outer boundary
   //! - allInners : Array of closed curves which constitute the
   //! inner boundary
-  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)&              aSurface,
-                            const Standard_Integer                          aFlag,
-                            const Handle(IGESGeom_CurveOnSurface)&          anOuter,
-                            const Handle(IGESGeom_HArray1OfCurveOnSurface)& allInners);
+  Standard_EXPORT void Init(
+    const occ::handle<IGESData_IGESEntity>&                                       aSurface,
+    const int                                                                     aFlag,
+    const occ::handle<IGESGeom_CurveOnSurface>&                                   anOuter,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>>& allInners);
 
   //! returns the surface to be trimmed
-  Standard_EXPORT Handle(IGESData_IGESEntity) Surface() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Surface() const;
 
   //! returns True if outer contour exists
-  Standard_EXPORT Standard_Boolean HasOuterContour() const;
+  Standard_EXPORT bool HasOuterContour() const;
 
   //! returns the outer contour of the trimmed surface
-  Standard_EXPORT Handle(IGESGeom_CurveOnSurface) OuterContour() const;
+  Standard_EXPORT occ::handle<IGESGeom_CurveOnSurface> OuterContour() const;
 
   //! returns the outer contour type of the trimmed surface
   //! 0  : The outer boundary is the boundary of D
   //! 1  : otherwise
-  Standard_EXPORT Standard_Integer OuterBoundaryType() const;
+  Standard_EXPORT int OuterBoundaryType() const;
 
   //! returns the number of inner boundaries
-  Standard_EXPORT Standard_Integer NbInnerContours() const;
+  Standard_EXPORT int NbInnerContours() const;
 
   //! returns the Index'th inner contour
   //! raises exception if Index <= 0 or Index > NbInnerContours()
-  Standard_EXPORT Handle(IGESGeom_CurveOnSurface) InnerContour(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESGeom_CurveOnSurface> InnerContour(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_TrimmedSurface, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_IGESEntity)              theSurface;
-  Standard_Integer                         theFlag;
-  Handle(IGESGeom_CurveOnSurface)          theOuterCurve;
-  Handle(IGESGeom_HArray1OfCurveOnSurface) theInnerCurves;
+  occ::handle<IGESData_IGESEntity>                                       theSurface;
+  int                                                                    theFlag;
+  occ::handle<IGESGeom_CurveOnSurface>                                   theOuterCurve;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>> theInnerCurves;
 };
 
 #endif // _IGESGeom_TrimmedSurface_HeaderFile

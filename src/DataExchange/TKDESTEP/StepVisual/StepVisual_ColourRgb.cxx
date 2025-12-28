@@ -18,10 +18,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ColourRgb, StepVisual_ColourSpecification)
 
 StepVisual_ColourRgb::StepVisual_ColourRgb() {}
 
-void StepVisual_ColourRgb::Init(const Handle(TCollection_HAsciiString)& aName,
-                                const Standard_Real                     aRed,
-                                const Standard_Real                     aGreen,
-                                const Standard_Real                     aBlue)
+void StepVisual_ColourRgb::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                const double                                 aRed,
+                                const double                                 aGreen,
+                                const double                                 aBlue)
 {
   // --- classe own fields ---
   red   = aRed;
@@ -31,32 +31,32 @@ void StepVisual_ColourRgb::Init(const Handle(TCollection_HAsciiString)& aName,
   StepVisual_ColourSpecification::Init(aName);
 }
 
-void StepVisual_ColourRgb::SetRed(const Standard_Real aRed)
+void StepVisual_ColourRgb::SetRed(const double aRed)
 {
   red = aRed;
 }
 
-Standard_Real StepVisual_ColourRgb::Red() const
+double StepVisual_ColourRgb::Red() const
 {
   return red;
 }
 
-void StepVisual_ColourRgb::SetGreen(const Standard_Real aGreen)
+void StepVisual_ColourRgb::SetGreen(const double aGreen)
 {
   green = aGreen;
 }
 
-Standard_Real StepVisual_ColourRgb::Green() const
+double StepVisual_ColourRgb::Green() const
 {
   return green;
 }
 
-void StepVisual_ColourRgb::SetBlue(const Standard_Real aBlue)
+void StepVisual_ColourRgb::SetBlue(const double aBlue)
 {
   blue = aBlue;
 }
 
-Standard_Real StepVisual_ColourRgb::Blue() const
+double StepVisual_ColourRgb::Blue() const
 {
   return blue;
 }

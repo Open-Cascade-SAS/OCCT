@@ -42,12 +42,12 @@ set(OCCT_Aspect_FILES
   Aspect_RectangularGrid.cxx
   Aspect_RectangularGrid.hxx
   Aspect_RenderingContext.hxx
-  Aspect_SequenceOfColor.hxx
+
   Aspect_ScrollDelta.hxx
   Aspect_SkydomeBackground.cxx
   Aspect_SkydomeBackground.hxx
   Aspect_Touch.hxx
-  Aspect_TouchMap.hxx
+
   Aspect_TrackedDevicePose.hxx
   Aspect_TypeOfColorScaleData.hxx
   Aspect_TypeOfColorScaleOrientation.hxx

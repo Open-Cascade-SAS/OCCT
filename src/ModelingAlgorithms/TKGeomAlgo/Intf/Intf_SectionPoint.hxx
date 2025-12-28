@@ -37,11 +37,11 @@ public:
 
   //! Returns the cumulated Parameter of the SectionPoint on the
   //! first element.
-  Standard_Real ParamOnFirst() const;
+  double ParamOnFirst() const;
 
   //! Returns the cumulated Parameter of the section point on the
   //! second element.
-  Standard_Real ParamOnSecond() const;
+  double ParamOnSecond() const;
 
   //! Returns the type of the section point on the first element.
   Intf_PIType TypeOnFirst() const;
@@ -50,85 +50,75 @@ public:
   //! element.
   Intf_PIType TypeOnSecond() const;
 
-  Standard_EXPORT void InfoFirst(Intf_PIType&      Dim,
-                                 Standard_Integer& Add1,
-                                 Standard_Integer& Add2,
-                                 Standard_Real&    Param) const;
+  Standard_EXPORT void InfoFirst(Intf_PIType& Dim, int& Add1, int& Add2, double& Param) const;
 
   //! Gives the data about the first argument of the Interference.
-  Standard_EXPORT void InfoFirst(Intf_PIType&      Dim,
-                                 Standard_Integer& Addr,
-                                 Standard_Real&    Param) const;
+  Standard_EXPORT void InfoFirst(Intf_PIType& Dim, int& Addr, double& Param) const;
 
-  Standard_EXPORT void InfoSecond(Intf_PIType&      Dim,
-                                  Standard_Integer& Add1,
-                                  Standard_Integer& Add2,
-                                  Standard_Real&    Param) const;
+  Standard_EXPORT void InfoSecond(Intf_PIType& Dim, int& Add1, int& Add2, double& Param) const;
 
   //! Gives the data about the second argument of the Interference.
-  Standard_EXPORT void InfoSecond(Intf_PIType&      Dim,
-                                  Standard_Integer& Addr,
-                                  Standard_Real&    Param) const;
+  Standard_EXPORT void InfoSecond(Intf_PIType& Dim, int& Addr, double& Param) const;
 
   //! Gives the incidence at this section point. The incidence
   //! between the two triangles is given by the cosine. The best
   //! incidence is 0. (PI/2). The worst is 1. (null angle).
-  Standard_EXPORT Standard_Real Incidence() const;
+  Standard_EXPORT double Incidence() const;
 
   //! Returns True if the two SectionPoint have the same logical
   //! information.
-  Standard_Boolean IsEqual(const Intf_SectionPoint& Other) const;
+  bool IsEqual(const Intf_SectionPoint& Other) const;
 
-  Standard_Boolean operator==(const Intf_SectionPoint& Other) const { return IsEqual(Other); }
+  bool operator==(const Intf_SectionPoint& Other) const { return IsEqual(Other); }
 
   //! Returns True if the two SectionPoints are on the same edge
   //! of the first or the second element.
-  Standard_EXPORT Standard_Boolean IsOnSameEdge(const Intf_SectionPoint& Other) const;
+  Standard_EXPORT bool IsOnSameEdge(const Intf_SectionPoint& Other) const;
 
   Standard_EXPORT Intf_SectionPoint();
 
   //! Builds a SectionPoint with the respective dimensions
   //! (vertex edge or face) of the concerned arguments and their
   //! addresses in the Topological structure.
-  Standard_EXPORT Intf_SectionPoint(const gp_Pnt&          Where,
-                                    const Intf_PIType      DimeO,
-                                    const Standard_Integer AddrO1,
-                                    const Standard_Integer AddrO2,
-                                    const Standard_Real    ParamO,
-                                    const Intf_PIType      DimeT,
-                                    const Standard_Integer AddrT1,
-                                    const Standard_Integer AddrT2,
-                                    const Standard_Real    ParamT,
-                                    const Standard_Real    Incid);
+  Standard_EXPORT Intf_SectionPoint(const gp_Pnt&     Where,
+                                    const Intf_PIType DimeO,
+                                    const int         AddrO1,
+                                    const int         AddrO2,
+                                    const double      ParamO,
+                                    const Intf_PIType DimeT,
+                                    const int         AddrT1,
+                                    const int         AddrT2,
+                                    const double      ParamT,
+                                    const double      Incid);
 
   //! Builds a SectionPoint 2d with the respective dimensions
   //! (vertex or edge) of the concerned arguments and their
   //! addresses in the Topological structure.
-  Standard_EXPORT Intf_SectionPoint(const gp_Pnt2d&        Where,
-                                    const Intf_PIType      DimeO,
-                                    const Standard_Integer AddrO1,
-                                    const Standard_Real    ParamO,
-                                    const Intf_PIType      DimeT,
-                                    const Standard_Integer AddrT1,
-                                    const Standard_Real    ParamT,
-                                    const Standard_Real    Incid);
+  Standard_EXPORT Intf_SectionPoint(const gp_Pnt2d&   Where,
+                                    const Intf_PIType DimeO,
+                                    const int         AddrO1,
+                                    const double      ParamO,
+                                    const Intf_PIType DimeT,
+                                    const int         AddrT1,
+                                    const double      ParamT,
+                                    const double      Incid);
 
   //! Merges two SectionPoints.
   Standard_EXPORT void Merge(Intf_SectionPoint& Other);
 
-  Standard_EXPORT void Dump(const Standard_Integer Indent) const;
+  Standard_EXPORT void Dump(const int Indent) const;
 
 private:
-  gp_Pnt           myPnt;
-  Intf_PIType      DimenObje;
-  Standard_Integer IndexO1;
-  Standard_Integer IndexO2;
-  Standard_Real    ParamObje;
-  Intf_PIType      DimenTool;
-  Standard_Integer IndexT1;
-  Standard_Integer IndexT2;
-  Standard_Real    ParamTool;
-  Standard_Real    Incide;
+  gp_Pnt      myPnt;
+  Intf_PIType DimenObje;
+  int         IndexO1;
+  int         IndexO2;
+  double      ParamObje;
+  Intf_PIType DimenTool;
+  int         IndexT1;
+  int         IndexT2;
+  double      ParamTool;
+  double      Incide;
 };
 
 #include <Intf_SectionPoint.lxx>

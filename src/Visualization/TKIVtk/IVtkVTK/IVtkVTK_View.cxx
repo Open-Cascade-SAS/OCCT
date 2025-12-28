@@ -178,9 +178,9 @@ void IVtkVTK_View::GetWindowSize(int& theX, int& theY) const
 
 //=================================================================================================
 
-void IVtkVTK_View::GetCamera(Graphic3d_Mat4d&  theProj,
-                             Graphic3d_Mat4d&  theOrient,
-                             Standard_Boolean& theIsOrtho) const
+void IVtkVTK_View::GetCamera(NCollection_Mat4<double>& theProj,
+                             NCollection_Mat4<double>& theOrient,
+                             bool&                     theIsOrtho) const
 {
   theIsOrtho = !IsPerspective();
 
@@ -189,9 +189,9 @@ void IVtkVTK_View::GetCamera(Graphic3d_Mat4d&  theProj,
       myRenderer->GetTiledAspectRatio(),
       0,
       1);
-  for (Standard_Integer aRow = 0; aRow < 4; ++aRow)
+  for (int aRow = 0; aRow < 4; ++aRow)
   {
-    for (Standard_Integer aCol = 0; aCol < 4; ++aCol)
+    for (int aCol = 0; aCol < 4; ++aCol)
     {
       theProj.SetValue(aRow, aCol, aCompositeProj->GetElement(aRow, aCol));
     }
@@ -202,12 +202,12 @@ void IVtkVTK_View::GetCamera(Graphic3d_Mat4d&  theProj,
 
 //=================================================================================================
 
-void IVtkVTK_View::GetViewport(Standard_Real& theX,
-                               Standard_Real& theY,
-                               Standard_Real& theWidth,
-                               Standard_Real& theHeight) const
+void IVtkVTK_View::GetViewport(double& theX,
+                               double& theY,
+                               double& theWidth,
+                               double& theHeight) const
 {
-  Standard_Real aViewport[4];
+  double aViewport[4];
   myRenderer->GetViewport(aViewport);
   theX      = aViewport[0];
   theY      = aViewport[1];

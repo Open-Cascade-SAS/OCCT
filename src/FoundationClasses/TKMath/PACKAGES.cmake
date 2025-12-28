@@ -20,6 +20,5 @@ set(OCCT_TKMath_LIST_OF_PACKAGES
   Bnd
   BVH
   gp
-  TColgp
   TopLoc
 )

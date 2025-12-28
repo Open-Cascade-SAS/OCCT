@@ -51,36 +51,35 @@ public:
   //! 7     ExternallyDefinedRepresentation from StepRepr,
   //! 8     AutoDesignDocumentReference from StepAP214,
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Product (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Product) Product() const;
+  Standard_EXPORT occ::handle<StepBasic_Product> Product() const;
 
   //! returns Value as a ProductDefinition (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! returns Value as a ProductDefinitionFormation (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 
   //! returns Value as a ProductDefinitionRelationship (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship>
+                  ProductDefinitionRelationship() const;
 
   //! returns Value as a ProductDefinitionWithAssociatedDocuments (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)
-    ProductDefinitionWithAssociatedDocuments() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments>
+                  ProductDefinitionWithAssociatedDocuments() const;
 
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ExternallyDefinedRepresentation) ExternallyDefinedRepresentation()
+  Standard_EXPORT occ::handle<StepRepr_ExternallyDefinedRepresentation>
+                  ExternallyDefinedRepresentation() const;
+
+  Standard_EXPORT occ::handle<StepAP214_AutoDesignDocumentReference> AutoDesignDocumentReference()
     const;
-
-  Standard_EXPORT Handle(StepAP214_AutoDesignDocumentReference) AutoDesignDocumentReference() const;
-
-protected:
-private:
 };
 
 #endif // _StepAP214_AutoDesignGeneralOrgItem_HeaderFile

@@ -51,12 +51,12 @@ public:
                                                   const TCollection_ExtendedString& ProgID);
 
   //! Returns True if there is GUID for given <ProgID> then GUID is returned in <ID>
-  Standard_EXPORT static Standard_Boolean GUIDFromProgID(const TCollection_ExtendedString& ProgID,
-                                                         Standard_GUID&                    ID);
+  Standard_EXPORT static bool GUIDFromProgID(const TCollection_ExtendedString& ProgID,
+                                             Standard_GUID&                    ID);
 
   //! Returns True if there is ProgID for given <ID> then ProgID is returned in <ProgID>
-  Standard_EXPORT static Standard_Boolean ProgIDFromGUID(const Standard_GUID&        ID,
-                                                         TCollection_ExtendedString& ProgID);
+  Standard_EXPORT static bool ProgIDFromGUID(const Standard_GUID&        ID,
+                                             TCollection_ExtendedString& ProgID);
 };
 
 #endif // _TDF_HeaderFile

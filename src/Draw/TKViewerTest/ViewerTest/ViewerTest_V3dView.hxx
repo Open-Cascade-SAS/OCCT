@@ -22,13 +22,13 @@ class ViewerTest_V3dView : public V3d_View
   DEFINE_STANDARD_RTTIEXT(ViewerTest_V3dView, V3d_View)
 public:
   //! Initializes the view.
-  Standard_EXPORT ViewerTest_V3dView(const Handle(V3d_Viewer)& theViewer,
-                                     const V3d_TypeOfView      theType     = V3d_ORTHOGRAPHIC,
-                                     bool                      theIs2dMode = false);
+  Standard_EXPORT ViewerTest_V3dView(const occ::handle<V3d_Viewer>& theViewer,
+                                     const V3d_TypeOfView           theType     = V3d_ORTHOGRAPHIC,
+                                     bool                           theIs2dMode = false);
 
   //! Initializes the view by copying.
-  Standard_EXPORT ViewerTest_V3dView(const Handle(V3d_Viewer)& theViewer,
-                                     const Handle(V3d_View)&   theView);
+  Standard_EXPORT ViewerTest_V3dView(const occ::handle<V3d_Viewer>& theViewer,
+                                     const occ::handle<V3d_View>&   theView);
 
   //! Returns true if 2D mode is set for the view
   bool IsViewIn2DMode() const { return myIs2dMode; }
@@ -44,7 +44,7 @@ public:
   Standard_EXPORT static void SetCurrentView2DMode(bool theIs2d);
 
 private:
-  Standard_Boolean myIs2dMode; //!< 2D mode flag
+  bool myIs2dMode; //!< 2D mode flag
 };
 
 #endif // _ViewerTest_V3dView_HeaderFile

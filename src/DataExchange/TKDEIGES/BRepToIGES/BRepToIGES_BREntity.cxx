@@ -24,7 +24,7 @@
 #include <BRepToIGES_BRWire.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Standard_Transient.hxx>
 #include <TopoDS.hxx>
@@ -67,51 +67,51 @@ void BRepToIGES_BREntity::Init()
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::SetModel(const Handle(IGESData_IGESModel)& model)
+void BRepToIGES_BREntity::SetModel(const occ::handle<IGESData_IGESModel>& model)
 {
-  TheModel                 = model;
-  Standard_Real unitfactor = TheModel->GlobalSection().UnitValue();
+  TheModel          = model;
+  double unitfactor = TheModel->GlobalSection().UnitValue();
   if (unitfactor != 1.)
     TheUnitFactor = unitfactor;
 }
 
 //=================================================================================================
 
-Handle(IGESData_IGESModel) BRepToIGES_BREntity::GetModel() const
+occ::handle<IGESData_IGESModel> BRepToIGES_BREntity::GetModel() const
 {
   return TheModel;
 }
 
 //=================================================================================================
 
-Standard_Real BRepToIGES_BREntity::GetUnit() const
+double BRepToIGES_BREntity::GetUnit() const
 {
   return TheUnitFactor;
 }
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::SetTransferProcess(const Handle(Transfer_FinderProcess)& TP)
+void BRepToIGES_BREntity::SetTransferProcess(const occ::handle<Transfer_FinderProcess>& TP)
 {
   TheMap = TP;
 }
 
 //=================================================================================================
 
-Handle(Transfer_FinderProcess) BRepToIGES_BREntity::GetTransferProcess() const
+occ::handle<Transfer_FinderProcess> BRepToIGES_BREntity::GetTransferProcess() const
 {
   return TheMap;
 }
 
 //=================================================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGES_BREntity::TransferShape(
+occ::handle<IGESData_IGESEntity> BRepToIGES_BREntity::TransferShape(
   const TopoDS_Shape&          start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   //  TopoDS_Shape theShape;
-  // Standard_Integer Nb = 1; //szv#4:S4163:12Mar99 not needed
+  // int Nb = 1; //szv#4:S4163:12Mar99 not needed
 
   if (start.IsNull())
     return res;
@@ -128,8 +128,8 @@ Handle(IGESData_IGESEntity) BRepToIGES_BREntity::TransferShape(
     TopoDS_Edge       E = TopoDS::Edge(start);
     BRepToIGES_BRWire BW(*this);
     BW.SetModel(GetModel());
-    TopTools_DataMapOfShapeShape anEmptyMap;
-    res = BW.TransferEdge(E, anEmptyMap, Standard_False);
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> anEmptyMap;
+    res = BW.TransferEdge(E, anEmptyMap, false);
   }
   else if (start.ShapeType() == TopAbs_WIRE)
   {
@@ -192,56 +192,55 @@ Handle(IGESData_IGESEntity) BRepToIGES_BREntity::TransferShape(
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::AddFail(const TopoDS_Shape& start, const Standard_CString amess)
+void BRepToIGES_BREntity::AddFail(const TopoDS_Shape& start, const char* amess)
 {
-  Handle(TransferBRep_ShapeMapper) Mapper = new TransferBRep_ShapeMapper(start);
+  occ::handle<TransferBRep_ShapeMapper> Mapper = new TransferBRep_ShapeMapper(start);
   TheMap->AddFail(Mapper, amess);
 }
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::AddWarning(const TopoDS_Shape& start, const Standard_CString amess)
+void BRepToIGES_BREntity::AddWarning(const TopoDS_Shape& start, const char* amess)
 {
-  Handle(TransferBRep_ShapeMapper) Mapper = new TransferBRep_ShapeMapper(start);
+  occ::handle<TransferBRep_ShapeMapper> Mapper = new TransferBRep_ShapeMapper(start);
   TheMap->AddWarning(Mapper, amess);
 }
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::AddFail(const Handle(Standard_Transient)& start,
-                                  const Standard_CString            amess)
+void BRepToIGES_BREntity::AddFail(const occ::handle<Standard_Transient>& start, const char* amess)
 {
-  Handle(Transfer_TransientMapper) Mapper = new Transfer_TransientMapper(start);
+  occ::handle<Transfer_TransientMapper> Mapper = new Transfer_TransientMapper(start);
   TheMap->AddFail(Mapper, amess);
 }
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::AddWarning(const Handle(Standard_Transient)& start,
-                                     const Standard_CString            amess)
+void BRepToIGES_BREntity::AddWarning(const occ::handle<Standard_Transient>& start,
+                                     const char*                            amess)
 {
-  Handle(Transfer_TransientMapper) Mapper = new Transfer_TransientMapper(start);
+  occ::handle<Transfer_TransientMapper> Mapper = new Transfer_TransientMapper(start);
   TheMap->AddWarning(Mapper, amess);
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepToIGES_BREntity::HasShapeResult(const TopoDS_Shape& start) const
+bool BRepToIGES_BREntity::HasShapeResult(const TopoDS_Shape& start) const
 {
-  Handle(TransferBRep_ShapeMapper) Mapper = new TransferBRep_ShapeMapper(start);
+  occ::handle<TransferBRep_ShapeMapper> Mapper = new TransferBRep_ShapeMapper(start);
   DeclareAndCast(Transfer_SimpleBinderOfTransient, binder, TheMap->Find(Mapper));
   if (binder.IsNull())
-    return Standard_False;
+    return false;
   return binder->HasResult();
 }
 
 //=================================================================================================
 
-Handle(Standard_Transient) BRepToIGES_BREntity::GetShapeResult(const TopoDS_Shape& start) const
+occ::handle<Standard_Transient> BRepToIGES_BREntity::GetShapeResult(const TopoDS_Shape& start) const
 {
-  Handle(Standard_Transient) res;
+  occ::handle<Standard_Transient> res;
 
-  Handle(TransferBRep_ShapeMapper) Mapper = new TransferBRep_ShapeMapper(start);
+  occ::handle<TransferBRep_ShapeMapper> Mapper = new TransferBRep_ShapeMapper(start);
   DeclareAndCast(Transfer_SimpleBinderOfTransient, binder, TheMap->Find(Mapper));
   if (binder.IsNull())
     return res;
@@ -252,34 +251,34 @@ Handle(Standard_Transient) BRepToIGES_BREntity::GetShapeResult(const TopoDS_Shap
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::SetShapeResult(const TopoDS_Shape&               start,
-                                         const Handle(Standard_Transient)& result)
+void BRepToIGES_BREntity::SetShapeResult(const TopoDS_Shape&                    start,
+                                         const occ::handle<Standard_Transient>& result)
 {
-  Handle(TransferBRep_ShapeMapper)         Mapper = new TransferBRep_ShapeMapper(start);
-  Handle(Transfer_SimpleBinderOfTransient) binder = new Transfer_SimpleBinderOfTransient;
+  occ::handle<TransferBRep_ShapeMapper>         Mapper = new TransferBRep_ShapeMapper(start);
+  occ::handle<Transfer_SimpleBinderOfTransient> binder = new Transfer_SimpleBinderOfTransient;
   binder->SetResult(result);
   TheMap->Bind(Mapper, binder);
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepToIGES_BREntity::HasShapeResult(const Handle(Standard_Transient)& start) const
+bool BRepToIGES_BREntity::HasShapeResult(const occ::handle<Standard_Transient>& start) const
 {
-  Handle(Transfer_TransientMapper) Mapper = new Transfer_TransientMapper(start);
+  occ::handle<Transfer_TransientMapper> Mapper = new Transfer_TransientMapper(start);
   DeclareAndCast(Transfer_SimpleBinderOfTransient, binder, TheMap->Find(Mapper));
   if (binder.IsNull())
-    return Standard_False;
+    return false;
   return binder->HasResult();
 }
 
 //=================================================================================================
 
-Handle(Standard_Transient) BRepToIGES_BREntity::GetShapeResult(
-  const Handle(Standard_Transient)& start) const
+occ::handle<Standard_Transient> BRepToIGES_BREntity::GetShapeResult(
+  const occ::handle<Standard_Transient>& start) const
 {
-  Handle(Standard_Transient) res;
+  occ::handle<Standard_Transient> res;
 
-  Handle(Transfer_TransientMapper) Mapper = new Transfer_TransientMapper(start);
+  occ::handle<Transfer_TransientMapper> Mapper = new Transfer_TransientMapper(start);
   DeclareAndCast(Transfer_SimpleBinderOfTransient, binder, TheMap->Find(Mapper));
   if (binder.IsNull())
     return res;
@@ -290,25 +289,25 @@ Handle(Standard_Transient) BRepToIGES_BREntity::GetShapeResult(
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::SetShapeResult(const Handle(Standard_Transient)& start,
-                                         const Handle(Standard_Transient)& result)
+void BRepToIGES_BREntity::SetShapeResult(const occ::handle<Standard_Transient>& start,
+                                         const occ::handle<Standard_Transient>& result)
 {
-  Handle(Transfer_TransientMapper)         Mapper = new Transfer_TransientMapper(start);
-  Handle(Transfer_SimpleBinderOfTransient) binder = new Transfer_SimpleBinderOfTransient;
+  occ::handle<Transfer_TransientMapper>         Mapper = new Transfer_TransientMapper(start);
+  occ::handle<Transfer_SimpleBinderOfTransient> binder = new Transfer_SimpleBinderOfTransient;
   TheMap->Bind(Mapper, binder);
   binder->SetResult(result);
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepToIGES_BREntity::GetConvertSurfaceMode() const
+bool BRepToIGES_BREntity::GetConvertSurfaceMode() const
 {
   return myConvSurface;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepToIGES_BREntity::GetPCurveMode() const
+bool BRepToIGES_BREntity::GetPCurveMode() const
 {
   return myPCurveMode;
 }

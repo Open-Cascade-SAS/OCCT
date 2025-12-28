@@ -25,9 +25,6 @@ class Interface_EntityIterator;
 class Interface_Graph;
 class TCollection_AsciiString;
 
-class IFSelect_SelectDiff;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectDiff, IFSelect_SelectControl)
-
 //! A SelectDiff keeps the entities from a Selection, the Main
 //! Input, which are not listed by the Second Input
 class IFSelect_SelectDiff : public IFSelect_SelectControl
@@ -39,19 +36,16 @@ public:
 
   //! Returns the list of selected entities : they are the Entities
   //! gotten from the Main Input but not from the Diff Input
-  Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
 
   //! Returns a text defining the criterium : "Difference"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectDiff, IFSelect_SelectControl)
 
 protected:
   //! Returns always True, because RootResult gives a Unique list
-  Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const Standard_OVERRIDE;
-
-private:
+  Standard_EXPORT virtual bool HasUniqueResult() const override;
 };
 
 #endif // _IFSelect_SelectDiff_HeaderFile

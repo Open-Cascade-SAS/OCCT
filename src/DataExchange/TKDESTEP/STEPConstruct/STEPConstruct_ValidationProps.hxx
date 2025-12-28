@@ -24,7 +24,8 @@
 #include <StepBasic_Unit.hxx>
 #include <STEPConstruct_Tool.hxx>
 #include <Standard_CString.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 class StepBasic_ProductDefinition;
 class XSControl_WorkSession;
 class TopoDS_Shape;
@@ -47,102 +48,102 @@ public:
   Standard_EXPORT STEPConstruct_ValidationProps();
 
   //! Creates a tool and loads it with worksession
-  Standard_EXPORT STEPConstruct_ValidationProps(const Handle(XSControl_WorkSession)& WS);
+  Standard_EXPORT STEPConstruct_ValidationProps(const occ::handle<XSControl_WorkSession>& WS);
 
   //! Load worksession; returns True if succeeded
-  Standard_EXPORT Standard_Boolean Init(const Handle(XSControl_WorkSession)& WS);
+  Standard_EXPORT bool Init(const occ::handle<XSControl_WorkSession>& WS);
 
   //! General method for adding (writing) a validation property
   //! for shape which should be already mapped on writing itself.
   //! It uses FindTarget() to find target STEP entity
   //! resulting from given shape, and associated context
   //! Returns True if success, False in case of fail
-  Standard_EXPORT Standard_Boolean AddProp(const TopoDS_Shape&                        Shape,
-                                           const Handle(StepRepr_RepresentationItem)& Prop,
-                                           const Standard_CString                     Descr,
-                                           const Standard_Boolean instance = Standard_False);
+  Standard_EXPORT bool AddProp(const TopoDS_Shape&                             Shape,
+                               const occ::handle<StepRepr_RepresentationItem>& Prop,
+                               const char*                                     Descr,
+                               const bool                                      instance = false);
 
   //! General method for adding (writing) a validation property
   //! for shape which should be already mapped on writing itself.
   //! It takes target and Context entities which correspond to shape
   //! Returns True if success, False in case of fail
-  Standard_EXPORT Standard_Boolean AddProp(const StepRepr_CharacterizedDefinition&       target,
-                                           const Handle(StepRepr_RepresentationContext)& Context,
-                                           const Handle(StepRepr_RepresentationItem)&    Prop,
-                                           const Standard_CString                        Descr);
+  Standard_EXPORT bool AddProp(const StepRepr_CharacterizedDefinition&            target,
+                               const occ::handle<StepRepr_RepresentationContext>& Context,
+                               const occ::handle<StepRepr_RepresentationItem>&    Prop,
+                               const char*                                        Descr);
 
   //! Adds surface area property for given shape (already mapped).
   //! Returns True if success, False in case of fail
-  Standard_EXPORT Standard_Boolean AddArea(const TopoDS_Shape& Shape, const Standard_Real Area);
+  Standard_EXPORT bool AddArea(const TopoDS_Shape& Shape, const double Area);
 
   //! Adds volume property for given shape (already mapped).
   //! Returns True if success, False in case of fail
-  Standard_EXPORT Standard_Boolean AddVolume(const TopoDS_Shape& Shape, const Standard_Real Vol);
+  Standard_EXPORT bool AddVolume(const TopoDS_Shape& Shape, const double Vol);
 
   //! Adds centroid property for given shape (already mapped).
   //! Returns True if success, False in case of fail
   //! If instance is True, then centroid is assigned to
   //! an instance of component in assembly
-  Standard_EXPORT Standard_Boolean AddCentroid(const TopoDS_Shape&    Shape,
-                                               const gp_Pnt&          Pnt,
-                                               const Standard_Boolean instance = Standard_False);
+  Standard_EXPORT bool AddCentroid(const TopoDS_Shape& Shape,
+                                   const gp_Pnt&       Pnt,
+                                   const bool          instance = false);
 
   //! Finds target STEP entity to which validation props should
   //! be assigned, and corresponding context, starting from shape
   //! Returns True if success, False in case of fail
-  Standard_EXPORT Standard_Boolean FindTarget(const TopoDS_Shape&                     S,
-                                              StepRepr_CharacterizedDefinition&       target,
-                                              Handle(StepRepr_RepresentationContext)& Context,
-                                              const Standard_Boolean instance = Standard_False);
+  Standard_EXPORT bool FindTarget(const TopoDS_Shape&                          S,
+                                  StepRepr_CharacterizedDefinition&            target,
+                                  occ::handle<StepRepr_RepresentationContext>& Context,
+                                  const bool                                   instance = false);
 
   //! Searches for entities of the type PropertyDefinitionRepresentation
   //! in the model and fills the sequence by them
-  Standard_EXPORT Standard_Boolean LoadProps(TColStd_SequenceOfTransient& seq) const;
+  Standard_EXPORT bool LoadProps(NCollection_Sequence<occ::handle<Standard_Transient>>& seq) const;
 
   //! Returns CDSR associated with given PpD or NULL if not found
   //! (when, try GetPropSDR)
-  Standard_EXPORT Handle(StepRepr_NextAssemblyUsageOccurrence) GetPropNAUO(
-    const Handle(StepRepr_PropertyDefinition)& PD) const;
+  Standard_EXPORT occ::handle<StepRepr_NextAssemblyUsageOccurrence> GetPropNAUO(
+    const occ::handle<StepRepr_PropertyDefinition>& PD) const;
 
   //! Returns SDR associated with given PpD or NULL if not found
   //! (when, try GetPropCDSR)
-  Standard_EXPORT Handle(StepBasic_ProductDefinition) GetPropPD(
-    const Handle(StepRepr_PropertyDefinition)& PD) const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinition> GetPropPD(
+    const occ::handle<StepRepr_PropertyDefinition>& PD) const;
 
   //! Returns Shape associated with given SDR or Null Shape
   //! if not found
   Standard_EXPORT TopoDS_Shape
-    GetPropShape(const Handle(StepBasic_ProductDefinition)& ProdDef) const;
+    GetPropShape(const occ::handle<StepBasic_ProductDefinition>& ProdDef) const;
 
   //! Returns Shape associated with given PpD or Null Shape
   //! if not found
-  Standard_EXPORT TopoDS_Shape GetPropShape(const Handle(StepRepr_PropertyDefinition)& PD) const;
+  Standard_EXPORT TopoDS_Shape
+    GetPropShape(const occ::handle<StepRepr_PropertyDefinition>& PD) const;
 
   //! Returns value of Real-Valued property (Area or Volume)
   //! If Property is neither Area nor Volume, returns False
   //! Else returns True and isArea indicates whether property
   //! is area or volume
-  Standard_EXPORT Standard_Boolean
-    GetPropReal(const Handle(StepRepr_RepresentationItem)& item,
-                Standard_Real&                             Val,
-                Standard_Boolean&                          isArea,
-                const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+  Standard_EXPORT bool GetPropReal(
+    const occ::handle<StepRepr_RepresentationItem>& item,
+    double&                                         Val,
+    bool&                                           isArea,
+    const StepData_Factors&                         theLocalFactors = StepData_Factors()) const;
 
   //! Returns value of Centroid property (or False if it is not)
-  Standard_EXPORT Standard_Boolean
-    GetPropPnt(const Handle(StepRepr_RepresentationItem)&    item,
-               const Handle(StepRepr_RepresentationContext)& Context,
-               gp_Pnt&                                       Pnt,
-               const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+  Standard_EXPORT bool GetPropPnt(
+    const occ::handle<StepRepr_RepresentationItem>&    item,
+    const occ::handle<StepRepr_RepresentationContext>& Context,
+    gp_Pnt&                                            Pnt,
+    const StepData_Factors&                            theLocalFactors = StepData_Factors()) const;
 
   //! Sets current assembly shape SDR (for FindCDSR calls)
   Standard_EXPORT void SetAssemblyShape(const TopoDS_Shape& shape);
 
-protected:
 private:
-  StepBasic_Unit                      areaUnit;
-  StepBasic_Unit                      volUnit;
-  Handle(StepBasic_ProductDefinition) myAssemblyPD;
+  StepBasic_Unit                           areaUnit;
+  StepBasic_Unit                           volUnit;
+  occ::handle<StepBasic_ProductDefinition> myAssemblyPD;
 };
 
 #endif // _STEPConstruct_ValidationProps_HeaderFile

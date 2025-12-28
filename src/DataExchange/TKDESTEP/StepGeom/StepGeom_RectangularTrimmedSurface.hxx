@@ -26,9 +26,6 @@
 class StepGeom_Surface;
 class TCollection_HAsciiString;
 
-class StepGeom_RectangularTrimmedSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_RectangularTrimmedSurface, StepGeom_BoundedSurface)
-
 class StepGeom_RectangularTrimmedSurface : public StepGeom_BoundedSurface
 {
 
@@ -36,54 +33,53 @@ public:
   //! Returns a RectangularTrimmedSurface
   Standard_EXPORT StepGeom_RectangularTrimmedSurface();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepGeom_Surface)&         aBasisSurface,
-                            const Standard_Real                     aU1,
-                            const Standard_Real                     aU2,
-                            const Standard_Real                     aV1,
-                            const Standard_Real                     aV2,
-                            const Standard_Boolean                  aUsense,
-                            const Standard_Boolean                  aVsense);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepGeom_Surface>&         aBasisSurface,
+                            const double                                 aU1,
+                            const double                                 aU2,
+                            const double                                 aV1,
+                            const double                                 aV2,
+                            const bool                                   aUsense,
+                            const bool                                   aVsense);
 
-  Standard_EXPORT void SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface);
+  Standard_EXPORT void SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface);
 
-  Standard_EXPORT Handle(StepGeom_Surface) BasisSurface() const;
+  Standard_EXPORT occ::handle<StepGeom_Surface> BasisSurface() const;
 
-  Standard_EXPORT void SetU1(const Standard_Real aU1);
+  Standard_EXPORT void SetU1(const double aU1);
 
-  Standard_EXPORT Standard_Real U1() const;
+  Standard_EXPORT double U1() const;
 
-  Standard_EXPORT void SetU2(const Standard_Real aU2);
+  Standard_EXPORT void SetU2(const double aU2);
 
-  Standard_EXPORT Standard_Real U2() const;
+  Standard_EXPORT double U2() const;
 
-  Standard_EXPORT void SetV1(const Standard_Real aV1);
+  Standard_EXPORT void SetV1(const double aV1);
 
-  Standard_EXPORT Standard_Real V1() const;
+  Standard_EXPORT double V1() const;
 
-  Standard_EXPORT void SetV2(const Standard_Real aV2);
+  Standard_EXPORT void SetV2(const double aV2);
 
-  Standard_EXPORT Standard_Real V2() const;
+  Standard_EXPORT double V2() const;
 
-  Standard_EXPORT void SetUsense(const Standard_Boolean aUsense);
+  Standard_EXPORT void SetUsense(const bool aUsense);
 
-  Standard_EXPORT Standard_Boolean Usense() const;
+  Standard_EXPORT bool Usense() const;
 
-  Standard_EXPORT void SetVsense(const Standard_Boolean aVsense);
+  Standard_EXPORT void SetVsense(const bool aVsense);
 
-  Standard_EXPORT Standard_Boolean Vsense() const;
+  Standard_EXPORT bool Vsense() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_RectangularTrimmedSurface, StepGeom_BoundedSurface)
 
-protected:
 private:
-  Handle(StepGeom_Surface) basisSurface;
-  Standard_Real            u1;
-  Standard_Real            u2;
-  Standard_Real            v1;
-  Standard_Real            v2;
-  Standard_Boolean         usense;
-  Standard_Boolean         vsense;
+  occ::handle<StepGeom_Surface> basisSurface;
+  double                        u1;
+  double                        u2;
+  double                        v1;
+  double                        v2;
+  bool                          usense;
+  bool                          vsense;
 };
 
 #endif // _StepGeom_RectangularTrimmedSurface_HeaderFile

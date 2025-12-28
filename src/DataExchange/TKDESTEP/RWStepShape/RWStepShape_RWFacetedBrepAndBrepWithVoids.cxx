@@ -19,19 +19,20 @@
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_FacetedBrep.hxx>
 #include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
-#include <StepShape_HArray1OfOrientedClosedShell.hxx>
 #include <StepShape_OrientedClosedShell.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 RWStepShape_RWFacetedBrepAndBrepWithVoids::RWStepShape_RWFacetedBrepAndBrepWithVoids() {}
 
 void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
-  const Handle(StepData_StepReaderData)&               data,
-  const Standard_Integer                               num0,
-  Handle(Interface_Check)&                             ach,
-  const Handle(StepShape_FacetedBrepAndBrepWithVoids)& ent) const
+  const occ::handle<StepData_StepReaderData>&               data,
+  const int                                                 num0,
+  occ::handle<Interface_Check>&                             ach,
+  const occ::handle<StepShape_FacetedBrepAndBrepWithVoids>& ent) const
 {
 
-  Standard_Integer num = num0;
+  int num = num0;
 
   // --- Instance of plex component BrepWithVoids ---
 
@@ -40,16 +41,16 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
 
   // --- field : voids ---
 
-  Handle(StepShape_HArray1OfOrientedClosedShell) aVoids;
-  Handle(StepShape_OrientedClosedShell)          anent;
-  Standard_Integer                               nsub1;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>> aVoids;
+  occ::handle<StepShape_OrientedClosedShell>                                   anent;
+  int                                                                          nsub1;
   if (data->ReadSubList(num, 1, "voids", ach, nsub1))
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
-    aVoids               = new StepShape_HArray1OfOrientedClosedShell(1, nb1);
-    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    int nb1 = data->NbParams(nsub1);
+    aVoids  = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, nb1);
+    for (int i1 = 1; i1 <= nb1; i1++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat1 =` not needed
       if (data->ReadEntity(nsub1,
                            i1,
                            "oriented_closed_shell",
@@ -82,8 +83,8 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
     return;
   // --- field : outer ---
 
-  Handle(StepShape_ClosedShell) aOuter;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepShape_ClosedShell> aOuter;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 1, "outer", ach, STANDARD_TYPE(StepShape_ClosedShell), aOuter);
 
   num = data->NextForComplex(num);
@@ -95,8 +96,8 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
 
   // --- field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat10 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat10 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   num = data->NextForComplex(num);
@@ -112,8 +113,8 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
 }
 
 void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep(
-  StepData_StepWriter&                                 SW,
-  const Handle(StepShape_FacetedBrepAndBrepWithVoids)& ent) const
+  StepData_StepWriter&                                      SW,
+  const occ::handle<StepShape_FacetedBrepAndBrepWithVoids>& ent) const
 {
 
   // --- Instance of plex component BrepWithVoids ---
@@ -122,7 +123,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep(
   // --- field : voids ---
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->NbVoids(); i1++)
+  for (int i1 = 1; i1 <= ent->NbVoids(); i1++)
   {
     SW.Send(ent->VoidsValue(i1));
   }
@@ -156,14 +157,14 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep(
 }
 
 void RWStepShape_RWFacetedBrepAndBrepWithVoids::Share(
-  const Handle(StepShape_FacetedBrepAndBrepWithVoids)& ent,
-  Interface_EntityIterator&                            iter) const
+  const occ::handle<StepShape_FacetedBrepAndBrepWithVoids>& ent,
+  Interface_EntityIterator&                                 iter) const
 {
 
   iter.GetOneItem(ent->Outer());
 
-  Standard_Integer nbElem2 = ent->NbVoids();
-  for (Standard_Integer is2 = 1; is2 <= nbElem2; is2++)
+  int nbElem2 = ent->NbVoids();
+  for (int is2 = 1; is2 <= nbElem2; is2++)
   {
     iter.GetOneItem(ent->VoidsValue(is2));
   }

@@ -39,19 +39,19 @@ public:
   //! Returns the <U, V> parameters which are associated
   //! with <P>
   //! it's the parameters which start the marching algorithm
-  static void Value2d(const IntSurf_PathPoint& PStart, Standard_Real& U, Standard_Real& V);
+  static void Value2d(const IntSurf_PathPoint& PStart, double& U, double& V);
 
   //! Returns True if the point is a point on a non-oriented
   //! arc, which means that the intersection line does not
   //! stop at such a point but just go through such a point.
   //! IsPassingPnt is True when IsOnArc is True
-  static Standard_Boolean IsPassingPnt(const IntSurf_PathPoint& PStart);
+  static bool IsPassingPnt(const IntSurf_PathPoint& PStart);
 
   //! Returns True if the surfaces are tangent at this point.
   //! IsTangent can be True when IsOnArc is True
   //! if IsPassingPnt is True and IsTangent is True,this point
   //! is a stopped point.
-  static Standard_Boolean IsTangent(const IntSurf_PathPoint& PStart);
+  static bool IsTangent(const IntSurf_PathPoint& PStart);
 
   //! returns the tangent at the intersection in 3d space
   //! associated to <P>
@@ -69,17 +69,11 @@ public:
   //! Returns the multiplicity of the point i-e
   //! the number of auxillar parameters associated to the
   //! point which the principal parameters are given by Value2d
-  static Standard_Integer Multiplicity(const IntSurf_PathPoint& PStart);
+  static int Multiplicity(const IntSurf_PathPoint& PStart);
 
   //! Parametric coordinates associated to the multiplicity.
   //! An exception is raised if Mult<=0 or Mult>multiplicity.
-  static void Parameters(const IntSurf_PathPoint& PStart,
-                         const Standard_Integer   Mult,
-                         Standard_Real&           U,
-                         Standard_Real&           V);
-
-protected:
-private:
+  static void Parameters(const IntSurf_PathPoint& PStart, const int Mult, double& U, double& V);
 };
 
 #include <IntSurf_PathPointTool.lxx>

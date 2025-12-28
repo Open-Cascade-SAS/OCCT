@@ -43,31 +43,31 @@ public:
 
   //! Creates a ShareOutResult from a ShareOut, to work on a Model
   //! (without any more precision; uses Active Protocol)
-  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_ShareOut)&        sho,
-                                          const Handle(Interface_InterfaceModel)& mod);
+  Standard_EXPORT IFSelect_ShareOutResult(const occ::handle<IFSelect_ShareOut>&        sho,
+                                          const occ::handle<Interface_InterfaceModel>& mod);
 
   //! Creates a ShareOutResult from a ShareOut, to work on a Graph
   //! already computed, which defines the Input Model and can
   //! specialize some Entities
-  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_ShareOut)& sho,
-                                          const Interface_Graph&           G);
+  Standard_EXPORT IFSelect_ShareOutResult(const occ::handle<IFSelect_ShareOut>& sho,
+                                          const Interface_Graph&                G);
 
   //! Creates a ShareOutResult from a unique Dispatch, to work on
   //! a Model. As if it was a ShareOut with only one Dispatch
   //! (without any more precision; uses Active Protocol)
   //! Allows to compute the effect of a single Dispatch
-  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_Dispatch)&        disp,
-                                          const Handle(Interface_InterfaceModel)& mod);
+  Standard_EXPORT IFSelect_ShareOutResult(const occ::handle<IFSelect_Dispatch>&        disp,
+                                          const occ::handle<Interface_InterfaceModel>& mod);
 
   //! Creates a ShareOutResult from a unique Dispatch, to work on
   //! a Graph. As if it was a ShareOut with only one Dispatch
   //! Allows to compute the effect of a single Dispatch
-  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_Dispatch)& disp,
-                                          const Interface_Graph&           G);
+  Standard_EXPORT IFSelect_ShareOutResult(const occ::handle<IFSelect_Dispatch>& disp,
+                                          const Interface_Graph&                G);
 
   //! Returns the ShareOut used to create the ShareOutResult
   //! if creation from a Dispatch, returns a Null Handle
-  Standard_EXPORT Handle(IFSelect_ShareOut) ShareOut() const;
+  Standard_EXPORT occ::handle<IFSelect_ShareOut> ShareOut() const;
 
   //! Returns the Graph used to create theShareOutResult
   Standard_EXPORT const Interface_Graph& Graph() const;
@@ -91,12 +91,11 @@ public:
   //! this mode allows to evaluate duplications
   //! Remark that to send packets, iteration remains preferable
   //! (file names are managed)
-  Standard_EXPORT Handle(IFSelect_PacketList) Packets(
-    const Standard_Boolean complete = Standard_True);
+  Standard_EXPORT occ::handle<IFSelect_PacketList> Packets(const bool complete = true);
 
   //! Returns the total count of produced non empty packets
   //! (in out : calls Evaluate as necessary)
-  Standard_EXPORT Standard_Integer NbPackets();
+  Standard_EXPORT int NbPackets();
 
   //! Prepares the iteration on the packets
   //! This method is called by Evaluate, but can be called anytime
@@ -114,7 +113,7 @@ public:
 
   //! Returns True if there is more packets in the current Dispatch,
   //! else if there is more Dispatch in the ShareOut
-  Standard_EXPORT Standard_Boolean More();
+  Standard_EXPORT bool More();
 
   //! Passes to the next Packet in the current Dispatch, or if there
   //! is none, to the next Dispatch in the ShareOut
@@ -124,16 +123,15 @@ public:
   Standard_EXPORT void NextDispatch();
 
   //! Returns the current Dispatch
-  Standard_EXPORT Handle(IFSelect_Dispatch) Dispatch() const;
+  Standard_EXPORT occ::handle<IFSelect_Dispatch> Dispatch() const;
 
   //! Returns the Rank of the current Dispatch in the ShareOut
   //! Returns Zero if there is none (iteration finished)
-  Standard_EXPORT Standard_Integer DispatchRank() const;
+  Standard_EXPORT int DispatchRank() const;
 
   //! Returns Number (rank) of current Packet in current Dispatch,
   //! and total count of Packets in current Dispatch, as arguments
-  Standard_EXPORT void PacketsInDispatch(Standard_Integer& numpack,
-                                         Standard_Integer& nbpacks) const;
+  Standard_EXPORT void PacketsInDispatch(int& numpack, int& nbpacks) const;
 
   //! Returns the list of Roots of the current Packet (never empty)
   //! (i.e. the Entities to be themselves asked for transfer)
@@ -155,14 +153,14 @@ protected:
   IFGraph_SubPartsIterator thedispres;
 
 private:
-  Handle(IFSelect_ShareOut) theshareout;
-  Handle(IFSelect_Dispatch) thedispatch;
-  Standard_Boolean          theeval;
-  Standard_Integer          thedispnum;
-  Standard_Integer          thepacknum;
-  Standard_Integer          thepackdisp;
-  Standard_Integer          thenbindisp;
-  TColStd_SequenceOfInteger thedisplist;
+  occ::handle<IFSelect_ShareOut> theshareout;
+  occ::handle<IFSelect_Dispatch> thedispatch;
+  bool                           theeval;
+  int                            thedispnum;
+  int                            thepacknum;
+  int                            thepackdisp;
+  int                            thenbindisp;
+  NCollection_Sequence<int>      thedisplist;
 };
 
 #endif // _IFSelect_ShareOutResult_HeaderFile

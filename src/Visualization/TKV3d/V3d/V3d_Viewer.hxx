@@ -22,10 +22,11 @@
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
-#include <TColStd_MapOfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <V3d_ListOfLight.hxx>
+#include <V3d_Light.hxx>
 #include <V3d_ListOfView.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 #include <V3d_TypeOfView.hxx>
@@ -54,20 +55,20 @@ public:
   //! - View orientation: V3d_XposYnegZpos
   //! - View background: Quantity_NOC_GRAY30
   //! - Shading model: V3d_GOURAUD
-  Standard_EXPORT V3d_Viewer(const Handle(Graphic3d_GraphicDriver)& theDriver);
+  Standard_EXPORT V3d_Viewer(const occ::handle<Graphic3d_GraphicDriver>& theDriver);
 
   //! Returns True if One View more can be defined in this Viewer.
-  Standard_EXPORT Standard_Boolean IfMoreViews() const;
+  Standard_EXPORT bool IfMoreViews() const;
 
   //! Creates a view in the viewer according to its default parameters.
-  Standard_EXPORT Handle(V3d_View) CreateView();
+  Standard_EXPORT occ::handle<V3d_View> CreateView();
 
   //! Activates all of the views of a viewer attached to a window.
   Standard_EXPORT void SetViewOn();
 
   //! Activates a particular view in the Viewer.
   //! Must be call if the Window attached to the view has been Deiconified.
-  Standard_EXPORT void SetViewOn(const Handle(V3d_View)& theView);
+  Standard_EXPORT void SetViewOn(const occ::handle<V3d_View>& theView);
 
   //! Deactivates all the views of a Viewer
   //! attached to a window.
@@ -76,7 +77,7 @@ public:
   //! Deactivates a particular view in the Viewer.
   //! Must be call if the Window attached to the view
   //! has been Iconified .
-  Standard_EXPORT void SetViewOff(const Handle(V3d_View)& theView);
+  Standard_EXPORT void SetViewOff(const occ::handle<V3d_View>& theView);
 
   //! Deprecated, Redraw() should be used instead.
   void Update() { Redraw(); }
@@ -97,10 +98,10 @@ public:
   Standard_EXPORT void Remove();
 
   //! Return Graphic Driver instance.
-  const Handle(Graphic3d_GraphicDriver)& Driver() const { return myDriver; }
+  const occ::handle<Graphic3d_GraphicDriver>& Driver() const { return myDriver; }
 
   //! Returns the structure manager associated to this viewer.
-  Handle(Graphic3d_StructureManager) StructureManager() const { return myStructureManager; }
+  occ::handle<Graphic3d_StructureManager> StructureManager() const { return myStructureManager; }
 
   //! Return default Rendering Parameters.
   //! By default these parameters are set in a new V3d_View.
@@ -136,10 +137,10 @@ public:
   }
 
   //! Returns the default size of the view.
-  Standard_Real DefaultViewSize() const { return myViewSize; }
+  double DefaultViewSize() const { return myViewSize; }
 
   //! Gives a default size for the creation of views of the viewer.
-  Standard_EXPORT void SetDefaultViewSize(const Standard_Real theSize);
+  Standard_EXPORT void SetDefaultViewSize(const double theSize);
 
   //! Returns the default Projection.
   V3d_TypeOfOrientation DefaultViewProj() const { return myViewProj; }
@@ -187,7 +188,7 @@ public:
 
   //! Return all Z layer ids in sequence ordered by overlay level from lowest layer to highest (
   //! foreground ). The first layer ID in sequence is the default layer that can't be removed.
-  Standard_EXPORT void GetAllZLayers(TColStd_SequenceOfInteger& theLayerSeq) const;
+  Standard_EXPORT void GetAllZLayers(NCollection_Sequence<int>& theLayerSeq) const;
 
   //! Add a new top-level Z layer to all managed views and get its ID as <theLayerId> value.
   //! The Z layers are controlled entirely by viewer, it is not possible to add a layer to a
@@ -196,9 +197,8 @@ public:
   //! @param[out] theLayerId  id of created layer
   //! @param[in] theSettings  new layer settings
   //! @return FALSE if the layer can not be created
-  Standard_Boolean AddZLayer(
-    Graphic3d_ZLayerId&             theLayerId,
-    const Graphic3d_ZLayerSettings& theSettings = Graphic3d_ZLayerSettings())
+  bool AddZLayer(Graphic3d_ZLayerId&             theLayerId,
+                 const Graphic3d_ZLayerSettings& theSettings = Graphic3d_ZLayerSettings())
   {
     return InsertLayerBefore(theLayerId, theSettings, Graphic3d_ZLayerId_Top);
   }
@@ -213,9 +213,9 @@ public:
   //! @param[in] theSettings     new layer settings
   //! @param[in] theLayerAfter   id of layer to append new layer before
   //! @return FALSE if the layer can not be created
-  Standard_EXPORT Standard_Boolean InsertLayerBefore(Graphic3d_ZLayerId&             theNewLayerId,
-                                                     const Graphic3d_ZLayerSettings& theSettings,
-                                                     const Graphic3d_ZLayerId        theLayerAfter);
+  Standard_EXPORT bool InsertLayerBefore(Graphic3d_ZLayerId&             theNewLayerId,
+                                         const Graphic3d_ZLayerSettings& theSettings,
+                                         const Graphic3d_ZLayerId        theLayerAfter);
 
   //! Add a new top-level Z layer to all managed views and get its ID as <theLayerId> value.
   //! The Z layers are controlled entirely by viewer, it is not possible to add a layer to a
@@ -227,14 +227,14 @@ public:
   //! @param[in] theSettings     new layer settings
   //! @param[in] theLayerBefore  id of layer to append new layer after
   //! @return FALSE if the layer can not be created
-  Standard_EXPORT Standard_Boolean InsertLayerAfter(Graphic3d_ZLayerId&             theNewLayerId,
-                                                    const Graphic3d_ZLayerSettings& theSettings,
-                                                    const Graphic3d_ZLayerId        theLayerBefore);
+  Standard_EXPORT bool InsertLayerAfter(Graphic3d_ZLayerId&             theNewLayerId,
+                                        const Graphic3d_ZLayerSettings& theSettings,
+                                        const Graphic3d_ZLayerId        theLayerBefore);
 
   //! Remove Z layer with ID <theLayerId>.
-  //! Method returns Standard_False if the layer can not be removed or doesn't exists.
+  //! Method returns false if the layer can not be removed or doesn't exists.
   //! By default, there are always default bottom-level layer that can't be removed.
-  Standard_EXPORT Standard_Boolean RemoveZLayer(const Graphic3d_ZLayerId theLayerId);
+  Standard_EXPORT bool RemoveZLayer(const Graphic3d_ZLayerId theLayerId);
 
   //! Returns the settings of a single Z layer.
   Standard_EXPORT const Graphic3d_ZLayerSettings& ZLayerSettings(
@@ -246,25 +246,25 @@ public:
 
 public:
   //! Return a list of active views.
-  const V3d_ListOfView& ActiveViews() const { return myActiveViews; }
+  const NCollection_List<occ::handle<V3d_View>>& ActiveViews() const { return myActiveViews; }
 
   //! Return an iterator for active views.
-  V3d_ListOfViewIterator ActiveViewIterator() const
+  NCollection_List<occ::handle<V3d_View>>::Iterator ActiveViewIterator() const
   {
-    return V3d_ListOfViewIterator(myActiveViews);
+    return NCollection_List<occ::handle<V3d_View>>::Iterator(myActiveViews);
   }
 
   //! returns true if there is only one active view.
-  Standard_Boolean LastActiveView() const { return myActiveViews.Extent() == 1; }
+  bool LastActiveView() const { return myActiveViews.Extent() == 1; }
 
 public:
   //! Return a list of defined views.
-  const V3d_ListOfView& DefinedViews() const { return myDefinedViews; }
+  const NCollection_List<occ::handle<V3d_View>>& DefinedViews() const { return myDefinedViews; }
 
   //! Return an iterator for defined views.
-  V3d_ListOfViewIterator DefinedViewIterator() const
+  NCollection_List<occ::handle<V3d_View>>::Iterator DefinedViewIterator() const
   {
-    return V3d_ListOfViewIterator(myDefinedViews);
+    return NCollection_List<occ::handle<V3d_View>>::Iterator(myDefinedViews);
   }
 
 public: //! @name lights management
@@ -276,45 +276,51 @@ public: //! @name lights management
   Standard_EXPORT void SetDefaultLights();
 
   //! Activates MyLight in the viewer.
-  Standard_EXPORT void SetLightOn(const Handle(V3d_Light)& theLight);
+  Standard_EXPORT void SetLightOn(const occ::handle<V3d_Light>& theLight);
 
   //! Activates all the lights defined in this viewer.
   Standard_EXPORT void SetLightOn();
 
   //! Deactivates MyLight in this viewer.
-  Standard_EXPORT void SetLightOff(const Handle(V3d_Light)& theLight);
+  Standard_EXPORT void SetLightOff(const occ::handle<V3d_Light>& theLight);
 
   //! Deactivate all the Lights defined in this viewer.
   Standard_EXPORT void SetLightOff();
 
   //! Adds Light in Sequence Of Lights.
-  Standard_EXPORT void AddLight(const Handle(V3d_Light)& theLight);
+  Standard_EXPORT void AddLight(const occ::handle<V3d_Light>& theLight);
 
   //! Delete Light in Sequence Of Lights.
-  Standard_EXPORT void DelLight(const Handle(V3d_Light)& theLight);
+  Standard_EXPORT void DelLight(const occ::handle<V3d_Light>& theLight);
 
   //! Updates the lights of all the views of a viewer.
   Standard_EXPORT void UpdateLights();
 
-  Standard_EXPORT Standard_Boolean IsGlobalLight(const Handle(V3d_Light)& TheLight) const;
+  Standard_EXPORT bool IsGlobalLight(const occ::handle<V3d_Light>& TheLight) const;
 
   //! Return a list of active lights.
-  const V3d_ListOfLight& ActiveLights() const { return myActiveLights; }
+  const NCollection_List<occ::handle<Graphic3d_CLight>>& ActiveLights() const
+  {
+    return myActiveLights;
+  }
 
   //! Return an iterator for defined lights.
-  V3d_ListOfLightIterator ActiveLightIterator() const
+  NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator ActiveLightIterator() const
   {
-    return V3d_ListOfLightIterator(myActiveLights);
+    return NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator(myActiveLights);
   }
 
 public:
   //! Return a list of defined lights.
-  const V3d_ListOfLight& DefinedLights() const { return myDefinedLights; }
+  const NCollection_List<occ::handle<Graphic3d_CLight>>& DefinedLights() const
+  {
+    return myDefinedLights;
+  }
 
   //! Return an iterator for defined lights.
-  V3d_ListOfLightIterator DefinedLightIterator() const
+  NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator DefinedLightIterator() const
   {
-    return V3d_ListOfLightIterator(myDefinedLights);
+    return NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator(myDefinedLights);
   }
 
 public: //! @name objects management
@@ -326,24 +332,23 @@ public: //! @name objects management
 
 public:
   //! returns true if the computed mode can be used.
-  Standard_Boolean ComputedMode() const { return myComputedMode; }
+  bool ComputedMode() const { return myComputedMode; }
 
   //! Set if the computed mode can be used.
-  void SetComputedMode(const Standard_Boolean theMode) { myComputedMode = theMode; }
+  void SetComputedMode(const bool theMode) { myComputedMode = theMode; }
 
   //! returns true if by default the computed mode must be used.
-  Standard_Boolean DefaultComputedMode() const { return myDefaultComputedMode; }
+  bool DefaultComputedMode() const { return myDefaultComputedMode; }
 
   //! Set if by default the computed mode must be used.
-  void SetDefaultComputedMode(const Standard_Boolean theMode) { myDefaultComputedMode = theMode; }
+  void SetDefaultComputedMode(const bool theMode) { myDefaultComputedMode = theMode; }
 
 public: //! @name privileged plane management
   const gp_Ax3& PrivilegedPlane() const { return myPrivilegedPlane; }
 
   Standard_EXPORT void SetPrivilegedPlane(const gp_Ax3& thePlane);
 
-  Standard_EXPORT void DisplayPrivilegedPlane(const Standard_Boolean theOnOff,
-                                              const Standard_Real    theSize = 1);
+  Standard_EXPORT void DisplayPrivilegedPlane(const bool theOnOff, const double theSize = 1);
 
 public: //! @name grid management
   //! Activates the grid in all views of <me>.
@@ -355,7 +360,7 @@ public: //! @name grid management
 
   //! Show/Don't show grid echo to the hit point.
   //! If TRUE,the grid echo will be shown at ConvertToGrid() time.
-  Standard_EXPORT void SetGridEcho(const Standard_Boolean showGrid = Standard_True);
+  Standard_EXPORT void SetGridEcho(const bool showGrid = true);
 
   //! Show grid echo <aMarker> to the hit point.
   //! Warning: When the grid echo marker is not set,
@@ -363,19 +368,20 @@ public: //! @name grid management
   //! marker type : Aspect_TOM_STAR
   //! marker color : Quantity_NOC_GRAY90
   //! marker size : 3.0
-  Standard_EXPORT void SetGridEcho(const Handle(Graphic3d_AspectMarker3d)& aMarker);
+  Standard_EXPORT void SetGridEcho(const occ::handle<Graphic3d_AspectMarker3d>& aMarker);
 
   //! Returns TRUE when grid echo must be displayed at hit point.
-  Standard_Boolean GridEcho() const { return myGridEcho; }
+  bool GridEcho() const { return myGridEcho; }
 
-  //! Returns Standard_True if a grid is activated in <me>.
-  Standard_EXPORT Standard_Boolean IsGridActive();
-
-  //! Returns the defined grid in <me>.
-  Handle(Aspect_Grid) Grid(bool theToCreate = true) { return Grid(myGridType, theToCreate); }
+  //! Returns true if a grid is activated in <me>.
+  Standard_EXPORT bool IsGridActive();
 
   //! Returns the defined grid in <me>.
-  Standard_EXPORT Handle(Aspect_Grid) Grid(Aspect_GridType theGridType, bool theToCreate = true);
+  occ::handle<Aspect_Grid> Grid(bool theToCreate = true) { return Grid(myGridType, theToCreate); }
+
+  //! Returns the defined grid in <me>.
+  Standard_EXPORT occ::handle<Aspect_Grid> Grid(Aspect_GridType theGridType,
+                                                bool            theToCreate = true);
 
   //! Returns the current grid type defined in <me>.
   Aspect_GridType GridType() const { return myGridType; }
@@ -384,76 +390,74 @@ public: //! @name grid management
   Standard_EXPORT Aspect_GridDrawMode GridDrawMode();
 
   //! Returns the definition of the rectangular grid.
-  Standard_EXPORT void RectangularGridValues(Standard_Real& theXOrigin,
-                                             Standard_Real& theYOrigin,
-                                             Standard_Real& theXStep,
-                                             Standard_Real& theYStep,
-                                             Standard_Real& theRotationAngle);
+  Standard_EXPORT void RectangularGridValues(double& theXOrigin,
+                                             double& theYOrigin,
+                                             double& theXStep,
+                                             double& theYStep,
+                                             double& theRotationAngle);
 
   //! Sets the definition of the rectangular grid.
   //! <XOrigin>, <YOrigin> defines the origin of the grid.
   //! <XStep> defines the interval between 2 vertical lines.
   //! <YStep> defines the interval between 2 horizontal lines.
   //! <RotationAngle> defines the rotation angle of the grid.
-  Standard_EXPORT void SetRectangularGridValues(const Standard_Real XOrigin,
-                                                const Standard_Real YOrigin,
-                                                const Standard_Real XStep,
-                                                const Standard_Real YStep,
-                                                const Standard_Real RotationAngle);
+  Standard_EXPORT void SetRectangularGridValues(const double XOrigin,
+                                                const double YOrigin,
+                                                const double XStep,
+                                                const double YStep,
+                                                const double RotationAngle);
 
   //! Returns the definition of the circular grid.
-  Standard_EXPORT void CircularGridValues(Standard_Real&    theXOrigin,
-                                          Standard_Real&    theYOrigin,
-                                          Standard_Real&    theRadiusStep,
-                                          Standard_Integer& theDivisionNumber,
-                                          Standard_Real&    theRotationAngle);
+  Standard_EXPORT void CircularGridValues(double& theXOrigin,
+                                          double& theYOrigin,
+                                          double& theRadiusStep,
+                                          int&    theDivisionNumber,
+                                          double& theRotationAngle);
 
   //! Sets the definition of the circular grid.
   //! <XOrigin>, <YOrigin> defines the origin of the grid.
   //! <RadiusStep> defines the interval between 2 circles.
   //! <DivisionNumber> defines the section number of one half circle.
   //! <RotationAngle> defines the rotation angle of the grid.
-  Standard_EXPORT void SetCircularGridValues(const Standard_Real    XOrigin,
-                                             const Standard_Real    YOrigin,
-                                             const Standard_Real    RadiusStep,
-                                             const Standard_Integer DivisionNumber,
-                                             const Standard_Real    RotationAngle);
+  Standard_EXPORT void SetCircularGridValues(const double XOrigin,
+                                             const double YOrigin,
+                                             const double RadiusStep,
+                                             const int    DivisionNumber,
+                                             const double RotationAngle);
 
   //! Returns the location and the size of the grid.
-  Standard_EXPORT void CircularGridGraphicValues(Standard_Real& theRadius,
-                                                 Standard_Real& theOffSet);
+  Standard_EXPORT void CircularGridGraphicValues(double& theRadius, double& theOffSet);
 
   //! Sets the location and the size of the grid.
   //! <XSize> defines the width of the grid.
   //! <YSize> defines the height of the grid.
   //! <OffSet> defines the displacement along the plane normal.
-  Standard_EXPORT void SetCircularGridGraphicValues(const Standard_Real Radius,
-                                                    const Standard_Real OffSet);
+  Standard_EXPORT void SetCircularGridGraphicValues(const double Radius, const double OffSet);
 
   //! Returns the location and the size of the grid.
-  Standard_EXPORT void RectangularGridGraphicValues(Standard_Real& theXSize,
-                                                    Standard_Real& theYSize,
-                                                    Standard_Real& theOffSet);
+  Standard_EXPORT void RectangularGridGraphicValues(double& theXSize,
+                                                    double& theYSize,
+                                                    double& theOffSet);
 
   //! Sets the location and the size of the grid.
   //! <XSize> defines the width of the grid.
   //! <YSize> defines the height of the grid.
   //! <OffSet> defines the displacement along the plane normal.
-  Standard_EXPORT void SetRectangularGridGraphicValues(const Standard_Real XSize,
-                                                       const Standard_Real YSize,
-                                                       const Standard_Real OffSet);
+  Standard_EXPORT void SetRectangularGridGraphicValues(const double XSize,
+                                                       const double YSize,
+                                                       const double OffSet);
 
   //! Display grid echo at requested point in the view.
-  Standard_EXPORT void ShowGridEcho(const Handle(V3d_View)& theView,
-                                    const Graphic3d_Vertex& thePoint);
+  Standard_EXPORT void ShowGridEcho(const occ::handle<V3d_View>& theView,
+                                    const Graphic3d_Vertex&      thePoint);
 
   //! Temporarily hide grid echo.
-  Standard_EXPORT void HideGridEcho(const Handle(V3d_View)& theView);
+  Standard_EXPORT void HideGridEcho(const occ::handle<V3d_View>& theView);
 
 public: //! @name deprecated methods
-  //! Returns Standard_True if a grid is activated in <me>.
+  //! Returns true if a grid is activated in <me>.
   Standard_DEPRECATED("Deprecated method - IsGridActive() should be used instead")
-  Standard_Boolean IsActive() { return IsGridActive(); }
+  bool IsActive() { return IsGridActive(); }
 
   //! Initializes an internal iterator on the active views.
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
@@ -461,7 +465,7 @@ public: //! @name deprecated methods
 
   //! Returns true if there are more active view(s) to return.
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
-  Standard_Boolean MoreActiveViews() const { return myActiveViewsIterator.More(); }
+  bool MoreActiveViews() const { return myActiveViewsIterator.More(); }
 
   //! Go to the next active view (if there is not, ActiveView will raise an exception)
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
@@ -472,7 +476,7 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
-  const Handle(V3d_View)& ActiveView() const { return myActiveViewsIterator.Value(); }
+  const occ::handle<V3d_View>& ActiveView() const { return myActiveViewsIterator.Value(); }
 
   //! Initializes an internal iterator on the Defined views.
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
@@ -480,7 +484,7 @@ public: //! @name deprecated methods
 
   //! returns true if there are more Defined view(s) to return.
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
-  Standard_Boolean MoreDefinedViews() const { return myDefinedViewsIterator.More(); }
+  bool MoreDefinedViews() const { return myDefinedViewsIterator.More(); }
 
   //! Go to the next Defined view (if there is not, DefinedView will raise an exception)
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
@@ -491,7 +495,7 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
-  const Handle(V3d_View)& DefinedView() const { return myDefinedViewsIterator.Value(); }
+  const occ::handle<V3d_View>& DefinedView() const { return myDefinedViewsIterator.Value(); }
 
   //! Initializes an internal iteratator on the active Lights.
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
@@ -499,14 +503,14 @@ public: //! @name deprecated methods
 
   //! returns true if there are more active Light(s) to return.
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-  Standard_Boolean MoreActiveLights() const { return myActiveLightsIterator.More(); }
+  bool MoreActiveLights() const { return myActiveLightsIterator.More(); }
 
   //! Go to the next active Light (if there is not, ActiveLight() will raise an exception)
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
   void NextActiveLights() { myActiveLightsIterator.Next(); }
 
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-  const Handle(V3d_Light)& ActiveLight() const { return myActiveLightsIterator.Value(); }
+  const occ::handle<V3d_Light>& ActiveLight() const { return myActiveLightsIterator.Value(); }
 
   //! Initializes an internal iterattor on the Defined Lights.
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
@@ -514,7 +518,7 @@ public: //! @name deprecated methods
 
   //! Returns true if there are more Defined Light(s) to return.
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
-  Standard_Boolean MoreDefinedLights() const { return myDefinedLightsIterator.More(); }
+  bool MoreDefinedLights() const { return myDefinedLightsIterator.More(); }
 
   //! Go to the next Defined Light (if there is not, DefinedLight() will raise an exception)
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
@@ -525,63 +529,61 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
-  const Handle(V3d_Light)& DefinedLight() const { return myDefinedLightsIterator.Value(); }
+  const occ::handle<V3d_Light>& DefinedLight() const { return myDefinedLightsIterator.Value(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   //! Returns the default background colour.
   const Aspect_Background& GetBackgroundColor() const { return myBackground; }
 
   //! Adds View in Sequence Of Views.
-  Standard_EXPORT void AddView(const Handle(V3d_View)& theView);
+  Standard_EXPORT void AddView(const occ::handle<V3d_View>& theView);
 
   //! Delete View in Sequence Of Views.
   Standard_EXPORT void DelView(const V3d_View* theView);
 
 private:
-  Handle(Graphic3d_GraphicDriver)    myDriver;
-  Handle(Graphic3d_StructureManager) myStructureManager;
-  TColStd_MapOfInteger               myLayerIds;
-  Aspect_GenId                       myZLayerGenId;
+  occ::handle<Graphic3d_GraphicDriver>    myDriver;
+  occ::handle<Graphic3d_StructureManager> myStructureManager;
+  NCollection_Map<int>                    myLayerIds;
+  Aspect_GenId                            myZLayerGenId;
 
-  V3d_ListOfView  myDefinedViews;
-  V3d_ListOfView  myActiveViews;
-  V3d_ListOfLight myDefinedLights;
-  V3d_ListOfLight myActiveLights;
+  NCollection_List<occ::handle<V3d_View>>         myDefinedViews;
+  NCollection_List<occ::handle<V3d_View>>         myActiveViews;
+  NCollection_List<occ::handle<Graphic3d_CLight>> myDefinedLights;
+  NCollection_List<occ::handle<Graphic3d_CLight>> myActiveLights;
 
   Aspect_Background         myBackground;
   Aspect_GradientBackground myGradientBackground;
-  Standard_Real             myViewSize;
+  double                    myViewSize;
   V3d_TypeOfOrientation     myViewProj;
   V3d_TypeOfVisualization   myVisualization;
   V3d_TypeOfView            myDefaultTypeOfView;
   Graphic3d_RenderingParams myDefaultRenderingParams;
 
-  V3d_ListOfView::Iterator  myActiveViewsIterator;
-  V3d_ListOfView::Iterator  myDefinedViewsIterator;
-  V3d_ListOfLight::Iterator myActiveLightsIterator;
-  V3d_ListOfLight::Iterator myDefinedLightsIterator;
+  NCollection_List<occ::handle<V3d_View>>::Iterator         myActiveViewsIterator;
+  NCollection_List<occ::handle<V3d_View>>::Iterator         myDefinedViewsIterator;
+  NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator myActiveLightsIterator;
+  NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator myDefinedLightsIterator;
 
-  Standard_Boolean myComputedMode;
-  Standard_Boolean myDefaultComputedMode;
+  bool myComputedMode;
+  bool myDefaultComputedMode;
 
-  gp_Ax3                      myPrivilegedPlane;
-  Handle(Graphic3d_Structure) myPlaneStructure;
-  Standard_Boolean            myDisplayPlane;
-  Standard_Real               myDisplayPlaneLength;
+  gp_Ax3                           myPrivilegedPlane;
+  occ::handle<Graphic3d_Structure> myPlaneStructure;
+  bool                             myDisplayPlane;
+  double                           myDisplayPlaneLength;
 
-  Handle(V3d_RectangularGrid)      myRGrid;
-  Handle(V3d_CircularGrid)         myCGrid;
-  Aspect_GridType                  myGridType;
-  Standard_Boolean                 myGridEcho;
-  Handle(Graphic3d_Structure)      myGridEchoStructure;
-  Handle(Graphic3d_Group)          myGridEchoGroup;
-  Handle(Graphic3d_AspectMarker3d) myGridEchoAspect;
-  Graphic3d_Vertex                 myGridEchoLastVert;
+  occ::handle<V3d_RectangularGrid>      myRGrid;
+  occ::handle<V3d_CircularGrid>         myCGrid;
+  Aspect_GridType                       myGridType;
+  bool                                  myGridEcho;
+  occ::handle<Graphic3d_Structure>      myGridEchoStructure;
+  occ::handle<Graphic3d_Group>          myGridEchoGroup;
+  occ::handle<Graphic3d_AspectMarker3d> myGridEchoAspect;
+  Graphic3d_Vertex                      myGridEchoLastVert;
 };
-
-DEFINE_STANDARD_HANDLE(V3d_Viewer, Standard_Transient)
 
 #endif // _V3d_Viewer_HeaderFile

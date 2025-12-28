@@ -30,13 +30,13 @@
 // *********************************
 //=================================================================================================
 
-void PLib::SetPoles(const TColgp_Array1OfPnt2d& Poles, TColStd_Array1OfReal& FP)
+void PLib::SetPoles(const NCollection_Array1<gp_Pnt2d>& Poles, NCollection_Array1<double>& FP)
 {
-  Standard_Integer j      = FP.Lower();
-  Standard_Integer PLower = Poles.Lower();
-  Standard_Integer PUpper = Poles.Upper();
+  int j      = FP.Lower();
+  int PLower = Poles.Lower();
+  int PUpper = Poles.Upper();
 
-  for (Standard_Integer i = PLower; i <= PUpper; i++)
+  for (int i = PLower; i <= PUpper; i++)
   {
     const gp_Pnt2d& P = Poles(i);
     FP(j)             = P.Coord(1);
@@ -48,17 +48,17 @@ void PLib::SetPoles(const TColgp_Array1OfPnt2d& Poles, TColStd_Array1OfReal& FP)
 
 //=================================================================================================
 
-void PLib::SetPoles(const TColgp_Array1OfPnt2d& Poles,
-                    const TColStd_Array1OfReal& Weights,
-                    TColStd_Array1OfReal&       FP)
+void PLib::SetPoles(const NCollection_Array1<gp_Pnt2d>& Poles,
+                    const NCollection_Array1<double>&   Weights,
+                    NCollection_Array1<double>&         FP)
 {
-  Standard_Integer j      = FP.Lower();
-  Standard_Integer PLower = Poles.Lower();
-  Standard_Integer PUpper = Poles.Upper();
+  int j      = FP.Lower();
+  int PLower = Poles.Lower();
+  int PUpper = Poles.Upper();
 
-  for (Standard_Integer i = PLower; i <= PUpper; i++)
+  for (int i = PLower; i <= PUpper; i++)
   {
-    Standard_Real   w = Weights(i);
+    double          w = Weights(i);
     const gp_Pnt2d& P = Poles(i);
     FP(j)             = P.Coord(1) * w;
     j++;
@@ -71,13 +71,13 @@ void PLib::SetPoles(const TColgp_Array1OfPnt2d& Poles,
 
 //=================================================================================================
 
-void PLib::GetPoles(const TColStd_Array1OfReal& FP, TColgp_Array1OfPnt2d& Poles)
+void PLib::GetPoles(const NCollection_Array1<double>& FP, NCollection_Array1<gp_Pnt2d>& Poles)
 {
-  Standard_Integer j      = FP.Lower();
-  Standard_Integer PLower = Poles.Lower();
-  Standard_Integer PUpper = Poles.Upper();
+  int j      = FP.Lower();
+  int PLower = Poles.Lower();
+  int PUpper = Poles.Upper();
 
-  for (Standard_Integer i = PLower; i <= PUpper; i++)
+  for (int i = PLower; i <= PUpper; i++)
   {
     gp_Pnt2d& P = Poles(i);
     P.SetCoord(1, FP(j));
@@ -89,19 +89,19 @@ void PLib::GetPoles(const TColStd_Array1OfReal& FP, TColgp_Array1OfPnt2d& Poles)
 
 //=================================================================================================
 
-void PLib::GetPoles(const TColStd_Array1OfReal& FP,
-                    TColgp_Array1OfPnt2d&       Poles,
-                    TColStd_Array1OfReal&       Weights)
+void PLib::GetPoles(const NCollection_Array1<double>& FP,
+                    NCollection_Array1<gp_Pnt2d>&     Poles,
+                    NCollection_Array1<double>&       Weights)
 {
-  Standard_Integer j      = FP.Lower();
-  Standard_Integer PLower = Poles.Lower();
-  Standard_Integer PUpper = Poles.Upper();
+  int j      = FP.Lower();
+  int PLower = Poles.Lower();
+  int PUpper = Poles.Upper();
 
-  for (Standard_Integer i = PLower; i <= PUpper; i++)
+  for (int i = PLower; i <= PUpper; i++)
   {
-    Standard_Real w = FP(j + 2);
-    Weights(i)      = w;
-    gp_Pnt2d& P     = Poles(i);
+    double w    = FP(j + 2);
+    Weights(i)  = w;
+    gp_Pnt2d& P = Poles(i);
     P.SetCoord(1, FP(j) / w);
     j++;
     P.SetCoord(2, FP(j) / w);
@@ -112,13 +112,13 @@ void PLib::GetPoles(const TColStd_Array1OfReal& FP,
 
 //=================================================================================================
 
-void PLib::SetPoles(const TColgp_Array1OfPnt& Poles, TColStd_Array1OfReal& FP)
+void PLib::SetPoles(const NCollection_Array1<gp_Pnt>& Poles, NCollection_Array1<double>& FP)
 {
-  Standard_Integer j      = FP.Lower();
-  Standard_Integer PLower = Poles.Lower();
-  Standard_Integer PUpper = Poles.Upper();
+  int j      = FP.Lower();
+  int PLower = Poles.Lower();
+  int PUpper = Poles.Upper();
 
-  for (Standard_Integer i = PLower; i <= PUpper; i++)
+  for (int i = PLower; i <= PUpper; i++)
   {
     const gp_Pnt& P = Poles(i);
     FP(j)           = P.Coord(1);
@@ -132,17 +132,17 @@ void PLib::SetPoles(const TColgp_Array1OfPnt& Poles, TColStd_Array1OfReal& FP)
 
 //=================================================================================================
 
-void PLib::SetPoles(const TColgp_Array1OfPnt&   Poles,
-                    const TColStd_Array1OfReal& Weights,
-                    TColStd_Array1OfReal&       FP)
+void PLib::SetPoles(const NCollection_Array1<gp_Pnt>& Poles,
+                    const NCollection_Array1<double>& Weights,
+                    NCollection_Array1<double>&       FP)
 {
-  Standard_Integer j      = FP.Lower();
-  Standard_Integer PLower = Poles.Lower();
-  Standard_Integer PUpper = Poles.Upper();
+  int j      = FP.Lower();
+  int PLower = Poles.Lower();
+  int PUpper = Poles.Upper();
 
-  for (Standard_Integer i = PLower; i <= PUpper; i++)
+  for (int i = PLower; i <= PUpper; i++)
   {
-    Standard_Real w = Weights(i);
+    double        w = Weights(i);
     const gp_Pnt& P = Poles(i);
     FP(j)           = P.Coord(1) * w;
     j++;
@@ -157,13 +157,13 @@ void PLib::SetPoles(const TColgp_Array1OfPnt&   Poles,
 
 //=================================================================================================
 
-void PLib::GetPoles(const TColStd_Array1OfReal& FP, TColgp_Array1OfPnt& Poles)
+void PLib::GetPoles(const NCollection_Array1<double>& FP, NCollection_Array1<gp_Pnt>& Poles)
 {
-  Standard_Integer j      = FP.Lower();
-  Standard_Integer PLower = Poles.Lower();
-  Standard_Integer PUpper = Poles.Upper();
+  int j      = FP.Lower();
+  int PLower = Poles.Lower();
+  int PUpper = Poles.Upper();
 
-  for (Standard_Integer i = PLower; i <= PUpper; i++)
+  for (int i = PLower; i <= PUpper; i++)
   {
     gp_Pnt& P = Poles(i);
     P.SetCoord(1, FP(j));
@@ -177,19 +177,19 @@ void PLib::GetPoles(const TColStd_Array1OfReal& FP, TColgp_Array1OfPnt& Poles)
 
 //=================================================================================================
 
-void PLib::GetPoles(const TColStd_Array1OfReal& FP,
-                    TColgp_Array1OfPnt&         Poles,
-                    TColStd_Array1OfReal&       Weights)
+void PLib::GetPoles(const NCollection_Array1<double>& FP,
+                    NCollection_Array1<gp_Pnt>&       Poles,
+                    NCollection_Array1<double>&       Weights)
 {
-  Standard_Integer j      = FP.Lower();
-  Standard_Integer PLower = Poles.Lower();
-  Standard_Integer PUpper = Poles.Upper();
+  int j      = FP.Lower();
+  int PLower = Poles.Lower();
+  int PUpper = Poles.Upper();
 
-  for (Standard_Integer i = PLower; i <= PUpper; i++)
+  for (int i = PLower; i <= PUpper; i++)
   {
-    Standard_Real w = FP(j + 3);
-    Weights(i)      = w;
-    gp_Pnt& P       = Poles(i);
+    double w   = FP(j + 3);
+    Weights(i) = w;
+    gp_Pnt& P  = Poles(i);
     P.SetCoord(1, FP(j) / w);
     j++;
     P.SetCoord(2, FP(j) / w);
@@ -206,7 +206,7 @@ namespace
 
 //! Compile-time Pascal's triangle allocator for binomial coefficients
 //! @tparam MaxDegree Maximum degree N for which C(N,P) can be computed
-template <Standard_Integer MaxDegree>
+template <int MaxDegree>
 class BinomAllocator
 {
 public:
@@ -219,14 +219,14 @@ public:
     myBinom[0][0] = 1;
 
     // Build Pascal's triangle row by row
-    for (Standard_Integer i = 1; i <= MaxDegree; ++i)
+    for (int i = 1; i <= MaxDegree; ++i)
     {
       // First and last elements are always 1
       myBinom[i][0] = 1;
       myBinom[i][i] = 1;
 
       // Use recurrence relation for middle elements
-      for (Standard_Integer j = 1; j < i; ++j)
+      for (int j = 1; j < i; ++j)
       {
         myBinom[i][j] = myBinom[i - 1][j - 1] + myBinom[i - 1][j];
       }
@@ -238,18 +238,15 @@ public:
   //! @param P the parameter (k in C(n,k))
   //! @return the value of C(N,P)
   //! @note Caller must ensure N and P are within valid range
-  constexpr Standard_Integer Value(const Standard_Integer N, const Standard_Integer P) const
-  {
-    return myBinom[N][P];
-  }
+  constexpr int Value(const int N, const int P) const { return myBinom[N][P]; }
 
 private:
-  Standard_Integer myBinom[MaxDegree + 1][MaxDegree + 1];
+  int myBinom[MaxDegree + 1][MaxDegree + 1];
 };
 
 //! Thread-safe lazy initialization of compile-time computed binomial coefficients
 //! @tparam MaxDegree Maximum degree supported (default 25)
-template <Standard_Integer MaxDegree = BSplCLib::MaxDegree()>
+template <int MaxDegree = BSplCLib::MaxDegree()>
 inline const BinomAllocator<MaxDegree>& GetBinomAllocator()
 {
   static constexpr BinomAllocator<MaxDegree> THE_ALLOCATOR{};
@@ -260,7 +257,7 @@ inline const BinomAllocator<MaxDegree>& GetBinomAllocator()
 
 //=================================================================================================
 
-Standard_Real PLib::Bin(const Standard_Integer N, const Standard_Integer P)
+double PLib::Bin(const int N, const int P)
 {
   const auto& aBinom = GetBinomAllocator();
 
@@ -269,17 +266,17 @@ Standard_Real PLib::Bin(const Standard_Integer N, const Standard_Integer P)
   Standard_OutOfRange_Raise_if(P < 0 || P > N,
                                "PLib::Bin: parameter P is out of valid range [0, N]");
 
-  return Standard_Real(aBinom.Value(N, P));
+  return double(aBinom.Value(N, P));
 }
 
 //=================================================================================================
 
-void PLib::RationalDerivative(const Standard_Integer Degree,
-                              const Standard_Integer DerivativeRequest,
-                              const Standard_Integer Dimension,
-                              Standard_Real&         Ders,
-                              Standard_Real&         RDers,
-                              const Standard_Boolean All)
+void PLib::RationalDerivative(const int  Degree,
+                              const int  DerivativeRequest,
+                              const int  Dimension,
+                              double&    Ders,
+                              double&    RDers,
+                              const bool All)
 {
   //
   // Our purpose is to compute f = (u/v) derivated N = DerivativeRequest times
@@ -318,17 +315,17 @@ void PLib::RationalDerivative(const Standard_Integer Degree,
   //  u (1)     u (2) ....   u  (Dimension)     v (1)
   //
   //
-  Standard_Real                         Inverse;
-  Standard_Real*                        PolesArray    = &Ders;
-  Standard_Real*                        RationalArray = &RDers;
-  Standard_Real                         Factor;
-  Standard_Integer                      ii, Index, OtherIndex, Index1, Index2, jj;
-  NCollection_LocalArray<Standard_Real> binomial_array;
-  NCollection_LocalArray<Standard_Real> derivative_storage;
+  double                         Inverse;
+  double*                        PolesArray    = &Ders;
+  double*                        RationalArray = &RDers;
+  double                         Factor;
+  int                            ii, Index, OtherIndex, Index1, Index2, jj;
+  NCollection_LocalArray<double> binomial_array;
+  NCollection_LocalArray<double> derivative_storage;
   if (Dimension == 3)
   {
-    Standard_Integer DeRequest1 = DerivativeRequest + 1;
-    Standard_Integer MinDegRequ = DerivativeRequest;
+    int DeRequest1 = DerivativeRequest + 1;
+    int MinDegRequ = DerivativeRequest;
     if (MinDegRequ > Degree)
       MinDegRequ = Degree;
     binomial_array.Allocate(DeRequest1);
@@ -339,7 +336,7 @@ void PLib::RationalDerivative(const Standard_Integer Degree,
     }
     if (!All)
     {
-      Standard_Integer DimDeRequ1 = (DeRequest1 << 1) + DeRequest1;
+      int DimDeRequ1 = (DeRequest1 << 1) + DeRequest1;
       derivative_storage.Allocate(DimDeRequ1);
       RationalArray = derivative_storage;
     }
@@ -428,9 +425,9 @@ void PLib::RationalDerivative(const Standard_Integer Degree,
 
     if (!All)
     {
-      RationalArray              = &RDers;
-      Standard_Integer DimDeRequ = (DerivativeRequest << 1) + DerivativeRequest;
-      RationalArray[0]           = derivative_storage[DimDeRequ];
+      RationalArray    = &RDers;
+      int DimDeRequ    = (DerivativeRequest << 1) + DerivativeRequest;
+      RationalArray[0] = derivative_storage[DimDeRequ];
       DimDeRequ++;
       RationalArray[1] = derivative_storage[DimDeRequ];
       DimDeRequ++;
@@ -439,11 +436,11 @@ void PLib::RationalDerivative(const Standard_Integer Degree,
   }
   else
   {
-    Standard_Integer kk;
-    Standard_Integer Dimension1 = Dimension + 1;
-    Standard_Integer Dimension2 = Dimension << 1;
-    Standard_Integer DeRequest1 = DerivativeRequest + 1;
-    Standard_Integer MinDegRequ = DerivativeRequest;
+    int kk;
+    int Dimension1 = Dimension + 1;
+    int Dimension2 = Dimension << 1;
+    int DeRequest1 = DerivativeRequest + 1;
+    int MinDegRequ = DerivativeRequest;
     if (MinDegRequ > Degree)
       MinDegRequ = Degree;
     binomial_array.Allocate(DeRequest1);
@@ -454,7 +451,7 @@ void PLib::RationalDerivative(const Standard_Integer Degree,
     }
     if (!All)
     {
-      Standard_Integer DimDeRequ1 = Dimension * DeRequest1;
+      int DimDeRequ1 = Dimension * DeRequest1;
       derivative_storage.Allocate(DimDeRequ1);
       RationalArray = derivative_storage;
     }
@@ -544,8 +541,8 @@ void PLib::RationalDerivative(const Standard_Integer Degree,
 
     if (!All)
     {
-      RationalArray              = &RDers;
-      Standard_Integer DimDeRequ = Dimension * DerivativeRequest;
+      RationalArray = &RDers;
+      int DimDeRequ = Dimension * DerivativeRequest;
 
       for (kk = 0; kk < Dimension; kk++)
       {
@@ -561,15 +558,15 @@ void PLib::RationalDerivative(const Standard_Integer Degree,
 // purpose  : Uses Homogeneous Poles Derivatives and Derivatives of Weights
 //=======================================================================
 
-void PLib::RationalDerivatives(const Standard_Integer DerivativeRequest,
-                               const Standard_Integer Dimension,
-                               Standard_Real&         PolesDerivates,
+void PLib::RationalDerivatives(const int DerivativeRequest,
+                               const int Dimension,
+                               double&   PolesDerivates,
                                // must be an array with
                                // (DerivativeRequest + 1) * Dimension slots
-                               Standard_Real& WeightsDerivates,
+                               double& WeightsDerivates,
                                // must be an array with
                                // (DerivativeRequest + 1) slots
-                               Standard_Real& RationalDerivates)
+                               double& RationalDerivates)
 {
   //
   // Our purpose is to compute f = (u/v) derivated N times
@@ -595,17 +592,17 @@ void PLib::RationalDerivatives(const Standard_Integer DerivativeRequest,
   // make arrays for the binomial since computing it each time could
   // raize a performance issue
   //
-  Standard_Real  Inverse;
-  Standard_Real* PolesArray    = &PolesDerivates;
-  Standard_Real* WeightsArray  = &WeightsDerivates;
-  Standard_Real* RationalArray = &RationalDerivates;
-  Standard_Real  Factor;
+  double  Inverse;
+  double* PolesArray    = &PolesDerivates;
+  double* WeightsArray  = &WeightsDerivates;
+  double* RationalArray = &RationalDerivates;
+  double  Factor;
 
-  Standard_Integer ii, Index, Index1, Index2, jj;
-  Standard_Integer DeRequest1 = DerivativeRequest + 1;
+  int ii, Index, Index1, Index2, jj;
+  int DeRequest1 = DerivativeRequest + 1;
 
-  NCollection_LocalArray<Standard_Real> binomial_array(DeRequest1);
-  NCollection_LocalArray<Standard_Real> derivative_storage;
+  NCollection_LocalArray<double> binomial_array(DeRequest1);
+  NCollection_LocalArray<double> derivative_storage;
 
   for (ii = 0; ii < DeRequest1; ii++)
   {
@@ -656,10 +653,10 @@ void PLib::RationalDerivatives(const Standard_Integer DerivativeRequest,
   }
   else
   {
-    Standard_Integer kk;
-    Standard_Integer Dimension2 = Dimension << 1;
-    Index                       = 0;
-    Index2                      = -Dimension2;
+    int kk;
+    int Dimension2 = Dimension << 1;
+    Index          = 0;
+    Index2         = -Dimension2;
 
     for (ii = 0; ii < DeRequest1; ii++)
     {
@@ -944,12 +941,12 @@ constexpr std::array<EvalPolyFunc, THE_MAX_OPT_DIM> THE_EVAL_POLY2_TABLE =
 // purpose  : up to the requested order
 //=======================================================================
 
-void PLib::EvalPolynomial(const Standard_Real    Par,
-                          const Standard_Integer DerivativeRequest,
-                          const Standard_Integer Degree,
-                          const Standard_Integer Dimension,
-                          const Standard_Real&   PolynomialCoeff,
-                          Standard_Real&         Results)
+void PLib::EvalPolynomial(const double  Par,
+                          const int     DerivativeRequest,
+                          const int     Degree,
+                          const int     Dimension,
+                          const double& PolynomialCoeff,
+                          double&       Results)
 //
 // the polynomial coefficients are assumed to be stored as follows :
 //                                                      0
@@ -968,8 +965,8 @@ void PLib::EvalPolynomial(const Standard_Real    Par,
 //  where d is the Degree
 //
 {
-  const Standard_Real* aCoeffs = &PolynomialCoeff + Degree * Dimension;
-  Standard_Real*       aRes    = &Results;
+  const double* aCoeffs = &PolynomialCoeff + Degree * Dimension;
+  double*       aRes    = &Results;
 
   switch (DerivativeRequest)
   {
@@ -1005,11 +1002,11 @@ void PLib::EvalPolynomial(const Standard_Real    Par,
 
       for (int aDeg = 0; aDeg <= Degree; ++aDeg)
       {
-        Standard_Real* aPtr = aRes + aResSize - Dimension;
+        double* aPtr = aRes + aResSize - Dimension;
         // Calculating derivatives of the polynomial
         for (int aDeriv = DerivativeRequest; aDeriv > 0; --aDeriv)
         {
-          Standard_Real* anOriginal = aPtr - Dimension;
+          double* anOriginal = aPtr - Dimension;
           for (int ind = 0; ind < Dimension; ++ind)
           {
             aPtr[ind] = aPtr[ind] * Par + anOriginal[ind] * aDeriv;
@@ -1029,15 +1026,15 @@ void PLib::EvalPolynomial(const Standard_Real    Par,
 
 //=================================================================================================
 
-void PLib::NoDerivativeEvalPolynomial(const Standard_Real    Par,
-                                      const Standard_Integer Degree,
-                                      const Standard_Integer Dimension,
-                                      const Standard_Integer DegreeDimension,
-                                      const Standard_Real&   PolynomialCoeff,
-                                      Standard_Real&         Results)
+void PLib::NoDerivativeEvalPolynomial(const double  Par,
+                                      const int     Degree,
+                                      const int     Dimension,
+                                      const int     DegreeDimension,
+                                      const double& PolynomialCoeff,
+                                      double&       Results)
 {
-  const Standard_Real* aCoeffs = &PolynomialCoeff + DegreeDimension;
-  Standard_Real*       aRes    = &Results;
+  const double* aCoeffs = &PolynomialCoeff + DegreeDimension;
+  double*       aRes    = &Results;
 
   if (Dimension >= 1 && Dimension <= THE_MAX_OPT_DIM)
   {
@@ -1054,15 +1051,15 @@ void PLib::NoDerivativeEvalPolynomial(const Standard_Real    Par,
 // purpose  : or its derivative at the requested orders
 //=======================================================================
 
-void PLib::EvalPoly2Var(const Standard_Real    UParameter,
-                        const Standard_Real    VParameter,
-                        const Standard_Integer UDerivativeRequest,
-                        const Standard_Integer VDerivativeRequest,
-                        const Standard_Integer UDegree,
-                        const Standard_Integer VDegree,
-                        const Standard_Integer Dimension,
-                        Standard_Real&         PolynomialCoeff,
-                        Standard_Real&         Results)
+void PLib::EvalPoly2Var(const double UParameter,
+                        const double VParameter,
+                        const int    UDerivativeRequest,
+                        const int    VDerivativeRequest,
+                        const int    UDegree,
+                        const int    VDegree,
+                        const int    Dimension,
+                        double&      PolynomialCoeff,
+                        double&      Results)
 //
 // the polynomial coefficients are assumed to be stored as follows :
 //                                                      0 0
@@ -1095,12 +1092,12 @@ void PLib::EvalPoly2Var(const Standard_Real    UParameter,
 //
 //  where n = VDegree
 {
-  Standard_Integer     Udim = (VDegree + 1) * Dimension, index = Udim * UDerivativeRequest;
-  TColStd_Array1OfReal Curve(1, Udim * (UDerivativeRequest + 1));
-  TColStd_Array1OfReal Point(1, Dimension * (VDerivativeRequest + 1));
-  Standard_Real*       Result = (Standard_Real*)&Curve.ChangeValue(1);
-  Standard_Real*       Digit  = (Standard_Real*)&Point.ChangeValue(1);
-  Standard_Real*       ResultArray;
+  int                        Udim = (VDegree + 1) * Dimension, index = Udim * UDerivativeRequest;
+  NCollection_Array1<double> Curve(1, Udim * (UDerivativeRequest + 1));
+  NCollection_Array1<double> Point(1, Dimension * (VDerivativeRequest + 1));
+  double*                    Result = (double*)&Curve.ChangeValue(1);
+  double*                    Digit  = (double*)&Point.ChangeValue(1);
+  double*                    ResultArray;
   ResultArray = &Results;
 
   PLib::EvalPolynomial(UParameter, UDerivativeRequest, UDegree, Udim, PolynomialCoeff, Result[0]);
@@ -1109,7 +1106,7 @@ void PLib::EvalPoly2Var(const Standard_Real    UParameter,
 
   index = Dimension * VDerivativeRequest;
 
-  for (Standard_Integer i = 0; i < Dimension; i++)
+  for (int i = 0; i < Dimension; i++)
   {
     ResultArray[i] = Digit[index + i];
   }
@@ -1121,13 +1118,13 @@ void PLib::EvalPoly2Var(const Standard_Real    UParameter,
 // points of dimension <Dimension> with given assigned parameters
 //=======================================================================
 
-Standard_Integer PLib::EvalLagrange(const Standard_Real    Parameter,
-                                    const Standard_Integer DerivativeRequest,
-                                    const Standard_Integer Degree,
-                                    const Standard_Integer Dimension,
-                                    Standard_Real&         Values,
-                                    Standard_Real&         Parameters,
-                                    Standard_Real&         Results)
+int PLib::EvalLagrange(const double Parameter,
+                       const int    DerivativeRequest,
+                       const int    Degree,
+                       const int    Dimension,
+                       double&      Values,
+                       double&      Parameters,
+                       double&      Results)
 {
   //
   // the points  are assumed to be stored as follows in the Values array :
@@ -1151,12 +1148,12 @@ Standard_Integer PLib::EvalLagrange(const Standard_Real    Parameter,
   //  [0]   is assign to first  point
   //  [1]   is assign to second point
   //
-  Standard_Integer ii, jj, kk, Index, Index1, ReturnCode = 0;
-  Standard_Integer local_request = DerivativeRequest;
-  Standard_Real*   ParameterArray;
-  Standard_Real    difference;
-  Standard_Real*   PointsArray;
-  Standard_Real*   ResultArray;
+  int     ii, jj, kk, Index, Index1, ReturnCode = 0;
+  int     local_request = DerivativeRequest;
+  double* ParameterArray;
+  double  difference;
+  double* PointsArray;
+  double* ResultArray;
 
   PointsArray    = &Values;
   ParameterArray = &Parameters;
@@ -1165,7 +1162,7 @@ Standard_Integer PLib::EvalLagrange(const Standard_Real    Parameter,
   {
     local_request = Degree;
   }
-  NCollection_LocalArray<Standard_Real> divided_differences_array((Degree + 1) * Dimension);
+  NCollection_LocalArray<double> divided_differences_array((Degree + 1) * Dimension);
   //
   //  Build the divided differences array
   //
@@ -1235,7 +1232,7 @@ Standard_Integer PLib::EvalLagrange(const Standard_Real    Parameter,
       for (kk = 0; kk < Dimension; kk++)
       {
         ResultArray[Index + kk] *= difference;
-        ResultArray[Index + kk] += ResultArray[Index1 + kk] * (Standard_Real)jj;
+        ResultArray[Index + kk] += ResultArray[Index1 + kk] * (double)jj;
       }
     }
     Index = (ii - 1) * Dimension;
@@ -1256,13 +1253,13 @@ FINISH:
 // points of dimension <Dimension> with given assigned parameters
 //=======================================================================
 
-Standard_Integer PLib::EvalCubicHermite(const Standard_Real    Parameter,
-                                        const Standard_Integer DerivativeRequest,
-                                        const Standard_Integer Dimension,
-                                        Standard_Real&         Values,
-                                        Standard_Real&         Derivatives,
-                                        Standard_Real&         theParameters,
-                                        Standard_Real&         Results)
+int PLib::EvalCubicHermite(const double Parameter,
+                           const int    DerivativeRequest,
+                           const int    Dimension,
+                           double&      Values,
+                           double&      Derivatives,
+                           double&      theParameters,
+                           double&      Results)
 {
   //
   // the points  are assumed to be stored as follows in the Values array :
@@ -1284,18 +1281,18 @@ Standard_Integer PLib::EvalCubicHermite(const Standard_Real    Parameter,
   //  [0]   is assign to first  point
   //  [1]   is assign to last   point
   //
-  Standard_Integer ii, jj, kk, pp, Index, Index1, Degree, ReturnCode;
-  Standard_Integer local_request = DerivativeRequest;
+  int ii, jj, kk, pp, Index, Index1, Degree, ReturnCode;
+  int local_request = DerivativeRequest;
 
   ReturnCode = 0;
   Degree     = 3;
-  Standard_Real  ParametersArray[4];
-  Standard_Real  difference;
-  Standard_Real  inverse;
-  Standard_Real* FirstLast;
-  Standard_Real* PointsArray;
-  Standard_Real* DerivativesArray;
-  Standard_Real* ResultArray;
+  double  ParametersArray[4];
+  double  difference;
+  double  inverse;
+  double* FirstLast;
+  double* PointsArray;
+  double* DerivativesArray;
+  double* ResultArray;
 
   DerivativesArray = &Derivatives;
   PointsArray      = &Values;
@@ -1305,7 +1302,7 @@ Standard_Integer PLib::EvalCubicHermite(const Standard_Real    Parameter,
   {
     local_request = Degree;
   }
-  NCollection_LocalArray<Standard_Real> divided_differences_array((Degree + 1) * Dimension);
+  NCollection_LocalArray<double> divided_differences_array((Degree + 1) * Dimension);
 
   for (ii = 0, jj = 0; ii < 2; ii++, jj += 2)
   {
@@ -1383,7 +1380,7 @@ Standard_Integer PLib::EvalCubicHermite(const Standard_Real    Parameter,
       for (kk = 0; kk < Dimension; kk++)
       {
         ResultArray[Index + kk] *= difference;
-        ResultArray[Index + kk] += ResultArray[Index1 + kk] * (Standard_Real)jj;
+        ResultArray[Index + kk] += ResultArray[Index1 + kk] * (double)jj;
       }
     }
     Index = (ii - 1) * Dimension;
@@ -1403,30 +1400,30 @@ Standard_Integer PLib::EvalCubicHermite(const Standard_Real    Parameter,
 // purpose  : calcul des polynomes d'Hermite
 //=======================================================================
 
-Standard_Boolean PLib::HermiteCoefficients(const Standard_Real    FirstParameter,
-                                           const Standard_Real    LastParameter,
-                                           const Standard_Integer FirstOrder,
-                                           const Standard_Integer LastOrder,
-                                           math_Matrix&           MatrixCoefs)
+bool PLib::HermiteCoefficients(const double FirstParameter,
+                               const double LastParameter,
+                               const int    FirstOrder,
+                               const int    LastOrder,
+                               math_Matrix& MatrixCoefs)
 {
-  Standard_Integer NbCoeff = FirstOrder + LastOrder + 2, Ordre[2];
-  Standard_Integer ii, jj, pp, cote, iof = 0;
-  Standard_Real    Prod, TBorne = FirstParameter;
-  math_Vector      Coeff(1, NbCoeff), B(1, NbCoeff, 0.0);
-  math_Matrix      MAT(1, NbCoeff, 1, NbCoeff, 0.0);
+  int         NbCoeff = FirstOrder + LastOrder + 2, Ordre[2];
+  int         ii, jj, pp, cote, iof = 0;
+  double      Prod, TBorne = FirstParameter;
+  math_Vector Coeff(1, NbCoeff), B(1, NbCoeff, 0.0);
+  math_Matrix MAT(1, NbCoeff, 1, NbCoeff, 0.0);
 
   // Test de validites
 
   if ((FirstOrder < 0) || (LastOrder < 0))
-    return Standard_False;
-  Standard_Real D1 = fabs(FirstParameter), D2 = fabs(LastParameter);
+    return false;
+  double D1 = fabs(FirstParameter), D2 = fabs(LastParameter);
   if (D1 > 100 || D2 > 100)
-    return Standard_False;
+    return false;
   D2 += D1;
   if (D2 < 0.01)
-    return Standard_False;
+    return false;
   if (fabs(LastParameter - FirstParameter) / D2 < 0.01)
-    return Standard_False;
+    return false;
 
   // Calcul de la matrice a inverser (MAT)
 
@@ -1457,7 +1454,7 @@ Standard_Boolean PLib::HermiteCoefficients(const Standard_Real    FirstParameter
   // resolution du systemes
   math_Gauss ResolCoeff(MAT, 1.0e-10);
   if (!ResolCoeff.IsDone())
-    return Standard_False;
+    return false;
 
   for (ii = 1; ii <= NbCoeff; ii++)
   {
@@ -1466,19 +1463,19 @@ Standard_Boolean PLib::HermiteCoefficients(const Standard_Real    FirstParameter
     MatrixCoefs.SetRow(ii, Coeff);
     B(ii) = 0;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void PLib::CoefficientsPoles(const TColgp_Array1OfPnt&   Coefs,
-                             const TColStd_Array1OfReal* WCoefs,
-                             TColgp_Array1OfPnt&         Poles,
-                             TColStd_Array1OfReal*       Weights)
+void PLib::CoefficientsPoles(const NCollection_Array1<gp_Pnt>& Coefs,
+                             const NCollection_Array1<double>* WCoefs,
+                             NCollection_Array1<gp_Pnt>&       Poles,
+                             NCollection_Array1<double>*       Weights)
 {
-  TColStd_Array1OfReal tempC(1, 3 * Coefs.Length());
+  NCollection_Array1<double> tempC(1, 3 * Coefs.Length());
   PLib::SetPoles(Coefs, tempC);
-  TColStd_Array1OfReal tempP(1, 3 * Poles.Length());
+  NCollection_Array1<double> tempP(1, 3 * Poles.Length());
   PLib::SetPoles(Coefs, tempP);
   PLib::CoefficientsPoles(3, tempC, WCoefs, tempP, Weights);
   PLib::GetPoles(tempP, Poles);
@@ -1486,14 +1483,14 @@ void PLib::CoefficientsPoles(const TColgp_Array1OfPnt&   Coefs,
 
 //=================================================================================================
 
-void PLib::CoefficientsPoles(const TColgp_Array1OfPnt2d& Coefs,
-                             const TColStd_Array1OfReal* WCoefs,
-                             TColgp_Array1OfPnt2d&       Poles,
-                             TColStd_Array1OfReal*       Weights)
+void PLib::CoefficientsPoles(const NCollection_Array1<gp_Pnt2d>& Coefs,
+                             const NCollection_Array1<double>*   WCoefs,
+                             NCollection_Array1<gp_Pnt2d>&       Poles,
+                             NCollection_Array1<double>*         Weights)
 {
-  TColStd_Array1OfReal tempC(1, 2 * Coefs.Length());
+  NCollection_Array1<double> tempC(1, 2 * Coefs.Length());
   PLib::SetPoles(Coefs, tempC);
-  TColStd_Array1OfReal tempP(1, 2 * Poles.Length());
+  NCollection_Array1<double> tempP(1, 2 * Poles.Length());
   PLib::SetPoles(Coefs, tempP);
   PLib::CoefficientsPoles(2, tempC, WCoefs, tempP, Weights);
   PLib::GetPoles(tempP, Poles);
@@ -1501,33 +1498,33 @@ void PLib::CoefficientsPoles(const TColgp_Array1OfPnt2d& Coefs,
 
 //=================================================================================================
 
-void PLib::CoefficientsPoles(const TColStd_Array1OfReal& Coefs,
-                             const TColStd_Array1OfReal* WCoefs,
-                             TColStd_Array1OfReal&       Poles,
-                             TColStd_Array1OfReal*       Weights)
+void PLib::CoefficientsPoles(const NCollection_Array1<double>& Coefs,
+                             const NCollection_Array1<double>* WCoefs,
+                             NCollection_Array1<double>&       Poles,
+                             NCollection_Array1<double>*       Weights)
 {
   PLib::CoefficientsPoles(1, Coefs, WCoefs, Poles, Weights);
 }
 
 //=================================================================================================
 
-void PLib::CoefficientsPoles(const Standard_Integer      dim,
-                             const TColStd_Array1OfReal& Coefs,
-                             const TColStd_Array1OfReal* WCoefs,
-                             TColStd_Array1OfReal&       Poles,
-                             TColStd_Array1OfReal*       Weights)
+void PLib::CoefficientsPoles(const int                         dim,
+                             const NCollection_Array1<double>& Coefs,
+                             const NCollection_Array1<double>* WCoefs,
+                             NCollection_Array1<double>&       Poles,
+                             NCollection_Array1<double>*       Weights)
 {
-  Standard_Boolean rat    = WCoefs != NULL;
-  Standard_Integer loc    = Coefs.Lower();
-  Standard_Integer lop    = Poles.Lower();
-  Standard_Integer lowc   = 0;
-  Standard_Integer lowp   = 0;
-  Standard_Integer upc    = Coefs.Upper();
-  Standard_Integer upp    = Poles.Upper();
-  Standard_Integer upwc   = 0;
-  Standard_Integer upwp   = 0;
-  Standard_Integer reflen = Coefs.Length() / dim;
-  Standard_Integer i, j, k;
+  bool rat    = WCoefs != NULL;
+  int  loc    = Coefs.Lower();
+  int  lop    = Poles.Lower();
+  int  lowc   = 0;
+  int  lowp   = 0;
+  int  upc    = Coefs.Upper();
+  int  upp    = Poles.Upper();
+  int  upwc   = 0;
+  int  upwp   = 0;
+  int  reflen = Coefs.Length() / dim;
+  int  i, j, k;
   // Les Extremites.
   if (rat)
   {
@@ -1548,7 +1545,7 @@ void PLib::CoefficientsPoles(const Standard_Integer      dim,
     (*Weights)(upwp) = (*WCoefs)(upwc);
   }
 
-  Standard_Real Cnp;
+  double Cnp;
   for (i = 2; i < reflen; i++)
   {
     Cnp = PLib::Bin(reflen - 1, i - 1);
@@ -1591,12 +1588,12 @@ void PLib::CoefficientsPoles(const Standard_Integer      dim,
 
 //=================================================================================================
 
-void PLib::Trimming(const Standard_Real   U1,
-                    const Standard_Real   U2,
-                    TColgp_Array1OfPnt&   Coefs,
-                    TColStd_Array1OfReal* WCoefs)
+void PLib::Trimming(const double                U1,
+                    const double                U2,
+                    NCollection_Array1<gp_Pnt>& Coefs,
+                    NCollection_Array1<double>* WCoefs)
 {
-  TColStd_Array1OfReal temp(1, 3 * Coefs.Length());
+  NCollection_Array1<double> temp(1, 3 * Coefs.Length());
   PLib::SetPoles(Coefs, temp);
   PLib::Trimming(U1, U2, 3, temp, WCoefs);
   PLib::GetPoles(temp, Coefs);
@@ -1604,12 +1601,12 @@ void PLib::Trimming(const Standard_Real   U1,
 
 //=================================================================================================
 
-void PLib::Trimming(const Standard_Real   U1,
-                    const Standard_Real   U2,
-                    TColgp_Array1OfPnt2d& Coefs,
-                    TColStd_Array1OfReal* WCoefs)
+void PLib::Trimming(const double                  U1,
+                    const double                  U2,
+                    NCollection_Array1<gp_Pnt2d>& Coefs,
+                    NCollection_Array1<double>*   WCoefs)
 {
-  TColStd_Array1OfReal temp(1, 2 * Coefs.Length());
+  NCollection_Array1<double> temp(1, 2 * Coefs.Length());
   PLib::SetPoles(Coefs, temp);
   PLib::Trimming(U1, U2, 2, temp, WCoefs);
   PLib::GetPoles(temp, Coefs);
@@ -1617,21 +1614,21 @@ void PLib::Trimming(const Standard_Real   U1,
 
 //=================================================================================================
 
-void PLib::Trimming(const Standard_Real   U1,
-                    const Standard_Real   U2,
-                    TColStd_Array1OfReal& Coefs,
-                    TColStd_Array1OfReal* WCoefs)
+void PLib::Trimming(const double                U1,
+                    const double                U2,
+                    NCollection_Array1<double>& Coefs,
+                    NCollection_Array1<double>* WCoefs)
 {
   PLib::Trimming(U1, U2, 1, Coefs, WCoefs);
 }
 
 //=================================================================================================
 
-void PLib::Trimming(const Standard_Real    U1,
-                    const Standard_Real    U2,
-                    const Standard_Integer dim,
-                    TColStd_Array1OfReal&  Coefs,
-                    TColStd_Array1OfReal*  WCoefs)
+void PLib::Trimming(const double                U1,
+                    const double                U2,
+                    const int                   dim,
+                    NCollection_Array1<double>& Coefs,
+                    NCollection_Array1<double>* WCoefs)
 {
 
   // principe :
@@ -1639,11 +1636,11 @@ void PLib::Trimming(const Standard_Real    U1,
   // on exprime u = f(v) que l'on remplace dans l'expression polynomiale
   // decomposee sous la forme du schema iteratif de horner.
 
-  Standard_Real    lsp = U2 - U1;
-  Standard_Integer indc, indw = 0;
-  Standard_Integer upc = Coefs.Upper() - dim + 1, upw = 0;
-  Standard_Integer len = Coefs.Length() / dim;
-  Standard_Boolean rat = WCoefs != NULL;
+  double lsp = U2 - U1;
+  int    indc, indw = 0;
+  int    upc = Coefs.Upper() - dim + 1, upw = 0;
+  int    len = Coefs.Length() / dim;
+  bool   rat = WCoefs != NULL;
 
   if (rat)
   {
@@ -1653,9 +1650,9 @@ void PLib::Trimming(const Standard_Real    U1,
   }
   len--;
 
-  for (Standard_Integer i = 1; i <= len; i++)
+  for (int i = 1; i <= len; i++)
   {
-    Standard_Integer j;
+    int j;
     indc = upc - dim * (i - 1);
     if (rat)
       indw = upw - i + 1;
@@ -1674,7 +1671,7 @@ void PLib::Trimming(const Standard_Real    U1,
     {
       indc += dim;
 
-      for (Standard_Integer k = 0; k < dim; k++)
+      for (int k = 0; k < dim; k++)
       {
         Coefs(indc - dim + k) = U1 * Coefs(indc + k) + lsp * Coefs(indc - dim + k);
       }
@@ -1704,29 +1701,29 @@ void PLib::Trimming(const Standard_Real    U1,
 // fait avec BuildCache ou plus simplement d'utiliser PolesCoefficients
 //=======================================================================
 
-void PLib::CoefficientsPoles(const TColgp_Array2OfPnt&   Coefs,
-                             const TColStd_Array2OfReal* WCoefs,
-                             TColgp_Array2OfPnt&         Poles,
-                             TColStd_Array2OfReal*       Weights)
+void PLib::CoefficientsPoles(const NCollection_Array2<gp_Pnt>& Coefs,
+                             const NCollection_Array2<double>* WCoefs,
+                             NCollection_Array2<gp_Pnt>&       Poles,
+                             NCollection_Array2<double>*       Weights)
 {
-  Standard_Boolean rat       = (WCoefs != NULL);
-  Standard_Integer LowerRow  = Poles.LowerRow();
-  Standard_Integer UpperRow  = Poles.UpperRow();
-  Standard_Integer LowerCol  = Poles.LowerCol();
-  Standard_Integer UpperCol  = Poles.UpperCol();
-  Standard_Integer ColLength = Poles.ColLength();
-  Standard_Integer RowLength = Poles.RowLength();
+  bool rat       = (WCoefs != NULL);
+  int  LowerRow  = Poles.LowerRow();
+  int  UpperRow  = Poles.UpperRow();
+  int  LowerCol  = Poles.LowerCol();
+  int  UpperCol  = Poles.UpperCol();
+  int  ColLength = Poles.ColLength();
+  int  RowLength = Poles.RowLength();
 
   // Bidouille pour retablir u et v pour les coefs calcules
   // par buildcache
-  //  Standard_Boolean inv = Standard_False; //ColLength != Coefs.ColLength();
+  //  bool inv = false; //ColLength != Coefs.ColLength();
 
-  Standard_Integer Row, Col;
-  Standard_Real    W, Cnp;
+  int    Row, Col;
+  double W, Cnp;
 
-  Standard_Integer I1, I2;
-  Standard_Integer NPoleu, NPolev;
-  gp_XYZ           Temp;
+  int    I1, I2;
+  int    NPoleu, NPolev;
+  gp_XYZ Temp;
 
   for (NPoleu = LowerRow; NPoleu <= UpperRow; NPoleu++)
   {
@@ -1810,22 +1807,22 @@ void PLib::CoefficientsPoles(const TColgp_Array2OfPnt&   Coefs,
 
 //=================================================================================================
 
-void PLib::UTrimming(const Standard_Real   U1,
-                     const Standard_Real   U2,
-                     TColgp_Array2OfPnt&   Coeffs,
-                     TColStd_Array2OfReal* WCoeffs)
+void PLib::UTrimming(const double                U1,
+                     const double                U2,
+                     NCollection_Array2<gp_Pnt>& Coeffs,
+                     NCollection_Array2<double>* WCoeffs)
 {
-  Standard_Boolean     rat = WCoeffs != NULL;
-  Standard_Integer     lr  = Coeffs.LowerRow();
-  Standard_Integer     ur  = Coeffs.UpperRow();
-  Standard_Integer     lc  = Coeffs.LowerCol();
-  Standard_Integer     uc  = Coeffs.UpperCol();
-  TColgp_Array1OfPnt   Temp(lr, ur);
-  TColStd_Array1OfReal Temw(lr, ur);
+  bool                       rat = WCoeffs != NULL;
+  int                        lr  = Coeffs.LowerRow();
+  int                        ur  = Coeffs.UpperRow();
+  int                        lc  = Coeffs.LowerCol();
+  int                        uc  = Coeffs.UpperCol();
+  NCollection_Array1<gp_Pnt> Temp(lr, ur);
+  NCollection_Array1<double> Temw(lr, ur);
 
-  for (Standard_Integer icol = lc; icol <= uc; icol++)
+  for (int icol = lc; icol <= uc; icol++)
   {
-    Standard_Integer irow;
+    int irow;
     for (irow = lr; irow <= ur; irow++)
     {
       Temp(irow) = Coeffs(irow, icol);
@@ -1848,22 +1845,22 @@ void PLib::UTrimming(const Standard_Real   U1,
 
 //=================================================================================================
 
-void PLib::VTrimming(const Standard_Real   V1,
-                     const Standard_Real   V2,
-                     TColgp_Array2OfPnt&   Coeffs,
-                     TColStd_Array2OfReal* WCoeffs)
+void PLib::VTrimming(const double                V1,
+                     const double                V2,
+                     NCollection_Array2<gp_Pnt>& Coeffs,
+                     NCollection_Array2<double>* WCoeffs)
 {
-  Standard_Boolean     rat = WCoeffs != NULL;
-  Standard_Integer     lr  = Coeffs.LowerRow();
-  Standard_Integer     ur  = Coeffs.UpperRow();
-  Standard_Integer     lc  = Coeffs.LowerCol();
-  Standard_Integer     uc  = Coeffs.UpperCol();
-  TColgp_Array1OfPnt   Temp(lc, uc);
-  TColStd_Array1OfReal Temw(lc, uc);
+  bool                       rat = WCoeffs != NULL;
+  int                        lr  = Coeffs.LowerRow();
+  int                        ur  = Coeffs.UpperRow();
+  int                        lc  = Coeffs.LowerCol();
+  int                        uc  = Coeffs.UpperCol();
+  NCollection_Array1<gp_Pnt> Temp(lc, uc);
+  NCollection_Array1<double> Temw(lc, uc);
 
-  for (Standard_Integer irow = lr; irow <= ur; irow++)
+  for (int irow = lr; irow <= ur; irow++)
   {
-    Standard_Integer icol;
+    int icol;
     for (icol = lc; icol <= uc; icol++)
     {
       Temp(icol) = Coeffs(irow, icol);
@@ -1886,16 +1883,16 @@ void PLib::VTrimming(const Standard_Real   V1,
 
 //=================================================================================================
 
-Standard_Boolean PLib::HermiteInterpolate(const Standard_Integer      Dimension,
-                                          const Standard_Real         FirstParameter,
-                                          const Standard_Real         LastParameter,
-                                          const Standard_Integer      FirstOrder,
-                                          const Standard_Integer      LastOrder,
-                                          const TColStd_Array2OfReal& FirstConstr,
-                                          const TColStd_Array2OfReal& LastConstr,
-                                          TColStd_Array1OfReal&       Coefficients)
+bool PLib::HermiteInterpolate(const int                         Dimension,
+                              const double                      FirstParameter,
+                              const double                      LastParameter,
+                              const int                         FirstOrder,
+                              const int                         LastOrder,
+                              const NCollection_Array2<double>& FirstConstr,
+                              const NCollection_Array2<double>& LastConstr,
+                              NCollection_Array1<double>&       Coefficients)
 {
-  Standard_Real Pattern[3][6];
+  double Pattern[3][6];
 
   // portage HP : il faut les initialiser 1 par 1
 
@@ -1920,12 +1917,12 @@ Standard_Boolean PLib::HermiteInterpolate(const Standard_Integer      Dimension,
 
   math_Matrix A(0, FirstOrder + LastOrder + 1, 0, FirstOrder + LastOrder + 1);
   //  The initialisation of the matrix A
-  Standard_Integer irow;
+  int irow;
   for (irow = 0; irow <= FirstOrder; irow++)
   {
-    Standard_Real FirstVal = 1.;
+    double FirstVal = 1.;
 
-    for (Standard_Integer icol = 0; icol <= FirstOrder + LastOrder + 1; icol++)
+    for (int icol = 0; icol <= FirstOrder + LastOrder + 1; icol++)
     {
       A(irow, icol) = Pattern[irow][icol] * FirstVal;
       if (irow <= icol)
@@ -1935,9 +1932,9 @@ Standard_Boolean PLib::HermiteInterpolate(const Standard_Integer      Dimension,
 
   for (irow = 0; irow <= LastOrder; irow++)
   {
-    Standard_Real LastVal = 1.;
+    double LastVal = 1.;
 
-    for (Standard_Integer icol = 0; icol <= FirstOrder + LastOrder + 1; icol++)
+    for (int icol = 0; icol <= FirstOrder + LastOrder + 1; icol++)
     {
       A(irow + FirstOrder + 1, icol) = Pattern[irow][icol] * LastVal;
       if (irow <= icol)
@@ -1962,12 +1959,12 @@ Standard_Boolean PLib::HermiteInterpolate(const Standard_Integer      Dimension,
   math_Gauss Equations(A);
   //  std::cout << "A=" << A << std::endl;
 
-  for (Standard_Integer idim = 1; idim <= Dimension; idim++)
+  for (int idim = 1; idim <= Dimension; idim++)
   {
     //  std::cout << "idim=" << idim << std::endl;
 
-    math_Vector      B(0, FirstOrder + LastOrder + 1);
-    Standard_Integer icol;
+    math_Vector B(0, FirstOrder + LastOrder + 1);
+    int         icol;
     for (icol = 0; icol <= FirstOrder; icol++)
       B(icol) = FirstConstr(idim, icol);
 
@@ -1979,24 +1976,24 @@ Standard_Boolean PLib::HermiteInterpolate(const Standard_Integer      Dimension,
     Equations.Solve(B);
     //  std::cout << "After Solving" << std::endl << "B=" << B << std::endl;
 
-    if (Equations.IsDone() == Standard_False)
-      return Standard_False;
+    if (Equations.IsDone() == false)
+      return false;
 
     //  the filling of the Coefficients
 
     for (icol = 0; icol <= FirstOrder + LastOrder + 1; icol++)
       Coefficients(Dimension * icol + idim - 1) = B(icol);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void PLib::JacobiParameters(const GeomAbs_Shape    ConstraintOrder,
-                            const Standard_Integer MaxDegree,
-                            const Standard_Integer Code,
-                            Standard_Integer&      NbGaussPoints,
-                            Standard_Integer&      WorkDegree)
+void PLib::JacobiParameters(const GeomAbs_Shape ConstraintOrder,
+                            const int           MaxDegree,
+                            const int           Code,
+                            int&                NbGaussPoints,
+                            int&                WorkDegree)
 {
   // ConstraintOrder: Ordre de contrainte aux extremites :
   //            C0 = contraintes de passage aux bornes;
@@ -2020,10 +2017,10 @@ void PLib::JacobiParameters(const GeomAbs_Shape    ConstraintOrder,
 
   // The possible values of NbGaussPoints
 
-  const Standard_Integer NDEG8 = 8, NDEG10 = 10, NDEG15 = 15, NDEG20 = 20, NDEG25 = 25, NDEG30 = 30,
-                         NDEG40 = 40, NDEG50 = 50, NDEG61 = 61;
+  const int NDEG8 = 8, NDEG10 = 10, NDEG15 = 15, NDEG20 = 20, NDEG25 = 25, NDEG30 = 30, NDEG40 = 40,
+            NDEG50 = 50, NDEG61 = 61;
 
-  Standard_Integer NivConstr = 0;
+  int NivConstr = 0;
   switch (ConstraintOrder)
   {
     case GeomAbs_C0:
@@ -2047,7 +2044,7 @@ void PLib::JacobiParameters(const GeomAbs_Shape    ConstraintOrder,
     WorkDegree = MaxDegree + 6;
 
   //---> Nbre mini de points necessaires.
-  Standard_Integer IPMIN = 0;
+  int IPMIN = 0;
   if (WorkDegree < NDEG8)
     IPMIN = NDEG8;
   else if (WorkDegree < NDEG10)
@@ -2069,7 +2066,7 @@ void PLib::JacobiParameters(const GeomAbs_Shape    ConstraintOrder,
   else
     throw Standard_ConstructionError("Invalid MaxDegree");
   // ---> Nbre de points voulus.
-  Standard_Integer IWANT = 0;
+  int IWANT = 0;
   switch (Code)
   {
     case -5:
@@ -2114,9 +2111,9 @@ void PLib::JacobiParameters(const GeomAbs_Shape    ConstraintOrder,
 // purpose  : translates from GeomAbs_Shape to Integer
 //=======================================================================
 
-Standard_Integer PLib::NivConstr(const GeomAbs_Shape ConstraintOrder)
+int PLib::NivConstr(const GeomAbs_Shape ConstraintOrder)
 {
-  Standard_Integer NivConstr = 0;
+  int NivConstr = 0;
   switch (ConstraintOrder)
   {
     case GeomAbs_C0:
@@ -2139,7 +2136,7 @@ Standard_Integer PLib::NivConstr(const GeomAbs_Shape ConstraintOrder)
 // purpose  : translates from Integer to GeomAbs_Shape
 //=======================================================================
 
-GeomAbs_Shape PLib::ConstraintOrder(const Standard_Integer NivConstr)
+GeomAbs_Shape PLib::ConstraintOrder(const int NivConstr)
 {
   GeomAbs_Shape ConstraintOrder = GeomAbs_C0;
   switch (NivConstr)
@@ -2161,19 +2158,19 @@ GeomAbs_Shape PLib::ConstraintOrder(const Standard_Integer NivConstr)
 
 //=================================================================================================
 
-void PLib::EvalLength(const Standard_Integer Degree,
-                      const Standard_Integer Dimension,
-                      Standard_Real&         PolynomialCoeff,
-                      const Standard_Real    U1,
-                      const Standard_Real    U2,
-                      Standard_Real&         Length)
+void PLib::EvalLength(const int    Degree,
+                      const int    Dimension,
+                      double&      PolynomialCoeff,
+                      const double U1,
+                      const double U2,
+                      double&      Length)
 {
-  Standard_Integer i, j, idim, degdim;
-  Standard_Real    C1, C2, Sum, Tran, X1, X2, Der1, Der2, D1, D2, DD;
+  int    i, j, idim, degdim;
+  double C1, C2, Sum, Tran, X1, X2, Der1, Der2, D1, D2, DD;
 
-  Standard_Real* PolynomialArray = &PolynomialCoeff;
+  double* PolynomialArray = &PolynomialCoeff;
 
-  Standard_Integer NbGaussPoints = 4 * std::min((Degree / 4) + 1, 10);
+  int NbGaussPoints = 4 * std::min((Degree / 4) + 1, 10);
 
   math_Vector GaussPoints(1, NbGaussPoints);
   math::GaussPoints(NbGaussPoints, GaussPoints);
@@ -2225,20 +2222,20 @@ void PLib::EvalLength(const Standard_Integer Degree,
 
 //=================================================================================================
 
-void PLib::EvalLength(const Standard_Integer Degree,
-                      const Standard_Integer Dimension,
-                      Standard_Real&         PolynomialCoeff,
-                      const Standard_Real    U1,
-                      const Standard_Real    U2,
-                      const Standard_Real    Tol,
-                      Standard_Real&         Length,
-                      Standard_Real&         Error)
+void PLib::EvalLength(const int    Degree,
+                      const int    Dimension,
+                      double&      PolynomialCoeff,
+                      const double U1,
+                      const double U2,
+                      const double Tol,
+                      double&      Length,
+                      double&      Error)
 {
-  Standard_Integer i;
-  Standard_Integer NbSubInt = 1,  // Current number of subintervals
-    MaxNbIter               = 13, // Max number of iterations
-    NbIter                  = 1;  // Current number of iterations
-  Standard_Real dU, OldLen, LenI;
+  int i;
+  int NbSubInt = 1,  // Current number of subintervals
+    MaxNbIter  = 13, // Max number of iterations
+    NbIter     = 1;  // Current number of iterations
+  double dU, OldLen, LenI;
 
   PLib::EvalLength(Degree, Dimension, PolynomialCoeff, U1, U2, Length);
 

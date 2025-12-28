@@ -19,17 +19,18 @@ IMPLEMENT_STANDARD_RTTIEXT(Vrml_AsciiText, Standard_Transient)
 Vrml_AsciiText::Vrml_AsciiText()
 {
   TCollection_AsciiString tmpS("");
-  myString = new TColStd_HArray1OfAsciiString(1, 1, tmpS);
+  myString = new NCollection_HArray1<TCollection_AsciiString>(1, 1, tmpS);
 
   mySpacing       = 1;
   myJustification = Vrml_LEFT;
   myWidth         = 0;
 }
 
-Vrml_AsciiText::Vrml_AsciiText(const Handle(TColStd_HArray1OfAsciiString)& aString,
-                               const Standard_Real                         aSpacing,
-                               const Vrml_AsciiTextJustification           aJustification,
-                               const Standard_Real                         aWidth)
+Vrml_AsciiText::Vrml_AsciiText(
+  const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString,
+  const double                                                     aSpacing,
+  const Vrml_AsciiTextJustification                                aJustification,
+  const double                                                     aWidth)
 {
   myString        = aString;
   mySpacing       = aSpacing;
@@ -37,22 +38,23 @@ Vrml_AsciiText::Vrml_AsciiText(const Handle(TColStd_HArray1OfAsciiString)& aStri
   myWidth         = aWidth;
 }
 
-void Vrml_AsciiText::SetString(const Handle(TColStd_HArray1OfAsciiString)& aString)
+void Vrml_AsciiText::SetString(
+  const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString)
 {
   myString = aString;
 }
 
-Handle(TColStd_HArray1OfAsciiString) Vrml_AsciiText::String() const
+occ::handle<NCollection_HArray1<TCollection_AsciiString>> Vrml_AsciiText::String() const
 {
   return myString;
 }
 
-void Vrml_AsciiText::SetSpacing(const Standard_Real aSpacing)
+void Vrml_AsciiText::SetSpacing(const double aSpacing)
 {
   mySpacing = aSpacing;
 }
 
-Standard_Real Vrml_AsciiText::Spacing() const
+double Vrml_AsciiText::Spacing() const
 {
   return mySpacing;
 }
@@ -67,19 +69,19 @@ Vrml_AsciiTextJustification Vrml_AsciiText::Justification() const
   return myJustification;
 }
 
-void Vrml_AsciiText::SetWidth(const Standard_Real aWidth)
+void Vrml_AsciiText::SetWidth(const double aWidth)
 {
   myWidth = aWidth;
 }
 
-Standard_Real Vrml_AsciiText::Width() const
+double Vrml_AsciiText::Width() const
 {
   return myWidth;
 }
 
 Standard_OStream& Vrml_AsciiText::Print(Standard_OStream& anOStream) const
 {
-  Standard_Integer i;
+  int i;
 
   anOStream << "AsciiText {\n";
 

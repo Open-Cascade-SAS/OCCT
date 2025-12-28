@@ -56,11 +56,11 @@
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_Array1OfAsciiString.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_Map.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_TransferReader.hxx>
@@ -76,8 +76,8 @@ STEPControl_Reader::STEPControl_Reader()
 
 //=================================================================================================
 
-STEPControl_Reader::STEPControl_Reader(const Handle(XSControl_WorkSession)& WS,
-                                       const Standard_Boolean               scratch)
+STEPControl_Reader::STEPControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
+                                       const bool                                scratch)
 {
   STEPControl_Controller::Init();
   SetWS(WS, scratch);
@@ -86,22 +86,22 @@ STEPControl_Reader::STEPControl_Reader(const Handle(XSControl_WorkSession)& WS,
 
 //=================================================================================================
 
-Handle(StepData_StepModel) STEPControl_Reader::StepModel() const
+occ::handle<StepData_StepModel> STEPControl_Reader::StepModel() const
 {
-  return Handle(StepData_StepModel)::DownCast(Model());
+  return occ::down_cast<StepData_StepModel>(Model());
 }
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString filename)
+IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char* filename)
 {
-  Handle(IFSelect_WorkLibrary) aLibrary  = WS()->WorkLibrary();
-  Handle(Interface_Protocol)   aProtocol = WS()->Protocol();
+  occ::handle<IFSelect_WorkLibrary> aLibrary  = WS()->WorkLibrary();
+  occ::handle<Interface_Protocol>   aProtocol = WS()->Protocol();
   if (aLibrary.IsNull())
     return IFSelect_RetVoid;
   if (aProtocol.IsNull())
     return IFSelect_RetVoid;
-  Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
+  occ::handle<StepData_StepModel> aStepModel = new StepData_StepModel;
   aStepModel->InternalParameters.InitFromStatic();
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
   APIHeaderSection_MakeHeader aHeaderMaker;
@@ -110,7 +110,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString filena
   try
   {
     OCC_CATCH_SIGNALS
-    Standard_Integer stat = aLibrary->ReadFile(filename, aStepModel, aProtocol);
+    int stat = aLibrary->ReadFile(filename, aStepModel, aProtocol);
     if (stat == 0)
       status = IFSelect_RetDone;
     else if (stat < 0)
@@ -136,17 +136,17 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString filena
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString   filename,
+IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char*              filename,
                                                    const DESTEP_Parameters& theParams)
 {
-  Handle(IFSelect_WorkLibrary) aLibrary  = WS()->WorkLibrary();
-  Handle(Interface_Protocol)   aProtocol = WS()->Protocol();
+  occ::handle<IFSelect_WorkLibrary> aLibrary  = WS()->WorkLibrary();
+  occ::handle<Interface_Protocol>   aProtocol = WS()->Protocol();
   if (aLibrary.IsNull())
     return IFSelect_RetVoid;
   if (aProtocol.IsNull())
     return IFSelect_RetVoid;
-  Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
-  aStepModel->InternalParameters        = theParams;
+  occ::handle<StepData_StepModel> aStepModel = new StepData_StepModel;
+  aStepModel->InternalParameters             = theParams;
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
   APIHeaderSection_MakeHeader aHeaderMaker;
   aHeaderMaker.Apply(aStepModel);
@@ -154,7 +154,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString   file
   try
   {
     OCC_CATCH_SIGNALS
-    Standard_Integer stat = aLibrary->ReadFile(filename, aStepModel, aProtocol);
+    int stat = aLibrary->ReadFile(filename, aStepModel, aProtocol);
     if (stat == 0)
       status = IFSelect_RetDone;
     else if (stat < 0)
@@ -180,16 +180,15 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString   file
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString theName,
-                                                     std::istream&          theIStream)
+IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char* theName, std::istream& theIStream)
 {
-  Handle(IFSelect_WorkLibrary) aLibrary  = WS()->WorkLibrary();
-  Handle(Interface_Protocol)   aProtocol = WS()->Protocol();
+  occ::handle<IFSelect_WorkLibrary> aLibrary  = WS()->WorkLibrary();
+  occ::handle<Interface_Protocol>   aProtocol = WS()->Protocol();
   if (aLibrary.IsNull())
     return IFSelect_RetVoid;
   if (aProtocol.IsNull())
     return IFSelect_RetVoid;
-  Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
+  occ::handle<StepData_StepModel> aStepModel = new StepData_StepModel;
   aStepModel->InternalParameters.InitFromStatic();
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
   APIHeaderSection_MakeHeader aHeaderMaker;
@@ -198,7 +197,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString theN
   try
   {
     OCC_CATCH_SIGNALS
-    Standard_Integer stat = aLibrary->ReadStream(theName, theIStream, aStepModel, aProtocol);
+    int stat = aLibrary->ReadStream(theName, theIStream, aStepModel, aProtocol);
     if (stat == 0)
       status = IFSelect_RetDone;
     else if (stat < 0)
@@ -224,18 +223,18 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString theN
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString   theName,
+IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char*              theName,
                                                      const DESTEP_Parameters& theParams,
                                                      std::istream&            theIStream)
 {
-  Handle(IFSelect_WorkLibrary) aLibrary  = WS()->WorkLibrary();
-  Handle(Interface_Protocol)   aProtocol = WS()->Protocol();
+  occ::handle<IFSelect_WorkLibrary> aLibrary  = WS()->WorkLibrary();
+  occ::handle<Interface_Protocol>   aProtocol = WS()->Protocol();
   if (aLibrary.IsNull())
     return IFSelect_RetVoid;
   if (aProtocol.IsNull())
     return IFSelect_RetVoid;
-  Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
-  aStepModel->InternalParameters        = theParams;
+  occ::handle<StepData_StepModel> aStepModel = new StepData_StepModel;
+  aStepModel->InternalParameters             = theParams;
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
   APIHeaderSection_MakeHeader aHeaderMaker;
   aHeaderMaker.Apply(aStepModel);
@@ -243,7 +242,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString   th
   try
   {
     OCC_CATCH_SIGNALS
-    Standard_Integer stat = aLibrary->ReadStream(theName, theIStream, aStepModel, aProtocol);
+    int stat = aLibrary->ReadStream(theName, theIStream, aStepModel, aProtocol);
     if (stat == 0)
       status = IFSelect_RetDone;
     else if (stat < 0)
@@ -269,26 +268,25 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString   th
 
 //=================================================================================================
 
-Standard_Boolean STEPControl_Reader::TransferRoot(const Standard_Integer       num,
-                                                  const Message_ProgressRange& theProgress)
+bool STEPControl_Reader::TransferRoot(const int num, const Message_ProgressRange& theProgress)
 {
   return TransferOneRoot(num, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Integer STEPControl_Reader::NbRootsForTransfer()
+int STEPControl_Reader::NbRootsForTransfer()
 {
   if (therootsta)
     return theroots.Length();
-  therootsta = Standard_True;
+  therootsta = true;
 
-  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(WS()->Model());
+  occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(WS()->Model());
   // theroots.Clear();
-  Standard_Integer nb = Model()->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = Model()->NbEntities();
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient) ent = Model()->Value(i);
+    occ::handle<Standard_Transient> ent = Model()->Value(i);
     if (aStepModel->InternalParameters.ReadAllShapes == 1)
     {
       // Special case to read invalid shape_representation without links to shapes.
@@ -317,21 +315,21 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
       if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionWithAssociatedDocuments)))
       {
         // check if PDWAD-> PDF <-Document_Product_Equivalence.
-        Standard_Boolean                                           iSexclude = Standard_False;
-        Handle(StepBasic_ProductDefinitionWithAssociatedDocuments) PDWAD =
-          Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)::DownCast(ent);
+        bool                                                            iSexclude = false;
+        occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments> PDWAD =
+          occ::down_cast<StepBasic_ProductDefinitionWithAssociatedDocuments>(ent);
         Interface_EntityIterator PDWADsubs = WS()->Graph().Shareds(PDWAD);
         for (PDWADsubs.Start(); PDWADsubs.More(); PDWADsubs.Next())
         {
           if (!PDWADsubs.Value()->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
             continue;
-          Handle(StepBasic_ProductDefinitionFormation) localPDF =
-            Handle(StepBasic_ProductDefinitionFormation)::DownCast(PDWADsubs.Value());
+          occ::handle<StepBasic_ProductDefinitionFormation> localPDF =
+            occ::down_cast<StepBasic_ProductDefinitionFormation>(PDWADsubs.Value());
           Interface_EntityIterator PDFsubs = WS()->Graph().Sharings(localPDF);
           for (PDFsubs.Start(); PDFsubs.More(); PDFsubs.Next())
             if (PDFsubs.Value()->IsKind(STANDARD_TYPE(StepBasic_DocumentProductEquivalence)))
             {
-              iSexclude = Standard_True;
+              iSexclude = true;
               break;
             }
           if (iSexclude)
@@ -346,19 +344,20 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
           continue;
         }
       }
-      Handle(StepBasic_ProductDefinition) PD = Handle(StepBasic_ProductDefinition)::DownCast(ent);
-      Standard_Boolean                    IsRoot = Standard_True;
-      const Interface_Graph&              graph  = WS()->Graph();
+      occ::handle<StepBasic_ProductDefinition> PD =
+        occ::down_cast<StepBasic_ProductDefinition>(ent);
+      bool                   IsRoot = true;
+      const Interface_Graph& graph  = WS()->Graph();
       // determinate roots used NextAssemblyUsageOccurrence
       Interface_EntityIterator subs = graph.Sharings(PD);
       for (subs.Start(); subs.More(); subs.Next())
       {
-        Handle(StepRepr_NextAssemblyUsageOccurrence) NAUO =
-          Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(subs.Value());
+        occ::handle<StepRepr_NextAssemblyUsageOccurrence> NAUO =
+          occ::down_cast<StepRepr_NextAssemblyUsageOccurrence>(subs.Value());
         if (NAUO.IsNull())
           continue;
         if (PD == NAUO->RelatedProductDefinition())
-          IsRoot = Standard_False;
+          IsRoot = false;
       }
       // determinate roots used ProductDefinitionContext
       if (IsRoot)
@@ -366,36 +365,36 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
         DESTEP_Parameters::ReadMode_ProductContext aProdContMode =
           aStepModel->InternalParameters.ReadProductContext;
         TCollection_AsciiString str1 = aStepModel->InternalParameters.GetString(aProdContMode);
-        Standard_Integer        ICS  = aStepModel->InternalParameters.ReadProductContext;
+        int                     ICS  = aStepModel->InternalParameters.ReadProductContext;
         if (ICS > 1)
         {
           subs = graph.Shareds(PD);
           for (subs.Start(); subs.More(); subs.Next())
           {
-            Handle(StepBasic_ProductDefinitionContext) PDC =
-              Handle(StepBasic_ProductDefinitionContext)::DownCast(subs.Value());
+            occ::handle<StepBasic_ProductDefinitionContext> PDC =
+              occ::down_cast<StepBasic_ProductDefinitionContext>(subs.Value());
             if (PDC.IsNull())
               continue;
             const char* str2 = PDC->LifeCycleStage()->String().ToCString();
             const char* str3 = PDC->Name()->String().ToCString();
             if (!(strcasecmp(str1.ToCString(), str2) == 0
                   || strcasecmp(str1.ToCString(), str3) == 0))
-              IsRoot = Standard_False;
+              IsRoot = false;
           }
         }
       }
       // determinate roots used ProductDefinitionFormationRelationship
       // subs = graph.Shareds(PD);
       // for(subs.Start(); subs.More(); subs.Next()) {
-      //  Handle(StepBasic_ProductDefinitionFormation) PDF =
-      //    Handle(StepBasic_ProductDefinitionFormation)::DownCast(subs.Value());
+      //  occ::handle<StepBasic_ProductDefinitionFormation> PDF =
+      //    occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
       //  if (PDF.IsNull()) continue;
       //  Interface_EntityIterator subs1 = graph.Sharings(PDF);
       //  for(subs1.Start(); subs1.More(); subs1.Next()) {
-      //    Handle(StepBasic_ProductDefinitionFormationRelationship) PDFR =
-      //      Handle(StepBasic_ProductDefinitionFormationRelationship)::DownCast(subs1.Value());
+      //    occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
+      //      occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs1.Value());
       //    if (PDFR.IsNull()) continue;
-      //    if (PDF==PDFR->RelatedProductDefinition()) IsRoot=Standard_False;
+      //    if (PDF==PDFR->RelatedProductDefinition()) IsRoot=false;
       //  }
       //}
       if (IsRoot)
@@ -409,40 +408,40 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
     {
       if (ent->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
       {
-        Standard_Boolean                                IsRoot = Standard_True;
-        Handle(StepShape_ShapeDefinitionRepresentation) SDR =
-          Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(ent);
-        Handle(StepRepr_PropertyDefinition) PropDef = SDR->Definition().PropertyDefinition();
+        bool                                                 IsRoot = true;
+        occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+          occ::down_cast<StepShape_ShapeDefinitionRepresentation>(ent);
+        occ::handle<StepRepr_PropertyDefinition> PropDef = SDR->Definition().PropertyDefinition();
         if (!PropDef.IsNull())
         {
-          Handle(StepBasic_ProductDefinition) PD = PropDef->Definition().ProductDefinition();
+          occ::handle<StepBasic_ProductDefinition> PD = PropDef->Definition().ProductDefinition();
           if (!PD.IsNull())
-            IsRoot = Standard_False;
+            IsRoot = false;
           if (IsRoot)
           {
-            Handle(StepRepr_ShapeAspect) SA = PropDef->Definition().ShapeAspect();
+            occ::handle<StepRepr_ShapeAspect> SA = PropDef->Definition().ShapeAspect();
             if (!SA.IsNull())
             {
-              Handle(StepRepr_ProductDefinitionShape) PDS = SA->OfShape();
-              PD                                          = PDS->Definition().ProductDefinition();
+              occ::handle<StepRepr_ProductDefinitionShape> PDS = SA->OfShape();
+              PD = PDS->Definition().ProductDefinition();
               if (!PD.IsNull())
-                IsRoot = Standard_False;
+                IsRoot = false;
             }
           }
           if (IsRoot)
           {
-            Handle(StepRepr_NextAssemblyUsageOccurrence) NAUO =
-              Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(
+            occ::handle<StepRepr_NextAssemblyUsageOccurrence> NAUO =
+              occ::down_cast<StepRepr_NextAssemblyUsageOccurrence>(
                 PropDef->Definition().ProductDefinitionRelationship());
             if (!NAUO.IsNull())
-              IsRoot = Standard_False;
+              IsRoot = false;
           }
           if (IsRoot)
           {
-            Handle(StepShape_ShapeRepresentation) SR =
-              Handle(StepShape_ShapeRepresentation)::DownCast(SDR->UsedRepresentation());
+            occ::handle<StepShape_ShapeRepresentation> SR =
+              occ::down_cast<StepShape_ShapeRepresentation>(SDR->UsedRepresentation());
             if (SR.IsNull())
-              IsRoot = Standard_False;
+              IsRoot = false;
           }
         }
         if (IsRoot)
@@ -453,38 +452,38 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
       }
       if (ent->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
       {
-        Standard_Boolean                      IsRoot = Standard_True;
-        Handle(StepShape_ShapeRepresentation) SR =
-          Handle(StepShape_ShapeRepresentation)::DownCast(ent);
+        bool                                       IsRoot = true;
+        occ::handle<StepShape_ShapeRepresentation> SR =
+          occ::down_cast<StepShape_ShapeRepresentation>(ent);
         const Interface_Graph&   graph = WS()->Graph();
         Interface_EntityIterator subs  = graph.Sharings(SR);
         for (subs.Start(); subs.More() && IsRoot; subs.Next())
         {
-          Handle(StepShape_ShapeDefinitionRepresentation) SDR =
-            Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs.Value());
+          occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+            occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs.Value());
           if (!SDR.IsNull())
-            IsRoot = Standard_False;
+            IsRoot = false;
           if (IsRoot)
           {
-            Handle(StepRepr_RepresentationRelationship) RR =
-              Handle(StepRepr_RepresentationRelationship)::DownCast(subs.Value());
+            occ::handle<StepRepr_RepresentationRelationship> RR =
+              occ::down_cast<StepRepr_RepresentationRelationship>(subs.Value());
             if (!RR.IsNull())
             {
-              Handle(StepShape_ShapeRepresentation) SR2 =
-                Handle(StepShape_ShapeRepresentation)::DownCast(RR->Rep1());
+              occ::handle<StepShape_ShapeRepresentation> SR2 =
+                occ::down_cast<StepShape_ShapeRepresentation>(RR->Rep1());
               if (SR == SR2)
-                SR2 = Handle(StepShape_ShapeRepresentation)::DownCast(RR->Rep2());
+                SR2 = occ::down_cast<StepShape_ShapeRepresentation>(RR->Rep2());
               if (!SR2.IsNull())
               {
                 Interface_EntityIterator subs2 = graph.Sharings(SR2);
                 for (subs2.Start(); subs2.More(); subs2.Next())
                 {
-                  Handle(StepShape_ShapeDefinitionRepresentation) SDR2 =
-                    Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs2.Value());
+                  occ::handle<StepShape_ShapeDefinitionRepresentation> SDR2 =
+                    occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs2.Value());
                   if (!SDR2.IsNull())
-                    IsRoot = Standard_False;
+                    IsRoot = false;
                   // else {
-                  //   if(SR==SRR->Rep2()) IsRoot = Standard_False;
+                  //   if(SR==SRR->Rep2()) IsRoot = false;
                   // }
                 }
               }
@@ -492,24 +491,24 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
           }
           if (IsRoot)
           {
-            Handle(StepRepr_RepresentationMap) RM =
-              Handle(StepRepr_RepresentationMap)::DownCast(subs.Value());
+            occ::handle<StepRepr_RepresentationMap> RM =
+              occ::down_cast<StepRepr_RepresentationMap>(subs.Value());
             if (!RM.IsNull())
             {
               Interface_EntityIterator subs2 = graph.Sharings(RM);
               for (subs2.Start(); subs2.More(); subs2.Next())
               {
-                Handle(StepRepr_MappedItem) MI =
-                  Handle(StepRepr_MappedItem)::DownCast(subs2.Value());
+                occ::handle<StepRepr_MappedItem> MI =
+                  occ::down_cast<StepRepr_MappedItem>(subs2.Value());
                 if (!MI.IsNull())
                 {
                   Interface_EntityIterator subs3 = graph.Sharings(MI);
                   for (subs3.Start(); subs3.More(); subs3.Next())
                   {
-                    Handle(StepShape_ShapeRepresentation) SR2 =
-                      Handle(StepShape_ShapeRepresentation)::DownCast(subs3.Value());
+                    occ::handle<StepShape_ShapeRepresentation> SR2 =
+                      occ::down_cast<StepShape_ShapeRepresentation>(subs3.Value());
                     if (!SR2.IsNull())
-                      IsRoot = Standard_False;
+                      IsRoot = false;
                   }
                 }
               }
@@ -530,11 +529,12 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
 
 //=================================================================================================
 
-void STEPControl_Reader::FileUnits(TColStd_SequenceOfAsciiString& theUnitLengthNames,
-                                   TColStd_SequenceOfAsciiString& theUnitAngleNames,
-                                   TColStd_SequenceOfAsciiString& theUnitSolidAngleNames)
+void STEPControl_Reader::FileUnits(
+  NCollection_Sequence<TCollection_AsciiString>& theUnitLengthNames,
+  NCollection_Sequence<TCollection_AsciiString>& theUnitAngleNames,
+  NCollection_Sequence<TCollection_AsciiString>& theUnitSolidAngleNames)
 {
-  Standard_Integer nbroots = NbRootsForTransfer();
+  int nbroots = NbRootsForTransfer();
   if (!nbroots)
     return;
 
@@ -545,40 +545,40 @@ void STEPControl_Reader::FileUnits(TColStd_SequenceOfAsciiString& theUnitLengthN
     SOLID_ANGLE = 2
   };
 
-  const Interface_Graph&   graph = WS()->Graph();
-  TColStd_MapOfAsciiString aMapUnits[3];
+  const Interface_Graph&                   graph = WS()->Graph();
+  NCollection_Map<TCollection_AsciiString> aMapUnits[3];
 
-  for (Standard_Integer i = 1; i <= nbroots; i++)
+  for (int i = 1; i <= nbroots; i++)
   {
-    Handle(Standard_Transient) anEnt = theroots(i);
-    Standard_Integer           num   = graph.EntityNumber(anEnt);
+    occ::handle<Standard_Transient> anEnt = theroots(i);
+    int                             num   = graph.EntityNumber(anEnt);
     if (!num)
       continue;
-    Handle(StepBasic_ProductDefinition) aProdDef =
-      Handle(StepBasic_ProductDefinition)::DownCast(anEnt);
-    Handle(StepShape_ShapeDefinitionRepresentation) aShapeDefRepr;
+    occ::handle<StepBasic_ProductDefinition> aProdDef =
+      occ::down_cast<StepBasic_ProductDefinition>(anEnt);
+    occ::handle<StepShape_ShapeDefinitionRepresentation> aShapeDefRepr;
     if (!aProdDef.IsNull())
     {
       Interface_EntityIterator subsPD = graph.Sharings(aProdDef);
       for (subsPD.Start(); subsPD.More() && aShapeDefRepr.IsNull(); subsPD.Next())
       {
-        Handle(StepRepr_ProductDefinitionShape) aProdDefShape =
-          Handle(StepRepr_ProductDefinitionShape)::DownCast(subsPD.Value());
+        occ::handle<StepRepr_ProductDefinitionShape> aProdDefShape =
+          occ::down_cast<StepRepr_ProductDefinitionShape>(subsPD.Value());
         if (aProdDefShape.IsNull())
           continue;
-        Interface_EntityIterator              subsSR = graph.Sharings(aProdDefShape);
-        Handle(StepShape_ShapeRepresentation) SR;
+        Interface_EntityIterator                   subsSR = graph.Sharings(aProdDefShape);
+        occ::handle<StepShape_ShapeRepresentation> SR;
         for (subsSR.Start(); subsSR.More() && aShapeDefRepr.IsNull(); subsSR.Next())
         {
-          Handle(StepShape_ShapeDefinitionRepresentation) aCurShapeDefRepr =
-            Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subsSR.Value());
+          occ::handle<StepShape_ShapeDefinitionRepresentation> aCurShapeDefRepr =
+            occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subsSR.Value());
           if (aCurShapeDefRepr.IsNull())
             continue;
-          Handle(StepRepr_Representation) aUseRepr = aCurShapeDefRepr->UsedRepresentation();
+          occ::handle<StepRepr_Representation> aUseRepr = aCurShapeDefRepr->UsedRepresentation();
           if (aUseRepr.IsNull())
             continue;
-          Handle(StepShape_ShapeRepresentation) aShapeRepr =
-            Handle(StepShape_ShapeRepresentation)::DownCast(aUseRepr);
+          occ::handle<StepShape_ShapeRepresentation> aShapeRepr =
+            occ::down_cast<StepShape_ShapeRepresentation>(aUseRepr);
           if (aShapeRepr.IsNull())
             continue;
           aShapeDefRepr = aCurShapeDefRepr;
@@ -586,25 +586,25 @@ void STEPControl_Reader::FileUnits(TColStd_SequenceOfAsciiString& theUnitLengthN
       }
     }
     else
-      aShapeDefRepr = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(anEnt);
+      aShapeDefRepr = occ::down_cast<StepShape_ShapeDefinitionRepresentation>(anEnt);
     if (!aShapeDefRepr.IsNull())
     {
-      Handle(StepShape_ShapeRepresentation) aShapeRepr =
-        Handle(StepShape_ShapeRepresentation)::DownCast(aShapeDefRepr->UsedRepresentation());
-      Handle(StepRepr_RepresentationContext) aRepCont = aShapeRepr->ContextOfItems();
+      occ::handle<StepShape_ShapeRepresentation> aShapeRepr =
+        occ::down_cast<StepShape_ShapeRepresentation>(aShapeDefRepr->UsedRepresentation());
+      occ::handle<StepRepr_RepresentationContext> aRepCont = aShapeRepr->ContextOfItems();
       if (aRepCont.IsNull())
         continue;
-      TColStd_Array1OfAsciiString aNameUnits(1, 3);
-      TColStd_Array1OfReal        aFactorUnits(1, 3);
+      NCollection_Array1<TCollection_AsciiString> aNameUnits(1, 3);
+      NCollection_Array1<double>                  aFactorUnits(1, 3);
       if (findUnits(aRepCont, aNameUnits, aFactorUnits))
       {
-        Standard_Integer k = LENGTH;
+        int k = LENGTH;
         for (; k <= SOLID_ANGLE; k++)
         {
           if (!aMapUnits[k].Contains(aNameUnits(k + 1)))
           {
             aMapUnits[k].Add(aNameUnits(k + 1));
-            TColStd_SequenceOfAsciiString& anUnitSeq =
+            NCollection_Sequence<TCollection_AsciiString>& anUnitSeq =
               (k == LENGTH ? theUnitLengthNames
                            : (k == ANLGE ? theUnitAngleNames : theUnitSolidAngleNames));
             anUnitSeq.Append(aNameUnits(k + 1));
@@ -616,28 +616,28 @@ void STEPControl_Reader::FileUnits(TColStd_SequenceOfAsciiString& theUnitLengthN
   // for case when units was not found through PDF or SDR
   if (theUnitLengthNames.IsEmpty())
   {
-    const Handle(Interface_InterfaceModel)& aModel = WS()->Model();
+    const occ::handle<Interface_InterfaceModel>& aModel = WS()->Model();
     if (aModel.IsNull())
       return;
-    Standard_Integer nb = aModel->NbEntities();
-    for (Standard_Integer i = 1; i <= nb; i++)
+    int nb = aModel->NbEntities();
+    for (int i = 1; i <= nb; i++)
     {
-      Handle(Standard_Transient)             anEnt = aModel->Value(i);
-      Handle(StepRepr_RepresentationContext) aRepCont =
-        Handle(StepRepr_RepresentationContext)::DownCast(anEnt);
+      occ::handle<Standard_Transient>             anEnt = aModel->Value(i);
+      occ::handle<StepRepr_RepresentationContext> aRepCont =
+        occ::down_cast<StepRepr_RepresentationContext>(anEnt);
       if (aRepCont.IsNull())
         continue;
-      TColStd_Array1OfAsciiString aNameUnits(1, 3);
-      TColStd_Array1OfReal        aFactorUnits(1, 3);
+      NCollection_Array1<TCollection_AsciiString> aNameUnits(1, 3);
+      NCollection_Array1<double>                  aFactorUnits(1, 3);
       if (findUnits(aRepCont, aNameUnits, aFactorUnits))
       {
-        Standard_Integer k = LENGTH;
+        int k = LENGTH;
         for (; k <= SOLID_ANGLE; k++)
         {
           if (!aMapUnits[k].Contains(aNameUnits(k + 1)))
           {
             aMapUnits[k].Add(aNameUnits(k + 1));
-            TColStd_SequenceOfAsciiString& anUnitSeq =
+            NCollection_Sequence<TCollection_AsciiString>& anUnitSeq =
               (k == LENGTH ? theUnitLengthNames
                            : (k == ANLGE ? theUnitAngleNames : theUnitSolidAngleNames));
             anUnitSeq.Append(aNameUnits(k + 1));
@@ -650,7 +650,7 @@ void STEPControl_Reader::FileUnits(TColStd_SequenceOfAsciiString& theUnitLengthN
 
 //=================================================================================================
 
-void STEPControl_Reader::SetSystemLengthUnit(const Standard_Real theLengthUnit)
+void STEPControl_Reader::SetSystemLengthUnit(const double theLengthUnit)
 {
   if (StepModel().IsNull())
   {
@@ -661,7 +661,7 @@ void STEPControl_Reader::SetSystemLengthUnit(const Standard_Real theLengthUnit)
 
 //=================================================================================================
 
-Standard_Real STEPControl_Reader::SystemLengthUnit() const
+double STEPControl_Reader::SystemLengthUnit() const
 {
   if (StepModel().IsNull())
   {
@@ -672,7 +672,7 @@ Standard_Real STEPControl_Reader::SystemLengthUnit() const
 
 //=================================================================================================
 
-inline static TCollection_AsciiString getSiName(const Handle(StepBasic_SiUnit)& theUnit)
+inline static TCollection_AsciiString getSiName(const occ::handle<StepBasic_SiUnit>& theUnit)
 {
 
   TCollection_AsciiString aName;
@@ -770,56 +770,54 @@ ShapeProcess::OperationsFlags STEPControl_Reader::GetDefaultShapeProcessFlags() 
 
 //=================================================================================================
 
-Standard_Boolean STEPControl_Reader::findUnits(
-  const Handle(StepRepr_RepresentationContext)& theRepCont,
-  TColStd_Array1OfAsciiString&                  theNameUnits,
-  TColStd_Array1OfReal&                         theFactorUnits)
+bool STEPControl_Reader::findUnits(const occ::handle<StepRepr_RepresentationContext>& theRepCont,
+                                   NCollection_Array1<TCollection_AsciiString>&       theNameUnits,
+                                   NCollection_Array1<double>& theFactorUnits)
 {
-  Handle(StepRepr_GlobalUnitAssignedContext)        aContext;
-  Handle(StepRepr_GlobalUncertaintyAssignedContext) aTol;
+  occ::handle<StepRepr_GlobalUnitAssignedContext>        aContext;
+  occ::handle<StepRepr_GlobalUncertaintyAssignedContext> aTol;
 
   if (theRepCont->IsKind(
         STANDARD_TYPE(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)))
   {
-    aContext =
-      Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(
-        theRepCont)
-        ->GlobalUnitAssignedContext();
+    aContext = occ::down_cast<StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext>(
+                 theRepCont)
+                 ->GlobalUnitAssignedContext();
   }
 
   if (theRepCont->IsKind(
         STANDARD_TYPE(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)))
   {
     aContext =
-      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRepCont)
+      occ::down_cast<StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx>(theRepCont)
         ->GlobalUnitAssignedContext();
   }
   if (aContext.IsNull())
-    return Standard_False;
+    return false;
   // Start Computation
-  Handle(StepBasic_HArray1OfNamedUnit) anUnits = aContext->Units();
-  Standard_Integer                     nbU     = aContext->NbUnits();
-  Standard_Integer                     nbFind  = 0;
-  for (Standard_Integer i = 1; i <= nbU; i++)
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> anUnits = aContext->Units();
+  int                                                                nbU     = aContext->NbUnits();
+  int                                                                nbFind  = 0;
+  for (int i = 1; i <= nbU; i++)
   {
-    Handle(StepBasic_NamedUnit)           aNamedUnit = aContext->UnitsValue(i);
-    Handle(StepBasic_ConversionBasedUnit) aConvUnit =
-      Handle(StepBasic_ConversionBasedUnit)::DownCast(aNamedUnit);
-    Standard_Integer        anInd = 0;
+    occ::handle<StepBasic_NamedUnit>           aNamedUnit = aContext->UnitsValue(i);
+    occ::handle<StepBasic_ConversionBasedUnit> aConvUnit =
+      occ::down_cast<StepBasic_ConversionBasedUnit>(aNamedUnit);
+    int                     anInd = 0;
     TCollection_AsciiString aName;
-    Standard_Real           anUnitFact = 0;
+    double                  anUnitFact = 0;
     if (!aConvUnit.IsNull())
     {
-      Handle(StepBasic_MeasureWithUnit) aMeasWithUnit;
-      Handle(Standard_Transient)        aConvFactor = aConvUnit->ConversionFactor();
+      occ::handle<StepBasic_MeasureWithUnit> aMeasWithUnit;
+      occ::handle<Standard_Transient>        aConvFactor = aConvUnit->ConversionFactor();
       if (aConvFactor->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)))
       {
-        aMeasWithUnit = Handle(StepBasic_MeasureWithUnit)::DownCast(aConvFactor);
+        aMeasWithUnit = occ::down_cast<StepBasic_MeasureWithUnit>(aConvFactor);
       }
       else if (aConvFactor->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)))
       {
-        Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem =
-          Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aConvFactor);
+        occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aReprMeasureItem =
+          occ::down_cast<StepRepr_ReprItemAndMeasureWithUnit>(aConvFactor);
         aMeasWithUnit = aReprMeasureItem->GetMeasureWithUnit();
       }
 
@@ -839,7 +837,7 @@ Standard_Boolean STEPControl_Reader::findUnits(
     }
     else
     {
-      Handle(StepBasic_SiUnit) aSiUnit = Handle(StepBasic_SiUnit)::DownCast(aNamedUnit);
+      occ::handle<StepBasic_SiUnit> aSiUnit = occ::down_cast<StepBasic_SiUnit>(aNamedUnit);
       if (aSiUnit.IsNull())
         continue;
       if (aSiUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit)))

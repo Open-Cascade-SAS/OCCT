@@ -20,9 +20,6 @@
 #include <Message_Printer.hxx>
 #include <Standard_OStream.hxx>
 
-class Message_PrinterOStream;
-DEFINE_STANDARD_HANDLE(Message_PrinterOStream, Message_Printer)
-
 //! Implementation of a message printer associated with an std::ostream
 //! The std::ostream may be either externally defined one (e.g. std::cout),
 //! or file stream maintained internally (depending on constructor).
@@ -51,9 +48,9 @@ public:
   //! The option theDoAppend specifies whether file should be
   //! appended or rewritten.
   //! For specific file names (cout, cerr) standard streams are used
-  Standard_EXPORT Message_PrinterOStream(const Standard_CString theFileName,
-                                         const Standard_Boolean theDoAppend,
-                                         const Message_Gravity  theTraceLevel = Message_Info);
+  Standard_EXPORT Message_PrinterOStream(const char*           theFileName,
+                                         const bool            theDoAppend,
+                                         const Message_Gravity theTraceLevel = Message_Info);
 
   //! Flushes the output stream and destroys it if it has been
   //! specified externally with option doFree (or if it is internal
@@ -67,22 +64,22 @@ public:
 
   //! Returns TRUE if text output into console should be colorized depending on message gravity;
   //! TRUE by default.
-  Standard_Boolean ToColorize() const { return myToColorize; }
+  bool ToColorize() const { return myToColorize; }
 
   //! Set if text output into console should be colorized depending on message gravity.
-  void SetToColorize(Standard_Boolean theToColorize) { myToColorize = theToColorize; }
+  void SetToColorize(bool theToColorize) { myToColorize = theToColorize; }
 
 protected:
   //! Puts a message to the current stream
   //! if its gravity is equal or greater
   //! to the trace level set by SetTraceLevel()
   Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity theGravity) const Standard_OVERRIDE;
+                                    const Message_Gravity          theGravity) const override;
 
 private:
-  Standard_Address myStream;
-  Standard_Boolean myIsFile;
-  Standard_Boolean myToColorize;
+  void* myStream;
+  bool  myIsFile;
+  bool  myToColorize;
 };
 
 #endif // _Message_PrinterOStream_HeaderFile

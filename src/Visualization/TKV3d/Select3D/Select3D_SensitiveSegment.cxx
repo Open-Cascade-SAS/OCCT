@@ -23,9 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSegment, Select3D_SensitiveEntity)
 //=================================================================================================
 
 Select3D_SensitiveSegment::Select3D_SensitiveSegment(
-  const Handle(SelectMgr_EntityOwner)& theOwnerId,
-  const gp_Pnt&                        theFirstPnt,
-  const gp_Pnt&                        theLastPnt)
+  const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+  const gp_Pnt&                             theFirstPnt,
+  const gp_Pnt&                             theLastPnt)
     : Select3D_SensitiveEntity(theOwnerId)
 {
   mySFactor = 3;
@@ -37,8 +37,8 @@ Select3D_SensitiveSegment::Select3D_SensitiveSegment(
 // function : Matches
 // purpose  : Checks whether the segment overlaps current selecting volume
 // =======================================================================
-Standard_Boolean Select3D_SensitiveSegment::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult)
+bool Select3D_SensitiveSegment::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                        SelectBasics_PickResult&             thePickResult)
 {
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
@@ -52,18 +52,18 @@ Standard_Boolean Select3D_SensitiveSegment::Matches(SelectBasics_SelectingVolume
 
   if (!theMgr.OverlapsSegment(myStart, myEnd, thePickResult)) // check for overlap
   {
-    return Standard_False;
+    return false;
   }
 
   thePickResult.SetDistToGeomCenter(theMgr.DistToGeometryCenter(CenterOfGeometry()));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveSegment::GetConnected()
+occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveSegment::GetConnected()
 {
-  Handle(Select3D_SensitiveSegment) aNewEntity =
+  occ::handle<Select3D_SensitiveSegment> aNewEntity =
     new Select3D_SensitiveSegment(myOwnerId, myStart, myEnd);
 
   return aNewEntity;
@@ -86,12 +86,12 @@ gp_Pnt Select3D_SensitiveSegment::CenterOfGeometry() const
 //=======================================================================
 Select3D_BndBox3d Select3D_SensitiveSegment::BoundingBox()
 {
-  const SelectMgr_Vec3 aMinPnt(std::min(myStart.X(), myEnd.X()),
-                               std::min(myStart.Y(), myEnd.Y()),
-                               std::min(myStart.Z(), myEnd.Z()));
-  const SelectMgr_Vec3 aMaxPnt(std::max(myStart.X(), myEnd.X()),
-                               std::max(myStart.Y(), myEnd.Y()),
-                               std::max(myStart.Z(), myEnd.Z()));
+  const NCollection_Vec3<double> aMinPnt(std::min(myStart.X(), myEnd.X()),
+                                         std::min(myStart.Y(), myEnd.Y()),
+                                         std::min(myStart.Z(), myEnd.Z()));
+  const NCollection_Vec3<double> aMaxPnt(std::max(myStart.X(), myEnd.X()),
+                                         std::max(myStart.Y(), myEnd.Y()),
+                                         std::max(myStart.Z(), myEnd.Z()));
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }
 
@@ -99,15 +99,14 @@ Select3D_BndBox3d Select3D_SensitiveSegment::BoundingBox()
 // function : NbSubElements
 // purpose  : Returns the amount of points
 //=======================================================================
-Standard_Integer Select3D_SensitiveSegment::NbSubElements() const
+int Select3D_SensitiveSegment::NbSubElements() const
 {
   return 2;
 }
 
 //=================================================================================================
 
-void Select3D_SensitiveSegment::DumpJson(Standard_OStream& theOStream,
-                                         Standard_Integer  theDepth) const
+void Select3D_SensitiveSegment::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)

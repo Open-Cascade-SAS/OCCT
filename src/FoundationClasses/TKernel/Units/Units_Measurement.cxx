@@ -25,21 +25,21 @@
 Units_Measurement::Units_Measurement()
 {
   themeasurement = 0.;
-  myHasToken     = Standard_False;
+  myHasToken     = false;
 }
 
 //=================================================================================================
 
-Units_Measurement::Units_Measurement(const Standard_Real avalue, const Handle(Units_Token)& atoken)
+Units_Measurement::Units_Measurement(const double avalue, const occ::handle<Units_Token>& atoken)
 {
   themeasurement = avalue;
   thetoken       = atoken;
-  myHasToken     = Standard_True;
+  myHasToken     = true;
 }
 
 //=================================================================================================
 
-Units_Measurement::Units_Measurement(const Standard_Real avalue, const Standard_CString aunit)
+Units_Measurement::Units_Measurement(const double avalue, const char* aunit)
 {
   themeasurement = avalue;
   Units_UnitSentence unit(aunit);
@@ -48,32 +48,32 @@ Units_Measurement::Units_Measurement(const Standard_Real avalue, const Standard_
 #ifdef OCCT_DEBUG
     std::cout << "can not create Units_Measurement - incorrect unit" << std::endl;
 #endif
-    myHasToken = Standard_False;
+    myHasToken = false;
   }
   else
   {
     thetoken = unit.Evaluate();
     thetoken->Word(aunit);
     thetoken->Mean("U");
-    myHasToken = Standard_True;
+    myHasToken = true;
   }
 }
 
 //=================================================================================================
 
-void Units_Measurement::Convert(const Standard_CString aunit)
+void Units_Measurement::Convert(const char* aunit)
 {
-  Handle(Units_Token) oldtoken = thetoken;
-  Units_UnitSentence  newunit(aunit);
+  occ::handle<Units_Token> oldtoken = thetoken;
+  Units_UnitSentence       newunit(aunit);
   if (!newunit.IsDone())
   {
     std::cout << "Units_Measurement: can not convert - incorrect unit => result is not correct"
               << std::endl;
     return;
   }
-  Handle(Units_Token)      newtoken   = newunit.Evaluate();
-  Handle(Units_Token)      token      = oldtoken / newtoken;
-  Handle(Units_Dimensions) dimensions = token->Dimensions();
+  occ::handle<Units_Token>      newtoken   = newunit.Evaluate();
+  occ::handle<Units_Token>      token      = oldtoken / newtoken;
+  occ::handle<Units_Dimensions> dimensions = token->Dimensions();
 
   if (dimensions->IsEqual(Units::NullDimensions()))
   {
@@ -95,26 +95,26 @@ void Units_Measurement::Convert(const Standard_CString aunit)
 
 Units_Measurement Units_Measurement::Integer() const
 {
-  return Units_Measurement((Standard_Integer)themeasurement, thetoken);
+  return Units_Measurement((int)themeasurement, thetoken);
 }
 
 //=================================================================================================
 
 Units_Measurement Units_Measurement::Fractional() const
 {
-  return Units_Measurement(themeasurement - (Standard_Integer)themeasurement, thetoken);
+  return Units_Measurement(themeasurement - (int)themeasurement, thetoken);
 }
 
 //=================================================================================================
 
-Standard_Real Units_Measurement::Measurement() const
+double Units_Measurement::Measurement() const
 {
   return themeasurement;
 }
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Measurement::Token() const
+occ::handle<Units_Token> Units_Measurement::Token() const
 {
   return thetoken;
 }
@@ -123,14 +123,14 @@ Handle(Units_Token) Units_Measurement::Token() const
 
 Units_Measurement Units_Measurement::Add(const Units_Measurement& ameasurement) const
 {
-  Standard_Real     value;
+  double            value;
   Units_Measurement measurement;
   if (thetoken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
     return measurement;
-  value                     = ameasurement.Token()->Multiplied(ameasurement.Measurement());
-  value                     = thetoken->Divided(value);
-  value                     = themeasurement + value;
-  Handle(Units_Token) token = thetoken->Creates();
+  value                          = ameasurement.Token()->Multiplied(ameasurement.Measurement());
+  value                          = thetoken->Divided(value);
+  value                          = themeasurement + value;
+  occ::handle<Units_Token> token = thetoken->Creates();
   return Units_Measurement(value, token);
 }
 
@@ -138,14 +138,14 @@ Units_Measurement Units_Measurement::Add(const Units_Measurement& ameasurement) 
 
 Units_Measurement Units_Measurement::Subtract(const Units_Measurement& ameasurement) const
 {
-  Standard_Real     value;
+  double            value;
   Units_Measurement measurement;
   if (thetoken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
     return measurement;
-  value                     = ameasurement.Token()->Multiplied(ameasurement.Measurement());
-  value                     = thetoken->Divided(value);
-  value                     = themeasurement - value;
-  Handle(Units_Token) token = thetoken->Creates();
+  value                          = ameasurement.Token()->Multiplied(ameasurement.Measurement());
+  value                          = thetoken->Divided(value);
+  value                          = themeasurement - value;
+  occ::handle<Units_Token> token = thetoken->Creates();
   return Units_Measurement(value, token);
 }
 
@@ -153,17 +153,17 @@ Units_Measurement Units_Measurement::Subtract(const Units_Measurement& ameasurem
 
 Units_Measurement Units_Measurement::Multiply(const Units_Measurement& ameasurement) const
 {
-  Standard_Real       value = themeasurement * ameasurement.Measurement();
-  Handle(Units_Token) token = thetoken * ameasurement.Token();
+  double                   value = themeasurement * ameasurement.Measurement();
+  occ::handle<Units_Token> token = thetoken * ameasurement.Token();
   return Units_Measurement(value, token);
 }
 
 //=================================================================================================
 
-Units_Measurement Units_Measurement::Multiply(const Standard_Real avalue) const
+Units_Measurement Units_Measurement::Multiply(const double avalue) const
 {
-  Standard_Real       value = themeasurement * avalue;
-  Handle(Units_Token) token = thetoken->Creates();
+  double                   value = themeasurement * avalue;
+  occ::handle<Units_Token> token = thetoken->Creates();
   return Units_Measurement(value, token);
 }
 
@@ -171,32 +171,32 @@ Units_Measurement Units_Measurement::Multiply(const Standard_Real avalue) const
 
 Units_Measurement Units_Measurement::Divide(const Units_Measurement& ameasurement) const
 {
-  Standard_Real       value = themeasurement / ameasurement.Measurement();
-  Handle(Units_Token) token = thetoken / ameasurement.Token();
+  double                   value = themeasurement / ameasurement.Measurement();
+  occ::handle<Units_Token> token = thetoken / ameasurement.Token();
   return Units_Measurement(value, token);
 }
 
 //=================================================================================================
 
-Units_Measurement Units_Measurement::Divide(const Standard_Real avalue) const
+Units_Measurement Units_Measurement::Divide(const double avalue) const
 {
-  Standard_Real       value = themeasurement / avalue;
-  Handle(Units_Token) token = thetoken->Creates();
+  double                   value = themeasurement / avalue;
+  occ::handle<Units_Token> token = thetoken->Creates();
   return Units_Measurement(value, token);
 }
 
 //=================================================================================================
 
-Units_Measurement Units_Measurement::Power(const Standard_Real anexponent) const
+Units_Measurement Units_Measurement::Power(const double anexponent) const
 {
-  Standard_Real       value = pow(themeasurement, anexponent);
-  Handle(Units_Token) token = pow(thetoken, anexponent);
+  double                   value = pow(themeasurement, anexponent);
+  occ::handle<Units_Token> token = pow(thetoken, anexponent);
   return Units_Measurement(value, token);
 }
 
 //=================================================================================================
 
-Standard_Boolean Units_Measurement::HasToken() const
+bool Units_Measurement::HasToken() const
 {
   return myHasToken;
 }
@@ -215,7 +215,7 @@ void Units_Measurement::Dump() const
 // purpose  :
 //=======================================================================
 
-Units_Measurement operator*(const Standard_Real avalue, const Units_Measurement& ameasurement)
+Units_Measurement operator*(const double avalue, const Units_Measurement& ameasurement)
 {
   return ameasurement * avalue;
 }
@@ -225,7 +225,7 @@ Units_Measurement operator*(const Standard_Real avalue, const Units_Measurement&
 // purpose  :
 //=======================================================================
 
-Units_Measurement operator/(const Standard_Real avalue, const Units_Measurement& ameasurement)
+Units_Measurement operator/(const double avalue, const Units_Measurement& ameasurement)
 {
   return ameasurement / avalue;
 }

@@ -32,9 +32,9 @@ public:
 
   Standard_EXPORT virtual ~AdvApprox_Cutting();
 
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real a,
-                                                 const Standard_Real b,
-                                                 Standard_Real&      cuttingvalue) const = 0;
+  Standard_EXPORT virtual bool Value(const double a,
+                                     const double b,
+                                     double&      cuttingvalue) const = 0;
 };
 
 #endif // _AdvApprox_Cutting_HeaderFile

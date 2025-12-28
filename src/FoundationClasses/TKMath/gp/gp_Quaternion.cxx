@@ -24,10 +24,10 @@
 
 //=================================================================================================
 
-Standard_Boolean gp_Quaternion::IsEqual(const gp_Quaternion& theOther) const
+bool gp_Quaternion::IsEqual(const gp_Quaternion& theOther) const
 {
   if (this == &theOther)
-    return Standard_True;
+    return true;
   return std::abs(x - theOther.x) <= gp::Resolution()
          && std::abs(y - theOther.y) <= gp::Resolution()
          && std::abs(z - theOther.z) <= gp::Resolution()
@@ -72,22 +72,22 @@ void gp_Quaternion::SetRotation(const gp_Vec& theVecFrom,
 
 //=================================================================================================
 
-void gp_Quaternion::SetVectorAndAngle(const gp_Vec& theAxis, const Standard_Real theAngle)
+void gp_Quaternion::SetVectorAndAngle(const gp_Vec& theAxis, const double theAngle)
 {
-  gp_Vec        anAxis      = theAxis.Normalized();
-  Standard_Real anAngleHalf = 0.5 * theAngle;
-  Standard_Real sin_a       = std::sin(anAngleHalf);
+  gp_Vec anAxis      = theAxis.Normalized();
+  double anAngleHalf = 0.5 * theAngle;
+  double sin_a       = std::sin(anAngleHalf);
   Set(anAxis.X() * sin_a, anAxis.Y() * sin_a, anAxis.Z() * sin_a, std::cos(anAngleHalf));
 }
 
 //=================================================================================================
 
-void gp_Quaternion::GetVectorAndAngle(gp_Vec& theAxis, Standard_Real& theAngle) const
+void gp_Quaternion::GetVectorAndAngle(gp_Vec& theAxis, double& theAngle) const
 {
-  Standard_Real vl = std::sqrt(x * x + y * y + z * z);
+  double vl = std::sqrt(x * x + y * y + z * z);
   if (vl > gp::Resolution())
   {
-    Standard_Real ivl = 1.0 / vl;
+    double ivl = 1.0 / vl;
     theAxis.SetCoord(x * ivl, y * ivl, z * ivl);
     if (w < 0.0)
     {
@@ -109,7 +109,7 @@ void gp_Quaternion::GetVectorAndAngle(gp_Vec& theAxis, Standard_Real& theAngle) 
 
 void gp_Quaternion::SetMatrix(const gp_Mat& theMat)
 {
-  Standard_Real tr = theMat(1, 1) + theMat(2, 2) + theMat(3, 3); // trace of martix
+  double tr = theMat(1, 1) + theMat(2, 2) + theMat(3, 3); // trace of martix
   if (tr > 0.0)
   { // if trace positive than "w" is biggest component
     Set(theMat(3, 2) - theMat(2, 3),
@@ -148,20 +148,20 @@ void gp_Quaternion::SetMatrix(const gp_Mat& theMat)
 
 gp_Mat gp_Quaternion::GetMatrix() const
 {
-  Standard_Real wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
-  Standard_Real s = 2.0 / SquareNorm();
-  x2              = x * s;
-  y2              = y * s;
-  z2              = z * s;
-  xx              = x * x2;
-  xy              = x * y2;
-  xz              = x * z2;
-  yy              = y * y2;
-  yz              = y * z2;
-  zz              = z * z2;
-  wx              = w * x2;
-  wy              = w * y2;
-  wz              = w * z2;
+  double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+  double s = 2.0 / SquareNorm();
+  x2       = x * s;
+  y2       = y * s;
+  z2       = z * s;
+  xx       = x * x2;
+  xy       = x * y2;
+  xz       = x * z2;
+  yy       = y * y2;
+  yz       = y * z2;
+  zz       = z * z2;
+  wx       = w * x2;
+  wy       = w * y2;
+  wz       = w * z2;
 
   gp_Mat aMat;
 
@@ -195,19 +195,16 @@ namespace
 
 struct gp_EulerSequence_Parameters
 {
-  Standard_Integer i;           // first rotation axis
-  Standard_Integer j;           // next axis of rotation
-  Standard_Integer k;           // third axis
-                                // clang-format off
-  Standard_Boolean isOdd;       // true if order of two first rotation axes is odd permutation, e.g. XZ
-                                // clang-format on
-  Standard_Boolean isTwoAxes;   // true if third rotation is about the same axis as first
-  Standard_Boolean isExtrinsic; // true if rotations are made around fixed axes
+  int i;            // first rotation axis
+  int j;            // next axis of rotation
+  int k;            // third axis
+                    // clang-format off
+  bool isOdd;       // true if order of two first rotation axes is odd permutation, e.g. XZ
+                    // clang-format on
+  bool isTwoAxes;   // true if third rotation is about the same axis as first
+  bool isExtrinsic; // true if rotations are made around fixed axes
 
-  gp_EulerSequence_Parameters(Standard_Integer theAx1,
-                              Standard_Boolean theisOdd,
-                              Standard_Boolean theisTwoAxes,
-                              Standard_Boolean theisExtrinsic)
+  gp_EulerSequence_Parameters(int theAx1, bool theisOdd, bool theisTwoAxes, bool theisExtrinsic)
       : i(theAx1),
         j(1 + (theAx1 + (theisOdd ? 1 : 0)) % 3),
         k(1 + (theAx1 + (theisOdd ? 0 : 1)) % 3),
@@ -221,8 +218,8 @@ struct gp_EulerSequence_Parameters
 gp_EulerSequence_Parameters translateEulerSequence(const gp_EulerSequence theSeq)
 {
   typedef gp_EulerSequence_Parameters Params;
-  const Standard_Boolean              F = Standard_False;
-  const Standard_Boolean              T = Standard_True;
+  const bool                          F = false;
+  const bool                          T = true;
 
   switch (theSeq)
   {
@@ -297,13 +294,13 @@ gp_EulerSequence_Parameters translateEulerSequence(const gp_EulerSequence theSeq
 //=================================================================================================
 
 void gp_Quaternion::SetEulerAngles(const gp_EulerSequence theOrder,
-                                   const Standard_Real    theAlpha,
-                                   const Standard_Real    theBeta,
-                                   const Standard_Real    theGamma)
+                                   const double           theAlpha,
+                                   const double           theBeta,
+                                   const double           theGamma)
 {
   gp_EulerSequence_Parameters o = translateEulerSequence(theOrder);
 
-  Standard_Real a = theAlpha, b = theBeta, c = theGamma;
+  double a = theAlpha, b = theBeta, c = theGamma;
   if (!o.isExtrinsic)
   {
     a = theGamma;
@@ -312,21 +309,21 @@ void gp_Quaternion::SetEulerAngles(const gp_EulerSequence theOrder,
   if (o.isOdd)
     b = -b;
 
-  Standard_Real ti = 0.5 * a;
-  Standard_Real tj = 0.5 * b;
-  Standard_Real th = 0.5 * c;
-  Standard_Real ci = std::cos(ti);
-  Standard_Real cj = std::cos(tj);
-  Standard_Real ch = std::cos(th);
-  Standard_Real si = std::sin(ti);
-  Standard_Real sj = std::sin(tj);
-  Standard_Real sh = std::sin(th);
-  Standard_Real cc = ci * ch;
-  Standard_Real cs = ci * sh;
-  Standard_Real sc = si * ch;
-  Standard_Real ss = si * sh;
+  double ti = 0.5 * a;
+  double tj = 0.5 * b;
+  double th = 0.5 * c;
+  double ci = std::cos(ti);
+  double cj = std::cos(tj);
+  double ch = std::cos(th);
+  double si = std::sin(ti);
+  double sj = std::sin(tj);
+  double sh = std::sin(th);
+  double cc = ci * ch;
+  double cs = ci * sh;
+  double sc = si * ch;
+  double ss = si * sh;
 
-  Standard_Real values[4]; // w, x, y, z
+  double values[4]; // w, x, y, z
   if (o.isTwoAxes)
   {
     values[o.i] = cj * (cs + sc);
@@ -353,9 +350,9 @@ void gp_Quaternion::SetEulerAngles(const gp_EulerSequence theOrder,
 //=================================================================================================
 
 void gp_Quaternion::GetEulerAngles(const gp_EulerSequence theOrder,
-                                   Standard_Real&         theAlpha,
-                                   Standard_Real&         theBeta,
-                                   Standard_Real&         theGamma) const
+                                   double&                theAlpha,
+                                   double&                theBeta,
+                                   double&                theGamma) const
 {
   gp_Mat M = GetMatrix();
 
@@ -398,9 +395,9 @@ void gp_Quaternion::GetEulerAngles(const gp_EulerSequence theOrder,
   }
   if (!o.isExtrinsic)
   {
-    Standard_Real aFirst = theAlpha;
-    theAlpha             = theGamma;
-    theGamma             = aFirst;
+    double aFirst = theAlpha;
+    theAlpha      = theGamma;
+    theGamma      = aFirst;
   }
 }
 
@@ -408,7 +405,7 @@ void gp_Quaternion::GetEulerAngles(const gp_EulerSequence theOrder,
 
 void gp_Quaternion::StabilizeLength()
 {
-  Standard_Real cs = std::abs(x) + std::abs(y) + std::abs(z) + std::abs(w);
+  double cs = std::abs(x) + std::abs(y) + std::abs(z) + std::abs(w);
   if (cs > 0.0)
   {
     x /= cs;
@@ -426,7 +423,7 @@ void gp_Quaternion::StabilizeLength()
 
 void gp_Quaternion::Normalize()
 {
-  Standard_Real aMagn = Norm();
+  double aMagn = Norm();
   if (aMagn < gp::Resolution())
   {
     StabilizeLength();
@@ -437,7 +434,7 @@ void gp_Quaternion::Normalize()
 
 //=================================================================================================
 
-Standard_Real gp_Quaternion::GetRotationAngle() const
+double gp_Quaternion::GetRotationAngle() const
 {
   if (w < 0.0)
   {

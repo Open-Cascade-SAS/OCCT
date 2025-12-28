@@ -22,18 +22,19 @@
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepDS_CurveExplorer.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_List.hxx>
 
 //=======================================================================
 // function : TopOpeBRepBuild_Builder1::CorrectResult2d
 // purpose  : Change the Result (after CorrectFace2d)
 //=======================================================================
-Standard_Integer TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
+int TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult)
 
 {
-  Standard_Integer aNb = myMapOfCorrect2dEdges.Extent();
+  int aNb = myMapOfCorrect2dEdges.Extent();
   if (!aNb)
     return 0;
 
@@ -43,14 +44,14 @@ Standard_Integer TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult
   //
   // 1. Map Of sources' subshapes .
   //    The map (aSourceShapeMap) is to prevent unnecessary coping
-  TopTools_IndexedMapOfShape aSourceShapeMap;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSourceShapeMap;
   TopExp::MapShapes(myShape1, TopAbs_EDGE, aSourceShapeMap);
   TopExp::MapShapes(myShape2, TopAbs_EDGE, aSourceShapeMap);
 
-  TopTools_IndexedDataMapOfShapeShape EdMap;
-  BRep_Builder                        BB;
-  TopoDS_Shape                        aLocalShape = aResult.EmptyCopied();
-  TopoDS_Solid                        aSolid      = TopoDS::Solid(aLocalShape);
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> EdMap;
+  BRep_Builder                                                                    BB;
+  TopoDS_Shape aLocalShape = aResult.EmptyCopied();
+  TopoDS_Solid aSolid      = TopoDS::Solid(aLocalShape);
   //  TopoDS_Solid aSolid=TopoDS::Solid(aResult.EmptyCopied());
 
   TopExp_Explorer anExpShells(aResult, TopAbs_SHELL);
@@ -121,9 +122,9 @@ Standard_Integer TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult
 
             EdMap.Add(E, anEdge);
 
-            TopExp_Explorer  anExpVertices(E, TopAbs_VERTEX);
-            Standard_Boolean free = anEdge.Free();
-            anEdge.Free(Standard_True);
+            TopExp_Explorer anExpVertices(E, TopAbs_VERTEX);
+            bool            free = anEdge.Free();
+            anEdge.Free(true);
             for (; anExpVertices.More(); anExpVertices.Next())
               BB.Add(anEdge, anExpVertices.Current());
 
@@ -155,10 +156,10 @@ Standard_Integer TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult
   TopOpeBRepDS_CurveExplorer cex(myDataStructure->DS());
   for (; cex.More(); cex.Next())
   {
-    Standard_Integer                   ic  = cex.Index();
-    TopTools_ListOfShape&              LSE = ChangeNewEdges(ic);
-    TopTools_ListOfShape               corrLSE;
-    TopTools_ListIteratorOfListOfShape it(LSE);
+    int                                      ic  = cex.Index();
+    NCollection_List<TopoDS_Shape>&          LSE = ChangeNewEdges(ic);
+    NCollection_List<TopoDS_Shape>           corrLSE;
+    NCollection_List<TopoDS_Shape>::Iterator it(LSE);
     for (; it.More(); it.Next())
     {
       const TopoDS_Shape& E = it.Value();
@@ -176,7 +177,7 @@ Standard_Integer TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult
 
   // update section edges
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
-  Standard_Integer                  i, nes = BDS.NbSectionEdges();
+  int                               i, nes = BDS.NbSectionEdges();
 
   for (i = 1; i <= nes; i++)
   {
@@ -184,12 +185,12 @@ Standard_Integer TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult
     if (es.IsNull())
       continue;
 
-    for (Standard_Integer j = 0; j <= 2; j++)
+    for (int j = 0; j <= 2; j++)
     {
-      TopAbs_State                       staspl = TopAbs_State(j); // 0 - IN, 1 - OUT, 2 - ON
-      TopTools_ListOfShape&              LSE    = ChangeSplit(es, staspl);
-      TopTools_ListOfShape               corrLSE;
-      TopTools_ListIteratorOfListOfShape it(LSE);
+      TopAbs_State                             staspl = TopAbs_State(j); // 0 - IN, 1 - OUT, 2 - ON
+      NCollection_List<TopoDS_Shape>&          LSE    = ChangeSplit(es, staspl);
+      NCollection_List<TopoDS_Shape>           corrLSE;
+      NCollection_List<TopoDS_Shape>::Iterator it(LSE);
       for (; it.More(); it.Next())
       {
         const TopoDS_Shape& E = it.Value();

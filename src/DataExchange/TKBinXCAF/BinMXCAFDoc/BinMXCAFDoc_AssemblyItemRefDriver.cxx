@@ -24,80 +24,80 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_AssemblyItemRefDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMXCAFDoc_AssemblyItemRefDriver::BinMXCAFDoc_AssemblyItemRefDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_AssemblyItemRef)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMXCAFDoc_AssemblyItemRefDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMXCAFDoc_AssemblyItemRefDriver::NewEmpty() const
 {
   return new XCAFDoc_AssemblyItemRef();
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_AssemblyItemRefDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool BinMXCAFDoc_AssemblyItemRefDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                              const occ::handle<TDF_Attribute>& theTarget,
+                                              BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_AssemblyItemRef) aThis = Handle(XCAFDoc_AssemblyItemRef)::DownCast(theTarget);
+  occ::handle<XCAFDoc_AssemblyItemRef> aThis = occ::down_cast<XCAFDoc_AssemblyItemRef>(theTarget);
   if (aThis.IsNull())
-    return Standard_False;
+    return false;
 
   TCollection_AsciiString aPathStr;
   if (!(theSource >> aPathStr))
-    return Standard_False;
+    return false;
 
   aThis->SetItem(aPathStr);
 
-  Standard_Integer anExtraRef = 0;
+  int anExtraRef = 0;
   if (!(theSource >> anExtraRef))
-    return Standard_False;
+    return false;
 
   if (anExtraRef == 1)
   {
     Standard_GUID aGUID;
     if (!(theSource >> aGUID))
-      return Standard_False;
+      return false;
 
     aThis->SetGUID(aGUID);
   }
   else if (anExtraRef == 2)
   {
-    Standard_Integer aSubshapeIndex;
+    int aSubshapeIndex;
     if (!(theSource >> aSubshapeIndex))
-      return Standard_False;
+      return false;
 
     aThis->SetSubshapeIndex(aSubshapeIndex);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BinMXCAFDoc_AssemblyItemRefDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                              BinObjMgt_Persistent&        theTarget,
-                                              BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+void BinMXCAFDoc_AssemblyItemRefDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_AssemblyItemRef) aThis = Handle(XCAFDoc_AssemblyItemRef)::DownCast(theSource);
+  occ::handle<XCAFDoc_AssemblyItemRef> aThis = occ::down_cast<XCAFDoc_AssemblyItemRef>(theSource);
   if (!aThis.IsNull())
   {
     theTarget << aThis->GetItem().ToString();
     if (aThis->IsGUID())
     {
-      theTarget << Standard_Integer(1);
+      theTarget << int(1);
       theTarget << aThis->GetGUID();
     }
     else if (aThis->IsSubshapeIndex())
     {
-      theTarget << Standard_Integer(2);
+      theTarget << int(2);
       theTarget << aThis->GetSubshapeIndex();
     }
     else
-      theTarget << Standard_Integer(0);
+      theTarget << int(0);
   }
 }

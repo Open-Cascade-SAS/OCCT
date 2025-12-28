@@ -25,7 +25,7 @@
 #include <algorithm>
 
 //! Pair of Morton code and primitive ID.
-typedef std::pair<unsigned int, Standard_Integer> BVH_EncodedLink;
+typedef std::pair<unsigned int, int> BVH_EncodedLink;
 
 namespace BVH
 {
@@ -97,15 +97,10 @@ public:
   }
 
   //! Sorts the set.
-  virtual void Perform(BVH_Set<T, N>* theSet) Standard_OVERRIDE
-  {
-    Perform(theSet, 0, theSet->Size() - 1);
-  }
+  virtual void Perform(BVH_Set<T, N>* theSet) override { Perform(theSet, 0, theSet->Size() - 1); }
 
   //! Sorts the given (inclusive) range in the set.
-  virtual void Perform(BVH_Set<T, N>*         theSet,
-                       const Standard_Integer theStart,
-                       const Standard_Integer theFinal) Standard_OVERRIDE;
+  virtual void Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal) override;
 
   //! Returns Morton codes assigned to BVH primitives.
   const NCollection_Array1<BVH_EncodedLink>& EncodedLinks() const { return *myEncodedLinks; }
@@ -126,7 +121,7 @@ struct BitPredicate
   unsigned int myBit;
 
   //! Creates new radix sort predicate.
-  BitPredicate(const Standard_Integer theDigit)
+  BitPredicate(const int theDigit)
       : myBit(1U << theDigit)
   {
   }
@@ -144,7 +139,7 @@ struct BitComparator
   unsigned int myBit;
 
   //! Creates new STL comparator.
-  BitComparator(const Standard_Integer theDigit)
+  BitComparator(const int theDigit)
       : myBit(1U << theDigit)
   {
   }
@@ -166,23 +161,23 @@ private:
   //! Structure defining sorting range.
   struct SortRange
   {
-    LinkIterator     myStart; //!< Start element of exclusive sorting range
-    LinkIterator     myFinal; //!< Final element of exclusive sorting range
-    Standard_Integer myDigit; //!< Bit number used for partition operation
+    LinkIterator myStart; //!< Start element of exclusive sorting range
+    LinkIterator myFinal; //!< Final element of exclusive sorting range
+    int          myDigit; //!< Bit number used for partition operation
   };
 
   //! Functor class to run sorting in parallel.
   class Functor
   {
   public:
-    Functor(const SortRange (&aSplits)[2], const Standard_Boolean isParallel)
+    Functor(const SortRange (&aSplits)[2], const bool isParallel)
         : mySplits(aSplits),
           myIsParallel(isParallel)
     {
     }
 
     //! Runs sorting function for the given range.
-    void operator()(const Standard_Integer theIndex) const
+    void operator()(const int theIndex) const
     {
       RadixSorter::Sort(mySplits[theIndex].myStart,
                         mySplits[theIndex].myFinal,
@@ -195,14 +190,14 @@ private:
 
   private:
     const SortRange (&mySplits)[2];
-    Standard_Boolean myIsParallel;
+    bool myIsParallel;
   };
 
 public:
-  static void Sort(LinkIterator           theStart,
-                   LinkIterator           theFinal,
-                   Standard_Integer       theDigit,
-                   const Standard_Boolean isParallel)
+  static void Sort(LinkIterator theStart,
+                   LinkIterator theFinal,
+                   int          theDigit,
+                   const bool   isParallel)
   {
     if (theDigit < 24)
     {
@@ -220,7 +215,7 @@ public:
 
 protected:
   // Performs MSD (most significant digit) radix sort.
-  static void perform(LinkIterator theStart, LinkIterator theFinal, Standard_Integer theDigit = 29)
+  static void perform(LinkIterator theStart, LinkIterator theFinal, int theDigit = 29)
   {
     while (theStart != theFinal && theDigit >= 0)
     {
@@ -235,14 +230,12 @@ protected:
 //=================================================================================================
 
 template <class T, int N>
-void BVH_RadixSorter<T, N>::Perform(BVH_Set<T, N>*         theSet,
-                                    const Standard_Integer theStart,
-                                    const Standard_Integer theFinal)
+void BVH_RadixSorter<T, N>::Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal)
 {
   Standard_STATIC_ASSERT(N == 2 || N == 3 || N == 4);
 
-  const Standard_Integer aDimension = 1024;
-  const Standard_Integer aNbEffComp = N == 2 ? 2 : 3; // 4th component is ignored
+  const int aDimension = 1024;
+  const int aNbEffComp = N == 2 ? 2 : 3; // 4th component is ignored
 
   const BVH_VecNt aSceneMin = myBox.CornerMin();
   const BVH_VecNt aSceneMax = myBox.CornerMax();
@@ -255,17 +248,17 @@ void BVH_RadixSorter<T, N>::Perform(BVH_Set<T, N>*         theSet,
   myEncodedLinks = new NCollection_Shared<NCollection_Array1<BVH_EncodedLink>>(theStart, theFinal);
 
   // Step 1 -- Assign Morton code to each primitive using LUT for faster encoding
-  for (Standard_Integer aPrimIdx = theStart; aPrimIdx <= theFinal; ++aPrimIdx)
+  for (int aPrimIdx = theStart; aPrimIdx <= theFinal; ++aPrimIdx)
   {
     const BVH_VecNt aCenter = theSet->Box(aPrimIdx).Center();
     const BVH_VecNt aVoxelF = (aCenter - aSceneMin) * aReverseSize;
 
     // Compute voxel coordinates clamped to valid range
-    const Standard_Integer aVoxelX =
+    const int aVoxelX =
       std::clamp(BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, 0)), 0, aDimension - 1);
-    const Standard_Integer aVoxelY =
+    const int aVoxelY =
       std::clamp(BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, 1)), 0, aDimension - 1);
-    const Standard_Integer aVoxelZ =
+    const int aVoxelZ =
       (aNbEffComp > 2)
         ? std::clamp(BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, 2)), 0, aDimension - 1)
         : 0;
@@ -281,17 +274,17 @@ void BVH_RadixSorter<T, N>::Perform(BVH_Set<T, N>*         theSet,
   // Step 2 -- Sort primitives by their Morton codes using radix sort
   BVH::RadixSorter::Sort(myEncodedLinks->begin(), myEncodedLinks->end(), 29, this->IsParallel());
 
-  NCollection_Array1<Standard_Integer> aLinkMap(theStart, theFinal);
-  for (Standard_Integer aLinkIdx = theStart; aLinkIdx <= theFinal; ++aLinkIdx)
+  NCollection_Array1<int> aLinkMap(theStart, theFinal);
+  for (int aLinkIdx = theStart; aLinkIdx <= theFinal; ++aLinkIdx)
   {
     aLinkMap(myEncodedLinks->Value(aLinkIdx).second) = aLinkIdx;
   }
 
   // Step 3 -- Rearranging primitive list according to Morton codes (in place)
-  Standard_Integer aPrimIdx = theStart;
+  int aPrimIdx = theStart;
   while (aPrimIdx <= theFinal)
   {
-    const Standard_Integer aSortIdx = aLinkMap(aPrimIdx);
+    const int aSortIdx = aLinkMap(aPrimIdx);
     if (aPrimIdx != aSortIdx)
     {
       theSet->Swap(aPrimIdx, aSortIdx);

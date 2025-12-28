@@ -43,55 +43,55 @@ Graphic3d_LightSet::Graphic3d_LightSet()
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_LightSet::Add(const Handle(Graphic3d_CLight)& theLight)
+bool Graphic3d_LightSet::Add(const occ::handle<Graphic3d_CLight>& theLight)
 {
   if (theLight.IsNull())
   {
     throw Standard_ProgramError("Graphic3d_LightSet::Add(), NULL argument");
   }
 
-  const Standard_Integer anOldExtent = myLights.Extent();
-  const Standard_Integer anIndex     = myLights.Add(theLight, 0);
+  const int anOldExtent = myLights.Extent();
+  const int anIndex     = myLights.Add(theLight, 0);
   if (anIndex <= anOldExtent)
   {
-    return Standard_False;
+    return false;
   }
 
   myLightTypes[theLight->Type()] += 1;
   myLights.ChangeFromIndex(anIndex) = theLight->Revision();
   ++myRevision;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_LightSet::Remove(const Handle(Graphic3d_CLight)& theLight)
+bool Graphic3d_LightSet::Remove(const occ::handle<Graphic3d_CLight>& theLight)
 {
-  const Standard_Integer anIndToRemove = myLights.FindIndex(theLight);
+  const int anIndToRemove = myLights.FindIndex(theLight);
   if (anIndToRemove <= 0)
   {
-    return Standard_False;
+    return false;
   }
 
   ++myRevision;
   myLights.RemoveFromIndex(anIndToRemove);
   myLightTypes[theLight->Type()] -= 1;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Size Graphic3d_LightSet::UpdateRevision()
+size_t Graphic3d_LightSet::UpdateRevision()
 {
   if (myCacheRevision == myRevision)
   {
     // check implicit updates of light sources
-    for (NCollection_IndexedDataMap<Handle(Graphic3d_CLight), Standard_Size>::Iterator aLightIter(
+    for (NCollection_IndexedDataMap<occ::handle<Graphic3d_CLight>, size_t>::Iterator aLightIter(
            myLights);
          aLightIter.More();
          aLightIter.Next())
     {
-      const Handle(Graphic3d_CLight)& aLight = aLightIter.Key();
+      const occ::handle<Graphic3d_CLight>& aLight = aLightIter.Key();
       if (aLightIter.Value() != aLight->Revision())
       {
         ++myRevision;
@@ -109,14 +109,14 @@ Standard_Size Graphic3d_LightSet::UpdateRevision()
   myAmbient.SetValues(0.0f, 0.0f, 0.0f, 0.0f);
   memset(myLightTypesEnabled, 0, sizeof(myLightTypesEnabled));
   NCollection_LocalArray<char, 32> aKeyLong(myLights.Extent() + 1);
-  Standard_Integer                 aLightLast = 0;
-  for (NCollection_IndexedDataMap<Handle(Graphic3d_CLight), Standard_Size>::Iterator aLightIter(
+  int                              aLightLast = 0;
+  for (NCollection_IndexedDataMap<occ::handle<Graphic3d_CLight>, size_t>::Iterator aLightIter(
          myLights);
        aLightIter.More();
        aLightIter.Next())
   {
-    const Handle(Graphic3d_CLight)& aLight = aLightIter.Key();
-    aLightIter.ChangeValue()               = aLight->Revision();
+    const occ::handle<Graphic3d_CLight>& aLight = aLightIter.Key();
+    aLightIter.ChangeValue()                    = aLight->Revision();
     if (!aLight->IsEnabled())
     {
       continue;

@@ -30,43 +30,39 @@
 #include <gp_Pnt.hxx>
 #include <gp_Cone.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array2.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <math_PSO.hxx>
 #include <math_Powell.hxx>
 //
-static Standard_Integer NbUSamples(const Adaptor3d_Surface& S,
-                                   const Standard_Real      Umin,
-                                   const Standard_Real      Umax);
+static int NbUSamples(const Adaptor3d_Surface& S, const double Umin, const double Umax);
 //
-static Standard_Integer NbVSamples(const Adaptor3d_Surface& S,
-                                   const Standard_Real      Vmin,
-                                   const Standard_Real      Vmax);
+static int NbVSamples(const Adaptor3d_Surface& S, const double Vmin, const double Vmax);
 //
-static Standard_Real AdjustExtr(const Adaptor3d_Surface& S,
-                                const Standard_Real      UMin,
-                                const Standard_Real      UMax,
-                                const Standard_Real      VMin,
-                                const Standard_Real      VMax,
-                                const Standard_Real      Extr0,
-                                const Standard_Integer   CoordIndx,
-                                const Standard_Real      Tol,
-                                const Standard_Boolean   IsMin);
+static double AdjustExtr(const Adaptor3d_Surface& S,
+                         const double             UMin,
+                         const double             UMax,
+                         const double             VMin,
+                         const double             VMax,
+                         const double             Extr0,
+                         const int                CoordIndx,
+                         const double             Tol,
+                         const bool               IsMin);
 
-static void ComputePolesIndexes(const TColStd_Array1OfReal&    theKnots,
-                                const TColStd_Array1OfInteger& theMults,
-                                const Standard_Integer         theDegree,
-                                const Standard_Real            theMin,
-                                const Standard_Real            theMax,
-                                const Standard_Integer         theMaxPoleIdx,
-                                const Standard_Boolean         theIsPeriodic,
-                                Standard_Integer&              theOutMinIdx,
-                                Standard_Integer&              theOutMaxIdx);
+static void ComputePolesIndexes(const NCollection_Array1<double>& theKnots,
+                                const NCollection_Array1<int>&    theMults,
+                                const int                         theDegree,
+                                const double                      theMin,
+                                const double                      theMax,
+                                const int                         theMaxPoleIdx,
+                                const bool                        theIsPeriodic,
+                                int&                              theOutMinIdx,
+                                int&                              theOutMaxIdx);
 
 //=================================================================================================
 
-void BndLib_AddSurface::Add(const Adaptor3d_Surface& S, const Standard_Real Tol, Bnd_Box& B)
+void BndLib_AddSurface::Add(const Adaptor3d_Surface& S, const double Tol, Bnd_Box& B)
 {
 
   BndLib_AddSurface::Add(S,
@@ -80,9 +76,9 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S, const Standard_Real Tol,
 
 //=================================================================================================
 
-static Standard_Integer NbUSamples(const Adaptor3d_Surface& S)
+static int NbUSamples(const Adaptor3d_Surface& S)
 {
-  Standard_Integer    N;
+  int                 N;
   GeomAbs_SurfaceType Type = S.GetType();
   switch (Type)
   {
@@ -91,8 +87,8 @@ static Standard_Integer NbUSamples(const Adaptor3d_Surface& S)
       break;
     }
     case GeomAbs_BSplineSurface: {
-      const Handle(Geom_BSplineSurface)& BS = S.BSpline();
-      N                                     = 2 * (BS->UDegree() + 1) * (BS->NbUKnots() - 1);
+      const occ::handle<Geom_BSplineSurface>& BS = S.BSpline();
+      N                                          = 2 * (BS->UDegree() + 1) * (BS->NbUKnots() - 1);
       break;
     }
     default:
@@ -103,9 +99,9 @@ static Standard_Integer NbUSamples(const Adaptor3d_Surface& S)
 
 //=================================================================================================
 
-static Standard_Integer NbVSamples(const Adaptor3d_Surface& S)
+static int NbVSamples(const Adaptor3d_Surface& S)
 {
-  Standard_Integer    N;
+  int                 N;
   GeomAbs_SurfaceType Type = S.GetType();
   switch (Type)
   {
@@ -114,8 +110,8 @@ static Standard_Integer NbVSamples(const Adaptor3d_Surface& S)
       break;
     }
     case GeomAbs_BSplineSurface: {
-      const Handle(Geom_BSplineSurface)& BS = S.BSpline();
-      N                                     = 2 * (BS->VDegree() + 1) * (BS->NbVKnots() - 1);
+      const occ::handle<Geom_BSplineSurface>& BS = S.BSpline();
+      N                                          = 2 * (BS->VDegree() + 1) * (BS->NbVKnots() - 1);
       break;
     }
     default:
@@ -125,17 +121,17 @@ static Standard_Integer NbVSamples(const Adaptor3d_Surface& S)
 }
 
 //  Modified by skv - Fri Aug 27 12:29:04 2004 OCC6503 Begin
-static gp_Pnt BaryCenter(const gp_Pln&       aPlane,
-                         const Standard_Real aUMin,
-                         const Standard_Real aUMax,
-                         const Standard_Real aVMin,
-                         const Standard_Real aVMax)
+static gp_Pnt BaryCenter(const gp_Pln& aPlane,
+                         const double  aUMin,
+                         const double  aUMax,
+                         const double  aVMin,
+                         const double  aVMax)
 {
-  Standard_Real    aU, aV;
-  Standard_Boolean isU1Inf = Precision::IsInfinite(aUMin);
-  Standard_Boolean isU2Inf = Precision::IsInfinite(aUMax);
-  Standard_Boolean isV1Inf = Precision::IsInfinite(aVMin);
-  Standard_Boolean isV2Inf = Precision::IsInfinite(aVMax);
+  double aU, aV;
+  bool   isU1Inf = Precision::IsInfinite(aUMin);
+  bool   isU2Inf = Precision::IsInfinite(aUMax);
+  bool   isV1Inf = Precision::IsInfinite(aVMin);
+  bool   isV2Inf = Precision::IsInfinite(aVMax);
 
   if (isU1Inf && isU2Inf)
     aU = 0;
@@ -160,17 +156,17 @@ static gp_Pnt BaryCenter(const gp_Pln&       aPlane,
   return aCenter;
 }
 
-static void TreatInfinitePlane(const gp_Pln&       aPlane,
-                               const Standard_Real aUMin,
-                               const Standard_Real aUMax,
-                               const Standard_Real aVMin,
-                               const Standard_Real aVMax,
-                               const Standard_Real aTol,
-                               Bnd_Box&            aB)
+static void TreatInfinitePlane(const gp_Pln& aPlane,
+                               const double  aUMin,
+                               const double  aUMax,
+                               const double  aVMin,
+                               const double  aVMax,
+                               const double  aTol,
+                               Bnd_Box&      aB)
 {
   // Get 3 coordinate axes of the plane.
-  const gp_Dir&           aNorm        = aPlane.Axis().Direction();
-  constexpr Standard_Real anAngularTol = RealEpsilon();
+  const gp_Dir&    aNorm        = aPlane.Axis().Direction();
+  constexpr double anAngularTol = RealEpsilon();
 
   // Get location of the plane as its barycenter
   gp_Pnt aLocation = BaryCenter(aPlane, aUMin, aUMax, aVMin, aVMax);
@@ -215,23 +211,23 @@ static void TreatInfinitePlane(const gp_Pln&       aPlane,
 // This value should be equal to 1 in case of non periodic BSpline,
 // and (degree + 1) - mults(the lowest index).
 
-void ComputePolesIndexes(const TColStd_Array1OfReal&    theKnots,
-                         const TColStd_Array1OfInteger& theMults,
-                         const Standard_Integer         theDegree,
-                         const Standard_Real            theMin,
-                         const Standard_Real            theMax,
-                         const Standard_Integer         theMaxPoleIdx,
-                         const Standard_Boolean         theIsPeriodic,
-                         Standard_Integer&              theOutMinIdx,
-                         Standard_Integer&              theOutMaxIdx)
+void ComputePolesIndexes(const NCollection_Array1<double>& theKnots,
+                         const NCollection_Array1<int>&    theMults,
+                         const int                         theDegree,
+                         const double                      theMin,
+                         const double                      theMax,
+                         const int                         theMaxPoleIdx,
+                         const bool                        theIsPeriodic,
+                         int&                              theOutMinIdx,
+                         int&                              theOutMaxIdx)
 {
   BSplCLib::Hunt(theKnots, theMin, theOutMinIdx);
   theOutMinIdx = std::max(theOutMinIdx, theKnots.Lower());
 
   BSplCLib::Hunt(theKnots, theMax, theOutMaxIdx);
   theOutMaxIdx++;
-  theOutMaxIdx          = std::min(theOutMaxIdx, theKnots.Upper());
-  Standard_Integer mult = theMults(theOutMaxIdx);
+  theOutMaxIdx = std::min(theOutMaxIdx, theKnots.Upper());
+  int mult     = theMults(theOutMaxIdx);
 
   theOutMinIdx = BSplCLib::PoleIndex(theDegree, theOutMinIdx, theIsPeriodic, theMults) + 1;
   theOutMinIdx = std::max(theOutMinIdx, 1);
@@ -245,11 +241,11 @@ void ComputePolesIndexes(const TColStd_Array1OfReal&    theKnots,
 //=================================================================================================
 
 void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
-                            const Standard_Real      UMin,
-                            const Standard_Real      UMax,
-                            const Standard_Real      VMin,
-                            const Standard_Real      VMax,
-                            const Standard_Real      Tol,
+                            const double             UMin,
+                            const double             UMax,
+                            const double             VMin,
+                            const double             VMax,
+                            const double             Tol,
                             Bnd_Box&                 B)
 {
   GeomAbs_SurfaceType Type = S.GetType(); // skv OCC6503
@@ -310,7 +306,7 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
       break;
     }
     case GeomAbs_OffsetSurface: {
-      Handle(Adaptor3d_Surface) HS = S.BasisSurface();
+      occ::handle<Adaptor3d_Surface> HS = S.BasisSurface();
       Add(*HS, UMin, UMax, VMin, VMax, Tol, B);
       B.Enlarge(S.OffsetValue());
       B.Enlarge(Tol);
@@ -318,12 +314,12 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
     }
     case GeomAbs_BezierSurface:
     case GeomAbs_BSplineSurface: {
-      Standard_Boolean isUseConvexHullAlgorithm = Standard_True;
-      Standard_Real    PTol                     = Precision::Parametric(Precision::Confusion());
+      bool   isUseConvexHullAlgorithm = true;
+      double PTol                     = Precision::Parametric(Precision::Confusion());
       // Borders of underlying geometry.
-      Standard_Real anUMinParam = UMin, anUMaxParam = UMax, // BSpline case.
+      double anUMinParam = UMin, anUMaxParam = UMax, // BSpline case.
         aVMinParam = VMin, aVMaxParam = VMax;
-      Handle(Geom_BSplineSurface) aBS;
+      occ::handle<Geom_BSplineSurface> aBS;
       if (Type == GeomAbs_BezierSurface)
       {
         // Bezier surface:
@@ -336,7 +332,7 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
             || std::abs(VMax - S.LastVParameter()) > PTol)
         {
           // Borders not equal to topology borders.
-          isUseConvexHullAlgorithm = Standard_False;
+          isUseConvexHullAlgorithm = false;
         }
       }
       else
@@ -352,17 +348,17 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
             || (UMax - anUMaxParam) > PTol || (VMax - aVMaxParam) > PTol)
         {
           // Out of geometry borders.
-          isUseConvexHullAlgorithm = Standard_False;
+          isUseConvexHullAlgorithm = false;
         }
       }
 
       if (isUseConvexHullAlgorithm)
       {
-        Standard_Integer   aNbUPoles = S.NbUPoles(), aNbVPoles = S.NbVPoles();
-        TColgp_Array2OfPnt Tp(1, aNbUPoles, 1, aNbVPoles);
-        Standard_Integer   UMinIdx = 0, UMaxIdx = 0;
-        Standard_Integer   VMinIdx = 0, VMaxIdx = 0;
-        Standard_Boolean   isUPeriodic = S.IsUPeriodic(), isVPeriodic = S.IsVPeriodic();
+        int                        aNbUPoles = S.NbUPoles(), aNbVPoles = S.NbVPoles();
+        NCollection_Array2<gp_Pnt> Tp(1, aNbUPoles, 1, aNbVPoles);
+        int                        UMinIdx = 0, UMaxIdx = 0;
+        int                        VMinIdx = 0, VMaxIdx = 0;
+        bool                       isUPeriodic = S.IsUPeriodic(), isVPeriodic = S.IsVPeriodic();
         if (Type == GeomAbs_BezierSurface)
         {
           S.Bezier()->Poles(Tp);
@@ -382,8 +378,8 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
 
           if (UMin > anUMinParam || UMax < anUMaxParam)
           {
-            TColStd_Array1OfInteger aMults(1, aBS->NbUKnots());
-            TColStd_Array1OfReal    aKnots(1, aBS->NbUKnots());
+            NCollection_Array1<int>    aMults(1, aBS->NbUKnots());
+            NCollection_Array1<double> aKnots(1, aBS->NbUKnots());
             aBS->UKnots(aKnots);
             aBS->UMultiplicities(aMults);
 
@@ -400,8 +396,8 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
 
           if (VMin > aVMinParam || VMax < aVMaxParam)
           {
-            TColStd_Array1OfInteger aMults(1, aBS->NbVKnots());
-            TColStd_Array1OfReal    aKnots(1, aBS->NbVKnots());
+            NCollection_Array1<int>    aMults(1, aBS->NbVKnots());
+            NCollection_Array1<double> aKnots(1, aBS->NbVKnots());
             aBS->VKnots(aKnots);
             aBS->VMultiplicities(aMults);
 
@@ -418,15 +414,15 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
         }
 
         // Use poles to build convex hull.
-        Standard_Integer ip, jp;
-        for (Standard_Integer i = UMinIdx; i <= UMaxIdx; i++)
+        int ip, jp;
+        for (int i = UMinIdx; i <= UMaxIdx; i++)
         {
           ip = i;
           if (isUPeriodic && ip > aNbUPoles)
           {
             ip = ip - aNbUPoles;
           }
-          for (Standard_Integer j = VMinIdx; j <= VMaxIdx; j++)
+          for (int j = VMinIdx; j <= VMaxIdx; j++)
           {
             jp = j;
             if (isVPeriodic && jp > aNbVPoles)
@@ -441,20 +437,20 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
         break;
       }
     }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     default: {
       // Use batch grid evaluation for optimized surface point computation
-      const Standard_Integer Nu = NbUSamples(S);
-      const Standard_Integer Nv = NbVSamples(S);
+      const int Nu = NbUSamples(S);
+      const int Nv = NbVSamples(S);
 
-      TColStd_Array1OfReal aUParams(1, Nu);
-      TColStd_Array1OfReal aVParams(1, Nv);
+      NCollection_Array1<double> aUParams(1, Nu);
+      NCollection_Array1<double> aVParams(1, Nv);
 
-      for (Standard_Integer i = 1; i <= Nu; i++)
+      for (int i = 1; i <= Nu; i++)
       {
         aUParams.SetValue(i, UMin + ((UMax - UMin) * (i - 1) / (Nu - 1)));
       }
-      for (Standard_Integer j = 1; j <= Nv; j++)
+      for (int j = 1; j <= Nv; j++)
       {
         aVParams.SetValue(j, VMin + ((VMax - VMin) * (j - 1) / (Nv - 1)));
       }
@@ -463,9 +459,9 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
       anEvaluator.Initialize(S);
 
       const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
-      for (Standard_Integer i = aGrid.LowerRow(); i <= aGrid.UpperRow(); i++)
+      for (int i = aGrid.LowerRow(); i <= aGrid.UpperRow(); i++)
       {
-        for (Standard_Integer j = aGrid.LowerCol(); j <= aGrid.UpperCol(); j++)
+        for (int j = aGrid.LowerCol(); j <= aGrid.UpperCol(); j++)
         {
           B.Add(aGrid.Value(i, j));
         }
@@ -479,7 +475,7 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
 
 //=================================================================================================
 
-void BndLib_AddSurface::AddOptimal(const Adaptor3d_Surface& S, const Standard_Real Tol, Bnd_Box& B)
+void BndLib_AddSurface::AddOptimal(const Adaptor3d_Surface& S, const double Tol, Bnd_Box& B)
 {
 
   BndLib_AddSurface::AddOptimal(S,
@@ -494,11 +490,11 @@ void BndLib_AddSurface::AddOptimal(const Adaptor3d_Surface& S, const Standard_Re
 //=================================================================================================
 
 void BndLib_AddSurface::AddOptimal(const Adaptor3d_Surface& S,
-                                   const Standard_Real      UMin,
-                                   const Standard_Real      UMax,
-                                   const Standard_Real      VMin,
-                                   const Standard_Real      VMax,
-                                   const Standard_Real      Tol,
+                                   const double             UMin,
+                                   const double             UMax,
+                                   const double             VMin,
+                                   const double             VMax,
+                                   const double             Tol,
                                    Bnd_Box&                 B)
 {
   GeomAbs_SurfaceType Type = S.GetType();
@@ -552,35 +548,35 @@ void BndLib_AddSurface::AddOptimal(const Adaptor3d_Surface& S,
 //=================================================================================================
 
 void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
-                                   const Standard_Real      UMin,
-                                   const Standard_Real      UMax,
-                                   const Standard_Real      VMin,
-                                   const Standard_Real      VMax,
-                                   const Standard_Real      Tol,
+                                   const double             UMin,
+                                   const double             UMax,
+                                   const double             VMin,
+                                   const double             VMax,
+                                   const double             Tol,
                                    Bnd_Box&                 B)
 {
-  const Standard_Integer Nu = NbUSamples(S, UMin, UMax);
-  const Standard_Integer Nv = NbVSamples(S, VMin, VMax);
+  const int Nu = NbUSamples(S, UMin, UMax);
+  const int Nv = NbVSamples(S, VMin, VMax);
   //
-  Standard_Real CoordMin[3] = {RealLast(), RealLast(), RealLast()};
-  Standard_Real CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
-  Standard_Real DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
+  double CoordMin[3] = {RealLast(), RealLast(), RealLast()};
+  double CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
+  double DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
   //
-  const Standard_Real du = (UMax - UMin) / (Nu - 1), du2 = du / 2.;
-  const Standard_Real dv = (VMax - VMin) / (Nv - 1), dv2 = dv / 2.;
+  const double du = (UMax - UMin) / (Nu - 1), du2 = du / 2.;
+  const double dv = (VMax - VMin) / (Nv - 1), dv2 = dv / 2.;
 
   // Use batch grid evaluation with finer grid (2*Nu-1) x (2*Nv-1) to include midpoints
-  const Standard_Integer NuFine = 2 * Nu - 1;
-  const Standard_Integer NvFine = 2 * Nv - 1;
+  const int NuFine = 2 * Nu - 1;
+  const int NvFine = 2 * Nv - 1;
 
-  TColStd_Array1OfReal aUParams(1, NuFine);
-  TColStd_Array1OfReal aVParams(1, NvFine);
+  NCollection_Array1<double> aUParams(1, NuFine);
+  NCollection_Array1<double> aVParams(1, NvFine);
 
-  for (Standard_Integer i = 1; i <= NuFine; i++)
+  for (int i = 1; i <= NuFine; i++)
   {
     aUParams.SetValue(i, UMin + (i - 1) * du2);
   }
-  for (Standard_Integer j = 1; j <= NvFine; j++)
+  for (int j = 1; j <= NvFine; j++)
   {
     aVParams.SetValue(j, VMin + (j - 1) * dv2);
   }
@@ -594,15 +590,15 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
   // Main grid indices in fine grid: iFine = 2*i - 1, jFine = 2*j - 1
   NCollection_Array2<gp_XYZ> aPnts(1, Nu, 1, Nv);
 
-  Standard_Integer i, j, k;
+  int i, j, k;
   for (i = 1; i <= Nu; i++)
   {
-    const Standard_Integer iFine = 2 * i - 1;
+    const int iFine = 2 * i - 1;
     for (j = 1; j <= Nv; j++)
     {
-      const Standard_Integer jFine = 2 * j - 1;
-      const gp_Pnt&          P     = aFineGrid.Value(iFine, jFine);
-      aPnts(i, j)                  = P.XYZ();
+      const int     jFine = 2 * j - 1;
+      const gp_Pnt& P     = aFineGrid.Value(iFine, jFine);
+      aPnts(i, j)         = P.XYZ();
       //
       for (k = 0; k < 3; ++k)
       {
@@ -633,7 +629,7 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
           {
             CoordMax[k] = PM.Coord(k + 1);
           }
-          const Standard_Real d = std::abs(aD.Coord(k + 1));
+          const double d = std::abs(aD.Coord(k + 1));
           if (DeflMax[k] < d)
           {
             DeflMax[k] = d;
@@ -657,7 +653,7 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
           {
             CoordMax[k] = PM.Coord(k + 1);
           }
-          const Standard_Real d = std::abs(aD.Coord(k + 1));
+          const double d = std::abs(aD.Coord(k + 1));
           if (DeflMax[k] < d)
           {
             DeflMax[k] = d;
@@ -668,30 +664,29 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
   }
   //
   // Adjusting minmax
-  Standard_Real eps = std::max(Tol, Precision::Confusion());
+  double eps = std::max(Tol, Precision::Confusion());
   for (k = 0; k < 3; ++k)
   {
-    Standard_Real d = DeflMax[k];
+    double d = DeflMax[k];
     if (d <= eps)
     {
       continue;
     }
 
-    Standard_Real CMin = CoordMin[k];
-    Standard_Real CMax = CoordMax[k];
+    double CMin = CoordMin[k];
+    double CMax = CoordMax[k];
     for (i = 1; i <= Nu; ++i)
     {
       for (j = 1; j <= Nv; ++j)
       {
         if (aPnts(i, j).Coord(k + 1) - CMin < d)
         {
-          Standard_Real umin, umax, vmin, vmax;
-          umin = UMin + std::max(0, i - 2) * du;
-          umax = UMin + std::min(Nu - 1, i) * du;
-          vmin = VMin + std::max(0, j - 2) * dv;
-          vmax = VMin + std::min(Nv - 1, j) * dv;
-          Standard_Real cmin =
-            AdjustExtr(S, umin, umax, vmin, vmax, CMin, k + 1, eps, Standard_True);
+          double umin, umax, vmin, vmax;
+          umin        = UMin + std::max(0, i - 2) * du;
+          umax        = UMin + std::min(Nu - 1, i) * du;
+          vmin        = VMin + std::max(0, j - 2) * dv;
+          vmax        = VMin + std::min(Nv - 1, j) * dv;
+          double cmin = AdjustExtr(S, umin, umax, vmin, vmax, CMin, k + 1, eps, true);
           if (cmin < CMin)
           {
             CMin = cmin;
@@ -699,13 +694,12 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
         }
         else if (CMax - aPnts(i, j).Coord(k + 1) < d)
         {
-          Standard_Real umin, umax, vmin, vmax;
-          umin = UMin + std::max(0, i - 2) * du;
-          umax = UMin + std::min(Nu - 1, i) * du;
-          vmin = VMin + std::max(0, j - 2) * dv;
-          vmax = VMin + std::min(Nv - 1, j) * dv;
-          Standard_Real cmax =
-            AdjustExtr(S, umin, umax, vmin, vmax, CMax, k + 1, eps, Standard_False);
+          double umin, umax, vmin, vmax;
+          umin        = UMin + std::max(0, i - 2) * du;
+          umax        = UMin + std::min(Nu - 1, i) * du;
+          vmin        = VMin + std::max(0, j - 2) * dv;
+          vmax        = VMin + std::min(Nv - 1, j) * dv;
+          double cmax = AdjustExtr(S, umin, umax, vmin, vmax, CMax, k + 1, eps, false);
           if (cmax > CMax)
           {
             CMax = cmax;
@@ -729,12 +723,12 @@ class SurfMaxMinCoord : public math_MultipleVarFunction
 {
 public:
   SurfMaxMinCoord(const Adaptor3d_Surface& theSurf,
-                  const Standard_Real      UMin,
-                  const Standard_Real      UMax,
-                  const Standard_Real      VMin,
-                  const Standard_Real      VMax,
-                  const Standard_Integer   CoordIndx,
-                  const Standard_Real      Sign)
+                  const double             UMin,
+                  const double             UMax,
+                  const double             VMin,
+                  const double             VMax,
+                  const int                CoordIndx,
+                  const double             Sign)
       : mySurf(theSurf),
         myUMin(UMin),
         myUMax(UMax),
@@ -747,22 +741,22 @@ public:
     math_Vector X(1, 2);
     X(1) = UMin;
     X(2) = (VMin + VMax) / 2.;
-    Standard_Real F1, F2;
+    double F1, F2;
     Value(X, F1);
     X(1) = UMax;
     Value(X, F2);
-    Standard_Real DU = std::abs((F2 - F1) / (UMax - UMin));
-    X(1)             = (UMin + UMax) / 2.;
-    X(2)             = VMin;
+    double DU = std::abs((F2 - F1) / (UMax - UMin));
+    X(1)      = (UMin + UMax) / 2.;
+    X(2)      = VMin;
     Value(X, F1);
     X(2) = VMax;
     Value(X, F2);
-    Standard_Real DV = std::abs((F2 - F1) / (VMax - VMin));
-    myPenalty        = 10. * std::max(DU, DV);
-    myPenalty        = std::max(myPenalty, 1.);
+    double DV = std::abs((F2 - F1) / (VMax - VMin));
+    myPenalty = 10. * std::max(DU, DV);
+    myPenalty = std::max(myPenalty, 1.);
   }
 
-  Standard_Boolean Value(const math_Vector& X, Standard_Real& F)
+  bool Value(const math_Vector& X, double& F)
   {
     if (CheckInputData(X))
     {
@@ -771,7 +765,7 @@ public:
     }
     else
     {
-      Standard_Real UPen = 0., VPen = 0., u0, v0;
+      double UPen = 0., VPen = 0., u0, v0;
       if (X(1) < myUMin)
       {
         UPen = myPenalty * (myUMin - X(1));
@@ -806,53 +800,53 @@ public:
       F         = mySign * aP.Coord(myCoordIndx) + UPen + VPen;
     }
 
-    return Standard_True;
+    return true;
   }
 
-  Standard_Integer NbVariables() const { return 2; }
+  int NbVariables() const { return 2; }
 
 private:
   SurfMaxMinCoord& operator=(const SurfMaxMinCoord&) = delete;
 
-  Standard_Boolean CheckInputData(const math_Vector& theParams)
+  bool CheckInputData(const math_Vector& theParams)
   {
     if (theParams(1) < myUMin || theParams(1) > myUMax || theParams(2) < myVMin
         || theParams(2) > myVMax)
-      return Standard_False;
-    return Standard_True;
+      return false;
+    return true;
   }
 
   const Adaptor3d_Surface& mySurf;
-  Standard_Real            myUMin;
-  Standard_Real            myUMax;
-  Standard_Real            myVMin;
-  Standard_Real            myVMax;
-  Standard_Integer         myCoordIndx;
-  Standard_Real            mySign;
-  Standard_Real            myPenalty;
+  double                   myUMin;
+  double                   myUMax;
+  double                   myVMin;
+  double                   myVMax;
+  int                      myCoordIndx;
+  double                   mySign;
+  double                   myPenalty;
 };
 
 //=================================================================================================
 
-Standard_Real AdjustExtr(const Adaptor3d_Surface& S,
-                         const Standard_Real      UMin,
-                         const Standard_Real      UMax,
-                         const Standard_Real      VMin,
-                         const Standard_Real      VMax,
-                         const Standard_Real      Extr0,
-                         const Standard_Integer   CoordIndx,
-                         const Standard_Real      Tol,
-                         const Standard_Boolean   IsMin)
+double AdjustExtr(const Adaptor3d_Surface& S,
+                  const double             UMin,
+                  const double             UMax,
+                  const double             VMin,
+                  const double             VMax,
+                  const double             Extr0,
+                  const int                CoordIndx,
+                  const double             Tol,
+                  const bool               IsMin)
 {
-  Standard_Real aSign  = IsMin ? 1. : -1.;
-  Standard_Real extr   = aSign * Extr0;
-  Standard_Real relTol = 2. * Tol;
+  double aSign  = IsMin ? 1. : -1.;
+  double extr   = aSign * Extr0;
+  double relTol = 2. * Tol;
   if (std::abs(extr) > Tol)
   {
     relTol /= std::abs(extr);
   }
-  Standard_Real Du = (S.LastUParameter() - S.FirstUParameter());
-  Standard_Real Dv = (S.LastVParameter() - S.FirstVParameter());
+  double Du = (S.LastUParameter() - S.FirstUParameter());
+  double Dv = (S.LastVParameter() - S.FirstVParameter());
   //
   math_Vector aT(1, 2);
   math_Vector aLowBorder(1, 2);
@@ -863,13 +857,13 @@ Standard_Real AdjustExtr(const Adaptor3d_Surface& S,
   aLowBorder(2) = VMin;
   aUppBorder(2) = VMax;
 
-  Standard_Integer aNbU         = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
-  Standard_Integer aNbV         = std::max(8, RealToInt(32 * (VMax - VMin) / Dv));
-  Standard_Integer aNbParticles = aNbU * aNbV;
-  Standard_Real    aMaxUStep    = (UMax - UMin) / (aNbU + 1);
-  aSteps(1)                     = std::min(0.1 * Du, aMaxUStep);
-  Standard_Real aMaxVStep       = (VMax - VMin) / (aNbV + 1);
-  aSteps(2)                     = std::min(0.1 * Dv, aMaxVStep);
+  int    aNbU         = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
+  int    aNbV         = std::max(8, RealToInt(32 * (VMax - VMin) / Dv));
+  int    aNbParticles = aNbU * aNbV;
+  double aMaxUStep    = (UMax - UMin) / (aNbU + 1);
+  aSteps(1)           = std::min(0.1 * Du, aMaxUStep);
+  double aMaxVStep    = (VMax - VMin) / (aNbV + 1);
+  aSteps(2)           = std::min(0.1 * Dv, aMaxVStep);
 
   SurfMaxMinCoord aFunc(S, UMin, UMax, VMin, VMax, CoordIndx, aSign);
   math_PSO        aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
@@ -882,8 +876,8 @@ Standard_Real AdjustExtr(const Adaptor3d_Surface& S,
   aDir(1, 2) = 0.;
   aDir(2, 2) = 1.;
 
-  Standard_Integer aNbIter = 200;
-  math_Powell      powell(aFunc, relTol, aNbIter, Tol);
+  int         aNbIter = 200;
+  math_Powell powell(aFunc, relTol, aNbIter, Tol);
   powell.Perform(aFunc, aT, aDir);
 
   if (powell.IsDone())
@@ -897,18 +891,16 @@ Standard_Real AdjustExtr(const Adaptor3d_Surface& S,
 
 //=================================================================================================
 
-Standard_Integer NbUSamples(const Adaptor3d_Surface& S,
-                            const Standard_Real      Umin,
-                            const Standard_Real      Umax)
+int NbUSamples(const Adaptor3d_Surface& S, const double Umin, const double Umax)
 {
-  Standard_Integer    N;
+  int                 N;
   GeomAbs_SurfaceType Type = S.GetType();
   switch (Type)
   {
     case GeomAbs_BezierSurface: {
       N = 2 * S.NbUPoles();
       // By default parametric range of Bezier surf is [0, 1] [0, 1]
-      Standard_Real du = Umax - Umin;
+      double du = Umax - Umin;
       if (du < .9)
       {
         N = RealToInt(du * N) + 1;
@@ -917,11 +909,11 @@ Standard_Integer NbUSamples(const Adaptor3d_Surface& S,
       break;
     }
     case GeomAbs_BSplineSurface: {
-      const Handle(Geom_BSplineSurface)& BS = S.BSpline();
-      N                                     = 2 * (BS->UDegree() + 1) * (BS->NbUKnots() - 1);
-      Standard_Real umin, umax, vmin, vmax;
+      const occ::handle<Geom_BSplineSurface>& BS = S.BSpline();
+      N                                          = 2 * (BS->UDegree() + 1) * (BS->NbUKnots() - 1);
+      double umin, umax, vmin, vmax;
       BS->Bounds(umin, umax, vmin, vmax);
-      Standard_Real du = (Umax - Umin) / (umax - umin);
+      double du = (Umax - Umin) / (umax - umin);
       if (du < .9)
       {
         N = RealToInt(du * N) + 1;
@@ -937,18 +929,16 @@ Standard_Integer NbUSamples(const Adaptor3d_Surface& S,
 
 //=================================================================================================
 
-Standard_Integer NbVSamples(const Adaptor3d_Surface& S,
-                            const Standard_Real      Vmin,
-                            const Standard_Real      Vmax)
+int NbVSamples(const Adaptor3d_Surface& S, const double Vmin, const double Vmax)
 {
-  Standard_Integer    N;
+  int                 N;
   GeomAbs_SurfaceType Type = S.GetType();
   switch (Type)
   {
     case GeomAbs_BezierSurface: {
       N = 2 * S.NbVPoles();
       // By default parametric range of Bezier surf is [0, 1] [0, 1]
-      Standard_Real dv = Vmax - Vmin;
+      double dv = Vmax - Vmin;
       if (dv < .9)
       {
         N = RealToInt(dv * N) + 1;
@@ -957,11 +947,11 @@ Standard_Integer NbVSamples(const Adaptor3d_Surface& S,
       break;
     }
     case GeomAbs_BSplineSurface: {
-      const Handle(Geom_BSplineSurface)& BS = S.BSpline();
-      N                                     = 2 * (BS->VDegree() + 1) * (BS->NbVKnots() - 1);
-      Standard_Real umin, umax, vmin, vmax;
+      const occ::handle<Geom_BSplineSurface>& BS = S.BSpline();
+      N                                          = 2 * (BS->VDegree() + 1) * (BS->NbVKnots() - 1);
+      double umin, umax, vmin, vmax;
       BS->Bounds(umin, umax, vmin, vmax);
-      Standard_Real dv = (Vmax - Vmin) / (vmax - vmin);
+      double dv = (Vmax - Vmin) / (vmax - vmin);
       if (dv < .9)
       {
         N = RealToInt(dv * N) + 1;

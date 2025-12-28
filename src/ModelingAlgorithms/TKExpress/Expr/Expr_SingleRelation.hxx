@@ -25,54 +25,48 @@
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;
 
-class Expr_SingleRelation;
-DEFINE_STANDARD_HANDLE(Expr_SingleRelation, Expr_GeneralRelation)
-
 class Expr_SingleRelation : public Expr_GeneralRelation
 {
 
 public:
   //! Defines the first member of the relation
-  Standard_EXPORT void SetFirstMember(const Handle(Expr_GeneralExpression)& exp);
+  Standard_EXPORT void SetFirstMember(const occ::handle<Expr_GeneralExpression>& exp);
 
   //! Defines the second member of the relation
-  Standard_EXPORT void SetSecondMember(const Handle(Expr_GeneralExpression)& exp);
+  Standard_EXPORT void SetSecondMember(const occ::handle<Expr_GeneralExpression>& exp);
 
   //! Returns the first member of the relation
-  Standard_EXPORT Handle(Expr_GeneralExpression) FirstMember() const;
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> FirstMember() const;
 
   //! Returns the second member of the relation
-  Standard_EXPORT Handle(Expr_GeneralExpression) SecondMember() const;
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> SecondMember() const;
 
   //! Tests if <me> is linear between its NamedUnknowns.
-  Standard_EXPORT Standard_Boolean IsLinear() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsLinear() const override;
 
   //! Returns the number of relations contained in <me>.
-  Standard_EXPORT Standard_Integer NbOfSubRelations() const Standard_OVERRIDE;
+  Standard_EXPORT int NbOfSubRelations() const override;
 
   //! Returns the number of SingleRelations contained in
   //! <me> (Always 1).
-  Standard_EXPORT Standard_Integer NbOfSingleRelations() const Standard_OVERRIDE;
+  Standard_EXPORT int NbOfSingleRelations() const override;
 
   //! Returns the relation denoted by <index> in <me>.
   //! An exception is raised if index is out of range.
-  Standard_EXPORT Handle(Expr_GeneralRelation) SubRelation(const Standard_Integer index) const
-    Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Expr_GeneralRelation> SubRelation(const int index) const override;
 
   //! Tests if <me> contains <exp>.
-  Standard_EXPORT Standard_Boolean
-    Contains(const Handle(Expr_GeneralExpression)& exp) const Standard_OVERRIDE;
+  Standard_EXPORT bool Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
 
   //! Replaces all occurrences of <var> with <with> in <me>.
-  Standard_EXPORT void Replace(const Handle(Expr_NamedUnknown)&      var,
-                               const Handle(Expr_GeneralExpression)& with) Standard_OVERRIDE;
+  Standard_EXPORT void Replace(const occ::handle<Expr_NamedUnknown>&      var,
+                               const occ::handle<Expr_GeneralExpression>& with) override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_SingleRelation, Expr_GeneralRelation)
 
-protected:
 private:
-  Handle(Expr_GeneralExpression) myFirstMember;
-  Handle(Expr_GeneralExpression) mySecondMember;
+  occ::handle<Expr_GeneralExpression> myFirstMember;
+  occ::handle<Expr_GeneralExpression> mySecondMember;
 };
 
 #endif // _Expr_SingleRelation_HeaderFile

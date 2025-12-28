@@ -31,22 +31,22 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESDimen_ToolRadiusDimension::IGESDimen_ToolRadiusDimension() {}
 
-void IGESDimen_ToolRadiusDimension::ReadOwnParams(const Handle(IGESDimen_RadiusDimension)& ent,
-                                                  const Handle(IGESData_IGESReaderData)&   IR,
-                                                  IGESData_ParamReader&                    PR) const
+void IGESDimen_ToolRadiusDimension::ReadOwnParams(const occ::handle<IGESDimen_RadiusDimension>& ent,
+                                                  const occ::handle<IGESData_IGESReaderData>&   IR,
+                                                  IGESData_ParamReader& PR) const
 {
-  Handle(IGESDimen_GeneralNote) tempNote;
-  Handle(IGESDimen_LeaderArrow) leadArr;
-  gp_XY                         arcCenter;
-  Handle(IGESDimen_LeaderArrow) leadArr2;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  occ::handle<IGESDimen_GeneralNote> tempNote;
+  occ::handle<IGESDimen_LeaderArrow> leadArr;
+  gp_XY                              arcCenter;
+  occ::handle<IGESDimen_LeaderArrow> leadArr2;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -67,15 +67,16 @@ void IGESDimen_ToolRadiusDimension::ReadOwnParams(const Handle(IGESDimen_RadiusD
                   PR.Current(),
                   "Leader arrow 2",
                   // clang-format off
-		  STANDARD_TYPE(IGESDimen_LeaderArrow), leadArr2, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		  STANDARD_TYPE(IGESDimen_LeaderArrow), leadArr2, true); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNote, leadArr, arcCenter, leadArr2);
 }
 
-void IGESDimen_ToolRadiusDimension::WriteOwnParams(const Handle(IGESDimen_RadiusDimension)& ent,
-                                                   IGESData_IGESWriter& IW) const
+void IGESDimen_ToolRadiusDimension::WriteOwnParams(
+  const occ::handle<IGESDimen_RadiusDimension>& ent,
+  IGESData_IGESWriter&                          IW) const
 {
   IW.Send(ent->Note());
   IW.Send(ent->Leader());
@@ -85,22 +86,22 @@ void IGESDimen_ToolRadiusDimension::WriteOwnParams(const Handle(IGESDimen_Radius
     IW.Send(ent->Leader2());
 }
 
-void IGESDimen_ToolRadiusDimension::OwnShared(const Handle(IGESDimen_RadiusDimension)& ent,
-                                              Interface_EntityIterator&                iter) const
+void IGESDimen_ToolRadiusDimension::OwnShared(const occ::handle<IGESDimen_RadiusDimension>& ent,
+                                              Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Note());
   iter.GetOneItem(ent->Leader());
   iter.GetOneItem(ent->Leader2());
 }
 
-void IGESDimen_ToolRadiusDimension::OwnCopy(const Handle(IGESDimen_RadiusDimension)& another,
-                                            const Handle(IGESDimen_RadiusDimension)& ent,
-                                            Interface_CopyTool&                      TC) const
+void IGESDimen_ToolRadiusDimension::OwnCopy(const occ::handle<IGESDimen_RadiusDimension>& another,
+                                            const occ::handle<IGESDimen_RadiusDimension>& ent,
+                                            Interface_CopyTool&                           TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, tempNote, TC.Transferred(another->Note()));
   DeclareAndCast(IGESDimen_LeaderArrow, leadArr, TC.Transferred(another->Leader()));
-  gp_XY                         arcCenter = another->Center().XY();
-  Handle(IGESDimen_LeaderArrow) leadArr2;
+  gp_XY                              arcCenter = another->Center().XY();
+  occ::handle<IGESDimen_LeaderArrow> leadArr2;
   if (another->HasLeader2())
     leadArr2 = GetCasted(IGESDimen_LeaderArrow, TC.Transferred(another->Leader2()));
   ent->Init(tempNote, leadArr, arcCenter, leadArr2);
@@ -108,7 +109,7 @@ void IGESDimen_ToolRadiusDimension::OwnCopy(const Handle(IGESDimen_RadiusDimensi
 }
 
 IGESData_DirChecker IGESDimen_ToolRadiusDimension::DirChecker(
-  const Handle(IGESDimen_RadiusDimension)& /* ent */) const
+  const occ::handle<IGESDimen_RadiusDimension>& /* ent */) const
 {
   IGESData_DirChecker DC(222, 0, 1);
   DC.Structure(IGESData_DefVoid);
@@ -121,22 +122,22 @@ IGESData_DirChecker IGESDimen_ToolRadiusDimension::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolRadiusDimension::OwnCheck(const Handle(IGESDimen_RadiusDimension)& ent,
+void IGESDimen_ToolRadiusDimension::OwnCheck(const occ::handle<IGESDimen_RadiusDimension>& ent,
                                              const Interface_ShareTool&,
-                                             Handle(Interface_Check)& ach) const
+                                             occ::handle<Interface_Check>& ach) const
 {
   if (ent->HasLeader2() && ent->FormNumber() == 0)
     ach->AddFail("Value of Form Number not consistent with presence of Leader2");
   // Form 1 : Leader can be defined or not. Form 0 : only cannot
 }
 
-void IGESDimen_ToolRadiusDimension::OwnDump(const Handle(IGESDimen_RadiusDimension)& ent,
-                                            const IGESData_IGESDumper&               dumper,
-                                            Standard_OStream&                        S,
-                                            const Standard_Integer                   level) const
+void IGESDimen_ToolRadiusDimension::OwnDump(const occ::handle<IGESDimen_RadiusDimension>& ent,
+                                            const IGESData_IGESDumper&                    dumper,
+                                            Standard_OStream&                             S,
+                                            const int level) const
 {
   S << "IGESDimen_RadiusDimension\n";
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "General note : ";
   dumper.Dump(ent->Note(), S, sublevel);

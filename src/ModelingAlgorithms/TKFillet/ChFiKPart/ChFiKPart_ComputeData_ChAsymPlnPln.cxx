@@ -50,18 +50,18 @@
 // Out      : True if the chamfer has been computed
 //           False else
 //=======================================================================
-Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
-                                      const Handle(ChFiDS_SurfData)& Data,
-                                      const gp_Pln&                  Pl1,
-                                      const gp_Pln&                  Pl2,
-                                      const TopAbs_Orientation       Or1,
-                                      const TopAbs_Orientation       Or2,
-                                      const Standard_Real            Dis,
-                                      const Standard_Real            Angle,
-                                      const gp_Lin&                  Spine,
-                                      const Standard_Real            First,
-                                      const TopAbs_Orientation       Of1,
-                                      const Standard_Boolean         DisOnP1)
+bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
+                          const occ::handle<ChFiDS_SurfData>& Data,
+                          const gp_Pln&                       Pl1,
+                          const gp_Pln&                       Pl2,
+                          const TopAbs_Orientation            Or1,
+                          const TopAbs_Orientation            Or2,
+                          const double                        Dis,
+                          const double                        Angle,
+                          const gp_Lin&                       Spine,
+                          const double                        First,
+                          const TopAbs_Orientation            Of1,
+                          const bool                          DisOnP1)
 {
 
   // Creation of the plane which carry the chamfer
@@ -84,8 +84,8 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   // compute the intersection line of Pl1 and Pl2
   IntAna_QuadQuadGeo LInt(Pl1, Pl2, Precision::Angular(), Precision::Confusion());
 
-  gp_Pnt        P;
-  Standard_Real Fint;
+  gp_Pnt P;
+  double Fint;
   if (LInt.IsDone())
   {
     Fint = ElCLib::Parameter(LInt.Line(1), ElCLib::Value(First, Spine));
@@ -93,7 +93,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 
   gp_Dir LinAx1     = Spine.Direction();
@@ -105,7 +105,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   if (VecTransl2.Dot(D1) < 0.)
     VecTransl2.Reverse();
 
-  Standard_Real cosP, sinP, dis1, dis2;
+  double cosP, sinP, dis1, dis2;
   cosP = VecTransl1.Dot(VecTransl2);
   sinP = sqrt(1. - cosP * cosP);
 
@@ -148,7 +148,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   if (PlanAx3.YDirection().Dot(D2) >= 0.)
     PlanAx3.YReverse();
 
-  Handle(Geom_Plane) gpl = new Geom_Plane(PlanAx3);
+  occ::handle<Geom_Plane> gpl = new Geom_Plane(PlanAx3);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gpl, DStr));
 
   // About the orientation of the chamfer plane
@@ -163,8 +163,8 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   // Compute the orientation of the chamfer plane
   gp_Dir norplch = gpl->Pln().Position().XDirection().Crossed(gpl->Pln().Position().YDirection());
 
-  gp_Dir           DirCh12(gp_Vec(P1, P2));
-  Standard_Boolean toreverse = (norplch.Dot(norface1) <= 0.);
+  gp_Dir DirCh12(gp_Vec(P1, P2));
+  bool   toreverse = (norplch.Dot(norface1) <= 0.);
   if (VecTransl1.Dot(DirCh12) > 0)
     toreverse = !toreverse;
 
@@ -176,21 +176,21 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   // Loading of the FaceInterferences with pcurves & 3d curves.
 
   // case face 1
-  gp_Lin            linPln(P1, xdir);
-  Handle(Geom_Line) GLinPln1 = new Geom_Line(linPln);
+  gp_Lin                 linPln(P1, xdir);
+  occ::handle<Geom_Line> GLinPln1 = new Geom_Line(linPln);
 
-  Standard_Real u, v;
+  double u, v;
   ElSLib::PlaneParameters(Pos1, P1, u, v);
-  gp_Pnt2d            p2dPln(u, v);
-  gp_Dir2d            dir2dPln(xdir.Dot(Pos1.XDirection()), xdir.Dot(Pos1.YDirection()));
-  gp_Lin2d            lin2dPln(p2dPln, dir2dPln);
-  Handle(Geom2d_Line) GLin2dPln1 = new Geom2d_Line(lin2dPln);
+  gp_Pnt2d                 p2dPln(u, v);
+  gp_Dir2d                 dir2dPln(xdir.Dot(Pos1.XDirection()), xdir.Dot(Pos1.YDirection()));
+  gp_Lin2d                 lin2dPln(p2dPln, dir2dPln);
+  occ::handle<Geom2d_Line> GLin2dPln1 = new Geom2d_Line(lin2dPln);
 
   ElSLib::PlaneParameters(PlanAx3, P1, u, v);
   p2dPln.SetCoord(u, v);
   lin2dPln.SetLocation(p2dPln);
   lin2dPln.SetDirection(gp::DX2d());
-  Handle(Geom2d_Line) GLin2dPlnCh1 = new Geom2d_Line(lin2dPln);
+  occ::handle<Geom2d_Line> GLin2dPlnCh1 = new Geom2d_Line(lin2dPln);
 
   TopAbs_Orientation trans;
   toreverse = (norplch.Dot(norpl) <= 0.);
@@ -209,20 +209,20 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
   // case face 2
 
   linPln.SetLocation(P2);
-  Handle(Geom_Line) GLinPln2 = new Geom_Line(linPln);
+  occ::handle<Geom_Line> GLinPln2 = new Geom_Line(linPln);
 
   ElSLib::PlaneParameters(Pos2, P2, u, v);
   p2dPln.SetCoord(u, v);
   dir2dPln.SetCoord(xdir.Dot(Pos2.XDirection()), xdir.Dot(Pos2.YDirection()));
   lin2dPln.SetLocation(p2dPln);
   lin2dPln.SetDirection(dir2dPln);
-  Handle(Geom2d_Line) GLin2dPln2 = new Geom2d_Line(lin2dPln);
+  occ::handle<Geom2d_Line> GLin2dPln2 = new Geom2d_Line(lin2dPln);
 
   ElSLib::PlaneParameters(PlanAx3, P2, u, v);
   p2dPln.SetCoord(u, v);
   lin2dPln.SetLocation(p2dPln);
   lin2dPln.SetDirection(gp::DX2d());
-  Handle(Geom2d_Line) GLin2dPlnCh2 = new Geom2d_Line(lin2dPln);
+  occ::handle<Geom2d_Line> GLin2dPlnCh2 = new Geom2d_Line(lin2dPln);
 
   norpl     = Pos2.XDirection().Crossed(Pos2.YDirection());
   toreverse = (norplch.Dot(norpl) <= 0.);
@@ -238,5 +238,5 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
                                                  GLin2dPln2,
                                                  GLin2dPlnCh2);
 
-  return Standard_True;
+  return true;
 }

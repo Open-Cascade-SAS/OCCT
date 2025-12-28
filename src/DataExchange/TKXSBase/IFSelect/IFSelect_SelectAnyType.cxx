@@ -18,9 +18,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectAnyType, IFSelect_SelectExtract)
 
-Standard_Boolean IFSelect_SelectAnyType::Sort(const Standard_Integer,
-                                              const Handle(Standard_Transient)& ent,
-                                              const Handle(Interface_InterfaceModel)&) const
+bool IFSelect_SelectAnyType::Sort(const int,
+                                  const occ::handle<Standard_Transient>& ent,
+                                  const occ::handle<Interface_InterfaceModel>&) const
 {
   return ent->IsKind(TypeForMatch());
 }

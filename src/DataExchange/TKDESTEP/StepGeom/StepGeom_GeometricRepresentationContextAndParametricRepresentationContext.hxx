@@ -26,10 +26,6 @@ class StepGeom_GeometricRepresentationContext;
 class StepRepr_ParametricRepresentationContext;
 class TCollection_HAsciiString;
 
-class StepGeom_GeometricRepresentationContextAndParametricRepresentationContext;
-DEFINE_STANDARD_HANDLE(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext,
-                       StepRepr_RepresentationContext)
-
 class StepGeom_GeometricRepresentationContextAndParametricRepresentationContext
     : public StepRepr_RepresentationContext
 {
@@ -39,39 +35,37 @@ public:
   Standard_EXPORT StepGeom_GeometricRepresentationContextAndParametricRepresentationContext();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                 aContextIdentifier,
-    const Handle(TCollection_HAsciiString)&                 aContextType,
-    const Handle(StepGeom_GeometricRepresentationContext)&  aGeometricRepresentationContext,
-    const Handle(StepRepr_ParametricRepresentationContext)& aParametricRepresentationContext);
+    const occ::handle<TCollection_HAsciiString>&                 aContextIdentifier,
+    const occ::handle<TCollection_HAsciiString>&                 aContextType,
+    const occ::handle<StepGeom_GeometricRepresentationContext>&  aGeometricRepresentationContext,
+    const occ::handle<StepRepr_ParametricRepresentationContext>& aParametricRepresentationContext);
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aContextIdentifier,
-                            const Handle(TCollection_HAsciiString)& aContextType,
-                            const Standard_Integer                  aCoordinateSpaceDimension);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
+                            const occ::handle<TCollection_HAsciiString>& aContextType,
+                            const int                                    aCoordinateSpaceDimension);
 
   Standard_EXPORT void SetGeometricRepresentationContext(
-    const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext);
+    const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext);
 
-  Standard_EXPORT Handle(StepGeom_GeometricRepresentationContext) GeometricRepresentationContext()
-    const;
+  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationContext>
+                  GeometricRepresentationContext() const;
 
   Standard_EXPORT void SetParametricRepresentationContext(
-    const Handle(StepRepr_ParametricRepresentationContext)& aParametricRepresentationContext);
+    const occ::handle<StepRepr_ParametricRepresentationContext>& aParametricRepresentationContext);
 
-  Standard_EXPORT Handle(StepRepr_ParametricRepresentationContext) ParametricRepresentationContext()
-    const;
+  Standard_EXPORT occ::handle<StepRepr_ParametricRepresentationContext>
+                  ParametricRepresentationContext() const;
 
-  Standard_EXPORT void SetCoordinateSpaceDimension(
-    const Standard_Integer aCoordinateSpaceDimension);
+  Standard_EXPORT void SetCoordinateSpaceDimension(const int aCoordinateSpaceDimension);
 
-  Standard_EXPORT Standard_Integer CoordinateSpaceDimension() const;
+  Standard_EXPORT int CoordinateSpaceDimension() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext,
                           StepRepr_RepresentationContext)
 
-protected:
 private:
-  Handle(StepGeom_GeometricRepresentationContext)  geometricRepresentationContext;
-  Handle(StepRepr_ParametricRepresentationContext) parametricRepresentationContext;
+  occ::handle<StepGeom_GeometricRepresentationContext>  geometricRepresentationContext;
+  occ::handle<StepRepr_ParametricRepresentationContext> parametricRepresentationContext;
 };
 
 #endif // _StepGeom_GeometricRepresentationContextAndParametricRepresentationContext_HeaderFile

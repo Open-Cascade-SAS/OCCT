@@ -30,7 +30,9 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 //=================================================================================================
 
@@ -40,7 +42,7 @@ void LocOpe_LinearForm::Perform(const TopoDS_Shape& Base,
                                 const gp_Pnt&       Pnt2)
 
 {
-  myIsTrans = Standard_False;
+  myIsTrans = false;
   myMap.Clear();
   myFirstShape.Nullify();
   myLastShape.Nullify();
@@ -66,7 +68,7 @@ void LocOpe_LinearForm::Perform(const TopoDS_Shape& Base,
                                 const gp_Pnt&       Pnt2)
 
 {
-  myIsTrans = Standard_True;
+  myIsTrans = true;
   myTra     = Vectra;
   myMap.Clear();
   myFirstShape.Nullify();
@@ -95,7 +97,7 @@ void LocOpe_LinearForm::IntPerf()
   {
     gp_Trsf T;
     T.SetTranslation(myTra);
-    Handle(BRepTools_TrsfModification) modbase = new BRepTools_TrsfModification(T);
+    occ::handle<BRepTools_TrsfModification> modbase = new BRepTools_TrsfModification(T);
     Modif.Init(theBase);
     Modif.Perform(modbase);
     theBase = Modif.ModifiedShape(theBase);
@@ -114,7 +116,7 @@ void LocOpe_LinearForm::IntPerf()
       const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
       if (!myMap.IsBound(edg))
       {
-        TopTools_ListOfShape thelist;
+        NCollection_List<TopoDS_Shape> thelist;
         myMap.Bind(edg, thelist);
         TopoDS_Shape desc = myPrism.Shape(edg);
         if (!desc.IsNull())
@@ -129,21 +131,24 @@ void LocOpe_LinearForm::IntPerf()
   else
   {
     // Cas base != FACE
-    TopTools_IndexedDataMapOfShapeListOfShape theEFMap;
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      theEFMap;
     TopExp::MapShapesAndAncestors(theBase, TopAbs_EDGE, TopAbs_FACE, theEFMap);
-    TopTools_ListOfShape lfaces;
-    Standard_Boolean     toremove = Standard_False;
-    for (Standard_Integer i = 1; i <= theEFMap.Extent(); i++)
+    NCollection_List<TopoDS_Shape> lfaces;
+    bool                           toremove = false;
+    for (int i = 1; i <= theEFMap.Extent(); i++)
     {
-      const TopoDS_Shape&  edg = theEFMap.FindKey(i);
-      TopTools_ListOfShape thelist1;
+      const TopoDS_Shape&            edg = theEFMap.FindKey(i);
+      NCollection_List<TopoDS_Shape> thelist1;
       myMap.Bind(edg, thelist1);
       TopoDS_Shape desc = myPrism.Shape(edg);
       if (!desc.IsNull())
       {
         if (theEFMap(i).Extent() >= 2)
         {
-          toremove = Standard_True;
+          toremove = true;
         }
         else
         {
@@ -174,7 +179,7 @@ void LocOpe_LinearForm::IntPerf()
         const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
         if (!myMap.IsBound(edg))
         {
-          TopTools_ListOfShape thelist2;
+          NCollection_List<TopoDS_Shape> thelist2;
           myMap.Bind(edg, thelist2);
           TopoDS_Shape desc = myPrism.Shape(edg);
           if (!desc.IsNull())
@@ -203,7 +208,7 @@ void LocOpe_LinearForm::IntPerf()
     }
   }
 
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
@@ -233,7 +238,7 @@ const TopoDS_Shape& LocOpe_LinearForm::LastShape() const
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_LinearForm::Shapes(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& LocOpe_LinearForm::Shapes(const TopoDS_Shape& S) const
 {
   return myMap(S);
 }

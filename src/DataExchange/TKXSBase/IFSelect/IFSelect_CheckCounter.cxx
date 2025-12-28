@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_CheckCounter, IFSelect_SignatureList)
 
 //=================================================================================================
 
-IFSelect_CheckCounter::IFSelect_CheckCounter(const Standard_Boolean withlist)
+IFSelect_CheckCounter::IFSelect_CheckCounter(const bool withlist)
     : IFSelect_SignatureList(withlist)
 {
   SetName("Check");
@@ -31,39 +31,39 @@ IFSelect_CheckCounter::IFSelect_CheckCounter(const Standard_Boolean withlist)
 
 //=================================================================================================
 
-void IFSelect_CheckCounter::SetSignature(const Handle(MoniTool_SignText)& sign)
+void IFSelect_CheckCounter::SetSignature(const occ::handle<MoniTool_SignText>& sign)
 {
   thesign = sign;
 }
 
 //=================================================================================================
 
-Handle(MoniTool_SignText) IFSelect_CheckCounter::Signature() const
+occ::handle<MoniTool_SignText> IFSelect_CheckCounter::Signature() const
 {
   return thesign;
 }
 
 //=================================================================================================
 
-void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&          list,
-                                    const Handle(Interface_InterfaceModel)& model,
-                                    const Standard_Boolean                  original,
-                                    const Standard_Boolean                  failsonly)
+void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&               list,
+                                    const occ::handle<Interface_InterfaceModel>& model,
+                                    const bool                                   original,
+                                    const bool                                   failsonly)
 {
-  Standard_Integer i, nb, num, nbe = (model.IsNull() ? 0 : model->NbEntities());
-  char             mess[300];
+  int  i, nb, num, nbe = (model.IsNull() ? 0 : model->NbEntities());
+  char mess[300];
   Sprintf(mess, "Check %s", list.Name());
   SetName(mess);
   for (list.Start(); list.More(); list.Next())
   {
     num = list.Number();
-    Handle(Standard_Transient)     ent;
-    const Handle(Interface_Check)& check = list.Value();
-    ent                                  = check->Entity();
+    occ::handle<Standard_Transient>     ent;
+    const occ::handle<Interface_Check>& check = list.Value();
+    ent                                       = check->Entity();
     if (ent.IsNull() && num > 0 && num <= nbe)
       ent = model->Value(num);
-    nb                     = check->NbFails();
-    Standard_CString tystr = NULL;
+    nb                = check->NbFails();
+    const char* tystr = NULL;
     if (!ent.IsNull())
     {
       if (!thesign.IsNull())

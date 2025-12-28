@@ -30,13 +30,13 @@ class OpenGl_Group;
 namespace OpenGl_Raytrace
 {
 //! Checks to see if the group contains ray-trace geometry.
-Standard_EXPORT Standard_Boolean IsRaytracedGroup(const OpenGl_Group* theGroup);
+Standard_EXPORT bool IsRaytracedGroup(const OpenGl_Group* theGroup);
 
 //! Checks to see if the element contains ray-trace geometry.
-Standard_EXPORT Standard_Boolean IsRaytracedElement(const OpenGl_ElementNode* theNode);
+Standard_EXPORT bool IsRaytracedElement(const OpenGl_ElementNode* theNode);
 
 //! Checks to see if the element contains ray-trace geometry.
-Standard_EXPORT Standard_Boolean IsRaytracedElement(const OpenGl_Element* theElement);
+Standard_EXPORT bool IsRaytracedElement(const OpenGl_Element* theElement);
 } // namespace OpenGl_Raytrace
 
 //! Stores properties of surface material.
@@ -69,7 +69,7 @@ public:
   Standard_EXPORT OpenGl_RaytraceMaterial();
 
   //! Returns packed (serialized) representation of material.
-  const Standard_ShortReal* Packed() { return reinterpret_cast<Standard_ShortReal*>(this); }
+  const float* Packed() { return reinterpret_cast<float*>(this); }
 };
 
 //! Stores properties of OpenGL light source.
@@ -87,12 +87,12 @@ public:
   Standard_EXPORT OpenGl_RaytraceLight(const BVH_Vec4f& theEmission, const BVH_Vec4f& thePosition);
 
   //! Returns packed (serialized) representation of light source.
-  const Standard_ShortReal* Packed() { return reinterpret_cast<Standard_ShortReal*>(this); }
+  const float* Packed() { return reinterpret_cast<float*>(this); }
 };
 
 //! Shared pointer to quad BVH (QBVH) tree.
-typedef opencascade::handle<BVH_Tree<Standard_ShortReal, 3, BVH_QuadTree>> QuadBvhHandle;
-typedef BVH_Triangulation<Standard_ShortReal, 3> OpenGl_BVHTriangulation3f;
+typedef opencascade::handle<BVH_Tree<float, 3, BVH_QuadTree>> QuadBvhHandle;
+typedef BVH_Triangulation<float, 3>                           OpenGl_BVHTriangulation3f;
 
 //! Triangulation of single OpenGL primitive array.
 class OpenGl_TriangleSet : public OpenGl_BVHTriangulation3f
@@ -100,19 +100,18 @@ class OpenGl_TriangleSet : public OpenGl_BVHTriangulation3f
   DEFINE_STANDARD_RTTIEXT(OpenGl_TriangleSet, OpenGl_BVHTriangulation3f)
 public:
   //! Value of invalid material index to return in case of errors.
-  static const Standard_Integer INVALID_MATERIAL = -1;
+  static const int INVALID_MATERIAL = -1;
 
 public:
   //! Creates new OpenGL element triangulation.
-  Standard_EXPORT OpenGl_TriangleSet(
-    const Standard_Size                                            theArrayID,
-    const opencascade::handle<BVH_Builder<Standard_ShortReal, 3>>& theBuilder);
+  Standard_EXPORT OpenGl_TriangleSet(const size_t                                      theArrayID,
+                                     const opencascade::handle<BVH_Builder<float, 3>>& theBuilder);
 
   //! Returns ID of associated primitive array.
-  Standard_Size AssociatedPArrayID() const { return myArrayID; }
+  size_t AssociatedPArrayID() const { return myArrayID; }
 
   //! Returns material index of triangle set.
-  Standard_Integer MaterialIndex() const
+  int MaterialIndex() const
   {
     if (Elements.size() == 0)
     {
@@ -123,24 +122,22 @@ public:
   }
 
   //! Sets material index for entire triangle set.
-  void SetMaterialIndex(Standard_Integer theMatID)
+  void SetMaterialIndex(int theMatID)
   {
-    for (Standard_Size anIdx = 0; anIdx < Elements.size(); ++anIdx)
+    for (size_t anIdx = 0; anIdx < Elements.size(); ++anIdx)
     {
       Elements[anIdx].w() = theMatID;
     }
   }
 
   //! Returns AABB of primitive set.
-  virtual BVH_BoxNt Box() const Standard_OVERRIDE;
+  virtual BVH_BoxNt Box() const override;
 
   //! Returns AABB of the given object.
-  using BVH_Triangulation<Standard_ShortReal, 3>::Box;
+  using BVH_Triangulation<float, 3>::Box;
 
   //! Returns centroid position along the given axis.
-  Standard_EXPORT virtual Standard_ShortReal Center(const Standard_Integer theIndex,
-                                                    const Standard_Integer theAxis) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual float Center(const int theIndex, const int theAxis) const override;
 
   //! Returns quad BVH (QBVH) tree produced from binary BVH.
   Standard_EXPORT const QuadBvhHandle& QuadBVH();
@@ -150,23 +147,23 @@ public:
   BVH_Array2f TexCrds; //!< Array of texture coords.
 
 private:
-  Standard_Size myArrayID; //!< ID of associated primitive array.
+  size_t myArrayID; //!< ID of associated primitive array.
 
   QuadBvhHandle myQuadBVH; //!< QBVH produced from binary BVH tree.
 };
 
 //! Stores geometry of ray-tracing scene.
-class OpenGl_RaytraceGeometry : public BVH_Geometry<Standard_ShortReal, 3>
+class OpenGl_RaytraceGeometry : public BVH_Geometry<float, 3>
 {
 public:
   //! Value of invalid offset to return in case of errors.
-  static const Standard_Integer INVALID_OFFSET = -1;
+  static const int INVALID_OFFSET = -1;
 
   //! Maximum number of textures used in ray-tracing shaders.
   //! This is not restriction of the solution implemented, but
   //! rather the reasonable limit of the number of textures in
   //! various applications (can be increased if needed).
-  static const Standard_Integer MAX_TEX_NUMBER = 32;
+  static const int MAX_TEX_NUMBER = 32;
 
 public:
   //! Array of properties of light sources.
@@ -181,7 +178,7 @@ public:
 public:
   //! Creates uninitialized ray-tracing geometry.
   OpenGl_RaytraceGeometry()
-      : BVH_Geometry<Standard_ShortReal, 3>(),
+      : BVH_Geometry<float, 3>(),
         myTopLevelTreeDepth(0),
         myBotLevelTreeDepth(0)
   {
@@ -206,73 +203,73 @@ public:
   }
 
   //! Clears ray-tracing geometry.
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
 public: //! @name methods related to acceleration structure
   //! Performs post-processing of high-level scene BVH.
-  Standard_EXPORT Standard_Boolean ProcessAcceleration();
+  Standard_EXPORT bool ProcessAcceleration();
 
   //! Returns offset of bottom-level BVH for given leaf node.
   //! If the node index is not valid the function returns -1.
   //! @note Can be used after processing acceleration structure.
-  Standard_EXPORT Standard_Integer AccelerationOffset(Standard_Integer theNodeIdx);
+  Standard_EXPORT int AccelerationOffset(int theNodeIdx);
 
   //! Returns offset of triangulation vertices for given leaf node.
   //! If the node index is not valid the function returns -1.
   //! @note Can be used after processing acceleration structure.
-  Standard_EXPORT Standard_Integer VerticesOffset(Standard_Integer theNodeIdx);
+  Standard_EXPORT int VerticesOffset(int theNodeIdx);
 
   //! Returns offset of triangulation elements for given leaf node.
   //! If the node index is not valid the function returns -1.
   //! @note Can be used after processing acceleration structure.
-  Standard_EXPORT Standard_Integer ElementsOffset(Standard_Integer theNodeIdx);
+  Standard_EXPORT int ElementsOffset(int theNodeIdx);
 
   //! Returns triangulation data for given leaf node.
   //! If the node index is not valid the function returns NULL.
   //! @note Can be used after processing acceleration structure.
-  Standard_EXPORT OpenGl_TriangleSet* TriangleSet(Standard_Integer theNodeIdx);
+  Standard_EXPORT OpenGl_TriangleSet* TriangleSet(int theNodeIdx);
 
   //! Returns quad BVH (QBVH) tree produced from binary BVH.
   Standard_EXPORT const QuadBvhHandle& QuadBVH();
 
 public: //! @name methods related to texture management
   //! Checks if scene contains textured objects.
-  Standard_Boolean HasTextures() const { return !myTextures.IsEmpty(); }
+  bool HasTextures() const { return !myTextures.IsEmpty(); }
 
   //! Adds new OpenGL texture to the scene and returns its index.
-  Standard_EXPORT Standard_Integer AddTexture(const Handle(OpenGl_Texture)& theTexture);
+  Standard_EXPORT int AddTexture(const occ::handle<OpenGl_Texture>& theTexture);
 
   //! Updates unique 64-bit texture handles to use in shaders.
-  Standard_EXPORT Standard_Boolean UpdateTextureHandles(const Handle(OpenGl_Context)& theContext);
+  Standard_EXPORT bool UpdateTextureHandles(const occ::handle<OpenGl_Context>& theContext);
 
   //! Makes the OpenGL texture handles resident (must be called before using).
-  Standard_EXPORT Standard_Boolean AcquireTextures(const Handle(OpenGl_Context)& theContext);
+  Standard_EXPORT bool AcquireTextures(const occ::handle<OpenGl_Context>& theContext);
 
   //! Makes the OpenGL texture handles non-resident (must be called after using).
-  Standard_EXPORT Standard_Boolean ReleaseTextures(const Handle(OpenGl_Context)& theContext) const;
+  Standard_EXPORT bool ReleaseTextures(const occ::handle<OpenGl_Context>& theContext) const;
 
   //! Returns array of texture handles.
   const std::vector<GLuint64>& TextureHandles() const { return myTextureHandles; }
 
   //! Releases OpenGL resources.
-  void ReleaseResources(const Handle(OpenGl_Context)&)
+  void ReleaseResources(const occ::handle<OpenGl_Context>&)
   {
     //
   }
 
 public: //! @name auxiliary methods
   //! Returns depth of top-level scene BVH from last build.
-  Standard_Integer TopLevelTreeDepth() const { return myTopLevelTreeDepth; }
+  int TopLevelTreeDepth() const { return myTopLevelTreeDepth; }
 
   //! Returns maximum depth of bottom-level scene BVHs from last build.
-  Standard_Integer BotLevelTreeDepth() const { return myBotLevelTreeDepth; }
+  int BotLevelTreeDepth() const { return myBotLevelTreeDepth; }
 
 protected:
   // clang-format off
-  NCollection_Vector<Handle(OpenGl_Texture)> myTextures;           //!< Array of texture maps shared between rendered objects
+  NCollection_Vector<occ::handle<OpenGl_Texture>> myTextures;           //!< Array of texture maps shared between rendered objects
   std::vector<GLuint64>                      myTextureHandles;     //!< Array of unique 64-bit texture handles obtained from OpenGL
-  Standard_Integer                           myTopLevelTreeDepth;  //!< Depth of high-level scene BVH from last build
-  Standard_Integer                           myBotLevelTreeDepth;  //!< Maximum depth of bottom-level scene BVHs from last build
+  int                           myTopLevelTreeDepth;  //!< Depth of high-level scene BVH from last build
+  int                           myBotLevelTreeDepth;  //!< Maximum depth of bottom-level scene BVHs from last build
   // clang-format on
 
   QuadBvhHandle myQuadBVH; //!< QBVH produced from binary BVH tree.

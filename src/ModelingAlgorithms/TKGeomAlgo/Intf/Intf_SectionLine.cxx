@@ -20,14 +20,14 @@
 //=================================================================================================
 
 Intf_SectionLine::Intf_SectionLine()
-    : closed(Standard_False)
+    : closed(false)
 {
 }
 
 //=================================================================================================
 
 Intf_SectionLine::Intf_SectionLine(const Intf_SectionLine& Other)
-    : closed(Standard_False)
+    : closed(false)
 {
   myPoints = Other.myPoints;
 }
@@ -71,19 +71,19 @@ void Intf_SectionLine::Reverse()
 
 void Intf_SectionLine::Close()
 {
-  closed = Standard_True;
+  closed = true;
 }
 
 //=================================================================================================
 
-const Intf_SectionPoint& Intf_SectionLine::GetPoint(const Standard_Integer index) const
+const Intf_SectionPoint& Intf_SectionLine::GetPoint(const int index) const
 {
   return myPoints.Value(index);
 }
 
 //=================================================================================================
 
-Standard_Boolean Intf_SectionLine::IsClosed() const
+bool Intf_SectionLine::IsClosed() const
 {
   // return closed;
   //  On ne peut fermer une ligne de section inseree dans une liste car
@@ -96,17 +96,17 @@ Standard_Boolean Intf_SectionLine::IsClosed() const
 
 //=================================================================================================
 
-Standard_Boolean Intf_SectionLine::Contains(const Intf_SectionPoint& ThePI) const
+bool Intf_SectionLine::Contains(const Intf_SectionPoint& ThePI) const
 {
-  for (Standard_Integer i = 1; i <= myPoints.Length(); i++)
+  for (int i = 1; i <= myPoints.Length(); i++)
     if (ThePI.IsEqual(myPoints(i)))
-      return Standard_True;
-  return Standard_False;
+      return true;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Integer Intf_SectionLine::IsEnd(const Intf_SectionPoint& ThePI) const
+int Intf_SectionLine::IsEnd(const Intf_SectionPoint& ThePI) const
 {
   if (myPoints.First().IsEqual(ThePI))
     return 1;
@@ -117,28 +117,28 @@ Standard_Integer Intf_SectionLine::IsEnd(const Intf_SectionPoint& ThePI) const
 
 //=================================================================================================
 
-Standard_Boolean Intf_SectionLine::IsEqual(const Intf_SectionLine& Other) const
+bool Intf_SectionLine::IsEqual(const Intf_SectionLine& Other) const
 {
   if (myPoints.Length() != Other.myPoints.Length())
-    return Standard_False;
-  for (Standard_Integer i = 1; i <= myPoints.Length(); i++)
+    return false;
+  for (int i = 1; i <= myPoints.Length(); i++)
     if (!myPoints(i).IsEqual(Other.myPoints(i)))
-      return Standard_False;
-  return Standard_True;
+      return false;
+  return true;
 }
 
 //=================================================================================================
 
-void Intf_SectionLine::Dump(const Standard_Integer Indent) const
+void Intf_SectionLine::Dump(const int Indent) const
 {
-  for (Standard_Integer id = 0; id < Indent; id++)
+  for (int id = 0; id < Indent; id++)
     std::cout << " ";
   std::cout << "LS ";
   if (IsClosed())
     std::cout << "Closed :" << std::endl;
   else
     std::cout << "Open :" << std::endl;
-  for (Standard_Integer p = 1; p <= myPoints.Length(); p++)
+  for (int p = 1; p <= myPoints.Length(); p++)
   {
     myPoints.Value(p).Dump(Indent + 2);
   }

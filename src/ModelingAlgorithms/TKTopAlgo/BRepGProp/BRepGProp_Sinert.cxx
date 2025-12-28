@@ -45,9 +45,9 @@ BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&   theSurface,
 
 //=================================================================================================
 
-BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
-                                   const gp_Pnt&       theLocation,
-                                   const Standard_Real theEps)
+BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face& theSurface,
+                                   const gp_Pnt&   theLocation,
+                                   const double    theEps)
 {
   SetLocation(theLocation);
   Perform(theSurface, theEps);
@@ -55,10 +55,10 @@ BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
 
 //=================================================================================================
 
-BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
-                                   BRepGProp_Domain&   theDomain,
-                                   const gp_Pnt&       theLocation,
-                                   const Standard_Real theEps)
+BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&   theSurface,
+                                   BRepGProp_Domain& theDomain,
+                                   const gp_Pnt&     theLocation,
+                                   const double      theEps)
 {
   SetLocation(theLocation);
   Perform(theSurface, theDomain, theEps);
@@ -93,7 +93,7 @@ void BRepGProp_Sinert::Perform(BRepGProp_Face& theSurface, BRepGProp_Domain& the
 
 //=================================================================================================
 
-Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face& theSurface, const Standard_Real theEps)
+double BRepGProp_Sinert::Perform(BRepGProp_Face& theSurface, const double theEps)
 {
   BRepGProp_Domain anEmptyDomian;
   return Perform(theSurface, anEmptyDomian, theEps);
@@ -101,9 +101,9 @@ Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face& theSurface, const Standa
 
 //=================================================================================================
 
-Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face&     theSurface,
-                                        BRepGProp_Domain&   theDomain,
-                                        const Standard_Real theEps)
+double BRepGProp_Sinert::Perform(BRepGProp_Face&   theSurface,
+                                 BRepGProp_Domain& theDomain,
+                                 const double      theEps)
 {
   BRepGProp_Gauss aGauss(BRepGProp_Gauss::Sinert);
   return myEpsilon = aGauss.Compute(theSurface, theDomain, loc, theEps, dim, g, inertia);
@@ -111,7 +111,7 @@ Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face&     theSurface,
 
 //=================================================================================================
 
-Standard_Real BRepGProp_Sinert::GetEpsilon()
+double BRepGProp_Sinert::GetEpsilon()
 {
   return myEpsilon;
 }

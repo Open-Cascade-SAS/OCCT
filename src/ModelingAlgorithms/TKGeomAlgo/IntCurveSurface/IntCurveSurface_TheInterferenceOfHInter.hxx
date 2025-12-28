@@ -23,7 +23,8 @@
 
 #include <Standard_Boolean.hxx>
 #include <Intf_Interference.hxx>
-#include <Intf_Array1OfLin.hxx>
+#include <gp_Lin.hxx>
+#include <NCollection_Array1.hxx>
 class IntCurveSurface_ThePolygonOfHInter;
 class IntCurveSurface_ThePolygonToolOfHInter;
 class IntCurveSurface_ThePolyhedronOfHInter;
@@ -57,7 +58,7 @@ public:
   //! Constructs and computes an interference between the
   //! Straight Lines and the Polyhedron.
   Standard_EXPORT IntCurveSurface_TheInterferenceOfHInter(
-    const Intf_Array1OfLin&                      theLins,
+    const NCollection_Array1<gp_Lin>&            theLins,
     const IntCurveSurface_ThePolyhedronOfHInter& thePolyh);
 
   //! Computes an interference between the Polygon and the
@@ -72,7 +73,7 @@ public:
 
   //! Computes an interference between the Straight Lines and
   //! the Polyhedron.
-  Standard_EXPORT void Perform(const Intf_Array1OfLin&                      theLins,
+  Standard_EXPORT void Perform(const NCollection_Array1<gp_Lin>&            theLins,
                                const IntCurveSurface_ThePolyhedronOfHInter& thePolyh);
 
   //! Constructs and computes an interference between the Polygon
@@ -92,7 +93,7 @@ public:
   //! Constructs and computes an interference between the
   //! Straight Lines and the Polyhedron.
   Standard_EXPORT IntCurveSurface_TheInterferenceOfHInter(
-    const Intf_Array1OfLin&                      theLins,
+    const NCollection_Array1<gp_Lin>&            theLins,
     const IntCurveSurface_ThePolyhedronOfHInter& thePolyh,
     Bnd_BoundSortBox&                            theBoundSB);
 
@@ -110,7 +111,7 @@ public:
 
   //! Computes an interference between the Straight Lines and
   //! the Polyhedron.
-  Standard_EXPORT void Perform(const Intf_Array1OfLin&                      theLins,
+  Standard_EXPORT void Perform(const NCollection_Array1<gp_Lin>&            theLins,
                                const IntCurveSurface_ThePolyhedronOfHInter& thePolyh,
                                Bnd_BoundSortBox&                            theBoundSB);
 
@@ -125,30 +126,29 @@ public:
   Standard_EXPORT void Interference(const IntCurveSurface_ThePolygonOfHInter&    thePolyg,
                                     const IntCurveSurface_ThePolyhedronOfHInter& thePolyh);
 
-protected:
 private:
   //! Computes the intersection between the segment <BegO><EndO>
   //! and the triangle <TTri> of <thePolyh>.
   Standard_EXPORT void Intersect(const gp_Pnt&                                BegO,
                                  const gp_Pnt&                                EndO,
-                                 const Standard_Boolean                       Infinite,
-                                 const Standard_Integer                       TTri,
+                                 const bool                                   Infinite,
+                                 const int                                    TTri,
                                  const IntCurveSurface_ThePolyhedronOfHInter& thePolyh);
 
   //! Computes the intersection between the segment <BegO><EndO>
   //! and the triangle <TTri> of <thePolyh>.
   Standard_EXPORT void Intersect(const gp_Pnt&                                BegO,
                                  const gp_Pnt&                                EndO,
-                                 const Standard_Boolean                       Infinite,
-                                 const Standard_Integer                       TTri,
+                                 const bool                                   Infinite,
+                                 const int                                    TTri,
                                  const IntCurveSurface_ThePolyhedronOfHInter& thePolyh,
                                  const gp_XYZ&                                TriNormal,
-                                 const Standard_Real                          TriDp,
-                                 const Standard_Real                          dBegTri,
-                                 const Standard_Real                          dEndTri);
+                                 const double                                 TriDp,
+                                 const double                                 dBegTri,
+                                 const double                                 dEndTri);
 
-  Standard_Boolean BeginOfClosedPolygon;
-  Standard_Integer iLin;
+  bool BeginOfClosedPolygon;
+  int  iLin;
 };
 
 #endif // _IntCurveSurface_TheInterferenceOfHInter_HeaderFile

@@ -25,9 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-class IGESSolid_ConeFrustum;
-DEFINE_STANDARD_HANDLE(IGESSolid_ConeFrustum, IGESData_IGESEntity)
-
 //! defines ConeFrustum, Type <156> Form Number <0>
 //! in package IGESSolid
 //! The Cone Frustum is defined by the center of the
@@ -48,20 +45,20 @@ public:
   //! - R2     : Radius of the smaller face (default 0)
   //! - Center : Center of the larger face (default (0,0,0))
   //! - anAxis : Unit vector in axis direction (default (0,0,1))
-  Standard_EXPORT void Init(const Standard_Real Ht,
-                            const Standard_Real R1,
-                            const Standard_Real R2,
-                            const gp_XYZ&       Center,
-                            const gp_XYZ&       anAxis);
+  Standard_EXPORT void Init(const double  Ht,
+                            const double  R1,
+                            const double  R2,
+                            const gp_XYZ& Center,
+                            const gp_XYZ& anAxis);
 
   //! returns the height of the cone frustum
-  Standard_EXPORT Standard_Real Height() const;
+  Standard_EXPORT double Height() const;
 
   //! returns the radius of the larger face of the cone frustum
-  Standard_EXPORT Standard_Real LargerRadius() const;
+  Standard_EXPORT double LargerRadius() const;
 
   //! returns the radius of the second face of the cone frustum
-  Standard_EXPORT Standard_Real SmallerRadius() const;
+  Standard_EXPORT double SmallerRadius() const;
 
   //! returns the center of the larger face of the cone frustum
   Standard_EXPORT gp_Pnt FaceCenter() const;
@@ -79,13 +76,12 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_ConeFrustum, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Real theHeight;
-  Standard_Real theR1;
-  Standard_Real theR2;
-  gp_XYZ        theFaceCenter;
-  gp_XYZ        theAxis;
+  double theHeight;
+  double theR1;
+  double theR2;
+  gp_XYZ theFaceCenter;
+  gp_XYZ theAxis;
 };
 
 #endif // _IGESSolid_ConeFrustum_HeaderFile

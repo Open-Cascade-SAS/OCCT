@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PointRepresentation, Standard_Transient)
 
 //=================================================================================================
 
-BRep_PointRepresentation::BRep_PointRepresentation(const Standard_Real P, const TopLoc_Location& L)
+BRep_PointRepresentation::BRep_PointRepresentation(const double P, const TopLoc_Location& L)
     : myLocation(L),
       myParameter(P)
 {
@@ -33,110 +33,109 @@ BRep_PointRepresentation::BRep_PointRepresentation(const Standard_Real P, const 
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointRepresentation::IsPointOnCurve() const
+bool BRep_PointRepresentation::IsPointOnCurve() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointRepresentation::IsPointOnCurveOnSurface() const
+bool BRep_PointRepresentation::IsPointOnCurveOnSurface() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointRepresentation::IsPointOnSurface() const
+bool BRep_PointRepresentation::IsPointOnSurface() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointRepresentation::IsPointOnCurve(const Handle(Geom_Curve)&,
-                                                          const TopLoc_Location&) const
+bool BRep_PointRepresentation::IsPointOnCurve(const occ::handle<Geom_Curve>&,
+                                              const TopLoc_Location&) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointRepresentation::IsPointOnCurveOnSurface(const Handle(Geom2d_Curve)&,
-                                                                   const Handle(Geom_Surface)&,
-                                                                   const TopLoc_Location&) const
+bool BRep_PointRepresentation::IsPointOnCurveOnSurface(const occ::handle<Geom2d_Curve>&,
+                                                       const occ::handle<Geom_Surface>&,
+                                                       const TopLoc_Location&) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointRepresentation::IsPointOnSurface(const Handle(Geom_Surface)&,
-                                                            const TopLoc_Location&) const
+bool BRep_PointRepresentation::IsPointOnSurface(const occ::handle<Geom_Surface>&,
+                                                const TopLoc_Location&) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real BRep_PointRepresentation::Parameter2() const
-{
-  throw Standard_DomainError("BRep_PointRepresentation");
-}
-
-//=================================================================================================
-
-void BRep_PointRepresentation::Parameter2(const Standard_Real)
+double BRep_PointRepresentation::Parameter2() const
 {
   throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 //=================================================================================================
 
-const Handle(Geom_Curve)& BRep_PointRepresentation::Curve() const
+void BRep_PointRepresentation::Parameter2(const double)
 {
   throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 //=================================================================================================
 
-void BRep_PointRepresentation::Curve(const Handle(Geom_Curve)&)
+const occ::handle<Geom_Curve>& BRep_PointRepresentation::Curve() const
 {
   throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 //=================================================================================================
 
-const Handle(Geom2d_Curve)& BRep_PointRepresentation::PCurve() const
+void BRep_PointRepresentation::Curve(const occ::handle<Geom_Curve>&)
 {
   throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 //=================================================================================================
 
-void BRep_PointRepresentation::PCurve(const Handle(Geom2d_Curve)&)
+const occ::handle<Geom2d_Curve>& BRep_PointRepresentation::PCurve() const
 {
   throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 //=================================================================================================
 
-const Handle(Geom_Surface)& BRep_PointRepresentation::Surface() const
+void BRep_PointRepresentation::PCurve(const occ::handle<Geom2d_Curve>&)
 {
   throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 //=================================================================================================
 
-void BRep_PointRepresentation::Surface(const Handle(Geom_Surface)&)
+const occ::handle<Geom_Surface>& BRep_PointRepresentation::Surface() const
 {
   throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 //=================================================================================================
 
-void BRep_PointRepresentation::DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth) const
+void BRep_PointRepresentation::Surface(const occ::handle<Geom_Surface>&)
+{
+  throw Standard_DomainError("BRep_PointRepresentation");
+}
+
+//=================================================================================================
+
+void BRep_PointRepresentation::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

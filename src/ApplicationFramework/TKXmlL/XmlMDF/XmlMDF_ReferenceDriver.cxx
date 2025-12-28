@@ -27,14 +27,14 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ReferenceDriver, XmlMDF_ADriver)
 
 //=================================================================================================
 
-XmlMDF_ReferenceDriver::XmlMDF_ReferenceDriver(const Handle(Message_Messenger)& theMsgDriver)
+XmlMDF_ReferenceDriver::XmlMDF_ReferenceDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDF_ReferenceDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDF_ReferenceDriver::NewEmpty() const
 {
   return (new TDF_Reference());
 }
@@ -43,40 +43,40 @@ Handle(TDF_Attribute) XmlMDF_ReferenceDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                               const Handle(TDF_Attribute)& theTarget,
-                                               XmlObjMgt_RRelocationTable&) const
+bool XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                   const occ::handle<TDF_Attribute>& theTarget,
+                                   XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString anXPath = XmlObjMgt::GetStringValue(theSource);
 
   if (anXPath == NULL)
   {
     myMessageDriver->Send("Cannot retrieve reference string from element", Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   TCollection_AsciiString anEntry;
-  if (XmlObjMgt::GetTagEntryString(anXPath, anEntry) == Standard_False)
+  if (XmlObjMgt::GetTagEntryString(anXPath, anEntry) == false)
   {
     TCollection_ExtendedString aMessage =
       TCollection_ExtendedString("Cannot retrieve reference from \"") + anXPath + '\"';
     myMessageDriver->Send(aMessage, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(TDF_Reference) aRef = Handle(TDF_Reference)::DownCast(theTarget);
+  occ::handle<TDF_Reference> aRef = occ::down_cast<TDF_Reference>(theTarget);
 
   // find label by entry
   TDF_Label tLab; // Null label.
   if (anEntry.Length() > 0)
   {
-    TDF_Tool::Label(aRef->Label().Data(), anEntry, tLab, Standard_True);
+    TDF_Tool::Label(aRef->Label().Data(), anEntry, tLab, true);
   }
 
   // set referenced label
   aRef->Set(tLab);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -89,11 +89,11 @@ Standard_Boolean XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&  theS
 //           <TDF_Reference id="621"> /document/label/label[@tag="4"]/label[@tag="1"]
 //           </TDF_Reference>    <This is reference to label 0:4:1>
 //=======================================================================
-void XmlMDF_ReferenceDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                   XmlObjMgt_Persistent&        theTarget,
+void XmlMDF_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                   XmlObjMgt_Persistent&             theTarget,
                                    XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDF_Reference) aRef = Handle(TDF_Reference)::DownCast(theSource);
+  occ::handle<TDF_Reference> aRef = occ::down_cast<TDF_Reference>(theSource);
   if (!aRef.IsNull())
   {
     const TDF_Label& lab    = aRef->Label();
@@ -109,7 +109,7 @@ void XmlMDF_ReferenceDriver::Paste(const Handle(TDF_Attribute)& theSource,
         XmlObjMgt_DOMString aDOMString;
         XmlObjMgt::SetTagEntryString(aDOMString, anEntry);
         // No occurrence of '&', '<' and other irregular XML characters
-        XmlObjMgt::SetStringValue(theTarget, aDOMString, Standard_True);
+        XmlObjMgt::SetStringValue(theTarget, aDOMString, true);
       }
     }
   }

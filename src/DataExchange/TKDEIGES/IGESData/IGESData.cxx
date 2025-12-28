@@ -26,10 +26,10 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
-static Handle(IGESData_Protocol) proto;
+static occ::handle<IGESData_Protocol> proto;
 
-static Handle(IGESData_DefaultGeneral)  stmod;
-static Handle(IGESData_DefaultSpecific) speci;
+static occ::handle<IGESData_DefaultGeneral>  stmod;
+static occ::handle<IGESData_DefaultSpecific> speci;
 
 void IGESData::Init()
 {
@@ -191,10 +191,10 @@ void IGESData::Init()
   // #58 rln 28.12.98 changing default values for Global Section
   char procver[80];
   Sprintf(procver, XSTEP_PROCESSOR_VERSION, "IGES");
-  Handle(TCollection_HAsciiString) gsys = new TCollection_HAsciiString(procver);
+  occ::handle<TCollection_HAsciiString> gsys = new TCollection_HAsciiString(procver);
   Interface_Static::Init("XSTEP", "write.iges.header.product", 't', procver);
 
-  /*  Handle(TCollection_HAsciiString) gsys = new TCollection_HAsciiString
+  /*  occ::handle<TCollection_HAsciiString> gsys = new TCollection_HAsciiString
       (XSTEP_VERSION);
     gsys->AssignCat(" on ");
     gsys->AssignCat
@@ -214,7 +214,7 @@ void IGESData::Init()
     struct utsname infosy;
     istat = uname (&infosy);
     lstat = sysinfo (SI_HW_PROVIDER,nomsys,99);
-    Handle(TCollection_HAsciiString) gsys = new TCollection_HAsciiString(nomsys);
+    occ::handle<TCollection_HAsciiString> gsys = new TCollection_HAsciiString(nomsys);
     gsys->AssignCat(" ");
     lstat = sysinfo (SI_ARCHITECTURE,nomsys,99);
     gsys->AssignCat(nomsys);
@@ -223,11 +223,11 @@ void IGESData::Init()
     gsys->AssignCat(" ");
     gsys->AssignCat(infosy.release);
   */
-  Standard_Integer year; // gka 19.01.99
-  OSD_Process      system;
-  Quantity_Date    ladate = system.SystemDate();
-  year                    = ladate.Year();
-  Handle(TCollection_HAsciiString) datestr;
+  int           year; // gka 19.01.99
+  OSD_Process   system;
+  Quantity_Date ladate = system.SystemDate();
+  year                 = ladate.Year();
+  occ::handle<TCollection_HAsciiString> datestr;
   if (year < 2000)
     // #65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000)
     datestr = GS.NewDateString(0, 0, 0, 0, 0, 0, 0);
@@ -272,12 +272,12 @@ void IGESData::Init()
   // Creating the Model
   //-------------------
 
-  Handle(IGESData_IGESModel) model = new IGESData_IGESModel;
+  occ::handle<IGESData_IGESModel> model = new IGESData_IGESModel;
   model->SetGlobalSection(GS);
   Interface_InterfaceModel::SetTemplate("iges", model);
 }
 
-Handle(IGESData_Protocol) IGESData::Protocol()
+occ::handle<IGESData_Protocol> IGESData::Protocol()
 {
   return proto;
 }

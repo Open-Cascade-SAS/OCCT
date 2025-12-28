@@ -19,13 +19,13 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RationalBSplineCurve, StepGeom_BSplineCurve)
 StepGeom_RationalBSplineCurve::StepGeom_RationalBSplineCurve() {}
 
 void StepGeom_RationalBSplineCurve::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aDegree,
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
-  const StepGeom_BSplineCurveForm                 aCurveForm,
-  const StepData_Logical                          aClosedCurve,
-  const StepData_Logical                          aSelfIntersect,
-  const Handle(TColStd_HArray1OfReal)&            aWeightsData)
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aDegree,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+  const StepGeom_BSplineCurveForm                                               aCurveForm,
+  const StepData_Logical                                                        aClosedCurve,
+  const StepData_Logical                                                        aSelfIntersect,
+  const occ::handle<NCollection_HArray1<double>>&                               aWeightsData)
 {
   // --- classe own fields ---
   weightsData = aWeightsData;
@@ -39,22 +39,22 @@ void StepGeom_RationalBSplineCurve::Init(
 }
 
 void StepGeom_RationalBSplineCurve::SetWeightsData(
-  const Handle(TColStd_HArray1OfReal)& aWeightsData)
+  const occ::handle<NCollection_HArray1<double>>& aWeightsData)
 {
   weightsData = aWeightsData;
 }
 
-Handle(TColStd_HArray1OfReal) StepGeom_RationalBSplineCurve::WeightsData() const
+occ::handle<NCollection_HArray1<double>> StepGeom_RationalBSplineCurve::WeightsData() const
 {
   return weightsData;
 }
 
-Standard_Real StepGeom_RationalBSplineCurve::WeightsDataValue(const Standard_Integer num) const
+double StepGeom_RationalBSplineCurve::WeightsDataValue(const int num) const
 {
   return weightsData->Value(num);
 }
 
-Standard_Integer StepGeom_RationalBSplineCurve::NbWeightsData() const
+int StepGeom_RationalBSplineCurve::NbWeightsData() const
 {
   return weightsData->Length();
 }

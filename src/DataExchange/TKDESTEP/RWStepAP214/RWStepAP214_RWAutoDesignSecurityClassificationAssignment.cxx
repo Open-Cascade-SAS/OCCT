@@ -16,7 +16,8 @@
 #include "RWStepAP214_RWAutoDesignSecurityClassificationAssignment.pxx"
 #include <StepAP214_AutoDesignSecurityClassificationAssignment.hxx>
 #include <StepBasic_Approval.hxx>
-#include <StepBasic_HArray1OfApproval.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_SecurityClassification.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -27,10 +28,10 @@ RWStepAP214_RWAutoDesignSecurityClassificationAssignment::
 }
 
 void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                              data,
-  const Standard_Integer                                              num,
-  Handle(Interface_Check)&                                            ach,
-  const Handle(StepAP214_AutoDesignSecurityClassificationAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                              data,
+  const int                                                                num,
+  occ::handle<Interface_Check>&                                            ach,
+  const occ::handle<StepAP214_AutoDesignSecurityClassificationAssignment>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -40,7 +41,7 @@ void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::ReadStep(
 
   // --- inherited field : assignedSecurityClassification ---
 
-  Handle(StepBasic_SecurityClassification) aAssignedSecurityClassification;
+  occ::handle<StepBasic_SecurityClassification> aAssignedSecurityClassification;
   data->ReadEntity(num,
                    1,
                    "assigned_security_classification",
@@ -50,21 +51,21 @@ void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::ReadStep(
 
   // --- own field : items ---
 
-  Handle(StepBasic_HArray1OfApproval) aItems;
-  Handle(StepBasic_Approval)          anent2;
-  Standard_Integer                    nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>> aItems;
+  occ::handle<StepBasic_Approval>                                   anent2;
+  int                                                               nsub2;
   if (data->ReadSubList(num, 2, "items", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aItems               = new StepBasic_HArray1OfApproval(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aItems  = new NCollection_HArray1<occ::handle<StepBasic_Approval>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      Standard_Boolean stat2 = data->ReadEntity(nsub2,
-                                                i2,
-                                                "auto_design_security_classified_item",
-                                                ach,
-                                                STANDARD_TYPE(StepBasic_Approval),
-                                                anent2);
+      bool stat2 = data->ReadEntity(nsub2,
+                                    i2,
+                                    "auto_design_security_classified_item",
+                                    ach,
+                                    STANDARD_TYPE(StepBasic_Approval),
+                                    anent2);
       if (stat2)
         aItems->SetValue(i2, anent2);
     }
@@ -76,8 +77,8 @@ void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::WriteStep(
-  StepData_StepWriter&                                                SW,
-  const Handle(StepAP214_AutoDesignSecurityClassificationAssignment)& ent) const
+  StepData_StepWriter&                                                     SW,
+  const occ::handle<StepAP214_AutoDesignSecurityClassificationAssignment>& ent) const
 {
 
   // --- inherited field assignedSecurityClassification ---
@@ -87,7 +88,7 @@ void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::WriteStep(
   // --- own field : items ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbItems(); i2++)
+  for (int i2 = 1; i2 <= ent->NbItems(); i2++)
   {
     SW.Send(ent->ItemsValue(i2));
   }
@@ -95,14 +96,14 @@ void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::WriteStep(
 }
 
 void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::Share(
-  const Handle(StepAP214_AutoDesignSecurityClassificationAssignment)& ent,
-  Interface_EntityIterator&                                           iter) const
+  const occ::handle<StepAP214_AutoDesignSecurityClassificationAssignment>& ent,
+  Interface_EntityIterator&                                                iter) const
 {
 
   iter.GetOneItem(ent->AssignedSecurityClassification());
 
-  Standard_Integer nbElem2 = ent->NbItems();
-  for (Standard_Integer is2 = 1; is2 <= nbElem2; is2++)
+  int nbElem2 = ent->NbItems();
+  for (int is2 = 1; is2 <= nbElem2; is2++)
   {
     iter.GetOneItem(ent->ItemsValue(is2));
   }

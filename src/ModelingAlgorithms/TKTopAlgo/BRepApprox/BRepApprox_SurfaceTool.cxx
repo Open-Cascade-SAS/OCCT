@@ -19,26 +19,22 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <Geom_BezierSurface.hxx>
 
-Standard_Integer BRepApprox_SurfaceTool::NbSamplesU(const BRepAdaptor_Surface&)
+int BRepApprox_SurfaceTool::NbSamplesU(const BRepAdaptor_Surface&)
 {
   return (10);
 }
 
-Standard_Integer BRepApprox_SurfaceTool::NbSamplesV(const BRepAdaptor_Surface&)
+int BRepApprox_SurfaceTool::NbSamplesV(const BRepAdaptor_Surface&)
 {
   return (10);
 }
 
-Standard_Integer BRepApprox_SurfaceTool::NbSamplesU(const BRepAdaptor_Surface&,
-                                                    const Standard_Real,
-                                                    const Standard_Real)
+int BRepApprox_SurfaceTool::NbSamplesU(const BRepAdaptor_Surface&, const double, const double)
 {
   return (10);
 }
 
-Standard_Integer BRepApprox_SurfaceTool::NbSamplesV(const BRepAdaptor_Surface&,
-                                                    const Standard_Real,
-                                                    const Standard_Real)
+int BRepApprox_SurfaceTool::NbSamplesV(const BRepAdaptor_Surface&, const double, const double)
 {
   return (10);
 }

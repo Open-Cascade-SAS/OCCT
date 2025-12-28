@@ -21,9 +21,11 @@
 #include <Standard_Handle.hxx>
 
 #include <Draw_Interpretor.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <XSControl_WorkSession.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
 class IFSelect_SessionPilot;
 class XSControl_WorkSession;
 class XSControl_Controller;
@@ -50,12 +52,11 @@ public:
   //! Changes the name under which a command of xstep is known by
   //! Draw. This allows to avoid collisions
   //! To be called before LoadDraw or any other xstep initialisation
-  Standard_EXPORT static void ChangeCommand(const Standard_CString oldname,
-                                            const Standard_CString newname);
+  Standard_EXPORT static void ChangeCommand(const char* oldname, const char* newname);
 
   //! Removes a command from the interpretation list of Draw
   //! To be called before LoadDraw or any other xstep initialisation
-  Standard_EXPORT static void RemoveCommand(const Standard_CString oldname);
+  Standard_EXPORT static void RemoveCommand(const char* oldname);
 
   //! Defines the basic context to work with a X-STEP Session :
   //! it performs the basic inits, also records the Controller
@@ -63,7 +64,7 @@ public:
   //! (call to SetController)
   //! LoadSession is called by LoadDraw
   //! Returns True the first time, False if already called
-  Standard_EXPORT static Standard_Boolean LoadSession();
+  Standard_EXPORT static bool LoadSession();
 
   //! Defines the context for using a X-STEP Session under DRAW
   //! Once the various INITs have been done, a call to LoadDraw
@@ -93,88 +94,87 @@ public:
   //! Form with a variable text part : add %s for the variable :
   //! Execute ("command args %s args..",var) [var is a CString]
   //! Returns the same value as returned by call from DRAW
-  Standard_EXPORT static Standard_Integer Execute(const Standard_CString command,
-                                                  const Standard_CString var = "");
+  Standard_EXPORT static int Execute(const char* command, const char* var = "");
 
   //! Returns the SessionPilot (can be used for direct call)
-  Standard_EXPORT static Handle(IFSelect_SessionPilot) Pilot();
+  Standard_EXPORT static occ::handle<IFSelect_SessionPilot> Pilot();
 
   //! Updates the WorkSession defined in AddDraw (through Pilot)
   //! It is from XSControl, it brings functionalities for Transfers
-  Standard_EXPORT static void SetSession(const Handle(XSControl_WorkSession)& theSession);
+  Standard_EXPORT static void SetSession(const occ::handle<XSControl_WorkSession>& theSession);
 
   //! Returns the WorkSession defined in AddDraw (through Pilot)
   //! It is from XSControl, it brings functionalities for Transfers
-  Standard_EXPORT static const Handle(XSControl_WorkSession) Session();
+  Standard_EXPORT static const occ::handle<XSControl_WorkSession> Session();
 
   //! Defines a Controller for the command "xinit" and applies it
   //! (i.e. calls its method Customise)
-  Standard_EXPORT static void SetController(const Handle(XSControl_Controller)& control);
+  Standard_EXPORT static void SetController(const occ::handle<XSControl_Controller>& control);
 
   //! Returns the Controller, a Null Handle if not yet defined
-  Standard_EXPORT static Handle(XSControl_Controller) Controller();
+  Standard_EXPORT static occ::handle<XSControl_Controller> Controller();
 
   //! Sets a norm by its name (controller recorded as <normname> )
   //! Returns True if done, False if this norm is unknown
-  Standard_EXPORT static Standard_Boolean SetNorm(const Standard_CString normname);
+  Standard_EXPORT static bool SetNorm(const char* normname);
 
   //! Returns the actually defined Protocol
-  Standard_EXPORT static Handle(Interface_Protocol) Protocol();
+  Standard_EXPORT static occ::handle<Interface_Protocol> Protocol();
 
   //! Returns the Model of the Session (it is Session()->Model() )
-  Standard_EXPORT static Handle(Interface_InterfaceModel) Model();
+  Standard_EXPORT static occ::handle<Interface_InterfaceModel> Model();
 
   //! Sets a Model in session (it is Session()->SetModel(model) )
   //! If <file> is defined, SetLoadedFile is also done
-  Standard_EXPORT static void SetModel(const Handle(Interface_InterfaceModel)& model,
-                                       const Standard_CString                  file = "");
+  Standard_EXPORT static void SetModel(const occ::handle<Interface_InterfaceModel>& model,
+                                       const char*                                  file = "");
 
   //! Produces a new model (from the Controller), can be Null
   //! Does not set it in the session
-  Standard_EXPORT static Handle(Interface_InterfaceModel) NewModel();
+  Standard_EXPORT static occ::handle<Interface_InterfaceModel> NewModel();
 
   //! Returns the entity n0 <num> of the Model of the Session
   //! (it is StartingEntity)
   //! Null Handle if <num> is not suitable
-  Standard_EXPORT static Handle(Standard_Transient) Entity(const Standard_Integer num);
+  Standard_EXPORT static occ::handle<Standard_Transient> Entity(const int num);
 
   //! Returns the number of an entity in the Model (StartingNumber)
   //! 0 if <ent> unknown in the model, or null
-  Standard_EXPORT static Standard_Integer Number(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT static int Number(const occ::handle<Standard_Transient>& ent);
 
   //! Sets a TransferProcess in order to analyse it (see Activator)
   //! It can be either a FinderProcess or a TransientProcess, in
   //! that case a new TransferReader is created on it
-  Standard_EXPORT static void SetTransferProcess(const Handle(Standard_Transient)& TP);
+  Standard_EXPORT static void SetTransferProcess(const occ::handle<Standard_Transient>& TP);
 
   //! Returns the TransferProcess : TransientProcess detained by
   //! the TransferReader
-  Standard_EXPORT static Handle(Transfer_TransientProcess) TransientProcess();
+  Standard_EXPORT static occ::handle<Transfer_TransientProcess> TransientProcess();
 
   //! Returns the FinderProcess, detained by the TransferWriter
-  Standard_EXPORT static Handle(Transfer_FinderProcess) FinderProcess();
+  Standard_EXPORT static occ::handle<Transfer_FinderProcess> FinderProcess();
 
   //! Initialises a TransferReader, according to mode:
   //! 0 nullifies it, 1 clears it (not nullify)
   //! 2 sets it with TransientProcess & Model
   //! 3 idem plus roots of TransientProcess
   //! Remark : called with 0 at least at each SetModel/NewModel
-  Standard_EXPORT static void InitTransferReader(const Standard_Integer mode);
+  Standard_EXPORT static void InitTransferReader(const int mode);
 
   //! Returns the current TransferReader, can be null
   //! It detains the TransientProcess
-  Standard_EXPORT static Handle(XSControl_TransferReader) TransferReader();
+  Standard_EXPORT static occ::handle<XSControl_TransferReader> TransferReader();
 
   //! Takes the name of an entity, either as argument, or (if <name>
   //! is empty) on keyboard, and returns the entity
   //! name can be a label or a number (in alphanumeric), it is
   //! searched by NumberFromLabel from WorkSession.
   //! If <name> doesn't match en entity, a Null Handle is returned
-  Standard_EXPORT static Handle(Standard_Transient) GetEntity(const Standard_CString name = "");
+  Standard_EXPORT static occ::handle<Standard_Transient> GetEntity(const char* name = "");
 
   //! Same as GetEntity, but returns the number in the model of the
   //! entity. Returns 0 for null handle
-  Standard_EXPORT static Standard_Integer GetEntityNumber(const Standard_CString name = "");
+  Standard_EXPORT static int GetEntityNumber(const char* name = "");
 
   //! Evaluates and returns a list of entity, from :
   //! keyboard if <first> and <second> are empty, see below
@@ -183,9 +183,8 @@ public:
   //! first : name of a selection, evaluated from a list defined by
   //! second
   //! In case of failure, returns a Null Handle
-  Standard_EXPORT static Handle(TColStd_HSequenceOfTransient) GetList(
-    const Standard_CString first  = "",
-    const Standard_CString second = "");
+  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+    GetList(const char* first = "", const char* second = "");
 
   //! Analyses given file name and variable name, with a default
   //! name for variables. Returns resulting file name and variable
@@ -198,11 +197,11 @@ public:
   //! If <var> is neither null nor empty, resvar = var
   //! Else, the root part of <resfile> is considered, if defined
   //! Else, <def> is taken
-  Standard_EXPORT static Standard_Boolean FileAndVar(const Standard_CString   file,
-                                                     const Standard_CString   var,
-                                                     const Standard_CString   def,
-                                                     TCollection_AsciiString& resfile,
-                                                     TCollection_AsciiString& resvar);
+  Standard_EXPORT static bool FileAndVar(const char*              file,
+                                         const char*              var,
+                                         const char*              def,
+                                         TCollection_AsciiString& resfile,
+                                         TCollection_AsciiString& resvar);
 
   //! Analyses a name as designating Shapes from DRAW variables or
   //! XSTEP transfer (last Transfer on Reading). <name> can be :
@@ -214,14 +213,14 @@ public:
   //! <list>. If <list> is null, it is firstly created. Then it is
   //! completed (Append without Clear) by the Shapes found
   //! Returns 0 if no Shape could be found
-  Standard_EXPORT static Standard_Integer MoreShapes(Handle(TopTools_HSequenceOfShape)& list,
-                                                     const Standard_CString             name);
+  Standard_EXPORT static int MoreShapes(occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
+                                        const char*                                       name);
 
   //! Extracts length unit from the static interface or document.
   //! Document unit has the highest priority.
   //! @return length unit in MM. 1.0 by default
-  Standard_EXPORT static Standard_Real GetLengthUnit(
-    const Handle(TDocStd_Document)& theDoc = nullptr);
+  Standard_EXPORT static double GetLengthUnit(
+    const occ::handle<TDocStd_Document>& theDoc = nullptr);
 
   //! Returns available work sessions with their associated files.
   Standard_EXPORT static XSControl_WorkSessionMap& WorkSessionList();
@@ -231,9 +230,10 @@ public:
   //! @param[in] theWS the session object
   //! @param[in] theName the session file name
   //! @param[out] theMap collection to keep session info
-  Standard_EXPORT static void CollectActiveWorkSessions(const Handle(XSControl_WorkSession)& theWS,
-                                                        const TCollection_AsciiString& theName,
-                                                        XSControl_WorkSessionMap&      theMap);
+  Standard_EXPORT static void CollectActiveWorkSessions(
+    const occ::handle<XSControl_WorkSession>& theWS,
+    const TCollection_AsciiString&            theName,
+    XSControl_WorkSessionMap&                 theMap);
 
   //! Binds current session with input name.
   //! @param[in] theName the session file name

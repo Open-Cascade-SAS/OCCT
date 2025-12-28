@@ -30,10 +30,10 @@ RWStepDimTol_RWUnequallyDisposedGeometricTolerance::
 //=================================================================================================
 
 void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&                        data,
-  const Standard_Integer                                        num,
-  Handle(Interface_Check)&                                      ach,
-  const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent) const
+  const occ::handle<StepData_StepReaderData>&                        data,
+  const int                                                          num,
+  occ::handle<Interface_Check>&                                      ach,
+  const occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "unequally_disposed_geometric_tolerance"))
@@ -41,13 +41,13 @@ void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::ReadStep(
 
   // inherited from GeometricTolerance
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "geometric_tolerance.name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "geometric_tolerance.description", ach, aDescription);
 
-  Handle(Standard_Transient) aMagnitude;
+  occ::handle<Standard_Transient> aMagnitude;
   data->ReadEntity(num,
                    3,
                    "geometric_tolerance.magnitude",
@@ -64,7 +64,7 @@ void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::ReadStep(
 
   // own fields of UnequallyDisposedGeometricTolerance
 
-  Handle(StepBasic_LengthMeasureWithUnit) aDisplacement;
+  occ::handle<StepBasic_LengthMeasureWithUnit> aDisplacement;
   data->ReadEntity(num,
                    5,
                    "displacement",
@@ -79,8 +79,8 @@ void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::WriteStep(
-  StepData_StepWriter&                                          SW,
-  const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent) const
+  StepData_StepWriter&                                               SW,
+  const occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance>& ent) const
 {
 
   // Own fields of GeometricTolerance
@@ -99,8 +99,8 @@ void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::Share(
-  const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent,
-  Interface_EntityIterator&                                     iter) const
+  const occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance>& ent,
+  Interface_EntityIterator&                                          iter) const
 {
 
   // Own fields of GeometricTolerance

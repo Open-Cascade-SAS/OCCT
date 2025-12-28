@@ -22,25 +22,26 @@
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=============================================================================
 // Creation d' une direction de prostep a partir d' une Dir de gp
 //=============================================================================
 GeomToStep_MakeDirection::GeomToStep_MakeDirection(const gp_Dir& D)
 {
-  Handle(StepGeom_Direction)    Dir        = new StepGeom_Direction;
-  Handle(TColStd_HArray1OfReal) aDirRatios = new TColStd_HArray1OfReal(1, 3);
-  Standard_Real                 X, Y, Z;
+  occ::handle<StepGeom_Direction>          Dir        = new StepGeom_Direction;
+  occ::handle<NCollection_HArray1<double>> aDirRatios = new NCollection_HArray1<double>(1, 3);
+  double                                   X, Y, Z;
 
   D.Coord(X, Y, Z);
   aDirRatios->SetValue(1, X);
   aDirRatios->SetValue(2, Y);
   aDirRatios->SetValue(3, Z);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Dir->Init(name, aDirRatios);
   theDirection = Dir;
-  done         = Standard_True;
+  done         = true;
 }
 
 //=============================================================================
@@ -49,67 +50,67 @@ GeomToStep_MakeDirection::GeomToStep_MakeDirection(const gp_Dir& D)
 
 GeomToStep_MakeDirection::GeomToStep_MakeDirection(const gp_Dir2d& D)
 {
-  Handle(StepGeom_Direction)    Dir        = new StepGeom_Direction;
-  Handle(TColStd_HArray1OfReal) aDirRatios = new TColStd_HArray1OfReal(1, 2);
-  Standard_Real                 X, Y;
+  occ::handle<StepGeom_Direction>          Dir        = new StepGeom_Direction;
+  occ::handle<NCollection_HArray1<double>> aDirRatios = new NCollection_HArray1<double>(1, 2);
+  double                                   X, Y;
 
   D.Coord(X, Y);
   aDirRatios->SetValue(1, X);
   aDirRatios->SetValue(2, Y);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Dir->Init(name, aDirRatios);
   theDirection = Dir;
-  done         = Standard_True;
+  done         = true;
 }
 
 //=============================================================================
 // Creation d' une direction de prostep a partir d' une Direction de Geom
 //=============================================================================
 
-GeomToStep_MakeDirection::GeomToStep_MakeDirection(const Handle(Geom_Direction)& Direc)
+GeomToStep_MakeDirection::GeomToStep_MakeDirection(const occ::handle<Geom_Direction>& Direc)
 {
-  gp_Dir                        D;
-  Handle(StepGeom_Direction)    Dir        = new StepGeom_Direction;
-  Handle(TColStd_HArray1OfReal) aDirRatios = new TColStd_HArray1OfReal(1, 3);
-  Standard_Real                 X, Y, Z;
+  gp_Dir                                   D;
+  occ::handle<StepGeom_Direction>          Dir        = new StepGeom_Direction;
+  occ::handle<NCollection_HArray1<double>> aDirRatios = new NCollection_HArray1<double>(1, 3);
+  double                                   X, Y, Z;
 
   D = Direc->Dir();
   D.Coord(X, Y, Z);
   aDirRatios->SetValue(1, X);
   aDirRatios->SetValue(2, Y);
   aDirRatios->SetValue(3, Z);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Dir->Init(name, aDirRatios);
   theDirection = Dir;
-  done         = Standard_True;
+  done         = true;
 }
 
 //=============================================================================
 // Creation d' une direction de prostep a partir d' une Direction de Geom2d
 //=============================================================================
 
-GeomToStep_MakeDirection::GeomToStep_MakeDirection(const Handle(Geom2d_Direction)& Direc)
+GeomToStep_MakeDirection::GeomToStep_MakeDirection(const occ::handle<Geom2d_Direction>& Direc)
 {
-  gp_Dir2d                      D;
-  Handle(StepGeom_Direction)    Dir        = new StepGeom_Direction;
-  Handle(TColStd_HArray1OfReal) aDirRatios = new TColStd_HArray1OfReal(1, 2);
-  Standard_Real                 X, Y;
+  gp_Dir2d                                 D;
+  occ::handle<StepGeom_Direction>          Dir        = new StepGeom_Direction;
+  occ::handle<NCollection_HArray1<double>> aDirRatios = new NCollection_HArray1<double>(1, 2);
+  double                                   X, Y;
 
   D = Direc->Dir2d();
   D.Coord(X, Y);
   aDirRatios->SetValue(1, X);
   aDirRatios->SetValue(2, Y);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Dir->Init(name, aDirRatios);
   theDirection = Dir;
-  done         = Standard_True;
+  done         = true;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Direction)& GeomToStep_MakeDirection::Value() const
+const occ::handle<StepGeom_Direction>& GeomToStep_MakeDirection::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeDirection::Value() - no result");
   return theDirection;

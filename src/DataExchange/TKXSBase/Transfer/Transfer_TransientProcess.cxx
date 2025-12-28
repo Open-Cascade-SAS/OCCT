@@ -18,34 +18,35 @@
 #include <Interface_MSG.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Transfer_TransientProcess.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_TransientProcess, Transfer_ProcessForTransient)
 
 //=================================================================================================
 
-Transfer_TransientProcess::Transfer_TransientProcess(const Standard_Integer nb)
+Transfer_TransientProcess::Transfer_TransientProcess(const int nb)
     : Transfer_ProcessForTransient(nb)
 {
-  thetrroots = new TColStd_HSequenceOfTransient;
+  thetrroots = new NCollection_HSequence<occ::handle<Standard_Transient>>;
 }
 
 //=================================================================================================
 
-void Transfer_TransientProcess::SetModel(const Handle(Interface_InterfaceModel)& model)
+void Transfer_TransientProcess::SetModel(const occ::handle<Interface_InterfaceModel>& model)
 {
   themodel = model;
 }
 
 //=================================================================================================
 
-Handle(Interface_InterfaceModel) Transfer_TransientProcess::Model() const
+occ::handle<Interface_InterfaceModel> Transfer_TransientProcess::Model() const
 {
   return themodel;
 }
 
-void Transfer_TransientProcess::SetGraph(const Handle(Interface_HGraph)& HG)
+void Transfer_TransientProcess::SetGraph(const occ::handle<Interface_HGraph>& HG)
 {
   thegraph = HG;
   if (!thegraph.IsNull())
@@ -56,14 +57,14 @@ void Transfer_TransientProcess::SetGraph(const Handle(Interface_HGraph)& HG)
 
 //=================================================================================================
 
-Standard_Boolean Transfer_TransientProcess::HasGraph() const
+bool Transfer_TransientProcess::HasGraph() const
 {
   return !thegraph.IsNull();
 }
 
 //=================================================================================================
 
-Handle(Interface_HGraph) Transfer_TransientProcess::HGraph() const
+occ::handle<Interface_HGraph> Transfer_TransientProcess::HGraph() const
 {
   return thegraph;
 }
@@ -77,27 +78,27 @@ const Interface_Graph& Transfer_TransientProcess::Graph() const
 
 //=================================================================================================
 
-void Transfer_TransientProcess::SetContext(const Standard_CString            name,
-                                           const Handle(Standard_Transient)& ctx)
+void Transfer_TransientProcess::SetContext(const char*                            name,
+                                           const occ::handle<Standard_Transient>& ctx)
 {
   thectx.Bind(name, ctx);
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_TransientProcess::GetContext(const Standard_CString       name,
-                                                       const Handle(Standard_Type)& type,
-                                                       Handle(Standard_Transient)&  ctx) const
+bool Transfer_TransientProcess::GetContext(const char*                       name,
+                                           const occ::handle<Standard_Type>& type,
+                                           occ::handle<Standard_Transient>&  ctx) const
 {
   if (thectx.IsEmpty())
-    return Standard_False;
+    return false;
   if (!thectx.Find(name, ctx))
     ctx.Nullify();
 
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
   if (type.IsNull())
-    return Standard_True;
+    return true;
   if (!ctx->IsKind(type))
     ctx.Nullify();
   return !ctx.IsNull();
@@ -105,7 +106,7 @@ Standard_Boolean Transfer_TransientProcess::GetContext(const Standard_CString   
 
 //=================================================================================================
 
-NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>&
+NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>&
   Transfer_TransientProcess::Context()
 {
   return thectx;
@@ -113,8 +114,8 @@ NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>&
 
 //=================================================================================================
 
-void Transfer_TransientProcess::PrintTrace(const Handle(Standard_Transient)& start,
-                                           Standard_OStream&                 S) const
+void Transfer_TransientProcess::PrintTrace(const occ::handle<Standard_Transient>& start,
+                                           Standard_OStream&                      S) const
 {
   if (!start.IsNull())
   {
@@ -133,7 +134,7 @@ void Transfer_TransientProcess::PrintTrace(const Handle(Standard_Transient)& sta
 
 //=================================================================================================
 
-Standard_Integer Transfer_TransientProcess::CheckNum(const Handle(Standard_Transient)& start) const
+int Transfer_TransientProcess::CheckNum(const occ::handle<Standard_Transient>& start) const
 {
   return (themodel.IsNull() ? 0 : themodel->Number(start));
 }
@@ -141,8 +142,8 @@ Standard_Integer Transfer_TransientProcess::CheckNum(const Handle(Standard_Trans
 //=================================================================================================
 
 Interface_EntityIterator Transfer_TransientProcess::TypedSharings(
-  const Handle(Standard_Transient)& start,
-  const Handle(Standard_Type)&      type) const
+  const occ::handle<Standard_Transient>& start,
+  const occ::handle<Standard_Type>&      type) const
 {
   Interface_EntityIterator iter;
   if (thegraph.IsNull())
@@ -152,61 +153,58 @@ Interface_EntityIterator Transfer_TransientProcess::TypedSharings(
 
 //=================================================================================================
 
-Standard_Boolean Transfer_TransientProcess::IsDataLoaded(
-  const Handle(Standard_Transient)& start) const
+bool Transfer_TransientProcess::IsDataLoaded(const occ::handle<Standard_Transient>& start) const
 {
   if (themodel.IsNull())
-    return Standard_True;
-  Standard_Integer num = themodel->Number(start);
+    return true;
+  int num = themodel->Number(start);
   if (num == 0)
-    return Standard_True;
+    return true;
   if (themodel->IsUnknownEntity(num))
-    return Standard_False;
+    return false;
   return !themodel->IsRedefinedContent(num);
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_TransientProcess::IsDataFail(
-  const Handle(Standard_Transient)& start) const
+bool Transfer_TransientProcess::IsDataFail(const occ::handle<Standard_Transient>& start) const
 {
   if (themodel.IsNull())
-    return Standard_False;
-  Standard_Integer num = themodel->Number(start);
+    return false;
+  int num = themodel->Number(start);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (themodel->IsErrorEntity(num))
-    return Standard_True;
-  const Handle(Interface_Check) ach = themodel->Check(num, Standard_False); // semantic
+    return true;
+  const occ::handle<Interface_Check> ach = themodel->Check(num, false); // semantic
   return ach->HasFailed();
 }
 
 //=================================================================================================
 
-void Transfer_TransientProcess::PrintStats(const Standard_Integer /*mode*/,
-                                           Standard_OStream& S) const
+void Transfer_TransientProcess::PrintStats(const int /*mode*/, Standard_OStream& S) const
 {
   S << "\n*******************************************************************\n";
   //  if (mode == 1) {    //  Basic statistics
   S << "********                 Basic Statistics                  ********" << std::endl;
 
-  Handle(Interface_InterfaceModel) model = Model();
+  occ::handle<Interface_InterfaceModel> model = Model();
   if (model.IsNull())
     S << "****        Model unknown" << std::endl;
   else
     S << "****        Nb Entities         : " << model->NbEntities() << std::endl;
 
-  Standard_Integer nbr = 0, nbe = 0, nbw = 0;
-  Standard_Integer i, max = NbMapped(), nbroots = NbRoots();
+  int nbr = 0, nbe = 0, nbw = 0;
+  int i, max = NbMapped(), nbroots = NbRoots();
   S << "****        Nb Final Results    : " << nbroots << std::endl;
 
   for (i = 1; i <= max; i++)
   {
-    const Handle(Transfer_Binder)& binder = MapItem(i);
+    const occ::handle<Transfer_Binder>& binder = MapItem(i);
     if (binder.IsNull())
       continue;
-    const Handle(Interface_Check) ach  = binder->Check();
-    Transfer_StatusExec           stat = binder->StatusExec();
+    const occ::handle<Interface_Check> ach  = binder->Check();
+    Transfer_StatusExec                stat = binder->StatusExec();
     if (stat != Transfer_StatusInitial && stat != Transfer_StatusDone)
       nbe++;
     else
@@ -232,7 +230,8 @@ void Transfer_TransientProcess::PrintStats(const Standard_Integer /*mode*/,
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfTransient) Transfer_TransientProcess::RootsForTransfer()
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_TransientProcess::
+  RootsForTransfer()
 {
   return thetrroots;
 }

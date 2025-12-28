@@ -21,13 +21,11 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 class IGESBasic_HArray1OfHArray1OfInteger;
-
-class IGESGraph_TextFontDef;
-DEFINE_STANDARD_HANDLE(IGESGraph_TextFontDef, IGESData_IGESEntity)
 
 //! defines IGES Text Font Definition Entity, Type <310>
 //! in package IGESGraph
@@ -59,84 +57,80 @@ public:
   //! An exception is raised if the lengths of allASCIICodes,
   //! allNextChars, allPenMotions, allPenFlags and allMovePenTo
   //! are not same.
-  Standard_EXPORT void Init(const Standard_Integer                             aFontCode,
-                            const Handle(TCollection_HAsciiString)&            aFontName,
-                            const Standard_Integer                             aSupersededFont,
-                            const Handle(IGESGraph_TextFontDef)&               aSupersededEntity,
-                            const Standard_Integer                             aScale,
-                            const Handle(TColStd_HArray1OfInteger)&            allASCIICodes,
-                            const Handle(TColStd_HArray1OfInteger)&            allNextCharX,
-                            const Handle(TColStd_HArray1OfInteger)&            allNextCharY,
-                            const Handle(TColStd_HArray1OfInteger)&            allPenMotions,
-                            const Handle(IGESBasic_HArray1OfHArray1OfInteger)& allPenFlags,
-                            const Handle(IGESBasic_HArray1OfHArray1OfInteger)& allMovePenToX,
-                            const Handle(IGESBasic_HArray1OfHArray1OfInteger)& allMovePenToY);
+  Standard_EXPORT void Init(const int                                    aFontCode,
+                            const occ::handle<TCollection_HAsciiString>& aFontName,
+                            const int                                    aSupersededFont,
+                            const occ::handle<IGESGraph_TextFontDef>&    aSupersededEntity,
+                            const int                                    aScale,
+                            const occ::handle<NCollection_HArray1<int>>& allASCIICodes,
+                            const occ::handle<NCollection_HArray1<int>>& allNextCharX,
+                            const occ::handle<NCollection_HArray1<int>>& allNextCharY,
+                            const occ::handle<NCollection_HArray1<int>>& allPenMotions,
+                            const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allPenFlags,
+                            const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allMovePenToX,
+                            const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allMovePenToY);
 
   //! returns the font code.
-  Standard_EXPORT Standard_Integer FontCode() const;
+  Standard_EXPORT int FontCode() const;
 
   //! returns the font name.
-  Standard_EXPORT Handle(TCollection_HAsciiString) FontName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> FontName() const;
 
   //! True if this definition supersedes another
   //! TextFontDefinition Entity,
   //! False if it supersedes value.
-  Standard_EXPORT Standard_Boolean IsSupersededFontEntity() const;
+  Standard_EXPORT bool IsSupersededFontEntity() const;
 
   //! returns the font number which this entity modifies.
-  Standard_EXPORT Standard_Integer SupersededFontCode() const;
+  Standard_EXPORT int SupersededFontCode() const;
 
   //! returns the font entity which this entity modifies.
-  Standard_EXPORT Handle(IGESGraph_TextFontDef) SupersededFontEntity() const;
+  Standard_EXPORT occ::handle<IGESGraph_TextFontDef> SupersededFontEntity() const;
 
   //! returns the number of grid units which equal one text height unit.
-  Standard_EXPORT Standard_Integer Scale() const;
+  Standard_EXPORT int Scale() const;
 
   //! returns the number of characters in this definition.
-  Standard_EXPORT Standard_Integer NbCharacters() const;
+  Standard_EXPORT int NbCharacters() const;
 
   //! returns the ASCII code of Chnum'th character.
   //! Exception OutOfRange is raised if Chnum <= 0 or Chnum > NbCharacters
-  Standard_EXPORT Standard_Integer ASCIICode(const Standard_Integer Chnum) const;
+  Standard_EXPORT int ASCIICode(const int Chnum) const;
 
   //! returns grid location of origin of character next to Chnum'th char.
   //! Exception OutOfRange is raised if Chnum <= 0 or Chnum > NbCharacters
-  Standard_EXPORT void NextCharOrigin(const Standard_Integer Chnum,
-                                      Standard_Integer&      NX,
-                                      Standard_Integer&      NY) const;
+  Standard_EXPORT void NextCharOrigin(const int Chnum, int& NX, int& NY) const;
 
   //! returns number of pen motions for Chnum'th character.
   //! Exception OutOfRange is raised if Chnum <= 0 or Chnum > NbCharacters
-  Standard_EXPORT Standard_Integer NbPenMotions(const Standard_Integer Chnum) const;
+  Standard_EXPORT int NbPenMotions(const int Chnum) const;
 
   //! returns pen status(True if 1, False if 0) of Motionnum'th motion
   //! of Chnum'th character.
   //! Exception raised if Chnum <= 0 or Chnum > NbCharacters or
   //! Motionnum <= 0 or Motionnum > NbPenMotions
-  Standard_EXPORT Standard_Boolean IsPenUp(const Standard_Integer Chnum,
-                                           const Standard_Integer Motionnum) const;
+  Standard_EXPORT bool IsPenUp(const int Chnum, const int Motionnum) const;
 
-  Standard_EXPORT void NextPenPosition(const Standard_Integer Chnum,
-                                       const Standard_Integer Motionnum,
-                                       Standard_Integer&      IX,
-                                       Standard_Integer&      IY) const;
+  Standard_EXPORT void NextPenPosition(const int Chnum,
+                                       const int Motionnum,
+                                       int&      IX,
+                                       int&      IY) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_TextFontDef, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                            theFontCode;
-  Handle(TCollection_HAsciiString)            theFontName;
-  Standard_Integer                            theSupersededFontCode;
-  Handle(IGESGraph_TextFontDef)               theSupersededFontEntity;
-  Standard_Integer                            theScale;
-  Handle(TColStd_HArray1OfInteger)            theASCIICodes;
-  Handle(TColStd_HArray1OfInteger)            theNextCharOriginX;
-  Handle(TColStd_HArray1OfInteger)            theNextCharOriginY;
-  Handle(TColStd_HArray1OfInteger)            theNbPenMotions;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) thePenMotions;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) thePenMovesToX;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) thePenMovesToY;
+  int                                              theFontCode;
+  occ::handle<TCollection_HAsciiString>            theFontName;
+  int                                              theSupersededFontCode;
+  occ::handle<IGESGraph_TextFontDef>               theSupersededFontEntity;
+  int                                              theScale;
+  occ::handle<NCollection_HArray1<int>>            theASCIICodes;
+  occ::handle<NCollection_HArray1<int>>            theNextCharOriginX;
+  occ::handle<NCollection_HArray1<int>>            theNextCharOriginY;
+  occ::handle<NCollection_HArray1<int>>            theNbPenMotions;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> thePenMotions;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> thePenMovesToX;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> thePenMovesToY;
 };
 
 #endif // _IGESGraph_TextFontDef_HeaderFile

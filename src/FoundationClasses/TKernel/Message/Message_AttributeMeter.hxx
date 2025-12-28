@@ -29,7 +29,7 @@ class Message_AttributeMeter : public Message_Attribute
 public:
   //! Returns default value of the metric when it is not defined
   //! @return undefined value
-  static Standard_Real UndefinedMetricValue() { return -1.0; }
+  static double UndefinedMetricValue() { return -1.0; }
 
 public:
   //! Constructor with string argument
@@ -39,63 +39,61 @@ public:
   //! Checks whether the attribute has values for the metric
   //! @param[in] theMetric  metric type
   //! @return true if the metric values exist in the attribute
-  Standard_EXPORT Standard_Boolean HasMetric(const Message_MetricType& theMetric) const;
+  Standard_EXPORT bool HasMetric(const Message_MetricType& theMetric) const;
 
   //! Returns true when both values of the metric are set.
   //! @param[in] theMetric  metric type
   //! @return true if metric values are valid
-  Standard_EXPORT Standard_Boolean IsMetricValid(const Message_MetricType& theMetric) const;
+  Standard_EXPORT bool IsMetricValid(const Message_MetricType& theMetric) const;
 
   //! Returns start value for the metric
   //! @param[in] theMetric  metric type
   //! @return real value
-  Standard_EXPORT Standard_Real StartValue(const Message_MetricType& theMetric) const;
+  Standard_EXPORT double StartValue(const Message_MetricType& theMetric) const;
 
   //! Sets start values for the metric
   //! @param[in] theMetric  metric type
-  Standard_EXPORT void SetStartValue(const Message_MetricType& theMetric,
-                                     const Standard_Real       theValue);
+  Standard_EXPORT void SetStartValue(const Message_MetricType& theMetric, const double theValue);
 
   //! Returns stop value for the metric
   //! @param[in] theMetric  metric type
   //! @return real value
-  Standard_EXPORT Standard_Real StopValue(const Message_MetricType& theMetric) const;
+  Standard_EXPORT double StopValue(const Message_MetricType& theMetric) const;
 
   //! Sets stop values for the metric
   //! @param[in] theMetric  metric type
-  Standard_EXPORT void SetStopValue(const Message_MetricType& theMetric,
-                                    const Standard_Real       theValue);
+  Standard_EXPORT void SetStopValue(const Message_MetricType& theMetric, const double theValue);
 
 public:
   //! Sets start values of default report metrics into the alert
   //! @param theAlert an alert
-  static void StartAlert(const Handle(Message_AlertExtended)& theAlert)
+  static void StartAlert(const occ::handle<Message_AlertExtended>& theAlert)
   {
-    SetAlertMetrics(theAlert, Standard_True);
+    SetAlertMetrics(theAlert, true);
   }
 
   //! Sets stop values of default report metrics into the alert
   //! @param theAlert an alert
-  static void StopAlert(const Handle(Message_AlertExtended)& theAlert)
+  static void StopAlert(const occ::handle<Message_AlertExtended>& theAlert)
   {
-    SetAlertMetrics(theAlert, Standard_False);
+    SetAlertMetrics(theAlert, false);
   }
 
   //! Sets current values of default report metrics into the alert.
   //! Processed only alert with Message_AttributeMeter attribute
   //! @param theAlert an alert
   //! @param theStartValue flag, if true, the start value is collected otherwise stop
-  static Standard_EXPORT void SetAlertMetrics(const Handle(Message_AlertExtended)& theAlert,
-                                              const Standard_Boolean               theStartValue);
+  static Standard_EXPORT void SetAlertMetrics(const occ::handle<Message_AlertExtended>& theAlert,
+                                              const bool theStartValue);
 
   //! Dumps the content of me into the stream
   virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Message_AttributeMeter, Message_Attribute)
 
 private:
-  typedef std::pair<Standard_Real, Standard_Real> StartToStopValue;
+  typedef std::pair<double, double> StartToStopValue;
   // clang-format off
   NCollection_IndexedDataMap<Message_MetricType, StartToStopValue> myMetrics; //!< computed metrics
   // clang-format on

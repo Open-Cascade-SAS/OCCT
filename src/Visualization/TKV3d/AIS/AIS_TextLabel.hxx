@@ -34,22 +34,19 @@ public:
   Standard_EXPORT AIS_TextLabel();
 
   //! Return TRUE for supported display mode.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
-  {
-    return theMode == 0;
-  }
+  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Setup color of entire text.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   //! Setup transparency within [0, 1] range.
-  Standard_EXPORT virtual void SetTransparency(const Standard_Real theValue) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTransparency(const double theValue) override;
 
   //! Removes the transparency setting.
-  virtual void UnsetTransparency() Standard_OVERRIDE { SetTransparency(0.0); }
+  virtual void UnsetTransparency() override { SetTransparency(0.0); }
 
   //! Material has no effect for text label.
-  virtual void SetMaterial(const Graphic3d_MaterialAspect&) Standard_OVERRIDE {}
+  virtual void SetMaterial(const Graphic3d_MaterialAspect&) override {}
 
   //! Setup text.
   Standard_EXPORT void SetText(const TCollection_ExtendedString& theText);
@@ -64,19 +61,19 @@ public:
   Standard_EXPORT void SetVJustification(const Graphic3d_VerticalTextAlignment theVJust);
 
   //! Setup angle.
-  Standard_EXPORT void SetAngle(const Standard_Real theAngle);
+  Standard_EXPORT void SetAngle(const double theAngle);
 
   //! Setup zoomable property.
-  Standard_EXPORT void SetZoomable(const Standard_Boolean theIsZoomable);
+  Standard_EXPORT void SetZoomable(const bool theIsZoomable);
 
   //! Setup height.
-  Standard_EXPORT void SetHeight(const Standard_Real theHeight);
+  Standard_EXPORT void SetHeight(const double theHeight);
 
   //! Setup font aspect.
   Standard_EXPORT void SetFontAspect(const Font_FontAspect theFontAspect);
 
   //! Setup font.
-  Standard_EXPORT void SetFont(Standard_CString theFont);
+  Standard_EXPORT void SetFont(const char* theFont);
 
   //! Setup label orientation in the model 3D space.
   Standard_EXPORT void SetOrientation3D(const gp_Ax2& theOrientation);
@@ -100,20 +97,17 @@ public:
   Standard_EXPORT const gp_Ax2& Orientation3D() const;
 
   //! Returns true if the current text placement mode uses text orientation in the model 3D space.
-  Standard_EXPORT Standard_Boolean HasOrientation3D() const;
+  Standard_EXPORT bool HasOrientation3D() const;
 
-  Standard_EXPORT void SetFlipping(const Standard_Boolean theIsFlipping);
+  Standard_EXPORT void SetFlipping(const bool theIsFlipping);
 
-  Standard_EXPORT Standard_Boolean HasFlipping() const;
+  Standard_EXPORT bool HasFlipping() const;
 
   //! Returns flag if text uses position as point of attach
-  Standard_Boolean HasOwnAnchorPoint() const { return myHasOwnAnchorPoint; }
+  bool HasOwnAnchorPoint() const { return myHasOwnAnchorPoint; }
 
   //! Set flag if text uses position as point of attach
-  void SetOwnAnchorPoint(const Standard_Boolean theOwnAnchorPoint)
-  {
-    myHasOwnAnchorPoint = theOwnAnchorPoint;
-  }
+  void SetOwnAnchorPoint(const bool theOwnAnchorPoint) { myHasOwnAnchorPoint = theOwnAnchorPoint; }
 
   //! Define the display type of the text.
   //!
@@ -130,48 +124,47 @@ public:
 
   //! Returns text presentation formatter; NULL by default, which means standard text formatter will
   //! be used.
-  const Handle(Font_TextFormatter)& TextFormatter() const { return myFormatter; }
+  const occ::handle<Font_TextFormatter>& TextFormatter() const { return myFormatter; }
 
   //! Setup text formatter for presentation. It's empty by default.
-  void SetTextFormatter(const Handle(Font_TextFormatter)& theFormatter)
+  void SetTextFormatter(const occ::handle<Font_TextFormatter>& theFormatter)
   {
     myFormatter = theFormatter;
   }
 
 protected:
   //! Compute
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& theprsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& theprsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
   //! Compute selection
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(
+    const occ::handle<SelectMgr_Selection>& theSelection,
+    const int                               theMode) override;
 
   //! Calculate label center, width and height
-  Standard_EXPORT Standard_Boolean calculateLabelParams(const gp_Pnt&  thePosition,
-                                                        gp_Pnt&        theCenterOfLabel,
-                                                        Standard_Real& theWidth,
-                                                        Standard_Real& theHeight) const;
+  Standard_EXPORT bool calculateLabelParams(const gp_Pnt& thePosition,
+                                            gp_Pnt&       theCenterOfLabel,
+                                            double&       theWidth,
+                                            double&       theHeight) const;
 
   //! Calculate label transformation
   Standard_EXPORT gp_Trsf calculateLabelTrsf(const gp_Pnt& thePosition,
                                              gp_Pnt&       theCenterOfLabel) const;
 
 protected:
-  Handle(Font_TextFormatter) myFormatter;
+  occ::handle<Font_TextFormatter> myFormatter;
 
   TCollection_ExtendedString myText;
   gp_Ax2                     myOrientation3D;
-  Standard_Boolean           myHasOrientation3D;
-  Standard_Boolean           myHasOwnAnchorPoint;
-  Standard_Boolean           myHasFlipping;
+  bool                       myHasOrientation3D;
+  bool                       myHasOwnAnchorPoint;
+  bool                       myHasFlipping;
 
 public:
   //! CASCADE RTTI
   DEFINE_STANDARD_RTTIEXT(AIS_TextLabel, AIS_InteractiveObject)
 };
-
-DEFINE_STANDARD_HANDLE(AIS_TextLabel, AIS_InteractiveObject)
 
 #endif // _AIS_TextLabel_HeaderFile

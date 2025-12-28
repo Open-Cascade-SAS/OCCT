@@ -20,14 +20,15 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DataSource3D, MeshVS_DataSource)
 
 //=================================================================================================
 
-Handle(MeshVS_HArray1OfSequenceOfInteger) MeshVS_DataSource3D::GetPrismTopology(
-  const Standard_Integer BasePoints) const
+occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D::GetPrismTopology(
+  const int BasePoints) const
 {
   if (myPrismTopos.IsBound(BasePoints))
     return myPrismTopos.Find(BasePoints);
   else
   {
-    Handle(MeshVS_HArray1OfSequenceOfInteger) result = CreatePrismTopology(BasePoints);
+    occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result =
+      CreatePrismTopology(BasePoints);
     if (!result.IsNull())
       ((MeshVS_DataSource3D*)this)->myPrismTopos.Bind(BasePoints, result);
     return result;
@@ -36,14 +37,15 @@ Handle(MeshVS_HArray1OfSequenceOfInteger) MeshVS_DataSource3D::GetPrismTopology(
 
 //=================================================================================================
 
-Handle(MeshVS_HArray1OfSequenceOfInteger) MeshVS_DataSource3D::GetPyramidTopology(
-  const Standard_Integer BasePoints) const
+occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D::GetPyramidTopology(
+  const int BasePoints) const
 {
   if (myPyramidTopos.IsBound(BasePoints))
     return myPyramidTopos.Find(BasePoints);
   else
   {
-    Handle(MeshVS_HArray1OfSequenceOfInteger) result = CreatePyramidTopology(BasePoints);
+    occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result =
+      CreatePyramidTopology(BasePoints);
     if (!result.IsNull())
       ((MeshVS_DataSource3D*)this)->myPyramidTopos.Bind(BasePoints, result);
     return result;
@@ -52,15 +54,15 @@ Handle(MeshVS_HArray1OfSequenceOfInteger) MeshVS_DataSource3D::GetPyramidTopolog
 
 //=================================================================================================
 
-Handle(MeshVS_HArray1OfSequenceOfInteger) MeshVS_DataSource3D::CreatePrismTopology(
-  const Standard_Integer BasePoints)
+occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D::
+  CreatePrismTopology(const int BasePoints)
 {
-  Handle(MeshVS_HArray1OfSequenceOfInteger) result;
+  occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result;
 
   if (BasePoints >= 3)
   {
-    result = new MeshVS_HArray1OfSequenceOfInteger(1, BasePoints + 2);
-    Standard_Integer i, next;
+    result = new NCollection_HArray1<NCollection_Sequence<int>>(1, BasePoints + 2);
+    int i, next;
 
     for (i = 0; i < BasePoints; i++)
     {
@@ -80,16 +82,16 @@ Handle(MeshVS_HArray1OfSequenceOfInteger) MeshVS_DataSource3D::CreatePrismTopolo
 
 //=================================================================================================
 
-Handle(MeshVS_HArray1OfSequenceOfInteger) MeshVS_DataSource3D::CreatePyramidTopology(
-  const Standard_Integer BasePoints)
+occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D::
+  CreatePyramidTopology(const int BasePoints)
 {
-  Handle(MeshVS_HArray1OfSequenceOfInteger) result;
+  occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result;
 
   if (BasePoints >= 3)
   {
-    result = new MeshVS_HArray1OfSequenceOfInteger(1, BasePoints + 1);
+    result = new NCollection_HArray1<NCollection_Sequence<int>>(1, BasePoints + 1);
 
-    for (Standard_Integer i = 1; i <= BasePoints; i++)
+    for (int i = 1; i <= BasePoints; i++)
     {
       result->ChangeValue(1).Prepend(i);
       result->ChangeValue(1 + i).Append(0);

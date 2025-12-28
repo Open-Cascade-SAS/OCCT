@@ -65,7 +65,7 @@
 #include <Precision.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -73,14 +73,15 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <V3d_View.hxx>
-#include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
+#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 
-extern Standard_Boolean VDisplayAISObject(const TCollection_AsciiString&       theName,
-                                          const Handle(AIS_InteractiveObject)& theAISObj,
-                                          Standard_Boolean theReplaceIfExists = Standard_True);
-extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
-extern int                             ViewerMainLoop(Standard_Integer argc, const char** argv);
-extern Handle(AIS_InteractiveContext)& TheAISContext();
+extern bool VDisplayAISObject(const TCollection_AsciiString&            theName,
+                              const occ::handle<AIS_InteractiveObject>& theAISObj,
+                              bool                                      theReplaceIfExists = true);
+extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
+                                            GetMapOfAIS();
+extern int                                  ViewerMainLoop(int argc, const char** argv);
+extern occ::handle<AIS_InteractiveContext>& TheAISContext();
 
 #define VertexMask 0x01
 #define EdgeMask 0x02
@@ -93,25 +94,25 @@ extern Handle(AIS_InteractiveContext)& TheAISContext();
 //=======================================================================
 static gp_Pnt Get3DPointAtMousePosition()
 {
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  occ::handle<V3d_View> aView = ViewerTest::CurrentView();
 
-  Standard_Real xv, yv, zv;
+  double xv, yv, zv;
   aView->Proj(xv, yv, zv);
-  Standard_Real xat, yat, zat;
+  double xat, yat, zat;
   aView->At(xat, yat, zat);
   gp_Pln aPlane(gp_Pnt(xat, yat, zat), gp_Dir(xv, yv, zv));
 
-  Standard_Integer aPixX, aPixY;
-  Standard_Real    aX, aY, aZ, aDX, aDY, aDZ;
+  int    aPixX, aPixY;
+  double aX, aY, aZ, aDX, aDY, aDZ;
 
   ViewerTest::GetMousePosition(aPixX, aPixY);
   aView->ConvertWithProj(aPixX, aPixY, aX, aY, aZ, aDX, aDY, aDZ);
   gp_Lin aLine(gp_Pnt(aX, aY, aZ), gp_Dir(aDX, aDY, aDZ));
 
   // Compute intersection
-  Handle(Geom_Line)  aGeomLine  = new Geom_Line(aLine);
-  Handle(Geom_Plane) aGeomPlane = new Geom_Plane(aPlane);
-  GeomAPI_IntCS      anIntersector(aGeomLine, aGeomPlane);
+  occ::handle<Geom_Line>  aGeomLine  = new Geom_Line(aLine);
+  occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(aPlane);
+  GeomAPI_IntCS           anIntersector(aGeomLine, aGeomPlane);
   if (!anIntersector.IsDone() || anIntersector.NbPoints() == 0)
   {
     return gp::Origin();
@@ -124,16 +125,16 @@ static gp_Pnt Get3DPointAtMousePosition()
 // purpose  : Calculates the 3D points corresponding to the mouse position
 //           in the plane of the view
 //=======================================================================
-static Standard_Boolean Get3DPointAtMousePosition(const gp_Pnt& theFirstPoint,
-                                                  const gp_Pnt& theSecondPoint,
-                                                  gp_Pnt&       theOutputPoint)
+static bool Get3DPointAtMousePosition(const gp_Pnt& theFirstPoint,
+                                      const gp_Pnt& theSecondPoint,
+                                      gp_Pnt&       theOutputPoint)
 {
   theOutputPoint = gp::Origin();
 
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  occ::handle<V3d_View> aView = ViewerTest::CurrentView();
 
-  Standard_Integer aPixX, aPixY;
-  Standard_Real    aX, aY, aZ, aDx, aDy, aDz, aUx, aUy, aUz;
+  int    aPixX, aPixY;
+  double aX, aY, aZ, aDx, aDy, aDz, aUx, aUy, aUz;
 
   // Get 3D point in view coordinates and projection vector from the pixel point.
   ViewerTest::GetMousePosition(aPixX, aPixY);
@@ -148,23 +149,23 @@ static Standard_Boolean Get3DPointAtMousePosition(const gp_Pnt& theFirstPoint,
   if (aDimVec.IsParallel(aViewUp, Precision::Angular()))
   {
     theOutputPoint = Get3DPointAtMousePosition();
-    return Standard_True;
+    return true;
   }
 
   gp_Vec aDimNormal = aDimVec ^ aViewUp;
   gp_Pln aViewPlane = gce_MakePln(theFirstPoint, aDimNormal);
 
   // Get intersection of view plane and projection line
-  Handle(Geom_Plane) aPlane    = new Geom_Plane(aViewPlane);
-  Handle(Geom_Line)  aProjLine = new Geom_Line(aProjLin);
-  GeomAPI_IntCS      anIntersector(aProjLine, aPlane);
+  occ::handle<Geom_Plane> aPlane    = new Geom_Plane(aViewPlane);
+  occ::handle<Geom_Line>  aProjLine = new Geom_Line(aProjLin);
+  GeomAPI_IntCS           anIntersector(aProjLine, aPlane);
   if (!anIntersector.IsDone() || anIntersector.NbPoints() == 0)
   {
-    return Standard_False;
+    return false;
   }
 
   theOutputPoint = anIntersector.Point(1);
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -191,23 +192,23 @@ static Standard_Boolean Get3DPointAtMousePosition(const gp_Pnt& theFirstPoint,
 // For text position changing use 'vmovedim'.
 //=======================================================================
 static int ParseDimensionParams(
-  Standard_Integer                                                       theArgNum,
+  int                                                                    theArgNum,
   const char**                                                           theArgVec,
-  Standard_Integer                                                       theStartIndex,
-  const Handle(Prs3d_DimensionAspect)&                                   theAspect,
-  Standard_Boolean&                                                      theIsCustomPlane,
+  int                                                                    theStartIndex,
+  const occ::handle<Prs3d_DimensionAspect>&                              theAspect,
+  bool&                                                                  theIsCustomPlane,
   gp_Pln&                                                                thePlane,
-  NCollection_DataMap<TCollection_AsciiString, Standard_Real>&           theRealParams,
+  NCollection_DataMap<TCollection_AsciiString, double>&                  theRealParams,
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theStringParams,
-  NCollection_List<Handle(AIS_InteractiveObject)>*                       theShapeList = NULL)
+  NCollection_List<occ::handle<AIS_InteractiveObject>>*                  theShapeList = NULL)
 {
   theRealParams.Clear();
   theStringParams.Clear();
 
-  theIsCustomPlane = Standard_False;
+  theIsCustomPlane = false;
 
   // Begin from the second parameter: the first one is dimension name
-  for (Standard_Integer anIt = theStartIndex; anIt < theArgNum; ++anIt)
+  for (int anIt = theStartIndex; anIt < theArgNum; ++anIt)
   {
     TCollection_AsciiString aParam(theArgVec[anIt]);
     aParam.LowerCase();
@@ -226,12 +227,12 @@ static int ParseDimensionParams(
 
     if (aParam.IsEqual("-showunits"))
     {
-      theAspect->MakeUnitsDisplayed(Standard_True);
+      theAspect->MakeUnitsDisplayed(true);
       continue;
     }
     else if (aParam.IsEqual("-hideunits"))
     {
-      theAspect->MakeUnitsDisplayed(Standard_False);
+      theAspect->MakeUnitsDisplayed(false);
       continue;
     }
     else if (aParam.IsEqual("-selected"))
@@ -273,10 +274,10 @@ static int ParseDimensionParams(
       do
       {
         anIt++;
-        TCollection_AsciiString       anArgString = theArgVec[anIt];
-        Handle(AIS_InteractiveObject) anAISObject;
-        Standard_CString              aStr   = anArgString.ToCString();
-        TopoDS_Shape                  aShape = DBRep::Get(aStr);
+        TCollection_AsciiString            anArgString = theArgVec[anIt];
+        occ::handle<AIS_InteractiveObject> anAISObject;
+        const char*                        aStr   = anArgString.ToCString();
+        TopoDS_Shape                       aShape = DBRep::Get(aStr);
         if (!aShape.IsNull())
         {
           anAISObject = new AIS_Shape(aShape);
@@ -298,19 +299,19 @@ static int ParseDimensionParams(
         aValue.LowerCase();
         if (aValue.IsEqual("3d"))
         {
-          theAspect->MakeText3d(Standard_True);
+          theAspect->MakeText3d(true);
         }
         else if (aValue.IsEqual("2d"))
         {
-          theAspect->MakeText3d(Standard_False);
+          theAspect->MakeText3d(false);
         }
         else if (aValue.IsEqual("wf") || aValue.IsEqual("wireframe"))
         {
-          theAspect->MakeTextShaded(Standard_False);
+          theAspect->MakeTextShaded(false);
         }
         else if (aValue.IsEqual("sh") || aValue.IsEqual("shading"))
         {
-          theAspect->MakeTextShaded(Standard_True);
+          theAspect->MakeTextShaded(true);
         }
         else if (aValue.IsIntegerValue()) // text size
         {
@@ -392,7 +393,7 @@ static int ParseDimensionParams(
     else if (aParam.IsEqual("-zoomablearrow"))
     {
       TCollection_AsciiString aValue(theArgVec[++anIt]);
-      Standard_Boolean        isZoomableArrow = Standard_True;
+      bool                    isZoomableArrow = true;
       if (!Draw::ParseOnOff(aValue.ToCString(), isZoomableArrow))
       {
         Message::SendFail() << "Error: zoomable arrow value should be 0 or 1.";
@@ -403,7 +404,7 @@ static int ParseDimensionParams(
     else if (aParam.IsEqual("-arrowlength") || aParam.IsEqual("-arlen"))
     {
       TCollection_AsciiString aValue(theArgVec[++anIt]);
-      if (!aValue.IsRealValue(Standard_True))
+      if (!aValue.IsRealValue(true))
       {
         Message::SendFail() << "Error: arrow length should be float degree value.";
         return 1;
@@ -413,7 +414,7 @@ static int ParseDimensionParams(
     else if (aParam.IsEqual("-arrowangle") || aParam.IsEqual("-arangle"))
     {
       TCollection_AsciiString aValue(theArgVec[++anIt]);
-      if (!aValue.IsRealValue(Standard_True))
+      if (!aValue.IsRealValue(true))
       {
         Message::SendFail("Error: arrow angle should be float degree value.");
         return 1;
@@ -422,9 +423,8 @@ static int ParseDimensionParams(
     }
     else if (aParam.IsEqual("-color"))
     {
-      Quantity_Color   aColor;
-      Standard_Integer aNbParsed =
-        Draw::ParseColor(theArgNum - anIt - 1, theArgVec + anIt + 1, aColor);
+      Quantity_Color aColor;
+      int aNbParsed = Draw::ParseColor(theArgNum - anIt - 1, theArgVec + anIt + 1, aColor);
       anIt += aNbParsed;
       if (aNbParsed == 0)
       {
@@ -436,7 +436,7 @@ static int ParseDimensionParams(
     else if (aParam.IsEqual("-extension"))
     {
       TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
-      if (!aLocalParam.IsRealValue(Standard_True))
+      if (!aLocalParam.IsRealValue(true))
       {
         Message::SendFail("Error: extension size for dimension should be real value.");
         return 1;
@@ -449,17 +449,17 @@ static int ParseDimensionParams(
       aValue.LowerCase();
       if (aValue == "xoy")
       {
-        theIsCustomPlane = Standard_True;
+        theIsCustomPlane = true;
         thePlane         = gp_Pln(gp_Ax3(gp::XOY()));
       }
       else if (aValue == "zox")
       {
-        theIsCustomPlane = Standard_True;
+        theIsCustomPlane = true;
         thePlane         = gp_Pln(gp_Ax3(gp::ZOX()));
       }
       else if (aValue == "yoz")
       {
-        theIsCustomPlane = Standard_True;
+        theIsCustomPlane = true;
         thePlane         = gp_Pln(gp_Ax3(gp::YOZ()));
       }
       else
@@ -471,7 +471,7 @@ static int ParseDimensionParams(
     else if (aParam.IsEqual("-flyout"))
     {
       TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
-      if (!aLocalParam.IsRealValue(Standard_True))
+      if (!aLocalParam.IsRealValue(true))
       {
         Message::SendFail("Error: flyout for dimension should be real value.");
         return 1;
@@ -482,7 +482,7 @@ static int ParseDimensionParams(
     else if (aParam.IsEqual("-value"))
     {
       TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
-      if (!aLocalParam.IsRealValue(Standard_True))
+      if (!aLocalParam.IsRealValue(true))
       {
         Message::SendFail("Error: dimension value for dimension should be real value");
         return 1;
@@ -523,8 +523,8 @@ static int ParseDimensionParams(
 // purpose  : Sets parameters for dimension
 //=======================================================================
 static void SetDimensionParams(
-  const Handle(PrsDim_Dimension)&                                              theDim,
-  const NCollection_DataMap<TCollection_AsciiString, Standard_Real>&           theRealParams,
+  const occ::handle<PrsDim_Dimension>&                                         theDim,
+  const NCollection_DataMap<TCollection_AsciiString, double>&                  theRealParams,
   const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theStringParams)
 {
   if (theRealParams.IsBound("flyout"))
@@ -566,15 +566,15 @@ static void SetDimensionParams(
 //           -showarrow [first|second|both|none]
 //=======================================================================
 static int ParseAngleDimensionParams(
-  Standard_Integer                                                       theArgNum,
+  int                                                                    theArgNum,
   const char**                                                           theArgVec,
-  Standard_Integer                                                       theStartIndex,
+  int                                                                    theStartIndex,
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theStringParams)
 {
   theStringParams.Clear();
 
   // Begin from the second parameter: the first one is dimension name
-  for (Standard_Integer anIt = theStartIndex; anIt < theArgNum; ++anIt)
+  for (int anIt = theStartIndex; anIt < theArgNum; ++anIt)
   {
     TCollection_AsciiString aParam(theArgVec[anIt]);
     aParam.LowerCase();
@@ -619,10 +619,10 @@ static int ParseAngleDimensionParams(
 // purpose  : Sets parameters for angle dimension
 //=======================================================================
 static void SetAngleDimensionParams(
-  const Handle(PrsDim_Dimension)&                                              theDim,
+  const occ::handle<PrsDim_Dimension>&                                         theDim,
   const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theStringParams)
 {
-  Handle(PrsDim_AngleDimension) anAngleDim = Handle(PrsDim_AngleDimension)::DownCast(theDim);
+  occ::handle<PrsDim_AngleDimension> anAngleDim = occ::down_cast<PrsDim_AngleDimension>(theDim);
   if (anAngleDim.IsNull())
   {
     return;
@@ -680,9 +680,7 @@ static void SetAngleDimensionParams(
 // purpose  : Command for building dimension presentations: angle,
 //           length, radius, diameter
 //=======================================================================
-static int VDimBuilder(Draw_Interpretor& /*theDi*/,
-                       Standard_Integer theArgsNb,
-                       const char**     theArgs)
+static int VDimBuilder(Draw_Interpretor& /*theDi*/, int theArgsNb, const char** theArgs)
 {
   if (theArgsNb < 2)
   {
@@ -693,12 +691,12 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
   // Parse parameters
   TCollection_AsciiString aName(theArgs[1]);
 
-  NCollection_List<Handle(AIS_InteractiveObject)> aShapes;
-  Handle(Prs3d_DimensionAspect)                   anAspect      = new Prs3d_DimensionAspect();
-  Standard_Boolean                                isPlaneCustom = Standard_False;
-  gp_Pln                                          aWorkingPlane;
+  NCollection_List<occ::handle<AIS_InteractiveObject>> aShapes;
+  occ::handle<Prs3d_DimensionAspect>                   anAspect      = new Prs3d_DimensionAspect();
+  bool                                                 isPlaneCustom = false;
+  gp_Pln                                               aWorkingPlane;
 
-  NCollection_DataMap<TCollection_AsciiString, Standard_Real>           aRealParams;
+  NCollection_DataMap<TCollection_AsciiString, double>                  aRealParams;
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
 
   TCollection_AsciiString aDimType(theArgs[2]);
@@ -740,13 +738,13 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
   }
 
   // Build dimension
-  Handle(PrsDim_Dimension) aDim;
+  occ::handle<PrsDim_Dimension> aDim;
   switch (aKindOfDimension)
   {
     case PrsDim_KOD_LENGTH: {
       if (aShapes.Extent() == 1)
       {
-        Handle(AIS_Shape) aFirstShapePrs = Handle(AIS_Shape)::DownCast(aShapes.First());
+        occ::handle<AIS_Shape> aFirstShapePrs = occ::down_cast<AIS_Shape>(aShapes.First());
         if (aFirstShapePrs.IsNull() || aFirstShapePrs->Shape().ShapeType() != TopAbs_EDGE)
         {
           Message::SendFail("Error: wrong shape type");
@@ -765,27 +763,27 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
         aDim = new PrsDim_LengthDimension(anEdge, aWorkingPlane);
 
         // Move standard plane (XOY, YOZ or ZOX) to the first point to make it working for dimension
-        aWorkingPlane.SetLocation(Handle(PrsDim_LengthDimension)::DownCast(aDim)->FirstPoint());
+        aWorkingPlane.SetLocation(occ::down_cast<PrsDim_LengthDimension>(aDim)->FirstPoint());
       }
       else if (aShapes.Extent() == 2)
       {
         TopoDS_Shape aShape1, aShape2;
 
         // Getting shapes
-        if (Handle(AIS_Point) aPntPrs = Handle(AIS_Point)::DownCast(aShapes.First()))
+        if (occ::handle<AIS_Point> aPntPrs = occ::down_cast<AIS_Point>(aShapes.First()))
         {
           aShape1 = aPntPrs->Vertex();
         }
-        else if (Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast(aShapes.First()))
+        else if (occ::handle<AIS_Shape> aShapePrs = occ::down_cast<AIS_Shape>(aShapes.First()))
         {
           aShape1 = aShapePrs->Shape();
         }
 
-        if (Handle(AIS_Point) aPntPrs = Handle(AIS_Point)::DownCast(aShapes.Last()))
+        if (occ::handle<AIS_Point> aPntPrs = occ::down_cast<AIS_Point>(aShapes.Last()))
         {
           aShape2 = aPntPrs->Vertex();
         }
-        else if (Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast(aShapes.Last()))
+        else if (occ::handle<AIS_Shape> aShapePrs = occ::down_cast<AIS_Shape>(aShapes.Last()))
         {
           aShape2 = aShapePrs->Shape();
         }
@@ -797,7 +795,7 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
         }
 
         // Face-Face case
-        Handle(PrsDim_LengthDimension) aLenDim = new PrsDim_LengthDimension();
+        occ::handle<PrsDim_LengthDimension> aLenDim = new PrsDim_LengthDimension();
         if (isPlaneCustom)
         {
           if (aShape1.ShapeType() == TopAbs_VERTEX)
@@ -830,7 +828,7 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
       switch (aShapes.Extent())
       {
         case 1: {
-          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aShapes.First()))
+          if (occ::handle<AIS_Shape> aShape = occ::down_cast<AIS_Shape>(aShapes.First()))
           {
             if (aShape->Shape().ShapeType() == TopAbs_FACE)
             {
@@ -840,8 +838,8 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
           break;
         }
         case 2: {
-          Handle(AIS_Shape) aShape1 = Handle(AIS_Shape)::DownCast(aShapes.First());
-          Handle(AIS_Shape) aShape2 = Handle(AIS_Shape)::DownCast(aShapes.Last());
+          occ::handle<AIS_Shape> aShape1 = occ::down_cast<AIS_Shape>(aShapes.First());
+          occ::handle<AIS_Shape> aShape2 = occ::down_cast<AIS_Shape>(aShapes.Last());
           if (!aShape1.IsNull() && !aShape2.IsNull() && aShape1->Shape().ShapeType() == TopAbs_EDGE
               && aShape2->Shape().ShapeType() == TopAbs_EDGE)
           {
@@ -856,13 +854,13 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
           break;
         }
         case 3: {
-          gp_Pnt           aPnts[3];
-          Standard_Integer aPntIndex = 0;
-          for (NCollection_List<Handle(AIS_InteractiveObject)>::Iterator aPntIter(aShapes);
+          gp_Pnt aPnts[3];
+          int    aPntIndex = 0;
+          for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator aPntIter(aShapes);
                aPntIter.More();
                aPntIter.Next())
           {
-            if (Handle(AIS_Point) aPoint = Handle(AIS_Point)::DownCast(aPntIter.Value()))
+            if (occ::handle<AIS_Point> aPoint = occ::down_cast<AIS_Point>(aPntIter.Value()))
             {
               aPnts[aPntIndex++] = aPoint->Component()->Pnt();
             }
@@ -885,11 +883,11 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
     {
       gp_Pnt anAnchor;
       bool   hasAnchor = false;
-      for (NCollection_List<Handle(AIS_InteractiveObject)>::Iterator aShapeIter(aShapes);
+      for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator aShapeIter(aShapes);
            aShapeIter.More();
            aShapeIter.Next())
       {
-        if (Handle(AIS_Point) aPoint = Handle(AIS_Point)::DownCast(aShapeIter.Value()))
+        if (occ::handle<AIS_Point> aPoint = occ::down_cast<AIS_Point>(aShapeIter.Value()))
         {
           hasAnchor = true;
           anAnchor  = aPoint->Component()->Pnt();
@@ -903,7 +901,7 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
         return 1;
       }
 
-      if (Handle(AIS_Circle) aShapeCirc = Handle(AIS_Circle)::DownCast(aShapes.First()))
+      if (occ::handle<AIS_Circle> aShapeCirc = occ::down_cast<AIS_Circle>(aShapes.First()))
       {
         gp_Circ aCircle = aShapeCirc->Circle()->Circ();
         if (hasAnchor)
@@ -915,9 +913,9 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
           aDim = new PrsDim_RadiusDimension(aCircle);
         }
       }
-      else if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aShapes.First()))
+      else if (occ::handle<AIS_Shape> aShape = occ::down_cast<AIS_Shape>(aShapes.First()))
       {
-        Handle(PrsDim_RadiusDimension) aRadDim = new PrsDim_RadiusDimension(aShape->Shape());
+        occ::handle<PrsDim_RadiusDimension> aRadDim = new PrsDim_RadiusDimension(aShape->Shape());
         if (hasAnchor)
         {
           aRadDim->SetMeasuredGeometry(aShape->Shape(), anAnchor);
@@ -936,13 +934,13 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
       {
         if (aShapes.First()->DynamicType() == STANDARD_TYPE(AIS_Circle))
         {
-          Handle(AIS_Circle) aShape  = Handle(AIS_Circle)::DownCast(aShapes.First());
-          gp_Circ            aCircle = aShape->Circle()->Circ();
-          aDim                       = new PrsDim_DiameterDimension(aCircle);
+          occ::handle<AIS_Circle> aShape  = occ::down_cast<AIS_Circle>(aShapes.First());
+          gp_Circ                 aCircle = aShape->Circle()->Circ();
+          aDim                            = new PrsDim_DiameterDimension(aCircle);
         }
         else
         {
-          Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aShapes.First());
+          occ::handle<AIS_Shape> aShape = occ::down_cast<AIS_Shape>(aShapes.First());
           if (aShape.IsNull())
           {
             Message::SendFail("Error: shape for radius is of wrong type");
@@ -985,7 +983,7 @@ static int VDimBuilder(Draw_Interpretor& /*theDi*/,
 namespace
 {
 //! If the given shapes are edges then check whether they are parallel else return true.
-Standard_Boolean IsParallel(const TopoDS_Shape& theShape1, const TopoDS_Shape& theShape2)
+bool IsParallel(const TopoDS_Shape& theShape1, const TopoDS_Shape& theShape2)
 {
   if (theShape1.ShapeType() == TopAbs_EDGE && theShape2.ShapeType() == TopAbs_EDGE)
   {
@@ -993,7 +991,7 @@ Standard_Boolean IsParallel(const TopoDS_Shape& theShape1, const TopoDS_Shape& t
     return aDelta.IsParallel();
   }
 
-  return Standard_True;
+  return true;
 }
 } // namespace
 
@@ -1001,9 +999,7 @@ Standard_Boolean IsParallel(const TopoDS_Shape& theShape1, const TopoDS_Shape& t
 // function : VRelationBuilder
 // purpose  : Command for building relation presentation
 //=======================================================================
-static int VRelationBuilder(Draw_Interpretor& /*theDi*/,
-                            Standard_Integer theArgsNb,
-                            const char**     theArgs)
+static int VRelationBuilder(Draw_Interpretor& /*theDi*/, int theArgsNb, const char** theArgs)
 {
   if (theArgsNb < 2)
   {
@@ -1056,11 +1052,11 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/,
     aKindOfRelation = PrsDim_KOR_SYMMETRIC;
   }
 
-  TopTools_ListOfShape aShapes;
+  NCollection_List<TopoDS_Shape> aShapes;
   ViewerTest::GetSelectedShapes(aShapes);
 
   // Build relation.
-  Handle(PrsDim_Relation) aRelation;
+  occ::handle<PrsDim_Relation> aRelation;
   switch (aKindOfRelation)
   {
     case PrsDim_KOR_CONCENTRIC: {
@@ -1099,8 +1095,8 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/,
 
       TopoDS_Shape aSelectedShapes[4];
 
-      Standard_Integer               anIdx = 0;
-      TopTools_ListOfShape::Iterator anIter(aShapes);
+      int                                      anIdx = 0;
+      NCollection_List<TopoDS_Shape>::Iterator anIter(aShapes);
       for (; anIter.More(); anIter.Next(), ++anIdx)
       {
         aSelectedShapes[anIdx] = anIter.Value();
@@ -1306,7 +1302,7 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/,
         return 1;
       }
 
-      Standard_Real              aDist = std::round(sqrt(aDelta.SquareDistance(1)) * 10.0) / 10.0;
+      double                     aDist = std::round(sqrt(aDelta.SquareDistance(1)) * 10.0) / 10.0;
       TCollection_ExtendedString aMessage(TCollection_ExtendedString("offset=")
                                           + TCollection_ExtendedString(aDist));
       aRelation = new PrsDim_OffsetDimension(aFace1, aFace2, aDist, aMessage);
@@ -1482,9 +1478,9 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/,
         return 1;
       }
 
-      TopoDS_Shape                   aSelectedShapes[3];
-      Standard_Integer               anIdx = 0;
-      TopTools_ListOfShape::Iterator anIter(aShapes);
+      TopoDS_Shape                             aSelectedShapes[3];
+      int                                      anIdx = 0;
+      NCollection_List<TopoDS_Shape>::Iterator anIter(aShapes);
       for (; anIter.More(); anIter.Next(), ++anIdx)
       {
         aSelectedShapes[anIdx] = anIter.Value();
@@ -1555,7 +1551,7 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/,
 // function : VDimParam
 // purpose  : Sets aspect parameters to dimension.
 //=======================================================================
-static int VDimParam(Draw_Interpretor& theDi, Standard_Integer theArgNum, const char** theArgVec)
+static int VDimParam(Draw_Interpretor& theDi, int theArgNum, const char** theArgVec)
 {
   if (theArgNum < 3)
   {
@@ -1565,26 +1561,26 @@ static int VDimParam(Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
 
   TCollection_AsciiString aName(theArgVec[1]);
   gp_Pln                  aWorkingPlane;
-  Standard_Boolean        isCustomPlane = Standard_False;
-  Standard_Boolean        toUpdate      = Standard_True;
+  bool                    isCustomPlane = false;
+  bool                    toUpdate      = true;
 
-  NCollection_DataMap<TCollection_AsciiString, Standard_Real>           aRealParams;
+  NCollection_DataMap<TCollection_AsciiString, double>                  aRealParams;
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
 
-  Handle(AIS_InteractiveObject) anObject;
+  occ::handle<AIS_InteractiveObject> anObject;
   if (!GetMapOfAIS().Find2(aName, anObject))
   {
     theDi << theArgVec[0] << "error: no object with this name.\n";
     return 1;
   }
-  Handle(PrsDim_Dimension) aDim = Handle(PrsDim_Dimension)::DownCast(anObject);
+  occ::handle<PrsDim_Dimension> aDim = occ::down_cast<PrsDim_Dimension>(anObject);
   if (aDim.IsNull())
   {
     theDi << theArgVec[0] << "error: no dimension with this name.\n";
     return 1;
   }
 
-  Handle(Prs3d_DimensionAspect) anAspect = aDim->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> anAspect = aDim->DimensionAspect();
 
   if (ParseDimensionParams(theArgNum,
                            theArgVec,
@@ -1624,7 +1620,7 @@ static int VDimParam(Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
 // function : VLengthParam
 // purpose  : Sets parameters to length dimension.
 //=======================================================================
-static int VLengthParam(Draw_Interpretor&, Standard_Integer theArgNum, const char** theArgVec)
+static int VLengthParam(Draw_Interpretor&, int theArgNum, const char** theArgVec)
 {
   if (theArgNum < 3)
   {
@@ -1632,15 +1628,15 @@ static int VLengthParam(Draw_Interpretor&, Standard_Integer theArgNum, const cha
     return 1;
   }
 
-  TCollection_AsciiString       aName(theArgVec[1]);
-  Handle(AIS_InteractiveObject) anObject;
+  TCollection_AsciiString            aName(theArgVec[1]);
+  occ::handle<AIS_InteractiveObject> anObject;
   if (!GetMapOfAIS().Find2(aName, anObject))
   {
     Message::SendFail() << "Syntax error: no object with name '" << aName << "'";
     return 1;
   }
 
-  Handle(PrsDim_LengthDimension) aLengthDim = Handle(PrsDim_LengthDimension)::DownCast(anObject);
+  occ::handle<PrsDim_LengthDimension> aLengthDim = occ::down_cast<PrsDim_LengthDimension>(anObject);
   if (aLengthDim.IsNull())
   {
     Message::SendFail() << "Syntax error: no length dimension with name '" << aName << "'";
@@ -1662,7 +1658,7 @@ static int VLengthParam(Draw_Interpretor&, Standard_Integer theArgNum, const cha
       return 1;
     }
     anArgumentIt++;
-    isCustomDirection              = Standard_True;
+    isCustomDirection              = true;
     TCollection_AsciiString aValue = theArgVec[anArgumentIt];
     aValue.LowerCase();
     if (aValue == "ox")
@@ -1681,11 +1677,11 @@ static int VLengthParam(Draw_Interpretor&, Standard_Integer theArgNum, const cha
         return 1;
       }
       // access coordinate arguments
-      TColStd_SequenceOfReal aCoords;
+      NCollection_Sequence<double> aCoords;
       for (; anArgumentIt < theArgNum; ++anArgumentIt)
       {
         TCollection_AsciiString anArg(theArgVec[anArgumentIt]);
-        if (!anArg.IsRealValue(Standard_True))
+        if (!anArg.IsRealValue(true))
         {
           break;
         }
@@ -1721,7 +1717,7 @@ static int VLengthParam(Draw_Interpretor&, Standard_Integer theArgNum, const cha
 // function : VAngleParam
 // purpose  : Sets aspect parameters to angle dimension.
 //=======================================================================
-static int VAngleParam(Draw_Interpretor& theDi, Standard_Integer theArgNum, const char** theArgVec)
+static int VAngleParam(Draw_Interpretor& theDi, int theArgNum, const char** theArgVec)
 {
   if (theArgNum < 3)
   {
@@ -1730,24 +1726,24 @@ static int VAngleParam(Draw_Interpretor& theDi, Standard_Integer theArgNum, cons
   }
 
   TCollection_AsciiString aName(theArgVec[1]);
-  Standard_Boolean        toUpdate = Standard_True;
+  bool                    toUpdate = true;
 
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
-  Handle(AIS_InteractiveObject)                                         anObject;
+  occ::handle<AIS_InteractiveObject>                                    anObject;
   if (!GetMapOfAIS().Find2(aName, anObject))
   {
     theDi << theArgVec[0] << "error: no object with this name.\n";
     return 1;
   }
 
-  Handle(PrsDim_Dimension) aDim = Handle(PrsDim_Dimension)::DownCast(anObject);
+  occ::handle<PrsDim_Dimension> aDim = occ::down_cast<PrsDim_Dimension>(anObject);
   if (aDim.IsNull())
   {
     theDi << theArgVec[0] << "error: no dimension with this name.\n";
     return 1;
   }
 
-  Handle(Prs3d_DimensionAspect) anAspect = aDim->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> anAspect = aDim->DimensionAspect();
   if (ParseAngleDimensionParams(theArgNum, theArgVec, 2, aStringParams))
   {
     return 1;
@@ -1775,7 +1771,7 @@ static int VAngleParam(Draw_Interpretor& theDi, Standard_Integer theArgNum, cons
 //           position and updates the object.
 // draw args: vmovedim [name] [x y z]
 //=======================================================================
-static int VMoveDim(Draw_Interpretor& theDi, Standard_Integer theArgNum, const char** theArgVec)
+static int VMoveDim(Draw_Interpretor& theDi, int theArgNum, const char** theArgVec)
 {
   if (theArgNum > 5)
   {
@@ -1784,12 +1780,12 @@ static int VMoveDim(Draw_Interpretor& theDi, Standard_Integer theArgNum, const c
   }
 
   // Parameters parsing
-  Standard_Boolean isNameSet  = (theArgNum == 2 || theArgNum == 5);
-  Standard_Boolean isPointSet = (theArgNum == 4 || theArgNum == 5);
+  bool isNameSet  = (theArgNum == 2 || theArgNum == 5);
+  bool isPointSet = (theArgNum == 4 || theArgNum == 5);
 
-  Handle(AIS_InteractiveObject) aPickedObj;
-  gp_Pnt                        aPoint(gp::Origin());
-  Standard_Integer              aMaxPickNum = 5;
+  occ::handle<AIS_InteractiveObject> aPickedObj;
+  gp_Pnt                             aPoint(gp::Origin());
+  int                                aMaxPickNum = 5;
 
   // Find object
   if (isNameSet)
@@ -1811,12 +1807,12 @@ static int VMoveDim(Draw_Interpretor& theDi, Standard_Integer theArgNum, const c
   else // Pick dimension or relation
   {
     // Loop that will be handle picking.
-    Standard_Integer anArgNum  = 5;
-    const char*      aBuffer[] = {"VPick", "X", "VPickY", "VPickZ", "VPickShape"};
-    const char**     anArgVec  = (const char**)aBuffer;
+    int          anArgNum  = 5;
+    const char*  aBuffer[] = {"VPick", "X", "VPickY", "VPickZ", "VPickShape"};
+    const char** anArgVec  = (const char**)aBuffer;
 
-    Standard_Boolean isPicked = Standard_False;
-    Standard_Integer aPickNum = 0;
+    bool isPicked = false;
+    int  aPickNum = 0;
     while (!isPicked && aPickNum < aMaxPickNum)
     {
       while (ViewerMainLoop(anArgNum, anArgVec))
@@ -1853,9 +1849,9 @@ static int VMoveDim(Draw_Interpretor& theDi, Standard_Integer theArgNum, const c
   }
   else // Pick the point
   {
-    Standard_Integer aPickArgNum = 5;
-    const char*      aPickBuff[] = {"VPick", "X", "VPickY", "VPickZ", "VPickShape"};
-    const char**     aPickArgVec = (const char**)aPickBuff;
+    int          aPickArgNum = 5;
+    const char*  aPickBuff[] = {"VPick", "X", "VPickY", "VPickZ", "VPickShape"};
+    const char** aPickArgVec = (const char**)aPickBuff;
 
     while (ViewerMainLoop(aPickArgNum, aPickArgVec))
     {
@@ -1864,37 +1860,39 @@ static int VMoveDim(Draw_Interpretor& theDi, Standard_Integer theArgNum, const c
     // Set text position, update relation or dimension.
     if (aPickedObj->Type() == AIS_KindOfInteractive_Relation)
     {
-      Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast(aPickedObj);
-      aPoint                            = Get3DPointAtMousePosition();
+      occ::handle<PrsDim_Relation> aRelation = occ::down_cast<PrsDim_Relation>(aPickedObj);
+      aPoint                                 = Get3DPointAtMousePosition();
       aRelation->SetPosition(aPoint);
-      TheAISContext()->Redisplay(aRelation, Standard_True);
+      TheAISContext()->Redisplay(aRelation, true);
     }
     else
     {
-      Handle(PrsDim_Dimension) aDim = Handle(PrsDim_Dimension)::DownCast(aPickedObj);
-      gp_Pnt                   aFirstPoint, aSecondPoint;
+      occ::handle<PrsDim_Dimension> aDim = occ::down_cast<PrsDim_Dimension>(aPickedObj);
+      gp_Pnt                        aFirstPoint, aSecondPoint;
       if (aDim->KindOfDimension() == PrsDim_KOD_PLANEANGLE)
       {
-        Handle(PrsDim_AngleDimension) anAngleDim = Handle(PrsDim_AngleDimension)::DownCast(aDim);
-        aFirstPoint                              = anAngleDim->FirstPoint();
-        aSecondPoint                             = anAngleDim->SecondPoint();
+        occ::handle<PrsDim_AngleDimension> anAngleDim = occ::down_cast<PrsDim_AngleDimension>(aDim);
+        aFirstPoint                                   = anAngleDim->FirstPoint();
+        aSecondPoint                                  = anAngleDim->SecondPoint();
       }
       else if (aDim->KindOfDimension() == PrsDim_KOD_LENGTH)
       {
-        Handle(PrsDim_LengthDimension) aLengthDim = Handle(PrsDim_LengthDimension)::DownCast(aDim);
-        aFirstPoint                               = aLengthDim->FirstPoint();
-        aSecondPoint                              = aLengthDim->SecondPoint();
+        occ::handle<PrsDim_LengthDimension> aLengthDim =
+          occ::down_cast<PrsDim_LengthDimension>(aDim);
+        aFirstPoint  = aLengthDim->FirstPoint();
+        aSecondPoint = aLengthDim->SecondPoint();
       }
       else if (aDim->KindOfDimension() == PrsDim_KOD_RADIUS)
       {
-        Handle(PrsDim_RadiusDimension) aRadiusDim = Handle(PrsDim_RadiusDimension)::DownCast(aDim);
-        aFirstPoint                               = aRadiusDim->AnchorPoint();
-        aSecondPoint                              = aRadiusDim->Circle().Location();
+        occ::handle<PrsDim_RadiusDimension> aRadiusDim =
+          occ::down_cast<PrsDim_RadiusDimension>(aDim);
+        aFirstPoint  = aRadiusDim->AnchorPoint();
+        aSecondPoint = aRadiusDim->Circle().Location();
       }
       else if (aDim->KindOfDimension() == PrsDim_KOD_DIAMETER)
       {
-        Handle(PrsDim_DiameterDimension) aDiameterDim =
-          Handle(PrsDim_DiameterDimension)::DownCast(aDim);
+        occ::handle<PrsDim_DiameterDimension> aDiameterDim =
+          occ::down_cast<PrsDim_DiameterDimension>(aDim);
         aFirstPoint  = aDiameterDim->AnchorPoint();
         aSecondPoint = aDiameterDim->Circle().Location();
       }
@@ -1905,21 +1903,21 @@ static int VMoveDim(Draw_Interpretor& theDi, Standard_Integer theArgNum, const c
       }
 
       aDim->SetTextPosition(aPoint);
-      TheAISContext()->Redisplay(aDim, Standard_True);
+      TheAISContext()->Redisplay(aDim, true);
     }
   }
 
   // Set text position, update relation or dimension.
-  if (Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast(aPickedObj))
+  if (occ::handle<PrsDim_Relation> aRelation = occ::down_cast<PrsDim_Relation>(aPickedObj))
   {
     aRelation->SetPosition(aPoint);
-    TheAISContext()->Redisplay(aRelation, Standard_True);
+    TheAISContext()->Redisplay(aRelation, true);
   }
   else
   {
-    Handle(PrsDim_Dimension) aDim = Handle(PrsDim_Dimension)::DownCast(aPickedObj);
+    occ::handle<PrsDim_Dimension> aDim = occ::down_cast<PrsDim_Dimension>(aPickedObj);
     aDim->SetTextPosition(aPoint);
-    TheAISContext()->Redisplay(aDim, Standard_True);
+    TheAISContext()->Redisplay(aDim, true);
   }
 
   return 0;

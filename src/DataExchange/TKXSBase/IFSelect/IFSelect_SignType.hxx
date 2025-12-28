@@ -23,9 +23,6 @@
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-class IFSelect_SignType;
-DEFINE_STANDARD_HANDLE(IFSelect_SignType, IFSelect_Signature)
-
 //! This Signature returns the cdl Type of an entity, under two
 //! forms :
 //! - complete dynamic type (package and class)
@@ -37,19 +34,18 @@ public:
   //! Returns a SignType
   //! <nopk> false (D) : complete dynamic type (name = Dynamic Type)
   //! <nopk> true : class type without pk (name = Class Type)
-  Standard_EXPORT IFSelect_SignType(const Standard_Boolean nopk = Standard_False);
+  Standard_EXPORT IFSelect_SignType(const bool nopk = false);
 
   //! Returns the Signature for a Transient object, as its Dynamic
   //! Type, with or without package name, according starting option
-  Standard_EXPORT Standard_CString
-    Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignType, IFSelect_Signature)
 
-protected:
 private:
-  Standard_Boolean thenopk;
+  bool thenopk;
 };
 
 #endif // _IFSelect_SignType_HeaderFile

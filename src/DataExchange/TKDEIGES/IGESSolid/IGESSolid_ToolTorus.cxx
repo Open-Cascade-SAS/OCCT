@@ -36,14 +36,14 @@
 
 IGESSolid_ToolTorus::IGESSolid_ToolTorus() {}
 
-void IGESSolid_ToolTorus::ReadOwnParams(const Handle(IGESSolid_Torus)& ent,
-                                        const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESSolid_ToolTorus::ReadOwnParams(const occ::handle<IGESSolid_Torus>& ent,
+                                        const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                         IGESData_ParamReader& PR) const
 {
-  Standard_Real r1, r2;
-  Standard_Real tempreal;
-  gp_XYZ        tempPoint, tempAxis;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  double r1, r2;
+  double tempreal;
+  gp_XYZ tempPoint, tempAxis;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadReal(PR.Current(), "Radius of revolution", r1); // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadReal(PR.Current(), "Radius of disc", r2);       // szv#4:S4163:12Mar99 `st=` not needed
@@ -110,13 +110,13 @@ void IGESSolid_ToolTorus::ReadOwnParams(const Handle(IGESSolid_Torus)& ent,
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(r1, r2, tempPoint, tempAxis);
-  Standard_Real eps = 1.E-05;
+  double eps = 1.E-05;
   if (!tempAxis.IsEqual(ent->Axis().XYZ(), eps))
     PR.AddWarning("Axis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolTorus::WriteOwnParams(const Handle(IGESSolid_Torus)& ent,
-                                         IGESData_IGESWriter&           IW) const
+void IGESSolid_ToolTorus::WriteOwnParams(const occ::handle<IGESSolid_Torus>& ent,
+                                         IGESData_IGESWriter&                IW) const
 {
   IW.Send(ent->MajorRadius());
   IW.Send(ent->DiscRadius());
@@ -128,13 +128,13 @@ void IGESSolid_ToolTorus::WriteOwnParams(const Handle(IGESSolid_Torus)& ent,
   IW.Send(ent->Axis().Z());
 }
 
-void IGESSolid_ToolTorus::OwnShared(const Handle(IGESSolid_Torus)& /* ent */,
+void IGESSolid_ToolTorus::OwnShared(const occ::handle<IGESSolid_Torus>& /* ent */,
                                     Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESSolid_ToolTorus::OwnCopy(const Handle(IGESSolid_Torus)& another,
-                                  const Handle(IGESSolid_Torus)& ent,
+void IGESSolid_ToolTorus::OwnCopy(const occ::handle<IGESSolid_Torus>& another,
+                                  const occ::handle<IGESSolid_Torus>& ent,
                                   Interface_CopyTool& /* TC */) const
 {
   ent->Init(another->MajorRadius(),
@@ -143,7 +143,8 @@ void IGESSolid_ToolTorus::OwnCopy(const Handle(IGESSolid_Torus)& another,
             another->Axis().XYZ());
 }
 
-IGESData_DirChecker IGESSolid_ToolTorus::DirChecker(const Handle(IGESSolid_Torus)& /* ent */) const
+IGESData_DirChecker IGESSolid_ToolTorus::DirChecker(
+  const occ::handle<IGESSolid_Torus>& /* ent */) const
 {
   IGESData_DirChecker DC(160, 0);
 
@@ -156,9 +157,9 @@ IGESData_DirChecker IGESSolid_ToolTorus::DirChecker(const Handle(IGESSolid_Torus
   return DC;
 }
 
-void IGESSolid_ToolTorus::OwnCheck(const Handle(IGESSolid_Torus)& ent,
+void IGESSolid_ToolTorus::OwnCheck(const occ::handle<IGESSolid_Torus>& ent,
                                    const Interface_ShareTool&,
-                                   Handle(Interface_Check)& ach) const
+                                   occ::handle<Interface_Check>& ach) const
 {
   if (ent->MajorRadius() <= 0.0)
     ach->AddFail("Radius of revolution : Not Positive");
@@ -168,10 +169,10 @@ void IGESSolid_ToolTorus::OwnCheck(const Handle(IGESSolid_Torus)& ent,
     ach->AddFail("Radius of disc : is not Less than Radius of revolution");
 }
 
-void IGESSolid_ToolTorus::OwnDump(const Handle(IGESSolid_Torus)& ent,
+void IGESSolid_ToolTorus::OwnDump(const occ::handle<IGESSolid_Torus>& ent,
                                   const IGESData_IGESDumper& /* dumper */,
-                                  Standard_OStream&      S,
-                                  const Standard_Integer level) const
+                                  Standard_OStream& S,
+                                  const int         level) const
 {
   S << "IGESSolid_Torus\n"
     << "Radius of revolution : " << ent->MajorRadius() << "  "

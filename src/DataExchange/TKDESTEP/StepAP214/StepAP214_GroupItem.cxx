@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_GroupItem.hxx>
 #include <StepBasic_GroupRelationship.hxx>
@@ -31,7 +31,7 @@
 
 StepAP214_GroupItem::StepAP214_GroupItem() {}
 
-Standard_Integer StepAP214_GroupItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP214_GroupItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -66,77 +66,78 @@ Standard_Integer StepAP214_GroupItem::CaseNum(const Handle(Standard_Transient)& 
   return 0;
 }
 
-Handle(StepGeom_GeometricRepresentationItem) StepAP214_GroupItem::GeometricRepresentationItem()
+occ::handle<StepGeom_GeometricRepresentationItem> StepAP214_GroupItem::GeometricRepresentationItem()
   const
 {
   return GetCasted(StepGeom_GeometricRepresentationItem, Value());
 }
 
-Handle(StepBasic_GroupRelationship) StepAP214_GroupItem::GroupRelationship() const
+occ::handle<StepBasic_GroupRelationship> StepAP214_GroupItem::GroupRelationship() const
 {
   return GetCasted(StepBasic_GroupRelationship, Value());
 }
 
-Handle(StepRepr_MappedItem) StepAP214_GroupItem::MappedItem() const
+occ::handle<StepRepr_MappedItem> StepAP214_GroupItem::MappedItem() const
 {
   return GetCasted(StepRepr_MappedItem, Value());
 }
 
-Handle(StepBasic_ProductDefinition) StepAP214_GroupItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP214_GroupItem::ProductDefinition() const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
 
-Handle(StepBasic_ProductDefinitionFormation) StepAP214_GroupItem::ProductDefinitionFormation() const
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP214_GroupItem::ProductDefinitionFormation()
+  const
 {
   return GetCasted(StepBasic_ProductDefinitionFormation, Value());
 }
 
-Handle(StepRepr_PropertyDefinitionRepresentation) StepAP214_GroupItem::
+occ::handle<StepRepr_PropertyDefinitionRepresentation> StepAP214_GroupItem::
   PropertyDefinitionRepresentation() const
 {
   return GetCasted(StepRepr_PropertyDefinitionRepresentation, Value());
 }
 
-Handle(StepRepr_Representation) StepAP214_GroupItem::Representation() const
+occ::handle<StepRepr_Representation> StepAP214_GroupItem::Representation() const
 {
   return GetCasted(StepRepr_Representation, Value());
 }
 
-Handle(StepRepr_RepresentationItem) StepAP214_GroupItem::RepresentationItem() const
+occ::handle<StepRepr_RepresentationItem> StepAP214_GroupItem::RepresentationItem() const
 {
   return GetCasted(StepRepr_RepresentationItem, Value());
 }
 
-Handle(StepRepr_RepresentationRelationshipWithTransformation) StepAP214_GroupItem::
+occ::handle<StepRepr_RepresentationRelationshipWithTransformation> StepAP214_GroupItem::
   RepresentationRelationshipWithTransformation() const
 {
   return GetCasted(StepRepr_RepresentationRelationshipWithTransformation, Value());
 }
 
-Handle(StepRepr_ShapeAspect) StepAP214_GroupItem::ShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepAP214_GroupItem::ShapeAspect() const
 {
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-Handle(StepRepr_ShapeAspectRelationship) StepAP214_GroupItem::ShapeAspectRelationship() const
+occ::handle<StepRepr_ShapeAspectRelationship> StepAP214_GroupItem::ShapeAspectRelationship() const
 {
   return GetCasted(StepRepr_ShapeAspectRelationship, Value());
 }
 
-Handle(StepRepr_ShapeRepresentationRelationship) StepAP214_GroupItem::
+occ::handle<StepRepr_ShapeRepresentationRelationship> StepAP214_GroupItem::
   ShapeRepresentationRelationship() const
 {
   return GetCasted(StepRepr_ShapeRepresentationRelationship, Value());
 }
 
-Handle(StepVisual_StyledItem) StepAP214_GroupItem::StyledItem() const
+occ::handle<StepVisual_StyledItem> StepAP214_GroupItem::StyledItem() const
 {
   return GetCasted(StepVisual_StyledItem, Value());
 }
 
-Handle(StepShape_TopologicalRepresentationItem) StepAP214_GroupItem::TopologicalRepresentationItem()
-  const
+occ::handle<StepShape_TopologicalRepresentationItem> StepAP214_GroupItem::
+  TopologicalRepresentationItem() const
 {
   return GetCasted(StepShape_TopologicalRepresentationItem, Value());
 }

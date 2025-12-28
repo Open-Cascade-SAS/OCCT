@@ -19,9 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
 
 class gp_Pnt2d;
 
@@ -63,13 +63,13 @@ public:
   //! @param[in] theVMin   Minimum V bound of the polygon domain
   //! @param[in] theUMax   Maximum U bound of the polygon domain
   //! @param[in] theVMax   Maximum V bound of the polygon domain
-  Standard_EXPORT CSLib_Class2d(const TColgp_Array1OfPnt2d& thePnts2d,
-                                double                      theTolU,
-                                double                      theTolV,
-                                double                      theUMin,
-                                double                      theVMin,
-                                double                      theUMax,
-                                double                      theVMax);
+  Standard_EXPORT CSLib_Class2d(const NCollection_Array1<gp_Pnt2d>& thePnts2d,
+                                double                              theTolU,
+                                double                              theTolV,
+                                double                              theUMin,
+                                double                              theVMin,
+                                double                              theUMax,
+                                double                              theVMax);
 
   //! Constructs a 2D classifier from a sequence of polygon vertices.
   //!
@@ -82,13 +82,13 @@ public:
   //! @param[in] theVMin   Minimum V bound of the polygon domain
   //! @param[in] theUMax   Maximum U bound of the polygon domain
   //! @param[in] theVMax   Maximum V bound of the polygon domain
-  Standard_EXPORT CSLib_Class2d(const TColgp_SequenceOfPnt2d& thePnts2d,
-                                double                        theTolU,
-                                double                        theTolV,
-                                double                        theUMin,
-                                double                        theVMin,
-                                double                        theUMax,
-                                double                        theVMax);
+  Standard_EXPORT CSLib_Class2d(const NCollection_Sequence<gp_Pnt2d>& thePnts2d,
+                                double                                theTolU,
+                                double                                theTolV,
+                                double                                theUMin,
+                                double                                theVMin,
+                                double                                theUMax,
+                                double                                theVMax);
 
   //! Move constructor.
   CSLib_Class2d(CSLib_Class2d&& theOther) noexcept
@@ -176,15 +176,15 @@ private:
   CSLib_Class2d& operator=(const CSLib_Class2d&) = delete;
 
 private:
-  TColStd_Array1OfReal myPnts2dX;           //!< X coordinates (normalized)
-  TColStd_Array1OfReal myPnts2dY;           //!< Y coordinates (normalized)
-  double               myTolU        = 0.0; //!< Tolerance in U direction (normalized)
-  double               myTolV        = 0.0; //!< Tolerance in V direction (normalized)
-  int                  myPointsCount = 0;   //!< Number of polygon vertices
-  double               myUMin        = 0.0; //!< Original minimum U bound
-  double               myVMin        = 0.0; //!< Original minimum V bound
-  double               myUMax        = 0.0; //!< Original maximum U bound
-  double               myVMax        = 0.0; //!< Original maximum V bound
+  NCollection_Array1<double> myPnts2dX;           //!< X coordinates (normalized)
+  NCollection_Array1<double> myPnts2dY;           //!< Y coordinates (normalized)
+  double                     myTolU        = 0.0; //!< Tolerance in U direction (normalized)
+  double                     myTolV        = 0.0; //!< Tolerance in V direction (normalized)
+  int                        myPointsCount = 0;   //!< Number of polygon vertices
+  double                     myUMin        = 0.0; //!< Original minimum U bound
+  double                     myVMin        = 0.0; //!< Original minimum V bound
+  double                     myUMax        = 0.0; //!< Original maximum U bound
+  double                     myVMax        = 0.0; //!< Original maximum V bound
 };
 
 #endif // _CSLib_Class2d_HeaderFile

@@ -23,8 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepKinematics_KinematicPair.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_LowOrderKinematicPairValue, StepKinematics_PairValue)
-
 //! Representation of STEP entity LowOrderKinematicPairValue
 class StepKinematics_LowOrderKinematicPairValue : public StepKinematics_PairValue
 {
@@ -33,53 +31,54 @@ public:
   Standard_EXPORT StepKinematics_LowOrderKinematicPairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                            const Standard_Real                         theActualTranslationX,
-                            const Standard_Real                         theActualTranslationY,
-                            const Standard_Real                         theActualTranslationZ,
-                            const Standard_Real                         theActualRotationX,
-                            const Standard_Real                         theActualRotationY,
-                            const Standard_Real                         theActualRotationZ);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+    const double                                     theActualTranslationX,
+    const double                                     theActualTranslationY,
+    const double                                     theActualTranslationZ,
+    const double                                     theActualRotationX,
+    const double                                     theActualRotationY,
+    const double                                     theActualRotationZ);
 
   //! Returns field ActualTranslationX
-  Standard_EXPORT Standard_Real ActualTranslationX() const;
+  Standard_EXPORT double ActualTranslationX() const;
   //! Sets field ActualTranslationX
-  Standard_EXPORT void SetActualTranslationX(const Standard_Real theActualTranslationX);
+  Standard_EXPORT void SetActualTranslationX(const double theActualTranslationX);
 
   //! Returns field ActualTranslationY
-  Standard_EXPORT Standard_Real ActualTranslationY() const;
+  Standard_EXPORT double ActualTranslationY() const;
   //! Sets field ActualTranslationY
-  Standard_EXPORT void SetActualTranslationY(const Standard_Real theActualTranslationY);
+  Standard_EXPORT void SetActualTranslationY(const double theActualTranslationY);
 
   //! Returns field ActualTranslationZ
-  Standard_EXPORT Standard_Real ActualTranslationZ() const;
+  Standard_EXPORT double ActualTranslationZ() const;
   //! Sets field ActualTranslationZ
-  Standard_EXPORT void SetActualTranslationZ(const Standard_Real theActualTranslationZ);
+  Standard_EXPORT void SetActualTranslationZ(const double theActualTranslationZ);
 
   //! Returns field ActualRotationX
-  Standard_EXPORT Standard_Real ActualRotationX() const;
+  Standard_EXPORT double ActualRotationX() const;
   //! Sets field ActualRotationX
-  Standard_EXPORT void SetActualRotationX(const Standard_Real theActualRotationX);
+  Standard_EXPORT void SetActualRotationX(const double theActualRotationX);
 
   //! Returns field ActualRotationY
-  Standard_EXPORT Standard_Real ActualRotationY() const;
+  Standard_EXPORT double ActualRotationY() const;
   //! Sets field ActualRotationY
-  Standard_EXPORT void SetActualRotationY(const Standard_Real theActualRotationY);
+  Standard_EXPORT void SetActualRotationY(const double theActualRotationY);
 
   //! Returns field ActualRotationZ
-  Standard_EXPORT Standard_Real ActualRotationZ() const;
+  Standard_EXPORT double ActualRotationZ() const;
   //! Sets field ActualRotationZ
-  Standard_EXPORT void SetActualRotationZ(const Standard_Real theActualRotationZ);
+  Standard_EXPORT void SetActualRotationZ(const double theActualRotationZ);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_LowOrderKinematicPairValue, StepKinematics_PairValue)
 
 private:
-  Standard_Real myActualTranslationX;
-  Standard_Real myActualTranslationY;
-  Standard_Real myActualTranslationZ;
-  Standard_Real myActualRotationX;
-  Standard_Real myActualRotationY;
-  Standard_Real myActualRotationZ;
+  double myActualTranslationX;
+  double myActualTranslationY;
+  double myActualTranslationZ;
+  double myActualRotationX;
+  double myActualRotationY;
+  double myActualRotationZ;
 };
 #endif // _StepKinematics_LowOrderKinematicPairValue_HeaderFile_

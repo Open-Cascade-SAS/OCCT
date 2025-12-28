@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_MapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Map.hxx>
 class Interface_Graph;
 class Standard_Transient;
 class StepShape_ConnectedFaceSet;
@@ -35,50 +36,50 @@ public:
 
   Standard_EXPORT STEPSelections_Counter();
 
-  Standard_EXPORT void Count(const Interface_Graph& graph, const Handle(Standard_Transient)& start);
+  Standard_EXPORT void Count(const Interface_Graph&                 graph,
+                             const occ::handle<Standard_Transient>& start);
 
   Standard_EXPORT void Clear();
 
-  Standard_Integer NbInstancesOfFaces() const;
+  int NbInstancesOfFaces() const;
 
-  Standard_Integer POP() const;
+  int POP() const;
 
-  Standard_Integer POP2() const;
+  int POP2() const;
 
-  Standard_Integer NbInstancesOfShells() const;
+  int NbInstancesOfShells() const;
 
-  Standard_Integer NbInstancesOfSolids() const;
+  int NbInstancesOfSolids() const;
 
-  Standard_Integer NbInstancesOfEdges() const;
+  int NbInstancesOfEdges() const;
 
-  Standard_Integer NbInstancesOfWires() const;
+  int NbInstancesOfWires() const;
 
-  Standard_Integer NbSourceFaces() const;
+  int NbSourceFaces() const;
 
-  Standard_Integer NbSourceShells() const;
+  int NbSourceShells() const;
 
-  Standard_Integer NbSourceSolids() const;
+  int NbSourceSolids() const;
 
-  Standard_Integer NbSourceEdges() const;
+  int NbSourceEdges() const;
 
-  Standard_Integer NbSourceWires() const;
+  int NbSourceWires() const;
 
-protected:
 private:
-  Standard_EXPORT void AddShell(const Handle(StepShape_ConnectedFaceSet)& cfs);
+  Standard_EXPORT void AddShell(const occ::handle<StepShape_ConnectedFaceSet>& cfs);
 
-  Standard_EXPORT void AddCompositeCurve(const Handle(StepGeom_CompositeCurve)& ccurve);
+  Standard_EXPORT void AddCompositeCurve(const occ::handle<StepGeom_CompositeCurve>& ccurve);
 
-  Standard_Integer       myNbFaces;
-  Standard_Integer       myNbShells;
-  Standard_Integer       myNbSolids;
-  Standard_Integer       myNbEdges;
-  Standard_Integer       myNbWires;
-  TColStd_MapOfTransient myMapOfFaces;
-  TColStd_MapOfTransient myMapOfShells;
-  TColStd_MapOfTransient myMapOfSolids;
-  TColStd_MapOfTransient myMapOfEdges;
-  TColStd_MapOfTransient myMapOfWires;
+  int                                              myNbFaces;
+  int                                              myNbShells;
+  int                                              myNbSolids;
+  int                                              myNbEdges;
+  int                                              myNbWires;
+  NCollection_Map<occ::handle<Standard_Transient>> myMapOfFaces;
+  NCollection_Map<occ::handle<Standard_Transient>> myMapOfShells;
+  NCollection_Map<occ::handle<Standard_Transient>> myMapOfSolids;
+  NCollection_Map<occ::handle<Standard_Transient>> myMapOfEdges;
+  NCollection_Map<occ::handle<Standard_Transient>> myMapOfWires;
 };
 
 #include <STEPSelections_Counter.lxx>

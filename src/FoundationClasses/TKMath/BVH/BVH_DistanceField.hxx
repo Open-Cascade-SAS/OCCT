@@ -36,46 +36,44 @@ public:
 
 public:
   //! Creates empty 3D distance field.
-  BVH_DistanceField(const Standard_Integer theMaximumSize, const Standard_Boolean theComputeSign);
+  BVH_DistanceField(const int theMaximumSize, const bool theComputeSign);
 
   //! Releases resources of 3D distance field.
   virtual ~BVH_DistanceField();
 
   //! Builds 3D distance field from BVH geometry.
-  Standard_Boolean Build(BVH_Geometry<T, N>& theGeometry);
+  bool Build(BVH_Geometry<T, N>& theGeometry);
 
   //! Returns parallel flag.
-  inline Standard_Boolean IsParallel() const { return myIsParallel; }
+  inline bool IsParallel() const { return myIsParallel; }
 
   //! Set parallel flag controlling possibility of parallel execution.
-  inline void SetParallel(const Standard_Boolean isParallel) { myIsParallel = isParallel; }
+  inline void SetParallel(const bool isParallel) { myIsParallel = isParallel; }
 
 public:
   //! Returns packed voxel data.
   const T* PackedData() const { return myVoxelData; }
 
   //! Returns distance value for the given voxel.
-  T& Voxel(const Standard_Integer theX, const Standard_Integer theY, const Standard_Integer theZ)
+  T& Voxel(const int theX, const int theY, const int theZ)
   {
     return myVoxelData[theX + (theY + theZ * myDimensionY) * myDimensionX];
   }
 
   //! Returns distance value for the given voxel.
-  T Voxel(const Standard_Integer theX,
-          const Standard_Integer theY,
-          const Standard_Integer theZ) const
+  T Voxel(const int theX, const int theY, const int theZ) const
   {
     return myVoxelData[theX + (theY + theZ * myDimensionY) * myDimensionX];
   }
 
   //! Returns size of voxel grid in X dimension.
-  Standard_Integer DimensionX() const { return myDimensionX; }
+  int DimensionX() const { return myDimensionX; }
 
   //! Returns size of voxel grid in Y dimension.
-  Standard_Integer DimensionY() const { return myDimensionY; }
+  int DimensionY() const { return myDimensionY; }
 
   //! Returns size of voxel grid in Z dimension.
-  Standard_Integer DimensionZ() const { return myDimensionZ; }
+  int DimensionZ() const { return myDimensionZ; }
 
   //! Returns size of single voxel.
   const BVH_VecNt& VoxelSize() const { return myVoxelSize; }
@@ -88,9 +86,7 @@ public:
 
 protected:
   //! Performs building of distance field for the given Z slices.
-  void BuildSlices(BVH_Geometry<T, N>&    theGeometry,
-                   const Standard_Integer theStartZ,
-                   const Standard_Integer theFinalZ);
+  void BuildSlices(BVH_Geometry<T, N>& theGeometry, const int theStartZ, const int theFinalZ);
 
 protected:
   //! Array of voxels.
@@ -106,21 +102,21 @@ protected:
   BVH_VecNt myCornerMax;
 
   //! Size of voxel grid in X dimension.
-  Standard_Integer myDimensionX;
+  int myDimensionX;
 
   //! Size of voxel grid in Y dimension.
-  Standard_Integer myDimensionY;
+  int myDimensionY;
 
   //! Size of voxel grid in Z dimension.
-  Standard_Integer myDimensionZ;
+  int myDimensionZ;
 
   //! Size of voxel grid in maximum dimension.
-  Standard_Integer myMaximumSize;
+  int myMaximumSize;
 
   //! Enables/disables signing of distance field.
-  Standard_Boolean myComputeSign;
+  bool myComputeSign;
 
-  Standard_Boolean myIsParallel;
+  bool myIsParallel;
 };
 
 #include <BVH_DistanceField.lxx>

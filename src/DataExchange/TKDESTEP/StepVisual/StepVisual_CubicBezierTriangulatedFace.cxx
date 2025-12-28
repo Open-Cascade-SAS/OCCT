@@ -25,13 +25,13 @@ StepVisual_CubicBezierTriangulatedFace::StepVisual_CubicBezierTriangulatedFace()
 //=================================================================================================
 
 void StepVisual_CubicBezierTriangulatedFace::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
-  const Standard_Integer                    theTessellatedFace_Pnmax,
-  const Handle(TColStd_HArray2OfReal)&      theTessellatedFace_Normals,
-  const Standard_Boolean                    theHasTessellatedFace_GeometricLink,
-  const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
-  const Handle(TColStd_HArray2OfInteger)&   theCtriangles)
+  const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>&  theTessellatedFace_Coordinates,
+  const int                                       theTessellatedFace_Pnmax,
+  const occ::handle<NCollection_HArray2<double>>& theTessellatedFace_Normals,
+  const bool                                      theHasTessellatedFace_GeometricLink,
+  const StepVisual_FaceOrSurface&                 theTessellatedFace_GeometricLink,
+  const occ::handle<NCollection_HArray2<int>>&    theCtriangles)
 {
   StepVisual_TessellatedFace::Init(theRepresentationItem_Name,
                                    theTessellatedFace_Coordinates,
@@ -45,7 +45,7 @@ void StepVisual_CubicBezierTriangulatedFace::Init(
 
 //=================================================================================================
 
-Handle(TColStd_HArray2OfInteger) StepVisual_CubicBezierTriangulatedFace::Ctriangles() const
+occ::handle<NCollection_HArray2<int>> StepVisual_CubicBezierTriangulatedFace::Ctriangles() const
 {
   return myCtriangles;
 }
@@ -53,12 +53,12 @@ Handle(TColStd_HArray2OfInteger) StepVisual_CubicBezierTriangulatedFace::Ctriang
 //=================================================================================================
 
 void StepVisual_CubicBezierTriangulatedFace::SetCtriangles(
-  const Handle(TColStd_HArray2OfInteger)& theCtriangles)
+  const occ::handle<NCollection_HArray2<int>>& theCtriangles)
 {
   myCtriangles = theCtriangles;
 }
 
-Standard_Integer StepVisual_CubicBezierTriangulatedFace::NbCtriangles() const
+int StepVisual_CubicBezierTriangulatedFace::NbCtriangles() const
 {
   if (myCtriangles.IsNull())
   {

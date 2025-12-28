@@ -19,19 +19,18 @@
 
 #include <Bnd_Box.hxx>
 #include <HLRAlgo_BiPoint.hxx>
-#include <HLRAlgo_HArray1OfPHDat.hxx>
-#include <HLRAlgo_HArray1OfTData.hxx>
+#include <HLRAlgo_PolyHidingData.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <HLRAlgo_TriangleData.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <gp_XYZ.hxx>
 
 class HLRAlgo_EdgeStatus;
-
-class HLRAlgo_PolyData;
-DEFINE_STANDARD_HANDLE(HLRAlgo_PolyData, Standard_Transient)
 
 //! Data structure of a set of Triangles.
 class HLRAlgo_PolyData : public Standard_Transient
@@ -48,42 +47,43 @@ public:
     {
     }
 
-    Standard_Integer Index, Min, Max;
+    int Index, Min, Max;
   };
 
   struct Triangle
   {
-    gp_XY         V1, V2, V3;
-    Standard_Real Param, TolParam, TolAng, Tolerance;
+    gp_XY  V1, V2, V3;
+    double Param, TolParam, TolAng, Tolerance;
   };
 
   Standard_EXPORT HLRAlgo_PolyData();
 
-  Standard_EXPORT void HNodes(const Handle(TColgp_HArray1OfXYZ)& HNodes);
+  Standard_EXPORT void HNodes(const occ::handle<NCollection_HArray1<gp_XYZ>>& HNodes);
 
-  Standard_EXPORT void HTData(const Handle(HLRAlgo_HArray1OfTData)& HTData);
+  Standard_EXPORT void HTData(const occ::handle<NCollection_HArray1<HLRAlgo_TriangleData>>& HTData);
 
-  Standard_EXPORT void HPHDat(const Handle(HLRAlgo_HArray1OfPHDat)& HPHDat);
+  Standard_EXPORT void HPHDat(
+    const occ::handle<NCollection_HArray1<HLRAlgo_PolyHidingData>>& HPHDat);
 
-  void FaceIndex(const Standard_Integer I);
+  void FaceIndex(const int I);
 
-  Standard_Integer FaceIndex() const;
+  int FaceIndex() const;
 
-  TColgp_Array1OfXYZ& Nodes() const;
+  NCollection_Array1<gp_XYZ>& Nodes() const;
 
-  HLRAlgo_Array1OfTData& TData() const;
+  NCollection_Array1<HLRAlgo_TriangleData>& TData() const;
 
-  HLRAlgo_Array1OfPHDat& PHDat() const;
+  NCollection_Array1<HLRAlgo_PolyHidingData>& PHDat() const;
 
   Standard_EXPORT void UpdateGlobalMinMax(Bnd_Box& theBox);
 
-  Standard_Boolean Hiding() const;
+  bool Hiding() const;
 
   //! process hiding between <Pt1> and <Pt2>.
   Standard_EXPORT void HideByPolyData(const HLRAlgo_BiPoint::PointsT& thePoints,
                                       Triangle&                       theTriangle,
                                       HLRAlgo_BiPoint::IndicesT&      theIndices,
-                                      const Standard_Boolean          HidingShell,
+                                      const bool                      HidingShell,
                                       HLRAlgo_EdgeStatus&             status);
 
   FaceIndices& Indices() { return myFaceIndices; }
@@ -94,15 +94,15 @@ private:
   //! evident.
   void hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoints,
                          Triangle&                       theTriangle,
-                         const Standard_Boolean          Crossing,
-                         const Standard_Boolean          HideBefore,
-                         const Standard_Integer          TrFlags,
+                         const bool                      Crossing,
+                         const bool                      HideBefore,
+                         const int                       TrFlags,
                          HLRAlgo_EdgeStatus&             status);
 
-  FaceIndices                    myFaceIndices;
-  Handle(TColgp_HArray1OfXYZ)    myHNodes;
-  Handle(HLRAlgo_HArray1OfTData) myHTData;
-  Handle(HLRAlgo_HArray1OfPHDat) myHPHDat;
+  FaceIndices                                              myFaceIndices;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                 myHNodes;
+  occ::handle<NCollection_HArray1<HLRAlgo_TriangleData>>   myHTData;
+  occ::handle<NCollection_HArray1<HLRAlgo_PolyHidingData>> myHPHDat;
 };
 
 #include <HLRAlgo_PolyData.lxx>

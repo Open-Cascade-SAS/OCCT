@@ -15,7 +15,15 @@
 #ifndef _RWGltf_MaterialMetallicRoughness_HeaderFile
 #define _RWGltf_MaterialMetallicRoughness_HeaderFile
 
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+
+#include <Standard_TypeDef.hxx>
+
+#include <NCollection_Vec3.hxx>
+
+#include <NCollection_Vec4.hxx>
+
+#include <NCollection_Mat4.hxx>
 #include <Quantity_ColorRGBA.hxx>
 #include <RWGltf_GltfAlphaMode.hxx>
 #include <Standard_Transient.hxx>
@@ -27,22 +35,22 @@ class Image_Texture;
 class RWGltf_MaterialMetallicRoughness : public Standard_Transient
 {
 public:
-  Handle(Image_Texture) BaseColorTexture; //!< RGB texture for the base color
-                                          // clang-format off
-  Handle(Image_Texture)   MetallicRoughnessTexture; //!< RG texture packing the metallic and roughness properties together
-  Handle(Image_Texture)   EmissiveTexture;          //!< RGB emissive map controls the color and intensity of the light being emitted by the material
-  Handle(Image_Texture)   OcclusionTexture;         //!< R occlusion map indicating areas of indirect lighting
-  Handle(Image_Texture)   NormalTexture;            //!< normal map
+  occ::handle<Image_Texture> BaseColorTexture; //!< RGB texture for the base color
+                                               // clang-format off
+  occ::handle<Image_Texture>   MetallicRoughnessTexture; //!< RG texture packing the metallic and roughness properties together
+  occ::handle<Image_Texture>   EmissiveTexture;          //!< RGB emissive map controls the color and intensity of the light being emitted by the material
+  occ::handle<Image_Texture>   OcclusionTexture;         //!< R occlusion map indicating areas of indirect lighting
+  occ::handle<Image_Texture>   NormalTexture;            //!< normal map
   TCollection_AsciiString Id;                       //!< material identifier
   TCollection_AsciiString Name;                     //!< material name
   Quantity_ColorRGBA      BaseColor;                //!< base color (or scale factor to the texture); [1.0, 1.0, 1.0, 1.0] by default
-  Graphic3d_Vec3          EmissiveFactor;           //!< emissive color; [0.0, 0.0, 0.0] by default
-  Standard_ShortReal      Metallic;                 //!< metalness (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
-  Standard_ShortReal      Roughness;                //!< roughness (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
-  Standard_ShortReal      AlphaCutOff;              //!< alpha cutoff value; 0.5 by default
+  NCollection_Vec3<float>          EmissiveFactor;           //!< emissive color; [0.0, 0.0, 0.0] by default
+  float      Metallic;                 //!< metalness (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
+  float      Roughness;                //!< roughness (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
+  float      AlphaCutOff;              //!< alpha cutoff value; 0.5 by default
   RWGltf_GltfAlphaMode    AlphaMode;                //!< alpha mode; RWGltf_GltfAlphaMode_Opaque by default
-  Standard_Boolean        IsDoubleSided;            //!< specifies whether the material is double sided; FALSE by default
-                                          // clang-format on
+  bool        IsDoubleSided;            //!< specifies whether the material is double sided; FALSE by default
+                                               // clang-format on
 
   RWGltf_MaterialMetallicRoughness()
       : BaseColor(1.0f, 1.0f, 1.0f, 1.0f),
@@ -51,7 +59,7 @@ public:
         Roughness(1.0f),
         AlphaCutOff(0.5f),
         AlphaMode(RWGltf_GltfAlphaMode_Opaque),
-        IsDoubleSided(Standard_False)
+        IsDoubleSided(false)
   {
   }
 };

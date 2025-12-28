@@ -20,14 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepShape_HArray1OfOrientedEdge.hxx>
+#include <StepShape_OrientedEdge.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepShape_OrientedEdge;
-
-class StepShape_Path;
-DEFINE_STANDARD_HANDLE(StepShape_Path, StepShape_TopologicalRepresentationItem)
 
 class StepShape_Path : public StepShape_TopologicalRepresentationItem
 {
@@ -36,24 +35,24 @@ public:
   //! Returns a Path
   Standard_EXPORT StepShape_Path();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        aName,
-                            const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                                 aName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList);
 
   Standard_EXPORT virtual void SetEdgeList(
-    const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList);
 
-  Standard_EXPORT virtual Handle(StepShape_HArray1OfOrientedEdge) EdgeList() const;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>
+    EdgeList() const;
 
-  Standard_EXPORT virtual Handle(StepShape_OrientedEdge) EdgeListValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT virtual occ::handle<StepShape_OrientedEdge> EdgeListValue(const int num) const;
 
-  Standard_EXPORT virtual Standard_Integer NbEdgeList() const;
+  Standard_EXPORT virtual int NbEdgeList() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_Path, StepShape_TopologicalRepresentationItem)
 
-protected:
 private:
-  Handle(StepShape_HArray1OfOrientedEdge) edgeList;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> edgeList;
 };
 
 #endif // _StepShape_Path_HeaderFile

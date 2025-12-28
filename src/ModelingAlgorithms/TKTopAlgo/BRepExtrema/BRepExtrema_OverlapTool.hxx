@@ -18,7 +18,8 @@
 
 #include <BRepExtrema_TriangleSet.hxx>
 #include <BRepExtrema_ElementFilter.hxx>
-#include <BRepExtrema_MapOfIntegerPackedMapOfInteger.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <BVH_Traverse.hxx>
 
 //! Enables storing of individual overlapped triangles (useful for debug).
@@ -35,38 +36,38 @@
 //! In second case, tessellation of single shape will be tested for self-
 //! intersections. Please note that algorithm results are approximate and
 //! depend greatly on the quality of input tessellation(s).
-class BRepExtrema_OverlapTool : public BVH_PairTraverse<Standard_Real, 3>
+class BRepExtrema_OverlapTool : public BVH_PairTraverse<double, 3>
 {
 public:
   //! Creates new uninitialized overlap tool.
   BRepExtrema_OverlapTool();
 
   //! Creates new overlap tool for the given element sets.
-  BRepExtrema_OverlapTool(const Handle(BRepExtrema_TriangleSet)& theSet1,
-                          const Handle(BRepExtrema_TriangleSet)& theSet2);
+  BRepExtrema_OverlapTool(const occ::handle<BRepExtrema_TriangleSet>& theSet1,
+                          const occ::handle<BRepExtrema_TriangleSet>& theSet2);
 
 public:
   //! Loads the given element sets into the overlap tool.
-  void LoadTriangleSets(const Handle(BRepExtrema_TriangleSet)& theSet1,
-                        const Handle(BRepExtrema_TriangleSet)& theSet2);
+  void LoadTriangleSets(const occ::handle<BRepExtrema_TriangleSet>& theSet1,
+                        const occ::handle<BRepExtrema_TriangleSet>& theSet2);
 
   //! Performs searching of overlapped mesh elements.
-  void Perform(const Standard_Real theTolerance = 0.0);
+  void Perform(const double theTolerance = 0.0);
 
   //! Is overlap test completed?
-  Standard_Boolean IsDone() const { return myIsDone; }
+  bool IsDone() const { return myIsDone; }
 
   //! Marks test results as outdated.
-  void MarkDirty() { myIsDone = Standard_False; }
+  void MarkDirty() { myIsDone = false; }
 
   //! Returns set of overlapped sub-shapes of 1st shape (currently only faces are detected).
-  const BRepExtrema_MapOfIntegerPackedMapOfInteger& OverlapSubShapes1() const
+  const NCollection_DataMap<int, TColStd_PackedMapOfInteger>& OverlapSubShapes1() const
   {
     return myOverlapSubShapes1;
   }
 
   //! Returns set of overlapped sub-shapes of 2nd shape (currently only faces are detected).
-  const BRepExtrema_MapOfIntegerPackedMapOfInteger& OverlapSubShapes2() const
+  const NCollection_DataMap<int, TColStd_PackedMapOfInteger>& OverlapSubShapes2() const
   {
     return myOverlapSubShapes2;
   }
@@ -84,39 +85,34 @@ public:
 
 public: //! @name Reject/Accept implementations
   //! Defines the rules for node rejection by bounding box
-  Standard_EXPORT virtual Standard_Boolean RejectNode(const BVH_Vec3d& theCornerMin1,
-                                                      const BVH_Vec3d& theCornerMax1,
-                                                      const BVH_Vec3d& theCornerMin2,
-                                                      const BVH_Vec3d& theCornerMax2,
-                                                      Standard_Real&) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool RejectNode(const BVH_Vec3d& theCornerMin1,
+                                          const BVH_Vec3d& theCornerMax1,
+                                          const BVH_Vec3d& theCornerMin2,
+                                          const BVH_Vec3d& theCornerMax2,
+                                          double&) const override;
   //! Defines the rules for leaf acceptance
-  Standard_EXPORT virtual Standard_Boolean Accept(const Standard_Integer theLeaf1,
-                                                  const Standard_Integer theLeaf2)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Accept(const int theLeaf1, const int theLeaf2) override;
 
 protected:
   //! Performs narrow-phase of overlap test (exact intersection).
-  void intersectTrianglesExact(const Standard_Integer theTrgIdx1,
-                               const Standard_Integer theTrgIdx2);
+  void intersectTrianglesExact(const int theTrgIdx1, const int theTrgIdx2);
 
   //! Performs narrow-phase of overlap test (intersection with non-zero tolerance).
-  void intersectTrianglesToler(const Standard_Integer theTrgIdx1,
-                               const Standard_Integer theTrgIdx2,
-                               const Standard_Real    theToler);
+  void intersectTrianglesToler(const int theTrgIdx1, const int theTrgIdx2, const double theToler);
 
 private:
   //! Set of all mesh elements (triangles) of the 1st shape.
-  Handle(BRepExtrema_TriangleSet) mySet1;
+  occ::handle<BRepExtrema_TriangleSet> mySet1;
   //! Set of all mesh elements (triangles) of the 2nd shape.
-  Handle(BRepExtrema_TriangleSet) mySet2;
+  occ::handle<BRepExtrema_TriangleSet> mySet2;
 
   //! Filter for preliminary checking pairs of mesh elements.
   BRepExtrema_ElementFilter* myFilter;
 
   //! Resulted set of overlapped sub-shapes of 1st shape (only faces).
-  BRepExtrema_MapOfIntegerPackedMapOfInteger myOverlapSubShapes1;
+  NCollection_DataMap<int, TColStd_PackedMapOfInteger> myOverlapSubShapes1;
   //! Resulted set of overlapped sub-shapes of 2nd shape (only faces).
-  BRepExtrema_MapOfIntegerPackedMapOfInteger myOverlapSubShapes2;
+  NCollection_DataMap<int, TColStd_PackedMapOfInteger> myOverlapSubShapes2;
 
 #ifdef OVERLAP_TOOL_OUTPUT_TRIANGLES
   //! Set of overlapped elements from the 1st shape (only triangles).
@@ -126,9 +122,9 @@ private:
 #endif
 
   //! Is overlap test test completed?
-  Standard_Boolean myIsDone;
+  bool myIsDone;
 
-  Standard_Real myTolerance;
+  double myTolerance;
 };
 
 #endif // _BRepExtrema_OverlapTool_HeaderFile

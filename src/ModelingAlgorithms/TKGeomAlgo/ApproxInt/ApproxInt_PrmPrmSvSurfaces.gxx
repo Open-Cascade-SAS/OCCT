@@ -16,7 +16,7 @@
 
 #define TOLTANGENCY 0.0000000001
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <Precision.hxx>
 
@@ -28,10 +28,10 @@
 
 ApproxInt_PrmPrmSvSurfaces::ApproxInt_PrmPrmSvSurfaces(const ThePSurface& Surf1,
                                                        const ThePSurface& Surf2)
-    : MyIsTangent(Standard_False),
-      MyHasBeenComputed(Standard_False),
-      MyIsTangentbis(Standard_False),
-      MyHasBeenComputedbis(Standard_False),
+    : MyIsTangent(false),
+      MyHasBeenComputed(false),
+      MyIsTangentbis(false),
+      MyHasBeenComputedbis(false),
       MyIntersectionOn2S(Surf1, Surf2, TOLTANGENCY)
 {
 }
@@ -41,20 +41,20 @@ ApproxInt_PrmPrmSvSurfaces::ApproxInt_PrmPrmSvSurfaces(const ThePSurface& Surf1,
 // purpose  :    Computes point on curve, 3D and 2D-tangents of a curve and
 //            parameters on the surfaces.
 //=======================================================================
-Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
-                                                     Standard_Real& v1,
-                                                     Standard_Real& u2,
-                                                     Standard_Real& v2,
-                                                     gp_Pnt&        P,
-                                                     gp_Vec&        Tg,
-                                                     gp_Vec2d&      Tguv1,
-                                                     gp_Vec2d&      Tguv2)
+bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
+                                         double&   v1,
+                                         double&   u2,
+                                         double&   v2,
+                                         gp_Pnt&   P,
+                                         gp_Vec&   Tg,
+                                         gp_Vec2d& Tguv1,
+                                         gp_Vec2d& Tguv2)
 {
 
-  Standard_Real tu1 = u1;
-  Standard_Real tu2 = u2;
-  Standard_Real tv1 = v1;
-  Standard_Real tv2 = v2;
+  double tu1 = u1;
+  double tu2 = u2;
+  double tv1 = v1;
+  double tv2 = v2;
 
   if (MyHasBeenComputed)
   {
@@ -63,7 +63,7 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
     {
       return (MyIsTangent);
     }
-    else if (MyHasBeenComputedbis == Standard_False)
+    else if (MyHasBeenComputedbis == false)
     {
       MyTgbis              = MyTg;
       MyTguv1bis           = MyTguv1;
@@ -81,13 +81,13 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
         && (MyParOnS2bis.Y() == v2))
     {
 
-      gp_Vec           TV(MyTg);
-      gp_Vec2d         TV1(MyTguv1);
-      gp_Vec2d         TV2(MyTguv2);
-      gp_Pnt           TP(MyPnt);
-      gp_Pnt2d         TP1(MyParOnS1);
-      gp_Pnt2d         TP2(MyParOnS2);
-      Standard_Boolean TB = MyIsTangent;
+      gp_Vec   TV(MyTg);
+      gp_Vec2d TV1(MyTguv1);
+      gp_Vec2d TV2(MyTguv2);
+      gp_Pnt   TP(MyPnt);
+      gp_Pnt2d TP1(MyParOnS1);
+      gp_Pnt2d TP2(MyParOnS2);
+      bool     TB = MyIsTangent;
 
       MyTg        = MyTgbis;
       MyTguv1     = MyTguv1bis;
@@ -109,10 +109,10 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
     }
   }
 
-  MyIsTangent = Standard_True;
+  MyIsTangent = true;
 
-  Standard_Real        aParam[4]; // stack vs heap allocation
-  TColStd_Array1OfReal Param(aParam[0], 1, 4);
+  double                     aParam[4]; // stack vs heap allocation
+  NCollection_Array1<double> Param(aParam[0], 1, 4);
   Param(1) = u1;
   Param(2) = v1;
   Param(3) = u2;
@@ -121,18 +121,18 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
   MyIntersectionOn2S.Perform(Param, Rsnld);
   if (!MyIntersectionOn2S.IsDone())
   {
-    MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-    return (Standard_False);
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
   }
   if (MyIntersectionOn2S.IsEmpty())
   {
-    MyIsTangent = Standard_False;
+    MyIsTangent = false;
     // cout<<"\n----- Parametree Parametree : IsEmpty ds Compute "<<endl;
     // Debug(u1); Debug(u2); Debug(v1); Debug(v2);   cout<<endl;
-    MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-    return (Standard_False);
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
   }
-  MyHasBeenComputed = Standard_True;
+  MyHasBeenComputed = true;
   MyPnt = P = MyIntersectionOn2S.Point().Value();
 
   MyIntersectionOn2S.Point().Parameters(u1, v1, u2, v2);
@@ -141,9 +141,9 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
 
   if (MyIntersectionOn2S.IsTangent())
   {
-    MyIsTangent       = Standard_False;
-    MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-    return (Standard_False);
+    MyIsTangent       = false;
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
   }
   MyTg = Tg = MyIntersectionOn2S.Direction();
   MyTguv1 = Tguv1 = MyIntersectionOn2S.DirectionOnS1();
@@ -172,10 +172,10 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
   Tg.Normalize();
   MyTg = Tg;
 
-  Standard_Real DeltaU, DeltaV;
-  gp_Vec        TU, TV;
-  gp_Pnt        Pbid;
-  Standard_Real TUTV, TgTU, TgTV, TUTU, TVTV, DIS;
+  double DeltaU, DeltaV;
+  gp_Vec TU, TV;
+  gp_Pnt Pbid;
+  double TUTV, TgTU, TgTV, TUTU, TVTV, DIS;
   //------------------------------------------------------------
   //-- Calcul de Tguv1
   //--
@@ -189,9 +189,9 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
   DIS  = TUTU * TVTV - TUTV * TUTV;
   if (fabs(DIS) < Precision::Angular())
   {
-    MyIsTangent       = Standard_False;
-    MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-    return (Standard_False);
+    MyIsTangent       = false;
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
   }
 
   DeltaU = (TgTU * TVTV - TgTV * TUTV) / DIS;
@@ -213,9 +213,9 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
   DIS  = TUTU * TVTV - TUTV * TUTV;
   if (fabs(DIS) < Precision::Angular())
   {
-    MyIsTangent       = Standard_False;
-    MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-    return (Standard_False);
+    MyIsTangent       = false;
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    return (false);
   }
 
   DeltaU = (TgTU * TVTV - TgTV * TUTV) / DIS;
@@ -224,24 +224,24 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute(Standard_Real& u1,
   Tguv2.SetCoord(DeltaU, DeltaV);
   MyTguv2 = Tguv2;
 
-  return (Standard_True);
+  return (true);
 }
 
 //=================================================================================================
 
-void ApproxInt_PrmPrmSvSurfaces::Pnt(const Standard_Real u1,
-                                     const Standard_Real v1,
-                                     const Standard_Real u2,
-                                     const Standard_Real v2,
-                                     gp_Pnt&             P)
+void ApproxInt_PrmPrmSvSurfaces::Pnt(const double u1,
+                                     const double v1,
+                                     const double u2,
+                                     const double v2,
+                                     gp_Pnt&      P)
 {
-  gp_Pnt        aP;
-  gp_Vec        aT;
-  gp_Vec2d      aTS1, aTS2;
-  Standard_Real tu1 = u1;
-  Standard_Real tu2 = u2;
-  Standard_Real tv1 = v1;
-  Standard_Real tv2 = v2;
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
   this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
   P = MyPnt;
 }
@@ -251,83 +251,83 @@ void ApproxInt_PrmPrmSvSurfaces::Pnt(const Standard_Real u1,
 // purpose  :    Computes point on curve and
 //            parameters on the surfaces.
 //=======================================================================
-Standard_Boolean ApproxInt_PrmPrmSvSurfaces::SeekPoint(const Standard_Real u1,
-                                                       const Standard_Real v1,
-                                                       const Standard_Real u2,
-                                                       const Standard_Real v2,
-                                                       IntSurf_PntOn2S&    Point)
+bool ApproxInt_PrmPrmSvSurfaces::SeekPoint(const double     u1,
+                                           const double     v1,
+                                           const double     u2,
+                                           const double     v2,
+                                           IntSurf_PntOn2S& Point)
 {
-  gp_Pnt        aP;
-  gp_Vec        aT;
-  gp_Vec2d      aTS1, aTS2;
-  Standard_Real tu1 = u1;
-  Standard_Real tu2 = u2;
-  Standard_Real tv1 = v1;
-  Standard_Real tv2 = v2;
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
   if (!Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2))
-    return Standard_False;
+    return false;
 
   Point.SetValue(aP, tu1, tv1, tu2, tv2);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Tangency(const Standard_Real u1,
-                                                      const Standard_Real v1,
-                                                      const Standard_Real u2,
-                                                      const Standard_Real v2,
-                                                      gp_Vec&             T)
+bool ApproxInt_PrmPrmSvSurfaces::Tangency(const double u1,
+                                          const double v1,
+                                          const double u2,
+                                          const double v2,
+                                          gp_Vec&      T)
 {
-  gp_Pnt           aP;
-  gp_Vec           aT;
-  gp_Vec2d         aTS1, aTS2;
-  Standard_Real    tu1 = u1;
-  Standard_Real    tu2 = u2;
-  Standard_Real    tv1 = v1;
-  Standard_Real    tv2 = v2;
-  Standard_Boolean t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
-  T                    = MyTg;
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
+  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T            = MyTg;
   return (t);
 }
 
 //=================================================================================================
 
-Standard_Boolean ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf1(const Standard_Real u1,
-                                                             const Standard_Real v1,
-                                                             const Standard_Real u2,
-                                                             const Standard_Real v2,
-                                                             gp_Vec2d&           T)
+bool ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf1(const double u1,
+                                                 const double v1,
+                                                 const double u2,
+                                                 const double v2,
+                                                 gp_Vec2d&    T)
 {
-  gp_Pnt           aP;
-  gp_Vec           aT;
-  gp_Vec2d         aTS1, aTS2;
-  Standard_Real    tu1 = u1;
-  Standard_Real    tu2 = u2;
-  Standard_Real    tv1 = v1;
-  Standard_Real    tv2 = v2;
-  Standard_Boolean t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
-  T                    = MyTguv1;
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
+  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T            = MyTguv1;
   return (t);
 }
 
 //=================================================================================================
 
-Standard_Boolean ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf2(const Standard_Real u1,
-                                                             const Standard_Real v1,
-                                                             const Standard_Real u2,
-                                                             const Standard_Real v2,
-                                                             gp_Vec2d&           T)
+bool ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf2(const double u1,
+                                                 const double v1,
+                                                 const double u2,
+                                                 const double v2,
+                                                 gp_Vec2d&    T)
 {
-  gp_Pnt           aP;
-  gp_Vec           aT;
-  gp_Vec2d         aTS1, aTS2;
-  Standard_Real    tu1 = u1;
-  Standard_Real    tu2 = u2;
-  Standard_Real    tv1 = v1;
-  Standard_Real    tv2 = v2;
-  Standard_Boolean t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
-  T                    = MyTguv2;
+  gp_Pnt   aP;
+  gp_Vec   aT;
+  gp_Vec2d aTS1, aTS2;
+  double   tu1 = u1;
+  double   tu2 = u2;
+  double   tv1 = v1;
+  double   tv2 = v2;
+  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T            = MyTguv2;
   return (t);
 }
 
@@ -368,6 +368,6 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf2(const Standard_Real
   
   Tguv2.Multiplied(Delta);  MyTguv2 = Tguv2;
 
-  return(Standard_True);
+  return(true);
 }
 #endif

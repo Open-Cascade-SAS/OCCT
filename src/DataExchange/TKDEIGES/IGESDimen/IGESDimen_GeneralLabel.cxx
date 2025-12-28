@@ -26,8 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralLabel, IGESData_IGESEntity)
 
 IGESDimen_GeneralLabel::IGESDimen_GeneralLabel() {}
 
-void IGESDimen_GeneralLabel::Init(const Handle(IGESDimen_GeneralNote)&          aNote,
-                                  const Handle(IGESDimen_HArray1OfLeaderArrow)& someLeaders)
+void IGESDimen_GeneralLabel::Init(
+  const occ::handle<IGESDimen_GeneralNote>&                                   aNote,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders)
 {
   if (someLeaders->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_GeneralLabel : Init");
@@ -36,17 +37,17 @@ void IGESDimen_GeneralLabel::Init(const Handle(IGESDimen_GeneralNote)&          
   InitTypeAndForm(210, 0);
 }
 
-Handle(IGESDimen_GeneralNote) IGESDimen_GeneralLabel::Note() const
+occ::handle<IGESDimen_GeneralNote> IGESDimen_GeneralLabel::Note() const
 {
   return theNote;
 }
 
-Standard_Integer IGESDimen_GeneralLabel::NbLeaders() const
+int IGESDimen_GeneralLabel::NbLeaders() const
 {
   return theLeaders->Length();
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_GeneralLabel::Leader(const Standard_Integer Index) const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_GeneralLabel::Leader(const int Index) const
 {
   return theLeaders->Value(Index);
 }

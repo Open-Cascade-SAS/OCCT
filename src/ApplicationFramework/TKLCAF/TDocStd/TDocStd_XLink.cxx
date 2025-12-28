@@ -45,9 +45,9 @@ TDocStd_XLink::TDocStd_XLink()
 
 //=================================================================================================
 
-Handle(TDocStd_XLink) TDocStd_XLink::Set(const TDF_Label& atLabel)
+occ::handle<TDocStd_XLink> TDocStd_XLink::Set(const TDF_Label& atLabel)
 {
-  Handle(TDocStd_XLink) xRef;
+  occ::handle<TDocStd_XLink> xRef;
   if (!atLabel.FindAttribute(TDocStd_XLink::GetID(), xRef))
   {
     xRef = new TDocStd_XLink;
@@ -58,13 +58,13 @@ Handle(TDocStd_XLink) TDocStd_XLink::Set(const TDF_Label& atLabel)
 
 //=================================================================================================
 
-Handle(TDF_Reference) TDocStd_XLink::Update()
+occ::handle<TDF_Reference> TDocStd_XLink::Update()
 {
-  TDF_Label                reflabel;
-  Handle(TDocStd_Document) refdoc;
-  Standard_Integer         IEntry = myDocEntry.IntegerValue();
-  Handle(TDocStd_Document) mydoc  = TDocStd_Document::Get(Label()); // mon document
-  refdoc                          = Handle(TDocStd_Document)::DownCast(mydoc->Document(IEntry));
+  TDF_Label                     reflabel;
+  occ::handle<TDocStd_Document> refdoc;
+  int                           IEntry = myDocEntry.IntegerValue();
+  occ::handle<TDocStd_Document> mydoc  = TDocStd_Document::Get(Label()); // mon document
+  refdoc                               = occ::down_cast<TDocStd_Document>(mydoc->Document(IEntry));
   TDF_Tool::Label(refdoc->GetData(), myLabelEntry, reflabel);
   // return TXLink::Import(reflabel,Label());
   return TDF_Reference::Set(Label(), reflabel);
@@ -128,7 +128,7 @@ const TCollection_AsciiString& TDocStd_XLink::LabelEntry() const
 void TDocStd_XLink::AfterAddition()
 {
   TDocStd_XLinkRoot::Insert(this);
-  Label().Imported(Standard_True);
+  Label().Imported(true);
 }
 
 //=================================================================================================
@@ -138,7 +138,7 @@ void TDocStd_XLink::BeforeRemoval()
   if (!IsBackuped())
   {
     TDocStd_XLinkRoot::Remove(this);
-    Label().Imported(Standard_False);
+    Label().Imported(false);
   }
 }
 
@@ -147,14 +147,14 @@ void TDocStd_XLink::BeforeRemoval()
 // purpose  : Before application of a TDF_Delta.
 //=======================================================================
 
-Standard_Boolean TDocStd_XLink::BeforeUndo(const Handle(TDF_AttributeDelta)& anAttDelta,
-                                           const Standard_Boolean /*forceIt*/)
+bool TDocStd_XLink::BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                               const bool /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))
   {
     anAttDelta->Attribute()->BeforeRemoval();
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -162,21 +162,21 @@ Standard_Boolean TDocStd_XLink::BeforeUndo(const Handle(TDF_AttributeDelta)& anA
 // purpose  : After application of a TDF_Delta.
 //=======================================================================
 
-Standard_Boolean TDocStd_XLink::AfterUndo(const Handle(TDF_AttributeDelta)& anAttDelta,
-                                          const Standard_Boolean /*forceIt*/)
+bool TDocStd_XLink::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                              const bool /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
   {
     anAttDelta->Attribute()->AfterAddition();
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDocStd_XLink::BackupCopy() const
+occ::handle<TDF_Attribute> TDocStd_XLink::BackupCopy() const
 {
-  Handle(TDocStd_XLink) xRef = new TDocStd_XLink();
+  occ::handle<TDocStd_XLink> xRef = new TDocStd_XLink();
   xRef->DocumentEntry(myDocEntry);
   xRef->LabelEntry(myLabelEntry);
   return xRef;
@@ -184,9 +184,9 @@ Handle(TDF_Attribute) TDocStd_XLink::BackupCopy() const
 
 //=================================================================================================
 
-void TDocStd_XLink::Restore(const Handle(TDF_Attribute)& anAttribute)
+void TDocStd_XLink::Restore(const occ::handle<TDF_Attribute>& anAttribute)
 {
-  Handle(TDocStd_XLink) xRef(Handle(TDocStd_XLink)::DownCast(anAttribute));
+  occ::handle<TDocStd_XLink> xRef(occ::down_cast<TDocStd_XLink>(anAttribute));
   if (!xRef.IsNull())
   {
     myDocEntry   = xRef->DocumentEntry();
@@ -196,17 +196,17 @@ void TDocStd_XLink::Restore(const Handle(TDF_Attribute)& anAttribute)
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDocStd_XLink::NewEmpty() const
+occ::handle<TDF_Attribute> TDocStd_XLink::NewEmpty() const
 {
   return new TDocStd_XLink();
 }
 
 //=================================================================================================
 
-void TDocStd_XLink::Paste(const Handle(TDF_Attribute)& intoAttribute,
-                          const Handle(TDF_RelocationTable)& /*aRelocationTable*/) const
+void TDocStd_XLink::Paste(const occ::handle<TDF_Attribute>& intoAttribute,
+                          const occ::handle<TDF_RelocationTable>& /*aRelocationTable*/) const
 {
-  Handle(TDocStd_XLink) xRef(Handle(TDocStd_XLink)::DownCast(intoAttribute));
+  occ::handle<TDocStd_XLink> xRef(occ::down_cast<TDocStd_XLink>(intoAttribute));
   if (!xRef.IsNull())
   {
     xRef->DocumentEntry(myDocEntry);

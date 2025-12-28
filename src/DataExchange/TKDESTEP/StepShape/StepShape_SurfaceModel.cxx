@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepShape_FaceBasedSurfaceModel.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
@@ -19,7 +19,7 @@
 
 StepShape_SurfaceModel::StepShape_SurfaceModel() {}
 
-Standard_Integer StepShape_SurfaceModel::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepShape_SurfaceModel::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -29,7 +29,7 @@ Standard_Integer StepShape_SurfaceModel::CaseNum(const Handle(Standard_Transient
   return 0;
 }
 
-Handle(StepShape_ShellBasedSurfaceModel) StepShape_SurfaceModel::ShellBasedSurfaceModel() const
+occ::handle<StepShape_ShellBasedSurfaceModel> StepShape_SurfaceModel::ShellBasedSurfaceModel() const
 {
   return GetCasted(StepShape_ShellBasedSurfaceModel, Value());
 }

@@ -22,9 +22,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_ObjectIterator, Standard_Transient)
 
 //=================================================================================================
 
-Standard_Boolean TObj_ObjectIterator::More() const
+bool TObj_ObjectIterator::More() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -33,7 +33,7 @@ void TObj_ObjectIterator::Next() {}
 
 //=================================================================================================
 
-Handle(TObj_Object) TObj_ObjectIterator::Value() const
+occ::handle<TObj_Object> TObj_ObjectIterator::Value() const
 {
   return 0;
 }

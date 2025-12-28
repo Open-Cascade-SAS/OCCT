@@ -21,9 +21,6 @@
 
 #include <StepRepr_CompoundRepresentationItem.hxx>
 
-class StepRepr_ValueRange;
-DEFINE_STANDARD_HANDLE(StepRepr_ValueRange, StepRepr_CompoundRepresentationItem)
-
 //! Added for Dimensional Tolerances
 class StepRepr_ValueRange : public StepRepr_CompoundRepresentationItem
 {
@@ -32,9 +29,6 @@ public:
   Standard_EXPORT StepRepr_ValueRange();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ValueRange, StepRepr_CompoundRepresentationItem)
-
-protected:
-private:
 };
 
 #endif // _StepRepr_ValueRange_HeaderFile

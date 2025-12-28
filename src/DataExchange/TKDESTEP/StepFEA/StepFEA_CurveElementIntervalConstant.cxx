@@ -30,9 +30,9 @@ StepFEA_CurveElementIntervalConstant::StepFEA_CurveElementIntervalConstant() {}
 //=================================================================================================
 
 void StepFEA_CurveElementIntervalConstant::Init(
-  const Handle(StepFEA_CurveElementLocation)&              aCurveElementInterval_FinishPosition,
-  const Handle(StepBasic_EulerAngles)&                     aCurveElementInterval_EuAngles,
-  const Handle(StepElement_CurveElementSectionDefinition)& aSection)
+  const occ::handle<StepFEA_CurveElementLocation>& aCurveElementInterval_FinishPosition,
+  const occ::handle<StepBasic_EulerAngles>&        aCurveElementInterval_EuAngles,
+  const occ::handle<StepElement_CurveElementSectionDefinition>& aSection)
 {
   StepFEA_CurveElementInterval::Init(aCurveElementInterval_FinishPosition,
                                      aCurveElementInterval_EuAngles);
@@ -42,8 +42,8 @@ void StepFEA_CurveElementIntervalConstant::Init(
 
 //=================================================================================================
 
-Handle(StepElement_CurveElementSectionDefinition) StepFEA_CurveElementIntervalConstant::Section()
-  const
+occ::handle<StepElement_CurveElementSectionDefinition> StepFEA_CurveElementIntervalConstant::
+  Section() const
 {
   return theSection;
 }
@@ -51,7 +51,7 @@ Handle(StepElement_CurveElementSectionDefinition) StepFEA_CurveElementIntervalCo
 //=================================================================================================
 
 void StepFEA_CurveElementIntervalConstant::SetSection(
-  const Handle(StepElement_CurveElementSectionDefinition)& aSection)
+  const occ::handle<StepElement_CurveElementSectionDefinition>& aSection)
 {
   theSection = aSection;
 }

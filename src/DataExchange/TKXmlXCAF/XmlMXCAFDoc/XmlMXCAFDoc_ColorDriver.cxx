@@ -24,14 +24,14 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_ColorDriver, XmlMDF_ADriver)
 
 //=================================================================================================
 
-XmlMXCAFDoc_ColorDriver::XmlMXCAFDoc_ColorDriver(const Handle(Message_Messenger)& theMsgDriver)
+XmlMXCAFDoc_ColorDriver::XmlMXCAFDoc_ColorDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "Color")
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMXCAFDoc_ColorDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMXCAFDoc_ColorDriver::NewEmpty() const
 {
   return (new XCAFDoc_Color());
 }
@@ -40,35 +40,35 @@ Handle(TDF_Attribute) XmlMXCAFDoc_ColorDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_ColorDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                const Handle(TDF_Attribute)& theTarget,
-                                                XmlObjMgt_RRelocationTable&) const
+bool XmlMXCAFDoc_ColorDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                    const occ::handle<TDF_Attribute>& theTarget,
+                                    XmlObjMgt_RRelocationTable&) const
 {
-  Standard_Integer    aValue;
+  int                 aValue;
   XmlObjMgt_DOMString anIntStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (anIntStr.GetInteger(aValue) == Standard_False)
+  if (anIntStr.GetInteger(aValue) == false)
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Color attribute from \"") + anIntStr + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(XCAFDoc_Color) anInt = Handle(XCAFDoc_Color)::DownCast(theTarget);
+  occ::handle<XCAFDoc_Color> anInt = occ::down_cast<XCAFDoc_Color>(theTarget);
   anInt->Set((Quantity_NameOfColor)aValue);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMXCAFDoc_ColorDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                    XmlObjMgt_Persistent&        theTarget,
+void XmlMXCAFDoc_ColorDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                    XmlObjMgt_Persistent&             theTarget,
                                     XmlObjMgt_SRelocationTable&) const
 {
-  Handle(XCAFDoc_Color) anInt = Handle(XCAFDoc_Color)::DownCast(theSource);
-  XmlObjMgt::SetStringValue(theTarget, (Standard_Integer)anInt->GetNOC());
+  occ::handle<XCAFDoc_Color> anInt = occ::down_cast<XCAFDoc_Color>(theSource);
+  XmlObjMgt::SetStringValue(theTarget, (int)anInt->GetNOC());
 }

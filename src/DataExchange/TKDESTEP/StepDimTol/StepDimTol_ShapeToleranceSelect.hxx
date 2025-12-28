@@ -39,16 +39,13 @@ public:
   //! 1 -> GeometricTolerance from StepDimTol
   //! 2 -> PlusMinusTolerance from StepShape
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as GeometricTolerance (or Null if another type)
-  Standard_EXPORT Handle(StepDimTol_GeometricTolerance) GeometricTolerance() const;
+  Standard_EXPORT occ::handle<StepDimTol_GeometricTolerance> GeometricTolerance() const;
 
   //! Returns Value as PlusMinusTolerance (or Null if another type)
-  Standard_EXPORT Handle(StepShape_PlusMinusTolerance) PlusMinusTolerance() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepShape_PlusMinusTolerance> PlusMinusTolerance() const;
 };
 
 #endif // _StepDimTol_ShapeToleranceSelect_HeaderFile

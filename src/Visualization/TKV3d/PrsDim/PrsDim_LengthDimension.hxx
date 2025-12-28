@@ -21,8 +21,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 #include <TopoDS.hxx>
 
-DEFINE_STANDARD_HANDLE(PrsDim_LengthDimension, PrsDim_Dimension)
-
 //! Length dimension. Can be constructed:
 //! - Between two generic points.
 //! - Between two vertices.
@@ -138,45 +136,41 @@ public:
                                          const TopoDS_Shape& theSecondShape);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
 
-  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
 
   //! Set custom direction for dimension. If it is not set, the direction is obtained
   //! from the measured geometry (e.g. line between points of dimension)
   //! The direction does not change flyout direction of dimension.
   //! @param[in] theDirection  the dimension direction.
   //! @param[in] theUseDirection  boolean value if custom direction should be used.
-  Standard_EXPORT void SetDirection(const gp_Dir&          theDirection,
-                                    const Standard_Boolean theUseDirection = Standard_True);
+  Standard_EXPORT void SetDirection(const gp_Dir& theDirection, const bool theUseDirection = true);
 
 protected:
   //! Checks if the plane includes first and second points to build dimension.
-  Standard_EXPORT virtual Standard_Boolean CheckPlane(const gp_Pln& thePlane) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool CheckPlane(const gp_Pln& thePlane) const override;
 
   Standard_EXPORT virtual gp_Pln ComputePlane(const gp_Dir& theAttachDir) const;
 
   //! Computes distance between dimension points. If custom direction is defined, the distance
   //! is a projection value of the distance between points to this direction
   //! @return dimension value
-  Standard_EXPORT Standard_Real ComputeValue() const Standard_OVERRIDE;
+  Standard_EXPORT double ComputeValue() const override;
 
   Standard_EXPORT virtual void Compute(
-    const Handle(PrsMgr_PresentationManager)& thePresentationManager,
-    const Handle(Prs3d_Presentation)&         thePresentation,
-    const Standard_Integer                    theMode = 0) Standard_OVERRIDE;
+    const occ::handle<PrsMgr_PresentationManager>& thePresentationManager,
+    const occ::handle<Prs3d_Presentation>&         thePresentation,
+    const int                                      theMode = 0) override;
 
   //! Computes points bounded the flyout line for linear dimension.
   //! Direction of flyout line equal to the custom direction of dimension if defined or
@@ -188,31 +182,31 @@ protected:
   Standard_EXPORT virtual void ComputeFlyoutLinePoints(const gp_Pnt& theFirstPoint,
                                                        const gp_Pnt& theSecondPoint,
                                                        gp_Pnt&       theLineBegPoint,
-                                                       gp_Pnt& theLineEndPoint) Standard_OVERRIDE;
+                                                       gp_Pnt&       theLineEndPoint) override;
 
   Standard_EXPORT virtual void ComputeFlyoutSelection(
-    const Handle(SelectMgr_Selection)&   theSelection,
-    const Handle(SelectMgr_EntityOwner)& theEntityOwner) Standard_OVERRIDE;
+    const occ::handle<SelectMgr_Selection>&   theSelection,
+    const occ::handle<SelectMgr_EntityOwner>& theEntityOwner) override;
 
 protected:
   //! Checks that distance between two points is valid.
   //! @param[in] theFirstPoint  the first point.
   //! @param[in] theSecondPoint  the second point.
-  Standard_EXPORT Standard_Boolean IsValidPoints(const gp_Pnt& theFirstPoint,
-                                                 const gp_Pnt& theSecondPoint) const;
+  Standard_EXPORT bool IsValidPoints(const gp_Pnt& theFirstPoint,
+                                     const gp_Pnt& theSecondPoint) const;
 
-  Standard_EXPORT Standard_Boolean InitTwoEdgesLength(const TopoDS_Edge& theFirstEdge,
-                                                      const TopoDS_Edge& theSecondEdge,
-                                                      gp_Dir&            theEdgeDir);
+  Standard_EXPORT bool InitTwoEdgesLength(const TopoDS_Edge& theFirstEdge,
+                                          const TopoDS_Edge& theSecondEdge,
+                                          gp_Dir&            theEdgeDir);
 
   //! Auxiliary method for InitTwoShapesPoints()
   //! in case of the distance between edge and vertex.
   //! Finds the point on the edge that is the closest one to <theVertex>.
   //! @param[out] theEdgeDir  is the direction on the edge to build automatic plane.
-  Standard_EXPORT Standard_Boolean InitEdgeVertexLength(const TopoDS_Edge&   theEdge,
-                                                        const TopoDS_Vertex& theVertex,
-                                                        gp_Dir&              theEdgeDir,
-                                                        Standard_Boolean     isInfinite);
+  Standard_EXPORT bool InitEdgeVertexLength(const TopoDS_Edge&   theEdge,
+                                            const TopoDS_Vertex& theVertex,
+                                            gp_Dir&              theEdgeDir,
+                                            bool                 isInfinite);
 
   //! Auxiliary method for InitTwoShapesPoints()
   //! in case of the distance between face and edge.
@@ -221,26 +215,26 @@ protected:
   //! Iterate over the edges of the face and find the closest point according
   //! to found point on edge.
   //! @param[out] theEdgeDir  is the direction on the edge to build automatic plane.
-  Standard_EXPORT Standard_Boolean InitEdgeFaceLength(const TopoDS_Edge& theEdge,
-                                                      const TopoDS_Face& theFace,
-                                                      gp_Dir&            theEdgeDir);
+  Standard_EXPORT bool InitEdgeFaceLength(const TopoDS_Edge& theEdge,
+                                          const TopoDS_Face& theFace,
+                                          gp_Dir&            theEdgeDir);
 
   //! Initialization of two attach points in case of two owner shapes.
-  Standard_EXPORT Standard_Boolean InitTwoShapesPoints(const TopoDS_Shape& theFirstShape,
-                                                       const TopoDS_Shape& theSecondShape,
-                                                       gp_Pln&             theComputedPlane,
-                                                       Standard_Boolean&   theIsPlaneComputed);
+  Standard_EXPORT bool InitTwoShapesPoints(const TopoDS_Shape& theFirstShape,
+                                           const TopoDS_Shape& theSecondShape,
+                                           gp_Pln&             theComputedPlane,
+                                           bool&               theIsPlaneComputed);
 
   //! Initialization of two attach points in case of one owner shape.
-  Standard_EXPORT Standard_Boolean InitOneShapePoints(const TopoDS_Shape& theShape);
+  Standard_EXPORT bool InitOneShapePoints(const TopoDS_Shape& theShape);
 
 protected:
-  gp_Pnt           myFirstPoint;
-  gp_Pnt           mySecondPoint;
-  TopoDS_Shape     myFirstShape;
-  TopoDS_Shape     mySecondShape;
-  gp_Dir           myDirection;
-  Standard_Boolean myHasCustomDirection;
+  gp_Pnt       myFirstPoint;
+  gp_Pnt       mySecondPoint;
+  TopoDS_Shape myFirstShape;
+  TopoDS_Shape mySecondShape;
+  gp_Dir       myDirection;
+  bool         myHasCustomDirection;
 };
 
 #endif // _PrsDim_LengthDimension_HeaderFile

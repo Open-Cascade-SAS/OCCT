@@ -28,7 +28,7 @@ StepBasic_ActionAssignment::StepBasic_ActionAssignment() {}
 
 //=================================================================================================
 
-void StepBasic_ActionAssignment::Init(const Handle(StepBasic_Action)& aAssignedAction)
+void StepBasic_ActionAssignment::Init(const occ::handle<StepBasic_Action>& aAssignedAction)
 {
 
   theAssignedAction = aAssignedAction;
@@ -36,14 +36,15 @@ void StepBasic_ActionAssignment::Init(const Handle(StepBasic_Action)& aAssignedA
 
 //=================================================================================================
 
-Handle(StepBasic_Action) StepBasic_ActionAssignment::AssignedAction() const
+occ::handle<StepBasic_Action> StepBasic_ActionAssignment::AssignedAction() const
 {
   return theAssignedAction;
 }
 
 //=================================================================================================
 
-void StepBasic_ActionAssignment::SetAssignedAction(const Handle(StepBasic_Action)& aAssignedAction)
+void StepBasic_ActionAssignment::SetAssignedAction(
+  const occ::handle<StepBasic_Action>& aAssignedAction)
 {
   theAssignedAction = aAssignedAction;
 }

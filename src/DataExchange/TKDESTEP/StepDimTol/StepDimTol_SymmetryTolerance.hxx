@@ -20,10 +20,6 @@
 
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 
-class StepDimTol_SymmetryTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_SymmetryTolerance,
-                       StepDimTol_GeometricToleranceWithDatumReference)
-
 //! Representation of STEP entity SymmetryTolerance
 class StepDimTol_SymmetryTolerance : public StepDimTol_GeometricToleranceWithDatumReference
 {
@@ -34,9 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_SymmetryTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
-
-protected:
-private:
 };
 
 #endif // _StepDimTol_SymmetryTolerance_HeaderFile

@@ -26,7 +26,7 @@
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Drawable, Draw_Drawable3D)
 
@@ -36,9 +36,9 @@ IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Drawable, Draw_Drawable3D)
 //=======================================================================
 DrawTrSurf_Drawable::DrawTrSurf_Drawable(
 
-  const Standard_Integer discret,
-  const Standard_Real    deflection,
-  const Standard_Integer DrawMode)
+  const int    discret,
+  const double deflection,
+  const int    DrawMode)
     : myDrawMode(DrawMode),
       myDiscret(discret),
       myDeflection(deflection)
@@ -54,14 +54,14 @@ void DrawTrSurf_Drawable::DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& aDis
   gp_Pnt2d aPoint2d, *aPoint2dPtr;
   if (myDrawMode == 1)
   {
-    Standard_Real            Fleche = myDeflection / aDisplay.Zoom();
+    double                   Fleche = myDeflection / aDisplay.Zoom();
     GCPnts_UniformDeflection LineVu(C, Fleche);
     if (LineVu.IsDone())
     {
       P           = LineVu.Value(1);
       aPoint2dPtr = (gp_Pnt2d*)&P;
       aDisplay.MoveTo(*aPoint2dPtr);
-      for (Standard_Integer i = 2; i <= LineVu.NbPoints(); i++)
+      for (int i = 2; i <= LineVu.NbPoints(); i++)
       {
         P           = LineVu.Value(i);
         aPoint2dPtr = (gp_Pnt2d*)&P;
@@ -71,8 +71,8 @@ void DrawTrSurf_Drawable::DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& aDis
   }
   else
   {
-    Standard_Integer     intrv, nbintv = C.NbIntervals(GeomAbs_CN);
-    TColStd_Array1OfReal TI(1, nbintv + 1);
+    int                        intrv, nbintv = C.NbIntervals(GeomAbs_CN);
+    NCollection_Array1<double> TI(1, nbintv + 1);
     C.Intervals(TI, GeomAbs_CN);
     C.D0(C.FirstParameter(), aPoint2d);
     aDisplay.MoveTo(aPoint2d);
@@ -80,9 +80,9 @@ void DrawTrSurf_Drawable::DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& aDis
     {
       if (C.GetType() != GeomAbs_Line)
       {
-        Standard_Real t    = TI(intrv);
-        Standard_Real step = (TI(intrv + 1) - t) / myDiscret;
-        for (Standard_Integer i = 1; i < myDiscret; i++)
+        double t    = TI(intrv);
+        double step = (TI(intrv + 1) - t) / myDiscret;
+        for (int i = 1; i < myDiscret; i++)
         {
           t += step;
           C.D0(t, aPoint2d);
@@ -101,17 +101,17 @@ void DrawTrSurf_Drawable::DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& aDis
 //=======================================================================
 static void PlotCurve(Draw_Display&          aDisplay,
                       const Adaptor3d_Curve& C,
-                      Standard_Real&         theFirstParam,
-                      Standard_Real          theHalfStep,
+                      double&                theFirstParam,
+                      double                 theHalfStep,
                       const gp_Pnt&          theFirstPnt,
                       const gp_Pnt&          theLastPnt)
 {
-  Standard_Real IsoRatio = 1.001;
-  gp_Pnt        Pm;
+  double IsoRatio = 1.001;
+  gp_Pnt Pm;
 
   C.D0(theFirstParam + theHalfStep, Pm);
 
-  Standard_Real dfLength = theFirstPnt.Distance(theLastPnt);
+  double dfLength = theFirstPnt.Distance(theLastPnt);
   if (dfLength < Precision::Confusion()
       || Pm.Distance(theFirstPnt) + Pm.Distance(theLastPnt) <= IsoRatio * dfLength)
   {
@@ -120,7 +120,7 @@ static void PlotCurve(Draw_Display&          aDisplay,
   else
   {
     PlotCurve(aDisplay, C, theFirstParam, theHalfStep / 2., theFirstPnt, Pm);
-    Standard_Real aLocalF = theFirstParam + theHalfStep;
+    double aLocalF = theFirstParam + theHalfStep;
     PlotCurve(aDisplay, C, aLocalF, theHalfStep / 2., Pm, theLastPnt);
   }
 }
@@ -132,12 +132,12 @@ void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay
   gp_Pnt P;
   if (myDrawMode == 1)
   {
-    Standard_Real            Fleche = myDeflection / aDisplay.Zoom();
+    double                   Fleche = myDeflection / aDisplay.Zoom();
     GCPnts_UniformDeflection LineVu(C, Fleche);
     if (LineVu.IsDone())
     {
       aDisplay.MoveTo(LineVu.Value(1));
-      for (Standard_Integer i = 2; i <= LineVu.NbPoints(); i++)
+      for (int i = 2; i <= LineVu.NbPoints(); i++)
       {
         aDisplay.DrawTo(LineVu.Value(i));
       }
@@ -145,9 +145,9 @@ void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay
   }
   else
   {
-    Standard_Integer     j;
-    Standard_Integer     intrv, nbintv = C.NbIntervals(GeomAbs_CN);
-    TColStd_Array1OfReal TI(1, nbintv + 1);
+    int                        j;
+    int                        intrv, nbintv = C.NbIntervals(GeomAbs_CN);
+    NCollection_Array1<double> TI(1, nbintv + 1);
     C.Intervals(TI, GeomAbs_CN);
     C.D0(C.FirstParameter(), P);
     aDisplay.MoveTo(P);
@@ -156,8 +156,8 @@ void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay
 
     for (intrv = 1; intrv <= nbintv; intrv++)
     {
-      Standard_Real t    = TI(intrv);
-      Standard_Real step = (TI(intrv + 1) - t) / myDiscret;
+      double t    = TI(intrv);
+      double step = (TI(intrv + 1) - t) / myDiscret;
 
       switch (CurvType)
       {
@@ -178,10 +178,10 @@ void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay
         case GeomAbs_BSplineCurve:
         case GeomAbs_OffsetCurve:
         case GeomAbs_OtherCurve:
-          const Standard_Integer nIter = myDiscret / 2;
+          const int nIter = myDiscret / 2;
           for (j = 1; j < nIter; j++)
           {
-            const Standard_Real t1 = t + step * 2.;
+            const double t1 = t + step * 2.;
             C.D0(t1, aNPnt);
             PlotCurve(aDisplay, C, t, step, aPPnt, aNPnt);
             aPPnt = aNPnt;
@@ -202,9 +202,9 @@ void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay
 
 void DrawTrSurf_Drawable::DrawIsoCurveOn(Adaptor3d_IsoCurve&   C,
                                          const GeomAbs_IsoType T,
-                                         const Standard_Real   P,
-                                         const Standard_Real   F,
-                                         const Standard_Real   L,
+                                         const double          P,
+                                         const double          F,
+                                         const double          L,
                                          Draw_Display&         dis) const
 {
   C.Load(T, P, F, L);

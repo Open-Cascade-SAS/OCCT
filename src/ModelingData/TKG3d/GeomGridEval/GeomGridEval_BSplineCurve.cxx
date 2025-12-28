@@ -16,7 +16,7 @@
 #include <BSplCLib.hxx>
 #include <BSplCLib_Cache.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <NCollection_Array1.hxx>
 
 namespace
 {
@@ -43,10 +43,10 @@ struct SpanRange
 };
 
 //! Find span index for a parameter value.
-int locateSpan(double                      theParam,
-               int                         theDegree,
-               bool                        theIsPeriodic,
-               const TColStd_Array1OfReal& theFlatKnots)
+int locateSpan(double                            theParam,
+               int                               theDegree,
+               bool                              theIsPeriodic,
+               const NCollection_Array1<double>& theFlatKnots)
 {
   int    aSpanIndex = 0;
   double aNewParam  = theParam;
@@ -61,11 +61,11 @@ int locateSpan(double                      theParam,
 }
 
 //! Find span index with a hint for better performance on sorted parameters.
-int locateSpanWithHint(double                      theParam,
-                       int                         theHint,
-                       int                         theDegree,
-                       bool                        theIsPeriodic,
-                       const TColStd_Array1OfReal& theFlatKnots)
+int locateSpanWithHint(double                            theParam,
+                       int                               theHint,
+                       int                               theDegree,
+                       bool                              theIsPeriodic,
+                       const NCollection_Array1<double>& theFlatKnots)
 {
   const int aLower = theFlatKnots.Lower() + theDegree;
   const int aUpper = theFlatKnots.Upper() - theDegree - 1;
@@ -97,10 +97,10 @@ int locateSpanWithHint(double                      theParam,
 }
 
 //! Prepare parameters with span data.
-void prepareParams(const TColStd_Array1OfReal&        theParams,
+void prepareParams(const NCollection_Array1<double>&  theParams,
                    int                                theDegree,
                    bool                               theIsPeriodic,
-                   const TColStd_Array1OfReal&        theFlatKnots,
+                   const NCollection_Array1<double>&  theFlatKnots,
                    NCollection_Array1<ParamWithSpan>& theParamsWithSpan,
                    NCollection_Array1<SpanRange>&     theSpanRanges)
 {
@@ -212,7 +212,7 @@ void iterateSpanBlocks(const NCollection_Array1<SpanRange>&     theSpanRanges,
 //==================================================================================================
 
 NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
@@ -220,27 +220,27 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid(
   }
 
   // Get flat knots directly from geometry
-  const Handle(TColStd_HArray1OfReal)& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
+  const occ::handle<NCollection_HArray1<double>>& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
   if (aFlatKnotsHandle.IsNull())
   {
     return NCollection_Array1<gp_Pnt>();
   }
-  const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  const occ::handle<NCollection_HArray1<gp_Pnt>>& aPolesHandle = myGeom->HArrayPoles();
   if (aPolesHandle.IsNull())
   {
     return NCollection_Array1<gp_Pnt>();
   }
-  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
+  const NCollection_Array1<gp_Pnt>& aPoles = aPolesHandle->Array1();
 
-  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
-  const bool                           isRational     = myGeom->IsRational();
+  const occ::handle<NCollection_HArray1<double>>& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                                      isRational     = myGeom->IsRational();
   if (isRational && aWeightsHandle.IsNull())
   {
     return NCollection_Array1<gp_Pnt>();
   }
-  const TColStd_Array1OfReal* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
+  const NCollection_Array1<double>* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
 
   const int  aDegree    = myGeom->Degree();
   const bool isPeriodic = myGeom->IsPeriodic();
@@ -253,7 +253,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid(
   const int                  aNbParams = theParams.Size();
   NCollection_Array1<gp_Pnt> aPoints(1, aNbParams);
 
-  Handle(BSplCLib_Cache) aCache =
+  occ::handle<BSplCLib_Cache> aCache =
     new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
 
   iterateSpanBlocks(
@@ -285,34 +285,34 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGridD1(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const Handle(TColStd_HArray1OfReal)& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
+  const occ::handle<NCollection_HArray1<double>>& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
   if (aFlatKnotsHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
-  const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  const occ::handle<NCollection_HArray1<gp_Pnt>>& aPolesHandle = myGeom->HArrayPoles();
   if (aPolesHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
-  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
+  const NCollection_Array1<gp_Pnt>& aPoles = aPolesHandle->Array1();
 
-  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
-  const bool                           isRational     = myGeom->IsRational();
+  const occ::handle<NCollection_HArray1<double>>& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                                      isRational     = myGeom->IsRational();
   if (isRational && aWeightsHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
-  const TColStd_Array1OfReal* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
+  const NCollection_Array1<double>* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
 
   const int  aDegree    = myGeom->Degree();
   const bool isPeriodic = myGeom->IsPeriodic();
@@ -324,7 +324,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGri
   const int                                 aNbParams = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResults(1, aNbParams);
 
-  Handle(BSplCLib_Cache) aCache =
+  occ::handle<BSplCLib_Cache> aCache =
     new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
 
   iterateSpanBlocks(
@@ -359,34 +359,34 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGri
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGridD2(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const Handle(TColStd_HArray1OfReal)& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
+  const occ::handle<NCollection_HArray1<double>>& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
   if (aFlatKnotsHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
-  const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  const occ::handle<NCollection_HArray1<gp_Pnt>>& aPolesHandle = myGeom->HArrayPoles();
   if (aPolesHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
-  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
+  const NCollection_Array1<gp_Pnt>& aPoles = aPolesHandle->Array1();
 
-  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
-  const bool                           isRational     = myGeom->IsRational();
+  const occ::handle<NCollection_HArray1<double>>& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                                      isRational     = myGeom->IsRational();
   if (isRational && aWeightsHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
-  const TColStd_Array1OfReal* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
+  const NCollection_Array1<double>* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
 
   const int  aDegree    = myGeom->Degree();
   const bool isPeriodic = myGeom->IsPeriodic();
@@ -398,7 +398,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGri
   const int                                 aNbParams = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResults(1, aNbParams);
 
-  Handle(BSplCLib_Cache) aCache =
+  occ::handle<BSplCLib_Cache> aCache =
     new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
 
   iterateSpanBlocks(
@@ -434,34 +434,34 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGri
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGridD3(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const Handle(TColStd_HArray1OfReal)& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
+  const occ::handle<NCollection_HArray1<double>>& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
   if (aFlatKnotsHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
-  const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  const occ::handle<NCollection_HArray1<gp_Pnt>>& aPolesHandle = myGeom->HArrayPoles();
   if (aPolesHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
-  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
+  const NCollection_Array1<gp_Pnt>& aPoles = aPolesHandle->Array1();
 
-  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
-  const bool                           isRational     = myGeom->IsRational();
+  const occ::handle<NCollection_HArray1<double>>& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                                      isRational     = myGeom->IsRational();
   if (isRational && aWeightsHandle.IsNull())
   {
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
-  const TColStd_Array1OfReal* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
+  const NCollection_Array1<double>* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
 
   const int  aDegree    = myGeom->Degree();
   const bool isPeriodic = myGeom->IsPeriodic();
@@ -473,7 +473,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGri
   const int                                 aNbParams = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResults(1, aNbParams);
 
-  Handle(BSplCLib_Cache) aCache =
+  occ::handle<BSplCLib_Cache> aCache =
     new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
 
   iterateSpanBlocks(
@@ -510,8 +510,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGri
 //==================================================================================================
 
 NCollection_Array1<gp_Vec> GeomGridEval_BSplineCurve::EvaluateGridDN(
-  const TColStd_Array1OfReal& theParams,
-  int                         theN) const
+  const NCollection_Array1<double>& theParams,
+  int                               theN) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
   {
@@ -534,28 +534,28 @@ NCollection_Array1<gp_Vec> GeomGridEval_BSplineCurve::EvaluateGridDN(
   }
 
   // Get flat knots directly from geometry
-  const Handle(TColStd_HArray1OfReal)& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
+  const occ::handle<NCollection_HArray1<double>>& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
   if (aFlatKnotsHandle.IsNull())
   {
     return NCollection_Array1<gp_Vec>();
   }
-  const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
+  const NCollection_Array1<double>& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  const occ::handle<NCollection_HArray1<gp_Pnt>>& aPolesHandle = myGeom->HArrayPoles();
   if (aPolesHandle.IsNull())
   {
     return NCollection_Array1<gp_Vec>();
   }
-  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
+  const NCollection_Array1<gp_Pnt>& aPoles = aPolesHandle->Array1();
 
-  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
-  const bool                           isRational     = myGeom->IsRational();
-  const TColStd_Array1OfReal*          aWeights =
+  const occ::handle<NCollection_HArray1<double>>& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                                      isRational     = myGeom->IsRational();
+  const NCollection_Array1<double>*               aWeights =
     (isRational && !aWeightsHandle.IsNull()) ? &aWeightsHandle->Array1() : nullptr;
 
-  const TColStd_Array1OfReal&    aKnots     = myGeom->Knots();
-  const TColStd_Array1OfInteger& aMults     = myGeom->Multiplicities();
-  const bool                     isPeriodic = myGeom->IsPeriodic();
+  const NCollection_Array1<double>& aKnots     = myGeom->Knots();
+  const NCollection_Array1<int>&    aMults     = myGeom->Multiplicities();
+  const bool                        isPeriodic = myGeom->IsPeriodic();
 
   NCollection_Array1<ParamWithSpan> aParamsWithSpan;
   NCollection_Array1<SpanRange>     aSpanRanges;

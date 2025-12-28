@@ -40,30 +40,29 @@ public:
 
   Standard_EXPORT HLRBRep_TheCSFunctionOfInterCSurf(HLRBRep_Surface* const& S, const gp_Lin& C);
 
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
   Standard_EXPORT const gp_Pnt& Point() const;
 
-  Standard_EXPORT Standard_Real Root() const;
+  Standard_EXPORT double Root() const;
 
   Standard_EXPORT HLRBRep_Surface* const& AuxillarSurface() const;
 
   Standard_EXPORT const gp_Lin& AuxillarCurve() const;
 
-protected:
 private:
   HLRBRep_Surface* surface;
   gp_Lin           curve;
   gp_Pnt           p;
-  Standard_Real    f;
+  double           f;
 };
 
 #endif // _HLRBRep_TheCSFunctionOfInterCSurf_HeaderFile

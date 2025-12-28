@@ -15,13 +15,13 @@
 // commercial license or contractual agreement.
 
 #include <ChFiKPart_ComputeData_Fcts.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Line.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
 
 #include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
@@ -33,12 +33,9 @@
 
 //=================================================================================================
 
-Standard_Real ChFiKPart_InPeriod(const Standard_Real U,
-                                 const Standard_Real UFirst,
-                                 const Standard_Real ULast,
-                                 const Standard_Real Eps)
+double ChFiKPart_InPeriod(const double U, const double UFirst, const double ULast, const double Eps)
 {
-  Standard_Real u = U, period = ULast - UFirst;
+  double u = U, period = ULast - UFirst;
   while (Eps < (UFirst - u))
     u += period;
   while (Eps > (ULast - u))
@@ -54,20 +51,20 @@ Standard_Real ChFiKPart_InPeriod(const Standard_Real U,
 //           the parameters.
 //=======================================================================
 
-Handle(Geom2d_BSplineCurve) ChFiKPart_PCurve(const gp_Pnt2d&     UV1,
-                                             const gp_Pnt2d&     UV2,
-                                             const Standard_Real Pardeb,
-                                             const Standard_Real Parfin)
+occ::handle<Geom2d_BSplineCurve> ChFiKPart_PCurve(const gp_Pnt2d& UV1,
+                                                  const gp_Pnt2d& UV2,
+                                                  const double    Pardeb,
+                                                  const double    Parfin)
 {
-  TColgp_Array1OfPnt2d    p(1, 2);
-  TColStd_Array1OfReal    k(1, 2);
-  TColStd_Array1OfInteger m(1, 2);
+  NCollection_Array1<gp_Pnt2d> p(1, 2);
+  NCollection_Array1<double>   k(1, 2);
+  NCollection_Array1<int>      m(1, 2);
   m.Init(2);
-  k(1)                              = Pardeb;
-  k(2)                              = Parfin;
-  p(1)                              = UV1;
-  p(2)                              = UV2;
-  Handle(Geom2d_BSplineCurve) Pcurv = new Geom2d_BSplineCurve(p, k, m, 1);
+  k(1)                                   = Pardeb;
+  k(2)                                   = Parfin;
+  p(1)                                   = UV1;
+  p(2)                                   = UV2;
+  occ::handle<Geom2d_BSplineCurve> Pcurv = new Geom2d_BSplineCurve(p, k, m, 1);
   return Pcurv;
 }
 
@@ -79,13 +76,13 @@ Handle(Geom2d_BSplineCurve) ChFiKPart_PCurve(const gp_Pnt2d&     UV1,
 
 void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
                       const GeomAdaptor_Surface& Sg,
-                      Handle(Geom2d_Curve)&      Pcurv)
+                      occ::handle<Geom2d_Curve>& Pcurv)
 {
   if (Sg.GetType() < GeomAbs_BezierSurface)
   {
-    Handle(GeomAdaptor_Curve)   HCg = new GeomAdaptor_Curve(Cg);
-    Handle(GeomAdaptor_Surface) HSg = new GeomAdaptor_Surface(Sg);
-    ProjLib_ProjectedCurve      Projc(HSg, HCg);
+    occ::handle<GeomAdaptor_Curve>   HCg = new GeomAdaptor_Curve(Cg);
+    occ::handle<GeomAdaptor_Surface> HSg = new GeomAdaptor_Surface(Sg);
+    ProjLib_ProjectedCurve           Projc(HSg, HCg);
     switch (Projc.GetType())
     {
       case GeomAbs_Line: {
@@ -93,11 +90,11 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
       }
       break;
       case GeomAbs_BezierCurve: {
-        Handle(Geom2d_BezierCurve) BezProjc = Projc.Bezier();
-        TColgp_Array1OfPnt2d       TP(1, BezProjc->NbPoles());
+        occ::handle<Geom2d_BezierCurve> BezProjc = Projc.Bezier();
+        NCollection_Array1<gp_Pnt2d>    TP(1, BezProjc->NbPoles());
         if (BezProjc->IsRational())
         {
-          TColStd_Array1OfReal TW(1, BezProjc->NbPoles());
+          NCollection_Array1<double> TW(1, BezProjc->NbPoles());
           BezProjc->Poles(TP);
           BezProjc->Weights(TW);
           Pcurv = new Geom2d_BezierCurve(TP, TW);
@@ -110,9 +107,9 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
       }
       break;
 #if 0 
-	TColgp_Array1OfPnt2d TP(1,Projc.NbPoles());
+	NCollection_Array1<gp_Pnt2d> TP(1,Projc.NbPoles());
 	if (Projc.IsRational()) {
-	  TColStd_Array1OfReal TW(1,Projc.NbPoles());
+	  NCollection_Array1<double> TW(1,Projc.NbPoles());
 	  Projc.PolesAndWeights(TP,TW);
 	  Pcurv = new Geom2d_BezierCurve(TP,TW);
 	}
@@ -124,16 +121,16 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
       break;
 #endif
       case GeomAbs_BSplineCurve: {
-        Handle(Geom2d_BSplineCurve) BspProjc = Projc.BSpline();
-        TColgp_Array1OfPnt2d        TP(1, BspProjc->NbPoles());
-        TColStd_Array1OfReal        TK(1, BspProjc->NbKnots());
-        TColStd_Array1OfInteger     TM(1, BspProjc->NbKnots());
+        occ::handle<Geom2d_BSplineCurve> BspProjc = Projc.BSpline();
+        NCollection_Array1<gp_Pnt2d>     TP(1, BspProjc->NbPoles());
+        NCollection_Array1<double>       TK(1, BspProjc->NbKnots());
+        NCollection_Array1<int>          TM(1, BspProjc->NbKnots());
 
         BspProjc->Knots(TK);
         BspProjc->Multiplicities(TM);
         if (BspProjc->IsRational())
         {
-          TColStd_Array1OfReal TW(1, BspProjc->NbPoles());
+          NCollection_Array1<double> TW(1, BspProjc->NbPoles());
           BspProjc->Poles(TP);
           BspProjc->Weights(TW);
           Pcurv = new Geom2d_BSplineCurve(TP, TW, TK, TM, BspProjc->Degree());
@@ -146,12 +143,12 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
       }
       break;
 #if 0 
-	TColgp_Array1OfPnt2d TP(1,Projc.NbPoles());
-	TColStd_Array1OfReal TK(1,Projc.NbKnots());
-	TColStd_Array1OfInteger TM(1,Projc.NbKnots());
+	NCollection_Array1<gp_Pnt2d> TP(1,Projc.NbPoles());
+	NCollection_Array1<double> TK(1,Projc.NbKnots());
+	NCollection_Array1<int> TM(1,Projc.NbKnots());
 	Projc.KnotsAndMultiplicities(TK,TM);
 	if (Projc.IsRational()) {
-	  TColStd_Array1OfReal TW(1,Projc.NbPoles());
+	  NCollection_Array1<double> TW(1,Projc.NbPoles());
 	  Projc.PolesAndWeights(TP,TW);
 	  Pcurv = new Geom2d_BSplineCurve(TP,TW,TK,TM,Projc.Degree());
 	}
@@ -177,8 +174,7 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
 // purpose  : Place a Curve in the DS and return its index.
 //=======================================================================
 
-Standard_Integer ChFiKPart_IndexCurveInDS(const Handle(Geom_Curve)&   C,
-                                          TopOpeBRepDS_DataStructure& DStr)
+int ChFiKPart_IndexCurveInDS(const occ::handle<Geom_Curve>& C, TopOpeBRepDS_DataStructure& DStr)
 {
   return DStr.AddCurve(TopOpeBRepDS_Curve(C, 0.));
 }
@@ -188,8 +184,7 @@ Standard_Integer ChFiKPart_IndexCurveInDS(const Handle(Geom_Curve)&   C,
 // purpose  : Place a Surface in the DS and return its index.
 //=======================================================================
 
-Standard_Integer ChFiKPart_IndexSurfaceInDS(const Handle(Geom_Surface)& S,
-                                            TopOpeBRepDS_DataStructure& DStr)
+int ChFiKPart_IndexSurfaceInDS(const occ::handle<Geom_Surface>& S, TopOpeBRepDS_DataStructure& DStr)
 {
   return DStr.AddSurface(TopOpeBRepDS_Surface(S, 0.));
 }

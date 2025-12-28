@@ -24,9 +24,9 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_Real.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <math_Vector.hxx>
 
 class IntPatch_WLine;
@@ -61,31 +61,31 @@ public:
   //! @param theApproxU2V2 - Flag existence of second 2d set.
   //! @param theMinNbPnts - Minimal number of points per knot interval.
   //! @param theKnots - output knots sequence.
-  Standard_EXPORT static void BuildKnots(const TColgp_Array1OfPnt&             thePntsXYZ,
-                                         const TColgp_Array1OfPnt2d&           thePntsU1V1,
-                                         const TColgp_Array1OfPnt2d&           thePntsU2V2,
-                                         const math_Vector&                    thePars,
-                                         const Standard_Boolean                theApproxXYZ,
-                                         const Standard_Boolean                theApproxU1V1,
-                                         const Standard_Boolean                theApproxU2V2,
-                                         const Standard_Integer                theMinNbPnts,
-                                         NCollection_Vector<Standard_Integer>& theKnots);
+  Standard_EXPORT static void BuildKnots(const NCollection_Array1<gp_Pnt>&   thePntsXYZ,
+                                         const NCollection_Array1<gp_Pnt2d>& thePntsU1V1,
+                                         const NCollection_Array1<gp_Pnt2d>& thePntsU2V2,
+                                         const math_Vector&                  thePars,
+                                         const bool                          theApproxXYZ,
+                                         const bool                          theApproxU1V1,
+                                         const bool                          theApproxU2V2,
+                                         const int                           theMinNbPnts,
+                                         NCollection_Vector<int>&            theKnots);
 
   //! Builds discrete curvature
-  Standard_EXPORT static void BuildCurvature(const NCollection_LocalArray<Standard_Real>& theCoords,
-                                             const Standard_Integer                       theDim,
-                                             const math_Vector&                           thePars,
-                                             TColStd_Array1OfReal&                        theCurv,
-                                             Standard_Real& theMaxCurv);
+  Standard_EXPORT static void BuildCurvature(const NCollection_LocalArray<double>& theCoords,
+                                             const int                             theDim,
+                                             const math_Vector&                    thePars,
+                                             NCollection_Array1<double>&           theCurv,
+                                             double&                               theMaxCurv);
 
   //! Defines preferable parametrization type for theWL
   Standard_EXPORT static Approx_ParametrizationType DefineParType(
-    const Handle(IntPatch_WLine)& theWL,
-    const Standard_Integer        theFpar,
-    const Standard_Integer        theLpar,
-    const Standard_Boolean        theApproxXYZ,
-    const Standard_Boolean        theApproxU1V1,
-    const Standard_Boolean        theApproxU2V2);
+    const occ::handle<IntPatch_WLine>& theWL,
+    const int                          theFpar,
+    const int                          theLpar,
+    const bool                         theApproxXYZ,
+    const bool                         theApproxU1V1,
+    const bool                         theApproxU2V2);
 
 private:
   //! Compute indices of knots:
@@ -98,10 +98,10 @@ private:
   //! III: Put knots in monotone intervals of curvature.
   //!
   //! IV: Put additional knots near extrema points.
-  static void ComputeKnotInds(const NCollection_LocalArray<Standard_Real>& theCoords,
-                              const Standard_Integer                       theDim,
-                              const math_Vector&                           thePars,
-                              NCollection_Sequence<Standard_Integer>&      theInds);
+  static void ComputeKnotInds(const NCollection_LocalArray<double>& theCoords,
+                              const int                             theDim,
+                              const math_Vector&                    thePars,
+                              NCollection_Sequence<int>&            theInds);
 
   //! Insert knots before index I.
   //!
@@ -112,12 +112,12 @@ private:
   //! II: Check midpoint criteria:
   //! If exist point between two knot indices with angle greater than
   //! threshold value, then stop and put this index as knot.
-  static Standard_Boolean InsKnotBefI(const Standard_Integer                       theI,
-                                      const TColStd_Array1OfReal&                  theCurv,
-                                      const NCollection_LocalArray<Standard_Real>& theCoords,
-                                      const Standard_Integer                       theDim,
-                                      NCollection_Sequence<Standard_Integer>&      theInds,
-                                      const Standard_Boolean                       ChkCurv);
+  static bool InsKnotBefI(const int                             theI,
+                          const NCollection_Array1<double>&     theCurv,
+                          const NCollection_LocalArray<double>& theCoords,
+                          const int                             theDim,
+                          NCollection_Sequence<int>&            theInds,
+                          const bool                            ChkCurv);
 
   //! Perform knots filtration.
   //!
@@ -126,9 +126,9 @@ private:
   //! II: Filter points with too small amount of points per knot interval.
   //!
   //! III: Fill Last Knot.
-  static void FilterKnots(NCollection_Sequence<Standard_Integer>& theInds,
-                          const Standard_Integer                  theMinNbPnts,
-                          NCollection_Vector<Standard_Integer>&   theLKnots);
+  static void FilterKnots(NCollection_Sequence<int>& theInds,
+                          const int                  theMinNbPnts,
+                          NCollection_Vector<int>&   theLKnots);
 };
 
 #endif

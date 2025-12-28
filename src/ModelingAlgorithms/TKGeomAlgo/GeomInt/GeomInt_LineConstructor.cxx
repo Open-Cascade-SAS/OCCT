@@ -23,7 +23,8 @@
 #include <GeomInt.hxx>
 #include <GeomInt_LineConstructor.hxx>
 #include <GeomInt_LineTool.hxx>
-#include <GeomInt_SequenceOfParameterAndOrientation.hxx>
+#include <GeomInt_ParameterAndOrientation.hxx>
+#include <NCollection_Sequence.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntPatch_ALine.hxx>
 #include <IntPatch_GLine.hxx>
@@ -36,10 +37,11 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_IndexedMapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopAbs_Orientation.hxx>
 
-static const Standard_Real TwoPI = M_PI + M_PI;
+static const double TwoPI = M_PI + M_PI;
 
 //=======================================================================
 // class    : GeomInt_Vertex
@@ -54,19 +56,19 @@ public:
   //! Initializes this class by IntPatch_Point
   void SetVertex(const IntPatch_Point& theOther)
   {
-    myVertex                      = theOther;
-    const Standard_Real aNewParam = ElCLib::InPeriod(theOther.ParameterOnLine(), 0.0, TwoPI);
+    myVertex               = theOther;
+    const double aNewParam = ElCLib::InPeriod(theOther.ParameterOnLine(), 0.0, TwoPI);
     SetParameter(aNewParam);
   }
 
   //! Sets Parameter on Line
-  void SetParameter(const Standard_Real theParam) { myVertex.SetParameter(theParam); }
+  void SetParameter(const double theParam) { myVertex.SetParameter(theParam); }
 
   //! Returns IntPatch_Point
   const IntPatch_Point& Getvertex() const { return myVertex; }
 
   //! To provide sort
-  Standard_Boolean operator<(const GeomInt_Vertex& theOther) const
+  bool operator<(const GeomInt_Vertex& theOther) const
   {
     return myVertex.ParameterOnLine() < theOther.myVertex.ParameterOnLine();
   }
@@ -76,50 +78,50 @@ private:
 };
 
 //------------
-static void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
-                       const gp_Pnt&                      Ptref,
-                       Standard_Real&                     U1,
-                       Standard_Real&                     V1);
+static void Parameters(const occ::handle<GeomAdaptor_Surface>& myHS1,
+                       const gp_Pnt&                           Ptref,
+                       double&                                 U1,
+                       double&                                 V1);
 
-static void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
-                       const Handle(GeomAdaptor_Surface)& myHS2,
-                       const gp_Pnt&                      Ptref,
-                       Standard_Real&                     U1,
-                       Standard_Real&                     V1,
-                       Standard_Real&                     U2,
-                       Standard_Real&                     V2);
+static void Parameters(const occ::handle<GeomAdaptor_Surface>& myHS1,
+                       const occ::handle<GeomAdaptor_Surface>& myHS2,
+                       const gp_Pnt&                           Ptref,
+                       double&                                 U1,
+                       double&                                 V1,
+                       double&                                 U2,
+                       double&                                 V2);
 
-static void GLinePoint(const IntPatch_IType          typl,
-                       const Handle(IntPatch_GLine)& GLine,
-                       const Standard_Real           aT,
-                       gp_Pnt&                       aP);
+static void GLinePoint(const IntPatch_IType               typl,
+                       const occ::handle<IntPatch_GLine>& GLine,
+                       const double                       aT,
+                       gp_Pnt&                            aP);
 
-static void AdjustPeriodic(const Handle(GeomAdaptor_Surface)& myHS1,
-                           const Handle(GeomAdaptor_Surface)& myHS2,
-                           Standard_Real&                     u1,
-                           Standard_Real&                     v1,
-                           Standard_Real&                     u2,
-                           Standard_Real&                     v2);
+static void AdjustPeriodic(const occ::handle<GeomAdaptor_Surface>& myHS1,
+                           const occ::handle<GeomAdaptor_Surface>& myHS2,
+                           double&                                 u1,
+                           double&                                 v1,
+                           double&                                 u2,
+                           double&                                 v2);
 
-static Standard_Boolean RejectMicroCircle(const Handle(IntPatch_GLine)& aGLine,
-                                          const IntPatch_IType          aType,
-                                          const Standard_Real           aTol3D);
+static bool RejectMicroCircle(const occ::handle<IntPatch_GLine>& aGLine,
+                              const IntPatch_IType               aType,
+                              const double                       aTol3D);
 
 static void RejectDuplicates(NCollection_Array1<GeomInt_Vertex>& theVtxArr);
 
 //=================================================================================================
 
-void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
+void GeomInt_LineConstructor::Perform(const occ::handle<IntPatch_Line>& L)
 {
-  Standard_Integer        i, nbvtx;
-  Standard_Real           firstp, lastp;
-  constexpr Standard_Real Tol = Precision::PConfusion() * 35.0;
+  int              i, nbvtx;
+  double           firstp, lastp;
+  constexpr double Tol = Precision::PConfusion() * 35.0;
 
   const IntPatch_IType typl = L->ArcType();
   if (typl == IntPatch_Analytic)
   {
-    Standard_Real          u1, v1, u2, v2;
-    Handle(IntPatch_ALine) ALine(Handle(IntPatch_ALine)::DownCast(L));
+    double                      u1, v1, u2, v2;
+    occ::handle<IntPatch_ALine> ALine(occ::down_cast<IntPatch_ALine>(L));
     seqp.Clear();
     nbvtx = GeomInt_LineTool::NbVertex(L);
     for (i = 1; i < nbvtx; i++)
@@ -128,8 +130,8 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       lastp  = GeomInt_LineTool::Vertex(L, i + 1).ParameterOnLine();
       if (firstp != lastp)
       {
-        const Standard_Real pmid = (firstp + lastp) * 0.5;
-        const gp_Pnt        Pmid = ALine->Value(pmid);
+        const double pmid = (firstp + lastp) * 0.5;
+        const gp_Pnt Pmid = ALine->Value(pmid);
         Parameters(myHS1, myHS2, Pmid, u1, v1, u2, v2);
         AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
         const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1, v1), Tol);
@@ -144,13 +146,13 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         }
       }
     }
-    done = Standard_True;
+    done = true;
     return;
   } // if(typl == IntPatch_Analytic)  {
   else if (typl == IntPatch_Walking)
   {
-    Standard_Real          u1, v1, u2, v2;
-    Handle(IntPatch_WLine) WLine(Handle(IntPatch_WLine)::DownCast(L));
+    double                      u1, v1, u2, v2;
+    occ::handle<IntPatch_WLine> WLine(occ::down_cast<IntPatch_WLine>(L));
     seqp.Clear();
     nbvtx = GeomInt_LineTool::NbVertex(L);
     for (i = 1; i < nbvtx; i++)
@@ -161,7 +163,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       {
         if (lastp != firstp + 1)
         {
-          const Standard_Integer pmid = (Standard_Integer)((firstp + lastp) / 2);
+          const int              pmid = (int)((firstp + lastp) / 2);
           const IntSurf_PntOn2S& Pmid = WLine->Point(pmid);
           Pmid.Parameters(u1, v1, u2, v2);
           AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
@@ -197,9 +199,9 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
             // more strict check (all two points of WLine are checksed) is
             // applied in this case.
 
-            Standard_Real          aU21, aV21, aU22, aV22;
-            const IntSurf_PntOn2S& aPfirst = WLine->Point((Standard_Integer)(firstp));
-            const IntSurf_PntOn2S& aPlast  = WLine->Point((Standard_Integer)(lastp));
+            double                 aU21, aV21, aU22, aV22;
+            const IntSurf_PntOn2S& aPfirst = WLine->Point((int)(firstp));
+            const IntSurf_PntOn2S& aPlast  = WLine->Point((int)(lastp));
             aPfirst.Parameters(u1, v1, u2, v2);
             AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
             aPlast.Parameters(aU21, aV21, aU22, aV22);
@@ -223,7 +225,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
           }
           else
           {
-            const IntSurf_PntOn2S& Pfirst = WLine->Point((Standard_Integer)(firstp));
+            const IntSurf_PntOn2S& Pfirst = WLine->Point((int)(firstp));
             Pfirst.Parameters(u1, v1, u2, v2);
             AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
             TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1, v1), Tol);
@@ -232,7 +234,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
               TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2, v2), Tol);
               if (in2 != TopAbs_OUT)
               {
-                const IntSurf_PntOn2S& Plast = WLine->Point((Standard_Integer)(lastp));
+                const IntSurf_PntOn2S& Plast = WLine->Point((int)(lastp));
                 Plast.Parameters(u1, v1, u2, v2);
                 AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
                 in1 = myDom1->Classify(gp_Pnt2d(u1, v1), Tol);
@@ -260,17 +262,17 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     //     Why -? It is not known yet.
     //                                             PKV 22.Apr.2002
     //
-    Standard_Integer aNbParts;
+    int aNbParts;
     //
     aNbParts = seqp.Length() / 2;
     if (aNbParts > 1)
     {
-      Standard_Boolean    bCond;
+      bool                bCond;
       GeomAbs_SurfaceType aST1, aST2;
       aST1 = myHS1->GetType();
       aST2 = myHS2->GetType();
       //
-      bCond = Standard_False;
+      bCond = false;
       if (aST1 == GeomAbs_Plane)
       {
         if (aST2 == GeomAbs_SurfaceOfExtrusion || aST2 == GeomAbs_SurfaceOfRevolution)
@@ -288,15 +290,15 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       //
       if (bCond)
       {
-        Standard_Integer            aNb, anIndex, aNbTmp, jx;
-        TColStd_IndexedMapOfInteger aMap;
-        TColStd_SequenceOfReal      aSeqTmp;
+        int                          aNb, anIndex, aNbTmp, jx;
+        NCollection_IndexedMap<int>  aMap;
+        NCollection_Sequence<double> aSeqTmp;
         //
         aNb = seqp.Length();
         for (i = 1; i <= aNb; ++i)
         {
           lastp   = seqp(i);
-          anIndex = (Standard_Integer)lastp;
+          anIndex = (int)lastp;
           if (!aMap.Contains(anIndex))
           {
             aMap.Add(anIndex);
@@ -322,7 +324,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         }
       } // if (bCond) {
     }
-    done = Standard_True;
+    done = true;
     return;
   } // else if(typl == IntPatch_Walking)  {
   //
@@ -331,29 +333,29 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
   {
     seqp.Clear();
     //
-    Handle(IntPatch_GLine) GLine(Handle(IntPatch_GLine)::DownCast(L));
+    occ::handle<IntPatch_GLine> GLine(occ::down_cast<IntPatch_GLine>(L));
     //
     if (typl == IntPatch_Circle || typl == IntPatch_Ellipse)
     {
       TreatCircle(L, Tol);
-      done = Standard_True;
+      done = true;
       return;
     }
     //----------------------------
-    Standard_Boolean intrvtested;
-    Standard_Real    u1, v1, u2, v2;
+    bool   intrvtested;
+    double u1, v1, u2, v2;
     //
     nbvtx       = GeomInt_LineTool::NbVertex(L);
-    intrvtested = Standard_False;
+    intrvtested = false;
     for (i = 1; i < nbvtx; ++i)
     {
       firstp = GeomInt_LineTool::Vertex(L, i).ParameterOnLine();
       lastp  = GeomInt_LineTool::Vertex(L, i + 1).ParameterOnLine();
       if (std::abs(firstp - lastp) > Precision::PConfusion())
       {
-        intrvtested              = Standard_True;
-        const Standard_Real pmid = (firstp + lastp) * 0.5;
-        gp_Pnt              Pmid;
+        intrvtested       = true;
+        const double pmid = (firstp + lastp) * 0.5;
+        gp_Pnt       Pmid;
         GLinePoint(typl, GLine, pmid, Pmid);
         //
         Parameters(myHS1, myHS2, Pmid, u1, v1, u2, v2);
@@ -379,11 +381,11 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       seqp.Append(GeomInt_LineTool::LastParameter(L));
     }
     //
-    done = Standard_True;
+    done = true;
     return;
   } // else if (typl != IntPatch_Restriction)  {
 
-  done = Standard_False;
+  done = false;
   seqp.Clear();
   nbvtx = GeomInt_LineTool::NbVertex(L);
   if (nbvtx == 0)
@@ -391,17 +393,17 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     // surface to make the decision. Will be done in the caller
     seqp.Append(GeomInt_LineTool::FirstParameter(L));
     seqp.Append(GeomInt_LineTool::LastParameter(L));
-    done = Standard_True;
+    done = true;
     return;
   }
 
-  GeomInt_SequenceOfParameterAndOrientation seqpss;
-  TopAbs_Orientation                        or1 = TopAbs_FORWARD, or2 = TopAbs_FORWARD;
+  NCollection_Sequence<GeomInt_ParameterAndOrientation> seqpss;
+  TopAbs_Orientation                                    or1 = TopAbs_FORWARD, or2 = TopAbs_FORWARD;
 
   for (i = 1; i <= nbvtx; i++)
   {
     const IntPatch_Point& thevtx = GeomInt_LineTool::Vertex(L, i);
-    const Standard_Real   prm    = thevtx.ParameterOnLine();
+    const double          prm    = thevtx.ParameterOnLine();
     if (thevtx.IsOnDomS1())
     {
       switch (thevtx.TransitionLineArc1().TransitionType())
@@ -448,9 +450,9 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       or2 = TopAbs_INTERNAL;
     }
     //
-    const Standard_Integer nbinserted = seqpss.Length();
-    Standard_Boolean       inserted   = Standard_False;
-    for (Standard_Integer j = 1; j <= nbinserted; j++)
+    const int nbinserted = seqpss.Length();
+    bool      inserted   = false;
+    for (int j = 1; j <= nbinserted; j++)
     {
       if (std::abs(prm - seqpss(j).Parameter()) <= Tol)
       {
@@ -485,7 +487,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
             valj.SetOrientation2(or2);
           }
         }
-        inserted = Standard_True;
+        inserted = true;
         break;
       }
 
@@ -493,7 +495,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       {
         // insert before position j
         seqpss.InsertBefore(j, GeomInt_ParameterAndOrientation(prm, or1, or2));
-        inserted = Standard_True;
+        inserted = true;
         break;
       }
     }
@@ -504,9 +506,9 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
   }
 
   // determine the state at the beginning of line
-  Standard_Boolean trim   = Standard_False;
-  Standard_Boolean dansS1 = Standard_False;
-  Standard_Boolean dansS2 = Standard_False;
+  bool trim   = false;
+  bool dansS1 = false;
+  bool dansS2 = false;
 
   nbvtx = seqpss.Length();
   for (i = 1; i <= nbvtx; i++)
@@ -514,7 +516,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     or1 = seqpss(i).Orientation1();
     if (or1 != TopAbs_INTERNAL)
     {
-      trim   = Standard_True;
+      trim   = true;
       dansS1 = (or1 != TopAbs_FORWARD);
       break;
     }
@@ -522,7 +524,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
 
   if (i > nbvtx)
   {
-    Standard_Real U, V;
+    double U, V;
     for (i = 1; i <= GeomInt_LineTool::NbVertex(L); i++)
     {
       if (!GeomInt_LineTool::Vertex(L, i).IsOnDomS1())
@@ -531,13 +533,13 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         gp_Pnt2d PPCC(U, V);
         if (myDom1->Classify(PPCC, Tol) == TopAbs_OUT)
         {
-          done = Standard_True;
+          done = true;
           return;
         }
         break;
       }
     }
-    dansS1 = Standard_True; // Keep in doubt
+    dansS1 = true; // Keep in doubt
   }
   //
   for (i = 1; i <= nbvtx; i++)
@@ -545,7 +547,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     or2 = seqpss(i).Orientation2();
     if (or2 != TopAbs_INTERNAL)
     {
-      trim   = Standard_True;
+      trim   = true;
       dansS2 = (or2 != TopAbs_FORWARD);
       break;
     }
@@ -553,7 +555,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
 
   if (i > nbvtx)
   {
-    Standard_Real U, V;
+    double U, V;
     for (i = 1; i <= GeomInt_LineTool::NbVertex(L); i++)
     {
       if (!GeomInt_LineTool::Vertex(L, i).IsOnDomS2())
@@ -561,28 +563,28 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         GeomInt_LineTool::Vertex(L, i).ParametersOnS2(U, V);
         if (myDom2->Classify(gp_Pnt2d(U, V), Tol) == TopAbs_OUT)
         {
-          done = Standard_True;
+          done = true;
           return;
         }
         break;
       }
     }
-    dansS2 = Standard_True; //  Keep in doubt
+    dansS2 = true; //  Keep in doubt
   }
 
   if (!trim)
-  { // necessarily dansS1 == dansS2 == Standard_True
+  { // necessarily dansS1 == dansS2 == true
     seqp.Append(GeomInt_LineTool::FirstParameter(L));
     seqp.Append(GeomInt_LineTool::LastParameter(L));
-    done = Standard_True;
+    done = true;
     return;
   }
 
   // sequence seqpss is peeled to create valid ends
   // and store them in seqp(2*i+1) and seqp(2*i+2)
-  Standard_Real thefirst = GeomInt_LineTool::FirstParameter(L);
-  Standard_Real thelast  = GeomInt_LineTool::LastParameter(L);
-  firstp                 = thefirst;
+  double thefirst = GeomInt_LineTool::FirstParameter(L);
+  double thelast  = GeomInt_LineTool::LastParameter(L);
+  firstp          = thefirst;
 
   for (i = 1; i <= nbvtx; i++)
   {
@@ -592,18 +594,18 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     {
       if (or1 == TopAbs_REVERSED)
       {
-        dansS1 = Standard_False;
+        dansS1 = false;
       }
 
       if (or2 == TopAbs_REVERSED)
       {
-        dansS2 = Standard_False;
+        dansS2 = false;
       }
       if (!dansS1 || !dansS2)
       {
-        lastp                  = seqpss(i).Parameter();
-        Standard_Real stofirst = std::max(firstp, thefirst);
-        Standard_Real stolast  = std::min(lastp, thelast);
+        lastp           = seqpss(i).Parameter();
+        double stofirst = std::max(firstp, thefirst);
+        double stolast  = std::min(lastp, thelast);
 
         if (stolast > stofirst)
         {
@@ -622,28 +624,28 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       {
         if (or1 == TopAbs_REVERSED)
         {
-          dansS1 = Standard_False;
+          dansS1 = false;
         }
       }
       else
       {
         if (or1 == TopAbs_FORWARD)
         {
-          dansS1 = Standard_True;
+          dansS1 = true;
         }
       }
       if (dansS2)
       {
         if (or2 == TopAbs_REVERSED)
         {
-          dansS2 = Standard_False;
+          dansS2 = false;
         }
       }
       else
       {
         if (or2 == TopAbs_FORWARD)
         {
-          dansS2 = Standard_True;
+          dansS2 = true;
         }
       }
       if (dansS1 && dansS2)
@@ -664,24 +666,24 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       seqp.Append(lastp);
     }
   }
-  done = Standard_True;
+  done = true;
 }
 
 //=================================================================================================
 
-void GeomInt_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& theLine,
-                                          const Standard_Real          theTol)
+void GeomInt_LineConstructor::TreatCircle(const occ::handle<IntPatch_Line>& theLine,
+                                          const double                      theTol)
 {
-  const IntPatch_IType         aType = theLine->ArcType();
-  const Handle(IntPatch_GLine) aGLine(Handle(IntPatch_GLine)::DownCast(theLine));
+  const IntPatch_IType              aType = theLine->ArcType();
+  const occ::handle<IntPatch_GLine> aGLine(occ::down_cast<IntPatch_GLine>(theLine));
   if (RejectMicroCircle(aGLine, aType, theTol))
   {
     return;
   }
   //----------------------------------------
-  const Standard_Integer             aNbVtx = aGLine->NbVertex();
+  const int                          aNbVtx = aGLine->NbVertex();
   NCollection_Array1<GeomInt_Vertex> aVtxArr(1, aNbVtx + 1);
-  for (Standard_Integer i = 1; i <= aNbVtx; i++)
+  for (int i = 1; i <= aNbVtx; i++)
   {
     aVtxArr(i).SetVertex(aGLine->Vertex(i));
   }
@@ -689,25 +691,25 @@ void GeomInt_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& theLine,
   std::sort(aVtxArr.begin(), aVtxArr.begin() + aNbVtx);
 
   // Create last vertex
-  const Standard_Real aMinPrm = aVtxArr.First().Getvertex().ParameterOnLine() + TwoPI;
+  const double aMinPrm = aVtxArr.First().Getvertex().ParameterOnLine() + TwoPI;
   aVtxArr.ChangeLast().SetParameter(aMinPrm);
 
   RejectDuplicates(aVtxArr);
 
   std::sort(aVtxArr.begin(), aVtxArr.end());
 
-  Standard_Real aU1, aV1, aU2, aV2;
-  gp_Pnt        aPmid;
-  gp_Pnt2d      aP2D;
-  for (Standard_Integer i = aVtxArr.Lower(); i <= aVtxArr.Upper() - 1; i++)
+  double   aU1, aV1, aU2, aV2;
+  gp_Pnt   aPmid;
+  gp_Pnt2d aP2D;
+  for (int i = aVtxArr.Lower(); i <= aVtxArr.Upper() - 1; i++)
   {
-    const Standard_Real aT1 = aVtxArr(i).Getvertex().ParameterOnLine();
-    const Standard_Real aT2 = aVtxArr(i + 1).Getvertex().ParameterOnLine();
+    const double aT1 = aVtxArr(i).Getvertex().ParameterOnLine();
+    const double aT2 = aVtxArr(i + 1).Getvertex().ParameterOnLine();
 
     if (aT2 == RealLast())
       break;
 
-    const Standard_Real aTmid = (aT1 + aT2) * 0.5;
+    const double aTmid = (aT1 + aT2) * 0.5;
     GLinePoint(aType, aGLine, aTmid, aPmid);
     //
     Parameters(myHS1, myHS2, aPmid, aU1, aV1, aU2, aV2);
@@ -730,96 +732,96 @@ void GeomInt_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& theLine,
 
 //=================================================================================================
 
-void AdjustPeriodic(const Handle(GeomAdaptor_Surface)& myHS1,
-                    const Handle(GeomAdaptor_Surface)& myHS2,
-                    Standard_Real&                     u1,
-                    Standard_Real&                     v1,
-                    Standard_Real&                     u2,
-                    Standard_Real&                     v2)
+void AdjustPeriodic(const occ::handle<GeomAdaptor_Surface>& myHS1,
+                    const occ::handle<GeomAdaptor_Surface>& myHS2,
+                    double&                                 u1,
+                    double&                                 v1,
+                    double&                                 u2,
+                    double&                                 v2)
 {
-  Standard_Boolean          myHS1IsUPeriodic, myHS1IsVPeriodic;
+  bool                      myHS1IsUPeriodic, myHS1IsVPeriodic;
   const GeomAbs_SurfaceType typs1 = myHS1->GetType();
   switch (typs1)
   {
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
     case GeomAbs_Sphere: {
-      myHS1IsUPeriodic = Standard_True;
-      myHS1IsVPeriodic = Standard_False;
+      myHS1IsUPeriodic = true;
+      myHS1IsVPeriodic = false;
       break;
     }
     case GeomAbs_Torus: {
-      myHS1IsUPeriodic = myHS1IsVPeriodic = Standard_True;
+      myHS1IsUPeriodic = myHS1IsVPeriodic = true;
       break;
     }
     default: {
       //-- Case of periodic biparameters is processed upstream
-      myHS1IsUPeriodic = myHS1IsVPeriodic = Standard_False;
+      myHS1IsUPeriodic = myHS1IsVPeriodic = false;
       break;
     }
   }
-  Standard_Boolean          myHS2IsUPeriodic, myHS2IsVPeriodic;
+  bool                      myHS2IsUPeriodic, myHS2IsVPeriodic;
   const GeomAbs_SurfaceType typs2 = myHS2->GetType();
   switch (typs2)
   {
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
     case GeomAbs_Sphere: {
-      myHS2IsUPeriodic = Standard_True;
-      myHS2IsVPeriodic = Standard_False;
+      myHS2IsUPeriodic = true;
+      myHS2IsVPeriodic = false;
       break;
     }
     case GeomAbs_Torus: {
-      myHS2IsUPeriodic = myHS2IsVPeriodic = Standard_True;
+      myHS2IsUPeriodic = myHS2IsVPeriodic = true;
       break;
     }
     default: {
       //-- Case of periodic biparameters is processed upstream
-      myHS2IsUPeriodic = myHS2IsVPeriodic = Standard_False;
+      myHS2IsUPeriodic = myHS2IsVPeriodic = false;
       break;
     }
   }
-  Standard_Real du, dv;
+  double du, dv;
   //
   if (myHS1IsUPeriodic)
   {
-    const Standard_Real lmf = M_PI + M_PI; //-- myHS1->UPeriod();
-    const Standard_Real f   = myHS1->FirstUParameter();
-    const Standard_Real l   = myHS1->LastUParameter();
+    const double lmf = M_PI + M_PI; //-- myHS1->UPeriod();
+    const double f   = myHS1->FirstUParameter();
+    const double l   = myHS1->LastUParameter();
     GeomInt::AdjustPeriodic(u1, f, l, lmf, u1, du);
   }
   if (myHS1IsVPeriodic)
   {
-    const Standard_Real lmf = M_PI + M_PI; //-- myHS1->VPeriod();
-    const Standard_Real f   = myHS1->FirstVParameter();
-    const Standard_Real l   = myHS1->LastVParameter();
+    const double lmf = M_PI + M_PI; //-- myHS1->VPeriod();
+    const double f   = myHS1->FirstVParameter();
+    const double l   = myHS1->LastVParameter();
     GeomInt::AdjustPeriodic(v1, f, l, lmf, v1, dv);
   }
   if (myHS2IsUPeriodic)
   {
-    const Standard_Real lmf = M_PI + M_PI; //-- myHS2->UPeriod();
-    const Standard_Real f   = myHS2->FirstUParameter();
-    const Standard_Real l   = myHS2->LastUParameter();
+    const double lmf = M_PI + M_PI; //-- myHS2->UPeriod();
+    const double f   = myHS2->FirstUParameter();
+    const double l   = myHS2->LastUParameter();
     GeomInt::AdjustPeriodic(u2, f, l, lmf, u2, du);
   }
   if (myHS2IsVPeriodic)
   {
-    const Standard_Real lmf = M_PI + M_PI; //-- myHS2->VPeriod();
-    const Standard_Real f   = myHS2->FirstVParameter();
-    const Standard_Real l   = myHS2->LastVParameter();
+    const double lmf = M_PI + M_PI; //-- myHS2->VPeriod();
+    const double f   = myHS2->FirstVParameter();
+    const double l   = myHS2->LastVParameter();
     GeomInt::AdjustPeriodic(v2, f, l, lmf, v2, dv);
   }
 }
 
 //=================================================================================================
 
-void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
-                const Handle(GeomAdaptor_Surface)& myHS2,
-                const gp_Pnt&                      Ptref,
-                Standard_Real&                     U1,
-                Standard_Real&                     V1,
-                Standard_Real&                     U2,
-                Standard_Real&                     V2)
+void Parameters(const occ::handle<GeomAdaptor_Surface>& myHS1,
+                const occ::handle<GeomAdaptor_Surface>& myHS2,
+                const gp_Pnt&                           Ptref,
+                double&                                 U1,
+                double&                                 V1,
+                double&                                 U2,
+                double&                                 V2)
 {
   Parameters(myHS1, Ptref, U1, V1);
   Parameters(myHS2, Ptref, U2, V2);
@@ -827,10 +829,10 @@ void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
 
 //=================================================================================================
 
-void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
-                const gp_Pnt&                      Ptref,
-                Standard_Real&                     U1,
-                Standard_Real&                     V1)
+void Parameters(const occ::handle<GeomAdaptor_Surface>& myHS1,
+                const gp_Pnt&                           Ptref,
+                double&                                 U1,
+                double&                                 V1)
 {
   IntSurf_Quadric quad1;
   //
@@ -859,10 +861,10 @@ void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
 
 //=================================================================================================
 
-void GLinePoint(const IntPatch_IType          typl,
-                const Handle(IntPatch_GLine)& GLine,
-                const Standard_Real           aT,
-                gp_Pnt&                       aP)
+void GLinePoint(const IntPatch_IType               typl,
+                const occ::handle<IntPatch_GLine>& GLine,
+                const double                       aT,
+                gp_Pnt&                            aP)
 {
   switch (typl)
   {
@@ -888,14 +890,14 @@ void GLinePoint(const IntPatch_IType          typl,
 
 //=================================================================================================
 
-Standard_Boolean RejectMicroCircle(const Handle(IntPatch_GLine)& aGLine,
-                                   const IntPatch_IType          aType,
-                                   const Standard_Real           aTol3D)
+bool RejectMicroCircle(const occ::handle<IntPatch_GLine>& aGLine,
+                       const IntPatch_IType               aType,
+                       const double                       aTol3D)
 {
-  Standard_Boolean bRet;
-  Standard_Real    aR;
+  bool   bRet;
+  double aR;
   //
-  bRet = Standard_False;
+  bRet = false;
   //
   if (aType == IntPatch_Circle)
   {
@@ -924,22 +926,22 @@ void RejectDuplicates(NCollection_Array1<GeomInt_Vertex>& theVtxArr)
   // About the value aTolPC=1000.*Precision::PConfusion(),
   // see IntPatch_GLine::ComputeVertexParameters(...)
   // for more details;
-  constexpr Standard_Real aTolPC = 1000. * Precision::PConfusion();
+  constexpr double aTolPC = 1000. * Precision::PConfusion();
 
   // Find duplicates in a slice of the array [LowerBound, UpperBound-1].
   // If a duplicate has been found, the element with greater index will be rejected.
-  for (Standard_Integer i = theVtxArr.Lower(); i <= theVtxArr.Upper() - 2; i++)
+  for (int i = theVtxArr.Lower(); i <= theVtxArr.Upper() - 2; i++)
   {
     const IntPatch_Point& aVi   = theVtxArr(i).Getvertex();
-    const Standard_Real   aPrmi = aVi.ParameterOnLine();
+    const double          aPrmi = aVi.ParameterOnLine();
 
     if (aPrmi == RealLast())
       continue;
 
-    for (Standard_Integer j = i + 1; j <= theVtxArr.Upper() - 1; j++)
+    for (int j = i + 1; j <= theVtxArr.Upper() - 1; j++)
     {
       const IntPatch_Point& aVj   = theVtxArr(j).Getvertex();
-      const Standard_Real   aPrmj = aVj.ParameterOnLine();
+      const double          aPrmj = aVj.ParameterOnLine();
 
       if (aPrmj - aPrmi < aTolPC)
       {
@@ -954,11 +956,11 @@ void RejectDuplicates(NCollection_Array1<GeomInt_Vertex>& theVtxArr)
 
   // Find duplicates with the last element of the array.
   // If a duplicate has been found, the found element will be rejected.
-  const Standard_Real aMaxPrm = theVtxArr.Last().Getvertex().ParameterOnLine();
-  for (Standard_Integer i = theVtxArr.Upper() - 1; i > theVtxArr.Lower(); i--)
+  const double aMaxPrm = theVtxArr.Last().Getvertex().ParameterOnLine();
+  for (int i = theVtxArr.Upper() - 1; i > theVtxArr.Lower(); i--)
   {
     const IntPatch_Point& aVi   = theVtxArr(i).Getvertex();
-    const Standard_Real   aPrmi = aVi.ParameterOnLine();
+    const double          aPrmi = aVi.ParameterOnLine();
 
     if (aPrmi == RealLast())
       continue;

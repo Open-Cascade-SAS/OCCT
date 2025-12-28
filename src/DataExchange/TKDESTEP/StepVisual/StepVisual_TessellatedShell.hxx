@@ -21,10 +21,9 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_TessellatedItem.hxx>
 
-#include <StepVisual_HArray1OfTessellatedStructuredItem.hxx>
+#include <StepVisual_TessellatedStructuredItem.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedShell, StepVisual_TessellatedItem)
 
 //! Representation of STEP entity TessellatedShell
 class StepVisual_TessellatedShell : public StepVisual_TessellatedItem
@@ -35,41 +34,46 @@ public:
   Standard_EXPORT StepVisual_TessellatedShell();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                            const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems,
-                            const Standard_Boolean                    theHasTopologicalLink,
-                            const Handle(StepShape_ConnectedFaceSet)& theTopologicalLink);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>&
+                                                   theItems,
+    const bool                                     theHasTopologicalLink,
+    const occ::handle<StepShape_ConnectedFaceSet>& theTopologicalLink);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepVisual_HArray1OfTessellatedStructuredItem) Items() const;
+  Standard_EXPORT occ::handle<
+    NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>
+    Items() const;
 
   //! Sets field Items
   Standard_EXPORT void SetItems(
-    const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems);
+    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>&
+      theItems);
 
   //! Returns number of Items
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   //! Returns value of Items by its num
-  Standard_EXPORT Handle(StepVisual_TessellatedStructuredItem) ItemsValue(
-    const Standard_Integer theNum) const;
+  Standard_EXPORT occ::handle<StepVisual_TessellatedStructuredItem> ItemsValue(
+    const int theNum) const;
 
   //! Returns field TopologicalLink
-  Standard_EXPORT Handle(StepShape_ConnectedFaceSet) TopologicalLink() const;
+  Standard_EXPORT occ::handle<StepShape_ConnectedFaceSet> TopologicalLink() const;
 
   //! Sets field TopologicalLink
   Standard_EXPORT void SetTopologicalLink(
-    const Handle(StepShape_ConnectedFaceSet)& theTopologicalLink);
+    const occ::handle<StepShape_ConnectedFaceSet>& theTopologicalLink);
 
   //! Returns True if optional field TopologicalLink is defined
-  Standard_EXPORT Standard_Boolean HasTopologicalLink() const;
+  Standard_EXPORT bool HasTopologicalLink() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedShell, StepVisual_TessellatedItem)
 
 private:
-  Handle(StepVisual_HArray1OfTessellatedStructuredItem) myItems;
-  Handle(StepShape_ConnectedFaceSet)                    myTopologicalLink; //!< optional
-  Standard_Boolean myHasTopologicalLink; //!< flag "is TopologicalLink defined"
+  occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> myItems;
+  occ::handle<StepShape_ConnectedFaceSet> myTopologicalLink; //!< optional
+  bool myHasTopologicalLink;                                 //!< flag "is TopologicalLink defined"
 };
 
 #endif // _StepVisual_TessellatedShell_HeaderFile_

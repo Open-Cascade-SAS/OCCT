@@ -32,24 +32,22 @@ void OSD_Error::Reset()
   myErrno = 0;
 }
 
-Standard_Boolean OSD_Error::Failed() const
+bool OSD_Error::Failed() const
 {
   if (myErrno == 0)
-    return (Standard_False);
+    return (false);
   else
-    return (Standard_True);
+    return (true);
 }
 
-void OSD_Error::SetValue(const Standard_Integer         errcode,
-                         const Standard_Integer         from,
-                         const TCollection_AsciiString& message)
+void OSD_Error::SetValue(const int errcode, const int from, const TCollection_AsciiString& message)
 {
   myErrno   = errcode;
   myCode    = (OSD_WhoAmI)from;
   myMessage = message;
 }
 
-Standard_Integer OSD_Error::Error() const
+int OSD_Error::Error() const
 {
   return (extCode);
 }
@@ -455,7 +453,7 @@ void OSD_Error::Perror()
       extCode = ERR_TOOBIG;
       break;
     default: {
-      Standard_Character buf[255];
+      char buf[255];
       //
       Sprintf(buf, "%sUnknowm error #%d", buffer.ToCString(), myErrno);
       TCollection_AsciiString interm(buf);
@@ -483,8 +481,8 @@ void OSD_Error::Perror()
 typedef struct _error_table
 {
 
-  DWORD            wnt_error;
-  Standard_Integer csf_error;
+  DWORD wnt_error;
+  int   csf_error;
 
 } ERROR_TABLE;
 
@@ -590,7 +588,7 @@ static ERROR_TABLE fileNodeErrorTable[] = {
 
   #define FILE_NODE_ERR_TABLE_SIZE (int)(sizeof(fileNodeErrorTable) / sizeof(fileNodeErrorTable[0]))
 
-static Standard_Integer _get_comm_error(DWORD);
+static int _get_comm_error(DWORD);
 
 OSD_Error ::OSD_Error()
     : myCode((OSD_WhoAmI)0),
@@ -662,9 +660,7 @@ void OSD_Error ::Perror()
 
 } // end OSD_Error :: Perror
 
-void OSD_Error ::SetValue(const Standard_Integer         Errcode,
-                          const Standard_Integer         From,
-                          const TCollection_AsciiString& Message)
+void OSD_Error ::SetValue(const int Errcode, const int From, const TCollection_AsciiString& Message)
 {
 
   int i;
@@ -735,17 +731,17 @@ void OSD_Error ::SetValue(const Standard_Integer         Errcode,
 
 } // end OSD_Error :: SetValue
 
-Standard_Integer OSD_Error ::Error() const
+int OSD_Error ::Error() const
 {
 
   return extCode;
 
 } // end OSD_Error :: Error
 
-Standard_Boolean OSD_Error ::Failed() const
+bool OSD_Error ::Failed() const
 {
 
-  return myErrno == ERROR_SUCCESS ? Standard_False : Standard_True;
+  return myErrno == ERROR_SUCCESS ? false : true;
 
 } // end OSD_Error :: Failed
 
@@ -754,11 +750,11 @@ void OSD_Error ::Reset()
   myErrno = ERROR_SUCCESS;
 } // end OSD_Error :: Reset
 
-static Standard_Integer _get_comm_error(DWORD dwCode)
+static int _get_comm_error(DWORD dwCode)
 {
 
-  int              i;
-  Standard_Integer retVal = ERR_SURPRISE;
+  int i;
+  int retVal = ERR_SURPRISE;
 
   for (i = 0; i < COMM_ERR_TABLE_SIZE; ++i)
 

@@ -30,9 +30,9 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge()
       myPTol2(0.),
       myRange1(0., 0.),
       myRange2(0., 0.),
-      mySwap(Standard_False),
+      mySwap(false),
       myErrorStatus(0),
-      myQuickCoincidenceCheck(Standard_False)
+      myQuickCoincidenceCheck(false)
 {
 }
 
@@ -54,20 +54,20 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
       myPTol2(0.),
       myRange1(0., 0.),
       myRange2(0., 0.),
-      mySwap(Standard_False),
+      mySwap(false),
       myErrorStatus(0),
-      myQuickCoincidenceCheck(Standard_False)
+      myQuickCoincidenceCheck(false)
 {
 }
 
 //=================================================================================================
 
-inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
-                                            const Standard_Real aT11,
-                                            const Standard_Real aT12,
-                                            const TopoDS_Edge&  theEdge2,
-                                            const Standard_Real aT21,
-                                            const Standard_Real aT22)
+inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
+                                            const double       aT11,
+                                            const double       aT12,
+                                            const TopoDS_Edge& theEdge2,
+                                            const double       aT21,
+                                            const double       aT22)
     : myEdge1(theEdge1),
       myEdge2(theEdge2),
       myTol1(0.),
@@ -82,9 +82,9 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
       myPTol2(0.),
       myRange1(aT11, aT12),
       myRange2(aT21, aT22),
-      mySwap(Standard_False),
+      mySwap(false),
       myErrorStatus(0),
-      myQuickCoincidenceCheck(Standard_False)
+      myQuickCoincidenceCheck(false)
 {
 }
 
@@ -108,7 +108,7 @@ inline void IntTools_EdgeEdge::SetRange1(const IntTools_Range& theRange)
 
 //=================================================================================================
 
-inline void IntTools_EdgeEdge::SetRange1(const Standard_Real aT1, const Standard_Real aT2)
+inline void IntTools_EdgeEdge::SetRange1(const double aT1, const double aT2)
 {
   myRange1.SetFirst(aT1);
   myRange1.SetLast(aT2);
@@ -116,9 +116,9 @@ inline void IntTools_EdgeEdge::SetRange1(const Standard_Real aT1, const Standard
 
 //=================================================================================================
 
-inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge&  theEdge,
-                                        const Standard_Real aT1,
-                                        const Standard_Real aT2)
+inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge& theEdge,
+                                        const double       aT1,
+                                        const double       aT2)
 {
   SetEdge1(theEdge);
   SetRange1(aT1, aT2);
@@ -140,7 +140,7 @@ inline void IntTools_EdgeEdge::SetRange2(const IntTools_Range& theRange)
 
 //=================================================================================================
 
-inline void IntTools_EdgeEdge::SetRange2(const Standard_Real aT1, const Standard_Real aT2)
+inline void IntTools_EdgeEdge::SetRange2(const double aT1, const double aT2)
 {
   myRange2.SetFirst(aT1);
   myRange2.SetLast(aT2);
@@ -148,9 +148,9 @@ inline void IntTools_EdgeEdge::SetRange2(const Standard_Real aT1, const Standard
 
 //=================================================================================================
 
-inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge&  theEdge,
-                                        const Standard_Real aT1,
-                                        const Standard_Real aT2)
+inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge& theEdge,
+                                        const double       aT1,
+                                        const double       aT2)
 {
   SetEdge2(theEdge);
   SetRange2(aT1, aT2);
@@ -158,28 +158,28 @@ inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge&  theEdge,
 
 //=================================================================================================
 
-inline void IntTools_EdgeEdge::SetFuzzyValue(const Standard_Real theFuzz)
+inline void IntTools_EdgeEdge::SetFuzzyValue(const double theFuzz)
 {
   myFuzzyValue = std::max(theFuzz, Precision::Confusion());
 }
 
 //=================================================================================================
 
-inline Standard_Real IntTools_EdgeEdge::FuzzyValue() const
+inline double IntTools_EdgeEdge::FuzzyValue() const
 {
   return myFuzzyValue;
 }
 
 //=================================================================================================
 
-inline const IntTools_SequenceOfCommonPrts& IntTools_EdgeEdge::CommonParts() const
+inline const NCollection_Sequence<IntTools_CommonPrt>& IntTools_EdgeEdge::CommonParts() const
 {
   return myCommonParts;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean IntTools_EdgeEdge::IsDone() const
+inline bool IntTools_EdgeEdge::IsDone() const
 {
   return (myErrorStatus == 0);
 }

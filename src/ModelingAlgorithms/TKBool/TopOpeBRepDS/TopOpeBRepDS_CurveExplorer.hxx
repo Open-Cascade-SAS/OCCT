@@ -32,36 +32,34 @@ public:
   Standard_EXPORT TopOpeBRepDS_CurveExplorer();
 
   Standard_EXPORT TopOpeBRepDS_CurveExplorer(const TopOpeBRepDS_DataStructure& DS,
-                                             const Standard_Boolean FindOnlyKeep = Standard_True);
+                                             const bool                        FindOnlyKeep = true);
 
-  Standard_EXPORT void Init(const TopOpeBRepDS_DataStructure& DS,
-                            const Standard_Boolean            FindOnlyKeep = Standard_True);
+  Standard_EXPORT void Init(const TopOpeBRepDS_DataStructure& DS, const bool FindOnlyKeep = true);
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
   Standard_EXPORT const TopOpeBRepDS_Curve& Curve() const;
 
-  Standard_EXPORT Standard_Boolean IsCurve(const Standard_Integer I) const;
+  Standard_EXPORT bool IsCurve(const int I) const;
 
-  Standard_EXPORT Standard_Boolean IsCurveKeep(const Standard_Integer I) const;
+  Standard_EXPORT bool IsCurveKeep(const int I) const;
 
-  Standard_EXPORT const TopOpeBRepDS_Curve& Curve(const Standard_Integer I) const;
+  Standard_EXPORT const TopOpeBRepDS_Curve& Curve(const int I) const;
 
-  Standard_EXPORT Standard_Integer NbCurve();
+  Standard_EXPORT int NbCurve();
 
-  Standard_EXPORT Standard_Integer Index() const;
+  Standard_EXPORT int Index() const;
 
-protected:
 private:
   Standard_EXPORT void Find();
 
-  Standard_Integer myIndex;
-  Standard_Integer myMax;
-  Standard_Address myDS;
-  Standard_Boolean myFound;
-  Standard_Boolean myFindKeep;
+  int   myIndex;
+  int   myMax;
+  void* myDS;
+  bool  myFound;
+  bool  myFindKeep;
 };
 
 #endif // _TopOpeBRepDS_CurveExplorer_HeaderFile

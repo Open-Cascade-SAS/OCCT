@@ -23,7 +23,7 @@
 #include <gp_XYZ.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array2OfVec.hxx>
+#include <NCollection_Array2.hxx>
 
 #include <cmath>
 
@@ -255,18 +255,18 @@ inline bool CalculateD1(gp_Pnt&       theValue,
 //! @param[out] theDerNUV array of normal derivatives
 //! @param[in,out] theDerSurf array of surface derivatives
 template <class BasisSurfType, class OscSurfType>
-void ComputeDerivatives(int                  theMaxOrder,
-                        int                  theMinOrder,
-                        double               theU,
-                        double               theV,
-                        const BasisSurfType& theBasisSurf,
-                        int                  theNU,
-                        int                  theNV,
-                        bool                 theAlongU,
-                        bool                 theAlongV,
-                        const OscSurfType&   theOscSurf,
-                        TColgp_Array2OfVec&  theDerNUV,
-                        TColgp_Array2OfVec&  theDerSurf)
+void ComputeDerivatives(int                         theMaxOrder,
+                        int                         theMinOrder,
+                        double                      theU,
+                        double                      theV,
+                        const BasisSurfType&        theBasisSurf,
+                        int                         theNU,
+                        int                         theNV,
+                        bool                        theAlongU,
+                        bool                        theAlongV,
+                        const OscSurfType&          theOscSurf,
+                        NCollection_Array2<gp_Vec>& theDerNUV,
+                        NCollection_Array2<gp_Vec>& theDerSurf)
 {
   gp_Pnt P;
   gp_Vec DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3UUV, DL3UVV, DL3V;
@@ -584,8 +584,8 @@ bool EvaluateD0(double                  theU,
     // Singular case - query osculating surface and use higher order derivatives
     constexpr int aMaxOrder = 3;
 
-    OsculatingInfo              aOscInfo;
-    Handle(Geom_BSplineSurface) aOscSurf;
+    OsculatingInfo                   aOscInfo;
+    occ::handle<Geom_BSplineSurface> aOscSurf;
     if (theOscQuery)
     {
       aOscInfo.AlongU = theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
@@ -620,7 +620,7 @@ bool EvaluateD0(double                  theU,
     }
     else
     {
-      Handle(Geom_BSplineSurface) aDummy;
+      occ::handle<Geom_BSplineSurface> aDummy;
       ComputeDerivatives(aMaxOrder,
                          1,
                          theU,
@@ -796,8 +796,8 @@ bool EvaluateD1(double                  theU,
     gp_Vec    aNorm      = aD1U.Crossed(aD1V);
 
     // Query osculating surface only if singular
-    OsculatingInfo              aOscInfo;
-    Handle(Geom_BSplineSurface) aOscSurf;
+    OsculatingInfo                   aOscInfo;
+    occ::handle<Geom_BSplineSurface> aOscSurf;
     if (aNorm.SquareMagnitude() <= THE_D1_MAGNITUDE_TOL * THE_D1_MAGNITUDE_TOL)
     {
       if (theOscQuery)
@@ -881,7 +881,7 @@ bool EvaluateD1(double                  theU,
     }
     else
     {
-      Handle(Geom_BSplineSurface) aDummy;
+      occ::handle<Geom_BSplineSurface> aDummy;
       ComputeDerivatives(aMaxOrder,
                          2,
                          theU,
@@ -949,7 +949,7 @@ bool EvaluateD1(double                  theU,
         }
         else
         {
-          Handle(Geom_BSplineSurface) aDummy;
+          occ::handle<Geom_BSplineSurface> aDummy;
           ComputeDerivatives(aMaxOrder,
                              2,
                              theU,
@@ -1139,8 +1139,8 @@ bool EvaluateD2(double                  theU,
     const int aMaxOrder = (aNStatus == CSLib_Defined) ? 0 : 3;
 
     // Get osculating surface info
-    OsculatingInfo              aOscInfo;
-    Handle(Geom_BSplineSurface) aOscSurf;
+    OsculatingInfo                   aOscInfo;
+    occ::handle<Geom_BSplineSurface> aOscSurf;
     if ((aNStatus != CSLib_Defined) && theOscQuery)
     {
       aOscInfo.AlongU = theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
@@ -1183,7 +1183,7 @@ bool EvaluateD2(double                  theU,
     }
     else
     {
-      Handle(Geom_BSplineSurface) aDummy;
+      occ::handle<Geom_BSplineSurface> aDummy;
       ComputeDerivatives(aMaxOrder,
                          3,
                          theU,
@@ -1381,8 +1381,8 @@ bool EvaluateD3(double                  theU,
     const int aMaxOrder = (aNStatus == CSLib_Defined) ? 0 : 3;
 
     // Get osculating surface info
-    OsculatingInfo              aOscInfo;
-    Handle(Geom_BSplineSurface) aOscSurf;
+    OsculatingInfo                   aOscInfo;
+    occ::handle<Geom_BSplineSurface> aOscSurf;
     if ((aNStatus != CSLib_Defined) && theOscQuery)
     {
       aOscInfo.AlongU = theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
@@ -1426,7 +1426,7 @@ bool EvaluateD3(double                  theU,
     }
     else
     {
-      Handle(Geom_BSplineSurface) aDummy;
+      occ::handle<Geom_BSplineSurface> aDummy;
       ComputeDerivatives(aMaxOrder,
                          3,
                          theU,
@@ -1593,8 +1593,8 @@ bool EvaluateDN(double                  theU,
     aDerSurf.SetValue(0, 1, aD1V);
 
     // Check osculating surface only in singular case
-    OsculatingInfo              aOscInfo;
-    Handle(Geom_BSplineSurface) aOscSurf;
+    OsculatingInfo                   aOscInfo;
+    occ::handle<Geom_BSplineSurface> aOscSurf;
     if ((aNStatus != CSLib_Defined) && theOscQuery)
     {
       aOscInfo.AlongU = theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
@@ -1619,7 +1619,7 @@ bool EvaluateDN(double                  theU,
     }
     else
     {
-      Handle(Geom_BSplineSurface) aDummy;
+      occ::handle<Geom_BSplineSurface> aDummy;
       ComputeDerivatives(aMaxOrder,
                          1,
                          theU,

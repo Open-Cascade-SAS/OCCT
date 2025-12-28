@@ -22,7 +22,6 @@
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 //! @brief Batch evaluator for offset surface grid points.
 //!
@@ -44,7 +43,7 @@ public:
 
   //! Constructor with geometry.
   //! @param theOffset the offset surface geometry to evaluate
-  GeomGridEval_OffsetSurface(const Handle(Geom_OffsetSurface)& theOffset)
+  GeomGridEval_OffsetSurface(const occ::handle<Geom_OffsetSurface>& theOffset)
       : myGeom(theOffset),
         myOffset(0.0)
   {
@@ -62,7 +61,7 @@ public:
   GeomGridEval_OffsetSurface& operator=(GeomGridEval_OffsetSurface&&)      = delete;
 
   //! Returns the geometry handle.
-  const Handle(Geom_OffsetSurface)& Geometry() const { return myGeom; }
+  const occ::handle<Geom_OffsetSurface>& Geometry() const { return myGeom; }
 
   //! Evaluate all grid points.
   //! @param[in] theUParams array of U parameter values
@@ -70,8 +69,8 @@ public:
   //! @return 2D array of evaluated points (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate all grid points with first partial derivatives.
   //! @param[in] theUParams array of U parameter values
@@ -79,8 +78,8 @@ public:
   //! @return 2D array of SurfD1 (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate all grid points with first and second partial derivatives.
   //! @param[in] theUParams array of U parameter values
@@ -88,8 +87,8 @@ public:
   //! @return 2D array of SurfD2 (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate all grid points with derivatives up to third order.
   //! Uses GeomAdaptor_Surface::D3 for evaluation.
@@ -98,8 +97,8 @@ public:
   //! @return 2D array of SurfD3 (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
   //! Uses geometry DN method.
@@ -108,10 +107,11 @@ public:
   //! @param[in] theNU derivative order in U direction
   //! @param[in] theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
-                                                            const TColStd_Array1OfReal& theVParams,
-                                                            int                         theNU,
-                                                            int theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams,
+    int                               theNU,
+    int                               theNV) const;
 
   //! Evaluate points at arbitrary UV pairs.
   //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
@@ -152,9 +152,9 @@ public:
     int                                 theNV) const;
 
 private:
-  Handle(Geom_OffsetSurface) myGeom;
-  Handle(Geom_Surface)       myBasis;
-  double                     myOffset;
+  occ::handle<Geom_OffsetSurface> myGeom;
+  occ::handle<Geom_Surface>       myBasis;
+  double                          myOffset;
 };
 
 #endif // _GeomGridEval_OffsetSurface_HeaderFile

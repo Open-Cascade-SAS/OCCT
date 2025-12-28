@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TDataStd_BooleanArray, TDF_Attribute)
 
-static Standard_Integer DegreeOf2(const Standard_Integer degree)
+static int DegreeOf2(const int degree)
 {
   switch (degree)
   {
@@ -62,12 +62,12 @@ const Standard_GUID& TDataStd_BooleanArray::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_BooleanArray) SetAttr(const TDF_Label&       label,
-                                             const Standard_Integer lower,
-                                             const Standard_Integer upper,
-                                             const Standard_GUID&   theGuid)
+static occ::handle<TDataStd_BooleanArray> SetAttr(const TDF_Label&     label,
+                                                  const int            lower,
+                                                  const int            upper,
+                                                  const Standard_GUID& theGuid)
 {
-  Handle(TDataStd_BooleanArray) A;
+  occ::handle<TDataStd_BooleanArray> A;
   if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_BooleanArray;
@@ -91,20 +91,20 @@ TDataStd_BooleanArray::TDataStd_BooleanArray()
 
 //=================================================================================================
 
-void TDataStd_BooleanArray::Init(const Standard_Integer lower, const Standard_Integer upper)
+void TDataStd_BooleanArray::Init(const int lower, const int upper)
 {
   Standard_RangeError_Raise_if(upper < lower, "TDataStd_BooleanArray::Init");
   Backup();
   myLower  = lower;
   myUpper  = upper;
-  myValues = new TColStd_HArray1OfByte(0, Length() >> 3, 0 /*initialize to FALSE*/);
+  myValues = new NCollection_HArray1<uint8_t>(0, Length() >> 3, 0 /*initialize to FALSE*/);
 }
 
 //=================================================================================================
 
-Handle(TDataStd_BooleanArray) TDataStd_BooleanArray::Set(const TDF_Label&       label,
-                                                         const Standard_Integer lower,
-                                                         const Standard_Integer upper)
+occ::handle<TDataStd_BooleanArray> TDataStd_BooleanArray::Set(const TDF_Label& label,
+                                                              const int        lower,
+                                                              const int        upper)
 {
   return SetAttr(label, lower, upper, GetID());
 }
@@ -113,24 +113,24 @@ Handle(TDataStd_BooleanArray) TDataStd_BooleanArray::Set(const TDF_Label&       
 // function : Set
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
-Handle(TDataStd_BooleanArray) TDataStd_BooleanArray::Set(const TDF_Label&       label,
-                                                         const Standard_GUID&   theGuid,
-                                                         const Standard_Integer lower,
-                                                         const Standard_Integer upper)
+occ::handle<TDataStd_BooleanArray> TDataStd_BooleanArray::Set(const TDF_Label&     label,
+                                                              const Standard_GUID& theGuid,
+                                                              const int            lower,
+                                                              const int            upper)
 {
   return SetAttr(label, lower, upper, theGuid);
 }
 
 //=================================================================================================
 
-void TDataStd_BooleanArray::SetValue(const Standard_Integer index, const Standard_Boolean value)
+void TDataStd_BooleanArray::SetValue(const int index, const bool value)
 {
 
   if (myValues.IsNull())
     return;
-  Standard_Integer byte_index = (index - myLower) >> 3;
-  Standard_Integer degree     = index - (byte_index << 3) - myLower;
-  Standard_Integer byte_value = DegreeOf2(degree);
+  int byte_index = (index - myLower) >> 3;
+  int degree     = index - (byte_index << 3) - myLower;
+  int byte_value = DegreeOf2(degree);
 
   if ((value != 0) == ((myValues->Value(byte_index) & byte_value) > 0))
     return;
@@ -149,51 +149,52 @@ void TDataStd_BooleanArray::SetValue(const Standard_Integer index, const Standar
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_BooleanArray::Value(const Standard_Integer index) const
+bool TDataStd_BooleanArray::Value(const int index) const
 {
   if (myValues.IsNull())
-    return Standard_False;
+    return false;
   if (index < myLower || index > myUpper)
-    return Standard_False;
+    return false;
 
-  Standard_Integer byte_index = (index - myLower) >> 3;
-  Standard_Integer degree     = index - (byte_index << 3) - myLower;
-  Standard_Integer byte_value = DegreeOf2(degree);
+  int byte_index = (index - myLower) >> 3;
+  int degree     = index - (byte_index << 3) - myLower;
+  int byte_value = DegreeOf2(degree);
 
   return (myValues->Value(byte_index) & byte_value) > 0;
 }
 
 //=================================================================================================
 
-Standard_Integer TDataStd_BooleanArray::Lower(void) const
+int TDataStd_BooleanArray::Lower(void) const
 {
   return myLower;
 }
 
 //=================================================================================================
 
-Standard_Integer TDataStd_BooleanArray::Upper(void) const
+int TDataStd_BooleanArray::Upper(void) const
 {
   return myUpper;
 }
 
 //=================================================================================================
 
-Standard_Integer TDataStd_BooleanArray::Length(void) const
+int TDataStd_BooleanArray::Length(void) const
 {
   return myUpper - myLower + 1;
 }
 
 //=================================================================================================
 
-const Handle(TColStd_HArray1OfByte)& TDataStd_BooleanArray::InternalArray() const
+const occ::handle<NCollection_HArray1<uint8_t>>& TDataStd_BooleanArray::InternalArray() const
 {
   return myValues;
 }
 
 //=================================================================================================
 
-void TDataStd_BooleanArray::SetInternalArray(const Handle(TColStd_HArray1OfByte)& values)
+void TDataStd_BooleanArray::SetInternalArray(
+  const occ::handle<NCollection_HArray1<uint8_t>>& values)
 {
   myValues = values;
 }
@@ -225,24 +226,24 @@ void TDataStd_BooleanArray::SetID()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_BooleanArray::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_BooleanArray::NewEmpty() const
 {
   return new TDataStd_BooleanArray();
 }
 
 //=================================================================================================
 
-void TDataStd_BooleanArray::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_BooleanArray::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  Handle(TDataStd_BooleanArray) anArray = Handle(TDataStd_BooleanArray)::DownCast(With);
+  occ::handle<TDataStd_BooleanArray> anArray = occ::down_cast<TDataStd_BooleanArray>(With);
   if (!anArray->myValues.IsNull())
   {
-    myLower                     = anArray->Lower();
-    myUpper                     = anArray->Upper();
-    Standard_Integer byte_upper = Length() >> 3;
-    myValues = new TColStd_HArray1OfByte(0, byte_upper, 0 /*initialize to FALSE*/);
-    const TColStd_Array1OfByte& with_array = anArray->myValues->Array1();
-    for (Standard_Integer i = 0; i <= byte_upper; i++)
+    myLower        = anArray->Lower();
+    myUpper        = anArray->Upper();
+    int byte_upper = Length() >> 3;
+    myValues       = new NCollection_HArray1<uint8_t>(0, byte_upper, 0 /*initialize to FALSE*/);
+    const NCollection_Array1<uint8_t>& with_array = anArray->myValues->Array1();
+    for (int i = 0; i <= byte_upper; i++)
     {
       myValues->SetValue(i, with_array.Value(i));
     }
@@ -256,16 +257,16 @@ void TDataStd_BooleanArray::Restore(const Handle(TDF_Attribute)& With)
 
 //=================================================================================================
 
-void TDataStd_BooleanArray::Paste(const Handle(TDF_Attribute)& Into,
-                                  const Handle(TDF_RelocationTable)&) const
+void TDataStd_BooleanArray::Paste(const occ::handle<TDF_Attribute>& Into,
+                                  const occ::handle<TDF_RelocationTable>&) const
 {
   if (!myValues.IsNull())
   {
-    Handle(TDataStd_BooleanArray) anArray = Handle(TDataStd_BooleanArray)::DownCast(Into);
+    occ::handle<TDataStd_BooleanArray> anArray = occ::down_cast<TDataStd_BooleanArray>(Into);
     if (!anArray.IsNull())
     {
       anArray->Init(myLower, myUpper);
-      for (Standard_Integer i = myLower; i <= myUpper; i++)
+      for (int i = myLower; i <= myUpper; i++)
       {
         anArray->SetValue(i, Value(i));
       }
@@ -279,7 +280,7 @@ void TDataStd_BooleanArray::Paste(const Handle(TDF_Attribute)& Into,
 Standard_OStream& TDataStd_BooleanArray::Dump(Standard_OStream& anOS) const
 {
   anOS << "\nBooleanArray: ";
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
   anOS << std::endl;
@@ -288,7 +289,7 @@ Standard_OStream& TDataStd_BooleanArray::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_BooleanArray::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_BooleanArray::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -299,10 +300,10 @@ void TDataStd_BooleanArray::DumpJson(Standard_OStream& theOStream, Standard_Inte
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValues->Lower())
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValues->Upper())
 
-    for (TColStd_Array1OfByte::Iterator aValueIt(myValues->Array1()); aValueIt.More();
+    for (NCollection_Array1<uint8_t>::Iterator aValueIt(myValues->Array1()); aValueIt.More();
          aValueIt.Next())
     {
-      const Standard_Byte& aValue = aValueIt.Value();
+      const uint8_t& aValue = aValueIt.Value();
       OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aValue)
     }
   }

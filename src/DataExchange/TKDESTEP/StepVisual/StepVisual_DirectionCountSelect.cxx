@@ -20,33 +20,33 @@ StepVisual_DirectionCountSelect::StepVisual_DirectionCountSelect()
 {
 }
 
-void StepVisual_DirectionCountSelect::SetTypeOfContent(const Standard_Integer aType)
+void StepVisual_DirectionCountSelect::SetTypeOfContent(const int aType)
 {
   theTypeOfContent = aType;
 }
 
-Standard_Integer StepVisual_DirectionCountSelect::TypeOfContent() const
+int StepVisual_DirectionCountSelect::TypeOfContent() const
 {
   return theTypeOfContent;
 }
 
-Standard_Integer StepVisual_DirectionCountSelect::UDirectionCount() const
+int StepVisual_DirectionCountSelect::UDirectionCount() const
 {
   return theUDirectionCount;
 }
 
-void StepVisual_DirectionCountSelect::SetUDirectionCount(const Standard_Integer aUDirectionCount)
+void StepVisual_DirectionCountSelect::SetUDirectionCount(const int aUDirectionCount)
 {
   theUDirectionCount = aUDirectionCount;
   theTypeOfContent   = 1;
 }
 
-Standard_Integer StepVisual_DirectionCountSelect::VDirectionCount() const
+int StepVisual_DirectionCountSelect::VDirectionCount() const
 {
   return theUDirectionCount;
 }
 
-void StepVisual_DirectionCountSelect::SetVDirectionCount(const Standard_Integer aVDirectionCount)
+void StepVisual_DirectionCountSelect::SetVDirectionCount(const int aVDirectionCount)
 {
   theVDirectionCount = aVDirectionCount;
   theTypeOfContent   = 2;

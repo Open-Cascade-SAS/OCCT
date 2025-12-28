@@ -29,14 +29,14 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_PositionDriver, XmlMDF_ADriver)
 //=================================================================================================
 
 XmlMDataXtd_PositionDriver::XmlMDataXtd_PositionDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataXtd_PositionDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataXtd_PositionDriver::NewEmpty() const
 {
   return (new TDataXtd_Position());
 }
@@ -45,23 +45,23 @@ Handle(TDF_Attribute) XmlMDataXtd_PositionDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const Handle(TDF_Attribute)& theTarget,
-                                                   XmlObjMgt_RRelocationTable&) const
+bool XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       XmlObjMgt_RRelocationTable&) const
 {
-  Handle(TDataXtd_Position) aTPos = Handle(TDataXtd_Position)::DownCast(theTarget);
+  occ::handle<TDataXtd_Position> aTPos = occ::down_cast<TDataXtd_Position>(theTarget);
 
   // position
   XmlObjMgt_DOMString aPosStr = XmlObjMgt::GetStringValue(theSource.Element());
   if (aPosStr == NULL)
   {
     myMessageDriver->Send("Cannot retrieve position string from element", Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  gp_Pnt           aPos;
-  Standard_Real    aValue;
-  Standard_CString aValueStr = Standard_CString(aPosStr.GetString());
+  gp_Pnt      aPos;
+  double      aValue;
+  const char* aValueStr = static_cast<const char*>(aPosStr.GetString());
 
   // X
   if (!XmlObjMgt::GetReal(aValueStr, aValue))
@@ -71,7 +71,7 @@ Standard_Boolean XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&  
         "Cannot retrieve X coordinate for TDataXtd_Position attribute as \"")
       + aValueStr + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   aPos.SetX(aValue);
 
@@ -83,7 +83,7 @@ Standard_Boolean XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&  
         "Cannot retrieve Y coordinate for TDataXtd_Position attribute as \"")
       + aValueStr + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   aPos.SetY(aValue);
 
@@ -95,24 +95,24 @@ Standard_Boolean XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&  
         "Cannot retrieve Z coordinate for TDataXtd_Position attribute as \"")
       + aValueStr + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   aPos.SetZ(aValue);
 
   aTPos->SetPosition(aPos);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataXtd_PositionDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                       XmlObjMgt_Persistent&        theTarget,
+void XmlMDataXtd_PositionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                       XmlObjMgt_Persistent&             theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataXtd_Position) aTPos = Handle(TDataXtd_Position)::DownCast(theSource);
+  occ::handle<TDataXtd_Position> aTPos = occ::down_cast<TDataXtd_Position>(theSource);
   if (!aTPos.IsNull())
   {
     gp_Pnt aPos = aTPos->GetPosition();

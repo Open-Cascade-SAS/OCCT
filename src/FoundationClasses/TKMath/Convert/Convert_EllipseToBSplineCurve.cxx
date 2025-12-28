@@ -22,9 +22,9 @@
 #include <gp_Trsf2d.hxx>
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // Attention :
 // To avoid use of persistent tables in the fields
@@ -51,10 +51,10 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
     : Convert_ConicToBSplineCurve(0, 0, 0)
 {
 
-  Standard_Integer ii;
+  int ii;
 
-  Standard_Real                 R, r, value;
-  Handle(TColStd_HArray1OfReal) CosNumeratorPtr, SinNumeratorPtr;
+  double                                   R, r, value;
+  occ::handle<NCollection_HArray1<double>> CosNumeratorPtr, SinNumeratorPtr;
 
   R = E.MajorRadius();
   r = E.MinorRadius();
@@ -63,7 +63,7 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   {
     // If BuildCosAndSin cannot manage the periodicity
     // => trim on 0,2*PI
-    isperiodic = Standard_False;
+    isperiodic = false;
     Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                                 0,
                                                 2 * M_PI,
@@ -76,7 +76,7 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   }
   else
   {
-    isperiodic = Standard_True;
+    isperiodic = true;
     Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                                 CosNumeratorPtr,
                                                 SinNumeratorPtr,
@@ -89,7 +89,7 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   nbPoles = CosNumeratorPtr->Length();
   nbKnots = knots->Length();
 
-  poles = new TColgp_HArray1OfPnt2d(1, nbPoles);
+  poles = new NCollection_HArray1<gp_Pnt2d>(1, nbPoles);
 
   gp_Dir2d  Ox = E.XAxis().Direction();
   gp_Dir2d  Oy = E.YAxis().Direction();
@@ -122,25 +122,25 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
 
 Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   const gp_Elips2d&                  E,
-  const Standard_Real                UFirst,
-  const Standard_Real                ULast,
+  const double                       UFirst,
+  const double                       ULast,
   const Convert_ParameterisationType Parameterisation)
     : Convert_ConicToBSplineCurve(0, 0, 0)
 {
 #ifndef No_Exception
-  Standard_Real Tol   = Precision::PConfusion();
-  Standard_Real delta = ULast - UFirst;
+  double Tol   = Precision::PConfusion();
+  double delta = ULast - UFirst;
 #endif
   Standard_DomainError_Raise_if((delta > (2 * M_PI + Tol)) || (delta <= 0.0e0),
                                 "Convert_EllipseToBSplineCurve");
-  Standard_Integer              ii;
-  Standard_Real                 R, r, value;
-  Handle(TColStd_HArray1OfReal) CosNumeratorPtr, SinNumeratorPtr;
+  int                                      ii;
+  double                                   R, r, value;
+  occ::handle<NCollection_HArray1<double>> CosNumeratorPtr, SinNumeratorPtr;
 
   R = E.MajorRadius();
   r = E.MinorRadius();
 
-  isperiodic = Standard_False;
+  isperiodic = false;
   Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                               UFirst,
                                               ULast,
@@ -154,7 +154,7 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   nbPoles = CosNumeratorPtr->Length();
   nbKnots = knots->Length();
 
-  poles = new TColgp_HArray1OfPnt2d(1, nbPoles);
+  poles = new NCollection_HArray1<gp_Pnt2d>(1, nbPoles);
 
   gp_Dir2d  Ox = E.XAxis().Direction();
   gp_Dir2d  Oy = E.YAxis().Direction();

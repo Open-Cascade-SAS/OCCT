@@ -40,30 +40,27 @@ public:
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT TopOpeBRepBuild_EdgeBuilder(TopOpeBRepBuild_PaveSet&        LS,
                                               TopOpeBRepBuild_PaveClassifier& LC,
-                                              const Standard_Boolean ForceClass = Standard_False);
+                                              const bool                      ForceClass = false);
 
   Standard_EXPORT void InitEdgeBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                        TopOpeBRepBuild_LoopClassifier& LC,
-                                       const Standard_Boolean          ForceClass = Standard_False);
+                                       const bool                      ForceClass = false);
 
   Standard_EXPORT void InitEdge();
 
-  Standard_EXPORT Standard_Boolean MoreEdge() const;
+  Standard_EXPORT bool MoreEdge() const;
 
   Standard_EXPORT void NextEdge();
 
   Standard_EXPORT void InitVertex();
 
-  Standard_EXPORT Standard_Boolean MoreVertex() const;
+  Standard_EXPORT bool MoreVertex() const;
 
   Standard_EXPORT void NextVertex();
 
   Standard_EXPORT const TopoDS_Shape& Vertex() const;
 
-  Standard_EXPORT Standard_Real Parameter() const;
-
-protected:
-private:
+  Standard_EXPORT double Parameter() const;
 };
 
 #endif // _TopOpeBRepBuild_EdgeBuilder_HeaderFile

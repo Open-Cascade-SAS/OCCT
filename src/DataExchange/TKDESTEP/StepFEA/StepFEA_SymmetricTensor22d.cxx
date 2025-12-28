@@ -18,8 +18,10 @@
 #include <Standard_Transient.hxx>
 #include <StepData_SelectArrReal.hxx>
 #include <StepFEA_SymmetricTensor22d.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 //=================================================================================================
 
@@ -27,7 +29,7 @@ StepFEA_SymmetricTensor22d::StepFEA_SymmetricTensor22d() {}
 
 //=================================================================================================
 
-Standard_Integer StepFEA_SymmetricTensor22d::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepFEA_SymmetricTensor22d::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -38,11 +40,12 @@ Standard_Integer StepFEA_SymmetricTensor22d::CaseNum(const Handle(Standard_Trans
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor22d::AnisotropicSymmetricTensor22d() const
+occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor22d::AnisotropicSymmetricTensor22d()
+  const
 {
-  // return Handle(TColStd_HArray1OfReal)::DownCast(Value());
-  Handle(StepData_SelectArrReal) SSR = Handle(StepData_SelectArrReal)::DownCast(Value());
+  // return occ::down_cast<NCollection_HArray1<double>>(Value());
+  occ::handle<StepData_SelectArrReal> SSR = occ::down_cast<StepData_SelectArrReal>(Value());
   if (SSR.IsNull())
-    return new TColStd_HArray1OfReal(1, 3);
+    return new NCollection_HArray1<double>(1, 3);
   return SSR->ArrReal();
 }

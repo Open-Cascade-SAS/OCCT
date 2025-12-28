@@ -24,7 +24,7 @@
 
 RWMesh_FaceIterator::RWMesh_FaceIterator(const TDF_Label&       theLabel,
                                          const TopLoc_Location& theLocation,
-                                         const Standard_Boolean theToMapColors,
+                                         const bool             theToMapColors,
                                          const XCAFPrs_Style&   theStyle)
     : RWMesh_ShapeIterator(theLabel,
                            theLocation,
@@ -53,12 +53,12 @@ RWMesh_FaceIterator::RWMesh_FaceIterator(const TopoDS_Shape&  theShape,
 
 //=================================================================================================
 
-gp_Dir RWMesh_FaceIterator::normal(Standard_Integer theNode) const
+gp_Dir RWMesh_FaceIterator::normal(int theNode) const
 {
   gp_Dir aNormal(gp::DZ());
   if (myPolyTriang->HasNormals())
   {
-    Graphic3d_Vec3 aNormVec3;
+    NCollection_Vec3<float> aNormVec3;
     myPolyTriang->Normal(theNode, aNormVec3);
     if (aNormVec3.Modulus() != 0.0f)
     {

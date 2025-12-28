@@ -21,11 +21,11 @@
 
 #include <BOPAlgo_Builder.hxx>
 
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfIntegerListOfShape.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 
 //! The algorithm is based on the General Fuse algorithm (GFA).
 //! The result of GFA is all split parts of the Arguments.
@@ -100,11 +100,11 @@
 //! 1. API
 //! @code
 //! BOPAlgo_CellsBuilder aCBuilder;
-//! TopTools_ListOfShape aLS = ...; // arguments
+//! NCollection_List<TopoDS_Shape> aLS = ...; // arguments
 //! // parallel or single mode (the default value is FALSE)
 //! bool toRunParallel = false;
 //! // fuzzy option (default value is 0)
-//! Standard_Real aTol = 0.0;
+//! double aTol = 0.0;
 //! //
 //! aCBuilder.SetArguments (aLS);
 //! aCBuilder.SetRunParallel (toRunParallel);
@@ -120,14 +120,15 @@
 //! // all split parts
 //! const TopoDS_Shape& aRes = aCBuilder.GetAllParts();
 //! //
-//! TopTools_ListOfShape aLSToTake  = ...; // parts of these arguments will be taken into result
-//! TopTools_ListOfShape aLSToAvoid = ...; // parts of these arguments will not be taken into result
+//! NCollection_List<TopoDS_Shape> aLSToTake  = ...; // parts of these arguments will be taken into
+//! result NCollection_List<TopoDS_Shape> aLSToAvoid = ...; // parts of these arguments will not be
+//! taken into result
 //! //
 //! // defines the material common for the cells,
 //! // i.e. the boundaries between cells with the same material will be removed.
 //! // By default it is set to 0.
 //! // Thus, to remove some boundary the value of this variable should not be equal to 0.
-//! Standard_Integer iMaterial = ...;
+//! int iMaterial = ...;
 //! // defines whether to update the result right now or not
 //! bool toUpdate = ...;
 //! // adding to result
@@ -171,12 +172,12 @@ public:
 
   Standard_EXPORT BOPAlgo_CellsBuilder();
 
-  Standard_EXPORT BOPAlgo_CellsBuilder(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPAlgo_CellsBuilder(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   Standard_EXPORT virtual ~BOPAlgo_CellsBuilder();
 
   //! Redefined method Clear - clears the contents.
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Adding the parts to result.
   //! The parts are defined by two lists of shapes:
@@ -190,16 +191,15 @@ public:
   //! cells with the same material will be removed. Default value is 0.
   //! Thus, to remove any boundary the value of this variable should not be equal to 0.
   //! <theUpdate> parameter defines whether to remove boundaries now or not.
-  Standard_EXPORT void AddToResult(const TopTools_ListOfShape& theLSToTake,
-                                   const TopTools_ListOfShape& theLSToAvoid,
-                                   const Standard_Integer      theMaterial = 0,
-                                   const Standard_Boolean      theUpdate   = Standard_False);
+  Standard_EXPORT void AddToResult(const NCollection_List<TopoDS_Shape>& theLSToTake,
+                                   const NCollection_List<TopoDS_Shape>& theLSToAvoid,
+                                   const int                             theMaterial = 0,
+                                   const bool                            theUpdate   = false);
 
   //! Add all split parts to result.
   //! <theMaterial> defines the removal of internal boundaries;
   //! <theUpdate> parameter defines whether to remove boundaries now or not.
-  Standard_EXPORT void AddAllToResult(const Standard_Integer theMaterial = 0,
-                                      const Standard_Boolean theUpdate   = Standard_False);
+  Standard_EXPORT void AddAllToResult(const int theMaterial = 0, const bool theUpdate = false);
 
   //! Removing the parts from result.
   //! The parts are defined by two lists of shapes:
@@ -207,8 +207,8 @@ public:
   //! <theLSToAvoid> defines the arguments which parts should not be removed from result.
   //! To be removed from the result the part must be IN for all shapes from the list
   //! <theLSToTake> and must be OUT of all shapes from the list <theLSToAvoid>.
-  Standard_EXPORT void RemoveFromResult(const TopTools_ListOfShape& theLSToTake,
-                                        const TopTools_ListOfShape& theLSToAvoid);
+  Standard_EXPORT void RemoveFromResult(const NCollection_List<TopoDS_Shape>& theLSToTake,
+                                        const NCollection_List<TopoDS_Shape>& theLSToAvoid);
 
   //! Remove all parts from result.
   Standard_EXPORT void RemoveAllFromResult();
@@ -229,37 +229,37 @@ public:
 protected:
   //! Prepare information for history support taking into account
   //! local modification map of unified elements - myMapModified.
-  Standard_EXPORT virtual const TopTools_ListOfShape* LocModified(const TopoDS_Shape& theS)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>* LocModified(
+    const TopoDS_Shape& theS) override;
 
   //! Redefined method PerformInternal1 - makes all split parts,
   //! nullifies the result <myShape>, and index all parts.
   Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
-                                                const Message_ProgressRange& theRange)
-    Standard_OVERRIDE;
+                                                const Message_ProgressRange& theRange) override;
 
   //! Indexes the parts for quick access to the arguments.
   Standard_EXPORT void IndexParts();
 
   //! Looking for the parts defined by two lists.
-  Standard_EXPORT void FindParts(const TopTools_ListOfShape& theLSToTake,
-                                 const TopTools_ListOfShape& theLSToAvoid,
-                                 TopTools_ListOfShape&       theParts);
+  Standard_EXPORT void FindParts(const NCollection_List<TopoDS_Shape>& theLSToTake,
+                                 const NCollection_List<TopoDS_Shape>& theLSToAvoid,
+                                 NCollection_List<TopoDS_Shape>&       theParts);
 
   //! Removes internal boundaries between cells with the same material.
   //! Returns TRUE if any internal boundaries have been removed.
-  Standard_EXPORT Standard_Boolean
-    RemoveInternals(const TopTools_ListOfShape& theLS,
-                    TopTools_ListOfShape&       theLSNew,
-                    const TopTools_MapOfShape&  theMapKeepBnd = TopTools_MapOfShape());
+  Standard_EXPORT bool RemoveInternals(
+    const NCollection_List<TopoDS_Shape>&                         theLS,
+    NCollection_List<TopoDS_Shape>&                               theLSNew,
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapKeepBnd =
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>());
 
   // fields
   TopoDS_Shape myAllParts; //!< All split parts of the arguments
   // clang-format off
-  TopTools_IndexedDataMapOfShapeListOfShape myIndex; //!< Connection map from all splits parts to the argument shapes from which they were created
-  TopTools_DataMapOfIntegerListOfShape myMaterials;  //!< Map of assigned materials (material -> list of shape)
-  TopTools_DataMapOfShapeInteger myShapeMaterial;    //!< Map of assigned materials (shape -> material)
-  TopTools_DataMapOfShapeShape myMapModified;        //!< Local modification map to track unification of the splits
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myIndex; //!< Connection map from all splits parts to the argument shapes from which they were created
+  NCollection_DataMap<int, NCollection_List<TopoDS_Shape>> myMaterials;  //!< Map of assigned materials (material -> list of shape)
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> myShapeMaterial;    //!< Map of assigned materials (shape -> material)
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapModified;        //!< Local modification map to track unification of the splits
   // clang-format on
 };
 

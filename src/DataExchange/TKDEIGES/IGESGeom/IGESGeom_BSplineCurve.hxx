@@ -21,14 +21,11 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
-
-class IGESGeom_BSplineCurve;
-DEFINE_STANDARD_HANDLE(IGESGeom_BSplineCurve, IGESData_IGESEntity)
 
 //! defines IGESBSplineCurve, Type <126> Form <0-5>
 //! in package IGESGeom
@@ -56,94 +53,93 @@ public:
   //! - aUmin, aUmax : Starting and ending parameter values
   //! - aNorm        : Unit normal (if the curve is planar)
   //! raises exception if allWeights & allPoles are not of same size.
-  Standard_EXPORT void Init(const Standard_Integer               anIndex,
-                            const Standard_Integer               aDegree,
-                            const Standard_Boolean               aPlanar,
-                            const Standard_Boolean               aClosed,
-                            const Standard_Boolean               aPolynom,
-                            const Standard_Boolean               aPeriodic,
-                            const Handle(TColStd_HArray1OfReal)& allKnots,
-                            const Handle(TColStd_HArray1OfReal)& allWeights,
-                            const Handle(TColgp_HArray1OfXYZ)&   allPoles,
-                            const Standard_Real                  aUmin,
-                            const Standard_Real                  aUmax,
-                            const gp_XYZ&                        aNorm);
+  Standard_EXPORT void Init(const int                                       anIndex,
+                            const int                                       aDegree,
+                            const bool                                      aPlanar,
+                            const bool                                      aClosed,
+                            const bool                                      aPolynom,
+                            const bool                                      aPeriodic,
+                            const occ::handle<NCollection_HArray1<double>>& allKnots,
+                            const occ::handle<NCollection_HArray1<double>>& allWeights,
+                            const occ::handle<NCollection_HArray1<gp_XYZ>>& allPoles,
+                            const double                                    aUmin,
+                            const double                                    aUmax,
+                            const gp_XYZ&                                   aNorm);
 
   //! Changes FormNumber (indicates the Shape of the Curve)
   //! Error if not in range [0-5]
-  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+  Standard_EXPORT void SetFormNumber(const int form);
 
   //! returns the upper index of the sum (see Knots,Poles)
-  Standard_EXPORT Standard_Integer UpperIndex() const;
+  Standard_EXPORT int UpperIndex() const;
 
   //! returns the degree of basis functions
-  Standard_EXPORT Standard_Integer Degree() const;
+  Standard_EXPORT int Degree() const;
 
   //! returns True if the curve is Planar, False if non-planar
-  Standard_EXPORT Standard_Boolean IsPlanar() const;
+  Standard_EXPORT bool IsPlanar() const;
 
   //! returns True if the curve is closed, False if open
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT bool IsClosed() const;
 
   //! returns True if the curve is polynomial, False if rational
   //! <flag> False (D) : computed from the list of weights
   //! (all must be equal)
   //! <flag> True : as recorded
-  Standard_EXPORT Standard_Boolean IsPolynomial(const Standard_Boolean flag = Standard_False) const;
+  Standard_EXPORT bool IsPolynomial(const bool flag = false) const;
 
   //! returns True if the curve is periodic, False otherwise
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT bool IsPeriodic() const;
 
   //! returns the number of knots (i.e. Degree + UpperIndex + 2)
-  Standard_EXPORT Standard_Integer NbKnots() const;
+  Standard_EXPORT int NbKnots() const;
 
   //! returns the knot referred to by anIndex,
   //! inside the range [-Degree,UpperIndex+1]
   //! raises exception if
   //! anIndex < -Degree() or anIndex > (NbKnots() - Degree())
   //! Note : Knots are numbered from -Degree (not from 1)
-  Standard_EXPORT Standard_Real Knot(const Standard_Integer anIndex) const;
+  Standard_EXPORT double Knot(const int anIndex) const;
 
   //! returns number of poles (i.e. UpperIndex + 1)
-  Standard_EXPORT Standard_Integer NbPoles() const;
+  Standard_EXPORT int NbPoles() const;
 
   //! returns the weight referred to by anIndex, in [0,UpperIndex]
   //! raises exception if anIndex < 0 or anIndex > UpperIndex()
-  Standard_EXPORT Standard_Real Weight(const Standard_Integer anIndex) const;
+  Standard_EXPORT double Weight(const int anIndex) const;
 
   //! returns the pole referred to by anIndex, in [0,UpperIndex]
   //! raises exception if anIndex < 0 or anIndex > UpperIndex()
-  Standard_EXPORT gp_Pnt Pole(const Standard_Integer anIndex) const;
+  Standard_EXPORT gp_Pnt Pole(const int anIndex) const;
 
   //! returns the anIndex'th pole after applying Transf. Matrix
   //! raises exception if an Index < 0 or an Index > UpperIndex()
-  Standard_EXPORT gp_Pnt TransformedPole(const Standard_Integer anIndex) const;
+  Standard_EXPORT gp_Pnt TransformedPole(const int anIndex) const;
 
   //! returns starting parameter value
-  Standard_EXPORT Standard_Real UMin() const;
+  Standard_EXPORT double UMin() const;
 
   //! returns ending parameter value
-  Standard_EXPORT Standard_Real UMax() const;
+  Standard_EXPORT double UMax() const;
 
   //! if the curve is nonplanar then (0, 0, 0) is returned
   Standard_EXPORT gp_XYZ Normal() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_BSplineCurve, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer              theIndex;
-  Standard_Integer              theDegree;
-  Standard_Boolean              isPlanar;
-  Standard_Boolean              isClosed;
-  Standard_Boolean              isPolynomial;
-  Standard_Boolean              isPeriodic;
-  Handle(TColStd_HArray1OfReal) theKnots;
-  Handle(TColStd_HArray1OfReal) theWeights;
-  Handle(TColgp_HArray1OfXYZ)   thePoles;
-  Standard_Real                 theUmin;
-  Standard_Real                 theUmax;
-  gp_XYZ                        theNorm;
+  int                                      theIndex;
+  int                                      theDegree;
+  bool                                     isPlanar;
+  bool                                     isClosed;
+  bool                                     isPolynomial;
+  bool                                     isPeriodic;
+  occ::handle<NCollection_HArray1<double>> theKnots;
+  occ::handle<NCollection_HArray1<double>> theWeights;
+  occ::handle<NCollection_HArray1<gp_XYZ>> thePoles;
+  double                                   theUmin;
+  double                                   theUmax;
+  gp_XYZ                                   theNorm;
 };
 
 #endif // _IGESGeom_BSplineCurve_HeaderFile

@@ -22,23 +22,24 @@
 #include <TopExp_Explorer.hxx>
 #include <Precision.hxx>
 #include <Poly_Triangulation.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-Standard_Boolean BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
-                                            const TopoDS_Shape& S2,
-                                            gp_Pnt&             P1,
-                                            gp_Pnt&             P2,
-                                            Standard_Real&      dist)
+bool BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
+                                const TopoDS_Shape& S2,
+                                gp_Pnt&             P1,
+                                gp_Pnt&             P2,
+                                double&             dist)
 {
   dist = Precision::Infinite();
 
-  TopLoc_Location            L;
-  Handle(Poly_Triangulation) Tr;
-  TopExp_Explorer            exFace;
+  TopLoc_Location                 L;
+  occ::handle<Poly_Triangulation> Tr;
+  TopExp_Explorer                 exFace;
 
-  Standard_Integer nbn1 = 0;
+  int nbn1 = 0;
   for (exFace.Init(S1, TopAbs_FACE); exFace.More(); exFace.Next())
   {
     const TopoDS_Face& F = TopoDS::Face(exFace.Current());
@@ -47,9 +48,9 @@ Standard_Boolean BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
       nbn1 += Tr->NbNodes();
   }
   if (nbn1 == 0)
-    return Standard_False;
+    return false;
 
-  Standard_Integer nbn2 = 0;
+  int nbn2 = 0;
   for (exFace.Init(S2, TopAbs_FACE); exFace.More(); exFace.Next())
   {
     const TopoDS_Face& F = TopoDS::Face(exFace.Current());
@@ -58,11 +59,11 @@ Standard_Boolean BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
       nbn2 += Tr->NbNodes();
   }
   if (nbn2 == 0)
-    return Standard_False;
+    return false;
 
-  Standard_Integer i, n;
+  int i, n;
 
-  TColgp_Array1OfPnt TP1(1, nbn1);
+  NCollection_Array1<gp_Pnt> TP1(1, nbn1);
   nbn1 = 0;
 
   for (exFace.Init(S1, TopAbs_FACE); exFace.More(); exFace.Next())
@@ -81,7 +82,7 @@ Standard_Boolean BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
     }
   }
 
-  TColgp_Array1OfPnt TP2(1, nbn2);
+  NCollection_Array1<gp_Pnt> TP2(1, nbn2);
   nbn2 = 0;
 
   for (exFace.Init(S2, TopAbs_FACE); exFace.More(); exFace.Next())
@@ -100,14 +101,14 @@ Standard_Boolean BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
     }
   }
 
-  Standard_Integer i1, i2;
+  int i1, i2;
   for (i1 = 1; i1 <= nbn1; i1++)
   {
     const gp_Pnt& PP1 = TP1(i1);
     for (i2 = 1; i2 <= nbn2; i2++)
     {
-      const gp_Pnt&       PP2  = TP2(i2);
-      const Standard_Real dCur = PP1.Distance(PP2);
+      const gp_Pnt& PP2  = TP2(i2);
+      const double  dCur = PP1.Distance(PP2);
       if (dist > dCur)
       {
         P1   = PP1;
@@ -116,5 +117,5 @@ Standard_Boolean BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
       }
     }
   }
-  return Standard_True;
+  return true;
 }

@@ -28,10 +28,10 @@ RWStepVisual_RWSurfaceStyleTransparent::RWStepVisual_RWSurfaceStyleTransparent()
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleTransparent::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepVisual_SurfaceStyleTransparent)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                                              num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepVisual_SurfaceStyleTransparent>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "surface_style_transparent"))
@@ -39,7 +39,7 @@ void RWStepVisual_RWSurfaceStyleTransparent::ReadStep(
 
   // Own fields of SurfaceStyleTransparent
 
-  Standard_Real aTransparency;
+  double aTransparency;
   data->ReadReal(num, 1, "transparency", ach, aTransparency);
 
   // Initialize entity
@@ -49,8 +49,8 @@ void RWStepVisual_RWSurfaceStyleTransparent::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleTransparent::WriteStep(
-  StepData_StepWriter&                              SW,
-  const Handle(StepVisual_SurfaceStyleTransparent)& ent) const
+  StepData_StepWriter&                                   SW,
+  const occ::handle<StepVisual_SurfaceStyleTransparent>& ent) const
 {
 
   // Own fields of SurfaceStyleTransparent
@@ -61,7 +61,7 @@ void RWStepVisual_RWSurfaceStyleTransparent::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleTransparent::Share(
-  const Handle(StepVisual_SurfaceStyleTransparent)&,
+  const occ::handle<StepVisual_SurfaceStyleTransparent>&,
   Interface_EntityIterator&) const
 {
 }

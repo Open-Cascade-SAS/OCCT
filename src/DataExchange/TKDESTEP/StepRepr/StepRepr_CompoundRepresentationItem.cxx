@@ -20,39 +20,39 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CompoundRepresentationItem, StepRepr_Represe
 StepRepr_CompoundRepresentationItem::StepRepr_CompoundRepresentationItem() {}
 
 void StepRepr_CompoundRepresentationItem::Init(
-  const Handle(TCollection_HAsciiString)&             aName,
-  const Handle(StepRepr_HArray1OfRepresentationItem)& item_element)
+  const occ::handle<TCollection_HAsciiString>&                                      aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& item_element)
 {
   StepRepr_RepresentationItem::Init(aName);
   theItemElement = item_element;
 }
 
-Handle(StepRepr_HArray1OfRepresentationItem) StepRepr_CompoundRepresentationItem::ItemElement()
-  const
+occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>
+  StepRepr_CompoundRepresentationItem::ItemElement() const
 {
   return theItemElement;
 }
 
-Standard_Integer StepRepr_CompoundRepresentationItem::NbItemElement() const
+int StepRepr_CompoundRepresentationItem::NbItemElement() const
 {
   return (theItemElement.IsNull() ? 0 : theItemElement->Length());
 }
 
 void StepRepr_CompoundRepresentationItem::SetItemElement(
-  const Handle(StepRepr_HArray1OfRepresentationItem)& item_element)
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& item_element)
 {
   theItemElement = item_element;
 }
 
-Handle(StepRepr_RepresentationItem) StepRepr_CompoundRepresentationItem::ItemElementValue(
-  const Standard_Integer num) const
+occ::handle<StepRepr_RepresentationItem> StepRepr_CompoundRepresentationItem::ItemElementValue(
+  const int num) const
 {
   return theItemElement->Value(num);
 }
 
 void StepRepr_CompoundRepresentationItem::SetItemElementValue(
-  const Standard_Integer                     num,
-  const Handle(StepRepr_RepresentationItem)& anelement)
+  const int                                       num,
+  const occ::handle<StepRepr_RepresentationItem>& anelement)
 {
   theItemElement->SetValue(num, anelement);
 }

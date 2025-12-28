@@ -16,77 +16,77 @@
 
 #include <Expr_Operators.hxx>
 
-Handle(Expr_Sum) operator+(const Handle(Expr_GeneralExpression)& x,
-                           const Handle(Expr_GeneralExpression)& y)
+occ::handle<Expr_Sum> operator+(const occ::handle<Expr_GeneralExpression>& x,
+                                const occ::handle<Expr_GeneralExpression>& y)
 {
   return new Expr_Sum(x, y);
 }
 
-Handle(Expr_Sum) operator+(const Standard_Real x, const Handle(Expr_GeneralExpression)& y)
+occ::handle<Expr_Sum> operator+(const double x, const occ::handle<Expr_GeneralExpression>& y)
 {
-  Handle(Expr_NumericValue) nv = new Expr_NumericValue(x);
+  occ::handle<Expr_NumericValue> nv = new Expr_NumericValue(x);
   return new Expr_Sum(nv, y);
 }
 
-Handle(Expr_Sum) operator+(const Handle(Expr_GeneralExpression)& x, const Standard_Real y)
+occ::handle<Expr_Sum> operator+(const occ::handle<Expr_GeneralExpression>& x, const double y)
 {
   return y + x;
 }
 
-Handle(Expr_Difference) operator-(const Handle(Expr_GeneralExpression)& x,
-                                  const Handle(Expr_GeneralExpression)& y)
+occ::handle<Expr_Difference> operator-(const occ::handle<Expr_GeneralExpression>& x,
+                                       const occ::handle<Expr_GeneralExpression>& y)
 {
   return new Expr_Difference(x, y);
 }
 
-Handle(Expr_Difference) operator-(const Standard_Real x, const Handle(Expr_GeneralExpression)& y)
+occ::handle<Expr_Difference> operator-(const double x, const occ::handle<Expr_GeneralExpression>& y)
 {
-  Handle(Expr_NumericValue) nv = new Expr_NumericValue(x);
+  occ::handle<Expr_NumericValue> nv = new Expr_NumericValue(x);
   return new Expr_Difference(nv, y);
 }
 
-Handle(Expr_Difference) operator-(const Handle(Expr_GeneralExpression)& x, const Standard_Real y)
+occ::handle<Expr_Difference> operator-(const occ::handle<Expr_GeneralExpression>& x, const double y)
 {
-  Handle(Expr_NumericValue) nv = new Expr_NumericValue(y);
+  occ::handle<Expr_NumericValue> nv = new Expr_NumericValue(y);
   return new Expr_Difference(x, nv);
 }
 
-Handle(Expr_UnaryMinus) operator-(const Handle(Expr_GeneralExpression)& x)
+occ::handle<Expr_UnaryMinus> operator-(const occ::handle<Expr_GeneralExpression>& x)
 {
   return new Expr_UnaryMinus(x);
 }
 
-Handle(Expr_Product) operator*(const Handle(Expr_GeneralExpression)& x,
-                               const Handle(Expr_GeneralExpression)& y)
+occ::handle<Expr_Product> operator*(const occ::handle<Expr_GeneralExpression>& x,
+                                    const occ::handle<Expr_GeneralExpression>& y)
 {
   return new Expr_Product(x, y);
 }
 
-Handle(Expr_Product) operator*(const Standard_Real x, const Handle(Expr_GeneralExpression)& y)
+occ::handle<Expr_Product> operator*(const double x, const occ::handle<Expr_GeneralExpression>& y)
 {
-  Handle(Expr_NumericValue) nv = new Expr_NumericValue(x);
+  occ::handle<Expr_NumericValue> nv = new Expr_NumericValue(x);
   return new Expr_Product(nv, y);
 }
 
-Handle(Expr_Product) operator*(const Handle(Expr_GeneralExpression)& x, const Standard_Real y)
+occ::handle<Expr_Product> operator*(const occ::handle<Expr_GeneralExpression>& x, const double y)
 {
   return y * x;
 }
 
-Handle(Expr_Division) operator/(const Handle(Expr_GeneralExpression)& x,
-                                const Handle(Expr_GeneralExpression)& y)
+occ::handle<Expr_Division> operator/(const occ::handle<Expr_GeneralExpression>& x,
+                                     const occ::handle<Expr_GeneralExpression>& y)
 {
   return new Expr_Division(x, y);
 }
 
-Handle(Expr_Division) operator/(const Standard_Real x, const Handle(Expr_GeneralExpression)& y)
+occ::handle<Expr_Division> operator/(const double x, const occ::handle<Expr_GeneralExpression>& y)
 {
-  Handle(Expr_NumericValue) nv = new Expr_NumericValue(x);
+  occ::handle<Expr_NumericValue> nv = new Expr_NumericValue(x);
   return new Expr_Division(nv, y);
 }
 
-Handle(Expr_Division) operator/(const Handle(Expr_GeneralExpression)& x, const Standard_Real y)
+occ::handle<Expr_Division> operator/(const occ::handle<Expr_GeneralExpression>& x, const double y)
 {
-  Handle(Expr_NumericValue) nv = new Expr_NumericValue(y);
+  occ::handle<Expr_NumericValue> nv = new Expr_NumericValue(y);
   return new Expr_Division(x, nv);
 }

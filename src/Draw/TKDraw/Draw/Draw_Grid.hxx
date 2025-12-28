@@ -23,9 +23,6 @@
 #include <Draw_Drawable3D.hxx>
 class Draw_Display;
 
-class Draw_Grid;
-DEFINE_STANDARD_HANDLE(Draw_Grid, Draw_Drawable3D)
-
 class Draw_Grid : public Draw_Drawable3D
 {
 
@@ -34,33 +31,30 @@ public:
   Standard_EXPORT Draw_Grid();
 
   //! Sets the steps along the X, Y & Z axis.
-  Standard_EXPORT void Steps(const Standard_Real StepX,
-                             const Standard_Real StepY,
-                             const Standard_Real StepZ);
+  Standard_EXPORT void Steps(const double StepX, const double StepY, const double StepZ);
 
   //! Returns the step along the X axis.
-  Standard_Real StepX() const;
+  double StepX() const;
 
   //! Returns the step along the Y axis.
-  Standard_Real StepY() const;
+  double StepY() const;
 
   //! Returns the step along the Z axis.
-  Standard_Real StepZ() const;
+  double StepZ() const;
 
   //! Returns if the grid is active or not.
-  Standard_Boolean IsActive() const;
+  bool IsActive() const;
 
   //! Displays the grid.
-  Standard_EXPORT void DrawOn(Draw_Display& Out) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& Out) const override;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Grid, Draw_Drawable3D)
 
-protected:
 private:
-  Standard_Real    myStepX;
-  Standard_Real    myStepY;
-  Standard_Real    myStepZ;
-  Standard_Boolean myIsActive;
+  double myStepX;
+  double myStepY;
+  double myStepZ;
+  bool   myIsActive;
 };
 
 #include <Draw_Grid.lxx>

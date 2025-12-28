@@ -30,11 +30,11 @@ public:
   //!                          use -1 to skip reading the face data
   //! @param[in] theFileOffset  offset to the DDS data
   //! @return loaded face or NULL if file cannot be read or not valid DDS file
-  Standard_EXPORT static Handle(Image_CompressedPixMap) Load(
-    const Handle(Image_SupportedFormats)& theSupported,
-    const TCollection_AsciiString&        theFile,
-    const Standard_Integer                theFaceIndex,
-    const int64_t                         theFileOffset = 0);
+  Standard_EXPORT static occ::handle<Image_CompressedPixMap> Load(
+    const occ::handle<Image_SupportedFormats>& theSupported,
+    const TCollection_AsciiString&             theFile,
+    const int                                  theFaceIndex,
+    const int64_t                              theFileOffset = 0);
 
   //! Load the face from DDS file.
   //! @param[in] theSupported  list of supported image formats
@@ -43,10 +43,10 @@ public:
   //! @param[in] theFaceIndex  face index, within [0, Image_CompressedPixMap::NbFaces()) range;
   //!                          use -1 to skip reading the face data
   //! @return loaded face or NULL if file cannot be read or not valid DDS file
-  Standard_EXPORT static Handle(Image_CompressedPixMap) Load(
-    const Handle(Image_SupportedFormats)& theSupported,
-    const Handle(NCollection_Buffer)&     theBuffer,
-    const Standard_Integer                theFaceIndex);
+  Standard_EXPORT static occ::handle<Image_CompressedPixMap> Load(
+    const occ::handle<Image_SupportedFormats>& theSupported,
+    const occ::handle<NCollection_Buffer>&     theBuffer,
+    const int                                  theFaceIndex);
 
 private:
   struct DDSPixelFormat;
@@ -54,7 +54,7 @@ private:
 
 private:
   //! Parse DDS header.
-  static Handle(Image_CompressedPixMap) parseHeader(const DDSFileHeader& theHeader);
+  static occ::handle<Image_CompressedPixMap> parseHeader(const DDSFileHeader& theHeader);
 };
 
 #endif // _Image_DDSParser_HeaderFile

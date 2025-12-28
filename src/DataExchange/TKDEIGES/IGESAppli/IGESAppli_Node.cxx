@@ -27,8 +27,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_Node, IGESData_IGESEntity)
 
 IGESAppli_Node::IGESAppli_Node() {}
 
-void IGESAppli_Node::Init(const gp_XYZ&                                aCoord,
-                          const Handle(IGESGeom_TransformationMatrix)& aCoordSystem)
+void IGESAppli_Node::Init(const gp_XYZ&                                     aCoord,
+                          const occ::handle<IGESGeom_TransformationMatrix>& aCoordSystem)
 {
   theCoord  = aCoord;
   theSystem = aCoordSystem;
@@ -40,13 +40,13 @@ gp_Pnt IGESAppli_Node::Coord() const
   return gp_Pnt(theCoord);
 }
 
-Handle(IGESData_TransfEntity) IGESAppli_Node::System() const
+occ::handle<IGESData_TransfEntity> IGESAppli_Node::System() const
 {
   // if Null, Global Cartesian Coordinate System
-  return Handle(IGESData_TransfEntity)(theSystem);
+  return occ::handle<IGESData_TransfEntity>(theSystem);
 }
 
-Standard_Integer IGESAppli_Node::SystemType() const
+int IGESAppli_Node::SystemType() const
 {
   if (theSystem.IsNull())
     return 0;                           // 0 Global Cartesien
@@ -55,8 +55,8 @@ Standard_Integer IGESAppli_Node::SystemType() const
 
 gp_Pnt IGESAppli_Node::TransformedNodalCoord() const
 {
-  gp_XYZ                        tempCoord = Coord().XYZ();
-  Handle(IGESData_TransfEntity) temp      = System();
+  gp_XYZ                             tempCoord = Coord().XYZ();
+  occ::handle<IGESData_TransfEntity> temp      = System();
   if (!temp.IsNull())
     temp->Value().Transforms(tempCoord);
   return gp_Pnt(tempCoord);

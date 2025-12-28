@@ -25,9 +25,6 @@
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
 
-class IGESDefs_SpecificModule;
-DEFINE_STANDARD_HANDLE(IGESDefs_SpecificModule, IGESData_SpecificModule)
-
 //! Defines Services attached to IGES Entities : Dump, for IGESDefs
 class IGESDefs_SpecificModule : public IGESData_SpecificModule
 {
@@ -37,16 +34,13 @@ public:
   Standard_EXPORT IGESDefs_SpecificModule();
 
   //! Specific Dump (own parameters) for IGESDefs
-  Standard_EXPORT void OwnDump(const Standard_Integer             CN,
-                               const Handle(IGESData_IGESEntity)& ent,
-                               const IGESData_IGESDumper&         dumper,
-                               Standard_OStream&                  S,
-                               const Standard_Integer             own) const Standard_OVERRIDE;
+  Standard_EXPORT void OwnDump(const int                               CN,
+                               const occ::handle<IGESData_IGESEntity>& ent,
+                               const IGESData_IGESDumper&              dumper,
+                               Standard_OStream&                       S,
+                               const int                               own) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_SpecificModule, IGESData_SpecificModule)
-
-protected:
-private:
 };
 
 #endif // _IGESDefs_SpecificModule_HeaderFile

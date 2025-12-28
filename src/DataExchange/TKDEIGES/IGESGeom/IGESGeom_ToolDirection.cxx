@@ -35,14 +35,14 @@
 
 IGESGeom_ToolDirection::IGESGeom_ToolDirection() {}
 
-void IGESGeom_ToolDirection::ReadOwnParams(const Handle(IGESGeom_Direction)& ent,
-                                           const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESGeom_ToolDirection::ReadOwnParams(const occ::handle<IGESGeom_Direction>& ent,
+                                           const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                            IGESData_ParamReader& PR) const
 {
   gp_XYZ aDirection;
   gp_XY  tmpXY;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Real tmpReal;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  double tmpReal;
 
   // st = PR.ReadXY(PR.CurrentList(1, 2), "Direction", tmpXY); //szv#4:S4163:12Mar99 moved in if
   if (PR.ReadXY(PR.CurrentList(1, 2), "Direction", tmpXY))
@@ -66,28 +66,28 @@ void IGESGeom_ToolDirection::ReadOwnParams(const Handle(IGESGeom_Direction)& ent
   ent->Init(aDirection);
 }
 
-void IGESGeom_ToolDirection::WriteOwnParams(const Handle(IGESGeom_Direction)& ent,
-                                            IGESData_IGESWriter&              IW) const
+void IGESGeom_ToolDirection::WriteOwnParams(const occ::handle<IGESGeom_Direction>& ent,
+                                            IGESData_IGESWriter&                   IW) const
 {
   IW.Send(ent->Value().X());
   IW.Send(ent->Value().Y());
   IW.Send(ent->Value().Z());
 }
 
-void IGESGeom_ToolDirection::OwnShared(const Handle(IGESGeom_Direction)& /* ent */,
+void IGESGeom_ToolDirection::OwnShared(const occ::handle<IGESGeom_Direction>& /* ent */,
                                        Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESGeom_ToolDirection::OwnCopy(const Handle(IGESGeom_Direction)& another,
-                                     const Handle(IGESGeom_Direction)& ent,
+void IGESGeom_ToolDirection::OwnCopy(const occ::handle<IGESGeom_Direction>& another,
+                                     const occ::handle<IGESGeom_Direction>& ent,
                                      Interface_CopyTool& /* TC */) const
 {
   ent->Init(another->Value().XYZ());
 }
 
 IGESData_DirChecker IGESGeom_ToolDirection::DirChecker(
-  const Handle(IGESGeom_Direction)& /* ent */) const
+  const occ::handle<IGESGeom_Direction>& /* ent */) const
 {
   IGESData_DirChecker DC(123, 0);
   DC.Structure(IGESData_DefVoid);
@@ -102,18 +102,18 @@ IGESData_DirChecker IGESGeom_ToolDirection::DirChecker(
   return DC;
 }
 
-void IGESGeom_ToolDirection::OwnCheck(const Handle(IGESGeom_Direction)& ent,
+void IGESGeom_ToolDirection::OwnCheck(const occ::handle<IGESGeom_Direction>& ent,
                                       const Interface_ShareTool&,
-                                      Handle(Interface_Check)& ach) const
+                                      occ::handle<Interface_Check>& ach) const
 {
   if (ent->Value().XYZ().SquareModulus() <= 0.0)
     ach->AddFail("Direction : The values indicate no direction");
 }
 
-void IGESGeom_ToolDirection::OwnDump(const Handle(IGESGeom_Direction)& ent,
+void IGESGeom_ToolDirection::OwnDump(const occ::handle<IGESGeom_Direction>& ent,
                                      const IGESData_IGESDumper& /* dumper */,
-                                     Standard_OStream&      S,
-                                     const Standard_Integer level) const
+                                     Standard_OStream& S,
+                                     const int         level) const
 {
   S << "IGESGeom_Direction\n\n"
     << "Value : ";

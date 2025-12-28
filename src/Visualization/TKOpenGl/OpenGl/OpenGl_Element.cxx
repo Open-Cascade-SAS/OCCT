@@ -48,7 +48,7 @@ void OpenGl_Element::UpdateDrawStats(Graphic3d_FrameStatsDataTmp&, bool) const
 
 //=================================================================================================
 
-void OpenGl_Element::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void OpenGl_Element::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_Element)
   OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, this)

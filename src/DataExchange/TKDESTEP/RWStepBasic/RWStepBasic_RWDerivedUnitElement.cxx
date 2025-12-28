@@ -21,10 +21,10 @@
 RWStepBasic_RWDerivedUnitElement::RWStepBasic_RWDerivedUnitElement() {}
 
 void RWStepBasic_RWDerivedUnitElement::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepBasic_DerivedUnitElement)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                                        num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepBasic_DerivedUnitElement>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,10 +34,10 @@ void RWStepBasic_RWDerivedUnitElement::ReadStep(
 
   // --- own fields
 
-  Handle(StepBasic_NamedUnit) nu;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepBasic_NamedUnit> nu;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "unit", ach, STANDARD_TYPE(StepBasic_NamedUnit), nu);
-  Standard_Real expo;
+  double expo;
   // szv#4:S4163:12Mar99 `stat1 =` not needed
   data->ReadReal(num, 2, "exponent", ach, expo);
 
@@ -47,8 +47,8 @@ void RWStepBasic_RWDerivedUnitElement::ReadStep(
 }
 
 void RWStepBasic_RWDerivedUnitElement::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepBasic_DerivedUnitElement)& ent) const
+  StepData_StepWriter&                             SW,
+  const occ::handle<StepBasic_DerivedUnitElement>& ent) const
 {
 
   // --- own field : dimensions ---
@@ -57,8 +57,8 @@ void RWStepBasic_RWDerivedUnitElement::WriteStep(
   SW.Send(ent->Exponent());
 }
 
-void RWStepBasic_RWDerivedUnitElement::Share(const Handle(StepBasic_DerivedUnitElement)& ent,
-                                             Interface_EntityIterator&                   iter) const
+void RWStepBasic_RWDerivedUnitElement::Share(const occ::handle<StepBasic_DerivedUnitElement>& ent,
+                                             Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->Unit());

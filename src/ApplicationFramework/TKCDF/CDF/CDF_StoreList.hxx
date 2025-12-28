@@ -20,8 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <CDM_ListOfDocument.hxx>
-#include <CDM_MapIteratorOfMapOfDocument.hxx>
+#include <CDM_Document.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Map.hxx>
 #include <Standard_Transient.hxx>
 #include <PCDM_StoreStatus.hxx>
 
@@ -29,42 +30,38 @@ class CDM_Document;
 class CDM_MetaData;
 class TCollection_ExtendedString;
 
-class CDF_StoreList;
-DEFINE_STANDARD_HANDLE(CDF_StoreList, Standard_Transient)
-
 class CDF_StoreList : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT CDF_StoreList(const Handle(CDM_Document)& aDocument);
+  Standard_EXPORT CDF_StoreList(const occ::handle<CDM_Document>& aDocument);
 
-  Standard_EXPORT Standard_Boolean IsConsistent() const;
+  Standard_EXPORT bool IsConsistent() const;
 
   //! stores each object of the storelist in the reverse
   //! order of which they had been added.
   Standard_EXPORT PCDM_StoreStatus
-    Store(Handle(CDM_MetaData)&        aMetaData,
+    Store(occ::handle<CDM_MetaData>&   aMetaData,
           TCollection_ExtendedString&  aStatusAssociatedText,
           const Message_ProgressRange& theRange = Message_ProgressRange());
 
   Standard_EXPORT void Init();
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
-  Standard_EXPORT Handle(CDM_Document) Value() const;
+  Standard_EXPORT occ::handle<CDM_Document> Value() const;
 
   DEFINE_STANDARD_RTTIEXT(CDF_StoreList, Standard_Transient)
 
-protected:
 private:
-  Standard_EXPORT void Add(const Handle(CDM_Document)& aDocument);
+  Standard_EXPORT void Add(const occ::handle<CDM_Document>& aDocument);
 
-  CDM_MapOfDocument              myItems;
-  CDM_ListOfDocument             myStack;
-  CDM_MapIteratorOfMapOfDocument myIterator;
-  Handle(CDM_Document)           myMainDocument;
+  NCollection_Map<occ::handle<CDM_Document>>           myItems;
+  NCollection_List<occ::handle<CDM_Document>>          myStack;
+  NCollection_Map<occ::handle<CDM_Document>>::Iterator myIterator;
+  occ::handle<CDM_Document>                            myMainDocument;
 };
 
 #endif // _CDF_StoreList_HeaderFile

@@ -49,14 +49,14 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationGuide, GeomFill_LocationLaw)
 
 #ifdef DRAW
-static Standard_Integer Affich = 0;
+static int Affich = 0;
   #include <Approx_Curve3d.hxx>
   #include <DrawTrSurf.hxx>
 #endif
@@ -66,12 +66,12 @@ static Standard_Integer Affich = 0;
 // purpose  : Trace la surface de revolution (Debug)
 //=======================================================================
 #ifdef OCCT_DEBUG
-static void TraceRevol(const Standard_Real                        t,
-                       const Standard_Real                        s,
-                       const Handle(GeomFill_TrihedronWithGuide)& Law,
-                       const Handle(GeomFill_SectionLaw)&         Section,
-                       const Handle(Adaptor3d_Curve)&             Curve,
-                       const gp_Mat&                              Trans)
+static void TraceRevol(const double                                    t,
+                       const double                                    s,
+                       const occ::handle<GeomFill_TrihedronWithGuide>& Law,
+                       const occ::handle<GeomFill_SectionLaw>&         Section,
+                       const occ::handle<Adaptor3d_Curve>&             Curve,
+                       const gp_Mat&                                   Trans)
 
 {
   gp_Vec T, N, B;
@@ -94,8 +94,8 @@ static void TraceRevol(const Standard_Real                        t,
   Transfo.SetTransformation(N3, Rep);
 
   // transformer la section
-  Standard_Real      f, l, e = 1.e-7;
-  Handle(Geom_Curve) S, C;
+  double                  f, l, e = 1.e-7;
+  occ::handle<Geom_Curve> S, C;
 
   if (Section->IsConstant(e))
   {
@@ -103,14 +103,14 @@ static void TraceRevol(const Standard_Real                        t,
   }
   else
   {
-    Standard_Integer NbPoles, NbKnots, Deg;
+    int NbPoles, NbKnots, Deg;
     Section->SectionShape(NbPoles, NbKnots, Deg);
-    TColStd_Array1OfInteger Mult(1, NbKnots);
+    NCollection_Array1<int> Mult(1, NbKnots);
     Section->Mults(Mult);
-    TColStd_Array1OfReal Knots(1, NbKnots);
+    NCollection_Array1<double> Knots(1, NbKnots);
     Section->Knots(Knots);
-    TColgp_Array1OfPnt   Poles(1, NbPoles);
-    TColStd_Array1OfReal Weights(1, NbPoles);
+    NCollection_Array1<gp_Pnt> Poles(1, NbPoles);
+    NCollection_Array1<double> Weights(1, NbPoles);
     Section->D0(s, Poles, Weights);
     if (Section->IsRational())
       C = new (Geom_BSplineCurve)(Poles, Weights, Knots, Mult, Deg, Section->IsUPeriodic());
@@ -124,11 +124,11 @@ static void TraceRevol(const Standard_Real                        t,
   S->Transform(Transfo);
 
   // Surface de revolution
-  Handle(Geom_Surface) Revol = new (Geom_SurfaceOfRevolution)(S, Ax);
+  occ::handle<Geom_Surface> Revol = new (Geom_SurfaceOfRevolution)(S, Ax);
   std::cout << "Surf Revol at parameter t = " << t << std::endl;
 
   #if DRAW
-  Standard_CString aName = "TheRevol";
+  const char* aName = "TheRevol";
   DrawTrSurf::Set(aName, Revol);
   #endif
 }
@@ -136,12 +136,10 @@ static void TraceRevol(const Standard_Real                        t,
 
 //=================================================================================================
 
-static void InGoodPeriod(const Standard_Real Prec,
-                         const Standard_Real Period,
-                         Standard_Real&      Current)
+static void InGoodPeriod(const double Prec, const double Period, double& Current)
 {
-  Standard_Real    Diff = Current - Prec;
-  Standard_Integer nb   = (Standard_Integer)std::trunc(Diff / Period);
+  double Diff = Current - Prec;
+  int    nb   = (int)std::trunc(Diff / Period);
   Current -= nb * Period;
   Diff = Current - Prec;
   if (Diff > Period / 2)
@@ -152,7 +150,8 @@ static void InGoodPeriod(const Standard_Real Prec,
 
 //=================================================================================================
 
-GeomFill_LocationGuide::GeomFill_LocationGuide(const Handle(GeomFill_TrihedronWithGuide)& Triedre)
+GeomFill_LocationGuide::GeomFill_LocationGuide(
+  const occ::handle<GeomFill_TrihedronWithGuide>& Triedre)
     : TolRes(1, 3),
       Inf(1, 3, 0.),
       Sup(1, 3, 0.),
@@ -170,7 +169,7 @@ GeomFill_LocationGuide::GeomFill_LocationGuide(const Handle(GeomFill_TrihedronWi
   myGuide = myLaw->Guide(); // courbe guide
   if (!myGuide->IsPeriodic())
   {
-    Standard_Real f, l, delta;
+    double f, l, delta;
     f     = myGuide->FirstParameter();
     l     = myGuide->LastParameter();
     delta = (l - f) / 100;
@@ -179,12 +178,12 @@ GeomFill_LocationGuide::GeomFill_LocationGuide(const Handle(GeomFill_TrihedronWi
     myGuide = myGuide->Trim(f, l, delta * 1.e-7); // courbe guide
   } // if
 
-  myPoles2d  = new (TColgp_HArray2OfPnt2d)(1, 2, 1, myNbPts);
-  rotation   = Standard_False; // contact ou non
-  OrigParam1 = 0;              // param pour ACR quand trajectoire
-  OrigParam2 = 1;              // et guide pas meme sens de parcourt
+  myPoles2d  = new (NCollection_HArray2<gp_Pnt2d>)(1, 2, 1, myNbPts);
+  rotation   = false; // contact ou non
+  OrigParam1 = 0;     // param pour ACR quand trajectoire
+  OrigParam2 = 1;     // et guide pas meme sens de parcourt
   Trans.SetIdentity();
-  WithTrans = Standard_False;
+  WithTrans = false;
 
 #ifdef DRAW
   if (Affich)
@@ -192,7 +191,7 @@ GeomFill_LocationGuide::GeomFill_LocationGuide(const Handle(GeomFill_TrihedronWi
     Approx_Curve3d approx(myGuide, 1.e-4, GeomAbs_C1, 15 + myGuide->NbIntervals(GeomAbs_CN), 14);
     if (approx.HasResult())
     {
-      Standard_CString aName = "TheGuide";
+      const char* aName = "TheGuide";
       DrawTrSurf::Set(aName, approx.Curve());
     }
   }
@@ -203,7 +202,7 @@ GeomFill_LocationGuide::GeomFill_LocationGuide(const Handle(GeomFill_TrihedronWi
 // Function: SetRotation
 // Purpose : init et force la Rotation
 //==================================================================
-void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard_Real& LastAngle)
+void GeomFill_LocationGuide::SetRotation(const double PrecAngle, double& LastAngle)
 {
   if (myCurve.IsNull())
     throw Standard_ConstructionError("GeomFill_LocationGuide::The path is not set !!");
@@ -211,31 +210,31 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
   // repere fixe
   gp_Ax3 Rep(gp::Origin(), gp::DZ(), gp::DX());
   //  gp_Pnt P,P1,P2;
-  gp_Pnt                            P;
-  gp_Vec                            T, N, B;
-  Standard_Integer                  ii, Deg;
-  Standard_Boolean                  isconst, israt = Standard_False;
-  Standard_Real                     t, v, w, OldAngle = 0, Angle, DeltaG, Diff;
-  Standard_Real                     CurAngle = PrecAngle, a1 /*, a2*/;
-  gp_Pnt2d                          p1, p2;
-  Handle(Geom_SurfaceOfRevolution)  Revol; // surface de revolution
-  Handle(GeomAdaptor_Surface)       Pl;    // = Revol
-  Handle(Geom_TrimmedCurve)         S;
-  IntCurveSurface_IntersectionPoint PInt; // intersection guide/Revol
-  Handle(TColStd_HArray1OfInteger)  Mult;
-  Handle(TColStd_HArray1OfReal)     Knots, Weights;
-  Handle(TColgp_HArray1OfPnt)       Poles;
+  gp_Pnt                                   P;
+  gp_Vec                                   T, N, B;
+  int                                      ii, Deg;
+  bool                                     isconst, israt = false;
+  double                                   t, v, w, OldAngle = 0, Angle, DeltaG, Diff;
+  double                                   CurAngle = PrecAngle, a1 /*, a2*/;
+  gp_Pnt2d                                 p1, p2;
+  occ::handle<Geom_SurfaceOfRevolution>    Revol; // surface de revolution
+  occ::handle<GeomAdaptor_Surface>         Pl;    // = Revol
+  occ::handle<Geom_TrimmedCurve>           S;
+  IntCurveSurface_IntersectionPoint        PInt; // intersection guide/Revol
+  occ::handle<NCollection_HArray1<int>>    Mult;
+  occ::handle<NCollection_HArray1<double>> Knots, Weights;
+  occ::handle<NCollection_HArray1<gp_Pnt>> Poles;
 
-  Standard_Real    U = 0, UPeriod = 0;
-  Standard_Real    f = myCurve->FirstParameter();
-  Standard_Real    l = myCurve->LastParameter();
-  Standard_Boolean Ok, uperiodic = mySec->IsUPeriodic();
+  double U = 0, UPeriod = 0;
+  double f = myCurve->FirstParameter();
+  double l = myCurve->LastParameter();
+  bool   Ok, uperiodic = mySec->IsUPeriodic();
 
   DeltaG = (myGuide->LastParameter() - myGuide->FirstParameter()) / 5;
-  Handle(Geom_Curve) mySection;
-  Standard_Real      Tol = 1.e-9;
+  occ::handle<Geom_Curve> mySection;
+  double                  Tol = 1.e-9;
 
-  Standard_Integer NbPoles, NbKnots;
+  int NbPoles, NbKnots;
   mySec->SectionShape(NbPoles, NbKnots, Deg);
 
   if (mySec->IsConstant(Tol))
@@ -244,25 +243,25 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
     Uf        = mySection->FirstParameter();
     Ul        = mySection->LastParameter();
 
-    isconst = Standard_True;
+    isconst = true;
   }
   else
   {
-    isconst = Standard_False;
+    isconst = false;
     israt   = mySec->IsRational();
-    Mult    = new (TColStd_HArray1OfInteger)(1, NbKnots);
+    Mult    = new (NCollection_HArray1<int>)(1, NbKnots);
     mySec->Mults(Mult->ChangeArray1());
-    Knots = new (TColStd_HArray1OfReal)(1, NbKnots);
+    Knots = new (NCollection_HArray1<double>)(1, NbKnots);
     mySec->Knots(Knots->ChangeArray1());
-    Poles   = new (TColgp_HArray1OfPnt)(1, NbPoles);
-    Weights = new (TColStd_HArray1OfReal)(1, NbPoles);
+    Poles   = new (NCollection_HArray1<gp_Pnt>)(1, NbPoles);
+    Weights = new (NCollection_HArray1<double>)(1, NbPoles);
     Uf      = Knots->Value(1);
     Ul      = Knots->Value(NbKnots);
   }
 
   // Bornes de calculs
-  Standard_Real Delta;
-  //  Standard_Integer bid1, bid2, NbK;
+  double Delta;
+  //  int bid1, bid2, NbK;
   Delta  = myGuide->LastParameter() - myGuide->FirstParameter();
   Inf(1) = myGuide->FirstParameter() - Delta / 10;
   Sup(1) = myGuide->LastParameter() + Delta / 10;
@@ -280,7 +279,7 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
 
   for (ii = 1; ii <= myNbPts; ii++)
   {
-    t = Standard_Real(myNbPts - ii) * f + Standard_Real(ii - 1) * l;
+    t = double(myNbPts - ii) * f + double(ii - 1) * l;
     t /= (myNbPts - 1);
     myCurve->D0(t, P);
     Ok = myLaw->D0(t, T, N, B);
@@ -326,7 +325,7 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
     }
     else
     {
-      S = new (Geom_TrimmedCurve)(Handle(Geom_Curve)::DownCast(mySection->Copy()), Uf, Ul);
+      S = new (Geom_TrimmedCurve)(occ::down_cast<Geom_Curve>(mySection->Copy()), Uf, Ul);
     }
     S->Transform(Transfo);
 
@@ -337,7 +336,7 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
     Extrema_ExtCS       DistMini(*myGuide, GArevol, Precision::Confusion(), Precision::Confusion());
     Extrema_POnCurv     Pc;
     Extrema_POnSurf     Ps;
-    Standard_Real       theU = 0., theV = 0.;
+    double              theU = 0., theV = 0.;
 
     if (!DistMini.IsDone() || DistMini.NbExt() == 0)
     {
@@ -345,7 +344,7 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
       std::cout << "LocationGuide : Pas d'intersection" << std::endl;
       TraceRevol(t, U, myLaw, mySec, myCurve, Trans);
 #endif
-      Standard_Boolean SOS = Standard_False;
+      bool SOS = false;
       if (ii > 1)
       {
         // Intersection de secour entre surf revol et guide
@@ -364,7 +363,7 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
 #ifdef OCCT_DEBUG
           std::cout << "Ratrappage Reussi !" << std::endl;
 #endif
-          SOS = Standard_True;
+          SOS = true;
           math_Vector RR(1, 3);
           Result.Root(RR);
           PInt.SetValues(P, RR(2), RR(3), RR(1), IntCurveSurface_Out);
@@ -388,11 +387,11 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
     { // on prend le point d'intersection
       // d'angle le plus proche de P
 
-      Standard_Real    MinDist = RealLast();
-      Standard_Integer jref    = 0;
-      for (Standard_Integer j = 1; j <= DistMini.NbExt(); j++)
+      double MinDist = RealLast();
+      int    jref    = 0;
+      for (int j = 1; j <= DistMini.NbExt(); j++)
       {
-        Standard_Real aDist = DistMini.SquareDistance(j);
+        double aDist = DistMini.SquareDistance(j);
         if (aDist < MinDist)
         {
           MinDist = aDist;
@@ -476,19 +475,19 @@ void GeomFill_LocationGuide::SetRotation(const Standard_Real PrecAngle, Standard
   }
 
   LastAngle = CurAngle;
-  rotation  = Standard_True; // C'est pret !
+  rotation  = true; // C'est pret !
 }
 
 //==================================================================
 // Function: Set
 // Purpose : init loi de section et force la Rotation
 //==================================================================
-void GeomFill_LocationGuide::Set(const Handle(GeomFill_SectionLaw)& Section,
-                                 const Standard_Boolean             rotat,
-                                 const Standard_Real                SFirst,
-                                 const Standard_Real                SLast,
-                                 const Standard_Real                PrecAngle,
-                                 Standard_Real&                     LastAngle)
+void GeomFill_LocationGuide::Set(const occ::handle<GeomFill_SectionLaw>& Section,
+                                 const bool                              rotat,
+                                 const double                            SFirst,
+                                 const double                            SLast,
+                                 const double                            PrecAngle,
+                                 double&                                 LastAngle)
 {
   myStatus  = GeomFill_PipeOk;
   myFirstS  = SFirst;
@@ -503,26 +502,26 @@ void GeomFill_LocationGuide::Set(const Handle(GeomFill_SectionLaw)& Section,
   if (rotat)
     SetRotation(PrecAngle, LastAngle);
   else
-    rotation = Standard_False;
+    rotation = false;
 }
 
 //=================================================================================================
 
 void GeomFill_LocationGuide::EraseRotation()
 {
-  rotation = Standard_False;
+  rotation = false;
   if (myStatus == GeomFill_ImpossibleContact)
     myStatus = GeomFill_PipeOk;
 }
 
 //=================================================================================================
 
-Handle(GeomFill_LocationLaw) GeomFill_LocationGuide::Copy() const
+occ::handle<GeomFill_LocationLaw> GeomFill_LocationGuide::Copy() const
 {
-  Standard_Real                       la;
-  Handle(GeomFill_TrihedronWithGuide) L;
-  L = Handle(GeomFill_TrihedronWithGuide)::DownCast(myLaw->Copy());
-  Handle(GeomFill_LocationGuide) copy = new (GeomFill_LocationGuide)(L);
+  double                                   la;
+  occ::handle<GeomFill_TrihedronWithGuide> L;
+  L = occ::down_cast<GeomFill_TrihedronWithGuide>(myLaw->Copy());
+  occ::handle<GeomFill_LocationGuide> copy = new (GeomFill_LocationGuide)(L);
   copy->SetOrigine(OrigParam1, OrigParam2);
   copy->Set(mySec, rotation, myFirstS, myLastS, myPoles2d->Value(1, 1).X(), la);
   copy->SetTrsf(Trans);
@@ -535,9 +534,9 @@ Handle(GeomFill_LocationLaw) GeomFill_LocationGuide::Copy() const
 // Purpose : Calcul des poles sur la surface d'arret (intersection
 // courbe guide / surface de revolution en myNbPts points)
 //==================================================================
-Standard_Boolean GeomFill_LocationGuide::SetCurve(const Handle(Adaptor3d_Curve)& C)
+bool GeomFill_LocationGuide::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
-  Standard_Real LastAngle;
+  double LastAngle;
   myCurve   = C;
   myTrimmed = C;
 
@@ -557,7 +556,7 @@ Standard_Boolean GeomFill_LocationGuide::SetCurve(const Handle(Adaptor3d_Curve)&
 // Function: GetCurve
 // Purpose : return the trajectoire
 //==================================================================
-const Handle(Adaptor3d_Curve)& GeomFill_LocationGuide::GetCurve() const
+const occ::handle<Adaptor3d_Curve>& GeomFill_LocationGuide::GetCurve() const
 {
   return myCurve;
 }
@@ -570,20 +569,20 @@ void GeomFill_LocationGuide::SetTrsf(const gp_Mat& Transfo)
   gp_Mat Aux;
   Aux.SetIdentity();
   Aux -= Trans;
-  WithTrans = Standard_False; // Au cas ou Trans = I
-  for (Standard_Integer ii = 1; ii <= 3 && !WithTrans; ii++)
-    for (Standard_Integer jj = 1; jj <= 3 && !WithTrans; jj++)
+  WithTrans = false; // Au cas ou Trans = I
+  for (int ii = 1; ii <= 3 && !WithTrans; ii++)
+    for (int jj = 1; jj <= 3 && !WithTrans; jj++)
       if (std::abs(Aux.Value(ii, jj)) > 1.e-14)
-        WithTrans = Standard_True;
+        WithTrans = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_LocationGuide::D0(const Standard_Real Param, gp_Mat& M, gp_Vec& V)
+bool GeomFill_LocationGuide::D0(const double Param, gp_Mat& M, gp_Vec& V)
 {
-  Standard_Boolean Ok;
-  gp_Vec           T, N, B;
-  gp_Pnt           P;
+  bool   Ok;
+  gp_Vec T, N, B;
+  gp_Pnt P;
 
   myCurve->D0(Param, P);
   V.SetXYZ(P.XYZ());
@@ -602,12 +601,12 @@ Standard_Boolean GeomFill_LocationGuide::D0(const Standard_Real Param, gp_Mat& M
 
   if (rotation)
   {
-    Standard_Real U = myFirstS + (Param - myCurve->FirstParameter()) * ratio;
+    double U = myFirstS + (Param - myCurve->FirstParameter()) * ratio;
     // initialisations germe
     InitX(Param);
 
-    Standard_Integer Iter = 100;
-    gp_XYZ           t, b, n;
+    int    Iter = 100;
+    gp_XYZ t, b, n;
     t = M.Column(3);
     b = M.Column(2);
     n = M.Column(1);
@@ -640,26 +639,26 @@ Standard_Boolean GeomFill_LocationGuide::D0(const Standard_Real Param, gp_Mat& M
       TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif
       myStatus = GeomFill_ImpossibleContact;
-      return Standard_False;
+      return false;
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //==================================================================
 // Function: D0
 // Purpose : calcul de l'intersection (C0) surface revol / guide
 //==================================================================
-Standard_Boolean GeomFill_LocationGuide::D0(const Standard_Real Param,
-                                            gp_Mat&             M,
-                                            gp_Vec&             V,
-                                            //					     TColgp_Array1OfPnt2d& Poles2d)
-                                            TColgp_Array1OfPnt2d&)
+bool GeomFill_LocationGuide::D0(const double Param,
+                                gp_Mat&      M,
+                                gp_Vec&      V,
+                                //					     NCollection_Array1<gp_Pnt2d>& Poles2d)
+                                NCollection_Array1<gp_Pnt2d>&)
 {
-  gp_Vec           T, N, B;
-  gp_Pnt           P;
-  Standard_Boolean Ok;
+  gp_Vec T, N, B;
+  gp_Pnt P;
+  bool   Ok;
 
   myCurve->D0(Param, P);
   V.SetXYZ(P.XYZ());
@@ -680,8 +679,8 @@ Standard_Boolean GeomFill_LocationGuide::D0(const Standard_Real Param,
   {
     // initialisation du germe
     InitX(Param);
-    Standard_Integer Iter = 100;
-    gp_XYZ           b, n, t;
+    int    Iter = 100;
+    gp_XYZ b, n, t;
     t = M.Column(3);
     b = M.Column(2);
     n = M.Column(1);
@@ -713,37 +712,37 @@ Standard_Boolean GeomFill_LocationGuide::D0(const Standard_Real Param,
     else
     {
 #ifdef OCCT_DEBUG
-      Standard_Real U = myFirstS + ratio * (Param - myCurve->FirstParameter());
+      double U = myFirstS + ratio * (Param - myCurve->FirstParameter());
       std::cout << "LocationGuide::D0 : No Result !" << std::endl;
       TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif
       myStatus = GeomFill_ImpossibleContact;
-      return Standard_False;
+      return false;
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //==================================================================
 // Function: D1
 // Purpose : calcul de l'intersection (C1) surface revol / guide
 //==================================================================
-Standard_Boolean GeomFill_LocationGuide::D1(const Standard_Real Param,
-                                            gp_Mat&             M,
-                                            gp_Vec&             V,
-                                            gp_Mat&             DM,
-                                            gp_Vec&             DV,
-                                            //					     TColgp_Array1OfPnt2d& Poles2d,
-                                            TColgp_Array1OfPnt2d&,
-                                            //					     TColgp_Array1OfVec2d& DPoles2d)
-                                            TColgp_Array1OfVec2d&)
+bool GeomFill_LocationGuide::D1(const double Param,
+                                gp_Mat&      M,
+                                gp_Vec&      V,
+                                gp_Mat&      DM,
+                                gp_Vec&      DV,
+                                //					     NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Pnt2d>&,
+                                //					     NCollection_Array1<gp_Vec2d>& DPoles2d)
+                                NCollection_Array1<gp_Vec2d>&)
 {
   //  gp_Vec T, N, B, DT, DN, DB, T0, N0, B0;
   gp_Vec T, N, B, DT, DN, DB;
   //  gp_Pnt P, P0;
-  gp_Pnt           P;
-  Standard_Boolean Ok;
+  gp_Pnt P;
+  bool   Ok;
 
   myCurve->D1(Param, P, DV);
   V.SetXYZ(P.XYZ());
@@ -764,10 +763,10 @@ Standard_Boolean GeomFill_LocationGuide::D1(const Standard_Real Param,
 
   if (rotation)
   {
-    return Standard_False;
+    return false;
     /*
    #ifdef OCCT_DEBUG
-       Standard_Real U = myFirstS + ratio*(Param-myCurve->FirstParameter());
+       double U = myFirstS + ratio*(Param-myCurve->FirstParameter());
    #else
        myCurve->FirstParameter() ;
    #endif
@@ -775,7 +774,7 @@ Standard_Boolean GeomFill_LocationGuide::D1(const Standard_Real Param,
        // initialisation du germe
        InitX(Param);
 
-       Standard_Integer Iter = 100;
+       int Iter = 100;
        gp_XYZ t,b,n, dt, db, dn;
        t = M.Column(3);
        b = M.Column(2);
@@ -825,8 +824,6 @@ Standard_Boolean GeomFill_LocationGuide::D1(const Standard_Real Param,
          gp_Mat Rot, DRot;
          Rot.SetRotation(t, R(2));
 
-
-
          M.SetCols(n*Rot, b*Rot, t);
 
          // transfo entre triedre (en Q) et Oxyz
@@ -841,8 +838,8 @@ Standard_Boolean GeomFill_LocationGuide::D1(const Standard_Real Param,
          Transfo3.Transforms(db);
 
          // matrices de rotation et derivees
-         Standard_Real A = R(2);
-         Standard_Real Aprim = DSDT(2);
+         double A = R(2);
+         double Aprim = DSDT(2);
 
    #ifdef OCCT_DEBUG
          gp_Mat M2 (std::cos(A), -std::sin(A),0,  // rotation autour de T
@@ -856,7 +853,6 @@ Standard_Boolean GeomFill_LocationGuide::D1(const Standard_Real Param,
          M2prim.Multiply(Aprim);
 
          // transformations
-
 
          dn *= Rot;
          db *= Rot;
@@ -882,38 +878,37 @@ Standard_Boolean GeomFill_LocationGuide::D1(const Standard_Real Param,
        TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
    #endif
        myStatus = GeomFill_ImpossibleContact;
-       return Standard_False;
+       return false;
          }
    */
   } // if_rotation
 
-  return Standard_True;
+  return true;
 }
 
 //==================================================================
 // Function: D2
 // Purpose : calcul de l'intersection (C2) surface revol / guide
 //==================================================================
-Standard_Boolean GeomFill_LocationGuide::D2(
-  const Standard_Real Param,
-  gp_Mat&             M,
-  gp_Vec&             V,
-  gp_Mat&             DM,
-  gp_Vec&             DV,
-  gp_Mat&             D2M,
-  gp_Vec&             D2V,
-  //					     TColgp_Array1OfPnt2d& Poles2d,
-  TColgp_Array1OfPnt2d&,
-  //					     TColgp_Array1OfVec2d& DPoles2d,
-  TColgp_Array1OfVec2d&,
-  //					     TColgp_Array1OfVec2d& D2Poles2d)
-  TColgp_Array1OfVec2d&)
+bool GeomFill_LocationGuide::D2(const double Param,
+                                gp_Mat&      M,
+                                gp_Vec&      V,
+                                gp_Mat&      DM,
+                                gp_Vec&      DV,
+                                gp_Mat&      D2M,
+                                gp_Vec&      D2V,
+                                //					     NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Pnt2d>&,
+                                //					     NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                NCollection_Array1<gp_Vec2d>&,
+                                //					     NCollection_Array1<gp_Vec2d>& D2Poles2d)
+                                NCollection_Array1<gp_Vec2d>&)
 {
   gp_Vec T, N, B, DT, DN, DB, D2T, D2N, D2B;
   //  gp_Vec T0, N0, B0, T1, N1, B1;
   //  gp_Pnt P, P0, P1;
-  gp_Pnt           P;
-  Standard_Boolean Ok;
+  gp_Pnt P;
+  bool   Ok;
 
   myCurve->D2(Param, P, DV, D2V);
   V.SetXYZ(P.XYZ());
@@ -933,9 +928,9 @@ Standard_Boolean GeomFill_LocationGuide::D2(
 
   if (rotation)
   {
-    return Standard_False;
+    return false;
     /*
-        Standard_Real U = myFirstS +
+        double U = myFirstS +
           (Param-myCurve->FirstParameter())*ratio;
           // rotation
           math_Vector X(1,3,0);
@@ -944,9 +939,8 @@ Standard_Boolean GeomFill_LocationGuide::D2(
 
           TolRes.Init(1.e-6);
           // tolerance sur E
-    //      Standard_Real ETol = 1.e-6;
-          Standard_Integer Iter = 100;
-
+    //      double ETol = 1.e-6;
+          int Iter = 100;
 
           // resoudre equation d'intersection entre surf revol et guide => angle
           GeomFill_FunctionGuide E (mySec, myGuide, myFirstS +
@@ -1061,9 +1055,9 @@ Standard_Boolean GeomFill_LocationGuide::D2(
           D2B.Transform(Transfo3);
 
     //matrices de rotation et derivees
-          Standard_Real A = R(2);
-          Standard_Real Aprim = DSDT(2);
-          Standard_Real Asec = D2SDT2(2);
+          double A = R(2);
+          double Aprim = DSDT(2);
+          double Asec = D2SDT2(2);
 
           gp_Mat M2 (std::cos(A),-std::sin(A),0,   // rotation autour de T
                  std::sin(A), std::cos(A),0,
@@ -1100,7 +1094,6 @@ Standard_Boolean GeomFill_LocationGuide::D2(
                   M2sec(3,1),M2sec(3,2),M2sec(3,3),0,
                   1.e-8,1.e-8);
 
-
     //derivee premiere
           dn.Transform(Rot);
           db.Transform(Rot);
@@ -1133,7 +1126,7 @@ Standard_Boolean GeomFill_LocationGuide::D2(
         std::cout << "LocationGuide::D2 : No Result !!" <<std::endl;
         TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
     #endif
-        return Standard_False;
+        return false;
           }*/
   } // if_rotation
 
@@ -1144,27 +1137,27 @@ Standard_Boolean GeomFill_LocationGuide::D2(
     D2M.SetCols(D2N.XYZ(), D2B.XYZ(), D2T.XYZ());
   }
 
-  return Standard_True;
-  //  return Standard_False;
+  return true;
+  //  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_LocationGuide::HasFirstRestriction() const
+bool GeomFill_LocationGuide::HasFirstRestriction() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_LocationGuide::HasLastRestriction() const
+bool GeomFill_LocationGuide::HasLastRestriction() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_LocationGuide::TraceNumber() const
+int GeomFill_LocationGuide::TraceNumber() const
 {
   return 0;
 }
@@ -1178,9 +1171,9 @@ GeomFill_PipeError GeomFill_LocationGuide::ErrorStatus() const
 
 //=================================================================================================
 
-Standard_Integer GeomFill_LocationGuide::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_LocationGuide::NbIntervals(const GeomAbs_Shape S) const
 {
-  Standard_Integer Nb_Sec, Nb_Law;
+  int Nb_Sec, Nb_Law;
   Nb_Sec = myTrimmed->NbIntervals(S);
   Nb_Law = myLaw->NbIntervals(S);
 
@@ -1193,9 +1186,9 @@ Standard_Integer GeomFill_LocationGuide::NbIntervals(const GeomAbs_Shape S) cons
     return Nb_Sec;
   }
 
-  TColStd_Array1OfReal   IntC(1, Nb_Sec + 1);
-  TColStd_Array1OfReal   IntL(1, Nb_Law + 1);
-  TColStd_SequenceOfReal Inter;
+  NCollection_Array1<double>   IntC(1, Nb_Sec + 1);
+  NCollection_Array1<double>   IntL(1, Nb_Law + 1);
+  NCollection_Sequence<double> Inter;
   myTrimmed->Intervals(IntC, S);
   myLaw->Intervals(IntL, S);
 
@@ -1205,9 +1198,9 @@ Standard_Integer GeomFill_LocationGuide::NbIntervals(const GeomAbs_Shape S) cons
 
 //=================================================================================================
 
-void GeomFill_LocationGuide::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void GeomFill_LocationGuide::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
-  Standard_Integer Nb_Sec, Nb_Law;
+  int Nb_Sec, Nb_Law;
   Nb_Sec = myTrimmed->NbIntervals(S);
   Nb_Law = myLaw->NbIntervals(S);
 
@@ -1222,20 +1215,20 @@ void GeomFill_LocationGuide::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Sh
     return;
   }
 
-  TColStd_Array1OfReal   IntC(1, Nb_Sec + 1);
-  TColStd_Array1OfReal   IntL(1, Nb_Law + 1);
-  TColStd_SequenceOfReal Inter;
+  NCollection_Array1<double>   IntC(1, Nb_Sec + 1);
+  NCollection_Array1<double>   IntL(1, Nb_Law + 1);
+  NCollection_Sequence<double> Inter;
   myTrimmed->Intervals(IntC, S);
   myLaw->Intervals(IntL, S);
 
   GeomLib::FuseIntervals(IntC, IntL, Inter, Precision::PConfusion() * 0.99);
-  for (Standard_Integer ii = 1; ii <= Inter.Length(); ii++)
+  for (int ii = 1; ii <= Inter.Length(); ii++)
     T(ii) = Inter(ii);
 }
 
 //=================================================================================================
 
-void GeomFill_LocationGuide::SetInterval(const Standard_Real First, const Standard_Real Last)
+void GeomFill_LocationGuide::SetInterval(const double First, const double Last)
 {
   myLaw->SetInterval(First, Last);
   myTrimmed = myCurve->Trim(First, Last, 0);
@@ -1243,7 +1236,7 @@ void GeomFill_LocationGuide::SetInterval(const Standard_Real First, const Standa
 
 //=================================================================================================
 
-void GeomFill_LocationGuide::GetInterval(Standard_Real& First, Standard_Real& Last) const
+void GeomFill_LocationGuide::GetInterval(double& First, double& Last) const
 {
   First = myTrimmed->FirstParameter();
   Last  = myTrimmed->LastParameter();
@@ -1251,7 +1244,7 @@ void GeomFill_LocationGuide::GetInterval(Standard_Real& First, Standard_Real& La
 
 //=================================================================================================
 
-void GeomFill_LocationGuide::GetDomain(Standard_Real& First, Standard_Real& Last) const
+void GeomFill_LocationGuide::GetDomain(double& First, double& Last) const
 {
   First = myCurve->FirstParameter();
   Last  = myCurve->LastParameter();
@@ -1259,7 +1252,7 @@ void GeomFill_LocationGuide::GetDomain(Standard_Real& First, Standard_Real& Last
 
 //=================================================================================================
 
-void GeomFill_LocationGuide::SetTolerance(const Standard_Real Tol3d, const Standard_Real)
+void GeomFill_LocationGuide::SetTolerance(const double Tol3d, const double)
 {
   TolRes(1) = myGuide->Resolution(Tol3d);
   Resolution(1, Tol3d, TolRes(2), TolRes(3));
@@ -1267,11 +1260,11 @@ void GeomFill_LocationGuide::SetTolerance(const Standard_Real Tol3d, const Stand
 
 //=================================================================================================
 
-// void GeomFill_LocationGuide::Resolution (const Standard_Integer Index,
-void GeomFill_LocationGuide::Resolution(const Standard_Integer,
-                                        const Standard_Real Tol,
-                                        Standard_Real&      TolU,
-                                        Standard_Real&      TolV) const
+// void GeomFill_LocationGuide::Resolution (const int Index,
+void GeomFill_LocationGuide::Resolution(const int,
+                                        const double Tol,
+                                        double&      TolU,
+                                        double&      TolV) const
 {
   TolU = Tol / 100;
   TolV = Tol / 100;
@@ -1281,7 +1274,7 @@ void GeomFill_LocationGuide::Resolution(const Standard_Integer,
 // Function:GetMaximalNorm
 // Purpose :  On suppose les triedres normes => return 1
 //==================================================================
-Standard_Real GeomFill_LocationGuide::GetMaximalNorm()
+double GeomFill_LocationGuide::GetMaximalNorm()
 {
   return 1.;
 }
@@ -1290,9 +1283,9 @@ Standard_Real GeomFill_LocationGuide::GetMaximalNorm()
 
 void GeomFill_LocationGuide::GetAverageLaw(gp_Mat& AM, gp_Vec& AV)
 {
-  Standard_Integer ii;
-  Standard_Real    U, delta;
-  gp_Vec           V, V1, V2, V3;
+  int    ii;
+  double U, delta;
+  gp_Vec V, V1, V2, V3;
 
   myLaw->GetAverageLaw(V1, V2, V3);
   AM.SetCols(V1.XYZ(), V2.XYZ(), V3.XYZ());
@@ -1310,24 +1303,24 @@ void GeomFill_LocationGuide::GetAverageLaw(gp_Mat& AM, gp_Vec& AV)
 
 //=================================================================================================
 
-Handle(Geom_Curve) GeomFill_LocationGuide::Section() const
+occ::handle<Geom_Curve> GeomFill_LocationGuide::Section() const
 {
   return mySec->ConstantSection();
 }
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) GeomFill_LocationGuide::Guide() const
+occ::handle<Adaptor3d_Curve> GeomFill_LocationGuide::Guide() const
 {
   return myGuide;
 }
 
 //=================================================================================================
 
-// Standard_Boolean GeomFill_LocationGuide::IsRotation(Standard_Real& Error)  const
-Standard_Boolean GeomFill_LocationGuide::IsRotation(Standard_Real&) const
+// bool GeomFill_LocationGuide::IsRotation(double& Error)  const
+bool GeomFill_LocationGuide::IsRotation(double&) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -1340,21 +1333,21 @@ void GeomFill_LocationGuide::Rotation(gp_Pnt&) const
 
 //=================================================================================================
 
-// Standard_Boolean GeomFill_LocationGuide::IsTranslation(Standard_Real& Error) const
-Standard_Boolean GeomFill_LocationGuide::IsTranslation(Standard_Real&) const
+// bool GeomFill_LocationGuide::IsTranslation(double& Error) const
+bool GeomFill_LocationGuide::IsTranslation(double&) const
 {
-  return Standard_False;
+  return false;
 }
 
 //==================================================================
 // Function : InitX
 // Purpose : recherche par interpolation d'une valeur initiale
 //==================================================================
-void GeomFill_LocationGuide::InitX(const Standard_Real Param)
+void GeomFill_LocationGuide::InitX(const double Param)
 {
 
-  Standard_Integer Ideb = 1, Ifin = myPoles2d->RowLength(), Idemi;
-  Standard_Real    Valeur, t1, t2;
+  int    Ideb = 1, Ifin = myPoles2d->RowLength(), Idemi;
+  double Valeur, t1, t2;
 
   Valeur = myPoles2d->Value(1, Ideb).X();
   if (Param == Valeur)
@@ -1390,11 +1383,11 @@ void GeomFill_LocationGuide::InitX(const Standard_Real Param)
     }
   }
 
-  t1                 = myPoles2d->Value(1, Ideb).X();
-  t2                 = myPoles2d->Value(1, Ifin).X();
-  Standard_Real diff = t2 - t1;
+  t1          = myPoles2d->Value(1, Ideb).X();
+  t2          = myPoles2d->Value(1, Ifin).X();
+  double diff = t2 - t1;
 
-  Standard_Real W1, W2;
+  double W1, W2;
   W1                 = myPoles2d->Value(1, Ideb).Coord(2);
   W2                 = myPoles2d->Value(1, Ifin).Coord(2);
   const gp_Pnt2d& P1 = myPoles2d->Value(2, Ideb);
@@ -1402,7 +1395,7 @@ void GeomFill_LocationGuide::InitX(const Standard_Real Param)
 
   if (diff > 1.e-7)
   {
-    Standard_Real b = (Param - t1) / diff, a = (t2 - Param) / diff;
+    double b = (Param - t1) / diff, a = (t2 - Param) / diff;
     X(1) = a * W1 + b * W2;
     X(2) = a * P1.Coord(1) + b * P2.Coord(1); // angle
     X(3) = a * P1.Coord(2) + b * P2.Coord(2); // param isov
@@ -1429,7 +1422,7 @@ void GeomFill_LocationGuide::InitX(const Standard_Real Param)
 // Function : SetOrigine
 // Purpose : utilise pour ACR dans le cas ou la trajectoire est multi-edges
 //==================================================================
-void GeomFill_LocationGuide::SetOrigine(const Standard_Real Param1, const Standard_Real Param2)
+void GeomFill_LocationGuide::SetOrigine(const double Param1, const double Param2)
 {
   OrigParam1 = Param1;
   OrigParam2 = Param2;
@@ -1438,32 +1431,32 @@ void GeomFill_LocationGuide::SetOrigine(const Standard_Real Param1, const Standa
 //=================================================================================================
 
 GeomFill_PipeError GeomFill_LocationGuide::ComputeAutomaticLaw(
-  Handle(TColgp_HArray1OfPnt2d)& ParAndRad) const
+  occ::handle<NCollection_HArray1<gp_Pnt2d>>& ParAndRad) const
 {
-  gp_Pnt           P;
-  gp_Vec           T, N, B;
-  Standard_Integer ii;
-  Standard_Real    t;
+  gp_Pnt P;
+  gp_Vec T, N, B;
+  int    ii;
+  double t;
 
   GeomFill_PipeError theStatus = GeomFill_PipeOk;
 
-  Standard_Real f = myCurve->FirstParameter();
-  Standard_Real l = myCurve->LastParameter();
+  double f = myCurve->FirstParameter();
+  double l = myCurve->LastParameter();
 
-  ParAndRad = new TColgp_HArray1OfPnt2d(1, myNbPts);
+  ParAndRad = new NCollection_HArray1<gp_Pnt2d>(1, myNbPts);
   for (ii = 1; ii <= myNbPts; ii++)
   {
-    t = Standard_Real(myNbPts - ii) * f + Standard_Real(ii - 1) * l;
+    t = double(myNbPts - ii) * f + double(ii - 1) * l;
     t /= (myNbPts - 1);
     myCurve->D0(t, P);
-    Standard_Boolean Ok = myLaw->D0(t, T, N, B);
+    bool Ok = myLaw->D0(t, T, N, B);
     if (!Ok)
     {
       theStatus = myLaw->ErrorStatus();
       return theStatus;
     }
-    gp_Pnt        PointOnGuide = myLaw->CurrentPointOnGuide();
-    Standard_Real CurWidth     = P.Distance(PointOnGuide);
+    gp_Pnt PointOnGuide = myLaw->CurrentPointOnGuide();
+    double CurWidth     = P.Distance(PointOnGuide);
 
     gp_Pnt2d aParamWithRadius(t, CurWidth);
     ParAndRad->SetValue(ii, aParamWithRadius);

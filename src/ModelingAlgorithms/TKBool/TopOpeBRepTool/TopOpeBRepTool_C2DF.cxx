@@ -16,7 +16,21 @@
 
 #include <Geom2d_Curve.hxx>
 #include <TopOpeBRepTool_C2DF.hxx>
-#include <TopOpeBRepTool_define.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //=================================================================================================
 
@@ -24,11 +38,11 @@ TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF() {}
 
 //=================================================================================================
 
-TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF(const Handle(Geom2d_Curve)& PC,
-                                         const Standard_Real         f2d,
-                                         const Standard_Real         l2d,
-                                         const Standard_Real         tol,
-                                         const TopoDS_Face&          F)
+TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF(const occ::handle<Geom2d_Curve>& PC,
+                                         const double                     f2d,
+                                         const double                     l2d,
+                                         const double                     tol,
+                                         const TopoDS_Face&               F)
 {
   myPC   = PC;
   myf2d  = f2d;
@@ -39,10 +53,10 @@ TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF(const Handle(Geom2d_Curve)& PC,
 
 //=================================================================================================
 
-void TopOpeBRepTool_C2DF::SetPC(const Handle(Geom2d_Curve)& PC,
-                                const Standard_Real         f2d,
-                                const Standard_Real         l2d,
-                                const Standard_Real         tol)
+void TopOpeBRepTool_C2DF::SetPC(const occ::handle<Geom2d_Curve>& PC,
+                                const double                     f2d,
+                                const double                     l2d,
+                                const double                     tol)
 {
   myPC  = PC;
   myf2d = f2d;
@@ -59,9 +73,9 @@ void TopOpeBRepTool_C2DF::SetFace(const TopoDS_Face& F)
 
 //=================================================================================================
 
-const Handle(Geom2d_Curve)& TopOpeBRepTool_C2DF::PC(Standard_Real& f2d,
-                                                    Standard_Real& l2d,
-                                                    Standard_Real& tol) const
+const occ::handle<Geom2d_Curve>& TopOpeBRepTool_C2DF::PC(double& f2d,
+                                                         double& l2d,
+                                                         double& tol) const
 {
   f2d = myf2d;
   l2d = myl2d;
@@ -78,16 +92,16 @@ const TopoDS_Face& TopOpeBRepTool_C2DF::Face() const
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_C2DF::IsPC(const Handle(Geom2d_Curve)& PC) const
+bool TopOpeBRepTool_C2DF::IsPC(const occ::handle<Geom2d_Curve>& PC) const
 {
-  Standard_Boolean b = (PC == myPC);
+  bool b = (PC == myPC);
   return b;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_C2DF::IsFace(const TopoDS_Face& F) const
+bool TopOpeBRepTool_C2DF::IsFace(const TopoDS_Face& F) const
 {
-  Standard_Boolean b = (F.IsEqual(myFace));
+  bool b = (F.IsEqual(myFace));
   return b;
 }

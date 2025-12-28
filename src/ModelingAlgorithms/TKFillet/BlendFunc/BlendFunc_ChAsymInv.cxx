@@ -22,9 +22,9 @@
 
 //=================================================================================================
 
-BlendFunc_ChAsymInv::BlendFunc_ChAsymInv(const Handle(Adaptor3d_Surface)& S1,
-                                         const Handle(Adaptor3d_Surface)& S2,
-                                         const Handle(Adaptor3d_Curve)&   C)
+BlendFunc_ChAsymInv::BlendFunc_ChAsymInv(const occ::handle<Adaptor3d_Surface>& S1,
+                                         const occ::handle<Adaptor3d_Surface>& S2,
+                                         const occ::handle<Adaptor3d_Curve>&   C)
     : surf1(S1),
       surf2(S2),
       dist1(RealLast()),
@@ -32,7 +32,7 @@ BlendFunc_ChAsymInv::BlendFunc_ChAsymInv(const Handle(Adaptor3d_Surface)& S1,
       tgang(RealLast()),
       curv(C),
       choix(0),
-      first(Standard_False),
+      first(false),
       FX(1, 4),
       DX(1, 4, 1, 4)
 {
@@ -40,9 +40,7 @@ BlendFunc_ChAsymInv::BlendFunc_ChAsymInv(const Handle(Adaptor3d_Surface)& S1,
 
 //=================================================================================================
 
-void BlendFunc_ChAsymInv::Set(const Standard_Real    Dist1,
-                              const Standard_Real    Angle,
-                              const Standard_Integer Choix)
+void BlendFunc_ChAsymInv::Set(const double Dist1, const double Angle, const int Choix)
 {
   dist1 = std::abs(Dist1);
   angle = Angle;
@@ -52,14 +50,14 @@ void BlendFunc_ChAsymInv::Set(const Standard_Real    Dist1,
 
 //=================================================================================================
 
-Standard_Integer BlendFunc_ChAsymInv::NbEquations() const
+int BlendFunc_ChAsymInv::NbEquations() const
 {
   return 4;
 }
 
 //=================================================================================================
 
-void BlendFunc_ChAsymInv::Set(const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& C)
+void BlendFunc_ChAsymInv::Set(const bool OnFirst, const occ::handle<Adaptor2d_Curve2d>& C)
 {
   first = OnFirst;
   csurf = C;
@@ -67,7 +65,7 @@ void BlendFunc_ChAsymInv::Set(const Standard_Boolean OnFirst, const Handle(Adapt
 
 //=================================================================================================
 
-void BlendFunc_ChAsymInv::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
+void BlendFunc_ChAsymInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = csurf->Resolution(Tol);
   Tolerance(2) = curv->Resolution(Tol);
@@ -100,13 +98,13 @@ void BlendFunc_ChAsymInv::GetBounds(math_Vector& InfBound, math_Vector& SupBound
     SupBound(4) = surf2->LastVParameter();
     if (!Precision::IsInfinite(InfBound(3)) && !Precision::IsInfinite(SupBound(3)))
     {
-      const Standard_Real range = (SupBound(3) - InfBound(3));
+      const double range = (SupBound(3) - InfBound(3));
       InfBound(3) -= range;
       SupBound(3) += range;
     }
     if (!Precision::IsInfinite(InfBound(4)) && !Precision::IsInfinite(SupBound(4)))
     {
-      const Standard_Real range = (SupBound(4) - InfBound(4));
+      const double range = (SupBound(4) - InfBound(4));
       InfBound(4) -= range;
       SupBound(4) += range;
     }
@@ -119,13 +117,13 @@ void BlendFunc_ChAsymInv::GetBounds(math_Vector& InfBound, math_Vector& SupBound
     SupBound(4) = surf1->LastVParameter();
     if (!Precision::IsInfinite(InfBound(3)) && !Precision::IsInfinite(SupBound(3)))
     {
-      const Standard_Real range = (SupBound(3) - InfBound(3));
+      const double range = (SupBound(3) - InfBound(3));
       InfBound(3) -= range;
       SupBound(3) += range;
     }
     if (!Precision::IsInfinite(InfBound(4)) && !Precision::IsInfinite(SupBound(4)))
     {
-      const Standard_Real range = (SupBound(4) - InfBound(4));
+      const double range = (SupBound(4) - InfBound(4));
       InfBound(4) -= range;
       SupBound(4) += range;
     }
@@ -134,7 +132,7 @@ void BlendFunc_ChAsymInv::GetBounds(math_Vector& InfBound, math_Vector& SupBound
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsymInv::IsSolution(const math_Vector& Sol, const Standard_Real Tol)
+bool BlendFunc_ChAsymInv::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector valsol(1, 4);
   gp_Pnt      pts1, pts2, ptgui;
@@ -160,9 +158,9 @@ Standard_Boolean BlendFunc_ChAsymInv::IsSolution(const math_Vector& Sol, const S
   Nsurf1 = d1u1.Crossed(d1v1);
   tsurf1 = Nsurf1.Crossed(nplan);
 
-  gp_Vec        s1s2(pts1, pts2);
-  Standard_Real PScaInv = 1. / tsurf1.Dot(s1s2), temp; // ,F4;
-  Standard_Real Nordu1 = d1u1.Magnitude(), Nordv1 = d1v1.Magnitude();
+  gp_Vec s1s2(pts1, pts2);
+  double PScaInv = 1. / tsurf1.Dot(s1s2), temp; // ,F4;
+  double Nordu1 = d1u1.Magnitude(), Nordv1 = d1v1.Magnitude();
 
   temp = 2. * (Nordu1 + Nordv1) * s1s2.Magnitude() + 2. * Nordu1 * Nordv1;
 
@@ -173,28 +171,26 @@ Standard_Boolean BlendFunc_ChAsymInv::IsSolution(const math_Vector& Sol, const S
       && std::abs(valsol(4)) < Tol * (1. + tgang) * std::abs(PScaInv) * temp)
   {
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsymInv::ComputeValues(const math_Vector&     X,
-                                                    const Standard_Integer DegF,
-                                                    const Standard_Integer DegL)
+bool BlendFunc_ChAsymInv::ComputeValues(const math_Vector& X, const int DegF, const int DegL)
 {
   if (DegF > DegL)
-    return Standard_False;
+    return false;
 
-  gp_Vec        nplan, dnplan, d1gui, d2gui, d1u1, d1v1, d2u1, d2v1, d2uv1, d1u2, d1v2;
-  gp_Vec        Nsurf1, tsurf1;
-  gp_Pnt        pts1, pts2, ptgui;
-  Standard_Real PScaInv, F4;
-  Standard_Real Normg = 0.;
-  gp_Pnt2d      pt2d;
-  gp_Vec2d      v2d;
+  gp_Vec   nplan, dnplan, d1gui, d2gui, d1u1, d1v1, d2u1, d2v1, d2uv1, d1u2, d1v2;
+  gp_Vec   Nsurf1, tsurf1;
+  gp_Pnt   pts1, pts2, ptgui;
+  double   PScaInv, F4;
+  double   Normg = 0.;
+  gp_Pnt2d pt2d;
+  gp_Vec2d v2d;
 
   if ((DegF == 0) && (DegL == 0))
   {
@@ -252,7 +248,7 @@ Standard_Boolean BlendFunc_ChAsymInv::ComputeValues(const math_Vector&     X,
 
   if (DegF == 0)
   {
-    Standard_Real Dist;
+    double Dist;
     Dist  = ptgui.XYZ().Dot(nplan.XYZ());
     FX(1) = pts1.XYZ().Dot(nplan.XYZ()) - Dist;
     FX(2) = pts2.XYZ().Dot(nplan.XYZ()) - Dist;
@@ -262,9 +258,9 @@ Standard_Boolean BlendFunc_ChAsymInv::ComputeValues(const math_Vector&     X,
 
   if (DegL == 1)
   {
-    gp_Vec        dwtsurf1, tempVec;
-    Standard_Real temp;
-    gp_Vec        nps2(ptgui, pts2);
+    gp_Vec dwtsurf1, tempVec;
+    double temp;
+    gp_Vec nps2(ptgui, pts2);
 
     if (first)
     {
@@ -347,34 +343,34 @@ Standard_Boolean BlendFunc_ChAsymInv::ComputeValues(const math_Vector&     X,
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsymInv::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_ChAsymInv::Value(const math_Vector& X, math_Vector& F)
 {
-  const Standard_Boolean Error = ComputeValues(X, 0, 0);
-  F                            = FX;
+  const bool Error = ComputeValues(X, 0, 0);
+  F                = FX;
   return Error;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsymInv::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_ChAsymInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  const Standard_Boolean Error = ComputeValues(X, 1, 1);
-  D                            = DX;
+  const bool Error = ComputeValues(X, 1, 1);
+  D                = DX;
   return Error;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsymInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool BlendFunc_ChAsymInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
-  const Standard_Boolean Error = ComputeValues(X, 0, 1);
-  F                            = FX;
-  D                            = DX;
+  const bool Error = ComputeValues(X, 0, 1);
+  F                = FX;
+  D                = DX;
   return Error;
   /*  std::cout<<std::endl;
     std::cout<<" test ChAsymInv"<<std::endl;

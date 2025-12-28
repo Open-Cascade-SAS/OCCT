@@ -20,83 +20,73 @@
 #include <Standard.hxx>
 
 #include <Standard_Transient.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Real.hxx>
-#include <FEmTool_HAssemblyTable.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <math_Vector.hxx>
-#include <TColStd_Array1OfReal.hxx>
 class FEmTool_Curve;
 class math_Matrix;
-
-class AppDef_SmoothCriterion;
-DEFINE_STANDARD_HANDLE(AppDef_SmoothCriterion, Standard_Transient)
 
 //! defined criterion to smooth points in curve
 class AppDef_SmoothCriterion : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT virtual void SetParameters(const Handle(TColStd_HArray1OfReal)& Parameters) = 0;
+  Standard_EXPORT virtual void SetParameters(
+    const occ::handle<NCollection_HArray1<double>>& Parameters) = 0;
 
-  Standard_EXPORT virtual void SetCurve(const Handle(FEmTool_Curve)& C) = 0;
+  Standard_EXPORT virtual void SetCurve(const occ::handle<FEmTool_Curve>& C) = 0;
 
-  Standard_EXPORT virtual void GetCurve(Handle(FEmTool_Curve)& C) const = 0;
+  Standard_EXPORT virtual void GetCurve(occ::handle<FEmTool_Curve>& C) const = 0;
 
-  Standard_EXPORT virtual void SetEstimation(const Standard_Real E1,
-                                             const Standard_Real E2,
-                                             const Standard_Real E3) = 0;
+  Standard_EXPORT virtual void SetEstimation(const double E1, const double E2, const double E3) = 0;
 
-  Standard_EXPORT virtual Standard_Real& EstLength() = 0;
+  Standard_EXPORT virtual double& EstLength() = 0;
 
-  Standard_EXPORT virtual void GetEstimation(Standard_Real& E1,
-                                             Standard_Real& E2,
-                                             Standard_Real& E3) const = 0;
+  Standard_EXPORT virtual void GetEstimation(double& E1, double& E2, double& E3) const = 0;
 
-  Standard_EXPORT virtual Handle(FEmTool_HAssemblyTable) AssemblyTable() const = 0;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>
+    AssemblyTable() const = 0;
 
-  Standard_EXPORT virtual Handle(TColStd_HArray2OfInteger) DependenceTable() const = 0;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray2<int>> DependenceTable() const = 0;
 
-  Standard_EXPORT virtual Standard_Integer QualityValues(const Standard_Real J1min,
-                                                         const Standard_Real J2min,
-                                                         const Standard_Real J3min,
-                                                         Standard_Real&      J1,
-                                                         Standard_Real&      J2,
-                                                         Standard_Real&      J3) = 0;
+  Standard_EXPORT virtual int QualityValues(const double J1min,
+                                            const double J2min,
+                                            const double J3min,
+                                            double&      J1,
+                                            double&      J2,
+                                            double&      J3) = 0;
 
-  Standard_EXPORT virtual void ErrorValues(Standard_Real& MaxError,
-                                           Standard_Real& QuadraticError,
-                                           Standard_Real& AverageError) = 0;
+  Standard_EXPORT virtual void ErrorValues(double& MaxError,
+                                           double& QuadraticError,
+                                           double& AverageError) = 0;
 
-  Standard_EXPORT virtual void Hessian(const Standard_Integer Element,
-                                       const Standard_Integer Dimension1,
-                                       const Standard_Integer Dimension2,
-                                       math_Matrix&           H) = 0;
+  Standard_EXPORT virtual void Hessian(const int    Element,
+                                       const int    Dimension1,
+                                       const int    Dimension2,
+                                       math_Matrix& H) = 0;
 
-  Standard_EXPORT virtual void Gradient(const Standard_Integer Element,
-                                        const Standard_Integer Dimension,
-                                        math_Vector&           G) = 0;
+  Standard_EXPORT virtual void Gradient(const int Element, const int Dimension, math_Vector& G) = 0;
 
   //! Convert the assembly Vector in an Curve;
-  Standard_EXPORT virtual void InputVector(const math_Vector&                    X,
-                                           const Handle(FEmTool_HAssemblyTable)& AssTable) = 0;
+  Standard_EXPORT virtual void InputVector(
+    const math_Vector&                                                             X,
+    const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& AssTable) = 0;
 
-  Standard_EXPORT virtual void SetWeight(const Standard_Real QuadraticWeight,
-                                         const Standard_Real QualityWeight,
-                                         const Standard_Real percentJ1,
-                                         const Standard_Real percentJ2,
-                                         const Standard_Real percentJ3) = 0;
+  Standard_EXPORT virtual void SetWeight(const double QuadraticWeight,
+                                         const double QualityWeight,
+                                         const double percentJ1,
+                                         const double percentJ2,
+                                         const double percentJ3) = 0;
 
-  Standard_EXPORT virtual void GetWeight(Standard_Real& QuadraticWeight,
-                                         Standard_Real& QualityWeight) const = 0;
+  Standard_EXPORT virtual void GetWeight(double& QuadraticWeight, double& QualityWeight) const = 0;
 
-  Standard_EXPORT virtual void SetWeight(const TColStd_Array1OfReal& Weight) = 0;
+  Standard_EXPORT virtual void SetWeight(const NCollection_Array1<double>& Weight) = 0;
 
   DEFINE_STANDARD_RTTIEXT(AppDef_SmoothCriterion, Standard_Transient)
-
-protected:
-private:
 };
 
 #endif // _AppDef_SmoothCriterion_HeaderFile

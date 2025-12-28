@@ -60,30 +60,30 @@ public:
   //! - Line           signature 5
   //! - Circle         signature 6
   //! - Plane          signature 7.
-  virtual Standard_Integer Signature() const { return -1; }
+  virtual int Signature() const { return -1; }
 
-  //! Updates the active presentation; if <AllModes> = Standard_True
+  //! Updates the active presentation; if <AllModes> = true
   //! all the presentations inside are recomputed.
   //! IMPORTANT: It is preferable to call Redisplay method of
   //! corresponding AIS_InteractiveContext instance for cases when it
   //! is accessible. This method just redirects call to myCTXPtr,
   //! so this class field must be up to date for proper result.
-  Standard_EXPORT void Redisplay(const Standard_Boolean AllModes = Standard_False);
+  Standard_EXPORT void Redisplay(const bool AllModes = false);
 
   //! Indicates whether the Interactive Object has a pointer to an interactive context.
-  Standard_Boolean HasInteractiveContext() const { return myCTXPtr != NULL; }
+  bool HasInteractiveContext() const { return myCTXPtr != NULL; }
 
   //! Returns the context pointer to the interactive context.
   AIS_InteractiveContext* InteractiveContext() const { return myCTXPtr; }
 
   //! Sets the interactive context aCtx and provides a link
   //! to the default drawing tool or "Drawer" if there is none.
-  Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& aCtx);
+  Standard_EXPORT virtual void SetContext(const occ::handle<AIS_InteractiveContext>& aCtx);
 
   //! Returns true if the object has an owner attributed to it.
   //! The owner can be a shape for a set of sub-shapes or a sub-shape for sub-shapes which it is
   //! composed of, and takes the form of a transient.
-  Standard_Boolean HasOwner() const { return !myOwner.IsNull(); }
+  bool HasOwner() const { return !myOwner.IsNull(); }
 
   //! Returns the owner of the Interactive Object.
   //! The owner can be a shape for a set of sub-shapes or
@@ -94,13 +94,13 @@ public:
   //! edges, wires, and faces.
   //! -   Users, presentable objects connecting to sensitive
   //! primitives, or a shape which has been decomposed.
-  const Handle(Standard_Transient)& GetOwner() const { return myOwner; }
+  const occ::handle<Standard_Transient>& GetOwner() const { return myOwner; }
 
   //! Allows you to attribute the owner theApplicativeEntity to
   //! an Interactive Object. This can be a shape for a set of
   //! sub-shapes or a sub-shape for sub-shapes which it
   //! is composed of. The owner takes the form of a transient.
-  void SetOwner(const Handle(Standard_Transient)& theApplicativeEntity)
+  void SetOwner(const occ::handle<Standard_Transient>& theApplicativeEntity)
   {
     myOwner = theApplicativeEntity;
   }
@@ -117,31 +117,30 @@ public:
   //! @param[in] theDragTo    drag end point
   //! @param[in] theAction    drag action
   //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
-  Standard_EXPORT virtual Standard_Boolean ProcessDragging(
-    const Handle(AIS_InteractiveContext)& theCtx,
-    const Handle(V3d_View)&               theView,
-    const Handle(SelectMgr_EntityOwner)&  theOwner,
-    const Graphic3d_Vec2i&                theDragFrom,
-    const Graphic3d_Vec2i&                theDragTo,
-    const AIS_DragAction                  theAction);
+  Standard_EXPORT virtual bool ProcessDragging(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                               const occ::handle<V3d_View>&               theView,
+                                               const occ::handle<SelectMgr_EntityOwner>&  theOwner,
+                                               const NCollection_Vec2<int>& theDragFrom,
+                                               const NCollection_Vec2<int>& theDragTo,
+                                               const AIS_DragAction         theAction);
 
 public:
   //! Returns the context pointer to the interactive context.
-  Standard_EXPORT Handle(AIS_InteractiveContext) GetContext() const;
+  Standard_EXPORT occ::handle<AIS_InteractiveContext> GetContext() const;
 
   //! Returns TRUE when this object has a presentation in the current DisplayMode()
-  Standard_EXPORT Standard_Boolean HasPresentation() const;
+  Standard_EXPORT bool HasPresentation() const;
 
   //! Returns the current presentation of this object according to the current DisplayMode()
-  Standard_EXPORT Handle(Prs3d_Presentation) Presentation() const;
+  Standard_EXPORT occ::handle<Prs3d_Presentation> Presentation() const;
 
   //! Sets the graphic basic aspect to the current presentation.
   Standard_DEPRECATED("Deprecated method, results might be undefined")
-  Standard_EXPORT void SetAspect(const Handle(Prs3d_BasicAspect)& anAspect);
+  Standard_EXPORT void SetAspect(const occ::handle<Prs3d_BasicAspect>& anAspect);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! The TypeOfPresention3d means that the interactive object
@@ -156,9 +155,7 @@ protected:
   // clang-format off
   AIS_InteractiveContext*    myCTXPtr; //!< pointer to Interactive Context, where object is currently displayed; @sa SetContext()
   // clang-format on
-  Handle(Standard_Transient) myOwner; //!< application-specific owner object
+  occ::handle<Standard_Transient> myOwner; //!< application-specific owner object
 };
-
-DEFINE_STANDARD_HANDLE(AIS_InteractiveObject, SelectMgr_SelectableObject)
 
 #endif // _AIS_InteractiveObject_HeaderFile

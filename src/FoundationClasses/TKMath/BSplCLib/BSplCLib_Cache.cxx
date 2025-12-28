@@ -16,19 +16,21 @@
 
 #include <NCollection_LocalArray.hxx>
 
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt2d.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BSplCLib_Cache, Standard_Transient)
 
 //==================================================================================================
 
 BSplCLib_Cache::BSplCLib_Cache(
-  const Standard_Integer&     theDegree,
-  const Standard_Boolean&     thePeriodic,
-  const TColStd_Array1OfReal& theFlatKnots,
-  const TColgp_Array1OfPnt2d& /* only used to distinguish from 3d variant */,
-  const TColStd_Array1OfReal* theWeights)
+  const int&                        theDegree,
+  const bool&                       thePeriodic,
+  const NCollection_Array1<double>& theFlatKnots,
+  const NCollection_Array1<gp_Pnt2d>& /* only used to distinguish from 3d variant */,
+  const NCollection_Array1<double>* theWeights)
     : myIsRational(theWeights != NULL),
       myParams(theDegree, thePeriodic, theFlatKnots),
       myRowLength(myIsRational ? 3 : 2)
@@ -38,11 +40,11 @@ BSplCLib_Cache::BSplCLib_Cache(
 //==================================================================================================
 
 BSplCLib_Cache::BSplCLib_Cache(
-  const Standard_Integer&     theDegree,
-  const Standard_Boolean&     thePeriodic,
-  const TColStd_Array1OfReal& theFlatKnots,
-  const TColgp_Array1OfPnt& /* only used to distinguish from 2d variant */,
-  const TColStd_Array1OfReal* theWeights)
+  const int&                        theDegree,
+  const bool&                       thePeriodic,
+  const NCollection_Array1<double>& theFlatKnots,
+  const NCollection_Array1<gp_Pnt>& /* only used to distinguish from 2d variant */,
+  const NCollection_Array1<double>* theWeights)
     : myIsRational(theWeights != NULL),
       myParams(theDegree, thePeriodic, theFlatKnots),
       myRowLength(myIsRational ? 4 : 3)
@@ -51,28 +53,28 @@ BSplCLib_Cache::BSplCLib_Cache(
 
 //==================================================================================================
 
-Standard_Boolean BSplCLib_Cache::IsCacheValid(Standard_Real theParameter) const
+bool BSplCLib_Cache::IsCacheValid(double theParameter) const
 {
   return myParams.IsCacheValid(theParameter);
 }
 
 //==================================================================================================
 
-void BSplCLib_Cache::BuildCache(const Standard_Real&        theParameter,
-                                const TColStd_Array1OfReal& theFlatKnots,
-                                const TColgp_Array1OfPnt2d& thePoles2d,
-                                const TColStd_Array1OfReal* theWeights)
+void BSplCLib_Cache::BuildCache(const double&                       theParameter,
+                                const NCollection_Array1<double>&   theFlatKnots,
+                                const NCollection_Array1<gp_Pnt2d>& thePoles2d,
+                                const NCollection_Array1<double>*   theWeights)
 {
   // Normalize theParameter for periodical B-splines
-  Standard_Real aNewParam = myParams.PeriodicNormalization(theParameter);
+  double aNewParam = myParams.PeriodicNormalization(theParameter);
   myParams.LocateParameter(aNewParam, theFlatKnots);
 
   // Create array wrapper referencing the stack buffer
-  TColStd_Array2OfReal aPolesWeights(myPolesWeightsBuffer[0],
-                                     1,
-                                     myParams.Degree + 1,
-                                     1,
-                                     myRowLength);
+  NCollection_Array2<double> aPolesWeights(myPolesWeightsBuffer[0],
+                                           1,
+                                           myParams.Degree + 1,
+                                           1,
+                                           myRowLength);
 
   // Calculate new cache data
   BSplCLib::BuildCache(myParams.SpanStart,
@@ -86,21 +88,21 @@ void BSplCLib_Cache::BuildCache(const Standard_Real&        theParameter,
                        aPolesWeights);
 }
 
-void BSplCLib_Cache::BuildCache(const Standard_Real&        theParameter,
-                                const TColStd_Array1OfReal& theFlatKnots,
-                                const TColgp_Array1OfPnt&   thePoles,
-                                const TColStd_Array1OfReal* theWeights)
+void BSplCLib_Cache::BuildCache(const double&                     theParameter,
+                                const NCollection_Array1<double>& theFlatKnots,
+                                const NCollection_Array1<gp_Pnt>& thePoles,
+                                const NCollection_Array1<double>* theWeights)
 {
   // Create list of knots with repetitions and normalize theParameter for periodical B-splines
-  Standard_Real aNewParam = myParams.PeriodicNormalization(theParameter);
+  double aNewParam = myParams.PeriodicNormalization(theParameter);
   myParams.LocateParameter(aNewParam, theFlatKnots);
 
   // Create array wrapper referencing the stack buffer
-  TColStd_Array2OfReal aPolesWeights(myPolesWeightsBuffer[0],
-                                     1,
-                                     myParams.Degree + 1,
-                                     1,
-                                     myRowLength);
+  NCollection_Array2<double> aPolesWeights(myPolesWeightsBuffer[0],
+                                           1,
+                                           myParams.Degree + 1,
+                                           1,
+                                           myRowLength);
 
   // Calculate new cache data
   BSplCLib::BuildCache(myParams.SpanStart,
@@ -116,9 +118,9 @@ void BSplCLib_Cache::BuildCache(const Standard_Real&        theParameter,
 
 //==================================================================================================
 
-void BSplCLib_Cache::calculateDerivative(double         theParameter,
-                                         int            theDerivative,
-                                         Standard_Real* theDerivArray) const
+void BSplCLib_Cache::calculateDerivative(double  theParameter,
+                                         int     theDerivative,
+                                         double* theDerivArray) const
 {
   double aLocalParam = myParams.PeriodicNormalization(theParameter);
   aLocalParam        = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
@@ -127,19 +129,19 @@ void BSplCLib_Cache::calculateDerivative(double         theParameter,
 
 //==================================================================================================
 
-void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
-                                              int            theDerivative,
-                                              Standard_Real* theDerivArray) const
+void BSplCLib_Cache::calculateDerivativeLocal(double  theLocalParam,
+                                              int     theDerivative,
+                                              double* theDerivArray) const
 {
   const int aDimension = myRowLength;
 
   // Temporary container. The maximal size of this container is defined by:
   //    1) maximal derivative for cache evaluation, which is 3, plus one row for function values,
   //    2) and maximal dimension of the point, which is 3, plus one column for weights.
-  Standard_Real aTmpContainer[16];
+  double aTmpContainer[16];
 
   // When the PLib::RationalDerivative needs to be called, use temporary container
-  Standard_Real* aPntDeriv = myIsRational ? aTmpContainer : theDerivArray;
+  double* aPntDeriv = myIsRational ? aTmpContainer : theDerivArray;
 
   // When the degree of curve is lesser than the requested derivative,
   // nullify array cells corresponding to greater derivatives
@@ -163,7 +165,7 @@ void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
   // Unnormalize derivatives since those are computed normalized
   // Use division by SpanLength instead of multiplication by precomputed inverse
   // for better numerical stability with very small span lengths
-  Standard_Real aFactor = 1.0;
+  double aFactor = 1.0;
   for (int deriv = 1; deriv <= aDerivative; deriv++)
   {
     aFactor /= myParams.SpanLength;
@@ -185,14 +187,14 @@ void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
 
 //==================================================================================================
 
-void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt2d& thePoint) const
+void BSplCLib_Cache::D0(const double& theParameter, gp_Pnt2d& thePoint) const
 {
-  Standard_Real aNewParameter = myParams.PeriodicNormalization(theParameter);
-  aNewParameter               = (aNewParameter - myParams.SpanStart) / myParams.SpanLength;
+  double aNewParameter = myParams.PeriodicNormalization(theParameter);
+  aNewParameter        = (aNewParameter - myParams.SpanStart) / myParams.SpanLength;
 
-  Standard_Real*         aPolesArray = const_cast<Standard_Real*>(myPolesWeightsBuffer);
-  Standard_Real          aPoint[4];
-  const Standard_Integer aDimension = myRowLength;
+  double*   aPolesArray = const_cast<double*>(myPolesWeightsBuffer);
+  double    aPoint[4];
+  const int aDimension = myRowLength;
 
   PLib::NoDerivativeEvalPolynomial(aNewParameter,
                                    myParams.Degree,
@@ -208,10 +210,10 @@ void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt2d& thePoint) c
 
 //==================================================================================================
 
-void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt& thePoint) const
+void BSplCLib_Cache::D0(const double& theParameter, gp_Pnt& thePoint) const
 {
-  Standard_Real aLocalParam = myParams.PeriodicNormalization(theParameter);
-  aLocalParam               = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
+  double aLocalParam = myParams.PeriodicNormalization(theParameter);
+  aLocalParam        = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
   D0Local(aLocalParam, thePoint);
 }
 
@@ -220,7 +222,7 @@ void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt& thePoint) con
 void BSplCLib_Cache::D0Local(double theLocalParam, gp_Pnt& thePoint) const
 {
   // theLocalParam is already computed as (param - SpanStart) / SpanLength
-  Standard_Real aPoint[4];
+  double aPoint[4];
 
   PLib::NoDerivativeEvalPolynomial(theLocalParam,
                                    myParams.Degree,
@@ -236,12 +238,10 @@ void BSplCLib_Cache::D0Local(double theLocalParam, gp_Pnt& thePoint) const
   }
 }
 
-void BSplCLib_Cache::D1(const Standard_Real& theParameter,
-                        gp_Pnt2d&            thePoint,
-                        gp_Vec2d&            theTangent) const
+void BSplCLib_Cache::D1(const double& theParameter, gp_Pnt2d& thePoint, gp_Vec2d& theTangent) const
 {
-  Standard_Integer aDimension = myRowLength;
-  Standard_Real    aPntDeriv[8]; // result storage (point and derivative coordinates)
+  int    aDimension = myRowLength;
+  double aPntDeriv[8]; // result storage (point and derivative coordinates)
 
   calculateDerivative(theParameter, 1, aPntDeriv);
   if (myIsRational) // the size of aPntDeriv was changed by PLib::RationalDerivative
@@ -251,12 +251,10 @@ void BSplCLib_Cache::D1(const Standard_Real& theParameter,
   theTangent.SetCoord(aPntDeriv[aDimension], aPntDeriv[aDimension + 1]);
 }
 
-void BSplCLib_Cache::D1(const Standard_Real& theParameter,
-                        gp_Pnt&              thePoint,
-                        gp_Vec&              theTangent) const
+void BSplCLib_Cache::D1(const double& theParameter, gp_Pnt& thePoint, gp_Vec& theTangent) const
 {
-  Standard_Real aLocalParam = myParams.PeriodicNormalization(theParameter);
-  aLocalParam               = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
+  double aLocalParam = myParams.PeriodicNormalization(theParameter);
+  aLocalParam        = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
   D1Local(aLocalParam, thePoint, theTangent);
 }
 
@@ -264,7 +262,7 @@ void BSplCLib_Cache::D1(const Standard_Real& theParameter,
 
 void BSplCLib_Cache::D1Local(double theLocalParam, gp_Pnt& thePoint, gp_Vec& theTangent) const
 {
-  Standard_Real aDerivArray[8];
+  double aDerivArray[8];
   calculateDerivativeLocal(theLocalParam, 1, aDerivArray);
 
   const int aDim = myIsRational ? myRowLength - 1 : myRowLength;
@@ -272,13 +270,13 @@ void BSplCLib_Cache::D1Local(double theLocalParam, gp_Pnt& thePoint, gp_Vec& the
   theTangent.SetCoord(aDerivArray[aDim], aDerivArray[aDim + 1], aDerivArray[aDim + 2]);
 }
 
-void BSplCLib_Cache::D2(const Standard_Real& theParameter,
-                        gp_Pnt2d&            thePoint,
-                        gp_Vec2d&            theTangent,
-                        gp_Vec2d&            theCurvature) const
+void BSplCLib_Cache::D2(const double& theParameter,
+                        gp_Pnt2d&     thePoint,
+                        gp_Vec2d&     theTangent,
+                        gp_Vec2d&     theCurvature) const
 {
-  Standard_Integer aDimension = myRowLength;
-  Standard_Real    aPntDeriv[12]; // result storage (point and derivatives coordinates)
+  int    aDimension = myRowLength;
+  double aPntDeriv[12]; // result storage (point and derivatives coordinates)
 
   calculateDerivative(theParameter, 2, aPntDeriv);
   if (myIsRational) // the size of aPntDeriv was changed by PLib::RationalDerivative
@@ -289,13 +287,13 @@ void BSplCLib_Cache::D2(const Standard_Real& theParameter,
   theCurvature.SetCoord(aPntDeriv[aDimension << 1], aPntDeriv[(aDimension << 1) + 1]);
 }
 
-void BSplCLib_Cache::D2(const Standard_Real& theParameter,
-                        gp_Pnt&              thePoint,
-                        gp_Vec&              theTangent,
-                        gp_Vec&              theCurvature) const
+void BSplCLib_Cache::D2(const double& theParameter,
+                        gp_Pnt&       thePoint,
+                        gp_Vec&       theTangent,
+                        gp_Vec&       theCurvature) const
 {
-  Standard_Real aLocalParam = myParams.PeriodicNormalization(theParameter);
-  aLocalParam               = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
+  double aLocalParam = myParams.PeriodicNormalization(theParameter);
+  aLocalParam        = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
   D2Local(aLocalParam, thePoint, theTangent, theCurvature);
 }
 
@@ -306,7 +304,7 @@ void BSplCLib_Cache::D2Local(double  theLocalParam,
                              gp_Vec& theTangent,
                              gp_Vec& theCurvature) const
 {
-  Standard_Real aDerivArray[12];
+  double aDerivArray[12];
   calculateDerivativeLocal(theLocalParam, 2, aDerivArray);
 
   const int aDim   = myIsRational ? myRowLength - 1 : myRowLength;
@@ -316,14 +314,14 @@ void BSplCLib_Cache::D2Local(double  theLocalParam,
   theCurvature.SetCoord(aDerivArray[aShift], aDerivArray[aShift + 1], aDerivArray[aShift + 2]);
 }
 
-void BSplCLib_Cache::D3(const Standard_Real& theParameter,
-                        gp_Pnt2d&            thePoint,
-                        gp_Vec2d&            theTangent,
-                        gp_Vec2d&            theCurvature,
-                        gp_Vec2d&            theTorsion) const
+void BSplCLib_Cache::D3(const double& theParameter,
+                        gp_Pnt2d&     thePoint,
+                        gp_Vec2d&     theTangent,
+                        gp_Vec2d&     theCurvature,
+                        gp_Vec2d&     theTorsion) const
 {
-  Standard_Integer aDimension = myRowLength;
-  Standard_Real    aPntDeriv[16]; // result storage (point and derivatives coordinates)
+  int    aDimension = myRowLength;
+  double aPntDeriv[16]; // result storage (point and derivatives coordinates)
 
   calculateDerivative(theParameter, 3, aPntDeriv);
   if (myIsRational) // the size of aPntDeriv was changed by PLib::RationalDerivative
@@ -331,20 +329,20 @@ void BSplCLib_Cache::D3(const Standard_Real& theParameter,
 
   thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1]);
   theTangent.SetCoord(aPntDeriv[aDimension], aPntDeriv[aDimension + 1]);
-  Standard_Integer aShift = aDimension << 1;
+  int aShift = aDimension << 1;
   theCurvature.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1]);
   aShift += aDimension;
   theTorsion.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1]);
 }
 
-void BSplCLib_Cache::D3(const Standard_Real& theParameter,
-                        gp_Pnt&              thePoint,
-                        gp_Vec&              theTangent,
-                        gp_Vec&              theCurvature,
-                        gp_Vec&              theTorsion) const
+void BSplCLib_Cache::D3(const double& theParameter,
+                        gp_Pnt&       thePoint,
+                        gp_Vec&       theTangent,
+                        gp_Vec&       theCurvature,
+                        gp_Vec&       theTorsion) const
 {
-  Standard_Real aLocalParam = myParams.PeriodicNormalization(theParameter);
-  aLocalParam               = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
+  double aLocalParam = myParams.PeriodicNormalization(theParameter);
+  aLocalParam        = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
   D3Local(aLocalParam, thePoint, theTangent, theCurvature, theTorsion);
 }
 
@@ -356,7 +354,7 @@ void BSplCLib_Cache::D3Local(double  theLocalParam,
                              gp_Vec& theCurvature,
                              gp_Vec& theTorsion) const
 {
-  Standard_Real aDerivArray[16];
+  double aDerivArray[16];
   calculateDerivativeLocal(theLocalParam, 3, aDerivArray);
 
   const int aDim    = myIsRational ? myRowLength - 1 : myRowLength;

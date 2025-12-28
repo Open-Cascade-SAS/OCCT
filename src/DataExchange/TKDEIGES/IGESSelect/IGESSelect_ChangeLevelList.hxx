@@ -27,9 +27,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-class IGESSelect_ChangeLevelList;
-DEFINE_STANDARD_HANDLE(IGESSelect_ChangeLevelList, IGESSelect_ModelModifier)
-
 //! Changes Level List (in directory part) to a new single value
 //! Only entities attached to a LevelListEntity are considered
 //! If OldNumber is defined, only entities whose LevelList
@@ -52,26 +49,26 @@ public:
   //! Returns True if OldNumber is defined : then, only entities
   //! which have a LevelList which contains the value are processed.
   //! Else, all entities attached to a LevelList are.
-  Standard_EXPORT Standard_Boolean HasOldNumber() const;
+  Standard_EXPORT bool HasOldNumber() const;
 
   //! Returns the parameter for OldNumber. If not defined (Null
   //! Handle), it will be interpreted as "all level lists"
-  Standard_EXPORT Handle(IFSelect_IntParam) OldNumber() const;
+  Standard_EXPORT occ::handle<IFSelect_IntParam> OldNumber() const;
 
   //! Sets a parameter for OldNumber
-  Standard_EXPORT void SetOldNumber(const Handle(IFSelect_IntParam)& param);
+  Standard_EXPORT void SetOldNumber(const occ::handle<IFSelect_IntParam>& param);
 
   //! Returns True if NewNumber is defined : then, it gives the new
   //! value for Level Number. Else, the first value of the LevelList
   //! is used as new Level Number.
-  Standard_EXPORT Standard_Boolean HasNewNumber() const;
+  Standard_EXPORT bool HasNewNumber() const;
 
   //! Returns the parameter for NewNumber. If not defined (Null
   //! Handle), it will be interpreted as "new value 0"
-  Standard_EXPORT Handle(IFSelect_IntParam) NewNumber() const;
+  Standard_EXPORT occ::handle<IFSelect_IntParam> NewNumber() const;
 
   //! Sets a parameter for NewNumber
-  Standard_EXPORT void SetNewNumber(const Handle(IFSelect_IntParam)& param);
+  Standard_EXPORT void SetNewNumber(const occ::handle<IFSelect_IntParam>& param);
 
   //! Specific action : considers selected target entities :
   //! If OldNumber is not defined, all entities attached to a
@@ -80,22 +77,21 @@ public:
   //! Level List which contains this value
   //! Attaches all these entities to value given by NewNumber, or
   //! the first value of the Level List
-  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
-                                  const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+                                  const occ::handle<IGESData_IGESModel>& target,
+                                  Interface_CopyTool&                    TC) const override;
 
   //! Returns a text which begins by
   //! "Changes Level Lists containing <old>", or
   //! "Changes all Level Lists in D.E.", and ends by
   //! " to Number <new>"  or  " to Number = first value in List"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_ChangeLevelList, IGESSelect_ModelModifier)
 
-protected:
 private:
-  Handle(IFSelect_IntParam) theold;
-  Handle(IFSelect_IntParam) thenew;
+  occ::handle<IFSelect_IntParam> theold;
+  occ::handle<IFSelect_IntParam> thenew;
 };
 
 #endif // _IGESSelect_ChangeLevelList_HeaderFile

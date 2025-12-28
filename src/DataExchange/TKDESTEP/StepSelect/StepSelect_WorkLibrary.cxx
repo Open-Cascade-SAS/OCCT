@@ -16,7 +16,7 @@
 #include <Interface_CheckIterator.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ReportEntity.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
@@ -34,7 +34,7 @@
 #include <errno.h>
 IMPLEMENT_STANDARD_RTTIEXT(StepSelect_WorkLibrary, IFSelect_WorkLibrary)
 
-StepSelect_WorkLibrary::StepSelect_WorkLibrary(const Standard_Boolean copymode)
+StepSelect_WorkLibrary::StepSelect_WorkLibrary(const bool copymode)
     : thecopymode(copymode),
       thelabmode(0)
 {
@@ -46,48 +46,46 @@ StepSelect_WorkLibrary::StepSelect_WorkLibrary(const Standard_Boolean copymode)
 
 // rq : les init sont faits par ailleurs, pas de souci a se faire
 
-void StepSelect_WorkLibrary::SetDumpLabel(const Standard_Integer mode)
+void StepSelect_WorkLibrary::SetDumpLabel(const int mode)
 {
   thelabmode = mode;
 }
 
-Standard_Integer StepSelect_WorkLibrary::ReadFile(const Standard_CString            name,
-                                                  Handle(Interface_InterfaceModel)& model,
-                                                  const Handle(Interface_Protocol)& protocol) const
+int StepSelect_WorkLibrary::ReadFile(const char*                            name,
+                                     occ::handle<Interface_InterfaceModel>& model,
+                                     const occ::handle<Interface_Protocol>& protocol) const
 {
   DeclareAndCast(StepData_Protocol, stepro, protocol);
   if (stepro.IsNull())
     return 1;
-  Standard_Integer aStatus =
-    StepFile_Read(name, 0, Handle(StepData_StepModel)::DownCast(model), stepro);
+  int aStatus = StepFile_Read(name, 0, occ::down_cast<StepData_StepModel>(model), stepro);
   return aStatus;
 }
 
-Standard_Integer StepSelect_WorkLibrary::ReadStream(
-  const Standard_CString            theName,
-  std::istream&                     theIStream,
-  Handle(Interface_InterfaceModel)& model,
-  const Handle(Interface_Protocol)& protocol) const
+int StepSelect_WorkLibrary::ReadStream(const char*                            theName,
+                                       std::istream&                          theIStream,
+                                       occ::handle<Interface_InterfaceModel>& model,
+                                       const occ::handle<Interface_Protocol>& protocol) const
 {
   DeclareAndCast(StepData_Protocol, stepro, protocol);
   if (stepro.IsNull())
     return 1;
-  Standard_Integer aStatus =
-    StepFile_Read(theName, &theIStream, Handle(StepData_StepModel)::DownCast(model), stepro);
+  int aStatus =
+    StepFile_Read(theName, &theIStream, occ::down_cast<StepData_StepModel>(model), stepro);
   return aStatus;
 }
 
-Standard_Boolean StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
+bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
 {
   //  Preparation
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   DeclareAndCast(StepData_StepModel, stepmodel, ctx.Model());
   DeclareAndCast(StepData_Protocol, stepro, ctx.Protocol());
   if (stepmodel.IsNull() || stepro.IsNull())
-    return Standard_False;
+    return false;
 
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aStream =
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(ctx.FileName(), std::ios::out | std::ios::binary | std::ios::trunc);
 
   if (aStream.get() == NULL)
@@ -101,8 +99,8 @@ Standard_Boolean StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) c
   sout << "(" << stepmodel->NbEntities() << " ents) ";
 
   //  File Modifiers
-  Standard_Integer nbmod = ctx.NbModifiers();
-  for (Standard_Integer numod = 1; numod <= nbmod; numod++)
+  int nbmod = ctx.NbModifiers();
+  for (int numod = 1; numod <= nbmod; numod++)
   {
     ctx.SetModifier(numod);
     DeclareAndCast(StepSelect_FileModifier, filemod, ctx.FileModifier());
@@ -123,7 +121,7 @@ Standard_Boolean StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) c
   for (chl.Start(); chl.More(); chl.Next())
     ctx.CCheck(chl.Number())->GetMessages(chl.Value());
   sout << " Write ";
-  Standard_Boolean isGood = SW.Print(*aStream);
+  bool isGood = SW.Print(*aStream);
   sout << " Done" << std::endl;
 
   errno = 0;
@@ -135,27 +133,27 @@ Standard_Boolean StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) c
   return isGood;
 }
 
-Standard_Boolean StepSelect_WorkLibrary::CopyModel(const Handle(Interface_InterfaceModel)& original,
-                                                   const Handle(Interface_InterfaceModel)& newmodel,
-                                                   const Interface_EntityIterator&         list,
-                                                   Interface_CopyTool&                     TC) const
+bool StepSelect_WorkLibrary::CopyModel(const occ::handle<Interface_InterfaceModel>& original,
+                                       const occ::handle<Interface_InterfaceModel>& newmodel,
+                                       const Interface_EntityIterator&              list,
+                                       Interface_CopyTool&                          TC) const
 {
   if (thecopymode)
     return IFSelect_WorkLibrary::CopyModel(original, newmodel, list, TC);
   return thecopymode;
 }
 
-void StepSelect_WorkLibrary::DumpEntity(const Handle(Interface_InterfaceModel)& model,
-                                        const Handle(Interface_Protocol)&       protocol,
-                                        const Handle(Standard_Transient)&       entity,
-                                        Standard_OStream&                       S,
-                                        const Standard_Integer                  level) const
+void StepSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
+                                        const occ::handle<Interface_Protocol>&       protocol,
+                                        const occ::handle<Standard_Transient>&       entity,
+                                        Standard_OStream&                            S,
+                                        const int                                    level) const
 {
-  Standard_Integer nument = model->Number(entity);
+  int nument = model->Number(entity);
   if (nument <= 0 || nument > model->NbEntities())
     return;
-  Standard_Boolean           iserr = model->IsRedefinedContent(nument);
-  Handle(Standard_Transient) ent, con;
+  bool                            iserr = model->IsRedefinedContent(nument);
+  occ::handle<Standard_Transient> ent, con;
   ent = entity;
   S << " --- (STEP) Entity ";
   model->Print(entity, S);

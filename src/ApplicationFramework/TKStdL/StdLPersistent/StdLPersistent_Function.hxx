@@ -41,18 +41,18 @@ public:
   inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
 
   //! Returns persistent type name
-  inline Standard_CString PName() const { return "PFunction_Function"; }
+  inline const char* PName() const { return "PFunction_Function"; }
 
   //! Import transient attribute from the persistent data.
-  void Import(const Handle(TFunction_Function)& theAttribute) const
+  void Import(const occ::handle<TFunction_Function>& theAttribute) const
   {
     theAttribute->SetDriverGUID(myDriverGUID);
     theAttribute->SetFailure(myFailure);
   }
 
 private:
-  Standard_GUID    myDriverGUID;
-  Standard_Integer myFailure;
+  Standard_GUID myDriverGUID;
+  int           myFailure;
 };
 
 #endif

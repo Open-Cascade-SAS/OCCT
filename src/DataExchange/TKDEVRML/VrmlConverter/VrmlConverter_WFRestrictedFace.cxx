@@ -26,24 +26,24 @@
 
 //=================================================================================================
 
-void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anOStream,
-                                         const Handle(BRepAdaptor_Surface)&  aFace,
-                                         const Standard_Boolean              DrawUIso,
-                                         const Standard_Boolean              DrawVIso,
-                                         const Standard_Integer              NBUiso,
-                                         const Standard_Integer              NBViso,
-                                         const Handle(VrmlConverter_Drawer)& aDrawer)
+void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                        anOStream,
+                                         const occ::handle<BRepAdaptor_Surface>&  aFace,
+                                         const bool                               DrawUIso,
+                                         const bool                               DrawVIso,
+                                         const int                                NBUiso,
+                                         const int                                NBViso,
+                                         const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
-  Standard_Real    aLimit   = aDrawer->MaximalParameterValue();
-  Standard_Integer nbPoints = aDrawer->Discretisation();
+  double aLimit   = aDrawer->MaximalParameterValue();
+  int    nbPoints = aDrawer->Discretisation();
 
   StdPrs_ToolRFace ToolRst(aFace);
 
   // compute bounds of the restriction
-  Standard_Real    UMin, UMax, VMin, VMax;
-  Standard_Integer i;
-  gp_Pnt2d         P1, P2;
-  Bnd_Box2d        B;
+  double    UMin, UMax, VMin, VMax;
+  int       i;
+  gp_Pnt2d  P1, P2;
+  Bnd_Box2d B;
 
   for (ToolRst.Init(); ToolRst.More(); ToolRst.Next())
   {
@@ -54,9 +54,9 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
   B.Get(UMin, VMin, UMax, VMax);
 
   // load the infinite isos
-  Hatch_Hatcher    isobuild(1.e-5, ToolRst.IsOriented());
-  Standard_Boolean UClosed = aFace->IsUClosed();
-  Standard_Boolean VClosed = aFace->IsVClosed();
+  Hatch_Hatcher isobuild(1.e-5, ToolRst.IsOriented());
+  bool          UClosed = aFace->IsUClosed();
+  bool          VClosed = aFace->IsVClosed();
 
   if (!UClosed)
   {
@@ -74,8 +74,8 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
   {
     if (NBUiso > 0)
     {
-      UClosed          = Standard_False;
-      Standard_Real du = UClosed ? (UMax - UMin) / NBUiso : (UMax - UMin) / (1 + NBUiso);
+      UClosed   = false;
+      double du = UClosed ? (UMax - UMin) / NBUiso : (UMax - UMin) / (1 + NBUiso);
       for (i = 1; i <= NBUiso; i++)
       {
         isobuild.AddXLine(UMin + du * i);
@@ -86,8 +86,8 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
   {
     if (NBViso > 0)
     {
-      VClosed          = Standard_False;
-      Standard_Real dv = VClosed ? (VMax - VMin) / NBViso : (VMax - VMin) / (1 + NBViso);
+      VClosed   = false;
+      double dv = VClosed ? (VMax - VMin) / NBViso : (VMax - VMin) / (1 + NBViso);
       for (i = 1; i <= NBViso; i++)
       {
         isobuild.AddYLine(VMin + dv * i);
@@ -96,7 +96,7 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
   }
 
   // trim the isos
-  Standard_Real U1, U2, U, DU;
+  double U1, U2, U, DU;
 
   for (ToolRst.Init(); ToolRst.More(); ToolRst.Next())
   {
@@ -134,24 +134,24 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
 
   Adaptor3d_IsoCurve anIso;
   anIso.Load(aFace);
-  Standard_Integer NumberOfLines = isobuild.NbLines();
+  int NumberOfLines = isobuild.NbLines();
 
-  Handle(VrmlConverter_LineAspect) latmp = new VrmlConverter_LineAspect;
+  occ::handle<VrmlConverter_LineAspect> latmp = new VrmlConverter_LineAspect;
   latmp->SetMaterial(aDrawer->LineAspect()->Material());
   latmp->SetHasMaterial(aDrawer->LineAspect()->HasMaterial());
 
-  Handle(VrmlConverter_IsoAspect) iautmp = new VrmlConverter_IsoAspect;
+  occ::handle<VrmlConverter_IsoAspect> iautmp = new VrmlConverter_IsoAspect;
   iautmp->SetMaterial(aDrawer->UIsoAspect()->Material());
   iautmp->SetHasMaterial(aDrawer->UIsoAspect()->HasMaterial());
   iautmp->SetNumber(aDrawer->UIsoAspect()->Number());
 
-  Handle(VrmlConverter_IsoAspect) iavtmp = new VrmlConverter_IsoAspect;
+  occ::handle<VrmlConverter_IsoAspect> iavtmp = new VrmlConverter_IsoAspect;
   iavtmp->SetMaterial(aDrawer->VIsoAspect()->Material());
   iavtmp->SetHasMaterial(aDrawer->VIsoAspect()->HasMaterial());
   iavtmp->SetNumber(aDrawer->VIsoAspect()->Number());
 
-  Handle(VrmlConverter_LineAspect) laU = new VrmlConverter_LineAspect;
-  Handle(VrmlConverter_LineAspect) laV = new VrmlConverter_LineAspect;
+  occ::handle<VrmlConverter_LineAspect> laU = new VrmlConverter_LineAspect;
+  occ::handle<VrmlConverter_LineAspect> laV = new VrmlConverter_LineAspect;
 
   laU = aDrawer->UIsoAspect();
   laV = aDrawer->VIsoAspect();
@@ -174,7 +174,7 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
   Vrml_Separator SE2;
   Vrml_Separator SE3;
 
-  Standard_Boolean flag = Standard_False; // to check a call of Vrml_Separator.Print(anOStream)
+  bool flag = false; // to check a call of Vrml_Separator.Print(anOStream)
 
   SE1.Print(anOStream);
 
@@ -186,13 +186,13 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
       if (laU->HasMaterial())
       {
 
-        Handle(Vrml_Material) MU;
+        occ::handle<Vrml_Material> MU;
         MU = laU->Material();
 
         MU->Print(anOStream);
-        laU->SetHasMaterial(Standard_False);
+        laU->SetHasMaterial(false);
 
-        flag = Standard_True;
+        flag = true;
         // Separator 2 {
         SE2.Print(anOStream);
       }
@@ -202,11 +202,11 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
       {
         if (isobuild.IsXLine(i))
         {
-          Standard_Integer NumberOfIntervals = isobuild.NbIntervals(i);
-          Standard_Real    Coord             = isobuild.Coordinate(i);
-          for (Standard_Integer j = 1; j <= NumberOfIntervals; j++)
+          int    NumberOfIntervals = isobuild.NbIntervals(i);
+          double Coord             = isobuild.Coordinate(i);
+          for (int j = 1; j <= NumberOfIntervals; j++)
           {
-            Standard_Real b1 = isobuild.Start(i, j), b2 = isobuild.End(i, j);
+            double b1 = isobuild.Start(i, j), b2 = isobuild.End(i, j);
 
             b1 = b1 == RealFirst() ? -aLimit : b1;
             b2 = b2 == RealLast() ? aLimit : b2;
@@ -222,7 +222,7 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
       {
         // Separator 2 }
         SE2.Print(anOStream);
-        flag = Standard_False;
+        flag = false;
       }
     }
   }
@@ -234,12 +234,12 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
       if (laV->HasMaterial())
       {
 
-        Handle(Vrml_Material) MV;
+        occ::handle<Vrml_Material> MV;
         MV = laV->Material();
 
         MV->Print(anOStream);
-        laV->SetHasMaterial(Standard_False);
-        flag = Standard_True;
+        laV->SetHasMaterial(false);
+        flag = true;
 
         // Separator 3 {
         SE3.Print(anOStream);
@@ -251,11 +251,11 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
       {
         if (isobuild.IsYLine(i))
         {
-          Standard_Integer NumberOfIntervals = isobuild.NbIntervals(i);
-          Standard_Real    Coord             = isobuild.Coordinate(i);
-          for (Standard_Integer j = 1; j <= NumberOfIntervals; j++)
+          int    NumberOfIntervals = isobuild.NbIntervals(i);
+          double Coord             = isobuild.Coordinate(i);
+          for (int j = 1; j <= NumberOfIntervals; j++)
           {
-            Standard_Real b1 = isobuild.Start(i, j), b2 = isobuild.End(i, j);
+            double b1 = isobuild.Start(i, j), b2 = isobuild.End(i, j);
 
             b1 = b1 == RealFirst() ? -aLimit : b1;
             b2 = b2 == RealLast() ? aLimit : b2;
@@ -271,7 +271,7 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
       {
         // Separator 3 }
         SE3.Print(anOStream);
-        flag = Standard_False;
+        flag = false;
       }
     }
   }
@@ -297,57 +297,39 @@ void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anO
 
 //=================================================================================================
 
-void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                   anOStream,
-                                         const Handle(BRepAdaptor_Surface)&  aFace,
-                                         const Handle(VrmlConverter_Drawer)& aDrawer)
+void VrmlConverter_WFRestrictedFace::Add(Standard_OStream&                        anOStream,
+                                         const occ::handle<BRepAdaptor_Surface>&  aFace,
+                                         const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
-  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
-  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+  int finu = aDrawer->UIsoAspect()->Number();
+  int finv = aDrawer->VIsoAspect()->Number();
 
-  VrmlConverter_WFRestrictedFace::Add(anOStream,
-                                      aFace,
-                                      Standard_True,
-                                      Standard_True,
-                                      finu,
-                                      finv,
-                                      aDrawer);
+  VrmlConverter_WFRestrictedFace::Add(anOStream, aFace, true, true, finu, finv, aDrawer);
 }
 
 //=================================================================================================
 
-void VrmlConverter_WFRestrictedFace::AddUIso(Standard_OStream&                   anOStream,
-                                             const Handle(BRepAdaptor_Surface)&  aFace,
-                                             const Handle(VrmlConverter_Drawer)& aDrawer)
+void VrmlConverter_WFRestrictedFace::AddUIso(Standard_OStream&                        anOStream,
+                                             const occ::handle<BRepAdaptor_Surface>&  aFace,
+                                             const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
-  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
-  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+  int finu = aDrawer->UIsoAspect()->Number();
+  int finv = aDrawer->VIsoAspect()->Number();
 
-  VrmlConverter_WFRestrictedFace::Add(anOStream,
-                                      aFace,
-                                      Standard_True,
-                                      Standard_False,
-                                      finu,
-                                      finv,
-                                      aDrawer);
+  VrmlConverter_WFRestrictedFace::Add(anOStream, aFace, true, false, finu, finv, aDrawer);
 }
 
 //=================================================================================================
 
-void VrmlConverter_WFRestrictedFace::AddVIso(Standard_OStream&                   anOStream,
-                                             const Handle(BRepAdaptor_Surface)&  aFace,
-                                             const Handle(VrmlConverter_Drawer)& aDrawer)
+void VrmlConverter_WFRestrictedFace::AddVIso(Standard_OStream&                        anOStream,
+                                             const occ::handle<BRepAdaptor_Surface>&  aFace,
+                                             const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
-  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
-  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+  int finu = aDrawer->UIsoAspect()->Number();
+  int finv = aDrawer->VIsoAspect()->Number();
 
-  VrmlConverter_WFRestrictedFace::Add(anOStream,
-                                      aFace,
-                                      Standard_False,
-                                      Standard_True,
-                                      finu,
-                                      finv,
-                                      aDrawer);
+  VrmlConverter_WFRestrictedFace::Add(anOStream, aFace, false, true, finu, finv, aDrawer);
 }

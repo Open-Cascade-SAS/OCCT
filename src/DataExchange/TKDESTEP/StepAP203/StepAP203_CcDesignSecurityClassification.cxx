@@ -29,9 +29,9 @@ StepAP203_CcDesignSecurityClassification::StepAP203_CcDesignSecurityClassificati
 //=================================================================================================
 
 void StepAP203_CcDesignSecurityClassification::Init(
-  const Handle(StepBasic_SecurityClassification)&
+  const occ::handle<StepBasic_SecurityClassification>&
     aSecurityClassificationAssignment_AssignedSecurityClassification,
-  const Handle(StepAP203_HArray1OfClassifiedItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>>& aItems)
 {
   StepBasic_SecurityClassificationAssignment::Init(
     aSecurityClassificationAssignment_AssignedSecurityClassification);
@@ -41,7 +41,8 @@ void StepAP203_CcDesignSecurityClassification::Init(
 
 //=================================================================================================
 
-Handle(StepAP203_HArray1OfClassifiedItem) StepAP203_CcDesignSecurityClassification::Items() const
+occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>>
+  StepAP203_CcDesignSecurityClassification::Items() const
 {
   return theItems;
 }
@@ -49,7 +50,7 @@ Handle(StepAP203_HArray1OfClassifiedItem) StepAP203_CcDesignSecurityClassificati
 //=================================================================================================
 
 void StepAP203_CcDesignSecurityClassification::SetItems(
-  const Handle(StepAP203_HArray1OfClassifiedItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>>& aItems)
 {
   theItems = aItems;
 }

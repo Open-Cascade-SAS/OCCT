@@ -22,25 +22,25 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ScrewPairWithRange, StepKinematics_Scr
 
 StepKinematics_ScrewPairWithRange::StepKinematics_ScrewPairWithRange()
 {
-  defLowerLimitActualRotation = Standard_False;
-  defUpperLimitActualRotation = Standard_False;
+  defLowerLimitActualRotation = false;
+  defUpperLimitActualRotation = false;
 }
 
 //=================================================================================================
 
 void StepKinematics_ScrewPairWithRange::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Real                          theScrewPair_Pitch,
-  const Standard_Boolean                       hasLowerLimitActualRotation,
-  const Standard_Real                          theLowerLimitActualRotation,
-  const Standard_Boolean                       hasUpperLimitActualRotation,
-  const Standard_Real                          theUpperLimitActualRotation)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                                        hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const double                                      theScrewPair_Pitch,
+  const bool                                        hasLowerLimitActualRotation,
+  const double                                      theLowerLimitActualRotation,
+  const bool                                        hasUpperLimitActualRotation,
+  const double                                      theUpperLimitActualRotation)
 {
   StepKinematics_ScrewPair::Init(theRepresentationItem_Name,
                                  theItemDefinedTransformation_Name,
@@ -70,7 +70,7 @@ void StepKinematics_ScrewPairWithRange::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_ScrewPairWithRange::LowerLimitActualRotation() const
+double StepKinematics_ScrewPairWithRange::LowerLimitActualRotation() const
 {
   return myLowerLimitActualRotation;
 }
@@ -78,21 +78,21 @@ Standard_Real StepKinematics_ScrewPairWithRange::LowerLimitActualRotation() cons
 //=================================================================================================
 
 void StepKinematics_ScrewPairWithRange::SetLowerLimitActualRotation(
-  const Standard_Real theLowerLimitActualRotation)
+  const double theLowerLimitActualRotation)
 {
   myLowerLimitActualRotation = theLowerLimitActualRotation;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_ScrewPairWithRange::HasLowerLimitActualRotation() const
+bool StepKinematics_ScrewPairWithRange::HasLowerLimitActualRotation() const
 {
   return defLowerLimitActualRotation;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_ScrewPairWithRange::UpperLimitActualRotation() const
+double StepKinematics_ScrewPairWithRange::UpperLimitActualRotation() const
 {
   return myUpperLimitActualRotation;
 }
@@ -100,14 +100,14 @@ Standard_Real StepKinematics_ScrewPairWithRange::UpperLimitActualRotation() cons
 //=================================================================================================
 
 void StepKinematics_ScrewPairWithRange::SetUpperLimitActualRotation(
-  const Standard_Real theUpperLimitActualRotation)
+  const double theUpperLimitActualRotation)
 {
   myUpperLimitActualRotation = theUpperLimitActualRotation;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_ScrewPairWithRange::HasUpperLimitActualRotation() const
+bool StepKinematics_ScrewPairWithRange::HasUpperLimitActualRotation() const
 {
   return defUpperLimitActualRotation;
 }

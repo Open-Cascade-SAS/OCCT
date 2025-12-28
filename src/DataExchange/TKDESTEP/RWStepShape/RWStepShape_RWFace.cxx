@@ -18,14 +18,15 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_Face.hxx>
 #include <StepShape_FaceBound.hxx>
-#include <StepShape_HArray1OfFaceBound.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 RWStepShape_RWFace::RWStepShape_RWFace() {}
 
-void RWStepShape_RWFace::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                  const Standard_Integer                 num,
-                                  Handle(Interface_Check)&               ach,
-                                  const Handle(StepShape_Face)&          ent) const
+void RWStepShape_RWFace::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                  const int                                   num,
+                                  occ::handle<Interface_Check>&               ach,
+                                  const occ::handle<StepShape_Face>&          ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,22 +36,22 @@ void RWStepShape_RWFace::ReadStep(const Handle(StepData_StepReaderData)& data,
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : bounds ---
 
-  Handle(StepShape_HArray1OfFaceBound) aBounds;
-  Handle(StepShape_FaceBound)          anent2;
-  Standard_Integer                     nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> aBounds;
+  occ::handle<StepShape_FaceBound>                                   anent2;
+  int                                                                nsub2;
   if (data->ReadSubList(num, 2, "bounds", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aBounds              = new StepShape_HArray1OfFaceBound(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aBounds = new NCollection_HArray1<occ::handle<StepShape_FaceBound>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data
             ->ReadEntity(nsub2, i2, "face_bound", ach, STANDARD_TYPE(StepShape_FaceBound), anent2))
         aBounds->SetValue(i2, anent2);
@@ -62,7 +63,8 @@ void RWStepShape_RWFace::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aBounds);
 }
 
-void RWStepShape_RWFace::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Face)& ent) const
+void RWStepShape_RWFace::WriteStep(StepData_StepWriter&               SW,
+                                   const occ::handle<StepShape_Face>& ent) const
 {
 
   // --- inherited field name ---
@@ -72,19 +74,19 @@ void RWStepShape_RWFace::WriteStep(StepData_StepWriter& SW, const Handle(StepSha
   // --- own field : bounds ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbBounds(); i2++)
+  for (int i2 = 1; i2 <= ent->NbBounds(); i2++)
   {
     SW.Send(ent->BoundsValue(i2));
   }
   SW.CloseSub();
 }
 
-void RWStepShape_RWFace::Share(const Handle(StepShape_Face)& ent,
-                               Interface_EntityIterator&     iter) const
+void RWStepShape_RWFace::Share(const occ::handle<StepShape_Face>& ent,
+                               Interface_EntityIterator&          iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbBounds();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbBounds();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->BoundsValue(is1));
   }

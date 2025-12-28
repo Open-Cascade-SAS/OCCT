@@ -28,27 +28,28 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 
 //=================================================================================================
 
 ShapeFix_FreeBounds::ShapeFix_FreeBounds()
-    : myShared(Standard_False),
+    : myShared(false),
       mySewToler(0.0),
       myCloseToler(0.0),
-      mySplitClosed(Standard_False),
-      mySplitOpen(Standard_False)
+      mySplitClosed(false),
+      mySplitOpen(false)
 {
 }
 
 //=================================================================================================
 
-ShapeFix_FreeBounds::ShapeFix_FreeBounds(const TopoDS_Shape&    shape,
-                                         const Standard_Real    sewtoler,
-                                         const Standard_Real    closetoler,
-                                         const Standard_Boolean splitclosed,
-                                         const Standard_Boolean splitopen)
-    : myShared(Standard_False),
+ShapeFix_FreeBounds::ShapeFix_FreeBounds(const TopoDS_Shape& shape,
+                                         const double        sewtoler,
+                                         const double        closetoler,
+                                         const bool          splitclosed,
+                                         const bool          splitopen)
+    : myShared(false),
       mySewToler(sewtoler),
       myCloseToler(closetoler),
       mySplitClosed(splitclosed),
@@ -60,11 +61,11 @@ ShapeFix_FreeBounds::ShapeFix_FreeBounds(const TopoDS_Shape&    shape,
 
 //=================================================================================================
 
-ShapeFix_FreeBounds::ShapeFix_FreeBounds(const TopoDS_Shape&    shape,
-                                         const Standard_Real    closetoler,
-                                         const Standard_Boolean splitclosed,
-                                         const Standard_Boolean splitopen)
-    : myShared(Standard_True),
+ShapeFix_FreeBounds::ShapeFix_FreeBounds(const TopoDS_Shape& shape,
+                                         const double        closetoler,
+                                         const bool          splitclosed,
+                                         const bool          splitopen)
+    : myShared(true),
       mySewToler(0.),
       myCloseToler(closetoler),
       mySplitClosed(splitclosed),
@@ -76,7 +77,7 @@ ShapeFix_FreeBounds::ShapeFix_FreeBounds(const TopoDS_Shape&    shape,
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_FreeBounds::Perform()
+bool ShapeFix_FreeBounds::Perform()
 {
   ShapeAnalysis_FreeBounds safb;
   if (myShared)
@@ -89,9 +90,10 @@ Standard_Boolean ShapeFix_FreeBounds::Perform()
 
   if (myCloseToler > mySewToler)
   {
-    ShapeExtend_Explorer              see;
-    Handle(TopTools_HSequenceOfShape) newwires, open = see.SeqFromCompound(myEdges, Standard_False);
-    TopTools_DataMapOfShapeShape      vertices;
+    ShapeExtend_Explorer                             see;
+    occ::handle<NCollection_HSequence<TopoDS_Shape>> newwires,
+      open = see.SeqFromCompound(myEdges, false);
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
     ShapeAnalysis_FreeBounds::ConnectWiresToWires(open, myCloseToler, myShared, newwires, vertices);
     myEdges.Nullify();
     ShapeAnalysis_FreeBounds::DispatchWires(newwires, myWires, myEdges);
@@ -114,5 +116,5 @@ Standard_Boolean ShapeFix_FreeBounds::Perform()
       }
     }
   }
-  return Standard_True;
+  return true;
 }

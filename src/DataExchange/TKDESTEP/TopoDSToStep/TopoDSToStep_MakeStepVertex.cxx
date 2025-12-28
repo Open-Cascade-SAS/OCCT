@@ -35,41 +35,42 @@
 TopoDSToStep_MakeStepVertex::TopoDSToStep_MakeStepVertex()
     : myError(TopoDSToStep_VertexOther)
 {
-  done = Standard_False;
+  done = false;
 }
 
-TopoDSToStep_MakeStepVertex::TopoDSToStep_MakeStepVertex(const TopoDS_Vertex&                  V,
-                                                         TopoDSToStep_Tool&                    T,
-                                                         const Handle(Transfer_FinderProcess)& FP,
-                                                         const StepData_Factors& theLocalFactors)
+TopoDSToStep_MakeStepVertex::TopoDSToStep_MakeStepVertex(
+  const TopoDS_Vertex&                       V,
+  TopoDSToStep_Tool&                         T,
+  const occ::handle<Transfer_FinderProcess>& FP,
+  const StepData_Factors&                    theLocalFactors)
 {
-  done = Standard_False;
+  done = false;
   Init(V, T, FP, theLocalFactors);
 }
 
 //=================================================================================================
 
-void TopoDSToStep_MakeStepVertex::Init(const TopoDS_Vertex&                  aVertex,
-                                       TopoDSToStep_Tool&                    aTool,
-                                       const Handle(Transfer_FinderProcess)& FP,
-                                       const StepData_Factors&               theLocalFactors)
+void TopoDSToStep_MakeStepVertex::Init(const TopoDS_Vertex&                       aVertex,
+                                       TopoDSToStep_Tool&                         aTool,
+                                       const occ::handle<Transfer_FinderProcess>& FP,
+                                       const StepData_Factors&                    theLocalFactors)
 {
 
   aTool.SetCurrentVertex(aVertex);
 
   // [BEGIN] Processing non-manifold topology (ssv; 11.11.2010)
-  Standard_Boolean isNMMode =
-    Handle(StepData_StepModel)::DownCast(FP->Model())->InternalParameters.WriteNonmanifold != 0;
+  bool isNMMode =
+    occ::down_cast<StepData_StepModel>(FP->Model())->InternalParameters.WriteNonmanifold != 0;
   if (isNMMode)
   {
-    Handle(StepShape_VertexPoint)    aVP;
-    Handle(TransferBRep_ShapeMapper) aSTEPMapper = TransferBRep::ShapeMapper(FP, aVertex);
+    occ::handle<StepShape_VertexPoint>    aVP;
+    occ::handle<TransferBRep_ShapeMapper> aSTEPMapper = TransferBRep::ShapeMapper(FP, aVertex);
     if (FP->FindTypedTransient(aSTEPMapper, STANDARD_TYPE(StepShape_VertexPoint), aVP))
     {
       // Non-manifold topology detected
       myError  = TopoDSToStep_VertexOther;
       myResult = aVP;
-      done     = Standard_True;
+      done     = true;
       return;
     }
   }
@@ -78,7 +79,7 @@ void TopoDSToStep_MakeStepVertex::Init(const TopoDS_Vertex&                  aVe
   if (aTool.IsBound(aVertex))
   {
     myError  = TopoDSToStep_VertexOther;
-    done     = Standard_True;
+    done     = true;
     myResult = aTool.Find(aVertex);
     return;
   }
@@ -86,22 +87,23 @@ void TopoDSToStep_MakeStepVertex::Init(const TopoDS_Vertex&                  aVe
   gp_Pnt P;
 
   P = BRep_Tool::Pnt(aVertex);
-  GeomToStep_MakeCartesianPoint    MkPoint(P, theLocalFactors.LengthFactor());
-  Handle(StepGeom_CartesianPoint)  Gpms  = MkPoint.Value();
-  Handle(StepShape_VertexPoint)    Vpms  = new StepShape_VertexPoint();
-  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
+  GeomToStep_MakeCartesianPoint         MkPoint(P, theLocalFactors.LengthFactor());
+  occ::handle<StepGeom_CartesianPoint>  Gpms  = MkPoint.Value();
+  occ::handle<StepShape_VertexPoint>    Vpms  = new StepShape_VertexPoint();
+  occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
 
   Vpms->Init(aName, Gpms);
 
   aTool.Bind(aVertex, Vpms);
   myError  = TopoDSToStep_VertexDone;
-  done     = Standard_True;
+  done     = true;
   myResult = Vpms;
 }
 
 //=================================================================================================
 
-const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepVertex::Value() const
+const occ::handle<StepShape_TopologicalRepresentationItem>& TopoDSToStep_MakeStepVertex::Value()
+  const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeStepVertex::Value() - no result");
   return myResult;

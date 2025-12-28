@@ -25,11 +25,11 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_EdgeVertexInterference, TopOpeBRepDS_Sha
 TopOpeBRepDS_EdgeVertexInterference::TopOpeBRepDS_EdgeVertexInterference(
   const TopOpeBRepDS_Transition& T,
   const TopOpeBRepDS_Kind        ST,
-  const Standard_Integer         S,
-  const Standard_Integer         G,
-  const Standard_Boolean         GIsBound,
+  const int                      S,
+  const int                      G,
+  const bool                     GIsBound,
   const TopOpeBRepDS_Config      C,
-  const Standard_Real            P)
+  const double                   P)
     : TopOpeBRepDS_ShapeShapeInterference(T, ST, S, TopOpeBRepDS_VERTEX, G, GIsBound, C),
       myParam(P)
 {
@@ -39,11 +39,11 @@ TopOpeBRepDS_EdgeVertexInterference::TopOpeBRepDS_EdgeVertexInterference(
 
 TopOpeBRepDS_EdgeVertexInterference::TopOpeBRepDS_EdgeVertexInterference(
   const TopOpeBRepDS_Transition& T,
-  const Standard_Integer         S,
-  const Standard_Integer         G,
-  const Standard_Boolean         GIsBound,
+  const int                      S,
+  const int                      G,
+  const bool                     GIsBound,
   const TopOpeBRepDS_Config      C,
-  const Standard_Real            P)
+  const double                   P)
     : TopOpeBRepDS_ShapeShapeInterference(T,
                                           TopOpeBRepDS_EDGE,
                                           S,
@@ -57,14 +57,14 @@ TopOpeBRepDS_EdgeVertexInterference::TopOpeBRepDS_EdgeVertexInterference(
 
 //=================================================================================================
 
-Standard_Real TopOpeBRepDS_EdgeVertexInterference::Parameter() const
+double TopOpeBRepDS_EdgeVertexInterference::Parameter() const
 {
   return myParam;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_EdgeVertexInterference::Parameter(const Standard_Real P)
+void TopOpeBRepDS_EdgeVertexInterference::Parameter(const double P)
 {
   myParam = P;
 }

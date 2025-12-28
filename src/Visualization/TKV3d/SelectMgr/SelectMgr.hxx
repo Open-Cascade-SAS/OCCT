@@ -27,10 +27,10 @@ class SelectMgr
 public:
   //! Compute debug presentation for sensitive objects.
   Standard_EXPORT static void ComputeSensitivePrs(
-    const Handle(Graphic3d_Structure)&     theStructure,
-    const Handle(SelectMgr_Selection)&     theSel,
-    const gp_Trsf&                         theLoc,
-    const Handle(Graphic3d_TransformPers)& theTrsfPers);
+    const occ::handle<Graphic3d_Structure>&     theStructure,
+    const occ::handle<SelectMgr_Selection>&     theSel,
+    const gp_Trsf&                              theLoc,
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPers);
 };
 
 #endif

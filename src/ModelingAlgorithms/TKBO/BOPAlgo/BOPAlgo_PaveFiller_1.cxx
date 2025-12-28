@@ -22,7 +22,8 @@
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-#include <BOPDS_VectorOfInterfVV.hxx>
+#include <NCollection_Vector.hxx>
+#include <BOPDS_Interf.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_TVertex.hxx>
@@ -31,18 +32,20 @@
 #include <IntTools_Context.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Precision.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Compound.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
 {
-  Standard_Integer                  n1, n2, iFlag, aSize;
-  Handle(NCollection_BaseAllocator) aAllocator;
+  int                                    n1, n2, iFlag, aSize;
+  occ::handle<NCollection_BaseAllocator> aAllocator;
   //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_VERTEX);
   aSize = myIterator->ExpectedLength();
@@ -52,13 +55,13 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
     return;
   }
   //
-  BOPDS_VectorOfInterfVV& aVVs = myDS->InterfVV();
+  NCollection_Vector<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
   aVVs.SetIncrement(aSize);
   //
   //-----------------------------------------------------scope f
   aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
-  NCollection_IndexedDataMap<Standard_Integer, TColStd_ListOfInteger> aMILI(100, aAllocator);
-  NCollection_List<TColStd_ListOfInteger>                             aMBlocks(aAllocator);
+  NCollection_IndexedDataMap<int, NCollection_List<int>> aMILI(100, aAllocator);
+  NCollection_List<NCollection_List<int>>                aMBlocks(aAllocator);
   //
   // 1. Map V/LV
   // Split progress range on intersection stage and making blocks. Display only intersection stage.
@@ -78,10 +81,10 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
     }
 
     // Check for SD vertices
-    Standard_Integer n1SD = n1;
+    int n1SD = n1;
     myDS->HasShapeSD(n1, n1SD);
 
-    Standard_Integer n2SD = n2;
+    int n2SD = n2;
     myDS->HasShapeSD(n2, n2SD);
 
     const TopoDS_Vertex& aV1 = (*(TopoDS_Vertex*)(&myDS->Shape(n1SD)));
@@ -98,20 +101,20 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
   BOPAlgo_Tools::MakeBlocks(aMILI, aMBlocks, aAllocator);
   //
   // 3. Make vertices
-  NCollection_List<TColStd_ListOfInteger>::Iterator aItB(aMBlocks);
+  NCollection_List<NCollection_List<int>>::Iterator aItB(aMBlocks);
   for (; aItB.More(); aItB.Next())
   {
     if (UserBreak(aPS))
     {
       return;
     }
-    const TColStd_ListOfInteger& aLI = aItB.Value();
+    const NCollection_List<int>& aLI = aItB.Value();
     MakeSDVertices(aLI);
   }
   //
-  TColStd_DataMapIteratorOfDataMapOfIntegerInteger aItDMII;
+  NCollection_DataMap<int, int>::Iterator aItDMII;
   //
-  TColStd_DataMapOfIntegerInteger& aDMII = myDS->ShapesSD();
+  NCollection_DataMap<int, int>& aDMII = myDS->ShapesSD();
   aItDMII.Initialize(aDMII);
   for (; aItDMII.More(); aItDMII.Next())
   {
@@ -130,16 +133,16 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-Standard_Integer BOPAlgo_PaveFiller::MakeSDVertices(const TColStd_ListOfInteger& theVertIndices,
-                                                    const Standard_Boolean       theAddInterfs)
+int BOPAlgo_PaveFiller::MakeSDVertices(const NCollection_List<int>& theVertIndices,
+                                       const bool                   theAddInterfs)
 {
-  TopoDS_Vertex                       aVSD, aVn;
-  Standard_Integer                    nSD = -1;
-  TColStd_ListIteratorOfListOfInteger aItLI(theVertIndices);
-  TopTools_ListOfShape                aLV;
+  TopoDS_Vertex                   aVSD, aVn;
+  int                             nSD = -1;
+  NCollection_List<int>::Iterator aItLI(theVertIndices);
+  NCollection_List<TopoDS_Shape>  aLV;
   for (; aItLI.More(); aItLI.Next())
   {
-    Standard_Integer nX = aItLI.Value(), nSD1;
+    int nX = aItLI.Value(), nSD1;
     if (myDS->HasShapeSD(nX, nSD1))
     {
       const TopoDS_Shape& aVSD1 = myDS->Shape(nSD1);
@@ -157,7 +160,7 @@ Standard_Integer BOPAlgo_PaveFiller::MakeSDVertices(const TColStd_ListOfInteger&
     aLV.Append(aV);
   }
   BOPTools_AlgoTools::MakeVertex(aLV, aVn);
-  Standard_Integer nV;
+  int nV;
   if (nSD != -1)
   {
     // update old SD vertex with new value
@@ -181,24 +184,24 @@ Standard_Integer BOPAlgo_PaveFiller::MakeSDVertices(const TColStd_ListOfInteger&
   aBox.SetGap(BRep_Tool::Tolerance(aVn) + Precision::Confusion());
   //
   // Fill ShapesSD
-  BOPDS_VectorOfInterfVV& aVVs = myDS->InterfVV();
+  NCollection_Vector<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
   if (theAddInterfs)
     aVVs.SetIncrement(theVertIndices.Extent());
   //
   aItLI.Initialize(theVertIndices);
   for (; aItLI.More(); aItLI.Next())
   {
-    Standard_Integer n1 = aItLI.Value();
+    int n1 = aItLI.Value();
     myDS->AddShapeSD(n1, nV);
     //
-    Standard_Integer    iR1 = myDS->Rank(n1);
+    int                 iR1 = myDS->Rank(n1);
     const TopoDS_Shape& aV1 = myDS->Shape(n1);
     //
-    TColStd_ListIteratorOfListOfInteger aItLI2 = aItLI;
+    NCollection_List<int>::Iterator aItLI2 = aItLI;
     aItLI2.Next();
     for (; aItLI2.More(); aItLI2.Next())
     {
-      Standard_Integer n2 = aItLI2.Value();
+      int n2 = aItLI2.Value();
       //
       if (iR1 >= 0 && iR1 == myDS->Rank(n2))
       {

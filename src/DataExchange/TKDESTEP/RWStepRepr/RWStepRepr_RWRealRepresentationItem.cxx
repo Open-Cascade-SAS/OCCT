@@ -20,21 +20,21 @@
 RWStepRepr_RWRealRepresentationItem::RWStepRepr_RWRealRepresentationItem() {}
 
 void RWStepRepr_RWRealRepresentationItem::ReadStep(
-  const Handle(StepData_StepReaderData)&         theData,
-  const Standard_Integer                         theNum,
-  Handle(Interface_Check)&                       theAch,
-  const Handle(StepRepr_RealRepresentationItem)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&         theData,
+  const int                                           theNum,
+  occ::handle<Interface_Check>&                       theAch,
+  const occ::handle<StepRepr_RealRepresentationItem>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 2, theAch, "real_representation_item"))
     return;
 
   // --- inherited field : name ---
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   theData->ReadString(theNum, 1, "name", theAch, aName);
 
   // --- own field : value ---
-  Standard_Real aValue;
+  double aValue;
   theData->ReadReal(theNum, 2, "value", theAch, aValue);
 
   //--- Initialisation of the read entity ---
@@ -42,8 +42,8 @@ void RWStepRepr_RWRealRepresentationItem::ReadStep(
 }
 
 void RWStepRepr_RWRealRepresentationItem::WriteStep(
-  StepData_StepWriter&                           theSW,
-  const Handle(StepRepr_RealRepresentationItem)& theEnt) const
+  StepData_StepWriter&                                theSW,
+  const occ::handle<StepRepr_RealRepresentationItem>& theEnt) const
 {
   theSW.Send(theEnt->Name());
   theSW.Send(theEnt->Value());

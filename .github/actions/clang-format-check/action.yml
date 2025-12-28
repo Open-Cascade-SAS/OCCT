@@ -51,10 +51,7 @@ runs:
       if: steps.changed-files.outputs.has_files == 'true'
       shell: pwsh
       run: |
-        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
-        $files | ForEach-Object {
-          python3 .github/actions/scripts/validate-license.py --files "$_" --fix
-        }
+        python3 .github/actions/scripts/validate-license.py --file-list changed_files.txt --fix
 
     - name: Check formatting
       if: steps.changed-files.outputs.has_files == 'true'
@@ -69,10 +66,7 @@ runs:
       if: steps.changed-files.outputs.has_files == 'true'
       shell: pwsh
       run: |
-        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
-        $files | ForEach-Object {
-          python3 .github/actions/scripts/cleanup-includes.py --files "$_"
-        }
+        python3 .github/actions/scripts/cleanup-includes.py --file-list changed_files.txt
 
     - name: Re-run clang-format after include cleanup
       if: steps.changed-files.outputs.has_files == 'true'

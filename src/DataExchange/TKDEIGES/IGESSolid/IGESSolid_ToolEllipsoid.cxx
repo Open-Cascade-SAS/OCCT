@@ -36,13 +36,13 @@
 
 IGESSolid_ToolEllipsoid::IGESSolid_ToolEllipsoid() {}
 
-void IGESSolid_ToolEllipsoid::ReadOwnParams(const Handle(IGESSolid_Ellipsoid)& ent,
-                                            const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESSolid_ToolEllipsoid::ReadOwnParams(const occ::handle<IGESSolid_Ellipsoid>& ent,
+                                            const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                             IGESData_ParamReader& PR) const
 {
   gp_XYZ tempSize, tempCenter, tempXAxis, tempZAxis;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Real tempreal;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  double tempreal;
 
   PR.ReadXYZ(PR.CurrentList(1, 3), "Size", tempSize); // szv#4:S4163:12Mar99 `st=` not needed
 
@@ -138,15 +138,15 @@ void IGESSolid_ToolEllipsoid::ReadOwnParams(const Handle(IGESSolid_Ellipsoid)& e
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempSize, tempCenter, tempXAxis, tempZAxis);
-  Standard_Real eps = 1.E-05;
+  double eps = 1.E-05;
   if (!tempXAxis.IsEqual(ent->XAxis().XYZ(), eps))
     PR.AddWarning("XAxis poorly unitary, normalized");
   if (!tempZAxis.IsEqual(ent->ZAxis().XYZ(), eps))
     PR.AddWarning("ZAxis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolEllipsoid::WriteOwnParams(const Handle(IGESSolid_Ellipsoid)& ent,
-                                             IGESData_IGESWriter&               IW) const
+void IGESSolid_ToolEllipsoid::WriteOwnParams(const occ::handle<IGESSolid_Ellipsoid>& ent,
+                                             IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->Size().X());
   IW.Send(ent->Size().Y());
@@ -162,13 +162,13 @@ void IGESSolid_ToolEllipsoid::WriteOwnParams(const Handle(IGESSolid_Ellipsoid)& 
   IW.Send(ent->ZAxis().Z());
 }
 
-void IGESSolid_ToolEllipsoid::OwnShared(const Handle(IGESSolid_Ellipsoid)& /* ent */,
+void IGESSolid_ToolEllipsoid::OwnShared(const occ::handle<IGESSolid_Ellipsoid>& /* ent */,
                                         Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESSolid_ToolEllipsoid::OwnCopy(const Handle(IGESSolid_Ellipsoid)& another,
-                                      const Handle(IGESSolid_Ellipsoid)& ent,
+void IGESSolid_ToolEllipsoid::OwnCopy(const occ::handle<IGESSolid_Ellipsoid>& another,
+                                      const occ::handle<IGESSolid_Ellipsoid>& ent,
                                       Interface_CopyTool& /* TC */) const
 {
   ent->Init(another->Size(),
@@ -178,7 +178,7 @@ void IGESSolid_ToolEllipsoid::OwnCopy(const Handle(IGESSolid_Ellipsoid)& another
 }
 
 IGESData_DirChecker IGESSolid_ToolEllipsoid::DirChecker(
-  const Handle(IGESSolid_Ellipsoid)& /* ent */) const
+  const occ::handle<IGESSolid_Ellipsoid>& /* ent */) const
 {
   IGESData_DirChecker DC(168, 0);
   DC.Structure(IGESData_DefVoid);
@@ -190,12 +190,12 @@ IGESData_DirChecker IGESSolid_ToolEllipsoid::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolEllipsoid::OwnCheck(const Handle(IGESSolid_Ellipsoid)& ent,
+void IGESSolid_ToolEllipsoid::OwnCheck(const occ::handle<IGESSolid_Ellipsoid>& ent,
                                        const Interface_ShareTool&,
-                                       Handle(Interface_Check)& ach) const
+                                       occ::handle<Interface_Check>& ach) const
 {
-  Standard_Real eps    = 1.E-04;
-  Standard_Real prosca = ent->XAxis().Dot(ent->ZAxis());
+  double eps    = 1.E-04;
+  double prosca = ent->XAxis().Dot(ent->ZAxis());
   if (prosca < -eps || prosca > eps)
     ach->AddFail("Local Z axis : Not orthogonal to X axis");
   if (!(ent->Size().X() >= ent->Size().Y() && ent->Size().Y() >= ent->Size().Z()
@@ -203,10 +203,10 @@ void IGESSolid_ToolEllipsoid::OwnCheck(const Handle(IGESSolid_Ellipsoid)& ent,
     ach->AddFail("Size : The values does not satisfy LX >= LY >= LZ > 0");
 }
 
-void IGESSolid_ToolEllipsoid::OwnDump(const Handle(IGESSolid_Ellipsoid)& ent,
+void IGESSolid_ToolEllipsoid::OwnDump(const occ::handle<IGESSolid_Ellipsoid>& ent,
                                       const IGESData_IGESDumper& /* dumper */,
-                                      Standard_OStream&      S,
-                                      const Standard_Integer level) const
+                                      Standard_OStream& S,
+                                      const int         level) const
 {
   S << "IGESSolid_Ellipsoid\n"
     << "Size   : ";

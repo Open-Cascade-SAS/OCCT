@@ -17,62 +17,61 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_AppliedModifiers, Standard_Transient)
 
-IFSelect_AppliedModifiers::IFSelect_AppliedModifiers(const Standard_Integer nbmax,
-                                                     const Standard_Integer nbent)
+IFSelect_AppliedModifiers::IFSelect_AppliedModifiers(const int nbmax, const int nbent)
     : thelists(nbmax + 1)
 {
   thenbent  = nbent;
   theentcnt = 0;
 }
 
-Standard_Boolean IFSelect_AppliedModifiers::AddModif(const Handle(IFSelect_GeneralModifier)& modif)
+bool IFSelect_AppliedModifiers::AddModif(const occ::handle<IFSelect_GeneralModifier>& modif)
 {
   if (themodifs.Length() >= thelists.NbEntities())
-    return Standard_False;
+    return false;
   themodifs.Append(modif);
   thelists.SetNumber(themodifs.Length());
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_AppliedModifiers::AddNum(const Standard_Integer nument)
+bool IFSelect_AppliedModifiers::AddNum(const int nument)
 {
   thelists.Add(nument);
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer IFSelect_AppliedModifiers::Count() const
+int IFSelect_AppliedModifiers::Count() const
 {
   return themodifs.Length();
 }
 
-Standard_Boolean IFSelect_AppliedModifiers::Item(const Standard_Integer            num,
-                                                 Handle(IFSelect_GeneralModifier)& modif,
-                                                 Standard_Integer&                 entcount)
+bool IFSelect_AppliedModifiers::Item(const int                              num,
+                                     occ::handle<IFSelect_GeneralModifier>& modif,
+                                     int&                                   entcount)
 {
   if (num < 1 || num > themodifs.Length())
-    return Standard_False;
+    return false;
   modif = themodifs.Value(num);
   thelists.SetNumber(num);
   theentcnt = thelists.Length();
   entcount  = (theentcnt > 0 ? theentcnt : thenbent);
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer IFSelect_AppliedModifiers::ItemNum(const Standard_Integer nument) const
+int IFSelect_AppliedModifiers::ItemNum(const int nument) const
 {
   return (theentcnt > 0 ? thelists.Value(nument) : nument);
 }
 
-Handle(TColStd_HSequenceOfInteger) IFSelect_AppliedModifiers::ItemList() const
+occ::handle<NCollection_HSequence<int>> IFSelect_AppliedModifiers::ItemList() const
 {
-  Handle(TColStd_HSequenceOfInteger) list = new TColStd_HSequenceOfInteger();
-  Standard_Integer                   i, nb = (theentcnt > 0 ? theentcnt : thenbent);
+  occ::handle<NCollection_HSequence<int>> list = new NCollection_HSequence<int>();
+  int                                     i, nb = (theentcnt > 0 ? theentcnt : thenbent);
   for (i = 1; i <= nb; i++)
     list->Append(ItemNum(i));
   return list;
 }
 
-Standard_Boolean IFSelect_AppliedModifiers::IsForAll() const
+bool IFSelect_AppliedModifiers::IsForAll() const
 {
   return (theentcnt == 0);
 }

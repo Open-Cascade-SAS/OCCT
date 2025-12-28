@@ -22,9 +22,10 @@
 
 #include <TopoDS_Shape.hxx>
 #include <gp_Vec.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <gp_Pnt.hxx>
-#include <TopTools_ListOfShape.hxx>
 
 //! Defines a linear form (using Prism from BRepSweep)
 //! with modifications provided for the LinearForm feature.
@@ -63,23 +64,22 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  Standard_EXPORT const TopTools_ListOfShape& Shapes(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Shapes(const TopoDS_Shape& S) const;
 
-protected:
 private:
   Standard_EXPORT void IntPerf();
 
-  TopoDS_Shape                       myBase;
-  gp_Vec                             myVec;
-  gp_Vec                             myTra;
-  Standard_Boolean                   myDone;
-  Standard_Boolean                   myIsTrans;
-  TopoDS_Shape                       myRes;
-  TopoDS_Shape                       myFirstShape;
-  TopoDS_Shape                       myLastShape;
-  TopTools_DataMapOfShapeListOfShape myMap;
-  gp_Pnt                             myPnt1;
-  gp_Pnt                             myPnt2;
+  TopoDS_Shape myBase;
+  gp_Vec       myVec;
+  gp_Vec       myTra;
+  bool         myDone;
+  bool         myIsTrans;
+  TopoDS_Shape myRes;
+  TopoDS_Shape myFirstShape;
+  TopoDS_Shape myLastShape;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
+  gp_Pnt                                                                                     myPnt1;
+  gp_Pnt                                                                                     myPnt2;
 };
 
 #include <LocOpe_LinearForm.lxx>

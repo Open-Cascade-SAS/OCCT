@@ -21,8 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopOpeBRepBuild_ListOfLoop.hxx>
-#include <TopOpeBRepBuild_ListIteratorOfListOfLoop.hxx>
+#include <TopOpeBRepBuild_Loop.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class TopOpeBRepBuild_Loop;
@@ -36,22 +36,21 @@ public:
 
   Standard_EXPORT virtual ~TopOpeBRepBuild_LoopSet();
 
-  Standard_EXPORT TopOpeBRepBuild_ListOfLoop& ChangeListOfLoop();
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& ChangeListOfLoop();
 
   Standard_EXPORT virtual void InitLoop();
 
-  Standard_EXPORT virtual Standard_Boolean MoreLoop() const;
+  Standard_EXPORT virtual bool MoreLoop() const;
 
   Standard_EXPORT virtual void NextLoop();
 
-  Standard_EXPORT virtual Handle(TopOpeBRepBuild_Loop) Loop() const;
+  Standard_EXPORT virtual occ::handle<TopOpeBRepBuild_Loop> Loop() const;
 
-protected:
 private:
-  TopOpeBRepBuild_ListOfLoop               myListOfLoop;
-  TopOpeBRepBuild_ListIteratorOfListOfLoop myLoopIterator;
-  Standard_Integer                         myLoopIndex;
-  Standard_Integer                         myNbLoop;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>           myListOfLoop;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator myLoopIterator;
+  int                                                           myLoopIndex;
+  int                                                           myNbLoop;
 };
 
 #endif // _TopOpeBRepBuild_LoopSet_HeaderFile

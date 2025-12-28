@@ -24,12 +24,10 @@
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Drawable3D, Standard_Transient)
 
 //! Return the map of factory functions.
-static NCollection_DataMap<Standard_CString,
-                           Draw_Drawable3D::FactoryFunction_t,
-                           Standard_CStringHasher>&
+static NCollection_DataMap<const char*, Draw_Drawable3D::FactoryFunction_t, Standard_CStringHasher>&
   getFactoryMap()
 {
-  static NCollection_DataMap<Standard_CString,
+  static NCollection_DataMap<const char*,
                              Draw_Drawable3D::FactoryFunction_t,
                              Standard_CStringHasher>
     myToolMap;
@@ -38,23 +36,22 @@ static NCollection_DataMap<Standard_CString,
 
 //=================================================================================================
 
-void Draw_Drawable3D::RegisterFactory(const Standard_CString   theType,
-                                      const FactoryFunction_t& theFactory)
+void Draw_Drawable3D::RegisterFactory(const char* theType, const FactoryFunction_t& theFactory)
 {
   getFactoryMap().Bind(theType, theFactory);
 }
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) Draw_Drawable3D::Restore(const Standard_CString theType,
-                                                 Standard_IStream&      theStream)
+occ::handle<Draw_Drawable3D> Draw_Drawable3D::Restore(const char*       theType,
+                                                      Standard_IStream& theStream)
 {
   FactoryFunction_t aFactory = NULL;
   if (getFactoryMap().Find(theType, aFactory))
   {
     return aFactory(theStream);
   }
-  return Handle(Draw_Drawable3D)();
+  return occ::handle<Draw_Drawable3D>();
 }
 
 //=================================================================================================
@@ -65,23 +62,21 @@ Draw_Drawable3D::Draw_Drawable3D()
       myYmin(0.0),
       myYmax(0.0),
       myName(NULL),
-      isVisible(Standard_False),
-      isProtected(Standard_False)
+      isVisible(false),
+      isProtected(false)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean Draw_Drawable3D::PickReject(const Standard_Real X,
-                                             const Standard_Real Y,
-                                             const Standard_Real Prec) const
+bool Draw_Drawable3D::PickReject(const double X, const double Y, const double Prec) const
 {
   return ((X + Prec < myXmin) || (X - Prec > myXmax) || (Y + Prec < myYmin) || (Y - Prec > myYmax));
 }
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) Draw_Drawable3D::Copy() const
+occ::handle<Draw_Drawable3D> Draw_Drawable3D::Copy() const
 {
   return this;
 }

@@ -21,7 +21,8 @@
 #include <LocOpe_BuildShape.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
@@ -30,37 +31,41 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 
-static void Add(const Standard_Integer,
-                TColStd_MapOfInteger&,
-                TopTools_IndexedMapOfShape&,
-                const TopTools_IndexedDataMapOfShapeListOfShape&);
+static void Add(const int,
+                NCollection_Map<int>&,
+                NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&,
+                const NCollection_IndexedDataMap<TopoDS_Shape,
+                                                 NCollection_List<TopoDS_Shape>,
+                                                 TopTools_ShapeMapHasher>&);
 
 static void Propagate(const TopoDS_Shape&, // face
                       TopoDS_Shape&,       // shell
-                      const TopTools_IndexedMapOfShape&,
-                      TColStd_MapOfInteger&);
+                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&,
+                      NCollection_Map<int>&);
 
-static Standard_Boolean IsInside(const TopoDS_Shape&, const TopoDS_Shape&);
+static bool IsInside(const TopoDS_Shape&, const TopoDS_Shape&);
 
 //=================================================================================================
 
-void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
+void LocOpe_BuildShape::Perform(const NCollection_List<TopoDS_Shape>& L)
 {
-  Standard_Integer i;
-  Standard_Integer j;
-  Standard_Integer k;
+  int i;
+  int j;
+  int k;
   myRes.Nullify();
 
   TopoDS_Compound C;
   BRep_Builder    B;
   B.MakeCompound(C);
 
-  TopTools_IndexedMapOfShape         mapF;
-  TopTools_ListIteratorOfListOfShape itl;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mapF;
+  NCollection_List<TopoDS_Shape>::Iterator                      itl;
 
   for (itl.Initialize(L); itl.More(); itl.Next())
   {
@@ -76,15 +81,16 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
     return; // no face
   }
 
-  TopTools_IndexedDataMapOfShapeListOfShape theMapEF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    theMapEF;
   TopExp::MapShapesAndAncestors(C, TopAbs_EDGE, TopAbs_FACE, theMapEF);
 
-  TopTools_DataMapOfShapeListOfShape mapSh;
-  TColStd_MapOfInteger               mapI, mapIf;
-  Standard_Integer                   Nbedges = theMapEF.Extent();
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapSh;
+  NCollection_Map<int> mapI, mapIf;
+  int                  Nbedges = theMapEF.Extent();
 
-  TopTools_ListOfShape lshell;
-  TopTools_ListOfShape lresult;
+  NCollection_List<TopoDS_Shape> lshell;
+  NCollection_List<TopoDS_Shape> lresult;
 
   do
   {
@@ -101,7 +107,7 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
       mapF.Clear();
       mapIf.Clear();
       Add(i, mapI, mapF, theMapEF);
-      Standard_Boolean   Manifold = Standard_True;
+      bool               Manifold = true;
       TopoDS_Shape       FaceRef;
       TopAbs_Orientation orient;
 
@@ -110,7 +116,7 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
         orient = mapF(j).Orientation();
         if (orient == TopAbs_INTERNAL || orient == TopAbs_EXTERNAL)
         {
-          Manifold = Standard_False;
+          Manifold = false;
         }
         else if (FaceRef.IsNull())
         {
@@ -155,7 +161,10 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
       }
       else
       {
-        TopTools_IndexedDataMapOfShapeListOfShape theMapEFbis;
+        NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>
+          theMapEFbis;
         TopExp::MapShapesAndAncestors(newSh, TopAbs_EDGE, TopAbs_FACE, theMapEFbis);
         for (k = 1; k <= theMapEFbis.Extent(); k++)
         {
@@ -163,7 +172,7 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
           TopAbs_Orientation OriEd = Ed.Orientation();
           if (OriEd != TopAbs_INTERNAL && OriEd != TopAbs_EXTERNAL)
           {
-            Standard_Integer Nbfac = theMapEFbis(k).Extent();
+            int Nbfac = theMapEFbis(k).Extent();
             if (Nbfac > 2)
             { // peu probable
               break;
@@ -205,8 +214,8 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
   // il faut classifier les shells orientes pour en faire des solides...
   // on n`accepte qu`1 niveau d'imbrication
 
-  TopTools_DataMapOfShapeListOfShape imbSh;
-  TopTools_ListOfShape               LIntern;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> imbSh;
+  NCollection_List<TopoDS_Shape> LIntern;
 
   for (itl.Initialize(lresult); itl.More(); itl.Next())
   {
@@ -215,11 +224,11 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
     B.MakeSolid(tempo);
     B.Add(tempo, sh);
 
-    TopTools_ListOfShape thelist;
+    NCollection_List<TopoDS_Shape> thelist;
     imbSh.Bind(sh, thelist);
-    TopTools_ListIteratorOfListOfShape itl2;
+    NCollection_List<TopoDS_Shape>::Iterator itl2;
     for (itl2.Initialize(lresult);
-         //    for (TopTools_ListIteratorOfListOfShape itl2(lresult);
+         //    for (NCollection_List<TopoDS_Shape>::Iterator itl2(lresult);
          itl2.More();
          itl2.Next())
     {
@@ -246,11 +255,13 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
     }
   }
 
-  TopTools_ListOfShape lsolid;
+  NCollection_List<TopoDS_Shape> lsolid;
   do
   {
-    //    for (TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itdm(imbSh);
-    TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itdm(imbSh);
+    //    for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
+    //    TopTools_ShapeMapHasher>::Iterator itdm(imbSh);
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+      Iterator itdm(imbSh);
     for (; itdm.More(); itdm.Next())
     {
       if (itdm.Value().Extent() != 0)
@@ -283,8 +294,8 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
     }
   } while (imbSh.Extent() != 0);
 
-  Standard_Integer nbsol = lsolid.Extent();
-  Standard_Integer nbshl = lshell.Extent();
+  int nbsol = lsolid.Extent();
+  int nbshl = lshell.Extent();
 
   if (nbsol == 1 && nbshl == 0)
   {
@@ -310,10 +321,12 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
 
 //=================================================================================================
 
-static void Add(const Standard_Integer                           ind,
-                TColStd_MapOfInteger&                            mapI,
-                TopTools_IndexedMapOfShape&                      mapF,
-                const TopTools_IndexedDataMapOfShapeListOfShape& mapEF)
+static void Add(const int                                                      ind,
+                NCollection_Map<int>&                                          mapI,
+                NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& mapF,
+                const NCollection_IndexedDataMap<TopoDS_Shape,
+                                                 NCollection_List<TopoDS_Shape>,
+                                                 TopTools_ShapeMapHasher>&     mapEF)
 
 {
   if (!mapI.Add(ind))
@@ -321,7 +334,7 @@ static void Add(const Standard_Integer                           ind,
     throw Standard_ConstructionError();
   }
 
-  TopTools_ListIteratorOfListOfShape itl(mapEF(ind));
+  NCollection_List<TopoDS_Shape>::Iterator itl(mapEF(ind));
   for (; itl.More(); itl.Next())
   {
     if (!mapF.Contains(itl.Value()))
@@ -334,7 +347,7 @@ static void Add(const Standard_Integer                           ind,
            exp.Next())
       {
         const TopoDS_Shape& edg    = exp.Current();
-        Standard_Integer    indedg = mapEF.FindIndex(edg);
+        int                 indedg = mapEF.FindIndex(edg);
         if (indedg == 0)
         {
           throw Standard_ConstructionError();
@@ -350,13 +363,13 @@ static void Add(const Standard_Integer                           ind,
 
 //=================================================================================================
 
-static void Propagate(const TopoDS_Shape&               F,
-                      TopoDS_Shape&                     Sh,
-                      const TopTools_IndexedMapOfShape& mapF,
-                      TColStd_MapOfInteger&             mapIf)
+static void Propagate(const TopoDS_Shape&                                                  F,
+                      TopoDS_Shape&                                                        Sh,
+                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& mapF,
+                      NCollection_Map<int>&                                                mapIf)
 {
-  BRep_Builder     B;
-  Standard_Integer indf = mapF.FindIndex(F);
+  BRep_Builder B;
+  int          indf = mapF.FindIndex(F);
   if (!mapIf.Contains(indf))
   {
     return;
@@ -379,8 +392,8 @@ static void Propagate(const TopoDS_Shape&               F,
     {
       continue;
     }
-    //    for (TColStd_MapIteratorOfMapOfInteger itm(mapIf);
-    TColStd_MapIteratorOfMapOfInteger itm(mapIf);
+    //    for (NCollection_Map<int>::Iterator itm(mapIf);
+    NCollection_Map<int>::Iterator itm(mapIf);
     for (; itm.More(); itm.Next())
     {
       const TopoDS_Shape& newF = mapF(itm.Key());
@@ -401,18 +414,18 @@ static void Propagate(const TopoDS_Shape&               F,
     }
     if (itm.More())
     {
-      TopoDS_Shape     FtoAdd = mapF(itm.Key());
-      Standard_Boolean added  = Standard_False;
+      TopoDS_Shape FtoAdd = mapF(itm.Key());
+      bool         added  = false;
       if (ored2 == ored1)
       {
         FtoAdd.Reverse();
         B.Add(Sh, FtoAdd);
-        added = Standard_True;
+        added = true;
       }
       else if (ored2 == TopAbs::Reverse(ored1))
       {
         B.Add(Sh, FtoAdd);
-        added = Standard_True;
+        added = true;
       }
       if (added)
       {
@@ -424,7 +437,7 @@ static void Propagate(const TopoDS_Shape&               F,
 
 //=================================================================================================
 
-static Standard_Boolean IsInside(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
+static bool IsInside(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
   BRepClass3d_SolidClassifier Class(S2);
   TopExp_Explorer             exp;
@@ -433,20 +446,20 @@ static Standard_Boolean IsInside(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
     //  for (TopExp_Explorer exp(S1,TopAbs_VERTEX);exp.More(); exp.Next()) {
     const TopoDS_Vertex& vtx    = TopoDS::Vertex(exp.Current());
     gp_Pnt               Pttest = BRep_Tool::Pnt(vtx);
-    Standard_Real        Tol    = BRep_Tool::Tolerance(vtx);
+    double               Tol    = BRep_Tool::Tolerance(vtx);
     Class.Perform(Pttest, Tol);
     if (Class.State() == TopAbs_IN)
     {
-      return Standard_True;
+      return true;
     }
     else if (Class.State() == TopAbs_OUT)
     {
-      return Standard_False;
+      return false;
     }
   }
 #ifdef OCCT_DEBUG
   std::cout << "Classification impossible sur vertex " << std::endl;
 #endif
 
-  return Standard_True;
+  return true;
 }

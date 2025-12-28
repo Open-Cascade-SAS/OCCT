@@ -42,25 +42,23 @@ constexpr double THE_PI        = 3.14159265358979323846;
 class SqrtTwoFuncOld : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX - 2.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = 2.0 * theX;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX - 2.0;
     theD = 2.0 * theX;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -69,25 +67,23 @@ public:
 class CosMinusXFuncOld : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = std::cos(theX) - theX;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = -std::sin(theX) - 1.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = std::cos(theX) - theX;
     theD = -std::sin(theX) - 1.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -96,25 +92,23 @@ public:
 class SinFuncOld : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = std::sin(theX);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = std::cos(theX);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = std::sin(theX);
     theD = std::cos(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -123,25 +117,23 @@ public:
 class CubicFuncOld : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX * theX - theX - 2.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = 3.0 * theX * theX - 1.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX * theX - theX - 2.0;
     theD = 3.0 * theX * theX - 1.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -150,25 +142,23 @@ public:
 class ExpMinusThreeFuncOld : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = std::exp(theX) - 3.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = std::exp(theX);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = std::exp(theX) - 3.0;
     theD = std::exp(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -566,25 +556,23 @@ TEST(MathRoot_ComparisonTest, ChallengingCase_CloseToZeroDerivative)
   // f(x) = x^3 at x=0 has derivative near zero
   struct CubicNearZeroOld : public math_FunctionWithDerivative
   {
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+    bool Value(const double theX, double& theF) override
     {
       theF = theX * theX * theX - 0.001;
-      return Standard_True;
+      return true;
     }
 
-    Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+    bool Derivative(const double theX, double& theD) override
     {
       theD = 3.0 * theX * theX;
-      return Standard_True;
+      return true;
     }
 
-    Standard_Boolean Values(const Standard_Real theX,
-                            Standard_Real&      theF,
-                            Standard_Real&      theD) override
+    bool Values(const double theX, double& theF, double& theD) override
     {
       Value(theX, theF);
       Derivative(theX, theD);
-      return Standard_True;
+      return true;
     }
   };
 

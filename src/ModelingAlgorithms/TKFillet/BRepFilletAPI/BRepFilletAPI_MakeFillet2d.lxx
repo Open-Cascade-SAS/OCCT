@@ -16,42 +16,42 @@
 
 //=================================================================================================
 
-inline Standard_Boolean BRepFilletAPI_MakeFillet2d::IsModified(const TopoDS_Edge& E) const
+inline bool BRepFilletAPI_MakeFillet2d::IsModified(const TopoDS_Edge& E) const
 {
   return myMakeChFi2d.IsModified(E);
 }
 
 //=================================================================================================
 
-inline const TopTools_SequenceOfShape& BRepFilletAPI_MakeFillet2d::FilletEdges() const
+inline const NCollection_Sequence<TopoDS_Shape>& BRepFilletAPI_MakeFillet2d::FilletEdges() const
 {
   return myMakeChFi2d.FilletEdges();
 }
 
 //=================================================================================================
 
-inline Standard_Integer BRepFilletAPI_MakeFillet2d::NbFillet() const
+inline int BRepFilletAPI_MakeFillet2d::NbFillet() const
 {
   return myMakeChFi2d.NbFillet();
 }
 
 //=================================================================================================
 
-inline const TopTools_SequenceOfShape& BRepFilletAPI_MakeFillet2d::ChamferEdges() const
+inline const NCollection_Sequence<TopoDS_Shape>& BRepFilletAPI_MakeFillet2d::ChamferEdges() const
 {
   return myMakeChFi2d.ChamferEdges();
 }
 
 //=================================================================================================
 
-inline Standard_Integer BRepFilletAPI_MakeFillet2d::NbChamfer() const
+inline int BRepFilletAPI_MakeFillet2d::NbChamfer() const
 {
   return myMakeChFi2d.NbChamfer();
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BRepFilletAPI_MakeFillet2d::HasDescendant(const TopoDS_Edge& E) const
+inline bool BRepFilletAPI_MakeFillet2d::HasDescendant(const TopoDS_Edge& E) const
 {
   return myMakeChFi2d.HasDescendant(E);
 }

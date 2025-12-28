@@ -22,10 +22,10 @@
 
 RWStepRepr_RWShapeAspect::RWStepRepr_RWShapeAspect() {}
 
-void RWStepRepr_RWShapeAspect::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                        const Standard_Integer                 num,
-                                        Handle(Interface_Check)&               ach,
-                                        const Handle(StepRepr_ShapeAspect)&    ent) const
+void RWStepRepr_RWShapeAspect::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                        const int                                   num,
+                                        occ::handle<Interface_Check>&               ach,
+                                        const occ::handle<StepRepr_ShapeAspect>&    ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,29 +35,29 @@ void RWStepRepr_RWShapeAspect::ReadStep(const Handle(StepData_StepReaderData)& d
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   if (data->IsParamDefined(num, 2))
   { // gka 05.03.99 S4134 upgrade from CD to DIS
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat2 =` not needed
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   // --- own field : ofShape ---
 
-  Handle(StepRepr_ProductDefinitionShape) aOfShape;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepRepr_ProductDefinitionShape> aOfShape;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data
     ->ReadEntity(num, 3, "of_shape", ach, STANDARD_TYPE(StepRepr_ProductDefinitionShape), aOfShape);
 
   // --- own field : productDefinitional ---
 
   StepData_Logical aProductDefinitional;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadLogical(num, 4, "product_definitional", ach, aProductDefinitional);
 
   //--- Initialisation of the read entity ---
@@ -65,8 +65,8 @@ void RWStepRepr_RWShapeAspect::ReadStep(const Handle(StepData_StepReaderData)& d
   ent->Init(aName, aDescription, aOfShape, aProductDefinitional);
 }
 
-void RWStepRepr_RWShapeAspect::WriteStep(StepData_StepWriter&                SW,
-                                         const Handle(StepRepr_ShapeAspect)& ent) const
+void RWStepRepr_RWShapeAspect::WriteStep(StepData_StepWriter&                     SW,
+                                         const occ::handle<StepRepr_ShapeAspect>& ent) const
 {
 
   // --- own field : name ---
@@ -86,8 +86,8 @@ void RWStepRepr_RWShapeAspect::WriteStep(StepData_StepWriter&                SW,
   SW.SendLogical(ent->ProductDefinitional());
 }
 
-void RWStepRepr_RWShapeAspect::Share(const Handle(StepRepr_ShapeAspect)& ent,
-                                     Interface_EntityIterator&           iter) const
+void RWStepRepr_RWShapeAspect::Share(const occ::handle<StepRepr_ShapeAspect>& ent,
+                                     Interface_EntityIterator&                iter) const
 {
 
   iter.GetOneItem(ent->OfShape());

@@ -87,7 +87,7 @@ void gp_Trsf::SetMirror(const gp_Ax2& A2) noexcept
 
 //=================================================================================================
 
-void gp_Trsf::SetRotation(const gp_Ax1& A1, const Standard_Real Ang)
+void gp_Trsf::SetRotation(const gp_Ax1& A1, const double Ang)
 {
   shape = gp_Rotation;
   scale = 1.;
@@ -156,7 +156,7 @@ void gp_Trsf::SetRotationPart(const gp_Quaternion& theR)
 
 //=================================================================================================
 
-void gp_Trsf::SetScale(const gp_Pnt& P, const Standard_Real S)
+void gp_Trsf::SetScale(const gp_Pnt& P, const double S)
 {
   shape = gp_Scale;
   scale = S;
@@ -244,8 +244,8 @@ void gp_Trsf::SetDisplacement(const gp_Ax3& FromA1, const gp_Ax3& ToA2)
 void gp_Trsf::SetTranslationPart(const gp_Vec& V) noexcept
 {
 
-  loc                            = V.XYZ();
-  const Standard_Boolean locnull = (loc.SquareModulus() < gp::Resolution());
+  loc                = V.XYZ();
+  const bool locnull = (loc.SquareModulus() < gp::Resolution());
 
   switch (shape)
   {
@@ -277,12 +277,12 @@ void gp_Trsf::SetTranslationPart(const gp_Vec& V) noexcept
 
 //=================================================================================================
 
-void gp_Trsf::SetScaleFactor(const Standard_Real S)
+void gp_Trsf::SetScaleFactor(const double S)
 {
   Standard_ConstructionError_Raise_if(std::abs(S) <= gp::Resolution(), "gp_Trsf::SetScaleFactor");
-  scale                        = S;
-  const Standard_Boolean unit  = std::abs(scale - 1.) <= gp::Resolution(); // = (scale == 1)
-  const Standard_Boolean munit = std::abs(scale + 1.) <= gp::Resolution(); // = (scale == -1)
+  scale            = S;
+  const bool unit  = std::abs(scale - 1.) <= gp::Resolution(); // = (scale == 1)
+  const bool munit = std::abs(scale + 1.) <= gp::Resolution(); // = (scale == -1)
 
   switch (shape)
   {
@@ -325,26 +325,26 @@ void gp_Trsf::SetScaleFactor(const Standard_Real S)
 //  sont nuls : c'est toujours mieux que gp::Resolution !
 //=======================================================================
 
-void gp_Trsf::SetValues(const Standard_Real a11,
-                        const Standard_Real a12,
-                        const Standard_Real a13,
-                        const Standard_Real a14,
-                        const Standard_Real a21,
-                        const Standard_Real a22,
-                        const Standard_Real a23,
-                        const Standard_Real a24,
-                        const Standard_Real a31,
-                        const Standard_Real a32,
-                        const Standard_Real a33,
-                        const Standard_Real a34)
+void gp_Trsf::SetValues(const double a11,
+                        const double a12,
+                        const double a13,
+                        const double a14,
+                        const double a21,
+                        const double a22,
+                        const double a23,
+                        const double a24,
+                        const double a31,
+                        const double a32,
+                        const double a33,
+                        const double a34)
 {
   gp_XYZ col1(a11, a21, a31);
   gp_XYZ col2(a12, a22, a32);
   gp_XYZ col3(a13, a23, a33);
   gp_XYZ col4(a14, a24, a34);
   // compute the determinant
-  gp_Mat        M(col1, col2, col3);
-  Standard_Real s = M.Determinant();
+  gp_Mat M(col1, col2, col3);
+  double s = M.Determinant();
   Standard_ConstructionError_Raise_if(std::abs(s) < gp::Resolution(),
                                       "gp_Trsf::SetValues, null determinant");
   if (s > 0)
@@ -537,7 +537,7 @@ void gp_Trsf::Multiply(const gp_Trsf& T)
 
 //=================================================================================================
 
-void gp_Trsf::Power(const Standard_Integer N)
+void gp_Trsf::Power(const int N)
 {
   if (shape == gp_Identity)
   {
@@ -566,8 +566,8 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       if (shape == gp_Translation)
       {
-        Standard_Integer Npower  = std::abs(N) - 1;
-        gp_XYZ           Temploc = loc;
+        int    Npower  = std::abs(N) - 1;
+        gp_XYZ Temploc = loc;
         for (;;)
         {
           if (IsOdd(Npower))
@@ -580,9 +580,9 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       else if (shape == gp_Scale)
       {
-        Standard_Integer Npower    = std::abs(N) - 1;
-        gp_XYZ           Temploc   = loc;
-        Standard_Real    Tempscale = scale;
+        int    Npower    = std::abs(N) - 1;
+        gp_XYZ Temploc   = loc;
+        double Tempscale = scale;
         for (;;)
         {
           if (IsOdd(Npower))
@@ -599,8 +599,8 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       else if (shape == gp_Rotation)
       {
-        Standard_Integer Npower = std::abs(N) - 1;
-        gp_Mat           Tempmatrix(matrix);
+        int    Npower = std::abs(N) - 1;
+        gp_Mat Tempmatrix(matrix);
         if (loc.X() == 0.0 && loc.Y() == 0.0 && loc.Z() == 0.0)
         {
           for (;;)
@@ -645,11 +645,11 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       else
       {
-        shape                      = gp_CompoundTrsf;
-        Standard_Integer Npower    = std::abs(N) - 1;
-        gp_XYZ           Temploc   = loc;
-        Standard_Real    Tempscale = scale;
-        gp_Mat           Tempmatrix(matrix);
+        shape            = gp_CompoundTrsf;
+        int    Npower    = std::abs(N) - 1;
+        gp_XYZ Temploc   = loc;
+        double Tempscale = scale;
+        gp_Mat Tempmatrix(matrix);
         for (;;)
         {
           if (IsOdd(Npower))
@@ -800,13 +800,13 @@ void gp_Trsf::PreMultiply(const gp_Trsf& T)
 //           scientists and Engineers" McGraw-Hill, 1961, ch.14.10-2.
 //=======================================================================
 
-Standard_Boolean gp_Trsf::GetRotation(gp_XYZ& theAxis, Standard_Real& theAngle) const
+bool gp_Trsf::GetRotation(gp_XYZ& theAxis, double& theAngle) const
 {
   gp_Quaternion Q = GetRotation();
   gp_Vec        aVec;
   Q.GetVectorAndAngle(aVec, theAngle);
   theAxis = aVec.XYZ();
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -898,28 +898,30 @@ void gp_Trsf::Orthogonalize()
 
 //=================================================================================================
 
-void gp_Trsf::DumpJson(Standard_OStream& theOStream, Standard_Integer) const {
+void gp_Trsf::DumpJson(Standard_OStream& theOStream, int) const
+{
   OCCT_DUMP_VECTOR_CLASS(theOStream, "Location", 3, loc.X(), loc.Y(), loc.Z())
-    OCCT_DUMP_VECTOR_CLASS(theOStream,
-                           "Matrix",
-                           9,
-                           matrix.Value(1, 1),
-                           matrix.Value(1, 2),
-                           matrix.Value(1, 3),
-                           matrix.Value(2, 1),
-                           matrix.Value(2, 2),
-                           matrix.Value(2, 3),
-                           matrix.Value(3, 1),
-                           matrix.Value(3, 2),
-                           matrix.Value(3, 3)) OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, shape)
-      OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, scale)}
+  OCCT_DUMP_VECTOR_CLASS(theOStream,
+                         "Matrix",
+                         9,
+                         matrix.Value(1, 1),
+                         matrix.Value(1, 2),
+                         matrix.Value(1, 3),
+                         matrix.Value(2, 1),
+                         matrix.Value(2, 2),
+                         matrix.Value(2, 3),
+                         matrix.Value(3, 1),
+                         matrix.Value(3, 2),
+                         matrix.Value(3, 3))
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, shape)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, scale)
+}
 
 //=================================================================================================
 
-Standard_Boolean gp_Trsf::InitFromJson(const Standard_SStream& theSStream,
-                                       Standard_Integer&       theStreamPos)
+bool gp_Trsf::InitFromJson(const Standard_SStream& theSStream, int& theStreamPos)
 {
-  Standard_Integer        aPos       = theStreamPos;
+  int                     aPos       = theStreamPos;
   TCollection_AsciiString aStreamStr = Standard_Dump::Text(theSStream);
 
   gp_XYZ anXYZLoc;
@@ -932,7 +934,7 @@ Standard_Boolean gp_Trsf::InitFromJson(const Standard_SStream& theSStream,
                          &anXYZLoc.ChangeCoord(3))
   SetTranslation(anXYZLoc);
 
-  Standard_Real mymatrix[3][3];
+  double mymatrix[3][3];
   OCCT_INIT_VECTOR_CLASS(aStreamStr,
                          "Matrix",
                          aPos,
@@ -954,12 +956,12 @@ Standard_Boolean gp_Trsf::InitFromJson(const Standard_SStream& theSStream,
     }
   }
 
-  Standard_Real ashape;
+  double ashape;
   OCCT_INIT_FIELD_VALUE_INTEGER(aStreamStr, aPos, ashape);
-  shape = (gp_TrsfForm)((Standard_Integer)ashape);
+  shape = (gp_TrsfForm)((int)ashape);
 
   OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, scale);
 
   theStreamPos = aPos;
-  return Standard_True;
+  return true;
 }

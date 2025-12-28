@@ -24,11 +24,11 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUFA();
-extern Standard_Boolean TopOpeBRepBuild_GetcontextREGUXPU();
-extern Standard_Boolean TopOpeBRepBuild_GettraceSAVFREGU();
+extern bool TopOpeBRepBuild_GetcontextNOREGUFA();
+extern bool TopOpeBRepBuild_GetcontextREGUXPU();
+extern bool TopOpeBRepBuild_GettraceSAVFREGU();
 
-void debregufa(const Standard_Integer /*iF*/) {}
+void debregufa(const int /*iF*/) {}
 #endif
 
 #ifdef DRAW
@@ -40,39 +40,39 @@ void debregufa(const Standard_Integer /*iF*/) {}
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::RegularizeFaces(const TopoDS_Shape&         FF,
-                                              const TopTools_ListOfShape& lnewFace,
-                                              TopTools_ListOfShape&       LOF)
+void TopOpeBRepBuild_Builder::RegularizeFaces(const TopoDS_Shape&                   FF,
+                                              const NCollection_List<TopoDS_Shape>& lnewFace,
+                                              NCollection_List<TopoDS_Shape>&       LOF)
 {
   LOF.Clear();
   myMemoSplit.Clear();
 
-  TopTools_ListIteratorOfListOfShape itl(lnewFace);
+  NCollection_List<TopoDS_Shape>::Iterator itl(lnewFace);
   for (; itl.More(); itl.Next())
   {
-    const TopoDS_Shape&  newFace = itl.Value();
-    TopTools_ListOfShape newFaceLOF;
+    const TopoDS_Shape&            newFace = itl.Value();
+    NCollection_List<TopoDS_Shape> newFaceLOF;
     RegularizeFace(FF, newFace, newFaceLOF);
 #ifdef OCCT_DEBUG
-//    Standard_Integer nnewFaceLOF = newFaceLOF.Extent(); // DEB
+//    int nnewFaceLOF = newFaceLOF.Extent(); // DEB
 #endif
     LOF.Append(newFaceLOF);
   }
 #ifdef OCCT_DEBUG
-//  Standard_Integer nLOF = LOF.Extent(); // DEB
+//  int nLOF = LOF.Extent(); // DEB
 #endif
 
-  Standard_Integer nr = myMemoSplit.Extent();
+  int nr = myMemoSplit.Extent();
   if (nr == 0)
     return;
 
   // lfsdFF = faces SameDomain de FF
-  TopTools_ListOfShape lfsdFF, lfsdFF1, lfsdFF2;
+  NCollection_List<TopoDS_Shape> lfsdFF, lfsdFF1, lfsdFF2;
   GFindSamDom(FF, lfsdFF1, lfsdFF2);
   lfsdFF.Append(lfsdFF1);
   lfsdFF.Append(lfsdFF2);
 
-  TopTools_ListIteratorOfListOfShape itlfsdFF(lfsdFF);
+  NCollection_List<TopoDS_Shape>::Iterator itlfsdFF(lfsdFF);
   for (; itlfsdFF.More(); itlfsdFF.Next())
   {
     const TopoDS_Shape& fsdFF = itlfsdFF.Value();
@@ -83,38 +83,38 @@ void TopOpeBRepBuild_Builder::RegularizeFaces(const TopoDS_Shape&         FF,
       //    for (TopExp_Explorer x(fsdFF,TopAbs_EDGE);x.More();x.Next()) {
       const TopoDS_Shape& e = x.Current();
 #ifdef OCCT_DEBUG
-//      Standard_Integer ie = myDataStructure->Shape(e); //DEB
-//      Standard_Boolean issect = myDataStructure->DS().IsSectionEdge(TopoDS::Edge(e));
+//      int ie = myDataStructure->Shape(e); //DEB
+//      bool issect = myDataStructure->DS().IsSectionEdge(TopoDS::Edge(e));
 #endif
 
-      Standard_Integer ranke   = GShapeRank(e);
-      TopAbs_State     staeope = (ranke == 1) ? myState1 : myState2;
+      int          ranke   = GShapeRank(e);
+      TopAbs_State staeope = (ranke == 1) ? myState1 : myState2;
 
-      for (Standard_Integer iiista = 1; iiista <= 2; iiista++)
+      for (int iiista = 1; iiista <= 2; iiista++)
       {
 
         TopAbs_State stae = staeope;
         if (iiista == 2)
           stae = TopAbs_ON;
 
-        Standard_Boolean issplite = IsSplit(e, stae);
+        bool issplite = IsSplit(e, stae);
         if (!issplite)
           continue;
 
-        TopTools_ListOfShape& lspe = ChangeSplit(e, stae);
+        NCollection_List<TopoDS_Shape>& lspe = ChangeSplit(e, stae);
 #ifdef OCCT_DEBUG
-//	Standard_Integer nlspe = lspe.Extent(); // DEB
+//	int nlspe = lspe.Extent(); // DEB
 #endif
-        TopTools_ListOfShape newlspe;
-        for (TopTools_ListIteratorOfListOfShape itl1(lspe); itl1.More(); itl1.Next())
+        NCollection_List<TopoDS_Shape> newlspe;
+        for (NCollection_List<TopoDS_Shape>::Iterator itl1(lspe); itl1.More(); itl1.Next())
         {
           const TopoDS_Shape& esp     = itl1.Value();
-          Standard_Boolean    espmemo = myMemoSplit.Contains(esp);
+          bool                espmemo = myMemoSplit.Contains(esp);
           if (!espmemo)
             newlspe.Append(esp);
           else
           {
-            const TopTools_ListOfShape& lspesp = Splits(esp, stae);
+            const NCollection_List<TopoDS_Shape>& lspesp = Splits(esp, stae);
             GCopyList(lspesp, newlspe);
           }
         }
@@ -129,20 +129,20 @@ void TopOpeBRepBuild_Builder::RegularizeFaces(const TopoDS_Shape&         FF,
 /*static void FUN_setInternal(TopoDS_Face& F)
 {
   TopExp_Explorer ex(F,TopAbs_EDGE);
-  TopTools_MapOfShape meF,meR,meI;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> meF,meR,meI;
   for (; ex.More(); ex.Next()){
     const TopoDS_Edge& E = TopoDS::Edge(ex.Current());
     TopAbs_Orientation oE = E.Orientation();
-    Standard_Boolean isclo = BRep_Tool::IsClosed(E,F); // E has 2d rep on F
+    bool isclo = BRep_Tool::IsClosed(E,F); // E has 2d rep on F
     if (isclo) continue;
-    Standard_Boolean isb = Standard_False; // the edge is FOR + REV in F
+    bool isb = false; // the edge is FOR + REV in F
     if      (M_FORWARD(oE))  {meF.Add(E); isb = meR.Contains(E);}
     else if (M_REVERSED(oE)) {meR.Add(E); isb = meF.Contains(E);}
     if (isb) meI.Add(E.Oriented(TopAbs_INTERNAL));
   }
 
   BRep_Builder BB;
-  TopTools_MapIteratorOfMapOfShape it(meI);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator it(meI);
   for (; it.More(); it.Next()){
     const TopoDS_Edge& E = TopoDS::Edge(it.Key());
     BB.Remove(F,E.Oriented(TopAbs_FORWARD));
@@ -153,23 +153,23 @@ void TopOpeBRepBuild_Builder::RegularizeFaces(const TopoDS_Shape&         FF,
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&   FF,
-                                             const TopoDS_Shape&   anewFace,
-                                             TopTools_ListOfShape& LOF)
+void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&             FF,
+                                             const TopoDS_Shape&             anewFace,
+                                             NCollection_List<TopoDS_Shape>& LOF)
 {
   LOF.Clear();
   const TopoDS_Face& newFace = TopoDS::Face(anewFace);
-  Standard_Boolean   toregu  = Standard_True;
-  Standard_Boolean   usewtof = Standard_True;
+  bool               toregu  = true;
+  bool               usewtof = true;
 
 #ifdef OCCT_DEBUG
-  Standard_Integer iF;
-  Standard_Boolean tSPSFF = GtraceSPS(FF, iF);
-  //  Standard_Boolean savfregu = TopOpeBRepBuild_GettraceSAVFREGU();
+  int  iF;
+  bool tSPSFF = GtraceSPS(FF, iF);
+  //  bool savfregu = TopOpeBRepBuild_GettraceSAVFREGU();
   if (TopOpeBRepBuild_GetcontextNOREGUFA())
-    toregu = Standard_False;
+    toregu = false;
   if (TopOpeBRepBuild_GetcontextREGUXPU())
-    usewtof = Standard_False;
+    usewtof = false;
   if (tSPSFF)
     debregufa(iF);
 #endif
@@ -185,9 +185,10 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&   FF,
     return;
   }
 
-  TopTools_DataMapOfShapeListOfShape ownw; // OldWires --> NewWires;
-  Standard_Boolean                   rw = Standard_False;
-  Standard_Boolean                   rf = Standard_False;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+       ownw; // OldWires --> NewWires;
+  bool rw = false;
+  bool rf = false;
   myESplits.Clear();
 
   rw = TopOpeBRepTool::RegularizeWires(newFace, ownw, myESplits);
@@ -198,25 +199,26 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&   FF,
     return;
   }
 
-  TopTools_ListOfShape newfaces;
+  NCollection_List<TopoDS_Shape> newfaces;
   if (usewtof)
   {
-    TopOpeBRepBuild_WireToFace                          wtof;
-    TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itownw(ownw);
+    TopOpeBRepBuild_WireToFace wtof;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+      Iterator itownw(ownw);
     for (; itownw.More(); itownw.Next())
     {
-      const TopTools_ListOfShape& lw = itownw.Value();
+      const NCollection_List<TopoDS_Shape>& lw = itownw.Value();
 
       // xpu200798 : cto902D4 f14ou
       // recall ownw = {(ow = old wire, lnw = {list of new wires descendant of old wire}}
       // if lnw is empty, then ow is kept unchanged.
-      Standard_Boolean kept = lw.IsEmpty();
+      bool kept = lw.IsEmpty();
       if (kept)
       {
         const TopoDS_Wire& ow = TopoDS::Wire(itownw.Key());
         wtof.AddWire(ow);
       }
-      for (TopTools_ListIteratorOfListOfShape iw(lw); iw.More(); iw.Next())
+      for (NCollection_List<TopoDS_Shape>::Iterator iw(lw); iw.More(); iw.Next())
       {
         const TopoDS_Wire& w = TopoDS::Wire(iw.Value());
         wtof.AddWire(w);
@@ -224,7 +226,7 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&   FF,
     }
     wtof.MakeFaces(newFace, newfaces);
 #ifdef OCCT_DEBUG
-//    Standard_Integer nnewfaces = newfaces.Extent(); // DEB
+//    int nnewfaces = newfaces.Extent(); // DEB
 #endif
     rf = (newfaces.Extent() != 0);
   }
@@ -248,15 +250,15 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&   FF,
 #endif
 
   // LOF = nouvelles faces regularisees de newFace
-  TopTools_ListIteratorOfListOfShape itlnf(newfaces);
+  NCollection_List<TopoDS_Shape>::Iterator itlnf(newfaces);
   for (; itlnf.More(); itlnf.Next())
     LOF.Append(TopoDS::Face(itlnf.Value()));
 
   // mise a jour des aretes decoupees
   // Edge(FF) = {E}, E-->Split(E) = {E'}, E'-->myESplits(E') = {E''}
 
-  TopTools_MapOfShape menf; // menf = aretes de newFace
-  TopExp_Explorer     x;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> menf; // menf = aretes de newFace
+  TopExp_Explorer                                        x;
   for (x.Init(newFace, TopAbs_EDGE); x.More(); x.Next())
   {
     const TopoDS_Shape& E = x.Current();
@@ -264,32 +266,32 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&   FF,
   }
 
   // lfsdFF = faces SameDomain de FF
-  TopTools_ListOfShape lfsdFF, lfsdFF1, lfsdFF2;
+  NCollection_List<TopoDS_Shape> lfsdFF, lfsdFF1, lfsdFF2;
   GFindSamDom(FF, lfsdFF1, lfsdFF2);
   lfsdFF.Append(lfsdFF1);
   lfsdFF.Append(lfsdFF2);
 
-  TopTools_ListIteratorOfListOfShape itlfsdFF(lfsdFF);
+  NCollection_List<TopoDS_Shape>::Iterator itlfsdFF(lfsdFF);
   for (; itlfsdFF.More(); itlfsdFF.Next())
   {
     const TopoDS_Shape& fsdFF = itlfsdFF.Value();
 
 #ifdef OCCT_DEBUG
-    Standard_Integer ifsdFF    = 0;
-    Standard_Boolean tSPSfsdFF = GtraceSPS(fsdFF, ifsdFF);
+    int  ifsdFF    = 0;
+    bool tSPSfsdFF = GtraceSPS(fsdFF, ifsdFF);
     if (tSPSfsdFF)
       debregufa(ifsdFF);
 #endif
 
-    Standard_Integer rankfsdFF = GShapeRank(fsdFF);
-    TopAbs_State     stafsdFF  = (rankfsdFF == 1) ? myState1 : myState2;
+    int          rankfsdFF = GShapeRank(fsdFF);
+    TopAbs_State stafsdFF  = (rankfsdFF == 1) ? myState1 : myState2;
 #ifdef OCCT_DEBUG
-//    Standard_Boolean issplitfsdFF = IsSplit(fsdFF,stafsdFF);
+//    bool issplitfsdFF = IsSplit(fsdFF,stafsdFF);
 #endif
 
     /*#ifdef OCCT_DEBUG
-        const TopTools_ListOfShape& lspfsdFF = Splits(fsdFF,stafsdFF);
-        Standard_Integer nlspfsdFF = lspfsdFF.Extent();
+        const NCollection_List<TopoDS_Shape>& lspfsdFF = Splits(fsdFF,stafsdFF);
+        int nlspfsdFF = lspfsdFF.Extent();
     #endif*/
 
     // iteration sur les aretes de fsdFF
@@ -300,40 +302,40 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&   FF,
       const TopoDS_Shape& fsdFFe = x.Current();
 
 #ifdef OCCT_DEBUG
-      Standard_Integer ifsdFFe    = 0;
-      Standard_Boolean tSPSfsdFFe = GtraceSPS(fsdFFe, ifsdFFe);
+      int  ifsdFFe    = 0;
+      bool tSPSfsdFFe = GtraceSPS(fsdFFe, ifsdFFe);
       if (tSPSfsdFFe)
         debregufa(ifsdFFe);
 #endif
 
       // a priori, on ne peut avoir plus de deux etats splites
       // sur l'arete , soit (IN + ON) , soit (OUT + ON)
-      for (Standard_Integer iiista = 1; iiista <= 2; iiista++)
+      for (int iiista = 1; iiista <= 2; iiista++)
       {
         TopAbs_State stafsdFFe = stafsdFF;
         if (iiista == 2)
           stafsdFFe = TopAbs_ON;
 
-        TopTools_ListOfShape& lspfsdFFe = ChangeSplit(fsdFFe, stafsdFFe);
+        NCollection_List<TopoDS_Shape>& lspfsdFFe = ChangeSplit(fsdFFe, stafsdFFe);
 #ifdef OCCT_DEBUG
-//	Standard_Boolean issplitfsdFFe = IsSplit(fsdFFe,stafsdFFe);
-//	Standard_Integer nlspfsdFFe = lspfsdFFe.Extent();
+//	bool issplitfsdFFe = IsSplit(fsdFFe,stafsdFFe);
+//	int nlspfsdFFe = lspfsdFFe.Extent();
 #endif
 
-        for (TopTools_ListIteratorOfListOfShape it(lspfsdFFe); it.More(); it.Next())
+        for (NCollection_List<TopoDS_Shape>::Iterator it(lspfsdFFe); it.More(); it.Next())
         {
 
           // fsdFFe (Cf supra E) a ete splittee, espfdsFFe = arete splittee de fsdFFe
 
           const TopoDS_Shape& espfsdFFe = it.Value();
-          Standard_Boolean    inmenf    = menf.Contains(espfsdFFe);
+          bool                inmenf    = menf.Contains(espfsdFFe);
           if (!inmenf)
             continue;
 
           // fsdFFe (Cf supra E) a ete splittee, espfdsFFe = arete splittee de fsdFFe
           // espfsdFFe est une arete de Split(fsdFFe) ET figure dans newFace (Cf supra E')
 
-          Standard_Boolean resplitloc = myESplits.IsBound(espfsdFFe);
+          bool resplitloc = myESplits.IsBound(espfsdFFe);
           if (resplitloc)
           {
 
@@ -342,13 +344,14 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&   FF,
             // espfsdFFe de newFace a ete redecoupee par RegularizeWires
 
             // son decoupage lresplit est stocke dans la DS du Builder
-            const TopTools_ListOfShape& lresplit = myESplits.Find(espfsdFFe); // Cf supra E''
+            const NCollection_List<TopoDS_Shape>& lresplit =
+              myESplits.Find(espfsdFFe); // Cf supra E''
 
             // on memorise que espfsdFFe est redecoupee ...
             myMemoSplit.Add(espfsdFFe);
 
             // on stocke le nouveau decoupage de espfsdFFe dans la DS du builder ...
-            TopTools_ListOfShape& lsp = ChangeSplit(espfsdFFe, stafsdFFe);
+            NCollection_List<TopoDS_Shape>& lsp = ChangeSplit(espfsdFFe, stafsdFFe);
             GCopyList(lresplit, lsp);
           }
         } // it.More

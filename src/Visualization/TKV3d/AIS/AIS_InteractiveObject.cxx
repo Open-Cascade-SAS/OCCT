@@ -41,36 +41,36 @@ AIS_InteractiveObject::AIS_InteractiveObject(
 
 //=================================================================================================
 
-void AIS_InteractiveObject::Redisplay(const Standard_Boolean AllModes)
+void AIS_InteractiveObject::Redisplay(const bool AllModes)
 {
   if (myCTXPtr == NULL)
     return;
 
-  myCTXPtr->Redisplay(this, Standard_False, AllModes);
+  myCTXPtr->Redisplay(this, false, AllModes);
 }
 
 //=================================================================================================
 
-Standard_Boolean AIS_InteractiveObject::ProcessDragging(const Handle(AIS_InteractiveContext)&,
-                                                        const Handle(V3d_View)&,
-                                                        const Handle(SelectMgr_EntityOwner)&,
-                                                        const Graphic3d_Vec2i&,
-                                                        const Graphic3d_Vec2i&,
-                                                        const AIS_DragAction)
+bool AIS_InteractiveObject::ProcessDragging(const occ::handle<AIS_InteractiveContext>&,
+                                            const occ::handle<V3d_View>&,
+                                            const occ::handle<SelectMgr_EntityOwner>&,
+                                            const NCollection_Vec2<int>&,
+                                            const NCollection_Vec2<int>&,
+                                            const AIS_DragAction)
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(AIS_InteractiveContext) AIS_InteractiveObject::GetContext() const
+occ::handle<AIS_InteractiveContext> AIS_InteractiveObject::GetContext() const
 {
   return myCTXPtr;
 }
 
 //=================================================================================================
 
-void AIS_InteractiveObject::SetContext(const Handle(AIS_InteractiveContext)& theCtx)
+void AIS_InteractiveObject::SetContext(const occ::handle<AIS_InteractiveContext>& theCtx)
 {
   if (myCTXPtr == theCtx.get())
   {
@@ -93,7 +93,7 @@ void AIS_InteractiveObject::SetDisplayStatus(PrsMgr_DisplayStatus theStatus)
 
 //=================================================================================================
 
-Standard_Boolean AIS_InteractiveObject::HasPresentation() const
+bool AIS_InteractiveObject::HasPresentation() const
 {
   return HasInteractiveContext()
          && myCTXPtr->MainPrsMgr()->HasPresentation(this, myDrawer->DisplayMode());
@@ -101,21 +101,21 @@ Standard_Boolean AIS_InteractiveObject::HasPresentation() const
 
 //=================================================================================================
 
-Handle(Prs3d_Presentation) AIS_InteractiveObject::Presentation() const
+occ::handle<Prs3d_Presentation> AIS_InteractiveObject::Presentation() const
 {
   if (!HasInteractiveContext())
   {
-    return Handle(Prs3d_Presentation)();
+    return occ::handle<Prs3d_Presentation>();
   }
 
-  Handle(PrsMgr_Presentation) aPrs =
+  occ::handle<PrsMgr_Presentation> aPrs =
     myCTXPtr->MainPrsMgr()->Presentation(this, myDrawer->DisplayMode(), false);
   return aPrs;
 }
 
 //=================================================================================================
 
-void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& theAspect)
+void AIS_InteractiveObject::SetAspect(const occ::handle<Prs3d_BasicAspect>& theAspect)
 {
 
   if (!HasPresentation())
@@ -123,25 +123,27 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& theAspect
     return;
   }
 
-  Handle(Prs3d_Presentation) aPrs = Presentation();
+  occ::handle<Prs3d_Presentation> aPrs = Presentation();
   if (aPrs->Groups().IsEmpty())
   {
     return;
   }
-  const Handle(Graphic3d_Group)& aGroup = aPrs->Groups().Last();
-  if (Handle(Prs3d_ShadingAspect) aShadingAspect = Handle(Prs3d_ShadingAspect)::DownCast(theAspect))
+  const occ::handle<Graphic3d_Group>& aGroup = aPrs->Groups().Last();
+  if (occ::handle<Prs3d_ShadingAspect> aShadingAspect =
+        occ::down_cast<Prs3d_ShadingAspect>(theAspect))
   {
     aGroup->SetGroupPrimitivesAspect(aShadingAspect->Aspect());
   }
-  else if (Handle(Prs3d_LineAspect) aLineAspect = Handle(Prs3d_LineAspect)::DownCast(theAspect))
+  else if (occ::handle<Prs3d_LineAspect> aLineAspect = occ::down_cast<Prs3d_LineAspect>(theAspect))
   {
     aGroup->SetGroupPrimitivesAspect(aLineAspect->Aspect());
   }
-  else if (Handle(Prs3d_PointAspect) aPointAspect = Handle(Prs3d_PointAspect)::DownCast(theAspect))
+  else if (occ::handle<Prs3d_PointAspect> aPointAspect =
+             occ::down_cast<Prs3d_PointAspect>(theAspect))
   {
     aGroup->SetGroupPrimitivesAspect(aPointAspect->Aspect());
   }
-  else if (Handle(Prs3d_TextAspect) aTextAspect = Handle(Prs3d_TextAspect)::DownCast(theAspect))
+  else if (occ::handle<Prs3d_TextAspect> aTextAspect = occ::down_cast<Prs3d_TextAspect>(theAspect))
   {
     aGroup->SetGroupPrimitivesAspect(aTextAspect->Aspect());
   }
@@ -149,7 +151,7 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& theAspect
 
 //=================================================================================================
 
-void AIS_InteractiveObject::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void AIS_InteractiveObject::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

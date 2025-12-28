@@ -28,10 +28,10 @@ StepRepr_PropertyDefinitionRelationship::StepRepr_PropertyDefinitionRelationship
 //=================================================================================================
 
 void StepRepr_PropertyDefinitionRelationship::Init(
-  const Handle(TCollection_HAsciiString)&    aName,
-  const Handle(TCollection_HAsciiString)&    aDescription,
-  const Handle(StepRepr_PropertyDefinition)& aRelatingPropertyDefinition,
-  const Handle(StepRepr_PropertyDefinition)& aRelatedPropertyDefinition)
+  const occ::handle<TCollection_HAsciiString>&    aName,
+  const occ::handle<TCollection_HAsciiString>&    aDescription,
+  const occ::handle<StepRepr_PropertyDefinition>& aRelatingPropertyDefinition,
+  const occ::handle<StepRepr_PropertyDefinition>& aRelatedPropertyDefinition)
 {
 
   theName = aName;
@@ -45,21 +45,22 @@ void StepRepr_PropertyDefinitionRelationship::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_PropertyDefinitionRelationship::Name() const
+occ::handle<TCollection_HAsciiString> StepRepr_PropertyDefinitionRelationship::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepRepr_PropertyDefinitionRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepRepr_PropertyDefinitionRelationship::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_PropertyDefinitionRelationship::Description() const
+occ::handle<TCollection_HAsciiString> StepRepr_PropertyDefinitionRelationship::Description() const
 {
   return theDescription;
 }
@@ -67,14 +68,14 @@ Handle(TCollection_HAsciiString) StepRepr_PropertyDefinitionRelationship::Descri
 //=================================================================================================
 
 void StepRepr_PropertyDefinitionRelationship::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_PropertyDefinition) StepRepr_PropertyDefinitionRelationship::
+occ::handle<StepRepr_PropertyDefinition> StepRepr_PropertyDefinitionRelationship::
   RelatingPropertyDefinition() const
 {
   return theRelatingPropertyDefinition;
@@ -83,14 +84,14 @@ Handle(StepRepr_PropertyDefinition) StepRepr_PropertyDefinitionRelationship::
 //=================================================================================================
 
 void StepRepr_PropertyDefinitionRelationship::SetRelatingPropertyDefinition(
-  const Handle(StepRepr_PropertyDefinition)& aRelatingPropertyDefinition)
+  const occ::handle<StepRepr_PropertyDefinition>& aRelatingPropertyDefinition)
 {
   theRelatingPropertyDefinition = aRelatingPropertyDefinition;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_PropertyDefinition) StepRepr_PropertyDefinitionRelationship::
+occ::handle<StepRepr_PropertyDefinition> StepRepr_PropertyDefinitionRelationship::
   RelatedPropertyDefinition() const
 {
   return theRelatedPropertyDefinition;
@@ -99,7 +100,7 @@ Handle(StepRepr_PropertyDefinition) StepRepr_PropertyDefinitionRelationship::
 //=================================================================================================
 
 void StepRepr_PropertyDefinitionRelationship::SetRelatedPropertyDefinition(
-  const Handle(StepRepr_PropertyDefinition)& aRelatedPropertyDefinition)
+  const occ::handle<StepRepr_PropertyDefinition>& aRelatedPropertyDefinition)
 {
   theRelatedPropertyDefinition = aRelatedPropertyDefinition;
 }

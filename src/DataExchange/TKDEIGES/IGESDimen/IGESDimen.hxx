@@ -35,7 +35,7 @@ public:
   Standard_EXPORT static void Init();
 
   //! Returns the Protocol for this Package
-  Standard_EXPORT static Handle(IGESDimen_Protocol) Protocol();
+  Standard_EXPORT static occ::handle<IGESDimen_Protocol> Protocol();
 };
 
 #endif // _IGESDimen_HeaderFile

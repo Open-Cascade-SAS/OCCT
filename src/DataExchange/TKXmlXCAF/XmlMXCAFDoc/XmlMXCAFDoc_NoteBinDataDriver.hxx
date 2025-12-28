@@ -18,25 +18,22 @@
 
 #include <XmlMXCAFDoc_NoteDriver.hxx>
 
-class XmlMXCAFDoc_NoteBinDataDriver;
-DEFINE_STANDARD_HANDLE(XmlMXCAFDoc_NoteBinDataDriver, XmlMXCAFDoc_NoteDriver)
-
 //! Attribute Driver.
 class XmlMXCAFDoc_NoteBinDataDriver : public XmlMXCAFDoc_NoteDriver
 {
 public:
-  Standard_EXPORT XmlMXCAFDoc_NoteBinDataDriver(const Handle(Message_Messenger)& theMessageDriver);
+  Standard_EXPORT XmlMXCAFDoc_NoteBinDataDriver(
+    const occ::handle<Message_Messenger>& theMessageDriver);
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT Standard_Boolean
-    Paste(const XmlObjMgt_Persistent&  theSource,
-          const Handle(TDF_Attribute)& theTarget,
-          XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT bool Paste(const XmlObjMgt_Persistent&       theSource,
+                             const occ::handle<TDF_Attribute>& theTarget,
+                             XmlObjMgt_RRelocationTable&       theRelocTable) const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
-                             XmlObjMgt_Persistent&        theTarget,
-                             XmlObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& theSource,
+                             XmlObjMgt_Persistent&             theTarget,
+                             XmlObjMgt_SRelocationTable&       theRelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_NoteBinDataDriver, XmlMXCAFDoc_NoteDriver)
 };

@@ -20,11 +20,9 @@
 #include <Standard.hxx>
 
 #include <Prs3d_Drawer.hxx>
-#include <TColStd_ListOfInteger.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Transient.hxx>
-
-DEFINE_STANDARD_HANDLE(AIS_GlobalStatus, Standard_Transient)
 
 //! Stores information about objects in graphic context:
 class AIS_GlobalStatus : public Standard_Transient
@@ -35,62 +33,56 @@ public:
   Standard_EXPORT AIS_GlobalStatus();
 
   //! Returns the display mode.
-  Standard_Integer DisplayMode() const { return myDispMode; }
+  int DisplayMode() const { return myDispMode; }
 
   //! Sets display mode.
-  void SetDisplayMode(const Standard_Integer theMode) { myDispMode = theMode; }
+  void SetDisplayMode(const int theMode) { myDispMode = theMode; }
 
   //! Returns TRUE if object is highlighted
-  Standard_Boolean IsHilighted() const { return myIsHilit; }
+  bool IsHilighted() const { return myIsHilit; }
 
   //! Sets highlighted state.
-  void SetHilightStatus(const Standard_Boolean theStatus) { myIsHilit = theStatus; }
+  void SetHilightStatus(const bool theStatus) { myIsHilit = theStatus; }
 
   //! Changes applied highlight style for a particular object
-  void SetHilightStyle(const Handle(Prs3d_Drawer)& theStyle) { myHiStyle = theStyle; }
+  void SetHilightStyle(const occ::handle<Prs3d_Drawer>& theStyle) { myHiStyle = theStyle; }
 
   //! Returns applied highlight style for a particular object
-  const Handle(Prs3d_Drawer)& HilightStyle() const { return myHiStyle; }
+  const occ::handle<Prs3d_Drawer>& HilightStyle() const { return myHiStyle; }
 
   //! Returns active selection modes of the object.
-  const TColStd_ListOfInteger& SelectionModes() const { return mySelModes; }
+  const NCollection_List<int>& SelectionModes() const { return mySelModes; }
 
   //! Return TRUE if selection mode was registered.
-  Standard_Boolean IsSModeIn(Standard_Integer theMode) const
-  {
-    return mySelModes.Contains(theMode);
-  }
+  bool IsSModeIn(int theMode) const { return mySelModes.Contains(theMode); }
 
   //! Add selection mode.
-  Standard_Boolean AddSelectionMode(const Standard_Integer theMode)
+  bool AddSelectionMode(const int theMode)
   {
     if (!mySelModes.Contains(theMode))
     {
       mySelModes.Append(theMode);
-      return Standard_True;
+      return true;
     }
-    return Standard_False;
+    return false;
   }
 
   //! Remove selection mode.
-  Standard_Boolean RemoveSelectionMode(const Standard_Integer theMode)
-  {
-    return mySelModes.Remove(theMode);
-  }
+  bool RemoveSelectionMode(const int theMode) { return mySelModes.Remove(theMode); }
 
   //! Remove all selection modes.
   void ClearSelectionModes() { mySelModes.Clear(); }
 
-  Standard_Boolean IsSubIntensityOn() const { return mySubInt; }
+  bool IsSubIntensityOn() const { return mySubInt; }
 
-  void SetSubIntensity(Standard_Boolean theIsOn) { mySubInt = theIsOn; }
+  void SetSubIntensity(bool theIsOn) { mySubInt = theIsOn; }
 
 private:
-  TColStd_ListOfInteger mySelModes;
-  Handle(Prs3d_Drawer)  myHiStyle;
-  Standard_Integer      myDispMode;
-  Standard_Boolean      myIsHilit;
-  Standard_Boolean      mySubInt;
+  NCollection_List<int>     mySelModes;
+  occ::handle<Prs3d_Drawer> myHiStyle;
+  int                       myDispMode;
+  bool                      myIsHilit;
+  bool                      mySubInt;
 };
 
 #endif // _AIS_GlobalStatus_HeaderFile

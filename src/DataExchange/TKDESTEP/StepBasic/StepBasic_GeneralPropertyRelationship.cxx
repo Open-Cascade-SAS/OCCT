@@ -24,11 +24,11 @@ StepBasic_GeneralPropertyRelationship::StepBasic_GeneralPropertyRelationship() {
 //=================================================================================================
 
 void StepBasic_GeneralPropertyRelationship::Init(
-  const Handle(TCollection_HAsciiString)&  aName,
-  const Standard_Boolean                   hasDescription,
-  const Handle(TCollection_HAsciiString)&  aDescription,
-  const Handle(StepBasic_GeneralProperty)& aRelatingGeneralProperty,
-  const Handle(StepBasic_GeneralProperty)& aRelatedGeneralProperty)
+  const occ::handle<TCollection_HAsciiString>&  aName,
+  const bool                                    hasDescription,
+  const occ::handle<TCollection_HAsciiString>&  aDescription,
+  const occ::handle<StepBasic_GeneralProperty>& aRelatingGeneralProperty,
+  const occ::handle<StepBasic_GeneralProperty>& aRelatedGeneralProperty)
 {
   theName = aName;
 
@@ -47,28 +47,29 @@ void StepBasic_GeneralPropertyRelationship::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GeneralPropertyRelationship::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_GeneralPropertyRelationship::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_GeneralPropertyRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_GeneralPropertyRelationship::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_GeneralPropertyRelationship::HasDescription() const
+bool StepBasic_GeneralPropertyRelationship::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GeneralPropertyRelationship::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_GeneralPropertyRelationship::Description() const
 {
   return theDescription;
 }
@@ -76,7 +77,7 @@ Handle(TCollection_HAsciiString) StepBasic_GeneralPropertyRelationship::Descript
 //=================================================================================================
 
 void StepBasic_GeneralPropertyRelationship::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   defDescription = true;
   if (aDescription.IsNull())
@@ -88,8 +89,8 @@ void StepBasic_GeneralPropertyRelationship::SetDescription(
 
 //=================================================================================================
 
-Handle(StepBasic_GeneralProperty) StepBasic_GeneralPropertyRelationship::RelatingGeneralProperty()
-  const
+occ::handle<StepBasic_GeneralProperty> StepBasic_GeneralPropertyRelationship::
+  RelatingGeneralProperty() const
 {
   return theRelatingGeneralProperty;
 }
@@ -97,15 +98,15 @@ Handle(StepBasic_GeneralProperty) StepBasic_GeneralPropertyRelationship::Relatin
 //=================================================================================================
 
 void StepBasic_GeneralPropertyRelationship::SetRelatingGeneralProperty(
-  const Handle(StepBasic_GeneralProperty)& aRelatingGeneralProperty)
+  const occ::handle<StepBasic_GeneralProperty>& aRelatingGeneralProperty)
 {
   theRelatingGeneralProperty = aRelatingGeneralProperty;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_GeneralProperty) StepBasic_GeneralPropertyRelationship::RelatedGeneralProperty()
-  const
+occ::handle<StepBasic_GeneralProperty> StepBasic_GeneralPropertyRelationship::
+  RelatedGeneralProperty() const
 {
   return theRelatedGeneralProperty;
 }
@@ -113,7 +114,7 @@ Handle(StepBasic_GeneralProperty) StepBasic_GeneralPropertyRelationship::Related
 //=================================================================================================
 
 void StepBasic_GeneralPropertyRelationship::SetRelatedGeneralProperty(
-  const Handle(StepBasic_GeneralProperty)& aRelatedGeneralProperty)
+  const occ::handle<StepBasic_GeneralProperty>& aRelatedGeneralProperty)
 {
   theRelatedGeneralProperty = aRelatedGeneralProperty;
 }

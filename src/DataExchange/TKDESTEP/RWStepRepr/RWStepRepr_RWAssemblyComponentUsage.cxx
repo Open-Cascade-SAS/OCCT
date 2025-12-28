@@ -30,10 +30,10 @@ RWStepRepr_RWAssemblyComponentUsage::RWStepRepr_RWAssemblyComponentUsage() {}
 //=================================================================================================
 
 void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
-  const Handle(StepData_StepReaderData)&         data,
-  const Standard_Integer                         num,
-  Handle(Interface_Check)&                       ach,
-  const Handle(StepRepr_AssemblyComponentUsage)& ent) const
+  const occ::handle<StepData_StepReaderData>&         data,
+  const int                                           num,
+  occ::handle<Interface_Check>&                       ach,
+  const occ::handle<StepRepr_AssemblyComponentUsage>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "assembly_component_usage"))
@@ -41,22 +41,22 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
 
   // Inherited fields of ProductDefinitionRelationship
 
-  Handle(TCollection_HAsciiString) aProductDefinitionRelationship_Id;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Id;
   data->ReadString(num,
                    1,
                    "product_definition_relationship.id",
                    ach,
                    aProductDefinitionRelationship_Id);
 
-  Handle(TCollection_HAsciiString) aProductDefinitionRelationship_Name;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Name;
   data->ReadString(num,
                    2,
                    "product_definition_relationship.name",
                    ach,
                    aProductDefinitionRelationship_Name);
 
-  Handle(TCollection_HAsciiString) aProductDefinitionRelationship_Description;
-  Standard_Boolean                 hasProductDefinitionRelationship_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Description;
+  bool                                  hasProductDefinitionRelationship_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num,
@@ -67,7 +67,7 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
   }
   else
   {
-    hasProductDefinitionRelationship_Description = Standard_False;
+    hasProductDefinitionRelationship_Description = false;
   }
 
   StepBasic_ProductDefinitionOrReference aProductDefinitionRelationship_RelatingProductDefinition;
@@ -78,7 +78,7 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
                    aProductDefinitionRelationship_RelatingProductDefinition);
   if (aProductDefinitionRelationship_RelatingProductDefinition.Value().IsNull())
   {
-    Handle(StepRepr_ProductDefinitionShape) aProductDefinitionShape;
+    occ::handle<StepRepr_ProductDefinitionShape> aProductDefinitionShape;
     data->ReadEntity(num,
                      4,
                      "product_definition_relationship.relating_product_definition_shape",
@@ -100,7 +100,7 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
                    aProductDefinitionRelationship_RelatedProductDefinition);
   if (aProductDefinitionRelationship_RelatedProductDefinition.Value().IsNull())
   {
-    Handle(StepRepr_ProductDefinitionShape) aProductDefinitionShape;
+    occ::handle<StepRepr_ProductDefinitionShape> aProductDefinitionShape;
     data->ReadEntity(num,
                      5,
                      "product_definition_relationship.related_product_definition_shape",
@@ -116,15 +116,15 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
 
   // Own fields of AssemblyComponentUsage
 
-  Handle(TCollection_HAsciiString) aReferenceDesignator;
-  Standard_Boolean                 hasReferenceDesignator = Standard_True;
+  occ::handle<TCollection_HAsciiString> aReferenceDesignator;
+  bool                                  hasReferenceDesignator = true;
   if (data->IsParamDefined(num, 6))
   {
     data->ReadString(num, 6, "reference_designator", ach, aReferenceDesignator);
   }
   else
   {
-    hasReferenceDesignator = Standard_False;
+    hasReferenceDesignator = false;
   }
 
   // Initialize entity
@@ -141,8 +141,8 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWAssemblyComponentUsage::WriteStep(
-  StepData_StepWriter&                           SW,
-  const Handle(StepRepr_AssemblyComponentUsage)& ent) const
+  StepData_StepWriter&                                SW,
+  const occ::handle<StepRepr_AssemblyComponentUsage>& ent) const
 {
 
   // Inherited fields of ProductDefinitionRelationship
@@ -174,8 +174,9 @@ void RWStepRepr_RWAssemblyComponentUsage::WriteStep(
 
 //=================================================================================================
 
-void RWStepRepr_RWAssemblyComponentUsage::Share(const Handle(StepRepr_AssemblyComponentUsage)& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepRepr_RWAssemblyComponentUsage::Share(
+  const occ::handle<StepRepr_AssemblyComponentUsage>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   // Inherited fields of ProductDefinitionRelationship

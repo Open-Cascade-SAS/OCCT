@@ -31,10 +31,10 @@ RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::
 //=================================================================================================
 
 void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::ReadStep(
-  const Handle(StepData_StepReaderData)&                                  data,
-  const Standard_Integer                                                  num,
-  Handle(Interface_Check)&                                                ach,
-  const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent) const
+  const occ::handle<StepData_StepReaderData>&                                  data,
+  const int                                                                    num,
+  occ::handle<Interface_Check>&                                                ach,
+  const occ::handle<StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_tangential_coefficient_of_linear_thermal_expansion"))
@@ -42,7 +42,7 @@ void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of FeaTangentialCoefficientOfLinearThermalExpansion
@@ -57,8 +57,8 @@ void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::WriteStep(
-  StepData_StepWriter&                                                    SW,
-  const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent) const
+  StepData_StepWriter&                                                         SW,
+  const occ::handle<StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -73,8 +73,8 @@ void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::Share(
-  const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent,
-  Interface_EntityIterator&                                               iter) const
+  const occ::handle<StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion>& ent,
+  Interface_EntityIterator&                                                    iter) const
 {
 
   // Inherited fields of RepresentationItem

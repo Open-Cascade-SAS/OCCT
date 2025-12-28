@@ -28,11 +28,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Flash, IGESData_IGESEntity)
 
 IGESGeom_Flash::IGESGeom_Flash() {}
 
-void IGESGeom_Flash::Init(const gp_XY&                       aPoint,
-                          const Standard_Real                aDim1,
-                          const Standard_Real                aDim2,
-                          const Standard_Real                aRotation,
-                          const Handle(IGESData_IGESEntity)& aReference)
+void IGESGeom_Flash::Init(const gp_XY&                            aPoint,
+                          const double                            aDim1,
+                          const double                            aDim2,
+                          const double                            aRotation,
+                          const occ::handle<IGESData_IGESEntity>& aReference)
 {
   thePoint     = aPoint;
   theDim1      = aDim1;
@@ -43,7 +43,7 @@ void IGESGeom_Flash::Init(const gp_XY&                       aPoint,
   // FormNumber : 0-4, Shape of the Flash
 }
 
-void IGESGeom_Flash::SetFormNumber(const Standard_Integer form)
+void IGESGeom_Flash::SetFormNumber(const int form)
 {
   if (form < 0 || form > 4)
     throw Standard_OutOfRange("IGESGeom_Flash : SetFormNumber");
@@ -63,27 +63,27 @@ gp_Pnt IGESGeom_Flash::TransformedReferencePoint() const
   return gp_Pnt(Point);
 }
 
-Standard_Real IGESGeom_Flash::Dimension1() const
+double IGESGeom_Flash::Dimension1() const
 {
   return theDim1;
 }
 
-Standard_Real IGESGeom_Flash::Dimension2() const
+double IGESGeom_Flash::Dimension2() const
 {
   return theDim2;
 }
 
-Standard_Real IGESGeom_Flash::Rotation() const
+double IGESGeom_Flash::Rotation() const
 {
   return theRotation;
 }
 
-Standard_Boolean IGESGeom_Flash::HasReferenceEntity() const
+bool IGESGeom_Flash::HasReferenceEntity() const
 {
   return (!theReference.IsNull());
 }
 
-Handle(IGESData_IGESEntity) IGESGeom_Flash::ReferenceEntity() const
+occ::handle<IGESData_IGESEntity> IGESGeom_Flash::ReferenceEntity() const
 {
   return theReference;
 }

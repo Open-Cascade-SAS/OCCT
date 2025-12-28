@@ -20,9 +20,6 @@
 class TDF_Label;
 class gp_Lin;
 
-class TDataXtd_Axis;
-DEFINE_STANDARD_HANDLE(TDataXtd_Axis, TDataStd_GenericEmpty)
-
 //! The basis to define an axis attribute.
 //!
 //! Warning: Use TDataXtd_Geometry attribute to retrieve the
@@ -42,25 +39,22 @@ public:
   //! Exceptions
   //! Standard_NullObject if no compatible named shape is
   //! associated with the label.
-  Standard_EXPORT static Handle(TDataXtd_Axis) Set(const TDF_Label& label);
+  Standard_EXPORT static occ::handle<TDataXtd_Axis> Set(const TDF_Label& label);
 
   //! Find, or create, an Axis attribute and set <P> as
   //! generated in the associated NamedShape.
 
   //! Axis methods
   //! ============
-  Standard_EXPORT static Handle(TDataXtd_Axis) Set(const TDF_Label& label, const gp_Lin& L);
+  Standard_EXPORT static occ::handle<TDataXtd_Axis> Set(const TDF_Label& label, const gp_Lin& L);
 
   Standard_EXPORT TDataXtd_Axis();
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataXtd_Axis, TDataStd_GenericEmpty)
-
-protected:
-private:
 };
 
 #endif // _TDataXtd_Axis_HeaderFile

@@ -16,7 +16,9 @@
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>
 
 #include <StepDimTol_GeometricToleranceTarget.hxx>
-#include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
+#include <StepDimTol_GeometricToleranceModifier.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithModifiers,
                            StepDimTol_GeometricTolerance)
@@ -28,11 +30,11 @@ StepDimTol_GeometricToleranceWithModifiers::StepDimTol_GeometricToleranceWithMod
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceWithModifiers::Init(
-  const Handle(TCollection_HAsciiString)&                       theName,
-  const Handle(TCollection_HAsciiString)&                       theDescription,
-  const Handle(Standard_Transient)&                             theMagnitude,
-  const StepDimTol_GeometricToleranceTarget&                    theTolerancedShapeAspect,
-  const Handle(StepDimTol_HArray1OfGeometricToleranceModifier)& theModifiers)
+  const occ::handle<TCollection_HAsciiString>& theName,
+  const occ::handle<TCollection_HAsciiString>& theDescription,
+  const occ::handle<Standard_Transient>&       theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect,
+  const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>>& theModifiers)
 {
   StepDimTol_GeometricTolerance::Init(theName,
                                       theDescription,

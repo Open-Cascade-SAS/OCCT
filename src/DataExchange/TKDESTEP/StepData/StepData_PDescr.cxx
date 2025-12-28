@@ -31,24 +31,24 @@ StepData_PDescr::StepData_PDescr()
     : thesel(0),
       thekind(0),
       thearit(0),
-      theopt(Standard_False),
-      theder(Standard_False),
+      theopt(false),
+      theder(false),
       thefnum(0)
 {
 }
 
-void StepData_PDescr::SetName(const Standard_CString name)
+void StepData_PDescr::SetName(const char* name)
 {
   thename.Clear();
   thename.AssignCat(name);
 }
 
-Standard_CString StepData_PDescr::Name() const
+const char* StepData_PDescr::Name() const
 {
   return thename.ToCString();
 }
 
-Standard_Integer StepData_PDescr::Kind() const
+int StepData_PDescr::Kind() const
 {
   return thekind;
 }
@@ -58,7 +58,7 @@ void StepData_PDescr::SetSelect()
   thesel = 4;
 }
 
-void StepData_PDescr::AddMember(const Handle(StepData_PDescr)& member)
+void StepData_PDescr::AddMember(const occ::handle<StepData_PDescr>& member)
 {
   if (member.IsNull())
     return;
@@ -76,7 +76,7 @@ void StepData_PDescr::AddMember(const Handle(StepData_PDescr)& member)
     thesel = 2;
 }
 
-void StepData_PDescr::SetMemberName(const Standard_CString memname)
+void StepData_PDescr::SetMemberName(const char* memname)
 {
   thesnam.Clear();
   thesnam.AssignCat(memname);
@@ -112,19 +112,19 @@ void StepData_PDescr::SetEnum()
   thekind = KindEnum;
 }
 
-void StepData_PDescr::AddEnumDef(const Standard_CString enumdef)
+void StepData_PDescr::AddEnumDef(const char* enumdef)
 {
   theenum.AddDefinition(enumdef);
 }
 
-void StepData_PDescr::SetType(const Handle(Standard_Type)& atype)
+void StepData_PDescr::SetType(const occ::handle<Standard_Type>& atype)
 {
   thekind = KindEntity;
   thetype = atype;
   thednam.Clear();
 }
 
-void StepData_PDescr::SetDescr(const Standard_CString dscnam)
+void StepData_PDescr::SetDescr(const char* dscnam)
 {
   thekind = KindEntity;
   thetype.Nullify();
@@ -132,22 +132,22 @@ void StepData_PDescr::SetDescr(const Standard_CString dscnam)
   thednam.AssignCat(dscnam);
 }
 
-void StepData_PDescr::AddArity(const Standard_Integer arity)
+void StepData_PDescr::AddArity(const int arity)
 {
   thearit += arity;
 }
 
-void StepData_PDescr::SetArity(const Standard_Integer arity)
+void StepData_PDescr::SetArity(const int arity)
 {
   thearit = arity;
 }
 
-void StepData_PDescr::SetFrom(const Handle(StepData_PDescr)& other)
+void StepData_PDescr::SetFrom(const occ::handle<StepData_PDescr>& other)
 {
   if (other.IsNull())
     return;
   thekind = other->Kind();
-  Standard_Integer i, maxenum = other->EnumMax();
+  int i, maxenum = other->EnumMax();
   for (i = 0; i <= maxenum; i++)
     AddEnumDef(other->EnumText(i));
   //  SELECT types are not copied
@@ -161,17 +161,17 @@ void StepData_PDescr::SetFrom(const Handle(StepData_PDescr)& other)
   thefnum = other->FieldRank();
 }
 
-void StepData_PDescr::SetOptional(const Standard_Boolean opt)
+void StepData_PDescr::SetOptional(const bool opt)
 {
   theopt = opt;
 }
 
-void StepData_PDescr::SetDerived(const Standard_Boolean der)
+void StepData_PDescr::SetDerived(const bool der)
 {
   theder = der;
 }
 
-void StepData_PDescr::SetField(const Standard_CString name, const Standard_Integer rank)
+void StepData_PDescr::SetField(const char* name, const int rank)
 {
   thefnam.Clear();
   thefnam.AssignCat(name);
@@ -180,18 +180,18 @@ void StepData_PDescr::SetField(const Standard_CString name, const Standard_Integ
 
 //    ######  INTERRO  ######
 
-Standard_Boolean StepData_PDescr::IsSelect() const
+bool StepData_PDescr::IsSelect() const
 {
   if (!thefrom.IsNull())
     return thefrom->IsSelect();
   return (thesel > 0);
 }
 
-Handle(StepData_PDescr) StepData_PDescr::Member(const Standard_CString name) const
+occ::handle<StepData_PDescr> StepData_PDescr::Member(const char* name) const
 {
   if (!thefrom.IsNull())
     return thefrom->Member(name);
-  Handle(StepData_PDescr) descr;
+  occ::handle<StepData_PDescr> descr;
   if (thesnam.IsEqual(name))
     return this;
   if (thenext.IsNull())
@@ -199,104 +199,104 @@ Handle(StepData_PDescr) StepData_PDescr::Member(const Standard_CString name) con
   return thenext->Member(name);
 }
 
-Standard_Boolean StepData_PDescr::IsInteger() const
+bool StepData_PDescr::IsInteger() const
 {
   return (thekind == KindInteger);
 }
 
-Standard_Boolean StepData_PDescr::IsReal() const
+bool StepData_PDescr::IsReal() const
 {
   return (thekind == KindReal);
 }
 
-Standard_Boolean StepData_PDescr::IsString() const
+bool StepData_PDescr::IsString() const
 {
   return (thekind == KindString);
 }
 
-Standard_Boolean StepData_PDescr::IsBoolean() const
+bool StepData_PDescr::IsBoolean() const
 {
   return (thekind == KindBoolean || thekind == KindLogical);
 }
 
-Standard_Boolean StepData_PDescr::IsLogical() const
+bool StepData_PDescr::IsLogical() const
 {
   return (thekind == KindLogical);
 }
 
-Standard_Boolean StepData_PDescr::IsEnum() const
+bool StepData_PDescr::IsEnum() const
 {
   return (thekind == KindEnum);
 }
 
-Standard_Integer StepData_PDescr::EnumMax() const
+int StepData_PDescr::EnumMax() const
 {
   return theenum.MaxValue();
 }
 
-Standard_Integer StepData_PDescr::EnumValue(const Standard_CString name) const
+int StepData_PDescr::EnumValue(const char* name) const
 {
   return theenum.Value(name);
 }
 
-Standard_CString StepData_PDescr::EnumText(const Standard_Integer val) const
+const char* StepData_PDescr::EnumText(const int val) const
 {
   return theenum.Text(val).ToCString();
 }
 
-Standard_Boolean StepData_PDescr::IsEntity() const
+bool StepData_PDescr::IsEntity() const
 {
   return (thekind == KindEntity);
 }
 
-Standard_Boolean StepData_PDescr::IsType(const Handle(Standard_Type)& atype) const
+bool StepData_PDescr::IsType(const occ::handle<Standard_Type>& atype) const
 {
   if (atype.IsNull())
-    return Standard_False;
+    return false;
   if (!thetype.IsNull())
   {
     if (atype->SubType(thetype))
-      return Standard_True;
+      return true;
   }
   if (!thenext.IsNull())
     return thenext->IsType(atype);
   if (!thefrom.IsNull())
     return thefrom->IsType(atype);
-  return Standard_False;
+  return false;
 }
 
-Handle(Standard_Type) StepData_PDescr::Type() const
+occ::handle<Standard_Type> StepData_PDescr::Type() const
 {
   return thetype;
 }
 
-Standard_Boolean StepData_PDescr::IsDescr(const Handle(StepData_EDescr)& descr) const
+bool StepData_PDescr::IsDescr(const occ::handle<StepData_EDescr>& descr) const
 {
   if (descr.IsNull())
-    return Standard_False;
+    return false;
   if (thednam.Length() > 0)
   {
     if (descr->Matches(thednam.ToCString()))
-      return Standard_True;
+      return true;
   }
   if (!thenext.IsNull())
     return thenext->IsDescr(descr);
   if (!thefrom.IsNull())
     return thefrom->IsDescr(descr);
-  return Standard_False;
+  return false;
 }
 
-Standard_CString StepData_PDescr::DescrName() const
+const char* StepData_PDescr::DescrName() const
 {
   return thednam.ToCString();
 }
 
-Standard_Integer StepData_PDescr::Arity() const
+int StepData_PDescr::Arity() const
 {
   return thearit;
 }
 
-Handle(StepData_PDescr) StepData_PDescr::Simple() const
+occ::handle<StepData_PDescr> StepData_PDescr::Simple() const
 {
   if (thearit == 0)
     return this;
@@ -305,32 +305,33 @@ Handle(StepData_PDescr) StepData_PDescr::Simple() const
   return thefrom;
 }
 
-Standard_Boolean StepData_PDescr::IsOptional() const
+bool StepData_PDescr::IsOptional() const
 {
   return theopt;
 }
 
-Standard_Boolean StepData_PDescr::IsDerived() const
+bool StepData_PDescr::IsDerived() const
 {
   return theder;
 }
 
-Standard_Boolean StepData_PDescr::IsField() const
+bool StepData_PDescr::IsField() const
 {
   return (thefnum > 0);
 }
 
-Standard_CString StepData_PDescr::FieldName() const
+const char* StepData_PDescr::FieldName() const
 {
   return thefnam.ToCString();
 }
 
-Standard_Integer StepData_PDescr::FieldRank() const
+int StepData_PDescr::FieldRank() const
 {
   return thefnum;
 }
 
-void StepData_PDescr::Check(const StepData_Field& /*afild*/, Handle(Interface_Check)& /*ach*/) const
+void StepData_PDescr::Check(const StepData_Field& /*afild*/,
+                            occ::handle<Interface_Check>& /*ach*/) const
 {
   //  For now...
 }

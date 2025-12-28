@@ -26,9 +26,6 @@ class Interface_InterfaceModel;
 class Interface_Protocol;
 class Interface_CopyTool;
 
-class IFSelect_Modifier;
-DEFINE_STANDARD_HANDLE(IFSelect_Modifier, IFSelect_GeneralModifier)
-
 //! This class gives a frame for Actions which can work globally
 //! on a File once completely defined (i.e. afterwards)
 //!
@@ -51,19 +48,17 @@ public:
   //!
   //! In case of Error, use methods CCheck from the ContextModif
   //! to acknowledge an entity Check or a Global Check with messages
-  Standard_EXPORT virtual void Perform(IFSelect_ContextModif&                  ctx,
-                                       const Handle(Interface_InterfaceModel)& target,
-                                       const Handle(Interface_Protocol)&       protocol,
-                                       Interface_CopyTool&                     TC) const = 0;
+  Standard_EXPORT virtual void Perform(IFSelect_ContextModif&                       ctx,
+                                       const occ::handle<Interface_InterfaceModel>& target,
+                                       const occ::handle<Interface_Protocol>&       protocol,
+                                       Interface_CopyTool&                          TC) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_Modifier, IFSelect_GeneralModifier)
 
 protected:
   //! Calls inherited Initialize, transmits to it the information
   //! <maychangegraph>
-  Standard_EXPORT IFSelect_Modifier(const Standard_Boolean maychangegraph);
-
-private:
+  Standard_EXPORT IFSelect_Modifier(const bool maychangegraph);
 };
 
 #endif // _IFSelect_Modifier_HeaderFile

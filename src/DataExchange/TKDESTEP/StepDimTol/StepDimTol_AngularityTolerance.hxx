@@ -20,10 +20,6 @@
 
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 
-class StepDimTol_AngularityTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_AngularityTolerance,
-                       StepDimTol_GeometricToleranceWithDatumReference)
-
 //! Representation of STEP entity AngularityTolerance
 class StepDimTol_AngularityTolerance : public StepDimTol_GeometricToleranceWithDatumReference
 {
@@ -34,9 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_AngularityTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
-
-protected:
-private:
 };
 
 #endif // _StepDimTol_AngularityTolerance_HeaderFile

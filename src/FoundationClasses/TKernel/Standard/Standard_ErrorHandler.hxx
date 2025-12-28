@@ -101,19 +101,19 @@ public:
 
   //! Returns "True" if the caught exception has the same type
   //! or inherits from "aType"
-  Standard_EXPORT Standard_Boolean Catches(const Handle(Standard_Type)& aType);
+  Standard_EXPORT bool Catches(const occ::handle<Standard_Type>& aType);
 
   //! Returns label for jump
   Standard_JmpBuf& Label() { return myLabel; }
 
   //! Returns the current Error.
-  Standard_EXPORT Handle(Standard_Failure) Error() const;
+  Standard_EXPORT occ::handle<Standard_Failure> Error() const;
 
   //! Returns the caught exception.
-  Standard_EXPORT static Handle(Standard_Failure) LastCaughtError();
+  Standard_EXPORT static occ::handle<Standard_Failure> LastCaughtError();
 
   //! Test if the code is currently running in a try block
-  Standard_EXPORT static Standard_Boolean IsInTryBlock();
+  Standard_EXPORT static bool IsInTryBlock();
 
 private:
   //! A exception is raised but it is not yet caught.
@@ -121,14 +121,14 @@ private:
   //! to "calling routines".
   //! Warning: If no catch is prepared for this exception, it displays the
   //! exception name and calls "exit(1)".
-  Standard_EXPORT static void Abort(const Handle(Standard_Failure)& theError);
+  Standard_EXPORT static void Abort(const occ::handle<Standard_Failure>& theError);
 
   //! Set the Error which will be transmitted to "calling routines".
-  Standard_EXPORT static void Error(const Handle(Standard_Failure)& aError);
+  Standard_EXPORT static void Error(const occ::handle<Standard_Failure>& aError);
 
   //! Returns the current handler (closest in the stack in the current execution thread)
   Standard_EXPORT static Standard_PErrorHandler FindHandler(const Standard_HandlerStatus theStatus,
-                                                            const Standard_Boolean       theUnlink);
+                                                            const bool                   theUnlink);
 
 public:
   //! Defines a base class for callback objects that can be registered
@@ -186,20 +186,20 @@ public:
       Callback();
 
   private:
-    Standard_Address myHandler;
-    Standard_Address myPrev;
-    Standard_Address myNext;
+    void* myHandler;
+    void* myPrev;
+    void* myNext;
 
     friend class Standard_ErrorHandler;
   };
 
 private:
-  Standard_PErrorHandler   myPrevious;
-  Handle(Standard_Failure) myCaughtError;
-  Standard_JmpBuf          myLabel;
-  Standard_HandlerStatus   myStatus;
-  Standard_ThreadId        myThread;
-  Callback*                myCallbackPtr;
+  Standard_PErrorHandler        myPrevious;
+  occ::handle<Standard_Failure> myCaughtError;
+  Standard_JmpBuf               myLabel;
+  Standard_HandlerStatus        myStatus;
+  Standard_ThreadId             myThread;
+  Callback*                     myCallbackPtr;
 
   friend class Standard_Failure;
 };

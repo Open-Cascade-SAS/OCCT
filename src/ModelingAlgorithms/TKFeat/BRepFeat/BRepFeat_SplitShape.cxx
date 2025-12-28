@@ -34,26 +34,26 @@ void BRepFeat_SplitShape::Build(const Message_ProgressRange& /*theRange*/)
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepFeat_SplitShape::DirectLeft() const
+const NCollection_List<TopoDS_Shape>& BRepFeat_SplitShape::DirectLeft() const
 {
   return mySShape.DirectLeft();
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepFeat_SplitShape::Left() const
+const NCollection_List<TopoDS_Shape>& BRepFeat_SplitShape::Left() const
 {
   return mySShape.Left();
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepFeat_SplitShape::Right() const
+const NCollection_List<TopoDS_Shape>& BRepFeat_SplitShape::Right() const
 {
   if (myRight.IsEmpty())
   {
-    TopTools_MapOfShape                aMapOfLeft;
-    TopTools_ListIteratorOfListOfShape anIterator;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapOfLeft;
+    NCollection_List<TopoDS_Shape>::Iterator               anIterator;
     for (anIterator.Initialize(mySShape.Left()); anIterator.More(); anIterator.Next())
     {
       aMapOfLeft.Add(anIterator.Value());
@@ -71,9 +71,9 @@ const TopTools_ListOfShape& BRepFeat_SplitShape::Right() const
 
 //=================================================================================================
 
-Standard_Boolean BRepFeat_SplitShape::IsDeleted(const TopoDS_Shape& F)
+bool BRepFeat_SplitShape::IsDeleted(const TopoDS_Shape& F)
 {
-  TopTools_ListIteratorOfListOfShape itl(((LocOpe_Spliter*)&mySShape)->DescendantShapes(F));
+  NCollection_List<TopoDS_Shape>::Iterator itl(((LocOpe_Spliter*)&mySShape)->DescendantShapes(F));
   // all that to swindle the constant
 
   return (!itl.More()); // a priori impossible
@@ -81,7 +81,7 @@ Standard_Boolean BRepFeat_SplitShape::IsDeleted(const TopoDS_Shape& F)
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepFeat_SplitShape::Modified(const TopoDS_Shape& F)
+const NCollection_List<TopoDS_Shape>& BRepFeat_SplitShape::Modified(const TopoDS_Shape& F)
 {
   return mySShape.DescendantShapes(F);
 }

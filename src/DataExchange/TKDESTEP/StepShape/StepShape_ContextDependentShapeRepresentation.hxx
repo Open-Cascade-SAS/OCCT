@@ -24,34 +24,31 @@
 class StepRepr_ShapeRepresentationRelationship;
 class StepRepr_ProductDefinitionShape;
 
-class StepShape_ContextDependentShapeRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_ContextDependentShapeRepresentation, Standard_Transient)
-
 class StepShape_ContextDependentShapeRepresentation : public Standard_Transient
 {
 
 public:
   Standard_EXPORT StepShape_ContextDependentShapeRepresentation();
 
-  Standard_EXPORT void Init(const Handle(StepRepr_ShapeRepresentationRelationship)& aRepRel,
-                            const Handle(StepRepr_ProductDefinitionShape)&          aProRel);
+  Standard_EXPORT void Init(const occ::handle<StepRepr_ShapeRepresentationRelationship>& aRepRel,
+                            const occ::handle<StepRepr_ProductDefinitionShape>&          aProRel);
 
-  Standard_EXPORT Handle(StepRepr_ShapeRepresentationRelationship) RepresentationRelation() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeRepresentationRelationship> RepresentationRelation()
+    const;
 
   Standard_EXPORT void SetRepresentationRelation(
-    const Handle(StepRepr_ShapeRepresentationRelationship)& aRepRel);
+    const occ::handle<StepRepr_ShapeRepresentationRelationship>& aRepRel);
 
-  Standard_EXPORT Handle(StepRepr_ProductDefinitionShape) RepresentedProductRelation() const;
+  Standard_EXPORT occ::handle<StepRepr_ProductDefinitionShape> RepresentedProductRelation() const;
 
   Standard_EXPORT void SetRepresentedProductRelation(
-    const Handle(StepRepr_ProductDefinitionShape)& aProRel);
+    const occ::handle<StepRepr_ProductDefinitionShape>& aProRel);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ContextDependentShapeRepresentation, Standard_Transient)
 
-protected:
 private:
-  Handle(StepRepr_ShapeRepresentationRelationship) theRepRel;
-  Handle(StepRepr_ProductDefinitionShape)          theProRel;
+  occ::handle<StepRepr_ShapeRepresentationRelationship> theRepRel;
+  occ::handle<StepRepr_ProductDefinitionShape>          theProRel;
 };
 
 #endif // _StepShape_ContextDependentShapeRepresentation_HeaderFile

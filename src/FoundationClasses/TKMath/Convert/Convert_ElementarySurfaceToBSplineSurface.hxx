@@ -21,10 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class gp_Pnt;
 
@@ -62,29 +62,29 @@ class Convert_ElementarySurfaceToBSplineSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Standard_Integer UDegree() const;
+  Standard_EXPORT int UDegree() const;
 
   //! Returns the degree for the u or v parametric direction of
   //! the BSpline surface whose data is computed in this framework.
-  Standard_EXPORT Standard_Integer VDegree() const;
+  Standard_EXPORT int VDegree() const;
 
-  Standard_EXPORT Standard_Integer NbUPoles() const;
+  Standard_EXPORT int NbUPoles() const;
 
   //! Returns the number of poles for the u or v parametric
   //! direction of the BSpline surface whose data is computed in this framework.
-  Standard_EXPORT Standard_Integer NbVPoles() const;
+  Standard_EXPORT int NbVPoles() const;
 
-  Standard_EXPORT Standard_Integer NbUKnots() const;
+  Standard_EXPORT int NbUKnots() const;
 
   //! Returns the number of knots for the u or v parametric
   //! direction of the BSpline surface whose data is computed in this framework .
-  Standard_EXPORT Standard_Integer NbVKnots() const;
+  Standard_EXPORT int NbVKnots() const;
 
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const;
+  Standard_EXPORT bool IsUPeriodic() const;
 
   //! Returns true if the BSpline surface whose data is computed
   //! in this framework is periodic in the u or v parametric direction.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const;
+  Standard_EXPORT bool IsVPeriodic() const;
 
   //! Returns the pole of index (UIndex,VIndex) to the poles
   //! table of the BSpline surface whose data is computed in this framework.
@@ -95,7 +95,7 @@ public:
   //! parametric direction, or
   //! -   VIndex is outside the bounds of the poles table in the v
   //! parametric direction.
-  Standard_EXPORT gp_Pnt Pole(const Standard_Integer UIndex, const Standard_Integer VIndex) const;
+  Standard_EXPORT gp_Pnt Pole(const int UIndex, const int VIndex) const;
 
   //! Returns the weight of the pole of index (UIndex,VIndex) to
   //! the poles table of the BSpline surface whose data is computed in this framework.
@@ -106,49 +106,46 @@ public:
   //! parametric direction, or
   //! -   VIndex is outside the bounds of the poles table in the v
   //! parametric direction.
-  Standard_EXPORT Standard_Real Weight(const Standard_Integer UIndex,
-                                       const Standard_Integer VIndex) const;
+  Standard_EXPORT double Weight(const int UIndex, const int VIndex) const;
 
   //! Returns the U-knot of range UIndex.
   //! Raised if UIndex < 1 or UIndex > NbUKnots.
-  Standard_EXPORT Standard_Real UKnot(const Standard_Integer UIndex) const;
+  Standard_EXPORT double UKnot(const int UIndex) const;
 
   //! Returns the V-knot of range VIndex.
   //! Raised if VIndex < 1 or VIndex > NbVKnots.
-  Standard_EXPORT Standard_Real VKnot(const Standard_Integer UIndex) const;
+  Standard_EXPORT double VKnot(const int UIndex) const;
 
   //! Returns the multiplicity of the U-knot of range UIndex.
   //! Raised if UIndex < 1 or UIndex > NbUKnots.
-  Standard_EXPORT Standard_Integer UMultiplicity(const Standard_Integer UIndex) const;
+  Standard_EXPORT int UMultiplicity(const int UIndex) const;
 
   //! Returns the multiplicity of the V-knot of range VIndex.
   //! Raised if VIndex < 1 or VIndex > NbVKnots.
-  Standard_EXPORT Standard_Integer VMultiplicity(const Standard_Integer VIndex) const;
+  Standard_EXPORT int VMultiplicity(const int VIndex) const;
 
 protected:
-  Standard_EXPORT Convert_ElementarySurfaceToBSplineSurface(const Standard_Integer NumberOfUPoles,
-                                                            const Standard_Integer NumberOfVPoles,
-                                                            const Standard_Integer NumberOfUKnots,
-                                                            const Standard_Integer NumberOfVKnots,
-                                                            const Standard_Integer UDegree,
-                                                            const Standard_Integer VDegree);
+  Standard_EXPORT Convert_ElementarySurfaceToBSplineSurface(const int NumberOfUPoles,
+                                                            const int NumberOfVPoles,
+                                                            const int NumberOfUKnots,
+                                                            const int NumberOfVKnots,
+                                                            const int UDegree,
+                                                            const int VDegree);
 
-  TColgp_Array2OfPnt      poles;
-  TColStd_Array2OfReal    weights;
-  TColStd_Array1OfReal    uknots;
-  TColStd_Array1OfInteger umults;
-  TColStd_Array1OfReal    vknots;
-  TColStd_Array1OfInteger vmults;
-  Standard_Integer        udegree;
-  Standard_Integer        vdegree;
-  Standard_Integer        nbUPoles;
-  Standard_Integer        nbVPoles;
-  Standard_Integer        nbUKnots;
-  Standard_Integer        nbVKnots;
-  Standard_Boolean        isuperiodic;
-  Standard_Boolean        isvperiodic;
-
-private:
+  NCollection_Array2<gp_Pnt> poles;
+  NCollection_Array2<double> weights;
+  NCollection_Array1<double> uknots;
+  NCollection_Array1<int>    umults;
+  NCollection_Array1<double> vknots;
+  NCollection_Array1<int>    vmults;
+  int                        udegree;
+  int                        vdegree;
+  int                        nbUPoles;
+  int                        nbVPoles;
+  int                        nbUKnots;
+  int                        nbVKnots;
+  bool                       isuperiodic;
+  bool                       isvperiodic;
 };
 
 #endif // _Convert_ElementarySurfaceToBSplineSurface_HeaderFile

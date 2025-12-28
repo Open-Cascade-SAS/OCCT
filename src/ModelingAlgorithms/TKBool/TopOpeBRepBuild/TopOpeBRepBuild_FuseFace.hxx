@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 
 class TopOpeBRepBuild_FuseFace
@@ -31,13 +32,13 @@ public:
 
   TopOpeBRepBuild_FuseFace();
 
-  TopOpeBRepBuild_FuseFace(const TopTools_ListOfShape& LIF,
-                           const TopTools_ListOfShape& LRF,
-                           const Standard_Integer      CXM);
+  TopOpeBRepBuild_FuseFace(const NCollection_List<TopoDS_Shape>& LIF,
+                           const NCollection_List<TopoDS_Shape>& LRF,
+                           const int                             CXM);
 
-  Standard_EXPORT void Init(const TopTools_ListOfShape& LIF,
-                            const TopTools_ListOfShape& LRF,
-                            const Standard_Integer      CXM);
+  Standard_EXPORT void Init(const NCollection_List<TopoDS_Shape>& LIF,
+                            const NCollection_List<TopoDS_Shape>& LRF,
+                            const int                             CXM);
 
   Standard_EXPORT void PerformFace();
 
@@ -47,39 +48,39 @@ public:
 
   Standard_EXPORT void ClearVertex();
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
-  Standard_Boolean IsModified() const;
+  bool IsModified() const;
 
-  const TopTools_ListOfShape& LFuseFace() const;
+  const NCollection_List<TopoDS_Shape>& LFuseFace() const;
 
-  const TopTools_ListOfShape& LInternEdge() const;
+  const NCollection_List<TopoDS_Shape>& LInternEdge() const;
 
-  const TopTools_ListOfShape& LExternEdge() const;
+  const NCollection_List<TopoDS_Shape>& LExternEdge() const;
 
-  const TopTools_ListOfShape& LModifEdge() const;
+  const NCollection_List<TopoDS_Shape>& LModifEdge() const;
 
-  const TopTools_ListOfShape& LInternVertex() const;
+  const NCollection_List<TopoDS_Shape>& LInternVertex() const;
 
-  const TopTools_ListOfShape& LExternVertex() const;
+  const NCollection_List<TopoDS_Shape>& LExternVertex() const;
 
-  const TopTools_ListOfShape& LModifVertex() const;
+  const NCollection_List<TopoDS_Shape>& LModifVertex() const;
 
 protected:
-  TopTools_ListOfShape myLIE;
-  TopTools_ListOfShape myLEE;
-  TopTools_ListOfShape myLME;
-  TopTools_ListOfShape myLIV;
-  TopTools_ListOfShape myLEV;
-  TopTools_ListOfShape myLMV;
+  NCollection_List<TopoDS_Shape> myLIE;
+  NCollection_List<TopoDS_Shape> myLEE;
+  NCollection_List<TopoDS_Shape> myLME;
+  NCollection_List<TopoDS_Shape> myLIV;
+  NCollection_List<TopoDS_Shape> myLEV;
+  NCollection_List<TopoDS_Shape> myLMV;
 
 private:
-  TopTools_ListOfShape myLIF;
-  TopTools_ListOfShape myLRF;
-  TopTools_ListOfShape myLFF;
-  Standard_Boolean     myInternal;
-  Standard_Boolean     myModified;
-  Standard_Boolean     myDone;
+  NCollection_List<TopoDS_Shape> myLIF;
+  NCollection_List<TopoDS_Shape> myLRF;
+  NCollection_List<TopoDS_Shape> myLFF;
+  bool                           myInternal;
+  bool                           myModified;
+  bool                           myDone;
 };
 
 #include <TopOpeBRepBuild_FuseFace.lxx>

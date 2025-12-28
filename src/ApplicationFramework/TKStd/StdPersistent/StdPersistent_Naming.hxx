@@ -52,16 +52,16 @@ public:
     }
 
     //! Returns persistent type name
-    inline Standard_CString PName() const { return "PNaming_NamedShape"; }
+    inline const char* PName() const { return "PNaming_NamedShape"; }
 
     //! Import transient attribute from the persistent data.
-    void Import(const Handle(TNaming_NamedShape)& theAttribute) const;
+    void Import(const occ::handle<TNaming_NamedShape>& theAttribute) const;
 
   private:
     Handle(StdPersistent_HArray1::Shape1) myOldShapes;
     Handle(StdPersistent_HArray1::Shape1) myNewShapes;
-    Standard_Integer                      myShapeStatus;
-    Standard_Integer                      myVersion;
+    int                                   myShapeStatus;
+    int                                   myVersion;
   };
 
   class Name : public StdObjMgt_Persistent
@@ -82,17 +82,18 @@ public:
     }
 
     //! Returns persistent type name
-    inline Standard_CString PName() const { return "PNaming_Name"; }
+    inline const char* PName() const { return "PNaming_Name"; }
 
     //! Import transient object from the persistent data.
-    Standard_EXPORT virtual void Import(TNaming_Name& theName, const Handle(TDF_Data)& theDF) const;
+    Standard_EXPORT virtual void Import(TNaming_Name&                theName,
+                                        const occ::handle<TDF_Data>& theDF) const;
 
   private:
-    Standard_Integer                           myType;
-    Standard_Integer                           myShapeType;
+    int                                        myType;
+    int                                        myShapeType;
     Handle(StdLPersistent_HArray1::Persistent) myArgs;
-    Handle(StdObjMgt_Persistent)               myStop;
-    Standard_Integer                           myIndex;
+    occ::handle<StdObjMgt_Persistent>          myStop;
+    int                                        myIndex;
   };
 
   class Name_1 : public Name
@@ -112,10 +113,11 @@ public:
     }
 
     //! Returns persistent type name
-    inline Standard_CString PName() const { return "PNaming_Name_1"; }
+    inline const char* PName() const { return "PNaming_Name_1"; }
 
     //! Import transient object from the persistent data.
-    Standard_EXPORT virtual void Import(TNaming_Name& theName, const Handle(TDF_Data)& theDF) const;
+    Standard_EXPORT virtual void Import(TNaming_Name&                theName,
+                                        const occ::handle<TDF_Data>& theDF) const;
 
   private:
     Handle(StdLPersistent_HString::Ascii) myContextLabel;
@@ -136,13 +138,14 @@ public:
     }
 
     //! Returns persistent type name
-    inline Standard_CString PName() const { return "PNaming_Name_2"; }
+    inline const char* PName() const { return "PNaming_Name_2"; }
 
     //! Import transient object from the persistent data.
-    Standard_EXPORT virtual void Import(TNaming_Name& theName, const Handle(TDF_Data)& theDF) const;
+    Standard_EXPORT virtual void Import(TNaming_Name&                theName,
+                                        const occ::handle<TDF_Data>& theDF) const;
 
   private:
-    Standard_Integer myOrientation;
+    int myOrientation;
   };
 
   class Naming : public StdObjMgt_Attribute<TNaming_Naming>::SingleRef

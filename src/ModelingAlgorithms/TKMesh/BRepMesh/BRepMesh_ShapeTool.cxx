@@ -32,7 +32,7 @@ namespace
 //! Auxiliary struct to take a tolerance of edge.
 struct EdgeTolerance
 {
-  static Standard_Real Get(const TopoDS_Shape& theEdge)
+  static double Get(const TopoDS_Shape& theEdge)
   {
     return BRep_Tool::Tolerance(TopoDS::Edge(theEdge));
   }
@@ -41,7 +41,7 @@ struct EdgeTolerance
 //! Auxiliary struct to take a tolerance of vertex.
 struct VertexTolerance
 {
-  static Standard_Real Get(const TopoDS_Shape& theVertex)
+  static double Get(const TopoDS_Shape& theVertex)
   {
     return BRep_Tool::Tolerance(TopoDS::Vertex(theVertex));
   }
@@ -49,13 +49,13 @@ struct VertexTolerance
 
 //! Returns maximum tolerance of face element of the specified type.
 template <TopAbs_ShapeEnum ShapeType, class ToleranceExtractor>
-Standard_Real MaxTolerance(const TopoDS_Face& theFace)
+double MaxTolerance(const TopoDS_Face& theFace)
 {
-  Standard_Real   aMaxTolerance = RealFirst();
+  double          aMaxTolerance = RealFirst();
   TopExp_Explorer aExplorer(theFace, ShapeType);
   for (; aExplorer.More(); aExplorer.Next())
   {
-    Standard_Real aTolerance = ToleranceExtractor::Get(aExplorer.Current());
+    double aTolerance = ToleranceExtractor::Get(aExplorer.Current());
     if (aTolerance > aMaxTolerance)
       aMaxTolerance = aTolerance;
   }
@@ -66,24 +66,24 @@ Standard_Real MaxTolerance(const TopoDS_Face& theFace)
 
 //=================================================================================================
 
-Standard_Real BRepMesh_ShapeTool::MaxFaceTolerance(const TopoDS_Face& theFace)
+double BRepMesh_ShapeTool::MaxFaceTolerance(const TopoDS_Face& theFace)
 {
-  Standard_Real aMaxTolerance = BRep_Tool::Tolerance(theFace);
+  double aMaxTolerance = BRep_Tool::Tolerance(theFace);
 
-  Standard_Real aTolerance = std::max(MaxTolerance<TopAbs_EDGE, EdgeTolerance>(theFace),
-                                      MaxTolerance<TopAbs_VERTEX, VertexTolerance>(theFace));
+  double aTolerance = std::max(MaxTolerance<TopAbs_EDGE, EdgeTolerance>(theFace),
+                               MaxTolerance<TopAbs_VERTEX, VertexTolerance>(theFace));
 
   return std::max(aMaxTolerance, aTolerance);
 }
 
 //=================================================================================================
 
-void BRepMesh_ShapeTool::BoxMaxDimension(const Bnd_Box& theBox, Standard_Real& theMaxDimension)
+void BRepMesh_ShapeTool::BoxMaxDimension(const Bnd_Box& theBox, double& theMaxDimension)
 {
   if (theBox.IsVoid())
     return;
 
-  Standard_Real aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
+  double aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
   theBox.Get(aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ);
 
   theMaxDimension = std::max(aMaxX - aMinX, std::max(aMaxY - aMinY, aMaxZ - aMinZ));
@@ -103,12 +103,12 @@ void BRepMesh_ShapeTool::CheckAndUpdateFlags(const IMeshData::IEdgeHandle&   the
   const TopoDS_Edge& aEdge = theEdge->GetEdge();
   const TopoDS_Face& aFace = thePCurve->GetFace()->GetFace();
 
-  Handle(Geom_Curve) aCurve;
-  Standard_Real      aFirstParam, aLastParam;
+  occ::handle<Geom_Curve> aCurve;
+  double                  aFirstParam, aLastParam;
   Range(aEdge, aCurve, aFirstParam, aLastParam);
   if (aCurve.IsNull())
   {
-    theEdge->SetDegenerated(Standard_True);
+    theEdge->SetDegenerated(true);
     return;
   }
 
@@ -117,14 +117,14 @@ void BRepMesh_ShapeTool::CheckAndUpdateFlags(const IMeshData::IEdgeHandle&   the
   {
     if (theEdge->GetSameRange())
     {
-      const Standard_Real aDiffFirst = aCurveOnSurf.FirstParameter() - aFirstParam;
-      const Standard_Real aDiffLast  = aCurveOnSurf.LastParameter() - aLastParam;
+      const double aDiffFirst = aCurveOnSurf.FirstParameter() - aFirstParam;
+      const double aDiffLast  = aCurveOnSurf.LastParameter() - aLastParam;
       theEdge->SetSameRange(std::abs(aDiffFirst) < Precision::PConfusion()
                             && std::abs(aDiffLast) < Precision::PConfusion());
 
       if (!theEdge->GetSameRange())
       {
-        theEdge->SetSameParam(Standard_False);
+        theEdge->SetSameParam(false);
       }
     }
   }
@@ -135,25 +135,25 @@ void BRepMesh_ShapeTool::CheckAndUpdateFlags(const IMeshData::IEdgeHandle&   the
     TopExp::Vertices(aEdge, aStartVertex, aEndVertex);
     if (aStartVertex.IsNull() || aEndVertex.IsNull())
     {
-      theEdge->SetDegenerated(Standard_True);
+      theEdge->SetDegenerated(true);
       return;
     }
 
     if (aStartVertex.IsSame(aEndVertex))
     {
-      const Standard_Integer aPointsNb        = 20;
-      const Standard_Real    aVertexTolerance = BRep_Tool::Tolerance(aStartVertex);
-      const Standard_Real    aDu              = (aLastParam - aFirstParam) / aPointsNb;
-      // const Standard_Real    aEdgeTolerance     = BRep_Tool::Tolerance (aEdge);
-      // const Standard_Real    aSqEdgeTolerance   = aEdgeTolerance * aEdgeTolerance;
+      const int    aPointsNb        = 20;
+      const double aVertexTolerance = BRep_Tool::Tolerance(aStartVertex);
+      const double aDu              = (aLastParam - aFirstParam) / aPointsNb;
+      // const double    aEdgeTolerance     = BRep_Tool::Tolerance (aEdge);
+      // const double    aSqEdgeTolerance   = aEdgeTolerance * aEdgeTolerance;
 
       gp_Pnt aPrevPnt;
       aCurve->D0(aFirstParam, aPrevPnt);
 
-      Standard_Real aLength = 0.0;
-      for (Standard_Integer i = 1; i <= aPointsNb; ++i)
+      double aLength = 0.0;
+      for (int i = 1; i <= aPointsNb; ++i)
       {
-        const Standard_Real aParameter = aFirstParam + i * aDu;
+        const double aParameter = aFirstParam + i * aDu;
         // Calculation of the length of the edge in 3D
         // in order to check degenerativity
         gp_Pnt aPnt;
@@ -184,15 +184,15 @@ void BRepMesh_ShapeTool::CheckAndUpdateFlags(const IMeshData::IEdgeHandle&   the
 
 //=================================================================================================
 
-void BRepMesh_ShapeTool::AddInFace(const TopoDS_Face&          theFace,
-                                   Handle(Poly_Triangulation)& theTriangulation)
+void BRepMesh_ShapeTool::AddInFace(const TopoDS_Face&               theFace,
+                                   occ::handle<Poly_Triangulation>& theTriangulation)
 {
   const TopLoc_Location& aLoc = theFace.Location();
   if (!aLoc.IsIdentity())
   {
     gp_Trsf aTrsf = aLoc.Transformation();
     aTrsf.Invert();
-    for (Standard_Integer aNodeIter = 1; aNodeIter <= theTriangulation->NbNodes(); ++aNodeIter)
+    for (int aNodeIter = 1; aNodeIter <= theTriangulation->NbNodes(); ++aNodeIter)
     {
       gp_Pnt aNode = theTriangulation->Node(aNodeIter);
       aNode.Transform(aTrsf);
@@ -209,16 +209,16 @@ void BRepMesh_ShapeTool::AddInFace(const TopoDS_Face&          theFace,
 void BRepMesh_ShapeTool::NullifyFace(const TopoDS_Face& theFace)
 {
   BRep_Builder aBuilder;
-  aBuilder.UpdateFace(theFace, Handle(Poly_Triangulation)());
+  aBuilder.UpdateFace(theFace, occ::handle<Poly_Triangulation>());
 }
 
 //=================================================================================================
 
-void BRepMesh_ShapeTool::NullifyEdge(const TopoDS_Edge&                theEdge,
-                                     const Handle(Poly_Triangulation)& theTriangulation,
-                                     const TopLoc_Location&            theLocation)
+void BRepMesh_ShapeTool::NullifyEdge(const TopoDS_Edge&                     theEdge,
+                                     const occ::handle<Poly_Triangulation>& theTriangulation,
+                                     const TopLoc_Location&                 theLocation)
 {
-  UpdateEdge(theEdge, Handle(Poly_PolygonOnTriangulation)(), theTriangulation, theLocation);
+  UpdateEdge(theEdge, occ::handle<Poly_PolygonOnTriangulation>(), theTriangulation, theLocation);
 }
 
 //=================================================================================================
@@ -226,15 +226,15 @@ void BRepMesh_ShapeTool::NullifyEdge(const TopoDS_Edge&                theEdge,
 void BRepMesh_ShapeTool::NullifyEdge(const TopoDS_Edge& theEdge, const TopLoc_Location& theLocation)
 {
   BRep_Builder aBuilder;
-  aBuilder.UpdateEdge(theEdge, Handle(Poly_Polygon3D)(), theLocation);
+  aBuilder.UpdateEdge(theEdge, occ::handle<Poly_Polygon3D>(), theLocation);
 }
 
 //=================================================================================================
 
-void BRepMesh_ShapeTool::UpdateEdge(const TopoDS_Edge&                         theEdge,
-                                    const Handle(Poly_PolygonOnTriangulation)& thePolygon,
-                                    const Handle(Poly_Triangulation)&          theTriangulation,
-                                    const TopLoc_Location&                     theLocation)
+void BRepMesh_ShapeTool::UpdateEdge(const TopoDS_Edge&                              theEdge,
+                                    const occ::handle<Poly_PolygonOnTriangulation>& thePolygon,
+                                    const occ::handle<Poly_Triangulation>& theTriangulation,
+                                    const TopLoc_Location&                 theLocation)
 {
   BRep_Builder aBuilder;
   aBuilder.UpdateEdge(theEdge, thePolygon, theTriangulation, theLocation);
@@ -242,11 +242,11 @@ void BRepMesh_ShapeTool::UpdateEdge(const TopoDS_Edge&                         t
 
 //=================================================================================================
 
-void BRepMesh_ShapeTool::UpdateEdge(const TopoDS_Edge&                         theEdge,
-                                    const Handle(Poly_PolygonOnTriangulation)& thePolygon1,
-                                    const Handle(Poly_PolygonOnTriangulation)& thePolygon2,
-                                    const Handle(Poly_Triangulation)&          theTriangulation,
-                                    const TopLoc_Location&                     theLocation)
+void BRepMesh_ShapeTool::UpdateEdge(const TopoDS_Edge&                              theEdge,
+                                    const occ::handle<Poly_PolygonOnTriangulation>& thePolygon1,
+                                    const occ::handle<Poly_PolygonOnTriangulation>& thePolygon2,
+                                    const occ::handle<Poly_Triangulation>& theTriangulation,
+                                    const TopLoc_Location&                 theLocation)
 {
   BRep_Builder aBuilder;
   aBuilder.UpdateEdge(theEdge, thePolygon1, thePolygon2, theTriangulation, theLocation);
@@ -254,8 +254,8 @@ void BRepMesh_ShapeTool::UpdateEdge(const TopoDS_Edge&                         t
 
 //=================================================================================================
 
-void BRepMesh_ShapeTool::UpdateEdge(const TopoDS_Edge&            theEdge,
-                                    const Handle(Poly_Polygon3D)& thePolygon)
+void BRepMesh_ShapeTool::UpdateEdge(const TopoDS_Edge&                 theEdge,
+                                    const occ::handle<Poly_Polygon3D>& thePolygon)
 {
   BRep_Builder aBuilder;
   aBuilder.UpdateEdge(theEdge, thePolygon);
@@ -275,33 +275,33 @@ gp_Pnt BRepMesh_ShapeTool::UseLocation(const gp_Pnt& thePnt, const TopLoc_Locati
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_ShapeTool::UVPoints(const TopoDS_Edge&     theEdge,
-                                              const TopoDS_Face&     theFace,
-                                              gp_Pnt2d&              theFirstPoint2d,
-                                              gp_Pnt2d&              theLastPoint2d,
-                                              const Standard_Boolean isConsiderOrientation)
+bool BRepMesh_ShapeTool::UVPoints(const TopoDS_Edge& theEdge,
+                                  const TopoDS_Face& theFace,
+                                  gp_Pnt2d&          theFirstPoint2d,
+                                  gp_Pnt2d&          theLastPoint2d,
+                                  const bool         isConsiderOrientation)
 {
 
-  Handle(Geom2d_Curve) aCurve2d;
-  Standard_Real        aFirstParam, aLastParam;
+  occ::handle<Geom2d_Curve> aCurve2d;
+  double                    aFirstParam, aLastParam;
   if (!Range(theEdge, theFace, aCurve2d, aFirstParam, aLastParam, isConsiderOrientation))
   {
-    return Standard_False;
+    return false;
   }
 
   aCurve2d->D0(aFirstParam, theFirstPoint2d);
   aCurve2d->D0(aLastParam, theLastPoint2d);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_ShapeTool::Range(const TopoDS_Edge&     theEdge,
-                                           const TopoDS_Face&     theFace,
-                                           Handle(Geom2d_Curve)&  thePCurve,
-                                           Standard_Real&         theFirstParam,
-                                           Standard_Real&         theLastParam,
-                                           const Standard_Boolean isConsiderOrientation)
+bool BRepMesh_ShapeTool::Range(const TopoDS_Edge&         theEdge,
+                               const TopoDS_Face&         theFace,
+                               occ::handle<Geom2d_Curve>& thePCurve,
+                               double&                    theFirstParam,
+                               double&                    theLastParam,
+                               const bool                 isConsiderOrientation)
 {
 
   ShapeAnalysis_Edge aEdge;
@@ -311,11 +311,11 @@ Standard_Boolean BRepMesh_ShapeTool::Range(const TopoDS_Edge&     theEdge,
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_ShapeTool::Range(const TopoDS_Edge&     theEdge,
-                                           Handle(Geom_Curve)&    theCurve,
-                                           Standard_Real&         theFirstParam,
-                                           Standard_Real&         theLastParam,
-                                           const Standard_Boolean isConsiderOrientation)
+bool BRepMesh_ShapeTool::Range(const TopoDS_Edge&       theEdge,
+                               occ::handle<Geom_Curve>& theCurve,
+                               double&                  theFirstParam,
+                               double&                  theLastParam,
+                               const bool               isConsiderOrientation)
 {
 
   ShapeAnalysis_Edge aEdge;

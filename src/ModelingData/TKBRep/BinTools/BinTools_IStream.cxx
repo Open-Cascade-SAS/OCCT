@@ -34,7 +34,7 @@ BinTools_ObjectType BinTools_IStream::ReadType()
 
 //=================================================================================================
 
-Standard_Boolean BinTools_IStream::IsReference()
+bool BinTools_IStream::IsReference()
 {
   return myLastType == BinTools_ObjectType_Reference8
          || myLastType == BinTools_ObjectType_Reference16
@@ -107,7 +107,8 @@ void BinTools_IStream::GoTo(const uint64_t& thePosition)
 TopAbs_ShapeEnum BinTools_IStream::ShapeType()
 {
   return TopAbs_ShapeEnum(
-    (Standard_Byte(myLastType) - Standard_Byte(BinTools_ObjectType_EndShape) - 1) >> 2);
+    (static_cast<uint8_t>(myLastType) - static_cast<uint8_t>(BinTools_ObjectType_EndShape) - 1)
+    >> 2);
 }
 
 //=================================================================================================
@@ -115,25 +116,26 @@ TopAbs_ShapeEnum BinTools_IStream::ShapeType()
 TopAbs_Orientation BinTools_IStream::ShapeOrientation()
 {
   return TopAbs_Orientation(
-    (Standard_Byte(myLastType) - Standard_Byte(BinTools_ObjectType_EndShape) - 1) & 3);
+    (static_cast<uint8_t>(myLastType) - static_cast<uint8_t>(BinTools_ObjectType_EndShape) - 1)
+    & 3);
 }
 
 //=================================================================================================
 
 BinTools_IStream::operator bool() const
 {
-  return *myStream ? Standard_True : Standard_False;
+  return *myStream ? true : false;
 }
 
 //=======================================================================
 // function : operator <<
 // purpose  :
 //=======================================================================
-BinTools_IStream& BinTools_IStream::operator>>(Standard_Real& theValue)
+BinTools_IStream& BinTools_IStream::operator>>(double& theValue)
 {
-  if (!myStream->read((char*)&theValue, sizeof(Standard_Real)))
+  if (!myStream->read((char*)&theValue, sizeof(double)))
     throw Storage_StreamTypeMismatchError();
-  myPosition += sizeof(Standard_Real);
+  myPosition += sizeof(double);
 #if DO_INVERSE
   theValue = InverseReal(theValue);
 #endif
@@ -144,11 +146,11 @@ BinTools_IStream& BinTools_IStream::operator>>(Standard_Real& theValue)
 // function : operator <<
 // purpose  :
 //=======================================================================
-BinTools_IStream& BinTools_IStream::operator>>(Standard_Integer& theValue)
+BinTools_IStream& BinTools_IStream::operator>>(int& theValue)
 {
-  if (!myStream->read((char*)&theValue, sizeof(Standard_Integer)))
+  if (!myStream->read((char*)&theValue, sizeof(int)))
     throw Storage_StreamTypeMismatchError();
-  myPosition += sizeof(Standard_Integer);
+  myPosition += sizeof(int);
 #if DO_INVERSE
   theValue = InverseInt(theValue);
 #endif
@@ -161,17 +163,17 @@ BinTools_IStream& BinTools_IStream::operator>>(Standard_Integer& theValue)
 //=======================================================================
 BinTools_IStream& BinTools_IStream::operator>>(gp_Pnt& theValue)
 {
-  Standard_Real aValue;
+  double aValue;
   for (int aCoord = 1; aCoord <= 3; aCoord++)
   {
-    if (!myStream->read((char*)&aValue, sizeof(Standard_Real)))
+    if (!myStream->read((char*)&aValue, sizeof(double)))
       throw Storage_StreamTypeMismatchError();
 #if DO_INVERSE
     aValue = InverseReal(aValue);
 #endif
     theValue.SetCoord(aCoord, aValue);
   }
-  myPosition += 3 * sizeof(Standard_Real);
+  myPosition += 3 * sizeof(double);
   return *this;
 }
 
@@ -179,10 +181,10 @@ BinTools_IStream& BinTools_IStream::operator>>(gp_Pnt& theValue)
 // function : operator <<
 // purpose  :
 //=======================================================================
-BinTools_IStream& BinTools_IStream::operator>>(Standard_Byte& theValue)
+BinTools_IStream& BinTools_IStream::operator>>(uint8_t& theValue)
 {
-  myStream->read((char*)&theValue, sizeof(Standard_Byte));
-  myPosition += sizeof(Standard_Byte);
+  myStream->read((char*)&theValue, sizeof(uint8_t));
+  myPosition += sizeof(uint8_t);
   return *this;
 }
 
@@ -190,10 +192,10 @@ BinTools_IStream& BinTools_IStream::operator>>(Standard_Byte& theValue)
 // function : operator <<
 // purpose  :
 //=======================================================================
-BinTools_IStream& BinTools_IStream::operator>>(Standard_ShortReal& theValue)
+BinTools_IStream& BinTools_IStream::operator>>(float& theValue)
 {
-  myStream->read((char*)&theValue, sizeof(Standard_ShortReal));
-  myPosition += sizeof(Standard_ShortReal);
+  myStream->read((char*)&theValue, sizeof(float));
+  myPosition += sizeof(float);
   return *this;
 }
 
@@ -203,7 +205,7 @@ BinTools_IStream& BinTools_IStream::operator>>(Standard_ShortReal& theValue)
 //=======================================================================
 BinTools_IStream& BinTools_IStream::operator>>(gp_Trsf& theValue)
 {
-  Standard_Real aV1[3], aV2[3], aV3[3], aV[3];
+  double aV1[3], aV2[3], aV3[3], aV[3];
   *this >> aV1[0] >> aV1[1] >> aV1[2] >> aV[0];
   *this >> aV2[0] >> aV2[1] >> aV2[2] >> aV[1];
   *this >> aV3[0] >> aV3[1] >> aV3[2] >> aV[2];
@@ -224,32 +226,30 @@ BinTools_IStream& BinTools_IStream::operator>>(gp_Trsf& theValue)
 
 //=================================================================================================
 
-void BinTools_IStream::ReadBools(Standard_Boolean& theBool1,
-                                 Standard_Boolean& theBool2,
-                                 Standard_Boolean& theBool3)
+void BinTools_IStream::ReadBools(bool& theBool1, bool& theBool2, bool& theBool3)
 {
-  Standard_Byte aByte = ReadByte();
-  theBool1            = (aByte & 1) == 1;
-  theBool2            = (aByte & 2) == 2;
-  theBool3            = (aByte & 4) == 4;
+  uint8_t aByte = ReadByte();
+  theBool1      = (aByte & 1) == 1;
+  theBool2      = (aByte & 2) == 2;
+  theBool3      = (aByte & 4) == 4;
 }
 
 //=================================================================================================
 
-void BinTools_IStream::ReadBools(Standard_Boolean& theBool1,
-                                 Standard_Boolean& theBool2,
-                                 Standard_Boolean& theBool3,
-                                 Standard_Boolean& theBool4,
-                                 Standard_Boolean& theBool5,
-                                 Standard_Boolean& theBool6,
-                                 Standard_Boolean& theBool7)
+void BinTools_IStream::ReadBools(bool& theBool1,
+                                 bool& theBool2,
+                                 bool& theBool3,
+                                 bool& theBool4,
+                                 bool& theBool5,
+                                 bool& theBool6,
+                                 bool& theBool7)
 {
-  Standard_Byte aByte = ReadByte();
-  theBool1            = (aByte & 1) == 1;
-  theBool2            = (aByte & 2) == 2;
-  theBool3            = (aByte & 4) == 4;
-  theBool4            = (aByte & 8) == 8;
-  theBool5            = (aByte & 16) == 16;
-  theBool6            = (aByte & 32) == 32;
-  theBool7            = (aByte & 64) == 64;
+  uint8_t aByte = ReadByte();
+  theBool1      = (aByte & 1) == 1;
+  theBool2      = (aByte & 2) == 2;
+  theBool3      = (aByte & 4) == 4;
+  theBool4      = (aByte & 8) == 8;
+  theBool5      = (aByte & 16) == 16;
+  theBool6      = (aByte & 32) == 32;
+  theBool7      = (aByte & 64) == 64;
 }

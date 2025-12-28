@@ -27,17 +27,17 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_SweepFunction, Approx_SweepFunction)
 
 //=================================================================================================
 
-GeomFill_SweepFunction::GeomFill_SweepFunction(const Handle(GeomFill_SectionLaw)&  Section,
-                                               const Handle(GeomFill_LocationLaw)& Location,
-                                               const Standard_Real                 FirstParameter,
-                                               const Standard_Real FirstParameterOnS,
-                                               const Standard_Real RatioParameterOnS)
+GeomFill_SweepFunction::GeomFill_SweepFunction(const occ::handle<GeomFill_SectionLaw>&  Section,
+                                               const occ::handle<GeomFill_LocationLaw>& Location,
+                                               const double FirstParameter,
+                                               const double FirstParameterOnS,
+                                               const double RatioParameterOnS)
 {
   myLoc   = Location;
   mySec   = Section;
@@ -48,17 +48,17 @@ GeomFill_SweepFunction::GeomFill_SweepFunction(const Handle(GeomFill_SectionLaw)
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_SweepFunction::D0(const Standard_Real Param,
-                                            const Standard_Real,
-                                            const Standard_Real,
-                                            TColgp_Array1OfPnt&   Poles,
-                                            TColgp_Array1OfPnt2d& Poles2d,
-                                            TColStd_Array1OfReal& Weigths)
+bool GeomFill_SweepFunction::D0(const double Param,
+                                const double,
+                                const double,
+                                NCollection_Array1<gp_Pnt>&   Poles,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<double>&   Weigths)
 {
-  Standard_Integer ii, L;
-  Standard_Boolean Ok;
-  Standard_Real    T = myfOnS + (Param - myf) * myRatio;
-  L                  = Poles.Length();
+  int    ii, L;
+  bool   Ok;
+  double T = myfOnS + (Param - myf) * myRatio;
+  L        = Poles.Length();
 
   Ok = myLoc->D0(Param, M, V, Poles2d);
   if (!Ok)
@@ -73,25 +73,25 @@ Standard_Boolean GeomFill_SweepFunction::D0(const Standard_Real Param,
     aux *= M;
     aux += V.XYZ();
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_SweepFunction::D1(const Standard_Real Param,
-                                            const Standard_Real,
-                                            const Standard_Real,
-                                            TColgp_Array1OfPnt&   Poles,
-                                            TColgp_Array1OfVec&   DPoles,
-                                            TColgp_Array1OfPnt2d& Poles2d,
-                                            TColgp_Array1OfVec2d& DPoles2d,
-                                            TColStd_Array1OfReal& Weigths,
-                                            TColStd_Array1OfReal& DWeigths)
+bool GeomFill_SweepFunction::D1(const double Param,
+                                const double,
+                                const double,
+                                NCollection_Array1<gp_Pnt>&   Poles,
+                                NCollection_Array1<gp_Vec>&   DPoles,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                NCollection_Array1<double>&   Weigths,
+                                NCollection_Array1<double>&   DWeigths)
 {
-  Standard_Integer ii, L;
-  Standard_Boolean Ok;
-  Standard_Real    T = myfOnS + (Param - myf) * myRatio;
-  gp_XYZ           PPrim;
+  int    ii, L;
+  bool   Ok;
+  double T = myfOnS + (Param - myf) * myRatio;
+  gp_XYZ PPrim;
   L = Poles.Length();
 
   Ok = myLoc->D1(Param, M, V, DM, DV, Poles2d, DPoles2d);
@@ -115,29 +115,29 @@ Standard_Boolean GeomFill_SweepFunction::D1(const Standard_Real Param,
     P *= M;
     P += V.XYZ();
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_SweepFunction::D2(const Standard_Real Param,
-                                            const Standard_Real,
-                                            const Standard_Real,
-                                            TColgp_Array1OfPnt&   Poles,
-                                            TColgp_Array1OfVec&   DPoles,
-                                            TColgp_Array1OfVec&   D2Poles,
-                                            TColgp_Array1OfPnt2d& Poles2d,
-                                            TColgp_Array1OfVec2d& DPoles2d,
-                                            TColgp_Array1OfVec2d& D2Poles2d,
-                                            TColStd_Array1OfReal& Weigths,
-                                            TColStd_Array1OfReal& DWeigths,
-                                            TColStd_Array1OfReal& D2Weigths)
+bool GeomFill_SweepFunction::D2(const double Param,
+                                const double,
+                                const double,
+                                NCollection_Array1<gp_Pnt>&   Poles,
+                                NCollection_Array1<gp_Vec>&   DPoles,
+                                NCollection_Array1<gp_Vec>&   D2Poles,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                NCollection_Array1<double>&   Weigths,
+                                NCollection_Array1<double>&   DWeigths,
+                                NCollection_Array1<double>&   D2Weigths)
 {
-  Standard_Integer ii, L;
-  Standard_Boolean Ok;
-  Standard_Real    T           = myfOnS + (Param - myf) * myRatio;
-  Standard_Real    squareratio = myRatio * myRatio;
-  L                            = Poles.Length();
+  int    ii, L;
+  bool   Ok;
+  double T           = myfOnS + (Param - myf) * myRatio;
+  double squareratio = myRatio * myRatio;
+  L                  = Poles.Length();
 
   Ok = myLoc->D2(Param, M, V, DM, DV, D2M, D2V, Poles2d, DPoles2d, D2Poles2d);
   if (!Ok)
@@ -170,51 +170,49 @@ Standard_Boolean GeomFill_SweepFunction::D2(const Standard_Real Param,
     P *= M;
     P += V.XYZ();
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_SweepFunction::Nb2dCurves() const
+int GeomFill_SweepFunction::Nb2dCurves() const
 {
   return myLoc->Nb2dCurves();
 }
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::SectionShape(Standard_Integer& NbPoles,
-                                          Standard_Integer& NbKnots,
-                                          Standard_Integer& Degree) const
+void GeomFill_SweepFunction::SectionShape(int& NbPoles, int& NbKnots, int& Degree) const
 {
   mySec->SectionShape(NbPoles, NbKnots, Degree);
 }
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::Knots(TColStd_Array1OfReal& TKnots) const
+void GeomFill_SweepFunction::Knots(NCollection_Array1<double>& TKnots) const
 {
   mySec->Knots(TKnots);
 }
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::Mults(TColStd_Array1OfInteger& TMults) const
+void GeomFill_SweepFunction::Mults(NCollection_Array1<int>& TMults) const
 {
   mySec->Mults(TMults);
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_SweepFunction::IsRational() const
+bool GeomFill_SweepFunction::IsRational() const
 {
   return mySec->IsRational();
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_SweepFunction::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_SweepFunction::NbIntervals(const GeomAbs_Shape S) const
 {
-  Standard_Integer Nb_Sec, Nb_Loc;
+  int Nb_Sec, Nb_Loc;
   Nb_Sec = mySec->NbIntervals(S);
   Nb_Loc = myLoc->NbIntervals(S);
 
@@ -227,11 +225,11 @@ Standard_Integer GeomFill_SweepFunction::NbIntervals(const GeomAbs_Shape S) cons
     return Nb_Sec;
   }
 
-  TColStd_Array1OfReal   IntS(1, Nb_Sec + 1);
-  TColStd_Array1OfReal   IntL(1, Nb_Loc + 1);
-  TColStd_SequenceOfReal Inter;
-  Standard_Real          T;
-  Standard_Integer       ii;
+  NCollection_Array1<double>   IntS(1, Nb_Sec + 1);
+  NCollection_Array1<double>   IntL(1, Nb_Loc + 1);
+  NCollection_Sequence<double> Inter;
+  double                       T;
+  int                          ii;
   mySec->Intervals(IntS, S);
   for (ii = 1; ii <= Nb_Sec + 1; ii++)
   {
@@ -246,9 +244,9 @@ Standard_Integer GeomFill_SweepFunction::NbIntervals(const GeomAbs_Shape S) cons
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void GeomFill_SweepFunction::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
-  Standard_Integer Nb_Sec, Nb_Loc, ii;
+  int Nb_Sec, Nb_Loc, ii;
   Nb_Sec = mySec->NbIntervals(S);
   Nb_Loc = myLoc->NbIntervals(S);
 
@@ -259,7 +257,7 @@ void GeomFill_SweepFunction::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Sh
   }
   else if (Nb_Loc == 1)
   {
-    Standard_Real t;
+    double t;
     mySec->Intervals(T, S);
     for (ii = 1; ii <= Nb_Sec + 1; ii++)
     {
@@ -269,10 +267,10 @@ void GeomFill_SweepFunction::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Sh
     return;
   }
 
-  TColStd_Array1OfReal   IntS(1, Nb_Sec + 1);
-  TColStd_Array1OfReal   IntL(1, Nb_Loc + 1);
-  TColStd_SequenceOfReal Inter;
-  Standard_Real          t;
+  NCollection_Array1<double>   IntS(1, Nb_Sec + 1);
+  NCollection_Array1<double>   IntL(1, Nb_Loc + 1);
+  NCollection_Sequence<double> Inter;
+  double                       t;
 
   mySec->Intervals(IntS, S);
   for (ii = 1; ii <= Nb_Sec + 1; ii++)
@@ -289,9 +287,9 @@ void GeomFill_SweepFunction::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Sh
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::SetInterval(const Standard_Real First, const Standard_Real Last)
+void GeomFill_SweepFunction::SetInterval(const double First, const double Last)
 {
-  Standard_Real uf, ul;
+  double uf, ul;
   myLoc->SetInterval(First, Last);
   uf = myf + (First - myf) * myRatio;
   ul = myf + (Last - myf) * myRatio;
@@ -300,27 +298,27 @@ void GeomFill_SweepFunction::SetInterval(const Standard_Real First, const Standa
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::GetTolerance(const Standard_Real   BoundTol,
-                                          const Standard_Real   SurfTol,
-                                          const Standard_Real   AngleTol,
-                                          TColStd_Array1OfReal& Tol3d) const
+void GeomFill_SweepFunction::GetTolerance(const double                BoundTol,
+                                          const double                SurfTol,
+                                          const double                AngleTol,
+                                          NCollection_Array1<double>& Tol3d) const
 {
   mySec->GetTolerance(BoundTol, SurfTol, AngleTol, Tol3d);
 }
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::Resolution(const Standard_Integer Index,
-                                        const Standard_Real    Tol,
-                                        Standard_Real&         TolU,
-                                        Standard_Real&         TolV) const
+void GeomFill_SweepFunction::Resolution(const int    Index,
+                                        const double Tol,
+                                        double&      TolU,
+                                        double&      TolV) const
 {
   myLoc->Resolution(Index, Tol, TolU, TolV);
 }
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::SetTolerance(const Standard_Real Tol3d, const Standard_Real Tol2d)
+void GeomFill_SweepFunction::SetTolerance(const double Tol3d, const double Tol2d)
 {
   mySec->SetTolerance(Tol3d, Tol2d);
   myLoc->SetTolerance(Tol3d, Tol2d);
@@ -344,16 +342,16 @@ gp_Pnt GeomFill_SweepFunction::BarycentreOfSurf() const
 
 //=================================================================================================
 
-Standard_Real GeomFill_SweepFunction::MaximalSection() const
+double GeomFill_SweepFunction::MaximalSection() const
 {
-  Standard_Real L = mySec->MaximalSection();
+  double L = mySec->MaximalSection();
   L *= myLoc->GetMaximalNorm();
   return L;
 }
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::GetMinimalWeight(TColStd_Array1OfReal& Weigths) const
+void GeomFill_SweepFunction::GetMinimalWeight(NCollection_Array1<double>& Weigths) const
 {
   mySec->GetMinimalWeight(Weigths);
 }

@@ -20,10 +20,10 @@
 
 RWStepGeom_RWOffsetCurve3d::RWStepGeom_RWOffsetCurve3d() {}
 
-void RWStepGeom_RWOffsetCurve3d::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepGeom_OffsetCurve3d)&  ent) const
+void RWStepGeom_RWOffsetCurve3d::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                                   num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepGeom_OffsetCurve3d>&  ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,32 +33,32 @@ void RWStepGeom_RWOffsetCurve3d::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : basisCurve ---
 
-  Handle(StepGeom_Curve) aBasisCurve;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Curve> aBasisCurve;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "basis_curve", ach, STANDARD_TYPE(StepGeom_Curve), aBasisCurve);
 
   // --- own field : distance ---
 
-  Standard_Real aDistance;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aDistance;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "distance", ach, aDistance);
 
   // --- own field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadLogical(num, 4, "self_intersect", ach, aSelfIntersect);
 
   // --- own field : refDirection ---
 
-  Handle(StepGeom_Direction) aRefDirection;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  occ::handle<StepGeom_Direction> aRefDirection;
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadEntity(num, 5, "ref_direction", ach, STANDARD_TYPE(StepGeom_Direction), aRefDirection);
 
   //--- Initialisation of the read entity ---
@@ -66,8 +66,8 @@ void RWStepGeom_RWOffsetCurve3d::ReadStep(const Handle(StepData_StepReaderData)&
   ent->Init(aName, aBasisCurve, aDistance, aSelfIntersect, aRefDirection);
 }
 
-void RWStepGeom_RWOffsetCurve3d::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepGeom_OffsetCurve3d)& ent) const
+void RWStepGeom_RWOffsetCurve3d::WriteStep(StepData_StepWriter&                       SW,
+                                           const occ::handle<StepGeom_OffsetCurve3d>& ent) const
 {
 
   // --- inherited field name ---
@@ -91,8 +91,8 @@ void RWStepGeom_RWOffsetCurve3d::WriteStep(StepData_StepWriter&                 
   SW.Send(ent->RefDirection());
 }
 
-void RWStepGeom_RWOffsetCurve3d::Share(const Handle(StepGeom_OffsetCurve3d)& ent,
-                                       Interface_EntityIterator&             iter) const
+void RWStepGeom_RWOffsetCurve3d::Share(const occ::handle<StepGeom_OffsetCurve3d>& ent,
+                                       Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->BasisCurve());

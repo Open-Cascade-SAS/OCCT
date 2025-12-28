@@ -27,16 +27,14 @@ StepElement_SurfaceElementPurpose::StepElement_SurfaceElementPurpose() {}
 
 //=================================================================================================
 
-Standard_Integer StepElement_SurfaceElementPurpose::CaseNum(
-  const Handle(Standard_Transient)& /*ent*/) const
+int StepElement_SurfaceElementPurpose::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_SurfaceElementPurpose::CaseMem(
-  const Handle(StepData_SelectMember)& ent) const
+int StepElement_SurfaceElementPurpose::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -50,7 +48,7 @@ Standard_Integer StepElement_SurfaceElementPurpose::CaseMem(
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepElement_SurfaceElementPurpose::NewMember() const
+occ::handle<StepData_SelectMember> StepElement_SurfaceElementPurpose::NewMember() const
 {
   return new StepElement_SurfaceElementPurposeMember;
 }
@@ -60,14 +58,14 @@ Handle(StepData_SelectMember) StepElement_SurfaceElementPurpose::NewMember() con
 void StepElement_SurfaceElementPurpose::SetEnumeratedSurfaceElementPurpose(
   const StepElement_EnumeratedSurfaceElementPurpose val)
 {
-  Handle(StepElement_SurfaceElementPurposeMember) SelMem =
-    Handle(StepElement_SurfaceElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_SurfaceElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_SurfaceElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("EnumeratedSurfaceElementPurpose");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((Standard_Integer)val);
+  SelMem->SetEnum((int)val);
 }
 
 //=================================================================================================
@@ -75,17 +73,17 @@ void StepElement_SurfaceElementPurpose::SetEnumeratedSurfaceElementPurpose(
 StepElement_EnumeratedSurfaceElementPurpose StepElement_SurfaceElementPurpose::
   EnumeratedSurfaceElementPurpose() const
 {
-  Handle(StepElement_SurfaceElementPurposeMember) SelMem =
-    Handle(StepElement_SurfaceElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_SurfaceElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_SurfaceElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return StepElement_MembraneDirect;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("EnumeratedSurfaceElementPurpose");
   if (name->IsDifferent(nameitem))
     return StepElement_MembraneDirect;
-  Standard_Integer                            numit = SelMem->Enum();
+  int                                         numit = SelMem->Enum();
   StepElement_EnumeratedSurfaceElementPurpose val;
   switch (numit)
   {
@@ -114,13 +112,13 @@ StepElement_EnumeratedSurfaceElementPurpose StepElement_SurfaceElementPurpose::
 //=================================================================================================
 
 void StepElement_SurfaceElementPurpose::SetApplicationDefinedElementPurpose(
-  const Handle(TCollection_HAsciiString)& val)
+  const occ::handle<TCollection_HAsciiString>& val)
 {
-  Handle(StepElement_SurfaceElementPurposeMember) SelMem =
-    Handle(StepElement_SurfaceElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_SurfaceElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_SurfaceElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ApplicationDefinedElementPurpose");
   SelMem->SetName(name->ToCString());
   SelMem->SetString(val->ToCString());
@@ -128,20 +126,20 @@ void StepElement_SurfaceElementPurpose::SetApplicationDefinedElementPurpose(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_SurfaceElementPurpose::
+occ::handle<TCollection_HAsciiString> StepElement_SurfaceElementPurpose::
   ApplicationDefinedElementPurpose() const
 {
-  Handle(StepElement_SurfaceElementPurposeMember) SelMem =
-    Handle(StepElement_SurfaceElementPurposeMember)::DownCast(Value());
+  occ::handle<StepElement_SurfaceElementPurposeMember> SelMem =
+    occ::down_cast<StepElement_SurfaceElementPurposeMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ApplicationDefinedElementPurpose");
   if (name->IsDifferent(nameitem))
     return 0;
-  Handle(TCollection_HAsciiString) val = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;
 }

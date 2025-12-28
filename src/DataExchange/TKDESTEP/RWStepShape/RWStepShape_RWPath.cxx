@@ -21,10 +21,10 @@
 
 RWStepShape_RWPath::RWStepShape_RWPath() {}
 
-void RWStepShape_RWPath::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                  const Standard_Integer                 num,
-                                  Handle(Interface_Check)&               ach,
-                                  const Handle(StepShape_Path)&          ent) const
+void RWStepShape_RWPath::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                  const int                                   num,
+                                  occ::handle<Interface_Check>&               ach,
+                                  const occ::handle<StepShape_Path>&          ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,22 +34,22 @@ void RWStepShape_RWPath::ReadStep(const Handle(StepData_StepReaderData)& data,
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : edgeList ---
 
-  Handle(StepShape_HArray1OfOrientedEdge) aEdgeList;
-  Handle(StepShape_OrientedEdge)          anent2;
-  Standard_Integer                        nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> aEdgeList;
+  occ::handle<StepShape_OrientedEdge>                                   anent2;
+  int                                                                   nsub2;
   if (data->ReadSubList(num, 2, "edge_list", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aEdgeList            = new StepShape_HArray1OfOrientedEdge(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2   = data->NbParams(nsub2);
+    aEdgeList = new NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2,
                            i2,
                            "oriented_edge",
@@ -65,7 +65,8 @@ void RWStepShape_RWPath::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aEdgeList);
 }
 
-void RWStepShape_RWPath::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Path)& ent) const
+void RWStepShape_RWPath::WriteStep(StepData_StepWriter&               SW,
+                                   const occ::handle<StepShape_Path>& ent) const
 {
 
   // --- inherited field name ---
@@ -75,19 +76,19 @@ void RWStepShape_RWPath::WriteStep(StepData_StepWriter& SW, const Handle(StepSha
   // --- own field : edgeList ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbEdgeList(); i2++)
+  for (int i2 = 1; i2 <= ent->NbEdgeList(); i2++)
   {
     SW.Send(ent->EdgeListValue(i2));
   }
   SW.CloseSub();
 }
 
-void RWStepShape_RWPath::Share(const Handle(StepShape_Path)& ent,
-                               Interface_EntityIterator&     iter) const
+void RWStepShape_RWPath::Share(const occ::handle<StepShape_Path>& ent,
+                               Interface_EntityIterator&          iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbEdgeList();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbEdgeList();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->EdgeListValue(is1));
   }

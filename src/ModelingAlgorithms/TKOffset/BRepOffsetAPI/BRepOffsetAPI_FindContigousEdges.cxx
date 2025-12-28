@@ -22,8 +22,8 @@
 
 //=================================================================================================
 
-BRepOffsetAPI_FindContigousEdges::BRepOffsetAPI_FindContigousEdges(const Standard_Real    tolerance,
-                                                                   const Standard_Boolean option)
+BRepOffsetAPI_FindContigousEdges::BRepOffsetAPI_FindContigousEdges(const double tolerance,
+                                                                   const bool   option)
 {
   mySewing = new BRepBuilderAPI_Sewing;
   Init(tolerance, option);
@@ -31,10 +31,9 @@ BRepOffsetAPI_FindContigousEdges::BRepOffsetAPI_FindContigousEdges(const Standar
 
 //=================================================================================================
 
-void BRepOffsetAPI_FindContigousEdges::Init(const Standard_Real    tolerance,
-                                            const Standard_Boolean option)
+void BRepOffsetAPI_FindContigousEdges::Init(const double tolerance, const bool option)
 {
-  mySewing->Init(tolerance, option, Standard_False, Standard_True);
+  mySewing->Init(tolerance, option, false, true);
 }
 
 //=================================================================================================
@@ -53,15 +52,14 @@ void BRepOffsetAPI_FindContigousEdges::Perform()
 
 //=================================================================================================
 
-Standard_Integer BRepOffsetAPI_FindContigousEdges::NbContigousEdges() const
+int BRepOffsetAPI_FindContigousEdges::NbContigousEdges() const
 {
   return mySewing->NbContigousEdges();
 }
 
 //=================================================================================================
 
-const TopoDS_Edge& BRepOffsetAPI_FindContigousEdges::ContigousEdge(
-  const Standard_Integer index) const
+const TopoDS_Edge& BRepOffsetAPI_FindContigousEdges::ContigousEdge(const int index) const
 {
   Standard_OutOfRange_Raise_if(index < 0 || index > NbContigousEdges(),
                                "BRepOffsetAPI_FindContigousEdges::ContigousEdge");
@@ -70,8 +68,8 @@ const TopoDS_Edge& BRepOffsetAPI_FindContigousEdges::ContigousEdge(
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepOffsetAPI_FindContigousEdges::ContigousEdgeCouple(
-  const Standard_Integer index) const
+const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_FindContigousEdges::ContigousEdgeCouple(
+  const int index) const
 {
   Standard_OutOfRange_Raise_if(index < 0 || index > NbContigousEdges(),
                                "BRepOffsetAPI_FindContigousEdges::ContigousEdgeCouple");
@@ -90,15 +88,14 @@ const TopoDS_Edge& BRepOffsetAPI_FindContigousEdges::SectionToBoundary(
 
 //=================================================================================================
 
-Standard_Integer BRepOffsetAPI_FindContigousEdges::NbDegeneratedShapes() const
+int BRepOffsetAPI_FindContigousEdges::NbDegeneratedShapes() const
 {
   return mySewing->NbDegeneratedShapes();
 }
 
 //=================================================================================================
 
-const TopoDS_Shape& BRepOffsetAPI_FindContigousEdges::DegeneratedShape(
-  const Standard_Integer index) const
+const TopoDS_Shape& BRepOffsetAPI_FindContigousEdges::DegeneratedShape(const int index) const
 {
   Standard_OutOfRange_Raise_if(index < 0 || index > NbDegeneratedShapes(),
                                "BRepOffsetAPI_FindContigousEdges::DegereratedShape");
@@ -107,14 +104,14 @@ const TopoDS_Shape& BRepOffsetAPI_FindContigousEdges::DegeneratedShape(
 
 //=================================================================================================
 
-Standard_Boolean BRepOffsetAPI_FindContigousEdges::IsDegenerated(const TopoDS_Shape& aShape) const
+bool BRepOffsetAPI_FindContigousEdges::IsDegenerated(const TopoDS_Shape& aShape) const
 {
   return mySewing->IsDegenerated(aShape);
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepOffsetAPI_FindContigousEdges::IsModified(const TopoDS_Shape& aShape) const
+bool BRepOffsetAPI_FindContigousEdges::IsModified(const TopoDS_Shape& aShape) const
 {
   return mySewing->IsModified(aShape);
 }

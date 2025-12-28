@@ -22,8 +22,8 @@
 #include <BSplCLib.hxx>
 #include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_XYZ.hxx>
 
 //=================================================================================================
@@ -36,28 +36,28 @@ public:
   {
   }
 
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
   Approx_SweepApproximation& Tool;
 };
 
-void Approx_SweepApproximation_Eval::Evaluate(Standard_Integer*, /*Dimension*/
-                                              Standard_Real     StartEnd[2],
-                                              Standard_Real*    Parameter,
-                                              Standard_Integer* DerivativeRequest,
-                                              Standard_Real*    Result, // [Dimension]
-                                              Standard_Integer* ErrorCode)
+void Approx_SweepApproximation_Eval::Evaluate(int*, /*Dimension*/
+                                              double  StartEnd[2],
+                                              double* Parameter,
+                                              int*    DerivativeRequest,
+                                              double* Result, // [Dimension]
+                                              int*    ErrorCode)
 {
   *ErrorCode = Tool.Eval(*Parameter, *DerivativeRequest, StartEnd[0], StartEnd[1], Result[0]);
 }
 
-Approx_SweepApproximation::Approx_SweepApproximation(const Handle(Approx_SweepFunction)& Func)
+Approx_SweepApproximation::Approx_SweepApproximation(const occ::handle<Approx_SweepFunction>& Func)
 {
   myFunc = Func;
   //  Init of variables of control
@@ -65,38 +65,38 @@ Approx_SweepApproximation::Approx_SweepApproximation(const Handle(Approx_SweepFu
   myOrder = -1;
   first   = 1.e100;
   last    = -1.e100;
-  done    = Standard_False;
+  done    = false;
 }
 
-void Approx_SweepApproximation::Perform(const Standard_Real    First,
-                                        const Standard_Real    Last,
-                                        const Standard_Real    Tol3d,
-                                        const Standard_Real    BoundTol,
-                                        const Standard_Real    Tol2d,
-                                        const Standard_Real    TolAngular,
-                                        const GeomAbs_Shape    Continuity,
-                                        const Standard_Integer Degmax,
-                                        const Standard_Integer Segmax)
+void Approx_SweepApproximation::Perform(const double        First,
+                                        const double        Last,
+                                        const double        Tol3d,
+                                        const double        BoundTol,
+                                        const double        Tol2d,
+                                        const double        TolAngular,
+                                        const GeomAbs_Shape Continuity,
+                                        const int           Degmax,
+                                        const int           Segmax)
 {
-  Standard_Integer NbPolSect, NbKnotSect, ii;
-  Standard_Real    Tol, Tol3dMin = Tol3d, The3D2DTol = 0;
-  GeomAbs_Shape    continuity = Continuity;
+  int           NbPolSect, NbKnotSect, ii;
+  double        Tol, Tol3dMin = Tol3d, The3D2DTol = 0;
+  GeomAbs_Shape continuity = Continuity;
 
   // (1) Characteristics of a section
   myFunc->SectionShape(NbPolSect, NbKnotSect, udeg);
   Num2DSS   = myFunc->Nb2dCurves();
-  tabUKnots = new (TColStd_HArray1OfReal)(1, NbKnotSect);
-  tabUMults = new (TColStd_HArray1OfInteger)(1, NbKnotSect);
+  tabUKnots = new (NCollection_HArray1<double>)(1, NbKnotSect);
+  tabUMults = new (NCollection_HArray1<int>)(1, NbKnotSect);
   myFunc->Knots(tabUKnots->ChangeArray1());
   myFunc->Mults(tabUMults->ChangeArray1());
 
   // (2) Decompositition into sub-spaces
-  Handle(TColStd_HArray1OfReal) OneDTol, TwoDTol, ThreeDTol;
+  occ::handle<NCollection_HArray1<double>> OneDTol, TwoDTol, ThreeDTol;
   Num3DSS = NbPolSect;
 
   // (2.1) Tolerance 3d and 1d
-  OneDTol   = new (TColStd_HArray1OfReal)(1, Num3DSS);
-  ThreeDTol = new (TColStd_HArray1OfReal)(1, Num3DSS);
+  OneDTol   = new (NCollection_HArray1<double>)(1, Num3DSS);
+  ThreeDTol = new (NCollection_HArray1<double>)(1, Num3DSS);
 
   myFunc->GetTolerance(BoundTol, Tol3d, TolAngular, ThreeDTol->ChangeArray1());
 
@@ -106,9 +106,9 @@ void Approx_SweepApproximation::Perform(const Standard_Real    First,
 
   if (myFunc->IsRational())
   {
-    Standard_Real Size;
+    double Size;
     Num1DSS = NbPolSect;
-    TColStd_Array1OfReal Wmin(1, Num1DSS);
+    NCollection_Array1<double> Wmin(1, Num1DSS);
     myFunc->GetMinimalWeight(Wmin);
     Size = myFunc->MaximalSection();
     Translation.SetXYZ(myFunc->BarycentreOfSurf().XYZ());
@@ -134,9 +134,9 @@ void Approx_SweepApproximation::Perform(const Standard_Real    First,
   {
     // for 2d define affinity using resolutions, to
     // avoid homogeneous tolerance of approximation (u/v and 2d/3d)
-    Standard_Real res, tolu, tolv;
-    TwoDTol    = new (TColStd_HArray1OfReal)(1, Num2DSS);
-    AAffin     = new (Approx_HArray1OfGTrsf2d)(1, Num2DSS);
+    double res, tolu, tolv;
+    TwoDTol    = new (NCollection_HArray1<double>)(1, Num2DSS);
+    AAffin     = new (NCollection_HArray1<gp_GTrsf2d>)(1, Num2DSS);
     The3D2DTol = 0.9 * BoundTol; // 10% of security
     for (ii = 1; ii <= Num2DSS; ii++)
     {
@@ -158,33 +158,33 @@ void Approx_SweepApproximation::Perform(const Standard_Real    First,
   // (3) Approximation
 
   // Init
-  myPoles   = new (TColgp_HArray1OfPnt)(1, Num3DSS);
-  myDPoles  = new (TColgp_HArray1OfVec)(1, Num3DSS);
-  myD2Poles = new (TColgp_HArray1OfVec)(1, Num3DSS);
+  myPoles   = new (NCollection_HArray1<gp_Pnt>)(1, Num3DSS);
+  myDPoles  = new (NCollection_HArray1<gp_Vec>)(1, Num3DSS);
+  myD2Poles = new (NCollection_HArray1<gp_Vec>)(1, Num3DSS);
 
-  myWeigths   = new (TColStd_HArray1OfReal)(1, Num3DSS);
-  myDWeigths  = new (TColStd_HArray1OfReal)(1, Num3DSS);
-  myD2Weigths = new (TColStd_HArray1OfReal)(1, Num3DSS);
+  myWeigths   = new (NCollection_HArray1<double>)(1, Num3DSS);
+  myDWeigths  = new (NCollection_HArray1<double>)(1, Num3DSS);
+  myD2Weigths = new (NCollection_HArray1<double>)(1, Num3DSS);
 
   if (Num2DSS > 0)
   {
-    myPoles2d   = new (TColgp_HArray1OfPnt2d)(1, Num2DSS);
-    myDPoles2d  = new (TColgp_HArray1OfVec2d)(1, Num2DSS);
-    myD2Poles2d = new (TColgp_HArray1OfVec2d)(1, Num2DSS);
-    COnSurfErr  = new (TColStd_HArray1OfReal)(1, Num2DSS);
+    myPoles2d   = new (NCollection_HArray1<gp_Pnt2d>)(1, Num2DSS);
+    myDPoles2d  = new (NCollection_HArray1<gp_Vec2d>)(1, Num2DSS);
+    myD2Poles2d = new (NCollection_HArray1<gp_Vec2d>)(1, Num2DSS);
+    COnSurfErr  = new (NCollection_HArray1<double>)(1, Num2DSS);
   }
   else
   {
-    myPoles2d   = new TColgp_HArray1OfPnt2d();
-    myDPoles2d  = new TColgp_HArray1OfVec2d();
-    myD2Poles2d = new TColgp_HArray1OfVec2d();
-    COnSurfErr  = new TColStd_HArray1OfReal();
+    myPoles2d   = new NCollection_HArray1<gp_Pnt2d>();
+    myDPoles2d  = new NCollection_HArray1<gp_Vec2d>();
+    myD2Poles2d = new NCollection_HArray1<gp_Vec2d>();
+    COnSurfErr  = new NCollection_HArray1<double>();
   }
 
   // Checks if myFunc->D2 is implemented
   if (continuity >= GeomAbs_C2)
   {
-    Standard_Boolean B;
+    bool B;
     B = myFunc->D2(First,
                    First,
                    Last,
@@ -203,7 +203,7 @@ void Approx_SweepApproximation::Perform(const Standard_Real    First,
   // Checks if myFunc->D1 is implemented
   if (continuity == GeomAbs_C1)
   {
-    Standard_Boolean B;
+    bool B;
     B = myFunc->D1(First,
                    First,
                    Last,
@@ -220,15 +220,15 @@ void Approx_SweepApproximation::Perform(const Standard_Real    First,
   // So that F was at least 20 times more exact than its approx
   myFunc->SetTolerance(Tol3dMin / 20, Tol2d / 20);
 
-  Standard_Integer NbIntervalC2 = myFunc->NbIntervals(GeomAbs_C2);
-  Standard_Integer NbIntervalC3 = myFunc->NbIntervals(GeomAbs_C3);
+  int NbIntervalC2 = myFunc->NbIntervals(GeomAbs_C2);
+  int NbIntervalC3 = myFunc->NbIntervals(GeomAbs_C3);
 
   if (NbIntervalC3 > 1)
   {
     // (3.1) Approximation with preferential cut
-    TColStd_Array1OfReal Param_de_decoupeC2(1, NbIntervalC2 + 1);
+    NCollection_Array1<double> Param_de_decoupeC2(1, NbIntervalC2 + 1);
     myFunc->Intervals(Param_de_decoupeC2, GeomAbs_C2);
-    TColStd_Array1OfReal Param_de_decoupeC3(1, NbIntervalC3 + 1);
+    NCollection_Array1<double> Param_de_decoupeC3(1, NbIntervalC3 + 1);
     myFunc->Intervals(Param_de_decoupeC3, GeomAbs_C3);
 
     AdvApprox_PrefAndRec Preferentiel(Param_de_decoupeC2, Param_de_decoupeC3);
@@ -270,17 +270,18 @@ void Approx_SweepApproximation::Perform(const Standard_Real    First,
 // purpose  : Call F(t) and store the results
 //=================================================================================================
 
-void Approx_SweepApproximation::Approximation(const Handle(TColStd_HArray1OfReal)& OneDTol,
-                                              const Handle(TColStd_HArray1OfReal)& TwoDTol,
-                                              const Handle(TColStd_HArray1OfReal)& ThreeDTol,
-                                              const Standard_Real                  BoundTol,
-                                              const Standard_Real                  First,
-                                              const Standard_Real                  Last,
-                                              const GeomAbs_Shape                  Continuity,
-                                              const Standard_Integer               Degmax,
-                                              const Standard_Integer               Segmax,
-                                              const AdvApprox_EvaluatorFunction& TheApproxFunction,
-                                              const AdvApprox_Cutting&           TheCuttingTool)
+void Approx_SweepApproximation::Approximation(
+  const occ::handle<NCollection_HArray1<double>>& OneDTol,
+  const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+  const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+  const double                                    BoundTol,
+  const double                                    First,
+  const double                                    Last,
+  const GeomAbs_Shape                             Continuity,
+  const int                                       Degmax,
+  const int                                       Segmax,
+  const AdvApprox_EvaluatorFunction&              TheApproxFunction,
+  const AdvApprox_Cutting&                        TheCuttingTool)
 {
   AdvApprox_ApproxAFunction Approx(Num1DSS,
                                    Num2DSS,
@@ -300,19 +301,19 @@ void Approx_SweepApproximation::Approximation(const Handle(TColStd_HArray1OfReal
   if (done)
   {
     // --> Fill Champs of the surface ----
-    Standard_Integer ii, jj;
+    int ii, jj;
 
     vdeg = Approx.Degree();
     // Unfortunately Adv_Approx stores the transposition of the required
     // so, writing tabPoles = Approx.Poles() will give an erroneous result
     // It is only possible to allocate and recopy term by term...
-    tabPoles   = new (TColgp_HArray2OfPnt)(1, Num3DSS, 1, Approx.NbPoles());
-    tabWeights = new (TColStd_HArray2OfReal)(1, Num3DSS, 1, Approx.NbPoles());
+    tabPoles   = new (NCollection_HArray2<gp_Pnt>)(1, Num3DSS, 1, Approx.NbPoles());
+    tabWeights = new (NCollection_HArray2<double>)(1, Num3DSS, 1, Approx.NbPoles());
 
     if (Num1DSS == Num3DSS)
     {
-      Standard_Real wpoid;
-      gp_Pnt        P;
+      double wpoid;
+      gp_Pnt P;
       for (ii = 1; ii <= Num3DSS; ii++)
       {
         for (jj = 1; jj <= Approx.NbPoles(); jj++)
@@ -352,8 +353,9 @@ void Approx_SweepApproximation::Approximation(const Handle(TColStd_HArray1OfReal
 
       for (ii = 1; ii <= Num2DSS; ii++)
       {
-        TrsfInv                           = AAffin->Value(ii).Inverted();
-        Handle(TColgp_HArray1OfPnt2d) P2d = new (TColgp_HArray1OfPnt2d)(1, Approx.NbPoles());
+        TrsfInv = AAffin->Value(ii).Inverted();
+        occ::handle<NCollection_HArray1<gp_Pnt2d>> P2d =
+          new (NCollection_HArray1<gp_Pnt2d>)(1, Approx.NbPoles());
         Approx.Poles2d(ii, P2d->ChangeArray1());
         // do not forget to apply inverted homothety.
         for (jj = 1; jj <= Approx.NbPoles(); jj++)
@@ -364,8 +366,8 @@ void Approx_SweepApproximation::Approximation(const Handle(TColStd_HArray1OfReal
       }
     }
     // ---> Filling of errors
-    MError3d = new (TColStd_HArray1OfReal)(1, Num3DSS);
-    AError3d = new (TColStd_HArray1OfReal)(1, Num3DSS);
+    MError3d = new (NCollection_HArray1<double>)(1, Num3DSS);
+    AError3d = new (NCollection_HArray1<double>)(1, Num3DSS);
     for (ii = 1; ii <= Num3DSS; ii++)
     {
       MError3d->SetValue(ii, Approx.MaxError(3, ii));
@@ -374,8 +376,8 @@ void Approx_SweepApproximation::Approximation(const Handle(TColStd_HArray1OfReal
 
     if (myFunc->IsRational())
     {
-      MError1d = new (TColStd_HArray1OfReal)(1, Num3DSS);
-      AError1d = new (TColStd_HArray1OfReal)(1, Num3DSS);
+      MError1d = new (NCollection_HArray1<double>)(1, Num3DSS);
+      AError1d = new (NCollection_HArray1<double>)(1, Num3DSS);
       for (ii = 1; ii <= Num1DSS; ii++)
       {
         MError1d->SetValue(ii, Approx.MaxError(1, ii));
@@ -385,8 +387,8 @@ void Approx_SweepApproximation::Approximation(const Handle(TColStd_HArray1OfReal
 
     if (Num2DSS > 0)
     {
-      tab2dError = new (TColStd_HArray1OfReal)(1, Num2DSS);
-      Ave2dError = new (TColStd_HArray1OfReal)(1, Num2DSS);
+      tab2dError = new (NCollection_HArray1<double>)(1, Num2DSS);
+      Ave2dError = new (NCollection_HArray1<double>)(1, Num2DSS);
       for (ii = 1; ii <= Num2DSS; ii++)
       {
         tab2dError->SetValue(ii, Approx.MaxError(2, ii));
@@ -397,13 +399,13 @@ void Approx_SweepApproximation::Approximation(const Handle(TColStd_HArray1OfReal
   }
 }
 
-Standard_Integer Approx_SweepApproximation::Eval(const Standard_Real    Parameter,
-                                                 const Standard_Integer DerivativeRequest,
-                                                 const Standard_Real    First,
-                                                 const Standard_Real    Last,
-                                                 Standard_Real&         Result)
+int Approx_SweepApproximation::Eval(const double Parameter,
+                                    const int    DerivativeRequest,
+                                    const double First,
+                                    const double Last,
+                                    double&      Result)
 {
-  Standard_Integer ier = 0;
+  int ier = 0;
   switch (DerivativeRequest)
   {
     case 0:
@@ -421,14 +423,14 @@ Standard_Integer Approx_SweepApproximation::Eval(const Standard_Real    Paramete
   return ier;
 }
 
-Standard_Boolean Approx_SweepApproximation::D0(const Standard_Real Param,
-                                               const Standard_Real First,
-                                               const Standard_Real Last,
-                                               Standard_Real&      Result)
+bool Approx_SweepApproximation::D0(const double Param,
+                                   const double First,
+                                   const double Last,
+                                   double&      Result)
 {
-  Standard_Integer index, ii;
-  Standard_Boolean Ok          = Standard_True;
-  Standard_Real*   LocalResult = &Result;
+  int     index, ii;
+  bool    Ok          = true;
+  double* LocalResult = &Result;
 
   // Management of limits
   if ((first != First) || (Last != last))
@@ -489,16 +491,16 @@ Standard_Boolean Approx_SweepApproximation::D0(const Standard_Real Param,
   return Ok;
 }
 
-Standard_Boolean Approx_SweepApproximation::D1(const Standard_Real Param,
-                                               const Standard_Real First,
-                                               const Standard_Real Last,
-                                               Standard_Real&      Result)
+bool Approx_SweepApproximation::D1(const double Param,
+                                   const double First,
+                                   const double Last,
+                                   double&      Result)
 {
-  gp_XY            Vcoord;
-  gp_Vec           Vaux;
-  Standard_Integer index, ii;
-  Standard_Boolean Ok          = Standard_True;
-  Standard_Real*   LocalResult = &Result;
+  gp_XY   Vcoord;
+  gp_Vec  Vaux;
+  int     index, ii;
+  bool    Ok          = true;
+  double* LocalResult = &Result;
 
   if ((first != First) || (Last != last))
   {
@@ -526,7 +528,7 @@ Standard_Boolean Approx_SweepApproximation::D1(const Standard_Real Param,
       // Translation on the section
       myPoles->ChangeValue(ii).ChangeCoord() -= Translation.XYZ();
       // Homothety on all.
-      const Standard_Real aWeight = myWeigths->Value(ii);
+      const double aWeight = myWeigths->Value(ii);
       myDPoles->ChangeValue(ii) *= aWeight;
       Vaux.SetXYZ(myPoles->Value(ii).Coord());
       myDPoles->ChangeValue(ii) += myDWeigths->Value(ii) * Vaux;
@@ -571,16 +573,16 @@ Standard_Boolean Approx_SweepApproximation::D1(const Standard_Real Param,
   return Ok;
 }
 
-Standard_Boolean Approx_SweepApproximation::D2(const Standard_Real Param,
-                                               const Standard_Real First,
-                                               const Standard_Real Last,
-                                               Standard_Real&      Result)
+bool Approx_SweepApproximation::D2(const double Param,
+                                   const double First,
+                                   const double Last,
+                                   double&      Result)
 {
-  gp_XY            Vcoord;
-  gp_Vec           Vaux;
-  Standard_Integer index, ii;
-  Standard_Boolean Ok          = Standard_True;
-  Standard_Real*   LocalResult = &Result;
+  gp_XY   Vcoord;
+  gp_Vec  Vaux;
+  int     index, ii;
+  bool    Ok          = true;
+  double* LocalResult = &Result;
 
   // management of limits
   if ((first != First) || (Last != last))
@@ -666,12 +668,12 @@ Standard_Boolean Approx_SweepApproximation::D2(const Standard_Real Param,
   return Ok;
 }
 
-void Approx_SweepApproximation::SurfShape(Standard_Integer& UDegree,
-                                          Standard_Integer& VDegree,
-                                          Standard_Integer& NbUPoles,
-                                          Standard_Integer& NbVPoles,
-                                          Standard_Integer& NbUKnots,
-                                          Standard_Integer& NbVKnots) const
+void Approx_SweepApproximation::SurfShape(int& UDegree,
+                                          int& VDegree,
+                                          int& NbUPoles,
+                                          int& NbVPoles,
+                                          int& NbUKnots,
+                                          int& NbVKnots) const
 {
   if (!done)
   {
@@ -685,12 +687,12 @@ void Approx_SweepApproximation::SurfShape(Standard_Integer& UDegree,
   NbVKnots = tabVKnots->Length();
 }
 
-void Approx_SweepApproximation::Surface(TColgp_Array2OfPnt&      TPoles,
-                                        TColStd_Array2OfReal&    TWeights,
-                                        TColStd_Array1OfReal&    TUKnots,
-                                        TColStd_Array1OfReal&    TVKnots,
-                                        TColStd_Array1OfInteger& TUMults,
-                                        TColStd_Array1OfInteger& TVMults) const
+void Approx_SweepApproximation::Surface(NCollection_Array2<gp_Pnt>& TPoles,
+                                        NCollection_Array2<double>& TWeights,
+                                        NCollection_Array1<double>& TUKnots,
+                                        NCollection_Array1<double>& TVKnots,
+                                        NCollection_Array1<int>&    TUMults,
+                                        NCollection_Array1<int>&    TVMults) const
 {
   if (!done)
   {
@@ -704,10 +706,10 @@ void Approx_SweepApproximation::Surface(TColgp_Array2OfPnt&      TPoles,
   TVMults  = tabVMults->Array1();
 }
 
-Standard_Real Approx_SweepApproximation::MaxErrorOnSurf() const
+double Approx_SweepApproximation::MaxErrorOnSurf() const
 {
-  Standard_Integer ii;
-  Standard_Real    MaxError = 0, err;
+  int    ii;
+  double MaxError = 0, err;
   if (!done)
   {
     throw StdFail_NotDone("Approx_SweepApproximation");
@@ -715,9 +717,9 @@ Standard_Real Approx_SweepApproximation::MaxErrorOnSurf() const
 
   if (myFunc->IsRational())
   {
-    TColStd_Array1OfReal Wmin(1, Num1DSS);
+    NCollection_Array1<double> Wmin(1, Num1DSS);
     myFunc->GetMinimalWeight(Wmin);
-    Standard_Real Size = myFunc->MaximalSection();
+    double Size = myFunc->MaximalSection();
     for (ii = 1; ii <= Num3DSS; ii++)
     {
       err = (Size * MError1d->Value(ii) + MError3d->Value(ii)) / Wmin(ii);
@@ -737,10 +739,10 @@ Standard_Real Approx_SweepApproximation::MaxErrorOnSurf() const
   return MaxError;
 }
 
-Standard_Real Approx_SweepApproximation::AverageErrorOnSurf() const
+double Approx_SweepApproximation::AverageErrorOnSurf() const
 {
-  Standard_Integer ii;
-  Standard_Real    MoyError = 0, err;
+  int    ii;
+  double MoyError = 0, err;
   if (!done)
   {
     throw StdFail_NotDone("Approx_SweepApproximation");
@@ -748,9 +750,9 @@ Standard_Real Approx_SweepApproximation::AverageErrorOnSurf() const
 
   if (myFunc->IsRational())
   {
-    TColStd_Array1OfReal Wmin(1, Num1DSS);
+    NCollection_Array1<double> Wmin(1, Num1DSS);
     myFunc->GetMinimalWeight(Wmin);
-    Standard_Real Size = myFunc->MaximalSection();
+    double Size = myFunc->MaximalSection();
     for (ii = 1; ii <= Num3DSS; ii++)
     {
       err = (Size * AError1d->Value(ii) + AError3d->Value(ii)) / Wmin(ii);
@@ -768,9 +770,7 @@ Standard_Real Approx_SweepApproximation::AverageErrorOnSurf() const
   return MoyError / Num3DSS;
 }
 
-void Approx_SweepApproximation::Curves2dShape(Standard_Integer& Degree,
-                                              Standard_Integer& NbPoles,
-                                              Standard_Integer& NbKnots) const
+void Approx_SweepApproximation::Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const
 {
   if (!done)
   {
@@ -785,10 +785,10 @@ void Approx_SweepApproximation::Curves2dShape(Standard_Integer& Degree,
   NbKnots = tab2dKnots->Length();
 }
 
-void Approx_SweepApproximation::Curve2d(const Standard_Integer   Index,
-                                        TColgp_Array1OfPnt2d&    TPoles,
-                                        TColStd_Array1OfReal&    TKnots,
-                                        TColStd_Array1OfInteger& TMults) const
+void Approx_SweepApproximation::Curve2d(const int                     Index,
+                                        NCollection_Array1<gp_Pnt2d>& TPoles,
+                                        NCollection_Array1<double>&   TKnots,
+                                        NCollection_Array1<int>&      TMults) const
 {
   if (!done)
   {
@@ -803,7 +803,7 @@ void Approx_SweepApproximation::Curve2d(const Standard_Integer   Index,
   TMults = tab2dMults->Array1();
 }
 
-Standard_Real Approx_SweepApproximation::Max2dError(const Standard_Integer Index) const
+double Approx_SweepApproximation::Max2dError(const int Index) const
 {
   if (!done)
   {
@@ -812,7 +812,7 @@ Standard_Real Approx_SweepApproximation::Max2dError(const Standard_Integer Index
   return tab2dError->Value(Index);
 }
 
-Standard_Real Approx_SweepApproximation::Average2dError(const Standard_Integer Index) const
+double Approx_SweepApproximation::Average2dError(const int Index) const
 {
   if (!done)
   {
@@ -821,7 +821,7 @@ Standard_Real Approx_SweepApproximation::Average2dError(const Standard_Integer I
   return Ave2dError->Value(Index);
 }
 
-Standard_Real Approx_SweepApproximation::TolCurveOnSurf(const Standard_Integer Index) const
+double Approx_SweepApproximation::TolCurveOnSurf(const int Index) const
 {
   if (!done)
   {
@@ -840,7 +840,7 @@ void Approx_SweepApproximation::Dump(Standard_OStream& o) const
     if (Num2DSS > 0)
     {
       o << "Error 2d = ";
-      for (Standard_Integer ii = 1; ii <= Num2DSS; ii++)
+      for (int ii = 1; ii <= Num2DSS; ii++)
       {
         o << Max2dError(ii);
         if (ii < Num2DSS)

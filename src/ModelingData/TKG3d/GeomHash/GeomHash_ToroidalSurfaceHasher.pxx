@@ -24,7 +24,7 @@
 struct GeomHash_ToroidalSurfaceHasher
 {
   // Hashes the torus by its position, major radius, and minor radius.
-  std::size_t operator()(const Handle(Geom_ToroidalSurface)& theTorus) const noexcept
+  std::size_t operator()(const occ::handle<Geom_ToroidalSurface>& theTorus) const noexcept
   {
     constexpr double aTolerance = 1e-12;
     constexpr double aFactor    = 1.0 / aTolerance;
@@ -38,8 +38,8 @@ struct GeomHash_ToroidalSurfaceHasher
   }
 
   // Compares two tori by their positions, major radii, and minor radii.
-  bool operator()(const Handle(Geom_ToroidalSurface)& theTorus1,
-                  const Handle(Geom_ToroidalSurface)& theTorus2) const noexcept
+  bool operator()(const occ::handle<Geom_ToroidalSurface>& theTorus1,
+                  const occ::handle<Geom_ToroidalSurface>& theTorus2) const noexcept
   {
     constexpr double             aTolerance = 1e-12;
     const GeomHash_AxisPlacement anAxisHasher;

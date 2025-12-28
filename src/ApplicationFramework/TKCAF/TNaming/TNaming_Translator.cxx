@@ -29,12 +29,13 @@
 #include <TopoDS_TShell.hxx>
 #include <TopoDS_TSolid.hxx>
 #include <TopoDS_TWire.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 
 //=================================================================================================
 
 TNaming_Translator::TNaming_Translator()
-    : myIsDone(Standard_False)
+    : myIsDone(false)
 {
   myDataMapOfResults.Clear();
 }
@@ -49,14 +50,15 @@ void TNaming_Translator::Add(const TopoDS_Shape& aShape)
 
 //=================================================================================================
 
-Standard_Boolean TNaming_Translator::IsDone() const
+bool TNaming_Translator::IsDone() const
 {
   return myIsDone;
 }
 
 //=================================================================================================
 
-const TopTools_DataMapOfShapeShape& TNaming_Translator::Copied() const
+const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& TNaming_Translator::
+  Copied() const
 {
   return myDataMapOfResults;
 }
@@ -78,8 +80,9 @@ const TopoDS_Shape TNaming_Translator::Copied(const TopoDS_Shape& aShape) const
 
 void TNaming_Translator::Perform()
 {
-  TopoDS_Shape                                  Result;
-  TopTools_DataMapIteratorOfDataMapOfShapeShape itm(myDataMapOfResults);
+  TopoDS_Shape                                                                       Result;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm(
+    myDataMapOfResults);
   for (; itm.More(); itm.Next())
   {
     TNaming_CopyShape::CopyTool(itm.Key(), myMap, Result);
@@ -88,12 +91,12 @@ void TNaming_Translator::Perform()
     Result.Nullify();
   }
   if (myDataMapOfResults.Extent())
-    myIsDone = Standard_True;
+    myIsDone = true;
 }
 
 //=================================================================================================
 
-void TNaming_Translator::DumpMap(const Standard_Boolean isWrite) const
+void TNaming_Translator::DumpMap(const bool isWrite) const
 {
   TCollection_AsciiString name("Map");
   TCollection_AsciiString keyname;
@@ -106,11 +109,11 @@ void TNaming_Translator::DumpMap(const Standard_Boolean isWrite) const
   else
     std::cout << "TNaming_Translator:: IndexedDataMap Extent = " << myMap.Extent() << std::endl;
 
-  for (Standard_Integer i = 1; i <= myMap.Extent(); i++)
+  for (int i = 1; i <= myMap.Extent(); i++)
   {
     std::cout << "TNaming_Translator::DumpMap:  Index = " << i
               << " Type = " << (myMap.FindKey(i))->DynamicType() << std::endl;
-    Handle(Standard_Type) T = (myMap.FindKey(i))->DynamicType();
+    occ::handle<Standard_Type> T = (myMap.FindKey(i))->DynamicType();
     if ((T == STANDARD_TYPE(BRep_TVertex)) || (T == STANDARD_TYPE(BRep_TEdge))
         || T == STANDARD_TYPE(BRep_TFace) || T == STANDARD_TYPE(TopoDS_TWire)
         || T == STANDARD_TYPE(TopoDS_TShell) || T == STANDARD_TYPE(TopoDS_TSolid)
@@ -118,9 +121,9 @@ void TNaming_Translator::DumpMap(const Standard_Boolean isWrite) const
     {
       if (isWrite)
       {
-        Handle(TopoDS_TShape) key(Handle(TopoDS_TShape)::DownCast(myMap.FindKey(i)));
-        Handle(TopoDS_TShape) item(Handle(TopoDS_TShape)::DownCast(myMap.FindFromIndex(i)));
-        TopoDS_Shape          S1;
+        occ::handle<TopoDS_TShape> key(occ::down_cast<TopoDS_TShape>(myMap.FindKey(i)));
+        occ::handle<TopoDS_TShape> item(occ::down_cast<TopoDS_TShape>(myMap.FindFromIndex(i)));
+        TopoDS_Shape               S1;
         S1.TShape(key);
         TopoDS_Shape S2;
         S2.TShape(item);
@@ -132,9 +135,9 @@ void TNaming_Translator::DumpMap(const Standard_Boolean isWrite) const
     {
       if (isWrite)
       {
-        const Handle(TopLoc_Datum3D) key = Handle(TopLoc_Datum3D)::DownCast(myMap.FindKey(i));
-        const Handle(TopLoc_Datum3D) Item =
-          Handle(TopLoc_Datum3D)::DownCast(myMap.FindFromIndex(i));
+        const occ::handle<TopLoc_Datum3D> key = occ::down_cast<TopLoc_Datum3D>(myMap.FindKey(i));
+        const occ::handle<TopLoc_Datum3D> Item =
+          occ::down_cast<TopLoc_Datum3D>(myMap.FindFromIndex(i));
         std::cout << "TNaming_Translator::DumpMap: Location_Key_name  = "
                   << keyname.Cat(i).ToCString() << std::endl;
         key->ShallowDump(std::cout);

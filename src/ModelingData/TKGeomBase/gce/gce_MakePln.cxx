@@ -50,10 +50,7 @@ gce_MakePln::gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2)
   }
 }
 
-gce_MakePln::gce_MakePln(const Standard_Real A,
-                         const Standard_Real B,
-                         const Standard_Real C,
-                         const Standard_Real D)
+gce_MakePln::gce_MakePln(const double A, const double B, const double C, const double D)
 {
   if (A * A + B * B + C * C <= gp::Resolution())
   {
@@ -92,7 +89,7 @@ gce_MakePln::gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
 //   Creation d un gp_pln parallele a un autre pln a une distance donnee. +
 //=========================================================================
 
-gce_MakePln::gce_MakePln(const gp_Pln& Pl, const Standard_Real Dist)
+gce_MakePln::gce_MakePln(const gp_Pln& Pl, const double Dist)
 {
   gp_Pnt Center(Pl.Location().XYZ() + Dist * gp_XYZ(Pl.Axis().Direction().XYZ()));
   ThePln   = gp_Pln(gp_Ax3(Center, Pl.Axis().Direction(), Pl.XAxis().Direction()));
@@ -125,8 +122,8 @@ gce_MakePln::gce_MakePln(const gp_Ax1& Axis)
 //=========================================================================
 
 /*gce_MakePln::gce_MakePln(const gp_Array1OfPnt& Pts     ,
-                   Standard_Real   ErrMax  ,
-                   Standard_Real   ErrMean )
+                   double   ErrMax  ,
+                   double   ErrMean )
 {
   TheError = gce_ConfusedPoints;
 }

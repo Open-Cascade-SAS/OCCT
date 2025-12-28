@@ -22,11 +22,12 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Standard_CString.hxx>
 #include <IFSelect_ReturnStatus.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 #include <IFSelect_PrintCount.hxx>
 #include <Message_ProgressRange.hxx>
@@ -80,38 +81,38 @@ public:
 
   //! Creates a Reader from scratch, with a norm name which
   //! identifies a Controller
-  Standard_EXPORT XSControl_Reader(const Standard_CString norm);
+  Standard_EXPORT XSControl_Reader(const char* norm);
 
   //! Creates a Reader from an already existing Session, with a
   //! Controller already set
   //! Virtual destructor
-  Standard_EXPORT XSControl_Reader(const Handle(XSControl_WorkSession)& WS,
-                                   const Standard_Boolean               scratch = Standard_True);
+  Standard_EXPORT XSControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
+                                   const bool                                scratch = true);
 
   //! Empty virtual destructor
   virtual ~XSControl_Reader() {}
 
   //! Sets a specific norm to <me>
   //! Returns True if done, False if <norm> is not available
-  Standard_EXPORT Standard_Boolean SetNorm(const Standard_CString norm);
+  Standard_EXPORT bool SetNorm(const char* norm);
 
   //! Sets a specific session to <me>
-  Standard_EXPORT void SetWS(const Handle(XSControl_WorkSession)& WS,
-                             const Standard_Boolean               scratch = Standard_True);
+  Standard_EXPORT void SetWS(const occ::handle<XSControl_WorkSession>& WS,
+                             const bool                                scratch = true);
 
   //! Returns the session used in <me>
-  Standard_EXPORT Handle(XSControl_WorkSession) WS() const;
+  Standard_EXPORT occ::handle<XSControl_WorkSession> WS() const;
 
   //! Loads a file and returns the read status
   //! Zero for a Model which complies with the Controller
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const Standard_CString filename);
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const char* filename);
 
   //! Loads a file from stream and returns the read status
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const Standard_CString theName,
-                                                           std::istream&          theIStream);
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const char*   theName,
+                                                           std::istream& theIStream);
 
   //! Returns the model. It can then be consulted (header, product)
-  Standard_EXPORT Handle(Interface_InterfaceModel) Model() const;
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> Model() const;
 
   //! Returns a list of entities from the IGES or STEP file
   //! according to the following rules:
@@ -140,74 +141,75 @@ public:
   //! Reader.GiveList("xst-transferrable-roots","step-type(ADVANCED_FACE)");
   //! Warning
   //! If the value given to second is incorrect, it will simply be ignored.
-  Standard_EXPORT Handle(TColStd_HSequenceOfTransient) GiveList(const Standard_CString first  = "",
-                                                                const Standard_CString second = "");
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GiveList(
+    const char* first  = "",
+    const char* second = "");
 
   //! Computes a List of entities from the model as follows
   //! <first> being a Selection, <ent> being an entity or a list
   //! of entities (as a HSequenceOfTransient) :
   //! the standard result of this selection applied to this list
   //! if <first> is erroneous, a null handle is returned
-  Standard_EXPORT Handle(TColStd_HSequenceOfTransient) GiveList(
-    const Standard_CString            first,
-    const Handle(Standard_Transient)& ent);
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GiveList(
+    const char*                            first,
+    const occ::handle<Standard_Transient>& ent);
 
   //! Determines the list of root entities which are candidate for
   //! a transfer to a Shape, and returns the number
   //! of entities in the list
-  Standard_EXPORT virtual Standard_Integer NbRootsForTransfer();
+  Standard_EXPORT virtual int NbRootsForTransfer();
 
   //! Returns an IGES or STEP root
   //! entity for translation. The entity is identified by its
   //! rank in a list.
-  Standard_EXPORT Handle(Standard_Transient) RootForTransfer(const Standard_Integer num = 1);
+  Standard_EXPORT occ::handle<Standard_Transient> RootForTransfer(const int num = 1);
 
   //! Translates a root identified by the rank num in the model.
   //! false is returned if no shape is produced.
-  Standard_EXPORT Standard_Boolean
-    TransferOneRoot(const Standard_Integer       num         = 1,
-                    const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool TransferOneRoot(
+    const int                    num         = 1,
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Translates an IGES or STEP
   //! entity identified by the rank num in the model.
   //! false is returned if no shape is produced.
-  Standard_EXPORT Standard_Boolean
-    TransferOne(const Standard_Integer       num,
-                const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool TransferOne(
+    const int                    num,
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Translates an IGES or STEP
   //! entity in the model. true is returned if a shape is
   //! produced; otherwise, false is returned.
-  Standard_EXPORT Standard_Boolean
-    TransferEntity(const Handle(Standard_Transient)& start,
-                   const Message_ProgressRange&      theProgress = Message_ProgressRange());
+  Standard_EXPORT bool TransferEntity(
+    const occ::handle<Standard_Transient>& start,
+    const Message_ProgressRange&           theProgress = Message_ProgressRange());
 
   //! Translates a list of entities.
   //! Returns the number of IGES or STEP entities that were
   //! successfully translated. The list can be produced with GiveList.
   //! Warning - This function does not clear the existing output shapes.
-  Standard_EXPORT Standard_Integer
-    TransferList(const Handle(TColStd_HSequenceOfTransient)& list,
-                 const Message_ProgressRange&                theProgress = Message_ProgressRange());
+  Standard_EXPORT int TransferList(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Translates all translatable
   //! roots and returns the number of successful translations.
   //! Warning - This function clears existing output shapes first.
-  Standard_EXPORT Standard_Integer
-    TransferRoots(const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT int TransferRoots(
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Clears the list of shapes that
   //! may have accumulated in calls to TransferOne or TransferRoot.C
   Standard_EXPORT void ClearShapes();
 
   //! Returns the number of shapes produced by translation.
-  Standard_EXPORT Standard_Integer NbShapes() const;
+  Standard_EXPORT int NbShapes() const;
 
   //! Returns the shape resulting
   //! from a translation and identified by the rank num.
   //! num equals 1 by default. In other words, the first shape
   //! resulting from the translation is returned.
-  Standard_EXPORT TopoDS_Shape Shape(const Standard_Integer num = 1) const;
+  Standard_EXPORT TopoDS_Shape Shape(const int num = 1) const;
 
   //! Returns all of the results in
   //! a single shape which is:
@@ -222,12 +224,11 @@ public:
   //! mode = 0 : per entity, prints messages
   //! mode = 1 : per message, just gives count of entities per check
   //! mode = 2 : also gives entity numbers
-  Standard_EXPORT void PrintCheckLoad(const Standard_Boolean    failsonly,
-                                      const IFSelect_PrintCount mode) const;
+  Standard_EXPORT void PrintCheckLoad(const bool failsonly, const IFSelect_PrintCount mode) const;
 
   //! Prints the check list attached to loaded data.
   Standard_EXPORT void PrintCheckLoad(Standard_OStream&         theStream,
-                                      const Standard_Boolean    failsonly,
+                                      const bool                failsonly,
                                       const IFSelect_PrintCount mode) const;
 
   //! Displays check results for the
@@ -236,13 +237,13 @@ public:
   //! true. All messages are displayed if failsonly is
   //! false. mode determines the contents and the order of the
   //! messages according to the terms of the IFSelect_PrintCount enumeration.
-  Standard_EXPORT void PrintCheckTransfer(const Standard_Boolean    failsonly,
+  Standard_EXPORT void PrintCheckTransfer(const bool                failsonly,
                                           const IFSelect_PrintCount mode) const;
 
   //! Displays check results for the last translation of IGES or STEP entities to Open CASCADE
   //! entities.
   Standard_EXPORT void PrintCheckTransfer(Standard_OStream&         theStream,
-                                          const Standard_Boolean    failsonly,
+                                          const bool                failsonly,
                                           const IFSelect_PrintCount mode) const;
 
   //! Displays the statistics for
@@ -272,19 +273,19 @@ public:
   //! - if mode is 0 all warnings and checks per entity are returned
   //! - if mode is 2 the list of entities per warning is returned.
   //! If mode is not set, only the list of all entities per warning is given.
-  Standard_EXPORT void PrintStatsTransfer(const Standard_Integer what,
-                                          const Standard_Integer mode = 0) const;
+  Standard_EXPORT void PrintStatsTransfer(const int what, const int mode = 0) const;
 
   //! Displays the statistics for the last translation.
-  Standard_EXPORT void PrintStatsTransfer(Standard_OStream&      theStream,
-                                          const Standard_Integer what,
-                                          const Standard_Integer mode = 0) const;
+  Standard_EXPORT void PrintStatsTransfer(Standard_OStream& theStream,
+                                          const int         what,
+                                          const int         mode = 0) const;
 
   //! Gives statistics about Transfer
-  Standard_EXPORT void GetStatsTransfer(const Handle(TColStd_HSequenceOfTransient)& list,
-                                        Standard_Integer&                           nbMapped,
-                                        Standard_Integer&                           nbWithResult,
-                                        Standard_Integer& nbWithFail) const;
+  Standard_EXPORT void GetStatsTransfer(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+    int&                                                                       nbMapped,
+    int&                                                                       nbWithResult,
+    int&                                                                       nbWithFail) const;
 
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.
@@ -321,7 +322,7 @@ public:
 
 protected:
   //! Returns a sequence of produced shapes
-  Standard_EXPORT TopTools_SequenceOfShape& Shapes();
+  Standard_EXPORT NCollection_Sequence<TopoDS_Shape>& Shapes();
 
   //! Returns default parameters for shape fixing.
   //! This method should be implemented in the derived classes to return default parameters for
@@ -345,19 +346,19 @@ private:
   //! Returns the Actor for the Transfer of an Entity.
   //! This Actor is used by the Reader to perform the Transfer.
   //! @return the Actor for the Transfer of an Entity. May be nullptr.
-  Handle(Transfer_ActorOfTransientProcess) GetActor() const;
+  occ::handle<Transfer_ActorOfTransientProcess> GetActor() const;
 
   //! If parameters haven't yet been provided, initializes them with default values
   //! provided by GetDefaultShapeFixParameters() method.
   void InitializeMissingParameters();
 
 protected:
-  Standard_Boolean            therootsta;
-  TColStd_SequenceOfTransient theroots;
+  bool                                                  therootsta;
+  NCollection_Sequence<occ::handle<Standard_Transient>> theroots;
 
 private:
-  Handle(XSControl_WorkSession) thesession;
-  TopTools_SequenceOfShape      theshapes;
+  occ::handle<XSControl_WorkSession> thesession;
+  NCollection_Sequence<TopoDS_Shape> theshapes;
 };
 
 #endif // _XSControl_Reader_HeaderFile

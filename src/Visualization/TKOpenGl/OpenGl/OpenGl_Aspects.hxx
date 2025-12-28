@@ -28,13 +28,13 @@ public:
   Standard_EXPORT OpenGl_Aspects();
 
   //! Create and assign parameters.
-  Standard_EXPORT OpenGl_Aspects(const Handle(Graphic3d_Aspects)& theAspect);
+  Standard_EXPORT OpenGl_Aspects(const occ::handle<Graphic3d_Aspects>& theAspect);
 
   //! Return aspect.
-  const Handle(Graphic3d_Aspects)& Aspect() const { return myAspect; }
+  const occ::handle<Graphic3d_Aspects>& Aspect() const { return myAspect; }
 
   //! Assign parameters.
-  Standard_EXPORT void SetAspect(const Handle(Graphic3d_Aspects)& theAspect);
+  Standard_EXPORT void SetAspect(const occ::handle<Graphic3d_Aspects>& theAspect);
 
   //! Returns Shading Model.
   Graphic3d_TypeOfShadingModel ShadingModel() const { return myShadingModel; }
@@ -43,54 +43,54 @@ public:
   void SetNoLighting() { myShadingModel = Graphic3d_TypeOfShadingModel_Unlit; }
 
   //! Returns textures map.
-  const Handle(OpenGl_TextureSet)& TextureSet(const Handle(OpenGl_Context)& theCtx,
-                                              bool theToHighlight = false) const
+  const occ::handle<OpenGl_TextureSet>& TextureSet(const occ::handle<OpenGl_Context>& theCtx,
+                                                   bool theToHighlight = false) const
   {
-    const Handle(OpenGl_PointSprite)& aSprite  = myResSprite.Sprite(theCtx, myAspect, false);
-    const Handle(OpenGl_PointSprite)& aSpriteA = myResSprite.Sprite(theCtx, myAspect, true);
+    const occ::handle<OpenGl_PointSprite>& aSprite  = myResSprite.Sprite(theCtx, myAspect, false);
+    const occ::handle<OpenGl_PointSprite>& aSpriteA = myResSprite.Sprite(theCtx, myAspect, true);
     return myResTextureSet.TextureSet(theCtx, myAspect, aSprite, aSpriteA, theToHighlight);
   }
 
   //! Init and return OpenGl shader program resource.
   //! @return shader program resource.
-  const Handle(OpenGl_ShaderProgram)& ShaderProgramRes(const Handle(OpenGl_Context)& theCtx) const
+  const occ::handle<OpenGl_ShaderProgram>& ShaderProgramRes(
+    const occ::handle<OpenGl_Context>& theCtx) const
   {
     return myResProgram.ShaderProgram(theCtx, myAspect->ShaderProgram());
   }
 
   //! @return marker size
-  Standard_ShortReal MarkerSize() const { return myResSprite.MarkerSize(); }
+  float MarkerSize() const { return myResSprite.MarkerSize(); }
 
   //! Return TRUE if OpenGl point sprite resource defines texture.
-  bool HasPointSprite(const Handle(OpenGl_Context)& theCtx) const
+  bool HasPointSprite(const occ::handle<OpenGl_Context>& theCtx) const
   {
     return myResSprite.HasPointSprite(theCtx, myAspect);
   }
 
   //! Return TRUE if OpenGl point sprite resource defined by obsolete Display List (bitmap).
-  bool IsDisplayListSprite(const Handle(OpenGl_Context)& theCtx) const
+  bool IsDisplayListSprite(const occ::handle<OpenGl_Context>& theCtx) const
   {
     return myResSprite.IsDisplayListSprite(theCtx, myAspect);
   }
 
   //! Init and return OpenGl point sprite resource.
   //! @return point sprite texture.
-  const Handle(OpenGl_PointSprite)& SpriteRes(const Handle(OpenGl_Context)& theCtx,
-                                              bool                          theIsAlphaSprite) const
+  const occ::handle<OpenGl_PointSprite>& SpriteRes(const occ::handle<OpenGl_Context>& theCtx,
+                                                   bool theIsAlphaSprite) const
   {
     return myResSprite.Sprite(theCtx, myAspect, theIsAlphaSprite);
   }
 
-  Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
-    Standard_OVERRIDE;
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Render(
+    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
 
   //! Update presentation aspects parameters after their modification.
-  virtual void SynchronizeAspects() Standard_OVERRIDE { SetAspect(myAspect); }
+  virtual void SynchronizeAspects() override { SetAspect(myAspect); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   //! OpenGl resources
@@ -98,8 +98,8 @@ protected:
   mutable OpenGl_AspectsTextureSet myResTextureSet;
   mutable OpenGl_AspectsSprite     myResSprite;
 
-  Handle(Graphic3d_Aspects)    myAspect;
-  Graphic3d_TypeOfShadingModel myShadingModel;
+  occ::handle<Graphic3d_Aspects> myAspect;
+  Graphic3d_TypeOfShadingModel   myShadingModel;
 
 public:
   DEFINE_STANDARD_ALLOC

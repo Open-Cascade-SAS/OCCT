@@ -39,12 +39,9 @@ public:
   //! Adaptor, and provides data from a Geom surface.
   //! This makes it possible to use the surface in a geometric algorithm.
   //! Note that this surface object is manipulated by handles.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Adaptor3d_Surface)&  aSurface,
-                                  const Handle(Prs3d_Drawer)&       aDrawer);
-
-protected:
-private:
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Adaptor3d_Surface>&  aSurface,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer);
 };
 
 #endif // _StdPrs_WFDeflectionSurface_HeaderFile

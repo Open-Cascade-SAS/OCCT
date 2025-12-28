@@ -53,9 +53,9 @@ void ShapePersistent_TopoDS::HShape::PChildren(SequenceOfPersistent& theChildren
   StdObject_Shape::PChildren(theChildren);
 }
 
-void ShapePersistent_TopoDS::pTBase::setFlags(const Handle(TopoDS_TShape)& theTShape) const
+void ShapePersistent_TopoDS::pTBase::setFlags(const occ::handle<TopoDS_TShape>& theTShape) const
 {
-  theTShape->Free(Standard_False); // Always frozen when coming from DB
+  theTShape->Free(false); // Always frozen when coming from DB
   theTShape->Modified((myFlags & ModifiedMask) != 0);
   theTShape->Checked((myFlags & CheckedMask) != 0);
   theTShape->Orientable((myFlags & OrientableMask) != 0);
@@ -64,7 +64,8 @@ void ShapePersistent_TopoDS::pTBase::setFlags(const Handle(TopoDS_TShape)& theTS
   theTShape->Convex((myFlags & ConvexMask) != 0);
 }
 
-static inline void AddShape(TopoDS_Shape& theParent, const Handle(StdObjMgt_Persistent)& theRef)
+static inline void AddShape(TopoDS_Shape&                            theParent,
+                            const occ::handle<StdObjMgt_Persistent>& theRef)
 {
   Handle(ShapePersistent_TopoDS::HShape) aShape =
     Handle(ShapePersistent_TopoDS::HShape)::DownCast(theRef);
@@ -81,7 +82,7 @@ static inline void AddShape(TopoDS_Shape& theParent, const StdObject_Shape& theS
 template <class ShapesArray>
 void ShapePersistent_TopoDS::pTBase::addShapesT(TopoDS_Shape& theParent) const
 {
-  Handle(ShapesArray) aShapes = Handle(ShapesArray)::DownCast(myShapes);
+  occ::handle<ShapesArray> aShapes = occ::down_cast<ShapesArray>(myShapes);
   if (aShapes)
   {
     typename ShapesArray::Iterator anIter(*aShapes->Array());
@@ -97,7 +98,7 @@ template void ShapePersistent_TopoDS::pTBase::addShapesT<StdPersistent_HArray1::
   TopoDS_Shape& theParent) const;
 
 template <class Target>
-Handle(TopoDS_TShape) ShapePersistent_TopoDS::pTSimple<Target>::createTShape() const
+occ::handle<TopoDS_TShape> ShapePersistent_TopoDS::pTSimple<Target>::createTShape() const
 {
   return new Target;
 }
@@ -113,11 +114,11 @@ template class ShapePersistent_TopoDS::pTSimple<TopoDS_TCompound>;
 // purpose  : Creates a persistent object from a shape
 //=======================================================================
 Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
-  const TopoDS_Shape&               theShape,
-  StdObjMgt_TransientPersistentMap& theMap,
-  ShapePersistent_TriangleMode      theTriangleMode)
+  const TopoDS_Shape&                                                                      theShape,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,
+  ShapePersistent_TriangleMode theTriangleMode)
 {
-  Handle(HShape) pHShape;
+  occ::handle<HShape> pHShape;
 
   if (theShape.IsNull())
     return pHShape;
@@ -160,38 +161,38 @@ Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
       }
       break;
       case TopAbs_WIRE: {
-        Handle(TWire) aPWire = new TWire;
-        pHShape->myTShape    = aPWire;
-        aPWire->myPersistent = new TWire::pTObjectT;
-        aPTShape             = aPWire->myPersistent.get();
+        occ::handle<TWire> aPWire = new TWire;
+        pHShape->myTShape         = aPWire;
+        aPWire->myPersistent      = new TWire::pTObjectT;
+        aPTShape                  = aPWire->myPersistent.get();
       }
       break;
       case TopAbs_SHELL: {
-        Handle(TShell) aPShell = new TShell;
-        pHShape->myTShape      = aPShell;
-        aPShell->myPersistent  = new TShell::pTObjectT;
-        aPTShape               = aPShell->myPersistent.get();
+        occ::handle<TShell> aPShell = new TShell;
+        pHShape->myTShape           = aPShell;
+        aPShell->myPersistent       = new TShell::pTObjectT;
+        aPTShape                    = aPShell->myPersistent.get();
       }
       break;
       case TopAbs_SOLID: {
-        Handle(TSolid) aPSolid = new TSolid;
-        pHShape->myTShape      = aPSolid;
-        aPSolid->myPersistent  = new TSolid::pTObjectT;
-        aPTShape               = aPSolid->myPersistent.get();
+        occ::handle<TSolid> aPSolid = new TSolid;
+        pHShape->myTShape           = aPSolid;
+        aPSolid->myPersistent       = new TSolid::pTObjectT;
+        aPTShape                    = aPSolid->myPersistent.get();
       }
       break;
       case TopAbs_COMPSOLID: {
-        Handle(TCompSolid) aPCompSolid = new TCompSolid;
-        pHShape->myTShape              = aPCompSolid;
-        aPCompSolid->myPersistent      = new TCompSolid::pTObjectT;
-        aPTShape                       = aPCompSolid->myPersistent.get();
+        occ::handle<TCompSolid> aPCompSolid = new TCompSolid;
+        pHShape->myTShape                   = aPCompSolid;
+        aPCompSolid->myPersistent           = new TCompSolid::pTObjectT;
+        aPTShape                            = aPCompSolid->myPersistent.get();
       }
       break;
       case TopAbs_COMPOUND: {
-        Handle(TCompound) aPComp = new TCompound;
-        pHShape->myTShape        = aPComp;
-        aPComp->myPersistent     = new TCompound::pTObjectT;
-        aPTShape                 = aPComp->myPersistent.get();
+        occ::handle<TCompound> aPComp = new TCompound;
+        pHShape->myTShape             = aPComp;
+        aPComp->myPersistent          = new TCompound::pTObjectT;
+        aPTShape                      = aPComp->myPersistent.get();
       }
       break;
 
@@ -205,7 +206,7 @@ Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
     theMap.Bind(theShape.TShape(), pHShape->myTShape);
 
     // Shape flags
-    Standard_Integer aFlags = 0;
+    int aFlags = 0;
     if (theShape.Modified())
       aFlags |= ModifiedMask;
     if (theShape.Checked())
@@ -225,20 +226,21 @@ Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
     S.Orientation(TopAbs_FORWARD);
     S.Location(TopLoc_Location());
     // Count the number of <sub-shape> of the Shape's TShape
-    Standard_Integer nbElem = S.NbChildren();
+    int nbElem = S.NbChildren();
     if (nbElem > 0)
     {
-      Handle(StdLPersistent_HArray1OfPersistent) aShapes =
-        new StdLPersistent_HArray1OfPersistent(1, nbElem);
+      occ::handle<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>> aShapes =
+        new NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>(1, nbElem);
       // translate <sub-shapes>
       TopoDS_Iterator anItTrans(S);
-      for (Standard_Integer i = 1; anItTrans.More(); anItTrans.Next(), ++i)
+      for (int i = 1; anItTrans.More(); anItTrans.Next(), ++i)
       {
         aShapes->SetValue(i, Translate(anItTrans.Value(), theMap, theTriangleMode));
       }
-      aPTShape->myShapes = StdLPersistent_HArray1::Translate<StdLPersistent_HArray1OfPersistent>(
-        "PTopoDS_HArray1OfHShape",
-        aShapes->Array1());
+      aPTShape->myShapes =
+        StdLPersistent_HArray1::Translate<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>>(
+          "PTopoDS_HArray1OfHShape",
+          aShapes->Array1());
     }
   }
 

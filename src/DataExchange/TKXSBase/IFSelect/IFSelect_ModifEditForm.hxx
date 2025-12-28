@@ -28,34 +28,30 @@ class Interface_Protocol;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-class IFSelect_ModifEditForm;
-DEFINE_STANDARD_HANDLE(IFSelect_ModifEditForm, IFSelect_Modifier)
-
 //! This modifier applies an EditForm on the entities selected
 class IFSelect_ModifEditForm : public IFSelect_Modifier
 {
 
 public:
   //! Creates a ModifEditForm. It may not change the graph
-  Standard_EXPORT IFSelect_ModifEditForm(const Handle(IFSelect_EditForm)& editform);
+  Standard_EXPORT IFSelect_ModifEditForm(const occ::handle<IFSelect_EditForm>& editform);
 
   //! Returns the EditForm
-  Standard_EXPORT Handle(IFSelect_EditForm) EditForm() const;
+  Standard_EXPORT occ::handle<IFSelect_EditForm> EditForm() const;
 
   //! Acts by applying an EditForm to entities, selected or all model
-  Standard_EXPORT void Perform(IFSelect_ContextModif&                  ctx,
-                               const Handle(Interface_InterfaceModel)& target,
-                               const Handle(Interface_Protocol)&       protocol,
-                               Interface_CopyTool&                     TC) const Standard_OVERRIDE;
+  Standard_EXPORT void Perform(IFSelect_ContextModif&                       ctx,
+                               const occ::handle<Interface_InterfaceModel>& target,
+                               const occ::handle<Interface_Protocol>&       protocol,
+                               Interface_CopyTool&                          TC) const override;
 
   //! Returns Label as "Apply EditForm <+ label of EditForm>"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_ModifEditForm, IFSelect_Modifier)
 
-protected:
 private:
-  Handle(IFSelect_EditForm) theedit;
+  occ::handle<IFSelect_EditForm> theedit;
 };
 
 #endif // _IFSelect_ModifEditForm_HeaderFile

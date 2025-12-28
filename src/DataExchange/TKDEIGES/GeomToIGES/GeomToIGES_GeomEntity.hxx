@@ -38,22 +38,21 @@ public:
   Standard_EXPORT GeomToIGES_GeomEntity(const GeomToIGES_GeomEntity& GE);
 
   //! Set the value of "TheModel"
-  Standard_EXPORT void SetModel(const Handle(IGESData_IGESModel)& model);
+  Standard_EXPORT void SetModel(const occ::handle<IGESData_IGESModel>& model);
 
   //! Returns the value of "TheModel"
-  Standard_EXPORT Handle(IGESData_IGESModel) GetModel() const;
+  Standard_EXPORT occ::handle<IGESData_IGESModel> GetModel() const;
 
   //! Sets the value of the UnitFlag
-  Standard_EXPORT void SetUnit(const Standard_Real unit);
+  Standard_EXPORT void SetUnit(const double unit);
 
   //! Returns the value of the UnitFlag of the header of the model
   //! in meters.
-  Standard_EXPORT Standard_Real GetUnit() const;
+  Standard_EXPORT double GetUnit() const;
 
-protected:
 private:
-  Handle(IGESData_IGESModel) TheModel;
-  Standard_Real              TheUnitFactor;
+  occ::handle<IGESData_IGESModel> TheModel;
+  double                          TheUnitFactor;
 };
 
 #endif // _GeomToIGES_GeomEntity_HeaderFile

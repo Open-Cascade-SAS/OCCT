@@ -52,7 +52,6 @@ public:
   //! Computes the self interference of a Polyhedron.
   Standard_EXPORT void Perform(const IntPatch_Polyhedron& Obje);
 
-protected:
 private:
   Standard_EXPORT void Interference(const IntPatch_Polyhedron& Obje1);
 
@@ -64,30 +63,30 @@ private:
 
   //! Computes the intersection between the facet <Tri1> of
   //! <FirstPol> and the facet <Tri2> of <SecondPol>.
-  Standard_EXPORT void Intersect(const Standard_Integer     TriF,
+  Standard_EXPORT void Intersect(const int                  TriF,
                                  const IntPatch_Polyhedron& Obje1,
-                                 const Standard_Integer     TriS,
+                                 const int                  TriS,
                                  const IntPatch_Polyhedron& Obje2);
 
   //! Computes the zone of tangence between the facet <Tri1> of
   //! <FirstPol> and the facet <Tri2> of <SecondPol>.
-  Standard_EXPORT Standard_Boolean TangentZoneValue(Intf_TangentZone&          TheTZ,
-                                                    const IntPatch_Polyhedron& Obje1,
-                                                    const Standard_Integer     Tri1,
-                                                    const IntPatch_Polyhedron& Obje2,
-                                                    const Standard_Integer     Tri2) const;
+  Standard_EXPORT bool TangentZoneValue(Intf_TangentZone&          TheTZ,
+                                        const IntPatch_Polyhedron& Obje1,
+                                        const int                  Tri1,
+                                        const IntPatch_Polyhedron& Obje2,
+                                        const int                  Tri2) const;
 
   Standard_EXPORT void CoupleCharacteristics(const IntPatch_Polyhedron& FirstPol,
                                              const IntPatch_Polyhedron& SeconPol);
 
-  Standard_Integer OI[3];
-  Standard_Integer TI[3];
-  Standard_Real    dpOpT[3][3];
-  Standard_Real    dpOeT[3][3];
-  Standard_Real    deOpT[3][3];
-  gp_XYZ           voo[3];
-  gp_XYZ           vtt[3];
-  Standard_Real    Incidence;
+  int    OI[3];
+  int    TI[3];
+  double dpOpT[3][3];
+  double dpOeT[3][3];
+  double deOpT[3][3];
+  gp_XYZ voo[3];
+  gp_XYZ vtt[3];
+  double Incidence;
 };
 
 #endif // _IntPatch_InterferencePolyhedron_HeaderFile

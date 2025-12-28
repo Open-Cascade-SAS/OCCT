@@ -23,9 +23,6 @@
 #include <StepBasic_ConversionBasedUnit.hxx>
 class StepBasic_VolumeUnit;
 
-class StepBasic_ConversionBasedUnitAndVolumeUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_ConversionBasedUnitAndVolumeUnit, StepBasic_ConversionBasedUnit)
-
 class StepBasic_ConversionBasedUnitAndVolumeUnit : public StepBasic_ConversionBasedUnit
 {
 
@@ -33,15 +30,14 @@ public:
   //! Returns a ConversionBasedUnitAndVolumeUnit
   Standard_EXPORT StepBasic_ConversionBasedUnitAndVolumeUnit();
 
-  Standard_EXPORT void SetVolumeUnit(const Handle(StepBasic_VolumeUnit)& aVolumeUnit);
+  Standard_EXPORT void SetVolumeUnit(const occ::handle<StepBasic_VolumeUnit>& aVolumeUnit);
 
-  Standard_EXPORT Handle(StepBasic_VolumeUnit) VolumeUnit() const;
+  Standard_EXPORT occ::handle<StepBasic_VolumeUnit> VolumeUnit() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndVolumeUnit, StepBasic_ConversionBasedUnit)
 
-protected:
 private:
-  Handle(StepBasic_VolumeUnit) volumeUnit;
+  occ::handle<StepBasic_VolumeUnit> volumeUnit;
 };
 
 #endif // _StepBasic_ConversionBasedUnitAndVolumeUnit_HeaderFile

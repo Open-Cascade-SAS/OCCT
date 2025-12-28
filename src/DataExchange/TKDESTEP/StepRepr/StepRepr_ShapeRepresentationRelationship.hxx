@@ -22,10 +22,6 @@
 
 #include <StepRepr_RepresentationRelationship.hxx>
 
-class StepRepr_ShapeRepresentationRelationship;
-DEFINE_STANDARD_HANDLE(StepRepr_ShapeRepresentationRelationship,
-                       StepRepr_RepresentationRelationship)
-
 class StepRepr_ShapeRepresentationRelationship : public StepRepr_RepresentationRelationship
 {
 
@@ -34,9 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeRepresentationRelationship,
                           StepRepr_RepresentationRelationship)
-
-protected:
-private:
 };
 
 #endif // _StepRepr_ShapeRepresentationRelationship_HeaderFile

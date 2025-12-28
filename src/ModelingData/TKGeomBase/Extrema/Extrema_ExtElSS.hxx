@@ -23,8 +23,9 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <Extrema_HArray1OfPOnSurf.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <Standard_Real.hxx>
 
 class gp_Pln;
@@ -81,31 +82,28 @@ public:
   Standard_EXPORT void Perform(const gp_Sphere& S1, const gp_Torus& S2);
 
   //! Returns True if the distances are found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns True if the two surfaces are parallel.
-  Standard_EXPORT Standard_Boolean IsParallel() const;
+  Standard_EXPORT bool IsParallel() const;
 
   //! Returns the number of extremum distances.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Returns the value of the Nth extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N = 1) const;
+  Standard_EXPORT double SquareDistance(const int N = 1) const;
 
   //! Returns the points for the Nth resulting distance.
   //! P1 is on the first surface, P2 on the second one.
-  Standard_EXPORT void Points(const Standard_Integer N,
-                              Extrema_POnSurf&       P1,
-                              Extrema_POnSurf&       P2) const;
+  Standard_EXPORT void Points(const int N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const;
 
-protected:
 private:
-  Standard_Boolean                 myDone;
-  Standard_Boolean                 myIsPar;
-  Standard_Integer                 myNbExt;
-  Handle(TColStd_HArray1OfReal)    mySqDist;
-  Handle(Extrema_HArray1OfPOnSurf) myPOnS1;
-  Handle(Extrema_HArray1OfPOnSurf) myPOnS2;
+  bool                                              myDone;
+  bool                                              myIsPar;
+  int                                               myNbExt;
+  occ::handle<NCollection_HArray1<double>>          mySqDist;
+  occ::handle<NCollection_HArray1<Extrema_POnSurf>> myPOnS1;
+  occ::handle<NCollection_HArray1<Extrema_POnSurf>> myPOnS2;
 };
 
 #endif // _Extrema_ExtElSS_HeaderFile

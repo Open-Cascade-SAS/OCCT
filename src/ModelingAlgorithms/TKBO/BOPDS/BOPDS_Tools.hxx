@@ -32,22 +32,19 @@ public:
   //! Converts the conmbination of two types
   //! of shape <theT1>,<theT2>
   //! to the one integer value, that is returned
-  static Standard_Integer TypeToInteger(const TopAbs_ShapeEnum theT1, const TopAbs_ShapeEnum theT2);
+  static int TypeToInteger(const TopAbs_ShapeEnum theT1, const TopAbs_ShapeEnum theT2);
 
   //! Converts the type of shape <theT>,
   //! to integer value, that is returned
-  static Standard_Integer TypeToInteger(const TopAbs_ShapeEnum theT);
+  static int TypeToInteger(const TopAbs_ShapeEnum theT);
 
   //! Returns true if the type <theT> correspond
   //! to a shape having boundary representation
-  static Standard_Boolean HasBRep(const TopAbs_ShapeEnum theT);
+  static bool HasBRep(const TopAbs_ShapeEnum theT);
 
   //! Returns true if the type <theT> can be participant of
   //! an interference
-  static Standard_Boolean IsInterfering(const TopAbs_ShapeEnum theT);
-
-protected:
-private:
+  static bool IsInterfering(const TopAbs_ShapeEnum theT);
 };
 
 #include <BOPDS_Tools.lxx>

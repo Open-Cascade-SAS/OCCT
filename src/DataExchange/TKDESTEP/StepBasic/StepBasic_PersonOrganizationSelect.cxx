@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_Person.hxx>
@@ -20,8 +20,7 @@
 
 StepBasic_PersonOrganizationSelect::StepBasic_PersonOrganizationSelect() {}
 
-Standard_Integer StepBasic_PersonOrganizationSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepBasic_PersonOrganizationSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -34,18 +33,18 @@ Standard_Integer StepBasic_PersonOrganizationSelect::CaseNum(
   return 0;
 }
 
-Handle(StepBasic_Person) StepBasic_PersonOrganizationSelect::Person() const
+occ::handle<StepBasic_Person> StepBasic_PersonOrganizationSelect::Person() const
 {
   return GetCasted(StepBasic_Person, Value());
 }
 
-Handle(StepBasic_Organization) StepBasic_PersonOrganizationSelect::Organization() const
+occ::handle<StepBasic_Organization> StepBasic_PersonOrganizationSelect::Organization() const
 {
   return GetCasted(StepBasic_Organization, Value());
 }
 
-Handle(StepBasic_PersonAndOrganization) StepBasic_PersonOrganizationSelect::PersonAndOrganization()
-  const
+occ::handle<StepBasic_PersonAndOrganization> StepBasic_PersonOrganizationSelect::
+  PersonAndOrganization() const
 {
   return GetCasted(StepBasic_PersonAndOrganization, Value());
 }

@@ -27,8 +27,8 @@ StepAP203_Change::StepAP203_Change() {}
 
 //=================================================================================================
 
-void StepAP203_Change::Init(const Handle(StepBasic_Action)& aActionAssignment_AssignedAction,
-                            const Handle(StepAP203_HArray1OfWorkItem)& aItems)
+void StepAP203_Change::Init(const occ::handle<StepBasic_Action>& aActionAssignment_AssignedAction,
+                            const occ::handle<NCollection_HArray1<StepAP203_WorkItem>>& aItems)
 {
   StepBasic_ActionAssignment::Init(aActionAssignment_AssignedAction);
 
@@ -37,14 +37,14 @@ void StepAP203_Change::Init(const Handle(StepBasic_Action)& aActionAssignment_As
 
 //=================================================================================================
 
-Handle(StepAP203_HArray1OfWorkItem) StepAP203_Change::Items() const
+occ::handle<NCollection_HArray1<StepAP203_WorkItem>> StepAP203_Change::Items() const
 {
   return theItems;
 }
 
 //=================================================================================================
 
-void StepAP203_Change::SetItems(const Handle(StepAP203_HArray1OfWorkItem)& aItems)
+void StepAP203_Change::SetItems(const occ::handle<NCollection_HArray1<StepAP203_WorkItem>>& aItems)
 {
   theItems = aItems;
 }

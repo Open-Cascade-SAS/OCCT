@@ -39,19 +39,19 @@ public:
   //! Iterates on the ChildStepren of the given Step. If
   //! <allLevels> option is set to true, it explores not
   //! only the first, but all the sub Step levels.
-  Standard_EXPORT TDataStd_ChildNodeIterator(const Handle(TDataStd_TreeNode)& aTreeNode,
-                                             const Standard_Boolean allLevels = Standard_False);
+  Standard_EXPORT TDataStd_ChildNodeIterator(const occ::handle<TDataStd_TreeNode>& aTreeNode,
+                                             const bool allLevels = false);
 
   //! Initializes the iteration on the Children Step of
   //! the given Step. If <allLevels> option is set to
   //! true, it explores not only the first, but all the
   //! sub Step levels.
-  Standard_EXPORT void Initialize(const Handle(TDataStd_TreeNode)& aTreeNode,
-                                  const Standard_Boolean           allLevels = Standard_False);
+  Standard_EXPORT void Initialize(const occ::handle<TDataStd_TreeNode>& aTreeNode,
+                                  const bool                            allLevels = false);
 
   //! Returns True if there is a current Item in the
   //! iteration.
-  Standard_Boolean More() const { return !myNode.IsNull(); }
+  bool More() const { return !myNode.IsNull(); }
 
   //! Move to the next Item
   Standard_EXPORT void Next();
@@ -64,11 +64,11 @@ public:
 
   //! Returns the current item; a null Step if there is
   //! no one.
-  const Handle(TDataStd_TreeNode)& Value() const { return myNode; }
+  const occ::handle<TDataStd_TreeNode>& Value() const { return myNode; }
 
 private:
-  Handle(TDataStd_TreeNode) myNode;
-  Standard_Integer          myFirstLevel;
+  occ::handle<TDataStd_TreeNode> myNode;
+  int                            myFirstLevel;
 };
 
 #endif // _TDataStd_ChildNodeIterator_HeaderFile

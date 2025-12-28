@@ -36,29 +36,28 @@ class Vrml_Cube
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Vrml_Cube(const Standard_Real aWidth  = 2,
-                            const Standard_Real aHeight = 2,
-                            const Standard_Real aDepth  = 2);
+  Standard_EXPORT Vrml_Cube(const double aWidth  = 2,
+                            const double aHeight = 2,
+                            const double aDepth  = 2);
 
-  Standard_EXPORT void SetWidth(const Standard_Real aWidth);
+  Standard_EXPORT void SetWidth(const double aWidth);
 
-  Standard_EXPORT Standard_Real Width() const;
+  Standard_EXPORT double Width() const;
 
-  Standard_EXPORT void SetHeight(const Standard_Real aHeight);
+  Standard_EXPORT void SetHeight(const double aHeight);
 
-  Standard_EXPORT Standard_Real Height() const;
+  Standard_EXPORT double Height() const;
 
-  Standard_EXPORT void SetDepth(const Standard_Real aDepth);
+  Standard_EXPORT void SetDepth(const double aDepth);
 
-  Standard_EXPORT Standard_Real Depth() const;
+  Standard_EXPORT double Depth() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
-  Standard_Real myWidth;
-  Standard_Real myHeight;
-  Standard_Real myDepth;
+  double myWidth;
+  double myHeight;
+  double myDepth;
 };
 
 #endif // _Vrml_Cube_HeaderFile

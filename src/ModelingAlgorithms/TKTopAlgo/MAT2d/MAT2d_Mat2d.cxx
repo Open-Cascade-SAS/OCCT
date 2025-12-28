@@ -17,18 +17,19 @@
 #include <MAT2d_Mat2d.hxx>
 #include <MAT2d_Tool2d.hxx>
 #include <MAT_Bisector.hxx>
-#include <MAT_DataMapOfIntegerBisector.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 #include <MAT_Edge.hxx>
 #include <MAT_ListOfBisector.hxx>
 #include <MAT_ListOfEdge.hxx>
 #include <Precision.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-MAT2d_Mat2d::MAT2d_Mat2d(const Standard_Boolean IsOpenResult)
-    : semiInfinite(Standard_False),
-      isDone(Standard_False)
+MAT2d_Mat2d::MAT2d_Mat2d(const bool IsOpenResult)
+    : semiInfinite(false),
+      isDone(false)
 {
   myIsOpenResult       = IsOpenResult;
   thenumberofbisectors = 0;
@@ -121,47 +122,47 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
 {
 
 #ifdef ICONTINUE
-  Standard_Boolean Icontinue;
+  bool Icontinue;
 #endif
 
-  Standard_Boolean interrupt = Standard_False;
+  bool interrupt = false;
 
-  Handle(MAT_Edge) edgetoremove;
-  Handle(MAT_Edge) previousedge, currentedge;
+  occ::handle<MAT_Edge> edgetoremove;
+  occ::handle<MAT_Edge> previousedge, currentedge;
 
-  Standard_Integer     noofbisectorstoremove;
-  Handle(MAT_Bisector) firstbisector, secondbisector;
-  Handle(MAT_Edge)     edge;
-  Standard_Integer     intersectionpoint;
-  Standard_Integer     beginbisector;
-  Standard_Integer     noofbisectors;
+  int                       noofbisectorstoremove;
+  occ::handle<MAT_Bisector> firstbisector, secondbisector;
+  occ::handle<MAT_Edge>     edge;
+  int                       intersectionpoint;
+  int                       beginbisector;
+  int                       noofbisectors;
 
-  Standard_Integer        NbIterBis     = 0;
-  Standard_Integer        EvenNbIterBis = 10;
-  TColStd_Array1OfInteger EdgeNumbers(1, EvenNbIterBis + 1);
+  int                     NbIterBis     = 0;
+  int                     EvenNbIterBis = 10;
+  NCollection_Array1<int> EdgeNumbers(1, EvenNbIterBis + 1);
   EdgeNumbers.Init(-1);
-  Standard_Boolean ToNullifyNoofbisectorstoremove = Standard_False;
+  bool ToNullifyNoofbisectorstoremove = false;
 
-  Handle(MAT_ListOfBisector) currentbisectorlist;
+  occ::handle<MAT_ListOfBisector> currentbisectorlist;
 
-  Handle(MAT_Bisector) bisectortoremove, lastbisector, currentbisector;
-  Handle(MAT_Bisector) previousbisector;
+  occ::handle<MAT_Bisector> bisectortoremove, lastbisector, currentbisector;
+  occ::handle<MAT_Bisector> previousbisector;
 
-  Standard_Integer i, j, k, narea, shift, compact, all;
-  Standard_Integer noofedges;
-  Standard_Integer NumberMaxOfIte;
-  Standard_Real    toleranceofconfusion;
+  int    i, j, k, narea, shift, compact, all;
+  int    noofedges;
+  int    NumberMaxOfIte;
+  double toleranceofconfusion;
 
   noofedges            = atool.NumberOfItems();
   toleranceofconfusion = atool.ToleranceOfConfusion();
   NumberMaxOfIte       = noofedges * noofedges;
 
-  TColStd_Array1OfInteger firstarea(0, noofedges);
-  TColStd_Array1OfInteger lastarea(0, noofedges);
-  TColStd_Array1OfInteger noofarea(0, noofedges);
+  NCollection_Array1<int> firstarea(0, noofedges);
+  NCollection_Array1<int> lastarea(0, noofedges);
+  NCollection_Array1<int> noofarea(0, noofedges);
 
-  Standard_Integer parama[2];
-  Standard_Integer paramb[2];
+  int parama[2];
+  int paramb[2];
 
   // -----------------------------------------
   // Initialisation et remise a zero des maps.
@@ -171,7 +172,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
   typeofbisectortoremove.Clear();
   bisectormap.Clear();
 
-  isDone        = Standard_True;
+  isDone        = true;
   noofbisectors = noofedges - 1;
   beginbisector = 0;
 
@@ -195,7 +196,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
   //---------------------------------------------------
   // Initialisation des bissectrices issues du contour.
   //---------------------------------------------------
-  Standard_Real Dist;
+  double Dist;
   theedgelist->First();
 
   for (i = 0; i < theedgelist->Number() - 1; i++)
@@ -234,7 +235,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
   //===========================================================================
   //                         Boucle Principale   (etape 2)
   //===========================================================================
-  Standard_Integer NumberOfIte = 0;
+  int NumberOfIte = 0;
 
   while (theedgelist->Number() > 1)
   {
@@ -290,7 +291,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
         EdgeNumbers(EvenNbIterBis + 1) = theedgelist->Number();
       }
       if (EdgeNumbers(EvenNbIterBis + 1) == EdgeNumbers(1))
-        ToNullifyNoofbisectorstoremove = Standard_True;
+        ToNullifyNoofbisectorstoremove = true;
 
       for (i = 1; i < theedgelist->Number() - 1; i++)
       {
@@ -603,7 +604,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
     //------------------------------------------------------------------
     if (narea == 0)
     {
-      interrupt = Standard_True;
+      interrupt = true;
       break;
     }
 
@@ -710,7 +711,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
     //-----------------------------------------------------------------------
     if (NumberOfIte > NumberMaxOfIte)
     {
-      isDone = Standard_False; // Echec calcul de la carte.
+      isDone = false; // Echec calcul de la carte.
       break;
     }
     NumberOfIte++;
@@ -728,10 +729,10 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
   //----------------------------------------------
 
   if (interrupt)
-    semiInfinite = Standard_True;
+    semiInfinite = true;
   else
   {
-    semiInfinite = Standard_False;
+    semiInfinite = false;
 
     //------------------------------------------------------------------
     // Si le nombre d edge > 1 => le nombre d edge = 2
@@ -757,7 +758,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
           bisectormap(noofbisectors - 1)->AddBisector(edge->SecondBisector());
         }
         else
-          semiInfinite = Standard_True;
+          semiInfinite = true;
         //  Modified by skv - Tue Sep 13 12:13:28 2005 IDEM End
       }
       else
@@ -770,7 +771,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
           bisectormap(noofbisectors - 1)->AddBisector(edge->FirstBisector());
         }
         else
-          semiInfinite = Standard_True;
+          semiInfinite = true;
         //  Modified by skv - Tue Sep 13 12:13:28 2005 IDEM End
       }
       if (!semiInfinite)
@@ -820,51 +821,51 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 {
 
 #ifdef ICONTINUE
-  Standard_Boolean Icontinue;
+  bool Icontinue;
 #endif
 
-  Standard_Boolean interrupt = Standard_False;
+  bool interrupt = false;
 
-  Handle(MAT_Edge) edgetoremove;
-  Handle(MAT_Edge) previousedge, currentedge;
+  occ::handle<MAT_Edge> edgetoremove;
+  occ::handle<MAT_Edge> previousedge, currentedge;
 
-  Standard_Integer     noofbisectorstoremove;
-  Handle(MAT_Bisector) firstbisector, secondbisector;
-  Handle(MAT_Edge)     edge;
-  Standard_Integer     intersectionpoint;
-  Standard_Integer     beginbisector;
-  Standard_Integer     noofbisectors;
+  int                       noofbisectorstoremove;
+  occ::handle<MAT_Bisector> firstbisector, secondbisector;
+  occ::handle<MAT_Edge>     edge;
+  int                       intersectionpoint;
+  int                       beginbisector;
+  int                       noofbisectors;
 
-  Standard_Integer        NbIterBis     = 0;
-  Standard_Integer        EvenNbIterBis = 10;
-  TColStd_Array1OfInteger EdgeNumbers(1, EvenNbIterBis + 1);
+  int                     NbIterBis     = 0;
+  int                     EvenNbIterBis = 10;
+  NCollection_Array1<int> EdgeNumbers(1, EvenNbIterBis + 1);
   EdgeNumbers.Init(-1);
-  Standard_Boolean ToNullifyNoofbisectorstoremove = Standard_False;
+  bool ToNullifyNoofbisectorstoremove = false;
 
-  Handle(MAT_ListOfBisector) currentbisectorlist;
+  occ::handle<MAT_ListOfBisector> currentbisectorlist;
 
-  Handle(MAT_Bisector) bisectortoremove, lastbisector, currentbisector;
-  Handle(MAT_Bisector) previousbisector;
+  occ::handle<MAT_Bisector> bisectortoremove, lastbisector, currentbisector;
+  occ::handle<MAT_Bisector> previousbisector;
 
-  Standard_Integer i, j, k, narea, shift, compact, all;
-  Standard_Integer noofedges;
-  Standard_Integer NumberMaxOfIte;
-  Standard_Real    toleranceofconfusion;
+  int    i, j, k, narea, shift, compact, all;
+  int    noofedges;
+  int    NumberMaxOfIte;
+  double toleranceofconfusion;
 
   noofedges            = atool.NumberOfItems();
   toleranceofconfusion = atool.ToleranceOfConfusion();
   NumberMaxOfIte       = noofedges * noofedges;
 
-  TColStd_Array1OfInteger firstarea(0, noofedges);
-  TColStd_Array1OfInteger lastarea(0, noofedges);
-  TColStd_Array1OfInteger noofarea(0, noofedges);
+  NCollection_Array1<int> firstarea(0, noofedges);
+  NCollection_Array1<int> lastarea(0, noofedges);
+  NCollection_Array1<int> noofarea(0, noofedges);
 
-  Standard_Integer parama[2];
-  Standard_Integer paramb[2];
+  int parama[2];
+  int paramb[2];
   //
-  Standard_Integer aNbOfNarea1 = 0, aPrefNarea = 0, aNbMaxNarea1 = 10;
-  Standard_Integer aNbElts[2] = {0, 0}, aCountElts[2] = {0, 0};
-  Standard_Boolean isBreak = Standard_False;
+  int  aNbOfNarea1 = 0, aPrefNarea = 0, aNbMaxNarea1 = 10;
+  int  aNbElts[2] = {0, 0}, aCountElts[2] = {0, 0};
+  bool isBreak = false;
 
   // -----------------------------------------
   // Initialisation et remise a zero des maps.
@@ -874,7 +875,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
   typeofbisectortoremove.Clear();
   bisectormap.Clear();
 
-  isDone        = Standard_True;
+  isDone        = true;
   noofbisectors = noofedges;
   beginbisector = 0;
 
@@ -898,7 +899,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
   //---------------------------------------------------
   // Initialisation des bissectrices issues du contour.
   //---------------------------------------------------
-  Standard_Real Dist;
+  double Dist;
   theedgelist->First();
 
   for (i = 0; i < theedgelist->Number(); i++)
@@ -931,7 +932,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
   //===========================================================================
   //                         Boucle Principale   (etape 2)
   //===========================================================================
-  Standard_Integer NumberOfIte = 0;
+  int NumberOfIte = 0;
 
   while (theedgelist->Number() > 1)
   {
@@ -939,7 +940,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
     // ------------------------------------------------------------------
     //  Creation des geometries des bissectrices via le tool. (etape 2.1)
     // -------------------------------------------------------------------
-    Standard_Integer aNbBis = noofbisectors - beginbisector;
+    int aNbBis = noofbisectors - beginbisector;
     for (i = beginbisector; i < noofbisectors; i++)
     {
 
@@ -961,8 +962,8 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
       if (aPrefNarea == 1)
       {
         aNbOfNarea1++;
-        Standard_Integer edge1number = bisectormap(beginbisector)->FirstEdge()->EdgeNumber();
-        Standard_Integer edge2number = bisectormap(beginbisector)->SecondEdge()->EdgeNumber();
+        int edge1number = bisectormap(beginbisector)->FirstEdge()->EdgeNumber();
+        int edge2number = bisectormap(beginbisector)->SecondEdge()->EdgeNumber();
         if (aNbElts[0] == edge1number)
         {
           aCountElts[0]++;
@@ -984,7 +985,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
         if (aNbOfNarea1 >= aNbMaxNarea1
             && (aCountElts[0] >= aNbMaxNarea1 || aCountElts[1] >= aNbMaxNarea1))
         {
-          isBreak = Standard_True;
+          isBreak = true;
         }
       }
       else
@@ -1027,7 +1028,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
         EdgeNumbers(EvenNbIterBis + 1) = theedgelist->Number();
       }
       if (EdgeNumbers(EvenNbIterBis + 1) == EdgeNumbers(1))
-        ToNullifyNoofbisectorstoremove = Standard_True;
+        ToNullifyNoofbisectorstoremove = true;
 
       for (i = 0; i < theedgelist->Number(); i++)
       {
@@ -1346,7 +1347,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
     //
     if (narea == 0)
     {
-      interrupt = Standard_True;
+      interrupt = true;
       break;
     }
 
@@ -1452,7 +1453,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
     //-----------------------------------------------------------------------
     if (NumberOfIte > NumberMaxOfIte)
     {
-      isDone = Standard_False; // Echec calcul de la carte.
+      isDone = false; // Echec calcul de la carte.
       break;
     }
     NumberOfIte++;
@@ -1470,10 +1471,10 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
   //----------------------------------------------
 
   if (interrupt)
-    semiInfinite = Standard_True;
+    semiInfinite = true;
   else
   {
-    semiInfinite = Standard_False;
+    semiInfinite = false;
 
     //------------------------------------------------------------------
     // Si le nombre d edge > 1 => le nombre d edge = 2
@@ -1499,7 +1500,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
           bisectormap(noofbisectors - 1)->AddBisector(edge->SecondBisector());
         }
         else
-          semiInfinite = Standard_True;
+          semiInfinite = true;
         //  Modified by skv - Tue Sep 13 12:13:28 2005 IDEM End
       }
       else
@@ -1512,7 +1513,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
           bisectormap(noofbisectors - 1)->AddBisector(edge->FirstBisector());
         }
         else
-          semiInfinite = Standard_True;
+          semiInfinite = true;
         //  Modified by skv - Tue Sep 13 12:13:28 2005 IDEM End
       }
       if (!semiInfinite)
@@ -1561,18 +1562,18 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 //  function : LoadBisectorsToRemove
 //  purpose  : Chargement des bisectrices a effacer.
 //========================================================================
-void MAT2d_Mat2d::LoadBisectorsToRemove(Standard_Integer&           noofbisectorstoremove,
-                                        const Standard_Real         distance1,
-                                        const Standard_Real         distance2,
-                                        const Handle(MAT_Bisector)& firstbisectortoremove1,
-                                        const Handle(MAT_Bisector)& firstbisectortoremove2,
-                                        const Handle(MAT_Bisector)& lastbisectortoremove1,
-                                        const Handle(MAT_Bisector)& lastbisectortoremove2)
+void MAT2d_Mat2d::LoadBisectorsToRemove(int&                             noofbisectorstoremove,
+                                        const double                     distance1,
+                                        const double                     distance2,
+                                        const occ::handle<MAT_Bisector>& firstbisectortoremove1,
+                                        const occ::handle<MAT_Bisector>& firstbisectortoremove2,
+                                        const occ::handle<MAT_Bisector>& lastbisectortoremove1,
+                                        const occ::handle<MAT_Bisector>& lastbisectortoremove2)
 {
 
-  Standard_Integer     found, index;
-  Handle(MAT_Bisector) firstbisectortoremove[2];
-  Handle(MAT_Bisector) lastbisectortoremove[2];
+  int                       found, index;
+  occ::handle<MAT_Bisector> firstbisectortoremove[2];
+  occ::handle<MAT_Bisector> lastbisectortoremove[2];
 
   firstbisectortoremove[0] = firstbisectortoremove1;
   firstbisectortoremove[1] = firstbisectortoremove2;
@@ -1634,19 +1635,19 @@ void MAT2d_Mat2d::LoadBisectorsToRemove(Standard_Integer&           noofbisector
 //             Si <aside=2> Intersection de <secondbisector> avec ses
 //                descendants les plus a gauche et les plus a droite.
 //========================================================================v
-void MAT2d_Mat2d::Intersect(MAT2d_Tool2d&               atool,
-                            const Standard_Integer      aside,
-                            Standard_Integer&           noofbisectortoremove,
-                            const Handle(MAT_Bisector)& firstbisector,
-                            const Handle(MAT_Bisector)& secondbisector)
+void MAT2d_Mat2d::Intersect(MAT2d_Tool2d&                    atool,
+                            const int                        aside,
+                            int&                             noofbisectortoremove,
+                            const occ::handle<MAT_Bisector>& firstbisector,
+                            const occ::handle<MAT_Bisector>& secondbisector)
 {
-  Standard_Integer     bisectornumber;
-  Standard_Real        distant, saveparameter;
-  Standard_Real        distance[2];
-  Standard_Integer     intersectionpoint;
-  Handle(MAT_Bisector) lastbisector, previousbisector;
-  Handle(MAT_Bisector) firstbisectortoremove[2];
-  Handle(MAT_Bisector) lastbisectortoremove[2];
+  int                       bisectornumber;
+  double                    distant, saveparameter;
+  double                    distance[2];
+  int                       intersectionpoint;
+  occ::handle<MAT_Bisector> lastbisector, previousbisector;
+  occ::handle<MAT_Bisector> firstbisectortoremove[2];
+  occ::handle<MAT_Bisector> lastbisectortoremove[2];
 
   distance[0] = Precision::Infinite();
   distance[1] = Precision::Infinite();
@@ -1740,7 +1741,7 @@ void MAT2d_Mat2d::Init()
 
 //=================================================================================================
 
-Standard_Boolean MAT2d_Mat2d::More() const
+bool MAT2d_Mat2d::More() const
 {
   return roots->More();
 }
@@ -1754,28 +1755,28 @@ void MAT2d_Mat2d::Next()
 
 //=================================================================================================
 
-Handle(MAT_Bisector) MAT2d_Mat2d::Bisector() const
+occ::handle<MAT_Bisector> MAT2d_Mat2d::Bisector() const
 {
   return roots->Current();
 }
 
 //=================================================================================================
 
-Standard_Integer MAT2d_Mat2d::NumberOfBisectors() const
+int MAT2d_Mat2d::NumberOfBisectors() const
 {
   return thenumberofbisectors;
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT2d_Mat2d::SemiInfinite() const
+bool MAT2d_Mat2d::SemiInfinite() const
 {
   return semiInfinite;
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT2d_Mat2d::IsDone() const
+bool MAT2d_Mat2d::IsDone() const
 {
   return isDone;
 }
@@ -1784,10 +1785,10 @@ Standard_Boolean MAT2d_Mat2d::IsDone() const
 
 MAT2d_Mat2d::~MAT2d_Mat2d()
 {
-  MAT_DataMapIteratorOfDataMapOfIntegerBisector itmap(bisectormap);
+  NCollection_DataMap<int, occ::handle<MAT_Bisector>>::Iterator itmap(bisectormap);
   for (; itmap.More(); itmap.Next())
   {
-    const Handle(MAT_Bisector)& aBisector = itmap.Value();
+    const occ::handle<MAT_Bisector>& aBisector = itmap.Value();
     aBisector->FirstEdge(NULL);
     aBisector->SecondEdge(NULL);
   }
@@ -1795,9 +1796,9 @@ MAT2d_Mat2d::~MAT2d_Mat2d()
   if (!theedgelist.IsNull())
   {
     theedgelist->First();
-    for (Standard_Integer i = 1; i <= theedgelist->Number(); i++)
+    for (int i = 1; i <= theedgelist->Number(); i++)
     {
-      Handle(MAT_Edge) anEdge = theedgelist->Current();
+      occ::handle<MAT_Edge> anEdge = theedgelist->Current();
       anEdge->FirstBisector(NULL);
       anEdge->SecondBisector(NULL);
       theedgelist->Next();
@@ -1806,9 +1807,9 @@ MAT2d_Mat2d::~MAT2d_Mat2d()
   if (!RemovedEdgesList.IsNull())
   {
     RemovedEdgesList->First();
-    for (Standard_Integer i = 1; i <= RemovedEdgesList->Number(); i++)
+    for (int i = 1; i <= RemovedEdgesList->Number(); i++)
     {
-      Handle(MAT_Edge) anEdge = RemovedEdgesList->Current();
+      occ::handle<MAT_Edge> anEdge = RemovedEdgesList->Current();
       anEdge->FirstBisector(NULL);
       anEdge->SecondBisector(NULL);
       RemovedEdgesList->Next();

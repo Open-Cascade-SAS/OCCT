@@ -140,17 +140,17 @@ private:
 
 //=================================================================================================
 
-WNT_Window::WNT_Window(const Standard_CString     theTitle,
-                       const Handle(WNT_WClass)&  theClass,
-                       const WNT_Dword&           theStyle,
-                       const Standard_Integer     thePxLeft,
-                       const Standard_Integer     thePxTop,
-                       const Standard_Integer     thePxWidth,
-                       const Standard_Integer     thePxHeight,
-                       const Quantity_NameOfColor theBackColor,
-                       const Aspect_Handle        theParent,
-                       const Aspect_Handle        theMenu,
-                       const Standard_Address     theClientStruct)
+WNT_Window::WNT_Window(const char*                    theTitle,
+                       const occ::handle<WNT_WClass>& theClass,
+                       const WNT_Dword&               theStyle,
+                       const int                      thePxLeft,
+                       const int                      thePxTop,
+                       const int                      thePxWidth,
+                       const int                      thePxHeight,
+                       const Quantity_NameOfColor     theBackColor,
+                       const Aspect_Handle            theParent,
+                       const Aspect_Handle            theMenu,
+                       void* const                    theClientStruct)
     : Aspect_Window(),
       myWClass(theClass),
       myHWindow(NULL),
@@ -159,7 +159,7 @@ WNT_Window::WNT_Window(const Standard_CString     theTitle,
       myYTop(thePxTop),
       myXRight(thePxLeft + thePxWidth),
       myYBottom(thePxTop + thePxHeight),
-      myIsForeign(Standard_False)
+      myIsForeign(false)
 {
   if (thePxWidth <= 0 || thePxHeight <= 0)
   {
@@ -219,7 +219,7 @@ WNT_Window::WNT_Window(const Aspect_Handle theHandle, const Quantity_NameOfColor
       myYTop(0),
       myXRight(0),
       myYBottom(0),
-      myIsForeign(Standard_True)
+      myIsForeign(true)
 {
   SetBackground(theBackColor);
 
@@ -243,7 +243,7 @@ WNT_Window::~WNT_Window()
   }
 
   DestroyWindow((HWND)myHWindow);
-  myIsForeign = Standard_False;
+  myIsForeign = false;
 }
 
 //=================================================================================================
@@ -255,11 +255,11 @@ void WNT_Window::SetCursor(const Aspect_Handle theCursor) const
 
 //=================================================================================================
 
-Standard_Boolean WNT_Window::IsMapped() const
+bool WNT_Window::IsMapped() const
 {
   if (IsVirtual())
   {
-    return Standard_True;
+    return true;
   }
 
   WINDOWPLACEMENT aPlace = {};
@@ -280,7 +280,7 @@ void WNT_Window::Map() const
 
 //=================================================================================================
 
-void WNT_Window::Map(const Standard_Integer theMapMode) const
+void WNT_Window::Map(const int theMapMode) const
 {
   if (IsVirtual())
   {
@@ -363,24 +363,21 @@ Aspect_TypeOfResize WNT_Window::DoResize()
 
 //=================================================================================================
 
-Standard_Real WNT_Window::Ratio() const
+double WNT_Window::Ratio() const
 {
   if (IsVirtual())
   {
-    return Standard_Real(myXRight - myXLeft) / Standard_Real(myYBottom - myYTop);
+    return double(myXRight - myXLeft) / double(myYBottom - myYTop);
   }
 
   RECT aRect = {};
   GetClientRect((HWND)myHWindow, &aRect);
-  return Standard_Real(aRect.right - aRect.left) / Standard_Real(aRect.bottom - aRect.top);
+  return double(aRect.right - aRect.left) / double(aRect.bottom - aRect.top);
 }
 
 //=================================================================================================
 
-void WNT_Window::Position(Standard_Integer& theX1,
-                          Standard_Integer& theY1,
-                          Standard_Integer& theX2,
-                          Standard_Integer& theY2) const
+void WNT_Window::Position(int& theX1, int& theY1, int& theX2, int& theY2) const
 {
   if (IsVirtual())
   {
@@ -415,7 +412,7 @@ void WNT_Window::Position(Standard_Integer& theX1,
 
 //=================================================================================================
 
-void WNT_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) const
+void WNT_Window::Size(int& theWidth, int& theHeight) const
 {
   if (IsVirtual())
   {
@@ -432,10 +429,7 @@ void WNT_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) c
 
 //=================================================================================================
 
-void WNT_Window::SetPos(const Standard_Integer theX,
-                        const Standard_Integer theY,
-                        const Standard_Integer theX1,
-                        const Standard_Integer theY1)
+void WNT_Window::SetPos(const int theX, const int theY, const int theX1, const int theY1)
 {
   myXLeft   = theX;
   myYTop    = theY;
@@ -453,7 +447,7 @@ void WNT_Window::SetTitle(const TCollection_AsciiString& theTitle)
 
 //=================================================================================================
 
-void WNT_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)&)
+void WNT_Window::InvalidateContent(const occ::handle<Aspect_DisplayConnection>&)
 {
   if (myHWindow != NULL)
   {
@@ -463,16 +457,16 @@ void WNT_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)&)
 
 //=================================================================================================
 
-Aspect_VKey WNT_Window::VirtualKeyFromNative(Standard_Integer theKey)
+Aspect_VKey WNT_Window::VirtualKeyFromNative(int theKey)
 {
-  if (theKey >= Standard_Integer('0') && theKey <= Standard_Integer('9'))
+  if (theKey >= int('0') && theKey <= int('9'))
   {
-    return Aspect_VKey((theKey - Standard_Integer('0')) + Aspect_VKey_0);
+    return Aspect_VKey((theKey - int('0')) + Aspect_VKey_0);
   }
-  if (theKey >= Standard_Integer('A') && theKey <= Standard_Integer('Z'))
+  if (theKey >= int('A') && theKey <= int('Z'))
   {
     // main latin alphabet keys
-    return Aspect_VKey((theKey - Standard_Integer('A')) + Aspect_VKey_A);
+    return Aspect_VKey((theKey - int('A')) + Aspect_VKey_A);
   }
   if (theKey >= VK_F1 && theKey <= VK_F24)
   {
@@ -815,7 +809,7 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
     }
     case WM_KEYUP:
     case WM_KEYDOWN: {
-      const Aspect_VKey aVKey = WNT_Window::VirtualKeyFromNative((Standard_Integer)theMsg.wParam);
+      const Aspect_VKey aVKey = WNT_Window::VirtualKeyFromNative((int)theMsg.wParam);
       if (aVKey != Aspect_VKey_UNKNOWN)
       {
         const double aTimeStamp = theListener.EventTime();
@@ -849,9 +843,9 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
         }
       }
 
-      const Graphic3d_Vec2i  aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
-      const Aspect_VKeyFlags aFlags  = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
-      Aspect_VKeyMouse       aButton = Aspect_VKeyMouse_NONE;
+      const NCollection_Vec2<int> aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
+      const Aspect_VKeyFlags      aFlags  = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
+      Aspect_VKeyMouse            aButton = Aspect_VKeyMouse_NONE;
       switch (theMsg.message)
       {
         case WM_LBUTTONUP:
@@ -884,10 +878,11 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
     }
     case WM_MOUSEWHEEL: {
       const int              aDelta  = GET_WHEEL_DELTA_WPARAM(theMsg.wParam);
-      const Standard_Real    aDeltaF = Standard_Real(aDelta) / Standard_Real(WHEEL_DELTA);
+      const double           aDeltaF = double(aDelta) / double(WHEEL_DELTA);
       const Aspect_VKeyFlags aFlags  = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
-      Graphic3d_Vec2i aPos(int(short(LOWORD(theMsg.lParam))), int(short(HIWORD(theMsg.lParam))));
-      POINT           aCursorPnt = {aPos.x(), aPos.y()};
+      NCollection_Vec2<int>  aPos(int(short(LOWORD(theMsg.lParam))),
+                                  int(short(HIWORD(theMsg.lParam))));
+      POINT                  aCursorPnt = {aPos.x(), aPos.y()};
       if (ScreenToClient(theMsg.hwnd, &aCursorPnt))
       {
         aPos.SetValues(aCursorPnt.x, aCursorPnt.y);
@@ -903,9 +898,9 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
       return true;
     }
     case WM_MOUSEMOVE: {
-      Graphic3d_Vec2i  aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
-      Aspect_VKeyMouse aButtons = WNT_Window::MouseButtonsFromEvent(theMsg.wParam);
-      Aspect_VKeyFlags aFlags   = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
+      NCollection_Vec2<int> aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
+      Aspect_VKeyMouse      aButtons = WNT_Window::MouseButtonsFromEvent(theMsg.wParam);
+      Aspect_VKeyFlags      aFlags   = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
 
       // don't make a slide-show from input events - fetch the actual mouse cursor position
       CURSORINFO aCursor;
@@ -972,7 +967,7 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
                                    aRawInput->data.hid.dwSizeHid);
       if (theListener.Update3dMouse(aSpaceData))
       {
-        InvalidateContent(Handle(Aspect_DisplayConnection)());
+        InvalidateContent(occ::handle<Aspect_DisplayConnection>());
       }
       return true;
     }
@@ -988,21 +983,22 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
         break;
       }
 
-      Graphic3d_Vec2i aWinTopLeft, aWinBotRight;
+      NCollection_Vec2<int> aWinTopLeft, aWinBotRight;
       Position(aWinTopLeft.x(), aWinTopLeft.y(), aWinBotRight.x(), aWinBotRight.y());
 
       bool hasUpdates = false;
       for (size_t aTouchIter = 0; aTouchIter < aSrcTouches.Size(); ++aTouchIter)
       {
-        const TOUCHINPUT&   aTouchSrc = aSrcTouches[aTouchIter];
-        const Standard_Size aTouchId  = (Standard_Size)aTouchSrc.dwID;
-        // const Standard_Size aDeviceId = (Standard_Size )aTouchSrc.hSource;
+        const TOUCHINPUT& aTouchSrc = aSrcTouches[aTouchIter];
+        const size_t      aTouchId  = (size_t)aTouchSrc.dwID;
+        // const size_t aDeviceId = (size_t )aTouchSrc.hSource;
 
-        const Graphic3d_Vec2i aSize = aWinBotRight - aWinTopLeft;
-        const Graphic3d_Vec2d aNewPos2d =
-          Graphic3d_Vec2d(double(aTouchSrc.x), double(aTouchSrc.y)) * 0.01
-          - Graphic3d_Vec2d(aWinTopLeft);
-        const Graphic3d_Vec2i aNewPos2i = Graphic3d_Vec2i(aNewPos2d + Graphic3d_Vec2d(0.5));
+        const NCollection_Vec2<int>    aSize = aWinBotRight - aWinTopLeft;
+        const NCollection_Vec2<double> aNewPos2d =
+          NCollection_Vec2<double>(double(aTouchSrc.x), double(aTouchSrc.y)) * 0.01
+          - NCollection_Vec2<double>(aWinTopLeft);
+        const NCollection_Vec2<int> aNewPos2i =
+          NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
         if ((aTouchSrc.dwFlags & TOUCHEVENTF_DOWN) == TOUCHEVENTF_DOWN)
         {
           if (aNewPos2i.x() >= 0 && aNewPos2i.x() < aSize.x() && aNewPos2i.y() >= 0
@@ -1032,7 +1028,7 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
 
       if (hasUpdates)
       {
-        InvalidateContent(Handle(Aspect_DisplayConnection)());
+        InvalidateContent(occ::handle<Aspect_DisplayConnection>());
       }
       return true;
     }

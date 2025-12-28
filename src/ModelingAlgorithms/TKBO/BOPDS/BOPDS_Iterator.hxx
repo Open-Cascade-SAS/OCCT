@@ -24,7 +24,8 @@
 
 #include <Standard_Integer.hxx>
 #include <BOPDS_PDS.hxx>
-#include <BOPDS_VectorOfVectorOfPair.hxx>
+#include <NCollection_Vector.hxx>
+#include <BOPDS_Pair.hxx>
 #include <BOPTools_BoxTree.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Precision.hxx>
@@ -48,7 +49,7 @@ public:
 
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
-  Standard_EXPORT BOPDS_Iterator(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPDS_Iterator(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Modifier
   //! Sets the data structure <pDS> to process
@@ -65,7 +66,7 @@ public:
 
   //! Returns true if still there are pairs
   //! of intersected shapes
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   //! Moves iterations ahead
   Standard_EXPORT void Next();
@@ -73,57 +74,59 @@ public:
   //! Returns indices (DS) of intersected shapes
   //! theIndex1 - the index of the first shape
   //! theIndex2 - the index of the second shape
-  Standard_EXPORT void Value(Standard_Integer& theIndex1, Standard_Integer& theIndex2) const;
+  Standard_EXPORT void Value(int& theIndex1, int& theIndex2) const;
 
   //! Perform the intersection algorithm and prepare
   //! the results to be used
   Standard_EXPORT virtual void Prepare(
-    const Handle(IntTools_Context)& theCtx        = Handle(IntTools_Context)(),
-    const Standard_Boolean          theCheckOBB   = Standard_False,
-    const Standard_Real             theFuzzyValue = Precision::Confusion());
+    const occ::handle<IntTools_Context>& theCtx        = occ::handle<IntTools_Context>(),
+    const bool                           theCheckOBB   = false,
+    const double                         theFuzzyValue = Precision::Confusion());
 
   //! Updates the tree of Bounding Boxes with increased boxes and
   //! intersects such elements with the tree.
-  Standard_EXPORT void IntersectExt(const TColStd_MapOfInteger& theIndicies);
+  Standard_EXPORT void IntersectExt(const NCollection_Map<int>& theIndicies);
 
   //! Returns the number of intersections founded
-  Standard_EXPORT Standard_Integer ExpectedLength() const;
+  Standard_EXPORT int ExpectedLength() const;
 
   //! Returns the block length
-  Standard_EXPORT Standard_Integer BlockLength() const;
+  Standard_EXPORT int BlockLength() const;
 
   //! Set the flag of parallel processing
   //! if <theFlag> is true  the parallel processing is switched on
   //! if <theFlag> is false the parallel processing is switched off
-  Standard_EXPORT void SetRunParallel(const Standard_Boolean theFlag);
+  Standard_EXPORT void SetRunParallel(const bool theFlag);
 
   //! Returns the flag of parallel processing
-  Standard_EXPORT Standard_Boolean RunParallel() const;
+  Standard_EXPORT bool RunParallel() const;
 
 public: //! @name Number of extra interfering types
   // Extra lists contain only V/V, V/E, V/F interfering pairs.
   // Although E/E is also initialized (but never filled) for code simplicity.
-  static Standard_Integer NbExtInterfs() { return 4; }
+  static int NbExtInterfs() { return 4; }
 
 protected: //! @name Protected methods for bounding boxes intersection
   //! Intersects the Bounding boxes of sub-shapes of the arguments with the tree
   //! and saves the interfering pairs for further geometrical intersection.
   Standard_EXPORT virtual void Intersect(
-    const Handle(IntTools_Context)& theCtx        = Handle(IntTools_Context)(),
-    const Standard_Boolean          theCheckOBB   = Standard_False,
-    const Standard_Real             theFuzzyValue = Precision::Confusion());
+    const occ::handle<IntTools_Context>& theCtx        = occ::handle<IntTools_Context>(),
+    const bool                           theCheckOBB   = false,
+    const double                         theFuzzyValue = Precision::Confusion());
 
-protected:                                       //! @name Fields
-  Handle(NCollection_BaseAllocator) myAllocator; //!< Allocator
-  Standard_Integer                  myLength;    //!< Length of the intersection vector of
-                                                 //! particular intersection type
-  BOPDS_PDS                    myDS;             //!< Data Structure
-  BOPDS_VectorOfVectorOfPair   myLists;          //!< Pairs with interfering bounding boxes
-  BOPDS_VectorOfPair::Iterator myIterator;       //!< Iterator on each interfering type
-  Standard_Boolean             myRunParallel;    //!< Flag for parallel processing
-  BOPDS_VectorOfVectorOfPair   myExtLists;       //!< Extra pairs of sub-shapes found after
-                                                 //! intersection of increased sub-shapes
-  Standard_Boolean myUseExt;                     //!< Information flag for using the extra lists
+protected:                                            //! @name Fields
+  occ::handle<NCollection_BaseAllocator> myAllocator; //!< Allocator
+  int                                    myLength;    //!< Length of the intersection vector of
+                                                      //! particular intersection type
+  BOPDS_PDS myDS;                                     //!< Data Structure
+  NCollection_Vector<NCollection_Vector<BOPDS_Pair>>
+                                           myLists;       //!< Pairs with interfering bounding boxes
+  NCollection_Vector<BOPDS_Pair>::Iterator myIterator;    //!< Iterator on each interfering type
+  bool                                     myRunParallel; //!< Flag for parallel processing
+  NCollection_Vector<NCollection_Vector<BOPDS_Pair>>
+    myExtLists;  //!< Extra pairs of sub-shapes found after
+                 //! intersection of increased sub-shapes
+  bool myUseExt; //!< Information flag for using the extra lists
 };
 
 #endif // _BOPDS_Iterator_HeaderFile

@@ -61,13 +61,13 @@ public:
   }
 
   //! Constructor.
-  NCollection_OccAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
+  NCollection_OccAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
       : myAllocator(theAlloc)
   {
   }
 
   //! Constructor.
-  NCollection_OccAllocator(Handle(NCollection_BaseAllocator)&& theAlloc)
+  NCollection_OccAllocator(occ::handle<NCollection_BaseAllocator>&& theAlloc)
       : myAllocator(theAlloc)
   {
   }
@@ -115,9 +115,12 @@ public:
   {
   }
 
-  void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc) { myAllocator = theAlloc; }
+  void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
+  {
+    myAllocator = theAlloc;
+  }
 
-  const Handle(NCollection_BaseAllocator)& Allocator() const noexcept { return myAllocator; }
+  const occ::handle<NCollection_BaseAllocator>& Allocator() const noexcept { return myAllocator; }
 
   //! Allocates memory for theSize objects.
   pointer allocate(size_type theSize, const void* = 0)
@@ -190,7 +193,7 @@ public:
   }
 
 private:
-  Handle(NCollection_BaseAllocator) myAllocator;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
 };
 
 template <class U, class V>

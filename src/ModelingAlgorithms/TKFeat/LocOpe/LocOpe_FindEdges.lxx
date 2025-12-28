@@ -37,7 +37,7 @@ inline void LocOpe_FindEdges::InitIterator()
 
 //=================================================================================================
 
-inline Standard_Boolean LocOpe_FindEdges::More() const
+inline bool LocOpe_FindEdges::More() const
 {
   return myItFrom.More();
 }

@@ -22,8 +22,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepGeom_Direction.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_RotationAboutDirection, StepGeom_GeometricRepresentationItem)
-
 //! Representation of STEP entity RotationAboutDirection
 class StepKinematics_RotationAboutDirection : public StepGeom_GeometricRepresentationItem
 {
@@ -32,25 +30,26 @@ public:
   Standard_EXPORT StepKinematics_RotationAboutDirection();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                            const Handle(StepGeom_Direction)&       theDirectionOfAxis,
-                            const Standard_Real                     theRotationAngle);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+                            const occ::handle<StepGeom_Direction>&       theDirectionOfAxis,
+                            const double                                 theRotationAngle);
 
   //! Returns field DirectionOfAxis
-  Standard_EXPORT Handle(StepGeom_Direction) DirectionOfAxis() const;
+  Standard_EXPORT occ::handle<StepGeom_Direction> DirectionOfAxis() const;
   //! Sets field DirectionOfAxis
-  Standard_EXPORT void SetDirectionOfAxis(const Handle(StepGeom_Direction)& theDirectionOfAxis);
+  Standard_EXPORT void SetDirectionOfAxis(
+    const occ::handle<StepGeom_Direction>& theDirectionOfAxis);
 
   //! Returns field RotationAngle
-  Standard_EXPORT Standard_Real RotationAngle() const;
+  Standard_EXPORT double RotationAngle() const;
   //! Sets field RotationAngle
-  Standard_EXPORT void SetRotationAngle(const Standard_Real theRotationAngle);
+  Standard_EXPORT void SetRotationAngle(const double theRotationAngle);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_RotationAboutDirection,
                           StepGeom_GeometricRepresentationItem)
 
 private:
-  Handle(StepGeom_Direction) myDirectionOfAxis;
-  Standard_Real              myRotationAngle;
+  occ::handle<StepGeom_Direction> myDirectionOfAxis;
+  double                          myRotationAngle;
 };
 #endif // _StepKinematics_RotationAboutDirection_HeaderFile_

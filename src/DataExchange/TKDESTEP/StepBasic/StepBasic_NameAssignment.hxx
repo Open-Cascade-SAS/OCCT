@@ -22,9 +22,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-class StepBasic_NameAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_NameAssignment, Standard_Transient)
-
 //! Representation of STEP entity NameAssignment
 class StepBasic_NameAssignment : public Standard_Transient
 {
@@ -34,19 +31,18 @@ public:
   Standard_EXPORT StepBasic_NameAssignment();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aAssignedName);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aAssignedName);
 
   //! Returns field AssignedName
-  Standard_EXPORT Handle(TCollection_HAsciiString) AssignedName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> AssignedName() const;
 
   //! Set field AssignedName
-  Standard_EXPORT void SetAssignedName(const Handle(TCollection_HAsciiString)& AssignedName);
+  Standard_EXPORT void SetAssignedName(const occ::handle<TCollection_HAsciiString>& AssignedName);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_NameAssignment, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) theAssignedName;
+  occ::handle<TCollection_HAsciiString> theAssignedName;
 };
 
 #endif // _StepBasic_NameAssignment_HeaderFile

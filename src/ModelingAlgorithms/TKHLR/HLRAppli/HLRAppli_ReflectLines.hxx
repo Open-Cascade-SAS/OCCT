@@ -41,15 +41,15 @@ public:
   //! Sets the normal to the plane of visualisation,
   //! the coordinates of the view point and
   //! the coordinates of the vertical direction vector.
-  Standard_EXPORT void SetAxes(const Standard_Real Nx,
-                               const Standard_Real Ny,
-                               const Standard_Real Nz,
-                               const Standard_Real XAt,
-                               const Standard_Real YAt,
-                               const Standard_Real ZAt,
-                               const Standard_Real XUp,
-                               const Standard_Real YUp,
-                               const Standard_Real ZUp);
+  Standard_EXPORT void SetAxes(const double Nx,
+                               const double Ny,
+                               const double Nz,
+                               const double XAt,
+                               const double YAt,
+                               const double ZAt,
+                               const double XUp,
+                               const double YUp,
+                               const double ZUp);
 
   Standard_EXPORT void Perform();
 
@@ -61,14 +61,13 @@ public:
   //! of specified type and visibility
   //! represented by edges in 3d or 2d
   Standard_EXPORT TopoDS_Shape GetCompoundOf3dEdges(const HLRBRep_TypeOfResultingEdge type,
-                                                    const Standard_Boolean            visible,
-                                                    const Standard_Boolean            In3d) const;
+                                                    const bool                        visible,
+                                                    const bool                        In3d) const;
 
-protected:
 private:
-  HLRAlgo_Projector    myProjector;
-  Handle(HLRBRep_Algo) myHLRAlgo;
-  TopoDS_Shape         myShape;
+  HLRAlgo_Projector         myProjector;
+  occ::handle<HLRBRep_Algo> myHLRAlgo;
+  TopoDS_Shape              myShape;
   // TopoDS_Shape myCompound;
 };
 

@@ -33,11 +33,10 @@ public:
   //! creates with a Graph, and will analyse :
   //! whole True  : all the contents of the Model
   //! whole False : sub-parts which will be given later
-  Standard_EXPORT IFGraph_ConnectedComponants(const Interface_Graph& agraph,
-                                              const Standard_Boolean whole);
+  Standard_EXPORT IFGraph_ConnectedComponants(const Interface_Graph& agraph, const bool whole);
 
   //! does the computation
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 };
 
 #endif // _IFGraph_ConnectedComponants_HeaderFile

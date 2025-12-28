@@ -24,15 +24,15 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_PropertyDefinition, Standard_Transient)
 
 StepRepr_PropertyDefinition::StepRepr_PropertyDefinition()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
-void StepRepr_PropertyDefinition::Init(const Handle(TCollection_HAsciiString)& aName,
-                                       const Standard_Boolean                  hasDescription,
-                                       const Handle(TCollection_HAsciiString)& aDescription,
-                                       const StepRepr_CharacterizedDefinition& aDefinition)
+void StepRepr_PropertyDefinition::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                       const bool                                   hasDescription,
+                                       const occ::handle<TCollection_HAsciiString>& aDescription,
+                                       const StepRepr_CharacterizedDefinition&      aDefinition)
 {
 
   theName = aName;
@@ -50,21 +50,21 @@ void StepRepr_PropertyDefinition::Init(const Handle(TCollection_HAsciiString)& a
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_PropertyDefinition::Name() const
+occ::handle<TCollection_HAsciiString> StepRepr_PropertyDefinition::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepRepr_PropertyDefinition::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepRepr_PropertyDefinition::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_PropertyDefinition::Description() const
+occ::handle<TCollection_HAsciiString> StepRepr_PropertyDefinition::Description() const
 {
   return theDescription;
 }
@@ -72,14 +72,14 @@ Handle(TCollection_HAsciiString) StepRepr_PropertyDefinition::Description() cons
 //=================================================================================================
 
 void StepRepr_PropertyDefinition::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepRepr_PropertyDefinition::HasDescription() const
+bool StepRepr_PropertyDefinition::HasDescription() const
 {
   return defDescription;
 }

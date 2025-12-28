@@ -25,8 +25,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepTopAdaptor_HVertex, Adaptor3d_HVertex)
 
-BRepTopAdaptor_HVertex::BRepTopAdaptor_HVertex(const TopoDS_Vertex&               V,
-                                               const Handle(BRepAdaptor_Curve2d)& C)
+BRepTopAdaptor_HVertex::BRepTopAdaptor_HVertex(const TopoDS_Vertex&                    V,
+                                               const occ::handle<BRepAdaptor_Curve2d>& C)
     : myVtx(V),
       myCurve(C)
 {
@@ -38,34 +38,34 @@ gp_Pnt2d BRepTopAdaptor_HVertex::Value()
   return gp_Pnt2d(RealFirst(), RealFirst()); // do nothing
 }
 
-Standard_Real BRepTopAdaptor_HVertex::Parameter(const Handle(Adaptor2d_Curve2d)& C)
+double BRepTopAdaptor_HVertex::Parameter(const occ::handle<Adaptor2d_Curve2d>& C)
 {
-  Handle(BRepAdaptor_Curve2d) brhc = Handle(BRepAdaptor_Curve2d)::DownCast(C);
+  occ::handle<BRepAdaptor_Curve2d> brhc = occ::down_cast<BRepAdaptor_Curve2d>(C);
   return BRep_Tool::Parameter(myVtx, brhc->Edge(), brhc->Face());
 }
 
-Standard_Real BRepTopAdaptor_HVertex::Resolution(const Handle(Adaptor2d_Curve2d)& C)
+double BRepTopAdaptor_HVertex::Resolution(const occ::handle<Adaptor2d_Curve2d>& C)
 {
-  Handle(BRepAdaptor_Curve2d) brhc = Handle(BRepAdaptor_Curve2d)::DownCast(C);
-  const TopoDS_Face&          F    = brhc->Face();
-  BRepAdaptor_Surface         S(F, 0);
-  Standard_Real               tv = BRep_Tool::Tolerance(myVtx);
-  Standard_Real               pp, p = BRep_Tool::Parameter(myVtx, brhc->Edge(), brhc->Face());
-  TopAbs_Orientation          Or = Orientation();
-  gp_Pnt2d                    p2d;
-  gp_Vec2d                    v2d;
+  occ::handle<BRepAdaptor_Curve2d> brhc = occ::down_cast<BRepAdaptor_Curve2d>(C);
+  const TopoDS_Face&               F    = brhc->Face();
+  BRepAdaptor_Surface              S(F, 0);
+  double                           tv = BRep_Tool::Tolerance(myVtx);
+  double                           pp, p = BRep_Tool::Parameter(myVtx, brhc->Edge(), brhc->Face());
+  TopAbs_Orientation               Or = Orientation();
+  gp_Pnt2d                         p2d;
+  gp_Vec2d                         v2d;
   C->D1(p, p2d, v2d);
   gp_Pnt P, P1;
   gp_Vec DU, DV, DC;
   S.D1(p2d.X(), p2d.Y(), P, DU, DV);
   DC.SetLinearForm(v2d.X(), DU, v2d.Y(), DV);
-  Standard_Real ResUV, mag = DC.Magnitude();
+  double ResUV, mag = DC.Magnitude();
 
-  Standard_Real URes   = S.UResolution(tv);
-  Standard_Real VRes   = S.VResolution(tv);
-  Standard_Real tURes  = C->Resolution(URes);
-  Standard_Real tVRes  = C->Resolution(VRes);
-  Standard_Real ResUV1 = std::max(tURes, tVRes);
+  double URes   = S.UResolution(tv);
+  double VRes   = S.VResolution(tv);
+  double tURes  = C->Resolution(URes);
+  double tVRes  = C->Resolution(VRes);
+  double ResUV1 = std::max(tURes, tVRes);
 
   if (mag < 1e-12)
   {
@@ -87,8 +87,8 @@ Standard_Real BRepTopAdaptor_HVertex::Resolution(const Handle(Adaptor2d_Curve2d)
   else
     pp = p - ResUV;
 
-  Standard_Real UMin = C->FirstParameter();
-  Standard_Real UMax = C->LastParameter();
+  double UMin = C->FirstParameter();
+  double UMax = C->LastParameter();
   if (pp > UMax)
     pp = UMax;
   if (pp < UMin)
@@ -97,11 +97,11 @@ Standard_Real BRepTopAdaptor_HVertex::Resolution(const Handle(Adaptor2d_Curve2d)
   C->D0(pp, p2d);
   S.D0(p2d.X(), p2d.Y(), P1);
 
-  Standard_Real Dist = P.Distance(P1);
+  double Dist = P.Distance(P1);
   if ((Dist > 1e-12) && ((Dist > 1.1 * tv) || (Dist < 0.8 * tv)))
   {
     // Refine if possible
-    Standard_Real Dist1;
+    double Dist1;
     if (Or == TopAbs_REVERSED)
       pp = p + tv / Dist;
     else
@@ -155,8 +155,8 @@ TopAbs_Orientation BRepTopAdaptor_HVertex::Orientation()
   return myVtx.Orientation();
 }
 
-Standard_Boolean BRepTopAdaptor_HVertex::IsSame(const Handle(Adaptor3d_HVertex)& Other)
+bool BRepTopAdaptor_HVertex::IsSame(const occ::handle<Adaptor3d_HVertex>& Other)
 {
-  Handle(BRepTopAdaptor_HVertex) brhv = Handle(BRepTopAdaptor_HVertex)::DownCast(Other);
+  occ::handle<BRepTopAdaptor_HVertex> brhv = occ::down_cast<BRepTopAdaptor_HVertex>(Other);
   return myVtx.IsSame(brhv->Vertex());
 }

@@ -32,16 +32,16 @@
 // pour propagate
 #include <TDocStd_XLinkTool.hxx>
 
-// typedef Standard_Integer (* DFBROWSER_CALL)(const Handle(TDocStd_Document)&);
+// typedef int (* DFBROWSER_CALL)(const occ::handle<TDocStd_Document>&);
 // static DFBROWSER_CALL gDFunc = 0;
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_Main(Draw_Interpretor& di, Standard_Integer nb, const char** a)
+static int DDocStd_Main(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2)
   {
-    Handle(TDocStd_Document) DOC;
+    occ::handle<TDocStd_Document> DOC;
     if (!DDocStd::GetDocument(a[1], DOC))
       return 1;
     DDocStd::ReturnLabel(di, DOC->Main());
@@ -53,9 +53,9 @@ static Standard_Integer DDocStd_Main(Draw_Interpretor& di, Standard_Integer nb, 
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_Format(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DDocStd_Format(Draw_Interpretor& di, int n, const char** a)
 {
-  Handle(TDocStd_Document) D;
+  occ::handle<TDocStd_Document> D;
   if (n == 2)
   {
     if (!DDocStd::GetDocument(a[1], D))
@@ -83,11 +83,11 @@ static Standard_Integer DDocStd_Format(Draw_Interpretor& di, Standard_Integer n,
 // function : Copy "Copy DOC entry XDOC xentry",
 //=======================================================================
 
-static Standard_Integer DDocStd_Copy(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DDocStd_Copy(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 5)
   {
-    Handle(TDocStd_Document) DOC, XDOC;
+    occ::handle<TDocStd_Document> DOC, XDOC;
     if (!DDocStd::GetDocument(a[1], DOC))
       return 1;
     if (!DDocStd::GetDocument(a[3], XDOC))
@@ -113,13 +113,11 @@ static Standard_Integer DDocStd_Copy(Draw_Interpretor& di, Standard_Integer n, c
 // function : CopyWithLink "Copy DOC entry XDOC xentry",
 //=======================================================================
 
-static Standard_Integer DDocStd_CopyWithLink(Draw_Interpretor& di,
-                                             Standard_Integer  n,
-                                             const char**      a)
+static int DDocStd_CopyWithLink(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 5)
   {
-    Handle(TDocStd_Document) DOC, XDOC;
+    occ::handle<TDocStd_Document> DOC, XDOC;
     if (!DDocStd::GetDocument(a[1], DOC))
       return 1;
     if (!DDocStd::GetDocument(a[3], XDOC))
@@ -145,17 +143,15 @@ static Standard_Integer DDocStd_CopyWithLink(Draw_Interpretor& di,
 // function : UpdateLink (D,[xrefentry])
 //=======================================================================
 
-static Standard_Integer DDocStd_UpdateLink(Draw_Interpretor& di,
-                                           Standard_Integer  nb,
-                                           const char**      a)
+static int DDocStd_UpdateLink(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2 || nb == 3)
   {
-    Handle(TDocStd_Document) DOC;
+    occ::handle<TDocStd_Document> DOC;
     if (!DDocStd::GetDocument(a[1], DOC))
       return 1;
-    Handle(TDF_Reference) REF;
-    TDocStd_XLinkTool     XLinkTool;
+    occ::handle<TDF_Reference> REF;
+    TDocStd_XLinkTool          XLinkTool;
     if (nb == 3)
     {
       if (!DDocStd::Find(DOC, a[2], TDF_Reference::GetID(), REF))
@@ -185,18 +181,18 @@ static Standard_Integer DDocStd_UpdateLink(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_UndoLimit(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DDocStd_UndoLimit(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Handle(TDocStd_Document) D;
+  occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
     return 1;
 
   if (n > 2)
   {
-    Standard_Integer lim = Draw::Atoi(a[2]);
+    int lim = Draw::Atoi(a[2]);
     D->SetUndoLimit(lim);
   }
 
@@ -212,23 +208,23 @@ static Standard_Integer DDocStd_UndoLimit(Draw_Interpretor& di, Standard_Integer
 // purpose  : Undo (DOC)
 //=======================================================================
 
-static Standard_Integer DDocStd_Undo(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DDocStd_Undo(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Handle(TDocStd_Document) D;
+  occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
     return 1;
 
-  Standard_Integer i, step = 1;
+  int i, step = 1;
   if (n > 2)
   {
     step = Draw::Atoi(a[2]);
   }
 
   // test if the command was undo or redo
-  Standard_Boolean undo = a[0][0] == 'U';
+  bool undo = a[0][0] == 'U';
 
   for (i = 1; i <= step; i++)
   {
@@ -245,7 +241,7 @@ static Standard_Integer DDocStd_Undo(Draw_Interpretor& di, Standard_Integer n, c
   }
 
   // Redraw the viewer.
-  Handle(AIS_InteractiveContext) IC;
+  occ::handle<AIS_InteractiveContext> IC;
   if (TPrsStd_AISViewer::Find(D->Main(), IC))
     IC->UpdateCurrentViewer();
 
@@ -254,13 +250,11 @@ static Standard_Integer DDocStd_Undo(Draw_Interpretor& di, Standard_Integer n, c
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_NewCommand(Draw_Interpretor& /*di*/,
-                                           Standard_Integer n,
-                                           const char**     a)
+static int DDocStd_NewCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
     return 1;
-  Handle(TDocStd_Document) D;
+  occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
     return 1;
   D->NewCommand();
@@ -269,14 +263,12 @@ static Standard_Integer DDocStd_NewCommand(Draw_Interpretor& /*di*/,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_OpenCommand(Draw_Interpretor& /*di*/,
-                                            Standard_Integer n,
-                                            const char**     a)
+static int DDocStd_OpenCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Handle(TDocStd_Document) D;
+  occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
     return 1;
   D->OpenCommand();
@@ -285,13 +277,11 @@ static Standard_Integer DDocStd_OpenCommand(Draw_Interpretor& /*di*/,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_AbortCommand(Draw_Interpretor& /*di*/,
-                                             Standard_Integer n,
-                                             const char**     a)
+static int DDocStd_AbortCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
     return 1;
-  Handle(TDocStd_Document) D;
+  occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
     return 1;
   D->AbortCommand();
@@ -300,13 +290,11 @@ static Standard_Integer DDocStd_AbortCommand(Draw_Interpretor& /*di*/,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_CommitCommand(Draw_Interpretor& /*di*/,
-                                              Standard_Integer n,
-                                              const char**     a)
+static int DDocStd_CommitCommand(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 2)
     return 1;
-  Handle(TDocStd_Document) D;
+  occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(a[1], D))
     return 1;
   D->CommitCommand();
@@ -318,13 +306,11 @@ static Standard_Integer DDocStd_CommitCommand(Draw_Interpretor& /*di*/,
 // purpose  : DumpDocument (DOC)
 //=======================================================================
 
-static Standard_Integer DDocStd_DumpDocument(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
-                                             const char**      arg)
+static int DDocStd_DumpDocument(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 2)
   {
-    Handle(TDocStd_Document) D;
+    occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
       return 1;
     di << "\n";
@@ -368,7 +354,7 @@ static Standard_Integer DDocStd_DumpDocument(Draw_Interpretor& di,
     if (!TDocStd_Modified::IsEmpty(D->Main()))
     {
       di << "MODIFICATIONS : ";
-      TDF_MapIteratorOfLabelMap it(D->GetModified());
+      NCollection_Map<TDF_Label>::Iterator it(D->GetModified());
       if (!it.More())
         di << "VALID\n";
       else
@@ -393,17 +379,15 @@ static Standard_Integer DDocStd_DumpDocument(Draw_Interpretor& di,
 // purpose  : Set modifications in a document
 //=======================================================================
 
-static Standard_Integer DDocStd_SetModified(Draw_Interpretor& di,
-                                            Standard_Integer  n,
-                                            const char**      a)
+static int DDocStd_SetModified(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 2)
   {
-    Handle(TDocStd_Document) D;
+    occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
       return 1;
     TDF_Label L;
-    for (Standard_Integer i = 2; i < n; i++)
+    for (int i = 2; i < n; i++)
     {
       if (DDocStd::Find(D, a[i], L))
         D->SetModified(L);
@@ -416,24 +400,22 @@ static Standard_Integer DDocStd_SetModified(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_Propagate(Draw_Interpretor& di,
-                                          Standard_Integer /*n*/,
-                                          const char** /*a*/)
+static int DDocStd_Propagate(Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {
   //   if (n == 2) {
-  //     Handle(TDocStd_Document) D;
+  //     occ::handle<TDocStd_Document> D;
   //     if (!DDocStd::GetDocument(a[1],D)) return 1;
   //     if (D->IsValid()) {
   //       std::cout << "the document is valid" << std::endl;
   //       return 0;
   //     }
-  //     Handle(TDesign_Function) F;
+  //     occ::handle<TDesign_Function> F;
   //     if (!D->Main().FindAttribute(TDesign_Function::GetID(),F)) {
   //       std::cout << "no function found at main" << std::endl;
   //       return 0;
   //     }
-  //     TFunction_Logbook mdf (Standard_True);
-  //     for (TDF_MapIteratorOfLabelMap it (D->GetModified());it.More();it.Next()) {
+  //     TFunction_Logbook mdf (true);
+  //     for (NCollection_Map<TDF_Label>::Iterator it (D->GetModified());it.More();it.Next()) {
   //       mdf.SetTouched(it.Key());
   //     }
   //     F->Execute(mdf);
@@ -446,15 +428,15 @@ static Standard_Integer DDocStd_Propagate(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer DDocStd_StoreTriangulation(Draw_Interpretor& theDi,
-                                                   Standard_Integer  theNbArgs,
-                                                   const char**      theArgVec)
+static int DDocStd_StoreTriangulation(Draw_Interpretor& theDi,
+                                      int               theNbArgs,
+                                      const char**      theArgVec)
 {
-  const Handle(TDocStd_Application)&       anApp = DDocStd::GetApplication();
-  Handle(BinDrivers_DocumentStorageDriver) aDriverXCaf =
-    Handle(BinDrivers_DocumentStorageDriver)::DownCast(anApp->WriterFromFormat("BinXCAF"));
-  Handle(BinDrivers_DocumentStorageDriver) aDriverOcaf =
-    Handle(BinDrivers_DocumentStorageDriver)::DownCast(anApp->WriterFromFormat("BinOcaf"));
+  const occ::handle<TDocStd_Application>&       anApp = DDocStd::GetApplication();
+  occ::handle<BinDrivers_DocumentStorageDriver> aDriverXCaf =
+    occ::down_cast<BinDrivers_DocumentStorageDriver>(anApp->WriterFromFormat("BinXCAF"));
+  occ::handle<BinDrivers_DocumentStorageDriver> aDriverOcaf =
+    occ::down_cast<BinDrivers_DocumentStorageDriver>(anApp->WriterFromFormat("BinOcaf"));
   if (aDriverXCaf.IsNull() || aDriverOcaf.IsNull())
   {
     std::cout << "Error: BinXCAF or BinOcaf storage formats are not registered\n";
@@ -467,16 +449,16 @@ static Standard_Integer DDocStd_StoreTriangulation(Draw_Interpretor& theDi,
     return 0;
   }
 
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString aParam(theArgVec[anArgIter]);
     aParam.LowerCase();
 
     // toStore optional positional parameter
-    Standard_Integer aParsedIntegerValue(0);
+    int aParsedIntegerValue(0);
     if (anArgIter == 1 && Draw::ParseInteger(aParam.ToCString(), aParsedIntegerValue))
     {
-      const Standard_Boolean toEnable = (aParsedIntegerValue != 0);
+      const bool toEnable = (aParsedIntegerValue != 0);
       aDriverXCaf->SetWithTriangles(anApp->MessageDriver(), toEnable);
       aDriverOcaf->SetWithTriangles(anApp->MessageDriver(), toEnable);
       continue;
@@ -484,7 +466,7 @@ static Standard_Integer DDocStd_StoreTriangulation(Draw_Interpretor& theDi,
 
     if (aParam == "-nonormals" || aParam == "-normals")
     {
-      Standard_Boolean isWithNormals(Standard_True);
+      bool isWithNormals(true);
       if (anArgIter + 1 < theNbArgs && Draw::ParseOnOff(theArgVec[anArgIter + 1], isWithNormals))
       {
         ++anArgIter;
@@ -510,10 +492,10 @@ static Standard_Integer DDocStd_StoreTriangulation(Draw_Interpretor& theDi,
 void DDocStd::DocumentCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "DDocStd commands";
 

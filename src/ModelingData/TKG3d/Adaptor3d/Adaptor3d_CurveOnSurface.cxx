@@ -47,11 +47,10 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_CurveOnSurface, Adaptor3d_Curve)
 
@@ -141,8 +140,8 @@ static gp_Vec SetLinearForm(const gp_Vec2d& DW,
 static void CompareBounds(gp_Pnt2d& P1,
                           gp_Pnt2d& P2) // SVV
 {
-  Standard_Real Lx = P1.X(), Ly = P1.Y();
-  Standard_Real Rx = P2.X(), Ry = P2.Y();
+  double Lx = P1.X(), Ly = P1.Y();
+  double Rx = P2.X(), Ry = P2.Y();
 
   if (Lx > Rx)
   {
@@ -158,11 +157,11 @@ static void CompareBounds(gp_Pnt2d& P1,
 
 //=================================================================================================
 
-static void Hunt(const TColStd_Array1OfReal& Arr, const Standard_Real Coord, Standard_Integer& Iloc)
+static void Hunt(const NCollection_Array1<double>& Arr, const double Coord, int& Iloc)
 { // Warning: Hunt is used to find number of knot which equals coordinate component,
   //        when coordinate component definitely equals a knot only.
-  constexpr Standard_Real Tol = Precision::PConfusion() / 10;
-  Standard_Integer        i   = 1;
+  constexpr double Tol = Precision::PConfusion() / 10;
+  int              i   = 1;
   while ((i <= Arr.Upper()) && (std::abs(Coord - Arr(i)) > Tol))
   {
     i++;
@@ -176,10 +175,7 @@ static void Hunt(const TColStd_Array1OfReal& Arr, const Standard_Real Coord, Sta
 
 //=================================================================================================
 
-static void ReverseParam(const Standard_Real In1,
-                         const Standard_Real In2,
-                         Standard_Real&      Out1,
-                         Standard_Real&      Out2)
+static void ReverseParam(const double In1, const double In2, double& Out1, double& Out2)
 {
 
   if (In1 > In2)
@@ -196,10 +192,7 @@ static void ReverseParam(const Standard_Real In1,
 
 //=================================================================================================
 
-static void ReverseParam(const Standard_Integer In1,
-                         const Standard_Integer In2,
-                         Standard_Integer&      Out1,
-                         Standard_Integer&      Out2)
+static void ReverseParam(const int In1, const int In2, int& Out1, int& Out2)
 {
   if (In1 > In2)
   {
@@ -215,25 +208,25 @@ static void ReverseParam(const Standard_Integer In1,
 
 //=================================================================================================
 
-static void FindBounds(const TColStd_Array1OfReal& Arr,
-                       const Standard_Real         Coord,
-                       const Standard_Real         Der,
-                       Standard_Integer&           Bound1,
-                       Standard_Integer&           Bound2,
-                       Standard_Boolean&           DerNull)
+static void FindBounds(const NCollection_Array1<double>& Arr,
+                       const double                      Coord,
+                       const double                      Der,
+                       int&                              Bound1,
+                       int&                              Bound2,
+                       bool&                             DerNull)
 
 {
-  Standard_Integer        N   = 0;
-  constexpr Standard_Real Tol = Precision::PConfusion() / 10;
+  int              N   = 0;
+  constexpr double Tol = Precision::PConfusion() / 10;
   Hunt(Arr, Coord, N);
-  DerNull = Standard_False;
+  DerNull = false;
 
   if (N == Bound1)
   {
     if (std::abs(Der) > Tol)
-      DerNull = Standard_False;
+      DerNull = false;
     if (std::abs(Der) <= Tol)
-      DerNull = Standard_True;
+      DerNull = true;
     Bound1 = N;
     Bound2 = N + 1;
     return;
@@ -241,9 +234,9 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
   if (N == Bound2)
   {
     if (std::abs(Der) > Tol)
-      DerNull = Standard_False;
+      DerNull = false;
     if (std::abs(Der) <= Tol)
-      DerNull = Standard_True;
+      DerNull = true;
     Bound1 = N - 1;
     Bound2 = N;
     return;
@@ -262,11 +255,11 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
         Bound1 = N - 1;
         Bound2 = N;
       }
-      DerNull = Standard_False;
+      DerNull = false;
     }
     if (std::abs(Der) <= Tol)
     {
-      DerNull = Standard_True;
+      DerNull = true;
       Bound1  = N - 1;
       Bound2  = N + 1;
     }
@@ -275,18 +268,18 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
 
 //=================================================================================================
 
-static void Locate1Coord(const Standard_Integer           Index,
-                         const gp_Pnt2d&                  UV,
-                         const gp_Vec2d&                  DUV,
-                         const Handle(Geom_BSplineCurve)& BSplC,
-                         gp_Pnt2d&                        LeftBot,
-                         gp_Pnt2d&                        RightTop)
+static void Locate1Coord(const int                             Index,
+                         const gp_Pnt2d&                       UV,
+                         const gp_Vec2d&                       DUV,
+                         const occ::handle<Geom_BSplineCurve>& BSplC,
+                         gp_Pnt2d&                             LeftBot,
+                         gp_Pnt2d&                             RightTop)
 {
-  Standard_Real           Comp1 = 0, DComp1 = 0, cur, f = 0.0, l = 0.0;
-  constexpr Standard_Real Tol     = Precision::PConfusion() / 10;
-  Standard_Integer        i       = 1, Bnd1, Bnd2;
-  Standard_Boolean        DIsNull = Standard_False;
-  TColStd_Array1OfReal    Arr(1, BSplC->NbKnots());
+  double                     Comp1 = 0, DComp1 = 0, cur, f = 0.0, l = 0.0;
+  constexpr double           Tol     = Precision::PConfusion() / 10;
+  int                        i       = 1, Bnd1, Bnd2;
+  bool                       DIsNull = false;
+  NCollection_Array1<double> Arr(1, BSplC->NbKnots());
   BSplC->Knots(Arr);
 
   if (Index == 1)
@@ -300,7 +293,7 @@ static void Locate1Coord(const Standard_Integer           Index,
     DComp1 = DUV.Y();
   }
 
-  Standard_Integer Lo = BSplC->FirstUKnotIndex(), Up = BSplC->LastUKnotIndex();
+  int Lo = BSplC->FirstUKnotIndex(), Up = BSplC->LastUKnotIndex();
 
   i = Lo;
   while ((std::abs(BSplC->Knot(i) - Comp1) > Tol) && (i != Up))
@@ -315,7 +308,7 @@ static void Locate1Coord(const Standard_Integer           Index,
     FindBounds(Arr, cur, DComp1, Bnd1, Bnd2, DIsNull);
     ReverseParam(Bnd1, Bnd2, Bnd1, Bnd2);
 
-    if (DIsNull == Standard_False)
+    if (DIsNull == false)
     {
       if (Index == 1)
       {
@@ -328,7 +321,7 @@ static void Locate1Coord(const Standard_Integer           Index,
         RightTop.SetY(BSplC->Knot(Bnd2));
       }
     }
-    else if (DIsNull == Standard_True)
+    else if (DIsNull == true)
     {
       if (std::abs(Comp1 - (f = BSplC->Knot(Lo))) <= Tol)
       {
@@ -446,20 +439,20 @@ static void Locate1Coord(const Standard_Integer           Index,
 
 //=================================================================================================
 
-static void Locate1Coord(const Standard_Integer             Index,
-                         const gp_Pnt2d&                    UV,
-                         const gp_Vec2d&                    DUV,
-                         const Handle(Geom_BSplineSurface)& BSplS,
-                         Standard_Boolean&                  DIsNull,
-                         gp_Pnt2d&                          LeftBot,
-                         gp_Pnt2d&                          RightTop)
+static void Locate1Coord(const int                               Index,
+                         const gp_Pnt2d&                         UV,
+                         const gp_Vec2d&                         DUV,
+                         const occ::handle<Geom_BSplineSurface>& BSplS,
+                         bool&                                   DIsNull,
+                         gp_Pnt2d&                               LeftBot,
+                         gp_Pnt2d&                               RightTop)
 {
-  Standard_Real           Comp1 = 0, DComp1 = 0;
-  constexpr Standard_Real Tol = Precision::PConfusion() / 10;
-  Standard_Integer        i = 1, Up = 0, Up1, Up2, Down = 0, Down1, Down2;
-  Standard_Real           cur = 0.;
+  double           Comp1 = 0, DComp1 = 0;
+  constexpr double Tol = Precision::PConfusion() / 10;
+  int              i = 1, Up = 0, Up1, Up2, Down = 0, Down1, Down2;
+  double           cur = 0.;
 
-  DIsNull = Standard_False;
+  DIsNull = false;
 
   Up1   = BSplS->LastUKnotIndex();
   Down1 = BSplS->FirstUKnotIndex();
@@ -499,23 +492,23 @@ static void Locate1Coord(const Standard_Integer             Index,
 
   if (std::abs(Comp1 - cur) <= Tol)
   {
-    Standard_Integer Bnd1 = Down, Bnd2 = Up;
+    int Bnd1 = Down, Bnd2 = Up;
     if (Index == 1)
     {
-      TColStd_Array1OfReal Arr1(1, BSplS->NbUKnots());
+      NCollection_Array1<double> Arr1(1, BSplS->NbUKnots());
       BSplS->UKnots(Arr1); //   Up1=Arr1.Upper(); Down1=Arr1.Lower();
       FindBounds(Arr1, cur, DUV.X(), Bnd1, Bnd2, DIsNull);
     }
     else if (Index == 2)
     {
-      TColStd_Array1OfReal Arr2(1, BSplS->NbVKnots());
+      NCollection_Array1<double> Arr2(1, BSplS->NbVKnots());
       BSplS->VKnots(Arr2); //   Up2=Arr2.Upper(); Down2=Arr2.Lower();
       FindBounds(Arr2, cur, DUV.Y(), Bnd1, Bnd2, DIsNull);
     }
 
     ReverseParam(Bnd1, Bnd2, Bnd1, Bnd2);
 
-    if (DIsNull == Standard_False)
+    if (DIsNull == false)
     {
       if (Index == 1)
       {
@@ -557,7 +550,7 @@ static void Locate1Coord(const Standard_Integer             Index,
     }
     else
     {
-      Standard_Real f = 0., l = 1.;
+      double f = 0., l = 1.;
       if (Index == 1)
       {
         f = BSplS->UKnot(Down);
@@ -662,16 +655,16 @@ static void Locate1Coord(const Standard_Integer             Index,
 // purpose  : along non-BSpline curve
 //=======================================================================
 
-static void Locate2Coord(const Standard_Integer Index,
-                         const gp_Pnt2d&        UV,
-                         const gp_Vec2d&        DUV,
-                         const Standard_Real    I1,
-                         const Standard_Real    I2,
-                         gp_Pnt2d&              LeftBot,
-                         gp_Pnt2d&              RightTop)
+static void Locate2Coord(const int       Index,
+                         const gp_Pnt2d& UV,
+                         const gp_Vec2d& DUV,
+                         const double    I1,
+                         const double    I2,
+                         gp_Pnt2d&       LeftBot,
+                         gp_Pnt2d&       RightTop)
 {
-  constexpr Standard_Real Tol   = Precision::PConfusion() / 10;
-  Standard_Real           Comp1 = 0, DComp1 = 0;
+  constexpr double Tol   = Precision::PConfusion() / 10;
+  double           Comp1 = 0, DComp1 = 0;
   if (Index == 1)
   {
     Comp1  = UV.X();
@@ -771,17 +764,17 @@ static void Locate2Coord(const Standard_Integer Index,
 
 //=================================================================================================
 
-static void Locate2Coord(const Standard_Integer             Index,
-                         const gp_Pnt2d&                    UV,
-                         const gp_Vec2d&                    DUV,
-                         const Handle(Geom_BSplineSurface)& BSplS,
-                         const TColStd_Array1OfReal&        Arr,
-                         gp_Pnt2d&                          LeftBot,
-                         gp_Pnt2d&                          RightTop)
+static void Locate2Coord(const int                               Index,
+                         const gp_Pnt2d&                         UV,
+                         const gp_Vec2d&                         DUV,
+                         const occ::handle<Geom_BSplineSurface>& BSplS,
+                         const NCollection_Array1<double>&       Arr,
+                         gp_Pnt2d&                               LeftBot,
+                         gp_Pnt2d&                               RightTop)
 {
-  Standard_Real           Comp = 0, DComp = 0, Tmp1 = 0.0, Tmp2 = 0.0;
-  constexpr Standard_Real Tol = Precision::PConfusion() / 10;
-  Standard_Integer        N = 0, NUp = 0, NLo = 0;
+  double           Comp = 0, DComp = 0, Tmp1 = 0.0, Tmp2 = 0.0;
+  constexpr double Tol = Precision::PConfusion() / 10;
+  int              N = 0, NUp = 0, NLo = 0;
   if (Index == 1)
   {
     Comp  = UV.X();
@@ -873,7 +866,7 @@ Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface()
 
 //=================================================================================================
 
-Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface(const Handle(Adaptor3d_Surface)& S)
+Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface(const occ::handle<Adaptor3d_Surface>& S)
     : myType(GeomAbs_OtherCurve),
       myIntCont(GeomAbs_CN)
 {
@@ -882,8 +875,8 @@ Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface(const Handle(Adaptor3d_Surfac
 
 //=================================================================================================
 
-Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& C,
-                                                   const Handle(Adaptor3d_Surface)& S)
+Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface(const occ::handle<Adaptor2d_Curve2d>& C,
+                                                   const occ::handle<Adaptor3d_Surface>& S)
     : myType(GeomAbs_OtherCurve),
       myIntCont(GeomAbs_CN)
 {
@@ -893,9 +886,9 @@ Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface(const Handle(Adaptor2d_Curve2
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) Adaptor3d_CurveOnSurface::ShallowCopy() const
+occ::handle<Adaptor3d_Curve> Adaptor3d_CurveOnSurface::ShallowCopy() const
 {
-  Handle(Adaptor3d_CurveOnSurface) aCopy = new Adaptor3d_CurveOnSurface();
+  occ::handle<Adaptor3d_CurveOnSurface> aCopy = new Adaptor3d_CurveOnSurface();
 
   if (!mySurface.IsNull())
   {
@@ -924,7 +917,7 @@ Handle(Adaptor3d_Curve) Adaptor3d_CurveOnSurface::ShallowCopy() const
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor3d_Surface)& S)
+void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurface = S;
   if (!myCurve.IsNull())
@@ -933,7 +926,7 @@ void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor3d_Surface)& S)
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_Curve2d)& C)
+void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor2d_Curve2d>& C)
 {
   myCurve = C;
   if (mySurface.IsNull())
@@ -958,8 +951,8 @@ void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_Curve2d)& C)
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_Curve2d)& C,
-                                    const Handle(Adaptor3d_Surface)& S)
+void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor2d_Curve2d>& C,
+                                    const occ::handle<Adaptor3d_Surface>& S)
 {
   Load(C);
   Load(S);
@@ -967,14 +960,14 @@ void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_Curve2d)& C,
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_CurveOnSurface::FirstParameter() const
+double Adaptor3d_CurveOnSurface::FirstParameter() const
 {
   return myCurve->FirstParameter();
 }
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_CurveOnSurface::LastParameter() const
+double Adaptor3d_CurveOnSurface::LastParameter() const
 {
   return myCurve->LastParameter();
 }
@@ -996,23 +989,23 @@ GeomAbs_Shape Adaptor3d_CurveOnSurface::Continuity() const
 
 // Auxiliary: adds roots of equation to sorted sequence of parameters
 // along curve, keeping it sorted and avoiding repetitions (within tolerance Tol)
-static void AddIntervals(const Handle(TColStd_HSequenceOfReal)& theParameters,
-                         const math_FunctionRoots&              theRoots,
-                         Standard_Real                          theTol)
+static void AddIntervals(const occ::handle<NCollection_HSequence<double>>& theParameters,
+                         const math_FunctionRoots&                         theRoots,
+                         double                                            theTol)
 {
   if (!theRoots.IsDone() || theRoots.IsAllNull())
     return;
 
-  Standard_Integer nsol = theRoots.NbSolutions();
-  for (Standard_Integer i = 1; i <= nsol; i++)
+  int nsol = theRoots.NbSolutions();
+  for (int i = 1; i <= nsol; i++)
   {
-    Standard_Real param = theRoots.Value(i);
+    double param = theRoots.Value(i);
     if (param - theParameters->Value(1)
         < theTol) // skip param if equal to or less than theParameters(1)
       continue;
-    for (Standard_Integer j = 2; j <= theParameters->Length(); ++j)
+    for (int j = 2; j <= theParameters->Length(); ++j)
     {
-      Standard_Real aDelta = theParameters->Value(j) - param;
+      double aDelta = theParameters->Value(j) - param;
       if (aDelta > theTol)
       {
         theParameters->InsertBefore(j, param);
@@ -1026,36 +1019,36 @@ static void AddIntervals(const Handle(TColStd_HSequenceOfReal)& theParameters,
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) const
+int Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) const
 {
   if (S == myIntCont && !myIntervals.IsNull())
     return myIntervals->Length() - 1;
 
-  Standard_Integer nu, nv, nc;
+  int nu, nv, nc;
   nu = mySurface->NbUIntervals(S);
   nv = mySurface->NbVIntervals(S);
   nc = myCurve->NbIntervals(S);
 
   // Allocate the memory for arrays TabU, TabV, TabC only once using the buffer TabBuf.
-  TColStd_Array1OfReal TabBuf(1, nu + nv + nc + 3);
-  TColStd_Array1OfReal TabU(TabBuf(1), 1, nu + 1);
-  TColStd_Array1OfReal TabV(TabBuf(nu + 2), 1, nv + 1);
-  TColStd_Array1OfReal TabC(TabBuf(nu + nv + 3), 1, nc + 1);
+  NCollection_Array1<double> TabBuf(1, nu + nv + nc + 3);
+  NCollection_Array1<double> TabU(TabBuf(1), 1, nu + 1);
+  NCollection_Array1<double> TabV(TabBuf(nu + 2), 1, nv + 1);
+  NCollection_Array1<double> TabC(TabBuf(nu + nv + 3), 1, nc + 1);
 
-  Standard_Integer NbSample = 20;
-  Standard_Real    U, V, Tdeb, Tfin;
+  int    NbSample = 20;
+  double U, V, Tdeb, Tfin;
   Tdeb = myCurve->FirstParameter();
   Tfin = myCurve->LastParameter();
 
   myCurve->Intervals(TabC, S);
 
-  constexpr Standard_Real Tol = Precision::PConfusion() / 10;
+  constexpr double Tol = Precision::PConfusion() / 10;
 
   // sorted sequence of parameters defining continuity intervals;
   // started with own intervals of curve and completed by
   // additional points coming from surface discontinuities
-  Handle(TColStd_HSequenceOfReal) aIntervals = new TColStd_HSequenceOfReal;
-  for (Standard_Integer i = 1; i <= nc + 1; i++)
+  occ::handle<NCollection_HSequence<double>> aIntervals = new NCollection_HSequence<double>;
+  for (int i = 1; i <= nc + 1; i++)
   {
     aIntervals->Append(TabC(i));
   }
@@ -1063,7 +1056,7 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) co
   if (nu > 1)
   {
     mySurface->UIntervals(TabU, S);
-    for (Standard_Integer iu = 2; iu <= nu; iu++)
+    for (int iu = 2; iu <= nu; iu++)
     {
       U = TabU.Value(iu);
       Adaptor3d_InterFunc Func(myCurve, U, 1);
@@ -1074,7 +1067,7 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) co
   if (nv > 1)
   {
     mySurface->VIntervals(TabV, S);
-    for (Standard_Integer iv = 2; iv <= nv; iv++)
+    for (int iv = 2; iv <= nv; iv++)
     {
       V = TabV.Value(iv);
       Adaptor3d_InterFunc Func(myCurve, V, 2);
@@ -1096,13 +1089,13 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) co
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void Adaptor3d_CurveOnSurface::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   NbIntervals(S);
   Standard_ASSERT_RAISE(
     T.Length() == myIntervals->Length(),
     "Error: Wrong size of array buffer in call to Adaptor3d_CurveOnSurface::Intervals");
-  for (Standard_Integer i = 1; i <= myIntervals->Length(); i++)
+  for (int i = 1; i <= myIntervals->Length(); i++)
   {
     T(i) = myIntervals->Value(i);
   }
@@ -1110,11 +1103,11 @@ void Adaptor3d_CurveOnSurface::Intervals(TColStd_Array1OfReal& T, const GeomAbs_
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) Adaptor3d_CurveOnSurface::Trim(const Standard_Real First,
-                                                       const Standard_Real Last,
-                                                       const Standard_Real Tol) const
+occ::handle<Adaptor3d_Curve> Adaptor3d_CurveOnSurface::Trim(const double First,
+                                                            const double Last,
+                                                            const double Tol) const
 {
-  Handle(Adaptor3d_CurveOnSurface) HCS = new Adaptor3d_CurveOnSurface();
+  occ::handle<Adaptor3d_CurveOnSurface> HCS = new Adaptor3d_CurveOnSurface();
   HCS->Load(mySurface);
   HCS->Load(myCurve->Trim(First, Last, Tol));
   return HCS;
@@ -1122,24 +1115,24 @@ Handle(Adaptor3d_Curve) Adaptor3d_CurveOnSurface::Trim(const Standard_Real First
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_CurveOnSurface::IsClosed() const
+bool Adaptor3d_CurveOnSurface::IsClosed() const
 {
   return myCurve->IsClosed();
 }
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_CurveOnSurface::IsPeriodic() const
+bool Adaptor3d_CurveOnSurface::IsPeriodic() const
 {
   if (myType == GeomAbs_Circle || myType == GeomAbs_Ellipse)
-    return Standard_True;
+    return true;
 
   return myCurve->IsPeriodic();
 }
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_CurveOnSurface::Period() const
+double Adaptor3d_CurveOnSurface::Period() const
 {
   if (myType == GeomAbs_Circle || myType == GeomAbs_Ellipse)
     return (2. * M_PI);
@@ -1149,7 +1142,7 @@ Standard_Real Adaptor3d_CurveOnSurface::Period() const
 
 //=================================================================================================
 
-gp_Pnt Adaptor3d_CurveOnSurface::Value(const Standard_Real U) const
+gp_Pnt Adaptor3d_CurveOnSurface::Value(const double U) const
 {
   gp_Pnt   P;
   gp_Pnt2d Puv;
@@ -1169,7 +1162,7 @@ gp_Pnt Adaptor3d_CurveOnSurface::Value(const Standard_Real U) const
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::D0(const Standard_Real U, gp_Pnt& P) const
+void Adaptor3d_CurveOnSurface::D0(const double U, gp_Pnt& P) const
 {
   gp_Pnt2d Puv;
 
@@ -1186,16 +1179,16 @@ void Adaptor3d_CurveOnSurface::D0(const Standard_Real U, gp_Pnt& P) const
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
+void Adaptor3d_CurveOnSurface::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
   gp_Pnt2d Puv;
   gp_Vec2d Duv;
   gp_Vec   D1U, D1V;
 
-  Standard_Real FP = myCurve->FirstParameter();
-  Standard_Real LP = myCurve->LastParameter();
+  double FP = myCurve->FirstParameter();
+  double LP = myCurve->LastParameter();
 
-  constexpr Standard_Real Tol = Precision::PConfusion() / 10;
+  constexpr double Tol = Precision::PConfusion() / 10;
   if ((std::abs(U - FP) < Tol) && (!myFirstSurf.IsNull()))
   {
     myCurve->D1(U, Puv, Duv);
@@ -1222,16 +1215,16 @@ void Adaptor3d_CurveOnSurface::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) c
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+void Adaptor3d_CurveOnSurface::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
   gp_Pnt2d UV;
   gp_Vec2d DW, D2W;
   gp_Vec   D1U, D1V, D2U, D2V, D2UV;
 
-  Standard_Real FP = myCurve->FirstParameter();
-  Standard_Real LP = myCurve->LastParameter();
+  double FP = myCurve->FirstParameter();
+  double LP = myCurve->LastParameter();
 
-  constexpr Standard_Real Tol = Precision::PConfusion() / 10;
+  constexpr double Tol = Precision::PConfusion() / 10;
   if ((std::abs(U - FP) < Tol) && (!myFirstSurf.IsNull()))
   {
     myCurve->D2(U, UV, DW, D2W);
@@ -1270,20 +1263,20 @@ void Adaptor3d_CurveOnSurface::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, 
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::D3(const Standard_Real U,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1,
-                                  gp_Vec&             V2,
-                                  gp_Vec&             V3) const
+void Adaptor3d_CurveOnSurface::D3(const double U,
+                                  gp_Pnt&      P,
+                                  gp_Vec&      V1,
+                                  gp_Vec&      V2,
+                                  gp_Vec&      V3) const
 {
 
-  constexpr Standard_Real Tol = Precision::PConfusion() / 10;
-  gp_Pnt2d                UV;
-  gp_Vec2d                DW, D2W, D3W;
-  gp_Vec                  D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV;
+  constexpr double Tol = Precision::PConfusion() / 10;
+  gp_Pnt2d         UV;
+  gp_Vec2d         DW, D2W, D3W;
+  gp_Vec           D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV;
 
-  Standard_Real FP = myCurve->FirstParameter();
-  Standard_Real LP = myCurve->LastParameter();
+  double FP = myCurve->FirstParameter();
+  double LP = myCurve->LastParameter();
 
   if ((std::abs(U - FP) < Tol) && (!myFirstSurf.IsNull()))
   {
@@ -1328,7 +1321,7 @@ void Adaptor3d_CurveOnSurface::D3(const Standard_Real U,
 
 //=================================================================================================
 
-gp_Vec Adaptor3d_CurveOnSurface::DN(const Standard_Real U, const Standard_Integer N) const
+gp_Vec Adaptor3d_CurveOnSurface::DN(const double U, const int N) const
 {
   gp_Pnt P;
   gp_Vec V1, V2, V;
@@ -1352,9 +1345,9 @@ gp_Vec Adaptor3d_CurveOnSurface::DN(const Standard_Real U, const Standard_Intege
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_CurveOnSurface::Resolution(const Standard_Real R3d) const
+double Adaptor3d_CurveOnSurface::Resolution(const double R3d) const
 {
-  Standard_Real ru, rv;
+  double ru, rv;
   ru = mySurface->UResolution(R3d);
   rv = mySurface->VResolution(R3d);
   return myCurve->Resolution(std::min(ru, rv));
@@ -1406,7 +1399,7 @@ gp_Parab Adaptor3d_CurveOnSurface::Parabola() const
   return to3d(mySurface->Plane(), myCurve->Parabola());
 }
 
-Standard_Integer Adaptor3d_CurveOnSurface::Degree() const
+int Adaptor3d_CurveOnSurface::Degree() const
 {
 
   // on a parametric surface should multiply
@@ -1417,14 +1410,14 @@ Standard_Integer Adaptor3d_CurveOnSurface::Degree() const
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_CurveOnSurface::IsRational() const
+bool Adaptor3d_CurveOnSurface::IsRational() const
 {
   return (myCurve->IsRational() || mySurface->IsURational() || mySurface->IsVRational());
 }
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_CurveOnSurface::NbPoles() const
+int Adaptor3d_CurveOnSurface::NbPoles() const
 {
   // on a parametric surface should multiply
   return myCurve->NbPoles();
@@ -1432,7 +1425,7 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbPoles() const
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_CurveOnSurface::NbKnots() const
+int Adaptor3d_CurveOnSurface::NbKnots() const
 {
   if (mySurface->GetType() == GeomAbs_Plane)
     return myCurve->NbKnots();
@@ -1444,26 +1437,26 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbKnots() const
 
 //=================================================================================================
 
-Handle(Geom_BezierCurve) Adaptor3d_CurveOnSurface::Bezier() const
+occ::handle<Geom_BezierCurve> Adaptor3d_CurveOnSurface::Bezier() const
 {
   Standard_NoSuchObject_Raise_if(mySurface->GetType() != GeomAbs_Plane,
                                  "Adaptor3d_CurveOnSurface : Bezier");
 
-  Handle(Geom2d_BezierCurve) Bez2d   = myCurve->Bezier();
-  Standard_Integer           NbPoles = Bez2d->NbPoles();
+  occ::handle<Geom2d_BezierCurve> Bez2d   = myCurve->Bezier();
+  int                             NbPoles = Bez2d->NbPoles();
 
   const gp_Pln& Plane = mySurface->Plane();
 
-  TColgp_Array1OfPnt Poles(1, NbPoles);
-  for (Standard_Integer i = 1; i <= NbPoles; i++)
+  NCollection_Array1<gp_Pnt> Poles(1, NbPoles);
+  for (int i = 1; i <= NbPoles; i++)
   {
     Poles(i) = to3d(Plane, Bez2d->Pole(i));
   }
-  Handle(Geom_BezierCurve) Bez;
+  occ::handle<Geom_BezierCurve> Bez;
 
   if (Bez2d->IsRational())
   {
-    TColStd_Array1OfReal Weights(1, NbPoles);
+    NCollection_Array1<double> Weights(1, NbPoles);
     Bez2d->Weights(Weights);
     Bez = new Geom_BezierCurve(Poles, Weights);
   }
@@ -1476,32 +1469,32 @@ Handle(Geom_BezierCurve) Adaptor3d_CurveOnSurface::Bezier() const
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) Adaptor3d_CurveOnSurface::BSpline() const
+occ::handle<Geom_BSplineCurve> Adaptor3d_CurveOnSurface::BSpline() const
 {
   Standard_NoSuchObject_Raise_if(mySurface->GetType() != GeomAbs_Plane,
                                  "Adaptor3d_CurveOnSurface : BSpline");
 
-  Handle(Geom2d_BSplineCurve) Bsp2d   = myCurve->BSpline();
-  Standard_Integer            NbPoles = Bsp2d->NbPoles();
+  occ::handle<Geom2d_BSplineCurve> Bsp2d   = myCurve->BSpline();
+  int                              NbPoles = Bsp2d->NbPoles();
 
   const gp_Pln& Plane = mySurface->Plane();
 
-  TColgp_Array1OfPnt Poles(1, NbPoles);
-  for (Standard_Integer i = 1; i <= NbPoles; i++)
+  NCollection_Array1<gp_Pnt> Poles(1, NbPoles);
+  for (int i = 1; i <= NbPoles; i++)
   {
     Poles(i) = to3d(Plane, Bsp2d->Pole(i));
   }
 
-  TColStd_Array1OfReal    Knots(1, Bsp2d->NbKnots());
-  TColStd_Array1OfInteger Mults(1, Bsp2d->NbKnots());
+  NCollection_Array1<double> Knots(1, Bsp2d->NbKnots());
+  NCollection_Array1<int>    Mults(1, Bsp2d->NbKnots());
   Bsp2d->Knots(Knots);
   Bsp2d->Multiplicities(Mults);
 
-  Handle(Geom_BSplineCurve) Bsp;
+  occ::handle<Geom_BSplineCurve> Bsp;
 
   if (Bsp2d->IsRational())
   {
-    TColStd_Array1OfReal Weights(1, NbPoles);
+    NCollection_Array1<double> Weights(1, NbPoles);
     Bsp2d->Weights(Weights);
     Bsp = new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Bsp2d->Degree(), Bsp2d->IsPeriodic());
   }
@@ -1514,28 +1507,28 @@ Handle(Geom_BSplineCurve) Adaptor3d_CurveOnSurface::BSpline() const
 
 //=================================================================================================
 
-const Handle(Adaptor2d_Curve2d)& Adaptor3d_CurveOnSurface::GetCurve() const
+const occ::handle<Adaptor2d_Curve2d>& Adaptor3d_CurveOnSurface::GetCurve() const
 {
   return myCurve;
 }
 
 //=================================================================================================
 
-const Handle(Adaptor3d_Surface)& Adaptor3d_CurveOnSurface::GetSurface() const
+const occ::handle<Adaptor3d_Surface>& Adaptor3d_CurveOnSurface::GetSurface() const
 {
   return mySurface;
 }
 
 //=================================================================================================
 
-Handle(Adaptor2d_Curve2d)& Adaptor3d_CurveOnSurface::ChangeCurve()
+occ::handle<Adaptor2d_Curve2d>& Adaptor3d_CurveOnSurface::ChangeCurve()
 {
   return myCurve;
 }
 
 //=================================================================================================
 
-Handle(Adaptor3d_Surface)& Adaptor3d_CurveOnSurface::ChangeSurface()
+occ::handle<Adaptor3d_Surface>& Adaptor3d_CurveOnSurface::ChangeSurface()
 {
   return mySurface;
 }
@@ -1722,17 +1715,17 @@ void Adaptor3d_CurveOnSurface::EvalKPart()
 
 void Adaptor3d_CurveOnSurface::EvalFirstLastSurf()
 {
-  Standard_Real           FirstPar, LastPar;
-  gp_Pnt2d                UV, LeftBot, RightTop;
-  gp_Vec2d                DUV;
-  constexpr Standard_Real Tol = Precision::PConfusion() / 10;
-  Standard_Boolean        Ok  = Standard_True;
+  double           FirstPar, LastPar;
+  gp_Pnt2d         UV, LeftBot, RightTop;
+  gp_Vec2d         DUV;
+  constexpr double Tol = Precision::PConfusion() / 10;
+  bool             Ok  = true;
 
   FirstPar = myCurve->FirstParameter();
   myCurve->D1(FirstPar, UV, DUV);
 
   if (DUV.Magnitude() <= Tol)
-    Ok = Standard_False;
+    Ok = false;
 
   if (Ok)
   {
@@ -1769,12 +1762,12 @@ void Adaptor3d_CurveOnSurface::EvalFirstLastSurf()
   }
 
   LastPar = myCurve->LastParameter();
-  Ok      = Standard_True;
+  Ok      = true;
   myCurve->D1(LastPar, UV, DUV);
   DUV.Reverse(); // We want the other part
 
   if (DUV.Magnitude() <= Tol)
-    Ok = Standard_False;
+    Ok = false;
 
   if (Ok)
   {
@@ -1813,17 +1806,17 @@ void Adaptor3d_CurveOnSurface::EvalFirstLastSurf()
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d&                  UV,
-                                                             const gp_Vec2d&                  DUV,
-                                                             const Handle(Adaptor3d_Surface)& S,
-                                                             gp_Pnt2d& LeftBot,
-                                                             gp_Pnt2d& RightTop) const
+bool Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d&                       UV,
+                                                 const gp_Vec2d&                       DUV,
+                                                 const occ::handle<Adaptor3d_Surface>& S,
+                                                 gp_Pnt2d&                             LeftBot,
+                                                 gp_Pnt2d& RightTop) const
 {
-  Handle(Adaptor3d_Curve) AHC = S->BasisCurve();
+  occ::handle<Adaptor3d_Curve> AHC = S->BasisCurve();
 
   if (AHC->GetType() == GeomAbs_BSplineCurve)
   {
-    Handle(Geom_BSplineCurve) BSplC;
+    occ::handle<Geom_BSplineCurve> BSplC;
     BSplC = AHC->BSpline();
 
     if ((S->GetType()) == GeomAbs_SurfaceOfExtrusion)
@@ -1837,29 +1830,29 @@ Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d&    
       Locate2Coord(1, UV, DUV, S->FirstUParameter(), S->LastUParameter(), LeftBot, RightTop);
     }
 
-    Standard_Real u1, u2, v1, v2;
+    double u1, u2, v1, v2;
     ReverseParam(LeftBot.X(), RightTop.X(), u1, u2);
     LeftBot.SetX(u1);
     RightTop.SetX(u2);
     ReverseParam(LeftBot.Y(), RightTop.Y(), v1, v2);
     LeftBot.SetY(v1);
     RightTop.SetY(v2);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_Offset(const gp_Pnt2d&                  UV,
-                                                             const gp_Vec2d&                  DUV,
-                                                             const Handle(Adaptor3d_Surface)& S,
-                                                             gp_Pnt2d& LeftBot,
-                                                             gp_Pnt2d& RightTop) const
+bool Adaptor3d_CurveOnSurface::LocatePart_Offset(const gp_Pnt2d&                       UV,
+                                                 const gp_Vec2d&                       DUV,
+                                                 const occ::handle<Adaptor3d_Surface>& S,
+                                                 gp_Pnt2d&                             LeftBot,
+                                                 gp_Pnt2d& RightTop) const
 {
-  Standard_Boolean            Ok = Standard_True;
-  Handle(Adaptor3d_Surface)   AHS;
-  Handle(Geom_BSplineSurface) BSplS;
+  bool                             Ok = true;
+  occ::handle<Adaptor3d_Surface>   AHS;
+  occ::handle<Geom_BSplineSurface> BSplS;
   AHS                            = S->BasisSurface();
   GeomAbs_SurfaceType BasisSType = AHS->GetType();
   switch (BasisSType)
@@ -1874,35 +1867,35 @@ Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_Offset(const gp_Pnt2d&    
       break;
 
     default:
-      Ok = Standard_False;
+      Ok = false;
   }
   return Ok;
 }
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::LocatePart(const gp_Pnt2d&                  UV,
-                                          const gp_Vec2d&                  DUV,
-                                          const Handle(Adaptor3d_Surface)& S,
-                                          gp_Pnt2d&                        LeftBot,
-                                          gp_Pnt2d&                        RightTop) const
+void Adaptor3d_CurveOnSurface::LocatePart(const gp_Pnt2d&                       UV,
+                                          const gp_Vec2d&                       DUV,
+                                          const occ::handle<Adaptor3d_Surface>& S,
+                                          gp_Pnt2d&                             LeftBot,
+                                          gp_Pnt2d&                             RightTop) const
 {
-  Handle(Geom_BSplineSurface) BSplS;
-  BSplS                     = S->BSpline();
-  Standard_Boolean DUIsNull = Standard_False, DVIsNull = Standard_False;
+  occ::handle<Geom_BSplineSurface> BSplS;
+  BSplS         = S->BSpline();
+  bool DUIsNull = false, DVIsNull = false;
 
   Locate1Coord(1, UV, DUV, BSplS, DUIsNull, LeftBot, RightTop);
   Locate1Coord(2, UV, DUV, BSplS, DVIsNull, LeftBot, RightTop);
 
-  if ((DUIsNull == Standard_True) && (DVIsNull == Standard_False))
+  if ((DUIsNull == true) && (DVIsNull == false))
   {
-    TColStd_Array1OfReal ArrU(1, BSplS->NbUKnots());
+    NCollection_Array1<double> ArrU(1, BSplS->NbUKnots());
     BSplS->UKnots(ArrU);
     Locate2Coord(1, UV, DUV, BSplS, ArrU, LeftBot, RightTop);
   }
-  else if ((DVIsNull == Standard_True) && (DUIsNull == Standard_False))
+  else if ((DVIsNull == true) && (DUIsNull == false))
   {
-    TColStd_Array1OfReal ArrV(1, BSplS->NbVKnots());
+    NCollection_Array1<double> ArrV(1, BSplS->NbVKnots());
     BSplS->VKnots(ArrV);
     Locate2Coord(2, UV, DUV, BSplS, ArrV, LeftBot, RightTop);
   }

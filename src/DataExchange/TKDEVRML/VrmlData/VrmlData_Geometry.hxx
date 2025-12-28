@@ -33,7 +33,7 @@ public:
    * Empty constructor
    */
   inline VrmlData_Geometry()
-      : myIsModified(Standard_True)
+      : myIsModified(true)
   {
   }
 
@@ -42,7 +42,7 @@ public:
    */
   inline VrmlData_Geometry(const VrmlData_Scene& theScene, const char* theName)
       : VrmlData_Node(theScene, theName),
-        myIsModified(Standard_True)
+        myIsModified(true)
   {
   }
 
@@ -50,7 +50,7 @@ public:
    * Query the shape. This method checks the flag myIsModified; if True it
    * should rebuild the shape presentation.
    */
-  Standard_EXPORT virtual const Handle(TopoDS_TShape)& TShape() = 0;
+  Standard_EXPORT virtual const occ::handle<TopoDS_TShape>& TShape() = 0;
 
 protected:
   // ---------- PROTECTED METHODS ----------
@@ -58,18 +58,18 @@ protected:
   /**
    * Set the TShape.
    */
-  inline void SetTShape(const Handle(TopoDS_TShape)& theTShape) { myTShape = theTShape; }
+  inline void SetTShape(const occ::handle<TopoDS_TShape>& theTShape) { myTShape = theTShape; }
 
   /**
    * Mark modification
    */
-  inline void SetModified() { myIsModified = Standard_True; }
+  inline void SetModified() { myIsModified = true; }
 
 protected:
   // ---------- PROTECTED FIELDS ----------
 
-  Handle(TopoDS_TShape) myTShape;
-  Standard_Boolean      myIsModified;
+  occ::handle<TopoDS_TShape> myTShape;
+  bool                       myIsModified;
 
 public:
   // Declaration of CASCADE RTTI
@@ -77,6 +77,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(VrmlData_Geometry, VrmlData_Node)
-
 #endif

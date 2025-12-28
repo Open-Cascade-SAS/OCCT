@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepRepr_ShapeAspect;
 
-class StepShape_AngularLocation;
-DEFINE_STANDARD_HANDLE(StepShape_AngularLocation, StepShape_DimensionalLocation)
-
 //! Representation of STEP entity AngularLocation
 class StepShape_AngularLocation : public StepShape_DimensionalLocation
 {
@@ -37,12 +34,12 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)& aShapeAspectRelationship_Name,
-    const Standard_Boolean                  hasShapeAspectRelationship_Description,
-    const Handle(TCollection_HAsciiString)& aShapeAspectRelationship_Description,
-    const Handle(StepRepr_ShapeAspect)&     aShapeAspectRelationship_RelatingShapeAspect,
-    const Handle(StepRepr_ShapeAspect)&     aShapeAspectRelationship_RelatedShapeAspect,
-    const StepShape_AngleRelator            aAngleSelection);
+    const occ::handle<TCollection_HAsciiString>& aShapeAspectRelationship_Name,
+    const bool                                   hasShapeAspectRelationship_Description,
+    const occ::handle<TCollection_HAsciiString>& aShapeAspectRelationship_Description,
+    const occ::handle<StepRepr_ShapeAspect>&     aShapeAspectRelationship_RelatingShapeAspect,
+    const occ::handle<StepRepr_ShapeAspect>&     aShapeAspectRelationship_RelatedShapeAspect,
+    const StepShape_AngleRelator                 aAngleSelection);
 
   //! Returns field AngleSelection
   Standard_EXPORT StepShape_AngleRelator AngleSelection() const;
@@ -52,7 +49,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_AngularLocation, StepShape_DimensionalLocation)
 
-protected:
 private:
   StepShape_AngleRelator theAngleSelection;
 };

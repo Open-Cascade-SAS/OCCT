@@ -32,7 +32,7 @@ protected:
 TEST_F(NCollection_ListTest, DefaultConstructor)
 {
   // Default constructor should create an empty list
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   EXPECT_TRUE(aList.IsEmpty());
   EXPECT_EQ(0, aList.Size());
   EXPECT_EQ(0, aList.Extent());
@@ -40,7 +40,7 @@ TEST_F(NCollection_ListTest, DefaultConstructor)
 
 TEST_F(NCollection_ListTest, Append)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
 
   // Test Append method
   EXPECT_EQ(10, aList.Append(10));
@@ -57,7 +57,7 @@ TEST_F(NCollection_ListTest, Append)
 
 TEST_F(NCollection_ListTest, Prepend)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
 
   // Test Prepend method
   EXPECT_EQ(30, aList.Prepend(30));
@@ -74,15 +74,15 @@ TEST_F(NCollection_ListTest, Prepend)
 
 TEST_F(NCollection_ListTest, IteratorAccess)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   aList.Append(10);
   aList.Append(20);
   aList.Append(30);
 
   // Test iteration using OCCT iterator
-  NCollection_List<Standard_Integer>::Iterator it(aList);
-  Standard_Integer                             expectedValues[] = {10, 20, 30};
-  Standard_Integer                             index            = 0;
+  NCollection_List<int>::Iterator it(aList);
+  int                             expectedValues[] = {10, 20, 30};
+  int                             index            = 0;
 
   for (; it.More(); it.Next(), index++)
   {
@@ -93,14 +93,14 @@ TEST_F(NCollection_ListTest, IteratorAccess)
 
 TEST_F(NCollection_ListTest, STLIterators)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   aList.Append(10);
   aList.Append(20);
   aList.Append(30);
 
   // Test STL-compatible iterators
-  Standard_Integer expectedValues[] = {10, 20, 30};
-  Standard_Integer index            = 0;
+  int expectedValues[] = {10, 20, 30};
+  int index            = 0;
 
   for (auto it = aList.begin(); it != aList.end(); ++it, ++index)
   {
@@ -119,7 +119,7 @@ TEST_F(NCollection_ListTest, STLIterators)
 
 TEST_F(NCollection_ListTest, RemoveFirst)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   aList.Append(10);
   aList.Append(20);
   aList.Append(30);
@@ -139,13 +139,13 @@ TEST_F(NCollection_ListTest, RemoveFirst)
 
 TEST_F(NCollection_ListTest, Remove)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   aList.Append(10);
   aList.Append(20);
   aList.Append(30);
 
   // Test Remove with iterator
-  NCollection_List<Standard_Integer>::Iterator it(aList);
+  NCollection_List<int>::Iterator it(aList);
   it.Next();        // Point to second element (20)
   aList.Remove(it); // Remove 20, iterator now points to 30
 
@@ -158,7 +158,7 @@ TEST_F(NCollection_ListTest, Remove)
 
 TEST_F(NCollection_ListTest, RemoveByValue)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   aList.Append(10);
   aList.Append(20);
   aList.Append(10); // Add duplicate
@@ -181,7 +181,7 @@ TEST_F(NCollection_ListTest, RemoveByValue)
   EXPECT_EQ(2, aList.Size());
 
   // Check final list state
-  NCollection_List<Standard_Integer>::Iterator it(aList);
+  NCollection_List<int>::Iterator it(aList);
   EXPECT_EQ(20, it.Value());
   it.Next();
   EXPECT_EQ(30, it.Value());
@@ -189,7 +189,7 @@ TEST_F(NCollection_ListTest, RemoveByValue)
 
 TEST_F(NCollection_ListTest, Clear)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   aList.Append(10);
   aList.Append(20);
   aList.Append(30);
@@ -202,20 +202,20 @@ TEST_F(NCollection_ListTest, Clear)
 
 TEST_F(NCollection_ListTest, Assignment)
 {
-  NCollection_List<Standard_Integer> aList1;
+  NCollection_List<int> aList1;
   aList1.Append(10);
   aList1.Append(20);
   aList1.Append(30);
 
   // Test assignment operator
-  NCollection_List<Standard_Integer> aList2;
+  NCollection_List<int> aList2;
   aList2 = aList1;
 
   // Check both lists have the same content
   EXPECT_EQ(aList1.Size(), aList2.Size());
 
-  NCollection_List<Standard_Integer>::Iterator it1(aList1);
-  NCollection_List<Standard_Integer>::Iterator it2(aList2);
+  NCollection_List<int>::Iterator it1(aList1);
+  NCollection_List<int>::Iterator it2(aList2);
 
   for (; it1.More() && it2.More(); it1.Next(), it2.Next())
   {
@@ -230,20 +230,20 @@ TEST_F(NCollection_ListTest, Assignment)
 
 TEST_F(NCollection_ListTest, AssignMethod)
 {
-  NCollection_List<Standard_Integer> aList1;
+  NCollection_List<int> aList1;
   aList1.Append(10);
   aList1.Append(20);
   aList1.Append(30);
 
   // Test Assign method
-  NCollection_List<Standard_Integer> aList2;
+  NCollection_List<int> aList2;
   aList2.Append(40);     // Add some initial content
   aList2.Assign(aList1); // This should replace aList2's content
 
   EXPECT_EQ(aList1.Size(), aList2.Size());
 
   // Check values
-  NCollection_List<Standard_Integer>::Iterator it2(aList2);
+  NCollection_List<int>::Iterator it2(aList2);
   EXPECT_EQ(10, it2.Value());
   it2.Next();
   EXPECT_EQ(20, it2.Value());
@@ -253,11 +253,11 @@ TEST_F(NCollection_ListTest, AssignMethod)
 
 TEST_F(NCollection_ListTest, AppendList)
 {
-  NCollection_List<Standard_Integer> aList1;
+  NCollection_List<int> aList1;
   aList1.Append(10);
   aList1.Append(20);
 
-  NCollection_List<Standard_Integer> aList2;
+  NCollection_List<int> aList2;
   aList2.Append(30);
   aList2.Append(40);
 
@@ -268,7 +268,7 @@ TEST_F(NCollection_ListTest, AppendList)
   EXPECT_TRUE(aList2.IsEmpty()); // aList2 should be cleared
 
   // Check values in aList1
-  NCollection_List<Standard_Integer>::Iterator it(aList1);
+  NCollection_List<int>::Iterator it(aList1);
   EXPECT_EQ(10, it.Value());
   it.Next();
   EXPECT_EQ(20, it.Value());
@@ -280,11 +280,11 @@ TEST_F(NCollection_ListTest, AppendList)
 
 TEST_F(NCollection_ListTest, PrependList)
 {
-  NCollection_List<Standard_Integer> aList1;
+  NCollection_List<int> aList1;
   aList1.Append(30);
   aList1.Append(40);
 
-  NCollection_List<Standard_Integer> aList2;
+  NCollection_List<int> aList2;
   aList2.Append(10);
   aList2.Append(20);
 
@@ -295,7 +295,7 @@ TEST_F(NCollection_ListTest, PrependList)
   EXPECT_TRUE(aList2.IsEmpty()); // aList2 should be cleared
 
   // Check values in aList1
-  NCollection_List<Standard_Integer>::Iterator it(aList1);
+  NCollection_List<int>::Iterator it(aList1);
   EXPECT_EQ(10, it.Value());
   it.Next();
   EXPECT_EQ(20, it.Value());
@@ -307,12 +307,12 @@ TEST_F(NCollection_ListTest, PrependList)
 
 TEST_F(NCollection_ListTest, InsertBefore)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   aList.Append(10);
   aList.Append(30);
 
   // Get iterator to second element
-  NCollection_List<Standard_Integer>::Iterator it(aList);
+  NCollection_List<int>::Iterator it(aList);
   it.Next();
 
   // Insert before the second element
@@ -321,7 +321,7 @@ TEST_F(NCollection_ListTest, InsertBefore)
   // Check the list
   EXPECT_EQ(3, aList.Size());
 
-  NCollection_List<Standard_Integer>::Iterator checkIt(aList);
+  NCollection_List<int>::Iterator checkIt(aList);
   EXPECT_EQ(10, checkIt.Value());
   checkIt.Next();
   EXPECT_EQ(20, checkIt.Value());
@@ -331,12 +331,12 @@ TEST_F(NCollection_ListTest, InsertBefore)
 
 TEST_F(NCollection_ListTest, InsertAfter)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   aList.Append(10);
   aList.Append(30);
 
   // Get iterator to first element
-  NCollection_List<Standard_Integer>::Iterator it(aList);
+  NCollection_List<int>::Iterator it(aList);
 
   // Insert after the first element
   EXPECT_EQ(20, aList.InsertAfter(20, it));
@@ -344,7 +344,7 @@ TEST_F(NCollection_ListTest, InsertAfter)
   // Check the list
   EXPECT_EQ(3, aList.Size());
 
-  NCollection_List<Standard_Integer>::Iterator checkIt(aList);
+  NCollection_List<int>::Iterator checkIt(aList);
   EXPECT_EQ(10, checkIt.Value());
   checkIt.Next();
   EXPECT_EQ(20, checkIt.Value());
@@ -354,16 +354,16 @@ TEST_F(NCollection_ListTest, InsertAfter)
 
 TEST_F(NCollection_ListTest, InsertList)
 {
-  NCollection_List<Standard_Integer> aList1;
+  NCollection_List<int> aList1;
   aList1.Append(10);
   aList1.Append(40);
 
-  NCollection_List<Standard_Integer> aList2;
+  NCollection_List<int> aList2;
   aList2.Append(20);
   aList2.Append(30);
 
   // Get iterator to the second element in aList1
-  NCollection_List<Standard_Integer>::Iterator it(aList1);
+  NCollection_List<int>::Iterator it(aList1);
   it.Next();
 
   // Insert aList2 before the second element in aList1
@@ -373,7 +373,7 @@ TEST_F(NCollection_ListTest, InsertList)
   EXPECT_TRUE(aList2.IsEmpty());
 
   // Check the resulting list
-  NCollection_List<Standard_Integer>::Iterator checkIt(aList1);
+  NCollection_List<int>::Iterator checkIt(aList1);
   EXPECT_EQ(10, checkIt.Value());
   checkIt.Next();
   EXPECT_EQ(20, checkIt.Value());
@@ -385,7 +385,7 @@ TEST_F(NCollection_ListTest, InsertList)
 
 TEST_F(NCollection_ListTest, Reverse)
 {
-  NCollection_List<Standard_Integer> aList;
+  NCollection_List<int> aList;
   aList.Append(10);
   aList.Append(20);
   aList.Append(30);
@@ -397,7 +397,7 @@ TEST_F(NCollection_ListTest, Reverse)
   EXPECT_EQ(30, aList.First());
   EXPECT_EQ(10, aList.Last());
 
-  NCollection_List<Standard_Integer>::Iterator it(aList);
+  NCollection_List<int>::Iterator it(aList);
   EXPECT_EQ(30, it.Value());
   it.Next();
   EXPECT_EQ(20, it.Value());
@@ -407,14 +407,14 @@ TEST_F(NCollection_ListTest, Reverse)
 
 TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_MinMax)
 {
-  NCollection_List<Standard_Integer> aList;
-  std::list<Standard_Integer>        aStdList;
+  NCollection_List<int> aList;
+  std::list<int>        aStdList;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
-  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = aDistribution(aGenerator);
+    int aVal = aDistribution(aGenerator);
     aList.Append(aVal);
     aStdList.push_back(aVal);
   }
@@ -431,20 +431,20 @@ TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_MinMax)
 
 TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_Replace)
 {
-  NCollection_List<Standard_Integer> aList;
-  std::list<Standard_Integer>        aStdList;
+  NCollection_List<int> aList;
+  std::list<int>        aStdList;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
-  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
+  std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = aDistribution(aGenerator);
+    int aVal = aDistribution(aGenerator);
     aList.Append(aVal);
     aStdList.push_back(aVal);
   }
 
-  Standard_Integer aTargetValue = aStdList.back();
-  Standard_Integer aNewValue    = -1;
+  int aTargetValue = aStdList.back();
+  int aNewValue    = -1;
 
   std::replace(aList.begin(), aList.end(), aTargetValue, aNewValue);
   std::replace(aStdList.begin(), aStdList.end(), aTargetValue, aNewValue);
@@ -459,25 +459,25 @@ TEST_F(NCollection_ListTest, OCC25348_AssignDoesNotChangeAllocator)
   // This test verifies that calling Assign() doesn't change the allocator
   // of the target list
 
-  Handle(NCollection_IncAllocator) anAlloc1 = new NCollection_IncAllocator();
-  NCollection_List<int>            aList1(anAlloc1);
+  occ::handle<NCollection_IncAllocator> anAlloc1 = new NCollection_IncAllocator();
+  NCollection_List<int>                 aList1(anAlloc1);
 
   // Perform multiple assign operations with different source lists,
   // each having their own allocator
   for (int i = 0; i < 10; i++)
   {
-    Handle(NCollection_IncAllocator) anAlloc2 = new NCollection_IncAllocator();
-    NCollection_List<int>            aList2(anAlloc2);
+    occ::handle<NCollection_IncAllocator> anAlloc2 = new NCollection_IncAllocator();
+    NCollection_List<int>                 aList2(anAlloc2);
     aList2.Append(i);
 
     // Store the allocator before Assign
-    Handle(NCollection_BaseAllocator) anAllocBefore = aList1.Allocator();
+    occ::handle<NCollection_BaseAllocator> anAllocBefore = aList1.Allocator();
 
     // Assign aList2 to aList1
     aList1.Assign(aList2);
 
     // Verify that the allocator of aList1 hasn't changed
-    Handle(NCollection_BaseAllocator) anAllocAfter = aList1.Allocator();
+    occ::handle<NCollection_BaseAllocator> anAllocAfter = aList1.Allocator();
     EXPECT_EQ(anAllocBefore, anAllocAfter) << "Assign() should not change the target's allocator";
 
     // Verify the content was copied correctly

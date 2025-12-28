@@ -14,15 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TColStd_HArray2OfReal.hxx>
-#include <Plate_HArray1OfPinpointConstraint.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
-inline const Plate_Array1OfPinpointConstraint& Plate_LinearXYZConstraint::GetPPC() const
+inline const NCollection_Array1<Plate_PinpointConstraint>& Plate_LinearXYZConstraint::GetPPC() const
 {
   return myPPC->Array1();
 }
 
-inline const TColStd_Array2OfReal& Plate_LinearXYZConstraint::Coeff() const
+inline const NCollection_Array2<double>& Plate_LinearXYZConstraint::Coeff() const
 {
   return myCoef->Array2();
 }

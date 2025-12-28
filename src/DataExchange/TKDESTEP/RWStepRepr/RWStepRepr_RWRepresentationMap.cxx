@@ -21,10 +21,11 @@
 
 RWStepRepr_RWRepresentationMap::RWStepRepr_RWRepresentationMap() {}
 
-void RWStepRepr_RWRepresentationMap::ReadStep(const Handle(StepData_StepReaderData)&    data,
-                                              const Standard_Integer                    num,
-                                              Handle(Interface_Check)&                  ach,
-                                              const Handle(StepRepr_RepresentationMap)& ent) const
+void RWStepRepr_RWRepresentationMap::ReadStep(
+  const occ::handle<StepData_StepReaderData>&    data,
+  const int                                      num,
+  occ::handle<Interface_Check>&                  ach,
+  const occ::handle<StepRepr_RepresentationMap>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,8 +35,8 @@ void RWStepRepr_RWRepresentationMap::ReadStep(const Handle(StepData_StepReaderDa
 
   // --- own field : mappingOrigin ---
 
-  Handle(StepRepr_RepresentationItem) aMappingOrigin;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepRepr_RepresentationItem> aMappingOrigin;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "mapping_origin",
@@ -45,8 +46,8 @@ void RWStepRepr_RWRepresentationMap::ReadStep(const Handle(StepData_StepReaderDa
 
   // --- own field : mappedRepresentation ---
 
-  Handle(StepRepr_Representation) aMappedRepresentation;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepRepr_Representation> aMappedRepresentation;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "mapped_representation",
@@ -59,8 +60,9 @@ void RWStepRepr_RWRepresentationMap::ReadStep(const Handle(StepData_StepReaderDa
   ent->Init(aMappingOrigin, aMappedRepresentation);
 }
 
-void RWStepRepr_RWRepresentationMap::WriteStep(StepData_StepWriter&                      SW,
-                                               const Handle(StepRepr_RepresentationMap)& ent) const
+void RWStepRepr_RWRepresentationMap::WriteStep(
+  StepData_StepWriter&                           SW,
+  const occ::handle<StepRepr_RepresentationMap>& ent) const
 {
 
   // --- own field : mappingOrigin ---
@@ -72,8 +74,8 @@ void RWStepRepr_RWRepresentationMap::WriteStep(StepData_StepWriter&             
   SW.Send(ent->MappedRepresentation());
 }
 
-void RWStepRepr_RWRepresentationMap::Share(const Handle(StepRepr_RepresentationMap)& ent,
-                                           Interface_EntityIterator&                 iter) const
+void RWStepRepr_RWRepresentationMap::Share(const occ::handle<StepRepr_RepresentationMap>& ent,
+                                           Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->MappingOrigin());

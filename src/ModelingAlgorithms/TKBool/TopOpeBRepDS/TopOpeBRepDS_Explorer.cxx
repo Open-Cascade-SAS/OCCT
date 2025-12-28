@@ -30,30 +30,30 @@ TopOpeBRepDS_Explorer::TopOpeBRepDS_Explorer()
     : myT(TopAbs_SHAPE),
       myI(1),
       myN(0),
-      myB(Standard_False),
-      myFK(Standard_True)
+      myB(false),
+      myFK(true)
 {
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_Explorer::TopOpeBRepDS_Explorer(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                             const TopAbs_ShapeEnum                     T,
-                                             const Standard_Boolean                     FK)
+TopOpeBRepDS_Explorer::TopOpeBRepDS_Explorer(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                             const TopAbs_ShapeEnum                          T,
+                                             const bool                                      FK)
 {
   Init(HDS, T, FK);
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Explorer::Init(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                 const TopAbs_ShapeEnum                     T,
-                                 const Standard_Boolean                     FK)
+void TopOpeBRepDS_Explorer::Init(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                 const TopAbs_ShapeEnum                          T,
+                                 const bool                                      FK)
 {
   myI   = 1;
   myN   = 0;
-  myB   = Standard_False;
-  myFK  = Standard_True;
+  myB   = false;
+  myFK  = true;
   myT   = T;
   myHDS = HDS;
   if (myHDS.IsNull())
@@ -74,17 +74,17 @@ TopAbs_ShapeEnum TopOpeBRepDS_Explorer::Type() const
 
 void TopOpeBRepDS_Explorer::Find()
 {
-  Standard_Boolean                  found = Standard_False;
+  bool                              found = false;
   const TopOpeBRepDS_DataStructure& BDS   = myHDS->DS();
   while ((myI <= myN) && (!found))
   {
-    Standard_Boolean b = BDS.KeepShape(myI, myFK);
+    bool b = BDS.KeepShape(myI, myFK);
     if (b)
     {
-      const TopoDS_Shape& s = BDS.Shape(myI, Standard_False);
+      const TopoDS_Shape& s = BDS.Shape(myI, false);
       TopAbs_ShapeEnum    t = s.ShapeType();
       if (t == myT || myT == TopAbs_SHAPE)
-        found = Standard_True;
+        found = true;
       else
         myI++;
     }
@@ -96,7 +96,7 @@ void TopOpeBRepDS_Explorer::Find()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_Explorer::More() const
+bool TopOpeBRepDS_Explorer::More() const
 {
   return myB;
 }
@@ -120,7 +120,7 @@ const TopoDS_Shape& TopOpeBRepDS_Explorer::Current() const
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_Explorer::Index() const
+int TopOpeBRepDS_Explorer::Index() const
 {
   Standard_NoSuchObject_Raise_if(!More(), "TopOpeBRepDS_Explorer::Index");
   return myI;

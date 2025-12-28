@@ -33,14 +33,11 @@ public:
 
   Standard_EXPORT void Set(const IntSurf_PntOn2S& P);
 
-  Standard_EXPORT void ParametersOnS1(Standard_Real& U, Standard_Real& V) const;
+  Standard_EXPORT void ParametersOnS1(double& U, double& V) const;
 
-  Standard_EXPORT void ParametersOnS2(Standard_Real& U, Standard_Real& V) const;
+  Standard_EXPORT void ParametersOnS2(double& U, double& V) const;
 
-  Standard_EXPORT void Parameters(Standard_Real& U1,
-                                  Standard_Real& V1,
-                                  Standard_Real& U2,
-                                  Standard_Real& V2) const;
+  Standard_EXPORT void Parameters(double& U1, double& V1, double& U2, double& V2) const;
 
   Standard_EXPORT gp_Pnt2d ValueOnS1() const;
 
@@ -50,7 +47,6 @@ public:
 
   Standard_EXPORT TopOpeBRep_PPntOn2S PPntOn2SDummy() const;
 
-protected:
 private:
   TopOpeBRep_PPntOn2S myPP2S;
 };

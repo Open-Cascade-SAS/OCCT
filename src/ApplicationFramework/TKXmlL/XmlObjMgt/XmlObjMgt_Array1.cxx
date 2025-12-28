@@ -43,7 +43,7 @@ XmlObjMgt_Array1::XmlObjMgt_Array1(const XmlObjMgt_Element&   theParent,
 
 //=================================================================================================
 
-XmlObjMgt_Array1::XmlObjMgt_Array1(const Standard_Integer aFirst, const Standard_Integer aLast)
+XmlObjMgt_Array1::XmlObjMgt_Array1(const int aFirst, const int aLast)
     : myFirst(aFirst),
       myLast(aLast)
 {
@@ -75,7 +75,7 @@ void XmlObjMgt_Array1::CreateArrayElement(XmlObjMgt_Element&         theParent,
 
 //=================================================================================================
 
-void XmlObjMgt_Array1::SetValue(const Standard_Integer theIndex, XmlObjMgt_Element& theValue)
+void XmlObjMgt_Array1::SetValue(const int theIndex, XmlObjMgt_Element& theValue)
 {
   myElement.appendChild(theValue);
   theValue.setAttribute(::IndString(), theIndex);
@@ -83,14 +83,14 @@ void XmlObjMgt_Array1::SetValue(const Standard_Integer theIndex, XmlObjMgt_Eleme
 
 //=================================================================================================
 
-XmlObjMgt_Element XmlObjMgt_Array1::Value(const Standard_Integer theIndex) const
+XmlObjMgt_Element XmlObjMgt_Array1::Value(const int theIndex) const
 {
   XmlObjMgt_Element anElem;
 
   if (theIndex >= myFirst && theIndex <= myLast)
   {
-    Standard_Integer ind;
-    LDOM_Node        aNode = myElement.getFirstChild();
+    int       ind;
+    LDOM_Node aNode = myElement.getFirstChild();
     while (!aNode.isNull())
     {
       if (aNode.getNodeType() == LDOM_Node::ELEMENT_NODE)

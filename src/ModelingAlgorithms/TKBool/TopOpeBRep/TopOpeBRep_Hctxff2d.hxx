@@ -21,8 +21,6 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <TopoDS_Face.hxx>
 
-DEFINE_STANDARD_HANDLE(TopOpeBRep_Hctxff2d, Standard_Transient)
-
 class TopOpeBRep_Hctxff2d : public Standard_Transient
 {
 
@@ -31,43 +29,42 @@ public:
 
   Standard_EXPORT void SetFaces(const TopoDS_Face& F1, const TopoDS_Face& F2);
 
-  Standard_EXPORT void SetHSurfaces(const Handle(BRepAdaptor_Surface)& S1,
-                                    const Handle(BRepAdaptor_Surface)& S2);
+  Standard_EXPORT void SetHSurfaces(const occ::handle<BRepAdaptor_Surface>& S1,
+                                    const occ::handle<BRepAdaptor_Surface>& S2);
 
-  Standard_EXPORT void SetTolerances(const Standard_Real Tol1, const Standard_Real Tol2);
+  Standard_EXPORT void SetTolerances(const double Tol1, const double Tol2);
 
-  Standard_EXPORT void GetTolerances(Standard_Real& Tol1, Standard_Real& Tol2) const;
+  Standard_EXPORT void GetTolerances(double& Tol1, double& Tol2) const;
 
-  Standard_EXPORT Standard_Real GetMaxTolerance() const;
+  Standard_EXPORT double GetMaxTolerance() const;
 
-  Standard_EXPORT const TopoDS_Face& Face(const Standard_Integer I) const;
+  Standard_EXPORT const TopoDS_Face& Face(const int I) const;
 
-  Standard_EXPORT Handle(BRepAdaptor_Surface) HSurface(const Standard_Integer I) const;
+  Standard_EXPORT occ::handle<BRepAdaptor_Surface> HSurface(const int I) const;
 
-  Standard_EXPORT Standard_Boolean SurfacesSameOriented() const;
+  Standard_EXPORT bool SurfacesSameOriented() const;
 
-  Standard_EXPORT Standard_Boolean FacesSameOriented() const;
+  Standard_EXPORT bool FacesSameOriented() const;
 
-  Standard_EXPORT Standard_Boolean FaceSameOrientedWithRef(const Standard_Integer I) const;
+  Standard_EXPORT bool FaceSameOrientedWithRef(const int I) const;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRep_Hctxff2d, Standard_Transient)
 
-protected:
 private:
   Standard_EXPORT void SetHSurfacesPrivate();
 
-  TopoDS_Face                 myFace1;
-  Handle(BRepAdaptor_Surface) mySurface1;
-  GeomAbs_SurfaceType         mySurfaceType1;
-  Standard_Boolean            myf1surf1F_sameoriented;
-  TopoDS_Face                 myFace2;
-  Handle(BRepAdaptor_Surface) mySurface2;
-  GeomAbs_SurfaceType         mySurfaceType2;
-  Standard_Boolean            myf2surf1F_sameoriented;
-  Standard_Boolean            mySurfacesSameOriented;
-  Standard_Boolean            myFacesSameOriented;
-  Standard_Real               myTol1;
-  Standard_Real               myTol2;
+  TopoDS_Face                      myFace1;
+  occ::handle<BRepAdaptor_Surface> mySurface1;
+  GeomAbs_SurfaceType              mySurfaceType1;
+  bool                             myf1surf1F_sameoriented;
+  TopoDS_Face                      myFace2;
+  occ::handle<BRepAdaptor_Surface> mySurface2;
+  GeomAbs_SurfaceType              mySurfaceType2;
+  bool                             myf2surf1F_sameoriented;
+  bool                             mySurfacesSameOriented;
+  bool                             myFacesSameOriented;
+  double                           myTol1;
+  double                           myTol2;
 };
 
 #endif // _TopOpeBRep_Hctxff2d_HeaderFile

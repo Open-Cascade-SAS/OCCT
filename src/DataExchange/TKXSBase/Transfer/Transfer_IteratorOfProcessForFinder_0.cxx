@@ -20,23 +20,22 @@
 #include <Transfer_Finder.hxx>
 #include <Transfer_FindHasher.hxx>
 #include <Transfer_ProcessForFinder.hxx>
-#include <Transfer_TransferMapOfProcessForFinder.hxx>
-#include <Transfer_ActorOfProcessForFinder.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <Transfer_Binder.hxx>
+#include <Transfer_ActorOfProcessForFinder.hxx>
 
 //=================================================================================================
 
-Transfer_IteratorOfProcessForFinder::Transfer_IteratorOfProcessForFinder(
-  const Standard_Boolean withstarts)
+Transfer_IteratorOfProcessForFinder::Transfer_IteratorOfProcessForFinder(const bool withstarts)
     : Transfer_TransferIterator()
 {
   if (withstarts)
-    thestarts = new Transfer_HSequenceOfFinder();
+    thestarts = new NCollection_HSequence<occ::handle<Transfer_Finder>>();
 }
 
 //=================================================================================================
 
-void Transfer_IteratorOfProcessForFinder::Add(const Handle(Transfer_Binder)& binder)
+void Transfer_IteratorOfProcessForFinder::Add(const occ::handle<Transfer_Binder>& binder)
 {
   if (!thestarts.IsNull())
     throw Standard_NoSuchObject(
@@ -46,8 +45,8 @@ void Transfer_IteratorOfProcessForFinder::Add(const Handle(Transfer_Binder)& bin
 
 //=================================================================================================
 
-void Transfer_IteratorOfProcessForFinder::Add(const Handle(Transfer_Binder)& binder,
-                                              const Handle(Transfer_Finder)& start)
+void Transfer_IteratorOfProcessForFinder::Add(const occ::handle<Transfer_Binder>& binder,
+                                              const occ::handle<Transfer_Finder>& start)
 {
   AddItem(binder);
   if (!thestarts.IsNull())
@@ -56,16 +55,20 @@ void Transfer_IteratorOfProcessForFinder::Add(const Handle(Transfer_Binder)& bin
 
 //=================================================================================================
 
-void Transfer_IteratorOfProcessForFinder::Filter(const Handle(Transfer_HSequenceOfFinder)& list,
-                                                 const Standard_Boolean                    keep)
+void Transfer_IteratorOfProcessForFinder::Filter(
+  const occ::handle<NCollection_HSequence<occ::handle<Transfer_Finder>>>& list,
+  const bool                                                              keep)
 {
   if (list.IsNull() || thestarts.IsNull())
     return;
-  Standard_Integer i, j, nb = thestarts->Length();
+  int i, j, nb = thestarts->Length();
   if (nb == 0)
     return;
-  Handle(Transfer_Binder)                factice;
-  Transfer_TransferMapOfProcessForFinder amap(nb);
+  occ::handle<Transfer_Binder> factice;
+  NCollection_IndexedDataMap<occ::handle<Transfer_Finder>,
+                             occ::handle<Transfer_Binder>,
+                             Transfer_FindHasher>
+    amap(nb);
   for (i = 1; i <= nb; i++)
   {
     j = amap.Add(thestarts->Value(i), factice);
@@ -84,14 +87,14 @@ void Transfer_IteratorOfProcessForFinder::Filter(const Handle(Transfer_HSequence
 
 //=================================================================================================
 
-Standard_Boolean Transfer_IteratorOfProcessForFinder::HasStarting() const
+bool Transfer_IteratorOfProcessForFinder::HasStarting() const
 {
   return (!thestarts.IsNull());
 }
 
 //=================================================================================================
 
-const Handle(Transfer_Finder)& Transfer_IteratorOfProcessForFinder::Starting() const
+const occ::handle<Transfer_Finder>& Transfer_IteratorOfProcessForFinder::Starting() const
 {
   if (thestarts.IsNull())
     throw Standard_NoSuchObject("TransferIterator : No Starting defined at all");

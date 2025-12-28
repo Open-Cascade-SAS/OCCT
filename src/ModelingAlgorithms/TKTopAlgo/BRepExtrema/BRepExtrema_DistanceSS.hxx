@@ -14,7 +14,8 @@
 #ifndef _BRepExtrema_DistanceSS_HeaderFile
 #define _BRepExtrema_DistanceSS_HeaderFile
 
-#include <BRepExtrema_SeqOfSolution.hxx>
+#include <NCollection_Sequence.hxx>
+#include <BRepExtrema_SolutionElem.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_ExtAlgo.hxx>
 #include <Precision.hxx>
@@ -50,12 +51,12 @@ public: //! @name Constructor from two shapes
                          const TopoDS_Shape&   theS2,
                          const Bnd_Box&        theBox1,
                          const Bnd_Box&        theBox2,
-                         const Standard_Real   theDstRef,
-                         const Standard_Real   theDeflection = Precision::Confusion(),
+                         const double          theDstRef,
+                         const double          theDeflection = Precision::Confusion(),
                          const Extrema_ExtFlag theExtFlag    = Extrema_ExtFlag_MINMAX,
                          const Extrema_ExtAlgo theExtAlgo    = Extrema_ExtAlgo_Grad)
       : myDstRef(theDstRef),
-        myModif(Standard_False),
+        myModif(false),
         myEps(theDeflection),
         myFlag(theExtFlag),
         myAlgo(theExtAlgo)
@@ -65,16 +66,16 @@ public: //! @name Constructor from two shapes
 
 public: //! @name Results
   //! Returns true if the distance has been computed, false otherwise.
-  Standard_Boolean IsDone() const { return myModif; }
+  bool IsDone() const { return myModif; }
 
   //! Returns the distance value.
-  Standard_Real DistValue() const { return myDstRef; }
+  double DistValue() const { return myDstRef; }
 
   //! Returns the list of solutions on the first shape.
-  const BRepExtrema_SeqOfSolution& Seq1Value() const { return mySeqSolShape1; }
+  const NCollection_Sequence<BRepExtrema_SolutionElem>& Seq1Value() const { return mySeqSolShape1; }
 
   //! Returns the list of solutions on the second shape.
-  const BRepExtrema_SeqOfSolution& Seq2Value() const { return mySeqSolShape2; }
+  const NCollection_Sequence<BRepExtrema_SolutionElem>& Seq2Value() const { return mySeqSolShape2; }
 
 private: //! @name private methods performing the search
   //! Computes the distance between two Shapes (face edge vertex).
@@ -85,49 +86,49 @@ private: //! @name private methods performing the search
                                const Bnd_Box&      theBox2);
 
   //! Computes the distance between two vertices.
-  void Perform(const TopoDS_Vertex&       S1,
-               const TopoDS_Vertex&       S2,
-               BRepExtrema_SeqOfSolution& theSeqSolShape1,
-               BRepExtrema_SeqOfSolution& theSeqSolShape2);
+  void Perform(const TopoDS_Vertex&                            S1,
+               const TopoDS_Vertex&                            S2,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2);
 
   //! Computes the minimum distance between a vertex and an edge.
-  void Perform(const TopoDS_Vertex&       theS1,
-               const TopoDS_Edge&         theS2,
-               BRepExtrema_SeqOfSolution& theSeqSolShape1,
-               BRepExtrema_SeqOfSolution& theSeqSolShape2);
+  void Perform(const TopoDS_Vertex&                            theS1,
+               const TopoDS_Edge&                              theS2,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2);
 
   //! Computes the minimum distance between a vertex and a face.
-  void Perform(const TopoDS_Vertex&       theS1,
-               const TopoDS_Face&         theS2,
-               BRepExtrema_SeqOfSolution& theSeqSolShape1,
-               BRepExtrema_SeqOfSolution& theSeqSolShape2);
+  void Perform(const TopoDS_Vertex&                            theS1,
+               const TopoDS_Face&                              theS2,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2);
 
   //! Computes the minimum distance between two edges.
-  void Perform(const TopoDS_Edge&         theS1,
-               const TopoDS_Edge&         theS2,
-               BRepExtrema_SeqOfSolution& theSeqSolShape1,
-               BRepExtrema_SeqOfSolution& theSeqSolShape2);
+  void Perform(const TopoDS_Edge&                              theS1,
+               const TopoDS_Edge&                              theS2,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2);
 
   //! Computes the minimum distance between an edge and a face.
-  void Perform(const TopoDS_Edge&         theS1,
-               const TopoDS_Face&         theS2,
-               BRepExtrema_SeqOfSolution& theSeqSolShape1,
-               BRepExtrema_SeqOfSolution& theSeqSolShape2);
+  void Perform(const TopoDS_Edge&                              theS1,
+               const TopoDS_Face&                              theS2,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2);
 
   //! Computes the minimum distance between two faces.
-  void Perform(const TopoDS_Face&         theS1,
-               const TopoDS_Face&         theS2,
-               BRepExtrema_SeqOfSolution& theSeqSolShape1,
-               BRepExtrema_SeqOfSolution& theSeqSolShape2);
+  void Perform(const TopoDS_Face&                              theS1,
+               const TopoDS_Face&                              theS2,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+               NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2);
 
-private:                                    //! @name Fields
-  BRepExtrema_SeqOfSolution mySeqSolShape1; //!< Solutions on the first shape
-  BRepExtrema_SeqOfSolution mySeqSolShape2; //!< Solutions on the second shape
-  Standard_Real             myDstRef;       //!< The minimal distance found
-  Standard_Boolean          myModif; //!< Flag indicating whether the solution was improved or not
-  Standard_Real             myEps;   //!< Deflection
-  Extrema_ExtFlag           myFlag;  //!< Extrema flag indicating what solutions to look for
-  Extrema_ExtAlgo           myAlgo;  //!< Extrema algo to be used to look for solutions
+private:                                                         //! @name Fields
+  NCollection_Sequence<BRepExtrema_SolutionElem> mySeqSolShape1; //!< Solutions on the first shape
+  NCollection_Sequence<BRepExtrema_SolutionElem> mySeqSolShape2; //!< Solutions on the second shape
+  double                                         myDstRef;       //!< The minimal distance found
+  bool            myModif; //!< Flag indicating whether the solution was improved or not
+  double          myEps;   //!< Deflection
+  Extrema_ExtFlag myFlag;  //!< Extrema flag indicating what solutions to look for
+  Extrema_ExtAlgo myAlgo;  //!< Extrema algo to be used to look for solutions
 };
 
 #endif

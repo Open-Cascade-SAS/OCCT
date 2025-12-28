@@ -20,14 +20,13 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <BRepCheck_Result.hxx>
-#include <TopTools_ListOfShape.hxx>
 class TopoDS_Shell;
 class TopoDS_Shape;
-
-class BRepCheck_Shell;
-DEFINE_STANDARD_HANDLE(BRepCheck_Shell, BRepCheck_Result)
 
 class BRepCheck_Shell : public BRepCheck_Result
 {
@@ -35,40 +34,40 @@ class BRepCheck_Shell : public BRepCheck_Result
 public:
   Standard_EXPORT BRepCheck_Shell(const TopoDS_Shell& S);
 
-  Standard_EXPORT void InContext(const TopoDS_Shape& ContextShape) Standard_OVERRIDE;
+  Standard_EXPORT void InContext(const TopoDS_Shape& ContextShape) override;
 
-  Standard_EXPORT void Minimum() Standard_OVERRIDE;
+  Standard_EXPORT void Minimum() override;
 
-  Standard_EXPORT void Blind() Standard_OVERRIDE;
+  Standard_EXPORT void Blind() override;
 
   //! Checks if the oriented faces of the shell give a
   //! closed shell. If the wire is closed, returns
   //! BRepCheck_NoError. If <Update> is set to
-  //! Standard_True, registers the status in the list.
-  Standard_EXPORT BRepCheck_Status Closed(const Standard_Boolean Update = Standard_False);
+  //! true, registers the status in the list.
+  Standard_EXPORT BRepCheck_Status Closed(const bool Update = false);
 
   //! Checks if the oriented faces of the shell are
   //! correctly oriented. An internal call is made to
   //! the method Closed. If <Update> is set to
-  //! Standard_True, registers the status in the list.
-  Standard_EXPORT BRepCheck_Status Orientation(const Standard_Boolean Update = Standard_False);
+  //! true, registers the status in the list.
+  Standard_EXPORT BRepCheck_Status Orientation(const bool Update = false);
 
   Standard_EXPORT void SetUnorientable();
 
-  Standard_EXPORT Standard_Boolean IsUnorientable() const;
+  Standard_EXPORT bool IsUnorientable() const;
 
-  Standard_EXPORT Standard_Integer NbConnectedSet(TopTools_ListOfShape& theSets);
+  Standard_EXPORT int NbConnectedSet(NCollection_List<TopoDS_Shape>& theSets);
 
   DEFINE_STANDARD_RTTIEXT(BRepCheck_Shell, BRepCheck_Result)
 
-protected:
 private:
-  Standard_Integer                          myNbori;
-  Standard_Boolean                          myCdone;
-  BRepCheck_Status                          myCstat;
-  Standard_Boolean                          myOdone;
-  BRepCheck_Status                          myOstat;
-  TopTools_IndexedDataMapOfShapeListOfShape myMapEF;
+  int              myNbori;
+  bool             myCdone;
+  BRepCheck_Status myCstat;
+  bool             myOdone;
+  BRepCheck_Status myOstat;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myMapEF;
 };
 
 #endif // _BRepCheck_Shell_HeaderFile

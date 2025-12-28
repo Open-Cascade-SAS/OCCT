@@ -17,7 +17,9 @@
 #include <BRepCheck.hxx>
 
 #include <BRep_Tool.hxx>
-#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+#include <BRepCheck_Status.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Shared.hxx>
 #include <BRepCheck_Wire.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -30,9 +32,9 @@
 
 //=================================================================================================
 
-void BRepCheck::Add(BRepCheck_ListOfStatus& lst, const BRepCheck_Status stat)
+void BRepCheck::Add(NCollection_List<BRepCheck_Status>& lst, const BRepCheck_Status stat)
 {
-  BRepCheck_ListIteratorOfListOfStatus it(lst);
+  NCollection_List<BRepCheck_Status>::Iterator it(lst);
   while (it.More())
   {
     if (it.Value() == BRepCheck_NoError && stat != BRepCheck_NoError)
@@ -53,39 +55,39 @@ void BRepCheck::Add(BRepCheck_ListOfStatus& lst, const BRepCheck_Status stat)
 
 //=================================================================================================
 
-Standard_Boolean BRepCheck::SelfIntersection(const TopoDS_Wire& W,
-                                             const TopoDS_Face& myFace,
-                                             TopoDS_Edge&       RetE1,
-                                             TopoDS_Edge&       RetE2)
+bool BRepCheck::SelfIntersection(const TopoDS_Wire& W,
+                                 const TopoDS_Face& myFace,
+                                 TopoDS_Edge&       RetE1,
+                                 TopoDS_Edge&       RetE2)
 {
-  Handle(BRepCheck_Wire) chkw = new BRepCheck_Wire(W);
-  BRepCheck_Status       stat = chkw->SelfIntersect(myFace, RetE1, RetE2);
+  occ::handle<BRepCheck_Wire> chkw = new BRepCheck_Wire(W);
+  BRepCheck_Status            stat = chkw->SelfIntersect(myFace, RetE1, RetE2);
   return (stat == BRepCheck_SelfIntersectingWire);
 }
 
 //=================================================================================================
 
-Standard_Real BRepCheck::PrecCurve(const Adaptor3d_Curve& aAC3D)
+double BRepCheck::PrecCurve(const Adaptor3d_Curve& aAC3D)
 {
-  Standard_Real aXEmax = RealEpsilon();
+  double aXEmax = RealEpsilon();
   //
   GeomAbs_CurveType aCT = aAC3D.GetType();
   if (aCT == GeomAbs_Ellipse)
   {
-    Standard_Real aX[5];
+    double aX[5];
     //
     gp_Elips aEL3D = aAC3D.Ellipse();
     aEL3D.Location().Coord(aX[0], aX[1], aX[2]);
     aX[3]  = aEL3D.MajorRadius();
     aX[4]  = aEL3D.MinorRadius();
     aXEmax = -1.;
-    for (Standard_Integer i = 0; i < 5; ++i)
+    for (int i = 0; i < 5; ++i)
     {
       if (aX[i] < 0.)
       {
         aX[i] = -aX[i];
       }
-      Standard_Real aXE = Epsilon(aX[i]);
+      double aXE = Epsilon(aX[i]);
       if (aXE > aXEmax)
       {
         aXEmax = aXE;
@@ -98,26 +100,26 @@ Standard_Real BRepCheck::PrecCurve(const Adaptor3d_Curve& aAC3D)
 
 //=================================================================================================
 
-Standard_Real BRepCheck::PrecSurface(const Handle(Adaptor3d_Surface)& aAHSurf)
+double BRepCheck::PrecSurface(const occ::handle<Adaptor3d_Surface>& aAHSurf)
 {
-  Standard_Real aXEmax = RealEpsilon();
+  double aXEmax = RealEpsilon();
   //
   GeomAbs_SurfaceType aST = aAHSurf->GetType();
   if (aST == GeomAbs_Cone)
   {
-    gp_Cone       aCone = aAHSurf->Cone();
-    Standard_Real aX[4];
+    gp_Cone aCone = aAHSurf->Cone();
+    double  aX[4];
     //
     aCone.Location().Coord(aX[0], aX[1], aX[2]);
     aX[3]  = aCone.RefRadius();
     aXEmax = -1.;
-    for (Standard_Integer i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; ++i)
     {
       if (aX[i] < 0.)
       {
         aX[i] = -aX[i];
       }
-      Standard_Real aXE = Epsilon(aX[i]);
+      double aXE = Epsilon(aX[i]);
       if (aXE > aXEmax)
       {
         aXEmax = aXE;

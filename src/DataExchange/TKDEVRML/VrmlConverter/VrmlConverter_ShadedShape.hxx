@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_OStream.hxx>
-#include <TColgp_Array1OfDir.hxx>
+#include <gp_Dir.hxx>
+#include <NCollection_Array1.hxx>
 class TopoDS_Shape;
 class VrmlConverter_Drawer;
 class TopoDS_Face;
@@ -40,16 +41,13 @@ class VrmlConverter_ShadedShape
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static void Add(Standard_OStream&                   anOStream,
-                                  const TopoDS_Shape&                 aShape,
-                                  const Handle(VrmlConverter_Drawer)& aDrawer);
+  Standard_EXPORT static void Add(Standard_OStream&                        anOStream,
+                                  const TopoDS_Shape&                      aShape,
+                                  const occ::handle<VrmlConverter_Drawer>& aDrawer);
 
-  Standard_EXPORT static void ComputeNormal(const TopoDS_Face&  aFace,
-                                            Poly_Connect&       pc,
-                                            TColgp_Array1OfDir& Nor);
-
-protected:
-private:
+  Standard_EXPORT static void ComputeNormal(const TopoDS_Face&          aFace,
+                                            Poly_Connect&               pc,
+                                            NCollection_Array1<gp_Dir>& Nor);
 };
 
 #endif // _VrmlConverter_ShadedShape_HeaderFile

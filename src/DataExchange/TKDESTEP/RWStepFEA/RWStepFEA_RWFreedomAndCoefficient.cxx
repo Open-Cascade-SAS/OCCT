@@ -28,10 +28,10 @@ RWStepFEA_RWFreedomAndCoefficient::RWStepFEA_RWFreedomAndCoefficient() {}
 //=================================================================================================
 
 void RWStepFEA_RWFreedomAndCoefficient::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepFEA_FreedomAndCoefficient)& ent) const
+  const occ::handle<StepData_StepReaderData>&       data,
+  const int                                         num,
+  occ::handle<Interface_Check>&                     ach,
+  const occ::handle<StepFEA_FreedomAndCoefficient>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "freedom_and_coefficient"))
@@ -52,8 +52,8 @@ void RWStepFEA_RWFreedomAndCoefficient::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFreedomAndCoefficient::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepFEA_FreedomAndCoefficient)& ent) const
+  StepData_StepWriter&                              SW,
+  const occ::handle<StepFEA_FreedomAndCoefficient>& ent) const
 {
 
   // Own fields of FreedomAndCoefficient
@@ -65,7 +65,7 @@ void RWStepFEA_RWFreedomAndCoefficient::WriteStep(
 
 //=================================================================================================
 
-void RWStepFEA_RWFreedomAndCoefficient::Share(const Handle(StepFEA_FreedomAndCoefficient)& ent,
+void RWStepFEA_RWFreedomAndCoefficient::Share(const occ::handle<StepFEA_FreedomAndCoefficient>& ent,
                                               Interface_EntityIterator& iter) const
 {
 

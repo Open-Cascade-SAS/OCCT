@@ -30,9 +30,6 @@ class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
-class Geom2d_Parabola;
-DEFINE_STANDARD_HANDLE(Geom2d_Parabola, Geom2d_Conic)
-
 //! Describes a parabola in the plane (2D space).
 //! A parabola is defined by its focal length (i.e. the
 //! distance between its focus and its apex) and is
@@ -72,9 +69,9 @@ public:
   //! parabola and is in the direct sense if Sense is True.
   //! The "Location" point of "MirrorAxis" is the vertex of the parabola
   //! Raised if Focal < 0.0
-  Standard_EXPORT Geom2d_Parabola(const gp_Ax2d&         MirrorAxis,
-                                  const Standard_Real    Focal,
-                                  const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT Geom2d_Parabola(const gp_Ax2d& MirrorAxis,
+                                  const double   Focal,
+                                  const bool     Sense = true);
 
   //! Creates a parabola with its Axis and it's focal
   //! length "Focal".
@@ -83,7 +80,7 @@ public:
   //! parabola. The "Location" point of "Axis" is the vertex
   //! of the parabola.
   //! Raised if Focal < 0.0
-  Standard_EXPORT Geom2d_Parabola(const gp_Ax22d& Axis, const Standard_Real Focal);
+  Standard_EXPORT Geom2d_Parabola(const gp_Ax22d& Axis, const double Focal);
 
   //! D is the directrix of the parabola and F the focus point.
   //! The symmetry axis "XAxis" of the parabola is normal to the
@@ -95,7 +92,7 @@ public:
 
   //! Assigns the value Focal to the focal length of this parabola.
   //! Exceptions Standard_ConstructionError if Focal is negative.
-  Standard_EXPORT void SetFocal(const Standard_Real Focal);
+  Standard_EXPORT void SetFocal(const double Focal);
 
   //! Converts the gp_Parab2d parabola Prb into this parabola.
   Standard_EXPORT void SetParab2d(const gp_Parab2d& Prb);
@@ -107,19 +104,19 @@ public:
   //! Computes the parameter on the reversed parabola
   //! for the point of parameter U on this parabola.
   //! For a parabola, the returned value is -U.
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT double ReversedParameter(const double U) const override;
 
   //! Returns RealFirst from Standard.
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double FirstParameter() const override;
 
   //! Returns RealLast from Standard.
-  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double LastParameter() const override;
 
   //! Returns False
-  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsClosed() const override;
 
   //! Returns False
-  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsPeriodic() const override;
 
   //! The directrix is parallel to the "YAxis" of the parabola.
   //! The "Location" point of the directrix is the intersection
@@ -127,7 +124,7 @@ public:
   Standard_EXPORT gp_Ax2d Directrix() const;
 
   //! Returns the eccentricity e = 1.0
-  Standard_EXPORT Standard_Real Eccentricity() const Standard_OVERRIDE;
+  Standard_EXPORT double Eccentricity() const override;
 
   //! Computes the focus of this parabola The focus is on the
   //! positive side of the "X Axis" of the local coordinate system of the parabola.
@@ -135,14 +132,14 @@ public:
 
   //! Computes the focal length of this parabola.
   //! The focal length is the distance between the apex and the focus of the parabola.
-  Standard_EXPORT Standard_Real Focal() const;
+  Standard_EXPORT double Focal() const;
 
   //! Computes the parameter of this parabola, which is
   //! the distance between its focus and its directrix. This
   //! distance is twice the focal length.
   //! If P is the parameter of the parabola, the equation of
   //! the parabola in its local coordinate system is: Y**2 = 2.*P*X.
-  Standard_EXPORT Standard_Real Parameter() const;
+  Standard_EXPORT double Parameter() const;
 
   //! Returns in P the point of parameter U.
   //! If U = 0 the returned point is the origin of the XAxis and
@@ -150,41 +147,36 @@ public:
   //! P = S + F * (U * U * XDir + * U * YDir)
   //! where S is the vertex of the parabola, XDir the XDirection and
   //! YDir the YDirection of the parabola's local coordinate system.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
 
   //! Returns the point P of parameter U and the first derivative V1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
-  Standard_EXPORT void D2(const Standard_Real U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const Standard_OVERRIDE;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
 
   //! Returns the point P of parameter U, the first second and third
   //! derivatives V1 V2 and V3.
-  Standard_EXPORT void D3(const Standard_Real U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const Standard_OVERRIDE;
+  Standard_EXPORT void D3(const double U,
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const override;
 
   //! For the point of parameter U of this parabola,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
-                              const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
 
   //! Applies the transformation T to this parabola.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
 
   //! Computes the parameter on the transformed
   //! parabola, for the point of parameter U on this parabola.
   //! For a parabola, the returned value is equal to U
   //! multiplied by the scale factor of transformation T.
-  Standard_EXPORT Standard_Real TransformedParameter(const Standard_Real U,
-                                                     const gp_Trsf2d&    T) const Standard_OVERRIDE;
+  Standard_EXPORT double TransformedParameter(const double U, const gp_Trsf2d& T) const override;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -197,21 +189,19 @@ public:
   //! Value(U).Transformed(T)
   //!
   //! This methods returns T.ScaleFactor()
-  Standard_EXPORT Standard_Real
-    ParametricTransformation(const gp_Trsf2d& T) const Standard_OVERRIDE;
+  Standard_EXPORT double ParametricTransformation(const gp_Trsf2d& T) const override;
 
   //! Creates a new object, which is a copy of this parabola.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Parabola, Geom2d_Conic)
 
-protected:
 private:
-  Standard_Real focalLength;
+  double focalLength;
 };
 
 #endif // _Geom2d_Parabola_HeaderFile

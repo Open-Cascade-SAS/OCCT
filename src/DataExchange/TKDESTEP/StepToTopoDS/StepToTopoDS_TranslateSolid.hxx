@@ -36,12 +36,12 @@ public:
 
   Standard_EXPORT StepToTopoDS_TranslateSolid();
 
-  Standard_EXPORT void Init(const Handle(StepVisual_TessellatedSolid)& theTSo,
-                            const Handle(Transfer_TransientProcess)&   theTP,
-                            StepToTopoDS_Tool&                         theTool,
-                            StepToTopoDS_NMTool&                       theNMTool,
-                            const Standard_Boolean       theReadTessellatedWhenNoBRepOnly,
-                            Standard_Boolean&            theHasGeom,
+  Standard_EXPORT void Init(const occ::handle<StepVisual_TessellatedSolid>& theTSo,
+                            const occ::handle<Transfer_TransientProcess>&   theTP,
+                            StepToTopoDS_Tool&                              theTool,
+                            StepToTopoDS_NMTool&                            theNMTool,
+                            const bool                   theReadTessellatedWhenNoBRepOnly,
+                            bool&                        theHasGeom,
                             const StepData_Factors&      theLocalFactors = StepData_Factors(),
                             const Message_ProgressRange& theProgress     = Message_ProgressRange());
 
@@ -49,7 +49,6 @@ public:
 
   Standard_EXPORT StepToTopoDS_TranslateSolidError Error() const;
 
-protected:
 private:
   StepToTopoDS_TranslateSolidError myError;
   TopoDS_Shape                     myResult;

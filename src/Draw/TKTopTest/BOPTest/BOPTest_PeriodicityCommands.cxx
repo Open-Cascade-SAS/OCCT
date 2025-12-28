@@ -29,10 +29,10 @@
 
 #include <TopoDS.hxx>
 
-static Standard_Integer MakePeriodic(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer GetTwins(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer RepeatShape(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer, const char**);
+static int MakePeriodic(Draw_Interpretor&, int, const char**);
+static int GetTwins(Draw_Interpretor&, int, const char**);
+static int RepeatShape(Draw_Interpretor&, int, const char**);
+static int ClearRepetitions(Draw_Interpretor&, int, const char**);
 
 namespace
 {
@@ -47,10 +47,10 @@ static BOPAlgo_MakePeriodic& getPeriodicityMaker()
 
 void BOPTest::PeriodicityCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* group = "BOPTest commands";
   // Commands
@@ -95,9 +95,7 @@ void BOPTest::PeriodicityCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
-                              Standard_Integer  theArgc,
-                              const char**      theArgv)
+int MakePeriodic(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 5)
   {
@@ -116,12 +114,12 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
   getPeriodicityMaker().Clear();
   getPeriodicityMaker().SetShape(aShape);
 
-  for (Standard_Integer i = 3; i < theArgc;)
+  for (int i = 3; i < theArgc;)
   {
     // Get periodicity
-    Standard_Integer iDir = i;
+    int iDir = i;
 
-    Standard_Integer aDirID = -1;
+    int aDirID = -1;
     if (!strcasecmp(theArgv[i], "-x"))
       aDirID = 0;
     else if (!strcasecmp(theArgv[i], "-y"))
@@ -143,9 +141,9 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
       return 1;
     }
 
-    Standard_Real aPeriod = Draw::Atof(theArgv[++i]);
+    double aPeriod = Draw::Atof(theArgv[++i]);
 
-    getPeriodicityMaker().MakePeriodic(aDirID, Standard_True, aPeriod);
+    getPeriodicityMaker().MakePeriodic(aDirID, true, aPeriod);
 
     ++i;
     if (theArgc > i + 1)
@@ -158,9 +156,9 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
           theDI << "Trim bounds for " << cDirName << " direction are not set\n";
           return 1;
         }
-        Standard_Real aFirst = Draw::Atof(theArgv[++i]);
+        double aFirst = Draw::Atof(theArgv[++i]);
 
-        getPeriodicityMaker().SetTrimmed(aDirID, Standard_False, aFirst);
+        getPeriodicityMaker().SetTrimmed(aDirID, false, aFirst);
         ++i;
       }
     }
@@ -191,7 +189,7 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+int GetTwins(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 3)
   {
@@ -207,7 +205,7 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, con
     return 1;
   }
 
-  const TopTools_ListOfShape& aTwins = getPeriodicityMaker().GetTwins(aShape);
+  const NCollection_List<TopoDS_Shape>& aTwins = getPeriodicityMaker().GetTwins(aShape);
 
   TopoDS_Shape aCTwins;
   if (aTwins.IsEmpty())
@@ -217,7 +215,7 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, con
   else
   {
     BRep_Builder().MakeCompound(TopoDS::Compound(aCTwins));
-    for (TopTools_ListIteratorOfListOfShape it(aTwins); it.More(); it.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator it(aTwins); it.More(); it.Next())
       BRep_Builder().Add(aCTwins, it.Value());
   }
 
@@ -228,9 +226,7 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, con
 
 //=================================================================================================
 
-Standard_Integer RepeatShape(Draw_Interpretor& theDI,
-                             Standard_Integer  theArgc,
-                             const char**      theArgv)
+int RepeatShape(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 4)
   {
@@ -238,9 +234,9 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
     return 1;
   }
 
-  for (Standard_Integer i = 2; i < theArgc; ++i)
+  for (int i = 2; i < theArgc; ++i)
   {
-    Standard_Integer aDirID = -1;
+    int aDirID = -1;
     if (!strcasecmp(theArgv[i], "-x"))
       aDirID = 0;
     else if (!strcasecmp(theArgv[i], "-y"))
@@ -256,7 +252,7 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
     char cDirName[2];
     Sprintf(cDirName, "%c", theArgv[i][1]);
 
-    Standard_Integer aTimes = 0;
+    int aTimes = 0;
     if (theArgc > i + 1)
       aTimes = Draw::Atoi(theArgv[++i]);
 
@@ -289,7 +285,7 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer theArgc, const char** theArgv)
+int ClearRepetitions(Draw_Interpretor&, int theArgc, const char** theArgv)
 {
   // Clear all previous repetitions
   getPeriodicityMaker().ClearRepetitions();

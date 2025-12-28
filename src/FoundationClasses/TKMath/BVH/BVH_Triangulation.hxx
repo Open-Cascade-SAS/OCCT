@@ -50,18 +50,15 @@ public:
 
 public:
   //! Returns total number of triangles.
-  virtual Standard_Integer Size() const Standard_OVERRIDE
-  {
-    return BVH::Array<Standard_Integer, 4>::Size(Elements);
-  }
+  virtual int Size() const override { return BVH::Array<int, 4>::Size(Elements); }
 
   //! Returns AABB of entire set of objects.
   using BVH_PrimitiveSet<T, N>::Box;
 
   //! Returns AABB of the given triangle.
-  virtual BVH_Box<T, N> Box(const Standard_Integer theIndex) const Standard_OVERRIDE
+  virtual BVH_Box<T, N> Box(const int theIndex) const override
   {
-    const BVH_Vec4i& anIndex = BVH::Array<Standard_Integer, 4>::Value(Elements, theIndex);
+    const BVH_Vec4i& anIndex = BVH::Array<int, 4>::Value(Elements, theIndex);
 
     const BVH_VecNt& aPoint0 = BVH::Array<T, N>::Value(Vertices, anIndex.x());
     const BVH_VecNt& aPoint1 = BVH::Array<T, N>::Value(Vertices, anIndex.y());
@@ -77,10 +74,9 @@ public:
   }
 
   //! Returns centroid position along the given axis.
-  virtual T Center(const Standard_Integer theIndex,
-                   const Standard_Integer theAxis) const Standard_OVERRIDE
+  virtual T Center(const int theIndex, const int theAxis) const override
   {
-    const BVH_Vec4i& anIndex = BVH::Array<Standard_Integer, 4>::Value(Elements, theIndex);
+    const BVH_Vec4i& anIndex = BVH::Array<int, 4>::Value(Elements, theIndex);
 
     const BVH_VecNt& aPoint0 = BVH::Array<T, N>::Value(Vertices, anIndex.x());
     const BVH_VecNt& aPoint1 = BVH::Array<T, N>::Value(Vertices, anIndex.y());
@@ -91,11 +87,10 @@ public:
   }
 
   //! Performs transposing the two given triangles in the set.
-  virtual void Swap(const Standard_Integer theIndex1,
-                    const Standard_Integer theIndex2) Standard_OVERRIDE
+  virtual void Swap(const int theIndex1, const int theIndex2) override
   {
-    BVH_Vec4i& anIndices1 = BVH::Array<Standard_Integer, 4>::ChangeValue(Elements, theIndex1);
-    BVH_Vec4i& anIndices2 = BVH::Array<Standard_Integer, 4>::ChangeValue(Elements, theIndex2);
+    BVH_Vec4i& anIndices1 = BVH::Array<int, 4>::ChangeValue(Elements, theIndex1);
+    BVH_Vec4i& anIndices2 = BVH::Array<int, 4>::ChangeValue(Elements, theIndex2);
     std::swap(anIndices1, anIndices2);
   }
 };

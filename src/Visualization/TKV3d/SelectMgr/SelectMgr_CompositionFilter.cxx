@@ -16,19 +16,19 @@
 
 #include <SelectMgr_CompositionFilter.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <SelectMgr_ListIteratorOfListOfFilter.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_CompositionFilter, SelectMgr_Filter)
 
-void SelectMgr_CompositionFilter::Add(const Handle(SelectMgr_Filter)& afilter)
+void SelectMgr_CompositionFilter::Add(const occ::handle<SelectMgr_Filter>& afilter)
 {
   myFilters.Append(afilter);
 }
 
-void SelectMgr_CompositionFilter::Remove(const Handle(SelectMgr_Filter)& afilter)
+void SelectMgr_CompositionFilter::Remove(const occ::handle<SelectMgr_Filter>& afilter)
 {
-  SelectMgr_ListIteratorOfListOfFilter It(myFilters);
+  NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator It(myFilters);
   for (; It.More(); It.Next())
   {
     if (afilter == It.Value())
@@ -39,18 +39,18 @@ void SelectMgr_CompositionFilter::Remove(const Handle(SelectMgr_Filter)& afilter
   }
 }
 
-Standard_Boolean SelectMgr_CompositionFilter::IsEmpty() const
+bool SelectMgr_CompositionFilter::IsEmpty() const
 {
   return myFilters.IsEmpty();
 }
 
-Standard_Boolean SelectMgr_CompositionFilter::IsIn(const Handle(SelectMgr_Filter)& afilter) const
+bool SelectMgr_CompositionFilter::IsIn(const occ::handle<SelectMgr_Filter>& afilter) const
 {
-  SelectMgr_ListIteratorOfListOfFilter It(myFilters);
+  NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator It(myFilters);
   for (; It.More(); It.Next())
     if (afilter == It.Value())
-      return Standard_True;
-  return Standard_False;
+      return true;
+  return false;
 }
 
 void SelectMgr_CompositionFilter::Clear()
@@ -58,14 +58,14 @@ void SelectMgr_CompositionFilter::Clear()
   myFilters.Clear();
 }
 
-Standard_Boolean SelectMgr_CompositionFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+bool SelectMgr_CompositionFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const
 {
-  SelectMgr_ListIteratorOfListOfFilter It(myFilters);
+  NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator It(myFilters);
   for (; It.More(); It.Next())
   {
     if (It.Value()->ActsOn(aStandardMode))
-      return Standard_True;
+      return true;
   }
 
-  return Standard_False;
+  return false;
 }

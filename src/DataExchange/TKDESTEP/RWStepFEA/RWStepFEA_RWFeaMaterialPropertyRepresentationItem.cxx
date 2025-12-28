@@ -31,10 +31,10 @@ RWStepFEA_RWFeaMaterialPropertyRepresentationItem::
 //=================================================================================================
 
 void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::ReadStep(
-  const Handle(StepData_StepReaderData)&                       data,
-  const Standard_Integer                                       num,
-  Handle(Interface_Check)&                                     ach,
-  const Handle(StepFEA_FeaMaterialPropertyRepresentationItem)& ent) const
+  const occ::handle<StepData_StepReaderData>&                       data,
+  const int                                                         num,
+  occ::handle<Interface_Check>&                                     ach,
+  const occ::handle<StepFEA_FeaMaterialPropertyRepresentationItem>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "fea_material_property_representation_item"))
@@ -42,7 +42,7 @@ void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Initialize entity
@@ -52,8 +52,8 @@ void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::WriteStep(
-  StepData_StepWriter&                                         SW,
-  const Handle(StepFEA_FeaMaterialPropertyRepresentationItem)& ent) const
+  StepData_StepWriter&                                              SW,
+  const occ::handle<StepFEA_FeaMaterialPropertyRepresentationItem>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -64,7 +64,7 @@ void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::Share(
-  const Handle(StepFEA_FeaMaterialPropertyRepresentationItem)&,
+  const occ::handle<StepFEA_FeaMaterialPropertyRepresentationItem>&,
   Interface_EntityIterator&) const
 {
   // Inherited fields of RepresentationItem

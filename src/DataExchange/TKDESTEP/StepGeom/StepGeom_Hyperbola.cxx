@@ -18,10 +18,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Hyperbola, StepGeom_Conic)
 
 StepGeom_Hyperbola::StepGeom_Hyperbola() {}
 
-void StepGeom_Hyperbola::Init(const Handle(TCollection_HAsciiString)& aName,
-                              const StepGeom_Axis2Placement&          aPosition,
-                              const Standard_Real                     aSemiAxis,
-                              const Standard_Real                     aSemiImagAxis)
+void StepGeom_Hyperbola::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                              const StepGeom_Axis2Placement&               aPosition,
+                              const double                                 aSemiAxis,
+                              const double                                 aSemiImagAxis)
 {
   // --- classe own fields ---
   semiAxis     = aSemiAxis;
@@ -30,22 +30,22 @@ void StepGeom_Hyperbola::Init(const Handle(TCollection_HAsciiString)& aName,
   StepGeom_Conic::Init(aName, aPosition);
 }
 
-void StepGeom_Hyperbola::SetSemiAxis(const Standard_Real aSemiAxis)
+void StepGeom_Hyperbola::SetSemiAxis(const double aSemiAxis)
 {
   semiAxis = aSemiAxis;
 }
 
-Standard_Real StepGeom_Hyperbola::SemiAxis() const
+double StepGeom_Hyperbola::SemiAxis() const
 {
   return semiAxis;
 }
 
-void StepGeom_Hyperbola::SetSemiImagAxis(const Standard_Real aSemiImagAxis)
+void StepGeom_Hyperbola::SetSemiImagAxis(const double aSemiImagAxis)
 {
   semiImagAxis = aSemiImagAxis;
 }
 
-Standard_Real StepGeom_Hyperbola::SemiImagAxis() const
+double StepGeom_Hyperbola::SemiImagAxis() const
 {
   return semiImagAxis;
 }

@@ -30,8 +30,9 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_SplitCommonVertex, ShapeFix_Root)
 
@@ -68,8 +69,8 @@ void ShapeFix_SplitCommonVertex::Perform()
     if (F.IsNull())
       continue;
     // analys face and split if necessary
-    TopTools_SequenceOfShape wires;
-    for (TopoDS_Iterator itw(F, Standard_False); itw.More(); itw.Next())
+    NCollection_Sequence<TopoDS_Shape> wires;
+    for (TopoDS_Iterator itw(F, false); itw.More(); itw.Next())
     {
       if (itw.Value().ShapeType() != TopAbs_WIRE)
         continue;
@@ -77,16 +78,16 @@ void ShapeFix_SplitCommonVertex::Perform()
     }
     if (wires.Length() < 2)
       continue;
-    TopTools_DataMapOfShapeShape MapVV;
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> MapVV;
     MapVV.Clear();
-    for (Standard_Integer nw1 = 1; nw1 < wires.Length(); nw1++)
+    for (int nw1 = 1; nw1 < wires.Length(); nw1++)
     {
-      TopoDS_Wire                  w1    = TopoDS::Wire(wires.Value(nw1));
-      Handle(ShapeExtend_WireData) sewd1 = new ShapeExtend_WireData(w1);
-      for (Standard_Integer nw2 = nw1 + 1; nw2 <= wires.Length(); nw2++)
+      TopoDS_Wire                       w1    = TopoDS::Wire(wires.Value(nw1));
+      occ::handle<ShapeExtend_WireData> sewd1 = new ShapeExtend_WireData(w1);
+      for (int nw2 = nw1 + 1; nw2 <= wires.Length(); nw2++)
       {
-        TopoDS_Wire                  w2    = TopoDS::Wire(wires.Value(nw2));
-        Handle(ShapeExtend_WireData) sewd2 = new ShapeExtend_WireData(w2);
+        TopoDS_Wire                       w2    = TopoDS::Wire(wires.Value(nw2));
+        occ::handle<ShapeExtend_WireData> sewd2 = new ShapeExtend_WireData(w2);
 
         for (TopExp_Explorer expv1(w1, TopAbs_VERTEX); expv1.More(); expv1.Next())
         {
@@ -104,29 +105,29 @@ void ShapeFix_SplitCommonVertex::Perform()
               }
               else
               {
-                gp_Pnt        P   = BRep_Tool::Pnt(V2);
-                Standard_Real tol = BRep_Tool::Tolerance(V2);
-                BRep_Builder  B;
+                gp_Pnt       P   = BRep_Tool::Pnt(V2);
+                double       tol = BRep_Tool::Tolerance(V2);
+                BRep_Builder B;
                 B.MakeVertex(Vnew, P, tol);
                 MapVV.Bind(V2, Vnew);
               }
               ShapeBuild_Edge    sbe;
               ShapeAnalysis_Edge sae;
-              for (Standard_Integer ne2 = 1; ne2 <= sewd2->NbEdges(); ne2++)
+              for (int ne2 = 1; ne2 <= sewd2->NbEdges(); ne2++)
               {
-                TopoDS_Edge      E       = sewd2->Edge(ne2);
-                TopoDS_Vertex    FV      = sae.FirstVertex(E);
-                TopoDS_Vertex    LV      = sae.LastVertex(E);
-                Standard_Boolean IsCoinc = Standard_False;
+                TopoDS_Edge   E       = sewd2->Edge(ne2);
+                TopoDS_Vertex FV      = sae.FirstVertex(E);
+                TopoDS_Vertex LV      = sae.LastVertex(E);
+                bool          IsCoinc = false;
                 if (FV == V2)
                 {
                   FV      = Vnew;
-                  IsCoinc = Standard_True;
+                  IsCoinc = true;
                 }
                 if (LV == V2)
                 {
                   LV      = Vnew;
-                  IsCoinc = Standard_True;
+                  IsCoinc = true;
                 }
                 if (IsCoinc)
                 {

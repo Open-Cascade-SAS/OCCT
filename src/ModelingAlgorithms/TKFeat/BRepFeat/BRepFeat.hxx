@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
@@ -83,27 +84,27 @@ class BRepFeat
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static void SampleEdges(const TopoDS_Shape& S, TColgp_SequenceOfPnt& Pt);
+  Standard_EXPORT static void SampleEdges(const TopoDS_Shape& S, NCollection_Sequence<gp_Pnt>& Pt);
 
   Standard_EXPORT static void Barycenter(const TopoDS_Shape& S, gp_Pnt& Pt);
 
-  Standard_EXPORT static Standard_Real ParametricBarycenter(const TopoDS_Shape&       S,
-                                                            const Handle(Geom_Curve)& C);
+  Standard_EXPORT static double ParametricBarycenter(const TopoDS_Shape&            S,
+                                                     const occ::handle<Geom_Curve>& C);
 
   //! Ori = True taking account the orientation
-  Standard_EXPORT static void ParametricMinMax(const TopoDS_Shape&       S,
-                                               const Handle(Geom_Curve)& C,
-                                               Standard_Real&            prmin,
-                                               Standard_Real&            prmax,
-                                               Standard_Real&            prbmin,
-                                               Standard_Real&            prbmax,
-                                               Standard_Boolean&         flag,
-                                               const Standard_Boolean    Ori = Standard_False);
+  Standard_EXPORT static void ParametricMinMax(const TopoDS_Shape&            S,
+                                               const occ::handle<Geom_Curve>& C,
+                                               double&                        prmin,
+                                               double&                        prmax,
+                                               double&                        prbmin,
+                                               double&                        prbmax,
+                                               bool&                          flag,
+                                               const bool                     Ori = false);
 
-  Standard_EXPORT static Standard_Boolean IsInside(const TopoDS_Face& F1, const TopoDS_Face& F2);
+  Standard_EXPORT static bool IsInside(const TopoDS_Face& F1, const TopoDS_Face& F2);
 
-  Standard_EXPORT static Standard_Boolean IsInOut(const BRepTopAdaptor_FClass2d& FC,
-                                                  const Geom2dAdaptor_Curve&     AC);
+  Standard_EXPORT static bool IsInOut(const BRepTopAdaptor_FClass2d& FC,
+                                      const Geom2dAdaptor_Curve&     AC);
 
   Standard_EXPORT static void FaceUntil(const TopoDS_Shape& S, TopoDS_Face& F);
 

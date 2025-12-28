@@ -44,43 +44,41 @@ public:
   }
 
   //! Constructor
-  IntPolyh_Couple(const Standard_Integer theTriangle1,
-                  const Standard_Integer theTriangle2,
-                  const Standard_Real    theAngle = -2.0)
+  IntPolyh_Couple(const int theTriangle1, const int theTriangle2, const double theAngle = -2.0)
       : myIndex1(theTriangle1),
         myIndex2(theTriangle2),
-        myAnalyzed(Standard_False),
+        myAnalyzed(false),
         myAngle(theAngle)
   {
   }
 
   //! Returns the first index
-  Standard_Integer FirstValue() const { return myIndex1; }
+  int FirstValue() const { return myIndex1; }
 
   //! Returns the second index
-  Standard_Integer SecondValue() const { return myIndex2; }
+  int SecondValue() const { return myIndex2; }
 
   //! Returns TRUE if the couple has been analyzed
-  Standard_Boolean IsAnalyzed() const { return myAnalyzed; }
+  bool IsAnalyzed() const { return myAnalyzed; }
 
   //! Returns the angle
-  Standard_Real Angle() const { return myAngle; }
+  double Angle() const { return myAngle; }
 
   //! Sets the triangles
-  void SetCoupleValue(const Standard_Integer theInd1, const Standard_Integer theInd2)
+  void SetCoupleValue(const int theInd1, const int theInd2)
   {
     myIndex1 = theInd1;
     myIndex2 = theInd2;
   }
 
   //! Sets the analyzed flag
-  void SetAnalyzed(const Standard_Boolean theAnalyzed) { myAnalyzed = theAnalyzed; }
+  void SetAnalyzed(const bool theAnalyzed) { myAnalyzed = theAnalyzed; }
 
   //! Sets the angle
-  void SetAngle(const Standard_Real theAngle) { myAngle = theAngle; }
+  void SetAngle(const double theAngle) { myAngle = theAngle; }
 
   //! Returns true if the Couple is equal to <theOther>
-  Standard_Boolean IsEqual(const IntPolyh_Couple& theOther) const
+  bool IsEqual(const IntPolyh_Couple& theOther) const
   {
     return (myIndex1 == theOther.myIndex1 && myIndex2 == theOther.myIndex2)
            || (myIndex1 == theOther.myIndex2 && myIndex2 == theOther.myIndex1);
@@ -90,14 +88,13 @@ public:
   bool operator==(const IntPolyh_Couple& theOther) const { return IsEqual(theOther); }
 
   // Dump
-  Standard_EXPORT void Dump(const Standard_Integer v) const;
+  Standard_EXPORT void Dump(const int v) const;
 
-protected:
 private:
-  Standard_Integer myIndex1;
-  Standard_Integer myIndex2;
-  Standard_Boolean myAnalyzed;
-  Standard_Real    myAngle;
+  int    myIndex1;
+  int    myIndex2;
+  bool   myAnalyzed;
+  double myAngle;
 };
 
 namespace std

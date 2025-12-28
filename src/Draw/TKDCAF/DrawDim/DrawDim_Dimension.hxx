@@ -24,19 +24,16 @@
 class gp_Pnt;
 class Draw_Display;
 
-class DrawDim_Dimension;
-DEFINE_STANDARD_HANDLE(DrawDim_Dimension, Draw_Drawable3D)
-
 //! Dimension between planes and cylinder
 class DrawDim_Dimension : public Draw_Drawable3D
 {
 
 public:
-  Standard_EXPORT void SetValue(const Standard_Real avalue);
+  Standard_EXPORT void SetValue(const double avalue);
 
-  Standard_EXPORT Standard_Real GetValue() const;
+  Standard_EXPORT double GetValue() const;
 
-  Standard_EXPORT Standard_Boolean IsValued() const;
+  Standard_EXPORT bool IsValued() const;
 
   Standard_EXPORT void TextColor(const Draw_Color& C);
 
@@ -49,11 +46,9 @@ public:
 protected:
   Standard_EXPORT DrawDim_Dimension();
 
-  Standard_Boolean is_valued;
-  Standard_Real    myValue;
-  Draw_Color       myTextColor;
-
-private:
+  bool       is_valued;
+  double     myValue;
+  Draw_Color myTextColor;
 };
 
 #endif // _DrawDim_Dimension_HeaderFile

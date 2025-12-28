@@ -39,13 +39,14 @@ const Standard_GUID& XCAFDoc_DimTol::GetID()
 
 //=================================================================================================
 
-Handle(XCAFDoc_DimTol) XCAFDoc_DimTol::Set(const TDF_Label&                        label,
-                                           const Standard_Integer                  kind,
-                                           const Handle(TColStd_HArray1OfReal)&    aVal,
-                                           const Handle(TCollection_HAsciiString)& aName,
-                                           const Handle(TCollection_HAsciiString)& aDescription)
+occ::handle<XCAFDoc_DimTol> XCAFDoc_DimTol::Set(
+  const TDF_Label&                                label,
+  const int                                       kind,
+  const occ::handle<NCollection_HArray1<double>>& aVal,
+  const occ::handle<TCollection_HAsciiString>&    aName,
+  const occ::handle<TCollection_HAsciiString>&    aDescription)
 {
-  Handle(XCAFDoc_DimTol) A;
+  occ::handle<XCAFDoc_DimTol> A;
   if (!label.FindAttribute(XCAFDoc_DimTol::GetID(), A))
   {
     A = new XCAFDoc_DimTol();
@@ -57,10 +58,10 @@ Handle(XCAFDoc_DimTol) XCAFDoc_DimTol::Set(const TDF_Label&                     
 
 //=================================================================================================
 
-void XCAFDoc_DimTol::Set(const Standard_Integer                  kind,
-                         const Handle(TColStd_HArray1OfReal)&    aVal,
-                         const Handle(TCollection_HAsciiString)& aName,
-                         const Handle(TCollection_HAsciiString)& aDescription)
+void XCAFDoc_DimTol::Set(const int                                       kind,
+                         const occ::handle<NCollection_HArray1<double>>& aVal,
+                         const occ::handle<TCollection_HAsciiString>&    aName,
+                         const occ::handle<TCollection_HAsciiString>&    aDescription)
 {
   Backup();
   myKind        = kind;
@@ -71,28 +72,28 @@ void XCAFDoc_DimTol::Set(const Standard_Integer                  kind,
 
 //=================================================================================================
 
-Standard_Integer XCAFDoc_DimTol::GetKind() const
+int XCAFDoc_DimTol::GetKind() const
 {
   return myKind;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) XCAFDoc_DimTol::GetVal() const
+occ::handle<NCollection_HArray1<double>> XCAFDoc_DimTol::GetVal() const
 {
   return myVal;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDoc_DimTol::GetName() const
+occ::handle<TCollection_HAsciiString> XCAFDoc_DimTol::GetName() const
 {
   return myName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDoc_DimTol::GetDescription() const
+occ::handle<TCollection_HAsciiString> XCAFDoc_DimTol::GetDescription() const
 {
   return myDescription;
 }
@@ -106,32 +107,32 @@ const Standard_GUID& XCAFDoc_DimTol::ID() const
 
 //=================================================================================================
 
-void XCAFDoc_DimTol::Restore(const Handle(TDF_Attribute)& With)
+void XCAFDoc_DimTol::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  myKind        = Handle(XCAFDoc_DimTol)::DownCast(With)->GetKind();
-  myVal         = Handle(XCAFDoc_DimTol)::DownCast(With)->GetVal();
-  myName        = Handle(XCAFDoc_DimTol)::DownCast(With)->GetName();
-  myDescription = Handle(XCAFDoc_DimTol)::DownCast(With)->GetDescription();
+  myKind        = occ::down_cast<XCAFDoc_DimTol>(With)->GetKind();
+  myVal         = occ::down_cast<XCAFDoc_DimTol>(With)->GetVal();
+  myName        = occ::down_cast<XCAFDoc_DimTol>(With)->GetName();
+  myDescription = occ::down_cast<XCAFDoc_DimTol>(With)->GetDescription();
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XCAFDoc_DimTol::NewEmpty() const
+occ::handle<TDF_Attribute> XCAFDoc_DimTol::NewEmpty() const
 {
   return new XCAFDoc_DimTol();
 }
 
 //=================================================================================================
 
-void XCAFDoc_DimTol::Paste(const Handle(TDF_Attribute)& Into,
-                           const Handle(TDF_RelocationTable)& /*RT*/) const
+void XCAFDoc_DimTol::Paste(const occ::handle<TDF_Attribute>& Into,
+                           const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
-  Handle(XCAFDoc_DimTol)::DownCast(Into)->Set(myKind, myVal, myName, myDescription);
+  occ::down_cast<XCAFDoc_DimTol>(Into)->Set(myKind, myVal, myName, myDescription);
 }
 
 //=================================================================================================
 
-void XCAFDoc_DimTol::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_DimTol::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -139,9 +140,9 @@ void XCAFDoc_DimTol::DumpJson(Standard_OStream& theOStream, Standard_Integer the
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myKind)
 
-  for (TColStd_Array1OfReal::Iterator aValIt(myVal->Array1()); aValIt.More(); aValIt.Next())
+  for (NCollection_Array1<double>::Iterator aValIt(myVal->Array1()); aValIt.More(); aValIt.Next())
   {
-    const Standard_Real& aValue = aValIt.Value();
+    const double& aValue = aValIt.Value();
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aValue)
   }
 

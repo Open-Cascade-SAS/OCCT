@@ -23,9 +23,6 @@
 class TCollection_HAsciiString;
 class StepBasic_ProductDefinition;
 
-class StepRepr_QuantifiedAssemblyComponentUsage;
-DEFINE_STANDARD_HANDLE(StepRepr_QuantifiedAssemblyComponentUsage, StepRepr_AssemblyComponentUsage)
-
 //! Representation of STEP entity QuantifiedAssemblyComponentUsage
 class StepRepr_QuantifiedAssemblyComponentUsage : public StepRepr_AssemblyComponentUsage
 {
@@ -36,44 +33,43 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
-    const Standard_Boolean                  hasProductDefinitionRelationship_Description,
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
-    const Handle(StepBasic_ProductDefinition)&
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
+    const bool                                   hasProductDefinitionRelationship_Description,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
+    const occ::handle<StepBasic_ProductDefinition>&
       aProductDefinitionRelationship_RelatingProductDefinition,
-    const Handle(StepBasic_ProductDefinition)&
-                                            aProductDefinitionRelationship_RelatedProductDefinition,
-    const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(Standard_Transient)&       aQuantity);
+    const occ::handle<StepBasic_ProductDefinition>&
+               aProductDefinitionRelationship_RelatedProductDefinition,
+    const bool hasAssemblyComponentUsage_ReferenceDesignator,
+    const occ::handle<TCollection_HAsciiString>& aAssemblyComponentUsage_ReferenceDesignator,
+    const occ::handle<Standard_Transient>&       aQuantity);
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
-    const Standard_Boolean                  hasProductDefinitionRelationship_Description,
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
+    const bool                                   hasProductDefinitionRelationship_Description,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
     const StepBasic_ProductDefinitionOrReference&
       aProductDefinitionRelationship_RelatingProductDefinition,
     const StepBasic_ProductDefinitionOrReference&
-                                            aProductDefinitionRelationship_RelatedProductDefinition,
-    const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(Standard_Transient)&       aQuantity);
+               aProductDefinitionRelationship_RelatedProductDefinition,
+    const bool hasAssemblyComponentUsage_ReferenceDesignator,
+    const occ::handle<TCollection_HAsciiString>& aAssemblyComponentUsage_ReferenceDesignator,
+    const occ::handle<Standard_Transient>&       aQuantity);
 
   //! Returns field Quantity
-  Standard_EXPORT Handle(Standard_Transient) Quantity() const;
+  Standard_EXPORT occ::handle<Standard_Transient> Quantity() const;
 
   //! Set field Quantity
-  Standard_EXPORT void SetQuantity(const Handle(Standard_Transient)& Quantity);
+  Standard_EXPORT void SetQuantity(const occ::handle<Standard_Transient>& Quantity);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_QuantifiedAssemblyComponentUsage,
                           StepRepr_AssemblyComponentUsage)
 
-protected:
 private:
-  Handle(Standard_Transient) theQuantity;
+  occ::handle<Standard_Transient> theQuantity;
 };
 
 #endif // _StepRepr_QuantifiedAssemblyComponentUsage_HeaderFile

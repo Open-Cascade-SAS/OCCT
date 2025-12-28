@@ -58,7 +58,7 @@ public:
   Aspect_XDisplay* GetDisplayAspect() { return myDisplay; }
 
   //! @return TRUE if X Display has been allocated by this class
-  Standard_Boolean IsOwnDisplay() const { return myIsOwnDisplay; }
+  bool IsOwnDisplay() const { return myIsOwnDisplay; }
 
   //! @return identifier(atom) for custom named property associated with windows that use current
   //! connection to X server.
@@ -122,14 +122,12 @@ private:
   Aspect_FBConfig                             myDefFBConfig;
   NCollection_DataMap<Aspect_XAtom, uint64_t> myAtoms;
   TCollection_AsciiString                     myDisplayName;
-  Standard_Boolean                            myIsOwnDisplay;
+  bool                                        myIsOwnDisplay;
 
 private:
   //! To protect the connection from closing copying allowed only through the handles.
   Aspect_DisplayConnection(const Aspect_DisplayConnection&);
   Aspect_DisplayConnection& operator=(const Aspect_DisplayConnection&);
 };
-
-DEFINE_STANDARD_HANDLE(Aspect_DisplayConnection, Standard_Transient)
 
 #endif // _Aspect_DisplayConnection_H__

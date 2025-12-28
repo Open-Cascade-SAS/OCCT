@@ -21,9 +21,6 @@
 
 #include <StepRepr_ShapeAspect.hxx>
 
-class StepFEA_FeaModelDefinition;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaModelDefinition, StepRepr_ShapeAspect)
-
 //! Representation of STEP entity FeaModelDefinition
 class StepFEA_FeaModelDefinition : public StepRepr_ShapeAspect
 {
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepFEA_FeaModelDefinition();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModelDefinition, StepRepr_ShapeAspect)
-
-protected:
-private:
 };
 
 #endif // _StepFEA_FeaModelDefinition_HeaderFile

@@ -79,10 +79,11 @@ void VrmlData_WorldInfo::AddInfo(const char* theString)
 // purpose  : Create a copy of this node
 //=======================================================================
 
-Handle(VrmlData_Node) VrmlData_WorldInfo::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_WorldInfo::Clone(
+  const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_WorldInfo) aResult =
-    Handle(VrmlData_WorldInfo)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_WorldInfo> aResult =
+    occ::down_cast<VrmlData_WorldInfo>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_WorldInfo(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
 
@@ -148,7 +149,7 @@ VrmlData_ErrorStatus VrmlData_WorldInfo::Write(const char* thePrefix) const
   VrmlData_ErrorStatus  aStatus(VrmlData_StatusOK);
   const VrmlData_Scene& aScene   = Scene();
   static char           header[] = "WorldInfo {";
-  if (aScene.IsDummyWrite() == Standard_False
+  if (aScene.IsDummyWrite() == false
       && OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
     char buf[4096];
@@ -158,7 +159,7 @@ VrmlData_ErrorStatus VrmlData_WorldInfo::Write(const char* thePrefix) const
       aStatus = aScene.WriteLine(buf);
     }
 
-    if (myInfo.IsEmpty() == Standard_False && OK(aStatus))
+    if (myInfo.IsEmpty() == false && OK(aStatus))
     {
       if (OK(aStatus, aScene.WriteLine("info [", 0L, GlobalIndent())))
       {
@@ -183,7 +184,7 @@ VrmlData_ErrorStatus VrmlData_WorldInfo::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-Standard_Boolean VrmlData_WorldInfo::IsDefault() const
+bool VrmlData_WorldInfo::IsDefault() const
 {
   return (myTitle == 0L && myInfo.IsEmpty());
 }

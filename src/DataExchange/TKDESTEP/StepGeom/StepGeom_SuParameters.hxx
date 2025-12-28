@@ -22,8 +22,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepGeom_SuParameters, StepGeom_GeometricRepresentationItem)
-
 //! Representation of STEP entity SuParameters
 class StepGeom_SuParameters : public StepGeom_GeometricRepresentationItem
 {
@@ -32,52 +30,52 @@ public:
   Standard_EXPORT StepGeom_SuParameters();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                            const Standard_Real                     theA,
-                            const Standard_Real                     theAlpha,
-                            const Standard_Real                     theB,
-                            const Standard_Real                     theBeta,
-                            const Standard_Real                     theC,
-                            const Standard_Real                     theGamma);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+                            const double                                 theA,
+                            const double                                 theAlpha,
+                            const double                                 theB,
+                            const double                                 theBeta,
+                            const double                                 theC,
+                            const double                                 theGamma);
 
   //! Returns field A
-  Standard_EXPORT Standard_Real A() const;
+  Standard_EXPORT double A() const;
   //! Sets field A
-  Standard_EXPORT void SetA(const Standard_Real theA);
+  Standard_EXPORT void SetA(const double theA);
 
   //! Returns field Alpha
-  Standard_EXPORT Standard_Real Alpha() const;
+  Standard_EXPORT double Alpha() const;
   //! Sets field Alpha
-  Standard_EXPORT void SetAlpha(const Standard_Real theAlpha);
+  Standard_EXPORT void SetAlpha(const double theAlpha);
 
   //! Returns field B
-  Standard_EXPORT Standard_Real B() const;
+  Standard_EXPORT double B() const;
   //! Sets field B
-  Standard_EXPORT void SetB(const Standard_Real theB);
+  Standard_EXPORT void SetB(const double theB);
 
   //! Returns field Beta
-  Standard_EXPORT Standard_Real Beta() const;
+  Standard_EXPORT double Beta() const;
   //! Sets field Beta
-  Standard_EXPORT void SetBeta(const Standard_Real theBeta);
+  Standard_EXPORT void SetBeta(const double theBeta);
 
   //! Returns field C
-  Standard_EXPORT Standard_Real C() const;
+  Standard_EXPORT double C() const;
   //! Sets field C
-  Standard_EXPORT void SetC(const Standard_Real theC);
+  Standard_EXPORT void SetC(const double theC);
 
   //! Returns field Gamma
-  Standard_EXPORT Standard_Real Gamma() const;
+  Standard_EXPORT double Gamma() const;
   //! Sets field Gamma
-  Standard_EXPORT void SetGamma(const Standard_Real theGamma);
+  Standard_EXPORT void SetGamma(const double theGamma);
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_SuParameters, StepGeom_GeometricRepresentationItem)
 
 private:
-  Standard_Real myA;
-  Standard_Real myAlpha;
-  Standard_Real myB;
-  Standard_Real myBeta;
-  Standard_Real myC;
-  Standard_Real myGamma;
+  double myA;
+  double myAlpha;
+  double myB;
+  double myBeta;
+  double myC;
+  double myGamma;
 };
 #endif // _StepGeom_SuParameters_HeaderFile_

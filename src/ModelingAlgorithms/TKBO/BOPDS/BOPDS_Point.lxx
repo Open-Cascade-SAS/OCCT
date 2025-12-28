@@ -30,14 +30,14 @@ inline BOPDS_Point::~BOPDS_Point() {}
 
 //=================================================================================================
 
-inline void BOPDS_Point::SetIndex(const Standard_Integer theIndex)
+inline void BOPDS_Point::SetIndex(const int theIndex)
 {
   myIndex = theIndex;
 }
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_Point::Index() const
+inline int BOPDS_Point::Index() const
 {
   return myIndex;
 }

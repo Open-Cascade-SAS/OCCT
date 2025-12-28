@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Axis1Placement, StepGeom_Placement)
 
 StepGeom_Axis1Placement::StepGeom_Axis1Placement() {}
 
-void StepGeom_Axis1Placement::Init(const Handle(TCollection_HAsciiString)& aName,
-                                   const Handle(StepGeom_CartesianPoint)&  aLocation,
-                                   const Standard_Boolean                  hasAaxis,
-                                   const Handle(StepGeom_Direction)&       aAxis)
+void StepGeom_Axis1Placement::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                   const occ::handle<StepGeom_CartesianPoint>&  aLocation,
+                                   const bool                                   hasAaxis,
+                                   const occ::handle<StepGeom_Direction>&       aAxis)
 {
   // --- classe own fields ---
   hasAxis = hasAaxis;
@@ -32,24 +32,24 @@ void StepGeom_Axis1Placement::Init(const Handle(TCollection_HAsciiString)& aName
   StepGeom_Placement::Init(aName, aLocation);
 }
 
-void StepGeom_Axis1Placement::SetAxis(const Handle(StepGeom_Direction)& aAxis)
+void StepGeom_Axis1Placement::SetAxis(const occ::handle<StepGeom_Direction>& aAxis)
 {
   axis    = aAxis;
-  hasAxis = Standard_True;
+  hasAxis = true;
 }
 
 void StepGeom_Axis1Placement::UnSetAxis()
 {
-  hasAxis = Standard_False;
+  hasAxis = false;
   axis.Nullify();
 }
 
-Handle(StepGeom_Direction) StepGeom_Axis1Placement::Axis() const
+occ::handle<StepGeom_Direction> StepGeom_Axis1Placement::Axis() const
 {
   return axis;
 }
 
-Standard_Boolean StepGeom_Axis1Placement::HasAxis() const
+bool StepGeom_Axis1Placement::HasAxis() const
 {
   return hasAxis;
 }

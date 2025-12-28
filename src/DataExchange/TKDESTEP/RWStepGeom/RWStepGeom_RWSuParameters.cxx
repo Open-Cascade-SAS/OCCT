@@ -29,10 +29,10 @@ RWStepGeom_RWSuParameters::RWStepGeom_RWSuParameters() {}
 
 //=================================================================================================
 
-void RWStepGeom_RWSuParameters::ReadStep(const Handle(StepData_StepReaderData)& theData,
-                                         const Standard_Integer                 theNum,
-                                         Handle(Interface_Check)&               theAch,
-                                         const Handle(StepGeom_SuParameters)&   theEnt) const
+void RWStepGeom_RWSuParameters::ReadStep(const occ::handle<StepData_StepReaderData>& theData,
+                                         const int                                   theNum,
+                                         occ::handle<Interface_Check>&               theAch,
+                                         const occ::handle<StepGeom_SuParameters>&   theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 7, theAch, "su_parameters"))
@@ -40,27 +40,27 @@ void RWStepGeom_RWSuParameters::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theAch, aRepresentationItem_Name);
 
   // Own fields of SuParameters
 
-  Standard_Real aA;
+  double aA;
   theData->ReadReal(theNum, 2, "a", theAch, aA);
 
-  Standard_Real aAlpha;
+  double aAlpha;
   theData->ReadReal(theNum, 3, "alpha", theAch, aAlpha);
 
-  Standard_Real aB;
+  double aB;
   theData->ReadReal(theNum, 4, "b", theAch, aB);
 
-  Standard_Real aBeta;
+  double aBeta;
   theData->ReadReal(theNum, 5, "beta", theAch, aBeta);
 
-  Standard_Real aC;
+  double aC;
   theData->ReadReal(theNum, 6, "c", theAch, aC);
 
-  Standard_Real aGamma;
+  double aGamma;
   theData->ReadReal(theNum, 7, "gamma", theAch, aGamma);
 
   // Initialize entity
@@ -69,8 +69,8 @@ void RWStepGeom_RWSuParameters::ReadStep(const Handle(StepData_StepReaderData)& 
 
 //=================================================================================================
 
-void RWStepGeom_RWSuParameters::WriteStep(StepData_StepWriter&                 theSW,
-                                          const Handle(StepGeom_SuParameters)& theEnt) const
+void RWStepGeom_RWSuParameters::WriteStep(StepData_StepWriter&                      theSW,
+                                          const occ::handle<StepGeom_SuParameters>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -94,7 +94,7 @@ void RWStepGeom_RWSuParameters::WriteStep(StepData_StepWriter&                 t
 
 //=================================================================================================
 
-void RWStepGeom_RWSuParameters::Share(const Handle(StepGeom_SuParameters)& /*theEnt*/,
+void RWStepGeom_RWSuParameters::Share(const occ::handle<StepGeom_SuParameters>& /*theEnt*/,
                                       Interface_EntityIterator& /*iter*/) const
 {
 

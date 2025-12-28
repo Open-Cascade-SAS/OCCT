@@ -23,13 +23,13 @@
 #include <StepData_Factors.hxx>
 #include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_KnotType.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Integer.hxx>
 
 //=============================================================================
 // Creation d' une bspline_curve_with_knots_and_rational_bspline_curve de
@@ -37,9 +37,9 @@
 //=============================================================================
 GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
   GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(
-    const Handle(Geom_BSplineCurve)& BS,
-    const StepData_Factors&          theLocalFactors){
-#define Array1OfPnt_gen TColgp_Array1OfPnt
+    const occ::handle<Geom_BSplineCurve>& BS,
+    const StepData_Factors&               theLocalFactors){
+#define Array1OfPnt_gen NCollection_Array1<gp_Pnt>
 #include "GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_gen.pxx"
 #undef Array1OfPnt_gen
   }
@@ -51,11 +51,11 @@ GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
 
 GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
   GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(
-    const Handle(Geom2d_BSplineCurve)& BS,
-    const StepData_Factors&            theLocalFactors)
+    const occ::handle<Geom2d_BSplineCurve>& BS,
+    const StepData_Factors&                 theLocalFactors)
 
 {
-#define Array1OfPnt_gen TColgp_Array1OfPnt2d
+#define Array1OfPnt_gen NCollection_Array1<gp_Pnt2d>
 #include "GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_gen.pxx"
 #undef Array1OfPnt_gen
 }
@@ -64,7 +64,7 @@ GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)&
+const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>&
   GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::Value() const
 {
   StdFail_NotDone_Raise_if(

@@ -25,9 +25,9 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <LocOpe_FindEdges.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
@@ -41,11 +41,11 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
   myLFrom.Clear();
   myLTo.Clear();
 
-  TopExp_Explorer       expf, expt;
-  Handle(Geom_Curve)    Cf, Ct;
-  TopLoc_Location       Loc;
-  Standard_Real         ff, lf, ft, lt;
-  Handle(Standard_Type) Tf, Tt;
+  TopExp_Explorer            expf, expt;
+  occ::handle<Geom_Curve>    Cf, Ct;
+  TopLoc_Location            Loc;
+  double                     ff, lf, ft, lt;
+  occ::handle<Standard_Type> Tf, Tt;
 
   for (expf.Init(myFFrom, TopAbs_EDGE); expf.More(); expf.Next())
   {
@@ -53,13 +53,13 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
     Cf                      = BRep_Tool::Curve(edgf, Loc, ff, lf);
     if (!Loc.IsIdentity())
     {
-      Handle(Geom_Geometry) GGf = Cf->Transformed(Loc.Transformation());
-      Cf                        = Handle(Geom_Curve)::DownCast(GGf);
+      occ::handle<Geom_Geometry> GGf = Cf->Transformed(Loc.Transformation());
+      Cf                             = occ::down_cast<Geom_Curve>(GGf);
     }
     Tf = Cf->DynamicType();
     if (Tf == STANDARD_TYPE(Geom_TrimmedCurve))
     {
-      Cf = Handle(Geom_TrimmedCurve)::DownCast(Cf)->BasisCurve();
+      Cf = occ::down_cast<Geom_TrimmedCurve>(Cf)->BasisCurve();
       Tf = Cf->DynamicType();
     }
     if (Tf != STANDARD_TYPE(Geom_Line) && Tf != STANDARD_TYPE(Geom_Circle)
@@ -74,13 +74,13 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
       Ct                      = BRep_Tool::Curve(edgt, Loc, ft, lt);
       if (!Loc.IsIdentity())
       {
-        Handle(Geom_Geometry) GGt = Ct->Transformed(Loc.Transformation());
-        Ct                        = Handle(Geom_Curve)::DownCast(GGt);
+        occ::handle<Geom_Geometry> GGt = Ct->Transformed(Loc.Transformation());
+        Ct                             = occ::down_cast<Geom_Curve>(GGt);
       }
       Tt = Ct->DynamicType();
       if (Tt == STANDARD_TYPE(Geom_TrimmedCurve))
       {
-        Ct = Handle(Geom_TrimmedCurve)::DownCast(Ct)->BasisCurve();
+        Ct = occ::down_cast<Geom_TrimmedCurve>(Ct)->BasisCurve();
         Tt = Ct->DynamicType();
       }
       if (Tt != Tf)
@@ -88,15 +88,15 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
         continue;
       }
       // On a presomption de confusion
-      Standard_Real Tol = Precision::Confusion();
+      double Tol = Precision::Confusion();
       if (Tt == STANDARD_TYPE(Geom_Line))
       {
-        gp_Lin        lif  = Handle(Geom_Line)::DownCast(Cf)->Lin();
-        gp_Lin        lit  = Handle(Geom_Line)::DownCast(Ct)->Lin();
-        gp_Pnt        p1   = ElCLib::Value(ff, lif);
-        gp_Pnt        p2   = ElCLib::Value(lf, lif);
-        Standard_Real prm1 = ElCLib::Parameter(lit, p1);
-        Standard_Real prm2 = ElCLib::Parameter(lit, p2);
+        gp_Lin lif  = occ::down_cast<Geom_Line>(Cf)->Lin();
+        gp_Lin lit  = occ::down_cast<Geom_Line>(Ct)->Lin();
+        gp_Pnt p1   = ElCLib::Value(ff, lif);
+        gp_Pnt p2   = ElCLib::Value(lf, lif);
+        double prm1 = ElCLib::Parameter(lit, p1);
+        double prm2 = ElCLib::Parameter(lit, p2);
         if (prm1 >= ft - Tol && prm1 <= lt + Tol && prm2 >= ft - Tol && prm2 <= lt + Tol)
         {
           Tol *= Tol;
@@ -115,8 +115,8 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
       }
       else if (Tt == STANDARD_TYPE(Geom_Circle))
       {
-        gp_Circ cif = Handle(Geom_Circle)::DownCast(Cf)->Circ();
-        gp_Circ cit = Handle(Geom_Circle)::DownCast(Ct)->Circ();
+        gp_Circ cif = occ::down_cast<Geom_Circle>(Cf)->Circ();
+        gp_Circ cit = occ::down_cast<Geom_Circle>(Ct)->Circ();
         if (std::abs(cif.Radius() - cit.Radius()) <= Tol
             && cif.Location().SquareDistance(cit.Location()) <= Tol * Tol)
         {
@@ -127,14 +127,14 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
           ElCLib::D1(ff, cif, p1, tgf);
           p2 = ElCLib::Value(lf, cif);
 
-          Standard_Real prm1  = ElCLib::Parameter(cit, p1);
-          Standard_Real Tol2d = Precision::PConfusion();
+          double prm1  = ElCLib::Parameter(cit, p1);
+          double Tol2d = Precision::PConfusion();
           if (std::abs(prm1 - ft) <= Tol2d)
             prm1 = ft;
           prm1 = ElCLib::InPeriod(prm1, ft, ft + 2. * M_PI);
           ElCLib::D1(prm1, cit, p1, tgt);
 
-          Standard_Real prm2 = ElCLib::Parameter(cit, p2);
+          double prm2 = ElCLib::Parameter(cit, p2);
           if (tgt.Dot(tgf) > 0.)
           { // meme sens
             while (prm2 <= prm1)
@@ -175,8 +175,8 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
       }
       else if (Tt == STANDARD_TYPE(Geom_Ellipse))
       {
-        gp_Elips cif = Handle(Geom_Ellipse)::DownCast(Cf)->Elips();
-        gp_Elips cit = Handle(Geom_Ellipse)::DownCast(Ct)->Elips();
+        gp_Elips cif = occ::down_cast<Geom_Ellipse>(Cf)->Elips();
+        gp_Elips cit = occ::down_cast<Geom_Ellipse>(Ct)->Elips();
 
         if (std::abs(cif.MajorRadius() - cit.MajorRadius()) <= Tol
             && std::abs(cif.MinorRadius() - cit.MinorRadius()) <= Tol
@@ -189,11 +189,11 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
           ElCLib::D1(ff, cif, p1, tgf);
           p2 = ElCLib::Value(lf, cif);
 
-          Standard_Real prm1 = ElCLib::Parameter(cit, p1);
-          prm1               = ElCLib::InPeriod(prm1, ft, ft + 2. * M_PI);
+          double prm1 = ElCLib::Parameter(cit, p1);
+          prm1        = ElCLib::InPeriod(prm1, ft, ft + 2. * M_PI);
           ElCLib::D1(prm1, cit, p1, tgt);
 
-          Standard_Real prm2 = ElCLib::Parameter(cit, p2);
+          double prm2 = ElCLib::Parameter(cit, p2);
           if (tgt.Dot(tgf) > 0.)
           { // meme sens
             while (prm2 <= prm1)
@@ -232,61 +232,61 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
       }
       else if (Tt == STANDARD_TYPE(Geom_BSplineCurve))
       {
-        Handle(Geom_BSplineCurve) Bf = Handle(Geom_BSplineCurve)::DownCast(Cf);
-        Handle(Geom_BSplineCurve) Bt = Handle(Geom_BSplineCurve)::DownCast(Ct);
+        occ::handle<Geom_BSplineCurve> Bf = occ::down_cast<Geom_BSplineCurve>(Cf);
+        occ::handle<Geom_BSplineCurve> Bt = occ::down_cast<Geom_BSplineCurve>(Ct);
 
-        Standard_Boolean IsSame = Standard_True;
+        bool IsSame = true;
 
-        Standard_Integer nbpoles = Bf->NbPoles();
+        int nbpoles = Bf->NbPoles();
         if (nbpoles != Bt->NbPoles())
         {
-          IsSame = Standard_False;
+          IsSame = false;
         }
 
         if (IsSame)
         {
-          Standard_Integer nbknots = Bf->NbKnots();
+          int nbknots = Bf->NbKnots();
           if (nbknots != Bt->NbKnots())
           {
-            IsSame = Standard_False;
+            IsSame = false;
           }
 
           if (IsSame)
           {
-            TColgp_Array1OfPnt Pf(1, nbpoles), Pt(1, nbpoles);
+            NCollection_Array1<gp_Pnt> Pf(1, nbpoles), Pt(1, nbpoles);
             Bf->Poles(Pf);
             Bt->Poles(Pt);
 
-            Standard_Real tol3d = BRep_Tool::Tolerance(edgt);
-            for (Standard_Integer p = 1; p <= nbpoles; p++)
+            double tol3d = BRep_Tool::Tolerance(edgt);
+            for (int p = 1; p <= nbpoles; p++)
             {
               if ((Pf(p)).Distance(Pt(p)) > tol3d)
               {
-                IsSame = Standard_False;
+                IsSame = false;
                 break;
               }
             }
 
             if (IsSame)
             {
-              TColStd_Array1OfReal Kf(1, nbknots), Kt(1, nbknots);
+              NCollection_Array1<double> Kf(1, nbknots), Kt(1, nbknots);
               Bf->Knots(Kf);
               Bt->Knots(Kt);
 
-              TColStd_Array1OfInteger Mf(1, nbknots), Mt(1, nbknots);
+              NCollection_Array1<int> Mf(1, nbknots), Mt(1, nbknots);
               Bf->Multiplicities(Mf);
               Bt->Multiplicities(Mt);
 
-              for (Standard_Integer k = 1; k <= nbknots; k++)
+              for (int k = 1; k <= nbknots; k++)
               {
                 if ((Kf(k) - Kt(k)) > Tol)
                 {
-                  IsSame = Standard_False;
+                  IsSame = false;
                   break;
                 }
                 if (std::abs(Mf(k) - Mt(k)) > Tol)
                 {
-                  IsSame = Standard_False;
+                  IsSame = false;
                   break;
                 }
               }
@@ -295,28 +295,28 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
               {
                 if (Bt->IsRational())
                 {
-                  IsSame = Standard_False;
+                  IsSame = false;
                 }
               }
               else
               {
                 if (!Bt->IsRational())
                 {
-                  IsSame = Standard_False;
+                  IsSame = false;
                 }
               }
 
               if (IsSame && Bf->IsRational())
               {
-                TColStd_Array1OfReal Wf(1, nbpoles), Wt(1, nbpoles);
+                NCollection_Array1<double> Wf(1, nbpoles), Wt(1, nbpoles);
                 Bf->Weights(Wf);
                 Bt->Weights(Wt);
 
-                for (Standard_Integer w = 1; w <= nbpoles; w++)
+                for (int w = 1; w <= nbpoles; w++)
                 {
                   if (std::abs(Wf(w) - Wt(w)) > Tol)
                   {
-                    IsSame = Standard_False;
+                    IsSame = false;
                     break;
                   }
                 }
@@ -337,28 +337,28 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
       }
       else if (Tt == STANDARD_TYPE(Geom_BezierCurve))
       {
-        Handle(Geom_BezierCurve) Bf = Handle(Geom_BezierCurve)::DownCast(Cf);
-        Handle(Geom_BezierCurve) Bt = Handle(Geom_BezierCurve)::DownCast(Ct);
+        occ::handle<Geom_BezierCurve> Bf = occ::down_cast<Geom_BezierCurve>(Cf);
+        occ::handle<Geom_BezierCurve> Bt = occ::down_cast<Geom_BezierCurve>(Ct);
 
-        Standard_Boolean IsSame = Standard_True;
+        bool IsSame = true;
 
-        Standard_Integer nbpoles = Bf->NbPoles();
+        int nbpoles = Bf->NbPoles();
         if (nbpoles != Bt->NbPoles())
         {
-          IsSame = Standard_False;
+          IsSame = false;
         }
 
         if (IsSame)
         {
-          TColgp_Array1OfPnt Pf(1, nbpoles), Pt(1, nbpoles);
+          NCollection_Array1<gp_Pnt> Pf(1, nbpoles), Pt(1, nbpoles);
           Bf->Poles(Pf);
           Bt->Poles(Pt);
 
-          for (Standard_Integer p = 1; p <= nbpoles; p++)
+          for (int p = 1; p <= nbpoles; p++)
           {
             if ((Pf(p)).Distance(Pt(p)) > Tol)
             {
-              IsSame = Standard_False;
+              IsSame = false;
               break;
             }
           }
@@ -369,28 +369,28 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
             {
               if (Bt->IsRational())
               {
-                IsSame = Standard_False;
+                IsSame = false;
               }
             }
             else
             {
               if (!Bt->IsRational())
               {
-                IsSame = Standard_False;
+                IsSame = false;
               }
             }
 
             if (IsSame && Bf->IsRational())
             {
-              TColStd_Array1OfReal Wf(1, nbpoles), Wt(1, nbpoles);
+              NCollection_Array1<double> Wf(1, nbpoles), Wt(1, nbpoles);
               Bf->Weights(Wf);
               Bt->Weights(Wt);
 
-              for (Standard_Integer w = 1; w <= nbpoles; w++)
+              for (int w = 1; w <= nbpoles; w++)
               {
                 if (std::abs(Wf(w) - Wt(w)) > Tol)
                 {
-                  IsSame = Standard_False;
+                  IsSame = false;
                   break;
                 }
               }

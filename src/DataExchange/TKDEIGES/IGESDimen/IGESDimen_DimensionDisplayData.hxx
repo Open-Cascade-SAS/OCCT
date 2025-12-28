@@ -21,12 +21,10 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
-
-class IGESDimen_DimensionDisplayData;
-DEFINE_STANDARD_HANDLE(IGESDimen_DimensionDisplayData, IGESData_IGESEntity)
 
 //! Defines IGES Dimension Display Data, Type <406> Form <30>,
 //! in package IGESDimen
@@ -40,91 +38,90 @@ class IGESDimen_DimensionDisplayData : public IGESData_IGESEntity
 public:
   Standard_EXPORT IGESDimen_DimensionDisplayData();
 
-  Standard_EXPORT void Init(const Standard_Integer                  numProps,
-                            const Standard_Integer                  aDimType,
-                            const Standard_Integer                  aLabelPos,
-                            const Standard_Integer                  aCharSet,
-                            const Handle(TCollection_HAsciiString)& aString,
-                            const Standard_Integer                  aSymbol,
-                            const Standard_Real                     anAng,
-                            const Standard_Integer                  anAlign,
-                            const Standard_Integer                  aLevel,
-                            const Standard_Integer                  aPlace,
-                            const Standard_Integer                  anOrient,
-                            const Standard_Real                     initVal,
-                            const Handle(TColStd_HArray1OfInteger)& notes,
-                            const Handle(TColStd_HArray1OfInteger)& startInd,
-                            const Handle(TColStd_HArray1OfInteger)& endInd);
+  Standard_EXPORT void Init(const int                                    numProps,
+                            const int                                    aDimType,
+                            const int                                    aLabelPos,
+                            const int                                    aCharSet,
+                            const occ::handle<TCollection_HAsciiString>& aString,
+                            const int                                    aSymbol,
+                            const double                                 anAng,
+                            const int                                    anAlign,
+                            const int                                    aLevel,
+                            const int                                    aPlace,
+                            const int                                    anOrient,
+                            const double                                 initVal,
+                            const occ::handle<NCollection_HArray1<int>>& notes,
+                            const occ::handle<NCollection_HArray1<int>>& startInd,
+                            const occ::handle<NCollection_HArray1<int>>& endInd);
 
   //! returns the number of property values (14)
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the dimension type
-  Standard_EXPORT Standard_Integer DimensionType() const;
+  Standard_EXPORT int DimensionType() const;
 
   //! returns the preferred label position
-  Standard_EXPORT Standard_Integer LabelPosition() const;
+  Standard_EXPORT int LabelPosition() const;
 
   //! returns the character set interpretation
-  Standard_EXPORT Standard_Integer CharacterSet() const;
+  Standard_EXPORT int CharacterSet() const;
 
   //! returns e.g., 8HDIAMETER
-  Standard_EXPORT Handle(TCollection_HAsciiString) LString() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> LString() const;
 
-  Standard_EXPORT Standard_Integer DecimalSymbol() const;
+  Standard_EXPORT int DecimalSymbol() const;
 
   //! returns the witness line angle in radians
-  Standard_EXPORT Standard_Real WitnessLineAngle() const;
+  Standard_EXPORT double WitnessLineAngle() const;
 
   //! returns the text alignment
-  Standard_EXPORT Standard_Integer TextAlignment() const;
+  Standard_EXPORT int TextAlignment() const;
 
   //! returns the text level
-  Standard_EXPORT Standard_Integer TextLevel() const;
+  Standard_EXPORT int TextLevel() const;
 
   //! returns the preferred text placement
-  Standard_EXPORT Standard_Integer TextPlacement() const;
+  Standard_EXPORT int TextPlacement() const;
 
   //! returns the arrowhead orientation
-  Standard_EXPORT Standard_Integer ArrowHeadOrientation() const;
+  Standard_EXPORT int ArrowHeadOrientation() const;
 
   //! returns the primary dimension initial value
-  Standard_EXPORT Standard_Real InitialValue() const;
+  Standard_EXPORT double InitialValue() const;
 
   //! returns the number of supplementary notes or zero
-  Standard_EXPORT Standard_Integer NbSupplementaryNotes() const;
+  Standard_EXPORT int NbSupplementaryNotes() const;
 
   //! returns the Index'th supplementary note
   //! raises exception if Index <= 0 or Index > NbSupplementaryNotes()
-  Standard_EXPORT Standard_Integer SupplementaryNote(const Standard_Integer Index) const;
+  Standard_EXPORT int SupplementaryNote(const int Index) const;
 
   //! returns the Index'th note start index
   //! raises exception if Index <= 0 or Index > NbSupplementaryNotes()
-  Standard_EXPORT Standard_Integer StartIndex(const Standard_Integer Index) const;
+  Standard_EXPORT int StartIndex(const int Index) const;
 
   //! returns the Index'th note end index
   //! raises exception if Index <= 0 or Index > NbSupplemetaryNotes()
-  Standard_EXPORT Standard_Integer EndIndex(const Standard_Integer Index) const;
+  Standard_EXPORT int EndIndex(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_DimensionDisplayData, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbPropertyValues;
-  Standard_Integer                 theDimensionType;
-  Standard_Integer                 theLabelPosition;
-  Standard_Integer                 theCharacterSet;
-  Handle(TCollection_HAsciiString) theLString;
-  Standard_Integer                 theDecimalSymbol;
-  Standard_Real                    theWitnessLineAngle;
-  Standard_Integer                 theTextAlignment;
-  Standard_Integer                 theTextLevel;
-  Standard_Integer                 theTextPlacement;
-  Standard_Integer                 theArrowHeadOrientation;
-  Standard_Real                    theInitialValue;
-  Handle(TColStd_HArray1OfInteger) theSupplementaryNotes;
-  Handle(TColStd_HArray1OfInteger) theStartIndex;
-  Handle(TColStd_HArray1OfInteger) theEndIndex;
+  int                                   theNbPropertyValues;
+  int                                   theDimensionType;
+  int                                   theLabelPosition;
+  int                                   theCharacterSet;
+  occ::handle<TCollection_HAsciiString> theLString;
+  int                                   theDecimalSymbol;
+  double                                theWitnessLineAngle;
+  int                                   theTextAlignment;
+  int                                   theTextLevel;
+  int                                   theTextPlacement;
+  int                                   theArrowHeadOrientation;
+  double                                theInitialValue;
+  occ::handle<NCollection_HArray1<int>> theSupplementaryNotes;
+  occ::handle<NCollection_HArray1<int>> theStartIndex;
+  occ::handle<NCollection_HArray1<int>> theEndIndex;
 };
 
 #endif // _IGESDimen_DimensionDisplayData_HeaderFile

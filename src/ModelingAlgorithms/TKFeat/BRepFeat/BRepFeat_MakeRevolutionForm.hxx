@@ -22,8 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Ax1.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BRepFeat_RibSlot.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Plane;
@@ -62,14 +64,14 @@ public:
   //! Fuse offers a choice between:
   //! -   removing matter with a Boolean cut using the setting 0 in case of the groove
   //! -   adding matter with Boolean fusion using the setting 1 in case of the rib.
-  BRepFeat_MakeRevolutionForm(const TopoDS_Shape&       Sbase,
-                              const TopoDS_Wire&        W,
-                              const Handle(Geom_Plane)& Plane,
-                              const gp_Ax1&             Axis,
-                              const Standard_Real       Height1,
-                              const Standard_Real       Height2,
-                              const Standard_Integer    Fuse,
-                              Standard_Boolean&         Sliding);
+  BRepFeat_MakeRevolutionForm(const TopoDS_Shape&            Sbase,
+                              const TopoDS_Wire&             W,
+                              const occ::handle<Geom_Plane>& Plane,
+                              const gp_Ax1&                  Axis,
+                              const double                   Height1,
+                              const double                   Height2,
+                              const int                      Fuse,
+                              bool&                          Sliding);
 
   //! Initializes this construction algorithm
   //! A contour W, a shape Sbase and a plane P are initialized to serve as the basic elements
@@ -79,14 +81,14 @@ public:
   //! Fuse offers a choice between:
   //! -   removing matter with a Boolean cut using the setting 0 in case of the groove
   //! -   adding matter with Boolean fusion using the setting 1 in case of the rib.
-  Standard_EXPORT void Init(const TopoDS_Shape&       Sbase,
-                            const TopoDS_Wire&        W,
-                            const Handle(Geom_Plane)& Plane,
-                            const gp_Ax1&             Axis,
-                            const Standard_Real       Height1,
-                            const Standard_Real       Height2,
-                            const Standard_Integer    Fuse,
-                            Standard_Boolean&         Sliding);
+  Standard_EXPORT void Init(const TopoDS_Shape&            Sbase,
+                            const TopoDS_Wire&             W,
+                            const occ::handle<Geom_Plane>& Plane,
+                            const gp_Ax1&                  Axis,
+                            const double                   Height1,
+                            const double                   Height2,
+                            const int                      Fuse,
+                            bool&                          Sliding);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>. Raises ConstructionError if the face does not belong to the
@@ -97,25 +99,25 @@ public:
   //! along the basis shape S. Reconstructs the feature topologically.
   Standard_EXPORT void Perform();
 
-  Standard_EXPORT Standard_Boolean Propagate(TopTools_ListOfShape& L,
-                                             const TopoDS_Face&    F,
-                                             const gp_Pnt&         FPoint,
-                                             const gp_Pnt&         LPoint,
-                                             Standard_Boolean&     falseside);
+  Standard_EXPORT bool Propagate(NCollection_List<TopoDS_Shape>& L,
+                                 const TopoDS_Face&              F,
+                                 const gp_Pnt&                   FPoint,
+                                 const gp_Pnt&                   LPoint,
+                                 bool&                           falseside);
 
-protected:
 private:
-  gp_Ax1                             myAxe;
-  Standard_Real                      myHeight1;
-  Standard_Real                      myHeight2;
-  Standard_Boolean                   mySliding;
-  Handle(Geom_Plane)                 myPln;
-  Standard_Real                      myBnd;
-  TopTools_DataMapOfShapeListOfShape mySlface;
-  TopTools_ListOfShape               myListOfEdges;
-  Standard_Real                      myTol;
-  Standard_Real                      myAngle1;
-  Standard_Real                      myAngle2;
+  gp_Ax1                  myAxe;
+  double                  myHeight1;
+  double                  myHeight2;
+  bool                    mySliding;
+  occ::handle<Geom_Plane> myPln;
+  double                  myBnd;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                 mySlface;
+  NCollection_List<TopoDS_Shape> myListOfEdges;
+  double                         myTol;
+  double                         myAngle1;
+  double                         myAngle2;
 };
 
 #include <BRepFeat_MakeRevolutionForm.lxx>

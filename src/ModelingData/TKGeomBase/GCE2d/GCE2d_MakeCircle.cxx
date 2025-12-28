@@ -29,9 +29,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& C)
   TheCircle = new Geom2d_Circle(C);
 }
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax2d&         A,
-                                   const Standard_Real    Radius,
-                                   const Standard_Boolean Sense)
+GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax2d& A, const double Radius, const bool Sense)
 {
   if (Radius < 0.0)
   {
@@ -44,7 +42,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax2d&         A,
   }
 }
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax22d& A, const Standard_Real Radius)
+GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax22d& A, const double Radius)
 {
   if (Radius < 0.0)
   {
@@ -64,7 +62,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
   TheError    = gce_Done;
 }
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const Standard_Real Dist)
+GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const double Dist)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(Circ, Dist);
   TheError         = C.Status();
@@ -84,9 +82,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const
   }
 }
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d&        Point,
-                                   const Standard_Real    Radius,
-                                   const Standard_Boolean Sense)
+GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Point, const double Radius, const bool Sense)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(Point, Radius, Sense);
   TheError         = C.Status();
@@ -96,9 +92,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d&        Point,
   }
 }
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d&        Center,
-                                   const gp_Pnt2d&        Point,
-                                   const Standard_Boolean Sense)
+GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Center, const gp_Pnt2d& Point, const bool Sense)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(Center, Point, Sense);
   TheError         = C.Status();
@@ -108,7 +102,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d&        Center,
   }
 }
 
-const Handle(Geom2d_Circle)& GCE2d_MakeCircle::Value() const
+const occ::handle<Geom2d_Circle>& GCE2d_MakeCircle::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeCircle::Value() - no result");
   return TheCircle;

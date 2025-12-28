@@ -45,13 +45,12 @@ public:
   Standard_EXPORT GCE2d_MakeTranslation(const gp_Pnt2d& Point1, const gp_Pnt2d& Point2);
 
   //! Returns the constructed transformation.
-  Standard_EXPORT const Handle(Geom2d_Transformation)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
 
-  operator const Handle(Geom2d_Transformation)&() const { return Value(); }
+  operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
 
-protected:
 private:
-  Handle(Geom2d_Transformation) TheTranslation;
+  occ::handle<Geom2d_Transformation> TheTranslation;
 };
 
 #endif // _GCE2d_MakeTranslation_HeaderFile

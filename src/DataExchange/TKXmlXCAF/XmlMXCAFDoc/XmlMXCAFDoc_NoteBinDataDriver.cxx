@@ -29,24 +29,23 @@ IMPLEMENT_DOMSTRING(Size, "size")
 //=================================================================================================
 
 XmlMXCAFDoc_NoteBinDataDriver::XmlMXCAFDoc_NoteBinDataDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteBinData)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMXCAFDoc_NoteBinDataDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMXCAFDoc_NoteBinDataDriver::NewEmpty() const
 {
   return new XCAFDoc_NoteBinData();
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMXCAFDoc_NoteBinDataDriver::Paste(
-  const XmlObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  XmlObjMgt_RRelocationTable&  theRelocTable) const
+bool XmlMXCAFDoc_NoteBinDataDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                          const occ::handle<TDF_Attribute>& theTarget,
+                                          XmlObjMgt_RRelocationTable&       theRelocTable) const
 {
   XmlMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
@@ -56,41 +55,41 @@ Standard_Boolean XmlMXCAFDoc_NoteBinDataDriver::Paste(
   XmlObjMgt_DOMString aMIMEtype = anElement.getAttribute(::MIMEtype());
   XmlObjMgt_DOMString aSize     = anElement.getAttribute(::Size());
   if (aTitle == NULL || aMIMEtype == NULL || aSize == NULL)
-    return Standard_False;
+    return false;
 
-  Handle(XCAFDoc_NoteBinData) aNote = Handle(XCAFDoc_NoteBinData)::DownCast(theTarget);
+  occ::handle<XCAFDoc_NoteBinData> aNote = occ::down_cast<XCAFDoc_NoteBinData>(theTarget);
   if (aNote.IsNull())
-    return Standard_False;
+    return false;
 
-  Standard_Integer nbSize = 0;
+  int nbSize = 0;
   if (!aSize.GetInteger(nbSize))
-    return Standard_False;
+    return false;
 
   XmlObjMgt_DOMString aDataStr = XmlObjMgt::GetStringValue(theSource);
   Standard_SStream    anSS(aDataStr.GetString());
 
-  Handle(TColStd_HArray1OfByte) aData = new TColStd_HArray1OfByte(1, nbSize);
-  for (Standard_Integer i = 1; i <= nbSize; ++i)
+  occ::handle<NCollection_HArray1<uint8_t>> aData = new NCollection_HArray1<uint8_t>(1, nbSize);
+  for (int i = 1; i <= nbSize; ++i)
   {
-    Standard_Byte aValue;
+    uint8_t aValue;
     anSS >> aValue;
     aData->ChangeValue(i) = aValue;
   }
 
   aNote->Set(aTitle.GetString(), aMIMEtype.GetString(), aData);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void XmlMXCAFDoc_NoteBinDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                          XmlObjMgt_Persistent&        theTarget,
-                                          XmlObjMgt_SRelocationTable&  theRelocTable) const
+void XmlMXCAFDoc_NoteBinDataDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                          XmlObjMgt_Persistent&             theTarget,
+                                          XmlObjMgt_SRelocationTable&       theRelocTable) const
 {
   XmlMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
-  Handle(XCAFDoc_NoteBinData) aNote = Handle(XCAFDoc_NoteBinData)::DownCast(theSource);
+  occ::handle<XCAFDoc_NoteBinData> aNote = occ::down_cast<XCAFDoc_NoteBinData>(theSource);
 
   XmlObjMgt_DOMString aTitle(TCollection_AsciiString(aNote->Title()).ToCString());
   XmlObjMgt_DOMString aMIMEtype(aNote->MIMEtype().ToCString());
@@ -101,16 +100,16 @@ void XmlMXCAFDoc_NoteBinDataDriver::Paste(const Handle(TDF_Attribute)& theSource
 
   if (aNote->Size() > 0)
   {
-    const Handle(TColStd_HArray1OfByte)& aData = aNote->Data();
-    LDOM_OSStream                        anOSS(aNote->Size());
-    for (Standard_Integer i = aData->Lower(); i <= aData->Upper(); ++i)
+    const occ::handle<NCollection_HArray1<uint8_t>>& aData = aNote->Data();
+    LDOM_OSStream                                    anOSS(aNote->Size());
+    for (int i = aData->Lower(); i <= aData->Upper(); ++i)
     {
       anOSS << std::hex << aData->Value(i);
     }
     // clang-format off
-    Standard_Character* dump = (Standard_Character*)anOSS.str(); // copying! Don't forget to delete it.
+    char* dump = (char*)anOSS.str(); // copying! Don't forget to delete it.
     // clang-format on
-    XmlObjMgt::SetStringValue(theTarget, dump, Standard_True);
+    XmlObjMgt::SetStringValue(theTarget, dump, true);
     delete[] dump;
   }
 }

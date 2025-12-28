@@ -14,10 +14,10 @@
 
 #include <Standard_DomainError.hxx>
 
-inline void IntPatch_Line::SetValue(const Standard_Boolean Uiso1,
-                                    const Standard_Boolean Viso1,
-                                    const Standard_Boolean Uiso2,
-                                    const Standard_Boolean Viso2)
+inline void IntPatch_Line::SetValue(const bool Uiso1,
+                                    const bool Viso1,
+                                    const bool Uiso2,
+                                    const bool Viso2)
 {
   uS1 = Uiso1;
   vS1 = Viso1;
@@ -30,7 +30,7 @@ inline IntPatch_IType IntPatch_Line::ArcType() const
   return typ;
 }
 
-inline Standard_Boolean IntPatch_Line::IsTangent() const
+inline bool IntPatch_Line::IsTangent() const
 {
 
   return tg;
@@ -68,25 +68,25 @@ inline IntSurf_Situation IntPatch_Line::SituationS2() const
   return sit2;
 }
 
-inline Standard_Boolean IntPatch_Line::IsUIsoOnS1() const
+inline bool IntPatch_Line::IsUIsoOnS1() const
 {
 
   return uS1;
 }
 
-inline Standard_Boolean IntPatch_Line::IsVIsoOnS1() const
+inline bool IntPatch_Line::IsVIsoOnS1() const
 {
 
   return vS1;
 }
 
-inline Standard_Boolean IntPatch_Line::IsUIsoOnS2() const
+inline bool IntPatch_Line::IsUIsoOnS2() const
 {
 
   return uS2;
 }
 
-inline Standard_Boolean IntPatch_Line::IsVIsoOnS2() const
+inline bool IntPatch_Line::IsVIsoOnS2() const
 {
 
   return vS2;

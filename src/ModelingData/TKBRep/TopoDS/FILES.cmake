@@ -18,7 +18,7 @@ set(OCCT_TopoDS_FILES
   TopoDS_HShape.lxx
   TopoDS_Iterator.cxx
   TopoDS_Iterator.hxx
-  TopoDS_ListIteratorOfListOfShape.hxx
+
   TopoDS_ListOfShape.hxx
   TopoDS_LockedShape.hxx
   TopoDS_Shape.cxx

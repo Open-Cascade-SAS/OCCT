@@ -19,14 +19,14 @@
 #include <IntCurve_PConic.hxx>
 #include <IntCurve_ProjectOnPConicTool.hxx>
 
-Standard_Real IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePConic,
-                                                          const gp_Pnt2d&        P,
-                                                          const Standard_Real    LowParameter,
-                                                          const Standard_Real    HighParameter,
-                                                          const Standard_Real)
+double IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePConic,
+                                                   const gp_Pnt2d&        P,
+                                                   const double           LowParameter,
+                                                   const double           HighParameter,
+                                                   const double)
 {
 
-  Standard_Real ParamSup, ParamInf, Param = 0;
+  double ParamSup, ParamInf, Param = 0;
   if (LowParameter > HighParameter)
   {
     ParamSup = LowParameter;
@@ -85,14 +85,14 @@ Standard_Real IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic&
   return (Param);
 }
 
-Standard_Real IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePConic,
-                                                          const gp_Pnt2d&        P,
-                                                          const Standard_Real)
+double IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePConic,
+                                                   const gp_Pnt2d&        P,
+                                                   const double)
 {
 
   // std::cout<<"\n\n---- Dans ProjectOnPConicTool::FindParameter  Point : "<<P.X()<<","<<P.Y();
 
-  Standard_Real Param = 0;
+  double Param = 0;
 
   switch (ThePConic.TypeCurve())
   {

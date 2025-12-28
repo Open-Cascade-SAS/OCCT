@@ -60,21 +60,19 @@ public:
   //! and its focal length.
   //! Warnings : It is possible to have Focal = 0.
   //! The status is "NullFocalLength" Raised if Focal < 0.0
-  Standard_EXPORT gce_MakeParab2d(const gp_Ax2d&         MirrorAxis,
-                                  const Standard_Real    Focal,
-                                  const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT gce_MakeParab2d(const gp_Ax2d& MirrorAxis,
+                                  const double   Focal,
+                                  const bool     Sense = true);
 
   //! Creates a parabola with its local coordinate system <A>
   //! and its focal length.
   //! Warnings : It is possible to have Focal = 0.
   //! The status is "NullFocalLength" Raised if Focal < 0.0
-  Standard_EXPORT gce_MakeParab2d(const gp_Ax22d& A, const Standard_Real Focal);
+  Standard_EXPORT gce_MakeParab2d(const gp_Ax22d& A, const double Focal);
 
   //! Creates a parabola with the directrix and the focus point.
   //! The sense of parametrization is given by Sense.
-  Standard_EXPORT gce_MakeParab2d(const gp_Ax2d&         D,
-                                  const gp_Pnt2d&        F,
-                                  const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT gce_MakeParab2d(const gp_Ax2d& D, const gp_Pnt2d& F, const bool Sense = true);
 
   //! Make an Parab2d with S1 as the Focal point and Center
   //! as the apex of the parabola
@@ -85,9 +83,9 @@ public:
   //! false), the Status function returns:
   //! -   gce_NullFocusLength if Focal is less than 0.0, or
   //! -   gce_NullAxis if S1 and Center are coincident.
-  Standard_EXPORT gce_MakeParab2d(const gp_Pnt2d&        S1,
-                                  const gp_Pnt2d&        Center,
-                                  const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT gce_MakeParab2d(const gp_Pnt2d& S1,
+                                  const gp_Pnt2d& Center,
+                                  const bool      Sense = true);
 
   //! Returns the constructed parabola.
   //! Exceptions StdFail_NotDone if no parabola is constructed.
@@ -96,7 +94,6 @@ public:
   Standard_EXPORT const gp_Parab2d& Operator() const;
   Standard_EXPORT                   operator gp_Parab2d() const;
 
-protected:
 private:
   gp_Parab2d TheParab2d;
 };

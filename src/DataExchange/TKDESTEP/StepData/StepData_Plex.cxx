@@ -24,41 +24,41 @@ IMPLEMENT_STANDARD_RTTIEXT(StepData_Plex, StepData_Described)
 
 static StepData_Field bid;
 
-StepData_Plex::StepData_Plex(const Handle(StepData_ECDescr)& descr)
+StepData_Plex::StepData_Plex(const occ::handle<StepData_ECDescr>& descr)
     : StepData_Described(descr)
 {
 }
 
-void StepData_Plex::Add(const Handle(StepData_Simple)& member)
+void StepData_Plex::Add(const occ::handle<StepData_Simple>& member)
 {
   themembers.Append(member);
 }
 
-Handle(StepData_ECDescr) StepData_Plex::ECDescr() const
+occ::handle<StepData_ECDescr> StepData_Plex::ECDescr() const
 {
-  return Handle(StepData_ECDescr)::DownCast(Description());
+  return occ::down_cast<StepData_ECDescr>(Description());
 }
 
-Standard_Boolean StepData_Plex::IsComplex() const
+bool StepData_Plex::IsComplex() const
 {
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean StepData_Plex::Matches(const Standard_CString steptype) const
+bool StepData_Plex::Matches(const char* steptype) const
 {
-  Standard_Integer i, nb = NbMembers();
+  int i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     if (Member(i)->Matches(steptype))
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
-Handle(StepData_Simple) StepData_Plex::As(const Standard_CString steptype) const
+occ::handle<StepData_Simple> StepData_Plex::As(const char* steptype) const
 {
-  Handle(StepData_Simple) ent;
-  Standard_Integer        i, nb = NbMembers();
+  occ::handle<StepData_Simple> ent;
+  int                          i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     ent = Member(i);
@@ -69,21 +69,21 @@ Handle(StepData_Simple) StepData_Plex::As(const Standard_CString steptype) const
   return ent;
 }
 
-Standard_Boolean StepData_Plex::HasField(const Standard_CString name) const
+bool StepData_Plex::HasField(const char* name) const
 {
-  Standard_Integer i, nb = NbMembers();
+  int i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     if (Member(i)->HasField(name))
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
-const StepData_Field& StepData_Plex::Field(const Standard_CString name) const
+const StepData_Field& StepData_Plex::Field(const char* name) const
 {
-  Handle(StepData_Simple) ent;
-  Standard_Integer        i, nb = NbMembers();
+  occ::handle<StepData_Simple> ent;
+  int                          i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     ent = Member(i);
@@ -93,10 +93,10 @@ const StepData_Field& StepData_Plex::Field(const Standard_CString name) const
   throw Interface_InterfaceMismatch("StepData_Plex : Field");
 }
 
-StepData_Field& StepData_Plex::CField(const Standard_CString name)
+StepData_Field& StepData_Plex::CField(const char* name)
 {
-  Handle(StepData_Simple) ent;
-  Standard_Integer        i, nb = NbMembers();
+  occ::handle<StepData_Simple> ent;
+  int                          i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     ent = Member(i);
@@ -106,20 +106,21 @@ StepData_Field& StepData_Plex::CField(const Standard_CString name)
   throw Interface_InterfaceMismatch("StepData_Plex : Field");
 }
 
-Standard_Integer StepData_Plex::NbMembers() const
+int StepData_Plex::NbMembers() const
 {
   return themembers.Length();
 }
 
-Handle(StepData_Simple) StepData_Plex::Member(const Standard_Integer num) const
+occ::handle<StepData_Simple> StepData_Plex::Member(const int num) const
 {
-  return Handle(StepData_Simple)::DownCast(themembers.Value(num));
+  return occ::down_cast<StepData_Simple>(themembers.Value(num));
 }
 
-Handle(TColStd_HSequenceOfAsciiString) StepData_Plex::TypeList() const
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> StepData_Plex::TypeList() const
 {
-  Handle(TColStd_HSequenceOfAsciiString) tl = new TColStd_HSequenceOfAsciiString();
-  Standard_Integer                       i, nb = NbMembers();
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> tl =
+    new NCollection_HSequence<TCollection_AsciiString>();
+  int i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     TCollection_AsciiString nam(Member(i)->StepType());
@@ -128,22 +129,22 @@ Handle(TColStd_HSequenceOfAsciiString) StepData_Plex::TypeList() const
   return tl;
 }
 
-void StepData_Plex::Check(Handle(Interface_Check)& ach) const
+void StepData_Plex::Check(occ::handle<Interface_Check>& ach) const
 {
-  Standard_Integer i, nb = NbMembers();
+  int i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
-    Handle(StepData_Simple) si = Member(i);
+    occ::handle<StepData_Simple> si = Member(i);
     si->Check(ach);
   }
 }
 
 void StepData_Plex::Shared(Interface_EntityIterator& list) const
 {
-  Standard_Integer i, nb = NbMembers();
+  int i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
-    Handle(StepData_Simple) si = Member(i);
+    occ::handle<StepData_Simple> si = Member(i);
     si->Shared(list);
   }
 }

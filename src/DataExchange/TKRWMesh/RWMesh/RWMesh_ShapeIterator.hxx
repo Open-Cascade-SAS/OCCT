@@ -18,7 +18,10 @@
 #include <NCollection_DataMap.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <TopoDS_Edge.hxx>
 #include <XCAFPrs_Style.hxx>
 #include <gp_Trsf.hxx>
@@ -59,22 +62,22 @@ public:
   const Quantity_ColorRGBA& Color() const { return myColor; }
 
   //! Lower element index in current triangulation.
-  Standard_EXPORT virtual Standard_Integer ElemLower() const = 0;
+  Standard_EXPORT virtual int ElemLower() const = 0;
 
   //! Upper element index in current triangulation.
-  Standard_EXPORT virtual Standard_Integer ElemUpper() const = 0;
+  Standard_EXPORT virtual int ElemUpper() const = 0;
 
   //! Return number of nodes for the current shape.
-  Standard_EXPORT virtual Standard_Integer NbNodes() const = 0;
+  Standard_EXPORT virtual int NbNodes() const = 0;
 
   //! Lower node index in current shape.
-  Standard_EXPORT virtual Standard_Integer NodeLower() const = 0;
+  Standard_EXPORT virtual int NodeLower() const = 0;
 
   //! Upper node index in current shape.
-  Standard_EXPORT virtual Standard_Integer NodeUpper() const = 0;
+  Standard_EXPORT virtual int NodeUpper() const = 0;
 
   //! Return the node with specified index with applied transformation.
-  gp_Pnt NodeTransformed(const Standard_Integer theNode) const
+  gp_Pnt NodeTransformed(const int theNode) const
   {
     gp_Pnt aNode = node(theNode);
     aNode.Transform(myTrsf);
@@ -83,14 +86,14 @@ public:
 
 protected:
   //! Return the node with specified index with applied transformation.
-  virtual gp_Pnt node(const Standard_Integer theNode) const = 0;
+  virtual gp_Pnt node(const int theNode) const = 0;
 
   //! Main constructor.
   RWMesh_ShapeIterator(const TDF_Label&       theLabel,
                        const TopLoc_Location& theLocation,
                        const TopAbs_ShapeEnum theShapeTypeFind,
                        const TopAbs_ShapeEnum theShapeTypeAvoid,
-                       const Standard_Boolean theToMapColors = false,
+                       const bool             theToMapColors = false,
                        const XCAFPrs_Style&   theStyle       = XCAFPrs_Style());
 
   //! Auxiliary constructor.
@@ -117,9 +120,9 @@ protected:
 
 protected:
   NCollection_DataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>
-                   myStyles;      //!< Shape -> Style map
-  XCAFPrs_Style    myDefStyle;    //!< default style for shapes without dedicated style
-  Standard_Boolean myToMapColors; //!< flag to dispatch styles
+                myStyles;      //!< Shape -> Style map
+  XCAFPrs_Style myDefStyle;    //!< default style for shapes without dedicated style
+  bool          myToMapColors; //!< flag to dispatch styles
 
   TopExp_Explorer    myIter;      //!< shape explorer
   TopLoc_Location    myLocation;  //!< current shape location
@@ -127,7 +130,7 @@ protected:
   XCAFPrs_Style      myStyle;     //!< current shape style
   Quantity_ColorRGBA myColor;     //!< current shape color
   TopAbs_ShapeEnum   myShapeType; //!< type of shape
-  Standard_Boolean   myHasColor;  //!< flag indicating that current shape has assigned color
+  bool               myHasColor;  //!< flag indicating that current shape has assigned color
 };
 
 #endif // _RWMesh_ShapeIterator_HeaderFile

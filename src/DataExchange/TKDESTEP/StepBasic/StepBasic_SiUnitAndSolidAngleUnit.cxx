@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndSolidAngleUnit, StepBasic_SiUnit)
 
 StepBasic_SiUnitAndSolidAngleUnit::StepBasic_SiUnitAndSolidAngleUnit() {}
 
-void StepBasic_SiUnitAndSolidAngleUnit::Init(const Standard_Boolean     hasAprefix,
+void StepBasic_SiUnitAndSolidAngleUnit::Init(const bool                 hasAprefix,
                                              const StepBasic_SiPrefix   aPrefix,
                                              const StepBasic_SiUnitName aName)
 {
@@ -30,18 +30,18 @@ void StepBasic_SiUnitAndSolidAngleUnit::Init(const Standard_Boolean     hasApref
 
   // --- ANDOR component fields ---
   solidAngleUnit = new StepBasic_SolidAngleUnit();
-  Handle(StepBasic_DimensionalExponents) aDimensions;
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
   aDimensions.Nullify();
   solidAngleUnit->Init(aDimensions);
 }
 
 void StepBasic_SiUnitAndSolidAngleUnit::SetSolidAngleUnit(
-  const Handle(StepBasic_SolidAngleUnit)& aSolidAngleUnit)
+  const occ::handle<StepBasic_SolidAngleUnit>& aSolidAngleUnit)
 {
   solidAngleUnit = aSolidAngleUnit;
 }
 
-Handle(StepBasic_SolidAngleUnit) StepBasic_SiUnitAndSolidAngleUnit::SolidAngleUnit() const
+occ::handle<StepBasic_SolidAngleUnit> StepBasic_SiUnitAndSolidAngleUnit::SolidAngleUnit() const
 {
   return solidAngleUnit;
 }

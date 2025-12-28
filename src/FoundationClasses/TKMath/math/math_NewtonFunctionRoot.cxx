@@ -17,19 +17,19 @@
 #include <StdFail_NotDone.hxx>
 
 math_NewtonFunctionRoot::math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
-                                                 const Standard_Real          Guess,
-                                                 const Standard_Real          EpsX,
-                                                 const Standard_Real          EpsF,
-                                                 const Standard_Real          A,
-                                                 const Standard_Real          B,
-                                                 const Standard_Integer       NbIterations)
+                                                 const double                 Guess,
+                                                 const double                 EpsX,
+                                                 const double                 EpsF,
+                                                 const double                 A,
+                                                 const double                 B,
+                                                 const int                    NbIterations)
 {
   EpsilonX = EpsX;
   EpsilonF = EpsF;
   Binf     = A;
   Bsup     = B;
   Itermax  = NbIterations;
-  Done     = Standard_False;
+  Done     = false;
   X        = RealLast();
   DFx      = 0;
   Fx       = RealLast();
@@ -37,11 +37,11 @@ math_NewtonFunctionRoot::math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
   Perform(F, Guess);
 }
 
-math_NewtonFunctionRoot::math_NewtonFunctionRoot(const Standard_Real    A,
-                                                 const Standard_Real    B,
-                                                 const Standard_Real    EpsX,
-                                                 const Standard_Real    EpsF,
-                                                 const Standard_Integer NbIterations)
+math_NewtonFunctionRoot::math_NewtonFunctionRoot(const double A,
+                                                 const double B,
+                                                 const double EpsX,
+                                                 const double EpsF,
+                                                 const int    NbIterations)
 {
 
   Binf     = A;
@@ -49,7 +49,7 @@ math_NewtonFunctionRoot::math_NewtonFunctionRoot(const Standard_Real    A,
   EpsilonX = EpsX;
   EpsilonF = EpsF;
   Itermax  = NbIterations;
-  Done     = Standard_False;
+  Done     = false;
   X        = RealLast();
   DFx      = 0;
   Fx       = RealLast();
@@ -57,17 +57,17 @@ math_NewtonFunctionRoot::math_NewtonFunctionRoot(const Standard_Real    A,
 }
 
 math_NewtonFunctionRoot::math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
-                                                 const Standard_Real          Guess,
-                                                 const Standard_Real          EpsX,
-                                                 const Standard_Real          EpsF,
-                                                 const Standard_Integer       NbIterations)
+                                                 const double                 Guess,
+                                                 const double                 EpsX,
+                                                 const double                 EpsF,
+                                                 const int                    NbIterations)
 {
   EpsilonX = EpsX;
   EpsilonF = EpsF;
   Itermax  = NbIterations;
   Binf     = RealFirst();
   Bsup     = RealLast();
-  Done     = Standard_False;
+  Done     = false;
   X        = RealLast();
   DFx      = 0;
   Fx       = RealLast();
@@ -75,18 +75,18 @@ math_NewtonFunctionRoot::math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
   Perform(F, Guess);
 }
 
-void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const Standard_Real Guess)
+void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const double Guess)
 {
 
-  Standard_Real    Dx;
-  Standard_Boolean Ok;
-  Standard_Real    AA, BB;
+  double Dx;
+  bool   Ok;
+  double AA, BB;
 
   //--------------------------------------------------
   //-- lbr le 12 Nov 97
   //-- la meilleure estimation n est pas sauvee et on
   //-- renvoie une solution plus fausse que Guess
-  Standard_Real BestX = X, BestFx = RealLast();
+  double BestX = X, BestFx = RealLast();
   //--
 
   if (Binf < Bsup)
@@ -108,7 +108,7 @@ void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const Stan
   {
     Ok = F.Values(X, Fx, DFx);
 
-    Standard_Real AbsFx = Fx;
+    double AbsFx = Fx;
     if (AbsFx < 0)
       AbsFx = -AbsFx;
     if (AbsFx < BestFx)
@@ -121,7 +121,7 @@ void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const Stan
     {
       if (DFx == 0.)
       {
-        Done = Standard_False;
+        Done = false;
         It   = Itermax + 1;
       }
       else
@@ -138,7 +138,7 @@ void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const Stan
     }
     else
     {
-      Done = Standard_False;
+      Done = false;
       It   = Itermax + 1;
     }
   }
@@ -146,11 +146,11 @@ void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const Stan
 
   if (It <= Itermax)
   {
-    Done = Standard_True;
+    Done = true;
   }
   else
   {
-    Done = Standard_False;
+    Done = false;
   }
 }
 

@@ -98,13 +98,13 @@ class Standard_MMgrRaw : public Standard_MMgrRoot
 public:
   //! Constructor; if theToClear is True, the memory will be nullified
   //! upon allocation.
-  Standard_MMgrRaw(const Standard_Boolean theToClear = Standard_False) { myClear = theToClear; }
+  Standard_MMgrRaw(const bool theToClear = false) { myClear = theToClear; }
 
   //! Allocate theSize bytes
-  Standard_Address Allocate(const Standard_Size theSize) override
+  void* Allocate(const size_t theSize) override
   {
     // we use ?: operator instead of if() since it is faster :-)
-    Standard_Address aPtr = (myClear ? calloc(theSize, sizeof(char)) : malloc(theSize));
+    void* aPtr = (myClear ? calloc(theSize, sizeof(char)) : malloc(theSize));
     if (!aPtr)
       throw Standard_OutOfMemory("Standard_MMgrRaw::Allocate(): malloc failed");
     return aPtr;
@@ -112,9 +112,9 @@ public:
 
   //! Reallocate thePtr to the size theSize.
   //! The new pointer is returned.
-  Standard_Address Reallocate(Standard_Address thePtr, const Standard_Size theSize) override
+  void* Reallocate(void* thePtr, const size_t theSize) override
   {
-    Standard_Address aNewStorage = (Standard_Address)realloc(thePtr, theSize);
+    void* aNewStorage = (void*)realloc(thePtr, theSize);
     if (!aNewStorage)
       throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
     // Note that it is not possible to ensure that additional memory
@@ -124,10 +124,10 @@ public:
   }
 
   //! Free allocated memory. The pointer is nullified.
-  void Free(Standard_Address thePtr) override { free(thePtr); }
+  void Free(void* thePtr) override { free(thePtr); }
 
 protected:
-  Standard_Boolean myClear; //! Option to nullify allocated memory
+  bool myClear; //! Option to nullify allocated memory
 };
 
 //! Implementation of OCC memory manager which uses Intel TBB
@@ -140,14 +140,13 @@ class Standard_MMgrTBBalloc : public Standard_MMgrRoot
 public:
   //! Constructor; if theClear is True, the memory will be nullified
   //! upon allocation.
-  Standard_MMgrTBBalloc(const Standard_Boolean theClear = Standard_False) { myClear = theClear; }
+  Standard_MMgrTBBalloc(const bool theClear = false) { myClear = theClear; }
 
   //! Allocate theSize bytes
-  Standard_Address Allocate(const Standard_Size theSize) override
+  void* Allocate(const size_t theSize) override
   {
     // we use ?: operator instead of if() since it is faster :-)
-    Standard_Address aPtr =
-      (myClear ? scalable_calloc(theSize, sizeof(char)) : scalable_malloc(theSize));
+    void* aPtr = (myClear ? scalable_calloc(theSize, sizeof(char)) : scalable_malloc(theSize));
     if (!aPtr)
       throw Standard_OutOfMemory("Standard_MMgrTBBalloc::Allocate(): malloc failed");
     return aPtr;
@@ -155,9 +154,9 @@ public:
 
   //! Reallocate thePtr to the size theSize.
   //! The new pointer is returned.
-  Standard_Address Reallocate(Standard_Address thePtr, const Standard_Size theSize) override
+  void* Reallocate(void* thePtr, const size_t theSize) override
   {
-    Standard_Address aNewStorage = (Standard_Address)scalable_realloc(thePtr, theSize);
+    void* aNewStorage = (void*)scalable_realloc(thePtr, theSize);
     if (!aNewStorage)
       throw Standard_OutOfMemory("Standard_MMgrTBBalloc::Reallocate(): realloc failed");
     // Note that it is not possible to ensure that additional memory
@@ -167,10 +166,10 @@ public:
   }
 
   //! Free allocated memory
-  void Free(Standard_Address thePtr) override { scalable_free(thePtr); }
+  void Free(void* thePtr) override { scalable_free(thePtr); }
 
 protected:
-  Standard_Boolean myClear; //! Option to nullify allocated memory
+  bool myClear; //! Option to nullify allocated memory
 };
 
 //=======================================================================
@@ -220,17 +219,17 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   // Check basic assumption.
   // If assertion happens, then OCCT should be corrected for compatibility with such CPU
   // architecture.
-  Standard_STATIC_ASSERT(sizeof(Standard_Utf8Char) == 1);
+  Standard_STATIC_ASSERT(sizeof(char) == 1);
   Standard_STATIC_ASSERT(sizeof(short) == 2);
-  Standard_STATIC_ASSERT(sizeof(Standard_Utf16Char) == 2);
-  Standard_STATIC_ASSERT(sizeof(Standard_Utf32Char) == 4);
+  Standard_STATIC_ASSERT(sizeof(char16_t) == 2);
+  Standard_STATIC_ASSERT(sizeof(char32_t) == 4);
   #ifdef _WIN32
-  Standard_STATIC_ASSERT(sizeof(Standard_WideChar) == sizeof(Standard_Utf16Char));
+  Standard_STATIC_ASSERT(sizeof(wchar_t) == sizeof(char16_t));
   #endif
 
   char* aVar;
-  aVar                       = getenv("MMGT_OPT");
-  Standard_Integer anAllocId = (aVar ? atoi(aVar) : OCCT_MMGT_OPT_DEFAULT);
+  aVar          = getenv("MMGT_OPT");
+  int anAllocId = (aVar ? atoi(aVar) : OCCT_MMGT_OPT_DEFAULT);
 
   #if defined(HAVE_TBB) && defined(_M_IX86)
   if (anAllocId == 2)
@@ -262,8 +261,8 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   }
   #endif
 
-  aVar                     = getenv("MMGT_CLEAR");
-  Standard_Boolean toClear = (aVar ? (atoi(aVar) != 0) : Standard_True);
+  aVar         = getenv("MMGT_CLEAR");
+  bool toClear = (aVar ? (atoi(aVar) != 0) : true);
 
   // on Windows (actual for XP and 2000) activate low fragmentation heap
   // for CRT heap in order to get best performance.
@@ -282,15 +281,15 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   {
     case 1: // OCCT optimized memory allocator
     {
-      aVar                        = getenv("MMGT_MMAP");
-      Standard_Boolean bMMap      = (aVar ? (atoi(aVar) != 0) : Standard_True);
-      aVar                        = getenv("MMGT_CELLSIZE");
-      Standard_Integer aCellSize  = (aVar ? atoi(aVar) : 200);
-      aVar                        = getenv("MMGT_NBPAGES");
-      Standard_Integer aNbPages   = (aVar ? atoi(aVar) : 1000);
-      aVar                        = getenv("MMGT_THRESHOLD");
-      Standard_Integer aThreshold = (aVar ? atoi(aVar) : 40000);
-      myFMMgr = new Standard_MMgrOpt(toClear, bMMap, aCellSize, aNbPages, aThreshold);
+      aVar           = getenv("MMGT_MMAP");
+      bool bMMap     = (aVar ? (atoi(aVar) != 0) : true);
+      aVar           = getenv("MMGT_CELLSIZE");
+      int aCellSize  = (aVar ? atoi(aVar) : 200);
+      aVar           = getenv("MMGT_NBPAGES");
+      int aNbPages   = (aVar ? atoi(aVar) : 1000);
+      aVar           = getenv("MMGT_THRESHOLD");
+      int aThreshold = (aVar ? atoi(aVar) : 40000);
+      myFMMgr        = new Standard_MMgrOpt(toClear, bMMap, aCellSize, aNbPages, aThreshold);
       break;
     }
     case 2: // TBB memory allocator
@@ -308,7 +307,7 @@ Standard_MMgrFactory::Standard_MMgrFactory()
 Standard_MMgrFactory::~Standard_MMgrFactory()
 {
   if (myFMMgr)
-    myFMMgr->Purge(Standard_True);
+    myFMMgr->Purge(true);
 }
 
 //=======================================================================
@@ -329,7 +328,7 @@ Standard_MMgrFactory::~Standard_MMgrFactory()
 // dynamically during program execution rather than in its constructor.
 //
 // Therefore holder currently does not call destructor of the memory manager
-// but only its method Purge() with Standard_True.
+// but only its method Purge() with true.
 //
 // To free the memory completely, we probably could use compiler-specific
 // pragmas (such as '#pragma fini' on SUN Solaris and '#pragma init_seg' on
@@ -369,22 +368,22 @@ Standard::AllocatorType Standard::GetAllocatorType()
 
 //=================================================================================================
 
-Standard_Address Standard::Allocate(const Standard_Size theSize)
+void* Standard::Allocate(const size_t theSize)
 {
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   return Standard_MMgrFactory::GetMMgr()->Allocate(theSize);
 #elif defined OCCT_MMGT_OPT_JEMALLOC
-  Standard_Address aPtr = je_calloc(theSize, sizeof(char));
+  void* aPtr = je_calloc(theSize, sizeof(char));
   if (!aPtr)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Allocate(): malloc failed");
   return aPtr;
 #elif defined OCCT_MMGT_OPT_TBB
-  Standard_Address aPtr = scalable_calloc(theSize, sizeof(char));
+  void* aPtr = scalable_calloc(theSize, sizeof(char));
   if (!aPtr)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Allocate(): malloc failed");
   return aPtr;
 #else
-  Standard_Address aPtr = calloc(theSize, sizeof(char));
+  void* aPtr = calloc(theSize, sizeof(char));
   if (!aPtr)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Allocate(): malloc failed");
   return aPtr;
@@ -393,7 +392,7 @@ Standard_Address Standard::Allocate(const Standard_Size theSize)
 
 //=================================================================================================
 
-Standard_Address Standard::AllocateOptimal(const Standard_Size theSize)
+void* Standard::AllocateOptimal(const size_t theSize)
 {
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   return Standard_MMgrFactory::GetMMgr()->Allocate(theSize);
@@ -408,7 +407,7 @@ Standard_Address Standard::AllocateOptimal(const Standard_Size theSize)
 
 //=================================================================================================
 
-void Standard::Free(Standard_Address theStorage)
+void Standard::Free(void* theStorage)
 {
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   Standard_MMgrFactory::GetMMgr()->Free(theStorage);
@@ -423,7 +422,7 @@ void Standard::Free(Standard_Address theStorage)
 
 //=================================================================================================
 
-Standard_Address Standard::Reallocate(Standard_Address theStorage, const Standard_Size theSize)
+void* Standard::Reallocate(void* theStorage, const size_t theSize)
 {
   // Note that it is not possible to ensure that additional memory
   // allocated by realloc will be cleared (so as to satisfy myClear mode);
@@ -431,17 +430,17 @@ Standard_Address Standard::Reallocate(Standard_Address theStorage, const Standar
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   return Standard_MMgrFactory::GetMMgr()->Reallocate(theStorage, theSize);
 #elif defined OCCT_MMGT_OPT_JEMALLOC
-  Standard_Address aNewStorage = (Standard_Address)je_realloc(theStorage, theSize);
+  void* aNewStorage = (void*)je_realloc(theStorage, theSize);
   if (!aNewStorage)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
   return aNewStorage;
 #elif defined OCCT_MMGT_OPT_TBB
-  Standard_Address aNewStorage = (Standard_Address)scalable_realloc(theStorage, theSize);
+  void* aNewStorage = (void*)scalable_realloc(theStorage, theSize);
   if (!aNewStorage)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
   return aNewStorage;
 #else
-  Standard_Address aNewStorage = (Standard_Address)realloc(theStorage, theSize);
+  void* aNewStorage = (void*)realloc(theStorage, theSize);
   if (!aNewStorage)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
   return aNewStorage;
@@ -450,7 +449,7 @@ Standard_Address Standard::Reallocate(Standard_Address theStorage, const Standar
 
 //=================================================================================================
 
-Standard_Integer Standard::Purge()
+int Standard::Purge()
 {
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   return Standard_MMgrFactory::GetMMgr()->Purge();
@@ -461,8 +460,7 @@ Standard_Integer Standard::Purge()
 
 //=================================================================================================
 
-Standard_Address Standard::AllocateAligned(const Standard_Size theSize,
-                                           const Standard_Size theAlign)
+void* Standard::AllocateAligned(const size_t theSize, const size_t theAlign)
 {
 #ifdef OCCT_MMGT_OPT_JEMALLOC
   return je_aligned_alloc(theAlign, theSize);
@@ -489,7 +487,7 @@ Standard_Address Standard::AllocateAligned(const Standard_Size theSize,
 
 //=================================================================================================
 
-void Standard::FreeAligned(Standard_Address thePtrAligned)
+void Standard::FreeAligned(void* thePtrAligned)
 {
 #ifdef OCCT_MMGT_OPT_JEMALLOC
   return je_free(thePtrAligned);

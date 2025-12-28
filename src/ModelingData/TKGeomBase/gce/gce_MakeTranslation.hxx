@@ -49,7 +49,6 @@ public:
   Standard_EXPORT const gp_Trsf& Operator() const;
   Standard_EXPORT                operator gp_Trsf() const;
 
-protected:
 private:
   gp_Trsf TheTranslation;
 };

@@ -21,9 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class TopoDS_Wire;
@@ -49,45 +50,45 @@ public:
   Standard_EXPORT void Init(const TopoDS_Shape& S);
 
   //! Tests if it is possible to split the edge <E>.
-  Standard_EXPORT Standard_Boolean CanSplit(const TopoDS_Edge& E) const;
+  Standard_EXPORT bool CanSplit(const TopoDS_Edge& E) const;
 
   //! Adds the vertex <V> on the edge <E>, at parameter <P>.
-  Standard_EXPORT void Add(const TopoDS_Vertex& V, const Standard_Real P, const TopoDS_Edge& E);
+  Standard_EXPORT void Add(const TopoDS_Vertex& V, const double P, const TopoDS_Edge& E);
 
   //! Adds the wire <W> on the face <F>.
-  Standard_EXPORT Standard_Boolean Add(const TopoDS_Wire& W, const TopoDS_Face& F);
+  Standard_EXPORT bool Add(const TopoDS_Wire& W, const TopoDS_Face& F);
 
   //! Adds the list of wires <Lwires> on the face <F>.
-  Standard_EXPORT Standard_Boolean Add(const TopTools_ListOfShape& Lwires, const TopoDS_Face& F);
+  Standard_EXPORT bool Add(const NCollection_List<TopoDS_Shape>& Lwires, const TopoDS_Face& F);
 
   //! Returns the "original" shape.
   const TopoDS_Shape& Shape() const;
 
   //! Returns the list of descendant shapes of <S>.
-  Standard_EXPORT const TopTools_ListOfShape& DescendantShapes(const TopoDS_Shape& S);
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& DescendantShapes(const TopoDS_Shape& S);
 
   //! Returns the "left" part defined by the wire <W> on
   //! the face <F>. The returned list of shape is in
   //! fact a list of faces. The face <F> is considered
   //! with its topological orientation in the original
   //! shape. <W> is considered with its orientation.
-  Standard_EXPORT const TopTools_ListOfShape& LeftOf(const TopoDS_Wire& W, const TopoDS_Face& F);
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& LeftOf(const TopoDS_Wire& W,
+                                                               const TopoDS_Face& F);
 
-protected:
 private:
-  Standard_EXPORT Standard_Boolean AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F);
+  Standard_EXPORT bool AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F);
 
-  Standard_EXPORT Standard_Boolean AddClosedWire(const TopoDS_Wire& W, const TopoDS_Face& F);
+  Standard_EXPORT bool AddClosedWire(const TopoDS_Wire& W, const TopoDS_Face& F);
 
   Standard_EXPORT void Put(const TopoDS_Shape& S);
 
-  Standard_EXPORT Standard_Boolean Rebuild(const TopoDS_Shape& S);
+  Standard_EXPORT bool Rebuild(const TopoDS_Shape& S);
 
-  Standard_Boolean                   myDone;
-  TopoDS_Shape                       myShape;
-  TopTools_DataMapOfShapeListOfShape myMap;
-  TopTools_MapOfShape                myDblE;
-  TopTools_ListOfShape               myLeft;
+  bool         myDone;
+  TopoDS_Shape myShape;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                     myDblE;
+  NCollection_List<TopoDS_Shape>                                                             myLeft;
 };
 
 #include <LocOpe_SplitShape.lxx>

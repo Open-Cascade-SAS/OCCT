@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Edge.hxx>
-#include <TopOpeBRepBuild_ListIteratorOfListOfPave.hxx>
+#include <TopOpeBRepBuild_Pave.hxx>
+#include <NCollection_List.hxx>
 #include <TopOpeBRepBuild_LoopSet.hxx>
 class TopoDS_Shape;
 class TopOpeBRepBuild_Pave;
@@ -38,42 +39,42 @@ public:
   //! Create a Pave set on edge <E>. It contains <E> vertices.
   Standard_EXPORT TopOpeBRepBuild_PaveSet(const TopoDS_Shape& E);
 
-  Standard_EXPORT void RemovePV(const Standard_Boolean B);
+  Standard_EXPORT void RemovePV(const bool B);
 
   //! Add <PV> in the Pave set.
-  Standard_EXPORT void Append(const Handle(TopOpeBRepBuild_Pave)& PV);
+  Standard_EXPORT void Append(const occ::handle<TopOpeBRepBuild_Pave>& PV);
 
-  Standard_EXPORT virtual void InitLoop() Standard_OVERRIDE;
+  Standard_EXPORT virtual void InitLoop() override;
 
-  Standard_EXPORT virtual Standard_Boolean MoreLoop() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool MoreLoop() const override;
 
-  Standard_EXPORT virtual void NextLoop() Standard_OVERRIDE;
+  Standard_EXPORT virtual void NextLoop() override;
 
-  Standard_EXPORT virtual Handle(TopOpeBRepBuild_Loop) Loop() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TopOpeBRepBuild_Loop> Loop() const override;
 
   Standard_EXPORT const TopoDS_Edge& Edge() const;
 
-  Standard_EXPORT Standard_Boolean HasEqualParameters();
+  Standard_EXPORT bool HasEqualParameters();
 
-  Standard_EXPORT Standard_Real EqualParameters() const;
+  Standard_EXPORT double EqualParameters() const;
 
-  Standard_EXPORT Standard_Boolean ClosedVertices();
+  Standard_EXPORT bool ClosedVertices();
 
-  Standard_EXPORT static void SortPave(const TopOpeBRepBuild_ListOfPave& Lin,
-                                       TopOpeBRepBuild_ListOfPave&       Lout);
+  Standard_EXPORT static void SortPave(
+    const NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>& Lin,
+    NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>&       Lout);
 
-protected:
 private:
   Standard_EXPORT void Prepare();
 
-  TopoDS_Edge                              myEdge;
-  TopOpeBRepBuild_ListOfPave               myVertices;
-  TopOpeBRepBuild_ListIteratorOfListOfPave myVerticesIt;
-  Standard_Boolean                         myHasEqualParameters;
-  Standard_Real                            myEqualParameters;
-  Standard_Boolean                         myClosed;
-  Standard_Boolean                         myPrepareDone;
-  Standard_Boolean                         myRemovePV;
+  TopoDS_Edge                                                   myEdge;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>           myVertices;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator myVerticesIt;
+  bool                                                          myHasEqualParameters;
+  double                                                        myEqualParameters;
+  bool                                                          myClosed;
+  bool                                                          myPrepareDone;
+  bool                                                          myRemovePV;
 };
 
 #endif // _TopOpeBRepBuild_PaveSet_HeaderFile

@@ -17,7 +17,7 @@
 
 //=================================================================================================
 
-Standard_Real Blend_AppFunction::Parameter(const Blend_Point& P) const
+double Blend_AppFunction::Parameter(const Blend_Point& P) const
 {
   return P.Parameter();
 }

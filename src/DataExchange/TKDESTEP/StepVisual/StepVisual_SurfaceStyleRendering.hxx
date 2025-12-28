@@ -24,9 +24,6 @@
 #include <StepVisual_ShadingSurfaceMethod.hxx>
 #include <StepVisual_Colour.hxx>
 
-class StepVisual_SurfaceStyleRendering;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleRendering, Standard_Transient)
-
 //! Representation of STEP entity SurfaceStyleRendering
 class StepVisual_SurfaceStyleRendering : public Standard_Transient
 {
@@ -36,7 +33,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const StepVisual_ShadingSurfaceMethod theRenderingMethod,
-                            const Handle(StepVisual_Colour)&      theSurfaceColour);
+                            const occ::handle<StepVisual_Colour>& theSurfaceColour);
 
   //! Returns field RenderingMethod
   Standard_EXPORT StepVisual_ShadingSurfaceMethod RenderingMethod() const;
@@ -44,14 +41,14 @@ public:
   Standard_EXPORT void SetRenderingMethod(const StepVisual_ShadingSurfaceMethod theRenderingMethod);
 
   //! Returns field SurfaceColour
-  Standard_EXPORT Handle(StepVisual_Colour) SurfaceColour() const;
+  Standard_EXPORT occ::handle<StepVisual_Colour> SurfaceColour() const;
   //! Sets field SurfaceColour
-  Standard_EXPORT void SetSurfaceColour(const Handle(StepVisual_Colour)& theSurfaceColour);
+  Standard_EXPORT void SetSurfaceColour(const occ::handle<StepVisual_Colour>& theSurfaceColour);
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleRendering, Standard_Transient)
 
 private:
   StepVisual_ShadingSurfaceMethod myRenderingMethod;
-  Handle(StepVisual_Colour)       mySurfaceColour;
+  occ::handle<StepVisual_Colour>  mySurfaceColour;
 };
 #endif // _StepVisual_SurfaceStyleRendering_HeaderFile_

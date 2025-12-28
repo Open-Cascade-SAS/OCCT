@@ -32,10 +32,10 @@ public:
   Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const;
 
   //! Returns persistent type name
-  virtual Standard_CString PName() const { return "PDataStd_TreeNode"; }
+  virtual const char* PName() const { return "PDataStd_TreeNode"; }
 
   //! Create an empty transient attribute
-  Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> CreateAttribute();
 
   //! Import transient attribute from the persistent data.
   Standard_EXPORT virtual void ImportAttribute();
@@ -43,12 +43,12 @@ public:
 private:
   struct dynamic : public Standard_Transient
   {
-    Handle(StdLPersistent_TreeNode) First;
-    Standard_GUID                   TreeID;
+    occ::handle<StdLPersistent_TreeNode> First;
+    Standard_GUID                        TreeID;
   };
 
-  Handle(dynamic)                 myDynamicData;
-  Handle(StdLPersistent_TreeNode) myNext;
+  Handle(dynamic)                      myDynamicData;
+  occ::handle<StdLPersistent_TreeNode> myNext;
 };
 
 #endif

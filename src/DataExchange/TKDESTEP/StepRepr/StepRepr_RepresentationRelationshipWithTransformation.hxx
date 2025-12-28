@@ -25,10 +25,6 @@
 class TCollection_HAsciiString;
 class StepRepr_Representation;
 
-class StepRepr_RepresentationRelationshipWithTransformation;
-DEFINE_STANDARD_HANDLE(StepRepr_RepresentationRelationshipWithTransformation,
-                       StepRepr_ShapeRepresentationRelationship)
-
 class StepRepr_RepresentationRelationshipWithTransformation
     : public StepRepr_ShapeRepresentationRelationship
 {
@@ -36,11 +32,11 @@ class StepRepr_RepresentationRelationshipWithTransformation
 public:
   Standard_EXPORT StepRepr_RepresentationRelationshipWithTransformation();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(TCollection_HAsciiString)& aDescription,
-                            const Handle(StepRepr_Representation)&  aRep1,
-                            const Handle(StepRepr_Representation)&  aRep2,
-                            const StepRepr_Transformation&          aTransf);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
+                            const occ::handle<StepRepr_Representation>&  aRep1,
+                            const occ::handle<StepRepr_Representation>&  aRep2,
+                            const StepRepr_Transformation&               aTransf);
 
   Standard_EXPORT StepRepr_Transformation TransformationOperator() const;
 
@@ -49,7 +45,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationRelationshipWithTransformation,
                           StepRepr_ShapeRepresentationRelationship)
 
-protected:
 private:
   StepRepr_Transformation theTrans;
 };

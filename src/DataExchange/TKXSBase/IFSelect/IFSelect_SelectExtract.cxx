@@ -23,15 +23,15 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectExtract, IFSelect_SelectDeduct)
 
 IFSelect_SelectExtract::IFSelect_SelectExtract()
 {
-  thesort = Standard_True;
+  thesort = true;
 }
 
-Standard_Boolean IFSelect_SelectExtract::IsDirect() const
+bool IFSelect_SelectExtract::IsDirect() const
 {
   return thesort;
 }
 
-void IFSelect_SelectExtract::SetDirect(const Standard_Boolean direct)
+void IFSelect_SelectExtract::SetDirect(const bool direct)
 {
   thesort = direct;
 }
@@ -40,10 +40,10 @@ Interface_EntityIterator IFSelect_SelectExtract::RootResult(const Interface_Grap
 {
   Interface_EntityIterator iter;
   Interface_EntityIterator inputer = InputResult(G); // takes everything into account
-  Standard_Integer         rank    = 0;
+  int                      rank    = 0;
   for (inputer.Start(); inputer.More(); inputer.Next())
   {
-    const Handle(Standard_Transient)& ent = inputer.Value();
+    const occ::handle<Standard_Transient>& ent = inputer.Value();
     rank++;
     if (SortInGraph(rank, ent, G) == thesort)
       iter.GetOneItem(ent);
@@ -51,9 +51,9 @@ Interface_EntityIterator IFSelect_SelectExtract::RootResult(const Interface_Grap
   return iter;
 }
 
-Standard_Boolean IFSelect_SelectExtract::SortInGraph(const Standard_Integer            rank,
-                                                     const Handle(Standard_Transient)& ent,
-                                                     const Interface_Graph&            G) const
+bool IFSelect_SelectExtract::SortInGraph(const int                              rank,
+                                         const occ::handle<Standard_Transient>& ent,
+                                         const Interface_Graph&                 G) const
 {
   return Sort(rank, ent, G.Model());
 }

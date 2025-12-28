@@ -22,7 +22,7 @@
 #include <gp_XYZ.hxx>
 #include <IGESGeom_CopiousData.hxx>
 #include <IGESGeom_Direction.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 
 //=============================================================================
 // GeomToIGES_GeomVector
@@ -46,9 +46,10 @@ GeomToIGES_GeomVector::GeomToIGES_GeomVector(const GeomToIGES_GeomEntity& GE)
 // TransferVector
 //=============================================================================
 
-Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(const Handle(Geom_Vector)& start)
+occ::handle<IGESGeom_Direction> GeomToIGES_GeomVector::TransferVector(
+  const occ::handle<Geom_Vector>& start)
 {
-  Handle(IGESGeom_Direction) res;
+  occ::handle<IGESGeom_Direction> res;
   if (start.IsNull())
   {
     return res;
@@ -73,18 +74,18 @@ Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(const Handle(Ge
 // TransferVector
 //=============================================================================
 
-Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(
-  const Handle(Geom_VectorWithMagnitude)& start)
+occ::handle<IGESGeom_Direction> GeomToIGES_GeomVector::TransferVector(
+  const occ::handle<Geom_VectorWithMagnitude>& start)
 {
-  Handle(IGESGeom_Direction) Dir = new IGESGeom_Direction;
+  occ::handle<IGESGeom_Direction> Dir = new IGESGeom_Direction;
   if (start.IsNull())
   {
     return Dir;
   }
 
-  Standard_Real X, Y, Z;
+  double X, Y, Z;
   start->Coord(X, Y, Z);
-  Standard_Real M = start->Magnitude();
+  double M = start->Magnitude();
   Dir->Init(gp_XYZ(X / (M * GetUnit()), Y / (M * GetUnit()), Z / (M * GetUnit())));
   return Dir;
 }
@@ -94,16 +95,16 @@ Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(
 // TransferVector
 //=============================================================================
 
-Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(
-  const Handle(Geom_Direction)& start)
+occ::handle<IGESGeom_Direction> GeomToIGES_GeomVector::TransferVector(
+  const occ::handle<Geom_Direction>& start)
 {
-  Handle(IGESGeom_Direction) Dir = new IGESGeom_Direction;
+  occ::handle<IGESGeom_Direction> Dir = new IGESGeom_Direction;
   if (start.IsNull())
   {
     return Dir;
   }
 
-  Standard_Real X, Y, Z;
+  double X, Y, Z;
   start->Coord(X, Y, Z);
   Dir->Init(gp_XYZ(X / GetUnit(), Y / GetUnit(), Z / GetUnit()));
   return Dir;

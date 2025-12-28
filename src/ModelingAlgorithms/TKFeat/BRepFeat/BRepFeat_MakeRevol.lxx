@@ -23,12 +23,12 @@ inline BRepFeat_MakeRevol::BRepFeat_MakeRevol()
 
 //=================================================================================================
 
-inline BRepFeat_MakeRevol::BRepFeat_MakeRevol(const TopoDS_Shape&    Sbase,
-                                              const TopoDS_Shape&    Pbase,
-                                              const TopoDS_Face&     Skface,
-                                              const gp_Ax1&          Axis,
-                                              const Standard_Integer Fuse,
-                                              const Standard_Boolean Modify)
+inline BRepFeat_MakeRevol::BRepFeat_MakeRevol(const TopoDS_Shape& Sbase,
+                                              const TopoDS_Shape& Pbase,
+                                              const TopoDS_Face&  Skface,
+                                              const gp_Ax1&       Axis,
+                                              const int           Fuse,
+                                              const bool          Modify)
 
 {
   Init(Sbase, Pbase, Skface, Axis, Fuse, Modify);

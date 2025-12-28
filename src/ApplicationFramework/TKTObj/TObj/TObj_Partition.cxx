@@ -27,17 +27,16 @@ IMPLEMENT_TOBJOCAF_PERSISTENCE(TObj_Partition)
 
 //=================================================================================================
 
-TObj_Partition::TObj_Partition(const TDF_Label& theLabel, const Standard_Boolean theSetName)
+TObj_Partition::TObj_Partition(const TDF_Label& theLabel, const bool theSetName)
     : TObj_Object(theLabel, theSetName)
 {
 }
 
 //=================================================================================================
 
-Handle(TObj_Partition) TObj_Partition::Create(const TDF_Label&       theLabel,
-                                              const Standard_Boolean theSetName)
+occ::handle<TObj_Partition> TObj_Partition::Create(const TDF_Label& theLabel, const bool theSetName)
 {
-  Handle(TObj_Partition) aPartition = new TObj_Partition(theLabel, theSetName);
+  occ::handle<TObj_Partition> aPartition = new TObj_Partition(theLabel, theSetName);
   aPartition->SetLastIndex(0);
   return aPartition;
 }
@@ -54,22 +53,21 @@ TDF_Label TObj_Partition::NewLabel() const
 
 //=================================================================================================
 
-void TObj_Partition::SetNamePrefix(const Handle(TCollection_HExtendedString)& thePrefix)
+void TObj_Partition::SetNamePrefix(const occ::handle<TCollection_HExtendedString>& thePrefix)
 {
   myPrefix = thePrefix;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HExtendedString) TObj_Partition::GetNewName(
-  const Standard_Boolean theIsToChangeCount)
+occ::handle<TCollection_HExtendedString> TObj_Partition::GetNewName(const bool theIsToChangeCount)
 {
   if (myPrefix.IsNull())
     return 0;
 
-  Standard_Integer                    aRank    = GetLastIndex() + 1;
-  Standard_Integer                    saveRank = aRank;
-  Handle(TCollection_HExtendedString) aName;
+  int                                      aRank    = GetLastIndex() + 1;
+  int                                      saveRank = aRank;
+  occ::handle<TCollection_HExtendedString> aName;
   do
   {
     aName = new TCollection_HExtendedString(myPrefix->String() + aRank++);
@@ -85,9 +83,9 @@ Handle(TCollection_HExtendedString) TObj_Partition::GetNewName(
 
 //=================================================================================================
 
-Handle(TObj_Partition) TObj_Partition::GetPartition(const Handle(TObj_Object)& theObject)
+occ::handle<TObj_Partition> TObj_Partition::GetPartition(const occ::handle<TObj_Object>& theObject)
 {
-  Handle(TObj_Partition) aPartition;
+  occ::handle<TObj_Partition> aPartition;
   if (!theObject.IsNull())
   {
     TDF_Label aLabel = theObject->GetLabel().Father();
@@ -95,9 +93,9 @@ Handle(TObj_Partition) TObj_Partition::GetPartition(const Handle(TObj_Object)& t
     // find partition which contains the object
     while (aPartition.IsNull() && !aLabel.IsNull())
     {
-      Handle(TObj_Object) anObject;
-      if (TObj_Object::GetObj(aLabel, anObject, Standard_True))
-        aPartition = Handle(TObj_Partition)::DownCast(anObject);
+      occ::handle<TObj_Object> anObject;
+      if (TObj_Object::GetObj(aLabel, anObject, true))
+        aPartition = occ::down_cast<TObj_Partition>(anObject);
 
       if (aPartition.IsNull())
         aLabel = aLabel.Father();
@@ -108,25 +106,25 @@ Handle(TObj_Partition) TObj_Partition::GetPartition(const Handle(TObj_Object)& t
 
 //=================================================================================================
 
-Standard_Integer TObj_Partition::GetLastIndex() const
+int TObj_Partition::GetLastIndex() const
 {
   return getInteger(DataTag_LastIndex);
 }
 
 //=================================================================================================
 
-void TObj_Partition::SetLastIndex(const Standard_Integer theIndex)
+void TObj_Partition::SetLastIndex(const int theIndex)
 {
   setInteger(theIndex, DataTag_LastIndex);
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Partition::copyData(const Handle(TObj_Object)& theTargetObject)
+bool TObj_Partition::copyData(const occ::handle<TObj_Object>& theTargetObject)
 {
-  Standard_Boolean       IsDone;
-  Handle(TObj_Partition) aTargetPartition = Handle(TObj_Partition)::DownCast(theTargetObject);
-  IsDone = aTargetPartition.IsNull() ? Standard_False : Standard_True;
+  bool                        IsDone;
+  occ::handle<TObj_Partition> aTargetPartition = occ::down_cast<TObj_Partition>(theTargetObject);
+  IsDone                                       = aTargetPartition.IsNull() ? false : true;
   if (IsDone)
   {
     IsDone = TObj_Object::copyData(theTargetObject);
@@ -143,14 +141,14 @@ Standard_Boolean TObj_Partition::copyData(const Handle(TObj_Object)& theTargetOb
 // purpose  : do not register a name in the dictionary
 //=======================================================================
 
-Standard_Boolean TObj_Partition::SetName(const Handle(TCollection_HExtendedString)& theName) const
+bool TObj_Partition::SetName(const occ::handle<TCollection_HExtendedString>& theName) const
 {
-  Handle(TCollection_HExtendedString) anOldName = GetName();
+  occ::handle<TCollection_HExtendedString> anOldName = GetName();
   if (!anOldName.IsNull() && theName->String().IsEqual(anOldName->String()))
-    return Standard_True;
+    return true;
 
   TDataStd_Name::Set(GetLabel(), theName->String());
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================

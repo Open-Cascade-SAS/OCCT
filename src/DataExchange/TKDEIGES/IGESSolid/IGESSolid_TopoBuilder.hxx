@@ -22,9 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
-#include <TColgp_HSequenceOfXYZ.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <gp_XYZ.hxx>
 class IGESSolid_ManifoldSolid;
 class IGESSolid_Shell;
 class IGESSolid_Face;
@@ -56,33 +57,33 @@ public:
   Standard_EXPORT void AddVertex(const gp_XYZ& val);
 
   //! Returns the count of already recorded Vertices
-  Standard_EXPORT Standard_Integer NbVertices() const;
+  Standard_EXPORT int NbVertices() const;
 
   //! Returns a Vertex, given its rank
-  Standard_EXPORT const gp_XYZ& Vertex(const Standard_Integer num) const;
+  Standard_EXPORT const gp_XYZ& Vertex(const int num) const;
 
   //! Returns the VertexList. It can be referenced, but it remains
   //! empty until call to EndShell or EndSolid
-  Standard_EXPORT Handle(IGESSolid_VertexList) VertexList() const;
+  Standard_EXPORT occ::handle<IGESSolid_VertexList> VertexList() const;
 
   //! Adds an Edge (3D) to the EdgeList, defined by a Curve and
   //! two number of Vertex, for start and end
-  Standard_EXPORT void AddEdge(const Handle(IGESData_IGESEntity)& curve,
-                               const Standard_Integer             vstart,
-                               const Standard_Integer             vend);
+  Standard_EXPORT void AddEdge(const occ::handle<IGESData_IGESEntity>& curve,
+                               const int                               vstart,
+                               const int                               vend);
 
   //! Returns the count of recorded Edges (3D)
-  Standard_EXPORT Standard_Integer NbEdges() const;
+  Standard_EXPORT int NbEdges() const;
 
   //! Returns the definition of an Edge (3D) given its rank
-  Standard_EXPORT void Edge(const Standard_Integer       num,
-                            Handle(IGESData_IGESEntity)& curve,
-                            Standard_Integer&            vstart,
-                            Standard_Integer&            vend) const;
+  Standard_EXPORT void Edge(const int                         num,
+                            occ::handle<IGESData_IGESEntity>& curve,
+                            int&                              vstart,
+                            int&                              vend) const;
 
   //! Returns the EdgeList. It can be referenced, but it remains
   //! empty until call to EndShell or EndSolid
-  Standard_EXPORT Handle(IGESSolid_EdgeList) EdgeList() const;
+  Standard_EXPORT occ::handle<IGESSolid_EdgeList> EdgeList() const;
 
   //! Begins the definition of a new Loop : it is the Current Loop
   //! All Edges (UV) defined by MakeEdge/EndEdge will be added in it
@@ -99,13 +100,10 @@ public:
   //! - give the parametric curves
   //! - close the definition of this edge(UV) by EndEdge, else
   //! the next call to MakeEdge will erase this one
-  Standard_EXPORT void MakeEdge(const Standard_Integer edgetype,
-                                const Standard_Integer edge3d,
-                                const Standard_Integer orientation);
+  Standard_EXPORT void MakeEdge(const int edgetype, const int edge3d, const int orientation);
 
   //! Adds a Parametric Curve (UV) to the current Edge(UV)
-  Standard_EXPORT void AddCurveUV(const Handle(IGESData_IGESEntity)& curve,
-                                  const Standard_Integer             iso);
+  Standard_EXPORT void AddCurveUV(const occ::handle<IGESData_IGESEntity>& curve, const int iso);
 
   //! Closes the definition of an Edge(UV) and adds it to the
   //! current Loop
@@ -116,7 +114,7 @@ public:
   //! the closing call : SetOuter for the Outer Loop (by default,
   //! if SetOuter is not called, no OuterLoop is defined);
   //! AddInner for the list of Inner Loops (there can be none)
-  Standard_EXPORT void MakeFace(const Handle(IGESData_IGESEntity)& surface);
+  Standard_EXPORT void MakeFace(const occ::handle<IGESData_IGESEntity>& surface);
 
   //! Closes the current Loop and sets it Loop as Outer Loop. If no
   //! current Loop has yet been defined, does nothing.
@@ -128,7 +126,7 @@ public:
 
   //! Closes the definition of the current Face, fills it and adds
   //! it to the current Shell with an orientation flag (0/1)
-  Standard_EXPORT void EndFace(const Standard_Integer orientation);
+  Standard_EXPORT void EndFace(const int orientation);
 
   //! Begins the definition of a new Shell (either Simple or in a
   //! Solid)
@@ -139,11 +137,11 @@ public:
 
   //! Closes the definition of the current Shell as for the Main
   //! Shell of a Solid, with an orientation flag (0/1)
-  Standard_EXPORT void SetMainShell(const Standard_Integer orientation);
+  Standard_EXPORT void SetMainShell(const int orientation);
 
   //! Closes the definition of the current Shell and adds it to the
   //! list of Void Shells of a Solid, with an orientation flag (0/1)
-  Standard_EXPORT void AddVoidShell(const Standard_Integer orientation);
+  Standard_EXPORT void AddVoidShell(const int orientation);
 
   //! Closes the whole definition as that of a ManifoldSolid
   //! Its call is exclusive from that of EndSimpleShell
@@ -151,11 +149,11 @@ public:
 
   //! Returns the current Shell. The current Shell is created empty
   //! by MakeShell and filled by EndShell
-  Standard_EXPORT Handle(IGESSolid_Shell) Shell() const;
+  Standard_EXPORT occ::handle<IGESSolid_Shell> Shell() const;
 
   //! Returns the current ManifoldSolid. It is created empty by
   //! Create and filled by EndSolid
-  Standard_EXPORT Handle(IGESSolid_ManifoldSolid) Solid() const;
+  Standard_EXPORT occ::handle<IGESSolid_ManifoldSolid> Solid() const;
 
 protected:
   //! Closes the definition of Vertex and Edge Lists
@@ -174,32 +172,32 @@ protected:
   Standard_EXPORT void EndShell();
 
 private:
-  Handle(IGESSolid_ManifoldSolid)      thesolid;
-  Handle(IGESSolid_Shell)              themains;
-  Standard_Boolean                     themflag;
-  Handle(TColStd_HSequenceOfTransient) thevoids;
-  Handle(TColStd_HSequenceOfInteger)   thevflag;
-  Handle(IGESSolid_Shell)              theshell;
-  Handle(TColStd_HSequenceOfTransient) thefaces;
-  Handle(TColStd_HSequenceOfInteger)   thefflag;
-  Handle(IGESSolid_Face)               theface;
-  Handle(IGESData_IGESEntity)          thesurf;
-  Standard_Boolean                     theouter;
-  Handle(TColStd_HSequenceOfTransient) theinner;
-  Handle(IGESSolid_Loop)               theloop;
-  Handle(TColStd_HSequenceOfInteger)   theetype;
-  Handle(TColStd_HSequenceOfInteger)   thee3d;
-  Handle(TColStd_HSequenceOfInteger)   theeflag;
-  Handle(TColStd_HSequenceOfTransient) theeuv;
-  Handle(TColStd_HSequenceOfInteger)   theisol;
-  Handle(TColStd_HSequenceOfTransient) thecuruv;
-  Handle(TColStd_HSequenceOfTransient) theiso;
-  Handle(IGESSolid_EdgeList)           theedgel;
-  Handle(TColStd_HSequenceOfTransient) thecur3d;
-  Handle(TColStd_HSequenceOfInteger)   thevstar;
-  Handle(TColStd_HSequenceOfInteger)   thevend;
-  Handle(IGESSolid_VertexList)         thevertl;
-  Handle(TColgp_HSequenceOfXYZ)        thepoint;
+  occ::handle<IGESSolid_ManifoldSolid>                                thesolid;
+  occ::handle<IGESSolid_Shell>                                        themains;
+  bool                                                                themflag;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> thevoids;
+  occ::handle<NCollection_HSequence<int>>                             thevflag;
+  occ::handle<IGESSolid_Shell>                                        theshell;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> thefaces;
+  occ::handle<NCollection_HSequence<int>>                             thefflag;
+  occ::handle<IGESSolid_Face>                                         theface;
+  occ::handle<IGESData_IGESEntity>                                    thesurf;
+  bool                                                                theouter;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> theinner;
+  occ::handle<IGESSolid_Loop>                                         theloop;
+  occ::handle<NCollection_HSequence<int>>                             theetype;
+  occ::handle<NCollection_HSequence<int>>                             thee3d;
+  occ::handle<NCollection_HSequence<int>>                             theeflag;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> theeuv;
+  occ::handle<NCollection_HSequence<int>>                             theisol;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> thecuruv;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> theiso;
+  occ::handle<IGESSolid_EdgeList>                                     theedgel;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> thecur3d;
+  occ::handle<NCollection_HSequence<int>>                             thevstar;
+  occ::handle<NCollection_HSequence<int>>                             thevend;
+  occ::handle<IGESSolid_VertexList>                                   thevertl;
+  occ::handle<NCollection_HSequence<gp_XYZ>>                          thepoint;
 };
 
 #endif // _IGESSolid_TopoBuilder_HeaderFile

@@ -30,53 +30,47 @@ public:
   Standard_EXPORT Aspect_NeutralWindow();
 
   //! Return native handle of this drawable.
-  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE { return myHandle; }
+  virtual Aspect_Drawable NativeHandle() const override { return myHandle; }
 
   //! Return native handle of the parent drawable.
-  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE { return myParentHandle; }
+  virtual Aspect_Drawable NativeParentHandle() const override { return myParentHandle; }
 
   //! Return FBConfig.
-  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return myFBConfig; }
+  virtual Aspect_FBConfig NativeFBConfig() const override { return myFBConfig; }
 
   //! Set native handle.
   //! @return true if definition has been changed
-  Standard_Boolean SetNativeHandle(Aspect_Drawable theWindow)
-  {
-    return SetNativeHandles(theWindow, 0, 0);
-  }
+  bool SetNativeHandle(Aspect_Drawable theWindow) { return SetNativeHandles(theWindow, 0, 0); }
 
   //! Set native handles.
   //! @return true if definition has been changed
-  Standard_EXPORT Standard_Boolean SetNativeHandles(Aspect_Drawable theWindow,
-                                                    Aspect_Drawable theParentWindow,
-                                                    Aspect_FBConfig theFbConfig);
+  Standard_EXPORT bool SetNativeHandles(Aspect_Drawable theWindow,
+                                        Aspect_Drawable theParentWindow,
+                                        Aspect_FBConfig theFbConfig);
 
   //! Return true if window is not hidden.
-  virtual Standard_Boolean IsMapped() const Standard_OVERRIDE { return myIsMapped; }
+  virtual bool IsMapped() const override { return myIsMapped; }
 
   //! Change window mapped flag to TRUE.
-  virtual void Map() const Standard_OVERRIDE { myIsMapped = Standard_True; }
+  virtual void Map() const override { myIsMapped = true; }
 
   //! Change window mapped flag to FALSE.
-  virtual void Unmap() const Standard_OVERRIDE { myIsMapped = Standard_False; }
+  virtual void Unmap() const override { myIsMapped = false; }
 
   //! Resize window - do nothing.
-  virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE { return Aspect_TOR_UNKNOWN; }
+  virtual Aspect_TypeOfResize DoResize() override { return Aspect_TOR_UNKNOWN; }
 
   //! Map window - do nothing.
-  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool DoMapping() const override { return true; }
 
   //! Returns window ratio equal to the physical width/height dimensions.
-  virtual Standard_Real Ratio() const Standard_OVERRIDE
+  virtual double Ratio() const override
   {
-    return (myWidth != 0 && myHeight != 0) ? Standard_Real(myWidth) / Standard_Real(myHeight) : 1.0;
+    return (myWidth != 0 && myHeight != 0) ? double(myWidth) / double(myHeight) : 1.0;
   }
 
   //! Return the window position.
-  virtual void Position(Standard_Integer& theX1,
-                        Standard_Integer& theY1,
-                        Standard_Integer& theX2,
-                        Standard_Integer& theY2) const Standard_OVERRIDE
+  virtual void Position(int& theX1, int& theY1, int& theX2, int& theY2) const override
   {
     theX1 = myPosX;
     theX2 = myPosX + myWidth;
@@ -86,17 +80,14 @@ public:
 
   //! Set the window position.
   //! @return true if position has been changed
-  Standard_EXPORT Standard_Boolean SetPosition(Standard_Integer theX1, Standard_Integer theY1);
+  Standard_EXPORT bool SetPosition(int theX1, int theY1);
 
   //! Set the window position.
   //! @return true if position has been changed
-  Standard_EXPORT Standard_Boolean SetPosition(Standard_Integer theX1,
-                                               Standard_Integer theY1,
-                                               Standard_Integer theX2,
-                                               Standard_Integer theY2);
+  Standard_EXPORT bool SetPosition(int theX1, int theY1, int theX2, int theY2);
 
   //! Return the window size.
-  virtual void Size(Standard_Integer& theWidth, Standard_Integer& theHeight) const Standard_OVERRIDE
+  virtual void Size(int& theWidth, int& theHeight) const override
   {
     theWidth  = myWidth;
     theHeight = myHeight;
@@ -104,20 +95,17 @@ public:
 
   //! Set the window size.
   //! @return true if size has been changed
-  Standard_EXPORT Standard_Boolean SetSize(const Standard_Integer theWidth,
-                                           const Standard_Integer theHeight);
+  Standard_EXPORT bool SetSize(const int theWidth, const int theHeight);
 
 protected:
-  Aspect_Drawable          myHandle;
-  Aspect_Drawable          myParentHandle;
-  Aspect_FBConfig          myFBConfig;
-  Standard_Integer         myPosX;
-  Standard_Integer         myPosY;
-  Standard_Integer         myWidth;
-  Standard_Integer         myHeight;
-  mutable Standard_Boolean myIsMapped;
+  Aspect_Drawable myHandle;
+  Aspect_Drawable myParentHandle;
+  Aspect_FBConfig myFBConfig;
+  int             myPosX;
+  int             myPosY;
+  int             myWidth;
+  int             myHeight;
+  mutable bool    myIsMapped;
 };
-
-DEFINE_STANDARD_HANDLE(Aspect_NeutralWindow, Aspect_Window)
 
 #endif // _Aspect_NeutralWindow_HeaderFile

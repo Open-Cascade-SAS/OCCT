@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignValidity, IFSelect_Signature)
 
-static Standard_CString nulsign = "";
+static const char* nulsign = "";
 
 //=================================================================================================
 
@@ -37,20 +37,20 @@ IFSelect_SignValidity::IFSelect_SignValidity()
 
 //=================================================================================================
 
-Standard_CString IFSelect_SignValidity::CVal(const Handle(Standard_Transient)&       ent,
-                                             const Handle(Interface_InterfaceModel)& model)
+const char* IFSelect_SignValidity::CVal(const occ::handle<Standard_Transient>&       ent,
+                                        const occ::handle<Interface_InterfaceModel>& model)
 {
   if (ent.IsNull() || model.IsNull())
     return nulsign;
-  Standard_Integer num = model->Number(ent);
-  Standard_Integer cas = 0;
+  int num = model->Number(ent);
+  int cas = 0;
   if (model->IsUnknownEntity(num))
     return "UNKNOWN";
   if (model->IsRedefinedContent(num))
     return "UNLOADED";
 
-  const Handle(Interface_Check) ch1 = model->Check(num, Standard_True);
-  const Handle(Interface_Check) ch2 = model->Check(num, Standard_False);
+  const occ::handle<Interface_Check> ch1 = model->Check(num, true);
+  const occ::handle<Interface_Check> ch2 = model->Check(num, false);
   if (ch1->NbFails() > 0)
     return "Load-Error";
   else if (ch1->NbWarnings() > 0)
@@ -68,8 +68,8 @@ Standard_CString IFSelect_SignValidity::CVal(const Handle(Standard_Transient)&  
 
 //=================================================================================================
 
-Standard_CString IFSelect_SignValidity::Value(const Handle(Standard_Transient)&       ent,
-                                              const Handle(Interface_InterfaceModel)& model) const
+const char* IFSelect_SignValidity::Value(const occ::handle<Standard_Transient>&       ent,
+                                         const occ::handle<Interface_InterfaceModel>& model) const
 {
   return IFSelect_SignValidity::CVal(ent, model);
 }

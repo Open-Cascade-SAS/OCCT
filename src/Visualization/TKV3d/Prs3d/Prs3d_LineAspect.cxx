@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Prs3d_LineAspect, Prs3d_BasicAspect)
 
 Prs3d_LineAspect::Prs3d_LineAspect(const Quantity_Color&   theColor,
                                    const Aspect_TypeOfLine theType,
-                                   const Standard_Real     theWidth)
+                                   const double            theWidth)
     : myAspect(new Graphic3d_AspectLine3d(theColor, theType, theWidth))
 {
   //
@@ -30,7 +30,7 @@ Prs3d_LineAspect::Prs3d_LineAspect(const Quantity_Color&   theColor,
 
 //=================================================================================================
 
-void Prs3d_LineAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Prs3d_LineAspect::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myAspect.get())

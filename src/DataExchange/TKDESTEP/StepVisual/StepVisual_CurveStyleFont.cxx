@@ -20,42 +20,45 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CurveStyleFont, Standard_Transient)
 StepVisual_CurveStyleFont::StepVisual_CurveStyleFont() {}
 
 void StepVisual_CurveStyleFont::Init(
-  const Handle(TCollection_HAsciiString)&                  aName,
-  const Handle(StepVisual_HArray1OfCurveStyleFontPattern)& aPatternList)
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>&
+    aPatternList)
 {
   // --- classe own fields ---
   name        = aName;
   patternList = aPatternList;
 }
 
-void StepVisual_CurveStyleFont::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepVisual_CurveStyleFont::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepVisual_CurveStyleFont::Name() const
+occ::handle<TCollection_HAsciiString> StepVisual_CurveStyleFont::Name() const
 {
   return name;
 }
 
 void StepVisual_CurveStyleFont::SetPatternList(
-  const Handle(StepVisual_HArray1OfCurveStyleFontPattern)& aPatternList)
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>&
+    aPatternList)
 {
   patternList = aPatternList;
 }
 
-Handle(StepVisual_HArray1OfCurveStyleFontPattern) StepVisual_CurveStyleFont::PatternList() const
+occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>
+  StepVisual_CurveStyleFont::PatternList() const
 {
   return patternList;
 }
 
-Handle(StepVisual_CurveStyleFontPattern) StepVisual_CurveStyleFont::PatternListValue(
-  const Standard_Integer num) const
+occ::handle<StepVisual_CurveStyleFontPattern> StepVisual_CurveStyleFont::PatternListValue(
+  const int num) const
 {
   return patternList->Value(num);
 }
 
-Standard_Integer StepVisual_CurveStyleFont::NbPatternList() const
+int StepVisual_CurveStyleFont::NbPatternList() const
 {
   if (patternList.IsNull())
     return 0;

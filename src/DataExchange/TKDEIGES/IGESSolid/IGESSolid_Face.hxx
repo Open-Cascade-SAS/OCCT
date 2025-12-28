@@ -19,13 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <IGESSolid_HArray1OfLoop.hxx>
+#include <IGESSolid_Loop.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESSolid_Loop;
-
-class IGESSolid_Face;
-DEFINE_STANDARD_HANDLE(IGESSolid_Face, IGESData_IGESEntity)
 
 //! defines Face, Type <510> Form Number <1>
 //! in package IGESSolid
@@ -40,30 +39,30 @@ public:
   //! - aSurface      : Pointer to the underlying surface
   //! - outerLoopFlag : True means the first loop is the outer loop
   //! - loops         : Array of loops bounding the face
-  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)&     aSurface,
-                            const Standard_Boolean                 outerLoopFlag,
-                            const Handle(IGESSolid_HArray1OfLoop)& loops);
+  Standard_EXPORT void Init(
+    const occ::handle<IGESData_IGESEntity>&                              aSurface,
+    const bool                                                           outerLoopFlag,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>>& loops);
 
   //! returns the underlying surface of the face
-  Standard_EXPORT Handle(IGESData_IGESEntity) Surface() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Surface() const;
 
   //! returns the number of the loops bounding the face
-  Standard_EXPORT Standard_Integer NbLoops() const;
+  Standard_EXPORT int NbLoops() const;
 
   //! checks whether there is an outer loop or not
-  Standard_EXPORT Standard_Boolean HasOuterLoop() const;
+  Standard_EXPORT bool HasOuterLoop() const;
 
   //! returns the Index'th loop that bounds the face
   //! raises exception if Index < 0 or Index >= NbLoops
-  Standard_EXPORT Handle(IGESSolid_Loop) Loop(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESSolid_Loop> Loop(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Face, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_IGESEntity)     theSurface;
-  Standard_Boolean                hasOuterLoop;
-  Handle(IGESSolid_HArray1OfLoop) theLoops;
+  occ::handle<IGESData_IGESEntity>                              theSurface;
+  bool                                                          hasOuterLoop;
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> theLoops;
 };
 
 #endif // _IGESSolid_Face_HeaderFile

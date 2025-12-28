@@ -24,8 +24,7 @@
 #include <TopoDS_Shape.hxx>
 #include <BRepSweep_Tool.hxx>
 #include <Sweep_NumShapeTool.hxx>
-#include <TopTools_Array2OfShape.hxx>
-#include <TColStd_Array2OfBoolean.hxx>
+#include <NCollection_Array2.hxx>
 #include <TopAbs_Orientation.hxx>
 
 //! This a generic class is used to build Sweept
@@ -161,31 +160,30 @@ public:
   //! Returns true if aNewSubShape (addressed by
   //! aSubGenS and aDirS) must be added in aNewShape
   //! (addressed by aGenS and aDirS).
-  Standard_EXPORT virtual Standard_Boolean GGDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
-                                                           const TopoDS_Shape&   aNewSubShape,
-                                                           const TopoDS_Shape&   aGenS,
-                                                           const TopoDS_Shape&   aSubGenS,
-                                                           const Sweep_NumShape& aDirS) const = 0;
+  Standard_EXPORT virtual bool GGDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
+                                               const TopoDS_Shape&   aNewSubShape,
+                                               const TopoDS_Shape&   aGenS,
+                                               const TopoDS_Shape&   aSubGenS,
+                                               const Sweep_NumShape& aDirS) const = 0;
 
   //! Returns true if aNewSubShape (addressed by
   //! aGenS and aSubDirS) must be added in aNewShape
   //! (addressed by aGenS and aDirS).
-  Standard_EXPORT virtual Standard_Boolean GDDShapeIsToAdd(
-    const TopoDS_Shape&   aNewShape,
-    const TopoDS_Shape&   aNewSubShape,
-    const TopoDS_Shape&   aGenS,
-    const Sweep_NumShape& aDirS,
-    const Sweep_NumShape& aSubDirS) const = 0;
+  Standard_EXPORT virtual bool GDDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
+                                               const TopoDS_Shape&   aNewSubShape,
+                                               const TopoDS_Shape&   aGenS,
+                                               const Sweep_NumShape& aDirS,
+                                               const Sweep_NumShape& aSubDirS) const = 0;
 
   //! In some particular cases the topology of a
   //! generated face must be composed of independent
   //! closed wires, in this case this function returns
   //! true.
-  Standard_EXPORT virtual Standard_Boolean SeparatedWires(const TopoDS_Shape&   aNewShape,
-                                                          const TopoDS_Shape&   aNewSubShape,
-                                                          const TopoDS_Shape&   aGenS,
-                                                          const TopoDS_Shape&   aSubGenS,
-                                                          const Sweep_NumShape& aDirS) const = 0;
+  Standard_EXPORT virtual bool SeparatedWires(const TopoDS_Shape&   aNewShape,
+                                              const TopoDS_Shape&   aNewSubShape,
+                                              const TopoDS_Shape&   aGenS,
+                                              const TopoDS_Shape&   aSubGenS,
+                                              const Sweep_NumShape& aDirS) const = 0;
 
   //! In some particular cases the topology of a
   //! generated Shell must be composed of independent
@@ -203,11 +201,11 @@ public:
   //! resulting Shape. In some specific cases the shape
   //! can be geometrically inexsistant, then this
   //! function returns false.
-  Standard_EXPORT virtual Standard_Boolean HasShape(const TopoDS_Shape&   aGenS,
-                                                    const Sweep_NumShape& aDirS) const = 0;
+  Standard_EXPORT virtual bool HasShape(const TopoDS_Shape&   aGenS,
+                                        const Sweep_NumShape& aDirS) const = 0;
 
   //! Returns true if aGenS cannot be transformed.
-  Standard_EXPORT virtual Standard_Boolean IsInvariant(const TopoDS_Shape& aGenS) const = 0;
+  Standard_EXPORT virtual bool IsInvariant(const TopoDS_Shape& aGenS) const = 0;
 
   //! Returns the resulting Shape indexed by aDirS and
   //! aGenS.
@@ -219,11 +217,11 @@ public:
 
   //! Returns true if the initial shape aGenS
   //! is used in result shape
-  Standard_EXPORT Standard_Boolean IsUsed(const TopoDS_Shape& aGenS) const;
+  Standard_EXPORT bool IsUsed(const TopoDS_Shape& aGenS) const;
 
   //! Returns true if the shape, generated from theS
   //! is used in result shape
-  Standard_EXPORT Standard_Boolean GenIsUsed(const TopoDS_Shape& theS) const;
+  Standard_EXPORT bool GenIsUsed(const TopoDS_Shape& theS) const;
 
   //! Returns the resulting Shape indexed by myDirWire
   //! and myGenShape.
@@ -245,7 +243,7 @@ public:
   //! Vertex of myDirWire and aGenS.
   Standard_EXPORT TopoDS_Shape LastShape(const TopoDS_Shape& aGenS);
 
-  Standard_EXPORT Standard_Boolean Closed() const;
+  Standard_EXPORT bool Closed() const;
 
 protected:
   //! Creates a NumLinearRegularSweep. <aBuilder> gives
@@ -254,16 +252,14 @@ protected:
                                                   const TopoDS_Shape&      aGenShape,
                                                   const Sweep_NumShape&    aDirWire);
 
-  BRepSweep_Builder       myBuilder;
-  TopoDS_Shape            myGenShape;
-  Sweep_NumShape          myDirWire;
-  BRepSweep_Tool          myGenShapeTool;
-  Sweep_NumShapeTool      myDirShapeTool;
-  TopTools_Array2OfShape  myShapes;
-  TColStd_Array2OfBoolean myBuiltShapes;
-  TColStd_Array2OfBoolean myUsedShapes;
-
-private:
+  BRepSweep_Builder                myBuilder;
+  TopoDS_Shape                     myGenShape;
+  Sweep_NumShape                   myDirWire;
+  BRepSweep_Tool                   myGenShapeTool;
+  Sweep_NumShapeTool               myDirShapeTool;
+  NCollection_Array2<TopoDS_Shape> myShapes;
+  NCollection_Array2<bool>         myBuiltShapes;
+  NCollection_Array2<bool>         myUsedShapes;
 };
 
 #endif // _BRepSweep_NumLinearRegularSweep_HeaderFile

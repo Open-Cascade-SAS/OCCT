@@ -29,15 +29,15 @@ StepDimTol_CommonDatum::StepDimTol_CommonDatum() {}
 //=================================================================================================
 
 void StepDimTol_CommonDatum::Init(
-  const Handle(TCollection_HAsciiString)&        theShapeAspect_Name,
-  const Handle(TCollection_HAsciiString)&        theShapeAspect_Description,
-  const Handle(StepRepr_ProductDefinitionShape)& theShapeAspect_OfShape,
-  const StepData_Logical                         theShapeAspect_ProductDefinitional,
-  const Handle(TCollection_HAsciiString)&        theDatum_Name,
-  const Handle(TCollection_HAsciiString)&        theDatum_Description,
-  const Handle(StepRepr_ProductDefinitionShape)& theDatum_OfShape,
-  const StepData_Logical                         theDatum_ProductDefinitional,
-  const Handle(TCollection_HAsciiString)&        theDatum_Identification)
+  const occ::handle<TCollection_HAsciiString>&        theShapeAspect_Name,
+  const occ::handle<TCollection_HAsciiString>&        theShapeAspect_Description,
+  const occ::handle<StepRepr_ProductDefinitionShape>& theShapeAspect_OfShape,
+  const StepData_Logical                              theShapeAspect_ProductDefinitional,
+  const occ::handle<TCollection_HAsciiString>&        theDatum_Name,
+  const occ::handle<TCollection_HAsciiString>&        theDatum_Description,
+  const occ::handle<StepRepr_ProductDefinitionShape>& theDatum_OfShape,
+  const StepData_Logical                              theDatum_ProductDefinitional,
+  const occ::handle<TCollection_HAsciiString>&        theDatum_Identification)
 {
   StepRepr_CompositeShapeAspect::Init(theShapeAspect_Name,
                                       theShapeAspect_Description,
@@ -52,14 +52,14 @@ void StepDimTol_CommonDatum::Init(
 
 //=================================================================================================
 
-Handle(StepDimTol_Datum) StepDimTol_CommonDatum::Datum() const
+occ::handle<StepDimTol_Datum> StepDimTol_CommonDatum::Datum() const
 {
   return myDatum;
 }
 
 //=================================================================================================
 
-void StepDimTol_CommonDatum::SetDatum(const Handle(StepDimTol_Datum)& theDatum)
+void StepDimTol_CommonDatum::SetDatum(const occ::handle<StepDimTol_Datum>& theDatum)
 {
   myDatum = theDatum;
 }

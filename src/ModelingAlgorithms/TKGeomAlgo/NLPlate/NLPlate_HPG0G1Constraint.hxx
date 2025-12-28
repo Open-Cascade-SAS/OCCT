@@ -25,9 +25,6 @@
 class gp_XY;
 class gp_XYZ;
 
-class NLPlate_HPG0G1Constraint;
-DEFINE_STANDARD_HANDLE(NLPlate_HPG0G1Constraint, NLPlate_HPG0Constraint)
-
 //! define a PinPoint G0+G1 Constraint used to load a Non Linear
 //! Plate
 class NLPlate_HPG0G1Constraint : public NLPlate_HPG0Constraint
@@ -38,20 +35,19 @@ public:
                                            const gp_XYZ&   Value,
                                            const Plate_D1& D1T);
 
-  Standard_EXPORT virtual void SetOrientation(const Standard_Integer Orient = 0) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetOrientation(const int Orient = 0) override;
 
-  Standard_EXPORT virtual Standard_Integer ActiveOrder() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int ActiveOrder() const override;
 
-  Standard_EXPORT virtual Standard_Integer Orientation() Standard_OVERRIDE;
+  Standard_EXPORT virtual int Orientation() override;
 
-  Standard_EXPORT virtual const Plate_D1& G1Target() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Plate_D1& G1Target() const override;
 
   DEFINE_STANDARD_RTTIEXT(NLPlate_HPG0G1Constraint, NLPlate_HPG0Constraint)
 
-protected:
 private:
-  Plate_D1         myG1Target;
-  Standard_Integer myOrientation;
+  Plate_D1 myG1Target;
+  int      myOrientation;
 };
 
 #endif // _NLPlate_HPG0G1Constraint_HeaderFile

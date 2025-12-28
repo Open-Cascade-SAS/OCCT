@@ -23,24 +23,24 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(CDM_Reference, Standard_Transient)
 
-CDM_Reference::CDM_Reference(const Handle(CDM_Document)& aFromDocument,
-                             const Handle(CDM_Document)& aToDocument,
-                             const Standard_Integer      aReferenceIdentifier,
-                             const Standard_Integer      aToDocumentVersion)
+CDM_Reference::CDM_Reference(const occ::handle<CDM_Document>& aFromDocument,
+                             const occ::handle<CDM_Document>& aToDocument,
+                             const int                        aReferenceIdentifier,
+                             const int                        aToDocumentVersion)
     : myToDocument(aToDocument),
       myFromDocument(aFromDocument.operator->()),
       myReferenceIdentifier(aReferenceIdentifier),
       myDocumentVersion(aToDocumentVersion),
-      myUseStorageConfiguration(Standard_False)
+      myUseStorageConfiguration(false)
 {
 }
 
-CDM_Reference::CDM_Reference(const Handle(CDM_Document)&    aFromDocument,
-                             const Handle(CDM_MetaData)&    aToDocument,
-                             const Standard_Integer         aReferenceIdentifier,
-                             const Handle(CDM_Application)& anApplication,
-                             const Standard_Integer         aToDocumentVersion,
-                             const Standard_Boolean         UseStorageConfiguration)
+CDM_Reference::CDM_Reference(const occ::handle<CDM_Document>&    aFromDocument,
+                             const occ::handle<CDM_MetaData>&    aToDocument,
+                             const int                           aReferenceIdentifier,
+                             const occ::handle<CDM_Application>& anApplication,
+                             const int                           aToDocumentVersion,
+                             const bool                          UseStorageConfiguration)
     : myFromDocument(aFromDocument.operator->()),
       myReferenceIdentifier(aReferenceIdentifier),
       myApplication(anApplication),
@@ -50,12 +50,12 @@ CDM_Reference::CDM_Reference(const Handle(CDM_Document)&    aFromDocument,
 {
 }
 
-Handle(CDM_Document) CDM_Reference::FromDocument()
+occ::handle<CDM_Document> CDM_Reference::FromDocument()
 {
   return myFromDocument;
 }
 
-Handle(CDM_Document) CDM_Reference::ToDocument()
+occ::handle<CDM_Document> CDM_Reference::ToDocument()
 {
   if (myToDocument.IsNull())
   {
@@ -65,12 +65,12 @@ Handle(CDM_Document) CDM_Reference::ToDocument()
   return myToDocument;
 }
 
-Standard_Integer CDM_Reference::ReferenceIdentifier()
+int CDM_Reference::ReferenceIdentifier()
 {
   return myReferenceIdentifier;
 }
 
-void CDM_Reference::Update(const Handle(CDM_MetaData)& aMetaData)
+void CDM_Reference::Update(const occ::handle<CDM_MetaData>& aMetaData)
 {
   if (myToDocument.IsNull())
   {
@@ -83,9 +83,9 @@ void CDM_Reference::Update(const Handle(CDM_MetaData)& aMetaData)
   }
 }
 
-Standard_Boolean CDM_Reference::IsUpToDate() const
+bool CDM_Reference::IsUpToDate() const
 {
-  Standard_Integer theActualDocumentVersion;
+  int theActualDocumentVersion;
   if (myToDocument.IsNull())
     theActualDocumentVersion = myMetaData->DocumentVersion(myApplication);
   else
@@ -97,7 +97,7 @@ Standard_Boolean CDM_Reference::IsUpToDate() const
 void CDM_Reference::SetIsUpToDate()
 {
 
-  Standard_Integer theActualDocumentVersion;
+  int theActualDocumentVersion;
   if (myToDocument.IsNull())
     theActualDocumentVersion = myMetaData->DocumentVersion(myApplication);
   else
@@ -107,66 +107,66 @@ void CDM_Reference::SetIsUpToDate()
     myDocumentVersion = theActualDocumentVersion;
 }
 
-void CDM_Reference::UnsetToDocument(const Handle(CDM_MetaData)&    aMetaData,
-                                    const Handle(CDM_Application)& anApplication)
+void CDM_Reference::UnsetToDocument(const occ::handle<CDM_MetaData>&    aMetaData,
+                                    const occ::handle<CDM_Application>& anApplication)
 {
   myToDocument.Nullify();
   myApplication = anApplication;
   myMetaData    = aMetaData;
 }
 
-Standard_Integer CDM_Reference::DocumentVersion() const
+int CDM_Reference::DocumentVersion() const
 {
   return myDocumentVersion;
 }
 
-Standard_Boolean CDM_Reference::IsOpened() const
+bool CDM_Reference::IsOpened() const
 {
   if (myToDocument.IsNull())
-    return Standard_False;
+    return false;
   return myToDocument->IsOpened();
 }
 
-Standard_Boolean CDM_Reference::IsReadOnly() const
+bool CDM_Reference::IsReadOnly() const
 {
   if (myToDocument.IsNull())
     return myMetaData->IsReadOnly();
   return myToDocument->IsReadOnly();
 }
 
-Handle(CDM_Document) CDM_Reference::Document() const
+occ::handle<CDM_Document> CDM_Reference::Document() const
 {
   return myToDocument;
 }
 
-Handle(CDM_MetaData) CDM_Reference::MetaData() const
+occ::handle<CDM_MetaData> CDM_Reference::MetaData() const
 {
   return myMetaData;
 }
 
-Handle(CDM_Application) CDM_Reference::Application() const
+occ::handle<CDM_Application> CDM_Reference::Application() const
 {
   return myApplication;
 }
 
-Standard_Boolean CDM_Reference::UseStorageConfiguration() const
+bool CDM_Reference::UseStorageConfiguration() const
 {
   return myUseStorageConfiguration;
 }
 
-Standard_Boolean CDM_Reference::IsInSession() const
+bool CDM_Reference::IsInSession() const
 {
   return !myToDocument.IsNull();
 }
 
-Standard_Boolean CDM_Reference::IsStored() const
+bool CDM_Reference::IsStored() const
 {
   return !myMetaData.IsNull();
 }
 
 //=================================================================================================
 
-void CDM_Reference::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void CDM_Reference::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -38,7 +38,7 @@ ChFiDS_ElSpine::ChFiDS_ElSpine()
     : pfirst(0.0),
       plast(0.0),
       period(0.0),
-      periodic(Standard_False),
+      periodic(false),
       pfirstsav(Precision::Infinite()),
       plastsav(Precision::Infinite())
 {
@@ -46,13 +46,13 @@ ChFiDS_ElSpine::ChFiDS_ElSpine()
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) ChFiDS_ElSpine::ShallowCopy() const
+occ::handle<Adaptor3d_Curve> ChFiDS_ElSpine::ShallowCopy() const
 {
-  Handle(ChFiDS_ElSpine) aCopy = new ChFiDS_ElSpine();
+  occ::handle<ChFiDS_ElSpine> aCopy = new ChFiDS_ElSpine();
 
-  const Handle(Adaptor3d_Curve) aCurve     = curve.ShallowCopy();
-  const GeomAdaptor_Curve&      aGeomCurve = *(Handle(GeomAdaptor_Curve)::DownCast(aCurve));
-  aCopy->curve                             = aGeomCurve;
+  const occ::handle<Adaptor3d_Curve> aCurve     = curve.ShallowCopy();
+  const GeomAdaptor_Curve&           aGeomCurve = *(occ::down_cast<GeomAdaptor_Curve>(aCurve));
+  aCopy->curve                                  = aGeomCurve;
 
   aCopy->ptfirst              = ptfirst;
   aCopy->ptlast               = ptlast;
@@ -73,28 +73,28 @@ Handle(Adaptor3d_Curve) ChFiDS_ElSpine::ShallowCopy() const
 
 //=================================================================================================
 
-Standard_Real ChFiDS_ElSpine::FirstParameter() const
+double ChFiDS_ElSpine::FirstParameter() const
 {
   return pfirst;
 }
 
 //=================================================================================================
 
-Standard_Real ChFiDS_ElSpine::LastParameter() const
+double ChFiDS_ElSpine::LastParameter() const
 {
   return plast;
 }
 
 //=================================================================================================
 
-Standard_Real ChFiDS_ElSpine::GetSavedFirstParameter() const
+double ChFiDS_ElSpine::GetSavedFirstParameter() const
 {
   return pfirstsav;
 }
 
 //=================================================================================================
 
-Standard_Real ChFiDS_ElSpine::GetSavedLastParameter() const
+double ChFiDS_ElSpine::GetSavedLastParameter() const
 {
   return plastsav;
 }
@@ -108,30 +108,30 @@ GeomAbs_Shape ChFiDS_ElSpine::Continuity() const
 
 //=================================================================================================
 
-Standard_Integer ChFiDS_ElSpine::NbIntervals(const GeomAbs_Shape S) const
+int ChFiDS_ElSpine::NbIntervals(const GeomAbs_Shape S) const
 {
   return curve.NbIntervals(S);
 }
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void ChFiDS_ElSpine::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   curve.Intervals(T, S);
 }
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) ChFiDS_ElSpine::Trim(const Standard_Real First,
-                                             const Standard_Real Last,
-                                             const Standard_Real Tol) const
+occ::handle<Adaptor3d_Curve> ChFiDS_ElSpine::Trim(const double First,
+                                                  const double Last,
+                                                  const double Tol) const
 {
   return curve.Trim(First, Last, Tol);
 }
 
 //=================================================================================================
 
-Standard_Real ChFiDS_ElSpine::Resolution(const Standard_Real R3d) const
+double ChFiDS_ElSpine::Resolution(const double R3d) const
 {
   return curve.Resolution(R3d);
 }
@@ -145,14 +145,14 @@ GeomAbs_CurveType ChFiDS_ElSpine::GetType() const
 
 //=================================================================================================
 
-Standard_Boolean ChFiDS_ElSpine::IsPeriodic() const
+bool ChFiDS_ElSpine::IsPeriodic() const
 {
   return periodic;
 }
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::SetPeriodic(const Standard_Boolean I)
+void ChFiDS_ElSpine::SetPeriodic(const bool I)
 {
   periodic = I;
   period   = plast - pfirst;
@@ -160,7 +160,7 @@ void ChFiDS_ElSpine::SetPeriodic(const Standard_Boolean I)
 
 //=================================================================================================
 
-Standard_Real ChFiDS_ElSpine::Period() const
+double ChFiDS_ElSpine::Period() const
 {
   if (!periodic)
     throw Standard_Failure("ElSpine non periodique");
@@ -169,53 +169,49 @@ Standard_Real ChFiDS_ElSpine::Period() const
 
 //=================================================================================================
 
-gp_Pnt ChFiDS_ElSpine::Value(const Standard_Real AbsC) const
+gp_Pnt ChFiDS_ElSpine::Value(const double AbsC) const
 {
   return curve.Value(AbsC);
 }
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::D0(const Standard_Real AbsC, gp_Pnt& P) const
+void ChFiDS_ElSpine::D0(const double AbsC, gp_Pnt& P) const
 {
   curve.D0(AbsC, P);
 }
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::D1(const Standard_Real AbsC, gp_Pnt& P, gp_Vec& V1) const
+void ChFiDS_ElSpine::D1(const double AbsC, gp_Pnt& P, gp_Vec& V1) const
 {
   curve.D1(AbsC, P, V1);
 }
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::D2(const Standard_Real AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+void ChFiDS_ElSpine::D2(const double AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
   curve.D2(AbsC, P, V1, V2);
 }
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::D3(const Standard_Real AbsC,
-                        gp_Pnt&             P,
-                        gp_Vec&             V1,
-                        gp_Vec&             V2,
-                        gp_Vec&             V3) const
+void ChFiDS_ElSpine::D3(const double AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
   curve.D3(AbsC, P, V1, V2, V3);
 }
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::FirstParameter(const Standard_Real P)
+void ChFiDS_ElSpine::FirstParameter(const double P)
 {
   pfirst = P;
 }
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::LastParameter(const Standard_Real P)
+void ChFiDS_ElSpine::LastParameter(const double P)
 {
   plast = P;
 }
@@ -236,11 +232,11 @@ void ChFiDS_ElSpine::SaveLastParameter()
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::SetOrigin(const Standard_Real O)
+void ChFiDS_ElSpine::SetOrigin(const double O)
 {
   if (!periodic)
     throw Standard_Failure("Elspine non periodique");
-  Handle(Geom_BSplineCurve) bs = Handle(Geom_BSplineCurve)::DownCast(curve.Curve());
+  occ::handle<Geom_BSplineCurve> bs = occ::down_cast<Geom_BSplineCurve>(curve.Curve());
   if (!bs.IsNull())
   {
     bs->SetOrigin(O, Precision::PConfusion());
@@ -289,49 +285,49 @@ void ChFiDS_ElSpine::LastPointAndTgt(gp_Pnt& P, gp_Vec& T) const
 
 //=================================================================================================
 
-Standard_Integer ChFiDS_ElSpine::NbVertices() const
+int ChFiDS_ElSpine::NbVertices() const
 {
   return VerticesWithTangents.Length();
 }
 
 //=================================================================================================
 
-const gp_Ax1& ChFiDS_ElSpine::VertexWithTangent(const Standard_Integer Index) const
+const gp_Ax1& ChFiDS_ElSpine::VertexWithTangent(const int Index) const
 {
   return VerticesWithTangents(Index);
 }
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::SetCurve(const Handle(Geom_Curve)& C)
+void ChFiDS_ElSpine::SetCurve(const occ::handle<Geom_Curve>& C)
 {
   curve.Load(C);
 }
 
 //=================================================================================================
 
-const Handle(ChFiDS_SurfData)& ChFiDS_ElSpine::Previous() const
+const occ::handle<ChFiDS_SurfData>& ChFiDS_ElSpine::Previous() const
 {
   return previous;
 }
 
 //=================================================================================================
 
-Handle(ChFiDS_SurfData)& ChFiDS_ElSpine::ChangePrevious()
+occ::handle<ChFiDS_SurfData>& ChFiDS_ElSpine::ChangePrevious()
 {
   return previous;
 }
 
 //=================================================================================================
 
-const Handle(ChFiDS_SurfData)& ChFiDS_ElSpine::Next() const
+const occ::handle<ChFiDS_SurfData>& ChFiDS_ElSpine::Next() const
 {
   return next;
 }
 
 //=================================================================================================
 
-Handle(ChFiDS_SurfData)& ChFiDS_ElSpine::ChangeNext()
+occ::handle<ChFiDS_SurfData>& ChFiDS_ElSpine::ChangeNext()
 {
   return next;
 }
@@ -378,14 +374,14 @@ gp_Parab ChFiDS_ElSpine::Parabola() const
 
 //=================================================================================================
 
-Handle(Geom_BezierCurve) ChFiDS_ElSpine::Bezier() const
+occ::handle<Geom_BezierCurve> ChFiDS_ElSpine::Bezier() const
 {
   return curve.Bezier();
 }
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) ChFiDS_ElSpine::BSpline() const
+occ::handle<Geom_BSplineCurve> ChFiDS_ElSpine::BSpline() const
 {
   return curve.BSpline();
 }

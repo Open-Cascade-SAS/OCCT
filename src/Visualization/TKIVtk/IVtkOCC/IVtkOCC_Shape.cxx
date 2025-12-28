@@ -21,8 +21,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_Shape, IVtk_IShape)
 
 //=================================================================================================
 
-IVtkOCC_Shape::IVtkOCC_Shape(const TopoDS_Shape&         theShape,
-                             const Handle(Prs3d_Drawer)& theDrawerLink)
+IVtkOCC_Shape::IVtkOCC_Shape(const TopoDS_Shape&              theShape,
+                             const occ::handle<Prs3d_Drawer>& theDrawerLink)
     : myTopoDSShape(theShape),
       myOCCTDrawer(new Prs3d_Drawer())
 {
@@ -47,8 +47,7 @@ IVtkOCC_Shape::~IVtkOCC_Shape() {}
 
 IVtk_IdType IVtkOCC_Shape::GetSubShapeId(const TopoDS_Shape& theSubShape) const
 {
-  Standard_Integer anIndex =
-    theSubShape.IsSame(myTopoDSShape) ? -1 : mySubShapeIds.FindIndex(theSubShape);
+  int anIndex = theSubShape.IsSame(myTopoDSShape) ? -1 : mySubShapeIds.FindIndex(theSubShape);
   if (anIndex == 0) // Not found in the map
   {
     return (IVtk_IdType)-1;
@@ -58,11 +57,11 @@ IVtk_IdType IVtkOCC_Shape::GetSubShapeId(const TopoDS_Shape& theSubShape) const
 
 //=================================================================================================
 
-IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds(const IVtk_IdType theId) const
+NCollection_List<IVtk_IdType> IVtkOCC_Shape::GetSubIds(const IVtk_IdType theId) const
 {
-  IVtk_ShapeIdList aRes;
+  NCollection_List<IVtk_IdType> aRes;
   // Get the sub-shape by the given id.
-  TopoDS_Shape     aShape     = mySubShapeIds.FindKey((Standard_Integer)theId);
+  TopoDS_Shape     aShape     = mySubShapeIds.FindKey((int)theId);
   TopAbs_ShapeEnum aShapeType = aShape.ShapeType();
   if (aShapeType == TopAbs_VERTEX || aShapeType == TopAbs_EDGE || aShapeType == TopAbs_FACE)
   {
@@ -73,7 +72,7 @@ IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds(const IVtk_IdType theId) const
   {
     // Find all composing vertices, edges and faces of the found sub-shape
     // and append their ids to the result.
-    TopTools_IndexedMapOfShape aSubShapes;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSubShapes;
     if (aShape.IsSame(myTopoDSShape))
     {
       aSubShapes = mySubShapeIds;
@@ -102,7 +101,7 @@ IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds(const IVtk_IdType theId) const
 
 const TopoDS_Shape& IVtkOCC_Shape::GetSubShape(const IVtk_IdType theId) const
 {
-  return mySubShapeIds.FindKey((Standard_Integer)theId);
+  return mySubShapeIds.FindKey((int)theId);
 }
 
 //============================================================================

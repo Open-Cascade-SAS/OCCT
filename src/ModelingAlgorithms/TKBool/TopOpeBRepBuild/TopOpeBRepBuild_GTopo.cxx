@@ -28,15 +28,15 @@ TopOpeBRepBuild_GTopo::TopOpeBRepBuild_GTopo()
 
 //=================================================================================================
 
-TopOpeBRepBuild_GTopo::TopOpeBRepBuild_GTopo(const Standard_Boolean    ii,
-                                             const Standard_Boolean    in,
-                                             const Standard_Boolean    io,
-                                             const Standard_Boolean    ni,
-                                             const Standard_Boolean    nn,
-                                             const Standard_Boolean    no,
-                                             const Standard_Boolean    oi,
-                                             const Standard_Boolean    on,
-                                             const Standard_Boolean    oo,
+TopOpeBRepBuild_GTopo::TopOpeBRepBuild_GTopo(const bool                ii,
+                                             const bool                in,
+                                             const bool                io,
+                                             const bool                ni,
+                                             const bool                nn,
+                                             const bool                no,
+                                             const bool                oi,
+                                             const bool                on,
+                                             const bool                oo,
                                              const TopAbs_ShapeEnum    t1,
                                              const TopAbs_ShapeEnum    t2,
                                              const TopOpeBRepDS_Config C1,
@@ -56,22 +56,22 @@ void TopOpeBRepBuild_GTopo::Reset()
 {
   myt1 = myt2   = TopAbs_SHAPE;
   mycases[0][0] = mycases[0][1] = mycases[0][2] = mycases[1][0] = mycases[1][1] = mycases[1][2] =
-    mycases[2][0] = mycases[2][1] = mycases[2][2] = Standard_False;
+    mycases[2][0] = mycases[2][1] = mycases[2][2] = false;
   myConfig1 = myConfig2 = TopOpeBRepDS_UNSHGEOMETRY;
-  myReverseForce = myReverseValue = Standard_False;
+  myReverseForce = myReverseValue = false;
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::Set(const Standard_Boolean ii,
-                                const Standard_Boolean in,
-                                const Standard_Boolean io,
-                                const Standard_Boolean ni,
-                                const Standard_Boolean nn,
-                                const Standard_Boolean no,
-                                const Standard_Boolean oi,
-                                const Standard_Boolean on,
-                                const Standard_Boolean oo)
+void TopOpeBRepBuild_GTopo::Set(const bool ii,
+                                const bool in,
+                                const bool io,
+                                const bool ni,
+                                const bool nn,
+                                const bool no,
+                                const bool oi,
+                                const bool on,
+                                const bool oo)
 {
   mycases[0][0] = ii;
   mycases[0][1] = in;
@@ -124,56 +124,51 @@ void TopOpeBRepBuild_GTopo::ChangeConfig(const TopOpeBRepDS_Config C1, const Top
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_GTopo::Value(const Standard_Integer i1,
-                                              const Standard_Integer i2) const
+bool TopOpeBRepBuild_GTopo::Value(const int i1, const int i2) const
 {
-  Standard_Boolean b = mycases[i1][i2];
+  bool b = mycases[i1][i2];
   return b;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_GTopo::Value(const TopAbs_State s1, const TopAbs_State s2) const
+bool TopOpeBRepBuild_GTopo::Value(const TopAbs_State s1, const TopAbs_State s2) const
 {
-  Standard_Integer i1 = GIndex(s1);
-  Standard_Integer i2 = GIndex(s2);
-  Standard_Boolean b  = mycases[i1][i2];
+  int  i1 = GIndex(s1);
+  int  i2 = GIndex(s2);
+  bool b  = mycases[i1][i2];
   return b;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_GTopo::Value(const Standard_Integer II) const
+bool TopOpeBRepBuild_GTopo::Value(const int II) const
 {
-  Standard_Integer i1 = 0, i2 = 0;
+  int i1 = 0, i2 = 0;
   Index(II, i1, i2);
-  Standard_Boolean b = Value(i1, i2);
+  bool b = Value(i1, i2);
   return b;
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::ChangeValue(const Standard_Integer i1,
-                                        const Standard_Integer i2,
-                                        const Standard_Boolean b)
+void TopOpeBRepBuild_GTopo::ChangeValue(const int i1, const int i2, const bool b)
 {
   mycases[i1][i2] = b;
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::ChangeValue(const TopAbs_State     s1,
-                                        const TopAbs_State     s2,
-                                        const Standard_Boolean b)
+void TopOpeBRepBuild_GTopo::ChangeValue(const TopAbs_State s1, const TopAbs_State s2, const bool b)
 {
-  Standard_Integer i1 = GIndex(s1);
-  Standard_Integer i2 = GIndex(s2);
-  mycases[i1][i2]     = b;
+  int i1          = GIndex(s1);
+  int i2          = GIndex(s2);
+  mycases[i1][i2] = b;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepBuild_GTopo::GIndex(const TopAbs_State s) const
+int TopOpeBRepBuild_GTopo::GIndex(const TopAbs_State s) const
 {
   if (s == TopAbs_IN)
     return 0;
@@ -187,7 +182,7 @@ Standard_Integer TopOpeBRepBuild_GTopo::GIndex(const TopAbs_State s) const
 
 //=================================================================================================
 
-TopAbs_State TopOpeBRepBuild_GTopo::GState(const Standard_Integer i) const
+TopAbs_State TopOpeBRepBuild_GTopo::GState(const int i) const
 {
   if (i == 0)
     return TopAbs_IN;
@@ -201,9 +196,7 @@ TopAbs_State TopOpeBRepBuild_GTopo::GState(const Standard_Integer i) const
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::Index(const Standard_Integer II,
-                                  Standard_Integer&      i1,
-                                  Standard_Integer&      i2) const
+void TopOpeBRepBuild_GTopo::Index(const int II, int& i1, int& i2) const
 {
   switch (II)
   {
@@ -266,10 +259,10 @@ void TopOpeBRepBuild_GTopo::DumpType(Standard_OStream& OS) const
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::DumpSSB(Standard_OStream&      OS,
-                                    const TopAbs_State     s1,
-                                    const TopAbs_State     s2,
-                                    const Standard_Boolean b)
+void TopOpeBRepBuild_GTopo::DumpSSB(Standard_OStream&  OS,
+                                    const TopAbs_State s1,
+                                    const TopAbs_State s2,
+                                    const bool         b)
 {
   TopAbs::Print(s1, OS);
   OS << " ";
@@ -279,7 +272,7 @@ void TopOpeBRepBuild_GTopo::DumpSSB(Standard_OStream&      OS,
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::Dump(Standard_OStream& OS, const Standard_Address a) const
+void TopOpeBRepBuild_GTopo::Dump(Standard_OStream& OS, void* const a) const
 {
   char* s = (char*)a;
 
@@ -353,7 +346,7 @@ void TopOpeBRepBuild_GTopo::StatesON(TopAbs_State& s1, TopAbs_State& s2) const
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_GTopo::IsToReverse1() const
+bool TopOpeBRepBuild_GTopo::IsToReverse1() const
 {
   if (myReverseForce)
   {
@@ -363,20 +356,20 @@ Standard_Boolean TopOpeBRepBuild_GTopo::IsToReverse1() const
   {
     TopAbs_State s1, s2;
     StatesON(s1, s2);
-    Standard_Boolean IsToRev;
+    bool IsToRev;
     if (s1 == TopAbs_IN && s2 == TopAbs_IN)
-      IsToRev = Standard_False;
+      IsToRev = false;
     else
       IsToRev = (s1 == TopAbs_IN);
     return IsToRev;
   }
   //  throw Standard_ProgramError("GTopo::IsToReverse1");
-  //  return Standard_False; // dummy
+  //  return false; // dummy
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_GTopo::IsToReverse2() const
+bool TopOpeBRepBuild_GTopo::IsToReverse2() const
 {
   if (myReverseForce)
   {
@@ -386,9 +379,9 @@ Standard_Boolean TopOpeBRepBuild_GTopo::IsToReverse2() const
   {
     TopAbs_State s1, s2;
     StatesON(s1, s2);
-    Standard_Boolean IsToRev;
+    bool IsToRev;
     if (s1 == TopAbs_IN && s2 == TopAbs_IN)
-      IsToRev = Standard_False;
+      IsToRev = false;
     else
       IsToRev = (s2 == TopAbs_IN);
     return IsToRev;
@@ -397,15 +390,15 @@ Standard_Boolean TopOpeBRepBuild_GTopo::IsToReverse2() const
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::SetReverse(const Standard_Boolean rev)
+void TopOpeBRepBuild_GTopo::SetReverse(const bool rev)
 {
-  myReverseForce = Standard_True;
+  myReverseForce = true;
   myReverseValue = rev;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_GTopo::Reverse() const
+bool TopOpeBRepBuild_GTopo::Reverse() const
 {
   if (myReverseForce)
     return myReverseValue;
@@ -420,7 +413,7 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTopo::CopyPermuted() const
 
   g.ChangeType(myt2, myt1);
   g.ChangeConfig(myConfig2, myConfig1);
-  Standard_Integer i, j;
+  int i, j;
   for (i = 0; i < 3; i++)
     for (j = 0; j < 3; j++)
       g.ChangeValue(j, i, Value(i, j));

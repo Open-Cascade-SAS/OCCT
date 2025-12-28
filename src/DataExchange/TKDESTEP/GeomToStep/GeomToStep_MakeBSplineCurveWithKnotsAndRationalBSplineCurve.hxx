@@ -38,19 +38,18 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(
-    const Handle(Geom_BSplineCurve)& Bsplin,
-    const StepData_Factors&          theLocalFactors = StepData_Factors());
+    const occ::handle<Geom_BSplineCurve>& Bsplin,
+    const StepData_Factors&               theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(
-    const Handle(Geom2d_BSplineCurve)& Bsplin,
-    const StepData_Factors&            theLocalFactors = StepData_Factors());
+    const occ::handle<Geom2d_BSplineCurve>& Bsplin,
+    const StepData_Factors&                 theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& Value()
+  Standard_EXPORT const occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>& Value()
     const;
 
-protected:
 private:
-  Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)
+  occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>
     theBSplineCurveWithKnotsAndRationalBSplineCurve;
 };
 

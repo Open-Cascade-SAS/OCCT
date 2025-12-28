@@ -27,21 +27,20 @@
 
 #include <TDataStd_Name.hxx>
 
-#include <TDataStd_ListOfExtendedString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_List.hxx>
 
 //=======================================================================
 // function : DDataStd_SetName
 // purpose  : SetName (DF, entry, name [,guid])
 //=======================================================================
 
-static Standard_Integer DDataStd_SetName(Draw_Interpretor& di,
-                                         Standard_Integer  nb,
-                                         const char**      arg)
+static int DDataStd_SetName(Draw_Interpretor& di, int nb, const char** arg)
 {
 
   if (nb == 4 || nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
@@ -49,7 +48,7 @@ static Standard_Integer DDataStd_SetName(Draw_Interpretor& di,
     if (L.IsNull())
       di << "Label is not found" << "\n";
     if (nb == 4)
-      TDataStd_Name::Set(L, TCollection_ExtendedString(arg[3], Standard_True));
+      TDataStd_Name::Set(L, TCollection_ExtendedString(arg[3], true));
     else
     {
       if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -58,7 +57,7 @@ static Standard_Integer DDataStd_SetName(Draw_Interpretor& di,
         return 1;
       }
       Standard_GUID guid(arg[4]);
-      TDataStd_Name::Set(L, guid, TCollection_ExtendedString(arg[3], Standard_True));
+      TDataStd_Name::Set(L, guid, TCollection_ExtendedString(arg[3], true));
     }
     return 0;
   }
@@ -72,13 +71,11 @@ static Standard_Integer DDataStd_SetName(Draw_Interpretor& di,
 // purpose  : GetName (DF, entry [,guid])
 //=======================================================================
 
-static Standard_Integer DDataStd_GetName(Draw_Interpretor& di,
-                                         Standard_Integer  nb,
-                                         const char**      arg)
+static int DDataStd_GetName(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3 || nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
@@ -95,7 +92,7 @@ static Standard_Integer DDataStd_GetName(Draw_Interpretor& di,
       }
       aGuid = Standard_GUID(arg[3]);
     }
-    Handle(TDataStd_Name) N;
+    occ::handle<TDataStd_Name> N;
     if (!L.FindAttribute(aGuid, N))
     {
       di << "Name attribute is not found or not set";
@@ -117,10 +114,10 @@ static Standard_Integer DDataStd_GetName(Draw_Interpretor& di,
 void DDataStd::NameCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "DDataStd : Name attribute commands";
 

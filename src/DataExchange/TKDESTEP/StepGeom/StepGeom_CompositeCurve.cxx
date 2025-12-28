@@ -19,9 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CompositeCurve, StepGeom_BoundedCurve)
 
 StepGeom_CompositeCurve::StepGeom_CompositeCurve() {}
 
-void StepGeom_CompositeCurve::Init(const Handle(TCollection_HAsciiString)&                aName,
-                                   const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments,
-                                   const StepData_Logical aSelfIntersect)
+void StepGeom_CompositeCurve::Init(
+  const occ::handle<TCollection_HAsciiString>&                                         aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>>& aSegments,
+  const StepData_Logical aSelfIntersect)
 {
   // --- classe own fields ---
   segments      = aSegments;
@@ -31,23 +32,24 @@ void StepGeom_CompositeCurve::Init(const Handle(TCollection_HAsciiString)&      
 }
 
 void StepGeom_CompositeCurve::SetSegments(
-  const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments)
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>>& aSegments)
 {
   segments = aSegments;
 }
 
-Handle(StepGeom_HArray1OfCompositeCurveSegment) StepGeom_CompositeCurve::Segments() const
+occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>>
+  StepGeom_CompositeCurve::Segments() const
 {
   return segments;
 }
 
-Handle(StepGeom_CompositeCurveSegment) StepGeom_CompositeCurve::SegmentsValue(
-  const Standard_Integer num) const
+occ::handle<StepGeom_CompositeCurveSegment> StepGeom_CompositeCurve::SegmentsValue(
+  const int num) const
 {
   return segments->Value(num);
 }
 
-Standard_Integer StepGeom_CompositeCurve::NbSegments() const
+int StepGeom_CompositeCurve::NbSegments() const
 {
   if (segments.IsNull())
     return 0;

@@ -19,7 +19,8 @@
 
 #include <IGESAppli_ElementResults.hxx>
 #include <IGESAppli_FiniteElement.hxx>
-#include <IGESAppli_HArray1OfFiniteElement.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESAppli_ToolElementResults.hxx>
 #include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
 #include <IGESBasic_HArray1OfHArray1OfReal.hxx>
@@ -33,34 +34,33 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Integer.hxx>
 
 #include <stdio.h>
 
 IGESAppli_ToolElementResults::IGESAppli_ToolElementResults() {}
 
-void IGESAppli_ToolElementResults::ReadOwnParams(const Handle(IGESAppli_ElementResults)& ent,
-                                                 const Handle(IGESData_IGESReaderData)&  IR,
-                                                 IGESData_ParamReader&                   PR) const
+void IGESAppli_ToolElementResults::ReadOwnParams(const occ::handle<IGESAppli_ElementResults>& ent,
+                                                 const occ::handle<IGESData_IGESReaderData>&  IR,
+                                                 IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer                            num = 0;
-  Handle(IGESDimen_GeneralNote)               aNote;
-  Standard_Integer                            aSubcaseNumber    = 0;
-  Standard_Real                               aTime             = 0;
-  Standard_Integer                            nv                = 0;
-  Standard_Integer                            aResultReportFlag = 0;
-  Handle(TColStd_HArray1OfInteger)            allElementIdentifiers;
-  Handle(IGESAppli_HArray1OfFiniteElement)    allElements;
-  Handle(TColStd_HArray1OfInteger)            allElementTopologyType;
-  Handle(TColStd_HArray1OfInteger)            allNbLayers;
-  Handle(TColStd_HArray1OfInteger)            allDataLayerFlag;
-  Handle(TColStd_HArray1OfInteger)            allNbResultDataLocs;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) allResultDataLoc;
-  Handle(IGESBasic_HArray1OfHArray1OfReal)    allResultData;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int                                                                    num = 0;
+  occ::handle<IGESDimen_GeneralNote>                                     aNote;
+  int                                                                    aSubcaseNumber    = 0;
+  double                                                                 aTime             = 0;
+  int                                                                    nv                = 0;
+  int                                                                    aResultReportFlag = 0;
+  occ::handle<NCollection_HArray1<int>>                                  allElementIdentifiers;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>> allElements;
+  occ::handle<NCollection_HArray1<int>>                                  allElementTopologyType;
+  occ::handle<NCollection_HArray1<int>>                                  allNbLayers;
+  occ::handle<NCollection_HArray1<int>>                                  allDataLayerFlag;
+  occ::handle<NCollection_HArray1<int>>                                  allNbResultDataLocs;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>                       allResultDataLoc;
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal>                          allResultData;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadEntity(IR, PR.Current(), "General Note", STANDARD_TYPE(IGESDimen_GeneralNote), aNote);
@@ -72,12 +72,12 @@ void IGESAppli_ToolElementResults::ReadOwnParams(const Handle(IGESAppli_ElementR
 
   if (num > 0)
   {
-    allElementIdentifiers  = new TColStd_HArray1OfInteger(1, num);
-    allElements            = new IGESAppli_HArray1OfFiniteElement(1, num);
-    allElementTopologyType = new TColStd_HArray1OfInteger(1, num);
-    allNbLayers            = new TColStd_HArray1OfInteger(1, num);
-    allDataLayerFlag       = new TColStd_HArray1OfInteger(1, num);
-    allNbResultDataLocs    = new TColStd_HArray1OfInteger(1, num);
+    allElementIdentifiers  = new NCollection_HArray1<int>(1, num);
+    allElements            = new NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>(1, num);
+    allElementTopologyType = new NCollection_HArray1<int>(1, num);
+    allNbLayers            = new NCollection_HArray1<int>(1, num);
+    allDataLayerFlag       = new NCollection_HArray1<int>(1, num);
+    allNbResultDataLocs    = new NCollection_HArray1<int>(1, num);
     allResultDataLoc       = new IGESBasic_HArray1OfHArray1OfInteger(1, num);
     allResultData          = new IGESBasic_HArray1OfHArray1OfReal(1, num);
     // ??  WHAT ABOUT FILLING  ?
@@ -85,13 +85,13 @@ void IGESAppli_ToolElementResults::ReadOwnParams(const Handle(IGESAppli_ElementR
   else
     PR.AddFail("Number of Finite Elements: Not Positive");
 
-  for (Standard_Integer nume = 1; nume <= num; nume++)
+  for (int nume = 1; nume <= num; nume++)
   {
-    Standard_Integer ival, nl, nrl, numv;
+    int ival, nl, nrl, numv;
     ival = nl = nrl = numv = 0;
-    Handle(IGESAppli_FiniteElement)  aFEM;
-    Handle(TColStd_HArray1OfInteger) rdrl;
-    Handle(TColStd_HArray1OfReal)    vres;
+    occ::handle<IGESAppli_FiniteElement>     aFEM;
+    occ::handle<NCollection_HArray1<int>>    rdrl;
+    occ::handle<NCollection_HArray1<double>> vres;
     // szv#4:S4163:12Mar99 moved in if
     if (PR.ReadInteger(PR.Current(), "FEM Element Identifier", ival))
       allElementIdentifiers->SetValue(nume, ival);
@@ -134,11 +134,11 @@ void IGESAppli_ToolElementResults::ReadOwnParams(const Handle(IGESAppli_ElementR
             allResultData);
 }
 
-void IGESAppli_ToolElementResults::WriteOwnParams(const Handle(IGESAppli_ElementResults)& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+void IGESAppli_ToolElementResults::WriteOwnParams(const occ::handle<IGESAppli_ElementResults>& ent,
+                                                  IGESData_IGESWriter& IW) const
 {
-  Standard_Integer i, j;
-  Standard_Integer num = ent->NbElements();
+  int i, j;
+  int num = ent->NbElements();
   IW.Send(ent->Note());
   IW.Send(ent->SubCaseNumber());
   IW.Send(ent->Time());
@@ -147,9 +147,9 @@ void IGESAppli_ToolElementResults::WriteOwnParams(const Handle(IGESAppli_Element
   IW.Send(num);
   for (i = 1; i <= num; i++)
   {
-    Standard_Integer nl   = ent->NbLayers(i);
-    Standard_Integer nrl  = ent->NbResultDataLocs(i);
-    Standard_Integer numv = ent->NbResults(i);
+    int nl   = ent->NbLayers(i);
+    int nrl  = ent->NbResultDataLocs(i);
+    int numv = ent->NbResults(i);
     IW.Send(ent->ElementIdentifier(i));
     IW.Send(ent->Element(i));
     IW.Send(ent->ElementTopologyType(i));
@@ -164,50 +164,50 @@ void IGESAppli_ToolElementResults::WriteOwnParams(const Handle(IGESAppli_Element
   }
 }
 
-void IGESAppli_ToolElementResults::OwnShared(const Handle(IGESAppli_ElementResults)& ent,
-                                             Interface_EntityIterator&               iter) const
+void IGESAppli_ToolElementResults::OwnShared(const occ::handle<IGESAppli_ElementResults>& ent,
+                                             Interface_EntityIterator& iter) const
 {
-  Standard_Integer i;
-  Standard_Integer num = ent->NbElements();
+  int i;
+  int num = ent->NbElements();
   iter.GetOneItem(ent->Note());
   for (i = 1; i <= num; i++)
     iter.GetOneItem(ent->Element(i));
 }
 
-void IGESAppli_ToolElementResults::OwnCopy(const Handle(IGESAppli_ElementResults)& another,
-                                           const Handle(IGESAppli_ElementResults)& ent,
-                                           Interface_CopyTool&                     TC) const
+void IGESAppli_ToolElementResults::OwnCopy(const occ::handle<IGESAppli_ElementResults>& another,
+                                           const occ::handle<IGESAppli_ElementResults>& ent,
+                                           Interface_CopyTool&                          TC) const
 {
-  Standard_Integer i, j;
-  Standard_Integer num = another->NbElements();
+  int i, j;
+  int num = another->NbElements();
   DeclareAndCast(IGESDimen_GeneralNote, aNote, TC.Transferred(another->Note()));
-  Standard_Integer aSubcaseNumber    = another->SubCaseNumber();
-  Standard_Real    aTime             = another->Time();
-  Standard_Integer nv                = another->NbResultValues();
-  Standard_Integer aResultReportFlag = another->ResultReportFlag();
+  int    aSubcaseNumber    = another->SubCaseNumber();
+  double aTime             = another->Time();
+  int    nv                = another->NbResultValues();
+  int    aResultReportFlag = another->ResultReportFlag();
 
-  Handle(TColStd_HArray1OfInteger)            allElementIdentifiers;
-  Handle(IGESAppli_HArray1OfFiniteElement)    allElements;
-  Handle(TColStd_HArray1OfInteger)            allElementTopologyType;
-  Handle(TColStd_HArray1OfInteger)            allNbLayers;
-  Handle(TColStd_HArray1OfInteger)            allDataLayerFlag;
-  Handle(TColStd_HArray1OfInteger)            allNbResultDataLocs;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) allResultDataLoc;
-  Handle(IGESBasic_HArray1OfHArray1OfReal)    allResultData;
+  occ::handle<NCollection_HArray1<int>>                                  allElementIdentifiers;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>> allElements;
+  occ::handle<NCollection_HArray1<int>>                                  allElementTopologyType;
+  occ::handle<NCollection_HArray1<int>>                                  allNbLayers;
+  occ::handle<NCollection_HArray1<int>>                                  allDataLayerFlag;
+  occ::handle<NCollection_HArray1<int>>                                  allNbResultDataLocs;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>                       allResultDataLoc;
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal>                          allResultData;
   if (num > 0)
   {
-    allElementIdentifiers  = new TColStd_HArray1OfInteger(1, num);
-    allElements            = new IGESAppli_HArray1OfFiniteElement(1, num);
-    allElementTopologyType = new TColStd_HArray1OfInteger(1, num);
-    allNbLayers            = new TColStd_HArray1OfInteger(1, num);
-    allDataLayerFlag       = new TColStd_HArray1OfInteger(1, num);
-    allNbResultDataLocs    = new TColStd_HArray1OfInteger(1, num);
+    allElementIdentifiers  = new NCollection_HArray1<int>(1, num);
+    allElements            = new NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>(1, num);
+    allElementTopologyType = new NCollection_HArray1<int>(1, num);
+    allNbLayers            = new NCollection_HArray1<int>(1, num);
+    allDataLayerFlag       = new NCollection_HArray1<int>(1, num);
+    allNbResultDataLocs    = new NCollection_HArray1<int>(1, num);
     allResultDataLoc       = new IGESBasic_HArray1OfHArray1OfInteger(1, num);
     allResultData          = new IGESBasic_HArray1OfHArray1OfReal(1, num);
   }
   for (i = 1; i <= num; i++)
   {
-    Standard_Integer nl, nrl, numv;
+    int nl, nrl, numv;
     allElementIdentifiers->SetValue(i, another->ElementIdentifier(i));
     allElements->SetValue(i,
                           GetCasted(IGESAppli_FiniteElement, TC.Transferred(another->Element(i))));
@@ -217,12 +217,12 @@ void IGESAppli_ToolElementResults::OwnCopy(const Handle(IGESAppli_ElementResults
     allDataLayerFlag->SetValue(i, another->DataLayerFlag(i));
     nrl = another->NbResultDataLocs(i);
     allNbResultDataLocs->SetValue(i, nrl);
-    Handle(TColStd_HArray1OfInteger) rdrl = new TColStd_HArray1OfInteger(1, nrl);
+    occ::handle<NCollection_HArray1<int>> rdrl = new NCollection_HArray1<int>(1, nrl);
     allResultDataLoc->SetValue(i, rdrl);
     for (j = 1; j <= nrl; j++)
       rdrl->SetValue(j, another->ResultDataLoc(i, j));
-    numv                               = another->NbResults(i);
-    Handle(TColStd_HArray1OfReal) vres = new TColStd_HArray1OfReal(1, numv);
+    numv                                          = another->NbResults(i);
+    occ::handle<NCollection_HArray1<double>> vres = new NCollection_HArray1<double>(1, numv);
     for (j = 1; j <= numv; j++)
       vres->SetValue(j, another->ResultData(i, j));
     allResultData->SetValue(i, vres);
@@ -244,7 +244,7 @@ void IGESAppli_ToolElementResults::OwnCopy(const Handle(IGESAppli_ElementResults
 }
 
 IGESData_DirChecker IGESAppli_ToolElementResults::DirChecker(
-  const Handle(IGESAppli_ElementResults)& /* ent  */) const
+  const occ::handle<IGESAppli_ElementResults>& /* ent  */) const
 {
   IGESData_DirChecker DC(148, 0, 34);
   DC.Structure(IGESData_DefVoid);
@@ -258,157 +258,157 @@ IGESData_DirChecker IGESAppli_ToolElementResults::DirChecker(
   return DC;
 }
 
-void IGESAppli_ToolElementResults::OwnCheck(const Handle(IGESAppli_ElementResults)& ent,
+void IGESAppli_ToolElementResults::OwnCheck(const occ::handle<IGESAppli_ElementResults>& ent,
                                             const Interface_ShareTool&,
-                                            Handle(Interface_Check)& ach) const
+                                            occ::handle<Interface_Check>& ach) const
 // UNFINISHED
 {
-  Standard_Integer rrf = ent->ResultReportFlag();
+  int rrf = ent->ResultReportFlag();
   if (rrf < 0 || rrf > 3)
     ach->AddFail("Result Report Flag not in [0-3]");
-  Standard_Integer nv = ent->NbResultValues();
-  Standard_Boolean OK = Standard_True;
+  int  nv = ent->NbResultValues();
+  bool OK = true;
   switch (ent->FormNumber())
   {
     case 0:
       if (nv < 0)
-        OK = Standard_False;
+        OK = false;
       break;
     case 1:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 2:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 3:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 4:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 5:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 6:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 7:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 8:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 9:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 10:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 11:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 12:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 13:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 14:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 15:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 16:
       if (nv != 1)
-        OK = Standard_False;
+        OK = false;
       break;
     case 17:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 18:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 19:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 20:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 21:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 22:
       if (nv != 3)
-        OK = Standard_False;
+        OK = false;
       break;
     case 23:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 24:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 25:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 26:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 27:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 28:
       if (nv != 6)
-        OK = Standard_False;
+        OK = false;
       break;
     case 29:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 30:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 31:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 32:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 33:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     case 34:
       if (nv != 9)
-        OK = Standard_False;
+        OK = false;
       break;
     default:
       ach->AddFail("Incorrect Form Number");
@@ -416,13 +416,13 @@ void IGESAppli_ToolElementResults::OwnCheck(const Handle(IGESAppli_ElementResult
   }
   if (!OK)
     ach->AddFail("Incorrect count of real values in array V for FEM node");
-  Standard_Integer ne = ent->NbElements();
-  for (Standard_Integer i = 1; i <= ne; i++)
+  int ne = ent->NbElements();
+  for (int i = 1; i <= ne; i++)
   {
-    char             mess[100];
-    Standard_Integer dlf = ent->DataLayerFlag(i);
-    Standard_Integer nl  = ent->NbLayers(i);
-    Standard_Integer nrl = ent->NbResultDataLocs(i);
+    char mess[100];
+    int  dlf = ent->DataLayerFlag(i);
+    int  nl  = ent->NbLayers(i);
+    int  nrl = ent->NbResultDataLocs(i);
     if (dlf < 0 || dlf > 4)
       ach->AddFail("One of the Data Layer Flags not in [0-4]");
     if (dlf < 4 && ent->NbLayers(i) != 1)
@@ -444,12 +444,12 @@ void IGESAppli_ToolElementResults::OwnCheck(const Handle(IGESAppli_ElementResult
   }
 }
 
-void IGESAppli_ToolElementResults::OwnDump(const Handle(IGESAppli_ElementResults)& ent,
-                                           const IGESData_IGESDumper&              dumper,
-                                           Standard_OStream&                       S,
-                                           const Standard_Integer level) const // UNFINISHED
+void IGESAppli_ToolElementResults::OwnDump(const occ::handle<IGESAppli_ElementResults>& ent,
+                                           const IGESData_IGESDumper&                   dumper,
+                                           Standard_OStream&                            S,
+                                           const int level) const // UNFINISHED
 {
-  Standard_Integer sublevel = (level > 4) ? 1 : 0;
+  int sublevel = (level > 4) ? 1 : 0;
   S << "IGESAppli_ElementResults\n";
   S << "General Note   : ";
   dumper.Dump(ent->Note(), S, sublevel);
@@ -479,12 +479,12 @@ void IGESAppli_ToolElementResults::OwnDump(const Handle(IGESAppli_ElementResults
     S << " [ ask level > 4 for more, > 5 for complete ]\n";
   else
   {
-    Standard_Integer i; // svv Jan 10 2000 : porting on DEC
+    int i; // svv Jan 10 2000 : porting on DEC
     for (i = 1; i <= ent->NbElements(); i++)
     {
-      Standard_Integer nloc = ent->NbResultDataLocs(i);
+      int nloc = ent->NbResultDataLocs(i);
       S << " [" << i << ":NbLoc=" << nloc << "]:";
-      for (Standard_Integer j = 1; j <= nloc; j++)
+      for (int j = 1; j <= nloc; j++)
         S << " " << ent->ResultDataLoc(i, j);
       S << "\n";
     }
@@ -492,13 +492,13 @@ void IGESAppli_ToolElementResults::OwnDump(const Handle(IGESAppli_ElementResults
 
     for (i = 1; i <= ent->NbElements(); i++)
     {
-      Standard_Integer nres = ent->NbResults(i);
+      int nres = ent->NbResults(i);
       S << " [" << i << ":NbRes=" << nres << "]:";
       if (level <= 5)
         S << " [ ask level > 5 for complete Data ]\n";
       else
       {
-        for (Standard_Integer j = 1; j <= nres; j++)
+        for (int j = 1; j <= nres; j++)
           S << " " << ent->ResultData(i, j); // ?? is it all ?? UNFINISHED
       }
     }

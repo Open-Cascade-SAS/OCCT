@@ -21,7 +21,9 @@
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRef.hxx>
-#include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
+#include <StepDimTol_DatumSystemOrReference.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -30,35 +32,35 @@ RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::RWStepDimTol_RWGeoTolAndGeoTolWthDatRef
 //=================================================================================================
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::ReadStep(
-  const Handle(StepData_StepReaderData)&             data,
-  const Standard_Integer                             num0,
-  Handle(Interface_Check)&                           ach,
-  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent) const
+  const occ::handle<StepData_StepReaderData>&             data,
+  const int                                               num0,
+  occ::handle<Interface_Check>&                           ach,
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRef>& ent) const
 {
-  Standard_Integer num = 0; // num0;
+  int num = 0; // num0;
   data->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", num0, num, ach);
   if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance"))
     return;
   // Own fields of GeometricTolerance
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
-  Handle(Standard_Transient) aMagnitude;
+  occ::handle<Standard_Transient> aMagnitude;
   data->ReadEntity(num, 3, "magnitude", ach, STANDARD_TYPE(Standard_Transient), aMagnitude);
   StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
   data->ReadEntity(num, 4, "toleranced_shape_aspect", ach, aTolerancedShapeAspect);
 
   data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE", "GTWDR", num0, num, ach);
   // Own fields of GeometricToleranceWithDatumReference
-  Handle(StepDimTol_HArray1OfDatumSystemOrReference) aDatumSystem;
-  Standard_Integer                                   sub5 = 0;
+  occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> aDatumSystem;
+  int                                                                 sub5 = 0;
   if (data->ReadSubList(num, 1, "datum_system", ach, sub5))
   {
-    Standard_Integer nb0  = data->NbParams(sub5);
-    aDatumSystem          = new StepDimTol_HArray1OfDatumSystemOrReference(1, nb0);
-    Standard_Integer num2 = sub5;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0      = data->NbParams(sub5);
+    aDatumSystem = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(1, nb0);
+    int num2     = sub5;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepDimTol_DatumSystemOrReference anIt0;
       data->ReadEntity(num2, i0, "datum_system_or_reference", ach, anIt0);
@@ -66,15 +68,15 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::ReadStep(
     }
   }
   // Initialize entity
-  Handle(StepDimTol_GeometricToleranceWithDatumReference) aGTWDR =
+  occ::handle<StepDimTol_GeometricToleranceWithDatumReference> aGTWDR =
     new StepDimTol_GeometricToleranceWithDatumReference;
   aGTWDR->SetDatumSystem(aDatumSystem);
 
   // Choose type of geometric tolerance
-  TColStd_SequenceOfAsciiString aTypes;
+  NCollection_Sequence<TCollection_AsciiString> aTypes;
   data->ComplexType(num0, aTypes);
-  Standard_CString                  aFirst = aTypes.First().ToCString();
-  Standard_CString                  aLast  = aTypes.Last().ToCString();
+  const char*                       aFirst = aTypes.First().ToCString();
+  const char*                       aLast  = aTypes.Last().ToCString();
   StepDimTol_GeometricToleranceType aType  = StepDimTol_GTTPositionTolerance;
   if (strcmp(aFirst, "ANGULARITY_TOLERANCE") == 0)
     aType = StepDimTol_GTTAngularityTolerance;
@@ -116,8 +118,8 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::WriteStep(
-  StepData_StepWriter&                               SW,
-  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent) const
+  StepData_StepWriter&                                    SW,
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRef>& ent) const
 {
   StepDimTol_GeometricToleranceType aType = ent->GetToleranceType();
   if (aType == StepDimTol_GTTAngularityTolerance)
@@ -140,7 +142,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::WriteStep(
   SW.Send(ent->TolerancedShapeAspect().Value());
   SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE");
   SW.OpenSub();
-  for (Standard_Integer i4 = 1;
+  for (int i4 = 1;
        i4 <= ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length();
        i4++)
   {
@@ -173,14 +175,14 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::Share(
-  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent,
-  Interface_EntityIterator&                          iter) const
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRef>& ent,
+  Interface_EntityIterator&                               iter) const
 {
   // Own fields of GeometricTolerance
   iter.AddItem(ent->Magnitude());
   iter.AddItem(ent->TolerancedShapeAspect().Value());
   // Own fields of GeometricToleranceWithDatumReference
-  for (Standard_Integer i3 = 1;
+  for (int i3 = 1;
        i3 <= ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length();
        i3++)
   {

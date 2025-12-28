@@ -20,21 +20,22 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <PLib.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
 Convert_CompBezierCurves2dToBSplineCurve2d::Convert_CompBezierCurves2dToBSplineCurve2d(
-  const Standard_Real AngularTolerance)
+  const double AngularTolerance)
     : myDegree(0),
       myAngular(AngularTolerance),
-      myDone(Standard_False)
+      myDone(false)
 {
 }
 
 //=================================================================================================
 
-void Convert_CompBezierCurves2dToBSplineCurve2d::AddCurve(const TColgp_Array1OfPnt2d& Poles)
+void Convert_CompBezierCurves2dToBSplineCurve2d::AddCurve(const NCollection_Array1<gp_Pnt2d>& Poles)
 {
   if (!mySequence.IsEmpty())
   {
@@ -47,32 +48,33 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::AddCurve(const TColgp_Array1OfP
     //      ( !P1.IsEqual(P2,Precision::Confusion()),
     //       "Convert_CompBezierCurves2dToBSplineCurve2d::Addcurve");
   }
-  myDone                               = Standard_False;
-  Handle(TColgp_HArray1OfPnt2d) HPoles = new TColgp_HArray1OfPnt2d(Poles.Lower(), Poles.Upper());
-  HPoles->ChangeArray1()               = Poles;
+  myDone = false;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> HPoles =
+    new NCollection_HArray1<gp_Pnt2d>(Poles.Lower(), Poles.Upper());
+  HPoles->ChangeArray1() = Poles;
   mySequence.Append(HPoles);
 }
 
 //=================================================================================================
 
-Standard_Integer Convert_CompBezierCurves2dToBSplineCurve2d::Degree() const
+int Convert_CompBezierCurves2dToBSplineCurve2d::Degree() const
 {
   return myDegree;
 }
 
 //=================================================================================================
 
-Standard_Integer Convert_CompBezierCurves2dToBSplineCurve2d::NbPoles() const
+int Convert_CompBezierCurves2dToBSplineCurve2d::NbPoles() const
 {
   return CurvePoles.Length();
 }
 
 //=================================================================================================
 
-void Convert_CompBezierCurves2dToBSplineCurve2d::Poles(TColgp_Array1OfPnt2d& Poles) const
+void Convert_CompBezierCurves2dToBSplineCurve2d::Poles(NCollection_Array1<gp_Pnt2d>& Poles) const
 {
-  Standard_Integer i, Lower = Poles.Lower(), Upper = Poles.Upper();
-  Standard_Integer k = 1;
+  int i, Lower = Poles.Lower(), Upper = Poles.Upper();
+  int k = 1;
   for (i = Lower; i <= Upper; i++)
   {
     Poles(i) = CurvePoles(k++);
@@ -81,19 +83,19 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::Poles(TColgp_Array1OfPnt2d& Pol
 
 //=================================================================================================
 
-Standard_Integer Convert_CompBezierCurves2dToBSplineCurve2d::NbKnots() const
+int Convert_CompBezierCurves2dToBSplineCurve2d::NbKnots() const
 {
   return CurveKnots.Length();
 }
 
 //=================================================================================================
 
-void Convert_CompBezierCurves2dToBSplineCurve2d::KnotsAndMults(TColStd_Array1OfReal&    Knots,
-                                                               TColStd_Array1OfInteger& Mults) const
+void Convert_CompBezierCurves2dToBSplineCurve2d::KnotsAndMults(NCollection_Array1<double>& Knots,
+                                                               NCollection_Array1<int>& Mults) const
 {
-  Standard_Integer i, LowerK = Knots.Lower(), UpperK = Knots.Upper();
-  Standard_Integer LowerM = Mults.Lower(), UpperM = Mults.Upper();
-  Standard_Integer k = 1;
+  int i, LowerK = Knots.Lower(), UpperK = Knots.Upper();
+  int LowerM = Mults.Lower(), UpperM = Mults.Upper();
+  int k = 1;
   for (i = LowerK; i <= UpperK; i++)
   {
     Knots(i) = CurveKnots(k++);
@@ -109,27 +111,27 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::KnotsAndMults(TColStd_Array1OfR
 
 void Convert_CompBezierCurves2dToBSplineCurve2d::Perform()
 {
-  myDone = Standard_True;
+  myDone = true;
   CurvePoles.Clear();
   CurveKnots.Clear();
   KnotsMultiplicities.Clear();
-  Standard_Integer LowerI  = 1;
-  Standard_Integer UpperI  = mySequence.Length();
-  Standard_Integer NbrCurv = UpperI - LowerI + 1;
-  //  Standard_Integer NbKnotsSpl = NbrCurv + 1 ;
-  TColStd_Array1OfReal CurveKnVals(1, NbrCurv);
+  int LowerI  = 1;
+  int UpperI  = mySequence.Length();
+  int NbrCurv = UpperI - LowerI + 1;
+  //  int NbKnotsSpl = NbrCurv + 1 ;
+  NCollection_Array1<double> CurveKnVals(1, NbrCurv);
 
-  Standard_Integer i;
+  int i;
   myDegree = 0;
   for (i = 1; i <= mySequence.Length(); i++)
   {
     myDegree = std::max(myDegree, (mySequence(i))->Length() - 1);
   }
 
-  Standard_Real        Det = 0;
-  gp_Pnt2d             P1, P2, P3;
-  Standard_Integer     Deg, Inc, MaxDegree = myDegree;
-  TColgp_Array1OfPnt2d Points(1, myDegree + 1);
+  double                       Det = 0;
+  gp_Pnt2d                     P1, P2, P3;
+  int                          Deg, Inc, MaxDegree = myDegree;
+  NCollection_Array1<gp_Pnt2d> Points(1, myDegree + 1);
 
   for (i = LowerI; i <= UpperI; i++)
   {
@@ -153,7 +155,7 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::Perform()
     if (i == LowerI)
     {
       // Processing of initial node of the BSpline.
-      for (Standard_Integer j = 1; j <= MaxDegree; j++)
+      for (int j = 1; j <= MaxDegree; j++)
       {
         CurvePoles.Append(Points(j));
       }
@@ -171,12 +173,12 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::Perform()
       // Processing of the tangency between the Bezier and the previous.
       // This allows guaranteeing at least continuity C1 if the tangents are coherent.
       // Test of angle at myAngular
-      Standard_Real D1 = V1.SquareMagnitude();
-      Standard_Real D2 = V2.SquareMagnitude();
+      double D1 = V1.SquareMagnitude();
+      double D2 = V2.SquareMagnitude();
       if (MaxDegree > 1 && // rln 20.06.99 work-around
           D1 > gp::Resolution() && D2 > gp::Resolution() && V1.IsParallel(V2, myAngular))
       {
-        Standard_Real Lambda = std::sqrt(D2 / D1);
+        double Lambda = std::sqrt(D2 / D1);
         KnotsMultiplicities.Append(MaxDegree - 1);
         CurveKnVals(i) = CurveKnVals(i - 1) * Lambda;
       }
@@ -189,7 +191,7 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::Perform()
       Det += CurveKnVals(i);
 
       // Store poles.
-      for (Standard_Integer j = 2; j <= MaxDegree; j++)
+      for (int j = 2; j <= MaxDegree; j++)
       {
         CurvePoles.Append(Points(j));
       }

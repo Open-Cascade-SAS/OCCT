@@ -38,19 +38,19 @@ Contap_SurfFunction::Contap_SurfFunction()
       Vsol(0.0),
       Fpu(0.0),
       Fpv(0.0),
-      tangent(Standard_False),
-      computed(Standard_False),
-      derived(Standard_False)
+      tangent(false),
+      computed(false),
+      derived(false)
 {
 }
 
-void Contap_SurfFunction::Set(const Handle(Adaptor3d_Surface)& S)
+void Contap_SurfFunction::Set(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurf = S;
-  Standard_Integer i;
-  Standard_Integer nbs = Contap_HContTool::NbSamplePoints(S);
-  Standard_Real    U, V;
-  gp_Vec           norm;
+  int    i;
+  int    nbs = Contap_HContTool::NbSamplePoints(S);
+  double U, V;
+  gp_Vec norm;
   if (nbs > 0)
   {
     myMean = 0.;
@@ -62,23 +62,23 @@ void Contap_SurfFunction::Set(const Handle(Adaptor3d_Surface)& S)
       Contap_SurfProps::Normale(S, U, V, solpt, norm);
       myMean = myMean + norm.Magnitude();
     }
-    myMean = myMean / ((Standard_Real)nbs);
+    myMean = myMean / ((double)nbs);
   }
-  computed = Standard_False;
-  derived  = Standard_False;
+  computed = false;
+  derived  = false;
 }
 
-Standard_Integer Contap_SurfFunction::NbVariables() const
+int Contap_SurfFunction::NbVariables() const
 {
   return 2;
 }
 
-Standard_Integer Contap_SurfFunction::NbEquations() const
+int Contap_SurfFunction::NbEquations() const
 {
   return 1;
 }
 
-Standard_Boolean Contap_SurfFunction::Value(const math_Vector& X, math_Vector& F)
+bool Contap_SurfFunction::Value(const math_Vector& X, math_Vector& F)
 {
   Usol = X(1);
   Vsol = X(2);
@@ -103,12 +103,12 @@ Standard_Boolean Contap_SurfFunction::Value(const math_Vector& X, math_Vector& F
     default: {
     }
   }
-  computed = Standard_False;
-  derived  = Standard_False;
-  return Standard_True;
+  computed = false;
+  derived  = false;
+  return true;
 }
 
-Standard_Boolean Contap_SurfFunction::Derivatives(const math_Vector& X, math_Matrix& Grad)
+bool Contap_SurfFunction::Derivatives(const math_Vector& X, math_Matrix& Grad)
 {
   //  gp_Vec d2u,d2v,d2uv;
   Usol = X(1);
@@ -150,14 +150,12 @@ Standard_Boolean Contap_SurfFunction::Derivatives(const math_Vector& X, math_Mat
   }
   Fpu      = Grad(1, 1);
   Fpv      = Grad(1, 2);
-  computed = Standard_False;
-  derived  = Standard_True;
-  return Standard_True;
+  computed = false;
+  derived  = true;
+  return true;
 }
 
-Standard_Boolean Contap_SurfFunction::Values(const math_Vector& X,
-                                             math_Vector&       F,
-                                             math_Matrix&       Grad)
+bool Contap_SurfFunction::Values(const math_Vector& X, math_Vector& F, math_Matrix& Grad)
 {
   //  gp_Vec d2u,d2v,d2uv;
 
@@ -208,16 +206,16 @@ Standard_Boolean Contap_SurfFunction::Values(const math_Vector& X,
   valf     = F(1);
   Fpu      = Grad(1, 1);
   Fpv      = Grad(1, 2);
-  computed = Standard_False;
-  derived  = Standard_True;
-  return Standard_True;
+  computed = false;
+  derived  = true;
+  return true;
 }
 
-Standard_Boolean Contap_SurfFunction::IsTangent()
+bool Contap_SurfFunction::IsTangent()
 {
   if (!computed)
   {
-    computed = Standard_True;
+    computed = true;
     if (!derived)
     {
       //      gp_Vec d2u,d2v,d2uv;
@@ -259,14 +257,14 @@ Standard_Boolean Contap_SurfFunction::IsTangent()
         default: {
         }
       }
-      derived = Standard_True;
+      derived = true;
     }
-    tangent         = Standard_False;
-    Standard_Real D = std::sqrt(Fpu * Fpu + Fpv * Fpv);
+    tangent  = false;
+    double D = std::sqrt(Fpu * Fpu + Fpv * Fpv);
 
     if (D <= gp::Resolution())
     {
-      tangent = Standard_True;
+      tangent = true;
     }
     else
     {
@@ -281,7 +279,7 @@ Standard_Boolean Contap_SurfFunction::IsTangent()
       // jag 940616    if (d3d.Magnitude() <= Tolpetit) {
       if (d3d.Magnitude() <= tol)
       {
-        tangent = Standard_True;
+        tangent = true;
       }
     }
   }

@@ -23,40 +23,39 @@
 #include <Law_BSpline.hxx>
 #include <Law_Interpolate.hxx>
 #include <Law_Linear.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
-Handle(Law_BSpFunc) Law::MixBnd(const Handle(Law_Linear)& Lin)
+occ::handle<Law_BSpFunc> Law::MixBnd(const occ::handle<Law_Linear>& Lin)
 {
-  Standard_Real f, l;
+  double f, l;
   Lin->Bounds(f, l);
-  TColStd_Array1OfReal    Knots(1, 4);
-  TColStd_Array1OfInteger Mults(1, 4);
+  NCollection_Array1<double> Knots(1, 4);
+  NCollection_Array1<int>    Mults(1, 4);
   Knots(1) = f;
   Knots(4) = l;
   Knots(2) = 0.75 * f + 0.25 * l;
   Knots(3) = 0.25 * f + 0.75 * l;
   Mults(1) = Mults(4) = 4;
-  Mults(2) = Mults(3)               = 1;
-  Handle(TColStd_HArray1OfReal) pol = Law::MixBnd(3, Knots, Mults, Lin);
-  Handle(Law_BSpline)           bs  = new Law_BSpline(pol->Array1(), Knots, Mults, 3);
-  Handle(Law_BSpFunc)           bsf = new Law_BSpFunc();
+  Mults(2) = Mults(3)                          = 1;
+  occ::handle<NCollection_HArray1<double>> pol = Law::MixBnd(3, Knots, Mults, Lin);
+  occ::handle<Law_BSpline>                 bs  = new Law_BSpline(pol->Array1(), Knots, Mults, 3);
+  occ::handle<Law_BSpFunc>                 bsf = new Law_BSpFunc();
   bsf->SetCurve(bs);
   return bsf;
 }
 
-Handle(TColStd_HArray1OfReal) Law::MixBnd(const Standard_Integer         Degree,
-                                          const TColStd_Array1OfReal&    Knots,
-                                          const TColStd_Array1OfInteger& Mults,
-                                          const Handle(Law_Linear)&      Lin)
+occ::handle<NCollection_HArray1<double>> Law::MixBnd(const int                         Degree,
+                                                     const NCollection_Array1<double>& Knots,
+                                                     const NCollection_Array1<int>&    Mults,
+                                                     const occ::handle<Law_Linear>&    Lin)
 {
-  Standard_Integer nbpol = 0, nbfk = 0, i, j, k = 0;
+  int nbpol = 0, nbfk = 0, i, j, k = 0;
   for (i = Mults.Lower(); i <= Mults.Upper(); i++)
   {
     nbfk += Mults(i);
   }
-  TColStd_Array1OfReal fk(1, nbfk);
+  NCollection_Array1<double> fk(1, nbfk);
   for (i = Mults.Lower(); i <= Mults.Upper(); i++)
   {
     for (j = 1; j <= Mults(i); j++)
@@ -65,15 +64,15 @@ Handle(TColStd_HArray1OfReal) Law::MixBnd(const Standard_Integer         Degree,
     }
   }
   nbpol = nbfk - Degree - 1;
-  TColStd_Array1OfReal par(1, nbpol);
+  NCollection_Array1<double> par(1, nbpol);
   BSplCLib::BuildSchoenbergPoints(Degree, fk, par);
-  Handle(TColStd_HArray1OfReal) res = new TColStd_HArray1OfReal(1, nbpol);
-  TColStd_Array1OfReal&         pol = res->ChangeArray1();
+  occ::handle<NCollection_HArray1<double>> res = new NCollection_HArray1<double>(1, nbpol);
+  NCollection_Array1<double>&              pol = res->ChangeArray1();
   for (i = 1; i <= nbpol; i++)
   {
     pol(i) = Lin->Value(par(i));
   }
-  TColStd_Array1OfInteger ord(1, nbpol);
+  NCollection_Array1<int> ord(1, nbpol);
   ord.Init(0);
   BSplCLib::Interpolate(Degree, fk, par, ord, 1, pol(1), i);
   if (nbpol >= 4)
@@ -84,20 +83,20 @@ Handle(TColStd_HArray1OfReal) Law::MixBnd(const Standard_Integer         Degree,
   return res;
 }
 
-static Standard_Real eval1(const Standard_Real    p,
-                           const Standard_Real    first,
-                           const Standard_Real    last,
-                           const Standard_Real    piv,
-                           const Standard_Boolean nulr)
+static double eval1(const double p,
+                    const double first,
+                    const double last,
+                    const double piv,
+                    const bool   nulr)
 {
   if ((nulr && p >= piv) || (!nulr && p <= piv))
     return 0.;
   else if (nulr)
   {
-    Standard_Real a = piv - first;
+    double a = piv - first;
     a *= a;
-    a               = 1. / a;
-    Standard_Real b = p - first;
+    a        = 1. / a;
+    double b = p - first;
     a *= b;
     b = piv - p;
     a *= b;
@@ -106,10 +105,10 @@ static Standard_Real eval1(const Standard_Real    p,
   }
   else
   {
-    Standard_Real a = last - piv;
+    double a = last - piv;
     a *= a;
-    a               = 1. / a;
-    Standard_Real b = last - p;
+    a        = 1. / a;
+    double b = last - p;
     a *= b;
     b = p - piv;
     a *= b;
@@ -118,21 +117,21 @@ static Standard_Real eval1(const Standard_Real    p,
   }
 }
 
-Handle(TColStd_HArray1OfReal) Law::MixTgt(const Standard_Integer         Degree,
-                                          const TColStd_Array1OfReal&    Knots,
-                                          const TColStd_Array1OfInteger& Mults,
-                                          const Standard_Boolean         NulOnTheRight,
-                                          const Standard_Integer         Index)
+occ::handle<NCollection_HArray1<double>> Law::MixTgt(const int                         Degree,
+                                                     const NCollection_Array1<double>& Knots,
+                                                     const NCollection_Array1<int>&    Mults,
+                                                     const bool NulOnTheRight,
+                                                     const int  Index)
 {
-  Standard_Real    first = Knots(Knots.Lower());
-  Standard_Real    last  = Knots(Knots.Upper());
-  Standard_Real    piv   = Knots(Index);
-  Standard_Integer nbpol = 0, nbfk = 0, i, j, k = 0;
+  double first = Knots(Knots.Lower());
+  double last  = Knots(Knots.Upper());
+  double piv   = Knots(Index);
+  int    nbpol = 0, nbfk = 0, i, j, k = 0;
   for (i = Mults.Lower(); i <= Mults.Upper(); i++)
   {
     nbfk += Mults(i);
   }
-  TColStd_Array1OfReal fk(1, nbfk);
+  NCollection_Array1<double> fk(1, nbfk);
   for (i = Mults.Lower(); i <= Mults.Upper(); i++)
   {
     for (j = 1; j <= Mults(i); j++)
@@ -141,44 +140,44 @@ Handle(TColStd_HArray1OfReal) Law::MixTgt(const Standard_Integer         Degree,
     }
   }
   nbpol = nbfk - Degree - 1;
-  TColStd_Array1OfReal par(1, nbpol);
+  NCollection_Array1<double> par(1, nbpol);
   BSplCLib::BuildSchoenbergPoints(Degree, fk, par);
-  Handle(TColStd_HArray1OfReal) res = new TColStd_HArray1OfReal(1, nbpol);
-  TColStd_Array1OfReal&         pol = res->ChangeArray1();
+  occ::handle<NCollection_HArray1<double>> res = new NCollection_HArray1<double>(1, nbpol);
+  NCollection_Array1<double>&              pol = res->ChangeArray1();
   for (i = 1; i <= nbpol; i++)
   {
     pol(i) = eval1(par(i), first, last, piv, NulOnTheRight);
   }
-  TColStd_Array1OfInteger ord(1, nbpol);
+  NCollection_Array1<int> ord(1, nbpol);
   ord.Init(0);
   BSplCLib::Interpolate(Degree, fk, par, ord, 1, pol(1), i);
   return res;
 }
 
-Handle(Law_BSpline) Law::Reparametrize(const Adaptor3d_Curve& Curve,
-                                       const Standard_Real    First,
-                                       const Standard_Real    Last,
-                                       const Standard_Boolean HasDF,
-                                       const Standard_Boolean HasDL,
-                                       const Standard_Real    DFirst,
-                                       const Standard_Real    DLast,
-                                       const Standard_Boolean Rev,
-                                       const Standard_Integer NbPoints)
+occ::handle<Law_BSpline> Law::Reparametrize(const Adaptor3d_Curve& Curve,
+                                            const double           First,
+                                            const double           Last,
+                                            const bool             HasDF,
+                                            const bool             HasDL,
+                                            const double           DFirst,
+                                            const double           DLast,
+                                            const bool             Rev,
+                                            const int              NbPoints)
 {
   // On evalue la longeur approximative de la courbe.
 
-  Standard_Integer i;
-  Standard_Real    DDFirst = DFirst, DDLast = DLast;
+  int    i;
+  double DDFirst = DFirst, DDLast = DLast;
   if (HasDF && Rev)
     DDFirst = -DFirst;
   if (HasDL && Rev)
     DDLast = -DLast;
-  TColStd_Array1OfReal cumdist(1, 2 * NbPoints);
-  TColStd_Array1OfReal ucourbe(1, 2 * NbPoints);
-  gp_Pnt               P1, P2;
-  Standard_Real        U1 = Curve.FirstParameter();
-  Standard_Real        U2 = Curve.LastParameter();
-  Standard_Real        U, DU, Length = 0.;
+  NCollection_Array1<double> cumdist(1, 2 * NbPoints);
+  NCollection_Array1<double> ucourbe(1, 2 * NbPoints);
+  gp_Pnt                     P1, P2;
+  double                     U1 = Curve.FirstParameter();
+  double                     U2 = Curve.LastParameter();
+  double                     U, DU, Length = 0.;
   if (!Rev)
   {
     P1 = Curve.Value(U1);
@@ -205,14 +204,14 @@ Handle(Law_BSpline) Law::Reparametrize(const Adaptor3d_Curve& Curve,
   else
     ucourbe(2 * NbPoints) = U2;
 
-  Handle(TColStd_HArray1OfReal) point = new TColStd_HArray1OfReal(1, NbPoints);
-  Handle(TColStd_HArray1OfReal) param = new TColStd_HArray1OfReal(1, NbPoints);
+  occ::handle<NCollection_HArray1<double>> point = new NCollection_HArray1<double>(1, NbPoints);
+  occ::handle<NCollection_HArray1<double>> param = new NCollection_HArray1<double>(1, NbPoints);
 
-  Standard_Real    DCorde = Length / (NbPoints - 1);
-  Standard_Real    Corde  = DCorde;
-  Standard_Integer Index  = 1;
-  Standard_Real    Alpha;
-  Standard_Real    fac = 1. / (NbPoints - 1);
+  double DCorde = Length / (NbPoints - 1);
+  double Corde  = DCorde;
+  int    Index  = 1;
+  double Alpha;
+  double fac = 1. / (NbPoints - 1);
 
   point->SetValue(1, ucourbe(1));
   param->SetValue(1, First);
@@ -233,8 +232,8 @@ Handle(Law_BSpline) Law::Reparametrize(const Adaptor3d_Curve& Curve,
   Law_Interpolate inter(point, param, 0, 1.e-9);
   if (HasDF || HasDL)
   {
-    TColStd_Array1OfReal             tgt(1, NbPoints);
-    Handle(TColStd_HArray1OfBoolean) flag = new TColStd_HArray1OfBoolean(1, NbPoints);
+    NCollection_Array1<double>             tgt(1, NbPoints);
+    occ::handle<NCollection_HArray1<bool>> flag = new NCollection_HArray1<bool>(1, NbPoints);
     flag->ChangeArray1().Init(0);
     if (HasDF)
     {
@@ -251,20 +250,20 @@ Handle(Law_BSpline) Law::Reparametrize(const Adaptor3d_Curve& Curve,
   inter.Perform();
   if (!inter.IsDone())
     throw Standard_Failure("Law::Reparametrize echec interpolation");
-  Handle(Law_BSpline) bs = inter.Curve();
+  occ::handle<Law_BSpline> bs = inter.Curve();
   return bs;
 }
 
-static Standard_Real eval2(const Standard_Real p,
-                           //			   const Standard_Real        first,
-                           const Standard_Real,
-                           //			   const Standard_Real        last,
-                           const Standard_Real,
-                           const Standard_Real        mil,
-                           const Standard_Boolean     hasfirst,
-                           const Standard_Boolean     haslast,
-                           const Handle(Law_BSpline)& bs1,
-                           const Handle(Law_BSpline)& bs2)
+static double eval2(const double p,
+                    //			   const double        first,
+                    const double,
+                    //			   const double        last,
+                    const double,
+                    const double                    mil,
+                    const bool                      hasfirst,
+                    const bool                      haslast,
+                    const occ::handle<Law_BSpline>& bs1,
+                    const occ::handle<Law_BSpline>& bs2)
 {
   if (hasfirst && p < mil)
     return bs1->Value(p);
@@ -274,18 +273,18 @@ static Standard_Real eval2(const Standard_Real p,
     return 1.;
 }
 
-Handle(Law_BSpline) Law::Scale(const Standard_Real    First,
-                               const Standard_Real    Last,
-                               const Standard_Boolean HasF,
-                               const Standard_Boolean HasL,
-                               const Standard_Real    VFirst,
-                               const Standard_Real    VLast)
+occ::handle<Law_BSpline> Law::Scale(const double First,
+                                    const double Last,
+                                    const bool   HasF,
+                                    const bool   HasL,
+                                    const double VFirst,
+                                    const double VLast)
 {
-  Standard_Integer        i;
-  Standard_Real           Milieu = 0.5 * (First + Last);
-  TColStd_Array1OfReal    knot(1, 3);
-  TColStd_Array1OfReal    fknot(1, 10);
-  TColStd_Array1OfInteger mult(1, 3);
+  int                        i;
+  double                     Milieu = 0.5 * (First + Last);
+  NCollection_Array1<double> knot(1, 3);
+  NCollection_Array1<double> fknot(1, 10);
+  NCollection_Array1<int>    mult(1, 3);
   knot(1)  = First;
   knot(2)  = Milieu;
   knot(3)  = Last;
@@ -296,11 +295,11 @@ Handle(Law_BSpline) Law::Scale(const Standard_Real    First,
   mult(3)             = 4;
   mult(2)             = 2;
 
-  TColStd_Array1OfReal    pbs(1, 4);
-  TColStd_Array1OfReal    kbs(1, 2);
-  TColStd_Array1OfInteger mbs(1, 2);
+  NCollection_Array1<double> pbs(1, 4);
+  NCollection_Array1<double> kbs(1, 2);
+  NCollection_Array1<int>    mbs(1, 2);
   mbs(1) = mbs(2) = 4;
-  Handle(Law_BSpline) bs1, bs2;
+  occ::handle<Law_BSpline> bs1, bs2;
   if (HasF)
   {
     pbs(1) = pbs(2) = VFirst;
@@ -318,32 +317,32 @@ Handle(Law_BSpline) Law::Scale(const Standard_Real    First,
     bs2             = new Law_BSpline(pbs, kbs, mbs, 3);
   }
 
-  TColStd_Array1OfReal pol(1, 6);
-  TColStd_Array1OfReal par(1, 6);
+  NCollection_Array1<double> pol(1, 6);
+  NCollection_Array1<double> par(1, 6);
   BSplCLib::BuildSchoenbergPoints(3, fknot, par);
   for (i = 1; i <= 6; i++)
   {
     pol(i) = eval2(par(i), First, Last, Milieu, HasF, HasL, bs1, bs2);
   }
-  TColStd_Array1OfInteger ord(1, 6);
+  NCollection_Array1<int> ord(1, 6);
   ord.Init(0);
   BSplCLib::Interpolate(3, fknot, par, ord, 1, pol(1), i);
   bs1 = new Law_BSpline(pol, knot, mult, 3);
   return bs1;
 }
 
-Handle(Law_BSpline) Law::ScaleCub(const Standard_Real    First,
-                                  const Standard_Real    Last,
-                                  const Standard_Boolean HasF,
-                                  const Standard_Boolean HasL,
-                                  const Standard_Real    VFirst,
-                                  const Standard_Real    VLast)
+occ::handle<Law_BSpline> Law::ScaleCub(const double First,
+                                       const double Last,
+                                       const bool   HasF,
+                                       const bool   HasL,
+                                       const double VFirst,
+                                       const double VLast)
 {
-  // Standard_Integer i;
-  Standard_Real           Milieu = 0.5 * (First + Last);
-  TColStd_Array1OfReal    pol(1, 5);
-  TColStd_Array1OfReal    knot(1, 3);
-  TColStd_Array1OfInteger mult(1, 3);
+  // int i;
+  double                     Milieu = 0.5 * (First + Last);
+  NCollection_Array1<double> pol(1, 5);
+  NCollection_Array1<double> knot(1, 3);
+  NCollection_Array1<int>    mult(1, 3);
   knot(1) = First;
   knot(2) = Milieu;
   knot(3) = Last;
@@ -351,7 +350,7 @@ Handle(Law_BSpline) Law::ScaleCub(const Standard_Real    First,
   mult(3) = 4;
   mult(2) = 1;
 
-  Handle(Law_BSpline) bs;
+  occ::handle<Law_BSpline> bs;
   if (HasF)
   {
     pol(1) = pol(2) = VFirst;

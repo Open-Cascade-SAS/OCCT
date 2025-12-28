@@ -25,9 +25,6 @@
 class StepGeom_CartesianPoint;
 class StepVisual_PlanarBox;
 
-class StepVisual_ViewVolume;
-DEFINE_STANDARD_HANDLE(StepVisual_ViewVolume, Standard_Transient)
-
 class StepVisual_ViewVolume : public Standard_Transient
 {
 
@@ -35,65 +32,65 @@ public:
   //! Returns a ViewVolume
   Standard_EXPORT StepVisual_ViewVolume();
 
-  Standard_EXPORT void Init(const StepVisual_CentralOrParallel     aProjectionType,
-                            const Handle(StepGeom_CartesianPoint)& aProjectionPoint,
-                            const Standard_Real                    aViewPlaneDistance,
-                            const Standard_Real                    aFrontPlaneDistance,
-                            const Standard_Boolean                 aFrontPlaneClipping,
-                            const Standard_Real                    aBackPlaneDistance,
-                            const Standard_Boolean                 aBackPlaneClipping,
-                            const Standard_Boolean                 aViewVolumeSidesClipping,
-                            const Handle(StepVisual_PlanarBox)&    aViewWindow);
+  Standard_EXPORT void Init(const StepVisual_CentralOrParallel          aProjectionType,
+                            const occ::handle<StepGeom_CartesianPoint>& aProjectionPoint,
+                            const double                                aViewPlaneDistance,
+                            const double                                aFrontPlaneDistance,
+                            const bool                                  aFrontPlaneClipping,
+                            const double                                aBackPlaneDistance,
+                            const bool                                  aBackPlaneClipping,
+                            const bool                                  aViewVolumeSidesClipping,
+                            const occ::handle<StepVisual_PlanarBox>&    aViewWindow);
 
   Standard_EXPORT void SetProjectionType(const StepVisual_CentralOrParallel aProjectionType);
 
   Standard_EXPORT StepVisual_CentralOrParallel ProjectionType() const;
 
-  Standard_EXPORT void SetProjectionPoint(const Handle(StepGeom_CartesianPoint)& aProjectionPoint);
+  Standard_EXPORT void SetProjectionPoint(
+    const occ::handle<StepGeom_CartesianPoint>& aProjectionPoint);
 
-  Standard_EXPORT Handle(StepGeom_CartesianPoint) ProjectionPoint() const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianPoint> ProjectionPoint() const;
 
-  Standard_EXPORT void SetViewPlaneDistance(const Standard_Real aViewPlaneDistance);
+  Standard_EXPORT void SetViewPlaneDistance(const double aViewPlaneDistance);
 
-  Standard_EXPORT Standard_Real ViewPlaneDistance() const;
+  Standard_EXPORT double ViewPlaneDistance() const;
 
-  Standard_EXPORT void SetFrontPlaneDistance(const Standard_Real aFrontPlaneDistance);
+  Standard_EXPORT void SetFrontPlaneDistance(const double aFrontPlaneDistance);
 
-  Standard_EXPORT Standard_Real FrontPlaneDistance() const;
+  Standard_EXPORT double FrontPlaneDistance() const;
 
-  Standard_EXPORT void SetFrontPlaneClipping(const Standard_Boolean aFrontPlaneClipping);
+  Standard_EXPORT void SetFrontPlaneClipping(const bool aFrontPlaneClipping);
 
-  Standard_EXPORT Standard_Boolean FrontPlaneClipping() const;
+  Standard_EXPORT bool FrontPlaneClipping() const;
 
-  Standard_EXPORT void SetBackPlaneDistance(const Standard_Real aBackPlaneDistance);
+  Standard_EXPORT void SetBackPlaneDistance(const double aBackPlaneDistance);
 
-  Standard_EXPORT Standard_Real BackPlaneDistance() const;
+  Standard_EXPORT double BackPlaneDistance() const;
 
-  Standard_EXPORT void SetBackPlaneClipping(const Standard_Boolean aBackPlaneClipping);
+  Standard_EXPORT void SetBackPlaneClipping(const bool aBackPlaneClipping);
 
-  Standard_EXPORT Standard_Boolean BackPlaneClipping() const;
+  Standard_EXPORT bool BackPlaneClipping() const;
 
-  Standard_EXPORT void SetViewVolumeSidesClipping(const Standard_Boolean aViewVolumeSidesClipping);
+  Standard_EXPORT void SetViewVolumeSidesClipping(const bool aViewVolumeSidesClipping);
 
-  Standard_EXPORT Standard_Boolean ViewVolumeSidesClipping() const;
+  Standard_EXPORT bool ViewVolumeSidesClipping() const;
 
-  Standard_EXPORT void SetViewWindow(const Handle(StepVisual_PlanarBox)& aViewWindow);
+  Standard_EXPORT void SetViewWindow(const occ::handle<StepVisual_PlanarBox>& aViewWindow);
 
-  Standard_EXPORT Handle(StepVisual_PlanarBox) ViewWindow() const;
+  Standard_EXPORT occ::handle<StepVisual_PlanarBox> ViewWindow() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_ViewVolume, Standard_Transient)
 
-protected:
 private:
-  StepVisual_CentralOrParallel    projectionType;
-  Handle(StepGeom_CartesianPoint) projectionPoint;
-  Standard_Real                   viewPlaneDistance;
-  Standard_Real                   frontPlaneDistance;
-  Standard_Boolean                frontPlaneClipping;
-  Standard_Real                   backPlaneDistance;
-  Standard_Boolean                backPlaneClipping;
-  Standard_Boolean                viewVolumeSidesClipping;
-  Handle(StepVisual_PlanarBox)    viewWindow;
+  StepVisual_CentralOrParallel         projectionType;
+  occ::handle<StepGeom_CartesianPoint> projectionPoint;
+  double                               viewPlaneDistance;
+  double                               frontPlaneDistance;
+  bool                                 frontPlaneClipping;
+  double                               backPlaneDistance;
+  bool                                 backPlaneClipping;
+  bool                                 viewVolumeSidesClipping;
+  occ::handle<StepVisual_PlanarBox>    viewWindow;
 };
 
 #endif // _StepVisual_ViewVolume_HeaderFile

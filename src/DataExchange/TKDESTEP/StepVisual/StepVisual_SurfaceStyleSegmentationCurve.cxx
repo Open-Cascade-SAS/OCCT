@@ -19,20 +19,20 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSegmentationCurve, Standard_Tr
 StepVisual_SurfaceStyleSegmentationCurve::StepVisual_SurfaceStyleSegmentationCurve() {}
 
 void StepVisual_SurfaceStyleSegmentationCurve::Init(
-  const Handle(StepVisual_CurveStyle)& aStyleOfSegmentationCurve)
+  const occ::handle<StepVisual_CurveStyle>& aStyleOfSegmentationCurve)
 {
   // --- classe own fields ---
   styleOfSegmentationCurve = aStyleOfSegmentationCurve;
 }
 
 void StepVisual_SurfaceStyleSegmentationCurve::SetStyleOfSegmentationCurve(
-  const Handle(StepVisual_CurveStyle)& aStyleOfSegmentationCurve)
+  const occ::handle<StepVisual_CurveStyle>& aStyleOfSegmentationCurve)
 {
   styleOfSegmentationCurve = aStyleOfSegmentationCurve;
 }
 
-Handle(StepVisual_CurveStyle) StepVisual_SurfaceStyleSegmentationCurve::StyleOfSegmentationCurve()
-  const
+occ::handle<StepVisual_CurveStyle> StepVisual_SurfaceStyleSegmentationCurve::
+  StyleOfSegmentationCurve() const
 {
   return styleOfSegmentationCurve;
 }

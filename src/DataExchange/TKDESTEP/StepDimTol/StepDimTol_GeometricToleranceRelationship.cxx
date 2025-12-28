@@ -28,10 +28,10 @@ StepDimTol_GeometricToleranceRelationship::StepDimTol_GeometricToleranceRelation
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceRelationship::Init(
-  const Handle(TCollection_HAsciiString)&      theName,
-  const Handle(TCollection_HAsciiString)&      theDescription,
-  const Handle(StepDimTol_GeometricTolerance)& theRelatingGeometricTolerance,
-  const Handle(StepDimTol_GeometricTolerance)& theRelatedGeometricTolerance)
+  const occ::handle<TCollection_HAsciiString>&      theName,
+  const occ::handle<TCollection_HAsciiString>&      theDescription,
+  const occ::handle<StepDimTol_GeometricTolerance>& theRelatingGeometricTolerance,
+  const occ::handle<StepDimTol_GeometricTolerance>& theRelatedGeometricTolerance)
 {
 
   myName = theName;
@@ -45,7 +45,7 @@ void StepDimTol_GeometricToleranceRelationship::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepDimTol_GeometricToleranceRelationship::Name() const
+occ::handle<TCollection_HAsciiString> StepDimTol_GeometricToleranceRelationship::Name() const
 {
   return myName;
 }
@@ -53,14 +53,14 @@ Handle(TCollection_HAsciiString) StepDimTol_GeometricToleranceRelationship::Name
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceRelationship::SetName(
-  const Handle(TCollection_HAsciiString)& theName)
+  const occ::handle<TCollection_HAsciiString>& theName)
 {
   myName = theName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepDimTol_GeometricToleranceRelationship::Description() const
+occ::handle<TCollection_HAsciiString> StepDimTol_GeometricToleranceRelationship::Description() const
 {
   return myDescription;
 }
@@ -68,14 +68,14 @@ Handle(TCollection_HAsciiString) StepDimTol_GeometricToleranceRelationship::Desc
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceRelationship::SetDescription(
-  const Handle(TCollection_HAsciiString)& theDescription)
+  const occ::handle<TCollection_HAsciiString>& theDescription)
 {
   myDescription = theDescription;
 }
 
 //=================================================================================================
 
-Handle(StepDimTol_GeometricTolerance) StepDimTol_GeometricToleranceRelationship::
+occ::handle<StepDimTol_GeometricTolerance> StepDimTol_GeometricToleranceRelationship::
   RelatingGeometricTolerance() const
 {
   return myRelatingGeometricTolerance;
@@ -84,14 +84,14 @@ Handle(StepDimTol_GeometricTolerance) StepDimTol_GeometricToleranceRelationship:
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceRelationship::SetRelatingGeometricTolerance(
-  const Handle(StepDimTol_GeometricTolerance)& theRelatingGeometricTolerance)
+  const occ::handle<StepDimTol_GeometricTolerance>& theRelatingGeometricTolerance)
 {
   myRelatingGeometricTolerance = theRelatingGeometricTolerance;
 }
 
 //=================================================================================================
 
-Handle(StepDimTol_GeometricTolerance) StepDimTol_GeometricToleranceRelationship::
+occ::handle<StepDimTol_GeometricTolerance> StepDimTol_GeometricToleranceRelationship::
   RelatedGeometricTolerance() const
 {
   return myRelatedGeometricTolerance;
@@ -100,7 +100,7 @@ Handle(StepDimTol_GeometricTolerance) StepDimTol_GeometricToleranceRelationship:
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceRelationship::SetRelatedGeometricTolerance(
-  const Handle(StepDimTol_GeometricTolerance)& theRelatedGeometricTolerance)
+  const occ::handle<StepDimTol_GeometricTolerance>& theRelatedGeometricTolerance)
 {
   myRelatedGeometricTolerance = theRelatedGeometricTolerance;
 }

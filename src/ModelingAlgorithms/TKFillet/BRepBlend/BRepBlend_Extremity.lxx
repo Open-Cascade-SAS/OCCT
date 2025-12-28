@@ -21,11 +21,11 @@ inline const gp_Pnt& BRepBlend_Extremity::Value() const
 
 inline void BRepBlend_Extremity::SetTangent(const gp_Vec& Tangent)
 {
-  hastang = Standard_True;
+  hastang = true;
   tang    = Tangent;
 }
 
-inline Standard_Boolean BRepBlend_Extremity::HasTangent() const
+inline bool BRepBlend_Extremity::HasTangent() const
 {
   return hastang;
 }
@@ -39,23 +39,23 @@ inline const gp_Vec& BRepBlend_Extremity::Tangent() const
   return tang;
 }
 
-inline void BRepBlend_Extremity::Parameters(Standard_Real& U, Standard_Real& V) const
+inline void BRepBlend_Extremity::Parameters(double& U, double& V) const
 {
   U = u;
   V = v;
 }
 
-inline Standard_Real BRepBlend_Extremity::Tolerance() const
+inline double BRepBlend_Extremity::Tolerance() const
 {
   return tol;
 }
 
-inline Standard_Boolean BRepBlend_Extremity::IsVertex() const
+inline bool BRepBlend_Extremity::IsVertex() const
 {
   return isvtx;
 }
 
-inline const Handle(Adaptor3d_HVertex)& BRepBlend_Extremity::Vertex() const
+inline const occ::handle<Adaptor3d_HVertex>& BRepBlend_Extremity::Vertex() const
 {
   if (!isvtx)
   {
@@ -64,24 +64,23 @@ inline const Handle(Adaptor3d_HVertex)& BRepBlend_Extremity::Vertex() const
   return vtx;
 }
 
-inline Standard_Integer BRepBlend_Extremity::NbPointOnRst() const
+inline int BRepBlend_Extremity::NbPointOnRst() const
 {
   return seqpt.Length();
 }
 
-inline const BRepBlend_PointOnRst& BRepBlend_Extremity::PointOnRst(
-  const Standard_Integer Index) const
+inline const BRepBlend_PointOnRst& BRepBlend_Extremity::PointOnRst(const int Index) const
 {
   return seqpt(Index);
 }
 
-inline Standard_Real BRepBlend_Extremity::Parameter() const
+inline double BRepBlend_Extremity::Parameter() const
 
 {
   return u;
 }
 
-inline Standard_Real BRepBlend_Extremity::ParameterOnGuide() const
+inline double BRepBlend_Extremity::ParameterOnGuide() const
 
 {
   return param;

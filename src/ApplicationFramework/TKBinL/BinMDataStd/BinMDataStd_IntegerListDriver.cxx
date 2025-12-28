@@ -18,7 +18,8 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <TDataStd_IntegerList.hxx>
 #include <TDF_Attribute.hxx>
 
@@ -27,14 +28,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntegerListDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_IntegerListDriver::BinMDataStd_IntegerListDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_IntegerList)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_IntegerListDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_IntegerListDriver::NewEmpty() const
 {
   return new TDataStd_IntegerList();
 }
@@ -43,21 +44,20 @@ Handle(TDF_Attribute) BinMDataStd_IntegerListDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDataStd_IntegerListDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_IntegerListDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                          const occ::handle<TDF_Attribute>& theTarget,
+                                          BinObjMgt_RRelocationTable&       theRelocTable) const
 {
-  Standard_Integer aIndex, aFirstInd, aLastInd;
+  int aIndex, aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
-    return Standard_False;
-  const Handle(TDataStd_IntegerList) anAtt = Handle(TDataStd_IntegerList)::DownCast(theTarget);
+    return false;
+  const occ::handle<TDataStd_IntegerList> anAtt = occ::down_cast<TDataStd_IntegerList>(theTarget);
   if (aLastInd > 0)
   {
-    const Standard_Integer aLength = aLastInd - aFirstInd + 1;
+    const int aLength = aLastInd - aFirstInd + 1;
     if (aLength > 0)
     {
-      TColStd_Array1OfInteger aTargetArray(aFirstInd, aLastInd);
+      NCollection_Array1<int> aTargetArray(aFirstInd, aLastInd);
       theSource.GetIntArray(&aTargetArray(aFirstInd), aLength);
       for (aIndex = aFirstInd; aIndex <= aLastInd; aIndex++)
         anAtt->Append(aTargetArray.Value(aIndex));
@@ -67,35 +67,36 @@ Standard_Boolean BinMDataStd_IntegerListDriver::Paste(
   BinMDataStd::SetAttributeID(theSource,
                               anAtt,
                               theRelocTable.GetHeaderData()->StorageVersion().IntegerValue());
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_IntegerListDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                          BinObjMgt_Persistent&        theTarget,
-                                          BinObjMgt_SRelocationTable&) const
+void BinMDataStd_IntegerListDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  const Handle(TDataStd_IntegerList) anAtt     = Handle(TDataStd_IntegerList)::DownCast(theSource);
-  const Standard_Integer             aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;
-  const Standard_Integer             aLastInd(anAtt->Extent());
-  const Standard_Integer             aLength = aLastInd - aFirstInd + 1;
+  const occ::handle<TDataStd_IntegerList> anAtt = occ::down_cast<TDataStd_IntegerList>(theSource);
+  const int                               aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;
+  const int                               aLastInd(anAtt->Extent());
+  const int                               aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
     return;
   theTarget << aFirstInd << aLastInd;
   if (aLastInd == 0)
     return;
-  TColStd_Array1OfInteger aSourceArray(aFirstInd, aLastInd);
+  NCollection_Array1<int> aSourceArray(aFirstInd, aLastInd);
   if (aLastInd >= 1)
   {
-    TColStd_ListIteratorOfListOfInteger itr(anAtt->List());
-    for (Standard_Integer i = 1; itr.More(); itr.Next(), i++)
+    NCollection_List<int>::Iterator itr(anAtt->List());
+    for (int i = 1; itr.More(); itr.Next(), i++)
     {
       aSourceArray.SetValue(i, itr.Value());
     }
-    Standard_Integer* aPtr = (Standard_Integer*)&aSourceArray(aFirstInd);
+    int* aPtr = (int*)&aSourceArray(aFirstInd);
     theTarget.PutIntArray(aPtr, aLength);
   }
 

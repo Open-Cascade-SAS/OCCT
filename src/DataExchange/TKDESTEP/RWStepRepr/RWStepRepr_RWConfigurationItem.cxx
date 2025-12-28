@@ -29,10 +29,11 @@ RWStepRepr_RWConfigurationItem::RWStepRepr_RWConfigurationItem() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWConfigurationItem::ReadStep(const Handle(StepData_StepReaderData)&    data,
-                                              const Standard_Integer                    num,
-                                              Handle(Interface_Check)&                  ach,
-                                              const Handle(StepRepr_ConfigurationItem)& ent) const
+void RWStepRepr_RWConfigurationItem::ReadStep(
+  const occ::handle<StepData_StepReaderData>&    data,
+  const int                                      num,
+  occ::handle<Interface_Check>&                  ach,
+  const occ::handle<StepRepr_ConfigurationItem>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "configuration_item"))
@@ -40,36 +41,36 @@ void RWStepRepr_RWConfigurationItem::ReadStep(const Handle(StepData_StepReaderDa
 
   // Own fields of ConfigurationItem
 
-  Handle(TCollection_HAsciiString) aId;
+  occ::handle<TCollection_HAsciiString> aId;
   data->ReadString(num, 1, "id", ach, aId);
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 2, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasDescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "description", ach, aDescription);
   }
   else
   {
-    hasDescription = Standard_False;
+    hasDescription = false;
   }
 
-  Handle(StepRepr_ProductConcept) aItemConcept;
+  occ::handle<StepRepr_ProductConcept> aItemConcept;
   data
     ->ReadEntity(num, 4, "item_concept", ach, STANDARD_TYPE(StepRepr_ProductConcept), aItemConcept);
 
-  Handle(TCollection_HAsciiString) aPurpose;
-  Standard_Boolean                 hasPurpose = Standard_True;
+  occ::handle<TCollection_HAsciiString> aPurpose;
+  bool                                  hasPurpose = true;
   if (data->IsParamDefined(num, 5))
   {
     data->ReadString(num, 5, "purpose", ach, aPurpose);
   }
   else
   {
-    hasPurpose = Standard_False;
+    hasPurpose = false;
   }
 
   // Initialize entity
@@ -78,8 +79,9 @@ void RWStepRepr_RWConfigurationItem::ReadStep(const Handle(StepData_StepReaderDa
 
 //=================================================================================================
 
-void RWStepRepr_RWConfigurationItem::WriteStep(StepData_StepWriter&                      SW,
-                                               const Handle(StepRepr_ConfigurationItem)& ent) const
+void RWStepRepr_RWConfigurationItem::WriteStep(
+  StepData_StepWriter&                           SW,
+  const occ::handle<StepRepr_ConfigurationItem>& ent) const
 {
 
   // Own fields of ConfigurationItem
@@ -107,8 +109,8 @@ void RWStepRepr_RWConfigurationItem::WriteStep(StepData_StepWriter&             
 
 //=================================================================================================
 
-void RWStepRepr_RWConfigurationItem::Share(const Handle(StepRepr_ConfigurationItem)& ent,
-                                           Interface_EntityIterator&                 iter) const
+void RWStepRepr_RWConfigurationItem::Share(const occ::handle<StepRepr_ConfigurationItem>& ent,
+                                           Interface_EntityIterator& iter) const
 {
 
   // Own fields of ConfigurationItem

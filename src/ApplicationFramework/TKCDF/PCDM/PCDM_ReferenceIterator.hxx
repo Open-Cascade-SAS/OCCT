@@ -20,7 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <PCDM_SequenceOfReference.hxx>
+#include <PCDM_Reference.hxx>
+#include <NCollection_Sequence.hxx>
 #include <CDM_MetaDataLookUpTable.hxx>
 
 class Message_Messenger;
@@ -28,44 +29,40 @@ class CDM_Document;
 class CDM_MetaData;
 class CDM_Application;
 
-class PCDM_ReferenceIterator;
-DEFINE_STANDARD_HANDLE(PCDM_ReferenceIterator, Standard_Transient)
-
 class PCDM_ReferenceIterator : public Standard_Transient
 {
 
 public:
   //! Warning! The constructor does not initialization.
-  Standard_EXPORT PCDM_ReferenceIterator(const Handle(Message_Messenger)& theMessageDriver);
+  Standard_EXPORT PCDM_ReferenceIterator(const occ::handle<Message_Messenger>& theMessageDriver);
 
-  Standard_EXPORT void LoadReferences(const Handle(CDM_Document)&    aDocument,
-                                      const Handle(CDM_MetaData)&    aMetaData,
-                                      const Handle(CDM_Application)& anApplication,
-                                      const Standard_Boolean         UseStorageConfiguration);
+  Standard_EXPORT void LoadReferences(const occ::handle<CDM_Document>&    aDocument,
+                                      const occ::handle<CDM_MetaData>&    aMetaData,
+                                      const occ::handle<CDM_Application>& anApplication,
+                                      const bool                          UseStorageConfiguration);
 
-  Standard_EXPORT virtual void Init(const Handle(CDM_MetaData)& aMetaData);
+  Standard_EXPORT virtual void Init(const occ::handle<CDM_MetaData>& aMetaData);
 
   DEFINE_STANDARD_RTTIEXT(PCDM_ReferenceIterator, Standard_Transient)
 
-protected:
 private:
-  Standard_EXPORT virtual Standard_Boolean More() const;
+  Standard_EXPORT virtual bool More() const;
 
   Standard_EXPORT virtual void Next();
 
-  Standard_EXPORT virtual Handle(CDM_MetaData) MetaData(
-    CDM_MetaDataLookUpTable& theLookUpTable,
-    const Standard_Boolean   UseStorageConfiguration) const;
+  Standard_EXPORT virtual occ::handle<CDM_MetaData> MetaData(
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+    const bool UseStorageConfiguration) const;
 
-  Standard_EXPORT virtual Standard_Integer ReferenceIdentifier() const;
+  Standard_EXPORT virtual int ReferenceIdentifier() const;
 
   //! returns the version of the document in the reference
-  Standard_EXPORT virtual Standard_Integer DocumentVersion() const;
+  Standard_EXPORT virtual int DocumentVersion() const;
 
 private:
-  PCDM_SequenceOfReference  myReferences;
-  Standard_Integer          myIterator;
-  Handle(Message_Messenger) myMessageDriver;
+  NCollection_Sequence<PCDM_Reference> myReferences;
+  int                                  myIterator;
+  occ::handle<Message_Messenger>       myMessageDriver;
 };
 
 #endif // _PCDM_ReferenceIterator_HeaderFile

@@ -33,11 +33,10 @@ public:
   void SetShape(const TopoDS_Shape& theShape) { myShape = theShape; }
 
   //! Returns false.
-  virtual Standard_EXPORT Standard_Boolean SupportsMerge() const Standard_OVERRIDE;
+  virtual Standard_EXPORT bool SupportsMerge() const override;
 
   //! Returns false.
-  virtual Standard_EXPORT Standard_Boolean Merge(const Handle(Message_Alert)& theTarget)
-    Standard_OVERRIDE;
+  virtual Standard_EXPORT bool Merge(const occ::handle<Message_Alert>& theTarget) override;
 
   // OCCT RTTI
   DEFINE_STANDARD_RTTIEXT(TopoDS_AlertWithShape, Message_Alert)

@@ -26,8 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalRefFileIndex, IGESData_IGESEntity)
 
 IGESBasic_ExternalRefFileIndex::IGESBasic_ExternalRefFileIndex() {}
 
-void IGESBasic_ExternalRefFileIndex::Init(const Handle(Interface_HArray1OfHAsciiString)& aNameArray,
-                                          const Handle(IGESData_HArray1OfIGESEntity)& allEntities)
+void IGESBasic_ExternalRefFileIndex::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aNameArray,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      allEntities)
 {
   if (aNameArray->Lower() != 1 || allEntities->Lower() != 1
       || aNameArray->Length() != allEntities->Length())
@@ -38,19 +39,17 @@ void IGESBasic_ExternalRefFileIndex::Init(const Handle(Interface_HArray1OfHAscii
   InitTypeAndForm(402, 12);
 }
 
-Standard_Integer IGESBasic_ExternalRefFileIndex::NbEntries() const
+int IGESBasic_ExternalRefFileIndex::NbEntries() const
 {
   return theNames->Length();
 }
 
-Handle(TCollection_HAsciiString) IGESBasic_ExternalRefFileIndex::Name(
-  const Standard_Integer Index) const
+occ::handle<TCollection_HAsciiString> IGESBasic_ExternalRefFileIndex::Name(const int Index) const
 {
   return theNames->Value(Index);
 }
 
-Handle(IGESData_IGESEntity) IGESBasic_ExternalRefFileIndex::Entity(
-  const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESBasic_ExternalRefFileIndex::Entity(const int Index) const
 {
   return theEntities->Value(Index);
 }

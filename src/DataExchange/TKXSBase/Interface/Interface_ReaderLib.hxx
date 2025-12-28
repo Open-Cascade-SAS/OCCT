@@ -36,14 +36,14 @@ public:
 
   //! Adds a couple (Module-Protocol) into the global definition set
   //! for this class of Library.
-  Standard_EXPORT static void SetGlobal(const Handle(Interface_ReaderModule)& amodule,
-                                        const Handle(Interface_Protocol)&     aprotocol);
+  Standard_EXPORT static void SetGlobal(const occ::handle<Interface_ReaderModule>& amodule,
+                                        const occ::handle<Interface_Protocol>&     aprotocol);
 
   //! Creates a Library which complies with a Protocol, that is :
   //! Same class (criterium IsInstance)
   //! This creation gets the Modules from the global set, those
   //! which are bound to the given Protocol and its Resources
-  Standard_EXPORT Interface_ReaderLib(const Handle(Interface_Protocol)& aprotocol);
+  Standard_EXPORT Interface_ReaderLib(const occ::handle<Interface_Protocol>& aprotocol);
 
   //! Creates an empty Library : it will later by filled by method
   //! AddProtocol
@@ -52,7 +52,7 @@ public:
   //! Adds a couple (Module-Protocol) to the Library, given the
   //! class of a Protocol. Takes Resources into account.
   //! (if <aprotocol> is not of type TheProtocol, it is not added)
-  Standard_EXPORT void AddProtocol(const Handle(Standard_Transient)& aprotocol);
+  Standard_EXPORT void AddProtocol(const occ::handle<Standard_Transient>& aprotocol);
 
   //! Clears the list of Modules of a library (can be used to
   //! redefine the order of Modules before action : Clear then
@@ -69,30 +69,29 @@ public:
   //! Number determined by the associated Protocol.
   //! If Select has failed, <module> is Null Handle and CN is zero.
   //! (Select can work on any criterium, such as Object DynamicType)
-  Standard_EXPORT Standard_Boolean Select(const Handle(Standard_Transient)& obj,
-                                          Handle(Interface_ReaderModule)&   module,
-                                          Standard_Integer&                 CN) const;
+  Standard_EXPORT bool Select(const occ::handle<Standard_Transient>& obj,
+                              occ::handle<Interface_ReaderModule>&   module,
+                              int&                                   CN) const;
 
   //! Starts Iteration on the Modules (sets it on the first one)
   Standard_EXPORT void Start();
 
   //! Returns True if there are more Modules to iterate on
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   //! Iterates by getting the next Module in the list
   //! If there is none, the exception will be raised by Value
   Standard_EXPORT void Next();
 
   //! Returns the current Module in the Iteration
-  Standard_EXPORT const Handle(Interface_ReaderModule)& Module() const;
+  Standard_EXPORT const occ::handle<Interface_ReaderModule>& Module() const;
 
   //! Returns the current Protocol in the Iteration
-  Standard_EXPORT const Handle(Interface_Protocol)& Protocol() const;
+  Standard_EXPORT const occ::handle<Interface_Protocol>& Protocol() const;
 
-protected:
 private:
-  Handle(Interface_NodeOfReaderLib) thelist;
-  Handle(Interface_NodeOfReaderLib) thecurr;
+  occ::handle<Interface_NodeOfReaderLib> thelist;
+  occ::handle<Interface_NodeOfReaderLib> thecurr;
 };
 
 #endif // _Interface_ReaderLib_HeaderFile

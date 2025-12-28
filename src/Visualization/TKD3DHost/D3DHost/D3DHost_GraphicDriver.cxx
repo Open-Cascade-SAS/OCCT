@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(D3DHost_GraphicDriver, OpenGl_GraphicDriver)
 //=================================================================================================
 
 D3DHost_GraphicDriver::D3DHost_GraphicDriver()
-    : OpenGl_GraphicDriver(Handle(Aspect_DisplayConnection)(), Standard_True)
+    : OpenGl_GraphicDriver(occ::handle<Aspect_DisplayConnection>(), true)
 {
   //
 }
@@ -41,15 +41,16 @@ D3DHost_GraphicDriver::~D3DHost_GraphicDriver()
 
 //=================================================================================================
 
-Handle(Graphic3d_CView) D3DHost_GraphicDriver::CreateView(
-  const Handle(Graphic3d_StructureManager)& theMgr)
+occ::handle<Graphic3d_CView> D3DHost_GraphicDriver::CreateView(
+  const occ::handle<Graphic3d_StructureManager>& theMgr)
 {
-  Handle(D3DHost_View) aView = new D3DHost_View(theMgr, this, myCaps, &myStateCounter);
+  occ::handle<D3DHost_View> aView = new D3DHost_View(theMgr, this, myCaps, &myStateCounter);
   myMapOfView.Add(aView);
-  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter(myLayers); aLayerIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
+       aLayerIter.More();
        aLayerIter.Next())
   {
-    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
     aView->InsertLayerAfter(aLayer->LayerId(), aLayer->LayerSettings(), Graphic3d_ZLayerId_UNKNOWN);
   }
   return aView;

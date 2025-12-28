@@ -23,24 +23,24 @@
 #include <BRepTest_Objects.hxx>
 #include <DBRep.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 
 #include <Draw_ProgressIndicator.hxx>
 
 #include <stdio.h>
 
-static Standard_Integer bapibuild(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bapibop(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bapisplit(Draw_Interpretor&, Standard_Integer, const char**);
+static int bapibuild(Draw_Interpretor&, int, const char**);
+static int bapibop(Draw_Interpretor&, int, const char**);
+static int bapisplit(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::APICommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
   // Commands
@@ -82,7 +82,7 @@ void BOPTest::APICommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer bapibop(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bapibop(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 3)
   {
@@ -97,8 +97,8 @@ Standard_Integer bapibop(Draw_Interpretor& di, Standard_Integer n, const char** 
     return 0;
   }
   //
-  Standard_Boolean              bRunParallel, bNonDestructive;
-  Standard_Real                 aFuzzyValue;
+  bool                          bRunParallel, bNonDestructive;
+  double                        aFuzzyValue;
   BRepAlgoAPI_Common            aCommon;
   BRepAlgoAPI_Fuse              aFuse;
   BRepAlgoAPI_Cut               aCut;
@@ -130,8 +130,8 @@ Standard_Integer bapibop(Draw_Interpretor& di, Standard_Integer n, const char** 
       break;
   }
   //
-  TopTools_ListOfShape& aLS = BOPTest_Objects::Shapes();
-  TopTools_ListOfShape& aLT = BOPTest_Objects::Tools();
+  NCollection_List<TopoDS_Shape>& aLS = BOPTest_Objects::Shapes();
+  NCollection_List<TopoDS_Shape>& aLT = BOPTest_Objects::Tools();
   //
   bRunParallel           = BOPTest_Objects::RunParallel();
   aFuzzyValue            = BOPTest_Objects::FuzzyValue();
@@ -157,7 +157,7 @@ Standard_Integer bapibop(Draw_Interpretor& di, Standard_Integer n, const char** 
   pBuilder->SetUseOBB(BOPTest_Objects::UseOBB());
   pBuilder->SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   pBuilder->Build(aProgress->Start());
   pBuilder->SimplifyResult(BOPTest_Objects::UnifyEdges(),
                            BOPTest_Objects::UnifyFaces(),
@@ -195,7 +195,7 @@ Standard_Integer bapibop(Draw_Interpretor& di, Standard_Integer n, const char** 
 
 //=================================================================================================
 
-Standard_Integer bapibuild(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bapibuild(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -203,13 +203,13 @@ Standard_Integer bapibuild(Draw_Interpretor& di, Standard_Integer n, const char*
     return 1;
   }
   //
-  Standard_Boolean        bRunParallel, bNonDestructive;
-  Standard_Integer        iErr;
-  Standard_Real           aFuzzyValue;
+  bool                    bRunParallel, bNonDestructive;
+  int                     iErr;
+  double                  aFuzzyValue;
   BRepAlgoAPI_BuilderAlgo aBuilder;
   //
-  TopTools_ListOfShape aLS = BOPTest_Objects::Shapes();
-  TopTools_ListOfShape aLT = BOPTest_Objects::Tools();
+  NCollection_List<TopoDS_Shape> aLS = BOPTest_Objects::Shapes();
+  NCollection_List<TopoDS_Shape> aLT = BOPTest_Objects::Tools();
   //
   aLS.Append(aLT);
   bRunParallel           = BOPTest_Objects::RunParallel();
@@ -226,7 +226,7 @@ Standard_Integer bapibuild(Draw_Interpretor& di, Standard_Integer n, const char*
   aBuilder.SetUseOBB(BOPTest_Objects::UseOBB());
   aBuilder.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   aBuilder.Build(aProgress->Start());
   aBuilder.SimplifyResult(BOPTest_Objects::UnifyEdges(),
                           BOPTest_Objects::UnifyFaces(),
@@ -265,7 +265,7 @@ Standard_Integer bapibuild(Draw_Interpretor& di, Standard_Integer n, const char*
 
 //=================================================================================================
 
-Standard_Integer bapisplit(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bapisplit(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -287,7 +287,7 @@ Standard_Integer bapisplit(Draw_Interpretor& di, Standard_Integer n, const char*
   aSplitter.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   // performing operation
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   aSplitter.Build(aProgress->Start());
   aSplitter.SimplifyResult(BOPTest_Objects::UnifyEdges(),
                            BOPTest_Objects::UnifyFaces(),
@@ -305,7 +305,7 @@ Standard_Integer bapisplit(Draw_Interpretor& di, Standard_Integer n, const char*
     di << aSStream;
   }
   // checking error status
-  Standard_Integer iErr = aSplitter.HasErrors();
+  int iErr = aSplitter.HasErrors();
   if (iErr)
   {
     Standard_SStream aSStream;

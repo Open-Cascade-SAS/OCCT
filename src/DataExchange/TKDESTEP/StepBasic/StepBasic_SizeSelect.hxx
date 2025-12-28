@@ -37,25 +37,20 @@ public:
   //! Recognizes a TrimmingSelect Kind Entity that is :
   //! 1 -> SizeMember
   //! 0 else (i.e. Real)
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns a SizeMember (POSITIVE_LENGTH_MEASURE) as preferred
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Recognizes a SelectMember as Real, named as PARAMETER_VALUE
   //! 1 -> PositiveLengthMeasure i.e. Real
   //! 0 else (i.e. Entity)
-  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
-  Standard_EXPORT void SetRealValue(const Standard_Real aReal);
+  Standard_EXPORT void SetRealValue(const double aReal);
 
   //! returns Value as a Real (Null if another type)
-  Standard_EXPORT Standard_Real RealValue() const;
-
-protected:
-private:
+  Standard_EXPORT double RealValue() const;
 };
 
 #endif // _StepBasic_SizeSelect_HeaderFile

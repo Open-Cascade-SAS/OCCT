@@ -31,33 +31,33 @@
 
 ShapeAnalysis_WireVertex::ShapeAnalysis_WireVertex()
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myPreci = Precision::Confusion();
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::Init(const TopoDS_Wire& wire, const Standard_Real preci)
+void ShapeAnalysis_WireVertex::Init(const TopoDS_Wire& wire, const double preci)
 {
   Init(new ShapeExtend_WireData(wire), preci);
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::Init(const Handle(ShapeExtend_WireData)& sbwd,
-                                    const Standard_Real /*preci*/)
+void ShapeAnalysis_WireVertex::Init(const occ::handle<ShapeExtend_WireData>& sbwd,
+                                    const double /*preci*/)
 {
-  Standard_Integer nb = sbwd->NbEdges();
+  int nb = sbwd->NbEdges();
   if (nb == 0)
     return;
-  myDone = Standard_False;
+  myDone = false;
   myWire = sbwd;
-  myStat = new TColStd_HArray1OfInteger(1, nb);
+  myStat = new NCollection_HArray1<int>(1, nb);
   myStat->Init(0);
-  myPos  = new TColgp_HArray1OfXYZ(1, nb);
-  myUPre = new TColStd_HArray1OfReal(1, nb);
+  myPos  = new NCollection_HArray1<gp_XYZ>(1, nb);
+  myUPre = new NCollection_HArray1<double>(1, nb);
   myUPre->Init(0.0);
-  myUFol = new TColStd_HArray1OfReal(1, nb);
+  myUFol = new NCollection_HArray1<double>(1, nb);
   myUFol->Init(0.0);
 }
 
@@ -70,17 +70,17 @@ void ShapeAnalysis_WireVertex::Load(const TopoDS_Wire& wire)
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::Load(const Handle(ShapeExtend_WireData)& sbwd)
+void ShapeAnalysis_WireVertex::Load(const occ::handle<ShapeExtend_WireData>& sbwd)
 {
   Init(sbwd, myPreci);
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::SetPrecision(const Standard_Real preci)
+void ShapeAnalysis_WireVertex::SetPrecision(const double preci)
 {
   myPreci = preci;
-  myDone  = Standard_False;
+  myDone  = false;
 }
 
 //=================================================================================================
@@ -89,12 +89,12 @@ void ShapeAnalysis_WireVertex::Analyze()
 {
   if (myStat.IsNull())
     return;
-  myDone = Standard_True;
+  myDone = true;
   //  Analyse des vertex qui se suivent
-  Handle(Geom_Curve) c1, c2;
-  Standard_Real      cf, cl, upre, ufol;
-  Standard_Integer   i, j, nb = myStat->Length(), stat;
-  ShapeAnalysis_Edge EA;
+  occ::handle<Geom_Curve> c1, c2;
+  double                  cf, cl, upre, ufol;
+  int                     i, j, nb = myStat->Length(), stat;
+  ShapeAnalysis_Edge      EA;
   for (i = 1; i <= nb; i++)
   {
     stat = -1; // au depart
@@ -106,8 +106,8 @@ void ShapeAnalysis_WireVertex::Analyze()
     TopoDS_Vertex V2   = EA.FirstVertex(myWire->Edge(j));
     gp_Pnt        PV1  = BRep_Tool::Pnt(V1);
     gp_Pnt        PV2  = BRep_Tool::Pnt(V2);
-    Standard_Real tol1 = BRep_Tool::Tolerance(V1);
-    Standard_Real tol2 = BRep_Tool::Tolerance(V2);
+    double        tol1 = BRep_Tool::Tolerance(V1);
+    double        tol2 = BRep_Tool::Tolerance(V2);
     EA.Curve3d(myWire->Edge(i), c1, cf, upre);
     EA.Curve3d(myWire->Edge(j), c2, ufol, cl);
     if (c1.IsNull() || c2.IsNull())
@@ -116,9 +116,9 @@ void ShapeAnalysis_WireVertex::Analyze()
     gp_Pnt P2 = c2->Value(ufol);
 
     //   Est-ce que le jeu de vertex convient ? (meme si V1 == V2, on verifie)
-    Standard_Real d1 = PV1.Distance(P1);
-    Standard_Real d2 = PV2.Distance(P2);
-    Standard_Real dd = PV1.Distance(PV2);
+    double d1 = PV1.Distance(P1);
+    double d2 = PV2.Distance(P2);
+    double dd = PV1.Distance(PV2);
     if (d1 <= tol1 && d2 <= tol2 && dd <= (tol1 + tol2))
       stat = 1;
     else if (d1 <= myPreci && d2 <= myPreci && dd <= myPreci)
@@ -138,12 +138,10 @@ void ShapeAnalysis_WireVertex::Analyze()
 
     //    Une edge se termine sur l autre : il faudra simplement relimiter
     //    Projection calculee sur une demi-edge (pour eviter les pbs de couture)
-    gp_Pnt        PJ1, PJ2;
-    Standard_Real U1, U2;
-    Standard_Real dj1 =
-      ShapeAnalysis_Curve().Project(c1, P2, myPreci, PJ1, U1, (cf + upre) / 2, upre);
-    Standard_Real dj2 =
-      ShapeAnalysis_Curve().Project(c2, P1, myPreci, PJ2, U2, ufol, (ufol + cl) / 2);
+    gp_Pnt PJ1, PJ2;
+    double U1, U2;
+    double dj1 = ShapeAnalysis_Curve().Project(c1, P2, myPreci, PJ1, U1, (cf + upre) / 2, upre);
+    double dj2 = ShapeAnalysis_Curve().Project(c2, P1, myPreci, PJ2, U2, ufol, (ufol + cl) / 2);
     if (dj1 <= myPreci)
     {
       SetStart(i, PJ1.XYZ(), U1);
@@ -161,30 +159,28 @@ void ShapeAnalysis_WireVertex::Analyze()
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::SetSameVertex(const Standard_Integer num)
+void ShapeAnalysis_WireVertex::SetSameVertex(const int num)
 {
   myStat->SetValue(num, 0);
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::SetSameCoords(const Standard_Integer num)
+void ShapeAnalysis_WireVertex::SetSameCoords(const int num)
 {
   myStat->SetValue(num, 1);
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::SetClose(const Standard_Integer num)
+void ShapeAnalysis_WireVertex::SetClose(const int num)
 {
   myStat->SetValue(num, 2);
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::SetEnd(const Standard_Integer num,
-                                      const gp_XYZ&          pos,
-                                      const Standard_Real    ufol)
+void ShapeAnalysis_WireVertex::SetEnd(const int num, const gp_XYZ& pos, const double ufol)
 {
   myStat->SetValue(num, 3);
   myPos->SetValue(num, pos);
@@ -193,9 +189,7 @@ void ShapeAnalysis_WireVertex::SetEnd(const Standard_Integer num,
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::SetStart(const Standard_Integer num,
-                                        const gp_XYZ&          pos,
-                                        const Standard_Real    upre)
+void ShapeAnalysis_WireVertex::SetStart(const int num, const gp_XYZ& pos, const double upre)
 {
   myStat->SetValue(num, 4);
   myPos->SetValue(num, pos);
@@ -204,10 +198,10 @@ void ShapeAnalysis_WireVertex::SetStart(const Standard_Integer num,
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::SetInters(const Standard_Integer num,
-                                         const gp_XYZ&          pos,
-                                         const Standard_Real    upre,
-                                         const Standard_Real    ufol)
+void ShapeAnalysis_WireVertex::SetInters(const int     num,
+                                         const gp_XYZ& pos,
+                                         const double  upre,
+                                         const double  ufol)
 {
   myStat->SetValue(num, 5);
   myPos->SetValue(num, pos);
@@ -217,49 +211,49 @@ void ShapeAnalysis_WireVertex::SetInters(const Standard_Integer num,
 
 //=================================================================================================
 
-void ShapeAnalysis_WireVertex::SetDisjoined(const Standard_Integer num)
+void ShapeAnalysis_WireVertex::SetDisjoined(const int num)
 {
   myStat->SetValue(num, -1);
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_WireVertex::IsDone() const
+bool ShapeAnalysis_WireVertex::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_WireVertex::Precision() const
+double ShapeAnalysis_WireVertex::Precision() const
 {
   return myPreci;
 }
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireVertex::NbEdges() const
+int ShapeAnalysis_WireVertex::NbEdges() const
 {
   return myWire->NbEdges();
 }
 
 //=================================================================================================
 
-const Handle(ShapeExtend_WireData)& ShapeAnalysis_WireVertex::WireData() const
+const occ::handle<ShapeExtend_WireData>& ShapeAnalysis_WireVertex::WireData() const
 {
   return myWire;
 }
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireVertex::Status(const Standard_Integer num) const
+int ShapeAnalysis_WireVertex::Status(const int num) const
 {
   return myStat->Value(num);
 }
 
 //=================================================================================================
 
-gp_XYZ ShapeAnalysis_WireVertex::Position(const Standard_Integer num) const
+gp_XYZ ShapeAnalysis_WireVertex::Position(const int num) const
 {
   return myPos->Value(num);
 }
@@ -267,7 +261,7 @@ gp_XYZ ShapeAnalysis_WireVertex::Position(const Standard_Integer num) const
 //=================================================================================================
 
 // szv#4:S4163:12Mar99 was bug: returned Integer
-Standard_Real ShapeAnalysis_WireVertex::UPrevious(const Standard_Integer num) const
+double ShapeAnalysis_WireVertex::UPrevious(const int num) const
 {
   return myUPre->Value(num);
 }
@@ -275,17 +269,14 @@ Standard_Real ShapeAnalysis_WireVertex::UPrevious(const Standard_Integer num) co
 //=================================================================================================
 
 // szv#4:S4163:12Mar99 was bug: returned Integer
-Standard_Real ShapeAnalysis_WireVertex::UFollowing(const Standard_Integer num) const
+double ShapeAnalysis_WireVertex::UFollowing(const int num) const
 {
   return myUFol->Value(num);
 }
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireVertex::Data(const Standard_Integer num,
-                                                gp_XYZ&                pos,
-                                                Standard_Real&         upre,
-                                                Standard_Real&         ufol) const
+int ShapeAnalysis_WireVertex::Data(const int num, gp_XYZ& pos, double& upre, double& ufol) const
 {
   pos  = myPos->Value(num);
   upre = myUPre->Value(num);
@@ -295,13 +286,12 @@ Standard_Integer ShapeAnalysis_WireVertex::Data(const Standard_Integer num,
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireVertex::NextStatus(const Standard_Integer stat,
-                                                      const Standard_Integer num) const
+int ShapeAnalysis_WireVertex::NextStatus(const int stat, const int num) const
 {
   // szv#4:S4163:12Mar99 optimized
   if (!myStat.IsNull())
   {
-    Standard_Integer i, nb = myStat->Length();
+    int i, nb = myStat->Length();
     for (i = num + 1; i <= nb; i++)
       if (myStat->Value(i) == stat)
         return i;
@@ -311,16 +301,15 @@ Standard_Integer ShapeAnalysis_WireVertex::NextStatus(const Standard_Integer sta
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireVertex::NextCriter(const Standard_Integer crit,
-                                                      const Standard_Integer num) const
+int ShapeAnalysis_WireVertex::NextCriter(const int crit, const int num) const
 {
   // szv#4:S4163:12Mar99 optimized
   if (!myStat.IsNull())
   {
-    Standard_Integer i, nb = myStat->Length();
+    int i, nb = myStat->Length();
     for (i = num + 1; i <= nb; i++)
     {
-      Standard_Integer stat = myStat->Value(i);
+      int stat = myStat->Value(i);
       if ((crit == -1 && stat < 0) || (crit == 0 && stat == 0) || (crit == 1 && stat > 0)
           || (crit == 2 && (stat >= 0 && stat <= 2)) || (crit == 3 && (stat == 1 || stat == 2))
           || (crit == 4 && stat > 2))

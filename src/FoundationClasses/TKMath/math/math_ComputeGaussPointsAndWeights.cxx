@@ -13,26 +13,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_Array1OfValueAndWeight.hxx>
+#include <math_ValueAndWeight.hxx>
+#include <NCollection_Array1.hxx>
 #include <math_ComputeGaussPointsAndWeights.hxx>
 #include <math_EigenValuesSearcher.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 #include <algorithm>
 
-math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const Standard_Integer Number)
+math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const int Number)
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
 
   try
   {
-    myPoints  = new TColStd_HArray1OfReal(1, Number);
-    myWeights = new TColStd_HArray1OfReal(1, Number);
+    myPoints  = new NCollection_HArray1<double>(1, Number);
+    myWeights = new NCollection_HArray1<double>(1, Number);
 
-    Standard_Integer i;
+    int i;
 
-    TColStd_Array1OfReal aDiag(1, Number);
-    TColStd_Array1OfReal aSubDiag(1, Number);
+    NCollection_Array1<double> aDiag(1, Number);
+    NCollection_Array1<double> aSubDiag(1, Number);
 
     // Initialization of a real symmetric tridiagonal matrix for
     // computation of Gauss quadrature.
@@ -45,9 +46,9 @@ math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const Stand
         aSubDiag(i) = 0.;
       else
       {
-        Standard_Integer sqrIm1 = (i - 1) * (i - 1);
-        aSubDiag(i)             = sqrIm1 / (4. * sqrIm1 - 1);
-        aSubDiag(i)             = std::sqrt(aSubDiag(i));
+        int sqrIm1  = (i - 1) * (i - 1);
+        aSubDiag(i) = sqrIm1 / (4. * sqrIm1 - 1);
+        aSubDiag(i) = std::sqrt(aSubDiag(i));
       }
     }
 
@@ -56,12 +57,12 @@ math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const Stand
 
     if (EVsearch.IsDone())
     {
-      math_Array1OfValueAndWeight VWarray(1, Number);
+      NCollection_Array1<math_ValueAndWeight> VWarray(1, Number);
       for (i = 1; i <= Number; i++)
       {
-        math_Vector   anEigenVector = EVsearch.EigenVector(i);
-        Standard_Real aWeight       = anEigenVector(1);
-        aWeight                     = 2. * aWeight * aWeight;
+        math_Vector anEigenVector = EVsearch.EigenVector(i);
+        double      aWeight       = anEigenVector(1);
+        aWeight                   = 2. * aWeight * aWeight;
         math_ValueAndWeight EVW(EVsearch.EigenValue(i), aWeight);
         VWarray(i) = EVW;
       }
@@ -73,7 +74,7 @@ math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const Stand
         myPoints->ChangeValue(i)  = VWarray(i).Value();
         myWeights->ChangeValue(i) = VWarray(i).Weight();
       }
-      myIsDone = Standard_True;
+      myIsDone = true;
     }
   }
   catch (Standard_Failure const&)
@@ -81,16 +82,16 @@ math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const Stand
   }
 }
 
-Standard_Boolean math_ComputeGaussPointsAndWeights::IsDone() const
+bool math_ComputeGaussPointsAndWeights::IsDone() const
 {
   return myIsDone;
 }
 
 math_Vector math_ComputeGaussPointsAndWeights::Points() const
 {
-  Standard_Integer Number = myPoints->Length();
-  math_Vector      thePoints(1, Number);
-  for (Standard_Integer i = 1; i <= Number; i++)
+  int         Number = myPoints->Length();
+  math_Vector thePoints(1, Number);
+  for (int i = 1; i <= Number; i++)
     thePoints(i) = myPoints->Value(i);
 
   return thePoints;
@@ -98,9 +99,9 @@ math_Vector math_ComputeGaussPointsAndWeights::Points() const
 
 math_Vector math_ComputeGaussPointsAndWeights::Weights() const
 {
-  Standard_Integer Number = myWeights->Length();
-  math_Vector      theWeights(1, Number);
-  for (Standard_Integer i = 1; i <= Number; i++)
+  int         Number = myWeights->Length();
+  math_Vector theWeights(1, Number);
+  for (int i = 1; i <= Number; i++)
     theWeights(i) = myWeights->Value(i);
 
   return theWeights;

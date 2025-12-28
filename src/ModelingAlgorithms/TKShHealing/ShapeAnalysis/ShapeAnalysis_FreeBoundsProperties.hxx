@@ -22,7 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <ShapeAnalysis_HSequenceOfFreeBounds.hxx>
+#include <ShapeAnalysis_FreeBoundData.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 class ShapeAnalysis_FreeBoundData;
 class TopoDS_Wire;
@@ -56,31 +58,29 @@ public:
 
   //! Creates the object and calls corresponding Init.
   //! <shape> should be a compound of faces.
-  Standard_EXPORT ShapeAnalysis_FreeBoundsProperties(
-    const TopoDS_Shape&    shape,
-    const Standard_Real    tolerance,
-    const Standard_Boolean splitclosed = Standard_False,
-    const Standard_Boolean splitopen   = Standard_False);
+  Standard_EXPORT ShapeAnalysis_FreeBoundsProperties(const TopoDS_Shape& shape,
+                                                     const double        tolerance,
+                                                     const bool          splitclosed = false,
+                                                     const bool          splitopen   = false);
 
   //! Creates the object and calls corresponding Init.
   //! <shape> should be a compound of shells.
-  Standard_EXPORT ShapeAnalysis_FreeBoundsProperties(
-    const TopoDS_Shape&    shape,
-    const Standard_Boolean splitclosed = Standard_False,
-    const Standard_Boolean splitopen   = Standard_False);
+  Standard_EXPORT ShapeAnalysis_FreeBoundsProperties(const TopoDS_Shape& shape,
+                                                     const bool          splitclosed = false,
+                                                     const bool          splitopen   = false);
 
   //! Initializes the object with given parameters.
   //! <shape> should be a compound of faces.
-  Standard_EXPORT void Init(const TopoDS_Shape&    shape,
-                            const Standard_Real    tolerance,
-                            const Standard_Boolean splitclosed = Standard_False,
-                            const Standard_Boolean splitopen   = Standard_False);
+  Standard_EXPORT void Init(const TopoDS_Shape& shape,
+                            const double        tolerance,
+                            const bool          splitclosed = false,
+                            const bool          splitopen   = false);
 
   //! Initializes the object with given parameters.
   //! <shape> should be a compound of shells.
-  Standard_EXPORT void Init(const TopoDS_Shape&    shape,
-                            const Standard_Boolean splitclosed = Standard_False,
-                            const Standard_Boolean splitopen   = Standard_False);
+  Standard_EXPORT void Init(const TopoDS_Shape& shape,
+                            const bool          splitclosed = false,
+                            const bool          splitopen   = false);
 
   //! Builds and analyzes free bounds of the shape.
   //! First calls ShapeAnalysis_FreeBounds for building free
@@ -92,66 +92,67 @@ public:
   //! - average width of contour,
   //! - notches on the contour and for each notch
   //! - maximum width of the notch.
-  Standard_EXPORT Standard_Boolean Perform();
+  Standard_EXPORT bool Perform();
 
   //! Returns True if shape is loaded
-  Standard_Boolean IsLoaded() const;
+  bool IsLoaded() const;
 
   //! Returns shape
   TopoDS_Shape Shape() const;
 
   //! Returns tolerance
-  Standard_Real Tolerance() const;
+  double Tolerance() const;
 
   //! Returns number of free bounds
-  Standard_Integer NbFreeBounds() const;
+  int NbFreeBounds() const;
 
   //! Returns number of closed free bounds
-  Standard_Integer NbClosedFreeBounds() const;
+  int NbClosedFreeBounds() const;
 
   //! Returns number of open free bounds
-  Standard_Integer NbOpenFreeBounds() const;
+  int NbOpenFreeBounds() const;
 
   //! Returns all closed free bounds
-  Handle(ShapeAnalysis_HSequenceOfFreeBounds) ClosedFreeBounds() const;
+  occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>> ClosedFreeBounds()
+    const;
 
   //! Returns all open free bounds
-  Handle(ShapeAnalysis_HSequenceOfFreeBounds) OpenFreeBounds() const;
+  occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>> OpenFreeBounds()
+    const;
 
   //! Returns properties of closed free bound specified by its rank
   //! number
-  Handle(ShapeAnalysis_FreeBoundData) ClosedFreeBound(const Standard_Integer index) const;
+  occ::handle<ShapeAnalysis_FreeBoundData> ClosedFreeBound(const int index) const;
 
   //! Returns properties of open free bound specified by its rank
   //! number
-  Handle(ShapeAnalysis_FreeBoundData) OpenFreeBound(const Standard_Integer index) const;
+  occ::handle<ShapeAnalysis_FreeBoundData> OpenFreeBound(const int index) const;
 
-  Standard_EXPORT Standard_Boolean DispatchBounds();
+  Standard_EXPORT bool DispatchBounds();
 
-  Standard_EXPORT Standard_Boolean CheckContours(const Standard_Real prec = 0.0);
+  Standard_EXPORT bool CheckContours(const double prec = 0.0);
 
-  Standard_EXPORT Standard_Boolean CheckNotches(const Standard_Real prec = 0.0);
+  Standard_EXPORT bool CheckNotches(const double prec = 0.0);
 
-  Standard_EXPORT Standard_Boolean CheckNotches(Handle(ShapeAnalysis_FreeBoundData)& fbData,
-                                                const Standard_Real                  prec = 0.0);
+  Standard_EXPORT bool CheckNotches(occ::handle<ShapeAnalysis_FreeBoundData>& fbData,
+                                    const double                              prec = 0.0);
 
-  Standard_EXPORT Standard_Boolean CheckNotches(const TopoDS_Wire&     freebound,
-                                                const Standard_Integer num,
-                                                TopoDS_Wire&           notch,
-                                                Standard_Real&         distMax,
-                                                const Standard_Real    prec = 0.0);
+  Standard_EXPORT bool CheckNotches(const TopoDS_Wire& freebound,
+                                    const int          num,
+                                    TopoDS_Wire&       notch,
+                                    double&            distMax,
+                                    const double       prec = 0.0);
 
-  Standard_EXPORT Standard_Boolean FillProperties(Handle(ShapeAnalysis_FreeBoundData)& fbData,
-                                                  const Standard_Real                  prec = 0.0);
+  Standard_EXPORT bool FillProperties(occ::handle<ShapeAnalysis_FreeBoundData>& fbData,
+                                      const double                              prec = 0.0);
 
-protected:
 private:
-  TopoDS_Shape                                myShape;
-  Standard_Real                               myTolerance;
-  Standard_Boolean                            mySplitClosed;
-  Standard_Boolean                            mySplitOpen;
-  Handle(ShapeAnalysis_HSequenceOfFreeBounds) myClosedFreeBounds;
-  Handle(ShapeAnalysis_HSequenceOfFreeBounds) myOpenFreeBounds;
+  TopoDS_Shape                                                                 myShape;
+  double                                                                       myTolerance;
+  bool                                                                         mySplitClosed;
+  bool                                                                         mySplitOpen;
+  occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>> myClosedFreeBounds;
+  occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>> myOpenFreeBounds;
 };
 
 #include <ShapeAnalysis_FreeBoundsProperties.lxx>

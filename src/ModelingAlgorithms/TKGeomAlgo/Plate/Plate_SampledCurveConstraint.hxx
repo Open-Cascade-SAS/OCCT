@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Plate_LinearXYZConstraint.hxx>
-#include <Plate_SequenceOfPinpointConstraint.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <NCollection_Sequence.hxx>
 
 //! define m PinPointConstraint driven by m unknown
 class Plate_SampledCurveConstraint
@@ -30,12 +31,12 @@ class Plate_SampledCurveConstraint
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Plate_SampledCurveConstraint(const Plate_SequenceOfPinpointConstraint& SOPPC,
-                                               const Standard_Integer                    n);
+  Standard_EXPORT Plate_SampledCurveConstraint(
+    const NCollection_Sequence<Plate_PinpointConstraint>& SOPPC,
+    const int                                             n);
 
   const Plate_LinearXYZConstraint& LXYZC() const;
 
-protected:
 private:
   Plate_LinearXYZConstraint myLXYZC;
 };

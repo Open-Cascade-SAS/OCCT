@@ -25,12 +25,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AssociativityDef, IGESData_IGESEntity)
 
 IGESDefs_AssociativityDef::IGESDefs_AssociativityDef() {}
 
-void IGESDefs_AssociativityDef::Init(const Handle(TColStd_HArray1OfInteger)& requirements,
-                                     const Handle(TColStd_HArray1OfInteger)& orders,
-                                     const Handle(TColStd_HArray1OfInteger)& numItems,
-                                     const Handle(IGESBasic_HArray1OfHArray1OfInteger)& items)
+void IGESDefs_AssociativityDef::Init(const occ::handle<NCollection_HArray1<int>>& requirements,
+                                     const occ::handle<NCollection_HArray1<int>>& orders,
+                                     const occ::handle<NCollection_HArray1<int>>& numItems,
+                                     const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& items)
 {
-  Standard_Integer len = requirements->Length();
+  int len = requirements->Length();
   if (requirements->Lower() != 1 || (orders->Lower() != 1 || orders->Length() != len)
       || (numItems->Lower() != 1 || numItems->Length() != len)
       || (items->Lower() != 1 || items->Length() != len))
@@ -44,45 +44,44 @@ void IGESDefs_AssociativityDef::Init(const Handle(TColStd_HArray1OfInteger)& req
   //  FormNumber is free over 5000
 }
 
-void IGESDefs_AssociativityDef::SetFormNumber(const Standard_Integer form)
+void IGESDefs_AssociativityDef::SetFormNumber(const int form)
 {
   InitTypeAndForm(302, form);
 }
 
-Standard_Integer IGESDefs_AssociativityDef::NbClassDefs() const
+int IGESDefs_AssociativityDef::NbClassDefs() const
 {
   return theBackPointerReqs->Length();
 }
 
-Standard_Boolean IGESDefs_AssociativityDef::IsBackPointerReq(const Standard_Integer ClassNum) const
+bool IGESDefs_AssociativityDef::IsBackPointerReq(const int ClassNum) const
 {
   return (theBackPointerReqs->Value(ClassNum) == 1);
   //  1 True  2 False
 }
 
-Standard_Integer IGESDefs_AssociativityDef::BackPointerReq(const Standard_Integer ClassNum) const
+int IGESDefs_AssociativityDef::BackPointerReq(const int ClassNum) const
 {
   return theBackPointerReqs->Value(ClassNum);
 }
 
-Standard_Boolean IGESDefs_AssociativityDef::IsOrdered(const Standard_Integer ClassNum) const
+bool IGESDefs_AssociativityDef::IsOrdered(const int ClassNum) const
 {
   return (theClassOrders->Value(ClassNum) == 1);
   //  1 True  2 False
 }
 
-Standard_Integer IGESDefs_AssociativityDef::ClassOrder(const Standard_Integer ClassNum) const
+int IGESDefs_AssociativityDef::ClassOrder(const int ClassNum) const
 {
   return theClassOrders->Value(ClassNum);
 }
 
-Standard_Integer IGESDefs_AssociativityDef::NbItemsPerClass(const Standard_Integer ClassNum) const
+int IGESDefs_AssociativityDef::NbItemsPerClass(const int ClassNum) const
 {
   return theNbItemsPerClass->Value(ClassNum);
 }
 
-Standard_Integer IGESDefs_AssociativityDef::Item(const Standard_Integer ClassNum,
-                                                 const Standard_Integer ItemNum) const
+int IGESDefs_AssociativityDef::Item(const int ClassNum, const int ItemNum) const
 {
   return theItems->Value(ClassNum)->Value(ItemNum);
 }

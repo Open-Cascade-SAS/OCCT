@@ -34,7 +34,7 @@
 #include <BRep_Builder.hxx>
 #include <ElCLib.hxx>
 #include <Precision.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopOpeBRepTool_CurveTool.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_2d.hxx>
@@ -53,24 +53,24 @@
 // ----------------------------------------------------------------------
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_tool_tolUV(const TopoDS_Face& F, Standard_Real& tolu, Standard_Real& tolv)
+Standard_EXPORT void FUN_tool_tolUV(const TopoDS_Face& F, double& tolu, double& tolv)
 {
-  Standard_Real       tolF = BRep_Tool::Tolerance(TopoDS::Face(F));
+  double              tolF = BRep_Tool::Tolerance(TopoDS::Face(F));
   BRepAdaptor_Surface BS(TopoDS::Face(F));
   tolu = BS.UResolution(tolF);
   tolv = BS.VResolution(tolF);
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_direct(const TopoDS_Face& F, Standard_Boolean& direct)
+Standard_EXPORT bool FUN_tool_direct(const TopoDS_Face& F, bool& direct)
 {
   BRepAdaptor_Surface BS(TopoDS::Face(F));
   GeomAbs_SurfaceType ST    = BS.GetType();
-  Standard_Boolean    plane = (ST == GeomAbs_Plane);
-  Standard_Boolean    cyl   = (ST == GeomAbs_Cylinder);
-  Standard_Boolean    cone  = (ST == GeomAbs_Cone);
-  Standard_Boolean    sphe  = (ST == GeomAbs_Sphere);
-  Standard_Boolean    torus = (ST == GeomAbs_Torus);
+  bool                plane = (ST == GeomAbs_Plane);
+  bool                cyl   = (ST == GeomAbs_Cylinder);
+  bool                cone  = (ST == GeomAbs_Cone);
+  bool                sphe  = (ST == GeomAbs_Sphere);
+  bool                torus = (ST == GeomAbs_Torus);
   if (plane)
   {
     const gp_Pln& plpl = BS.Plane();
@@ -96,44 +96,44 @@ Standard_EXPORT Standard_Boolean FUN_tool_direct(const TopoDS_Face& F, Standard_
     const gp_Torus& toto = BS.Torus();
     direct               = toto.Direct();
   }
-  Standard_Boolean ok = plane || cyl || cone || sphe || torus;
+  bool ok = plane || cyl || cone || sphe || torus;
   return ok;
 }
 
 /*// ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_IsUViso(const TopoDS_Shape& E,const TopoDS_Shape& F,
-                     Standard_Boolean& isoU,Standard_Boolean& isoV,
+Standard_EXPORT bool FUN_tool_IsUViso(const TopoDS_Shape& E,const TopoDS_Shape& F,
+                     bool& isoU,bool& isoV,
                      gp_Dir2d& d2d,gp_Pnt2d& o2d)
 {
-  isoU = isoV = Standard_False; Standard_Real f,l,tol;
-  Handle(Geom2d_Curve) PC =
+  isoU = isoV = false; double f,l,tol;
+  occ::handle<Geom2d_Curve> PC =
     FC2D_CurveOnSurface(TopoDS::Edge(E),TopoDS::Face(F),f,l,tol);
-  if (PC.IsNull()) return Standard_False;
-  Standard_Boolean iso = FUN_tool_IsUViso(PC,isoU,isoV,d2d,o2d);
+  if (PC.IsNull()) return false;
+  bool iso = FUN_tool_IsUViso(PC,isoU,isoV,d2d,o2d);
   return iso;
 }*/
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_geombounds(const TopoDS_Face& F,
-                                                     Standard_Real&     u1,
-                                                     Standard_Real&     u2,
-                                                     Standard_Real&     v1,
-                                                     Standard_Real&     v2)
+Standard_EXPORT bool FUN_tool_geombounds(const TopoDS_Face& F,
+                                         double&            u1,
+                                         double&            u2,
+                                         double&            v1,
+                                         double&            v2)
 {
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(F);
+  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F);
   if (S.IsNull())
-    return Standard_False;
+    return false;
   S->Bounds(u1, u2, v1, v2);
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_bounds(const TopoDS_Shape& Sh,
-                                                 Standard_Real&      u1,
-                                                 Standard_Real&      u2,
-                                                 Standard_Real&      v1,
-                                                 //				                 Standard_Real& v2)
-                                                 Standard_Real&)
+Standard_EXPORT bool FUN_tool_bounds(const TopoDS_Shape& Sh,
+                                     double&             u1,
+                                     double&             u2,
+                                     double&             v1,
+                                     //				                 double& v2)
+                                     double&)
 {
   Bnd_Box2d          B2d;
   const TopoDS_Face& F = TopoDS::Face(Sh);
@@ -146,50 +146,50 @@ Standard_EXPORT Standard_Boolean FUN_tool_bounds(const TopoDS_Shape& Sh,
     B2d.Add(newB2d);
   }
   B2d.Get(u1, v1, u2, v1);
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_isobounds(const TopoDS_Shape& Sh,
-                                                    Standard_Real&      u1,
-                                                    Standard_Real&      u2,
-                                                    Standard_Real&      v1,
-                                                    Standard_Real&      v2)
+Standard_EXPORT bool FUN_tool_isobounds(const TopoDS_Shape& Sh,
+                                        double&             u1,
+                                        double&             u2,
+                                        double&             v1,
+                                        double&             v2)
 {
   const TopoDS_Face& F = TopoDS::Face(Sh);
   u1 = v1 = 1.e7;
   u2 = v2 = -1.e7;
 
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(F);
+  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F);
   if (S.IsNull())
-    return Standard_False;
+    return false;
 
-  Standard_Boolean uclosed, vclosed;
-  Standard_Real    uperiod, vperiod;
+  bool   uclosed, vclosed;
+  double uperiod, vperiod;
 
-  //  Standard_Boolean uvclosed =
+  //  bool uvclosed =
 
   FUN_tool_closedS(F, uclosed, uperiod, vclosed, vperiod);
 
-  //  Standard_Real uf,ul,vf,vl; S->Bounds(uf,ul,vf,vl);
+  //  double uf,ul,vf,vl; S->Bounds(uf,ul,vf,vl);
 
   //  if (!uvclosed) {
   //    u1 = uf; v1 = vf; u2 = ul; v2 = vl;
-  //    return Standard_True;
+  //    return true;
   //  }
   TopExp_Explorer ex(F, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
   {
-    const TopoDS_Edge&   E = TopoDS::Edge(ex.Current());
-    Standard_Real        f, l, tol;
-    Handle(Geom2d_Curve) PC = FC2D_CurveOnSurface(E, F, f, l, tol);
+    const TopoDS_Edge&        E = TopoDS::Edge(ex.Current());
+    double                    f, l, tol;
+    occ::handle<Geom2d_Curve> PC = FC2D_CurveOnSurface(E, F, f, l, tol);
     if (PC.IsNull())
-      return Standard_False;
+      return false;
 
-    Standard_Boolean isou, isov;
-    gp_Pnt2d         o2d;
-    gp_Dir2d         d2d;
-    Standard_Boolean isouv = TopOpeBRepTool_TOOL::UVISO(PC, isou, isov, d2d, o2d);
+    bool     isou, isov;
+    gp_Pnt2d o2d;
+    gp_Dir2d d2d;
+    bool     isouv = TopOpeBRepTool_TOOL::UVISO(PC, isou, isov, d2d, o2d);
 
     if (isouv)
     {
@@ -205,127 +205,123 @@ Standard_EXPORT Standard_Boolean FUN_tool_isobounds(const TopoDS_Shape& Sh,
       v2            = std::max(p2dl.Y(), v2);
     }
     if (!isouv)
-      return Standard_False;
+      return false;
     // ====================
   }
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_outbounds(const TopoDS_Shape& Sh,
-                                                    Standard_Real&      u1,
-                                                    Standard_Real&      u2,
-                                                    Standard_Real&      v1,
-                                                    Standard_Real&      v2,
-                                                    Standard_Boolean&   outbounds)
+Standard_EXPORT bool FUN_tool_outbounds(const TopoDS_Shape& Sh,
+                                        double&             u1,
+                                        double&             u2,
+                                        double&             v1,
+                                        double&             v2,
+                                        bool&               outbounds)
 {
-  Handle(Geom_Surface) S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(Sh));
+  occ::handle<Geom_Surface> S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(Sh));
   if (S.IsNull())
-    return Standard_False;
-  Standard_Real uf, ul, vf, vl;
+    return false;
+  double uf, ul, vf, vl;
   S->Bounds(uf, ul, vf, vl);
 
-  outbounds           = Standard_False;
-  Standard_Boolean ok = FUN_tool_bounds(Sh, u1, u2, v1, v2);
+  outbounds = false;
+  bool ok   = FUN_tool_bounds(Sh, u1, u2, v1, v2);
   if (!ok)
-    return Standard_False;
+    return false;
 
   const TopoDS_Face& F = TopoDS::Face(Sh);
-  Standard_Boolean   uclosed, vclosed;
-  Standard_Real      uperiod, vperiod;
+  bool               uclosed, vclosed;
+  double             uperiod, vperiod;
   FUN_tool_closedS(F, uclosed, uperiod, vclosed, vperiod);
-  Standard_Real tolp = 1.e-6;
+  double tolp = 1.e-6;
 
   if (uclosed)
   {
-    Standard_Real dd = u2 - u1;
+    double dd = u2 - u1;
     if (dd > uperiod + tolp)
     {
       u1        = uf;
       v1        = vf;
       u2        = ul;
       v2        = vl;
-      outbounds = Standard_True;
+      outbounds = true;
     }
   }
   if (vclosed)
   {
-    Standard_Real dd = v2 - v1;
+    double dd = v2 - v1;
     if (dd > vperiod + tolp)
     {
       u1        = uf;
       v1        = vf;
       u2        = ul;
       v2        = vl;
-      outbounds = Standard_True;
+      outbounds = true;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_PinC(const gp_Pnt&            P,
-                                               const BRepAdaptor_Curve& BAC,
-                                               const Standard_Real      pmin,
-                                               const Standard_Real      pmax,
-                                               const Standard_Real      tol)
+Standard_EXPORT bool FUN_tool_PinC(const gp_Pnt&            P,
+                                   const BRepAdaptor_Curve& BAC,
+                                   const double             pmin,
+                                   const double             pmax,
+                                   const double             tol)
 {
   // returns true if <P> is on <C> under a given tolerance <tol>
-  Standard_Boolean PinC = Standard_False;
-  Extrema_ExtPC    ponc(P, BAC, pmin, pmax);
-  Standard_Boolean ok = ponc.IsDone();
+  bool          PinC = false;
+  Extrema_ExtPC ponc(P, BAC, pmin, pmax);
+  bool          ok = ponc.IsDone();
   if (ok)
   {
     if (ponc.NbExt())
     {
-      Standard_Integer i  = FUN_tool_getindex(ponc);
-      Standard_Real    d2 = ponc.SquareDistance(i);
-      PinC                = (d2 <= tol * tol);
+      int    i  = FUN_tool_getindex(ponc);
+      double d2 = ponc.SquareDistance(i);
+      PinC      = (d2 <= tol * tol);
     }
   }
   return PinC;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_PinC(const gp_Pnt&            P,
-                                               const BRepAdaptor_Curve& BAC,
-                                               const Standard_Real      tol)
+Standard_EXPORT bool FUN_tool_PinC(const gp_Pnt& P, const BRepAdaptor_Curve& BAC, const double tol)
 {
   // returns true if <P> is on <C> under a given tolerance <tol>
-  Standard_Boolean PinC = Standard_False;
-  Standard_Real    pmin = BAC.FirstParameter();
-  Standard_Real    pmax = BAC.LastParameter();
-  PinC                  = FUN_tool_PinC(P, BAC, pmin, pmax, tol);
+  bool   PinC = false;
+  double pmin = BAC.FirstParameter();
+  double pmax = BAC.LastParameter();
+  PinC        = FUN_tool_PinC(P, BAC, pmin, pmax, tol);
   return PinC;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_value(const Standard_Real par,
-                                                const TopoDS_Edge&  E,
-                                                gp_Pnt&             P)
+Standard_EXPORT bool FUN_tool_value(const double par, const TopoDS_Edge& E, gp_Pnt& P)
 {
   BRepAdaptor_Curve BAC(E);
-  Standard_Real     f  = BAC.FirstParameter();
-  Standard_Real     l  = BAC.LastParameter();
-  Standard_Boolean  ok = (f <= par) && (par <= l);
+  double            f  = BAC.FirstParameter();
+  double            l  = BAC.LastParameter();
+  bool              ok = (f <= par) && (par <= l);
   if (!ok)
-    return Standard_False;
+    return false;
   P = BAC.Value(par);
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_value(const gp_Pnt2d& UV, const TopoDS_Face& F, gp_Pnt& P)
+Standard_EXPORT bool FUN_tool_value(const gp_Pnt2d& UV, const TopoDS_Face& F, gp_Pnt& P)
 {
   BRepAdaptor_Surface BS(F);
   P = BS.Value(UV.X(), UV.Y());
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT TopAbs_State FUN_tool_staPinE(const gp_Pnt&       P,
-                                              const TopoDS_Edge&  E,
-                                              const Standard_Real tol)
+Standard_EXPORT TopAbs_State FUN_tool_staPinE(const gp_Pnt&      P,
+                                              const TopoDS_Edge& E,
+                                              const double       tol)
 {
   // project point on curve,
   // if projection fails,returns UNKNOWN.
@@ -337,10 +333,10 @@ Standard_EXPORT TopAbs_State FUN_tool_staPinE(const gp_Pnt&       P,
   Extrema_ExtPC     ProjonBAC(P, BAC);
   if (ProjonBAC.IsDone() && ProjonBAC.NbExt() > 0)
   {
-    Standard_Integer i     = FUN_tool_getindex(ProjonBAC);
-    gp_Pnt           Pnear = ProjonBAC.Point(i).Value();
-    Standard_Real    d     = Pnear.Distance(P);
-    sta                    = (d < tol) ? TopAbs_IN : TopAbs_OUT;
+    int    i     = FUN_tool_getindex(ProjonBAC);
+    gp_Pnt Pnear = ProjonBAC.Point(i).Value();
+    double d     = Pnear.Distance(P);
+    sta          = (d < tol) ? TopAbs_IN : TopAbs_OUT;
   }
   return sta;
 }
@@ -348,9 +344,9 @@ Standard_EXPORT TopAbs_State FUN_tool_staPinE(const gp_Pnt&       P,
 // ----------------------------------------------------------------------
 Standard_EXPORT TopAbs_State FUN_tool_staPinE(const gp_Pnt& P, const TopoDS_Edge& E)
 {
-  //  Standard_Real tol = Precision::Confusion()*10.;
-  Standard_Real tol3d = BRep_Tool::Tolerance(E) * 1.e2; // KKKKK a revoir xpu(CTS21118,f14ou,GI13)
-  TopAbs_State  sta   = FUN_tool_staPinE(P, E, tol3d);
+  //  double tol = Precision::Confusion()*10.;
+  double       tol3d = BRep_Tool::Tolerance(E) * 1.e2; // KKKKK a revoir xpu(CTS21118,f14ou,GI13)
+  TopAbs_State sta   = FUN_tool_staPinE(P, E, tol3d);
   return sta;
 }
 
@@ -365,13 +361,13 @@ Standard_EXPORT TopAbs_State FUN_tool_staPinE(const gp_Pnt& P, const TopoDS_Edge
 #define CLOSING (3)
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Integer FUN_tool_orientVinE(const TopoDS_Vertex& v, const TopoDS_Edge& e)
+Standard_EXPORT int FUN_tool_orientVinE(const TopoDS_Vertex& v, const TopoDS_Edge& e)
 {
-  Standard_Integer result = 0;
-  TopoDS_Vertex    vf, vl;
+  int           result = 0;
+  TopoDS_Vertex vf, vl;
   TopExp::Vertices(e, vf, vl);
-  Standard_Boolean visf = v.IsSame(vf);
-  Standard_Boolean visl = v.IsSame(vl);
+  bool visf = v.IsSame(vf);
+  bool visl = v.IsSame(vl);
   if (visf)
     result = FIRST;
   if (visl)
@@ -382,9 +378,9 @@ Standard_EXPORT Standard_Integer FUN_tool_orientVinE(const TopoDS_Vertex& v, con
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_orientEinF(const TopoDS_Edge&  E,
-                                                     const TopoDS_Face&  F,
-                                                     TopAbs_Orientation& oriEinF)
+Standard_EXPORT bool FUN_tool_orientEinF(const TopoDS_Edge&  E,
+                                         const TopoDS_Face&  F,
+                                         TopAbs_Orientation& oriEinF)
 {
   oriEinF = TopAbs_FORWARD;
   TopExp_Explorer e(F, TopAbs_EDGE);
@@ -397,14 +393,14 @@ Standard_EXPORT Standard_Boolean FUN_tool_orientEinF(const TopoDS_Edge&  E,
       break;
     }
   }
-  Standard_Boolean ok = e.More();
+  bool ok = e.More();
   return ok;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_orientEinFFORWARD(const TopoDS_Edge&  E,
-                                                            const TopoDS_Face&  F,
-                                                            TopAbs_Orientation& oriEinF)
+Standard_EXPORT bool FUN_tool_orientEinFFORWARD(const TopoDS_Edge&  E,
+                                                const TopoDS_Face&  F,
+                                                TopAbs_Orientation& oriEinF)
 {
   // <oriEinF> : dummy for closing edge <E> of <F>.
   // returns false if <E> is not bound of <F>
@@ -414,52 +410,52 @@ Standard_EXPORT Standard_Boolean FUN_tool_orientEinFFORWARD(const TopoDS_Edge&  
   //  TopoDS_Face FF = TopoDS::Face(F.Oriented(TopAbs_FORWARD));
   oriEinF = TopAbs_EXTERNAL;
   TopAbs_Orientation reso;
-  Standard_Boolean   ok = ::FUN_tool_orientEinF(E, FF, reso);
+  bool               ok = ::FUN_tool_orientEinF(E, FF, reso);
   if (ok)
     oriEinF = reso;
   return ok;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_EboundF(const TopoDS_Edge& E, const TopoDS_Face& F)
+Standard_EXPORT bool FUN_tool_EboundF(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
   TopAbs_Orientation ori;
-  Standard_Boolean   ok = FUN_tool_orientEinFFORWARD(E, F, ori);
+  bool               ok = FUN_tool_orientEinFFORWARD(E, F, ori);
   if (!ok)
-    return Standard_False;
-  Standard_Boolean closingE = BRep_Tool::IsClosed(E, F);
+    return false;
+  bool closingE = BRep_Tool::IsClosed(E, F);
   if (closingE)
-    return Standard_True;
-  Standard_Boolean notbound = (ori == TopAbs_INTERNAL) || (ori == TopAbs_EXTERNAL);
+    return true;
+  bool notbound = (ori == TopAbs_INTERNAL) || (ori == TopAbs_EXTERNAL);
   return notbound;
 }
 
 // ----------------------------------------------------------------------
 Standard_EXPORT gp_Vec FUN_tool_nggeomF(const gp_Pnt2d& p2d, const TopoDS_Face& F)
 {
-  Handle(Geom_Surface) S = BRep_Tool::Surface(F);
-  gp_Vec               ngF(FUN_tool_ngS(p2d, S));
+  occ::handle<Geom_Surface> S = BRep_Tool::Surface(F);
+  gp_Vec                    ngF(FUN_tool_ngS(p2d, S));
   return ngF;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_nggeomF(const Standard_Real& paronE,
-                                                  const TopoDS_Edge&   E,
-                                                  const TopoDS_Face&   F,
-                                                  gp_Vec&              nggeomF,
-                                                  const Standard_Real  tol)
+Standard_EXPORT bool FUN_tool_nggeomF(const double&      paronE,
+                                      const TopoDS_Edge& E,
+                                      const TopoDS_Face& F,
+                                      gp_Vec&            nggeomF,
+                                      const double       tol)
 {
   // <p2d> :
-  Standard_Real      f, l;
+  double             f, l;
   gp_Pnt2d           p2d;
-  Standard_Boolean   project = Standard_True;
+  bool               project = true;
   TopAbs_Orientation oef;
-  Standard_Boolean   edonfa = FUN_tool_orientEinFFORWARD(E, F, oef);
+  bool               edonfa = FUN_tool_orientEinFFORWARD(E, F, oef);
   if (edonfa)
   {
-    Standard_Real        ttol;
-    Handle(Geom2d_Curve) c2d = FC2D_CurveOnSurface(E, F, f, l, ttol);
-    project                  = c2d.IsNull();
+    double                    ttol;
+    occ::handle<Geom2d_Curve> c2d = FC2D_CurveOnSurface(E, F, f, l, ttol);
+    project                       = c2d.IsNull();
     if (!project)
       p2d = c2d->Value(paronE);
   }
@@ -467,119 +463,119 @@ Standard_EXPORT Standard_Boolean FUN_tool_nggeomF(const Standard_Real& paronE,
   {
     BRepAdaptor_Curve BC(E);
     gp_Pnt            p3d = BC.Value(paronE);
-    Standard_Real     d;
-    Standard_Boolean  ok = FUN_tool_projPonF(p3d, F, p2d, d);
+    double            d;
+    bool              ok = FUN_tool_projPonF(p3d, F, p2d, d);
 
     // modified by NIZHNY-MZV  Wed Dec  1 13:55:08 1999
     // if !ok try to compute new pcurve
     if (!ok)
     {
-      Standard_Real        ttol;
-      Handle(Geom2d_Curve) c2d = FC2D_CurveOnSurface(E, F, f, l, ttol);
-      ok                       = !c2d.IsNull();
+      double                    ttol;
+      occ::handle<Geom2d_Curve> c2d = FC2D_CurveOnSurface(E, F, f, l, ttol);
+      ok                            = !c2d.IsNull();
       if (ok)
         p2d = c2d->Value(paronE);
     }
     if (!ok)
-      return Standard_False;
+      return false;
     // modified by NIZHNY-MZV  Wed Dec  1 13:56:14 1999
     // xpu010698
     gp_Pnt p3duv;
     FUN_tool_value(p2d, F, p3duv);
-    Standard_Real dd = p3duv.Distance(p3d);
+    double dd = p3duv.Distance(p3d);
     if (dd > tol)
-      return Standard_False;
+      return false;
     // xpu010698
   }
   nggeomF = FUN_tool_nggeomF(p2d, F);
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_nggeomF(const Standard_Real& paronE,
-                                                  const TopoDS_Edge&   E,
-                                                  const TopoDS_Face&   F,
-                                                  gp_Vec&              nggeomF)
+Standard_EXPORT bool FUN_tool_nggeomF(const double&      paronE,
+                                      const TopoDS_Edge& E,
+                                      const TopoDS_Face& F,
+                                      gp_Vec&            nggeomF)
 {
-  Standard_Real tol3d = BRep_Tool::Tolerance(F);
+  double tol3d = BRep_Tool::Tolerance(F);
   tol3d *= 1.e2;
-  Standard_Boolean ok = FUN_tool_nggeomF(paronE, E, F, nggeomF, tol3d);
+  bool ok = FUN_tool_nggeomF(paronE, E, F, nggeomF, tol3d);
   return ok;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_EtgF(const Standard_Real& paronE,
-                                               const TopoDS_Edge&   E,
-                                               const gp_Pnt2d&      p2d,
-                                               const TopoDS_Face&   F,
-                                               const Standard_Real  tola)
+Standard_EXPORT bool FUN_tool_EtgF(const double&      paronE,
+                                   const TopoDS_Edge& E,
+                                   const gp_Pnt2d&    p2d,
+                                   const TopoDS_Face& F,
+                                   const double       tola)
 {
-  gp_Vec           tgE;
-  Standard_Boolean ok = TopOpeBRepTool_TOOL::TggeomE(paronE, E, tgE);
+  gp_Vec tgE;
+  bool   ok = TopOpeBRepTool_TOOL::TggeomE(paronE, E, tgE);
   if (!ok)
-    return Standard_False; // NYIRAISE
+    return false; // NYIRAISE
 
-  gp_Vec           ngF  = FUN_tool_nggeomF(p2d, F);
-  Standard_Real    prod = tgE.Dot(ngF);
-  Standard_Boolean tgt  = std::abs(prod) < tola;
+  gp_Vec ngF  = FUN_tool_nggeomF(p2d, F);
+  double prod = tgE.Dot(ngF);
+  bool   tgt  = std::abs(prod) < tola;
   return tgt;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_EtgOOE(const Standard_Real& paronE,
-                                                 const TopoDS_Edge&   E,
-                                                 const Standard_Real& paronOOE,
-                                                 const TopoDS_Edge&   OOE,
-                                                 const Standard_Real  tola)
+Standard_EXPORT bool FUN_tool_EtgOOE(const double&      paronE,
+                                     const TopoDS_Edge& E,
+                                     const double&      paronOOE,
+                                     const TopoDS_Edge& OOE,
+                                     const double       tola)
 {
-  gp_Vec           tgOOE;
-  Standard_Boolean ok = TopOpeBRepTool_TOOL::TggeomE(paronOOE, OOE, tgOOE);
+  gp_Vec tgOOE;
+  bool   ok = TopOpeBRepTool_TOOL::TggeomE(paronOOE, OOE, tgOOE);
   if (!ok)
-    return Standard_False; // NYIRAISE
+    return false; // NYIRAISE
   gp_Vec tgE;
   ok = TopOpeBRepTool_TOOL::TggeomE(paronE, E, tgE);
   if (!ok)
-    return Standard_False; // NYIRAISE
-  Standard_Real    prod = tgOOE.Dot(tgE);
-  Standard_Boolean tg   = (std::abs(1 - std::abs(prod)) < tola);
+    return false; // NYIRAISE
+  double prod = tgOOE.Dot(tgE);
+  bool   tg   = (std::abs(1 - std::abs(prod)) < tola);
   return tg;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_nearestISO(const TopoDS_Face&     F,
-                                                const Standard_Real    xpar,
-                                                const Standard_Boolean isoU,
-                                                Standard_Real&         xinf,
-                                                Standard_Real&         xsup)
+Standard_EXPORT bool FUN_nearestISO(const TopoDS_Face& F,
+                                    const double       xpar,
+                                    const bool         isoU,
+                                    double&            xinf,
+                                    double&            xsup)
 {
   // IMPORTANT : xinf=xf,xsup=xl are INITIALIZED with first and last x
   //             parameters of F (x = u,v )
   // purpose : finding greater xinf : xinf <= xpar
   //                   smaller xsup :        xpar <=xsup
-  Standard_Real    tol2d = 1.e-6;
-  Standard_Real    df    = xpar - xinf;
-  Standard_Boolean onf   = (std::abs(df) < tol2d);
-  Standard_Real    dl    = xpar - xsup;
-  Standard_Boolean onl   = (std::abs(dl) < tol2d);
+  double tol2d = 1.e-6;
+  double df    = xpar - xinf;
+  bool   onf   = (std::abs(df) < tol2d);
+  double dl    = xpar - xsup;
+  bool   onl   = (std::abs(dl) < tol2d);
   if (onf || onl)
-    return Standard_True;
+    return true;
 
-  Standard_Boolean isoV = !isoU;
-  TopExp_Explorer  ex(F, TopAbs_EDGE);
+  bool            isoV = !isoU;
+  TopExp_Explorer ex(F, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
   {
     const TopoDS_Edge& E = TopoDS::Edge(ex.Current());
-    Standard_Boolean   isou, isov;
+    bool               isou, isov;
     gp_Pnt2d           o2d;
     gp_Dir2d           d2d;
-    Standard_Boolean   isouv = TopOpeBRepTool_TOOL::UVISO(E, F, isou, isov, d2d, o2d);
+    bool               isouv = TopOpeBRepTool_TOOL::UVISO(E, F, isou, isov, d2d, o2d);
     if (!isouv)
-      return Standard_False;
+      return false;
 
-    Standard_Boolean compare = (isoU && isou) || (isoV && isov);
+    bool compare = (isoU && isou) || (isoV && isov);
     if (!compare)
-      return Standard_False;
-    Standard_Real xvalue = isou ? o2d.X() : o2d.Y();
+      return false;
+    double xvalue = isou ? o2d.X() : o2d.Y();
 
     if (xvalue < xpar)
       if (xinf < xvalue)
@@ -588,24 +584,24 @@ Standard_EXPORT Standard_Boolean FUN_nearestISO(const TopoDS_Face&     F,
       if (xvalue < xsup)
         xsup = xvalue;
   }
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_EitangenttoFe(const gp_Dir&       ngFe,
-                                                        const TopoDS_Edge&  Ei,
-                                                        const Standard_Real parOnEi)
+Standard_EXPORT bool FUN_tool_EitangenttoFe(const gp_Dir&      ngFe,
+                                            const TopoDS_Edge& Ei,
+                                            const double       parOnEi)
 {
   // returns true if <Ei> is tangent to Fe at point
   // p3d of param <parOnEi>,<ngFe> is normal to Fe at p3d.
-  gp_Vec           tgEi;
-  Standard_Boolean ok = TopOpeBRepTool_TOOL::TggeomE(parOnEi, Ei, tgEi);
+  gp_Vec tgEi;
+  bool   ok = TopOpeBRepTool_TOOL::TggeomE(parOnEi, Ei, tgEi);
   if (!ok)
-    return Standard_False; // NYIRAISE
+    return false; // NYIRAISE
 
-  Standard_Real    prod    = ngFe.Dot(tgEi);
-  Standard_Real    tol     = Precision::Parametric(Precision::Confusion());
-  Standard_Boolean tangent = (std::abs(prod) <= tol);
+  double prod    = ngFe.Dot(tgEi);
+  double tol     = Precision::Parametric(Precision::Confusion());
+  bool   tangent = (std::abs(prod) <= tol);
   return tangent;
 }
 
@@ -618,97 +614,94 @@ Standard_EXPORT GeomAbs_CurveType FUN_tool_typ(const TopoDS_Edge& E)
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_line(const TopoDS_Edge& E)
+Standard_EXPORT bool FUN_tool_line(const TopoDS_Edge& E)
 {
   BRepAdaptor_Curve BC(E);
-  Standard_Boolean  line = (BC.GetType() == GeomAbs_Line);
+  bool              line = (BC.GetType() == GeomAbs_Line);
   return line;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_plane(const TopoDS_Shape& F)
+Standard_EXPORT bool FUN_tool_plane(const TopoDS_Shape& F)
 {
-  Handle(Geom_Surface) S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
-  GeomAdaptor_Surface  GS(S);
+  occ::handle<Geom_Surface> S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
+  GeomAdaptor_Surface       GS(S);
   return (GS.GetType() == GeomAbs_Plane);
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_cylinder(const TopoDS_Shape& F)
+Standard_EXPORT bool FUN_tool_cylinder(const TopoDS_Shape& F)
 {
-  Handle(Geom_Surface) S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
-  GeomAdaptor_Surface  GS(S);
+  occ::handle<Geom_Surface> S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
+  GeomAdaptor_Surface       GS(S);
   return (GS.GetType() == GeomAbs_Cylinder);
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_closedS(const TopoDS_Shape& F,
-                                                  Standard_Boolean&   uclosed,
-                                                  Standard_Real&      uperiod,
-                                                  Standard_Boolean&   vclosed,
-                                                  Standard_Real&      vperiod)
+Standard_EXPORT bool FUN_tool_closedS(const TopoDS_Shape& F,
+                                      bool&               uclosed,
+                                      double&             uperiod,
+                                      bool&               vclosed,
+                                      double&             vperiod)
 {
-  //  const Handle(Geom_Surface)& S = BRep_Tool::Surface(TopoDS::Face(F));
-  Handle(Geom_Surface) S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
+  //  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(TopoDS::Face(F));
+  occ::handle<Geom_Surface> S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
   if (S.IsNull())
-    return Standard_False;
-  Standard_Boolean closed = FUN_tool_closed(S, uclosed, uperiod, vclosed, vperiod);
+    return false;
+  bool closed = FUN_tool_closed(S, uclosed, uperiod, vclosed, vperiod);
   return closed;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_closedS(const TopoDS_Shape& F)
+Standard_EXPORT bool FUN_tool_closedS(const TopoDS_Shape& F)
 {
-  Standard_Boolean uclosed = Standard_False, vclosed = Standard_False;
-  Standard_Real    uperiod = 0., vperiod = 0.;
-  Standard_Boolean closed = FUN_tool_closedS(F, uclosed, uperiod, vclosed, vperiod);
+  bool   uclosed = false, vclosed = false;
+  double uperiod = 0., vperiod = 0.;
+  bool   closed = FUN_tool_closedS(F, uclosed, uperiod, vclosed, vperiod);
   return closed;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_closedS(const TopoDS_Shape& F,
-                                                  Standard_Boolean&   inU,
-                                                  Standard_Real&      xmin,
-                                                  Standard_Real&      xper)
+Standard_EXPORT bool FUN_tool_closedS(const TopoDS_Shape& F, bool& inU, double& xmin, double& xper)
 {
-  Standard_Boolean     uclosed, vclosed;
-  Standard_Real        uperiod, vperiod;
-  Handle(Geom_Surface) S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
+  bool                      uclosed, vclosed;
+  double                    uperiod, vperiod;
+  occ::handle<Geom_Surface> S = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
   if (S.IsNull())
-    return Standard_False;
-  Standard_Boolean closed = FUN_tool_closed(S, uclosed, uperiod, vclosed, vperiod);
+    return false;
+  bool closed = FUN_tool_closed(S, uclosed, uperiod, vclosed, vperiod);
   if (!closed)
-    return Standard_False;
-  Standard_Real u1, u2, v1, v2;
+    return false;
+  double u1, u2, v1, v2;
   S->Bounds(u1, u2, v1, v2);
 
   inU  = uclosed;
   xper = inU ? uperiod : vperiod;
   xmin = inU ? u1 : v1;
-  return Standard_False;
+  return false;
 }
 
 // ----------------------------------------------------------------------
 Standard_EXPORT void FUN_tool_mkBnd2d(const TopoDS_Shape& W, const TopoDS_Shape& FF, Bnd_Box2d& B2d)
 {
   // greater <B> with <W>'s UV representation on <F>
-  Standard_Real   tol = 1.e-8;
+  double          tol = 1.e-8;
   Bnd_Box2d       newB2d;
   TopExp_Explorer ex;
   for (ex.Init(W, TopAbs_EDGE); ex.More(); ex.Next())
   {
     //  for (TopExp_Explorer ex(W,TopAbs_EDGE); ex.More(); ex.Next()) {
-    const TopoDS_Edge&   E = TopoDS::Edge(ex.Current());
-    const TopoDS_Face&   F = TopoDS::Face(FF);
-    Standard_Real        f, l, tolpc;
-    Handle(Geom2d_Curve) pc;
-    Standard_Boolean     haspc = FC2D_HasCurveOnSurface(E, F);
+    const TopoDS_Edge&        E = TopoDS::Edge(ex.Current());
+    const TopoDS_Face&        F = TopoDS::Face(FF);
+    double                    f, l, tolpc;
+    occ::handle<Geom2d_Curve> pc;
+    bool                      haspc = FC2D_HasCurveOnSurface(E, F);
     if (!haspc)
     {
-      Standard_Real tolE   = BRep_Tool::Tolerance(E);
-      pc                   = FC2D_CurveOnSurface(E, F, f, l, tolpc);
-      Standard_Real newtol = std::max(tolE, tolpc);
-      BRep_Builder  BB;
+      double tolE         = BRep_Tool::Tolerance(E);
+      pc                  = FC2D_CurveOnSurface(E, F, f, l, tolpc);
+      double       newtol = std::max(tolE, tolpc);
+      BRep_Builder BB;
       BB.UpdateEdge(E, pc, F, newtol);
     }
     BRepAdaptor_Curve2d BC2d(E, F);
@@ -721,37 +714,37 @@ Standard_EXPORT void FUN_tool_mkBnd2d(const TopoDS_Shape& W, const TopoDS_Shape&
 //=================================================================================================
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_IsClosingE(const TopoDS_Edge&  E,
-                                                     const TopoDS_Shape& S,
-                                                     const TopoDS_Face&  F)
+Standard_EXPORT bool FUN_tool_IsClosingE(const TopoDS_Edge&  E,
+                                         const TopoDS_Shape& S,
+                                         const TopoDS_Face&  F)
 {
-  Standard_Integer nbocc = 0;
-  TopExp_Explorer  exp;
+  int             nbocc = 0;
+  TopExp_Explorer exp;
   for (exp.Init(S, TopAbs_EDGE); exp.More(); exp.Next())
     //  for (TopExp_Explorer exp(S,TopAbs_EDGE);exp.More();exp.Next())
     if (exp.Current().IsSame(E))
       nbocc++;
   if (nbocc != 2)
-    return Standard_False;
+    return false;
   return BRep_Tool::IsClosed(E, F);
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_ClosingE(const TopoDS_Edge& E,
-                                                   const TopoDS_Wire& W,
-                                                   const TopoDS_Face& F)
+Standard_EXPORT bool FUN_tool_ClosingE(const TopoDS_Edge& E,
+                                       const TopoDS_Wire& W,
+                                       const TopoDS_Face& F)
 {
-  Standard_Boolean clo = FUN_tool_IsClosingE(E, W, F);
+  bool clo = FUN_tool_IsClosingE(E, W, F);
   return clo;
 }
 
 /*// ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_ClosedE(const TopoDS_Edge& E,TopoDS_Shape& vclosing)
+Standard_EXPORT bool FUN_tool_ClosedE(const TopoDS_Edge& E,TopoDS_Shape& vclosing)
 {
   // returns true if <E> has a closing vertex <vclosing>
 //  return E.IsClosed();
-  Standard_Boolean isdgE = BRep_Tool::Degenerated(E);
-  if (isdgE) return Standard_False;
+  bool isdgE = BRep_Tool::Degenerated(E);
+  if (isdgE) return false;
 
   TopoDS_Shape vv; vclosing.Nullify();
   TopExp_Explorer ex(E,TopAbs_VERTEX);
@@ -760,43 +753,42 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClosedE(const TopoDS_Edge& E,TopoDS_Sh
     if (M_INTERNAL(v.Orientation())) continue;
     if (vv.IsNull()) vv = v;
     else if (v.IsSame(vv))
-      {vclosing = vv; return Standard_True;}
+      {vclosing = vv; return true;}
   }
-  return Standard_False;
+  return false;
 }*/
 
 //=================================================================================================
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_inS(const TopoDS_Shape& subshape,
-                                              const TopoDS_Shape& shape)
+Standard_EXPORT bool FUN_tool_inS(const TopoDS_Shape& subshape, const TopoDS_Shape& shape)
 {
-  TopAbs_ShapeEnum           sstyp = subshape.ShapeType();
-  TopTools_IndexedMapOfShape M;
+  TopAbs_ShapeEnum                                              sstyp = subshape.ShapeType();
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> M;
   TopExp::MapShapes(shape, sstyp, M);
-  Standard_Boolean isbound = M.Contains(subshape);
+  bool isbound = M.Contains(subshape);
   return isbound;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_Eshared(const TopoDS_Shape& v,
-                                                  const TopoDS_Shape& F1,
-                                                  const TopoDS_Shape& F2,
-                                                  TopoDS_Shape&       Eshared)
+Standard_EXPORT bool FUN_tool_Eshared(const TopoDS_Shape& v,
+                                      const TopoDS_Shape& F1,
+                                      const TopoDS_Shape& F2,
+                                      TopoDS_Shape&       Eshared)
 // purpose : finds out <Eshared> shared by <F1> and <F2>,
 //           with <V> bound of <Eshared>
 {
-  TopTools_ListOfShape e1s;
-  TopExp_Explorer      ex(F1, TopAbs_EDGE);
+  NCollection_List<TopoDS_Shape> e1s;
+  TopExp_Explorer                ex(F1, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
   {
     const TopoDS_Shape& e1   = ex.Current();
-    Standard_Boolean    e1ok = Standard_False;
+    bool                e1ok = false;
     TopExp_Explorer     exv(e1, TopAbs_VERTEX);
     for (; exv.More(); exv.Next())
       if (exv.Current().IsSame(v))
       {
-        e1ok = Standard_True;
+        e1ok = true;
         break;
       }
     if (e1ok)
@@ -805,26 +797,24 @@ Standard_EXPORT Standard_Boolean FUN_tool_Eshared(const TopoDS_Shape& v,
   ex.Init(F2, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
   {
-    const TopoDS_Shape&                e2 = ex.Current();
-    TopTools_ListIteratorOfListOfShape it1(e1s);
+    const TopoDS_Shape&                      e2 = ex.Current();
+    NCollection_List<TopoDS_Shape>::Iterator it1(e1s);
     for (; it1.More(); it1.Next())
       if (it1.Value().IsSame(e2))
       {
         Eshared = e2;
-        return Standard_True;
+        return true;
       }
   }
-  return Standard_False;
+  return false;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_parVonE(const TopoDS_Vertex& v,
-                                                  const TopoDS_Edge&   E,
-                                                  Standard_Real&       par)
+Standard_EXPORT bool FUN_tool_parVonE(const TopoDS_Vertex& v, const TopoDS_Edge& E, double& par)
 {
-  Standard_Real    tol    = Precision::Confusion();
-  Standard_Boolean isVofE = Standard_False;
-  TopExp_Explorer  ex;
+  double          tol    = Precision::Confusion();
+  bool            isVofE = false;
+  TopExp_Explorer ex;
   for (ex.Init(E, TopAbs_VERTEX); ex.More(); ex.Next())
   {
     //  for (TopExp_Explorer ex(E,TopAbs_VERTEX); ex.More(); ex.Next()) {
@@ -846,121 +836,121 @@ Standard_EXPORT Standard_Boolean FUN_tool_parVonE(const TopoDS_Vertex& v,
       if (ptex.IsEqual(pt, tol))
       {
         par = BRep_Tool::Parameter(vex, E);
-        return Standard_True;
+        return true;
       }
     }
 
-    //    Standard_Real f,l;
+    //    double f,l;
     BRepAdaptor_Curve BAC(E);
     Extrema_ExtPC     pro(pt, BAC);
-    Standard_Boolean  done = pro.IsDone() && (pro.NbExt() > 0);
+    bool              done = pro.IsDone() && (pro.NbExt() > 0);
     if (!done)
-      return Standard_False;
-    Standard_Integer i = FUN_tool_getindex(pro);
-    par                = pro.Point(i).Parameter();
+      return false;
+    int i = FUN_tool_getindex(pro);
+    par   = pro.Point(i).Parameter();
   }
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_parE(const TopoDS_Edge&   E0,
-                                               const Standard_Real& par0,
-                                               const TopoDS_Edge&   E,
-                                               Standard_Real&       par,
-                                               const Standard_Real  tol)
+Standard_EXPORT bool FUN_tool_parE(const TopoDS_Edge& E0,
+                                   const double&      par0,
+                                   const TopoDS_Edge& E,
+                                   double&            par,
+                                   const double       tol)
 {
-  gp_Pnt           P;
-  Standard_Boolean ok = FUN_tool_value(par0, E0, P);
+  gp_Pnt P;
+  bool   ok = FUN_tool_value(par0, E0, P);
   if (!ok)
-    return Standard_False;
+    return false;
 
-  Standard_Real dist;
+  double dist;
   ok = FUN_tool_projPonE(P, E, par, dist);
   if (!ok)
-    return Standard_False;
+    return false;
 
   ok = (dist < tol);
   return ok;
 }
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_parE(const TopoDS_Edge&   E0,
-                                               const Standard_Real& par0,
-                                               const TopoDS_Edge&   E,
-                                               Standard_Real&       par)
+Standard_EXPORT bool FUN_tool_parE(const TopoDS_Edge& E0,
+                                   const double&      par0,
+                                   const TopoDS_Edge& E,
+                                   double&            par)
 // ? <par> :  P -> <par0> on <E0>,<par> on <E>
 // prequesitory : point(par0 ,E0) is IN 1d(E)
 {
-  Standard_Real tol3d = BRep_Tool::Tolerance(E) * 1.e2; // KKKKK a revoir xpu(CTS21118,f14ou,GI13)
-  Standard_Boolean ok = FUN_tool_parE(E0, par0, E, par, tol3d);
+  double tol3d = BRep_Tool::Tolerance(E) * 1.e2; // KKKKK a revoir xpu(CTS21118,f14ou,GI13)
+  bool   ok    = FUN_tool_parE(E0, par0, E, par, tol3d);
   return ok;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_parF(const TopoDS_Edge&   E,
-                                               const Standard_Real& par,
-                                               const TopoDS_Face&   F,
-                                               gp_Pnt2d&            UV,
-                                               const Standard_Real  tol3d)
+Standard_EXPORT bool FUN_tool_parF(const TopoDS_Edge& E,
+                                   const double&      par,
+                                   const TopoDS_Face& F,
+                                   gp_Pnt2d&          UV,
+                                   const double       tol3d)
 // ? <UV> : P -> <par> on <E>,<UV> on <F>
 {
-  gp_Pnt           P;
-  Standard_Boolean ok = FUN_tool_value(par, E, P);
+  gp_Pnt P;
+  bool   ok = FUN_tool_value(par, E, P);
   if (!ok)
-    return Standard_False;
+    return false;
 
-  Standard_Real dist;
+  double dist;
   ok = FUN_tool_projPonF(P, F, UV, dist);
   if (!ok)
-    return Standard_False;
+    return false;
 
   ok = (dist < tol3d);
   return ok;
 }
 
-Standard_EXPORT Standard_Boolean FUN_tool_parF(const TopoDS_Edge&   E,
-                                               const Standard_Real& par,
-                                               const TopoDS_Face&   F,
-                                               gp_Pnt2d&            UV)
+Standard_EXPORT bool FUN_tool_parF(const TopoDS_Edge& E,
+                                   const double&      par,
+                                   const TopoDS_Face& F,
+                                   gp_Pnt2d&          UV)
 {
-  Standard_Real    tol3d = BRep_Tool::Tolerance(F) * 1.e2; // KK xpu
-  Standard_Boolean ok    = FUN_tool_parF(E, par, F, UV, tol3d);
+  double tol3d = BRep_Tool::Tolerance(F) * 1.e2; // KK xpu
+  bool   ok    = FUN_tool_parF(E, par, F, UV, tol3d);
   return ok;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_paronEF(const TopoDS_Edge&   E,
-                                                  const Standard_Real& par,
-                                                  const TopoDS_Face&   F,
-                                                  gp_Pnt2d&            UV,
-                                                  const Standard_Real  tol3d)
+Standard_EXPORT bool FUN_tool_paronEF(const TopoDS_Edge& E,
+                                      const double&      par,
+                                      const TopoDS_Face& F,
+                                      gp_Pnt2d&          UV,
+                                      const double       tol3d)
 // <E> is on <F> ? <UV> : P -> <par> on <E>,<UV> on <F>
 {
-  Standard_Real        f, l, tol;
-  Handle(Geom2d_Curve) PC = FC2D_CurveOnSurface(E, F, f, l, tol);
+  double                    f, l, tol;
+  occ::handle<Geom2d_Curve> PC = FC2D_CurveOnSurface(E, F, f, l, tol);
   if (PC.IsNull())
   {
-    Standard_Boolean ok = FUN_tool_parF(E, par, F, UV, tol3d);
+    bool ok = FUN_tool_parF(E, par, F, UV, tol3d);
     return ok;
   }
-  Standard_Boolean ok = (f <= par) && (par <= l);
+  bool ok = (f <= par) && (par <= l);
   if (!ok)
-    return Standard_False;
+    return false;
   UV = PC->Value(par);
-  return Standard_True;
+  return true;
 }
 
-Standard_EXPORT Standard_Boolean FUN_tool_paronEF(const TopoDS_Edge&   E,
-                                                  const Standard_Real& par,
-                                                  const TopoDS_Face&   F,
-                                                  gp_Pnt2d&            UV)
+Standard_EXPORT bool FUN_tool_paronEF(const TopoDS_Edge& E,
+                                      const double&      par,
+                                      const TopoDS_Face& F,
+                                      gp_Pnt2d&          UV)
 {
-  Standard_Real    tol3d = BRep_Tool::Tolerance(F) * 1.e2; // KKxpu
-  Standard_Boolean ok    = FUN_tool_paronEF(E, par, F, UV, tol3d);
+  double tol3d = BRep_Tool::Tolerance(F) * 1.e2; // KKxpu
+  bool   ok    = FUN_tool_paronEF(E, par, F, UV, tol3d);
   return ok;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT gp_Dir FUN_tool_dirC(const Standard_Real par, const BRepAdaptor_Curve& BAC)
+Standard_EXPORT gp_Dir FUN_tool_dirC(const double par, const BRepAdaptor_Curve& BAC)
 {
   gp_Pnt p;
   gp_Vec tgE;
@@ -970,9 +960,9 @@ Standard_EXPORT gp_Dir FUN_tool_dirC(const Standard_Real par, const BRepAdaptor_
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT gp_Vec FUN_tool_tggeomE(const Standard_Real paronE, const TopoDS_Edge& E)
+Standard_EXPORT gp_Vec FUN_tool_tggeomE(const double paronE, const TopoDS_Edge& E)
 {
-  Standard_Boolean isdgE = BRep_Tool::Degenerated(E);
+  bool isdgE = BRep_Tool::Degenerated(E);
   if (isdgE)
     return gp_Vec(0, 0, 0);
   gp_Vec dirE(FUN_tool_dirC(paronE, E));
@@ -980,102 +970,97 @@ Standard_EXPORT gp_Vec FUN_tool_tggeomE(const Standard_Real paronE, const TopoDS
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_line(const BRepAdaptor_Curve& BAC)
+Standard_EXPORT bool FUN_tool_line(const BRepAdaptor_Curve& BAC)
 {
-  Standard_Boolean line = (BAC.GetType() == GeomAbs_Line);
+  bool line = (BAC.GetType() == GeomAbs_Line);
   return line;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_quad(const TopoDS_Edge& E)
+Standard_EXPORT bool FUN_tool_quad(const TopoDS_Edge& E)
 {
   BRepAdaptor_Curve BC(E);
   GeomAbs_CurveType CT   = BC.GetType();
-  Standard_Boolean  quad = FUN_quadCT(CT);
+  bool              quad = FUN_quadCT(CT);
   return quad;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_quad(const BRepAdaptor_Curve& BAC)
+Standard_EXPORT bool FUN_tool_quad(const BRepAdaptor_Curve& BAC)
 {
   GeomAbs_CurveType CT     = BAC.GetType();
-  Standard_Boolean  isquad = Standard_False;
+  bool              isquad = false;
   if (CT == GeomAbs_Line)
-    isquad = Standard_True;
+    isquad = true;
   if (CT == GeomAbs_Circle)
-    isquad = Standard_True;
+    isquad = true;
   if (CT == GeomAbs_Ellipse)
-    isquad = Standard_True;
+    isquad = true;
   if (CT == GeomAbs_Hyperbola)
-    isquad = Standard_True;
+    isquad = true;
   if (CT == GeomAbs_Parabola)
-    isquad = Standard_True;
+    isquad = true;
   return isquad;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_quad(const TopoDS_Face& F)
+Standard_EXPORT bool FUN_tool_quad(const TopoDS_Face& F)
 {
-  Handle(Geom_Surface) S    = TopOpeBRepTool_ShapeTool::BASISSURFACE(F);
-  Standard_Boolean     quad = FUN_tool_quad(S);
+  occ::handle<Geom_Surface> S    = TopOpeBRepTool_ShapeTool::BASISSURFACE(F);
+  bool                      quad = FUN_tool_quad(S);
   return quad;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_findPinBAC(const BRepAdaptor_Curve& BAC,
-                                                     gp_Pnt&                  P,
-                                                     Standard_Real&           par)
+Standard_EXPORT bool FUN_tool_findPinBAC(const BRepAdaptor_Curve& BAC, gp_Pnt& P, double& par)
 {
   FUN_tool_findparinBAC(BAC, par);
   BAC.D0(par, P);
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_findparinBAC(const BRepAdaptor_Curve& BAC,
-                                                       Standard_Real&           par)
+Standard_EXPORT bool FUN_tool_findparinBAC(const BRepAdaptor_Curve& BAC, double& par)
 {
-  Standard_Real fE = BAC.FirstParameter(), lE = BAC.LastParameter();
-  Standard_Real t = 0.34567237;
-  par             = (1 - t) * fE + t * lE;
-  return Standard_True;
+  double fE = BAC.FirstParameter(), lE = BAC.LastParameter();
+  double t = 0.34567237;
+  par      = (1 - t) * fE + t * lE;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_findparinE(const TopoDS_Shape& E, Standard_Real& par)
+Standard_EXPORT bool FUN_tool_findparinE(const TopoDS_Shape& E, double& par)
 {
   BRepAdaptor_Curve BAC(TopoDS::Edge(E));
-  Standard_Boolean  r = FUN_tool_findparinBAC(BAC, par);
+  bool              r = FUN_tool_findparinBAC(BAC, par);
   return r;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_findPinE(const TopoDS_Shape& E,
-                                                   gp_Pnt&             P,
-                                                   Standard_Real&      par)
+Standard_EXPORT bool FUN_tool_findPinE(const TopoDS_Shape& E, gp_Pnt& P, double& par)
 {
   BRepAdaptor_Curve BAC(TopoDS::Edge(E));
-  Standard_Boolean  r = FUN_tool_findPinBAC(BAC, P, par);
+  bool              r = FUN_tool_findPinBAC(BAC, P, par);
   return r;
 }
 
 //=================================================================================================
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_maxtol(const TopoDS_Shape&     S,
-                                                 const TopAbs_ShapeEnum& typ,
-                                                 Standard_Real&          maxtol)
+Standard_EXPORT bool FUN_tool_maxtol(const TopoDS_Shape&     S,
+                                     const TopAbs_ShapeEnum& typ,
+                                     double&                 maxtol)
 // purpose : returns maxtol of <S>'s shapes of type <typ>
 {
-  Standard_Boolean face   = (typ == TopAbs_FACE);
-  Standard_Boolean edge   = (typ == TopAbs_EDGE);
-  Standard_Boolean vertex = (typ == TopAbs_VERTEX);
-  TopExp_Explorer  ex(S, typ);
-  Standard_Boolean hasshatyp = ex.More();
+  bool            face   = (typ == TopAbs_FACE);
+  bool            edge   = (typ == TopAbs_EDGE);
+  bool            vertex = (typ == TopAbs_VERTEX);
+  TopExp_Explorer ex(S, typ);
+  bool            hasshatyp = ex.More();
   for (; ex.More(); ex.Next())
   {
     const TopoDS_Shape& ss    = ex.Current();
-    Standard_Real       tolss = 0.;
+    double              tolss = 0.;
     if (face)
       tolss = BRep_Tool::Tolerance(TopoDS::Face(ss));
     if (edge)
@@ -1089,10 +1074,10 @@ Standard_EXPORT Standard_Boolean FUN_tool_maxtol(const TopoDS_Shape&     S,
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Real FUN_tool_maxtol(const TopoDS_Shape& S)
+Standard_EXPORT double FUN_tool_maxtol(const TopoDS_Shape& S)
 // purpose : returns maxtol between <S>'s shapes.
 {
-  Standard_Real maxtol = 0.;
+  double maxtol = 0.;
   FUN_tool_maxtol(S, TopAbs_FACE, maxtol);
   FUN_tool_maxtol(S, TopAbs_EDGE, maxtol);
   FUN_tool_maxtol(S, TopAbs_VERTEX, maxtol);
@@ -1100,20 +1085,19 @@ Standard_EXPORT Standard_Real FUN_tool_maxtol(const TopoDS_Shape& S)
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Integer FUN_tool_nbshapes(const TopoDS_Shape&     S,
-                                                   const TopAbs_ShapeEnum& typ)
+Standard_EXPORT int FUN_tool_nbshapes(const TopoDS_Shape& S, const TopAbs_ShapeEnum& typ)
 {
-  TopExp_Explorer  ex(S, typ);
-  Standard_Integer i = 0;
+  TopExp_Explorer ex(S, typ);
+  int             i = 0;
   for (; ex.More(); ex.Next())
     i++;
   return i;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_tool_shapes(const TopoDS_Shape&     S,
-                                     const TopAbs_ShapeEnum& typ,
-                                     TopTools_ListOfShape&   ltyp)
+Standard_EXPORT void FUN_tool_shapes(const TopoDS_Shape&             S,
+                                     const TopAbs_ShapeEnum&         typ,
+                                     NCollection_List<TopoDS_Shape>& ltyp)
 {
   TopExp_Explorer ex(S, typ);
   for (; ex.More(); ex.Next())
@@ -1121,8 +1105,7 @@ Standard_EXPORT void FUN_tool_shapes(const TopoDS_Shape&     S,
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Integer FUN_tool_comparebndkole(const TopoDS_Shape& sh1,
-                                                         const TopoDS_Shape& sh2)
+Standard_EXPORT int FUN_tool_comparebndkole(const TopoDS_Shape& sh1, const TopoDS_Shape& sh2)
 // purpose: comparing bounding boxes of <sh1> and <sh2>,
 //          returns k =1,2 if shi is contained in shk
 //          else returns 0
@@ -1136,19 +1119,19 @@ Standard_EXPORT Standard_Integer FUN_tool_comparebndkole(const TopoDS_Shape& sh1
 
   if (bnd1.IsOut(bnd2))
     return 0;
-  TColStd_Array1OfReal xyz1(1, 6), xyz2(1, 6);
+  NCollection_Array1<double> xyz1(1, 6), xyz2(1, 6);
   bnd1.Get(xyz1(1), xyz1(2), xyz1(3), xyz1(4), xyz1(5), xyz1(6));
   bnd2.Get(xyz2(1), xyz2(2), xyz2(3), xyz2(4), xyz2(5), xyz2(6));
-  Standard_Real tol = Precision::Confusion();
+  double tol = Precision::Confusion();
 
-  Standard_Integer neq, n2sup;
+  int neq, n2sup;
   neq = n2sup = 0;
-  //  for (Standard_Integer i = 1; i<=3; i++) {
-  Standard_Integer i;
+  //  for (int i = 1; i<=3; i++) {
+  int i;
   for (i = 1; i <= 3; i++)
   {
-    Standard_Real    d  = xyz2(i) - xyz1(i);
-    Standard_Boolean eq = (std::abs(d) < tol);
+    double d  = xyz2(i) - xyz1(i);
+    bool   eq = (std::abs(d) < tol);
     if (eq)
     {
       neq++;
@@ -1159,8 +1142,8 @@ Standard_EXPORT Standard_Integer FUN_tool_comparebndkole(const TopoDS_Shape& sh1
   }
   for (i = 4; i <= 6; i++)
   {
-    Standard_Real    d  = xyz2(i) - xyz1(i);
-    Standard_Boolean eq = (std::abs(d) < tol);
+    double d  = xyz2(i) - xyz1(i);
+    bool   eq = (std::abs(d) < tol);
     if (eq)
     {
       neq++;
@@ -1174,106 +1157,107 @@ Standard_EXPORT Standard_Integer FUN_tool_comparebndkole(const TopoDS_Shape& sh1
   if (neq == 6)
     return 0;
 
-  Standard_Integer ires = (n2sup > 0) ? 2 : 1;
+  int ires = (n2sup > 0) ? 2 : 1;
   return ires;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_SameOri(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
+Standard_EXPORT bool FUN_tool_SameOri(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 // prequesitory : 1- <E1> and <E2> share same domain,
 //                2- C3d<E1> contains C3d<E2>
 {
-  Standard_Real f, l;
+  double f, l;
   FUN_tool_bounds(E2, f, l);
-  Standard_Real x   = 0.345;
-  Standard_Real mid = x * f + (1 - x) * l;
-  gp_Pnt        Pmid;
+  double x   = 0.345;
+  double mid = x * f + (1 - x) * l;
+  gp_Pnt Pmid;
   FUN_tool_value(mid, E2, Pmid);
-  gp_Vec           tmp;
-  Standard_Boolean ok = TopOpeBRepTool_TOOL::TggeomE(mid, E2, tmp);
+  gp_Vec tmp;
+  bool   ok = TopOpeBRepTool_TOOL::TggeomE(mid, E2, tmp);
   if (!ok)
-    return Standard_False;
+    return false;
   gp_Dir             tgE2(tmp);
   TopAbs_Orientation oriE2 = E2.Orientation();
   if (M_REVERSED(oriE2))
     tgE2.Reverse();
 
-  Standard_Real pE1, dist;
-  ok                 = FUN_tool_projPonE(Pmid, E1, pE1, dist);
-  Standard_Real tol1 = BRep_Tool::Tolerance(E1);
-  Standard_Real tol2 = BRep_Tool::Tolerance(E2);
-  Standard_Real tol  = std::max(tol1, tol2) * 10.;
+  double pE1, dist;
+  ok          = FUN_tool_projPonE(Pmid, E1, pE1, dist);
+  double tol1 = BRep_Tool::Tolerance(E1);
+  double tol2 = BRep_Tool::Tolerance(E2);
+  double tol  = std::max(tol1, tol2) * 10.;
   if (dist > tol)
-    return Standard_False;
+    return false;
   if (!ok)
-    return Standard_False;
+    return false;
   ok = TopOpeBRepTool_TOOL::TggeomE(pE1, E1, tmp);
   if (!ok)
-    return Standard_False;
+    return false;
   gp_Dir             tgE1(tmp);
   TopAbs_Orientation oriE1 = E1.Orientation();
   if (M_REVERSED(oriE1))
     tgE1.Reverse();
 
-  Standard_Boolean sameori = (tgE2.Dot(tgE1) > 0.);
+  bool sameori = (tgE2.Dot(tgE1) > 0.);
   return sameori;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_haspc(const TopoDS_Edge& E, const TopoDS_Face& F)
+Standard_EXPORT bool FUN_tool_haspc(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-  Standard_Real        f, l, tol;
-  Handle(Geom2d_Curve) C2d  = FC2D_CurveOnSurface(E, F, f, l, tol);
-  Standard_Boolean     null = C2d.IsNull();
+  double                    f, l, tol;
+  occ::handle<Geom2d_Curve> C2d  = FC2D_CurveOnSurface(E, F, f, l, tol);
+  bool                      null = C2d.IsNull();
   return !null;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_pcurveonF(const TopoDS_Face& F, TopoDS_Edge& E)
+Standard_EXPORT bool FUN_tool_pcurveonF(const TopoDS_Face& F, TopoDS_Edge& E)
 {
-  Standard_Real      f, l;
-  Handle(Geom_Curve) C3d = BRep_Tool::Curve(E, f, l);
+  double                  f, l;
+  occ::handle<Geom_Curve> C3d = BRep_Tool::Curve(E, f, l);
   if (C3d.IsNull())
-    return Standard_False;
-  Standard_Real        tolReached2d;
-  Handle(Geom2d_Curve) C2d = TopOpeBRepTool_CurveTool::MakePCurveOnFace(F, C3d, tolReached2d, f, l);
+    return false;
+  double                    tolReached2d;
+  occ::handle<Geom2d_Curve> C2d =
+    TopOpeBRepTool_CurveTool::MakePCurveOnFace(F, C3d, tolReached2d, f, l);
   if (C2d.IsNull())
-    return Standard_False;
+    return false;
 
-  Standard_Real tolE = BRep_Tool::Tolerance(E);
-  BRep_Builder  BB;
+  double       tolE = BRep_Tool::Tolerance(E);
+  BRep_Builder BB;
   BB.UpdateEdge(E, C2d, F, tolE);
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_pcurveonF(const TopoDS_Face&          fF,
-                                                    TopoDS_Edge&                faultyE,
-                                                    const Handle(Geom2d_Curve)& C2d,
-                                                    TopoDS_Face&                newf)
+Standard_EXPORT bool FUN_tool_pcurveonF(const TopoDS_Face&               fF,
+                                        TopoDS_Edge&                     faultyE,
+                                        const occ::handle<Geom2d_Curve>& C2d,
+                                        TopoDS_Face&                     newf)
 {
-  BRep_Builder         BB;
-  TopExp_Explorer      exw(fF, TopAbs_WIRE);
-  TopTools_ListOfShape low;
-  Standard_Boolean     hasnewf = Standard_False;
+  BRep_Builder                   BB;
+  TopExp_Explorer                exw(fF, TopAbs_WIRE);
+  NCollection_List<TopoDS_Shape> low;
+  bool                           hasnewf = false;
   for (; exw.More(); exw.Next())
   {
     const TopoDS_Shape& w = exw.Current();
 
-    TopTools_ListOfShape loe;
-    Standard_Boolean     hasneww = Standard_False;
-    TopExp_Explorer      exe(w, TopAbs_EDGE);
+    NCollection_List<TopoDS_Shape> loe;
+    bool                           hasneww = false;
+    TopExp_Explorer                exe(w, TopAbs_EDGE);
     for (; exe.More(); exe.Next())
     {
       const TopoDS_Edge& e     = TopoDS::Edge(exe.Current());
-      Standard_Boolean   equal = e.IsEqual(faultyE);
+      bool               equal = e.IsEqual(faultyE);
       if (!equal)
       {
         loe.Append(e);
         continue;
       }
 
-      Standard_Real tole = BRep_Tool::Tolerance(e);
+      double        tole = BRep_Tool::Tolerance(e);
       TopoDS_Vertex vf, vl;
       TopExp::Vertices(e, vf, vl);
 
@@ -1284,15 +1268,15 @@ Standard_EXPORT Standard_Boolean FUN_tool_pcurveonF(const TopoDS_Face&          
       BB.UpdateEdge(newe, C2d, fF, tole);
       newe.Orientation(e.Orientation());
       loe.Append(newe);
-      hasneww = Standard_True;
-      hasnewf = Standard_True;
+      hasneww = true;
+      hasnewf = true;
     }
     if (hasneww)
     {
-      TopoDS_Wire      neww;
-      Standard_Boolean ok = FUN_tool_MakeWire(loe, neww);
+      TopoDS_Wire neww;
+      bool        ok = FUN_tool_MakeWire(loe, neww);
       if (!ok)
-        return Standard_False;
+        return false;
       low.Append(neww);
     }
     else
@@ -1303,119 +1287,117 @@ Standard_EXPORT Standard_Boolean FUN_tool_pcurveonF(const TopoDS_Face&          
     TopoDS_Shape aLocalShape = fF.EmptyCopied();
     newf                     = TopoDS::Face(aLocalShape);
     //    newf = TopoDS::Face(fF.EmptyCopied());
-    for (TopTools_ListIteratorOfListOfShape itw(low); itw.More(); itw.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator itw(low); itw.More(); itw.Next())
     {
       const TopoDS_Shape w = itw.Value();
       BB.Add(newf, w);
     }
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_curvesSO(const TopoDS_Edge&  E1,
-                                                   const Standard_Real p1,
-                                                   const TopoDS_Edge&  E2,
-                                                   const Standard_Real p2,
-                                                   Standard_Boolean&   so)
+Standard_EXPORT bool FUN_tool_curvesSO(const TopoDS_Edge& E1,
+                                       const double       p1,
+                                       const TopoDS_Edge& E2,
+                                       const double       p2,
+                                       bool&              so)
 {
   BRepAdaptor_Curve BAC1(E1);
   BRepAdaptor_Curve BAC2(E2);
   gp_Vec            tg1;
-  Standard_Boolean  ok = TopOpeBRepTool_TOOL::TggeomE(p1, E1, tg1);
+  bool              ok = TopOpeBRepTool_TOOL::TggeomE(p1, E1, tg1);
   if (!ok)
-    return Standard_False; // NYIRAISE
+    return false; // NYIRAISE
   gp_Vec tg2;
   ok = TopOpeBRepTool_TOOL::TggeomE(p2, E2, tg2);
   if (!ok)
-    return Standard_False; // NYIRAISE
-  Standard_Real    tola = Precision::Angular() * 1.e3;
-  Standard_Boolean oppo = tg1.IsOpposite(tg2, tola);
-  Standard_Boolean samo = tg1.IsParallel(tg2, tola);
+    return false; // NYIRAISE
+  double tola = Precision::Angular() * 1.e3;
+  bool   oppo = tg1.IsOpposite(tg2, tola);
+  bool   samo = tg1.IsParallel(tg2, tola);
   if (oppo)
-    so = Standard_False;
+    so = false;
   else if (samo)
-    so = Standard_True;
+    so = true;
   else
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
-Standard_EXPORT Standard_Boolean FUN_tool_curvesSO(const TopoDS_Edge&  E1,
-                                                   const Standard_Real p1,
-                                                   const TopoDS_Edge&  E2,
-                                                   Standard_Boolean&   so)
+Standard_EXPORT bool FUN_tool_curvesSO(const TopoDS_Edge& E1,
+                                       const double       p1,
+                                       const TopoDS_Edge& E2,
+                                       bool&              so)
 {
   // prequesitory : P3d(E1,p1) is IN 1d(E2)
-  Standard_Real    p2 = 0.;
-  Standard_Boolean ok = FUN_tool_parE(E1, p1, E2, p2);
+  double p2 = 0.;
+  bool   ok = FUN_tool_parE(E1, p1, E2, p2);
   if (!ok)
-    return Standard_False;
+    return false;
   ok = FUN_tool_curvesSO(E1, p1, E2, p2, so);
   return ok;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_curvesSO(const TopoDS_Edge& E1,
-                                                   const TopoDS_Edge& E2,
-                                                   Standard_Boolean&  so)
+Standard_EXPORT bool FUN_tool_curvesSO(const TopoDS_Edge& E1, const TopoDS_Edge& E2, bool& so)
 {
   // prequesitory : E1 is IN 1d(E2)
   TopoDS_Vertex vf1, vl1;
   TopExp::Vertices(E1, vf1, vl1);
-  Standard_Boolean closed1 = vf1.IsSame(vl1);
-  TopoDS_Vertex    vf2, vl2;
+  bool          closed1 = vf1.IsSame(vl1);
+  TopoDS_Vertex vf2, vl2;
   TopExp::Vertices(E2, vf2, vl2);
-  Standard_Boolean closed2 = vf2.IsSame(vl2);
-  Standard_Boolean project = Standard_False;
+  bool closed2 = vf2.IsSame(vl2);
+  bool project = false;
   if (closed1 || closed2)
-    project = Standard_True;
+    project = true;
   else
   {
     if (vf1.IsSame(vf2))
-      so = Standard_True;
+      so = true;
     else if (vl1.IsSame(vl2))
-      so = Standard_True;
+      so = true;
     else if (vf1.IsSame(vl2))
-      so = Standard_False;
+      so = false;
     else if (vl1.IsSame(vf2))
-      so = Standard_False;
+      so = false;
     else
-      project = Standard_True;
+      project = true;
   }
   if (project)
   {
-    Standard_Real f, l;
+    double f, l;
     FUN_tool_bounds(E1, f, l);
-    Standard_Real    x  = 0.45678;
-    Standard_Real    p1 = (1 - x) * l + x * f;
-    Standard_Boolean ok = FUN_tool_curvesSO(E1, p1, E2, so);
+    double x  = 0.45678;
+    double p1 = (1 - x) * l + x * f;
+    bool   ok = FUN_tool_curvesSO(E1, p1, E2, so);
     return ok;
   }
-  return Standard_True;
+  return true;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_findAncestor(const TopTools_ListOfShape& lF,
-                                                       const TopoDS_Edge&          E,
-                                                       TopoDS_Face&                Fanc)
+Standard_EXPORT bool FUN_tool_findAncestor(const NCollection_List<TopoDS_Shape>& lF,
+                                           const TopoDS_Edge&                    E,
+                                           TopoDS_Face&                          Fanc)
 {
-  TopTools_ListIteratorOfListOfShape it(lF);
+  NCollection_List<TopoDS_Shape>::Iterator it(lF);
   for (; it.More(); it.Next())
   {
     const TopoDS_Face& F = TopoDS::Face(it.Value());
     TopAbs_Orientation dummy;
-    Standard_Boolean   found = FUN_tool_orientEinF(E, F, dummy);
+    bool               found = FUN_tool_orientEinF(E, F, dummy);
     if (found)
     {
       Fanc = F;
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -1426,8 +1408,8 @@ Standard_EXPORT Standard_Boolean FUN_tool_findAncestor(const TopTools_ListOfShap
 // ----------------------------------------------------------------------
 Standard_EXPORT void FUN_ds_CopyEdge(const TopoDS_Shape& Ein, TopoDS_Shape& Eou)
 {
-  Standard_Real f, l;
-  TopoDS_Edge   E1 = TopoDS::Edge(Ein);
+  double      f, l;
+  TopoDS_Edge E1 = TopoDS::Edge(Ein);
   BRep_Tool::Range(E1, f, l);
   Eou             = Ein.EmptyCopied();
   TopoDS_Edge  E2 = TopoDS::Edge(Eou);
@@ -1436,20 +1418,18 @@ Standard_EXPORT void FUN_ds_CopyEdge(const TopoDS_Shape& Ein, TopoDS_Shape& Eou)
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_ds_Parameter(const TopoDS_Shape& E,
-                                      const TopoDS_Shape& V,
-                                      const Standard_Real P)
+Standard_EXPORT void FUN_ds_Parameter(const TopoDS_Shape& E, const TopoDS_Shape& V, const double P)
 {
-  BRep_Builder         BB;
-  const TopoDS_Edge&   e = TopoDS::Edge(E);
-  const TopoDS_Vertex& v = TopoDS::Vertex(V);
-  Standard_Real        p = P;
-  TopLoc_Location      loc;
-  Standard_Real        f, l;
-  Handle(Geom_Curve)   C = BRep_Tool::Curve(e, loc, f, l);
+  BRep_Builder            BB;
+  const TopoDS_Edge&      e = TopoDS::Edge(E);
+  const TopoDS_Vertex&    v = TopoDS::Vertex(V);
+  double                  p = P;
+  TopLoc_Location         loc;
+  double                  f, l;
+  occ::handle<Geom_Curve> C = BRep_Tool::Curve(e, loc, f, l);
   if (!C.IsNull() && C->IsPeriodic())
   {
-    Standard_Real per = C->Period();
+    double per = C->Period();
 
     TopAbs_Orientation oV = TopAbs_FORWARD;
 
@@ -1469,8 +1449,8 @@ Standard_EXPORT void FUN_ds_Parameter(const TopoDS_Shape& E,
       {
         if (p < f)
         {
-          Standard_Real pp = ElCLib::InPeriod(p, f, f + per);
-          p                = pp;
+          double pp = ElCLib::InPeriod(p, f, f + per);
+          p         = pp;
         }
       }
     }
@@ -1479,17 +1459,16 @@ Standard_EXPORT void FUN_ds_Parameter(const TopoDS_Shape& E,
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_MakeWire(const TopTools_ListOfShape& loE,
-                                                   TopoDS_Wire&                newW)
+Standard_EXPORT bool FUN_tool_MakeWire(const NCollection_List<TopoDS_Shape>& loE, TopoDS_Wire& newW)
 {
   newW.Nullify();
   BRep_Builder BB;
   BB.MakeWire(newW);
-  TopTools_ListIteratorOfListOfShape itloE(loE);
+  NCollection_List<TopoDS_Shape>::Iterator itloE(loE);
   for (; itloE.More(); itloE.Next())
   {
     const TopoDS_Edge& E = TopoDS::Edge(itloE.Value());
     BB.Add(newW, E);
   }
-  return Standard_True;
+  return true;
 }

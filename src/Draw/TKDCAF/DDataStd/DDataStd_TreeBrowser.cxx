@@ -58,7 +58,7 @@ void DDataStd_TreeBrowser::DrawOn(Draw_Display& /*dis*/) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DDataStd_TreeBrowser::Copy() const
+occ::handle<Draw_Drawable3D> DDataStd_TreeBrowser::Copy() const
 {
   return new DDataStd_TreeBrowser(myRoot);
 }
@@ -96,8 +96,8 @@ TDF_Label DDataStd_TreeBrowser::Label() const
 
 TCollection_AsciiString DDataStd_TreeBrowser::OpenRoot() const
 {
-  TCollection_AsciiString   list;
-  Handle(TDataStd_TreeNode) TN;
+  TCollection_AsciiString        list;
+  occ::handle<TDataStd_TreeNode> TN;
   if (myRoot.FindAttribute(TDataStd_TreeNode::GetDefaultTreeID(), TN))
   {
     OpenNode(TN, list);
@@ -113,18 +113,18 @@ TCollection_AsciiString DDataStd_TreeBrowser::OpenRoot() const
 
 TCollection_AsciiString DDataStd_TreeBrowser::OpenNode(const TDF_Label& aLabel) const
 {
-  TCollection_AsciiString   list;
-  Handle(TDataStd_TreeNode) nodeToOpen;
+  TCollection_AsciiString        list;
+  occ::handle<TDataStd_TreeNode> nodeToOpen;
   if (aLabel.FindAttribute(TDataStd_TreeNode::GetDefaultTreeID(), nodeToOpen))
   {
-    Standard_Boolean          split   = Standard_False;
-    Handle(TDataStd_TreeNode) current = nodeToOpen->First();
+    bool                           split   = false;
+    occ::handle<TDataStd_TreeNode> current = nodeToOpen->First();
     while (!current.IsNull())
     {
       if (split)
         list.AssignCat(TDF_BrowserSeparator1);
       OpenNode(current, list);
-      split   = Standard_True;
+      split   = true;
       current = current->Next();
     }
   }
@@ -139,8 +139,8 @@ TCollection_AsciiString DDataStd_TreeBrowser::OpenNode(const TDF_Label& aLabel) 
 // First/Null : has/has not child
 //=======================================================================
 
-void DDataStd_TreeBrowser::OpenNode(const Handle(TDataStd_TreeNode)& aTreeNode,
-                                    TCollection_AsciiString&         aList) const
+void DDataStd_TreeBrowser::OpenNode(const occ::handle<TDataStd_TreeNode>& aTreeNode,
+                                    TCollection_AsciiString&              aList) const
 {
   // Label entry. -0
   TCollection_AsciiString tmp;
@@ -148,7 +148,7 @@ void DDataStd_TreeBrowser::OpenNode(const Handle(TDataStd_TreeNode)& aTreeNode,
   aList.AssignCat(tmp);
   // Name         -1
   aList.AssignCat(TDF_BrowserSeparator2);
-  Handle(TDataStd_Name) name;
+  occ::handle<TDataStd_Name> name;
   aList.AssignCat("\"");
   if (aTreeNode->Label().FindAttribute(TDataStd_Name::GetID(), name))
   {

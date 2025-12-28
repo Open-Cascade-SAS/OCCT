@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 
-class GccEnt_BadQualifier;
-DEFINE_STANDARD_HANDLE(GccEnt_BadQualifier, Standard_DomainError)
-
 #if !defined No_Exception && !defined No_GccEnt_BadQualifier
   #define GccEnt_BadQualifier_Raise_if(CONDITION, MESSAGE)                                         \
     if (CONDITION)                                                                                 \

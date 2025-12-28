@@ -29,26 +29,26 @@ public:
   Standard_EXPORT BRepTools_PurgeLocations();
 
   //! Removes all locations correspondingly to criterium from theShape.
-  Standard_EXPORT Standard_Boolean Perform(const TopoDS_Shape& theShape);
+  Standard_EXPORT bool Perform(const TopoDS_Shape& theShape);
 
   //! Returns shape with removed locations.
   Standard_EXPORT const TopoDS_Shape& GetResult() const;
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns modified shape obtained from initial shape.
   TopoDS_Shape ModifiedShape(const TopoDS_Shape& theInitShape) const;
 
 private:
-  void             AddShape(const TopoDS_Shape& theS);
-  Standard_Boolean PurgeLocation(const TopoDS_Shape& theS, TopoDS_Shape& theRes);
+  void AddShape(const TopoDS_Shape& theS);
+  bool PurgeLocation(const TopoDS_Shape& theS, TopoDS_Shape& theRes);
 
-  Standard_Boolean             myDone;
-  TopoDS_Shape                 myShape;
-  TopTools_IndexedMapOfShape   myMapShapes;
-  TopTools_LocationSet         myLocations;
-  TopTools_DataMapOfShapeShape myMapNewShapes;
-  Handle(BRepTools_ReShape)    myReShape;
+  bool                                                                     myDone;
+  TopoDS_Shape                                                             myShape;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>            myMapShapes;
+  TopTools_LocationSet                                                     myLocations;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapNewShapes;
+  occ::handle<BRepTools_ReShape>                                           myReShape;
 };
 
 #endif // _BRepTools_PurgeLocations_HeaderFile

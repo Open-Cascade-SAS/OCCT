@@ -20,11 +20,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_FrameStats, Standard_Transient)
 namespace
 {
 //! Format counter.
-static std::ostream& formatCounter(std::ostream&    theStream,
-                                   Standard_Integer theWidth,
-                                   const char*      thePrefix,
-                                   Standard_Size    theValue,
-                                   const char*      thePostfix = NULL)
+static std::ostream& formatCounter(std::ostream& theStream,
+                                   int           theWidth,
+                                   const char*   thePrefix,
+                                   size_t        theValue,
+                                   const char*   thePostfix = NULL)
 {
   if (thePrefix != NULL)
   {
@@ -33,17 +33,17 @@ static std::ostream& formatCounter(std::ostream&    theStream,
   theStream << std::setfill(' ') << std::setw(theWidth);
   if (theValue >= 1000000000)
   {
-    Standard_Real aValM = Standard_Real(theValue) / 1000000000.0;
+    double aValM = double(theValue) / 1000000000.0;
     theStream << std::fixed << std::setprecision(1) << aValM << "G";
   }
   else if (theValue >= 1000000)
   {
-    Standard_Real aValM = Standard_Real(theValue) / 1000000.0;
+    double aValM = double(theValue) / 1000000.0;
     theStream << std::fixed << std::setprecision(1) << aValM << "M";
   }
   else if (theValue >= 1000)
   {
-    Standard_Real aValK = Standard_Real(theValue) / 1000.0;
+    double aValK = double(theValue) / 1000.0;
     theStream << std::fixed << std::setprecision(1) << aValK << "k";
   }
   else
@@ -62,12 +62,12 @@ static std::ostream& formatCounter(std::ostream&    theStream,
 }
 
 //! Format a pair of counters.
-static std::ostream& formatCounterPair(std::ostream&    theStream,
-                                       Standard_Integer theWidth,
-                                       const char*      thePrefix,
-                                       Standard_Size    theValue,
-                                       Standard_Size    theImmValue,
-                                       bool             theToShowImmediate)
+static std::ostream& formatCounterPair(std::ostream& theStream,
+                                       int           theWidth,
+                                       const char*   thePrefix,
+                                       size_t        theValue,
+                                       size_t        theImmValue,
+                                       bool          theToShowImmediate)
 {
   formatCounter(theStream, theWidth, thePrefix, theValue, NULL);
   if (theToShowImmediate)
@@ -79,11 +79,11 @@ static std::ostream& formatCounterPair(std::ostream&    theStream,
 }
 
 //! Format memory counter.
-static std::ostream& formatBytes(std::ostream&    theStream,
-                                 Standard_Integer theWidth,
-                                 const char*      thePrefix,
-                                 Standard_Size    theValue,
-                                 const char*      thePostfix = NULL)
+static std::ostream& formatBytes(std::ostream& theStream,
+                                 int           theWidth,
+                                 const char*   thePrefix,
+                                 size_t        theValue,
+                                 const char*   thePostfix = NULL)
 {
   if (thePrefix != NULL)
   {
@@ -92,17 +92,17 @@ static std::ostream& formatBytes(std::ostream&    theStream,
   theStream << std::setfill(' ') << std::setw(theWidth);
   if (theValue >= 1024 * 1024 * 1024)
   {
-    Standard_Real aValM = Standard_Real(theValue) / (1024.0 * 1024.0 * 1024.0);
+    double aValM = double(theValue) / (1024.0 * 1024.0 * 1024.0);
     theStream << std::fixed << std::setprecision(1) << aValM << " GiB";
   }
   else if (theValue >= 1024 * 1024)
   {
-    Standard_Real aValM = Standard_Real(theValue) / (1024.0 * 1024.0);
+    double aValM = double(theValue) / (1024.0 * 1024.0);
     theStream << std::fixed << std::setprecision(1) << aValM << " MiB";
   }
   else if (theValue >= 1024)
   {
-    Standard_Real aValK = Standard_Real(theValue) / 1024.0;
+    double aValK = double(theValue) / 1024.0;
     theStream << std::fixed << std::setprecision(1) << aValK << " KiB";
   }
   else
@@ -125,25 +125,25 @@ constexpr double THE_SECOND_IN_MINUTE  = 1.0 / THE_SECONDS_IN_MINUTE;
 } // namespace
 
 //! Format time.
-static std::ostream& formatTime(std::ostream&    theStream,
-                                Standard_Integer theWidth,
-                                const char*      thePrefix,
-                                Standard_Real    theSeconds,
-                                const char*      thePostfix = NULL)
+static std::ostream& formatTime(std::ostream& theStream,
+                                int           theWidth,
+                                const char*   thePrefix,
+                                double        theSeconds,
+                                const char*   thePostfix = NULL)
 {
   if (thePrefix != NULL)
   {
     theStream << thePrefix;
   }
 
-  Standard_Real aSecIn = theSeconds;
-  unsigned int  aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
-  aSecIn -= Standard_Real(aHours) * THE_SECONDS_IN_HOUR;
+  double       aSecIn = theSeconds;
+  unsigned int aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
+  aSecIn -= double(aHours) * THE_SECONDS_IN_HOUR;
   unsigned int aMinutes = (unsigned int)(aSecIn * THE_SECOND_IN_MINUTE);
-  aSecIn -= Standard_Real(aMinutes) * THE_SECONDS_IN_MINUTE;
+  aSecIn -= double(aMinutes) * THE_SECONDS_IN_MINUTE;
   unsigned int aSeconds = (unsigned int)aSecIn;
-  aSecIn -= Standard_Real(aSeconds);
-  Standard_Real aMilliSeconds = 1000.0 * aSecIn;
+  aSecIn -= double(aSeconds);
+  double aMilliSeconds = 1000.0 * aSecIn;
 
   char aBuffer[64];
   theStream << std::setfill(' ') << std::setw(theWidth);
@@ -175,18 +175,20 @@ static std::ostream& formatTime(std::ostream&    theStream,
 }
 
 //! Add key-value pair to the dictionary.
-static void addInfo(TColStd_IndexedDataMapOfStringString& theDict,
-                    const TCollection_AsciiString&        theKey,
-                    const char*                           theValue)
+static void addInfo(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  const TCollection_AsciiString&                                                theKey,
+  const char*                                                                   theValue)
 {
   TCollection_AsciiString aValue(theValue != NULL ? theValue : "");
   theDict.ChangeFromIndex(theDict.Add(theKey, aValue)) = aValue;
 }
 
 //! Add key-value pair to the dictionary.
-static void addInfo(TColStd_IndexedDataMapOfStringString& theDict,
-                    const TCollection_AsciiString&        theKey,
-                    const Standard_Real                   theValue)
+static void addInfo(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  const TCollection_AsciiString&                                                theKey,
+  const double                                                                  theValue)
 {
   char aTmp[50];
   Sprintf(aTmp, "%.1g", theValue);
@@ -194,9 +196,10 @@ static void addInfo(TColStd_IndexedDataMapOfStringString& theDict,
 }
 
 //! Add key-value pair to the dictionary.
-static void addInfo(TColStd_IndexedDataMapOfStringString& theDict,
-                    const TCollection_AsciiString&        theKey,
-                    const Standard_Size                   theValue)
+static void addInfo(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  const TCollection_AsciiString&                                                theKey,
+  const size_t                                                                  theValue)
 {
   char aTmp[50];
   Sprintf(aTmp, "%zu", theValue);
@@ -204,18 +207,19 @@ static void addInfo(TColStd_IndexedDataMapOfStringString& theDict,
 }
 
 //! Format time.
-static void addTimeInfo(TColStd_IndexedDataMapOfStringString& theDict,
-                        const TCollection_AsciiString&        theKey,
-                        Standard_Real                         theSeconds)
+static void addTimeInfo(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  const TCollection_AsciiString&                                                theKey,
+  double                                                                        theSeconds)
 {
-  Standard_Real aSecIn = theSeconds;
-  unsigned int  aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
-  aSecIn -= Standard_Real(aHours) * THE_SECONDS_IN_HOUR;
+  double       aSecIn = theSeconds;
+  unsigned int aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
+  aSecIn -= double(aHours) * THE_SECONDS_IN_HOUR;
   unsigned int aMinutes = (unsigned int)(aSecIn * THE_SECOND_IN_MINUTE);
-  aSecIn -= Standard_Real(aMinutes) * THE_SECONDS_IN_MINUTE;
+  aSecIn -= double(aMinutes) * THE_SECONDS_IN_MINUTE;
   unsigned int aSeconds = (unsigned int)aSecIn;
-  aSecIn -= Standard_Real(aSeconds);
-  Standard_Real aMilliSeconds = 1000.0 * aSecIn;
+  aSecIn -= double(aSeconds);
+  double aMilliSeconds = 1000.0 * aSecIn;
 
   char aBuffer[64];
   if (aHours > 0)
@@ -243,14 +247,14 @@ static void addTimeInfo(TColStd_IndexedDataMapOfStringString& theDict,
 //=================================================================================================
 
 Graphic3d_FrameStats::Graphic3d_FrameStats()
-    : myFpsTimer(Standard_True),
+    : myFpsTimer(true),
       myFrameStartTime(0.0),
       myFrameDuration(0.0),
       myUpdateInterval(1.0),
       myFpsFrameCount(0),
       myCounters(0, 0),
       myLastFrameIndex(0),
-      myIsLongLineFormat(Standard_False)
+      myIsLongLineFormat(false)
 {
   //
 }
@@ -267,10 +271,10 @@ Graphic3d_FrameStats::~Graphic3d_FrameStats()
 TCollection_AsciiString Graphic3d_FrameStats::FormatStats(
   Graphic3d_RenderingParams::PerfCounters theFlags) const
 {
-  const Standard_Integer aValWidth = 5;
-  std::stringstream      aBuf;
+  const int         aValWidth = 5;
+  std::stringstream aBuf;
   // clang-format off
-  const Standard_Boolean isCompact = theFlags == Graphic3d_RenderingParams::PerfCounters_FrameRate; // only FPS is displayed
+  const bool isCompact = theFlags == Graphic3d_RenderingParams::PerfCounters_FrameRate; // only FPS is displayed
   // clang-format on
   const Graphic3d_FrameStatsData& aStats = LastDataFrame();
   if (myIsLongLineFormat && (theFlags & Graphic3d_RenderingParams::PerfCounters_FrameRate) != 0
@@ -557,8 +561,9 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats(
 
 //=================================================================================================
 
-void Graphic3d_FrameStats::FormatStats(TColStd_IndexedDataMapOfStringString&   theDict,
-                                       Graphic3d_RenderingParams::PerfCounters theFlags) const
+void Graphic3d_FrameStats::FormatStats(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  Graphic3d_RenderingParams::PerfCounters                                       theFlags) const
 {
   const Graphic3d_FrameStatsData& aStats = LastDataFrame();
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_FrameRate) != 0)
@@ -673,8 +678,8 @@ void Graphic3d_FrameStats::FormatStats(TColStd_IndexedDataMapOfStringString&   t
 
 //=================================================================================================
 
-void Graphic3d_FrameStats::FrameStart(const Handle(Graphic3d_CView)& theView,
-                                      bool                           theIsImmediateOnly)
+void Graphic3d_FrameStats::FrameStart(const occ::handle<Graphic3d_CView>& theView,
+                                      bool                                theIsImmediateOnly)
 {
   const Graphic3d_RenderingParams::PerfCounters aBits =
     !theView.IsNull() ? theView->RenderingParams().CollectedStats
@@ -684,7 +689,7 @@ void Graphic3d_FrameStats::FrameStart(const Handle(Graphic3d_CView)& theView,
     return;
   }
 
-  const Standard_Integer aNbFrames =
+  const int aNbFrames =
     std::max(!theView.IsNull() ? theView->RenderingParams().StatsNbFrames : 1, 1);
   if (myCounters.Size() != aNbFrames)
   {
@@ -708,7 +713,8 @@ void Graphic3d_FrameStats::FrameStart(const Handle(Graphic3d_CView)& theView,
 
 //=================================================================================================
 
-void Graphic3d_FrameStats::FrameEnd(const Handle(Graphic3d_CView)& theView, bool theIsImmediateOnly)
+void Graphic3d_FrameStats::FrameEnd(const occ::handle<Graphic3d_CView>& theView,
+                                    bool                                theIsImmediateOnly)
 {
   const Graphic3d_RenderingParams::PerfCounters aBits =
     !theView.IsNull() ? theView->RenderingParams().CollectedStats
@@ -781,12 +787,12 @@ void Graphic3d_FrameStats::FrameEnd(const Handle(Graphic3d_CView)& theView, bool
   if (theIsImmediateOnly)
   {
     // copy rendered counters collected for immediate layers
-    const Standard_Integer anImmShift =
+    const int anImmShift =
       Graphic3d_FrameStatsCounter_IMMEDIATE_LOWER - Graphic3d_FrameStatsCounter_RENDERED_LOWER;
     Standard_STATIC_ASSERT(
       (Graphic3d_FrameStatsCounter_RENDERED_UPPER - Graphic3d_FrameStatsCounter_RENDERED_LOWER)
       == (Graphic3d_FrameStatsCounter_IMMEDIATE_UPPER
-          - Graphic3d_FrameStatsCounter_IMMEDIATE_LOWER)) for (Standard_Integer aCntIter =
+          - Graphic3d_FrameStatsCounter_IMMEDIATE_LOWER)) for (int aCntIter =
                                                                  Graphic3d_FrameStatsCounter_RENDERED_LOWER;
                                                                aCntIter
                                                                <= Graphic3d_FrameStatsCounter_RENDERED_UPPER;
@@ -797,7 +803,7 @@ void Graphic3d_FrameStats::FrameEnd(const Handle(Graphic3d_CView)& theView, bool
     }
 
     // copy main rendered counters from previous non-immediate frame
-    for (Standard_Integer aCntIter = Graphic3d_FrameStatsCounter_RENDERED_LOWER;
+    for (int aCntIter = Graphic3d_FrameStatsCounter_RENDERED_LOWER;
          aCntIter <= Graphic3d_FrameStatsCounter_RENDERED_UPPER;
          ++aCntIter)
     {

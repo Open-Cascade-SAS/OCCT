@@ -24,8 +24,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_RackAndPinionPairWithRange, StepKinematics_RackAndPinionPair)
-
 //! Representation of STEP entity RackAndPinionPairWithRange
 class StepKinematics_RackAndPinionPairWithRange : public StepKinematics_RackAndPinionPair
 {
@@ -35,44 +33,42 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Standard_Real                          theRackAndPinionPair_PinionRadius,
-    const Standard_Boolean                       hasLowerLimitRackDisplacement,
-    const Standard_Real                          theLowerLimitRackDisplacement,
-    const Standard_Boolean                       hasUpperLimitRackDisplacement,
-    const Standard_Real                          theUpperLimitRackDisplacement);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                                        hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const double                                      theRackAndPinionPair_PinionRadius,
+    const bool                                        hasLowerLimitRackDisplacement,
+    const double                                      theLowerLimitRackDisplacement,
+    const bool                                        hasUpperLimitRackDisplacement,
+    const double                                      theUpperLimitRackDisplacement);
 
   //! Returns field LowerLimitRackDisplacement
-  Standard_EXPORT Standard_Real LowerLimitRackDisplacement() const;
+  Standard_EXPORT double LowerLimitRackDisplacement() const;
   //! Sets field LowerLimitRackDisplacement
-  Standard_EXPORT void SetLowerLimitRackDisplacement(
-    const Standard_Real theLowerLimitRackDisplacement);
+  Standard_EXPORT void SetLowerLimitRackDisplacement(const double theLowerLimitRackDisplacement);
   //! Returns True if optional field LowerLimitRackDisplacement is defined
-  Standard_EXPORT Standard_Boolean HasLowerLimitRackDisplacement() const;
+  Standard_EXPORT bool HasLowerLimitRackDisplacement() const;
 
   //! Returns field UpperLimitRackDisplacement
-  Standard_EXPORT Standard_Real UpperLimitRackDisplacement() const;
+  Standard_EXPORT double UpperLimitRackDisplacement() const;
   //! Sets field UpperLimitRackDisplacement
-  Standard_EXPORT void SetUpperLimitRackDisplacement(
-    const Standard_Real theUpperLimitRackDisplacement);
+  Standard_EXPORT void SetUpperLimitRackDisplacement(const double theUpperLimitRackDisplacement);
   //! Returns True if optional field UpperLimitRackDisplacement is defined
-  Standard_EXPORT Standard_Boolean HasUpperLimitRackDisplacement() const;
+  Standard_EXPORT bool HasUpperLimitRackDisplacement() const;
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPairWithRange,
                           StepKinematics_RackAndPinionPair)
 
 private:
-  Standard_Real myLowerLimitRackDisplacement; //!< optional
-  Standard_Real myUpperLimitRackDisplacement; //!< optional
+  double myLowerLimitRackDisplacement; //!< optional
+  double myUpperLimitRackDisplacement; //!< optional
   // clang-format off
-  Standard_Boolean defLowerLimitRackDisplacement; //!< flag "is LowerLimitRackDisplacement defined"
-  Standard_Boolean defUpperLimitRackDisplacement; //!< flag "is UpperLimitRackDisplacement defined"
+  bool defLowerLimitRackDisplacement; //!< flag "is LowerLimitRackDisplacement defined"
+  bool defUpperLimitRackDisplacement; //!< flag "is UpperLimitRackDisplacement defined"
   // clang-format on
 };
 #endif // _StepKinematics_RackAndPinionPairWithRange_HeaderFile_

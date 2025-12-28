@@ -39,9 +39,9 @@ typedef gp_XY       XY;
 
 //=================================================================================================
 
-Handle(Geom2d_Geometry) Geom2d_Line::Copy() const
+occ::handle<Geom2d_Geometry> Geom2d_Line::Copy() const
 {
-  Handle(Geom2d_Line) L;
+  occ::handle<Geom2d_Line> L;
   L = new Line(pos);
   return L;
 }
@@ -132,37 +132,37 @@ void Geom2d_Line::Reverse()
 
 //=================================================================================================
 
-Standard_Real Geom2d_Line::ReversedParameter(const Standard_Real U) const
+double Geom2d_Line::ReversedParameter(const double U) const
 {
   return (-U);
 }
 
 //=================================================================================================
 
-Standard_Real Geom2d_Line::FirstParameter() const
+double Geom2d_Line::FirstParameter() const
 {
   return -Precision::Infinite();
 }
 
 //=================================================================================================
 
-Standard_Real Geom2d_Line::LastParameter() const
+double Geom2d_Line::LastParameter() const
 {
   return Precision::Infinite();
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom2d_Line::IsClosed() const
+bool Geom2d_Line::IsClosed() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom2d_Line::IsPeriodic() const
+bool Geom2d_Line::IsPeriodic() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -174,28 +174,28 @@ GeomAbs_Shape Geom2d_Line::Continuity() const
 
 //=================================================================================================
 
-Standard_Boolean Geom2d_Line::IsCN(const Standard_Integer) const
+bool Geom2d_Line::IsCN(const int) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void Geom2d_Line::D0(const Standard_Real U, Pnt2d& P) const
+void Geom2d_Line::D0(const double U, Pnt2d& P) const
 {
   P = ElCLib::LineValue(U, pos);
 }
 
 //=================================================================================================
 
-void Geom2d_Line::D1(const Standard_Real U, Pnt2d& P, Vec2d& V1) const
+void Geom2d_Line::D1(const double U, Pnt2d& P, Vec2d& V1) const
 {
   ElCLib::LineD1(U, pos, P, V1);
 }
 
 //=================================================================================================
 
-void Geom2d_Line::D2(const Standard_Real U, Pnt2d& P, Vec2d& V1, Vec2d& V2) const
+void Geom2d_Line::D2(const double U, Pnt2d& P, Vec2d& V1, Vec2d& V2) const
 {
   ElCLib::LineD1(U, pos, P, V1);
   V2.SetCoord(0.0, 0.0);
@@ -203,7 +203,7 @@ void Geom2d_Line::D2(const Standard_Real U, Pnt2d& P, Vec2d& V1, Vec2d& V2) cons
 
 //=================================================================================================
 
-void Geom2d_Line::D3(const Standard_Real U, Pnt2d& P, Vec2d& V1, Vec2d& V2, Vec2d& V3) const
+void Geom2d_Line::D3(const double U, Pnt2d& P, Vec2d& V1, Vec2d& V2, Vec2d& V3) const
 {
   ElCLib::LineD1(U, pos, P, V1);
   V2.SetCoord(0.0, 0.0);
@@ -212,7 +212,7 @@ void Geom2d_Line::D3(const Standard_Real U, Pnt2d& P, Vec2d& V1, Vec2d& V2, Vec2
 
 //=================================================================================================
 
-Vec2d Geom2d_Line::DN(const Standard_Real, const Standard_Integer N) const
+Vec2d Geom2d_Line::DN(const double, const int N) const
 {
   Standard_RangeError_Raise_if(N <= 0, " ");
   if (N == 1)
@@ -230,7 +230,7 @@ void Geom2d_Line::Transform(const Trsf2d& T)
 
 //=================================================================================================
 
-Standard_Real Geom2d_Line::TransformedParameter(const Standard_Real U, const gp_Trsf2d& T) const
+double Geom2d_Line::TransformedParameter(const double U, const gp_Trsf2d& T) const
 {
   if (Precision::IsInfinite(U))
     return U;
@@ -239,14 +239,14 @@ Standard_Real Geom2d_Line::TransformedParameter(const Standard_Real U, const gp_
 
 //=================================================================================================
 
-Standard_Real Geom2d_Line::ParametricTransformation(const gp_Trsf2d& T) const
+double Geom2d_Line::ParametricTransformation(const gp_Trsf2d& T) const
 {
   return std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
 
-Standard_Real Geom2d_Line::Distance(const gp_Pnt2d& P) const
+double Geom2d_Line::Distance(const gp_Pnt2d& P) const
 {
 
   gp_Lin2d L(pos);
@@ -255,7 +255,7 @@ Standard_Real Geom2d_Line::Distance(const gp_Pnt2d& P) const
 
 //=================================================================================================
 
-void Geom2d_Line::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom2d_Line::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom2d_Curve)

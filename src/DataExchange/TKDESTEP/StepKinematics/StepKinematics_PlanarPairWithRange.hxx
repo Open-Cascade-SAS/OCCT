@@ -24,8 +24,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_PlanarPairWithRange, StepKinematics_PlanarPair)
-
 //! Representation of STEP entity PlanarPairWithRange
 class StepKinematics_PlanarPairWithRange : public StepKinematics_PlanarPair
 {
@@ -35,94 +33,94 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Standard_Boolean                       theLowOrderKinematicPair_TX,
-    const Standard_Boolean                       theLowOrderKinematicPair_TY,
-    const Standard_Boolean                       theLowOrderKinematicPair_TZ,
-    const Standard_Boolean                       theLowOrderKinematicPair_RX,
-    const Standard_Boolean                       theLowOrderKinematicPair_RY,
-    const Standard_Boolean                       theLowOrderKinematicPair_RZ,
-    const Standard_Boolean                       hasLowerLimitActualRotation,
-    const Standard_Real                          theLowerLimitActualRotation,
-    const Standard_Boolean                       hasUpperLimitActualRotation,
-    const Standard_Real                          theUpperLimitActualRotation,
-    const Standard_Boolean                       hasLowerLimitActualTranslationX,
-    const Standard_Real                          theLowerLimitActualTranslationX,
-    const Standard_Boolean                       hasUpperLimitActualTranslationX,
-    const Standard_Real                          theUpperLimitActualTranslationX,
-    const Standard_Boolean                       hasLowerLimitActualTranslationY,
-    const Standard_Real                          theLowerLimitActualTranslationY,
-    const Standard_Boolean                       hasUpperLimitActualTranslationY,
-    const Standard_Real                          theUpperLimitActualTranslationY);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                                        hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const bool                                        theLowOrderKinematicPair_TX,
+    const bool                                        theLowOrderKinematicPair_TY,
+    const bool                                        theLowOrderKinematicPair_TZ,
+    const bool                                        theLowOrderKinematicPair_RX,
+    const bool                                        theLowOrderKinematicPair_RY,
+    const bool                                        theLowOrderKinematicPair_RZ,
+    const bool                                        hasLowerLimitActualRotation,
+    const double                                      theLowerLimitActualRotation,
+    const bool                                        hasUpperLimitActualRotation,
+    const double                                      theUpperLimitActualRotation,
+    const bool                                        hasLowerLimitActualTranslationX,
+    const double                                      theLowerLimitActualTranslationX,
+    const bool                                        hasUpperLimitActualTranslationX,
+    const double                                      theUpperLimitActualTranslationX,
+    const bool                                        hasLowerLimitActualTranslationY,
+    const double                                      theLowerLimitActualTranslationY,
+    const bool                                        hasUpperLimitActualTranslationY,
+    const double                                      theUpperLimitActualTranslationY);
 
   //! Returns field LowerLimitActualRotation
-  Standard_EXPORT Standard_Real LowerLimitActualRotation() const;
+  Standard_EXPORT double LowerLimitActualRotation() const;
   //! Sets field LowerLimitActualRotation
-  Standard_EXPORT void SetLowerLimitActualRotation(const Standard_Real theLowerLimitActualRotation);
+  Standard_EXPORT void SetLowerLimitActualRotation(const double theLowerLimitActualRotation);
   //! Returns True if optional field LowerLimitActualRotation is defined
-  Standard_EXPORT Standard_Boolean HasLowerLimitActualRotation() const;
+  Standard_EXPORT bool HasLowerLimitActualRotation() const;
 
   //! Returns field UpperLimitActualRotation
-  Standard_EXPORT Standard_Real UpperLimitActualRotation() const;
+  Standard_EXPORT double UpperLimitActualRotation() const;
   //! Sets field UpperLimitActualRotation
-  Standard_EXPORT void SetUpperLimitActualRotation(const Standard_Real theUpperLimitActualRotation);
+  Standard_EXPORT void SetUpperLimitActualRotation(const double theUpperLimitActualRotation);
   //! Returns True if optional field UpperLimitActualRotation is defined
-  Standard_EXPORT Standard_Boolean HasUpperLimitActualRotation() const;
+  Standard_EXPORT bool HasUpperLimitActualRotation() const;
 
   //! Returns field LowerLimitActualTranslationX
-  Standard_EXPORT Standard_Real LowerLimitActualTranslationX() const;
+  Standard_EXPORT double LowerLimitActualTranslationX() const;
   //! Sets field LowerLimitActualTranslationX
   Standard_EXPORT void SetLowerLimitActualTranslationX(
-    const Standard_Real theLowerLimitActualTranslationX);
+    const double theLowerLimitActualTranslationX);
   //! Returns True if optional field LowerLimitActualTranslationX is defined
-  Standard_EXPORT Standard_Boolean HasLowerLimitActualTranslationX() const;
+  Standard_EXPORT bool HasLowerLimitActualTranslationX() const;
 
   //! Returns field UpperLimitActualTranslationX
-  Standard_EXPORT Standard_Real UpperLimitActualTranslationX() const;
+  Standard_EXPORT double UpperLimitActualTranslationX() const;
   //! Sets field UpperLimitActualTranslationX
   Standard_EXPORT void SetUpperLimitActualTranslationX(
-    const Standard_Real theUpperLimitActualTranslationX);
+    const double theUpperLimitActualTranslationX);
   //! Returns True if optional field UpperLimitActualTranslationX is defined
-  Standard_EXPORT Standard_Boolean HasUpperLimitActualTranslationX() const;
+  Standard_EXPORT bool HasUpperLimitActualTranslationX() const;
 
   //! Returns field LowerLimitActualTranslationY
-  Standard_EXPORT Standard_Real LowerLimitActualTranslationY() const;
+  Standard_EXPORT double LowerLimitActualTranslationY() const;
   //! Sets field LowerLimitActualTranslationY
   Standard_EXPORT void SetLowerLimitActualTranslationY(
-    const Standard_Real theLowerLimitActualTranslationY);
+    const double theLowerLimitActualTranslationY);
   //! Returns True if optional field LowerLimitActualTranslationY is defined
-  Standard_EXPORT Standard_Boolean HasLowerLimitActualTranslationY() const;
+  Standard_EXPORT bool HasLowerLimitActualTranslationY() const;
 
   //! Returns field UpperLimitActualTranslationY
-  Standard_EXPORT Standard_Real UpperLimitActualTranslationY() const;
+  Standard_EXPORT double UpperLimitActualTranslationY() const;
   //! Sets field UpperLimitActualTranslationY
   Standard_EXPORT void SetUpperLimitActualTranslationY(
-    const Standard_Real theUpperLimitActualTranslationY);
+    const double theUpperLimitActualTranslationY);
   //! Returns True if optional field UpperLimitActualTranslationY is defined
-  Standard_EXPORT Standard_Boolean HasUpperLimitActualTranslationY() const;
+  Standard_EXPORT bool HasUpperLimitActualTranslationY() const;
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_PlanarPairWithRange, StepKinematics_PlanarPair)
 
 private:
-  Standard_Real    myLowerLimitActualRotation;     //!< optional
-  Standard_Real    myUpperLimitActualRotation;     //!< optional
-  Standard_Real    myLowerLimitActualTranslationX; //!< optional
-  Standard_Real    myUpperLimitActualTranslationX; //!< optional
-  Standard_Real    myLowerLimitActualTranslationY; //!< optional
-  Standard_Real    myUpperLimitActualTranslationY; //!< optional
-  Standard_Boolean defLowerLimitActualRotation;    //!< flag "is LowerLimitActualRotation defined"
-  Standard_Boolean defUpperLimitActualRotation;    //!< flag "is UpperLimitActualRotation defined"
+  double myLowerLimitActualRotation;     //!< optional
+  double myUpperLimitActualRotation;     //!< optional
+  double myLowerLimitActualTranslationX; //!< optional
+  double myUpperLimitActualTranslationX; //!< optional
+  double myLowerLimitActualTranslationY; //!< optional
+  double myUpperLimitActualTranslationY; //!< optional
+  bool   defLowerLimitActualRotation;    //!< flag "is LowerLimitActualRotation defined"
+  bool   defUpperLimitActualRotation;    //!< flag "is UpperLimitActualRotation defined"
   // clang-format off
-  Standard_Boolean defLowerLimitActualTranslationX; //!< flag "is LowerLimitActualTranslationX defined"
-  Standard_Boolean defUpperLimitActualTranslationX; //!< flag "is UpperLimitActualTranslationX defined"
-  Standard_Boolean defLowerLimitActualTranslationY; //!< flag "is LowerLimitActualTranslationY defined"
-  Standard_Boolean defUpperLimitActualTranslationY; //!< flag "is UpperLimitActualTranslationY defined"
+  bool defLowerLimitActualTranslationX; //!< flag "is LowerLimitActualTranslationX defined"
+  bool defUpperLimitActualTranslationX; //!< flag "is UpperLimitActualTranslationX defined"
+  bool defLowerLimitActualTranslationY; //!< flag "is LowerLimitActualTranslationY defined"
+  bool defUpperLimitActualTranslationY; //!< flag "is UpperLimitActualTranslationY defined"
   // clang-format on
 };
 #endif // _StepKinematics_PlanarPairWithRange_HeaderFile_

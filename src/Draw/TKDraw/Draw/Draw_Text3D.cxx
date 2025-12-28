@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Text3D, Draw_Drawable3D)
 
 //=================================================================================================
 
-Draw_Text3D::Draw_Text3D(const gp_Pnt& p, const Standard_CString T, const Draw_Color& col)
+Draw_Text3D::Draw_Text3D(const gp_Pnt& p, const char* T, const Draw_Color& col)
     : myPoint(p),
       myColor(col),
       myText(T),
@@ -34,11 +34,11 @@ Draw_Text3D::Draw_Text3D(const gp_Pnt& p, const Standard_CString T, const Draw_C
 
 //=================================================================================================
 
-Draw_Text3D::Draw_Text3D(const gp_Pnt&          p,
-                         const Standard_CString T,
-                         const Draw_Color&      col,
-                         const Standard_Real    moveX,
-                         const Standard_Real    moveY)
+Draw_Text3D::Draw_Text3D(const gp_Pnt&     p,
+                         const char*       T,
+                         const Draw_Color& col,
+                         const double      moveX,
+                         const double      moveY)
     : myPoint(p),
       myColor(col),
       myText(T),

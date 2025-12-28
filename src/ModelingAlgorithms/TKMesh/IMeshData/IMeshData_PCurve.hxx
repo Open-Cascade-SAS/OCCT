@@ -31,28 +31,28 @@ public:
   virtual ~IMeshData_PCurve() {}
 
   //! Inserts new discretization point at the given position.
-  Standard_EXPORT virtual void InsertPoint(const Standard_Integer thePosition,
-                                           const gp_Pnt2d&        thePoint,
-                                           const Standard_Real    theParamOnPCurve) = 0;
+  Standard_EXPORT virtual void InsertPoint(const int       thePosition,
+                                           const gp_Pnt2d& thePoint,
+                                           const double    theParamOnPCurve) = 0;
 
   //! Adds new discretization point to pcurve.
-  Standard_EXPORT virtual void AddPoint(const gp_Pnt2d&     thePoint,
-                                        const Standard_Real theParamOnPCurve) = 0;
+  Standard_EXPORT virtual void AddPoint(const gp_Pnt2d& thePoint,
+                                        const double    theParamOnPCurve) = 0;
 
   //! Returns discretization point with the given index.
-  Standard_EXPORT virtual gp_Pnt2d& GetPoint(const Standard_Integer theIndex) = 0;
+  Standard_EXPORT virtual gp_Pnt2d& GetPoint(const int theIndex) = 0;
 
   //! Returns index in mesh corresponded to discretization point with the given index.
-  Standard_EXPORT virtual Standard_Integer& GetIndex(const Standard_Integer theIndex) = 0;
+  Standard_EXPORT virtual int& GetIndex(const int theIndex) = 0;
 
   //! Removes point with the given index.
-  Standard_EXPORT virtual void RemovePoint(const Standard_Integer theIndex) = 0;
+  Standard_EXPORT virtual void RemovePoint(const int theIndex) = 0;
 
   //! Returns forward flag of this pcurve.
-  Standard_Boolean IsForward() const { return (myOrientation != TopAbs_REVERSED); }
+  bool IsForward() const { return (myOrientation != TopAbs_REVERSED); }
 
   //! Returns internal flag of this pcurve.
-  Standard_Boolean IsInternal() const { return (myOrientation == TopAbs_INTERNAL); }
+  bool IsInternal() const { return (myOrientation == TopAbs_INTERNAL); }
 
   //! Returns orientation of the edge associated with current pcurve.
   TopAbs_Orientation GetOrientation() const { return myOrientation; }

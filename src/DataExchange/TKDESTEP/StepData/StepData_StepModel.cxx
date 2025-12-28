@@ -16,7 +16,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_GeneralLib.hxx>
 #include <Interface_GeneralModule.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -33,14 +33,14 @@ IMPLEMENT_STANDARD_RTTIEXT(StepData_StepModel, Interface_InterfaceModel)
 // Default constructor for STEP data model
 StepData_StepModel::StepData_StepModel() {}
 
-Handle(Standard_Transient) StepData_StepModel::Entity(const Standard_Integer num) const
+occ::handle<Standard_Transient> StepData_StepModel::Entity(const int num) const
 {
   return Value(num);
 } // More user-friendly name for accessing entities
 
 // Copy header entities from another STEP model
 // This method transfers only the header section, not the data entities
-void StepData_StepModel::GetFromAnother(const Handle(Interface_InterfaceModel)& other)
+void StepData_StepModel::GetFromAnother(const occ::handle<Interface_InterfaceModel>& other)
 {
   theheader.Clear();
   DeclareAndCast(StepData_StepModel, another, other);
@@ -51,15 +51,15 @@ void StepData_StepModel::GetFromAnother(const Handle(Interface_InterfaceModel)& 
   Interface_CopyTool TC(this, StepData::HeaderProtocol());
   for (; iter.More(); iter.Next())
   {
-    Handle(Standard_Transient) newhead;
-    if (!TC.Copy(iter.Value(), newhead, Standard_False, Standard_False))
+    occ::handle<Standard_Transient> newhead;
+    if (!TC.Copy(iter.Value(), newhead, false, false))
       continue;
     if (!newhead.IsNull())
       theheader.Append(newhead);
   }
 }
 
-Handle(Interface_InterfaceModel) StepData_StepModel::NewEmptyModel() const
+occ::handle<Interface_InterfaceModel> StepData_StepModel::NewEmptyModel() const
 {
   return new StepData_StepModel;
 }
@@ -73,13 +73,13 @@ Interface_EntityIterator StepData_StepModel::Header() const
 
 // Check if exactly one header entity of specified type exists
 // Returns true only if there is exactly one entity of the given type
-Standard_Boolean StepData_StepModel::HasHeaderEntity(const Handle(Standard_Type)& atype) const
+bool StepData_StepModel::HasHeaderEntity(const occ::handle<Standard_Type>& atype) const
 {
   return (theheader.NbTypedEntities(atype) == 1);
 }
 
-Handle(Standard_Transient) StepData_StepModel::HeaderEntity(
-  const Handle(Standard_Type)& atype) const
+occ::handle<Standard_Transient> StepData_StepModel::HeaderEntity(
+  const occ::handle<Standard_Type>& atype) const
 {
   return theheader.TypedEntity(atype);
 }
@@ -91,39 +91,39 @@ void StepData_StepModel::ClearHeader()
   theheader.Clear();
 }
 
-void StepData_StepModel::AddHeaderEntity(const Handle(Standard_Transient)& ent)
+void StepData_StepModel::AddHeaderEntity(const occ::handle<Standard_Transient>& ent)
 {
   theheader.Append(ent);
 }
 
-void StepData_StepModel::VerifyCheck(Handle(Interface_Check)& ach) const
+void StepData_StepModel::VerifyCheck(occ::handle<Interface_Check>& ach) const
 {
-  Interface_GeneralLib            lib(StepData::HeaderProtocol());
-  Handle(StepData_StepModel)      me(this);
-  Handle(Interface_Protocol)      aHP = StepData::HeaderProtocol();
-  Interface_ShareTool             sh(me, aHP);
-  Handle(Interface_GeneralModule) module;
-  Standard_Integer                CN;
+  Interface_GeneralLib                 lib(StepData::HeaderProtocol());
+  occ::handle<StepData_StepModel>      me(this);
+  occ::handle<Interface_Protocol>      aHP = StepData::HeaderProtocol();
+  Interface_ShareTool                  sh(me, aHP);
+  occ::handle<Interface_GeneralModule> module;
+  int                                  CN;
   for (Interface_EntityIterator iter = Header(); iter.More(); iter.Next())
   {
-    const Handle(Standard_Transient)& head = iter.Value();
+    const occ::handle<Standard_Transient>& head = iter.Value();
     if (!lib.Select(head, module, CN))
       continue;
     module->CheckCase(CN, head, sh, ach);
   }
 }
 
-void StepData_StepModel::DumpHeader(Standard_OStream& S, const Standard_Integer /*level*/) const
+void StepData_StepModel::DumpHeader(Standard_OStream& S, const int /*level*/) const
 {
   // Note: level parameter is not used in this implementation
 
-  Handle(StepData_Protocol) stepro = StepData::HeaderProtocol();
-  Standard_Boolean          iapro  = !stepro.IsNull();
+  occ::handle<StepData_Protocol> stepro = StepData::HeaderProtocol();
+  bool                           iapro  = !stepro.IsNull();
   if (!iapro)
     S << " -- WARNING : StepModel DumpHeader, Protocol not defined\n";
 
   Interface_EntityIterator iter = Header();
-  Standard_Integer         nb   = iter.NbEntities();
+  int                      nb   = iter.NbEntities();
   S << " --  Step Model Header : " << iter.NbEntities() << " Entities :\n";
   for (iter.Start(); iter.More(); iter.Next())
   {
@@ -134,9 +134,9 @@ void StepData_StepModel::DumpHeader(Standard_OStream& S, const Standard_Integer 
   S << " --  --        STEP MODEL    HEADER  CONTENT      --  --" << "\n";
   S << " --   Dumped with Protocol : " << stepro->DynamicType()->Name() << "   --\n";
 
-  Handle(StepData_StepModel) me(this);
-  StepData_StepWriter        SW(me);
-  SW.SendModel(stepro, Standard_True); // Send HEADER only
+  occ::handle<StepData_StepModel> me(this);
+  StepData_StepWriter             SW(me);
+  SW.SendModel(stepro, true); // Send HEADER only
   SW.Print(S);
 }
 
@@ -147,28 +147,27 @@ void StepData_StepModel::ClearLabels()
 
 // Set identifier label for an entity (used in STEP file format)
 // The identifier is typically a number like #123 that appears in STEP files
-void StepData_StepModel::SetIdentLabel(const Handle(Standard_Transient)& ent,
-                                       const Standard_Integer            ident)
+void StepData_StepModel::SetIdentLabel(const occ::handle<Standard_Transient>& ent, const int ident)
 {
-  Standard_Integer num = Number(ent);
+  int num = Number(ent);
   if (!num)
     return; // Entity not found in model
-  Standard_Integer nbEnt = NbEntities();
+  int nbEnt = NbEntities();
 
   // Initialize identifier array if not yet created
   if (theidnums.IsNull())
   {
-    theidnums = new TColStd_HArray1OfInteger(1, nbEnt);
+    theidnums = new NCollection_HArray1<int>(1, nbEnt);
     theidnums->Init(0); // Initialize all values to 0
   }
   // Resize array if model has grown since last allocation
   else if (nbEnt > theidnums->Length())
   {
-    Standard_Integer                 prevLength = theidnums->Length();
-    Handle(TColStd_HArray1OfInteger) idnums1    = new TColStd_HArray1OfInteger(1, nbEnt);
+    int                                   prevLength = theidnums->Length();
+    occ::handle<NCollection_HArray1<int>> idnums1    = new NCollection_HArray1<int>(1, nbEnt);
     idnums1->Init(0);
     // Copy existing identifier mappings
-    Standard_Integer k = 1;
+    int k = 1;
     for (; k <= prevLength; k++)
       idnums1->SetValue(k, theidnums->Value(k));
     theidnums = idnums1;
@@ -176,19 +175,19 @@ void StepData_StepModel::SetIdentLabel(const Handle(Standard_Transient)& ent,
   theidnums->SetValue(num, ident);
 }
 
-Standard_Integer StepData_StepModel::IdentLabel(const Handle(Standard_Transient)& ent) const
+int StepData_StepModel::IdentLabel(const occ::handle<Standard_Transient>& ent) const
 {
   if (theidnums.IsNull())
     return 0;
-  Standard_Integer num = Number(ent);
+  int num = Number(ent);
   return (!num ? 0 : theidnums->Value(num));
 }
 
-void StepData_StepModel::PrintLabel(const Handle(Standard_Transient)& ent,
-                                    Standard_OStream&                 S) const
+void StepData_StepModel::PrintLabel(const occ::handle<Standard_Transient>& ent,
+                                    Standard_OStream&                      S) const
 {
-  Standard_Integer num = (theidnums.IsNull() ? 0 : Number(ent));
-  Standard_Integer nid = (!num ? 0 : theidnums->Value(num));
+  int num = (theidnums.IsNull() ? 0 : Number(ent));
+  int nid = (!num ? 0 : theidnums->Value(num));
   if (nid > 0)
     S << "#" << nid;
   else if (num > 0)
@@ -197,13 +196,13 @@ void StepData_StepModel::PrintLabel(const Handle(Standard_Transient)& ent,
     S << "(#0..)";
 }
 
-Handle(TCollection_HAsciiString) StepData_StepModel::StringLabel(
-  const Handle(Standard_Transient)& ent) const
+occ::handle<TCollection_HAsciiString> StepData_StepModel::StringLabel(
+  const occ::handle<Standard_Transient>& ent) const
 {
-  Handle(TCollection_HAsciiString) label;
-  char                             text[20];
-  Standard_Integer                 num = (theidnums.IsNull() ? 0 : Number(ent));
-  Standard_Integer                 nid = (!num ? 0 : theidnums->Value(num));
+  occ::handle<TCollection_HAsciiString> label;
+  char                                  text[20];
+  int                                   num = (theidnums.IsNull() ? 0 : Number(ent));
+  int                                   nid = (!num ? 0 : theidnums->Value(num));
 
   if (nid > 0)
     Sprintf(text, "#%d", nid);
@@ -218,37 +217,37 @@ Handle(TCollection_HAsciiString) StepData_StepModel::StringLabel(
 
 //=================================================================================================
 
-void StepData_StepModel::SetLocalLengthUnit(const Standard_Real theUnit)
+void StepData_StepModel::SetLocalLengthUnit(const double theUnit)
 {
   myLocalLengthUnit       = theUnit;
-  myReadUnitIsInitialized = Standard_True;
+  myReadUnitIsInitialized = true;
 }
 
 //=================================================================================================
 
-Standard_Real StepData_StepModel::LocalLengthUnit() const
+double StepData_StepModel::LocalLengthUnit() const
 {
   return myLocalLengthUnit;
 }
 
 //=================================================================================================
 
-void StepData_StepModel::SetWriteLengthUnit(const Standard_Real theUnit)
+void StepData_StepModel::SetWriteLengthUnit(const double theUnit)
 {
   myWriteUnit              = theUnit;
-  myWriteUnitIsInitialized = Standard_True;
+  myWriteUnitIsInitialized = true;
 }
 
 //=================================================================================================
 
 // Get the length unit for writing STEP files
 // Returns the conversion factor from millimeters to the target unit
-Standard_Real StepData_StepModel::WriteLengthUnit() const
+double StepData_StepModel::WriteLengthUnit() const
 {
   // Lazy initialization of write unit from global parameters
   if (!myWriteUnitIsInitialized)
   {
-    myWriteUnitIsInitialized = Standard_True;
+    myWriteUnitIsInitialized = true;
     switch (InternalParameters.WriteUnit)
     {
       case UnitsMethods_LengthUnit_Inch:
@@ -282,7 +281,7 @@ Standard_Real StepData_StepModel::WriteLengthUnit() const
         myWriteUnit = 0.0000254;
         break;
       default: {
-        myWriteUnitIsInitialized = Standard_False;
+        myWriteUnitIsInitialized = false;
         GlobalCheck()->AddWarning("Incorrect write.step.unit parameter, use default value");
       }
     }

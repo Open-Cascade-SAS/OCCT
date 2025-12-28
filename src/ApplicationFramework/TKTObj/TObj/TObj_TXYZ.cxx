@@ -42,9 +42,9 @@ const Standard_GUID& TObj_TXYZ::ID() const
 
 //=================================================================================================
 
-Handle(TObj_TXYZ) TObj_TXYZ::Set(const TDF_Label& theLabel, const gp_XYZ& theXYZ)
+occ::handle<TObj_TXYZ> TObj_TXYZ::Set(const TDF_Label& theLabel, const gp_XYZ& theXYZ)
 {
-  Handle(TObj_TXYZ) A;
+  occ::handle<TObj_TXYZ> A;
   if (!theLabel.FindAttribute(TObj_TXYZ::GetID(), A))
   {
     A = new TObj_TXYZ;
@@ -71,25 +71,25 @@ gp_XYZ TObj_TXYZ::Get() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TObj_TXYZ::NewEmpty() const
+occ::handle<TDF_Attribute> TObj_TXYZ::NewEmpty() const
 {
   return new TObj_TXYZ();
 }
 
 //=================================================================================================
 
-void TObj_TXYZ::Restore(const Handle(TDF_Attribute)& theWith)
+void TObj_TXYZ::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
-  Handle(TObj_TXYZ) R = Handle(TObj_TXYZ)::DownCast(theWith);
-  myXYZ               = R->Get();
+  occ::handle<TObj_TXYZ> R = occ::down_cast<TObj_TXYZ>(theWith);
+  myXYZ                    = R->Get();
 }
 
 //=================================================================================================
 
-void TObj_TXYZ::Paste(const Handle(TDF_Attribute)& theInto,
-                      const Handle(TDF_RelocationTable)& /* RT */) const
+void TObj_TXYZ::Paste(const occ::handle<TDF_Attribute>& theInto,
+                      const occ::handle<TDF_RelocationTable>& /* RT */) const
 {
-  Handle(TObj_TXYZ) R = Handle(TObj_TXYZ)::DownCast(theInto);
+  occ::handle<TObj_TXYZ> R = occ::down_cast<TObj_TXYZ>(theInto);
   R->Set(myXYZ);
 }
 

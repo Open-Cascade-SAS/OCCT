@@ -22,10 +22,11 @@
 #include <BOPAlgo_BuilderShape.hxx>
 #include <BRepTools_History.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Map.hxx>
 
 //! The RemoveFeatures algorithm is intended for reconstruction of
 //! the shape by removal of the unwanted parts from it. These parts can
@@ -116,9 +117,9 @@
 //! Here is the example of usage of the algorithm:
 //! ~~~~
 //! TopoDS_Shape aSolid = ...;              // Input shape to remove the features from
-//! TopTools_ListOfShape aFaces = ...;      // Faces to remove from the shape
-//! Standard_Boolean bRunParallel = ...;    // Parallel processing mode
-//! Standard_Boolean isHistoryNeeded = ...; // History support
+//! NCollection_List<TopoDS_Shape> aFaces = ...;      // Faces to remove from the shape
+//! bool bRunParallel = ...;    // Parallel processing mode
+//! bool isHistoryNeeded = ...; // History support
 //!
 //! BOPAlgo_RemoveFeatures aRF;             // Feature removal algorithm
 //! aRF.SetShape(aSolid);                   // Set the shape
@@ -171,26 +172,26 @@ public: //! @name Setting input data for the algorithm
 
   //! Adds the faces to remove from the input shape.
   //! @param[in] theFaces  The list of shapes to extract the faces for removal.
-  void AddFacesToRemove(const TopTools_ListOfShape& theFaces)
+  void AddFacesToRemove(const NCollection_List<TopoDS_Shape>& theFaces)
   {
-    TopTools_ListIteratorOfListOfShape it(theFaces);
+    NCollection_List<TopoDS_Shape>::Iterator it(theFaces);
     for (; it.More(); it.Next())
       myFacesToRemove.Append(it.Value());
   }
 
   //! Returns the list of faces which have been requested for removal
   //! from the input shape.
-  const TopTools_ListOfShape& FacesToRemove() const { return myFacesToRemove; }
+  const NCollection_List<TopoDS_Shape>& FacesToRemove() const { return myFacesToRemove; }
 
 public: //! @name Performing the operation
   //! Performs the operation
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 public: //! @name Clearing the contents of the algorithm
   //! Clears the contents of the algorithm from previous run,
   //! allowing reusing it for following removals.
-  virtual void Clear() Standard_OVERRIDE
+  virtual void Clear() override
   {
     BOPAlgo_BuilderShape::Clear();
     myInputShape.Nullify();
@@ -206,7 +207,7 @@ protected: //! @name Protected methods performing the removal
   //! If the input shape is not a solid, the method looks for the solids
   //! in <myInputShape> and uses only them. All other shapes are simply removed.
   //! If no solids were found, the Error of unsupported type is returned.
-  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckData() override;
 
   //! Prepares the faces to remove:
   //! - Gets only faces contained in the input solids;
@@ -227,14 +228,17 @@ protected: //! @name Protected methods performing the removal
   //! @param[in] theAdjFacesHistory  The history of the adjacent faces reconstruction;
   //! @param[in] theSolidsHistoryNeeded  Defines whether the history of solids
   //!                                    modifications should be tracked or not.
-  Standard_EXPORT void RemoveFeature(const TopoDS_Shape&               theFeature,
-                                     const TopTools_IndexedMapOfShape& theSolids,
-                                     const TopTools_MapOfShape&        theFeatureFacesMap,
-                                     const Standard_Boolean            theHasAdjacentFaces,
-                                     const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
-                                     const Handle(BRepTools_History)& theAdjFacesHistory,
-                                     const Standard_Boolean           theSolidsHistoryNeeded,
-                                     const Message_ProgressRange&     theRange);
+  Standard_EXPORT void RemoveFeature(
+    const TopoDS_Shape&                                                  theFeature,
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSolids,
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&        theFeatureFacesMap,
+    const bool                                                           theHasAdjacentFaces,
+    const NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<TopoDS_Shape>,
+                                     TopTools_ShapeMapHasher>&           theAdjFaces,
+    const occ::handle<BRepTools_History>&                                theAdjFacesHistory,
+    const bool                                                           theSolidsHistoryNeeded,
+    const Message_ProgressRange&                                         theRange);
 
   //! Updates history with the removed features
   Standard_EXPORT void UpdateHistory(const Message_ProgressRange& theRange);
@@ -247,18 +251,19 @@ protected: //! @name Protected methods performing the removal
   Standard_EXPORT void PostTreat();
 
   //! Filling steps for constant operations
-  Standard_EXPORT void fillPIConstants(const Standard_Real theWhole,
-                                       BOPAlgo_PISteps&    theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT void fillPIConstants(const double     theWhole,
+                                       BOPAlgo_PISteps& theSteps) const override;
 
 protected: //! @name Fields
   // Inputs
-  TopoDS_Shape         myInputShape;    //!< Input shape
-  TopTools_ListOfShape myFacesToRemove; //!< Faces to remove
+  TopoDS_Shape                   myInputShape;    //!< Input shape
+  NCollection_List<TopoDS_Shape> myFacesToRemove; //!< Faces to remove
 
   // Intermediate
-  TopTools_ListOfShape myFeatures;        //!< List of not connected features to remove
-                                          //! (each feature is a compound of faces)
-  TopTools_IndexedMapOfShape myInputsMap; //!< Map of all sub-shapes of the input shape
+  NCollection_List<TopoDS_Shape> myFeatures; //!< List of not connected features to remove
+                                             //! (each feature is a compound of faces)
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>
+    myInputsMap; //!< Map of all sub-shapes of the input shape
 };
 
 #endif // _BOPAlgo_RemoveFeatures_HeaderFile

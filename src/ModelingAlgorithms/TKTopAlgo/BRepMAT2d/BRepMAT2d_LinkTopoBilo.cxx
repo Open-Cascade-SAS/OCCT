@@ -22,11 +22,12 @@
 #include <Geom2d_Geometry.hxx>
 #include <MAT_BasicElt.hxx>
 #include <MAT_Graph.hxx>
-#include <MAT_SequenceOfBasicElt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
-#include <TColGeom2d_SequenceOfCurve.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -34,13 +35,12 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_SequenceOfShape.hxx>
 
 //=================================================================================================
 
 BRepMAT2d_LinkTopoBilo::BRepMAT2d_LinkTopoBilo()
     : current(0),
-      isEmpty(Standard_True)
+      isEmpty(true)
 {
 }
 
@@ -60,8 +60,8 @@ void BRepMAT2d_LinkTopoBilo::Perform(const BRepMAT2d_Explorer&       Explo,
   myMap.Clear();
   myBEShape.Clear();
 
-  TopoDS_Shape     S          = Explo.Shape();
-  Standard_Integer IndContour = 1;
+  TopoDS_Shape S          = Explo.Shape();
+  int          IndContour = 1;
 
   if (S.ShapeType() == TopAbs_FACE)
   {
@@ -84,20 +84,20 @@ void BRepMAT2d_LinkTopoBilo::Perform(const BRepMAT2d_Explorer&       Explo,
 
 void BRepMAT2d_LinkTopoBilo::Init(const TopoDS_Shape& S)
 {
-  isEmpty = Standard_False;
+  isEmpty = false;
   current = 1;
   if (myMap.IsBound(S))
     myKey = S;
   else
-    isEmpty = Standard_True;
+    isEmpty = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepMAT2d_LinkTopoBilo::More()
+bool BRepMAT2d_LinkTopoBilo::More()
 {
   if (isEmpty)
-    return Standard_False;
+    return false;
   return (current <= myMap(myKey).Length());
 }
 
@@ -110,41 +110,41 @@ void BRepMAT2d_LinkTopoBilo::Next()
 
 //=================================================================================================
 
-Handle(MAT_BasicElt) BRepMAT2d_LinkTopoBilo::Value() const
+occ::handle<MAT_BasicElt> BRepMAT2d_LinkTopoBilo::Value() const
 {
   return myMap(myKey).Value(current);
 }
 
 //=================================================================================================
 
-TopoDS_Shape BRepMAT2d_LinkTopoBilo::GeneratingShape(const Handle(MAT_BasicElt)& BE) const
+TopoDS_Shape BRepMAT2d_LinkTopoBilo::GeneratingShape(const occ::handle<MAT_BasicElt>& BE) const
 {
   return myBEShape(BE);
 }
 
-static void LinkToContour(const BRepMAT2d_Explorer&        Explo,
-                          const Standard_Integer           IndC,
-                          const BRepMAT2d_BisectingLocus&  BiLo,
-                          TColStd_DataMapOfIntegerInteger& Link);
+static void LinkToContour(const BRepMAT2d_Explorer&       Explo,
+                          const int                       IndC,
+                          const BRepMAT2d_BisectingLocus& BiLo,
+                          NCollection_DataMap<int, int>&  Link);
 
 //=================================================================================================
 
 void BRepMAT2d_LinkTopoBilo::LinkToWire(const TopoDS_Wire&              W,
                                         const BRepMAT2d_Explorer&       Explo,
-                                        const Standard_Integer          IndC,
+                                        const int                       IndC,
                                         const BRepMAT2d_BisectingLocus& BiLo)
 {
-  BRepTools_WireExplorer   TheExp(W);
-  Standard_Integer         KC;
-  TopoDS_Vertex            VF, VL;
-  TopoDS_Shape             S;
-  Handle(MAT_BasicElt)     BE;
-  Handle(Standard_Type)    Type;
-  TopTools_SequenceOfShape TopoSeq;
-  MAT_SequenceOfBasicElt   EmptySeq;
+  BRepTools_WireExplorer                          TheExp(W);
+  int                                             KC;
+  TopoDS_Vertex                                   VF, VL;
+  TopoDS_Shape                                    S;
+  occ::handle<MAT_BasicElt>                       BE;
+  occ::handle<Standard_Type>                      Type;
+  NCollection_Sequence<TopoDS_Shape>              TopoSeq;
+  NCollection_Sequence<occ::handle<MAT_BasicElt>> EmptySeq;
 
-  TColStd_DataMapIteratorOfDataMapOfIntegerInteger Ite;
-  TColStd_DataMapOfIntegerInteger                  LinkBECont;
+  NCollection_DataMap<int, int>::Iterator Ite;
+  NCollection_DataMap<int, int>           LinkBECont;
 
   for (; TheExp.More(); TheExp.Next())
   {
@@ -201,38 +201,38 @@ void BRepMAT2d_LinkTopoBilo::LinkToWire(const TopoDS_Wire&              W,
 //           contour from which it comes.
 //=======================================================================
 
-void LinkToContour(const BRepMAT2d_Explorer&        Explo,
-                   const Standard_Integer           IndC,
-                   const BRepMAT2d_BisectingLocus&  BiLo,
-                   TColStd_DataMapOfIntegerInteger& Link)
+void LinkToContour(const BRepMAT2d_Explorer&       Explo,
+                   const int                       IndC,
+                   const BRepMAT2d_BisectingLocus& BiLo,
+                   NCollection_DataMap<int, int>&  Link)
 {
-  Handle(MAT_BasicElt)    BE;
-  Handle(Geom2d_Geometry) GeomBE;
-  Handle(Standard_Type)   Type;
-  Standard_Boolean        DirectSense = Standard_True;
-  Standard_Boolean        LastPoint   = Standard_False;
-  Standard_Integer        NbSect, ISect;
+  occ::handle<MAT_BasicElt>    BE;
+  occ::handle<Geom2d_Geometry> GeomBE;
+  occ::handle<Standard_Type>   Type;
+  bool                         DirectSense = true;
+  bool                         LastPoint   = false;
+  int                          NbSect, ISect;
 
   //---------------------------------------------------
   // NbSect : number of sections on the current curve.
   // ISect  : Counter on sections.
   //---------------------------------------------------
 
-  const TColGeom2d_SequenceOfCurve& Cont = Explo.Contour(IndC);
+  const NCollection_Sequence<occ::handle<Geom2d_Curve>>& Cont = Explo.Contour(IndC);
 
   //------------------------------------------------------------------
   // Initialization of the explorer on the first curve of the contour.
   //------------------------------------------------------------------
-  Standard_Integer IndOnCont     = 1;
-  Standard_Integer PrecIndOnCont = -1;
-  NbSect                         = BiLo.NumberOfSections(IndC, 1);
-  ISect                          = 0;
+  int IndOnCont     = 1;
+  int PrecIndOnCont = -1;
+  NbSect            = BiLo.NumberOfSections(IndC, 1);
+  ISect             = 0;
 
   //------------------------------------------------------------------
   // Parsing of base elements associated to contour IndC.
   // Rq : the base elements are ordered.
   //------------------------------------------------------------------
-  for (Standard_Integer i = 1; i <= BiLo.NumberOfElts(IndC); i++)
+  for (int i = 1; i <= BiLo.NumberOfElts(IndC); i++)
   {
 
     BE     = BiLo.BasicElt(IndC, i);
@@ -292,14 +292,14 @@ void LinkToContour(const BRepMAT2d_Explorer&        Explo,
           IndOnCont--;
           if (IndOnCont != 0)
             NbSect = BiLo.NumberOfSections(IndC, IndOnCont);
-          LastPoint = Standard_False;
+          LastPoint = false;
         }
         else
         {
-          LastPoint = Standard_True;
+          LastPoint = true;
         }
         ISect       = 0;
-        DirectSense = Standard_False;
+        DirectSense = false;
       }
     }
   }

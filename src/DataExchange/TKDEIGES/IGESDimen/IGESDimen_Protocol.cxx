@@ -47,14 +47,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_Protocol, IGESData_Protocol)
 
 IGESDimen_Protocol::IGESDimen_Protocol() {}
 
-Standard_Integer IGESDimen_Protocol::NbResources() const
+int IGESDimen_Protocol::NbResources() const
 {
   return 2;
 }
 
-Handle(Interface_Protocol) IGESDimen_Protocol::Resource(const Standard_Integer num) const
+occ::handle<Interface_Protocol> IGESDimen_Protocol::Resource(const int num) const
 {
-  Handle(Interface_Protocol) res;
+  occ::handle<Interface_Protocol> res;
   if (num == 1)
     res = IGESGraph::Protocol();
   if (num == 2)
@@ -62,7 +62,7 @@ Handle(Interface_Protocol) IGESDimen_Protocol::Resource(const Standard_Integer n
   return res;
 }
 
-Standard_Integer IGESDimen_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
+int IGESDimen_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESDimen_AngularDimension))
     return 1;

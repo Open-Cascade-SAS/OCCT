@@ -52,9 +52,9 @@ TEST(BVH_BuildQueueTest, EnqueueMultiple)
 
 TEST(BVH_BuildQueueTest, FetchFromEmptyQueue)
 {
-  BVH_BuildQueue   aQueue;
-  Standard_Boolean wasBusy = Standard_False;
-  Standard_Integer aResult = aQueue.Fetch(wasBusy);
+  BVH_BuildQueue aQueue;
+  bool           wasBusy = false;
+  int            aResult = aQueue.Fetch(wasBusy);
 
   EXPECT_EQ(aResult, -1);
   EXPECT_FALSE(wasBusy);
@@ -66,8 +66,8 @@ TEST(BVH_BuildQueueTest, FetchSingleItem)
   BVH_BuildQueue aQueue;
   aQueue.Enqueue(42);
 
-  Standard_Boolean wasBusy = Standard_False;
-  Standard_Integer aResult = aQueue.Fetch(wasBusy);
+  bool wasBusy = false;
+  int  aResult = aQueue.Fetch(wasBusy);
 
   EXPECT_EQ(aResult, 42);
   EXPECT_TRUE(wasBusy);
@@ -83,7 +83,7 @@ TEST(BVH_BuildQueueTest, FetchFIFOOrder)
   aQueue.Enqueue(20);
   aQueue.Enqueue(30);
 
-  Standard_Boolean wasBusy = Standard_False;
+  bool wasBusy = false;
 
   EXPECT_EQ(aQueue.Fetch(wasBusy), 10);
   EXPECT_TRUE(wasBusy);
@@ -107,7 +107,7 @@ TEST(BVH_BuildQueueTest, ThreadCountTracking)
 
   EXPECT_FALSE(aQueue.HasBusyThreads());
 
-  Standard_Boolean wasBusy = Standard_False;
+  bool wasBusy = false;
 
   // First fetch - thread becomes busy
   aQueue.Fetch(wasBusy);
@@ -132,7 +132,7 @@ TEST(BVH_BuildQueueTest, AlternatingEnqueueFetch)
   aQueue.Enqueue(1);
   EXPECT_EQ(aQueue.Size(), 1);
 
-  Standard_Boolean wasBusy = Standard_False;
+  bool wasBusy = false;
   EXPECT_EQ(aQueue.Fetch(wasBusy), 1);
   EXPECT_EQ(aQueue.Size(), 0);
 
@@ -155,7 +155,7 @@ TEST(BVH_BuildQueueTest, LargeQueue)
 
   EXPECT_EQ(aQueue.Size(), aCount);
 
-  Standard_Boolean wasBusy = Standard_False;
+  bool wasBusy = false;
   for (int i = 0; i < aCount; ++i)
   {
     EXPECT_EQ(aQueue.Fetch(wasBusy), i);
@@ -172,7 +172,7 @@ TEST(BVH_BuildQueueTest, NegativeValues)
   aQueue.Enqueue(-100);
   aQueue.Enqueue(0);
 
-  Standard_Boolean wasBusy = Standard_False;
+  bool wasBusy = false;
 
   EXPECT_EQ(aQueue.Fetch(wasBusy), -1);
   EXPECT_EQ(aQueue.Fetch(wasBusy), -100);
@@ -226,10 +226,10 @@ TEST(BVH_BuildQueueTest, ConcurrentFetch)
   for (int t = 0; t < aThreadCount; ++t)
   {
     aThreads.emplace_back([&aQueue, t, &aFetchedCounts]() {
-      Standard_Boolean wasBusy = Standard_False;
+      bool wasBusy = false;
       while (true)
       {
-        Standard_Integer aItem = aQueue.Fetch(wasBusy);
+        int aItem = aQueue.Fetch(wasBusy);
         if (aItem == -1)
           break;
         aFetchedCounts[t]++;
@@ -278,10 +278,10 @@ TEST(BVH_BuildQueueTest, ConcurrentEnqueueAndFetch)
   for (int t = 0; t < aConsumerCount; ++t)
   {
     aThreads.emplace_back([&aQueue, &aFetchedCount, &aDone]() {
-      Standard_Boolean wasBusy = Standard_False;
+      bool wasBusy = false;
       while (!aDone.load() || aQueue.Size() > 0)
       {
-        Standard_Integer aItem = aQueue.Fetch(wasBusy);
+        int aItem = aQueue.Fetch(wasBusy);
         if (aItem != -1)
         {
           aFetchedCount.fetch_add(1);
@@ -315,12 +315,12 @@ TEST(BVH_BuildQueueTest, ConcurrentEnqueueAndFetch)
 
 TEST(BVH_BuildQueueTest, RepeatedFetchFromEmpty)
 {
-  BVH_BuildQueue   aQueue;
-  Standard_Boolean wasBusy = Standard_False;
+  BVH_BuildQueue aQueue;
+  bool           wasBusy = false;
 
   for (int i = 0; i < 10; ++i)
   {
-    Standard_Integer aResult = aQueue.Fetch(wasBusy);
+    int aResult = aQueue.Fetch(wasBusy);
     EXPECT_EQ(aResult, -1);
     EXPECT_FALSE(wasBusy);
   }
@@ -335,7 +335,7 @@ TEST(BVH_BuildQueueTest, EnqueueZero)
   aQueue.Enqueue(0);
   EXPECT_EQ(aQueue.Size(), 1);
 
-  Standard_Boolean wasBusy = Standard_False;
+  bool wasBusy = false;
   EXPECT_EQ(aQueue.Fetch(wasBusy), 0);
   EXPECT_TRUE(wasBusy);
 }
@@ -350,7 +350,7 @@ TEST(BVH_BuildQueueTest, DuplicateValues)
 
   EXPECT_EQ(aQueue.Size(), 3);
 
-  Standard_Boolean wasBusy = Standard_False;
+  bool wasBusy = false;
   EXPECT_EQ(aQueue.Fetch(wasBusy), 5);
   EXPECT_EQ(aQueue.Fetch(wasBusy), 5);
   EXPECT_EQ(aQueue.Fetch(wasBusy), 5);
@@ -363,8 +363,8 @@ TEST(BVH_BuildQueueTest, SingleThreadWorkflow)
   // Simulate single-threaded BVH building workflow
   aQueue.Enqueue(0); // Root node
 
-  Standard_Boolean wasBusy = Standard_False;
-  Standard_Integer aNode   = aQueue.Fetch(wasBusy);
+  bool wasBusy = false;
+  int  aNode   = aQueue.Fetch(wasBusy);
 
   EXPECT_EQ(aNode, 0);
   EXPECT_TRUE(wasBusy);

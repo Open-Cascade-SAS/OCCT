@@ -32,19 +32,22 @@ public:
   Standard_EXPORT XCAFPrs_Style();
 
   //! Return TRUE if style is empty - does not override any properties.
-  Standard_Boolean IsEmpty() const
+  bool IsEmpty() const
   {
     return !myHasColorSurf && !myHasColorCurv && myMaterial.IsNull() && myIsVisible;
   }
 
   //! Return material.
-  const Handle(XCAFDoc_VisMaterial)& Material() const { return myMaterial; }
+  const occ::handle<XCAFDoc_VisMaterial>& Material() const { return myMaterial; }
 
   //! Set material.
-  void SetMaterial(const Handle(XCAFDoc_VisMaterial)& theMaterial) { myMaterial = theMaterial; }
+  void SetMaterial(const occ::handle<XCAFDoc_VisMaterial>& theMaterial)
+  {
+    myMaterial = theMaterial;
+  }
 
   //! Return TRUE if surface color has been defined.
-  Standard_Boolean IsSetColorSurf() const { return myHasColorSurf; }
+  bool IsSetColorSurf() const { return myHasColorSurf; }
 
   //! Return surface color.
   const Quantity_Color& GetColorSurf() const { return myColorSurf.GetRGB(); }
@@ -62,7 +65,7 @@ public:
   Standard_EXPORT void UnSetColorSurf();
 
   //! Return TRUE if curve color has been defined.
-  Standard_Boolean IsSetColorCurv() const { return myHasColorCurv; }
+  bool IsSetColorCurv() const { return myHasColorCurv; }
 
   //! Return curve color.
   const Quantity_Color& GetColorCurv() const { return myColorCurv; }
@@ -74,15 +77,15 @@ public:
   Standard_EXPORT void UnSetColorCurv();
 
   //! Assign visibility.
-  void SetVisibility(const Standard_Boolean theVisibility) { myIsVisible = theVisibility; }
+  void SetVisibility(const bool theVisibility) { myIsVisible = theVisibility; }
 
   //! Manage visibility.
-  Standard_Boolean IsVisible() const { return myIsVisible; }
+  bool IsVisible() const { return myIsVisible; }
 
   //! Return base color texture.
-  const Handle(Image_Texture)& BaseColorTexture() const
+  const occ::handle<Image_Texture>& BaseColorTexture() const
   {
-    static const Handle(Image_Texture) THE_NULL_TEXTURE;
+    static const occ::handle<Image_Texture> THE_NULL_TEXTURE;
     if (myMaterial.IsNull())
     {
       return THE_NULL_TEXTURE;
@@ -101,7 +104,7 @@ public:
 
   //! Returns True if styles are the same
   //! Methods for using Style as key in maps
-  Standard_Boolean IsEqual(const XCAFPrs_Style& theOther) const
+  bool IsEqual(const XCAFPrs_Style& theOther) const
   {
     if (myIsVisible != theOther.myIsVisible)
     {
@@ -119,21 +122,21 @@ public:
   }
 
   //! Returns True if styles are the same.
-  Standard_Boolean operator==(const XCAFPrs_Style& theOther) const { return IsEqual(theOther); }
+  bool operator==(const XCAFPrs_Style& theOther) const { return IsEqual(theOther); }
 
   template <class T>
   friend struct std::hash;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected:
-  Handle(XCAFDoc_VisMaterial) myMaterial;
-  Quantity_ColorRGBA          myColorSurf;
-  Quantity_Color              myColorCurv;
-  Standard_Boolean            myHasColorSurf;
-  Standard_Boolean            myHasColorCurv;
-  Standard_Boolean            myIsVisible;
+  occ::handle<XCAFDoc_VisMaterial> myMaterial;
+  Quantity_ColorRGBA               myColorSurf;
+  Quantity_Color                   myColorCurv;
+  bool                             myHasColorSurf;
+  bool                             myHasColorCurv;
+  bool                             myIsVisible;
 };
 
 namespace std
@@ -159,7 +162,7 @@ struct hash<XCAFPrs_Style>
     }
     if (!theStyle.myMaterial.IsNull())
     {
-      aCombination[aCount++] = std::hash<Handle(XCAFDoc_VisMaterial)>{}(theStyle.myMaterial);
+      aCombination[aCount++] = std::hash<occ::handle<XCAFDoc_VisMaterial>>{}(theStyle.myMaterial);
     }
     return aCount > 0 ? opencascade::hashBytes(aCombination, sizeof(size_t) * aCount) : 0;
   }

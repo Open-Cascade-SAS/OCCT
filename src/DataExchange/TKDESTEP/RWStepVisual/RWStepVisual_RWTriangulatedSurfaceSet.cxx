@@ -20,11 +20,11 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepVisual_CoordinatesList.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Real.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
 
 //=================================================================================================
 
@@ -33,10 +33,10 @@ RWStepVisual_RWTriangulatedSurfaceSet::RWStepVisual_RWTriangulatedSurfaceSet() {
 //=================================================================================================
 
 void RWStepVisual_RWTriangulatedSurfaceSet::ReadStep(
-  const Handle(StepData_StepReaderData)&           theData,
-  const Standard_Integer                           theNum,
-  Handle(Interface_Check)&                         theCheck,
-  const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&           theData,
+  const int                                             theNum,
+  occ::handle<Interface_Check>&                         theCheck,
+  const occ::handle<StepVisual_TriangulatedSurfaceSet>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 6, theCheck, "triangulated_surface_set"))
@@ -45,11 +45,11 @@ void RWStepVisual_RWTriangulatedSurfaceSet::ReadStep(
   }
 
   // Inherited fields of RepresentationItem
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theCheck, aRepresentationItem_Name);
 
   // Inherited fields of TessellatedSurfaceSet
-  Handle(StepVisual_CoordinatesList) aTessellatedSurfaceSet_Coordinates;
+  occ::handle<StepVisual_CoordinatesList> aTessellatedSurfaceSet_Coordinates;
   theData->ReadEntity(theNum,
                       2,
                       "tessellated_surface_set.coordinates",
@@ -57,33 +57,33 @@ void RWStepVisual_RWTriangulatedSurfaceSet::ReadStep(
                       STANDARD_TYPE(StepVisual_CoordinatesList),
                       aTessellatedSurfaceSet_Coordinates);
 
-  Standard_Integer aTessellatedSurfaceSet_Pnmax;
+  int aTessellatedSurfaceSet_Pnmax;
   theData->ReadInteger(theNum,
                        3,
                        "tessellated_surface_set.pnmax",
                        theCheck,
                        aTessellatedSurfaceSet_Pnmax);
 
-  Handle(TColStd_HArray2OfReal) aTessellatedSurfaceSet_Normals;
-  Standard_Integer              aNormSub4 = 0;
+  occ::handle<NCollection_HArray2<double>> aTessellatedSurfaceSet_Normals;
+  int                                      aNormSub4 = 0;
   if (theData->ReadSubList(theNum, 4, "tessellated_surface_set.normals", theCheck, aNormSub4))
   {
-    const Standard_Integer aNormNb  = theData->NbParams(aNormSub4);
-    const Standard_Integer anAxesNb = theData->NbParams(theData->ParamNumber(aNormSub4, 1));
-    aTessellatedSurfaceSet_Normals  = new TColStd_HArray2OfReal(1, aNormNb, 1, anAxesNb);
-    for (Standard_Integer aNormIndex = 1; aNormIndex <= aNormNb; aNormIndex++)
+    const int aNormNb              = theData->NbParams(aNormSub4);
+    const int anAxesNb             = theData->NbParams(theData->ParamNumber(aNormSub4, 1));
+    aTessellatedSurfaceSet_Normals = new NCollection_HArray2<double>(1, aNormNb, 1, anAxesNb);
+    for (int aNormIndex = 1; aNormIndex <= aNormNb; aNormIndex++)
     {
-      Standard_Integer anAxesSub4 = 0;
+      int anAxesSub4 = 0;
       if (theData->ReadSubList(aNormSub4,
                                aNormIndex,
                                "sub-part(tessellated_surface_set.normals)",
                                theCheck,
                                anAxesSub4))
       {
-        const Standard_Integer anAxisNum4 = anAxesSub4;
-        for (Standard_Integer anAxisIndex = 1; anAxisIndex <= anAxesNb; anAxisIndex++)
+        const int anAxisNum4 = anAxesSub4;
+        for (int anAxisIndex = 1; anAxisIndex <= anAxesNb; anAxisIndex++)
         {
-          Standard_Real aValue;
+          double aValue;
           theData->ReadReal(anAxisNum4, anAxisIndex, "real", theCheck, aValue);
           aTessellatedSurfaceSet_Normals->SetValue(aNormIndex, anAxisIndex, aValue);
         }
@@ -92,37 +92,37 @@ void RWStepVisual_RWTriangulatedSurfaceSet::ReadStep(
   }
 
   // Own fields of TriangulatedSurfaceSet
-  Handle(TColStd_HArray1OfInteger) aPnindex;
-  Standard_Integer                 aPnSub5 = 0;
+  occ::handle<NCollection_HArray1<int>> aPnindex;
+  int                                   aPnSub5 = 0;
   if (theData->ReadSubList(theNum, 5, "pnindex", theCheck, aPnSub5))
   {
-    const Standard_Integer aPnNb   = theData->NbParams(aPnSub5);
-    aPnindex                       = new TColStd_HArray1OfInteger(1, aPnNb);
-    const Standard_Integer aPnNum2 = aPnSub5;
-    for (Standard_Integer aPnIndex = 1; aPnIndex <= aPnNb; aPnIndex++)
+    const int aPnNb   = theData->NbParams(aPnSub5);
+    aPnindex          = new NCollection_HArray1<int>(1, aPnNb);
+    const int aPnNum2 = aPnSub5;
+    for (int aPnIndex = 1; aPnIndex <= aPnNb; aPnIndex++)
     {
-      Standard_Integer aValue;
+      int aValue;
       theData->ReadInteger(aPnNum2, aPnIndex, "integer", theCheck, aValue);
       aPnindex->SetValue(aPnIndex, aValue);
     }
   }
 
-  Handle(TColStd_HArray2OfInteger) aTriangles;
-  Standard_Integer                 aTrSub6 = 0;
+  occ::handle<NCollection_HArray2<int>> aTriangles;
+  int                                   aTrSub6 = 0;
   if (theData->ReadSubList(theNum, 6, "triangles", theCheck, aTrSub6))
   {
-    const Standard_Integer aTriaNb  = theData->NbParams(aTrSub6);
-    const Standard_Integer anAxesNb = theData->NbParams(theData->ParamNumber(aTrSub6, 1));
-    aTriangles                      = new TColStd_HArray2OfInteger(1, aTriaNb, 1, anAxesNb);
-    for (Standard_Integer aTriaIndex = 1; aTriaIndex <= aTriaNb; aTriaIndex++)
+    const int aTriaNb  = theData->NbParams(aTrSub6);
+    const int anAxesNb = theData->NbParams(theData->ParamNumber(aTrSub6, 1));
+    aTriangles         = new NCollection_HArray2<int>(1, aTriaNb, 1, anAxesNb);
+    for (int aTriaIndex = 1; aTriaIndex <= aTriaNb; aTriaIndex++)
     {
-      Standard_Integer anAxesSubj6 = 0;
+      int anAxesSubj6 = 0;
       if (theData->ReadSubList(aTrSub6, aTriaIndex, "sub-part(triangles)", theCheck, anAxesSubj6))
       {
-        const Standard_Integer anAxisNum4 = anAxesSubj6;
-        for (Standard_Integer anAxisIndex = 1; anAxisIndex <= anAxesNb; anAxisIndex++)
+        const int anAxisNum4 = anAxesSubj6;
+        for (int anAxisIndex = 1; anAxisIndex <= anAxesNb; anAxisIndex++)
         {
-          Standard_Integer aValue;
+          int aValue;
           theData->ReadInteger(anAxisNum4, anAxisIndex, "integer", theCheck, aValue);
           aTriangles->SetValue(aTriaIndex, anAxisIndex, aValue);
         }
@@ -142,8 +142,8 @@ void RWStepVisual_RWTriangulatedSurfaceSet::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTriangulatedSurfaceSet::WriteStep(
-  StepData_StepWriter&                             theSW,
-  const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const
+  StepData_StepWriter&                                  theSW,
+  const occ::handle<StepVisual_TriangulatedSurfaceSet>& theEnt) const
 {
   // Own fields of RepresentationItem
   theSW.Send(theEnt->Name());
@@ -153,14 +153,13 @@ void RWStepVisual_RWTriangulatedSurfaceSet::WriteStep(
   theSW.Send(theEnt->Pnmax());
 
   theSW.OpenSub();
-  for (Standard_Integer aNormIndex = 1; aNormIndex <= theEnt->Normals()->NbRows(); aNormIndex++)
+  for (int aNormIndex = 1; aNormIndex <= theEnt->Normals()->NbRows(); aNormIndex++)
   {
-    theSW.NewLine(Standard_False);
+    theSW.NewLine(false);
     theSW.OpenSub();
-    for (Standard_Integer anAxisIndex = 1; anAxisIndex <= theEnt->Normals()->NbColumns();
-         anAxisIndex++)
+    for (int anAxisIndex = 1; anAxisIndex <= theEnt->Normals()->NbColumns(); anAxisIndex++)
     {
-      const Standard_Real aValue = theEnt->Normals()->Value(aNormIndex, anAxisIndex);
+      const double aValue = theEnt->Normals()->Value(aNormIndex, anAxisIndex);
       theSW.Send(aValue);
     }
     theSW.CloseSub();
@@ -169,23 +168,22 @@ void RWStepVisual_RWTriangulatedSurfaceSet::WriteStep(
 
   // Own fields of TriangulatedSurfaceSet
   theSW.OpenSub();
-  TColStd_HArray1OfInteger::Iterator aPnIndexIt(theEnt->Pnindex()->Array1());
+  NCollection_HArray1<int>::Iterator aPnIndexIt(theEnt->Pnindex()->Array1());
   for (; aPnIndexIt.More(); aPnIndexIt.Next())
   {
-    const Standard_Integer aValue = aPnIndexIt.Value();
+    const int aValue = aPnIndexIt.Value();
     theSW.Send(aValue);
   }
   theSW.CloseSub();
 
   theSW.OpenSub();
-  for (Standard_Integer aTriaIndex = 1; aTriaIndex <= theEnt->Triangles()->NbRows(); aTriaIndex++)
+  for (int aTriaIndex = 1; aTriaIndex <= theEnt->Triangles()->NbRows(); aTriaIndex++)
   {
-    theSW.NewLine(Standard_False);
+    theSW.NewLine(false);
     theSW.OpenSub();
-    for (Standard_Integer anAxisIndex = 1; anAxisIndex <= theEnt->Triangles()->NbColumns();
-         anAxisIndex++)
+    for (int anAxisIndex = 1; anAxisIndex <= theEnt->Triangles()->NbColumns(); anAxisIndex++)
     {
-      const Standard_Integer aValue = theEnt->Triangles()->Value(aTriaIndex, anAxisIndex);
+      const int aValue = theEnt->Triangles()->Value(aTriaIndex, anAxisIndex);
       theSW.Send(aValue);
     }
     theSW.CloseSub();
@@ -196,8 +194,8 @@ void RWStepVisual_RWTriangulatedSurfaceSet::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTriangulatedSurfaceSet::Share(
-  const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt,
-  Interface_EntityIterator&                        theIter) const
+  const occ::handle<StepVisual_TriangulatedSurfaceSet>& theEnt,
+  Interface_EntityIterator&                             theIter) const
 {
   // Inherited fields of TessellatedSurfaceSet
   theIter.AddItem(theEnt->StepVisual_TessellatedSurfaceSet::Coordinates());

@@ -26,12 +26,12 @@ FEmTool_ElementaryCriterion::FEmTool_ElementaryCriterion()
 {
 }
 
-void FEmTool_ElementaryCriterion::Set(const Handle(TColStd_HArray2OfReal)& Coeff)
+void FEmTool_ElementaryCriterion::Set(const occ::handle<NCollection_HArray2<double>>& Coeff)
 {
   myCoeff = Coeff;
 }
 
-void FEmTool_ElementaryCriterion::Set(const Standard_Real FirstKnot, const Standard_Real LastKnot)
+void FEmTool_ElementaryCriterion::Set(const double FirstKnot, const double LastKnot)
 {
   myFirst = FirstKnot;
   myLast  = LastKnot;

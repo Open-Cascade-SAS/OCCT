@@ -10,7 +10,7 @@ set(OCCT_LProp_FILES
   LProp_CurAndInf.cxx
   LProp_CurAndInf.hxx
   LProp_NotDefined.hxx
-  LProp_SequenceOfCIType.hxx
+
   LProp_SLProps.gxx
   LProp_Status.hxx
 )

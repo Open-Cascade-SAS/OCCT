@@ -19,7 +19,8 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 //=================================================================================================
 
@@ -28,11 +29,7 @@ ShapeAnalysis_ShapeTolerance::ShapeAnalysis_ShapeTolerance()
 {
 }
 
-static void AddTol(const Standard_Real tol,
-                   Standard_Integer&   nbt,
-                   Standard_Real&      cmin,
-                   Standard_Real&      cmoy,
-                   Standard_Real&      cmax)
+static void AddTol(const double tol, int& nbt, double& cmin, double& cmoy, double& cmax)
 {
   nbt++;
   if (nbt == 1)
@@ -45,7 +42,7 @@ static void AddTol(const Standard_Real tol,
       cmax = tol;
     //    cmoy += tol;
     //  Calcul en moyenne geometrique  entre 1 et 1e-7
-    Standard_Integer mult = 1;
+    int mult = 1;
     // #76 rln 11.03.99 S4135: compute average without weights according to tolerances
     /*    if      (tol < 1.e-07) mult = 10000;
         else if (tol < 1.e-06) mult =  3000;
@@ -63,9 +60,9 @@ static void AddTol(const Standard_Real tol,
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_ShapeTolerance::Tolerance(const TopoDS_Shape&    shape,
-                                                      const Standard_Integer mode,
-                                                      const TopAbs_ShapeEnum type)
+double ShapeAnalysis_ShapeTolerance::Tolerance(const TopoDS_Shape&    shape,
+                                               const int              mode,
+                                               const TopAbs_ShapeEnum type)
 {
   InitTolerance();
   AddTolerance(shape, type);
@@ -74,9 +71,9 @@ Standard_Real ShapeAnalysis_ShapeTolerance::Tolerance(const TopoDS_Shape&    sha
 
 //=================================================================================================
 
-Handle(TopTools_HSequenceOfShape) ShapeAnalysis_ShapeTolerance::OverTolerance(
+occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::OverTolerance(
   const TopoDS_Shape&    shape,
-  const Standard_Real    value,
+  const double           value,
   const TopAbs_ShapeEnum type) const
 {
   if (value >= 0)
@@ -87,15 +84,15 @@ Handle(TopTools_HSequenceOfShape) ShapeAnalysis_ShapeTolerance::OverTolerance(
 
 //=================================================================================================
 
-Handle(TopTools_HSequenceOfShape) ShapeAnalysis_ShapeTolerance::InTolerance(
+occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::InTolerance(
   const TopoDS_Shape&    shape,
-  const Standard_Real    valmin,
-  const Standard_Real    valmax,
+  const double           valmin,
+  const double           valmax,
   const TopAbs_ShapeEnum type) const
 {
-  Standard_Real                     tol;
-  Standard_Boolean                  over = (valmax < valmin); // pas de liminite max
-  Handle(TopTools_HSequenceOfShape) sl   = new TopTools_HSequenceOfShape();
+  double                                           tol;
+  bool                                             over = (valmax < valmin); // pas de liminite max
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> sl   = new NCollection_HSequence<TopoDS_Shape>();
 
   TopExp_Explorer myExp;
 
@@ -146,20 +143,21 @@ Handle(TopTools_HSequenceOfShape) ShapeAnalysis_ShapeTolerance::InTolerance(
   if (type == TopAbs_SHELL)
   {
     //  Exploration des shells
-    TopTools_MapOfShape mapface;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> mapface;
     myExp.Init(shape, TopAbs_SHELL);
     while (myExp.More())
     {
-      Standard_Boolean iashell = Standard_False;
-      TopoDS_Shape     ash     = myExp.Current();
+      bool         iashell = false;
+      TopoDS_Shape ash     = myExp.Current();
       for (TopExp_Explorer face(ash, TopAbs_FACE); face.More(); face.Next())
       {
         mapface.Add(face.Current());
-        Handle(TopTools_HSequenceOfShape) fc = InTolerance(face.Current(), valmin, valmax, type);
+        occ::handle<NCollection_HSequence<TopoDS_Shape>> fc =
+          InTolerance(face.Current(), valmin, valmax, type);
         if (fc->Length() > 0)
         {
           sl->Append(fc);
-          iashell = Standard_True;
+          iashell = true;
         }
       }
       if (iashell)
@@ -171,24 +169,24 @@ Handle(TopTools_HSequenceOfShape) ShapeAnalysis_ShapeTolerance::InTolerance(
     myExp.Init(shape, TopAbs_FACE);
     for (; myExp.More(); myExp.Next())
     {
-      Standard_Boolean iaface = Standard_False;
+      bool iaface = false;
       if (mapface.Contains(myExp.Current()))
         continue;
       tol = BRep_Tool::Tolerance(TopoDS::Face(myExp.Current()));
       if (tol >= valmin && (over || (tol <= valmax)))
-        iaface = Standard_True;
+        iaface = true;
       else
       {
         // les edges contenues ?
-        Handle(TopTools_HSequenceOfShape) fl =
+        occ::handle<NCollection_HSequence<TopoDS_Shape>> fl =
           InTolerance(myExp.Current(), valmin, valmax, TopAbs_EDGE);
         if (fl->Length() > 0)
-          iaface = Standard_True;
+          iaface = true;
         else
         {
           fl = InTolerance(myExp.Current(), valmin, valmax, TopAbs_VERTEX);
           if (fl->Length() > 0)
-            iaface = Standard_True;
+            iaface = true;
         }
       }
       if (iaface)
@@ -212,8 +210,8 @@ void ShapeAnalysis_ShapeTolerance::InitTolerance()
 void ShapeAnalysis_ShapeTolerance::AddTolerance(const TopoDS_Shape&    shape,
                                                 const TopAbs_ShapeEnum type)
 {
-  Standard_Integer nbt = 0;
-  Standard_Real    tol, cmin = 0., cmoy = 0., cmax = 0.;
+  int    nbt = 0;
+  double tol, cmin = 0., cmoy = 0., cmax = 0.;
 
   TopExp_Explorer myExp;
 
@@ -269,10 +267,10 @@ void ShapeAnalysis_ShapeTolerance::AddTolerance(const TopoDS_Shape&    shape,
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_ShapeTolerance::GlobalTolerance(const Standard_Integer mode) const
+double ShapeAnalysis_ShapeTolerance::GlobalTolerance(const int mode) const
 {
   // szv#4:S4163:12Mar99 optimized
-  Standard_Real result = 0.;
+  double result = 0.;
   if (myNbTol != 0.)
   {
     if (mode < 0)

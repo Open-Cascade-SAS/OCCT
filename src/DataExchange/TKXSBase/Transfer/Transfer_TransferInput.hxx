@@ -47,37 +47,34 @@ public:
   //! Fills an InterfaceModel with the Complete Result of a Transfer
   //! stored in a TransientProcess (Starting Objects are Transient)
   //! The complete result is exactly added to the model
-  Standard_EXPORT void FillModel(const Handle(Transfer_TransientProcess)& proc,
-                                 const Handle(Interface_InterfaceModel)&  amodel) const;
+  Standard_EXPORT void FillModel(const occ::handle<Transfer_TransientProcess>& proc,
+                                 const occ::handle<Interface_InterfaceModel>&  amodel) const;
 
   //! Fills an InterfaceModel with results of the Transfer recorded
   //! in a TransientProcess (Starting Objects are Transient) :
   //! Root Result if <roots> is True (Default), Complete Result else
   //! The entities added to the model are determined from the result
   //! by by adding the referenced entities
-  Standard_EXPORT void FillModel(const Handle(Transfer_TransientProcess)& proc,
-                                 const Handle(Interface_InterfaceModel)&  amodel,
-                                 const Handle(Interface_Protocol)&        proto,
-                                 const Standard_Boolean roots = Standard_True) const;
+  Standard_EXPORT void FillModel(const occ::handle<Transfer_TransientProcess>& proc,
+                                 const occ::handle<Interface_InterfaceModel>&  amodel,
+                                 const occ::handle<Interface_Protocol>&        proto,
+                                 const bool                                    roots = true) const;
 
   //! Fills an InterfaceModel with the Complete Result of a Transfer
   //! stored in a TransientProcess (Starting Objects are Transient)
   //! The complete result is exactly added to the model
-  Standard_EXPORT void FillModel(const Handle(Transfer_FinderProcess)&   proc,
-                                 const Handle(Interface_InterfaceModel)& amodel) const;
+  Standard_EXPORT void FillModel(const occ::handle<Transfer_FinderProcess>&   proc,
+                                 const occ::handle<Interface_InterfaceModel>& amodel) const;
 
   //! Fills an InterfaceModel with results of the Transfer recorded
   //! in a TransientProcess (Starting Objects are Transient) :
   //! Root Result if <roots> is True (Default), Complete Result else
   //! The entities added to the model are determined from the result
   //! by by adding the referenced entities
-  Standard_EXPORT void FillModel(const Handle(Transfer_FinderProcess)&   proc,
-                                 const Handle(Interface_InterfaceModel)& amodel,
-                                 const Handle(Interface_Protocol)&       proto,
-                                 const Standard_Boolean roots = Standard_True) const;
-
-protected:
-private:
+  Standard_EXPORT void FillModel(const occ::handle<Transfer_FinderProcess>&   proc,
+                                 const occ::handle<Interface_InterfaceModel>& amodel,
+                                 const occ::handle<Interface_Protocol>&       proto,
+                                 const bool                                   roots = true) const;
 };
 
 #endif // _Transfer_TransferInput_HeaderFile

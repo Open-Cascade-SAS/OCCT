@@ -1,0 +1,2016 @@
+{
+  "forwarding_headers": [
+    {
+      "header_file": "Visualization/TKV3d/PrsMgr/PrsMgr_PresentationManager3d.hxx",
+      "includes": [
+        "PrsMgr_PresentationManager.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/PrsMgr/PrsMgr_Presentation3d.hxx",
+      "includes": [
+        "PrsMgr_Presentation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/SelectMgr/SelectMgr_ListIteratorOfListOfFilter.hxx",
+      "includes": [
+        "SelectMgr_Filter.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector3d.hxx",
+      "includes": [
+        "SelectMgr_ViewerSelector.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_ConcentricRelation.hxx",
+      "includes": [
+        "PrsDim_ConcentricRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_DataMapIteratorOfDataMapOfIOStatus.hxx",
+      "includes": [
+        "AIS_InteractiveObject.hxx",
+        "AIS_GlobalStatus.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_OffsetDimension.hxx",
+      "includes": [
+        "PrsDim_OffsetDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_MidPointRelation.hxx",
+      "includes": [
+        "PrsDim_MidPointRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_EqualDistanceRelation.hxx",
+      "includes": [
+        "PrsDim_EqualDistanceRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_Chamf2dDimension.hxx",
+      "includes": [
+        "PrsDim_Chamf2dDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_ParallelRelation.hxx",
+      "includes": [
+        "PrsDim_ParallelRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_MaxRadiusDimension.hxx",
+      "includes": [
+        "PrsDim_MaxRadiusDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_RadiusDimension.hxx",
+      "includes": [
+        "PrsDim_RadiusDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_DimensionOwner.hxx",
+      "includes": [
+        "PrsDim_DimensionOwner.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_DiameterDimension.hxx",
+      "includes": [
+        "PrsDim_DiameterDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_Relation.hxx",
+      "includes": [
+        "PrsDim_Relation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_EllipseRadiusDimension.hxx",
+      "includes": [
+        "PrsDim_EllipseRadiusDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_TangentRelation.hxx",
+      "includes": [
+        "PrsDim_TangentRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_IdenticRelation.hxx",
+      "includes": [
+        "PrsDim_IdenticRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_EqualRadiusRelation.hxx",
+      "includes": [
+        "PrsDim_EqualRadiusRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_PerpendicularRelation.hxx",
+      "includes": [
+        "PrsDim_PerpendicularRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_Chamf3dDimension.hxx",
+      "includes": [
+        "PrsDim_Chamf3dDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_LengthDimension.hxx",
+      "includes": [
+        "PrsDim_LengthDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_MinRadiusDimension.hxx",
+      "includes": [
+        "PrsDim_MinRadiusDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_SymmetricRelation.hxx",
+      "includes": [
+        "PrsDim_SymmetricRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_Dimension.hxx",
+      "includes": [
+        "PrsDim_Dimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_FixRelation.hxx",
+      "includes": [
+        "PrsDim_FixRelation.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_ListIteratorOfListOfInteractive.hxx",
+      "includes": [
+        "AIS_InteractiveObject.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/AIS/AIS_AngleDimension.hxx",
+      "includes": [
+        "PrsDim_AngleDimension.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/V3d/V3d_TypeOfBackfacingModel.hxx",
+      "includes": [
+        "Graphic3d_TypeOfBackfacingModel.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/V3d/V3d_TypeOfLight.hxx",
+      "includes": [
+        "Graphic3d_TypeOfLightSource.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/V3d/V3d_TypeOfShadingModel.hxx",
+      "includes": [
+        "Graphic3d_TypeOfShadingModel.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/SelectBasics/SelectBasics_EntityOwner.hxx",
+      "includes": [
+        "SelectMgr_EntityOwner.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/SelectBasics/SelectBasics_SensitiveEntity.hxx",
+      "includes": [
+        "Select3D_SensitiveEntity.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKV3d/Prs3d/Prs3d_ShapeTool.hxx",
+      "includes": [
+        "StdPrs_ShapeTool.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "TCollection_AsciiString.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfHArray1OfSequenceOfInteger.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "NCollection_Sequence.hxx",
+        "NCollection_Array1.hxx",
+        "NCollection_HArray1.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfIntegerColor.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "Quantity_Color.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_MapIteratorOfMapOfTwoNodes.hxx",
+      "includes": [
+        "MeshVS_TwoNodes.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfTwoColorsMapOfInteger.hxx",
+      "includes": [
+        "MeshVS_TwoColors.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_Map.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfIntegerVector.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "gp_Vec.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfIntegerTwoColors.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "MeshVS_TwoColors.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfIntegerBoolean.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfIntegerMeshEntityOwner.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "MeshVS_MeshEntityOwner.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfIntegerOwner.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "SelectMgr_EntityOwner.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "Graphic3d_MaterialAspect.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger.hxx",
+      "includes": [
+        "Quantity_Color.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_Map.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKService/Graphic3d/Graphic3d_Texture2Dmanual.hxx",
+      "includes": [
+        "Graphic3d_Texture2D.hxx",
+        "Graphic3d_NameOfTexture2D.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKService/Graphic3d/Graphic3d_Vec.hxx",
+      "includes": [
+        "NCollection_Vec2.hxx",
+        "Standard_TypeDef.hxx",
+        "NCollection_Vec3.hxx",
+        "Standard_TypeDef.hxx",
+        "NCollection_Vec4.hxx",
+        "Standard_TypeDef.hxx",
+        "NCollection_Mat4.hxx",
+        "Standard_TypeDef.hxx",
+        "NCollection_Mat4.hxx",
+        "Standard_TypeDef.hxx"
+      ]
+    },
+    {
+      "header_file": "Visualization/TKOpenGl/OpenGl/OpenGl_TextureBufferArb.hxx",
+      "includes": [
+        "OpenGl_TextureBuffer.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/Plugin/Plugin_DataMapIteratorOfMapOfFunctions.hxx",
+      "includes": [
+        "OSD_Function.hxx",
+        "TCollection_AsciiString.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/Message/Message_ListIteratorOfListOfMsg.hxx",
+      "includes": [
+        "Message_Msg.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/Storage/Storage_DataMapIteratorOfMapOfCallBack.hxx",
+      "includes": [
+        "TCollection_AsciiString.hxx",
+        "Storage_TypedCallBack.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/Storage/Storage_DataMapIteratorOfMapOfPers.hxx",
+      "includes": [
+        "Storage_Root.hxx",
+        "TCollection_AsciiString.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/Standard/Standard_PrimitiveTypes.hxx",
+      "includes": [
+        "stddef.h",
+        "stdlib.h",
+        "Standard_Macro.hxx",
+        "Standard_Boolean.hxx",
+        "Standard_Integer.hxx",
+        "Standard_Real.hxx",
+        "Standard_Character.hxx",
+        "Standard_ExtCharacter.hxx",
+        "Standard_CString.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/Standard/Standard_Stream.hxx",
+      "includes": [
+        "Standard_Macro.hxx",
+        "iostream",
+        "iomanip",
+        "fstream"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_DataMapIteratorOfDataMapOfIntegerReal.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_MapIteratorOfMapOfTransient.hxx",
+      "includes": [
+        "Standard_Transient.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_MapIteratorOfMapOfReal.hxx",
+      "includes": [
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_DataMapIteratorOfDataMapOfIntegerTransient.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "Standard_Transient.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_MapIteratorOfMapOfInteger.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_MapIteratorOfMapOfAsciiString.hxx",
+      "includes": [
+        "TCollection_AsciiString.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_DataMapIteratorOfDataMapOfTransientTransient.hxx",
+      "includes": [
+        "Standard_Transient.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_ListIteratorOfListOfInteger.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_DataMapIteratorOfDataMapOfStringInteger.hxx",
+      "includes": [
+        "TCollection_ExtendedString.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_ListIteratorOfListOfAsciiString.hxx",
+      "includes": [
+        "TCollection_AsciiString.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger.hxx",
+      "includes": [
+        "TCollection_AsciiString.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_DataMapIteratorOfDataMapOfIntegerListOfInteger.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "NCollection_List.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_ListIteratorOfListOfReal.hxx",
+      "includes": [
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKernel/TColStd/TColStd_ListIteratorOfListOfTransient.hxx",
+      "includes": [
+        "Standard_Transient.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "FoundationClasses/TKMath/TopLoc/TopLoc_MapIteratorOfMapOfLocation.hxx",
+      "includes": [
+        "TopLoc_Location.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_MapIteratorOfAttributeMap.hxx",
+      "includes": [
+        "Standard_Handle.hxx",
+        "TDF_Attribute.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_ListIteratorOfAttributeDeltaList.hxx",
+      "includes": [
+        "TDF_AttributeDelta.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_DataMapIteratorOfLabelDataMap.hxx",
+      "includes": [
+        "TDF_Label.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_ListIteratorOfDeltaList.hxx",
+      "includes": [
+        "TDF_Delta.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_DoubleMapIteratorOfAttributeDoubleMap.hxx",
+      "includes": [
+        "TDF_Attribute.hxx",
+        "NCollection_DoubleMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_MapIteratorOfLabelMap.hxx",
+      "includes": [
+        "TDF_Label.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_DataMapIteratorOfLabelIntegerMap.hxx",
+      "includes": [
+        "TDF_Label.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_ListIteratorOfIDList.hxx",
+      "includes": [
+        "Standard_GUID.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_ListIteratorOfAttributeList.hxx",
+      "includes": [
+        "TDF_Attribute.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_MapIteratorOfIDMap.hxx",
+      "includes": [
+        "Standard_GUID.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_DoubleMapIteratorOfGUIDProgIDMap.hxx",
+      "includes": [
+        "Standard_GUID.hxx",
+        "TCollection_ExtendedString.hxx",
+        "NCollection_DoubleMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_DoubleMapIteratorOfLabelDoubleMap.hxx",
+      "includes": [
+        "TDF_Label.hxx",
+        "NCollection_DoubleMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_ListIteratorOfLabelList.hxx",
+      "includes": [
+        "TDF_Label.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDF/TDF_DataMapIteratorOfAttributeDataMap.hxx",
+      "includes": [
+        "TDF_Attribute.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TFunction/TFunction_DataMapIteratorOfDataMapOfGUIDDriver.hxx",
+      "includes": [
+        "TFunction_Driver.hxx",
+        "Standard_GUID.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TFunction/TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "TDF_Label.hxx",
+        "NCollection_DoubleMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TFunction/TFunction_DataMapIteratorOfDataMapOfLabelListOfLabel.hxx",
+      "includes": [
+        "TDF_Label.hxx",
+        "NCollection_List.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDataStd/TDataStd_ListIteratorOfListOfExtendedString.hxx",
+      "includes": [
+        "TCollection_ExtendedString.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDataStd/TDataStd_DataMapIteratorOfDataMapOfStringByte.hxx",
+      "includes": [
+        "TCollection_ExtendedString.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDataStd/TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger.hxx",
+      "includes": [
+        "TCollection_ExtendedString.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_Array1.hxx",
+        "NCollection_HArray1.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDataStd/TDataStd_ListIteratorOfListOfByte.hxx",
+      "includes": [
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDataStd/TDataStd_DataMapIteratorOfDataMapOfStringReal.hxx",
+      "includes": [
+        "TCollection_ExtendedString.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDataStd/TDataStd_DataMapIteratorOfDataMapOfStringString.hxx",
+      "includes": [
+        "TCollection_ExtendedString.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDataStd/TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal.hxx",
+      "includes": [
+        "TCollection_ExtendedString.hxx",
+        "NCollection_Array1.hxx",
+        "NCollection_HArray1.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKLCAF/TDocStd/TDocStd_DataMapIteratorOfLabelIDMapDataMap.hxx",
+      "includes": [
+        "TDF_Label.hxx",
+        "Standard_GUID.hxx",
+        "NCollection_Map.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKXmlL/XmlMDF/XmlMDF_DataMapIteratorOfTypeADriverMap.hxx",
+      "includes": [
+        "Standard_Type.hxx",
+        "XmlMDF_ADriver.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKXmlL/XmlMDF/XmlMDF_DataMapIteratorOfMapOfDriver.hxx",
+      "includes": [
+        "TCollection_AsciiString.hxx",
+        "XmlMDF_ADriver.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKBinL/BinMDF/BinMDF_DataMapIteratorOfTypeADriverMap.hxx",
+      "includes": [
+        "Standard_Type.hxx",
+        "BinMDF_ADriver.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKBinL/BinMDF/BinMDF_DoubleMapIteratorOfTypeIdMap.hxx",
+      "includes": [
+        "Standard_Type.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_DoubleMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCDF/CDM/CDM_MapIteratorOfMapOfDocument.hxx",
+      "includes": [
+        "CDM_Document.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCDF/CDM/CDM_ListIteratorOfListOfReferences.hxx",
+      "includes": [
+        "CDM_Reference.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCDF/CDM/CDM_ListIteratorOfListOfDocument.hxx",
+      "includes": [
+        "CDM_Document.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCDF/CDM/CDM_DataMapIteratorOfMetaDataLookUpTable.hxx",
+      "includes": [
+        "CDM_MetaDataLookUpTable.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKVCAF/TPrsStd/TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver.hxx",
+      "includes": [
+        "Standard_GUID.hxx",
+        "TPrsStd_Driver.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCAF/TNaming/TNaming_ListIteratorOfListOfIndexedDataMapOfShapeListOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_IndexedDataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCAF/TNaming/TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TNaming_PtrRefShape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCAF/TNaming/TNaming_ListIteratorOfListOfNamedShape.hxx",
+      "includes": [
+        "TNaming_NamedShape.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCAF/TNaming/TNaming_MapIteratorOfMapOfNamedShape.hxx",
+      "includes": [
+        "TNaming_NamedShape.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCAF/TNaming/TNaming_DataMapIteratorOfDataMapOfShapeShapesSet.hxx",
+      "includes": [
+        "TNaming_ShapesSet.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ApplicationFramework/TKCAF/TNaming/TNaming_ListIteratorOfListOfMapOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_Map.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRep/TopOpeBRep_DataMapIteratorOfDataMapOfTopolTool.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "BRepTopAdaptor_TopolTool.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRep/TopOpeBRep_ListIteratorOfListOfBipoint.hxx",
+      "includes": [
+        "TopOpeBRep_Bipoint.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepTool/TopOpeBRepTool_DataMapIteratorOfDataMapOfShapeface.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopOpeBRepTool_face.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepTool/TopOpeBRepTool_define.hxx",
+      "includes": [
+        "TopAbs_ShapeEnum.hxx",
+        "TopAbs_Orientation.hxx",
+        "TopAbs_State.hxx",
+        "TopTools_MapIteratorOfMapOfShape.hxx",
+        "TopoDS_Shape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_Map.hxx",
+        "TopTools_ListIteratorOfListOfShape.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_IndexedMap.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_IndexedMap.hxx",
+        "TopoDS_Shape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx",
+        "TopoDS_Shape.hxx",
+        "Standard_Integer.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx",
+        "TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx",
+        "TopTools_DataMapIteratorOfDataMapOfShapeInteger.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx",
+        "TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx",
+        "TopTools_DataMapIteratorOfDataMapOfOrientedShapeInteger.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_IndexedDataMap.hxx",
+        "TopoDS_Shape.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_DataMap.hxx",
+        "TopoDS_Shape.hxx",
+        "TopoDS_Face.hxx",
+        "TopoDS_Edge.hxx",
+        "TopoDS_Vertex.hxx",
+        "TCollection_AsciiString.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepTool/TopOpeBRepTool_DataMapIteratorOfDataMapOfShapeListOfC2DF.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopOpeBRepTool_C2DF.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepTool/TopOpeBRepTool_DataMapIteratorOfDataMapOfOrientedShapeC2DF.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopOpeBRepTool_C2DF.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepTool/TopOpeBRepTool_ListIteratorOfListOfC2DF.hxx",
+      "includes": [
+        "TopOpeBRepTool_C2DF.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepTool/TopOpeBRepTool_EXPORT.hxx",
+      "includes": [
+        "TopOpeBRepTool_GEOMETRY.hxx",
+        "TopOpeBRepTool_PROJECT.hxx",
+        "TopOpeBRepTool_TOPOLOGY.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepBuild/TopOpeBRepBuild_ListIteratorOfListOfShapeListOfShape.hxx",
+      "includes": [
+        "TopOpeBRepBuild_ShapeListOfShape.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepBuild/TopOpeBRepBuild_ListIteratorOfListOfListOfLoop.hxx",
+      "includes": [
+        "TopOpeBRepBuild_Loop.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepBuild/TopOpeBRepBuild_ListIteratorOfListOfLoop.hxx",
+      "includes": [
+        "TopOpeBRepBuild_Loop.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepBuild/TopOpeBRepBuild_DataMapIteratorOfDataMapOfShapeListOfShapeListOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopOpeBRepBuild_ShapeListOfShape.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepBuild/TopOpeBRepBuild_ListIteratorOfListOfPave.hxx",
+      "includes": [
+        "TopOpeBRepBuild_Pave.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceShape.hxx",
+      "includes": [
+        "TopOpeBRepDS_Interference.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeState.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopAbs_State.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfMapOfSurface.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "TopOpeBRepDS_SurfaceData.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceListOfInterference.hxx",
+      "includes": [
+        "TopOpeBRepDS_Interference.hxx",
+        "NCollection_List.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_ListIteratorOfListOfInterference.hxx",
+      "includes": [
+        "TopOpeBRepDS_Interference.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfMapOfCurve.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "TopOpeBRepDS_CurveData.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape.hxx",
+      "includes": [
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DoubleMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData.hxx",
+      "includes": [
+        "TopOpeBRepDS_ShapeData.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfShapeSurface.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "Geom_Surface.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "TopOpeBRepDS_CheckStatus.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopOpeBRepDS_ListOfShapeOn1State.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfMapOfPoint.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "TopOpeBRepDS_PointData.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/TopOpeBRepDS/TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "TopOpeBRepDS_Interference.hxx",
+        "NCollection_List.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/BRepFill/BRepFill_DataMapIteratorOfDataMapOfOrientedShapeListOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/BRepFill/BRepFill_DataMapIteratorOfDataMapOfNodeDataMapOfShapeShape.hxx",
+      "includes": [
+        "MAT_Node.hxx",
+        "TopoDS_Shape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/BRepFill/BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfPnt.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "gp_Pnt.hxx",
+        "NCollection_Sequence.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/BRepFill/BRepFill_DataMapIteratorOfDataMapOfNodeShape.hxx",
+      "includes": [
+        "MAT_Node.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/BRepFill/BRepFill_ListIteratorOfListOfOffsetWire.hxx",
+      "includes": [
+        "BRepFill_OffsetWire.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/BRepFill/BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_Sequence.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/BRepFill/BRepFill_DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBool/BRepFill/BRepFill_DataMapIteratorOfDataMapOfShapeHArray2OfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_Array2.hxx",
+        "NCollection_HArray2.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBO/IntTools/IntTools_MapIteratorOfMapOfSurfaceSample.hxx",
+      "includes": [
+        "IntTools_SurfaceRangeSample.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBO/IntTools/IntTools_MapIteratorOfMapOfCurveSample.hxx",
+      "includes": [
+        "IntTools_CurveRangeSample.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBO/IntTools/IntTools_ListIteratorOfListOfBox.hxx",
+      "includes": [
+        "Bnd_Box.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBO/IntTools/IntTools_ListIteratorOfListOfSurfaceRangeSample.hxx",
+      "includes": [
+        "IntTools_SurfaceRangeSample.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBO/IntTools/IntTools_CArray1OfReal.hxx",
+      "includes": [
+        "NCollection_Array1.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBO/IntTools/IntTools_ListIteratorOfListOfCurveRangeSample.hxx",
+      "includes": [
+        "IntTools_CurveRangeSample.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKBO/IntTools/IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox.hxx",
+      "includes": [
+        "IntTools_SurfaceRangeSample.hxx",
+        "Bnd_Box.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKGeomAlgo/Geom2dHatch/Geom2dHatch_DataMapIteratorOfMapOfElements.hxx",
+      "includes": [
+        "Geom2dHatch_Element.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKGeomAlgo/Geom2dHatch/Geom2dHatch_DataMapIteratorOfHatchings.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "Geom2dHatch_Hatching.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKGeomAlgo/Law/Law_ListIteratorOfLaws.hxx",
+      "includes": [
+        "Law_Function.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKGeomAlgo/IntSurf/IntSurf_ListIteratorOfListOfPntOn2S.hxx",
+      "includes": [
+        "IntSurf_PntOn2S.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKGeomAlgo/NLPlate/NLPlate_ListIteratorOfStackOfPlate.hxx",
+      "includes": [
+        "Plate_Plate.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKExpress/ExprIntrp/ExprIntrp_ListIteratorOfStackOfGeneralRelation.hxx",
+      "includes": [
+        "Expr_GeneralRelation.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKExpress/ExprIntrp/ExprIntrp_ListIteratorOfStackOfGeneralFunction.hxx",
+      "includes": [
+        "Expr_GeneralFunction.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKExpress/ExprIntrp/ExprIntrp_ListIteratorOfStackOfGeneralExpression.hxx",
+      "includes": [
+        "Expr_GeneralExpression.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKHLR/HLRBRep/HLRBRep_ListIteratorOfListOfBPoint.hxx",
+      "includes": [
+        "HLRBRep_BiPoint.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKHLR/HLRBRep/HLRBRep_ListIteratorOfListOfBPnt2D.hxx",
+      "includes": [
+        "HLRBRep_BiPnt2D.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKHLR/HLRAlgo/HLRAlgo_ListIteratorOfInterferenceList.hxx",
+      "includes": [
+        "HLRAlgo_Interference.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKHLR/HLRAlgo/HLRAlgo_ListIteratorOfListOfBPoint.hxx",
+      "includes": [
+        "HLRAlgo_BiPoint.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKHLR/HLRTopoBRep/HLRTopoBRep_DataMapIteratorOfDataMapOfShapeFaceData.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "HLRTopoBRep_FaceData.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKHLR/HLRTopoBRep/HLRTopoBRep_ListIteratorOfListOfVData.hxx",
+      "includes": [
+        "HLRTopoBRep_VData.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKHLR/HLRTopoBRep/HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "HLRTopoBRep_VData.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKHLR/TopBas/TopBas_ListIteratorOfListOfTestInterference.hxx",
+      "includes": [
+        "TopBas_TestInterference.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKOffset/BRepOffset/BRepOffset_DataMapIteratorOfDataMapOfShapeMapOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_Map.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKOffset/BRepOffset/BRepOffset_DataMapIteratorOfDataMapOfShapeOffset.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "BRepOffset_Offset.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKOffset/BRepOffset/BRepOffset_DataMapIteratorOfDataMapOfShapeListOfInterval.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "BRepOffset_Interval.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKOffset/BRepOffset/BRepOffset_ListIteratorOfListOfInterval.hxx",
+      "includes": [
+        "BRepOffset_Interval.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT/MAT_DataMapIteratorOfDataMapOfIntegerNode.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "MAT_Node.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT/MAT_DataMapIteratorOfDataMapOfIntegerArc.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "MAT_Arc.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT/MAT_DataMapIteratorOfDataMapOfIntegerBisector.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "MAT_Bisector.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT/MAT_DataMapIteratorOfDataMapOfIntegerBasicElt.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "MAT_BasicElt.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/BRepClass3d/BRepClass3d_DataMapIteratorOfMapOfInter.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/BRepTopAdaptor/BRepTopAdaptor_DataMapIteratorOfMapOfShapeTool.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "BRepTopAdaptor_Tool.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/BRepMAT2d/BRepMAT2d_DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "MAT_BasicElt.hxx",
+        "NCollection_Sequence.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/BRepMAT2d/BRepMAT2d_DataMapIteratorOfDataMapOfBasicEltShape.hxx",
+      "includes": [
+        "MAT_BasicElt.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/BRepCheck/BRepCheck_ListIteratorOfListOfStatus.hxx",
+      "includes": [
+        "BRepCheck_Status.hxx",
+        "NCollection_List.hxx",
+        "NCollection_Shared.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT2d/MAT2d_DataMapIteratorOfDataMapOfBiIntSequenceOfInteger.hxx",
+      "includes": [
+        "MAT2d_BiInt.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_Sequence.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT2d/MAT2d_DataMapIteratorOfDataMapOfBiIntInteger.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "MAT2d_BiInt.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT2d/MAT2d_DataMapIteratorOfDataMapOfIntegerBisec.hxx",
+      "includes": [
+        "Bisector_Bisec.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT2d/MAT2d_DataMapIteratorOfDataMapOfIntegerPnt2d.hxx",
+      "includes": [
+        "gp_Pnt2d.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT2d/MAT2d_DataMapIteratorOfDataMapOfIntegerSequenceOfConnexion.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "MAT2d_Connexion.hxx",
+        "NCollection_Sequence.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT2d/MAT2d_DataMapIteratorOfDataMapOfIntegerVec2d.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "gp_Vec2d.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKTopAlgo/MAT2d/MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "MAT2d_Connexion.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKFillet/ChFiDS/ChFiDS_ListIteratorOfListOfHElSpine.hxx",
+      "includes": [
+        "ChFiDS_ElSpine.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKFillet/ChFiDS/ChFiDS_ListIteratorOfListOfStripe.hxx",
+      "includes": [
+        "ChFiDS_Stripe.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKFillet/ChFiDS/ChFiDS_ListIteratorOfRegularities.hxx",
+      "includes": [
+        "ChFiDS_Regul.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKFillet/ChFiKPart/ChFiKPart_DataMapIteratorOfRstMap.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "Adaptor2d_Curve2d.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKShHealing/ShapeFix/ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "Bnd_Box2d.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKShHealing/ShapeAnalysis/ShapeAnalysis_DataMapIteratorOfDataMapOfShapeListOfReal.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKShHealing/ShapeExtend/ShapeExtend_DataMapIteratorOfDataMapOfShapeListOfMsg.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "Message_Msg.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKShHealing/ShapeExtend/ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg.hxx",
+      "includes": [
+        "Standard_Transient.hxx",
+        "Message_Msg.hxx",
+        "NCollection_List.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingAlgorithms/TKFeat/LocOpe/LocOpe_DataMapIteratorOfDataMapOfShapePnt.hxx",
+      "includes": [
+        "gp_Pnt.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKGeomBase/FEmTool/FEmTool_ListIteratorOfListOfVectors.hxx",
+      "includes": [
+        "NCollection_Array1.hxx",
+        "NCollection_HArray1.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKGeomBase/IntAna/IntAna_ListIteratorOfListOfCurve.hxx",
+      "includes": [
+        "IntAna_Curve.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopoDS/TopoDS_ListIteratorOfListOfShape.hxx",
+      "includes": [
+        "TopoDS_ListOfShape.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/BRepTools/BRepTools_DataMapIteratorOfMapOfVertexPnt2d.hxx",
+      "includes": [
+        "gp_Pnt2d.hxx",
+        "NCollection_Sequence.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/BRep/BRep_ListIteratorOfListOfPointRepresentation.hxx",
+      "includes": [
+        "BRep_PointRepresentation.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/BRep/BRep_ListIteratorOfListOfCurveRepresentation.hxx",
+      "includes": [
+        "BRep_CurveRepresentation.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfShapeInteger.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "Standard_Integer.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfShapeListOfInteger.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_List.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfOrientedShapeInteger.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_ListIteratorOfListOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_MapIteratorOfMapOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfShapeReal.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfIntegerShape.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape.hxx",
+      "includes": [
+        "Standard_Integer.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_List.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_MapIteratorOfMapOfOrientedShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_Map.hxx"
+      ]
+    },
+    {
+      "header_file": "ModelingData/TKBRep/TopTools/TopTools_DataMapIteratorOfDataMapOfShapeSequenceOfShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "NCollection_Sequence.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Draw/TKDraw/DBRep/DBRep_ListIteratorOfListOfEdge.hxx",
+      "includes": [
+        "DBRep_Edge.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "Draw/TKDraw/DBRep/DBRep_ListIteratorOfListOfHideData.hxx",
+      "includes": [
+        "DBRep_HideData.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "Draw/TKDraw/DBRep/DBRep_ListIteratorOfListOfFace.hxx",
+      "includes": [
+        "DBRep_Face.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "Draw/TKDCAF/DNaming/DNaming_DataMapIteratorOfDataMapOfShapeOfName.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TCollection_AsciiString.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "Draw/TKDCAF/DDF/DDF_ListIteratorOfTransactionStack.hxx",
+      "includes": [
+        "DDF_Transaction.hxx",
+        "NCollection_List.hxx"
+      ]
+    },
+    {
+      "header_file": "Draw/TKViewerTest/ViewerTest/ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx",
+      "includes": [
+        "ViewerTest_DoubleMapOfInteractiveAndName.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEIGES/IGESCAFControl/IGESCAFControl_Provider.hxx",
+      "includes": [
+        "DEIGES_Provider.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEIGES/IGESCAFControl/IGESCAFControl_ConfigurationNode.hxx",
+      "includes": [
+        "DEIGES_ConfigurationNode.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTL/RWStl/RWStl_Provider.hxx",
+      "includes": [
+        "DESTL_Provider.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTL/RWStl/RWStl_ConfigurationNode.hxx",
+      "includes": [
+        "DESTL_ConfigurationNode.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDECascade/DEXCAFCascade/DEXCAFCascade_ConfigurationNode.hxx",
+      "includes": [
+        "DEXCAF_ConfigurationNode.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDECascade/DEXCAFCascade/DEXCAFCascade_Provider.hxx",
+      "includes": [
+        "DEXCAF_Provider.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDECascade/DEBRepCascade/DEBRepCascade_Provider.hxx",
+      "includes": [
+        "DEBREP_Provider.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDECascade/DEBRepCascade/DEBRepCascade_ConfigurationNode.hxx",
+      "includes": [
+        "DEBREP_ConfigurationNode.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEPLY/RWPly/RWPly_ConfigurationNode.hxx",
+      "includes": [
+        "DEPLY_ConfigurationNode.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEPLY/RWPly/RWPly_Provider.hxx",
+      "includes": [
+        "DEPLY_Provider.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEOBJ/RWObj/RWObj_Provider.hxx",
+      "includes": [
+        "DEOBJ_Provider.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEOBJ/RWObj/RWObj_ConfigurationNode.hxx",
+      "includes": [
+        "DEOBJ_ConfigurationNode.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKXSBase/Interface/Interface_Macros.hxx",
+      "includes": [
+        "MoniTool_Macros.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKXSBase/Interface/Interface_DataMapIteratorOfDataMapOfTransientInteger.hxx",
+      "includes": [
+        "Standard_Transient.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKXSBase/MoniTool/MoniTool_DataMapIteratorOfDataMapOfShapeTransient.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "Standard_Transient.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKXSBase/MoniTool/MoniTool_DataMapIteratorOfDataMapOfTimer.hxx",
+      "includes": [
+        "MoniTool_DataMapOfTimer.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_DataMapIteratorOfDataMapOfLabelShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "TDF_Label.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_DataMapIteratorOfDataMapOfShapeSDR.hxx",
+      "includes": [
+        "StepShape_ShapeDefinitionRepresentation.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_Provider.hxx",
+      "includes": [
+        "DESTEP_Provider.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_DataMapIteratorOfDataMapOfShapePD.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "StepBasic_ProductDefinition.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_DataMapIteratorOfDataMapOfPDExternFile.hxx",
+      "includes": [
+        "StepBasic_ProductDefinition.hxx",
+        "STEPCAFControl_ExternFile.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_DataMapIteratorOfDataMapOfSDRExternFile.hxx",
+      "includes": [
+        "StepShape_ShapeDefinitionRepresentation.hxx",
+        "STEPCAFControl_ExternFile.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_ConfigurationNode.hxx",
+      "includes": [
+        "DESTEP_ConfigurationNode.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_DataMapIteratorOfDataMapOfLabelExternFile.hxx",
+      "includes": [
+        "TDF_Label.hxx",
+        "STEPCAFControl_ExternFile.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/StepToTopoDS/StepToTopoDS_DataMapIteratorOfDataMapOfRI.hxx",
+      "includes": [
+        "StepRepr_RepresentationItem.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/StepToTopoDS/StepToTopoDS_DataMapIteratorOfPointEdgeMap.hxx",
+      "includes": [
+        "StepToTopoDS_PointPair.hxx",
+        "TopoDS_Edge.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/StepToTopoDS/StepToTopoDS_DataMapIteratorOfDataMapOfRINames.hxx",
+      "includes": [
+        "TCollection_AsciiString.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/StepToTopoDS/StepToTopoDS_DataMapIteratorOfDataMapOfTRI.hxx",
+      "includes": [
+        "StepShape_TopologicalRepresentationItem.hxx",
+        "TopoDS_Shape.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/StepToTopoDS/StepToTopoDS_DataMapIteratorOfPointVertexMap.hxx",
+      "includes": [
+        "StepGeom_CartesianPoint.hxx",
+        "TopoDS_Vertex.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPConstruct/STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient.hxx",
+      "includes": [
+        "TCollection_AsciiString.hxx",
+        "Standard_Transient.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/STEPConstruct/STEPConstruct_DataMapIteratorOfDataMapOfPointTransient.hxx",
+      "includes": [
+        "gp_Pnt.hxx",
+        "Standard_Transient.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDESTEP/StepData/StepData_ConfParameters.hxx",
+      "includes": [
+        "DESTEP_Parameters.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKXCAF/XCAFDoc/XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel.hxx",
+      "includes": [
+        "TDF_Label.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKXCAF/XCAFPrs/XCAFPrs_DataMapIteratorOfDataMapOfStyleShape.hxx",
+      "includes": [
+        "TopoDS_Shape.hxx",
+        "XCAFPrs_Style.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKXCAF/XCAFPrs/XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle.hxx",
+      "includes": [
+        "XCAFPrs_Style.hxx",
+        "TopTools_ShapeMapHasher.hxx",
+        "NCollection_IndexedDataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKXCAF/XCAFPrs/XCAFPrs_DataMapIteratorOfDataMapOfStyleTransient.hxx",
+      "includes": [
+        "XCAFPrs_Style.hxx",
+        "Standard_Transient.hxx",
+        "NCollection_DataMap.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEGLTF/RWGltf/RWGltf_ConfigurationNode.hxx",
+      "includes": [
+        "DEGLTF_ConfigurationNode.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEGLTF/RWGltf/RWGltf_Provider.hxx",
+      "includes": [
+        "DEGLTF_Provider.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEVRML/Vrml/Vrml_Provider.hxx",
+      "includes": [
+        "DEVRML_Provider.hxx"
+      ]
+    },
+    {
+      "header_file": "DataExchange/TKDEVRML/Vrml/Vrml_ConfigurationNode.hxx",
+      "includes": [
+        "DEVRML_ConfigurationNode.hxx"
+      ]
+    }
+  ],
+  "total_count": 263,
+  "headers_removed": 263,
+  "files_updated": 572,
+  "cmake_updated": 78
+}

@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DrawDim_Dimension, Draw_Drawable3D)
 //=================================================================================================
 
 DrawDim_Dimension::DrawDim_Dimension()
-    : is_valued(Standard_False),
+    : is_valued(false),
       myValue(0.0),
       myTextColor(Draw_blanc)
 {
@@ -34,15 +34,15 @@ DrawDim_Dimension::DrawDim_Dimension()
 
 //=================================================================================================
 
-void DrawDim_Dimension::SetValue(const Standard_Real avalue)
+void DrawDim_Dimension::SetValue(const double avalue)
 {
-  is_valued = Standard_True;
+  is_valued = true;
   myValue   = avalue;
 }
 
 //=================================================================================================
 
-Standard_Real DrawDim_Dimension::GetValue() const
+double DrawDim_Dimension::GetValue() const
 {
   if (!is_valued)
     throw Standard_DomainError();
@@ -51,7 +51,7 @@ Standard_Real DrawDim_Dimension::GetValue() const
 
 //=================================================================================================
 
-Standard_Boolean DrawDim_Dimension::IsValued() const
+bool DrawDim_Dimension::IsValued() const
 {
   return is_valued;
 }
@@ -78,9 +78,9 @@ void DrawDim_Dimension::DrawText(const gp_Pnt& P, Draw_Display& D) const
   if (is_valued)
   {
     t += "=";
-    Standard_Integer l = t.Length();
+    int l = t.Length();
     t += myValue;
-    for (Standard_Integer i = l; i <= t.Length(); i++)
+    for (int i = l; i <= t.Length(); i++)
     {
       if (t.Value(i) == '.')
       {

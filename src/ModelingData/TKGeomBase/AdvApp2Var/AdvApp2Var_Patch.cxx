@@ -33,10 +33,11 @@
 #include <Convert_GridPolynomialToPoles.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AdvApp2Var_Patch, Standard_Transient)
 
@@ -51,22 +52,22 @@ AdvApp2Var_Patch::AdvApp2Var_Patch()
       myOrdInV(0),
       myNbCoeffInU(0),
       myNbCoeffInV(0),
-      myApprIsDone(Standard_False),
-      myHasResult(Standard_False),
+      myApprIsDone(false),
+      myHasResult(false),
       myCutSense(0),
-      myDiscIsDone(Standard_False),
+      myDiscIsDone(false),
       myCritValue(0.)
 {
 }
 
 //=================================================================================================
 
-AdvApp2Var_Patch::AdvApp2Var_Patch(const Standard_Real    U0,
-                                   const Standard_Real    U1,
-                                   const Standard_Real    V0,
-                                   const Standard_Real    V1,
-                                   const Standard_Integer iu,
-                                   const Standard_Integer iv)
+AdvApp2Var_Patch::AdvApp2Var_Patch(const double U0,
+                                   const double U1,
+                                   const double V0,
+                                   const double V1,
+                                   const int    iu,
+                                   const int    iv)
     : myU0(U0),
       myU1(U1),
       myV0(V0),
@@ -75,17 +76,17 @@ AdvApp2Var_Patch::AdvApp2Var_Patch(const Standard_Real    U0,
       myOrdInV(iv),
       myNbCoeffInU(0),
       myNbCoeffInV(0),
-      myApprIsDone(Standard_False),
-      myHasResult(Standard_False),
+      myApprIsDone(false),
+      myHasResult(false),
       myCutSense(0),
-      myDiscIsDone(Standard_False),
+      myDiscIsDone(false),
       myCritValue(0.)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean AdvApp2Var_Patch::IsDiscretised() const
+bool AdvApp2Var_Patch::IsDiscretised() const
 {
   return myDiscIsDone;
 }
@@ -98,35 +99,35 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
 {
 
   // data stored in the Context
-  Standard_Integer NDIMEN, ISOFAV;
+  int NDIMEN, ISOFAV;
   NDIMEN = Conditions.TotalDimension();
   // Attention : works only for 3D
   ISOFAV = Conditions.FavorIso();
 
   // data related to the patch to be discretized
-  Standard_Integer              NBPNTU, NBPNTV;
-  Standard_Integer              IORDRU = myOrdInU, IORDRV = myOrdInV;
-  Handle(TColStd_HArray1OfReal) HUROOT = Conditions.URoots();
-  Handle(TColStd_HArray1OfReal) HVROOT = Conditions.VRoots();
-  Standard_Real*                UROOT;
-  UROOT  = (Standard_Real*)&HUROOT->ChangeArray1()(HUROOT->Lower());
+  int                                      NBPNTU, NBPNTV;
+  int                                      IORDRU = myOrdInU, IORDRV = myOrdInV;
+  occ::handle<NCollection_HArray1<double>> HUROOT = Conditions.URoots();
+  occ::handle<NCollection_HArray1<double>> HVROOT = Conditions.VRoots();
+  double*                                  UROOT;
+  UROOT  = (double*)&HUROOT->ChangeArray1()(HUROOT->Lower());
   NBPNTU = (Conditions.URoots())->Length();
   if (myOrdInU > -1)
     NBPNTU -= 2;
-  Standard_Real* VROOT;
-  VROOT  = (Standard_Real*)&HVROOT->ChangeArray1()(HVROOT->Lower());
+  double* VROOT;
+  VROOT  = (double*)&HVROOT->ChangeArray1()(HVROOT->Lower());
   NBPNTV = (Conditions.VRoots())->Length();
   if (myOrdInV > -1)
     NBPNTV -= 2;
 
   // data stored in the Framework Constraints cad Nodes and Isos
   // C1, C2, C3 and C4 are dimensionnes in FORTRAN with (NDIMEN,IORDRU+2,IORDRV+2)
-  Standard_Integer              SIZE   = NDIMEN * (IORDRU + 2) * (IORDRV + 2);
-  Handle(TColStd_HArray1OfReal) HCOINS = new TColStd_HArray1OfReal(1, SIZE * 4);
+  int                                      SIZE   = NDIMEN * (IORDRU + 2) * (IORDRV + 2);
+  occ::handle<NCollection_HArray1<double>> HCOINS = new NCollection_HArray1<double>(1, SIZE * 4);
   HCOINS->Init(0.);
 
-  Standard_Integer iu, iv;
-  Standard_Real    du = (myU1 - myU0) / 2, dv = (myV1 - myV0) / 2, rho, valnorm;
+  int    iu, iv;
+  double du = (myU1 - myU0) / 2, dv = (myV1 - myV0) / 2, rho, valnorm;
 
   for (iu = 0; iu <= myOrdInU; iu++)
   {
@@ -168,10 +169,10 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
       HCOINS->SetValue(3 * SIZE + 3 + NDIMEN * iu + NDIMEN * (IORDRU + 2) * iv, valnorm);
     }
   }
-  Standard_Real* C1 = (Standard_Real*)&HCOINS->ChangeArray1()(HCOINS->Lower());
-  Standard_Real* C2 = C1 + SIZE;
-  Standard_Real* C3 = C2 + SIZE;
-  Standard_Real* C4 = C3 + SIZE;
+  double* C1 = (double*)&HCOINS->ChangeArray1()(HCOINS->Lower());
+  double* C2 = C1 + SIZE;
+  double* C3 = C2 + SIZE;
+  double* C4 = C3 + SIZE;
 
   // tables SomTab and Diftab of discretization of isos U=U0 and U=U1
   // SU0, SU1, DU0 and DU1 are dimensioned in FORTRAN to
@@ -179,20 +180,24 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
 
   SIZE = (1 + NBPNTV / 2) * NDIMEN;
 
-  Handle(TColStd_HArray1OfReal) HSU0 = new TColStd_HArray1OfReal(1, SIZE * (IORDRU + 1));
-  HSU0->ChangeArray1()               = ((Constraints.IsoU(myU0, myV0, myV1)).SomTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HSU0 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HSU0->ChangeArray1() = ((Constraints.IsoU(myU0, myV0, myV1)).SomTab())->Array1();
 
-  Handle(TColStd_HArray1OfReal) HDU0 = new TColStd_HArray1OfReal(1, SIZE * (IORDRU + 1));
-  HDU0->ChangeArray1()               = ((Constraints.IsoU(myU0, myV0, myV1)).DifTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HDU0 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HDU0->ChangeArray1() = ((Constraints.IsoU(myU0, myV0, myV1)).DifTab())->Array1();
 
-  Handle(TColStd_HArray1OfReal) HSU1 = new TColStd_HArray1OfReal(1, SIZE * (IORDRU + 1));
-  HSU1->ChangeArray1()               = ((Constraints.IsoU(myU1, myV0, myV1)).SomTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HSU1 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HSU1->ChangeArray1() = ((Constraints.IsoU(myU1, myV0, myV1)).SomTab())->Array1();
 
-  Handle(TColStd_HArray1OfReal) HDU1 = new TColStd_HArray1OfReal(1, SIZE * (IORDRU + 1));
-  HDU1->ChangeArray1()               = ((Constraints.IsoU(myU1, myV0, myV1)).DifTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HDU1 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HDU1->ChangeArray1() = ((Constraints.IsoU(myU1, myV0, myV1)).DifTab())->Array1();
 
   // normalization
-  Standard_Integer ideb1, ideb2, ideb3, ideb4, jj;
+  int ideb1, ideb2, ideb3, ideb4, jj;
   for (iu = 1; iu <= IORDRU; iu++)
   {
     rho   = pow(du, iu);
@@ -209,10 +214,10 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
     }
   }
 
-  Standard_Real* SU0 = (Standard_Real*)&HSU0->ChangeArray1()(HSU0->Lower());
-  Standard_Real* DU0 = (Standard_Real*)&HDU0->ChangeArray1()(HDU0->Lower());
-  Standard_Real* SU1 = (Standard_Real*)&HSU1->ChangeArray1()(HSU1->Lower());
-  Standard_Real* DU1 = (Standard_Real*)&HDU1->ChangeArray1()(HDU1->Lower());
+  double* SU0 = (double*)&HSU0->ChangeArray1()(HSU0->Lower());
+  double* DU0 = (double*)&HDU0->ChangeArray1()(HDU0->Lower());
+  double* SU1 = (double*)&HSU1->ChangeArray1()(HSU1->Lower());
+  double* DU1 = (double*)&HDU1->ChangeArray1()(HDU1->Lower());
 
   // tables SomTab and Diftab of discretization of isos V=V0 and V=V1
   // SU0, SU1, DU0 and DU1 are dimensioned in FORTRAN at
@@ -220,17 +225,21 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
 
   SIZE = (1 + NBPNTU / 2) * NDIMEN;
 
-  Handle(TColStd_HArray1OfReal) HSV0 = new TColStd_HArray1OfReal(1, SIZE * (IORDRV + 1));
-  HSV0->ChangeArray1()               = ((Constraints.IsoV(myU0, myU1, myV0)).SomTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HSV0 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HSV0->ChangeArray1() = ((Constraints.IsoV(myU0, myU1, myV0)).SomTab())->Array1();
 
-  Handle(TColStd_HArray1OfReal) HDV0 = new TColStd_HArray1OfReal(1, SIZE * (IORDRV + 1));
-  HDV0->ChangeArray1()               = ((Constraints.IsoV(myU0, myU1, myV0)).DifTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HDV0 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HDV0->ChangeArray1() = ((Constraints.IsoV(myU0, myU1, myV0)).DifTab())->Array1();
 
-  Handle(TColStd_HArray1OfReal) HSV1 = new TColStd_HArray1OfReal(1, SIZE * (IORDRV + 1));
-  HSV1->ChangeArray1()               = ((Constraints.IsoV(myU0, myU1, myV1)).SomTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HSV1 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HSV1->ChangeArray1() = ((Constraints.IsoV(myU0, myU1, myV1)).SomTab())->Array1();
 
-  Handle(TColStd_HArray1OfReal) HDV1 = new TColStd_HArray1OfReal(1, SIZE * (IORDRV + 1));
-  HDV1->ChangeArray1()               = ((Constraints.IsoV(myU0, myU1, myV1)).DifTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HDV1 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HDV1->ChangeArray1() = ((Constraints.IsoV(myU0, myU1, myV1)).DifTab())->Array1();
 
   // normalisation
   for (iv = 1; iv <= IORDRV; iv++)
@@ -249,21 +258,21 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
     }
   }
 
-  Standard_Real* SV0 = (Standard_Real*)&HSV0->ChangeArray1()(HSV0->Lower());
-  Standard_Real* DV0 = (Standard_Real*)&HDV0->ChangeArray1()(HDV0->Lower());
-  Standard_Real* SV1 = (Standard_Real*)&HSV1->ChangeArray1()(HSV1->Lower());
-  Standard_Real* DV1 = (Standard_Real*)&HDV1->ChangeArray1()(HDV1->Lower());
+  double* SV0 = (double*)&HSV0->ChangeArray1()(HSV0->Lower());
+  double* DV0 = (double*)&HDV0->ChangeArray1()(HDV0->Lower());
+  double* SV1 = (double*)&HSV1->ChangeArray1()(HSV1->Lower());
+  double* DV1 = (double*)&HDV1->ChangeArray1()(HDV1->Lower());
 
   // SOSOTB and DIDITB are dimensioned in FORTRAN at
   // (0:NBPNTU/2,0:NBPNTV/2,NDIMEN)
 
   SIZE = (1 + NBPNTU / 2) * (1 + NBPNTV / 2) * NDIMEN;
 
-  Handle(TColStd_HArray1OfReal) HSOSO  = new TColStd_HArray1OfReal(1, SIZE);
-  Standard_Real*                SOSOTB = (Standard_Real*)&HSOSO->ChangeArray1()(HSOSO->Lower());
+  occ::handle<NCollection_HArray1<double>> HSOSO  = new NCollection_HArray1<double>(1, SIZE);
+  double*                                  SOSOTB = (double*)&HSOSO->ChangeArray1()(HSOSO->Lower());
   HSOSO->Init(0.);
-  Handle(TColStd_HArray1OfReal) HDIDI  = new TColStd_HArray1OfReal(1, SIZE);
-  Standard_Real*                DIDITB = (Standard_Real*)&HDIDI->ChangeArray1()(HDIDI->Lower());
+  occ::handle<NCollection_HArray1<double>> HDIDI  = new NCollection_HArray1<double>(1, SIZE);
+  double*                                  DIDITB = (double*)&HDIDI->ChangeArray1()(HDIDI->Lower());
   HDIDI->Init(0.);
 
   // SODITB and DISOTB are dimensioned in FORTRAN at
@@ -271,14 +280,14 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
 
   SIZE = (NBPNTU / 2) * (NBPNTV / 2) * NDIMEN;
 
-  Handle(TColStd_HArray1OfReal) HSODI  = new TColStd_HArray1OfReal(1, SIZE);
-  Standard_Real*                SODITB = (Standard_Real*)&HSODI->ChangeArray1()(HSODI->Lower());
+  occ::handle<NCollection_HArray1<double>> HSODI  = new NCollection_HArray1<double>(1, SIZE);
+  double*                                  SODITB = (double*)&HSODI->ChangeArray1()(HSODI->Lower());
   HSODI->Init(0.);
-  Handle(TColStd_HArray1OfReal) HDISO  = new TColStd_HArray1OfReal(1, SIZE);
-  Standard_Real*                DISOTB = (Standard_Real*)&HDISO->ChangeArray1()(HDISO->Lower());
+  occ::handle<NCollection_HArray1<double>> HDISO  = new NCollection_HArray1<double>(1, SIZE);
+  double*                                  DISOTB = (double*)&HDISO->ChangeArray1()(HDISO->Lower());
   HDISO->Init(0.);
 
-  Standard_Integer IERCOD = 0;
+  int IERCOD = 0;
 
   //  discretization of polynoms of interpolation
   AdvApp2Var_ApproxF2var::mma2cdi_(&NDIMEN,
@@ -307,18 +316,19 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
                                    &IERCOD);
 
   //  discretization of the square
-  Standard_Real UDBFN[2], VDBFN[2];
+  double UDBFN[2], VDBFN[2];
   UDBFN[0] = myU0;
   UDBFN[1] = myU1;
   VDBFN[0] = myV0;
   VDBFN[1] = myV1;
 
-  SIZE                                 = std::max(NBPNTU, NBPNTV);
-  Handle(TColStd_HArray1OfReal) HTABLE = new TColStd_HArray1OfReal(1, SIZE);
-  Standard_Real*                TAB    = (Standard_Real*)&HTABLE->ChangeArray1()(HTABLE->Lower());
+  SIZE                                            = std::max(NBPNTU, NBPNTV);
+  occ::handle<NCollection_HArray1<double>> HTABLE = new NCollection_HArray1<double>(1, SIZE);
+  double*                                  TAB = (double*)&HTABLE->ChangeArray1()(HTABLE->Lower());
 
-  Handle(TColStd_HArray1OfReal) HPOINTS = new TColStd_HArray1OfReal(1, SIZE * NDIMEN);
-  Standard_Real*                PTS = (Standard_Real*)&HPOINTS->ChangeArray1()(HPOINTS->Lower());
+  occ::handle<NCollection_HArray1<double>> HPOINTS =
+    new NCollection_HArray1<double>(1, SIZE * NDIMEN);
+  double* PTS = (double*)&HPOINTS->ChangeArray1()(HPOINTS->Lower());
 
   // GCC 3.0 would not accept this line without the void
   // pointer cast.  Perhaps the real problem is a definition
@@ -343,7 +353,7 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
   // the results are stored
   if (IERCOD == 0)
   {
-    myDiscIsDone = Standard_True;
+    myDiscIsDone = true;
     mySosoTab    = HSOSO;
     myDisoTab    = HDISO;
     mySodiTab    = HSODI;
@@ -351,20 +361,20 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
   }
   else
   {
-    myDiscIsDone = Standard_False;
+    myDiscIsDone = false;
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean AdvApp2Var_Patch::HasResult() const
+bool AdvApp2Var_Patch::HasResult() const
 {
   return myHasResult;
 }
 
 //=================================================================================================
 
-Standard_Boolean AdvApp2Var_Patch::IsApproximated() const
+bool AdvApp2Var_Patch::IsApproximated() const
 {
   return myApprIsDone;
 }
@@ -375,8 +385,8 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
                                       const AdvApp2Var_Framework& Constraints)
 {
   // data stored in the  Context
-  Standard_Integer NDIMEN;
-  Standard_Integer IERCOD, NCFLMU, NCFLMV, NDegU, NDegV;
+  int NDIMEN;
+  int IERCOD, NCFLMU, NCFLMV, NDegU, NDegV;
   NDIMEN = Conditions.TotalDimension();
   // Attention : works only for 3D
   NCFLMU = Conditions.ULimit();
@@ -385,29 +395,31 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   NDegV  = NCFLMV - 1;
 
   // data relative to the patch
-  Standard_Integer IORDRU = myOrdInU, IORDRV = myOrdInV;
-  Standard_Real*   PATCAN = (Standard_Real*)&myEquation->ChangeArray1()(myEquation->Lower());
+  int     IORDRU = myOrdInU, IORDRV = myOrdInV;
+  double* PATCAN = (double*)&myEquation->ChangeArray1()(myEquation->Lower());
 
   // curves of approximation of Isos U
-  Standard_Integer              SIZE     = NCFLMV * NDIMEN;
-  Handle(TColStd_HArray1OfReal) HIsoU0   = new TColStd_HArray1OfReal(1, SIZE * (IORDRU + 1));
-  HIsoU0->ChangeArray1()                 = (Constraints.IsoU(myU0, myV0, myV1)).Polynom()->Array1();
-  Standard_Real*                   IsoU0 = (Standard_Real*)&HIsoU0->ChangeArray1()(HIsoU0->Lower());
-  Handle(TColStd_HArray1OfInteger) HCFU0 = new TColStd_HArray1OfInteger(1, IORDRU + 1);
-  Standard_Integer* NCFU0 = (Standard_Integer*)&HCFU0->ChangeArray1()(HCFU0->Lower());
+  int                                      SIZE = NCFLMV * NDIMEN;
+  occ::handle<NCollection_HArray1<double>> HIsoU0 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HIsoU0->ChangeArray1() = (Constraints.IsoU(myU0, myV0, myV1)).Polynom()->Array1();
+  double*                               IsoU0 = (double*)&HIsoU0->ChangeArray1()(HIsoU0->Lower());
+  occ::handle<NCollection_HArray1<int>> HCFU0 = new NCollection_HArray1<int>(1, IORDRU + 1);
+  int*                                  NCFU0 = (int*)&HCFU0->ChangeArray1()(HCFU0->Lower());
   HCFU0->Init((Constraints.IsoU(myU0, myV0, myV1)).NbCoeff());
 
-  Handle(TColStd_HArray1OfReal) HIsoU1   = new TColStd_HArray1OfReal(1, SIZE * (IORDRU + 1));
-  HIsoU1->ChangeArray1()                 = (Constraints.IsoU(myU1, myV0, myV1)).Polynom()->Array1();
-  Standard_Real*                   IsoU1 = (Standard_Real*)&HIsoU1->ChangeArray1()(HIsoU1->Lower());
-  Handle(TColStd_HArray1OfInteger) HCFU1 = new TColStd_HArray1OfInteger(1, IORDRU + 1);
-  Standard_Integer* NCFU1 = (Standard_Integer*)&HCFU1->ChangeArray1()(HCFU1->Lower());
+  occ::handle<NCollection_HArray1<double>> HIsoU1 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HIsoU1->ChangeArray1() = (Constraints.IsoU(myU1, myV0, myV1)).Polynom()->Array1();
+  double*                               IsoU1 = (double*)&HIsoU1->ChangeArray1()(HIsoU1->Lower());
+  occ::handle<NCollection_HArray1<int>> HCFU1 = new NCollection_HArray1<int>(1, IORDRU + 1);
+  int*                                  NCFU1 = (int*)&HCFU1->ChangeArray1()(HCFU1->Lower());
   HCFU1->Init((Constraints.IsoU(myU1, myV0, myV1)).NbCoeff());
 
   // normalization of Isos U
-  Standard_Integer iu, iv;
-  Standard_Real    du = (myU1 - myU0) / 2, dv = (myV1 - myV0) / 2, rho, valnorm;
-  Standard_Integer ideb0, ideb1, jj;
+  int    iu, iv;
+  double du = (myU1 - myU0) / 2, dv = (myV1 - myV0) / 2, rho, valnorm;
+  int    ideb0, ideb1, jj;
 
   for (iu = 1; iu <= IORDRU; iu++)
   {
@@ -422,19 +434,21 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   }
 
   // curves of approximation of Isos V
-  SIZE                                   = NCFLMU * NDIMEN;
-  Handle(TColStd_HArray1OfReal) HIsoV0   = new TColStd_HArray1OfReal(1, SIZE * (IORDRV + 1));
-  HIsoV0->ChangeArray1()                 = (Constraints.IsoV(myU0, myU1, myV0)).Polynom()->Array1();
-  Standard_Real*                   IsoV0 = (Standard_Real*)&HIsoV0->ChangeArray1()(HIsoV0->Lower());
-  Handle(TColStd_HArray1OfInteger) HCFV0 = new TColStd_HArray1OfInteger(1, IORDRV + 1);
-  Standard_Integer* NCFV0 = (Standard_Integer*)&HCFV0->ChangeArray1()(HCFV0->Lower());
+  SIZE = NCFLMU * NDIMEN;
+  occ::handle<NCollection_HArray1<double>> HIsoV0 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HIsoV0->ChangeArray1() = (Constraints.IsoV(myU0, myU1, myV0)).Polynom()->Array1();
+  double*                               IsoV0 = (double*)&HIsoV0->ChangeArray1()(HIsoV0->Lower());
+  occ::handle<NCollection_HArray1<int>> HCFV0 = new NCollection_HArray1<int>(1, IORDRV + 1);
+  int*                                  NCFV0 = (int*)&HCFV0->ChangeArray1()(HCFV0->Lower());
   HCFV0->Init((Constraints.IsoV(myU0, myU1, myV0)).NbCoeff());
 
-  Handle(TColStd_HArray1OfReal) HIsoV1   = new TColStd_HArray1OfReal(1, SIZE * (IORDRV + 1));
-  HIsoV1->ChangeArray1()                 = (Constraints.IsoV(myU0, myU1, myV1)).Polynom()->Array1();
-  Standard_Real*                   IsoV1 = (Standard_Real*)&HIsoV1->ChangeArray1()(HIsoV1->Lower());
-  Handle(TColStd_HArray1OfInteger) HCFV1 = new TColStd_HArray1OfInteger(1, IORDRV + 1);
-  Standard_Integer* NCFV1 = (Standard_Integer*)&HCFV1->ChangeArray1()(HCFV1->Lower());
+  occ::handle<NCollection_HArray1<double>> HIsoV1 =
+    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HIsoV1->ChangeArray1() = (Constraints.IsoV(myU0, myU1, myV1)).Polynom()->Array1();
+  double*                               IsoV1 = (double*)&HIsoV1->ChangeArray1()(HIsoV1->Lower());
+  occ::handle<NCollection_HArray1<int>> HCFV1 = new NCollection_HArray1<int>(1, IORDRV + 1);
+  int*                                  NCFV1 = (int*)&HCFV1->ChangeArray1()(HCFV1->Lower());
   HCFV1->Init((Constraints.IsoV(myU0, myU1, myV1)).NbCoeff());
 
   //  normalization of Isos V
@@ -451,9 +465,9 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   }
 
   // add constraints to constant V
-  Handle(TColStd_HArray1OfReal) HHERMV =
-    new TColStd_HArray1OfReal(1, (2 * IORDRV + 2) * (2 * IORDRV + 2));
-  Standard_Real* HermV = (Standard_Real*)&HHERMV->ChangeArray1()(HHERMV->Lower());
+  occ::handle<NCollection_HArray1<double>> HHERMV =
+    new NCollection_HArray1<double>(1, (2 * IORDRV + 2) * (2 * IORDRV + 2));
+  double* HermV = (double*)&HHERMV->ChangeArray1()(HHERMV->Lower());
   if (IORDRV >= 0)
   {
     AdvApp2Var_ApproxF2var::mma1her_(&IORDRV, HermV, &IERCOD);
@@ -475,9 +489,9 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   }
 
   // add constraints to constant U
-  Handle(TColStd_HArray1OfReal) HHERMU =
-    new TColStd_HArray1OfReal(1, (2 * IORDRU + 2) * (2 * IORDRU + 2));
-  Standard_Real* HermU = (Standard_Real*)&HHERMU->ChangeArray1()(HHERMU->Lower());
+  occ::handle<NCollection_HArray1<double>> HHERMU =
+    new NCollection_HArray1<double>(1, (2 * IORDRU + 2) * (2 * IORDRU + 2));
+  double* HermU = (double*)&HHERMU->ChangeArray1()(HHERMU->Lower());
   if (IORDRU >= 0)
   {
     AdvApp2Var_ApproxF2var::mma1her_(&IORDRU, HermU, &IERCOD);
@@ -499,9 +513,9 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   }
 
   // add constraints at the corners
-  Standard_Integer ideb;
-  SIZE                                 = NDIMEN * (IORDRU + 2) * (IORDRV + 2);
-  Handle(TColStd_HArray1OfReal) HCOINS = new TColStd_HArray1OfReal(1, SIZE * 4);
+  int ideb;
+  SIZE                                            = NDIMEN * (IORDRU + 2) * (IORDRV + 2);
+  occ::handle<NCollection_HArray1<double>> HCOINS = new NCollection_HArray1<double>(1, SIZE * 4);
 
   for (iu = 0; iu <= myOrdInU; iu++)
   {
@@ -548,14 +562,15 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   }
 
   //  tables required for FORTRAN
-  Standard_Integer              IORDMX = std::max(IORDRU, IORDRV);
-  Handle(TColStd_HArray1OfReal) HEXTR  = new TColStd_HArray1OfReal(1, 2 * IORDMX + 2);
-  Standard_Real*                EXTR   = (Standard_Real*)&HEXTR->ChangeArray1()(HEXTR->Lower());
-  Handle(TColStd_HArray1OfReal) HFACT  = new TColStd_HArray1OfReal(1, IORDMX + 1);
-  Standard_Real*                FACT   = (Standard_Real*)&HFACT->ChangeArray1()(HFACT->Lower());
+  int                                      IORDMX = std::max(IORDRU, IORDRV);
+  occ::handle<NCollection_HArray1<double>> HEXTR =
+    new NCollection_HArray1<double>(1, 2 * IORDMX + 2);
+  double*                                  EXTR  = (double*)&HEXTR->ChangeArray1()(HEXTR->Lower());
+  occ::handle<NCollection_HArray1<double>> HFACT = new NCollection_HArray1<double>(1, IORDMX + 1);
+  double*                                  FACT  = (double*)&HFACT->ChangeArray1()(HFACT->Lower());
 
-  Standard_Integer idim, ncf0, ncf1, iun = 1;
-  Standard_Real*   Is;
+  int     idim, ncf0, ncf1, iun = 1;
+  double* Is;
 
   // add extremities of isos U
   for (iu = 1; iu <= IORDRU + 1; iu++)
@@ -610,10 +625,10 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   }
 
   // add all to PATCAN
-  Standard_Real* C1 = (Standard_Real*)&HCOINS->ChangeArray1()(HCOINS->Lower());
-  Standard_Real* C2 = C1 + SIZE;
-  Standard_Real* C3 = C2 + SIZE;
-  Standard_Real* C4 = C3 + SIZE;
+  double* C1 = (double*)&HCOINS->ChangeArray1()(HCOINS->Lower());
+  double* C2 = C1 + SIZE;
+  double* C3 = C2 + SIZE;
+  double* C4 = C3 + SIZE;
   if (IORDRU >= 0 && IORDRV >= 0)
   {
     AdvApp2Var_ApproxF2var::mma2ac1_(&NDIMEN,
@@ -635,10 +650,10 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
 
 void AdvApp2Var_Patch::AddErrors(const AdvApp2Var_Framework& Constraints)
 {
-  Standard_Integer NBSESP = 1, iesp;
-  Standard_Integer iu, iv;
+  int NBSESP = 1, iesp;
+  int iu, iv;
 
-  Standard_Real errU, errV, error, hmax[4];
+  double errU, errV, error, hmax[4];
   hmax[0] = 0;
   hmax[1] = 1;
   hmax[2] = 1.5;
@@ -689,14 +704,15 @@ void AdvApp2Var_Patch::AddErrors(const AdvApp2Var_Framework& Constraints)
     myMoyErrors->SetValue(iesp, std::sqrt(error));
 
     // max errors at iso-borders
-    Handle(TColStd_HArray2OfReal) HERISO = new TColStd_HArray2OfReal(1, NBSESP, 1, 4);
+    occ::handle<NCollection_HArray2<double>> HERISO =
+      new NCollection_HArray2<double>(1, NBSESP, 1, 4);
     HERISO->SetValue(iesp, 1, ((Constraints.IsoV(myU0, myU1, myV0)).MaxErrors())->Value(iesp, 1));
     HERISO->SetValue(iesp, 2, ((Constraints.IsoV(myU0, myU1, myV1)).MaxErrors())->Value(iesp, 1));
     HERISO->SetValue(iesp, 3, ((Constraints.IsoU(myU0, myV0, myV1)).MaxErrors())->Value(iesp, 1));
     HERISO->SetValue(iesp, 4, ((Constraints.IsoU(myU1, myV0, myV1)).MaxErrors())->Value(iesp, 1));
 
     // calculate max errors at the corners
-    Standard_Real emax1 = 0., emax2 = 0., emax3 = 0., emax4 = 0., err1, err2, err3, err4;
+    double emax1 = 0., emax2 = 0., emax3 = 0., emax4 = 0., err1, err2, err3, err4;
     for (iu = 0; iu <= myOrdInU; iu++)
     {
       for (iv = 0; iv <= myOrdInV; iv++)
@@ -743,13 +759,13 @@ void AdvApp2Var_Patch::AddErrors(const AdvApp2Var_Framework& Constraints)
 
 void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
                                   const AdvApp2Var_Framework& Constraints,
-                                  const Standard_Integer      NumDec)
+                                  const int                   NumDec)
 {
 
   // data stored in the Context
-  Standard_Integer NDIMEN, NBSESP, NDIMSE;
-  Standard_Integer NBPNTU, NBPNTV, NCFLMU, NCFLMV, NDJACU, NDJACV;
-  Standard_Integer NDegU, NDegV, NJacU, NJacV;
+  int NDIMEN, NBSESP, NDIMSE;
+  int NBPNTU, NBPNTV, NCFLMU, NCFLMV, NDJACU, NDJACV;
+  int NDegU, NDegV, NJacU, NJacV;
   NDIMEN = Conditions.TotalDimension();
   NBSESP = Conditions.TotalNumberSSP();
   NDIMSE = 3;
@@ -769,7 +785,7 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   NJacV  = NDJACV + 1;
 
   // data relative to the processed patch
-  Standard_Integer IORDRU = myOrdInU, IORDRV = myOrdInV, NDMINU = 1, NDMINV = 1, NCOEFU, NCOEFV;
+  int IORDRU = myOrdInU, IORDRV = myOrdInV, NDMINU = 1, NDMINV = 1, NCOEFU, NCOEFV;
   // NDMINU and NDMINV depend on the nb of coeff of neighboring isos
   // and of the required order of continuity
   NDMINU = std::max(1, 2 * IORDRU + 1);
@@ -785,9 +801,9 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   NDMINV = std::max(NDMINV, NCOEFV);
 
   // tables of approximations
-  Handle(TColStd_HArray1OfReal) HEPSAPR = new TColStd_HArray1OfReal(1, NBSESP);
-  Handle(TColStd_HArray1OfReal) HEPSFRO = new TColStd_HArray1OfReal(1, NBSESP * 8);
-  Standard_Integer              iesp;
+  occ::handle<NCollection_HArray1<double>> HEPSAPR = new NCollection_HArray1<double>(1, NBSESP);
+  occ::handle<NCollection_HArray1<double>> HEPSFRO = new NCollection_HArray1<double>(1, NBSESP * 8);
+  int                                      iesp;
   for (iesp = 1; iesp <= NBSESP; iesp++)
   {
     HEPSAPR->SetValue(iesp, (Conditions.IToler())->Value(iesp));
@@ -800,32 +816,32 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
     HEPSFRO->SetValue(iesp + 6 * NBSESP, (Conditions.CToler())->Value(iesp, 3));
     HEPSFRO->SetValue(iesp + 7 * NBSESP, (Conditions.CToler())->Value(iesp, 4));
   }
-  Standard_Real* EPSAPR = (Standard_Real*)&HEPSAPR->ChangeArray1()(HEPSAPR->Lower());
-  Standard_Real* EPSFRO = (Standard_Real*)&HEPSFRO->ChangeArray1()(HEPSFRO->Lower());
+  double* EPSAPR = (double*)&HEPSAPR->ChangeArray1()(HEPSAPR->Lower());
+  double* EPSFRO = (double*)&HEPSFRO->ChangeArray1()(HEPSFRO->Lower());
 
-  Standard_Integer              SIZE    = (1 + NDJACU) * (1 + NDJACV) * NDIMEN;
-  Handle(TColStd_HArray1OfReal) HPJAC   = new TColStd_HArray1OfReal(1, SIZE);
-  Standard_Real*                PATJAC  = (Standard_Real*)&HPJAC->ChangeArray1()(HPJAC->Lower());
-  SIZE                                  = 2 * SIZE;
-  Handle(TColStd_HArray1OfReal) HPAUX   = new TColStd_HArray1OfReal(1, SIZE);
-  Standard_Real*                PATAUX  = (Standard_Real*)&HPAUX->ChangeArray1()(HPAUX->Lower());
-  SIZE                                  = NCFLMU * NCFLMV * NDIMEN;
-  Handle(TColStd_HArray1OfReal) HPCAN   = new TColStd_HArray1OfReal(1, SIZE);
-  Standard_Real*                PATCAN  = (Standard_Real*)&HPCAN->ChangeArray1()(HPCAN->Lower());
-  Handle(TColStd_HArray1OfReal) HERRMAX = new TColStd_HArray1OfReal(1, NBSESP);
-  Standard_Real*                ERRMAX = (Standard_Real*)&HERRMAX->ChangeArray1()(HERRMAX->Lower());
-  Handle(TColStd_HArray1OfReal) HERRMOY = new TColStd_HArray1OfReal(1, NBSESP);
-  Standard_Real*                ERRMOY = (Standard_Real*)&HERRMOY->ChangeArray1()(HERRMOY->Lower());
+  int                                      SIZE   = (1 + NDJACU) * (1 + NDJACV) * NDIMEN;
+  occ::handle<NCollection_HArray1<double>> HPJAC  = new NCollection_HArray1<double>(1, SIZE);
+  double*                                  PATJAC = (double*)&HPJAC->ChangeArray1()(HPJAC->Lower());
+  SIZE                                            = 2 * SIZE;
+  occ::handle<NCollection_HArray1<double>> HPAUX  = new NCollection_HArray1<double>(1, SIZE);
+  double*                                  PATAUX = (double*)&HPAUX->ChangeArray1()(HPAUX->Lower());
+  SIZE                                            = NCFLMU * NCFLMV * NDIMEN;
+  occ::handle<NCollection_HArray1<double>> HPCAN  = new NCollection_HArray1<double>(1, SIZE);
+  double*                                  PATCAN = (double*)&HPCAN->ChangeArray1()(HPCAN->Lower());
+  occ::handle<NCollection_HArray1<double>> HERRMAX = new NCollection_HArray1<double>(1, NBSESP);
+  double* ERRMAX = (double*)&HERRMAX->ChangeArray1()(HERRMAX->Lower());
+  occ::handle<NCollection_HArray1<double>> HERRMOY = new NCollection_HArray1<double>(1, NBSESP);
+  double* ERRMOY = (double*)&HERRMOY->ChangeArray1()(HERRMOY->Lower());
 
   // tables of discretization of the square
-  Standard_Real* SOSOTB = (Standard_Real*)&mySosoTab->ChangeArray1()(mySosoTab->Lower());
-  Standard_Real* DISOTB = (Standard_Real*)&myDisoTab->ChangeArray1()(myDisoTab->Lower());
-  Standard_Real* SODITB = (Standard_Real*)&mySodiTab->ChangeArray1()(mySodiTab->Lower());
-  Standard_Real* DIDITB = (Standard_Real*)&myDidiTab->ChangeArray1()(myDidiTab->Lower());
+  double* SOSOTB = (double*)&mySosoTab->ChangeArray1()(mySosoTab->Lower());
+  double* DISOTB = (double*)&myDisoTab->ChangeArray1()(myDisoTab->Lower());
+  double* SODITB = (double*)&mySodiTab->ChangeArray1()(mySodiTab->Lower());
+  double* DIDITB = (double*)&myDidiTab->ChangeArray1()(myDidiTab->Lower());
 
   //  approximation
-  Standard_Integer ITYDEC = 0, IERCOD = 0;
-  Standard_Integer iun = 1, itrois = 3;
+  int ITYDEC = 0, IERCOD = 0;
+  int iun = 1, itrois = 3;
   NCOEFU = 0;
   NCOEFV = 0;
   AdvApp2Var_ApproxF2var::mma2ce1_((integer*)&NumDec,
@@ -859,7 +875,7 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   myCutSense = ITYDEC;
   if (ITYDEC == 0 && IERCOD <= 0)
   {
-    myHasResult  = Standard_True;
+    myHasResult  = true;
     myApprIsDone = (IERCOD == 0);
     myNbCoeffInU = NCOEFU + 1;
     myNbCoeffInV = NCOEFV + 1;
@@ -897,7 +913,7 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
     AddErrors(Constraints);
 
     // Reduction of degrees if possible
-    PATCAN = (Standard_Real*)&myEquation->ChangeArray1()(myEquation->Lower());
+    PATCAN = (double*)&myEquation->ChangeArray1()(myEquation->Lower());
 
     AdvApp2Var_ApproxF2var::mma2fx6_(&NCFLMU,
                                      &NCFLMV,
@@ -916,7 +932,7 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
                                      &myNbCoeffInV);
 
     // transposition (NCFLMU,NCFLMV,NDIMEN)Fortran-C++
-    Standard_Integer aIU, aIN, dim, ii, jj;
+    int aIU, aIN, dim, ii, jj;
     for (dim = 1; dim <= NDIMEN; dim++)
     {
       aIN = (dim - 1) * NCFLMU * NCFLMV;
@@ -934,17 +950,14 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   }
   else
   {
-    myApprIsDone = Standard_False;
-    myHasResult  = Standard_False;
+    myApprIsDone = false;
+    myHasResult  = false;
   }
 }
 
 //=================================================================================================
 
-void AdvApp2Var_Patch::ChangeDomain(const Standard_Real a,
-                                    const Standard_Real b,
-                                    const Standard_Real c,
-                                    const Standard_Real d)
+void AdvApp2Var_Patch::ChangeDomain(const double a, const double b, const double c, const double d)
 {
   myU0 = a;
   myU1 = b;
@@ -959,8 +972,8 @@ void AdvApp2Var_Patch::ChangeDomain(const Standard_Real a,
 
 void AdvApp2Var_Patch::ResetApprox()
 {
-  myApprIsDone = Standard_False;
-  myHasResult  = Standard_False;
+  myApprIsDone = false;
+  myHasResult  = false;
 }
 
 //============================================================================
@@ -971,47 +984,47 @@ void AdvApp2Var_Patch::ResetApprox()
 void AdvApp2Var_Patch::OverwriteApprox()
 {
   if (myHasResult)
-    myApprIsDone = Standard_True;
+    myApprIsDone = true;
 }
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_Patch::U0() const
+double AdvApp2Var_Patch::U0() const
 {
   return myU0;
 }
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_Patch::U1() const
+double AdvApp2Var_Patch::U1() const
 {
   return myU1;
 }
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_Patch::V0() const
+double AdvApp2Var_Patch::V0() const
 {
   return myV0;
 }
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_Patch::V1() const
+double AdvApp2Var_Patch::V1() const
 {
   return myV1;
 }
 
 //=================================================================================================
 
-Standard_Integer AdvApp2Var_Patch::UOrder() const
+int AdvApp2Var_Patch::UOrder() const
 {
   return myOrdInU;
 }
 
 //=================================================================================================
 
-Standard_Integer AdvApp2Var_Patch::VOrder() const
+int AdvApp2Var_Patch::VOrder() const
 {
   return myOrdInV;
 }
@@ -1022,7 +1035,7 @@ Standard_Integer AdvApp2Var_Patch::VOrder() const
 //           2 : required cut by V; 3 : required cut by U and by V
 //============================================================================
 
-Standard_Integer AdvApp2Var_Patch::CutSense() const
+int AdvApp2Var_Patch::CutSense() const
 {
   return myCutSense;
 }
@@ -1033,10 +1046,9 @@ Standard_Integer AdvApp2Var_Patch::CutSense() const
 //           2 : required cut by V; 3 : required cut by U and by V
 //============================================================================
 
-Standard_Integer AdvApp2Var_Patch::CutSense(const AdvApp2Var_Criterion& Crit,
-                                            const Standard_Integer      NumDec) const
+int AdvApp2Var_Patch::CutSense(const AdvApp2Var_Criterion& Crit, const int NumDec) const
 {
-  Standard_Boolean CritRel = (Crit.Type() == AdvApp2Var_Relative);
+  bool CritRel = (Crit.Type() == AdvApp2Var_Relative);
   if (CritRel && !IsApproximated())
   {
     return myCutSense;
@@ -1056,14 +1068,14 @@ Standard_Integer AdvApp2Var_Patch::CutSense(const AdvApp2Var_Criterion& Crit,
 
 //=================================================================================================
 
-Standard_Integer AdvApp2Var_Patch::NbCoeffInU() const
+int AdvApp2Var_Patch::NbCoeffInU() const
 {
   return myNbCoeffInU;
 }
 
 //=================================================================================================
 
-Standard_Integer AdvApp2Var_Patch::NbCoeffInV() const
+int AdvApp2Var_Patch::NbCoeffInV() const
 {
   return myNbCoeffInV;
 }
@@ -1073,8 +1085,7 @@ Standard_Integer AdvApp2Var_Patch::NbCoeffInV() const
 // purpose  : allows increasing the nb of coeff (cf Network)
 //============================================================================
 
-void AdvApp2Var_Patch::ChangeNbCoeff(const Standard_Integer NbCoeffU,
-                                     const Standard_Integer NbCoeffV)
+void AdvApp2Var_Patch::ChangeNbCoeff(const int NbCoeffU, const int NbCoeffV)
 {
   if (myNbCoeffInU < NbCoeffU)
     myNbCoeffInU = NbCoeffU;
@@ -1087,7 +1098,7 @@ void AdvApp2Var_Patch::ChangeNbCoeff(const Standard_Integer NbCoeffU,
 // purpose  : returns max errors of polynomial approximation
 //============================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApp2Var_Patch::MaxErrors() const
+occ::handle<NCollection_HArray1<double>> AdvApp2Var_Patch::MaxErrors() const
 {
   return myMaxErrors;
 }
@@ -1097,7 +1108,7 @@ Handle(TColStd_HArray1OfReal) AdvApp2Var_Patch::MaxErrors() const
 // purpose  : returns average errors of polynomial approximation
 //============================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApp2Var_Patch::AverageErrors() const
+occ::handle<NCollection_HArray1<double>> AdvApp2Var_Patch::AverageErrors() const
 {
   return myMoyErrors;
 }
@@ -1107,7 +1118,7 @@ Handle(TColStd_HArray1OfReal) AdvApp2Var_Patch::AverageErrors() const
 // purpose  : returns max errors on borders of polynomial approximation
 //============================================================================
 
-Handle(TColStd_HArray2OfReal) AdvApp2Var_Patch::IsoErrors() const
+occ::handle<NCollection_HArray2<double>> AdvApp2Var_Patch::IsoErrors() const
 {
   return myIsoErrors;
 }
@@ -1117,10 +1128,11 @@ Handle(TColStd_HArray2OfReal) AdvApp2Var_Patch::IsoErrors() const
 // purpose  : returns poles of the polynomial approximation
 //============================================================================
 
-Handle(TColgp_HArray2OfPnt) AdvApp2Var_Patch::Poles(const Standard_Integer    SSPIndex,
-                                                    const AdvApp2Var_Context& Cond) const
+occ::handle<NCollection_HArray2<gp_Pnt>> AdvApp2Var_Patch::Poles(
+  const int                 SSPIndex,
+  const AdvApp2Var_Context& Cond) const
 {
-  Handle(TColStd_HArray1OfReal) SousEquation;
+  occ::handle<NCollection_HArray1<double>> SousEquation;
   if (Cond.TotalNumberSSP() == 1 && SSPIndex == 1)
   {
     SousEquation = myEquation;
@@ -1129,11 +1141,11 @@ Handle(TColgp_HArray2OfPnt) AdvApp2Var_Patch::Poles(const Standard_Integer    SS
   {
     throw Standard_ConstructionError("AdvApp2Var_Patch::Poles :  SSPIndex out of range");
   }
-  Handle(TColStd_HArray1OfReal) Intervalle = new (TColStd_HArray1OfReal)(1, 2);
+  occ::handle<NCollection_HArray1<double>> Intervalle = new (NCollection_HArray1<double>)(1, 2);
   Intervalle->SetValue(1, -1);
   Intervalle->SetValue(2, 1);
 
-  Handle(TColStd_HArray1OfInteger) NbCoeff = new (TColStd_HArray1OfInteger)(1, 2);
+  occ::handle<NCollection_HArray1<int>> NbCoeff = new (NCollection_HArray1<int>)(1, 2);
   NbCoeff->SetValue(1, myNbCoeffInU);
   NbCoeff->SetValue(2, myNbCoeffInV);
 
@@ -1153,10 +1165,11 @@ Handle(TColgp_HArray2OfPnt) AdvApp2Var_Patch::Poles(const Standard_Integer    SS
 // purpose  : returns coeff. of the equation of polynomial approximation
 //============================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApp2Var_Patch::Coefficients(const Standard_Integer    SSPIndex,
-                                                             const AdvApp2Var_Context& Cond) const
+occ::handle<NCollection_HArray1<double>> AdvApp2Var_Patch::Coefficients(
+  const int                 SSPIndex,
+  const AdvApp2Var_Context& Cond) const
 {
-  Handle(TColStd_HArray1OfReal) SousEquation;
+  occ::handle<NCollection_HArray1<double>> SousEquation;
   if (Cond.TotalNumberSSP() == 1 && SSPIndex == 1)
   {
     SousEquation = myEquation;
@@ -1170,14 +1183,14 @@ Handle(TColStd_HArray1OfReal) AdvApp2Var_Patch::Coefficients(const Standard_Inte
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_Patch::CritValue() const
+double AdvApp2Var_Patch::CritValue() const
 {
   return myCritValue;
 }
 
 //=================================================================================================
 
-void AdvApp2Var_Patch::SetCritValue(const Standard_Real dist)
+void AdvApp2Var_Patch::SetCritValue(const double dist)
 {
   myCritValue = dist;
 }

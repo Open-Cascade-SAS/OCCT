@@ -27,9 +27,9 @@ StepShape_ConnectedFaceSubSet::StepShape_ConnectedFaceSubSet() {}
 //=================================================================================================
 
 void StepShape_ConnectedFaceSubSet::Init(
-  const Handle(TCollection_HAsciiString)&   aRepresentationItem_Name,
-  const Handle(StepShape_HArray1OfFace)&    aConnectedFaceSet_CfsFaces,
-  const Handle(StepShape_ConnectedFaceSet)& aParentFaceSet)
+  const occ::handle<TCollection_HAsciiString>&                         aRepresentationItem_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aConnectedFaceSet_CfsFaces,
+  const occ::handle<StepShape_ConnectedFaceSet>&                       aParentFaceSet)
 {
   StepShape_ConnectedFaceSet::Init(aRepresentationItem_Name, aConnectedFaceSet_CfsFaces);
 
@@ -38,7 +38,7 @@ void StepShape_ConnectedFaceSubSet::Init(
 
 //=================================================================================================
 
-Handle(StepShape_ConnectedFaceSet) StepShape_ConnectedFaceSubSet::ParentFaceSet() const
+occ::handle<StepShape_ConnectedFaceSet> StepShape_ConnectedFaceSubSet::ParentFaceSet() const
 {
   return theParentFaceSet;
 }
@@ -46,7 +46,7 @@ Handle(StepShape_ConnectedFaceSet) StepShape_ConnectedFaceSubSet::ParentFaceSet(
 //=================================================================================================
 
 void StepShape_ConnectedFaceSubSet::SetParentFaceSet(
-  const Handle(StepShape_ConnectedFaceSet)& aParentFaceSet)
+  const occ::handle<StepShape_ConnectedFaceSet>& aParentFaceSet)
 {
   theParentFaceSet = aParentFaceSet;
 }

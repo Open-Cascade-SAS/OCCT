@@ -25,9 +25,6 @@ class StepGeom_Surface;
 class StepRepr_DefinitionalRepresentation;
 class TCollection_HAsciiString;
 
-class StepGeom_Pcurve;
-DEFINE_STANDARD_HANDLE(StepGeom_Pcurve, StepGeom_Curve)
-
 class StepGeom_Pcurve : public StepGeom_Curve
 {
 
@@ -35,25 +32,25 @@ public:
   //! Returns a Pcurve
   Standard_EXPORT StepGeom_Pcurve();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&            aName,
-                            const Handle(StepGeom_Surface)&                    aBasisSurface,
-                            const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&            aName,
+    const occ::handle<StepGeom_Surface>&                    aBasisSurface,
+    const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve);
 
-  Standard_EXPORT void SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface);
+  Standard_EXPORT void SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface);
 
-  Standard_EXPORT Handle(StepGeom_Surface) BasisSurface() const;
+  Standard_EXPORT occ::handle<StepGeom_Surface> BasisSurface() const;
 
   Standard_EXPORT void SetReferenceToCurve(
-    const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve);
+    const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve);
 
-  Standard_EXPORT Handle(StepRepr_DefinitionalRepresentation) ReferenceToCurve() const;
+  Standard_EXPORT occ::handle<StepRepr_DefinitionalRepresentation> ReferenceToCurve() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Pcurve, StepGeom_Curve)
 
-protected:
 private:
-  Handle(StepGeom_Surface)                    basisSurface;
-  Handle(StepRepr_DefinitionalRepresentation) referenceToCurve;
+  occ::handle<StepGeom_Surface>                    basisSurface;
+  occ::handle<StepRepr_DefinitionalRepresentation> referenceToCurve;
 };
 
 #endif // _StepGeom_Pcurve_HeaderFile

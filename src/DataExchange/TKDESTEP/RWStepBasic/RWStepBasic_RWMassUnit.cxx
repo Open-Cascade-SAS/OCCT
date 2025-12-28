@@ -28,10 +28,10 @@ RWStepBasic_RWMassUnit::RWStepBasic_RWMassUnit() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWMassUnit::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                      const Standard_Integer                 num,
-                                      Handle(Interface_Check)&               ach,
-                                      const Handle(StepBasic_MassUnit)&      ent) const
+void RWStepBasic_RWMassUnit::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                      const int                                   num,
+                                      occ::handle<Interface_Check>&               ach,
+                                      const occ::handle<StepBasic_MassUnit>&      ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "mass_unit"))
@@ -39,7 +39,7 @@ void RWStepBasic_RWMassUnit::ReadStep(const Handle(StepData_StepReaderData)& dat
 
   // Inherited fields of NamedUnit
 
-  Handle(StepBasic_DimensionalExponents) aNamedUnit_Dimensions;
+  occ::handle<StepBasic_DimensionalExponents> aNamedUnit_Dimensions;
   data->ReadEntity(num,
                    1,
                    "named_unit.dimensions",
@@ -53,8 +53,8 @@ void RWStepBasic_RWMassUnit::ReadStep(const Handle(StepData_StepReaderData)& dat
 
 //=================================================================================================
 
-void RWStepBasic_RWMassUnit::WriteStep(StepData_StepWriter&              SW,
-                                       const Handle(StepBasic_MassUnit)& ent) const
+void RWStepBasic_RWMassUnit::WriteStep(StepData_StepWriter&                   SW,
+                                       const occ::handle<StepBasic_MassUnit>& ent) const
 {
 
   // Inherited fields of NamedUnit
@@ -64,8 +64,8 @@ void RWStepBasic_RWMassUnit::WriteStep(StepData_StepWriter&              SW,
 
 //=================================================================================================
 
-void RWStepBasic_RWMassUnit::Share(const Handle(StepBasic_MassUnit)& ent,
-                                   Interface_EntityIterator&         iter) const
+void RWStepBasic_RWMassUnit::Share(const occ::handle<StepBasic_MassUnit>& ent,
+                                   Interface_EntityIterator&              iter) const
 {
 
   // Inherited fields of NamedUnit

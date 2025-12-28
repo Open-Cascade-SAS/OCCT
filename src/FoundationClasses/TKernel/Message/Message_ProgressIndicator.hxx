@@ -22,8 +22,6 @@
 
 #include <mutex>
 
-DEFINE_STANDARD_HANDLE(Message_ProgressIndicator, Standard_Transient)
-
 class Message_ProgressRange;
 class Message_ProgressScope;
 
@@ -36,7 +34,7 @@ class Message_ProgressScope;
 //! to reset progress indicator and get access to the root range:
 //!
 //! @code{.cpp}
-//! Handle(Message_ProgressIndicator) aProgress = ...;
+//! occ::handle<Message_ProgressIndicator> aProgress = ...;
 //! anAlgorithm.Perform (aProgress->Start());
 //! @endcode
 //!
@@ -74,7 +72,7 @@ public:
   //! Otherwise, returns dummy range that can be safely used in the algorithms
   //! but not bound to progress indicator.
   Standard_EXPORT static Message_ProgressRange Start(
-    const Handle(Message_ProgressIndicator)& theProgress);
+    const occ::handle<Message_ProgressIndicator>& theProgress);
 
 protected:
   //!@name Virtual methods to be defined by descendant.
@@ -87,7 +85,7 @@ protected:
   //! as possible to avoid delaying the calling algorithm.
   //!
   //! Default implementation returns False.
-  virtual Standard_Boolean UserBreak() { return Standard_False; }
+  virtual bool UserBreak() { return false; }
 
   //! Virtual method to be defined by descendant.
   //! Should update presentation of the progress indicator.
@@ -108,7 +106,7 @@ protected:
   //! The parameter theScope is the current scope being advanced;
   //! it can be used to show the names and ranges of the on-going scope and
   //! its parents, providing more visibility of the current stage of the process.
-  virtual void Show(const Message_ProgressScope& theScope, const Standard_Boolean isForce) = 0;
+  virtual void Show(const Message_ProgressScope& theScope, const bool isForce) = 0;
 
   //! Call-back method called by Start(), can be redefined by descendants
   //! if some actions are needed when the indicator is restarted.
@@ -120,7 +118,7 @@ public:
   //! Returns total progress position ranged from 0 to 1.
   //! Should not be called concurrently while the progress is advancing,
   //! except from implementation of method Show().
-  Standard_Real GetPosition() const { return myPosition; }
+  double GetPosition() const { return myPosition; }
 
   //! Destructor
   Standard_EXPORT ~Message_ProgressIndicator();
@@ -134,10 +132,10 @@ private:
   //! then calls Show() to update presentation.
   //! The parameter theScope is reference to the caller object;
   //! it is passed to Show() where can be used to track context of the process.
-  void Increment(const Standard_Real theStep, const Message_ProgressScope& theScope);
+  void Increment(const double theStep, const Message_ProgressScope& theScope);
 
 private:
-  Standard_Real          myPosition;  //!< Total progress position ranged from 0 to 1
+  double                 myPosition;  //!< Total progress position ranged from 0 to 1
   std::mutex             myMutex;     //!< Protection of myPosition from concurrent increment
   Message_ProgressScope* myRootScope; //!< The root progress scope
 
@@ -150,7 +148,7 @@ private:
 
 //=================================================================================================
 
-inline void Message_ProgressIndicator::Increment(const Standard_Real          theStep,
+inline void Message_ProgressIndicator::Increment(const double                 theStep,
                                                  const Message_ProgressScope& theScope)
 {
   // protect incrementation by mutex to avoid problems in multithreaded scenarios
@@ -161,7 +159,7 @@ inline void Message_ProgressIndicator::Increment(const Standard_Real          th
   // show progress indicator; note that this call is protected by
   // the same mutex to avoid concurrency and ensure that this call
   // to Show() will see the position exactly as it was just set above
-  Show(theScope, Standard_False);
+  Show(theScope, false);
 }
 
 #endif // _Message_ProgressIndicator_HeaderFile

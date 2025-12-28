@@ -52,12 +52,10 @@ public:
 
   //! Transfer an Entity from Geom2d to IGES. If this
   //! Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) Transfer2dCurve(const Handle(Geom2d_Curve)& start,
-                                                              const Standard_Real         Udeb,
-                                                              const Standard_Real         Ufin);
-
-protected:
-private:
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Transfer2dCurve(
+    const occ::handle<Geom2d_Curve>& start,
+    const double                     Udeb,
+    const double                     Ufin);
 };
 
 #endif // _Geom2dToIGES_Geom2dCurve_HeaderFile

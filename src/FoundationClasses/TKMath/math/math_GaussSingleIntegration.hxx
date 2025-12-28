@@ -36,39 +36,38 @@ public:
 
   //! The Gauss-Legendre integration with N = Order points of integration,
   //! is done on the function F between the bounds Lower and Upper.
-  Standard_EXPORT math_GaussSingleIntegration(math_Function&         F,
-                                              const Standard_Real    Lower,
-                                              const Standard_Real    Upper,
-                                              const Standard_Integer Order);
+  Standard_EXPORT math_GaussSingleIntegration(math_Function& F,
+                                              const double   Lower,
+                                              const double   Upper,
+                                              const int      Order);
 
   //! The Gauss-Legendre integration with N = Order points of integration and
   //! given tolerance = Tol is done on the function F between the bounds
   //! Lower and Upper.
-  Standard_EXPORT math_GaussSingleIntegration(math_Function&         F,
-                                              const Standard_Real    Lower,
-                                              const Standard_Real    Upper,
-                                              const Standard_Integer Order,
-                                              const Standard_Real    Tol);
+  Standard_EXPORT math_GaussSingleIntegration(math_Function& F,
+                                              const double   Lower,
+                                              const double   Upper,
+                                              const int      Order,
+                                              const double   Tol);
 
   //! returns True if all has been correctly done.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the value of the integral.
-  Standard_Real Value() const;
+  double Value() const;
 
   //! Prints information on the current state of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
   //! performs actual computation
-  Standard_EXPORT void Perform(math_Function&         F,
-                               const Standard_Real    Lower,
-                               const Standard_Real    Upper,
-                               const Standard_Integer Order);
+  Standard_EXPORT void Perform(math_Function& F,
+                               const double   Lower,
+                               const double   Upper,
+                               const int      Order);
 
-  Standard_Real    Val{};
-  Standard_Boolean Done{};
+  double Val{};
+  bool   Done{};
 };
 
 #include <math_GaussSingleIntegration.lxx>

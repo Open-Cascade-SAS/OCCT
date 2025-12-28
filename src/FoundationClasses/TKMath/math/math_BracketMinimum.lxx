@@ -16,8 +16,8 @@
 
 #include <Precision.hxx>
 
-inline math_BracketMinimum::math_BracketMinimum(const Standard_Real A, const Standard_Real B)
-    : Done(Standard_False),
+inline math_BracketMinimum::math_BracketMinimum(const double A, const double B)
+    : Done(false),
       Ax(A),
       Bx(B),
       Cx(0.),
@@ -26,13 +26,13 @@ inline math_BracketMinimum::math_BracketMinimum(const Standard_Real A, const Sta
       FCx(0.),
       myLeft(-Precision::Infinite()),
       myRight(Precision::Infinite()),
-      myIsLimited(Standard_False),
-      myFA(Standard_False),
-      myFB(Standard_False)
+      myIsLimited(false),
+      myFA(false),
+      myFB(false)
 {
 }
 
-inline Standard_Boolean math_BracketMinimum::IsDone() const
+inline bool math_BracketMinimum::IsDone() const
 {
   return Done;
 }
@@ -43,27 +43,26 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_BracketMinim
   return o;
 }
 
-inline void math_BracketMinimum::SetLimits(const Standard_Real theLeft,
-                                           const Standard_Real theRight)
+inline void math_BracketMinimum::SetLimits(const double theLeft, const double theRight)
 {
   myLeft      = theLeft;
   myRight     = theRight;
-  myIsLimited = Standard_True;
+  myIsLimited = true;
 }
 
-inline void math_BracketMinimum::SetFA(const Standard_Real theValue)
+inline void math_BracketMinimum::SetFA(const double theValue)
 {
   FAx  = theValue;
-  myFA = Standard_True;
+  myFA = true;
 }
 
-inline void math_BracketMinimum::SetFB(const Standard_Real theValue)
+inline void math_BracketMinimum::SetFB(const double theValue)
 {
   FBx  = theValue;
-  myFB = Standard_True;
+  myFB = true;
 }
 
-inline Standard_Real math_BracketMinimum::Limited(const Standard_Real theValue) const
+inline double math_BracketMinimum::Limited(const double theValue) const
 {
   return theValue < myLeft ? myLeft : theValue > myRight ? myRight : theValue;
 }

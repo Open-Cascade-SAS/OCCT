@@ -22,38 +22,40 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure, Standard_Transient)
 
 //=================================================================================================
 
-Graphic3d_CStructure::Graphic3d_CStructure(const Handle(Graphic3d_StructureManager)& theManager)
+Graphic3d_CStructure::Graphic3d_CStructure(
+  const occ::handle<Graphic3d_StructureManager>& theManager)
     : myGraphicDriver(theManager->GraphicDriver()),
       myId(-1),
       myZLayer(Graphic3d_ZLayerId_Default),
       myPriority(Graphic3d_DisplayPriority_Normal),
       myPreviousPriority(Graphic3d_DisplayPriority_Normal),
-      myIsCulled(Standard_True),
-      myBndBoxClipCheck(Standard_True),
-      myHasGroupTrsf(Standard_False),
+      myIsCulled(true),
+      myBndBoxClipCheck(true),
+      myHasGroupTrsf(false),
       //
       IsInfinite(0),
       stick(0),
       highlight(0),
       visible(1),
       HLRValidation(0),
-      IsForHighlight(Standard_False),
-      IsMutable(Standard_False),
-      Is2dText(Standard_False)
+      IsForHighlight(false),
+      IsMutable(false),
+      Is2dText(false)
 {
   myId = myGraphicDriver->NewIdentification();
 }
 
 //=================================================================================================
 
-void Graphic3d_CStructure::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_CStructure::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  for (Graphic3d_SequenceOfGroup::Iterator anIterator(myGroups); anIterator.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator anIterator(myGroups);
+       anIterator.More();
        anIterator.Next())
   {
-    const Handle(Graphic3d_Group)& aGroup = anIterator.Value();
+    const occ::handle<Graphic3d_Group>& aGroup = anIterator.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aGroup.get())
   }
 

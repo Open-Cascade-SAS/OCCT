@@ -20,31 +20,31 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveBox, Select3D_SensitiveEntity)
 
 //=================================================================================================
 
-Select3D_SensitiveBox::Select3D_SensitiveBox(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                             const Bnd_Box&                       theBox)
+Select3D_SensitiveBox::Select3D_SensitiveBox(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                             const Bnd_Box&                            theBox)
     : Select3D_SensitiveEntity(theOwnerId)
 {
-  Standard_Real aXMax, aYMax, aZMax;
-  Standard_Real aXMin, aYMin, aZMin;
+  double aXMax, aYMax, aZMax;
+  double aXMin, aYMin, aZMin;
   theBox.Get(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-  myBox =
-    Select3D_BndBox3d(SelectMgr_Vec3(aXMin, aYMin, aZMin), SelectMgr_Vec3(aXMax, aYMax, aZMax));
+  myBox      = Select3D_BndBox3d(NCollection_Vec3<double>(aXMin, aYMin, aZMin),
+                            NCollection_Vec3<double>(aXMax, aYMax, aZMax));
   myCenter3d = (gp_XYZ(aXMin, aYMin, aZMin) + gp_XYZ(aXMax, aYMax, aZMax)) * (1.0 / 2.0);
 }
 
 //=================================================================================================
 
-Select3D_SensitiveBox::Select3D_SensitiveBox(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                             const Standard_Real                  theXMin,
-                                             const Standard_Real                  theYMin,
-                                             const Standard_Real                  theZMin,
-                                             const Standard_Real                  theXMax,
-                                             const Standard_Real                  theYMax,
-                                             const Standard_Real                  theZMax)
+Select3D_SensitiveBox::Select3D_SensitiveBox(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                             const double                              theXMin,
+                                             const double                              theYMin,
+                                             const double                              theZMin,
+                                             const double                              theXMax,
+                                             const double                              theYMax,
+                                             const double                              theZMax)
     : Select3D_SensitiveEntity(theOwnerId)
 {
-  myBox = Select3D_BndBox3d(SelectMgr_Vec3(theXMin, theYMin, theZMin),
-                            SelectMgr_Vec3(theXMax, theYMax, theZMax));
+  myBox = Select3D_BndBox3d(NCollection_Vec3<double>(theXMin, theYMin, theZMin),
+                            NCollection_Vec3<double>(theXMax, theYMax, theZMax));
   myCenter3d =
     (gp_XYZ(theXMin, theYMin, theZMin) + gp_XYZ(theXMax, theYMax, theZMax)) * (1.0 / 2.0);
 }
@@ -53,14 +53,14 @@ Select3D_SensitiveBox::Select3D_SensitiveBox(const Handle(SelectMgr_EntityOwner)
 // function : NbSubElements
 // purpose  : Returns the amount of sub-entities in sensitive
 //=======================================================================
-Standard_Integer Select3D_SensitiveBox::NbSubElements() const
+int Select3D_SensitiveBox::NbSubElements() const
 {
   return 1;
 }
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected()
+occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveBox::GetConnected()
 {
   Bnd_Box aBox;
   aBox.Update(myBox.CornerMin().x(),
@@ -69,7 +69,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected()
               myBox.CornerMax().x(),
               myBox.CornerMax().y(),
               myBox.CornerMax().z());
-  Handle(Select3D_SensitiveBox) aNewEntity = new Select3D_SensitiveBox(myOwnerId, aBox);
+  occ::handle<Select3D_SensitiveBox> aNewEntity = new Select3D_SensitiveBox(myOwnerId, aBox);
 
   return aNewEntity;
 }
@@ -78,22 +78,22 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected()
 // function : Matches
 // purpose  : Checks whether the box overlaps current selecting volume
 //=======================================================================
-Standard_Boolean Select3D_SensitiveBox::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                SelectBasics_PickResult&             thePickResult)
+bool Select3D_SensitiveBox::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                    SelectBasics_PickResult&             thePickResult)
 {
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
-    Standard_Boolean isInside = Standard_True;
+    bool isInside = true;
     return theMgr.OverlapsBox(myBox.CornerMin(), myBox.CornerMax(), &isInside) && isInside;
   }
 
   if (!theMgr.OverlapsBox(myBox.CornerMin(), myBox.CornerMax(), thePickResult)) // check for overlap
   {
-    return Standard_False;
+    return false;
   }
 
   thePickResult.SetDistToGeomCenter(theMgr.DistToGeometryCenter(myCenter3d));
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -118,7 +118,7 @@ Select3D_BndBox3d Select3D_SensitiveBox::BoundingBox()
 
 //=================================================================================================
 
-void Select3D_SensitiveBox::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Select3D_SensitiveBox::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)

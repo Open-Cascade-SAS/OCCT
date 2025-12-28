@@ -26,7 +26,7 @@ public:
   Standard_EXPORT Graphic3d_Texture3D(const TCollection_AsciiString& theFileName);
 
   //! Creates a texture from the pixmap.
-  Standard_EXPORT Graphic3d_Texture3D(const Handle(Image_PixMap)& thePixMap);
+  Standard_EXPORT Graphic3d_Texture3D(const occ::handle<Image_PixMap>& thePixMap);
 
   //! Creates a texture from a file.
   Standard_EXPORT Graphic3d_Texture3D(const NCollection_Array1<TCollection_AsciiString>& theFiles);
@@ -37,11 +37,11 @@ public:
   //! Assign new image to the texture.
   //! Note that this method does not invalidate already uploaded resources - consider calling
   //! ::UpdateRevision() if needed.
-  Standard_EXPORT void SetImage(const Handle(Image_PixMap)& thePixMap);
+  Standard_EXPORT void SetImage(const occ::handle<Image_PixMap>& thePixMap);
 
   //! Load and return image.
-  Standard_EXPORT virtual Handle(Image_PixMap) GetImage(
-    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Image_PixMap> GetImage(
+    const occ::handle<Image_SupportedFormats>& theSupported) override;
 
 protected:
   NCollection_Array1<TCollection_AsciiString> myPaths;

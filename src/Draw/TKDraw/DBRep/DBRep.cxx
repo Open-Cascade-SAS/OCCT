@@ -31,16 +31,17 @@
 #include <GProp_GProps.hxx>
 #include <NCollection_Vector.hxx>
 #include <OSD_FileSystem.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 #include <stdio.h>
 // memory management
@@ -100,7 +101,7 @@ DBRep_Params& DBRep::Parameters()
 // isos
 //=======================================================================
 
-static Standard_Integer isos(Draw_Interpretor& di, Standard_Integer NbArg, const char** Arg)
+static int isos(Draw_Interpretor& di, int NbArg, const char** Arg)
 {
   DBRep_Params& aParams = DBRep::Parameters();
   NbArg--;
@@ -110,15 +111,15 @@ static Standard_Integer isos(Draw_Interpretor& di, Standard_Integer NbArg, const
     return 0;
   }
 
-  Standard_Integer aNbIsos = 0;
-  Standard_Boolean Change  = Standard_False;
+  int  aNbIsos = 0;
+  bool Change  = false;
   if (!Characters(NbArg) && Float(NbArg))
     return 1;
   if (!Characters(NbArg))
   {
     aNbIsos = Draw::Atoi(Arg[NbArg]);
     NbArg--;
-    Change = Standard_True;
+    Change = true;
   }
 
   if (NbArg <= 0)
@@ -128,12 +129,12 @@ static Standard_Integer isos(Draw_Interpretor& di, Standard_Integer NbArg, const
   }
   else
   {
-    for (Standard_Integer IArg = 1; IArg <= NbArg; IArg++)
+    for (int IArg = 1; IArg <= NbArg; IArg++)
     {
-      Handle(Draw_Drawable3D) Shape1 = Draw::Get(Arg[IArg]);
+      occ::handle<Draw_Drawable3D> Shape1 = Draw::Get(Arg[IArg]);
       if (!Shape1.IsNull())
       {
-        Handle(DBRep_DrawableShape) Shape2 = Handle(DBRep_DrawableShape)::DownCast(Shape1);
+        occ::handle<DBRep_DrawableShape> Shape2 = occ::down_cast<DBRep_DrawableShape>(Shape1);
         if (!Shape2.IsNull())
         {
           if (Change)
@@ -158,7 +159,7 @@ static Standard_Integer isos(Draw_Interpretor& di, Standard_Integer NbArg, const
 // hlr
 //=======================================================================
 
-static Standard_Integer hlr(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int hlr(Draw_Interpretor& di, int n, const char** a)
 {
   DBRep_Params& aParams = DBRep::Parameters();
   if (n <= 1)
@@ -185,41 +186,41 @@ static Standard_Integer hlr(Draw_Interpretor& di, Standard_Integer n, const char
   {
     if (!strcasecmp(a[1], "nohlr"))
     {
-      aParams.WithHLR = Standard_False;
+      aParams.WithHLR = false;
     }
     else if (!strcasecmp(a[1], "hlr"))
     {
-      aParams.WithHLR = Standard_True;
+      aParams.WithHLR = true;
     }
     else if (!strcasecmp(a[1], "nohid"))
     {
-      aParams.WithHid = Standard_False;
+      aParams.WithHid = false;
     }
     else if (!strcasecmp(a[1], "hid"))
     {
-      aParams.WithHLR = Standard_True;
-      aParams.WithHid = Standard_True;
+      aParams.WithHLR = true;
+      aParams.WithHid = true;
     }
     else if (!strcasecmp(a[1], "norg1"))
     {
-      aParams.WithRg1 = Standard_False;
-      aParams.WithRgN = Standard_False;
+      aParams.WithRg1 = false;
+      aParams.WithRgN = false;
     }
     else if (!strcasecmp(a[1], "rg1"))
     {
-      aParams.WithHLR = Standard_True;
-      aParams.WithRg1 = Standard_True;
-      aParams.WithRgN = Standard_False;
+      aParams.WithHLR = true;
+      aParams.WithRg1 = true;
+      aParams.WithRgN = false;
     }
     else if (!strcasecmp(a[1], "norgn"))
     {
-      aParams.WithRgN = Standard_False;
+      aParams.WithRgN = false;
     }
     else if (!strcasecmp(a[1], "rgn"))
     {
-      aParams.WithHLR = Standard_True;
-      aParams.WithRg1 = Standard_True;
-      aParams.WithRgN = Standard_True;
+      aParams.WithHLR = true;
+      aParams.WithRg1 = true;
+      aParams.WithRgN = true;
     }
     else if (!strcasecmp(a[1], "ang"))
     {
@@ -230,15 +231,15 @@ static Standard_Integer hlr(Draw_Interpretor& di, Standard_Integer n, const char
       return 1;
   }
 
-  Standard_Integer nFirst = 2;
+  int nFirst = 2;
 
   if (n >= 3 && !strcasecmp(a[1], "ang"))
   {
     nFirst = 3;
     if (n == 3)
     {
-      Standard_Real ang = Draw::Atof(a[2]);
-      aParams.HLRAngle  = ang * M_PI / 180;
+      double ang       = Draw::Atof(a[2]);
+      aParams.HLRAngle = ang * M_PI / 180;
       if (aParams.HLRAngle < aParams.HAngMin)
       {
         aParams.HLRAngle = aParams.HAngMin;
@@ -252,60 +253,60 @@ static Standard_Integer hlr(Draw_Interpretor& di, Standard_Integer n, const char
     di << aParams.HLRAngle * 180 / M_PI << " degrees\n";
   }
 
-  for (Standard_Integer i = nFirst; i < n; i++)
+  for (int i = nFirst; i < n; i++)
   {
-    Handle(Draw_Drawable3D)     D = Draw::Get(a[i]);
-    Handle(DBRep_DrawableShape) S = Handle(DBRep_DrawableShape)::DownCast(D);
+    occ::handle<Draw_Drawable3D>     D = Draw::Get(a[i]);
+    occ::handle<DBRep_DrawableShape> S = occ::down_cast<DBRep_DrawableShape>(D);
     if (S.IsNull())
     {
       continue;
     }
 
-    bool          localHLR = false, localRg1 = false, localRgN = false, localHid = false;
-    Standard_Real localAng = 0.0;
+    bool   localHLR = false, localRg1 = false, localRgN = false, localHid = false;
+    double localAng = 0.0;
     S->GetDisplayHLR(localHLR, localRg1, localRgN, localHid, localAng);
     if (!strcasecmp(a[1], "nohlr"))
     {
-      localHLR = Standard_False;
+      localHLR = false;
     }
     else if (!strcasecmp(a[1], "hlr"))
     {
-      localHLR = Standard_True;
+      localHLR = true;
     }
     else if (!strcasecmp(a[1], "nohid"))
     {
-      localHid = Standard_False;
+      localHid = false;
     }
     else if (!strcasecmp(a[1], "hid"))
     {
-      localHLR = Standard_True;
-      localHid = Standard_True;
+      localHLR = true;
+      localHid = true;
     }
     else if (!strcasecmp(a[1], "norg1"))
     {
-      localRg1 = Standard_False;
-      localRgN = Standard_False;
+      localRg1 = false;
+      localRgN = false;
     }
     else if (!strcasecmp(a[1], "rg1"))
     {
-      localHLR = Standard_True;
-      localRg1 = Standard_True;
-      localRgN = Standard_False;
+      localHLR = true;
+      localRg1 = true;
+      localRgN = false;
     }
     else if (!strcasecmp(a[1], "norgn"))
     {
-      localRgN = Standard_False;
+      localRgN = false;
     }
     else if (!strcasecmp(a[1], "rgn"))
     {
-      localHLR = Standard_True;
-      localRg1 = Standard_True;
-      localRgN = Standard_True;
+      localHLR = true;
+      localRg1 = true;
+      localRgN = true;
     }
     else if (!strcasecmp(a[1], "ang"))
     {
-      Standard_Real ang = Draw::Atof(a[2]);
-      localAng          = ang * M_PI / 180;
+      double ang = Draw::Atof(a[2]);
+      localAng   = ang * M_PI / 180;
     }
     else
     {
@@ -323,18 +324,18 @@ static Standard_Integer hlr(Draw_Interpretor& di, Standard_Integer n, const char
 // dispor, dispcon
 //=======================================================================
 
-static Standard_Integer dispor(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int dispor(Draw_Interpretor&, int n, const char** a)
 {
-  Standard_Boolean d = !strcasecmp(a[0], "vori");
+  bool d = !strcasecmp(a[0], "vori");
   if (d)
   {
     DBRep_WriteColorOrientation();
   }
 
-  for (Standard_Integer i = 1; i < n; i++)
+  for (int i = 1; i < n; i++)
   {
-    Handle(Draw_Drawable3D) d1 = Draw::Get(a[i]);
-    if (Handle(DBRep_DrawableShape) d2 = Handle(DBRep_DrawableShape)::DownCast(d1))
+    occ::handle<Draw_Drawable3D> d1 = Draw::Get(a[i]);
+    if (occ::handle<DBRep_DrawableShape> d2 = occ::down_cast<DBRep_DrawableShape>(d1))
     {
       d2->DisplayOrientation(d);
       Draw::Repaint();
@@ -347,7 +348,7 @@ static Standard_Integer dispor(Draw_Interpretor&, Standard_Integer n, const char
 // discretisation
 //=======================================================================
 
-static Standard_Integer discretisation(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int discretisation(Draw_Interpretor& di, int n, const char** a)
 {
   DBRep_Params& aParams = DBRep::Parameters();
   if (n <= 1)
@@ -365,7 +366,7 @@ static Standard_Integer discretisation(Draw_Interpretor& di, Standard_Integer n,
 // triangles
 //=======================================================================
 
-static Standard_Integer triangles(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int triangles(Draw_Interpretor&, int n, const char** a)
 {
   DBRep_Params& aParams = DBRep::Parameters();
   if (n < 1)
@@ -378,10 +379,10 @@ static Standard_Integer triangles(Draw_Interpretor&, Standard_Integer n, const c
   }
   else
   {
-    for (Standard_Integer i = 1; i <= n - 1; i++)
+    for (int i = 1; i <= n - 1; i++)
     {
-      Handle(Draw_Drawable3D) d1 = Draw::Get(a[i]);
-      if (Handle(DBRep_DrawableShape) d2 = Handle(DBRep_DrawableShape)::DownCast(d1))
+      occ::handle<Draw_Drawable3D> d1 = Draw::Get(a[i]);
+      if (occ::handle<DBRep_DrawableShape> d2 = occ::down_cast<DBRep_DrawableShape>(d1))
       {
         d2->DisplayTriangulation(!(d2->DisplayTriangulation()));
       }
@@ -396,10 +397,10 @@ static Standard_Integer triangles(Draw_Interpretor&, Standard_Integer n, const c
 // tclean
 //=======================================================================
 
-static Standard_Integer tclean(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int tclean(Draw_Interpretor& di, int n, const char** a)
 {
-  Standard_Boolean toRemoveGeometry = Standard_False;
-  Standard_Boolean isForceClean     = Standard_False;
+  bool toRemoveGeometry = false;
+  bool isForceClean     = false;
 
   if (n <= 1)
   {
@@ -408,15 +409,15 @@ static Standard_Integer tclean(Draw_Interpretor& di, Standard_Integer n, const c
   }
   TopoDS_Compound aCompound;
   BRep_Builder().MakeCompound(aCompound);
-  for (Standard_Integer anArgIter = 1; anArgIter < n; ++anArgIter)
+  for (int anArgIter = 1; anArgIter < n; ++anArgIter)
   {
     if (strcmp(a[anArgIter], "-geom") == 0)
     {
-      toRemoveGeometry = Standard_True;
+      toRemoveGeometry = true;
     }
     else if (strcmp(a[anArgIter], "-force") == 0)
     {
-      isForceClean = Standard_True;
+      isForceClean = true;
     }
     else
     {
@@ -452,7 +453,7 @@ static Standard_Integer tclean(Draw_Interpretor& di, Standard_Integer n, const c
 // polygons
 //=======================================================================
 
-static Standard_Integer polygons(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int polygons(Draw_Interpretor&, int n, const char** a)
 {
   DBRep_Params& aParams = DBRep::Parameters();
   if (n < 1)
@@ -465,10 +466,10 @@ static Standard_Integer polygons(Draw_Interpretor&, Standard_Integer n, const ch
   }
   else
   {
-    for (Standard_Integer i = 1; i <= n - 1; i++)
+    for (int i = 1; i <= n - 1; i++)
     {
-      Handle(Draw_Drawable3D) d1 = Draw::Get(a[i]);
-      if (Handle(DBRep_DrawableShape) d2 = Handle(DBRep_DrawableShape)::DownCast(d1))
+      occ::handle<Draw_Drawable3D> d1 = Draw::Get(a[i]);
+      if (occ::handle<DBRep_DrawableShape> d2 = occ::down_cast<DBRep_DrawableShape>(d1))
       {
         d2->DisplayPolygons(!(d2->DisplayPolygons()));
       }
@@ -482,14 +483,14 @@ static Standard_Integer polygons(Draw_Interpretor&, Standard_Integer n, const ch
 // compound
 //=======================================================================
 
-static Standard_Integer compound(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int compound(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
     return 1;
   BRep_Builder    B;
   TopoDS_Compound C;
   B.MakeCompound(C);
-  for (Standard_Integer i = 1; i < n - 1; i++)
+  for (int i = 1; i < n - 1; i++)
   {
     TopoDS_Shape S2 = DBRep::Get(a[i]);
     if (!S2.IsNull())
@@ -503,7 +504,7 @@ static Standard_Integer compound(Draw_Interpretor&, Standard_Integer n, const ch
 // emptycopy
 //=======================================================================
 
-static Standard_Integer emptycopy(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int emptycopy(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
     return 1;
@@ -519,7 +520,7 @@ static Standard_Integer emptycopy(Draw_Interpretor&, Standard_Integer n, const c
 // add
 //=======================================================================
 
-static Standard_Integer add(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int add(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
     return 1;
@@ -539,7 +540,7 @@ static Standard_Integer add(Draw_Interpretor&, Standard_Integer n, const char** 
 // explode
 //=======================================================================
 
-static Standard_Integer explode(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int explode(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
     return 1;
@@ -553,7 +554,7 @@ static Standard_Integer explode(Draw_Interpretor& di, Standard_Integer n, const 
     p++;
   *p = '_';
   p++;
-  Standard_Integer i = 0;
+  int i = 0;
   if (n == 2)
   {
     TopoDS_Iterator itr(S);
@@ -615,13 +616,13 @@ static Standard_Integer explode(Draw_Interpretor& di, Standard_Integer n, const 
         return 1;
     }
 
-    TopTools_MapOfShape M;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
     M.Add(S);
     TopExp_Explorer ex(S, typ);
     for (; ex.More(); ex.Next())
     {
       const TopoDS_Shape& Sx    = ex.Current();
-      Standard_Boolean    added = M.Add(Sx);
+      bool                added = M.Add(Sx);
       if (added)
       {
         i++;
@@ -638,7 +639,7 @@ static Standard_Integer explode(Draw_Interpretor& di, Standard_Integer n, const 
 // nexplode : stable numbered explode (from Serguey Nizhny)
 //=======================================================================
 
-static Standard_Integer nexplode(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int nexplode(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 2)
     return 1;
@@ -674,14 +675,14 @@ static Standard_Integer nexplode(Draw_Interpretor& di, Standard_Integer n, const
     default:
       return 1;
   }
-  TopTools_IndexedMapOfShape IMOStmp;
-  TopTools_MapOfShape        MShape;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> IMOStmp;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>        MShape;
   IMOStmp.Add(S);
   TopExp::MapShapes(S, typ, IMOStmp);
-  TopExp_Explorer  Exp(S, typ);
-  Standard_Integer MaxShapes, Index = 0;
+  TopExp_Explorer Exp(S, typ);
+  int             MaxShapes, Index = 0;
   MaxShapes = IMOStmp.Extent() - 1;
-  TopTools_Array1OfShape aShapes(1, MaxShapes);
+  NCollection_Array1<TopoDS_Shape> aShapes(1, MaxShapes);
 
   // explode
   while (Exp.More())
@@ -694,12 +695,12 @@ static Standard_Integer nexplode(Draw_Interpretor& di, Standard_Integer n, const
     Exp.Next();
   }
   //
-  TColStd_Array1OfInteger OrderInd(1, MaxShapes);
-  gp_Pnt                  GPoint;
-  GProp_GProps            GPr;
-  Standard_Integer        aTemp;
-  TColStd_Array1OfReal    MidXYZ(1, MaxShapes); // X,Y,Z;
-  Standard_Boolean        NoSort = Standard_True;
+  NCollection_Array1<int>    OrderInd(1, MaxShapes);
+  gp_Pnt                     GPoint;
+  GProp_GProps               GPr;
+  int                        aTemp;
+  NCollection_Array1<double> MidXYZ(1, MaxShapes); // X,Y,Z;
+  bool                       NoSort = true;
   //
   // Computing of CentreOfMass for edge and face
   // and for vertex use its point
@@ -721,7 +722,7 @@ static Standard_Integer nexplode(Draw_Interpretor& di, Standard_Integer n, const
   // Sorting
   while (NoSort)
   {
-    NoSort = Standard_False;
+    NoSort = false;
     for (Index = 1; Index < MaxShapes; Index++)
     {
       if (MidXYZ(OrderInd(Index)) > MidXYZ(OrderInd(Index + 1)))
@@ -729,7 +730,7 @@ static Standard_Integer nexplode(Draw_Interpretor& di, Standard_Integer n, const
         aTemp               = OrderInd(Index);
         OrderInd(Index)     = OrderInd(Index + 1);
         OrderInd(Index + 1) = aTemp;
-        NoSort              = Standard_True;
+        NoSort              = true;
       }
     }
   }
@@ -754,7 +755,7 @@ static Standard_Integer nexplode(Draw_Interpretor& di, Standard_Integer n, const
 // exwire
 //=======================================================================
 
-static Standard_Integer exwire(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int exwire(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
     return 1;
@@ -770,7 +771,7 @@ static Standard_Integer exwire(Draw_Interpretor&, Standard_Integer n, const char
     p++;
   *p = '_';
   p++;
-  Standard_Integer       i = 0;
+  int                    i = 0;
   BRepTools_WireExplorer ex(TopoDS::Wire(S));
   while (ex.More())
   {
@@ -786,7 +787,7 @@ static Standard_Integer exwire(Draw_Interpretor&, Standard_Integer n, const char
 // invert
 //=======================================================================
 
-static Standard_Integer invert(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int invert(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
     return 1;
@@ -813,13 +814,13 @@ static Standard_Integer invert(Draw_Interpretor&, Standard_Integer n, const char
 // orientation, reverse, complement
 //=======================================================================
 
-static Standard_Integer orientation(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int orientation(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
     return 1;
-  Standard_Integer   cas  = 0;
+  int                cas  = 0;
   TopAbs_Orientation ori  = TopAbs_FORWARD;
-  Standard_Integer   last = n;
+  int                last = n;
   if (!strcasecmp(a[0], "orientation"))
   {
     if (n <= 2)
@@ -856,7 +857,7 @@ static Standard_Integer orientation(Draw_Interpretor&, Standard_Integer n, const
     cas = -2;
   }
 
-  for (Standard_Integer i = 1; i < last; i++)
+  for (int i = 1; i < last; i++)
   {
     TopoDS_Shape S = DBRep::Get(a[i]);
     if (!S.IsNull())
@@ -879,13 +880,13 @@ static Standard_Integer orientation(Draw_Interpretor&, Standard_Integer n, const
 // numshapes same as nbshapes but the output is cout
 //=======================================================================
 
-static Standard_Integer numshapes(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int numshapes(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Standard_Integer i;
-  TopExp_Explorer  ex;
+  int             i;
+  TopExp_Explorer ex;
   for (i = 1; i < n; i++)
   {
     TopoDS_Shape S = DBRep::Get(a[i]);
@@ -910,19 +911,19 @@ static Standard_Integer numshapes(Draw_Interpretor& di, Standard_Integer n, cons
 //=======================================================================
 static void DumpExtent(const TopoDS_Shape& aS, TCollection_AsciiString& aStr)
 {
-  const int                  aNbTypes             = 8;
-  const char*                pNames[aNbTypes + 1] = {" SHAPE     : ",
-                                                     " COMPOUND  : ",
-                                                     " COMPSOLID : ",
-                                                     " SOLID     : ",
-                                                     " SHELL     : ",
-                                                     " FACE      : ",
-                                                     " WIRE      : ",
-                                                     " EDGE      : ",
-                                                     " VERTEX    : "};
-  Standard_Integer           i, aNb, aNbSh;
-  TopAbs_ShapeEnum           aType;
-  TopTools_IndexedMapOfShape aM;
+  const int        aNbTypes             = 8;
+  const char*      pNames[aNbTypes + 1] = {" SHAPE     : ",
+                                           " COMPOUND  : ",
+                                           " COMPSOLID : ",
+                                           " SOLID     : ",
+                                           " SHELL     : ",
+                                           " FACE      : ",
+                                           " WIRE      : ",
+                                           " EDGE      : ",
+                                           " VERTEX    : "};
+  int              i, aNb, aNbSh;
+  TopAbs_ShapeEnum aType;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aM;
   //
   aNbSh = 0;
   //
@@ -942,16 +943,16 @@ static void DumpExtent(const TopoDS_Shape& aS, TCollection_AsciiString& aStr)
 // nbshapes
 //=======================================================================
 
-static Standard_Integer nbshapes(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int nbshapes(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Standard_Integer i;
-  Standard_Boolean aTotal;
-  TopExp_Explorer  ex;
+  int             i;
+  bool            aTotal;
+  TopExp_Explorer ex;
   //
-  aTotal = !strcmp(a[n - 1], "-t") ? Standard_True : Standard_False;
+  aTotal = !strcmp(a[n - 1], "-t") ? true : false;
   //
   for (i = 1; i < n; i++)
   {
@@ -981,26 +982,26 @@ static Standard_Integer nbshapes(Draw_Interpretor& di, Standard_Integer n, const
 //
 //=======================================================================
 
-static Standard_Integer countshapes(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int countshapes(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Standard_Integer i;
-  TopExp_Explorer  ex;
+  int             i;
+  TopExp_Explorer ex;
   for (i = 1; i < n; i++)
   {
-    TopoDS_Shape     Sh     = DBRep::Get(a[i]);
-    Standard_Integer nbElem = 0;
+    TopoDS_Shape Sh     = DBRep::Get(a[i]);
+    int          nbElem = 0;
     if (!Sh.IsNull())
     {
       di << "Number of shapes in " << a[i] << "\n";
-      TopTools_MapOfShape M;
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
 
       for (ex.Init(Sh, TopAbs_VERTEX); ex.More(); ex.Next())
       {
         const TopoDS_Shape& S     = ex.Current();
-        Standard_Boolean    added = M.Add(S);
+        bool                added = M.Add(S);
         if (added)
         {
           nbElem++;
@@ -1012,7 +1013,7 @@ static Standard_Integer countshapes(Draw_Interpretor& di, Standard_Integer n, co
       for (ex.Init(Sh, TopAbs_EDGE); ex.More(); ex.Next())
       {
         const TopoDS_Shape& S     = ex.Current();
-        Standard_Boolean    added = M.Add(S);
+        bool                added = M.Add(S);
         if (added)
         {
           nbElem++;
@@ -1024,7 +1025,7 @@ static Standard_Integer countshapes(Draw_Interpretor& di, Standard_Integer n, co
       for (ex.Init(Sh, TopAbs_WIRE); ex.More(); ex.Next())
       {
         const TopoDS_Shape& S     = ex.Current();
-        Standard_Boolean    added = M.Add(S);
+        bool                added = M.Add(S);
         if (added)
         {
           nbElem++;
@@ -1036,7 +1037,7 @@ static Standard_Integer countshapes(Draw_Interpretor& di, Standard_Integer n, co
       for (ex.Init(Sh, TopAbs_FACE); ex.More(); ex.Next())
       {
         const TopoDS_Shape& S     = ex.Current();
-        Standard_Boolean    added = M.Add(S);
+        bool                added = M.Add(S);
         if (added)
         {
           nbElem++;
@@ -1048,7 +1049,7 @@ static Standard_Integer countshapes(Draw_Interpretor& di, Standard_Integer n, co
       for (ex.Init(Sh, TopAbs_SHELL); ex.More(); ex.Next())
       {
         const TopoDS_Shape& S     = ex.Current();
-        Standard_Boolean    added = M.Add(S);
+        bool                added = M.Add(S);
         if (added)
         {
           nbElem++;
@@ -1060,7 +1061,7 @@ static Standard_Integer countshapes(Draw_Interpretor& di, Standard_Integer n, co
       for (ex.Init(Sh, TopAbs_SOLID); ex.More(); ex.Next())
       {
         const TopoDS_Shape& S     = ex.Current();
-        Standard_Boolean    added = M.Add(S);
+        bool                added = M.Add(S);
         if (added)
         {
           nbElem++;
@@ -1072,7 +1073,7 @@ static Standard_Integer countshapes(Draw_Interpretor& di, Standard_Integer n, co
       for (ex.Init(Sh, TopAbs_COMPSOLID); ex.More(); ex.Next())
       {
         const TopoDS_Shape& S     = ex.Current();
-        Standard_Boolean    added = M.Add(S);
+        bool                added = M.Add(S);
         if (added)
         {
           nbElem++;
@@ -1084,7 +1085,7 @@ static Standard_Integer countshapes(Draw_Interpretor& di, Standard_Integer n, co
       for (ex.Init(Sh, TopAbs_COMPOUND); ex.More(); ex.Next())
       {
         const TopoDS_Shape& S     = ex.Current();
-        Standard_Boolean    added = M.Add(S);
+        bool                added = M.Add(S);
         if (added)
         {
           nbElem++;
@@ -1104,97 +1105,97 @@ static Standard_Integer countshapes(Draw_Interpretor& di, Standard_Integer n, co
 //=======================================================================
 //
 //=======================================================================
-void setProp(TopoDS_Shape Sh, const char** a, Standard_Integer n)
+void setProp(TopoDS_Shape Sh, const char** a, int n)
 {
-  Standard_Integer i;
+  int i;
   for (i = 2; i < n; i++)
   {
     if (strstr(a[i], "free"))
     {
       if (a[i][0] == '-')
       {
-        Sh.Free(Standard_False);
+        Sh.Free(false);
       }
       else
       {
-        Sh.Free(Standard_True);
+        Sh.Free(true);
       }
     }
     if (strstr(a[i], "modified"))
     {
       if (a[i][0] == '-')
       {
-        Sh.Modified(Standard_False);
+        Sh.Modified(false);
       }
       else
       {
-        Sh.Modified(Standard_True);
+        Sh.Modified(true);
       }
     }
     if (strstr(a[i], "checked"))
     {
       if (a[i][0] == '-')
       {
-        Sh.Checked(Standard_False);
+        Sh.Checked(false);
       }
       else
       {
-        Sh.Checked(Standard_True);
+        Sh.Checked(true);
       }
     }
     if (strstr(a[i], "orientable"))
     {
       if (a[i][0] == '-')
       {
-        Sh.Orientable(Standard_False);
+        Sh.Orientable(false);
       }
       else
       {
-        Sh.Orientable(Standard_True);
+        Sh.Orientable(true);
       }
     }
     if (strstr(a[i], "closed"))
     {
       if (a[i][0] == '-')
       {
-        Sh.Closed(Standard_False);
+        Sh.Closed(false);
       }
       else
       {
-        Sh.Closed(Standard_True);
+        Sh.Closed(true);
       }
     }
     if (strstr(a[i], "infinite"))
     {
       if (a[i][0] == '-')
       {
-        Sh.Infinite(Standard_False);
+        Sh.Infinite(false);
       }
       else
       {
-        Sh.Infinite(Standard_True);
+        Sh.Infinite(true);
       }
     }
     if (strstr(a[i], "convex"))
     {
       if (a[i][0] == '-')
       {
-        Sh.Convex(Standard_False);
+        Sh.Convex(false);
       }
       else
       {
-        Sh.Convex(Standard_True);
+        Sh.Convex(true);
       }
     }
     if (strstr(a[i], "locked"))
     {
       if (a[i][0] == '-')
       {
-        Sh.Locked(Standard_False);
+        Sh.Locked(false);
       }
       else
       {
-        Sh.Locked(Standard_True);
+        Sh.Locked(true);
       }
     }
   }
@@ -1203,7 +1204,7 @@ void setProp(TopoDS_Shape Sh, const char** a, Standard_Integer n)
 //=======================================================================
 //
 //=======================================================================
-static Standard_Integer setFlags(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int setFlags(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
     return 1;
@@ -1239,7 +1240,7 @@ static Standard_Integer setFlags(Draw_Interpretor&, Standard_Integer n, const ch
 //=======================================================================
 // memory management
 //=======================================================================
-static Standard_Integer purgemmgt(Draw_Interpretor&, Standard_Integer, const char**)
+static int purgemmgt(Draw_Interpretor&, int, const char**)
 {
   Standard::Purge();
   return 0;
@@ -1251,13 +1252,13 @@ static Standard_Integer purgemmgt(Draw_Interpretor&, Standard_Integer, const cha
 // check
 //=======================================================================
 
-static Standard_Integer check(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int check(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Standard_Integer i;
-  TopExp_Explorer  ex;
+  int             i;
+  TopExp_Explorer ex;
   for (i = 1; i < n; i++)
   {
     TopoDS_Shape S = DBRep::Get(a[i]);
@@ -1267,7 +1268,7 @@ static Standard_Integer check(Draw_Interpretor&, Standard_Integer n, const char*
     for (ex.Init(S, TopAbs_FACE); ex.More(); ex.Next())
     {
       C = ex.Current();
-      C.Checked(Standard_False);
+      C.Checked(false);
       BRepTools::Update(C);
     }
   }
@@ -1278,9 +1279,7 @@ static Standard_Integer check(Draw_Interpretor&, Standard_Integer n, const char*
 //=======================================================================
 // normals
 //=======================================================================
-static Standard_Integer normals(Draw_Interpretor& theDI,
-                                Standard_Integer  theArgNum,
-                                const char**      theArgs)
+static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
 {
   if (theArgNum < 2)
   {
@@ -1296,11 +1295,11 @@ static Standard_Integer normals(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Boolean toUseMesh = Standard_False;
-  Standard_Real    aLength   = 10.0;
-  Standard_Integer aNbAlongU = 1, aNbAlongV = 1;
-  Standard_Boolean bPrint = Standard_False;
-  for (Standard_Integer anArgIter = 2; anArgIter < theArgNum; ++anArgIter)
+  bool   toUseMesh = false;
+  double aLength   = 10.0;
+  int    aNbAlongU = 1, aNbAlongV = 1;
+  bool   bPrint = false;
+  for (int anArgIter = 2; anArgIter < theArgNum; ++anArgIter)
   {
     TCollection_AsciiString aParam(theArgs[anArgIter]);
     aParam.LowerCase();
@@ -1315,7 +1314,7 @@ static Standard_Integer normals(Draw_Interpretor& theDI,
     }
     else if (aParam == "-usemesh" || aParam == "-mesh")
     {
-      toUseMesh = Standard_True;
+      toUseMesh = true;
     }
     else if (aParam == "-length" || aParam == "-len")
     {
@@ -1360,7 +1359,7 @@ static Standard_Integer normals(Draw_Interpretor& theDI,
     }
     else if (aParam == "-print")
     {
-      bPrint = Standard_True;
+      bPrint = true;
     }
     else
     {
@@ -1386,18 +1385,18 @@ static Standard_Integer normals(Draw_Interpretor& theDI,
        aFaceIt.More();
        aFaceIt.Next())
   {
-    Standard_Boolean   bReverse = Standard_False;
+    bool               bReverse = false;
     TopAbs_Orientation aFaceOri = aFaceIt.Key().Orientation();
     const Draw_Color   aColor   = DBRep_ColorOrientation(aFaceOri);
     if (aFaceOri == TopAbs_REVERSED)
-      bReverse = Standard_True;
+      bReverse = true;
 
     for (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>::Iterator aNormalsIt(aFaceIt.Value());
          aNormalsIt.More();
          aNormalsIt.Next())
     {
       const std::pair<gp_Pnt, gp_Pnt>& aVec = aNormalsIt.Value();
-      Handle(Draw_Segment3D)           aSeg = new Draw_Segment3D(aVec.first, aVec.second, aColor);
+      occ::handle<Draw_Segment3D>      aSeg = new Draw_Segment3D(aVec.first, aVec.second, aColor);
       dout << aSeg;
       if (bPrint)
       {
@@ -1418,17 +1417,17 @@ static Standard_Integer normals(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-void DBRep::Set(const Standard_CString theName, const TopoDS_Shape& theShape)
+void DBRep::Set(const char* theName, const TopoDS_Shape& theShape)
 {
-  DBRep_Params&               aParams    = DBRep::Parameters();
-  Handle(DBRep_DrawableShape) aDrawShape = new DBRep_DrawableShape(theShape,
-                                                                   Draw_vert,
-                                                                   Draw_jaune,
-                                                                   Draw_rouge,
-                                                                   Draw_bleu,
-                                                                   aParams.Size,
-                                                                   aParams.NbIsos,
-                                                                   aParams.Discretization);
+  DBRep_Params&                    aParams    = DBRep::Parameters();
+  occ::handle<DBRep_DrawableShape> aDrawShape = new DBRep_DrawableShape(theShape,
+                                                                        Draw_vert,
+                                                                        Draw_jaune,
+                                                                        Draw_rouge,
+                                                                        Draw_bleu,
+                                                                        aParams.Size,
+                                                                        aParams.NbIsos,
+                                                                        aParams.Discretization);
   aDrawShape->DisplayTriangulation(aParams.DispTriangles);
   aDrawShape->DisplayPolygons(aParams.DisplayPolygons);
   aDrawShape->DisplayHLR(aParams.WithHLR,
@@ -1441,12 +1440,11 @@ void DBRep::Set(const Standard_CString theName, const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-TopoDS_Shape DBRep::getShape(Standard_CString& theName,
-                             TopAbs_ShapeEnum  theType,
-                             Standard_Boolean  theToComplain)
+TopoDS_Shape DBRep::getShape(const char*& theName, TopAbs_ShapeEnum theType, bool theToComplain)
 {
-  const Standard_Boolean      toPick    = theName[0] == '.';
-  Handle(DBRep_DrawableShape) aDrawable = Handle(DBRep_DrawableShape)::DownCast(Draw::Get(theName));
+  const bool                       toPick = theName[0] == '.';
+  occ::handle<DBRep_DrawableShape> aDrawable =
+    occ::down_cast<DBRep_DrawableShape>(Draw::Get(theName));
   if (aDrawable.IsNull())
   {
     return TopoDS_Shape();
@@ -1456,7 +1454,7 @@ TopoDS_Shape DBRep::getShape(Standard_CString& theName,
   if (theType != TopAbs_SHAPE && theType != aShape.ShapeType() && toPick)
   {
     // try to find prom pick
-    Standard_Real u, v;
+    double u, v;
     DBRep_DrawableShape::LastPick(aShape, u, v);
   }
   if (theType != TopAbs_SHAPE && theType != aShape.ShapeType())
@@ -1474,13 +1472,13 @@ TopoDS_Shape DBRep::getShape(Standard_CString& theName,
   return aShape;
 }
 
-static Standard_Integer XProgress(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int XProgress(Draw_Interpretor& di, int argc, const char** argv)
 {
-  for (Standard_Integer i = 1; i < argc; i++)
+  for (int i = 1; i < argc; i++)
   {
-    Standard_Boolean turn = Standard_True;
+    bool turn = true;
     if (argv[i][0] == '-')
-      turn = Standard_False;
+      turn = false;
     else if (argv[i][0] != '+')
       continue;
 
@@ -1494,7 +1492,7 @@ static Standard_Integer XProgress(Draw_Interpretor& di, Standard_Integer argc, c
       Draw_ProgressIndicator::DefaultGraphMode() = turn;
     else if (!strcmp(argv[i], "-stop") && i + 1 < argc)
     {
-      Standard_Address aPtr = 0;
+      void* aPtr = 0;
       if (sscanf(argv[++i], "%p", &aPtr) == 1)
         Draw_ProgressIndicator::StopIndicator() = aPtr;
       return 0;
@@ -1534,22 +1532,20 @@ static Standard_Integer XProgress(Draw_Interpretor& di, Standard_Integer argc, c
 //=======================================================================
 // writebrep
 //=======================================================================
-static Standard_Integer writebrep(Draw_Interpretor& theDI,
-                                  Standard_Integer  theNbArgs,
-                                  const char**      theArgVec)
+static int writebrep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
-  Standard_Integer        aVersion = -1;
+  int                     aVersion = -1;
   TCollection_AsciiString aShapeName, aFileName;
   TopoDS_Shape            aShape;
-  Standard_Boolean        isBinaryFormat(Standard_False);
-  Standard_Boolean        isWithTriangles(Standard_True);
-  Standard_Boolean        isWithNormals(Standard_False);
+  bool                    isBinaryFormat(false);
+  bool                    isWithTriangles(true);
+  bool                    isWithNormals(false);
   if (!strcasecmp(theArgVec[0], "binsave"))
   {
-    isBinaryFormat = Standard_True;
+    isBinaryFormat = true;
   }
 
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString aParam(theArgVec[anArgIter]);
     aParam.LowerCase();
@@ -1604,7 +1600,7 @@ static Standard_Integer writebrep(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI);
   if (isBinaryFormat)
   {
     if (aVersion > BinTools_FormatVersion_UPPER)
@@ -1664,9 +1660,7 @@ static Standard_Integer writebrep(Draw_Interpretor& theDI,
 //=======================================================================
 // readbrep
 //=======================================================================
-static Standard_Integer readbrep(Draw_Interpretor& theDI,
-                                 Standard_Integer  theNbArgs,
-                                 const char**      theArgVec)
+static int readbrep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 3)
   {
@@ -1674,13 +1668,13 @@ static Standard_Integer readbrep(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_CString aFileName      = theArgVec[1];
-  Standard_CString aShapeName     = theArgVec[2];
-  bool             isBinaryFormat = true;
+  const char* aFileName      = theArgVec[1];
+  const char* aShapeName     = theArgVec[2];
+  bool        isBinaryFormat = true;
   {
     // probe file header to recognize format
-    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    std::shared_ptr<std::istream> aFile =
+    const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+    std::shared_ptr<std::istream>      aFile =
       aFileSystem->OpenIStream(aFileName, std::ios::in | std::ios::binary);
     if (aFile.get() == NULL)
     {
@@ -1698,8 +1692,8 @@ static Standard_Integer readbrep(Draw_Interpretor& theDI,
     isBinaryFormat = !(::strncmp(aStringBuf, "DBRep_DrawableShape", 19) == 0);
   }
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI);
-  TopoDS_Shape                   aShape;
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI);
+  TopoDS_Shape                        aShape;
   if (isBinaryFormat)
   {
     if (!BinTools::Read(aShape, aFileName, aProgress->Start()))
@@ -1725,7 +1719,7 @@ static Standard_Integer readbrep(Draw_Interpretor& theDI,
 //=======================================================================
 // removeinternals
 //=======================================================================
-static Standard_Integer removeInternals(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int removeInternals(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -1740,7 +1734,7 @@ static Standard_Integer removeInternals(Draw_Interpretor& di, Standard_Integer n
     return 1;
   }
 
-  Standard_Boolean isForce = Standard_False;
+  bool isForce = false;
   if (n > 2)
   {
     isForce = (Draw::Atoi(a[2]) != 0);
@@ -1755,13 +1749,13 @@ static Standard_Integer removeInternals(Draw_Interpretor& di, Standard_Integer n
 
 //=================================================================================================
 
-static Standard_Boolean done = Standard_False;
+static bool done = false;
 
 void DBRep::BasicCommands(Draw_Interpretor& theCommands)
 {
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   Draw::Commands(theCommands);
 
   // Register save/restore tools

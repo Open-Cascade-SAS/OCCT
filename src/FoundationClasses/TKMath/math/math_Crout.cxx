@@ -28,13 +28,13 @@
 #include <Standard_DimensionError.hxx>
 #include <StdFail_NotDone.hxx>
 
-math_Crout::math_Crout(const math_Matrix& A, const Standard_Real MinPivot)
+math_Crout::math_Crout(const math_Matrix& A, const double MinPivot)
     : InvA(1, A.RowNumber(), 1, A.ColNumber())
 {
-  Standard_Integer i, j, k;
-  Standard_Integer Nctl = A.RowNumber();
-  Standard_Integer lowr = A.LowerRow(), lowc = A.LowerCol();
-  Standard_Real    scale;
+  int    i, j, k;
+  int    Nctl = A.RowNumber();
+  int    lowr = A.LowerRow(), lowc = A.LowerCol();
+  double scale;
 
   math_Matrix L(1, Nctl, 1, Nctl);
   math_Vector Diag(1, Nctl);
@@ -62,7 +62,7 @@ math_Crout::math_Crout(const math_Matrix& A, const Standard_Real MinPivot)
     Det *= Diag(i);
     if (std::abs(Diag(i)) <= MinPivot)
     {
-      Done = Standard_False;
+      Done = false;
       return;
     }
     L(i, i) = 1.0;
@@ -107,7 +107,7 @@ math_Crout::math_Crout(const math_Matrix& A, const Standard_Real MinPivot)
       InvA(i, j) = scale;
     }
   }
-  Done = Standard_True;
+  Done = true;
 }
 
 void math_Crout::Solve(const math_Vector& B, math_Vector& X) const
@@ -116,9 +116,9 @@ void math_Crout::Solve(const math_Vector& B, math_Vector& X) const
   Standard_DimensionError_Raise_if((B.Length() != InvA.RowNumber()) || (X.Length() != B.Length()),
                                    " ");
 
-  Standard_Integer n    = InvA.RowNumber();
-  Standard_Integer lowb = B.Lower(), lowx = X.Lower();
-  Standard_Integer i, j;
+  int n    = InvA.RowNumber();
+  int lowb = B.Lower(), lowx = X.Lower();
+  int i, j;
 
   for (i = 1; i <= n; i++)
   {

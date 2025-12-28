@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Units_TokensSequence.hxx>
+#include <Units_Token.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_CString.hxx>
 class Units_Lexicon;
 class Units_Token;
@@ -35,32 +37,31 @@ public:
 
   //! Createsand returns a Sentence, by analyzing the
   //! string <astring> with the lexicon <alexicon>.
-  Standard_EXPORT Units_Sentence(const Handle(Units_Lexicon)& alexicon,
-                                 const Standard_CString       astring);
+  Standard_EXPORT Units_Sentence(const occ::handle<Units_Lexicon>& alexicon, const char* astring);
 
   //! For each constant encountered, sets the value.
   Standard_EXPORT void SetConstants();
 
   //! Returns <thesequenceoftokens>.
-  Handle(Units_TokensSequence) Sequence() const;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> Sequence() const;
 
   //! Sets the field <thesequenceoftokens> to <asequenceoftokens>.
-  void Sequence(const Handle(Units_TokensSequence)& asequenceoftokens);
+  void Sequence(
+    const occ::handle<NCollection_HSequence<occ::handle<Units_Token>>>& asequenceoftokens);
 
   //! Computes and returns in a token the result of the
   //! expression.
-  Standard_EXPORT Handle(Units_Token) Evaluate();
+  Standard_EXPORT occ::handle<Units_Token> Evaluate();
 
   //! Return True if number of created tokens > 0
   //! (i.e creation of sentence is successful)
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Useful for debugging.
   void Dump() const;
 
-protected:
 private:
-  Handle(Units_TokensSequence) thesequenceoftokens;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> thesequenceoftokens;
 };
 
 #include <Units_Sentence.lxx>

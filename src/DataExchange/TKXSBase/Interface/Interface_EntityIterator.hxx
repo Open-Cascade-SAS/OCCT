@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -39,50 +41,53 @@ public:
   Standard_EXPORT Interface_EntityIterator();
 
   //! Defines an iterator on a list, directly i.e. without copying it
-  Standard_EXPORT Interface_EntityIterator(const Handle(TColStd_HSequenceOfTransient)& list);
+  Standard_EXPORT Interface_EntityIterator(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Gets a list of entities and adds its to the iteration list
-  Standard_EXPORT void AddList(const Handle(TColStd_HSequenceOfTransient)& list);
+  Standard_EXPORT void AddList(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Adds to the iteration list a defined entity
-  Standard_EXPORT void AddItem(const Handle(Standard_Transient)& anentity);
+  Standard_EXPORT void AddItem(const occ::handle<Standard_Transient>& anentity);
 
   //! same as AddItem (kept for compatibility)
-  Standard_EXPORT void GetOneItem(const Handle(Standard_Transient)& anentity);
+  Standard_EXPORT void GetOneItem(const occ::handle<Standard_Transient>& anentity);
 
   //! Selects entities with are Kind of a given type, keep only
   //! them (is keep is True) or reject only them (if keep is False)
-  Standard_EXPORT void SelectType(const Handle(Standard_Type)& atype, const Standard_Boolean keep);
+  Standard_EXPORT void SelectType(const occ::handle<Standard_Type>& atype, const bool keep);
 
   //! Returns count of entities which will be iterated on
   //! Calls Start if not yet done
-  Standard_EXPORT Standard_Integer NbEntities() const;
+  Standard_EXPORT int NbEntities() const;
 
   //! Returns count of entities of a given type (kind of)
-  Standard_EXPORT Standard_Integer NbTyped(const Handle(Standard_Type)& type) const;
+  Standard_EXPORT int NbTyped(const occ::handle<Standard_Type>& type) const;
 
   //! Returns the list of entities of a given type (kind of)
-  Standard_EXPORT Interface_EntityIterator Typed(const Handle(Standard_Type)& type) const;
+  Standard_EXPORT Interface_EntityIterator Typed(const occ::handle<Standard_Type>& type) const;
 
   //! Allows re-iteration (useless for the first iteration)
   Standard_EXPORT virtual void Start() const;
 
   //! Says if there are other entities (vertices) to iterate
   //! the first time, calls Start
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   //! Sets iteration to the next entity (vertex) to give
   Standard_EXPORT void Next() const;
 
   //! Returns the current Entity iterated, to be used by Interface
   //! tools
-  Standard_EXPORT const Handle(Standard_Transient)& Value() const;
+  Standard_EXPORT const occ::handle<Standard_Transient>& Value() const;
 
   //! Returns the content of the Iterator, accessed through a Handle
   //! to be used by a frontal-engine logic
   //! Returns an empty Sequence if the Iterator is empty
   //! Calls Start if not yet done
-  Standard_EXPORT Handle(TColStd_HSequenceOfTransient) Content() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Content()
+    const;
 
   //! Clears data of iteration
   Standard_EXPORT void Destroy();
@@ -95,8 +100,8 @@ protected:
   Standard_EXPORT void Reset();
 
 private:
-  Handle(Interface_IntVal)             thecurr;
-  Handle(TColStd_HSequenceOfTransient) thelist;
+  occ::handle<Interface_IntVal>                                       thecurr;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> thelist;
 };
 
 #endif // _Interface_EntityIterator_HeaderFile

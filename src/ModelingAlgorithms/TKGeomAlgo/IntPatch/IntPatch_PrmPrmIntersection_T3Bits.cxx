@@ -16,12 +16,12 @@
 
 #include <IntPatch_PrmPrmIntersection_T3Bits.hxx>
 
-IntPatch_PrmPrmIntersection_T3Bits::IntPatch_PrmPrmIntersection_T3Bits(const Standard_Integer size)
+IntPatch_PrmPrmIntersection_T3Bits::IntPatch_PrmPrmIntersection_T3Bits(const int size)
 {
   //-- ex: size=4  -> 4**3 = 64 bits -> 2 mots 32bits
-  Standard_Integer nb = (size * size * size) >> 5;
-  Isize               = nb;
-  p                   = new Standard_Integer[nb];
+  int nb = (size * size * size) >> 5;
+  Isize  = nb;
+  p      = new int[nb];
   do
   {
     p[--nb] = 0;
@@ -42,13 +42,12 @@ void IntPatch_PrmPrmIntersection_T3Bits::ResetAnd()
   // ind = 0;
 }
 
-Standard_Integer IntPatch_PrmPrmIntersection_T3Bits::And(IntPatch_PrmPrmIntersection_T3Bits& Oth,
-                                                         Standard_Integer&                   indice)
+int IntPatch_PrmPrmIntersection_T3Bits::And(IntPatch_PrmPrmIntersection_T3Bits& Oth, int& indice)
 {
   int k = indice >> 5;
   while (k < Isize)
   {
-    Standard_Integer r = p[k] & Oth.p[k];
+    int r = p[k] & Oth.p[k];
     if (r)
     {
       unsigned int c = 0;
@@ -56,7 +55,7 @@ Standard_Integer IntPatch_PrmPrmIntersection_T3Bits::And(IntPatch_PrmPrmIntersec
       {
         if (r & 1)
         {
-          const Standard_Integer op = (k << 5) | (c);
+          const int op = (k << 5) | (c);
           Raz(op);
           Oth.Raz(op);
           indice = op;

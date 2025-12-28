@@ -16,56 +16,56 @@
 
 //=================================================================================================
 
-inline Standard_Integer& TransferBRep_TransferResultInfo::Result()
+inline int& TransferBRep_TransferResultInfo::Result()
 {
   return myR;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarning()
+inline int& TransferBRep_TransferResultInfo::ResultWarning()
 {
   return myRW;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& TransferBRep_TransferResultInfo::ResultFail()
+inline int& TransferBRep_TransferResultInfo::ResultFail()
 {
   return myRF;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarningFail()
+inline int& TransferBRep_TransferResultInfo::ResultWarningFail()
 {
   return myRWF;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& TransferBRep_TransferResultInfo::NoResult()
+inline int& TransferBRep_TransferResultInfo::NoResult()
 {
   return myNR;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarning()
+inline int& TransferBRep_TransferResultInfo::NoResultWarning()
 {
   return myNRW;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultFail()
+inline int& TransferBRep_TransferResultInfo::NoResultFail()
 {
   return myNRF;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarningFail()
+inline int& TransferBRep_TransferResultInfo::NoResultWarningFail()
 {
   return myNRWF;
 }

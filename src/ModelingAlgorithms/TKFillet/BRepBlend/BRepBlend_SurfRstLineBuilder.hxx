@@ -67,134 +67,133 @@ class BRepBlend_SurfRstLineBuilder
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BRepBlend_SurfRstLineBuilder(const Handle(Adaptor3d_Surface)&   Surf1,
-                                               const Handle(Adaptor3d_TopolTool)& Domain1,
-                                               const Handle(Adaptor3d_Surface)&   Surf2,
-                                               const Handle(Adaptor2d_Curve2d)&   Rst,
-                                               const Handle(Adaptor3d_TopolTool)& Domain2);
+  Standard_EXPORT BRepBlend_SurfRstLineBuilder(const occ::handle<Adaptor3d_Surface>&   Surf1,
+                                               const occ::handle<Adaptor3d_TopolTool>& Domain1,
+                                               const occ::handle<Adaptor3d_Surface>&   Surf2,
+                                               const occ::handle<Adaptor2d_Curve2d>&   Rst,
+                                               const occ::handle<Adaptor3d_TopolTool>& Domain2);
 
   Standard_EXPORT void Perform(Blend_SurfRstFunction&  Func,
                                Blend_FuncInv&          Finv,
                                Blend_SurfPointFuncInv& FinvP,
                                Blend_SurfCurvFuncInv&  FinvC,
-                               const Standard_Real     Pdep,
-                               const Standard_Real     Pmax,
-                               const Standard_Real     MaxStep,
-                               const Standard_Real     Tol3d,
-                               const Standard_Real     Tol2d,
-                               const Standard_Real     TolGuide,
+                               const double            Pdep,
+                               const double            Pmax,
+                               const double            MaxStep,
+                               const double            Tol3d,
+                               const double            Tol2d,
+                               const double            TolGuide,
                                const math_Vector&      Soldep,
-                               const Standard_Real     Fleche,
-                               const Standard_Boolean  Appro = Standard_False);
+                               const double            Fleche,
+                               const bool              Appro = false);
 
-  Standard_EXPORT Standard_Boolean PerformFirstSection(Blend_SurfRstFunction&  Func,
-                                                       Blend_FuncInv&          Finv,
-                                                       Blend_SurfPointFuncInv& FinvP,
-                                                       Blend_SurfCurvFuncInv&  FinvC,
-                                                       const Standard_Real     Pdep,
-                                                       const Standard_Real     Pmax,
-                                                       const math_Vector&      Soldep,
-                                                       const Standard_Real     Tol3d,
-                                                       const Standard_Real     Tol2d,
-                                                       const Standard_Real     TolGuide,
-                                                       const Standard_Boolean  RecRst,
-                                                       const Standard_Boolean  RecP,
-                                                       const Standard_Boolean  RecS,
-                                                       Standard_Real&          Psol,
-                                                       math_Vector&            ParSol);
+  Standard_EXPORT bool PerformFirstSection(Blend_SurfRstFunction&  Func,
+                                           Blend_FuncInv&          Finv,
+                                           Blend_SurfPointFuncInv& FinvP,
+                                           Blend_SurfCurvFuncInv&  FinvC,
+                                           const double            Pdep,
+                                           const double            Pmax,
+                                           const math_Vector&      Soldep,
+                                           const double            Tol3d,
+                                           const double            Tol2d,
+                                           const double            TolGuide,
+                                           const bool              RecRst,
+                                           const bool              RecP,
+                                           const bool              RecS,
+                                           double&                 Psol,
+                                           math_Vector&            ParSol);
 
-  Standard_EXPORT Standard_Boolean Complete(Blend_SurfRstFunction&  Func,
-                                            Blend_FuncInv&          Finv,
-                                            Blend_SurfPointFuncInv& FinvP,
-                                            Blend_SurfCurvFuncInv&  FinvC,
-                                            const Standard_Real     Pmin);
+  Standard_EXPORT bool Complete(Blend_SurfRstFunction&  Func,
+                                Blend_FuncInv&          Finv,
+                                Blend_SurfPointFuncInv& FinvP,
+                                Blend_SurfCurvFuncInv&  FinvC,
+                                const double            Pmin);
 
-  Standard_EXPORT Standard_Integer ArcToRecadre(const math_Vector&     Sol,
-                                                const Standard_Integer PrevIndex,
-                                                gp_Pnt2d&              pt2d,
-                                                gp_Pnt2d&              lastpt2d,
-                                                Standard_Real&         ponarc);
+  Standard_EXPORT int ArcToRecadre(const math_Vector& Sol,
+                                   const int          PrevIndex,
+                                   gp_Pnt2d&          pt2d,
+                                   gp_Pnt2d&          lastpt2d,
+                                   double&            ponarc);
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
-  const Handle(BRepBlend_Line)& Line() const;
+  const occ::handle<BRepBlend_Line>& Line() const;
 
-  Standard_Boolean DecrochStart() const;
+  bool DecrochStart() const;
 
-  Standard_Boolean DecrochEnd() const;
+  bool DecrochEnd() const;
 
-protected:
 private:
   Standard_EXPORT void InternalPerform(Blend_SurfRstFunction&  Func,
                                        Blend_FuncInv&          Finv,
                                        Blend_SurfPointFuncInv& FinvP,
                                        Blend_SurfCurvFuncInv&  FinvC,
-                                       const Standard_Real     Bound);
+                                       const double            Bound);
 
-  Standard_EXPORT Standard_Boolean Recadre(Blend_SurfCurvFuncInv&     FinvC,
-                                           math_Vector&               Solinv,
-                                           Handle(Adaptor2d_Curve2d)& Arc,
-                                           Standard_Boolean&          IsVtx,
-                                           Handle(Adaptor3d_HVertex)& Vtx);
+  Standard_EXPORT bool Recadre(Blend_SurfCurvFuncInv&          FinvC,
+                               math_Vector&                    Solinv,
+                               occ::handle<Adaptor2d_Curve2d>& Arc,
+                               bool&                           IsVtx,
+                               occ::handle<Adaptor3d_HVertex>& Vtx);
 
-  Standard_EXPORT Standard_Boolean Recadre(Blend_SurfRstFunction&     Func,
-                                           Blend_FuncInv&             Finv,
-                                           math_Vector&               Solinv,
-                                           Standard_Boolean&          IsVtx,
-                                           Handle(Adaptor3d_HVertex)& Vtx);
+  Standard_EXPORT bool Recadre(Blend_SurfRstFunction&          Func,
+                               Blend_FuncInv&                  Finv,
+                               math_Vector&                    Solinv,
+                               bool&                           IsVtx,
+                               occ::handle<Adaptor3d_HVertex>& Vtx);
 
-  Standard_EXPORT Standard_Boolean Recadre(Blend_SurfPointFuncInv&    FinvP,
-                                           math_Vector&               Solinv,
-                                           Standard_Boolean&          IsVtx,
-                                           Handle(Adaptor3d_HVertex)& Vtx);
+  Standard_EXPORT bool Recadre(Blend_SurfPointFuncInv&         FinvP,
+                               math_Vector&                    Solinv,
+                               bool&                           IsVtx,
+                               occ::handle<Adaptor3d_HVertex>& Vtx);
 
-  Standard_EXPORT void Transition(const Standard_Boolean           OnFirst,
-                                  const Handle(Adaptor2d_Curve2d)& Arc,
-                                  const Standard_Real              Param,
-                                  IntSurf_Transition&              TLine,
-                                  IntSurf_Transition&              TArc);
+  Standard_EXPORT void Transition(const bool                            OnFirst,
+                                  const occ::handle<Adaptor2d_Curve2d>& Arc,
+                                  const double                          Param,
+                                  IntSurf_Transition&                   TLine,
+                                  IntSurf_Transition&                   TArc);
 
-  Standard_EXPORT void MakeExtremity(BRepBlend_Extremity&             Extrem,
-                                     const Standard_Boolean           OnFirst,
-                                     const Handle(Adaptor2d_Curve2d)& Arc,
-                                     const Standard_Real              Param,
-                                     const Standard_Boolean           IsVtx,
-                                     const Handle(Adaptor3d_HVertex)& Vtx);
+  Standard_EXPORT void MakeExtremity(BRepBlend_Extremity&                  Extrem,
+                                     const bool                            OnFirst,
+                                     const occ::handle<Adaptor2d_Curve2d>& Arc,
+                                     const double                          Param,
+                                     const bool                            IsVtx,
+                                     const occ::handle<Adaptor3d_HVertex>& Vtx);
 
   Standard_EXPORT Blend_Status CheckDeflectionOnSurf(const Blend_Point& CurPoint);
 
   Standard_EXPORT Blend_Status CheckDeflectionOnRst(const Blend_Point& CurPoint);
 
   Standard_EXPORT Blend_Status TestArret(Blend_SurfRstFunction& Func,
-                                         const Standard_Boolean TestDeflection,
+                                         const bool             TestDeflection,
                                          const Blend_Status     State);
 
-  Standard_EXPORT Standard_Boolean CheckInside(Blend_SurfRstFunction& Func,
-                                               TopAbs_State&          SituOnC,
-                                               TopAbs_State&          SituOnS,
-                                               Standard_Boolean&      Decroch);
+  Standard_EXPORT bool CheckInside(Blend_SurfRstFunction& Func,
+                                   TopAbs_State&          SituOnC,
+                                   TopAbs_State&          SituOnS,
+                                   bool&                  Decroch);
 
-  Standard_Boolean            done;
-  Handle(BRepBlend_Line)      line;
-  math_Vector                 sol;
-  Handle(Adaptor3d_Surface)   surf1;
-  Handle(Adaptor3d_TopolTool) domain1;
-  Handle(Adaptor3d_Surface)   surf2;
-  Handle(Adaptor2d_Curve2d)   rst;
-  Handle(Adaptor3d_TopolTool) domain2;
-  Standard_Real               tolpoint3d;
-  Standard_Real               tolpoint2d;
-  Standard_Real               tolgui;
-  Standard_Real               pasmax;
-  Standard_Real               fleche;
-  Standard_Real               param;
-  Blend_Point                 previousP;
-  Standard_Boolean            rebrou;
-  Standard_Boolean            iscomplete;
-  Standard_Boolean            comptra;
-  Standard_Real               sens;
-  Standard_Boolean            decrochdeb;
-  Standard_Boolean            decrochfin;
+  bool                             done;
+  occ::handle<BRepBlend_Line>      line;
+  math_Vector                      sol;
+  occ::handle<Adaptor3d_Surface>   surf1;
+  occ::handle<Adaptor3d_TopolTool> domain1;
+  occ::handle<Adaptor3d_Surface>   surf2;
+  occ::handle<Adaptor2d_Curve2d>   rst;
+  occ::handle<Adaptor3d_TopolTool> domain2;
+  double                           tolpoint3d;
+  double                           tolpoint2d;
+  double                           tolgui;
+  double                           pasmax;
+  double                           fleche;
+  double                           param;
+  Blend_Point                      previousP;
+  bool                             rebrou;
+  bool                             iscomplete;
+  bool                             comptra;
+  double                           sens;
+  bool                             decrochdeb;
+  bool                             decrochfin;
 };
 
 #include <BRepBlend_SurfRstLineBuilder.lxx>

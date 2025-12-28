@@ -17,27 +17,27 @@
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransferIterator.hxx>
 
-static Handle(Standard_Transient) nultrans; // for const&(Null) return
+static occ::handle<Standard_Transient> nultrans; // for const&(Null) return
 
 Transfer_TransferIterator::Transfer_TransferIterator()
 {
-  theitems  = new Transfer_HSequenceOfBinder();
-  theselect = new TColStd_HSequenceOfInteger();
+  theitems  = new NCollection_HSequence<occ::handle<Transfer_Binder>>();
+  theselect = new NCollection_HSequence<int>();
   themaxi   = 0;
   thecurr   = 1;
 }
 
-void Transfer_TransferIterator::AddItem(const Handle(Transfer_Binder)& atr)
+void Transfer_TransferIterator::AddItem(const occ::handle<Transfer_Binder>& atr)
 {
   theitems->Append(atr);
   theselect->Append(1);
   themaxi = theselect->Length();
 }
 
-void Transfer_TransferIterator::SelectBinder(const Handle(Standard_Type)& atype,
-                                             const Standard_Boolean       keep)
+void Transfer_TransferIterator::SelectBinder(const occ::handle<Standard_Type>& atype,
+                                             const bool                        keep)
 {
-  for (Standard_Integer i = theitems->Length(); i > 0; i--)
+  for (int i = theitems->Length(); i > 0; i--)
   {
     if (theitems->Value(i)->IsKind(atype) != keep)
     {
@@ -48,22 +48,22 @@ void Transfer_TransferIterator::SelectBinder(const Handle(Standard_Type)& atype,
   }
 }
 
-void Transfer_TransferIterator::SelectResult(const Handle(Standard_Type)& atype,
-                                             const Standard_Boolean       keep)
+void Transfer_TransferIterator::SelectResult(const occ::handle<Standard_Type>& atype,
+                                             const bool                        keep)
 {
-  Standard_Integer casetype = 0;
+  int casetype = 0;
   if (atype->SubType(STANDARD_TYPE(Standard_Transient)))
     casetype = 2;
 
-  for (Standard_Integer i = theitems->Length(); i > 0; i--)
+  for (int i = theitems->Length(); i > 0; i--)
   {
-    Handle(Transfer_Binder) atr   = theitems->Value(i);
-    Handle(Standard_Type)   btype = ResultType();
-    Standard_Boolean        matchtype;
+    occ::handle<Transfer_Binder> atr   = theitems->Value(i);
+    occ::handle<Standard_Type>   btype = ResultType();
+    bool                         matchtype;
     if (!atr->HasResult())
-      matchtype = Standard_False;
+      matchtype = false;
     else if (atr->IsMultiple())
-      matchtype = Standard_False;
+      matchtype = false;
     else if (casetype == 0)
       matchtype = (atype == btype); // Type fixe
     else
@@ -77,11 +77,11 @@ void Transfer_TransferIterator::SelectResult(const Handle(Standard_Type)& atype,
   }
 }
 
-void Transfer_TransferIterator::SelectUnique(const Standard_Boolean keep)
+void Transfer_TransferIterator::SelectUnique(const bool keep)
 {
-  for (Standard_Integer i = theitems->Length(); i > 0; i--)
+  for (int i = theitems->Length(); i > 0; i--)
   {
-    Handle(Transfer_Binder) atr = theitems->Value(i);
+    occ::handle<Transfer_Binder> atr = theitems->Value(i);
     if (atr->IsMultiple() == keep)
     {
       theselect->SetValue(i, 0);
@@ -91,7 +91,7 @@ void Transfer_TransferIterator::SelectUnique(const Standard_Boolean keep)
   }
 }
 
-void Transfer_TransferIterator::SelectItem(const Standard_Integer num, const Standard_Boolean keep)
+void Transfer_TransferIterator::SelectItem(const int num, const bool keep)
 {
   if (num < 1 || num > theselect->Length())
     return;
@@ -103,9 +103,9 @@ void Transfer_TransferIterator::SelectItem(const Standard_Integer num, const Sta
 
 //  ....                Iteration-Interrogations                ....
 
-Standard_Integer Transfer_TransferIterator::Number() const
+int Transfer_TransferIterator::Number() const
 {
-  Standard_Integer numb, i;
+  int numb, i;
   numb = 0;
   for (i = 1; i <= themaxi; i++)
   {
@@ -121,14 +121,14 @@ void Transfer_TransferIterator::Start()
   Next();
 }
 
-Standard_Boolean Transfer_TransferIterator::More()
+bool Transfer_TransferIterator::More()
 {
   if (thecurr > themaxi)
-    return Standard_False;
+    return false;
   if (theselect->Value(thecurr) == 0)
     Next();
   if (thecurr > themaxi)
-    return Standard_False;
+    return false;
   return (theselect->Value(thecurr) > 0);
 }
 
@@ -141,7 +141,7 @@ void Transfer_TransferIterator::Next()
     Next();
 }
 
-const Handle(Transfer_Binder)& Transfer_TransferIterator::Value() const
+const occ::handle<Transfer_Binder>& Transfer_TransferIterator::Value() const
 {
   if (thecurr == 0 || thecurr > themaxi)
     throw Standard_NoSuchObject("TransferIterator : Value");
@@ -152,42 +152,42 @@ const Handle(Transfer_Binder)& Transfer_TransferIterator::Value() const
 
 //  ....                Access to Current Binder Data                ....
 
-Standard_Boolean Transfer_TransferIterator::HasResult() const
+bool Transfer_TransferIterator::HasResult() const
 {
-  Handle(Transfer_Binder) atr = Value();
+  occ::handle<Transfer_Binder> atr = Value();
   return atr->HasResult();
 }
 
-Standard_Boolean Transfer_TransferIterator::HasUniqueResult() const
+bool Transfer_TransferIterator::HasUniqueResult() const
 {
-  Handle(Transfer_Binder) atr = Value();
+  occ::handle<Transfer_Binder> atr = Value();
   if (atr->IsMultiple())
-    return Standard_False;
+    return false;
   return atr->HasResult();
 }
 
-Handle(Standard_Type) Transfer_TransferIterator::ResultType() const
+occ::handle<Standard_Type> Transfer_TransferIterator::ResultType() const
 {
-  Handle(Standard_Type)   btype;
-  Handle(Transfer_Binder) atr = Value();
+  occ::handle<Standard_Type>   btype;
+  occ::handle<Transfer_Binder> atr = Value();
   if (!atr->IsMultiple())
     btype = atr->ResultType();
   //  Binder's ResultType takes into account the Dynamic Type for Handles
   return btype;
 }
 
-Standard_Boolean Transfer_TransferIterator::HasTransientResult() const
+bool Transfer_TransferIterator::HasTransientResult() const
 {
-  Handle(Standard_Type) btype = ResultType();
+  occ::handle<Standard_Type> btype = ResultType();
   if (btype.IsNull())
-    return Standard_False;
+    return false;
   return btype->SubType(STANDARD_TYPE(Standard_Transient));
 }
 
-const Handle(Standard_Transient)& Transfer_TransferIterator::TransientResult() const
+const occ::handle<Standard_Transient>& Transfer_TransferIterator::TransientResult() const
 {
-  Handle(Transfer_SimpleBinderOfTransient) atr =
-    Handle(Transfer_SimpleBinderOfTransient)::DownCast(Value());
+  occ::handle<Transfer_SimpleBinderOfTransient> atr =
+    occ::down_cast<Transfer_SimpleBinderOfTransient>(Value());
   if (!atr.IsNull())
     return atr->Result();
   return nultrans;
@@ -195,24 +195,24 @@ const Handle(Standard_Transient)& Transfer_TransferIterator::TransientResult() c
 
 Transfer_StatusExec Transfer_TransferIterator::Status() const
 {
-  Handle(Transfer_Binder) atr = Value();
+  occ::handle<Transfer_Binder> atr = Value();
   return atr->StatusExec();
 }
 
-Standard_Boolean Transfer_TransferIterator::HasFails() const
+bool Transfer_TransferIterator::HasFails() const
 {
-  Handle(Transfer_Binder) atr = Value();
+  occ::handle<Transfer_Binder> atr = Value();
   return atr->Check()->HasFailed();
 }
 
-Standard_Boolean Transfer_TransferIterator::HasWarnings() const
+bool Transfer_TransferIterator::HasWarnings() const
 {
-  Handle(Transfer_Binder) atr = Value();
+  occ::handle<Transfer_Binder> atr = Value();
   return atr->Check()->HasWarnings();
 }
 
-const Handle(Interface_Check) Transfer_TransferIterator::Check() const
+const occ::handle<Interface_Check> Transfer_TransferIterator::Check() const
 {
-  Handle(Transfer_Binder) atr = Value();
+  occ::handle<Transfer_Binder> atr = Value();
   return atr->Check();
 }

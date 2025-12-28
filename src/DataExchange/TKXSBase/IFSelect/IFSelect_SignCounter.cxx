@@ -23,17 +23,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignCounter, IFSelect_SignatureList)
 
-IFSelect_SignCounter::IFSelect_SignCounter(const Standard_Boolean withmap,
-                                           const Standard_Boolean withlist)
+IFSelect_SignCounter::IFSelect_SignCounter(const bool withmap, const bool withlist)
     : IFSelect_SignatureList(withlist)
 {
   themapstat = withmap;
   thenbcomp1 = thenbcomp2 = theselmode = 0;
 }
 
-IFSelect_SignCounter::IFSelect_SignCounter(const Handle(IFSelect_Signature)& matcher,
-                                           const Standard_Boolean            withmap,
-                                           const Standard_Boolean            withlist)
+IFSelect_SignCounter::IFSelect_SignCounter(const occ::handle<IFSelect_Signature>& matcher,
+                                           const bool                             withmap,
+                                           const bool                             withlist)
     : IFSelect_SignatureList(withlist),
       thematcher(matcher)
 {
@@ -43,31 +42,31 @@ IFSelect_SignCounter::IFSelect_SignCounter(const Handle(IFSelect_Signature)& mat
   SetName(sign.ToCString());
 }
 
-Handle(IFSelect_Signature) IFSelect_SignCounter::Signature() const
+occ::handle<IFSelect_Signature> IFSelect_SignCounter::Signature() const
 {
   return thematcher;
 }
 
-void IFSelect_SignCounter::SetMap(const Standard_Boolean withmap)
+void IFSelect_SignCounter::SetMap(const bool withmap)
 {
   themapstat = withmap;
 }
 
-Standard_Boolean IFSelect_SignCounter::AddEntity(const Handle(Standard_Transient)&       ent,
-                                                 const Handle(Interface_InterfaceModel)& model)
+bool IFSelect_SignCounter::AddEntity(const occ::handle<Standard_Transient>&       ent,
+                                     const occ::handle<Interface_InterfaceModel>& model)
 {
   if (themapstat && !ent.IsNull())
   {
     if (themap.Contains(ent))
-      return Standard_False;
+      return false;
     themap.Add(ent);
   }
   AddSign(ent, model);
-  return Standard_True;
+  return true;
 }
 
-void IFSelect_SignCounter::AddSign(const Handle(Standard_Transient)&       ent,
-                                   const Handle(Interface_InterfaceModel)& model)
+void IFSelect_SignCounter::AddSign(const occ::handle<Standard_Transient>&       ent,
+                                   const occ::handle<Interface_InterfaceModel>& model)
 {
   char nulsign[2];
   nulsign[0] = '\0';
@@ -77,38 +76,40 @@ void IFSelect_SignCounter::AddSign(const Handle(Standard_Transient)&       ent,
     Add(ent, thematcher->Value(ent, model));
 }
 
-void IFSelect_SignCounter::AddList(const Handle(TColStd_HSequenceOfTransient)& list,
-                                   const Handle(Interface_InterfaceModel)&     model)
+void IFSelect_SignCounter::AddList(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  const occ::handle<Interface_InterfaceModel>&                               model)
 {
   if (list.IsNull())
     return;
-  Standard_Integer nb = list->Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = list->Length();
+  for (int i = 1; i <= nb; i++)
     AddEntity(list->Value(i), model);
 }
 
-void IFSelect_SignCounter::AddWithGraph(const Handle(TColStd_HSequenceOfTransient)& list,
-                                        const Interface_Graph&                      graph)
+void IFSelect_SignCounter::AddWithGraph(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  const Interface_Graph&                                                     graph)
 {
   AddList(list, graph.Model());
 }
 
-void IFSelect_SignCounter::AddModel(const Handle(Interface_InterfaceModel)& model)
+void IFSelect_SignCounter::AddModel(const occ::handle<Interface_InterfaceModel>& model)
 {
   if (model.IsNull())
     return;
-  Standard_Integer nb = model->NbEntities();
+  int nb = model->NbEntities();
   //  If we start from empty, we know that each entity is unique in the model
-  Standard_Boolean mapstat = themapstat;
+  bool mapstat = themapstat;
   if (themap.Extent() == 0)
-    themapstat = Standard_False;
-  for (Standard_Integer i = 1; i <= nb; i++)
+    themapstat = false;
+  for (int i = 1; i <= nb; i++)
     AddEntity(model->Value(i), model);
   themapstat = mapstat;
 }
 
-void IFSelect_SignCounter::AddFromSelection(const Handle(IFSelect_Selection)& sel,
-                                            const Interface_Graph&            G)
+void IFSelect_SignCounter::AddFromSelection(const occ::handle<IFSelect_Selection>& sel,
+                                            const Interface_Graph&                 G)
 {
   Interface_EntityIterator iter = sel->RootResult(G);
   AddWithGraph(iter.Content(), G);
@@ -116,19 +117,19 @@ void IFSelect_SignCounter::AddFromSelection(const Handle(IFSelect_Selection)& se
 
 //  #############    SELECTION    ##############
 
-void IFSelect_SignCounter::SetSelection(const Handle(IFSelect_Selection)& sel)
+void IFSelect_SignCounter::SetSelection(const occ::handle<IFSelect_Selection>& sel)
 {
   theselect = sel;
   SetSelMode(-1);
   SetSelMode(sel.IsNull() ? 0 : 2);
 }
 
-Handle(IFSelect_Selection) IFSelect_SignCounter::Selection() const
+occ::handle<IFSelect_Selection> IFSelect_SignCounter::Selection() const
 {
   return theselect;
 }
 
-void IFSelect_SignCounter::SetSelMode(const Standard_Integer selmode)
+void IFSelect_SignCounter::SetSelMode(const int selmode)
 {
   if (selmode < 0)
     thenbcomp1 = thenbcomp2 = 0;
@@ -138,48 +139,48 @@ void IFSelect_SignCounter::SetSelMode(const Standard_Integer selmode)
     theselect.Nullify();
 }
 
-Standard_Integer IFSelect_SignCounter::SelMode() const
+int IFSelect_SignCounter::SelMode() const
 {
   return theselmode;
 }
 
-Standard_Boolean IFSelect_SignCounter::ComputeSelected(const Interface_Graph& G,
-                                                       const Standard_Boolean forced)
+bool IFSelect_SignCounter::ComputeSelected(const Interface_Graph& G, const bool forced)
 {
   if (theselmode < 2 || theselect.IsNull())
-    return Standard_False;
-  Standard_Boolean         afaire = forced;
+    return false;
+  bool                     afaire = forced;
   Interface_EntityIterator iter   = theselect->RootResult(G);
-  Standard_Integer         nb1    = G.Size();
-  Standard_Integer         nb2    = iter.NbEntities();
+  int                      nb1    = G.Size();
+  int                      nb2    = iter.NbEntities();
   if (!afaire)
     afaire = (nb1 != thenbcomp1 || nb2 != thenbcomp2);
   thenbcomp1 = nb1;
   thenbcomp2 = nb2;
   if (afaire)
     AddWithGraph(iter.Content(), G);
-  return Standard_True;
+  return true;
 }
 
-Handle(TCollection_HAsciiString) IFSelect_SignCounter::Sign(
-  const Handle(Standard_Transient)&       ent,
-  const Handle(Interface_InterfaceModel)& model) const
+occ::handle<TCollection_HAsciiString> IFSelect_SignCounter::Sign(
+  const occ::handle<Standard_Transient>&       ent,
+  const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(TCollection_HAsciiString) res;
+  occ::handle<TCollection_HAsciiString> res;
   if (ent.IsNull() || thematcher.IsNull())
     return res;
   res = new TCollection_HAsciiString(thematcher->Value(ent, model));
   return res;
 }
 
-Standard_CString IFSelect_SignCounter::ComputedSign(const Handle(Standard_Transient)& ent,
-                                                    const Interface_Graph&            G)
+const char* IFSelect_SignCounter::ComputedSign(const occ::handle<Standard_Transient>& ent,
+                                               const Interface_Graph&                 G)
 {
-  Handle(TColStd_HSequenceOfTransient) list = new TColStd_HSequenceOfTransient();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
   list->Append(ent);
-  ModeSignOnly() = Standard_True;
+  ModeSignOnly() = true;
   AddWithGraph(list, G);
-  Standard_CString val = LastValue();
-  ModeSignOnly()       = Standard_False;
+  const char* val = LastValue();
+  ModeSignOnly()  = false;
   return val;
 }

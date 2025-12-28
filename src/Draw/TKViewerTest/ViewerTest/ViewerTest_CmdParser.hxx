@@ -16,7 +16,8 @@
 #ifndef _ViewerTest_CmdParser_HeaderFile
 #define _ViewerTest_CmdParser_HeaderFile
 
-#include <Graphic3d_Vec3.hxx>
+#include <NCollection_Vec3.hxx>
+#include <Standard_TypeDef.hxx>
 
 #include <map>
 #include <vector>
@@ -61,7 +62,7 @@ public:
   void PrintHelp() const;
 
   //! Parses argument list (skips the command name); assigns local arguments to each option.
-  void Parse(Standard_Integer theArgsNb, const char* const* theArgVec);
+  void Parse(int theArgsNb, const char* const* theArgVec);
 
   //! Gets an option name by its access key
   //! @param theOptionKey the access key of the option which name is to be found
@@ -92,7 +93,7 @@ public:
   //! @return true if an option was set, or false otherwise
   bool HasOption(const std::string& theOptionName,
                  std::size_t        theMandatoryArgsNb = 0,
-                 bool               isFatal            = Standard_False) const;
+                 bool               isFatal            = false) const;
 
   //! Checks if option was used with given minimal number of arguments.
   //! Prints error message if isFatal flag was set.
@@ -102,17 +103,17 @@ public:
   //! @return true if an option was set, or false otherwise
   bool HasOption(ViewerTest_CommandOptionKey theOptionKey,
                  std::size_t                 theMandatoryArgsNb = 0,
-                 bool                        isFatal            = Standard_False) const;
+                 bool                        isFatal            = false) const;
 
   //! Gets a number of option arguments
   //! @param theOptionName the name of the option
   //! @return a number of option arguments, or 0 if option was not used
-  Standard_Integer GetNumberOfOptionArguments(const std::string& theOptionName) const;
+  int GetNumberOfOptionArguments(const std::string& theOptionName) const;
 
   //! Gets a number of option arguments
   //! @param theOptionKey the access key of the option
   //! @return a number of option arguments, or 0 if option was not used
-  Standard_Integer GetNumberOfOptionArguments(ViewerTest_CommandOptionKey theOptionKey) const;
+  int GetNumberOfOptionArguments(ViewerTest_CommandOptionKey theOptionKey) const;
 
   //! Accesses local argument of option 'theOptionName' with index 'theArgumentIndex'.
   //! @param theOptionName the name of the option which argument is to be accessed
@@ -120,7 +121,7 @@ public:
   //! @param theOptionArgument an argument of the option with the given name
   //! @return true if an access was successful, or false otherwise
   bool Arg(const std::string& theOptionName,
-           Standard_Integer   theArgumentIndex,
+           int                theArgumentIndex,
            std::string&       theOptionArgument) const;
 
   //! Accesses a local argument with the index 'theArgumentIndex' of the option with the key
@@ -130,57 +131,51 @@ public:
   //! @param theOptionArgument an argument of the option with the given key
   //! @return true if an access was successful, or false otherwise
   bool Arg(ViewerTest_CommandOptionKey theOptionKey,
-           Standard_Integer            theArgumentIndex,
+           int                         theArgumentIndex,
            std::string&                theOptionArgument) const;
 
   //! Accesses local argument of option 'theOptionName' with index 'theArgumentIndex'.
   //! @param theOptionName the name of the option which argument is to be accessed
   //! @param theArgumentIndex the index of an accessed argument
   //! @return an argument of the option with the given name
-  std::string Arg(const std::string& theOptionName, Standard_Integer theArgumentIndex) const;
+  std::string Arg(const std::string& theOptionName, int theArgumentIndex) const;
 
   //! Accesses a local argument with the index 'theArgumentIndex' of the option with the key
   //! 'theOptionKey'.
   //! @param theOptionKey the access key of the option which argument is to be accessed
   //! @param theArgumentIndex the index of an accessed argument
   //! @return an argument of the option with the given key
-  std::string Arg(ViewerTest_CommandOptionKey theOptionKey,
-                  Standard_Integer            theArgumentIndex) const;
+  std::string Arg(ViewerTest_CommandOptionKey theOptionKey, int theArgumentIndex) const;
 
   // Interprets arguments of option 'theOptionName' as float vector starting with index
   // 'theArgumentIndex'.
-  Graphic3d_Vec3 ArgVec3f(const std::string&     theOptionName,
-                          const Standard_Integer theArgumentIndex = 0) const;
+  NCollection_Vec3<float> ArgVec3f(const std::string& theOptionName,
+                                   const int          theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as double vector starting with index
   // 'theArgumentIndex'.
-  Graphic3d_Vec3d ArgVec3d(const std::string&     theOptionName,
-                           const Standard_Integer theArgumentIndex = 0) const;
+  NCollection_Vec3<double> ArgVec3d(const std::string& theOptionName,
+                                    const int          theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as gp vector starting with index
   // 'theArgumentIndex'.
-  gp_Vec ArgVec(const std::string&     theOptionName,
-                const Standard_Integer theArgumentIndex = 0) const;
+  gp_Vec ArgVec(const std::string& theOptionName, const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as gp vector starting with index
   // 'theArgumentIndex'.
-  gp_Pnt ArgPnt(const std::string&     theOptionName,
-                const Standard_Integer theArgumentIndex = 0) const;
+  gp_Pnt ArgPnt(const std::string& theOptionName, const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as double at index 'theArgumentIndex'.
-  Standard_Real ArgDouble(const std::string&     theOptionName,
-                          const Standard_Integer theArgumentIndex = 0) const;
+  double ArgDouble(const std::string& theOptionName, const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as float at index 'theArgumentIndex'.
-  Standard_ShortReal ArgFloat(const std::string&     theOptionName,
-                              const Standard_Integer theArgumentIndex = 0) const;
+  float ArgFloat(const std::string& theOptionName, const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as integer at index 'theArgumentIndex'.
-  Standard_Integer ArgInt(const std::string&     theOptionName,
-                          const Standard_Integer theArgumentIndex = 0) const;
+  int ArgInt(const std::string& theOptionName, const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as boolean at index 'theArgumentIndex'.
-  bool ArgBool(const std::string& theOptionName, const Standard_Integer theArgumentIndex = 0) const;
+  bool ArgBool(const std::string& theOptionName, const int theArgumentIndex = 0) const;
 
   //! Interprets arguments of the option 'theOptionName' with the index 'theArgumentIndex' as an
   //! RGB(A) color object.
@@ -192,9 +187,7 @@ public:
   //! name
   //! @return true if an interpretation was successful, or false otherwise
   template <typename TheColor>
-  bool ArgColor(const std::string& theOptionName,
-                Standard_Integer&  theArgumentIndex,
-                TheColor&          theColor) const;
+  bool ArgColor(const std::string& theOptionName, int& theArgumentIndex, TheColor& theColor) const;
 
   //! Interprets arguments of the option with the key 'theOptionKey' as an RGB(A) color object.
   //! @tparam theColor the type of a resulting RGB(A) color object
@@ -206,7 +199,7 @@ public:
   //! @return true if an interpretation was successful, or false otherwise
   template <typename TheColor>
   bool ArgColor(ViewerTest_CommandOptionKey theOptionKey,
-                Standard_Integer&           theArgumentIndex,
+                int&                        theArgumentIndex,
                 TheColor&                   theColor) const;
 
 private:

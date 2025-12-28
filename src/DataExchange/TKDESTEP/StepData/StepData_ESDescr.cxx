@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_ESDescr.hxx>
 #include <StepData_PDescr.hxx>
@@ -20,23 +20,24 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_ESDescr, StepData_EDescr)
 
-StepData_ESDescr::StepData_ESDescr(const Standard_CString name)
+StepData_ESDescr::StepData_ESDescr(const char* name)
     : thenom(name)
 {
   // Constructor for Simple Entity Descriptor with the given type name
 }
 
-void StepData_ESDescr::SetNbFields(const Standard_Integer nb)
+void StepData_ESDescr::SetNbFields(const int nb)
 {
   // Set the number of fields for this entity descriptor, preserving existing field data
-  Standard_Integer minb, i, oldnb = NbFields();
+  int minb, i, oldnb = NbFields();
   thenames.Clear(); // Clear name-to-index mapping
   if (nb == 0)
   {
     thedescr.Nullify();
     return;
   }
-  Handle(TColStd_HArray1OfTransient) li = new TColStd_HArray1OfTransient(1, nb);
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> li =
+    new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nb);
   if (oldnb == 0)
   {
     thedescr = li;
@@ -54,30 +55,30 @@ void StepData_ESDescr::SetNbFields(const Standard_Integer nb)
   thedescr = li;
 }
 
-void StepData_ESDescr::SetField(const Standard_Integer         num,
-                                const Standard_CString         name,
-                                const Handle(StepData_PDescr)& descr)
+void StepData_ESDescr::SetField(const int                           num,
+                                const char*                         name,
+                                const occ::handle<StepData_PDescr>& descr)
 {
   // Set field descriptor at specified position with given name and parameter descriptor
   if (num < 1 || num > NbFields())
     return;
-  Handle(StepData_PDescr) pde = new StepData_PDescr;
+  occ::handle<StepData_PDescr> pde = new StepData_PDescr;
   pde->SetFrom(descr); // Copy descriptor properties
   pde->SetName(name);  // Set field name
   thedescr->SetValue(num, pde);
   thenames.Bind(name, num); // Update name-to-index mapping
 }
 
-void StepData_ESDescr::SetBase(const Handle(StepData_ESDescr)& base)
+void StepData_ESDescr::SetBase(const occ::handle<StepData_ESDescr>& base)
 {
   thebase = base;
   //  Need to ACCUMULATE the fields from the base and its superclasses
 }
 
-void StepData_ESDescr::SetSuper(const Handle(StepData_ESDescr)& super)
+void StepData_ESDescr::SetSuper(const occ::handle<StepData_ESDescr>& super)
 {
   // Set the superclass descriptor, handling inheritance hierarchy
-  Handle(StepData_ESDescr) sup = super->Base();
+  occ::handle<StepData_ESDescr> sup = super->Base();
   if (sup.IsNull())
     sup = super;
   if (!thebase.IsNull())
@@ -86,7 +87,7 @@ void StepData_ESDescr::SetSuper(const Handle(StepData_ESDescr)& super)
     thesuper = sup; // Otherwise set directly
 }
 
-Standard_CString StepData_ESDescr::TypeName() const
+const char* StepData_ESDescr::TypeName() const
 {
   return thenom.ToCString();
 }
@@ -96,48 +97,48 @@ const TCollection_AsciiString& StepData_ESDescr::StepType() const
   return thenom;
 }
 
-Handle(StepData_ESDescr) StepData_ESDescr::Base() const
+occ::handle<StepData_ESDescr> StepData_ESDescr::Base() const
 {
   return thebase;
 }
 
-Handle(StepData_ESDescr) StepData_ESDescr::Super() const
+occ::handle<StepData_ESDescr> StepData_ESDescr::Super() const
 {
   return thesuper;
 }
 
-Standard_Boolean StepData_ESDescr::IsSub(const Handle(StepData_ESDescr)& other) const
+bool StepData_ESDescr::IsSub(const occ::handle<StepData_ESDescr>& other) const
 {
   // Check if this descriptor is a subclass of the given descriptor
-  Handle(StepData_ESDescr) oth = other->Base();
+  occ::handle<StepData_ESDescr> oth = other->Base();
   if (oth.IsNull())
     oth = other;
   if (!thebase.IsNull())
     return thebase->IsSub(oth); // Delegate to base if exists
-  Handle(Standard_Transient) t1 = this;
+  occ::handle<Standard_Transient> t1 = this;
   if (oth == t1)
-    return Standard_True; // Same descriptor
+    return true; // Same descriptor
   if (oth == thesuper)
-    return Standard_True; // Direct superclass
+    return true; // Direct superclass
   else if (thesuper.IsNull())
-    return Standard_False;     // No superclass
+    return false;              // No superclass
   return thesuper->IsSub(oth); // Check recursively up the hierarchy
 }
 
-Standard_Integer StepData_ESDescr::NbFields() const
+int StepData_ESDescr::NbFields() const
 {
   return (thedescr.IsNull() ? 0 : thedescr->Length());
 }
 
-Standard_Integer StepData_ESDescr::Rank(const Standard_CString name) const
+int StepData_ESDescr::Rank(const char* name) const
 {
-  Standard_Integer rank;
+  int rank;
   if (!thenames.Find(name, rank))
     return 0;
   return rank;
 }
 
-Standard_CString StepData_ESDescr::Name(const Standard_Integer num) const
+const char* StepData_ESDescr::Name(const int num) const
 {
   if (num < 1)
     return "";
@@ -147,38 +148,38 @@ Standard_CString StepData_ESDescr::Name(const Standard_Integer num) const
   return pde->Name();
 }
 
-Handle(StepData_PDescr) StepData_ESDescr::Field(const Standard_Integer num) const
+occ::handle<StepData_PDescr> StepData_ESDescr::Field(const int num) const
 {
   return GetCasted(StepData_PDescr, thedescr->Value(num));
 }
 
-Handle(StepData_PDescr) StepData_ESDescr::NamedField(const Standard_CString name) const
+occ::handle<StepData_PDescr> StepData_ESDescr::NamedField(const char* name) const
 {
-  Handle(StepData_PDescr) pde;
-  Standard_Integer        rank = Rank(name);
+  occ::handle<StepData_PDescr> pde;
+  int                          rank = Rank(name);
   if (rank > 0)
     pde = GetCasted(StepData_PDescr, thedescr->Value(rank));
   return pde;
 }
 
-Standard_Boolean StepData_ESDescr::Matches(const Standard_CString name) const
+bool StepData_ESDescr::Matches(const char* name) const
 {
   // Check if this descriptor matches the given type name (including inheritance)
   if (thenom.IsEqual(name))
-    return Standard_True; // Direct match
+    return true; // Direct match
   if (thesuper.IsNull())
-    return Standard_False;        // No superclass to check
+    return false;                 // No superclass to check
   return thesuper->Matches(name); // Check superclass hierarchy
 }
 
-Standard_Boolean StepData_ESDescr::IsComplex() const
+bool StepData_ESDescr::IsComplex() const
 {
-  return Standard_False;
+  return false;
 }
 
-Handle(StepData_Described) StepData_ESDescr::NewEntity() const
+occ::handle<StepData_Described> StepData_ESDescr::NewEntity() const
 {
   // Create a new simple entity instance based on this descriptor
-  Handle(StepData_Simple) ent = new StepData_Simple(this);
+  occ::handle<StepData_Simple> ent = new StepData_Simple(this);
   return ent;
 }

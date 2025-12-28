@@ -16,8 +16,6 @@
 
 #include <Graphic3d_TransformPers.hxx>
 
-DEFINE_STANDARD_HANDLE(Graphic3d_TransformPersScaledAbove, Graphic3d_TransformPers)
-
 //! Transformation Zoom persistence with the above boundary of scale.
 //! This persistence works only when the camera scale value is below the scale value of this
 //! persistence. Otherwise, no persistence is applied.
@@ -25,8 +23,7 @@ class Graphic3d_TransformPersScaledAbove : public Graphic3d_TransformPers
 {
 public:
   //! Create a Zoom transformation persistence with an anchor 3D point and a scale value
-  Standard_EXPORT Graphic3d_TransformPersScaledAbove(const Standard_Real theScale,
-                                                     const gp_Pnt&       thePnt);
+  Standard_EXPORT Graphic3d_TransformPersScaledAbove(const double theScale, const gp_Pnt& thePnt);
 
   //! Destructor
   virtual ~Graphic3d_TransformPersScaledAbove() {}
@@ -36,16 +33,15 @@ public:
   //! @param[in] theCamera  camera definition
   //! @param[in] theViewportWidth  the width of viewport.
   //! @param[in] theViewportHeight  the height of viewport.
-  Standard_EXPORT virtual Standard_Real persistentScale(
-    const Handle(Graphic3d_Camera)& theCamera,
-    const Standard_Integer          theViewportWidth,
-    const Standard_Integer          theViewportHeight) const Standard_OVERRIDE;
+  Standard_EXPORT virtual double persistentScale(const occ::handle<Graphic3d_Camera>& theCamera,
+                                                 const int theViewportWidth,
+                                                 const int theViewportHeight) const override;
 
 public:
   DEFINE_STANDARD_RTTIEXT(Graphic3d_TransformPersScaledAbove, Graphic3d_TransformPers)
 
 private:
-  Standard_Real myScale; //!< scale bound value
+  double myScale; //!< scale bound value
 };
 
 #endif

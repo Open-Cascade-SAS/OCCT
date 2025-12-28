@@ -27,9 +27,10 @@ StepElement_ElementMaterial::StepElement_ElementMaterial() {}
 //=================================================================================================
 
 void StepElement_ElementMaterial::Init(
-  const Handle(TCollection_HAsciiString)&                         aMaterialId,
-  const Handle(TCollection_HAsciiString)&                         aDescription,
-  const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation)& aProperties)
+  const occ::handle<TCollection_HAsciiString>& aMaterialId,
+  const occ::handle<TCollection_HAsciiString>& aDescription,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>&
+    aProperties)
 {
 
   theMaterialId = aMaterialId;
@@ -41,21 +42,22 @@ void StepElement_ElementMaterial::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_ElementMaterial::MaterialId() const
+occ::handle<TCollection_HAsciiString> StepElement_ElementMaterial::MaterialId() const
 {
   return theMaterialId;
 }
 
 //=================================================================================================
 
-void StepElement_ElementMaterial::SetMaterialId(const Handle(TCollection_HAsciiString)& aMaterialId)
+void StepElement_ElementMaterial::SetMaterialId(
+  const occ::handle<TCollection_HAsciiString>& aMaterialId)
 {
   theMaterialId = aMaterialId;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_ElementMaterial::Description() const
+occ::handle<TCollection_HAsciiString> StepElement_ElementMaterial::Description() const
 {
   return theDescription;
 }
@@ -63,15 +65,15 @@ Handle(TCollection_HAsciiString) StepElement_ElementMaterial::Description() cons
 //=================================================================================================
 
 void StepElement_ElementMaterial::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_HArray1OfMaterialPropertyRepresentation) StepElement_ElementMaterial::Properties()
-  const
+occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>
+  StepElement_ElementMaterial::Properties() const
 {
   return theProperties;
 }
@@ -79,7 +81,8 @@ Handle(StepRepr_HArray1OfMaterialPropertyRepresentation) StepElement_ElementMate
 //=================================================================================================
 
 void StepElement_ElementMaterial::SetProperties(
-  const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation)& aProperties)
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>&
+    aProperties)
 {
   theProperties = aProperties;
 }

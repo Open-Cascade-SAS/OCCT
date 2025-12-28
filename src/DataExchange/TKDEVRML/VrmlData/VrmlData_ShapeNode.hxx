@@ -43,17 +43,17 @@ public:
   /**
    * Query the Appearance.
    */
-  inline const Handle(VrmlData_Appearance)& Appearance() const { return myAppearance; }
+  inline const occ::handle<VrmlData_Appearance>& Appearance() const { return myAppearance; }
 
   /**
    * Query the Geometry.
    */
-  inline const Handle(VrmlData_Geometry)& Geometry() const { return myGeometry; }
+  inline const occ::handle<VrmlData_Geometry>& Geometry() const { return myGeometry; }
 
   /**
    * Set the Appearance
    */
-  inline void SetAppearance(const Handle(VrmlData_Appearance)& theAppear)
+  inline void SetAppearance(const occ::handle<VrmlData_Appearance>& theAppear)
   {
     myAppearance = theAppear;
   }
@@ -61,7 +61,7 @@ public:
   /**
    * Set the Geometry
    */
-  inline void SetGeometry(const Handle(VrmlData_Geometry)& theGeometry)
+  inline void SetGeometry(const occ::handle<VrmlData_Geometry>& theGeometry)
   {
     myGeometry = theGeometry;
   }
@@ -71,32 +71,29 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+    const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Fill the Node internal data from the given input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
 
   /**
    * Check if the Shape Node is writeable.
    */
-  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
-
-protected:
-  // ---------- PROTECTED METHODS ----------
+  Standard_EXPORT virtual bool IsDefault() const override;
 
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  Handle(VrmlData_Appearance) myAppearance;
-  Handle(VrmlData_Geometry)   myGeometry;
+  occ::handle<VrmlData_Appearance> myAppearance;
+  occ::handle<VrmlData_Geometry>   myGeometry;
 
 public:
   // Declaration of CASCADE RTTI
@@ -104,6 +101,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(VrmlData_ShapeNode, VrmlData_Node)
-
 #endif

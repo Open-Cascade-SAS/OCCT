@@ -19,11 +19,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_Protocol, StepData_Protocol)
 
-static Standard_CString schemaAP214CD  = "AUTOMOTIVE_DESIGN_CC2 { 1 2 10303 214 -1 1 5 4 }";
-static Standard_CString schemaAP214DIS = "AUTOMOTIVE_DESIGN { 1 2 10303 214 0 1 1 1 }";
-static Standard_CString schemaAP214IS  = "AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }";
-static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
-static Standard_CString schemaAP242DIS =
+static const char* schemaAP214CD  = "AUTOMOTIVE_DESIGN_CC2 { 1 2 10303 214 -1 1 5 4 }";
+static const char* schemaAP214DIS = "AUTOMOTIVE_DESIGN { 1 2 10303 214 0 1 1 1 }";
+static const char* schemaAP214IS  = "AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }";
+static const char* schemaAP203    = "CONFIG_CONTROL_DESIGN";
+static const char* schemaAP242DIS =
   "AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF {1 0 10303 442 1 1 4 }";
 
 #include <HeaderSection_Protocol.hxx>
@@ -380,7 +380,9 @@ static Standard_CString schemaAP242DIS =
 // Added by CKY (Resources)
 #include <HeaderSection.hxx>
 
-#include <Interface_DataMapOfTransientInteger.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 // Added from CC2 to DIS March 1999 j4
 
 #include <StepAP214_AppliedDateAndTimeAssignment.hxx>
@@ -755,8 +757,8 @@ static Standard_CString schemaAP242DIS =
 #include <StepVisual_CubicBezierTriangulatedFace.hxx>
 #include <StepVisual_TriangulatedSurfaceSet.hxx>
 
-static int                                 THE_StepAP214_Protocol_init = 0;
-static Interface_DataMapOfTransientInteger types(819);
+static int                                                       THE_StepAP214_Protocol_init = 0;
+static NCollection_DataMap<occ::handle<Standard_Transient>, int> types(819);
 
 //=================================================================================================
 
@@ -1575,7 +1577,7 @@ StepAP214_Protocol::StepAP214_Protocol()
 
 //=================================================================================================
 
-Standard_Integer StepAP214_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
+int StepAP214_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (types.IsBound(atype))
     return types.Find(atype);
@@ -1585,10 +1587,10 @@ Standard_Integer StepAP214_Protocol::TypeNumber(const Handle(Standard_Type)& aty
 
 //=================================================================================================
 
-Standard_CString StepAP214_Protocol::SchemaName(
-  const Handle(Interface_InterfaceModel)& theModel) const
+const char* StepAP214_Protocol::SchemaName(
+  const occ::handle<Interface_InterfaceModel>& theModel) const
 {
-  Handle(StepData_StepModel) aModel1 = Handle(StepData_StepModel)::DownCast(theModel);
+  occ::handle<StepData_StepModel> aModel1 = occ::down_cast<StepData_StepModel>(theModel);
   const DESTEP_Parameters::WriteMode_StepSchema aSchema =
     aModel1.IsNull() ? DESTEP_Parameters::WriteMode_StepSchema_AP214IS
                      : aModel1->InternalParameters.WriteSchema;
@@ -1610,14 +1612,14 @@ Standard_CString StepAP214_Protocol::SchemaName(
 
 //=================================================================================================
 
-Standard_Integer StepAP214_Protocol::NbResources() const
+int StepAP214_Protocol::NbResources() const
 {
   return 1;
 }
 
 //=================================================================================================
 
-Handle(Interface_Protocol) StepAP214_Protocol::Resource(const Standard_Integer /*num*/) const
+occ::handle<Interface_Protocol> StepAP214_Protocol::Resource(const int /*num*/) const
 {
   return HeaderSection::Protocol();
 }

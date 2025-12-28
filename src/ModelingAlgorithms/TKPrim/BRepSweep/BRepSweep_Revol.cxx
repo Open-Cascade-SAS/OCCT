@@ -26,10 +26,10 @@
 
 //=================================================================================================
 
-BRepSweep_Revol::BRepSweep_Revol(const TopoDS_Shape&    S,
-                                 const gp_Ax1&          Ax,
-                                 const Standard_Real    D,
-                                 const Standard_Boolean C)
+BRepSweep_Revol::BRepSweep_Revol(const TopoDS_Shape& S,
+                                 const gp_Ax1&       Ax,
+                                 const double        D,
+                                 const bool          C)
     : myRotation(S.Oriented(TopAbs_FORWARD), NumShape(D), Location(Ax, D), Axe(Ax, D), Angle(D), C)
 {
   Standard_ConstructionError_Raise_if(Angle(D) <= Precision::Angular(),
@@ -38,7 +38,7 @@ BRepSweep_Revol::BRepSweep_Revol(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-BRepSweep_Revol::BRepSweep_Revol(const TopoDS_Shape& S, const gp_Ax1& Ax, const Standard_Boolean C)
+BRepSweep_Revol::BRepSweep_Revol(const TopoDS_Shape& S, const gp_Ax1& Ax, const bool C)
     : myRotation(S.Oriented(TopAbs_FORWARD),
                  NumShape(2 * M_PI),
                  Location(Ax, 2 * M_PI),
@@ -93,12 +93,12 @@ TopoDS_Shape BRepSweep_Revol::LastShape(const TopoDS_Shape& aGenS)
 
 //=================================================================================================
 
-Sweep_NumShape BRepSweep_Revol::NumShape(const Standard_Real D) const
+Sweep_NumShape BRepSweep_Revol::NumShape(const double D) const
 {
   Sweep_NumShape N;
   if (std::abs(Angle(D) - 2 * M_PI) <= Precision::Angular())
   {
-    N.Init(2, TopAbs_EDGE, Standard_True, Standard_False, Standard_False);
+    N.Init(2, TopAbs_EDGE, true, false, false);
   }
   else
   {
@@ -109,7 +109,7 @@ Sweep_NumShape BRepSweep_Revol::NumShape(const Standard_Real D) const
 
 //=================================================================================================
 
-TopLoc_Location BRepSweep_Revol::Location(const gp_Ax1& Ax, const Standard_Real D) const
+TopLoc_Location BRepSweep_Revol::Location(const gp_Ax1& Ax, const double D) const
 {
   gp_Trsf gpt;
   gpt.SetRotation(Axe(Ax, D), Angle(D));
@@ -119,7 +119,7 @@ TopLoc_Location BRepSweep_Revol::Location(const gp_Ax1& Ax, const Standard_Real 
 
 //=================================================================================================
 
-gp_Ax1 BRepSweep_Revol::Axe(const gp_Ax1& Ax, const Standard_Real D) const
+gp_Ax1 BRepSweep_Revol::Axe(const gp_Ax1& Ax, const double D) const
 {
   gp_Ax1 A = Ax;
   if (D < 0.)
@@ -129,9 +129,9 @@ gp_Ax1 BRepSweep_Revol::Axe(const gp_Ax1& Ax, const Standard_Real D) const
 
 //=================================================================================================
 
-Standard_Real BRepSweep_Revol::Angle(const Standard_Real D) const
+double BRepSweep_Revol::Angle(const double D) const
 {
-  Standard_Real d = std::abs(D);
+  double d = std::abs(D);
   while (d > (2 * M_PI + Precision::Angular()))
   {
     d = d - 2 * M_PI;
@@ -141,7 +141,7 @@ Standard_Real BRepSweep_Revol::Angle(const Standard_Real D) const
 
 //=================================================================================================
 
-Standard_Real BRepSweep_Revol::Angle() const
+double BRepSweep_Revol::Angle() const
 {
   return myRotation.Angle();
 }
@@ -155,7 +155,7 @@ gp_Ax1 BRepSweep_Revol::Axe() const
 
 //=================================================================================================
 
-Standard_Boolean BRepSweep_Revol::IsUsed(const TopoDS_Shape& aGenS) const
+bool BRepSweep_Revol::IsUsed(const TopoDS_Shape& aGenS) const
 {
   return myRotation.IsUsed(aGenS);
 }

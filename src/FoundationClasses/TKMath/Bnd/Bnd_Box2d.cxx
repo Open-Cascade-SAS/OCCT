@@ -19,12 +19,15 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 
 namespace
 {
 // Precision constant for infinite bounds
-constexpr Standard_Real THE_BND_PRECISION_INFINITE = 1e+100;
+constexpr double THE_BND_PRECISION_INFINITE = 1e+100;
 
 // Precomputed unit direction vectors for bounding box transformations
 constexpr gp_Dir2d THE_DIR_XMIN{gp_Dir2d::D::NX};
@@ -35,10 +38,7 @@ constexpr gp_Dir2d THE_DIR_YMAX{gp_Dir2d::D::Y};
 
 //=================================================================================================
 
-void Bnd_Box2d::Update(const Standard_Real x,
-                       const Standard_Real y,
-                       const Standard_Real X,
-                       const Standard_Real Y)
+void Bnd_Box2d::Update(const double x, const double y, const double X, const double Y)
 {
   if (Flags & VoidMask)
   {
@@ -63,7 +63,7 @@ void Bnd_Box2d::Update(const Standard_Real x,
 
 //=================================================================================================
 
-void Bnd_Box2d::Update(const Standard_Real X, const Standard_Real Y)
+void Bnd_Box2d::Update(const double X, const double Y)
 {
   if (Flags & VoidMask)
   {
@@ -88,7 +88,7 @@ void Bnd_Box2d::Update(const Standard_Real X, const Standard_Real Y)
 
 //=================================================================================================
 
-void Bnd_Box2d::Get(Standard_Real& x, Standard_Real& y, Standard_Real& Xm, Standard_Real& Ym) const
+void Bnd_Box2d::Get(double& x, double& y, double& Xm, double& Ym) const
 {
   if (Flags & VoidMask)
     throw Standard_ConstructionError("Bnd_Box is void");
@@ -108,28 +108,28 @@ Bnd_Box2d::Limits Bnd_Box2d::Get() const
 
 //=================================================================================================
 
-Standard_Real Bnd_Box2d::GetXMin() const
+double Bnd_Box2d::GetXMin() const
 {
   return (Flags & XminMask) ? -THE_BND_PRECISION_INFINITE : Xmin - Gap;
 }
 
 //=================================================================================================
 
-Standard_Real Bnd_Box2d::GetXMax() const
+double Bnd_Box2d::GetXMax() const
 {
   return (Flags & XmaxMask) ? THE_BND_PRECISION_INFINITE : Xmax + Gap;
 }
 
 //=================================================================================================
 
-Standard_Real Bnd_Box2d::GetYMin() const
+double Bnd_Box2d::GetYMin() const
 {
   return (Flags & YminMask) ? -THE_BND_PRECISION_INFINITE : Ymin - Gap;
 }
 
 //=================================================================================================
 
-Standard_Real Bnd_Box2d::GetYMax() const
+double Bnd_Box2d::GetYMax() const
 {
   return (Flags & YmaxMask) ? THE_BND_PRECISION_INFINITE : Ymax + Gap;
 }
@@ -148,7 +148,7 @@ Bnd_Box2d Bnd_Box2d::Transformed(const gp_Trsf2d& T) const
   }
   else if (aF == gp_Translation)
   {
-    Standard_Real aDX, aDY;
+    double aDX, aDY;
     (T.TranslationPart()).Coord(aDX, aDY);
     if (!(Flags & XminMask))
       aNewBox.Xmin += aDX;
@@ -161,39 +161,39 @@ Bnd_Box2d Bnd_Box2d::Transformed(const gp_Trsf2d& T) const
   }
   else
   {
-    gp_Pnt2d         aP[4];
-    Standard_Boolean aVertex[4];
-    aVertex[0] = Standard_True;
-    aVertex[1] = Standard_True;
-    aVertex[2] = Standard_True;
-    aVertex[3] = Standard_True;
-    gp_Dir2d         aD[6];
-    Standard_Integer aNbDirs = 0;
+    gp_Pnt2d aP[4];
+    bool     aVertex[4];
+    aVertex[0] = true;
+    aVertex[1] = true;
+    aVertex[2] = true;
+    aVertex[3] = true;
+    gp_Dir2d aD[6];
+    int      aNbDirs = 0;
 
     if (Flags & XminMask)
     {
       aD[aNbDirs++] = THE_DIR_XMIN;
-      aVertex[0] = aVertex[2] = Standard_False;
+      aVertex[0] = aVertex[2] = false;
     }
     if (Flags & XmaxMask)
     {
       aD[aNbDirs++] = THE_DIR_XMAX;
-      aVertex[1] = aVertex[3] = Standard_False;
+      aVertex[1] = aVertex[3] = false;
     }
     if (Flags & YminMask)
     {
       aD[aNbDirs++] = THE_DIR_YMIN;
-      aVertex[0] = aVertex[1] = Standard_False;
+      aVertex[0] = aVertex[1] = false;
     }
     if (Flags & YmaxMask)
     {
       aD[aNbDirs++] = THE_DIR_YMAX;
-      aVertex[2] = aVertex[3] = Standard_False;
+      aVertex[2] = aVertex[3] = false;
     }
 
     aNewBox.SetVoid();
 
-    for (Standard_Integer i = 0; i < aNbDirs; i++)
+    for (int i = 0; i < aNbDirs; i++)
     {
       aD[i].Transform(T);
       aNewBox.Add(aD[i]);
@@ -277,8 +277,8 @@ void Bnd_Box2d::Add(const Bnd_Box2d& Other)
 
 void Bnd_Box2d::Add(const gp_Dir2d& D)
 {
-  Standard_Real DX = D.X();
-  Standard_Real DY = D.Y();
+  double DX = D.X();
+  double DY = D.Y();
 
   if (DX < -RealEpsilon())
     OpenXmin();
@@ -293,69 +293,69 @@ void Bnd_Box2d::Add(const gp_Dir2d& D)
 
 //=================================================================================================
 
-Standard_Boolean Bnd_Box2d::IsOut(const gp_Pnt2d& P) const
+bool Bnd_Box2d::IsOut(const gp_Pnt2d& P) const
 {
   if (IsWhole())
-    return Standard_False;
+    return false;
   else if (IsVoid())
-    return Standard_True;
+    return true;
   else
   {
-    Standard_Real X = P.X();
-    Standard_Real Y = P.Y();
+    double X = P.X();
+    double Y = P.Y();
     if (!(Flags & XminMask) && (X < (Xmin - Gap)))
-      return Standard_True;
+      return true;
     else if (!(Flags & XmaxMask) && (X > (Xmax + Gap)))
-      return Standard_True;
+      return true;
     else if (!(Flags & YminMask) && (Y < (Ymin - Gap)))
-      return Standard_True;
+      return true;
     else if (!(Flags & YmaxMask) && (Y > (Ymax + Gap)))
-      return Standard_True;
+      return true;
     else
-      return Standard_False;
+      return false;
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean Bnd_Box2d::IsOut(const gp_Lin2d& theL) const
+bool Bnd_Box2d::IsOut(const gp_Lin2d& theL) const
 {
   if (IsWhole())
   {
-    return Standard_False;
+    return false;
   }
   if (IsVoid())
   {
-    return Standard_True;
+    return true;
   }
-  Standard_Real aXMin, aXMax, aYMin, aYMax;
+  double aXMin, aXMax, aYMin, aYMax;
   Get(aXMin, aYMin, aXMax, aYMax);
 
   gp_XY aCenter((aXMin + aXMax) / 2, (aYMin + aYMax) / 2);
   gp_XY aHeigh(std::abs(aXMax - aCenter.X()), std::abs(aYMax - aCenter.Y()));
 
-  const Standard_Real aProd[3] = {theL.Direction().XY() ^ (aCenter - theL.Location().XY()),
-                                  theL.Direction().X() * aHeigh.Y(),
-                                  theL.Direction().Y() * aHeigh.X()};
-  Standard_Boolean    aStatus  = (std::abs(aProd[0]) > (std::abs(aProd[1]) + std::abs(aProd[2])));
+  const double aProd[3] = {theL.Direction().XY() ^ (aCenter - theL.Location().XY()),
+                           theL.Direction().X() * aHeigh.Y(),
+                           theL.Direction().Y() * aHeigh.X()};
+  bool         aStatus  = (std::abs(aProd[0]) > (std::abs(aProd[1]) + std::abs(aProd[2])));
   return aStatus;
 }
 
 //=================================================================================================
 
-Standard_Boolean Bnd_Box2d::IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) const
+bool Bnd_Box2d::IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) const
 {
   if (IsWhole())
   {
-    return Standard_False;
+    return false;
   }
   if (IsVoid())
   {
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean aStatus = Standard_True;
-  Standard_Real    aLocXMin, aLocXMax, aLocYMin, aLocYMax;
+  bool   aStatus = true;
+  double aLocXMin, aLocXMax, aLocYMin, aLocYMax;
   Get(aLocXMin, aLocYMin, aLocXMax, aLocYMax);
 
   //// Intersect the line containing the segment.
@@ -364,9 +364,9 @@ Standard_Boolean Bnd_Box2d::IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) 
   gp_XY aCenter((aLocXMin + aLocXMax) / 2, (aLocYMin + aLocYMax) / 2);
   gp_XY aHeigh(std::abs(aLocXMax - aCenter.X()), std::abs(aLocYMax - aCenter.Y()));
 
-  const Standard_Real aProd[3] = {aSegDelta ^ (aCenter - theP0.XY()),
-                                  aSegDelta.X() * aHeigh.Y(),
-                                  aSegDelta.Y() * aHeigh.X()};
+  const double aProd[3] = {aSegDelta ^ (aCenter - theP0.XY()),
+                           aSegDelta.X() * aHeigh.Y(),
+                           aSegDelta.Y() * aHeigh.X()};
 
   if ((std::abs(aProd[0]) <= (std::abs(aProd[1]) + std::abs(aProd[2]))))
   {
@@ -381,30 +381,30 @@ Standard_Boolean Bnd_Box2d::IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) 
 
 //=================================================================================================
 
-Standard_Boolean Bnd_Box2d::IsOut(const Bnd_Box2d& Other) const
+bool Bnd_Box2d::IsOut(const Bnd_Box2d& Other) const
 {
   if (IsWhole())
-    return Standard_False;
+    return false;
   else if (IsVoid())
-    return Standard_True;
+    return true;
   else if (Other.IsWhole())
-    return Standard_False;
+    return false;
   else if (Other.IsVoid())
-    return Standard_True;
+    return true;
   else
   {
-    Standard_Real OXmin, OXmax, OYmin, OYmax;
+    double OXmin, OXmax, OYmin, OYmax;
     Other.Get(OXmin, OYmin, OXmax, OYmax);
     if (!(Flags & XminMask) && (OXmax < (Xmin - Gap)))
-      return Standard_True;
+      return true;
     else if (!(Flags & XmaxMask) && (OXmin > (Xmax + Gap)))
-      return Standard_True;
+      return true;
     else if (!(Flags & YminMask) && (OYmax < (Ymin - Gap)))
-      return Standard_True;
+      return true;
     else if (!(Flags & YmaxMask) && (OYmin > (Ymax + Gap)))
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================

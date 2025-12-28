@@ -21,9 +21,9 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_TessellatedFace.hxx>
 
-#include <TColStd_HArray2OfInteger.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_CubicBezierTriangulatedFace, StepVisual_TessellatedFace)
+#include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 //! Representation of STEP entity CubicBezierTriangulatedFace
 class StepVisual_CubicBezierTriangulatedFace : public StepVisual_TessellatedFace
@@ -35,27 +35,27 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-    const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
-    const Standard_Integer                    theTessellatedFace_Pnmax,
-    const Handle(TColStd_HArray2OfReal)&      theTessellatedFace_Normals,
-    const Standard_Boolean                    theHasTessellatedFace_GeometricLink,
-    const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
-    const Handle(TColStd_HArray2OfInteger)&   theCtriangles);
+    const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
+    const occ::handle<StepVisual_CoordinatesList>&  theTessellatedFace_Coordinates,
+    const int                                       theTessellatedFace_Pnmax,
+    const occ::handle<NCollection_HArray2<double>>& theTessellatedFace_Normals,
+    const bool                                      theHasTessellatedFace_GeometricLink,
+    const StepVisual_FaceOrSurface&                 theTessellatedFace_GeometricLink,
+    const occ::handle<NCollection_HArray2<int>>&    theCtriangles);
 
   //! Returns field Ctriangles
-  Standard_EXPORT Handle(TColStd_HArray2OfInteger) Ctriangles() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<int>> Ctriangles() const;
 
   //! Sets field Ctriangles
-  Standard_EXPORT void SetCtriangles(const Handle(TColStd_HArray2OfInteger)& theCtriangles);
+  Standard_EXPORT void SetCtriangles(const occ::handle<NCollection_HArray2<int>>& theCtriangles);
 
   //! Returns number of Ctriangles
-  Standard_EXPORT Standard_Integer NbCtriangles() const;
+  Standard_EXPORT int NbCtriangles() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CubicBezierTriangulatedFace, StepVisual_TessellatedFace)
 
 private:
-  Handle(TColStd_HArray2OfInteger) myCtriangles;
+  occ::handle<NCollection_HArray2<int>> myCtriangles;
 };
 
 #endif // _StepVisual_CubicBezierTriangulatedFace_HeaderFile_

@@ -71,13 +71,13 @@ public:
   }
 
   //! Returns true if ProgressIndicator signals UserBreak
-  Standard_Boolean UserBreak() const;
+  bool UserBreak() const;
 
   //! Returns false if ProgressIndicator signals UserBreak
-  Standard_Boolean More() const { return !UserBreak(); }
+  bool More() const { return !UserBreak(); }
 
   //! Returns true if this progress range is attached to some indicator.
-  Standard_Boolean IsActive() const;
+  bool IsActive() const;
 
   //! Closes the current range and advances indicator
   void Close();
@@ -87,9 +87,7 @@ public:
 
 private:
   //! Constructor is private
-  Message_ProgressRange(const Message_ProgressScope& theParent,
-                        Standard_Real                theStart,
-                        Standard_Real                theDelta)
+  Message_ProgressRange(const Message_ProgressScope& theParent, double theStart, double theDelta)
       : myParentScope(&theParent),
         myStart(theStart),
         myDelta(theDelta),
@@ -99,11 +97,11 @@ private:
 
 private:
   const Message_ProgressScope* myParentScope; //!< Pointer to parent scope
-  Standard_Real                myStart;       //!< Start point on the global scale
-  Standard_Real                myDelta;       //!< Step of incrementation on the global scale
+  double                       myStart;       //!< Start point on the global scale
+  double                       myDelta;       //!< Step of incrementation on the global scale
 
-  mutable Standard_Boolean myWasUsed; //!< Flag indicating that this range
-                                      //!  was used to create a new scope
+  mutable bool myWasUsed; //!< Flag indicating that this range
+                          //!  was used to create a new scope
 
   friend class Message_ProgressScope;
 };
@@ -112,14 +110,14 @@ private:
 
 //=================================================================================================
 
-inline Standard_Boolean Message_ProgressRange::IsActive() const
+inline bool Message_ProgressRange::IsActive() const
 {
   return !myWasUsed && myParentScope && myParentScope->myProgress;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean Message_ProgressRange::UserBreak() const
+inline bool Message_ProgressRange::UserBreak() const
 {
   return myParentScope && myParentScope->myProgress && myParentScope->myProgress->UserBreak();
 }

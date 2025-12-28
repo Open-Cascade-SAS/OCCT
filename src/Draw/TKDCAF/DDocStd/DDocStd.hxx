@@ -46,35 +46,33 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the global instance of application.
-  Standard_EXPORT static const Handle(TDocStd_Application)& GetApplication();
+  Standard_EXPORT static const occ::handle<TDocStd_Application>& GetApplication();
 
-  Standard_EXPORT static Standard_Boolean GetDocument(
-    Standard_CString&         Name,
-    Handle(TDocStd_Document)& Doc,
-    const Standard_Boolean    Complain = Standard_True);
+  Standard_EXPORT static bool GetDocument(const char*&                   Name,
+                                          occ::handle<TDocStd_Document>& Doc,
+                                          const bool                     Complain = true);
 
-  Standard_EXPORT static Standard_Boolean Find(const Handle(TDocStd_Document)& Document,
-                                               const Standard_CString          Entry,
-                                               TDF_Label&                      Label,
-                                               const Standard_Boolean Complain = Standard_True);
+  Standard_EXPORT static bool Find(const occ::handle<TDocStd_Document>& Document,
+                                   const char*                          Entry,
+                                   TDF_Label&                           Label,
+                                   const bool                           Complain = true);
 
-  Standard_EXPORT static Standard_Boolean Find(const Handle(TDocStd_Document)& Document,
-                                               const Standard_CString          Entry,
-                                               const Standard_GUID&            ID,
-                                               Handle(TDF_Attribute)&          A,
-                                               const Standard_Boolean Complain = Standard_True);
+  Standard_EXPORT static bool Find(const occ::handle<TDocStd_Document>& Document,
+                                   const char*                          Entry,
+                                   const Standard_GUID&                 ID,
+                                   occ::handle<TDF_Attribute>&          A,
+                                   const bool                           Complain = true);
 
   //! Safe variant for arbitrary type of argument
   template <class T>
-  static Standard_Boolean Find(const Handle(TDocStd_Document)& Document,
-                               const Standard_CString          Entry,
-                               const Standard_GUID&            ID,
-                               Handle(T)&                      A,
-                               const Standard_Boolean          Complain = Standard_True)
+  static bool Find(const occ::handle<TDocStd_Document>& Document,
+                   const char*                          Entry,
+                   const Standard_GUID&                 ID,
+                   occ::handle<T>&                      A,
+                   const bool                           Complain = true)
   {
-    Handle(TDF_Attribute) anAttr = A;
-    return Find(Document, Entry, ID, anAttr, Complain)
-           && !(A = Handle(T)::DownCast(anAttr)).IsNull();
+    occ::handle<TDF_Attribute> anAttr = A;
+    return Find(Document, Entry, ID, anAttr, Complain) && !(A = occ::down_cast<T>(anAttr)).IsNull();
   }
 
   Standard_EXPORT static Draw_Interpretor& ReturnLabel(Draw_Interpretor& theCommands,

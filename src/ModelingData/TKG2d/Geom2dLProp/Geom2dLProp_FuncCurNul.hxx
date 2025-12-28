@@ -30,23 +30,20 @@ class Geom2dLProp_FuncCurNul : public math_FunctionWithDerivative
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Geom2dLProp_FuncCurNul(const Handle(Geom2d_Curve)& C);
+  Standard_EXPORT Geom2dLProp_FuncCurNul(const occ::handle<Geom2d_Curve>& C);
 
   //! Returns the value for the variable <X>.
-  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
+  Standard_EXPORT bool Value(const double X, double& F);
 
   //! Returns the derivative for the variable <X>
-  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D);
+  Standard_EXPORT bool Derivative(const double X, double& D);
 
   //! Returns the value of the function and the derivative
   //! for the variable <X>.
-  Standard_EXPORT Standard_Boolean Values(const Standard_Real X,
-                                          Standard_Real&      F,
-                                          Standard_Real&      D);
+  Standard_EXPORT bool Values(const double X, double& F, double& D);
 
-protected:
 private:
-  Handle(Geom2d_Curve) theCurve;
+  occ::handle<Geom2d_Curve> theCurve;
 };
 
 #endif // _Geom2dLProp_FuncCurNul_HeaderFile

@@ -29,10 +29,10 @@ StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::
 }
 
 void StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::Init(
-  const Handle(TCollection_HAsciiString)&          aName,
-  const Handle(StepBasic_MeasureValueMember)&      aValueComponent,
-  const StepBasic_Unit&                            aUnitComponent,
-  const Handle(StepShape_HArray1OfValueQualifier)& qualifiers)
+  const occ::handle<TCollection_HAsciiString>&                      aName,
+  const occ::handle<StepBasic_MeasureValueMember>&                  aValueComponent,
+  const StepBasic_Unit&                                             aUnitComponent,
+  const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers)
 {
   StepRepr_RepresentationItem::Init(aName);
   myMeasure->Init(aValueComponent, aUnitComponent);
@@ -40,43 +40,42 @@ void StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::Init(
 }
 
 void StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::SetMeasure(
-  const Handle(StepBasic_MeasureWithUnit)& Measure)
+  const occ::handle<StepBasic_MeasureWithUnit>& Measure)
 {
   myMeasure = Measure;
 }
 
-Handle(StepBasic_MeasureWithUnit)
+occ::handle<StepBasic_MeasureWithUnit>
   StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::Measure() const
 {
   return myMeasure;
 }
 
-Handle(StepShape_HArray1OfValueQualifier)
+occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>
   StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::Qualifiers() const
 {
   return theQualifiers;
 }
 
-Standard_Integer StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::NbQualifiers()
-  const
+int StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::NbQualifiers() const
 {
   return theQualifiers->Length();
 }
 
 void StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::SetQualifiers(
-  const Handle(StepShape_HArray1OfValueQualifier)& qualifiers)
+  const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers)
 {
   theQualifiers = qualifiers;
 }
 
 StepShape_ValueQualifier StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::
-  QualifiersValue(const Standard_Integer num) const
+  QualifiersValue(const int num) const
 {
   return theQualifiers->Value(num);
 }
 
 void StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::SetQualifiersValue(
-  const Standard_Integer          num,
+  const int                       num,
   const StepShape_ValueQualifier& aqualifier)
 {
   theQualifiers->SetValue(num, aqualifier);

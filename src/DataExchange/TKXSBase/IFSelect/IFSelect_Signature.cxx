@@ -21,19 +21,19 @@
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Signature, Interface_SignType)
 
 // unused
-// static Standard_CString nulsign = "";
+// static const char* nulsign = "";
 static char intval[20];
 
-IFSelect_Signature::IFSelect_Signature(const Standard_CString name)
+IFSelect_Signature::IFSelect_Signature(const char* name)
     : thename(name)
 {
   thecasi[0] = thecasi[1] = thecasi[2] = 0;
 }
 
-void IFSelect_Signature::SetIntCase(const Standard_Boolean hasmin,
-                                    const Standard_Integer valmin,
-                                    const Standard_Boolean hasmax,
-                                    const Standard_Integer valmax)
+void IFSelect_Signature::SetIntCase(const bool hasmin,
+                                    const int  valmin,
+                                    const bool hasmax,
+                                    const int  valmax)
 {
   thecasi[0] = 1;
   if (hasmin)
@@ -48,42 +48,39 @@ void IFSelect_Signature::SetIntCase(const Standard_Boolean hasmin,
   }
 }
 
-Standard_Boolean IFSelect_Signature::IsIntCase(Standard_Boolean& hasmin,
-                                               Standard_Integer& valmin,
-                                               Standard_Boolean& hasmax,
-                                               Standard_Integer& valmax) const
+bool IFSelect_Signature::IsIntCase(bool& hasmin, int& valmin, bool& hasmax, int& valmax) const
 {
-  hasmin = hasmax = Standard_False;
+  hasmin = hasmax = false;
   valmin = valmax = 0;
   if (!thecasi[0])
-    return Standard_False;
+    return false;
   if (thecasi[0] & 2)
   {
-    hasmin = Standard_True;
+    hasmin = true;
     valmin = thecasi[1];
   }
   if (thecasi[0] & 4)
   {
-    hasmax = Standard_True;
+    hasmax = true;
     valmax = thecasi[2];
   }
-  return Standard_True;
+  return true;
 }
 
-void IFSelect_Signature::AddCase(const Standard_CString acase)
+void IFSelect_Signature::AddCase(const char* acase)
 {
   if (thecasl.IsNull())
-    thecasl = new TColStd_HSequenceOfAsciiString();
+    thecasl = new NCollection_HSequence<TCollection_AsciiString>();
   TCollection_AsciiString scase(acase);
   thecasl->Append(scase);
 }
 
-Handle(TColStd_HSequenceOfAsciiString) IFSelect_Signature::CaseList() const
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> IFSelect_Signature::CaseList() const
 {
   return thecasl;
 }
 
-Standard_CString IFSelect_Signature::Name() const
+const char* IFSelect_Signature::Name() const
 {
   return thename.ToCString();
 }
@@ -95,37 +92,37 @@ TCollection_AsciiString IFSelect_Signature::Label() const
   return label;
 }
 
-Standard_Boolean IFSelect_Signature::Matches(const Handle(Standard_Transient)&       ent,
-                                             const Handle(Interface_InterfaceModel)& model,
-                                             const TCollection_AsciiString&          text,
-                                             const Standard_Boolean                  exact) const
+bool IFSelect_Signature::Matches(const occ::handle<Standard_Transient>&       ent,
+                                 const occ::handle<Interface_InterfaceModel>& model,
+                                 const TCollection_AsciiString&               text,
+                                 const bool                                   exact) const
 
 {
   return IFSelect_Signature::MatchValue(Value(ent, model), text, exact);
 }
 
-Standard_Boolean IFSelect_Signature::MatchValue(const Standard_CString         val,
-                                                const TCollection_AsciiString& text,
-                                                const Standard_Boolean         exact)
+bool IFSelect_Signature::MatchValue(const char*                    val,
+                                    const TCollection_AsciiString& text,
+                                    const bool                     exact)
 {
   if (exact)
     return text.IsEqual(val);
   // NB: no regexp
-  char             cardeb = text.Value(1);
-  Standard_Integer ln, lnt, i, j;
+  char cardeb = text.Value(1);
+  int  ln, lnt, i, j;
   ln  = text.Length();
-  lnt = (Standard_Integer)(strlen(val) - ln);
+  lnt = (int)(strlen(val) - ln);
   for (i = 0; i <= lnt; i++)
   {
     if (val[i] == cardeb)
     {
       //    a candidate
-      Standard_Boolean res = Standard_True;
+      bool res = true;
       for (j = 1; j < ln; j++)
       {
         if (val[i + j] != text.Value(j + 1))
         {
-          res = Standard_False;
+          res = false;
           break;
         }
       }
@@ -133,10 +130,10 @@ Standard_Boolean IFSelect_Signature::MatchValue(const Standard_CString         v
         return res;
     }
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_CString IFSelect_Signature::IntValue(const Standard_Integer val)
+const char* IFSelect_Signature::IntValue(const int val)
 {
   switch (val)
   {

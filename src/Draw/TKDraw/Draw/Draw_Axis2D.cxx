@@ -24,11 +24,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Axis2D, Draw_Drawable2D)
 
-extern Standard_Boolean Draw_Bounds;
+extern bool Draw_Bounds;
 
 //=================================================================================================
 
-Draw_Axis2D::Draw_Axis2D(const Draw_Color& col, const Standard_Integer Size)
+Draw_Axis2D::Draw_Axis2D(const Draw_Color& col, const int Size)
     : myAxes(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::X)),
       myColor(col),
       mySize(Size)
@@ -37,7 +37,7 @@ Draw_Axis2D::Draw_Axis2D(const Draw_Color& col, const Standard_Integer Size)
 
 //=================================================================================================
 
-Draw_Axis2D::Draw_Axis2D(const gp_Pnt2d& p, const Draw_Color& col, const Standard_Integer Size)
+Draw_Axis2D::Draw_Axis2D(const gp_Pnt2d& p, const Draw_Color& col, const int Size)
     : myAxes(p, gp_Dir2d(gp_Dir2d::D::X)),
       myColor(col),
       mySize(Size)
@@ -46,7 +46,7 @@ Draw_Axis2D::Draw_Axis2D(const gp_Pnt2d& p, const Draw_Color& col, const Standar
 
 //=================================================================================================
 
-Draw_Axis2D::Draw_Axis2D(const gp_Ax22d& a, const Draw_Color& col, const Standard_Integer Size)
+Draw_Axis2D::Draw_Axis2D(const gp_Ax22d& a, const Draw_Color& col, const int Size)
     : myAxes(a),
       myColor(col),
       mySize(Size)
@@ -57,10 +57,10 @@ Draw_Axis2D::Draw_Axis2D(const gp_Ax22d& a, const Draw_Color& col, const Standar
 
 void Draw_Axis2D::DrawOn(Draw_Display& dis) const
 {
-  Draw_Bounds = Standard_False;
+  Draw_Bounds = false;
   dis.SetColor(myColor);
-  Standard_Real z = dis.Zoom();
-  z               = (Standard_Real)mySize / z;
+  double z = dis.Zoom();
+  z        = (double)mySize / z;
   gp_Pnt2d P, P0 = myAxes.Location();
   P = P0.Translated(gp_Vec2d(myAxes.XDirection()) * z);
   dis.Draw(P0, P);
@@ -68,5 +68,5 @@ void Draw_Axis2D::DrawOn(Draw_Display& dis) const
   P = P0.Translated(gp_Vec2d(myAxes.YDirection()) * z);
   dis.Draw(P0, P);
   dis.DrawString(P, "Y");
-  Draw_Bounds = Standard_True;
+  Draw_Bounds = true;
 }

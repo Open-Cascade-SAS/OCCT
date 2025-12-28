@@ -16,12 +16,13 @@
 
 #include <Standard_GUID.hxx>
 
-StdObjMgt_WriteData::StdObjMgt_WriteData(const Handle(Storage_BaseDriver)& theDriver)
+StdObjMgt_WriteData::StdObjMgt_WriteData(const occ::handle<Storage_BaseDriver>& theDriver)
     : myDriver(theDriver)
 {
 }
 
-void StdObjMgt_WriteData::WritePersistentObject(const Handle(StdObjMgt_Persistent)& thePersistent)
+void StdObjMgt_WriteData::WritePersistentObject(
+  const occ::handle<StdObjMgt_Persistent>& thePersistent)
 {
   if (thePersistent)
   {
@@ -33,7 +34,7 @@ void StdObjMgt_WriteData::WritePersistentObject(const Handle(StdObjMgt_Persisten
 }
 
 StdObjMgt_WriteData& StdObjMgt_WriteData::operator<<(
-  const Handle(StdObjMgt_Persistent)& thePersistent)
+  const occ::handle<StdObjMgt_Persistent>& thePersistent)
 {
   myDriver->PutReference(thePersistent ? thePersistent->RefNum() : 0);
   return *this;
@@ -49,9 +50,9 @@ StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const Standar
 
   const Standard_UUID anUUID = theGUID.ToUUID();
 
-  Standard_Integer      a32b;
-  Standard_ExtCharacter a16b[3];
-  Standard_Character    a8b[6];
+  int      a32b;
+  char16_t a16b[3];
+  char     a8b[6];
 
   // see Standard_GUID::Standard_GUID(const Standard_UUID& aWntGuid)
   a32b    = anUUID.Data1;

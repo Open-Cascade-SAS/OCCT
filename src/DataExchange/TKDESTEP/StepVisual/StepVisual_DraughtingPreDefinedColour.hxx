@@ -22,9 +22,6 @@
 
 #include <StepVisual_PreDefinedColour.hxx>
 
-class StepVisual_DraughtingPreDefinedColour;
-DEFINE_STANDARD_HANDLE(StepVisual_DraughtingPreDefinedColour, StepVisual_PreDefinedColour)
-
 class StepVisual_DraughtingPreDefinedColour : public StepVisual_PreDefinedColour
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepVisual_DraughtingPreDefinedColour();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingPreDefinedColour, StepVisual_PreDefinedColour)
-
-protected:
-private:
 };
 
 #endif // _StepVisual_DraughtingPreDefinedColour_HeaderFile

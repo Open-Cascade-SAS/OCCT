@@ -22,10 +22,6 @@
 
 #include <StepVisual_PresentationArea.hxx>
 
-class StepVisual_MechanicalDesignGeometricPresentationArea;
-DEFINE_STANDARD_HANDLE(StepVisual_MechanicalDesignGeometricPresentationArea,
-                       StepVisual_PresentationArea)
-
 class StepVisual_MechanicalDesignGeometricPresentationArea : public StepVisual_PresentationArea
 {
 
@@ -35,9 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_MechanicalDesignGeometricPresentationArea,
                           StepVisual_PresentationArea)
-
-protected:
-private:
 };
 
 #endif // _StepVisual_MechanicalDesignGeometricPresentationArea_HeaderFile

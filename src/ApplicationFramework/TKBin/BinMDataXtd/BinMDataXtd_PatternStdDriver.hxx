@@ -20,36 +20,32 @@
 
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
-
-class BinMDataXtd_PatternStdDriver;
-DEFINE_STANDARD_HANDLE(BinMDataXtd_PatternStdDriver, BinMDF_ADriver)
 
 //! Attribute Driver.
 class BinMDataXtd_PatternStdDriver : public BinMDF_ADriver
 {
 
 public:
-  Standard_EXPORT BinMDataXtd_PatternStdDriver(const Handle(Message_Messenger)& theMessageDriver);
+  Standard_EXPORT BinMDataXtd_PatternStdDriver(
+    const occ::handle<Message_Messenger>& theMessageDriver);
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT Standard_Boolean
-    Paste(const BinObjMgt_Persistent&  Source,
-          const Handle(TDF_Attribute)& Target,
-          BinObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       Source,
+                             const occ::handle<TDF_Attribute>& Target,
+                             BinObjMgt_RRelocationTable&       RelocTable) const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
-                             BinObjMgt_Persistent&        Target,
-                             BinObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(
+    const occ::handle<TDF_Attribute>&                        Source,
+    BinObjMgt_Persistent&                                    Target,
+    NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(BinMDataXtd_PatternStdDriver, BinMDF_ADriver)
-
-protected:
-private:
 };
 
 #endif // _BinMDataXtd_PatternStdDriver_HeaderFile

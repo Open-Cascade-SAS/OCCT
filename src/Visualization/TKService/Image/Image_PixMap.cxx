@@ -30,10 +30,10 @@ struct Image_FormatInfo
   unsigned int NbComponents; //!< number of components
   unsigned int PixelSize;    //!< bytes per pixel
 
-  Image_FormatInfo(Image_Format  theFormat,
-                   const char*   theName,
-                   unsigned int  theNbComponents,
-                   Standard_Size thePixelSize)
+  Image_FormatInfo(Image_Format theFormat,
+                   const char*  theName,
+                   unsigned int theNbComponents,
+                   size_t       thePixelSize)
       : Name(theName),
         Format(theFormat),
         NbComponents(theNbComponents),
@@ -44,7 +44,7 @@ struct Image_FormatInfo
   Image_FormatInfo(Image_CompressedFormat theFormat,
                    const char*            theName,
                    unsigned int           theNbComponents,
-                   Standard_Size          thePixelSize)
+                   size_t                 thePixelSize)
       : Name(theName),
         Format(theFormat),
         NbComponents(theNbComponents),
@@ -96,22 +96,23 @@ IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap, Standard_Transient)
 
 //=================================================================================================
 
-const Handle(NCollection_BaseAllocator)& Image_PixMap::DefaultAllocator()
+const occ::handle<NCollection_BaseAllocator>& Image_PixMap::DefaultAllocator()
 {
-  static const Handle(NCollection_BaseAllocator) THE_ALLOC = new NCollection_AlignedAllocator(16);
+  static const occ::handle<NCollection_BaseAllocator> THE_ALLOC =
+    new NCollection_AlignedAllocator(16);
   return THE_ALLOC;
 }
 
 //=================================================================================================
 
-Standard_CString Image_PixMap::ImageFormatToString(Image_Format theFormat)
+const char* Image_PixMap::ImageFormatToString(Image_Format theFormat)
 {
   return Image_Table_ImageFormats[theFormat].Name;
 }
 
 //=================================================================================================
 
-Standard_CString Image_PixMap::ImageFormatToString(Image_CompressedFormat theFormat)
+const char* Image_PixMap::ImageFormatToString(Image_CompressedFormat theFormat)
 {
   return Image_Table_ImageFormats[theFormat].Name;
 }
@@ -133,7 +134,7 @@ Image_PixMap::~Image_PixMap()
 
 //=================================================================================================
 
-Standard_Size Image_PixMap::SizePixelBytes(const Image_Format thePixelFormat)
+size_t Image_PixMap::SizePixelBytes(const Image_Format thePixelFormat)
 {
   return Image_Table_ImageFormats[thePixelFormat].PixelSize;
 }
@@ -158,10 +159,10 @@ void Image_PixMap::SetFormat(Image_Format thePixelFormat)
 
 //=================================================================================================
 
-bool Image_PixMap::InitWrapper3D(Image_Format                           thePixelFormat,
-                                 Standard_Byte*                         theDataPtr,
-                                 const NCollection_Vec3<Standard_Size>& theSizeXYZ,
-                                 const Standard_Size                    theSizeRowBytes)
+bool Image_PixMap::InitWrapper3D(Image_Format                    thePixelFormat,
+                                 uint8_t*                        theDataPtr,
+                                 const NCollection_Vec3<size_t>& theSizeXYZ,
+                                 const size_t                    theSizeRowBytes)
 {
   Clear();
   myImgFormat = thePixelFormat;
@@ -170,7 +171,7 @@ bool Image_PixMap::InitWrapper3D(Image_Format                           thePixel
     return false;
   }
 
-  Handle(NCollection_BaseAllocator) anEmptyAlloc;
+  occ::handle<NCollection_BaseAllocator> anEmptyAlloc;
   myData.Init(anEmptyAlloc,
               Image_PixMap::SizePixelBytes(thePixelFormat),
               theSizeXYZ,
@@ -181,23 +182,23 @@ bool Image_PixMap::InitWrapper3D(Image_Format                           thePixel
 
 //=================================================================================================
 
-bool Image_PixMap::InitWrapper(Image_Format        thePixelFormat,
-                               Standard_Byte*      theDataPtr,
-                               const Standard_Size theSizeX,
-                               const Standard_Size theSizeY,
-                               const Standard_Size theSizeRowBytes)
+bool Image_PixMap::InitWrapper(Image_Format thePixelFormat,
+                               uint8_t*     theDataPtr,
+                               const size_t theSizeX,
+                               const size_t theSizeY,
+                               const size_t theSizeRowBytes)
 {
   return InitWrapper3D(thePixelFormat,
                        theDataPtr,
-                       NCollection_Vec3<Standard_Size>(theSizeX, theSizeY, 1),
+                       NCollection_Vec3<size_t>(theSizeX, theSizeY, 1),
                        theSizeRowBytes);
 }
 
 //=================================================================================================
 
-bool Image_PixMap::InitTrash3D(Image_Format                           thePixelFormat,
-                               const NCollection_Vec3<Standard_Size>& theSizeXYZ,
-                               const Standard_Size                    theSizeRowBytes)
+bool Image_PixMap::InitTrash3D(Image_Format                    thePixelFormat,
+                               const NCollection_Vec3<size_t>& theSizeXYZ,
+                               const size_t                    theSizeRowBytes)
 {
   Clear();
   myImgFormat = thePixelFormat;
@@ -207,7 +208,7 @@ bool Image_PixMap::InitTrash3D(Image_Format                           thePixelFo
   }
 
   // use argument only if it greater
-  const Standard_Size aSizeRowBytes =
+  const size_t aSizeRowBytes =
     std::max(theSizeRowBytes, theSizeXYZ.x() * SizePixelBytes(thePixelFormat));
   myData.Init(DefaultAllocator(),
               Image_PixMap::SizePixelBytes(thePixelFormat),
@@ -219,22 +220,22 @@ bool Image_PixMap::InitTrash3D(Image_Format                           thePixelFo
 
 //=================================================================================================
 
-bool Image_PixMap::InitTrash(Image_Format        thePixelFormat,
-                             const Standard_Size theSizeX,
-                             const Standard_Size theSizeY,
-                             const Standard_Size theSizeRowBytes)
+bool Image_PixMap::InitTrash(Image_Format thePixelFormat,
+                             const size_t theSizeX,
+                             const size_t theSizeY,
+                             const size_t theSizeRowBytes)
 {
   return InitTrash3D(thePixelFormat,
-                     NCollection_Vec3<Standard_Size>(theSizeX, theSizeY, 1),
+                     NCollection_Vec3<size_t>(theSizeX, theSizeY, 1),
                      theSizeRowBytes);
 }
 
 //=================================================================================================
 
-bool Image_PixMap::InitZero3D(Image_Format                           thePixelFormat,
-                              const NCollection_Vec3<Standard_Size>& theSizeXYZ,
-                              const Standard_Size                    theSizeRowBytes,
-                              const Standard_Byte                    theValue)
+bool Image_PixMap::InitZero3D(Image_Format                    thePixelFormat,
+                              const NCollection_Vec3<size_t>& theSizeXYZ,
+                              const size_t                    theSizeRowBytes,
+                              const uint8_t                   theValue)
 {
   if (theSizeXYZ.z() > 1)
   {
@@ -287,30 +288,30 @@ bool Image_PixMap::InitCopy(const Image_PixMap& theCopy)
 
 void Image_PixMap::Clear()
 {
-  Handle(NCollection_BaseAllocator) anEmptyAlloc;
+  occ::handle<NCollection_BaseAllocator> anEmptyAlloc;
   myData.Init(anEmptyAlloc,
               Image_PixMap::SizePixelBytes(myImgFormat),
-              NCollection_Vec3<Standard_Size>(0),
+              NCollection_Vec3<size_t>(0),
               0,
               nullptr);
 }
 
 //=================================================================================================
 
-Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const Standard_Byte*   theRawValue,
-                                                   const Image_Format     theFormat,
-                                                   const Standard_Boolean theToLinearize)
+Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const uint8_t*     theRawValue,
+                                                   const Image_Format theFormat,
+                                                   const bool         theToLinearize)
 {
   switch (theFormat)
   {
     case Image_Format_GrayF: {
-      const Standard_ShortReal& aPixel = *reinterpret_cast<const Standard_ShortReal*>(theRawValue);
+      const float& aPixel = *reinterpret_cast<const float*>(theRawValue);
       // clang-format off
       return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel, aPixel, aPixel, 1.0f)); // opaque
       // clang-format on
     }
     case Image_Format_AlphaF: {
-      const Standard_ShortReal& aPixel = *reinterpret_cast<const Standard_ShortReal*>(theRawValue);
+      const float& aPixel = *reinterpret_cast<const float*>(theRawValue);
       return Quantity_ColorRGBA(NCollection_Vec4<float>(1.0f, 1.0f, 1.0f, aPixel));
     }
     case Image_Format_RGF: {
@@ -438,12 +439,12 @@ Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const Standard_Byte*   theRaw
                                     1.0f);
     }
     case Image_Format_Gray: {
-      const Standard_Byte& aPixel      = *reinterpret_cast<const Standard_Byte*>(theRawValue);
-      const float          anIntensity = float(aPixel) / 255.0f;
+      const uint8_t& aPixel      = *reinterpret_cast<const uint8_t*>(theRawValue);
+      const float    anIntensity = float(aPixel) / 255.0f;
       return Quantity_ColorRGBA(anIntensity, anIntensity, anIntensity, 1.0f); // opaque
     }
     case Image_Format_Alpha: {
-      const Standard_Byte& aPixel = *reinterpret_cast<const Standard_Byte*>(theRawValue);
+      const uint8_t& aPixel = *reinterpret_cast<const uint8_t*>(theRawValue);
       return Quantity_ColorRGBA(1.0f, 1.0f, 1.0f, float(aPixel) / 255.0f);
     }
     case Image_Format_Gray16: {
@@ -462,20 +463,20 @@ Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const Standard_Byte*   theRaw
 
 //=================================================================================================
 
-void Image_PixMap::ColorToRawPixel(Standard_Byte*            theRawValue,
+void Image_PixMap::ColorToRawPixel(uint8_t*                  theRawValue,
                                    const Image_Format        theFormat,
                                    const Quantity_ColorRGBA& theColor,
-                                   const Standard_Boolean    theToDeLinearize)
+                                   const bool                theToDeLinearize)
 {
   const NCollection_Vec4<float>& aColor = theColor;
   switch (theFormat)
   {
     case Image_Format_GrayF: {
-      *reinterpret_cast<Standard_ShortReal*>(theRawValue) = aColor.r();
+      *reinterpret_cast<float*>(theRawValue) = aColor.r();
       return;
     }
     case Image_Format_AlphaF: {
-      *reinterpret_cast<Standard_ShortReal*>(theRawValue) = aColor.a();
+      *reinterpret_cast<float*>(theRawValue) = aColor.a();
       return;
     }
     case Image_Format_RGF: {
@@ -539,49 +540,58 @@ void Image_PixMap::ColorToRawPixel(Standard_Byte*            theRawValue,
       Image_ColorRGBA& aPixel = *reinterpret_cast<Image_ColorRGBA*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
-        aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
-        aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
-        aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
+        aPixel.r() = static_cast<uint8_t>(aColor.r() * 255.0f);
+        aPixel.g() = static_cast<uint8_t>(aColor.g() * 255.0f);
+        aPixel.b() = static_cast<uint8_t>(aColor.b() * 255.0f);
       }
-      aPixel.a() = Standard_Byte(aColor.a() * 255.0f);
+      aPixel.a() = static_cast<uint8_t>(aColor.a() * 255.0f);
       return;
     }
     case Image_Format_BGRA: {
       Image_ColorBGRA& aPixel = *reinterpret_cast<Image_ColorBGRA*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
-        aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
-        aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
-        aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
+        aPixel.r() = static_cast<uint8_t>(aColor.r() * 255.0f);
+        aPixel.g() = static_cast<uint8_t>(aColor.g() * 255.0f);
+        aPixel.b() = static_cast<uint8_t>(aColor.b() * 255.0f);
       }
-      aPixel.a() = Standard_Byte(aColor.a() * 255.0f);
+      aPixel.a() = static_cast<uint8_t>(aColor.a() * 255.0f);
       return;
     }
     case Image_Format_RGB32: {
       Image_ColorRGB32& aPixel = *reinterpret_cast<Image_ColorRGB32*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
-        aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
-        aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
-        aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
+        aPixel.r() = static_cast<uint8_t>(aColor.r() * 255.0f);
+        aPixel.g() = static_cast<uint8_t>(aColor.g() * 255.0f);
+        aPixel.b() = static_cast<uint8_t>(aColor.b() * 255.0f);
       }
       aPixel.a_() = 255;
       return;
@@ -590,15 +600,18 @@ void Image_PixMap::ColorToRawPixel(Standard_Byte*            theRawValue,
       Image_ColorBGR32& aPixel = *reinterpret_cast<Image_ColorBGR32*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
-        aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
-        aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
-        aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
+        aPixel.r() = static_cast<uint8_t>(aColor.r() * 255.0f);
+        aPixel.g() = static_cast<uint8_t>(aColor.g() * 255.0f);
+        aPixel.b() = static_cast<uint8_t>(aColor.b() * 255.0f);
       }
       aPixel.a_() = 255;
       return;
@@ -607,15 +620,18 @@ void Image_PixMap::ColorToRawPixel(Standard_Byte*            theRawValue,
       Image_ColorRGB& aPixel = *reinterpret_cast<Image_ColorRGB*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
-        aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
-        aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
-        aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
+        aPixel.r() = static_cast<uint8_t>(aColor.r() * 255.0f);
+        aPixel.g() = static_cast<uint8_t>(aColor.g() * 255.0f);
+        aPixel.b() = static_cast<uint8_t>(aColor.b() * 255.0f);
       }
       return;
     }
@@ -623,24 +639,27 @@ void Image_PixMap::ColorToRawPixel(Standard_Byte*            theRawValue,
       Image_ColorBGR& aPixel = *reinterpret_cast<Image_ColorBGR*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = Standard_Byte(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
-        aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
-        aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
-        aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
+        aPixel.r() = static_cast<uint8_t>(aColor.r() * 255.0f);
+        aPixel.g() = static_cast<uint8_t>(aColor.g() * 255.0f);
+        aPixel.b() = static_cast<uint8_t>(aColor.b() * 255.0f);
       }
       return;
     }
     case Image_Format_Gray: {
-      *reinterpret_cast<Standard_Byte*>(theRawValue) = Standard_Byte(aColor.r() * 255.0f);
+      *reinterpret_cast<uint8_t*>(theRawValue) = static_cast<uint8_t>(aColor.r() * 255.0f);
       return;
     }
     case Image_Format_Alpha: {
-      *reinterpret_cast<Standard_Byte*>(theRawValue) = Standard_Byte(aColor.a() * 255.0f);
+      *reinterpret_cast<uint8_t*>(theRawValue) = static_cast<uint8_t>(aColor.a() * 255.0f);
       return;
     }
     case Image_Format_Gray16: {
@@ -665,11 +684,11 @@ bool Image_PixMap::SwapRgbaBgra(Image_PixMap& theImage)
     case Image_Format_RGBA: {
       const bool toResetAlpha =
         theImage.Format() == Image_Format_BGR32 || theImage.Format() == Image_Format_RGB32;
-      for (Standard_Size aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
+      for (size_t aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
       {
-        for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+        for (size_t aRow = 0; aRow < theImage.SizeY(); ++aRow)
         {
-          for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+          for (size_t aCol = 0; aCol < theImage.SizeX(); ++aCol)
           {
             Image_ColorRGBA& aPixel = theImage.ChangeValueXYZ<Image_ColorRGBA>(aCol, aRow, aSlice);
             Image_ColorBGRA  aPixelCopy = theImage.ValueXYZ<Image_ColorBGRA>(aCol, aRow, aSlice);
@@ -687,11 +706,11 @@ bool Image_PixMap::SwapRgbaBgra(Image_PixMap& theImage)
     }
     case Image_Format_BGR:
     case Image_Format_RGB: {
-      for (Standard_Size aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
+      for (size_t aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
       {
-        for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+        for (size_t aRow = 0; aRow < theImage.SizeY(); ++aRow)
         {
-          for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+          for (size_t aCol = 0; aCol < theImage.SizeX(); ++aCol)
           {
             Image_ColorRGB& aPixel = theImage.ChangeValueXYZ<Image_ColorRGB>(aCol, aRow, aSlice);
             Image_ColorBGR  aPixelCopy = theImage.ValueXYZ<Image_ColorBGR>(aCol, aRow, aSlice);
@@ -707,11 +726,11 @@ bool Image_PixMap::SwapRgbaBgra(Image_PixMap& theImage)
     case Image_Format_RGBF:
     case Image_Format_BGRAF:
     case Image_Format_RGBAF: {
-      for (Standard_Size aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
+      for (size_t aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
       {
-        for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+        for (size_t aRow = 0; aRow < theImage.SizeY(); ++aRow)
         {
-          for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+          for (size_t aCol = 0; aCol < theImage.SizeX(); ++aCol)
           {
             Image_ColorRGBF& aPixel = theImage.ChangeValueXYZ<Image_ColorRGBF>(aCol, aRow, aSlice);
             Image_ColorBGRF  aPixelCopy = theImage.ValueXYZ<Image_ColorBGRF>(aCol, aRow, aSlice);
@@ -736,11 +755,11 @@ void Image_PixMap::ToBlackWhite(Image_PixMap& theImage)
   {
     case Image_Format_Gray:
     case Image_Format_Alpha: {
-      for (Standard_Size aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
+      for (size_t aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
       {
-        for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+        for (size_t aRow = 0; aRow < theImage.SizeY(); ++aRow)
         {
-          for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+          for (size_t aCol = 0; aCol < theImage.SizeX(); ++aCol)
           {
             uint8_t& aPixel = theImage.ChangeValueXYZ<uint8_t>(aCol, aRow, aSlice);
             if (aPixel != 0)
@@ -753,11 +772,11 @@ void Image_PixMap::ToBlackWhite(Image_PixMap& theImage)
       break;
     }
     case Image_Format_Gray16: {
-      for (Standard_Size aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
+      for (size_t aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
       {
-        for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+        for (size_t aRow = 0; aRow < theImage.SizeY(); ++aRow)
         {
-          for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+          for (size_t aCol = 0; aCol < theImage.SizeX(); ++aCol)
           {
             uint16_t& aPixel = theImage.ChangeValueXYZ<uint16_t>(aCol, aRow, aSlice);
             if (aPixel != 0)
@@ -776,11 +795,11 @@ void Image_PixMap::ToBlackWhite(Image_PixMap& theImage)
     case Image_Format_RGBA:
     case Image_Format_BGRA: {
       const NCollection_Vec3<uint8_t> aWhite24(255, 255, 255);
-      for (Standard_Size aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
+      for (size_t aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
       {
-        for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+        for (size_t aRow = 0; aRow < theImage.SizeY(); ++aRow)
         {
-          for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+          for (size_t aCol = 0; aCol < theImage.SizeX(); ++aCol)
           {
             NCollection_Vec3<uint8_t>& aPixel =
               theImage.ChangeValueXYZ<NCollection_Vec3<uint8_t>>(aCol, aRow, aSlice);
@@ -795,13 +814,13 @@ void Image_PixMap::ToBlackWhite(Image_PixMap& theImage)
     }
     default: {
       const Quantity_ColorRGBA aWhiteRgba(1.0f, 1.0f, 1.0f, 1.0f);
-      for (Standard_Size aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
+      for (size_t aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
       {
-        for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+        for (size_t aRow = 0; aRow < theImage.SizeY(); ++aRow)
         {
-          for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+          for (size_t aCol = 0; aCol < theImage.SizeX(); ++aCol)
           {
-            Standard_Byte*           aRawPixel    = theImage.ChangeRawValueXYZ(aCol, aRow, aSlice);
+            uint8_t*                 aRawPixel    = theImage.ChangeRawValueXYZ(aCol, aRow, aSlice);
             const Quantity_ColorRGBA aPixelRgba   = ColorFromRawPixel(aRawPixel, theImage.Format());
             const NCollection_Vec4<float>& aPixel = aPixelRgba;
             if (aPixel[0] != 0.0f || aPixel[1] != 0.0f || aPixel[2] != 0.0f)
@@ -833,14 +852,13 @@ bool Image_PixMap::FlipY(Image_PixMap& theImage)
   }
 
   // for odd height middle row should be left as is
-  Standard_Size aNbRowsHalf = theImage.SizeY() / 2;
-  for (Standard_Size aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
+  size_t aNbRowsHalf = theImage.SizeY() / 2;
+  for (size_t aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
   {
-    for (Standard_Size aRowT = 0, aRowB = theImage.SizeY() - 1; aRowT < aNbRowsHalf;
-         ++aRowT, --aRowB)
+    for (size_t aRowT = 0, aRowB = theImage.SizeY() - 1; aRowT < aNbRowsHalf; ++aRowT, --aRowB)
     {
-      Standard_Byte* aTop = theImage.ChangeSliceRow(aSlice, aRowT);
-      Standard_Byte* aBot = theImage.ChangeSliceRow(aSlice, aRowB);
+      uint8_t* aTop = theImage.ChangeSliceRow(aSlice, aRowT);
+      uint8_t* aBot = theImage.ChangeSliceRow(aSlice, aRowB);
       memcpy(aTmp.ChangeData(), aTop, aRowSize);
       memcpy(aTop, aBot, aRowSize);
       memcpy(aBot, aTmp.Data(), aRowSize);

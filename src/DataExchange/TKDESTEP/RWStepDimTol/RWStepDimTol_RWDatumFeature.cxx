@@ -28,10 +28,10 @@ RWStepDimTol_RWDatumFeature::RWStepDimTol_RWDatumFeature() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumFeature::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepDimTol_DatumFeature)& ent) const
+void RWStepDimTol_RWDatumFeature::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                                   num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepDimTol_DatumFeature>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "datum_feature"))
@@ -39,16 +39,16 @@ void RWStepDimTol_RWDatumFeature::ReadStep(const Handle(StepData_StepReaderData)
 
   // Inherited fields of ShapeAspect
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Name;
   data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Description;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Description;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
   }
 
-  Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
+  occ::handle<StepRepr_ProductDefinitionShape> aShapeAspect_OfShape;
   data->ReadEntity(num,
                    3,
                    "shape_aspect.of_shape",
@@ -72,8 +72,8 @@ void RWStepDimTol_RWDatumFeature::ReadStep(const Handle(StepData_StepReaderData)
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumFeature::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepDimTol_DatumFeature)& ent) const
+void RWStepDimTol_RWDatumFeature::WriteStep(StepData_StepWriter&                        SW,
+                                            const occ::handle<StepDimTol_DatumFeature>& ent) const
 {
 
   // Inherited fields of ShapeAspect
@@ -89,8 +89,8 @@ void RWStepDimTol_RWDatumFeature::WriteStep(StepData_StepWriter&                
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumFeature::Share(const Handle(StepDimTol_DatumFeature)& ent,
-                                        Interface_EntityIterator&              iter) const
+void RWStepDimTol_RWDatumFeature::Share(const occ::handle<StepDimTol_DatumFeature>& ent,
+                                        Interface_EntityIterator&                   iter) const
 {
 
   // Inherited fields of ShapeAspect

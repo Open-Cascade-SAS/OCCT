@@ -42,7 +42,7 @@ static const double MyAngularToleranceForG1 = Precision::Angular();
 
 //==================================================================================================
 
-Handle(Geom2d_Geometry) Geom2d_OffsetCurve::Copy() const
+occ::handle<Geom2d_Geometry> Geom2d_OffsetCurve::Copy() const
 {
   return new Geom2d_OffsetCurve(*this);
 }
@@ -53,9 +53,9 @@ Handle(Geom2d_Geometry) Geom2d_OffsetCurve::Copy() const
 //            offset curve.
 //==================================================================================================
 
-Geom2d_OffsetCurve::Geom2d_OffsetCurve(const Handle(Geom2d_Curve)& theCurve,
-                                       const Standard_Real         theOffset,
-                                       const Standard_Boolean      isTheNotCheckC0)
+Geom2d_OffsetCurve::Geom2d_OffsetCurve(const occ::handle<Geom2d_Curve>& theCurve,
+                                       const double                     theOffset,
+                                       const bool                       isTheNotCheckC0)
     : offsetValue(theOffset)
 {
   SetBasisCurve(theCurve, isTheNotCheckC0);
@@ -68,7 +68,7 @@ Geom2d_OffsetCurve::Geom2d_OffsetCurve(const Geom2d_OffsetCurve& theOther)
       myBasisCurveContinuity(theOther.myBasisCurveContinuity)
 {
   // Deep copy basis curve without validation
-  basisCurve = Handle(Geom2d_Curve)::DownCast(theOther.basisCurve->Copy());
+  basisCurve = occ::down_cast<Geom2d_Curve>(theOther.basisCurve->Copy());
 }
 
 //==================================================================================================
@@ -81,34 +81,33 @@ void Geom2d_OffsetCurve::Reverse()
 
 //==================================================================================================
 
-Standard_Real Geom2d_OffsetCurve::ReversedParameter(const Standard_Real U) const
+double Geom2d_OffsetCurve::ReversedParameter(const double U) const
 {
   return basisCurve->ReversedParameter(U);
 }
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::SetBasisCurve(const Handle(Geom2d_Curve)& C,
-                                       const Standard_Boolean      isNotCheckC0)
+void Geom2d_OffsetCurve::SetBasisCurve(const occ::handle<Geom2d_Curve>& C, const bool isNotCheckC0)
 {
-  const double         aUf = C->FirstParameter(), aUl = C->LastParameter();
-  Handle(Geom2d_Curve) aCheckingCurve = C;
-  bool                 isTrimmed      = false;
+  const double              aUf = C->FirstParameter(), aUl = C->LastParameter();
+  occ::handle<Geom2d_Curve> aCheckingCurve = C;
+  bool                      isTrimmed      = false;
 
   while (aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))
          || aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
   {
     if (aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
     {
-      Handle(Geom2d_TrimmedCurve) aTrimC = Handle(Geom2d_TrimmedCurve)::DownCast(aCheckingCurve);
-      aCheckingCurve                     = aTrimC->BasisCurve();
-      isTrimmed                          = true;
+      occ::handle<Geom2d_TrimmedCurve> aTrimC = occ::down_cast<Geom2d_TrimmedCurve>(aCheckingCurve);
+      aCheckingCurve                          = aTrimC->BasisCurve();
+      isTrimmed                               = true;
     }
 
     if (aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
     {
-      Handle(Geom2d_OffsetCurve) aOC = Handle(Geom2d_OffsetCurve)::DownCast(aCheckingCurve);
-      aCheckingCurve                 = aOC->BasisCurve();
+      occ::handle<Geom2d_OffsetCurve> aOC = occ::down_cast<Geom2d_OffsetCurve>(aCheckingCurve);
+      aCheckingCurve                      = aOC->BasisCurve();
       offsetValue += aOC->Offset();
     }
   }
@@ -120,7 +119,7 @@ void Geom2d_OffsetCurve::SetBasisCurve(const Handle(Geom2d_Curve)& C,
   // Basis curve must be at least C1
   if (isC0 && aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
-    Handle(Geom2d_BSplineCurve) aBC = Handle(Geom2d_BSplineCurve)::DownCast(aCheckingCurve);
+    occ::handle<Geom2d_BSplineCurve> aBC = occ::down_cast<Geom2d_BSplineCurve>(aCheckingCurve);
     if (aBC->IsG1(aUf, aUl, MyAngularToleranceForG1))
     {
       // Checking if basis curve has more smooth (C1, G2 and above) is not done.
@@ -148,14 +147,14 @@ void Geom2d_OffsetCurve::SetBasisCurve(const Handle(Geom2d_Curve)& C,
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::SetOffsetValue(const Standard_Real D)
+void Geom2d_OffsetCurve::SetOffsetValue(const double D)
 {
   offsetValue = D;
 }
 
 //==================================================================================================
 
-Handle(Geom2d_Curve) Geom2d_OffsetCurve::BasisCurve() const
+occ::handle<Geom2d_Curve> Geom2d_OffsetCurve::BasisCurve() const
 {
   return basisCurve;
 }
@@ -195,7 +194,7 @@ GeomAbs_Shape Geom2d_OffsetCurve::Continuity() const
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::D0(const Standard_Real theU, gp_Pnt2d& theP) const
+void Geom2d_OffsetCurve::D0(const double theU, gp_Pnt2d& theP) const
 {
   if (!Geom2d_OffsetCurveUtils::EvaluateD0(theU, basisCurve.get(), offsetValue, theP))
   {
@@ -205,7 +204,7 @@ void Geom2d_OffsetCurve::D0(const Standard_Real theU, gp_Pnt2d& theP) const
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::D1(const Standard_Real theU, gp_Pnt2d& theP, gp_Vec2d& theV1) const
+void Geom2d_OffsetCurve::D1(const double theU, gp_Pnt2d& theP, gp_Vec2d& theV1) const
 {
   if (!Geom2d_OffsetCurveUtils::EvaluateD1(theU, basisCurve.get(), offsetValue, theP, theV1))
   {
@@ -215,10 +214,10 @@ void Geom2d_OffsetCurve::D1(const Standard_Real theU, gp_Pnt2d& theP, gp_Vec2d& 
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::D2(const Standard_Real theU,
-                            gp_Pnt2d&           theP,
-                            gp_Vec2d&           theV1,
-                            gp_Vec2d&           theV2) const
+void Geom2d_OffsetCurve::D2(const double theU,
+                            gp_Pnt2d&    theP,
+                            gp_Vec2d&    theV1,
+                            gp_Vec2d&    theV2) const
 {
   if (!Geom2d_OffsetCurveUtils::EvaluateD2(theU, basisCurve.get(), offsetValue, theP, theV1, theV2))
   {
@@ -228,11 +227,11 @@ void Geom2d_OffsetCurve::D2(const Standard_Real theU,
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::D3(const Standard_Real theU,
-                            gp_Pnt2d&           theP,
-                            gp_Vec2d&           theV1,
-                            gp_Vec2d&           theV2,
-                            gp_Vec2d&           theV3) const
+void Geom2d_OffsetCurve::D3(const double theU,
+                            gp_Pnt2d&    theP,
+                            gp_Vec2d&    theV1,
+                            gp_Vec2d&    theV2,
+                            gp_Vec2d&    theV3) const
 {
   if (!Geom2d_OffsetCurveUtils::EvaluateD3(theU,
                                            basisCurve.get(),
@@ -248,7 +247,7 @@ void Geom2d_OffsetCurve::D3(const Standard_Real theU,
 
 //==================================================================================================
 
-gp_Vec2d Geom2d_OffsetCurve::DN(const Standard_Real U, const Standard_Integer N) const
+gp_Vec2d Geom2d_OffsetCurve::DN(const double U, const int N) const
 {
   Standard_RangeError_Raise_if(N < 1, "Exception: Geom2d_OffsetCurve::DN(). N<1.");
 
@@ -267,28 +266,28 @@ gp_Vec2d Geom2d_OffsetCurve::DN(const Standard_Real U, const Standard_Integer N)
 
 //==================================================================================================
 
-Standard_Real Geom2d_OffsetCurve::FirstParameter() const
+double Geom2d_OffsetCurve::FirstParameter() const
 {
   return basisCurve->FirstParameter();
 }
 
 //==================================================================================================
 
-Standard_Real Geom2d_OffsetCurve::LastParameter() const
+double Geom2d_OffsetCurve::LastParameter() const
 {
   return basisCurve->LastParameter();
 }
 
 //==================================================================================================
 
-Standard_Real Geom2d_OffsetCurve::Offset() const
+double Geom2d_OffsetCurve::Offset() const
 {
   return offsetValue;
 }
 
 //==================================================================================================
 
-Standard_Boolean Geom2d_OffsetCurve::IsClosed() const
+bool Geom2d_OffsetCurve::IsClosed() const
 {
   gp_Pnt2d PF, PL;
   D0(FirstParameter(), PF);
@@ -298,7 +297,7 @@ Standard_Boolean Geom2d_OffsetCurve::IsClosed() const
 
 //==================================================================================================
 
-Standard_Boolean Geom2d_OffsetCurve::IsCN(const Standard_Integer N) const
+bool Geom2d_OffsetCurve::IsCN(const int N) const
 {
   Standard_RangeError_Raise_if(N < 0, " ");
   return basisCurve->IsCN(N + 1);
@@ -306,14 +305,14 @@ Standard_Boolean Geom2d_OffsetCurve::IsCN(const Standard_Integer N) const
 
 //==================================================================================================
 
-Standard_Boolean Geom2d_OffsetCurve::IsPeriodic() const
+bool Geom2d_OffsetCurve::IsPeriodic() const
 {
   return basisCurve->IsPeriodic();
 }
 
 //==================================================================================================
 
-Standard_Real Geom2d_OffsetCurve::Period() const
+double Geom2d_OffsetCurve::Period() const
 {
   return basisCurve->Period();
 }
@@ -328,15 +327,14 @@ void Geom2d_OffsetCurve::Transform(const gp_Trsf2d& T)
 
 //==================================================================================================
 
-Standard_Real Geom2d_OffsetCurve::TransformedParameter(const Standard_Real U,
-                                                       const gp_Trsf2d&    T) const
+double Geom2d_OffsetCurve::TransformedParameter(const double U, const gp_Trsf2d& T) const
 {
   return basisCurve->TransformedParameter(U, T);
 }
 
 //==================================================================================================
 
-Standard_Real Geom2d_OffsetCurve::ParametricTransformation(const gp_Trsf2d& T) const
+double Geom2d_OffsetCurve::ParametricTransformation(const gp_Trsf2d& T) const
 {
   return basisCurve->ParametricTransformation(T);
 }
@@ -350,7 +348,7 @@ GeomAbs_Shape Geom2d_OffsetCurve::GetBasisCurveContinuity() const
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom2d_OffsetCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

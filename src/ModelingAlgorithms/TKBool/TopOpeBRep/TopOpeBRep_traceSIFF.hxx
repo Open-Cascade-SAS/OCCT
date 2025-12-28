@@ -19,9 +19,36 @@
 
 #ifdef OCCT_DEBUG
 
-  #include <TopOpeBRepTool_define.hxx>
-  #include <Standard_OStream.hxx>
+  #include <TopAbs_ShapeEnum.hxx>
+
+  #include <TopAbs_Orientation.hxx>
+
+  #include <TopAbs_State.hxx>
+
   #include <TopoDS_Shape.hxx>
+
+  #include <TopTools_ShapeMapHasher.hxx>
+
+  #include <NCollection_Map.hxx>
+
+  #include <NCollection_List.hxx>
+
+  #include <NCollection_IndexedMap.hxx>
+
+  #include <NCollection_DataMap.hxx>
+
+  #include <Standard_Integer.hxx>
+
+  #include <NCollection_IndexedDataMap.hxx>
+
+  #include <TopoDS_Face.hxx>
+
+  #include <TopoDS_Edge.hxx>
+
+  #include <TopoDS_Vertex.hxx>
+
+  #include <TCollection_AsciiString.hxx>
+  #include <Standard_OStream.hxx>
 
 class TopOpeBRep_traceSIFF
 {
@@ -30,25 +57,25 @@ public:
 
   void Reset();
 
-  void Set(const Standard_Boolean b, Standard_Integer n, char** a);
+  void Set(const bool b, int n, char** a);
 
   void Set(const TCollection_AsciiString& brep1,
            const TCollection_AsciiString& brep2,
            const TCollection_AsciiString& n);
 
-  TCollection_AsciiString Name1(const Standard_Integer I) const;
-  TCollection_AsciiString Name2(const Standard_Integer I) const;
+  TCollection_AsciiString Name1(const int I) const;
+  TCollection_AsciiString Name2(const int I) const;
 
   const TCollection_AsciiString& File() const;
 
-  Standard_Boolean Start(const TCollection_AsciiString& s, Standard_OStream& OS);
-  void             Add(const Standard_Integer I1, const Standard_Integer I2);
-  void             End(const TCollection_AsciiString& s, Standard_OStream& OS);
+  bool Start(const TCollection_AsciiString& s, Standard_OStream& OS);
+  void Add(const int I1, const int I2);
+  void End(const TCollection_AsciiString& s, Standard_OStream& OS);
 
 private:
   TCollection_AsciiString mybrep1, mybrep2, myfilename;
   std::filebuf            myfilebuf;
-  Standard_Boolean        myopen;
+  bool                    myopen;
 };
 
 // #ifdef OCCT_DEBUG

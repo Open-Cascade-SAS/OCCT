@@ -20,10 +20,12 @@
 
 //=================================================================================================
 
-void TopOpeBRepTool_AncestorsTool::MakeAncestors(const TopoDS_Shape&                        S,
-                                                 const TopAbs_ShapeEnum                     TS,
-                                                 const TopAbs_ShapeEnum                     TA,
-                                                 TopTools_IndexedDataMapOfShapeListOfShape& M)
+void TopOpeBRepTool_AncestorsTool::MakeAncestors(
+  const TopoDS_Shape&    S,
+  const TopAbs_ShapeEnum TS,
+  const TopAbs_ShapeEnum TA,
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    M)
 {
   TopExp::MapShapesAndAncestors(S, TS, TA, M);
 }

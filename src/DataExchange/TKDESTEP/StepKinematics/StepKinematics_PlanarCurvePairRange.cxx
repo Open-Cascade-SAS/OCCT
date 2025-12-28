@@ -25,18 +25,18 @@ StepKinematics_PlanarCurvePairRange::StepKinematics_PlanarCurvePairRange() {}
 //=================================================================================================
 
 void StepKinematics_PlanarCurvePairRange::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Handle(StepGeom_Curve)&                thePlanarCurvePair_Curve1,
-  const Handle(StepGeom_Curve)&                thePlanarCurvePair_Curve2,
-  const Standard_Boolean                       thePlanarCurvePair_Orientation,
-  const Handle(StepGeom_TrimmedCurve)&         theRangeOnCurve1,
-  const Handle(StepGeom_TrimmedCurve)&         theRangeOnCurve2)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                                        hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const occ::handle<StepGeom_Curve>&                thePlanarCurvePair_Curve1,
+  const occ::handle<StepGeom_Curve>&                thePlanarCurvePair_Curve2,
+  const bool                                        thePlanarCurvePair_Orientation,
+  const occ::handle<StepGeom_TrimmedCurve>&         theRangeOnCurve1,
+  const occ::handle<StepGeom_TrimmedCurve>&         theRangeOnCurve2)
 {
   StepKinematics_PlanarCurvePair::Init(theRepresentationItem_Name,
                                        theItemDefinedTransformation_Name,
@@ -56,7 +56,7 @@ void StepKinematics_PlanarCurvePairRange::Init(
 
 //=================================================================================================
 
-Handle(StepGeom_TrimmedCurve) StepKinematics_PlanarCurvePairRange::RangeOnCurve1() const
+occ::handle<StepGeom_TrimmedCurve> StepKinematics_PlanarCurvePairRange::RangeOnCurve1() const
 {
   return myRangeOnCurve1;
 }
@@ -64,14 +64,14 @@ Handle(StepGeom_TrimmedCurve) StepKinematics_PlanarCurvePairRange::RangeOnCurve1
 //=================================================================================================
 
 void StepKinematics_PlanarCurvePairRange::SetRangeOnCurve1(
-  const Handle(StepGeom_TrimmedCurve)& theRangeOnCurve1)
+  const occ::handle<StepGeom_TrimmedCurve>& theRangeOnCurve1)
 {
   myRangeOnCurve1 = theRangeOnCurve1;
 }
 
 //=================================================================================================
 
-Handle(StepGeom_TrimmedCurve) StepKinematics_PlanarCurvePairRange::RangeOnCurve2() const
+occ::handle<StepGeom_TrimmedCurve> StepKinematics_PlanarCurvePairRange::RangeOnCurve2() const
 {
   return myRangeOnCurve2;
 }
@@ -79,7 +79,7 @@ Handle(StepGeom_TrimmedCurve) StepKinematics_PlanarCurvePairRange::RangeOnCurve2
 //=================================================================================================
 
 void StepKinematics_PlanarCurvePairRange::SetRangeOnCurve2(
-  const Handle(StepGeom_TrimmedCurve)& theRangeOnCurve2)
+  const occ::handle<StepGeom_TrimmedCurve>& theRangeOnCurve2)
 {
   myRangeOnCurve2 = theRangeOnCurve2;
 }

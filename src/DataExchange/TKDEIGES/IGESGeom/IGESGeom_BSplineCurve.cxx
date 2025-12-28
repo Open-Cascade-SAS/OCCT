@@ -28,18 +28,18 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_BSplineCurve, IGESData_IGESEntity)
 
 IGESGeom_BSplineCurve::IGESGeom_BSplineCurve() {}
 
-void IGESGeom_BSplineCurve::Init(const Standard_Integer               anIndex,
-                                 const Standard_Integer               aDegree,
-                                 const Standard_Boolean               aPlanar,
-                                 const Standard_Boolean               aClosed,
-                                 const Standard_Boolean               aPolynom,
-                                 const Standard_Boolean               aPeriodic,
-                                 const Handle(TColStd_HArray1OfReal)& allKnots,
-                                 const Handle(TColStd_HArray1OfReal)& allWeights,
-                                 const Handle(TColgp_HArray1OfXYZ)&   allPoles,
-                                 const Standard_Real                  aUmin,
-                                 const Standard_Real                  aUmax,
-                                 const gp_XYZ&                        aNorm)
+void IGESGeom_BSplineCurve::Init(const int                                       anIndex,
+                                 const int                                       aDegree,
+                                 const bool                                      aPlanar,
+                                 const bool                                      aClosed,
+                                 const bool                                      aPolynom,
+                                 const bool                                      aPeriodic,
+                                 const occ::handle<NCollection_HArray1<double>>& allKnots,
+                                 const occ::handle<NCollection_HArray1<double>>& allWeights,
+                                 const occ::handle<NCollection_HArray1<gp_XYZ>>& allPoles,
+                                 const double                                    aUmin,
+                                 const double                                    aUmax,
+                                 const gp_XYZ&                                   aNorm)
 {
   if (!allPoles.IsNull())
   {
@@ -73,78 +73,78 @@ void IGESGeom_BSplineCurve::Init(const Standard_Integer               anIndex,
   // FormNumber  precises the shape  0-5
 }
 
-void IGESGeom_BSplineCurve::SetFormNumber(const Standard_Integer form)
+void IGESGeom_BSplineCurve::SetFormNumber(const int form)
 {
   if (form < 0 || form > 5)
     throw Standard_OutOfRange("IGESGeom_BSplineCurve : SetFormNumber");
   InitTypeAndForm(126, form);
 }
 
-Standard_Integer IGESGeom_BSplineCurve::UpperIndex() const
+int IGESGeom_BSplineCurve::UpperIndex() const
 {
   return theIndex;
 }
 
-Standard_Integer IGESGeom_BSplineCurve::Degree() const
+int IGESGeom_BSplineCurve::Degree() const
 {
   return theDegree;
 }
 
-Standard_Boolean IGESGeom_BSplineCurve::IsPlanar() const
+bool IGESGeom_BSplineCurve::IsPlanar() const
 {
   return isPlanar;
 }
 
-Standard_Boolean IGESGeom_BSplineCurve::IsClosed() const
+bool IGESGeom_BSplineCurve::IsClosed() const
 {
   return isClosed;
 }
 
-Standard_Boolean IGESGeom_BSplineCurve::IsPolynomial(const Standard_Boolean flag) const
+bool IGESGeom_BSplineCurve::IsPolynomial(const bool flag) const
 {
   if (flag || theWeights.IsNull())
     return isPolynomial;
-  Standard_Integer i, i1 = theWeights->Lower(), i2 = theWeights->Upper();
-  Standard_Real    w0 = theWeights->Value(i1);
+  int    i, i1 = theWeights->Lower(), i2 = theWeights->Upper();
+  double w0 = theWeights->Value(i1);
   for (i = i1 + 1; i <= i2; i++)
     if (std::abs(theWeights->Value(i) - w0) > 1.e-10)
-      return Standard_False;
-  return Standard_True;
+      return false;
+  return true;
 }
 
-Standard_Boolean IGESGeom_BSplineCurve::IsPeriodic() const
+bool IGESGeom_BSplineCurve::IsPeriodic() const
 {
   return isPeriodic;
 }
 
-Standard_Integer IGESGeom_BSplineCurve::NbKnots() const
+int IGESGeom_BSplineCurve::NbKnots() const
 {
   return (theKnots.IsNull() ? 0 : theKnots->Length());
 }
 
-Standard_Real IGESGeom_BSplineCurve::Knot(const Standard_Integer anIndex) const
+double IGESGeom_BSplineCurve::Knot(const int anIndex) const
 {
   return theKnots->Value(anIndex);
 }
 
-Standard_Integer IGESGeom_BSplineCurve::NbPoles() const
+int IGESGeom_BSplineCurve::NbPoles() const
 {
   return (thePoles.IsNull() ? 0 : thePoles->Length());
 }
 
-Standard_Real IGESGeom_BSplineCurve::Weight(const Standard_Integer anIndex) const
+double IGESGeom_BSplineCurve::Weight(const int anIndex) const
 {
   return theWeights->Value(anIndex);
 }
 
-gp_Pnt IGESGeom_BSplineCurve::Pole(const Standard_Integer anIndex) const
+gp_Pnt IGESGeom_BSplineCurve::Pole(const int anIndex) const
 {
   gp_XYZ tempXYZ = thePoles->Value(anIndex);
   gp_Pnt Pole(tempXYZ);
   return Pole;
 }
 
-gp_Pnt IGESGeom_BSplineCurve::TransformedPole(const Standard_Integer anIndex) const
+gp_Pnt IGESGeom_BSplineCurve::TransformedPole(const int anIndex) const
 {
   gp_XYZ tempXYZ = thePoles->Value(anIndex);
   if (HasTransf())
@@ -153,12 +153,12 @@ gp_Pnt IGESGeom_BSplineCurve::TransformedPole(const Standard_Integer anIndex) co
   return Pole;
 }
 
-Standard_Real IGESGeom_BSplineCurve::UMin() const
+double IGESGeom_BSplineCurve::UMin() const
 {
   return theUmin;
 }
 
-Standard_Real IGESGeom_BSplineCurve::UMax() const
+double IGESGeom_BSplineCurve::UMax() const
 {
   return theUmax;
 }

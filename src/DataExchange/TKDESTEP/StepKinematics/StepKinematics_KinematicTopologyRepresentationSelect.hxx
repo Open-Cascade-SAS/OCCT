@@ -42,19 +42,18 @@ public:
   //! -- 1 -> KinematicTopologyDirectedStructure
   //! -- 2 -> KinematicTopologyNetworkStructure
   //! -- 3 -> KinematicTopologyStructure
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as KinematicTopologyDirectedStructure (or Null if another type)
-  Standard_EXPORT Handle(StepKinematics_KinematicTopologyDirectedStructure)
-    KinematicTopologyDirectedStructure() const;
+  Standard_EXPORT occ::handle<StepKinematics_KinematicTopologyDirectedStructure>
+                  KinematicTopologyDirectedStructure() const;
 
   //! Returns Value as KinematicTopologyNetworkStructure (or Null if another type)
-  Standard_EXPORT Handle(StepKinematics_KinematicTopologyNetworkStructure)
-    KinematicTopologyNetworkStructure() const;
+  Standard_EXPORT occ::handle<StepKinematics_KinematicTopologyNetworkStructure>
+                  KinematicTopologyNetworkStructure() const;
 
   //! Returns Value as KinematicTopologyStructure (or Null if another type)
-  Standard_EXPORT Handle(StepKinematics_KinematicTopologyStructure) KinematicTopologyStructure()
-    const;
+  Standard_EXPORT occ::handle<StepKinematics_KinematicTopologyStructure>
+                  KinematicTopologyStructure() const;
 };
 #endif // _StepKinematics_KinematicTopologyRepresentationSelect_HeaderFile

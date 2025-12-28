@@ -25,9 +25,6 @@
 #include <StepBasic_SiUnitName.hxx>
 class StepBasic_SolidAngleUnit;
 
-class StepBasic_SiUnitAndSolidAngleUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_SiUnitAndSolidAngleUnit, StepBasic_SiUnit)
-
 class StepBasic_SiUnitAndSolidAngleUnit : public StepBasic_SiUnit
 {
 
@@ -35,19 +32,19 @@ public:
   //! Returns a SiUnitAndSolidAngleUnit
   Standard_EXPORT StepBasic_SiUnitAndSolidAngleUnit();
 
-  Standard_EXPORT void Init(const Standard_Boolean     hasAprefix,
+  Standard_EXPORT void Init(const bool                 hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName);
 
-  Standard_EXPORT void SetSolidAngleUnit(const Handle(StepBasic_SolidAngleUnit)& aSolidAngleUnit);
+  Standard_EXPORT void SetSolidAngleUnit(
+    const occ::handle<StepBasic_SolidAngleUnit>& aSolidAngleUnit);
 
-  Standard_EXPORT Handle(StepBasic_SolidAngleUnit) SolidAngleUnit() const;
+  Standard_EXPORT occ::handle<StepBasic_SolidAngleUnit> SolidAngleUnit() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndSolidAngleUnit, StepBasic_SiUnit)
 
-protected:
 private:
-  Handle(StepBasic_SolidAngleUnit) solidAngleUnit;
+  occ::handle<StepBasic_SolidAngleUnit> solidAngleUnit;
 };
 
 #endif // _StepBasic_SiUnitAndSolidAngleUnit_HeaderFile

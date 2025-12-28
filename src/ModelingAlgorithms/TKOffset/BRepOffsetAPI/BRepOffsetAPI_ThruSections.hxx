@@ -22,16 +22,17 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepFill_ThruSectionErrorStatus.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeListOfInteger.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Approx_ParametrizationType.hxx>
-#include <Standard_Integer.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <TopTools_Array1OfShape.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Handle.hxx>
 
 class TopoDS_Wire;
@@ -61,9 +62,9 @@ public:
   //! approximation algorithm; the default value is 1.0e-6.
   //! Use AddWire and AddVertex to define the
   //! successive sections of the shell or solid to be built.
-  Standard_EXPORT BRepOffsetAPI_ThruSections(const Standard_Boolean isSolid = Standard_False,
-                                             const Standard_Boolean ruled   = Standard_False,
-                                             const Standard_Real    pres3d  = 1.0e-06);
+  Standard_EXPORT BRepOffsetAPI_ThruSections(const bool   isSolid = false,
+                                             const bool   ruled   = false,
+                                             const double pres3d  = 1.0e-06);
 
   //! Initializes this algorithm for building a shell or a solid
   //! passing through a set of sections, where:
@@ -77,9 +78,9 @@ public:
   //! approximation algorithm; the default value is 1.0e-6.
   //! Use AddWire and AddVertex to define the successive
   //! sections of the shell or solid to be built.
-  Standard_EXPORT void Init(const Standard_Boolean isSolid = Standard_False,
-                            const Standard_Boolean ruled   = Standard_False,
-                            const Standard_Real    pres3d  = 1.0e-06);
+  Standard_EXPORT void Init(const bool   isSolid = false,
+                            const bool   ruled   = false,
+                            const double pres3d  = 1.0e-06);
 
   //! Adds the wire wire to the set of
   //! sections through which the shell or solid is built.
@@ -96,10 +97,10 @@ public:
   //! Sets/unsets the option to
   //! compute origin and orientation on wires to avoid twisted results
   //! and update wires to have same number of edges.
-  Standard_EXPORT void CheckCompatibility(const Standard_Boolean check = Standard_True);
+  Standard_EXPORT void CheckCompatibility(const bool check = true);
 
   //! Define the approximation algorithm
-  Standard_EXPORT void SetSmoothing(const Standard_Boolean UseSmoothing);
+  Standard_EXPORT void SetSmoothing(const bool UseSmoothing);
 
   //! Define the type of parametrization used in the approximation
   Standard_EXPORT void SetParType(const Approx_ParametrizationType ParType);
@@ -111,12 +112,10 @@ public:
   //! the optimization.
   //!
   //! if Wi <= 0
-  Standard_EXPORT void SetCriteriumWeight(const Standard_Real W1,
-                                          const Standard_Real W2,
-                                          const Standard_Real W3);
+  Standard_EXPORT void SetCriteriumWeight(const double W1, const double W2, const double W3);
 
   //! Define the maximal U degree of result surface
-  Standard_EXPORT void SetMaxDegree(const Standard_Integer MaxDeg);
+  Standard_EXPORT void SetMaxDegree(const int MaxDeg);
 
   //! returns the type of parametrization used in the approximation
   Standard_EXPORT Approx_ParametrizationType ParType() const;
@@ -125,19 +124,17 @@ public:
   Standard_EXPORT GeomAbs_Shape Continuity() const;
 
   //! returns the maximal U degree of result surface
-  Standard_EXPORT Standard_Integer MaxDegree() const;
+  Standard_EXPORT int MaxDegree() const;
 
   //! Define the approximation algorithm
-  Standard_EXPORT Standard_Boolean UseSmoothing() const;
+  Standard_EXPORT bool UseSmoothing() const;
 
   //! returns the Weights associed to the criterium used in
   //! the optimization.
-  Standard_EXPORT void CriteriumWeight(Standard_Real& W1,
-                                       Standard_Real& W2,
-                                       Standard_Real& W3) const;
+  Standard_EXPORT void CriteriumWeight(double& W1, double& W2, double& W3) const;
 
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the TopoDS Shape of the bottom of the loft if solid
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
@@ -155,59 +152,60 @@ public:
   //! Sets the mutable input state.
   //! If true then the input profile can be modified inside
   //! the thrusection operation. Default value is true.
-  Standard_EXPORT void SetMutableInput(const Standard_Boolean theIsMutableInput);
+  Standard_EXPORT void SetMutableInput(const bool theIsMutableInput);
 
   //! Returns a list of new shapes generated from the shape
   //! S by the shell-generating algorithm.
   //! This function is redefined from BRepBuilderAPI_MakeShape::Generated.
   //! S can be an edge or a vertex of a given Profile (see methods AddWire and AddVertex).
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& S) override;
 
   //! Returns the list of original wires
-  const TopTools_ListOfShape& Wires() const { return myInputWires; }
+  const NCollection_List<TopoDS_Shape>& Wires() const { return myInputWires; }
 
   //! Returns the current mutable input state
-  Standard_EXPORT Standard_Boolean IsMutableInput() const;
+  Standard_EXPORT bool IsMutableInput() const;
 
   //! Returns the status of thrusection operation
   BRepFill_ThruSectionErrorStatus GetStatus() const { return myStatus; }
 
-protected:
 private:
   Standard_EXPORT void CreateRuled();
 
   Standard_EXPORT void CreateSmoothed();
 
-  Standard_EXPORT Handle(Geom_BSplineSurface) TotalSurf(const TopTools_Array1OfShape& shapes,
-                                                        const Standard_Integer        NbSect,
-                                                        const Standard_Integer        NbEdges,
-                                                        const Standard_Boolean        w1Point,
-                                                        const Standard_Boolean        w2Point,
-                                                        const Standard_Boolean vClosed) const;
+  Standard_EXPORT occ::handle<Geom_BSplineSurface> TotalSurf(
+    const NCollection_Array1<TopoDS_Shape>& shapes,
+    const int                               NbSect,
+    const int                               NbEdges,
+    const bool                              w1Point,
+    const bool                              w2Point,
+    const bool                              vClosed) const;
 
-  TopTools_ListOfShape                   myInputWires; //!< List of input wires
-  TopTools_SequenceOfShape               myWires;      //!< Working wires
-  TopTools_DataMapOfShapeListOfInteger   myEdgeNewIndices;
-  TopTools_DataMapOfShapeInteger         myVertexIndex;
-  Standard_Integer                       myNbEdgesInSection;
-  Standard_Boolean                       myIsSolid;
-  Standard_Boolean                       myIsRuled;
-  Standard_Boolean                       myWCheck;
-  Standard_Real                          myPres3d;
-  TopoDS_Face                            myFirst;
-  TopoDS_Face                            myLast;
-  Standard_Boolean                       myDegen1;
-  Standard_Boolean                       myDegen2;
-  TopTools_DataMapOfShapeShape           myEdgeFace;
-  GeomAbs_Shape                          myContinuity;
-  Approx_ParametrizationType             myParamType;
-  Standard_Integer                       myDegMax;
-  Standard_Real                          myCritWeights[3];
-  Standard_Boolean                       myUseSmoothing;
-  Standard_Boolean                       myMutableInput;
-  NCollection_Handle<BRepFill_Generator> myBFGenerator;
-  BRepFill_ThruSectionErrorStatus        myStatus;
+  NCollection_List<TopoDS_Shape>     myInputWires; //!< List of input wires
+  NCollection_Sequence<TopoDS_Shape> myWires;      //!< Working wires
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<int>, TopTools_ShapeMapHasher>
+                                                                           myEdgeNewIndices;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>          myVertexIndex;
+  int                                                                      myNbEdgesInSection;
+  bool                                                                     myIsSolid;
+  bool                                                                     myIsRuled;
+  bool                                                                     myWCheck;
+  double                                                                   myPres3d;
+  TopoDS_Face                                                              myFirst;
+  TopoDS_Face                                                              myLast;
+  bool                                                                     myDegen1;
+  bool                                                                     myDegen2;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myEdgeFace;
+  GeomAbs_Shape                                                            myContinuity;
+  Approx_ParametrizationType                                               myParamType;
+  int                                                                      myDegMax;
+  double                                                                   myCritWeights[3];
+  bool                                                                     myUseSmoothing;
+  bool                                                                     myMutableInput;
+  NCollection_Handle<BRepFill_Generator>                                   myBFGenerator;
+  BRepFill_ThruSectionErrorStatus                                          myStatus;
 };
 
 #endif // _BRepOffsetAPI_ThruSections_HeaderFile

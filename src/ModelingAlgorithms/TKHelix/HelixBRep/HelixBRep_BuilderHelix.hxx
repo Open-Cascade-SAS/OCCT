@@ -24,12 +24,10 @@
 #include <GeomAbs_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_List.hxx>
 
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
+#include <NCollection_HArray1.hxx>
 class gp_Ax1;
 class gp_Pnt;
 class TopoDS_Wire;
@@ -58,95 +56,95 @@ public:
   Standard_EXPORT virtual ~HelixBRep_BuilderHelix();
 
   //! Sets parameters of general composite helix
-  Standard_EXPORT void SetParameters(const gp_Ax3&                  theAxis,
-                                     const TColStd_Array1OfReal&    theDiams,
-                                     const TColStd_Array1OfReal&    theHeights,
-                                     const TColStd_Array1OfReal&    thePitches,
-                                     const TColStd_Array1OfBoolean& theIsPitches);
+  Standard_EXPORT void SetParameters(const gp_Ax3&                     theAxis,
+                                     const NCollection_Array1<double>& theDiams,
+                                     const NCollection_Array1<double>& theHeights,
+                                     const NCollection_Array1<double>& thePitches,
+                                     const NCollection_Array1<bool>&   theIsPitches);
 
   //! Sets parameters of pure helix
-  Standard_EXPORT void SetParameters(const gp_Ax3&                  theAxis,
-                                     const Standard_Real            theDiam,
-                                     const TColStd_Array1OfReal&    theHeights,
-                                     const TColStd_Array1OfReal&    thePitches,
-                                     const TColStd_Array1OfBoolean& theIsPitches);
+  Standard_EXPORT void SetParameters(const gp_Ax3&                     theAxis,
+                                     const double                      theDiam,
+                                     const NCollection_Array1<double>& theHeights,
+                                     const NCollection_Array1<double>& thePitches,
+                                     const NCollection_Array1<bool>&   theIsPitches);
 
   //! Sets parameters of pure spiral
-  Standard_EXPORT void SetParameters(const gp_Ax3&                  theAxis,
-                                     const Standard_Real            theDiam1,
-                                     const Standard_Real            theDiam2,
-                                     const TColStd_Array1OfReal&    theHeights,
-                                     const TColStd_Array1OfReal&    thePitches,
-                                     const TColStd_Array1OfBoolean& theIsPitches);
+  Standard_EXPORT void SetParameters(const gp_Ax3&                     theAxis,
+                                     const double                      theDiam1,
+                                     const double                      theDiam2,
+                                     const NCollection_Array1<double>& theHeights,
+                                     const NCollection_Array1<double>& thePitches,
+                                     const NCollection_Array1<bool>&   theIsPitches);
 
   //! Sets parameters of general composite helix
-  Standard_EXPORT void SetParameters(const gp_Ax3&               theAxis,
-                                     const TColStd_Array1OfReal& theDiams,
-                                     const TColStd_Array1OfReal& thePitches,
-                                     const TColStd_Array1OfReal& theNbTurns);
+  Standard_EXPORT void SetParameters(const gp_Ax3&                     theAxis,
+                                     const NCollection_Array1<double>& theDiams,
+                                     const NCollection_Array1<double>& thePitches,
+                                     const NCollection_Array1<double>& theNbTurns);
 
   //! Sets parameters of pure helix
-  Standard_EXPORT void SetParameters(const gp_Ax3&               theAxis,
-                                     const Standard_Real         theDiam,
-                                     const TColStd_Array1OfReal& thePitches,
-                                     const TColStd_Array1OfReal& theNbTurns);
+  Standard_EXPORT void SetParameters(const gp_Ax3&                     theAxis,
+                                     const double                      theDiam,
+                                     const NCollection_Array1<double>& thePitches,
+                                     const NCollection_Array1<double>& theNbTurns);
 
   //! Sets parameters of pure spiral
-  Standard_EXPORT void SetParameters(const gp_Ax3&               theAxis,
-                                     const Standard_Real         theDiam1,
-                                     const Standard_Real         theDiam2,
-                                     const TColStd_Array1OfReal& thePitches,
-                                     const TColStd_Array1OfReal& theNbTurns);
+  Standard_EXPORT void SetParameters(const gp_Ax3&                     theAxis,
+                                     const double                      theDiam1,
+                                     const double                      theDiam2,
+                                     const NCollection_Array1<double>& thePitches,
+                                     const NCollection_Array1<double>& theNbTurns);
 
   //! Sets parameters for approximation
-  Standard_EXPORT void SetApproxParameters(const Standard_Real    theTolerance,
-                                           const Standard_Integer theMaxDegree,
-                                           const GeomAbs_Shape    theContinuity);
+  Standard_EXPORT void SetApproxParameters(const double        theTolerance,
+                                           const int           theMaxDegree,
+                                           const GeomAbs_Shape theContinuity);
 
   //! Performs calculations
   Standard_EXPORT void Perform();
 
   //! Gets tolerance reached by approximation
-  Standard_EXPORT Standard_Real ToleranceReached() const;
+  Standard_EXPORT double ToleranceReached() const;
 
   //! Returns error status of algorithm
-  Standard_EXPORT Standard_Integer ErrorStatus() const;
+  Standard_EXPORT int ErrorStatus() const;
 
   //! Returns warning status of algorithm
-  Standard_EXPORT Standard_Integer WarningStatus() const;
+  Standard_EXPORT int WarningStatus() const;
 
   //! Gets result of algorithm
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
 protected:
-  gp_Ax3                           myAxis3;
-  Handle(TColStd_HArray1OfReal)    myDiams;
-  Handle(TColStd_HArray1OfReal)    myHeights;
-  Handle(TColStd_HArray1OfReal)    myPitches;
-  Handle(TColStd_HArray1OfBoolean) myIsPitches;
-  Standard_Real                    myTolerance;
-  Standard_Real                    myTolReached;
-  GeomAbs_Shape                    myContinuity;
-  Standard_Integer                 myMaxDegree;
-  Standard_Integer                 myMaxSegments;
-  Standard_Integer                 myErrorStatus;
-  Standard_Integer                 myWarningStatus;
-  TopoDS_Shape                     myShape;
+  gp_Ax3                                   myAxis3;
+  occ::handle<NCollection_HArray1<double>> myDiams;
+  occ::handle<NCollection_HArray1<double>> myHeights;
+  occ::handle<NCollection_HArray1<double>> myPitches;
+  occ::handle<NCollection_HArray1<bool>>   myIsPitches;
+  double                                   myTolerance;
+  double                                   myTolReached;
+  GeomAbs_Shape                            myContinuity;
+  int                                      myMaxDegree;
+  int                                      myMaxSegments;
+  int                                      myErrorStatus;
+  int                                      myWarningStatus;
+  TopoDS_Shape                             myShape;
 
 private:
-  Standard_EXPORT void BuildPart(const gp_Ax1&          theAxis,
-                                 const gp_Pnt&          thePStart,
-                                 const Standard_Real    theHeight,
-                                 const Standard_Real    thePitch,
-                                 const Standard_Real    theTaperAngle,
-                                 const Standard_Boolean theIsClockwise,
-                                 TopoDS_Wire&           thePart);
+  Standard_EXPORT void BuildPart(const gp_Ax1& theAxis,
+                                 const gp_Pnt& thePStart,
+                                 const double  theHeight,
+                                 const double  thePitch,
+                                 const double  theTaperAngle,
+                                 const bool    theIsClockwise,
+                                 TopoDS_Wire&  thePart);
 
-  Standard_EXPORT void Smoothing(TopTools_ListOfShape& theParts);
+  Standard_EXPORT void Smoothing(NCollection_List<TopoDS_Shape>& theParts);
 
   Standard_EXPORT void SmoothingEdges(TopoDS_Edge& thePrev, TopoDS_Edge& theNext);
 
-  Standard_Integer myNParts;
+  int myNParts;
 };
 
 #endif // _HelixBRep_BuilderHelix_HeaderFile

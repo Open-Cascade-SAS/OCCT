@@ -46,11 +46,11 @@ public:
   //! For a Vertex : Index is the index of the vertex in
   //! the edge (1 or 2), Type is TopAbsVERTEX, all the
   //! other fields have no meanning.
-  Standard_EXPORT Sweep_NumShape(const Standard_Integer Index,
+  Standard_EXPORT Sweep_NumShape(const int              Index,
                                  const TopAbs_ShapeEnum Type,
-                                 const Standard_Boolean Closed = Standard_False,
-                                 const Standard_Boolean BegInf = Standard_False,
-                                 const Standard_Boolean EndInf = Standard_False);
+                                 const bool             Closed = false,
+                                 const bool             BegInf = false,
+                                 const bool             EndInf = false);
 
   //! Reinitialize a simple indexed edge.
   //!
@@ -64,31 +64,30 @@ public:
   //! the edge (1 or 2), Type is TopAbsVERTEX, Closed is
   //! true if it is the vertex of a closed edge, all the
   //! other fields have no meanning.
-  Standard_EXPORT void Init(const Standard_Integer Index,
+  Standard_EXPORT void Init(const int              Index,
                             const TopAbs_ShapeEnum Type,
-                            const Standard_Boolean Closed = Standard_False,
-                            const Standard_Boolean BegInf = Standard_False,
-                            const Standard_Boolean EndInf = Standard_False);
+                            const bool             Closed = false,
+                            const bool             BegInf = false,
+                            const bool             EndInf = false);
 
-  Standard_Integer Index() const;
+  int Index() const;
 
   TopAbs_ShapeEnum Type() const;
 
-  Standard_Boolean Closed() const;
+  bool Closed() const;
 
-  Standard_Boolean BegInfinite() const;
+  bool BegInfinite() const;
 
-  Standard_Boolean EndInfinite() const;
+  bool EndInfinite() const;
 
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
-protected:
 private:
   TopAbs_ShapeEnum myType;
-  Standard_Integer myIndex;
-  Standard_Boolean myClosed;
-  Standard_Boolean myBegInf;
-  Standard_Boolean myEndInf;
+  int              myIndex;
+  bool             myClosed;
+  bool             myBegInf;
+  bool             myEndInf;
 };
 
 #include <Sweep_NumShape.lxx>

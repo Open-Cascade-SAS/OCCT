@@ -16,19 +16,17 @@
 #ifndef _MeshVS_ElementalColorPrsBuilder_HeaderFile
 #define _MeshVS_ElementalColorPrsBuilder_HeaderFile
 
-#include <MeshVS_DataMapOfIntegerColor.hxx>
-#include <MeshVS_DataMapOfIntegerTwoColors.hxx>
+#include <Standard_Integer.hxx>
+#include <Quantity_Color.hxx>
+#include <NCollection_DataMap.hxx>
+#include <MeshVS_TwoColors.hxx>
 #include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_BuilderPriority.hxx>
-#include <MeshVS_TwoColors.hxx>
 
 class MeshVS_Mesh;
 class MeshVS_DataSource;
 class Quantity_Color;
-
-class MeshVS_ElementalColorPrsBuilder;
-DEFINE_STANDARD_HANDLE(MeshVS_ElementalColorPrsBuilder, MeshVS_PrsBuilder)
 
 //! This class provides methods to create presentation of elements with
 //! assigned colors. The class contains two color maps: map of same colors for front
@@ -39,71 +37,68 @@ class MeshVS_ElementalColorPrsBuilder : public MeshVS_PrsBuilder
 public:
   //! Constructor
   Standard_EXPORT MeshVS_ElementalColorPrsBuilder(
-    const Handle(MeshVS_Mesh)&       Parent,
-    const MeshVS_DisplayModeFlags&   Flags    = MeshVS_DMF_ElementalColorDataPrs,
-    const Handle(MeshVS_DataSource)& DS       = 0,
-    const Standard_Integer           Id       = -1,
-    const MeshVS_BuilderPriority&    Priority = MeshVS_BP_ElemColor);
+    const occ::handle<MeshVS_Mesh>&       Parent,
+    const MeshVS_DisplayModeFlags&        Flags    = MeshVS_DMF_ElementalColorDataPrs,
+    const occ::handle<MeshVS_DataSource>& DS       = 0,
+    const int                             Id       = -1,
+    const MeshVS_BuilderPriority&         Priority = MeshVS_BP_ElemColor);
 
   //! Builds presentation of elements with assigned colors.
-  Standard_EXPORT virtual void Build(const Handle(Prs3d_Presentation)& Prs,
-                                     const TColStd_PackedMapOfInteger& IDs,
-                                     TColStd_PackedMapOfInteger&       IDsToExclude,
-                                     const Standard_Boolean            IsElement,
-                                     const Standard_Integer DisplayMode) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
+                                     const TColStd_PackedMapOfInteger&      IDs,
+                                     TColStd_PackedMapOfInteger&            IDsToExclude,
+                                     const bool                             IsElement,
+                                     const int DisplayMode) const override;
 
   //! Returns map of colors same for front and back side of face.
-  Standard_EXPORT const MeshVS_DataMapOfIntegerColor& GetColors1() const;
+  Standard_EXPORT const NCollection_DataMap<int, Quantity_Color>& GetColors1() const;
 
   //! Sets map of colors same for front and back side of face.
-  Standard_EXPORT void SetColors1(const MeshVS_DataMapOfIntegerColor& Map);
+  Standard_EXPORT void SetColors1(const NCollection_DataMap<int, Quantity_Color>& Map);
 
   //! Returns true, if map of colors isn't empty
-  Standard_EXPORT Standard_Boolean HasColors1() const;
+  Standard_EXPORT bool HasColors1() const;
 
   //! Returns color assigned with element number ID
-  Standard_EXPORT Standard_Boolean GetColor1(const Standard_Integer ID,
-                                             Quantity_Color&        theColor) const;
+  Standard_EXPORT bool GetColor1(const int ID, Quantity_Color& theColor) const;
 
   //! Sets color assigned with element number ID
-  Standard_EXPORT void SetColor1(const Standard_Integer ID, const Quantity_Color& theColor);
+  Standard_EXPORT void SetColor1(const int ID, const Quantity_Color& theColor);
 
   //! Returns map of different colors for front and back side of face
-  Standard_EXPORT const MeshVS_DataMapOfIntegerTwoColors& GetColors2() const;
+  Standard_EXPORT const NCollection_DataMap<int, MeshVS_TwoColors>& GetColors2() const;
 
   //! Sets map of different colors for front and back side of face
-  Standard_EXPORT void SetColors2(const MeshVS_DataMapOfIntegerTwoColors& Map);
+  Standard_EXPORT void SetColors2(const NCollection_DataMap<int, MeshVS_TwoColors>& Map);
 
   //! Returns true, if map isn't empty
-  Standard_EXPORT Standard_Boolean HasColors2() const;
+  Standard_EXPORT bool HasColors2() const;
 
   //! Returns colors assigned with element number ID
-  Standard_EXPORT Standard_Boolean GetColor2(const Standard_Integer ID,
-                                             MeshVS_TwoColors&      theColor) const;
+  Standard_EXPORT bool GetColor2(const int ID, MeshVS_TwoColors& theColor) const;
 
   //! Returns colors assigned with element number ID
   //! theColor1 is the front element color
   //! theColor2 is the back element color
-  Standard_EXPORT Standard_Boolean GetColor2(const Standard_Integer ID,
-                                             Quantity_Color&        theColor1,
-                                             Quantity_Color&        theColor2) const;
+  Standard_EXPORT bool GetColor2(const int       ID,
+                                 Quantity_Color& theColor1,
+                                 Quantity_Color& theColor2) const;
 
   //! Sets colors assigned with element number ID
-  Standard_EXPORT void SetColor2(const Standard_Integer ID, const MeshVS_TwoColors& theTwoColors);
+  Standard_EXPORT void SetColor2(const int ID, const MeshVS_TwoColors& theTwoColors);
 
   //! Sets color assigned with element number ID
   //! theColor1 is the front element color
   //! theColor2 is the back element color
-  Standard_EXPORT void SetColor2(const Standard_Integer ID,
-                                 const Quantity_Color&  theColor1,
-                                 const Quantity_Color&  theColor2);
+  Standard_EXPORT void SetColor2(const int             ID,
+                                 const Quantity_Color& theColor1,
+                                 const Quantity_Color& theColor2);
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_ElementalColorPrsBuilder, MeshVS_PrsBuilder)
 
-protected:
 private:
-  MeshVS_DataMapOfIntegerColor     myElemColorMap1;
-  MeshVS_DataMapOfIntegerTwoColors myElemColorMap2;
+  NCollection_DataMap<int, Quantity_Color>   myElemColorMap1;
+  NCollection_DataMap<int, MeshVS_TwoColors> myElemColorMap2;
 };
 
 #endif // _MeshVS_ElementalColorPrsBuilder_HeaderFile

@@ -26,17 +26,17 @@ RWStepBasic_RWRatioMeasureWithUnit::RWStepBasic_RWRatioMeasureWithUnit() {}
 //=================================================================================================
 
 void RWStepBasic_RWRatioMeasureWithUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepBasic_RatioMeasureWithUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepBasic_RatioMeasureWithUnit>& ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "ratio_measure_with_unit"))
     return;
 
   // --- inherited field : valueComponent ---
-  Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 1, "value_component", ach, mvc);
 
   // --- inherited field : unitComponent ---
@@ -50,8 +50,8 @@ void RWStepBasic_RWRatioMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWRatioMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                          SW,
-  const Handle(StepBasic_RatioMeasureWithUnit)& ent) const
+  StepData_StepWriter&                               SW,
+  const occ::handle<StepBasic_RatioMeasureWithUnit>& ent) const
 {
   // --- inherited field valueComponent ---
   SW.Send(ent->ValueComponentMember());
@@ -62,8 +62,9 @@ void RWStepBasic_RWRatioMeasureWithUnit::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWRatioMeasureWithUnit::Share(const Handle(StepBasic_RatioMeasureWithUnit)& ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepBasic_RWRatioMeasureWithUnit::Share(
+  const occ::handle<StepBasic_RatioMeasureWithUnit>& ent,
+  Interface_EntityIterator&                          iter) const
 {
   iter.GetOneItem(ent->UnitComponent().Value());
 }

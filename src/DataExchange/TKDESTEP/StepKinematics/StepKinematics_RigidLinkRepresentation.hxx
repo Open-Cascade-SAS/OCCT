@@ -21,10 +21,9 @@
 #include <StepKinematics_KinematicLinkRepresentation.hxx>
 
 #include <TCollection_HAsciiString.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-
-DEFINE_STANDARD_HANDLE(StepKinematics_RigidLinkRepresentation,
-                       StepKinematics_KinematicLinkRepresentation)
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! Representation of STEP entity RigidLinkRepresentation
 class StepKinematics_RigidLinkRepresentation : public StepKinematics_KinematicLinkRepresentation

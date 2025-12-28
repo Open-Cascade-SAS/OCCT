@@ -16,19 +16,19 @@
 
 #include <Standard_GUID.hxx>
 
-StdObjMgt_ReadData::StdObjMgt_ReadData(const Handle(Storage_BaseDriver)& theDriver,
-                                       const Standard_Integer            theNumberOfObjects)
+StdObjMgt_ReadData::StdObjMgt_ReadData(const occ::handle<Storage_BaseDriver>& theDriver,
+                                       const int                              theNumberOfObjects)
     : myDriver(theDriver),
       myPersistentObjects(1, theNumberOfObjects)
 {
 }
 
-void StdObjMgt_ReadData::ReadPersistentObject(const Standard_Integer theRef)
+void StdObjMgt_ReadData::ReadPersistentObject(const int theRef)
 {
-  Handle(StdObjMgt_Persistent) aPersistent = myPersistentObjects(theRef);
+  occ::handle<StdObjMgt_Persistent> aPersistent = myPersistentObjects(theRef);
   if (aPersistent)
   {
-    Standard_Integer aRef, aType;
+    int aRef, aType;
     myDriver->ReadPersistentObjectHeader(aRef, aType);
     myDriver->BeginReadPersistentObjectData();
     aPersistent->Read(*this);
@@ -36,9 +36,9 @@ void StdObjMgt_ReadData::ReadPersistentObject(const Standard_Integer theRef)
   }
 }
 
-Handle(StdObjMgt_Persistent) StdObjMgt_ReadData::ReadReference()
+occ::handle<StdObjMgt_Persistent> StdObjMgt_ReadData::ReadReference()
 {
-  Standard_Integer aRef;
+  int aRef;
   myDriver->GetReference(aRef);
   return aRef ? PersistentObject(aRef) : NULL;
 }
@@ -51,9 +51,9 @@ StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, Standard_GUID& t
 {
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Integer      a32b;
-  Standard_ExtCharacter a16b[3];
-  Standard_Character    a8b[6];
+  int      a32b;
+  char16_t a16b[3];
+  char     a8b[6];
 
   theReadData >> a32b >> a16b[0] >> a16b[1] >> a16b[2];
   theReadData >> a8b[0] >> a8b[1] >> a8b[2] >> a8b[3] >> a8b[4] >> a8b[5];

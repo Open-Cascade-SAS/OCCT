@@ -32,9 +32,6 @@ class ShapeUpgrade_WireDivide;
   #undef Status
 #endif
 
-class ShapeUpgrade_FaceDivide;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_FaceDivide, ShapeUpgrade_Tool)
-
 //! Divides a Face (both edges in the wires, by splitting
 //! curves and pcurves, and the face itself, by splitting
 //! supporting surface) according to splitting criteria.
@@ -64,7 +61,7 @@ public:
 
   //! Purpose sets mode for trimming (segment) surface by
   //! wire UV bounds.
-  Standard_EXPORT void SetSurfaceSegmentMode(const Standard_Boolean Segment);
+  Standard_EXPORT void SetSurfaceSegmentMode(const bool Segment);
 
   //! Performs splitting and computes the resulting shell
   //! The context is used to keep track of former splittings
@@ -73,18 +70,18 @@ public:
   //! The optional argument <theArea> is used to initialize
   //! the tool for splitting surface in the case of
   //! splitting into N parts where N is user-defined.
-  Standard_EXPORT virtual Standard_Boolean Perform(const Standard_Real theArea = 0.);
+  Standard_EXPORT virtual bool Perform(const double theArea = 0.);
 
   //! Performs splitting of surface and computes the shell
   //! from source face.
   //! The optional argument <theArea> is used to initialize
   //! the tool for splitting surface in the case of
   //! splitting into N parts where N is user-defined.
-  Standard_EXPORT virtual Standard_Boolean SplitSurface(const Standard_Real theArea = 0.);
+  Standard_EXPORT virtual bool SplitSurface(const double theArea = 0.);
 
   //! Performs splitting of curves of all the edges in the
   //! shape and divides these edges.
-  Standard_EXPORT virtual Standard_Boolean SplitCurves();
+  Standard_EXPORT virtual bool SplitCurves();
 
   //! Gives the resulting Shell, or Face, or Null shape if not done.
   Standard_EXPORT TopoDS_Shape Result() const;
@@ -96,34 +93,35 @@ public:
   //! DONE3: surface was modified without splitting
   //! FAIL1: some fails encountered during splitting wires
   //! FAIL2: face cannot be split
-  Standard_EXPORT Standard_Boolean Status(const ShapeExtend_Status status) const;
+  Standard_EXPORT bool Status(const ShapeExtend_Status status) const;
 
   //! Sets the tool for splitting surfaces.
   Standard_EXPORT void SetSplitSurfaceTool(
-    const Handle(ShapeUpgrade_SplitSurface)& splitSurfaceTool);
+    const occ::handle<ShapeUpgrade_SplitSurface>& splitSurfaceTool);
 
   //! Sets the tool for dividing edges on Face.
-  Standard_EXPORT void SetWireDivideTool(const Handle(ShapeUpgrade_WireDivide)& wireDivideTool);
+  Standard_EXPORT void SetWireDivideTool(
+    const occ::handle<ShapeUpgrade_WireDivide>& wireDivideTool);
 
   //! Returns the tool for splitting surfaces.
   //! This tool must be already initialized.
-  Standard_EXPORT virtual Handle(ShapeUpgrade_SplitSurface) GetSplitSurfaceTool() const;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_SplitSurface> GetSplitSurfaceTool() const;
 
   //! Returns the tool for dividing edges on Face.
   //! This tool must be already initialized.
-  Standard_EXPORT virtual Handle(ShapeUpgrade_WireDivide) GetWireDivideTool() const;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_WireDivide> GetWireDivideTool() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivide, ShapeUpgrade_Tool)
 
 protected:
-  TopoDS_Face      myFace;
-  TopoDS_Shape     myResult;
-  Standard_Boolean mySegmentMode;
-  Standard_Integer myStatus;
+  TopoDS_Face  myFace;
+  TopoDS_Shape myResult;
+  bool         mySegmentMode;
+  int          myStatus;
 
 private:
-  Handle(ShapeUpgrade_SplitSurface) mySplitSurfaceTool;
-  Handle(ShapeUpgrade_WireDivide)   myWireDivideTool;
+  occ::handle<ShapeUpgrade_SplitSurface> mySplitSurfaceTool;
+  occ::handle<ShapeUpgrade_WireDivide>   myWireDivideTool;
 };
 
 #endif // _ShapeUpgrade_FaceDivide_HeaderFile

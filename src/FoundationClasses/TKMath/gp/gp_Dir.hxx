@@ -84,7 +84,7 @@ public:
   //! from gp where theXv, theYv ,theZv are the new coordinates it is not possible to construct the
   //! direction and the method raises the exception ConstructionError.
   //! @note Constexpr-compatible when input is already normalized.
-  constexpr gp_Dir(const Standard_Real theXv, const Standard_Real theYv, const Standard_Real theZv);
+  constexpr gp_Dir(const double theXv, const double theYv, const double theZv);
 
   constexpr gp_Dir(const gp_Dir&) noexcept = default;
   constexpr gp_Dir(gp_Dir&&) noexcept      = default;
@@ -109,27 +109,25 @@ public:
   //! value theXi and the two other coordinates of this vector
   //! that were not directly modified.
   //! @note Constexpr-compatible when result is already normalized.
-  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi);
+  constexpr void SetCoord(const int theIndex, const double theXi);
 
   //! For this unit vector, assigns the values theXv, theYv and theZv to its three coordinates.
   //! Remember that all the coordinates of a unit vector are
   //! implicitly modified when any single one is changed directly.
   //! @note Constexpr-compatible when input is already normalized.
-  constexpr void SetCoord(const Standard_Real theXv,
-                          const Standard_Real theYv,
-                          const Standard_Real theZv);
+  constexpr void SetCoord(const double theXv, const double theYv, const double theZv);
 
   //! Assigns the given value to the X coordinate of this unit vector.
   //! @note Constexpr-compatible when result is already normalized.
-  constexpr void SetX(const Standard_Real theX);
+  constexpr void SetX(const double theX);
 
   //! Assigns the given value to the Y coordinate of this unit vector.
   //! @note Constexpr-compatible when result is already normalized.
-  constexpr void SetY(const Standard_Real theY);
+  constexpr void SetY(const double theY);
 
   //! Assigns the given value to the Z coordinate of this unit vector.
   //! @note Constexpr-compatible when result is already normalized.
-  constexpr void SetZ(const Standard_Real theZ);
+  constexpr void SetZ(const double theZ);
 
   //! Assigns the three coordinates of theCoord to this unit vector.
   //! @note Constexpr-compatible when input is already normalized.
@@ -141,43 +139,38 @@ public:
   //! theIndex = 3 => Z is returned
   //! Exceptions
   //! Standard_OutOfRange if theIndex is not 1, 2, or 3.
-  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
-  {
-    return coord.Coord(theIndex);
-  }
+  constexpr double Coord(const int theIndex) const { return coord.Coord(theIndex); }
 
   //! Returns for the unit vector its three coordinates theXv, theYv, and theZv.
-  constexpr void Coord(Standard_Real& theXv,
-                       Standard_Real& theYv,
-                       Standard_Real& theZv) const noexcept
+  constexpr void Coord(double& theXv, double& theYv, double& theZv) const noexcept
   {
     coord.Coord(theXv, theYv, theZv);
   }
 
   //! Returns the X coordinate for a unit vector.
-  constexpr Standard_Real X() const noexcept { return coord.X(); }
+  constexpr double X() const noexcept { return coord.X(); }
 
   //! Returns the Y coordinate for a unit vector.
-  constexpr Standard_Real Y() const noexcept { return coord.Y(); }
+  constexpr double Y() const noexcept { return coord.Y(); }
 
   //! Returns the Z coordinate for a unit vector.
-  constexpr Standard_Real Z() const noexcept { return coord.Z(); }
+  constexpr double Z() const noexcept { return coord.Z(); }
 
   //! for this unit vector, returns its three coordinates as a number triple.
   constexpr const gp_XYZ& XYZ() const noexcept { return coord; }
 
   //! Returns True if the angle between the two directions is
   //! lower or equal to theAngularTolerance.
-  Standard_Boolean IsEqual(const gp_Dir& theOther, const Standard_Real theAngularTolerance) const
+  bool IsEqual(const gp_Dir& theOther, const double theAngularTolerance) const
   {
     return Angle(theOther) <= theAngularTolerance;
   }
 
   //! Returns True if the angle between this unit vector and the unit vector theOther is equal to
   //! Pi/2 (normal).
-  Standard_Boolean IsNormal(const gp_Dir& theOther, const Standard_Real theAngularTolerance) const
+  bool IsNormal(const gp_Dir& theOther, const double theAngularTolerance) const
   {
-    Standard_Real anAng = M_PI / 2.0 - Angle(theOther);
+    double anAng = M_PI / 2.0 - Angle(theOther);
     if (anAng < 0)
     {
       anAng = -anAng;
@@ -187,7 +180,7 @@ public:
 
   //! Returns True if the angle between this unit vector and the unit vector theOther is equal to
   //! Pi (opposite).
-  Standard_Boolean IsOpposite(const gp_Dir& theOther, const Standard_Real theAngularTolerance) const
+  bool IsOpposite(const gp_Dir& theOther, const double theAngularTolerance) const
   {
     return M_PI - Angle(theOther) <= theAngularTolerance;
   }
@@ -195,16 +188,16 @@ public:
   //! Returns true if the angle between this unit vector and the
   //! unit vector theOther is equal to 0 or to Pi.
   //! Note: the tolerance criterion is given by theAngularTolerance.
-  Standard_Boolean IsParallel(const gp_Dir& theOther, const Standard_Real theAngularTolerance) const
+  bool IsParallel(const gp_Dir& theOther, const double theAngularTolerance) const
   {
-    Standard_Real anAng = Angle(theOther);
+    double anAng = Angle(theOther);
     return anAng <= theAngularTolerance || M_PI - anAng <= theAngularTolerance;
   }
 
   //! Computes the angular value in radians between <me> and
   //! <theOther>. This value is always positive in 3D space.
   //! Returns the angle in the range [0, PI]
-  Standard_EXPORT Standard_Real Angle(const gp_Dir& theOther) const;
+  Standard_EXPORT double Angle(const gp_Dir& theOther) const;
 
   //! Computes the angular value between <me> and <theOther>.
   //! <theVRef> is the direction of reference normal to <me> and <theOther>
@@ -214,7 +207,7 @@ public:
   //! Returns the angular value in the range -PI and PI (in radians). Raises DomainError if <me>
   //! and <theOther> are not parallel this exception is raised when <theVRef> is in the same plane
   //! as <me> and <theOther> The tolerance criterion is Resolution from package gp.
-  Standard_EXPORT Standard_Real AngleWithRef(const gp_Dir& theOther, const gp_Dir& theVRef) const;
+  Standard_EXPORT double AngleWithRef(const gp_Dir& theOther, const gp_Dir& theVRef) const;
 
   //! Computes the cross product between two directions
   //! Raises the exception ConstructionError if the two directions
@@ -231,9 +224,9 @@ public:
   //! or <me> and (V1^V2) are parallel because the computed vector
   //! can't be normalized to create a direction.
   //! @note Constexpr-compatible when result is already normalized.
-  Standard_NODISCARD constexpr gp_Dir Crossed(const gp_Dir& theRight) const;
+  [[nodiscard]] constexpr gp_Dir Crossed(const gp_Dir& theRight) const;
 
-  Standard_NODISCARD constexpr gp_Dir operator^(const gp_Dir& theRight) const
+  [[nodiscard]] constexpr gp_Dir operator^(const gp_Dir& theRight) const
   {
     return Crossed(theRight);
   }
@@ -250,22 +243,19 @@ public:
   //! This is because, in these conditions, the computed vector
   //! is null and cannot be normalized.
   //! @note Constexpr-compatible when result is already normalized.
-  Standard_NODISCARD constexpr gp_Dir CrossCrossed(const gp_Dir& theV1, const gp_Dir& theV2) const;
+  [[nodiscard]] constexpr gp_Dir CrossCrossed(const gp_Dir& theV1, const gp_Dir& theV2) const;
 
   //! Computes the scalar product
-  constexpr Standard_Real Dot(const gp_Dir& theOther) const noexcept
-  {
-    return coord.Dot(theOther.coord);
-  }
+  constexpr double Dot(const gp_Dir& theOther) const noexcept { return coord.Dot(theOther.coord); }
 
-  constexpr Standard_Real operator*(const gp_Dir& theOther) const noexcept { return Dot(theOther); }
+  constexpr double operator*(const gp_Dir& theOther) const noexcept { return Dot(theOther); }
 
   //! Computes the triple scalar product <me> * (theV1 ^ theV2).
   //! Warnings :
   //! The computed vector theV1' = theV1 ^ theV2 is not normalized
   //! to create a unitary vector. So this method never
   //! raises an exception even if theV1 and theV2 are parallel.
-  constexpr Standard_Real DotCross(const gp_Dir& theV1, const gp_Dir& theV2) const noexcept
+  constexpr double DotCross(const gp_Dir& theV1, const gp_Dir& theV2) const noexcept
   {
     return coord.Dot(theV1.coord.Crossed(theV2.coord));
   }
@@ -277,41 +267,41 @@ public:
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction V which is the center of
   //! the symmetry.
-  Standard_NODISCARD constexpr gp_Dir Reversed() const noexcept
+  [[nodiscard]] constexpr gp_Dir Reversed() const noexcept
   {
     gp_Dir aV = *this;
     aV.coord.Reverse();
     return aV;
   }
 
-  Standard_NODISCARD constexpr gp_Dir operator-() const noexcept { return Reversed(); }
+  [[nodiscard]] constexpr gp_Dir operator-() const noexcept { return Reversed(); }
 
   Standard_EXPORT void Mirror(const gp_Dir& theV) noexcept;
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction theV which is the center
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Dir Mirrored(const gp_Dir& theV) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Dir Mirrored(const gp_Dir& theV) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Dir Mirrored(const gp_Ax1& theA1) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Dir Mirrored(const gp_Ax1& theA1) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Performs the symmetrical transformation of a direction
   //! with respect to a plane. The axis placement theA2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Dir Mirrored(const gp_Ax2& theA2) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Dir Mirrored(const gp_Ax2& theA2) const noexcept;
 
-  void Rotate(const gp_Ax1& theA1, const Standard_Real theAng);
+  void Rotate(const gp_Ax1& theA1, const double theAng);
 
   //! Rotates a direction. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Dir Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  [[nodiscard]] gp_Dir Rotated(const gp_Ax1& theA1, const double theAng) const
   {
     gp_Dir aV = *this;
     aV.Rotate(theA1, theAng);
@@ -324,7 +314,7 @@ public:
   //! Warnings :
   //! If the scale factor of the "Trsf" theT is negative then the
   //! direction <me> is reversed.
-  Standard_NODISCARD gp_Dir Transformed(const gp_Trsf& theT) const
+  [[nodiscard]] gp_Dir Transformed(const gp_Trsf& theT) const
   {
     gp_Dir aV = *this;
     aV.Transform(theT);
@@ -332,11 +322,10 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT Standard_Boolean InitFromJson(const Standard_SStream& theSStream,
-                                                Standard_Integer&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
 
 private:
   gp_XYZ coord;
@@ -360,11 +349,9 @@ inline constexpr gp_Dir::gp_Dir(const gp_XYZ& theXYZ)
 
 //=================================================================================================
 
-inline constexpr gp_Dir::gp_Dir(const Standard_Real theXv,
-                                const Standard_Real theYv,
-                                const Standard_Real theZv)
+inline constexpr gp_Dir::gp_Dir(const double theXv, const double theYv, const double theZv)
 {
-  const Standard_Real aSqMod = theXv * theXv + theYv * theYv + theZv * theZv;
+  const double aSqMod = theXv * theXv + theYv * theYv + theZv * theZv;
 
   // Fast path: already normalized - fully constexpr
   if (aSqMod >= (1.0 - gp::Resolution()) && aSqMod <= (1.0 + gp::Resolution()))
@@ -376,13 +363,13 @@ inline constexpr gp_Dir::gp_Dir(const Standard_Real theXv,
   // Slow path: runtime only (sqrt not constexpr - compile error if reached in constexpr context)
   Standard_ConstructionError_Raise_if(aSqMod <= gp::Resolution() * gp::Resolution(),
                                       "gp_Dir() - input vector has zero norm");
-  const Standard_Real aD = sqrt(aSqMod);
+  const double aD = sqrt(aSqMod);
   coord.SetCoord(theXv / aD, theYv / aD, theZv / aD);
 }
 
 //=================================================================================================
 
-inline constexpr void gp_Dir::SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+inline constexpr void gp_Dir::SetCoord(const int theIndex, const double theXi)
 {
   Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 3,
                                "gp_Dir::SetCoord() - index is out of range [1, 3]");
@@ -402,11 +389,9 @@ inline constexpr void gp_Dir::SetCoord(const Standard_Integer theIndex, const St
 
 //=================================================================================================
 
-inline constexpr void gp_Dir::SetCoord(const Standard_Real theXv,
-                                       const Standard_Real theYv,
-                                       const Standard_Real theZv)
+inline constexpr void gp_Dir::SetCoord(const double theXv, const double theYv, const double theZv)
 {
-  const Standard_Real aSqMod = theXv * theXv + theYv * theYv + theZv * theZv;
+  const double aSqMod = theXv * theXv + theYv * theYv + theZv * theZv;
 
   // Fast path: already normalized - fully constexpr
   if (aSqMod >= (1.0 - gp::Resolution()) && aSqMod <= (1.0 + gp::Resolution()))
@@ -418,27 +403,27 @@ inline constexpr void gp_Dir::SetCoord(const Standard_Real theXv,
   // Slow path: runtime only (sqrt not constexpr - compile error if reached in constexpr context)
   Standard_ConstructionError_Raise_if(aSqMod <= gp::Resolution() * gp::Resolution(),
                                       "gp_Dir::SetCoord() - input vector has zero norm");
-  const Standard_Real aD = sqrt(aSqMod);
+  const double aD = sqrt(aSqMod);
   coord.SetCoord(theXv / aD, theYv / aD, theZv / aD);
 }
 
 //=================================================================================================
 
-inline constexpr void gp_Dir::SetX(const Standard_Real theX)
+inline constexpr void gp_Dir::SetX(const double theX)
 {
   SetCoord(theX, coord.Y(), coord.Z());
 }
 
 //=================================================================================================
 
-inline constexpr void gp_Dir::SetY(const Standard_Real theY)
+inline constexpr void gp_Dir::SetY(const double theY)
 {
   SetCoord(coord.X(), theY, coord.Z());
 }
 
 //=================================================================================================
 
-inline constexpr void gp_Dir::SetZ(const Standard_Real theZ)
+inline constexpr void gp_Dir::SetZ(const double theZ)
 {
   SetCoord(coord.X(), coord.Y(), theZ);
 }
@@ -455,7 +440,7 @@ inline constexpr void gp_Dir::SetXYZ(const gp_XYZ& theXYZ)
 inline constexpr void gp_Dir::Cross(const gp_Dir& theRight)
 {
   coord.Cross(theRight.coord);
-  const Standard_Real aSqMod = coord.SquareModulus();
+  const double aSqMod = coord.SquareModulus();
 
   // Fast path: already normalized - fully constexpr
   if (aSqMod >= (1.0 - gp::Resolution()) && aSqMod <= (1.0 + gp::Resolution()))
@@ -483,7 +468,7 @@ inline constexpr gp_Dir gp_Dir::Crossed(const gp_Dir& theRight) const
 inline constexpr void gp_Dir::CrossCross(const gp_Dir& theV1, const gp_Dir& theV2)
 {
   coord.CrossCross(theV1.coord, theV2.coord);
-  const Standard_Real aSqMod = coord.SquareModulus();
+  const double aSqMod = coord.SquareModulus();
 
   // Fast path: already normalized - fully constexpr
   if (aSqMod >= (1.0 - gp::Resolution()) && aSqMod <= (1.0 + gp::Resolution()))
@@ -508,7 +493,7 @@ inline constexpr gp_Dir gp_Dir::CrossCrossed(const gp_Dir& theV1, const gp_Dir& 
 
 //=================================================================================================
 
-inline void gp_Dir::Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
+inline void gp_Dir::Rotate(const gp_Ax1& theA1, const double theAng)
 {
   gp_Trsf aT;
   aT.SetRotation(theA1, theAng);

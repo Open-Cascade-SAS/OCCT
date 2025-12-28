@@ -21,9 +21,6 @@
 #include <Standard_Real.hxx>
 #include <StepElement_SurfaceSection.hxx>
 
-class StepElement_UniformSurfaceSection;
-DEFINE_STANDARD_HANDLE(StepElement_UniformSurfaceSection, StepElement_SurfaceSection)
-
 //! Representation of STEP entity UniformSurfaceSection
 class StepElement_UniformSurfaceSection : public StepElement_SurfaceSection
 {
@@ -37,15 +34,15 @@ public:
     const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_Offset,
     const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMass,
     const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMassOffset,
-    const Standard_Real                          aThickness,
+    const double                                 aThickness,
     const StepElement_MeasureOrUnspecifiedValue& aBendingThickness,
     const StepElement_MeasureOrUnspecifiedValue& aShearThickness);
 
   //! Returns field Thickness
-  Standard_EXPORT Standard_Real Thickness() const;
+  Standard_EXPORT double Thickness() const;
 
   //! Set field Thickness
-  Standard_EXPORT void SetThickness(const Standard_Real Thickness);
+  Standard_EXPORT void SetThickness(const double Thickness);
 
   //! Returns field BendingThickness
   Standard_EXPORT StepElement_MeasureOrUnspecifiedValue BendingThickness() const;
@@ -63,9 +60,8 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection, StepElement_SurfaceSection)
 
-protected:
 private:
-  Standard_Real                         theThickness;
+  double                                theThickness;
   StepElement_MeasureOrUnspecifiedValue theBendingThickness;
   StepElement_MeasureOrUnspecifiedValue theShearThickness;
 };

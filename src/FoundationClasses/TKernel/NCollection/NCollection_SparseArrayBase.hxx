@@ -36,14 +36,14 @@ public:
   Standard_EXPORT void Clear();
 
   //! Returns number of currently contained items
-  Standard_Size Size() const noexcept { return mySize; }
+  size_t Size() const noexcept { return mySize; }
 
   //! Check whether the value at given index is set
-  Standard_EXPORT Standard_Boolean HasValue(const Standard_Size theIndex) const;
+  Standard_EXPORT bool HasValue(const size_t theIndex) const;
 
   //! Deletes the item from the array;
   //! returns True if that item was defined
-  Standard_EXPORT Standard_Boolean UnsetValue(const Standard_Size theIndex);
+  Standard_EXPORT bool UnsetValue(const size_t theIndex);
 
   //!@}
 
@@ -71,40 +71,36 @@ private:
     typedef unsigned char Cell; //!< type of items used to hold bits
 
     //! Number of bits in each cell
-    static constexpr Standard_Size BitsPerCell() noexcept { return sizeof(Cell) * 8; }
+    static constexpr size_t BitsPerCell() noexcept { return sizeof(Cell) * 8; }
 
   public:
     //! Initializes the block by pointer to block data
-    Block(const Standard_Address theAddr,
-          const Standard_Size    theNbItems,
-          const Standard_Size    theItemSize)
-        : Count((Standard_Size*)theAddr),
-          Array((char*)theAddr + sizeof(Standard_Size)),
-          Bits((Cell*)((char*)theAddr + sizeof(Standard_Size) + theNbItems * theItemSize))
+    Block(void* const theAddr, const size_t theNbItems, const size_t theItemSize)
+        : Count((size_t*)theAddr),
+          Array((char*)theAddr + sizeof(size_t)),
+          Bits((Cell*)((char*)theAddr + sizeof(size_t) + theNbItems * theItemSize))
     {
     }
 
     //! Compute required size for block data, in bytes
-    static constexpr Standard_Size Size(const Standard_Size theNbItems,
-                                        const Standard_Size theItemSize) noexcept
+    static constexpr size_t Size(const size_t theNbItems, const size_t theItemSize) noexcept
     {
-      return sizeof(Standard_Size)
-             + sizeof(Cell) * ((theNbItems + BitsPerCell() - 1) / BitsPerCell())
+      return sizeof(size_t) + sizeof(Cell) * ((theNbItems + BitsPerCell() - 1) / BitsPerCell())
              + theNbItems * theItemSize;
     }
 
     //! Returns address of array from address of block
-    static char* ToArray(const Standard_Address theAddress,
-                         const Standard_Size /*theNbItems*/,
-                         const Standard_Size /*theItemSize*/) noexcept
+    static char* ToArray(void* const theAddress,
+                         const size_t /*theNbItems*/,
+                         const size_t /*theItemSize*/) noexcept
     {
-      return (char*)theAddress + sizeof(Standard_Size);
+      return (char*)theAddress + sizeof(size_t);
     }
 
   public:
     //! Set bit for i-th item; returns non-null if that bit has
     //! not been set previously
-    Cell Set(Standard_Size i) noexcept
+    Cell Set(size_t i) noexcept
     {
       Cell* abyte = Bits + i / BitsPerCell();
       Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
@@ -114,7 +110,7 @@ private:
     }
 
     //! Check bit for i-th item; returns non-null if that bit is set
-    Cell IsSet(Standard_Size i) noexcept
+    Cell IsSet(size_t i) noexcept
     {
       Cell* abyte = Bits + i / BitsPerCell();
       Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
@@ -123,7 +119,7 @@ private:
 
     //! Unset bit for i-th item; returns non-null if that bit
     //! has been set previously
-    Cell Unset(Standard_Size i) noexcept
+    Cell Unset(size_t i) noexcept
     {
       Cell* abyte = Bits + i / BitsPerCell();
       Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
@@ -133,9 +129,9 @@ private:
     }
 
   public:
-    Standard_Size*   Count; //!< items counter
-    Standard_Address Array; //!< pointer to the data items array
-    Cell*            Bits;  //!< bit map for defined/undefined flags
+    size_t* Count; //!< items counter
+    void*   Array; //!< pointer to the data items array
+    Cell*   Bits;  //!< bit map for defined/undefined flags
   };
 
 public:
@@ -152,13 +148,13 @@ public:
     void Restart() { init(myArr); }
 
     //! Returns True if current item is available
-    Standard_Boolean More() const noexcept { return myHasMore; }
+    bool More() const noexcept { return myHasMore; }
 
     //! Advances to the next item
     Standard_EXPORT void Next();
 
     //! Returns current index
-    Standard_Size Index() const noexcept { return myIBlock * myArr->myBlockSize + myInd; }
+    size_t Index() const noexcept { return myIBlock * myArr->myBlockSize + myInd; }
 
   protected:
     // Methods for descendant
@@ -170,13 +166,13 @@ public:
     Standard_EXPORT void init(const NCollection_SparseArrayBase* theArray);
 
     //! Returns address of the current item
-    Standard_Address value() const noexcept { return myArr->getItem(myBlock, myInd); }
+    void* value() const noexcept { return myArr->getItem(myBlock, myInd); }
 
   private:
     const NCollection_SparseArrayBase* myArr;
-    Standard_Boolean                   myHasMore;
-    Standard_Size                      myIBlock;
-    Standard_Size                      myInd;
+    bool                               myHasMore;
+    size_t                             myIBlock;
+    size_t                             myInd;
     Block                              myBlock;
   };
   friend class Iterator;
@@ -190,7 +186,7 @@ protected:
   // Object life
 
   //! Constructor; initialized by size of item and of block (in items)
-  NCollection_SparseArrayBase(Standard_Size theItemSize, Standard_Size theBlockSize) noexcept
+  NCollection_SparseArrayBase(size_t theItemSize, size_t theBlockSize) noexcept
       : myItemSize(theItemSize),
         myBlockSize(theBlockSize),
         myNbBlocks(0),
@@ -206,19 +202,19 @@ protected:
   // Data access interface for descendants
 
   //! Creates Block structure for block pointed by theAddr
-  Block getBlock(const Standard_Address theAddr) const noexcept
+  Block getBlock(void* const theAddr) const noexcept
   {
     return Block(theAddr, myBlockSize, myItemSize);
   }
 
   //! Find address of the item in the block by index (in the block)
-  Standard_Address getItem(const Block& theBlock, Standard_Size theInd) const noexcept
+  void* getItem(const Block& theBlock, size_t theInd) const noexcept
   {
     return ((char*)theBlock.Array) + myItemSize * theInd;
   }
 
   //! Direct const access to the item
-  Standard_Address getValue(const Standard_Size theIndex) const
+  void* getValue(const size_t theIndex) const
   {
     Standard_OutOfRange_Raise_if(
       !HasValue(theIndex),
@@ -229,8 +225,7 @@ protected:
   }
 
   //! Set a value to the specified item; returns address of the set item
-  Standard_EXPORT Standard_Address setValue(const Standard_Size    theIndex,
-                                            const Standard_Address theValue);
+  Standard_EXPORT void* setValue(const size_t theIndex, void* const theValue);
 
   //! Copy contents of theOther to this;
   //! assumes that this and theOther have exactly the same type of arguments
@@ -244,33 +239,33 @@ protected:
   // Methods to be provided by descendant
 
   //! Create new item at the specified address with default constructor
-  //  virtual void createItem (Standard_Address theAddress) = 0;
+  //  virtual void createItem (void* theAddress) = 0;
 
   //! Create new item at the specified address with copy constructor
   //! from existing item
-  virtual void createItem(Standard_Address theAddress, Standard_Address theOther) = 0;
+  virtual void createItem(void* theAddress, void* theOther) = 0;
 
   //! Call destructor to the item
-  virtual void destroyItem(Standard_Address theAddress) = 0;
+  virtual void destroyItem(void* theAddress) = 0;
 
   //! Call assignment operator to the item
-  virtual void copyItem(Standard_Address theAddress, Standard_Address theOther) = 0;
+  virtual void copyItem(void* theAddress, void* theOther) = 0;
 
 private:
   // Implementation of memory allocation/deallocation and access mechanics
 
   //! Allocate space for at least iBlock+1 blocks
-  void allocData(const Standard_Size iBlock);
+  void allocData(const size_t iBlock);
 
   //! Free specified block
-  void freeBlock(const Standard_Size iBlock);
+  void freeBlock(const size_t iBlock);
 
 protected:
-  Standard_Size     myItemSize;  //!< size of item
-  Standard_Size     myBlockSize; //!< block size (in items)
-  Standard_Size     myNbBlocks;  //!< allocated size of blocks table
-  Standard_Size     mySize;      //!< number of currently defined items
-  Standard_Address* myData;      //!< array of pointers to data blocks
+  size_t myItemSize;  //!< size of item
+  size_t myBlockSize; //!< block size (in items)
+  size_t myNbBlocks;  //!< allocated size of blocks table
+  size_t mySize;      //!< number of currently defined items
+  void** myData;      //!< array of pointers to data blocks
 };
 
 #endif

@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Expr_Array1OfSingleRelation.hxx>
+#include <Expr_SingleRelation.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class Expr_GeneralRelation;
@@ -34,21 +35,20 @@ class Expr_RelationIterator
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Expr_RelationIterator(const Handle(Expr_GeneralRelation)& rel);
+  Standard_EXPORT Expr_RelationIterator(const occ::handle<Expr_GeneralRelation>& rel);
 
   //! Returns False if no other relation remains.
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
   //! Returns current basic relation.
   //! Exception is raised if no more relation remains.
-  Standard_EXPORT Handle(Expr_SingleRelation) Value() const;
+  Standard_EXPORT occ::handle<Expr_SingleRelation> Value() const;
 
-protected:
 private:
-  Expr_Array1OfSingleRelation myRelation;
-  Standard_Integer            current;
+  NCollection_Array1<occ::handle<Expr_SingleRelation>> myRelation;
+  int                                                  current;
 };
 
 #endif // _Expr_RelationIterator_HeaderFile

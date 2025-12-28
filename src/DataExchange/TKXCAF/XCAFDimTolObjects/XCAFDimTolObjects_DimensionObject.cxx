@@ -13,7 +13,9 @@
 
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 
-#include <TColgp_HArray1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject, Standard_Transient)
 
@@ -21,16 +23,16 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject, Standard_Transient
 
 XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject()
 {
-  myHasPlane       = Standard_False;
-  myHasPntText     = Standard_False;
-  myHasConnection1 = Standard_False;
-  myHasConnection2 = Standard_False;
+  myHasPlane       = false;
+  myHasPntText     = false;
+  myHasConnection1 = false;
+  myHasConnection2 = false;
 }
 
 //=================================================================================================
 
 XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject(
-  const Handle(XCAFDimTolObjects_DimensionObject)& theObj)
+  const occ::handle<XCAFDimTolObjects_DimensionObject>& theObj)
 {
   myType               = theObj->myType;
   myVal                = theObj->myVal;
@@ -71,7 +73,7 @@ XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDimTolObjects_DimensionObject::GetSemanticName() const
+occ::handle<TCollection_HAsciiString> XCAFDimTolObjects_DimensionObject::GetSemanticName() const
 {
   return mySemanticName;
 }
@@ -79,7 +81,7 @@ Handle(TCollection_HAsciiString) XCAFDimTolObjects_DimensionObject::GetSemanticN
 //=================================================================================================
 
 void XCAFDimTolObjects_DimensionObject::SetSemanticName(
-  const Handle(TCollection_HAsciiString)& theName)
+  const occ::handle<TCollection_HAsciiString>& theName)
 {
   mySemanticName = theName;
 }
@@ -101,7 +103,7 @@ XCAFDimTolObjects_DimensionQualifier XCAFDimTolObjects_DimensionObject::GetQuali
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::HasQualifier() const
+bool XCAFDimTolObjects_DimensionObject::HasQualifier() const
 {
   return (myQualifier != XCAFDimTolObjects_DimensionQualifier_None);
 }
@@ -123,7 +125,7 @@ XCAFDimTolObjects_AngularQualifier XCAFDimTolObjects_DimensionObject::GetAngular
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::HasAngularQualifier() const
+bool XCAFDimTolObjects_DimensionObject::HasAngularQualifier() const
 {
   return (myAngularQualifier != XCAFDimTolObjects_AngularQualifier_None);
 }
@@ -144,7 +146,7 @@ XCAFDimTolObjects_DimensionType XCAFDimTolObjects_DimensionObject::GetType() con
 
 //=================================================================================================
 
-Standard_Real XCAFDimTolObjects_DimensionObject::GetValue() const
+double XCAFDimTolObjects_DimensionObject::GetValue() const
 {
   if (myVal.IsNull())
     return 0;
@@ -164,44 +166,45 @@ Standard_Real XCAFDimTolObjects_DimensionObject::GetValue() const
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) XCAFDimTolObjects_DimensionObject::GetValues() const
+occ::handle<NCollection_HArray1<double>> XCAFDimTolObjects_DimensionObject::GetValues() const
 {
   return myVal;
 }
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::SetValue(const Standard_Real theValue)
+void XCAFDimTolObjects_DimensionObject::SetValue(const double theValue)
 {
-  myVal = new TColStd_HArray1OfReal(1, 1);
+  myVal = new NCollection_HArray1<double>(1, 1);
   myVal->SetValue(1, theValue);
 }
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::SetValues(const Handle(TColStd_HArray1OfReal)& theValue)
+void XCAFDimTolObjects_DimensionObject::SetValues(
+  const occ::handle<NCollection_HArray1<double>>& theValue)
 {
   myVal = theValue;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimWithRange() const
+bool XCAFDimTolObjects_DimensionObject::IsDimWithRange() const
 {
   if (!myVal.IsNull() && myVal->Length() == 2)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::SetUpperBound(const Standard_Real theUpperBound)
+void XCAFDimTolObjects_DimensionObject::SetUpperBound(const double theUpperBound)
 {
   if (!myVal.IsNull() && myVal->Length() > 1)
     myVal->SetValue(2, theUpperBound);
   else
   {
-    myVal = new TColStd_HArray1OfReal(1, 2);
+    myVal = new NCollection_HArray1<double>(1, 2);
     myVal->SetValue(1, theUpperBound);
     myVal->SetValue(2, theUpperBound);
   }
@@ -209,13 +212,13 @@ void XCAFDimTolObjects_DimensionObject::SetUpperBound(const Standard_Real theUpp
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::SetLowerBound(const Standard_Real theLowerBound)
+void XCAFDimTolObjects_DimensionObject::SetLowerBound(const double theLowerBound)
 {
   if (!myVal.IsNull() && myVal->Length() > 1)
     myVal->SetValue(1, theLowerBound);
   else
   {
-    myVal = new TColStd_HArray1OfReal(1, 2);
+    myVal = new NCollection_HArray1<double>(1, 2);
     myVal->SetValue(2, theLowerBound);
     myVal->SetValue(1, theLowerBound);
   }
@@ -223,7 +226,7 @@ void XCAFDimTolObjects_DimensionObject::SetLowerBound(const Standard_Real theLow
 
 //=================================================================================================
 
-Standard_Real XCAFDimTolObjects_DimensionObject::GetUpperBound() const
+double XCAFDimTolObjects_DimensionObject::GetUpperBound() const
 {
   if (!myVal.IsNull() && myVal->Length() == 2)
   {
@@ -234,7 +237,7 @@ Standard_Real XCAFDimTolObjects_DimensionObject::GetUpperBound() const
 
 //=================================================================================================
 
-Standard_Real XCAFDimTolObjects_DimensionObject::GetLowerBound() const
+double XCAFDimTolObjects_DimensionObject::GetLowerBound() const
 {
   if (!myVal.IsNull() && myVal->Length() == 2)
   {
@@ -245,58 +248,56 @@ Standard_Real XCAFDimTolObjects_DimensionObject::GetLowerBound() const
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimWithPlusMinusTolerance() const
+bool XCAFDimTolObjects_DimensionObject::IsDimWithPlusMinusTolerance() const
 {
   return (!myVal.IsNull() && myVal->Length() == 3);
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::SetUpperTolValue(
-  const Standard_Real theUperTolValue)
+bool XCAFDimTolObjects_DimensionObject::SetUpperTolValue(const double theUperTolValue)
 {
   if (!myVal.IsNull() && myVal->Length() == 3)
   {
     myVal->SetValue(3, theUperTolValue);
-    return Standard_True;
+    return true;
   }
   else if (!myVal.IsNull() && myVal->Length() == 1)
   {
-    Standard_Real v = myVal->Value(1);
-    myVal           = new TColStd_HArray1OfReal(1, 3);
+    double v = myVal->Value(1);
+    myVal    = new NCollection_HArray1<double>(1, 3);
     myVal->SetValue(1, v);
     myVal->SetValue(2, theUperTolValue);
     myVal->SetValue(3, theUperTolValue);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::SetLowerTolValue(
-  const Standard_Real theLowerTolValue)
+bool XCAFDimTolObjects_DimensionObject::SetLowerTolValue(const double theLowerTolValue)
 {
   if (!myVal.IsNull() && myVal->Length() == 3)
   {
     myVal->SetValue(2, theLowerTolValue);
-    return Standard_True;
+    return true;
   }
   else if (!myVal.IsNull() && myVal->Length() == 1)
   {
-    Standard_Real v = myVal->Value(1);
-    myVal           = new TColStd_HArray1OfReal(1, 3);
+    double v = myVal->Value(1);
+    myVal    = new NCollection_HArray1<double>(1, 3);
     myVal->SetValue(1, v);
     myVal->SetValue(2, theLowerTolValue);
     myVal->SetValue(3, theLowerTolValue);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real XCAFDimTolObjects_DimensionObject::GetUpperTolValue() const
+double XCAFDimTolObjects_DimensionObject::GetUpperTolValue() const
 {
   if (!myVal.IsNull() && myVal->Length() == 3)
   {
@@ -307,7 +308,7 @@ Standard_Real XCAFDimTolObjects_DimensionObject::GetUpperTolValue() const
 
 //=================================================================================================
 
-Standard_Real XCAFDimTolObjects_DimensionObject::GetLowerTolValue() const
+double XCAFDimTolObjects_DimensionObject::GetLowerTolValue() const
 {
   if (!myVal.IsNull() && myVal->Length() == 3)
   {
@@ -318,7 +319,7 @@ Standard_Real XCAFDimTolObjects_DimensionObject::GetLowerTolValue() const
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimWithClassOfTolerance() const
+bool XCAFDimTolObjects_DimensionObject::IsDimWithClassOfTolerance() const
 {
   return (myFormVariance != XCAFDimTolObjects_DimensionFormVariance_None);
 }
@@ -326,7 +327,7 @@ Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimWithClassOfTolerance() 
 //=================================================================================================
 
 void XCAFDimTolObjects_DimensionObject::SetClassOfTolerance(
-  const Standard_Boolean                        theHole,
+  const bool                                    theHole,
   const XCAFDimTolObjects_DimensionFormVariance theFormVariance,
   const XCAFDimTolObjects_DimensionGrade        theGrade)
 {
@@ -337,8 +338,8 @@ void XCAFDimTolObjects_DimensionObject::SetClassOfTolerance(
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::GetClassOfTolerance(
-  Standard_Boolean&                        theHole,
+bool XCAFDimTolObjects_DimensionObject::GetClassOfTolerance(
+  bool&                                    theHole,
   XCAFDimTolObjects_DimensionFormVariance& theFormVariance,
   XCAFDimTolObjects_DimensionGrade&        theGrade) const
 {
@@ -347,15 +348,14 @@ Standard_Boolean XCAFDimTolObjects_DimensionObject::GetClassOfTolerance(
   {
     theHole  = myIsHole;
     theGrade = myGrade;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::SetNbOfDecimalPlaces(const Standard_Integer theL,
-                                                             const Standard_Integer theR)
+void XCAFDimTolObjects_DimensionObject::SetNbOfDecimalPlaces(const int theL, const int theR)
 {
   myL = theL;
   myR = theR;
@@ -363,8 +363,7 @@ void XCAFDimTolObjects_DimensionObject::SetNbOfDecimalPlaces(const Standard_Inte
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::GetNbOfDecimalPlaces(Standard_Integer& theL,
-                                                             Standard_Integer& theR) const
+void XCAFDimTolObjects_DimensionObject::GetNbOfDecimalPlaces(int& theL, int& theR) const
 {
   theL = myL;
   theR = myR;
@@ -372,7 +371,8 @@ void XCAFDimTolObjects_DimensionObject::GetNbOfDecimalPlaces(Standard_Integer& t
 
 //=================================================================================================
 
-XCAFDimTolObjects_DimensionModifiersSequence XCAFDimTolObjects_DimensionObject::GetModifiers() const
+NCollection_Sequence<XCAFDimTolObjects_DimensionModif> XCAFDimTolObjects_DimensionObject::
+  GetModifiers() const
 {
   return myModifiers;
 }
@@ -380,7 +380,7 @@ XCAFDimTolObjects_DimensionModifiersSequence XCAFDimTolObjects_DimensionObject::
 //=================================================================================================
 
 void XCAFDimTolObjects_DimensionObject::SetModifiers(
-  const XCAFDimTolObjects_DimensionModifiersSequence& theModifiers)
+  const NCollection_Sequence<XCAFDimTolObjects_DimensionModif>& theModifiers)
 {
   myModifiers = theModifiers;
 }
@@ -412,34 +412,34 @@ void XCAFDimTolObjects_DimensionObject::SetPath(const TopoDS_Edge& thePath)
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::GetDirection(gp_Dir& theDir) const
+bool XCAFDimTolObjects_DimensionObject::GetDirection(gp_Dir& theDir) const
 {
   theDir = myDir;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::SetDirection(const gp_Dir& theDir)
+bool XCAFDimTolObjects_DimensionObject::SetDirection(const gp_Dir& theDir)
 {
   myDir = theDir;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::RemoveDescription(const Standard_Integer theNumber)
+void XCAFDimTolObjects_DimensionObject::RemoveDescription(const int theNumber)
 {
   if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
     return;
-  NCollection_Vector<Handle(TCollection_HAsciiString)> aDescriptions;
-  NCollection_Vector<Handle(TCollection_HAsciiString)> aDescriptionNames;
-  for (Standard_Integer i = aDescriptions.Lower(); i < theNumber; i++)
+  NCollection_Vector<occ::handle<TCollection_HAsciiString>> aDescriptions;
+  NCollection_Vector<occ::handle<TCollection_HAsciiString>> aDescriptionNames;
+  for (int i = aDescriptions.Lower(); i < theNumber; i++)
   {
     aDescriptions.Append(myDescriptions.Value(i));
     aDescriptionNames.Append(myDescriptionNames.Value(i));
   }
-  for (Standard_Integer i = theNumber + 1; i <= aDescriptions.Upper(); i++)
+  for (int i = theNumber + 1; i <= aDescriptions.Upper(); i++)
   {
     aDescriptions.Append(myDescriptions.Value(i));
     aDescriptionNames.Append(myDescriptionNames.Value(i));
@@ -450,7 +450,7 @@ void XCAFDimTolObjects_DimensionObject::RemoveDescription(const Standard_Integer
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimensionalLocation(
+bool XCAFDimTolObjects_DimensionObject::IsDimensionalLocation(
   const XCAFDimTolObjects_DimensionType theType)
 {
   if (theType == XCAFDimTolObjects_DimensionType_Location_None
@@ -465,13 +465,13 @@ Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimensionalLocation(
       || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToOuter
       || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToInner
       || theType == XCAFDimTolObjects_DimensionType_Location_Oriented)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimensionalSize(
+bool XCAFDimTolObjects_DimensionObject::IsDimensionalSize(
   const XCAFDimTolObjects_DimensionType theType)
 {
   if (theType == XCAFDimTolObjects_DimensionType_Size_CurveLength
@@ -488,14 +488,13 @@ Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimensionalSize(
       || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorRadius
       || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorRadius
       || theType == XCAFDimTolObjects_DimensionType_Size_Thickness)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream,
-                                                 Standard_Integer  theDepth) const
+void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -503,9 +502,9 @@ void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream,
 
   if (!myVal.IsNull())
   {
-    for (Standard_Integer anId = myVal->Lower(); anId <= myVal->Upper(); anId++)
+    for (int anId = myVal->Lower(); anId <= myVal->Upper(); anId++)
     {
-      Standard_Real aValue = myVal->Value(anId);
+      double aValue = myVal->Value(anId);
       OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aValue)
     }
   }
@@ -551,37 +550,37 @@ void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream,
 
   if (!mySemanticName.IsNull())
   {
-    Standard_CString aSemanticName = mySemanticName->ToCString();
+    const char* aSemanticName = mySemanticName->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aSemanticName)
   }
   if (!myPresentationName.IsNull())
   {
-    Standard_CString aPresentationName = myPresentationName->ToCString();
+    const char* aPresentationName = myPresentationName->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aPresentationName)
   }
 
-  for (NCollection_Vector<Handle(TCollection_HAsciiString)>::Iterator aDescIt(myDescriptions);
+  for (NCollection_Vector<occ::handle<TCollection_HAsciiString>>::Iterator aDescIt(myDescriptions);
        aDescIt.More();
        aDescIt.Next())
   {
     if (aDescIt.Value().IsNull())
       continue;
-    Standard_CString aDescription = aDescIt.Value()->ToCString();
+    const char* aDescription = aDescIt.Value()->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aDescription)
   }
 
-  for (NCollection_Vector<Handle(TCollection_HAsciiString)>::Iterator aDescNameIt(
+  for (NCollection_Vector<occ::handle<TCollection_HAsciiString>>::Iterator aDescNameIt(
          myDescriptionNames);
        aDescNameIt.More();
        aDescNameIt.Next())
   {
     if (aDescNameIt.Value().IsNull())
       continue;
-    Standard_CString aDescriptionName = aDescNameIt.Value()->ToCString();
+    const char* aDescriptionName = aDescNameIt.Value()->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aDescriptionName)
   }
 
-  for (XCAFDimTolObjects_DimensionModifiersSequence::Iterator aModifIt(myModifiers);
+  for (NCollection_Sequence<XCAFDimTolObjects_DimensionModif>::Iterator aModifIt(myModifiers);
        aModifIt.More();
        aModifIt.Next())
   {

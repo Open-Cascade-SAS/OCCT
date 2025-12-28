@@ -52,14 +52,14 @@ public:
   //! -   the services provided by a surface from the package Geom
   //! -   and those required of the surface by the computation algorithm.
   //! The adapted surface is created in the following way:
-  //! Handle(Geom_Surface) mysurface = ... ;
+  //! occ::handle<Geom_Surface> mysurface = ... ;
   //! GeomAdaptor_Surface S(mysurface);
   //! The bounding box B is then enlarged by adding this surface:
   //! Bnd_Box B;
   //! // ...
-  //! Standard_Real Tol = ... ;
+  //! double Tol = ... ;
   //! AddSurface::Add ( S, Tol, B );
-  Standard_EXPORT static void Add(const Adaptor3d_Surface& S, const Standard_Real Tol, Bnd_Box& B);
+  Standard_EXPORT static void Add(const Adaptor3d_Surface& S, const double Tol, Bnd_Box& B);
 
   //! Adds to the bounding box B the surface S
   //! the patch of the surface S limited in the u parametric
@@ -85,34 +85,32 @@ public:
   //! -   the services provided by a surface from the package Geom
   //! -   and those required of the surface by the computation algorithm.
   //! The adapted surface is created in the following way:
-  //! Handle(Geom_Surface) mysurface = ... ;
+  //! occ::handle<Geom_Surface> mysurface = ... ;
   //! GeomAdaptor_Surface S(mysurface);
   //! The bounding box B is then enlarged by adding this surface:
   //! Bnd_Box B;
   //! // ...
-  //! Standard_Real Tol = ... ;
+  //! double Tol = ... ;
   //! AddSurface::Add ( S, Tol, B );
   Standard_EXPORT static void Add(const Adaptor3d_Surface& S,
-                                  const Standard_Real      UMin,
-                                  const Standard_Real      UMax,
-                                  const Standard_Real      VMin,
-                                  const Standard_Real      VMax,
-                                  const Standard_Real      Tol,
+                                  const double             UMin,
+                                  const double             UMax,
+                                  const double             VMin,
+                                  const double             VMax,
+                                  const double             Tol,
                                   Bnd_Box&                 B);
 
   //! Adds the surface S to the bounding box B.
   //! This algorithm builds precise bounding box
 
-  Standard_EXPORT static void AddOptimal(const Adaptor3d_Surface& S,
-                                         const Standard_Real      Tol,
-                                         Bnd_Box&                 B);
+  Standard_EXPORT static void AddOptimal(const Adaptor3d_Surface& S, const double Tol, Bnd_Box& B);
 
   Standard_EXPORT static void AddOptimal(const Adaptor3d_Surface& S,
-                                         const Standard_Real      UMin,
-                                         const Standard_Real      UMax,
-                                         const Standard_Real      VMin,
-                                         const Standard_Real      VMax,
-                                         const Standard_Real      Tol,
+                                         const double             UMin,
+                                         const double             UMax,
+                                         const double             VMin,
+                                         const double             VMax,
+                                         const double             Tol,
                                          Bnd_Box&                 B);
 
   //! Adds to the bounding box B the surface S
@@ -120,15 +118,12 @@ public:
   //! This method is used in AddOptimal for not analytical surfaces and torus.
   //! if Tol < Precision::Confusion(), Precision::Confusion is used as computation tolerance
   Standard_EXPORT static void AddGenSurf(const Adaptor3d_Surface& S,
-                                         const Standard_Real      UMin,
-                                         const Standard_Real      UMax,
-                                         const Standard_Real      VMin,
-                                         const Standard_Real      VMax,
-                                         const Standard_Real      Tol,
+                                         const double             UMin,
+                                         const double             UMax,
+                                         const double             VMin,
+                                         const double             VMax,
+                                         const double             Tol,
                                          Bnd_Box&                 B);
-
-protected:
-private:
 };
 
 #endif // _BndLib_AddSurface_HeaderFile

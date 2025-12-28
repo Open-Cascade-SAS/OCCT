@@ -23,7 +23,9 @@
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_GEOMETRY.hxx>
+#include <TopOpeBRepTool_PROJECT.hxx>
+#include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_PShapeClassifier.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 #include <TopOpeBRepTool_tol.hxx>
@@ -37,19 +39,19 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
 
-Standard_EXPORT Handle(Geom2d_Curve) MakePCurve(const ProjLib_ProjectedCurve& PC);
+Standard_EXPORT occ::handle<Geom2d_Curve> MakePCurve(const ProjLib_ProjectedCurve& PC);
 
 static TopAbs_State FUN_staPinF3d(const gp_Pnt& P, const TopoDS_Face& F)
 // prequesitory : the compute of state(P,3dmatter of F)
 // - solid classifier -
 {
-  TopAbs_State     st = TopAbs_UNKNOWN;
-  gp_Pnt2d         UV;
-  Standard_Real    d  = 1.e2;
-  Standard_Boolean ok = FUN_tool_projPonboundedF(P, F, UV, d);
+  TopAbs_State st = TopAbs_UNKNOWN;
+  gp_Pnt2d     UV;
+  double       d  = 1.e2;
+  bool         ok = FUN_tool_projPonboundedF(P, F, UV, d);
   if (!ok)
     return st;
-  Standard_Real tolF = BRep_Tool::Tolerance(F);
+  double tolF = BRep_Tool::Tolerance(F);
   if (d < tolF)
     return TopAbs_IN; // TopAbs_ON;
   gp_Pnt pF;
@@ -57,16 +59,16 @@ static TopAbs_State FUN_staPinF3d(const gp_Pnt& P, const TopoDS_Face& F)
   gp_Dir ntF = FUN_tool_nggeomF(UV, F);
   if (F.Orientation() == TopAbs_REVERSED)
     ntF.Reverse();
-  gp_Dir        PpF(gp_Vec(P, pF));
-  Standard_Real dot = ntF.Dot(PpF);
-  st                = (dot > 0) ? TopAbs_IN : TopAbs_OUT;
+  gp_Dir PpF(gp_Vec(P, pF));
+  double dot = ntF.Dot(PpF);
+  st         = (dot > 0) ? TopAbs_IN : TopAbs_OUT;
   return st;
 }
 
 Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
                                     const TopoDS_Face&              FS,
                                     const TopoDS_Edge&              EE,
-                                    const Standard_Boolean          EEofFF,
+                                    const bool                      EEofFF,
                                     TopAbs_State&                   stateb,
                                     TopAbs_State&                   statea,
                                     TopOpeBRepTool_PShapeClassifier pClassif)
@@ -74,17 +76,17 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   BRep_Builder BB;
 
   stateb = statea = TopAbs_UNKNOWN;
-  Standard_Real      fE, lE;
-  Handle(Geom_Curve) CEE = BRep_Tool::Curve(EE, fE, lE);
+  double                  fE, lE;
+  occ::handle<Geom_Curve> CEE = BRep_Tool::Curve(EE, fE, lE);
 
   if (CEE.IsNull())
     return; // NYI : get points from 2d curve
-  Handle(Geom_Surface) SFF = BRep_Tool::Surface(FF);
+  occ::handle<Geom_Surface> SFF = BRep_Tool::Surface(FF);
 
-  Standard_Real ttE  = 0.41237118973;
-  Standard_Real parE = (1 - ttE) * fE + ttE * lE;
-  gp_Pnt        PE;
-  gp_Vec        VE;
+  double ttE  = 0.41237118973;
+  double parE = (1 - ttE) * fE + ttE * lE;
+  gp_Pnt PE;
+  gp_Vec VE;
   CEE->D1(parE, PE, VE);
 
   GeomAPI_ProjectPointOnSurf PonS(PE, SFF);
@@ -93,34 +95,34 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   if (PonS.NbPoints() == 0)
     return;
 
-  Standard_Real u, v;
+  double u, v;
   PonS.Parameters(1, u, v);
   gp_Vec d1u, d1v;
   gp_Pnt puv;
   SFF->D1(u, v, puv, d1u, d1v);
-  gp_Vec        N = d1u.Crossed(d1v);
-  Standard_Real FUMin, FUMax, FVMin, FVMax;
+  gp_Vec N = d1u.Crossed(d1v);
+  double FUMin, FUMax, FVMin, FVMax;
 
   // les bornes de FF
   BRepTools::UVBounds(FF, FUMin, FUMax, FVMin, FVMax);
 
   // les bornes de EE dans FF
-  Standard_Real EUMin, EUMax, EVMin, EVMax;
+  double EUMin, EUMax, EVMin, EVMax;
   if (EEofFF)
   {
     BRepTools::UVBounds(FF, EE, EUMin, EUMax, EVMin, EVMax);
   }
   else
   { // EE n'est pas une arete de FF => EE est une arete de FS
-    Handle(Geom2d_Curve) CEEFFx;
+    occ::handle<Geom2d_Curve> CEEFFx;
     if (CEE.IsNull())
     {
-      Standard_Boolean            compminmaxUV = Standard_False;
-      BRepAdaptor_Surface         BAS(FS, compminmaxUV);
-      Handle(BRepAdaptor_Surface) BAHS = new BRepAdaptor_Surface(BAS);
-      BRepAdaptor_Curve           AC(EE, FS);
-      Handle(BRepAdaptor_Curve)   AHC = new BRepAdaptor_Curve(AC);
-      Standard_Real               tolin;
+      bool                             compminmaxUV = false;
+      BRepAdaptor_Surface              BAS(FS, compminmaxUV);
+      occ::handle<BRepAdaptor_Surface> BAHS = new BRepAdaptor_Surface(BAS);
+      BRepAdaptor_Curve                AC(EE, FS);
+      occ::handle<BRepAdaptor_Curve>   AHC = new BRepAdaptor_Curve(AC);
+      double                           tolin;
       FTOL_FaceTolerances3d(FF, FS, tolin);
       ProjLib_ProjectedCurve projcurv(BAHS, AHC, tolin);
       CEEFFx = MakePCurve(projcurv);
@@ -164,19 +166,19 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
     BRepTools::UVBounds(FFx, EEx, EUMin, EUMax, EVMin, EVMax);
   }
 
-  //  Standard_Boolean EisoU = (abs(EVMax-EVMin) < Precision::Confusion());
-  Standard_Boolean EisoU = (fabs(EVMax - EVMin) < Precision::Confusion());
-  //  Standard_Boolean EisoV = (abs(EUMax-EUMin) < Precision::Confusion());
-  Standard_Boolean EisoV = (fabs(EUMax - EUMin) < Precision::Confusion());
+  //  bool EisoU = (abs(EVMax-EVMin) < Precision::Confusion());
+  bool EisoU = (fabs(EVMax - EVMin) < Precision::Confusion());
+  //  bool EisoV = (abs(EUMax-EUMin) < Precision::Confusion());
+  bool EisoV = (fabs(EUMax - EUMin) < Precision::Confusion());
   // xpu161098 : bad analysis : we should choose smaller factor
   //   cto009C1 (FF3,FS10,EG9)
-  Standard_Real ttu  = 1.e-2; // Standard_Real ttu = 0.1;
-  Standard_Real paru = fabs(ttu * (FUMax - FUMin));
-  Standard_Real ttv  = 1.e-2; // Standard_Real ttv = 0.1;
-  Standard_Real parv = fabs(ttv * (FVMax - FVMin));
+  double ttu  = 1.e-2; // double ttu = 0.1;
+  double paru = fabs(ttu * (FUMax - FUMin));
+  double ttv  = 1.e-2; // double ttv = 0.1;
+  double parv = fabs(ttv * (FVMax - FVMin));
 
-  Standard_Real up = u;
-  Standard_Real vp = v;
+  double up = u;
+  double vp = v;
   if (EisoV)
     up += paru;
   else if (EisoU)
@@ -189,8 +191,8 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   gp_Pnt Pb;
   SFF->D0(up, vp, Pb);
 
-  Standard_Real um = u;
-  Standard_Real vm = v;
+  double um = u;
+  double vm = v;
   if (EisoV)
     um -= paru;
   else if (EisoU)
@@ -203,26 +205,26 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   gp_Pnt Pa;
   SFF->D0(um, vm, Pa);
 
-  Standard_Boolean permute = Standard_False;
-  Standard_Real    dot;
-  gp_Vec           VEcroN = VE.Crossed(N);
+  bool   permute = false;
+  double dot;
+  gp_Vec VEcroN = VE.Crossed(N);
   if (EisoV)
   {
     dot = VEcroN.Dot(d1u);
     if (dot < 0.)
-      permute = Standard_True;
+      permute = true;
   }
   else if (EisoU)
   {
     dot = VEcroN.Dot(d1v);
     if (dot < 0.)
-      permute = Standard_True;
+      permute = true;
   }
   else
   {
     dot = VEcroN.Dot(d1v);
     if (dot < 0.)
-      permute = Standard_True;
+      permute = true;
   }
   if (permute)
   {

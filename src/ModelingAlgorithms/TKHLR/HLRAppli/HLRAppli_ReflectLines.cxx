@@ -29,18 +29,18 @@ HLRAppli_ReflectLines::HLRAppli_ReflectLines(const TopoDS_Shape& aShape)
 
 //=================================================================================================
 
-void HLRAppli_ReflectLines::SetAxes(const Standard_Real Nx,
-                                    const Standard_Real Ny,
-                                    const Standard_Real Nz,
-                                    const Standard_Real XAt,
-                                    const Standard_Real YAt,
-                                    const Standard_Real ZAt,
-                                    const Standard_Real XUp,
-                                    const Standard_Real YUp,
-                                    const Standard_Real ZUp)
+void HLRAppli_ReflectLines::SetAxes(const double Nx,
+                                    const double Ny,
+                                    const double Nz,
+                                    const double XAt,
+                                    const double YAt,
+                                    const double ZAt,
+                                    const double XUp,
+                                    const double YUp,
+                                    const double ZUp)
 {
-  Standard_Boolean IsPerspective = Standard_False;
-  Standard_Real    aFocus        = 1;
+  bool   IsPerspective = false;
+  double aFocus        = 1;
   // Prs3d_Projector aPrs3dProjector(IsPerspective, aFocus, Nx, Ny, Nz, XAt, YAt, ZAt, XUp, YUp,
   // ZUp);
 
@@ -71,21 +71,21 @@ void HLRAppli_ReflectLines::Perform()
 
   myCompound = aHLRToShape.OutLineVCompound3d();
 
-  BRepLib::SameParameter(myCompound,Precision::PConfusion(),Standard_False);
+  BRepLib::SameParameter(myCompound,Precision::PConfusion(),false);
   */
 }
 
 //=================================================================================================
 
 TopoDS_Shape HLRAppli_ReflectLines::GetCompoundOf3dEdges(const HLRBRep_TypeOfResultingEdge type,
-                                                         const Standard_Boolean            visible,
-                                                         const Standard_Boolean In3d) const
+                                                         const bool                        visible,
+                                                         const bool In3d) const
 {
   HLRBRep_HLRToShape aHLRToShape(myHLRAlgo);
 
   TopoDS_Shape theCompound = aHLRToShape.CompoundOfEdges(type, visible, In3d);
 
-  BRepLib::SameParameter(theCompound, Precision::PConfusion(), Standard_False);
+  BRepLib::SameParameter(theCompound, Precision::PConfusion(), false);
 
   return theCompound;
 }
@@ -94,5 +94,5 @@ TopoDS_Shape HLRAppli_ReflectLines::GetCompoundOf3dEdges(const HLRBRep_TypeOfRes
 
 TopoDS_Shape HLRAppli_ReflectLines::GetResult() const
 {
-  return GetCompoundOf3dEdges(HLRBRep_OutLine, Standard_True, Standard_True);
+  return GetCompoundOf3dEdges(HLRBRep_OutLine, true, true);
 }

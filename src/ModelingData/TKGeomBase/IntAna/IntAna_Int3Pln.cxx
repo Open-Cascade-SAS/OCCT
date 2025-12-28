@@ -26,8 +26,8 @@
 #include <StdFail_NotDone.hxx>
 
 IntAna_Int3Pln::IntAna_Int3Pln()
-    : done(Standard_False),
-      empt(Standard_True)
+    : done(false),
+      empt(true)
 {
 }
 
@@ -40,7 +40,7 @@ IntAna_Int3Pln::IntAna_Int3Pln(const gp_Pln& P1, const gp_Pln& P2, const gp_Pln&
 void IntAna_Int3Pln::Perform(const gp_Pln& P1, const gp_Pln& P2, const gp_Pln& P3)
 {
 
-  done = Standard_False;
+  done = false;
   math_Matrix M(1, 3, 1, 3);
   math_Vector V(1, 3);
 
@@ -52,14 +52,14 @@ void IntAna_Int3Pln::Perform(const gp_Pln& P1, const gp_Pln& P2, const gp_Pln& P
 
   if (!Resol.IsDone())
   {
-    empt = Standard_True;
+    empt = true;
   }
   else
   {
-    empt = Standard_False;
+    empt = false;
     V    = -V;
     Resol.Solve(V);
     pnt.SetCoord(V(1), V(2), V(3));
   }
-  done = Standard_True;
+  done = true;
 }

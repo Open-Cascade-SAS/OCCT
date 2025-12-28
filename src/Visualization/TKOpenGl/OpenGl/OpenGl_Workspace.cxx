@@ -50,18 +50,19 @@ void OpenGl_Material::Init(const OpenGl_Context&           theCtx,
 void OpenGl_Material::init(const OpenGl_Context&           theCtx,
                            const Graphic3d_MaterialAspect& theMat,
                            const Quantity_Color&           theInteriorColor,
-                           const Standard_Integer          theIndex)
+                           const int                       theIndex)
 {
   OpenGl_MaterialCommon& aCommon = Common[theIndex];
   OpenGl_MaterialPBR&    aPbr    = Pbr[theIndex];
   aPbr.ChangeMetallic()          = theMat.PBRMaterial().Metallic();
   aPbr.ChangeRoughness()         = theMat.PBRMaterial().NormalizedRoughness();
-  aPbr.EmissionIOR = Graphic3d_Vec4(theMat.PBRMaterial().Emission(), theMat.PBRMaterial().IOR());
+  aPbr.EmissionIOR =
+    NCollection_Vec4<float>(theMat.PBRMaterial().Emission(), theMat.PBRMaterial().IOR());
 
-  const OpenGl_Vec3& aSrcAmb = theMat.AmbientColor();
-  const OpenGl_Vec3& aSrcDif = theMat.DiffuseColor();
-  const OpenGl_Vec3& aSrcSpe = theMat.SpecularColor();
-  const OpenGl_Vec3& aSrcEms = theMat.EmissiveColor();
+  const NCollection_Vec3<float>& aSrcAmb = theMat.AmbientColor();
+  const NCollection_Vec3<float>& aSrcDif = theMat.DiffuseColor();
+  const NCollection_Vec3<float>& aSrcSpe = theMat.SpecularColor();
+  const NCollection_Vec3<float>& aSrcEms = theMat.EmissiveColor();
   // clang-format off
   aCommon.SpecularShininess.SetValues (aSrcSpe,128.0f * theMat.Shininess()); // interior color is ignored for Specular
   // clang-format on
@@ -91,12 +92,13 @@ void OpenGl_Material::init(const OpenGl_Context&           theCtx,
 
 //=================================================================================================
 
-OpenGl_Workspace::OpenGl_Workspace(OpenGl_View* theView, const Handle(OpenGl_Window)& theWindow)
+OpenGl_Workspace::OpenGl_Workspace(OpenGl_View*                      theView,
+                                   const occ::handle<OpenGl_Window>& theWindow)
     : myView(theView),
       myWindow(theWindow),
       myGlContext(!theWindow.IsNull() ? theWindow->GetGlContext() : NULL),
-      myUseZBuffer(Standard_True),
-      myUseDepthWrite(Standard_True),
+      myUseZBuffer(true),
+      myUseDepthWrite(true),
       //
       myNbSkippedTranspElems(0),
       myRenderFilter(OpenGl_RenderFilter_Empty),
@@ -144,11 +146,11 @@ OpenGl_Workspace::OpenGl_Workspace(OpenGl_View* theView, const Handle(OpenGl_Win
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_Workspace::Activate()
+bool OpenGl_Workspace::Activate()
 {
   if (myWindow.IsNull() || !myWindow->Activate())
   {
-    return Standard_False;
+    return false;
   }
 
   if (myGlContext->core11ffp == NULL)
@@ -179,16 +181,16 @@ Standard_Boolean OpenGl_Workspace::Activate()
   ResetAppliedAspect();
 
   // reset state for safety
-  myGlContext->BindProgram(Handle(OpenGl_ShaderProgram)());
+  myGlContext->BindProgram(occ::handle<OpenGl_ShaderProgram>());
   if (myGlContext->core20fwd != NULL)
   {
     myGlContext->core20fwd->glUseProgram(OpenGl_ShaderProgram::NO_PROGRAM);
   }
   if (myGlContext->caps->ffpEnable)
   {
-    myGlContext->ShaderManager()->PushState(Handle(OpenGl_ShaderProgram)());
+    myGlContext->ShaderManager()->PushState(occ::handle<OpenGl_ShaderProgram>());
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -314,8 +316,8 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects(bool theToBindTextures)
 
   if (theToBindTextures)
   {
-    const Handle(OpenGl_TextureSet)& aTextureSet = TextureSet();
-    myGlContext->BindTextures(aTextureSet, Handle(OpenGl_ShaderProgram)());
+    const occ::handle<OpenGl_TextureSet>& aTextureSet = TextureSet();
+    myGlContext->BindTextures(aTextureSet, occ::handle<OpenGl_ShaderProgram>());
   }
 
   if ((myView->ShadingModel() == Graphic3d_TypeOfShadingModel_Pbr
@@ -331,46 +333,45 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects(bool theToBindTextures)
 
 //=================================================================================================
 
-Standard_Integer OpenGl_Workspace::Width() const
+int OpenGl_Workspace::Width() const
 {
   return !myView->GlWindow().IsNull() ? myView->GlWindow()->Width() : 0;
 }
 
 //=================================================================================================
 
-Standard_Integer OpenGl_Workspace::Height() const
+int OpenGl_Workspace::Height() const
 {
   return !myView->GlWindow().IsNull() ? myView->GlWindow()->Height() : 0;
 }
 
 //=================================================================================================
 
-Handle(OpenGl_FrameBuffer) OpenGl_Workspace::FBOCreate(const Standard_Integer theWidth,
-                                                       const Standard_Integer theHeight)
+occ::handle<OpenGl_FrameBuffer> OpenGl_Workspace::FBOCreate(const int theWidth, const int theHeight)
 {
   // activate OpenGL context
   if (!Activate())
-    return Handle(OpenGl_FrameBuffer)();
+    return occ::handle<OpenGl_FrameBuffer>();
 
   // create the FBO
-  const Handle(OpenGl_Context)& aCtx = GetGlContext();
-  aCtx->BindTextures(Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
-  Handle(OpenGl_FrameBuffer) aFrameBuffer = new OpenGl_FrameBuffer();
+  const occ::handle<OpenGl_Context>& aCtx = GetGlContext();
+  aCtx->BindTextures(occ::handle<OpenGl_TextureSet>(), occ::handle<OpenGl_ShaderProgram>());
+  occ::handle<OpenGl_FrameBuffer> aFrameBuffer = new OpenGl_FrameBuffer();
   if (!aFrameBuffer->Init(aCtx,
-                          Graphic3d_Vec2i(theWidth, theHeight),
+                          NCollection_Vec2<int>(theWidth, theHeight),
                           GL_SRGB8_ALPHA8,
                           GL_DEPTH24_STENCIL8,
                           0))
   {
     aFrameBuffer->Release(aCtx.operator->());
-    return Handle(OpenGl_FrameBuffer)();
+    return occ::handle<OpenGl_FrameBuffer>();
   }
   return aFrameBuffer;
 }
 
 //=================================================================================================
 
-void OpenGl_Workspace::FBORelease(Handle(OpenGl_FrameBuffer)& theFbo)
+void OpenGl_Workspace::FBORelease(occ::handle<OpenGl_FrameBuffer>& theFbo)
 {
   // activate OpenGL context
   if (!Activate() || theFbo.IsNull())
@@ -384,9 +385,9 @@ void OpenGl_Workspace::FBORelease(Handle(OpenGl_FrameBuffer)& theFbo)
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_Workspace::BufferDump(const Handle(OpenGl_FrameBuffer)& theFbo,
-                                              Image_PixMap&                     theImage,
-                                              const Graphic3d_BufferType&       theBufferType)
+bool OpenGl_Workspace::BufferDump(const occ::handle<OpenGl_FrameBuffer>& theFbo,
+                                  Image_PixMap&                          theImage,
+                                  const Graphic3d_BufferType&            theBufferType)
 {
   return !theImage.IsEmpty() && Activate()
          && OpenGl_FrameBuffer::BufferDump(GetGlContext(), theFbo, theImage, theBufferType);
@@ -453,7 +454,7 @@ bool OpenGl_Workspace::ShouldRender(const OpenGl_Element* theElement, const Open
 
 //=================================================================================================
 
-void OpenGl_Workspace::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void OpenGl_Workspace::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

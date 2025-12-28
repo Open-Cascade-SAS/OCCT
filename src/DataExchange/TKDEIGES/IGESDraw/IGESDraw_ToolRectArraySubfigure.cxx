@@ -29,26 +29,29 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDraw_ToolRectArraySubfigure::IGESDraw_ToolRectArraySubfigure() {}
 
-void IGESDraw_ToolRectArraySubfigure::ReadOwnParams(const Handle(IGESDraw_RectArraySubfigure)& ent,
-                                                    const Handle(IGESData_IGESReaderData)&     IR,
-                                                    IGESData_ParamReader& PR) const
+void IGESDraw_ToolRectArraySubfigure::ReadOwnParams(
+  const occ::handle<IGESDraw_RectArraySubfigure>& ent,
+  const occ::handle<IGESData_IGESReaderData>&     IR,
+  IGESData_ParamReader&                           PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
-  gp_XYZ                           tempLowerLeftCorner;
-  Standard_Real                    tempScaleFactor;
-  Handle(IGESData_IGESEntity)      tempBaseEntity;
-  Handle(TColStd_HArray1OfInteger) tempPositions;
-  Standard_Real                    tempColumnSeparation, tempRowSeparation, tempRotationAngle;
-  Standard_Integer                 tempNbColumns, tempNbRows, tempDoDontFlag, tempListCount;
+  gp_XYZ                                tempLowerLeftCorner;
+  double                                tempScaleFactor;
+  occ::handle<IGESData_IGESEntity>      tempBaseEntity;
+  occ::handle<NCollection_HArray1<int>> tempPositions;
+  double                                tempColumnSeparation, tempRowSeparation, tempRotationAngle;
+  int                                   tempNbColumns, tempNbRows, tempDoDontFlag, tempListCount;
 
   // clang-format off
   PR.ReadEntity(IR, PR.Current(), "Base Entity", tempBaseEntity); //szv#4:S4163:12Mar99 `st=` not needed
@@ -73,7 +76,7 @@ void IGESDraw_ToolRectArraySubfigure::ReadOwnParams(const Handle(IGESDraw_RectAr
   {
     // Initialise HArray1 only if there is no error reading its Length
     if (tempListCount > 0)
-      tempPositions = new TColStd_HArray1OfInteger(1, tempListCount);
+      tempPositions = new NCollection_HArray1<int>(1, tempListCount);
     else if (tempListCount < 0)
       PR.AddFail("DO-DONT List Count : Less than Zero");
   }
@@ -85,10 +88,10 @@ void IGESDraw_ToolRectArraySubfigure::ReadOwnParams(const Handle(IGESDraw_RectAr
   // Read the HArray1 only if its Length was read without any Error
   if (!tempPositions.IsNull())
   {
-    Standard_Integer I;
+    int I;
     for (I = 1; I <= tempListCount; I++)
     {
-      Standard_Integer tempPos;
+      int tempPos;
       // st = PR.ReadInteger(PR.Current(), "Number Of Position To Process",
       // tempPos); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "Number Of Position To Process", tempPos))
@@ -109,8 +112,9 @@ void IGESDraw_ToolRectArraySubfigure::ReadOwnParams(const Handle(IGESDraw_RectAr
             tempPositions);
 }
 
-void IGESDraw_ToolRectArraySubfigure::WriteOwnParams(const Handle(IGESDraw_RectArraySubfigure)& ent,
-                                                     IGESData_IGESWriter& IW) const
+void IGESDraw_ToolRectArraySubfigure::WriteOwnParams(
+  const occ::handle<IGESDraw_RectArraySubfigure>& ent,
+  IGESData_IGESWriter&                            IW) const
 {
   IW.Send(ent->BaseEntity());
   IW.Send(ent->ScaleFactor());
@@ -124,37 +128,38 @@ void IGESDraw_ToolRectArraySubfigure::WriteOwnParams(const Handle(IGESDraw_RectA
   IW.Send(ent->RotationAngle());
   IW.Send(ent->ListCount());
   IW.SendBoolean(ent->DoDontFlag());
-  Standard_Integer I;
-  Standard_Integer up = ent->ListCount();
+  int I;
+  int up = ent->ListCount();
   for (I = 1; I <= up; I++)
     IW.Send(ent->ListPosition(I));
 }
 
-void IGESDraw_ToolRectArraySubfigure::OwnShared(const Handle(IGESDraw_RectArraySubfigure)& ent,
+void IGESDraw_ToolRectArraySubfigure::OwnShared(const occ::handle<IGESDraw_RectArraySubfigure>& ent,
                                                 Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->BaseEntity());
 }
 
-void IGESDraw_ToolRectArraySubfigure::OwnCopy(const Handle(IGESDraw_RectArraySubfigure)& another,
-                                              const Handle(IGESDraw_RectArraySubfigure)& ent,
-                                              Interface_CopyTool&                        TC) const
+void IGESDraw_ToolRectArraySubfigure::OwnCopy(
+  const occ::handle<IGESDraw_RectArraySubfigure>& another,
+  const occ::handle<IGESDraw_RectArraySubfigure>& ent,
+  Interface_CopyTool&                             TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, tempBaseEntity, TC.Transferred(another->BaseEntity()));
-  Standard_Real                    tempScaleFactor      = another->ScaleFactor();
-  gp_XYZ                           tempLowerLeftCorner  = (another->LowerLeftCorner()).XYZ();
-  Standard_Integer                 tempNbColumns        = another->NbColumns();
-  Standard_Integer                 tempNbRows           = another->NbRows();
-  Standard_Real                    tempColumnSeparation = another->ColumnSeparation();
-  Standard_Real                    tempRowSeparation    = another->RowSeparation();
-  Standard_Real                    tempRotationAngle    = another->RotationAngle();
-  Standard_Integer                 tempListCount        = another->ListCount();
-  Standard_Integer                 tempDoDontFlag       = (another->DoDontFlag() ? 1 : 0);
-  Handle(TColStd_HArray1OfInteger) tempPositions;
+  double                                tempScaleFactor      = another->ScaleFactor();
+  gp_XYZ                                tempLowerLeftCorner  = (another->LowerLeftCorner()).XYZ();
+  int                                   tempNbColumns        = another->NbColumns();
+  int                                   tempNbRows           = another->NbRows();
+  double                                tempColumnSeparation = another->ColumnSeparation();
+  double                                tempRowSeparation    = another->RowSeparation();
+  double                                tempRotationAngle    = another->RotationAngle();
+  int                                   tempListCount        = another->ListCount();
+  int                                   tempDoDontFlag       = (another->DoDontFlag() ? 1 : 0);
+  occ::handle<NCollection_HArray1<int>> tempPositions;
   if (tempListCount != 0)
   {
-    tempPositions = new TColStd_HArray1OfInteger(1, tempListCount);
-    Standard_Integer I;
+    tempPositions = new NCollection_HArray1<int>(1, tempListCount);
+    int I;
     for (I = 1; I <= tempListCount; I++)
       tempPositions->SetValue(I, another->ListPosition(I));
   }
@@ -172,7 +177,7 @@ void IGESDraw_ToolRectArraySubfigure::OwnCopy(const Handle(IGESDraw_RectArraySub
 }
 
 IGESData_DirChecker IGESDraw_ToolRectArraySubfigure::DirChecker(
-  const Handle(IGESDraw_RectArraySubfigure)& /*ent*/) const
+  const occ::handle<IGESDraw_RectArraySubfigure>& /*ent*/) const
 {
   IGESData_DirChecker DC(412, 0);
   DC.Structure(IGESData_DefVoid);
@@ -184,18 +189,19 @@ IGESData_DirChecker IGESDraw_ToolRectArraySubfigure::DirChecker(
   return DC;
 }
 
-void IGESDraw_ToolRectArraySubfigure::OwnCheck(const Handle(IGESDraw_RectArraySubfigure)& /*ent*/,
-                                               const Interface_ShareTool&,
-                                               Handle(Interface_Check)& /*ach*/) const
+void IGESDraw_ToolRectArraySubfigure::OwnCheck(
+  const occ::handle<IGESDraw_RectArraySubfigure>& /*ent*/,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& /*ach*/) const
 {
 }
 
-void IGESDraw_ToolRectArraySubfigure::OwnDump(const Handle(IGESDraw_RectArraySubfigure)& ent,
-                                              const IGESData_IGESDumper&                 dumper,
-                                              Standard_OStream&                          S,
-                                              const Standard_Integer level) const
+void IGESDraw_ToolRectArraySubfigure::OwnDump(const occ::handle<IGESDraw_RectArraySubfigure>& ent,
+                                              const IGESData_IGESDumper& dumper,
+                                              Standard_OStream&          S,
+                                              const int                  level) const
 {
-  Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
+  int tempSubLevel = (level <= 4) ? 0 : 1;
 
   S << "IGESDraw_RectArraySubfigure\n"
     << "Base Entity : ";

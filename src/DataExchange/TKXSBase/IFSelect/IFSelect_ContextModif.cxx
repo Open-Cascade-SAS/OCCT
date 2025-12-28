@@ -31,17 +31,17 @@
 
 IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph&    graph,
                                              const Interface_CopyTool& TC,
-                                             const Standard_CString    filename)
-    : thegraf(graph, Standard_False),
+                                             const char*               filename)
+    : thegraf(graph, false),
       thefile(filename),
       thelist(graph.Size(), ' ')
 {
   themap  = TC.Control();
-  thesel  = Standard_False;
-  thecurr = thecurt             = 0;
-  Standard_Integer           nb = thelist.Length();
-  Handle(Standard_Transient) newent;
-  for (Standard_Integer i = 1; i <= nb; i++)
+  thesel  = false;
+  thecurr = thecurt                  = 0;
+  int                             nb = thelist.Length();
+  occ::handle<Standard_Transient> newent;
+  for (int i = 1; i <= nb; i++)
   {
     if (themap->Search(graph.Entity(i), newent))
       thelist.SetValue(i, '1');
@@ -50,17 +50,16 @@ IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph&    graph,
 
 //=================================================================================================
 
-IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph& graph,
-                                             const Standard_CString filename)
-    : thegraf(graph, Standard_False),
+IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph& graph, const char* filename)
+    : thegraf(graph, false),
       thefile(filename),
       thelist(graph.Size(), ' ')
 {
-  thesel  = Standard_False;
-  thecurr = thecurt             = 0;
-  Standard_Integer           nb = thelist.Length();
-  Handle(Standard_Transient) newent;
-  for (Standard_Integer i = 1; i <= nb; i++)
+  thesel  = false;
+  thecurr = thecurt                  = 0;
+  int                             nb = thelist.Length();
+  occ::handle<Standard_Transient> newent;
+  for (int i = 1; i <= nb; i++)
     thelist.SetValue(i, '1');
 }
 
@@ -68,15 +67,15 @@ IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph& graph,
 
 void IFSelect_ContextModif::Select(Interface_EntityIterator& list)
 {
-  thesel              = Standard_True;
-  Standard_Integer nb = thelist.Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  thesel = true;
+  int nb = thelist.Length();
+  for (int i = 1; i <= nb; i++)
     thelist.SetValue(i, ' ');
   for (list.Start(); list.More(); list.Next())
   {
-    Handle(Standard_Transient) start, newent;
-    start                = list.Value();
-    Standard_Integer num = thegraf.EntityNumber(start);
+    occ::handle<Standard_Transient> start, newent;
+    start   = list.Value();
+    int num = thegraf.EntityNumber(start);
     if (num > nb || num < 0)
       num = 0;
     if (themap.IsNull() && num > 0)
@@ -98,86 +97,86 @@ const Interface_Graph& IFSelect_ContextModif::OriginalGraph() const
 
 //=================================================================================================
 
-Handle(Interface_InterfaceModel) IFSelect_ContextModif::OriginalModel() const
+occ::handle<Interface_InterfaceModel> IFSelect_ContextModif::OriginalModel() const
 {
   return thegraf.Model();
 }
 
 //=================================================================================================
 
-void IFSelect_ContextModif::SetProtocol(const Handle(Interface_Protocol)& prot)
+void IFSelect_ContextModif::SetProtocol(const occ::handle<Interface_Protocol>& prot)
 {
   theprot = prot;
 }
 
 //=================================================================================================
 
-Handle(Interface_Protocol) IFSelect_ContextModif::Protocol() const
+occ::handle<Interface_Protocol> IFSelect_ContextModif::Protocol() const
 {
   return theprot;
 }
 
 //=================================================================================================
 
-Standard_Boolean IFSelect_ContextModif::HasFileName() const
+bool IFSelect_ContextModif::HasFileName() const
 {
   return (thefile.Length() > 0);
 }
 
 //=================================================================================================
 
-Standard_CString IFSelect_ContextModif::FileName() const
+const char* IFSelect_ContextModif::FileName() const
 {
   return thefile.ToCString();
 }
 
 //=================================================================================================
 
-Handle(Interface_CopyControl) IFSelect_ContextModif::Control() const
+occ::handle<Interface_CopyControl> IFSelect_ContextModif::Control() const
 {
   return themap;
 }
 
 //=================================================================================================
 
-Standard_Boolean IFSelect_ContextModif::IsForNone() const
+bool IFSelect_ContextModif::IsForNone() const
 {
   if (!thesel)
-    return Standard_False;
-  Standard_Integer nb = thelist.Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+    return false;
+  int nb = thelist.Length();
+  for (int i = 1; i <= nb; i++)
   {
     if (thelist.Value(i) != ' ')
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean IFSelect_ContextModif::IsForAll() const
+bool IFSelect_ContextModif::IsForAll() const
 {
   return (!thesel);
 }
 
 //=================================================================================================
 
-Standard_Boolean IFSelect_ContextModif::IsTransferred(const Handle(Standard_Transient)& ent) const
+bool IFSelect_ContextModif::IsTransferred(const occ::handle<Standard_Transient>& ent) const
 {
   if (themap.IsNull())
-    return Standard_True;
-  Handle(Standard_Transient) newent;
+    return true;
+  occ::handle<Standard_Transient> newent;
   return themap->Search(ent, newent);
 }
 
 //=================================================================================================
 
-Standard_Boolean IFSelect_ContextModif::IsSelected(const Handle(Standard_Transient)& ent) const
+bool IFSelect_ContextModif::IsSelected(const occ::handle<Standard_Transient>& ent) const
 {
   //  Select already verified "IsTransferred"
-  Standard_Integer num = thegraf.EntityNumber(ent);
+  int num = thegraf.EntityNumber(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   return (thelist.Value(num) != ' ');
 }
 
@@ -186,8 +185,8 @@ Standard_Boolean IFSelect_ContextModif::IsSelected(const Handle(Standard_Transie
 Interface_EntityIterator IFSelect_ContextModif::SelectedOriginal() const
 {
   Interface_EntityIterator list;
-  Standard_Integer         nb = thelist.Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int                      nb = thelist.Length();
+  for (int i = 1; i <= nb; i++)
   {
     if (thelist.Value(i) != ' ')
       list.GetOneItem(thegraf.Entity(i));
@@ -200,10 +199,10 @@ Interface_EntityIterator IFSelect_ContextModif::SelectedOriginal() const
 Interface_EntityIterator IFSelect_ContextModif::SelectedResult() const
 {
   Interface_EntityIterator list;
-  Standard_Integer         nb = thelist.Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int                      nb = thelist.Length();
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient) newent;
+    occ::handle<Standard_Transient> newent;
     if (themap.IsNull())
       newent = thegraf.Entity(i);
     else if (thelist.Value(i) != ' ')
@@ -216,11 +215,11 @@ Interface_EntityIterator IFSelect_ContextModif::SelectedResult() const
 
 //=================================================================================================
 
-Standard_Integer IFSelect_ContextModif::SelectedCount() const
+int IFSelect_ContextModif::SelectedCount() const
 {
-  Standard_Integer nb = thelist.Length();
-  Standard_Integer ns = 0;
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = thelist.Length();
+  int ns = 0;
+  for (int i = 1; i <= nb; i++)
   {
     if (thelist.Value(i) != ' ')
       ns++;
@@ -238,7 +237,7 @@ void IFSelect_ContextModif::Start()
 
 //=================================================================================================
 
-Standard_Boolean IFSelect_ContextModif::More() const
+bool IFSelect_ContextModif::More() const
 {
   return (thecurr > 0);
 }
@@ -247,10 +246,10 @@ Standard_Boolean IFSelect_ContextModif::More() const
 
 void IFSelect_ContextModif::Next()
 {
-  Standard_Integer nb = thelist.Length();
+  int nb = thelist.Length();
   //  thecurr = thecurt;
   //  if (thecurr <= 0 && thecurt >= 0) return;
-  for (Standard_Integer i = thecurr + 1; i <= nb; i++)
+  for (int i = thecurr + 1; i <= nb; i++)
   {
     if (thelist.Value(i) != ' ')
     {
@@ -264,7 +263,7 @@ void IFSelect_ContextModif::Next()
 
 //=================================================================================================
 
-Handle(Standard_Transient) IFSelect_ContextModif::ValueOriginal() const
+occ::handle<Standard_Transient> IFSelect_ContextModif::ValueOriginal() const
 {
   if (thecurr <= 0)
     throw Standard_NoSuchObject("IFSelect_ContextModif");
@@ -273,11 +272,11 @@ Handle(Standard_Transient) IFSelect_ContextModif::ValueOriginal() const
 
 //=================================================================================================
 
-Handle(Standard_Transient) IFSelect_ContextModif::ValueResult() const
+occ::handle<Standard_Transient> IFSelect_ContextModif::ValueResult() const
 {
   if (thecurr <= 0)
     throw Standard_NoSuchObject("IFSelect_ContextModif");
-  Handle(Standard_Transient) ent, newent;
+  occ::handle<Standard_Transient> ent, newent;
   ent = thegraf.Entity(thecurr);
   if (themap.IsNull())
     newent = ent;
@@ -288,22 +287,22 @@ Handle(Standard_Transient) IFSelect_ContextModif::ValueResult() const
 
 //=================================================================================================
 
-void IFSelect_ContextModif::TraceModifier(const Handle(IFSelect_GeneralModifier)& modif)
+void IFSelect_ContextModif::TraceModifier(const occ::handle<IFSelect_GeneralModifier>& modif)
 {
   if (modif.IsNull())
     return;
 
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   sout << "---   Run Modifier:" << std::endl;
-  Handle(IFSelect_Selection) sel = modif->Selection();
+  occ::handle<IFSelect_Selection> sel = modif->Selection();
   if (!sel.IsNull())
     sout << "      Selection:" << sel->Label();
   else
     sout << "  (no Selection)";
 
   //  on va simplement compter les entites
-  Standard_Integer ne = 0, nb = thelist.Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int ne = 0, nb = thelist.Length();
+  for (int i = 1; i <= nb; i++)
   {
     if (thelist.Value(i) != ' ')
       ne++;
@@ -316,7 +315,7 @@ void IFSelect_ContextModif::TraceModifier(const Handle(IFSelect_GeneralModifier)
 
 //=================================================================================================
 
-void IFSelect_ContextModif::Trace(const Standard_CString mess)
+void IFSelect_ContextModif::Trace(const char* mess)
 {
   //  Trace courante
   if (thecurr <= 0)
@@ -333,12 +332,12 @@ void IFSelect_ContextModif::Trace(const Standard_CString mess)
 
 //=================================================================================================
 
-void IFSelect_ContextModif::AddCheck(const Handle(Interface_Check)& check)
+void IFSelect_ContextModif::AddCheck(const occ::handle<Interface_Check>& check)
 {
   if (check->NbFails() + check->NbWarnings() == 0)
     return;
-  const Handle(Standard_Transient)& ent = check->Entity();
-  Standard_Integer                  num = thegraf.EntityNumber(ent);
+  const occ::handle<Standard_Transient>& ent = check->Entity();
+  int                                    num = thegraf.EntityNumber(ent);
   if (num == 0 && !ent.IsNull())
     num = -1; // force enregistrement
   thechek.Add(check, num);
@@ -346,27 +345,27 @@ void IFSelect_ContextModif::AddCheck(const Handle(Interface_Check)& check)
 
 //=================================================================================================
 
-void IFSelect_ContextModif::AddWarning(const Handle(Standard_Transient)& start,
-                                       const Standard_CString            mess,
-                                       const Standard_CString            orig)
+void IFSelect_ContextModif::AddWarning(const occ::handle<Standard_Transient>& start,
+                                       const char*                            mess,
+                                       const char*                            orig)
 {
   thechek.CCheck(thegraf.EntityNumber(start))->AddWarning(mess, orig);
 }
 
 //=================================================================================================
 
-void IFSelect_ContextModif::AddFail(const Handle(Standard_Transient)& start,
-                                    const Standard_CString            mess,
-                                    const Standard_CString            orig)
+void IFSelect_ContextModif::AddFail(const occ::handle<Standard_Transient>& start,
+                                    const char*                            mess,
+                                    const char*                            orig)
 {
   thechek.CCheck(thegraf.EntityNumber(start))->AddFail(mess, orig);
 }
 
 //=================================================================================================
 
-Handle(Interface_Check) IFSelect_ContextModif::CCheck(const Standard_Integer num)
+occ::handle<Interface_Check> IFSelect_ContextModif::CCheck(const int num)
 {
-  Handle(Interface_Check) ach = thechek.CCheck(num);
+  occ::handle<Interface_Check> ach = thechek.CCheck(num);
   if (num > 0 && num <= thegraf.Size())
     ach->SetEntity(thegraf.Entity(num));
   return ach;
@@ -374,12 +373,13 @@ Handle(Interface_Check) IFSelect_ContextModif::CCheck(const Standard_Integer num
 
 //=================================================================================================
 
-Handle(Interface_Check) IFSelect_ContextModif::CCheck(const Handle(Standard_Transient)& ent)
+occ::handle<Interface_Check> IFSelect_ContextModif::CCheck(
+  const occ::handle<Standard_Transient>& ent)
 {
-  Standard_Integer num = thegraf.EntityNumber(ent);
+  int num = thegraf.EntityNumber(ent);
   if (num == 0)
     num = -1; // force l enregistrement
-  Handle(Interface_Check)& ach = thechek.CCheck(num);
+  occ::handle<Interface_Check>& ach = thechek.CCheck(num);
   ach->SetEntity(ent);
   return ach;
 }

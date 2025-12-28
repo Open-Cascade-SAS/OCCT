@@ -29,102 +29,97 @@ class AIS_Circle : public AIS_InteractiveObject
 public:
   //! Initializes this algorithm for constructing AIS circle
   //! datums initializes the circle aCircle
-  Standard_EXPORT AIS_Circle(const Handle(Geom_Circle)& aCircle);
+  Standard_EXPORT AIS_Circle(const occ::handle<Geom_Circle>& aCircle);
 
   //! Initializes this algorithm for constructing AIS circle datums.
   //! Initializes the circle theCircle, the arc
   //! starting point theUStart, the arc ending point theUEnd,
   //! and the type of sensitivity theIsFilledCircleSens.
-  Standard_EXPORT AIS_Circle(const Handle(Geom_Circle)& theCircle,
-                             const Standard_Real        theUStart,
-                             const Standard_Real        theUEnd,
-                             const Standard_Boolean     theIsFilledCircleSens = Standard_False);
+  Standard_EXPORT AIS_Circle(const occ::handle<Geom_Circle>& theCircle,
+                             const double                    theUStart,
+                             const double                    theUEnd,
+                             const bool                      theIsFilledCircleSens = false);
 
   //! Returns index 6 by default.
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 6; }
+  virtual int Signature() const override { return 6; }
 
   //! Indicates that the type of Interactive Object is a datum.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
-  {
-    return AIS_KindOfInteractive_Datum;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Returns the circle component defined in SetCircle.
-  const Handle(Geom_Circle)& Circle() const { return myComponent; }
+  const occ::handle<Geom_Circle>& Circle() const { return myComponent; }
 
   //! Constructs instances of the starting point and the end
   //! point parameters, theU1 and theU2.
-  void Parameters(Standard_Real& theU1, Standard_Real& theU2) const
+  void Parameters(double& theU1, double& theU2) const
   {
     theU1 = myUStart;
     theU2 = myUEnd;
   }
 
   //! Allows you to provide settings for the circle datum aCircle.
-  void SetCircle(const Handle(Geom_Circle)& theCircle) { myComponent = theCircle; }
+  void SetCircle(const occ::handle<Geom_Circle>& theCircle) { myComponent = theCircle; }
 
   //! Allows you to set the parameter theU for the starting point of an arc.
-  void SetFirstParam(const Standard_Real theU)
+  void SetFirstParam(const double theU)
   {
     myUStart      = theU;
-    myCircleIsArc = Standard_True;
+    myCircleIsArc = true;
   }
 
   //! Allows you to provide the parameter theU for the end point of an arc.
-  void SetLastParam(const Standard_Real theU)
+  void SetLastParam(const double theU)
   {
     myUEnd        = theU;
-    myCircleIsArc = Standard_True;
+    myCircleIsArc = true;
   }
 
-  Standard_EXPORT void SetColor(const Quantity_Color& aColor) Standard_OVERRIDE;
+  Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
 
   //! Assigns the width aValue to the solid line boundary of the circle datum.
-  Standard_EXPORT void SetWidth(const Standard_Real aValue) Standard_OVERRIDE;
+  Standard_EXPORT void SetWidth(const double aValue) override;
 
   //! Removes color from the solid line boundary of the circle datum.
-  Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT void UnsetColor() override;
 
   //! Removes width settings from the solid line boundary of the circle datum.
-  Standard_EXPORT void UnsetWidth() Standard_OVERRIDE;
+  Standard_EXPORT void UnsetWidth() override;
 
   //! Returns the type of sensitivity for the circle;
-  Standard_Boolean IsFilledCircleSens() const { return myIsFilledCircleSens; }
+  bool IsFilledCircleSens() const { return myIsFilledCircleSens; }
 
-  //! Sets the type of sensitivity for the circle. If theIsFilledCircleSens set to Standard_True
+  //! Sets the type of sensitivity for the circle. If theIsFilledCircleSens set to true
   //! then the whole circle will be detectable, otherwise only the boundary of the circle.
-  void SetFilledCircleSens(const Standard_Boolean theIsFilledCircleSens)
+  void SetFilledCircleSens(const bool theIsFilledCircleSens)
   {
     myIsFilledCircleSens = theIsFilledCircleSens;
   }
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         theprs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         theprs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
-  Standard_EXPORT void ComputeCircle(const Handle(Prs3d_Presentation)& aPresentation);
+  Standard_EXPORT void ComputeCircle(const occ::handle<Prs3d_Presentation>& aPresentation);
 
-  Standard_EXPORT void ComputeArc(const Handle(Prs3d_Presentation)& aPresentation);
+  Standard_EXPORT void ComputeArc(const occ::handle<Prs3d_Presentation>& aPresentation);
 
-  Standard_EXPORT void ComputeCircleSelection(const Handle(SelectMgr_Selection)& aSelection);
+  Standard_EXPORT void ComputeCircleSelection(const occ::handle<SelectMgr_Selection>& aSelection);
 
-  Standard_EXPORT void ComputeArcSelection(const Handle(SelectMgr_Selection)& aSelection);
+  Standard_EXPORT void ComputeArcSelection(const occ::handle<SelectMgr_Selection>& aSelection);
 
   //! Replace aspects of already computed groups with the new value.
-  void replaceWithNewLineAspect(const Handle(Prs3d_LineAspect)& theAspect);
+  void replaceWithNewLineAspect(const occ::handle<Prs3d_LineAspect>& theAspect);
 
 private:
-  Handle(Geom_Circle) myComponent;
-  Standard_Real       myUStart;
-  Standard_Real       myUEnd;
-  Standard_Boolean    myCircleIsArc;
-  Standard_Boolean    myIsFilledCircleSens;
+  occ::handle<Geom_Circle> myComponent;
+  double                   myUStart;
+  double                   myUEnd;
+  bool                     myCircleIsArc;
+  bool                     myIsFilledCircleSens;
 };
-
-DEFINE_STANDARD_HANDLE(AIS_Circle, AIS_InteractiveObject)
 
 #endif // _AIS_Circle_HeaderFile

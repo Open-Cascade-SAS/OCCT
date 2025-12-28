@@ -18,15 +18,13 @@
 
 #include <Standard.hxx>
 
-#include <XmlMDF_TypeADriverMap.hxx>
+#include <Standard_Type.hxx>
+#include <XmlMDF_ADriver.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Type.hxx>
-#include <XmlMDF_MapOfDriver.hxx>
+#include <TCollection_AsciiString.hxx>
 class XmlMDF_ADriver;
-
-class XmlMDF_ADriverTable;
-DEFINE_STANDARD_HANDLE(XmlMDF_ADriverTable, Standard_Transient)
 
 //! A driver table is an object building links between
 //! object types and object drivers. In the
@@ -41,30 +39,30 @@ public:
   Standard_EXPORT XmlMDF_ADriverTable();
 
   //! Sets a translation driver: <aDriver>.
-  Standard_EXPORT void AddDriver(const Handle(XmlMDF_ADriver)& anHDriver);
+  Standard_EXPORT void AddDriver(const occ::handle<XmlMDF_ADriver>& anHDriver);
 
   //! Adds a translation driver for the derived attribute. The base driver must be already added.
   //! @param theInstance is newly created attribute, detached from any label
-  Standard_EXPORT void AddDerivedDriver(const Handle(TDF_Attribute)& theInstance);
+  Standard_EXPORT void AddDerivedDriver(const occ::handle<TDF_Attribute>& theInstance);
 
   //! Adds a translation driver for the derived attribute. The base driver must be already added.
   //! @param theDerivedType is registered attribute type using IMPLEMENT_DERIVED_ATTRIBUTE macro
-  Standard_EXPORT const Handle(Standard_Type)& AddDerivedDriver(Standard_CString theDerivedType);
+  Standard_EXPORT const occ::handle<Standard_Type>& AddDerivedDriver(const char* theDerivedType);
 
   //! Fills the map by all registered drivers.
-  Standard_EXPORT void CreateDrvMap(XmlMDF_MapOfDriver& theDriverMap);
+  Standard_EXPORT void CreateDrvMap(
+    NCollection_DataMap<TCollection_AsciiString, occ::handle<XmlMDF_ADriver>>& theDriverMap);
 
   //! Gets a driver <aDriver> according to <aType>
   //!
   //! Returns True if a driver is found; false otherwise.
-  Standard_EXPORT Standard_Boolean GetDriver(const Handle(Standard_Type)& theType,
-                                             Handle(XmlMDF_ADriver)&      theDriver);
+  Standard_EXPORT bool GetDriver(const occ::handle<Standard_Type>& theType,
+                                 occ::handle<XmlMDF_ADriver>&      theDriver);
 
   DEFINE_STANDARD_RTTIEXT(XmlMDF_ADriverTable, Standard_Transient)
 
-protected:
 private:
-  XmlMDF_TypeADriverMap myMap;
+  NCollection_DataMap<occ::handle<Standard_Type>, occ::handle<XmlMDF_ADriver>> myMap;
 };
 
 #endif // _XmlMDF_ADriverTable_HeaderFile

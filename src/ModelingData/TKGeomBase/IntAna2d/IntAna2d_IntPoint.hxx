@@ -33,10 +33,10 @@ public:
   //! Create an intersection point between 2 parametric 2d lines.
   //! X,Y are the coordinate of the point. U1 is the parameter
   //! on the first element, U2 the parameter on the second one.
-  Standard_EXPORT IntAna2d_IntPoint(const Standard_Real X,
-                                    const Standard_Real Y,
-                                    const Standard_Real U1,
-                                    const Standard_Real U2);
+  Standard_EXPORT IntAna2d_IntPoint(const double X,
+                                    const double Y,
+                                    const double U1,
+                                    const double U2);
 
   //! Create an intersection point between a parametric 2d line,
   //! and a line given by an implicit equation (ImplicitCurve).
@@ -44,43 +44,38 @@ public:
   //! on the parametric element.
   //! Empty constructor. It's necessary to use one of
   //! the SetValue method after this one.
-  Standard_EXPORT IntAna2d_IntPoint(const Standard_Real X,
-                                    const Standard_Real Y,
-                                    const Standard_Real U1);
+  Standard_EXPORT IntAna2d_IntPoint(const double X, const double Y, const double U1);
 
   Standard_EXPORT IntAna2d_IntPoint();
 
   //! Set the values for a "non-implicit" point.
-  Standard_EXPORT virtual void SetValue(const Standard_Real X,
-                                        const Standard_Real Y,
-                                        const Standard_Real U1,
-                                        const Standard_Real U2);
+  Standard_EXPORT virtual void SetValue(const double X,
+                                        const double Y,
+                                        const double U1,
+                                        const double U2);
 
   //! Set the values for an "implicit" point.
-  Standard_EXPORT virtual void SetValue(const Standard_Real X,
-                                        const Standard_Real Y,
-                                        const Standard_Real U1);
+  Standard_EXPORT virtual void SetValue(const double X, const double Y, const double U1);
 
   //! Returns the geometric point.
   const gp_Pnt2d& Value() const;
 
   //! Returns True if the second curve is implicit.
-  Standard_Boolean SecondIsImplicit() const;
+  bool SecondIsImplicit() const;
 
   //! Returns the parameter on the first element.
-  Standard_Real ParamOnFirst() const;
+  double ParamOnFirst() const;
 
   //! Returns the parameter on the second element.
   //! If the second element is an implicit curve, an exception
   //! is raised.
-  Standard_Real ParamOnSecond() const;
+  double ParamOnSecond() const;
 
-protected:
 private:
-  Standard_Real    myu1;
-  Standard_Real    myu2;
-  gp_Pnt2d         myp;
-  Standard_Boolean myimplicit;
+  double   myu1;
+  double   myu2;
+  gp_Pnt2d myp;
+  bool     myimplicit;
 };
 
 #include <IntAna2d_IntPoint.lxx>

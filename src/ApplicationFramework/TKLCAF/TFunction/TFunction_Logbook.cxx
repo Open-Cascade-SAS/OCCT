@@ -39,9 +39,9 @@ const Standard_GUID& TFunction_Logbook::GetID()
 // purpose  : Finds or creates a Scope attribute
 //=======================================================================
 
-Handle(TFunction_Logbook) TFunction_Logbook::Set(const TDF_Label& Access)
+occ::handle<TFunction_Logbook> TFunction_Logbook::Set(const TDF_Label& Access)
 {
-  Handle(TFunction_Logbook) S;
+  occ::handle<TFunction_Logbook> S;
   if (!Access.Root().FindAttribute(TFunction_Logbook::GetID(), S))
   {
     S = new TFunction_Logbook();
@@ -63,7 +63,7 @@ const Standard_GUID& TFunction_Logbook::ID() const
 //=================================================================================================
 
 TFunction_Logbook::TFunction_Logbook()
-    : isDone(Standard_False)
+    : isDone(false)
 {
 }
 
@@ -85,49 +85,48 @@ void TFunction_Logbook::Clear()
 
 //=======================================================================
 // function : IsEmpty
-// purpose  : Returns Standard_True if the nothing is recorded in the logbook
+// purpose  : Returns true if the nothing is recorded in the logbook
 //=======================================================================
 
-Standard_Boolean TFunction_Logbook::IsEmpty() const
+bool TFunction_Logbook::IsEmpty() const
 {
   return (myTouched.IsEmpty() && myImpacted.IsEmpty() && myValid.IsEmpty());
 }
 
 //=======================================================================
 // function : IsModified
-// purpose  : Returns Standard_True if the label is modified
+// purpose  : Returns true if the label is modified
 //=======================================================================
 
-Standard_Boolean TFunction_Logbook::IsModified(const TDF_Label&       L,
-                                               const Standard_Boolean WithChildren) const
+bool TFunction_Logbook::IsModified(const TDF_Label& L, const bool WithChildren) const
 {
   if (myTouched.Contains(L))
-    return Standard_True;
+    return true;
   if (myImpacted.Contains(L))
-    return Standard_True;
+    return true;
   if (WithChildren)
   {
     TDF_ChildIterator itr(L);
     for (; itr.More(); itr.Next())
     {
-      if (IsModified(itr.Value(), Standard_True))
+      if (IsModified(itr.Value(), true))
       {
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void TFunction_Logbook::SetValid(const TDF_Label& L, const Standard_Boolean WithChildren)
+void TFunction_Logbook::SetValid(const TDF_Label& L, const bool WithChildren)
 {
   Backup();
   myValid.Add(L);
   if (WithChildren)
   {
-    TDF_ChildIterator itr(L, Standard_True);
+    TDF_ChildIterator itr(L, true);
     for (; itr.More(); itr.Next())
     {
       myValid.Add(itr.Value());
@@ -135,10 +134,10 @@ void TFunction_Logbook::SetValid(const TDF_Label& L, const Standard_Boolean With
   }
 }
 
-void TFunction_Logbook::SetValid(const TDF_LabelMap& Ls)
+void TFunction_Logbook::SetValid(const NCollection_Map<TDF_Label>& Ls)
 {
   Backup();
-  TDF_MapIteratorOfLabelMap itrm(Ls);
+  NCollection_Map<TDF_Label>::Iterator itrm(Ls);
   for (; itrm.More(); itrm.Next())
   {
     const TDF_Label& L = itrm.Key();
@@ -148,13 +147,13 @@ void TFunction_Logbook::SetValid(const TDF_LabelMap& Ls)
 
 //=================================================================================================
 
-void TFunction_Logbook::SetImpacted(const TDF_Label& L, const Standard_Boolean WithChildren)
+void TFunction_Logbook::SetImpacted(const TDF_Label& L, const bool WithChildren)
 {
   Backup();
   myImpacted.Add(L);
   if (WithChildren)
   {
-    TDF_ChildIterator itr(L, Standard_True);
+    TDF_ChildIterator itr(L, true);
     for (; itr.More(); itr.Next())
     {
       myImpacted.Add(itr.Value());
@@ -164,10 +163,10 @@ void TFunction_Logbook::SetImpacted(const TDF_Label& L, const Standard_Boolean W
 
 //=================================================================================================
 
-void TFunction_Logbook::GetValid(TDF_LabelMap& Ls) const
+void TFunction_Logbook::GetValid(NCollection_Map<TDF_Label>& Ls) const
 {
   // Copy valid labels.
-  TDF_MapIteratorOfLabelMap itrm(myValid);
+  NCollection_Map<TDF_Label>::Iterator itrm(myValid);
   for (; itrm.More(); itrm.Next())
   {
     const TDF_Label& L = itrm.Key();
@@ -180,15 +179,15 @@ void TFunction_Logbook::GetValid(TDF_LabelMap& Ls) const
 // purpose  : Undos (and redos) the attribute.
 //=======================================================================
 
-void TFunction_Logbook::Restore(const Handle(TDF_Attribute)& other)
+void TFunction_Logbook::Restore(const occ::handle<TDF_Attribute>& other)
 {
-  Handle(TFunction_Logbook) logbook = Handle(TFunction_Logbook)::DownCast(other);
+  occ::handle<TFunction_Logbook> logbook = occ::down_cast<TFunction_Logbook>(other);
 
   // Status.
   isDone = logbook->isDone;
 
   // Valid labels
-  TDF_MapIteratorOfLabelMap itrm;
+  NCollection_Map<TDF_Label>::Iterator itrm;
   for (itrm.Initialize(logbook->myValid); itrm.More(); itrm.Next())
   {
     myValid.Add(itrm.Key());
@@ -210,17 +209,17 @@ void TFunction_Logbook::Restore(const Handle(TDF_Attribute)& other)
 // purpose  : Method for Copy mechanism
 //=======================================================================
 
-void TFunction_Logbook::Paste(const Handle(TDF_Attribute)&       into,
-                              const Handle(TDF_RelocationTable)& RT) const
+void TFunction_Logbook::Paste(const occ::handle<TDF_Attribute>&       into,
+                              const occ::handle<TDF_RelocationTable>& RT) const
 {
-  Handle(TFunction_Logbook) logbook = Handle(TFunction_Logbook)::DownCast(into);
+  occ::handle<TFunction_Logbook> logbook = occ::down_cast<TFunction_Logbook>(into);
 
   // Status.
   logbook->isDone = isDone;
 
   // Touched.
   logbook->myTouched.Clear();
-  TDF_MapIteratorOfLabelMap itr(myTouched);
+  NCollection_Map<TDF_Label>::Iterator itr(myTouched);
   for (; itr.More(); itr.Next())
   {
     const TDF_Label& L = itr.Value();
@@ -272,7 +271,7 @@ void TFunction_Logbook::Paste(const Handle(TDF_Attribute)&       into,
 // purpose  : Returns new empty graph node attribute
 //=======================================================================
 
-Handle(TDF_Attribute) TFunction_Logbook::NewEmpty() const
+occ::handle<TDF_Attribute> TFunction_Logbook::NewEmpty() const
 {
   return new TFunction_Logbook();
 }
@@ -281,8 +280,8 @@ Handle(TDF_Attribute) TFunction_Logbook::NewEmpty() const
 
 Standard_OStream& TFunction_Logbook::Dump(Standard_OStream& stream) const
 {
-  TDF_MapIteratorOfLabelMap itr;
-  TCollection_AsciiString   as;
+  NCollection_Map<TDF_Label>::Iterator itr;
+  TCollection_AsciiString              as;
 
   stream << "Done = " << isDone << std::endl;
   stream << "Touched labels: " << std::endl;

@@ -37,9 +37,10 @@ const char* GeomTools_Dump(void* theHandlePtr)
   try
   {
     OCC_CATCH_SIGNALS
-    const Handle(Standard_Transient)& aHandle = *(Handle(Standard_Transient)*)theHandlePtr;
+    const occ::handle<Standard_Transient>& aHandle =
+      *(occ::handle<Standard_Transient>*)theHandlePtr;
 
-    Handle(Geom_Surface) GS = Handle(Geom_Surface)::DownCast(aHandle);
+    occ::handle<Geom_Surface> GS = occ::down_cast<Geom_Surface>(aHandle);
     if (!GS.IsNull())
     {
       std::cout << "\n\n";
@@ -48,7 +49,7 @@ const char* GeomTools_Dump(void* theHandlePtr)
       return "Found Geom_Surface, see dump in std::cout";
     }
 
-    Handle(Geom_Curve) GC = Handle(Geom_Curve)::DownCast(aHandle);
+    occ::handle<Geom_Curve> GC = occ::down_cast<Geom_Curve>(aHandle);
     if (!GC.IsNull())
     {
       std::cout << "\n\n";
@@ -57,7 +58,7 @@ const char* GeomTools_Dump(void* theHandlePtr)
       return "Found Geom_Curve, see dump in std::cout";
     }
 
-    Handle(Geom2d_Curve) GC2d = Handle(Geom2d_Curve)::DownCast(aHandle);
+    occ::handle<Geom2d_Curve> GC2d = occ::down_cast<Geom2d_Curve>(aHandle);
     if (!GC2d.IsNull())
     {
       std::cout << "\n\n";
@@ -80,7 +81,7 @@ const char* GeomTools_Dump(void* theHandlePtr)
 // work with them (DBX could, on SUN Solaris).
 #ifndef _MSC_VER
 
-const char* GeomTools_Dump(const Handle(Standard_Transient)& theGeom)
+const char* GeomTools_Dump(const occ::handle<Standard_Transient>& theGeom)
 {
   return GeomTools_Dump((void*)&theGeom);
 }

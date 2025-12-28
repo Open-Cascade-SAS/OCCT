@@ -24,9 +24,6 @@
 class TCollection_AsciiString;
 class Standard_Transient;
 
-class MoniTool_SignShape;
-DEFINE_STANDARD_HANDLE(MoniTool_SignShape, MoniTool_SignText)
-
 //! Signs HShape according to its real content (type of Shape)
 //! Context is not used
 class MoniTool_SignShape : public MoniTool_SignText
@@ -36,18 +33,15 @@ public:
   Standard_EXPORT MoniTool_SignShape();
 
   //! Returns "SHAPE"
-  Standard_EXPORT Standard_CString Name() const Standard_OVERRIDE;
+  Standard_EXPORT const char* Name() const override;
 
   //! Returns for a HShape, the string of its ShapeEnum
   //! The Model is absolutely useless (may be null)
   Standard_EXPORT TCollection_AsciiString
-    Text(const Handle(Standard_Transient)& ent,
-         const Handle(Standard_Transient)& context) const Standard_OVERRIDE;
+    Text(const occ::handle<Standard_Transient>& ent,
+         const occ::handle<Standard_Transient>& context) const override;
 
   DEFINE_STANDARD_RTTIEXT(MoniTool_SignShape, MoniTool_SignText)
-
-protected:
-private:
 };
 
 #endif // _MoniTool_SignShape_HeaderFile

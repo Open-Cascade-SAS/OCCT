@@ -14,7 +14,7 @@
 #include <IGESData_UndefinedEntity.hxx>
 #include <IGESSelect_IGESTypeForm.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
@@ -24,37 +24,35 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_IGESTypeForm, IFSelect_Signature)
 static char falsetype[] = "?";
 static char typeval[30]; // une seule reponse a la fois ...
 
-IGESSelect_IGESTypeForm::IGESSelect_IGESTypeForm(const Standard_Boolean withform)
+IGESSelect_IGESTypeForm::IGESSelect_IGESTypeForm(const bool withform)
     // JR/Hp
-    : IFSelect_Signature(
-        (Standard_CString)(withform ? "IGES Type & Form Numbers" : "IGES Type Number"))
+    : IFSelect_Signature((const char*)(withform ? "IGES Type & Form Numbers" : "IGES Type Number"))
 //: IFSelect_Signature (withform ? "IGES Type & Form Numbers" : "IGES Type Number")
 {
   theform = withform;
 }
 
-void IGESSelect_IGESTypeForm::SetForm(const Standard_Boolean withform)
+void IGESSelect_IGESTypeForm::SetForm(const bool withform)
 {
   theform = withform;
   thename.Clear();
   // JR/Hp
-  Standard_CString astr =
-    (Standard_CString)(withform ? "IGES Type & Form Numbers" : "IGES Type Number");
+  const char* astr = (const char*)(withform ? "IGES Type & Form Numbers" : "IGES Type Number");
   thename.AssignCat(astr);
 }
 
 //         thename.AssignCat (withform ? "IGES Type & Form Numbers" : "IGES Type Number") ;
 
-Standard_CString IGESSelect_IGESTypeForm::Value(
-  const Handle(Standard_Transient)& ent,
-  const Handle(Interface_InterfaceModel)& /*model*/) const
+const char* IGESSelect_IGESTypeForm::Value(
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
     return &falsetype[0];
-  Standard_Boolean unk     = ent->IsKind(STANDARD_TYPE(IGESData_UndefinedEntity));
-  Standard_Integer typenum = igesent->TypeNumber();
-  Standard_Integer formnum = igesent->FormNumber();
+  bool unk     = ent->IsKind(STANDARD_TYPE(IGESData_UndefinedEntity));
+  int  typenum = igesent->TypeNumber();
+  int  formnum = igesent->FormNumber();
   if (unk)
   {
     if (theform)

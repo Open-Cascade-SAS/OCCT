@@ -130,8 +130,8 @@ void Standard_ErrorHandler::Unlink()
   myPrevious = 0;
 
   // unlink and destroy all registered callbacks
-  Standard_Address aPtr = aCurrent->myCallbackPtr;
-  myCallbackPtr         = 0;
+  void* aPtr    = aCurrent->myCallbackPtr;
+  myCallbackPtr = 0;
   while (aPtr)
   {
     Standard_ErrorHandler::Callback* aCallback = (Standard_ErrorHandler::Callback*)aPtr;
@@ -146,9 +146,9 @@ void Standard_ErrorHandler::Unlink()
 // purpose  :  test if the code is currently running in
 //=======================================================================
 
-Standard_Boolean Standard_ErrorHandler::IsInTryBlock()
+bool Standard_ErrorHandler::IsInTryBlock()
 {
-  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, Standard_False);
+  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, false);
   return anActive != NULL;
 }
 
@@ -157,9 +157,9 @@ Standard_Boolean Standard_ErrorHandler::IsInTryBlock()
 //====    Abort if there is a non null 'Error'
 //============================================================================
 
-void Standard_ErrorHandler::Abort(const Handle(Standard_Failure)& theError)
+void Standard_ErrorHandler::Abort(const occ::handle<Standard_Failure>& theError)
 {
-  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, Standard_True);
+  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, true);
 
   //==== Check if can do the "longjmp" =======================================
   if (anActive == NULL)
@@ -171,7 +171,7 @@ void Standard_ErrorHandler::Abort(const Handle(Standard_Failure)& theError)
   }
 
   anActive->myStatus = Standard_HandlerJumped;
-  longjmp(anActive->myLabel, Standard_True);
+  longjmp(anActive->myLabel, true);
 }
 
 //============================================================================
@@ -179,44 +179,44 @@ void Standard_ErrorHandler::Abort(const Handle(Standard_Failure)& theError)
 //====          returns True and clean 'Error', else returns False.
 //============================================================================
 
-Standard_Boolean Standard_ErrorHandler::Catches(const Handle(Standard_Type)& AType)
+bool Standard_ErrorHandler::Catches(const occ::handle<Standard_Type>& AType)
 {
-  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerJumped, Standard_False);
+  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerJumped, false);
   if (anActive == 0)
-    return Standard_False;
+    return false;
 
   if (anActive->myCaughtError.IsNull())
-    return Standard_False;
+    return false;
 
   if (anActive->myCaughtError->IsKind(AType))
   {
     myStatus = Standard_HandlerProcessed;
-    return Standard_True;
+    return true;
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 }
 
-Handle(Standard_Failure) Standard_ErrorHandler::LastCaughtError()
+occ::handle<Standard_Failure> Standard_ErrorHandler::LastCaughtError()
 {
-  Handle(Standard_Failure) aHandle;
-  Standard_ErrorHandler*   anActive = FindHandler(Standard_HandlerProcessed, Standard_False);
+  occ::handle<Standard_Failure> aHandle;
+  Standard_ErrorHandler*        anActive = FindHandler(Standard_HandlerProcessed, false);
   if (anActive != 0)
     aHandle = anActive->myCaughtError;
 
   return aHandle;
 }
 
-Handle(Standard_Failure) Standard_ErrorHandler::Error() const
+occ::handle<Standard_Failure> Standard_ErrorHandler::Error() const
 {
   return myCaughtError;
 }
 
-void Standard_ErrorHandler::Error(const Handle(Standard_Failure)& theError)
+void Standard_ErrorHandler::Error(const occ::handle<Standard_Failure>& theError)
 {
-  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, Standard_False);
+  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, false);
   if (anActive == NULL)
     Abort(theError);
 
@@ -224,7 +224,7 @@ void Standard_ErrorHandler::Error(const Handle(Standard_Failure)& theError)
 }
 
 Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_HandlerStatus theStatus,
-                                                          const Standard_Boolean       theUnlink)
+                                                          const bool                   theUnlink)
 {
   // Use shared lock for read-only access (most common case), exclusive lock only when modifying
   if (!theUnlink)
@@ -258,7 +258,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
     Standard_ErrorHandler* aPrevious = 0;
     Standard_ErrorHandler* aCurrent  = Top;
     Standard_ErrorHandler* anActive  = 0;
-    Standard_Boolean       aStop     = Standard_False;
+    bool                   aStop     = false;
     Standard_ThreadId      aTreadId  = GetThreadID();
 
     // searching an exception with correct ID number
@@ -293,13 +293,13 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
         {
           // found one
           anActive = aCurrent;
-          aStop    = Standard_True;
+          aStop    = true;
         }
       }
       else
       {
         // Current is NULL, means that no handles
-        aStop = Standard_True;
+        aStop = true;
       }
     }
 
@@ -327,8 +327,7 @@ void Standard_ErrorHandler::Callback::RegisterCallback()
     return; // already registered
 
   // find current active exception handler
-  Standard_ErrorHandler* aHandler =
-    Standard_ErrorHandler::FindHandler(Standard_HandlerVoid, Standard_False);
+  Standard_ErrorHandler* aHandler = Standard_ErrorHandler::FindHandler(Standard_HandlerVoid, false);
 
   // if found, add this callback object first to the list
   if (aHandler)

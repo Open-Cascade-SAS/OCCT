@@ -22,25 +22,25 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ModifEditForm, IFSelect_Modifier)
 
-IFSelect_ModifEditForm::IFSelect_ModifEditForm(const Handle(IFSelect_EditForm)& editform)
-    : IFSelect_Modifier(Standard_False)
+IFSelect_ModifEditForm::IFSelect_ModifEditForm(const occ::handle<IFSelect_EditForm>& editform)
+    : IFSelect_Modifier(false)
 {
   theedit = editform;
 }
 
-Handle(IFSelect_EditForm) IFSelect_ModifEditForm::EditForm() const
+occ::handle<IFSelect_EditForm> IFSelect_ModifEditForm::EditForm() const
 {
   return theedit;
 }
 
-void IFSelect_ModifEditForm::Perform(IFSelect_ContextModif&                  ctx,
-                                     const Handle(Interface_InterfaceModel)& target,
-                                     const Handle(Interface_Protocol)& /*protocol*/,
+void IFSelect_ModifEditForm::Perform(IFSelect_ContextModif&                       ctx,
+                                     const occ::handle<Interface_InterfaceModel>& target,
+                                     const occ::handle<Interface_Protocol>& /*protocol*/,
                                      Interface_CopyTool& /*TC*/) const
 {
   for (ctx.Start(); ctx.More(); ctx.Next())
   {
-    Standard_Boolean done = theedit->ApplyData(ctx.ValueResult(), target);
+    bool done = theedit->ApplyData(ctx.ValueResult(), target);
     if (done)
       ctx.Trace();
     else
@@ -50,7 +50,7 @@ void IFSelect_ModifEditForm::Perform(IFSelect_ContextModif&                  ctx
 
 TCollection_AsciiString IFSelect_ModifEditForm::Label() const
 {
-  Standard_CString        editlab = theedit->Label();
+  const char*             editlab = theedit->Label();
   TCollection_AsciiString lab("Apply EditForm");
   if (editlab && editlab[0] != '\0')
   {

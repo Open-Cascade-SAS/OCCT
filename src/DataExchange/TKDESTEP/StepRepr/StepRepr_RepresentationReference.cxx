@@ -25,8 +25,8 @@ StepRepr_RepresentationReference::StepRepr_RepresentationReference() {}
 //=================================================================================================
 
 void StepRepr_RepresentationReference::Init(
-  const Handle(TCollection_HAsciiString)&                theId,
-  const Handle(StepRepr_RepresentationContextReference)& theContextOfItems)
+  const occ::handle<TCollection_HAsciiString>&                theId,
+  const occ::handle<StepRepr_RepresentationContextReference>& theContextOfItems)
 {
 
   myId = theId;
@@ -36,22 +36,22 @@ void StepRepr_RepresentationReference::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_RepresentationReference::Id() const
+occ::handle<TCollection_HAsciiString> StepRepr_RepresentationReference::Id() const
 {
   return myId;
 }
 
 //=================================================================================================
 
-void StepRepr_RepresentationReference::SetId(const Handle(TCollection_HAsciiString)& theId)
+void StepRepr_RepresentationReference::SetId(const occ::handle<TCollection_HAsciiString>& theId)
 {
   myId = theId;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_RepresentationContextReference) StepRepr_RepresentationReference::ContextOfItems()
-  const
+occ::handle<StepRepr_RepresentationContextReference> StepRepr_RepresentationReference::
+  ContextOfItems() const
 {
   return myContextOfItems;
 }
@@ -59,7 +59,7 @@ Handle(StepRepr_RepresentationContextReference) StepRepr_RepresentationReference
 //=================================================================================================
 
 void StepRepr_RepresentationReference::SetContextOfItems(
-  const Handle(StepRepr_RepresentationContextReference)& theContextOfItems)
+  const occ::handle<StepRepr_RepresentationContextReference>& theContextOfItems)
 {
   myContextOfItems = theContextOfItems;
 }

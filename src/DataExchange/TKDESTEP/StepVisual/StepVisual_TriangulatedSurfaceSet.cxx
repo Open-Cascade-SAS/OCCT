@@ -22,12 +22,12 @@ StepVisual_TriangulatedSurfaceSet::StepVisual_TriangulatedSurfaceSet() {}
 //=================================================================================================
 
 void StepVisual_TriangulatedSurfaceSet::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItemName,
-  const Handle(StepVisual_CoordinatesList)& theTessellatedSurfaceSetCoordinates,
-  const Standard_Integer                    theTessellatedSurfaceSetPnmax,
-  const Handle(TColStd_HArray2OfReal)&      theTessellatedSurfaceSetNormals,
-  const Handle(TColStd_HArray1OfInteger)&   thePnindex,
-  const Handle(TColStd_HArray2OfInteger)&   theTriangles)
+  const occ::handle<TCollection_HAsciiString>&    theRepresentationItemName,
+  const occ::handle<StepVisual_CoordinatesList>&  theTessellatedSurfaceSetCoordinates,
+  const int                                       theTessellatedSurfaceSetPnmax,
+  const occ::handle<NCollection_HArray2<double>>& theTessellatedSurfaceSetNormals,
+  const occ::handle<NCollection_HArray1<int>>&    thePnindex,
+  const occ::handle<NCollection_HArray2<int>>&    theTriangles)
 {
   StepVisual_TessellatedSurfaceSet::Init(theRepresentationItemName,
                                          theTessellatedSurfaceSetCoordinates,
@@ -39,7 +39,7 @@ void StepVisual_TriangulatedSurfaceSet::Init(
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TriangulatedSurfaceSet::NbPnindex() const
+int StepVisual_TriangulatedSurfaceSet::NbPnindex() const
 {
   if (myPnindex.IsNull())
   {
@@ -50,15 +50,14 @@ Standard_Integer StepVisual_TriangulatedSurfaceSet::NbPnindex() const
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TriangulatedSurfaceSet::PnindexValue(
-  const Standard_Integer theNum) const
+int StepVisual_TriangulatedSurfaceSet::PnindexValue(const int theNum) const
 {
   return myPnindex->Value(theNum);
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TriangulatedSurfaceSet::NbTriangles() const
+int StepVisual_TriangulatedSurfaceSet::NbTriangles() const
 {
   if (myTriangles.IsNull())
   {

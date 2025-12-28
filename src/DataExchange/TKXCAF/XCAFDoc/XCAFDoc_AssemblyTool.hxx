@@ -34,10 +34,10 @@ public:
   //! User function takes single argument of XCAFDoc_AssemblyItemId type
   //! and returns true/false to continue/break.
   //! ~~~~~{.cpp}
-  //! Standard_Boolean Print(const XCAFDoc_AssemblyItemId& theItem)
+  //! bool Print(const XCAFDoc_AssemblyItemId& theItem)
   //! {
   //!   std::cout << theItem.ToString() << std::endl;
-  //!   return Standard_True;
+  //!   return true;
   //! }
   //! ~~~~~
   //! \param[in]  theIterator - starting position in the assembly tree.
@@ -59,8 +59,8 @@ public:
   //! the assembly graph passed for traversing, current graph node ID
   //! and returns true/false to accept/reject node.
   //! ~~~~~{.cpp}
-  //! Standard_Boolean AcceptPartOnly(const Handle(XCAFDoc_AssemblyGraph)& theGraph,
-  //!                                 const Standard_Integer               theNode)
+  //! bool AcceptPartOnly(const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
+  //!                                 const int               theNode)
   //! {
   //!   return (theGraph->GetNodeType(theNode) == XCAFDoc_AssemblyGraph::NodeType_Part);
   //! }
@@ -72,16 +72,16 @@ public:
   //! \param[in]  theFunc   - user function called for accepted assembly graph node.
   //! \param[in]  theNode   - starting positive one-based graph node ID.
   template <typename Func, typename Filter>
-  static void Traverse(const Handle(XCAFDoc_AssemblyGraph)& theGraph,
-                       Filter                               theFilter,
-                       Func                                 theFunc,
-                       const Standard_Integer               theNode = 1)
+  static void Traverse(const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
+                       Filter                                    theFilter,
+                       Func                                      theFunc,
+                       const int                                 theNode = 1)
   {
     Standard_NullObject_Raise_if(theGraph.IsNull(), "Null assembly graph!");
 
     for (XCAFDoc_AssemblyGraph::Iterator anIt(theGraph, theNode); anIt.More(); anIt.Next())
     {
-      const Standard_Integer aN = anIt.Current();
+      const int aN = anIt.Current();
       if (theFilter(theGraph, aN))
       {
         if (!theFunc(theGraph, aN))

@@ -30,11 +30,11 @@ void LocalAnalysis_CurveContinuity::CurvC0(GeomLProp_CLProps& Curv1, GeomLProp_C
 /****************************************************************************/
 void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
-  gp_Vec        V1, V2;
-  Standard_Real ang;
+  gp_Vec V1, V2;
+  double ang;
   V1 = Curv1.D1();
   V2 = Curv2.D1();
-  Standard_Real norm1, norm2;
+  double norm1, norm2;
   norm1 = V1.Magnitude();
   norm2 = V2.Magnitude();
 
@@ -56,7 +56,7 @@ void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_C
   }
   else
   {
-    myIsDone      = Standard_False;
+    myIsDone      = false;
     myErrorStatus = LocalAnalysis_NullFirstDerivative;
   }
 }
@@ -67,7 +67,7 @@ void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_C
 {
   gp_Vec V1, V2, V12, V22;
   //  gp_Dir D1, D2;
-  Standard_Real norm1, norm2, norm12, norm22, ang;
+  double norm1, norm2, norm12, norm22, ang;
   V1     = Curv1.D1();
   V2     = Curv2.D1();
   V12    = Curv1.D2();
@@ -101,14 +101,14 @@ void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_C
 
     else
     {
-      myIsDone      = Standard_False;
+      myIsDone      = false;
       myErrorStatus = LocalAnalysis_NullSecondDerivative;
     }
   }
 
   else
   {
-    myIsDone      = Standard_False;
+    myIsDone      = false;
     myErrorStatus = LocalAnalysis_NullFirstDerivative;
   }
 }
@@ -117,8 +117,8 @@ void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_C
 
 void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
-  gp_Dir        Tang1, Tang2;
-  Standard_Real ang;
+  gp_Dir Tang1, Tang2;
+  double ang;
   if (Curv1.IsTangentDefined() && Curv2.IsTangentDefined())
   {
     Curv1.Tangent(Tang1);
@@ -131,7 +131,7 @@ void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_C
   }
   else
   {
-    myIsDone      = Standard_False;
+    myIsDone      = false;
     myErrorStatus = LocalAnalysis_TangentNotDefined;
   }
 }
@@ -140,10 +140,10 @@ void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_C
 
 void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
-  gp_Vec        V1, V2;
-  gp_Dir        D1, D2;
-  Standard_Real ang;
-  Standard_Real epscrb = 8 * myepsC0 / (myMaxLon * myMaxLon);
+  gp_Vec V1, V2;
+  gp_Dir D1, D2;
+  double ang;
+  double epscrb = 8 * myepsC0 / (myMaxLon * myMaxLon);
 
   if (Curv1.IsTangentDefined() && Curv2.IsTangentDefined())
   {
@@ -166,32 +166,32 @@ void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_C
     }
     else
     {
-      myIsDone      = Standard_False;
+      myIsDone      = false;
       myErrorStatus = LocalAnalysis_NormalNotDefined;
     }
   }
   else
   {
-    myIsDone      = Standard_False;
+    myIsDone      = false;
     myErrorStatus = LocalAnalysis_TangentNotDefined;
   }
 }
 
 /*********************************************************************************/
 
-LocalAnalysis_CurveContinuity::LocalAnalysis_CurveContinuity(const Handle(Geom_Curve)& Curv1,
-                                                             const Standard_Real       u1,
-                                                             const Handle(Geom_Curve)& Curv2,
-                                                             const Standard_Real       u2,
-                                                             const GeomAbs_Shape       Order,
-                                                             const Standard_Real       Epsnul,
-                                                             const Standard_Real       EpsC0,
-                                                             const Standard_Real       EpsC1,
-                                                             const Standard_Real       EpsC2,
-                                                             const Standard_Real       EpsG1,
-                                                             const Standard_Real       EpsG2,
-                                                             const Standard_Real       Percent,
-                                                             const Standard_Real       Maxlen)
+LocalAnalysis_CurveContinuity::LocalAnalysis_CurveContinuity(const occ::handle<Geom_Curve>& Curv1,
+                                                             const double                   u1,
+                                                             const occ::handle<Geom_Curve>& Curv2,
+                                                             const double                   u2,
+                                                             const GeomAbs_Shape            Order,
+                                                             const double                   Epsnul,
+                                                             const double                   EpsC0,
+                                                             const double                   EpsC1,
+                                                             const double                   EpsC2,
+                                                             const double                   EpsG1,
+                                                             const double                   EpsG2,
+                                                             const double                   Percent,
+                                                             const double                   Maxlen)
     : myContC0(0.0),
       myContC1(0.0),
       myContC2(0.0),
@@ -213,7 +213,7 @@ LocalAnalysis_CurveContinuity::LocalAnalysis_CurveContinuity(const Handle(Geom_C
   myepsG2    = EpsG2;
   myperce    = Percent;
 
-  myIsDone = Standard_True;
+  myIsDone = true;
 
   switch (Order)
   {
@@ -262,37 +262,37 @@ LocalAnalysis_CurveContinuity::LocalAnalysis_CurveContinuity(const Handle(Geom_C
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_CurveContinuity::IsC0() const
+bool LocalAnalysis_CurveContinuity::IsC0() const
 {
   if (!myIsDone)
   {
     throw StdFail_NotDone();
   }
   if (myContC0 <= myepsC0)
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_CurveContinuity::IsC1() const
+bool LocalAnalysis_CurveContinuity::IsC1() const
 {
   if (!myIsDone)
   {
     throw StdFail_NotDone();
   }
   if (IsC0() && ((myContC1 <= myepsC1) || (std::abs(myContC1 - M_PI) <= myepsC1)))
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_CurveContinuity::IsC2() const
+bool LocalAnalysis_CurveContinuity::IsC2() const
 {
-  Standard_Real epsil1, epsil2;
+  double epsil1, epsil2;
 
   if (!myIsDone)
   {
@@ -305,34 +305,34 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsC2() const
       epsil1 = 0.5 * myepsC1 * myepsC1 * myLambda1;
       epsil2 = 0.5 * myepsC2 * myepsC2 * myLambda2;
       if ((std::abs(myLambda1 * myLambda1 - myLambda2)) <= (epsil1 * epsil1 + epsil2))
-        return Standard_True;
+        return true;
     }
     else
-      return Standard_False;
+      return false;
   }
-  return Standard_False;
+  return false;
 }
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_CurveContinuity::IsG1() const
+bool LocalAnalysis_CurveContinuity::IsG1() const
 {
   if (!myIsDone)
   {
     throw StdFail_NotDone();
   }
   if (IsC0() && ((myContG1 <= myepsG1 || (std::abs(myContG1 - M_PI) <= myepsG1))))
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_CurveContinuity::IsG2() const
+bool LocalAnalysis_CurveContinuity::IsG2() const
 {
-  Standard_Real    CRBINF, CRBNUL;
-  Standard_Integer IETA1, IETA2;
+  double CRBINF, CRBNUL;
+  int    IETA1, IETA2;
   // etat des coubures IETA. -> 0 Crbure nulle
   //			   -> 1 Crbure finie
   //			   -> 2 Crbure infinie
@@ -362,30 +362,30 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsG2() const
     {
       if (IETA1 == 1)
       {
-        Standard_Real eps = RealPart((myContG2 + myepsG2) / M_PI) * M_PI;
+        double eps = RealPart((myContG2 + myepsG2) / M_PI) * M_PI;
         if (std::abs(eps - myepsG2) < myepsG2)
         {
           if (myG2Variation < myperce)
-            return Standard_True;
+            return true;
           else
-            return Standard_False;
+            return false;
         }
         else
-          return Standard_False;
+          return false;
       }
       else
-        return Standard_True;
+        return true;
     }
     else
-      return Standard_False;
+      return false;
   }
   else
-    return Standard_False;
+    return false;
 }
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_CurveContinuity::C0Value() const
+double LocalAnalysis_CurveContinuity::C0Value() const
 {
   if (!myIsDone)
   {
@@ -396,7 +396,7 @@ Standard_Real LocalAnalysis_CurveContinuity::C0Value() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_CurveContinuity::C1Angle() const
+double LocalAnalysis_CurveContinuity::C1Angle() const
 {
   if (!myIsDone)
   {
@@ -407,7 +407,7 @@ Standard_Real LocalAnalysis_CurveContinuity::C1Angle() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_CurveContinuity::C2Angle() const
+double LocalAnalysis_CurveContinuity::C2Angle() const
 {
   if (!myIsDone)
   {
@@ -418,7 +418,7 @@ Standard_Real LocalAnalysis_CurveContinuity::C2Angle() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_CurveContinuity::G1Angle() const
+double LocalAnalysis_CurveContinuity::G1Angle() const
 {
   if (!myIsDone)
   {
@@ -429,7 +429,7 @@ Standard_Real LocalAnalysis_CurveContinuity::G1Angle() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_CurveContinuity::G2Angle() const
+double LocalAnalysis_CurveContinuity::G2Angle() const
 {
   if (!myIsDone)
   {
@@ -440,7 +440,7 @@ Standard_Real LocalAnalysis_CurveContinuity::G2Angle() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_CurveContinuity::C1Ratio() const
+double LocalAnalysis_CurveContinuity::C1Ratio() const
 {
   if (!myIsDone)
   {
@@ -451,7 +451,7 @@ Standard_Real LocalAnalysis_CurveContinuity::C1Ratio() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_CurveContinuity::C2Ratio() const
+double LocalAnalysis_CurveContinuity::C2Ratio() const
 {
   if (!myIsDone)
   {
@@ -461,7 +461,7 @@ Standard_Real LocalAnalysis_CurveContinuity::C2Ratio() const
 }
 
 /********************************************************************************/
-Standard_Real LocalAnalysis_CurveContinuity::G2CurvatureVariation() const
+double LocalAnalysis_CurveContinuity::G2CurvatureVariation() const
 {
   if (!myIsDone)
   {
@@ -472,7 +472,7 @@ Standard_Real LocalAnalysis_CurveContinuity::G2CurvatureVariation() const
 
 /********************************************************************************/
 
-Standard_Boolean LocalAnalysis_CurveContinuity::IsDone() const
+bool LocalAnalysis_CurveContinuity::IsDone() const
 {
   return (myIsDone);
 }

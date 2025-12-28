@@ -27,26 +27,27 @@
 #include <ShapeExtend.hxx>
 #include <ShapeUpgrade_ConvertCurve2dToBezier.hxx>
 #include <Standard_Type.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Geom2d_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt2d.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_ConvertCurve2dToBezier, ShapeUpgrade_SplitCurve2d)
 
 ShapeUpgrade_ConvertCurve2dToBezier::ShapeUpgrade_ConvertCurve2dToBezier()
 {
-  mySegments    = new TColGeom2d_HSequenceOfCurve;
-  mySplitParams = new TColStd_HSequenceOfReal;
+  mySegments    = new NCollection_HSequence<occ::handle<Geom2d_Curve>>;
+  mySplitParams = new NCollection_HSequence<double>;
 }
 
-static Handle(Geom2d_BezierCurve) MakeBezier2d(const Handle(Geom2d_Curve)& theCurve2d,
-                                               const Standard_Real         theFirst,
-                                               const Standard_Real         theLast)
+static occ::handle<Geom2d_BezierCurve> MakeBezier2d(const occ::handle<Geom2d_Curve>& theCurve2d,
+                                                    const double                     theFirst,
+                                                    const double                     theLast)
 {
-  TColgp_Array1OfPnt2d poles(1, 2);
-  poles(1)                          = theCurve2d->Value(theFirst);
-  poles(2)                          = theCurve2d->Value(theLast);
-  Handle(Geom2d_BezierCurve) bezier = new Geom2d_BezierCurve(poles);
+  NCollection_Array1<gp_Pnt2d> poles(1, 2);
+  poles(1)                               = theCurve2d->Value(theFirst);
+  poles(2)                               = theCurve2d->Value(theLast);
+  occ::handle<Geom2d_BezierCurve> bezier = new Geom2d_BezierCurve(poles);
   return bezier;
 }
 
@@ -56,17 +57,17 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
 {
   mySegments->Clear();
   mySplitParams->Clear();
-  constexpr Standard_Real precision = Precision::PConfusion();
-  Standard_Real           First     = mySplitValues->Value(1);
-  Standard_Real           Last      = mySplitValues->Value(mySplitValues->Length());
+  constexpr double precision = Precision::PConfusion();
+  double           First     = mySplitValues->Value(1);
+  double           Last      = mySplitValues->Value(mySplitValues->Length());
 
   // PTV Try to create line2d from myCurve
   if (myCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))
       || myCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
   {
     // static function`s code getted from ShapeConvert
-    Standard_Real       tmpF, tmpL, aDeviation;
-    Handle(Geom2d_Line) aTmpLine2d =
+    double                   tmpF, tmpL, aDeviation;
+    occ::handle<Geom2d_Line> aTmpLine2d =
       ShapeCustom_Curve2d::ConvertToLine2d(myCurve,
                                            First,
                                            Last,
@@ -76,7 +77,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
                                            aDeviation);
     if (!aTmpLine2d.IsNull() && (aDeviation <= Precision::Approximation()))
     {
-      Handle(Geom2d_BezierCurve) bezier = MakeBezier2d(aTmpLine2d, tmpF, tmpL);
+      occ::handle<Geom2d_BezierCurve> bezier = MakeBezier2d(aTmpLine2d, tmpF, tmpL);
       mySegments->Append(bezier);
       mySplitParams->Append(First);
       mySplitParams->Append(Last);
@@ -88,8 +89,8 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
 
   if (myCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
-    Handle(Geom2d_TrimmedCurve)         tmp      = Handle(Geom2d_TrimmedCurve)::DownCast(myCurve);
-    Handle(Geom2d_Curve)                BasCurve = tmp->BasisCurve();
+    occ::handle<Geom2d_TrimmedCurve>    tmp      = occ::down_cast<Geom2d_TrimmedCurve>(myCurve);
+    occ::handle<Geom2d_Curve>           BasCurve = tmp->BasisCurve();
     ShapeUpgrade_ConvertCurve2dToBezier converter;
     // converter.Init(BasCurve,Max(First,BasCurve->FirstParameter()),Min(Last,BasCurve->LastParameter()));
     // //???
@@ -106,8 +107,8 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
   }
   else if (myCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
   {
-    Handle(Geom2d_BezierCurve) bezier = Handle(Geom2d_BezierCurve)::DownCast(myCurve);
-    myNbCurves                        = mySplitValues->Length() - 1;
+    occ::handle<Geom2d_BezierCurve> bezier = occ::down_cast<Geom2d_BezierCurve>(myCurve);
+    myNbCurves                             = mySplitValues->Length() - 1;
     mySplitParams->Append(First);
     mySplitParams->Append(Last);
     if (First < precision && Last > 1 - precision)
@@ -117,7 +118,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
     }
     else
     {
-      Handle(Geom2d_BezierCurve) besNew = Handle(Geom2d_BezierCurve)::DownCast(bezier->Copy());
+      occ::handle<Geom2d_BezierCurve> besNew = occ::down_cast<Geom2d_BezierCurve>(bezier->Copy());
       besNew->Segment(First, Last);
       mySegments->Append(besNew);
       myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
@@ -126,8 +127,8 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
   }
   else if (myCurve->IsKind(STANDARD_TYPE(Geom2d_Line)))
   {
-    Handle(Geom2d_Line)        aLine2d = Handle(Geom2d_Line)::DownCast(myCurve);
-    Handle(Geom2d_BezierCurve) bezier  = MakeBezier2d(aLine2d, First, Last);
+    occ::handle<Geom2d_Line>        aLine2d = occ::down_cast<Geom2d_Line>(myCurve);
+    occ::handle<Geom2d_BezierCurve> bezier  = MakeBezier2d(aLine2d, First, Last);
     mySegments->Append(bezier);
     mySplitParams->Append(First);
     mySplitParams->Append(Last);
@@ -137,12 +138,12 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
   }
   else
   {
-    Handle(Geom2d_BSplineCurve) aBSpline2d;
-    Standard_Real               Shift = 0.;
+    occ::handle<Geom2d_BSplineCurve> aBSpline2d;
+    double                           Shift = 0.;
     if (myCurve->IsKind(STANDARD_TYPE(Geom2d_Conic)))
     {
       // clang-format off
-      Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(myCurve,First,Last); //protection against parabols ets
+      occ::handle<Geom2d_Curve> tcurve = new Geom2d_TrimmedCurve(myCurve,First,Last); //protection against parabols ets
       // clang-format on
       Geom2dConvert_ApproxCurve approx(tcurve, Precision::Approximation(), GeomAbs_C1, 100, 6);
       if (approx.HasResult())
@@ -159,10 +160,10 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
       aBSpline2d = Geom2dConvert::CurveToBSplineCurve(myCurve, Convert_QuasiAngular);
     }
     else
-      aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
+      aBSpline2d = occ::down_cast<Geom2d_BSplineCurve>(myCurve);
 
-    Standard_Real bf = aBSpline2d->FirstParameter();
-    Standard_Real bl = aBSpline2d->LastParameter();
+    double bf = aBSpline2d->FirstParameter();
+    double bl = aBSpline2d->LastParameter();
     if (std::abs(First - bf) < precision)
       First = bf;
     if (std::abs(Last - bl) < precision)
@@ -188,27 +189,27 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
     ShapeCustom_Curve2d::SimplifyBSpline2d(aBSpline2d, Precision::Approximation());
 
     Geom2dConvert_BSplineCurveToBezierCurve tool(aBSpline2d, First, Last, precision);
-    Standard_Integer                        nbArcs = tool.NbArcs();
-    TColStd_Array1OfReal                    knots(1, nbArcs + 1);
+    int                                     nbArcs = tool.NbArcs();
+    NCollection_Array1<double>              knots(1, nbArcs + 1);
     tool.Knots(knots);
     mySplitParams->Append(First + Shift);
-    Standard_Integer j; // svv Jan 10 2000 : porting on DEC
+    int j; // svv Jan 10 2000 : porting on DEC
 
-    Standard_Real newFirst = First + Shift;
-    Standard_Real newLast  = First + Shift;
+    double newFirst = First + Shift;
+    double newLast  = First + Shift;
 
     for (j = 1; j <= nbArcs; j++)
     {
-      Standard_Real nextKnot = knots(j + 1) + Shift;
+      double nextKnot = knots(j + 1) + Shift;
       if (nextKnot - mySplitParams->Value(mySplitParams->Length()) > precision)
       {
-        Handle(Geom2d_Curve) aCrv2d = tool.Arc(j);
+        occ::handle<Geom2d_Curve> aCrv2d = tool.Arc(j);
         if (aCrv2d->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
         {
           newFirst = newLast;
           newLast  = nextKnot;
-          Standard_Real       tmpF, tmpL, aDeviation;
-          Handle(Geom2d_Line) aTmpLine2d =
+          double                   tmpF, tmpL, aDeviation;
+          occ::handle<Geom2d_Line> aTmpLine2d =
             ShapeCustom_Curve2d::ConvertToLine2d(aCrv2d,
                                                  newFirst,
                                                  newLast,
@@ -218,7 +219,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
                                                  aDeviation);
           if (!aTmpLine2d.IsNull() && (aDeviation <= Precision::Approximation()))
           {
-            Handle(Geom2d_BezierCurve) bezier = MakeBezier2d(aBSpline2d, newFirst, newLast);
+            occ::handle<Geom2d_BezierCurve> bezier = MakeBezier2d(aBSpline2d, newFirst, newLast);
             mySegments->Append(bezier);
             mySplitParams->Append(newLast);
             continue;
@@ -233,9 +234,9 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
     for (j = 2; j <= mySplitValues->Length(); j++)
     {
       Last = mySplitValues->Value(j);
-      for (Standard_Integer i = 2; i <= nbArcs + 1; i++)
+      for (int i = 2; i <= nbArcs + 1; i++)
       {
-        Standard_Real valknot = knots(i) + Shift;
+        double valknot = knots(i) + Shift;
         if (valknot <= First + precision)
           continue;
         if (valknot >= Last - precision)
@@ -251,27 +252,27 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
 
 //=================================================================================================
 
-void ShapeUpgrade_ConvertCurve2dToBezier::Build(const Standard_Boolean /*Segment*/)
+void ShapeUpgrade_ConvertCurve2dToBezier::Build(const bool /*Segment*/)
 {
-  constexpr Standard_Real prec = Precision::PConfusion();
-  Standard_Integer        nb   = mySplitValues->Length();
-  myResultingCurves            = new TColGeom2d_HArray1OfCurve(1, nb - 1);
-  Standard_Real    prevPar     = 0.;
-  Standard_Integer j           = 2;
-  for (Standard_Integer i = 2; i <= nb; i++)
+  constexpr double prec = Precision::PConfusion();
+  int              nb   = mySplitValues->Length();
+  myResultingCurves     = new NCollection_HArray1<occ::handle<Geom2d_Curve>>(1, nb - 1);
+  double prevPar        = 0.;
+  int    j              = 2;
+  for (int i = 2; i <= nb; i++)
   {
-    Standard_Real par = mySplitValues->Value(i);
+    double par = mySplitValues->Value(i);
     for (; j <= mySplitParams->Length(); j++)
       if (mySplitParams->Value(j) + prec > par)
         break;
       else
         prevPar = 0.;
 
-    Handle(Geom2d_BezierCurve) bes =
-      Handle(Geom2d_BezierCurve)::DownCast(mySegments->Value(j - 1)->Copy());
-    Standard_Real uFact  = mySplitParams->Value(j) - mySplitParams->Value(j - 1);
-    Standard_Real pp     = mySplitValues->Value(i - 1);
-    Standard_Real length = (par - pp) / uFact;
+    occ::handle<Geom2d_BezierCurve> bes =
+      occ::down_cast<Geom2d_BezierCurve>(mySegments->Value(j - 1)->Copy());
+    double uFact  = mySplitParams->Value(j) - mySplitParams->Value(j - 1);
+    double pp     = mySplitValues->Value(i - 1);
+    double length = (par - pp) / uFact;
     bes->Segment(prevPar, prevPar + length);
     prevPar += length;
     myResultingCurves->SetValue(i - 1, bes);
@@ -280,14 +281,15 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Build(const Standard_Boolean /*Segment
 
 //=================================================================================================
 
-Handle(TColGeom2d_HSequenceOfCurve) ShapeUpgrade_ConvertCurve2dToBezier::Segments() const
+occ::handle<NCollection_HSequence<occ::handle<Geom2d_Curve>>> ShapeUpgrade_ConvertCurve2dToBezier::
+  Segments() const
 {
   return mySegments;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfReal) ShapeUpgrade_ConvertCurve2dToBezier::SplitParams() const
+occ::handle<NCollection_HSequence<double>> ShapeUpgrade_ConvertCurve2dToBezier::SplitParams() const
 {
   return mySplitParams;
 }

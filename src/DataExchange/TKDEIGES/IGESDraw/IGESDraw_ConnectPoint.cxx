@@ -28,18 +28,19 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ConnectPoint, IGESData_IGESEntity)
 
 IGESDraw_ConnectPoint::IGESDraw_ConnectPoint() {}
 
-void IGESDraw_ConnectPoint::Init(const gp_XYZ&                                aPoint,
-                                 const Handle(IGESData_IGESEntity)&           aDisplaySymbol,
-                                 const Standard_Integer                       aTypeFlag,
-                                 const Standard_Integer                       aFunctionFlag,
-                                 const Handle(TCollection_HAsciiString)&      aFunctionIdentifier,
-                                 const Handle(IGESGraph_TextDisplayTemplate)& anIdentifierTemplate,
-                                 const Handle(TCollection_HAsciiString)&      aFunctionName,
-                                 const Handle(IGESGraph_TextDisplayTemplate)& aFunctionTemplate,
-                                 const Standard_Integer                       aPointIdentifier,
-                                 const Standard_Integer                       aFunctionCode,
-                                 const Standard_Integer                       aSwapFlag,
-                                 const Handle(IGESData_IGESEntity)&           anOwnerSubfigure)
+void IGESDraw_ConnectPoint::Init(
+  const gp_XYZ&                                     aPoint,
+  const occ::handle<IGESData_IGESEntity>&           aDisplaySymbol,
+  const int                                         aTypeFlag,
+  const int                                         aFunctionFlag,
+  const occ::handle<TCollection_HAsciiString>&      aFunctionIdentifier,
+  const occ::handle<IGESGraph_TextDisplayTemplate>& anIdentifierTemplate,
+  const occ::handle<TCollection_HAsciiString>&      aFunctionName,
+  const occ::handle<IGESGraph_TextDisplayTemplate>& aFunctionTemplate,
+  const int                                         aPointIdentifier,
+  const int                                         aFunctionCode,
+  const int                                         aSwapFlag,
+  const occ::handle<IGESData_IGESEntity>&           anOwnerSubfigure)
 {
   thePoint              = aPoint;
   theDisplaySymbol      = aDisplaySymbol;
@@ -72,77 +73,77 @@ gp_Pnt IGESDraw_ConnectPoint::TransformedPoint() const
   return (tempRes);
 }
 
-Standard_Boolean IGESDraw_ConnectPoint::HasDisplaySymbol() const
+bool IGESDraw_ConnectPoint::HasDisplaySymbol() const
 {
   return (!theDisplaySymbol.IsNull());
 }
 
-Handle(IGESData_IGESEntity) IGESDraw_ConnectPoint::DisplaySymbol() const
+occ::handle<IGESData_IGESEntity> IGESDraw_ConnectPoint::DisplaySymbol() const
 {
   return theDisplaySymbol;
 }
 
-Standard_Integer IGESDraw_ConnectPoint::TypeFlag() const
+int IGESDraw_ConnectPoint::TypeFlag() const
 {
   return theTypeFlag;
 }
 
-Standard_Integer IGESDraw_ConnectPoint::FunctionFlag() const
+int IGESDraw_ConnectPoint::FunctionFlag() const
 {
   return theFunctionFlag;
 }
 
-Handle(TCollection_HAsciiString) IGESDraw_ConnectPoint::FunctionIdentifier() const
+occ::handle<TCollection_HAsciiString> IGESDraw_ConnectPoint::FunctionIdentifier() const
 {
   return theFunctionIdentifier;
 }
 
-Standard_Boolean IGESDraw_ConnectPoint::HasIdentifierTemplate() const
+bool IGESDraw_ConnectPoint::HasIdentifierTemplate() const
 {
   return (!theIdentifierTemplate.IsNull());
 }
 
-Handle(IGESGraph_TextDisplayTemplate) IGESDraw_ConnectPoint::IdentifierTemplate() const
+occ::handle<IGESGraph_TextDisplayTemplate> IGESDraw_ConnectPoint::IdentifierTemplate() const
 {
   return theIdentifierTemplate;
 }
 
-Handle(TCollection_HAsciiString) IGESDraw_ConnectPoint::FunctionName() const
+occ::handle<TCollection_HAsciiString> IGESDraw_ConnectPoint::FunctionName() const
 {
   return theFunctionName;
 }
 
-Standard_Boolean IGESDraw_ConnectPoint::HasFunctionTemplate() const
+bool IGESDraw_ConnectPoint::HasFunctionTemplate() const
 {
   return (!theFunctionTemplate.IsNull());
 }
 
-Handle(IGESGraph_TextDisplayTemplate) IGESDraw_ConnectPoint::FunctionTemplate() const
+occ::handle<IGESGraph_TextDisplayTemplate> IGESDraw_ConnectPoint::FunctionTemplate() const
 {
   return theFunctionTemplate;
 }
 
-Standard_Integer IGESDraw_ConnectPoint::PointIdentifier() const
+int IGESDraw_ConnectPoint::PointIdentifier() const
 {
   return thePointIdentifier;
 }
 
-Standard_Integer IGESDraw_ConnectPoint::FunctionCode() const
+int IGESDraw_ConnectPoint::FunctionCode() const
 {
   return theFunctionCode;
 }
 
-Standard_Boolean IGESDraw_ConnectPoint::SwapFlag() const
+bool IGESDraw_ConnectPoint::SwapFlag() const
 {
   return theSwapFlag;
 }
 
-Standard_Boolean IGESDraw_ConnectPoint::HasOwnerSubfigure() const
+bool IGESDraw_ConnectPoint::HasOwnerSubfigure() const
 {
   return (!theOwnerSubfigure.IsNull());
 }
 
-Handle(IGESData_IGESEntity) IGESDraw_ConnectPoint::OwnerSubfigure() const
+occ::handle<IGESData_IGESEntity> IGESDraw_ConnectPoint::OwnerSubfigure() const
 {
   return theOwnerSubfigure;
 }

@@ -14,19 +14,19 @@
 #ifndef _Graphic3d_CameraTile_HeaderFile
 #define _Graphic3d_CameraTile_HeaderFile
 
-#include <Graphic3d_Vec2.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
-#include <Standard_TypeDef.hxx>
 
 //! Class defines the area (Tile) inside a view.
 class Graphic3d_CameraTile
 {
 public:
-  Graphic3d_Vec2i TotalSize; //!< total size of the View area, in pixels
-  Graphic3d_Vec2i TileSize;  //!< size of the Tile, in pixels
+  NCollection_Vec2<int> TotalSize; //!< total size of the View area, in pixels
+  NCollection_Vec2<int> TileSize;  //!< size of the Tile, in pixels
   // clang-format off
-  Graphic3d_Vec2i Offset;    //!< the lower-left corner of the Tile relative to the View area (or upper-left if IsTopDown is true), in pixels
+  NCollection_Vec2<int> Offset;    //!< the lower-left corner of the Tile relative to the View area (or upper-left if IsTopDown is true), in pixels
   bool            IsTopDown; //!< indicate the offset coordinate system - lower-left (default) or top-down
   // clang-format on
 
@@ -46,9 +46,10 @@ public:
   }
 
   //! Return offset position from lower-left corner.
-  Graphic3d_Vec2i OffsetLowerLeft() const
+  NCollection_Vec2<int> OffsetLowerLeft() const
   {
-    return Graphic3d_Vec2i(Offset.x(), !IsTopDown ? Offset.y() : TotalSize.y() - Offset.y() - 1);
+    return NCollection_Vec2<int>(Offset.x(),
+                                 !IsTopDown ? Offset.y() : TotalSize.y() - Offset.y() - 1);
   }
 
   //! Return the copy cropped by total size
@@ -63,25 +64,25 @@ public:
     aTile.Offset.x() = (std::max)(Offset.x(), 0);
     aTile.Offset.y() = (std::max)(Offset.y(), 0);
 
-    const Standard_Integer anX = (std::min)(Offset.x() + TileSize.x(), TotalSize.x());
-    const Standard_Integer anY = (std::min)(Offset.y() + TileSize.y(), TotalSize.y());
-    aTile.TileSize.x()         = anX - Offset.x();
-    aTile.TileSize.y()         = anY - Offset.y();
+    const int anX      = (std::min)(Offset.x() + TileSize.x(), TotalSize.x());
+    const int anY      = (std::min)(Offset.y() + TileSize.y(), TotalSize.y());
+    aTile.TileSize.x() = anX - Offset.x();
+    aTile.TileSize.y() = anY - Offset.y();
     return aTile;
   }
 
   //! Equality check.
   bool operator==(const Graphic3d_CameraTile& theOther) const
   {
-    const Graphic3d_Vec2i anOffset1 = OffsetLowerLeft();
-    const Graphic3d_Vec2i anOffset2 = theOther.OffsetLowerLeft();
+    const NCollection_Vec2<int> anOffset1 = OffsetLowerLeft();
+    const NCollection_Vec2<int> anOffset2 = theOther.OffsetLowerLeft();
     return TotalSize.x() == theOther.TotalSize.x() && TotalSize.y() == theOther.TotalSize.y()
            && TileSize.x() == theOther.TileSize.x() && TileSize.y() == theOther.TileSize.y()
            && anOffset1.x() == anOffset2.x() && anOffset1.y() == anOffset2.y();
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 };
 
 #endif // _Graphic3d_CameraTile_HeaderFile

@@ -17,49 +17,52 @@
 #define Graphic3d_MarkerImage_HeaderFile
 
 #include <Aspect_TypeOfMarker.hxx>
-#include <Graphic3d_Vec4.hxx>
-#include <TColStd_HArray1OfByte.hxx>
+#include <NCollection_Vec4.hxx>
+#include <Standard_TypeDef.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TCollection_AsciiString.hxx>
 
 class Image_PixMap;
 
 //! This class is used to store bitmaps and images for markers rendering.
-//! It can convert bitmap texture stored in TColStd_HArray1OfByte to Image_PixMap and vice versa.
+//! It can convert bitmap texture stored in NCollection_HArray1<uint8_t> to Image_PixMap and vice
+//! versa.
 class Graphic3d_MarkerImage : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_MarkerImage, Standard_Transient)
 public:
   //! Returns a marker image for the marker of the specified type, scale and color.
-  Standard_EXPORT static Handle(Graphic3d_MarkerImage) StandardMarker(
-    const Aspect_TypeOfMarker theMarkerType,
-    const Standard_ShortReal  theScale,
-    const Graphic3d_Vec4&     theColor);
+  Standard_EXPORT static occ::handle<Graphic3d_MarkerImage> StandardMarker(
+    const Aspect_TypeOfMarker      theMarkerType,
+    const float                    theScale,
+    const NCollection_Vec4<float>& theColor);
 
 public:
   //! Constructor from existing pixmap.
   //! @param[in] theImage  source image
   //! @param[in] theImageAlpha  colorless image
   Standard_EXPORT Graphic3d_MarkerImage(
-    const Handle(Image_PixMap)& theImage,
-    const Handle(Image_PixMap)& theImageAlpha = Handle(Image_PixMap)());
+    const occ::handle<Image_PixMap>& theImage,
+    const occ::handle<Image_PixMap>& theImageAlpha = occ::handle<Image_PixMap>());
 
   //! Creates marker image from array of bytes
   //! (method for compatibility with old markers definition).
   //! @param[in] theBitMap  source bitmap stored as array of bytes
   //! @param[in] theWidth   number of bits in a row
   //! @param[in] theHeight  number of bits in a column
-  Standard_EXPORT Graphic3d_MarkerImage(const Handle(TColStd_HArray1OfByte)& theBitMap,
-                                        const Standard_Integer               theWidth,
-                                        const Standard_Integer               theHeight);
+  Standard_EXPORT Graphic3d_MarkerImage(const occ::handle<NCollection_HArray1<uint8_t>>& theBitMap,
+                                        const int                                        theWidth,
+                                        const int                                        theHeight);
 
   //! Return marker image.
   //! If an instance of the class has been initialized with a bitmap, it will be converted to image.
-  Standard_EXPORT const Handle(Image_PixMap)& GetImage();
+  Standard_EXPORT const occ::handle<Image_PixMap>& GetImage();
 
   //! Return image alpha as grayscale image.
   //! Note that if an instance of the class has been initialized with a bitmap
   //! or with grayscale image this method will return exactly the same image as GetImage()
-  Standard_EXPORT const Handle(Image_PixMap)& GetImageAlpha();
+  Standard_EXPORT const occ::handle<Image_PixMap>& GetImageAlpha();
 
   //! Return an unique ID.
   //! This ID will be used to manage resource in graphic driver.
@@ -70,8 +73,7 @@ public:
   Standard_EXPORT const TCollection_AsciiString& GetImageAlphaId() const;
 
   //! Return texture size
-  Standard_EXPORT void GetTextureSize(Standard_Integer& theWidth,
-                                      Standard_Integer& theHeight) const;
+  Standard_EXPORT void GetTextureSize(int& theWidth, int& theHeight) const;
 
   //! Return TRUE if marker image has colors (e.g. RGBA and not grayscale).
   Standard_EXPORT bool IsColoredImage() const;
@@ -84,31 +86,29 @@ public:
   //!                      others will be stored as "0"
   //! @param[in] theIsTopDown  flag indicating expected rows order in returned bitmap, which is
   //! bottom-up by default
-  Standard_EXPORT Handle(TColStd_HArray1OfByte) GetBitMapArray(
-    const Standard_Real    theAlphaValue = 0.5,
-    const Standard_Boolean theIsTopDown  = false) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<uint8_t>> GetBitMapArray(
+    const double theAlphaValue = 0.5,
+    const bool   theIsTopDown  = false) const;
 
 protected:
   //! Constructor from existing pixmap with predefined ids.
   Standard_EXPORT Graphic3d_MarkerImage(
-    const TCollection_AsciiString& theId,
-    const TCollection_AsciiString& theAlphaId,
-    const Handle(Image_PixMap)&    theImage,
-    const Handle(Image_PixMap)&    theImageAlpha = Handle(Image_PixMap)());
+    const TCollection_AsciiString&   theId,
+    const TCollection_AsciiString&   theAlphaId,
+    const occ::handle<Image_PixMap>& theImage,
+    const occ::handle<Image_PixMap>& theImageAlpha = occ::handle<Image_PixMap>());
 
 private:
   TCollection_AsciiString myImageId;      //!< resource identifier
   TCollection_AsciiString myImageAlphaId; //!< resource identifier
                                           // clang-format off
-  Handle(TColStd_HArray1OfByte) myBitMap;       //!< bytes array with bitmap definition (for compatibility with old code)
-  Handle(Image_PixMap)          myImage;        //!< full-color  marker definition
-  Handle(Image_PixMap)          myImageAlpha;   //!< alpha-color marker definition (for dynamic hi-lighting)
-  Standard_Integer              myMargin;       //!< extra margin from boundaries for bitmap -> point sprite conversion, 1 px by default
-                                          // clang-format on
-  Standard_Integer myWidth;               //!< marker width
-  Standard_Integer myHeight;              //!< marker height
+  occ::handle<NCollection_HArray1<uint8_t>> myBitMap;       //!< bytes array with bitmap definition (for compatibility with old code)
+  occ::handle<Image_PixMap>          myImage;        //!< full-color  marker definition
+  occ::handle<Image_PixMap>          myImageAlpha;   //!< alpha-color marker definition (for dynamic hi-lighting)
+  int              myMargin;       //!< extra margin from boundaries for bitmap -> point sprite conversion, 1 px by default
+               // clang-format on
+  int myWidth;  //!< marker width
+  int myHeight; //!< marker height
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_MarkerImage, Standard_Transient)
 
 #endif // _Graphic3d_MarkerImage_H__

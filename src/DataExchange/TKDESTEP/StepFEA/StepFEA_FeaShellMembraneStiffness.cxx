@@ -29,8 +29,8 @@ StepFEA_FeaShellMembraneStiffness::StepFEA_FeaShellMembraneStiffness() {}
 //=================================================================================================
 
 void StepFEA_FeaShellMembraneStiffness::Init(
-  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-  const StepFEA_SymmetricTensor42d&       aFeaConstants)
+  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+  const StepFEA_SymmetricTensor42d&            aFeaConstants)
 {
   StepFEA_FeaMaterialPropertyRepresentationItem::Init(aRepresentationItem_Name);
 

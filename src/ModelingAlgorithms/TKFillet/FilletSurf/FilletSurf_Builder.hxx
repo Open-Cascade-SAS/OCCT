@@ -24,7 +24,8 @@
 #include <FilletSurf_InternalBuilder.hxx>
 #include <FilletSurf_StatusDone.hxx>
 #include <FilletSurf_ErrorTypeStatus.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <FilletSurf_StatusType.hxx>
@@ -55,12 +56,12 @@ public:
   //! Ta is the angular tolerance
   //! Tapp3d is the 3d approximation tolerance
   //! Tapp2d is the 2d approximation tolerance
-  Standard_EXPORT FilletSurf_Builder(const TopoDS_Shape&         S,
-                                     const TopTools_ListOfShape& E,
-                                     const Standard_Real         R,
-                                     const Standard_Real         Ta     = 1.0e-2,
-                                     const Standard_Real         Tapp3d = 1.0e-4,
-                                     const Standard_Real         Tapp2d = 1.0e-5);
+  Standard_EXPORT FilletSurf_Builder(const TopoDS_Shape&                   S,
+                                     const NCollection_List<TopoDS_Shape>& E,
+                                     const double                          R,
+                                     const double                          Ta     = 1.0e-2,
+                                     const double                          Tapp3d = 1.0e-4,
+                                     const double                          Tapp2d = 1.0e-5);
 
   //! ---Purpose computation of the fillet (list of NUBS)
   Standard_EXPORT void Perform();
@@ -86,56 +87,55 @@ public:
   Standard_EXPORT FilletSurf_ErrorTypeStatus StatusError() const;
 
   //! gives the number of NUBS surfaces of the Fillet.
-  Standard_EXPORT Standard_Integer NbSurface() const;
+  Standard_EXPORT int NbSurface() const;
 
   //! gives the NUBS surface of index Index.
-  Standard_EXPORT const Handle(Geom_Surface)& SurfaceFillet(const Standard_Integer Index) const;
+  Standard_EXPORT const occ::handle<Geom_Surface>& SurfaceFillet(const int Index) const;
 
   //! gives the 3d tolerance reached during approximation
   //! of surface of index Index
-  Standard_EXPORT Standard_Real TolApp3d(const Standard_Integer Index) const;
+  Standard_EXPORT double TolApp3d(const int Index) const;
 
   //! gives the first support face relative to SurfaceFillet(Index);
-  Standard_EXPORT const TopoDS_Face& SupportFace1(const Standard_Integer Index) const;
+  Standard_EXPORT const TopoDS_Face& SupportFace1(const int Index) const;
 
   //! gives the second support face relative to SurfaceFillet(Index);
-  Standard_EXPORT const TopoDS_Face& SupportFace2(const Standard_Integer Index) const;
+  Standard_EXPORT const TopoDS_Face& SupportFace2(const int Index) const;
 
   //! gives the 3d curve of SurfaceFillet(Index) on SupportFace1(Index)
-  Standard_EXPORT const Handle(Geom_Curve)& CurveOnFace1(const Standard_Integer Index) const;
+  Standard_EXPORT const occ::handle<Geom_Curve>& CurveOnFace1(const int Index) const;
 
   //! gives the 3d curve of SurfaceFillet(Index) on SupportFace2(Index)
-  Standard_EXPORT const Handle(Geom_Curve)& CurveOnFace2(const Standard_Integer Index) const;
+  Standard_EXPORT const occ::handle<Geom_Curve>& CurveOnFace2(const int Index) const;
 
   //! gives the PCurve associated to CurvOnSup1(Index) on the support face
-  Standard_EXPORT const Handle(Geom2d_Curve)& PCurveOnFace1(const Standard_Integer Index) const;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurveOnFace1(const int Index) const;
 
   //! gives the PCurve associated to CurveOnFace1(Index) on the Fillet
-  Standard_EXPORT const Handle(Geom2d_Curve)& PCurve1OnFillet(const Standard_Integer Index) const;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurve1OnFillet(const int Index) const;
 
   //! gives the PCurve associated to CurveOnSup2(Index) on the support face
-  Standard_EXPORT const Handle(Geom2d_Curve)& PCurveOnFace2(const Standard_Integer Index) const;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurveOnFace2(const int Index) const;
 
   //! gives the PCurve associated to CurveOnSup2(Index) on the fillet
-  Standard_EXPORT const Handle(Geom2d_Curve)& PCurve2OnFillet(const Standard_Integer Index) const;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurve2OnFillet(const int Index) const;
 
   //! gives the parameter of the fillet on the first edge.
-  Standard_EXPORT Standard_Real FirstParameter() const;
+  Standard_EXPORT double FirstParameter() const;
 
   //! gives the parameter of the fillet on the last edge
-  Standard_EXPORT Standard_Real LastParameter() const;
+  Standard_EXPORT double LastParameter() const;
 
   Standard_EXPORT FilletSurf_StatusType StartSectionStatus() const;
 
   Standard_EXPORT FilletSurf_StatusType EndSectionStatus() const;
 
-  Standard_EXPORT Standard_Integer NbSection(const Standard_Integer IndexSurf) const;
+  Standard_EXPORT int NbSection(const int IndexSurf) const;
 
-  Standard_EXPORT void Section(const Standard_Integer     IndexSurf,
-                               const Standard_Integer     IndexSec,
-                               Handle(Geom_TrimmedCurve)& Circ) const;
+  Standard_EXPORT void Section(const int                       IndexSurf,
+                               const int                       IndexSec,
+                               occ::handle<Geom_TrimmedCurve>& Circ) const;
 
-protected:
 private:
   FilletSurf_InternalBuilder myIntBuild;
   FilletSurf_StatusDone      myisdone;

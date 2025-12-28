@@ -117,7 +117,7 @@ const Graphic3d_MaterialAspect& Prs3d_ShadingAspect::Material(
 
 //=================================================================================================
 
-void Prs3d_ShadingAspect::SetTransparency(const Standard_Real            theValue,
+void Prs3d_ShadingAspect::SetTransparency(const double                   theValue,
                                           const Aspect_TypeOfFacingModel theModel)
 {
   if (theModel != Aspect_TOFM_BOTH_SIDE)
@@ -127,22 +127,22 @@ void Prs3d_ShadingAspect::SetTransparency(const Standard_Real            theValu
 
   if (theModel == Aspect_TOFM_FRONT_SIDE || theModel == Aspect_TOFM_BOTH_SIDE)
   {
-    myAspect->ChangeFrontMaterial().SetTransparency(Standard_ShortReal(theValue));
+    myAspect->ChangeFrontMaterial().SetTransparency(float(theValue));
     myAspect->SetInteriorColor(
-      Quantity_ColorRGBA(myAspect->InteriorColor(), 1.0f - Standard_ShortReal(theValue)));
+      Quantity_ColorRGBA(myAspect->InteriorColor(), 1.0f - float(theValue)));
   }
 
   if (theModel == Aspect_TOFM_BACK_SIDE || theModel == Aspect_TOFM_BOTH_SIDE)
   {
-    myAspect->ChangeBackMaterial().SetTransparency(Standard_ShortReal(theValue));
+    myAspect->ChangeBackMaterial().SetTransparency(float(theValue));
     myAspect->SetBackInteriorColor(
-      Quantity_ColorRGBA(myAspect->BackInteriorColor(), 1.0f - Standard_ShortReal(theValue)));
+      Quantity_ColorRGBA(myAspect->BackInteriorColor(), 1.0f - float(theValue)));
   }
 }
 
 //=================================================================================================
 
-Standard_Real Prs3d_ShadingAspect::Transparency(const Aspect_TypeOfFacingModel theModel) const
+double Prs3d_ShadingAspect::Transparency(const Aspect_TypeOfFacingModel theModel) const
 {
   switch (theModel)
   {
@@ -157,7 +157,7 @@ Standard_Real Prs3d_ShadingAspect::Transparency(const Aspect_TypeOfFacingModel t
 
 //=================================================================================================
 
-void Prs3d_ShadingAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Prs3d_ShadingAspect::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myAspect.get())

@@ -18,13 +18,14 @@
 
 #include <Standard.hxx>
 
-#include <StepElement_HArray1OfHSequenceOfCurveElementPurposeMember.hxx>
+#include <StepElement_CurveElementPurposeMember.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepElement_ElementDescriptor.hxx>
 #include <StepElement_ElementOrder.hxx>
 class TCollection_HAsciiString;
-
-class StepElement_Curve3dElementDescriptor;
-DEFINE_STANDARD_HANDLE(StepElement_Curve3dElementDescriptor, StepElement_ElementDescriptor)
 
 //! Representation of STEP entity Curve3dElementDescriptor
 class StepElement_Curve3dElementDescriptor : public StepElement_ElementDescriptor
@@ -36,22 +37,29 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
-    const Handle(TCollection_HAsciiString)& aElementDescriptor_Description,
-    const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& aPurpose);
+    const StepElement_ElementOrder               aElementDescriptor_TopologyOrder,
+    const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
+    const occ::handle<NCollection_HArray1<
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>&
+      aPurpose);
 
   //! Returns field Purpose
-  Standard_EXPORT Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember) Purpose() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>
+                  Purpose() const;
 
   //! Set field Purpose
   Standard_EXPORT void SetPurpose(
-    const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& Purpose);
+    const occ::handle<NCollection_HArray1<
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>&
+      Purpose);
 
   DEFINE_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor, StepElement_ElementDescriptor)
 
-protected:
 private:
-  Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember) thePurpose;
+  occ::handle<NCollection_HArray1<
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>
+    thePurpose;
 };
 
 #endif // _StepElement_Curve3dElementDescriptor_HeaderFile

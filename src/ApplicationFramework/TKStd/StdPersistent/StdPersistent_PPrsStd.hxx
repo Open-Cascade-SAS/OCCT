@@ -46,18 +46,18 @@ public:
     }
 
     //! Returns persistent type name
-    inline Standard_CString PName() const { return "PPrsStd_AISPresentation"; }
+    inline const char* PName() const { return "PPrsStd_AISPresentation"; }
 
     //! Import transient attribute from the persistent data.
-    void Import(const Handle(TDataXtd_Presentation)& theAttribute) const;
+    void Import(const occ::handle<TDataXtd_Presentation>& theAttribute) const;
 
   private:
-    Standard_Boolean             myIsDisplayed;
-    Handle(StdObjMgt_Persistent) myDriverGUID;
-    Standard_Real                myTransparency;
-    Standard_Integer             myColor;
-    Standard_Integer             myMaterial;
-    Standard_Real                myWidth;
+    bool                              myIsDisplayed;
+    occ::handle<StdObjMgt_Persistent> myDriverGUID;
+    double                            myTransparency;
+    int                               myColor;
+    int                               myMaterial;
+    double                            myWidth;
   };
 
   class AISPresentation_1 : public AISPresentation
@@ -78,13 +78,13 @@ public:
     }
 
     //! Returns persistent type name
-    inline Standard_CString PName() const { return "PPrsStd_AISPresentation_1"; }
+    inline const char* PName() const { return "PPrsStd_AISPresentation_1"; }
 
     //! Import transient attribute from the persistent data.
-    void Import(const Handle(TDataXtd_Presentation)& theAttribute) const;
+    void Import(const occ::handle<TDataXtd_Presentation>& theAttribute) const;
 
   private:
-    Standard_Integer myMode;
+    int myMode;
   };
 };
 

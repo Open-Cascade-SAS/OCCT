@@ -18,9 +18,9 @@
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 
-AdvApprox_PrefAndRec::AdvApprox_PrefAndRec(const TColStd_Array1OfReal& RecCut,
-                                           const TColStd_Array1OfReal& PrefCut,
-                                           const Standard_Real         Weight)
+AdvApprox_PrefAndRec::AdvApprox_PrefAndRec(const NCollection_Array1<double>& RecCut,
+                                           const NCollection_Array1<double>& PrefCut,
+                                           const double                      Weight)
     : myRecCutting(1, RecCut.Length()),
       myPrefCutting(1, PrefCut.Length()),
       myWeight(Weight)
@@ -33,15 +33,13 @@ AdvApprox_PrefAndRec::AdvApprox_PrefAndRec(const TColStd_Array1OfReal& RecCut,
   }
 }
 
-Standard_Boolean AdvApprox_PrefAndRec::Value(const Standard_Real a,
-                                             const Standard_Real b,
-                                             Standard_Real&      cuttingvalue) const
+bool AdvApprox_PrefAndRec::Value(const double a, const double b, double& cuttingvalue) const
 {
   //  longueur minimum d'un intervalle parametrique : 10*PConfusion()
-  constexpr Standard_Real lgmin = 10 * Precision::PConfusion();
-  Standard_Integer        i;
-  Standard_Real           cut, mil = (a + b) / 2, dist;
-  Standard_Boolean        isfound = Standard_False;
+  constexpr double lgmin = 10 * Precision::PConfusion();
+  int              i;
+  double           cut, mil = (a + b) / 2, dist;
+  bool             isfound = false;
 
   cut = mil;
 
@@ -53,7 +51,7 @@ Standard_Boolean AdvApprox_PrefAndRec::Value(const Standard_Real a,
     {
       cut     = myPrefCutting.Value(i);
       dist    = std::abs(mil - cut);
-      isfound = Standard_True;
+      isfound = true;
     }
   }
 

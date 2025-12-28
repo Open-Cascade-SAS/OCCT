@@ -21,15 +21,16 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_ShapeWithState.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <TopAbs_State.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopOpeBRepDS_DataMapOfShapeState.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_IndexedMapOfOrientedShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 class TopoDS_Shape;
 class TopOpeBRepTool_ShapeClassifier;
 class TopoDS_Face;
@@ -44,56 +45,68 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static void FindState(
-    const TopoDS_Shape&                              aVertex,
-    const TopAbs_State                               aState,
-    const TopAbs_ShapeEnum                           aShapeEnum,
-    const TopTools_IndexedDataMapOfShapeListOfShape& aMapVertexEdges,
-    TopTools_MapOfShape&                             aMapProcessedVertices,
-    TopOpeBRepDS_DataMapOfShapeState&                aMapVs);
+    const TopoDS_Shape&                                                       aVertex,
+    const TopAbs_State                                                        aState,
+    const TopAbs_ShapeEnum                                                    aShapeEnum,
+    const NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<TopoDS_Shape>,
+                                     TopTools_ShapeMapHasher>&                aMapVertexEdges,
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                   aMapProcessedVertices,
+    NCollection_DataMap<TopoDS_Shape, TopAbs_State, TopTools_ShapeMapHasher>& aMapVs);
 
   Standard_EXPORT static void PropagateState(
-    const TopOpeBRepDS_DataMapOfShapeState&      aSplEdgesState,
-    const TopTools_IndexedMapOfShape&            anEdgesToRestMap,
-    const TopAbs_ShapeEnum                       aShapeEnum1,
-    const TopAbs_ShapeEnum                       aShapeEnum2,
-    TopOpeBRepTool_ShapeClassifier&              aShapeClassifier,
-    TopOpeBRepDS_IndexedDataMapOfShapeWithState& aMapOfShapeWithState,
-    const TopTools_MapOfShape&                   anUnkStateShapes);
+    const NCollection_DataMap<TopoDS_Shape, TopAbs_State, TopTools_ShapeMapHasher>& aSplEdgesState,
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& anEdgesToRestMap,
+    const TopAbs_ShapeEnum                                               aShapeEnum1,
+    const TopAbs_ShapeEnum                                               aShapeEnum2,
+    TopOpeBRepTool_ShapeClassifier&                                      aShapeClassifier,
+    NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
+                                                                  aMapOfShapeWithState,
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& anUnkStateShapes);
 
   Standard_EXPORT static TopAbs_State FindStateThroughVertex(
-    const TopoDS_Shape&                          aShape,
-    TopOpeBRepTool_ShapeClassifier&              aShapeClassifier,
-    TopOpeBRepDS_IndexedDataMapOfShapeWithState& aMapOfShapeWithState,
-    const TopTools_MapOfShape&                   anAvoidSubshMap);
+    const TopoDS_Shape&             aShape,
+    TopOpeBRepTool_ShapeClassifier& aShapeClassifier,
+    NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
+                                                                  aMapOfShapeWithState,
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& anAvoidSubshMap);
 
   Standard_EXPORT static void PropagateStateForWires(
-    const TopTools_IndexedMapOfShape&            aFacesToRestMap,
-    TopOpeBRepDS_IndexedDataMapOfShapeWithState& aMapOfShapeWithState);
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aFacesToRestMap,
+    NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
+      aMapOfShapeWithState);
 
   Standard_EXPORT static void SpreadStateToChild(
-    const TopoDS_Shape&                          aShape,
-    const TopAbs_State                           aState,
-    TopOpeBRepDS_IndexedDataMapOfShapeWithState& aMapOfShapeWithState);
+    const TopoDS_Shape& aShape,
+    const TopAbs_State  aState,
+    NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
+      aMapOfShapeWithState);
 
   Standard_EXPORT static void FindState1(
-    const TopoDS_Shape&                              anEdge,
-    const TopAbs_State                               aState,
-    const TopTools_IndexedDataMapOfShapeListOfShape& aMapEdgesFaces,
-    TopTools_MapOfShape&                             aMapProcessedVertices,
-    TopOpeBRepDS_DataMapOfShapeState&                aMapVs);
+    const TopoDS_Shape&                                                       anEdge,
+    const TopAbs_State                                                        aState,
+    const NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<TopoDS_Shape>,
+                                     TopTools_ShapeMapHasher>&                aMapEdgesFaces,
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                   aMapProcessedVertices,
+    NCollection_DataMap<TopoDS_Shape, TopAbs_State, TopTools_ShapeMapHasher>& aMapVs);
 
   Standard_EXPORT static void FindState2(
-    const TopoDS_Shape&                              anEdge,
-    const TopAbs_State                               aState,
-    const TopTools_IndexedDataMapOfShapeListOfShape& aMapEdgesFaces,
-    TopTools_MapOfShape&                             aMapProcessedEdges,
-    TopOpeBRepDS_DataMapOfShapeState&                aMapVs);
+    const TopoDS_Shape&                                                       anEdge,
+    const TopAbs_State                                                        aState,
+    const NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<TopoDS_Shape>,
+                                     TopTools_ShapeMapHasher>&                aMapEdgesFaces,
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                   aMapProcessedEdges,
+    NCollection_DataMap<TopoDS_Shape, TopAbs_State, TopTools_ShapeMapHasher>& aMapVs);
 
-  Standard_EXPORT static Standard_Boolean GetAdjacentFace(
-    const TopoDS_Shape&                              aFaceObj,
-    const TopoDS_Shape&                              anEObj,
-    const TopTools_IndexedDataMapOfShapeListOfShape& anEdgeFaceMap,
-    TopoDS_Shape&                                    anAdjFaceObj);
+  Standard_EXPORT static bool GetAdjacentFace(
+    const TopoDS_Shape&                                        aFaceObj,
+    const TopoDS_Shape&                                        anEObj,
+    const NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<TopoDS_Shape>,
+                                     TopTools_ShapeMapHasher>& anEdgeFaceMap,
+    TopoDS_Shape&                                              anAdjFaceObj);
 
   Standard_EXPORT static void GetNormalToFaceOnEdge(const TopoDS_Face& aFObj,
                                                     const TopoDS_Edge& anEdgeObj,
@@ -106,13 +119,12 @@ public:
                                                       const TopoDS_Edge& anEdge,
                                                       gp_Vec&            aNormal);
 
-  Standard_EXPORT static Standard_Boolean GetTangentToEdgeEdge(const TopoDS_Face& aFObj,
-                                                               const TopoDS_Edge& anEdgeObj,
-                                                               const TopoDS_Edge& aOriEObj,
-                                                               gp_Vec&            aTangent);
+  Standard_EXPORT static bool GetTangentToEdgeEdge(const TopoDS_Face& aFObj,
+                                                   const TopoDS_Edge& anEdgeObj,
+                                                   const TopoDS_Edge& aOriEObj,
+                                                   gp_Vec&            aTangent);
 
-  Standard_EXPORT static Standard_Boolean GetTangentToEdge(const TopoDS_Edge& anEdgeObj,
-                                                           gp_Vec&            aTangent);
+  Standard_EXPORT static bool GetTangentToEdge(const TopoDS_Edge& anEdgeObj, gp_Vec& aTangent);
 
   //! Recompute PCurves of the all edges from the wire on the <toFace>
   Standard_EXPORT static void UpdatePCurves(const TopoDS_Wire& aWire,
@@ -129,8 +141,7 @@ public:
                                                const TopoDS_Face& OldFace,
                                                const TopoDS_Face& NewFace);
 
-  Standard_EXPORT static Standard_Boolean IsDegEdgesTheSame(const TopoDS_Shape& anE1,
-                                                            const TopoDS_Shape& anE2);
+  Standard_EXPORT static bool IsDegEdgesTheSame(const TopoDS_Shape& anE1, const TopoDS_Shape& anE2);
 
   //! test if <oldFace> does not contain INTERNAL or EXTERNAL edges
   //! and remove such edges in case of its presence. The result is stored in <corrFace>
@@ -143,25 +154,23 @@ public:
   //! start shapes). NOTE: Parameter corrFace doesn't mean anything. If you want to use
   //! this method, rebuild resulting face after by yourself using corrected edges.
   Standard_EXPORT static void CorrectFace2d(
-    const TopoDS_Shape&                       oldFace,
-    TopoDS_Shape&                             corrFace,
-    const TopTools_IndexedMapOfOrientedShape& aSourceShapes,
-    TopTools_IndexedDataMapOfShapeShape&      aMapOfCorrect2dEdges);
+    const TopoDS_Shape&                         oldFace,
+    TopoDS_Shape&                               corrFace,
+    const NCollection_IndexedMap<TopoDS_Shape>& aSourceShapes,
+    NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+      aMapOfCorrect2dEdges);
 
   Standard_EXPORT static void CorrectTolerances(const TopoDS_Shape& aS,
-                                                const Standard_Real aTolMax = 0.0001);
+                                                const double        aTolMax = 0.0001);
 
   Standard_EXPORT static void CorrectCurveOnSurface(const TopoDS_Shape& aS,
-                                                    const Standard_Real aTolMax = 0.0001);
+                                                    const double        aTolMax = 0.0001);
 
   Standard_EXPORT static void CorrectPointOnCurve(const TopoDS_Shape& aS,
-                                                  const Standard_Real aTolMax = 0.0001);
+                                                  const double        aTolMax = 0.0001);
 
   //! Checks if <theFace> has the properly closed in 2D boundary(ies)
-  Standard_EXPORT static Standard_Boolean CheckFaceClosed2d(const TopoDS_Face& theFace);
-
-protected:
-private:
+  Standard_EXPORT static bool CheckFaceClosed2d(const TopoDS_Face& theFace);
 };
 
 #endif // _TopOpeBRepBuild_Tools_HeaderFile

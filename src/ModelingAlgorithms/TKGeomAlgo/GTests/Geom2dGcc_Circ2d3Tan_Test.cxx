@@ -30,31 +30,31 @@ class Geom2dGcc_Circ2d3TanTest : public ::testing::Test
 protected:
   void SetUp() override { myTolerance = Precision::Confusion(); }
 
-  Standard_Real myTolerance;
+  double myTolerance;
 
   //! Verify that a solution is tangent to all three input circles
-  void verifyTangencyConstraints(const gp_Circ2d&       theSolution,
-                                 const gp_Circ2d&       theCircle1,
-                                 const gp_Circ2d&       theCircle2,
-                                 const gp_Circ2d&       theCircle3,
-                                 const Standard_Integer theSolutionIndex,
-                                 const Standard_Real    theTolerance = 1e-6) const
+  void verifyTangencyConstraints(const gp_Circ2d& theSolution,
+                                 const gp_Circ2d& theCircle1,
+                                 const gp_Circ2d& theCircle2,
+                                 const gp_Circ2d& theCircle3,
+                                 const int        theSolutionIndex,
+                                 const double     theTolerance = 1e-6) const
   {
-    gp_Pnt2d      aSolCenter = theSolution.Location();
-    Standard_Real aSolRadius = theSolution.Radius();
+    gp_Pnt2d aSolCenter = theSolution.Location();
+    double   aSolRadius = theSolution.Radius();
 
     // Check tangency to each input circle
-    for (Standard_Integer i = 1; i <= 3; i++)
+    for (int i = 1; i <= 3; i++)
     {
       const gp_Circ2d* aCircle     = (i == 1) ? &theCircle1 : (i == 2) ? &theCircle2 : &theCircle3;
       gp_Pnt2d         aCircCenter = aCircle->Location();
-      Standard_Real    aCircRadius = aCircle->Radius();
+      double           aCircRadius = aCircle->Radius();
 
-      Standard_Real aDistanceCenters = aSolCenter.Distance(aCircCenter);
+      double aDistanceCenters = aSolCenter.Distance(aCircCenter);
 
       // For tangency: distance = |R1 - R2| (internal) or R1 + R2 (external)
-      Standard_Real aExpectedDistExt = aSolRadius + aCircRadius;
-      Standard_Real aExpectedDistInt = std::abs(aSolRadius - aCircRadius);
+      double aExpectedDistExt = aSolRadius + aCircRadius;
+      double aExpectedDistInt = std::abs(aSolRadius - aCircRadius);
 
       bool isTangent = (std::abs(aDistanceCenters - aExpectedDistExt) <= theTolerance)
                        || (std::abs(aDistanceCenters - aExpectedDistInt) <= theTolerance);
@@ -67,25 +67,25 @@ protected:
   }
 
   //! Create a qualified curve from circle parameters
-  Geom2dGcc_QualifiedCurve createQualifiedCircle(const Standard_Real theX,
-                                                 const Standard_Real theY,
-                                                 const Standard_Real theRadius) const
+  Geom2dGcc_QualifiedCurve createQualifiedCircle(const double theX,
+                                                 const double theY,
+                                                 const double theRadius) const
   {
-    gp_Pnt2d              aCenter(theX, theY);
-    Handle(Geom2d_Circle) aCircle =
+    gp_Pnt2d                   aCenter(theX, theY);
+    occ::handle<Geom2d_Circle> aCircle =
       new Geom2d_Circle(gp_Circ2d(gp_Ax2d(aCenter, gp_Dir2d(1, 0)), theRadius));
     Geom2dAdaptor_Curve anAdaptor(aCircle);
     return Geom2dGcc::Unqualified(anAdaptor);
   }
 
   //! Verify solution validity
-  void verifySolutionValidity(const gp_Circ2d&       theSolution,
-                              const Standard_Integer theSolutionIndex,
-                              const Standard_Real    theMinX      = -10000.0,
-                              const Standard_Real    theMaxX      = 10000.0,
-                              const Standard_Real    theMinY      = -10000.0,
-                              const Standard_Real    theMaxY      = 10000.0,
-                              const Standard_Real    theMaxRadius = 100000.0) const
+  void verifySolutionValidity(const gp_Circ2d& theSolution,
+                              const int        theSolutionIndex,
+                              const double     theMinX      = -10000.0,
+                              const double     theMaxX      = 10000.0,
+                              const double     theMinY      = -10000.0,
+                              const double     theMaxY      = 10000.0,
+                              const double     theMaxRadius = 100000.0) const
   {
     EXPECT_GT(theSolution.Radius(), 0)
       << "Solution " << theSolutionIndex << " should have positive radius";
@@ -126,13 +126,13 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60622_RegressionCase)
 
   EXPECT_TRUE(aTangentSolver.IsDone()) << "Algorithm should succeed";
 
-  Standard_Integer aNbSolutions = aTangentSolver.NbSolutions();
+  int aNbSolutions = aTangentSolver.NbSolutions();
 
   // The regression test: we should find exactly 3 solutions for BUC60622 case
   EXPECT_EQ(aNbSolutions, 3) << "BUC60622 case should find exactly 3 solutions";
 
   // Verify each solution is geometrically valid and satisfies tangency constraints
-  for (Standard_Integer i = 1; i <= aNbSolutions; i++)
+  for (int i = 1; i <= aNbSolutions; i++)
   {
     gp_Circ2d aSol = aTangentSolver.ThisSolution(i);
 
@@ -163,22 +163,22 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, ToleranceImpact_Analysis)
   Geom2dGcc_QualifiedCurve aQual3 = createQualifiedCircle(700.0, 1900.0, 200.0);
 
   // Test with different tolerance values to ensure stability
-  std::vector<Standard_Real> aTestTolerances = {
+  std::vector<double> aTestTolerances = {
     Precision::Confusion(), // Default ~1e-15
     1e-12,                  // Slightly larger
     1e-10,                  // Moderate
     1e-8                    // Large
   };
 
-  Standard_Integer aDefaultSolCount = 0;
+  int aDefaultSolCount = 0;
 
-  for (Standard_Real aTol : aTestTolerances)
+  for (double aTol : aTestTolerances)
   {
     Geom2dGcc_Circ2d3Tan aSolver(aQual1, aQual2, aQual3, aTol, 0, 0, 0);
 
     EXPECT_TRUE(aSolver.IsDone()) << "Algorithm should succeed with tolerance " << aTol;
 
-    Standard_Integer aNbSol = aSolver.NbSolutions();
+    int aNbSol = aSolver.NbSolutions();
 
     if (aTol == Precision::Confusion())
     {
@@ -195,7 +195,7 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, ToleranceImpact_Analysis)
     }
 
     // Verify all solutions are valid regardless of tolerance
-    for (Standard_Integer i = 1; i <= aNbSol; i++)
+    for (int i = 1; i <= aNbSol; i++)
     {
       gp_Circ2d aSol = aSolver.ThisSolution(i);
       verifySolutionValidity(aSol, i, -1000.0, 2000.0, 1000.0, 3000.0, 10000.0);
@@ -220,11 +220,11 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, Simple_ThreeCircle_Case)
 
   EXPECT_TRUE(aSolver.IsDone()) << "Simple case should always work";
 
-  Standard_Integer aNbSol = aSolver.NbSolutions();
+  int aNbSol = aSolver.NbSolutions();
   EXPECT_GE(aNbSol, 1) << "Should find at least one solution for simple case";
 
   // Verify all solutions are valid and satisfy tangency constraints
-  for (Standard_Integer i = 1; i <= aNbSol; i++)
+  for (int i = 1; i <= aNbSol; i++)
   {
     gp_Circ2d aSol = aSolver.ThisSolution(i);
     verifySolutionValidity(aSol, i);
@@ -248,7 +248,7 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, Concentric_Circles_EdgeCase)
   EXPECT_TRUE(aSolver.IsDone())
     << "Algorithm should complete successfully even when no solutions exist";
 
-  Standard_Integer aNbSol = aSolver.NbSolutions();
+  int aNbSol = aSolver.NbSolutions();
   // This specific geometric configuration has no solutions - this is correct
   EXPECT_EQ(aNbSol, 0) << "This concentric configuration geometrically has no solutions";
 }
@@ -270,10 +270,10 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, SmallCircles_PrecisionTest)
 
   EXPECT_TRUE(aSolver.IsDone()) << "Small circles should be handled correctly";
 
-  Standard_Integer aNbSol = aSolver.NbSolutions();
+  int aNbSol = aSolver.NbSolutions();
   EXPECT_GE(aNbSol, 1) << "Should find at least one solution for small circles";
 
-  for (Standard_Integer i = 1; i <= aNbSol; i++)
+  for (int i = 1; i <= aNbSol; i++)
   {
     gp_Circ2d aSol = aSolver.ThisSolution(i);
     verifySolutionValidity(aSol, i, -10.0, 10.0, -10.0, 10.0, 10.0);
@@ -303,10 +303,10 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, LargeCircles_ScalingTest)
 
   EXPECT_TRUE(aSolver.IsDone()) << "Large circles should be handled correctly";
 
-  Standard_Integer aNbSol = aSolver.NbSolutions();
+  int aNbSol = aSolver.NbSolutions();
   EXPECT_GE(aNbSol, 1) << "Should find at least one solution for large circles";
 
-  for (Standard_Integer i = 1; i <= aNbSol; i++)
+  for (int i = 1; i <= aNbSol; i++)
   {
     gp_Circ2d aSol = aSolver.ThisSolution(i);
     verifySolutionValidity(aSol, i, -10000.0, 10000.0, -10000.0, 10000.0, 50000.0);
@@ -336,10 +336,10 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, LinearConfiguration_GeometricTest)
 
   EXPECT_TRUE(aSolver.IsDone()) << "Linear configuration should be solvable";
 
-  Standard_Integer aNbSol = aSolver.NbSolutions();
+  int aNbSol = aSolver.NbSolutions();
   EXPECT_GE(aNbSol, 1) << "Should find at least one solution for linear configuration";
 
-  for (Standard_Integer i = 1; i <= aNbSol; i++)
+  for (int i = 1; i <= aNbSol; i++)
   {
     gp_Circ2d aSol = aSolver.ThisSolution(i);
     verifySolutionValidity(aSol, i);
@@ -366,11 +366,11 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, TouchingCircles_DegenerateCase)
   // For this specific touching configuration, the algorithm should succeed
   EXPECT_TRUE(aSolver.IsDone()) << "Touching circles configuration should be solvable";
 
-  Standard_Integer aNbSol = aSolver.NbSolutions();
+  int aNbSol = aSolver.NbSolutions();
   EXPECT_GE(aNbSol, 1) << "Should find at least one solution for touching circles case";
 
   // Verify all solutions are valid and satisfy tangency
-  for (Standard_Integer i = 1; i <= aNbSol; i++)
+  for (int i = 1; i <= aNbSol; i++)
   {
     gp_Circ2d aSol = aSolver.ThisSolution(i);
     verifySolutionValidity(aSol, i);

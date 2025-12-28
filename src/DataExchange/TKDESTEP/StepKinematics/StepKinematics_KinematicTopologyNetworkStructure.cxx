@@ -28,10 +28,11 @@ StepKinematics_KinematicTopologyNetworkStructure::StepKinematics_KinematicTopolo
 //=================================================================================================
 
 void StepKinematics_KinematicTopologyNetworkStructure::Init(
-  const Handle(TCollection_HAsciiString)&                  theRepresentation_Name,
-  const Handle(StepRepr_HArray1OfRepresentationItem)&      theRepresentation_Items,
-  const Handle(StepRepr_RepresentationContext)&            theRepresentation_ContextOfItems,
-  const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
+  const occ::handle<TCollection_HAsciiString>& theRepresentation_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
+                                                                theRepresentation_Items,
+  const occ::handle<StepRepr_RepresentationContext>&            theRepresentation_ContextOfItems,
+  const occ::handle<StepKinematics_KinematicTopologyStructure>& theParent)
 {
   StepRepr_Representation::Init(theRepresentation_Name,
                                 theRepresentation_Items,
@@ -42,8 +43,8 @@ void StepKinematics_KinematicTopologyNetworkStructure::Init(
 
 //=================================================================================================
 
-Handle(StepKinematics_KinematicTopologyStructure) StepKinematics_KinematicTopologyNetworkStructure::
-  Parent() const
+occ::handle<StepKinematics_KinematicTopologyStructure>
+  StepKinematics_KinematicTopologyNetworkStructure::Parent() const
 {
   return myParent;
 }
@@ -51,7 +52,7 @@ Handle(StepKinematics_KinematicTopologyStructure) StepKinematics_KinematicTopolo
 //=================================================================================================
 
 void StepKinematics_KinematicTopologyNetworkStructure::SetParent(
-  const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
+  const occ::handle<StepKinematics_KinematicTopologyStructure>& theParent)
 {
   myParent = theParent;
 }

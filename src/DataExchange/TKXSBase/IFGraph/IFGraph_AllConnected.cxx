@@ -25,18 +25,18 @@ IFGraph_AllConnected::IFGraph_AllConnected(const Interface_Graph& agraph)
 {
 }
 
-IFGraph_AllConnected::IFGraph_AllConnected(const Interface_Graph&            agraph,
-                                           const Handle(Standard_Transient)& ent)
+IFGraph_AllConnected::IFGraph_AllConnected(const Interface_Graph&                 agraph,
+                                           const occ::handle<Standard_Transient>& ent)
     : thegraph(agraph)
 {
   GetFromEntity(ent);
 }
 
-void IFGraph_AllConnected::GetFromEntity(const Handle(Standard_Transient)& ent)
+void IFGraph_AllConnected::GetFromEntity(const occ::handle<Standard_Transient>& ent)
 {
   if (!thegraph.IsPresent(thegraph.EntityNumber(ent)))
     return;
-  thegraph.GetFromEntity(ent, Standard_False);
+  thegraph.GetFromEntity(ent, false);
 
   for (Interface_EntityIterator shareds = thegraph.Shareds(ent); shareds.More(); shareds.Next())
     GetFromEntity(shareds.Value());

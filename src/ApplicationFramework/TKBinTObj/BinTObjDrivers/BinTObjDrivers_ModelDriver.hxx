@@ -24,25 +24,26 @@ class BinTObjDrivers_ModelDriver : public BinMDF_ADriver
 {
 
 public:
-  Standard_EXPORT BinTObjDrivers_ModelDriver(const Handle(Message_Messenger)& theMessageDriver);
+  Standard_EXPORT BinTObjDrivers_ModelDriver(
+    const occ::handle<Message_Messenger>& theMessageDriver);
   // constructor
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
   // Creates a new attribute
 
-  Standard_EXPORT Standard_Boolean
-    Paste(const BinObjMgt_Persistent&  Source,
-          const Handle(TDF_Attribute)& Target,
-          BinObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       Source,
+                             const occ::handle<TDF_Attribute>& Target,
+                             BinObjMgt_RRelocationTable&       RelocTable) const override;
   // Translate the contents of <aSource> and put it
   // into <aTarget>, using the relocation table
   // <aRelocTable> to keep the sharings.
   // Set CurrentModel of TObj_Persistence into Target TObj_TModel
   // if its GUID and GUID stored in Source are same
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
-                             BinObjMgt_Persistent&        Target,
-                             BinObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(
+    const occ::handle<TDF_Attribute>&                        Source,
+    BinObjMgt_Persistent&                                    Target,
+    NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;
   // Translate the contents of <aSource> and put it
   // into <aTarget>, using the relocation table
   // <aRelocTable> to keep the sharings.
@@ -54,8 +55,6 @@ public:
 };
 
 // Define handle class
-DEFINE_STANDARD_HANDLE(BinTObjDrivers_ModelDriver, BinMDF_ADriver)
-
 #endif
 
 #ifdef _MSC_VER

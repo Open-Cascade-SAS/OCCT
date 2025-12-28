@@ -37,20 +37,18 @@ public:
   Standard_EXPORT IntSurf_Transition();
 
   //! Create a IN or OUT transition
-  Standard_EXPORT IntSurf_Transition(const Standard_Boolean Tangent, const IntSurf_TypeTrans Type);
+  Standard_EXPORT IntSurf_Transition(const bool Tangent, const IntSurf_TypeTrans Type);
 
   //! Create a TOUCH transition.
-  Standard_EXPORT IntSurf_Transition(const Standard_Boolean  Tangent,
+  Standard_EXPORT IntSurf_Transition(const bool              Tangent,
                                      const IntSurf_Situation Situ,
-                                     const Standard_Boolean  Oppos);
+                                     const bool              Oppos);
 
   //! Set the values of an IN or OUT transition.
-  void SetValue(const Standard_Boolean Tangent, const IntSurf_TypeTrans Type);
+  void SetValue(const bool Tangent, const IntSurf_TypeTrans Type);
 
   //! Set the values of a TOUCH transition.
-  void SetValue(const Standard_Boolean  Tangent,
-                const IntSurf_Situation Situ,
-                const Standard_Boolean  Oppos);
+  void SetValue(const bool Tangent, const IntSurf_Situation Situ, const bool Oppos);
 
   //! Set the values of an UNDECIDED transition.
   void SetValue();
@@ -66,7 +64,7 @@ public:
   //! Returns TRUE if the point is tangent to the arc
   //! given by Value.
   //! An exception is raised if TransitionType returns UNDECIDED.
-  Standard_Boolean IsTangent() const;
+  bool IsTangent() const;
 
   //! Returns a significant value if TransitionType returns
   //! TOUCH. In this case, the function returns :
@@ -84,14 +82,13 @@ public:
   //! space.
   //! If TransitionType returns IN or OUT or UNDECIDED, an
   //! exception is raised.
-  Standard_Boolean IsOpposite() const;
+  bool IsOpposite() const;
 
-protected:
 private:
-  Standard_Boolean  tangent;
+  bool              tangent;
   IntSurf_TypeTrans typetra;
   IntSurf_Situation situat;
-  Standard_Boolean  oppos;
+  bool              oppos;
 };
 
 #include <IntSurf_Transition.lxx>

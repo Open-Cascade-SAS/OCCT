@@ -20,9 +20,6 @@
 
 #include <StepRepr_PropertyDefinition.hxx>
 
-class StepRepr_ProductDefinitionShape;
-DEFINE_STANDARD_HANDLE(StepRepr_ProductDefinitionShape, StepRepr_PropertyDefinition)
-
 //! Representation of STEP entity ProductDefinitionShape
 class StepRepr_ProductDefinitionShape : public StepRepr_PropertyDefinition
 {
@@ -32,9 +29,6 @@ public:
   Standard_EXPORT StepRepr_ProductDefinitionShape();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ProductDefinitionShape, StepRepr_PropertyDefinition)
-
-protected:
-private:
 };
 
 #endif // _StepRepr_ProductDefinitionShape_HeaderFile

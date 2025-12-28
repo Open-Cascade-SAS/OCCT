@@ -25,9 +25,6 @@
 class StepVisual_PlanarBox;
 class TCollection_HAsciiString;
 
-class StepVisual_CameraModelD2;
-DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD2, StepVisual_CameraModel)
-
 class StepVisual_CameraModelD2 : public StepVisual_CameraModel
 {
 
@@ -35,24 +32,23 @@ public:
   //! Returns a CameraModelD2
   Standard_EXPORT StepVisual_CameraModelD2();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepVisual_PlanarBox)&     aViewWindow,
-                            const Standard_Boolean                  aViewWindowClipping);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepVisual_PlanarBox>&     aViewWindow,
+                            const bool                                   aViewWindowClipping);
 
-  Standard_EXPORT void SetViewWindow(const Handle(StepVisual_PlanarBox)& aViewWindow);
+  Standard_EXPORT void SetViewWindow(const occ::handle<StepVisual_PlanarBox>& aViewWindow);
 
-  Standard_EXPORT Handle(StepVisual_PlanarBox) ViewWindow() const;
+  Standard_EXPORT occ::handle<StepVisual_PlanarBox> ViewWindow() const;
 
-  Standard_EXPORT void SetViewWindowClipping(const Standard_Boolean aViewWindowClipping);
+  Standard_EXPORT void SetViewWindowClipping(const bool aViewWindowClipping);
 
-  Standard_EXPORT Standard_Boolean ViewWindowClipping() const;
+  Standard_EXPORT bool ViewWindowClipping() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModelD2, StepVisual_CameraModel)
 
-protected:
 private:
-  Handle(StepVisual_PlanarBox) viewWindow;
-  Standard_Boolean             viewWindowClipping;
+  occ::handle<StepVisual_PlanarBox> viewWindow;
+  bool                              viewWindowClipping;
 };
 
 #endif // _StepVisual_CameraModelD2_HeaderFile

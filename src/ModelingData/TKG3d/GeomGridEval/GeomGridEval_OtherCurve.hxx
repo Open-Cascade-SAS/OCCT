@@ -19,7 +19,6 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 #include <functional>
 
@@ -62,28 +61,28 @@ public:
   //! @return array of evaluated points (1-based indexing),
   //!         or empty array if no parameters
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first derivative.
   //! @param theParams array of parameter values
   //! @return array of CurveD1 (1-based indexing),
   //!         or empty array if no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first and second derivatives.
   //! @param theParams array of parameter values
   //! @return array of CurveD2 (1-based indexing),
   //!         or empty array if no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first, second, and third derivatives.
   //! @param theParams array of parameter values
   //! @return array of CurveD3 (1-based indexing),
   //!         or empty array if no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate Nth derivative at all grid points.
   //! For orders 1-3, reuses EvaluateGridD1/D2/D3.
@@ -91,8 +90,9 @@ public:
   //! @param theParams array of parameter values
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theParams,
-                                                            int                         theN) const;
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theParams,
+    int                               theN) const;
 
 private:
   std::reference_wrapper<const Adaptor3d_Curve> myCurve;

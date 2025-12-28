@@ -39,7 +39,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_Array1OfShape.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_Line3DDriver, TFunction_Driver)
 
@@ -51,28 +51,28 @@ DNaming_Line3DDriver::DNaming_Line3DDriver() {}
 // function : Validate
 // purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_Line3DDriver::Validate(Handle(TFunction_Logbook)&) const {}
+void DNaming_Line3DDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute
 // purpose  : Analyse in <theLog> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_Line3DDriver::MustExecute(const Handle(TFunction_Logbook)&) const
+bool DNaming_Line3DDriver::MustExecute(const occ::handle<TFunction_Logbook>&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog) const
+int DNaming_Line3DDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 {
-  Handle(TFunction_Function) aFunction;
+  occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
     return -1;
 
   aFunction->SetFailure(NOTDONE);
-  Handle(TNaming_NamedShape) aPrevILine3D = DNaming::GetFunctionResult(aFunction);
+  occ::handle<TNaming_NamedShape> aPrevILine3D = DNaming::GetFunctionResult(aFunction);
   // Save location
   TopLoc_Location aLocation;
   if (!aPrevILine3D.IsNull() && !aPrevILine3D->IsEmpty())
@@ -80,26 +80,27 @@ Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog
     aLocation = aPrevILine3D->Get().Location();
   }
 
-  const Standard_Integer aType    = DNaming::GetInteger(aFunction, LINE3D_TYPE)->Get();
-  Standard_Boolean       isClosed = (aType != 0);
-  Standard_Integer       aCounter(0), aLength = DNaming::GetInteger(aFunction, LINE3D_PNTNB)->Get();
+  const int aType    = DNaming::GetInteger(aFunction, LINE3D_TYPE)->Get();
+  bool      isClosed = (aType != 0);
+  int       aCounter(0), aLength = DNaming::GetInteger(aFunction, LINE3D_PNTNB)->Get();
   if (aLength < 2)
   {
     aFunction->SetFailure(WRONG_ARGUMENT);
     return -1;
   }
 
-  Handle(TNaming_NamedShape) aNS1, aNS2;
-  BRepBuilderAPI_MakeWire    aMakeWire;
-  TopoDS_Wire                aWire;
-  TopoDS_Shape               aShape1, aShape2;
+  occ::handle<TNaming_NamedShape> aNS1, aNS2;
+  BRepBuilderAPI_MakeWire         aMakeWire;
+  TopoDS_Wire                     aWire;
+  TopoDS_Shape                    aShape1, aShape2;
 
-  TopTools_Array1OfShape anArV(1, aLength); // aLength - number of points
+  NCollection_Array1<TopoDS_Shape> anArV(1, aLength); // aLength - number of points
   for (aCounter = 1; aCounter <= aLength - 1; aCounter++)
   {
-    Handle(TDataStd_UAttribute) aRefP1 = DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + aCounter));
-    aNS1                               = DNaming::GetObjectValue(aRefP1);
-    Handle(TDataStd_UAttribute) aRefP2 =
+    occ::handle<TDataStd_UAttribute> aRefP1 =
+      DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + aCounter));
+    aNS1 = DNaming::GetObjectValue(aRefP1);
+    occ::handle<TDataStd_UAttribute> aRefP2 =
       DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + aCounter + 1));
     aNS2 = DNaming::GetObjectValue(aRefP2);
 #ifdef OCCT_DEBUG
@@ -156,9 +157,9 @@ Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog
   //  } else // closed
   if (isClosed)
   {
-    Handle(TDataStd_UAttribute) aRefP1 = DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + 1));
-    aNS1                               = DNaming::GetObjectValue(aRefP1);
-    aShape1                            = aNS1->Get();
+    occ::handle<TDataStd_UAttribute> aRefP1 = DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + 1));
+    aNS1                                    = DNaming::GetObjectValue(aRefP1);
+    aShape1                                 = aNS1->Get();
     BRepBuilderAPI_MakeEdge aMakeEdge(TopoDS::Vertex(aShape2), TopoDS::Vertex(aShape1));
     if (aMakeEdge.IsDone())
       aMakeWire.Add(aMakeEdge.Edge());
@@ -191,9 +192,9 @@ Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog
 
   // restore location
   if (!aLocation.IsIdentity())
-    TNaming::Displace(aResultLabel, aLocation, Standard_True);
+    TNaming::Displace(aResultLabel, aLocation, true);
 
-  theLog->SetValid(aResultLabel, Standard_True);
+  theLog->SetValid(aResultLabel, true);
 
   aFunction->SetFailure(DONE);
   return 0;
@@ -203,10 +204,10 @@ Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog
 // function : LoadNamingDS
 // purpose  : Loads a Line3D in a data framework
 //=======================================================================
-void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&              theResultLabel,
-                                        const TopoDS_Wire&            theWire,
-                                        const TopTools_Array1OfShape& theArV,
-                                        const Standard_Boolean        isClosed) const
+void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        theResultLabel,
+                                        const TopoDS_Wire&                      theWire,
+                                        const NCollection_Array1<TopoDS_Shape>& theArV,
+                                        const bool                              isClosed) const
 {
   if (theWire.IsNull())
     return;
@@ -216,18 +217,18 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&              theResultL
 #ifdef OCCT_DEBUG
   TDataStd_Name::Set(theResultLabel, "Line3DCurve");
 #endif
-  Standard_Integer aLength = theArV.Length();
+  int aLength = theArV.Length();
   if (aLength < 2)
     return;
-  TopoDS_Shape           aShape;
-  TopTools_Array1OfShape anArE(1, aLength);
-  TopoDS_Vertex          aFirst, aLast;
-  for (Standard_Integer i = 1; i < aLength; i++)
+  TopoDS_Shape                     aShape;
+  NCollection_Array1<TopoDS_Shape> anArE(1, aLength);
+  TopoDS_Vertex                    aFirst, aLast;
+  for (int i = 1; i < aLength; i++)
   {
-    gp_Pnt           aP1    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(i)));
-    gp_Pnt           aP2    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(i + 1)));
-    Standard_Boolean aFound = Standard_False;
-    TopExp_Explorer  anExp(theWire, TopAbs_EDGE);
+    gp_Pnt          aP1    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(i)));
+    gp_Pnt          aP2    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(i + 1)));
+    bool            aFound = false;
+    TopExp_Explorer anExp(theWire, TopAbs_EDGE);
     for (; anExp.More(); anExp.Next())
     {
       const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());
@@ -238,21 +239,21 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&              theResultL
       if (aP1.IsEqual(aPE1, Precision::Confusion()) && aP2.IsEqual(aPE2, Precision::Confusion()))
       {
         anArE.SetValue(i, anE);
-        aFound = Standard_True;
+        aFound = true;
         break;
       }
     }
     if (!aFound)
       anArE.SetValue(i, aShape);
     else
-      aFound = Standard_False;
+      aFound = false;
   }
   if (isClosed)
   {
-    Standard_Boolean aFound = Standard_False;
-    gp_Pnt           aP1    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(aLength)));
-    gp_Pnt           aP2    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(1)));
-    TopExp_Explorer  anExp(theWire, TopAbs_EDGE);
+    bool            aFound = false;
+    gp_Pnt          aP1    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(aLength)));
+    gp_Pnt          aP2    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(1)));
+    TopExp_Explorer anExp(theWire, TopAbs_EDGE);
     for (; anExp.More(); anExp.Next())
     {
       const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());
@@ -263,7 +264,7 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&              theResultL
       if (aP1.IsEqual(aPE1, Precision::Confusion()) && aP2.IsEqual(aPE2, Precision::Confusion()))
       {
         anArE.SetValue(aLength, anE);
-        aFound = Standard_True;
+        aFound = true;
         // closed case
         aFirst = aV2;
         aLast  = aV1;
@@ -282,7 +283,7 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&              theResultL
 
   // put edges
   // from 1:aLength - edges
-  for (Standard_Integer i1 = 1; i1 <= aLength; i1++)
+  for (int i1 = 1; i1 <= aLength; i1++)
   {
     TDF_Label aLab = theResultLabel.FindChild(i1);
     if (!anArE.Value(i1).IsNull())
@@ -292,7 +293,7 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&              theResultL
     }
     else
     {
-      Handle(TNaming_NamedShape) aNS;
+      occ::handle<TNaming_NamedShape> aNS;
       if (aLab.FindAttribute(TNaming_NamedShape::GetID(), aNS))
         TNaming_Builder aB(aLab);
     }
@@ -309,7 +310,7 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&              theResultL
   }
   else
   {
-    Handle(TNaming_NamedShape) aNS;
+    occ::handle<TNaming_NamedShape> aNS;
     if (aLab1.FindAttribute(TNaming_NamedShape::GetID(), aNS))
       TNaming_Builder aB(aLab1);
   }
@@ -320,7 +321,7 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&              theResultL
   }
   else
   {
-    Handle(TNaming_NamedShape) aNS;
+    occ::handle<TNaming_NamedShape> aNS;
     if (aLab2.FindAttribute(TNaming_NamedShape::GetID(), aNS))
       TNaming_Builder aB(aLab2);
   }

@@ -25,9 +25,6 @@
 #include <Geom_Surface.hxx>
 class Geom_Curve;
 
-class Geom_SweptSurface;
-DEFINE_STANDARD_HANDLE(Geom_SweptSurface, Geom_Surface)
-
 //! Describes the common behavior for surfaces
 //! constructed by sweeping a curve with another curve.
 //! The Geom package provides two concrete derived
@@ -45,7 +42,7 @@ public:
   //! G1 : tangency continuity all along the surface,
   //! G2 : curvature continuity all along the surface,
   //! CN : the order of continuity is infinite.
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! Returns the reference direction of the swept surface.
   //! For a surface of revolution it is the direction of the
@@ -56,20 +53,18 @@ public:
   //! Returns the referenced curve of the surface.
   //! For a surface of revolution it is the revolution curve,
   //! for a surface of linear extrusion it is the extruded curve.
-  Standard_EXPORT Handle(Geom_Curve) BasisCurve() const;
+  Standard_EXPORT occ::handle<Geom_Curve> BasisCurve() const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_SweptSurface, Geom_Surface)
 
 protected:
-  Handle(Geom_Curve) basisCurve;
-  gp_Dir             direction;
-  GeomAbs_Shape      smooth;
-
-private:
+  occ::handle<Geom_Curve> basisCurve;
+  gp_Dir                  direction;
+  GeomAbs_Shape           smooth;
 };
 
 #endif // _Geom_SweptSurface_HeaderFile

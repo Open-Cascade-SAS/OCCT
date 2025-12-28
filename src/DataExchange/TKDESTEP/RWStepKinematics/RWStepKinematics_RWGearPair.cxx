@@ -32,10 +32,10 @@ RWStepKinematics_RWGearPair::RWStepKinematics_RWGearPair() {}
 
 //=================================================================================================
 
-void RWStepKinematics_RWGearPair::ReadStep(const Handle(StepData_StepReaderData)& theData,
-                                           const Standard_Integer                 theNum,
-                                           Handle(Interface_Check)&               theArch,
-                                           const Handle(StepKinematics_GearPair)& theEnt) const
+void RWStepKinematics_RWGearPair::ReadStep(const occ::handle<StepData_StepReaderData>& theData,
+                                           const int                                   theNum,
+                                           occ::handle<Interface_Check>&               theArch,
+                                           const occ::handle<StepKinematics_GearPair>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 11, theArch, "gear_pair"))
@@ -43,20 +43,20 @@ void RWStepKinematics_RWGearPair::ReadStep(const Handle(StepData_StepReaderData)
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -67,11 +67,11 @@ void RWStepKinematics_RWGearPair::ReadStep(const Handle(StepData_StepReaderData)
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -79,7 +79,7 @@ void RWStepKinematics_RWGearPair::ReadStep(const Handle(StepData_StepReaderData)
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -89,7 +89,7 @@ void RWStepKinematics_RWGearPair::ReadStep(const Handle(StepData_StepReaderData)
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -99,19 +99,19 @@ void RWStepKinematics_RWGearPair::ReadStep(const Handle(StepData_StepReaderData)
 
   // Own fields of GearPair
 
-  Standard_Real aRadiusFirstLink;
+  double aRadiusFirstLink;
   theData->ReadReal(theNum, 7, "radius_first_link", theArch, aRadiusFirstLink);
 
-  Standard_Real aRadiusSecondLink;
+  double aRadiusSecondLink;
   theData->ReadReal(theNum, 8, "radius_second_link", theArch, aRadiusSecondLink);
 
-  Standard_Real aBevel;
+  double aBevel;
   theData->ReadReal(theNum, 9, "bevel", theArch, aBevel);
 
-  Standard_Real aHelicalAngle;
+  double aHelicalAngle;
   theData->ReadReal(theNum, 10, "helical_angle", theArch, aHelicalAngle);
 
-  Standard_Real aGearRatio;
+  double aGearRatio;
   theData->ReadReal(theNum, 11, "gear_ratio", theArch, aGearRatio);
 
   // Initialize entity
@@ -131,8 +131,9 @@ void RWStepKinematics_RWGearPair::ReadStep(const Handle(StepData_StepReaderData)
 
 //=================================================================================================
 
-void RWStepKinematics_RWGearPair::WriteStep(StepData_StepWriter&                   theSW,
-                                            const Handle(StepKinematics_GearPair)& theEnt) const
+void RWStepKinematics_RWGearPair::WriteStep(
+  StepData_StepWriter&                        theSW,
+  const occ::handle<StepKinematics_GearPair>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -173,8 +174,8 @@ void RWStepKinematics_RWGearPair::WriteStep(StepData_StepWriter&                
 
 //=================================================================================================
 
-void RWStepKinematics_RWGearPair::Share(const Handle(StepKinematics_GearPair)& theEnt,
-                                        Interface_EntityIterator&              iter) const
+void RWStepKinematics_RWGearPair::Share(const occ::handle<StepKinematics_GearPair>& theEnt,
+                                        Interface_EntityIterator&                   iter) const
 {
 
   // Inherited fields of RepresentationItem

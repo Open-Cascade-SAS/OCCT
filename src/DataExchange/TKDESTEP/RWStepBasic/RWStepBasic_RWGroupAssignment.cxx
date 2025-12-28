@@ -28,10 +28,11 @@ RWStepBasic_RWGroupAssignment::RWStepBasic_RWGroupAssignment() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWGroupAssignment::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepBasic_GroupAssignment)& ent) const
+void RWStepBasic_RWGroupAssignment::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepBasic_GroupAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "group_assignment"))
@@ -39,7 +40,7 @@ void RWStepBasic_RWGroupAssignment::ReadStep(const Handle(StepData_StepReaderDat
 
   // Own fields of GroupAssignment
 
-  Handle(StepBasic_Group) aAssignedGroup;
+  occ::handle<StepBasic_Group> aAssignedGroup;
   data->ReadEntity(num, 1, "assigned_group", ach, STANDARD_TYPE(StepBasic_Group), aAssignedGroup);
 
   // Initialize entity
@@ -48,8 +49,9 @@ void RWStepBasic_RWGroupAssignment::ReadStep(const Handle(StepData_StepReaderDat
 
 //=================================================================================================
 
-void RWStepBasic_RWGroupAssignment::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepBasic_GroupAssignment)& ent) const
+void RWStepBasic_RWGroupAssignment::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepBasic_GroupAssignment>& ent) const
 {
 
   // Own fields of GroupAssignment
@@ -59,8 +61,8 @@ void RWStepBasic_RWGroupAssignment::WriteStep(StepData_StepWriter&              
 
 //=================================================================================================
 
-void RWStepBasic_RWGroupAssignment::Share(const Handle(StepBasic_GroupAssignment)& ent,
-                                          Interface_EntityIterator&                iter) const
+void RWStepBasic_RWGroupAssignment::Share(const occ::handle<StepBasic_GroupAssignment>& ent,
+                                          Interface_EntityIterator&                     iter) const
 {
 
   // Own fields of GroupAssignment

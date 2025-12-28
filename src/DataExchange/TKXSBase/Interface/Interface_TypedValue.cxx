@@ -22,14 +22,14 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_TypedValue, MoniTool_TypedValue)
 // static  char defmess[30]; svv #2
 //   Fonctions Satisfies offertes en standard ...
 //  svv#2
-// static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
+// static bool StaticPath(const occ::handle<TCollection_HAsciiString>& val)
 //{
 //   OSD_Path apath;
 //   return apath.IsValid (TCollection_AsciiString(val->ToCString()));
 // }
-Interface_TypedValue::Interface_TypedValue(const Standard_CString    name,
+Interface_TypedValue::Interface_TypedValue(const char*               name,
                                            const Interface_ParamType type,
-                                           const Standard_CString    init)
+                                           const char*               init)
     : MoniTool_TypedValue(name, Interface_TypedValue::ParamTypeToValueType(type), init)
 {
 }

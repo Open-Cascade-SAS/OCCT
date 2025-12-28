@@ -36,14 +36,15 @@
 
 IGESSolid_ToolRightAngularWedge::IGESSolid_ToolRightAngularWedge() {}
 
-void IGESSolid_ToolRightAngularWedge::ReadOwnParams(const Handle(IGESSolid_RightAngularWedge)& ent,
-                                                    const Handle(IGESData_IGESReaderData)& /* IR */,
-                                                    IGESData_ParamReader& PR) const
+void IGESSolid_ToolRightAngularWedge::ReadOwnParams(
+  const occ::handle<IGESSolid_RightAngularWedge>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
+  IGESData_ParamReader& PR) const
 {
-  gp_XYZ        tempSize, tempCorner, tempXAxis, tempZAxis;
-  Standard_Real lowX;
-  Standard_Real tempreal;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  gp_XYZ tempSize, tempCorner, tempXAxis, tempZAxis;
+  double lowX;
+  double tempreal;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // clang-format off
   PR.ReadXYZ(PR.CurrentList(1, 3), "Size of RightAngularWedge", tempSize); //szv#4:S4163:12Mar99 `st=` not needed
@@ -143,15 +144,16 @@ void IGESSolid_ToolRightAngularWedge::ReadOwnParams(const Handle(IGESSolid_Right
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempSize, lowX, tempCorner, tempXAxis, tempZAxis);
-  Standard_Real eps = 1.E-05;
+  double eps = 1.E-05;
   if (!tempXAxis.IsEqual(ent->XAxis().XYZ(), eps))
     PR.AddWarning("XAxis poorly unitary, normalized");
   if (!tempZAxis.IsEqual(ent->ZAxis().XYZ(), eps))
     PR.AddWarning("ZAxis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolRightAngularWedge::WriteOwnParams(const Handle(IGESSolid_RightAngularWedge)& ent,
-                                                     IGESData_IGESWriter& IW) const
+void IGESSolid_ToolRightAngularWedge::WriteOwnParams(
+  const occ::handle<IGESSolid_RightAngularWedge>& ent,
+  IGESData_IGESWriter&                            IW) const
 {
   IW.Send(ent->Size().X());
   IW.Send(ent->Size().Y());
@@ -169,14 +171,15 @@ void IGESSolid_ToolRightAngularWedge::WriteOwnParams(const Handle(IGESSolid_Righ
 }
 
 void IGESSolid_ToolRightAngularWedge::OwnShared(
-  const Handle(IGESSolid_RightAngularWedge)& /* ent */,
+  const occ::handle<IGESSolid_RightAngularWedge>& /* ent */,
   Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESSolid_ToolRightAngularWedge::OwnCopy(const Handle(IGESSolid_RightAngularWedge)& another,
-                                              const Handle(IGESSolid_RightAngularWedge)& ent,
-                                              Interface_CopyTool& /* TC */) const
+void IGESSolid_ToolRightAngularWedge::OwnCopy(
+  const occ::handle<IGESSolid_RightAngularWedge>& another,
+  const occ::handle<IGESSolid_RightAngularWedge>& ent,
+  Interface_CopyTool& /* TC */) const
 {
   ent->Init(another->Size(),
             another->XSmallLength(),
@@ -186,7 +189,7 @@ void IGESSolid_ToolRightAngularWedge::OwnCopy(const Handle(IGESSolid_RightAngula
 }
 
 IGESData_DirChecker IGESSolid_ToolRightAngularWedge::DirChecker(
-  const Handle(IGESSolid_RightAngularWedge)& /* ent */) const
+  const occ::handle<IGESSolid_RightAngularWedge>& /* ent */) const
 {
   IGESData_DirChecker DC(152, 0);
   DC.Structure(IGESData_DefVoid);
@@ -198,12 +201,12 @@ IGESData_DirChecker IGESSolid_ToolRightAngularWedge::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolRightAngularWedge::OwnCheck(const Handle(IGESSolid_RightAngularWedge)& ent,
+void IGESSolid_ToolRightAngularWedge::OwnCheck(const occ::handle<IGESSolid_RightAngularWedge>& ent,
                                                const Interface_ShareTool&,
-                                               Handle(Interface_Check)& ach) const
+                                               occ::handle<Interface_Check>& ach) const
 {
-  Standard_Real eps    = 1.E-04;
-  Standard_Real prosca = ent->XAxis() * ent->ZAxis();
+  double eps    = 1.E-04;
+  double prosca = ent->XAxis() * ent->ZAxis();
   if (prosca < -eps || prosca > eps)
     ach->AddFail("Local Z axis : Not orthogonal to X axis");
   if (ent->Size().X() <= 0. || ent->Size().Y() <= 0. || ent->Size().Z() <= 0.)
@@ -214,10 +217,10 @@ void IGESSolid_ToolRightAngularWedge::OwnCheck(const Handle(IGESSolid_RightAngul
     ach->AddFail("Small X Length : Value not < LX");
 }
 
-void IGESSolid_ToolRightAngularWedge::OwnDump(const Handle(IGESSolid_RightAngularWedge)& ent,
+void IGESSolid_ToolRightAngularWedge::OwnDump(const occ::handle<IGESSolid_RightAngularWedge>& ent,
                                               const IGESData_IGESDumper& /* dumper */,
-                                              Standard_OStream&      S,
-                                              const Standard_Integer level) const
+                                              Standard_OStream& S,
+                                              const int         level) const
 {
   S << "IGESSolid_RightAngularWedge\n"
     << "Size   : ";

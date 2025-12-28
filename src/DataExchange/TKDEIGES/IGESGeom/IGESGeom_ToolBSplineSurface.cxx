@@ -31,9 +31,10 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray2OfXYZ.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // MGE 31/07/98
 //=================================================================================================
@@ -42,9 +43,10 @@ IGESGeom_ToolBSplineSurface::IGESGeom_ToolBSplineSurface() {}
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSurface)& ent,
-                                                const Handle(IGESData_IGESReaderData)& /* IR */,
-                                                IGESData_ParamReader& PR) const
+void IGESGeom_ToolBSplineSurface::ReadOwnParams(
+  const occ::handle<IGESGeom_BSplineSurface>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
+  IGESData_ParamReader& PR) const
 {
   // MGE 31/07/98
   // Building of messages
@@ -56,21 +58,21 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
   Message_Msg Msg159("XSTEP_159");
   //========================================
 
-  Standard_Integer              I, J;
-  Standard_Integer              anIndexU, anIndexV, aDegU, aDegV;
-  Standard_Boolean              aCloseU, aCloseV, aPolynom, aPeriodU, aPeriodV;
-  Standard_Real                 aUmin, aUmax, aVmin = 0., aVmax = 0.;
-  Standard_Real                 tempVal;
-  gp_XYZ                        tempXYZ;
-  Handle(TColStd_HArray1OfReal) allKnotsU;
-  Handle(TColStd_HArray1OfReal) allKnotsV;
-  Handle(TColStd_HArray2OfReal) allWeights;
-  Handle(TColgp_HArray2OfXYZ)   allPoles;
+  int                                      I, J;
+  int                                      anIndexU, anIndexV, aDegU, aDegV;
+  bool                                     aCloseU, aCloseV, aPolynom, aPeriodU, aPeriodV;
+  double                                   aUmin, aUmax, aVmin = 0., aVmax = 0.;
+  double                                   tempVal;
+  gp_XYZ                                   tempXYZ;
+  occ::handle<NCollection_HArray1<double>> allKnotsU;
+  occ::handle<NCollection_HArray1<double>> allKnotsV;
+  occ::handle<NCollection_HArray2<double>> allWeights;
+  occ::handle<NCollection_HArray2<gp_XYZ>> allPoles;
 
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Boolean FlagindexU = PR.ReadInteger(PR.Current(), anIndexU);
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  bool FlagindexU = PR.ReadInteger(PR.Current(), anIndexU);
 
-  Standard_Boolean FlagindexV = PR.ReadInteger(PR.Current(), anIndexV);
+  bool FlagindexV = PR.ReadInteger(PR.Current(), anIndexV);
 
   if (!FlagindexU || !FlagindexV)
   {
@@ -78,9 +80,9 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
     PR.SendFail(Msg97);
   }
 
-  Standard_Boolean FlagdegU = PR.ReadInteger(PR.Current(), aDegU);
+  bool FlagdegU = PR.ReadInteger(PR.Current(), aDegU);
 
-  Standard_Boolean FlagdegV = PR.ReadInteger(PR.Current(), aDegV);
+  bool FlagdegV = PR.ReadInteger(PR.Current(), aDegV);
 
   if (!FlagdegU || !FlagdegV)
   {
@@ -95,16 +97,16 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
   PR.ReadBoolean(PR.Current(), Msg102, aPeriodV);
 
   /*
-    Standard_Boolean FlagindexU =
+    bool FlagindexU =
       PR.ReadInteger(PR.Current(), "Upper Index in U", anIndexU);
 
-    Standard_Boolean FlagindexV =
+    bool FlagindexV =
       PR.ReadInteger(PR.Current(), "Upper Index in V", anIndexV);
 
-    Standard_Boolean FlagdegU  =
+    bool FlagdegU  =
       PR.ReadInteger(PR.Current(), "Degree Of First Basis Functions", aDegU);
 
-    Standard_Boolean FlagdegV  =
+    bool FlagdegV  =
       PR.ReadInteger(PR.Current(), "Degree Of Second Basis Functions",aDegV);
 
     st = PR.ReadBoolean(PR.Current(), "Closed/Open flag in U Direction",aCloseU);
@@ -115,8 +117,8 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
   */
   if (FlagdegU && FlagindexU)
   {
-    //      allKnotsU = new TColStd_HArray1OfReal(-aDegU, anIndexU+1);  done by :
-    Standard_Integer tempind = anIndexU + aDegU + 2;
+    //      allKnotsU = new NCollection_HArray1<double>(-aDegU, anIndexU+1);  done by :
+    int tempind = anIndexU + aDegU + 2;
     // clang-format off
       PR.ReadReals(PR.CurrentList(tempind), Msg103, allKnotsU, -aDegU); //szv#4:S4163:12Mar99 `st=` not needed
       //st = PR.ReadReals(PR.CurrentList(tempind), "First knot sequence values", allKnotsU, -aDegU);
@@ -124,8 +126,8 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
 
   if ( FlagdegV && FlagindexV )
     {
-//      allKnotsV = new TColStd_HArray1OfReal(-aDegV, anIndexV+1);  done by :
-      Standard_Integer tempind = anIndexV+aDegV+2;
+//      allKnotsV = new NCollection_HArray1<double>(-aDegV, anIndexV+1);  done by :
+      int tempind = anIndexV+aDegV+2;
       PR.ReadReals(PR.CurrentList(tempind), Msg103, allKnotsV, -aDegV); //szv#4:S4163:12Mar99 `st=` not needed
       //st = PR.ReadReals(PR.CurrentList(tempind), "Second knot sequence values", allKnotsV, -aDegV);
     // clang-format on
@@ -133,11 +135,11 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
 
   if (FlagindexU && FlagindexV)
   {
-    allWeights = new TColStd_HArray2OfReal(0, anIndexU, 0, anIndexV);
-    allPoles   = new TColgp_HArray2OfXYZ(0, anIndexU, 0, anIndexV);
+    allWeights = new NCollection_HArray2<double>(0, anIndexU, 0, anIndexV);
+    allPoles   = new NCollection_HArray2<gp_XYZ>(0, anIndexU, 0, anIndexV);
 
-    Standard_Boolean BadWeigth = Standard_False;
-    Message_Msg      Msg105("XSTEP_105");
+    bool        BadWeigth = false;
+    Message_Msg Msg105("XSTEP_105");
 
     for (J = 0; J <= anIndexV; J++)
     {
@@ -149,7 +151,7 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
         {
           if (tempVal < Precision::PConfusion())
           { // skl for OCC2821 11.06.2003
-            BadWeigth = Standard_True;
+            BadWeigth = true;
           }
           allWeights->SetValue(I, J, tempVal);
         }
@@ -205,10 +207,10 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
     st = PR.ReadReal(PR.Current(), "Ending Value For U Direction", aVmax);
   */
   //  PROTECTION against ANSYS 5.3 which writes 3 additional floats ...
-  Standard_Integer icur = PR.CurrentNumber(), imax = PR.NbParams();
-  Standard_Real    bid;
-  Standard_Integer pbfin = 0;
-  // st = Standard_True; //szv#4:S4163:12Mar99 not needed
+  int    icur = PR.CurrentNumber(), imax = PR.NbParams();
+  double bid;
+  int    pbfin = 0;
+  // st = true; //szv#4:S4163:12Mar99 not needed
   while (imax >= icur)
   {
     Interface_ParamType pt = PR.ParamType(icur);
@@ -256,14 +258,14 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const Handle(IGESGeom_BSplineSur
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineSurface::WriteOwnParams(const Handle(IGESGeom_BSplineSurface)& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+void IGESGeom_ToolBSplineSurface::WriteOwnParams(const occ::handle<IGESGeom_BSplineSurface>& ent,
+                                                 IGESData_IGESWriter& IW) const
 {
-  Standard_Integer indU = ent->UpperIndexU();
-  Standard_Integer indV = ent->UpperIndexV();
-  Standard_Integer degU = ent->DegreeU();
-  Standard_Integer degV = ent->DegreeV();
-  Standard_Integer I, J;
+  int indU = ent->UpperIndexU();
+  int indV = ent->UpperIndexV();
+  int degU = ent->DegreeU();
+  int degV = ent->DegreeV();
+  int I, J;
   IW.Send(indU);
   IW.Send(indV);
   IW.Send(degU);
@@ -300,22 +302,22 @@ void IGESGeom_ToolBSplineSurface::WriteOwnParams(const Handle(IGESGeom_BSplineSu
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineSurface::OwnShared(const Handle(IGESGeom_BSplineSurface)& /* ent */,
+void IGESGeom_ToolBSplineSurface::OwnShared(const occ::handle<IGESGeom_BSplineSurface>& /* ent */,
                                             Interface_EntityIterator& /* iter */) const
 {
 }
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineSurface::OwnCopy(const Handle(IGESGeom_BSplineSurface)& another,
-                                          const Handle(IGESGeom_BSplineSurface)& ent,
+void IGESGeom_ToolBSplineSurface::OwnCopy(const occ::handle<IGESGeom_BSplineSurface>& another,
+                                          const occ::handle<IGESGeom_BSplineSurface>& ent,
                                           Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer I, J;
-  Standard_Integer anIndexU, anIndexV, aDegU, aDegV;
-  Standard_Boolean aCloseU, aCloseV, aPolynom;
-  Standard_Boolean aPeriodU, aPeriodV;
-  Standard_Real    aUmin, aUmax, aVmin, aVmax;
+  int    I, J;
+  int    anIndexU, anIndexV, aDegU, aDegV;
+  bool   aCloseU, aCloseV, aPolynom;
+  bool   aPeriodU, aPeriodV;
+  double aUmin, aUmax, aVmin, aVmax;
 
   anIndexU = another->UpperIndexU();
   anIndexV = another->UpperIndexV();
@@ -327,8 +329,10 @@ void IGESGeom_ToolBSplineSurface::OwnCopy(const Handle(IGESGeom_BSplineSurface)&
   aPeriodU = another->IsPeriodicU();
   aPeriodV = another->IsPeriodicV();
 
-  Handle(TColStd_HArray1OfReal) allKnotsU = new TColStd_HArray1OfReal(-aDegU, anIndexU + 1);
-  Handle(TColStd_HArray1OfReal) allKnotsV = new TColStd_HArray1OfReal(-aDegV, anIndexV + 1);
+  occ::handle<NCollection_HArray1<double>> allKnotsU =
+    new NCollection_HArray1<double>(-aDegU, anIndexU + 1);
+  occ::handle<NCollection_HArray1<double>> allKnotsV =
+    new NCollection_HArray1<double>(-aDegV, anIndexV + 1);
 
   for (I = -aDegU; I <= anIndexU + 1; I++)
     allKnotsU->SetValue(I, another->KnotU(I));
@@ -336,8 +340,10 @@ void IGESGeom_ToolBSplineSurface::OwnCopy(const Handle(IGESGeom_BSplineSurface)&
   for (I = -aDegV; I <= anIndexV + 1; I++)
     allKnotsV->SetValue(I, another->KnotV(I));
 
-  Handle(TColStd_HArray2OfReal) allWeights = new TColStd_HArray2OfReal(0, anIndexU, 0, anIndexV);
-  Handle(TColgp_HArray2OfXYZ)   allPoles   = new TColgp_HArray2OfXYZ(0, anIndexU, 0, anIndexV);
+  occ::handle<NCollection_HArray2<double>> allWeights =
+    new NCollection_HArray2<double>(0, anIndexU, 0, anIndexV);
+  occ::handle<NCollection_HArray2<gp_XYZ>> allPoles =
+    new NCollection_HArray2<gp_XYZ>(0, anIndexU, 0, anIndexV);
 
   for (J = 0; J <= anIndexV; J++)
     for (I = 0; I <= anIndexU; I++)
@@ -375,7 +381,7 @@ void IGESGeom_ToolBSplineSurface::OwnCopy(const Handle(IGESGeom_BSplineSurface)&
 //=================================================================================================
 
 IGESData_DirChecker IGESGeom_ToolBSplineSurface::DirChecker(
-  const Handle(IGESGeom_BSplineSurface)& /* ent */) const
+  const occ::handle<IGESGeom_BSplineSurface>& /* ent */) const
 {
   IGESData_DirChecker DC(128, 0, 9);
   DC.Structure(IGESData_DefVoid);
@@ -388,9 +394,9 @@ IGESData_DirChecker IGESGeom_ToolBSplineSurface::DirChecker(
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineSurface::OwnCheck(const Handle(IGESGeom_BSplineSurface)& ent,
+void IGESGeom_ToolBSplineSurface::OwnCheck(const occ::handle<IGESGeom_BSplineSurface>& ent,
                                            const Interface_ShareTool&,
-                                           Handle(Interface_Check)& ach) const
+                                           occ::handle<Interface_Check>& ach) const
 {
   // MGE 31/07/98
   // Building of messages
@@ -400,7 +406,7 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const Handle(IGESGeom_BSplineSurface)
   // Message_Msg Msg161("XSTEP_161");
   //========================================
 
-  // Standard_Real eps = 1.E-04;    // Tolerance des tests ?? //szv#4:S4163:12Mar99 not needed
+  // double eps = 1.E-04;    // Tolerance des tests ?? //szv#4:S4163:12Mar99 not needed
 
   // modified by rln 18/12/97 check of flag PROP2 according to IGES Standard
   // The same as in IGESGeom_ToolBSplineCurve::OwnCheck()
@@ -411,7 +417,7 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const Handle(IGESGeom_BSplineSurface)
   /*
     if (ent->UMin() == ent->KnotU(-ent->DegreeU()        ) &&
         ent->UMax() == ent->KnotU( ent->UpperIndexU() + 1)   ) {
-      Standard_Real udif = Max (ent->Pole(0, 0).SquareDistance (ent->Pole(ent->UpperIndexU(), 0)),
+      double udif = Max (ent->Pole(0, 0).SquareDistance (ent->Pole(ent->UpperIndexU(), 0)),
                                 ent->Pole(0, ent->UpperIndexV()).SquareDistance
   (ent->Pole(ent->UpperIndexU(), ent->UpperIndexV())));
   //  if ((ent->UMin() == ent->UMax()) && !ent->IsClosedU())
@@ -424,7 +430,7 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const Handle(IGESGeom_BSplineSurface)
 
     if (ent->VMin() == ent->KnotV(-ent->DegreeV()        ) &&
         ent->VMax() == ent->KnotV( ent->UpperIndexV() + 1)   ) {
-      Standard_Real vdif = Max (ent->Pole(0, 0).SquareDistance (ent->Pole(0, ent->UpperIndexV())),
+      double vdif = Max (ent->Pole(0, 0).SquareDistance (ent->Pole(0, ent->UpperIndexV())),
                                 ent->Pole(ent->UpperIndexU(), 0).SquareDistance
   (ent->Pole(ent->UpperIndexU(), ent->UpperIndexV())));
   //  if ((ent->VMin() == ent->VMax()) && !ent->IsClosedV())
@@ -436,10 +442,10 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const Handle(IGESGeom_BSplineSurface)
     }
   */
 
-  Standard_Boolean Flag = Standard_True;
-  Standard_Integer indU = ent->UpperIndexU();
-  Standard_Integer indV = ent->UpperIndexV();
-  Standard_Integer I, J;
+  bool Flag = true;
+  int  indU = ent->UpperIndexU();
+  int  indV = ent->UpperIndexV();
+  int  I, J;
 
   if (ent->NbKnotsU() != (indU + ent->DegreeU() + 2))
   {
@@ -464,14 +470,14 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const Handle(IGESGeom_BSplineSurface)
     ach->SendFail(Msg104);
   }
 
-  Flag                  = Standard_True;
-  Standard_Real tempVal = ent->Weight(0, 0);
+  Flag           = true;
+  double tempVal = ent->Weight(0, 0);
 
   for (J = 0; ((J < indV) && (Flag)); J++)
     for (I = 0; ((I < indU) && (Flag)); I++)
       Flag &= (ent->Weight(I, J) == tempVal);
 
-  //  Standard_Boolean Flap = ent->IsPolynomial(Standard_True);
+  //  bool Flap = ent->IsPolynomial(true);
   //  if (Flag && !Flap)
   //    ach.AddWarning("All weights equal & PROP3 != 1. (Surface not Polynomial)");
   //  if (!Flag && Flap)
@@ -480,17 +486,17 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const Handle(IGESGeom_BSplineSurface)
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineSurface::OwnDump(const Handle(IGESGeom_BSplineSurface)& ent,
+void IGESGeom_ToolBSplineSurface::OwnDump(const occ::handle<IGESGeom_BSplineSurface>& ent,
                                           const IGESData_IGESDumper& /* dumper */,
-                                          Standard_OStream&      S,
-                                          const Standard_Integer level) const
+                                          Standard_OStream& S,
+                                          const int         level) const
 {
   S << "BSplineSurface from IGESGeom\n\n";
 
-  Standard_Integer indU = ent->UpperIndexU();
-  Standard_Integer indV = ent->UpperIndexV();
-  Standard_Integer degU = ent->DegreeU();
-  Standard_Integer degV = ent->DegreeV();
+  int indU = ent->UpperIndexU();
+  int indV = ent->UpperIndexV();
+  int degU = ent->DegreeU();
+  int degV = ent->DegreeV();
 
   S << "In U : Upper Knot Index : " << indU << "   Degree : " << degU << "  "
     << (ent->IsClosedU() ? "Closed" : "Open") << "  "
@@ -498,7 +504,7 @@ void IGESGeom_ToolBSplineSurface::OwnDump(const Handle(IGESGeom_BSplineSurface)&
     << "In V : Upper Knot Index : " << indV << "   Degree : " << degV << "  "
     << (ent->IsClosedV() ? "Closed" : "Open") << "  "
     << (ent->IsPeriodicV() ? "Periodic" : "Non Periodic") << "  "
-    << (ent->IsPolynomial(Standard_True) ? "Polynomial" : "Rational") << "\n";
+    << (ent->IsPolynomial(true) ? "Polynomial" : "Rational") << "\n";
 
   S << "Starting Parameter for U direction : " << ent->UMin() << "\n"
     << "Ending   Parameter for U direction : " << ent->UMax() << "\n"
@@ -522,8 +528,8 @@ void IGESGeom_ToolBSplineSurface::OwnDump(const Handle(IGESGeom_BSplineSurface)&
     return;
   }
   gp_GTrsf loca = ent->Location();
-  for (Standard_Integer JP = 0; JP <= indV; JP++)
-    for (Standard_Integer IP = 0; IP <= indU; IP++)
+  for (int JP = 0; JP <= indV; JP++)
+    for (int IP = 0; IP <= indU; IP++)
     {
       if (IP == 0)
         S << "\n";

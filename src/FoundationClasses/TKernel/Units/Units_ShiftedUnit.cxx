@@ -15,7 +15,9 @@
 // commercial license or contractual agreement.
 
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Units_Quantity.hxx>
 #include <Units_ShiftedToken.hxx>
 #include <Units_ShiftedUnit.hxx>
@@ -25,11 +27,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Units_ShiftedUnit, Units_Unit)
 
 //=================================================================================================
 
-Units_ShiftedUnit::Units_ShiftedUnit(const Standard_CString        aname,
-                                     const Standard_CString        asymbol,
-                                     const Standard_Real           avalue,
-                                     const Standard_Real           amove,
-                                     const Handle(Units_Quantity)& aquantity)
+Units_ShiftedUnit::Units_ShiftedUnit(const char*                        aname,
+                                     const char*                        asymbol,
+                                     const double                       avalue,
+                                     const double                       amove,
+                                     const occ::handle<Units_Quantity>& aquantity)
     : Units_Unit(aname, asymbol, avalue, aquantity)
 {
   themove = amove;
@@ -37,7 +39,7 @@ Units_ShiftedUnit::Units_ShiftedUnit(const Standard_CString        aname,
 
 //=================================================================================================
 
-Units_ShiftedUnit::Units_ShiftedUnit(const Standard_CString aname, const Standard_CString asymbol)
+Units_ShiftedUnit::Units_ShiftedUnit(const char* aname, const char* asymbol)
     : Units_Unit(aname, asymbol),
       themove(0.0)
 {
@@ -45,7 +47,7 @@ Units_ShiftedUnit::Units_ShiftedUnit(const Standard_CString aname, const Standar
 
 //=================================================================================================
 
-Units_ShiftedUnit::Units_ShiftedUnit(const Standard_CString aname)
+Units_ShiftedUnit::Units_ShiftedUnit(const char* aname)
     : Units_Unit(aname),
       themove(0.0)
 {
@@ -53,21 +55,21 @@ Units_ShiftedUnit::Units_ShiftedUnit(const Standard_CString aname)
 
 //=================================================================================================
 
-void Units_ShiftedUnit::Move(const Standard_Real amove)
+void Units_ShiftedUnit::Move(const double amove)
 {
   themove = amove;
 }
 
 //=================================================================================================
 
-Standard_Real Units_ShiftedUnit::Move() const
+double Units_ShiftedUnit::Move() const
 {
   return themove;
 }
 
 //=================================================================================================
 
-Handle(Units_Token) Units_ShiftedUnit::Token() const
+occ::handle<Units_Token> Units_ShiftedUnit::Token() const
 {
   TCollection_AsciiString string = SymbolsSequence()->Value(1)->String();
   return new Units_ShiftedToken(string.ToCString(),
@@ -79,11 +81,11 @@ Handle(Units_Token) Units_ShiftedUnit::Token() const
 
 //=================================================================================================
 
-// void Units_ShiftedUnit::Dump(const Standard_Integer ashift,
-//			     const Standard_Integer alevel) const
-void Units_ShiftedUnit::Dump(const Standard_Integer, const Standard_Integer) const
+// void Units_ShiftedUnit::Dump(const int ashift,
+//			     const int alevel) const
+void Units_ShiftedUnit::Dump(const int, const int) const
 {
-  Standard_Integer        index;
+  int                     index;
   TCollection_AsciiString string;
 
   //  int i;

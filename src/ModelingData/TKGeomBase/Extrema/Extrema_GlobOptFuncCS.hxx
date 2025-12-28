@@ -29,32 +29,27 @@ public:
   //! Curve and surface should exist during all the lifetime of Extrema_GlobOptFuncCS.
   Standard_EXPORT Extrema_GlobOptFuncCS(const Adaptor3d_Curve* C, const Adaptor3d_Surface* S);
 
-  Standard_EXPORT virtual Standard_Integer NbVariables() const;
+  Standard_EXPORT virtual int NbVariables() const;
 
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF);
+  Standard_EXPORT virtual bool Value(const math_Vector& theX, double& theF);
 
-  Standard_EXPORT virtual Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG);
+  Standard_EXPORT virtual bool Gradient(const math_Vector& theX, math_Vector& theG);
 
-  Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& theX,
-                                                  Standard_Real&     theF,
-                                                  math_Vector&       theG);
+  Standard_EXPORT virtual bool Values(const math_Vector& theX, double& theF, math_Vector& theG);
 
-  Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& theX,
-                                                  Standard_Real&     theF,
-                                                  math_Vector&       theG,
-                                                  math_Matrix&       theH);
+  Standard_EXPORT virtual bool Values(const math_Vector& theX,
+                                      double&            theF,
+                                      math_Vector&       theG,
+                                      math_Matrix&       theH);
 
 private:
-  Standard_Boolean checkInputData(const math_Vector& X,
-                                  Standard_Real&     cu,
-                                  Standard_Real&     su,
-                                  Standard_Real&     sv);
+  bool checkInputData(const math_Vector& X, double& cu, double& su, double& sv);
 
-  void value(Standard_Real cu, Standard_Real su, Standard_Real sv, Standard_Real& F);
+  void value(double cu, double su, double sv, double& F);
 
-  void gradient(Standard_Real cu, Standard_Real su, Standard_Real sv, math_Vector& G);
+  void gradient(double cu, double su, double sv, math_Vector& G);
 
-  void hessian(Standard_Real cu, Standard_Real su, Standard_Real sv, math_Matrix& H);
+  void hessian(double cu, double su, double sv, math_Matrix& H);
 
   Extrema_GlobOptFuncCS& operator=(const Extrema_GlobOptFuncCS& theOther);
 

@@ -20,37 +20,31 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_Array1OfTransient.hxx>
 #include <Standard_Transient.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-
-class IGESBasic_HArray1OfHArray1OfInteger;
-DEFINE_STANDARD_HANDLE(IGESBasic_HArray1OfHArray1OfInteger, Standard_Transient)
+#include <NCollection_HArray1.hxx>
 
 class IGESBasic_HArray1OfHArray1OfInteger : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT IGESBasic_HArray1OfHArray1OfInteger(const Standard_Integer low,
-                                                      const Standard_Integer up);
+  Standard_EXPORT IGESBasic_HArray1OfHArray1OfInteger(const int low, const int up);
 
-  Standard_EXPORT Standard_Integer Lower() const;
+  Standard_EXPORT int Lower() const;
 
-  Standard_EXPORT Standard_Integer Upper() const;
+  Standard_EXPORT int Upper() const;
 
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
-  Standard_EXPORT void SetValue(const Standard_Integer                  num,
-                                const Handle(TColStd_HArray1OfInteger)& val);
+  Standard_EXPORT void SetValue(const int num, const occ::handle<NCollection_HArray1<int>>& val);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) Value(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<int>> Value(const int num) const;
 
   DEFINE_STANDARD_RTTI_INLINE(IGESBasic_HArray1OfHArray1OfInteger, Standard_Transient)
 
-protected:
 private:
-  TColStd_Array1OfTransient thelist;
+  NCollection_Array1<occ::handle<Standard_Transient>> thelist;
 };
 
 #endif // _IGESBasic_HArray1OfHArray1OfInteger_HeaderFile

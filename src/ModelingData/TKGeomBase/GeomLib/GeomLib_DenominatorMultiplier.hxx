@@ -21,7 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Real.hxx>
 class Geom_BSplineSurface;
 
@@ -39,8 +39,8 @@ public:
   //! a(u,v) * N(u,v)
   //! NewF(u,v) = ----------------
   //! a(u,v) * D(u,v)
-  Standard_EXPORT GeomLib_DenominatorMultiplier(const Handle(Geom_BSplineSurface)& Surface,
-                                                const TColStd_Array1OfReal&        KnotVector);
+  Standard_EXPORT GeomLib_DenominatorMultiplier(const occ::handle<Geom_BSplineSurface>& Surface,
+                                                const NCollection_Array1<double>&       KnotVector);
 
   //! Returns the value of
   //! a(UParameter,VParameter)=
@@ -56,13 +56,11 @@ public:
   //! D Denominator(Umax,Vparameter)
   //! - ------------------------------[H2(u)]/(Denominator(Umax,Vparameter)^2)
   //! D U
-  Standard_EXPORT Standard_Real Value(const Standard_Real UParameter,
-                                      const Standard_Real VParameter) const;
+  Standard_EXPORT double Value(const double UParameter, const double VParameter) const;
 
-protected:
 private:
-  Handle(Geom_BSplineSurface) mySurface;
-  TColStd_Array1OfReal        myKnotFlatVector;
+  occ::handle<Geom_BSplineSurface> mySurface;
+  NCollection_Array1<double>       myKnotFlatVector;
 };
 
 #endif // _GeomLib_DenominatorMultiplier_HeaderFile

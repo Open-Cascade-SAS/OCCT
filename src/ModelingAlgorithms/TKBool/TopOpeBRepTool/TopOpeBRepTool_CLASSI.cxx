@@ -14,20 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bnd_Array1OfBox2d.hxx>
 #include <Bnd_Box2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidExplorer.hxx>
 #include <BRepClass_FaceClassifier.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <NCollection_Array2.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_2d.hxx>
 #include <TopOpeBRepTool_CLASSI.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_GEOMETRY.hxx>
+#include <TopOpeBRepTool_PROJECT.hxx>
+#include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_face.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
@@ -53,102 +55,102 @@ void TopOpeBRepTool_CLASSI::Init2d(const TopoDS_Face& Fref)
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_CLASSI::HasInit2d() const
+bool TopOpeBRepTool_CLASSI::HasInit2d() const
 {
   return (!myFref.IsNull());
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_CLASSI::Add2d(const TopoDS_Shape& S)
+bool TopOpeBRepTool_CLASSI::Add2d(const TopoDS_Shape& S)
 {
   if (!HasInit2d())
-    return Standard_False;
+    return false;
 
-  Standard_Boolean isb = mymapsbox2d.Contains(S);
+  bool isb = mymapsbox2d.Contains(S);
   if (isb)
-    return Standard_True;
+    return true;
 
   Bnd_Box2d       B2d;
   TopExp_Explorer exe(S, TopAbs_EDGE);
   for (; exe.More(); exe.Next())
   {
     const TopoDS_Edge& E    = TopoDS::Edge(exe.Current());
-    Standard_Real      tolE = BRep_Tool::Tolerance(E);
+    double             tolE = BRep_Tool::Tolerance(E);
 
-    Standard_Boolean haspc = FC2D_HasCurveOnSurface(E, myFref);
+    bool haspc = FC2D_HasCurveOnSurface(E, myFref);
     if (!haspc)
-      return Standard_False;
+      return false;
     BRepAdaptor_Curve2d BC2d(E, myFref);
-    Standard_Real       tol2d = BC2d.Resolution(tolE);
+    double              tol2d = BC2d.Resolution(tolE);
     BndLib_Add2dCurve::Add(BC2d, tol2d, B2d);
   }
   mymapsbox2d.Add(S, B2d);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_CLASSI::GetBox2d(const TopoDS_Shape& S, Bnd_Box2d& B2d)
+bool TopOpeBRepTool_CLASSI::GetBox2d(const TopoDS_Shape& S, Bnd_Box2d& B2d)
 {
-  Standard_Boolean isb = mymapsbox2d.Contains(S);
+  bool isb = mymapsbox2d.Contains(S);
   if (!isb)
     isb = Add2d(S);
   if (!isb)
-    return Standard_False;
+    return false;
   B2d = mymapsbox2d.FindFromKey(S);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepTool_CLASSI::ClassiBnd2d(const TopoDS_Shape&    S1,
-                                                    const TopoDS_Shape&    S2,
-                                                    const Standard_Real    tol,
-                                                    const Standard_Boolean chklarge)
+int TopOpeBRepTool_CLASSI::ClassiBnd2d(const TopoDS_Shape& S1,
+                                       const TopoDS_Shape& S2,
+                                       const double        tol,
+                                       const bool          chklarge)
 {
-  Bnd_Array1OfBox2d B(1, 2);
-  Standard_Boolean  isb = mymapsbox2d.Contains(S1);
+  NCollection_Array1<Bnd_Box2d> B(1, 2);
+  bool                          isb = mymapsbox2d.Contains(S1);
   if (!isb)
     isb = Add2d(S1);
   if (!isb)
-    return Standard_False;
+    return false;
   B(1) = mymapsbox2d.FindFromKey(S1);
   isb  = mymapsbox2d.Contains(S2);
   if (!isb)
     isb = Add2d(S2);
   if (!isb)
-    return Standard_False;
+    return false;
   B(2) = mymapsbox2d.FindFromKey(S2);
 
-  TColStd_Array2OfReal UV(1, 2, 1, 4);
-  //  for (Standard_Integer i = 1; i <= 2; i++)
-  Standard_Integer i;
+  NCollection_Array2<double> UV(1, 2, 1, 4);
+  //  for (int i = 1; i <= 2; i++)
+  int i;
   for (i = 1; i <= 2; i++)
     //      (Umin(i), Vmin(i), Umax(i), Vmax(i))
     B(i).Get(UV(i, 1), UV(i, 3), UV(i, 2), UV(i, 4));
 
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = Standard_False;
+  bool trc = false;
   if (trc)
   {
-    for (Standard_Integer j = 1; j <= 2; j++)
+    for (int j = 1; j <= 2; j++)
       std::cout << "B(" << j << ") = (" << UV(j, 1) << " " << UV(j, 3) << " " << UV(j, 2) << " "
                 << UV(j, 4) << ")" << std::endl;
   }
 #endif
 
-  for (Standard_Integer k = 1; k <= 3; k += 2)
+  for (int k = 1; k <= 3; k += 2)
   {
     for (i = 1; i <= 2; i++)
     {
-      Standard_Integer ii = i, jj = (i == 1) ? 2 : 1;
+      int ii = i, jj = (i == 1) ? 2 : 1;
       //  diff = Umin<ii> - Umax<jj> : k = 1
       //  diff = Vmin<ii> - Vmax<jj> : k = 3
-      Standard_Real diff = UV(ii, k) - UV(jj, k + 1);
+      double diff = UV(ii, k) - UV(jj, k + 1);
       // IMPORTANT : for split faces sharing same edge, use
       // chklarge = True.
-      Standard_Boolean disjoint = chklarge ? (diff >= -tol) : (diff > 0.);
+      bool disjoint = chklarge ? (diff >= -tol) : (diff > 0.);
       if (disjoint)
         return DIFF;
     }
@@ -157,55 +159,55 @@ Standard_Integer TopOpeBRepTool_CLASSI::ClassiBnd2d(const TopoDS_Shape&    S1,
   for (i = 1; i <= 2; i++)
   {
     // comparing Bnd2d(ii) with Bnd2d(jj)
-    Standard_Integer ii = i, jj = (i == 1) ? 2 : 1;
-    Standard_Boolean smaller = Standard_True, same = Standard_True;
+    int  ii = i, jj = (i == 1) ? 2 : 1;
+    bool smaller = true, same = true;
 
-    //    for (Standard_Integer k = 1; k <= 3; k += 2){
-    Standard_Integer k;
+    //    for (int k = 1; k <= 3; k += 2){
+    int k;
     for (k = 1; k <= 3; k += 2)
     {
       //  diff = Umin<ii> - Umin<jj> : k = 1
       //  diff = Vmin<ii> - Vmin<jj> : k = 3
-      Standard_Real diff = UV(ii, k) - UV(jj, k);
-      smaller            = chklarge ? (smaller && (diff > -tol)) : (smaller && (diff > 0.));
-      same               = same && (std::abs(diff) <= tol);
+      double diff = UV(ii, k) - UV(jj, k);
+      smaller     = chklarge ? (smaller && (diff > -tol)) : (smaller && (diff > 0.));
+      same        = same && (std::abs(diff) <= tol);
     }
     for (k = 2; k <= 4; k += 2)
     {
       //  diff = Umax<ii> - Umax<jj> : k = 2
       //  diff = Vmax<ii> - Vmax<jj> : k = 4
-      Standard_Real diff = UV(ii, k) - UV(jj, k);
-      smaller            = chklarge ? (smaller && (diff < tol)) : (smaller && (diff < 0.));
-      same               = same && (std::abs(diff) <= tol);
+      double diff = UV(ii, k) - UV(jj, k);
+      smaller     = chklarge ? (smaller && (diff < tol)) : (smaller && (diff < 0.));
+      same        = same && (std::abs(diff) <= tol);
     }
 
     if (same)
       return SAME;
     if (smaller)
     {
-      Standard_Integer sta = (ii == 1) ? oneINtwo : twoINone;
+      int sta = (ii == 1) ? oneINtwo : twoINone;
       return sta;
     }
   }
   return UNKNOWN;
 }
 
-static Standard_Integer FUN_thegreatest(const TopoDS_Face& F1, BRepClass_FaceClassifier& class2)
+static int FUN_thegreatest(const TopoDS_Face& F1, BRepClass_FaceClassifier& class2)
 // prequesitory : p2d1 IN f2, p2d2 IN f1
 //                class2 for f2
 // returns oneINtwo || twoINone || UNKNOWN
 {
   TopExp_Explorer ex1(F1, TopAbs_EDGE);
-  Standard_Real   tolf1 = BRep_Tool::Tolerance(F1);
+  double          tolf1 = BRep_Tool::Tolerance(F1);
   for (; ex1.More(); ex1.Next())
   {
     const TopoDS_Edge& e1 = TopoDS::Edge(ex1.Current());
-    Standard_Real      f1, l1;
+    double             f1, l1;
     FUN_tool_bounds(e1, f1, l1);
-    Standard_Real    x  = 0.45678;
-    Standard_Real    p1 = (1 - x) * f1 + x + l1;
-    gp_Pnt2d         uv1;
-    Standard_Boolean ok1 = FUN_tool_paronEF(e1, p1, F1, uv1, tolf1);
+    double   x  = 0.45678;
+    double   p1 = (1 - x) * f1 + x + l1;
+    gp_Pnt2d uv1;
+    bool     ok1 = FUN_tool_paronEF(e1, p1, F1, uv1, tolf1);
     if (!ok1)
       continue;
     TopAbs_State sta12 = class2.State();
@@ -219,47 +221,47 @@ static Standard_Integer FUN_thegreatest(const TopoDS_Face& F1, BRepClass_FaceCla
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepTool_CLASSI::Classip2d(const TopoDS_Shape&    S1,
-                                                  const TopoDS_Shape&    S2,
-                                                  const Standard_Integer stabnd2d12)
+int TopOpeBRepTool_CLASSI::Classip2d(const TopoDS_Shape& S1,
+                                     const TopoDS_Shape& S2,
+                                     const int           stabnd2d12)
 {
   if (!HasInit2d())
     return UNKNOWN;
-  Standard_Boolean bnd2dUNK = (stabnd2d12 == UNKNOWN) || (stabnd2d12 == SAME);
+  bool bnd2dUNK = (stabnd2d12 == UNKNOWN) || (stabnd2d12 == SAME);
 
   // fa1,ffi1,finite1 :
   TopOpeBRepTool_face fa1;
-  Standard_Boolean    isb1 = mymapsface.IsBound(S1);
+  bool                isb1 = mymapsface.IsBound(S1);
   if (isb1)
     fa1 = mymapsface.Find(S1);
   else
   {
-    Standard_Boolean ok1 = fa1.Init(TopoDS::Wire(S1), myFref);
+    bool ok1 = fa1.Init(TopoDS::Wire(S1), myFref);
     if (!ok1)
       return UNKNOWN;
     mymapsface.Bind(S1, fa1);
   }
   const TopoDS_Face& ffi1    = fa1.Ffinite();
-  Standard_Boolean   finite1 = fa1.Finite();
+  bool               finite1 = fa1.Finite();
 
   // fa2,ffi2,finite2 :
   TopOpeBRepTool_face fa2;
-  Standard_Boolean    isb2 = mymapsface.IsBound(S2);
+  bool                isb2 = mymapsface.IsBound(S2);
   if (isb2)
     fa2 = mymapsface.Find(S2);
   else
   {
-    Standard_Boolean ok2 = fa2.Init(TopoDS::Wire(S2), myFref);
+    bool ok2 = fa2.Init(TopoDS::Wire(S2), myFref);
     if (!ok2)
       return UNKNOWN;
     mymapsface.Bind(S2, fa2);
   }
   const TopoDS_Face& ffi2    = fa2.Ffinite();
-  Standard_Boolean   finite2 = fa2.Finite();
+  bool               finite2 = fa2.Finite();
 
   // p2d1 :
-  Standard_Real    u1, v1;
-  Standard_Boolean ok1 = BRepClass3d_SolidExplorer::FindAPointInTheFace(ffi1, u1, v1);
+  double u1, v1;
+  bool   ok1 = BRepClass3d_SolidExplorer::FindAPointInTheFace(ffi1, u1, v1);
   if (!ok1)
     return UNKNOWN;
   gp_Pnt2d p2d1(u1, v1);
@@ -268,7 +270,7 @@ Standard_Integer TopOpeBRepTool_CLASSI::Classip2d(const TopoDS_Shape&    S1,
   // recall : ffi1 and ffi2 are built on same face
   // => ffi1(u1,v1) = ffi2(u1,v1)
   // ----------------------------
-  Standard_Real            tol2d2 = TopOpeBRepTool_TOOL::TolUV(ffi2, BRep_Tool::Tolerance(ffi2));
+  double                   tol2d2 = TopOpeBRepTool_TOOL::TolUV(ffi2, BRep_Tool::Tolerance(ffi2));
   BRepClass_FaceClassifier class2(ffi2, p2d1, tol2d2);
   TopAbs_State             sta12 = class2.State();
 
@@ -277,12 +279,12 @@ Standard_Integer TopOpeBRepTool_CLASSI::Classip2d(const TopoDS_Shape&    S1,
   //  - ffi1 IN ffi2
   //  - ffi2 IN ffi1
   //  - ffi1 and ffi2 are distinct
-  Standard_Integer staffi12 = UNKNOWN;
+  int staffi12 = UNKNOWN;
 
-  Standard_Boolean try21 = Standard_False;
+  bool try21 = false;
   if (bnd2dUNK)
   {
-    try21 = Standard_True;
+    try21 = true;
   }
   else if (stabnd2d12 == DIFF)
   {
@@ -297,7 +299,7 @@ Standard_Integer TopOpeBRepTool_CLASSI::Classip2d(const TopoDS_Shape&    S1,
       else if (stabnd2d12 == twoINone)
         staffi12 = twoINone; // Bnd2d(S2) IN Bnd2d(S1)
       else
-        try21 = Standard_True;
+        try21 = true;
     }
     else if (sta12 == TopAbs_OUT)
     { // 2 possible states : twoINone || DIFF
@@ -305,7 +307,7 @@ Standard_Integer TopOpeBRepTool_CLASSI::Classip2d(const TopoDS_Shape&    S1,
         staffi12 = twoINone;
       //    else if (stabnd2d12 == DIFF)     staffi12 = DIFF;
       else
-        try21 = Standard_True;
+        try21 = true;
     }
     else
       return UNKNOWN; // NYIxpu140199
@@ -314,14 +316,14 @@ Standard_Integer TopOpeBRepTool_CLASSI::Classip2d(const TopoDS_Shape&    S1,
   if (try21)
   {
     // p2d2 :
-    Standard_Real    u2, v2;
-    Standard_Boolean ok2 = BRepClass3d_SolidExplorer::FindAPointInTheFace(ffi2, u2, v2);
+    double u2, v2;
+    bool   ok2 = BRepClass3d_SolidExplorer::FindAPointInTheFace(ffi2, u2, v2);
     if (!ok2)
       return UNKNOWN;
     gp_Pnt2d p2d2(u2, v2);
 
     // sta21 :
-    Standard_Real            tol2d1 = TopOpeBRepTool_TOOL::TolUV(ffi1, BRep_Tool::Tolerance(ffi1));
+    double                   tol2d1 = TopOpeBRepTool_TOOL::TolUV(ffi1, BRep_Tool::Tolerance(ffi1));
     BRepClass_FaceClassifier class1(ffi1, p2d2, tol2d1);
     TopAbs_State             sta21 = class1.State();
 
@@ -383,52 +385,53 @@ Standard_Integer TopOpeBRepTool_CLASSI::Classip2d(const TopoDS_Shape&    S1,
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_CLASSI::Getface(const TopoDS_Shape&  S,
-                                                TopOpeBRepTool_face& fa) const
+bool TopOpeBRepTool_CLASSI::Getface(const TopoDS_Shape& S, TopOpeBRepTool_face& fa) const
 {
-  Standard_Boolean isb = mymapsface.IsBound(S);
+  bool isb = mymapsface.IsBound(S);
   if (!isb)
-    return Standard_False;
+    return false;
   fa = mymapsface.Find(S);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_EXPORT void FUN_addOwlw(const TopoDS_Shape&         Ow,
-                                 const TopTools_ListOfShape& lw,
-                                 TopTools_ListOfShape&       lresu)
+Standard_EXPORT void FUN_addOwlw(const TopoDS_Shape&                   Ow,
+                                 const NCollection_List<TopoDS_Shape>& lw,
+                                 NCollection_List<TopoDS_Shape>&       lresu)
 {
-  Standard_Integer nw = lw.Extent();
+  int nw = lw.Extent();
   if (nw == 0)
     lresu.Append(Ow);
   else
   {
-    TopTools_ListIteratorOfListOfShape it(lw);
+    NCollection_List<TopoDS_Shape>::Iterator it(lw);
     for (; it.More(); it.Next())
       lresu.Append(it.Value());
   }
 }
 
-Standard_Boolean TopOpeBRepTool_CLASSI::Classilist(const TopTools_ListOfShape&         lS,
-                                                   TopTools_DataMapOfShapeListOfShape& mapgreasma)
+bool TopOpeBRepTool_CLASSI::Classilist(
+  const NCollection_List<TopoDS_Shape>& lS,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    mapgreasma)
 {
-  Standard_Real        tolref = BRep_Tool::Tolerance(myFref);
-  Standard_Real        toluv  = TopOpeBRepTool_TOOL::TolUV(myFref, tolref); // nyixpu : cdliser??
-  TopTools_ListOfShape null;
+  double tolref = BRep_Tool::Tolerance(myFref);
+  double toluv  = TopOpeBRepTool_TOOL::TolUV(myFref, tolref); // nyixpu : cdliser??
+  NCollection_List<TopoDS_Shape> null;
 
-  TopTools_ListOfShape lw;
+  NCollection_List<TopoDS_Shape> lw;
   lw.Assign(lS);
   mapgreasma.Clear();
-  TopTools_ListIteratorOfListOfShape anIterW(lS);
+  NCollection_List<TopoDS_Shape>::Iterator anIterW(lS);
   for (; anIterW.More(); anIterW.Next())
     mapgreasma.Bind(anIterW.Value(), null);
 
-  Standard_Integer nw = lw.Extent();
+  int nw = lw.Extent();
   if (nw <= 1)
-    return Standard_True;
+    return true;
 
-  Standard_Integer nite = 0, nitemax = Standard_Integer(nw * (nw - 1) / 2);
+  int nite = 0, nitemax = int(nw * (nw - 1) / 2);
   while (nite <= nitemax)
   {
     nw = lw.Extent();
@@ -436,12 +439,12 @@ Standard_Boolean TopOpeBRepTool_CLASSI::Classilist(const TopTools_ListOfShape&  
       break;
 
     // wi1 :
-    TopoDS_Shape                       wi1;
-    TopTools_ListIteratorOfListOfShape itw(lw);
+    TopoDS_Shape                             wi1;
+    NCollection_List<TopoDS_Shape>::Iterator itw(lw);
     for (; itw.More(); itw.Next())
     {
-      wi1                   = itw.Value();
-      Standard_Boolean isb1 = mapgreasma.IsBound(wi1);
+      wi1       = itw.Value();
+      bool isb1 = mapgreasma.IsBound(wi1);
       if (!isb1)
         continue; // wi1 stored as smaller shape
       break;
@@ -449,7 +452,7 @@ Standard_Boolean TopOpeBRepTool_CLASSI::Classilist(const TopTools_ListOfShape&  
 
     while (itw.More())
     { // compare wi1 with all wi(k) (k>1)
-      Standard_Boolean isb1 = mapgreasma.IsBound(wi1);
+      bool isb1 = mapgreasma.IsBound(wi1);
       if (!isb1)
         break;
 
@@ -458,21 +461,21 @@ Standard_Boolean TopOpeBRepTool_CLASSI::Classilist(const TopTools_ListOfShape&  
         break;
 
       // wi2, sta12 :
-      Standard_Integer sta12  = UNKNOWN;
-      Standard_Boolean OUTall = Standard_False;
-      TopoDS_Shape     wi2;
+      int          sta12  = UNKNOWN;
+      bool         OUTall = false;
+      TopoDS_Shape wi2;
       for (; itw.More(); itw.Next())
       {
-        wi2                   = itw.Value();
-        Standard_Boolean isb2 = mapgreasma.IsBound(wi2);
+        wi2       = itw.Value();
+        bool isb2 = mapgreasma.IsBound(wi2);
         if (!isb2)
           continue;
 
-        Standard_Integer stabnd2d12 = ClassiBnd2d(wi1, wi2, toluv, Standard_True);
-        sta12                       = Classip2d(wi1, wi2, stabnd2d12);
+        int stabnd2d12 = ClassiBnd2d(wi1, wi2, toluv, true);
+        sta12          = Classip2d(wi1, wi2, stabnd2d12);
         if (sta12 == DIFF)
         {
-          OUTall = Standard_True;
+          OUTall = true;
           continue;
         }
         break;
@@ -481,16 +484,16 @@ Standard_Boolean TopOpeBRepTool_CLASSI::Classilist(const TopTools_ListOfShape&  
       // mapgreasma :
       if (sta12 == oneINtwo)
       { // greater = shape two
-        TopTools_ListOfShape& lwgre = mapgreasma.ChangeFind(wi2);
-        TopTools_ListOfShape  lsma;
+        NCollection_List<TopoDS_Shape>& lwgre = mapgreasma.ChangeFind(wi2);
+        NCollection_List<TopoDS_Shape>  lsma;
         FUN_addOwlw(wi1, mapgreasma.Find(wi1), lsma);
         mapgreasma.UnBind(wi1);
         lwgre.Append(lsma);
       }
       else if (sta12 == twoINone)
       { // greater = shape one
-        TopTools_ListOfShape& lwgre = mapgreasma.ChangeFind(wi1);
-        TopTools_ListOfShape  lsma;
+        NCollection_List<TopoDS_Shape>& lwgre = mapgreasma.ChangeFind(wi1);
+        NCollection_List<TopoDS_Shape>  lsma;
         FUN_addOwlw(wi2, mapgreasma.Find(wi2), lsma);
         mapgreasma.UnBind(wi2);
         lwgre.Append(lsma);
@@ -500,10 +503,10 @@ Standard_Boolean TopOpeBRepTool_CLASSI::Classilist(const TopTools_ListOfShape&  
         // nothing's done
       }
       else
-        return Standard_False;
+        return false;
     } // itw.More()
 
     lw.RemoveFirst();
   } // nite<=nmax
-  return Standard_True;
+  return true;
 }

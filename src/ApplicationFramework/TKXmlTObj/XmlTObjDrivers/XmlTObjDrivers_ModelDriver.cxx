@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ModelDriver, XmlMDF_ADriver)
 //=================================================================================================
 
 XmlTObjDrivers_ModelDriver::XmlTObjDrivers_ModelDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : XmlMDF_ADriver(theMessageDriver, NULL)
 {
 }
@@ -41,7 +41,7 @@ XmlTObjDrivers_ModelDriver::XmlTObjDrivers_ModelDriver(
 // purpose  : Creates a new attribute
 //=======================================================================
 
-Handle(TDF_Attribute) XmlTObjDrivers_ModelDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlTObjDrivers_ModelDriver::NewEmpty() const
 {
   return new TObj_TModel;
 }
@@ -55,27 +55,27 @@ Handle(TDF_Attribute) XmlTObjDrivers_ModelDriver::NewEmpty() const
 //           if its GUID and GUID stored in Source are same
 //=======================================================================
 
-Standard_Boolean XmlTObjDrivers_ModelDriver::Paste(const XmlObjMgt_Persistent&  Source,
-                                                   const Handle(TDF_Attribute)& Target,
-                                                   XmlObjMgt_RRelocationTable& /*RelocTable*/) const
+bool XmlTObjDrivers_ModelDriver::Paste(const XmlObjMgt_Persistent&       Source,
+                                       const occ::handle<TDF_Attribute>& Target,
+                                       XmlObjMgt_RRelocationTable& /*RelocTable*/) const
 {
   TCollection_ExtendedString aString;
   if (XmlObjMgt::GetExtendedString(Source, aString))
   {
-    Standard_GUID      aGUID(aString.ToExtString());
-    Handle(TObj_Model) aCurrentModel = TObj_Assistant::GetCurrentModel();
+    Standard_GUID           aGUID(aString.ToExtString());
+    occ::handle<TObj_Model> aCurrentModel = TObj_Assistant::GetCurrentModel();
     if (aGUID == aCurrentModel->GetGUID())
     {
-      Handle(TObj_TModel) aTModel = Handle(TObj_TModel)::DownCast(Target);
+      occ::handle<TObj_TModel> aTModel = occ::down_cast<TObj_TModel>(Target);
       aCurrentModel->SetLabel(aTModel->Label());
       aTModel->Set(aCurrentModel);
-      return Standard_True;
+      return true;
     }
     myMessageDriver->Send("TObj_TModel retrieval: wrong model GUID", Message_Fail);
-    return Standard_False;
+    return false;
   }
   myMessageDriver->Send("error retrieving ExtendedString for type TObj_TModel", Message_Fail);
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -86,15 +86,15 @@ Standard_Boolean XmlTObjDrivers_ModelDriver::Paste(const XmlObjMgt_Persistent&  
 //           a Model is stored as its GUID
 //=======================================================================
 
-void XmlTObjDrivers_ModelDriver::Paste(const Handle(TDF_Attribute)& Source,
-                                       XmlObjMgt_Persistent&        Target,
+void XmlTObjDrivers_ModelDriver::Paste(const occ::handle<TDF_Attribute>& Source,
+                                       XmlObjMgt_Persistent&             Target,
                                        XmlObjMgt_SRelocationTable& /*RelocTable*/) const
 {
-  Handle(TObj_TModel) aTModel = Handle(TObj_TModel)::DownCast(Source);
-  Handle(TObj_Model)  aModel  = aTModel->Model();
+  occ::handle<TObj_TModel> aTModel = occ::down_cast<TObj_TModel>(Source);
+  occ::handle<TObj_Model>  aModel  = aTModel->Model();
 
   // Store model GUID.
-  Standard_PCharacter aPGuidString = new Standard_Character[256];
+  Standard_PCharacter aPGuidString = new char[256];
   aModel->GetGUID().ToCString(aPGuidString);
   XmlObjMgt::SetExtendedString(Target, aPGuidString);
   delete[] aPGuidString;

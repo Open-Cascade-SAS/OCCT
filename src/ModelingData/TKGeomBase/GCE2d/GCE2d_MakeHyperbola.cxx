@@ -29,10 +29,10 @@ GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Hypr2d& H)
   TheHyperbola = new Geom2d_Hyperbola(H);
 }
 
-GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Ax2d&         MajorAxis,
-                                         const Standard_Real    MajorRadius,
-                                         const Standard_Real    MinorRadius,
-                                         const Standard_Boolean Sense)
+GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Ax2d& MajorAxis,
+                                         const double   MajorRadius,
+                                         const double   MinorRadius,
+                                         const bool     Sense)
 {
   gce_MakeHypr2d H = gce_MakeHypr2d(MajorAxis, MajorRadius, MinorRadius, Sense);
   TheError         = H.Status();
@@ -42,9 +42,9 @@ GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Ax2d&         MajorAxis,
   }
 }
 
-GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Ax22d&     Axis,
-                                         const Standard_Real MajorRadius,
-                                         const Standard_Real MinorRadius)
+GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Ax22d& Axis,
+                                         const double    MajorRadius,
+                                         const double    MinorRadius)
 {
   gce_MakeHypr2d H = gce_MakeHypr2d(Axis, MajorRadius, MinorRadius);
   TheError         = H.Status();
@@ -66,7 +66,7 @@ GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Pnt2d& S1,
   }
 }
 
-const Handle(Geom2d_Hyperbola)& GCE2d_MakeHyperbola::Value() const
+const occ::handle<Geom2d_Hyperbola>& GCE2d_MakeHyperbola::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeHyperbola::Value() - no result");
   return TheHyperbola;

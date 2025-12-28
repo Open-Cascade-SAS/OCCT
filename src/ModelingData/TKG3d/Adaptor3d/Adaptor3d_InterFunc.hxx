@@ -33,33 +33,31 @@ public:
 
   //! build the function U(t)=FixVal if Fix =1 or
   //! V(t)=FixVal if Fix=2
-  Standard_EXPORT Adaptor3d_InterFunc(const Handle(Adaptor2d_Curve2d)& C,
-                                      const Standard_Real              FixVal,
-                                      const Standard_Integer           Fix);
+  Standard_EXPORT Adaptor3d_InterFunc(const occ::handle<Adaptor2d_Curve2d>& C,
+                                      const double                          FixVal,
+                                      const int                             Fix);
 
   //! computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
+  Standard_EXPORT bool Value(const double X, double& F);
 
   //! computes the derivative <D> of the function
   //! for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D);
+  Standard_EXPORT bool Derivative(const double X, double& D);
 
   //! computes the value <F> and the derivative <D> of the
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values(const Standard_Real X,
-                                          Standard_Real&      F,
-                                          Standard_Real&      D);
+  Standard_EXPORT bool Values(const double X, double& F, double& D);
 
 private:
-  Handle(Adaptor2d_Curve2d) myCurve2d;
-  Standard_Real             myFixVal;
-  Standard_Integer          myFix;
+  occ::handle<Adaptor2d_Curve2d> myCurve2d;
+  double                         myFixVal;
+  int                            myFix;
 };
 
 #endif // _Adaptor3d_InterFunc_HeaderFile

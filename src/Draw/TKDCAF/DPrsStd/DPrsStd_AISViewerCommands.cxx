@@ -35,9 +35,7 @@
 // purpose  : AISInitViewer (DOC)
 //=======================================================================
 
-static Standard_Integer DPrsStd_AISInitViewer(Draw_Interpretor& theDI,
-                                              Standard_Integer  theArgNb,
-                                              const char**      theArgVec)
+static int DPrsStd_AISInitViewer(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb != 2)
   {
@@ -45,15 +43,15 @@ static Standard_Integer DPrsStd_AISInitViewer(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   if (!DDocStd::GetDocument(theArgVec[1], aDoc))
   {
     return 1;
   }
 
-  TDF_Label                 aRoot = aDoc->GetData()->Root();
-  Handle(TPrsStd_AISViewer) aDocViewer;
-  TCollection_AsciiString   aViewName =
+  TDF_Label                      aRoot = aDoc->GetData()->Root();
+  occ::handle<TPrsStd_AISViewer> aDocViewer;
+  TCollection_AsciiString        aViewName =
     TCollection_AsciiString("Driver1/Document_") + theArgVec[1] + "/View1";
   if (!TPrsStd_AISViewer::Find(aRoot, aDocViewer))
   {
@@ -67,13 +65,11 @@ static Standard_Integer DPrsStd_AISInitViewer(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer DPrsStd_AISRepaint(Draw_Interpretor& di,
-                                           Standard_Integer  nb,
-                                           const char**      arg)
+static int DPrsStd_AISRepaint(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 2)
   {
-    Handle(TDocStd_Document) D;
+    occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
       return 1;
     TDF_Label acces = D->GetData()->Root();
@@ -89,10 +85,10 @@ static Standard_Integer DPrsStd_AISRepaint(Draw_Interpretor& di,
 void DPrsStd::AISViewerCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done          = Standard_True;
+  done          = true;
   const char* g = "DPrsStd : standard presentation commands";
 
   // standard commands working on AISViewer

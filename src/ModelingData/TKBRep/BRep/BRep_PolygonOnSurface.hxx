@@ -25,48 +25,43 @@ class Poly_Polygon2D;
 class Geom_Surface;
 class TopLoc_Location;
 
-class BRep_PolygonOnSurface;
-DEFINE_STANDARD_HANDLE(BRep_PolygonOnSurface, BRep_CurveRepresentation)
-
 //! Representation of a 2D polygon in the parametric
 //! space of a surface.
 class BRep_PolygonOnSurface : public BRep_CurveRepresentation
 {
 
 public:
-  Standard_EXPORT BRep_PolygonOnSurface(const Handle(Poly_Polygon2D)& P,
-                                        const Handle(Geom_Surface)&   S,
-                                        const TopLoc_Location&        L);
+  Standard_EXPORT BRep_PolygonOnSurface(const occ::handle<Poly_Polygon2D>& P,
+                                        const occ::handle<Geom_Surface>&   S,
+                                        const TopLoc_Location&             L);
 
   //! A 2D polygon representation in the parametric
   //! space of a surface.
-  Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsPolygonOnSurface() const override;
 
   //! A 2D polygon representation in the parametric
   //! space of a surface.
-  Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface(const Handle(Geom_Surface)& S,
-                                                              const TopLoc_Location&      L) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsPolygonOnSurface(const occ::handle<Geom_Surface>& S,
+                                                  const TopLoc_Location& L) const override;
 
-  Standard_EXPORT virtual const Handle(Geom_Surface)& Surface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<Geom_Surface>& Surface() const override;
 
-  Standard_EXPORT virtual const Handle(Poly_Polygon2D)& Polygon() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<Poly_Polygon2D>& Polygon() const override;
 
-  Standard_EXPORT virtual void Polygon(const Handle(Poly_Polygon2D)& P) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Polygon(const occ::handle<Poly_Polygon2D>& P) override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnSurface, BRep_CurveRepresentation)
 
-protected:
 private:
-  Handle(Poly_Polygon2D) myPolygon2D;
-  Handle(Geom_Surface)   mySurface;
+  occ::handle<Poly_Polygon2D> myPolygon2D;
+  occ::handle<Geom_Surface>   mySurface;
 };
 
 #endif // _BRep_PolygonOnSurface_HeaderFile

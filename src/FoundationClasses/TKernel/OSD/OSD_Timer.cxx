@@ -29,23 +29,23 @@ namespace
 //! @param theHours   [out] clamped elapsed hours
 //! @param theMinutes [out] clamped elapsed minutes within range [0, 59]
 //! @param theSeconds [out] clamped elapsed seconds within range [0, 60)
-static void timeToHoursMinutesSeconds(Standard_Real     theTimeSec,
-                                      Standard_Integer& theHours,
-                                      Standard_Integer& theMinutes,
-                                      Standard_Real&    theSeconds)
+static void timeToHoursMinutesSeconds(double  theTimeSec,
+                                      int&    theHours,
+                                      int&    theMinutes,
+                                      double& theSeconds)
 {
-  Standard_Integer aSec = (Standard_Integer)theTimeSec;
-  theHours              = aSec / 3600;
-  theMinutes            = (aSec - theHours * 3600) / 60;
-  theSeconds            = theTimeSec - theHours * 3600 - theMinutes * 60;
+  int aSec   = (int)theTimeSec;
+  theHours   = aSec / 3600;
+  theMinutes = (aSec - theHours * 3600) / 60;
+  theSeconds = theTimeSec - theHours * 3600 - theMinutes * 60;
 }
 
 #ifdef _WIN32
 //! Define a structure for initializing global constant of pair values.
 struct PerfCounterFreq
 {
-  LARGE_INTEGER    Freq;
-  Standard_Boolean IsOk;
+  LARGE_INTEGER Freq;
+  bool          IsOk;
 
   PerfCounterFreq() { IsOk = QueryPerformanceFrequency(&Freq) != FALSE; }
 };
@@ -54,7 +54,7 @@ struct PerfCounterFreq
 
 //=================================================================================================
 
-Standard_Real OSD_Timer::GetWallClockTime()
+double OSD_Timer::GetWallClockTime()
 {
 #ifdef _WIN32
   // compute clock frequence on first call
@@ -62,7 +62,7 @@ Standard_Real OSD_Timer::GetWallClockTime()
 
   LARGE_INTEGER aTime;
   return aFreq.IsOk && QueryPerformanceCounter(&aTime)
-           ? (Standard_Real)aTime.QuadPart / (Standard_Real)aFreq.Freq.QuadPart
+           ? (double)aTime.QuadPart / (double)aFreq.Freq.QuadPart
   #if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0600)
            : 0.001 * GetTickCount64();
   #else
@@ -80,7 +80,7 @@ Standard_Real OSD_Timer::GetWallClockTime()
 
 //=================================================================================================
 
-OSD_Timer::OSD_Timer(Standard_Boolean theThisThreadOnly)
+OSD_Timer::OSD_Timer(bool theThisThreadOnly)
     : OSD_Chronometer(theThisThreadOnly),
       myTimeStart(0.0),
       myTimeCumul(0.0)
@@ -90,7 +90,7 @@ OSD_Timer::OSD_Timer(Standard_Boolean theThisThreadOnly)
 
 //=================================================================================================
 
-void OSD_Timer::Reset(const Standard_Real theTimeElapsedSec)
+void OSD_Timer::Reset(const double theTimeElapsedSec)
 {
   myTimeStart = 0.0;
   myTimeCumul = theTimeElapsedSec;
@@ -123,7 +123,7 @@ void OSD_Timer::Show() const
 
 //=================================================================================================
 
-Standard_Real OSD_Timer::ElapsedTime() const
+double OSD_Timer::ElapsedTime() const
 {
   if (myIsStopped)
   {
@@ -135,12 +135,9 @@ Standard_Real OSD_Timer::ElapsedTime() const
 
 //=================================================================================================
 
-void OSD_Timer::Show(Standard_Real&    theSeconds,
-                     Standard_Integer& theMinutes,
-                     Standard_Integer& theHours,
-                     Standard_Real&    theCPUtime) const
+void OSD_Timer::Show(double& theSeconds, int& theMinutes, int& theHours, double& theCPUtime) const
 {
-  const Standard_Real aTimeCumul =
+  const double aTimeCumul =
     myIsStopped ? myTimeCumul : myTimeCumul + GetWallClockTime() - myTimeStart;
   timeToHoursMinutesSeconds(aTimeCumul, theHours, theMinutes, theSeconds);
   OSD_Chronometer::Show(theCPUtime);
@@ -150,10 +147,10 @@ void OSD_Timer::Show(Standard_Real&    theSeconds,
 
 void OSD_Timer::Show(Standard_OStream& theOStream) const
 {
-  const Standard_Real aTimeCumul = ElapsedTime();
+  const double aTimeCumul = ElapsedTime();
 
-  Standard_Integer anHours, aMinutes;
-  Standard_Real    aSeconds;
+  int    anHours, aMinutes;
+  double aSeconds;
   timeToHoursMinutesSeconds(aTimeCumul, anHours, aMinutes, aSeconds);
 
   std::streamsize prec = theOStream.precision(12);

@@ -23,8 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepKinematics_KinematicPair.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_RackAndPinionPairValue, StepKinematics_PairValue)
-
 //! Representation of STEP entity RackAndPinionPairValue
 class StepKinematics_RackAndPinionPairValue : public StepKinematics_PairValue
 {
@@ -33,18 +31,19 @@ public:
   Standard_EXPORT StepKinematics_RackAndPinionPairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                            const Standard_Real                         theActualDisplacement);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+    const double                                     theActualDisplacement);
 
   //! Returns field ActualDisplacement
-  Standard_EXPORT Standard_Real ActualDisplacement() const;
+  Standard_EXPORT double ActualDisplacement() const;
   //! Sets field ActualDisplacement
-  Standard_EXPORT void SetActualDisplacement(const Standard_Real theActualDisplacement);
+  Standard_EXPORT void SetActualDisplacement(const double theActualDisplacement);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPairValue, StepKinematics_PairValue)
 
 private:
-  Standard_Real myActualDisplacement;
+  double myActualDisplacement;
 };
 #endif // _StepKinematics_RackAndPinionPairValue_HeaderFile_

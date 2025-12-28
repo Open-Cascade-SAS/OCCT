@@ -24,13 +24,11 @@ set(OCCT_XCAFDimTolObjects_FILES
   XCAFDimTolObjects_GeomToleranceTypeValue.hxx
   XCAFDimTolObjects_GeomToleranceMatReqModif.hxx
   XCAFDimTolObjects_GeomToleranceZoneModif.hxx
-  XCAFDimTolObjects_DimensionModifiersSequence.hxx
-  XCAFDimTolObjects_GeomToleranceModifiersSequence.hxx
-  XCAFDimTolObjects_DatumModifiersSequence.hxx
+
   XCAFDimTolObjects_DatumObjectSequence.hxx
   XCAFDimTolObjects_DimensionObjectSequence.hxx
   XCAFDimTolObjects_GeomToleranceObjectSequence.hxx
-  XCAFDimTolObjects_DataMapOfToleranceDatum.hxx
+
   XCAFDimTolObjects_ToleranceZoneAffectedPlane.hxx
   XCAFDimTolObjects_AngularQualifier.hxx
 )

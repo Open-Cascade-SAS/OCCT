@@ -22,9 +22,7 @@
 #include <NCollection_DataMap.hxx>
 
 class MoniTool_Timer;
-typedef NCollection_DataMap<Standard_CString, Handle(MoniTool_Timer), Standard_CStringHasher>
+typedef NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>
   MoniTool_DataMapOfTimer;
-typedef NCollection_DataMap<Standard_CString, Handle(MoniTool_Timer), Standard_CStringHasher>::
-  Iterator MoniTool_DataMapIteratorOfDataMapOfTimer;
 
 #endif

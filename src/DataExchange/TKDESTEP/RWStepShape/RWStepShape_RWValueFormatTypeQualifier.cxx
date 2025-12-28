@@ -26,10 +26,10 @@ RWStepShape_RWValueFormatTypeQualifier::RWStepShape_RWValueFormatTypeQualifier()
 //=================================================================================================
 
 void RWStepShape_RWValueFormatTypeQualifier::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepShape_ValueFormatTypeQualifier)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                                              num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepShape_ValueFormatTypeQualifier>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "value_format_type_qualifier"))
@@ -37,7 +37,7 @@ void RWStepShape_RWValueFormatTypeQualifier::ReadStep(
 
   // Own fields of ValueFormatTypeQualifier
 
-  Handle(TCollection_HAsciiString) aFormatType;
+  occ::handle<TCollection_HAsciiString> aFormatType;
   data->ReadString(num, 1, "format_type", ach, aFormatType);
 
   // Initialize entity
@@ -47,8 +47,8 @@ void RWStepShape_RWValueFormatTypeQualifier::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWValueFormatTypeQualifier::WriteStep(
-  StepData_StepWriter&                              SW,
-  const Handle(StepShape_ValueFormatTypeQualifier)& ent) const
+  StepData_StepWriter&                                   SW,
+  const occ::handle<StepShape_ValueFormatTypeQualifier>& ent) const
 {
   SW.Send(ent->FormatType());
 }

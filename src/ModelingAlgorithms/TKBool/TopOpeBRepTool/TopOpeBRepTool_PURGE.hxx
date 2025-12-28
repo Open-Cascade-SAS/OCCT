@@ -16,35 +16,50 @@
 
 #ifndef _TopOpeBRepTool_PURGE_HeaderFile
 #define _TopOpeBRepTool_PURGE_HeaderFile
-#include <TopOpeBRepTool_define.hxx>
-#include <TopTools_Array1OfShape.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
 
 #ifdef OCCT_DEBUG
 extern void FUN_REINIT();
-// extern Standard_Integer FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
+// extern int FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
 #endif
 
 // ----------------------------------------------------------------------
 // TopOpeBRepTool_faulty.cxx
 // ----------------------------------------------------------------------
 // Standard_IMPORT gp_Pnt2d FUN_GetVParonF(const TopoDS_Edge& E, const TopoDS_Face& F, const
-// Standard_Integer Index); Standard_IMPORT Standard_Real FUN_toluv(const GeomAdaptor_Surface& GAS,
-// const Standard_Real& tol3d); Standard_IMPORT void FUN_tool_Vertices(const TopoDS_Edge& E,
-// TopTools_Array1OfShape& vertices); Standard_IMPORT void FUN_mapVloe(const TopoDS_Shape& F,
-// TopTools_IndexedDataMapOfShapeListOfShape& mapVloe);
+// int Index); Standard_IMPORT double FUN_toluv(const GeomAdaptor_Surface& GAS,
+// const double& tol3d); Standard_IMPORT void FUN_tool_Vertices(const TopoDS_Edge& E,
+// NCollection_Array1<TopoDS_Shape>& vertices); Standard_IMPORT void FUN_mapVloe(const TopoDS_Shape&
+// F, NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
+// TopTools_ShapeMapHasher>& mapVloe);
 
-// Standard_IMPORT Standard_Boolean FUN_DetectEdgeswithfaultyUV(const TopoDS_Face& Fin, const
-// TopoDS_Shape& fF, const TopTools_ListOfShape& ISOEds, 						const
-// Standard_Boolean has2fybounds,
-// TopTools_ListOfShape& lfyE, Standard_Integer& Ivfaulty, 						const
-// Standard_Boolean& stopatfirst=Standard_False); Standard_IMPORT Standard_Boolean
+// Standard_IMPORT bool FUN_DetectEdgeswithfaultyUV(const TopoDS_Face& Fin, const
+// TopoDS_Shape& fF, const NCollection_List<TopoDS_Shape>& ISOEds, 						const
+// bool has2fybounds,
+// NCollection_List<TopoDS_Shape>& lfyE, int& Ivfaulty, 						const
+// bool& stopatfirst=false); Standard_IMPORT bool
 // FUN_DetectEdgewithfaultyUV(const
-// TopoDS_Face& Fin, const TopoDS_Shape& fF, const TopTools_ListOfShape& ISOEds, const
-// Standard_Boolean has2fybounds, TopoDS_Shape& fyE, Standard_Integer& Ivfaulty); Standard_IMPORT
-// Standard_Boolean FUN_DetectFaultyClosingEdge(const TopoDS_Face& Fin,const TopTools_ListOfShape&
-// Eds,const TopTools_ListOfShape& cEds,TopTools_ListOfShape& fyE); Standard_IMPORT Standard_Boolean
-// FUN_isUVClosed(const TopoDS_Face& F, const TopoDS_Face& fF);
+// TopoDS_Face& Fin, const TopoDS_Shape& fF, const NCollection_List<TopoDS_Shape>& ISOEds, const
+// bool has2fybounds, TopoDS_Shape& fyE, int& Ivfaulty); Standard_IMPORT
+// bool FUN_DetectFaultyClosingEdge(const TopoDS_Face& Fin,const NCollection_List<TopoDS_Shape>&
+// Eds,const NCollection_List<TopoDS_Shape>& cEds,NCollection_List<TopoDS_Shape>& fyE);
+// Standard_IMPORT bool FUN_isUVClosed(const TopoDS_Face& F, const TopoDS_Face& fF);
 
 // ----------------------------------------------------------------------
 // TopOpeBRepTool_PURGE.cxx

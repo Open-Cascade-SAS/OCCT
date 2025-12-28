@@ -21,7 +21,7 @@ TEST(Standard_Character_Test, OCC29925_CharacterClassificationFunctions)
   // for all valid ASCII chars (including extended)
   for (int i = 0; i < 256; i++)
   {
-    Standard_Character c = (char)(unsigned char)i;
+    char c = (char)(unsigned char)i;
 
     // These functions should not throw exceptions for any valid ASCII character
     EXPECT_NO_THROW(IsAlphabetic(c));

@@ -21,9 +21,6 @@
 
 #include <StepRepr_Representation.hxx>
 
-class StepRepr_ConstructiveGeometryRepresentation;
-DEFINE_STANDARD_HANDLE(StepRepr_ConstructiveGeometryRepresentation, StepRepr_Representation)
-
 class StepRepr_ConstructiveGeometryRepresentation : public StepRepr_Representation
 {
 public:

@@ -63,7 +63,7 @@ public:
     }
 
     //! Query if there is available triangle pointer on this iteration
-    inline Standard_Boolean More() const { return myCurrent != 0L; }
+    inline bool More() const { return myCurrent != 0L; }
 
     //! Go to the next iteration.
     Standard_EXPORT void Next();
@@ -129,8 +129,8 @@ public:
    * @param theA
    *   Allocator where the new pointer instance is created.
    */
-  Standard_EXPORT void Append(const Poly_CoherentTriangle*             pTri,
-                              const Handle(NCollection_BaseAllocator)& theA);
+  Standard_EXPORT void Append(const Poly_CoherentTriangle*                  pTri,
+                              const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**
    * Prepend a pointer to triangle into the list before the current instance.
@@ -139,8 +139,8 @@ public:
    * @param theA
    *   Allocator where the new pointer instance is created.
    */
-  Standard_EXPORT void Prepend(const Poly_CoherentTriangle*             pTri,
-                               const Handle(NCollection_BaseAllocator)& theA);
+  Standard_EXPORT void Prepend(const Poly_CoherentTriangle*                  pTri,
+                               const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**
    * Remove a pointer to triangle from its list.
@@ -149,14 +149,14 @@ public:
    * @param theA
    *   Allocator where the current pointer instance was created.
    */
-  Standard_EXPORT static void Remove(Poly_CoherentTriPtr*                     thePtr,
-                                     const Handle(NCollection_BaseAllocator)& theA);
+  Standard_EXPORT static void Remove(Poly_CoherentTriPtr*                          thePtr,
+                                     const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**
    * Remove the list containing the given pointer to triangle.
    */
   Standard_EXPORT static void RemoveList(Poly_CoherentTriPtr* thePtr,
-                                         const Handle(NCollection_BaseAllocator)&);
+                                         const occ::handle<NCollection_BaseAllocator>&);
 
 protected:
   // ---------- PROTECTED METHODS ----------

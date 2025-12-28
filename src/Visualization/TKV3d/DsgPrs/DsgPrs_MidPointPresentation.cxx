@@ -33,17 +33,17 @@
 // Function:Add
 // Purpose: draws the representation of a radial symmetry between two vertices.
 //===================================================================
-void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                      const Handle(Prs3d_Drawer)&       aDrawer,
-                                      const gp_Ax2&                     theAxe,
-                                      const gp_Pnt&                     MidPoint,
-                                      const gp_Pnt&                     Position,
-                                      const gp_Pnt&                     AttachPoint,
-                                      const Standard_Boolean            first)
+void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                      const gp_Ax2&                          theAxe,
+                                      const gp_Pnt&                          MidPoint,
+                                      const gp_Pnt&                          Position,
+                                      const gp_Pnt&                          AttachPoint,
+                                      const bool                             first)
 {
-  Standard_Real rad = AttachPoint.Distance(MidPoint) / 20.0;
+  double rad = AttachPoint.Distance(MidPoint) / 20.0;
 
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
   gp_Ax2 ax = theAxe;
   ax.SetLocation(MidPoint);
@@ -55,13 +55,13 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
     aPresentation->NewGroup();
     aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-    const Standard_Real    alpha = 2. * M_PI;
-    const Standard_Integer nbp   = 100;
-    const Standard_Real    dteta = alpha / (nbp - 1);
+    const double alpha = 2. * M_PI;
+    const int    nbp   = 100;
+    const double dteta = alpha / (nbp - 1);
 
-    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
+    occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
-    for (Standard_Integer i = 1; i <= nbp; i++)
+    for (int i = 1; i <= nbp; i++)
       aPrims->AddVertex(ElCLib::Value(dteta * (i - 1), aCircleM));
 
     // segment from mid point to the text position
@@ -87,7 +87,7 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
     }
 
     // segment from mid point to the geometry
-    Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+    occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
     // clang-format off
     aPrims->AddVertex(ElCLib::Value(ElCLib::Parameter(aCircleM,AttachPoint),aCircleM)); // mid point
     // clang-format on
@@ -100,21 +100,21 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
 // Function:Add
 // Purpose: draws the representation of a radial symmetry between two linear segments.
 //===================================================================
-void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                      const Handle(Prs3d_Drawer)&       aDrawer,
-                                      const gp_Ax2&                     theAxe,
-                                      const gp_Pnt&                     MidPoint,
-                                      const gp_Pnt&                     Position,
-                                      const gp_Pnt&                     AttachPoint,
-                                      const gp_Pnt&                     Point1,
-                                      const gp_Pnt&                     Point2,
-                                      const Standard_Boolean            first)
+void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                      const gp_Ax2&                          theAxe,
+                                      const gp_Pnt&                          MidPoint,
+                                      const gp_Pnt&                          Position,
+                                      const gp_Pnt&                          AttachPoint,
+                                      const gp_Pnt&                          Point1,
+                                      const gp_Pnt&                          Point2,
+                                      const bool                             first)
 {
-  Standard_Real rad = AttachPoint.Distance(MidPoint) / 20.0;
+  double rad = AttachPoint.Distance(MidPoint) / 20.0;
   if (rad <= Precision::Confusion())
     rad = Point1.Distance(Point2) / 20.0;
 
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
   gp_Ax2 ax = theAxe;
   ax.SetLocation(MidPoint);
@@ -124,7 +124,7 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
   aPresentation->NewGroup();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(Point1);
   aPrims->AddVertex(Point2);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
@@ -132,13 +132,13 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
   if (first)
   {
     // center of the symmetry - circle around the MidPoint
-    const Standard_Real    alpha = 2. * M_PI;
-    const Standard_Integer nbp   = 100;
-    const Standard_Real    dteta = alpha / (nbp - 1);
+    const double alpha = 2. * M_PI;
+    const int    nbp   = 100;
+    const double dteta = alpha / (nbp - 1);
 
     aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
-    for (Standard_Integer i = 1; i <= nbp; i++)
+    for (int i = 1; i <= nbp; i++)
       aPrims->AddVertex(ElCLib::Value(dteta * (i - 1), aCircleM));
 
     // segment from mid point to the text position
@@ -169,21 +169,21 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
 // Function:Add
 // Purpose: draws the representation of a radial symmetry between two circular arcs.
 //===================================================================
-void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                      const Handle(Prs3d_Drawer)&       aDrawer,
-                                      const gp_Circ&                    aCircle,
-                                      const gp_Pnt&                     MidPoint,
-                                      const gp_Pnt&                     Position,
-                                      const gp_Pnt&                     AttachPoint,
-                                      const gp_Pnt&                     Point1,
-                                      const gp_Pnt&                     Point2,
-                                      const Standard_Boolean            first)
+void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                      const gp_Circ&                         aCircle,
+                                      const gp_Pnt&                          MidPoint,
+                                      const gp_Pnt&                          Position,
+                                      const gp_Pnt&                          AttachPoint,
+                                      const gp_Pnt&                          Point1,
+                                      const gp_Pnt&                          Point2,
+                                      const bool                             first)
 {
-  Standard_Real rad = AttachPoint.Distance(MidPoint) / 20.0;
+  double rad = AttachPoint.Distance(MidPoint) / 20.0;
   if (rad <= Precision::Confusion())
     rad = Point1.Distance(Point2) / 20.0;
 
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
   gp_Ax2 ax = aCircle.Position();
   ax.SetLocation(MidPoint);
@@ -193,17 +193,17 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
   aPresentation->NewGroup();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  const Standard_Real pf    = ElCLib::Parameter(aCircle, Point1);
-  const Standard_Real pl    = ElCLib::Parameter(aCircle, Point2);
-  Standard_Real       alpha = pl - pf;
+  const double pf    = ElCLib::Parameter(aCircle, Point1);
+  const double pl    = ElCLib::Parameter(aCircle, Point2);
+  double       alpha = pl - pf;
   if (alpha < 0)
     alpha += 2. * M_PI;
-  const Standard_Integer nb    = (Standard_Integer)(50.0 * alpha / M_PI);
-  Standard_Integer       nbp   = std::max(4, nb);
-  Standard_Real          dteta = alpha / (nbp - 1);
+  const int nb    = (int)(50.0 * alpha / M_PI);
+  int       nbp   = std::max(4, nb);
+  double    dteta = alpha / (nbp - 1);
 
-  Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfPolylines(nbp);
-  for (Standard_Integer i = 1; i <= nbp; i++)
+  occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+  for (int i = 1; i <= nbp; i++)
     aPrims->AddVertex(ElCLib::Value(pf + dteta * (i - 1), aCircle));
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
@@ -216,7 +216,7 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
 
     aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
-    for (Standard_Integer i = 1; i <= nbp; i++)
+    for (int i = 1; i <= nbp; i++)
       aPrims->AddVertex(ElCLib::Value(dteta * (i - 1), aCircleM));
 
     // segment from mid point to the text position
@@ -249,21 +249,21 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
 // Function:Add
 // Purpose: draws the representation of a radial symmetry between two elliptic arcs.
 //===================================================================
-void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                      const Handle(Prs3d_Drawer)&       aDrawer,
-                                      const gp_Elips&                   aCircle,
-                                      const gp_Pnt&                     MidPoint,
-                                      const gp_Pnt&                     Position,
-                                      const gp_Pnt&                     AttachPoint,
-                                      const gp_Pnt&                     Point1,
-                                      const gp_Pnt&                     Point2,
-                                      const Standard_Boolean            first)
+void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                      const gp_Elips&                        aCircle,
+                                      const gp_Pnt&                          MidPoint,
+                                      const gp_Pnt&                          Position,
+                                      const gp_Pnt&                          AttachPoint,
+                                      const gp_Pnt&                          Point1,
+                                      const gp_Pnt&                          Point2,
+                                      const bool                             first)
 {
-  Standard_Real rad = AttachPoint.Distance(MidPoint) / 20.0;
+  double rad = AttachPoint.Distance(MidPoint) / 20.0;
   if (rad <= Precision::Confusion())
     rad = Point1.Distance(Point2) / 20.0;
 
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
   gp_Ax2 ax = aCircle.Position();
   ax.SetLocation(MidPoint);
@@ -273,17 +273,17 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
   aPresentation->NewGroup();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  const Standard_Real pf    = ElCLib::Parameter(aCircle, Point1);
-  const Standard_Real pl    = ElCLib::Parameter(aCircle, Point2);
-  Standard_Real       alpha = pl - pf;
+  const double pf    = ElCLib::Parameter(aCircle, Point1);
+  const double pl    = ElCLib::Parameter(aCircle, Point2);
+  double       alpha = pl - pf;
   if (alpha < 0)
     alpha += 2 * M_PI;
-  const Standard_Integer nb    = (Standard_Integer)(50.0 * alpha / M_PI);
-  Standard_Integer       nbp   = std::max(4, nb);
-  Standard_Real          dteta = alpha / (nbp - 1);
+  const int nb    = (int)(50.0 * alpha / M_PI);
+  int       nbp   = std::max(4, nb);
+  double    dteta = alpha / (nbp - 1);
 
-  Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfPolylines(nbp);
-  for (Standard_Integer i = 1; i <= nbp; i++)
+  occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+  for (int i = 1; i <= nbp; i++)
     aPrims->AddVertex(ElCLib::Value(pf + dteta * (i - 1), aCircle));
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
@@ -296,7 +296,7 @@ void DsgPrs_MidPointPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
 
     aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
-    for (Standard_Integer i = 1; i <= nbp; i++)
+    for (int i = 1; i <= nbp; i++)
       aPrims->AddVertex(ElCLib::Value(dteta * (i - 1), aCircleM));
 
     // segment from mid point to the text position

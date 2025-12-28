@@ -35,13 +35,11 @@
 // purpose  : SetShape (DF, entry, drawshape)
 //=======================================================================
 
-static Standard_Integer DDataStd_SetShape(Draw_Interpretor& di,
-                                          Standard_Integer  nb,
-                                          const char**      arg)
+static int DDataStd_SetShape(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TopoDS_Shape s = DBRep::Get(arg[3]);
@@ -65,10 +63,10 @@ static Standard_Integer DDataStd_SetShape(Draw_Interpretor& di,
 void DDataStd::NamedShapeCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done          = Standard_True;
+  done          = true;
   const char* g = "DData : Standard Attribute Commands";
 
   theCommands.Add("SetShape", "SetShape (DF, entry, drawname)", __FILE__, DDataStd_SetShape, g);

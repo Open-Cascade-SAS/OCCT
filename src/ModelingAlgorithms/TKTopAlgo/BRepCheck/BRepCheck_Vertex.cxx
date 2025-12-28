@@ -21,7 +21,9 @@
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
 #include <BRepCheck.hxx>
-#include <BRepCheck_ListOfStatus.hxx>
+#include <BRepCheck_Status.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Shared.hxx>
 #include <BRepCheck_Vertex.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
@@ -51,10 +53,11 @@ void BRepCheck_Vertex::Minimum()
   if (!myMin)
   {
     // checks the existence of a point 3D
-    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
-    BRepCheck_ListOfStatus&         lst      = **myMap.Bound(myShape, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
+      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    NCollection_List<BRepCheck_Status>& lst = **myMap.Bound(myShape, aNewList);
     lst.Append(BRepCheck_NoError);
-    myMin = Standard_True;
+    myMin = true;
   }
 }
 
@@ -62,7 +65,7 @@ void BRepCheck_Vertex::Minimum()
 
 void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
 {
-  Handle(BRepCheck_HListOfStatus) aHList;
+  occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock =
       myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
@@ -71,10 +74,11 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
       return;
     }
 
-    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
-    aHList                                   = *myMap.Bound(S, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
+      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    aHList = *myMap.Bound(S, aNewList);
   }
-  BRepCheck_ListOfStatus& lst = *aHList;
+  NCollection_List<BRepCheck_Status>& lst = *aHList;
 
   TopExp_Explorer exp(S, TopAbs_VERTEX);
   for (; exp.More(); exp.Next())
@@ -90,9 +94,9 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
     return; // leaves
   }
 
-  Handle(BRep_TVertex)& TV   = *((Handle(BRep_TVertex)*)&myShape.TShape());
-  const gp_Pnt&         prep = TV->Pnt();
-  gp_Pnt                Controlp;
+  occ::handle<BRep_TVertex>& TV   = *((occ::handle<BRep_TVertex>*)&myShape.TShape());
+  const gp_Pnt&              prep = TV->Pnt();
+  gp_Pnt                     Controlp;
 
   TopAbs_ShapeEnum styp = S.ShapeType();
   switch (styp)
@@ -102,7 +106,7 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
       const TopoDS_Edge& E = TopoDS::Edge(S);
       TopoDS_Iterator    itv(E.Oriented(TopAbs_FORWARD));
       TopoDS_Vertex      VFind;
-      Standard_Boolean   multiple = Standard_False;
+      bool               multiple = false;
       while (itv.More())
       {
         const TopoDS_Vertex& VF = TopoDS::Vertex(itv.Value());
@@ -118,7 +122,7 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
                 || (VFind.Orientation() == TopAbs_REVERSED && VF.Orientation() == TopAbs_FORWARD))
             {
               // the vertex on the edge is at once F and R
-              multiple = Standard_True;
+              multiple = true;
             }
             if (VFind.Orientation() != TopAbs_FORWARD && VFind.Orientation() != TopAbs_REVERSED)
             {
@@ -135,31 +139,31 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
       // VFind is not null for sure
       TopAbs_Orientation orv = VFind.Orientation();
 
-      Standard_Real Tol = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
-      Tol               = std::max(Tol, BRep_Tool::Tolerance(E)); // to check
+      double Tol = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
+      Tol        = std::max(Tol, BRep_Tool::Tolerance(E)); // to check
       Tol *= Tol;
 
-      Handle(BRep_TEdge)&                          TE = *((Handle(BRep_TEdge)*)&E.TShape());
-      BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
-      const TopLoc_Location&                       Eloc = E.Location();
+      occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
+      NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
+      const TopLoc_Location&                                            Eloc = E.Location();
 
-      BRep_ListIteratorOfListOfPointRepresentation itpr;
+      NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr;
       while (itcr.More())
       {
         // For each CurveRepresentation, the provided parameter is checked
-        const Handle(BRep_CurveRepresentation)& cr  = itcr.Value();
-        const TopLoc_Location&                  loc = cr->Location();
-        TopLoc_Location                         L   = (Eloc * loc).Predivided(myShape.Location());
+        const occ::handle<BRep_CurveRepresentation>& cr  = itcr.Value();
+        const TopLoc_Location&                       loc = cr->Location();
+        TopLoc_Location L = (Eloc * loc).Predivided(myShape.Location());
 
         if (cr->IsCurve3D())
         {
-          const Handle(Geom_Curve)& C = cr->Curve3D();
+          const occ::handle<Geom_Curve>& C = cr->Curve3D();
           if (!C.IsNull()) // edge non degenerated
           {
             itpr.Initialize(TV->Points());
             while (itpr.More())
             {
-              const Handle(BRep_PointRepresentation)& pr = itpr.Value();
+              const occ::handle<BRep_PointRepresentation>& pr = itpr.Value();
               if (pr->IsPointOnCurve(C, L))
               {
                 Controlp = C->Value(pr->Parameter());
@@ -173,7 +177,7 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
             }
             if (orv == TopAbs_FORWARD || orv == TopAbs_REVERSED)
             {
-              Handle(BRep_GCurve) GC = Handle(BRep_GCurve)::DownCast(cr);
+              occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(cr);
               if (orv == TopAbs_FORWARD || multiple)
               {
                 Controlp = C->Value(GC->First());
@@ -197,9 +201,9 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
         }
         else if (cr->IsCurveOnSurface())
         {
-          const Handle(Geom_Surface)& Su = cr->Surface();
-          const Handle(Geom2d_Curve)& PC = cr->PCurve();
-          Handle(Geom2d_Curve)        PC2;
+          const occ::handle<Geom_Surface>& Su = cr->Surface();
+          const occ::handle<Geom2d_Curve>& PC = cr->PCurve();
+          occ::handle<Geom2d_Curve>        PC2;
           if (cr->IsCurveOnClosedSurface())
           {
             PC2 = cr->PCurve2();
@@ -207,7 +211,7 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
           itpr.Initialize(TV->Points());
           while (itpr.More())
           {
-            const Handle(BRep_PointRepresentation)& pr = itpr.Value();
+            const occ::handle<BRep_PointRepresentation>& pr = itpr.Value();
             if (pr->IsPointOnCurveOnSurface(PC, Su, L))
             {
               gp_Pnt2d p2d = PC->Value(pr->Parameter());
@@ -240,20 +244,20 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
       break;
     }
     case TopAbs_FACE: {
-      Handle(BRep_TFace)&         TF    = *((Handle(BRep_TFace)*)&S.TShape());
-      const TopLoc_Location&      Floc  = S.Location();
-      const TopLoc_Location&      TFloc = TF->Location();
-      const Handle(Geom_Surface)& Su    = TF->Surface();
-      TopLoc_Location             L     = (Floc * TFloc).Predivided(myShape.Location());
+      occ::handle<BRep_TFace>&         TF    = *((occ::handle<BRep_TFace>*)&S.TShape());
+      const TopLoc_Location&           Floc  = S.Location();
+      const TopLoc_Location&           TFloc = TF->Location();
+      const occ::handle<Geom_Surface>& Su    = TF->Surface();
+      TopLoc_Location                  L     = (Floc * TFloc).Predivided(myShape.Location());
 
-      Standard_Real Tol = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
-      Tol               = std::max(Tol, BRep_Tool::Tolerance(TopoDS::Face(S))); // to check
+      double Tol = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
+      Tol        = std::max(Tol, BRep_Tool::Tolerance(TopoDS::Face(S))); // to check
       Tol *= Tol;
 
-      BRep_ListIteratorOfListOfPointRepresentation itpr(TV->Points());
+      NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr(TV->Points());
       while (itpr.More())
       {
-        const Handle(BRep_PointRepresentation)& pr = itpr.Value();
+        const occ::handle<BRep_PointRepresentation>& pr = itpr.Value();
         if (pr->IsPointOnSurface(Su, L))
         {
           Controlp = Su->Value(pr->Parameter(), pr->Parameter2());
@@ -290,19 +294,19 @@ void BRepCheck_Vertex::Blind()
   //   (see specification "Substitution existing set of evaluation DRAW commands to one").
 
   //   Check all the representations  of the vertex. (i-e checks the TVertex
-  //   BRepCheck_ListOfStatus& lst = myMap(myShape);
+  //   NCollection_List<BRepCheck_Status>& lst = myMap(myShape);
   //   lst.Clear(); // there was NoError...
 
-  //   Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*) &myShape.TShape());
+  //   occ::handle<BRep_TVertex>& TV = *((occ::handle<BRep_TVertex>*) &myShape.TShape());
   //   const gp_Pnt& prep = TV->Pnt();
-  //   Standard_Real Tol  = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
+  //   double Tol  = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
   //   Tol *= Tol;
 
   //   gp_Pnt Controlp;
-  //   BRep_ListIteratorOfListOfPointRepresentation itpr(TV->Points());
+  //   NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr(TV->Points());
   //   BRepCheck_Status stat=BRepCheck_NoError;
   //   while (itpr.More()) {
-  //     const Handle(BRep_PointRepresentation)& pr = itpr.Value();
+  //     const occ::handle<BRep_PointRepresentation>& pr = itpr.Value();
   //     const TopLoc_Location& loc = pr->Location();
   //     if (pr->IsPointOnCurve()) {
   //       Controlp = pr->Curve()->Value(pr->Parameter());
@@ -328,27 +332,27 @@ void BRepCheck_Vertex::Blind()
   //     lst.Append(BRepCheck_NoError);
   //   }
   // modified by NIZHNY-MKK  Fri May  7 16:43:45 2004.END
-  myBlind = Standard_True;
+  myBlind = true;
 }
 
 //=================================================================================================
 
-Standard_Real BRepCheck_Vertex::Tolerance()
+double BRepCheck_Vertex::Tolerance()
 {
 
   // Check all the representations  of the vertex. (i-e checks the TVertex
-  Handle(BRep_TVertex)& TV   = *((Handle(BRep_TVertex)*)&myShape.TShape());
-  const gp_Pnt&         prep = TV->Pnt();
-  Standard_Real         Tol  = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
+  occ::handle<BRep_TVertex>& TV   = *((occ::handle<BRep_TVertex>*)&myShape.TShape());
+  const gp_Pnt&              prep = TV->Pnt();
+  double                     Tol  = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
   Tol *= Tol;
 
   gp_Pnt Controlp;
   Controlp = prep;
-  BRep_ListIteratorOfListOfPointRepresentation itpr(TV->Points());
+  NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr(TV->Points());
   while (itpr.More())
   {
-    const Handle(BRep_PointRepresentation)& pr  = itpr.Value();
-    const TopLoc_Location&                  loc = pr->Location();
+    const occ::handle<BRep_PointRepresentation>& pr  = itpr.Value();
+    const TopLoc_Location&                       loc = pr->Location();
     if (pr->IsPointOnCurve())
     {
       if (!pr->Curve().IsNull())

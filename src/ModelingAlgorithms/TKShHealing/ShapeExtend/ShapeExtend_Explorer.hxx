@@ -21,8 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_HSequenceOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_List.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class TopoDS_Shape;
 
@@ -42,7 +44,7 @@ public:
 
   //! Converts a sequence of Shapes to a Compound
   Standard_EXPORT TopoDS_Shape
-    CompoundFromSeq(const Handle(TopTools_HSequenceOfShape)& seqval) const;
+    CompoundFromSeq(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval) const;
 
   //! Converts a Compound to a list of Shapes
   //! if <comp> is not a compound, the list contains only <comp>
@@ -50,28 +52,27 @@ public:
   //! if <comp> is a Compound, its sub-shapes are put into the list
   //! then if <expcomp> is True, if a sub-shape is a Compound, it
   //! is not put to the list but its sub-shapes are (recursive)
-  Standard_EXPORT Handle(TopTools_HSequenceOfShape) SeqFromCompound(
-    const TopoDS_Shape&    comp,
-    const Standard_Boolean expcomp) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TopoDS_Shape>> SeqFromCompound(
+    const TopoDS_Shape& comp,
+    const bool          expcomp) const;
 
   //! Converts a Sequence of Shapes to a List of Shapes
   //! <clear> if True (D), commands the list to start from scratch
   //! else, the list is cumulated
-  Standard_EXPORT void ListFromSeq(const Handle(TopTools_HSequenceOfShape)& seqval,
-                                   TopTools_ListOfShape&                    lisval,
-                                   const Standard_Boolean clear = Standard_True) const;
+  Standard_EXPORT void ListFromSeq(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval,
+                                   NCollection_List<TopoDS_Shape>&                         lisval,
+                                   const bool clear = true) const;
 
   //! Converts a List of Shapes to a Sequence of Shapes
-  Standard_EXPORT Handle(TopTools_HSequenceOfShape) SeqFromList(
-    const TopTools_ListOfShape& lisval) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TopoDS_Shape>> SeqFromList(
+    const NCollection_List<TopoDS_Shape>& lisval) const;
 
   //! Returns the type of a Shape: true type if <compound> is False
   //! If <compound> is True and <shape> is a Compound, iterates on
   //! its items. If all are of the same type, returns this type.
   //! Else, returns COMPOUND. If it is empty, returns SHAPE
   //! For a Null Shape, returns SHAPE
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType(const TopoDS_Shape&    shape,
-                                             const Standard_Boolean compound) const;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType(const TopoDS_Shape& shape, const bool compound) const;
 
   //! Builds a COMPOUND from the given shape.
   //! It explores the shape level by level, according to the
@@ -86,25 +87,23 @@ public:
   //! items directly contained in a Compound
   Standard_EXPORT TopoDS_Shape SortedCompound(const TopoDS_Shape&    shape,
                                               const TopAbs_ShapeEnum type,
-                                              const Standard_Boolean explore,
-                                              const Standard_Boolean compound) const;
+                                              const bool             explore,
+                                              const bool             compound) const;
 
   //! Dispatches starting list of shapes according to their type,
   //! to the appropriate resulting lists
   //! For each of these lists, if it is null, it is firstly created
   //! else, new items are appended to the already existing ones
-  Standard_EXPORT void DispatchList(const Handle(TopTools_HSequenceOfShape)& list,
-                                    Handle(TopTools_HSequenceOfShape)&       vertices,
-                                    Handle(TopTools_HSequenceOfShape)&       edges,
-                                    Handle(TopTools_HSequenceOfShape)&       wires,
-                                    Handle(TopTools_HSequenceOfShape)&       faces,
-                                    Handle(TopTools_HSequenceOfShape)&       shells,
-                                    Handle(TopTools_HSequenceOfShape)&       solids,
-                                    Handle(TopTools_HSequenceOfShape)&       compsols,
-                                    Handle(TopTools_HSequenceOfShape)&       compounds) const;
-
-protected:
-private:
+  Standard_EXPORT void DispatchList(
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       vertices,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       edges,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       wires,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       faces,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       shells,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       solids,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compsols,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compounds) const;
 };
 
 #endif // _ShapeExtend_Explorer_HeaderFile

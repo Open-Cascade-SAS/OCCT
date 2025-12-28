@@ -20,10 +20,10 @@
 
 RWStepShape_RWVertexPoint::RWStepShape_RWVertexPoint() {}
 
-void RWStepShape_RWVertexPoint::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepShape_VertexPoint)&   ent) const
+void RWStepShape_RWVertexPoint::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                                   num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepShape_VertexPoint>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,14 +33,14 @@ void RWStepShape_RWVertexPoint::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : vertexGeometry ---
 
-  Handle(StepGeom_Point) aVertexGeometry;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Point> aVertexGeometry;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "vertex_geometry", ach, STANDARD_TYPE(StepGeom_Point), aVertexGeometry);
 
   //--- Initialisation of the read entity ---
@@ -48,8 +48,8 @@ void RWStepShape_RWVertexPoint::ReadStep(const Handle(StepData_StepReaderData)& 
   ent->Init(aName, aVertexGeometry);
 }
 
-void RWStepShape_RWVertexPoint::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepShape_VertexPoint)& ent) const
+void RWStepShape_RWVertexPoint::WriteStep(StepData_StepWriter&                      SW,
+                                          const occ::handle<StepShape_VertexPoint>& ent) const
 {
 
   // --- inherited field name ---
@@ -61,8 +61,8 @@ void RWStepShape_RWVertexPoint::WriteStep(StepData_StepWriter&                 S
   SW.Send(ent->VertexGeometry());
 }
 
-void RWStepShape_RWVertexPoint::Share(const Handle(StepShape_VertexPoint)& ent,
-                                      Interface_EntityIterator&            iter) const
+void RWStepShape_RWVertexPoint::Share(const occ::handle<StepShape_VertexPoint>& ent,
+                                      Interface_EntityIterator&                 iter) const
 {
 
   iter.GetOneItem(ent->VertexGeometry());

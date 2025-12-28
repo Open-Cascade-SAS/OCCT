@@ -33,36 +33,35 @@ public:
   Standard_EXPORT virtual ~Aspect_OpenVRSession();
 
   //! Return TRUE if session is opened.
-  Standard_EXPORT virtual bool IsOpen() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOpen() const override;
 
   //! Initialize session.
-  Standard_EXPORT virtual bool Open() Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Open() override;
 
   //! Release session.
-  Standard_EXPORT virtual void Close() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Close() override;
 
   //! Fetch actual poses of tracked devices.
-  Standard_EXPORT virtual bool WaitPoses() Standard_OVERRIDE;
+  Standard_EXPORT virtual bool WaitPoses() override;
 
   //! Return recommended viewport Width x Height for rendering into VR.
-  virtual NCollection_Vec2<int> RecommendedViewport() const Standard_OVERRIDE { return myRendSize; }
+  virtual NCollection_Vec2<int> RecommendedViewport() const override { return myRendSize; }
 
   //! Return transformation from eye to head.
   //! vr::GetEyeToHeadTransform() wrapper.
-  Standard_EXPORT virtual NCollection_Mat4<double> EyeToHeadTransform(Aspect_Eye theEye) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual NCollection_Mat4<double> EyeToHeadTransform(
+    Aspect_Eye theEye) const override;
 
   //! Return projection matrix.
   Standard_EXPORT virtual NCollection_Mat4<double> ProjectionMatrix(Aspect_Eye theEye,
                                                                     double     theZNear,
-                                                                    double     theZFar) const
-    Standard_OVERRIDE;
+                                                                    double theZFar) const override;
 
   //! Return TRUE.
-  virtual bool HasProjectionFrustums() const Standard_OVERRIDE { return true; }
+  virtual bool HasProjectionFrustums() const override { return true; }
 
   //! Receive XR events.
-  Standard_EXPORT virtual void ProcessEvents() Standard_OVERRIDE;
+  Standard_EXPORT virtual void ProcessEvents() override;
 
   //! Submit texture eye to XR Composer.
   //! @param[in] theTexture      texture handle
@@ -75,31 +74,29 @@ public:
   Standard_EXPORT virtual bool SubmitEye(void*                  theTexture,
                                          Aspect_GraphicsLibrary theGraphicsLib,
                                          Aspect_ColorSpace      theColorSpace,
-                                         Aspect_Eye             theEye) Standard_OVERRIDE;
+                                         Aspect_Eye             theEye) override;
 
   //! Query information.
-  Standard_EXPORT virtual TCollection_AsciiString GetString(InfoString theInfo) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual TCollection_AsciiString GetString(InfoString theInfo) const override;
 
   //! Return index of tracked device of known role.
-  Standard_EXPORT virtual Standard_Integer NamedTrackedDevice(
-    Aspect_XRTrackedDeviceRole theDevice) const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NamedTrackedDevice(
+    Aspect_XRTrackedDeviceRole theDevice) const override;
 
   //! Fetch data for digital input action (like button).
   Standard_EXPORT virtual Aspect_XRDigitalActionData GetDigitalActionData(
-    const Handle(Aspect_XRAction)& theAction) const Standard_OVERRIDE;
+    const occ::handle<Aspect_XRAction>& theAction) const override;
 
   //! Fetch data for analog input action (like axis).
   Standard_EXPORT virtual Aspect_XRAnalogActionData GetAnalogActionData(
-    const Handle(Aspect_XRAction)& theAction) const Standard_OVERRIDE;
+    const occ::handle<Aspect_XRAction>& theAction) const override;
 
   //! Fetch data for pose input action (like fingertip position).
   Standard_EXPORT virtual Aspect_XRPoseActionData GetPoseActionDataForNextFrame(
-    const Handle(Aspect_XRAction)& theAction) const Standard_OVERRIDE;
+    const occ::handle<Aspect_XRAction>& theAction) const override;
 
   //! Set tracking origin.
-  Standard_EXPORT virtual void SetTrackingOrigin(TrackingUniverseOrigin theOrigin)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTrackingOrigin(TrackingUniverseOrigin theOrigin) override;
 
 protected:
   //! Find location of default actions manifest file (based on CSF_OCCTResourcePath or CASROOT
@@ -116,24 +113,24 @@ protected:
   Standard_EXPORT virtual bool initInput();
 
   //! Handle tracked device activation.
-  Standard_EXPORT virtual void onTrackedDeviceActivated(Standard_Integer theDeviceIndex);
+  Standard_EXPORT virtual void onTrackedDeviceActivated(int theDeviceIndex);
 
   //! Handle tracked device deactivation.
-  Standard_EXPORT virtual void onTrackedDeviceDeactivated(Standard_Integer theDeviceIndex);
+  Standard_EXPORT virtual void onTrackedDeviceDeactivated(int theDeviceIndex);
 
   //! Handle tracked device update.
-  Standard_EXPORT virtual void onTrackedDeviceUpdated(Standard_Integer theDeviceIndex);
+  Standard_EXPORT virtual void onTrackedDeviceUpdated(int theDeviceIndex);
 
   //! Trigger vibration.
   Standard_EXPORT virtual void triggerHapticVibrationAction(
-    const Handle(Aspect_XRAction)&   theAction,
-    const Aspect_XRHapticActionData& theParams) Standard_OVERRIDE;
+    const occ::handle<Aspect_XRAction>& theAction,
+    const Aspect_XRHapticActionData&    theParams) override;
 
   //! Return model for displaying device.
-  Standard_EXPORT virtual Handle(Graphic3d_ArrayOfTriangles) loadRenderModel(
-    Standard_Integer       theDevice,
-    Standard_Boolean       theToApplyUnitFactor,
-    Handle(Image_Texture)& theTexture) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Graphic3d_ArrayOfTriangles> loadRenderModel(
+    int                         theDevice,
+    bool                        theToApplyUnitFactor,
+    occ::handle<Image_Texture>& theTexture) override;
 
 protected:
   //! Access vr::IVRSystem* - OpenVR session object.

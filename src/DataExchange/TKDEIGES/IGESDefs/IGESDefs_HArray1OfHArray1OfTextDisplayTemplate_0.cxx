@@ -19,38 +19,39 @@
 #include <Standard_Type.hxx>
 
 IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(
-  const Standard_Integer low,
-  const Standard_Integer up)
+  const int low,
+  const int up)
     : thelist(low, up)
 {
-  Handle(Standard_Transient) nulo;
+  occ::handle<Standard_Transient> nulo;
   thelist.Init(nulo);
 }
 
-Standard_Integer IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Lower() const
+int IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Lower() const
 {
   return thelist.Lower();
 }
 
-Standard_Integer IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Upper() const
+int IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Upper() const
 {
   return thelist.Upper();
 }
 
-Standard_Integer IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Length() const
+int IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Length() const
 {
   return thelist.Length();
 }
 
 void IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::SetValue(
-  const Standard_Integer                                num,
-  const Handle(IGESGraph_HArray1OfTextDisplayTemplate)& val)
+  const int                                                                           num,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>& val)
 {
   thelist.SetValue(num, val);
 }
 
-Handle(IGESGraph_HArray1OfTextDisplayTemplate) IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::
-  Value(const Standard_Integer num) const
+occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>
+  IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Value(const int num) const
 {
-  return Handle(IGESGraph_HArray1OfTextDisplayTemplate)::DownCast(thelist.Value(num));
+  return occ::down_cast<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>(
+    thelist.Value(num));
 }

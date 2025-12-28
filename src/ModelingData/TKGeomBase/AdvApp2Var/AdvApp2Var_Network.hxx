@@ -21,8 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <AdvApp2Var_SequenceOfPatch.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <AdvApp2Var_Patch.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 class AdvApp2Var_Patch;
 
@@ -33,52 +33,48 @@ public:
 
   Standard_EXPORT AdvApp2Var_Network();
 
-  Standard_EXPORT AdvApp2Var_Network(const AdvApp2Var_SequenceOfPatch& Net,
-                                     const TColStd_SequenceOfReal&     TheU,
-                                     const TColStd_SequenceOfReal&     TheV);
+  Standard_EXPORT AdvApp2Var_Network(const NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>& Net,
+                                     const NCollection_Sequence<double>& TheU,
+                                     const NCollection_Sequence<double>& TheV);
 
   //! search the Index of the first Patch not approximated,
-  //! if all Patches are approximated Standard_False is returned
-  Standard_EXPORT Standard_Boolean FirstNotApprox(Standard_Integer& Index) const;
+  //! if all Patches are approximated false is returned
+  Standard_EXPORT bool FirstNotApprox(int& Index) const;
 
-  AdvApp2Var_Patch& ChangePatch(const Standard_Integer Index) { return *myNet.Value(Index); }
+  AdvApp2Var_Patch& ChangePatch(const int Index) { return *myNet.Value(Index); }
 
-  AdvApp2Var_Patch& operator()(const Standard_Integer Index) { return ChangePatch(Index); }
+  AdvApp2Var_Patch& operator()(const int Index) { return ChangePatch(Index); }
 
-  Standard_EXPORT void UpdateInU(const Standard_Real CuttingValue);
+  Standard_EXPORT void UpdateInU(const double CuttingValue);
 
-  Standard_EXPORT void UpdateInV(const Standard_Real CuttingValue);
+  Standard_EXPORT void UpdateInV(const double CuttingValue);
 
-  Standard_EXPORT void SameDegree(const Standard_Integer iu,
-                                  const Standard_Integer iv,
-                                  Standard_Integer&      ncfu,
-                                  Standard_Integer&      ncfv);
+  Standard_EXPORT void SameDegree(const int iu, const int iv, int& ncfu, int& ncfv);
 
-  Standard_EXPORT Standard_Integer NbPatch() const;
+  Standard_EXPORT int NbPatch() const;
 
-  Standard_EXPORT Standard_Integer NbPatchInU() const;
+  Standard_EXPORT int NbPatchInU() const;
 
-  Standard_EXPORT Standard_Integer NbPatchInV() const;
+  Standard_EXPORT int NbPatchInV() const;
 
-  Standard_EXPORT Standard_Real UParameter(const Standard_Integer Index) const;
+  Standard_EXPORT double UParameter(const int Index) const;
 
-  Standard_EXPORT Standard_Real VParameter(const Standard_Integer Index) const;
+  Standard_EXPORT double VParameter(const int Index) const;
 
-  const AdvApp2Var_Patch& Patch(const Standard_Integer UIndex, const Standard_Integer VIndex) const
+  const AdvApp2Var_Patch& Patch(const int UIndex, const int VIndex) const
   {
     return *myNet.Value((VIndex - 1) * (myUParameters.Length() - 1) + UIndex);
   }
 
-  const AdvApp2Var_Patch& operator()(const Standard_Integer UIndex,
-                                     const Standard_Integer VIndex) const
+  const AdvApp2Var_Patch& operator()(const int UIndex, const int VIndex) const
   {
     return Patch(UIndex, VIndex);
   }
 
 private:
-  AdvApp2Var_SequenceOfPatch myNet;
-  TColStd_SequenceOfReal     myUParameters;
-  TColStd_SequenceOfReal     myVParameters;
+  NCollection_Sequence<occ::handle<AdvApp2Var_Patch>> myNet;
+  NCollection_Sequence<double>                        myUParameters;
+  NCollection_Sequence<double>                        myVParameters;
 };
 
 #endif // _AdvApp2Var_Network_HeaderFile

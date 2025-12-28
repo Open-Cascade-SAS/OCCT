@@ -22,8 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class LocOpe_WiresOnShape;
 
 class LocOpe_Spliter
@@ -40,9 +41,9 @@ public:
   //! Initializes the algorithm on the shape <S>.
   void Init(const TopoDS_Shape& S);
 
-  Standard_EXPORT void Perform(const Handle(LocOpe_WiresOnShape)& PW);
+  Standard_EXPORT void Perform(const occ::handle<LocOpe_WiresOnShape>& PW);
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the new shape
   const TopoDS_Shape& ResultingShape() const;
@@ -52,24 +53,23 @@ public:
 
   //! Returns the faces which are the left of the
   //! projected wires and which are
-  Standard_EXPORT const TopTools_ListOfShape& DirectLeft() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& DirectLeft() const;
 
   //! Returns the faces of the "left" part on the shape.
   //! (It is build from DirectLeft, with the faces
   //! connected to this set, and so on...).
-  Standard_EXPORT const TopTools_ListOfShape& Left() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Left() const;
 
   //! Returns the list of descendant shapes of <S>.
-  Standard_EXPORT const TopTools_ListOfShape& DescendantShapes(const TopoDS_Shape& S);
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& DescendantShapes(const TopoDS_Shape& S);
 
-protected:
 private:
-  TopoDS_Shape                       myShape;
-  Standard_Boolean                   myDone;
-  TopoDS_Shape                       myRes;
-  TopTools_DataMapOfShapeListOfShape myMap;
-  TopTools_ListOfShape               myDLeft;
-  TopTools_ListOfShape               myLeft;
+  TopoDS_Shape myShape;
+  bool         myDone;
+  TopoDS_Shape myRes;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
+  NCollection_List<TopoDS_Shape> myDLeft;
+  NCollection_List<TopoDS_Shape> myLeft;
 };
 
 #include <LocOpe_Spliter.lxx>

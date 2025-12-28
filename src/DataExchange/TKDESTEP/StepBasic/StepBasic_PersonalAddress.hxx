@@ -19,15 +19,14 @@
 
 #include <Standard.hxx>
 
-#include <StepBasic_HArray1OfPerson.hxx>
+#include <StepBasic_Person.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_Address.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepBasic_Person;
-
-class StepBasic_PersonalAddress;
-DEFINE_STANDARD_HANDLE(StepBasic_PersonalAddress, StepBasic_Address)
 
 class StepBasic_PersonalAddress : public StepBasic_Address
 {
@@ -36,51 +35,52 @@ public:
   //! Returns a PersonalAddress
   Standard_EXPORT StepBasic_PersonalAddress();
 
-  Standard_EXPORT void Init(const Standard_Boolean                   hasAinternalLocation,
-                            const Handle(TCollection_HAsciiString)&  aInternalLocation,
-                            const Standard_Boolean                   hasAstreetNumber,
-                            const Handle(TCollection_HAsciiString)&  aStreetNumber,
-                            const Standard_Boolean                   hasAstreet,
-                            const Handle(TCollection_HAsciiString)&  aStreet,
-                            const Standard_Boolean                   hasApostalBox,
-                            const Handle(TCollection_HAsciiString)&  aPostalBox,
-                            const Standard_Boolean                   hasAtown,
-                            const Handle(TCollection_HAsciiString)&  aTown,
-                            const Standard_Boolean                   hasAregion,
-                            const Handle(TCollection_HAsciiString)&  aRegion,
-                            const Standard_Boolean                   hasApostalCode,
-                            const Handle(TCollection_HAsciiString)&  aPostalCode,
-                            const Standard_Boolean                   hasAcountry,
-                            const Handle(TCollection_HAsciiString)&  aCountry,
-                            const Standard_Boolean                   hasAfacsimileNumber,
-                            const Handle(TCollection_HAsciiString)&  aFacsimileNumber,
-                            const Standard_Boolean                   hasAtelephoneNumber,
-                            const Handle(TCollection_HAsciiString)&  aTelephoneNumber,
-                            const Standard_Boolean                   hasAelectronicMailAddress,
-                            const Handle(TCollection_HAsciiString)&  aElectronicMailAddress,
-                            const Standard_Boolean                   hasAtelexNumber,
-                            const Handle(TCollection_HAsciiString)&  aTelexNumber,
-                            const Handle(StepBasic_HArray1OfPerson)& aPeople,
-                            const Handle(TCollection_HAsciiString)&  aDescription);
+  Standard_EXPORT void Init(
+    const bool                                   hasAinternalLocation,
+    const occ::handle<TCollection_HAsciiString>& aInternalLocation,
+    const bool                                   hasAstreetNumber,
+    const occ::handle<TCollection_HAsciiString>& aStreetNumber,
+    const bool                                   hasAstreet,
+    const occ::handle<TCollection_HAsciiString>& aStreet,
+    const bool                                   hasApostalBox,
+    const occ::handle<TCollection_HAsciiString>& aPostalBox,
+    const bool                                   hasAtown,
+    const occ::handle<TCollection_HAsciiString>& aTown,
+    const bool                                   hasAregion,
+    const occ::handle<TCollection_HAsciiString>& aRegion,
+    const bool                                   hasApostalCode,
+    const occ::handle<TCollection_HAsciiString>& aPostalCode,
+    const bool                                   hasAcountry,
+    const occ::handle<TCollection_HAsciiString>& aCountry,
+    const bool                                   hasAfacsimileNumber,
+    const occ::handle<TCollection_HAsciiString>& aFacsimileNumber,
+    const bool                                   hasAtelephoneNumber,
+    const occ::handle<TCollection_HAsciiString>& aTelephoneNumber,
+    const bool                                   hasAelectronicMailAddress,
+    const occ::handle<TCollection_HAsciiString>& aElectronicMailAddress,
+    const bool                                   hasAtelexNumber,
+    const occ::handle<TCollection_HAsciiString>& aTelexNumber,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>>& aPeople,
+    const occ::handle<TCollection_HAsciiString>&                           aDescription);
 
-  Standard_EXPORT void SetPeople(const Handle(StepBasic_HArray1OfPerson)& aPeople);
+  Standard_EXPORT void SetPeople(
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>>& aPeople);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfPerson) People() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>> People() const;
 
-  Standard_EXPORT Handle(StepBasic_Person) PeopleValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_Person> PeopleValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbPeople() const;
+  Standard_EXPORT int NbPeople() const;
 
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_PersonalAddress, StepBasic_Address)
 
-protected:
 private:
-  Handle(StepBasic_HArray1OfPerson) people;
-  Handle(TCollection_HAsciiString)  description;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>> people;
+  occ::handle<TCollection_HAsciiString>                           description;
 };
 
 #endif // _StepBasic_PersonalAddress_HeaderFile

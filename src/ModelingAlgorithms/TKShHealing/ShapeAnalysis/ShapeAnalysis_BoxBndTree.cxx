@@ -26,25 +26,25 @@
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Reject(const Bnd_Box& theBnd) const
+bool ShapeAnalysis_BoxBndTreeSelector::Reject(const Bnd_Box& theBnd) const
 {
-  Standard_Boolean fch = myFBox.IsOut(theBnd);
-  Standard_Boolean lch = myLBox.IsOut(theBnd);
-  if (fch == Standard_False || lch == Standard_False)
-    return Standard_False;
-  return Standard_True;
+  bool fch = myFBox.IsOut(theBnd);
+  bool lch = myLBox.IsOut(theBnd);
+  if (fch == false || lch == false)
+    return false;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer& theObj)
+bool ShapeAnalysis_BoxBndTreeSelector::Accept(const int& theObj)
 {
   if (theObj < 1 || theObj > mySeq->Length())
     throw Standard_NoSuchObject(
       "ShapeAnalysis_BoxBndTreeSelector::Accept : no such object for current index");
-  Standard_Boolean IsAccept = Standard_False;
+  bool IsAccept = false;
   if (myList.Contains(theObj))
-    return Standard_False;
+    return false;
 
   enum
   {
@@ -60,7 +60,7 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
     if (myLVertex.IsSame(V1))
     {
       myStatus           = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
-      IsAccept           = Standard_True;
+      IsAccept           = true;
       myArrIndices(Last) = theObj;
     }
     else
@@ -68,7 +68,7 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
       if (myLVertex.IsSame(V2))
       {
         myStatus           = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
-        IsAccept           = Standard_True;
+        IsAccept           = true;
         myArrIndices(Last) = theObj;
       }
       else
@@ -76,7 +76,7 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
         if (myFVertex.IsSame(V2))
         {
           myStatus            = ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
-          IsAccept            = Standard_True;
+          IsAccept            = true;
           myArrIndices(First) = theObj;
         }
         else
@@ -84,7 +84,7 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
           if (myFVertex.IsSame(V1))
           {
             myStatus            = ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
-            IsAccept            = Standard_True;
+            IsAccept            = true;
             myArrIndices(First) = theObj;
           }
           else
@@ -97,11 +97,11 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
     {
       SetNb(theObj);
       if (myArrIndices(Last))
-        myStop = Standard_True;
-      return Standard_True;
+        myStop = true;
+      return true;
     }
     else
-      myStop = Standard_False;
+      myStop = false;
   }
 
   else
@@ -109,13 +109,13 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
     gp_Pnt p1 = BRep_Tool::Pnt(V1);
     gp_Pnt p2 = BRep_Tool::Pnt(V2);
 
-    Standard_Real tailhead, tailtail, headhead, headtail;
-    tailhead             = p1.Distance(myLPnt);
-    tailtail             = p2.Distance(myLPnt);
-    headhead             = p1.Distance(myFPnt);
-    headtail             = p2.Distance(myFPnt);
-    Standard_Real    dm1 = tailhead, dm2 = headtail;
-    Standard_Integer res1 = 0, res2 = 0;
+    double tailhead, tailtail, headhead, headtail;
+    tailhead   = p1.Distance(myLPnt);
+    tailtail   = p2.Distance(myLPnt);
+    headhead   = p1.Distance(myFPnt);
+    headtail   = p2.Distance(myFPnt);
+    double dm1 = tailhead, dm2 = headtail;
+    int    res1 = 0, res2 = 0;
     if (tailhead > tailtail)
     {
       res1 = 1;
@@ -126,15 +126,15 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
       res2 = 1;
       dm2  = headhead;
     }
-    Standard_Integer result = res1;
-    Standard_Real    min3d;
+    int    result = res1;
+    double min3d;
     min3d = std::min(dm1, dm2);
     if (min3d > myMin3d)
-      return Standard_False;
+      return false;
 
-    Standard_Integer minInd = (dm1 > dm2 ? First : Last);
-    Standard_Integer maxInd = (dm1 > dm2 ? Last : First);
-    myArrIndices(minInd)    = theObj;
+    int minInd           = (dm1 > dm2 ? First : Last);
+    int maxInd           = (dm1 > dm2 ? Last : First);
+    myArrIndices(minInd) = theObj;
     if ((min3d - myMin3d) > RealSmall())
       myArrIndices(maxInd) = 0;
 
@@ -142,14 +142,14 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
     if (min3d > myTol)
     {
       myStatus = ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
-      return Standard_False;
+      return false;
     }
 
-    Standard_Integer anObj = (myArrIndices(Last) ? myArrIndices(Last) : myArrIndices(First));
+    int anObj = (myArrIndices(Last) ? myArrIndices(Last) : myArrIndices(First));
     SetNb(anObj);
 
     if (min3d == 0 && minInd == Last)
-      myStop = Standard_True;
+      myStop = true;
 
     if (dm1 > dm2)
     {
@@ -174,8 +174,8 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::Accept(const Standard_Integer
           break;
       }
     }
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }

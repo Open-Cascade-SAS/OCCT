@@ -24,9 +24,6 @@
 #include <VrmlConverter_LineAspect.hxx>
 class Vrml_Material;
 
-class VrmlConverter_IsoAspect;
-DEFINE_STANDARD_HANDLE(VrmlConverter_IsoAspect, VrmlConverter_LineAspect)
-
 //! qualifies the aspect properties for
 //! the VRML conversation of iso curves.
 class VrmlConverter_IsoAspect : public VrmlConverter_LineAspect
@@ -37,21 +34,20 @@ public:
   //! Default value: myNumber - 10.
   Standard_EXPORT VrmlConverter_IsoAspect();
 
-  Standard_EXPORT VrmlConverter_IsoAspect(const Handle(Vrml_Material)& aMaterial,
-                                          const Standard_Boolean       OnOff,
-                                          const Standard_Integer       aNumber);
+  Standard_EXPORT VrmlConverter_IsoAspect(const occ::handle<Vrml_Material>& aMaterial,
+                                          const bool                        OnOff,
+                                          const int                         aNumber);
 
-  Standard_EXPORT void SetNumber(const Standard_Integer aNumber);
+  Standard_EXPORT void SetNumber(const int aNumber);
 
   //! returns the number of U or V isoparametric curves drawn for a
   //! single face.
-  Standard_EXPORT Standard_Integer Number() const;
+  Standard_EXPORT int Number() const;
 
   DEFINE_STANDARD_RTTIEXT(VrmlConverter_IsoAspect, VrmlConverter_LineAspect)
 
-protected:
 private:
-  Standard_Integer myNumber;
+  int myNumber;
 };
 
 #endif // _VrmlConverter_IsoAspect_HeaderFile

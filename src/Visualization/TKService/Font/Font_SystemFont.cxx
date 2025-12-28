@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_SystemFont, Standard_Transient)
 Font_SystemFont::Font_SystemFont(const TCollection_AsciiString& theFontName)
     : myFontKey(theFontName),
       myFontName(theFontName),
-      myIsSingleLine(Standard_False)
+      myIsSingleLine(false)
 {
   memset(myFaceIds, 0, sizeof(myFaceIds));
   if (theFontName.IsEmpty())
@@ -39,7 +39,7 @@ Font_SystemFont::Font_SystemFont(const TCollection_AsciiString& theFontName)
 
 void Font_SystemFont::SetFontPath(Font_FontAspect                theAspect,
                                   const TCollection_AsciiString& thePath,
-                                  const Standard_Integer         theFaceId)
+                                  const int                      theFaceId)
 {
   if (theAspect == Font_FontAspect_UNDEFINED)
   {
@@ -51,7 +51,7 @@ void Font_SystemFont::SetFontPath(Font_FontAspect                theAspect,
 
 //=================================================================================================
 
-Standard_Boolean Font_SystemFont::IsEqual(const Handle(Font_SystemFont)& theOtherFont) const
+bool Font_SystemFont::IsEqual(const occ::handle<Font_SystemFont>& theOtherFont) const
 {
   return theOtherFont.get() == this || myFontKey.IsEqual(theOtherFont->myFontKey);
 }

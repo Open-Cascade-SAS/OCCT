@@ -158,7 +158,7 @@ public:
   }
 
   //! Is bounding box valid?
-  constexpr Standard_Boolean IsValid() const noexcept { return myMinPoint[0] <= myMaxPoint[0]; }
+  constexpr bool IsValid() const noexcept { return myMinPoint[0] <= myMaxPoint[0]; }
 
   //! Appends new point to the bounding box.
   void Add(const BVH_VecNt& thePoint);
@@ -189,13 +189,13 @@ public:
   constexpr BVH_VecNt Center() const { return (myMinPoint + myMaxPoint) * static_cast<T>(0.5); }
 
   //! Returns center of bounding box along the given axis.
-  inline T Center(const Standard_Integer theAxis) const;
+  inline T Center(const int theAxis) const;
 
   //! Dumps the content of me into the stream
-  void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const
   {
     (void)theDepth;
-    const Standard_Integer anIsValid = IsValid() ? 1 : 0;
+    const int anIsValid = IsValid() ? 1 : 0;
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, anIsValid)
 
     constexpr int n = (N < 3) ? N : 3;
@@ -227,11 +227,11 @@ public:
   }
 
   //! Inits the content of me from the stream
-  Standard_Boolean InitFromJson(const Standard_SStream& theSStream, Standard_Integer& theStreamPos)
+  bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos)
   {
-    Standard_Integer aPos = theStreamPos;
+    int aPos = theStreamPos;
 
-    Standard_Integer        anIsValid  = 0;
+    int                     anIsValid  = 0;
     TCollection_AsciiString aStreamStr = Standard_Dump::Text(theSStream);
 
     OCCT_INIT_FIELD_VALUE_INTEGER(aStreamStr, aPos, anIsValid);
@@ -240,13 +240,13 @@ public:
     {
       Clear(); // Set to invalid state using sentinel values
       theStreamPos = aPos;
-      return Standard_True;
+      return true;
     }
 
     constexpr int n = (N < 3) ? N : 3;
     if constexpr (n == 1)
     {
-      Standard_Real aMinValue, aMaxValue;
+      double aMinValue, aMaxValue;
       OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, aMinValue);
       OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, aMaxValue);
       myMinPoint[0] = (T)aMinValue;
@@ -254,7 +254,7 @@ public:
     }
     else if constexpr (n == 2)
     {
-      Standard_Real aValue1, aValue2;
+      double aValue1, aValue2;
       OCCT_INIT_VECTOR_CLASS(aStreamStr, "MinPoint", aPos, n, &aValue1, &aValue2);
       myMinPoint[0] = (T)aValue1;
       myMinPoint[1] = (T)aValue2;
@@ -265,7 +265,7 @@ public:
     }
     else if constexpr (n == 3)
     {
-      Standard_Real aValue1, aValue2, aValue3;
+      double aValue1, aValue2, aValue3;
       OCCT_INIT_VECTOR_CLASS(aStreamStr, "MinPoint", aPos, n, &aValue1, &aValue2, &aValue3);
       myMinPoint[0] = (T)aValue1;
       myMinPoint[1] = (T)aValue2;
@@ -286,76 +286,75 @@ public:
     }
 
     theStreamPos = aPos;
-    return Standard_True;
+    return true;
   }
 
 public:
   //! Checks if the Box is out of the other box.
-  constexpr Standard_Boolean IsOut(const BVH_Box<T, N>& theOther) const
+  constexpr bool IsOut(const BVH_Box<T, N>& theOther) const
   {
     if (!theOther.IsValid())
-      return Standard_True;
+      return true;
 
     return IsOut(theOther.myMinPoint, theOther.myMaxPoint);
   }
 
   //! Checks if the Box is out of the other box defined by two points.
-  constexpr Standard_Boolean IsOut(const BVH_VecNt& theMinPoint, const BVH_VecNt& theMaxPoint) const
+  constexpr bool IsOut(const BVH_VecNt& theMinPoint, const BVH_VecNt& theMaxPoint) const
   {
     if (!IsValid())
-      return Standard_True;
+      return true;
 
     for (int i = 0; i < N; ++i)
     {
       if (myMinPoint[i] > theMaxPoint[i] || myMaxPoint[i] < theMinPoint[i])
-        return Standard_True;
+        return true;
     }
-    return Standard_False;
+    return false;
   }
 
   //! Checks if the Box fully contains the other box.
-  constexpr Standard_Boolean Contains(const BVH_Box<T, N>& theOther,
-                                      Standard_Boolean&    hasOverlap) const
+  constexpr bool Contains(const BVH_Box<T, N>& theOther, bool& hasOverlap) const
   {
-    hasOverlap = Standard_False;
+    hasOverlap = false;
     if (!theOther.IsValid())
-      return Standard_False;
+      return false;
 
     return Contains(theOther.myMinPoint, theOther.myMaxPoint, hasOverlap);
   }
 
   //! Checks if the Box is fully contains the other box.
-  constexpr Standard_Boolean Contains(const BVH_VecNt&  theMinPoint,
-                                      const BVH_VecNt&  theMaxPoint,
-                                      Standard_Boolean& hasOverlap) const
+  constexpr bool Contains(const BVH_VecNt& theMinPoint,
+                          const BVH_VecNt& theMaxPoint,
+                          bool&            hasOverlap) const
   {
-    hasOverlap = Standard_False;
+    hasOverlap = false;
     if (!IsValid())
-      return Standard_False;
+      return false;
 
-    Standard_Boolean isInside = Standard_True;
+    bool isInside = true;
     for (int i = 0; i < N; ++i)
     {
       hasOverlap = (myMinPoint[i] <= theMaxPoint[i] && myMaxPoint[i] >= theMinPoint[i]);
       if (!hasOverlap)
-        return Standard_False;
+        return false;
       isInside = isInside && (myMinPoint[i] <= theMinPoint[i] && myMaxPoint[i] >= theMaxPoint[i]);
     }
     return isInside;
   }
 
   //! Checks if the Point is out of the box.
-  constexpr Standard_Boolean IsOut(const BVH_VecNt& thePoint) const
+  constexpr bool IsOut(const BVH_VecNt& thePoint) const
   {
     if (!IsValid())
-      return Standard_True;
+      return true;
 
     for (int i = 0; i < N; ++i)
     {
       if (thePoint[i] < myMinPoint[i] || thePoint[i] > myMaxPoint[i])
-        return Standard_True;
+        return true;
     }
-    return Standard_False;
+    return false;
   }
 
 protected:
@@ -372,7 +371,7 @@ template <class T, int N>
 struct CenterAxis
 {
   //! Returns the center of the box along the specified axis using array access.
-  static inline T Center(const BVH_Box<T, N>& theBox, const Standard_Integer theAxis)
+  static inline T Center(const BVH_Box<T, N>& theBox, const int theAxis)
   {
     return (theBox.CornerMin()[theAxis] + theBox.CornerMax()[theAxis]) * static_cast<T>(0.5);
   }
@@ -481,7 +480,7 @@ T BVH_Box<T, N>::Area() const
 //=================================================================================================
 
 template <class T, int N>
-T BVH_Box<T, N>::Center(const Standard_Integer theAxis) const
+T BVH_Box<T, N>::Center(const int theAxis) const
 {
   return BVH::CenterAxis<T, N>::Center(*this, theAxis);
 }

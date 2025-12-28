@@ -43,7 +43,8 @@
 
 #include <math_FunctionSample.hxx>
 #include <math_FunctionAllRoots.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 
 //  Modified by skv - Tue Aug 31 12:13:51 2004 OCC569
 
@@ -64,42 +65,42 @@
   #include <GeomLib.hxx>
 #endif
 
-static Standard_Boolean IsDegenerated(const Handle(Adaptor3d_CurveOnSurface)& theCurve);
-static Standard_Boolean IsDegenerated(const IntSurf_Quadric& theQuadric);
+static bool IsDegenerated(const occ::handle<Adaptor3d_CurveOnSurface>& theCurve);
+static bool IsDegenerated(const IntSurf_Quadric& theQuadric);
 
 static void FindVertex(const TheArc&,
-                       const Handle(TheTopolTool)&,
+                       const occ::handle<TheTopolTool>&,
                        TheFunction&,
                        IntStart_SequenceOfPathPoint&,
-                       const Standard_Real);
+                       const double);
 
-static void BoundedArc(const TheArc&                 A,
-                       const Handle(TheTopolTool)&   Domain,
-                       const Standard_Real           Pdeb,
-                       const Standard_Real           Pfin,
-                       TheFunction&                  Func,
-                       IntStart_SequenceOfPathPoint& pnt,
-                       IntStart_SequenceOfSegment&   seg,
-                       const Standard_Real           TolBoundary,
-                       const Standard_Real           TolTangency,
-                       Standard_Boolean&             Arcsol,
-                       const Standard_Boolean        RecheckOnRegularity);
+static void BoundedArc(const TheArc&                    A,
+                       const occ::handle<TheTopolTool>& Domain,
+                       const double                     Pdeb,
+                       const double                     Pfin,
+                       TheFunction&                     Func,
+                       IntStart_SequenceOfPathPoint&    pnt,
+                       IntStart_SequenceOfSegment&      seg,
+                       const double                     TolBoundary,
+                       const double                     TolTangency,
+                       bool&                            Arcsol,
+                       const bool                       RecheckOnRegularity);
 
 static void PointProcess(const gp_Pnt&,
-                         const Standard_Real,
+                         const double,
                          const TheArc&,
-                         const Handle(TheTopolTool)&,
+                         const occ::handle<TheTopolTool>&,
                          IntStart_SequenceOfPathPoint&,
-                         const Standard_Real,
-                         Standard_Integer&);
+                         const double,
+                         int&);
 
-static Standard_Integer TreatLC(const TheArc&                 A,
-                                const Handle(TheTopolTool)&   aDomain,
-                                const IntSurf_Quadric&        aQuadric,
-                                const Standard_Real           TolBoundary,
-                                IntStart_SequenceOfPathPoint& pnt);
+static int TreatLC(const TheArc&                    A,
+                   const occ::handle<TheTopolTool>& aDomain,
+                   const IntSurf_Quadric&           aQuadric,
+                   const double                     TolBoundary,
+                   IntStart_SequenceOfPathPoint&    pnt);
 
-static Standard_Boolean IsRegularity(const TheArc& A, const Handle(TheTopolTool)& aDomain);
+static bool IsRegularity(const TheArc& A, const occ::handle<TheTopolTool>& aDomain);
 
 class MinFunction : public math_Function
 {
@@ -109,17 +110,17 @@ public:
 
   // returns value of the one-dimension-function when parameter
   // is equal to theX
-  virtual Standard_Boolean Value(const Standard_Real theX, Standard_Real& theFVal)
+  virtual bool Value(const double theX, double& theFVal)
   {
     if (!myFunc->Value(theX, theFVal))
-      return Standard_False;
+      return false;
 
     theFVal *= theFVal;
-    return Standard_True;
+    return true;
   }
 
   // see analogical method for abstract owner class math_Function
-  virtual Standard_Integer GetStateNumber() { return 0; }
+  virtual int GetStateNumber() { return 0; }
 
 private:
   TheFunction* myFunc;
@@ -127,19 +128,19 @@ private:
 
 //=================================================================================================
 
-void FindVertex(const TheArc&                 A,
-                const Handle(TheTopolTool)&   Domain,
-                TheFunction&                  Func,
-                IntStart_SequenceOfPathPoint& pnt,
-                const Standard_Real           Toler)
+void FindVertex(const TheArc&                    A,
+                const occ::handle<TheTopolTool>& Domain,
+                TheFunction&                     Func,
+                IntStart_SequenceOfPathPoint&    pnt,
+                const double                     Toler)
 {
 
   // Find the vertex of the arc A restriction solutions. It stores
   // Vertex in the list solutions pnt.
 
-  TheVertex        vtx;
-  Standard_Real    param, valf;
-  Standard_Integer itemp;
+  TheVertex vtx;
+  double    param, valf;
+  int       itemp;
 
   Domain->Initialize(A);
   Domain->InitVertexIterator();
@@ -163,28 +164,28 @@ void FindVertex(const TheArc&                 A,
   }
 }
 
-Standard_Boolean IsDegenerated(const Handle(Adaptor3d_CurveOnSurface)& theCurve)
+bool IsDegenerated(const occ::handle<Adaptor3d_CurveOnSurface>& theCurve)
 {
   if (theCurve->GetType() == GeomAbs_Circle)
   {
     gp_Circ aCirc = theCurve->Circle();
     if (aCirc.Radius() <= Precision::Confusion())
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean IsDegenerated(const IntSurf_Quadric& theQuadric)
+bool IsDegenerated(const IntSurf_Quadric& theQuadric)
 {
   GeomAbs_SurfaceType TypeQuad = theQuadric.TypeQuadric();
   if (TypeQuad == GeomAbs_Cone)
   {
-    gp_Cone       aCone      = theQuadric.Cone();
-    Standard_Real aSemiAngle = std::abs(aCone.SemiAngle());
+    gp_Cone aCone      = theQuadric.Cone();
+    double  aSemiAngle = std::abs(aCone.SemiAngle());
     if (aSemiAngle < 0.02 || aSemiAngle > 1.55)
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
 class SolInfo
@@ -196,21 +197,21 @@ public:
   {
   }
 
-  void Init(const math_FunctionAllRoots& theSolution, const Standard_Integer theIndex)
+  void Init(const math_FunctionAllRoots& theSolution, const int theIndex)
   {
     myMathIndex = theIndex;
     myValue     = theSolution.GetPoint(theIndex);
   }
 
-  void Init(const IntCurveSurface_HInter& theSolution, const Standard_Integer theIndex)
+  void Init(const IntCurveSurface_HInter& theSolution, const int theIndex)
   {
     myMathIndex = theIndex;
     myValue     = theSolution.Point(theIndex).W();
   }
 
-  Standard_Real Value() const { return myValue; }
+  double Value() const { return myValue; }
 
-  Standard_Integer Index() const { return myMathIndex; }
+  int Index() const { return myMathIndex; }
 
   bool operator>(const SolInfo& theOther) const { return myValue > theOther.myValue; }
 
@@ -218,35 +219,35 @@ public:
 
   bool operator==(const SolInfo& theOther) const { return myValue == theOther.myValue; }
 
-  Standard_Real& ChangeValue() { return myValue; }
+  double& ChangeValue() { return myValue; }
 
 private:
-  Standard_Integer myMathIndex;
-  Standard_Real    myValue;
+  int    myMathIndex;
+  double myValue;
 };
 
-static void BoundedArc(const TheArc&                 A,
-                       const Handle(TheTopolTool)&   Domain,
-                       const Standard_Real           Pdeb,
-                       const Standard_Real           Pfin,
-                       TheFunction&                  Func,
-                       IntStart_SequenceOfPathPoint& pnt,
-                       IntStart_SequenceOfSegment&   seg,
-                       const Standard_Real           TolBoundary,
-                       const Standard_Real           TolTangency,
-                       Standard_Boolean&             Arcsol,
-                       const Standard_Boolean        RecheckOnRegularity)
+static void BoundedArc(const TheArc&                    A,
+                       const occ::handle<TheTopolTool>& Domain,
+                       const double                     Pdeb,
+                       const double                     Pfin,
+                       TheFunction&                     Func,
+                       IntStart_SequenceOfPathPoint&    pnt,
+                       IntStart_SequenceOfSegment&      seg,
+                       const double                     TolBoundary,
+                       const double                     TolTangency,
+                       bool&                            Arcsol,
+                       const bool                       RecheckOnRegularity)
 {
   // Recherche des points solutions et des bouts d arc solution sur un arc donne.
   // On utilise la fonction math_FunctionAllRoots. Ne convient donc que pour
   // des arcs ayant un point debut et un point de fin (intervalle ferme de
   // parametrage).
 
-  Standard_Integer i, Nbi = 0, Nbp = 0;
+  int i, Nbi = 0, Nbp = 0;
 
-  gp_Pnt           ptdeb, ptfin;
-  Standard_Real    pardeb = 0., parfin = 0.;
-  Standard_Integer ideb, ifin, range, ranged, rangef;
+  gp_Pnt ptdeb, ptfin;
+  double pardeb = 0., parfin = 0.;
+  int    ideb, ifin, range, ranged, rangef;
 
   // Creer l echantillonage (math_FunctionSample ou classe heritant)
   // Appel a math_FunctionAllRoots
@@ -257,19 +258,19 @@ static void BoundedArc(const TheArc&                 A,
   //@@@   le vertex trouve ici n'est pas retrouve comme point d arret d une
   //@@@   ligne de cheminement
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  Standard_Real EpsX = 1.e-10;
+  double EpsX = 1.e-10;
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-  //  Standard_Integer NbEchant = TheSOBTool::NbSamplesOnArc(A);
-  Standard_Integer NbEchant = Func.NbSamples();
+  //  int NbEchant = TheSOBTool::NbSamplesOnArc(A);
+  int NbEchant = Func.NbSamples();
   if (NbEchant < 100)
     NbEchant = 100; //-- lbr le 22 Avril 96
   //-- Toujours des pbs
 
   //-- Modif 24  Aout 93 -----------------------------
-  Standard_Real nTolTangency = TolTangency;
+  double nTolTangency = TolTangency;
   if ((Pfin - Pdeb) < (TolTangency * 10.0))
   {
     nTolTangency = (Pfin - Pdeb) * 0.1;
@@ -286,21 +287,21 @@ static void BoundedArc(const TheArc&                 A,
   //-- Exemple : un segment diametre d une sphere
   //-- if(NbEchant<3) NbEchant = 3; //-- lbr le 19 Avril 95
   //--------------------------------------------------
-  Standard_Real para = 0, dist, maxdist;
+  double para = 0, dist, maxdist;
 
   //-------------------------------------------------------------- REJECTIONS le 15 oct 98
-  Standard_Boolean Rejection = Standard_True;
-  Standard_Real    maxdr, maxr, minr, ur, dur;
+  bool   Rejection = true;
+  double maxdr, maxr, minr, ur, dur;
   minr  = RealLast();
   maxr  = -minr;
   maxdr = -minr;
   dur   = (Pfin - Pdeb) * 0.2;
   for (i = 1, ur = Pdeb; i <= 6; i++)
   {
-    Standard_Real F, D;
+    double F, D;
     if (Func.Values(ur, F, D))
     {
-      Standard_Real lminr, lmaxr;
+      double lminr, lmaxr;
       if (D < 0.0)
         D = -D;
       D *= dur + dur;
@@ -314,7 +315,7 @@ static void BoundedArc(const TheArc&                 A,
         maxr = lmaxr;
       if (minr < 0.0 && maxr > 0.0)
       {
-        Rejection = Standard_False;
+        Rejection = false;
         break;
       }
     }
@@ -327,27 +328,27 @@ static void BoundedArc(const TheArc&                 A,
     maxr += dur;
     if (minr < 0.0 && maxr > 0.0)
     {
-      Rejection = Standard_False;
+      Rejection = false;
     }
   }
 
-  Arcsol = Standard_False;
+  Arcsol = false;
 
-  if (Rejection == Standard_False)
+  if (Rejection == false)
   {
     const IntSurf_Quadric& aQuadric = Func.Quadric();
     GeomAbs_SurfaceType    TypeQuad = aQuadric.TypeQuadric();
     GeomAbs_CurveType      TypeConS = GeomAbs_OtherCurve;
 
-    IntCurveSurface_HInter IntCS;
-    Standard_Boolean       IsIntCSdone = Standard_False;
-    TColStd_SequenceOfReal Params;
+    IntCurveSurface_HInter       IntCS;
+    bool                         IsIntCSdone = false;
+    NCollection_Sequence<double> Params;
 
     std::unique_ptr<math_FunctionAllRoots> pSol;
 
     math_FunctionSample Echant(Pdeb, Pfin, NbEchant);
 
-    Standard_Boolean aelargir = Standard_True;
+    bool aelargir = true;
     // modified by NIZNHY-PKV Thu Apr 12 09:25:19 2001 f
     //
     // maxdist = 100.0*TolBoundary;
@@ -356,12 +357,12 @@ static void BoundedArc(const TheArc&                 A,
     // modified by NIZNHY-PKV Thu Apr 12 09:25:23 2001 t
     for (i = 1; i <= NbEchant && aelargir; i++)
     {
-      Standard_Real u = Echant.GetParameter(i);
+      double u = Echant.GetParameter(i);
       if (Func.Value(u, dist))
       {
         if (dist > maxdist || -dist > maxdist)
         {
-          aelargir = Standard_False;
+          aelargir = false;
         }
       }
     }
@@ -373,11 +374,11 @@ static void BoundedArc(const TheArc&                 A,
     if (TypeQuad != GeomAbs_OtherSurface) // intersection of boundary curve and quadric surface
     {
       // Exact solution
-      Handle(Adaptor3d_Surface) aSurf = Func.Surface();
-      Adaptor3d_CurveOnSurface  ConS(A, aSurf);
+      occ::handle<Adaptor3d_Surface> aSurf = Func.Surface();
+      Adaptor3d_CurveOnSurface       ConS(A, aSurf);
       TypeConS = ConS.GetType();
 #ifdef OCCT_DEBUG
-      Handle(Geom_Curve) CurveConS;
+      occ::handle<Geom_Curve> CurveConS;
       switch (TypeConS)
       {
         case GeomAbs_Line: {
@@ -409,7 +410,7 @@ static void BoundedArc(const TheArc&                 A,
           break;
         }
         default: {
-          Standard_Real MaxDeviation, AverageDeviation;
+          double MaxDeviation, AverageDeviation;
           GeomLib::BuildCurve3d(1.e-5,
                                 ConS,
                                 ConS.FirstParameter(),
@@ -421,8 +422,8 @@ static void BoundedArc(const TheArc&                 A,
         }
       }
 #endif
-      Handle(Adaptor3d_CurveOnSurface) HConS = new Adaptor3d_CurveOnSurface(ConS);
-      Handle(Geom_Surface)             QuadSurf;
+      occ::handle<Adaptor3d_CurveOnSurface> HConS = new Adaptor3d_CurveOnSurface(ConS);
+      occ::handle<Geom_Surface>             QuadSurf;
       switch (TypeQuad)
       {
         case GeomAbs_Plane: {
@@ -448,7 +449,7 @@ static void BoundedArc(const TheArc&                 A,
         default:
           break;
       }
-      Handle(GeomAdaptor_Surface) GAHsurf = new GeomAdaptor_Surface(QuadSurf);
+      occ::handle<GeomAdaptor_Surface> GAHsurf = new GeomAdaptor_Surface(QuadSurf);
 
       if ((TypeConS == GeomAbs_Line || TypeConS == GeomAbs_Circle || TypeConS == GeomAbs_Ellipse
            || TypeConS == GeomAbs_Parabola || TypeConS == GeomAbs_Hyperbola)
@@ -467,7 +468,7 @@ static void BoundedArc(const TheArc&                 A,
       // If we have not got intersection, it may be touch with some tolerance,
       // need to be checked
       if (Nbp == 0 && Nbi == 0)
-        IsIntCSdone = Standard_False;
+        IsIntCSdone = false;
 
     } // if (TypeQuad != GeomAbs_OtherSurface) - intersection of boundary curve and quadric surface
 
@@ -490,9 +491,9 @@ static void BoundedArc(const TheArc&                 A,
     // jgv: build solution on the whole boundary
     if (RecheckOnRegularity && Nbp > 0 && IsRegularity(A, Domain))
     {
-      // Standard_Real theTol = Domain->MaxTolerance(A);
+      // double theTol = Domain->MaxTolerance(A);
       // theTol += theTol;
-      Standard_Real         theTol = 5.e-4;
+      double                theTol = 5.e-4;
       math_FunctionAllRoots SolAgain(Func,
                                      Echant,
                                      EpsX,
@@ -504,22 +505,22 @@ static void BoundedArc(const TheArc&                 A,
         throw Standard_Failure();
       }
 
-      Standard_Integer Nbi_again = SolAgain.NbIntervals();
+      int Nbi_again = SolAgain.NbIntervals();
 
       if (Nbi_again > 0)
       {
-        Standard_Integer NbSamples     = 10;
-        Standard_Real    delta         = (Pfin - Pdeb) / NbSamples;
-        Standard_Real    GlobalTol     = theTol * 10;
-        Standard_Boolean SolOnBoundary = Standard_True;
+        int    NbSamples     = 10;
+        double delta         = (Pfin - Pdeb) / NbSamples;
+        double GlobalTol     = theTol * 10;
+        bool   SolOnBoundary = true;
         for (i = 0; i <= NbSamples; i++)
         {
-          Standard_Real aParam = Pdeb + i * delta;
-          Standard_Real aValue;
+          double aParam = Pdeb + i * delta;
+          double aValue;
           Func.Value(aParam, aValue);
           if (std::abs(aValue) > GlobalTol)
           {
-            SolOnBoundary = Standard_False;
+            SolOnBoundary = false;
             break;
           }
         }
@@ -547,12 +548,12 @@ static void BoundedArc(const TheArc&                 A,
             ptfin = Func.Valpoint(ifin);
 
             PointProcess(ptdeb, pardeb, A, Domain, pnt, theTol, ranged);
-            newseg.SetLimitPoint(pnt.Value(ranged), Standard_True);
+            newseg.SetLimitPoint(pnt.Value(ranged), true);
             PointProcess(ptfin, parfin, A, Domain, pnt, theTol, rangef);
-            newseg.SetLimitPoint(pnt.Value(rangef), Standard_False);
+            newseg.SetLimitPoint(pnt.Value(rangef), false);
             seg.Append(newseg);
           }
-          Arcsol = Standard_True;
+          Arcsol = true;
           return;
         }
       }
@@ -587,7 +588,7 @@ static void BoundedArc(const TheArc&                 A,
       // The TreatLC(...) function is dedicated to solve the pb.
       //                           PKV Fri Mar 23 12:17:29 2001
 
-      Standard_Integer ip = TreatLC(A, Domain, aQuadric, TolBoundary, pnt);
+      int ip = TreatLC(A, Domain, aQuadric, TolBoundary, pnt);
       if (ip)
       {
         //////////////////////////////////////////////////////////
@@ -597,17 +598,17 @@ static void BoundedArc(const TheArc&                 A,
         //
         for (i = 1; i < Nbp; i++)
         {
-          Standard_Real parap1 = aSI(i + 1).Value();
-          para                 = aSI(i).Value();
+          double parap1 = aSI(i + 1).Value();
+          para          = aSI(i).Value();
 
-          Standard_Real param = (para + parap1) * 0.5;
-          Standard_Real yf    = 0.0;
-          Standard_Real ym    = 0.0;
-          Standard_Real yl    = 0.0;
+          double param = (para + parap1) * 0.5;
+          double yf    = 0.0;
+          double ym    = 0.0;
+          double yl    = 0.0;
           if (Func.Value(param, ym) && std::abs(ym) < maxdist)
           {
-            Standard_Real    sm    = std::copysign(1., ym);
-            Standard_Boolean aTang = Func.Value(para, yf) && Func.Value(parap1, yl);
+            double sm    = std::copysign(1., ym);
+            bool   aTang = Func.Value(para, yf) && Func.Value(parap1, yl);
             if (aTang)
             {
               // Line can be tangent surface if all distances less then maxdist
@@ -618,7 +619,7 @@ static void BoundedArc(const TheArc&                 A,
               // Interval is got by exact intersection
               // Line can be tangent if all points are on the same side of surface
               // it means that signs of all distances are the same
-              Standard_Real sf = std::copysign(1., yf), sl = std::copysign(1., yl);
+              double sf = std::copysign(1., yf), sl = std::copysign(1., yl);
               aTang = aTang && (sm == sf) && (sm == sl);
             }
             if (aTang)
@@ -627,7 +628,7 @@ static void BoundedArc(const TheArc&                 A,
               // Consider this interval as tangent one. Treat it to find
               // parameter with the lowest function value.
               // Compute the number of nodes.
-              Standard_Real aTol = TolBoundary * 1000.0;
+              double aTol = TolBoundary * 1000.0;
               if (aTol > 0.001)
                 aTol = 0.001;
 
@@ -635,15 +636,15 @@ static void BoundedArc(const TheArc&                 A,
               parap1 = (std::abs(parap1) < 1.e9) ? parap1 : ((parap1 >= 0.) ? 1.e9 : -1.e9);
               para   = (std::abs(para) < 1.e9) ? para : ((para >= 0.) ? 1.e9 : -1.e9);
 
-              Standard_Integer aNbNodes = RealToInt(std::ceil((parap1 - para) / aTol));
+              int aNbNodes = RealToInt(std::ceil((parap1 - para) / aTol));
 
-              Standard_Real aVal    = RealLast();
-              Standard_Real aValMax = 0.;
-              // Standard_Integer aNbNodes = 23;
-              Standard_Real    aDelta = (parap1 - para) / (aNbNodes + 1.);
-              Standard_Integer ii;
-              Standard_Real    aCurPar;
-              Standard_Real    aCurVal;
+              double aVal    = RealLast();
+              double aValMax = 0.;
+              // int aNbNodes = 23;
+              double aDelta = (parap1 - para) / (aNbNodes + 1.);
+              int    ii;
+              double aCurPar;
+              double aCurVal;
 
               for (ii = 0; ii <= aNbNodes + 1; ii++)
               {
@@ -651,7 +652,7 @@ static void BoundedArc(const TheArc&                 A,
 
                 if (Func.Value(aCurPar, aCurVal))
                 {
-                  Standard_Real anAbsVal = std::abs(aCurVal);
+                  double anAbsVal = std::abs(aCurVal);
                   if (anAbsVal < aVal)
                   {
                     aVal  = anAbsVal;
@@ -691,9 +692,9 @@ static void BoundedArc(const TheArc&                 A,
 
           dist = std::abs(dist);
 
-          Standard_Integer anIndx = -1;
-          // const Standard_Real aParam = Sol->GetPoint(aSI(i).Index());
-          const Standard_Real aParam = aSI(i).Value();
+          int anIndx = -1;
+          // const double aParam = Sol->GetPoint(aSI(i).Index());
+          const double aParam = aSI(i).Value();
           if (dist < maxdist)
           {
             if (!IsIntCSdone
@@ -716,8 +717,8 @@ static void BoundedArc(const TheArc&                 A,
 
             // All members in TabSol array has already been sorted in increase order.
             // Now, we limit precise boundaries in order to avoid changing this order.
-            const Standard_Real aFPar = (i == 1) ? Pdeb : (para + aSI(i - 1).Value()) / 2.0;
-            const Standard_Real aLPar = (i == Nbp) ? Pfin : (para + aSI(i + 1).Value()) / 2.0;
+            const double aFPar = (i == 1) ? Pdeb : (para + aSI(i - 1).Value()) / 2.0;
+            const double aLPar = (i == Nbp) ? Pfin : (para + aSI(i + 1).Value()) / 2.0;
 
             MinFunction       aNewFunc(Func);
             math_BrentMinimum aMin(Precision::Confusion());
@@ -779,9 +780,9 @@ static void BoundedArc(const TheArc&                 A,
       }
 
       PointProcess(ptdeb, pardeb, A, Domain, pnt, TolBoundary, ranged);
-      newseg.SetLimitPoint(pnt.Value(ranged), Standard_True);
+      newseg.SetLimitPoint(pnt.Value(ranged), true);
       PointProcess(ptfin, parfin, A, Domain, pnt, TolBoundary, rangef);
-      newseg.SetLimitPoint(pnt.Value(rangef), Standard_False);
+      newseg.SetLimitPoint(pnt.Value(rangef), false);
       seg.Append(newseg);
     }
 
@@ -790,7 +791,7 @@ static void BoundedArc(const TheArc&                 A,
       if ((std::abs(pardeb - Pdeb) < Precision::PConfusion())
           && (std::abs(parfin - Pfin) < Precision::PConfusion()))
       {
-        Arcsol = Standard_True;
+        Arcsol = true;
       }
     }
   }
@@ -800,10 +801,7 @@ static void BoundedArc(const TheArc&                 A,
 
 // - PROVISIONAL - TEMPORARY - NOT GOOD - NYI - TO DO
 // - Temporary - temporary - not good - nyi - to do
-void ComputeBoundsfromInfinite(TheFunction&      Func,
-                               Standard_Real&    PDeb,
-                               Standard_Real&    PFin,
-                               Standard_Integer& NbEchant)
+void ComputeBoundsfromInfinite(TheFunction& Func, double& PDeb, double& PFin, int& NbEchant)
 {
 
   // - We are looking for parameters for start and end of the arc (2d curve)
@@ -822,18 +820,18 @@ void ComputeBoundsfromInfinite(TheFunction&      Func,
 
   NbEchant = 100;
 
-  Standard_Real U0 = 0.0;
-  Standard_Real dU = 0.001;
-  Standard_Real Dist0, Dist1;
+  double U0 = 0.0;
+  double dU = 0.001;
+  double Dist0, Dist1;
 
   Func.Value(U0, Dist0);
   Func.Value(U0 + dU, Dist1);
-  Standard_Real dDist = Dist1 - Dist0;
+  double dDist = Dist1 - Dist0;
   if (dDist)
   {
     U0 -= dU * Dist0 / dDist;
-    PDeb = PFin        = U0;
-    Standard_Real Umin = U0 - 1e5;
+    PDeb = PFin = U0;
+    double Umin = U0 - 1e5;
     Func.Value(Umin, Dist0);
     Func.Value(Umin + dU, Dist1);
     dDist = Dist1 - Dist0;
@@ -845,7 +843,7 @@ void ComputeBoundsfromInfinite(TheFunction&      Func,
     {
       Umin -= 10.0;
     }
-    Standard_Real Umax = U0 + 1e8;
+    double Umax = U0 + 1e8;
     Func.Value(Umax, Dist0);
     Func.Value(Umax + dU, Dist1);
     dDist = Dist1 - Dist0;
@@ -879,13 +877,13 @@ void ComputeBoundsfromInfinite(TheFunction&      Func,
 
 //=================================================================================================
 
-void PointProcess(const gp_Pnt&                 Pt,
-                  const Standard_Real           Para,
-                  const TheArc&                 A,
-                  const Handle(TheTopolTool)&   Domain,
-                  IntStart_SequenceOfPathPoint& pnt,
-                  const Standard_Real           Tol,
-                  Standard_Integer&             Range)
+void PointProcess(const gp_Pnt&                    Pt,
+                  const double                     Para,
+                  const TheArc&                    A,
+                  const occ::handle<TheTopolTool>& Domain,
+                  IntStart_SequenceOfPathPoint&    pnt,
+                  const double                     Tol,
+                  int&                             Range)
 {
 
   // Check to see if a solution point is coincident with a vertex.
@@ -893,17 +891,17 @@ void PointProcess(const gp_Pnt&                 Pt,
   // Start. It then returns the position of this point in the list pnt.
   // Otherwise, add the point in the list.
 
-  Standard_Integer k;
-  Standard_Boolean found, goon;
-  Standard_Real    dist, toler;
+  int    k;
+  bool   found, goon;
+  double dist, toler;
 
-  Standard_Integer      Nbsol = pnt.Length();
+  int                   Nbsol = pnt.Length();
   TheVertex             vtx;
   IntStart_ThePathPoint ptsol;
 
   Domain->Initialize(A);
   Domain->InitVertexIterator();
-  found = Standard_False;
+  found = false;
   goon  = Domain->MoreVertex();
   while (goon)
   {
@@ -936,7 +934,7 @@ void PointProcess(const gp_Pnt&                 Pt,
           if (Domain->Identical(ptsol.Vertex(), vtx) && ptsol.Arc() == A
               && std::abs(ptsol.Parameter() - Para) <= toler)
           {
-            found = Standard_True;
+            found = true;
           }
           else
           {
@@ -960,8 +958,8 @@ void PointProcess(const gp_Pnt&                 Pt,
         pnt.Append(ptsol);
         Range = pnt.Length();
       }
-      found = Standard_True;
-      goon  = Standard_False;
+      found = true;
+      goon  = false;
     }
     else
     {
@@ -973,7 +971,7 @@ void PointProcess(const gp_Pnt&                 Pt,
   if (!found)
   { // No one is falling on a vertex
     // jgv: do not add segment's extremities if they already exist
-    Standard_Boolean found_internal = Standard_False;
+    bool found_internal = false;
     for (k = 1; k <= pnt.Length(); k++)
     {
       ptsol = pnt.Value(k);
@@ -981,7 +979,7 @@ void PointProcess(const gp_Pnt&                 Pt,
         continue;
       if (std::abs(ptsol.Parameter() - Para) <= Precision::PConfusion())
       {
-        found_internal = Standard_True;
+        found_internal = true;
         Range          = k;
       }
     }
@@ -989,7 +987,7 @@ void PointProcess(const gp_Pnt&                 Pt,
 
     if (!found_internal)
     {
-      Standard_Real TOL = Tol;
+      double TOL = Tol;
       TOL *= 1000.0;
       // if(TOL>0.001) TOL=0.001;
       if (TOL > 0.005)
@@ -1004,12 +1002,12 @@ void PointProcess(const gp_Pnt&                 Pt,
 
 //=================================================================================================
 
-Standard_Boolean IsRegularity(const TheArc& /*A*/, const Handle(TheTopolTool)& aDomain)
+bool IsRegularity(const TheArc& /*A*/, const occ::handle<TheTopolTool>& aDomain)
 {
-  Standard_Address anEAddress = aDomain->Edge();
+  void* anEAddress = aDomain->Edge();
   if (anEAddress == NULL)
   {
-    return Standard_False;
+    return false;
   }
 
   TopoDS_Edge* anE = (TopoDS_Edge*)anEAddress;
@@ -1019,15 +1017,15 @@ Standard_Boolean IsRegularity(const TheArc& /*A*/, const Handle(TheTopolTool)& a
 
 //=================================================================================================
 
-Standard_Integer TreatLC(const TheArc&                 A,
-                         const Handle(TheTopolTool)&   aDomain,
-                         const IntSurf_Quadric&        aQuadric,
-                         const Standard_Real           TolBoundary,
-                         IntStart_SequenceOfPathPoint& pnt)
+int TreatLC(const TheArc&                    A,
+            const occ::handle<TheTopolTool>& aDomain,
+            const IntSurf_Quadric&           aQuadric,
+            const double                     TolBoundary,
+            IntStart_SequenceOfPathPoint&    pnt)
 {
-  Standard_Integer anExitCode = 1, aNbExt;
+  int anExitCode = 1, aNbExt;
 
-  Standard_Address anEAddress = aDomain->Edge();
+  void* anEAddress = aDomain->Edge();
   if (anEAddress == NULL)
   {
     return anExitCode;
@@ -1057,14 +1055,14 @@ Standard_Integer TreatLC(const TheArc&                 A,
     return anExitCode;
   }
 
-  Standard_Real      f, l, U1f, U1l, U2f, U2l, UEgde, TOL, aDist, aR, aRRel, Tol;
-  Handle(Geom_Curve) aCEdge = BRep_Tool::Curve(*anE, f, l);
+  double                  f, l, U1f, U1l, U2f, U2l, UEgde, TOL, aDist, aR, aRRel, Tol;
+  occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(*anE, f, l);
 
-  gp_Cylinder       aCyl  = aQuadric.Cylinder();
-  const gp_Ax1&     anAx1 = aCyl.Axis();
-  gp_Lin            aLin(anAx1);
-  Handle(Geom_Line) aCAxis = new Geom_Line(aLin);
-  aR                       = aCyl.Radius();
+  gp_Cylinder            aCyl  = aQuadric.Cylinder();
+  const gp_Ax1&          anAx1 = aCyl.Axis();
+  gp_Lin                 aLin(anAx1);
+  occ::handle<Geom_Line> aCAxis = new Geom_Line(aLin);
+  aR                            = aCyl.Radius();
 
   U1f = aCAxis->FirstParameter();
   U1l = aCAxis->LastParameter();
@@ -1127,38 +1125,38 @@ Standard_Integer TreatLC(const TheArc&                 A,
 //=================================================================================================
 
 IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries()
-    : done(Standard_False),
-      all(Standard_False)
+    : done(false),
+      all(false)
 {
 }
 
 //=================================================================================================
 
-void IntStart_SearchOnBoundaries::Perform(TheFunction&                Func,
-                                          const Handle(TheTopolTool)& Domain,
-                                          const Standard_Real         TolBoundary,
-                                          const Standard_Real         TolTangency,
-                                          const Standard_Boolean      RecheckOnRegularity)
+void IntStart_SearchOnBoundaries::Perform(TheFunction&                     Func,
+                                          const occ::handle<TheTopolTool>& Domain,
+                                          const double                     TolBoundary,
+                                          const double                     TolTangency,
+                                          const bool                       RecheckOnRegularity)
 {
 
-  done = Standard_False;
+  done = false;
   spnt.Clear();
   sseg.Clear();
 
-  Standard_Boolean Arcsol;
-  Standard_Real    PDeb, PFin, prm, tol;
-  Standard_Integer i, nbknown, nbfound, index;
-  gp_Pnt           pt;
+  bool   Arcsol;
+  double PDeb, PFin, prm, tol;
+  int    i, nbknown, nbfound, index;
+  gp_Pnt pt;
 
   Domain->Init();
 
   if (Domain->More())
   {
-    all = Standard_True;
+    all = true;
   }
   else
   {
-    all = Standard_False;
+    all = false;
   }
 
   while (Domain->More())
@@ -1171,7 +1169,7 @@ void IntStart_SearchOnBoundaries::Perform(TheFunction&                Func,
       TheSOBTool::Bounds(A, PDeb, PFin);
       if (Precision::IsNegativeInfinite(PDeb) || Precision::IsPositiveInfinite(PFin))
       {
-        Standard_Integer NbEchant;
+        int NbEchant;
         ComputeBoundsfromInfinite(Func, PDeb, PFin, NbEchant);
       }
       BoundedArc(A,
@@ -1218,11 +1216,11 @@ void IntStart_SearchOnBoundaries::Perform(TheFunction&                Func,
         newseg.SetValue(A);
         if (TheSOBTool::HasFirstPoint(A, i, index))
         {
-          newseg.SetLimitPoint(spnt.Value(nbfound + index), Standard_True);
+          newseg.SetLimitPoint(spnt.Value(nbfound + index), true);
         }
         if (TheSOBTool::HasLastPoint(A, i, index))
         {
-          newseg.SetLimitPoint(spnt.Value(nbfound + index), Standard_False);
+          newseg.SetLimitPoint(spnt.Value(nbfound + index), false);
         }
         sseg.Append(newseg);
       }
@@ -1230,5 +1228,5 @@ void IntStart_SearchOnBoundaries::Perform(TheFunction&                Func,
     }
     Domain->Next();
   }
-  done = Standard_True;
+  done = true;
 }

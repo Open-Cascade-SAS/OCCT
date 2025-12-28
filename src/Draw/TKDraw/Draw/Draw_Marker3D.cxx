@@ -26,13 +26,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Marker3D, Draw_Drawable3D)
 Draw_Marker3D::Draw_Marker3D(const gp_Pnt&          P,
                              const Draw_MarkerShape T,
                              const Draw_Color&      C,
-                             const Standard_Integer S)
+                             const int              S)
     : myPos(P),
       myCol(C),
       myTyp(T),
       mySiz(S),
       myRSiz(0.0),
-      myIsRSiz(Standard_False)
+      myIsRSiz(false)
 {
 }
 
@@ -41,13 +41,13 @@ Draw_Marker3D::Draw_Marker3D(const gp_Pnt&          P,
 Draw_Marker3D::Draw_Marker3D(const gp_Pnt&          P,
                              const Draw_MarkerShape T,
                              const Draw_Color&      C,
-                             const Standard_Real    RSize)
+                             const double           RSize)
     : myPos(P),
       myCol(C),
       myTyp(T),
       mySiz(0),
       myRSiz(RSize),
-      myIsRSiz(Standard_True)
+      myIsRSiz(true)
 {
 }
 
@@ -71,9 +71,7 @@ gp_Pnt& Draw_Marker3D::ChangePos()
 
 //=================================================================================================
 
-Standard_Boolean Draw_Marker3D::PickReject(const Standard_Real,
-                                           const Standard_Real,
-                                           const Standard_Real) const
+bool Draw_Marker3D::PickReject(const double, const double, const double) const
 {
-  return Standard_False;
+  return false;
 }

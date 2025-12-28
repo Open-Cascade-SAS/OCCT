@@ -11,17 +11,7 @@ set(OCCT_StepShape_FILES
   StepShape_AngularLocation.hxx
   StepShape_AngularSize.cxx
   StepShape_AngularSize.hxx
-  StepShape_Array1OfConnectedEdgeSet.hxx
-  StepShape_Array1OfConnectedFaceSet.hxx
-  StepShape_Array1OfEdge.hxx
-  StepShape_Array1OfFace.hxx
-  StepShape_Array1OfFaceBound.hxx
-  StepShape_Array1OfGeometricSetSelect.hxx
-  StepShape_Array1OfOrientedClosedShell.hxx
-  StepShape_Array1OfOrientedEdge.hxx
-  StepShape_Array1OfShapeDimensionRepresentationItem.hxx
-  StepShape_Array1OfShell.hxx
-  StepShape_Array1OfValueQualifier.hxx
+
   StepShape_Block.cxx
   StepShape_Block.hxx
   StepShape_BooleanOperand.cxx
@@ -115,17 +105,7 @@ set(OCCT_StepShape_FILES
   StepShape_GeometricSetSelect.hxx
   StepShape_HalfSpaceSolid.cxx
   StepShape_HalfSpaceSolid.hxx
-  StepShape_HArray1OfConnectedEdgeSet.hxx
-  StepShape_HArray1OfConnectedFaceSet.hxx
-  StepShape_HArray1OfEdge.hxx
-  StepShape_HArray1OfFace.hxx
-  StepShape_HArray1OfFaceBound.hxx
-  StepShape_HArray1OfGeometricSetSelect.hxx
-  StepShape_HArray1OfOrientedClosedShell.hxx
-  StepShape_HArray1OfOrientedEdge.hxx
-  StepShape_HArray1OfShapeDimensionRepresentationItem.hxx
-  StepShape_HArray1OfShell.hxx
-  StepShape_HArray1OfValueQualifier.hxx
+
   StepShape_LimitsAndFits.cxx
   StepShape_LimitsAndFits.hxx
   StepShape_Loop.cxx

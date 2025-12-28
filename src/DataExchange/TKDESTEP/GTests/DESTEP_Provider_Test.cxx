@@ -36,8 +36,8 @@ protected:
   void SetUp() override
   {
     // Initialize provider with default configuration
-    Handle(DESTEP_ConfigurationNode) aNode = new DESTEP_ConfigurationNode();
-    myProvider                             = new DESTEP_Provider(aNode);
+    occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
+    myProvider                                  = new DESTEP_Provider(aNode);
 
     // Create test BRep shapes (perfect for STEP format)
     myBox      = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
@@ -45,7 +45,7 @@ protected:
     myCylinder = BRepPrimAPI_MakeCylinder(3.0, 8.0).Shape();
 
     // Create test document
-    Handle(TDocStd_Application) anApp = new TDocStd_Application();
+    occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
     anApp->NewDocument("BinXCAF", myDocument);
   }
 
@@ -56,9 +56,9 @@ protected:
   }
 
   // Helper method to count shape elements
-  Standard_Integer CountShapeElements(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
+  int CountShapeElements(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
   {
-    Standard_Integer aCount = 0;
+    int aCount = 0;
     for (TopExp_Explorer anExplorer(theShape, theType); anExplorer.More(); anExplorer.Next())
     {
       aCount++;
@@ -76,11 +76,11 @@ protected:
   }
 
 protected:
-  Handle(DESTEP_Provider)  myProvider;
-  TopoDS_Shape             myBox;
-  TopoDS_Shape             mySphere;
-  TopoDS_Shape             myCylinder;
-  Handle(TDocStd_Document) myDocument;
+  occ::handle<DESTEP_Provider>  myProvider;
+  TopoDS_Shape                  myBox;
+  TopoDS_Shape                  mySphere;
+  TopoDS_Shape                  myCylinder;
+  occ::handle<TDocStd_Document> myDocument;
 };
 
 // Test basic provider creation and format/vendor information
@@ -119,8 +119,8 @@ TEST_F(DESTEP_ProviderTest, StreamShapeWriteRead)
     if (!aReadShape.IsNull())
     {
       // STEP should preserve solid geometry
-      Standard_Integer aReadSolids     = CountShapeElements(aReadShape, TopAbs_SOLID);
-      Standard_Integer aOriginalSolids = CountShapeElements(myBox, TopAbs_SOLID);
+      int aReadSolids     = CountShapeElements(aReadShape, TopAbs_SOLID);
+      int aOriginalSolids = CountShapeElements(myBox, TopAbs_SOLID);
       EXPECT_EQ(aReadSolids, aOriginalSolids);
     }
   }
@@ -130,8 +130,8 @@ TEST_F(DESTEP_ProviderTest, StreamShapeWriteRead)
 TEST_F(DESTEP_ProviderTest, StreamDocumentWriteRead)
 {
   // Add box to document
-  Handle(XCAFDoc_ShapeTool) aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
-  TDF_Label                 aShapeLabel = aShapeTool->AddShape(myBox);
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
+  TDF_Label                      aShapeLabel = aShapeTool->AddShape(myBox);
   EXPECT_FALSE(aShapeLabel.IsNull());
 
   std::ostringstream           anOStream;
@@ -148,8 +148,8 @@ TEST_F(DESTEP_ProviderTest, StreamDocumentWriteRead)
   if (!aStepContent.empty())
   {
     // Create new document for reading
-    Handle(TDocStd_Application) anApp = new TDocStd_Application();
-    Handle(TDocStd_Document)    aNewDocument;
+    occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+    occ::handle<TDocStd_Document>    aNewDocument;
     anApp->NewDocument("BinXCAF", aNewDocument);
 
     // Read back from stream
@@ -160,8 +160,9 @@ TEST_F(DESTEP_ProviderTest, StreamDocumentWriteRead)
     EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
 
     // Validate document content
-    Handle(XCAFDoc_ShapeTool) aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
-    TDF_LabelSequence         aLabels;
+    occ::handle<XCAFDoc_ShapeTool> aNewShapeTool =
+      XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
+    NCollection_Sequence<TDF_Label> aLabels;
     aNewShapeTool->GetShapes(aLabels);
     EXPECT_GT(aLabels.Length(), 0); // Should have at least one shape in document
   }
@@ -171,8 +172,8 @@ TEST_F(DESTEP_ProviderTest, StreamDocumentWriteRead)
 TEST_F(DESTEP_ProviderTest, DE_WrapperIntegration)
 {
   // Initialize DE_Wrapper and bind STEP provider
-  DE_Wrapper                       aWrapper;
-  Handle(DESTEP_ConfigurationNode) aNode = new DESTEP_ConfigurationNode();
+  DE_Wrapper                            aWrapper;
+  occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
 
   // Bind the configured node to wrapper
   EXPECT_TRUE(aWrapper.Bind(aNode));
@@ -203,9 +204,9 @@ TEST_F(DESTEP_ProviderTest, DE_WrapperIntegration)
     DE_Provider::ReadStreamList aReadStreams2;
     aReadStreams2.Append(DE_Provider::ReadStreamNode("test.step", anIStream2));
 
-    Handle(DESTEP_Provider) aDirectProvider = new DESTEP_Provider(aNode);
-    TopoDS_Shape            aDirectShape;
-    bool                    aDirectResult = aDirectProvider->Read(aReadStreams2, aDirectShape);
+    occ::handle<DESTEP_Provider> aDirectProvider = new DESTEP_Provider(aNode);
+    TopoDS_Shape                 aDirectShape;
+    bool                         aDirectResult = aDirectProvider->Read(aReadStreams2, aDirectShape);
 
     // REQUIREMENT: DE_Wrapper must work exactly the same as direct provider
     EXPECT_EQ(aWrapperResult, aDirectResult);
@@ -213,7 +214,7 @@ TEST_F(DESTEP_ProviderTest, DE_WrapperIntegration)
 
     if (aDirectResult && !aDirectShape.IsNull())
     {
-      Standard_Integer aSolids = CountShapeElements(aDirectShape, TopAbs_SOLID);
+      int aSolids = CountShapeElements(aDirectShape, TopAbs_SOLID);
       EXPECT_GT(aSolids, 0);
     }
   }
@@ -223,10 +224,10 @@ TEST_F(DESTEP_ProviderTest, DE_WrapperIntegration)
 TEST_F(DESTEP_ProviderTest, MultipleShapesInDocument)
 {
   // Add multiple shapes to document
-  Handle(XCAFDoc_ShapeTool) aShapeTool     = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
-  TDF_Label                 aBoxLabel      = aShapeTool->AddShape(myBox);
-  TDF_Label                 aSphereLabel   = aShapeTool->AddShape(mySphere);
-  TDF_Label                 aCylinderLabel = aShapeTool->AddShape(myCylinder);
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool   = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
+  TDF_Label                      aBoxLabel    = aShapeTool->AddShape(myBox);
+  TDF_Label                      aSphereLabel = aShapeTool->AddShape(mySphere);
+  TDF_Label                      aCylinderLabel = aShapeTool->AddShape(myCylinder);
 
   EXPECT_FALSE(aBoxLabel.IsNull());
   EXPECT_FALSE(aSphereLabel.IsNull());
@@ -244,8 +245,8 @@ TEST_F(DESTEP_ProviderTest, MultipleShapesInDocument)
   EXPECT_TRUE(IsValidSTEPContent(aStepContent));
 
   // Read back into new document
-  Handle(TDocStd_Application) anApp = new TDocStd_Application();
-  Handle(TDocStd_Document)    aNewDocument;
+  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+  occ::handle<TDocStd_Document>    aNewDocument;
   anApp->NewDocument("BinXCAF", aNewDocument);
 
   std::istringstream          anIStream(aStepContent);
@@ -255,8 +256,9 @@ TEST_F(DESTEP_ProviderTest, MultipleShapesInDocument)
   EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
 
   // Validate document content
-  Handle(XCAFDoc_ShapeTool) aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
-  TDF_LabelSequence         aLabels;
+  occ::handle<XCAFDoc_ShapeTool> aNewShapeTool =
+    XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
+  NCollection_Sequence<TDF_Label> aLabels;
   aNewShapeTool->GetShapes(aLabels);
   EXPECT_EQ(aLabels.Length(), 3); // Should have exactly 3 shapes in document
 }
@@ -319,8 +321,8 @@ TEST_F(DESTEP_ProviderTest, DifferentBRepGeometries)
 // Test DE_Wrapper with different file extensions
 TEST_F(DESTEP_ProviderTest, DE_WrapperFileExtensions)
 {
-  DE_Wrapper                       aWrapper;
-  Handle(DESTEP_ConfigurationNode) aNode = new DESTEP_ConfigurationNode();
+  DE_Wrapper                            aWrapper;
+  occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
   EXPECT_TRUE(aWrapper.Bind(aNode));
 
   // Test different STEP extensions
@@ -381,7 +383,7 @@ TEST_F(DESTEP_ProviderTest, ErrorHandling)
   EXPECT_FALSE(myProvider->Read(anInvalidReadStreams, anInvalidShape));
 
   // Test with null document
-  Handle(TDocStd_Document) aNullDoc;
+  occ::handle<TDocStd_Document> aNullDoc;
   EXPECT_FALSE(myProvider->Write(aWriteStreams, aNullDoc));
   EXPECT_FALSE(myProvider->Read(anEmptyReadStreams, aNullDoc));
 }
@@ -389,8 +391,8 @@ TEST_F(DESTEP_ProviderTest, ErrorHandling)
 // Test DESTEP configuration modes
 TEST_F(DESTEP_ProviderTest, ConfigurationModes)
 {
-  Handle(DESTEP_ConfigurationNode) aNode =
-    Handle(DESTEP_ConfigurationNode)::DownCast(myProvider->GetNode());
+  occ::handle<DESTEP_ConfigurationNode> aNode =
+    occ::down_cast<DESTEP_ConfigurationNode>(myProvider->GetNode());
 
   // Test basic configuration access
   EXPECT_FALSE(aNode.IsNull());
@@ -400,8 +402,8 @@ TEST_F(DESTEP_ProviderTest, ConfigurationModes)
   EXPECT_STREQ("OCC", myProvider->GetVendor().ToCString());
 
   // Test that we can create provider with different configuration
-  Handle(DESTEP_ConfigurationNode) aNewNode     = new DESTEP_ConfigurationNode();
-  Handle(DESTEP_Provider)          aNewProvider = new DESTEP_Provider(aNewNode);
+  occ::handle<DESTEP_ConfigurationNode> aNewNode     = new DESTEP_ConfigurationNode();
+  occ::handle<DESTEP_Provider>          aNewProvider = new DESTEP_Provider(aNewNode);
 
   EXPECT_STREQ("STEP", aNewProvider->GetFormat().ToCString());
   EXPECT_STREQ("OCC", aNewProvider->GetVendor().ToCString());
@@ -411,7 +413,7 @@ TEST_F(DESTEP_ProviderTest, ConfigurationModes)
 // Test WorkSession integration
 TEST_F(DESTEP_ProviderTest, WorkSessionIntegration)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
 
   // Test write operation with work session
   std::ostringstream           anOStream;
@@ -438,11 +440,11 @@ TEST_F(DESTEP_ProviderTest, WorkSessionIntegration)
 TEST_F(DESTEP_ProviderTest, DocumentWorkSessionIntegration)
 {
   // Add shape to document
-  Handle(XCAFDoc_ShapeTool) aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
-  TDF_Label                 aShapeLabel = aShapeTool->AddShape(mySphere);
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
+  TDF_Label                      aShapeLabel = aShapeTool->AddShape(mySphere);
   EXPECT_FALSE(aShapeLabel.IsNull());
 
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
 
   std::ostringstream           anOStream;
   DE_Provider::WriteStreamList aWriteStreams;
@@ -456,8 +458,8 @@ TEST_F(DESTEP_ProviderTest, DocumentWorkSessionIntegration)
   EXPECT_TRUE(IsValidSTEPContent(aStepContent));
 
   // Create new document for reading
-  Handle(TDocStd_Application) anApp = new TDocStd_Application();
-  Handle(TDocStd_Document)    aNewDocument;
+  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+  occ::handle<TDocStd_Document>    aNewDocument;
   anApp->NewDocument("BinXCAF", aNewDocument);
 
   // Test document read with work session
@@ -468,8 +470,9 @@ TEST_F(DESTEP_ProviderTest, DocumentWorkSessionIntegration)
   EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument, aWS));
 
   // Validate document content
-  Handle(XCAFDoc_ShapeTool) aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
-  TDF_LabelSequence         aLabels;
+  occ::handle<XCAFDoc_ShapeTool> aNewShapeTool =
+    XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
+  NCollection_Sequence<TDF_Label> aLabels;
   aNewShapeTool->GetShapes(aLabels);
   EXPECT_GT(aLabels.Length(), 0);
 }

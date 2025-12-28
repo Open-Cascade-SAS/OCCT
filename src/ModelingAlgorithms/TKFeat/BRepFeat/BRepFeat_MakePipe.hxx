@@ -22,7 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS_Wire.hxx>
 #include <BRepFeat_Form.hxx>
 #include <Standard_Integer.hxx>
@@ -63,12 +65,12 @@ public:
   //! The sketch face Skface serves to determine
   //! the type of operation. If it is inside the basis
   //! shape, a local operation such as glueing can be performed.
-  BRepFeat_MakePipe(const TopoDS_Shape&    Sbase,
-                    const TopoDS_Shape&    Pbase,
-                    const TopoDS_Face&     Skface,
-                    const TopoDS_Wire&     Spine,
-                    const Standard_Integer Fuse,
-                    const Standard_Boolean Modify);
+  BRepFeat_MakePipe(const TopoDS_Shape& Sbase,
+                    const TopoDS_Shape& Pbase,
+                    const TopoDS_Face&  Skface,
+                    const TopoDS_Wire&  Spine,
+                    const int           Fuse,
+                    const bool          Modify);
 
   //! Initializes this algorithm for adding pipes to shapes.
   //! A face Pbase is selected in the shape Sbase to
@@ -79,12 +81,12 @@ public:
   //! The sketch face Skface serves to determine
   //! the type of operation. If it is inside the basis
   //! shape, a local operation such as glueing can be performed.
-  Standard_EXPORT void Init(const TopoDS_Shape&    Sbase,
-                            const TopoDS_Shape&    Pbase,
-                            const TopoDS_Face&     Skface,
-                            const TopoDS_Wire&     Spine,
-                            const Standard_Integer Fuse,
-                            const Standard_Boolean Modify);
+  Standard_EXPORT void Init(const TopoDS_Shape& Sbase,
+                            const TopoDS_Shape& Pbase,
+                            const TopoDS_Face&  Skface,
+                            const TopoDS_Wire&  Spine,
+                            const int           Fuse,
+                            const bool          Modify);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>. Raises ConstructionError if the face does not belong to the
@@ -101,18 +103,18 @@ public:
   //! Reconstructs the feature topologically according to the semantic option chosen.
   Standard_EXPORT void Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until);
 
-  Standard_EXPORT void Curves(TColGeom_SequenceOfCurve& S);
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S);
 
-  Standard_EXPORT Handle(Geom_Curve) BarycCurve();
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
 
-protected:
 private:
-  TopoDS_Shape                       myPbase;
-  TopoDS_Face                        mySkface;
-  TopTools_DataMapOfShapeListOfShape mySlface;
-  TopoDS_Wire                        mySpine;
-  TColGeom_SequenceOfCurve           myCurves;
-  Handle(Geom_Curve)                 myBCurve;
+  TopoDS_Shape myPbase;
+  TopoDS_Face  mySkface;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                mySlface;
+  TopoDS_Wire                                   mySpine;
+  NCollection_Sequence<occ::handle<Geom_Curve>> myCurves;
+  occ::handle<Geom_Curve>                       myBCurve;
 };
 
 #include <BRepFeat_MakePipe.lxx>

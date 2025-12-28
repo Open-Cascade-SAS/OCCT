@@ -28,12 +28,12 @@
 //}
 //=================================================================================================
 
-Geom2dAPI_ExtremaCurveCurve::Geom2dAPI_ExtremaCurveCurve(const Handle(Geom2d_Curve)& C1,
-                                                         const Handle(Geom2d_Curve)& C2,
-                                                         const Standard_Real         U1min,
-                                                         const Standard_Real         U1max,
-                                                         const Standard_Real         U2min,
-                                                         const Standard_Real         U2max)
+Geom2dAPI_ExtremaCurveCurve::Geom2dAPI_ExtremaCurveCurve(const occ::handle<Geom2d_Curve>& C1,
+                                                         const occ::handle<Geom2d_Curve>& C2,
+                                                         const double                     U1min,
+                                                         const double                     U1max,
+                                                         const double                     U2min,
+                                                         const double                     U2max)
 {
   myC1.Load(C1, U1min, U1max);
   myC2.Load(C2, U2min, U2max);
@@ -47,10 +47,10 @@ Geom2dAPI_ExtremaCurveCurve::Geom2dAPI_ExtremaCurveCurve(const Handle(Geom2d_Cur
   {
     // evaluate the lower distance and its index;
 
-    Standard_Real Dist2, Dist2Min = myExtCC.SquareDistance(1);
+    double Dist2, Dist2Min = myExtCC.SquareDistance(1);
     myIndex = 1;
 
-    for (Standard_Integer i = 2; i <= myExtCC.NbExt(); i++)
+    for (int i = 2; i <= myExtCC.NbExt(); i++)
     {
       Dist2 = myExtCC.SquareDistance(i);
       if (Dist2 < Dist2Min)
@@ -64,7 +64,7 @@ Geom2dAPI_ExtremaCurveCurve::Geom2dAPI_ExtremaCurveCurve(const Handle(Geom2d_Cur
 
 //=================================================================================================
 
-Standard_Integer Geom2dAPI_ExtremaCurveCurve::NbExtrema() const
+int Geom2dAPI_ExtremaCurveCurve::NbExtrema() const
 {
   if (myIsDone)
     return myExtCC.NbExt();
@@ -74,9 +74,7 @@ Standard_Integer Geom2dAPI_ExtremaCurveCurve::NbExtrema() const
 
 //=================================================================================================
 
-void Geom2dAPI_ExtremaCurveCurve::Points(const Standard_Integer Index,
-                                         gp_Pnt2d&              P1,
-                                         gp_Pnt2d&              P2) const
+void Geom2dAPI_ExtremaCurveCurve::Points(const int Index, gp_Pnt2d& P1, gp_Pnt2d& P2) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "Geom2dAPI_ExtremaCurveCurve::Points");
@@ -90,9 +88,7 @@ void Geom2dAPI_ExtremaCurveCurve::Points(const Standard_Integer Index,
 
 //=================================================================================================
 
-void Geom2dAPI_ExtremaCurveCurve::Parameters(const Standard_Integer Index,
-                                             Standard_Real&         U1,
-                                             Standard_Real&         U2) const
+void Geom2dAPI_ExtremaCurveCurve::Parameters(const int Index, double& U1, double& U2) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "Geom2dAPI_ExtremaCurveCurve::Parameters");
@@ -106,7 +102,7 @@ void Geom2dAPI_ExtremaCurveCurve::Parameters(const Standard_Integer Index,
 
 //=================================================================================================
 
-Standard_Real Geom2dAPI_ExtremaCurveCurve::Distance(const Standard_Integer Index) const
+double Geom2dAPI_ExtremaCurveCurve::Distance(const int Index) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "Geom2dAPI_ExtremaCurveCurve:Distance");
@@ -125,8 +121,7 @@ void Geom2dAPI_ExtremaCurveCurve::NearestPoints(gp_Pnt2d& P1, gp_Pnt2d& P2) cons
 
 //=================================================================================================
 
-void Geom2dAPI_ExtremaCurveCurve::LowerDistanceParameters(Standard_Real& U1,
-                                                          Standard_Real& U2) const
+void Geom2dAPI_ExtremaCurveCurve::LowerDistanceParameters(double& U1, double& U2) const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "Geom2dAPI_ExtremaCurveCurve:LowerDistanceParameters");
 
@@ -135,7 +130,7 @@ void Geom2dAPI_ExtremaCurveCurve::LowerDistanceParameters(Standard_Real& U1,
 
 //=================================================================================================
 
-Standard_Real Geom2dAPI_ExtremaCurveCurve::LowerDistance() const
+double Geom2dAPI_ExtremaCurveCurve::LowerDistance() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "Geom2dAPI_ExtremaCurveCurve:LowerDistance");
 
@@ -144,14 +139,14 @@ Standard_Real Geom2dAPI_ExtremaCurveCurve::LowerDistance() const
 
 //=================================================================================================
 
-Geom2dAPI_ExtremaCurveCurve::operator Standard_Real() const
+Geom2dAPI_ExtremaCurveCurve::operator double() const
 {
   return LowerDistance();
 }
 
 //=================================================================================================
 
-Geom2dAPI_ExtremaCurveCurve::operator Standard_Integer() const
+Geom2dAPI_ExtremaCurveCurve::operator int() const
 {
   return myExtCC.NbExt();
 }

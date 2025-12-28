@@ -58,15 +58,13 @@
 #include <IGESGeom_Line.hxx>
 #include <IGESGeom_OffsetCurve.hxx>
 #include <IGESGeom_TransformationMatrix.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // Pour toutes les courbes infinies soit
 // Udeb <= -Precision::Infinite() and/or Ufin >= Precision::Infinite()
@@ -94,11 +92,12 @@ GeomToIGES_GeomCurve::GeomToIGES_GeomCurve(const GeomToIGES_GeomEntity& GE)
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geom_Curve)& start,
-                                                                const Standard_Real       Udeb,
-                                                                const Standard_Real       Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_Curve>& start,
+  const double                   Udeb,
+  const double                   Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
@@ -132,12 +131,12 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
-  const Handle(Geom_BoundedCurve)& start,
-  const Standard_Real              Udeb,
-  const Standard_Real              Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_BoundedCurve>& start,
+  const double                          Udeb,
+  const double                          Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
@@ -175,7 +174,7 @@ static gp_XYZ GetAnyNormal(gp_XYZ orig)
   else
   {
     Norm.SetCoord(orig.Z(), 0, -orig.X());
-    Standard_Real nrm = Norm.Modulus();
+    double nrm = Norm.Modulus();
     if (nrm < Precision::Confusion())
       Norm.SetCoord(0, 0, 1);
     else
@@ -189,33 +188,33 @@ static gp_XYZ GetAnyNormal(gp_XYZ orig)
 // Detects if curve lies in some plane and returns normal
 // IsPlanar
 //=============================================================================
-static Standard_Boolean ArePolesPlanar(const TColgp_Array1OfPnt& Poles, gp_XYZ& Normal)
+static bool ArePolesPlanar(const NCollection_Array1<gp_Pnt>& Poles, gp_XYZ& Normal)
 {
   if (Poles.Length() < 3)
   {
     Normal = GetAnyNormal(Poles(1).XYZ() - Poles(2).XYZ());
-    return Standard_True;
+    return true;
   }
 
   Normal = Poles(Poles.Length()).XYZ() ^ Poles(1).XYZ();
-  Standard_Integer i; // svv Jan 10 2000 : porting on DEC
+  int i; // svv Jan 10 2000 : porting on DEC
   for (i = 1; i < Poles.Length(); i++)
     Normal += Poles(i).XYZ() ^ Poles(i + 1).XYZ();
 
-  constexpr Standard_Real tol = Precision::Confusion();
-  Standard_Real           nrm = Normal.Modulus();
+  constexpr double tol = Precision::Confusion();
+  double           nrm = Normal.Modulus();
   if (nrm < tol)
   {
     Normal.SetCoord(0, 0, 1);
-    return Standard_False;
+    return false;
   }
   Normal = Normal / nrm;
 
-  Standard_Real scl = Poles(1).XYZ() * Normal;
+  double scl = Poles(1).XYZ() * Normal;
   for (i = 2; i <= Poles.Length(); i++)
     if (std::abs(Poles(i).XYZ() * Normal - scl) > tol)
-      return Standard_False;
-  return Standard_True;
+      return false;
+  return true;
 }
 
 //%11 pdn 12.01.98
@@ -223,20 +222,20 @@ static Standard_Boolean ArePolesPlanar(const TColgp_Array1OfPnt& Poles, gp_XYZ& 
 // Detects if curve lies in some plane and returns normal
 // IsPlanar
 //=============================================================================
-static Standard_Boolean IsPlanar(const Handle(Geom_Curve)& curve, gp_XYZ& Normal)
+static bool IsPlanar(const occ::handle<Geom_Curve>& curve, gp_XYZ& Normal)
 {
   Normal.SetCoord(0, 0, 0);
   if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
   {
     DeclareAndCast(Geom_Line, Line, curve);
     Normal = GetAnyNormal(Line->Position().Direction().XYZ());
-    return Standard_True;
+    return true;
   }
   if (curve->IsKind(STANDARD_TYPE(Geom_Conic)))
   {
     DeclareAndCast(Geom_Conic, Conic, curve);
     Normal = Conic->Axis().Direction().XYZ();
-    return Standard_True;
+    return true;
   }
   if (curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
@@ -251,18 +250,18 @@ static Standard_Boolean IsPlanar(const Handle(Geom_Curve)& curve, gp_XYZ& Normal
   if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
     DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
-    TColgp_Array1OfPnt Poles(1, BSpline->NbPoles());
+    NCollection_Array1<gp_Pnt> Poles(1, BSpline->NbPoles());
     BSpline->Poles(Poles);
     return ArePolesPlanar(Poles, Normal);
   }
   if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
     DeclareAndCast(Geom_BezierCurve, Bezier, curve);
-    TColgp_Array1OfPnt Poles(1, Bezier->NbPoles());
+    NCollection_Array1<gp_Pnt> Poles(1, Bezier->NbPoles());
     Bezier->Poles(Poles);
     return ArePolesPlanar(Poles, Normal);
   }
-  return Standard_False;
+  return false;
 }
 
 //=============================================================================
@@ -270,29 +269,29 @@ static Standard_Boolean IsPlanar(const Handle(Geom_Curve)& curve, gp_XYZ& Normal
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
-  const Handle(Geom_BSplineCurve)& start,
-  const Standard_Real              Udeb,
-  const Standard_Real              Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_BSplineCurve>& start,
+  const double                          Udeb,
+  const double                          Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
   }
 
-  Handle(Geom_BSplineCurve) mycurve;
-  Standard_Boolean          IPlan = Standard_False;
-  gp_XYZ                    Norm  = gp_XYZ(0., 0., 1.);
+  occ::handle<Geom_BSplineCurve> mycurve;
+  bool                           IPlan = false;
+  gp_XYZ                         Norm  = gp_XYZ(0., 0., 1.);
 
   // If the curve is periodic, we go through a function to recover all
   // the parameters necessary for IGES writing.
 
-  Standard_Boolean IPerio = start->IsPeriodic();
+  bool IPerio = start->IsPeriodic();
 
   if (IPerio)
   {
-    mycurve = Handle(Geom_BSplineCurve)::DownCast(start->Copy());
+    mycurve = occ::down_cast<Geom_BSplineCurve>(start->Copy());
     mycurve->SetNotPeriodic();
   }
   else
@@ -300,16 +299,16 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
     mycurve = start;
   }
 
-  Standard_Real Umin = Udeb;
-  Standard_Real Umax = Ufin;
+  double Umin = Udeb;
+  double Umax = Ufin;
   if (Precision::IsNegativeInfinite(Udeb))
     Umin = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Ufin))
     Umax = Precision::Infinite();
 
   //%12 pdn: cut curve for E3
-  Standard_Real First = mycurve->FirstParameter();
-  Standard_Real Last  = mycurve->LastParameter();
+  double First = mycurve->FirstParameter();
+  double Last  = mycurve->LastParameter();
   //: l5 abv 14 Jan 99: protect against exceptions in Segment()
   if (Umin - First < Precision::PConfusion())
     Umin = First;
@@ -320,7 +319,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
     try
     {
       OCC_CATCH_SIGNALS
-      Handle(Geom_BSplineCurve) bspl = Handle(Geom_BSplineCurve)::DownCast(mycurve->Copy());
+      occ::handle<Geom_BSplineCurve> bspl = occ::down_cast<Geom_BSplineCurve>(mycurve->Copy());
       if (!bspl.IsNull())
       {
         if (std::abs(Umax - Umin) > Precision::PConfusion())
@@ -339,23 +338,23 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
     }
   }
 
-  Standard_Boolean IClos = mycurve->IsClosed();
-  //  Standard_Boolean IRatio  = mycurve->IsRational();
-  Standard_Boolean IPolyn = !(mycurve->IsRational());
-  // Standard_Boolean IPerio  = mycurve->IsPeriodic();
-  Standard_Integer Deg     = mycurve->Degree();
-  Standard_Integer Nbpoles = mycurve->NbPoles();
-  //  Standard_Integer Nbknots = mycurve->NbKnots();
-  Standard_Integer Index = Nbpoles - 1;
+  bool IClos = mycurve->IsClosed();
+  //  bool IRatio  = mycurve->IsRational();
+  bool IPolyn = !(mycurve->IsRational());
+  // bool IPerio  = mycurve->IsPeriodic();
+  int Deg     = mycurve->Degree();
+  int Nbpoles = mycurve->NbPoles();
+  //  int Nbknots = mycurve->NbKnots();
+  int Index = Nbpoles - 1;
 
   // Sequence des Knots de [-Deg, Index+1] dans IGESGeom.
   // and from [1, Nbpoles+Deg+1] in Geom
-  Standard_Integer     Knotindex;
-  Standard_Real        rtampon;
-  TColStd_Array1OfReal K(1, Nbpoles + Deg + 1);
+  int                        Knotindex;
+  double                     rtampon;
+  NCollection_Array1<double> K(1, Nbpoles + Deg + 1);
   mycurve->KnotSequence(K);
-  Standard_Integer              itampon = -Deg;
-  Handle(TColStd_HArray1OfReal) Knots   = new TColStd_HArray1OfReal(-Deg, Index + 1);
+  int                                      itampon = -Deg;
+  occ::handle<NCollection_HArray1<double>> Knots = new NCollection_HArray1<double>(-Deg, Index + 1);
   for (Knotindex = K.Lower(); Knotindex <= K.Upper(); Knotindex++)
   {
     rtampon = K.Value(Knotindex);
@@ -364,10 +363,10 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
   }
 
   // Tableau Weights de [0,Index]
-  TColStd_Array1OfReal W(1, Nbpoles);
+  NCollection_Array1<double> W(1, Nbpoles);
   mycurve->Weights(W);
-  itampon                               = 0;
-  Handle(TColStd_HArray1OfReal) Weights = new TColStd_HArray1OfReal(0, Index);
+  itampon                                          = 0;
+  occ::handle<NCollection_HArray1<double>> Weights = new NCollection_HArray1<double>(0, Index);
   for (Knotindex = W.Lower(); Knotindex <= W.Upper(); Knotindex++)
   {
     rtampon = W.Value(Knotindex);
@@ -376,12 +375,12 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
   }
 
   // Tableau Poles de [0,Index]
-  TColgp_Array1OfPnt P(1, Nbpoles);
+  NCollection_Array1<gp_Pnt> P(1, Nbpoles);
   mycurve->Poles(P);
-  Standard_Integer Poleindex;
+  int Poleindex;
   itampon = 0;
-  Standard_Real               Xpt, Ypt, Zpt;
-  Handle(TColgp_HArray1OfXYZ) Poles = new TColgp_HArray1OfXYZ(0, Index);
+  double                                   Xpt, Ypt, Zpt;
+  occ::handle<NCollection_HArray1<gp_XYZ>> Poles = new NCollection_HArray1<gp_XYZ>(0, Index);
   for (Poleindex = P.Lower(); Poleindex <= P.Upper(); Poleindex++)
   {
     gp_Pnt ptampon = P.Value(Poleindex);
@@ -392,11 +391,11 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
   }
 
   // modif mjm du 9/10/97 : mise en place d'une protection.
-  //%12  Standard_Real First = mycurve->FirstParameter();
-  //%12  Standard_Real Last = mycurve->LastParameter();
+  //%12  double First = mycurve->FirstParameter();
+  //%12  double Last = mycurve->LastParameter();
   //: l5  if (First >  Umin) Umin = First;
   //: l5  if (Last  <  Umax) Umax = Last;
-  Handle(IGESGeom_BSplineCurve) BSplineC = new IGESGeom_BSplineCurve;
+  occ::handle<IGESGeom_BSplineCurve> BSplineC = new IGESGeom_BSplineCurve;
   //%11 pdn 13.01.98 computing planar flag and normal
   IPlan = IsPlanar(start, Norm);
   if (Norm.Z() < 0)
@@ -412,24 +411,24 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
-  const Handle(Geom_BezierCurve)& start,
-  const Standard_Real             Udeb,
-  const Standard_Real             Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_BezierCurve>& start,
+  const double                         Udeb,
+  const double                         Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
   }
 
-  Handle(Geom_TrimmedCurve) mycurve3d = new Geom_TrimmedCurve(start, Udeb, Ufin);
-  Handle(Geom_BSplineCurve) Bspline =
+  occ::handle<Geom_TrimmedCurve> mycurve3d = new Geom_TrimmedCurve(start, Udeb, Ufin);
+  occ::handle<Geom_BSplineCurve> Bspline =
     GeomConvert::CurveToBSplineCurve(mycurve3d,
                                      Convert_RationalC1); // #28 rln 19.10.98 UKI60155
-  Standard_Real First = Bspline->FirstParameter();
-  Standard_Real Last  = Bspline->LastParameter();
-  res                 = TransferCurve(Bspline, First, Last);
+  double First = Bspline->FirstParameter();
+  double Last  = Bspline->LastParameter();
+  res          = TransferCurve(Bspline, First, Last);
   return res;
 }
 
@@ -438,23 +437,23 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
-  const Handle(Geom_TrimmedCurve)& start,
-  const Standard_Real              Udeb,
-  const Standard_Real              Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_TrimmedCurve>& start,
+  const double                          Udeb,
+  const double                          Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
   }
 
-  Handle(Geom_Curve) st = start->BasisCurve();
+  occ::handle<Geom_Curve> st = start->BasisCurve();
   if (st->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     DeclareAndCast(Geom_TrimmedCurve, Trimmed, st);
-    Handle(Geom_Curve) st1 = Trimmed->BasisCurve();
-    res                    = TransferCurve(st1, Udeb, Ufin);
+    occ::handle<Geom_Curve> st1 = Trimmed->BasisCurve();
+    res                         = TransferCurve(st1, Udeb, Ufin);
   }
 
   res = TransferCurve(st, Udeb, Ufin);
@@ -466,11 +465,12 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geom_Conic)& start,
-                                                                const Standard_Real       Udeb,
-                                                                const Standard_Real       Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_Conic>& start,
+  const double                   Udeb,
+  const double                   Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
@@ -514,38 +514,39 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geom_Circle)& start,
-                                                                const Standard_Real        Udeb,
-                                                                const Standard_Real        Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_Circle>& start,
+  const double                    Udeb,
+  const double                    Ufin)
 {
 
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
   }
-  Handle(IGESGeom_CircularArc) Circle = new IGESGeom_CircularArc();
-  IGESConvGeom_GeomBuilder     Build;
+  occ::handle<IGESGeom_CircularArc> Circle = new IGESGeom_CircularArc();
+  IGESConvGeom_GeomBuilder          Build;
 
-  Standard_Real U1 = Udeb;
-  Standard_Real U2 = Ufin;
+  double U1 = Udeb;
+  double U2 = Ufin;
   if (std::abs(Udeb) <= gp::Resolution())
     U1 = 0.0;
 
   // creation du "CircularArc" (#100)
   // --------------------------------
-  Standard_Real xloc, yloc, zloc;
+  double xloc, yloc, zloc;
   start->Circ().Location().Coord(xloc, yloc, zloc);
   gp_Pnt Loc;
   Loc.SetCoord(xloc, yloc, zloc);
   gp_Ax3 Pos = gp_Ax3(start->Circ().Position());
-  // unusable  Standard_Boolean IsDirect = Pos.Direct();
+  // unusable  bool IsDirect = Pos.Direct();
   Pos.SetLocation(Loc);
   Build.SetPosition(Pos);
 
-  Standard_Real Xc, Yc, Zc;
-  Standard_Real Xs, Ys, Zs;
-  Standard_Real Xe, Ye, Ze;
+  double Xc, Yc, Zc;
+  double Xs, Ys, Zs;
+  double Xe, Ye, Ze;
   // gka BUG 6542 1.09.04 BSpline curve was written in the IGES instead circle.
   gp_Pnt pfirst, plast;
   start->D0(U1, pfirst);
@@ -568,8 +569,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 
   if (!Build.IsIdentity())
   {
-    Handle(IGESGeom_TransformationMatrix) TMat = new IGESGeom_TransformationMatrix;
-    TMat                                       = Build.MakeTransformation(GetUnit());
+    occ::handle<IGESGeom_TransformationMatrix> TMat = new IGESGeom_TransformationMatrix;
+    TMat                                            = Build.MakeTransformation(GetUnit());
     Circle->InitTransf(TMat);
   }
 
@@ -582,12 +583,13 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geom_Ellipse)& start,
-                                                                const Standard_Real         Udeb,
-                                                                const Standard_Real         Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_Ellipse>& start,
+  const double                     Udeb,
+  const double                     Ufin)
 {
 
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
@@ -599,35 +601,35 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
   {
     // #53 rln 24.12.98 CCI60005
     // Trimmed ellipse. To avoid huge weights in B-Spline first rotate it and then convert
-    Handle(Geom_Ellipse) copystart = Handle(Geom_Ellipse)::DownCast(start->Copy());
-    gp_Ax2               pos       = copystart->Position();
+    occ::handle<Geom_Ellipse> copystart = occ::down_cast<Geom_Ellipse>(start->Copy());
+    gp_Ax2                    pos       = copystart->Position();
     copystart->SetPosition(pos.Rotated(pos.Axis(), gp_Ax3(pos).Direct() ? Udeb : 2 * M_PI - Udeb));
-    Handle(Geom_BSplineCurve) Bspline;
+    occ::handle<Geom_BSplineCurve> Bspline;
     //: q3 abv 17 Mar 99: use GeomConvert_ApproxCurve for precise conversion
-    const Handle(Geom_Curve)& aCopy = copystart; // to avoid ambiguity
-    GeomConvert_ApproxCurve   approx(aCopy, Precision::Approximation(), GeomAbs_C1, 100, 6);
+    const occ::handle<Geom_Curve>& aCopy = copystart; // to avoid ambiguity
+    GeomConvert_ApproxCurve        approx(aCopy, Precision::Approximation(), GeomAbs_C1, 100, 6);
     if (approx.HasResult())
       Bspline = approx.Curve();
     if (Bspline.IsNull())
       GeomConvert::CurveToBSplineCurve(copystart, Convert_QuasiAngular);
-    TColStd_Array1OfReal Knots(1, Bspline->NbKnots());
+    NCollection_Array1<double> Knots(1, Bspline->NbKnots());
     Bspline->Knots(Knots);
     BSplCLib::Reparametrize(Udeb, Udeb + 2 * M_PI, Knots);
     Bspline->SetKnots(Knots);
     return TransferCurve(Bspline, Udeb, Ufin);
   }
 
-  Handle(IGESGeom_ConicArc) Conic = new IGESGeom_ConicArc;
-  IGESConvGeom_GeomBuilder  Build;
-  Standard_Real             U1 = Udeb;
-  Standard_Real             U2 = Ufin;
+  occ::handle<IGESGeom_ConicArc> Conic = new IGESGeom_ConicArc;
+  IGESConvGeom_GeomBuilder       Build;
+  double                         U1 = Udeb;
+  double                         U2 = Ufin;
   if (std::abs(Udeb) <= gp::Resolution())
     U1 = 0.0;
 
   // creation du "ConicArc" (#104)
   // -----------------------------
 
-  Standard_Real xloc, yloc, zloc;
+  double xloc, yloc, zloc;
   start->Elips().Location().Coord(xloc, yloc, zloc);
   gp_Pnt Loc;
   Loc.SetCoord(xloc, yloc, zloc);
@@ -635,14 +637,14 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
   Pos.SetLocation(Loc);
   Build.SetPosition(Pos);
 
-  Standard_Real Xs, Ys, Zs;
-  Standard_Real Xe, Ye, Ze;
+  double Xs, Ys, Zs;
+  double Xe, Ye, Ze;
   Build.EvalXYZ((start->Value(U1)).XYZ(), Xs, Ys, Zs);
   Build.EvalXYZ((start->Value(U2)).XYZ(), Xe, Ye, Ze);
-  gp_Elips2d    E2d = gp_Elips2d(gp_Ax22d(gp::Origin2d(), gp::DX2d(), gp::DY2d()),
+  gp_Elips2d E2d = gp_Elips2d(gp_Ax22d(gp::Origin2d(), gp::DX2d(), gp::DY2d()),
                               (start->MajorRadius() / GetUnit()),
                               (start->MinorRadius() / GetUnit()));
-  Standard_Real A, B, C, D, E, F;
+  double     A, B, C, D, E, F;
   E2d.Coefficients(A, C, B, D, E, F); // #59 rln 29.12.98 PRO17015 face 67
                                       // gp_Elips2d returns 0.5*K not K
 
@@ -662,8 +664,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 
   if (!Build.IsIdentity())
   {
-    Handle(IGESGeom_TransformationMatrix) TMat = new IGESGeom_TransformationMatrix;
-    TMat                                       = Build.MakeTransformation(GetUnit());
+    occ::handle<IGESGeom_TransformationMatrix> TMat = new IGESGeom_TransformationMatrix;
+    TMat                                            = Build.MakeTransformation(GetUnit());
     Conic->InitTransf(TMat);
   }
   res = Conic;
@@ -675,20 +677,21 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geom_Hyperbola)& start,
-                                                                const Standard_Real           Udeb,
-                                                                const Standard_Real           Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_Hyperbola>& start,
+  const double                       Udeb,
+  const double                       Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
   }
 
-  Handle(IGESGeom_ConicArc) Conic = new IGESGeom_ConicArc;
-  IGESConvGeom_GeomBuilder  Build;
-  Standard_Real             U1 = Udeb;
-  Standard_Real             U2 = Ufin;
+  occ::handle<IGESGeom_ConicArc> Conic = new IGESGeom_ConicArc;
+  IGESConvGeom_GeomBuilder       Build;
+  double                         U1 = Udeb;
+  double                         U2 = Ufin;
   if (Precision::IsNegativeInfinite(Udeb))
     U1 = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Ufin))
@@ -696,7 +699,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 
   // creation du "ConicArc" (#104)
   // -----------------------------
-  Standard_Real xloc, yloc, zloc;
+  double xloc, yloc, zloc;
   start->Hypr().Location().Coord(xloc, yloc, zloc);
   gp_Pnt Loc;
   Loc.SetCoord(xloc, yloc, zloc);
@@ -704,14 +707,14 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
   Pos.SetLocation(Loc);
   Build.SetPosition(Pos);
 
-  Standard_Real Xs, Ys, Zs;
-  Standard_Real Xe, Ye, Ze;
+  double Xs, Ys, Zs;
+  double Xe, Ye, Ze;
   Build.EvalXYZ((start->Value(U1)).XYZ(), Xs, Ys, Zs);
   Build.EvalXYZ((start->Value(U2)).XYZ(), Xe, Ye, Ze);
-  gp_Hypr2d     H2d = gp_Hypr2d(gp_Ax22d(gp::Origin2d(), gp::DX2d(), gp::DY2d()),
+  gp_Hypr2d H2d = gp_Hypr2d(gp_Ax22d(gp::Origin2d(), gp::DX2d(), gp::DY2d()),
                             (start->MajorRadius() / GetUnit()),
                             (start->MinorRadius() / GetUnit()));
-  Standard_Real A, B, C, D, E, F;
+  double    A, B, C, D, E, F;
   H2d.Coefficients(A, C, B, D, E, F);
 
   Conic->Init(A,
@@ -730,8 +733,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 
   if (!Build.IsIdentity())
   {
-    Handle(IGESGeom_TransformationMatrix) TMat = new IGESGeom_TransformationMatrix;
-    TMat                                       = Build.MakeTransformation(GetUnit());
+    occ::handle<IGESGeom_TransformationMatrix> TMat = new IGESGeom_TransformationMatrix;
+    TMat                                            = Build.MakeTransformation(GetUnit());
     Conic->InitTransf(TMat);
   }
   res = Conic;
@@ -743,20 +746,21 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geom_Parabola)& start,
-                                                                const Standard_Real          Udeb,
-                                                                const Standard_Real          Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_Parabola>& start,
+  const double                      Udeb,
+  const double                      Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
   }
 
-  Handle(IGESGeom_ConicArc) Conic = new IGESGeom_ConicArc;
-  IGESConvGeom_GeomBuilder  Build;
-  Standard_Real             U1 = Udeb;
-  Standard_Real             U2 = Ufin;
+  occ::handle<IGESGeom_ConicArc> Conic = new IGESGeom_ConicArc;
+  IGESConvGeom_GeomBuilder       Build;
+  double                         U1 = Udeb;
+  double                         U2 = Ufin;
   if (Precision::IsNegativeInfinite(Udeb))
     U1 = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Ufin))
@@ -764,7 +768,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 
   // creation du "ConicArc" (#104)
   // -----------------------------
-  Standard_Real xloc, yloc, zloc;
+  double xloc, yloc, zloc;
   start->Parab().Location().Coord(xloc, yloc, zloc);
   gp_Pnt Loc;
   Loc.SetCoord(xloc, yloc, zloc);
@@ -772,13 +776,13 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
   Pos.SetLocation(Loc);
   Build.SetPosition(Pos);
 
-  Standard_Real Xs, Ys, Zs;
-  Standard_Real Xe, Ye, Ze;
+  double Xs, Ys, Zs;
+  double Xe, Ye, Ze;
   Build.EvalXYZ((start->Value(U1)).XYZ(), Xs, Ys, Zs);
   Build.EvalXYZ((start->Value(U2)).XYZ(), Xe, Ye, Ze);
   gp_Parab2d P2d =
     gp_Parab2d(gp_Ax22d(gp::Origin2d(), gp::DX2d(), gp::DY2d()), (start->Focal() * 2.));
-  Standard_Real A, B, C, D, E, F;
+  double A, B, C, D, E, F;
   P2d.Coefficients(A, C, B, D, E, F);
 
   Conic->Init(A,
@@ -797,8 +801,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 
   if (!Build.IsIdentity())
   {
-    Handle(IGESGeom_TransformationMatrix) TMat = new IGESGeom_TransformationMatrix;
-    TMat                                       = Build.MakeTransformation(GetUnit());
+    occ::handle<IGESGeom_TransformationMatrix> TMat = new IGESGeom_TransformationMatrix;
+    TMat                                            = Build.MakeTransformation(GetUnit());
     Conic->InitTransf(TMat);
   }
   res = Conic;
@@ -810,19 +814,20 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geom_Line)& start,
-                                                                const Standard_Real      Udeb,
-                                                                const Standard_Real      Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_Line>& start,
+  const double                  Udeb,
+  const double                  Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
   }
 
-  Handle(IGESGeom_Line) Line = new IGESGeom_Line;
-  Standard_Real         U1   = Udeb;
-  Standard_Real         U2   = Ufin;
+  occ::handle<IGESGeom_Line> Line = new IGESGeom_Line;
+  double                     U1   = Udeb;
+  double                     U2   = Ufin;
   if (Precision::IsNegativeInfinite(Udeb))
     U1 = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Ufin))
@@ -831,7 +836,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
   // creation du "Line" (#110)
   // -------------------------
 
-  Standard_Real X1, Y1, Z1, X2, Y2, Z2;
+  double X1, Y1, Z1, X2, Y2, Z2;
   start->Value(U1).Coord(X1, Y1, Z1);
   start->Value(U2).Coord(X2, Y2, Z2);
 
@@ -846,20 +851,20 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(const Handle(Geo
 // TransferCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
-  const Handle(Geom_OffsetCurve)& start,
-  const Standard_Real             Udeb,
-  const Standard_Real             Ufin)
+occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
+  const occ::handle<Geom_OffsetCurve>& start,
+  const double                         Udeb,
+  const double                         Ufin)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
   {
     return res;
   }
 
-  Handle(IGESGeom_OffsetCurve) OffsetC = new IGESGeom_OffsetCurve;
-  Standard_Real                U1      = Udeb;
-  Standard_Real                U2      = Ufin;
+  occ::handle<IGESGeom_OffsetCurve> OffsetC = new IGESGeom_OffsetCurve;
+  double                            U1      = Udeb;
+  double                            U2      = Ufin;
   if (Precision::IsNegativeInfinite(Udeb))
     U1 = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Ufin))
@@ -871,9 +876,9 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
     return res;
   }
 
-  Handle(Geom_Curve) Curve = start->BasisCurve();
-  Standard_Real      Deb   = Curve->FirstParameter();
-  Standard_Real      Fin   = Curve->LastParameter();
+  occ::handle<Geom_Curve> Curve = start->BasisCurve();
+  double                  Deb   = Curve->FirstParameter();
+  double                  Fin   = Curve->LastParameter();
   //%11 pdn 12.01.98 offset curve should be planar
   gp_XYZ Normal;
   if (!IsPlanar(Curve, Normal))
@@ -896,8 +901,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve(
     }
   }
 
-  Handle(IGESData_IGESEntity) BaseCurve = TransferCurve(Curve, Deb, Fin);
-  Handle(IGESData_IGESEntity) voident;
+  occ::handle<IGESData_IGESEntity> BaseCurve = TransferCurve(Curve, Deb, Fin);
+  occ::handle<IGESData_IGESEntity> voident;
 
   OffsetC->Init(BaseCurve,
                 1,

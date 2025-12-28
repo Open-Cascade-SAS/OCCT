@@ -29,20 +29,20 @@ RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::
 }
 
 void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&                        data,
-  const Standard_Integer                                        num0,
-  Handle(Interface_Check)&                                      ach,
-  const Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&                        data,
+  const int                                                          num0,
+  occ::handle<Interface_Check>&                                      ach,
+  const occ::handle<StepBasic_ConversionBasedUnitAndPlaneAngleUnit>& ent) const
 {
   // sln 09.10.2001. BUC61003. Correction of looking for items of complex entity in case of them  do
   // not saticfy to alphabetical order CONVERSION_BASED_UNIT
-  Standard_Integer num = 0; // num0;
+  int num = 0; // num0;
   data->NamedForComplex("CONVERSION_BASED_UNIT", "CNBSUN", num0, num, ach);
   if (!data->CheckNbParams(num, 2, ach, "conversion_based_unit"))
     return;
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
-  Handle(Standard_Transient) aConversionFactor;
+  occ::handle<Standard_Transient> aConversionFactor;
   data->ReadEntity(num,
                    2,
                    "conversion_factor",
@@ -55,7 +55,7 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep(
   data->NamedForComplex("NAMED_UNIT", "NMDUNT", num0, num, ach);
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
     return;
-  Handle(StepBasic_DimensionalExponents) aDimensions;
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
   data->ReadEntity(num,
                    1,
                    "dimensions",
@@ -73,8 +73,8 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep(
 }
 
 void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::WriteStep(
-  StepData_StepWriter&                                          SW,
-  const Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)& ent) const
+  StepData_StepWriter&                                               SW,
+  const occ::handle<StepBasic_ConversionBasedUnitAndPlaneAngleUnit>& ent) const
 {
 
   // --- Instance of plex component ConversionBasedUnit ---
@@ -100,8 +100,8 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::WriteStep(
 }
 
 void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::Share(
-  const Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)& ent,
-  Interface_EntityIterator&                                     iter) const
+  const occ::handle<StepBasic_ConversionBasedUnitAndPlaneAngleUnit>& ent,
+  Interface_EntityIterator&                                          iter) const
 {
 
   iter.GetOneItem(ent->Dimensions());

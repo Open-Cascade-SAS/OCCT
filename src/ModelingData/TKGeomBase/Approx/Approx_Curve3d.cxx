@@ -22,8 +22,8 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Precision.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
@@ -32,36 +32,34 @@
 class Approx_Curve3d_Eval : public AdvApprox_EvaluatorFunction
 {
 public:
-  Approx_Curve3d_Eval(const Handle(Adaptor3d_Curve)& theFunc,
-                      Standard_Real                  First,
-                      Standard_Real                  Last)
+  Approx_Curve3d_Eval(const occ::handle<Adaptor3d_Curve>& theFunc, double First, double Last)
       : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
-  Handle(Adaptor3d_Curve) fonct;
-  Standard_Real           StartEndSav[2];
+  occ::handle<Adaptor3d_Curve> fonct;
+  double                       StartEndSav[2];
 };
 
-void Approx_Curve3d_Eval::Evaluate(Standard_Integer* Dimension,
-                                   Standard_Real     StartEnd[2],
-                                   Standard_Real*    Param,  // Parameter at which evaluation
-                                   Standard_Integer* Order,  // Derivative Request
-                                   Standard_Real*    Result, // [Dimension]
-                                   Standard_Integer* ErrorCode)
+void Approx_Curve3d_Eval::Evaluate(int*    Dimension,
+                                   double  StartEnd[2],
+                                   double* Param,  // Parameter at which evaluation
+                                   int*    Order,  // Derivative Request
+                                   double* Result, // [Dimension]
+                                   int*    ErrorCode)
 {
-  *ErrorCode        = 0;
-  Standard_Real par = *Param;
+  *ErrorCode = 0;
+  double par = *Param;
 
   // Dimension is incorrect
   if (*Dimension != 3)
@@ -106,27 +104,27 @@ void Approx_Curve3d_Eval::Evaluate(Standard_Integer* Dimension,
   }
 }
 
-Approx_Curve3d::Approx_Curve3d(const Handle(Adaptor3d_Curve)& Curve,
-                               const Standard_Real            Tol3d,
-                               const GeomAbs_Shape            Order,
-                               const Standard_Integer         MaxSegments,
-                               const Standard_Integer         MaxDegree)
+Approx_Curve3d::Approx_Curve3d(const occ::handle<Adaptor3d_Curve>& Curve,
+                               const double                        Tol3d,
+                               const GeomAbs_Shape                 Order,
+                               const int                           MaxSegments,
+                               const int                           MaxDegree)
 {
   // Initialisation of input parameters of AdvApprox
 
-  Standard_Integer              Num1DSS = 0, Num2DSS = 0, Num3DSS = 1;
-  Handle(TColStd_HArray1OfReal) OneDTolNul, TwoDTolNul;
-  Handle(TColStd_HArray1OfReal) ThreeDTol = new TColStd_HArray1OfReal(1, Num3DSS);
+  int                                      Num1DSS = 0, Num2DSS = 0, Num3DSS = 1;
+  occ::handle<NCollection_HArray1<double>> OneDTolNul, TwoDTolNul;
+  occ::handle<NCollection_HArray1<double>> ThreeDTol = new NCollection_HArray1<double>(1, Num3DSS);
   ThreeDTol->Init(Tol3d);
 
-  Standard_Real First = Curve->FirstParameter();
-  Standard_Real Last  = Curve->LastParameter();
+  double First = Curve->FirstParameter();
+  double Last  = Curve->LastParameter();
 
-  Standard_Integer     NbInterv_C2 = Curve->NbIntervals(GeomAbs_C2);
-  TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
+  int                        NbInterv_C2 = Curve->NbIntervals(GeomAbs_C2);
+  NCollection_Array1<double> CutPnts_C2(1, NbInterv_C2 + 1);
   Curve->Intervals(CutPnts_C2, GeomAbs_C2);
-  Standard_Integer     NbInterv_C3 = Curve->NbIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal CutPnts_C3(1, NbInterv_C3 + 1);
+  int                        NbInterv_C3 = Curve->NbIntervals(GeomAbs_C3);
+  NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   Curve->Intervals(CutPnts_C3, GeomAbs_C3);
 
   AdvApprox_PrefAndRec CutTool(CutPnts_C2, CutPnts_C3);
@@ -153,32 +151,32 @@ Approx_Curve3d::Approx_Curve3d(const Handle(Adaptor3d_Curve)& Curve,
 
   if (myHasResult)
   {
-    TColgp_Array1OfPnt Poles(1, aApprox.NbPoles());
+    NCollection_Array1<gp_Pnt> Poles(1, aApprox.NbPoles());
     aApprox.Poles(1, Poles);
-    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
-    Standard_Integer                 Degree = aApprox.Degree();
+    occ::handle<NCollection_HArray1<double>> Knots  = aApprox.Knots();
+    occ::handle<NCollection_HArray1<int>>    Mults  = aApprox.Multiplicities();
+    int                                      Degree = aApprox.Degree();
     myBSplCurve = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
     myMaxError  = aApprox.MaxError(3, 1);
   }
 }
 
-Handle(Geom_BSplineCurve) Approx_Curve3d::Curve() const
+occ::handle<Geom_BSplineCurve> Approx_Curve3d::Curve() const
 {
   return myBSplCurve;
 }
 
-Standard_Boolean Approx_Curve3d::IsDone() const
+bool Approx_Curve3d::IsDone() const
 {
   return myIsDone;
 }
 
-Standard_Boolean Approx_Curve3d::HasResult() const
+bool Approx_Curve3d::HasResult() const
 {
   return myHasResult;
 }
 
-Standard_Real Approx_Curve3d::MaxError() const
+double Approx_Curve3d::MaxError() const
 {
   return myMaxError;
 }

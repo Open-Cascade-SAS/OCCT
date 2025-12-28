@@ -51,7 +51,7 @@ public:
                                              const Quantity_Color&           theInteriorColor,
                                              const Quantity_Color&           theEdgeColor,
                                              const Aspect_TypeOfLine         theEdgeLineType,
-                                             const Standard_Real             theEdgeWidth,
+                                             const double                    theEdgeWidth,
                                              const Graphic3d_MaterialAspect& theFrontMaterial,
                                              const Graphic3d_MaterialAspect& theBackMaterial);
 
@@ -59,7 +59,5 @@ public:
   Standard_DEPRECATED("Deprecated method, ToDrawEdges() should be used instead")
   bool Edge() const { return ToDrawEdges(); }
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_AspectFillArea3d, Graphic3d_Aspects)
 
 #endif // _Graphic3d_AspectFillArea3d_HeaderFile

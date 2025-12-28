@@ -27,8 +27,8 @@ static void splitLines(const TCollection_AsciiString&                   theStrin
     return;
   }
 
-  Standard_Integer aLineFrom = 1;
-  for (Standard_Integer aCharIter = 1;; ++aCharIter)
+  int aLineFrom = 1;
+  for (int aCharIter = 1;; ++aCharIter)
   {
     const char aChar = theString.Value(aCharIter);
     if (aChar != '\r' && aChar != '\n' && aCharIter != theString.Length())
@@ -95,7 +95,7 @@ bool RWPly_PlyWriterContext::Open(const TCollection_AsciiString&       theName,
     return true;
   }
 
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   myStream = aFileSystem->OpenOStream(theName, std::ios::out | std::ios::binary);
   if (myStream.get() == NULL || !myStream->good())
   {
@@ -140,9 +140,10 @@ bool RWPly_PlyWriterContext::Close(bool theIsAborted)
 
 //=================================================================================================
 
-bool RWPly_PlyWriterContext::WriteHeader(const Standard_Integer                      theNbNodes,
-                                         const Standard_Integer                      theNbElems,
-                                         const TColStd_IndexedDataMapOfStringString& theFileInfo)
+bool RWPly_PlyWriterContext::WriteHeader(
+  const int                                                                           theNbNodes,
+  const int                                                                           theNbElems,
+  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo)
 {
   if (myStream.get() == nullptr)
   {
@@ -154,20 +155,21 @@ bool RWPly_PlyWriterContext::WriteHeader(const Standard_Integer                 
   *myStream << "ply\n"
                "format ascii 1.0\n"
                "comment Exported by Open CASCADE Technology [dev.opencascade.org]\n";
-  for (TColStd_IndexedDataMapOfStringString::Iterator aKeyValueIter(theFileInfo);
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator
+         aKeyValueIter(theFileInfo);
        aKeyValueIter.More();
        aKeyValueIter.Next())
   {
     NCollection_IndexedMap<TCollection_AsciiString> aKeyLines, aValLines;
     splitLines(aKeyValueIter.Key(), aKeyLines);
     splitLines(aKeyValueIter.Value(), aValLines);
-    for (Standard_Integer aLineIter = 1; aLineIter <= aKeyLines.Extent(); ++aLineIter)
+    for (int aLineIter = 1; aLineIter <= aKeyLines.Extent(); ++aLineIter)
     {
       const TCollection_AsciiString& aLine = aKeyLines.FindKey(aLineIter);
       *myStream << (aLineIter > 1 ? "\n" : "") << "comment " << aLine;
     }
     *myStream << (!aKeyLines.IsEmpty() ? ":" : "comment ");
-    for (Standard_Integer aLineIter = 1; aLineIter <= aValLines.Extent(); ++aLineIter)
+    for (int aLineIter = 1; aLineIter <= aValLines.Extent(); ++aLineIter)
     {
       const TCollection_AsciiString& aLine = aValLines.FindKey(aLineIter);
       *myStream << (aLineIter > 1 ? "\n" : "") << "comment " << aLine;
@@ -223,10 +225,10 @@ bool RWPly_PlyWriterContext::WriteHeader(const Standard_Integer                 
 
 //=================================================================================================
 
-bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&           thePoint,
-                                         const Graphic3d_Vec3&   theNorm,
-                                         const Graphic3d_Vec2&   theUV,
-                                         const Graphic3d_Vec4ub& theColor)
+bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&                    thePoint,
+                                         const NCollection_Vec3<float>&   theNorm,
+                                         const NCollection_Vec2<float>&   theUV,
+                                         const NCollection_Vec4<uint8_t>& theColor)
 {
   if (myStream.get() == nullptr)
   {
@@ -265,14 +267,14 @@ bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&           thePoint,
 
 //=================================================================================================
 
-bool RWPly_PlyWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
+bool RWPly_PlyWriterContext::WriteTriangle(const NCollection_Vec3<int>& theTri)
 {
   if (myStream.get() == nullptr)
   {
     return false;
   }
 
-  const Graphic3d_Vec3i aTri = Graphic3d_Vec3i(myVertOffset) + theTri;
+  const NCollection_Vec3<int> aTri = NCollection_Vec3<int>(myVertOffset) + theTri;
   *myStream << "3 " << aTri[0] << " " << aTri[1] << " " << aTri[2];
   if (myHasSurfId)
   {
@@ -289,14 +291,14 @@ bool RWPly_PlyWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
 
 //=================================================================================================
 
-bool RWPly_PlyWriterContext::WriteQuad(const Graphic3d_Vec4i& theQuad)
+bool RWPly_PlyWriterContext::WriteQuad(const NCollection_Vec4<int>& theQuad)
 {
   if (myStream.get() == nullptr)
   {
     return false;
   }
 
-  const Graphic3d_Vec4i aQuad = Graphic3d_Vec4i(myVertOffset) + theQuad;
+  const NCollection_Vec4<int> aQuad = NCollection_Vec4<int>(myVertOffset) + theQuad;
   *myStream << "4 " << aQuad[0] << " " << aQuad[1] << " " << aQuad[2] << " " << aQuad[3];
   if (myHasSurfId)
   {

@@ -29,21 +29,21 @@
 
 //=================================================================================================
 
-static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
-                                 const Standard_Real      Param,
-                                 const GeomAbs_IsoType    IT,
-                                 const Standard_Real      TolMin,
-                                 const Standard_Real      TolMax)
+static bool IsoIsDeg(const Adaptor3d_Surface& S,
+                     const double             Param,
+                     const GeomAbs_IsoType    IT,
+                     const double             TolMin,
+                     const double             TolMax)
 {
-  Standard_Real    U1 = 0., U2 = 0., V1 = 0., V2 = 0., T;
-  Standard_Boolean Along = Standard_True;
-  U1                     = S.FirstUParameter();
-  U2                     = S.LastUParameter();
-  V1                     = S.FirstVParameter();
-  V2                     = S.LastVParameter();
-  gp_Vec        D1U, D1V;
-  gp_Pnt        P;
-  Standard_Real Step, D1NormMax;
+  double U1 = 0., U2 = 0., V1 = 0., V2 = 0., T;
+  bool   Along = true;
+  U1           = S.FirstUParameter();
+  U2           = S.LastUParameter();
+  V1           = S.FirstVParameter();
+  V2           = S.LastVParameter();
+  gp_Vec D1U, D1V;
+  gp_Pnt P;
+  double Step, D1NormMax;
   if (IT == GeomAbs_IsoV)
   {
     if (!Precision::IsInfinite(U1) && !Precision::IsInfinite(U2))
@@ -51,7 +51,7 @@ static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
       Step = (U2 - U1) / 10;
       if (Step < Precision::PConfusion())
       {
-        return Standard_False;
+        return false;
       }
       D1NormMax = 0.;
 
@@ -62,7 +62,7 @@ static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
       }
 
       if (D1NormMax > TolMax || D1NormMax < TolMin)
-        Along = Standard_False;
+        Along = false;
     }
   }
   else
@@ -72,7 +72,7 @@ static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
       Step = (V2 - V1) / 10;
       if (Step < Precision::PConfusion())
       {
-        return Standard_False;
+        return false;
       }
       D1NormMax = 0.;
       for (T = V1; T <= V2; T = T + Step)
@@ -82,7 +82,7 @@ static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
       }
 
       if (D1NormMax > TolMax || D1NormMax < TolMin)
-        Along = Standard_False;
+        Along = false;
     }
   }
   return Along;
@@ -90,9 +90,9 @@ static Standard_Boolean IsoIsDeg(const Adaptor3d_Surface& S,
 
 //=================================================================================================
 
-void Extrema_ExtPS::TreatSolution(const Extrema_POnSurf& PS, const Standard_Real Val)
+void Extrema_ExtPS::TreatSolution(const Extrema_POnSurf& PS, const double Val)
 {
-  Standard_Real U, V;
+  double U, V;
   PS.Parameter(U, V);
   if (myS->IsUPeriodic())
   {
@@ -126,7 +126,7 @@ void Extrema_ExtPS::TreatSolution(const Extrema_POnSurf& PS, const Standard_Real
 
 Extrema_ExtPS::Extrema_ExtPS()
     : myS(NULL),
-      myDone(Standard_False),
+      myDone(false),
       myuinf(0.0),
       myusup(0.0),
       myvinf(0.0),
@@ -145,8 +145,8 @@ Extrema_ExtPS::Extrema_ExtPS()
 
 Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&            theP,
                              const Adaptor3d_Surface& theS,
-                             const Standard_Real      theTolU,
-                             const Standard_Real      theTolV,
+                             const double             theTolU,
+                             const double             theTolV,
                              const Extrema_ExtFlag    theF,
                              const Extrema_ExtAlgo    theA)
 {
@@ -168,12 +168,12 @@ Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&            theP,
 
 Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&            theP,
                              const Adaptor3d_Surface& theS,
-                             const Standard_Real      theUinf,
-                             const Standard_Real      theUsup,
-                             const Standard_Real      theVinf,
-                             const Standard_Real      theVsup,
-                             const Standard_Real      theTolU,
-                             const Standard_Real      theTolV,
+                             const double             theUinf,
+                             const double             theUsup,
+                             const double             theVinf,
+                             const double             theVsup,
+                             const double             theTolU,
+                             const double             theTolV,
                              const Extrema_ExtFlag    theF,
                              const Extrema_ExtAlgo    theA)
 {
@@ -188,12 +188,12 @@ Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&            theP,
 //=================================================================================================
 
 void Extrema_ExtPS::Initialize(const Adaptor3d_Surface& theS,
-                               const Standard_Real      theUinf,
-                               const Standard_Real      theUsup,
-                               const Standard_Real      theVinf,
-                               const Standard_Real      theVsup,
-                               const Standard_Real      theTolU,
-                               const Standard_Real      theTolV)
+                               const double             theUinf,
+                               const double             theUsup,
+                               const double             theVinf,
+                               const double             theVsup,
+                               const double             theTolU,
+                               const double             theTolV)
 {
   myS    = &theS;
   myuinf = theUinf;
@@ -214,13 +214,12 @@ void Extrema_ExtPS::Initialize(const Adaptor3d_Surface& theS,
   mytolv = theTolV;
   mytype = myS->GetType();
 
-  Standard_Boolean isB =
-    (myS->GetType() == GeomAbs_BSplineSurface || myS->GetType() == GeomAbs_BezierSurface);
+  bool isB = (myS->GetType() == GeomAbs_BSplineSurface || myS->GetType() == GeomAbs_BezierSurface);
 
-  Standard_Integer nbU = (isB) ? 44 : 32;
-  Standard_Integer nbV = (isB) ? 44 : 32;
+  int nbU = (isB) ? 44 : 32;
+  int nbV = (isB) ? 44 : 32;
 
-  Standard_Boolean bUIsoIsDeg = Standard_False, bVIsoIsDeg = Standard_False;
+  bool bUIsoIsDeg = false, bVIsoIsDeg = false;
 
   if (myS->GetType() != GeomAbs_Plane)
   {
@@ -269,8 +268,9 @@ void Extrema_ExtPS::Perform(const gp_Pnt& thePoint)
     case GeomAbs_SurfaceOfExtrusion: {
       if (myExtPExtS.IsNull())
       {
-        Handle(GeomAdaptor_SurfaceOfLinearExtrusion) aS(new GeomAdaptor_SurfaceOfLinearExtrusion(
-          GeomAdaptor_SurfaceOfLinearExtrusion(myS->BasisCurve(), myS->Direction())));
+        occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion> aS(
+          new GeomAdaptor_SurfaceOfLinearExtrusion(
+            GeomAdaptor_SurfaceOfLinearExtrusion(myS->BasisCurve(), myS->Direction())));
 
         myExtPExtS =
           new Extrema_ExtPExtS(thePoint, aS, myuinf, myusup, myvinf, myvsup, mytolu, mytolv);
@@ -283,7 +283,7 @@ void Extrema_ExtPS::Perform(const gp_Pnt& thePoint)
       myDone = myExtPExtS->IsDone();
       if (myDone)
       {
-        for (Standard_Integer anIdx = 1; anIdx <= myExtPExtS->NbExt(); ++anIdx)
+        for (int anIdx = 1; anIdx <= myExtPExtS->NbExt(); ++anIdx)
         {
           TreatSolution(myExtPExtS->Point(anIdx), myExtPExtS->SquareDistance(anIdx));
         }
@@ -295,7 +295,7 @@ void Extrema_ExtPS::Perform(const gp_Pnt& thePoint)
     case GeomAbs_SurfaceOfRevolution: {
       if (myExtPRevS.IsNull())
       {
-        Handle(GeomAdaptor_SurfaceOfRevolution) aS(new GeomAdaptor_SurfaceOfRevolution(
+        occ::handle<GeomAdaptor_SurfaceOfRevolution> aS(new GeomAdaptor_SurfaceOfRevolution(
           GeomAdaptor_SurfaceOfRevolution(myS->BasisCurve(), myS->AxeOfRevolution())));
 
         myExtPRevS =
@@ -309,7 +309,7 @@ void Extrema_ExtPS::Perform(const gp_Pnt& thePoint)
       myDone = myExtPRevS->IsDone();
       if (myDone)
       {
-        for (Standard_Integer anIdx = 1; anIdx <= myExtPRevS->NbExt(); ++anIdx)
+        for (int anIdx = 1; anIdx <= myExtPRevS->NbExt(); ++anIdx)
         {
           TreatSolution(myExtPRevS->Point(anIdx), myExtPRevS->SquareDistance(anIdx));
         }
@@ -323,7 +323,7 @@ void Extrema_ExtPS::Perform(const gp_Pnt& thePoint)
       myDone = myExtPS.IsDone();
       if (myDone)
       {
-        for (Standard_Integer anIdx = 1; anIdx <= myExtPS.NbExt(); ++anIdx)
+        for (int anIdx = 1; anIdx <= myExtPS.NbExt(); ++anIdx)
         {
           TreatSolution(myExtPS.Point(anIdx), myExtPS.SquareDistance(anIdx));
         }
@@ -335,47 +335,47 @@ void Extrema_ExtPS::Perform(const gp_Pnt& thePoint)
   myDone = myExtPElS.IsDone();
   if (myDone)
   {
-    for (Standard_Integer anIdx = 1; anIdx <= myExtPElS.NbExt(); ++anIdx)
+    for (int anIdx = 1; anIdx <= myExtPElS.NbExt(); ++anIdx)
     {
       TreatSolution(myExtPElS.Point(anIdx), myExtPElS.SquareDistance(anIdx));
     }
   }
 }
 
-Standard_Boolean Extrema_ExtPS::IsDone() const
+bool Extrema_ExtPS::IsDone() const
 {
   return myDone;
 }
 
-Standard_Real Extrema_ExtPS::SquareDistance(const Standard_Integer N) const
+double Extrema_ExtPS::SquareDistance(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
     throw Standard_OutOfRange();
   return mySqDist.Value(N);
 }
 
-Standard_Integer Extrema_ExtPS::NbExt() const
+int Extrema_ExtPS::NbExt() const
 {
   if (!IsDone())
     throw StdFail_NotDone();
   return mySqDist.Length();
 }
 
-const Extrema_POnSurf& Extrema_ExtPS::Point(const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_ExtPS::Point(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
     throw Standard_OutOfRange();
   return myPoints.Value(N);
 }
 
-void Extrema_ExtPS::TrimmedSquareDistances(Standard_Real& dUfVf,
-                                           Standard_Real& dUfVl,
-                                           Standard_Real& dUlVf,
-                                           Standard_Real& dUlVl,
-                                           gp_Pnt&        PUfVf,
-                                           gp_Pnt&        PUfVl,
-                                           gp_Pnt&        PUlVf,
-                                           gp_Pnt&        PUlVl) const
+void Extrema_ExtPS::TrimmedSquareDistances(double& dUfVf,
+                                           double& dUfVl,
+                                           double& dUlVf,
+                                           double& dUlVl,
+                                           gp_Pnt& PUfVf,
+                                           gp_Pnt& PUfVl,
+                                           gp_Pnt& PUlVf,
+                                           gp_Pnt& PUlVl) const
 {
   dUfVf = d11;
   dUfVl = d12;

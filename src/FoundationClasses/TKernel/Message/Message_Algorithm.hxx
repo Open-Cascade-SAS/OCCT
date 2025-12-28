@@ -20,17 +20,19 @@
 #include <Standard_Type.hxx>
 
 #include <Message_ExecStatus.hxx>
-#include <TColStd_HArray1OfTransient.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Message_Status.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 #include <Message_Gravity.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
-#include <TColStd_HSequenceOfHExtendedString.hxx>
-#include <TColStd_SequenceOfHExtendedString.hxx>
-#include <Message_HArrayOfMsg.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Message_Msg.hxx>
+#include <NCollection_Handle.hxx>
 
 class Message_Messenger;
 class TCollection_AsciiString;
@@ -39,9 +41,6 @@ class TCollection_ExtendedString;
 class TCollection_HExtendedString;
 class Message_Msg;
 class TColStd_HPackedMapOfInteger;
-
-class Message_Algorithm;
-DEFINE_STANDARD_HANDLE(Message_Algorithm, Standard_Transient)
 
 //! Class Message_Algorithm is intended to be the base class for
 //! classes implementing algorithms or any operations that need
@@ -95,42 +94,42 @@ public:
   Standard_EXPORT void SetStatus(const Message_Status& theStat);
 
   //! Sets status with integer parameter
-  Standard_EXPORT void SetStatus(const Message_Status& theStat, const Standard_Integer theInt);
+  Standard_EXPORT void SetStatus(const Message_Status& theStat, const int theInt);
 
   //! Sets status with string parameter.
   //! If noRepetitions is True, the parameter will be added only
   //! if it has not been yet recorded for the same status flag
-  void SetStatus(const Message_Status&  theStat,
-                 const Standard_CString theStr,
-                 const Standard_Boolean noRepetitions = Standard_True);
+  void SetStatus(const Message_Status& theStat,
+                 const char*           theStr,
+                 const bool            noRepetitions = true);
 
   //! Sets status with string parameter
   //! If noRepetitions is True, the parameter will be added only
   //! if it has not been yet recorded for the same status flag
   void SetStatus(const Message_Status&          theStat,
                  const TCollection_AsciiString& theStr,
-                 const Standard_Boolean         noRepetitions = Standard_True);
+                 const bool                     noRepetitions = true);
 
   //! Sets status with string parameter
   //! If noRepetitions is True, the parameter will be added only
   //! if it has not been yet recorded for the same status flag
-  void SetStatus(const Message_Status&                   theStat,
-                 const Handle(TCollection_HAsciiString)& theStr,
-                 const Standard_Boolean                  noRepetitions = Standard_True);
+  void SetStatus(const Message_Status&                        theStat,
+                 const occ::handle<TCollection_HAsciiString>& theStr,
+                 const bool                                   noRepetitions = true);
 
   //! Sets status with string parameter
   //! If noRepetitions is True, the parameter will be added only
   //! if it has not been yet recorded for the same status flag
   void SetStatus(const Message_Status&             theStat,
                  const TCollection_ExtendedString& theStr,
-                 const Standard_Boolean            noRepetitions = Standard_True);
+                 const bool                        noRepetitions = true);
 
   //! Sets status with string parameter
   //! If noRepetitions is True, the parameter will be added only
   //! if it has not been yet recorded for the same status flag
-  Standard_EXPORT void SetStatus(const Message_Status&                      theStat,
-                                 const Handle(TCollection_HExtendedString)& theStr,
-                                 const Standard_Boolean noRepetitions = Standard_True);
+  Standard_EXPORT void SetStatus(const Message_Status&                           theStat,
+                                 const occ::handle<TCollection_HExtendedString>& theStr,
+                                 const bool noRepetitions = true);
 
   //! Sets status with preformatted message. This message will be
   //! used directly to report the status; automatic generation of
@@ -147,12 +146,12 @@ public:
   Standard_EXPORT void ClearStatus();
 
   //! Sets messenger to algorithm
-  Standard_EXPORT void SetMessenger(const Handle(Message_Messenger)& theMsgr);
+  Standard_EXPORT void SetMessenger(const occ::handle<Message_Messenger>& theMsgr);
 
   //! Returns messenger of algorithm.
   //! The returned handle is always non-null and can
   //! be used for sending messages.
-  Handle(Message_Messenger) GetMessenger() const;
+  occ::handle<Message_Messenger> GetMessenger() const;
 
   //! Print messages for all status flags that have been set during
   //! algorithm execution, excluding statuses that are NOT set
@@ -174,56 +173,56 @@ public:
   Standard_EXPORT virtual void SendStatusMessages(
     const Message_ExecStatus& theFilter,
     const Message_Gravity     theTraceLevel = Message_Warning,
-    const Standard_Integer    theMaxCount   = 20) const;
+    const int                 theMaxCount   = 20) const;
 
   //! Convenient variant of SendStatusMessages() with theFilter
   //! having defined all WARN, ALARM, and FAIL (but not DONE)
   //! status flags
-  Standard_EXPORT void SendMessages(const Message_Gravity  theTraceLevel = Message_Warning,
-                                    const Standard_Integer theMaxCount   = 20) const;
+  Standard_EXPORT void SendMessages(const Message_Gravity theTraceLevel = Message_Warning,
+                                    const int             theMaxCount   = 20) const;
 
   //! Add statuses to this algorithm from other algorithm
   //! (including messages)
-  Standard_EXPORT void AddStatus(const Handle(Message_Algorithm)& theOther);
+  Standard_EXPORT void AddStatus(const occ::handle<Message_Algorithm>& theOther);
 
   //! Add statuses to this algorithm from other algorithm, but
   //! only those items are moved that correspond to statuses
   //! set in theStatus
-  Standard_EXPORT void AddStatus(const Message_ExecStatus&        theStatus,
-                                 const Handle(Message_Algorithm)& theOther);
+  Standard_EXPORT void AddStatus(const Message_ExecStatus&             theStatus,
+                                 const occ::handle<Message_Algorithm>& theOther);
 
   //! Return the numbers associated with the indicated status;
   //! Null handle if no such status or no numbers associated with it
-  Standard_EXPORT Handle(TColStd_HPackedMapOfInteger) GetMessageNumbers(
+  Standard_EXPORT occ::handle<TColStd_HPackedMapOfInteger> GetMessageNumbers(
     const Message_Status& theStatus) const;
 
   //! Return the strings associated with the indicated status;
   //! Null handle if no such status or no strings associated with it
-  Standard_EXPORT Handle(TColStd_HSequenceOfHExtendedString) GetMessageStrings(
-    const Message_Status& theStatus) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>
+                  GetMessageStrings(const Message_Status& theStatus) const;
 
   //! Prepares a string containing a list of integers contained
   //! in theError map, but not more than theMaxCount
   Standard_EXPORT static TCollection_ExtendedString PrepareReport(
-    const Handle(TColStd_HPackedMapOfInteger)& theError,
-    const Standard_Integer                     theMaxCount);
+    const occ::handle<TColStd_HPackedMapOfInteger>& theError,
+    const int                                       theMaxCount);
 
   //! Prepares a string containing a list of names contained
   //! in theReportSeq sequence, but not more than theMaxCount
   Standard_EXPORT static TCollection_ExtendedString PrepareReport(
-    const TColStd_SequenceOfHExtendedString& theReportSeq,
-    const Standard_Integer                   theMaxCount);
+    const NCollection_Sequence<occ::handle<TCollection_HExtendedString>>& theReportSeq,
+    const int                                                             theMaxCount);
 
   DEFINE_STANDARD_RTTIEXT(Message_Algorithm, Standard_Transient)
 
 protected:
-  Message_ExecStatus        myStatus;
-  Handle(Message_Messenger) myMessenger;
+  Message_ExecStatus             myStatus;
+  occ::handle<Message_Messenger> myMessenger;
 
 private:
-  Handle(TColStd_HArray1OfTransient) myReportIntegers;
-  Handle(TColStd_HArray1OfTransient) myReportStrings;
-  Message_HArrayOfMsg                myReportMessages;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>       myReportIntegers;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>       myReportStrings;
+  NCollection_Handle<NCollection_Array1<NCollection_Handle<Message_Msg>>> myReportMessages;
 };
 
 #include <Message_Algorithm.lxx>

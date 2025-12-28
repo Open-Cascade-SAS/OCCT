@@ -37,22 +37,22 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_Circle, AIS_InteractiveObject)
 
 //=================================================================================================
 
-AIS_Circle::AIS_Circle(const Handle(Geom_Circle)& aComponent)
+AIS_Circle::AIS_Circle(const occ::handle<Geom_Circle>& aComponent)
     : AIS_InteractiveObject(PrsMgr_TOP_AllView),
       myComponent(aComponent),
       myUStart(0.0),
       myUEnd(2.0 * M_PI),
-      myCircleIsArc(Standard_False),
-      myIsFilledCircleSens(Standard_False)
+      myCircleIsArc(false),
+      myIsFilledCircleSens(false)
 {
 }
 
 //=================================================================================================
 
-AIS_Circle::AIS_Circle(const Handle(Geom_Circle)& theComponent,
-                       const Standard_Real        theUStart,
-                       const Standard_Real        theUEnd,
-                       const Standard_Boolean     theIsFilledCircleSens)
+AIS_Circle::AIS_Circle(const occ::handle<Geom_Circle>& theComponent,
+                       const double                    theUStart,
+                       const double                    theUEnd,
+                       const bool                      theIsFilledCircleSens)
     : AIS_InteractiveObject(PrsMgr_TOP_AllView),
       myComponent(theComponent),
       myUStart(theUStart),
@@ -64,9 +64,9 @@ AIS_Circle::AIS_Circle(const Handle(Geom_Circle)& theComponent,
 
 //=================================================================================================
 
-void AIS_Circle::Compute(const Handle(PrsMgr_PresentationManager)&,
-                         const Handle(Prs3d_Presentation)& thePrs,
-                         const Standard_Integer)
+void AIS_Circle::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                         const occ::handle<Prs3d_Presentation>& thePrs,
+                         const int)
 {
   if (myCircleIsArc)
   {
@@ -80,8 +80,8 @@ void AIS_Circle::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void AIS_Circle::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                  const Standard_Integer /*aMode*/)
+void AIS_Circle::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                  const int /*aMode*/)
 {
 
   if (myCircleIsArc)
@@ -92,7 +92,7 @@ void AIS_Circle::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
 //=================================================================================================
 
-void AIS_Circle::replaceWithNewLineAspect(const Handle(Prs3d_LineAspect)& theAspect)
+void AIS_Circle::replaceWithNewLineAspect(const occ::handle<Prs3d_LineAspect>& theAspect)
 {
   if (!myDrawer->HasLink())
   {
@@ -100,13 +100,13 @@ void AIS_Circle::replaceWithNewLineAspect(const Handle(Prs3d_LineAspect)& theAsp
     return;
   }
 
-  const Handle(Graphic3d_AspectLine3d) anAspectOld = myDrawer->LineAspect()->Aspect();
-  const Handle(Graphic3d_AspectLine3d) anAspectNew =
+  const occ::handle<Graphic3d_AspectLine3d> anAspectOld = myDrawer->LineAspect()->Aspect();
+  const occ::handle<Graphic3d_AspectLine3d> anAspectNew =
     !theAspect.IsNull() ? theAspect->Aspect() : myDrawer->Link()->LineAspect()->Aspect();
   if (anAspectNew != anAspectOld)
   {
     myDrawer->SetLineAspect(theAspect);
-    Graphic3d_MapOfAspectsToAspects aReplaceMap;
+    NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>> aReplaceMap;
     aReplaceMap.Bind(anAspectOld, anAspectNew);
     replaceAspects(aReplaceMap);
   }
@@ -116,15 +116,15 @@ void AIS_Circle::replaceWithNewLineAspect(const Handle(Prs3d_LineAspect)& theAsp
 
 void AIS_Circle::SetColor(const Quantity_Color& aCol)
 {
-  hasOwnColor = Standard_True;
+  hasOwnColor = true;
   myDrawer->SetColor(aCol);
 
   if (!myDrawer->HasOwnLineAspect())
   {
-    Standard_Real WW = HasWidth() ? myOwnWidth
-                       : myDrawer->HasLink()
-                         ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
-                         : 1.;
+    double WW = HasWidth() ? myOwnWidth
+                : myDrawer->HasLink()
+                  ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+                  : 1.;
     replaceWithNewLineAspect(new Prs3d_LineAspect(aCol, Aspect_TOL_SOLID, WW));
   }
   else
@@ -136,9 +136,9 @@ void AIS_Circle::SetColor(const Quantity_Color& aCol)
 
 //=================================================================================================
 
-void AIS_Circle::SetWidth(const Standard_Real aValue)
+void AIS_Circle::SetWidth(const double aValue)
 {
-  myOwnWidth = (Standard_ShortReal)aValue;
+  myOwnWidth = (float)aValue;
 
   if (!myDrawer->HasOwnLineAspect())
   {
@@ -160,11 +160,11 @@ void AIS_Circle::SetWidth(const Standard_Real aValue)
 
 void AIS_Circle::UnsetColor()
 {
-  hasOwnColor = Standard_False;
+  hasOwnColor = false;
 
   if (!HasWidth())
   {
-    replaceWithNewLineAspect(Handle(Prs3d_LineAspect)());
+    replaceWithNewLineAspect(occ::handle<Prs3d_LineAspect>());
   }
   else
   {
@@ -185,14 +185,13 @@ void AIS_Circle::UnsetWidth()
 {
   if (!HasColor())
   {
-    replaceWithNewLineAspect(Handle(Prs3d_LineAspect)());
+    replaceWithNewLineAspect(occ::handle<Prs3d_LineAspect>());
   }
   else
   {
-    Standard_ShortReal WW =
-      myDrawer->HasLink()
-        ? (Standard_ShortReal)AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
-        : 1.0f;
+    float WW = myDrawer->HasLink()
+                 ? (float)AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+                 : 1.0f;
     myDrawer->LineAspect()->SetWidth(WW);
     myOwnWidth = WW;
   }
@@ -200,11 +199,11 @@ void AIS_Circle::UnsetWidth()
 
 //=================================================================================================
 
-void AIS_Circle::ComputeCircle(const Handle(Prs3d_Presentation)& thePresentation)
+void AIS_Circle::ComputeCircle(const occ::handle<Prs3d_Presentation>& thePresentation)
 {
 
   GeomAdaptor_Curve curv(myComponent);
-  Standard_Real     prevdev = myDrawer->DeviationCoefficient();
+  double            prevdev = myDrawer->DeviationCoefficient();
   myDrawer->SetDeviationCoefficient(1.e-5);
   StdPrs_DeflectionCurve::Add(thePresentation, curv, myDrawer);
   myDrawer->SetDeviationCoefficient(prevdev);
@@ -212,10 +211,10 @@ void AIS_Circle::ComputeCircle(const Handle(Prs3d_Presentation)& thePresentation
 
 //=================================================================================================
 
-void AIS_Circle::ComputeArc(const Handle(Prs3d_Presentation)& thePresentation)
+void AIS_Circle::ComputeArc(const occ::handle<Prs3d_Presentation>& thePresentation)
 {
   GeomAdaptor_Curve curv(myComponent, myUStart, myUEnd);
-  Standard_Real     prevdev = myDrawer->DeviationCoefficient();
+  double            prevdev = myDrawer->DeviationCoefficient();
   myDrawer->SetDeviationCoefficient(1.e-5);
   StdPrs_DeflectionCurve::Add(thePresentation, curv, myDrawer);
   myDrawer->SetDeviationCoefficient(prevdev);
@@ -223,23 +222,23 @@ void AIS_Circle::ComputeArc(const Handle(Prs3d_Presentation)& thePresentation)
 
 //=================================================================================================
 
-void AIS_Circle::ComputeCircleSelection(const Handle(SelectMgr_Selection)& theSelection)
+void AIS_Circle::ComputeCircleSelection(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  Handle(SelectMgr_EntityOwner)    anOwner = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveCircle) aCirc =
+  occ::handle<SelectMgr_EntityOwner>    anOwner = new SelectMgr_EntityOwner(this);
+  occ::handle<Select3D_SensitiveCircle> aCirc =
     new Select3D_SensitiveCircle(anOwner, myComponent->Circ(), myIsFilledCircleSens);
   theSelection->Add(aCirc);
 }
 
 //=================================================================================================
 
-void AIS_Circle::ComputeArcSelection(const Handle(SelectMgr_Selection)& theSelection)
+void AIS_Circle::ComputeArcSelection(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  Handle(SelectMgr_EntityOwner)  anOwner = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitivePoly) aSeg    = new Select3D_SensitivePoly(anOwner,
-                                                                   myComponent->Circ(),
-                                                                   myUStart,
-                                                                   myUEnd,
-                                                                   myIsFilledCircleSens);
+  occ::handle<SelectMgr_EntityOwner>  anOwner = new SelectMgr_EntityOwner(this);
+  occ::handle<Select3D_SensitivePoly> aSeg    = new Select3D_SensitivePoly(anOwner,
+                                                                        myComponent->Circ(),
+                                                                        myUStart,
+                                                                        myUEnd,
+                                                                        myIsFilledCircleSens);
   theSelection->Add(aSeg);
 }

@@ -54,57 +54,58 @@ public:
 
   //! Returns default approval entity which
   //! is used when no other data are available
-  Standard_EXPORT Handle(StepBasic_Approval) DefaultApproval();
+  Standard_EXPORT occ::handle<StepBasic_Approval> DefaultApproval();
 
   //! Sets default approval
-  Standard_EXPORT void SetDefaultApproval(const Handle(StepBasic_Approval)& app);
+  Standard_EXPORT void SetDefaultApproval(const occ::handle<StepBasic_Approval>& app);
 
   //! Returns default date_and_time entity which
   //! is used when no other data are available
-  Standard_EXPORT Handle(StepBasic_DateAndTime) DefaultDateAndTime();
+  Standard_EXPORT occ::handle<StepBasic_DateAndTime> DefaultDateAndTime();
 
   //! Sets default date_and_time entity
-  Standard_EXPORT void SetDefaultDateAndTime(const Handle(StepBasic_DateAndTime)& dt);
+  Standard_EXPORT void SetDefaultDateAndTime(const occ::handle<StepBasic_DateAndTime>& dt);
 
   //! Returns default person_and_organization entity which
   //! is used when no other data are available
-  Standard_EXPORT Handle(StepBasic_PersonAndOrganization) DefaultPersonAndOrganization();
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganization> DefaultPersonAndOrganization();
 
   //! Sets default person_and_organization entity
   Standard_EXPORT void SetDefaultPersonAndOrganization(
-    const Handle(StepBasic_PersonAndOrganization)& po);
+    const occ::handle<StepBasic_PersonAndOrganization>& po);
 
   //! Returns default security_classification_level entity which
   //! is used when no other data are available
-  Standard_EXPORT Handle(StepBasic_SecurityClassificationLevel)
-    DefaultSecurityClassificationLevel();
+  Standard_EXPORT occ::handle<StepBasic_SecurityClassificationLevel>
+                  DefaultSecurityClassificationLevel();
 
   //! Sets default security_classification_level
   Standard_EXPORT void SetDefaultSecurityClassificationLevel(
-    const Handle(StepBasic_SecurityClassificationLevel)& sc);
+    const occ::handle<StepBasic_SecurityClassificationLevel>& sc);
 
-  Standard_EXPORT Handle(StepBasic_PersonAndOrganizationRole) RoleCreator() const;
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganizationRole> RoleCreator() const;
 
-  Standard_EXPORT Handle(StepBasic_PersonAndOrganizationRole) RoleDesignOwner() const;
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganizationRole> RoleDesignOwner() const;
 
-  Standard_EXPORT Handle(StepBasic_PersonAndOrganizationRole) RoleDesignSupplier() const;
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganizationRole> RoleDesignSupplier() const;
 
-  Standard_EXPORT Handle(StepBasic_PersonAndOrganizationRole) RoleClassificationOfficer() const;
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganizationRole> RoleClassificationOfficer()
+    const;
 
-  Standard_EXPORT Handle(StepBasic_DateTimeRole) RoleCreationDate() const;
+  Standard_EXPORT occ::handle<StepBasic_DateTimeRole> RoleCreationDate() const;
 
-  Standard_EXPORT Handle(StepBasic_DateTimeRole) RoleClassificationDate() const;
+  Standard_EXPORT occ::handle<StepBasic_DateTimeRole> RoleClassificationDate() const;
 
   //! Return predefined PersonAndOrganizationRole and DateTimeRole
   //! entities named 'creator', 'design owner', 'design supplier',
   //! 'classification officer', 'creation date', 'classification date',
   //! 'approver'
-  Standard_EXPORT Handle(StepBasic_ApprovalRole) RoleApprover() const;
+  Standard_EXPORT occ::handle<StepBasic_ApprovalRole> RoleApprover() const;
 
   //! Takes SDR (part) which brings all standard data around part
   //! (common for AP203 and AP214) and creates all the additional
   //! entities required for AP203
-  Standard_EXPORT void Init(const Handle(StepShape_ShapeDefinitionRepresentation)& sdr);
+  Standard_EXPORT void Init(const occ::handle<StepShape_ShapeDefinitionRepresentation>& sdr);
 
   //! Takes tool which describes standard data around part
   //! (common for AP203 and AP214) and creates all the additional
@@ -130,33 +131,35 @@ public:
   //! Takes tool which describes standard data around part
   //! (common for AP203 and AP214) and takes from model (or creates
   //! if missing) all the additional entities required by AP203
-  Standard_EXPORT void Init(const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo);
+  Standard_EXPORT void Init(const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& nauo);
 
-  Standard_EXPORT Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) GetCreator() const;
+  Standard_EXPORT occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> GetCreator() const;
 
-  Standard_EXPORT Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) GetDesignOwner() const;
-
-  Standard_EXPORT Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) GetDesignSupplier()
+  Standard_EXPORT occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> GetDesignOwner()
     const;
 
-  Standard_EXPORT Handle(StepAP203_CcDesignPersonAndOrganizationAssignment)
-    GetClassificationOfficer() const;
+  Standard_EXPORT occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> GetDesignSupplier()
+    const;
 
-  Standard_EXPORT Handle(StepAP203_CcDesignSecurityClassification) GetSecurity() const;
+  Standard_EXPORT occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment>
+                  GetClassificationOfficer() const;
 
-  Standard_EXPORT Handle(StepAP203_CcDesignDateAndTimeAssignment) GetCreationDate() const;
+  Standard_EXPORT occ::handle<StepAP203_CcDesignSecurityClassification> GetSecurity() const;
 
-  Standard_EXPORT Handle(StepAP203_CcDesignDateAndTimeAssignment) GetClassificationDate() const;
+  Standard_EXPORT occ::handle<StepAP203_CcDesignDateAndTimeAssignment> GetCreationDate() const;
 
-  Standard_EXPORT Handle(StepAP203_CcDesignApproval) GetApproval() const;
+  Standard_EXPORT occ::handle<StepAP203_CcDesignDateAndTimeAssignment> GetClassificationDate()
+    const;
 
-  Standard_EXPORT Handle(StepBasic_ApprovalPersonOrganization) GetApprover() const;
+  Standard_EXPORT occ::handle<StepAP203_CcDesignApproval> GetApproval() const;
 
-  Standard_EXPORT Handle(StepBasic_ApprovalDateTime) GetApprovalDateTime() const;
+  Standard_EXPORT occ::handle<StepBasic_ApprovalPersonOrganization> GetApprover() const;
+
+  Standard_EXPORT occ::handle<StepBasic_ApprovalDateTime> GetApprovalDateTime() const;
 
   //! Return entities (roots) instantiated for the part by method Init
-  Standard_EXPORT Handle(StepBasic_ProductCategoryRelationship) GetProductCategoryRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductCategoryRelationship>
+                  GetProductCategoryRelationship() const;
 
   //! Clears all fields describing entities specific to each part
   Standard_EXPORT void Clear();
@@ -165,7 +168,7 @@ public:
   Standard_EXPORT void InitRoles();
 
   //! Initializes all missing data which are required for assembly
-  Standard_EXPORT void InitAssembly(const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo);
+  Standard_EXPORT void InitAssembly(const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& nauo);
 
   //! Initializes ClassificationOfficer and ClassificationDate
   //! entities according to Security entity
@@ -175,33 +178,32 @@ public:
   //! entities according to Approval entity
   Standard_EXPORT void InitApprovalRequisites();
 
-protected:
 private:
   //! Initializes all missing data which are required for part
   Standard_EXPORT void InitPart(const STEPConstruct_Part& SDRTool);
 
-  Handle(StepBasic_Approval)                                defApproval;
-  Handle(StepBasic_DateAndTime)                             defDateAndTime;
-  Handle(StepBasic_PersonAndOrganization)                   defPersonAndOrganization;
-  Handle(StepBasic_SecurityClassificationLevel)             defSecurityClassificationLevel;
-  Handle(StepBasic_PersonAndOrganizationRole)               roleCreator;
-  Handle(StepBasic_PersonAndOrganizationRole)               roleDesignOwner;
-  Handle(StepBasic_PersonAndOrganizationRole)               roleDesignSupplier;
-  Handle(StepBasic_PersonAndOrganizationRole)               roleClassificationOfficer;
-  Handle(StepBasic_DateTimeRole)                            roleCreationDate;
-  Handle(StepBasic_DateTimeRole)                            roleClassificationDate;
-  Handle(StepBasic_ApprovalRole)                            roleApprover;
-  Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) myCreator;
-  Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) myDesignOwner;
-  Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) myDesignSupplier;
-  Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) myClassificationOfficer;
-  Handle(StepAP203_CcDesignSecurityClassification)          mySecurity;
-  Handle(StepAP203_CcDesignDateAndTimeAssignment)           myCreationDate;
-  Handle(StepAP203_CcDesignDateAndTimeAssignment)           myClassificationDate;
-  Handle(StepAP203_CcDesignApproval)                        myApproval;
-  Handle(StepBasic_ApprovalPersonOrganization)              myApprover;
-  Handle(StepBasic_ApprovalDateTime)                        myApprovalDateTime;
-  Handle(StepBasic_ProductCategoryRelationship)             myProductCategoryRelationship;
+  occ::handle<StepBasic_Approval>                                defApproval;
+  occ::handle<StepBasic_DateAndTime>                             defDateAndTime;
+  occ::handle<StepBasic_PersonAndOrganization>                   defPersonAndOrganization;
+  occ::handle<StepBasic_SecurityClassificationLevel>             defSecurityClassificationLevel;
+  occ::handle<StepBasic_PersonAndOrganizationRole>               roleCreator;
+  occ::handle<StepBasic_PersonAndOrganizationRole>               roleDesignOwner;
+  occ::handle<StepBasic_PersonAndOrganizationRole>               roleDesignSupplier;
+  occ::handle<StepBasic_PersonAndOrganizationRole>               roleClassificationOfficer;
+  occ::handle<StepBasic_DateTimeRole>                            roleCreationDate;
+  occ::handle<StepBasic_DateTimeRole>                            roleClassificationDate;
+  occ::handle<StepBasic_ApprovalRole>                            roleApprover;
+  occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> myCreator;
+  occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> myDesignOwner;
+  occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> myDesignSupplier;
+  occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> myClassificationOfficer;
+  occ::handle<StepAP203_CcDesignSecurityClassification>          mySecurity;
+  occ::handle<StepAP203_CcDesignDateAndTimeAssignment>           myCreationDate;
+  occ::handle<StepAP203_CcDesignDateAndTimeAssignment>           myClassificationDate;
+  occ::handle<StepAP203_CcDesignApproval>                        myApproval;
+  occ::handle<StepBasic_ApprovalPersonOrganization>              myApprover;
+  occ::handle<StepBasic_ApprovalDateTime>                        myApprovalDateTime;
+  occ::handle<StepBasic_ProductCategoryRelationship>             myProductCategoryRelationship;
 };
 
 #endif // _STEPConstruct_AP203Context_HeaderFile

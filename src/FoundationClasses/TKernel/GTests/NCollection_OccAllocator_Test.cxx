@@ -32,7 +32,7 @@ protected:
 TEST_F(NCollection_OccAllocatorTest, AllocatorTypeTraits)
 {
   // Test type definitions and static assertions (compile-time checks)
-  typedef Handle(Standard_Transient)           anElemType;
+  typedef occ::handle<Standard_Transient>      anElemType;
   typedef NCollection_OccAllocator<anElemType> anAllocatorType;
 
   // These would fail to compile if the types were wrong
@@ -60,7 +60,7 @@ TEST_F(NCollection_OccAllocatorTest, AllocatorTypeTraits)
 TEST_F(NCollection_OccAllocatorTest, STLContainerIntegration)
 {
   // Create incremental allocator outside the scope of objects it will manage
-  Handle(NCollection_IncAllocator) anIncAlloc = new NCollection_IncAllocator();
+  occ::handle<NCollection_IncAllocator> anIncAlloc = new NCollection_IncAllocator();
 
   {
     // Test with std::list using typed allocator
@@ -119,8 +119,8 @@ TEST_F(NCollection_OccAllocatorTest, DefaultAllocator)
 
 TEST_F(NCollection_OccAllocatorTest, AllocatorComparison)
 {
-  Handle(NCollection_IncAllocator) anIncAlloc1 = new NCollection_IncAllocator();
-  Handle(NCollection_IncAllocator) anIncAlloc2 = new NCollection_IncAllocator();
+  occ::handle<NCollection_IncAllocator> anIncAlloc1 = new NCollection_IncAllocator();
+  occ::handle<NCollection_IncAllocator> anIncAlloc2 = new NCollection_IncAllocator();
 
   NCollection_OccAllocator<int> aAlloc1(anIncAlloc1);
   NCollection_OccAllocator<int> aAlloc2(anIncAlloc1); // Same underlying allocator
@@ -139,7 +139,7 @@ TEST_F(NCollection_OccAllocatorTest, AllocatorComparison)
 
 TEST_F(NCollection_OccAllocatorTest, CrossTypeCompatibility)
 {
-  Handle(NCollection_IncAllocator) anIncAlloc = new NCollection_IncAllocator();
+  occ::handle<NCollection_IncAllocator> anIncAlloc = new NCollection_IncAllocator();
 
   // Test allocators for different types but same underlying allocator
   NCollection_OccAllocator<int>    anIntAlloc(anIncAlloc);

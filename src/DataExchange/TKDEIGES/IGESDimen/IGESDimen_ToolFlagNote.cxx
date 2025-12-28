@@ -25,29 +25,30 @@
 #include <IGESData_ParamReader.hxx>
 #include <IGESDimen_FlagNote.hxx>
 #include <IGESDimen_GeneralNote.hxx>
-#include <IGESDimen_HArray1OfLeaderArrow.hxx>
 #include <IGESDimen_LeaderArrow.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESDimen_ToolFlagNote.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESDimen_ToolFlagNote::IGESDimen_ToolFlagNote() {}
 
-void IGESDimen_ToolFlagNote::ReadOwnParams(const Handle(IGESDimen_FlagNote)&      ent,
-                                           const Handle(IGESData_IGESReaderData)& IR,
-                                           IGESData_ParamReader&                  PR) const
+void IGESDimen_ToolFlagNote::ReadOwnParams(const occ::handle<IGESDimen_FlagNote>&      ent,
+                                           const occ::handle<IGESData_IGESReaderData>& IR,
+                                           IGESData_ParamReader&                       PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  // bool st; //szv#4:S4163:12Mar99 moved down
 
-  gp_XYZ                                 lowerLeft;
-  Standard_Real                          angle;
-  Handle(IGESDimen_GeneralNote)          note;
-  Standard_Integer                       nbval;
-  Handle(IGESDimen_HArray1OfLeaderArrow) leaders;
+  gp_XYZ                                                               lowerLeft;
+  double                                                               angle;
+  occ::handle<IGESDimen_GeneralNote>                                   note;
+  int                                                                  nbval;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> leaders;
 
   // clang-format off
   PR.ReadXYZ (PR.CurrentList(1, 3), "Lower Left Corner Co-ords", lowerLeft); //szv#4:S4163:12Mar99 `st=` not needed
@@ -61,14 +62,14 @@ void IGESDimen_ToolFlagNote::ReadOwnParams(const Handle(IGESDimen_FlagNote)&    
                 STANDARD_TYPE(IGESDimen_GeneralNote),
                 note); // szv#4:S4163:12Mar99 `st=` not needed
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of Leaders", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "Number of Leaders", nbval);
   if (st && nbval > 0)
   {
-    leaders = new IGESDimen_HArray1OfLeaderArrow(1, nbval);
+    leaders = new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, nbval);
 
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
-      Handle(IGESDimen_LeaderArrow) anentity;
+      occ::handle<IGESDimen_LeaderArrow> anentity;
       // st = PR.ReadEntity(IR, PR.Current(), "Leaders",
       // STANDARD_TYPE(IGESDimen_LeaderArrow), anentity); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadEntity(IR,
@@ -86,44 +87,44 @@ void IGESDimen_ToolFlagNote::ReadOwnParams(const Handle(IGESDimen_FlagNote)&    
   ent->Init(lowerLeft, angle, note, leaders);
 }
 
-void IGESDimen_ToolFlagNote::WriteOwnParams(const Handle(IGESDimen_FlagNote)& ent,
-                                            IGESData_IGESWriter&              IW) const
+void IGESDimen_ToolFlagNote::WriteOwnParams(const occ::handle<IGESDimen_FlagNote>& ent,
+                                            IGESData_IGESWriter&                   IW) const
 {
   IW.Send(ent->LowerLeftCorner().X());
   IW.Send(ent->LowerLeftCorner().Y());
   IW.Send(ent->LowerLeftCorner().Z());
   IW.Send(ent->Angle());
   IW.Send(ent->Note());
-  Standard_Integer upper = ent->NbLeaders();
+  int upper = ent->NbLeaders();
   IW.Send(upper);
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
     IW.Send(ent->Leader(i));
 }
 
-void IGESDimen_ToolFlagNote::OwnShared(const Handle(IGESDimen_FlagNote)& ent,
-                                       Interface_EntityIterator&         iter) const
+void IGESDimen_ToolFlagNote::OwnShared(const occ::handle<IGESDimen_FlagNote>& ent,
+                                       Interface_EntityIterator&              iter) const
 {
   iter.GetOneItem(ent->Note());
-  Standard_Integer upper = ent->NbLeaders();
-  for (Standard_Integer i = 1; i <= upper; i++)
+  int upper = ent->NbLeaders();
+  for (int i = 1; i <= upper; i++)
     iter.GetOneItem(ent->Leader(i));
 }
 
-void IGESDimen_ToolFlagNote::OwnCopy(const Handle(IGESDimen_FlagNote)& another,
-                                     const Handle(IGESDimen_FlagNote)& ent,
-                                     Interface_CopyTool&               TC) const
+void IGESDimen_ToolFlagNote::OwnCopy(const occ::handle<IGESDimen_FlagNote>& another,
+                                     const occ::handle<IGESDimen_FlagNote>& ent,
+                                     Interface_CopyTool&                    TC) const
 {
-  gp_XYZ        lowerLeft = (another->LowerLeftCorner()).XYZ();
-  Standard_Real angle     = another->Angle();
+  gp_XYZ lowerLeft = (another->LowerLeftCorner()).XYZ();
+  double angle     = another->Angle();
   DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
-  Standard_Integer nbval = another->NbLeaders();
+  int nbval = another->NbLeaders();
 
-  Handle(IGESDimen_HArray1OfLeaderArrow) leaders;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> leaders;
 
   if (nbval > 0)
   {
-    leaders = new IGESDimen_HArray1OfLeaderArrow(1, nbval);
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    leaders = new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, nbval);
+    for (int i = 1; i <= nbval; i++)
     {
       DeclareAndCast(IGESDimen_LeaderArrow, new_ent, TC.Transferred(another->Leader(i)));
       leaders->SetValue(i, new_ent);
@@ -133,7 +134,7 @@ void IGESDimen_ToolFlagNote::OwnCopy(const Handle(IGESDimen_FlagNote)& another,
 }
 
 IGESData_DirChecker IGESDimen_ToolFlagNote::DirChecker(
-  const Handle(IGESDimen_FlagNote)& /* ent */) const
+  const occ::handle<IGESDimen_FlagNote>& /* ent */) const
 {
   IGESData_DirChecker DC(208, 0);
   DC.Structure(IGESData_DefVoid);
@@ -144,18 +145,18 @@ IGESData_DirChecker IGESDimen_ToolFlagNote::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolFlagNote::OwnCheck(const Handle(IGESDimen_FlagNote)& /* ent */,
+void IGESDimen_ToolFlagNote::OwnCheck(const occ::handle<IGESDimen_FlagNote>& /* ent */,
                                       const Interface_ShareTool&,
-                                      Handle(Interface_Check)& /* ach */) const
+                                      occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESDimen_ToolFlagNote::OwnDump(const Handle(IGESDimen_FlagNote)& ent,
-                                     const IGESData_IGESDumper&        dumper,
-                                     Standard_OStream&                 S,
-                                     const Standard_Integer            level) const
+void IGESDimen_ToolFlagNote::OwnDump(const occ::handle<IGESDimen_FlagNote>& ent,
+                                     const IGESData_IGESDumper&             dumper,
+                                     Standard_OStream&                      S,
+                                     const int                              level) const
 {
-  Standard_Integer sublevel = (level > 4) ? 1 : 0;
+  int sublevel = (level > 4) ? 1 : 0;
 
   S << "IGESDimen_FlagNote\n"
     << "LowerLeftCorner : ";

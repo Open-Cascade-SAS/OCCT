@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_Hctxee2d, Standard_Transient)
   #include <GeomTools_CurveSet.hxx>
   #include <GeomTools_Curve2dSet.hxx>
   #include <Geom_Curve.hxx>
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettracePROEDG();
+Standard_EXPORT bool TopOpeBRep_GettracePROEDG();
 #endif
 
 //=================================================================================================
@@ -56,10 +56,10 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge&         E1,
   myEdge1 = TopoDS::Edge(E1);
   myEdge2 = TopoDS::Edge(E2);
 
-  Standard_Real first, last, tole, tolpc;
-  gp_Pnt2d      pfirst, plast;
+  double   first, last, tole, tolpc;
+  gp_Pnt2d pfirst, plast;
 
-  Handle(Geom2d_Curve) PC1;
+  occ::handle<Geom2d_Curve> PC1;
   PC1 = FC2D_CurveOnSurface(myEdge1, F1, first, last, tolpc);
   if (PC1.IsNull())
     throw Standard_Failure("TopOpeBRep_Hctxee2d::SetEdges : no 2d curve");
@@ -69,7 +69,7 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge&         E1,
   myDomain1.SetValues(pfirst, first, tole, plast, last, tole);
 
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = Standard_False;
+  bool trc = false;
   if (trc)
   {
     std::cout << "ed1 on fa1 : {pfirst=(" << pfirst.X() << " " << pfirst.Y() << "),first=" << first
@@ -79,17 +79,17 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge&         E1,
   }
 #endif
 
-  Standard_Boolean           memesfaces  = F1.IsSame(F2);
-  Standard_Boolean           memesupport = Standard_False;
-  TopLoc_Location            L1, L2;
-  const Handle(Geom_Surface) S1 = BRep_Tool::Surface(F1, L1);
-  const Handle(Geom_Surface) S2 = BRep_Tool::Surface(F2, L2);
+  bool                            memesfaces  = F1.IsSame(F2);
+  bool                            memesupport = false;
+  TopLoc_Location                 L1, L2;
+  const occ::handle<Geom_Surface> S1 = BRep_Tool::Surface(F1, L1);
+  const occ::handle<Geom_Surface> S2 = BRep_Tool::Surface(F2, L2);
   if (S1 == S2 && L1 == L2)
-    memesupport = Standard_True;
+    memesupport = true;
 
   if (ST1 == GeomAbs_Plane || memesfaces || memesupport)
   {
-    Handle(Geom2d_Curve) PC2 = FC2D_CurveOnSurface(myEdge2, F1, first, last, tolpc);
+    occ::handle<Geom2d_Curve> PC2 = FC2D_CurveOnSurface(myEdge2, F1, first, last, tolpc);
     myCurve2.Load(PC2);
     BRep_Tool::UVPoints(myEdge2, F1, pfirst, plast);
     tole = BRep_Tool::Tolerance(myEdge2);
@@ -108,38 +108,41 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge&         E1,
   else
   {
 
-    Handle(Geom2d_Curve) PC2on1;
-    Handle(Geom_Curve)   NC;
-    Standard_Boolean     dgE2 = BRep_Tool::Degenerated(myEdge2);
+    occ::handle<Geom2d_Curve> PC2on1;
+    occ::handle<Geom_Curve>   NC;
+    bool                      dgE2 = BRep_Tool::Degenerated(myEdge2);
     if (dgE2)
     { // xpu210998 : cto900Q3
       TopExp_Explorer      exv(myEdge2, TopAbs_VERTEX);
       const TopoDS_Vertex& v2  = TopoDS::Vertex(exv.Current());
       gp_Pnt               pt2 = BRep_Tool::Pnt(v2);
       gp_Pnt2d             uv2;
-      Standard_Real        d;
-      Standard_Boolean     ok = FUN_tool_projPonF(pt2, F1, uv2, d);
+      double               d;
+      bool                 ok = FUN_tool_projPonF(pt2, F1, uv2, d);
       if (!ok)
         return; // nyiRaise
-      Handle(Geom_Surface) aS1  = BRep_Tool::Surface(F1);
-      Standard_Boolean     apex = FUN_tool_onapex(uv2, aS1);
+      occ::handle<Geom_Surface> aS1  = BRep_Tool::Surface(F1);
+      bool                      apex = FUN_tool_onapex(uv2, aS1);
       if (apex)
       {
         TopoDS_Vertex vf, vl;
         TopExp::Vertices(myEdge1, vf, vl);
-        gp_Pnt                                    ptf  = BRep_Tool::Pnt(vf);
-        Standard_Real                             df   = pt2.Distance(ptf);
-        Standard_Real                             tolf = BRep_Tool::Tolerance(vf);
-        Standard_Boolean                          onf  = (df < tolf);
-        TopoDS_Vertex                             v1   = onf ? vf : vl;
-        TopTools_IndexedDataMapOfShapeListOfShape mapVE;
+        gp_Pnt        ptf  = BRep_Tool::Pnt(vf);
+        double        df   = pt2.Distance(ptf);
+        double        tolf = BRep_Tool::Tolerance(vf);
+        bool          onf  = (df < tolf);
+        TopoDS_Vertex v1   = onf ? vf : vl;
+        NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>
+          mapVE;
         TopExp::MapShapesAndAncestors(F1, TopAbs_VERTEX, TopAbs_EDGE, mapVE);
-        const TopTools_ListOfShape&        Edsanc = mapVE.FindFromKey(v1);
-        TopTools_ListIteratorOfListOfShape it(Edsanc);
+        const NCollection_List<TopoDS_Shape>&    Edsanc = mapVE.FindFromKey(v1);
+        NCollection_List<TopoDS_Shape>::Iterator it(Edsanc);
         for (; it.More(); it.Next())
         {
           const TopoDS_Edge& ee   = TopoDS::Edge(it.Value());
-          Standard_Boolean   dgee = BRep_Tool::Degenerated(ee);
+          bool               dgee = BRep_Tool::Degenerated(ee);
           if (!dgee)
             continue;
           PC2on1 = BRep_Tool::CurveOnSurface(ee, F1, first, last);
@@ -152,10 +155,10 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge&         E1,
     else
     {
       // project curve of edge 2 on surface of face 1
-      TopLoc_Location    loc;
-      Handle(Geom_Curve) C = BRep_Tool::Curve(myEdge2, loc, first, last);
-      NC                   = Handle(Geom_Curve)::DownCast(C->Transformed(loc.Transformation()));
-      Standard_Real tolreached2d;
+      TopLoc_Location         loc;
+      occ::handle<Geom_Curve> C = BRep_Tool::Curve(myEdge2, loc, first, last);
+      NC                        = occ::down_cast<Geom_Curve>(C->Transformed(loc.Transformation()));
+      double tolreached2d;
       PC2on1 = TopOpeBRepTool_CurveTool::MakePCurveOnFace(F1, NC, tolreached2d);
     }
 
@@ -174,7 +177,7 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge&         E1,
         GeomTools_CurveSet::PrintCurve(NC, std::cout);
         std::cout << "--- nouvelle PCurve : " << std::endl;
         GeomTools_Curve2dSet::PrintCurve2d(PC2on1, std::cout);
-        Handle(Geom_Surface) aS1 = BRep_Tool::Surface(F1);
+        occ::handle<Geom_Surface> aS1 = BRep_Tool::Surface(F1);
         std::cout << "--- sur surface : " << std::endl;
         GeomTools_SurfaceSet::PrintSurface(aS1, std::cout);
         std::cout << std::endl;
@@ -187,7 +190,7 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge&         E1,
 
 //=================================================================================================
 
-const TopoDS_Shape& TopOpeBRep_Hctxee2d::Edge(const Standard_Integer Index) const
+const TopoDS_Shape& TopOpeBRep_Hctxee2d::Edge(const int Index) const
 {
   if (Index == 1)
     return myEdge1;
@@ -199,7 +202,7 @@ const TopoDS_Shape& TopOpeBRep_Hctxee2d::Edge(const Standard_Integer Index) cons
 
 //=================================================================================================
 
-const Geom2dAdaptor_Curve& TopOpeBRep_Hctxee2d::Curve(const Standard_Integer Index) const
+const Geom2dAdaptor_Curve& TopOpeBRep_Hctxee2d::Curve(const int Index) const
 {
   if (Index == 1)
     return myCurve1;
@@ -211,7 +214,7 @@ const Geom2dAdaptor_Curve& TopOpeBRep_Hctxee2d::Curve(const Standard_Integer Ind
 
 //=================================================================================================
 
-const IntRes2d_Domain& TopOpeBRep_Hctxee2d::Domain(const Standard_Integer Index) const
+const IntRes2d_Domain& TopOpeBRep_Hctxee2d::Domain(const int Index) const
 {
   if (Index == 1)
     return myDomain1;

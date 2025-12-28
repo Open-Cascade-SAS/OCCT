@@ -21,16 +21,16 @@ IntTools_CurveRangeSample::IntTools_CurveRangeSample()
   myIndex = 0;
 }
 
-IntTools_CurveRangeSample::IntTools_CurveRangeSample(const Standard_Integer theIndex)
+IntTools_CurveRangeSample::IntTools_CurveRangeSample(const int theIndex)
 {
   myIndex = theIndex;
 }
 
-IntTools_Range IntTools_CurveRangeSample::GetRange(const Standard_Real    theFirst,
-                                                   const Standard_Real    theLast,
-                                                   const Standard_Integer theNbSample) const
+IntTools_Range IntTools_CurveRangeSample::GetRange(const double theFirst,
+                                                   const double theLast,
+                                                   const int    theNbSample) const
 {
-  Standard_Real  diffC = theLast - theFirst;
+  double         diffC = theLast - theFirst;
   IntTools_Range aResult;
 
   if (GetDepth() <= 0)
@@ -40,10 +40,10 @@ IntTools_Range IntTools_CurveRangeSample::GetRange(const Standard_Real    theFir
   }
   else
   {
-    Standard_Real tmp        = pow(Standard_Real(theNbSample), Standard_Real(GetDepth()));
-    Standard_Real localdiffC = diffC / Standard_Real(tmp);
-    Standard_Real aFirstC    = theFirst + Standard_Real(myIndex) * localdiffC;
-    Standard_Real aLastC     = aFirstC + localdiffC;
+    double tmp        = pow(double(theNbSample), double(GetDepth()));
+    double localdiffC = diffC / double(tmp);
+    double aFirstC    = theFirst + double(myIndex) * localdiffC;
+    double aLastC     = aFirstC + localdiffC;
     aResult.SetFirst(aFirstC);
     aResult.SetLast(aLastC);
   }

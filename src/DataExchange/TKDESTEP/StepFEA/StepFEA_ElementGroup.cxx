@@ -27,10 +27,11 @@ StepFEA_ElementGroup::StepFEA_ElementGroup() {}
 
 //=================================================================================================
 
-void StepFEA_ElementGroup::Init(const Handle(TCollection_HAsciiString)& aGroup_Name,
-                                const Handle(TCollection_HAsciiString)& aGroup_Description,
-                                const Handle(StepFEA_FeaModel)&         aFeaGroup_ModelRef,
-                                const Handle(StepFEA_HArray1OfElementRepresentation)& aElements)
+void StepFEA_ElementGroup::Init(
+  const occ::handle<TCollection_HAsciiString>& aGroup_Name,
+  const occ::handle<TCollection_HAsciiString>& aGroup_Description,
+  const occ::handle<StepFEA_FeaModel>&         aFeaGroup_ModelRef,
+  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>>& aElements)
 {
   StepFEA_FeaGroup::Init(aGroup_Name, aGroup_Description, aFeaGroup_ModelRef);
 
@@ -39,7 +40,8 @@ void StepFEA_ElementGroup::Init(const Handle(TCollection_HAsciiString)& aGroup_N
 
 //=================================================================================================
 
-Handle(StepFEA_HArray1OfElementRepresentation) StepFEA_ElementGroup::Elements() const
+occ::handle<NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>> StepFEA_ElementGroup::
+  Elements() const
 {
   return theElements;
 }
@@ -47,7 +49,7 @@ Handle(StepFEA_HArray1OfElementRepresentation) StepFEA_ElementGroup::Elements() 
 //=================================================================================================
 
 void StepFEA_ElementGroup::SetElements(
-  const Handle(StepFEA_HArray1OfElementRepresentation)& aElements)
+  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_ElementRepresentation>>>& aElements)
 {
   theElements = aElements;
 }

@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Trsf.hxx>
-#include <HLRBRep_ListOfBPoint.hxx>
+#include <HLRBRep_BiPoint.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
 class Draw_Display;
@@ -51,37 +52,37 @@ public:
   //! TProj the projection
   //! Focal <= 0 means parallel projection
   //! Alg : the hidden lines
-  Standard_EXPORT void Set(const Standard_Integer ViewId,
-                           const gp_Trsf&         TProj,
-                           const Standard_Real    Focal,
-                           const TopoDS_Shape&    S,
-                           const Standard_Real    ang);
+  Standard_EXPORT void Set(const int           ViewId,
+                           const gp_Trsf&      TProj,
+                           const double        Focal,
+                           const TopoDS_Shape& S,
+                           const double        ang);
 
-  Standard_Integer ViewId() const { return myView; }
+  int ViewId() const { return myView; }
 
-  Standard_Real Angle() const { return myAngle; }
+  double Angle() const { return myAngle; }
 
   //! Returns True if the projection is the same
-  Standard_EXPORT Standard_Boolean IsSame(const gp_Trsf& TProj, const Standard_Real Focla) const;
+  Standard_EXPORT bool IsSame(const gp_Trsf& TProj, const double Focla) const;
 
-  Standard_EXPORT void DrawOn(Draw_Display&          D,
-                              const Standard_Boolean withRg1,
-                              const Standard_Boolean withRgN,
-                              const Standard_Boolean withHid,
-                              const Draw_Color&      VisCol,
-                              const Draw_Color&      HidCol);
+  Standard_EXPORT void DrawOn(Draw_Display&     D,
+                              const bool        withRg1,
+                              const bool        withRgN,
+                              const bool        withHid,
+                              const Draw_Color& VisCol,
+                              const Draw_Color& HidCol);
 
   //! Returns the subshape touched by the last pick.
   Standard_EXPORT const TopoDS_Shape& LastPick() const;
 
 private:
-  Standard_Integer     myView;
-  gp_Trsf              myTrsf;
-  Standard_Real        myFocal;
-  HLRBRep_ListOfBPoint myBiPntVis;
-  HLRBRep_ListOfBPoint myBiPntHid;
-  TopoDS_Shape         myPickShap;
-  Standard_Real        myAngle;
+  int                               myView;
+  gp_Trsf                           myTrsf;
+  double                            myFocal;
+  NCollection_List<HLRBRep_BiPoint> myBiPntVis;
+  NCollection_List<HLRBRep_BiPoint> myBiPntHid;
+  TopoDS_Shape                      myPickShap;
+  double                            myAngle;
 };
 
 #endif // _DBRep_HideData_HeaderFile

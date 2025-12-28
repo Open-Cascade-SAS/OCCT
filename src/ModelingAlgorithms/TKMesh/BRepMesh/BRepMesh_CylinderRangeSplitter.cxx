@@ -25,8 +25,8 @@ void BRepMesh_CylinderRangeSplitter::Reset(const IMeshData::IFaceHandle& theDFac
 {
   BRepMesh_DefaultRangeSplitter::Reset(theDFace, theParameters);
 
-  const Standard_Real aRadius = GetDFace()->GetSurface()->Cylinder().Radius();
-  myDu                        = GCPnts_TangentialDeflection::ArcAngularStep(aRadius,
+  const double aRadius = GetDFace()->GetSurface()->Cylinder().Radius();
+  myDu                 = GCPnts_TangentialDeflection::ArcAngularStep(aRadius,
                                                      GetDFace()->GetDeflection(),
                                                      theParameters.Angle,
                                                      theParameters.MinSize);
@@ -37,44 +37,44 @@ void BRepMesh_CylinderRangeSplitter::Reset(const IMeshData::IFaceHandle& theDFac
 Handle(IMeshData::ListOfPnt2d) BRepMesh_CylinderRangeSplitter::GenerateSurfaceNodes(
   const IMeshTools_Parameters& /*theParameters*/) const
 {
-  const std::pair<Standard_Real, Standard_Real>& aRangeU = GetRangeU();
-  const std::pair<Standard_Real, Standard_Real>& aRangeV = GetRangeV();
+  const std::pair<double, double>& aRangeU = GetRangeU();
+  const std::pair<double, double>& aRangeV = GetRangeV();
 
-  const Standard_Real aRadius = GetDFace()->GetSurface()->Cylinder().Radius();
+  const double aRadius = GetDFace()->GetSurface()->Cylinder().Radius();
 
-  Standard_Integer    nbU     = 0;
-  Standard_Integer    nbV     = 0;
-  const Standard_Real su      = aRangeU.second - aRangeU.first;
-  const Standard_Real sv      = aRangeV.second - aRangeV.first;
-  const Standard_Real aArcLen = su * aRadius;
+  int          nbU     = 0;
+  int          nbV     = 0;
+  const double su      = aRangeU.second - aRangeU.first;
+  const double sv      = aRangeV.second - aRangeV.first;
+  const double aArcLen = su * aRadius;
   if (aArcLen > GetDFace()->GetDeflection())
   {
     // Calculate parameters for iteration in U direction
-    nbU = (Standard_Integer)(su / myDu);
+    nbU = (int)(su / myDu);
 
     /*
     // Calculate parameters for iteration in V direction
-    const Standard_Real aDv = nbU*sv / aArcLen;
+    const double aDv = nbU*sv / aArcLen;
     // Protection against overflow during casting to int in case
     // of long cylinder with small radius.
-    nbV = aDv > static_cast<Standard_Real> (IntegerLast()) ?
-      0 : (Standard_Integer) (aDv);
+    nbV = aDv > static_cast<double> (IntegerLast()) ?
+      0 : (int) (aDv);
     nbV = std::min(nbV, 100 * nbU);
     */
   }
 
-  const Standard_Real Du = su / (nbU + 1);
-  const Standard_Real Dv = sv / (nbV + 1);
+  const double Du = su / (nbU + 1);
+  const double Dv = sv / (nbV + 1);
 
-  const Handle(NCollection_IncAllocator) aTmpAlloc =
+  const occ::handle<NCollection_IncAllocator> aTmpAlloc =
     new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
   Handle(IMeshData::ListOfPnt2d) aNodes = new IMeshData::ListOfPnt2d(aTmpAlloc);
 
-  const Standard_Real aPasMaxV = aRangeV.second - Dv * 0.5;
-  const Standard_Real aPasMaxU = aRangeU.second - Du * 0.5;
-  for (Standard_Real aPasV = aRangeV.first + Dv; aPasV < aPasMaxV; aPasV += Dv)
+  const double aPasMaxV = aRangeV.second - Dv * 0.5;
+  const double aPasMaxU = aRangeU.second - Du * 0.5;
+  for (double aPasV = aRangeV.first + Dv; aPasV < aPasMaxV; aPasV += Dv)
   {
-    for (Standard_Real aPasU = aRangeU.first + Du; aPasU < aPasMaxU; aPasU += Du)
+    for (double aPasU = aRangeU.first + Du; aPasU < aPasMaxU; aPasU += Du)
     {
       aNodes->Append(gp_Pnt2d(aPasU, aPasV));
     }
@@ -85,8 +85,8 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_CylinderRangeSplitter::GenerateSurfaceNo
 
 //=================================================================================================
 
-void BRepMesh_CylinderRangeSplitter::computeDelta(const Standard_Real /*theLengthU*/,
-                                                  const Standard_Real theLengthV)
+void BRepMesh_CylinderRangeSplitter::computeDelta(const double /*theLengthU*/,
+                                                  const double theLengthV)
 {
   const std::pair<double, double>& aRangeV = GetRangeV();
   myDelta.first  = myDu / std::max(theLengthV, aRangeV.second - aRangeV.first);

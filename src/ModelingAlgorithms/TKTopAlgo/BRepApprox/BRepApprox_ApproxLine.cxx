@@ -26,9 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepApprox_ApproxLine, Standard_Transient)
 
 //=================================================================================================
 
-BRepApprox_ApproxLine::BRepApprox_ApproxLine(const Handle(Geom_BSplineCurve)&   CurveXYZ,
-                                             const Handle(Geom2d_BSplineCurve)& CurveUV1,
-                                             const Handle(Geom2d_BSplineCurve)& CurveUV2)
+BRepApprox_ApproxLine::BRepApprox_ApproxLine(const occ::handle<Geom_BSplineCurve>&   CurveXYZ,
+                                             const occ::handle<Geom2d_BSplineCurve>& CurveUV1,
+                                             const occ::handle<Geom2d_BSplineCurve>& CurveUV2)
 {
   myCurveXYZ = CurveXYZ;
   myCurveUV1 = CurveUV1;
@@ -37,15 +37,14 @@ BRepApprox_ApproxLine::BRepApprox_ApproxLine(const Handle(Geom_BSplineCurve)&   
 
 //=================================================================================================
 
-BRepApprox_ApproxLine::BRepApprox_ApproxLine(const Handle(IntSurf_LineOn2S)& lin,
-                                             const Standard_Boolean)
+BRepApprox_ApproxLine::BRepApprox_ApproxLine(const occ::handle<IntSurf_LineOn2S>& lin, const bool)
     : myLineOn2S(lin)
 {
 }
 
 //=================================================================================================
 
-Standard_Integer BRepApprox_ApproxLine::NbPnts() const
+int BRepApprox_ApproxLine::NbPnts() const
 {
   if (!myCurveXYZ.IsNull())
     return (myCurveXYZ->NbPoles());
@@ -58,7 +57,7 @@ Standard_Integer BRepApprox_ApproxLine::NbPnts() const
 
 //=================================================================================================
 
-IntSurf_PntOn2S BRepApprox_ApproxLine::Point(const Standard_Integer Index)
+IntSurf_PntOn2S BRepApprox_ApproxLine::Point(const int Index)
 {
   if (!myLineOn2S.IsNull())
   {

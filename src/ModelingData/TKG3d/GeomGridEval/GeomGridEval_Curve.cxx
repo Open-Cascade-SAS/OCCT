@@ -30,10 +30,10 @@ namespace
 //! Extracts basis curve from potentially nested TrimmedCurve wrappers.
 //! @param theCurve input curve (may be TrimmedCurve or any other)
 //! @return the underlying basis curve, or theCurve if not a TrimmedCurve
-Handle(Geom_Curve) ExtractBasisCurve(const Handle(Geom_Curve)& theCurve)
+occ::handle<Geom_Curve> ExtractBasisCurve(const occ::handle<Geom_Curve>& theCurve)
 {
-  Handle(Geom_Curve) aResult = theCurve;
-  while (auto aTrimmed = Handle(Geom_TrimmedCurve)::DownCast(aResult))
+  occ::handle<Geom_Curve> aResult = theCurve;
+  while (auto aTrimmed = occ::down_cast<Geom_TrimmedCurve>(aResult))
   {
     aResult = aTrimmed->BasisCurve();
   }
@@ -60,7 +60,7 @@ void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
 
 //==================================================================================================
 
-void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
+void GeomGridEval_Curve::Initialize(const occ::handle<Geom_Curve>& theCurve)
 {
   if (theCurve.IsNull())
   {
@@ -70,44 +70,44 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
   }
 
   // Extract basis curve from potentially nested TrimmedCurve wrappers
-  Handle(Geom_Curve) aBasisCurve = ExtractBasisCurve(theCurve);
+  occ::handle<Geom_Curve> aBasisCurve = ExtractBasisCurve(theCurve);
 
-  if (auto aLine = Handle(Geom_Line)::DownCast(aBasisCurve))
+  if (auto aLine = occ::down_cast<Geom_Line>(aBasisCurve))
   {
     myCurveType = GeomAbs_Line;
     myEvaluator.emplace<GeomGridEval_Line>(aLine);
   }
-  else if (auto aCircle = Handle(Geom_Circle)::DownCast(aBasisCurve))
+  else if (auto aCircle = occ::down_cast<Geom_Circle>(aBasisCurve))
   {
     myCurveType = GeomAbs_Circle;
     myEvaluator.emplace<GeomGridEval_Circle>(aCircle);
   }
-  else if (auto anEllipse = Handle(Geom_Ellipse)::DownCast(aBasisCurve))
+  else if (auto anEllipse = occ::down_cast<Geom_Ellipse>(aBasisCurve))
   {
     myCurveType = GeomAbs_Ellipse;
     myEvaluator.emplace<GeomGridEval_Ellipse>(anEllipse);
   }
-  else if (auto aHyperbola = Handle(Geom_Hyperbola)::DownCast(aBasisCurve))
+  else if (auto aHyperbola = occ::down_cast<Geom_Hyperbola>(aBasisCurve))
   {
     myCurveType = GeomAbs_Hyperbola;
     myEvaluator.emplace<GeomGridEval_Hyperbola>(aHyperbola);
   }
-  else if (auto aParabola = Handle(Geom_Parabola)::DownCast(aBasisCurve))
+  else if (auto aParabola = occ::down_cast<Geom_Parabola>(aBasisCurve))
   {
     myCurveType = GeomAbs_Parabola;
     myEvaluator.emplace<GeomGridEval_Parabola>(aParabola);
   }
-  else if (auto aBezier = Handle(Geom_BezierCurve)::DownCast(aBasisCurve))
+  else if (auto aBezier = occ::down_cast<Geom_BezierCurve>(aBasisCurve))
   {
     myCurveType = GeomAbs_BezierCurve;
     myEvaluator.emplace<GeomGridEval_BezierCurve>(aBezier);
   }
-  else if (auto aBSpline = Handle(Geom_BSplineCurve)::DownCast(aBasisCurve))
+  else if (auto aBSpline = occ::down_cast<Geom_BSplineCurve>(aBasisCurve))
   {
     myCurveType = GeomAbs_BSplineCurve;
     myEvaluator.emplace<GeomGridEval_BSplineCurve>(aBSpline);
   }
-  else if (auto anOffset = Handle(Geom_OffsetCurve)::DownCast(aBasisCurve))
+  else if (auto anOffset = occ::down_cast<Geom_OffsetCurve>(aBasisCurve))
   {
     myCurveType = GeomAbs_OffsetCurve;
     myEvaluator.emplace<GeomGridEval_OffsetCurve>(anOffset);
@@ -131,7 +131,7 @@ bool GeomGridEval_Curve::IsInitialized() const
 //==================================================================================================
 
 NCollection_Array1<gp_Pnt> GeomGridEval_Curve::EvaluateGrid(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   return std::visit(
     [&theParams](const auto& theEval) -> NCollection_Array1<gp_Pnt> {
@@ -151,7 +151,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Curve::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Curve::EvaluateGridD1(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   return std::visit(
     [&theParams](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD1> {
@@ -171,7 +171,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Curve::EvaluateGridD1(
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Curve::EvaluateGridD2(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   return std::visit(
     [&theParams](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD2> {
@@ -191,7 +191,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Curve::EvaluateGridD2(
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Curve::EvaluateGridD3(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   return std::visit(
     [&theParams](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD3> {
@@ -210,8 +210,9 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Curve::EvaluateGridD3(
 
 //==================================================================================================
 
-NCollection_Array1<gp_Vec> GeomGridEval_Curve::EvaluateGridDN(const TColStd_Array1OfReal& theParams,
-                                                              int theN) const
+NCollection_Array1<gp_Vec> GeomGridEval_Curve::EvaluateGridDN(
+  const NCollection_Array1<double>& theParams,
+  int                               theN) const
 {
   return std::visit(
     [&theParams, theN](const auto& theEval) -> NCollection_Array1<gp_Vec> {

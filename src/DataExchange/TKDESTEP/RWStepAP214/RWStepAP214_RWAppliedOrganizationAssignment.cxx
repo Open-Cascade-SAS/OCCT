@@ -15,8 +15,9 @@
 #include <Interface_EntityIterator.hxx>
 #include "RWStepAP214_RWAppliedOrganizationAssignment.pxx"
 #include <StepAP214_AppliedOrganizationAssignment.hxx>
-#include <StepAP214_HArray1OfOrganizationItem.hxx>
 #include <StepAP214_OrganizationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_OrganizationRole.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -25,10 +26,10 @@
 RWStepAP214_RWAppliedOrganizationAssignment::RWStepAP214_RWAppliedOrganizationAssignment() {}
 
 void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepAP214_AppliedOrganizationAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                                   num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepAP214_AppliedOrganizationAssignment>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -38,7 +39,7 @@ void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
 
   // --- inherited field : assignedOrganization ---
 
-  Handle(StepBasic_Organization) aAssignedOrganization;
+  occ::handle<StepBasic_Organization> aAssignedOrganization;
   data->ReadEntity(num,
                    1,
                    "assigned_organization",
@@ -48,21 +49,21 @@ void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
 
   // --- inherited field : role ---
 
-  Handle(StepBasic_OrganizationRole) aRole;
+  occ::handle<StepBasic_OrganizationRole> aRole;
   data->ReadEntity(num, 2, "role", ach, STANDARD_TYPE(StepBasic_OrganizationRole), aRole);
 
   // --- own field : items ---
 
-  Handle(StepAP214_HArray1OfOrganizationItem) aItems;
-  StepAP214_OrganizationItem                  aItemsItem;
-  Standard_Integer                            nsub3;
+  occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>> aItems;
+  StepAP214_OrganizationItem                                   aItemsItem;
+  int                                                          nsub3;
   if (data->ReadSubList(num, 3, "items", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aItems               = new StepAP214_HArray1OfOrganizationItem(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aItems  = new NCollection_HArray1<StepAP214_OrganizationItem>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      Standard_Boolean stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
+      bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
       if (stat3)
         aItems->SetValue(i3, aItemsItem);
     }
@@ -74,8 +75,8 @@ void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAppliedOrganizationAssignment::WriteStep(
-  StepData_StepWriter&                                   SW,
-  const Handle(StepAP214_AppliedOrganizationAssignment)& ent) const
+  StepData_StepWriter&                                        SW,
+  const occ::handle<StepAP214_AppliedOrganizationAssignment>& ent) const
 {
 
   // --- inherited field assignedOrganization ---
@@ -89,7 +90,7 @@ void RWStepAP214_RWAppliedOrganizationAssignment::WriteStep(
   // --- own field : items ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbItems(); i3++)
+  for (int i3 = 1; i3 <= ent->NbItems(); i3++)
   {
     SW.Send(ent->ItemsValue(i3).Value());
   }
@@ -97,14 +98,14 @@ void RWStepAP214_RWAppliedOrganizationAssignment::WriteStep(
 }
 
 void RWStepAP214_RWAppliedOrganizationAssignment::Share(
-  const Handle(StepAP214_AppliedOrganizationAssignment)& ent,
-  Interface_EntityIterator&                              iter) const
+  const occ::handle<StepAP214_AppliedOrganizationAssignment>& ent,
+  Interface_EntityIterator&                                   iter) const
 {
 
   iter.GetOneItem(ent->AssignedOrganization());
   iter.GetOneItem(ent->Role());
-  Standard_Integer nbElem3 = ent->NbItems();
-  for (Standard_Integer is3 = 1; is3 <= nbElem3; is3++)
+  int nbElem3 = ent->NbItems();
+  for (int is3 = 1; is3 <= nbElem3; is3++)
   {
     iter.GetOneItem(ent->ItemsValue(is3).Value());
   }

@@ -66,7 +66,7 @@ public:
    * @param aIncrement
    *   size of memory (in terms of Items) to expand the array
    */
-  IntPolyh_Array(const Standard_Integer aIncrement = 256)
+  IntPolyh_Array(const int aIncrement = 256)
   {
     myNbAllocated = 0;
     myNbItems     = 0;
@@ -80,7 +80,7 @@ public:
    * @param aIncrement
    *   size of memory (in terms of Items) to expand the array
    */
-  IntPolyh_Array(const Standard_Integer aN, const Standard_Integer aIncrement = 256)
+  IntPolyh_Array(const int aN, const int aIncrement = 256)
   {
     myNbItems   = 0;
     myIncrement = aIncrement;
@@ -118,7 +118,7 @@ public:
    * @param
    *   aN - the number of items to allocate the memory
    */
-  void Init(const Standard_Integer aN)
+  void Init(const int aN)
   {
     Type aSL;
     //
@@ -134,7 +134,7 @@ public:
     myNbItems++;
     if (myNbItems >= myNbAllocated)
     {
-      Standard_Integer aN;
+      int aN;
       //
       aN = myNbAllocated + myIncrement;
       Init(aN);
@@ -146,21 +146,21 @@ public:
    * @return
    *   the number of 'allocated' items
    */
-  Standard_Integer GetN() const { return myNbAllocated; }
+  int GetN() const { return myNbAllocated; }
 
   /**
    * NbItems - returns the number of stored items
    * @return
    *   the number of stored items
    */
-  Standard_Integer NbItems() const { return myNbItems; }
+  int NbItems() const { return myNbItems; }
 
   /**
    * set the number of stored items
    * @param aNb
    *   the number of stored items
    */
-  void SetNbItems(const Standard_Integer aNb) { myNbItems = aNb; }
+  void SetNbItems(const int aNb) { myNbItems = aNb; }
 
   /**
    * query the const value
@@ -169,7 +169,7 @@ public:
    * @return
    *   the const item
    */
-  const Type& Value(const Standard_Integer aIndex) const { return myVectorOfType.Value(aIndex); }
+  const Type& Value(const int aIndex) const { return myVectorOfType.Value(aIndex); }
 
   /**
    * query the const value
@@ -178,7 +178,7 @@ public:
    * @return
    *   the const item
    */
-  const Type& operator[](const Standard_Integer aIndex) const { return Value(aIndex); }
+  const Type& operator[](const int aIndex) const { return Value(aIndex); }
 
   /**
    * query the value
@@ -187,7 +187,7 @@ public:
    * @return
    *   the item
    */
-  Type& ChangeValue(const Standard_Integer aIndex) { return myVectorOfType.ChangeValue(aIndex); }
+  Type& ChangeValue(const int aIndex) { return myVectorOfType.ChangeValue(aIndex); }
 
   /**
    * query the value
@@ -196,7 +196,7 @@ public:
    * @return
    *   the item
    */
-  Type& operator[](const Standard_Integer aIndex) { return ChangeValue(aIndex); }
+  Type& operator[](const int aIndex) { return ChangeValue(aIndex); }
 
   /**
    * dump the contents
@@ -204,7 +204,7 @@ public:
   void Dump() const
   {
     printf("\n ArrayOfSectionLines 0-> %d", myNbItems - 1);
-    for (Standard_Integer i = 0; i < myNbItems; i++)
+    for (int i = 0; i < myNbItems; i++)
     {
       (*this)[i].Dump();
     }
@@ -212,9 +212,9 @@ public:
   }
 
 protected:
-  Standard_Integer      myNbAllocated;
-  Standard_Integer      myNbItems;
-  Standard_Integer      myIncrement;
+  int                   myNbAllocated;
+  int                   myNbItems;
+  int                   myIncrement;
   IntPolyh_VectorOfType myVectorOfType;
 };
 

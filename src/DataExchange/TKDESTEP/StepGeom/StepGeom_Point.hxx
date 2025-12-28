@@ -22,9 +22,6 @@
 
 #include <StepGeom_GeometricRepresentationItem.hxx>
 
-class StepGeom_Point;
-DEFINE_STANDARD_HANDLE(StepGeom_Point, StepGeom_GeometricRepresentationItem)
-
 class StepGeom_Point : public StepGeom_GeometricRepresentationItem
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepGeom_Point();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Point, StepGeom_GeometricRepresentationItem)
-
-protected:
-private:
 };
 
 #endif // _StepGeom_Point_HeaderFile

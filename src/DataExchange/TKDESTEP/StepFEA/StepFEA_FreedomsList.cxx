@@ -25,7 +25,8 @@ StepFEA_FreedomsList::StepFEA_FreedomsList() {}
 
 //=================================================================================================
 
-void StepFEA_FreedomsList::Init(const Handle(StepFEA_HArray1OfDegreeOfFreedom)& aFreedoms)
+void StepFEA_FreedomsList::Init(
+  const occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>>& aFreedoms)
 {
 
   theFreedoms = aFreedoms;
@@ -33,14 +34,15 @@ void StepFEA_FreedomsList::Init(const Handle(StepFEA_HArray1OfDegreeOfFreedom)& 
 
 //=================================================================================================
 
-Handle(StepFEA_HArray1OfDegreeOfFreedom) StepFEA_FreedomsList::Freedoms() const
+occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>> StepFEA_FreedomsList::Freedoms() const
 {
   return theFreedoms;
 }
 
 //=================================================================================================
 
-void StepFEA_FreedomsList::SetFreedoms(const Handle(StepFEA_HArray1OfDegreeOfFreedom)& aFreedoms)
+void StepFEA_FreedomsList::SetFreedoms(
+  const occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>>& aFreedoms)
 {
   theFreedoms = aFreedoms;
 }

@@ -21,17 +21,17 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-Standard_Real BRepGProp_EdgeTool::FirstParameter(const BRepAdaptor_Curve& C)
+double BRepGProp_EdgeTool::FirstParameter(const BRepAdaptor_Curve& C)
 {
   return C.FirstParameter();
 }
 
-Standard_Real BRepGProp_EdgeTool::LastParameter(const BRepAdaptor_Curve& C)
+double BRepGProp_EdgeTool::LastParameter(const BRepAdaptor_Curve& C)
 {
   return C.LastParameter();
 }
 
-Standard_Integer BRepGProp_EdgeTool::IntegrationOrder(const BRepAdaptor_Curve& BAC)
+int BRepGProp_EdgeTool::IntegrationOrder(const BRepAdaptor_Curve& BAC)
 {
   switch (BAC.GetType())
   {
@@ -43,18 +43,18 @@ Standard_Integer BRepGProp_EdgeTool::IntegrationOrder(const BRepAdaptor_Curve& B
       return 5;
 
     case GeomAbs_BezierCurve: {
-      const GeomAdaptor_Curve&  GAC = BAC.Curve();
-      const Handle(Geom_Curve)& GC  = GAC.Curve();
-      Handle(Geom_BezierCurve)  GBZC(Handle(Geom_BezierCurve)::DownCast(GC));
-      Standard_Integer          n = 2 * (GBZC->NbPoles()) - 1;
+      const GeomAdaptor_Curve&       GAC = BAC.Curve();
+      const occ::handle<Geom_Curve>& GC  = GAC.Curve();
+      occ::handle<Geom_BezierCurve>  GBZC(occ::down_cast<Geom_BezierCurve>(GC));
+      int                            n = 2 * (GBZC->NbPoles()) - 1;
       return n;
     }
     break;
     case GeomAbs_BSplineCurve: {
-      const GeomAdaptor_Curve&  GAC = BAC.Curve();
-      const Handle(Geom_Curve)& GC  = GAC.Curve();
-      Handle(Geom_BSplineCurve) GBSC(Handle(Geom_BSplineCurve)::DownCast(GC));
-      Standard_Integer          n = 2 * (GBSC->NbPoles()) - 1;
+      const GeomAdaptor_Curve&       GAC = BAC.Curve();
+      const occ::handle<Geom_Curve>& GC  = GAC.Curve();
+      occ::handle<Geom_BSplineCurve> GBSC(occ::down_cast<Geom_BSplineCurve>(GC));
+      int                            n = 2 * (GBSC->NbPoles()) - 1;
       return n;
     }
     break;
@@ -64,21 +64,18 @@ Standard_Integer BRepGProp_EdgeTool::IntegrationOrder(const BRepAdaptor_Curve& B
   }
 }
 
-gp_Pnt BRepGProp_EdgeTool::Value(const BRepAdaptor_Curve& C, const Standard_Real U)
+gp_Pnt BRepGProp_EdgeTool::Value(const BRepAdaptor_Curve& C, const double U)
 {
   return C.Value(U);
 }
 
-void BRepGProp_EdgeTool::D1(const BRepAdaptor_Curve& C,
-                            const Standard_Real      U,
-                            gp_Pnt&                  P,
-                            gp_Vec&                  V1)
+void BRepGProp_EdgeTool::D1(const BRepAdaptor_Curve& C, const double U, gp_Pnt& P, gp_Vec& V1)
 {
   C.D1(U, P, V1);
 }
 
 // modified by NIZHNY-MKK  Thu Jun  9 12:15:15 2005.BEGIN
-Standard_Integer BRepGProp_EdgeTool::NbIntervals(const BRepAdaptor_Curve& C, const GeomAbs_Shape S)
+int BRepGProp_EdgeTool::NbIntervals(const BRepAdaptor_Curve& C, const GeomAbs_Shape S)
 {
   // clang-format off
   BRepAdaptor_Curve* pC = (BRepAdaptor_Curve*) &C; // at the moment actually NbIntervals() does not modify the 
@@ -86,7 +83,7 @@ Standard_Integer BRepGProp_EdgeTool::NbIntervals(const BRepAdaptor_Curve& C, con
   return pC->NbIntervals(S);
 }
 
-void BRepGProp_EdgeTool::Intervals(const BRepAdaptor_Curve& C,TColStd_Array1OfReal& T,const GeomAbs_Shape S) 
+void BRepGProp_EdgeTool::Intervals(const BRepAdaptor_Curve& C,NCollection_Array1<double>& T,const GeomAbs_Shape S) 
 {
   BRepAdaptor_Curve* pC = (BRepAdaptor_Curve*) &C; // at the moment actually Intervals() does not modify the
                                                    // object "C". So it is safe to do such a cast.

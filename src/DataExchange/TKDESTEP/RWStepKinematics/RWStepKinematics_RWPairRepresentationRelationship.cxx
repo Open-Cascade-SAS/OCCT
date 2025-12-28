@@ -36,10 +36,10 @@ RWStepKinematics_RWPairRepresentationRelationship::
 //=================================================================================================
 
 void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&                       theData,
-  const Standard_Integer                                       theNum,
-  Handle(Interface_Check)&                                     theArch,
-  const Handle(StepKinematics_PairRepresentationRelationship)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                       theData,
+  const int                                                         theNum,
+  occ::handle<Interface_Check>&                                     theArch,
+  const occ::handle<StepKinematics_PairRepresentationRelationship>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 6, theArch, "pair_representation_relationship"))
@@ -47,20 +47,20 @@ void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of RepresentationRelationship
 
-  Handle(TCollection_HAsciiString) aRepresentationRelationship_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationRelationship_Name;
   theData->ReadString(theNum,
                       2,
                       "representation_relationship.name",
                       theArch,
                       aRepresentationRelationship_Name);
 
-  Handle(TCollection_HAsciiString) aRepresentationRelationship_Description;
-  Standard_Boolean                 hasRepresentationRelationship_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aRepresentationRelationship_Description;
+  bool                                  hasRepresentationRelationship_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -71,7 +71,7 @@ void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
   }
   else
   {
-    hasRepresentationRelationship_Description = Standard_False;
+    hasRepresentationRelationship_Description = false;
     aRepresentationRelationship_Description.Nullify();
   }
 
@@ -111,8 +111,8 @@ void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPairRepresentationRelationship::WriteStep(
-  StepData_StepWriter&                                         theSW,
-  const Handle(StepKinematics_PairRepresentationRelationship)& theEnt) const
+  StepData_StepWriter&                                              theSW,
+  const occ::handle<StepKinematics_PairRepresentationRelationship>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -141,8 +141,8 @@ void RWStepKinematics_RWPairRepresentationRelationship::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPairRepresentationRelationship::Share(
-  const Handle(StepKinematics_PairRepresentationRelationship)& theEnt,
-  Interface_EntityIterator&                                    iter) const
+  const occ::handle<StepKinematics_PairRepresentationRelationship>& theEnt,
+  Interface_EntityIterator&                                         iter) const
 {
 
   // Inherited fields of RepresentationItem

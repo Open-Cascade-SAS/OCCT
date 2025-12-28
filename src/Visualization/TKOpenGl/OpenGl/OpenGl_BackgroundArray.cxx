@@ -31,13 +31,13 @@ OpenGl_BackgroundArray::OpenGl_BackgroundArray(const Graphic3d_TypeOfBackground 
       myFillMethod(Aspect_FM_NONE),
       myViewWidth(0),
       myViewHeight(0),
-      myToUpdate(Standard_False)
+      myToUpdate(false)
 {
   myDrawMode   = GL_TRIANGLES;
   myIsFillType = true;
 
-  myGradientParams.color1 = OpenGl_Vec4(0.0f, 0.0f, 0.0f, 1.0f);
-  myGradientParams.color2 = OpenGl_Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  myGradientParams.color1 = NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 1.0f);
+  myGradientParams.color2 = NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 1.0f);
   myGradientParams.type   = Aspect_GradientFillMethod_None;
 }
 
@@ -73,12 +73,12 @@ void OpenGl_BackgroundArray::SetGradientParameters(const Quantity_Color&        
     return;
   }
 
-  Standard_Real anR, aG, aB;
+  double anR, aG, aB;
   theColor1.Values(anR, aG, aB, Quantity_TOC_RGB);
-  myGradientParams.color1 = OpenGl_Vec4((float)anR, (float)aG, (float)aB, 0.0f);
+  myGradientParams.color1 = NCollection_Vec4<float>((float)anR, (float)aG, (float)aB, 0.0f);
 
   theColor2.Values(anR, aG, aB, Quantity_TOC_RGB);
-  myGradientParams.color2 = OpenGl_Vec4((float)anR, (float)aG, (float)aB, 0.0f);
+  myGradientParams.color2 = NCollection_Vec4<float>((float)anR, (float)aG, (float)aB, 0.0f);
 
   myGradientParams.type = theType;
   invalidateData();
@@ -108,25 +108,25 @@ bool OpenGl_BackgroundArray::IsDefined() const
     case Graphic3d_TOB_TEXTURE:
       return myFillMethod != Aspect_FM_NONE;
     case Graphic3d_TOB_CUBEMAP:
-      return Standard_True;
+      return true;
     case Graphic3d_TOB_NONE:
-      return Standard_False;
+      return false;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void OpenGl_BackgroundArray::invalidateData()
 {
-  myToUpdate = Standard_True;
+  myToUpdate = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_BackgroundArray::init(const Handle(OpenGl_Workspace)& theWorkspace) const
+bool OpenGl_BackgroundArray::init(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
-  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = theWorkspace->GetGlContext();
 
   if (myIndices.IsNull())
   {
@@ -142,27 +142,27 @@ Standard_Boolean OpenGl_BackgroundArray::init(const Handle(OpenGl_Workspace)& th
     case Graphic3d_TOB_GRADIENT: {
       if (!createGradientArray(aCtx))
       {
-        return Standard_False;
+        return false;
       }
       break;
     }
     case Graphic3d_TOB_TEXTURE: {
       if (!createTextureArray(theWorkspace))
       {
-        return Standard_False;
+        return false;
       }
       break;
     }
     case Graphic3d_TOB_CUBEMAP: {
       if (!createCubeMapArray())
       {
-        return Standard_False;
+        return false;
       }
       break;
     }
     case Graphic3d_TOB_NONE:
     default: {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -171,18 +171,17 @@ Standard_Boolean OpenGl_BackgroundArray::init(const Handle(OpenGl_Workspace)& th
   {
     clearMemoryGL(aCtx);
   }
-  buildVBO(aCtx, Standard_True);
-  myIsVboInit = Standard_True;
+  buildVBO(aCtx, true);
+  myIsVboInit = true;
 
   // Data is up-to-date
-  myToUpdate = Standard_False;
-  return Standard_True;
+  myToUpdate = false;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_BackgroundArray::createGradientArray(
-  const Handle(OpenGl_Context)& theCtx) const
+bool OpenGl_BackgroundArray::createGradientArray(const occ::handle<OpenGl_Context>& theCtx) const
 {
   // Initialize data for primitive array
   Graphic3d_Attribute aGragientAttribInfo[] = {{Graphic3d_TOA_POS, Graphic3d_TOD_VEC2},
@@ -190,11 +189,11 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray(
 
   if (!myAttribs->Init(4, aGragientAttribInfo, 2))
   {
-    return Standard_False;
+    return false;
   }
   if (!myIndices->Init<unsigned short>(6))
   {
-    return Standard_False;
+    return false;
   }
   const unsigned short THE_FS_QUAD_TRIS[6] = {0, 1, 3, 1, 2, 3};
   for (unsigned int aVertIter = 0; aVertIter < 6; ++aVertIter)
@@ -202,10 +201,11 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray(
     myIndices->SetIndex(aVertIter, THE_FS_QUAD_TRIS[aVertIter]);
   }
 
-  OpenGl_Vec2 aVertices[4] = {OpenGl_Vec2(float(myViewWidth), 0.0f),
-                              OpenGl_Vec2(float(myViewWidth), float(myViewHeight)),
-                              OpenGl_Vec2(0.0f, float(myViewHeight)),
-                              OpenGl_Vec2(0.0f, 0.0f)};
+  NCollection_Vec2<float> aVertices[4] = {
+    NCollection_Vec2<float>(float(myViewWidth), 0.0f),
+    NCollection_Vec2<float>(float(myViewWidth), float(myViewHeight)),
+    NCollection_Vec2<float>(0.0f, float(myViewHeight)),
+    NCollection_Vec2<float>(0.0f, 0.0f)};
 
   float* aCorners[4]     = {};
   float  aDiagCorner1[3] = {};
@@ -254,107 +254,112 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray(
       Graphic3d_Attribute aCornerAttribInfo[] = {{Graphic3d_TOA_POS, Graphic3d_TOD_VEC2},
                                                  {Graphic3d_TOA_UV, Graphic3d_TOD_VEC2}};
 
-      OpenGl_Vec2 anUVs[4] = {OpenGl_Vec2(1.0f, 0.0f),
-                              OpenGl_Vec2(1.0f, 1.0f),
-                              OpenGl_Vec2(0.0f, 1.0f),
-                              OpenGl_Vec2(0.0f, 0.0f)};
+      NCollection_Vec2<float> anUVs[4] = {NCollection_Vec2<float>(1.0f, 0.0f),
+                                          NCollection_Vec2<float>(1.0f, 1.0f),
+                                          NCollection_Vec2<float>(0.0f, 1.0f),
+                                          NCollection_Vec2<float>(0.0f, 0.0f)};
 
       if (!myAttribs->Init(4, aCornerAttribInfo, 2))
       {
-        return Standard_False;
+        return false;
       }
-      for (Standard_Integer anIt = 0; anIt < 4; ++anIt)
+      for (int anIt = 0; anIt < 4; ++anIt)
       {
-        OpenGl_Vec2* aVertData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(anIt));
-        *aVertData             = aVertices[anIt];
+        NCollection_Vec2<float>* aVertData =
+          reinterpret_cast<NCollection_Vec2<float>*>(myAttribs->changeValue(anIt));
+        *aVertData = aVertices[anIt];
 
-        OpenGl_Vec2* anUvData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(anIt)
-                                                               + myAttribs->AttributeOffset(1));
+        NCollection_Vec2<float>* anUvData = reinterpret_cast<NCollection_Vec2<float>*>(
+          myAttribs->changeValue(anIt) + myAttribs->AttributeOffset(1));
         // cyclically move highlighted corner depending on myGradientParams.type
         *anUvData = anUVs[(anIt + myGradientParams.type - Aspect_GradientFillMethod_Corner1) % 4];
       }
-      return Standard_True;
+      return true;
     }
     case Aspect_GradientFillMethod_Elliptical: {
       // construction of a circle circumscribed about a view rectangle
       // using parametric equation (scaled by aspect ratio and centered)
-      const Standard_Integer aSubdiv = 64;
+      const int aSubdiv = 64;
       if (!myAttribs->Init(aSubdiv + 2, aGragientAttribInfo, 2))
       {
-        return Standard_False;
+        return false;
       }
 
-      OpenGl_Vec2 anEllipVerts[aSubdiv + 2];
-      anEllipVerts[0]      = OpenGl_Vec2(float(myViewWidth) / 2.0f, float(myViewHeight) / 2.0f);
-      Standard_Real aTetta = (M_PI * 2.0) / aSubdiv;
-      Standard_Real aParam = 0.0;
-      for (Standard_Integer anIt = 1; anIt < aSubdiv + 2; ++anIt)
+      NCollection_Vec2<float> anEllipVerts[aSubdiv + 2];
+      anEllipVerts[0] =
+        NCollection_Vec2<float>(float(myViewWidth) / 2.0f, float(myViewHeight) / 2.0f);
+      double aTetta = (M_PI * 2.0) / aSubdiv;
+      double aParam = 0.0;
+      for (int anIt = 1; anIt < aSubdiv + 2; ++anIt)
       {
-        anEllipVerts[anIt] =
-          OpenGl_Vec2(float(std::cos(aParam) * M_SQRT2 * myViewWidth / 2.0 + myViewWidth / 2.0f),
-                      float(std::sin(aParam) * M_SQRT2 * myViewHeight / 2.0 + myViewHeight / 2.0f));
+        anEllipVerts[anIt] = NCollection_Vec2<float>(
+          float(std::cos(aParam) * M_SQRT2 * myViewWidth / 2.0 + myViewWidth / 2.0f),
+          float(std::sin(aParam) * M_SQRT2 * myViewHeight / 2.0 + myViewHeight / 2.0f));
 
         aParam += aTetta;
       }
-      for (Standard_Integer anIt = 0; anIt < aSubdiv + 2; ++anIt)
+      for (int anIt = 0; anIt < aSubdiv + 2; ++anIt)
       {
-        OpenGl_Vec2* aVertData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(anIt));
-        *aVertData             = anEllipVerts[anIt];
+        NCollection_Vec2<float>* aVertData =
+          reinterpret_cast<NCollection_Vec2<float>*>(myAttribs->changeValue(anIt));
+        *aVertData = anEllipVerts[anIt];
 
-        OpenGl_Vec3* aColorData = reinterpret_cast<OpenGl_Vec3*>(myAttribs->changeValue(anIt)
-                                                                 + myAttribs->AttributeOffset(1));
-        *aColorData             = myGradientParams.color2.rgb();
+        NCollection_Vec3<float>* aColorData = reinterpret_cast<NCollection_Vec3<float>*>(
+          myAttribs->changeValue(anIt) + myAttribs->AttributeOffset(1));
+        *aColorData = myGradientParams.color2.rgb();
       }
       // the central vertex is colored in different way
-      OpenGl_Vec3* aColorData =
-        reinterpret_cast<OpenGl_Vec3*>(myAttribs->changeValue(0) + myAttribs->AttributeOffset(1));
+      NCollection_Vec3<float>* aColorData = reinterpret_cast<NCollection_Vec3<float>*>(
+        myAttribs->changeValue(0) + myAttribs->AttributeOffset(1));
       *aColorData = myGradientParams.color1.rgb();
 
       if (!myIndices->Init<unsigned short>(3 * aSubdiv))
       {
-        return Standard_False;
+        return false;
       }
-      for (Standard_Integer aCurTri = 0; aCurTri < aSubdiv; aCurTri++)
+      for (int aCurTri = 0; aCurTri < aSubdiv; aCurTri++)
       {
         myIndices->SetIndex(aCurTri * 3 + 0, 0);
         myIndices->SetIndex(aCurTri * 3 + 1, aCurTri + 1);
         myIndices->SetIndex(aCurTri * 3 + 2, aCurTri + 2);
       }
 
-      return Standard_True;
+      return true;
     }
     case Aspect_GradientFillMethod_None: {
       break;
     }
   }
 
-  for (Standard_Integer anIt = 0; anIt < 4; ++anIt)
+  for (int anIt = 0; anIt < 4; ++anIt)
   {
-    OpenGl_Vec2* aVertData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(anIt));
-    *aVertData             = aVertices[anIt];
+    NCollection_Vec2<float>* aVertData =
+      reinterpret_cast<NCollection_Vec2<float>*>(myAttribs->changeValue(anIt));
+    *aVertData = aVertices[anIt];
 
-    OpenGl_Vec3* aColorData =
-      reinterpret_cast<OpenGl_Vec3*>(myAttribs->changeValue(anIt) + myAttribs->AttributeOffset(1));
-    *aColorData = theCtx
-                    ->Vec4FromQuantityColor(
-                      OpenGl_Vec4(aCorners[anIt][0], aCorners[anIt][1], aCorners[anIt][2], 1.0f))
-                    .rgb();
+    NCollection_Vec3<float>* aColorData = reinterpret_cast<NCollection_Vec3<float>*>(
+      myAttribs->changeValue(anIt) + myAttribs->AttributeOffset(1));
+    *aColorData =
+      theCtx
+        ->Vec4FromQuantityColor(
+          NCollection_Vec4<float>(aCorners[anIt][0], aCorners[anIt][1], aCorners[anIt][2], 1.0f))
+        .rgb();
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_BackgroundArray::createTextureArray(
-  const Handle(OpenGl_Workspace)& theWorkspace) const
+bool OpenGl_BackgroundArray::createTextureArray(
+  const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
   Graphic3d_Attribute aTextureAttribInfo[] = {{Graphic3d_TOA_POS, Graphic3d_TOD_VEC2},
                                               {Graphic3d_TOA_UV, Graphic3d_TOD_VEC2}};
 
   if (!myAttribs->Init(4, aTextureAttribInfo, 2))
   {
-    return Standard_False;
+    return false;
   }
 
   GLfloat aTexRangeX = 1.0f; // texture <s> coordinate
@@ -369,8 +374,8 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray(
   GLfloat aCoef = -1.0f;
 
   // Get texture parameters
-  const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
-  const OpenGl_Aspects*         anAspectFace = theWorkspace->Aspects();
+  const occ::handle<OpenGl_Context>& aCtx         = theWorkspace->GetGlContext();
+  const OpenGl_Aspects*              anAspectFace = theWorkspace->Aspects();
   GLfloat aTextureWidth  = (GLfloat)anAspectFace->TextureSet(aCtx)->First()->SizeX();
   GLfloat aTextureHeight = (GLfloat)anAspectFace->TextureSet(aCtx)->First()->SizeY();
 
@@ -389,25 +394,26 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray(
   // is simply ignored, and negative multiplier is here for convenience only
   // and does not result e.g. in texture mirroring
 
-  OpenGl_Vec2* aData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(0));
-  aData[0]           = OpenGl_Vec2(anOffsetX, -aCoef * anOffsetY);
-  aData[1]           = OpenGl_Vec2(aTexRangeX, 0.0f);
+  NCollection_Vec2<float>* aData =
+    reinterpret_cast<NCollection_Vec2<float>*>(myAttribs->changeValue(0));
+  aData[0] = NCollection_Vec2<float>(anOffsetX, -aCoef * anOffsetY);
+  aData[1] = NCollection_Vec2<float>(aTexRangeX, 0.0f);
 
-  aData    = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(1));
-  aData[0] = OpenGl_Vec2(anOffsetX, aCoef * anOffsetY);
-  aData[1] = OpenGl_Vec2(aTexRangeX, aCoef * aTexRangeY);
+  aData    = reinterpret_cast<NCollection_Vec2<float>*>(myAttribs->changeValue(1));
+  aData[0] = NCollection_Vec2<float>(anOffsetX, aCoef * anOffsetY);
+  aData[1] = NCollection_Vec2<float>(aTexRangeX, aCoef * aTexRangeY);
 
-  aData    = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(2));
-  aData[0] = OpenGl_Vec2(-anOffsetX, -aCoef * anOffsetY);
-  aData[1] = OpenGl_Vec2(0.0f, 0.0f);
+  aData    = reinterpret_cast<NCollection_Vec2<float>*>(myAttribs->changeValue(2));
+  aData[0] = NCollection_Vec2<float>(-anOffsetX, -aCoef * anOffsetY);
+  aData[1] = NCollection_Vec2<float>(0.0f, 0.0f);
 
-  aData    = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(3));
-  aData[0] = OpenGl_Vec2(-anOffsetX, aCoef * anOffsetY);
-  aData[1] = OpenGl_Vec2(0.0f, aCoef * aTexRangeY);
+  aData    = reinterpret_cast<NCollection_Vec2<float>*>(myAttribs->changeValue(3));
+  aData[0] = NCollection_Vec2<float>(-anOffsetX, aCoef * anOffsetY);
+  aData[1] = NCollection_Vec2<float>(0.0f, aCoef * aTexRangeY);
 
   if (!myIndices->Init<unsigned short>(6))
   {
-    return Standard_False;
+    return false;
   }
   const unsigned short THE_FS_QUAD_TRIS[6] = {0, 1, 2, 1, 3, 2};
   for (unsigned int aVertIter = 0; aVertIter < 6; ++aVertIter)
@@ -415,12 +421,12 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray(
     myIndices->SetIndex(aVertIter, THE_FS_QUAD_TRIS[aVertIter]);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
+bool OpenGl_BackgroundArray::createCubeMapArray() const
 {
   const Graphic3d_Attribute aCubeMapAttribInfo[] = {{Graphic3d_TOA_POS, Graphic3d_TOD_VEC3}};
 
@@ -431,11 +437,12 @@ Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
   }
   if (!myAttribs->Init(8, aCubeMapAttribInfo, 1) || !myIndices->Init<unsigned short>(6 * 3 * 2))
   {
-    return Standard_False;
+    return false;
   }
 
   {
-    OpenGl_Vec3* aData = reinterpret_cast<OpenGl_Vec3*>(myAttribs->changeValue(0));
+    NCollection_Vec3<float>* aData =
+      reinterpret_cast<NCollection_Vec3<float>*>(myAttribs->changeValue(0));
     aData[0].SetValues(-1.0, -1.0, 1.0);
     aData[1].SetValues(1.0, -1.0, 1.0);
     aData[2].SetValues(-1.0, 1.0, 1.0);
@@ -460,18 +467,18 @@ Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void OpenGl_BackgroundArray::Render(const Handle(OpenGl_Workspace)& theWorkspace,
-                                    Graphic3d_Camera::Projection    theProjection) const
+void OpenGl_BackgroundArray::Render(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                    Graphic3d_Camera::Projection         theProjection) const
 {
-  const Handle(OpenGl_Context)& aCtx       = theWorkspace->GetGlContext();
-  Standard_Integer              aViewSizeX = aCtx->Viewport()[2];
-  Standard_Integer              aViewSizeY = aCtx->Viewport()[3];
-  Graphic3d_Vec2i               aTileOffset, aTileSize;
+  const occ::handle<OpenGl_Context>& aCtx       = theWorkspace->GetGlContext();
+  int                                aViewSizeX = aCtx->Viewport()[2];
+  int                                aViewSizeY = aCtx->Viewport()[3];
+  NCollection_Vec2<int>              aTileOffset, aTileSize;
 
   if (aCtx->Camera()->Tile().IsValid())
   {
@@ -489,8 +496,8 @@ void OpenGl_BackgroundArray::Render(const Handle(OpenGl_Workspace)& theWorkspace
     init(theWorkspace);
   }
 
-  OpenGl_Mat4 aProjection = aCtx->ProjectionState.Current();
-  OpenGl_Mat4 aWorldView  = aCtx->WorldViewState.Current();
+  NCollection_Mat4<float> aProjection = aCtx->ProjectionState.Current();
+  NCollection_Mat4<float> aWorldView  = aCtx->WorldViewState.Current();
 
   if (myType == Graphic3d_TOB_CUBEMAP)
   {
@@ -519,13 +526,13 @@ void OpenGl_BackgroundArray::Render(const Handle(OpenGl_Workspace)& theWorkspace
       // get projection matrix without pre-multiplied stereoscopic head-to-eye translation
       if (theProjection == Graphic3d_Camera::Projection_MonoLeftEye)
       {
-        Graphic3d_Mat4 aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR;
+        NCollection_Mat4<float> aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR;
         aCamera.StereoProjectionF(aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR);
         aProjection = aMatProjL;
       }
       else if (theProjection == Graphic3d_Camera::Projection_MonoRightEye)
       {
-        Graphic3d_Mat4 aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR;
+        NCollection_Mat4<float> aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR;
         aCamera.StereoProjectionF(aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR);
         aProjection = aMatProjR;
       }
@@ -537,20 +544,21 @@ void OpenGl_BackgroundArray::Render(const Handle(OpenGl_Workspace)& theWorkspace
     aWorldView.InitIdentity();
     if (aCtx->Camera()->Tile().IsValid())
     {
-      aWorldView.SetDiagonal(OpenGl_Vec4(2.0f / aTileSize.x(), 2.0f / aTileSize.y(), 1.0f, 1.0f));
+      aWorldView.SetDiagonal(
+        NCollection_Vec4<float>(2.0f / aTileSize.x(), 2.0f / aTileSize.y(), 1.0f, 1.0f));
       if (myType == Graphic3d_TOB_GRADIENT)
       {
         aWorldView.SetColumn(3,
-                             OpenGl_Vec4(-1.0f - 2.0f * aTileOffset.x() / aTileSize.x(),
-                                         -1.0f - 2.0f * aTileOffset.y() / aTileSize.y(),
-                                         0.0f,
-                                         1.0f));
+                             NCollection_Vec4<float>(-1.0f - 2.0f * aTileOffset.x() / aTileSize.x(),
+                                                     -1.0f - 2.0f * aTileOffset.y() / aTileSize.y(),
+                                                     0.0f,
+                                                     1.0f));
       }
       else
       {
         aWorldView.SetColumn(
           3,
-          OpenGl_Vec4(
+          NCollection_Vec4<float>(
             -1.0f + (float)aViewSizeX / aTileSize.x() - 2.0f * aTileOffset.x() / aTileSize.x(),
             -1.0f + (float)aViewSizeY / aTileSize.y() - 2.0f * aTileOffset.y() / aTileSize.y(),
             0.0f,
@@ -559,10 +567,11 @@ void OpenGl_BackgroundArray::Render(const Handle(OpenGl_Workspace)& theWorkspace
     }
     else
     {
-      aWorldView.SetDiagonal(OpenGl_Vec4(2.0f / myViewWidth, 2.0f / myViewHeight, 1.0f, 1.0f));
+      aWorldView.SetDiagonal(
+        NCollection_Vec4<float>(2.0f / myViewWidth, 2.0f / myViewHeight, 1.0f, 1.0f));
       if (myType == Graphic3d_TOB_GRADIENT)
       {
-        aWorldView.SetColumn(3, OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 1.0f));
+        aWorldView.SetColumn(3, NCollection_Vec4<float>(-1.0f, -1.0f, 0.0f, 1.0f));
       }
     }
   }

@@ -46,32 +46,32 @@ DNaming_CylinderDriver::DNaming_CylinderDriver() {}
 // function : Validate
 // purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_CylinderDriver::Validate(Handle(TFunction_Logbook)&) const {}
+void DNaming_CylinderDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute
 // purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_CylinderDriver::MustExecute(const Handle(TFunction_Logbook)&) const
+bool DNaming_CylinderDriver::MustExecute(const occ::handle<TFunction_Logbook>&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Execute
 // purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
-Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theLog) const
+int DNaming_CylinderDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 {
-  Handle(TFunction_Function) aFunction;
+  occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
     return -1;
 
-  Standard_Real               aRadius  = DNaming::GetReal(aFunction, CYL_RADIUS)->Get();
-  Standard_Real               aHeight  = DNaming::GetReal(aFunction, CYL_HEIGHT)->Get();
-  Handle(TDataStd_UAttribute) anObject = DNaming::GetObjectArg(aFunction, CYL_AXIS);
-  Handle(TNaming_NamedShape)  aNSAxis  = DNaming::GetObjectValue(anObject);
+  double                           aRadius  = DNaming::GetReal(aFunction, CYL_RADIUS)->Get();
+  double                           aHeight  = DNaming::GetReal(aFunction, CYL_HEIGHT)->Get();
+  occ::handle<TDataStd_UAttribute> anObject = DNaming::GetObjectArg(aFunction, CYL_AXIS);
+  occ::handle<TNaming_NamedShape>  aNSAxis  = DNaming::GetObjectValue(anObject);
   if (aNSAxis->IsEmpty())
   {
 #ifdef OCCT_DEBUG
@@ -129,7 +129,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theL
     return -1;
   }
 
-  Handle(TNaming_NamedShape) aPrevCyl = DNaming::GetFunctionResult(aFunction);
+  occ::handle<TNaming_NamedShape> aPrevCyl = DNaming::GetFunctionResult(aFunction);
   // Save location
   TopLoc_Location aLocation;
   if (!aPrevCyl.IsNull() && !aPrevCyl->IsEmpty())
@@ -158,9 +158,9 @@ Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theL
 
   // restore location
   if (!aLocation.IsIdentity())
-    TNaming::Displace(RESPOSITION(aFunction), aLocation, Standard_True);
+    TNaming::Displace(RESPOSITION(aFunction), aLocation, true);
 
-  theLog->SetValid(RESPOSITION(aFunction), Standard_True);
+  theLog->SetValid(RESPOSITION(aFunction), true);
   aFunction->SetFailure(DONE);
   return 0;
 }
@@ -179,28 +179,28 @@ void DNaming_CylinderDriver::LoadNamingDS(const TDF_Label&          theResultLab
   if (S.HasBottom())
   {
     TopoDS_Face     BottomFace = S.BottomFace();
-    TNaming_Builder BOF(theResultLabel.FindChild(1, Standard_True));
+    TNaming_Builder BOF(theResultLabel.FindChild(1, true));
     BOF.Generated(BottomFace);
   }
 
   if (S.HasTop())
   {
     TopoDS_Face     TopFace = S.TopFace();
-    TNaming_Builder TOF(theResultLabel.FindChild(2, Standard_True));
+    TNaming_Builder TOF(theResultLabel.FindChild(2, true));
     TOF.Generated(TopFace);
   }
 
   TopoDS_Face     LateralFace = S.LateralFace();
-  TNaming_Builder LOF(theResultLabel.FindChild(3, Standard_True));
+  TNaming_Builder LOF(theResultLabel.FindChild(3, true));
   LOF.Generated(LateralFace);
 
   if (S.HasSides())
   {
     TopoDS_Face     StartFace = S.StartFace();
-    TNaming_Builder SF(theResultLabel.FindChild(4, Standard_True));
+    TNaming_Builder SF(theResultLabel.FindChild(4, true));
     SF.Generated(StartFace);
     TopoDS_Face     EndFace = S.EndFace();
-    TNaming_Builder EF(theResultLabel.FindChild(5, Standard_True));
+    TNaming_Builder EF(theResultLabel.FindChild(5, true));
     EF.Generated(EndFace);
   }
 }

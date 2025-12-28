@@ -22,7 +22,8 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_ConnectedEdgeSet.hxx>
 #include <StepShape_Edge.hxx>
-#include <StepShape_HArray1OfEdge.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -30,10 +31,11 @@ RWStepShape_RWConnectedEdgeSet::RWStepShape_RWConnectedEdgeSet() {}
 
 //=================================================================================================
 
-void RWStepShape_RWConnectedEdgeSet::ReadStep(const Handle(StepData_StepReaderData)&    data,
-                                              const Standard_Integer                    num,
-                                              Handle(Interface_Check)&                  ach,
-                                              const Handle(StepShape_ConnectedEdgeSet)& ent) const
+void RWStepShape_RWConnectedEdgeSet::ReadStep(
+  const occ::handle<StepData_StepReaderData>&    data,
+  const int                                      num,
+  occ::handle<Interface_Check>&                  ach,
+  const occ::handle<StepShape_ConnectedEdgeSet>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "connected_edge_set"))
@@ -41,21 +43,21 @@ void RWStepShape_RWConnectedEdgeSet::ReadStep(const Handle(StepData_StepReaderDa
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of ConnectedEdgeSet
 
-  Handle(StepShape_HArray1OfEdge) aCesEdges;
-  Standard_Integer                sub2 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_Edge>>> aCesEdges;
+  int                                                           sub2 = 0;
   if (data->ReadSubList(num, 2, "ces_edges", ach, sub2))
   {
-    Standard_Integer num2 = sub2;
-    Standard_Integer nb0  = data->NbParams(num2);
-    aCesEdges             = new StepShape_HArray1OfEdge(1, nb0);
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int num2  = sub2;
+    int nb0   = data->NbParams(num2);
+    aCesEdges = new NCollection_HArray1<occ::handle<StepShape_Edge>>(1, nb0);
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepShape_Edge) anIt0;
+      occ::handle<StepShape_Edge> anIt0;
       data->ReadEntity(num2, i0, "ces_edges", ach, STANDARD_TYPE(StepShape_Edge), anIt0);
       aCesEdges->SetValue(i0, anIt0);
     }
@@ -67,8 +69,9 @@ void RWStepShape_RWConnectedEdgeSet::ReadStep(const Handle(StepData_StepReaderDa
 
 //=================================================================================================
 
-void RWStepShape_RWConnectedEdgeSet::WriteStep(StepData_StepWriter&                      SW,
-                                               const Handle(StepShape_ConnectedEdgeSet)& ent) const
+void RWStepShape_RWConnectedEdgeSet::WriteStep(
+  StepData_StepWriter&                           SW,
+  const occ::handle<StepShape_ConnectedEdgeSet>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -78,9 +81,9 @@ void RWStepShape_RWConnectedEdgeSet::WriteStep(StepData_StepWriter&             
   // Own fields of ConnectedEdgeSet
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->CesEdges()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->CesEdges()->Length(); i1++)
   {
-    Handle(StepShape_Edge) Var0 = ent->CesEdges()->Value(i1);
+    occ::handle<StepShape_Edge> Var0 = ent->CesEdges()->Value(i1);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -88,17 +91,17 @@ void RWStepShape_RWConnectedEdgeSet::WriteStep(StepData_StepWriter&             
 
 //=================================================================================================
 
-void RWStepShape_RWConnectedEdgeSet::Share(const Handle(StepShape_ConnectedEdgeSet)& ent,
-                                           Interface_EntityIterator&                 iter) const
+void RWStepShape_RWConnectedEdgeSet::Share(const occ::handle<StepShape_ConnectedEdgeSet>& ent,
+                                           Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of RepresentationItem
 
   // Own fields of ConnectedEdgeSet
 
-  for (Standard_Integer i1 = 1; i1 <= ent->CesEdges()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->CesEdges()->Length(); i1++)
   {
-    Handle(StepShape_Edge) Var0 = ent->CesEdges()->Value(i1);
+    occ::handle<StepShape_Edge> Var0 = ent->CesEdges()->Value(i1);
     iter.AddItem(Var0);
   }
 }

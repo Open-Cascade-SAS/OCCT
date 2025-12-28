@@ -35,21 +35,21 @@ public:
   //! Creates the PointOnRst on the arc A, at parameter Param,
   //! with the transition TLine on the walking line, and
   //! TArc on the arc A.
-  Standard_EXPORT BRepBlend_PointOnRst(const Handle(Adaptor2d_Curve2d)& A,
-                                       const Standard_Real              Param,
-                                       const IntSurf_Transition&        TLine,
-                                       const IntSurf_Transition&        TArc);
+  Standard_EXPORT BRepBlend_PointOnRst(const occ::handle<Adaptor2d_Curve2d>& A,
+                                       const double                          Param,
+                                       const IntSurf_Transition&             TLine,
+                                       const IntSurf_Transition&             TArc);
 
   //! Sets the values of a point which is on the arc
   //! A, at parameter Param.
-  Standard_EXPORT void SetArc(const Handle(Adaptor2d_Curve2d)& A,
-                              const Standard_Real              Param,
-                              const IntSurf_Transition&        TLine,
-                              const IntSurf_Transition&        TArc);
+  Standard_EXPORT void SetArc(const occ::handle<Adaptor2d_Curve2d>& A,
+                              const double                          Param,
+                              const IntSurf_Transition&             TLine,
+                              const IntSurf_Transition&             TArc);
 
   //! Returns the arc of restriction containing the
   //! vertex.
-  const Handle(Adaptor2d_Curve2d)& Arc() const;
+  const occ::handle<Adaptor2d_Curve2d>& Arc() const;
 
   //! Returns the transition of the point on the
   //! line on surface.
@@ -61,14 +61,13 @@ public:
 
   //! Returns the parameter of the point on the
   //! arc returned by the method Arc().
-  Standard_Real ParameterOnArc() const;
+  double ParameterOnArc() const;
 
-protected:
 private:
-  Handle(Adaptor2d_Curve2d) arc;
-  IntSurf_Transition        traline;
-  IntSurf_Transition        traarc;
-  Standard_Real             prm;
+  occ::handle<Adaptor2d_Curve2d> arc;
+  IntSurf_Transition             traline;
+  IntSurf_Transition             traarc;
+  double                         prm;
 };
 
 #include <BRepBlend_PointOnRst.lxx>

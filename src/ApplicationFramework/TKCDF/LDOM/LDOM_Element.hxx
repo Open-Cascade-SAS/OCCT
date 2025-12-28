@@ -83,7 +83,7 @@ protected:
   friend class LDOMParser;
   // ---------- PROTECTED METHODS ----------
 
-  LDOM_Element(const LDOM_BasicElement& anElem, const Handle(LDOM_MemManager)& aDoc);
+  LDOM_Element(const LDOM_BasicElement& anElem, const occ::handle<LDOM_MemManager>& aDoc);
 
 private:
   // ---------- PRIVATE FIELDS ----------

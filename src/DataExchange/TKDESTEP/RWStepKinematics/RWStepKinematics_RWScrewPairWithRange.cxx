@@ -33,10 +33,10 @@ RWStepKinematics_RWScrewPairWithRange::RWStepKinematics_RWScrewPairWithRange() {
 //=================================================================================================
 
 void RWStepKinematics_RWScrewPairWithRange::ReadStep(
-  const Handle(StepData_StepReaderData)&           theData,
-  const Standard_Integer                           theNum,
-  Handle(Interface_Check)&                         theArch,
-  const Handle(StepKinematics_ScrewPairWithRange)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&           theData,
+  const int                                             theNum,
+  occ::handle<Interface_Check>&                         theArch,
+  const occ::handle<StepKinematics_ScrewPairWithRange>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 9, theArch, "screw_pair_with_range"))
@@ -44,20 +44,20 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -68,11 +68,11 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -80,7 +80,7 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -90,7 +90,7 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -100,32 +100,32 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
 
   // Inherited fields of ScrewPair
 
-  Standard_Real aScrewPair_Pitch;
+  double aScrewPair_Pitch;
   theData->ReadReal(theNum, 7, "screw_pair.pitch", theArch, aScrewPair_Pitch);
 
   // Own fields of ScrewPairWithRange
 
-  Standard_Real    aLowerLimitActualRotation;
-  Standard_Boolean hasLowerLimitActualRotation = Standard_True;
+  double aLowerLimitActualRotation;
+  bool   hasLowerLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 8))
   {
     theData->ReadReal(theNum, 8, "lower_limit_actual_rotation", theArch, aLowerLimitActualRotation);
   }
   else
   {
-    hasLowerLimitActualRotation = Standard_False;
+    hasLowerLimitActualRotation = false;
     aLowerLimitActualRotation   = 0;
   }
 
-  Standard_Real    aUpperLimitActualRotation;
-  Standard_Boolean hasUpperLimitActualRotation = Standard_True;
+  double aUpperLimitActualRotation;
+  bool   hasUpperLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 9))
   {
     theData->ReadReal(theNum, 9, "upper_limit_actual_rotation", theArch, aUpperLimitActualRotation);
   }
   else
   {
-    hasUpperLimitActualRotation = Standard_False;
+    hasUpperLimitActualRotation = false;
     aUpperLimitActualRotation   = 0;
   }
 
@@ -147,8 +147,8 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWScrewPairWithRange::WriteStep(
-  StepData_StepWriter&                             theSW,
-  const Handle(StepKinematics_ScrewPairWithRange)& theEnt) const
+  StepData_StepWriter&                                  theSW,
+  const occ::handle<StepKinematics_ScrewPairWithRange>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -198,8 +198,8 @@ void RWStepKinematics_RWScrewPairWithRange::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWScrewPairWithRange::Share(
-  const Handle(StepKinematics_ScrewPairWithRange)& theEnt,
-  Interface_EntityIterator&                        iter) const
+  const occ::handle<StepKinematics_ScrewPairWithRange>& theEnt,
+  Interface_EntityIterator&                             iter) const
 {
 
   // Inherited fields of RepresentationItem

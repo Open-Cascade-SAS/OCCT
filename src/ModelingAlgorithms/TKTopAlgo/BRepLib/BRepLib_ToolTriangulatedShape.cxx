@@ -24,9 +24,9 @@
 
 //=================================================================================================
 
-void BRepLib_ToolTriangulatedShape::ComputeNormals(const TopoDS_Face&                theFace,
-                                                   const Handle(Poly_Triangulation)& theTris,
-                                                   Poly_Connect&                     thePolyConnect)
+void BRepLib_ToolTriangulatedShape::ComputeNormals(const TopoDS_Face&                     theFace,
+                                                   const occ::handle<Poly_Triangulation>& theTris,
+                                                   Poly_Connect& thePolyConnect)
 {
   if (theTris.IsNull() || theTris->HasNormals())
   {
@@ -34,8 +34,8 @@ void BRepLib_ToolTriangulatedShape::ComputeNormals(const TopoDS_Face&           
   }
 
   // take in face the surface location
-  const TopoDS_Face    aZeroFace = TopoDS::Face(theFace.Located(TopLoc_Location()));
-  Handle(Geom_Surface) aSurf     = BRep_Tool::Surface(aZeroFace);
+  const TopoDS_Face         aZeroFace = TopoDS::Face(theFace.Located(TopLoc_Location()));
+  occ::handle<Geom_Surface> aSurf     = BRep_Tool::Surface(aZeroFace);
   if (!theTris->HasUVNodes() || aSurf.IsNull())
   {
     // compute normals by averaging triangulation normals sharing the same vertex
@@ -43,11 +43,11 @@ void BRepLib_ToolTriangulatedShape::ComputeNormals(const TopoDS_Face&           
     return;
   }
 
-  constexpr Standard_Real aTol = Precision::Confusion();
-  Standard_Integer        aTri[3];
-  gp_Dir                  aNorm;
+  constexpr double aTol = Precision::Confusion();
+  int              aTri[3];
+  gp_Dir           aNorm;
   theTris->AddNormals();
-  for (Standard_Integer aNodeIter = 1; aNodeIter <= theTris->NbNodes(); ++aNodeIter)
+  for (int aNodeIter = 1; aNodeIter <= theTris->NbNodes(); ++aNodeIter)
   {
     // try to retrieve normal from real surface first, when UV coordinates are available
     if (GeomLib::NormEstim(aSurf, theTris->UVNode(aNodeIter), aTol, aNorm) > 1)
@@ -62,17 +62,17 @@ void BRepLib_ToolTriangulatedShape::ComputeNormals(const TopoDS_Face&           
       for (thePolyConnect.Initialize(aNodeIter); thePolyConnect.More(); thePolyConnect.Next())
       {
         theTris->Triangle(thePolyConnect.Value()).Get(aTri[0], aTri[1], aTri[2]);
-        const gp_XYZ        v1(theTris->Node(aTri[1]).Coord() - theTris->Node(aTri[0]).Coord());
-        const gp_XYZ        v2(theTris->Node(aTri[2]).Coord() - theTris->Node(aTri[1]).Coord());
-        const gp_XYZ        vv   = v1 ^ v2;
-        const Standard_Real aMod = vv.Modulus();
+        const gp_XYZ v1(theTris->Node(aTri[1]).Coord() - theTris->Node(aTri[0]).Coord());
+        const gp_XYZ v2(theTris->Node(aTri[2]).Coord() - theTris->Node(aTri[1]).Coord());
+        const gp_XYZ vv   = v1 ^ v2;
+        const double aMod = vv.Modulus();
         if (aMod >= aTol)
         {
           eqPlan += vv / aMod;
         }
       }
-      const Standard_Real aModMax = eqPlan.Modulus();
-      aNorm                       = (aModMax > aTol) ? gp_Dir(eqPlan) : gp::DZ();
+      const double aModMax = eqPlan.Modulus();
+      aNorm                = (aModMax > aTol) ? gp_Dir(eqPlan) : gp::DZ();
     }
 
     theTris->SetNormal(aNodeIter, aNorm);

@@ -22,9 +22,6 @@
 
 #include <StepBasic_NamedUnit.hxx>
 
-class StepBasic_PlaneAngleUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_PlaneAngleUnit, StepBasic_NamedUnit)
-
 class StepBasic_PlaneAngleUnit : public StepBasic_NamedUnit
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepBasic_PlaneAngleUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_PlaneAngleUnit, StepBasic_NamedUnit)
-
-protected:
-private:
 };
 
 #endif // _StepBasic_PlaneAngleUnit_HeaderFile

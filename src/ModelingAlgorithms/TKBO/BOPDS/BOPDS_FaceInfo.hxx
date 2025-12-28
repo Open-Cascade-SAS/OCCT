@@ -22,10 +22,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPDS_IndexedMapOfPaveBlock.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <BOPDS_PaveBlock.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <NCollection_Map.hxx>
 
 //! The class BOPDS_FaceInfo is to store
 //! handy information about state of face
@@ -41,37 +42,37 @@ public:
 
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
-  BOPDS_FaceInfo(const Handle(NCollection_BaseAllocator)& theAllocator);
+  BOPDS_FaceInfo(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Clears the contents
   void Clear();
 
   //! Modifier
   //! Sets the index of the face <theI>
-  void SetIndex(const Standard_Integer theI);
+  void SetIndex(const int theI);
 
   //! Selector
   //! Returns the index of the face
   //!
   //! In
-  Standard_Integer Index() const;
+  int Index() const;
 
   //! Selector
   //! Returns the pave blocks of the face
   //! that have state In
-  const BOPDS_IndexedMapOfPaveBlock& PaveBlocksIn() const;
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& PaveBlocksIn() const;
 
   //! Selector/Modifier
   //! Returns the pave blocks
   //! of the face
   //! that have state In
-  BOPDS_IndexedMapOfPaveBlock& ChangePaveBlocksIn();
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& ChangePaveBlocksIn();
 
   //! Selector
   //! Returns the list of indices for vertices
   //! of the face
   //! that have state In
-  const TColStd_MapOfInteger& VerticesIn() const;
+  const NCollection_Map<int>& VerticesIn() const;
 
   //! Selector/Modifier
   //! Returns the list of indices for vertices
@@ -79,24 +80,24 @@ public:
   //! that have state In
   //!
   //! On
-  TColStd_MapOfInteger& ChangeVerticesIn();
+  NCollection_Map<int>& ChangeVerticesIn();
 
   //! Selector
   //! Returns the pave blocks of the face
   //! that have state On
-  const BOPDS_IndexedMapOfPaveBlock& PaveBlocksOn() const;
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& PaveBlocksOn() const;
 
   //! Selector/Modifier
   //! Returns the pave blocks
   //! of the face
   //! that have state On
-  BOPDS_IndexedMapOfPaveBlock& ChangePaveBlocksOn();
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& ChangePaveBlocksOn();
 
   //! Selector
   //! Returns the list of indices for vertices
   //! of the face
   //! that have state On
-  const TColStd_MapOfInteger& VerticesOn() const;
+  const NCollection_Map<int>& VerticesOn() const;
 
   //! Selector/Modifier
   //! Returns the list of indices for vertices
@@ -104,38 +105,36 @@ public:
   //! that have state On
   //!
   //! Sections
-  TColStd_MapOfInteger& ChangeVerticesOn();
+  NCollection_Map<int>& ChangeVerticesOn();
 
   //! Selector
   //! Returns the pave blocks of the face
   //! that are pave blocks of section edges
-  const BOPDS_IndexedMapOfPaveBlock& PaveBlocksSc() const;
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& PaveBlocksSc() const;
 
-  BOPDS_IndexedMapOfPaveBlock& ChangePaveBlocksSc();
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& ChangePaveBlocksSc();
 
   //! Selector
   //! Returns the list of indices for section vertices
   //! of the face
-  const TColStd_MapOfInteger& VerticesSc() const;
+  const NCollection_Map<int>& VerticesSc() const;
 
   //! Selector/Modifier
   //! Returns the list of indices for section vertices
   //! of the face
   //!
   //! Others
-  TColStd_MapOfInteger& ChangeVerticesSc();
+  NCollection_Map<int>& ChangeVerticesSc();
 
 protected:
-  Handle(NCollection_BaseAllocator) myAllocator;
-  Standard_Integer                  myIndex;
-  BOPDS_IndexedMapOfPaveBlock       myPaveBlocksIn;
-  TColStd_MapOfInteger              myVerticesIn;
-  BOPDS_IndexedMapOfPaveBlock       myPaveBlocksOn;
-  TColStd_MapOfInteger              myVerticesOn;
-  BOPDS_IndexedMapOfPaveBlock       myPaveBlocksSc;
-  TColStd_MapOfInteger              myVerticesSc;
-
-private:
+  occ::handle<NCollection_BaseAllocator>               myAllocator;
+  int                                                  myIndex;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> myPaveBlocksIn;
+  NCollection_Map<int>                                 myVerticesIn;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> myPaveBlocksOn;
+  NCollection_Map<int>                                 myVerticesOn;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> myPaveBlocksSc;
+  NCollection_Map<int>                                 myVerticesSc;
 };
 
 #include <BOPDS_FaceInfo.lxx>

@@ -35,38 +35,35 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <BSplCLib.hxx>
 #include <PLib.hxx>
 
 // #define AppParCurves_Gradient_BFGS BFGS_/**/AppParCurves_Gradient
 
 AppParCurves_Gradient::AppParCurves_Gradient(
-  const MultiLine&                                      SSP,
-  const Standard_Integer                                FirstPoint,
-  const Standard_Integer                                LastPoint,
-  const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
-  math_Vector&                                          Parameters,
-  const Standard_Integer                                Deg,
-  const Standard_Real                                   Tol3d,
-  const Standard_Real                                   Tol2d,
-  const Standard_Integer                                NbIterations)
+  const MultiLine&                                                       SSP,
+  const int                                                              FirstPoint,
+  const int                                                              LastPoint,
+  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+  math_Vector&                                                           Parameters,
+  const int                                                              Deg,
+  const double                                                           Tol3d,
+  const double                                                           Tol2d,
+  const int                                                              NbIterations)
     : ParError(FirstPoint, LastPoint, 0.0),
       AvError(0.0),
       MError3d(0.0),
       MError2d(0.0)
 {
 
-  //  Standard_Boolean grad = Standard_True;
-  Standard_Integer j, k, i2, l;
-  Standard_Real    UF, DU, Fval = 0.0, FU, DFU;
-  Standard_Integer nbP3d   = ToolLine::NbP3d(SSP);
-  Standard_Integer nbP2d   = ToolLine::NbP2d(SSP);
-  Standard_Integer mynbP3d = nbP3d, mynbP2d = nbP2d;
-  Standard_Integer nbP = nbP3d + nbP2d;
+  //  bool grad = true;
+  int    j, k, i2, l;
+  double UF, DU, Fval = 0.0, FU, DFU;
+  int    nbP3d   = ToolLine::NbP3d(SSP);
+  int    nbP2d   = ToolLine::NbP2d(SSP);
+  int    mynbP3d = nbP3d, mynbP2d = nbP2d;
+  int    nbP = nbP3d + nbP2d;
   //  gp_Pnt Pt, P1, P2;
   gp_Pnt Pt;
   //  gp_Pnt2d Pt2d, P12d, P22d;
@@ -75,16 +72,16 @@ AppParCurves_Gradient::AppParCurves_Gradient(
   gp_Vec V1, MyV;
   //  gp_Vec2d V12d, V22d, MyV2d;
   gp_Vec2d V12d, MyV2d;
-  Done = Standard_False;
+  Done = false;
 
   if (nbP3d == 0)
     mynbP3d = 1;
   if (nbP2d == 0)
     mynbP2d = 1;
-  TColgp_Array1OfPnt   TabP(1, mynbP3d);
-  TColgp_Array1OfPnt2d TabP2d(1, mynbP2d);
-  TColgp_Array1OfVec   TabV(1, mynbP3d);
-  TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+  NCollection_Array1<gp_Pnt>   TabP(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d> TabP2d(1, mynbP2d);
+  NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
   // Calcul de la fonction F= somme(||C(ui)-Ptli||2):
   // Appel a une fonction heritant de MultipleVarFunctionWithGradient
@@ -95,16 +92,16 @@ AppParCurves_Gradient::AppParCurves_Gradient(
 
   if (!MyF.Value(Parameters, Fval))
   {
-    Done = Standard_False;
+    Done = false;
     return;
   }
 
-  SCU                      = MyF.CurveValue();
-  Standard_Integer     deg = SCU.NbPoles() - 1;
-  TColgp_Array1OfPnt   TabPole(1, deg + 1), TabCoef(1, deg + 1);
-  TColgp_Array1OfPnt2d TabPole2d(1, deg + 1), TabCoef2d(1, deg + 1);
-  TColgp_Array1OfPnt   TheCoef(1, (deg + 1) * mynbP3d);
-  TColgp_Array1OfPnt2d TheCoef2d(1, (deg + 1) * mynbP2d);
+  SCU                              = MyF.CurveValue();
+  int                          deg = SCU.NbPoles() - 1;
+  NCollection_Array1<gp_Pnt>   TabPole(1, deg + 1), TabCoef(1, deg + 1);
+  NCollection_Array1<gp_Pnt2d> TabPole2d(1, deg + 1), TabCoef2d(1, deg + 1);
+  NCollection_Array1<gp_Pnt>   TheCoef(1, (deg + 1) * mynbP3d);
+  NCollection_Array1<gp_Pnt2d> TheCoef2d(1, (deg + 1) * mynbP2d);
 
   // Stockage des Poles des courbes pour projeter:
   // ============================================
@@ -180,7 +177,7 @@ AppParCurves_Gradient::AppParCurves_Gradient(
   if (!MyF.Value(Parameters, Fval))
   {
     SCU  = AppParCurves_MultiCurve();
-    Done = Standard_False;
+    Done = false;
     return;
   }
   MError3d = MyF.MaxError3d();
@@ -188,14 +185,14 @@ AppParCurves_Gradient::AppParCurves_Gradient(
 
   if (MError3d <= Tol3d && MError2d <= Tol2d)
   {
-    Done = Standard_True;
+    Done = true;
     SCU  = MyF.CurveValue();
   }
   else if (NbIterations != 0)
   {
     // NbIterations de gradient conjugue:
     // =================================
-    Standard_Real              Eps = 1.e-07;
+    double                     Eps = 1.e-07;
     AppParCurves_Gradient_BFGS FResol(MyF, Parameters, Tol3d, Tol2d, Eps, NbIterations);
     Parameters = MyF.NewParameters();
     SCU        = MyF.CurveValue();
@@ -217,7 +214,7 @@ AppParCurves_Gradient::AppParCurves_Gradient(
   MError2d = MyF.MaxError2d();
   if (MError3d <= Tol3d && MError2d <= Tol2d)
   {
-    Done = Standard_True;
+    Done = true;
   }
 }
 
@@ -226,27 +223,27 @@ AppParCurves_MultiCurve AppParCurves_Gradient::Value() const
   return SCU;
 }
 
-Standard_Boolean AppParCurves_Gradient::IsDone() const
+bool AppParCurves_Gradient::IsDone() const
 {
   return Done;
 }
 
-Standard_Real AppParCurves_Gradient::Error(const Standard_Integer Index) const
+double AppParCurves_Gradient::Error(const int Index) const
 {
   return ParError(Index);
 }
 
-Standard_Real AppParCurves_Gradient::AverageError() const
+double AppParCurves_Gradient::AverageError() const
 {
   return AvError;
 }
 
-Standard_Real AppParCurves_Gradient::MaxError3d() const
+double AppParCurves_Gradient::MaxError3d() const
 {
   return MError3d;
 }
 
-Standard_Real AppParCurves_Gradient::MaxError2d() const
+double AppParCurves_Gradient::MaxError2d() const
 {
   return MError2d;
 }

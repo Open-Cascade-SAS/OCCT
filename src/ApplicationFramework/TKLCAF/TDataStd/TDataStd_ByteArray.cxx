@@ -38,7 +38,7 @@ const Standard_GUID& TDataStd_ByteArray::GetID()
 //=================================================================================================
 
 TDataStd_ByteArray::TDataStd_ByteArray()
-    : myIsDelta(Standard_False),
+    : myIsDelta(false),
       myID(GetID())
 {
 }
@@ -47,13 +47,13 @@ TDataStd_ByteArray::TDataStd_ByteArray()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_ByteArray) SetAttr(const TDF_Label&       label,
-                                          const Standard_Integer lower,
-                                          const Standard_Integer upper,
-                                          const Standard_Boolean isDelta,
-                                          const Standard_GUID&   theGuid)
+static occ::handle<TDataStd_ByteArray> SetAttr(const TDF_Label&     label,
+                                               const int            lower,
+                                               const int            upper,
+                                               const bool           isDelta,
+                                               const Standard_GUID& theGuid)
 {
-  Handle(TDataStd_ByteArray) A;
+  occ::handle<TDataStd_ByteArray> A;
   if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_ByteArray;
@@ -71,19 +71,19 @@ static Handle(TDataStd_ByteArray) SetAttr(const TDF_Label&       label,
 
 //=================================================================================================
 
-void TDataStd_ByteArray::Init(const Standard_Integer lower, const Standard_Integer upper)
+void TDataStd_ByteArray::Init(const int lower, const int upper)
 {
   Standard_RangeError_Raise_if(upper < lower, "TDataStd_ByteArray::Init");
   Backup();
-  myValue = new TColStd_HArray1OfByte(lower, upper, 0x00);
+  myValue = new NCollection_HArray1<uint8_t>(lower, upper, 0x00);
 }
 
 //=================================================================================================
 
-Handle(TDataStd_ByteArray) TDataStd_ByteArray::Set(const TDF_Label&       label,
-                                                   const Standard_Integer lower,
-                                                   const Standard_Integer upper,
-                                                   const Standard_Boolean isDelta)
+occ::handle<TDataStd_ByteArray> TDataStd_ByteArray::Set(const TDF_Label& label,
+                                                        const int        lower,
+                                                        const int        upper,
+                                                        const bool       isDelta)
 {
   return SetAttr(label, lower, upper, isDelta, GetID());
 }
@@ -92,18 +92,18 @@ Handle(TDataStd_ByteArray) TDataStd_ByteArray::Set(const TDF_Label&       label,
 // function : Set
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
-Handle(TDataStd_ByteArray) TDataStd_ByteArray::Set(const TDF_Label&       label,
-                                                   const Standard_GUID&   theGuid,
-                                                   const Standard_Integer lower,
-                                                   const Standard_Integer upper,
-                                                   const Standard_Boolean isDelta)
+occ::handle<TDataStd_ByteArray> TDataStd_ByteArray::Set(const TDF_Label&     label,
+                                                        const Standard_GUID& theGuid,
+                                                        const int            lower,
+                                                        const int            upper,
+                                                        const bool           isDelta)
 {
   return SetAttr(label, lower, upper, isDelta, theGuid);
 }
 
 //=================================================================================================
 
-void TDataStd_ByteArray::SetValue(const Standard_Integer index, const Standard_Byte value)
+void TDataStd_ByteArray::SetValue(const int index, const uint8_t value)
 {
   if (myValue.IsNull())
     return;
@@ -116,14 +116,14 @@ void TDataStd_ByteArray::SetValue(const Standard_Integer index, const Standard_B
 
 //=================================================================================================
 
-Standard_Byte TDataStd_ByteArray::Value(const Standard_Integer index) const
+uint8_t TDataStd_ByteArray::Value(const int index) const
 {
   return myValue->Value(index);
 }
 
 //=================================================================================================
 
-Standard_Integer TDataStd_ByteArray::Lower(void) const
+int TDataStd_ByteArray::Lower(void) const
 {
   if (myValue.IsNull())
     return 0;
@@ -132,7 +132,7 @@ Standard_Integer TDataStd_ByteArray::Lower(void) const
 
 //=================================================================================================
 
-Standard_Integer TDataStd_ByteArray::Upper(void) const
+int TDataStd_ByteArray::Upper(void) const
 {
   if (myValue.IsNull())
     return -1;
@@ -141,7 +141,7 @@ Standard_Integer TDataStd_ByteArray::Upper(void) const
 
 //=================================================================================================
 
-Standard_Integer TDataStd_ByteArray::Length(void) const
+int TDataStd_ByteArray::Length(void) const
 {
   if (myValue.IsNull())
     return 0;
@@ -154,26 +154,26 @@ Standard_Integer TDataStd_ByteArray::Length(void) const
 //         : performed and myValue refers to new instance of HArray1OfByte
 //         : that holds <newArray>
 //=======================================================================
-void TDataStd_ByteArray::ChangeArray(const Handle(TColStd_HArray1OfByte)& newArray,
-                                     const Standard_Boolean               isCheckItems)
+void TDataStd_ByteArray::ChangeArray(const occ::handle<NCollection_HArray1<uint8_t>>& newArray,
+                                     const bool                                       isCheckItems)
 {
 
-  Standard_Integer aLower    = newArray->Lower();
-  Standard_Integer anUpper   = newArray->Upper();
-  Standard_Boolean aDimEqual = Standard_False;
-  Standard_Integer i;
+  int  aLower    = newArray->Lower();
+  int  anUpper   = newArray->Upper();
+  bool aDimEqual = false;
+  int  i;
 
   if (Lower() == aLower && Upper() == anUpper)
   {
-    aDimEqual = Standard_True;
+    aDimEqual = true;
     if (isCheckItems)
     {
-      Standard_Boolean isEqual = Standard_True;
+      bool isEqual = true;
       for (i = aLower; i <= anUpper; i++)
       {
         if (myValue->Value(i) != newArray->Value(i))
         {
-          isEqual = Standard_False;
+          isEqual = false;
           break;
         }
       }
@@ -185,7 +185,7 @@ void TDataStd_ByteArray::ChangeArray(const Handle(TColStd_HArray1OfByte)& newArr
   Backup();
   // Handles of myValue of current and backuped attributes will be different!
   if (myValue.IsNull() || !aDimEqual)
-    myValue = new TColStd_HArray1OfByte(aLower, anUpper);
+    myValue = new NCollection_HArray1<uint8_t>(aLower, anUpper);
 
   for (i = aLower; i <= anUpper; i++)
     myValue->SetValue(i, newArray->Value(i));
@@ -218,21 +218,21 @@ void TDataStd_ByteArray::SetID()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_ByteArray::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_ByteArray::NewEmpty() const
 {
   return new TDataStd_ByteArray();
 }
 
 //=================================================================================================
 
-void TDataStd_ByteArray::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_ByteArray::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  Handle(TDataStd_ByteArray) anArray = Handle(TDataStd_ByteArray)::DownCast(With);
+  occ::handle<TDataStd_ByteArray> anArray = occ::down_cast<TDataStd_ByteArray>(With);
   if (!anArray->myValue.IsNull())
   {
-    const TColStd_Array1OfByte& with_array = anArray->myValue->Array1();
-    Standard_Integer            lower = with_array.Lower(), i = lower, upper = with_array.Upper();
-    myValue = new TColStd_HArray1OfByte(lower, upper);
+    const NCollection_Array1<uint8_t>& with_array = anArray->myValue->Array1();
+    int lower = with_array.Lower(), i = lower, upper = with_array.Upper();
+    myValue = new NCollection_HArray1<uint8_t>(lower, upper);
     for (; i <= upper; i++)
       myValue->SetValue(i, with_array.Value(i));
     myIsDelta = anArray->myIsDelta;
@@ -244,15 +244,15 @@ void TDataStd_ByteArray::Restore(const Handle(TDF_Attribute)& With)
 
 //=================================================================================================
 
-void TDataStd_ByteArray::Paste(const Handle(TDF_Attribute)& Into,
-                               const Handle(TDF_RelocationTable)&) const
+void TDataStd_ByteArray::Paste(const occ::handle<TDF_Attribute>& Into,
+                               const occ::handle<TDF_RelocationTable>&) const
 {
   if (!myValue.IsNull())
   {
-    Handle(TDataStd_ByteArray) anAtt = Handle(TDataStd_ByteArray)::DownCast(Into);
+    occ::handle<TDataStd_ByteArray> anAtt = occ::down_cast<TDataStd_ByteArray>(Into);
     if (!anAtt.IsNull())
     {
-      anAtt->ChangeArray(myValue, Standard_False);
+      anAtt->ChangeArray(myValue, false);
       anAtt->SetDelta(myIsDelta);
       anAtt->SetID(myID);
     }
@@ -264,7 +264,7 @@ void TDataStd_ByteArray::Paste(const Handle(TDF_Attribute)& Into,
 Standard_OStream& TDataStd_ByteArray::Dump(Standard_OStream& anOS) const
 {
   anOS << "\nByteArray: ";
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid << std::endl;
   return anOS;
@@ -272,19 +272,19 @@ Standard_OStream& TDataStd_ByteArray::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-Handle(TDF_DeltaOnModification) TDataStd_ByteArray::DeltaOnModification(
-  const Handle(TDF_Attribute)& OldAttribute) const
+occ::handle<TDF_DeltaOnModification> TDataStd_ByteArray::DeltaOnModification(
+  const occ::handle<TDF_Attribute>& OldAttribute) const
 {
   if (myIsDelta)
     return new TDataStd_DeltaOnModificationOfByteArray(
-      Handle(TDataStd_ByteArray)::DownCast(OldAttribute));
+      occ::down_cast<TDataStd_ByteArray>(OldAttribute));
   else
     return new TDF_DefaultDeltaOnModification(OldAttribute);
 }
 
 //=================================================================================================
 
-void TDataStd_ByteArray::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_ByteArray::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -295,10 +295,10 @@ void TDataStd_ByteArray::DumpJson(Standard_OStream& theOStream, Standard_Integer
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue->Lower())
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue->Upper())
 
-    for (TColStd_Array1OfByte::Iterator aValueIt(myValue->Array1()); aValueIt.More();
+    for (NCollection_Array1<uint8_t>::Iterator aValueIt(myValue->Array1()); aValueIt.More();
          aValueIt.Next())
     {
-      const Standard_Byte& aValue = aValueIt.Value();
+      const uint8_t& aValue = aValueIt.Value();
       OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aValue)
     }
   }

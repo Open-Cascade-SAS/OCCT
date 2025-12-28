@@ -20,7 +20,7 @@
 
 namespace
 {
-const Standard_Real TOLERANCE = 1.0e-6;
+const double TOLERANCE = 1.0e-6;
 }
 
 TEST(math_Uzawa, SimpleEqualityConstraints)
@@ -362,8 +362,8 @@ TEST(math_Uzawa, ConsistentSystem)
 
   // Verify solution satisfies the equations
   const math_Vector& solution = solver.Value();
-  Standard_Real      eq1      = solution(1) + 2.0 * solution(2);
-  Standard_Real      eq2      = 2.0 * solution(1) + solution(2);
+  double             eq1      = solution(1) + 2.0 * solution(2);
+  double             eq2      = 2.0 * solution(1) + solution(2);
   EXPECT_NEAR(eq1, 5.0, TOLERANCE);
   EXPECT_NEAR(eq2, 7.0, TOLERANCE);
 }

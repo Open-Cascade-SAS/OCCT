@@ -16,8 +16,9 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <GProp_GProps.hxx>
 class gp_Pnt;
 class TopoDS_Edge;
@@ -40,16 +41,13 @@ public:
 
   //! Computes the global properties of
   //! of polylines represented by set of points.
-  Standard_EXPORT void Perform(const TColgp_Array1OfPnt& theNodes);
+  Standard_EXPORT void Perform(const NCollection_Array1<gp_Pnt>& theNodes);
 
   //! Prepare set of 3d points on base of any available edge polygons:
   //! 3D polygon, polygon on triangulation, 2d polygon on surface
   //! If edge has no polygons, array thePolyg is left unchanged
-  Standard_EXPORT static void PreparePolygon(const TopoDS_Edge&           theE,
-                                             Handle(TColgp_HArray1OfPnt)& thePolyg);
-
-protected:
-private:
+  Standard_EXPORT static void PreparePolygon(const TopoDS_Edge&                        theE,
+                                             occ::handle<NCollection_HArray1<gp_Pnt>>& thePolyg);
 };
 
 #endif // _BRepGProp_MeshCinert_HeaderFile

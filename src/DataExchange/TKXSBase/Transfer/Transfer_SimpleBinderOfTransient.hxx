@@ -22,9 +22,6 @@
 
 #include <Transfer_Binder.hxx>
 
-class Transfer_SimpleBinderOfTransient;
-DEFINE_STANDARD_HANDLE(Transfer_SimpleBinderOfTransient, Transfer_Binder)
-
 //! An adapted instantiation of SimpleBinder for Transient Result,
 //! i.e. ResultType can be computed from the Result itself,
 //! instead of being static
@@ -40,17 +37,17 @@ public:
 
   //! Returns the Effective (Dynamic) Type of the Result
   //! (Standard_Transient if no Result is defined)
-  Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Standard_Type> ResultType() const override;
 
   //! Returns the Effective Name of (Dynamic) Type of the Result
   //! (void) if no result is defined
-  Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
+  Standard_EXPORT const char* ResultTypeName() const override;
 
   //! Defines the Result
-  Standard_EXPORT void SetResult(const Handle(Standard_Transient)& res);
+  Standard_EXPORT void SetResult(const occ::handle<Standard_Transient>& res);
 
   //! Returns the defined Result, if there is one
-  Standard_EXPORT const Handle(Standard_Transient)& Result() const;
+  Standard_EXPORT const occ::handle<Standard_Transient>& Result() const;
 
   //! Returns a transient result according to its type (IsKind)
   //! i.e. the result itself if IsKind(atype), else searches in
@@ -60,15 +57,14 @@ public:
   //! This syntactic form avoids to do DownCast : if a result is
   //! found with the good type, it is loaded in <res> and can be
   //! immediately used, well initialised
-  Standard_EXPORT static Standard_Boolean GetTypedResult(const Handle(Transfer_Binder)& bnd,
-                                                         const Handle(Standard_Type)&   atype,
-                                                         Handle(Standard_Transient)&    res);
+  Standard_EXPORT static bool GetTypedResult(const occ::handle<Transfer_Binder>& bnd,
+                                             const occ::handle<Standard_Type>&   atype,
+                                             occ::handle<Standard_Transient>&    res);
 
   DEFINE_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient, Transfer_Binder)
 
-protected:
 private:
-  Handle(Standard_Transient) theres;
+  occ::handle<Standard_Transient> theres;
 };
 
 #endif // _Transfer_SimpleBinderOfTransient_HeaderFile

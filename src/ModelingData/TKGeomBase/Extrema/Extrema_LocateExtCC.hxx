@@ -39,25 +39,24 @@ public:
   //! the zero near the close point.
   Standard_EXPORT Extrema_LocateExtCC(const Adaptor3d_Curve& C1,
                                       const Adaptor3d_Curve& C2,
-                                      const Standard_Real    U0,
-                                      const Standard_Real    V0);
+                                      const double           U0,
+                                      const double           V0);
 
   //! Returns True if the distance is found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the value of the extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance() const;
+  Standard_EXPORT double SquareDistance() const;
 
   //! Returns the points of the extremum distance.
   //! P1 is on the first curve, P2 on the second one.
   Standard_EXPORT void Point(Extrema_POnCurv& P1, Extrema_POnCurv& P2) const;
 
-protected:
 private:
-  Standard_Boolean myDone;
-  Standard_Real    mySqDist;
-  Extrema_POnCurv  myPoint1;
-  Extrema_POnCurv  myPoint2;
+  bool            myDone;
+  double          mySqDist;
+  Extrema_POnCurv myPoint1;
+  Extrema_POnCurv myPoint2;
 };
 
 #endif // _Extrema_LocateExtCC_HeaderFile

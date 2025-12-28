@@ -66,41 +66,41 @@ public:
   //! 21 -> ShapeRepresentation
   //! 22 -> VersionedActionRequest
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Action (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_Action) Action() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_Action> Action() const;
 
   //! returns Value as a AssemblyComponentUsage (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_AssemblyComponentUsage) AssemblyComponentUsage() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_AssemblyComponentUsage> AssemblyComponentUsage()
+    const;
 
   //! returns Value as a ConfigurationDesign (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_ConfigurationDesign) ConfigurationDesign() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_ConfigurationDesign> ConfigurationDesign() const;
 
   //! returns Value as a ConfigurationEffectivity (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_ConfigurationEffectivity) ConfigurationEffectivity()
+  Standard_EXPORT virtual occ::handle<StepRepr_ConfigurationEffectivity> ConfigurationEffectivity()
     const;
 
   //! returns Value as a DraughtingModel (Null if another type)
-  Standard_EXPORT virtual Handle(StepVisual_DraughtingModel) DraughtingModel() const;
+  Standard_EXPORT virtual occ::handle<StepVisual_DraughtingModel> DraughtingModel() const;
 
   //! returns Value as a GeneralProperty (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_GeneralProperty) GeneralProperty() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_GeneralProperty> GeneralProperty() const;
 
   //! returns Value as a MakeFromUsageOption (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_MakeFromUsageOption) MakeFromUsageOption() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_MakeFromUsageOption> MakeFromUsageOption() const;
 
   //! returns Value as a ProductConcept (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_ProductConcept) ProductConcept() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_ProductConcept> ProductConcept() const;
 
   //! returns Value as a ProductDefinitionUsage (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_ProductDefinitionUsage) ProductDefinitionUsage() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_ProductDefinitionUsage> ProductDefinitionUsage()
+    const;
 
   //! returns Value as a VersionedActionRequest (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_VersionedActionRequest) VersionedActionRequest() const;
-
-protected:
-private:
+  Standard_EXPORT virtual occ::handle<StepBasic_VersionedActionRequest> VersionedActionRequest()
+    const;
 };
 
 #endif // _StepAP214_SecurityClassificationItem_HeaderFile

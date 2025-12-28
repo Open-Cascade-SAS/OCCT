@@ -33,10 +33,10 @@ typedef gp_Vec              Vec;
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_Axis1Placement::Copy() const
+occ::handle<Geom_Geometry> Geom_Axis1Placement::Copy() const
 {
 
-  Handle(Geom_Axis1Placement) A1;
+  occ::handle<Geom_Axis1Placement> A1;
   A1 = new Axis1Placement(axis);
   return A1;
 }
@@ -74,11 +74,11 @@ void Geom_Axis1Placement::Transform(const Trsf& T)
   axis.Transform(T);
 }
 
-Handle(Geom_Axis1Placement) Geom_Axis1Placement::Reversed() const
+occ::handle<Geom_Axis1Placement> Geom_Axis1Placement::Reversed() const
 {
 
   gp_Ax1 A1 = axis;
   A1.Reverse();
-  Handle(Axis1Placement) Temp = new Axis1Placement(A1);
+  occ::handle<Axis1Placement> Temp = new Axis1Placement(A1);
   return Temp;
 }

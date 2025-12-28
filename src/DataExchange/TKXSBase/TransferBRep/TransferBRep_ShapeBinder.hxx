@@ -32,9 +32,6 @@ class TopoDS_Solid;
 class TopoDS_CompSolid;
 class TopoDS_Compound;
 
-class TransferBRep_ShapeBinder;
-DEFINE_STANDARD_HANDLE(TransferBRep_ShapeBinder, TransferBRep_BinderOfShape)
-
 //! A ShapeBinder is a BinderOfShape with some additional services
 //! to cast the Result under various kinds of Shapes
 class TransferBRep_ShapeBinder : public TransferBRep_BinderOfShape
@@ -67,9 +64,6 @@ public:
   Standard_EXPORT TopoDS_Compound Compound() const;
 
   DEFINE_STANDARD_RTTIEXT(TransferBRep_ShapeBinder, TransferBRep_BinderOfShape)
-
-protected:
-private:
 };
 
 #endif // _TransferBRep_ShapeBinder_HeaderFile

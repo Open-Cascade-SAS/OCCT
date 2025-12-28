@@ -20,8 +20,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TDF_LabelMap.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 class TNaming_NamedShape;
 class TDF_Label;
 class TopoDS_Shape;
@@ -31,22 +33,21 @@ class TNaming_NamingTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static void CurrentShape(const TDF_LabelMap&               Valid,
-                                           const TDF_LabelMap&               Forbiden,
-                                           const Handle(TNaming_NamedShape)& NS,
-                                           TopTools_IndexedMapOfShape&       MS);
+  Standard_EXPORT static void CurrentShape(
+    const NCollection_Map<TDF_Label>&                              Valid,
+    const NCollection_Map<TDF_Label>&                              Forbiden,
+    const occ::handle<TNaming_NamedShape>&                         NS,
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MS);
 
-  Standard_EXPORT static void CurrentShapeFromShape(const TDF_LabelMap&         Valid,
-                                                    const TDF_LabelMap&         Forbiden,
-                                                    const TDF_Label&            Acces,
-                                                    const TopoDS_Shape&         S,
-                                                    TopTools_IndexedMapOfShape& MS);
+  Standard_EXPORT static void CurrentShapeFromShape(
+    const NCollection_Map<TDF_Label>&                              Valid,
+    const NCollection_Map<TDF_Label>&                              Forbiden,
+    const TDF_Label&                                               Acces,
+    const TopoDS_Shape&                                            S,
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MS);
 
-  Standard_EXPORT static void BuildDescendants(const Handle(TNaming_NamedShape)& NS,
-                                               TDF_LabelMap&                     Labels);
-
-protected:
-private:
+  Standard_EXPORT static void BuildDescendants(const occ::handle<TNaming_NamedShape>& NS,
+                                               NCollection_Map<TDF_Label>&            Labels);
 };
 
 #endif // _TNaming_NamingTool_HeaderFile

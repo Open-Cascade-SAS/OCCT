@@ -31,10 +31,11 @@
 #include <TObj_TReference.hxx>
 
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfExtendedString.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -56,10 +57,10 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_Object, Standard_Transient)
 
 //=================================================================================================
 
-TObj_Object::TObj_Object(const TDF_Label& theLabel, const Standard_Boolean theSetName)
+TObj_Object::TObj_Object(const TDF_Label& theLabel, const bool theSetName)
     : myLabel(theLabel)
 {
-  Handle(TObj_Object) aMe = this;
+  occ::handle<TObj_Object> aMe = this;
   TObj_TObject::Set(myLabel, aMe);
   if (theSetName)
     TObj_Model::SetNewName(aMe);
@@ -67,22 +68,22 @@ TObj_Object::TObj_Object(const TDF_Label& theLabel, const Standard_Boolean theSe
 
 //=================================================================================================
 
-Handle(TObj_Model) TObj_Object::GetModel() const
+occ::handle<TObj_Model> TObj_Object::GetModel() const
 {
-  Handle(TObj_Model) aModel;
+  occ::handle<TObj_Model> aModel;
   // if object label is null object is not alive
   if (myLabel.IsNull())
     return aModel;
 
   // TDF_Label aLabel = TDocStd_Document::Get(myLabel)->Main();
-  Handle(TDF_Data) aData = myLabel.Data();
+  occ::handle<TDF_Data> aData = myLabel.Data();
   if (aData.IsNull())
     return aModel;
 
   // try get the document from owner attribute manually
-  TDF_Label                aLabel = aData->Root();
-  Handle(TDocStd_Owner)    anOwnerAttr;
-  Handle(TDocStd_Document) aTDoc;
+  TDF_Label                     aLabel = aData->Root();
+  occ::handle<TDocStd_Owner>    anOwnerAttr;
+  occ::handle<TDocStd_Document> aTDoc;
   if (!aLabel.IsNull() && aLabel.FindAttribute(TDocStd_Owner::GetID(), anOwnerAttr))
     aTDoc = anOwnerAttr->GetDocument();
   if (aTDoc.IsNull())
@@ -90,7 +91,7 @@ Handle(TObj_Model) TObj_Object::GetModel() const
 
   // use main label of the document to find TObj model attribute
   aLabel = aTDoc->Main();
-  Handle(TObj_TModel) aModelAttr;
+  occ::handle<TObj_TModel> aModelAttr;
   if (!aLabel.IsNull() && aLabel.FindAttribute(TObj_TModel::GetID(), aModelAttr))
     aModel = aModelAttr->Model();
 
@@ -105,12 +106,13 @@ Handle(TObj_Model) TObj_Object::GetModel() const
 //           theType narrows a variety of iterated objects
 //=======================================================================
 
-static void addObjToOrderSequence(const Handle(TObj_Object)&      theObj,
-                                  const Standard_Integer          theOrder,
-                                  Handle(TObj_HSequenceOfObject)& theHSeqOfObj,
-                                  const Standard_Integer          theHSeqLength,
-                                  Standard_Integer&               theLastIndex,
-                                  Standard_Integer&               theLastOrder)
+static void addObjToOrderSequence(
+  const occ::handle<TObj_Object>&                               theObj,
+  const int                                                     theOrder,
+  occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>>& theHSeqOfObj,
+  const int                                                     theHSeqLength,
+  int&                                                          theLastIndex,
+  int&                                                          theLastOrder)
 {
   if (theOrder > theLastOrder)
   {
@@ -124,8 +126,8 @@ static void addObjToOrderSequence(const Handle(TObj_Object)&      theObj,
         theLastOrder = theOrder;
         return;
       }
-      Handle(TObj_Object) aNext = theHSeqOfObj->Value(theLastIndex);
-      theLastOrder              = aNext->GetOrder();
+      occ::handle<TObj_Object> aNext = theHSeqOfObj->Value(theLastIndex);
+      theLastOrder                   = aNext->GetOrder();
     }
     // add before current position
     theHSeqOfObj->InsertBefore(theLastIndex, theObj);
@@ -143,8 +145,8 @@ static void addObjToOrderSequence(const Handle(TObj_Object)&      theObj,
         return;
       }
       // get next object and compare with them
-      Handle(TObj_Object) aNext = theHSeqOfObj->Value(theLastIndex);
-      theLastOrder              = aNext->GetOrder();
+      occ::handle<TObj_Object> aNext = theHSeqOfObj->Value(theLastIndex);
+      theLastOrder                   = aNext->GetOrder();
     }
     // add object after current position
     theHSeqOfObj->InsertAfter(theLastIndex, theObj);
@@ -154,22 +156,24 @@ static void addObjToOrderSequence(const Handle(TObj_Object)&      theObj,
   }
 }
 
-Handle(TObj_ObjectIterator) TObj_Object::GetChildren(const Handle(Standard_Type)& theType) const
+occ::handle<TObj_ObjectIterator> TObj_Object::GetChildren(
+  const occ::handle<Standard_Type>& theType) const
 {
-  Handle(TObj_ObjectIterator) anItr =
-    new TObj_OcafObjectIterator(GetChildLabel(), theType, Standard_True);
+  occ::handle<TObj_ObjectIterator> anItr =
+    new TObj_OcafObjectIterator(GetChildLabel(), theType, true);
   if (!TestFlags(ObjectState_Ordered))
     return anItr;
   // return object according to their order
-  Standard_Integer               aLastIndex = 0;
-  Standard_Integer               aLastOrder = 0;
-  Handle(TObj_HSequenceOfObject) aHSeqOfObj = new TObj_HSequenceOfObject();
+  int                                                          aLastIndex = 0;
+  int                                                          aLastOrder = 0;
+  occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>> aHSeqOfObj =
+    new NCollection_HSequence<occ::handle<TObj_Object>>();
   for (; anItr->More(); anItr->Next())
   {
-    Handle(TObj_Object) anObj = anItr->Value();
+    occ::handle<TObj_Object> anObj = anItr->Value();
     if (anObj.IsNull())
       continue;
-    Standard_Integer anOrder = anObj->GetOrder();
+    int anOrder = anObj->GetOrder();
     if (!aLastIndex)
     {
       aHSeqOfObj->Append(anObj);
@@ -194,14 +198,12 @@ Handle(TObj_ObjectIterator) TObj_Object::GetChildren(const Handle(Standard_Type)
 //=======================================================================
 
 #ifdef DFBROWSE
-static TDF_Label getLabelByRank(const TDF_Label&       theL,
-                                const Standard_Integer theRank,
-                                const Standard_CString theName)
+static TDF_Label getLabelByRank(const TDF_Label& theL, const int theRank, const char* theName)
 {
-  TDF_Label L = theL.FindChild(theRank, Standard_False);
+  TDF_Label L = theL.FindChild(theRank, false);
   if (L.IsNull())
   {
-    L = theL.FindChild(theRank, Standard_True);
+    L = theL.FindChild(theRank, true);
     TDataStd_Name::Set(L, theName);
   }
   return L;
@@ -215,17 +217,17 @@ TDF_Label TObj_Object::GetChildLabel() const
 #ifdef DFBROWSE
   return getLabelByRank(GetLabel(), 4, "Children");
 #else
-  return GetLabel().FindChild(4, Standard_True);
+  return GetLabel().FindChild(4, true);
 #endif
 }
 
 //=================================================================================================
 
-TDF_Label TObj_Object::getChildLabel(const Standard_Integer theRank) const
+TDF_Label TObj_Object::getChildLabel(const int theRank) const
 {
   TDF_Label aLabel = GetChildLabel();
   if (theRank > 0)
-    aLabel = aLabel.FindChild(theRank, Standard_True);
+    aLabel = aLabel.FindChild(theRank, true);
   return aLabel;
 }
 
@@ -238,18 +240,18 @@ TDF_Label TObj_Object::GetLabel() const
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::SetName(const Handle(TCollection_HExtendedString)& theName) const
+bool TObj_Object::SetName(const occ::handle<TCollection_HExtendedString>& theName) const
 {
   // check if the name is exactly the same
-  Handle(TCollection_HExtendedString) anOldName = GetName();
+  occ::handle<TCollection_HExtendedString> anOldName = GetName();
   if (!anOldName.IsNull() && theName->String().IsEqual(anOldName->String()))
-    return Standard_True;
+    return true;
 
   // check if name is already registered and do nothing in that case
-  const Handle(TObj_TNameContainer) aDictionary = GetDictionary();
-  Handle(TObj_Model)                aModel      = GetModel();
+  const occ::handle<TObj_TNameContainer> aDictionary = GetDictionary();
+  occ::handle<TObj_Model>                aModel      = GetModel();
   if (aModel->IsRegisteredName(theName, aDictionary))
-    return Standard_False;
+    return false;
 
   // change name and update registry
   if (!anOldName.IsNull())
@@ -261,31 +263,31 @@ Standard_Boolean TObj_Object::SetName(const Handle(TCollection_HExtendedString)&
     aModel->RegisterName(theName, GetLabel(), aDictionary);
     TDataStd_Name::Set(GetLabel(), theName->String());
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::SetName(const Handle(TCollection_HAsciiString)& theName) const
+bool TObj_Object::SetName(const occ::handle<TCollection_HAsciiString>& theName) const
 {
-  Handle(TCollection_HExtendedString) aName = new TCollection_HExtendedString(theName);
+  occ::handle<TCollection_HExtendedString> aName = new TCollection_HExtendedString(theName);
   return SetName(aName);
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::SetName(const Standard_CString theName) const
+bool TObj_Object::SetName(const char* theName) const
 {
-  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString(theName);
+  occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString(theName);
   return SetName(aName);
 }
 
 //=================================================================================================
 
-Handle(TCollection_HExtendedString) TObj_Object::GetName() const
+occ::handle<TCollection_HExtendedString> TObj_Object::GetName() const
 {
-  Handle(TCollection_HExtendedString) aName;
-  Handle(TDataStd_Name)               A;
+  occ::handle<TCollection_HExtendedString> aName;
+  occ::handle<TDataStd_Name>               A;
   if (GetLabel().FindAttribute(TDataStd_Name::GetID(), A))
     aName = new TCollection_HExtendedString(A->Get());
   else
@@ -295,42 +297,43 @@ Handle(TCollection_HExtendedString) TObj_Object::GetName() const
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::GetName(TCollection_ExtendedString& theStr) const
+bool TObj_Object::GetName(TCollection_ExtendedString& theStr) const
 {
-  Handle(TCollection_HExtendedString) aName = GetName();
-  theStr                                    = aName->String();
+  occ::handle<TCollection_HExtendedString> aName = GetName();
+  theStr                                         = aName->String();
   return theStr.Length() != 0;
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::GetName(TCollection_AsciiString& theName) const
+bool TObj_Object::GetName(TCollection_AsciiString& theName) const
 {
-  Handle(TCollection_HExtendedString) aName = GetName();
+  occ::handle<TCollection_HExtendedString> aName = GetName();
   if (aName.IsNull())
-    return Standard_False;
+    return false;
   theName = TCollection_AsciiString(aName->String());
   return theName.Length() != 0;
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::HasReference(const Handle(TObj_Object)& theObject) const
+bool TObj_Object::HasReference(const occ::handle<TObj_Object>& theObject) const
 {
   if (theObject.IsNull())
-    return Standard_False;
-  Handle(TObj_ObjectIterator) anItr = GetReferences(theObject->DynamicType());
+    return false;
+  occ::handle<TObj_ObjectIterator> anItr = GetReferences(theObject->DynamicType());
   if (anItr.IsNull() || !anItr->More())
-    return Standard_False;
+    return false;
   for (; anItr->More(); anItr->Next())
     if (anItr->Value() == theObject)
-      return Standard_True;
-  return Standard_False;
+      return true;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(TObj_ObjectIterator) TObj_Object::GetReferences(const Handle(Standard_Type)& theType) const
+occ::handle<TObj_ObjectIterator> TObj_Object::GetReferences(
+  const occ::handle<Standard_Type>& theType) const
 {
   return new TObj_ReferenceIterator(GetReferenceLabel(), theType);
 }
@@ -346,23 +349,23 @@ void TObj_Object::RemoveAllReferences()
 
 //=================================================================================================
 
-void TObj_Object::AddBackReference(const Handle(TObj_Object)& theObject)
+void TObj_Object::AddBackReference(const occ::handle<TObj_Object>& theObject)
 {
   if (myHSeqBackRef.IsNull())
-    myHSeqBackRef = new TObj_HSequenceOfObject;
+    myHSeqBackRef = new NCollection_HSequence<occ::handle<TObj_Object>>;
 
   myHSeqBackRef->Append(theObject);
 }
 
 //=================================================================================================
 
-void TObj_Object::RemoveBackReference(const Handle(TObj_Object)& theObject,
-                                      const Standard_Boolean     theSingleOnly)
+void TObj_Object::RemoveBackReference(const occ::handle<TObj_Object>& theObject,
+                                      const bool                      theSingleOnly)
 {
   if (myHSeqBackRef.IsNull()) // to avoid exception.
     return;
 
-  for (Standard_Integer i = 1; i <= myHSeqBackRef->Length(); i++)
+  for (int i = 1; i <= myHSeqBackRef->Length(); i++)
   {
     if (theObject != myHSeqBackRef->Value(i))
       continue;
@@ -377,8 +380,8 @@ void TObj_Object::RemoveBackReference(const Handle(TObj_Object)& theObject,
 
 //=================================================================================================
 
-Handle(TObj_ObjectIterator) TObj_Object::GetBackReferences(
-  const Handle(Standard_Type)& theType) const
+occ::handle<TObj_ObjectIterator> TObj_Object::GetBackReferences(
+  const occ::handle<Standard_Type>& theType) const
 {
   return new TObj_SequenceIterator(myHSeqBackRef, theType);
 }
@@ -392,75 +395,75 @@ void TObj_Object::ClearBackReferences()
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::HasBackReferences() const
+bool TObj_Object::HasBackReferences() const
 {
-  Handle(TObj_ObjectIterator) anItr = GetBackReferences();
+  occ::handle<TObj_ObjectIterator> anItr = GetBackReferences();
   if (anItr.IsNull() || !anItr->More())
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::CanRemoveReference(const Handle(TObj_Object)& /*theObject*/) const
+bool TObj_Object::CanRemoveReference(const occ::handle<TObj_Object>& /*theObject*/) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void TObj_Object::RemoveReference(const Handle(TObj_Object)& theObject)
+void TObj_Object::RemoveReference(const occ::handle<TObj_Object>& theObject)
 {
-  Handle(TObj_Object) aNullObj;
+  occ::handle<TObj_Object> aNullObj;
   ReplaceReference(theObject, aNullObj);
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::CanDetach(const TObj_DeletingMode theMode)
+bool TObj_Object::CanDetach(const TObj_DeletingMode theMode)
 {
   if (!IsAlive())
-    return Standard_False;
+    return false;
 
-  Handle(TObj_ObjectIterator) aRefs = GetBackReferences();
+  occ::handle<TObj_ObjectIterator> aRefs = GetBackReferences();
 
   // Free Object can be deleted in any Mode
   if (aRefs.IsNull() || !aRefs->More())
-    return Standard_True;
+    return true;
 
   if (theMode == TObj_FreeOnly)
-    return Standard_False;
+    return false;
 
   if (theMode == TObj_Forced)
-    return Standard_True;
+    return true;
 
   // check the last KeepDepending mode
-  Handle(TObj_Object) aMe = this;
+  occ::handle<TObj_Object> aMe = this;
   for (; aRefs->More(); aRefs->Next())
   {
-    Handle(TObj_Object) anObject = aRefs->Value();
+    occ::handle<TObj_Object> anObject = aRefs->Value();
     if (!anObject->CanRemoveReference(aMe))
-      return Standard_False; // one of objects could not be unlinked
+      return false; // one of objects could not be unlinked
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::Detach(const TObj_DeletingMode theMode)
+bool TObj_Object::Detach(const TObj_DeletingMode theMode)
 {
   if (!IsAlive())
-    return Standard_False;
+    return false;
 
   // if object can not be deleted returns False
   if (!RemoveBackReferences(theMode))
-    return Standard_False;
+    return false;
 
-  Handle(TCollection_HExtendedString) anOldName = GetName();
+  occ::handle<TCollection_HExtendedString> anOldName = GetName();
 
   // detaching childs
-  Handle(TObj_ObjectIterator) aChildren = GetChildren();
+  occ::handle<TObj_ObjectIterator> aChildren = GetChildren();
 
   for (; aChildren->More(); aChildren->Next())
     aChildren->Value()->Detach(theMode);
@@ -474,7 +477,7 @@ Standard_Boolean TObj_Object::Detach(const TObj_DeletingMode theMode)
 
   if (!anOldName.IsNull())
   {
-    const Handle(TObj_TNameContainer) aDictionary = GetDictionary();
+    const occ::handle<TObj_TNameContainer> aDictionary = GetDictionary();
     // unregister only it is registered to me.
     if (!aDictionary.IsNull() && aDictionary->IsRegistered(anOldName))
     {
@@ -485,29 +488,29 @@ Standard_Boolean TObj_Object::Detach(const TObj_DeletingMode theMode)
   }
   GetLabel().ForgetAllAttributes();
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::Detach(const TDF_Label& theLabel, const TObj_DeletingMode theMode)
+bool TObj_Object::Detach(const TDF_Label& theLabel, const TObj_DeletingMode theMode)
 {
-  Handle(TObj_Object) anObject;
+  occ::handle<TObj_Object> anObject;
   if (GetObj(theLabel, anObject))
     return anObject->Detach(theMode);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::GetObj(const TDF_Label&       theLabel,
-                                     Handle(TObj_Object)&   theResult,
-                                     const Standard_Boolean isSuper)
+bool TObj_Object::GetObj(const TDF_Label&          theLabel,
+                         occ::handle<TObj_Object>& theResult,
+                         const bool                isSuper)
 {
   if (theLabel.IsNull())
-    return Standard_False;
+    return false;
 
-  Handle(TObj_TObject) A;
+  occ::handle<TObj_TObject> A;
 
   // find on the current label
   if (theLabel.FindAttribute(TObj_TObject::GetID(), A))
@@ -518,7 +521,7 @@ Standard_Boolean TObj_Object::GetObj(const TDF_Label&       theLabel,
   if (!theResult.IsNull())
   {
     if (!theResult->myLabel.IsNull())
-      return Standard_True;
+      return true;
 
     // if the object is not allive then it is a wrong data in the Data Model
     theResult.Nullify();
@@ -529,7 +532,7 @@ Standard_Boolean TObj_Object::GetObj(const TDF_Label&       theLabel,
     return GetObj(theLabel.Father(), theResult, isSuper);
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -538,15 +541,16 @@ Standard_Boolean TObj_Object::GetObj(const TDF_Label&       theLabel,
 //           theType gives type of father object to search
 //=======================================================================
 
-Handle(TObj_Object) TObj_Object::GetFatherObject(const Handle(Standard_Type)& theType) const
+occ::handle<TObj_Object> TObj_Object::GetFatherObject(
+  const occ::handle<Standard_Type>& theType) const
 {
-  Handle(TObj_Object) aFather;
+  occ::handle<TObj_Object> aFather;
 
   if (myLabel.IsNull())
     return aFather;
 
-  Handle(TObj_Object) aSon(this);
-  while (aSon->GetObj(aSon->GetLabel().Father(), aFather, Standard_True))
+  occ::handle<TObj_Object> aSon(this);
+  while (aSon->GetObj(aSon->GetLabel().Father(), aFather, true))
   {
     if (theType.IsNull() || aFather->IsKind(theType))
       break;
@@ -565,7 +569,7 @@ Handle(TObj_Object) TObj_Object::GetFatherObject(const Handle(Standard_Type)& th
 void TObj_Object::AfterRetrieval()
 {
   // Register the name
-  Handle(TObj_Model) aModel = GetModel();
+  occ::handle<TObj_Model> aModel = GetModel();
   if (!aModel.IsNull())
     aModel->RegisterName(GetName(), GetLabel(), GetDictionary());
 }
@@ -581,7 +585,7 @@ TDF_Label TObj_Object::GetReferenceLabel() const
 #ifdef DFBROWSE
   return getLabelByRank(GetLabel(), 1, "References");
 #else
-  return GetLabel().FindChild(1, Standard_True);
+  return GetLabel().FindChild(1, true);
 #endif
 }
 
@@ -592,36 +596,34 @@ TDF_Label TObj_Object::GetDataLabel() const
 #ifdef DFBROWSE
   return getLabelByRank(GetLabel(), 3, "Data");
 #else
-  return GetLabel().FindChild(3, Standard_True);
+  return GetLabel().FindChild(3, true);
 #endif
 }
 
 //=================================================================================================
 
-TDF_Label TObj_Object::getDataLabel(const Standard_Integer theRank1,
-                                    const Standard_Integer theRank2) const
+TDF_Label TObj_Object::getDataLabel(const int theRank1, const int theRank2) const
 {
   TDF_Label aLabel;
   if (theRank1 > 0) // protection
   {
-    aLabel = GetDataLabel().FindChild(theRank1, Standard_True);
+    aLabel = GetDataLabel().FindChild(theRank1, true);
     if (theRank2 > 0)
-      aLabel = aLabel.FindChild(theRank2, Standard_True);
+      aLabel = aLabel.FindChild(theRank2, true);
   }
   return aLabel;
 }
 
 //=================================================================================================
 
-TDF_Label TObj_Object::getReferenceLabel(const Standard_Integer theRank1,
-                                         const Standard_Integer theRank2) const
+TDF_Label TObj_Object::getReferenceLabel(const int theRank1, const int theRank2) const
 {
   TDF_Label aLabel;
   if (theRank1 > 0) // protection
   {
-    aLabel = GetReferenceLabel().FindChild(theRank1, Standard_True);
+    aLabel = GetReferenceLabel().FindChild(theRank1, true);
     if (theRank2 > 0)
-      aLabel = aLabel.FindChild(theRank2, Standard_True);
+      aLabel = aLabel.FindChild(theRank2, true);
   }
   return aLabel;
 }
@@ -635,60 +637,59 @@ TDF_Label TObj_Object::getReferenceLabel(const Standard_Integer theRank1,
 //           its sublabel
 //=======================================================================
 
-Standard_Boolean TObj_Object::isDataAttribute(const Standard_GUID&   theGUID,
-                                              const Standard_Integer theRank1,
-                                              const Standard_Integer theRank2) const
+bool TObj_Object::isDataAttribute(const Standard_GUID& theGUID,
+                                  const int            theRank1,
+                                  const int            theRank2) const
 {
   return getDataLabel(theRank1, theRank2).IsAttribute(theGUID);
 }
 
 //=================================================================================================
 
-Standard_Real TObj_Object::getReal(const Standard_Integer theRank1,
-                                   const Standard_Integer theRank2) const
+double TObj_Object::getReal(const int theRank1, const int theRank2) const
 {
   TDF_Label aLabel = getDataLabel(theRank1, theRank2);
 
-  Handle(TDataStd_Real) aReal;
+  occ::handle<TDataStd_Real> aReal;
   aLabel.FindAttribute(TDataStd_Real::GetID(), aReal);
   return aReal.IsNull() ? 0. : aReal->Get();
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::setReal(const Standard_Real    theValue,
-                                      const Standard_Integer theRank1,
-                                      const Standard_Integer theRank2,
-                                      const Standard_Real    theTolerance) const
+bool TObj_Object::setReal(const double theValue,
+                          const int    theRank1,
+                          const int    theRank2,
+                          const double theTolerance) const
 {
   TDF_Label aLabel = getDataLabel(theRank1, theRank2);
 
   // check that value is actually changed
-  Handle(TDataStd_Real) A;
+  occ::handle<TDataStd_Real> A;
   if (aLabel.FindAttribute(TDataStd_Real::GetID(), A) && fabs(A->Get() - theValue) <= theTolerance)
-    return Standard_False;
+    return false;
 
   TDataStd_Real::Set(aLabel, theValue);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HExtendedString) TObj_Object::getExtString(const Standard_Integer theRank1,
-                                                              const Standard_Integer theRank2) const
+occ::handle<TCollection_HExtendedString> TObj_Object::getExtString(const int theRank1,
+                                                                   const int theRank2) const
 {
   TDF_Label aLabel = getDataLabel(theRank1, theRank2);
 
-  Handle(TDataStd_Name) aName;
+  occ::handle<TDataStd_Name> aName;
   aLabel.FindAttribute(TDataStd_Name::GetID(), aName);
   return aName.IsNull() ? 0 : new TCollection_HExtendedString(aName->Get());
 }
 
 //=================================================================================================
 
-void TObj_Object::setExtString(const Handle(TCollection_HExtendedString)& theValue,
-                               const Standard_Integer                     theRank1,
-                               const Standard_Integer                     theRank2) const
+void TObj_Object::setExtString(const occ::handle<TCollection_HExtendedString>& theValue,
+                               const int                                       theRank1,
+                               const int                                       theRank2) const
 {
   TDF_Label aLabel = getDataLabel(theRank1, theRank2);
   if (!theValue.IsNull())
@@ -699,21 +700,21 @@ void TObj_Object::setExtString(const Handle(TCollection_HExtendedString)& theVal
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) TObj_Object::getAsciiString(const Standard_Integer theRank1,
-                                                             const Standard_Integer theRank2) const
+occ::handle<TCollection_HAsciiString> TObj_Object::getAsciiString(const int theRank1,
+                                                                  const int theRank2) const
 {
   TDF_Label aLabel = getDataLabel(theRank1, theRank2);
 
-  Handle(TDataStd_AsciiString) aStrAttr;
+  occ::handle<TDataStd_AsciiString> aStrAttr;
   aLabel.FindAttribute(TDataStd_AsciiString::GetID(), aStrAttr);
   return aStrAttr.IsNull() ? 0 : new TCollection_HAsciiString(aStrAttr->Get());
 }
 
 //=================================================================================================
 
-void TObj_Object::setAsciiString(const Handle(TCollection_HAsciiString)& theValue,
-                                 const Standard_Integer                  theRank1,
-                                 const Standard_Integer                  theRank2) const
+void TObj_Object::setAsciiString(const occ::handle<TCollection_HAsciiString>& theValue,
+                                 const int                                    theRank1,
+                                 const int                                    theRank2) const
 {
   TDF_Label aLabel = getDataLabel(theRank1, theRank2);
   if (!theValue.IsNull())
@@ -724,50 +725,46 @@ void TObj_Object::setAsciiString(const Handle(TCollection_HAsciiString)& theValu
 
 //=================================================================================================
 
-Standard_Integer TObj_Object::getInteger(const Standard_Integer theRank1,
-                                         const Standard_Integer theRank2) const
+int TObj_Object::getInteger(const int theRank1, const int theRank2) const
 {
   TDF_Label aLabel = getDataLabel(theRank1, theRank2);
 
-  Handle(TDataStd_Integer) aNum;
+  occ::handle<TDataStd_Integer> aNum;
   aLabel.FindAttribute(TDataStd_Integer::GetID(), aNum);
   return aNum.IsNull() ? 0 : aNum->Get();
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::setInteger(const Standard_Integer theValue,
-                                         const Standard_Integer theRank1,
-                                         const Standard_Integer theRank2) const
+bool TObj_Object::setInteger(const int theValue, const int theRank1, const int theRank2) const
 {
   TDF_Label aLabel = getDataLabel(theRank1, theRank2);
 
   // check that value is actually changed
-  Handle(TDataStd_Integer) A;
+  occ::handle<TDataStd_Integer> A;
   if (aLabel.FindAttribute(TDataStd_Integer::GetID(), A) && A->Get() == theValue)
-    return Standard_False;
+    return false;
 
   TDataStd_Integer::Set(aLabel, theValue);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(TObj_Object) TObj_Object::getReference(const Standard_Integer theRank1,
-                                              const Standard_Integer theRank2) const
+occ::handle<TObj_Object> TObj_Object::getReference(const int theRank1, const int theRank2) const
 {
   TDF_Label aLabel = getReferenceLabel(theRank1, theRank2);
 
-  Handle(TObj_TReference) aRef;
+  occ::handle<TObj_TReference> aRef;
   aLabel.FindAttribute(TObj_TReference::GetID(), aRef);
-  return aRef.IsNull() ? Handle(TObj_Object)() : aRef->Get();
+  return aRef.IsNull() ? occ::handle<TObj_Object>() : aRef->Get();
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::setReference(const Handle(TObj_Object)& theObject,
-                                           const Standard_Integer     theRank1,
-                                           const Standard_Integer     theRank2)
+bool TObj_Object::setReference(const occ::handle<TObj_Object>& theObject,
+                               const int                       theRank1,
+                               const int                       theRank2)
 {
   TDF_Label aLabel = getReferenceLabel(theRank1, theRank2);
 
@@ -775,31 +772,30 @@ Standard_Boolean TObj_Object::setReference(const Handle(TObj_Object)& theObject,
     return aLabel.ForgetAttribute(TObj_TReference::GetID());
 
   // check that reference is actually changed
-  Handle(TObj_TReference) A;
+  occ::handle<TObj_TReference> A;
   if (aLabel.FindAttribute(TObj_TReference::GetID(), A) && A->Get() == theObject)
-    return Standard_False;
+    return false;
 
   // 27.07.05, PTv: remove reference attribute before create new reference (for Undo/Redo)
   aLabel.ForgetAttribute(TObj_TReference::GetID());
 
-  Handle(TObj_Object) me = this;
+  occ::handle<TObj_Object> me = this;
   TObj_TReference::Set(aLabel, theObject, me);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-TDF_Label TObj_Object::addReference(const Standard_Integer     theRank1,
-                                    const Handle(TObj_Object)& theObject)
+TDF_Label TObj_Object::addReference(const int theRank1, const occ::handle<TObj_Object>& theObject)
 {
   TDF_Label aRefLabel = GetReferenceLabel();
   if (theRank1 > 0)
-    aRefLabel = aRefLabel.FindChild(theRank1, Standard_True);
+    aRefLabel = aRefLabel.FindChild(theRank1, true);
 
   TDF_TagSource aTag;
   TDF_Label     aLabel = aTag.NewChild(aRefLabel);
 
-  Handle(TObj_Object) me = this;
+  occ::handle<TObj_Object> me = this;
   TObj_TReference::Set(aLabel, theObject, me);
   return aLabel;
 }
@@ -815,20 +811,21 @@ TDF_Label TObj_Object::addReference(const Standard_Integer     theRank1,
 //           in order to assure Undo work
 //=======================================================================
 
-Handle(TColStd_HArray1OfReal) TObj_Object::getRealArray(const Standard_Integer theLength,
-                                                        const Standard_Integer theRank1,
-                                                        const Standard_Integer theRank2,
-                                                        const Standard_Real theInitialValue) const
+occ::handle<NCollection_HArray1<double>> TObj_Object::getRealArray(
+  const int    theLength,
+  const int    theRank1,
+  const int    theRank2,
+  const double theInitialValue) const
 {
-  TDF_Label                  aLabel = getDataLabel(theRank1, theRank2);
-  Handle(TDataStd_RealArray) anArrAttribute;
+  TDF_Label                       aLabel = getDataLabel(theRank1, theRank2);
+  occ::handle<TDataStd_RealArray> anArrAttribute;
   if (!aLabel.FindAttribute(TDataStd_RealArray::GetID(), anArrAttribute))
     if (theLength > 0)
     {
       anArrAttribute = TDataStd_RealArray::Set(aLabel, 1, theLength);
       anArrAttribute->Array()->Init(theInitialValue);
     }
-  Handle(TColStd_HArray1OfReal) anArr;
+  occ::handle<NCollection_HArray1<double>> anArr;
   if (!anArrAttribute.IsNull())
     anArr = anArrAttribute->Array();
   return anArr;
@@ -845,21 +842,20 @@ Handle(TColStd_HArray1OfReal) TObj_Object::getRealArray(const Standard_Integer t
 //           in order to assure Undo work
 //=======================================================================
 
-Handle(TColStd_HArray1OfInteger) TObj_Object::getIntegerArray(
-  const Standard_Integer theLength,
-  const Standard_Integer theRank1,
-  const Standard_Integer theRank2,
-  const Standard_Integer theInitialValue) const
+occ::handle<NCollection_HArray1<int>> TObj_Object::getIntegerArray(const int theLength,
+                                                                   const int theRank1,
+                                                                   const int theRank2,
+                                                                   const int theInitialValue) const
 {
-  TDF_Label                     aLabel = getDataLabel(theRank1, theRank2);
-  Handle(TDataStd_IntegerArray) anArrAttribute;
+  TDF_Label                          aLabel = getDataLabel(theRank1, theRank2);
+  occ::handle<TDataStd_IntegerArray> anArrAttribute;
   if (!aLabel.FindAttribute(TDataStd_IntegerArray::GetID(), anArrAttribute))
     if (theLength > 0)
     {
       anArrAttribute = TDataStd_IntegerArray::Set(aLabel, 1, theLength);
       anArrAttribute->Array()->Init(theInitialValue);
     }
-  Handle(TColStd_HArray1OfInteger) anArr;
+  occ::handle<NCollection_HArray1<int>> anArr;
   if (!anArrAttribute.IsNull())
     anArr = anArrAttribute->Array();
   return anArr;
@@ -876,18 +872,18 @@ Handle(TColStd_HArray1OfInteger) TObj_Object::getIntegerArray(
 //           in order to assure Undo work
 //=======================================================================
 
-Handle(TColStd_HArray1OfExtendedString) TObj_Object::getExtStringArray(
-  const Standard_Integer theLength,
-  const Standard_Integer theRank1,
-  const Standard_Integer theRank2) const
+occ::handle<NCollection_HArray1<TCollection_ExtendedString>> TObj_Object::getExtStringArray(
+  const int theLength,
+  const int theRank1,
+  const int theRank2) const
 {
-  TDF_Label                       aLabel = getDataLabel(theRank1, theRank2);
-  Handle(TDataStd_ExtStringArray) anArrAttribute;
+  TDF_Label                            aLabel = getDataLabel(theRank1, theRank2);
+  occ::handle<TDataStd_ExtStringArray> anArrAttribute;
   if (!aLabel.FindAttribute(TDataStd_ExtStringArray::GetID(), anArrAttribute))
     if (theLength > 0)
       anArrAttribute = TDataStd_ExtStringArray::Set(aLabel, 1, theLength);
 
-  Handle(TColStd_HArray1OfExtendedString) anArr;
+  occ::handle<NCollection_HArray1<TCollection_ExtendedString>> anArr;
   if (!anArrAttribute.IsNull())
     anArr = anArrAttribute->Array();
   return anArr;
@@ -900,12 +896,12 @@ Handle(TColStd_HArray1OfExtendedString) TObj_Object::getExtStringArray(
 //           If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
 //=======================================================================
 
-void TObj_Object::setArray(const Handle(TColStd_HArray1OfReal)& theArray,
-                           const Standard_Integer               theRank1,
-                           const Standard_Integer               theRank2)
+void TObj_Object::setArray(const occ::handle<NCollection_HArray1<double>>& theArray,
+                           const int                                       theRank1,
+                           const int                                       theRank2)
 {
-  TDF_Label                  aLabel = getDataLabel(theRank1, theRank2);
-  Handle(TDataStd_RealArray) anArrAttribute;
+  TDF_Label                       aLabel = getDataLabel(theRank1, theRank2);
+  occ::handle<TDataStd_RealArray> anArrAttribute;
   if (!aLabel.FindAttribute(TDataStd_RealArray::GetID(), anArrAttribute) && !theArray.IsNull())
     anArrAttribute = TDataStd_RealArray::Set(aLabel, 1, 1);
 
@@ -931,12 +927,12 @@ void TObj_Object::setArray(const Handle(TColStd_HArray1OfReal)& theArray,
 //           If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
 //=======================================================================
 
-void TObj_Object::setArray(const Handle(TColStd_HArray1OfInteger)& theArray,
-                           const Standard_Integer                  theRank1,
-                           const Standard_Integer                  theRank2)
+void TObj_Object::setArray(const occ::handle<NCollection_HArray1<int>>& theArray,
+                           const int                                    theRank1,
+                           const int                                    theRank2)
 {
-  TDF_Label                     aLabel = getDataLabel(theRank1, theRank2);
-  Handle(TDataStd_IntegerArray) anArrAttribute;
+  TDF_Label                          aLabel = getDataLabel(theRank1, theRank2);
+  occ::handle<TDataStd_IntegerArray> anArrAttribute;
   if (!aLabel.FindAttribute(TDataStd_IntegerArray::GetID(), anArrAttribute) && !theArray.IsNull())
     anArrAttribute = TDataStd_IntegerArray::Set(aLabel, 1, 1);
 
@@ -962,12 +958,13 @@ void TObj_Object::setArray(const Handle(TColStd_HArray1OfInteger)& theArray,
 //           If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
 //=======================================================================
 
-void TObj_Object::setArray(const Handle(TColStd_HArray1OfExtendedString)& theArray,
-                           const Standard_Integer                         theRank1,
-                           const Standard_Integer                         theRank2)
+void TObj_Object::setArray(
+  const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& theArray,
+  const int                                                           theRank1,
+  const int                                                           theRank2)
 {
-  TDF_Label                       aLabel = getDataLabel(theRank1, theRank2);
-  Handle(TDataStd_ExtStringArray) anArrAttribute;
+  TDF_Label                            aLabel = getDataLabel(theRank1, theRank2);
+  occ::handle<TDataStd_ExtStringArray> anArrAttribute;
   if (!aLabel.FindAttribute(TDataStd_ExtStringArray::GetID(), anArrAttribute) && !theArray.IsNull())
     anArrAttribute = TDataStd_ExtStringArray::Set(aLabel, 1, 1);
 
@@ -994,11 +991,11 @@ void TObj_Object::setArray(const Handle(TColStd_HArray1OfExtendedString)& theArr
 static void copyTagSources(const TDF_Label& theSourceLabel, const TDF_Label& theTargetLabel)
 {
   // copy tag source on current label
-  Handle(TDF_Attribute) anAttr;
+  occ::handle<TDF_Attribute> anAttr;
   if (theSourceLabel.FindAttribute(TDF_TagSource::GetID(), anAttr))
   {
-    Handle(TDF_TagSource) aTagSource       = Handle(TDF_TagSource)::DownCast(anAttr);
-    Handle(TDF_TagSource) aTargetTagSource = TDF_TagSource::Set(theTargetLabel);
+    occ::handle<TDF_TagSource> aTagSource       = occ::down_cast<TDF_TagSource>(anAttr);
+    occ::handle<TDF_TagSource> aTargetTagSource = TDF_TagSource::Set(theTargetLabel);
     aTargetTagSource->Set(aTagSource->Get());
   }
 
@@ -1007,7 +1004,7 @@ static void copyTagSources(const TDF_Label& theSourceLabel, const TDF_Label& the
   TDF_ChildIterator aLI(theTargetLabel);
   for (; aLI.More(); aLI.Next())
   {
-    TDF_Label aSourceLabel = theSourceLabel.FindChild(aLI.Value().Tag(), Standard_False);
+    TDF_Label aSourceLabel = theSourceLabel.FindChild(aLI.Value().Tag(), false);
     if (!aSourceLabel.IsNull())
       copyTagSources(aSourceLabel, aLI.Value());
   }
@@ -1015,20 +1012,20 @@ static void copyTagSources(const TDF_Label& theSourceLabel, const TDF_Label& the
 
 //=================================================================================================
 
-Handle(TObj_Object) TObj_Object::Clone(const TDF_Label&            theTargetLabel,
-                                       Handle(TDF_RelocationTable) theRelocTable)
+occ::handle<TObj_Object> TObj_Object::Clone(const TDF_Label&                 theTargetLabel,
+                                            occ::handle<TDF_RelocationTable> theRelocTable)
 {
-  Handle(TDF_RelocationTable) aRelocTable = theRelocTable;
+  occ::handle<TDF_RelocationTable> aRelocTable = theRelocTable;
   if (theRelocTable.IsNull())
     aRelocTable = new TDF_RelocationTable;
-  Handle(TObj_Object) aNewObj;
+  occ::handle<TObj_Object> aNewObj;
   // take current model for restoring it after creating object.
-  const Handle(TObj_Model)& aCurrentModel = TObj_Assistant::GetCurrentModel();
+  const occ::handle<TObj_Model>& aCurrentModel = TObj_Assistant::GetCurrentModel();
 
   // take target model
-  Handle(TObj_Model)  aTargetModel;
-  TDF_Label           aLabel = TDocStd_Document::Get(theTargetLabel)->Main();
-  Handle(TObj_TModel) aModelAttr;
+  occ::handle<TObj_Model>  aTargetModel;
+  TDF_Label                aLabel = TDocStd_Document::Get(theTargetLabel)->Main();
+  occ::handle<TObj_TModel> aModelAttr;
   if (aLabel.FindAttribute(TObj_TModel::GetID(), aModelAttr))
     aTargetModel = aModelAttr->Model();
 
@@ -1045,7 +1042,7 @@ Handle(TObj_Object) TObj_Object::Clone(const TDF_Label&            theTargetLabe
     aRelocTable->SetRelocation(GetLabel(), theTargetLabel);
 
     // now set name of object.
-    const Handle(TCollection_HExtendedString) aCloneName = GetNameForClone(aNewObj);
+    const occ::handle<TCollection_HExtendedString> aCloneName = GetNameForClone(aNewObj);
     if (!aCloneName.IsNull() && !aCloneName->IsEmpty())
       aNewObj->SetName(new TCollection_HExtendedString(aCloneName));
 
@@ -1073,9 +1070,9 @@ Handle(TObj_Object) TObj_Object::Clone(const TDF_Label&            theTargetLabe
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::copyData(const Handle(TObj_Object)& theTargetObject)
+bool TObj_Object::copyData(const occ::handle<TObj_Object>& theTargetObject)
 {
-  Standard_Boolean IsDone = Standard_False;
+  bool IsDone = false;
   if (!theTargetObject->DynamicType()->SubType(DynamicType()))
     return IsDone;
   // init the copier by labels.
@@ -1093,21 +1090,21 @@ Standard_Boolean TObj_Object::copyData(const Handle(TObj_Object)& theTargetObjec
 
 //=================================================================================================
 
-void TObj_Object::CopyChildren(TDF_Label&                         theTargetLabel,
-                               const Handle(TDF_RelocationTable)& theRelocTable)
+void TObj_Object::CopyChildren(TDF_Label&                              theTargetLabel,
+                               const occ::handle<TDF_RelocationTable>& theRelocTable)
 {
-  TDF_Label                   aSourceChildLabel = GetChildLabel();
-  Handle(TObj_ObjectIterator) aChildren         = // GetChildren();
-                                                  // clang-format off
-    new TObj_OcafObjectIterator (aSourceChildLabel, NULL, Standard_True); // to support children on sublabels of child label
-                                                  // clang-format on
+  TDF_Label                        aSourceChildLabel = GetChildLabel();
+  occ::handle<TObj_ObjectIterator> aChildren         = // GetChildren();
+                                                       // clang-format off
+    new TObj_OcafObjectIterator (aSourceChildLabel, NULL, true); // to support children on sublabels of child label
+                                                       // clang-format on
   for (; aChildren->More(); aChildren->Next())
   {
-    Handle(TObj_Object) aChild = aChildren->Value();
+    occ::handle<TObj_Object> aChild = aChildren->Value();
     if (!aChild.IsNull())
     {
       // to support childs on sublabels of sublabel of child label
-      TColStd_SequenceOfInteger aTags;
+      NCollection_Sequence<int> aTags;
       TDF_Label                 aCurChildLab = aChild->GetLabel();
       while (!aCurChildLab.IsNull() && aCurChildLab != aSourceChildLabel)
       {
@@ -1115,8 +1112,8 @@ void TObj_Object::CopyChildren(TDF_Label&                         theTargetLabel
         aCurChildLab = aCurChildLab.Father();
       }
       TDF_Label aChildLabel = theTargetLabel;
-      for (Standard_Integer i = aTags.Length(); i > 0; i--)
-        aChildLabel = aChildLabel.FindChild(aTags.Value(i), Standard_True);
+      for (int i = aTags.Length(); i > 0; i--)
+        aChildLabel = aChildLabel.FindChild(aTags.Value(i), true);
 
       aChild->Clone(aChildLabel, theRelocTable);
     }
@@ -1125,22 +1122,22 @@ void TObj_Object::CopyChildren(TDF_Label&                         theTargetLabel
 
 //=================================================================================================
 
-void TObj_Object::CopyReferences(const Handle(TObj_Object)&         theTargetObject,
-                                 const Handle(TDF_RelocationTable)& theRelocTable)
+void TObj_Object::CopyReferences(const occ::handle<TObj_Object>&         theTargetObject,
+                                 const occ::handle<TDF_RelocationTable>& theRelocTable)
 {
   // recursive copy of references
-  Handle(TObj_ObjectIterator)
+  occ::handle<TObj_ObjectIterator>
     aSrcChildren = // GetChildren();
                    // to support childs on sublabels of sublabel of child label
-    new TObj_OcafObjectIterator(GetChildLabel(), NULL, Standard_True);
+    new TObj_OcafObjectIterator(GetChildLabel(), NULL, true);
   for (; aSrcChildren->More(); aSrcChildren->Next())
   {
-    Handle(TObj_Object) aSrcChild = aSrcChildren->Value();
-    TDF_Label           aSrcL     = aSrcChild->GetLabel();
-    TDF_Label           aDestLabel;
+    occ::handle<TObj_Object> aSrcChild = aSrcChildren->Value();
+    TDF_Label                aSrcL     = aSrcChild->GetLabel();
+    TDF_Label                aDestLabel;
     if (!theRelocTable->HasRelocation(aSrcL, aDestLabel))
       continue;
-    Handle(TObj_Object) aDstChild;
+    occ::handle<TObj_Object> aDstChild;
     if (!TObj_Object::GetObj(aDestLabel, aDstChild))
       continue;
     if (aDstChild.IsNull() || !aDstChild->IsAlive()
@@ -1150,7 +1147,7 @@ void TObj_Object::CopyReferences(const Handle(TObj_Object)&         theTargetObj
     aSrcChild->CopyReferences(aDstChild, theRelocTable);
   }
   // copy of my references
-  theTargetObject->GetReferenceLabel().ForgetAllAttributes(Standard_True);
+  theTargetObject->GetReferenceLabel().ForgetAllAttributes(true);
 
   TDF_Label aTargetLabel = theTargetObject->GetReferenceLabel();
   copyReferences(GetReferenceLabel(), aTargetLabel, theRelocTable);
@@ -1158,14 +1155,14 @@ void TObj_Object::CopyReferences(const Handle(TObj_Object)&         theTargetObj
 
 //=================================================================================================
 
-void TObj_Object::copyReferences(const TDF_Label&                   theSourceLabel,
-                                 TDF_Label&                         theTargetLabel,
-                                 const Handle(TDF_RelocationTable)& theRelocTable)
+void TObj_Object::copyReferences(const TDF_Label&                        theSourceLabel,
+                                 TDF_Label&                              theTargetLabel,
+                                 const occ::handle<TDF_RelocationTable>& theRelocTable)
 {
   TDF_AttributeIterator anIter(theSourceLabel);
   for (; anIter.More(); anIter.Next())
   {
-    Handle(TDF_Attribute) anAttr = anIter.Value()->NewEmpty();
+    occ::handle<TDF_Attribute> anAttr = anIter.Value()->NewEmpty();
     theTargetLabel.AddAttribute(anAttr);
     anIter.Value()->Paste(anAttr, theRelocTable);
   }
@@ -1173,23 +1170,23 @@ void TObj_Object::copyReferences(const TDF_Label&                   theSourceLab
   TDF_Label         aTargetLabel;
   for (; aLI.More(); aLI.Next())
   {
-    aTargetLabel = theTargetLabel.FindChild(aLI.Value().Tag(), Standard_True);
+    aTargetLabel = theTargetLabel.FindChild(aLI.Value().Tag(), true);
     copyReferences(aLI.Value(), aTargetLabel, theRelocTable);
   }
 }
 
 //=================================================================================================
 
-void TObj_Object::ReplaceReference(const Handle(TObj_Object)& theOldObject,
-                                   const Handle(TObj_Object)& theNewObject)
+void TObj_Object::ReplaceReference(const occ::handle<TObj_Object>& theOldObject,
+                                   const occ::handle<TObj_Object>& theNewObject)
 {
-  Handle(TObj_LabelIterator) anItr = Handle(TObj_LabelIterator)::DownCast(GetReferences());
+  occ::handle<TObj_LabelIterator> anItr = occ::down_cast<TObj_LabelIterator>(GetReferences());
   if (anItr.IsNull())
     return;
   // iterates on references.
   for (; anItr->More(); anItr->Next())
   {
-    Handle(TObj_Object) anObj = anItr->Value();
+    occ::handle<TObj_Object> anObj = anItr->Value();
     if (anObj != theOldObject)
       continue;
 
@@ -1201,7 +1198,7 @@ void TObj_Object::ReplaceReference(const Handle(TObj_Object)& theOldObject,
       break;
     }
     // set reference to new object.
-    Handle(TObj_Object) me = this;
+    occ::handle<TObj_Object> me = this;
     TObj_TReference::Set(aRefLabel, theNewObject, me);
     break;
   }
@@ -1209,75 +1206,75 @@ void TObj_Object::ReplaceReference(const Handle(TObj_Object)& theOldObject,
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::IsAlive() const
+bool TObj_Object::IsAlive() const
 {
   if (myLabel.IsNull())
-    return Standard_False;
+    return false;
 
-  Handle(TObj_Object) anObj;
+  occ::handle<TObj_Object> anObj;
   if (!GetObj(myLabel, anObj))
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer TObj_Object::GetFlags() const
+int TObj_Object::GetFlags() const
 {
   return getInteger(DataTag_Flags);
 }
 
 //=================================================================================================
 
-void TObj_Object::SetFlags(const Standard_Integer theMask)
+void TObj_Object::SetFlags(const int theMask)
 {
-  Standard_Integer aFlags = getInteger(DataTag_Flags);
-  aFlags                  = aFlags | theMask;
+  int aFlags = getInteger(DataTag_Flags);
+  aFlags     = aFlags | theMask;
   setInteger(aFlags, DataTag_Flags);
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::TestFlags(const Standard_Integer theMask) const
+bool TObj_Object::TestFlags(const int theMask) const
 {
-  Standard_Integer aFlags = getInteger(DataTag_Flags);
+  int aFlags = getInteger(DataTag_Flags);
   return (aFlags & theMask) != 0;
 }
 
 //=================================================================================================
 
-void TObj_Object::ClearFlags(const Standard_Integer theMask)
+void TObj_Object::ClearFlags(const int theMask)
 {
-  Standard_Integer aFlags = getInteger(DataTag_Flags);
-  aFlags                  = aFlags & (~theMask);
+  int aFlags = getInteger(DataTag_Flags);
+  aFlags     = aFlags & (~theMask);
   setInteger(aFlags, DataTag_Flags);
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::RemoveBackReferences(const TObj_DeletingMode theMode)
+bool TObj_Object::RemoveBackReferences(const TObj_DeletingMode theMode)
 {
-  Handle(TObj_ObjectIterator) aRefs = GetBackReferences();
+  occ::handle<TObj_ObjectIterator> aRefs = GetBackReferences();
 
   // Free Object can be deleted in any Mode
   if (aRefs.IsNull() || !aRefs->More())
-    return Standard_True;
+    return true;
 
   if (theMode == TObj_FreeOnly)
-    return Standard_False;
+    return false;
 
   // Defining the sequence of objects which are referenced to this one. The
   // first sequence stores containers the second one object with strong
   // relation.
-  TObj_SequenceOfObject aContainers;
-  TObj_SequenceOfObject aStrongs;
-  Handle(TObj_Object)   aMe = this;
+  NCollection_Sequence<occ::handle<TObj_Object>> aContainers;
+  NCollection_Sequence<occ::handle<TObj_Object>> aStrongs;
+  occ::handle<TObj_Object>                       aMe = this;
 
   // Sorting the referencing objects
   for (; aRefs->More(); aRefs->Next())
   {
-    Handle(TObj_Object) anObject = aRefs->Value();
+    occ::handle<TObj_Object> anObject = aRefs->Value();
     if (anObject.IsNull() || !anObject->IsAlive())
       continue;
     if (anObject->CanRemoveReference(aMe))
@@ -1287,19 +1284,19 @@ Standard_Boolean TObj_Object::RemoveBackReferences(const TObj_DeletingMode theMo
   }
   // Can not be removed without deletion of referenced objects mode
   if (theMode == TObj_KeepDepending && aStrongs.Length() > 0)
-    return Standard_False;
+    return false;
   // Delete or link off the referencing objects
-  Standard_Integer i;
-  Handle(TDF_Data) anOwnData = GetLabel().Data();
+  int                   i;
+  occ::handle<TDF_Data> anOwnData = GetLabel().Data();
   for (i = 1; i <= aContainers.Length(); i++)
   {
-    Handle(TObj_Object) anObj = aContainers(i);
+    occ::handle<TObj_Object> anObj = aContainers(i);
     if (anObj.IsNull() || anObj->GetLabel().IsNull())
       continue; // undead object on dead label
-    Handle(TDF_Data) aData      = anObj->GetLabel().Data();
-    Standard_Boolean aModifMode = aData->IsModificationAllowed();
+    occ::handle<TDF_Data> aData      = anObj->GetLabel().Data();
+    bool                  aModifMode = aData->IsModificationAllowed();
     if (anOwnData != aData)
-      aData->AllowModification(Standard_True);
+      aData->AllowModification(true);
     anObj->RemoveReference(aMe);
     if (anOwnData != aData)
       aData->AllowModification(aModifMode);
@@ -1312,19 +1309,19 @@ Standard_Boolean TObj_Object::RemoveBackReferences(const TObj_DeletingMode theMo
   */
   for (i = 1; i <= aStrongs.Length(); i++)
   {
-    Handle(TObj_Object) anObj = aStrongs(i);
+    occ::handle<TObj_Object> anObj = aStrongs(i);
     if (anObj.IsNull() || anObj->GetLabel().IsNull())
       continue; // undead object on dead label
-    Handle(TDF_Data) aData      = anObj->GetLabel().Data();
-    Standard_Boolean aModifMode = aData->IsModificationAllowed();
+    occ::handle<TDF_Data> aData      = anObj->GetLabel().Data();
+    bool                  aModifMode = aData->IsModificationAllowed();
     if (anOwnData != aData)
-      aData->AllowModification(Standard_True);
+      aData->AllowModification(true);
     anObj->Detach(theMode);
     if (anOwnData != aData)
       aData->AllowModification(aModifMode);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -1340,15 +1337,15 @@ Standard_Boolean TObj_Object::RemoveBackReferences(const TObj_DeletingMode theMo
 //           a new referred label    = 0:2:7:2:7
 //=======================================================================
 
-Standard_Boolean TObj_Object::RelocateReferences(const TDF_Label&       theFromRoot,
-                                                 const TDF_Label&       theToRoot,
-                                                 const Standard_Boolean theUpdateBackRefs)
+bool TObj_Object::RelocateReferences(const TDF_Label& theFromRoot,
+                                     const TDF_Label& theToRoot,
+                                     const bool       theUpdateBackRefs)
 {
-  TDF_ChildIDIterator aRefIt(GetReferenceLabel(), TObj_TReference::GetID(), Standard_True);
-  Handle(TObj_Object) anObj;
+  TDF_ChildIDIterator      aRefIt(GetReferenceLabel(), TObj_TReference::GetID(), true);
+  occ::handle<TObj_Object> anObj;
   for (; aRefIt.More(); aRefIt.Next())
   {
-    Handle(TObj_TReference) aRef = Handle(TObj_TReference)::DownCast(aRefIt.Value());
+    occ::handle<TObj_TReference> aRef = occ::down_cast<TObj_TReference>(aRefIt.Value());
 
     TDF_Label aNewLabel, aLabel = aRef->GetLabel();
     if (aLabel.Data() != theFromRoot.Data() || aLabel.IsDescendant(theToRoot))
@@ -1356,12 +1353,12 @@ Standard_Boolean TObj_Object::RelocateReferences(const TDF_Label&       theFromR
 
     TDF_Tool::RelocateLabel(aLabel, theFromRoot, theToRoot, aNewLabel);
     if (aNewLabel.IsNull() || !TObj_Object::GetObj(aNewLabel, anObj))
-      return Standard_False;
+      return false;
 
     // care of back references
     if (theUpdateBackRefs)
     {
-      Handle(TObj_Object) me = this;
+      occ::handle<TObj_Object> me = this;
       // a new referred object
       anObj->AddBackReference(me);
       // an old object
@@ -1373,34 +1370,33 @@ Standard_Boolean TObj_Object::RelocateReferences(const TDF_Label&       theFromR
     aRef->Set(aNewLabel, aRef->GetMasterLabel());
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::GetBadReference(const TDF_Label& theRoot,
-                                              TDF_Label&       theBadReference) const
+bool TObj_Object::GetBadReference(const TDF_Label& theRoot, TDF_Label& theBadReference) const
 {
-  TDF_ChildIDIterator aRefIt(GetReferenceLabel(), TObj_TReference::GetID(), Standard_True);
-  Handle(TObj_Object) anObj;
+  TDF_ChildIDIterator      aRefIt(GetReferenceLabel(), TObj_TReference::GetID(), true);
+  occ::handle<TObj_Object> anObj;
   for (; aRefIt.More(); aRefIt.Next())
   {
-    Handle(TObj_TReference) aRef = Handle(TObj_TReference)::DownCast(aRefIt.Value());
+    occ::handle<TObj_TReference> aRef = occ::down_cast<TObj_TReference>(aRefIt.Value());
 
     TDF_Label aLabel = aRef->GetLabel();
     if (aLabel.Data() == theRoot.Data() && !aLabel.IsDescendant(theRoot))
     {
       theBadReference = aLabel;
-      return Standard_True;
+      return true;
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Integer TObj_Object::GetTypeFlags() const
+int TObj_Object::GetTypeFlags() const
 {
   return Visible;
 }
@@ -1410,9 +1406,9 @@ Standard_Integer TObj_Object::GetTypeFlags() const
 // purpose  : default implementation
 //=======================================================================
 
-Handle(TObj_TNameContainer) TObj_Object::GetDictionary() const
+occ::handle<TObj_TNameContainer> TObj_Object::GetDictionary() const
 {
-  Handle(TObj_Model) aModel = GetModel();
+  occ::handle<TObj_Model> aModel = GetModel();
   if (!aModel.IsNull())
     return aModel->GetDictionary();
   return NULL;
@@ -1420,17 +1416,17 @@ Handle(TObj_TNameContainer) TObj_Object::GetDictionary() const
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::SetOrder(const Standard_Integer& theIndx)
+bool TObj_Object::SetOrder(const int& theIndx)
 {
   setInteger(theIndx, DataTag_Order);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer TObj_Object::GetOrder() const
+int TObj_Object::GetOrder() const
 {
-  Standard_Integer order = getInteger(DataTag_Order);
+  int order = getInteger(DataTag_Order);
   if (!order)
     order = GetLabel().Tag();
   return order;
@@ -1438,7 +1434,7 @@ Standard_Integer TObj_Object::GetOrder() const
 
 //=================================================================================================
 
-Standard_Boolean TObj_Object::HasModifications() const
+bool TObj_Object::HasModifications() const
 {
-  return (!IsAlive() ? Standard_False : GetLabel().MayBeModified());
+  return (!IsAlive() ? false : GetLabel().MayBeModified());
 }

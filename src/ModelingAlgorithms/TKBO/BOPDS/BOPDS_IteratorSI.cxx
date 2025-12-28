@@ -34,7 +34,7 @@ BOPDS_IteratorSI::BOPDS_IteratorSI()
 
 //=================================================================================================
 
-BOPDS_IteratorSI::BOPDS_IteratorSI(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPDS_IteratorSI::BOPDS_IteratorSI(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPDS_Iterator(theAllocator)
 {
 }
@@ -45,9 +45,9 @@ BOPDS_IteratorSI::~BOPDS_IteratorSI() {}
 
 //=================================================================================================
 
-void BOPDS_IteratorSI::UpdateByLevelOfCheck(const Standard_Integer theLevel)
+void BOPDS_IteratorSI::UpdateByLevelOfCheck(const int theLevel)
 {
-  Standard_Integer i, aNbInterfTypes;
+  int i, aNbInterfTypes;
   //
   aNbInterfTypes = BOPDS_DS::NbInterfTypes();
   for (i = theLevel + 1; i < aNbInterfTypes; ++i)
@@ -58,16 +58,16 @@ void BOPDS_IteratorSI::UpdateByLevelOfCheck(const Standard_Integer theLevel)
 
 //=================================================================================================
 
-void BOPDS_IteratorSI::Intersect(const Handle(IntTools_Context)& theCtx,
-                                 const Standard_Boolean          theCheckOBB,
-                                 const Standard_Real             theFuzzyValue)
+void BOPDS_IteratorSI::Intersect(const occ::handle<IntTools_Context>& theCtx,
+                                 const bool                           theCheckOBB,
+                                 const double                         theFuzzyValue)
 {
-  const Standard_Integer aNbS = myDS->NbSourceShapes();
+  const int aNbS = myDS->NbSourceShapes();
 
   BOPTools_BoxTree aBBTree;
   aBBTree.SetSize(aNbS);
 
-  for (Standard_Integer i = 0; i < aNbS; ++i)
+  for (int i = 0; i < aNbS; ++i)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (!aSI.IsInterfering())
@@ -82,15 +82,15 @@ void BOPDS_IteratorSI::Intersect(const Handle(IntTools_Context)& theCtx,
   // Select pairs of shapes with interfering bounding boxes
   BOPTools_BoxPairSelector aPairSelector;
   aPairSelector.SetBVHSets(&aBBTree, &aBBTree);
-  aPairSelector.SetSame(Standard_True);
+  aPairSelector.SetSame(true);
   aPairSelector.Select();
   aPairSelector.Sort();
 
   // Treat the selected pairs
-  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
-  const Standard_Integer aNbPairs = static_cast<Standard_Integer>(aPairs.size());
+  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aPairSelector.Pairs();
+  const int                                             aNbPairs = static_cast<int>(aPairs.size());
 
-  for (Standard_Integer iPair = 0; iPair < aNbPairs; ++iPair)
+  for (int iPair = 0; iPair < aNbPairs; ++iPair)
   {
     const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
 
@@ -100,8 +100,8 @@ void BOPDS_IteratorSI::Intersect(const Handle(IntTools_Context)& theCtx,
     const TopAbs_ShapeEnum aType1 = aSI1.ShapeType();
     const TopAbs_ShapeEnum aType2 = aSI2.ShapeType();
 
-    Standard_Integer iType1 = BOPDS_Tools::TypeToInteger(aType1);
-    Standard_Integer iType2 = BOPDS_Tools::TypeToInteger(aType2);
+    int iType1 = BOPDS_Tools::TypeToInteger(aType1);
+    int iType2 = BOPDS_Tools::TypeToInteger(aType2);
 
     // avoid interfering of the shape with its sub-shapes
     if (((iType1 < iType2) && aSI1.HasSubShape(aPair.ID2))
@@ -118,7 +118,7 @@ void BOPDS_IteratorSI::Intersect(const Handle(IntTools_Context)& theCtx,
         continue;
     }
 
-    Standard_Integer iX = BOPDS_Tools::TypeToInteger(aType1, aType2);
+    int iX = BOPDS_Tools::TypeToInteger(aType1, aType2);
     myLists(iX).Append(BOPDS_Pair(std::min(aPair.ID1, aPair.ID2), std::max(aPair.ID1, aPair.ID2)));
   }
 }

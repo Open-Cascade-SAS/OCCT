@@ -32,16 +32,16 @@
 
 gp_Pln::gp_Pln(const gp_Pnt& P, const gp_Dir& V)
 {
-  Standard_Real A    = V.X();
-  Standard_Real B    = V.Y();
-  Standard_Real C    = V.Z();
-  Standard_Real Aabs = A;
+  double A    = V.X();
+  double B    = V.Y();
+  double C    = V.Z();
+  double Aabs = A;
   if (Aabs < 0)
     Aabs = -Aabs;
-  Standard_Real Babs = B;
+  double Babs = B;
   if (Babs < 0)
     Babs = -Babs;
-  Standard_Real Cabs = C;
+  double Cabs = C;
   if (Cabs < 0)
     Cabs = -Cabs;
 
@@ -73,18 +73,15 @@ gp_Pln::gp_Pln(const gp_Pnt& P, const gp_Dir& V)
   }
 }
 
-gp_Pln::gp_Pln(const Standard_Real A,
-               const Standard_Real B,
-               const Standard_Real C,
-               const Standard_Real D)
+gp_Pln::gp_Pln(const double A, const double B, const double C, const double D)
 {
-  Standard_Real Aabs = A;
+  double Aabs = A;
   if (Aabs < 0)
     Aabs = -Aabs;
-  Standard_Real Babs = B;
+  double Babs = B;
   if (Babs < 0)
     Babs = -Babs;
-  Standard_Real Cabs = C;
+  double Cabs = C;
   if (Cabs < 0)
     Cabs = -Cabs;
   if (Babs <= Aabs && Babs <= Cabs)
@@ -146,7 +143,7 @@ gp_Pln gp_Pln::Mirrored(const gp_Ax2& A2) const noexcept
   return Pl;
 }
 
-void gp_Pln::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void gp_Pln::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &pos)
 }

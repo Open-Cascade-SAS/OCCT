@@ -20,14 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepBasic_HArray1OfProductContext.hxx>
+#include <StepBasic_ProductContext.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepBasic_ProductContext;
-
-class StepBasic_Product;
-DEFINE_STANDARD_HANDLE(StepBasic_Product, Standard_Transient)
 
 class StepBasic_Product : public Standard_Transient
 {
@@ -36,41 +35,43 @@ public:
   //! Returns a Product
   Standard_EXPORT StepBasic_Product();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&          aId,
-                            const Handle(TCollection_HAsciiString)&          aName,
-                            const Handle(TCollection_HAsciiString)&          aDescription,
-                            const Handle(StepBasic_HArray1OfProductContext)& aFrameOfReference);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aId,
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const occ::handle<TCollection_HAsciiString>& aDescription,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>&
+      aFrameOfReference);
 
-  Standard_EXPORT void SetId(const Handle(TCollection_HAsciiString)& aId);
+  Standard_EXPORT void SetId(const occ::handle<TCollection_HAsciiString>& aId);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Id() const;
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   Standard_EXPORT void SetFrameOfReference(
-    const Handle(StepBasic_HArray1OfProductContext)& aFrameOfReference);
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>&
+      aFrameOfReference);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfProductContext) FrameOfReference() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>
+                  FrameOfReference() const;
 
-  Standard_EXPORT Handle(StepBasic_ProductContext) FrameOfReferenceValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_ProductContext> FrameOfReferenceValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbFrameOfReference() const;
+  Standard_EXPORT int NbFrameOfReference() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_Product, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)          id;
-  Handle(TCollection_HAsciiString)          name;
-  Handle(TCollection_HAsciiString)          description;
-  Handle(StepBasic_HArray1OfProductContext) frameOfReference;
+  occ::handle<TCollection_HAsciiString>                                   id;
+  occ::handle<TCollection_HAsciiString>                                   name;
+  occ::handle<TCollection_HAsciiString>                                   description;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> frameOfReference;
 };
 
 #endif // _StepBasic_Product_HeaderFile

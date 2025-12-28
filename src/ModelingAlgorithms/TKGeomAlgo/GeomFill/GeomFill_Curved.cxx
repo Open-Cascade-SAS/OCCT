@@ -18,9 +18,9 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
@@ -28,71 +28,72 @@ GeomFill_Curved::GeomFill_Curved() {}
 
 //=================================================================================================
 
-GeomFill_Curved::GeomFill_Curved(const TColgp_Array1OfPnt& P1,
-                                 const TColgp_Array1OfPnt& P2,
-                                 const TColgp_Array1OfPnt& P3,
-                                 const TColgp_Array1OfPnt& P4)
+GeomFill_Curved::GeomFill_Curved(const NCollection_Array1<gp_Pnt>& P1,
+                                 const NCollection_Array1<gp_Pnt>& P2,
+                                 const NCollection_Array1<gp_Pnt>& P3,
+                                 const NCollection_Array1<gp_Pnt>& P4)
 {
   Init(P1, P2, P3, P4);
 }
 
 //=================================================================================================
 
-GeomFill_Curved::GeomFill_Curved(const TColgp_Array1OfPnt&   P1,
-                                 const TColgp_Array1OfPnt&   P2,
-                                 const TColgp_Array1OfPnt&   P3,
-                                 const TColgp_Array1OfPnt&   P4,
-                                 const TColStd_Array1OfReal& W1,
-                                 const TColStd_Array1OfReal& W2,
-                                 const TColStd_Array1OfReal& W3,
-                                 const TColStd_Array1OfReal& W4)
+GeomFill_Curved::GeomFill_Curved(const NCollection_Array1<gp_Pnt>& P1,
+                                 const NCollection_Array1<gp_Pnt>& P2,
+                                 const NCollection_Array1<gp_Pnt>& P3,
+                                 const NCollection_Array1<gp_Pnt>& P4,
+                                 const NCollection_Array1<double>& W1,
+                                 const NCollection_Array1<double>& W2,
+                                 const NCollection_Array1<double>& W3,
+                                 const NCollection_Array1<double>& W4)
 {
   Init(P1, P2, P3, P4, W1, W2, W3, W4);
 }
 
 //=================================================================================================
 
-GeomFill_Curved::GeomFill_Curved(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2)
+GeomFill_Curved::GeomFill_Curved(const NCollection_Array1<gp_Pnt>& P1,
+                                 const NCollection_Array1<gp_Pnt>& P2)
 {
   Init(P1, P2);
 }
 
 //=================================================================================================
 
-GeomFill_Curved::GeomFill_Curved(const TColgp_Array1OfPnt&   P1,
-                                 const TColgp_Array1OfPnt&   P2,
-                                 const TColStd_Array1OfReal& W1,
-                                 const TColStd_Array1OfReal& W2)
+GeomFill_Curved::GeomFill_Curved(const NCollection_Array1<gp_Pnt>& P1,
+                                 const NCollection_Array1<gp_Pnt>& P2,
+                                 const NCollection_Array1<double>& W1,
+                                 const NCollection_Array1<double>& W2)
 {
   Init(P1, P2, W1, W2);
 }
 
 //=================================================================================================
 
-void GeomFill_Curved::Init(const TColgp_Array1OfPnt& P1,
-                           const TColgp_Array1OfPnt& P2,
-                           const TColgp_Array1OfPnt& P3,
-                           const TColgp_Array1OfPnt& P4)
+void GeomFill_Curved::Init(const NCollection_Array1<gp_Pnt>& P1,
+                           const NCollection_Array1<gp_Pnt>& P2,
+                           const NCollection_Array1<gp_Pnt>& P3,
+                           const NCollection_Array1<gp_Pnt>& P4)
 {
   Standard_DomainError_Raise_if(P1.Length() != P3.Length() || P2.Length() != P4.Length(), " ");
 
-  Standard_Integer NPolU = P1.Length();
-  Standard_Integer NPolV = P2.Length();
+  int NPolU = P1.Length();
+  int NPolV = P2.Length();
 
-  IsRational = Standard_False;
+  IsRational = false;
 
-  Standard_Real NU = NPolU - 1;
-  Standard_Real NV = NPolV - 1;
-  myPoles          = new TColgp_HArray2OfPnt(1, NPolU, 1, NPolV);
+  double NU = NPolU - 1;
+  double NV = NPolV - 1;
+  myPoles   = new NCollection_HArray2<gp_Pnt>(1, NPolU, 1, NPolV);
 
   // The boundaries are not modified
-  Standard_Integer i, j, k;
+  int i, j, k;
   for (i = 1; i <= NPolU; i++)
   {
     myPoles->SetValue(i, 1, P1(i));
     myPoles->SetValue(i, NPolV, P3(i));
   }
-  Standard_Real PU, PU1, PV, PV1;
+  double PU, PU1, PV, PV1;
 
   for (j = 2; j <= NPolV - 1; j++)
   {
@@ -123,14 +124,14 @@ void GeomFill_Curved::Init(const TColgp_Array1OfPnt& P1,
 
 //=================================================================================================
 
-void GeomFill_Curved::Init(const TColgp_Array1OfPnt&   P1,
-                           const TColgp_Array1OfPnt&   P2,
-                           const TColgp_Array1OfPnt&   P3,
-                           const TColgp_Array1OfPnt&   P4,
-                           const TColStd_Array1OfReal& W1,
-                           const TColStd_Array1OfReal& W2,
-                           const TColStd_Array1OfReal& W3,
-                           const TColStd_Array1OfReal& W4)
+void GeomFill_Curved::Init(const NCollection_Array1<gp_Pnt>& P1,
+                           const NCollection_Array1<gp_Pnt>& P2,
+                           const NCollection_Array1<gp_Pnt>& P3,
+                           const NCollection_Array1<gp_Pnt>& P4,
+                           const NCollection_Array1<double>& W1,
+                           const NCollection_Array1<double>& W2,
+                           const NCollection_Array1<double>& W3,
+                           const NCollection_Array1<double>& W4)
 {
   Standard_DomainError_Raise_if(W1.Length() != W3.Length() || W2.Length() != W4.Length(), " ");
   Standard_DomainError_Raise_if(W1.Length() != P1.Length() || W2.Length() != P2.Length()
@@ -138,23 +139,23 @@ void GeomFill_Curved::Init(const TColgp_Array1OfPnt&   P1,
                                 " ");
 
   Init(P1, P2, P3, P4);
-  IsRational = Standard_True;
+  IsRational = true;
 
-  Standard_Integer NPolU = W1.Length();
-  Standard_Integer NPolV = W2.Length();
+  int NPolU = W1.Length();
+  int NPolV = W2.Length();
 
-  Standard_Real NU = NPolU - 1;
-  Standard_Real NV = NPolV - 1;
-  myWeights        = new TColStd_HArray2OfReal(1, NPolU, 1, NPolV);
+  double NU = NPolU - 1;
+  double NV = NPolV - 1;
+  myWeights = new NCollection_HArray2<double>(1, NPolU, 1, NPolV);
 
   // The boundaries are not modified
-  Standard_Integer i, j;
+  int i, j;
   for (i = 1; i <= NPolU; i++)
   {
     myWeights->SetValue(i, 1, W1(i));
     myWeights->SetValue(i, NPolV, W3(i));
   }
-  Standard_Real PU, PU1, PV, PV1;
+  double PU, PU1, PV, PV1;
 
   for (j = 2; j <= NPolV - 1; j++)
   {
@@ -171,7 +172,7 @@ void GeomFill_Curved::Init(const TColgp_Array1OfPnt&   P1,
       PU1 = 1 - PU;
       PU /= 2.;
       PU1 /= 2.;
-      Standard_Real W = PV1 * W1(i) + PV * W3(i) + PU * W2(j) + PU1 * W4(j);
+      double W = PV1 * W1(i) + PV * W3(i) + PU * W2(j) + PU1 * W4(j);
       myWeights->SetValue(i, j, W);
     }
   }
@@ -179,16 +180,17 @@ void GeomFill_Curved::Init(const TColgp_Array1OfPnt&   P1,
 
 //=================================================================================================
 
-void GeomFill_Curved::Init(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2)
+void GeomFill_Curved::Init(const NCollection_Array1<gp_Pnt>& P1,
+                           const NCollection_Array1<gp_Pnt>& P2)
 {
-  Standard_Integer NPolU = P1.Length();
-  Standard_Integer NPolV = P2.Length();
+  int NPolU = P1.Length();
+  int NPolV = P2.Length();
 
-  IsRational = Standard_False;
+  IsRational = false;
 
-  myPoles = new TColgp_HArray2OfPnt(1, NPolU, 1, NPolV);
+  myPoles = new NCollection_HArray2<gp_Pnt>(1, NPolU, 1, NPolV);
 
-  Standard_Integer i, j;
+  int i, j;
 
   for (j = 1; j <= NPolV; j++)
   {
@@ -202,23 +204,23 @@ void GeomFill_Curved::Init(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPn
 
 //=================================================================================================
 
-void GeomFill_Curved::Init(const TColgp_Array1OfPnt&   P1,
-                           const TColgp_Array1OfPnt&   P2,
-                           const TColStd_Array1OfReal& W1,
-                           const TColStd_Array1OfReal& W2)
+void GeomFill_Curved::Init(const NCollection_Array1<gp_Pnt>& P1,
+                           const NCollection_Array1<gp_Pnt>& P2,
+                           const NCollection_Array1<double>& W1,
+                           const NCollection_Array1<double>& W2)
 {
   Init(P1, P2);
-  IsRational = Standard_True;
+  IsRational = true;
 
   // Initialisation des poids.
-  Standard_Integer NPolU = W1.Length();
-  Standard_Integer NPolV = W2.Length();
+  int NPolU = W1.Length();
+  int NPolV = W2.Length();
 
-  myWeights = new TColStd_HArray2OfReal(1, NPolU, 1, NPolV);
-  for (Standard_Integer j = 1; j <= NPolV; j++)
+  myWeights = new NCollection_HArray2<double>(1, NPolU, 1, NPolV);
+  for (int j = 1; j <= NPolV; j++)
   {
-    Standard_Real Factor = W2(j) / W1(1);
-    for (Standard_Integer i = 1; i <= NPolU; i++)
+    double Factor = W2(j) / W1(1);
+    for (int i = 1; i <= NPolU; i++)
     {
       myWeights->SetValue(i, j, W1(i) * Factor);
     }

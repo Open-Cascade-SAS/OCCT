@@ -18,184 +18,184 @@
 
   #include <Standard_Type.hxx>
 
-Standard_EXPORT Standard_Integer TopOpeBRepTool_BOOOPE_CHECK_DEB = 1;
+Standard_EXPORT int TopOpeBRepTool_BOOOPE_CHECK_DEB = 1;
 
-static Standard_Boolean TopOpeBRepTool_traceBOXPERSO = Standard_False;
+static bool TopOpeBRepTool_traceBOXPERSO = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceBOXPERSO(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceBOXPERSO(const bool b)
 {
   TopOpeBRepTool_traceBOXPERSO = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceBOXPERSO()
+Standard_EXPORT bool TopOpeBRepTool_GettraceBOXPERSO()
 {
   return TopOpeBRepTool_traceBOXPERSO;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceBOX = Standard_False;
+static bool TopOpeBRepTool_traceBOX = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceBOX(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceBOX(const bool b)
 {
   TopOpeBRepTool_traceBOX = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceBOX()
+Standard_EXPORT bool TopOpeBRepTool_GettraceBOX()
 {
   return TopOpeBRepTool_traceBOX;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceVC = Standard_False;
+static bool TopOpeBRepTool_traceVC = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceVC(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceVC(const bool b)
 {
   TopOpeBRepTool_traceVC = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceVC()
+Standard_EXPORT bool TopOpeBRepTool_GettraceVC()
 {
   return TopOpeBRepTool_traceVC;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceNYI = Standard_False;
+static bool TopOpeBRepTool_traceNYI = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceNYI(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceNYI(const bool b)
 {
   TopOpeBRepTool_traceNYI = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceNYI()
+Standard_EXPORT bool TopOpeBRepTool_GettraceNYI()
 {
   return TopOpeBRepTool_traceNYI;
 }
 
-static Standard_Boolean TopOpeBRepTool_tracePCURV = Standard_False;
+static bool TopOpeBRepTool_tracePCURV = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettracePCURV(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettracePCURV(const bool b)
 {
   TopOpeBRepTool_tracePCURV = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettracePCURV()
+Standard_EXPORT bool TopOpeBRepTool_GettracePCURV()
 {
   return TopOpeBRepTool_tracePCURV;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceCLOV = Standard_False;
+static bool TopOpeBRepTool_traceCLOV = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceCLOV(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceCLOV(const bool b)
 {
   TopOpeBRepTool_traceCLOV = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCLOV()
+Standard_EXPORT bool TopOpeBRepTool_GettraceCLOV()
 {
   return TopOpeBRepTool_traceCLOV;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceCHKBSPL = Standard_False;
+static bool TopOpeBRepTool_traceCHKBSPL = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceCHKBSPL(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceCHKBSPL(const bool b)
 {
   TopOpeBRepTool_traceCHKBSPL = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCHKBSPL()
+Standard_EXPORT bool TopOpeBRepTool_GettraceCHKBSPL()
 {
   return TopOpeBRepTool_traceCHKBSPL;
 }
 
-static Standard_Boolean TopOpeBRepTool_tracePURGE = Standard_False;
+static bool TopOpeBRepTool_tracePURGE = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettracePURGE(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettracePURGE(const bool b)
 {
   TopOpeBRepTool_tracePURGE = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettracePURGE()
+Standard_EXPORT bool TopOpeBRepTool_GettracePURGE()
 {
   return TopOpeBRepTool_tracePURGE;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceREGUFA = Standard_False;
+static bool TopOpeBRepTool_traceREGUFA = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceREGUFA(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceREGUFA(const bool b)
 {
   TopOpeBRepTool_traceREGUFA = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceREGUFA()
+Standard_EXPORT bool TopOpeBRepTool_GettraceREGUFA()
 {
   return TopOpeBRepTool_traceREGUFA;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceREGUSO = Standard_False;
+static bool TopOpeBRepTool_traceREGUSO = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceREGUSO(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceREGUSO(const bool b)
 {
   TopOpeBRepTool_traceREGUSO = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceREGUSO()
+Standard_EXPORT bool TopOpeBRepTool_GettraceREGUSO()
 {
   return TopOpeBRepTool_traceREGUSO;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceC2D = Standard_False;
+static bool TopOpeBRepTool_traceC2D = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceC2D(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceC2D(const bool b)
 {
   TopOpeBRepTool_traceC2D = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceC2D()
+Standard_EXPORT bool TopOpeBRepTool_GettraceC2D()
 {
   return TopOpeBRepTool_traceC2D;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceCORRISO = Standard_False;
+static bool TopOpeBRepTool_traceCORRISO = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceCORRISO(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceCORRISO(const bool b)
 {
   TopOpeBRepTool_traceCORRISO = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCORRISO()
+Standard_EXPORT bool TopOpeBRepTool_GettraceCORRISO()
 {
   return TopOpeBRepTool_traceCORRISO;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceKRO = Standard_False;
+static bool TopOpeBRepTool_traceKRO = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceKRO(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceKRO(const bool b)
 {
   TopOpeBRepTool_traceKRO = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceKRO()
+Standard_EXPORT bool TopOpeBRepTool_GettraceKRO()
 {
   return TopOpeBRepTool_traceKRO;
 }
 
-static Standard_Boolean TopOpeBRepTool_traceEND = Standard_False;
+static bool TopOpeBRepTool_traceEND = false;
 
-Standard_EXPORT void TopOpeBRepTool_SettraceEND(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SettraceEND(const bool b)
 {
   TopOpeBRepTool_traceEND = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceEND()
+Standard_EXPORT bool TopOpeBRepTool_GettraceEND()
 {
   return TopOpeBRepTool_traceEND;
 }
 
-static Standard_Boolean TopOpeBRepTool_contextNOSEW = Standard_False;
+static bool TopOpeBRepTool_contextNOSEW = false;
 
-Standard_EXPORT void TopOpeBRepTool_SetcontextNOSEW(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepTool_SetcontextNOSEW(const bool b)
 {
   TopOpeBRepTool_contextNOSEW = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GetcontextNOSEW()
+Standard_EXPORT bool TopOpeBRepTool_GetcontextNOSEW()
 {
   return TopOpeBRepTool_contextNOSEW;
 }

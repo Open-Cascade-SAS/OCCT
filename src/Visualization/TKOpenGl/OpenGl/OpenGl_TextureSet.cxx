@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TextureSet, Standard_Transient)
 
 //=================================================================================================
 
-OpenGl_TextureSet::OpenGl_TextureSet(const Handle(OpenGl_Texture)& theTexture)
+OpenGl_TextureSet::OpenGl_TextureSet(const occ::handle<OpenGl_Texture>& theTexture)
     : myTextures(0, 0),
       myTextureSetBits(Graphic3d_TextureSetBits_NONE)
 {

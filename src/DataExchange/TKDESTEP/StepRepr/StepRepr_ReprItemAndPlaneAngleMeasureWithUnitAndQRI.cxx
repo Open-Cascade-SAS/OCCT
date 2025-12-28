@@ -32,15 +32,15 @@ StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI::
 //=================================================================================================
 
 void StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI::SetPlaneAngleMeasureWithUnit(
-  const Handle(StepBasic_PlaneAngleMeasureWithUnit)& aLMWU)
+  const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& aLMWU)
 {
   myPlaneAngleMeasureWithUnit = aLMWU;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_PlaneAngleMeasureWithUnit) StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI::
-  GetPlaneAngleMeasureWithUnit() const
+occ::handle<StepBasic_PlaneAngleMeasureWithUnit>
+  StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI::GetPlaneAngleMeasureWithUnit() const
 {
   return myPlaneAngleMeasureWithUnit;
 }

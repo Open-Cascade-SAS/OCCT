@@ -19,9 +19,6 @@
 #include <Message_Printer.hxx>
 #include <Draw_Interpretor.hxx>
 
-class Draw_Printer;
-DEFINE_STANDARD_HANDLE(Draw_Printer, Message_Printer)
-
 //! Implementation of Printer class with output
 //! (Message_Messenge) directed to Draw_Interpretor
 class Draw_Printer : public Message_Printer
@@ -34,7 +31,7 @@ public:
 protected:
   //! Send a string message with specified trace level.
   Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity theGravity) const Standard_OVERRIDE;
+                                    const Message_Gravity          theGravity) const override;
 
 private:
   Draw_Interpretor* myTcl;

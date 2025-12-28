@@ -18,11 +18,11 @@
 
 #include <NCollection_Handle.hxx>
 #include <TopExp.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-
-class BRepTools_History;
-DEFINE_STANDARD_HANDLE(BRepTools_History, Standard_Transient)
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
 
 //! The history keeps the following relations between the input shapes
 //! (S1, ..., Sm) and output shapes (T1, ..., Tn):
@@ -97,11 +97,11 @@ public: //! @name Constructors for History creation
   //! @param[in] theArguments  Arguments of the algorithm;
   //! @param[in] theAlgo  The algorithm.
   template <class TheAlgo>
-  BRepTools_History(const TopTools_ListOfShape& theArguments, TheAlgo& theAlgo)
+  BRepTools_History(const NCollection_List<TopoDS_Shape>& theArguments, TheAlgo& theAlgo)
   {
     // Map all argument shapes to save them in history
-    TopTools_IndexedMapOfShape         anArgsMap;
-    TopTools_ListIteratorOfListOfShape aIt(theArguments);
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anArgsMap;
+    NCollection_List<TopoDS_Shape>::Iterator                      aIt(theArguments);
     for (; aIt.More(); aIt.Next())
     {
       if (!aIt.Value().IsNull())
@@ -109,7 +109,7 @@ public: //! @name Constructors for History creation
     }
 
     // Copy the history for all supported shapes from the algorithm
-    Standard_Integer i, aNb = anArgsMap.Extent();
+    int i, aNb = anArgsMap.Extent();
     for (i = 1; i <= aNb; ++i)
     {
       const TopoDS_Shape& aS = anArgsMap(i);
@@ -120,12 +120,12 @@ public: //! @name Constructors for History creation
         Remove(aS);
 
       // Check Modified
-      const TopTools_ListOfShape& aModified = theAlgo.Modified(aS);
+      const NCollection_List<TopoDS_Shape>& aModified = theAlgo.Modified(aS);
       for (aIt.Initialize(aModified); aIt.More(); aIt.Next())
         AddModified(aS, aIt.Value());
 
       // Check Generated
-      const TopTools_ListOfShape& aGenerated = theAlgo.Generated(aS);
+      const NCollection_List<TopoDS_Shape>& aGenerated = theAlgo.Generated(aS);
       for (aIt.Initialize(aGenerated); aIt.More(); aIt.Next())
         AddGenerated(aS, aIt.Value());
     }
@@ -142,7 +142,7 @@ public:
 
 public:
   //! Returns 'true' if the type of the shape is supported by the history.
-  static Standard_Boolean IsSupportedType(const TopoDS_Shape& theShape)
+  static bool IsSupportedType(const TopoDS_Shape& theShape)
   {
     const TopAbs_ShapeEnum aType = theShape.ShapeType();
     return aType == TopAbs_VERTEX || aType == TopAbs_EDGE || aType == TopAbs_FACE
@@ -178,26 +178,28 @@ public: //! Methods to set the history.
 
 public: //! Methods to read the history.
   //! Returns all shapes generated from the shape.
-  Standard_EXPORT const TopTools_ListOfShape& Generated(const TopoDS_Shape& theInitial) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& theInitial) const;
 
   //! Returns all shapes modified from the shape.
-  Standard_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& theInitial) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
+    const TopoDS_Shape& theInitial) const;
 
   //! Returns 'true' if the shape is removed.
-  Standard_EXPORT Standard_Boolean IsRemoved(const TopoDS_Shape& theInitial) const;
+  Standard_EXPORT bool IsRemoved(const TopoDS_Shape& theInitial) const;
 
   //! Returns 'true' if there any shapes with Generated elements present
-  Standard_Boolean HasGenerated() const { return !myShapeToGenerated.IsEmpty(); }
+  bool HasGenerated() const { return !myShapeToGenerated.IsEmpty(); }
 
   //! Returns 'true' if there any Modified shapes present
-  Standard_Boolean HasModified() const { return !myShapeToModified.IsEmpty(); }
+  bool HasModified() const { return !myShapeToModified.IsEmpty(); }
 
   //! Returns 'true' if there any removed shapes present
-  Standard_Boolean HasRemoved() const { return !myRemoved.IsEmpty(); }
+  bool HasRemoved() const { return !myRemoved.IsEmpty(); }
 
 public: //! A method to merge a next history to this history.
   //! Merges the next history to this history.
-  Standard_EXPORT void Merge(const Handle(BRepTools_History)& theHistory23);
+  Standard_EXPORT void Merge(const occ::handle<BRepTools_History>& theHistory23);
 
   //! Merges the next history to this history.
   Standard_EXPORT void Merge(const BRepTools_History& theHistory23);
@@ -208,7 +210,7 @@ public: //! A method to merge a next history to this history.
   //! @param[in] theArguments  Arguments of the algorithm;
   //! @param[in] theAlgo  The algorithm.
   template <class TheAlgo>
-  void Merge(const TopTools_ListOfShape& theArguments, TheAlgo& theAlgo)
+  void Merge(const NCollection_List<TopoDS_Shape>& theArguments, TheAlgo& theAlgo)
   {
     // Create new history object from the given algorithm and merge it into this.
     Merge(BRepTools_History(theArguments, theAlgo));
@@ -232,35 +234,36 @@ private:
   //! Prepares the shapes generated from the first shape to set the second one
   //! as generated one from the first one by the addition or the replacement.
   //! Returns 'true' on success.
-  Standard_Boolean prepareGenerated(const TopoDS_Shape& theInitial,
-                                    const TopoDS_Shape& theGenerated);
+  bool prepareGenerated(const TopoDS_Shape& theInitial, const TopoDS_Shape& theGenerated);
 
   //! Prepares the shapes modified from the first shape to set the second one
   //! as modified one from the first one by the addition or the replacement.
   //! Returns 'true' on success.
-  Standard_Boolean prepareModified(const TopoDS_Shape& theInitial, const TopoDS_Shape& theModified);
+  bool prepareModified(const TopoDS_Shape& theInitial, const TopoDS_Shape& theModified);
 
 private: //! Data to keep the history.
   //! Maps each input shape to all shapes modified from it.
   //! If an input shape is not bound to the map then
   //! there is no shapes modified from the shape.
   //! No any shape should be mapped to an empty list.
-  TopTools_DataMapOfShapeListOfShape myShapeToModified;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myShapeToModified;
 
   //! Maps each input shape to all shapes generated from it.
   //! If an input shape is not bound to the map then
   //! there is no shapes generated from the shape.
   //! No any shape should be mapped to an empty list.
-  TopTools_DataMapOfShapeListOfShape myShapeToGenerated;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myShapeToGenerated;
 
-  TopTools_MapOfShape myRemoved; //!< The removed shapes.
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myRemoved; //!< The removed shapes.
 
 private: //! Auxiliary members to read the history.
   //! An auxiliary empty list.
-  static const TopTools_ListOfShape myEmptyList;
+  static const NCollection_List<TopoDS_Shape> myEmptyList;
 
   //! A method to export the auxiliary list.
-  Standard_EXPORT static const TopTools_ListOfShape& emptyList();
+  Standard_EXPORT static const NCollection_List<TopoDS_Shape>& emptyList();
 
 private:
   //! Auxiliary messages.

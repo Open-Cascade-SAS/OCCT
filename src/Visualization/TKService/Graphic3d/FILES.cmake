@@ -95,14 +95,12 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_LightSet.cxx
   Graphic3d_LightSet.hxx
   Graphic3d_MapOfAspectsToAspects.hxx
-  Graphic3d_MapIteratorOfMapOfStructure.hxx
-  Graphic3d_MapOfObject.hxx
+
   Graphic3d_MapOfStructure.hxx
   Graphic3d_MarkerImage.cxx
   Graphic3d_MarkerImage.hxx
   Graphic3d_MarkerImage.pxx
-  Graphic3d_Mat4.hxx
-  Graphic3d_Mat4d.hxx
+
   Graphic3d_MaterialAspect.cxx
   Graphic3d_MaterialAspect.hxx
   Graphic3d_MaterialDefinitionError.hxx
@@ -115,7 +113,7 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_NameOfTexture2D.hxx
   Graphic3d_NameOfTextureEnv.hxx
   Graphic3d_NameOfTexturePlane.hxx
-  Graphic3d_NMapOfTransient.hxx
+
   Graphic3d_PBRMaterial.cxx
   Graphic3d_PBRMaterial.hxx
   Graphic3d_PolygonOffset.cxx
@@ -125,10 +123,10 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_RenderingParams.cxx
   Graphic3d_RenderingParams.hxx
   Graphic3d_RenderTransparentMethod.hxx
-  Graphic3d_SequenceOfGroup.hxx
+
   Graphic3d_SequenceOfHClipPlane.cxx
   Graphic3d_SequenceOfHClipPlane.hxx
-  Graphic3d_SequenceOfStructure.hxx
+
   Graphic3d_ShaderAttribute.cxx
   Graphic3d_ShaderAttribute.hxx
   Graphic3d_ShaderFlags.hxx
@@ -158,7 +156,7 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_Texture1Dsegment.hxx
   Graphic3d_Texture2D.cxx
   Graphic3d_Texture2D.hxx
-  Graphic3d_Texture2Dmanual.hxx
+
   Graphic3d_Texture2Dplane.cxx
   Graphic3d_Texture2Dplane.hxx
   Graphic3d_Texture3D.cxx
@@ -198,10 +196,7 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_TypeOfTextureFilter.hxx
   Graphic3d_TypeOfTextureMode.hxx
   Graphic3d_TypeOfVisualization.hxx
-  Graphic3d_Vec.hxx
-  Graphic3d_Vec2.hxx
-  Graphic3d_Vec3.hxx
-  Graphic3d_Vec4.hxx
+
   Graphic3d_Vertex.cxx
   Graphic3d_Vertex.hxx
   Graphic3d_VerticalTextAlignment.hxx

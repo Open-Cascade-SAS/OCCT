@@ -24,9 +24,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 
 //=================================================================================================
 
@@ -41,15 +40,15 @@ GeomConvert_CompCurveToBSplineCurve::GeomConvert_CompCurveToBSplineCurve(
 //=================================================================================================
 
 GeomConvert_CompCurveToBSplineCurve::GeomConvert_CompCurveToBSplineCurve(
-  const Handle(Geom_BoundedCurve)&   BasisCurve,
-  const Convert_ParameterisationType Parameterisation)
+  const occ::handle<Geom_BoundedCurve>& BasisCurve,
+  const Convert_ParameterisationType    Parameterisation)
     : myTol(Precision::Confusion()),
       myType(Parameterisation)
 {
-  Handle(Geom_BSplineCurve) Bs = Handle(Geom_BSplineCurve)::DownCast(BasisCurve);
+  occ::handle<Geom_BSplineCurve> Bs = occ::down_cast<Geom_BSplineCurve>(BasisCurve);
   if (!Bs.IsNull())
   {
-    myCurve = Handle(Geom_BSplineCurve)::DownCast(BasisCurve->Copy());
+    myCurve = occ::down_cast<Geom_BSplineCurve>(BasisCurve->Copy());
   }
   else
   {
@@ -59,17 +58,17 @@ GeomConvert_CompCurveToBSplineCurve::GeomConvert_CompCurveToBSplineCurve(
 
 //=================================================================================================
 
-Standard_Boolean GeomConvert_CompCurveToBSplineCurve::Add(const Handle(Geom_BoundedCurve)& NewCurve,
-                                                          const Standard_Real    Tolerance,
-                                                          const Standard_Boolean After,
-                                                          const Standard_Boolean WithRatio,
-                                                          const Standard_Integer MinM)
+bool GeomConvert_CompCurveToBSplineCurve::Add(const occ::handle<Geom_BoundedCurve>& NewCurve,
+                                              const double                          Tolerance,
+                                              const bool                            After,
+                                              const bool                            WithRatio,
+                                              const int                             MinM)
 {
   // conversion
-  Handle(Geom_BSplineCurve) Bs = Handle(Geom_BSplineCurve)::DownCast(NewCurve);
+  occ::handle<Geom_BSplineCurve> Bs = occ::down_cast<Geom_BSplineCurve>(NewCurve);
   if (!Bs.IsNull())
   {
-    Bs = Handle(Geom_BSplineCurve)::DownCast(NewCurve->Copy());
+    Bs = occ::down_cast<Geom_BSplineCurve>(NewCurve->Copy());
   }
   else
   {
@@ -78,10 +77,10 @@ Standard_Boolean GeomConvert_CompCurveToBSplineCurve::Add(const Handle(Geom_Boun
   if (myCurve.IsNull())
   {
     myCurve = Bs;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean avant, apres;
+  bool avant, apres;
   myTol = Tolerance;
 
   // Use actual curve endpoints instead of poles for proper G0 continuity check.
@@ -99,9 +98,9 @@ Standard_Boolean GeomConvert_CompCurveToBSplineCurve::Add(const Handle(Geom_Boun
   if (avant && apres)
   { // On leve l'ambiguite
     if (After)
-      avant = Standard_False;
+      avant = false;
     else
-      apres = Standard_False;
+      apres = false;
   }
 
   // Ajout Apres ?
@@ -111,8 +110,8 @@ Standard_Boolean GeomConvert_CompCurveToBSplineCurve::Add(const Handle(Geom_Boun
     {
       Bs->Reverse();
     }
-    Add(myCurve, Bs, Standard_True, WithRatio, MinM);
-    return Standard_True;
+    Add(myCurve, Bs, true, WithRatio, MinM);
+    return true;
   }
   // Ajout avant ?
   else if (avant)
@@ -121,21 +120,21 @@ Standard_Boolean GeomConvert_CompCurveToBSplineCurve::Add(const Handle(Geom_Boun
     {
       Bs->Reverse();
     }
-    Add(Bs, myCurve, Standard_False, WithRatio, MinM);
-    return Standard_True;
+    Add(Bs, myCurve, false, WithRatio, MinM);
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
-void GeomConvert_CompCurveToBSplineCurve::Add(Handle(Geom_BSplineCurve)& FirstCurve,
-                                              Handle(Geom_BSplineCurve)& SecondCurve,
-                                              const Standard_Boolean     After,
-                                              const Standard_Boolean     WithRatio,
-                                              const Standard_Integer     MinM)
+void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& FirstCurve,
+                                              occ::handle<Geom_BSplineCurve>& SecondCurve,
+                                              const bool                      After,
+                                              const bool                      WithRatio,
+                                              const int                       MinM)
 {
   // Harmonisation des degres.
-  Standard_Integer Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
+  int Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
   if (FirstCurve->Degree() < Deg)
   {
     FirstCurve->IncreaseDegree(Deg);
@@ -146,15 +145,15 @@ void GeomConvert_CompCurveToBSplineCurve::Add(Handle(Geom_BSplineCurve)& FirstCu
   }
 
   // Declarationd
-  Standard_Real           L1, L2;
-  Standard_Integer        ii, jj;
-  Standard_Real           Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
-  Standard_Integer        NbP1 = FirstCurve->NbPoles(), NbP2 = SecondCurve->NbPoles();
-  Standard_Integer        NbK1 = FirstCurve->NbKnots(), NbK2 = SecondCurve->NbKnots();
-  TColStd_Array1OfReal    Noeuds(1, NbK1 + NbK2 - 1);
-  TColgp_Array1OfPnt      Poles(1, NbP1 + NbP2 - 1);
-  TColStd_Array1OfReal    Poids(1, NbP1 + NbP2 - 1);
-  TColStd_Array1OfInteger Mults(1, NbK1 + NbK2 - 1);
+  double                     L1, L2;
+  int                        ii, jj;
+  double                     Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
+  int                        NbP1 = FirstCurve->NbPoles(), NbP2 = SecondCurve->NbPoles();
+  int                        NbK1 = FirstCurve->NbKnots(), NbK2 = SecondCurve->NbKnots();
+  NCollection_Array1<double> Noeuds(1, NbK1 + NbK2 - 1);
+  NCollection_Array1<gp_Pnt> Poles(1, NbP1 + NbP2 - 1);
+  NCollection_Array1<double> Poids(1, NbP1 + NbP2 - 1);
+  NCollection_Array1<int>    Mults(1, NbK1 + NbK2 - 1);
 
   // Ratio de reparametrisation (C1 si possible)
   if (WithRatio)
@@ -190,7 +189,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(Handle(Geom_BSplineCurve)& FirstCu
   }
 
   // Les Noeuds
-  Standard_Real eps;
+  double eps;
   for (ii = 1; ii <= NbK1; ii++)
   {
     Noeuds(ii) = Ratio1 * FirstCurve->Knot(ii) - Delta1;
@@ -242,8 +241,8 @@ void GeomConvert_CompCurveToBSplineCurve::Add(Handle(Geom_BSplineCurve)& FirstCu
   myCurve = new (Geom_BSplineCurve)(Poles, Poids, Noeuds, Mults, Deg);
 
   // Reduction eventuelle de la multiplicite jusqu'a MinM
-  Standard_Boolean Ok = Standard_True;
-  Standard_Integer M  = Mults(NbK1);
+  bool Ok = true;
+  int  M  = Mults(NbK1);
   while ((M > MinM) && Ok)
   {
     M--;
@@ -253,7 +252,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(Handle(Geom_BSplineCurve)& FirstCu
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) GeomConvert_CompCurveToBSplineCurve::BSplineCurve() const
+occ::handle<Geom_BSplineCurve> GeomConvert_CompCurveToBSplineCurve::BSplineCurve() const
 {
   return myCurve;
 }

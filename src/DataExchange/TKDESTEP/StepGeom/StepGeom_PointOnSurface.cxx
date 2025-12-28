@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_PointOnSurface, StepGeom_Point)
 
 StepGeom_PointOnSurface::StepGeom_PointOnSurface() {}
 
-void StepGeom_PointOnSurface::Init(const Handle(TCollection_HAsciiString)& aName,
-                                   const Handle(StepGeom_Surface)&         aBasisSurface,
-                                   const Standard_Real                     aPointParameterU,
-                                   const Standard_Real                     aPointParameterV)
+void StepGeom_PointOnSurface::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                   const occ::handle<StepGeom_Surface>&         aBasisSurface,
+                                   const double                                 aPointParameterU,
+                                   const double                                 aPointParameterV)
 {
   // --- classe own fields ---
   basisSurface    = aBasisSurface;
@@ -32,32 +32,32 @@ void StepGeom_PointOnSurface::Init(const Handle(TCollection_HAsciiString)& aName
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_PointOnSurface::SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface)
+void StepGeom_PointOnSurface::SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface)
 {
   basisSurface = aBasisSurface;
 }
 
-Handle(StepGeom_Surface) StepGeom_PointOnSurface::BasisSurface() const
+occ::handle<StepGeom_Surface> StepGeom_PointOnSurface::BasisSurface() const
 {
   return basisSurface;
 }
 
-void StepGeom_PointOnSurface::SetPointParameterU(const Standard_Real aPointParameterU)
+void StepGeom_PointOnSurface::SetPointParameterU(const double aPointParameterU)
 {
   pointParameterU = aPointParameterU;
 }
 
-Standard_Real StepGeom_PointOnSurface::PointParameterU() const
+double StepGeom_PointOnSurface::PointParameterU() const
 {
   return pointParameterU;
 }
 
-void StepGeom_PointOnSurface::SetPointParameterV(const Standard_Real aPointParameterV)
+void StepGeom_PointOnSurface::SetPointParameterV(const double aPointParameterV)
 {
   pointParameterV = aPointParameterV;
 }
 
-Standard_Real StepGeom_PointOnSurface::PointParameterV() const
+double StepGeom_PointOnSurface::PointParameterV() const
 {
   return pointParameterV;
 }

@@ -28,10 +28,10 @@ RWStepFEA_RWFeaShellShearStiffness::RWStepFEA_RWFeaShellShearStiffness() {}
 //=================================================================================================
 
 void RWStepFEA_RWFeaShellShearStiffness::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepFEA_FeaShellShearStiffness)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepFEA_FeaShellShearStiffness>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_shell_shear_stiffness"))
@@ -39,7 +39,7 @@ void RWStepFEA_RWFeaShellShearStiffness::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of FeaShellShearStiffness
@@ -54,8 +54,8 @@ void RWStepFEA_RWFeaShellShearStiffness::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaShellShearStiffness::WriteStep(
-  StepData_StepWriter&                          SW,
-  const Handle(StepFEA_FeaShellShearStiffness)& ent) const
+  StepData_StepWriter&                               SW,
+  const occ::handle<StepFEA_FeaShellShearStiffness>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -69,8 +69,9 @@ void RWStepFEA_RWFeaShellShearStiffness::WriteStep(
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaShellShearStiffness::Share(const Handle(StepFEA_FeaShellShearStiffness)& ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepFEA_RWFeaShellShearStiffness::Share(
+  const occ::handle<StepFEA_FeaShellShearStiffness>& ent,
+  Interface_EntityIterator&                          iter) const
 {
 
   // Inherited fields of RepresentationItem

@@ -22,18 +22,20 @@
 #include <AdvApp2Var_Network.hxx>
 #include <AdvApp2Var_Node.hxx>
 #include <AdvApp2Var_Iso.hxx>
-#include <AdvApp2Var_Strip.hxx>
+#include <NCollection_Sequence.hxx>
 #include <AdvApp2Var_Framework.hxx>
 #include <AdvApprox_Cutting.hxx>
 
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 #include <gp_XY.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
+#include <gp_Pnt.hxx>
 
 #include <Convert_GridPolynomialToPoles.hxx>
 
@@ -43,29 +45,29 @@
 //=================================================================================================
 
 AdvApp2Var_ApproxAFunc2Var::AdvApp2Var_ApproxAFunc2Var(
-  const Standard_Integer               Num1DSS,
-  const Standard_Integer               Num2DSS,
-  const Standard_Integer               Num3DSS,
-  const Handle(TColStd_HArray1OfReal)& OneDTol,
-  const Handle(TColStd_HArray1OfReal)& TwoDTol,
-  const Handle(TColStd_HArray1OfReal)& ThreeDTol,
-  const Handle(TColStd_HArray2OfReal)& OneDTolFr,
-  const Handle(TColStd_HArray2OfReal)& TwoDTolFr,
-  const Handle(TColStd_HArray2OfReal)& ThreeDTolFr,
-  const Standard_Real                  FirstInU,
-  const Standard_Real                  LastInU,
-  const Standard_Real                  FirstInV,
-  const Standard_Real                  LastInV,
-  const GeomAbs_IsoType                FavorIso,
-  const GeomAbs_Shape                  ContInU,
-  const GeomAbs_Shape                  ContInV,
-  const Standard_Integer               PrecisCode,
-  const Standard_Integer               MaxDegInU,
-  const Standard_Integer               MaxDegInV,
-  const Standard_Integer               MaxPatch,
-  const AdvApp2Var_EvaluatorFunc2Var&  Func,
-  AdvApprox_Cutting&                   UChoice,
-  AdvApprox_Cutting&                   VChoice)
+  const int                                       Num1DSS,
+  const int                                       Num2DSS,
+  const int                                       Num3DSS,
+  const occ::handle<NCollection_HArray1<double>>& OneDTol,
+  const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+  const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+  const occ::handle<NCollection_HArray2<double>>& OneDTolFr,
+  const occ::handle<NCollection_HArray2<double>>& TwoDTolFr,
+  const occ::handle<NCollection_HArray2<double>>& ThreeDTolFr,
+  const double                                    FirstInU,
+  const double                                    LastInU,
+  const double                                    FirstInV,
+  const double                                    LastInV,
+  const GeomAbs_IsoType                           FavorIso,
+  const GeomAbs_Shape                             ContInU,
+  const GeomAbs_Shape                             ContInV,
+  const int                                       PrecisCode,
+  const int                                       MaxDegInU,
+  const int                                       MaxDegInV,
+  const int                                       MaxPatch,
+  const AdvApp2Var_EvaluatorFunc2Var&             Func,
+  AdvApprox_Cutting&                              UChoice,
+  AdvApprox_Cutting&                              VChoice)
     : my1DTolerances(OneDTol),
       my2DTolerances(TwoDTol),
       my3DTolerances(ThreeDTol),
@@ -83,8 +85,8 @@ AdvApp2Var_ApproxAFunc2Var::AdvApp2Var_ApproxAFunc2Var(
       myMaxDegInU(MaxDegInU),
       myMaxDegInV(MaxDegInV),
       myMaxPatches(MaxPatch),
-      myDone(Standard_False),
-      myHasResult(Standard_False),
+      myDone(false),
+      myHasResult(false),
       myDegreeInU(0),
       myDegreeInV(0),
       myCriterionError(0.0)
@@ -101,30 +103,30 @@ AdvApp2Var_ApproxAFunc2Var::AdvApp2Var_ApproxAFunc2Var(
 //=================================================================================================
 
 AdvApp2Var_ApproxAFunc2Var::AdvApp2Var_ApproxAFunc2Var(
-  const Standard_Integer               Num1DSS,
-  const Standard_Integer               Num2DSS,
-  const Standard_Integer               Num3DSS,
-  const Handle(TColStd_HArray1OfReal)& OneDTol,
-  const Handle(TColStd_HArray1OfReal)& TwoDTol,
-  const Handle(TColStd_HArray1OfReal)& ThreeDTol,
-  const Handle(TColStd_HArray2OfReal)& OneDTolFr,
-  const Handle(TColStd_HArray2OfReal)& TwoDTolFr,
-  const Handle(TColStd_HArray2OfReal)& ThreeDTolFr,
-  const Standard_Real                  FirstInU,
-  const Standard_Real                  LastInU,
-  const Standard_Real                  FirstInV,
-  const Standard_Real                  LastInV,
-  const GeomAbs_IsoType                FavorIso,
-  const GeomAbs_Shape                  ContInU,
-  const GeomAbs_Shape                  ContInV,
-  const Standard_Integer               PrecisCode,
-  const Standard_Integer               MaxDegInU,
-  const Standard_Integer               MaxDegInV,
-  const Standard_Integer               MaxPatch,
-  const AdvApp2Var_EvaluatorFunc2Var&  Func,
-  const AdvApp2Var_Criterion&          Crit,
-  AdvApprox_Cutting&                   UChoice,
-  AdvApprox_Cutting&                   VChoice)
+  const int                                       Num1DSS,
+  const int                                       Num2DSS,
+  const int                                       Num3DSS,
+  const occ::handle<NCollection_HArray1<double>>& OneDTol,
+  const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+  const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+  const occ::handle<NCollection_HArray2<double>>& OneDTolFr,
+  const occ::handle<NCollection_HArray2<double>>& TwoDTolFr,
+  const occ::handle<NCollection_HArray2<double>>& ThreeDTolFr,
+  const double                                    FirstInU,
+  const double                                    LastInU,
+  const double                                    FirstInV,
+  const double                                    LastInV,
+  const GeomAbs_IsoType                           FavorIso,
+  const GeomAbs_Shape                             ContInU,
+  const GeomAbs_Shape                             ContInV,
+  const int                                       PrecisCode,
+  const int                                       MaxDegInU,
+  const int                                       MaxDegInV,
+  const int                                       MaxPatch,
+  const AdvApp2Var_EvaluatorFunc2Var&             Func,
+  const AdvApp2Var_Criterion&                     Crit,
+  AdvApprox_Cutting&                              UChoice,
+  AdvApprox_Cutting&                              VChoice)
     : my1DTolerances(OneDTol),
       my2DTolerances(TwoDTol),
       my3DTolerances(ThreeDTol),
@@ -142,8 +144,8 @@ AdvApp2Var_ApproxAFunc2Var::AdvApp2Var_ApproxAFunc2Var(
       myMaxDegInU(MaxDegInU),
       myMaxDegInV(MaxDegInV),
       myMaxPatches(MaxPatch),
-      myDone(Standard_False),
-      myHasResult(Standard_False),
+      myDone(false),
+      myHasResult(false),
       myDegreeInU(0),
       myDegreeInV(0),
       myCriterionError(0.0)
@@ -164,7 +166,7 @@ AdvApp2Var_ApproxAFunc2Var::AdvApp2Var_ApproxAFunc2Var(
 
 void AdvApp2Var_ApproxAFunc2Var::Init()
 {
-  Standard_Integer ifav, iu = 0, iv = 0, ndu, ndv;
+  int ifav, iu = 0, iv = 0, ndu, ndv;
   switch (myFavoriteIso)
   {
     case GeomAbs_IsoU:
@@ -236,17 +238,17 @@ void AdvApp2Var_ApproxAFunc2Var::Init()
 // purpose  : Initialisation of the approximation with regular cuttings
 //=======================================================================
 
-void AdvApp2Var_ApproxAFunc2Var::InitGrid(const Standard_Integer NbInt)
+void AdvApp2Var_ApproxAFunc2Var::InitGrid(const int NbInt)
 {
-  Standard_Integer iu = myConditions.UOrder(), iv = myConditions.VOrder(), iint;
+  int iu = myConditions.UOrder(), iv = myConditions.VOrder(), iint;
 
-  Handle(AdvApp2Var_Patch) M0 =
+  occ::handle<AdvApp2Var_Patch> M0 =
     new AdvApp2Var_Patch(myFirstParInU, myLastParInU, myFirstParInV, myLastParInV, iu, iv);
 
-  AdvApp2Var_SequenceOfPatch Net;
+  NCollection_Sequence<occ::handle<AdvApp2Var_Patch>> Net;
   Net.Append(M0);
 
-  TColStd_SequenceOfReal TheU, TheV;
+  NCollection_Sequence<double> TheU, TheV;
   TheU.Append(myFirstParInU);
   TheV.Append(myFirstParInV);
   TheU.Append(myLastParInU);
@@ -254,72 +256,72 @@ void AdvApp2Var_ApproxAFunc2Var::InitGrid(const Standard_Integer NbInt)
 
   AdvApp2Var_Network Result(Net, TheU, TheV);
 
-  gp_XY                     UV1(myFirstParInU, myFirstParInV);
-  Handle(AdvApp2Var_Node)   C1 = new AdvApp2Var_Node(UV1, iu, iv);
-  gp_XY                     UV2(myLastParInU, myFirstParInV);
-  Handle(AdvApp2Var_Node)   C2 = new AdvApp2Var_Node(UV2, iu, iv);
-  gp_XY                     UV4(myLastParInU, myLastParInV);
-  Handle(AdvApp2Var_Node)   C4 = new AdvApp2Var_Node(UV4, iu, iv);
-  gp_XY                     UV3(myFirstParInU, myLastParInV);
-  Handle(AdvApp2Var_Node)   C3 = new AdvApp2Var_Node(UV3, iu, iv);
-  AdvApp2Var_SequenceOfNode Bag;
+  gp_XY                                              UV1(myFirstParInU, myFirstParInV);
+  occ::handle<AdvApp2Var_Node>                       C1 = new AdvApp2Var_Node(UV1, iu, iv);
+  gp_XY                                              UV2(myLastParInU, myFirstParInV);
+  occ::handle<AdvApp2Var_Node>                       C2 = new AdvApp2Var_Node(UV2, iu, iv);
+  gp_XY                                              UV4(myLastParInU, myLastParInV);
+  occ::handle<AdvApp2Var_Node>                       C4 = new AdvApp2Var_Node(UV4, iu, iv);
+  gp_XY                                              UV3(myFirstParInU, myLastParInV);
+  occ::handle<AdvApp2Var_Node>                       C3 = new AdvApp2Var_Node(UV3, iu, iv);
+  NCollection_Sequence<occ::handle<AdvApp2Var_Node>> Bag;
   Bag.Append(C1);
   Bag.Append(C2);
   Bag.Append(C3);
   Bag.Append(C4);
 
-  Handle(AdvApp2Var_Iso) V0 = new AdvApp2Var_Iso(GeomAbs_IsoV,
-                                                 myFirstParInV,
-                                                 myFirstParInU,
-                                                 myLastParInU,
-                                                 myFirstParInV,
-                                                 myLastParInV,
-                                                 1,
-                                                 iu,
-                                                 iv);
-  Handle(AdvApp2Var_Iso) V1 = new AdvApp2Var_Iso(GeomAbs_IsoV,
-                                                 myLastParInV,
-                                                 myFirstParInU,
-                                                 myLastParInU,
-                                                 myFirstParInV,
-                                                 myLastParInV,
-                                                 2,
-                                                 iu,
-                                                 iv);
-  Handle(AdvApp2Var_Iso) U0 = new AdvApp2Var_Iso(GeomAbs_IsoU,
-                                                 myFirstParInU,
-                                                 myFirstParInU,
-                                                 myLastParInU,
-                                                 myFirstParInV,
-                                                 myLastParInV,
-                                                 3,
-                                                 iu,
-                                                 iv);
-  Handle(AdvApp2Var_Iso) U1 = new AdvApp2Var_Iso(GeomAbs_IsoU,
-                                                 myLastParInU,
-                                                 myFirstParInU,
-                                                 myLastParInU,
-                                                 myFirstParInV,
-                                                 myLastParInV,
-                                                 4,
-                                                 iu,
-                                                 iv);
+  occ::handle<AdvApp2Var_Iso> V0 = new AdvApp2Var_Iso(GeomAbs_IsoV,
+                                                      myFirstParInV,
+                                                      myFirstParInU,
+                                                      myLastParInU,
+                                                      myFirstParInV,
+                                                      myLastParInV,
+                                                      1,
+                                                      iu,
+                                                      iv);
+  occ::handle<AdvApp2Var_Iso> V1 = new AdvApp2Var_Iso(GeomAbs_IsoV,
+                                                      myLastParInV,
+                                                      myFirstParInU,
+                                                      myLastParInU,
+                                                      myFirstParInV,
+                                                      myLastParInV,
+                                                      2,
+                                                      iu,
+                                                      iv);
+  occ::handle<AdvApp2Var_Iso> U0 = new AdvApp2Var_Iso(GeomAbs_IsoU,
+                                                      myFirstParInU,
+                                                      myFirstParInU,
+                                                      myLastParInU,
+                                                      myFirstParInV,
+                                                      myLastParInV,
+                                                      3,
+                                                      iu,
+                                                      iv);
+  occ::handle<AdvApp2Var_Iso> U1 = new AdvApp2Var_Iso(GeomAbs_IsoU,
+                                                      myLastParInU,
+                                                      myFirstParInU,
+                                                      myLastParInU,
+                                                      myFirstParInV,
+                                                      myLastParInV,
+                                                      4,
+                                                      iu,
+                                                      iv);
 
-  AdvApp2Var_Strip BU0, BV0;
+  NCollection_Sequence<occ::handle<AdvApp2Var_Iso>> BU0, BV0;
   BU0.Append(V0);
   BU0.Append(V1);
   BV0.Append(U0);
   BV0.Append(U1);
 
-  AdvApp2Var_SequenceOfStrip UStrip, VStrip;
+  NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>> UStrip, VStrip;
   UStrip.Append(BU0);
   VStrip.Append(BV0);
 
   AdvApp2Var_Framework Constraints(Bag, UStrip, VStrip);
 
   // regular cutting if NbInt>1
-  Standard_Real deltu = (myLastParInU - myFirstParInU) / NbInt,
-                deltv = (myLastParInV - myFirstParInV) / NbInt;
+  double deltu = (myLastParInU - myFirstParInU) / NbInt,
+         deltv = (myLastParInV - myFirstParInV) / NbInt;
   for (iint = 1; iint <= NbInt - 1; iint++)
   {
     Result.UpdateInU(myFirstParInU + iint * deltu);
@@ -341,7 +343,7 @@ void AdvApp2Var_ApproxAFunc2Var::Perform(const AdvApprox_Cutting&            UCh
                                          const AdvApp2Var_EvaluatorFunc2Var& Func)
 {
   ComputePatches(UChoice, VChoice, Func);
-  myHasResult = myDone = Standard_True;
+  myHasResult = myDone = true;
   Compute3DErrors();
 }
 
@@ -356,7 +358,7 @@ void AdvApp2Var_ApproxAFunc2Var::Perform(const AdvApprox_Cutting&            UCh
                                          const AdvApp2Var_Criterion&         Crit)
 {
   ComputePatches(UChoice, VChoice, Func, Crit);
-  myHasResult = myDone = Standard_True;
+  myHasResult = myDone = true;
   Compute3DErrors();
   ComputeCritError();
 }
@@ -370,10 +372,10 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
                                                 const AdvApprox_Cutting&            VChoice,
                                                 const AdvApp2Var_EvaluatorFunc2Var& Func)
 {
-  Standard_Real    Udec, Vdec;
-  Standard_Boolean Umore, Vmore;
-  Standard_Integer NbPatch, NbU, NbV, NumDec;
-  Standard_Integer FirstNA;
+  double Udec, Vdec;
+  bool   Umore, Vmore;
+  int    NbPatch, NbU, NbV, NumDec;
+  int    FirstNA;
 
   while (myResult.FirstNotApprox(FirstNA))
   {
@@ -385,7 +387,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
     myResult(FirstNA).Discretise(myConditions, myConstraints, Func);
     if (!myResult(FirstNA).IsDiscretised())
     {
-      myHasResult = myDone = Standard_False;
+      myHasResult = myDone = false;
       throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
     }
 
@@ -436,7 +438,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
           }
           else
           {
-            myHasResult = myDone = Standard_False;
+            myHasResult = myDone = false;
             throw Standard_ConstructionError(
               "AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
           }
@@ -459,7 +461,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
           myConstraints.UpdateInV(Vdec);
           break;
         default:
-          myHasResult = myDone = Standard_False;
+          myHasResult = myDone = false;
           throw Standard_ConstructionError(
             "AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
       }
@@ -477,10 +479,10 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
                                                 const AdvApp2Var_EvaluatorFunc2Var& Func,
                                                 const AdvApp2Var_Criterion&         Crit)
 {
-  Standard_Real    Udec, Vdec, CritValue, m1 = 0.;
-  Standard_Boolean Umore, Vmore, CritAbs = (Crit.Type() == AdvApp2Var_Absolute);
-  Standard_Integer NbPatch, NbU, NbV, NbInt, NumDec;
-  Standard_Integer FirstNA, decision = 0;
+  double Udec, Vdec, CritValue, m1 = 0.;
+  bool   Umore, Vmore, CritAbs = (Crit.Type() == AdvApp2Var_Absolute);
+  int    NbPatch, NbU, NbV, NbInt, NumDec;
+  int    FirstNA, decision = 0;
 
   while (myResult.FirstNotApprox(FirstNA))
   {
@@ -496,7 +498,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
     myResult(FirstNA).Discretise(myConditions, myConstraints, Func);
     if (!myResult(FirstNA).IsDiscretised())
     {
-      myHasResult = myDone = Standard_False;
+      myHasResult = myDone = false;
       throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
     }
 
@@ -554,9 +556,9 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
         m1 = CritValue;
     }
     // is it necessary to cut ?
-    decision                 = myResult(FirstNA).CutSense(Crit, NumDec);
-    Standard_Boolean Regular = (Crit.Repartition() == AdvApp2Var_Regular);
-    //    Standard_Boolean Regular = Standard_True;
+    decision     = myResult(FirstNA).CutSense(Crit, NumDec);
+    bool Regular = (Crit.Repartition() == AdvApp2Var_Regular);
+    //    bool Regular = true;
     if (Regular && decision > 0)
     {
       NbInt++;
@@ -574,7 +576,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
           }
           else
           {
-            myHasResult = myDone = Standard_False;
+            myHasResult = myDone = false;
             throw Standard_ConstructionError(
               "AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
           }
@@ -597,7 +599,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
           myConstraints.UpdateInV(Vdec);
           break;
         default:
-          myHasResult = myDone = Standard_False;
+          myHasResult = myDone = false;
           throw Standard_ConstructionError(
             "AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
       }
@@ -614,20 +616,21 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting&    
                                                     const AdvApprox_Cutting&            VChoice,
                                                     const AdvApp2Var_EvaluatorFunc2Var& Func)
 {
-  Standard_Real    dec;
-  Standard_Boolean more;
-  Standard_Integer ind1, ind2, NbPatch, NbU, NbV;
-  Standard_Integer iu = myConditions.UOrder(), iv = myConditions.VOrder();
-  AdvApp2Var_Node  N1(iu, iv), N2(iu, iv);
+  double          dec;
+  bool            more;
+  int             ind1, ind2, NbPatch, NbU, NbV;
+  int             iu = myConditions.UOrder(), iv = myConditions.VOrder();
+  AdvApp2Var_Node N1(iu, iv), N2(iu, iv);
 
-  for (Handle(AdvApp2Var_Iso) anIso = myConstraints.FirstNotApprox(ind1, ind2); !anIso.IsNull();
-       anIso                        = myConstraints.FirstNotApprox(ind1, ind2))
+  for (occ::handle<AdvApp2Var_Iso> anIso = myConstraints.FirstNotApprox(ind1, ind2);
+       !anIso.IsNull();
+       anIso = myConstraints.FirstNotApprox(ind1, ind2))
   {
     // approximation of iso and calculation of constraints at extremities
-    const Standard_Integer indN1 = myConstraints.FirstNode(anIso->Type(), ind1, ind2);
-    N1                           = *myConstraints.Node(indN1);
-    const Standard_Integer indN2 = myConstraints.LastNode(anIso->Type(), ind1, ind2);
-    N2                           = *myConstraints.Node(indN2);
+    const int indN1 = myConstraints.FirstNode(anIso->Type(), ind1, ind2);
+    N1              = *myConstraints.Node(indN1);
+    const int indN2 = myConstraints.LastNode(anIso->Type(), ind1, ind2);
+    N2              = *myConstraints.Node(indN2);
 
     // note that old code attempted to make copy of anIso here (but copy was incomplete)
     anIso->MakeApprox(myConditions,
@@ -687,7 +690,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting&    
         }
         else
         {
-          myHasResult = myDone = Standard_False;
+          myHasResult = myDone = false;
           throw Standard_ConstructionError(
             "AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
         }
@@ -706,15 +709,16 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting&    
                                                     const AdvApp2Var_EvaluatorFunc2Var& Func,
                                                     const AdvApp2Var_Criterion&         Crit)
 {
-  Standard_Real    dec;
-  Standard_Boolean more, CritRel = (Crit.Type() == AdvApp2Var_Relative);
-  Standard_Integer ind1, ind2, NbPatch, NbU, NbV;
-  Standard_Integer indN1, indN2;
-  Standard_Integer iu = myConditions.UOrder(), iv = myConditions.VOrder();
-  AdvApp2Var_Node  N1(iu, iv), N2(iu, iv);
+  double          dec;
+  bool            more, CritRel = (Crit.Type() == AdvApp2Var_Relative);
+  int             ind1, ind2, NbPatch, NbU, NbV;
+  int             indN1, indN2;
+  int             iu = myConditions.UOrder(), iv = myConditions.VOrder();
+  AdvApp2Var_Node N1(iu, iv), N2(iu, iv);
 
-  for (Handle(AdvApp2Var_Iso) anIso = myConstraints.FirstNotApprox(ind1, ind2); !anIso.IsNull();
-       anIso                        = myConstraints.FirstNotApprox(ind1, ind2))
+  for (occ::handle<AdvApp2Var_Iso> anIso = myConstraints.FirstNotApprox(ind1, ind2);
+       !anIso.IsNull();
+       anIso = myConstraints.FirstNotApprox(ind1, ind2))
   {
     // approximation of the iso and calculation of constraints at the extremities
     indN1 = myConstraints.FirstNode(anIso->Type(), ind1, ind2);
@@ -784,7 +788,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting&    
         }
         else
         {
-          myHasResult = myDone = Standard_False;
+          myHasResult = myDone = false;
           throw Standard_ConstructionError(
             "AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
         }
@@ -801,15 +805,15 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting&    
 void AdvApp2Var_ApproxAFunc2Var::Compute3DErrors()
 {
 
-  Standard_Integer iesp, ipat;
-  Standard_Real    error_max, error_moy, error_U0, error_V0, error_U1, error_V1;
-  Standard_Real    Tol, F1Tol, F2Tol, F3Tol, F4Tol;
+  int    iesp, ipat;
+  double error_max, error_moy, error_U0, error_V0, error_U1, error_V1;
+  double Tol, F1Tol, F2Tol, F3Tol, F4Tol;
   if (myNumSubSpaces[2] > 0)
   {
-    my3DMaxError     = new (TColStd_HArray1OfReal)(1, myNumSubSpaces[2]);
-    my3DAverageError = new (TColStd_HArray1OfReal)(1, myNumSubSpaces[2]);
-    my3DUFrontError  = new (TColStd_HArray1OfReal)(1, myNumSubSpaces[2]);
-    my3DVFrontError  = new (TColStd_HArray1OfReal)(1, myNumSubSpaces[2]);
+    my3DMaxError     = new (NCollection_HArray1<double>)(1, myNumSubSpaces[2]);
+    my3DAverageError = new (NCollection_HArray1<double>)(1, myNumSubSpaces[2]);
+    my3DUFrontError  = new (NCollection_HArray1<double>)(1, myNumSubSpaces[2]);
+    my3DVFrontError  = new (NCollection_HArray1<double>)(1, myNumSubSpaces[2]);
     for (iesp = 1; iesp <= myNumSubSpaces[2]; iesp++)
     {
       error_max = 0;
@@ -835,12 +839,12 @@ void AdvApp2Var_ApproxAFunc2Var::Compute3DErrors()
       my3DMaxError->SetValue(iesp, error_max);
       my3DUFrontError->SetValue(iesp, std::max(error_U0, error_U1));
       my3DVFrontError->SetValue(iesp, std::max(error_V0, error_V1));
-      error_moy /= (Standard_Real)myResult.NbPatch();
+      error_moy /= (double)myResult.NbPatch();
       my3DAverageError->SetValue(iesp, error_moy);
       if (error_max > Tol || error_U0 > F3Tol || error_U1 > F4Tol || error_V0 > F1Tol
           || error_V1 > F2Tol)
       {
-        myDone = Standard_False;
+        myDone = false;
       }
     }
   }
@@ -854,8 +858,8 @@ void AdvApp2Var_ApproxAFunc2Var::Compute3DErrors()
 void AdvApp2Var_ApproxAFunc2Var::ComputeCritError()
 {
 
-  Standard_Integer iesp, ipat;
-  Standard_Real    crit_max;
+  int    iesp, ipat;
+  double crit_max;
   if (myNumSubSpaces[2] > 0)
   {
     for (iesp = 1; iesp <= myNumSubSpaces[2]; iesp++)
@@ -878,59 +882,62 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeCritError()
 void AdvApp2Var_ApproxAFunc2Var::ConvertBS()
 {
   // Homogeneization of degrees
-  Standard_Integer iu = myConditions.UOrder(), iv = myConditions.VOrder();
-  Standard_Integer ncfu = myConditions.ULimit(), ncfv = myConditions.VLimit();
+  int iu = myConditions.UOrder(), iv = myConditions.VOrder();
+  int ncfu = myConditions.ULimit(), ncfv = myConditions.VLimit();
   myResult.SameDegree(iu, iv, ncfu, ncfv);
   myDegreeInU = ncfu - 1;
   myDegreeInV = ncfv - 1;
 
   // Calculate resulting surfaces
-  mySurfaces = new (TColGeom_HArray1OfSurface)(1, myNumSubSpaces[2]);
+  mySurfaces = new (NCollection_HArray1<occ::handle<Geom_Surface>>)(1, myNumSubSpaces[2]);
 
-  Standard_Integer     j;
-  TColStd_Array1OfReal UKnots(1, myResult.NbPatchInU() + 1);
+  int                        j;
+  NCollection_Array1<double> UKnots(1, myResult.NbPatchInU() + 1);
   for (j = 1; j <= UKnots.Length(); j++)
   {
     UKnots.SetValue(j, myResult.UParameter(j));
   }
 
-  TColStd_Array1OfReal VKnots(1, myResult.NbPatchInV() + 1);
+  NCollection_Array1<double> VKnots(1, myResult.NbPatchInV() + 1);
   for (j = 1; j <= VKnots.Length(); j++)
   {
     VKnots.SetValue(j, myResult.VParameter(j));
   }
 
   // Prepare data for conversion grid of polynoms --> poles
-  Handle(TColStd_HArray1OfReal) Uint1 = new (TColStd_HArray1OfReal)(1, 2);
+  occ::handle<NCollection_HArray1<double>> Uint1 = new (NCollection_HArray1<double>)(1, 2);
   Uint1->SetValue(1, -1);
   Uint1->SetValue(2, 1);
-  Handle(TColStd_HArray1OfReal) Vint1 = new (TColStd_HArray1OfReal)(1, 2);
+  occ::handle<NCollection_HArray1<double>> Vint1 = new (NCollection_HArray1<double>)(1, 2);
   Vint1->SetValue(1, -1);
   Vint1->SetValue(2, 1);
 
-  Handle(TColStd_HArray1OfReal) Uint2 = new (TColStd_HArray1OfReal)(1, myResult.NbPatchInU() + 1);
+  occ::handle<NCollection_HArray1<double>> Uint2 =
+    new (NCollection_HArray1<double>)(1, myResult.NbPatchInU() + 1);
   for (j = 1; j <= Uint2->Length(); j++)
   {
     Uint2->SetValue(j, myResult.UParameter(j));
   }
-  Handle(TColStd_HArray1OfReal) Vint2 = new (TColStd_HArray1OfReal)(1, myResult.NbPatchInV() + 1);
+  occ::handle<NCollection_HArray1<double>> Vint2 =
+    new (NCollection_HArray1<double>)(1, myResult.NbPatchInV() + 1);
   for (j = 1; j <= Vint2->Length(); j++)
   {
     Vint2->SetValue(j, myResult.VParameter(j));
   }
 
-  Standard_Integer nmax    = myResult.NbPatchInU() * myResult.NbPatchInV(),
-                   Size_eq = myConditions.ULimit() * myConditions.VLimit() * 3;
+  int nmax    = myResult.NbPatchInU() * myResult.NbPatchInV(),
+      Size_eq = myConditions.ULimit() * myConditions.VLimit() * 3;
 
-  Handle(TColStd_HArray2OfInteger) NbCoeff = new (TColStd_HArray2OfInteger)(1, nmax, 1, 2);
-  Handle(TColStd_HArray1OfReal)    Poly    = new (TColStd_HArray1OfReal)(1, nmax * Size_eq);
+  occ::handle<NCollection_HArray2<int>>    NbCoeff = new (NCollection_HArray2<int>)(1, nmax, 1, 2);
+  occ::handle<NCollection_HArray1<double>> Poly =
+    new (NCollection_HArray1<double>)(1, nmax * Size_eq);
 
-  Standard_Integer SSP, i;
+  int SSP, i;
   for (SSP = 1; SSP <= myNumSubSpaces[2]; SSP++)
   {
 
     // Creation of the grid of polynoms
-    Standard_Integer n = 0, icf = 1, ieq;
+    int n = 0, icf = 1, ieq;
     for (j = 1; j <= myResult.NbPatchInV(); j++)
     {
       for (i = 1; i <= myResult.NbPatchInU(); i++)
@@ -961,7 +968,7 @@ void AdvApp2Var_ApproxAFunc2Var::ConvertBS()
                                       Vint2);
     if (!CvP.IsDone())
     {
-      myDone = Standard_False;
+      myDone = false;
     }
 
     // Conversion into BSpline
@@ -977,10 +984,10 @@ void AdvApp2Var_ApproxAFunc2Var::ConvertBS()
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApp2Var_ApproxAFunc2Var::MaxError(
-  const Standard_Integer Dimension) const
+occ::handle<NCollection_HArray1<double>> AdvApp2Var_ApproxAFunc2Var::MaxError(
+  const int Dimension) const
 {
-  Handle(TColStd_HArray1OfReal) EPtr;
+  occ::handle<NCollection_HArray1<double>> EPtr;
   if (Dimension < 1 || Dimension > 3)
   {
     throw Standard_OutOfRange(
@@ -1003,10 +1010,10 @@ Handle(TColStd_HArray1OfReal) AdvApp2Var_ApproxAFunc2Var::MaxError(
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApp2Var_ApproxAFunc2Var::AverageError(
-  const Standard_Integer Dimension) const
+occ::handle<NCollection_HArray1<double>> AdvApp2Var_ApproxAFunc2Var::AverageError(
+  const int Dimension) const
 {
-  Handle(TColStd_HArray1OfReal) EPtr;
+  occ::handle<NCollection_HArray1<double>> EPtr;
   if (Dimension < 1 || Dimension > 3)
   {
     throw Standard_OutOfRange(
@@ -1029,10 +1036,10 @@ Handle(TColStd_HArray1OfReal) AdvApp2Var_ApproxAFunc2Var::AverageError(
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApp2Var_ApproxAFunc2Var::UFrontError(
-  const Standard_Integer Dimension) const
+occ::handle<NCollection_HArray1<double>> AdvApp2Var_ApproxAFunc2Var::UFrontError(
+  const int Dimension) const
 {
-  Handle(TColStd_HArray1OfReal) EPtr;
+  occ::handle<NCollection_HArray1<double>> EPtr;
   if (Dimension < 1 || Dimension > 3)
   {
     throw Standard_OutOfRange(
@@ -1055,10 +1062,10 @@ Handle(TColStd_HArray1OfReal) AdvApp2Var_ApproxAFunc2Var::UFrontError(
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) AdvApp2Var_ApproxAFunc2Var::VFrontError(
-  const Standard_Integer Dimension) const
+occ::handle<NCollection_HArray1<double>> AdvApp2Var_ApproxAFunc2Var::VFrontError(
+  const int Dimension) const
 {
-  Handle(TColStd_HArray1OfReal) EPtr;
+  occ::handle<NCollection_HArray1<double>> EPtr;
   if (Dimension <= 0 || Dimension > 3)
   {
     throw Standard_OutOfRange(
@@ -1081,60 +1088,55 @@ Handle(TColStd_HArray1OfReal) AdvApp2Var_ApproxAFunc2Var::VFrontError(
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_ApproxAFunc2Var::MaxError(const Standard_Integer Dimension,
-                                                   const Standard_Integer SSPIndex) const
+double AdvApp2Var_ApproxAFunc2Var::MaxError(const int Dimension, const int SSPIndex) const
 {
   if (Dimension != 3 || SSPIndex != 1)
   {
     throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::MaxError: ONE Surface 3D only !");
   }
-  Handle(TColStd_HArray1OfReal) EPtr = MaxError(Dimension);
+  occ::handle<NCollection_HArray1<double>> EPtr = MaxError(Dimension);
   return EPtr->Value(SSPIndex);
 }
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_ApproxAFunc2Var::AverageError(const Standard_Integer Dimension,
-                                                       const Standard_Integer SSPIndex) const
+double AdvApp2Var_ApproxAFunc2Var::AverageError(const int Dimension, const int SSPIndex) const
 {
   if (Dimension != 3 || SSPIndex != 1)
   {
     throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::AverageError : ONE Surface 3D only !");
   }
-  Handle(TColStd_HArray1OfReal) EPtr = AverageError(Dimension);
+  occ::handle<NCollection_HArray1<double>> EPtr = AverageError(Dimension);
   return EPtr->Value(SSPIndex);
 }
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_ApproxAFunc2Var::UFrontError(const Standard_Integer Dimension,
-                                                      const Standard_Integer SSPIndex) const
+double AdvApp2Var_ApproxAFunc2Var::UFrontError(const int Dimension, const int SSPIndex) const
 {
   if (Dimension != 3 || SSPIndex != 1)
   {
     throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::UFrontError : ONE Surface 3D only !");
   }
-  Handle(TColStd_HArray1OfReal) EPtr = UFrontError(Dimension);
+  occ::handle<NCollection_HArray1<double>> EPtr = UFrontError(Dimension);
   return EPtr->Value(SSPIndex);
 }
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_ApproxAFunc2Var::VFrontError(const Standard_Integer Dimension,
-                                                      const Standard_Integer SSPIndex) const
+double AdvApp2Var_ApproxAFunc2Var::VFrontError(const int Dimension, const int SSPIndex) const
 {
   if (Dimension != 3 || SSPIndex != 1)
   {
     throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::VFrontError : ONE Surface 3D only !");
   }
-  Handle(TColStd_HArray1OfReal) EPtr = VFrontError(Dimension);
+  occ::handle<NCollection_HArray1<double>> EPtr = VFrontError(Dimension);
   return EPtr->Value(SSPIndex);
 }
 
 //=================================================================================================
 
-Standard_Real AdvApp2Var_ApproxAFunc2Var::CritError(const Standard_Integer Dimension,
-                                                    const Standard_Integer SSPIndex) const
+double AdvApp2Var_ApproxAFunc2Var::CritError(const int Dimension, const int SSPIndex) const
 {
   if (Dimension != 3 || SSPIndex != 1)
   {
@@ -1147,7 +1149,7 @@ Standard_Real AdvApp2Var_ApproxAFunc2Var::CritError(const Standard_Integer Dimen
 
 void AdvApp2Var_ApproxAFunc2Var::Dump(Standard_OStream& o) const
 {
-  Standard_Integer iesp = 1, NbKU, NbKV, ik;
+  int iesp = 1, NbKU, NbKV, ik;
   o << std::endl;
   if (!myHasResult)
   {
@@ -1177,7 +1179,8 @@ void AdvApp2Var_ApproxAFunc2Var::Dump(Standard_OStream& o) const
     o << "Degree of Bezier patches in U : " << myDegreeInU << "  in V : " << myDegreeInV
       << std::endl;
     o << std::endl;
-    Handle(Geom_BSplineSurface) S = Handle(Geom_BSplineSurface)::DownCast(mySurfaces->Value(iesp));
+    occ::handle<Geom_BSplineSurface> S =
+      occ::down_cast<Geom_BSplineSurface>(mySurfaces->Value(iesp));
     o << "Number of poles in U : " << S->NbUPoles() << "  in V : " << S->NbVPoles() << std::endl;
     o << std::endl;
     NbKU = S->NbUKnots();

@@ -26,14 +26,14 @@ StdStorage_RootData::StdStorage_RootData()
 {
 }
 
-Standard_Boolean StdStorage_RootData::Read(const Handle(Storage_BaseDriver)& theDriver)
+bool StdStorage_RootData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
 {
   // Check driver open mode
   if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
-    return Standard_False;
+    return false;
   }
 
   // Read root section
@@ -41,14 +41,14 @@ Standard_Boolean StdStorage_RootData::Read(const Handle(Storage_BaseDriver)& the
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadRootSection";
-    return Standard_False;
+    return false;
   }
 
   TCollection_AsciiString aRootName, aTypeName;
-  Standard_Integer        aRef;
+  int                     aRef;
 
-  Standard_Integer len = theDriver->RootSectionSize();
-  for (Standard_Integer i = 1; i <= len; i++)
+  int len = theDriver->RootSectionSize();
+  for (int i = 1; i <= len; i++)
   {
     try
     {
@@ -59,10 +59,10 @@ Standard_Boolean StdStorage_RootData::Read(const Handle(Storage_BaseDriver)& the
     {
       myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadRoot";
-      return Standard_False;
+      return false;
     }
 
-    Handle(StdStorage_Root) aRoot = new StdStorage_Root(aRootName, aRef, aTypeName);
+    occ::handle<StdStorage_Root> aRoot = new StdStorage_Root(aRootName, aRef, aTypeName);
     myObjects.Add(aRootName, aRoot);
   }
 
@@ -70,20 +70,20 @@ Standard_Boolean StdStorage_RootData::Read(const Handle(Storage_BaseDriver)& the
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadRootSection";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean StdStorage_RootData::Write(const Handle(Storage_BaseDriver)& theDriver)
+bool StdStorage_RootData::Write(const occ::handle<Storage_BaseDriver>& theDriver)
 {
   // Check driver open mode
   if (theDriver->OpenMode() != Storage_VSWrite && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
-    return Standard_False;
+    return false;
   }
 
   // Write root section
@@ -91,13 +91,16 @@ Standard_Boolean StdStorage_RootData::Write(const Handle(Storage_BaseDriver)& th
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginWriteRootSection";
-    return Standard_False;
+    return false;
   }
 
   theDriver->SetRootSectionSize(NumberOfRoots());
-  for (StdStorage_MapOfRoots::Iterator anIt(myObjects); anIt.More(); anIt.Next())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator
+         anIt(myObjects);
+       anIt.More();
+       anIt.Next())
   {
-    const Handle(StdStorage_Root)& aRoot = anIt.Value();
+    const occ::handle<StdStorage_Root>& aRoot = anIt.Value();
     try
     {
       OCC_CATCH_SIGNALS
@@ -107,7 +110,7 @@ Standard_Boolean StdStorage_RootData::Write(const Handle(Storage_BaseDriver)& th
     {
       myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadRoot";
-      return Standard_False;
+      return false;
     }
   }
 
@@ -115,27 +118,29 @@ Standard_Boolean StdStorage_RootData::Write(const Handle(Storage_BaseDriver)& th
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndWriteRootSection";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer StdStorage_RootData::NumberOfRoots() const
+int StdStorage_RootData::NumberOfRoots() const
 {
   return myObjects.Extent();
 }
 
-void StdStorage_RootData::AddRoot(const Handle(StdStorage_Root)& aRoot)
+void StdStorage_RootData::AddRoot(const occ::handle<StdStorage_Root>& aRoot)
 {
   myObjects.Add(aRoot->Name(), aRoot);
   aRoot->myRef = myObjects.Size();
 }
 
-Handle(StdStorage_HSequenceOfRoots) StdStorage_RootData::Roots() const
+occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> StdStorage_RootData::Roots() const
 {
-  Handle(StdStorage_HSequenceOfRoots)    anObjectsSeq = new StdStorage_HSequenceOfRoots;
-  StdStorage_DataMapIteratorOfMapOfRoots it(myObjects);
+  occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> anObjectsSeq =
+    new NCollection_HSequence<occ::handle<StdStorage_Root>>;
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator it(
+    myObjects);
 
   for (; it.More(); it.Next())
   {
@@ -145,9 +150,9 @@ Handle(StdStorage_HSequenceOfRoots) StdStorage_RootData::Roots() const
   return anObjectsSeq;
 }
 
-Handle(StdStorage_Root) StdStorage_RootData::Find(const TCollection_AsciiString& aName) const
+occ::handle<StdStorage_Root> StdStorage_RootData::Find(const TCollection_AsciiString& aName) const
 {
-  Handle(StdStorage_Root) p;
+  occ::handle<StdStorage_Root> p;
   if (myObjects.Contains(aName))
   {
     p = myObjects.FindFromKey(aName);
@@ -156,7 +161,7 @@ Handle(StdStorage_Root) StdStorage_RootData::Find(const TCollection_AsciiString&
   return p;
 }
 
-Standard_Boolean StdStorage_RootData::IsRoot(const TCollection_AsciiString& aName) const
+bool StdStorage_RootData::IsRoot(const TCollection_AsciiString& aName) const
 {
   return myObjects.Contains(aName);
 }
@@ -167,15 +172,21 @@ void StdStorage_RootData::RemoveRoot(const TCollection_AsciiString& aName)
   {
     myObjects.ChangeFromKey(aName)->myRef = 0;
     myObjects.RemoveKey(aName);
-    Standard_Integer aRef = 1;
-    for (StdStorage_MapOfRoots::Iterator anIt(myObjects); anIt.More(); anIt.Next(), ++aRef)
+    int aRef = 1;
+    for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator
+           anIt(myObjects);
+         anIt.More();
+         anIt.Next(), ++aRef)
       anIt.ChangeValue()->myRef = aRef;
   }
 }
 
 void StdStorage_RootData::Clear()
 {
-  for (StdStorage_MapOfRoots::Iterator anIt(myObjects); anIt.More(); anIt.Next())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator
+         anIt(myObjects);
+       anIt.More();
+       anIt.Next())
     anIt.ChangeValue()->myRef = 0;
 
   myObjects.Clear();

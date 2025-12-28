@@ -21,16 +21,16 @@
 
 //==================================================================================================
 
-void math_Matrix::SetRow(const Standard_Integer Row, const math_Vector& V)
+void math_Matrix::SetRow(const int Row, const math_Vector& V)
 {
   Standard_DimensionError_Raise_if(ColNumber() != V.Length(),
                                    "math_Matrix::SetRow() - input vector has wrong dimensions");
 
-  const Standard_Integer aLowerCol  = Array.LowerCol();
-  const Standard_Integer anUpperCol = Array.UpperCol();
+  const int aLowerCol  = Array.LowerCol();
+  const int anUpperCol = Array.UpperCol();
 
-  Standard_Integer I = V.Lower();
-  for (Standard_Integer Index = aLowerCol; Index <= anUpperCol; Index++)
+  int I = V.Lower();
+  for (int Index = aLowerCol; Index <= anUpperCol; Index++)
   {
     Array(Row, Index) = V(I);
     I++;
@@ -39,16 +39,16 @@ void math_Matrix::SetRow(const Standard_Integer Row, const math_Vector& V)
 
 //==================================================================================================
 
-void math_Matrix::SetCol(const Standard_Integer Col, const math_Vector& V)
+void math_Matrix::SetCol(const int Col, const math_Vector& V)
 {
   Standard_DimensionError_Raise_if(RowNumber() != V.Length(),
                                    "math_Matrix::SetCol() - input vector has wrong dimensions");
 
-  const Standard_Integer aLowerRow  = Array.LowerRow();
-  const Standard_Integer anUpperRow = Array.UpperRow();
+  const int aLowerRow  = Array.LowerRow();
+  const int anUpperRow = Array.UpperRow();
 
-  Standard_Integer I = V.Lower();
-  for (Standard_Integer Index = aLowerRow; Index <= anUpperRow; Index++)
+  int I = V.Lower();
+  for (int Index = aLowerRow; Index <= anUpperRow; Index++)
   {
     Array(Index, Col) = V(I);
     I++;
@@ -57,14 +57,14 @@ void math_Matrix::SetCol(const Standard_Integer Col, const math_Vector& V)
 
 //==================================================================================================
 
-math_Vector math_Matrix::Row(const Standard_Integer Row) const
+math_Vector math_Matrix::Row(const int Row) const
 {
-  const Standard_Integer aLowerCol  = Array.LowerCol();
-  const Standard_Integer anUpperCol = Array.UpperCol();
+  const int aLowerCol  = Array.LowerCol();
+  const int anUpperCol = Array.UpperCol();
 
   math_Vector Result(aLowerCol, anUpperCol);
 
-  for (Standard_Integer Index = aLowerCol; Index <= anUpperCol; Index++)
+  for (int Index = aLowerCol; Index <= anUpperCol; Index++)
   {
     Result(Index) = Array(Row, Index);
   }
@@ -73,14 +73,14 @@ math_Vector math_Matrix::Row(const Standard_Integer Row) const
 
 //==================================================================================================
 
-math_Vector math_Matrix::Col(const Standard_Integer Col) const
+math_Vector math_Matrix::Col(const int Col) const
 {
-  const Standard_Integer aLowerRow  = Array.LowerRow();
-  const Standard_Integer anUpperRow = Array.UpperRow();
+  const int aLowerRow  = Array.LowerRow();
+  const int anUpperRow = Array.UpperRow();
 
   math_Vector Result(aLowerRow, anUpperRow);
 
-  for (Standard_Integer Index = aLowerRow; Index <= anUpperRow; Index++)
+  for (int Index = aLowerRow; Index <= anUpperRow; Index++)
   {
     Result(Index) = Array(Index, Col);
   }
@@ -89,7 +89,7 @@ math_Vector math_Matrix::Col(const Standard_Integer Col) const
 
 //==================================================================================================
 
-void math_Matrix::SwapRow(const Standard_Integer Row1, const Standard_Integer Row2)
+void math_Matrix::SwapRow(const int Row1, const int Row2)
 {
   math_Vector V1 = Row(Row1);
   math_Vector V2 = Row(Row2);
@@ -99,7 +99,7 @@ void math_Matrix::SwapRow(const Standard_Integer Row1, const Standard_Integer Ro
 
 //==================================================================================================
 
-void math_Matrix::SwapCol(const Standard_Integer Col1, const Standard_Integer Col2)
+void math_Matrix::SwapCol(const int Col1, const int Col2)
 {
   math_Vector V1 = Col(Col1);
   math_Vector V2 = Col(Col2);
@@ -115,14 +115,14 @@ void math_Matrix::Multiply(const math_Vector& Left, const math_Vector& Right)
     (RowNumber() != Left.Length()) || (ColNumber() != Right.Length()),
     "math_Matrix::Multiply() - input vectors have incompatible dimensions");
 
-  const Standard_Integer aLowerRow  = Array.LowerRow();
-  const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol  = Array.LowerCol();
-  const Standard_Integer anUpperCol = Array.UpperCol();
+  const int aLowerRow  = Array.LowerRow();
+  const int anUpperRow = Array.UpperRow();
+  const int aLowerCol  = Array.LowerCol();
+  const int anUpperCol = Array.UpperCol();
 
-  for (Standard_Integer I = aLowerRow; I <= anUpperRow; I++)
+  for (int I = aLowerRow; I <= anUpperRow; I++)
   {
-    for (Standard_Integer J = aLowerCol; J <= anUpperCol; J++)
+    for (int J = aLowerCol; J <= anUpperCol; J++)
     {
       Array(I, J) = Left(I) * Right(J);
     }
@@ -137,18 +137,18 @@ math_Vector math_Matrix::Multiplied(const math_Vector& Right) const
     ColNumber() != Right.Length(),
     "math_Matrix::Multiplied() - input vector has incompatible dimensions");
 
-  const Standard_Integer aLowerRow  = Array.LowerRow();
-  const Standard_Integer anUpperRow = Array.UpperRow();
-  const Standard_Integer aLowerCol  = Array.LowerCol();
-  const Standard_Integer anUpperCol = Array.UpperCol();
+  const int aLowerRow  = Array.LowerRow();
+  const int anUpperRow = Array.UpperRow();
+  const int aLowerCol  = Array.LowerCol();
+  const int anUpperCol = Array.UpperCol();
 
   math_Vector Result(aLowerRow, anUpperRow);
 
-  for (Standard_Integer I = aLowerRow; I <= anUpperRow; I++)
+  for (int I = aLowerRow; I <= anUpperRow; I++)
   {
-    Result(I)           = 0.0;
-    Standard_Integer II = Right.Lower();
-    for (Standard_Integer J = aLowerCol; J <= anUpperCol; J++)
+    Result(I) = 0.0;
+    int II    = Right.Lower();
+    for (int J = aLowerCol; J <= anUpperCol; J++)
     {
       Result(I) = Result(I) + Array(I, J) * Right(II);
       II++;
@@ -166,7 +166,7 @@ math_Vector math_Matrix::operator*(const math_Vector& Right) const
 
 //==================================================================================================
 
-Standard_Real math_Matrix::Determinant() const
+double math_Matrix::Determinant() const
 {
   math_Gauss Sol(*this);
 

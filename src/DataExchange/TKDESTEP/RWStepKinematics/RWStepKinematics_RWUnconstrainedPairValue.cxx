@@ -31,10 +31,10 @@ RWStepKinematics_RWUnconstrainedPairValue::RWStepKinematics_RWUnconstrainedPairV
 //=================================================================================================
 
 void RWStepKinematics_RWUnconstrainedPairValue::ReadStep(
-  const Handle(StepData_StepReaderData)&               theData,
-  const Standard_Integer                               theNum,
-  Handle(Interface_Check)&                             theArch,
-  const Handle(StepKinematics_UnconstrainedPairValue)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&               theData,
+  const int                                                 theNum,
+  occ::handle<Interface_Check>&                             theArch,
+  const occ::handle<StepKinematics_UnconstrainedPairValue>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "unconstrained_pair_value"))
@@ -42,12 +42,12 @@ void RWStepKinematics_RWUnconstrainedPairValue::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of PairValue
 
-  Handle(StepKinematics_KinematicPair) aPairValue_AppliesToPair;
+  occ::handle<StepKinematics_KinematicPair> aPairValue_AppliesToPair;
   theData->ReadEntity(theNum,
                       2,
                       "pair_value.applies_to_pair",
@@ -57,7 +57,7 @@ void RWStepKinematics_RWUnconstrainedPairValue::ReadStep(
 
   // Own fields of UnconstrainedPairValue
 
-  Handle(StepGeom_Axis2Placement3d) aActualPlacement;
+  occ::handle<StepGeom_Axis2Placement3d> aActualPlacement;
   theData->ReadEntity(theNum,
                       3,
                       "actual_placement",
@@ -72,8 +72,8 @@ void RWStepKinematics_RWUnconstrainedPairValue::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWUnconstrainedPairValue::WriteStep(
-  StepData_StepWriter&                                 theSW,
-  const Handle(StepKinematics_UnconstrainedPairValue)& theEnt) const
+  StepData_StepWriter&                                      theSW,
+  const occ::handle<StepKinematics_UnconstrainedPairValue>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -92,8 +92,8 @@ void RWStepKinematics_RWUnconstrainedPairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWUnconstrainedPairValue::Share(
-  const Handle(StepKinematics_UnconstrainedPairValue)& theEnt,
-  Interface_EntityIterator&                            iter) const
+  const occ::handle<StepKinematics_UnconstrainedPairValue>& theEnt,
+  Interface_EntityIterator&                                 iter) const
 {
 
   // Inherited fields of RepresentationItem

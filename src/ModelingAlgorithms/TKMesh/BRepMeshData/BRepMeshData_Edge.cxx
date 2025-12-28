@@ -21,8 +21,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Edge, IMeshData_Edge)
 
 //=================================================================================================
 
-BRepMeshData_Edge::BRepMeshData_Edge(const TopoDS_Edge&                      theEdge,
-                                     const Handle(NCollection_IncAllocator)& theAllocator)
+BRepMeshData_Edge::BRepMeshData_Edge(const TopoDS_Edge&                           theEdge,
+                                     const occ::handle<NCollection_IncAllocator>& theAllocator)
     : IMeshData_Edge(theEdge),
       myAllocator(theAllocator),
       myPCurves(256, myAllocator),
@@ -37,7 +37,7 @@ BRepMeshData_Edge::~BRepMeshData_Edge() {}
 
 //=================================================================================================
 
-Standard_Integer BRepMeshData_Edge::PCurvesNb() const
+int BRepMeshData_Edge::PCurvesNb() const
 {
   return myPCurves.Size();
 }
@@ -48,7 +48,7 @@ const IMeshData::IPCurveHandle& BRepMeshData_Edge::AddPCurve(
   const IMeshData::IFacePtr& theDFace,
   const TopAbs_Orientation   theOrientation)
 {
-  const Standard_Integer aPCurveIndex = PCurvesNb();
+  const int aPCurveIndex = PCurvesNb();
   // Add pcurve to list of pcurves
   IMeshData::IPCurveHandle aPCurve(new (myAllocator)
                                      BRepMeshData_PCurve(theDFace, theOrientation, myAllocator));
@@ -80,7 +80,7 @@ const IMeshData::IPCurveHandle& BRepMeshData_Edge::GetPCurve(
 
 //=================================================================================================
 
-const IMeshData::IPCurveHandle& BRepMeshData_Edge::GetPCurve(const Standard_Integer theIndex) const
+const IMeshData::IPCurveHandle& BRepMeshData_Edge::GetPCurve(const int theIndex) const
 {
   return myPCurves(theIndex);
 }

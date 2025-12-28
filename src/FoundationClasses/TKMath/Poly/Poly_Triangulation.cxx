@@ -36,10 +36,10 @@ Poly_Triangulation::Poly_Triangulation()
 
 //=================================================================================================
 
-Poly_Triangulation::Poly_Triangulation(const Standard_Integer theNbNodes,
-                                       const Standard_Integer theNbTriangles,
-                                       const Standard_Boolean theHasUVNodes,
-                                       const Standard_Boolean theHasNormals)
+Poly_Triangulation::Poly_Triangulation(const int  theNbNodes,
+                                       const int  theNbTriangles,
+                                       const bool theHasUVNodes,
+                                       const bool theHasNormals)
     : myCachedMinMax(NULL),
       myDeflection(0),
       myNodes(theNbNodes),
@@ -58,8 +58,8 @@ Poly_Triangulation::Poly_Triangulation(const Standard_Integer theNbNodes,
 
 //=================================================================================================
 
-Poly_Triangulation::Poly_Triangulation(const TColgp_Array1OfPnt&    theNodes,
-                                       const Poly_Array1OfTriangle& theTriangles)
+Poly_Triangulation::Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        theNodes,
+                                       const NCollection_Array1<Poly_Triangle>& theTriangles)
     : myCachedMinMax(NULL),
       myDeflection(0),
       myNodes(theNodes.Length()),
@@ -73,9 +73,9 @@ Poly_Triangulation::Poly_Triangulation(const TColgp_Array1OfPnt&    theNodes,
 
 //=================================================================================================
 
-Poly_Triangulation::Poly_Triangulation(const TColgp_Array1OfPnt&    theNodes,
-                                       const TColgp_Array1OfPnt2d&  theUVNodes,
-                                       const Poly_Array1OfTriangle& theTriangles)
+Poly_Triangulation::Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        theNodes,
+                                       const NCollection_Array1<gp_Pnt2d>&      theUVNodes,
+                                       const NCollection_Array1<Poly_Triangle>& theTriangles)
     : myCachedMinMax(NULL),
       myDeflection(0),
       myNodes(theNodes.Length()),
@@ -99,14 +99,14 @@ Poly_Triangulation::~Poly_Triangulation()
 
 //=================================================================================================
 
-Handle(Poly_Triangulation) Poly_Triangulation::Copy() const
+occ::handle<Poly_Triangulation> Poly_Triangulation::Copy() const
 {
   return new Poly_Triangulation(this);
 }
 
 //=================================================================================================
 
-Poly_Triangulation::Poly_Triangulation(const Handle(Poly_Triangulation)& theTriangulation)
+Poly_Triangulation::Poly_Triangulation(const occ::handle<Poly_Triangulation>& theTriangulation)
     : myCachedMinMax(NULL),
       myDeflection(theTriangulation->myDeflection),
       myNodes(theTriangulation->myNodes),
@@ -130,7 +130,7 @@ void Poly_Triangulation::Clear()
   }
   if (!myTriangles.IsEmpty())
   {
-    Poly_Array1OfTriangle anEmptyTriangles;
+    NCollection_Array1<Poly_Triangle> anEmptyTriangles;
     myTriangles.Move(anEmptyTriangles);
   }
   RemoveUVNodes();
@@ -155,33 +155,33 @@ void Poly_Triangulation::RemoveNormals()
 {
   if (!myNormals.IsEmpty())
   {
-    NCollection_Array1<gp_Vec3f> anEmpty;
+    NCollection_Array1<NCollection_Vec3<float>> anEmpty;
     myNormals.Move(anEmpty);
   }
 }
 
 //=================================================================================================
 
-Handle(TColgp_HArray1OfPnt) Poly_Triangulation::MapNodeArray() const
+occ::handle<NCollection_HArray1<gp_Pnt>> Poly_Triangulation::MapNodeArray() const
 {
   if (myNodes.IsEmpty())
   {
-    return Handle(TColgp_HArray1OfPnt)();
+    return occ::handle<NCollection_HArray1<gp_Pnt>>();
   }
 
   if (myNodes.IsDoublePrecision())
   {
     // wrap array
-    const gp_Pnt*               aPntArr  = &myNodes.First<gp_Pnt>();
-    Handle(TColgp_HArray1OfPnt) anHArray = new TColgp_HArray1OfPnt();
-    TColgp_Array1OfPnt          anArray(*aPntArr, 1, NbNodes());
+    const gp_Pnt*                            aPntArr  = &myNodes.First<gp_Pnt>();
+    occ::handle<NCollection_HArray1<gp_Pnt>> anHArray = new NCollection_HArray1<gp_Pnt>();
+    NCollection_Array1<gp_Pnt>               anArray(*aPntArr, 1, NbNodes());
     anHArray->Move(anArray);
     return anHArray;
   }
 
   // deep copy
-  Handle(TColgp_HArray1OfPnt) anArray = new TColgp_HArray1OfPnt(1, NbNodes());
-  for (Standard_Integer aNodeIter = 0; aNodeIter < NbNodes(); ++aNodeIter)
+  occ::handle<NCollection_HArray1<gp_Pnt>> anArray = new NCollection_HArray1<gp_Pnt>(1, NbNodes());
+  for (int aNodeIter = 0; aNodeIter < NbNodes(); ++aNodeIter)
   {
     const gp_Pnt aPnt = myNodes.Value(aNodeIter);
     anArray->SetValue(aNodeIter + 1, aPnt);
@@ -191,41 +191,43 @@ Handle(TColgp_HArray1OfPnt) Poly_Triangulation::MapNodeArray() const
 
 //=================================================================================================
 
-Handle(Poly_HArray1OfTriangle) Poly_Triangulation::MapTriangleArray() const
+occ::handle<NCollection_HArray1<Poly_Triangle>> Poly_Triangulation::MapTriangleArray() const
 {
   if (myTriangles.IsEmpty())
   {
-    return Handle(Poly_HArray1OfTriangle)();
+    return occ::handle<NCollection_HArray1<Poly_Triangle>>();
   }
 
-  Handle(Poly_HArray1OfTriangle) anHArray = new Poly_HArray1OfTriangle();
-  Poly_Array1OfTriangle          anArray(myTriangles.First(), 1, NbTriangles());
+  occ::handle<NCollection_HArray1<Poly_Triangle>> anHArray =
+    new NCollection_HArray1<Poly_Triangle>();
+  NCollection_Array1<Poly_Triangle> anArray(myTriangles.First(), 1, NbTriangles());
   anHArray->Move(anArray);
   return anHArray;
 }
 
 //=================================================================================================
 
-Handle(TColgp_HArray1OfPnt2d) Poly_Triangulation::MapUVNodeArray() const
+occ::handle<NCollection_HArray1<gp_Pnt2d>> Poly_Triangulation::MapUVNodeArray() const
 {
   if (myUVNodes.IsEmpty())
   {
-    return Handle(TColgp_HArray1OfPnt2d)();
+    return occ::handle<NCollection_HArray1<gp_Pnt2d>>();
   }
 
   if (myUVNodes.IsDoublePrecision())
   {
     // wrap array
-    const gp_Pnt2d*               aPntArr  = &myUVNodes.First<gp_Pnt2d>();
-    Handle(TColgp_HArray1OfPnt2d) anHArray = new TColgp_HArray1OfPnt2d();
-    TColgp_Array1OfPnt2d          anArray(*aPntArr, 1, NbNodes());
+    const gp_Pnt2d*                            aPntArr  = &myUVNodes.First<gp_Pnt2d>();
+    occ::handle<NCollection_HArray1<gp_Pnt2d>> anHArray = new NCollection_HArray1<gp_Pnt2d>();
+    NCollection_Array1<gp_Pnt2d>               anArray(*aPntArr, 1, NbNodes());
     anHArray->Move(anArray);
     return anHArray;
   }
 
   // deep copy
-  Handle(TColgp_HArray1OfPnt2d) anArray = new TColgp_HArray1OfPnt2d(1, NbNodes());
-  for (Standard_Integer aNodeIter = 0; aNodeIter < NbNodes(); ++aNodeIter)
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> anArray =
+    new NCollection_HArray1<gp_Pnt2d>(1, NbNodes());
+  for (int aNodeIter = 0; aNodeIter < NbNodes(); ++aNodeIter)
   {
     const gp_Pnt2d aPnt = myUVNodes.Value(aNodeIter);
     anArray->SetValue(aNodeIter + 1, aPnt);
@@ -235,22 +237,22 @@ Handle(TColgp_HArray1OfPnt2d) Poly_Triangulation::MapUVNodeArray() const
 
 //=================================================================================================
 
-Handle(TShort_HArray1OfShortReal) Poly_Triangulation::MapNormalArray() const
+occ::handle<NCollection_HArray1<float>> Poly_Triangulation::MapNormalArray() const
 {
   if (myNormals.IsEmpty())
   {
-    return Handle(TShort_HArray1OfShortReal)();
+    return occ::handle<NCollection_HArray1<float>>();
   }
 
-  Handle(TShort_HArray1OfShortReal) anHArray = new TShort_HArray1OfShortReal();
-  TShort_Array1OfShortReal          anArray(*myNormals.First().GetData(), 1, 3 * NbNodes());
+  occ::handle<NCollection_HArray1<float>> anHArray = new NCollection_HArray1<float>();
+  NCollection_Array1<float>               anArray(*myNormals.First().GetData(), 1, 3 * NbNodes());
   anHArray->Move(anArray);
   return anHArray;
 }
 
 //=================================================================================================
 
-void Poly_Triangulation::SetNormals(const Handle(TShort_HArray1OfShortReal)& theNormals)
+void Poly_Triangulation::SetNormals(const occ::handle<NCollection_HArray1<float>>& theNormals)
 {
   if (theNormals.IsNull() || theNormals->Length() != 3 * NbNodes())
   {
@@ -258,13 +260,13 @@ void Poly_Triangulation::SetNormals(const Handle(TShort_HArray1OfShortReal)& the
   }
 
   AddNormals();
-  const Standard_Integer anArrayLower = theNormals->Lower();
-  for (Standard_Integer aNodeIter = 1; aNodeIter <= NbNodes(); ++aNodeIter)
+  const int anArrayLower = theNormals->Lower();
+  for (int aNodeIter = 1; aNodeIter <= NbNodes(); ++aNodeIter)
   {
-    Standard_Integer anArrayInd = anArrayLower + (aNodeIter - 1) * 3;
-    gp_Vec3f         aNorm(theNormals->Value(anArrayInd + 0),
-                   theNormals->Value(anArrayInd + 1),
-                   theNormals->Value(anArrayInd + 2));
+    int                     anArrayInd = anArrayLower + (aNodeIter - 1) * 3;
+    NCollection_Vec3<float> aNorm(theNormals->Value(anArrayInd + 0),
+                                  theNormals->Value(anArrayInd + 1),
+                                  theNormals->Value(anArrayInd + 2));
     SetNormal(aNodeIter, aNorm);
   }
 }
@@ -279,7 +281,7 @@ void Poly_Triangulation::SetDoublePrecision(bool theIsDouble)
 
 //=================================================================================================
 
-void Poly_Triangulation::ResizeNodes(Standard_Integer theNbNodes, Standard_Boolean theToCopyOld)
+void Poly_Triangulation::ResizeNodes(int theNbNodes, bool theToCopyOld)
 {
   myNodes.Resize(theNbNodes, theToCopyOld);
   if (!myUVNodes.IsEmpty())
@@ -294,8 +296,7 @@ void Poly_Triangulation::ResizeNodes(Standard_Integer theNbNodes, Standard_Boole
 
 //=================================================================================================
 
-void Poly_Triangulation::ResizeTriangles(Standard_Integer theNbTriangles,
-                                         Standard_Boolean theToCopyOld)
+void Poly_Triangulation::ResizeTriangles(int theNbTriangles, bool theToCopyOld)
 {
   myTriangles.Resize(1, theNbTriangles, theToCopyOld);
 }
@@ -322,7 +323,7 @@ void Poly_Triangulation::AddNormals()
 
 //=================================================================================================
 
-void Poly_Triangulation::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void Poly_Triangulation::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -374,9 +375,9 @@ void Poly_Triangulation::unsetCachedMinMax()
 
 //=================================================================================================
 
-Standard_Boolean Poly_Triangulation::MinMax(Bnd_Box&       theBox,
-                                            const gp_Trsf& theTrsf,
-                                            const bool     theIsAccurate) const
+bool Poly_Triangulation::MinMax(Bnd_Box&       theBox,
+                                const gp_Trsf& theTrsf,
+                                const bool     theIsAccurate) const
 {
   Bnd_Box aBox;
   if (HasCachedMinMax()
@@ -392,10 +393,10 @@ Standard_Boolean Poly_Triangulation::MinMax(Bnd_Box&       theBox,
   }
   if (aBox.IsVoid())
   {
-    return Standard_False;
+    return false;
   }
   theBox.Add(aBox);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -405,14 +406,14 @@ Bnd_Box Poly_Triangulation::computeBoundingBox(const gp_Trsf& theTrsf) const
   Bnd_Box aBox;
   if (theTrsf.Form() == gp_Identity)
   {
-    for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes(); aNodeIdx++)
+    for (int aNodeIdx = 0; aNodeIdx < NbNodes(); aNodeIdx++)
     {
       aBox.Add(myNodes.Value(aNodeIdx));
     }
   }
   else
   {
-    for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes(); aNodeIdx++)
+    for (int aNodeIdx = 0; aNodeIdx < NbNodes(); aNodeIdx++)
     {
       aBox.Add(myNodes.Value(aNodeIdx).Transformed(theTrsf));
     }
@@ -426,40 +427,41 @@ void Poly_Triangulation::ComputeNormals()
 {
   // zero values
   AddNormals();
-  myNormals.Init(gp_Vec3f(0.0f));
+  myNormals.Init(NCollection_Vec3<float>(0.0f));
 
-  Standard_Integer anElem[3] = {0, 0, 0};
-  for (Poly_Array1OfTriangle::Iterator aTriIter(myTriangles); aTriIter.More(); aTriIter.Next())
+  int anElem[3] = {0, 0, 0};
+  for (NCollection_Array1<Poly_Triangle>::Iterator aTriIter(myTriangles); aTriIter.More();
+       aTriIter.Next())
   {
     aTriIter.Value().Get(anElem[0], anElem[1], anElem[2]);
     const gp_Pnt aNode0 = myNodes.Value(anElem[0] - 1);
     const gp_Pnt aNode1 = myNodes.Value(anElem[1] - 1);
     const gp_Pnt aNode2 = myNodes.Value(anElem[2] - 1);
 
-    const gp_XYZ   aVec01   = aNode1.XYZ() - aNode0.XYZ();
-    const gp_XYZ   aVec02   = aNode2.XYZ() - aNode0.XYZ();
-    const gp_XYZ   aTriNorm = aVec01 ^ aVec02;
-    const gp_Vec3f aNorm3f =
-      gp_Vec3f(float(aTriNorm.X()), float(aTriNorm.Y()), float(aTriNorm.Z()));
-    for (Standard_Integer aNodeIter = 0; aNodeIter < 3; ++aNodeIter)
+    const gp_XYZ                  aVec01   = aNode1.XYZ() - aNode0.XYZ();
+    const gp_XYZ                  aVec02   = aNode2.XYZ() - aNode0.XYZ();
+    const gp_XYZ                  aTriNorm = aVec01 ^ aVec02;
+    const NCollection_Vec3<float> aNorm3f =
+      NCollection_Vec3<float>(float(aTriNorm.X()), float(aTriNorm.Y()), float(aTriNorm.Z()));
+    for (int aNodeIter = 0; aNodeIter < 3; ++aNodeIter)
     {
       myNormals.ChangeValue(anElem[aNodeIter] - 1) += aNorm3f;
     }
   }
 
   // Normalize all vectors
-  for (NCollection_Array1<gp_Vec3f>::Iterator aNodeIter(myNormals); aNodeIter.More();
+  for (NCollection_Array1<NCollection_Vec3<float>>::Iterator aNodeIter(myNormals); aNodeIter.More();
        aNodeIter.Next())
   {
-    gp_Vec3f&   aNorm3f = aNodeIter.ChangeValue();
-    const float aMod    = aNorm3f.Modulus();
-    aNorm3f             = aMod == 0.0f ? gp_Vec3f(0.0f, 0.0f, 1.0f) : (aNorm3f / aMod);
+    NCollection_Vec3<float>& aNorm3f = aNodeIter.ChangeValue();
+    const float              aMod    = aNorm3f.Modulus();
+    aNorm3f = aMod == 0.0f ? NCollection_Vec3<float>(0.0f, 0.0f, 1.0f) : (aNorm3f / aMod);
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean Poly_Triangulation::LoadDeferredData(const Handle(OSD_FileSystem)& theFileSystem)
+bool Poly_Triangulation::LoadDeferredData(const occ::handle<OSD_FileSystem>& theFileSystem)
 {
   if (!HasDeferredData())
   {
@@ -475,17 +477,17 @@ Standard_Boolean Poly_Triangulation::LoadDeferredData(const Handle(OSD_FileSyste
 
 //=================================================================================================
 
-Handle(Poly_Triangulation) Poly_Triangulation::DetachedLoadDeferredData(
-  const Handle(OSD_FileSystem)& theFileSystem) const
+occ::handle<Poly_Triangulation> Poly_Triangulation::DetachedLoadDeferredData(
+  const occ::handle<OSD_FileSystem>& theFileSystem) const
 {
   if (!HasDeferredData())
   {
-    return Handle(Poly_Triangulation)();
+    return occ::handle<Poly_Triangulation>();
   }
-  Handle(Poly_Triangulation) aResult = createNewEntity();
+  occ::handle<Poly_Triangulation> aResult = createNewEntity();
   if (!loadDeferredData(theFileSystem, aResult))
   {
-    return Handle(Poly_Triangulation)();
+    return occ::handle<Poly_Triangulation>();
   }
   aResult->SetMeshPurpose(aResult->MeshPurpose() | Poly_MeshPurpose_Loaded);
   return aResult;
@@ -493,7 +495,7 @@ Handle(Poly_Triangulation) Poly_Triangulation::DetachedLoadDeferredData(
 
 //=================================================================================================
 
-Standard_Boolean Poly_Triangulation::UnloadDeferredData()
+bool Poly_Triangulation::UnloadDeferredData()
 {
   if (HasDeferredData())
   {

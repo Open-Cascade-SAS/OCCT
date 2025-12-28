@@ -25,9 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidOfLinearExtrusion, IGESData_IGESEntity
 
 IGESSolid_SolidOfLinearExtrusion::IGESSolid_SolidOfLinearExtrusion() {}
 
-void IGESSolid_SolidOfLinearExtrusion::Init(const Handle(IGESData_IGESEntity)& aCurve,
-                                            const Standard_Real                Length,
-                                            const gp_XYZ&                      Direction)
+void IGESSolid_SolidOfLinearExtrusion::Init(const occ::handle<IGESData_IGESEntity>& aCurve,
+                                            const double                            Length,
+                                            const gp_XYZ&                           Direction)
 {
   theCurve     = aCurve;
   theLength    = Length;
@@ -35,12 +35,12 @@ void IGESSolid_SolidOfLinearExtrusion::Init(const Handle(IGESData_IGESEntity)& a
   InitTypeAndForm(164, 0);
 }
 
-Handle(IGESData_IGESEntity) IGESSolid_SolidOfLinearExtrusion::Curve() const
+occ::handle<IGESData_IGESEntity> IGESSolid_SolidOfLinearExtrusion::Curve() const
 {
   return theCurve;
 }
 
-Standard_Real IGESSolid_SolidOfLinearExtrusion::ExtrusionLength() const
+double IGESSolid_SolidOfLinearExtrusion::ExtrusionLength() const
 {
   return theLength;
 }

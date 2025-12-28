@@ -21,10 +21,10 @@
 
 RWStepGeom_RWToroidalSurface::RWStepGeom_RWToroidalSurface() {}
 
-void RWStepGeom_RWToroidalSurface::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepGeom_ToroidalSurface)& ent) const
+void RWStepGeom_RWToroidalSurface::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                                    num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepGeom_ToroidalSurface>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,26 +34,26 @@ void RWStepGeom_RWToroidalSurface::ReadStep(const Handle(StepData_StepReaderData
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : position ---
 
-  Handle(StepGeom_Axis2Placement3d) aPosition;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Axis2Placement3d> aPosition;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "position", ach, STANDARD_TYPE(StepGeom_Axis2Placement3d), aPosition);
 
   // --- own field : majorRadius ---
 
-  Standard_Real aMajorRadius;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aMajorRadius;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "major_radius", ach, aMajorRadius);
 
   // --- own field : minorRadius ---
 
-  Standard_Real aMinorRadius;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  double aMinorRadius;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadReal(num, 4, "minor_radius", ach, aMinorRadius);
 
   //--- Initialisation of the read entity ---
@@ -61,8 +61,8 @@ void RWStepGeom_RWToroidalSurface::ReadStep(const Handle(StepData_StepReaderData
   ent->Init(aName, aPosition, aMajorRadius, aMinorRadius);
 }
 
-void RWStepGeom_RWToroidalSurface::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepGeom_ToroidalSurface)& ent) const
+void RWStepGeom_RWToroidalSurface::WriteStep(StepData_StepWriter&                         SW,
+                                             const occ::handle<StepGeom_ToroidalSurface>& ent) const
 {
 
   // --- inherited field name ---
@@ -82,16 +82,16 @@ void RWStepGeom_RWToroidalSurface::WriteStep(StepData_StepWriter&               
   SW.Send(ent->MinorRadius());
 }
 
-void RWStepGeom_RWToroidalSurface::Share(const Handle(StepGeom_ToroidalSurface)& ent,
-                                         Interface_EntityIterator&               iter) const
+void RWStepGeom_RWToroidalSurface::Share(const occ::handle<StepGeom_ToroidalSurface>& ent,
+                                         Interface_EntityIterator&                    iter) const
 {
 
   iter.GetOneItem(ent->Position());
 }
 
-void RWStepGeom_RWToroidalSurface::Check(const Handle(StepGeom_ToroidalSurface)& ent,
+void RWStepGeom_RWToroidalSurface::Check(const occ::handle<StepGeom_ToroidalSurface>& ent,
                                          const Interface_ShareTool&,
-                                         Handle(Interface_Check)& ach) const
+                                         occ::handle<Interface_Check>& ach) const
 {
   //  std::cout << "------ calling CheckToroidalSurface ------" << std::endl;
   if (ent->MajorRadius() < 0.0)

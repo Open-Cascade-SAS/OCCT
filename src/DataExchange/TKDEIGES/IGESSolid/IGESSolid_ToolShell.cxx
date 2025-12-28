@@ -28,11 +28,13 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // MGE 03/08/98
 //=================================================================================================
@@ -41,32 +43,32 @@ IGESSolid_ToolShell::IGESSolid_ToolShell() {}
 
 //=================================================================================================
 
-void IGESSolid_ToolShell::ReadOwnParams(const Handle(IGESSolid_Shell)&         ent,
-                                        const Handle(IGESData_IGESReaderData)& IR,
-                                        IGESData_ParamReader&                  PR) const
+void IGESSolid_ToolShell::ReadOwnParams(const occ::handle<IGESSolid_Shell>&         ent,
+                                        const occ::handle<IGESData_IGESReaderData>& IR,
+                                        IGESData_ParamReader&                       PR) const
 {
 
   // MGE 03/08/98
 
-  // Standard_Boolean abool; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer nbfaces = 0; // szv#4:S4163:12Mar99 `i` moved in for
-  // Handle(IGESSolid_Face) aface; //szv#4:S4163:12Mar99 moved down
-  Handle(IGESSolid_HArray1OfFace)  tempFaces;
-  Handle(TColStd_HArray1OfInteger) tempOrientation;
+  // bool abool; //szv#4:S4163:12Mar99 moved down
+  int nbfaces = 0; // szv#4:S4163:12Mar99 `i` moved in for
+  // occ::handle<IGESSolid_Face> aface; //szv#4:S4163:12Mar99 moved down
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>> tempFaces;
+  occ::handle<NCollection_HArray1<int>>                         tempOrientation;
 
   // st = PR.ReadInteger(PR.Current(), Msg200, nbfaces); //szv#4:S4163:12Mar99 moved in if
   // st = PR.ReadInteger(PR.Current(), "Number of faces", nbfaces);
-  Standard_Boolean sb = PR.ReadInteger(PR.Current(), nbfaces);
+  bool sb = PR.ReadInteger(PR.Current(), nbfaces);
   if (sb && nbfaces > 0)
   {
     Message_Msg Msg180("XSTEP_180");
 
-    Standard_Boolean       abool;
-    Handle(IGESSolid_Face) aface;
-    tempFaces       = new IGESSolid_HArray1OfFace(1, nbfaces);
-    tempOrientation = new TColStd_HArray1OfInteger(1, nbfaces);
+    bool                        abool;
+    occ::handle<IGESSolid_Face> aface;
+    tempFaces       = new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nbfaces);
+    tempOrientation = new NCollection_HArray1<int>(1, nbfaces);
     IGESData_Status aStatus;
-    for (Standard_Integer i = 1; i <= nbfaces; i++)
+    for (int i = 1; i <= nbfaces; i++)
     {
       // st = PR.ReadEntity(IR, PR.Current(),Msg201, STANDARD_TYPE(IGESSolid_Face), aface);
       // //szv#4:S4163:12Mar99 moved in if st = PR.ReadEntity(IR, PR.Current(), "Faces",
@@ -118,10 +120,10 @@ void IGESSolid_ToolShell::ReadOwnParams(const Handle(IGESSolid_Shell)&         e
 
 //=================================================================================================
 
-void IGESSolid_ToolShell::WriteOwnParams(const Handle(IGESSolid_Shell)& ent,
-                                         IGESData_IGESWriter&           IW) const
+void IGESSolid_ToolShell::WriteOwnParams(const occ::handle<IGESSolid_Shell>& ent,
+                                         IGESData_IGESWriter&                IW) const
 {
-  Standard_Integer i, nbfaces = ent->NbFaces();
+  int i, nbfaces = ent->NbFaces();
 
   IW.Send(nbfaces);
   for (i = 1; i <= nbfaces; i++)
@@ -133,25 +135,26 @@ void IGESSolid_ToolShell::WriteOwnParams(const Handle(IGESSolid_Shell)& ent,
 
 //=================================================================================================
 
-void IGESSolid_ToolShell::OwnShared(const Handle(IGESSolid_Shell)& ent,
-                                    Interface_EntityIterator&      iter) const
+void IGESSolid_ToolShell::OwnShared(const occ::handle<IGESSolid_Shell>& ent,
+                                    Interface_EntityIterator&           iter) const
 {
-  Standard_Integer nbfaces = ent->NbFaces();
-  for (Standard_Integer i = 1; i <= nbfaces; i++)
+  int nbfaces = ent->NbFaces();
+  for (int i = 1; i <= nbfaces; i++)
     iter.GetOneItem(ent->Face(i));
 }
 
 //=================================================================================================
 
-void IGESSolid_ToolShell::OwnCopy(const Handle(IGESSolid_Shell)& another,
-                                  const Handle(IGESSolid_Shell)& ent,
-                                  Interface_CopyTool&            TC) const
+void IGESSolid_ToolShell::OwnCopy(const occ::handle<IGESSolid_Shell>& another,
+                                  const occ::handle<IGESSolid_Shell>& ent,
+                                  Interface_CopyTool&                 TC) const
 {
-  Standard_Integer nbfaces = another->NbFaces();
+  int nbfaces = another->NbFaces();
 
-  Handle(IGESSolid_HArray1OfFace)  tempFaces       = new IGESSolid_HArray1OfFace(1, nbfaces);
-  Handle(TColStd_HArray1OfInteger) tempOrientation = new TColStd_HArray1OfInteger(1, nbfaces);
-  for (Standard_Integer i = 1; i <= nbfaces; i++)
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>> tempFaces =
+    new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nbfaces);
+  occ::handle<NCollection_HArray1<int>> tempOrientation = new NCollection_HArray1<int>(1, nbfaces);
+  for (int i = 1; i <= nbfaces; i++)
   {
     DeclareAndCast(IGESSolid_Face, face, TC.Transferred(another->Face(i)));
     tempFaces->SetValue(i, face);
@@ -162,7 +165,8 @@ void IGESSolid_ToolShell::OwnCopy(const Handle(IGESSolid_Shell)& another,
 
 //=================================================================================================
 
-IGESData_DirChecker IGESSolid_ToolShell::DirChecker(const Handle(IGESSolid_Shell)& /* ent */) const
+IGESData_DirChecker IGESSolid_ToolShell::DirChecker(
+  const occ::handle<IGESSolid_Shell>& /* ent */) const
 {
   IGESData_DirChecker DC(514, 1, 2);
 
@@ -177,9 +181,9 @@ IGESData_DirChecker IGESSolid_ToolShell::DirChecker(const Handle(IGESSolid_Shell
 
 //=================================================================================================
 
-void IGESSolid_ToolShell::OwnCheck(const Handle(IGESSolid_Shell)& ent,
+void IGESSolid_ToolShell::OwnCheck(const occ::handle<IGESSolid_Shell>& ent,
                                    const Interface_ShareTool&,
-                                   Handle(Interface_Check)& ach) const
+                                   occ::handle<Interface_Check>& ach) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -196,14 +200,14 @@ void IGESSolid_ToolShell::OwnCheck(const Handle(IGESSolid_Shell)& ent,
 
 //=================================================================================================
 
-void IGESSolid_ToolShell::OwnDump(const Handle(IGESSolid_Shell)& ent,
-                                  const IGESData_IGESDumper&     dumper,
-                                  Standard_OStream&              S,
-                                  const Standard_Integer         level) const
+void IGESSolid_ToolShell::OwnDump(const occ::handle<IGESSolid_Shell>& ent,
+                                  const IGESData_IGESDumper&          dumper,
+                                  Standard_OStream&                   S,
+                                  const int                           level) const
 {
   S << "IGESSolid_Shell\n";
-  Standard_Integer upper    = ent->NbFaces();
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int upper    = ent->NbFaces();
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "Faces :\nOrientation flags : ";
   IGESData_DumpEntities(S, dumper, -level, 1, ent->NbFaces(), ent->Face);
@@ -211,7 +215,7 @@ void IGESSolid_ToolShell::OwnDump(const Handle(IGESSolid_Shell)& ent,
   if (level > 4)
   {
     S << "[\n";
-    for (Standard_Integer i = 1; i <= upper; i++)
+    for (int i = 1; i <= upper; i++)
     {
       S << "[" << i << "]:  "
         << "Face : ";

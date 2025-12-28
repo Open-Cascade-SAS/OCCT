@@ -38,7 +38,7 @@ public:
   //! Constructs a scaling transformation with
   //! -   Point as the center of the transformation, and
   //! -   Scale as the scale factor.
-  Standard_EXPORT gce_MakeScale(const gp_Pnt& Point, const Standard_Real Scale);
+  Standard_EXPORT gce_MakeScale(const gp_Pnt& Point, const double Scale);
 
   //! Returns the constructed transformation.
   Standard_EXPORT const gp_Trsf& Value() const;
@@ -46,7 +46,6 @@ public:
   Standard_EXPORT const gp_Trsf& Operator() const;
   Standard_EXPORT                operator gp_Trsf() const;
 
-protected:
 private:
   gp_Trsf TheScale;
 };

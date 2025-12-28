@@ -34,12 +34,12 @@
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 
 //==================================================================================================
 // Helper function to create a circular wire
@@ -128,8 +128,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft)
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
   // Create loft (thru sections) from circle to rectangle
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True,   // isSolid
-                                        Standard_False); // isRuled
+  BRepOffsetAPI_ThruSections aLoftMaker(true,   // isSolid
+                                        false); // isRuled
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aRectWire);
   aLoftMaker.Build();
@@ -144,17 +144,17 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft)
   EXPECT_TRUE(aChecker.IsValid()) << "Loft shape is not valid";
 
   // Attempt thickness operation (this is where the regression occurs)
-  double                       anOffset = 2.0;
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  double                         anOffset = 2.0;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    anOffset,
                                    1.0e-3, // tolerance
                                    BRepOffset_Skin,
-                                   Standard_False, // intersection
-                                   Standard_False, // selfInter
+                                   false, // intersection
+                                   false, // selfInter
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -201,8 +201,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_IntersectionMod
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
   // Create loft (thru sections) from circle to rectangle
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True,   // isSolid
-                                        Standard_False); // isRuled
+  BRepOffsetAPI_ThruSections aLoftMaker(true,   // isSolid
+                                        false); // isRuled
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aRectWire);
   aLoftMaker.Build();
@@ -213,17 +213,17 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_IntersectionMod
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
   // Attempt thickness operation with intersection mode
-  double                       anOffset = 2.0;
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  double                         anOffset = 2.0;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    anOffset,
                                    1.0e-3, // tolerance
                                    BRepOffset_Skin,
-                                   Standard_True,  // intersection mode
-                                   Standard_False, // selfInter
+                                   true,  // intersection mode
+                                   false, // selfInter
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -257,7 +257,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_SimpleBox_Baseline)
   ASSERT_FALSE(aWire.IsNull()) << "Failed to create rectangular wire";
 
   // Extrude to make a box-like solid
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_True);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, true);
 
   gp_Pnt      aTopCenter(0, 0, 50);
   TopoDS_Wire aTopWire = MakeRectangularWire(aTopCenter, aNormal, 100.0, 100.0);
@@ -272,17 +272,17 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_SimpleBox_Baseline)
   TopoDS_Shape aShape = aLoftMaker.Shape();
 
   // Thickness operation on ruled surface between two rectangles
-  double                       anOffset = 2.0;
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  double                         anOffset = 2.0;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aShape,
                                    aFacesToRemove,
                                    anOffset,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -371,7 +371,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToEllipseLoft)
   TopoDS_Wire anEllipseWire = MakeEllipticalWire(anEllipseCenter, aNormal, 60.0, 40.0);
   ASSERT_FALSE(anEllipseWire.IsNull()) << "Failed to create elliptical wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(anEllipseWire);
   aLoftMaker.Build();
@@ -381,16 +381,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToEllipseLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -416,7 +416,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToHexagonLoft)
   TopoDS_Wire aHexWire = MakePolygonalWire(aHexCenter, aNormal, 50.0, 6);
   ASSERT_FALSE(aHexWire.IsNull()) << "Failed to create hexagonal wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aHexWire);
   aLoftMaker.Build();
@@ -426,16 +426,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToHexagonLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -460,7 +460,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToSquareLoft)
   TopoDS_Wire aSquareWire = MakeRectangularWire(aSquareCenter, aNormal, 80.0, 80.0);
   ASSERT_FALSE(aSquareWire.IsNull()) << "Failed to create square wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aSquareWire);
   aLoftMaker.Build();
@@ -470,16 +470,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToSquareLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -504,7 +504,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_EllipseToRectangleLoft)
   TopoDS_Wire aRectWire = MakeRectangularWire(aRectCenter, aNormal, 100.0, 50.0);
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(anEllipseWire);
   aLoftMaker.AddWire(aRectWire);
   aLoftMaker.Build();
@@ -514,16 +514,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_EllipseToRectangleLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -548,7 +548,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_ThreeSectionLoft)
   TopoDS_Wire aRectWire = MakeRectangularWire(gp_Pnt(0, 0, 100), aNormal, 80.0, 60.0);
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(anEllipseWire);
   aLoftMaker.AddWire(aRectWire);
@@ -559,16 +559,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_ThreeSectionLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -594,7 +594,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_Ruled)
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
   // Use ruled mode (isRuled = true)
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_True);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, true);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aRectWire);
   aLoftMaker.Build();
@@ -604,16 +604,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_Ruled)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -637,7 +637,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_SmallOffset)
   TopoDS_Wire aRectWire = MakeRectangularWire(aRectCenter, aNormal, 80.0, 60.0);
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aRectWire);
   aLoftMaker.Build();
@@ -647,16 +647,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_SmallOffset)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
   // Try with a very small offset
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    0.5, // small offset
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -680,7 +680,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_LargeOffset)
   TopoDS_Wire aRectWire = MakeRectangularWire(aRectCenter, aNormal, 80.0, 60.0);
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aRectWire);
   aLoftMaker.Build();
@@ -690,16 +690,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_LargeOffset)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
   // Try with a larger offset
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    10.0, // large offset
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -723,7 +723,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_NegativeOffset)
   TopoDS_Wire aRectWire = MakeRectangularWire(aRectCenter, aNormal, 80.0, 60.0);
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aRectWire);
   aLoftMaker.Build();
@@ -733,16 +733,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_NegativeOffset)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
   // Try with negative offset (inward)
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    -2.0, // negative offset
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -760,16 +760,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_Cylinder_Baseline)
   TopoDS_Shape             aCylinder = aCylMaker.Shape();
   ASSERT_FALSE(aCylinder.IsNull()) << "Failed to create cylinder";
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aCylinder,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -793,16 +793,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_Sphere_Baseline)
   TopoDS_Shape           aSphere = aSphereMaker.Shape();
   ASSERT_FALSE(aSphere.IsNull()) << "Failed to create sphere";
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aSphere,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -834,16 +834,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_FusedBoxCylinder)
 
   TopoDS_Shape aFusedShape = aFuser.Shape();
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aFusedShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -870,7 +870,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_ThinLoft)
   TopoDS_Wire aRectWire = MakeRectangularWire(aRectCenter, aNormal, 80.0, 60.0);
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aRectWire);
   aLoftMaker.Build();
@@ -879,8 +879,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_ThinLoft)
 
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   // The operation may or may not succeed on very thin geometry,
   // but it must not crash
@@ -889,8 +889,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_ThinLoft)
                                    1.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -918,7 +918,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_TallLoft)
   TopoDS_Wire aRectWire = MakeRectangularWire(aRectCenter, aNormal, 80.0, 60.0);
   ASSERT_FALSE(aRectWire.IsNull()) << "Failed to create rectangular wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aRectWire);
   aLoftMaker.Build();
@@ -927,16 +927,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_TallLoft)
 
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -959,7 +959,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToTriangleLoft)
   TopoDS_Wire aTriWire = MakePolygonalWire(aTriCenter, aNormal, 60.0, 3);
   ASSERT_FALSE(aTriWire.IsNull()) << "Failed to create triangular wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(aTriWire);
   aLoftMaker.Build();
@@ -968,16 +968,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToTriangleLoft)
 
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 
@@ -1002,7 +1002,7 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToOctagonLoft)
   TopoDS_Wire anOctWire = MakePolygonalWire(anOctCenter, aNormal, 55.0, 8);
   ASSERT_FALSE(anOctWire.IsNull()) << "Failed to create octagonal wire";
 
-  BRepOffsetAPI_ThruSections aLoftMaker(Standard_True, Standard_False);
+  BRepOffsetAPI_ThruSections aLoftMaker(true, false);
   aLoftMaker.AddWire(aCircleWire);
   aLoftMaker.AddWire(anOctWire);
   aLoftMaker.Build();
@@ -1011,16 +1011,16 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToOctagonLoft)
 
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
-  TopTools_ListOfShape         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
                                    2.0,
                                    1.0e-3,
                                    BRepOffset_Skin,
-                                   Standard_False,
-                                   Standard_False,
+                                   false,
+                                   false,
                                    GeomAbs_Intersection);
   aThickMaker.Build();
 

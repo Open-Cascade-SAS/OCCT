@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_GTool, Standard_Transient)
 
 Interface_GTool::Interface_GTool() {}
 
-Interface_GTool::Interface_GTool(const Handle(Interface_Protocol)& proto, const Standard_Integer nb)
+Interface_GTool::Interface_GTool(const occ::handle<Interface_Protocol>& proto, const int nb)
     : theproto(proto),
       thelib(proto)
 {
@@ -35,18 +35,18 @@ Interface_GTool::Interface_GTool(const Handle(Interface_Protocol)& proto, const 
   }
 }
 
-void Interface_GTool::SetSignType(const Handle(Interface_SignType)& sign)
+void Interface_GTool::SetSignType(const occ::handle<Interface_SignType>& sign)
 {
   thesign = sign;
 }
 
-Handle(Interface_SignType) Interface_GTool::SignType() const
+occ::handle<Interface_SignType> Interface_GTool::SignType() const
 {
   return thesign;
 }
 
-Standard_CString Interface_GTool::SignValue(const Handle(Standard_Transient)&       ent,
-                                            const Handle(Interface_InterfaceModel)& model) const
+const char* Interface_GTool::SignValue(const occ::handle<Standard_Transient>&       ent,
+                                       const occ::handle<Interface_InterfaceModel>& model) const
 {
   if (ent.IsNull())
     return "";
@@ -55,15 +55,14 @@ Standard_CString Interface_GTool::SignValue(const Handle(Standard_Transient)&   
   return thesign->Value(ent, model);
 }
 
-Standard_CString Interface_GTool::SignName() const
+const char* Interface_GTool::SignName() const
 {
   if (thesign.IsNull())
     return "Class Name";
   return thesign->Name();
 }
 
-void Interface_GTool::SetProtocol(const Handle(Interface_Protocol)& proto,
-                                  const Standard_Boolean            enforce)
+void Interface_GTool::SetProtocol(const occ::handle<Interface_Protocol>& proto, const bool enforce)
 {
   if (proto == theproto && !enforce)
     return;
@@ -72,7 +71,7 @@ void Interface_GTool::SetProtocol(const Handle(Interface_Protocol)& proto,
   thelib.AddProtocol(proto);
 }
 
-Handle(Interface_Protocol) Interface_GTool::Protocol() const
+occ::handle<Interface_Protocol> Interface_GTool::Protocol() const
 {
   return theproto;
 }
@@ -82,9 +81,9 @@ Interface_GeneralLib& Interface_GTool::Lib()
   return thelib;
 }
 
-void Interface_GTool::Reservate(const Standard_Integer nb, const Standard_Boolean enforce)
+void Interface_GTool::Reservate(const int nb, const bool enforce)
 {
-  Standard_Integer n = thentnum.NbBuckets();
+  int n = thentnum.NbBuckets();
   if (n < nb && !enforce)
     return;
   thentnum.ReSize(nb);
@@ -99,24 +98,24 @@ void Interface_GTool::ClearEntities()
 
 //=================================================================================================
 
-Standard_Boolean Interface_GTool::Select(const Handle(Standard_Transient)& ent,
-                                         Handle(Interface_GeneralModule)&  gmod,
-                                         Standard_Integer&                 CN,
-                                         const Standard_Boolean            enforce)
+bool Interface_GTool::Select(const occ::handle<Standard_Transient>& ent,
+                             occ::handle<Interface_GeneralModule>&  gmod,
+                             int&                                   CN,
+                             const bool                             enforce)
 {
-  const Handle(Standard_Type)& aType = ent->DynamicType();
-  Standard_Integer             num   = thentmod.FindIndex(aType); // (ent);
+  const occ::handle<Standard_Type>& aType = ent->DynamicType();
+  int                               num   = thentmod.FindIndex(aType); // (ent);
   if (num == 0 || enforce)
   {
     if (thelib.Select(ent, gmod, CN))
     {
       num = thentmod.Add(aType, gmod);
       thentnum.Bind(aType, CN);
-      return Standard_True;
+      return true;
     }
-    return Standard_False;
+    return false;
   }
-  gmod = Handle(Interface_GeneralModule)::DownCast(thentmod.FindFromKey(aType));
+  gmod = occ::down_cast<Interface_GeneralModule>(thentmod.FindFromKey(aType));
   CN   = thentnum.Find(aType);
-  return Standard_True;
+  return true;
 }

@@ -23,13 +23,12 @@
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_String.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <mutex>
-
-DEFINE_STANDARD_HANDLE(StdPrs_BRepFont, Standard_Transient)
 
 //! This tool provides basic services for rendering of vectorized text glyphs as BRep shapes.
 //! Single instance initialize single font for sequential glyphs rendering with implicit caching of
@@ -48,10 +47,10 @@ public:
   //! @param theSize        the face size in model units
   //! @param theStrictLevel search strict level for using aliases and fallback
   //! @return true on success
-  Standard_EXPORT static Handle(StdPrs_BRepFont) FindAndCreate(
+  Standard_EXPORT static occ::handle<StdPrs_BRepFont> FindAndCreate(
     const TCollection_AsciiString& theFontName,
     const Font_FontAspect          theFontAspect,
-    const Standard_Real            theSize,
+    const double                   theSize,
     const Font_StrictLevel         theStrictLevel = Font_StrictLevel_Any);
 
   //! Empty constructor
@@ -62,8 +61,8 @@ public:
   //! @param theSize     the face size in model units
   //! @param theFaceId   face id within the file (0 by default)
   Standard_EXPORT StdPrs_BRepFont(const NCollection_String& theFontPath,
-                                  const Standard_Real       theSize,
-                                  const Standard_Integer    theFaceId = 0);
+                                  const double              theSize,
+                                  const int                 theFaceId = 0);
 
   //! Constructor with initialization.
   //! @param theFontName    the font name
@@ -72,7 +71,7 @@ public:
   //! @param theStrictLevel search strict level for using aliases and fallback
   Standard_EXPORT StdPrs_BRepFont(const NCollection_String& theFontName,
                                   const Font_FontAspect     theFontAspect,
-                                  const Standard_Real       theSize,
+                                  const double              theSize,
                                   const Font_StrictLevel    theStrictLevel = Font_StrictLevel_Any);
 
   //! Release currently loaded font.
@@ -84,8 +83,8 @@ public:
   //! @param theFaceId   face id within the file (0 by default)
   //! @return true on success
   Standard_EXPORT bool Init(const NCollection_String& theFontPath,
-                            const Standard_Real       theSize,
-                            const Standard_Integer    theFaceId);
+                            const double              theSize,
+                            const int                 theFaceId);
 
   //! Find (using Font_FontMgr) and initialize the font from the given name.
   //! Please take into account that size is specified NOT in typography points (pt.).
@@ -99,16 +98,16 @@ public:
   //! @return true on success
   Standard_EXPORT bool FindAndInit(const TCollection_AsciiString& theFontName,
                                    const Font_FontAspect          theFontAspect,
-                                   const Standard_Real            theSize,
+                                   const double                   theSize,
                                    const Font_StrictLevel theStrictLevel = Font_StrictLevel_Any);
 
   //! Return wrapper over FreeType font.
-  const Handle(Font_FTFont)& FTFont() const { return myFTFont; }
+  const occ::handle<Font_FTFont>& FTFont() const { return myFTFont; }
 
   //! Render single glyph as TopoDS_Shape.
   //! @param theChar glyph identifier
   //! @return rendered glyph within cache, might be NULL shape
-  Standard_EXPORT TopoDS_Shape RenderGlyph(const Standard_Utf32Char& theChar);
+  Standard_EXPORT TopoDS_Shape RenderGlyph(const char32_t& theChar);
 
   //! Setup glyph geometry construction mode.
   //! By default algorithm creates independent TopoDS_Edge
@@ -116,7 +115,7 @@ public:
   //! Algorithm might optionally create composite BSpline curve for each contour
   //! which reduces memory footprint but limits curve class to C0.
   //! Notice that altering this flag clears currently accumulated cache!
-  Standard_EXPORT void SetCompositeCurveMode(const Standard_Boolean theToConcatenate);
+  Standard_EXPORT void SetCompositeCurveMode(const bool theToConcatenate);
 
   //! Setup glyph scaling along X-axis.
   //! By default glyphs are not scaled (scaling factor = 1.0)
@@ -124,50 +123,47 @@ public:
 
 public:
   //! @return vertical distance from the horizontal baseline to the highest character coordinate.
-  Standard_Real Ascender() const { return myScaleUnits * Standard_Real(myFTFont->Ascender()); }
+  double Ascender() const { return myScaleUnits * double(myFTFont->Ascender()); }
 
   //! @return vertical distance from the horizontal baseline to the lowest character coordinate.
-  Standard_Real Descender() const { return myScaleUnits * Standard_Real(myFTFont->Descender()); }
+  double Descender() const { return myScaleUnits * double(myFTFont->Descender()); }
 
   //! @return default line spacing (the baseline-to-baseline distance).
-  Standard_Real LineSpacing() const
-  {
-    return myScaleUnits * Standard_Real(myFTFont->LineSpacing());
-  }
+  double LineSpacing() const { return myScaleUnits * double(myFTFont->LineSpacing()); }
 
   //! Configured point size
-  Standard_Real PointSize() const { return myScaleUnits * Standard_Real(myFTFont->PointSize()); }
+  double PointSize() const { return myScaleUnits * double(myFTFont->PointSize()); }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
-  Standard_Real AdvanceX(const Standard_Utf32Char theUCharNext)
+  double AdvanceX(const char32_t theUCharNext)
   {
-    return myScaleUnits * Standard_Real(myFTFont->AdvanceX(theUCharNext));
+    return myScaleUnits * double(myFTFont->AdvanceX(theUCharNext));
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
-  Standard_Real AdvanceX(const Standard_Utf32Char theUChar, const Standard_Utf32Char theUCharNext)
+  double AdvanceX(const char32_t theUChar, const char32_t theUCharNext)
   {
-    return myScaleUnits * Standard_Real(myFTFont->AdvanceX(theUChar, theUCharNext));
+    return myScaleUnits * double(myFTFont->AdvanceX(theUChar, theUCharNext));
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered vertically.
-  Standard_Real AdvanceY(const Standard_Utf32Char theUCharNext)
+  double AdvanceY(const char32_t theUCharNext)
   {
-    return myScaleUnits * Standard_Real(myFTFont->AdvanceY(theUCharNext));
+    return myScaleUnits * double(myFTFont->AdvanceY(theUCharNext));
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered vertically.
-  Standard_Real AdvanceY(const Standard_Utf32Char theUChar, const Standard_Utf32Char theUCharNext)
+  double AdvanceY(const char32_t theUChar, const char32_t theUCharNext)
   {
-    return myScaleUnits * Standard_Real(myFTFont->AdvanceY(theUChar, theUCharNext));
+    return myScaleUnits * double(myFTFont->AdvanceY(theUChar, theUCharNext));
   }
 
   //! Returns scaling factor for current font size.
-  Standard_Real Scale() const { return myScaleUnits; }
+  double Scale() const { return myScaleUnits; }
 
   //! Returns mutex.
   std::mutex& Mutex() { return myMutex; }
@@ -177,7 +173,7 @@ public:
   //! Alias for FindAndInit() for backward compatibility.
   bool Init(const NCollection_String& theFontName,
             const Font_FontAspect     theFontAspect,
-            const Standard_Real       theSize)
+            const double              theSize)
   {
     return FindAndInit(theFontName.ToCString(), theFontAspect, theSize, Font_StrictLevel_Any);
   }
@@ -187,40 +183,38 @@ protected:
   //! @param theChar  glyph identifier
   //! @param theShape rendered glyph within cache, might be NULL shape
   //! @return true if glyph's geometry is available
-  Standard_EXPORT Standard_Boolean renderGlyph(const Standard_Utf32Char theChar,
-                                               TopoDS_Shape&            theShape);
+  Standard_EXPORT bool renderGlyph(const char32_t theChar, TopoDS_Shape& theShape);
 
 private:
   //! Initialize class fields
   void init();
 
   //! Auxiliary method to create 3D curve
-  bool to3d(const Handle(Geom2d_Curve)& theCurve2d,
-            const GeomAbs_Shape         theContinuity,
-            Handle(Geom_Curve)&         theCurve3d);
+  bool to3d(const occ::handle<Geom2d_Curve>& theCurve2d,
+            const GeomAbs_Shape              theContinuity,
+            occ::handle<Geom_Curve>&         theCurve3d);
 
   //! Auxiliary method for creation faces from sequence of wires.
   //! Splits to few faces (if it is needed) and updates orientation of wires.
-  Standard_Boolean buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWires,
-                              TopoDS_Shape&                            theRes);
+  bool buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWires, TopoDS_Shape& theRes);
 
-protected:                                                        //! @name Protected fields
-  Handle(Font_FTFont)                                   myFTFont; //!< wrapper over FreeType font
-  NCollection_DataMap<Standard_Utf32Char, TopoDS_Shape> myCache;  //!< glyphs cache
-  std::mutex                                            myMutex;  //!< lock for thread-safety
-  Handle(Geom_Surface) mySurface;                                 //!< surface to place glyphs on to
-  Standard_Real        myPrecision;                               //!< algorithm precision
-  Standard_Real        myScaleUnits; //!< scale font rendering units into model units
+protected:                                                 //! @name Protected fields
+  occ::handle<Font_FTFont>                    myFTFont;    //!< wrapper over FreeType font
+  NCollection_DataMap<char32_t, TopoDS_Shape> myCache;     //!< glyphs cache
+  std::mutex                                  myMutex;     //!< lock for thread-safety
+  occ::handle<Geom_Surface>                   mySurface;   //!< surface to place glyphs on to
+  double                                      myPrecision; //!< algorithm precision
+  double myScaleUnits; //!< scale font rendering units into model units
   // clang-format off
-  Standard_Boolean     myIsCompositeCurve; //!< flag to merge C1 curves of each contour into single C0 curve, OFF by default
+  bool     myIsCompositeCurve; //!< flag to merge C1 curves of each contour into single C0 curve, OFF by default
   // clang-format on
 
 protected: //! @name Shared temporary variables for glyph construction
   Adaptor3d_CurveOnSurface              myCurvOnSurf;
-  Handle(Geom2dAdaptor_Curve)           myCurve2dAdaptor;
+  occ::handle<Geom2dAdaptor_Curve>      myCurve2dAdaptor;
   Geom2dConvert_CompCurveToBSplineCurve myConcatMaker;
-  TColgp_Array1OfPnt2d                  my3Poles;
-  TColgp_Array1OfPnt2d                  my4Poles;
+  NCollection_Array1<gp_Pnt2d>          my3Poles;
+  NCollection_Array1<gp_Pnt2d>          my4Poles;
   BRep_Builder                          myBuilder;
 };
 

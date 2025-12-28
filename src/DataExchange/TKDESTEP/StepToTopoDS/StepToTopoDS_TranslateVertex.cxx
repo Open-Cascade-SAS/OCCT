@@ -38,7 +38,7 @@
 StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex()
     : myError(StepToTopoDS_TranslateVertexOther)
 {
-  done = Standard_False;
+  done = false;
 }
 
 // ============================================================================
@@ -46,9 +46,9 @@ StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex()
 // Purpose : Constructor with a Vertex and a Tool
 // ============================================================================
 
-StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex(const Handle(StepShape_Vertex)& V,
-                                                           StepToTopoDS_Tool&              T,
-                                                           StepToTopoDS_NMTool&            NMTool,
+StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex(const occ::handle<StepShape_Vertex>& V,
+                                                           StepToTopoDS_Tool&                   T,
+                                                           StepToTopoDS_NMTool&    NMTool,
                                                            const StepData_Factors& theLocalFactors)
 {
   Init(V, T, NMTool, theLocalFactors);
@@ -59,15 +59,15 @@ StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex(const Handle(StepShap
 // Purpose : Init with a Vertex and a Tool
 // ============================================================================
 
-void StepToTopoDS_TranslateVertex::Init(const Handle(StepShape_Vertex)& aVertex,
-                                        StepToTopoDS_Tool&              aTool,
-                                        StepToTopoDS_NMTool&            NMTool,
-                                        const StepData_Factors&         theLocalFactors)
+void StepToTopoDS_TranslateVertex::Init(const occ::handle<StepShape_Vertex>& aVertex,
+                                        StepToTopoDS_Tool&                   aTool,
+                                        StepToTopoDS_NMTool&                 NMTool,
+                                        const StepData_Factors&              theLocalFactors)
 {
   if (aVertex.IsNull())
   {
     myError = StepToTopoDS_TranslateVertexOther;
-    done    = Standard_False;
+    done    = false;
     return;
   }
   if (!aTool.IsBound(aVertex))
@@ -78,36 +78,36 @@ void StepToTopoDS_TranslateVertex::Init(const Handle(StepShape_Vertex)& aVertex,
     {
       myResult = NMTool.Find(aVertex);
       myError  = StepToTopoDS_TranslateVertexDone;
-      done     = Standard_True;
+      done     = true;
       return;
     }
     // [END] Proceed with non-manifold topology (ssv; 14.11.2010)
 
     // [BEGIN] Proceed with I-DEAS-like STP (ssv; 15.11.2010)
-    const Handle(TCollection_HAsciiString) aVName = aVertex->Name();
+    const occ::handle<TCollection_HAsciiString> aVName = aVertex->Name();
     if (NMTool.IsActive() && NMTool.IsIDEASCase() && !aVName.IsNull() && !aVName->IsEmpty()
         && NMTool.IsBound(aVName->String()))
     {
       myResult = NMTool.Find(aVName->String());
       myError  = StepToTopoDS_TranslateVertexDone;
-      done     = Standard_True;
+      done     = true;
       return;
     }
     // [END] Proceed with I-DEAS-like STP (ssv; 15.11.2010)
 
-    //: S4136    Standard_Real preci = BRepAPI::Precision();
-    const Handle(StepShape_VertexPoint) VP = Handle(StepShape_VertexPoint)::DownCast(aVertex);
-    const Handle(StepGeom_Point)        P  = VP->VertexGeometry();
+    //: S4136    double preci = BRepAPI::Precision();
+    const occ::handle<StepShape_VertexPoint> VP = occ::down_cast<StepShape_VertexPoint>(aVertex);
+    const occ::handle<StepGeom_Point>        P  = VP->VertexGeometry();
     if (P.IsNull())
     {
       myError = StepToTopoDS_TranslateVertexOther;
-      done    = Standard_False;
+      done    = false;
       return;
     }
-    const Handle(StepGeom_CartesianPoint) P1 = Handle(StepGeom_CartesianPoint)::DownCast(P);
-    Handle(Geom_CartesianPoint)           P2 = StepToGeom::MakeCartesianPoint(P1, theLocalFactors);
-    BRep_Builder                          B;
-    TopoDS_Vertex                         V;
+    const occ::handle<StepGeom_CartesianPoint> P1 = occ::down_cast<StepGeom_CartesianPoint>(P);
+    occ::handle<Geom_CartesianPoint> P2 = StepToGeom::MakeCartesianPoint(P1, theLocalFactors);
+    BRep_Builder                     B;
+    TopoDS_Vertex                    V;
     B.MakeVertex(V, P2->Pnt(), Precision::Confusion()); //: S4136: preci
     aTool.Bind(aVertex, V);
 
@@ -126,7 +126,7 @@ void StepToTopoDS_TranslateVertex::Init(const Handle(StepShape_Vertex)& aVertex,
     myResult = TopoDS::Vertex(aTool.Find(aVertex));
   }
   myError = StepToTopoDS_TranslateVertexDone;
-  done    = Standard_True;
+  done    = true;
 }
 
 // ============================================================================

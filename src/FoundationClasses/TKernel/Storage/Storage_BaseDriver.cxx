@@ -29,17 +29,17 @@ Storage_BaseDriver::~Storage_BaseDriver() {}
 TCollection_AsciiString Storage_BaseDriver::ReadMagicNumber(Standard_IStream& theIStream)
 {
   // magic number has the same length which is 7: BINFILE, CMPFILE and FSDFILE
-  Standard_Size aMagicNumberLen = 7;
+  size_t aMagicNumberLen = 7;
 
   TCollection_AsciiString aReadMagicNumber;
 
-  char          aChar;
-  Standard_Size aReadCharNb = 0;
+  char   aChar;
+  size_t aReadCharNb = 0;
 
   while (theIStream.good() && (aReadCharNb < aMagicNumberLen))
   {
     theIStream.get(aChar);
-    aReadCharNb += (Standard_Size)theIStream.gcount();
+    aReadCharNb += (size_t)theIStream.gcount();
     aReadMagicNumber += aChar;
   }
 

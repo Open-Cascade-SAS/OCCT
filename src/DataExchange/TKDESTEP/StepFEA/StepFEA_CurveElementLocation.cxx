@@ -27,7 +27,7 @@ StepFEA_CurveElementLocation::StepFEA_CurveElementLocation() {}
 
 //=================================================================================================
 
-void StepFEA_CurveElementLocation::Init(const Handle(StepFEA_FeaParametricPoint)& aCoordinate)
+void StepFEA_CurveElementLocation::Init(const occ::handle<StepFEA_FeaParametricPoint>& aCoordinate)
 {
 
   theCoordinate = aCoordinate;
@@ -35,7 +35,7 @@ void StepFEA_CurveElementLocation::Init(const Handle(StepFEA_FeaParametricPoint)
 
 //=================================================================================================
 
-Handle(StepFEA_FeaParametricPoint) StepFEA_CurveElementLocation::Coordinate() const
+occ::handle<StepFEA_FeaParametricPoint> StepFEA_CurveElementLocation::Coordinate() const
 {
   return theCoordinate;
 }
@@ -43,7 +43,7 @@ Handle(StepFEA_FeaParametricPoint) StepFEA_CurveElementLocation::Coordinate() co
 //=================================================================================================
 
 void StepFEA_CurveElementLocation::SetCoordinate(
-  const Handle(StepFEA_FeaParametricPoint)& aCoordinate)
+  const occ::handle<StepFEA_FeaParametricPoint>& aCoordinate)
 {
   theCoordinate = aCoordinate;
 }

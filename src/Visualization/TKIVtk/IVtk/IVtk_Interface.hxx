@@ -19,9 +19,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
-class IVtk_Interface;
-DEFINE_STANDARD_HANDLE(IVtk_Interface, Standard_Transient)
-
 //! @class IVtk_Interface
 //! @brief Base interface for visualisation component.
 //!
@@ -32,7 +29,7 @@ class IVtk_Interface : public Standard_Transient
 {
 
 public:
-  typedef Handle(IVtk_Interface) Handle;
+  typedef occ::handle<IVtk_Interface> Handle;
   DEFINE_STANDARD_RTTIEXT(IVtk_Interface, Standard_Transient)
 
   virtual ~IVtk_Interface() {}

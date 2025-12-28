@@ -14,22 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_QuantitiesSequence.hxx>
 #include <Units_Quantity.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Units_Explorer.hxx>
 
 //=================================================================================================
 
-inline Handle(Units_QuantitiesSequence) Units_UnitsDictionary::Sequence() const
+inline occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> Units_UnitsDictionary::
+  Sequence() const
 {
   return thequantitiessequence;
 }
 
 //=================================================================================================
 
-inline void Units_UnitsDictionary::Dump(const Standard_Integer alevel) const
+inline void Units_UnitsDictionary::Dump(const int alevel) const
 {
-  Standard_Integer index;
+  int index;
   switch (alevel)
   {
     case 2:
@@ -55,9 +57,9 @@ inline void Units_UnitsDictionary::Dump(const Standard_Integer alevel) const
 
 //=================================================================================================
 
-inline void Units_UnitsDictionary::Dump(const Handle(Units_Dimensions)& adimensions) const
+inline void Units_UnitsDictionary::Dump(const occ::handle<Units_Dimensions>& adimensions) const
 {
-  Standard_Integer index;
+  int index;
   for (index = 1; index <= thequantitiessequence->Length(); index++)
   {
     if (thequantitiessequence->Value(index)->Dimensions()->IsEqual(adimensions))

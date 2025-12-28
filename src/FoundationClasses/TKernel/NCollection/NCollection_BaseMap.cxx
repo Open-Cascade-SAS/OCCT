@@ -20,10 +20,10 @@
 
 //=================================================================================================
 
-Standard_Boolean NCollection_BaseMap::BeginResize(const Standard_Integer  NbBuckets,
-                                                  Standard_Integer&       N,
-                                                  NCollection_ListNode**& data1,
-                                                  NCollection_ListNode**& data2) const
+bool NCollection_BaseMap::BeginResize(const int               NbBuckets,
+                                      int&                    N,
+                                      NCollection_ListNode**& data1,
+                                      NCollection_ListNode**& data2) const
 {
   // get next size for the buckets array
   N = NextPrimeForMap(NbBuckets);
@@ -32,7 +32,7 @@ Standard_Boolean NCollection_BaseMap::BeginResize(const Standard_Integer  NbBuck
     if (!myData1)
       N = myNbBuckets;
     else
-      return Standard_False;
+      return false;
   }
   data1 = (NCollection_ListNode**)Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*));
   if (isDouble)
@@ -41,13 +41,13 @@ Standard_Boolean NCollection_BaseMap::BeginResize(const Standard_Integer  NbBuck
   }
   else
     data2 = nullptr;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void NCollection_BaseMap::EndResize(const Standard_Integer theNbBuckets,
-                                    const Standard_Integer N,
+void NCollection_BaseMap::EndResize(const int              theNbBuckets,
+                                    const int              N,
                                     NCollection_ListNode** data1,
                                     NCollection_ListNode** data2) noexcept
 {
@@ -63,7 +63,7 @@ void NCollection_BaseMap::EndResize(const Standard_Integer theNbBuckets,
 
 //=================================================================================================
 
-void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, Standard_Boolean doReleaseMemory)
+void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory)
 {
   if (!IsEmpty())
   {
@@ -109,8 +109,8 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
     return;
 
   // compute statistics on 1
-  Standard_Integer*      sizes = new Standard_Integer[mySize + 1];
-  Standard_Integer       i, l, nb;
+  int*                   sizes = new int[mySize + 1];
+  int                    i, l, nb;
   NCollection_ListNode*  p;
   NCollection_ListNode** data;
 
@@ -144,7 +144,7 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
     }
   }
 
-  Standard_Real mean = ((Standard_Real)l) / ((Standard_Real)nb);
+  double mean = ((double)l) / ((double)nb);
   S << "\n\nMean of length : " << mean << "\n";
 
   delete[] sizes;
@@ -152,7 +152,7 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
 
 //=================================================================================================
 
-Standard_Integer NCollection_BaseMap::NextPrimeForMap(const Standard_Integer N) const noexcept
+int NCollection_BaseMap::NextPrimeForMap(const int N) const noexcept
 {
   return NCollection_Primes::NextPrimeForMap(N);
 }

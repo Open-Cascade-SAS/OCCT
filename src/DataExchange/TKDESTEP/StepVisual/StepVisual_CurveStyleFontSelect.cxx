@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepVisual_CurveStyleFont.hxx>
 #include <StepVisual_CurveStyleFontSelect.hxx>
@@ -20,8 +20,7 @@
 
 StepVisual_CurveStyleFontSelect::StepVisual_CurveStyleFontSelect() {}
 
-Standard_Integer StepVisual_CurveStyleFontSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_CurveStyleFontSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -34,17 +33,18 @@ Standard_Integer StepVisual_CurveStyleFontSelect::CaseNum(
   return 0;
 }
 
-Handle(StepVisual_CurveStyleFont) StepVisual_CurveStyleFontSelect::CurveStyleFont() const
+occ::handle<StepVisual_CurveStyleFont> StepVisual_CurveStyleFontSelect::CurveStyleFont() const
 {
   return GetCasted(StepVisual_CurveStyleFont, Value());
 }
 
-Handle(StepVisual_PreDefinedCurveFont) StepVisual_CurveStyleFontSelect::PreDefinedCurveFont() const
+occ::handle<StepVisual_PreDefinedCurveFont> StepVisual_CurveStyleFontSelect::PreDefinedCurveFont()
+  const
 {
   return GetCasted(StepVisual_PreDefinedCurveFont, Value());
 }
 
-Handle(StepVisual_ExternallyDefinedCurveFont) StepVisual_CurveStyleFontSelect::
+occ::handle<StepVisual_ExternallyDefinedCurveFont> StepVisual_CurveStyleFontSelect::
   ExternallyDefinedCurveFont() const
 {
   return GetCasted(StepVisual_ExternallyDefinedCurveFont, Value());

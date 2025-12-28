@@ -81,18 +81,18 @@ public:
   //! A, with major and minor radii MajorRadius and
   //! MinorRadius, where its major axis is the "X Axis"
   //! of A (A is the local coordinate system of the hyperbola).
-  Standard_EXPORT gce_MakeHypr2d(const gp_Ax2d&         MajorAxis,
-                                 const Standard_Real    MajorRadius,
-                                 const Standard_Real    MinorRadius,
-                                 const Standard_Boolean Sense);
+  Standard_EXPORT gce_MakeHypr2d(const gp_Ax2d& MajorAxis,
+                                 const double   MajorRadius,
+                                 const double   MinorRadius,
+                                 const bool     Sense);
 
   //! Creates a Hypr2d centered on the origin of the coordinate system
   //! A, with major and minor radii MajorRadius and
   //! MinorRadius, where its major axis is the "X Axis"
   //! of A (A is the local coordinate system of the hyperbola).
-  Standard_EXPORT gce_MakeHypr2d(const gp_Ax22d&     A,
-                                 const Standard_Real MajorRadius,
-                                 const Standard_Real MinorRadius);
+  Standard_EXPORT gce_MakeHypr2d(const gp_Ax22d& A,
+                                 const double    MajorRadius,
+                                 const double    MinorRadius);
 
   //! Returns the constructed hyperbola.
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
@@ -101,7 +101,6 @@ public:
   Standard_EXPORT const gp_Hypr2d& Operator() const;
   Standard_EXPORT                  operator gp_Hypr2d() const;
 
-protected:
 private:
   gp_Hypr2d TheHypr2d;
 };

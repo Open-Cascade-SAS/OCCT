@@ -27,31 +27,31 @@ RWStepRepr_RWReprItemAndLengthMeasureWithUnit::RWStepRepr_RWReprItemAndLengthMea
 //=================================================================================================
 
 void RWStepRepr_RWReprItemAndLengthMeasureWithUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&                   data,
-  const Standard_Integer                                   num0,
-  Handle(Interface_Check)&                                 ach,
-  const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&                   data,
+  const int                                                     num0,
+  occ::handle<Interface_Check>&                                 ach,
+  const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnit>& ent) const
 {
-  Standard_Integer num = 0; // num0;
+  int num = 0; // num0;
   data->NamedForComplex("MEASURE_WITH_UNIT", "MSWTUN", num0, num, ach);
   if (!data->CheckNbParams(num, 2, ach, "measure_with_unit"))
     return;
   // --- own field : valueComponent ---
-  Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 1, "value_component", ach, mvc);
   // --- own field : unitComponent ---
   StepBasic_Unit aUnitComponent;
   data->ReadEntity(num, 2, "unit_component", ach, aUnitComponent);
-  Handle(StepBasic_MeasureWithUnit) aMeasureWithUnit = new StepBasic_MeasureWithUnit;
+  occ::handle<StepBasic_MeasureWithUnit> aMeasureWithUnit = new StepBasic_MeasureWithUnit;
   aMeasureWithUnit->Init(mvc, aUnitComponent);
 
   data->NamedForComplex("REPRESENTATION_ITEM", "RPRITM", num0, num, ach);
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
     return;
   // --- own field : name ---
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
-  Handle(StepRepr_RepresentationItem) aReprItem = new StepRepr_RepresentationItem;
+  occ::handle<StepRepr_RepresentationItem> aReprItem = new StepRepr_RepresentationItem;
   aReprItem->Init(aName);
 
   //--- Initialisation of the read entity ---
@@ -61,8 +61,8 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWReprItemAndLengthMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                                     SW,
-  const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent) const
+  StepData_StepWriter&                                          SW,
+  const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnit>& ent) const
 {
   SW.StartEntity("LENGTH_MEASURE_WITH_UNIT");
   SW.StartEntity("MEASURE_REPRESENTATION_ITEM");

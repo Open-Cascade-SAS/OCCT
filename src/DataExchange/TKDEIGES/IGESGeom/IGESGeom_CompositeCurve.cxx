@@ -24,7 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CompositeCurve, IGESData_IGESEntity)
 
 IGESGeom_CompositeCurve::IGESGeom_CompositeCurve() {}
 
-void IGESGeom_CompositeCurve::Init(const Handle(IGESData_HArray1OfIGESEntity)& allEntities)
+void IGESGeom_CompositeCurve::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities)
 {
   if (!allEntities.IsNull() && allEntities->Lower() != 1)
     throw Standard_DimensionMismatch("IGESGeom_CompositeCurve : Init");
@@ -32,12 +33,12 @@ void IGESGeom_CompositeCurve::Init(const Handle(IGESData_HArray1OfIGESEntity)& a
   InitTypeAndForm(102, 0);
 }
 
-Standard_Integer IGESGeom_CompositeCurve::NbCurves() const
+int IGESGeom_CompositeCurve::NbCurves() const
 {
   return (theEntities.IsNull() ? 0 : theEntities->Length());
 }
 
-Handle(IGESData_IGESEntity) IGESGeom_CompositeCurve::Curve(const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESGeom_CompositeCurve::Curve(const int Index) const
 {
   return theEntities->Value(Index);
 }

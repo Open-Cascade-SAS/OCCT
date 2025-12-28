@@ -31,17 +31,17 @@ ChFiDS_SurfData::ChFiDS_SurfData()
       indexOfS2(0),
       indexOfC2(0),
       indexOfConge(0),
-      isoncurv1(Standard_False),
-      isoncurv2(Standard_False),
-      twistons1(Standard_False),
-      twistons2(Standard_False),
+      isoncurv1(false),
+      isoncurv2(false),
+      twistons1(false),
+      twistons2(false),
       orientation(TopAbs_FORWARD)
 {
 }
 
 //=================================================================================================
 
-void ChFiDS_SurfData::Copy(const Handle(ChFiDS_SurfData)& Other)
+void ChFiDS_SurfData::Copy(const occ::handle<ChFiDS_SurfData>& Other)
 {
   indexOfS1    = Other->indexOfS1;
   indexOfS2    = Other->indexOfS2;
@@ -73,7 +73,7 @@ void ChFiDS_SurfData::Copy(const Handle(ChFiDS_SurfData)& Other)
 
 //=================================================================================================
 
-Standard_Integer ChFiDS_SurfData::Index(const Standard_Integer OfS) const
+int ChFiDS_SurfData::Index(const int OfS) const
 {
   if (OfS == 1)
     return indexOfS1;
@@ -83,7 +83,7 @@ Standard_Integer ChFiDS_SurfData::Index(const Standard_Integer OfS) const
 
 //=================================================================================================
 
-const ChFiDS_FaceInterference& ChFiDS_SurfData::Interference(const Standard_Integer OnS) const
+const ChFiDS_FaceInterference& ChFiDS_SurfData::Interference(const int OnS) const
 {
   if (OnS == 1)
     return intf1;
@@ -93,7 +93,7 @@ const ChFiDS_FaceInterference& ChFiDS_SurfData::Interference(const Standard_Inte
 
 //=================================================================================================
 
-ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterference(const Standard_Integer OnS)
+ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterference(const int OnS)
 {
   if (OnS == 1)
     return intf1;
@@ -103,8 +103,7 @@ ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterference(const Standard_Inte
 
 //=================================================================================================
 
-const ChFiDS_CommonPoint& ChFiDS_SurfData::Vertex(const Standard_Boolean First,
-                                                  const Standard_Integer OnS) const
+const ChFiDS_CommonPoint& ChFiDS_SurfData::Vertex(const bool First, const int OnS) const
 {
   if (First && OnS == 1)
     return pfirstOnS1;
@@ -118,8 +117,7 @@ const ChFiDS_CommonPoint& ChFiDS_SurfData::Vertex(const Standard_Boolean First,
 
 //=================================================================================================
 
-ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertex(const Standard_Boolean First,
-                                                  const Standard_Integer OnS)
+ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertex(const bool First, const int OnS)
 {
   if (First && OnS == 1)
     return pfirstOnS1;
@@ -133,70 +131,70 @@ ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertex(const Standard_Boolean First,
 
 //=================================================================================================
 
-Standard_Real ChFiDS_SurfData::FirstSpineParam() const
+double ChFiDS_SurfData::FirstSpineParam() const
 {
   return ufspine;
 }
 
 //=================================================================================================
 
-Standard_Real ChFiDS_SurfData::LastSpineParam() const
+double ChFiDS_SurfData::LastSpineParam() const
 {
   return ulspine;
 }
 
 //=================================================================================================
 
-void ChFiDS_SurfData::FirstSpineParam(const Standard_Real Par)
+void ChFiDS_SurfData::FirstSpineParam(const double Par)
 {
   ufspine = Par;
 }
 
 //=================================================================================================
 
-void ChFiDS_SurfData::LastSpineParam(const Standard_Real Par)
+void ChFiDS_SurfData::LastSpineParam(const double Par)
 {
   ulspine = Par;
 }
 
 //=================================================================================================
 
-Standard_Real ChFiDS_SurfData::FirstExtensionValue() const
+double ChFiDS_SurfData::FirstExtensionValue() const
 {
   return myfirstextend;
 }
 
 //=================================================================================================
 
-Standard_Real ChFiDS_SurfData::LastExtensionValue() const
+double ChFiDS_SurfData::LastExtensionValue() const
 {
   return mylastextend;
 }
 
 //=================================================================================================
 
-void ChFiDS_SurfData::FirstExtensionValue(const Standard_Real Extend)
+void ChFiDS_SurfData::FirstExtensionValue(const double Extend)
 {
   myfirstextend = Extend;
 }
 
 //=================================================================================================
 
-void ChFiDS_SurfData::LastExtensionValue(const Standard_Real Extend)
+void ChFiDS_SurfData::LastExtensionValue(const double Extend)
 {
   mylastextend = Extend;
 }
 
 //=================================================================================================
 
-Handle(Standard_Transient) ChFiDS_SurfData::Simul() const
+occ::handle<Standard_Transient> ChFiDS_SurfData::Simul() const
 {
   return simul;
 }
 
 //=================================================================================================
 
-void ChFiDS_SurfData::SetSimul(const Handle(Standard_Transient)& S)
+void ChFiDS_SurfData::SetSimul(const occ::handle<Standard_Transient>& S)
 {
   simul = S;
 }
@@ -223,8 +221,7 @@ void ChFiDS_SurfData::Get2dPoints(gp_Pnt2d& P2df1,
 
 //=================================================================================================
 
-gp_Pnt2d ChFiDS_SurfData::Get2dPoints(const Standard_Boolean First,
-                                      const Standard_Integer OnS) const
+gp_Pnt2d ChFiDS_SurfData::Get2dPoints(const bool First, const int OnS) const
 
 {
   if (First && OnS == 1)

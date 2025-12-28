@@ -111,7 +111,7 @@ public:
                             const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
 
   //! Returns True if there are more shapes in the exploration.
-  Standard_Boolean More() const noexcept { return hasMore; }
+  bool More() const noexcept { return hasMore; }
 
   //! Moves to the next Shape in the exploration.
   Standard_EXPORT void Next();
@@ -130,7 +130,7 @@ public:
 
   //! Returns the current depth of the exploration. 0 is
   //! the shape to explore itself.
-  Standard_EXPORT Standard_Integer Depth() const noexcept;
+  Standard_EXPORT int Depth() const noexcept;
 
   //! Clears the content of the explorer.
   Standard_EXPORT void Clear();
@@ -143,7 +143,7 @@ private:
   TopoDS_Shape                        myShape;
   TopAbs_ShapeEnum                    toFind;
   TopAbs_ShapeEnum                    toAvoid;
-  Standard_Boolean                    hasMore;
+  bool                                hasMore;
 };
 
 #endif // _TopExp_Explorer_HeaderFile

@@ -30,23 +30,23 @@ public:
   //! Empty constructor
   Standard_EXPORT BOPAlgo_ToolsProvider();
 
-  Standard_EXPORT BOPAlgo_ToolsProvider(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPAlgo_ToolsProvider(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Clears internal fields and arguments
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Adds Tool argument of the operation
   Standard_EXPORT virtual void AddTool(const TopoDS_Shape& theShape);
 
   //! Adds the Tool arguments of the operation
-  Standard_EXPORT virtual void SetTools(const TopTools_ListOfShape& theShapes);
+  Standard_EXPORT virtual void SetTools(const NCollection_List<TopoDS_Shape>& theShapes);
 
   //! Returns the Tool arguments of the operation
-  const TopTools_ListOfShape& Tools() const { return myTools; }
+  const NCollection_List<TopoDS_Shape>& Tools() const { return myTools; }
 
 protected:
-  TopTools_ListOfShape myTools;
-  TopTools_MapOfShape  myMapTools;
+  NCollection_List<TopoDS_Shape>                         myTools;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMapTools;
 };
 
 #endif // _BOPAlgo_ToolsProvider_HeaderFile

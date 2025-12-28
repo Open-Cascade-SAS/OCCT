@@ -33,7 +33,7 @@ public:
   const TopoDS_Shape& Shape() const { return myShape; }
 
   //! Returns true if triangualtion was performed and has success.
-  Standard_Boolean IsDone() const { return myIsDone; }
+  bool IsDone() const { return myIsDone; }
 
   //! Compute triangulation for set shape.
   virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
@@ -45,17 +45,15 @@ protected:
   Standard_EXPORT BRepMesh_DiscretRoot();
 
   //! Sets IsDone flag.
-  void setDone() { myIsDone = Standard_True; }
+  void setDone() { myIsDone = true; }
 
   //! Clears IsDone flag.
-  void setNotDone() { myIsDone = Standard_False; }
+  void setNotDone() { myIsDone = false; }
 
   Standard_EXPORT virtual void init();
 
-  TopoDS_Shape     myShape;
-  Standard_Boolean myIsDone;
+  TopoDS_Shape myShape;
+  bool         myIsDone;
 };
-
-DEFINE_STANDARD_HANDLE(BRepMesh_DiscretRoot, Standard_Transient)
 
 #endif

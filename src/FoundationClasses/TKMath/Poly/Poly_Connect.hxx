@@ -21,9 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <Standard_Boolean.hxx>
 class Poly_Triangulation;
 
@@ -70,18 +70,18 @@ public:
 
   //! Constructs an algorithm to explore the adjacency data of
   //! nodes or triangles for the triangulation T.
-  Standard_EXPORT Poly_Connect(const Handle(Poly_Triangulation)& theTriangulation);
+  Standard_EXPORT Poly_Connect(const occ::handle<Poly_Triangulation>& theTriangulation);
 
   //! Initialize the algorithm to explore the adjacency data of
   //! nodes or triangles for the triangulation theTriangulation.
-  Standard_EXPORT void Load(const Handle(Poly_Triangulation)& theTriangulation);
+  Standard_EXPORT void Load(const occ::handle<Poly_Triangulation>& theTriangulation);
 
   //! Returns the triangulation analyzed by this tool.
-  const Handle(Poly_Triangulation)& Triangulation() const { return myTriangulation; }
+  const occ::handle<Poly_Triangulation>& Triangulation() const { return myTriangulation; }
 
   //! Returns the index of a triangle containing the node at
   //! index N in the nodes table specific to the triangulation analyzed by this tool
-  Standard_Integer Triangle(const Standard_Integer N) const { return myTriangles(N); }
+  int Triangle(const int N) const { return myTriangles(N); }
 
   //! Returns in t1, t2 and t3, the indices of the 3 triangles
   //! adjacent to the triangle at index T in the triangles table
@@ -89,15 +89,12 @@ public:
   //! Warning
   //! Null indices are returned when there are fewer than 3
   //! adjacent triangles.
-  void Triangles(const Standard_Integer T,
-                 Standard_Integer&      t1,
-                 Standard_Integer&      t2,
-                 Standard_Integer&      t3) const
+  void Triangles(const int T, int& t1, int& t2, int& t3) const
   {
-    Standard_Integer index = 6 * (T - 1);
-    t1                     = myAdjacents(index + 1);
-    t2                     = myAdjacents(index + 2);
-    t3                     = myAdjacents(index + 3);
+    int index = 6 * (T - 1);
+    t1        = myAdjacents(index + 1);
+    t2        = myAdjacents(index + 2);
+    t3        = myAdjacents(index + 3);
   }
 
   //! Returns, in n1, n2 and n3, the indices of the 3 nodes
@@ -105,15 +102,12 @@ public:
   //! triangles table specific to the triangulation analyzed by this tool.
   //! Warning
   //! Null indices are returned when there are fewer than 3 adjacent nodes.
-  void Nodes(const Standard_Integer T,
-             Standard_Integer&      n1,
-             Standard_Integer&      n2,
-             Standard_Integer&      n3) const
+  void Nodes(const int T, int& n1, int& n2, int& n3) const
   {
-    Standard_Integer index = 6 * (T - 1);
-    n1                     = myAdjacents(index + 4);
-    n2                     = myAdjacents(index + 5);
-    n3                     = myAdjacents(index + 6);
+    int index = 6 * (T - 1);
+    n1        = myAdjacents(index + 4);
+    n2        = myAdjacents(index + 5);
+    n3        = myAdjacents(index + 6);
   }
 
 public:
@@ -134,12 +128,12 @@ public:
   //! {
   //! t = C.Value();
   //! }
-  Standard_EXPORT void Initialize(const Standard_Integer N);
+  Standard_EXPORT void Initialize(const int N);
 
   //! Returns true if there is another element in the iterator
   //! defined with the function Initialize (i.e. if there is another
   //! triangle containing the given node).
-  Standard_Boolean More() const { return mymore; }
+  bool More() const { return mymore; }
 
   //! Advances the iterator defined with the function Initialize to
   //! access the next triangle.
@@ -151,19 +145,19 @@ public:
   //! iterator, defined with the function Initialize, points. This is
   //! an index in the triangles table specific to the triangulation
   //! analyzed by this tool
-  Standard_Integer Value() const { return mytr; }
+  int Value() const { return mytr; }
 
 private:
-  Handle(Poly_Triangulation) myTriangulation;
-  TColStd_Array1OfInteger    myTriangles;
-  TColStd_Array1OfInteger    myAdjacents;
-  Standard_Integer           mytr;
-  Standard_Integer           myfirst;
-  Standard_Integer           mynode;
-  Standard_Integer           myothernode;
-  Standard_Boolean           mysense;
-  Standard_Boolean           mymore;
-  TColStd_PackedMapOfInteger myPassedTr;
+  occ::handle<Poly_Triangulation> myTriangulation;
+  NCollection_Array1<int>         myTriangles;
+  NCollection_Array1<int>         myAdjacents;
+  int                             mytr;
+  int                             myfirst;
+  int                             mynode;
+  int                             myothernode;
+  bool                            mysense;
+  bool                            mymore;
+  TColStd_PackedMapOfInteger      myPassedTr;
 };
 
 #endif // _Poly_Connect_HeaderFile

@@ -60,17 +60,16 @@ public:
 
   //! Returns true if the solution is unqualified and false in
   //! the other cases.
-  Standard_EXPORT Standard_Boolean IsUnqualified() const;
+  Standard_EXPORT bool IsUnqualified() const;
 
   //! Returns true if the solution is Enclosed in the Lin2d and false in
   //! the other cases.
-  Standard_EXPORT Standard_Boolean IsEnclosed() const;
+  Standard_EXPORT bool IsEnclosed() const;
 
   //! Returns true if the solution is Outside the Lin2d and false in
   //! the other cases.
-  Standard_EXPORT Standard_Boolean IsOutside() const;
+  Standard_EXPORT bool IsOutside() const;
 
-protected:
 private:
   GccEnt_Position TheQualifier;
   gp_Lin2d        TheQualified;

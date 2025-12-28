@@ -39,7 +39,7 @@ public:
   }
 
   //! Return bytes reserved for one pixel (may include extra bytes for alignment).
-  Standard_EXPORT static Standard_Size SizePixelBytes(const Image_Format thePixelFormat);
+  Standard_EXPORT static size_t SizePixelBytes(const Image_Format thePixelFormat);
 
   //! Auxiliary method for swapping bytes between RGB and BGR formats.
   //! This method modifies the image data but does not change pixel format!
@@ -58,13 +58,13 @@ public:
   Standard_EXPORT static bool FlipY(Image_PixMap& theImage);
 
   //! Return default image data allocator.
-  Standard_EXPORT static const Handle(NCollection_BaseAllocator)& DefaultAllocator();
+  Standard_EXPORT static const occ::handle<NCollection_BaseAllocator>& DefaultAllocator();
 
   //! Return string representation of pixel format.
-  Standard_EXPORT static Standard_CString ImageFormatToString(Image_Format theFormat);
+  Standard_EXPORT static const char* ImageFormatToString(Image_Format theFormat);
 
   //! Return string representation of compressed pixel format.
-  Standard_EXPORT static Standard_CString ImageFormatToString(Image_CompressedFormat theFormat);
+  Standard_EXPORT static const char* ImageFormatToString(Image_CompressedFormat theFormat);
 
   //! Convert raw pixel value into Quantity_ColorRGBA. This function is relatively slow.
   //! @param[in] theRawValue pointer to pixel definition
@@ -72,10 +72,9 @@ public:
   //! @param[in] theToLinearize when TRUE, the color stored in non-linear color space (e.g.
   //! Image_Format_RGB) will be linearized
   //! @return the pixel color
-  Standard_EXPORT static Quantity_ColorRGBA ColorFromRawPixel(
-    const Standard_Byte*   theRawValue,
-    const Image_Format     theFormat,
-    const Standard_Boolean theToLinearize = false);
+  Standard_EXPORT static Quantity_ColorRGBA ColorFromRawPixel(const uint8_t*     theRawValue,
+                                                              const Image_Format theFormat,
+                                                              const bool theToLinearize = false);
 
   //! Set raw pixel value from Quantity_ColorRGBA. This function is relatively slow.
   //! @param[out] theRawValue pointer to pixel definition to modify
@@ -83,10 +82,10 @@ public:
   //! @param[in]  theColor color value to convert from
   //! @param[in] theToDeLinearize when TRUE, the gamma correction will be applied for storing in
   //! non-linear color space (e.g. Image_Format_RGB)
-  Standard_EXPORT static void ColorToRawPixel(Standard_Byte*            theRawValue,
+  Standard_EXPORT static void ColorToRawPixel(uint8_t*                  theRawValue,
                                               const Image_Format        theFormat,
                                               const Quantity_ColorRGBA& theColor,
-                                              const Standard_Boolean    theToDeLinearize = false);
+                                              const bool                theToDeLinearize = false);
 
 public: // high-level API
   //! Return pixel format.
@@ -99,34 +98,31 @@ public: // high-level API
   Standard_EXPORT void SetFormat(const Image_Format thePixelFormat);
 
   //! Return image width in pixels.
-  Standard_Size Width() const { return myData.SizeX; }
+  size_t Width() const { return myData.SizeX; }
 
   //! Return image height in pixels.
-  Standard_Size Height() const { return myData.SizeY; }
+  size_t Height() const { return myData.SizeY; }
 
   //! Return image depth in pixels.
-  Standard_Size Depth() const { return myData.SizeZ; }
+  size_t Depth() const { return myData.SizeZ; }
 
   //! Return image width in pixels.
-  Standard_Size SizeX() const { return myData.SizeX; }
+  size_t SizeX() const { return myData.SizeX; }
 
   //! Return image height in pixels.
-  Standard_Size SizeY() const { return myData.SizeY; }
+  size_t SizeY() const { return myData.SizeY; }
 
   //! Return image depth in pixels.
-  Standard_Size SizeZ() const { return myData.SizeZ; }
+  size_t SizeZ() const { return myData.SizeZ; }
 
   //! Return image width x height x depth in pixels.
-  NCollection_Vec3<Standard_Size> SizeXYZ() const
+  NCollection_Vec3<size_t> SizeXYZ() const
   {
-    return NCollection_Vec3<Standard_Size>(myData.SizeX, myData.SizeY, myData.SizeZ);
+    return NCollection_Vec3<size_t>(myData.SizeX, myData.SizeY, myData.SizeZ);
   }
 
   //! Return width / height.
-  Standard_Real Ratio() const
-  {
-    return (SizeY() > 0) ? (Standard_Real(SizeX()) / Standard_Real(SizeY())) : 1.0;
-  }
+  double Ratio() const { return (SizeY() > 0) ? (double(SizeX()) / double(SizeY())) : 1.0; }
 
   //! Return true if data is NULL.
   bool IsEmpty() const { return myData.IsEmpty(); }
@@ -145,17 +141,14 @@ public: // high-level API
   //! @param[in] theToLinearize when TRUE, the color stored in non-linear color space (e.g.
   //! Image_Format_RGB) will be linearized
   //! @return the pixel color
-  Quantity_ColorRGBA PixelColor(Standard_Integer theX,
-                                Standard_Integer theY,
-                                Standard_Boolean theToLinearize = false) const
+  Quantity_ColorRGBA PixelColor(int theX, int theY, bool theToLinearize = false) const
   {
-    if (IsEmpty() || theX < 0 || (Standard_Size)theX >= SizeX() || theY < 0
-        || (Standard_Size)theY >= SizeY())
+    if (IsEmpty() || theX < 0 || (size_t)theX >= SizeX() || theY < 0 || (size_t)theY >= SizeY())
     {
       return Quantity_ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f); // transparent
     }
 
-    const Standard_Byte* aRawPixel = RawValueXY(theX, theY);
+    const uint8_t* aRawPixel = RawValueXY(theX, theY);
     return ColorFromRawPixel(aRawPixel, myImgFormat, theToLinearize);
   }
 
@@ -167,10 +160,10 @@ public: // high-level API
   //! @param[in] theColor color to store
   //! @param[in] theToDeLinearize when TRUE, the gamma correction will be applied for storing in
   //! non-linear color space (e.g. Image_Format_RGB)
-  void SetPixelColor(const Standard_Integer theX,
-                     const Standard_Integer theY,
-                     const Quantity_Color&  theColor,
-                     const Standard_Boolean theToDeLinearize = false)
+  void SetPixelColor(const int             theX,
+                     const int             theY,
+                     const Quantity_Color& theColor,
+                     const bool            theToDeLinearize = false)
   {
     SetPixelColor(theX, theY, Quantity_ColorRGBA(theColor, 1.0f), theToDeLinearize);
   }
@@ -183,18 +176,17 @@ public: // high-level API
   //! @param[in] theColor color to store
   //! @param[in] theToDeLinearize when TRUE, the gamma correction will be applied for storing in
   //! non-linear color space (e.g. Image_Format_RGB)
-  void SetPixelColor(const Standard_Integer    theX,
-                     const Standard_Integer    theY,
+  void SetPixelColor(const int                 theX,
+                     const int                 theY,
                      const Quantity_ColorRGBA& theColor,
-                     const Standard_Boolean    theToDeLinearize = false)
+                     const bool                theToDeLinearize = false)
   {
-    if (IsEmpty() || theX < 0 || Standard_Size(theX) >= SizeX() || theY < 0
-        || Standard_Size(theY) >= SizeY())
+    if (IsEmpty() || theX < 0 || size_t(theX) >= SizeX() || theY < 0 || size_t(theY) >= SizeY())
     {
       return;
     }
 
-    Standard_Byte* aRawPixel = ChangeRawValueXY(theX, theY);
+    uint8_t* aRawPixel = ChangeRawValueXY(theX, theY);
     ColorToRawPixel(aRawPixel, myImgFormat, theColor, theToDeLinearize);
   }
 
@@ -202,18 +194,18 @@ public: // high-level API
   //! Data will not be copied! Notice that caller should ensure
   //! that data pointer will not be released during this wrapper lifetime.
   //! You may call InitCopy() to perform data copying.
-  Standard_EXPORT virtual bool InitWrapper(Image_Format        thePixelFormat,
-                                           Standard_Byte*      theDataPtr,
-                                           const Standard_Size theSizeX,
-                                           const Standard_Size theSizeY,
-                                           const Standard_Size theSizeRowBytes = 0);
+  Standard_EXPORT virtual bool InitWrapper(Image_Format thePixelFormat,
+                                           uint8_t*     theDataPtr,
+                                           const size_t theSizeX,
+                                           const size_t theSizeY,
+                                           const size_t theSizeRowBytes = 0);
 
   //! Initialize image plane with required dimensions.
   //! Memory will be left uninitialized (performance trick).
-  Standard_EXPORT virtual bool InitTrash(Image_Format        thePixelFormat,
-                                         const Standard_Size theSizeX,
-                                         const Standard_Size theSizeY,
-                                         const Standard_Size theSizeRowBytes = 0);
+  Standard_EXPORT virtual bool InitTrash(Image_Format thePixelFormat,
+                                         const size_t theSizeX,
+                                         const size_t theSizeY,
+                                         const size_t theSizeRowBytes = 0);
 
   //! Initialize by copying data.
   //! If you want to copy alien data you should create wrapper using InitWrapper() before.
@@ -221,14 +213,14 @@ public: // high-level API
 
   //! Initialize image plane with required dimensions.
   //! Buffer will be zeroed (black color for most formats).
-  bool InitZero(Image_Format        thePixelFormat,
-                const Standard_Size theSizeX,
-                const Standard_Size theSizeY,
-                const Standard_Size theSizeRowBytes = 0,
-                const Standard_Byte theValue        = 0)
+  bool InitZero(Image_Format  thePixelFormat,
+                const size_t  theSizeX,
+                const size_t  theSizeY,
+                const size_t  theSizeRowBytes = 0,
+                const uint8_t theValue        = 0)
   {
     return InitZero3D(thePixelFormat,
-                      NCollection_Vec3<Standard_Size>(theSizeX, theSizeY, 1),
+                      NCollection_Vec3<size_t>(theSizeX, theSizeY, 1),
                       theSizeRowBytes,
                       theValue);
   }
@@ -241,23 +233,23 @@ public:
   //! Data will not be copied! Notice that caller should ensure
   //! that data pointer will not be released during this wrapper lifetime.
   //! You may call InitCopy() to perform data copying.
-  Standard_EXPORT virtual bool InitWrapper3D(Image_Format                           thePixelFormat,
-                                             Standard_Byte*                         theDataPtr,
-                                             const NCollection_Vec3<Standard_Size>& theSizeXYZ,
-                                             const Standard_Size theSizeRowBytes = 0);
+  Standard_EXPORT virtual bool InitWrapper3D(Image_Format                    thePixelFormat,
+                                             uint8_t*                        theDataPtr,
+                                             const NCollection_Vec3<size_t>& theSizeXYZ,
+                                             const size_t                    theSizeRowBytes = 0);
 
   //! Initialize 2D/3D image with required dimensions.
   //! Memory will be left uninitialized (performance trick).
-  Standard_EXPORT virtual bool InitTrash3D(Image_Format                           thePixelFormat,
-                                           const NCollection_Vec3<Standard_Size>& theSizeXYZ,
-                                           const Standard_Size theSizeRowBytes = 0);
+  Standard_EXPORT virtual bool InitTrash3D(Image_Format                    thePixelFormat,
+                                           const NCollection_Vec3<size_t>& theSizeXYZ,
+                                           const size_t                    theSizeRowBytes = 0);
 
   //! Initialize 2D/3D image with required dimensions.
   //! Buffer will be zeroed (black color for most formats).
-  Standard_EXPORT bool InitZero3D(Image_Format                           thePixelFormat,
-                                  const NCollection_Vec3<Standard_Size>& theSizeXYZ,
-                                  const Standard_Size                    theSizeRowBytes = 0,
-                                  const Standard_Byte                    theValue        = 0);
+  Standard_EXPORT bool InitZero3D(Image_Format                    thePixelFormat,
+                                  const NCollection_Vec3<size_t>& theSizeXYZ,
+                                  const size_t                    theSizeRowBytes = 0,
+                                  const uint8_t                   theValue        = 0);
 
 public: //! @name low-level API for batch-processing (pixels reading / comparison / modification)
   //! Returns TRUE if image data is stored from Top to the Down.
@@ -278,65 +270,65 @@ public: //! @name low-level API for batch-processing (pixels reading / compariso
 
   //! Returns +1 if scanlines ordered in Top->Down order in memory and -1 otherwise.
   //! @return scanline increment for Top->Down iteration
-  Standard_Size TopDownInc() const { return myData.TopToDown; }
+  size_t TopDownInc() const { return myData.TopToDown; }
 
   //! Return data pointer for low-level operations (copying entire buffer, parsing with extra tools
   //! etc.).
-  const Standard_Byte* Data() const { return myData.Data(); }
+  const uint8_t* Data() const { return myData.Data(); }
 
   //! Return data pointer for low-level operations (copying entire buffer, parsing with extra tools
   //! etc.).
-  Standard_Byte* ChangeData() { return myData.ChangeData(); }
+  uint8_t* ChangeData() { return myData.ChangeData(); }
 
   //! Return data pointer to requested row (first column).
   //! Indexation starts from 0.
-  const Standard_Byte* Row(Standard_Size theRow) const { return myData.Row(theRow); }
+  const uint8_t* Row(size_t theRow) const { return myData.Row(theRow); }
 
   //! Return data pointer to requested row (first column).
   //! Indexation starts from 0.
-  Standard_Byte* ChangeRow(Standard_Size theRow) { return myData.ChangeRow(theRow); }
+  uint8_t* ChangeRow(size_t theRow) { return myData.ChangeRow(theRow); }
 
   //! Return data pointer to requested 2D slice.
   //! Indexation starts from 0.
-  const Standard_Byte* Slice(Standard_Size theSlice) const { return myData.Slice(theSlice); }
+  const uint8_t* Slice(size_t theSlice) const { return myData.Slice(theSlice); }
 
   //! Return data pointer to requested 2D slice.
   //! Indexation starts from 0.
-  Standard_Byte* ChangeSlice(Standard_Size theSlice) { return myData.ChangeSlice(theSlice); }
+  uint8_t* ChangeSlice(size_t theSlice) { return myData.ChangeSlice(theSlice); }
 
   //! Return data pointer to requested row (first column).
   //! Indexation starts from 0.
-  const Standard_Byte* SliceRow(Standard_Size theSlice, Standard_Size theRow) const
+  const uint8_t* SliceRow(size_t theSlice, size_t theRow) const
   {
     return myData.SliceRow(theSlice, theRow);
   }
 
   //! Return data pointer to requested row (first column).
   //! Indexation starts from 0.
-  Standard_Byte* ChangeSliceRow(Standard_Size theSlice, Standard_Size theRow)
+  uint8_t* ChangeSliceRow(size_t theSlice, size_t theRow)
   {
     return myData.ChangeSliceRow(theSlice, theRow);
   }
 
   //! Return bytes reserved for one pixel (may include extra bytes for alignment).
-  Standard_Size SizePixelBytes() const { return myData.SizeBPP; }
+  size_t SizePixelBytes() const { return myData.SizeBPP; }
 
   //! Return bytes reserved per row.
   //! Could be larger than needed to store packed row (extra bytes for alignment etc.).
-  Standard_Size SizeRowBytes() const { return myData.SizeRowBytes; }
+  size_t SizeRowBytes() const { return myData.SizeRowBytes; }
 
   //! Return the extra bytes in the row.
-  Standard_Size RowExtraBytes() const { return SizeRowBytes() - SizeX() * SizePixelBytes(); }
+  size_t RowExtraBytes() const { return SizeRowBytes() - SizeX() * SizePixelBytes(); }
 
   //! Compute the maximal row alignment for current row size.
   //! @return maximal row alignment in bytes (up to 16 bytes).
-  Standard_Size MaxRowAligmentBytes() const { return myData.MaxRowAligmentBytes(); }
+  size_t MaxRowAligmentBytes() const { return myData.MaxRowAligmentBytes(); }
 
   //! Return number of bytes per 2D slice.
-  Standard_Size SizeSliceBytes() const { return myData.SizeSliceBytes; }
+  size_t SizeSliceBytes() const { return myData.SizeSliceBytes; }
 
   //! Return buffer size
-  Standard_Size SizeBytes() const { return myData.Size(); }
+  size_t SizeBytes() const { return myData.Size(); }
 
 public:
   //! Access image pixel with specified color type.
@@ -345,7 +337,7 @@ public:
   //! WARNING: Input parameters are defined in the decreasing majority following memory layout -
   //! e.g. row first, column next.
   template <typename ColorType_t>
-  const ColorType_t& Value(Standard_Size theRow, Standard_Size theCol) const
+  const ColorType_t& Value(size_t theRow, size_t theCol) const
   {
     return *reinterpret_cast<const ColorType_t*>(myData.Value(theRow, theCol));
   }
@@ -356,7 +348,7 @@ public:
   //! WARNING: Input parameters are defined in the decreasing majority following memory layout -
   //! e.g. row first, column next.
   template <typename ColorType_t>
-  ColorType_t& ChangeValue(Standard_Size theRow, Standard_Size theCol)
+  ColorType_t& ChangeValue(size_t theRow, size_t theCol)
   {
     return *reinterpret_cast<ColorType_t*>(myData.ChangeValue(theRow, theCol));
   }
@@ -366,7 +358,7 @@ public:
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in the decreasing majority following memory layout -
   //! e.g. row first, column next.
-  const Standard_Byte* RawValue(Standard_Size theRow, Standard_Size theCol) const
+  const uint8_t* RawValue(size_t theRow, size_t theCol) const
   {
     return myData.Value(theRow, theCol);
   }
@@ -376,7 +368,7 @@ public:
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in the decreasing majority following memory layout -
   //! e.g. row first, column next.
-  Standard_Byte* ChangeRawValue(Standard_Size theRow, Standard_Size theCol)
+  uint8_t* ChangeRawValue(size_t theRow, size_t theCol)
   {
     return myData.ChangeValue(theRow, theCol);
   }
@@ -386,7 +378,7 @@ public:
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y order.
   template <typename ColorType_t>
-  const ColorType_t& ValueXY(Standard_Size theX, Standard_Size theY) const
+  const ColorType_t& ValueXY(size_t theX, size_t theY) const
   {
     return *reinterpret_cast<const ColorType_t*>(myData.ValueXY(theX, theY));
   }
@@ -396,7 +388,7 @@ public:
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y order.
   template <typename ColorType_t>
-  ColorType_t& ChangeValueXY(Standard_Size theX, Standard_Size theY)
+  ColorType_t& ChangeValueXY(size_t theX, size_t theY)
   {
     return *reinterpret_cast<ColorType_t*>(myData.ChangeValueXY(theX, theY));
   }
@@ -405,19 +397,13 @@ public:
   //! Indexation starts from 0.
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y order.
-  const Standard_Byte* RawValueXY(Standard_Size theX, Standard_Size theY) const
-  {
-    return myData.ValueXY(theX, theY);
-  }
+  const uint8_t* RawValueXY(size_t theX, size_t theY) const { return myData.ValueXY(theX, theY); }
 
   //! Access image pixel as raw data pointer.
   //! Indexation starts from 0.
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y order.
-  Standard_Byte* ChangeRawValueXY(Standard_Size theX, Standard_Size theY)
-  {
-    return myData.ChangeValueXY(theX, theY);
-  }
+  uint8_t* ChangeRawValueXY(size_t theX, size_t theY) { return myData.ChangeValueXY(theX, theY); }
 
 public:
   //! Access image pixel with specified color type.
@@ -425,7 +411,7 @@ public:
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y, Z order.
   template <typename ColorType_t>
-  const ColorType_t& ValueXYZ(Standard_Size theX, Standard_Size theY, Standard_Size theZ) const
+  const ColorType_t& ValueXYZ(size_t theX, size_t theY, size_t theZ) const
   {
     return *reinterpret_cast<const ColorType_t*>(myData.ValueXYZ(theX, theY, theZ));
   }
@@ -435,7 +421,7 @@ public:
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y, Z order.
   template <typename ColorType_t>
-  ColorType_t& ChangeValueXYZ(Standard_Size theX, Standard_Size theY, Standard_Size theZ)
+  ColorType_t& ChangeValueXYZ(size_t theX, size_t theY, size_t theZ)
   {
     return *reinterpret_cast<ColorType_t*>(myData.ChangeValueXYZ(theX, theY, theZ));
   }
@@ -444,7 +430,7 @@ public:
   //! Indexation starts from 0.
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y, Z order.
-  const Standard_Byte* RawValueXYZ(Standard_Size theX, Standard_Size theY, Standard_Size theZ) const
+  const uint8_t* RawValueXYZ(size_t theX, size_t theY, size_t theZ) const
   {
     return myData.ValueXYZ(theX, theY, theZ);
   }
@@ -453,7 +439,7 @@ public:
   //! Indexation starts from 0.
   //! This method does not perform any type checks - use on own risk (check Format() before)!
   //! WARNING: Input parameters are defined in traditional X, Y, Z order.
-  Standard_Byte* ChangeRawValueXYZ(Standard_Size theX, Standard_Size theY, Standard_Size theZ)
+  uint8_t* ChangeRawValueXYZ(size_t theX, size_t theY, size_t theZ)
   {
     return myData.ChangeValueXYZ(theX, theY, theZ);
   }
@@ -507,7 +493,5 @@ private:
   Image_PixMap(const Image_PixMap&);
   Image_PixMap& operator=(const Image_PixMap&);
 };
-
-DEFINE_STANDARD_HANDLE(Image_PixMap, Standard_Transient)
 
 #endif // _Image_PixMap_H__

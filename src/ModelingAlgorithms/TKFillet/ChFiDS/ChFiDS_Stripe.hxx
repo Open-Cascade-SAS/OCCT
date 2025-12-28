@@ -20,15 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <ChFiDS_HData.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Transient.hxx>
 class ChFiDS_Spine;
 class Geom2d_Curve;
-
-class ChFiDS_Stripe;
-DEFINE_STANDARD_HANDLE(ChFiDS_Stripe, Standard_Transient)
 
 //! Data characterising a band of fillet.
 class ChFiDS_Stripe : public Standard_Transient
@@ -40,49 +39,49 @@ public:
   //! Reset everything except Spine.
   Standard_EXPORT void Reset();
 
-  const Handle(ChFiDS_HData)& SetOfSurfData() const;
+  const occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& SetOfSurfData() const;
 
-  const Handle(ChFiDS_Spine)& Spine() const;
+  const occ::handle<ChFiDS_Spine>& Spine() const;
 
   TopAbs_Orientation OrientationOnFace1() const;
 
   TopAbs_Orientation OrientationOnFace2() const;
 
-  Standard_Integer Choix() const;
+  int Choix() const;
 
-  Handle(ChFiDS_HData)& ChangeSetOfSurfData();
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& ChangeSetOfSurfData();
 
-  Handle(ChFiDS_Spine)& ChangeSpine();
+  occ::handle<ChFiDS_Spine>& ChangeSpine();
 
   void OrientationOnFace1(const TopAbs_Orientation Or1);
 
   void OrientationOnFace2(const TopAbs_Orientation Or2);
 
-  void Choix(const Standard_Integer C);
+  void Choix(const int C);
 
-  void FirstParameters(Standard_Real& Pdeb, Standard_Real& Pfin) const;
+  void FirstParameters(double& Pdeb, double& Pfin) const;
 
-  void LastParameters(Standard_Real& Pdeb, Standard_Real& Pfin) const;
+  void LastParameters(double& Pdeb, double& Pfin) const;
 
-  void ChangeFirstParameters(const Standard_Real Pdeb, const Standard_Real Pfin);
+  void ChangeFirstParameters(const double Pdeb, const double Pfin);
 
-  void ChangeLastParameters(const Standard_Real Pdeb, const Standard_Real Pfin);
+  void ChangeLastParameters(const double Pdeb, const double Pfin);
 
-  Standard_Integer FirstCurve() const;
+  int FirstCurve() const;
 
-  Standard_Integer LastCurve() const;
+  int LastCurve() const;
 
-  void ChangeFirstCurve(const Standard_Integer Index);
+  void ChangeFirstCurve(const int Index);
 
-  void ChangeLastCurve(const Standard_Integer Index);
+  void ChangeLastCurve(const int Index);
 
-  const Handle(Geom2d_Curve)& FirstPCurve() const;
+  const occ::handle<Geom2d_Curve>& FirstPCurve() const;
 
-  const Handle(Geom2d_Curve)& LastPCurve() const;
+  const occ::handle<Geom2d_Curve>& LastPCurve() const;
 
-  Handle(Geom2d_Curve)& ChangeFirstPCurve();
+  occ::handle<Geom2d_Curve>& ChangeFirstPCurve();
 
-  Handle(Geom2d_Curve)& ChangeLastPCurve();
+  occ::handle<Geom2d_Curve>& ChangeLastPCurve();
 
   TopAbs_Orientation FirstPCurveOrientation() const;
 
@@ -92,89 +91,81 @@ public:
 
   void LastPCurveOrientation(const TopAbs_Orientation O);
 
-  Standard_Integer IndexFirstPointOnS1() const;
+  int IndexFirstPointOnS1() const;
 
-  Standard_Integer IndexFirstPointOnS2() const;
+  int IndexFirstPointOnS2() const;
 
-  Standard_Integer IndexLastPointOnS1() const;
+  int IndexLastPointOnS1() const;
 
-  Standard_Integer IndexLastPointOnS2() const;
+  int IndexLastPointOnS2() const;
 
-  void ChangeIndexFirstPointOnS1(const Standard_Integer Index);
+  void ChangeIndexFirstPointOnS1(const int Index);
 
-  void ChangeIndexFirstPointOnS2(const Standard_Integer Index);
+  void ChangeIndexFirstPointOnS2(const int Index);
 
-  void ChangeIndexLastPointOnS1(const Standard_Integer Index);
+  void ChangeIndexLastPointOnS1(const int Index);
 
-  void ChangeIndexLastPointOnS2(const Standard_Integer Index);
+  void ChangeIndexLastPointOnS2(const int Index);
 
-  Standard_EXPORT void Parameters(const Standard_Boolean First,
-                                  Standard_Real&         Pdeb,
-                                  Standard_Real&         Pfin) const;
+  Standard_EXPORT void Parameters(const bool First, double& Pdeb, double& Pfin) const;
 
-  Standard_EXPORT void SetParameters(const Standard_Boolean First,
-                                     const Standard_Real    Pdeb,
-                                     const Standard_Real    Pfin);
+  Standard_EXPORT void SetParameters(const bool First, const double Pdeb, const double Pfin);
 
-  Standard_EXPORT Standard_Integer Curve(const Standard_Boolean First) const;
+  Standard_EXPORT int Curve(const bool First) const;
 
-  Standard_EXPORT void SetCurve(const Standard_Integer Index, const Standard_Boolean First);
+  Standard_EXPORT void SetCurve(const int Index, const bool First);
 
-  Standard_EXPORT const Handle(Geom2d_Curve)& PCurve(const Standard_Boolean First) const;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurve(const bool First) const;
 
-  Standard_EXPORT Handle(Geom2d_Curve)& ChangePCurve(const Standard_Boolean First);
+  Standard_EXPORT occ::handle<Geom2d_Curve>& ChangePCurve(const bool First);
 
-  Standard_EXPORT TopAbs_Orientation Orientation(const Standard_Integer OnS) const;
+  Standard_EXPORT TopAbs_Orientation Orientation(const int OnS) const;
 
-  Standard_EXPORT void SetOrientation(const TopAbs_Orientation Or, const Standard_Integer OnS);
+  Standard_EXPORT void SetOrientation(const TopAbs_Orientation Or, const int OnS);
 
-  Standard_EXPORT TopAbs_Orientation Orientation(const Standard_Boolean First) const;
+  Standard_EXPORT TopAbs_Orientation Orientation(const bool First) const;
 
-  Standard_EXPORT void SetOrientation(const TopAbs_Orientation Or, const Standard_Boolean First);
+  Standard_EXPORT void SetOrientation(const TopAbs_Orientation Or, const bool First);
 
-  Standard_EXPORT Standard_Integer IndexPoint(const Standard_Boolean First,
-                                              const Standard_Integer OnS) const;
+  Standard_EXPORT int IndexPoint(const bool First, const int OnS) const;
 
-  Standard_EXPORT void SetIndexPoint(const Standard_Integer Index,
-                                     const Standard_Boolean First,
-                                     const Standard_Integer OnS);
+  Standard_EXPORT void SetIndexPoint(const int Index, const bool First, const int OnS);
 
-  Standard_EXPORT Standard_Integer SolidIndex() const;
+  Standard_EXPORT int SolidIndex() const;
 
-  Standard_EXPORT void SetSolidIndex(const Standard_Integer Index);
+  Standard_EXPORT void SetSolidIndex(const int Index);
 
   //! Set nb of SurfData's at end put in DS
-  Standard_EXPORT void InDS(const Standard_Boolean First, const Standard_Integer Nb = 1);
+  Standard_EXPORT void InDS(const bool First, const int Nb = 1);
 
   //! Returns nb of SurfData's at end being in DS
-  Standard_EXPORT Standard_Integer IsInDS(const Standard_Boolean First) const;
+  Standard_EXPORT int IsInDS(const bool First) const;
 
   DEFINE_STANDARD_RTTIEXT(ChFiDS_Stripe, Standard_Transient)
 
-protected:
 private:
-  Standard_Real        pardeb1;
-  Standard_Real        parfin1;
-  Standard_Real        pardeb2;
-  Standard_Real        parfin2;
-  Handle(ChFiDS_Spine) mySpine;
-  Handle(ChFiDS_HData) myHdata;
-  Handle(Geom2d_Curve) pcrv1;
-  Handle(Geom2d_Curve) pcrv2;
-  Standard_Integer     myChoix;
-  Standard_Integer     indexOfSolid;
-  Standard_Integer     indexOfcurve1;
-  Standard_Integer     indexOfcurve2;
-  Standard_Integer     indexfirstPOnS1;
-  Standard_Integer     indexlastPOnS1;
-  Standard_Integer     indexfirstPOnS2;
-  Standard_Integer     indexlastPOnS2;
-  Standard_Integer     begfilled;
-  Standard_Integer     endfilled;
-  TopAbs_Orientation   myOr1;
-  TopAbs_Orientation   myOr2;
-  TopAbs_Orientation   orcurv1;
-  TopAbs_Orientation   orcurv2;
+  double                                                           pardeb1;
+  double                                                           parfin1;
+  double                                                           pardeb2;
+  double                                                           parfin2;
+  occ::handle<ChFiDS_Spine>                                        mySpine;
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>> myHdata;
+  occ::handle<Geom2d_Curve>                                        pcrv1;
+  occ::handle<Geom2d_Curve>                                        pcrv2;
+  int                                                              myChoix;
+  int                                                              indexOfSolid;
+  int                                                              indexOfcurve1;
+  int                                                              indexOfcurve2;
+  int                                                              indexfirstPOnS1;
+  int                                                              indexlastPOnS1;
+  int                                                              indexfirstPOnS2;
+  int                                                              indexlastPOnS2;
+  int                                                              begfilled;
+  int                                                              endfilled;
+  TopAbs_Orientation                                               myOr1;
+  TopAbs_Orientation                                               myOr2;
+  TopAbs_Orientation                                               orcurv1;
+  TopAbs_Orientation                                               orcurv2;
 };
 
 #include <ChFiDS_Stripe.lxx>

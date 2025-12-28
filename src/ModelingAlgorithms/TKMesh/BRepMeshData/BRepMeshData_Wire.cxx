@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Wire, IMeshData_Wire)
 
 //=================================================================================================
 
-BRepMeshData_Wire::BRepMeshData_Wire(const TopoDS_Wire&                      theWire,
-                                     const Standard_Integer                  theEdgeNb,
-                                     const Handle(NCollection_IncAllocator)& theAllocator)
+BRepMeshData_Wire::BRepMeshData_Wire(const TopoDS_Wire&                           theWire,
+                                     const int                                    theEdgeNb,
+                                     const occ::handle<NCollection_IncAllocator>& theAllocator)
     : IMeshData_Wire(theWire),
       myDEdges(theEdgeNb > 0 ? theEdgeNb : 256, theAllocator),
       myDEdgesOri(theEdgeNb > 0 ? theEdgeNb : 256, theAllocator)
@@ -35,17 +35,17 @@ BRepMeshData_Wire::~BRepMeshData_Wire() {}
 
 //=================================================================================================
 
-Standard_Integer BRepMeshData_Wire::EdgesNb() const
+int BRepMeshData_Wire::EdgesNb() const
 {
   return myDEdges.Size();
 }
 
 //=================================================================================================
 
-Standard_Integer BRepMeshData_Wire::AddEdge(const IMeshData::IEdgePtr& theDEdge,
-                                            const TopAbs_Orientation   theOrientation)
+int BRepMeshData_Wire::AddEdge(const IMeshData::IEdgePtr& theDEdge,
+                               const TopAbs_Orientation   theOrientation)
 {
-  const Standard_Integer aIndex = EdgesNb();
+  const int aIndex = EdgesNb();
 
   myDEdges.Append(theDEdge);
   myDEdgesOri.Append(theOrientation);
@@ -55,14 +55,14 @@ Standard_Integer BRepMeshData_Wire::AddEdge(const IMeshData::IEdgePtr& theDEdge,
 
 //=================================================================================================
 
-const IMeshData::IEdgePtr& BRepMeshData_Wire::GetEdge(const Standard_Integer theIndex) const
+const IMeshData::IEdgePtr& BRepMeshData_Wire::GetEdge(const int theIndex) const
 {
   return myDEdges(theIndex);
 }
 
 //=================================================================================================
 
-TopAbs_Orientation BRepMeshData_Wire::GetEdgeOrientation(const Standard_Integer theIndex) const
+TopAbs_Orientation BRepMeshData_Wire::GetEdgeOrientation(const int theIndex) const
 {
   return myDEdgesOri(theIndex);
 }

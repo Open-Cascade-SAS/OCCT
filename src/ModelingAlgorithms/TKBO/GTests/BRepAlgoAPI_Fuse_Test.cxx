@@ -384,9 +384,9 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusRotatedNarrowBox_D1)
   aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
 
   // Create rotated narrow box: r=sqrt(2), box(0,0,0,r,0.25,1), rotate 45 degrees around Z
-  constexpr Standard_Real r     = M_SQRT2;
-  TopoDS_Shape            aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
-  gp_Trsf                 aTrsf;
+  constexpr double r     = M_SQRT2;
+  TopoDS_Shape     aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
+  gp_Trsf          aTrsf;
   aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), M_PI / 4.0); // 45 degrees
   aBox2.Move(aTrsf);
 
@@ -401,9 +401,9 @@ TEST_F(BFuseSimpleTest, NurbsBoxPlusRotatedNarrowBoxVariation_D2)
   aBox1              = BOPTest_Utilities::ConvertToNurbs(aBox1);
 
   // Create rotated narrow box: r=sqrt(31), box(0,0,0,r/4,0.25,1), rotate 34.73 degrees around Z
-  constexpr Standard_Real r     = 5.5677643628300219;
-  TopoDS_Shape            aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
-  gp_Trsf                 aTrsf;
+  constexpr double r     = 5.5677643628300219;
+  TopoDS_Shape     aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
+  gp_Trsf          aTrsf;
   aTrsf.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), 34.73 * M_PI / 180.0);
   aBox2.Move(aTrsf);
 
@@ -537,7 +537,7 @@ TEST_F(BFuseSimpleTest, ProfileBasedPrisms_D9)
 // Test bfuse_simple/E1: Complex profile with scaling (pro7637 bug)
 TEST_F(BFuseSimpleTest, ComplexProfileWithScaling_E1)
 {
-  const Standard_Real SCALE = 100.0;
+  const double SCALE = 100.0;
 
   // Create first profile: "profile f1 c 50*SCALE 180 x -100*SCALE c 50*SCALE 180"
   gp_Pln aPlane1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)));
@@ -589,7 +589,7 @@ TEST_F(BFuseSimpleTest, ComplexVertexEdgeWireRevolution_E3)
                                  gp_Pnt(0, 0, 4)};
 
   // Create wire from points
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create revolution: "revol cyla pa 0 0 0 0 0 1 360"
@@ -621,7 +621,7 @@ TEST_F(BFuseSimpleTest, CylinderWithComplexWireRevolution_E4)
                                  gp_Pnt(0, 3, 3)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create revolution: "revol ring f 0 0 0 0 0 1 269"
@@ -647,7 +647,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromVertexEdge_E5)
                                  gp_Pnt(3, 3, 0)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 0 1"
@@ -670,7 +670,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromFront_E6)
                                  gp_Pnt(3, 2, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 1 0"
@@ -693,7 +693,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromLeft_E7)
                                  gp_Pnt(3, 2, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 1 0 0"
@@ -716,7 +716,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromTop_E8)
                                  gp_Pnt(3, 3, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 0 -1"
@@ -739,7 +739,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromBack_E9)
                                  gp_Pnt(3, 3, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 -1 0"
@@ -762,7 +762,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromRight_F1)
                                  gp_Pnt(4, 2, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f -1 0 0"
@@ -785,7 +785,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromBottomDifferent_F2)
                                  gp_Pnt(3, 3, 0)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 0 1"
@@ -808,7 +808,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromBottomExternal_F3)
                                  gp_Pnt(8, 4, 0)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 0 1"
@@ -831,7 +831,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromFrontExternal_F4)
                                  gp_Pnt(8, 3, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 1 0"
@@ -854,7 +854,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromLeftExternal_F5)
                                  gp_Pnt(8, 3, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 1 0 0"
@@ -877,7 +877,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromTopExternal_F6)
                                  gp_Pnt(8, 4, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 0 -1"
@@ -900,7 +900,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromBackExternal_F7)
                                  gp_Pnt(8, 4, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 -1 0"
@@ -923,7 +923,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromRightExternal_F8)
                                  gp_Pnt(9, 3, 1)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f -1 0 0"
@@ -946,7 +946,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromBottomTopPosition_F9)
                                  gp_Pnt(3, 4, 4)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 0 1"
@@ -969,7 +969,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromFrontTopLevel_G1)
                                  gp_Pnt(3, 3, 5)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 1 0"
@@ -992,7 +992,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromLeftTopLevel_G2)
                                  gp_Pnt(3, 3, 5)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 1 0 0"
@@ -1015,7 +1015,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromTopTopLevel_G3)
                                  gp_Pnt(3, 4, 5)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 0 -1"
@@ -1038,7 +1038,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromBackTopLevel_G4)
                                  gp_Pnt(3, 4, 5)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f 0 -1 0"
@@ -1061,7 +1061,7 @@ TEST_F(BFuseSimpleTest, BoxWithPrismFromRightTopLevel_G5)
                                  gp_Pnt(4, 3, 5)};
 
   // Create wire and face
-  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, Standard_True);
+  const TopoDS_Wire  aWire = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
   const TopoDS_Shape aFace = BOPTest_Utilities::CreateFaceFromWire(aWire);
 
   // Create prism: "prism bb f -1 0 0"
@@ -1079,7 +1079,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBottom_G6)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1088,7 +1088,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBottom_G6)
                                      gp_Pnt(4, 2, 0),
                                      gp_Pnt(4, 3, 0),
                                      gp_Pnt(3, 3, 0)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, 1));
 
@@ -1104,7 +1104,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFront_G7)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1113,7 +1113,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFront_G7)
                                      gp_Pnt(4, 2, 0),
                                      gp_Pnt(4, 2, 1),
                                      gp_Pnt(3, 2, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 1, 0));
 
@@ -1129,7 +1129,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeft_G8)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1138,7 +1138,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeft_G8)
                                      gp_Pnt(3, 3, 0),
                                      gp_Pnt(3, 3, 1),
                                      gp_Pnt(3, 2, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(1, 0, 0));
 
@@ -1154,7 +1154,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTop_G9)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1163,7 +1163,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTop_G9)
                                      gp_Pnt(4, 2, 1),
                                      gp_Pnt(4, 3, 1),
                                      gp_Pnt(3, 3, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, -1));
 
@@ -1179,7 +1179,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackEdge_H1)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1188,7 +1188,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackEdge_H1)
                                      gp_Pnt(4, 3, 0),
                                      gp_Pnt(4, 3, 1),
                                      gp_Pnt(3, 3, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, -1, 0));
 
@@ -1204,7 +1204,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightEdge_H2)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1213,7 +1213,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightEdge_H2)
                                      gp_Pnt(4, 3, 0),
                                      gp_Pnt(4, 3, 1),
                                      gp_Pnt(4, 2, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(-1, 0, 0));
 
@@ -1229,7 +1229,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBottomCorner_H3)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1238,7 +1238,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBottomCorner_H3)
                                      gp_Pnt(9, 3, 0),
                                      gp_Pnt(9, 4, 0),
                                      gp_Pnt(8, 4, 0)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, 1));
 
@@ -1254,7 +1254,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFrontEdge_H4)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1263,7 +1263,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFrontEdge_H4)
                                      gp_Pnt(9, 3, 0),
                                      gp_Pnt(9, 3, 1),
                                      gp_Pnt(8, 3, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 1, 0));
 
@@ -1279,7 +1279,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeftEdge_H5)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1288,7 +1288,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeftEdge_H5)
                                      gp_Pnt(8, 4, 0),
                                      gp_Pnt(8, 4, 1),
                                      gp_Pnt(8, 3, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(1, 0, 0));
 
@@ -1304,7 +1304,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopEdge_H6)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1313,7 +1313,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopEdge_H6)
                                      gp_Pnt(9, 3, 1),
                                      gp_Pnt(9, 4, 1),
                                      gp_Pnt(8, 4, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, -1));
 
@@ -1329,7 +1329,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackEdgeCorner_H7)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1338,7 +1338,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackEdgeCorner_H7)
                                      gp_Pnt(9, 4, 0),
                                      gp_Pnt(9, 4, 1),
                                      gp_Pnt(8, 4, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, -1, 0));
 
@@ -1354,7 +1354,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightEdgeCorner_H8)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1363,7 +1363,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightEdgeCorner_H8)
                                      gp_Pnt(9, 4, 0),
                                      gp_Pnt(9, 4, 1),
                                      gp_Pnt(9, 3, 1)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(-1, 0, 0));
 
@@ -1379,7 +1379,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopCorner_H9)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1388,7 +1388,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopCorner_H9)
                                      gp_Pnt(4, 3, 4),
                                      gp_Pnt(4, 4, 4),
                                      gp_Pnt(3, 4, 4)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, 1));
 
@@ -1404,7 +1404,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFrontTopLevel_I1)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1413,7 +1413,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromFrontTopLevel_I1)
                                      gp_Pnt(4, 3, 4),
                                      gp_Pnt(4, 3, 5),
                                      gp_Pnt(3, 3, 5)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 1, 0));
 
@@ -1429,7 +1429,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeftTopLevel_I2)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1438,7 +1438,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromLeftTopLevel_I2)
                                      gp_Pnt(3, 4, 4),
                                      gp_Pnt(3, 4, 5),
                                      gp_Pnt(3, 3, 5)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(1, 0, 0));
 
@@ -1454,7 +1454,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopAbove_I3)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1463,7 +1463,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromTopAbove_I3)
                                      gp_Pnt(4, 3, 5),
                                      gp_Pnt(4, 4, 5),
                                      gp_Pnt(3, 4, 5)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, 0, -1));
 
@@ -1479,7 +1479,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackTopLevel_I4)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1488,7 +1488,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromBackTopLevel_I4)
                                      gp_Pnt(4, 4, 4),
                                      gp_Pnt(4, 4, 5),
                                      gp_Pnt(3, 4, 5)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(0, -1, 0));
 
@@ -1504,7 +1504,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightTopLevel_I5)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 4));
 
@@ -1513,7 +1513,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithSmallPrismFromRightTopLevel_I5)
                                      gp_Pnt(4, 4, 4),
                                      gp_Pnt(4, 4, 5),
                                      gp_Pnt(4, 3, 5)};
-  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, Standard_True);
+  const TopoDS_Wire   aSmallWire  = BOPTest_Utilities::CreatePolygonWire(aSmallPts, true);
   const TopoDS_Shape  aSmallFace  = BOPTest_Utilities::CreateFaceFromWire(aSmallWire);
   const TopoDS_Shape  aSmallPrism = BOPTest_Utilities::CreatePrism(aSmallFace, gp_Vec(-1, 0, 0));
 
@@ -1529,7 +1529,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismProfile_I6)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1557,7 +1557,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirection_I7)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1585,7 +1585,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismXDirection_I8)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1613,7 +1613,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismYDirectionFinal_I9)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1641,7 +1641,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J1)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1669,7 +1669,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY_J2)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1697,7 +1697,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideX_J3)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1725,7 +1725,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSideY2_J4)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1754,7 +1754,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J5)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1772,7 +1772,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J6)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1790,7 +1790,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismRightSide_J7)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1809,7 +1809,7 @@ TEST_F(BFuseSimpleTest, LargePrismWithOblongPrismTop_J8)
                                     gp_Pnt(8, 3, 0),
                                     gp_Pnt(8, 9, 0),
                                     gp_Pnt(3, 9, 0)};
-  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, Standard_True);
+  const TopoDS_Wire   aBaseWire  = BOPTest_Utilities::CreatePolygonWire(aBasePts, true);
   const TopoDS_Shape  aBaseFace  = BOPTest_Utilities::CreateFaceFromWire(aBaseWire);
   const TopoDS_Shape  aBasePrism = BOPTest_Utilities::CreatePrism(aBaseFace, gp_Vec(0, 0, 5));
 
@@ -1840,7 +1840,7 @@ TEST_F(BFuseSimpleTest, CylinderWithRevolutionRing_J9)
                                    gp_Pnt(0, 4, 2),
                                    gp_Pnt(0, 4, 3),
                                    gp_Pnt(0, 3, 3)};
-  const TopoDS_Wire   aRingWire = BOPTest_Utilities::CreatePolygonWire(aRingPts, Standard_True);
+  const TopoDS_Wire   aRingWire = BOPTest_Utilities::CreatePolygonWire(aRingPts, true);
   const TopoDS_Shape  aRingFace = BOPTest_Utilities::CreateFaceFromWire(aRingWire);
 
   // Create revolution: revol ring f 0 0 0 0 0 1 269

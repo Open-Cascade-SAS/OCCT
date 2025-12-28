@@ -41,8 +41,8 @@ public:
   //! all vectors and matrix declarations.
   Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
                                              const math_Vector&               theXTolerance,
-                                             const Standard_Real              theFTolerance,
-                                             const Standard_Integer theNbIterations = 100);
+                                             const double                     theFTolerance,
+                                             const int theNbIterations = 100);
 
   //! This constructor should be used in a sub-class to initialize
   //! correctly all the fields of this class.
@@ -50,8 +50,8 @@ public:
   //! all vectors and matrix declarations.
   //! The method SetTolerance must be called before performing the algorithm.
   Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
-                                             const Standard_Real              theFTolerance,
-                                             const Standard_Integer theNbIterations = 100);
+                                             const double                     theFTolerance,
+                                             const int theNbIterations = 100);
 
   //! Destructor
   Standard_EXPORT virtual ~math_NewtonFunctionSetRoot();
@@ -79,10 +79,10 @@ public:
   //! Vectors DeltaX, Fvalues and Jacobian Matrix are consistent with the
   //! possible solution Vector Sol and can be inspected to decide whether
   //! the solution is reached or not.
-  virtual Standard_Boolean IsSolutionReached(math_FunctionSetWithDerivatives& F);
+  virtual bool IsSolutionReached(math_FunctionSetWithDerivatives& F);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the value of the root of function F.
   //! Exceptions
@@ -97,7 +97,7 @@ public:
 
   //! Outputs the state number associated with the solution
   //! vector root.
-  Standard_Integer StateNumber() const;
+  int StateNumber() const;
 
   //! Returns the matrix value of the derivative at the root.
   //! Exception NotDone is raised if the root was not found.
@@ -125,7 +125,7 @@ public:
   //! Returns the number of iterations really done
   //! during the computation of the Root.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Integer NbIterations() const;
+  int NbIterations() const;
 
   //! Prints information on the current state of the object.
   //! Is used to redefine the operator <<.
@@ -133,7 +133,7 @@ public:
 
 protected:
   math_Vector        TolX;
-  Standard_Real      TolF;
+  double             TolF;
   math_IntegerVector Indx;
   math_Vector        Scratch;
   math_Vector        Sol;
@@ -142,10 +142,10 @@ protected:
   math_Matrix        Jacobian;
 
 private:
-  Standard_Boolean Done;
-  Standard_Integer State;
-  Standard_Integer Iter;
-  Standard_Integer Itermax;
+  bool Done;
+  int  State;
+  int  Iter;
+  int  Itermax;
 };
 
 #include <math_NewtonFunctionSetRoot.lxx>

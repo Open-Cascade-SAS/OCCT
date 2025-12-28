@@ -21,9 +21,6 @@
 
 #include <StepGeom_SurfaceCurve.hxx>
 
-class StepGeom_SeamCurve;
-DEFINE_STANDARD_HANDLE(StepGeom_SeamCurve, StepGeom_SurfaceCurve)
-
 class StepGeom_SeamCurve : public StepGeom_SurfaceCurve
 {
 
@@ -32,9 +29,6 @@ public:
   Standard_EXPORT StepGeom_SeamCurve();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_SeamCurve, StepGeom_SurfaceCurve)
-
-protected:
-private:
 };
 
 #endif // _StepGeom_SeamCurve_HeaderFile

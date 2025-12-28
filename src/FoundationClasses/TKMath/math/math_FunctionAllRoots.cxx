@@ -27,19 +27,19 @@
 
 math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
                                              const math_FunctionSample&   S,
-                                             const Standard_Real          EpsX,
-                                             const Standard_Real          EpsF,
-                                             const Standard_Real          EpsNul)
+                                             const double                 EpsX,
+                                             const double                 EpsF,
+                                             const double                 EpsNul)
 {
 
-  done = Standard_False;
+  done = false;
 
-  Standard_Boolean Nul, PNul, InterNul, Nuld, Nulf;
-  Standard_Real    DebNul = 0., FinNul = 0.;
-  Standard_Integer Indd = 0, Indf = 0;
-  Standard_Real    cst, val, valsav = 0, valbid;
-  Standard_Boolean fini;
-  Standard_Integer Nbp, i;
+  bool   Nul, PNul, InterNul, Nuld, Nulf;
+  double DebNul = 0., FinNul = 0.;
+  int    Indd = 0, Indf = 0;
+  double cst, val, valsav = 0, valbid;
+  bool   fini;
+  int    Nbp, i;
 
   Nbp = S.NbPoints();
   F.Value(S.GetParameter(1), val);
@@ -48,9 +48,9 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
   {
     valsav = val;
   }
-  InterNul = Standard_False;
-  Nuld     = Standard_False;
-  Nulf     = Standard_False;
+  InterNul = false;
+  Nuld     = false;
+  Nulf     = false;
 
   i    = 2;
   fini = (i > Nbp);
@@ -66,7 +66,7 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     }
     if (InterNul && (!Nul))
     {
-      InterNul = Standard_False;
+      InterNul = false;
       pdeb.Append(DebNul);
       ideb.Append(Indd);
       if (val > 0.0)
@@ -105,13 +105,13 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     }
     else if ((!InterNul) && PNul && Nul)
     {
-      InterNul = Standard_True;
+      InterNul = true;
       if (i == 2)
       {
         DebNul = S.GetParameter(1);
         F.Value(DebNul, valbid);
         Indd = F.GetStateNumber();
-        Nuld = Standard_True;
+        Nuld = true;
       }
       else
       {
@@ -160,7 +160,7 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     Indf = F.GetStateNumber();
     pfin.Append(FinNul);
     ifin.Append(Indf);
-    Nulf = Standard_True;
+    Nulf = true;
   }
 
   if (pdeb.Length() == 0)
@@ -169,7 +169,7 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     math_FunctionRoots Res(F, S.GetParameter(1), S.GetParameter(Nbp), Nbp, EpsX, EpsF, 0.0);
     Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
 
-    for (Standard_Integer j = 1; j <= Res.NbSolutions(); j++)
+    for (int j = 1; j <= Res.NbSolutions(); j++)
     {
       piso.Append(Res.Value(j));
       iiso.Append(Res.StateNumber(j));
@@ -177,35 +177,35 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
   }
   else
   {
-    Standard_Integer NbpMin = 3;
-    Standard_Integer Nbrpt;
+    int NbpMin = 3;
+    int Nbrpt;
     if (!Nuld)
     { // Recherche des solutions entre S.GetParameter(1)
       // et le debut du 1er intervalle nul
 
-      Nbrpt = (Standard_Integer)std::trunc(
+      Nbrpt = (int)std::trunc(
         std::abs((pdeb.Value(1) - S.GetParameter(1)) / (S.GetParameter(Nbp) - S.GetParameter(1)))
         * Nbp);
       math_FunctionRoots
         Res(F, S.GetParameter(1), pdeb.Value(1), std::max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
       Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
 
-      for (Standard_Integer j = 1; j <= Res.NbSolutions(); j++)
+      for (int j = 1; j <= Res.NbSolutions(); j++)
       {
         piso.Append(Res.Value(j));
         iiso.Append(Res.StateNumber(j));
       }
     }
-    for (Standard_Integer k = 2; k <= pdeb.Length(); k++)
+    for (int k = 2; k <= pdeb.Length(); k++)
     {
-      Nbrpt = (Standard_Integer)std::trunc(
+      Nbrpt = (int)std::trunc(
         std::abs((pdeb.Value(k) - pfin.Value(k - 1)) / (S.GetParameter(Nbp) - S.GetParameter(1)))
         * Nbp);
       math_FunctionRoots
         Res(F, pfin.Value(k - 1), pdeb.Value(k), std::max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
       Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
 
-      for (Standard_Integer j = 1; j <= Res.NbSolutions(); j++)
+      for (int j = 1; j <= Res.NbSolutions(); j++)
       {
         piso.Append(Res.Value(j));
         iiso.Append(Res.StateNumber(j));
@@ -215,10 +215,9 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     { // Recherche des solutions entre la fin du
       // dernier intervalle nul et Value(Nbp).
 
-      Nbrpt =
-        (Standard_Integer)std::trunc(std::abs((S.GetParameter(Nbp) - pfin.Value(pdeb.Length()))
-                                              / (S.GetParameter(Nbp) - S.GetParameter(1)))
-                                     * Nbp);
+      Nbrpt = (int)std::trunc(std::abs((S.GetParameter(Nbp) - pfin.Value(pdeb.Length()))
+                                       / (S.GetParameter(Nbp) - S.GetParameter(1)))
+                              * Nbp);
       math_FunctionRoots Res(F,
                              pfin.Value(pdeb.Length()),
                              S.GetParameter(Nbp),
@@ -228,14 +227,14 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
                              0.0);
       Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
 
-      for (Standard_Integer j = 1; j <= Res.NbSolutions(); j++)
+      for (int j = 1; j <= Res.NbSolutions(); j++)
       {
         piso.Append(Res.Value(j));
         iiso.Append(Res.StateNumber(j));
       }
     }
   }
-  done = Standard_True;
+  done = true;
 }
 
 void math_FunctionAllRoots::Dump(Standard_OStream& o) const

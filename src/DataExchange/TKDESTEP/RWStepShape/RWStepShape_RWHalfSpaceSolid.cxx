@@ -20,10 +20,10 @@
 
 RWStepShape_RWHalfSpaceSolid::RWStepShape_RWHalfSpaceSolid() {}
 
-void RWStepShape_RWHalfSpaceSolid::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepShape_HalfSpaceSolid)& ent) const
+void RWStepShape_RWHalfSpaceSolid::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                                    num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepShape_HalfSpaceSolid>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,20 +33,20 @@ void RWStepShape_RWHalfSpaceSolid::ReadStep(const Handle(StepData_StepReaderData
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : baseSurface ---
 
-  Handle(StepGeom_Surface) aBaseSurface;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Surface> aBaseSurface;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "base_surface", ach, STANDARD_TYPE(StepGeom_Surface), aBaseSurface);
 
   // --- own field : agreementFlag ---
 
-  Standard_Boolean aAgreementFlag;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  bool aAgreementFlag;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadBoolean(num, 3, "agreement_flag", ach, aAgreementFlag);
 
   //--- Initialisation of the read entity ---
@@ -54,8 +54,8 @@ void RWStepShape_RWHalfSpaceSolid::ReadStep(const Handle(StepData_StepReaderData
   ent->Init(aName, aBaseSurface, aAgreementFlag);
 }
 
-void RWStepShape_RWHalfSpaceSolid::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepShape_HalfSpaceSolid)& ent) const
+void RWStepShape_RWHalfSpaceSolid::WriteStep(StepData_StepWriter&                         SW,
+                                             const occ::handle<StepShape_HalfSpaceSolid>& ent) const
 {
 
   // --- inherited field name ---
@@ -71,8 +71,8 @@ void RWStepShape_RWHalfSpaceSolid::WriteStep(StepData_StepWriter&               
   SW.SendBoolean(ent->AgreementFlag());
 }
 
-void RWStepShape_RWHalfSpaceSolid::Share(const Handle(StepShape_HalfSpaceSolid)& ent,
-                                         Interface_EntityIterator&               iter) const
+void RWStepShape_RWHalfSpaceSolid::Share(const occ::handle<StepShape_HalfSpaceSolid>& ent,
+                                         Interface_EntityIterator&                    iter) const
 {
 
   iter.GetOneItem(ent->BaseSurface());

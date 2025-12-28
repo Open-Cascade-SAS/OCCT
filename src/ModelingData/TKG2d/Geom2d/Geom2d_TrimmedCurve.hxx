@@ -29,9 +29,6 @@ class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
-class Geom2d_TrimmedCurve;
-DEFINE_STANDARD_HANDLE(Geom2d_TrimmedCurve, Geom2d_BoundedCurve)
-
 //! Defines a portion of a curve limited by two values of
 //! parameters inside the parametric domain of the curve.
 //! The trimmed curve is defined by:
@@ -75,11 +72,11 @@ public:
   //! Raises ConstructionError the C is not periodic and U1 or U2 are out of
   //! the bounds of C.
   //! Raised if U1 = U2.
-  Standard_EXPORT Geom2d_TrimmedCurve(const Handle(Geom2d_Curve)& C,
-                                      const Standard_Real         U1,
-                                      const Standard_Real         U2,
-                                      const Standard_Boolean      Sense        = Standard_True,
-                                      const Standard_Boolean theAdjustPeriodic = Standard_True);
+  Standard_EXPORT Geom2d_TrimmedCurve(const occ::handle<Geom2d_Curve>& C,
+                                      const double                     U1,
+                                      const double                     U2,
+                                      const bool                       Sense             = true,
+                                      const bool                       theAdjustPeriodic = true);
 
   //! Changes the direction of parametrization of <me>. The first and
   //! the last parametric values are modified. The "StartPoint"
@@ -93,13 +90,13 @@ public:
   //! - the reversed basis curve, whose parameter range is still [ 0.,1. ], and
   //! - the two trim values 1. - U2 (first parameter)
   //! and 1. - U1 (last parameter).
-  Standard_EXPORT void Reverse() Standard_OVERRIDE;
+  Standard_EXPORT void Reverse() override;
 
   //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
   //!
   //! returns UFirst + ULast - U
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT double ReversedParameter(const double U) const override;
 
   //! Changes this trimmed curve, by redefining the
   //! parameter values U1 and U2, which limit its basis curve.
@@ -118,17 +115,17 @@ public:
   //! - the basis curve is not periodic, and either U1 or U2
   //! are outside the bounds of the basis curve, or
   //! - U1 is equal to U2.
-  Standard_EXPORT void SetTrim(const Standard_Real    U1,
-                               const Standard_Real    U2,
-                               const Standard_Boolean Sense             = Standard_True,
-                               const Standard_Boolean theAdjustPeriodic = Standard_True);
+  Standard_EXPORT void SetTrim(const double U1,
+                               const double U2,
+                               const bool   Sense             = true,
+                               const bool   theAdjustPeriodic = true);
 
   //! Returns the basis curve.
   //! Warning
   //! This function does not return a constant reference.
   //! Consequently, any modification of the returned value
   //! directly modifies the trimmed curve.
-  Standard_EXPORT Handle(Geom2d_Curve) BasisCurve() const;
+  Standard_EXPORT occ::handle<Geom2d_Curve> BasisCurve() const;
 
   //! Returns the global continuity of the basis curve of this trimmed curve.
   //! C0 : only geometric continuity,
@@ -136,7 +133,7 @@ public:
   //! C2 : continuity of the second derivative all along the Curve,
   //! C3 : continuity of the third derivative all along the Curve,
   //! CN : the order of continuity is infinite.
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! --- Purpose
   //! Returns True if the order of continuity of the
@@ -146,34 +143,34 @@ public:
   //! the continuity of the basis curve because you consider
   //! only a part of the basis curve.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT bool IsCN(const int N) const override;
 
   //! Returns the end point of <me>. This point is the
   //! evaluation of the curve for the "LastParameter".
-  Standard_EXPORT gp_Pnt2d EndPoint() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pnt2d EndPoint() const override;
 
   //! Returns the value of the first parameter of <me>.
   //! The first parameter is the parameter of the "StartPoint"
   //! of the trimmed curve.
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double FirstParameter() const override;
 
   //! Returns True if the distance between the StartPoint and
   //! the EndPoint is lower or equal to Resolution from package
   //! gp.
-  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsClosed() const override;
 
   //! Always returns FALSE (independently of the type of basis curve).
-  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsPeriodic() const override;
 
   //! Returns the period of the basis curve of this trimmed curve.
   //! Exceptions
   //! Standard_NoSuchObject if the basis curve is not periodic.
-  Standard_EXPORT virtual Standard_Real Period() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double Period() const override;
 
   //! Returns the value of the last parameter of <me>.
   //! The last parameter is the parameter of the "EndPoint" of the
   //! trimmed curve.
-  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double LastParameter() const override;
 
   //! Returns the start point of <me>.
   //! This point is the evaluation of the curve from the
@@ -182,28 +179,25 @@ public:
   //! Warnings :
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis curve.
-  Standard_EXPORT gp_Pnt2d StartPoint() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pnt2d StartPoint() const override;
 
   //! If the basis curve is an OffsetCurve sometimes it is not
   //! possible to do the evaluation of the curve at the parameter
   //! U (see class OffsetCurve).
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
 
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
 
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT void D2(const Standard_Real U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const Standard_OVERRIDE;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
 
   //! Raised if the continuity of the curve is not C3.
-  Standard_EXPORT void D3(const Standard_Real U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const Standard_OVERRIDE;
+  Standard_EXPORT void D3(const double U,
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const override;
 
   //! For the point of parameter U of this trimmed curve,
   //! computes the vector corresponding to the Nth derivative.
@@ -215,12 +209,11 @@ public:
   //! Exceptions
   //! Standard_RangeError if N is less than 1.
   //! geometric transformations
-  Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
-                              const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
 
   //! Applies the transformation T to this trimmed curve.
   //! Warning The basis curve is also modified.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
 
   //! Returns the parameter on the transformed curve for
   //! the transform of the point of parameter U on <me>.
@@ -232,9 +225,8 @@ public:
   //! me->Value(U).Transformed(T)
   //!
   //! This methods calls the basis curve method.
-  Standard_EXPORT virtual Standard_Real TransformedParameter(const Standard_Real U,
-                                                             const gp_Trsf2d&    T) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double TransformedParameter(const double     U,
+                                                      const gp_Trsf2d& T) const override;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -247,23 +239,21 @@ public:
   //! Value(U).Transformed(T)
   //!
   //! This methods calls the basis curve method.
-  Standard_EXPORT virtual Standard_Real ParametricTransformation(const gp_Trsf2d& T) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf2d& T) const override;
 
   //! Creates a new object, which is a copy of this trimmed curve.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_TrimmedCurve, Geom2d_BoundedCurve)
 
-protected:
 private:
-  Handle(Geom2d_Curve) basisCurve;
-  Standard_Real        uTrim1;
-  Standard_Real        uTrim2;
+  occ::handle<Geom2d_Curve> basisCurve;
+  double                    uTrim1;
+  double                    uTrim2;
 };
 
 #endif // _Geom2d_TrimmedCurve_HeaderFile

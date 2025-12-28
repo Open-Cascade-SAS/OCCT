@@ -30,10 +30,10 @@ RWStepAP214_RWExternallyDefinedClass::RWStepAP214_RWExternallyDefinedClass() {}
 //=================================================================================================
 
 void RWStepAP214_RWExternallyDefinedClass::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepAP214_ExternallyDefinedClass)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                                            num,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepAP214_ExternallyDefinedClass>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "externally_defined_class"))
@@ -41,18 +41,18 @@ void RWStepAP214_RWExternallyDefinedClass::ReadStep(
 
   // Inherited fields of Group
 
-  Handle(TCollection_HAsciiString) aGroup_Name;
+  occ::handle<TCollection_HAsciiString> aGroup_Name;
   data->ReadString(num, 1, "group.name", ach, aGroup_Name);
 
-  Handle(TCollection_HAsciiString) aGroup_Description;
-  Standard_Boolean                 hasGroup_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aGroup_Description;
+  bool                                  hasGroup_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "group.description", ach, aGroup_Description);
   }
   else
   {
-    hasGroup_Description = Standard_False;
+    hasGroup_Description = false;
   }
 
   // Inherited fields of ExternallyDefinedItem
@@ -60,7 +60,7 @@ void RWStepAP214_RWExternallyDefinedClass::ReadStep(
   StepBasic_SourceItem aExternallyDefinedItem_ItemId;
   data->ReadEntity(num, 3, "externally_defined_item.item_id", ach, aExternallyDefinedItem_ItemId);
 
-  Handle(StepBasic_ExternalSource) aExternallyDefinedItem_Source;
+  occ::handle<StepBasic_ExternalSource> aExternallyDefinedItem_Source;
   data->ReadEntity(num,
                    4,
                    "externally_defined_item.source",
@@ -79,8 +79,8 @@ void RWStepAP214_RWExternallyDefinedClass::ReadStep(
 //=================================================================================================
 
 void RWStepAP214_RWExternallyDefinedClass::WriteStep(
-  StepData_StepWriter&                            SW,
-  const Handle(StepAP214_ExternallyDefinedClass)& ent) const
+  StepData_StepWriter&                                 SW,
+  const occ::handle<StepAP214_ExternallyDefinedClass>& ent) const
 {
 
   // Inherited fields of Group
@@ -104,8 +104,8 @@ void RWStepAP214_RWExternallyDefinedClass::WriteStep(
 //=================================================================================================
 
 void RWStepAP214_RWExternallyDefinedClass::Share(
-  const Handle(StepAP214_ExternallyDefinedClass)& ent,
-  Interface_EntityIterator&                       iter) const
+  const occ::handle<StepAP214_ExternallyDefinedClass>& ent,
+  Interface_EntityIterator&                            iter) const
 {
 
   // Inherited fields of Group

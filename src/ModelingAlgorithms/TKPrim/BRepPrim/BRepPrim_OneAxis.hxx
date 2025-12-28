@@ -68,24 +68,24 @@ public:
   //! pcurves. This is used for the sphere for example,
   //! to give a range on the meridian edge which is not
   //! VMin, VMax.
-  Standard_EXPORT void SetMeridianOffset(const Standard_Real MeridianOffset = 0);
+  Standard_EXPORT void SetMeridianOffset(const double MeridianOffset = 0);
 
   //! Returns the Ax2 from <me>.
   Standard_EXPORT const gp_Ax2& Axes() const;
 
   Standard_EXPORT void Axes(const gp_Ax2& A);
 
-  Standard_EXPORT Standard_Real Angle() const;
+  Standard_EXPORT double Angle() const;
 
-  Standard_EXPORT void Angle(const Standard_Real A);
+  Standard_EXPORT void Angle(const double A);
 
-  Standard_EXPORT Standard_Real VMin() const;
+  Standard_EXPORT double VMin() const;
 
-  Standard_EXPORT void VMin(const Standard_Real V);
+  Standard_EXPORT void VMin(const double V);
 
-  Standard_EXPORT Standard_Real VMax() const;
+  Standard_EXPORT double VMax() const;
 
-  Standard_EXPORT void VMax(const Standard_Real V);
+  Standard_EXPORT void VMax(const double V);
 
   //! Returns a face with no edges. The surface is the
   //! lateral surface with normals pointing outward. The
@@ -97,7 +97,7 @@ public:
   //! Returns an edge with a 3D curve made from the
   //! meridian in the XZ plane rotated by <Ang> around
   //! the Z-axis. Ang may be 0 or myAngle.
-  Standard_EXPORT virtual TopoDS_Edge MakeEmptyMeridianEdge(const Standard_Real Ang) const = 0;
+  Standard_EXPORT virtual TopoDS_Edge MakeEmptyMeridianEdge(const double Ang) const = 0;
 
   //! Sets the parametric curve of the edge <E> in the
   //! face <F> to be the 2d representation of the
@@ -106,45 +106,45 @@ public:
 
   //! Returns the meridian point at parameter <V> in the
   //! plane XZ.
-  Standard_EXPORT virtual gp_Pnt2d MeridianValue(const Standard_Real V) const = 0;
+  Standard_EXPORT virtual gp_Pnt2d MeridianValue(const double V) const = 0;
 
   //! Returns True if the point of parameter <V> on the
   //! meridian is on the Axis. Default implementation is
   //! std::abs(MeridianValue(V).X()) < Precision::Confusion()
-  Standard_EXPORT virtual Standard_Boolean MeridianOnAxis(const Standard_Real V) const;
+  Standard_EXPORT virtual bool MeridianOnAxis(const double V) const;
 
   //! Returns True if the meridian is closed.
   //! Default implementation is:
   //! MeridianValue(VMin).IsEqual(MeridianValue(VMax),
   //! Precision::Confusion())
-  Standard_EXPORT virtual Standard_Boolean MeridianClosed() const;
+  Standard_EXPORT virtual bool MeridianClosed() const;
 
   //! Returns True if VMax is infinite.
   //! Default Precision::IsPositiveInfinite(VMax);
-  Standard_EXPORT virtual Standard_Boolean VMaxInfinite() const;
+  Standard_EXPORT virtual bool VMaxInfinite() const;
 
   //! Returns True if VMin is infinite.
   //! Default Precision::IsNegativeInfinite(VMax);
-  Standard_EXPORT virtual Standard_Boolean VMinInfinite() const;
+  Standard_EXPORT virtual bool VMinInfinite() const;
 
   //! Returns True if there is a top face.
   //!
   //! That is neither: VMaxInfinite()
   //! MeridianClosed()
   //! MeridianOnAxis(VMax)
-  Standard_EXPORT virtual Standard_Boolean HasTop() const;
+  Standard_EXPORT virtual bool HasTop() const;
 
   //! Returns True if there is a bottom face.
   //!
   //! That is neither: VMinInfinite()
   //! MeridianClosed()
   //! MeridianOnAxis(VMin)
-  Standard_EXPORT virtual Standard_Boolean HasBottom() const;
+  Standard_EXPORT virtual bool HasBottom() const;
 
   //! Returns True if there are Start and End faces.
   //!
   //! That is: 2*PI - Angle > Precision::Angular()
-  Standard_EXPORT virtual Standard_Boolean HasSides() const;
+  Standard_EXPORT virtual bool HasSides() const;
 
   //! Returns the Shell containing all the Faces of the
   //! primitive.
@@ -261,8 +261,8 @@ protected:
   //! the Topology. The angle defaults to 2*PI.
   Standard_EXPORT BRepPrim_OneAxis(const BRepPrim_Builder& B,
                                    const gp_Ax2&           A,
-                                   const Standard_Real     VMin,
-                                   const Standard_Real     VMax);
+                                   const double            VMin,
+                                   const double            VMax);
 
   BRepPrim_Builder myBuilder;
 
@@ -277,21 +277,21 @@ private:
   //! This indicates the AxisEdge would be degenerate (zero length).
   bool areHeightsEqual() const;
 
-  gp_Ax2           myAxes;
-  Standard_Real    myAngle;
-  Standard_Real    myVMin;
-  Standard_Real    myVMax;
-  Standard_Real    myMeridianOffset;
-  TopoDS_Shell     myShell;
-  Standard_Boolean ShellBuilt;
-  TopoDS_Vertex    myVertices[6];
-  Standard_Boolean VerticesBuilt[6];
-  TopoDS_Edge      myEdges[9];
-  Standard_Boolean EdgesBuilt[9];
-  TopoDS_Wire      myWires[9];
-  Standard_Boolean WiresBuilt[9];
-  TopoDS_Face      myFaces[5];
-  Standard_Boolean FacesBuilt[5];
+  gp_Ax2        myAxes;
+  double        myAngle;
+  double        myVMin;
+  double        myVMax;
+  double        myMeridianOffset;
+  TopoDS_Shell  myShell;
+  bool          ShellBuilt;
+  TopoDS_Vertex myVertices[6];
+  bool          VerticesBuilt[6];
+  TopoDS_Edge   myEdges[9];
+  bool          EdgesBuilt[9];
+  TopoDS_Wire   myWires[9];
+  bool          WiresBuilt[9];
+  TopoDS_Face   myFaces[5];
+  bool          FacesBuilt[5];
 };
 
 #endif // _BRepPrim_OneAxis_HeaderFile

@@ -69,12 +69,12 @@ BRepMesh_DelabellaBaseMeshAlgo::~BRepMesh_DelabellaBaseMeshAlgo() {}
 
 void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
 {
-  const Handle(BRepMesh_DataStructureOfDelaun)& aStructure = this->getStructure();
+  const occ::handle<BRepMesh_DataStructureOfDelaun>& aStructure = this->getStructure();
 
-  Bnd_B2d                    aBox;
-  const Standard_Integer     aNodesNb = aStructure->NbNodes();
-  std::vector<Standard_Real> aPoints(2 * (aNodesNb + 4));
-  for (Standard_Integer aNodeIt = 0; aNodeIt < aNodesNb; ++aNodeIt)
+  Bnd_B2d             aBox;
+  const int           aNodesNb = aStructure->NbNodes();
+  std::vector<double> aPoints(2 * (aNodesNb + 4));
+  for (int aNodeIt = 0; aNodeIt < aNodesNb; ++aNodeIt)
   {
     const BRepMesh_Vertex& aVertex = aStructure->GetNode(aNodeIt + 1);
 
@@ -109,8 +109,8 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
   aStructure->AddNode(
     BRepMesh_Vertex(aPoints[2 * aNodesNb + 6], aPoints[2 * aNodesNb + 7], BRepMesh_Free));
 
-  const Standard_Real aDiffX = (aMax.X() - aMin.X());
-  const Standard_Real aDiffY = (aMax.Y() - aMin.Y());
+  const double aDiffX = (aMax.X() - aMin.X());
+  const double aDiffY = (aMax.Y() - aMin.Y());
   for (size_t i = 0; i < aPoints.size(); i += 2)
   {
     aPoints[i + 0] = (aPoints[i + 0] - aMin.X()) / aDiffX - 0.5;
@@ -130,26 +130,26 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
     const int aVerticesNb = aTriangulator->Triangulate(static_cast<int>(aPoints.size() / 2),
                                                        &aPoints[0],
                                                        &aPoints[1],
-                                                       2 * sizeof(Standard_Real));
+                                                       2 * sizeof(double));
 
     if (aVerticesNb > 0)
     {
       const DelaBella_Triangle* aTrianglePtr = aTriangulator->GetFirstDelaunayTriangle();
       while (aTrianglePtr != NULL)
       {
-        Standard_Integer aNodes[3] = {aTrianglePtr->v[0]->i + 1,
-                                      aTrianglePtr->v[2]->i + 1,
-                                      aTrianglePtr->v[1]->i + 1};
+        int aNodes[3] = {aTrianglePtr->v[0]->i + 1,
+                         aTrianglePtr->v[2]->i + 1,
+                         aTrianglePtr->v[1]->i + 1};
 
-        Standard_Integer aEdges[3];
-        Standard_Boolean aOrientations[3];
-        for (Standard_Integer k = 0; k < 3; ++k)
+        int  aEdges[3];
+        bool aOrientations[3];
+        for (int k = 0; k < 3; ++k)
         {
           const BRepMesh_Edge aLink(aNodes[k], aNodes[(k + 1) % 3], BRepMesh_Free);
 
-          const Standard_Integer aLinkInfo = aStructure->AddLink(aLink);
-          aEdges[k]                        = std::abs(aLinkInfo);
-          aOrientations[k]                 = aLinkInfo > 0;
+          const int aLinkInfo = aStructure->AddLink(aLink);
+          aEdges[k]           = std::abs(aLinkInfo);
+          aOrientations[k]    = aLinkInfo > 0;
         }
 
         const BRepMesh_Triangle aTriangle(aEdges, aOrientations, BRepMesh_Free);

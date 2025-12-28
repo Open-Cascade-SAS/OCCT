@@ -23,8 +23,6 @@
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
 
-DEFINE_STANDARD_HANDLE(DrawTrSurf_Point, Draw_Drawable3D)
-
 //! A drawable point.
 class DrawTrSurf_Point : public Draw_Drawable3D
 {
@@ -39,10 +37,10 @@ public:
                                    const Draw_MarkerShape Shape,
                                    const Draw_Color&      Col);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
   //! Is a 3D object. (Default True).
-  Standard_EXPORT virtual Standard_Boolean Is3D() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Is3D() const override;
 
   gp_Pnt Point() const { return myPoint; }
 
@@ -61,20 +59,20 @@ public:
   Draw_MarkerShape Shape() const { return myShape; }
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const override;
 
   //! For variable whatis command.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
 private:
   gp_Pnt           myPoint;
-  Standard_Boolean is3D;
+  bool             is3D;
   Draw_MarkerShape myShape;
   Draw_Color       myColor;
 };

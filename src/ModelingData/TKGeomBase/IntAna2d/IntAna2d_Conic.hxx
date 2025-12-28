@@ -46,48 +46,44 @@ public:
   Standard_EXPORT IntAna2d_Conic(const gp_Elips2d& C);
 
   //! value of the function F at the point X,Y.
-  Standard_EXPORT Standard_Real Value(const Standard_Real X, const Standard_Real Y) const;
+  Standard_EXPORT double Value(const double X, const double Y) const;
 
   //! returns the value of the gradient of F at the point X,Y.
-  Standard_EXPORT gp_XY Grad(const Standard_Real X, const Standard_Real Y) const;
+  Standard_EXPORT gp_XY Grad(const double X, const double Y) const;
 
   //! Returns the value of the function and its gradient at
   //! the point X,Y.
-  Standard_EXPORT void ValAndGrad(const Standard_Real X,
-                                  const Standard_Real Y,
-                                  Standard_Real&      Val,
-                                  gp_XY&              Grd) const;
+  Standard_EXPORT void ValAndGrad(const double X, const double Y, double& Val, gp_XY& Grd) const;
 
   //! returns the coefficients of the polynomial equation
   //! which defines the conic:
   //! A.X**2 + B.Y**2 + 2.C.X*Y + 2.D.X + 2.E.Y + F = 0.
-  Standard_EXPORT void Coefficients(Standard_Real& A,
-                                    Standard_Real& B,
-                                    Standard_Real& C,
-                                    Standard_Real& D,
-                                    Standard_Real& E,
-                                    Standard_Real& F) const;
+  Standard_EXPORT void Coefficients(double& A,
+                                    double& B,
+                                    double& C,
+                                    double& D,
+                                    double& E,
+                                    double& F) const;
 
   //! Returns the coefficients of the polynomial equation
   //! ( written in the natural coordinates system )
   //! A x x + B y y + 2 C x y + 2 D x + 2 E y + F
   //! in the local coordinates system defined by Axis
-  Standard_EXPORT void NewCoefficients(Standard_Real& A,
-                                       Standard_Real& B,
-                                       Standard_Real& C,
-                                       Standard_Real& D,
-                                       Standard_Real& E,
-                                       Standard_Real& F,
+  Standard_EXPORT void NewCoefficients(double&        A,
+                                       double&        B,
+                                       double&        C,
+                                       double&        D,
+                                       double&        E,
+                                       double&        F,
                                        const gp_Ax2d& Axis) const;
 
-protected:
 private:
-  Standard_Real a;
-  Standard_Real b;
-  Standard_Real c;
-  Standard_Real d;
-  Standard_Real e;
-  Standard_Real f;
+  double a;
+  double b;
+  double c;
+  double d;
+  double e;
+  double f;
 };
 
 #endif // _IntAna2d_Conic_HeaderFile

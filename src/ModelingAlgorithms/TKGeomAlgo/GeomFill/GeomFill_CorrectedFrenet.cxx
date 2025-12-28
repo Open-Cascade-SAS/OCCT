@@ -37,39 +37,38 @@
 #include <Law_Interpolate.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CorrectedFrenet, GeomFill_TrihedronLaw)
 
 // Patch
 #ifdef OCCT_DEBUG
-static Standard_Boolean Affich = 0;
+static bool Affich = 0;
 #endif
 
 #ifdef DRAW
-static Standard_Integer CorrNumber = 0;
+static int CorrNumber = 0;
   #include <Draw_Appli.hxx>
   #include <DrawTrSurf.hxx>
   #include <Draw_Segment2D.hxx>
   // #include <Draw.hxx>
-  #include <TColgp_Array1OfPnt.hxx>
-  #include <TColStd_Array1OfReal.hxx>
-  #include <TColStd_HArray1OfInteger.hxx>
+  #include <Standard_Integer.hxx>
 #endif
 
 #ifdef DRAW
-static void draw(const Handle(Law_Function)& law)
+static void draw(const occ::handle<Law_Function>& law)
 {
-  Standard_Real    Step, u, v, tmin;
-  Standard_Integer NbInt, i, j, jmax;
+  double Step, u, v, tmin;
+  int    NbInt, i, j, jmax;
   NbInt = law->NbIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal Int(1, NbInt + 1);
+  NCollection_Array1<double> Int(1, NbInt + 1);
   law->Intervals(Int, GeomAbs_C3);
-  gp_Pnt2d               old;
-  Handle(Draw_Segment2D) tg2d;
+  gp_Pnt2d                    old;
+  occ::handle<Draw_Segment2D> tg2d;
 
   for (i = 1; i <= NbInt; i++)
   {
@@ -96,21 +95,20 @@ static void draw(const Handle(Law_Function)& law)
 }
 #endif
 
-static Standard_Real ComputeTorsion(const Standard_Real            Param,
-                                    const Handle(Adaptor3d_Curve)& aCurve)
+static double ComputeTorsion(const double Param, const occ::handle<Adaptor3d_Curve>& aCurve)
 {
-  Standard_Real Torsion;
+  double Torsion;
 
   gp_Pnt aPoint;
   gp_Vec DC1, DC2, DC3;
   aCurve->D3(Param, aPoint, DC1, DC2, DC3);
-  gp_Vec        DC1crossDC2      = DC1 ^ DC2;
-  Standard_Real Norm_DC1crossDC2 = DC1crossDC2.Magnitude();
+  gp_Vec DC1crossDC2      = DC1 ^ DC2;
+  double Norm_DC1crossDC2 = DC1crossDC2.Magnitude();
 
-  Standard_Real DC1DC2DC3 = DC1crossDC2 * DC3; // mixed product
+  double DC1DC2DC3 = DC1crossDC2 * DC3; // mixed product
 
-  Standard_Real Tol                    = gp::Resolution();
-  Standard_Real SquareNorm_DC1crossDC2 = Norm_DC1crossDC2 * Norm_DC1crossDC2;
+  double Tol                    = gp::Resolution();
+  double SquareNorm_DC1crossDC2 = Norm_DC1crossDC2 * Norm_DC1crossDC2;
   if (SquareNorm_DC1crossDC2 <= Tol)
     Torsion = 0.;
   else
@@ -123,25 +121,25 @@ static Standard_Real ComputeTorsion(const Standard_Real            Param,
 // Function : smoothlaw
 // Purpose : to smooth a law : Reduce the number of knots
 //===============================================================
-static void smoothlaw(Handle(Law_BSpline)&                 Law,
-                      const Handle(TColStd_HArray1OfReal)& Points,
-                      const Handle(TColStd_HArray1OfReal)& Param,
-                      const Standard_Real                  Tol)
+static void smoothlaw(occ::handle<Law_BSpline>&                       Law,
+                      const occ::handle<NCollection_HArray1<double>>& Points,
+                      const occ::handle<NCollection_HArray1<double>>& Param,
+                      const double                                    Tol)
 {
-  Standard_Real       tol, d;
-  Standard_Integer    ii, Nbk;
-  Standard_Boolean    B, Ok;
-  Handle(Law_BSpline) BS = Law->Copy();
+  double                   tol, d;
+  int                      ii, Nbk;
+  bool                     B, Ok;
+  occ::handle<Law_BSpline> BS = Law->Copy();
 
   Nbk = BS->NbKnots();
   tol = Tol / 10;
-  Ok  = Standard_False;
+  Ok  = false;
 
   for (ii = Nbk - 1; ii > 1; ii--)
   { // Une premiere passe tolerance serres
     B = BS->RemoveKnot(ii, 0, tol);
     if (B)
-      Ok = Standard_True;
+      Ok = true;
   }
 
   if (Ok)
@@ -172,13 +170,13 @@ static void smoothlaw(Handle(Law_BSpline)&                 Law,
   if (Ok)
     Law = BS;
 
-  Ok  = Standard_False; // Une deuxieme passe tolerance desserre
+  Ok  = false; // Une deuxieme passe tolerance desserre
   Nbk = BS->NbKnots();
   for (ii = Nbk - 1; ii > 1; ii--)
   {
     B = BS->RemoveKnot(ii, 0, tol);
     if (B)
-      Ok = Standard_True;
+      Ok = true;
   }
 
   if (Ok)
@@ -215,16 +213,16 @@ static void smoothlaw(Handle(Law_BSpline)&                 Law,
 
 //=================================================================================================
 
-static Standard_Boolean FindPlane(const Handle(Adaptor3d_Curve)& theC, Handle(Geom_Plane)& theP)
+static bool FindPlane(const occ::handle<Adaptor3d_Curve>& theC, occ::handle<Geom_Plane>& theP)
 {
-  Standard_Boolean            found = Standard_True;
-  Handle(TColgp_HArray1OfPnt) TabP;
+  bool                                     found = true;
+  occ::handle<NCollection_HArray1<gp_Pnt>> TabP;
 
   switch (theC->GetType())
   {
 
     case GeomAbs_Line: {
-      found = Standard_False;
+      found = false;
     }
     break;
 
@@ -245,47 +243,47 @@ static Standard_Boolean FindPlane(const Handle(Adaptor3d_Curve)& theC, Handle(Ge
       break;
 
     case GeomAbs_BezierCurve: {
-      Handle(Geom_BezierCurve) GC  = theC->Bezier();
-      Standard_Integer         nbp = GC->NbPoles();
+      occ::handle<Geom_BezierCurve> GC  = theC->Bezier();
+      int                           nbp = GC->NbPoles();
       if (nbp < 2)
-        found = Standard_False;
+        found = false;
       else if (nbp == 2)
       {
-        found = Standard_False;
+        found = false;
       }
       else
       {
-        TabP = new (TColgp_HArray1OfPnt)(1, nbp);
+        TabP = new (NCollection_HArray1<gp_Pnt>)(1, nbp);
         GC->Poles(TabP->ChangeArray1());
       }
     }
     break;
 
     case GeomAbs_BSplineCurve: {
-      Handle(Geom_BSplineCurve) GC  = theC->BSpline();
-      Standard_Integer          nbp = GC->NbPoles();
+      occ::handle<Geom_BSplineCurve> GC  = theC->BSpline();
+      int                            nbp = GC->NbPoles();
       if (nbp < 2)
-        found = Standard_False;
+        found = false;
       else if (nbp == 2)
       {
-        found = Standard_False;
+        found = false;
       }
       else
       {
-        TabP = new (TColgp_HArray1OfPnt)(1, nbp);
+        TabP = new (NCollection_HArray1<gp_Pnt>)(1, nbp);
         GC->Poles(TabP->ChangeArray1());
       }
     }
     break;
 
     default: { // On utilise un echantillonage
-      Standard_Integer nbp = 15 + theC->NbIntervals(GeomAbs_C3);
-      Standard_Real    f, l, t, inv;
-      Standard_Integer ii;
+      int    nbp = 15 + theC->NbIntervals(GeomAbs_C3);
+      double f, l, t, inv;
+      int    ii;
       f    = theC->FirstParameter();
       l    = theC->LastParameter();
       inv  = 1. / (nbp - 1);
-      TabP = new (TColgp_HArray1OfPnt)(1, nbp);
+      TabP = new (NCollection_HArray1<gp_Pnt>)(1, nbp);
       for (ii = 1; ii <= nbp; ii++)
       {
         t = (f * (nbp - ii) + l * (ii - 1));
@@ -297,12 +295,12 @@ static Standard_Boolean FindPlane(const Handle(Adaptor3d_Curve)& theC, Handle(Ge
 
   if (!TabP.IsNull())
   { // Recherche d'un plan moyen et controle
-    Standard_Boolean issingular;
-    gp_Ax2           inertia;
+    bool   issingular;
+    gp_Ax2 inertia;
     GeomLib::AxeOfInertia(TabP->Array1(), inertia, issingular);
     if (issingular)
     {
-      found = Standard_False;
+      found = false;
     }
     else
     {
@@ -311,9 +309,9 @@ static Standard_Boolean FindPlane(const Handle(Adaptor3d_Curve)& theC, Handle(Ge
     if (found)
     {
       // control = Controle(TabP->Array1(), P,  myTolerance);
-      //	Standard_Boolean isOnPlane;
-      Standard_Real    a, b, c, d, dist;
-      Standard_Integer ii;
+      //	bool isOnPlane;
+      double a, b, c, d, dist;
+      int    ii;
       theP->Coefficients(a, b, c, d);
       for (ii = 1; ii <= TabP->Length() && found; ii++)
       {
@@ -331,30 +329,30 @@ static Standard_Boolean FindPlane(const Handle(Adaptor3d_Curve)& theC, Handle(Ge
 //=================================================================================================
 
 GeomFill_CorrectedFrenet::GeomFill_CorrectedFrenet()
-    : isFrenet(Standard_False)
+    : isFrenet(false)
 {
   frenet          = new GeomFill_Frenet();
-  myForEvaluation = Standard_False;
+  myForEvaluation = false;
 }
 
 //=================================================================================================
 
-GeomFill_CorrectedFrenet::GeomFill_CorrectedFrenet(const Standard_Boolean ForEvaluation)
-    : isFrenet(Standard_False)
+GeomFill_CorrectedFrenet::GeomFill_CorrectedFrenet(const bool ForEvaluation)
+    : isFrenet(false)
 {
   frenet          = new GeomFill_Frenet();
   myForEvaluation = ForEvaluation;
 }
 
-Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
+occ::handle<GeomFill_TrihedronLaw> GeomFill_CorrectedFrenet::Copy() const
 {
-  Handle(GeomFill_CorrectedFrenet) copy = new (GeomFill_CorrectedFrenet)();
+  occ::handle<GeomFill_CorrectedFrenet> copy = new (GeomFill_CorrectedFrenet)();
   if (!myCurve.IsNull())
     copy->SetCurve(myCurve);
   return copy;
 }
 
-Standard_Boolean GeomFill_CorrectedFrenet::SetCurve(const Handle(Adaptor3d_Curve)& C)
+bool GeomFill_CorrectedFrenet::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   GeomFill_TrihedronLaw::SetCurve(C);
   if (!C.IsNull())
@@ -371,12 +369,12 @@ Standard_Boolean GeomFill_CorrectedFrenet::SetCurve(const Handle(Adaptor3d_Curve
       case GeomAbs_Parabola:
       case GeomAbs_Line: {
         // No probleme isFrenet
-        isFrenet = Standard_True;
+        isFrenet = true;
         break;
       }
       default: {
         // We have to search singularities
-        isFrenet = Standard_True;
+        isFrenet = true;
         Init();
       }
     }
@@ -390,33 +388,33 @@ Standard_Boolean GeomFill_CorrectedFrenet::SetCurve(const Handle(Adaptor3d_Curve
 //===============================================================
 void GeomFill_CorrectedFrenet::Init()
 {
-  EvolAroundT              = new Law_Composite();
-  Standard_Integer     NbI = frenet->NbIntervals(GeomAbs_C0), i;
-  TColStd_Array1OfReal T(1, NbI + 1);
+  EvolAroundT                    = new Law_Composite();
+  int                        NbI = frenet->NbIntervals(GeomAbs_C0), i;
+  NCollection_Array1<double> T(1, NbI + 1);
   frenet->Intervals(T, GeomAbs_C0);
-  Handle(Law_Function) Func;
+  occ::handle<Law_Function> Func;
   // OCC78
-  TColStd_SequenceOfReal SeqPoles, SeqAngle;
-  TColgp_SequenceOfVec   SeqTangent, SeqNormal;
+  NCollection_Sequence<double> SeqPoles, SeqAngle;
+  NCollection_Sequence<gp_Vec> SeqTangent, SeqNormal;
 
   gp_Vec Tangent, Normal, BN;
   frenet->D0(myTrimmed->FirstParameter(), Tangent, Normal, BN);
-  Standard_Integer NbStep;
-  //  Standard_Real StartAng = 0, AvStep, Step, t;
-  Standard_Real StartAng = 0, AvStep, Step;
+  int NbStep;
+  //  double StartAng = 0, AvStep, Step, t;
+  double StartAng = 0, AvStep, Step;
 
 #ifdef DRAW
-  Standard_Real t;
+  double t;
 
   if (Affich)
   { // Display the curve C'^C''(t)
     GeomFill_SnglrFunc CS(myCurve);
     NbStep = 99;
     AvStep = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / NbStep;
-    TColgp_Array1OfPnt TabP(1, NbStep + 1);
+    NCollection_Array1<gp_Pnt> TabP(1, NbStep + 1);
 
-    TColStd_Array1OfReal    TI(1, NbStep + 1);
-    TColStd_Array1OfInteger M(1, NbStep + 1);
+    NCollection_Array1<double> TI(1, NbStep + 1);
+    NCollection_Array1<int>    M(1, NbStep + 1);
     M.Init(1);
     M(1) = M(NbStep + 1) = 2;
     for (i = 1; i <= NbStep + 1; i++)
@@ -425,10 +423,10 @@ void GeomFill_CorrectedFrenet::Init()
       CS.D0(t, TabP(i));
       TI(i) = t;
     }
-    char             tname[100];
-    Standard_CString name = tname;
+    char        tname[100];
+    const char* name = tname;
     Sprintf(name, "Binorm_%d", ++CorrNumber);
-    Handle(Geom_BSplineCurve) BS = new (Geom_BSplineCurve)(TabP, TI, M, 1);
+    occ::handle<Geom_BSplineCurve> BS = new (Geom_BSplineCurve)(TabP, TI, M, 1);
     //    DrawTrSurf::Set(&name[0], BS);
     DrawTrSurf::Set(name, BS);
   }
@@ -438,7 +436,7 @@ void GeomFill_CorrectedFrenet::Init()
   AvStep = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / NbStep;
   for (i = 1; i <= NbI; i++)
   {
-    NbStep = std::max(Standard_Integer((T(i + 1) - T(i)) / AvStep), 3);
+    NbStep = std::max(int((T(i + 1) - T(i)) / AvStep), 3);
     Step   = (T(i + 1) - T(i)) / NbStep;
     if (!InitInterval(T(i),
                       T(i + 1),
@@ -455,22 +453,22 @@ void GeomFill_CorrectedFrenet::Init()
                       SeqNormal))
     {
       if (isFrenet)
-        isFrenet = Standard_False;
+        isFrenet = false;
     }
-    Handle(Law_Composite)::DownCast(EvolAroundT)->ChangeLaws().Append(Func);
+    occ::down_cast<Law_Composite>(EvolAroundT)->ChangeLaws().Append(Func);
   }
   if (myTrimmed->IsPeriodic())
-    Handle(Law_Composite)::DownCast(EvolAroundT)->SetPeriodic();
+    occ::down_cast<Law_Composite>(EvolAroundT)->SetPeriodic();
 
   TLaw = EvolAroundT;
   // OCC78
-  Standard_Integer iEnd = SeqPoles.Length();
+  int iEnd = SeqPoles.Length();
   if (iEnd != 0)
   {
-    HArrPoles   = new TColStd_HArray1OfReal(1, iEnd);
-    HArrAngle   = new TColStd_HArray1OfReal(1, iEnd);
-    HArrTangent = new TColgp_HArray1OfVec(1, iEnd);
-    HArrNormal  = new TColgp_HArray1OfVec(1, iEnd);
+    HArrPoles   = new NCollection_HArray1<double>(1, iEnd);
+    HArrAngle   = new NCollection_HArray1<double>(1, iEnd);
+    HArrTangent = new NCollection_HArray1<gp_Vec>(1, iEnd);
+    HArrNormal  = new NCollection_HArray1<gp_Vec>(1, iEnd);
     for (i = 1; i <= iEnd; i++)
     {
       HArrPoles->ChangeValue(i)   = SeqPoles(i);
@@ -492,50 +490,50 @@ void GeomFill_CorrectedFrenet::Init()
 // Function : InitInterval
 // Purpose : Compute the angle law on a span
 //===============================================================
-Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     First,
-                                                        const Standard_Real     Last,
-                                                        const Standard_Real     Step,
-                                                        Standard_Real&          startAng,
-                                                        gp_Vec&                 prevTangent,
-                                                        gp_Vec&                 prevNormal,
-                                                        gp_Vec&                 aT,
-                                                        gp_Vec&                 aN,
-                                                        Handle(Law_Function)&   FuncInt,
-                                                        TColStd_SequenceOfReal& SeqPoles,
-                                                        TColStd_SequenceOfReal& SeqAngle,
-                                                        TColgp_SequenceOfVec&   SeqTangent,
-                                                        TColgp_SequenceOfVec&   SeqNormal) const
+bool GeomFill_CorrectedFrenet::InitInterval(const double                  First,
+                                            const double                  Last,
+                                            const double                  Step,
+                                            double&                       startAng,
+                                            gp_Vec&                       prevTangent,
+                                            gp_Vec&                       prevNormal,
+                                            gp_Vec&                       aT,
+                                            gp_Vec&                       aN,
+                                            occ::handle<Law_Function>&    FuncInt,
+                                            NCollection_Sequence<double>& SeqPoles,
+                                            NCollection_Sequence<double>& SeqAngle,
+                                            NCollection_Sequence<gp_Vec>& SeqTangent,
+                                            NCollection_Sequence<gp_Vec>& SeqNormal) const
 {
-  gp_Vec                 Tangent, Normal, BN, cross;
-  TColStd_SequenceOfReal parameters;
-  TColStd_SequenceOfReal EvolAT;
-  Standard_Real          Param  = First;
-  Standard_Boolean       isZero = Standard_True, isConst = Standard_True;
-  gp_Pnt                 PonC;
-  gp_Vec                 D1;
+  gp_Vec                       Tangent, Normal, BN, cross;
+  NCollection_Sequence<double> parameters;
+  NCollection_Sequence<double> EvolAT;
+  double                       Param  = First;
+  bool                         isZero = true, isConst = true;
+  gp_Pnt                       PonC;
+  gp_Vec                       D1;
 
   frenet->SetInterval(First, Last); // To have right evaluation at bounds
   GeomFill_SnglrFunc CS(myCurve);
   Bnd_Box            aCurveBoundBox;
   BndLib_Add3dCurve::Add(CS, First, Last, 1.e-2, aCurveBoundBox);
-  const Standard_Real LengthMin = aCurveBoundBox.GetGap() * 1.e-4;
+  const double LengthMin = aCurveBoundBox.GetGap() * 1.e-4;
 
   aT = gp_Vec(0, 0, 0);
   aN = gp_Vec(0, 0, 0);
 
-  Standard_Real angleAT  = 0.;
-  Standard_Real currStep = Step;
+  double angleAT  = 0.;
+  double currStep = Step;
 
-  Handle(Geom_Plane) aPlane;
-  Standard_Boolean   isPlanar = Standard_False;
+  occ::handle<Geom_Plane> aPlane;
+  bool                    isPlanar = false;
   if (!myForEvaluation)
   {
     isPlanar = FindPlane(myCurve, aPlane);
   }
 
-  Standard_Integer    i         = 1;
-  Standard_Real       currParam = Param;
-  const Standard_Real DLast     = Last - Precision::PConfusion();
+  int          i         = 1;
+  double       currParam = Param;
+  const double DLast     = Last - Precision::PConfusion();
 
   while (Param < Last)
   {
@@ -567,7 +565,7 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
 
       if (isConst && i > 1)
         if (std::abs(angleAT) > Precision::PConfusion())
-          isConst = Standard_False;
+          isConst = false;
 
       angleAT += (i > 1) ? EvolAT(i - 1) : startAng;
       EvolAT.Append(angleAT);
@@ -575,7 +573,7 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
 
       if (isZero)
         if (std::abs(angleAT) > Precision::PConfusion())
-          isZero = Standard_False;
+          isZero = false;
 
       aT += Tangent;
       cross = Tangent.Crossed(Normal);
@@ -590,8 +588,8 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
 
       // Evaluate the Next step
       CS.D1(Param, PonC, D1);
-      Standard_Real L    = std::max(PonC.XYZ().Modulus() / 2, LengthMin);
-      Standard_Real norm = D1.Magnitude();
+      double L    = std::max(PonC.XYZ().Modulus() / 2, LengthMin);
+      double norm = D1.Magnitude();
       if (norm < Precision::Confusion())
       {
         norm = Precision::Confusion();
@@ -621,24 +619,25 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
   if (isConst || isPlanar)
   {
     FuncInt = new Law_Constant();
-    Handle(Law_Constant)::DownCast(FuncInt)->Set(angleAT, First, Last);
+    occ::down_cast<Law_Constant>(FuncInt)->Set(angleAT, First, Last);
   }
 
   else
   {
-    Standard_Integer              Length     = parameters.Length();
-    Handle(TColStd_HArray1OfReal) pararr     = new TColStd_HArray1OfReal(1, Length);
-    Handle(TColStd_HArray1OfReal) angleATarr = new TColStd_HArray1OfReal(1, Length);
+    int                                      Length = parameters.Length();
+    occ::handle<NCollection_HArray1<double>> pararr = new NCollection_HArray1<double>(1, Length);
+    occ::handle<NCollection_HArray1<double>> angleATarr =
+      new NCollection_HArray1<double>(1, Length);
 
-    for (Standard_Integer aParamIndex = 1; aParamIndex <= Length; ++aParamIndex)
+    for (int aParamIndex = 1; aParamIndex <= Length; ++aParamIndex)
     {
       pararr->ChangeValue(aParamIndex)     = parameters(aParamIndex);
       angleATarr->ChangeValue(aParamIndex) = EvolAT(aParamIndex);
     }
 
-    Law_Interpolate lawAT(angleATarr, pararr, Standard_False, Precision::PConfusion());
+    Law_Interpolate lawAT(angleATarr, pararr, false, Precision::PConfusion());
     lawAT.Perform();
-    Handle(Law_BSpline) BS = lawAT.Curve();
+    occ::handle<Law_BSpline> BS = lawAT.Curve();
     smoothlaw(BS, angleATarr, pararr, 0.1);
 
     FuncInt = new Law_BSpFunc(BS, First, Last);
@@ -651,13 +650,13 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
 // Purpose : Calculate angle of rotation of trihedron normal and its derivatives relative
 //           at any position on his curve
 //===============================================================
-Standard_Real GeomFill_CorrectedFrenet::CalcAngleAT(const gp_Vec& Tangent,
-                                                    const gp_Vec& Normal,
-                                                    const gp_Vec& prevTangent,
-                                                    const gp_Vec& prevNormal) const
+double GeomFill_CorrectedFrenet::CalcAngleAT(const gp_Vec& Tangent,
+                                             const gp_Vec& Normal,
+                                             const gp_Vec& prevTangent,
+                                             const gp_Vec& prevNormal) const
 {
-  Standard_Real angle;
-  gp_Vec        Normal_rot, cross;
+  double angle;
+  gp_Vec Normal_rot, cross;
   angle = Tangent.Angle(prevTangent);
   if (std::abs(angle) > Precision::Angular() && std::abs(angle) < M_PI - Precision::Angular())
   {
@@ -667,7 +666,7 @@ Standard_Real GeomFill_CorrectedFrenet::CalcAngleAT(const gp_Vec& Tangent,
   }
   else
     Normal_rot = Normal;
-  Standard_Real angleAT = Normal_rot.Angle(prevNormal);
+  double angleAT = Normal_rot.Angle(prevNormal);
   if (angleAT > Precision::Angular() && M_PI - angleAT > Precision::Angular())
     if (Normal_rot.Crossed(prevNormal).IsOpposite(prevTangent, Precision::Angular()))
       angleAT = -angleAT;
@@ -678,15 +677,15 @@ Standard_Real GeomFill_CorrectedFrenet::CalcAngleAT(const gp_Vec& Tangent,
 // Function : ... (OCC78)
 // Purpose : This family of functions produce conversion of angle utility
 //===============================================================
-static Standard_Real corr2PI_PI(Standard_Real Ang)
+static double corr2PI_PI(double Ang)
 {
   return Ang = (Ang < M_PI ? Ang : Ang - 2 * M_PI);
 }
 
-static Standard_Real diffAng(Standard_Real A, Standard_Real Ao)
+static double diffAng(double A, double Ao)
 {
-  Standard_Real dA = (A - Ao) - std::floor((A - Ao) / 2.0 / M_PI) * 2.0 * M_PI;
-  return dA        = dA >= 0 ? corr2PI_PI(dA) : -corr2PI_PI(-dA);
+  double dA = (A - Ao) - std::floor((A - Ao) / 2.0 / M_PI) * 2.0 * M_PI;
+  return dA = dA >= 0 ? corr2PI_PI(dA) : -corr2PI_PI(-dA);
 }
 
 //===============================================================
@@ -694,10 +693,10 @@ static Standard_Real diffAng(Standard_Real A, Standard_Real Ao)
 // Purpose : Calculate angle of rotation of trihedron normal and its derivatives relative
 //           at any position on his curve
 //===============================================================
-Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) const
+double GeomFill_CorrectedFrenet::GetAngleAT(const double Param) const
 {
   // Search index of low margin from poles of TLaw by bisection method
-  Standard_Integer iB = 1, iE = HArrPoles->Length(), iC = (iE + iB) / 2;
+  int iB = 1, iE = HArrPoles->Length(), iC = (iE + iB) / 2;
   if (Param == HArrPoles->Value(iB))
     return TLaw->Value(Param);
   if (Param > HArrPoles->Value(iE))
@@ -716,11 +715,11 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
       return TLaw->Value(Param);
   };
   //  Calculate differentiation between approximated and local values of AngleAT
-  Standard_Real AngP = TLaw->Value(Param), AngPo = HArrAngle->Value(iC), dAng = AngP - AngPo;
-  gp_Vec        Tangent, Normal, BN;
+  double AngP = TLaw->Value(Param), AngPo = HArrAngle->Value(iC), dAng = AngP - AngPo;
+  gp_Vec Tangent, Normal, BN;
   frenet->D0(Param, Tangent, Normal, BN);
-  Standard_Real DAng = CalcAngleAT(Tangent, Normal, HArrTangent->Value(iC), HArrNormal->Value(iC));
-  Standard_Real DA   = diffAng(DAng, dAng);
+  double DAng = CalcAngleAT(Tangent, Normal, HArrTangent->Value(iC), HArrNormal->Value(iC));
+  double DA   = diffAng(DAng, dAng);
   // The correction (there is core of OCC78 bug)
   if (std::abs(DA) > M_PI / 2.0)
   {
@@ -731,16 +730,16 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_CorrectedFrenet::D0(const Standard_Real Param,
-                                              gp_Vec&             Tangent,
-                                              gp_Vec&             Normal,
-                                              gp_Vec&             BiNormal)
+bool GeomFill_CorrectedFrenet::D0(const double Param,
+                                  gp_Vec&      Tangent,
+                                  gp_Vec&      Normal,
+                                  gp_Vec&      BiNormal)
 {
   frenet->D0(Param, Tangent, Normal, BiNormal);
   if (isFrenet)
-    return Standard_True;
+    return true;
 
-  Standard_Real angleAT;
+  double angleAT;
   // angleAT = TLaw->Value(Param);
   angleAT = GetAngleAT(Param); // OCC78
 
@@ -754,25 +753,25 @@ Standard_Boolean GeomFill_CorrectedFrenet::D0(const Standard_Real Param,
                        Normal);
   BiNormal = Tangent.Crossed(Normal);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_CorrectedFrenet::D1(const Standard_Real Param,
-                                              gp_Vec&             Tangent,
-                                              gp_Vec&             DTangent,
-                                              gp_Vec&             Normal,
-                                              gp_Vec&             DNormal,
-                                              gp_Vec&             BiNormal,
-                                              gp_Vec&             DBiNormal)
+bool GeomFill_CorrectedFrenet::D1(const double Param,
+                                  gp_Vec&      Tangent,
+                                  gp_Vec&      DTangent,
+                                  gp_Vec&      Normal,
+                                  gp_Vec&      DNormal,
+                                  gp_Vec&      BiNormal,
+                                  gp_Vec&      DBiNormal)
 {
   frenet->D1(Param, Tangent, DTangent, Normal, DNormal, BiNormal, DBiNormal);
   if (isFrenet)
-    return Standard_True;
+    return true;
 
-  Standard_Real angleAT, d_angleAT;
-  Standard_Real sina, cosa;
+  double angleAT, d_angleAT;
+  double sina, cosa;
 
   TLaw->D1(Param, angleAT, d_angleAT);
   angleAT = GetAngleAT(Param); // OCC78
@@ -799,7 +798,7 @@ Standard_Boolean GeomFill_CorrectedFrenet::D1(const Standard_Real Param,
 
   // for test
   /*  gp_Vec FDN, Tf, Nf, BNf;
-    Standard_Real h;
+    double h;
     h = 1.0e-8;
     if (Param + h > myTrimmed->LastParameter()) h = -h;
     D0(Param + h, Tf, Nf, BNf);
@@ -809,21 +808,21 @@ Standard_Boolean GeomFill_CorrectedFrenet::D1(const Standard_Real Param,
     std::cout<<"FDN = ("<<FDN.X()<<", "<<FDN.Y()<<", "<<FDN.Z()<<")"<<std::endl;
   */
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_CorrectedFrenet::D2(const Standard_Real Param,
-                                              gp_Vec&             Tangent,
-                                              gp_Vec&             DTangent,
-                                              gp_Vec&             D2Tangent,
-                                              gp_Vec&             Normal,
-                                              gp_Vec&             DNormal,
-                                              gp_Vec&             D2Normal,
-                                              gp_Vec&             BiNormal,
-                                              gp_Vec&             DBiNormal,
-                                              gp_Vec&             D2BiNormal)
+bool GeomFill_CorrectedFrenet::D2(const double Param,
+                                  gp_Vec&      Tangent,
+                                  gp_Vec&      DTangent,
+                                  gp_Vec&      D2Tangent,
+                                  gp_Vec&      Normal,
+                                  gp_Vec&      DNormal,
+                                  gp_Vec&      D2Normal,
+                                  gp_Vec&      BiNormal,
+                                  gp_Vec&      DBiNormal,
+                                  gp_Vec&      D2BiNormal)
 {
   frenet->D2(Param,
              Tangent,
@@ -836,10 +835,10 @@ Standard_Boolean GeomFill_CorrectedFrenet::D2(const Standard_Real Param,
              DBiNormal,
              D2BiNormal);
   if (isFrenet)
-    return Standard_True;
+    return true;
 
-  Standard_Real angleAT, d_angleAT, d2_angleAT;
-  Standard_Real sina, cosa;
+  double angleAT, d_angleAT, d2_angleAT;
+  double sina, cosa;
   TLaw->D2(Param, angleAT, d_angleAT, d2_angleAT);
   angleAT = GetAngleAT(Param); // OCC78
 
@@ -907,7 +906,7 @@ Standard_Boolean GeomFill_CorrectedFrenet::D2(const Standard_Real Param,
 
   // for test
   /*  gp_Vec FD2N, FD2T, FD2BN, Tf, DTf, Nf, DNf, BNf, DBNf;
-    Standard_Real h;
+    double h;
     h = 1.0e-8;
     if (Param + h > myTrimmed->LastParameter()) h = -h;
     D1(Param + h, Tf, DTf, Nf, DNf, BNf, DBNf);
@@ -924,14 +923,14 @@ Standard_Boolean GeomFill_CorrectedFrenet::D2(const Standard_Real Param,
     "<<FD2BN.Z()<<")"<<std::endl<<std::endl;
   */
   //
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_CorrectedFrenet::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_CorrectedFrenet::NbIntervals(const GeomAbs_Shape S) const
 {
-  Standard_Integer NbFrenet, NbLaw;
+  int NbFrenet, NbLaw;
   NbFrenet = frenet->NbIntervals(S);
   if (isFrenet)
     return NbFrenet;
@@ -940,22 +939,22 @@ Standard_Integer GeomFill_CorrectedFrenet::NbIntervals(const GeomAbs_Shape S) co
   if (NbFrenet == 1)
     return NbLaw;
 
-  TColStd_Array1OfReal   FrenetInt(1, NbFrenet + 1);
-  TColStd_Array1OfReal   LawInt(1, NbLaw + 1);
-  TColStd_SequenceOfReal Fusion;
+  NCollection_Array1<double>   FrenetInt(1, NbFrenet + 1);
+  NCollection_Array1<double>   LawInt(1, NbLaw + 1);
+  NCollection_Sequence<double> Fusion;
 
   frenet->Intervals(FrenetInt, S);
   EvolAroundT->Intervals(LawInt, S);
-  GeomLib::FuseIntervals(FrenetInt, LawInt, Fusion, Precision::PConfusion(), Standard_True);
+  GeomLib::FuseIntervals(FrenetInt, LawInt, Fusion, Precision::PConfusion(), true);
 
   return Fusion.Length() - 1;
 }
 
 //=================================================================================================
 
-void GeomFill_CorrectedFrenet::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void GeomFill_CorrectedFrenet::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
-  Standard_Integer NbFrenet, NbLaw;
+  int NbFrenet, NbLaw;
   if (isFrenet)
   {
     frenet->Intervals(T, S);
@@ -970,21 +969,21 @@ void GeomFill_CorrectedFrenet::Intervals(TColStd_Array1OfReal& T, const GeomAbs_
 
   NbLaw = EvolAroundT->NbIntervals(S);
 
-  TColStd_Array1OfReal   FrenetInt(1, NbFrenet + 1);
-  TColStd_Array1OfReal   LawInt(1, NbLaw + 1);
-  TColStd_SequenceOfReal Fusion;
+  NCollection_Array1<double>   FrenetInt(1, NbFrenet + 1);
+  NCollection_Array1<double>   LawInt(1, NbLaw + 1);
+  NCollection_Sequence<double> Fusion;
 
   frenet->Intervals(FrenetInt, S);
   EvolAroundT->Intervals(LawInt, S);
-  GeomLib::FuseIntervals(FrenetInt, LawInt, Fusion, Precision::PConfusion(), Standard_True);
+  GeomLib::FuseIntervals(FrenetInt, LawInt, Fusion, Precision::PConfusion(), true);
 
-  for (Standard_Integer i = 1; i <= Fusion.Length(); i++)
+  for (int i = 1; i <= Fusion.Length(); i++)
     T.ChangeValue(i) = Fusion.Value(i);
 }
 
 //=================================================================================================
 
-void GeomFill_CorrectedFrenet::SetInterval(const Standard_Real First, const Standard_Real Last)
+void GeomFill_CorrectedFrenet::SetInterval(const double First, const double Last)
 {
   GeomFill_TrihedronLaw::SetInterval(First, Last);
   frenet->SetInterval(First, Last);
@@ -999,28 +998,29 @@ GeomFill_Trihedron GeomFill_CorrectedFrenet::EvaluateBestMode()
   if (EvolAroundT.IsNull())
     return GeomFill_IsFrenet; // Frenet
 
-  const Standard_Real MaxAngle   = 3. * M_PI / 4.;
-  const Standard_Real MaxTorsion = 100.;
+  const double MaxAngle   = 3. * M_PI / 4.;
+  const double MaxTorsion = 100.;
 
-  Standard_Real    Step, u, v, tmin, tmax;
-  Standard_Integer NbInt, i, j, k = 1;
+  double Step, u, v, tmin, tmax;
+  int    NbInt, i, j, k = 1;
   NbInt = EvolAroundT->NbIntervals(GeomAbs_CN);
-  TColStd_Array1OfReal Int(1, NbInt + 1);
+  NCollection_Array1<double> Int(1, NbInt + 1);
   EvolAroundT->Intervals(Int, GeomAbs_CN);
   gp_Pnt2d old;
   gp_Vec2d aVec, PrevVec;
 
-  Standard_Integer NbSamples = 10;
+  int NbSamples = 10;
   for (i = 1; i <= NbInt; i++)
   {
-    tmin                  = Int(i);
-    tmax                  = Int(i + 1);
-    Standard_Real Torsion = ComputeTorsion(tmin, myTrimmed);
+    tmin           = Int(i);
+    tmax           = Int(i + 1);
+    double Torsion = ComputeTorsion(tmin, myTrimmed);
     if (std::abs(Torsion) > MaxTorsion)
       return GeomFill_IsDiscreteTrihedron; // DiscreteTrihedron
 
-    Handle(Law_Function) trimmedlaw = EvolAroundT->Trim(tmin, tmax, Precision::PConfusion() / 2);
-    Step                            = (Int(i + 1) - Int(i)) / NbSamples;
+    occ::handle<Law_Function> trimmedlaw =
+      EvolAroundT->Trim(tmin, tmax, Precision::PConfusion() / 2);
+    Step = (Int(i + 1) - Int(i)) / NbSamples;
     for (j = 0; j <= NbSamples; j++)
     {
       u = tmin + j * Step;
@@ -1031,7 +1031,7 @@ GeomFill_Trihedron GeomFill_CorrectedFrenet::EvaluateBestMode()
         aVec.SetXY(point2d.XY() - old.XY());
         if (k > 2)
         {
-          Standard_Real theAngle = PrevVec.Angle(aVec);
+          double theAngle = PrevVec.Angle(aVec);
           if (std::abs(theAngle) > MaxAngle)
             return GeomFill_IsDiscreteTrihedron; // DiscreteTrihedron
         }
@@ -1062,14 +1062,14 @@ void GeomFill_CorrectedFrenet::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, 
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_CorrectedFrenet::IsConstant() const
+bool GeomFill_CorrectedFrenet::IsConstant() const
 {
   return (myCurve->GetType() == GeomAbs_Line);
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_CorrectedFrenet::IsOnlyBy3dCurve() const
+bool GeomFill_CorrectedFrenet::IsOnlyBy3dCurve() const
 {
-  return Standard_True;
+  return true;
 }

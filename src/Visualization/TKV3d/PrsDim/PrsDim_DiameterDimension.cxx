@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_DiameterDimension, PrsDim_Dimension)
 
 namespace
 {
-static const Standard_ExtCharacter THE_DIAMETER_SYMBOL(0x00D8);
+static const char16_t THE_DIAMETER_SYMBOL(0x00D8);
 }
 
 //=================================================================================================
@@ -117,8 +117,8 @@ void PrsDim_DiameterDimension::SetMeasuredGeometry(const gp_Circ& theCircle)
 
 void PrsDim_DiameterDimension::SetMeasuredGeometry(const TopoDS_Shape& theShape)
 {
-  gp_Pnt           aDummyPnt(gp::Origin());
-  Standard_Boolean isClosed = Standard_False;
+  gp_Pnt aDummyPnt(gp::Origin());
+  bool   isClosed = false;
 
   myGeometryType    = GeometryType_UndefShapes;
   myShape           = theShape;
@@ -141,15 +141,15 @@ void PrsDim_DiameterDimension::SetMeasuredGeometry(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_DiameterDimension::CheckPlane(const gp_Pln& thePlane) const
+bool PrsDim_DiameterDimension::CheckPlane(const gp_Pln& thePlane) const
 {
   // Check if the circle center point belongs to plane.
   if (!thePlane.Contains(myCircle.Location(), Precision::Confusion()))
   {
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -169,12 +169,12 @@ void PrsDim_DiameterDimension::ComputePlane()
 void PrsDim_DiameterDimension::ComputeAnchorPoint()
 {
   // Anchor point is an intersection of dimension plane and circle.
-  Handle(Geom_Circle) aCircle = new Geom_Circle(myCircle);
-  Handle(Geom_Plane)  aPlane  = new Geom_Plane(myPlane);
-  GeomAPI_IntCS       anIntersector(aCircle, aPlane);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(myCircle);
+  occ::handle<Geom_Plane>  aPlane  = new Geom_Plane(myPlane);
+  GeomAPI_IntCS            anIntersector(aCircle, aPlane);
   if (!anIntersector.IsDone())
   {
-    myIsGeometryValid = Standard_False;
+    myIsGeometryValid = false;
     return;
   }
 
@@ -182,7 +182,7 @@ void PrsDim_DiameterDimension::ComputeAnchorPoint()
   if (anIntersector.NbPoints() != 2)
   {
     myAnchorPoint     = ElCLib::Value(0.0, myCircle);
-    myIsGeometryValid = Standard_True;
+    myIsGeometryValid = true;
     return;
   }
 
@@ -228,7 +228,7 @@ void PrsDim_DiameterDimension::SetDisplayUnits(const TCollection_AsciiString& th
 
 //=================================================================================================
 
-Standard_Real PrsDim_DiameterDimension::ComputeValue() const
+double PrsDim_DiameterDimension::ComputeValue() const
 {
   if (!IsValid())
   {
@@ -240,9 +240,9 @@ Standard_Real PrsDim_DiameterDimension::ComputeValue() const
 
 //=================================================================================================
 
-void PrsDim_DiameterDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                       const Handle(Prs3d_Presentation)& thePresentation,
-                                       const Standard_Integer            theMode)
+void PrsDim_DiameterDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                       const occ::handle<Prs3d_Presentation>& thePresentation,
+                                       const int                              theMode)
 {
   mySelectionGeom.Clear(theMode);
 
@@ -261,8 +261,8 @@ void PrsDim_DiameterDimension::Compute(const Handle(PrsMgr_PresentationManager)&
 //=================================================================================================
 
 void PrsDim_DiameterDimension::ComputeFlyoutSelection(
-  const Handle(SelectMgr_Selection)&   theSelection,
-  const Handle(SelectMgr_EntityOwner)& theEntityOwner)
+  const occ::handle<SelectMgr_Selection>&   theSelection,
+  const occ::handle<SelectMgr_EntityOwner>& theEntityOwner)
 {
   if (!IsValid())
   {
@@ -290,19 +290,19 @@ void PrsDim_DiameterDimension::ComputeSidePoints(const gp_Circ& theCircle,
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_DiameterDimension::IsValidCircle(const gp_Circ& theCircle) const
+bool PrsDim_DiameterDimension::IsValidCircle(const gp_Circ& theCircle) const
 {
   return (theCircle.Radius() * 2.0) > Precision::Confusion();
 }
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_DiameterDimension::IsValidAnchor(const gp_Circ& theCircle,
-                                                         const gp_Pnt&  theAnchor) const
+bool PrsDim_DiameterDimension::IsValidAnchor(const gp_Circ& theCircle,
+                                             const gp_Pnt&  theAnchor) const
 {
-  gp_Pln        aCirclePlane(theCircle.Location(), theCircle.Axis().Direction());
-  Standard_Real anAnchorDist = theAnchor.Distance(theCircle.Location());
-  Standard_Real aRadius      = myCircle.Radius();
+  gp_Pln aCirclePlane(theCircle.Location(), theCircle.Axis().Direction());
+  double anAnchorDist = theAnchor.Distance(theCircle.Location());
+  double aRadius      = myCircle.Radius();
 
   return std::abs(anAnchorDist - aRadius) > Precision::Confusion()
          && aCirclePlane.Contains(theAnchor, Precision::Confusion());
@@ -330,7 +330,7 @@ void PrsDim_DiameterDimension::SetTextPosition(const gp_Pnt& theTextPos)
     return;
   }
 
-  myIsTextPositionFixed = Standard_True;
+  myIsTextPositionFixed = true;
   myFixedTextPosition   = theTextPos;
 
   SetToUpdate();

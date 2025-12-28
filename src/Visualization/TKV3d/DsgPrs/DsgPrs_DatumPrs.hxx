@@ -34,8 +34,8 @@ public:
   //! @param[out] thePresentation  the modified presentation
   //! @param[in] theDatum  the source of trihedron position
   //! @param[in] theDrawer  the provider of display attributes
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& thePresentation,
-                                  const gp_Ax2&                     theDatum,
-                                  const Handle(Prs3d_Drawer)&       theDrawer);
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                  const gp_Ax2&                          theDatum,
+                                  const occ::handle<Prs3d_Drawer>&       theDrawer);
 };
 #endif

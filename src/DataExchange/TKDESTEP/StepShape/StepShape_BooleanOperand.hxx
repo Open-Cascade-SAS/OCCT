@@ -35,21 +35,22 @@ public:
   //! Returns a BooleanOperand SelectType
   Standard_EXPORT StepShape_BooleanOperand();
 
-  Standard_EXPORT void SetTypeOfContent(const Standard_Integer aTypeOfContent);
+  Standard_EXPORT void SetTypeOfContent(const int aTypeOfContent);
 
-  Standard_EXPORT Standard_Integer TypeOfContent() const;
+  Standard_EXPORT int TypeOfContent() const;
 
   //! returns Value as a SolidModel (Null if another
   //! type)
-  Standard_EXPORT Handle(StepShape_SolidModel) SolidModel() const;
+  Standard_EXPORT occ::handle<StepShape_SolidModel> SolidModel() const;
 
-  Standard_EXPORT void SetSolidModel(const Handle(StepShape_SolidModel)& aSolidModel);
+  Standard_EXPORT void SetSolidModel(const occ::handle<StepShape_SolidModel>& aSolidModel);
 
   //! returns Value as a HalfSpaceSolid (Null if
   //! another type)
-  Standard_EXPORT Handle(StepShape_HalfSpaceSolid) HalfSpaceSolid() const;
+  Standard_EXPORT occ::handle<StepShape_HalfSpaceSolid> HalfSpaceSolid() const;
 
-  Standard_EXPORT void SetHalfSpaceSolid(const Handle(StepShape_HalfSpaceSolid)& aHalfSpaceSolid);
+  Standard_EXPORT void SetHalfSpaceSolid(
+    const occ::handle<StepShape_HalfSpaceSolid>& aHalfSpaceSolid);
 
   //! returns Value as a CsgPrimitive (Null if another
   //! type)
@@ -60,17 +61,16 @@ public:
 
   //! returns Value as a BooleanResult (Null if another
   //! type)
-  Standard_EXPORT Handle(StepShape_BooleanResult) BooleanResult() const;
+  Standard_EXPORT occ::handle<StepShape_BooleanResult> BooleanResult() const;
 
-  Standard_EXPORT void SetBooleanResult(const Handle(StepShape_BooleanResult)& aBooleanResult);
+  Standard_EXPORT void SetBooleanResult(const occ::handle<StepShape_BooleanResult>& aBooleanResult);
 
-protected:
 private:
-  Handle(StepShape_SolidModel)     theSolidModel;
-  Handle(StepShape_HalfSpaceSolid) theHalfSpaceSolid;
-  StepShape_CsgPrimitive           theCsgPrimitive;
-  Handle(StepShape_BooleanResult)  theBooleanResult;
-  Standard_Integer                 theTypeOfContent;
+  occ::handle<StepShape_SolidModel>     theSolidModel;
+  occ::handle<StepShape_HalfSpaceSolid> theHalfSpaceSolid;
+  StepShape_CsgPrimitive                theCsgPrimitive;
+  occ::handle<StepShape_BooleanResult>  theBooleanResult;
+  int                                   theTypeOfContent;
 };
 
 #endif // _StepShape_BooleanOperand_HeaderFile

@@ -23,15 +23,15 @@ class StepTidy_PlaneReducerTest : public StepTidy_BaseTestFixture
 {
 protected:
   //! Perform removal of duplicate entities.
-  TColStd_MapOfTransient replaceDuplicatePlanes()
+  NCollection_Map<occ::handle<Standard_Transient>> replaceDuplicatePlanes()
   {
     StepTidy_PlaneReducer aReducer(myWS);
-    for (Standard_Integer anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
+    for (int anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
     {
       aReducer.ProcessEntity(myWS->Model()->Value(anIndex));
     }
 
-    TColStd_MapOfTransient aRemovedEntities;
+    NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities;
     aReducer.Perform(aRemovedEntities);
     return aRemovedEntities;
   }
@@ -41,27 +41,27 @@ protected:
 TEST_F(StepTidy_PlaneReducerTest, DifferentNames)
 {
   // Creating Planes.
-  Handle(StepGeom_Plane) aPlane1 = addPlane("Plane1");
-  Handle(StepGeom_Plane) aPlane2 = addPlane("Plane2");
+  occ::handle<StepGeom_Plane> aPlane1 = addPlane("Plane1");
+  occ::handle<StepGeom_Plane> aPlane2 = addPlane("Plane2");
 
   // Creating StepShape_AdvancedFace containing the first Plane.
-  Handle(StepShape_AdvancedFace) aFirstAdvancedFace = new StepShape_AdvancedFace;
+  occ::handle<StepShape_AdvancedFace> aFirstAdvancedFace = new StepShape_AdvancedFace;
   aFirstAdvancedFace->Init(new TCollection_HAsciiString,
-                           new StepShape_HArray1OfFaceBound,
+                           new NCollection_HArray1<occ::handle<StepShape_FaceBound>>,
                            aPlane1,
-                           Standard_True);
+                           true);
   addToModel(aFirstAdvancedFace);
 
   // Creating StepShape_AdvancedFace containing the second Plane.
-  Handle(StepShape_AdvancedFace) aSecondAdvancedFace = new StepShape_AdvancedFace;
+  occ::handle<StepShape_AdvancedFace> aSecondAdvancedFace = new StepShape_AdvancedFace;
   aSecondAdvancedFace->Init(new TCollection_HAsciiString,
-                            new StepShape_HArray1OfFaceBound,
+                            new NCollection_HArray1<occ::handle<StepShape_FaceBound>>,
                             aPlane2,
-                            Standard_True);
+                            true);
   addToModel(aSecondAdvancedFace);
 
   // Performing removal of duplicate Planes.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicatePlanes();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicatePlanes();
 
   // Check that nothing was removed.
   EXPECT_TRUE(aRemovedEntities.IsEmpty());
@@ -71,27 +71,27 @@ TEST_F(StepTidy_PlaneReducerTest, DifferentNames)
 TEST_F(StepTidy_PlaneReducerTest, StepShape_AdvancedFace)
 {
   // Creating Planes.
-  Handle(StepGeom_Plane) aPlane1 = addPlane();
-  Handle(StepGeom_Plane) aPlane2 = addPlane();
+  occ::handle<StepGeom_Plane> aPlane1 = addPlane();
+  occ::handle<StepGeom_Plane> aPlane2 = addPlane();
 
   // Creating StepShape_AdvancedFace containing the first Plane.
-  Handle(StepShape_AdvancedFace) aFirstAdvancedFace = new StepShape_AdvancedFace;
+  occ::handle<StepShape_AdvancedFace> aFirstAdvancedFace = new StepShape_AdvancedFace;
   aFirstAdvancedFace->Init(new TCollection_HAsciiString,
-                           new StepShape_HArray1OfFaceBound,
+                           new NCollection_HArray1<occ::handle<StepShape_FaceBound>>,
                            aPlane1,
-                           Standard_True);
+                           true);
   addToModel(aFirstAdvancedFace);
 
   // Creating StepShape_AdvancedFace containing the second Plane.
-  Handle(StepShape_AdvancedFace) aSecondAdvancedFace = new StepShape_AdvancedFace;
+  occ::handle<StepShape_AdvancedFace> aSecondAdvancedFace = new StepShape_AdvancedFace;
   aSecondAdvancedFace->Init(new TCollection_HAsciiString,
-                            new StepShape_HArray1OfFaceBound,
+                            new NCollection_HArray1<occ::handle<StepShape_FaceBound>>,
                             aPlane2,
-                            Standard_True);
+                            true);
   addToModel(aSecondAdvancedFace);
 
   // Performing removal of duplicate Planes.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicatePlanes();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicatePlanes();
 
   // Check that one Plane was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -102,25 +102,25 @@ TEST_F(StepTidy_PlaneReducerTest, StepShape_AdvancedFace)
 TEST_F(StepTidy_PlaneReducerTest, StepGeom_Pcurve)
 {
   // Creating Planes.
-  Handle(StepGeom_Plane) aPlane1 = addPlane();
-  Handle(StepGeom_Plane) aPlane2 = addPlane();
+  occ::handle<StepGeom_Plane> aPlane1 = addPlane();
+  occ::handle<StepGeom_Plane> aPlane2 = addPlane();
 
   // Creating StepGeom_Pcurve containing the first Plane.
-  Handle(StepGeom_Pcurve) aFirstPcurve = new StepGeom_Pcurve;
+  occ::handle<StepGeom_Pcurve> aFirstPcurve = new StepGeom_Pcurve;
   aFirstPcurve->Init(new TCollection_HAsciiString,
                      aPlane1,
                      new StepRepr_DefinitionalRepresentation);
   addToModel(aFirstPcurve);
 
   // Creating StepGeom_Pcurve containing the second Plane.
-  Handle(StepGeom_Pcurve) aSecondPcurve = new StepGeom_Pcurve;
+  occ::handle<StepGeom_Pcurve> aSecondPcurve = new StepGeom_Pcurve;
   aSecondPcurve->Init(new TCollection_HAsciiString,
                       aPlane2,
                       new StepRepr_DefinitionalRepresentation);
   addToModel(aSecondPcurve);
 
   // Performing removal of duplicate Planes.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicatePlanes();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicatePlanes();
 
   // Check that one Plane was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);

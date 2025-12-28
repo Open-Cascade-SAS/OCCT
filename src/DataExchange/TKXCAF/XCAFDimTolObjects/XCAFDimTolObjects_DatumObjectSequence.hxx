@@ -19,7 +19,7 @@
 #include <NCollection_Sequence.hxx>
 
 class XCAFDimTolObjects_DatumObject;
-typedef NCollection_Sequence<Handle(XCAFDimTolObjects_DatumObject)>
+typedef NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>
   XCAFDimTolObjects_DatumObjectSequence;
 
 #endif

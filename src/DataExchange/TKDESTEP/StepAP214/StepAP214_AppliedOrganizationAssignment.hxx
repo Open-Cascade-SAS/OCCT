@@ -19,15 +19,14 @@
 
 #include <Standard.hxx>
 
-#include <StepAP214_HArray1OfOrganizationItem.hxx>
+#include <StepAP214_OrganizationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_OrganizationAssignment.hxx>
 #include <Standard_Integer.hxx>
 class StepBasic_Organization;
 class StepBasic_OrganizationRole;
 class StepAP214_OrganizationItem;
-
-class StepAP214_AppliedOrganizationAssignment;
-DEFINE_STANDARD_HANDLE(StepAP214_AppliedOrganizationAssignment, StepBasic_OrganizationAssignment)
 
 class StepAP214_AppliedOrganizationAssignment : public StepBasic_OrganizationAssignment
 {
@@ -36,23 +35,24 @@ public:
   //! Returns a AppliedOrganizationAssignment
   Standard_EXPORT StepAP214_AppliedOrganizationAssignment();
 
-  Standard_EXPORT void Init(const Handle(StepBasic_Organization)&     aAssignedOrganization,
-                            const Handle(StepBasic_OrganizationRole)& aRole,
-                            const Handle(StepAP214_HArray1OfOrganizationItem)& aItems);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_Organization>&                          aAssignedOrganization,
+    const occ::handle<StepBasic_OrganizationRole>&                      aRole,
+    const occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>>& aItems);
 
-  Standard_EXPORT void SetItems(const Handle(StepAP214_HArray1OfOrganizationItem)& aItems);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>>& aItems);
 
-  Standard_EXPORT Handle(StepAP214_HArray1OfOrganizationItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>> Items() const;
 
-  Standard_EXPORT StepAP214_OrganizationItem ItemsValue(const Standard_Integer num) const;
+  Standard_EXPORT StepAP214_OrganizationItem ItemsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedOrganizationAssignment, StepBasic_OrganizationAssignment)
 
-protected:
 private:
-  Handle(StepAP214_HArray1OfOrganizationItem) items;
+  occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>> items;
 };
 
 #endif // _StepAP214_AppliedOrganizationAssignment_HeaderFile

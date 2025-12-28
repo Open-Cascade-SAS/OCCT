@@ -24,21 +24,21 @@
 #include <Precision.hxx>
 #include <BSplCLib.hxx>
 
-static Standard_Real Locate(const Standard_Real         Angfin,
-                            const TColgp_Array1OfPnt2d& TPoles,
-                            const Standard_Real         Umin,
-                            const Standard_Real         Umax)
+static double Locate(const double                        Angfin,
+                     const NCollection_Array1<gp_Pnt2d>& TPoles,
+                     const double                        Umin,
+                     const double                        Umax)
 {
-  Standard_Real umin = Umin;
-  Standard_Real umax = Umax;
-  Standard_Real Ptol = Precision::Angular();
-  Standard_Real Utol = Precision::PConfusion();
+  double umin = Umin;
+  double umax = Umax;
+  double Ptol = Precision::Angular();
+  double Utol = Precision::PConfusion();
   while (std::abs(umax - umin) >= Utol)
   {
-    Standard_Real ptest = (umax + umin) / 2.;
-    gp_Pnt2d      valP;
+    double   ptest = (umax + umin) / 2.;
+    gp_Pnt2d valP;
     BSplCLib::D0(ptest, TPoles, BSplCLib::NoWeights(), valP);
-    Standard_Real theta = std::atan2(valP.Y(), valP.X());
+    double theta = std::atan2(valP.Y(), valP.X());
     if (theta < 0.)
     {
       theta += 2. * M_PI;
@@ -59,19 +59,19 @@ static Standard_Real Locate(const Standard_Real         Angfin,
   return (umin + umax) / 2.;
 }
 
-void BuildPolynomialCosAndSin(const Standard_Real            UFirst,
-                              const Standard_Real            ULast,
-                              const Standard_Integer         num_poles,
-                              Handle(TColStd_HArray1OfReal)& CosNumeratorPtr,
-                              Handle(TColStd_HArray1OfReal)& SinNumeratorPtr,
-                              Handle(TColStd_HArray1OfReal)& DenominatorPtr)
+void BuildPolynomialCosAndSin(const double                              UFirst,
+                              const double                              ULast,
+                              const int                                 num_poles,
+                              occ::handle<NCollection_HArray1<double>>& CosNumeratorPtr,
+                              occ::handle<NCollection_HArray1<double>>& SinNumeratorPtr,
+                              occ::handle<NCollection_HArray1<double>>& DenominatorPtr)
 {
 
-  Standard_Real Delta, locUFirst,
+  double Delta, locUFirst,
     //  locULast,
     //  temp_value,
     t_min, t_max, trim_min, trim_max, middle, Angle, PI2 = 2 * M_PI;
-  Standard_Integer ii, degree = num_poles - 1;
+  int ii, degree = num_poles - 1;
   locUFirst = UFirst;
 
   // Return UFirst in [-2PI; 2PI]
@@ -99,7 +99,7 @@ void BuildPolynomialCosAndSin(const Standard_Real            UFirst,
   // Circle of radius 1. See Euclid
   //
 
-  TColgp_Array1OfPnt2d TPoles(1, 8), NewTPoles(1, 8);
+  NCollection_Array1<gp_Pnt2d> TPoles(1, 8), NewTPoles(1, 8);
   TPoles(1).SetCoord(1., 0.);
   TPoles(2).SetCoord(1., 1.013854);
   TPoles(3).SetCoord(-0.199043, 1.871905);
@@ -128,18 +128,18 @@ void BuildPolynomialCosAndSin(const Standard_Real            UFirst,
 
   trim_min = 1.0e0 - trim_max;
   //
-  Standard_Real    knot_array[2];
-  Standard_Integer mults_array[2];
+  double knot_array[2];
+  int    mults_array[2];
   knot_array[0]  = 0.0e0;
   knot_array[1]  = 1.0e0;
   mults_array[0] = degree + 1;
   mults_array[1] = degree + 1;
 
-  TColStd_Array1OfReal    the_knots(knot_array[0], 1, 2), the_new_knots(knot_array[0], 1, 2);
-  TColStd_Array1OfInteger the_mults(mults_array[0], 1, 2), the_new_mults(mults_array[0], 1, 2);
+  NCollection_Array1<double> the_knots(knot_array[0], 1, 2), the_new_knots(knot_array[0], 1, 2);
+  NCollection_Array1<int>    the_mults(mults_array[0], 1, 2), the_new_mults(mults_array[0], 1, 2);
 
   BSplCLib::Trimming(degree,
-                     Standard_False,
+                     false,
                      the_knots,
                      the_mults,
                      TPoles,
@@ -152,12 +152,12 @@ void BuildPolynomialCosAndSin(const Standard_Real            UFirst,
                      BSplCLib::NoWeights());
 
   // readjustment is obviously redundant
-  Standard_Real SinD = std::sin(Delta), CosD = std::cos(Delta);
-  gp_Pnt2d      Pdeb(1., 0.);
-  gp_Pnt2d      Pfin(CosD, SinD);
+  double   SinD = std::sin(Delta), CosD = std::cos(Delta);
+  gp_Pnt2d Pdeb(1., 0.);
+  gp_Pnt2d Pfin(CosD, SinD);
 
-  Standard_Real dtg = NewTPoles(1).Distance(NewTPoles(2));
-  NewTPoles(1)      = Pdeb;
+  double dtg   = NewTPoles(1).Distance(NewTPoles(2));
+  NewTPoles(1) = Pdeb;
   gp_XY theXY(0., dtg);
   Pdeb.ChangeCoord() += theXY;
   NewTPoles(2) = Pdeb;
@@ -186,40 +186,39 @@ void BuildPolynomialCosAndSin(const Standard_Real            UFirst,
 
 /*
 void BuildHermitePolynomialCosAndSin
-  (const Standard_Real UFirst,
-   const Standard_Real ULast,
-   const Standard_Integer num_poles,
-   Handle(TColStd_HArray1OfReal)& CosNumeratorPtr,
-   Handle(TColStd_HArray1OfReal)& SinNumeratorPtr,
-   Handle(TColStd_HArray1OfReal)& DenominatorPtr)
+  (const double UFirst,
+   const double ULast,
+   const int num_poles,
+   occ::handle<NCollection_HArray1<double>>& CosNumeratorPtr,
+   occ::handle<NCollection_HArray1<double>>& SinNumeratorPtr,
+   occ::handle<NCollection_HArray1<double>>& DenominatorPtr)
 {
 
   if (num_poles%2 != 0) {
     throw Standard_ConstructionError();
   }
-  Standard_Integer ii;
-  Standard_Integer ordre_deriv = num_poles/2;
-  Standard_Real ang = ULast - UFirst;
-  Standard_Real Cd = std::cos(UFirst);
-  Standard_Real Sd = std::sin(UFirst);
-  Standard_Real Cf = std::cos(ULast);
-  Standard_Real Sf = std::sin(ULast);
+  int ii;
+  int ordre_deriv = num_poles/2;
+  double ang = ULast - UFirst;
+  double Cd = std::cos(UFirst);
+  double Sd = std::sin(UFirst);
+  double Cf = std::cos(ULast);
+  double Sf = std::sin(ULast);
 
-  Standard_Integer Degree = num_poles-1;
-  TColStd_Array1OfReal FlatKnots(1,2*num_poles);
-  TColStd_Array1OfReal Parameters(1,num_poles);
-  TColStd_Array1OfInteger ContactOrderArray(1,num_poles);
-  TColgp_Array1OfPnt2d Poles(1,num_poles);
-  TColgp_Array1OfPnt2d TPoles(1,num_poles);
-
+  int Degree = num_poles-1;
+  NCollection_Array1<double> FlatKnots(1,2*num_poles);
+  NCollection_Array1<double> Parameters(1,num_poles);
+  NCollection_Array1<int> ContactOrderArray(1,num_poles);
+  NCollection_Array1<gp_Pnt2d> Poles(1,num_poles);
+  NCollection_Array1<gp_Pnt2d> TPoles(1,num_poles);
 
   for (ii=1; ii<=num_poles; ii++) {
     FlatKnots(ii) = 0.;
     FlatKnots(ii+num_poles) = 1.;
   }
 
-  Standard_Real coef = 1.;
-  Standard_Real xd,yd,xf,yf;
+  double coef = 1.;
+  double xd,yd,xf,yf;
 
   for (ii=1; ii<=ordre_deriv; ii++) {
     Parameters(ii) = 0.;
@@ -270,7 +269,7 @@ void BuildHermitePolynomialCosAndSin
     coef *= ang;
   }
 
-  Standard_Integer InversionPb;
+  int InversionPb;
   BSplCLib::Interpolate(Degree,FlatKnots,Parameters,
             ContactOrderArray,Poles,InversionPb);
 

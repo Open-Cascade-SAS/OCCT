@@ -16,8 +16,9 @@
 #ifndef _Graphic3d_BSDF_HeaderFile
 #define _Graphic3d_BSDF_HeaderFile
 
-#include <Graphic3d_Vec3.hxx>
-#include <Graphic3d_Vec4.hxx>
+#include <NCollection_Vec3.hxx>
+#include <Standard_TypeDef.hxx>
+#include <NCollection_Vec4.hxx>
 
 class Graphic3d_PBRMaterial;
 
@@ -39,43 +40,44 @@ public:
       : myFresnelType(Graphic3d_FM_CONSTANT)
   {
     // ideal specular reflector
-    myFresnelData = Graphic3d_Vec3(0.f, 1.f, 0.f);
+    myFresnelData = NCollection_Vec3<float>(0.f, 1.f, 0.f);
   }
 
   //! Creates Schlick's approximation of Fresnel factor.
-  static Graphic3d_Fresnel CreateSchlick(const Graphic3d_Vec3& theSpecularColor)
+  static Graphic3d_Fresnel CreateSchlick(const NCollection_Vec3<float>& theSpecularColor)
   {
     return Graphic3d_Fresnel(Graphic3d_FM_SCHLICK, theSpecularColor);
   }
 
   //! Creates Fresnel factor for constant reflection.
-  static Graphic3d_Fresnel CreateConstant(const Standard_ShortReal theReflection)
+  static Graphic3d_Fresnel CreateConstant(const float theReflection)
   {
-    return Graphic3d_Fresnel(Graphic3d_FM_CONSTANT, Graphic3d_Vec3(0.f, 1.f, theReflection));
+    return Graphic3d_Fresnel(Graphic3d_FM_CONSTANT,
+                             NCollection_Vec3<float>(0.f, 1.f, theReflection));
   }
 
   //! Creates Fresnel factor for physical-based dielectric model.
-  static Graphic3d_Fresnel CreateDielectric(Standard_ShortReal theRefractionIndex)
+  static Graphic3d_Fresnel CreateDielectric(float theRefractionIndex)
   {
-    return Graphic3d_Fresnel(Graphic3d_FM_DIELECTRIC, Graphic3d_Vec3(0.f, theRefractionIndex, 0.f));
+    return Graphic3d_Fresnel(Graphic3d_FM_DIELECTRIC,
+                             NCollection_Vec3<float>(0.f, theRefractionIndex, 0.f));
   }
 
   //! Creates Fresnel factor for physical-based conductor model.
-  static Graphic3d_Fresnel CreateConductor(Standard_ShortReal theRefractionIndex,
-                                           Standard_ShortReal theAbsorptionIndex)
+  static Graphic3d_Fresnel CreateConductor(float theRefractionIndex, float theAbsorptionIndex)
   {
     return Graphic3d_Fresnel(Graphic3d_FM_CONDUCTOR,
-                             Graphic3d_Vec3(0.f, theRefractionIndex, theAbsorptionIndex));
+                             NCollection_Vec3<float>(0.f, theRefractionIndex, theAbsorptionIndex));
   }
 
   //! Creates Fresnel factor for physical-based conductor model (spectral version).
   Standard_EXPORT static Graphic3d_Fresnel CreateConductor(
-    const Graphic3d_Vec3& theRefractionIndex,
-    const Graphic3d_Vec3& theAbsorptionIndex);
+    const NCollection_Vec3<float>& theRefractionIndex,
+    const NCollection_Vec3<float>& theAbsorptionIndex);
 
 public:
   //! Returns serialized representation of Fresnel factor.
-  Standard_EXPORT Graphic3d_Vec4 Serialize() const;
+  Standard_EXPORT NCollection_Vec4<float> Serialize() const;
 
   //! Performs comparison of two objects describing Fresnel factor.
   bool operator==(const Graphic3d_Fresnel& theOther) const
@@ -87,11 +89,11 @@ public:
   Graphic3d_FresnelModel FresnelType() const { return myFresnelType; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected:
   //! Creates new Fresnel reflectance factor.
-  Graphic3d_Fresnel(Graphic3d_FresnelModel theType, const Graphic3d_Vec3& theData)
+  Graphic3d_Fresnel(Graphic3d_FresnelModel theType, const NCollection_Vec3<float>& theData)
       : myFresnelType(theType),
         myFresnelData(theData)
   {
@@ -103,7 +105,7 @@ private:
   Graphic3d_FresnelModel myFresnelType;
 
   //! Serialized parameters of specific approximation.
-  Graphic3d_Vec3 myFresnelData;
+  NCollection_Vec3<float> myFresnelData;
 };
 
 //! Describes material's BSDF (Bidirectional Scattering Distribution Function) used
@@ -120,22 +122,22 @@ class Graphic3d_BSDF
 {
 public:
   //! Weight of coat specular/glossy BRDF.
-  Graphic3d_Vec4 Kc;
+  NCollection_Vec4<float> Kc;
 
   //! Weight of base diffuse BRDF.
-  Graphic3d_Vec3 Kd;
+  NCollection_Vec3<float> Kd;
 
   //! Weight of base specular/glossy BRDF.
-  Graphic3d_Vec4 Ks;
+  NCollection_Vec4<float> Ks;
 
   //! Weight of base specular/glossy BTDF.
-  Graphic3d_Vec3 Kt;
+  NCollection_Vec3<float> Kt;
 
   //! Radiance emitted by the surface.
-  Graphic3d_Vec3 Le;
+  NCollection_Vec3<float> Le;
 
   //! Volume scattering color/density.
-  Graphic3d_Vec4 Absorption;
+  NCollection_Vec4<float> Absorption;
 
   //! Parameters of Fresnel reflectance of coat layer.
   Graphic3d_Fresnel FresnelCoat;
@@ -145,28 +147,29 @@ public:
 
 public:
   //! Creates BSDF describing diffuse (Lambertian) surface.
-  static Standard_EXPORT Graphic3d_BSDF CreateDiffuse(const Graphic3d_Vec3& theWeight);
+  static Standard_EXPORT Graphic3d_BSDF CreateDiffuse(const NCollection_Vec3<float>& theWeight);
 
   //! Creates BSDF describing polished metallic-like surface.
-  static Standard_EXPORT Graphic3d_BSDF CreateMetallic(const Graphic3d_Vec3&    theWeight,
-                                                       const Graphic3d_Fresnel& theFresnel,
-                                                       const Standard_ShortReal theRoughness);
+  static Standard_EXPORT Graphic3d_BSDF CreateMetallic(const NCollection_Vec3<float>& theWeight,
+                                                       const Graphic3d_Fresnel&       theFresnel,
+                                                       const float                    theRoughness);
 
   //! Creates BSDF describing transparent object.
   //! Transparent BSDF models simple transparency without
   //! refraction (the ray passes straight through the surface).
   static Standard_EXPORT Graphic3d_BSDF
-    CreateTransparent(const Graphic3d_Vec3&    theWeight,
-                      const Graphic3d_Vec3&    theAbsorptionColor,
-                      const Standard_ShortReal theAbsorptionCoeff);
+    CreateTransparent(const NCollection_Vec3<float>& theWeight,
+                      const NCollection_Vec3<float>& theAbsorptionColor,
+                      const float                    theAbsorptionCoeff);
 
   //! Creates BSDF describing glass-like object.
   //! Glass-like BSDF mixes refraction and reflection effects at
   //! grazing angles using physically-based Fresnel dielectric model.
-  static Standard_EXPORT Graphic3d_BSDF CreateGlass(const Graphic3d_Vec3&    theWeight,
-                                                    const Graphic3d_Vec3&    theAbsorptionColor,
-                                                    const Standard_ShortReal theAbsorptionCoeff,
-                                                    const Standard_ShortReal theRefractionIndex);
+  static Standard_EXPORT Graphic3d_BSDF
+    CreateGlass(const NCollection_Vec3<float>& theWeight,
+                const NCollection_Vec3<float>& theAbsorptionColor,
+                const float                    theAbsorptionCoeff,
+                const float                    theRefractionIndex);
 
   //! Creates BSDF from PBR metallic-roughness material.
   static Standard_EXPORT Graphic3d_BSDF
@@ -183,7 +186,7 @@ public:
   Standard_EXPORT bool operator==(const Graphic3d_BSDF& theOther) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 };
 
 #endif // _Graphic3d_BSDF_HeaderFile

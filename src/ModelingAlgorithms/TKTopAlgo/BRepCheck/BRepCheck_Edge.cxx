@@ -25,7 +25,9 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepCheck.hxx>
 #include <BRepCheck_Edge.hxx>
-#include <BRepCheck_ListOfStatus.hxx>
+#include <BRepCheck_Status.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Shared.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor.hxx>
@@ -44,8 +46,9 @@
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfTransient.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -55,15 +58,15 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Edge, BRepCheck_Result)
 
-static const Standard_Integer NCONTROL = 23;
+static const int NCONTROL = 23;
 
 //=================================================================================================
 
 BRepCheck_Edge::BRepCheck_Edge(const TopoDS_Edge& E)
 {
   Init(E);
-  myGctrl         = Standard_True;
-  myIsExactMethod = Standard_False;
+  myGctrl         = true;
+  myIsExactMethod = false;
 }
 
 //=================================================================================================
@@ -72,39 +75,40 @@ void BRepCheck_Edge::Minimum()
 {
   if (!myMin)
   {
-    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
-    BRepCheck_ListOfStatus&         lst      = **myMap.Bound(myShape, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
+      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    NCollection_List<BRepCheck_Status>& lst = **myMap.Bound(myShape, aNewList);
     myCref.Nullify();
 
     // Existence et unicite d`une representation 3D
-    Handle(BRep_TEdge)&                          TE = *((Handle(BRep_TEdge)*)&myShape.TShape());
-    BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
-    Standard_Boolean                             exist  = Standard_False;
-    Standard_Boolean                             unique = Standard_True;
+    occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&myShape.TShape());
+    NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
+    bool                                                              exist  = false;
+    bool                                                              unique = true;
     // Search for a 3D reference. If no existent one, creates it with the
     // first encountered CurveOnSurf; if multiple, chooses the first one...
 
-    Standard_Boolean Degenerated   = TE->Degenerated();
-    Standard_Boolean SameParameter = TE->SameParameter();
-    Standard_Boolean SameRange     = TE->SameRange();
+    bool Degenerated   = TE->Degenerated();
+    bool SameParameter = TE->SameParameter();
+    bool SameRange     = TE->SameRange();
     if (!SameRange && SameParameter)
     {
       BRepCheck::Add(lst, BRepCheck_InvalidSameParameterFlag);
     }
-    //    Handle(Geom_Curve) C3d;
+    //    occ::handle<Geom_Curve> C3d;
 
     while (itcr.More())
     {
-      const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+      const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
       if (cr->IsCurve3D())
       {
         if (!exist)
         {
-          exist = Standard_True;
+          exist = true;
         }
         else
         {
-          unique = Standard_False;
+          unique = false;
         }
         if (myCref.IsNull() && !cr->Curve3D().IsNull())
         {
@@ -129,7 +133,7 @@ void BRepCheck_Edge::Minimum()
       itcr.Initialize(TE->Curves());
       while (itcr.More())
       {
-        const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+        const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
         if (cr->IsCurveOnSurface())
         {
           myCref = cr;
@@ -145,9 +149,9 @@ void BRepCheck_Edge::Minimum()
 
     if (!myCref.IsNull())
     {
-      Handle(BRep_GCurve)     GCref(Handle(BRep_GCurve)::DownCast(myCref));
-      constexpr Standard_Real eps = Precision::PConfusion();
-      Standard_Real           First, Last;
+      occ::handle<BRep_GCurve> GCref(occ::down_cast<BRep_GCurve>(myCref));
+      constexpr double         eps = Precision::PConfusion();
+      double                   First, Last;
       GCref->Range(First, Last);
       if (Last <= First)
       {
@@ -161,22 +165,23 @@ void BRepCheck_Edge::Minimum()
           // eap 6 Jun 2002 occ332
           // better transform C3d instead of transforming Surf upto C3d initial location,
           // on transformed BSpline surface 'same parameter' may seem wrong
-          TopLoc_Location    L   = myShape.Location() * myCref->Location();
-          Handle(Geom_Curve) C3d = Handle(Geom_Curve)::DownCast(
+          TopLoc_Location         L   = myShape.Location() * myCref->Location();
+          occ::handle<Geom_Curve> C3d = occ::down_cast<Geom_Curve>(
             myCref->Curve3D()->Transformed(/*myCref->Location()*/ L.Transformation()));
-          Standard_Boolean IsPeriodic = C3d->IsPeriodic();
-          Standard_Real    aPeriod    = RealLast();
+          bool   IsPeriodic = C3d->IsPeriodic();
+          double aPeriod    = RealLast();
           if (IsPeriodic)
           {
             aPeriod = C3d->Period();
           }
-          Standard_Real f = C3d->FirstParameter(), l = C3d->LastParameter();
+          double f = C3d->FirstParameter(), l = C3d->LastParameter();
           if (C3d->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
           {
-            const Handle(Geom_Curve)& aC = Handle(Geom_TrimmedCurve)::DownCast(C3d)->BasisCurve();
-            f                            = aC->FirstParameter();
-            l                            = aC->LastParameter();
-            IsPeriodic                   = aC->IsPeriodic();
+            const occ::handle<Geom_Curve>& aC =
+              occ::down_cast<Geom_TrimmedCurve>(C3d)->BasisCurve();
+            f          = aC->FirstParameter();
+            l          = aC->LastParameter();
+            IsPeriodic = aC->IsPeriodic();
             if (IsPeriodic)
             {
               aPeriod = aC->Period();
@@ -202,21 +207,21 @@ void BRepCheck_Edge::Minimum()
         }
         else
         { // curve on surface
-          Handle(Geom_Surface) Sref = myCref->Surface();
+          occ::handle<Geom_Surface> Sref = myCref->Surface();
           Sref =
-            Handle(Geom_Surface)::DownCast(Sref->Transformed(myCref->Location().Transformation()));
-          const Handle(Geom2d_Curve)& PCref      = myCref->PCurve();
-          Standard_Boolean            IsPeriodic = PCref->IsPeriodic();
-          Standard_Real               aPeriod    = RealLast();
+            occ::down_cast<Geom_Surface>(Sref->Transformed(myCref->Location().Transformation()));
+          const occ::handle<Geom2d_Curve>& PCref      = myCref->PCurve();
+          bool                             IsPeriodic = PCref->IsPeriodic();
+          double                           aPeriod    = RealLast();
           if (IsPeriodic)
           {
             aPeriod = PCref->Period();
           }
-          Standard_Real f = PCref->FirstParameter(), l = PCref->LastParameter();
+          double f = PCref->FirstParameter(), l = PCref->LastParameter();
           if (PCref->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
           {
-            const Handle(Geom2d_Curve)& aC =
-              Handle(Geom2d_TrimmedCurve)::DownCast(PCref)->BasisCurve();
+            const occ::handle<Geom2d_Curve>& aC =
+              occ::down_cast<Geom2d_TrimmedCurve>(PCref)->BasisCurve();
             f          = aC->FirstParameter();
             l          = aC->LastParameter();
             IsPeriodic = aC->IsPeriodic();
@@ -237,9 +242,9 @@ void BRepCheck_Edge::Minimum()
           }
           else
           {
-            Handle(GeomAdaptor_Surface) GAHSref = new GeomAdaptor_Surface(Sref);
-            Handle(Geom2dAdaptor_Curve) GHPCref = new Geom2dAdaptor_Curve(PCref, First, Last);
-            Adaptor3d_CurveOnSurface    ACSref(GHPCref, GAHSref);
+            occ::handle<GeomAdaptor_Surface> GAHSref = new GeomAdaptor_Surface(Sref);
+            occ::handle<Geom2dAdaptor_Curve> GHPCref = new Geom2dAdaptor_Curve(PCref, First, Last);
+            Adaptor3d_CurveOnSurface         ACSref(GHPCref, GAHSref);
             myHCurve = new Adaptor3d_CurveOnSurface(ACSref);
           }
         }
@@ -249,7 +254,7 @@ void BRepCheck_Edge::Minimum()
     {
       lst.Append(BRepCheck_NoError);
     }
-    myMin = Standard_True;
+    myMin = true;
   }
 }
 
@@ -257,7 +262,7 @@ void BRepCheck_Edge::Minimum()
 
 void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
 {
-  Handle(BRepCheck_HListOfStatus) aHList;
+  occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock =
       myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
@@ -266,14 +271,15 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
       return;
     }
 
-    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
-    aHList                                   = *myMap.Bound(S, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
+      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    aHList = *myMap.Bound(S, aNewList);
   }
 
-  BRepCheck_ListOfStatus& lst = *aHList;
+  NCollection_List<BRepCheck_Status>& lst = *aHList;
 
-  Handle(BRep_TEdge)& TE  = *((Handle(BRep_TEdge)*)&myShape.TShape());
-  Standard_Real       Tol = BRep_Tool::Tolerance(TopoDS::Edge(myShape));
+  occ::handle<BRep_TEdge>& TE  = *((occ::handle<BRep_TEdge>*)&myShape.TShape());
+  double                   Tol = BRep_Tool::Tolerance(TopoDS::Edge(myShape));
 
   TopAbs_ShapeEnum styp = S.ShapeType();
   //  for (TopExp_Explorer exp(S,TopAbs_EDGE); exp.More(); exp.Next()) {
@@ -301,8 +307,8 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
       if (!myCref.IsNull())
       {
 
-        Standard_Boolean SameParameter = TE->SameParameter();
-        Standard_Boolean SameRange     = TE->SameRange();
+        bool SameParameter = TE->SameParameter();
+        bool SameRange     = TE->SameRange();
         //  Modified by skv - Tue Apr 27 11:48:13 2004 Begin
         if (!SameParameter || !SameRange)
         {
@@ -314,31 +320,31 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
           return;
         }
         //  Modified by skv - Tue Apr 27 11:48:14 2004 End
-        Standard_Real First = myHCurve->FirstParameter();
-        Standard_Real Last  = myHCurve->LastParameter();
+        double First = myHCurve->FirstParameter();
+        double Last  = myHCurve->LastParameter();
 
-        Handle(BRep_TFace)&         TF          = *((Handle(BRep_TFace)*)&S.TShape());
-        const TopLoc_Location&      Floc        = S.Location();
-        const TopLoc_Location&      TFloc       = TF->Location();
-        const Handle(Geom_Surface)& Su          = TF->Surface();
-        TopLoc_Location             L           = (Floc * TFloc).Predivided(myShape.Location());
-        TopLoc_Location             LE          = myShape.Location() * myCref->Location();
-        const gp_Trsf&              Etrsf       = LE.Transformation();
-        Standard_Boolean            pcurvefound = Standard_False;
+        occ::handle<BRep_TFace>&         TF    = *((occ::handle<BRep_TFace>*)&S.TShape());
+        const TopLoc_Location&           Floc  = S.Location();
+        const TopLoc_Location&           TFloc = TF->Location();
+        const occ::handle<Geom_Surface>& Su    = TF->Surface();
+        TopLoc_Location                  L     = (Floc * TFloc).Predivided(myShape.Location());
+        TopLoc_Location                  LE    = myShape.Location() * myCref->Location();
+        const gp_Trsf&                   Etrsf = LE.Transformation();
+        bool                             pcurvefound = false;
 
-        BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
-        constexpr Standard_Real                      eps           = Precision::PConfusion();
-        const Standard_Boolean                       toRunParallel = myMutex != nullptr;
+        NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
+        constexpr double eps           = Precision::PConfusion();
+        const bool       toRunParallel = myMutex != nullptr;
         while (itcr.More())
         {
-          const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+          const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
           if (cr != myCref && cr->IsCurveOnSurface(Su, L))
           {
-            pcurvefound = Standard_True;
-            Handle(BRep_GCurve) GC(Handle(BRep_GCurve)::DownCast(cr));
-            Standard_Real       f, l;
+            pcurvefound = true;
+            occ::handle<BRep_GCurve> GC(occ::down_cast<BRep_GCurve>(cr));
+            double                   f, l;
             GC->Range(f, l);
-            Standard_Real ff = f, ll = l;
+            double ff = f, ll = l;
             if (myCref->IsCurve3D())
             {
               ff = myCref->Curve3D()->TransformedParameter(f, Etrsf);
@@ -353,18 +359,18 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
             }
             //  Modified by skv - Tue Apr 27 11:50:37 2004 End
             //
-            const Handle(Geom2d_Curve)& pc         = cr->PCurve();
-            Standard_Boolean            IsPeriodic = pc->IsPeriodic();
-            Standard_Real               aPeriod    = RealLast();
+            const occ::handle<Geom2d_Curve>& pc         = cr->PCurve();
+            bool                             IsPeriodic = pc->IsPeriodic();
+            double                           aPeriod    = RealLast();
             if (IsPeriodic)
             {
               aPeriod = pc->Period();
             }
-            Standard_Real fp = pc->FirstParameter(), lp = pc->LastParameter();
+            double fp = pc->FirstParameter(), lp = pc->LastParameter();
             if (pc->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
             {
-              const Handle(Geom2d_Curve) aC =
-                Handle(Geom2d_TrimmedCurve)::DownCast(pc)->BasisCurve();
+              const occ::handle<Geom2d_Curve> aC =
+                occ::down_cast<Geom2d_TrimmedCurve>(pc)->BasisCurve();
               fp         = aC->FirstParameter();
               lp         = aC->LastParameter();
               IsPeriodic = aC->IsPeriodic();
@@ -386,14 +392,14 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
 
             if (myGctrl)
             {
-              Handle(Geom_Surface) Sb = cr->Surface();
-              Sb                      = Handle(Geom_Surface)::DownCast
+              occ::handle<Geom_Surface> Sb = cr->Surface();
+              Sb                           = Handle(Geom_Surface)::DownCast
                 //	      (Su->Transformed(L.Transformation()));
                 (Su->Transformed(/*L*/ (Floc * TFloc).Transformation()));
-              Handle(Geom2d_Curve)             PC   = cr->PCurve();
-              Handle(GeomAdaptor_Surface)      GAHS = new GeomAdaptor_Surface(Sb);
-              Handle(Geom2dAdaptor_Curve)      GHPC = new Geom2dAdaptor_Curve(PC, f, l);
-              Handle(Adaptor3d_CurveOnSurface) ACS  = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
+              occ::handle<Geom2d_Curve>             PC   = cr->PCurve();
+              occ::handle<GeomAdaptor_Surface>      GAHS = new GeomAdaptor_Surface(Sb);
+              occ::handle<Geom2dAdaptor_Curve>      GHPC = new Geom2dAdaptor_Curve(PC, f, l);
+              occ::handle<Adaptor3d_CurveOnSurface> ACS  = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
 
               BRepLib_ValidateEdge aValidateEdge(myHCurve, ACS, SameParameter);
               aValidateEdge.SetExitIfToleranceExceeded(Tol);
@@ -446,16 +452,16 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
 
         if (!pcurvefound)
         {
-          Handle(Geom_Plane)    P;
-          Handle(Standard_Type) dtyp = Su->DynamicType();
+          occ::handle<Geom_Plane>    P;
+          occ::handle<Standard_Type> dtyp = Su->DynamicType();
           if (dtyp == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
           {
-            P = Handle(Geom_Plane)::DownCast(
-              Handle(Geom_RectangularTrimmedSurface)::DownCast(Su)->BasisSurface());
+            P = occ::down_cast<Geom_Plane>(
+              occ::down_cast<Geom_RectangularTrimmedSurface>(Su)->BasisSurface());
           }
           else
           {
-            P = Handle(Geom_Plane)::DownCast(Su);
+            P = occ::down_cast<Geom_Plane>(Su);
           }
           if (P.IsNull())
           { // not a plane
@@ -466,27 +472,27 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
             // plan en position
             if (myGctrl)
             {
-              P = Handle(Geom_Plane)::DownCast(
+              P = occ::down_cast<Geom_Plane>(
                 P->Transformed(/*L*/ (Floc * TFloc).Transformation())); // eap occ332
               // on projette Cref sur ce plan
-              Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(P);
+              occ::handle<GeomAdaptor_Surface> GAHS = new GeomAdaptor_Surface(P);
 
               // Dub - Normalement myHCurve est une GeomAdaptor_Curve
-              Handle(GeomAdaptor_Curve) Gac = Handle(GeomAdaptor_Curve)::DownCast(myHCurve);
-              Handle(Geom_Curve)        C3d = Gac->Curve();
-              Handle(Geom_Curve)        ProjOnPlane =
+              occ::handle<GeomAdaptor_Curve> Gac = occ::down_cast<GeomAdaptor_Curve>(myHCurve);
+              occ::handle<Geom_Curve>        C3d = Gac->Curve();
+              occ::handle<Geom_Curve>        ProjOnPlane =
                 GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(C3d, First, Last),
                                             P,
                                             P->Position().Direction(),
-                                            Standard_True);
-              Handle(GeomAdaptor_Curve) aHCurve = new GeomAdaptor_Curve(ProjOnPlane);
+                                            true);
+              occ::handle<GeomAdaptor_Curve> aHCurve = new GeomAdaptor_Curve(ProjOnPlane);
 
-              ProjLib_ProjectedCurve      proj(GAHS, aHCurve);
-              Handle(Geom2d_Curve)        PC = Geom2dAdaptor::MakeCurve(proj);
-              Handle(Geom2dAdaptor_Curve) GHPC =
+              ProjLib_ProjectedCurve           proj(GAHS, aHCurve);
+              occ::handle<Geom2d_Curve>        PC = Geom2dAdaptor::MakeCurve(proj);
+              occ::handle<Geom2dAdaptor_Curve> GHPC =
                 new Geom2dAdaptor_Curve(PC, myHCurve->FirstParameter(), myHCurve->LastParameter());
 
-              Handle(Adaptor3d_CurveOnSurface) ACS = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
+              occ::handle<Adaptor3d_CurveOnSurface> ACS = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
 
               BRepLib_ValidateEdge aValidateEdgeProj(myHCurve, ACS, SameParameter);
               aValidateEdgeProj.SetExitIfToleranceExceeded(Tol);
@@ -504,7 +510,7 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
       break;
     case TopAbs_SOLID: {
       // on verifie que l`edge est bien connectee 2 fois (pas de bord libre)
-      Standard_Integer nbconnection = 0;
+      int nbconnection = 0;
       // TopExp_Explorer exp;
       for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
       {
@@ -549,21 +555,21 @@ void BRepCheck_Edge::Blind()
   // The body of this function is removed because of its useless.
   if (!myBlind)
   {
-    myBlind = Standard_True;
+    myBlind = true;
   }
   //  Modified by skv - Tue Apr 27 11:36:02 2004 End
 }
 
 //=================================================================================================
 
-void BRepCheck_Edge::GeometricControls(const Standard_Boolean B)
+void BRepCheck_Edge::GeometricControls(const bool B)
 {
   myGctrl = B;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepCheck_Edge::GeometricControls() const
+bool BRepCheck_Edge::GeometricControls() const
 {
   return myGctrl;
 }
@@ -579,16 +585,16 @@ void BRepCheck_Edge::SetStatus(const BRepCheck_Status theStatus)
 
 //=================================================================================================
 
-Standard_Real BRepCheck_Edge::Tolerance()
+double BRepCheck_Edge::Tolerance()
 {
-  Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&myShape.TShape());
-  Standard_Integer    it, iRep = 1, nbRep = (TE->Curves()).Extent();
+  occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&myShape.TShape());
+  int                      it, iRep = 1, nbRep = (TE->Curves()).Extent();
   if (nbRep <= 1)
   {
     return Precision::Confusion();
   }
-  TColStd_Array1OfTransient theRep(1, nbRep * 2);
-  Standard_Real             First, Last;
+  NCollection_Array1<occ::handle<Standard_Transient>> theRep(1, nbRep * 2);
+  double                                              First, Last;
   if (!myHCurve.IsNull())
   {
     First = myHCurve->FirstParameter();
@@ -599,16 +605,16 @@ Standard_Real BRepCheck_Edge::Tolerance()
     BRep_Tool::Range(TopoDS::Edge(myShape), First, Last);
   }
 
-  BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   for (; itcr.More(); itcr.Next())
   {
-    const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
     if (cr->IsCurve3D() && !TE->Degenerated())
     {
       //// modified by jgv, 20.03.03 ////
-      TopLoc_Location    Loc = myShape.Location() * cr->Location();
-      Handle(Geom_Curve) C3d =
-        Handle(Geom_Curve)::DownCast(cr->Curve3D()->Transformed(Loc.Transformation()));
+      TopLoc_Location         Loc = myShape.Location() * cr->Location();
+      occ::handle<Geom_Curve> C3d =
+        occ::down_cast<Geom_Curve>(cr->Curve3D()->Transformed(Loc.Transformation()));
       ///////////////////////////////////
       GeomAdaptor_Curve GAC3d(C3d, First, Last);
       it = iRep;
@@ -623,26 +629,26 @@ Standard_Real BRepCheck_Edge::Tolerance()
     else if (cr->IsCurveOnSurface())
     {
       {
-        Handle(Geom_Surface) Sref = cr->Surface();
+        occ::handle<Geom_Surface> Sref = cr->Surface();
         //// modified by jgv, 20.03.03 ////
         TopLoc_Location Loc = myShape.Location() * cr->Location();
-        Sref = Handle(Geom_Surface)::DownCast(Sref->Transformed(Loc.Transformation()));
+        Sref                = occ::down_cast<Geom_Surface>(Sref->Transformed(Loc.Transformation()));
         ///////////////////////////////////
-        const Handle(Geom2d_Curve)& PCref   = cr->PCurve();
-        Handle(GeomAdaptor_Surface) GAHSref = new GeomAdaptor_Surface(Sref);
-        Handle(Geom2dAdaptor_Curve) GHPCref = new Geom2dAdaptor_Curve(PCref, First, Last);
-        Adaptor3d_CurveOnSurface    ACSref(GHPCref, GAHSref);
+        const occ::handle<Geom2d_Curve>& PCref   = cr->PCurve();
+        occ::handle<GeomAdaptor_Surface> GAHSref = new GeomAdaptor_Surface(Sref);
+        occ::handle<Geom2dAdaptor_Curve> GHPCref = new Geom2dAdaptor_Curve(PCref, First, Last);
+        Adaptor3d_CurveOnSurface         ACSref(GHPCref, GAHSref);
         theRep(iRep) = new Adaptor3d_CurveOnSurface(ACSref);
         iRep++;
       }
       if (cr->IsCurveOnClosedSurface())
       {
-        Handle(Geom_Surface) Sref = cr->Surface();
-        Sref = Handle(Geom_Surface)::DownCast(Sref->Transformed(cr->Location().Transformation()));
-        const Handle(Geom2d_Curve)& PCref   = cr->PCurve2();
-        Handle(GeomAdaptor_Surface) GAHSref = new GeomAdaptor_Surface(Sref);
-        Handle(Geom2dAdaptor_Curve) GHPCref = new Geom2dAdaptor_Curve(PCref, First, Last);
-        Adaptor3d_CurveOnSurface    ACSref(GHPCref, GAHSref);
+        occ::handle<Geom_Surface> Sref = cr->Surface();
+        Sref = occ::down_cast<Geom_Surface>(Sref->Transformed(cr->Location().Transformation()));
+        const occ::handle<Geom2d_Curve>& PCref   = cr->PCurve2();
+        occ::handle<GeomAdaptor_Surface> GAHSref = new GeomAdaptor_Surface(Sref);
+        occ::handle<Geom2dAdaptor_Curve> GHPCref = new Geom2dAdaptor_Curve(PCref, First, Last);
+        Adaptor3d_CurveOnSurface         ACSref(GHPCref, GAHSref);
         theRep(iRep) = new Adaptor3d_CurveOnSurface(ACSref);
         iRep++;
         nbRep++;
@@ -654,14 +660,14 @@ Standard_Real BRepCheck_Edge::Tolerance()
     }
   }
 
-  Standard_Real    dist2, tol2, tolCal = 0., prm;
-  gp_Pnt           center, othP;
-  Standard_Integer i;
+  double dist2, tol2, tolCal = 0., prm;
+  gp_Pnt center, othP;
+  int    i;
   for (i = 0; i < NCONTROL; i++)
   {
     prm  = ((NCONTROL - 1 - i) * First + i * Last) / (NCONTROL - 1);
     tol2 = dist2 = 0.;
-    center       = (*(Handle(Adaptor3d_Curve)*)&theRep(1))->Value(prm);
+    center       = (*(occ::handle<Adaptor3d_Curve>*)&theRep(1))->Value(prm);
     if (Precision::IsInfinite(center.X()) || Precision::IsInfinite(center.Y())
         || Precision::IsInfinite(center.Z()))
     {
@@ -669,7 +675,7 @@ Standard_Real BRepCheck_Edge::Tolerance()
     }
     for (iRep = 2; iRep <= nbRep; iRep++)
     {
-      othP = (*(Handle(Adaptor3d_Curve)*)&theRep(iRep))->Value(prm);
+      othP = (*(occ::handle<Adaptor3d_Curve>*)&theRep(iRep))->Value(prm);
       if (Precision::IsInfinite(othP.X()) || Precision::IsInfinite(othP.Y())
           || Precision::IsInfinite(othP.Z()))
       {
@@ -692,9 +698,9 @@ Standard_Real BRepCheck_Edge::Tolerance()
 
 BRepCheck_Status BRepCheck_Edge::CheckPolygonOnTriangulation(const TopoDS_Edge& theEdge)
 {
-  BRep_ListOfCurveRepresentation& aListOfCR =
-    (*((Handle(BRep_TEdge)*)&theEdge.TShape()))->ChangeCurves();
-  BRep_ListIteratorOfListOfCurveRepresentation anITCR(aListOfCR);
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>& aListOfCR =
+    (*((occ::handle<BRep_TEdge>*)&theEdge.TShape()))->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator anITCR(aListOfCR);
 
   BRepAdaptor_Curve aBC;
   aBC.Initialize(theEdge);
@@ -710,32 +716,30 @@ BRepCheck_Status BRepCheck_Edge::CheckPolygonOnTriangulation(const TopoDS_Edge& 
       continue;
     }
 
-    const Handle(BRep_CurveRepresentation) aCR = anITCR.Value();
-    Handle(BRep_PolygonOnTriangulation)    aPT(Handle(BRep_PolygonOnTriangulation)::DownCast(aCR));
+    const occ::handle<BRep_CurveRepresentation> aCR = anITCR.Value();
+    occ::handle<BRep_PolygonOnTriangulation> aPT(occ::down_cast<BRep_PolygonOnTriangulation>(aCR));
 
     const TopLoc_Location aLL   = theEdge.Location() * aPT->Location();
     const gp_Trsf         aTrsf = aLL;
 
-    const Handle(Poly_Triangulation)          aTriang   = aCR->Triangulation();
-    const Handle(Poly_PolygonOnTriangulation) aPOnTriag = aCR->IsPolygonOnClosedTriangulation()
-                                                            ? aCR->PolygonOnTriangulation2()
-                                                            : aCR->PolygonOnTriangulation();
-    const TColStd_Array1OfInteger&            anIndices = aPOnTriag->Nodes();
-    const Standard_Integer                    aNbNodes  = anIndices.Length();
+    const occ::handle<Poly_Triangulation>          aTriang   = aCR->Triangulation();
+    const occ::handle<Poly_PolygonOnTriangulation> aPOnTriag = aCR->IsPolygonOnClosedTriangulation()
+                                                                 ? aCR->PolygonOnTriangulation2()
+                                                                 : aCR->PolygonOnTriangulation();
+    const NCollection_Array1<int>&                 anIndices = aPOnTriag->Nodes();
+    const int                                      aNbNodes  = anIndices.Length();
 
-    const Standard_Real aTol = aPOnTriag->Deflection() + BRep_Tool::Tolerance(theEdge);
+    const double aTol = aPOnTriag->Deflection() + BRep_Tool::Tolerance(theEdge);
 
     if (aPOnTriag->HasParameters())
     {
-      for (Standard_Integer i = aPOnTriag->Parameters()->Lower();
-           i <= aPOnTriag->Parameters()->Upper();
-           i++)
+      for (int i = aPOnTriag->Parameters()->Lower(); i <= aPOnTriag->Parameters()->Upper(); i++)
       {
-        const Standard_Real aParam = aPOnTriag->Parameters()->Value(i);
-        const gp_Pnt        aPE(aBC.Value(aParam));
-        const gp_Pnt        aPnt(aTriang->Node(anIndices(i)).Transformed(aTrsf));
+        const double aParam = aPOnTriag->Parameters()->Value(i);
+        const gp_Pnt aPE(aBC.Value(aParam));
+        const gp_Pnt aPnt(aTriang->Node(anIndices(i)).Transformed(aTrsf));
 
-        const Standard_Real aSQDist = aPE.SquareDistance(aPnt);
+        const double aSQDist = aPE.SquareDistance(aPnt);
         if (aSQDist > aTol * aTol)
         {
           return BRepCheck_InvalidPolygonOnTriangulation;
@@ -749,7 +753,7 @@ BRepCheck_Status BRepCheck_Edge::CheckPolygonOnTriangulation(const TopoDS_Edge& 
 
       Bnd_Box aB;
 
-      for (Standard_Integer i = 1; i <= aNbNodes; i++)
+      for (int i = 1; i <= aNbNodes; i++)
       {
         if (aTrsf.Form() == gp_Identity)
         {
@@ -763,14 +767,14 @@ BRepCheck_Status BRepCheck_Edge::CheckPolygonOnTriangulation(const TopoDS_Edge& 
 
       aB.Enlarge(aTol);
 
-      Standard_Real aFP = aBC.FirstParameter();
-      Standard_Real aLP = aBC.LastParameter();
+      double aFP = aBC.FirstParameter();
+      double aLP = aBC.LastParameter();
 
-      const Standard_Real aStep = (aLP - aFP) / IntToReal(NCONTROL);
-      gp_Pnt              aP;
-      Standard_Real       aPar = aFP;
+      const double aStep = (aLP - aFP) / IntToReal(NCONTROL);
+      gp_Pnt       aP;
+      double       aPar = aFP;
 
-      for (Standard_Integer i = 1; i < NCONTROL; i++)
+      for (int i = 1; i < NCONTROL; i++)
       {
         aBC.D0(aPar, aP);
         if (aB.IsOut(aP))

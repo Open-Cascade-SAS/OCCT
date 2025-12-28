@@ -26,15 +26,15 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_TabulatedCylinder, IGESData_IGESEntity)
 
 IGESGeom_TabulatedCylinder::IGESGeom_TabulatedCylinder() {}
 
-void IGESGeom_TabulatedCylinder::Init(const Handle(IGESData_IGESEntity)& aDirectrix,
-                                      const gp_XYZ&                      anEnd)
+void IGESGeom_TabulatedCylinder::Init(const occ::handle<IGESData_IGESEntity>& aDirectrix,
+                                      const gp_XYZ&                           anEnd)
 {
   theDirectrix = aDirectrix;
   theEnd       = anEnd;
   InitTypeAndForm(122, 0);
 }
 
-Handle(IGESData_IGESEntity) IGESGeom_TabulatedCylinder::Directrix() const
+occ::handle<IGESData_IGESEntity> IGESGeom_TabulatedCylinder::Directrix() const
 {
   return theDirectrix;
 }

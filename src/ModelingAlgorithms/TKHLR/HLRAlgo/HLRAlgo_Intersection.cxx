@@ -30,11 +30,11 @@ HLRAlgo_Intersection::HLRAlgo_Intersection()
 //=================================================================================================
 
 HLRAlgo_Intersection::HLRAlgo_Intersection(const TopAbs_Orientation Ori,
-                                           const Standard_Integer   Lev,
-                                           const Standard_Integer   SegInd,
-                                           const Standard_Integer   Ind,
-                                           const Standard_Real      P,
-                                           const Standard_ShortReal Tol,
+                                           const int                Lev,
+                                           const int                SegInd,
+                                           const int                Ind,
+                                           const double             P,
+                                           const float              Tol,
                                            const TopAbs_State       S)
     : myOrien(Ori),
       mySegIndex(SegInd),

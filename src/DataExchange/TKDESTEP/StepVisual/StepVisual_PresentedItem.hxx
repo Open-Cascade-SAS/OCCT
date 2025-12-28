@@ -22,17 +22,11 @@
 
 #include <Standard_Transient.hxx>
 
-class StepVisual_PresentedItem;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentedItem, Standard_Transient)
-
 class StepVisual_PresentedItem : public Standard_Transient
 {
 
 public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_PresentedItem, Standard_Transient)
-
-protected:
-private:
 };
 
 #endif // _StepVisual_PresentedItem_HeaderFile

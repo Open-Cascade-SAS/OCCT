@@ -25,36 +25,31 @@
 class GeomFill_CoonsAlgPatch;
 class gp_Vec;
 
-class GeomFill_TgtOnCoons;
-DEFINE_STANDARD_HANDLE(GeomFill_TgtOnCoons, GeomFill_TgtField)
-
 //! Defines an algorithmic tangents field on a
 //! boundary of a CoonsAlgPatch.
 class GeomFill_TgtOnCoons : public GeomFill_TgtField
 {
 
 public:
-  Standard_EXPORT GeomFill_TgtOnCoons(const Handle(GeomFill_CoonsAlgPatch)& K,
-                                      const Standard_Integer                I);
+  Standard_EXPORT GeomFill_TgtOnCoons(const occ::handle<GeomFill_CoonsAlgPatch>& K, const int I);
 
   //! Computes the value of the field of tangency at
   //! parameter W.
-  Standard_EXPORT gp_Vec Value(const Standard_Real W) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec Value(const double W) const override;
 
   //! Computes the derivative of the field of tangency at
   //! parameter W.
-  Standard_EXPORT gp_Vec D1(const Standard_Real W) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec D1(const double W) const override;
 
   //! Computes the value and the derivative of the field of
   //! tangency at parameter W.
-  Standard_EXPORT void D1(const Standard_Real W, gp_Vec& T, gp_Vec& DT) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double W, gp_Vec& T, gp_Vec& DT) const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_TgtOnCoons, GeomFill_TgtField)
 
-protected:
 private:
-  Handle(GeomFill_CoonsAlgPatch) myK;
-  Standard_Integer               ibound;
+  occ::handle<GeomFill_CoonsAlgPatch> myK;
+  int                                 ibound;
 };
 
 #endif // _GeomFill_TgtOnCoons_HeaderFile

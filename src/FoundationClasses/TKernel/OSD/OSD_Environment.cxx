@@ -191,7 +191,7 @@ void OSD_Environment::Reset()
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
-Standard_Boolean OSD_Environment::Failed() const
+bool OSD_Environment::Failed() const
 {
   return myError.Failed();
 }
@@ -205,7 +205,7 @@ void OSD_Environment::Perror()
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
-Standard_Integer OSD_Environment::Error() const
+int OSD_Environment::Error() const
 {
   return myError.Error();
 }
@@ -277,15 +277,15 @@ TCollection_AsciiString OSD_Environment::Value()
   // up-to-date value of environment variable nevertheless C-runtime version used (or not used at
   // all) for setting value externally, considering msvc C-runtime implementation details.
   SetLastError(ERROR_SUCCESS);
-  NCollection_UtfWideString aNameWide(myName.ToCString());
-  DWORD                     aSize = GetEnvironmentVariableW(aNameWide.ToCString(), NULL, 0);
+  NCollection_UtfString<wchar_t> aNameWide(myName.ToCString());
+  DWORD                          aSize = GetEnvironmentVariableW(aNameWide.ToCString(), NULL, 0);
   if (aSize == 0 && GetLastError() != ERROR_SUCCESS)
   {
     _set_error(myError, ERROR_ENVVAR_NOT_FOUND);
     return myValue;
   }
 
-  NCollection_Utf8String aValue;
+  NCollection_UtfString<char> aValue;
   aSize += 1; // NULL-terminator
   wchar_t* aBuff = new wchar_t[aSize];
   GetEnvironmentVariableW(aNameWide.ToCString(), aBuff, aSize);
@@ -319,8 +319,8 @@ void OSD_Environment::Build()
   std::lock_guard<std::mutex> aLock(THE_ENV_LOCK);
   THE_ENV_MAP.Bind(myName, myValue);
   #else
-  NCollection_Utf8String aSetVariable =
-    NCollection_Utf8String(myName.ToCString()) + "=" + myValue.ToCString();
+  NCollection_UtfString<char> aSetVariable =
+    NCollection_UtfString<char>(myName.ToCString()) + "=" + myValue.ToCString();
   _wputenv(aSetVariable.ToUtfWide().ToCString());
   #endif
 }
@@ -331,12 +331,12 @@ void OSD_Environment::Remove()
   std::lock_guard<std::mutex> aLock(THE_ENV_LOCK);
   THE_ENV_MAP.UnBind(myName);
   #else
-  NCollection_Utf8String aSetVariable = NCollection_Utf8String(myName.ToCString()) + "=";
+  NCollection_UtfString<char> aSetVariable = NCollection_UtfString<char>(myName.ToCString()) + "=";
   _wputenv(aSetVariable.ToUtfWide().ToCString());
   #endif
 }
 
-Standard_Boolean OSD_Environment ::Failed() const
+bool OSD_Environment ::Failed() const
 {
 
   return myError.Failed();
@@ -355,7 +355,7 @@ void OSD_Environment ::Perror()
   myError.Perror();
 } // end OSD_Environment :: Perror
 
-Standard_Integer OSD_Environment ::Error() const
+int OSD_Environment ::Error() const
 {
 
   return myError.Error();
@@ -377,7 +377,7 @@ static void __fastcall _set_error(OSD_Error& theErr, DWORD theCode)
   {
     theErr.SetValue(anErrCode,
                     OSD_WEnvironment,
-                    TCollection_AsciiString("error code ") + (Standard_Integer)anErrCode);
+                    TCollection_AsciiString("error code ") + (int)anErrCode);
     SetLastError(anErrCode);
   }
   else

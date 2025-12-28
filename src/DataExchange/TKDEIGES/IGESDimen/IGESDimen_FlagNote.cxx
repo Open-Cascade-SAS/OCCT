@@ -29,10 +29,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_FlagNote, IGESData_IGESEntity)
 
 IGESDimen_FlagNote::IGESDimen_FlagNote() {}
 
-void IGESDimen_FlagNote::Init(const gp_XYZ&                                 leftCorner,
-                              const Standard_Real                           anAngle,
-                              const Handle(IGESDimen_GeneralNote)&          aNote,
-                              const Handle(IGESDimen_HArray1OfLeaderArrow)& someLeaders)
+void IGESDimen_FlagNote::Init(
+  const gp_XYZ&                                                               leftCorner,
+  const double                                                                anAngle,
+  const occ::handle<IGESDimen_GeneralNote>&                                   aNote,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders)
 {
   if (!someLeaders.IsNull())
     if (someLeaders->Lower() != 1)
@@ -58,35 +59,35 @@ gp_Pnt IGESDimen_FlagNote::TransformedLowerLeftCorner() const
   return gp_Pnt(tempXYZ);
 }
 
-Standard_Real IGESDimen_FlagNote::Angle() const
+double IGESDimen_FlagNote::Angle() const
 {
   return theAngle;
 }
 
-Handle(IGESDimen_GeneralNote) IGESDimen_FlagNote::Note() const
+occ::handle<IGESDimen_GeneralNote> IGESDimen_FlagNote::Note() const
 {
   return theNote;
 }
 
-Standard_Integer IGESDimen_FlagNote::NbLeaders() const
+int IGESDimen_FlagNote::NbLeaders() const
 {
   return (theLeaders.IsNull() ? 0 : theLeaders->Length());
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_FlagNote::Leader(const Standard_Integer Index) const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_FlagNote::Leader(const int Index) const
 {
   return theLeaders->Value(Index);
 }
 
-Standard_Real IGESDimen_FlagNote::Height() const
+double IGESDimen_FlagNote::Height() const
 {
   return (2 * CharacterHeight());
 }
 
-Standard_Real IGESDimen_FlagNote::CharacterHeight() const
+double IGESDimen_FlagNote::CharacterHeight() const
 {
-  Standard_Real Max = theNote->BoxHeight(1);
-  for (Standard_Integer i = 2; i <= theNote->NbStrings(); i++)
+  double Max = theNote->BoxHeight(1);
+  for (int i = 2; i <= theNote->NbStrings(); i++)
   {
     if (Max < theNote->BoxHeight(i))
       Max = theNote->BoxHeight(i);
@@ -94,20 +95,20 @@ Standard_Real IGESDimen_FlagNote::CharacterHeight() const
   return (Max);
 }
 
-Standard_Real IGESDimen_FlagNote::Length() const
+double IGESDimen_FlagNote::Length() const
 {
   return (TextWidth() + (0.4 * CharacterHeight()));
 }
 
-Standard_Real IGESDimen_FlagNote::TextWidth() const
+double IGESDimen_FlagNote::TextWidth() const
 {
-  Standard_Real width = 0;
-  for (Standard_Integer i = 1; i <= theNote->NbStrings(); i++)
+  double width = 0;
+  for (int i = 1; i <= theNote->NbStrings(); i++)
     width += theNote->BoxWidth(i);
   return (width);
 }
 
-Standard_Real IGESDimen_FlagNote::TipLength() const
+double IGESDimen_FlagNote::TipLength() const
 {
   return (0.5 * (Height() / std::tan((35. / 180.) * M_PI)));
 }

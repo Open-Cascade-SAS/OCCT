@@ -18,7 +18,11 @@
 #ifndef TObj_TNameContainer_HeaderFile
 #define TObj_TNameContainer_HeaderFile
 
-#include <TObj_Container.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
+#include <TDF_Label.hxx>
+#include <TObj_SequenceOfObject.hxx>
 #include <TDF_Attribute.hxx>
 
 /**
@@ -38,27 +42,27 @@ public:
   static Standard_EXPORT const Standard_GUID& GetID();
 
   //! Returns the ID of TObj_TNameContainer attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
 public:
   //! Method for create TObj_TNameContainer object
 
-  //! Creates TObj_DataMapOfNameLabel attribute on given label if not exist
-  static Standard_EXPORT Handle(TObj_TNameContainer) Set(const TDF_Label& theLabel);
+  //! Creates NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label> attribute on
+  //! given label if not exist
+  static Standard_EXPORT occ::handle<TObj_TNameContainer> Set(const TDF_Label& theLabel);
 
 public:
   //! Methods for adding and removing names
 
   //! Records name with label attached
-  Standard_EXPORT void RecordName(const Handle(TCollection_HExtendedString)& theName,
-                                  const TDF_Label&                           theLabel);
+  Standard_EXPORT void RecordName(const occ::handle<TCollection_HExtendedString>& theName,
+                                  const TDF_Label&                                theLabel);
 
   //! Remove name from the map
-  Standard_EXPORT void RemoveName(const Handle(TCollection_HExtendedString)& theName);
+  Standard_EXPORT void RemoveName(const occ::handle<TCollection_HExtendedString>& theName);
 
   //! Return True is theName is registered in the Map
-  Standard_EXPORT Standard_Boolean
-    IsRegistered(const Handle(TCollection_HExtendedString)& theName) const;
+  Standard_EXPORT bool IsRegistered(const occ::handle<TCollection_HExtendedString>& theName) const;
 
   //! Remove all names registered in container
   Standard_EXPORT void Clear();
@@ -66,31 +70,34 @@ public:
 public:
   //! Methods for setting and obtaining TObj_TNameContainer
 
-  //! Sets the TObj_DataMapOfNameLabel object
-  Standard_EXPORT void Set(const TObj_DataMapOfNameLabel& theElem);
+  //! Sets the NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label> object
+  Standard_EXPORT void Set(
+    const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>& theElem);
 
-  //! Returns the TObj_DataMapOfNameLabel object
-  Standard_EXPORT const TObj_DataMapOfNameLabel& Get() const;
+  //! Returns the NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label> object
+  Standard_EXPORT const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>&
+                        Get() const;
 
 public:
   //! Redefined OCAF abstract methods
 
   //! Returns an new empty TObj_TNameContainer attribute. It is used by the
   //! copy algorithm.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Restores the backuped contents from <theWith> into this one. It is used
   //! when aborting a transaction.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theWith) override;
 
   //! This method is used when copying an attribute from a source structure
   //! into a target structure.
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theInto,
-                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theInto,
+                             const occ::handle<TDF_RelocationTable>& theRT) const override;
 
 private:
   //! Fields
-  TObj_DataMapOfNameLabel myMap; //!< The map of the names
+  NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>
+    myMap; //!< The map of the names
 
 public:
   //! CASCADE RTTI
@@ -98,8 +105,6 @@ public:
 };
 
 //! Define handle class for TObj_TObject
-DEFINE_STANDARD_HANDLE(TObj_TNameContainer, TDF_Attribute)
-
 #endif
 
 #ifdef _MSC_VER

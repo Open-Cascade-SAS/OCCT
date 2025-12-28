@@ -60,8 +60,7 @@ set(OCCT_BRepBlend_FILES
   BRepBlend_RstRstLineBuilder.lxx
   BRepBlend_Ruled.hxx
   BRepBlend_RuledInv.hxx
-  BRepBlend_SequenceOfLine.hxx
-  BRepBlend_SequenceOfPointOnRst.hxx
+
   BRepBlend_SurfCurvConstRadInv.cxx
   BRepBlend_SurfCurvConstRadInv.hxx
   BRepBlend_SurfCurvEvolRadInv.cxx

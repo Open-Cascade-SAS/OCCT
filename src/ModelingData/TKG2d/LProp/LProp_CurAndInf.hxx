@@ -21,10 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_SequenceOfReal.hxx>
-#include <LProp_SequenceOfCIType.hxx>
-#include <Standard_Boolean.hxx>
+#include <NCollection_Sequence.hxx>
 #include <LProp_CIType.hxx>
+#include <Standard_Boolean.hxx>
 
 //! Stores the parameters of a curve 2d or 3d corresponding
 //! to the curvature's extremas and the Inflection's Points.
@@ -35,21 +34,21 @@ public:
 
   Standard_EXPORT LProp_CurAndInf();
 
-  Standard_EXPORT void AddInflection(const Standard_Real Param);
+  Standard_EXPORT void AddInflection(const double Param);
 
-  Standard_EXPORT void AddExtCur(const Standard_Real Param, const Standard_Boolean IsMin);
+  Standard_EXPORT void AddExtCur(const double Param, const bool IsMin);
 
   Standard_EXPORT void Clear();
 
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_EXPORT bool IsEmpty() const;
 
   //! Returns the number of points.
   //! The Points are stored to increasing parameter.
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   //! Returns the parameter of the Nth point.
   //! raises if N not in the range [1,NbPoints()]
-  Standard_EXPORT Standard_Real Parameter(const Standard_Integer N) const;
+  Standard_EXPORT double Parameter(const int N) const;
 
   //! Returns
   //! - MinCur if the Nth parameter corresponds to
@@ -59,12 +58,11 @@ public:
   //! - Inflection if the parameter corresponds to
   //! a point of inflection.
   //! raises if N not in the range [1,NbPoints()]
-  Standard_EXPORT LProp_CIType Type(const Standard_Integer N) const;
+  Standard_EXPORT LProp_CIType Type(const int N) const;
 
-protected:
 private:
-  TColStd_SequenceOfReal theParams;
-  LProp_SequenceOfCIType theTypes;
+  NCollection_Sequence<double>       theParams;
+  NCollection_Sequence<LProp_CIType> theTypes;
 };
 
 #endif // _LProp_CurAndInf_HeaderFile

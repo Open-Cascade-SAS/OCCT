@@ -17,9 +17,10 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
-static size_t NormalizedIds(const size_t aId, const Standard_Integer aDiv);
+static size_t NormalizedIds(const size_t aId, const int aDiv);
 
 //=================================================================================================
 
@@ -34,7 +35,7 @@ BOPTools_Set::BOPTools_Set()
 
 //=================================================================================================
 
-BOPTools_Set::BOPTools_Set(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPTools_Set::BOPTools_Set(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myAllocator(theAllocator),
       myShapes(myAllocator)
 {
@@ -52,7 +53,7 @@ BOPTools_Set::BOPTools_Set(const BOPTools_Set& theOther)
       mySum(theOther.mySum),
       myUpper(theOther.myUpper)
 {
-  for (TopTools_ListIteratorOfListOfShape aIt(theOther.myShapes); aIt.More(); aIt.Next())
+  for (NCollection_List<TopoDS_Shape>::Iterator aIt(theOther.myShapes); aIt.More(); aIt.Next())
   {
     const TopoDS_Shape& aShape = aIt.Value();
     myShapes.Append(aShape);
@@ -77,7 +78,7 @@ void BOPTools_Set::Clear()
 
 //=================================================================================================
 
-Standard_Integer BOPTools_Set::NbShapes() const
+int BOPTools_Set::NbShapes() const
 {
   return myNbShapes;
 }
@@ -86,7 +87,7 @@ Standard_Integer BOPTools_Set::NbShapes() const
 
 BOPTools_Set& BOPTools_Set::Assign(const BOPTools_Set& theOther)
 {
-  TopTools_ListIteratorOfListOfShape aIt;
+  NCollection_List<TopoDS_Shape>::Iterator aIt;
   //
   myShape     = theOther.myShape;
   myNbShapes  = theOther.myNbShapes;
@@ -113,19 +114,19 @@ const TopoDS_Shape& BOPTools_Set::Shape() const
 
 //=================================================================================================
 
-Standard_Boolean BOPTools_Set::IsEqual(const BOPTools_Set& theOther) const
+bool BOPTools_Set::IsEqual(const BOPTools_Set& theOther) const
 {
-  Standard_Boolean bRet;
+  bool bRet;
   //
-  bRet = Standard_False;
+  bRet = false;
   //
   if (theOther.myNbShapes != myNbShapes)
   {
     return bRet;
   }
   //
-  TopTools_MapOfShape                aM1;
-  TopTools_ListIteratorOfListOfShape aIt;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aM1;
+  NCollection_List<TopoDS_Shape>::Iterator               aIt;
   //
   aIt.Initialize(myShapes);
   for (; aIt.More(); aIt.Next())
@@ -198,7 +199,7 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType)
     return;
   }
   //
-  TopTools_ListIteratorOfListOfShape aIt;
+  NCollection_List<TopoDS_Shape>::Iterator aIt;
   //
   aIt.Initialize(myShapes);
   for (; aIt.More(); aIt.Next())
@@ -212,7 +213,7 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType)
 
 //=================================================================================================
 
-size_t NormalizedIds(const size_t aId, const Standard_Integer aDiv)
+size_t NormalizedIds(const size_t aId, const int aDiv)
 {
   size_t aMax, aTresh, aIdRet;
   //

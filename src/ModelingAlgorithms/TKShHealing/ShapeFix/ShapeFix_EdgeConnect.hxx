@@ -20,8 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Edge;
 class TopoDS_Shape;
 
@@ -52,10 +54,10 @@ public:
   //! Clears internal data structure
   Standard_EXPORT void Clear();
 
-protected:
 private:
-  TopTools_DataMapOfShapeShape       myVertices;
-  TopTools_DataMapOfShapeListOfShape myLists;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVertices;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myLists;
 };
 
 #endif // _ShapeFix_EdgeConnect_HeaderFile

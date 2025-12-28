@@ -19,14 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <IGESSolid_HArray1OfFace.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESData_IGESEntity.hxx>
+#include <IGESSolid_Face.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <IGESData_IGESEntity.hxx>
 class IGESSolid_Face;
-
-class IGESSolid_Shell;
-DEFINE_STANDARD_HANDLE(IGESSolid_Shell, IGESData_IGESEntity)
 
 //! defines Shell, Type <514> Form Number <1>
 //! in package IGESSolid
@@ -45,34 +43,34 @@ public:
   //! - allFaces  : the faces comprising the shell
   //! - allOrient : the orientation flags of the shell
   //! raises exception if length of allFaces & allOrient do not match
-  Standard_EXPORT void Init(const Handle(IGESSolid_HArray1OfFace)&  allFaces,
-                            const Handle(TColStd_HArray1OfInteger)& allOrient);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>& allFaces,
+    const occ::handle<NCollection_HArray1<int>>&                         allOrient);
 
   //! Tells if a Shell is Closed, i.e. if its FormNumber is 1
   //! (this is the default)
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT bool IsClosed() const;
 
   //! Sets or Unsets the Closed status (FormNumber = 1 else 2)
-  Standard_EXPORT void SetClosed(const Standard_Boolean closed);
+  Standard_EXPORT void SetClosed(const bool closed);
 
   //! returns the number of the face entities in the shell
-  Standard_EXPORT Standard_Integer NbFaces() const;
+  Standard_EXPORT int NbFaces() const;
 
   //! returns the Index'th face entity of the shell
   //! raises exception if Index <= 0 or Index > NbFaces()
-  Standard_EXPORT Handle(IGESSolid_Face) Face(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESSolid_Face> Face(const int Index) const;
 
   //! returns the orientation of Index'th face w.r.t the direction of
   //! the underlying surface
   //! raises exception if Index <= 0 or Index > NbFaces()
-  Standard_EXPORT Standard_Boolean Orientation(const Standard_Integer Index) const;
+  Standard_EXPORT bool Orientation(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Shell, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESSolid_HArray1OfFace)  theFaces;
-  Handle(TColStd_HArray1OfInteger) theOrientation;
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>> theFaces;
+  occ::handle<NCollection_HArray1<int>>                         theOrientation;
 };
 
 #endif // _IGESSolid_Shell_HeaderFile

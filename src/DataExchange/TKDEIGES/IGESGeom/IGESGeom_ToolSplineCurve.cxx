@@ -29,31 +29,33 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 #include <stdio.h>
 
 // MGE 29/07/98
 IGESGeom_ToolSplineCurve::IGESGeom_ToolSplineCurve() {}
 
-void IGESGeom_ToolSplineCurve::ReadOwnParams(const Handle(IGESGeom_SplineCurve)& ent,
-                                             const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESGeom_ToolSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_SplineCurve>& ent,
+                                             const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                              IGESData_ParamReader& PR) const
 {
   // MGE 29/07/98
   // Building of messages
 
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer              nbSegments;
-  Standard_Integer              aType, aDegree, nbDimensions;
-  Handle(TColStd_HArray1OfReal) allBreakPoints;
-  Handle(TColStd_HArray2OfReal) allXPolynomials;
-  Handle(TColStd_HArray2OfReal) allYPolynomials;
-  Handle(TColStd_HArray2OfReal) allZPolynomials;
-  Handle(TColStd_HArray1OfReal) allXvalues = new TColStd_HArray1OfReal(1, 4);
-  Handle(TColStd_HArray1OfReal) allYvalues = new TColStd_HArray1OfReal(1, 4);
-  Handle(TColStd_HArray1OfReal) allZvalues = new TColStd_HArray1OfReal(1, 4);
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int                                      nbSegments;
+  int                                      aType, aDegree, nbDimensions;
+  occ::handle<NCollection_HArray1<double>> allBreakPoints;
+  occ::handle<NCollection_HArray2<double>> allXPolynomials;
+  occ::handle<NCollection_HArray2<double>> allYPolynomials;
+  occ::handle<NCollection_HArray2<double>> allZPolynomials;
+  occ::handle<NCollection_HArray1<double>> allXvalues = new NCollection_HArray1<double>(1, 4);
+  occ::handle<NCollection_HArray1<double>> allYvalues = new NCollection_HArray1<double>(1, 4);
+  occ::handle<NCollection_HArray1<double>> allZvalues = new NCollection_HArray1<double>(1, 4);
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (!PR.ReadInteger(PR.Current(), aType))
@@ -88,10 +90,10 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const Handle(IGESGeom_SplineCurve)&
     }
     else
     {
-      allXPolynomials = new TColStd_HArray2OfReal(1, nbSegments, 1, 4);
-      allYPolynomials = new TColStd_HArray2OfReal(1, nbSegments, 1, 4);
-      allZPolynomials = new TColStd_HArray2OfReal(1, nbSegments, 1, 4);
-      allBreakPoints  = new TColStd_HArray1OfReal(1, (nbSegments + 1));
+      allXPolynomials = new NCollection_HArray2<double>(1, nbSegments, 1, 4);
+      allYPolynomials = new NCollection_HArray2<double>(1, nbSegments, 1, 4);
+      allZPolynomials = new NCollection_HArray2<double>(1, nbSegments, 1, 4);
+      allBreakPoints  = new NCollection_HArray1<double>(1, (nbSegments + 1));
     }
     Message_Msg Msg95("XSTEP_95");
     // clang-format off
@@ -108,19 +110,19 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const Handle(IGESGeom_SplineCurve)&
     PR.SendFail(Msg94);
   }
 
-  Handle(TColStd_HArray1OfReal) temp;
-  temp = new TColStd_HArray1OfReal(1, 4);
+  occ::handle<NCollection_HArray1<double>> temp;
+  temp = new NCollection_HArray1<double>(1, 4);
 
   if (!allXPolynomials.IsNull())
   {
-    Standard_Integer I;
+    int I;
     for (I = 1; I <= nbSegments; I++)
     {
       // st = PR.ReadReals(PR.CurrentList(4),"X-Coordinate Polynomial",temp); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadReals(PR.CurrentList(4), "X-Coordinate Polynomial", temp))
       {
-        Standard_Integer J;
+        int J;
         for (J = 1; J <= 4; J++)
           allXPolynomials->SetValue(I, J, temp->Value(J));
       }
@@ -129,7 +131,7 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const Handle(IGESGeom_SplineCurve)&
       // moved in if
       if (PR.ReadReals(PR.CurrentList(4), "Y-Coordinate Polynomial", temp))
       {
-        Standard_Integer J;
+        int J;
         for (J = 1; J <= 4; J++)
           allYPolynomials->SetValue(I, J, temp->Value(J));
       }
@@ -138,7 +140,7 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const Handle(IGESGeom_SplineCurve)&
       // moved in if
       if (PR.ReadReals(PR.CurrentList(4), "Z-Coordinate Polynomial", temp))
       {
-        Standard_Integer J;
+        int J;
         for (J = 1; J <= 4; J++)
           allZPolynomials->SetValue(I, J, temp->Value(J));
       }
@@ -149,7 +151,7 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const Handle(IGESGeom_SplineCurve)&
   // moved in if
   if (PR.ReadReals(PR.CurrentList(4), "TerminatePoint X-Values", temp))
   {
-    Standard_Integer J;
+    int J;
     for (J = 1; J <= 4; J++)
       allXvalues->SetValue(J, temp->Value(J));
   }
@@ -158,7 +160,7 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const Handle(IGESGeom_SplineCurve)&
   // moved in if
   if (PR.ReadReals(PR.CurrentList(4), "TerminatePoint Y-Values", temp))
   {
-    Standard_Integer J;
+    int J;
     for (J = 1; J <= 4; J++)
       allYvalues->SetValue(J, temp->Value(J));
   }
@@ -167,7 +169,7 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const Handle(IGESGeom_SplineCurve)&
   // moved in if
   if (PR.ReadReals(PR.CurrentList(4), "TerminatePoint Z-Values", temp))
   {
-    Standard_Integer J;
+    int J;
     for (J = 1; J <= 4; J++)
       allZvalues->SetValue(J, temp->Value(J));
   }
@@ -193,23 +195,23 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const Handle(IGESGeom_SplineCurve)&
   }
 }
 
-void IGESGeom_ToolSplineCurve::WriteOwnParams(const Handle(IGESGeom_SplineCurve)& ent,
-                                              IGESData_IGESWriter&                IW) const
+void IGESGeom_ToolSplineCurve::WriteOwnParams(const occ::handle<IGESGeom_SplineCurve>& ent,
+                                              IGESData_IGESWriter&                     IW) const
 {
   IW.Send(ent->SplineType());
   IW.Send(ent->Degree());
   IW.Send(ent->NbDimensions());
-  Standard_Integer nbSegments = ent->NbSegments();
+  int nbSegments = ent->NbSegments();
   IW.Send(nbSegments);
 
-  Standard_Integer I;
+  int I;
   for (I = 1; I <= nbSegments + 1; I++)
     IW.Send(ent->BreakPoint(I));
-  Standard_Real AX, BX, CX, DX, AY, BY, CY, DY, AZ, BZ, CZ, DZ;
+  double AX, BX, CX, DX, AY, BY, CY, DY, AZ, BZ, CZ, DZ;
   for (I = 1; I <= nbSegments; I++)
   {
     // no need to declare (hides the same name in an outer scope)
-    //      Standard_Real AX,BX,CX,DX, AY,BY,CY,DY, AZ,BZ,CZ,DZ;
+    //      double AX,BX,CX,DX, AY,BY,CY,DY, AZ,BZ,CZ,DZ;
     ent->XCoordPolynomial(I, AX, BX, CX, DX);
     ent->YCoordPolynomial(I, AY, BY, CY, DY);
     ent->ZCoordPolynomial(I, AZ, BZ, CZ, DZ);
@@ -243,29 +245,33 @@ void IGESGeom_ToolSplineCurve::WriteOwnParams(const Handle(IGESGeom_SplineCurve)
   IW.Send(DZ);
 }
 
-void IGESGeom_ToolSplineCurve::OwnShared(const Handle(IGESGeom_SplineCurve)& /* ent */,
+void IGESGeom_ToolSplineCurve::OwnShared(const occ::handle<IGESGeom_SplineCurve>& /* ent */,
                                          Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESGeom_ToolSplineCurve::OwnCopy(const Handle(IGESGeom_SplineCurve)& another,
-                                       const Handle(IGESGeom_SplineCurve)& ent,
+void IGESGeom_ToolSplineCurve::OwnCopy(const occ::handle<IGESGeom_SplineCurve>& another,
+                                       const occ::handle<IGESGeom_SplineCurve>& ent,
                                        Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer I;
-  Standard_Real    A, B, C, D;
-  Standard_Integer aType        = another->SplineType();
-  Standard_Integer aDegree      = another->Degree();
-  Standard_Integer nbDimensions = another->NbDimensions();
-  Standard_Integer nbSegments   = another->NbSegments();
+  int    I;
+  double A, B, C, D;
+  int    aType        = another->SplineType();
+  int    aDegree      = another->Degree();
+  int    nbDimensions = another->NbDimensions();
+  int    nbSegments   = another->NbSegments();
 
-  Handle(TColStd_HArray1OfReal) allBreakPoints = new TColStd_HArray1OfReal(1, nbSegments + 1);
+  occ::handle<NCollection_HArray1<double>> allBreakPoints =
+    new NCollection_HArray1<double>(1, nbSegments + 1);
   for (I = 1; I <= (nbSegments + 1); I++)
     allBreakPoints->SetValue(I, another->BreakPoint(I));
 
-  Handle(TColStd_HArray2OfReal) allXPolynomials = new TColStd_HArray2OfReal(1, nbSegments, 1, 4);
-  Handle(TColStd_HArray2OfReal) allYPolynomials = new TColStd_HArray2OfReal(1, nbSegments, 1, 4);
-  Handle(TColStd_HArray2OfReal) allZPolynomials = new TColStd_HArray2OfReal(1, nbSegments, 1, 4);
+  occ::handle<NCollection_HArray2<double>> allXPolynomials =
+    new NCollection_HArray2<double>(1, nbSegments, 1, 4);
+  occ::handle<NCollection_HArray2<double>> allYPolynomials =
+    new NCollection_HArray2<double>(1, nbSegments, 1, 4);
+  occ::handle<NCollection_HArray2<double>> allZPolynomials =
+    new NCollection_HArray2<double>(1, nbSegments, 1, 4);
 
   for (I = 1; I <= nbSegments; I++)
   {
@@ -288,9 +294,9 @@ void IGESGeom_ToolSplineCurve::OwnCopy(const Handle(IGESGeom_SplineCurve)& anoth
     allZPolynomials->SetValue(I, 4, D);
   }
 
-  Handle(TColStd_HArray1OfReal) allXvalues = new TColStd_HArray1OfReal(1, 4);
-  Handle(TColStd_HArray1OfReal) allYvalues = new TColStd_HArray1OfReal(1, 4);
-  Handle(TColStd_HArray1OfReal) allZvalues = new TColStd_HArray1OfReal(1, 4);
+  occ::handle<NCollection_HArray1<double>> allXvalues = new NCollection_HArray1<double>(1, 4);
+  occ::handle<NCollection_HArray1<double>> allYvalues = new NCollection_HArray1<double>(1, 4);
+  occ::handle<NCollection_HArray1<double>> allZvalues = new NCollection_HArray1<double>(1, 4);
 
   another->XValues(A, B, C, D);
   allXvalues->SetValue(1, A);
@@ -323,7 +329,7 @@ void IGESGeom_ToolSplineCurve::OwnCopy(const Handle(IGESGeom_SplineCurve)& anoth
 }
 
 IGESData_DirChecker IGESGeom_ToolSplineCurve::DirChecker(
-  const Handle(IGESGeom_SplineCurve)& /* ent */) const
+  const occ::handle<IGESGeom_SplineCurve>& /* ent */) const
 {
   IGESData_DirChecker DC(112, 0);
   DC.Structure(IGESData_DefVoid);
@@ -335,9 +341,9 @@ IGESData_DirChecker IGESGeom_ToolSplineCurve::DirChecker(
   return DC;
 }
 
-void IGESGeom_ToolSplineCurve::OwnCheck(const Handle(IGESGeom_SplineCurve)& ent,
+void IGESGeom_ToolSplineCurve::OwnCheck(const occ::handle<IGESGeom_SplineCurve>& ent,
                                         const Interface_ShareTool&,
-                                        Handle(Interface_Check)& ach) const
+                                        occ::handle<Interface_Check>& ach) const
 {
   // MGE 29/07/98
   // Building of messages
@@ -349,10 +355,10 @@ void IGESGeom_ToolSplineCurve::OwnCheck(const Handle(IGESGeom_SplineCurve)& ent,
   }
   if (ent->NbDimensions() == 2)
   {
-    Standard_Integer nbSegments = ent->NbSegments();
-    Standard_Real    AZ, BZ, CZ, DZ;
-    Message_Msg      Msg96("XSTEP_96");
-    for (Standard_Integer I = 1; I <= nbSegments; I++)
+    int         nbSegments = ent->NbSegments();
+    double      AZ, BZ, CZ, DZ;
+    Message_Msg Msg96("XSTEP_96");
+    for (int I = 1; I <= nbSegments; I++)
     {
       ent->ZCoordPolynomial(I, AZ, BZ, CZ, DZ);
       if (BZ != 0 || CZ != 0 || DZ != 0)
@@ -368,14 +374,14 @@ void IGESGeom_ToolSplineCurve::OwnCheck(const Handle(IGESGeom_SplineCurve)& ent,
   }
 }
 
-void IGESGeom_ToolSplineCurve::OwnDump(const Handle(IGESGeom_SplineCurve)& ent,
+void IGESGeom_ToolSplineCurve::OwnDump(const occ::handle<IGESGeom_SplineCurve>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       Standard_OStream&      S,
-                                       const Standard_Integer level) const
+                                       Standard_OStream& S,
+                                       const int         level) const
 {
   S << "IGESGeom_SplineCurve\n";
 
-  Standard_Integer nbSegments = ent->NbSegments();
+  int nbSegments = ent->NbSegments();
   S << "Spline Type          : " << ent->SplineType() << "  ";
   switch (ent->SplineType())
   {
@@ -413,11 +419,11 @@ void IGESGeom_ToolSplineCurve::OwnDump(const Handle(IGESGeom_SplineCurve)& ent,
     return;
   }
   S << "  --  Polynomial  Values  --\n";
-  Standard_Real AX, BX, CX, DX, AY, BY, CY, DY, AZ, BZ, CZ, DZ;
-  for (Standard_Integer I = 1; I <= nbSegments; I++)
+  double AX, BX, CX, DX, AY, BY, CY, DY, AZ, BZ, CZ, DZ;
+  for (int I = 1; I <= nbSegments; I++)
   {
     // no need to declare (hides the same name in an outer scope)
-    //   Standard_Real AX,BX,CX,DX, AY,BY,CY,DY, AZ,BZ,CZ,DZ;
+    //   double AX,BX,CX,DX, AY,BY,CY,DY, AZ,BZ,CZ,DZ;
     ent->XCoordPolynomial(I, AX, BX, CX, DX);
     ent->YCoordPolynomial(I, AY, BY, CY, DY);
     ent->ZCoordPolynomial(I, AZ, BZ, CZ, DZ);

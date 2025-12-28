@@ -35,17 +35,17 @@
 // de Geom
 //=============================================================================
 GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface(
-  const Handle(Geom_BoundedSurface)& S,
-  const StepData_Factors&            theLocalFactors)
+  const occ::handle<Geom_BoundedSurface>& S,
+  const StepData_Factors&                 theLocalFactors)
 {
-  done = Standard_True;
+  done = true;
   if (S->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
   {
-    Handle(Geom_BSplineSurface) BS = Handle(Geom_BSplineSurface)::DownCast(S);
+    occ::handle<Geom_BSplineSurface> BS = occ::down_cast<Geom_BSplineSurface>(S);
     // UPDATE FMA 1-04-96
     if (S->IsUPeriodic() || S->IsVPeriodic())
     {
-      Handle(Geom_BSplineSurface) newBS = Handle(Geom_BSplineSurface)::DownCast(BS->Copy());
+      occ::handle<Geom_BSplineSurface> newBS = occ::down_cast<Geom_BSplineSurface>(BS->Copy());
       newBS->SetUNotPeriodic();
       newBS->SetVNotPeriodic();
       BS = newBS;
@@ -65,8 +65,8 @@ GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface(
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
   {
-    Handle(Geom_BezierSurface)  Sur = Handle(Geom_BezierSurface)::DownCast(S);
-    Handle(Geom_BSplineSurface) BS  = GeomConvert::SurfaceToBSplineSurface(Sur);
+    occ::handle<Geom_BezierSurface>  Sur = occ::down_cast<Geom_BezierSurface>(S);
+    occ::handle<Geom_BSplineSurface> BS  = GeomConvert::SurfaceToBSplineSurface(Sur);
     if (BS->IsURational() || BS->IsVRational())
     {
       GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface MkRatBSplineS(
@@ -82,20 +82,20 @@ GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface(
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
-    Handle(Geom_RectangularTrimmedSurface) Sur =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
+    occ::handle<Geom_RectangularTrimmedSurface> Sur =
+      occ::down_cast<Geom_RectangularTrimmedSurface>(S);
     GeomToStep_MakeRectangularTrimmedSurface MkRTSurf(Sur, theLocalFactors);
     theBoundedSurface = MkRTSurf.Value();
   }
   else
-    done = Standard_False;
+    done = false;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_BoundedSurface)& GeomToStep_MakeBoundedSurface::Value() const
+const occ::handle<StepGeom_BoundedSurface>& GeomToStep_MakeBoundedSurface::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeBoundedSurface::Value() - no result");
   return theBoundedSurface;

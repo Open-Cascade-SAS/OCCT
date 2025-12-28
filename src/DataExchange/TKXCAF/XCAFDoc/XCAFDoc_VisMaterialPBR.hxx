@@ -14,7 +14,15 @@
 #ifndef _XCAFDoc_VisMaterialPBR_HeaderFile
 #define _XCAFDoc_VisMaterialPBR_HeaderFile
 
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+
+#include <Standard_TypeDef.hxx>
+
+#include <NCollection_Vec3.hxx>
+
+#include <NCollection_Vec4.hxx>
+
+#include <NCollection_Mat4.hxx>
 #include <Image_Texture.hxx>
 #include <Quantity_ColorRGBA.hxx>
 #include <Standard_Dump.hxx>
@@ -22,19 +30,19 @@
 //! Metallic-roughness PBR material definition.
 struct XCAFDoc_VisMaterialPBR
 {
-  Handle(Image_Texture) BaseColorTexture; //!< RGB texture for the base color
-                                          // clang-format off
-  Handle(Image_Texture)   MetallicRoughnessTexture; //!< RG texture packing the metallic and roughness properties together
-  Handle(Image_Texture)   EmissiveTexture;          //!< RGB emissive map controls the color and intensity of the light being emitted by the material
-  Handle(Image_Texture)   OcclusionTexture;         //!< R occlusion map indicating areas of indirect lighting
-  Handle(Image_Texture)   NormalTexture;            //!< normal map
+  occ::handle<Image_Texture> BaseColorTexture; //!< RGB texture for the base color
+                                               // clang-format off
+  occ::handle<Image_Texture>   MetallicRoughnessTexture; //!< RG texture packing the metallic and roughness properties together
+  occ::handle<Image_Texture>   EmissiveTexture;          //!< RGB emissive map controls the color and intensity of the light being emitted by the material
+  occ::handle<Image_Texture>   OcclusionTexture;         //!< R occlusion map indicating areas of indirect lighting
+  occ::handle<Image_Texture>   NormalTexture;            //!< normal map
   Quantity_ColorRGBA      BaseColor;                //!< base color (or scale factor to the texture); [1.0, 1.0, 1.0, 1.0] by default
-  Graphic3d_Vec3          EmissiveFactor;           //!< emissive color; [0.0, 0.0, 0.0] by default
-  Standard_ShortReal      Metallic;                 //!< metalness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
-  Standard_ShortReal      Roughness;                //!< roughness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
-  Standard_ShortReal      RefractionIndex;          //!< IOR (index of refraction) within range [1.0, 3.0]; 1.5 by default
-                                          // clang-format on
-  Standard_Boolean IsDefined;             //!< defined flag; TRUE by default
+  NCollection_Vec3<float>          EmissiveFactor;           //!< emissive color; [0.0, 0.0, 0.0] by default
+  float      Metallic;                 //!< metalness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
+  float      Roughness;                //!< roughness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
+  float      RefractionIndex;          //!< IOR (index of refraction) within range [1.0, 3.0]; 1.5 by default
+                                               // clang-format on
+  bool IsDefined;                              //!< defined flag; TRUE by default
 
   //! Empty constructor.
   XCAFDoc_VisMaterialPBR()
@@ -43,12 +51,12 @@ struct XCAFDoc_VisMaterialPBR
         Metallic(1.0f),
         Roughness(1.0f),
         RefractionIndex(1.5f),
-        IsDefined(Standard_True)
+        IsDefined(true)
   {
   }
 
   //! Compare two materials.
-  Standard_Boolean IsEqual(const XCAFDoc_VisMaterialPBR& theOther) const
+  bool IsEqual(const XCAFDoc_VisMaterialPBR& theOther) const
   {
     if (&theOther == this)
     {
@@ -73,7 +81,7 @@ struct XCAFDoc_VisMaterialPBR
   }
 
   //! Dumps the content of me into the stream
-  void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const
   {
     OCCT_DUMP_CLASS_BEGIN(theOStream, XCAFDoc_VisMaterialPBR)
 

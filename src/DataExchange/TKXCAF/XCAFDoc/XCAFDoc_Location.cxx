@@ -38,9 +38,9 @@ const Standard_GUID& XCAFDoc_Location::GetID()
 
 //=================================================================================================
 
-Handle(XCAFDoc_Location) XCAFDoc_Location::Set(const TDF_Label& L, const TopLoc_Location& Loc)
+occ::handle<XCAFDoc_Location> XCAFDoc_Location::Set(const TDF_Label& L, const TopLoc_Location& Loc)
 {
-  Handle(XCAFDoc_Location) A;
+  occ::handle<XCAFDoc_Location> A;
   if (!L.FindAttribute(XCAFDoc_Location::GetID(), A))
   {
     A = new XCAFDoc_Location();
@@ -74,29 +74,29 @@ const Standard_GUID& XCAFDoc_Location::ID() const
 
 //=================================================================================================
 
-void XCAFDoc_Location::Restore(const Handle(TDF_Attribute)& With)
+void XCAFDoc_Location::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  myLocation = Handle(XCAFDoc_Location)::DownCast(With)->Get();
+  myLocation = occ::down_cast<XCAFDoc_Location>(With)->Get();
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XCAFDoc_Location::NewEmpty() const
+occ::handle<TDF_Attribute> XCAFDoc_Location::NewEmpty() const
 {
   return new XCAFDoc_Location();
 }
 
 //=================================================================================================
 
-void XCAFDoc_Location::Paste(const Handle(TDF_Attribute)& Into,
-                             const Handle(TDF_RelocationTable)& /* RT */) const
+void XCAFDoc_Location::Paste(const occ::handle<TDF_Attribute>& Into,
+                             const occ::handle<TDF_RelocationTable>& /* RT */) const
 {
-  Handle(XCAFDoc_Location)::DownCast(Into)->Set(myLocation);
+  occ::down_cast<XCAFDoc_Location>(Into)->Set(myLocation);
 }
 
 //=================================================================================================
 
-void XCAFDoc_Location::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_Location::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

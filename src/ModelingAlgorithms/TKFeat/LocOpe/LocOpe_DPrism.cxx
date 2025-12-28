@@ -38,54 +38,56 @@
 #include <LocOpe_DPrism.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_Map.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean BRepFeat_GettraceFEAT();
+extern bool BRepFeat_GettraceFEAT();
 #endif
 
 #define NECHANT 7 // voir BRepFeat.cxx
 
 //=================================================================================================
 
-LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
-                             const Standard_Real Height1,
-                             const Standard_Real Height2,
-                             const Standard_Real Angle)
+LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
+                             const double       Height1,
+                             const double       Height2,
+                             const double       Angle)
     : mySpine(Spine)
 {
-  Standard_Integer i;
+  int i;
 
-  myHeight        = Height1 + Height2;
-  Standard_Real y = Height1 * sin(Angle);
-  Standard_Real z = Height1 * cos(Angle);
+  myHeight = Height1 + Height2;
+  double y = Height1 * sin(Angle);
+  double z = Height1 * cos(Angle);
 
   TopoDS_Vertex Vert2 = BRepLib_MakeVertex(gp_Pnt(0, y, z));
 
-  Standard_Real y1 = -Height2 * sin(Angle);
-  Standard_Real z1 = -Height2 * cos(Angle);
+  double y1 = -Height2 * sin(Angle);
+  double z1 = -Height2 * cos(Angle);
 
   TopoDS_Vertex Vert1 = BRepLib_MakeVertex(gp_Pnt(0, y1, z1));
 
   myProfile2 = BRepLib_MakeEdge(Vert1, Vert2);
 
-  Standard_Real Umin, Umax, Vmin, Vmax;
+  double Umin, Umax, Vmin, Vmax;
   Umax = 0.;
   Umin = 0.;
   Vmin = 0.;
   Vmax = 0.;
 
   BRepTools::UVBounds(Spine, Umin, Umax, Vmin, Vmax);
-  Standard_Real Deltay = std::max(Umax - Umin, Vmax - Vmin) + std::abs(y);
+  double Deltay = std::max(Umax - Umin, Vmax - Vmin) + std::abs(y);
   Deltay *= 2;
 
   TopoDS_Vertex Vert3 = BRepLib_MakeVertex(gp_Pnt(0, y + Deltay, z));
@@ -97,7 +99,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
   Vmax = 0.;
 
   BRepTools::UVBounds(Spine, Umin, Umax, Vmin, Vmax);
-  Standard_Real Deltay1 = std::max(Umax - Umin, Vmax - Vmin) + std::abs(y1);
+  double Deltay1 = std::max(Umax - Umin, Vmax - Vmin) + std::abs(y1);
   Deltay1 *= 2;
 
   TopoDS_Vertex Vert4 = BRepLib_MakeVertex(gp_Pnt(0, y1 + Deltay1, z1));
@@ -109,20 +111,20 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
 
   if (myDPrism.IsDone())
   {
-    LocOpe_BuildShape    BS;
-    BRep_Builder         B;
-    TopoDS_Compound      C;
-    TopoDS_Compound      D;
-    TopTools_ListOfShape lfaces, lcomplete;
+    LocOpe_BuildShape              BS;
+    BRep_Builder                   B;
+    TopoDS_Compound                C;
+    TopoDS_Compound                D;
+    NCollection_List<TopoDS_Shape> lfaces, lcomplete;
 
     B.MakeCompound(C);
-    TopTools_ListIteratorOfListOfShape it;
-    TopExp_Explorer                    ExpS(mySpine, TopAbs_EDGE);
-    TopTools_MapOfShape                View;
+    NCollection_List<TopoDS_Shape>::Iterator               it;
+    TopExp_Explorer                                        ExpS(mySpine, TopAbs_EDGE);
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
     for (; ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&         ES   = ExpS.Current();
-      const TopTools_ListOfShape& lffs = myDPrism.GeneratedShapes(ES, myProfile1);
+      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const NCollection_List<TopoDS_Shape>& lffs = myDPrism.GeneratedShapes(ES, myProfile1);
       for (it.Initialize(lffs); it.More(); it.Next())
       {
         if (View.Add(it.Value()))
@@ -130,7 +132,10 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
       }
     }
 
-    TopTools_IndexedDataMapOfShapeListOfShape theMapEF;
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      theMapEF;
     TopExp::MapShapesAndAncestors(C, TopAbs_EDGE, TopAbs_FACE, theMapEF);
     View.Clear();
 
@@ -179,8 +184,8 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
 
     for (; ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&         ES   = ExpS.Current();
-      const TopTools_ListOfShape& lfls = myDPrism.GeneratedShapes(ES, myProfile3);
+      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const NCollection_List<TopoDS_Shape>& lfls = myDPrism.GeneratedShapes(ES, myProfile3);
       for (it.Initialize(lfls); it.More(); it.Next())
       {
         if (View.Add(it.Value()))
@@ -234,8 +239,8 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
 
     for (ExpS.ReInit(); ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&         ES   = ExpS.Current();
-      const TopTools_ListOfShape& lffs = myDPrism.GeneratedShapes(ES, myProfile2);
+      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const NCollection_List<TopoDS_Shape>& lffs = myDPrism.GeneratedShapes(ES, myProfile2);
 
       for (it.Initialize(lffs); it.More(); it.Next())
       {
@@ -260,10 +265,10 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
             const TopoDS_Shape theWire = exp.Current();
             if (NewFace.IsNull())
             {
-              Handle(Geom_Surface) S = BRep_Tool::Surface(TopoDS::Face(it.Value()));
+              occ::handle<Geom_Surface> S = BRep_Tool::Surface(TopoDS::Face(it.Value()));
               if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
               {
-                S = Handle(Geom_RectangularTrimmedSurface)::DownCast(S)->BasisSurface();
+                S = occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface();
               }
               if (S->DynamicType() != STANDARD_TYPE(Geom_Plane))
               {
@@ -304,7 +309,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
         {
           B.Add(NewFace, NewWire.Oriented(Orref));
           lcomplete.Append(NewFace);
-          TopTools_ListOfShape thelist;
+          NCollection_List<TopoDS_Shape> thelist;
           myMap.Bind(ES, thelist);
           myMap(ES).Append(NewFace);
         }
@@ -333,7 +338,8 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
       TopExp_Explorer ExpS2;
       for (ExpS2.Init(ES, TopAbs_VERTEX); ExpS2.More(); ExpS2.Next())
       {
-        const TopTools_ListOfShape& ls2 = myDPrism.GeneratedShapes(ExpS2.Current(), myProfile2);
+        const NCollection_List<TopoDS_Shape>& ls2 =
+          myDPrism.GeneratedShapes(ExpS2.Current(), myProfile2);
         for (it.Initialize(ls2); it.More(); it.Next())
         {
           if (View.Add(it.Value()) && it.Value().ShapeType() == TopAbs_FACE)
@@ -352,23 +358,21 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
 
 //=================================================================================================
 
-LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
-                             const Standard_Real Height,
-                             const Standard_Real Angle)
+LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, const double Angle)
     : mySpine(Spine)
 {
-  Standard_Integer i;
-  myHeight        = Height;
-  Standard_Real y = Height * sin(Angle);
-  Standard_Real z = Height * cos(Angle);
+  int i;
+  myHeight = Height;
+  double y = Height * sin(Angle);
+  double z = Height * cos(Angle);
 
   TopoDS_Vertex Vert1 = BRepLib_MakeVertex(gp_Pnt(0, 0, 0));
   TopoDS_Vertex Vert2 = BRepLib_MakeVertex(gp_Pnt(0, y, z));
   myProfile2          = BRepLib_MakeEdge(Vert1, Vert2);
 
-  Standard_Real Umin, Umax, Vmin, Vmax;
+  double Umin, Umax, Vmin, Vmax;
   BRepTools::UVBounds(Spine, Umin, Umax, Vmin, Vmax);
-  Standard_Real Deltay = std::max(Umax - Umin, Vmax - Vmin) + std::abs(y);
+  double Deltay = std::max(Umax - Umin, Vmax - Vmin) + std::abs(y);
   Deltay *= 2;
 
   TopoDS_Vertex Vert3 = BRepLib_MakeVertex(gp_Pnt(0, y + Deltay, z));
@@ -382,20 +386,20 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
 
   if (myDPrism.IsDone())
   {
-    LocOpe_BuildShape    BS;
-    BRep_Builder         B;
-    TopoDS_Compound      C;
-    TopoDS_Compound      D;
-    TopTools_ListOfShape lfaces, lcomplete;
+    LocOpe_BuildShape              BS;
+    BRep_Builder                   B;
+    TopoDS_Compound                C;
+    TopoDS_Compound                D;
+    NCollection_List<TopoDS_Shape> lfaces, lcomplete;
 
     B.MakeCompound(C);
-    TopTools_ListIteratorOfListOfShape it;
-    TopExp_Explorer                    ExpS(mySpine, TopAbs_EDGE);
-    TopTools_MapOfShape                View;
+    NCollection_List<TopoDS_Shape>::Iterator               it;
+    TopExp_Explorer                                        ExpS(mySpine, TopAbs_EDGE);
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
     for (; ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&         ES   = ExpS.Current();
-      const TopTools_ListOfShape& lffs = myDPrism.GeneratedShapes(ES, myProfile1);
+      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const NCollection_List<TopoDS_Shape>& lffs = myDPrism.GeneratedShapes(ES, myProfile1);
       for (it.Initialize(lffs); it.More(); it.Next())
       {
         if (View.Add(it.Value()))
@@ -403,7 +407,10 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
       }
     }
 
-    TopTools_IndexedDataMapOfShapeListOfShape theMapEF;
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      theMapEF;
     TopExp::MapShapesAndAncestors(C, TopAbs_EDGE, TopAbs_FACE, theMapEF);
     View.Clear();
 
@@ -452,8 +459,8 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
 
     for (; ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&         ES   = ExpS.Current();
-      const TopTools_ListOfShape& lfls = myDPrism.GeneratedShapes(ES, myProfile3);
+      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const NCollection_List<TopoDS_Shape>& lfls = myDPrism.GeneratedShapes(ES, myProfile3);
       for (it.Initialize(lfls); it.More(); it.Next())
       {
         if (View.Add(it.Value()))
@@ -506,8 +513,8 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
     View.Clear();
     for (ExpS.ReInit(); ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&         ES = ExpS.Current();
-      const TopTools_ListOfShape& ls = myDPrism.GeneratedShapes(ES, myProfile2);
+      const TopoDS_Shape&                   ES = ExpS.Current();
+      const NCollection_List<TopoDS_Shape>& ls = myDPrism.GeneratedShapes(ES, myProfile2);
       for (it.Initialize(ls); it.More(); it.Next())
       {
         if (View.Add(it.Value()))
@@ -518,7 +525,8 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
       TopExp_Explorer ExpS2;
       for (ExpS2.Init(ES, TopAbs_VERTEX); ExpS2.More(); ExpS2.Next())
       {
-        const TopTools_ListOfShape& ls2 = myDPrism.GeneratedShapes(ExpS2.Current(), myProfile2);
+        const NCollection_List<TopoDS_Shape>& ls2 =
+          myDPrism.GeneratedShapes(ExpS2.Current(), myProfile2);
         for (it.Initialize(ls2); it.More(); it.Next())
         {
           if (View.Add(it.Value()) && it.Value().ShapeType() == TopAbs_FACE)
@@ -537,7 +545,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_DPrism::IsDone() const
+bool LocOpe_DPrism::IsDone() const
 {
   return myDPrism.IsDone();
 }
@@ -583,7 +591,7 @@ const TopoDS_Shape& LocOpe_DPrism::LastShape() const
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_DPrism::Shapes(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& LocOpe_DPrism::Shapes(const TopoDS_Shape& S) const
 {
   if (!myDPrism.IsDone())
   {
@@ -601,23 +609,23 @@ const TopTools_ListOfShape& LocOpe_DPrism::Shapes(const TopoDS_Shape& S) const
 
 //=================================================================================================
 
-void LocOpe_DPrism::Curves(TColGeom_SequenceOfCurve& Scurves) const
+void LocOpe_DPrism::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurves) const
 {
   // Retrieves dy and dz with myProfile2
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(myProfile2, V1, V2);
-  gp_Pnt        P1 = BRep_Tool::Pnt(V1);
-  gp_Pnt        P2 = BRep_Tool::Pnt(V2);
-  Standard_Real dy = P2.Y() - P1.Y();
-  Standard_Real dz = P2.Z() - P1.Z();
+  gp_Pnt P1 = BRep_Tool::Pnt(V1);
+  gp_Pnt P2 = BRep_Tool::Pnt(V2);
+  double dy = P2.Y() - P1.Y();
+  double dz = P2.Z() - P1.Z();
   Scurves.Clear();
-  Handle(Geom_Surface) S = BRep_Tool::Surface(mySpine);
+  occ::handle<Geom_Surface> S = BRep_Tool::Surface(mySpine);
   if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    S = Handle(Geom_RectangularTrimmedSurface)::DownCast(S)->BasisSurface();
+    S = occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface();
   }
 
-  Handle(Geom_Plane) PP = Handle(Geom_Plane)::DownCast(S);
+  occ::handle<Geom_Plane> PP = occ::down_cast<Geom_Plane>(S);
   if (PP.IsNull())
   {
     throw Standard_ConstructionError();
@@ -630,12 +638,12 @@ void LocOpe_DPrism::Curves(TColGeom_SequenceOfCurve& Scurves) const
     Normale.Reverse();
   }
 
-  TopTools_MapOfShape theMap;
-  TopExp_Explorer     exp(mySpine.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
-  TopLoc_Location     Loc;
-  Handle(Geom_Curve)  C;
-  Standard_Real       f, l, prm;
-  Standard_Integer    i;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
+  TopExp_Explorer         exp(mySpine.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
+  TopLoc_Location         Loc;
+  occ::handle<Geom_Curve> C;
+  double                  f, l, prm;
+  int                     i;
 
   for (; exp.More(); exp.Next())
   {
@@ -646,10 +654,10 @@ void LocOpe_DPrism::Curves(TColGeom_SequenceOfCurve& Scurves) const
     }
     if (!BRep_Tool::Degenerated(edg))
     {
-      C                = BRep_Tool::Curve(edg, Loc, f, l);
-      C                = Handle(Geom_Curve)::DownCast(C->Transformed(Loc.Transformation()));
-      Standard_Real u1 = -2 * std::abs(myHeight);
-      Standard_Real u2 = 2 * std::abs(myHeight);
+      C         = BRep_Tool::Curve(edg, Loc, f, l);
+      C         = occ::down_cast<Geom_Curve>(C->Transformed(Loc.Transformation()));
+      double u1 = -2 * std::abs(myHeight);
+      double u2 = 2 * std::abs(myHeight);
 
       for (i = 0; i <= NECHANT; i++)
       {
@@ -662,11 +670,11 @@ void LocOpe_DPrism::Curves(TColGeom_SequenceOfCurve& Scurves) const
           d1.Reverse();
         }
         d1.Normalize();
-        gp_Dir                    locy = Normale.Crossed(d1);
-        gp_Vec                    ldir = dy * locy.XYZ() + dz * Normale.XYZ();
-        gp_Lin                    lin(pt, ldir);
-        Handle(Geom_Line)         Lin   = new Geom_Line(lin);
-        Handle(Geom_TrimmedCurve) trlin = new Geom_TrimmedCurve(Lin, u1, u2, Standard_True);
+        gp_Dir                         locy = Normale.Crossed(d1);
+        gp_Vec                         ldir = dy * locy.XYZ() + dz * Normale.XYZ();
+        gp_Lin                         lin(pt, ldir);
+        occ::handle<Geom_Line>         Lin   = new Geom_Line(lin);
+        occ::handle<Geom_TrimmedCurve> trlin = new Geom_TrimmedCurve(Lin, u1, u2, true);
         Scurves.Append(trlin);
       }
     }
@@ -675,21 +683,21 @@ void LocOpe_DPrism::Curves(TColGeom_SequenceOfCurve& Scurves) const
 
 //=================================================================================================
 
-Handle(Geom_Curve) LocOpe_DPrism::BarycCurve() const
+occ::handle<Geom_Curve> LocOpe_DPrism::BarycCurve() const
 {
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(myProfile2, V1, V2);
-  gp_Pnt        P1 = BRep_Tool::Pnt(V1);
-  gp_Pnt        P2 = BRep_Tool::Pnt(V2);
-  Standard_Real dz = P2.Z() - P1.Z();
+  gp_Pnt P1 = BRep_Tool::Pnt(V1);
+  gp_Pnt P2 = BRep_Tool::Pnt(V2);
+  double dz = P2.Z() - P1.Z();
 
-  Handle(Geom_Surface) S = BRep_Tool::Surface(mySpine);
+  occ::handle<Geom_Surface> S = BRep_Tool::Surface(mySpine);
   if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    S = Handle(Geom_RectangularTrimmedSurface)::DownCast(S)->BasisSurface();
+    S = occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface();
   }
 
-  Handle(Geom_Plane) PP = Handle(Geom_Plane)::DownCast(S);
+  occ::handle<Geom_Plane> PP = occ::down_cast<Geom_Plane>(S);
   if (PP.IsNull())
   {
     throw Standard_ConstructionError();
@@ -704,7 +712,7 @@ Handle(Geom_Curve) LocOpe_DPrism::BarycCurve() const
   if (mySpine.Orientation() == TopAbs_REVERSED)
   {
 #ifdef OCCT_DEBUG
-    Standard_Boolean trc = BRepFeat_GettraceFEAT();
+    bool trc = BRepFeat_GettraceFEAT();
     if (trc)
     {
       std::cout << "LocOpe_DPrism::BarycCurve()" << std::endl;
@@ -715,8 +723,8 @@ Handle(Geom_Curve) LocOpe_DPrism::BarycCurve() const
   }
   gp_Vec Vec = dz * Normale.XYZ();
 
-  gp_Pnt               bar(0., 0., 0.);
-  TColgp_SequenceOfPnt spt;
+  gp_Pnt                       bar(0., 0., 0.);
+  NCollection_Sequence<gp_Pnt> spt;
   if (!myFirstShape.IsNull())
   {
     LocOpe::SampleEdges(myFirstShape, spt);
@@ -725,13 +733,13 @@ Handle(Geom_Curve) LocOpe_DPrism::BarycCurve() const
   {
     LocOpe::SampleEdges(mySpine, spt);
   }
-  for (Standard_Integer jj = 1; jj <= spt.Length(); jj++)
+  for (int jj = 1; jj <= spt.Length(); jj++)
   {
     const gp_Pnt& pvt = spt(jj);
     bar.ChangeCoord() += pvt.XYZ();
   }
   bar.ChangeCoord().Divide(spt.Length());
-  gp_Ax1            newAx(bar, Vec);
-  Handle(Geom_Line) theLin = new Geom_Line(newAx);
+  gp_Ax1                 newAx(bar, Vec);
+  occ::handle<Geom_Line> theLin = new Geom_Line(newAx);
   return theLin;
 }

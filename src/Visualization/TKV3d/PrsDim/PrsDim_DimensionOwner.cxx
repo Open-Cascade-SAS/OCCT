@@ -30,7 +30,7 @@ namespace
 // function : HighlightMode
 // purpose  : Return corresponding compute mode for selection type.
 //=======================================================================
-static PrsDim_Dimension::ComputeMode HighlightMode(const Standard_Integer theSelMode)
+static PrsDim_Dimension::ComputeMode HighlightMode(const int theSelMode)
 {
   switch (theSelMode)
   {
@@ -46,9 +46,10 @@ static PrsDim_Dimension::ComputeMode HighlightMode(const Standard_Integer theSel
 
 //=================================================================================================
 
-PrsDim_DimensionOwner::PrsDim_DimensionOwner(const Handle(SelectMgr_SelectableObject)& theSelObject,
-                                             const PrsDim_DimensionSelectionMode       theMode,
-                                             const Standard_Integer                    thePriority)
+PrsDim_DimensionOwner::PrsDim_DimensionOwner(
+  const occ::handle<SelectMgr_SelectableObject>& theSelObject,
+  const PrsDim_DimensionSelectionMode            theMode,
+  const int                                      thePriority)
     : SelectMgr_EntityOwner(theSelObject, thePriority),
       mySelectionMode(theMode)
 {
@@ -56,12 +57,12 @@ PrsDim_DimensionOwner::PrsDim_DimensionOwner(const Handle(SelectMgr_SelectableOb
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_DimensionOwner::IsHilighted(const Handle(PrsMgr_PresentationManager)& thePM,
-                                                    const Standard_Integer /*theMode*/) const
+bool PrsDim_DimensionOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                        const int /*theMode*/) const
 {
   if (!HasSelectable())
   {
-    return Standard_False;
+    return false;
   }
 
   return thePM->IsHighlighted(Selectable(), HighlightMode(mySelectionMode));
@@ -69,8 +70,8 @@ Standard_Boolean PrsDim_DimensionOwner::IsHilighted(const Handle(PrsMgr_Presenta
 
 //=================================================================================================
 
-void PrsDim_DimensionOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
-                                      const Standard_Integer /*theMode*/)
+void PrsDim_DimensionOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                      const int /*theMode*/)
 {
   if (!HasSelectable())
   {
@@ -82,9 +83,9 @@ void PrsDim_DimensionOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& 
 
 //=================================================================================================
 
-void PrsDim_DimensionOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
-                                             const Handle(Prs3d_Drawer)&               theStyle,
-                                             const Standard_Integer /*theMode*/)
+void PrsDim_DimensionOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                             const occ::handle<Prs3d_Drawer>& theStyle,
+                                             const int /*theMode*/)
 {
   thePM->Color(Selectable(), theStyle, HighlightMode(mySelectionMode));
 }

@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MappedItem, StepRepr_RepresentationItem)
 
 StepRepr_MappedItem::StepRepr_MappedItem() {}
 
-void StepRepr_MappedItem::Init(const Handle(TCollection_HAsciiString)&    aName,
-                               const Handle(StepRepr_RepresentationMap)&  aMappingSource,
-                               const Handle(StepRepr_RepresentationItem)& aMappingTarget)
+void StepRepr_MappedItem::Init(const occ::handle<TCollection_HAsciiString>&    aName,
+                               const occ::handle<StepRepr_RepresentationMap>&  aMappingSource,
+                               const occ::handle<StepRepr_RepresentationItem>& aMappingTarget)
 {
   // --- classe own fields ---
   mappingSource = aMappingSource;
@@ -31,23 +31,24 @@ void StepRepr_MappedItem::Init(const Handle(TCollection_HAsciiString)&    aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepRepr_MappedItem::SetMappingSource(const Handle(StepRepr_RepresentationMap)& aMappingSource)
+void StepRepr_MappedItem::SetMappingSource(
+  const occ::handle<StepRepr_RepresentationMap>& aMappingSource)
 {
   mappingSource = aMappingSource;
 }
 
-Handle(StepRepr_RepresentationMap) StepRepr_MappedItem::MappingSource() const
+occ::handle<StepRepr_RepresentationMap> StepRepr_MappedItem::MappingSource() const
 {
   return mappingSource;
 }
 
 void StepRepr_MappedItem::SetMappingTarget(
-  const Handle(StepRepr_RepresentationItem)& aMappingTarget)
+  const occ::handle<StepRepr_RepresentationItem>& aMappingTarget)
 {
   mappingTarget = aMappingTarget;
 }
 
-Handle(StepRepr_RepresentationItem) StepRepr_MappedItem::MappingTarget() const
+occ::handle<StepRepr_RepresentationItem> StepRepr_MappedItem::MappingTarget() const
 {
   return mappingTarget;
 }

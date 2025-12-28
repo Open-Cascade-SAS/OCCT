@@ -59,102 +59,100 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  inline virtual void DumpJson(Standard_OStream& theOStream,
-                               Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+  inline virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   // SAT Tests for different objects
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_Boolean hasBoxOverlap(const SelectMgr_Vec3& theBoxMin,
-                                 const SelectMgr_Vec3& theBoxMax,
-                                 Standard_Boolean*     theInside = NULL) const;
+  bool hasBoxOverlap(const NCollection_Vec3<double>& theBoxMin,
+                     const NCollection_Vec3<double>& theBoxMax,
+                     bool*                           theInside = NULL) const;
 
   //! SAT intersection test between defined volume and given point
-  Standard_Boolean hasPointOverlap(const gp_Pnt& thePnt) const;
+  bool hasPointOverlap(const gp_Pnt& thePnt) const;
 
   //! SAT intersection test between defined volume and given segment
-  Standard_Boolean hasSegmentOverlap(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2) const;
+  bool hasSegmentOverlap(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2) const;
 
   //! SAT intersection test between frustum given and planar convex polygon represented as ordered
   //! point set
-  Standard_Boolean hasPolygonOverlap(const TColgp_Array1OfPnt& theArrayOfPnts,
-                                     gp_Vec&                   theNormal) const;
+  bool hasPolygonOverlap(const NCollection_Array1<gp_Pnt>& theArrayOfPnts, gp_Vec& theNormal) const;
 
   //! SAT intersection test between defined volume and given triangle
-  Standard_Boolean hasTriangleOverlap(const gp_Pnt& thePnt1,
-                                      const gp_Pnt& thePnt2,
-                                      const gp_Pnt& thePnt3,
-                                      gp_Vec&       theNormal) const;
+  bool hasTriangleOverlap(const gp_Pnt& thePnt1,
+                          const gp_Pnt& thePnt2,
+                          const gp_Pnt& thePnt3,
+                          gp_Vec&       theNormal) const;
 
   //! Intersection test between defined volume and given sphere
-  Standard_Boolean hasSphereOverlap(const gp_Pnt&       thePnt1,
-                                    const Standard_Real theRadius,
-                                    Standard_Boolean*   theInside = NULL) const;
+  bool hasSphereOverlap(const gp_Pnt& thePnt1,
+                        const double  theRadius,
+                        bool*         theInside = NULL) const;
 
   //! Intersection test between defined volume and given cylinder (or cone).
-  Standard_Boolean hasCylinderOverlap(const Standard_Real    theBottomRad,
-                                      const Standard_Real    theTopRad,
-                                      const Standard_Real    theHeight,
-                                      const gp_Trsf&         theTrsf,
-                                      const Standard_Boolean theIsHollow,
-                                      Standard_Boolean*      theInside = NULL) const;
+  bool hasCylinderOverlap(const double   theBottomRad,
+                          const double   theTopRad,
+                          const double   theHeight,
+                          const gp_Trsf& theTrsf,
+                          const bool     theIsHollow,
+                          bool*          theInside = NULL) const;
 
   //! Intersection test between defined volume and given circle.
-  Standard_Boolean hasCircleOverlap(const Standard_Real    theRadius,
-                                    const gp_Trsf&         theTrsf,
-                                    const Standard_Boolean theIsFilled,
-                                    Standard_Boolean*      theInside = NULL) const;
+  bool hasCircleOverlap(const double   theRadius,
+                        const gp_Trsf& theTrsf,
+                        const bool     theIsFilled,
+                        bool*          theInside = NULL) const;
 
   //! Returns True if all vertices (theVertices) are inside the top and bottom sides of the
   //! cylinder.
-  Standard_Boolean isInsideCylinderEndFace(const Standard_Real       theBottomRad,
-                                           const Standard_Real       theTopRad,
-                                           const Standard_Real       theHeight,
-                                           const gp_Trsf&            theTrsf,
-                                           const TColgp_Array1OfPnt& theVertices) const;
+  bool isInsideCylinderEndFace(const double                      theBottomRad,
+                               const double                      theTopRad,
+                               const double                      theHeight,
+                               const gp_Trsf&                    theTrsf,
+                               const NCollection_Array1<gp_Pnt>& theVertices) const;
 
   //! Checking whether the point thePnt is inside the shape with borders theVertices.
   //! thePnt and theVertices lie in the same plane.
-  Standard_Boolean isDotInside(const gp_Pnt& thePnt, const TColgp_Array1OfPnt& theVertices) const;
+  bool isDotInside(const gp_Pnt& thePnt, const NCollection_Array1<gp_Pnt>& theVertices) const;
 
 private:
   //! Return true if one segment enclosed between the points thePnt1Seg1 and thePnt2Seg1
   //! intersects another segment that enclosed between thePnt1Seg2 and thePnt2Seg2.
-  Standard_Boolean isSegmentsIntersect(const gp_Pnt& thePnt1Seg1,
-                                       const gp_Pnt& thePnt2Seg1,
-                                       const gp_Pnt& thePnt1Seg2,
-                                       const gp_Pnt& thePnt2Seg2) const;
+  bool isSegmentsIntersect(const gp_Pnt& thePnt1Seg1,
+                           const gp_Pnt& thePnt2Seg1,
+                           const gp_Pnt& thePnt1Seg2,
+                           const gp_Pnt& thePnt2Seg2) const;
 
   //! Checking whether the borders theVertices of the shape intersect
   //! the cylinder (or cone) end face with the center theCenter and radius theRadius
-  Standard_Boolean isIntersectCircle(const Standard_Real       theRadius,
-                                     const gp_Pnt&             theCenter,
-                                     const gp_Trsf&            theTrsf,
-                                     const TColgp_Array1OfPnt& theVertices) const;
+  bool isIntersectCircle(const double                      theRadius,
+                         const gp_Pnt&                     theCenter,
+                         const gp_Trsf&                    theTrsf,
+                         const NCollection_Array1<gp_Pnt>& theVertices) const;
 
   //! Checks if AABB and frustum are separated along the given axis
-  Standard_Boolean isSeparated(const SelectMgr_Vec3& theBoxMin,
-                               const SelectMgr_Vec3& theBoxMax,
-                               const gp_XYZ&         theDirect,
-                               Standard_Boolean*     theInside) const;
+  bool isSeparated(const NCollection_Vec3<double>& theBoxMin,
+                   const NCollection_Vec3<double>& theBoxMax,
+                   const gp_XYZ&                   theDirect,
+                   bool*                           theInside) const;
 
   //! Checks if triangle and frustum are separated along the given axis
-  Standard_Boolean isSeparated(const gp_Pnt& thePnt1,
-                               const gp_Pnt& thePnt2,
-                               const gp_Pnt& thePnt3,
-                               const gp_XYZ& theAxis) const;
+  bool isSeparated(const gp_Pnt& thePnt1,
+                   const gp_Pnt& thePnt2,
+                   const gp_Pnt& thePnt3,
+                   const gp_XYZ& theAxis) const;
 
 protected:
   gp_Vec myPlanes[N + 2];   //!< Plane equations
   gp_Pnt myVertices[N * 2]; //!< Vertices coordinates
 
   // clang-format off
-  Standard_Real myMaxVertsProjections[N + 2];      //!< Cached projections of vertices onto frustum plane directions
-  Standard_Real myMinVertsProjections[N + 2];      //!< Cached projections of vertices onto frustum plane directions
-  Standard_Real myMaxOrthoVertsProjections[3];     //!< Cached projections of vertices onto directions of ortho unit vectors
-  Standard_Real myMinOrthoVertsProjections[3];     //!< Cached projections of vertices onto directions of ortho unit vectors
+  double myMaxVertsProjections[N + 2];      //!< Cached projections of vertices onto frustum plane directions
+  double myMinVertsProjections[N + 2];      //!< Cached projections of vertices onto frustum plane directions
+  double myMaxOrthoVertsProjections[3];     //!< Cached projections of vertices onto directions of ortho unit vectors
+  double myMinOrthoVertsProjections[3];     //!< Cached projections of vertices onto directions of ortho unit vectors
   // clang-format on
 
   gp_Vec myEdgeDirs[6]; //!< Cached edge directions

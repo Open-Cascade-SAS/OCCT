@@ -41,7 +41,7 @@
 
 #define DEFAULT_COLOR Quantity_NOC_GOLDENROD
 
-static Standard_Integer OCC267(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC267(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -49,11 +49,11 @@ static Standard_Integer OCC267(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  Handle(TDocStd_Document) D;
+  occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(argv[1], D))
     return 1;
-  TCollection_ExtendedString  path(argv[2]);
-  Handle(TDocStd_Application) A = DDocStd::GetApplication();
+  TCollection_ExtendedString       path(argv[2]);
+  occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
 
   PCDM_StoreStatus theStatus = A->SaveAs(D, path);
   if (theStatus == PCDM_SS_OK)
@@ -68,22 +68,22 @@ static Standard_Integer OCC267(Draw_Interpretor& di, Standard_Integer argc, cons
   return 0;
 }
 
-static Standard_Integer OCC181(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC181(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 5)
   {
     di << "ERROR OCC181: Usage : " << argv[0] << " FileName path1 path2 verbose=0/1\n";
     return 1;
   }
-  Standard_CString aFileName  = argv[1];
-  Standard_CString aDir1      = argv[2];
-  Standard_CString aDir2      = argv[3];
-  Standard_Integer verboseInt = Draw::Atoi(argv[4]);
+  const char* aFileName  = argv[1];
+  const char* aDir1      = argv[2];
+  const char* aDir2      = argv[3];
+  int         verboseInt = Draw::Atoi(argv[4]);
 
-  Standard_Boolean verboseBool = Standard_False;
+  bool verboseBool = false;
   if (verboseInt != 0)
   {
-    verboseBool = Standard_True;
+    verboseBool = true;
   }
 
   TCollection_AsciiString Env1, Env2, CSF_ = "set env(CSF_";
@@ -96,7 +96,7 @@ static Standard_Integer OCC181(Draw_Interpretor& di, Standard_Integer argc, cons
 
   di.Eval(Env2.ToCString());
 
-  Standard_Boolean aStatus = aManager.Save();
+  bool aStatus = aManager.Save();
 
   if (aStatus)
   {
@@ -110,15 +110,15 @@ static Standard_Integer OCC181(Draw_Interpretor& di, Standard_Integer argc, cons
   return 0;
 }
 
-static Standard_Integer OCC27849(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC27849(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
     di << "Usage : " << argv[0] << " <environment variable name> <resource name>\n";
     return 1;
   }
-  Standard_CString aEnvName = argv[1];
-  Standard_CString aResName = argv[2];
+  const char* aEnvName = argv[1];
+  const char* aResName = argv[2];
 
   Resource_Manager aManager(aEnvName);
   if (aManager.Find(aResName))
@@ -133,9 +133,9 @@ static Standard_Integer OCC27849(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Real delta_percent(Standard_Real a, Standard_Real b)
+static double delta_percent(double a, double b)
 {
-  Standard_Real result;
+  double result;
   if (b != 0.)
   {
     result = fabs((a - b) / b) * 100.;
@@ -151,7 +151,7 @@ static Standard_Real delta_percent(Standard_Real a, Standard_Real b)
   return result;
 }
 
-static Standard_Integer OCC367(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC367(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 7)
   {
@@ -159,13 +159,13 @@ static Standard_Integer OCC367(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  TopoDS_Wire      myTopoDSWire = TopoDS::Wire(DBRep::Get(argv[1]));
-  Standard_Real    l            = Draw::Atof(argv[2]);
-  Standard_Real    goodX        = Draw::Atof(argv[3]);
-  Standard_Real    goodY        = Draw::Atof(argv[4]);
-  Standard_Real    goodZ        = Draw::Atof(argv[5]);
-  Standard_Real    percent      = Draw::Atof(argv[6]);
-  Standard_Boolean aStatus      = Standard_False;
+  TopoDS_Wire myTopoDSWire = TopoDS::Wire(DBRep::Get(argv[1]));
+  double      l            = Draw::Atof(argv[2]);
+  double      goodX        = Draw::Atof(argv[3]);
+  double      goodY        = Draw::Atof(argv[4]);
+  double      goodZ        = Draw::Atof(argv[5]);
+  double      percent      = Draw::Atof(argv[6]);
+  bool        aStatus      = false;
 
   // Find the first vertex of the wire
   BRepTools_WireExplorer wire_exp(myTopoDSWire);
@@ -184,18 +184,18 @@ static Standard_Integer OCC367(Draw_Interpretor& di, Standard_Integer argc, cons
       vlast = vw2;
     }
   }
-  Standard_Integer EdgeIndex = 0;
-  Standard_Real    FirstEdgeX, FirstEdgeY, FirstEdgeZ, deltaX, deltaY, deltaZ;
+  int    EdgeIndex = 0;
+  double FirstEdgeX, FirstEdgeY, FirstEdgeZ, deltaX, deltaY, deltaZ;
   FirstEdgeX = FirstEdgeY = FirstEdgeZ = deltaX = deltaY = deltaZ = 0.;
   for (; wire_exp.More(); wire_exp.Next())
   {
     EdgeIndex++;
     di << "\n\n New Edge \n" << "\n";
-    Standard_Real      newufirst, newulast;
-    TopoDS_Edge        edge = TopoDS::Edge(wire_exp.Current());
-    Standard_Real      ufirst, ulast;
-    Handle(Geom_Curve) acurve;
-    TopoDS_Vertex      ve1, ve2;
+    double                  newufirst, newulast;
+    TopoDS_Edge             edge = TopoDS::Edge(wire_exp.Current());
+    double                  ufirst, ulast;
+    occ::handle<Geom_Curve> acurve;
+    TopoDS_Vertex           ve1, ve2;
     TopExp::Vertices(edge, ve1, ve2);
     if (ve1.IsSame(vlast))
     {
@@ -221,11 +221,11 @@ static Standard_Integer OCC367(Draw_Interpretor& di, Standard_Integer argc, cons
     algo.Initialize(curve, l, newufirst, newulast);
     if (!algo.IsDone())
       di << "Not Done!!!" << "\n";
-    Standard_Integer maxIndex = algo.NbPoints();
-    for (Standard_Integer Index = 1; Index <= maxIndex; Index++)
+    int maxIndex = algo.NbPoints();
+    for (int Index = 1; Index <= maxIndex; Index++)
     {
-      Standard_Real t   = algo.Parameter(Index);
-      gp_Pnt        pt3 = curve.Value(t);
+      double t   = algo.Parameter(Index);
+      gp_Pnt pt3 = curve.Value(t);
       di << "Parameter t = " << t << "\n";
       di << "Value Pnt = " << pt3.X() << " " << pt3.Y() << " " << pt3.Z() << "\n";
       if (EdgeIndex == 1 && Index == maxIndex)
@@ -238,7 +238,7 @@ static Standard_Integer OCC367(Draw_Interpretor& di, Standard_Integer argc, cons
         deltaZ     = delta_percent(FirstEdgeZ, goodZ);
         if (deltaX <= percent && deltaY <= percent && deltaZ <= percent)
         {
-          aStatus = Standard_True;
+          aStatus = true;
         }
       }
     }

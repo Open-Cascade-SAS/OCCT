@@ -29,10 +29,10 @@
 
 namespace
 {
-void ComputeErrFactors(const Standard_Real              theDeflection,
-                       const Handle(Adaptor3d_Surface)& theFace,
-                       Standard_Real&                   theErrFactorU,
-                       Standard_Real&                   theErrFactorV)
+void ComputeErrFactors(const double                          theDeflection,
+                       const occ::handle<Adaptor3d_Surface>& theFace,
+                       double&                               theErrFactorU,
+                       double&                               theErrFactorV)
 {
   theErrFactorU = theDeflection * 10.;
   theErrFactorV = theDeflection * 10.;
@@ -47,7 +47,7 @@ void ComputeErrFactors(const Standard_Real              theDeflection,
 
     case GeomAbs_SurfaceOfExtrusion:
     case GeomAbs_SurfaceOfRevolution: {
-      Handle(Adaptor3d_Curve) aCurve = theFace->BasisCurve();
+      occ::handle<Adaptor3d_Curve> aCurve = theFace->BasisCurve();
       if (aCurve->GetType() == GeomAbs_BSplineCurve && aCurve->Degree() > 2)
       {
         theErrFactorV /= (aCurve->Degree() * aCurve->NbKnots());
@@ -83,10 +83,10 @@ void ComputeErrFactors(const Standard_Real              theDeflection,
   }
 }
 
-void AdjustCellsCounts(const Handle(Adaptor3d_Surface)& theFace,
-                       const Standard_Integer           theNbVertices,
-                       Standard_Integer&                theCellsCountU,
-                       Standard_Integer&                theCellsCountV)
+void AdjustCellsCounts(const occ::handle<Adaptor3d_Surface>& theFace,
+                       const int                             theNbVertices,
+                       int&                                  theCellsCountU,
+                       int&                                  theCellsCountV)
 {
   const GeomAbs_SurfaceType aType = theFace->GetType();
   if (aType == GeomAbs_OtherSurface)
@@ -96,43 +96,42 @@ void AdjustCellsCounts(const Handle(Adaptor3d_Surface)& theFace,
     return;
   }
 
-  Standard_Real aSqNbVert = theNbVertices;
+  double aSqNbVert = theNbVertices;
   if (aType == GeomAbs_Plane)
   {
-    theCellsCountU = theCellsCountV =
-      (Standard_Integer)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+    theCellsCountU = theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
   }
   else if (aType == GeomAbs_Cylinder || aType == GeomAbs_Cone)
   {
-    theCellsCountV = (Standard_Integer)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+    theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
   }
   else if (aType == GeomAbs_SurfaceOfExtrusion || aType == GeomAbs_SurfaceOfRevolution)
   {
-    Handle(Adaptor3d_Curve) aCurve = theFace->BasisCurve();
+    occ::handle<Adaptor3d_Curve> aCurve = theFace->BasisCurve();
     if (aCurve->GetType() == GeomAbs_Line
         || (aCurve->GetType() == GeomAbs_BSplineCurve && aCurve->Degree() < 2))
     {
       // planar, cylindrical, conical cases
       if (aType == GeomAbs_SurfaceOfExtrusion)
-        theCellsCountU = (Standard_Integer)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+        theCellsCountU = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
       else
-        theCellsCountV = (Standard_Integer)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+        theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
     }
     if (aType == GeomAbs_SurfaceOfExtrusion)
     {
       // V is always a line
-      theCellsCountV = (Standard_Integer)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+      theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
     }
   }
   else if (aType == GeomAbs_BezierSurface || aType == GeomAbs_BSplineSurface)
   {
     if (theFace->UDegree() < 2)
     {
-      theCellsCountU = (Standard_Integer)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+      theCellsCountU = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
     }
     if (theFace->VDegree() < 2)
     {
-      theCellsCountV = (Standard_Integer)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+      theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
     }
   }
 
@@ -144,12 +143,12 @@ void AdjustCellsCounts(const Handle(Adaptor3d_Surface)& theFace,
 //=================================================================================================
 
 BRepMesh_GeomTool::BRepMesh_GeomTool(const BRepAdaptor_Curve& theCurve,
-                                     const Standard_Real      theFirstParam,
-                                     const Standard_Real      theLastParam,
-                                     const Standard_Real      theLinDeflection,
-                                     const Standard_Real      theAngDeflection,
-                                     const Standard_Integer   theMinPointsNb,
-                                     const Standard_Real      theMinSize)
+                                     const double             theFirstParam,
+                                     const double             theLastParam,
+                                     const double             theLinDeflection,
+                                     const double             theAngDeflection,
+                                     const int                theMinPointsNb,
+                                     const double             theMinSize)
     : myEdge(&theCurve.Edge()),
       myIsoType(GeomAbs_NoneIso)
 {
@@ -165,15 +164,15 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(const BRepAdaptor_Curve& theCurve,
 
 //=================================================================================================
 
-BRepMesh_GeomTool::BRepMesh_GeomTool(const Handle(BRepAdaptor_Surface)& theSurface,
-                                     const GeomAbs_IsoType              theIsoType,
-                                     const Standard_Real                theParamIso,
-                                     const Standard_Real                theFirstParam,
-                                     const Standard_Real                theLastParam,
-                                     const Standard_Real                theLinDeflection,
-                                     const Standard_Real                theAngDeflection,
-                                     const Standard_Integer             theMinPointsNb,
-                                     const Standard_Real                theMinSize)
+BRepMesh_GeomTool::BRepMesh_GeomTool(const occ::handle<BRepAdaptor_Surface>& theSurface,
+                                     const GeomAbs_IsoType                   theIsoType,
+                                     const double                            theParamIso,
+                                     const double                            theFirstParam,
+                                     const double                            theLastParam,
+                                     const double                            theLinDeflection,
+                                     const double                            theAngDeflection,
+                                     const int                               theMinPointsNb,
+                                     const double                            theMinSize)
     : myEdge(NULL),
       myIsoType(theIsoType)
 {
@@ -191,41 +190,41 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(const Handle(BRepAdaptor_Surface)& theSurfa
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_GeomTool::Value(const Standard_Integer             theIndex,
-                                          const Handle(BRepAdaptor_Surface)& theSurface,
-                                          Standard_Real&                     theParam,
-                                          gp_Pnt&                            thePoint,
-                                          gp_Pnt2d&                          theUV) const
+bool BRepMesh_GeomTool::Value(const int                               theIndex,
+                              const occ::handle<BRepAdaptor_Surface>& theSurface,
+                              double&                                 theParam,
+                              gp_Pnt&                                 thePoint,
+                              gp_Pnt2d&                               theUV) const
 {
   if (theIndex < 1 || theIndex > NbPoints())
-    return Standard_False;
+    return false;
 
   if (myEdge == NULL)
-    return Standard_False;
+    return false;
 
   thePoint = myDiscretTool.Value(theIndex);
   theParam = myDiscretTool.Parameter(theIndex);
 
   const TopoDS_Face& aFace = theSurface->Face();
 
-  Standard_Real        aFirst, aLast;
-  Handle(Geom2d_Curve) aCurve = BRep_Tool::CurveOnSurface(*myEdge, aFace, aFirst, aLast);
+  double                    aFirst, aLast;
+  occ::handle<Geom2d_Curve> aCurve = BRep_Tool::CurveOnSurface(*myEdge, aFace, aFirst, aLast);
 
   aCurve->D0(theParam, theUV);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_GeomTool::Value(const Standard_Integer theIndex,
-                                          const Standard_Real    theIsoParam,
-                                          Standard_Real&         theParam,
-                                          gp_Pnt&                thePoint,
-                                          gp_Pnt2d&              theUV) const
+bool BRepMesh_GeomTool::Value(const int    theIndex,
+                              const double theIsoParam,
+                              double&      theParam,
+                              gp_Pnt&      thePoint,
+                              gp_Pnt2d&    theUV) const
 {
   if (theIndex < 1 || theIndex > NbPoints())
-    return Standard_False;
+    return false;
 
   thePoint = myDiscretTool.Value(theIndex);
   theParam = myDiscretTool.Parameter(theIndex);
@@ -235,19 +234,19 @@ Standard_Boolean BRepMesh_GeomTool::Value(const Standard_Integer theIndex,
   else
     theUV.SetCoord(theParam, theIsoParam);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_GeomTool::Normal(const Handle(BRepAdaptor_Surface)& theSurface,
-                                           const Standard_Real                theParamU,
-                                           const Standard_Real                theParamV,
-                                           gp_Pnt&                            thePoint,
-                                           gp_Dir&                            theNormal)
+bool BRepMesh_GeomTool::Normal(const occ::handle<BRepAdaptor_Surface>& theSurface,
+                               const double                            theParamU,
+                               const double                            theParamV,
+                               gp_Pnt&                                 thePoint,
+                               gp_Dir&                                 theNormal)
 {
-  Standard_Boolean isOK = Standard_True;
-  gp_Vec           aD1U, aD1V;
+  bool   isOK = true;
+  gp_Vec aD1U, aD1V;
 
   theSurface->D1(theParamU, theParamV, thePoint, aD1U, aD1V);
 
@@ -270,14 +269,14 @@ Standard_Boolean BRepMesh_GeomTool::Normal(const Handle(BRepAdaptor_Surface)& th
   }
 
   if (!isOK)
-    return Standard_False;
+    return false;
 
   const TopoDS_Face& aFace = theSurface->Face();
   TopAbs_Orientation aOri  = aFace.Orientation();
   if (aOri == TopAbs_REVERSED)
     theNormal.Reverse();
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -287,16 +286,16 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntLinLin(const gp_XY& theStartPnt
                                                         const gp_XY& theStartPnt2,
                                                         const gp_XY& theEndPnt2,
                                                         gp_XY&       theIntPnt,
-                                                        Standard_Real (&theParamOnSegment)[2])
+                                                        double (&theParamOnSegment)[2])
 {
   gp_XY aVec1    = theEndPnt1 - theStartPnt1;
   gp_XY aVec2    = theEndPnt2 - theStartPnt2;
   gp_XY aVecO1O2 = theStartPnt2 - theStartPnt1;
 
-  Standard_Real aCrossD1D2 = aVec1 ^ aVec2;
-  Standard_Real aCrossD1D3 = aVecO1O2 ^ aVec2;
+  double aCrossD1D2 = aVec1 ^ aVec2;
+  double aCrossD1D3 = aVecO1O2 ^ aVec2;
 
-  const Standard_Real aPrec = gp::Resolution();
+  const double aPrec = gp::Resolution();
   // Are edgegs codirectional
   if (std::abs(aCrossD1D2) < aPrec)
   {
@@ -310,29 +309,28 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntLinLin(const gp_XY& theStartPnt
   theParamOnSegment[0] = aCrossD1D3 / aCrossD1D2;
   theIntPnt            = theStartPnt1 + theParamOnSegment[0] * aVec1;
 
-  Standard_Real aCrossD2D3 = aVecO1O2 ^ aVec1;
-  theParamOnSegment[1]     = aCrossD2D3 / aCrossD1D2;
+  double aCrossD2D3    = aVecO1O2 ^ aVec1;
+  theParamOnSegment[1] = aCrossD2D3 / aCrossD1D2;
 
   return BRepMesh_GeomTool::Cross;
 }
 
 //=================================================================================================
 
-BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(
-  const gp_XY&           theStartPnt1,
-  const gp_XY&           theEndPnt1,
-  const gp_XY&           theStartPnt2,
-  const gp_XY&           theEndPnt2,
-  const Standard_Boolean isConsiderEndPointTouch,
-  const Standard_Boolean isConsiderPointOnSegment,
-  gp_Pnt2d&              theIntPnt)
+BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(const gp_XY& theStartPnt1,
+                                                        const gp_XY& theEndPnt1,
+                                                        const gp_XY& theStartPnt2,
+                                                        const gp_XY& theEndPnt2,
+                                                        const bool   isConsiderEndPointTouch,
+                                                        const bool   isConsiderPointOnSegment,
+                                                        gp_Pnt2d&    theIntPnt)
 {
-  Standard_Integer aPointHash[] = {classifyPoint(theStartPnt1, theEndPnt1, theStartPnt2),
-                                   classifyPoint(theStartPnt1, theEndPnt1, theEndPnt2),
-                                   classifyPoint(theStartPnt2, theEndPnt2, theStartPnt1),
-                                   classifyPoint(theStartPnt2, theEndPnt2, theEndPnt1)};
+  int aPointHash[] = {classifyPoint(theStartPnt1, theEndPnt1, theStartPnt2),
+                      classifyPoint(theStartPnt1, theEndPnt1, theEndPnt2),
+                      classifyPoint(theStartPnt2, theEndPnt2, theStartPnt1),
+                      classifyPoint(theStartPnt2, theEndPnt2, theEndPnt1)};
 
-  Standard_Integer aPosHash = aPointHash[0] + aPointHash[1] + aPointHash[2] + aPointHash[3];
+  int aPosHash = aPointHash[0] + aPointHash[1] + aPointHash[2] + aPointHash[3];
 
   // Consider case when edges have shared vertex
   if (aPointHash[0] < 0 || aPointHash[1] < 0)
@@ -390,8 +388,8 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(
   else if (aPosHash == 2)
     return BRepMesh_GeomTool::Glued;
 
-  Standard_Real aParam[2];
-  IntFlag       aIntFlag =
+  double  aParam[2];
+  IntFlag aIntFlag =
     IntLinLin(theStartPnt1, theEndPnt1, theStartPnt2, theEndPnt2, theIntPnt.ChangeCoord(), aParam);
 
   if (aIntFlag == BRepMesh_GeomTool::NoIntersection)
@@ -409,9 +407,9 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(
 
   // Cross
   // Intersection is out of segments ranges
-  constexpr Standard_Real aPrec    = Precision::PConfusion();
-  const Standard_Real     aEndPrec = 1 - aPrec;
-  for (Standard_Integer i = 0; i < 2; ++i)
+  constexpr double aPrec    = Precision::PConfusion();
+  const double     aEndPrec = 1 - aPrec;
+  for (int i = 0; i < 2; ++i)
   {
     if (aParam[i] < aPrec || aParam[i] > aEndPrec)
       return BRepMesh_GeomTool::NoIntersection;
@@ -422,65 +420,65 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(
 
 //=================================================================================================
 
-std::pair<Standard_Integer, Standard_Integer> BRepMesh_GeomTool::CellsCount(
-  const Handle(Adaptor3d_Surface)&     theSurface,
-  const Standard_Integer               theVerticesNb,
-  const Standard_Real                  theDeflection,
-  const BRepMesh_DefaultRangeSplitter* theRangeSplitter)
+std::pair<int, int> BRepMesh_GeomTool::CellsCount(
+  const occ::handle<Adaptor3d_Surface>& theSurface,
+  const int                             theVerticesNb,
+  const double                          theDeflection,
+  const BRepMesh_DefaultRangeSplitter*  theRangeSplitter)
 {
   if (theRangeSplitter == NULL)
-    return std::pair<Standard_Integer, Standard_Integer>(-1, -1);
+    return std::pair<int, int>(-1, -1);
 
   const GeomAbs_SurfaceType aType = theSurface->GetType();
 
-  Standard_Real anErrFactorU, anErrFactorV;
+  double anErrFactorU, anErrFactorV;
   ComputeErrFactors(theDeflection, theSurface, anErrFactorU, anErrFactorV);
 
-  const std::pair<Standard_Real, Standard_Real>& aRangeU = theRangeSplitter->GetRangeU();
-  const std::pair<Standard_Real, Standard_Real>& aRangeV = theRangeSplitter->GetRangeV();
-  const std::pair<Standard_Real, Standard_Real>& aDelta  = theRangeSplitter->GetDelta();
+  const std::pair<double, double>& aRangeU = theRangeSplitter->GetRangeU();
+  const std::pair<double, double>& aRangeV = theRangeSplitter->GetRangeV();
+  const std::pair<double, double>& aDelta  = theRangeSplitter->GetDelta();
 
-  Standard_Integer aCellsCountU, aCellsCountV;
+  int aCellsCountU, aCellsCountV;
   if (aType == GeomAbs_Torus)
   {
-    aCellsCountU = (Standard_Integer)std::ceil(
-      std::pow(2, std::log10((aRangeU.second - aRangeU.first) / aDelta.first)));
-    aCellsCountV = (Standard_Integer)std::ceil(
-      std::pow(2, std::log10((aRangeV.second - aRangeV.first) / aDelta.second)));
+    aCellsCountU =
+      (int)std::ceil(std::pow(2, std::log10((aRangeU.second - aRangeU.first) / aDelta.first)));
+    aCellsCountV =
+      (int)std::ceil(std::pow(2, std::log10((aRangeV.second - aRangeV.first) / aDelta.second)));
   }
   else if (aType == GeomAbs_Cylinder)
   {
-    aCellsCountU = (Standard_Integer)std::ceil(
-      std::pow(2,
-               std::log10((aRangeU.second - aRangeU.first) / aDelta.first
-                          / (aRangeV.second - aRangeV.first))));
-    aCellsCountV = (Standard_Integer)std::ceil(
-      std::pow(2, std::log10((aRangeV.second - aRangeV.first) / anErrFactorV)));
+    aCellsCountU =
+      (int)std::ceil(std::pow(2,
+                              std::log10((aRangeU.second - aRangeU.first) / aDelta.first
+                                         / (aRangeV.second - aRangeV.first))));
+    aCellsCountV =
+      (int)std::ceil(std::pow(2, std::log10((aRangeV.second - aRangeV.first) / anErrFactorV)));
   }
   else
   {
-    aCellsCountU = (Standard_Integer)std::ceil(
+    aCellsCountU = (int)std::ceil(
       std::pow(2, std::log10((aRangeU.second - aRangeU.first) / aDelta.first / anErrFactorU)));
-    aCellsCountV = (Standard_Integer)std::ceil(
+    aCellsCountV = (int)std::ceil(
       std::pow(2, std::log10((aRangeV.second - aRangeV.first) / aDelta.second / anErrFactorV)));
   }
 
   AdjustCellsCounts(theSurface, theVerticesNb, aCellsCountU, aCellsCountV);
-  return std::pair<Standard_Integer, Standard_Integer>(aCellsCountU, aCellsCountV);
+  return std::pair<int, int>(aCellsCountU, aCellsCountV);
 }
 
 //=================================================================================================
 
-Standard_Integer BRepMesh_GeomTool::classifyPoint(const gp_XY& thePoint1,
-                                                  const gp_XY& thePoint2,
-                                                  const gp_XY& thePointToCheck)
+int BRepMesh_GeomTool::classifyPoint(const gp_XY& thePoint1,
+                                     const gp_XY& thePoint2,
+                                     const gp_XY& thePointToCheck)
 {
   gp_XY aP1 = thePoint2 - thePoint1;
   gp_XY aP2 = thePointToCheck - thePoint1;
 
-  constexpr Standard_Real aPrec   = Precision::PConfusion();
-  const Standard_Real     aSqPrec = aPrec * aPrec;
-  Standard_Real           aDist   = std::abs(aP1 ^ aP2);
+  constexpr double aPrec   = Precision::PConfusion();
+  const double     aSqPrec = aPrec * aPrec;
+  double           aDist   = std::abs(aP1 ^ aP2);
   if (aDist > aPrec)
   {
     aDist = (aDist * aDist) / aP1.SquareModulus();

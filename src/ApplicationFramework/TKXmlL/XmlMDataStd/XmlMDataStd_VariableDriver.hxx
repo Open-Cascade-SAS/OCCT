@@ -26,31 +26,25 @@ class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
-class XmlMDataStd_VariableDriver;
-DEFINE_STANDARD_HANDLE(XmlMDataStd_VariableDriver, XmlMDF_ADriver)
-
 //! Attribute Driver.
 class XmlMDataStd_VariableDriver : public XmlMDF_ADriver
 {
 
 public:
-  Standard_EXPORT XmlMDataStd_VariableDriver(const Handle(Message_Messenger)& theMessageDriver);
+  Standard_EXPORT XmlMDataStd_VariableDriver(
+    const occ::handle<Message_Messenger>& theMessageDriver);
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT Standard_Boolean
-    Paste(const XmlObjMgt_Persistent&  Source,
-          const Handle(TDF_Attribute)& Target,
-          XmlObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT bool Paste(const XmlObjMgt_Persistent&       Source,
+                             const occ::handle<TDF_Attribute>& Target,
+                             XmlObjMgt_RRelocationTable&       RelocTable) const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
-                             XmlObjMgt_Persistent&        Target,
-                             XmlObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& Source,
+                             XmlObjMgt_Persistent&             Target,
+                             XmlObjMgt_SRelocationTable&       RelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(XmlMDataStd_VariableDriver, XmlMDF_ADriver)
-
-protected:
-private:
 };
 
 #endif // _XmlMDataStd_VariableDriver_HeaderFile

@@ -14,7 +14,7 @@
 #include <IGESData_FreeFormatEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_UndefinedContent.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -25,93 +25,92 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESData_FreeFormatEntity, IGESData_UndefinedEntity)
 //  Methods of UndefinedContent, + Type & Form, + AddEntities (little gadget)
 IGESData_FreeFormatEntity::IGESData_FreeFormatEntity() {}
 
-void IGESData_FreeFormatEntity::SetTypeNumber(const Standard_Integer typenum)
+void IGESData_FreeFormatEntity::SetTypeNumber(const int typenum)
 {
   InitTypeAndForm(typenum, 0);
 }
 
-void IGESData_FreeFormatEntity::SetFormNumber(const Standard_Integer formnum)
+void IGESData_FreeFormatEntity::SetFormNumber(const int formnum)
 {
   InitTypeAndForm(TypeNumber(), formnum);
 }
 
-Standard_Integer IGESData_FreeFormatEntity::NbParams() const
+int IGESData_FreeFormatEntity::NbParams() const
 {
   return UndefinedContent()->NbParams();
 }
 
-Standard_Boolean IGESData_FreeFormatEntity::ParamData(const Standard_Integer            num,
-                                                      Interface_ParamType&              ptype,
-                                                      Handle(IGESData_IGESEntity)&      ent,
-                                                      Handle(TCollection_HAsciiString)& val) const
+bool IGESData_FreeFormatEntity::ParamData(const int                              num,
+                                          Interface_ParamType&                   ptype,
+                                          occ::handle<IGESData_IGESEntity>&      ent,
+                                          occ::handle<TCollection_HAsciiString>& val) const
 {
-  Handle(Standard_Transient) anEnt = ent;
+  occ::handle<Standard_Transient> anEnt = ent;
   return UndefinedContent()->ParamData(num, ptype, anEnt, val)
-         && !(ent = Handle(IGESData_IGESEntity)::DownCast(anEnt)).IsNull();
+         && !(ent = occ::down_cast<IGESData_IGESEntity>(anEnt)).IsNull();
 }
 
-Interface_ParamType IGESData_FreeFormatEntity::ParamType(const Standard_Integer num) const
+Interface_ParamType IGESData_FreeFormatEntity::ParamType(const int num) const
 {
   return UndefinedContent()->ParamType(num);
 }
 
-Standard_Boolean IGESData_FreeFormatEntity::IsParamEntity(const Standard_Integer num) const
+bool IGESData_FreeFormatEntity::IsParamEntity(const int num) const
 {
   return UndefinedContent()->IsParamEntity(num);
 }
 
-Handle(IGESData_IGESEntity) IGESData_FreeFormatEntity::ParamEntity(const Standard_Integer num) const
+occ::handle<IGESData_IGESEntity> IGESData_FreeFormatEntity::ParamEntity(const int num) const
 {
-  return Handle(IGESData_IGESEntity)::DownCast(UndefinedContent()->ParamEntity(num));
+  return occ::down_cast<IGESData_IGESEntity>(UndefinedContent()->ParamEntity(num));
 }
 
-Standard_Boolean IGESData_FreeFormatEntity::IsNegativePointer(const Standard_Integer num) const
+bool IGESData_FreeFormatEntity::IsNegativePointer(const int num) const
 {
   if (thenegptrs.IsNull())
-    return Standard_False;
-  Standard_Integer nb = thenegptrs->Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+    return false;
+  int nb = thenegptrs->Length();
+  for (int i = 1; i <= nb; i++)
     if (thenegptrs->Value(i) == num)
-      return Standard_True;
-  return Standard_False;
+      return true;
+  return false;
 }
 
-Handle(TCollection_HAsciiString) IGESData_FreeFormatEntity::ParamValue(
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> IGESData_FreeFormatEntity::ParamValue(const int num) const
 {
   return UndefinedContent()->ParamValue(num);
 }
 
-Handle(TColStd_HSequenceOfInteger) IGESData_FreeFormatEntity::NegativePointers() const
+occ::handle<NCollection_HSequence<int>> IGESData_FreeFormatEntity::NegativePointers() const
 {
   return thenegptrs;
 }
 
-void IGESData_FreeFormatEntity::AddLiteral(const Interface_ParamType               ptype,
-                                           const Handle(TCollection_HAsciiString)& val)
+void IGESData_FreeFormatEntity::AddLiteral(const Interface_ParamType                    ptype,
+                                           const occ::handle<TCollection_HAsciiString>& val)
 {
   UndefinedContent()->AddLiteral(ptype, val);
 }
 
-void IGESData_FreeFormatEntity::AddLiteral(const Interface_ParamType ptype,
-                                           const Standard_CString    val)
+void IGESData_FreeFormatEntity::AddLiteral(const Interface_ParamType ptype, const char* val)
 {
   UndefinedContent()->AddLiteral(ptype, new TCollection_HAsciiString(val));
 }
 
-void IGESData_FreeFormatEntity::AddEntity(const Interface_ParamType          ptype,
-                                          const Handle(IGESData_IGESEntity)& ent,
-                                          const Standard_Boolean             negative)
+void IGESData_FreeFormatEntity::AddEntity(const Interface_ParamType               ptype,
+                                          const occ::handle<IGESData_IGESEntity>& ent,
+                                          const bool                              negative)
 {
   UndefinedContent()->AddEntity(ptype, ent);
   if (!negative)
     return;
   if (thenegptrs.IsNull())
-    thenegptrs = new TColStd_HSequenceOfInteger();
+    thenegptrs = new NCollection_HSequence<int>();
   thenegptrs->Append(NbParams());
 }
 
-void IGESData_FreeFormatEntity::AddEntities(const Handle(IGESData_HArray1OfIGESEntity)& ents)
+void IGESData_FreeFormatEntity::AddEntities(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& ents)
 {
   if (ents.IsNull())
   {
@@ -119,17 +118,18 @@ void IGESData_FreeFormatEntity::AddEntities(const Handle(IGESData_HArray1OfIGESE
     return;
   }
   AddLiteral(Interface_ParamInteger, new TCollection_HAsciiString(ents->Length()));
-  Standard_Integer iup = ents->Upper();
-  for (Standard_Integer i = ents->Lower(); i <= iup; i++)
+  int iup = ents->Upper();
+  for (int i = ents->Lower(); i <= iup; i++)
   {
     AddEntity(Interface_ParamIdent, ents->Value(i));
   }
 }
 
-void IGESData_FreeFormatEntity::AddNegativePointers(const Handle(TColStd_HSequenceOfInteger)& list)
+void IGESData_FreeFormatEntity::AddNegativePointers(
+  const occ::handle<NCollection_HSequence<int>>& list)
 {
   if (thenegptrs.IsNull())
-    thenegptrs = new TColStd_HSequenceOfInteger();
+    thenegptrs = new NCollection_HSequence<int>();
   thenegptrs->Append(list);
 }
 
@@ -141,8 +141,8 @@ void IGESData_FreeFormatEntity::ClearNegativePointers()
 void IGESData_FreeFormatEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
 {
   //  Redefined from UndefinedEntity for : NegativePointers
-  Standard_Integer neg  = 0;
-  Standard_Integer fneg = 0;
+  int neg  = 0;
+  int fneg = 0;
   if (!thenegptrs.IsNull())
     if (!thenegptrs->IsEmpty())
     {
@@ -150,8 +150,8 @@ void IGESData_FreeFormatEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
       fneg = 1;
     }
 
-  Standard_Integer nb = UndefinedContent()->NbParams();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = UndefinedContent()->NbParams();
+  for (int i = 1; i <= nb; i++)
   {
     Interface_ParamType ptyp = UndefinedContent()->ParamType(i);
     if (ptyp == Interface_ParamVoid)
@@ -162,7 +162,7 @@ void IGESData_FreeFormatEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
       //  Send Entity : Redefini
       if (i == neg)
       {
-        IW.Send(anent, Standard_True);
+        IW.Send(anent, true);
         if (fneg >= thenegptrs->Length())
           neg = 0;
         else
@@ -172,7 +172,7 @@ void IGESData_FreeFormatEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
         }
       }
       else
-        IW.Send(anent, Standard_False);
+        IW.Send(anent, false);
     }
     else
       IW.SendString(UndefinedContent()->ParamValue(i));

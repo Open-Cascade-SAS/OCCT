@@ -46,22 +46,20 @@ public:
   //! 6 -> SurfaceStyleControlGrid
   //! 7 -> SurfaceStyleRendering
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a SurfaceStyleFillArea (Null if another type)
-  Standard_EXPORT Handle(StepVisual_SurfaceStyleFillArea) SurfaceStyleFillArea() const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleFillArea> SurfaceStyleFillArea() const;
 
   //! returns Value as a SurfaceStyleBoundary (Null if another type)
-  Standard_EXPORT Handle(StepVisual_SurfaceStyleBoundary) SurfaceStyleBoundary() const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleBoundary> SurfaceStyleBoundary() const;
 
   //! returns Value as a SurfaceStyleParameterLine (Null if another type)
-  Standard_EXPORT Handle(StepVisual_SurfaceStyleParameterLine) SurfaceStyleParameterLine() const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleParameterLine> SurfaceStyleParameterLine()
+    const;
 
   //! returns Value as a SurfaceStyleRendering (Null if another type)
-  Standard_EXPORT Handle(StepVisual_SurfaceStyleRendering) SurfaceStyleRendering() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleRendering> SurfaceStyleRendering() const;
 };
 
 #endif // _StepVisual_SurfaceStyleElementSelect_HeaderFile

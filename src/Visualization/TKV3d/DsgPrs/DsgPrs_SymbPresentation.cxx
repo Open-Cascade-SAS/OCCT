@@ -25,19 +25,19 @@
 #include <StdPrs_Point.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-void DsgPrs_SymbPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     OffsetPoint)
+void DsgPrs_SymbPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          OffsetPoint)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Handle(Prs3d_TextAspect)      TA = LA->TextAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_TextAspect>      TA = LA->TextAspect();
   TA->SetColor(Quantity_NOC_GREEN);
   Prs3d_Text::Draw(aPresentation->CurrentGroup(), TA, aText, OffsetPoint);
 
   // 2eme groupe : marker
-  Handle(Geom_CartesianPoint) theP = new Geom_CartesianPoint(OffsetPoint);
-  Handle(Prs3d_PointAspect)   PA   = aDrawer->PointAspect();
+  occ::handle<Geom_CartesianPoint> theP = new Geom_CartesianPoint(OffsetPoint);
+  occ::handle<Prs3d_PointAspect>   PA   = aDrawer->PointAspect();
   PA->SetTypeOfMarker(Aspect_TOM_RING2);
   StdPrs_Point::Add(aPresentation, theP, aDrawer);
 }

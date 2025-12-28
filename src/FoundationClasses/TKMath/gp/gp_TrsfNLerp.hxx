@@ -68,7 +68,7 @@ public:
 
     gp_XYZ        aLoc;
     gp_Quaternion aRot;
-    Standard_Real aScale = 1.0;
+    double        aScale = 1.0;
     myLocLerp.Interpolate(theT, aLoc);
     myRotLerp.Interpolate(theT, aRot);
     myScaleLerp.Interpolate(theT, aScale);
@@ -79,11 +79,11 @@ public:
   }
 
 private:
-  NCollection_Lerp<gp_XYZ>        myLocLerp;
-  NCollection_Lerp<Standard_Real> myScaleLerp;
-  gp_QuaternionNLerp              myRotLerp;
-  gp_Trsf                         myTrsfStart;
-  gp_Trsf                         myTrsfEnd;
+  NCollection_Lerp<gp_XYZ> myLocLerp;
+  NCollection_Lerp<double> myScaleLerp;
+  gp_QuaternionNLerp       myRotLerp;
+  gp_Trsf                  myTrsfStart;
+  gp_Trsf                  myTrsfEnd;
 };
 
 typedef NCollection_Lerp<gp_Trsf> gp_TrsfNLerp;

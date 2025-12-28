@@ -19,13 +19,11 @@
 
 #include <Standard.hxx>
 
-#include <CDM_ListOfDocument.hxx>
+#include <CDM_Document.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class CDM_Document;
-
-class CDF_Directory;
-DEFINE_STANDARD_HANDLE(CDF_Directory, Standard_Transient)
 
 //! A directory is a collection of documents. There is only one instance
 //! of a given document in a directory.
@@ -38,33 +36,32 @@ public:
   Standard_EXPORT CDF_Directory();
 
   //! adds a document into the directory.
-  Standard_EXPORT void Add(const Handle(CDM_Document)& aDocument);
+  Standard_EXPORT void Add(const occ::handle<CDM_Document>& aDocument);
 
   //! removes the document.
-  Standard_EXPORT void Remove(const Handle(CDM_Document)& aDocument);
+  Standard_EXPORT void Remove(const occ::handle<CDM_Document>& aDocument);
 
   //! Returns true if the document aDocument is in the directory
-  Standard_EXPORT Standard_Boolean Contains(const Handle(CDM_Document)& aDocument) const;
+  Standard_EXPORT bool Contains(const occ::handle<CDM_Document>& aDocument) const;
 
   //! returns the last document (if any) which has been added
   //! in the directory.
-  Standard_EXPORT Handle(CDM_Document) Last();
+  Standard_EXPORT occ::handle<CDM_Document> Last();
 
   //! returns the number of documents of the directory.
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
   //! returns true if the directory is empty.
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_EXPORT bool IsEmpty() const;
 
   friend class CDF_DirectoryIterator;
 
   DEFINE_STANDARD_RTTIEXT(CDF_Directory, Standard_Transient)
 
-protected:
 private:
-  Standard_EXPORT const CDM_ListOfDocument& List() const;
+  Standard_EXPORT const NCollection_List<occ::handle<CDM_Document>>& List() const;
 
-  CDM_ListOfDocument myDocuments;
+  NCollection_List<occ::handle<CDM_Document>> myDocuments;
 };
 
 #endif // _CDF_Directory_HeaderFile

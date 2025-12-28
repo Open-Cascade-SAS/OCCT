@@ -24,29 +24,29 @@ Interface_HGraph::Interface_HGraph(const Interface_Graph& agraph)
 {
 }
 
-Interface_HGraph::Interface_HGraph(const Handle(Interface_InterfaceModel)& amodel,
-                                   const Interface_GeneralLib&             lib,
-                                   const Standard_Boolean                  theModeStat)
+Interface_HGraph::Interface_HGraph(const occ::handle<Interface_InterfaceModel>& amodel,
+                                   const Interface_GeneralLib&                  lib,
+                                   const bool                                   theModeStat)
     : thegraph(amodel, lib, theModeStat)
 {
 }
 
-Interface_HGraph::Interface_HGraph(const Handle(Interface_InterfaceModel)& amodel,
-                                   const Handle(Interface_Protocol)&       protocol,
-                                   const Standard_Boolean                  theModeStat)
+Interface_HGraph::Interface_HGraph(const occ::handle<Interface_InterfaceModel>& amodel,
+                                   const occ::handle<Interface_Protocol>&       protocol,
+                                   const bool                                   theModeStat)
     : thegraph(amodel, protocol, theModeStat)
 {
 }
 
-Interface_HGraph::Interface_HGraph(const Handle(Interface_InterfaceModel)& amodel,
-                                   const Handle(Interface_GTool)&          gtool,
-                                   const Standard_Boolean                  theModeStat)
+Interface_HGraph::Interface_HGraph(const occ::handle<Interface_InterfaceModel>& amodel,
+                                   const occ::handle<Interface_GTool>&          gtool,
+                                   const bool                                   theModeStat)
     : thegraph(amodel, gtool, theModeStat)
 {
 }
 
-Interface_HGraph::Interface_HGraph(const Handle(Interface_InterfaceModel)& amodel,
-                                   const Standard_Boolean                  theModeStat)
+Interface_HGraph::Interface_HGraph(const occ::handle<Interface_InterfaceModel>& amodel,
+                                   const bool                                   theModeStat)
     : thegraph(amodel, theModeStat)
 {
 }

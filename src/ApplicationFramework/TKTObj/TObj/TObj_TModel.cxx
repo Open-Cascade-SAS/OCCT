@@ -43,21 +43,21 @@ const Standard_GUID& TObj_TModel::ID() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TObj_TModel::NewEmpty() const
+occ::handle<TDF_Attribute> TObj_TModel::NewEmpty() const
 {
   return new TObj_TModel;
 }
 
 //=================================================================================================
 
-Handle(TObj_Model) TObj_TModel::Model() const
+occ::handle<TObj_Model> TObj_TModel::Model() const
 {
   return myModel;
 }
 
 //=================================================================================================
 
-void TObj_TModel::Set(const Handle(TObj_Model)& theModel)
+void TObj_TModel::Set(const occ::handle<TObj_Model>& theModel)
 {
   Backup();
   myModel = theModel;
@@ -65,17 +65,17 @@ void TObj_TModel::Set(const Handle(TObj_Model)& theModel)
 
 //=================================================================================================
 
-void TObj_TModel::Restore(const Handle(TDF_Attribute)& theWith)
+void TObj_TModel::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
-  Handle(TObj_TModel) R = Handle(TObj_TModel)::DownCast(theWith);
-  myModel               = R->Model();
+  occ::handle<TObj_TModel> R = occ::down_cast<TObj_TModel>(theWith);
+  myModel                    = R->Model();
 }
 
 //=================================================================================================
 
-void TObj_TModel::Paste(const Handle(TDF_Attribute)& theInto,
-                        const Handle(TDF_RelocationTable)& /* RT */) const
+void TObj_TModel::Paste(const occ::handle<TDF_Attribute>& theInto,
+                        const occ::handle<TDF_RelocationTable>& /* RT */) const
 {
-  Handle(TObj_TModel) R = Handle(TObj_TModel)::DownCast(theInto);
+  occ::handle<TObj_TModel> R = occ::down_cast<TObj_TModel>(theInto);
   R->Set(myModel);
 }

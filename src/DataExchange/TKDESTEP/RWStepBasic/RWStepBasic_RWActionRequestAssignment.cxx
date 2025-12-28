@@ -30,10 +30,10 @@ RWStepBasic_RWActionRequestAssignment::RWStepBasic_RWActionRequestAssignment() {
 //=================================================================================================
 
 void RWStepBasic_RWActionRequestAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&           data,
-  const Standard_Integer                           num,
-  Handle(Interface_Check)&                         ach,
-  const Handle(StepBasic_ActionRequestAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&           data,
+  const int                                             num,
+  occ::handle<Interface_Check>&                         ach,
+  const occ::handle<StepBasic_ActionRequestAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "action_request_assignment"))
@@ -41,7 +41,7 @@ void RWStepBasic_RWActionRequestAssignment::ReadStep(
 
   // Own fields of ActionRequestAssignment
 
-  Handle(StepBasic_VersionedActionRequest) aAssignedActionRequest;
+  occ::handle<StepBasic_VersionedActionRequest> aAssignedActionRequest;
   data->ReadEntity(num,
                    1,
                    "assigned_action_request",
@@ -56,8 +56,8 @@ void RWStepBasic_RWActionRequestAssignment::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWActionRequestAssignment::WriteStep(
-  StepData_StepWriter&                             SW,
-  const Handle(StepBasic_ActionRequestAssignment)& ent) const
+  StepData_StepWriter&                                  SW,
+  const occ::handle<StepBasic_ActionRequestAssignment>& ent) const
 {
 
   // Own fields of ActionRequestAssignment
@@ -68,8 +68,8 @@ void RWStepBasic_RWActionRequestAssignment::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWActionRequestAssignment::Share(
-  const Handle(StepBasic_ActionRequestAssignment)& ent,
-  Interface_EntityIterator&                        iter) const
+  const occ::handle<StepBasic_ActionRequestAssignment>& ent,
+  Interface_EntityIterator&                             iter) const
 {
 
   // Own fields of ActionRequestAssignment

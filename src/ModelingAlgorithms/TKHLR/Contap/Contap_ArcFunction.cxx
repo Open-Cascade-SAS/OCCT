@@ -29,12 +29,12 @@ Contap_ArcFunction::Contap_ArcFunction()
 {
 }
 
-void Contap_ArcFunction::Set(const Handle(Adaptor3d_Surface)& S)
+void Contap_ArcFunction::Set(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurf = S;
-  Standard_Integer i;
-  Standard_Integer nbs = Contap_HContTool::NbSamplePoints(S);
-  Standard_Real    U, V;
+  int    i;
+  int    nbs = Contap_HContTool::NbSamplePoints(S);
+  double U, V;
   //  gp_Vec d1u,d1v;
   gp_Vec norm;
   if (nbs > 0)
@@ -48,11 +48,11 @@ void Contap_ArcFunction::Set(const Handle(Adaptor3d_Surface)& S)
       Contap_SurfProps::Normale(S, U, V, solpt, norm);
       myMean = myMean + norm.Magnitude();
     }
-    myMean = myMean / ((Standard_Real)nbs);
+    myMean = myMean / ((double)nbs);
   }
 }
 
-Standard_Boolean Contap_ArcFunction::Value(const Standard_Real U, Standard_Real& F)
+bool Contap_ArcFunction::Value(const double U, double& F)
 {
   // gp_Vec d1u,d1v;
   gp_Pnt2d pt2d(Contap_HCurve2dTool::Value(myArc, U));
@@ -79,14 +79,14 @@ Standard_Boolean Contap_ArcFunction::Value(const Standard_Real U, Standard_Real&
     default: {
     }
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Contap_ArcFunction::Derivative(const Standard_Real U, Standard_Real& D)
+bool Contap_ArcFunction::Derivative(const double U, double& D)
 {
-  gp_Pnt2d      pt2d;
-  gp_Vec2d      d2d;
-  Standard_Real dfu = 0., dfv = 0.;
+  gp_Pnt2d pt2d;
+  gp_Vec2d d2d;
+  double   dfu = 0., dfv = 0.;
   //  gp_Vec d1u,d1v,d2u,d2v,d2uv;
   Contap_HCurve2dTool::D1(myArc, U, pt2d, d2d);
   //  Adaptor3d_HSurfaceTool::D2(mySurf,pt2d.X(),pt2d.Y(),solpt,d1u,d1v,d2u,d2v,d2uv);
@@ -128,16 +128,14 @@ Standard_Boolean Contap_ArcFunction::Derivative(const Standard_Real U, Standard_
     }
   }
   D = d2d.X() * dfu + d2d.Y() * dfv;
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Contap_ArcFunction::Values(const Standard_Real U,
-                                            Standard_Real&      F,
-                                            Standard_Real&      D)
+bool Contap_ArcFunction::Values(const double U, double& F, double& D)
 {
-  gp_Pnt2d      pt2d;
-  gp_Vec2d      d2d;
-  Standard_Real dfu = 0., dfv = 0.;
+  gp_Pnt2d pt2d;
+  gp_Vec2d d2d;
+  double   dfu = 0., dfv = 0.;
   // gp_Vec d1u,d1v,d2u,d2v,d2uv;
   Contap_HCurve2dTool::D1(myArc, U, pt2d, d2d);
   //  Adaptor3d_HSurfaceTool::D2(mySurf,pt2d.X(),pt2d.Y(),solpt,d1u,d1v,d2u,d2v,d2uv);
@@ -183,16 +181,16 @@ Standard_Boolean Contap_ArcFunction::Values(const Standard_Real U,
   }
 
   D = d2d.X() * dfu + d2d.Y() * dfv;
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer Contap_ArcFunction::GetStateNumber()
+int Contap_ArcFunction::GetStateNumber()
 {
   seqpt.Append(solpt);
   return seqpt.Length();
 }
 
-Standard_Integer Contap_ArcFunction::NbSamples() const
+int Contap_ArcFunction::NbSamples() const
 {
   return std::max(std::max(Contap_HContTool::NbSamplesU(mySurf, 0., 0.),
                            Contap_HContTool::NbSamplesV(mySurf, 0., 0.)),

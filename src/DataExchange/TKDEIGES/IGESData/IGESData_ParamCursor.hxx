@@ -53,7 +53,7 @@ public:
   //! (this constructor allows to simply give a Number to a method
   //! Read... from ParamReader, which will be translated into a
   //! ParamCursor by compiler)
-  Standard_EXPORT IGESData_ParamCursor(const Standard_Integer num);
+  Standard_EXPORT IGESData_ParamCursor(const int num);
 
   //! Creates a Cursor to read a list of parameters (count "nb")
   //! starting from a precise one (number "num") included, then
@@ -64,9 +64,7 @@ public:
   //! instance, a Parameter comprises one Integer, or one Entity ...
   //! Size gives the complete size of each Item if it is complex.
   //! To be used ONLY IF it is constant
-  Standard_EXPORT IGESData_ParamCursor(const Standard_Integer num,
-                                       const Standard_Integer nb,
-                                       const Standard_Integer size = 1);
+  Standard_EXPORT IGESData_ParamCursor(const int num, const int nb, const int size = 1);
 
   //! Defines the size of a term to read in the item : this commands
   //! ParamReader to read "size" parameters for each item, then
@@ -84,53 +82,51 @@ public:
   //! If it is False, SetAdvance must be called directly if necessary
   //!
   //! Error if a SetTerm overpasses the size of the Item
-  Standard_EXPORT void SetTerm(const Standard_Integer size,
-                               const Standard_Boolean autoadv = Standard_True);
+  Standard_EXPORT void SetTerm(const int size, const bool autoadv = true);
 
   //! Defines a term of one Parameter (very current case)
-  Standard_EXPORT void SetOne(const Standard_Boolean autoadv = Standard_True);
+  Standard_EXPORT void SetOne(const bool autoadv = true);
 
   //! Defines a term of two Parameters for a XY (current case)
-  Standard_EXPORT void SetXY(const Standard_Boolean autoadv = Standard_True);
+  Standard_EXPORT void SetXY(const bool autoadv = true);
 
   //! Defines a term of three Parameters for XYZ (current case)
-  Standard_EXPORT void SetXYZ(const Standard_Boolean autoadv = Standard_True);
+  Standard_EXPORT void SetXYZ(const bool autoadv = true);
 
   //! Changes command to advance current cursor after reading
   //! parameters. If "advance" True, sets advance, if "False",
   //! resets it. ParamCursor is created by default with True.
-  Standard_EXPORT void SetAdvance(const Standard_Boolean advance);
+  Standard_EXPORT void SetAdvance(const bool advance);
 
   //! Returns (included) starting number for reading parameters
-  Standard_Integer Start() const;
+  int Start() const;
 
   //! Returns (excluded) upper limit number for reading parameters
-  Standard_Integer Limit() const;
+  int Limit() const;
 
   //! Returns required count of items to be read
-  Standard_Integer Count() const;
+  int Count() const;
 
   //! Returns length of item (count of parameters per item)
-  Standard_Integer ItemSize() const;
+  int ItemSize() const;
 
   //! Returns length of current term (count of parameters) in item
-  Standard_Integer TermSize() const;
+  int TermSize() const;
 
   //! Returns offset from which current term must be read in item
-  Standard_Integer Offset() const;
+  int Offset() const;
 
   //! Returns True if Advance command has been set
-  Standard_Boolean Advance() const;
+  bool Advance() const;
 
-protected:
 private:
-  Standard_Integer thestart;
-  Standard_Integer thelimit;
-  Standard_Integer thecount;
-  Standard_Integer theisize;
-  Standard_Integer theoffst;
-  Standard_Integer thetsize;
-  Standard_Boolean theadv;
+  int  thestart;
+  int  thelimit;
+  int  thecount;
+  int  theisize;
+  int  theoffst;
+  int  thetsize;
+  bool theadv;
 };
 
 #include <IGESData_ParamCursor.lxx>

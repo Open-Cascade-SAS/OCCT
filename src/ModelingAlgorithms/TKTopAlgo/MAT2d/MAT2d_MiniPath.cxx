@@ -20,12 +20,13 @@
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Point.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <MAT2d_Array2OfConnexion.hxx>
 #include <MAT2d_Connexion.hxx>
+#include <NCollection_Array2.hxx>
 #include <MAT2d_MiniPath.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColGeom2d_SequenceOfGeometry.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
 
 //=================================================================================================
 
@@ -41,14 +42,15 @@ MAT2d_MiniPath::MAT2d_MiniPath()
 //           le chemin part de la ligne <IndStart>.
 //           <Sense> = True les lignes sont orientes dans le sens trigo.
 //============================================================================
-void MAT2d_MiniPath::Perform(const MAT2d_SequenceOfSequenceOfGeometry& Figure,
-                             const Standard_Integer                    IndStart,
-                             const Standard_Boolean                    Sense)
+void MAT2d_MiniPath::Perform(
+  const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
+  const int                                                                       IndStart,
+  const bool                                                                      Sense)
 {
 
-  Standard_Integer        i, j;
-  Standard_Integer        NbLines = Figure.Length();
-  MAT2d_Array2OfConnexion Connexion(1, NbLines, 1, NbLines);
+  int                                              i, j;
+  int                                              NbLines = Figure.Length();
+  NCollection_Array2<occ::handle<MAT2d_Connexion>> Connexion(1, NbLines, 1, NbLines);
 
   indStart     = IndStart;
   theDirection = 1.;
@@ -68,11 +70,11 @@ void MAT2d_MiniPath::Perform(const MAT2d_SequenceOfSequenceOfGeometry& Figure,
     }
   }
 
-  TColStd_SequenceOfInteger Set1;
-  TColStd_SequenceOfInteger Set2;
-  Standard_Real             DistS1S2;
-  Standard_Integer          IndiceLine1, IndiceLine2;
-  Standard_Integer          ISuiv = 0, MinOnSet1 = 0, MinOnSet2 = 0;
+  NCollection_Sequence<int> Set1;
+  NCollection_Sequence<int> Set2;
+  double                    DistS1S2;
+  int                       IndiceLine1, IndiceLine2;
+  int                       ISuiv = 0, MinOnSet1 = 0, MinOnSet2 = 0;
   //---------------------------------------------------------------------------
   // - 0 Set1 est initialise avec la ligne de depart.
   //     Set2 contient toutes les autres.
@@ -134,24 +136,24 @@ void MAT2d_MiniPath::Perform(const MAT2d_SequenceOfSequenceOfGeometry& Figure,
 //           - les connexions sont les branches.
 //
 //============================================================================
-void MAT2d_MiniPath::Append(const Handle(MAT2d_Connexion)& C)
+void MAT2d_MiniPath::Append(const occ::handle<MAT2d_Connexion>& C)
 {
-  Handle(MAT2d_Connexion) CC;
+  occ::handle<MAT2d_Connexion> CC;
 
   if (!theConnexions.IsBound(C->IndexFirstLine()))
   {
-    MAT2d_SequenceOfConnexion Seq;
+    NCollection_Sequence<occ::handle<MAT2d_Connexion>> Seq;
     theConnexions.Bind(C->IndexFirstLine(), Seq);
     theConnexions(C->IndexFirstLine()).Append(C);
     theFather.Bind(C->IndexSecondLine(), C);
     return;
   }
 
-  MAT2d_SequenceOfConnexion& Seq          = theConnexions(C->IndexFirstLine());
-  Standard_Integer           IndexAfter   = 0;
-  Standard_Integer           NbConnexions = Seq.Length();
+  NCollection_Sequence<occ::handle<MAT2d_Connexion>>& Seq = theConnexions(C->IndexFirstLine());
+  int                                                 IndexAfter   = 0;
+  int                                                 NbConnexions = Seq.Length();
 
-  for (Standard_Integer i = 1; i <= NbConnexions; i++)
+  for (int i = 1; i <= NbConnexions; i++)
   {
     CC = Seq.Value(i);
     if (CC->IsAfter(C, theDirection))
@@ -181,14 +183,14 @@ void MAT2d_MiniPath::Append(const Handle(MAT2d_Connexion)& C)
 // function : Path
 // purpose  : Retour de la sequence de connexions definissant le chemin.
 //============================================================================
-const MAT2d_SequenceOfConnexion& MAT2d_MiniPath::Path() const
+const NCollection_Sequence<occ::handle<MAT2d_Connexion>>& MAT2d_MiniPath::Path() const
 {
   return thePath;
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT2d_MiniPath::IsConnexionsFrom(const Standard_Integer i) const
+bool MAT2d_MiniPath::IsConnexionsFrom(const int i) const
 {
   return (theConnexions.IsBound(i));
 }
@@ -197,14 +199,14 @@ Standard_Boolean MAT2d_MiniPath::IsConnexionsFrom(const Standard_Integer i) cons
 // function : Connexions
 // purpose  : Retour de la sequence de connexions issue de la ligne <i>.
 //============================================================================
-MAT2d_SequenceOfConnexion& MAT2d_MiniPath::ConnexionsFrom(const Standard_Integer i)
+NCollection_Sequence<occ::handle<MAT2d_Connexion>>& MAT2d_MiniPath::ConnexionsFrom(const int i)
 {
   return theConnexions.ChangeFind(i);
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT2d_MiniPath::IsRoot(const Standard_Integer ILine) const
+bool MAT2d_MiniPath::IsRoot(const int ILine) const
 {
   return (ILine == indStart);
 }
@@ -213,7 +215,7 @@ Standard_Boolean MAT2d_MiniPath::IsRoot(const Standard_Integer ILine) const
 // function : Father
 // purpose  : Retour de la premiere connexion qui arrive sur la ligne i
 //============================================================================
-Handle(MAT2d_Connexion) MAT2d_MiniPath::Father(const Standard_Integer ILine)
+occ::handle<MAT2d_Connexion> MAT2d_MiniPath::Father(const int ILine)
 {
   return theFather.ChangeFind(ILine);
 }
@@ -224,9 +226,9 @@ Handle(MAT2d_Connexion) MAT2d_MiniPath::Father(const Standard_Integer ILine)
 //============================================================================
 void MAT2d_MiniPath::RunOnConnexions()
 {
-  Standard_Integer                 i;
-  Handle(MAT2d_Connexion)          C;
-  const MAT2d_SequenceOfConnexion& SC = theConnexions(indStart);
+  int                                                       i;
+  occ::handle<MAT2d_Connexion>                              C;
+  const NCollection_Sequence<occ::handle<MAT2d_Connexion>>& SC = theConnexions(indStart);
 
   thePath.Clear();
 
@@ -241,18 +243,18 @@ void MAT2d_MiniPath::RunOnConnexions()
 
 //=================================================================================================
 
-void MAT2d_MiniPath::ExploSons(MAT2d_SequenceOfConnexion&     CResult,
-                               const Handle(MAT2d_Connexion)& CRef)
+void MAT2d_MiniPath::ExploSons(NCollection_Sequence<occ::handle<MAT2d_Connexion>>& CResult,
+                               const occ::handle<MAT2d_Connexion>&                 CRef)
 {
-  Standard_Integer i;
-  Standard_Integer Index = CRef->IndexSecondLine();
+  int i;
+  int Index = CRef->IndexSecondLine();
 
   if (!theConnexions.IsBound(Index))
     return;
 
-  const MAT2d_SequenceOfConnexion& SC  = theConnexions(Index);
-  Handle(MAT2d_Connexion)          CRR = CRef->Reverse();
-  Handle(MAT2d_Connexion)          C;
+  const NCollection_Sequence<occ::handle<MAT2d_Connexion>>& SC  = theConnexions(Index);
+  occ::handle<MAT2d_Connexion>                              CRR = CRef->Reverse();
+  occ::handle<MAT2d_Connexion>                              C;
 
   for (i = 1; i <= SC.Length(); i++)
   {
@@ -286,19 +288,19 @@ void MAT2d_MiniPath::ExploSons(MAT2d_SequenceOfConnexion&     CResult,
 // purpose  : Calcul de la connexion realisant le minimum de distance entre les
 //           lignes d indice <IL1> et <IL2> dans <Figure>.
 //============================================================================
-Handle(MAT2d_Connexion) MAT2d_MiniPath::MinimumL1L2(
-  const MAT2d_SequenceOfSequenceOfGeometry& Figure,
-  const Standard_Integer                    IL1,
-  const Standard_Integer                    IL2) const
+occ::handle<MAT2d_Connexion> MAT2d_MiniPath::MinimumL1L2(
+  const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
+  const int                                                                       IL1,
+  const int                                                                       IL2) const
 {
-  Extrema_POnCurv2d             PointOnCurv1, PointOnCurv2;
-  Standard_Integer              IC1, IC2, IMinC1 = 0, IMinC2 = 0, i;
-  Standard_Real                 DistL1L2_2, DistP1P2_2;
-  Standard_Real                 ParameterOnC1 = 0., ParameterOnC2 = 0.;
-  TColGeom2d_SequenceOfGeometry L1, L2;
-  gp_Pnt2d                      Point1, Point2, P1, P2;
-  Handle(Geom2d_Curve)          Item1;
-  Handle(Geom2d_Curve)          Item2;
+  Extrema_POnCurv2d                                  PointOnCurv1, PointOnCurv2;
+  int                                                IC1, IC2, IMinC1 = 0, IMinC2 = 0, i;
+  double                                             DistL1L2_2, DistP1P2_2;
+  double                                             ParameterOnC1 = 0., ParameterOnC2 = 0.;
+  NCollection_Sequence<occ::handle<Geom2d_Geometry>> L1, L2;
+  gp_Pnt2d                                           Point1, Point2, P1, P2;
+  occ::handle<Geom2d_Curve>                          Item1;
+  occ::handle<Geom2d_Curve>                          Item2;
 
   L1 = Figure.Value(IL1);
   L2 = Figure.Value(IL2);
@@ -312,27 +314,27 @@ Handle(MAT2d_Connexion) MAT2d_MiniPath::MinimumL1L2(
   for (IC1 = 1; IC1 <= L1.Length(); IC1++)
   {
 
-    Handle(Standard_Type) Type1 = L1.Value(IC1)->DynamicType();
+    occ::handle<Standard_Type> Type1 = L1.Value(IC1)->DynamicType();
     if (Type1 != STANDARD_TYPE(Geom2d_CartesianPoint))
     {
-      Item1 = Handle(Geom2d_Curve)::DownCast(L1.Value(IC1));
+      Item1 = occ::down_cast<Geom2d_Curve>(L1.Value(IC1));
     }
     else
     {
-      P1 = Handle(Geom2d_Point)::DownCast(L1.Value(IC1))->Pnt2d();
+      P1 = occ::down_cast<Geom2d_Point>(L1.Value(IC1))->Pnt2d();
     }
 
     for (IC2 = 1; IC2 <= L2.Length(); IC2++)
     {
 
-      Handle(Standard_Type) Type2 = L2.Value(IC2)->DynamicType();
+      occ::handle<Standard_Type> Type2 = L2.Value(IC2)->DynamicType();
       if (Type2 != STANDARD_TYPE(Geom2d_CartesianPoint))
       {
-        Item2 = Handle(Geom2d_Curve)::DownCast(L2.Value(IC2));
+        Item2 = occ::down_cast<Geom2d_Curve>(L2.Value(IC2));
       }
       else
       {
-        P2 = Handle(Geom2d_Point)::DownCast(L2.Value(IC2))->Pnt2d();
+        P2 = occ::down_cast<Geom2d_Point>(L2.Value(IC2))->Pnt2d();
       }
 
       if (Type1 == STANDARD_TYPE(Geom2d_CartesianPoint)
@@ -419,7 +421,7 @@ Handle(MAT2d_Connexion) MAT2d_MiniPath::MinimumL1L2(
       }
     }
   }
-  Handle(MAT2d_Connexion) ConnexionL1L2;
+  occ::handle<MAT2d_Connexion> ConnexionL1L2;
   ConnexionL1L2 = new MAT2d_Connexion(IL1,
                                       IL2,
                                       IMinC1,

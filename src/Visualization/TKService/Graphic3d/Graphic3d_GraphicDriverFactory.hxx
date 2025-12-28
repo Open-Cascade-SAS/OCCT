@@ -21,7 +21,6 @@
 class Aspect_DisplayConnection;
 class Graphic3d_GraphicDriver;
 class Graphic3d_GraphicDriverFactory;
-typedef NCollection_List<Handle(Graphic3d_GraphicDriverFactory)> Graphic3d_GraphicDriverFactoryList;
 
 //! This class for creation of Graphic3d_GraphicDriver.
 class Graphic3d_GraphicDriverFactory : public Standard_Transient
@@ -33,22 +32,23 @@ public:
   //! @param[in] theIsPreferred  add to the beginning of the list when TRUE, or add to the end
   //! otherwise
   Standard_EXPORT static void RegisterFactory(
-    const Handle(Graphic3d_GraphicDriverFactory)& theFactory,
-    bool                                          theIsPreferred = false);
+    const occ::handle<Graphic3d_GraphicDriverFactory>& theFactory,
+    bool                                               theIsPreferred = false);
 
   //! Unregisters factory.
   Standard_EXPORT static void UnregisterFactory(const TCollection_AsciiString& theName);
 
   //! Return default driver factory or NULL if no one was registered.
-  Standard_EXPORT static Handle(Graphic3d_GraphicDriverFactory) DefaultDriverFactory();
+  Standard_EXPORT static occ::handle<Graphic3d_GraphicDriverFactory> DefaultDriverFactory();
 
   //! Return the global map of registered driver factories.
-  Standard_EXPORT static const Graphic3d_GraphicDriverFactoryList& DriverFactories();
+  Standard_EXPORT static const NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>&
+    DriverFactories();
 
 public:
   //! Creates new empty graphic driver.
-  virtual Handle(Graphic3d_GraphicDriver) CreateDriver(
-    const Handle(Aspect_DisplayConnection)& theDisp) = 0;
+  virtual occ::handle<Graphic3d_GraphicDriver> CreateDriver(
+    const occ::handle<Aspect_DisplayConnection>& theDisp) = 0;
 
   //! Return driver factory name.
   const TCollection_AsciiString& Name() const { return myName; }

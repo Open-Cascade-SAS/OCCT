@@ -27,14 +27,14 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_FrustumBuilder, Standard_Transient)
 SelectMgr_FrustumBuilder::SelectMgr_FrustumBuilder()
     : myWidth(INT_MAX),
       myHeight(INT_MAX),
-      myIsViewportSet(Standard_False)
+      myIsViewportSet(false)
 {
   //
 }
 
 //=================================================================================================
 
-void SelectMgr_FrustumBuilder::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
+void SelectMgr_FrustumBuilder::SetCamera(const occ::handle<Graphic3d_Camera>& theCamera)
 {
   myCamera = theCamera;
 }
@@ -43,8 +43,7 @@ void SelectMgr_FrustumBuilder::SetCamera(const Handle(Graphic3d_Camera)& theCame
 // function : SetWindowSize
 // purpose  : Stores current window width and height
 //=======================================================================
-void SelectMgr_FrustumBuilder::SetWindowSize(const Standard_Integer theWidth,
-                                             const Standard_Integer theHeight)
+void SelectMgr_FrustumBuilder::SetWindowSize(const int theWidth, const int theHeight)
 {
   myWidth  = theWidth;
   myHeight = theHeight;
@@ -54,19 +53,18 @@ void SelectMgr_FrustumBuilder::SetWindowSize(const Standard_Integer theWidth,
 // function : SetViewport
 // purpose  : Stores current viewport coordinates
 //=======================================================================
-void SelectMgr_FrustumBuilder::SetViewport(const Standard_Real theX,
-                                           const Standard_Real theY,
-                                           const Standard_Real theWidth,
-                                           const Standard_Real theHeight)
+void SelectMgr_FrustumBuilder::SetViewport(const double theX,
+                                           const double theY,
+                                           const double theWidth,
+                                           const double theHeight)
 {
-  myViewport      = NCollection_Vec4<Standard_Real>(theX, theY, theWidth, theHeight);
-  myIsViewportSet = Standard_True;
+  myViewport      = NCollection_Vec4<double>(theX, theY, theWidth, theHeight);
+  myIsViewportSet = true;
 }
 
 //=================================================================================================
 
-void SelectMgr_FrustumBuilder::WindowSize(Standard_Integer& theWidth,
-                                          Standard_Integer& theHeight) const
+void SelectMgr_FrustumBuilder::WindowSize(int& theWidth, int& theHeight) const
 {
   theWidth  = myWidth;
   theHeight = myHeight;
@@ -76,7 +74,7 @@ void SelectMgr_FrustumBuilder::WindowSize(Standard_Integer& theWidth,
 
 void SelectMgr_FrustumBuilder::InvalidateViewport()
 {
-  myIsViewportSet = Standard_False;
+  myIsViewportSet = false;
 }
 
 //=======================================================================
@@ -84,15 +82,14 @@ void SelectMgr_FrustumBuilder::InvalidateViewport()
 // purpose  : Calculates signed distance between plane with equation
 //            theEq and point thePnt
 //=======================================================================
-Standard_Real SelectMgr_FrustumBuilder::SignedPlanePntDist(const SelectMgr_Vec3& theEq,
-                                                           const SelectMgr_Vec3& thePnt) const
+double SelectMgr_FrustumBuilder::SignedPlanePntDist(const NCollection_Vec3<double>& theEq,
+                                                    const NCollection_Vec3<double>& thePnt) const
 {
-  const Standard_Real aNormLength = LENGTH(theEq);
-  const Standard_Real anInvNormLength =
-    aNormLength < Precision::Confusion() ? 0.0 : 1.0 / aNormLength;
-  const Standard_Real anA = theEq.x() * anInvNormLength;
-  const Standard_Real aB  = theEq.y() * anInvNormLength;
-  const Standard_Real aC  = theEq.z() * anInvNormLength;
+  const double aNormLength     = LENGTH(theEq);
+  const double anInvNormLength = aNormLength < Precision::Confusion() ? 0.0 : 1.0 / aNormLength;
+  const double anA             = theEq.x() * anInvNormLength;
+  const double aB              = theEq.y() * anInvNormLength;
+  const double aC              = theEq.z() * anInvNormLength;
   return anA * thePnt.x() + aB * thePnt.y() + aC * thePnt.z();
 }
 
@@ -102,9 +99,9 @@ Standard_Real SelectMgr_FrustumBuilder::SignedPlanePntDist(const SelectMgr_Vec3&
 //            theZ = 0 - near plane,
 //            theZ = 1 - far plane
 // =======================================================================
-gp_Pnt SelectMgr_FrustumBuilder::ProjectPntOnViewPlane(const Standard_Real& theX,
-                                                       const Standard_Real& theY,
-                                                       const Standard_Real& theZ) const
+gp_Pnt SelectMgr_FrustumBuilder::ProjectPntOnViewPlane(const double& theX,
+                                                       const double& theY,
+                                                       const double& theZ) const
 {
   if (myCamera.IsNull())
   {

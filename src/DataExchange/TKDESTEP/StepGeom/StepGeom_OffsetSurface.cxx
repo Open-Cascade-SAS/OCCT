@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OffsetSurface, StepGeom_Surface)
 
 StepGeom_OffsetSurface::StepGeom_OffsetSurface() {}
 
-void StepGeom_OffsetSurface::Init(const Handle(TCollection_HAsciiString)& aName,
-                                  const Handle(StepGeom_Surface)&         aBasisSurface,
-                                  const Standard_Real                     aDistance,
-                                  const StepData_Logical                  aSelfIntersect)
+void StepGeom_OffsetSurface::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                  const occ::handle<StepGeom_Surface>&         aBasisSurface,
+                                  const double                                 aDistance,
+                                  const StepData_Logical                       aSelfIntersect)
 {
   // --- classe own fields ---
   basisSurface  = aBasisSurface;
@@ -32,22 +32,22 @@ void StepGeom_OffsetSurface::Init(const Handle(TCollection_HAsciiString)& aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_OffsetSurface::SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface)
+void StepGeom_OffsetSurface::SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface)
 {
   basisSurface = aBasisSurface;
 }
 
-Handle(StepGeom_Surface) StepGeom_OffsetSurface::BasisSurface() const
+occ::handle<StepGeom_Surface> StepGeom_OffsetSurface::BasisSurface() const
 {
   return basisSurface;
 }
 
-void StepGeom_OffsetSurface::SetDistance(const Standard_Real aDistance)
+void StepGeom_OffsetSurface::SetDistance(const double aDistance)
 {
   distance = aDistance;
 }
 
-Standard_Real StepGeom_OffsetSurface::Distance() const
+double StepGeom_OffsetSurface::Distance() const
 {
   return distance;
 }

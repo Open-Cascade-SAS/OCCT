@@ -32,42 +32,42 @@
 #include <Precision.hxx>
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Handle(Geom2d_Curve) BASISCURVE2D(const Handle(Geom2d_Curve)& C)
+Standard_EXPORT occ::handle<Geom2d_Curve> BASISCURVE2D(const occ::handle<Geom2d_Curve>& C)
 {
-  Handle(Standard_Type) T = C->DynamicType();
+  occ::handle<Standard_Type> T = C->DynamicType();
   if (T == STANDARD_TYPE(Geom2d_OffsetCurve))
-    return ::BASISCURVE2D(Handle(Geom2d_OffsetCurve)::DownCast(C)->BasisCurve());
+    return ::BASISCURVE2D(occ::down_cast<Geom2d_OffsetCurve>(C)->BasisCurve());
   else if (T == STANDARD_TYPE(Geom2d_TrimmedCurve))
-    return ::BASISCURVE2D(Handle(Geom2d_TrimmedCurve)::DownCast(C)->BasisCurve());
+    return ::BASISCURVE2D(occ::down_cast<Geom2d_TrimmedCurve>(C)->BasisCurve());
   else
     return C;
 }
 
 /*// ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_IsUViso(const Handle(Geom2d_Curve)& PC,
-                     Standard_Boolean& isoU,Standard_Boolean& isoV,
+Standard_EXPORT bool FUN_tool_IsUViso(const occ::handle<Geom2d_Curve>& PC,
+                     bool& isoU,bool& isoV,
                      gp_Dir2d& d2d,gp_Pnt2d& o2d)
 {
-  isoU = isoV = Standard_False;
-  if (PC.IsNull()) return Standard_False;
-  Handle(Geom2d_Curve) LLL = BASISCURVE2D(PC);
-  Handle(Standard_Type) T2 = LLL->DynamicType();
-  Standard_Boolean isline2d = (T2 == STANDARD_TYPE(Geom2d_Line));
-  if (!isline2d) return Standard_False;
+  isoU = isoV = false;
+  if (PC.IsNull()) return false;
+  occ::handle<Geom2d_Curve> LLL = BASISCURVE2D(PC);
+  occ::handle<Standard_Type> T2 = LLL->DynamicType();
+  bool isline2d = (T2 == STANDARD_TYPE(Geom2d_Line));
+  if (!isline2d) return false;
 
-  Handle(Geom2d_Line) L = Handle(Geom2d_Line)::DownCast(LLL);
+  occ::handle<Geom2d_Line> L = occ::down_cast<Geom2d_Line>(LLL);
   d2d = L->Direction();
   isoU = (std::abs(d2d.X()) < Precision::Parametric(Precision::Confusion()));
   isoV = (std::abs(d2d.Y()) < Precision::Parametric(Precision::Confusion()));
-  Standard_Boolean isoUV = isoU || isoV;
-  if (!isoUV) return Standard_False;
+  bool isoUV = isoU || isoV;
+  if (!isoUV) return false;
 
   o2d = L->Location();
-  return Standard_True;
+  return true;
 }*/
 
 // ----------------------------------------------------------------------
-Standard_EXPORT gp_Dir FUN_tool_dirC(const Standard_Real par, const Handle(Geom_Curve)& C)
+Standard_EXPORT gp_Dir FUN_tool_dirC(const double par, const occ::handle<Geom_Curve>& C)
 {
   gp_Pnt p;
   gp_Vec tgE;
@@ -77,34 +77,34 @@ Standard_EXPORT gp_Dir FUN_tool_dirC(const Standard_Real par, const Handle(Geom_
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_onapex(const gp_Pnt2d& p2d, const Handle(Geom_Surface)& S)
+Standard_EXPORT bool FUN_tool_onapex(const gp_Pnt2d& p2d, const occ::handle<Geom_Surface>& S)
 {
-  Standard_Boolean    isapex = Standard_False;
+  bool                isapex = false;
   GeomAdaptor_Surface GS(S);
-  Standard_Real       tol   = Precision::Confusion();
+  double              tol   = Precision::Confusion();
   GeomAbs_SurfaceType ST    = GS.GetType();
-  Standard_Real       toluv = 1.e-8;
+  double              toluv = 1.e-8;
   if (ST == GeomAbs_Cone)
   {
-    gp_Cone       co   = GS.Cone();
-    gp_Pnt        apex = co.Apex();
-    gp_Pnt        pnt  = GS.Value(p2d.X(), p2d.Y());
-    Standard_Real dist = pnt.Distance(apex);
-    isapex             = (dist < tol);
+    gp_Cone co   = GS.Cone();
+    gp_Pnt  apex = co.Apex();
+    gp_Pnt  pnt  = GS.Value(p2d.X(), p2d.Y());
+    double  dist = pnt.Distance(apex);
+    isapex       = (dist < tol);
   }
   if (ST == GeomAbs_Sphere)
   {
-    Standard_Real    pisur2       = M_PI * .5;
-    Standard_Real    v            = p2d.Y();
-    Standard_Boolean vpisur2      = (std::abs(v - pisur2) < toluv);
-    Standard_Boolean vmoinspisur2 = (std::abs(v + pisur2) < toluv);
-    isapex                        = vpisur2 || vmoinspisur2;
+    double pisur2       = M_PI * .5;
+    double v            = p2d.Y();
+    bool   vpisur2      = (std::abs(v - pisur2) < toluv);
+    bool   vmoinspisur2 = (std::abs(v + pisur2) < toluv);
+    isapex              = vpisur2 || vmoinspisur2;
   }
   return isapex;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const Handle(Geom_Surface)& S)
+Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const occ::handle<Geom_Surface>& S)
 {
   // ###############################
   // nyi : all geometries are direct
@@ -113,19 +113,19 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const Handle(Geom_Surfa
   gp_Vec d1u, d1v;
   S->D1(p2d.X(), p2d.Y(), p, d1u, d1v);
 
-  Standard_Real    du    = d1u.Magnitude();
-  Standard_Real    dv    = d1v.Magnitude();
-  Standard_Real    tol   = Precision::Confusion();
-  Standard_Boolean kpart = (du < tol) || (dv < tol);
+  double du    = d1u.Magnitude();
+  double dv    = d1v.Magnitude();
+  double tol   = Precision::Confusion();
+  bool   kpart = (du < tol) || (dv < tol);
   if (kpart)
   {
     GeomAdaptor_Surface GS(S);
     GeomAbs_SurfaceType ST    = GS.GetType();
-    Standard_Real       toluv = 1.e-8;
+    double              toluv = 1.e-8;
     if (ST == GeomAbs_Cone)
     {
-      Standard_Boolean nullx = (std::abs(p2d.X()) < toluv);
-      Standard_Boolean apex  = nullx && (std::abs(p2d.Y()) < toluv);
+      bool nullx = (std::abs(p2d.X()) < toluv);
+      bool apex  = nullx && (std::abs(p2d.Y()) < toluv);
       if (apex)
       {
         gp_Dir axis = GS.Cone().Axis().Direction();
@@ -135,11 +135,11 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const Handle(Geom_Surfa
       }
       else if (du < tol)
       {
-        Standard_Real    vf   = GS.FirstVParameter();
-        Standard_Boolean onvf = std::abs(p2d.Y() - vf) < toluv;
+        double vf   = GS.FirstVParameter();
+        bool   onvf = std::abs(p2d.Y() - vf) < toluv;
 
-        Standard_Real x = p2d.X();
-        Standard_Real y = p2d.Y();
+        double x = p2d.X();
+        double y = p2d.Y();
         // NYIXPU : devrait plutot etre fait sur les faces & TopOpeBRepTool_TOOL::minDUV...
         if (onvf)
           y += 1.;
@@ -152,15 +152,15 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const Handle(Geom_Surfa
     }
     if (ST == GeomAbs_Sphere)
     {
-      //      Standard_Real deuxpi = 2*M_PI;
-      Standard_Real pisur2 = M_PI * .5;
-      Standard_Real u = p2d.X(), v = p2d.Y();
-      //      Standard_Boolean u0  =(std::abs(u) < toluv);
-      //      Standard_Boolean u2pi=(std::abs(u-deuxpi) < toluv);
-      //      Standard_Boolean apex = u0 || u2pi;
-      Standard_Boolean vpisur2      = (std::abs(v - pisur2) < toluv);
-      Standard_Boolean vmoinspisur2 = (std::abs(v + pisur2) < toluv);
-      Standard_Boolean apex         = vpisur2 || vmoinspisur2;
+      //      double deuxpi = 2*M_PI;
+      double pisur2 = M_PI * .5;
+      double u = p2d.X(), v = p2d.Y();
+      //      bool u0  =(std::abs(u) < toluv);
+      //      bool u2pi=(std::abs(u-deuxpi) < toluv);
+      //      bool apex = u0 || u2pi;
+      bool vpisur2      = (std::abs(v - pisur2) < toluv);
+      bool vmoinspisur2 = (std::abs(v + pisur2) < toluv);
+      bool apex         = vpisur2 || vmoinspisur2;
       if (apex)
       {
         gp_Pnt center = GS.Sphere().Location();
@@ -183,111 +183,111 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const Handle(Geom_Surfa
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_line(const Handle(Geom_Curve)& C3d)
+Standard_EXPORT bool FUN_tool_line(const occ::handle<Geom_Curve>& C3d)
 {
-  Handle(Geom_Curve) C = TopOpeBRepTool_ShapeTool::BASISCURVE(C3d);
-  GeomAdaptor_Curve  GC(C);
-  Standard_Boolean   line = (GC.GetType() == GeomAbs_Line);
+  occ::handle<Geom_Curve> C = TopOpeBRepTool_ShapeTool::BASISCURVE(C3d);
+  GeomAdaptor_Curve       GC(C);
+  bool                    line = (GC.GetType() == GeomAbs_Line);
   return line;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_quadCT(const GeomAbs_CurveType& CT)
+Standard_EXPORT bool FUN_quadCT(const GeomAbs_CurveType& CT)
 {
-  Standard_Boolean isquad = Standard_False;
+  bool isquad = false;
   if (CT == GeomAbs_Line)
-    isquad = Standard_True;
+    isquad = true;
   if (CT == GeomAbs_Circle)
-    isquad = Standard_True;
+    isquad = true;
   if (CT == GeomAbs_Ellipse)
-    isquad = Standard_True;
+    isquad = true;
   if (CT == GeomAbs_Hyperbola)
-    isquad = Standard_True;
+    isquad = true;
   if (CT == GeomAbs_Parabola)
-    isquad = Standard_True;
+    isquad = true;
   return isquad;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_quad(const Handle(Geom_Curve)& C3d)
+Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom_Curve>& C3d)
 {
-  Handle(Geom_Curve) C = TopOpeBRepTool_ShapeTool::BASISCURVE(C3d);
+  occ::handle<Geom_Curve> C = TopOpeBRepTool_ShapeTool::BASISCURVE(C3d);
   if (C.IsNull())
-    return Standard_False;
+    return false;
   GeomAdaptor_Curve GC(C);
   GeomAbs_CurveType CT   = GC.GetType();
-  Standard_Boolean  quad = FUN_quadCT(CT);
+  bool              quad = FUN_quadCT(CT);
   return quad;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_quad(const Handle(Geom2d_Curve)& pc)
+Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom2d_Curve>& pc)
 {
-  Handle(Geom2d_Curve) pcb = BASISCURVE2D(pc); // NYI TopOpeBRepTool_ShapeTool
+  occ::handle<Geom2d_Curve> pcb = BASISCURVE2D(pc); // NYI TopOpeBRepTool_ShapeTool
   if (pcb.IsNull())
-    return Standard_False;
+    return false;
   Geom2dAdaptor_Curve GC2d(pcb);
   GeomAbs_CurveType   typ    = GC2d.GetType();
-  Standard_Boolean    isquad = Standard_False;
+  bool                isquad = false;
   if (typ == GeomAbs_Line)
-    isquad = Standard_True;
+    isquad = true;
   if (typ == GeomAbs_Circle)
-    isquad = Standard_True;
+    isquad = true;
   if (typ == GeomAbs_Ellipse)
-    isquad = Standard_True;
+    isquad = true;
   if (typ == GeomAbs_Hyperbola)
-    isquad = Standard_True;
+    isquad = true;
   if (typ == GeomAbs_Parabola)
-    isquad = Standard_True;
+    isquad = true;
   return isquad;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_line(const Handle(Geom2d_Curve)& pc)
+Standard_EXPORT bool FUN_tool_line(const occ::handle<Geom2d_Curve>& pc)
 {
-  Handle(Geom2d_Curve) pcb = BASISCURVE2D(pc); // NYI TopOpeBRepTool_ShapeTool
+  occ::handle<Geom2d_Curve> pcb = BASISCURVE2D(pc); // NYI TopOpeBRepTool_ShapeTool
   if (pcb.IsNull())
-    return Standard_False;
+    return false;
   Geom2dAdaptor_Curve GC2d(pcb);
   GeomAbs_CurveType   typ = GC2d.GetType();
 
   if (typ == GeomAbs_Line)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_quad(const Handle(Geom_Surface)& S)
+Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom_Surface>& S)
 {
   if (S.IsNull())
-    return Standard_False;
+    return false;
   GeomAdaptor_Surface GAS(S);
   GeomAbs_SurfaceType typ    = GAS.GetType();
-  Standard_Boolean    isquad = Standard_False;
+  bool                isquad = false;
   if (typ == GeomAbs_Plane)
-    isquad = Standard_True;
+    isquad = true;
   if (typ == GeomAbs_Cylinder)
-    isquad = Standard_True;
+    isquad = true;
   if (typ == GeomAbs_Cone)
-    isquad = Standard_True;
+    isquad = true;
   if (typ == GeomAbs_Sphere)
-    isquad = Standard_True;
+    isquad = true;
   if (typ == GeomAbs_Torus)
-    isquad = Standard_True;
+    isquad = true;
   return isquad;
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_closed(const Handle(Geom_Surface)& S,
-                                                 Standard_Boolean&           uclosed,
-                                                 Standard_Real&              uperiod,
-                                                 Standard_Boolean&           vclosed,
-                                                 Standard_Real&              vperiod)
+Standard_EXPORT bool FUN_tool_closed(const occ::handle<Geom_Surface>& S,
+                                     bool&                            uclosed,
+                                     double&                          uperiod,
+                                     bool&                            vclosed,
+                                     double&                          vperiod)
 {
   uperiod = vperiod = 0.;
   if (S.IsNull())
-    return Standard_False;
+    return false;
   uclosed = S->IsUClosed();
   if (uclosed)
     uclosed = S->IsUPeriodic(); // xpu261098 (BUC60382)
@@ -298,7 +298,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_closed(const Handle(Geom_Surface)& S,
     vclosed = S->IsVPeriodic();
   if (vclosed)
     vperiod = S->VPeriod();
-  Standard_Boolean closed = uclosed || vclosed;
+  bool closed = uclosed || vclosed;
   return closed;
 }
 

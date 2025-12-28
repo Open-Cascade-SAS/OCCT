@@ -30,8 +30,9 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf2d.hxx>
 #include <IGESBasic_SingleParent.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_ToolLocation.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
@@ -49,7 +50,7 @@
 #include <IGESToBRep_ToolContainer.hxx>
 #include <IGESToBRep_TopoCurve.hxx>
 #include <IGESToBRep_TopoSurface.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Message_Msg.hxx>
 #include <Message_ProgressScope.hxx>
 #include <Precision.hxx>
@@ -79,7 +80,7 @@
 IGESToBRep_BRepEntity::IGESToBRep_BRepEntity()
     : IGESToBRep_CurveAndSurface()
 {
-  SetModeTransfer(Standard_False);
+  SetModeTransfer(false);
   SetContinuity(0);
 }
 
@@ -93,12 +94,12 @@ IGESToBRep_BRepEntity::IGESToBRep_BRepEntity(const IGESToBRep_CurveAndSurface& C
 
 //=================================================================================================
 
-IGESToBRep_BRepEntity::IGESToBRep_BRepEntity(const Standard_Real    eps,
-                                             const Standard_Real    epsCoeff,
-                                             const Standard_Real    epsGeom,
-                                             const Standard_Boolean mode,
-                                             const Standard_Boolean modeapprox,
-                                             const Standard_Boolean optimized)
+IGESToBRep_BRepEntity::IGESToBRep_BRepEntity(const double eps,
+                                             const double epsCoeff,
+                                             const double epsGeom,
+                                             const bool   mode,
+                                             const bool   modeapprox,
+                                             const bool   optimized)
     : IGESToBRep_CurveAndSurface(eps, epsCoeff, epsGeom, mode, modeapprox, optimized)
 {
   SetContinuity(0);
@@ -106,8 +107,9 @@ IGESToBRep_BRepEntity::IGESToBRep_BRepEntity(const Standard_Real    eps,
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_BRepEntity::TransferBRepEntity(const Handle(IGESData_IGESEntity)& start,
-                                                       const Message_ProgressRange& theProgress)
+TopoDS_Shape IGESToBRep_BRepEntity::TransferBRepEntity(
+  const occ::handle<IGESData_IGESEntity>& start,
+  const Message_ProgressRange&            theProgress)
 {
   TopoDS_Shape res;
 
@@ -136,16 +138,16 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferBRepEntity(const Handle(IGESData_IGE
 
 //=================================================================================================
 
-TopoDS_Vertex IGESToBRep_BRepEntity::TransferVertex(const Handle(IGESSolid_VertexList)& start,
-                                                    const Standard_Integer              index)
+TopoDS_Vertex IGESToBRep_BRepEntity::TransferVertex(const occ::handle<IGESSolid_VertexList>& start,
+                                                    const int                                index)
 {
   TopoDS_Vertex res;
 
-  Standard_Integer nbshapes = NbShapeResult(start);
+  int nbshapes = NbShapeResult(start);
   if (nbshapes == 0)
   {
     BRep_Builder B;
-    for (Standard_Integer inum = 1; inum <= start->NbVertices(); inum++)
+    for (int inum = 1; inum <= start->NbVertices(); inum++)
     {
       gp_Pnt point = start->Vertex(inum);
       point.Scale(gp_Pnt(0, 0, 0), GetUnitFactor());
@@ -160,7 +162,7 @@ TopoDS_Vertex IGESToBRep_BRepEntity::TransferVertex(const Handle(IGESSolid_Verte
   if (Sh.IsNull())
   {
     Message_Msg Msg1156("IGES_1156"); //"the Vertex number %d is a null object." FAIL!!!
-    Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(start);
+    occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(start);
     Msg1156.Arg("vertex");
     Msg1156.Arg(label);
     SendWarning(start, Msg1156);
@@ -171,33 +173,33 @@ TopoDS_Vertex IGESToBRep_BRepEntity::TransferVertex(const Handle(IGESSolid_Verte
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge(const Handle(IGESSolid_EdgeList)& start,
-                                                 const Standard_Integer            index)
+TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge(const occ::handle<IGESSolid_EdgeList>& start,
+                                                 const int                              index)
 {
   TopoDS_Shape res;
   BRep_Builder B;
 
-  Standard_Integer nbshapes = NbShapeResult(start);
+  int nbshapes = NbShapeResult(start);
   if (nbshapes == 0)
   {
     IGESToBRep_TopoCurve TC(*this);
-    for (Standard_Integer inum = 1; inum <= start->NbEdges(); inum++)
+    for (int inum = 1; inum <= start->NbEdges(); inum++)
     {
 
       // Vertices
       // --------
-      Handle(IGESSolid_VertexList) thestartlist  = start->StartVertexList(inum);
-      Standard_Integer             thestartindex = start->StartVertexIndex(inum);
-      TopoDS_Vertex                V1            = TransferVertex(thestartlist, thestartindex);
+      occ::handle<IGESSolid_VertexList> thestartlist  = start->StartVertexList(inum);
+      int                               thestartindex = start->StartVertexIndex(inum);
+      TopoDS_Vertex                     V1            = TransferVertex(thestartlist, thestartindex);
 
-      Handle(IGESSolid_VertexList) theendlist  = start->EndVertexList(inum);
-      Standard_Integer             theendindex = start->EndVertexIndex(inum);
-      TopoDS_Vertex                V2          = TransferVertex(theendlist, theendindex);
+      occ::handle<IGESSolid_VertexList> theendlist  = start->EndVertexList(inum);
+      int                               theendindex = start->EndVertexIndex(inum);
+      TopoDS_Vertex                     V2          = TransferVertex(theendlist, theendindex);
 
       // Curve
       // -----
 
-      Handle(IGESData_IGESEntity) thecurve = start->Curve(inum);
+      occ::handle<IGESData_IGESEntity> thecurve = start->Curve(inum);
       if (thecurve.IsNull() || !IGESToBRep::IsTopoCurve(thecurve)
           || thecurve->IsKind(STANDARD_TYPE(IGESGeom_CurveOnSurface))
           || thecurve->IsKind(STANDARD_TYPE(IGESGeom_Boundary)))
@@ -220,10 +222,10 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge(const Handle(IGESSolid_EdgeList
             TopExp::Vertices(edge, Vf, Vl);
             TopoDS_Edge E;
             B.MakeEdge(E);
-            TopLoc_Location    loc;
-            Standard_Real      first, last;
-            Handle(Geom_Curve) Crv = BRep_Tool::Curve(edge, loc, first, last);
-            Handle(Geom_Curve) newC3d;
+            TopLoc_Location         loc;
+            double                  first, last;
+            occ::handle<Geom_Curve> Crv = BRep_Tool::Curve(edge, loc, first, last);
+            occ::handle<Geom_Curve> newC3d;
             // in the case of a conic, it is necessary to reverse
             // IGES direction of travel inverse to CASCADE direction of travel.
             if (Crv->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
@@ -236,14 +238,14 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge(const Handle(IGESSolid_EdgeList
               newC3d = Crv;
             }
             B.UpdateEdge(E, newC3d, loc, 0.); // S4054:GetEpsGeom()*GetUnitFactor()
-            gp_Pnt        p1     = BRep_Tool::Pnt(V1);
-            gp_Pnt        p2     = BRep_Tool::Pnt(V2);
-            gp_Pnt        pf     = BRep_Tool::Pnt(Vf);
-            gp_Pnt        pl     = BRep_Tool::Pnt(Vl);
-            Standard_Real dist1f = p1.Distance(pf);
-            Standard_Real dist2f = p2.Distance(pf);
-            Standard_Real dist1l = p1.Distance(pl);
-            Standard_Real dist2l = p2.Distance(pl);
+            gp_Pnt p1     = BRep_Tool::Pnt(V1);
+            gp_Pnt p2     = BRep_Tool::Pnt(V2);
+            gp_Pnt pf     = BRep_Tool::Pnt(Vf);
+            gp_Pnt pl     = BRep_Tool::Pnt(Vl);
+            double dist1f = p1.Distance(pf);
+            double dist2f = p2.Distance(pf);
+            double dist1l = p1.Distance(pl);
+            double dist2l = p2.Distance(pl);
             if (V1.IsSame(V2) || dist1f + dist2l <= dist1l + dist2f + Precision::Confusion())
             {
               //: 77 if (BRepTools::Compare(V1, Vf)) //the part 'else' only if, in fact, edge should
@@ -284,8 +286,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge(const Handle(IGESSolid_EdgeList
         }
         else
         {
-          Message_Msg                      Msg1156("IGES_1156");
-          Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(thecurve);
+          Message_Msg                           Msg1156("IGES_1156");
+          occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(thecurve);
           Msg1156.Arg("underlying curve");
           Msg1156.Arg(label);
           SendWarning(start, Msg1156);
@@ -298,8 +300,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge(const Handle(IGESSolid_EdgeList
   TopoDS_Shape Sh = GetShapeResult(start, index);
   if (Sh.IsNull())
   {
-    Message_Msg                      Msg1156("IGES_1156");
-    Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(start);
+    Message_Msg                           Msg1156("IGES_1156");
+    occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(start);
     Msg1156.Arg("edge");
     Msg1156.Arg(label);
     SendWarning(start, Msg1156);
@@ -309,34 +311,34 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge(const Handle(IGESSolid_EdgeList
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const Handle(IGESSolid_Loop)& start,
-                                                 const TopoDS_Face&            face,
-                                                 const gp_Trsf2d&              trans,
-                                                 const Standard_Real           uFact)
+TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const occ::handle<IGESSolid_Loop>& start,
+                                                 const TopoDS_Face&                 face,
+                                                 const gp_Trsf2d&                   trans,
+                                                 const double                       uFact)
 {
   TopoDS_Shape res;
 
   if (!HasShapeResult(start))
   {
-    TopoDS_Wire      mywire;
-    Standard_Boolean okCurve = Standard_True, okCurve3d = Standard_True, okCurve2d = Standard_True;
-    Handle(ShapeExtend_WireData) sewd;
-    Standard_Integer             filepreference = 3; // 3D is preferred by default
-    Standard_Boolean             Result         = Standard_True;
+    TopoDS_Wire                       mywire;
+    bool                              okCurve = true, okCurve3d = true, okCurve2d = true;
+    occ::handle<ShapeExtend_WireData> sewd;
+    int                               filepreference = 3; // 3D is preferred by default
+    bool                              Result         = true;
 
-    Handle(IGESToBRep_IGESBoundary) IB =
+    occ::handle<IGESToBRep_IGESBoundary> IB =
       IGESToBRep::AlgoContainer()->ToolContainer()->IGESBoundary();
     IB->Init(*this, start, face, trans, uFact, filepreference);
     BRep_Builder    B;
     ShapeBuild_Edge sbe;
 
-    for (Standard_Integer iedge = 1; iedge <= start->NbEdges(); iedge++)
+    for (int iedge = 1; iedge <= start->NbEdges(); iedge++)
     {
-      Standard_Integer            itype       = start->EdgeType(iedge);
-      Handle(IGESData_IGESEntity) theedge     = start->Edge(iedge);
-      Standard_Integer            indexlist   = start->ListIndex(iedge);
-      Standard_Boolean            orientation = start->Orientation(iedge);
-      Standard_Integer            nbparam     = start->NbParameterCurves(iedge);
+      int                              itype       = start->EdgeType(iedge);
+      occ::handle<IGESData_IGESEntity> theedge     = start->Edge(iedge);
+      int                              indexlist   = start->ListIndex(iedge);
+      bool                             orientation = start->Orientation(iedge);
+      int                              nbparam     = start->NbParameterCurves(iedge);
       if (theedge.IsNull())
       {
         Message_Msg Msg1365("IGES_1365"); //"Loop : one edge is null"
@@ -348,7 +350,7 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const Handle(IGESSolid_Loop)& s
       {
         //  edge
         //  ----
-        Handle(ShapeExtend_WireData) curve3d = new ShapeExtend_WireData;
+        occ::handle<ShapeExtend_WireData> curve3d = new ShapeExtend_WireData;
 
         if ((itype == 1) && (theedge->IsKind(STANDARD_TYPE(IGESSolid_VertexList))))
         {
@@ -361,7 +363,7 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const Handle(IGESSolid_Loop)& s
           B.Add(E, TopoDS::Vertex(sh));
           sh = V1.Oriented(TopAbs_REVERSED);
           B.Add(E, TopoDS::Vertex(sh));
-          B.Degenerated(E, Standard_True);
+          B.Degenerated(E, true);
           curve3d->Add(E);
         }
         else if ((itype == 0) && (theedge->IsKind(STANDARD_TYPE(IGESSolid_EdgeList))))
@@ -378,8 +380,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const Handle(IGESSolid_Loop)& s
         }
         else
         {
-          Message_Msg                      Msg1365("IGES_1365"); //"Improper type for the edge"
-          Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(start);
+          Message_Msg                           Msg1365("IGES_1365"); //"Improper type for the edge"
+          occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(start);
           Msg1365.Arg(iedge);
           SendWarning(start, Msg1365);
           continue;
@@ -389,23 +391,23 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const Handle(IGESSolid_Loop)& s
 
         //  processing of 2d curves.
         //  -------------------------
-        Handle(IGESData_HArray1OfIGESEntity) Curves2d;
+        occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Curves2d;
 
         // Current limitation:
         // 2D representation is not translated if:
         //- 3D curve was translated into wire (i.e. if it is 102)
         //- more than 1 2D curve,
         //- 2D curve is 102
-        Handle(TColStd_HSequenceOfTransient) seq2d;
+        occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seq2d;
         if (curve3d->NbEdges() == 1 && nbparam == 1
             && IGESToBRep::IGESCurveToSequenceOfIGESCurve(start->ParametricCurve(iedge, 1), seq2d)
                  == 1)
         {
-          Curves2d = new IGESData_HArray1OfIGESEntity(1, nbparam);
-          for (Standard_Integer i = 1; i <= nbparam; i++)
+          Curves2d = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbparam);
+          for (int i = 1; i <= nbparam; i++)
             Curves2d->SetValue(i, start->ParametricCurve(iedge, i));
         }
-        Handle(ShapeExtend_WireData) lsewd; // result of translation of current edge
+        occ::handle<ShapeExtend_WireData> lsewd; // result of translation of current edge
         Result = Result
                  & IB->Transfer(okCurve,
                                 okCurve3d,
@@ -431,11 +433,11 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const Handle(IGESSolid_Loop)& s
         }
       }
     }
-    // IB->Check(Result, Standard_True);
+    // IB->Check(Result, true);
     // pdn 20.04.99 CTS22655 avoid of exceptions in case of empty loops
     if (!sewd.IsNull())
     {
-      // IB.Fix (sewd, Standard_False, Standard_True, Standard_True, Standard_True, Standard_True);
+      // IB.Fix (sewd, false, true, true, true, true);
       mywire = sewd->Wire();
     }
     SetShapeResult(start, mywire);
@@ -444,8 +446,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const Handle(IGESSolid_Loop)& s
   TopoDS_Shape Sh = GetShapeResult(start);
   if (Sh.IsNull())
   {
-    Message_Msg                      Msg1156("IGES_1156"); // The Loop is null
-    Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(start);
+    Message_Msg                           Msg1156("IGES_1156"); // The Loop is null
+    occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(start);
     Msg1156.Arg("loop");
     Msg1156.Arg(label);
     SendWarning(start, Msg1156);
@@ -455,17 +457,17 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const Handle(IGESSolid_Loop)& s
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const Handle(IGESSolid_Face)& start)
+TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const occ::handle<IGESSolid_Face>& start)
 {
   TopoDS_Shape res;
 
   if (!HasShapeResult(start))
   {
-    BRep_Builder                B;
-    TopoDS_Face                 F;
-    Handle(IGESData_IGESEntity) surf    = start->Surface();
-    Standard_Integer            nbloops = start->NbLoops();
-    IGESToBRep_TopoSurface      TS(*this);
+    BRep_Builder                     B;
+    TopoDS_Face                      F;
+    occ::handle<IGESData_IGESEntity> surf    = start->Surface();
+    int                              nbloops = start->NbLoops();
+    IGESToBRep_TopoSurface           TS(*this);
 
     // surface
     // -------
@@ -486,9 +488,9 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const Handle(IGESSolid_Face)& s
       // if the IGES surface is a surface of revolution, it will be necessary
       // to invert the 2d curves (u,v) to be in agreement with the parametrization
       // BRep.
-      gp_Trsf2d     trans;
-      Standard_Real uFact;
-      TopoDS_Shape  myshape = TS.ParamSurface(surf, trans, uFact);
+      gp_Trsf2d    trans;
+      double       uFact;
+      TopoDS_Shape myshape = TS.ParamSurface(surf, trans, uFact);
 
       if (!myshape.IsNull())
       {
@@ -498,14 +500,14 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const Handle(IGESSolid_Face)& s
           F = TopoDS::Face(myshape);
           F.EmptyCopy();
           if (nbloops == 0)
-            B.NaturalRestriction(F, Standard_True);
+            B.NaturalRestriction(F, true);
 
           // Loops
           // -----
-          for (Standard_Integer iloop = 1; iloop <= nbloops; iloop++)
+          for (int iloop = 1; iloop <= nbloops; iloop++)
           {
-            Handle(IGESSolid_Loop) loop  = start->Loop(iloop);
-            TopoDS_Shape           Shape = TransferLoop(loop, F, trans, uFact);
+            occ::handle<IGESSolid_Loop> loop  = start->Loop(iloop);
+            TopoDS_Shape                Shape = TransferLoop(loop, F, trans, uFact);
             // pdn 20.04.99 CTS22655 avoid of exceptions in case of empty loops
             if (!Shape.IsNull())
               B.Add(F, Shape);
@@ -513,14 +515,14 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const Handle(IGESSolid_Face)& s
 
           // update the face
           BRepTools::Update(F);
-          F.Orientable(Standard_True);
+          F.Orientable(true);
           SetShapeResult(start, F);
         }
       }
       else
       {
         Message_Msg Msg1156("IGES_1156"); // Face : result of TransferTopoSurface is Null
-        Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(surf);
+        occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(surf);
         Msg1156.Arg("surface");
         Msg1156.Arg(label);
         SendFail(start, Msg1156);
@@ -534,8 +536,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const Handle(IGESSolid_Face)& s
   TopoDS_Shape Sh = GetShapeResult(start);
   if (Sh.IsNull())
   {
-    Message_Msg                      Msg1156("IGES_1156"); // the Face is a Null object.
-    Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(start);
+    Message_Msg                           Msg1156("IGES_1156"); // the Face is a Null object.
+    occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(start);
     Msg1156.Arg("face");
     Msg1156.Arg(label);
     SendFail(start, Msg1156);
@@ -546,8 +548,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const Handle(IGESSolid_Face)& s
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_BRepEntity::TransferShell(const Handle(IGESSolid_Shell)& start,
-                                                  const Message_ProgressRange&   theProgress)
+TopoDS_Shape IGESToBRep_BRepEntity::TransferShell(const occ::handle<IGESSolid_Shell>& start,
+                                                  const Message_ProgressRange&        theProgress)
 {
   TopoDS_Shape res;
 
@@ -556,20 +558,20 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferShell(const Handle(IGESSolid_Shell)&
     TopoDS_Shell S;
     BRep_Builder B;
     B.MakeShell(S);
-    Standard_Integer nbfaces = start->NbFaces();
+    int nbfaces = start->NbFaces();
     if (nbfaces != 0)
     {
-      Standard_Boolean      closed = Standard_True; //: 39
+      bool                  closed = true; //: 39
       Message_ProgressScope aPS(theProgress, "Face", nbfaces);
-      for (Standard_Integer iface = 1; iface <= nbfaces && aPS.More(); iface++, aPS.Next())
+      for (int iface = 1; iface <= nbfaces && aPS.More(); iface++, aPS.Next())
       {
-        Handle(IGESSolid_Face) face        = start->Face(iface);
-        Standard_Boolean       orientation = start->Orientation(iface);
-        TopoDS_Shape           Sh          = TransferFace(face);
+        occ::handle<IGESSolid_Face> face        = start->Face(iface);
+        bool                        orientation = start->Orientation(iface);
+        TopoDS_Shape                Sh          = TransferFace(face);
         if (Sh.IsNull())
         { //: 39 by abv 15.12.97
 
-          closed = Standard_False;
+          closed = false;
           continue;
         }
         if (!orientation)
@@ -583,7 +585,7 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferShell(const Handle(IGESSolid_Shell)&
       }
       // AddWarning ( start, "Shell is not closed" ); //:39
       S.Closed(closed); //: 39
-      S.Orientable(Standard_True);
+      S.Orientable(true);
       SetShapeResult(start, S);
     }
     else
@@ -596,8 +598,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferShell(const Handle(IGESSolid_Shell)&
   TopoDS_Shape Sh = GetShapeResult(start);
   if (Sh.IsNull())
   {
-    Message_Msg                      Msg1156("IGES_1156"); // the Shell is a null object
-    Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(start);
+    Message_Msg                           Msg1156("IGES_1156"); // the Shell is a null object
+    occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(start);
     Msg1156.Arg("shell");
     Msg1156.Arg(label);
     SendFail(start, Msg1156);
@@ -610,8 +612,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferShell(const Handle(IGESSolid_Shell)&
 //=================================================================================================
 
 TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid(
-  const Handle(IGESSolid_ManifoldSolid)& start,
-  const Message_ProgressRange&           theProgress)
+  const occ::handle<IGESSolid_ManifoldSolid>& start,
+  const Message_ProgressRange&                theProgress)
 {
   TopoDS_Shape res;
 
@@ -620,10 +622,10 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid(
     TopoDS_Solid S;
     BRep_Builder B;
     B.MakeSolid(S);
-    Handle(IGESSolid_Shell) shell      = start->Shell();
-    Standard_Boolean        isoriented = start->OrientationFlag();
-    Standard_Integer        nbshell    = start->NbVoidShells();
-    TopoDS_Shape            Sh         = TransferShell(shell, theProgress);
+    occ::handle<IGESSolid_Shell> shell      = start->Shell();
+    bool                         isoriented = start->OrientationFlag();
+    int                          nbshell    = start->NbVoidShells();
+    TopoDS_Shape                 Sh         = TransferShell(shell, theProgress);
     if (!Sh.IsNull())
     {
       if (Sh.ShapeType() == TopAbs_SHELL)
@@ -638,10 +640,10 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid(
       {
         // progress scope without name, since usually we have single shell in solid
         Message_ProgressScope aPS(theProgress, NULL, nbshell);
-        for (Standard_Integer ishell = 1; ishell <= nbshell && aPS.More(); ishell++)
+        for (int ishell = 1; ishell <= nbshell && aPS.More(); ishell++)
         {
-          Handle(IGESSolid_Shell) voidshell = start->VoidShell(ishell);
-          //	  Standard_Boolean orientation = start->VoidOrientationFlag(ishell);
+          occ::handle<IGESSolid_Shell> voidshell = start->VoidShell(ishell);
+          //	  bool orientation = start->VoidOrientationFlag(ishell);
           TopoDS_Shape aSh = TransferShell(voidshell, aPS.Next());
           if (!aSh.IsNull())
           {
@@ -668,8 +670,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid(
   TopoDS_Shape Sh = GetShapeResult(start);
   if (Sh.IsNull())
   {
-    Message_Msg                      Msg1156("IGES_1156"); // the ManifoldSolid is a null object.
-    Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(start);
+    Message_Msg Msg1156("IGES_1156"); // the ManifoldSolid is a null object.
+    occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(start);
     Msg1156.Arg("solid");
     Msg1156.Arg(label);
     SendFail(start, Msg1156);

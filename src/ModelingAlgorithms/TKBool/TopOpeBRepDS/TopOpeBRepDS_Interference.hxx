@@ -26,9 +26,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
-class TopOpeBRepDS_Interference;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Interference, Standard_Transient)
-
 //! An interference is the description of the
 //! attachment of a new geometry on a geometry. For
 //! example an intersection point on an Edge or on a
@@ -58,11 +55,11 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_Interference(const TopOpeBRepDS_Transition& Transition,
                                             const TopOpeBRepDS_Kind        SupportType,
-                                            const Standard_Integer         Support,
+                                            const int                      Support,
                                             const TopOpeBRepDS_Kind        GeometryType,
-                                            const Standard_Integer         Geometry);
+                                            const int                      Geometry);
 
-  Standard_EXPORT TopOpeBRepDS_Interference(const Handle(TopOpeBRepDS_Interference)& I);
+  Standard_EXPORT TopOpeBRepDS_Interference(const occ::handle<TopOpeBRepDS_Interference>& I);
 
   Standard_EXPORT const TopOpeBRepDS_Transition& Transition() const;
 
@@ -71,42 +68,36 @@ public:
   Standard_EXPORT void Transition(const TopOpeBRepDS_Transition& T);
 
   //! return GeometryType + Geometry + SupportType + Support
-  Standard_EXPORT void GKGSKS(TopOpeBRepDS_Kind& GK,
-                              Standard_Integer&  G,
-                              TopOpeBRepDS_Kind& SK,
-                              Standard_Integer&  S) const;
+  Standard_EXPORT void GKGSKS(TopOpeBRepDS_Kind& GK, int& G, TopOpeBRepDS_Kind& SK, int& S) const;
 
   Standard_EXPORT TopOpeBRepDS_Kind SupportType() const;
 
-  Standard_EXPORT Standard_Integer Support() const;
+  Standard_EXPORT int Support() const;
 
   Standard_EXPORT TopOpeBRepDS_Kind GeometryType() const;
 
-  Standard_EXPORT Standard_Integer Geometry() const;
+  Standard_EXPORT int Geometry() const;
 
-  Standard_EXPORT void SetGeometry(const Standard_Integer GI);
+  Standard_EXPORT void SetGeometry(const int GI);
 
   Standard_EXPORT void SupportType(const TopOpeBRepDS_Kind ST);
 
-  Standard_EXPORT void Support(const Standard_Integer S);
+  Standard_EXPORT void Support(const int S);
 
   Standard_EXPORT void GeometryType(const TopOpeBRepDS_Kind GT);
 
-  Standard_EXPORT void Geometry(const Standard_Integer G);
+  Standard_EXPORT void Geometry(const int G);
 
-  Standard_EXPORT Standard_Boolean
-    HasSameSupport(const Handle(TopOpeBRepDS_Interference)& Other) const;
+  Standard_EXPORT bool HasSameSupport(const occ::handle<TopOpeBRepDS_Interference>& Other) const;
 
-  Standard_EXPORT Standard_Boolean
-    HasSameGeometry(const Handle(TopOpeBRepDS_Interference)& Other) const;
+  Standard_EXPORT bool HasSameGeometry(const occ::handle<TopOpeBRepDS_Interference>& Other) const;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Interference, Standard_Transient)
 
-protected:
 private:
   TopOpeBRepDS_Transition myTransition;
-  Standard_Integer        mySupport;
-  Standard_Integer        myGeometry;
+  int                     mySupport;
+  int                     myGeometry;
   TopOpeBRepDS_Kind       mySupportType;
   TopOpeBRepDS_Kind       myGeometryType;
 };

@@ -60,7 +60,7 @@ inline ChFiDS_State ChFiDS_Spine::LastStatus() const
 
 //=================================================================================================
 
-inline void ChFiDS_Spine::SetStatus(const ChFiDS_State S, const Standard_Boolean IsFirst)
+inline void ChFiDS_Spine::SetStatus(const ChFiDS_State S, const bool IsFirst)
 {
   if (IsFirst)
     firstState = S;
@@ -70,7 +70,7 @@ inline void ChFiDS_Spine::SetStatus(const ChFiDS_State S, const Standard_Boolean
 
 //=================================================================================================
 
-inline ChFiDS_State ChFiDS_Spine::Status(const Standard_Boolean IsFirst) const
+inline ChFiDS_State ChFiDS_Spine::Status(const bool IsFirst) const
 {
   if (IsFirst)
     return firstState;
@@ -80,8 +80,7 @@ inline ChFiDS_State ChFiDS_Spine::Status(const Standard_Boolean IsFirst) const
 
 //=================================================================================================
 
-inline void ChFiDS_Spine::SetTangencyExtremity(const Standard_Boolean IsTangency,
-                                               const Standard_Boolean IsFirst)
+inline void ChFiDS_Spine::SetTangencyExtremity(const bool IsTangency, const bool IsFirst)
 {
   if (IsFirst)
     firstistgt = IsTangency;
@@ -91,7 +90,7 @@ inline void ChFiDS_Spine::SetTangencyExtremity(const Standard_Boolean IsTangency
 
 //=================================================================================================
 
-inline Standard_Boolean ChFiDS_Spine::IsTangencyExtremity(const Standard_Boolean IsFirst) const
+inline bool ChFiDS_Spine::IsTangencyExtremity(const bool IsFirst) const
 {
   if (IsFirst)
     return firstistgt;
@@ -101,21 +100,21 @@ inline Standard_Boolean ChFiDS_Spine::IsTangencyExtremity(const Standard_Boolean
 
 //=================================================================================================
 
-inline Standard_Integer ChFiDS_Spine::NbEdges() const
+inline int ChFiDS_Spine::NbEdges() const
 {
   return spine.Length();
 }
 
 //=================================================================================================
 
-inline const TopoDS_Edge& ChFiDS_Spine::Edges(const Standard_Integer I) const
+inline const TopoDS_Edge& ChFiDS_Spine::Edges(const int I) const
 {
   return TopoDS::Edge(spine.Value(I));
 }
 
 //=================================================================================================
 
-inline const TopoDS_Edge& ChFiDS_Spine::OffsetEdges(const Standard_Integer I) const
+inline const TopoDS_Edge& ChFiDS_Spine::OffsetEdges(const int I) const
 {
   return TopoDS::Edge(offsetspine.Value(I));
 }
@@ -150,7 +149,7 @@ inline void ChFiDS_Spine::PutInFirstOffset(const TopoDS_Edge& E)
 
 //=================================================================================================
 
-inline Standard_Integer ChFiDS_Spine::CurrentIndexOfElementarySpine() const
+inline int ChFiDS_Spine::CurrentIndexOfElementarySpine() const
 {
   return indexofcurve;
 }
@@ -165,7 +164,7 @@ inline ChFiDS_ChamfMode ChFiDS_Spine::Mode() const
 
 //=================================================================================================
 
-inline Standard_Real ChFiDS_Spine::GetTolesp() const
+inline double ChFiDS_Spine::GetTolesp() const
 {
   return tolesp;
 }

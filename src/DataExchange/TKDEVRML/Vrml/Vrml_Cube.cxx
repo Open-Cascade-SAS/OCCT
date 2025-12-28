@@ -13,41 +13,39 @@
 
 #include <Vrml_Cube.hxx>
 
-Vrml_Cube::Vrml_Cube(const Standard_Real aWidth,
-                     const Standard_Real aHeight,
-                     const Standard_Real aDepth)
+Vrml_Cube::Vrml_Cube(const double aWidth, const double aHeight, const double aDepth)
 {
   myWidth  = aWidth;
   myHeight = aHeight;
   myDepth  = aDepth;
 }
 
-void Vrml_Cube::SetWidth(const Standard_Real aWidth)
+void Vrml_Cube::SetWidth(const double aWidth)
 {
   myWidth = aWidth;
 }
 
-Standard_Real Vrml_Cube::Width() const
+double Vrml_Cube::Width() const
 {
   return myWidth;
 }
 
-void Vrml_Cube::SetHeight(const Standard_Real aHeight)
+void Vrml_Cube::SetHeight(const double aHeight)
 {
   myHeight = aHeight;
 }
 
-Standard_Real Vrml_Cube::Height() const
+double Vrml_Cube::Height() const
 {
   return myHeight;
 }
 
-void Vrml_Cube::SetDepth(const Standard_Real aDepth)
+void Vrml_Cube::SetDepth(const double aDepth)
 {
   myDepth = aDepth;
 }
 
-Standard_Real Vrml_Cube::Depth() const
+double Vrml_Cube::Depth() const
 {
   return myDepth;
 }

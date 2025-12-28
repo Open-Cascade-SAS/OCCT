@@ -32,27 +32,27 @@ public:
   Standard_EXPORT Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* C);
 
   Standard_EXPORT Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* C,
-                                              const Standard_Real    theTf,
-                                              const Standard_Real    theTl);
+                                              const double           theTf,
+                                              const double           theTl);
 
   Standard_EXPORT Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* C, const Adaptor3d_Surface* S);
 
   Standard_EXPORT void LoadQuad(const Adaptor3d_Surface* S,
-                                const Standard_Real      theUf,
-                                const Standard_Real      theUl,
-                                const Standard_Real      theVf,
-                                const Standard_Real      theVl);
+                                const double             theUf,
+                                const double             theUl,
+                                const double             theVf,
+                                const double             theVl);
 
-  Standard_EXPORT virtual Standard_Integer NbVariables() const;
+  Standard_EXPORT virtual int NbVariables() const;
 
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF);
+  Standard_EXPORT virtual bool Value(const math_Vector& theX, double& theF);
   //! Parameters of quadric for point on curve defined by theCT
   Standard_EXPORT void QuadricParameters(const math_Vector& theCT, math_Vector& theUV) const;
 
 private:
-  Standard_Boolean checkInputData(const math_Vector& X, Standard_Real& ct);
+  bool checkInputData(const math_Vector& X, double& ct);
 
-  void value(Standard_Real ct, Standard_Real& F);
+  void value(double ct, double& F);
 
   const Adaptor3d_Curve*   myC;
   const Adaptor3d_Surface* myS;
@@ -64,12 +64,12 @@ private:
   gp_Torus                 myTorus;
   gp_Pnt                   myPTrim[4];
   // Boundaries
-  Standard_Real myTf;
-  Standard_Real myTl;
-  Standard_Real myUf;
-  Standard_Real myUl;
-  Standard_Real myVf;
-  Standard_Real myVl;
+  double myTf;
+  double myTl;
+  double myUf;
+  double myUl;
+  double myVf;
+  double myVl;
 };
 
 #endif

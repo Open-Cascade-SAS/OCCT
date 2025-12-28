@@ -18,8 +18,8 @@
 
 //=================================================================================================
 
-math_PSOParticlesPool::math_PSOParticlesPool(const Standard_Integer theParticlesCount,
-                                             const Standard_Integer theDimensionCount)
+math_PSOParticlesPool::math_PSOParticlesPool(const int theParticlesCount,
+                                             const int theDimensionCount)
     : myParticlesPool(1, theParticlesCount),
       myMemory(0,
                theParticlesCount
@@ -32,7 +32,7 @@ math_PSOParticlesPool::math_PSOParticlesPool(const Standard_Integer theParticles
   myDimensionCount = theDimensionCount;
   myMemory.Init(0.);
   // Pointers adjusting.
-  Standard_Integer aParIdx, aShiftIdx;
+  int aParIdx, aShiftIdx;
   for (aParIdx = 1; aParIdx <= myParticlesCount; ++aParIdx)
   {
     aShiftIdx                             = (theDimensionCount * 3) * (aParIdx - 1);
@@ -48,7 +48,7 @@ math_PSOParticlesPool::~math_PSOParticlesPool() {}
 
 //=================================================================================================
 
-PSO_Particle* math_PSOParticlesPool::GetParticle(const Standard_Integer theIdx)
+PSO_Particle* math_PSOParticlesPool::GetParticle(const int theIdx)
 {
   return &myParticlesPool(theIdx);
 }

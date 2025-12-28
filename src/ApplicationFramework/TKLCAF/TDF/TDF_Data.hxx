@@ -21,7 +21,7 @@
 
 #include <TDF_LabelNodePtr.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <NCollection_List.hxx>
 #include <TDF_HAllocator.hxx>
 #include <Standard_Transient.hxx>
 #include <TDF_Label.hxx>
@@ -29,9 +29,6 @@
 #include <NCollection_DataMap.hxx>
 class TDF_Delta;
 class TDF_Label;
-
-class TDF_Data;
-DEFINE_STANDARD_HANDLE(TDF_Data, Standard_Transient)
 
 //! This class is used to manipulate a complete independent,
 //! self sufficient data structure and its services:
@@ -55,27 +52,27 @@ public:
   const TDF_Label Root() const;
 
   //! Returns the current transaction number.
-  Standard_Integer Transaction() const;
+  int Transaction() const;
 
   //! Returns the current tick. It is incremented each Commit.
-  Standard_Integer Time() const;
+  int Time() const;
 
   //! Returns true if <aDelta> is applicable HERE and NOW.
-  Standard_EXPORT Standard_Boolean IsApplicable(const Handle(TDF_Delta)& aDelta) const;
+  Standard_EXPORT bool IsApplicable(const occ::handle<TDF_Delta>& aDelta) const;
 
   //! Apply <aDelta> to undo a set of attribute modifications.
   //!
   //! Optional <withDelta> set to True indicates a
   //! Delta Set must be generated. (See above)
-  Standard_EXPORT Handle(TDF_Delta) Undo(const Handle(TDF_Delta)& aDelta,
-                                         const Standard_Boolean   withDelta = Standard_False);
+  Standard_EXPORT occ::handle<TDF_Delta> Undo(const occ::handle<TDF_Delta>& aDelta,
+                                              const bool                    withDelta = false);
 
   Standard_EXPORT void Destroy();
 
   ~TDF_Data() { Destroy(); }
 
   //! Returns the undo mode status.
-  Standard_Boolean NotUndoMode() const;
+  bool NotUndoMode() const;
 
   //! Dumps the Data on <aStream>.
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const;
@@ -83,10 +80,10 @@ public:
   Standard_OStream& operator<<(Standard_OStream& anOS) const { return Dump(anOS); }
 
   //! Sets modification mode.
-  void AllowModification(const Standard_Boolean isAllowed);
+  void AllowModification(const bool isAllowed);
 
   //! returns modification mode.
-  Standard_Boolean IsModificationAllowed() const;
+  bool IsModificationAllowed() const;
 
   //! Initializes a mechanism for fast access to the labels by their entries.
   //! The fast access is useful for large documents and often access to the labels
@@ -95,15 +92,15 @@ public:
   //! If the mechanism is turned off, the internal table is cleaned.
   //! New labels are added to the table, if the mechanism is on
   //! (no need to re-initialize the mechanism).
-  Standard_EXPORT void SetAccessByEntries(const Standard_Boolean aSet);
+  Standard_EXPORT void SetAccessByEntries(const bool aSet);
 
   //! Returns a status of mechanism for fast access to the labels via entries.
-  Standard_Boolean IsAccessByEntries() const { return myAccessByEntries; }
+  bool IsAccessByEntries() const { return myAccessByEntries; }
 
   //! Returns a label by an entry.
-  //! Returns Standard_False, if such a label doesn't exist
+  //! Returns false, if such a label doesn't exist
   //! or mechanism for fast access to the label by entry is not initialized.
-  Standard_Boolean GetLabel(const TCollection_AsciiString& anEntry, TDF_Label& aLabel)
+  bool GetLabel(const TCollection_AsciiString& anEntry, TDF_Label& aLabel)
   {
     return myAccessByEntriesTable.Find(anEntry, aLabel);
   }
@@ -147,21 +144,20 @@ public:
   const TDF_HAllocator& LabelNodeAllocator() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   friend class TDF_Transaction;
   friend class TDF_LabelNode;
 
   DEFINE_STANDARD_RTTIEXT(TDF_Data, Standard_Transient)
 
-protected:
 private:
   //! Fixes order of Attributes' Deltas to perform undo/redo without exceptions:
   //! puts OnRemoval deltas to the end of the list.
-  void FixOrder(const Handle(TDF_Delta)& theDelta);
+  void FixOrder(const occ::handle<TDF_Delta>& theDelta);
 
   //! Increments the transaction number and returns it.
-  Standard_EXPORT Standard_Integer OpenTransaction();
+  Standard_EXPORT int OpenTransaction();
 
   //! Decrements the transaction number and commits the
   //! modifications.
@@ -170,15 +166,13 @@ private:
   //!
   //! Optional <withDelta> set to True indicates a
   //! Delta must be generated.
-  Standard_EXPORT Handle(TDF_Delta) CommitTransaction(
-    const Standard_Boolean withDelta = Standard_False);
+  Standard_EXPORT occ::handle<TDF_Delta> CommitTransaction(const bool withDelta = false);
 
   //! Decrements the transaction number and commits the
   //! modifications until AND including the transaction
   //! <untilTransaction>.
-  Standard_EXPORT Handle(TDF_Delta) CommitUntilTransaction(
-    const Standard_Integer untilTransaction,
-    const Standard_Boolean withDelta = Standard_False);
+  Standard_EXPORT occ::handle<TDF_Delta> CommitUntilTransaction(const int  untilTransaction,
+                                                                const bool withDelta = false);
 
   //! Decrements the transaction number and forgets the
   //! modifications.
@@ -189,7 +183,7 @@ private:
   //! Decrements the transaction number and forgets the
   //! modifications until AND including the transaction
   //! <untilTransaction>.
-  Standard_EXPORT void AbortUntilTransaction(const Standard_Integer untilTransaction);
+  Standard_EXPORT void AbortUntilTransaction(const int untilTransaction);
 
   //! Decrements the transaction number and commits the
   //! modifications. Used to implement the recursif
@@ -197,19 +191,19 @@ private:
   //! attributes (new, modified or deleted) has been
   //! committed from the previous transaction into the
   //! current one.
-  Standard_EXPORT Standard_Integer CommitTransaction(const TDF_Label&         aLabel,
-                                                     const Handle(TDF_Delta)& aDelta,
-                                                     const Standard_Boolean   withDelta);
+  Standard_EXPORT int CommitTransaction(const TDF_Label&              aLabel,
+                                        const occ::handle<TDF_Delta>& aDelta,
+                                        const bool                    withDelta);
 
   TDF_LabelNodePtr                                        myRoot;
-  Standard_Integer                                        myTransaction;
-  Standard_Integer                                        myNbTouchedAtt;
-  Standard_Boolean                                        myNotUndoMode;
-  Standard_Integer                                        myTime;
-  TColStd_ListOfInteger                                   myTimes;
+  int                                                     myTransaction;
+  int                                                     myNbTouchedAtt;
+  bool                                                    myNotUndoMode;
+  int                                                     myTime;
+  NCollection_List<int>                                   myTimes;
   TDF_HAllocator                                          myLabelNodeAllocator;
-  Standard_Boolean                                        myAllowModification;
-  Standard_Boolean                                        myAccessByEntries;
+  bool                                                    myAllowModification;
+  bool                                                    myAccessByEntries;
   NCollection_DataMap<TCollection_AsciiString, TDF_Label> myAccessByEntriesTable;
 };
 

@@ -20,12 +20,12 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IGESBasic_HArray2OfHArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Real.hxx>
-
-class IGESGeom_SplineSurface;
-DEFINE_STANDARD_HANDLE(IGESGeom_SplineSurface, IGESData_IGESEntity)
 
 //! defines IGESSplineSurface, Type <114> Form <0>
 //! in package IGESGeom
@@ -61,69 +61,70 @@ public:
   //! raises exception if allXCoeffs, allYCoeffs & allZCoeffs are not
   //! of the same size.
   //! or if the size of each element of the double array is not 16
-  Standard_EXPORT void Init(const Standard_Integer                          aBoundaryType,
-                            const Standard_Integer                          aPatchType,
-                            const Handle(TColStd_HArray1OfReal)&            allUBreakpoints,
-                            const Handle(TColStd_HArray1OfReal)&            allVBreakpoints,
-                            const Handle(IGESBasic_HArray2OfHArray1OfReal)& allXCoeffs,
-                            const Handle(IGESBasic_HArray2OfHArray1OfReal)& allYCoeffs,
-                            const Handle(IGESBasic_HArray2OfHArray1OfReal)& allZCoeffs);
+  Standard_EXPORT void Init(
+    const int                                       aBoundaryType,
+    const int                                       aPatchType,
+    const occ::handle<NCollection_HArray1<double>>& allUBreakpoints,
+    const occ::handle<NCollection_HArray1<double>>& allVBreakpoints,
+    const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allXCoeffs,
+    const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allYCoeffs,
+    const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allZCoeffs);
 
   //! returns the number of U segments
-  Standard_EXPORT Standard_Integer NbUSegments() const;
+  Standard_EXPORT int NbUSegments() const;
 
   //! returns the number of V segments
-  Standard_EXPORT Standard_Integer NbVSegments() const;
+  Standard_EXPORT int NbVSegments() const;
 
   //! returns boundary type
-  Standard_EXPORT Standard_Integer BoundaryType() const;
+  Standard_EXPORT int BoundaryType() const;
 
   //! returns patch type
-  Standard_EXPORT Standard_Integer PatchType() const;
+  Standard_EXPORT int PatchType() const;
 
   //! returns U break point of the grid line referred to by anIndex
   //! raises exception if anIndex <= 0 or anIndex > NbUSegments() + 1
-  Standard_EXPORT Standard_Real UBreakPoint(const Standard_Integer anIndex) const;
+  Standard_EXPORT double UBreakPoint(const int anIndex) const;
 
   //! returns V break point of the grid line referred to by anIndex
   //! raises exception if anIndex <= 0 or anIndex > NbVSegments() + 1
-  Standard_EXPORT Standard_Real VBreakPoint(const Standard_Integer anIndex) const;
+  Standard_EXPORT double VBreakPoint(const int anIndex) const;
 
   //! returns X polynomial of patch referred to by anIndex1, anIndex2
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbUSegments()
   //! or anIndex2 <= 0 or anIndex2 > NbVSegments()
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) XPolynomial(const Standard_Integer anIndex1,
-                                                            const Standard_Integer anIndex2) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> XPolynomial(const int anIndex1,
+                                                                       const int anIndex2) const;
 
   //! returns Y polynomial of patch referred to by anIndex1, anIndex2
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbUSegments()
   //! or anIndex2 <= 0 or anIndex2 > NbVSegments()
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) YPolynomial(const Standard_Integer anIndex1,
-                                                            const Standard_Integer anIndex2) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> YPolynomial(const int anIndex1,
+                                                                       const int anIndex2) const;
 
   //! returns Z polynomial of patch referred to by anIndex1, anIndex2
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbUSegments()
   //! or anIndex2 <= 0 or anIndex2 > NbVSegments()
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) ZPolynomial(const Standard_Integer anIndex1,
-                                                            const Standard_Integer anIndex2) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> ZPolynomial(const int anIndex1,
+                                                                       const int anIndex2) const;
 
   //! returns in one all the polynomial values "in bulk"
   //! useful for massive treatments
-  Standard_EXPORT void Polynomials(Handle(IGESBasic_HArray2OfHArray1OfReal)& XCoef,
-                                   Handle(IGESBasic_HArray2OfHArray1OfReal)& YCoef,
-                                   Handle(IGESBasic_HArray2OfHArray1OfReal)& ZCoef) const;
+  Standard_EXPORT void Polynomials(
+    occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& XCoef,
+    occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& YCoef,
+    occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& ZCoef) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_SplineSurface, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                         theBoundaryType;
-  Standard_Integer                         thePatchType;
-  Handle(TColStd_HArray1OfReal)            theUBreakPoints;
-  Handle(TColStd_HArray1OfReal)            theVBreakPoints;
-  Handle(IGESBasic_HArray2OfHArray1OfReal) theXCoeffs;
-  Handle(IGESBasic_HArray2OfHArray1OfReal) theYCoeffs;
-  Handle(IGESBasic_HArray2OfHArray1OfReal) theZCoeffs;
+  int                                                                        theBoundaryType;
+  int                                                                        thePatchType;
+  occ::handle<NCollection_HArray1<double>>                                   theUBreakPoints;
+  occ::handle<NCollection_HArray1<double>>                                   theVBreakPoints;
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> theXCoeffs;
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> theYCoeffs;
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> theZCoeffs;
 };
 
 #endif // _IGESGeom_SplineSurface_HeaderFile

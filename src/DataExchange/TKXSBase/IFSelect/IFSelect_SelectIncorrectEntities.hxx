@@ -21,9 +21,6 @@
 
 #include <IFSelect_SelectFlag.hxx>
 
-class IFSelect_SelectIncorrectEntities;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectIncorrectEntities, IFSelect_SelectFlag)
-
 //! A SelectIncorrectEntities sorts the Entities which have been
 //! noted as Incorrect in the Graph of the Session
 //! (flag "Incorrect")
@@ -38,9 +35,6 @@ public:
   Standard_EXPORT IFSelect_SelectIncorrectEntities();
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectIncorrectEntities, IFSelect_SelectFlag)
-
-protected:
-private:
 };
 
 #endif // _IFSelect_SelectIncorrectEntities_HeaderFile

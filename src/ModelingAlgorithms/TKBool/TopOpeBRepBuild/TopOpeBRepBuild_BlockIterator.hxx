@@ -31,24 +31,22 @@ public:
 
   Standard_EXPORT TopOpeBRepBuild_BlockIterator();
 
-  Standard_EXPORT TopOpeBRepBuild_BlockIterator(const Standard_Integer Lower,
-                                                const Standard_Integer Upper);
+  Standard_EXPORT TopOpeBRepBuild_BlockIterator(const int Lower, const int Upper);
 
   void Initialize();
 
-  Standard_Boolean More() const;
+  bool More() const;
 
   void Next();
 
-  Standard_Integer Value() const;
+  int Value() const;
 
-  Standard_Integer Extent() const;
+  int Extent() const;
 
-protected:
 private:
-  Standard_Integer myLower;
-  Standard_Integer myUpper;
-  Standard_Integer myValue;
+  int myLower;
+  int myUpper;
+  int myValue;
 };
 
 #include <TopOpeBRepBuild_BlockIterator.lxx>

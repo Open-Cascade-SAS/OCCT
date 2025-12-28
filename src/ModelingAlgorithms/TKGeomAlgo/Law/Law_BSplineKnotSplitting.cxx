@@ -19,19 +19,19 @@
 #include <Law_BSplineKnotSplitting.hxx>
 #include <Standard_RangeError.hxx>
 
-typedef TColStd_Array1OfInteger  Array1OfInteger;
-typedef TColStd_HArray1OfInteger HArray1OfInteger;
+typedef NCollection_Array1<int>  Array1OfInteger;
+typedef NCollection_HArray1<int> HArray1OfInteger;
 
-Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const Handle(Law_BSpline)& BasisCurve,
-                                                   const Standard_Integer     ContinuityRange)
+Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const occ::handle<Law_BSpline>& BasisCurve,
+                                                   const int                       ContinuityRange)
 {
   if (ContinuityRange < 0)
     throw Standard_RangeError();
 
-  Standard_Integer FirstIndex = BasisCurve->FirstUKnotIndex();
-  Standard_Integer LastIndex  = BasisCurve->LastUKnotIndex();
+  int FirstIndex = BasisCurve->FirstUKnotIndex();
+  int LastIndex  = BasisCurve->LastUKnotIndex();
 
-  Standard_Integer Degree = BasisCurve->Degree();
+  int Degree = BasisCurve->Degree();
 
   if (ContinuityRange == 0)
   {
@@ -41,10 +41,10 @@ Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const Handle(Law_BSpline)& Ba
   }
   else
   {
-    Standard_Integer NbKnots = BasisCurve->NbKnots();
-    Array1OfInteger  Mults(1, NbKnots);
+    int             NbKnots = BasisCurve->NbKnots();
+    Array1OfInteger Mults(1, NbKnots);
     BasisCurve->Multiplicities(Mults);
-    Standard_Integer Mmax = BSplCLib::MaxKnotMult(Mults, FirstIndex, LastIndex);
+    int Mmax = BSplCLib::MaxKnotMult(Mults, FirstIndex, LastIndex);
     if (Degree - Mmax >= ContinuityRange)
     {
       splitIndexes = new HArray1OfInteger(1, 2);
@@ -53,10 +53,10 @@ Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const Handle(Law_BSpline)& Ba
     }
     else
     {
-      Array1OfInteger  Split(1, LastIndex - FirstIndex + 1);
-      Standard_Integer NbSplit = 1;
-      Standard_Integer Index   = FirstIndex;
-      Split(NbSplit)           = Index;
+      Array1OfInteger Split(1, LastIndex - FirstIndex + 1);
+      int             NbSplit = 1;
+      int             Index   = FirstIndex;
+      Split(NbSplit)          = Index;
       Index++;
       NbSplit++;
       while (Index < LastIndex)
@@ -70,7 +70,7 @@ Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const Handle(Law_BSpline)& Ba
       }
       Split(NbSplit) = Index;
       splitIndexes   = new HArray1OfInteger(1, NbSplit);
-      for (Standard_Integer i = 1; i <= NbSplit; i++)
+      for (int i = 1; i <= NbSplit; i++)
       {
         splitIndexes->SetValue(i, Split(i));
       }
@@ -78,15 +78,15 @@ Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const Handle(Law_BSpline)& Ba
   }
 }
 
-Standard_Integer Law_BSplineKnotSplitting::NbSplits() const
+int Law_BSplineKnotSplitting::NbSplits() const
 {
 
   return splitIndexes->Length();
 }
 
-Standard_Integer Law_BSplineKnotSplitting::SplitValue(
+int Law_BSplineKnotSplitting::SplitValue(
 
-  const Standard_Integer Index
+  const int Index
 
 ) const
 {
@@ -102,7 +102,7 @@ void Law_BSplineKnotSplitting::Splitting(
 ) const
 {
 
-  for (Standard_Integer i = 1; i <= splitIndexes->Length(); i++)
+  for (int i = 1; i <= splitIndexes->Length(); i++)
   {
     SplitValues(i) = splitIndexes->Value(i);
   }

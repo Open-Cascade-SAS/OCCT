@@ -21,14 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <Storage_Error.hxx>
 #include <Standard_Transient.hxx>
 class Storage_BaseDriver;
-
-class Storage_HeaderData;
-DEFINE_STANDARD_HANDLE(Storage_HeaderData, Standard_Transient)
 
 class Storage_HeaderData : public Standard_Transient
 {
@@ -36,7 +34,7 @@ class Storage_HeaderData : public Standard_Transient
 public:
   Standard_EXPORT Storage_HeaderData();
 
-  Standard_EXPORT Standard_Boolean Read(const Handle(Storage_BaseDriver)& theDriver);
+  Standard_EXPORT bool Read(const occ::handle<Storage_BaseDriver>& theDriver);
 
   //! return the creation date
   Standard_EXPORT TCollection_AsciiString CreationDate() const;
@@ -72,18 +70,18 @@ public:
   Standard_EXPORT void AddToUserInfo(const TCollection_AsciiString& theUserInfo);
 
   //! return the user information
-  Standard_EXPORT const TColStd_SequenceOfAsciiString& UserInfo() const;
+  Standard_EXPORT const NCollection_Sequence<TCollection_AsciiString>& UserInfo() const;
 
   //! add <theUserInfo> to the user information
   Standard_EXPORT void AddToComments(const TCollection_ExtendedString& aComment);
 
   //! return the user information
-  Standard_EXPORT const TColStd_SequenceOfExtendedString& Comments() const;
+  Standard_EXPORT const NCollection_Sequence<TCollection_ExtendedString>& Comments() const;
 
   //! the number of persistent objects
   //! Return:
   //! the number of persistent objects readed
-  Standard_EXPORT Standard_Integer NumberOfObjects() const;
+  Standard_EXPORT int NumberOfObjects() const;
 
   Standard_EXPORT Storage_Error ErrorStatus() const;
 
@@ -96,11 +94,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(Storage_HeaderData, Standard_Transient)
 
 public:
-  Standard_EXPORT void SetNumberOfObjects(const Standard_Integer anObjectNumber);
+  Standard_EXPORT void SetNumberOfObjects(const int anObjectNumber);
 
   Standard_EXPORT void SetStorageVersion(const TCollection_AsciiString& aVersion);
 
-  void SetStorageVersion(const Standard_Integer theVersion)
+  void SetStorageVersion(const int theVersion)
   {
     SetStorageVersion(TCollection_AsciiString(theVersion));
   }
@@ -116,18 +114,18 @@ private:
 
   Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  Standard_Integer                 myNBObj;
-  TCollection_AsciiString          myStorageVersion;
-  TCollection_AsciiString          mySchemaVersion;
-  TCollection_AsciiString          mySchemaName;
-  TCollection_AsciiString          myApplicationVersion;
-  TCollection_ExtendedString       myApplicationName;
-  TCollection_ExtendedString       myDataType;
-  TCollection_AsciiString          myDate;
-  TColStd_SequenceOfAsciiString    myUserInfo;
-  TColStd_SequenceOfExtendedString myComments;
-  Storage_Error                    myErrorStatus;
-  TCollection_AsciiString          myErrorStatusExt;
+  int                                              myNBObj;
+  TCollection_AsciiString                          myStorageVersion;
+  TCollection_AsciiString                          mySchemaVersion;
+  TCollection_AsciiString                          mySchemaName;
+  TCollection_AsciiString                          myApplicationVersion;
+  TCollection_ExtendedString                       myApplicationName;
+  TCollection_ExtendedString                       myDataType;
+  TCollection_AsciiString                          myDate;
+  NCollection_Sequence<TCollection_AsciiString>    myUserInfo;
+  NCollection_Sequence<TCollection_ExtendedString> myComments;
+  Storage_Error                                    myErrorStatus;
+  TCollection_AsciiString                          myErrorStatusExt;
 };
 
 #endif // _Storage_HeaderData_HeaderFile

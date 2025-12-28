@@ -23,10 +23,10 @@
 RWStepBasic_RWApprovalPersonOrganization::RWStepBasic_RWApprovalPersonOrganization() {}
 
 void RWStepBasic_RWApprovalPersonOrganization::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_ApprovalPersonOrganization)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                                                num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepBasic_ApprovalPersonOrganization>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -37,13 +37,13 @@ void RWStepBasic_RWApprovalPersonOrganization::ReadStep(
   // --- own field : personOrganization ---
 
   StepBasic_PersonOrganizationSelect aPersonOrganization;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "person_organization", ach, aPersonOrganization);
 
   // --- own field : authorizedApproval ---
 
-  Handle(StepBasic_Approval) aAuthorizedApproval;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepBasic_Approval> aAuthorizedApproval;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "authorized_approval",
@@ -53,8 +53,8 @@ void RWStepBasic_RWApprovalPersonOrganization::ReadStep(
 
   // --- own field : role ---
 
-  Handle(StepBasic_ApprovalRole) aRole;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepBasic_ApprovalRole> aRole;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "role", ach, STANDARD_TYPE(StepBasic_ApprovalRole), aRole);
 
   //--- Initialisation of the read entity ---
@@ -63,8 +63,8 @@ void RWStepBasic_RWApprovalPersonOrganization::ReadStep(
 }
 
 void RWStepBasic_RWApprovalPersonOrganization::WriteStep(
-  StepData_StepWriter&                                SW,
-  const Handle(StepBasic_ApprovalPersonOrganization)& ent) const
+  StepData_StepWriter&                                     SW,
+  const occ::handle<StepBasic_ApprovalPersonOrganization>& ent) const
 {
 
   // --- own field : personOrganization ---
@@ -81,8 +81,8 @@ void RWStepBasic_RWApprovalPersonOrganization::WriteStep(
 }
 
 void RWStepBasic_RWApprovalPersonOrganization::Share(
-  const Handle(StepBasic_ApprovalPersonOrganization)& ent,
-  Interface_EntityIterator&                           iter) const
+  const occ::handle<StepBasic_ApprovalPersonOrganization>& ent,
+  Interface_EntityIterator&                                iter) const
 {
 
   iter.GetOneItem(ent->PersonOrganization().Value());

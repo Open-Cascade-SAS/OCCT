@@ -26,45 +26,46 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_VariableDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_VariableDriver::BinMDataStd_VariableDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_VariableDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_VariableDriver::NewEmpty() const
 {
   return (new TDataStd_Variable());
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMDataStd_VariableDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                   const Handle(TDF_Attribute)& theTarget,
-                                                   BinObjMgt_RRelocationTable&) const
+bool BinMDataStd_VariableDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       BinObjMgt_RRelocationTable&) const
 {
-  Handle(TDataStd_Variable) aV = Handle(TDataStd_Variable)::DownCast(theTarget);
+  occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theTarget);
 
-  Standard_Boolean isConstant;
+  bool isConstant;
   if (!(theSource >> isConstant))
-    return Standard_False;
+    return false;
   aV->Constant(isConstant);
 
   TCollection_AsciiString anStr;
   if (!(theSource >> anStr))
-    return Standard_False;
+    return false;
   aV->Unit(anStr);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BinMDataStd_VariableDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                       BinObjMgt_Persistent&        theTarget,
-                                       BinObjMgt_SRelocationTable&) const
+void BinMDataStd_VariableDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDataStd_Variable) aV = Handle(TDataStd_Variable)::DownCast(theSource);
+  occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theSource);
   theTarget << aV->IsConstant() << aV->Unit();
 }

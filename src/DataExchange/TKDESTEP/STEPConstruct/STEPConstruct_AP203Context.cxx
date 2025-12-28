@@ -37,7 +37,8 @@
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
 
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <StepBasic_CalendarDate.hxx>
 #include <StepBasic_LocalTime.hxx>
@@ -51,10 +52,12 @@
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductRelatedProductCategory.hxx>
-#include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
-#include <StepAP203_HArray1OfClassifiedItem.hxx>
-#include <StepAP203_HArray1OfDateTimeItem.hxx>
-#include <StepAP203_HArray1OfApprovedItem.hxx>
+#include <StepAP203_PersonOrganizationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepAP203_ClassifiedItem.hxx>
+#include <StepAP203_DateTimeItem.hxx>
+#include <StepAP203_ApprovedItem.hxx>
 #include <StepBasic_ProductCategory.hxx>
 
 #if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
@@ -70,16 +73,16 @@ STEPConstruct_AP203Context::STEPConstruct_AP203Context()
 
 //=================================================================================================
 
-Handle(StepBasic_Approval) STEPConstruct_AP203Context::DefaultApproval()
+occ::handle<StepBasic_Approval> STEPConstruct_AP203Context::DefaultApproval()
 {
   if (defApproval.IsNull())
   {
-    Handle(StepBasic_ApprovalStatus) aStatus = new StepBasic_ApprovalStatus;
-    Handle(TCollection_HAsciiString) aName   = new TCollection_HAsciiString("not_yet_approved");
+    occ::handle<StepBasic_ApprovalStatus> aStatus = new StepBasic_ApprovalStatus;
+    occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("not_yet_approved");
     aStatus->Init(aName);
 
-    Handle(TCollection_HAsciiString) aLevel = new TCollection_HAsciiString("");
-    defApproval                             = new StepBasic_Approval;
+    occ::handle<TCollection_HAsciiString> aLevel = new TCollection_HAsciiString("");
+    defApproval                                  = new StepBasic_Approval;
     defApproval->Init(aStatus, aLevel);
   }
   return defApproval;
@@ -87,40 +90,40 @@ Handle(StepBasic_Approval) STEPConstruct_AP203Context::DefaultApproval()
 
 //=================================================================================================
 
-void STEPConstruct_AP203Context::SetDefaultApproval(const Handle(StepBasic_Approval)& app)
+void STEPConstruct_AP203Context::SetDefaultApproval(const occ::handle<StepBasic_Approval>& app)
 {
   defApproval = app;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_DateAndTime) STEPConstruct_AP203Context::DefaultDateAndTime()
+occ::handle<StepBasic_DateAndTime> STEPConstruct_AP203Context::DefaultDateAndTime()
 {
   if (defDateAndTime.IsNull())
   {
     OSD_Process   sys;
     Quantity_Date date = sys.SystemDate();
 
-    Handle(StepBasic_CalendarDate) aDate = new StepBasic_CalendarDate;
+    occ::handle<StepBasic_CalendarDate> aDate = new StepBasic_CalendarDate;
     aDate->Init(date.Year(), date.Day(), date.Month());
 
-    Handle(StepBasic_CoordinatedUniversalTimeOffset) zone =
+    occ::handle<StepBasic_CoordinatedUniversalTimeOffset> zone =
       new StepBasic_CoordinatedUniversalTimeOffset;
 #if defined(_MSC_VER) && _MSC_VER >= 1600
     long shift = 0;
     _get_timezone(&shift);
 #else
-    Standard_Integer shift = Standard_Integer(timezone);
+    int shift = int(timezone);
 #endif
-    Standard_Integer        shifth = abs(shift) / 3600;
-    Standard_Integer        shiftm = (abs(shift) - shifth * 3600) / 60;
+    int                     shifth = abs(shift) / 3600;
+    int                     shiftm = (abs(shift) - shifth * 3600) / 60;
     StepBasic_AheadOrBehind sense  = (shift > 0   ? StepBasic_aobBehind
                                       : shift < 0 ? StepBasic_aobAhead
                                                   : StepBasic_aobExact);
     zone->Init(shifth, (shiftm != 0), shiftm, sense);
 
-    Handle(StepBasic_LocalTime) aTime = new StepBasic_LocalTime;
-    aTime->Init(date.Hour(), Standard_True, date.Minute(), Standard_False, 0., zone);
+    occ::handle<StepBasic_LocalTime> aTime = new StepBasic_LocalTime;
+    aTime->Init(date.Hour(), true, date.Minute(), false, 0., zone);
 
     defDateAndTime = new StepBasic_DateAndTime;
     defDateAndTime->Init(aDate, aTime);
@@ -130,23 +133,24 @@ Handle(StepBasic_DateAndTime) STEPConstruct_AP203Context::DefaultDateAndTime()
 
 //=================================================================================================
 
-void STEPConstruct_AP203Context::SetDefaultDateAndTime(const Handle(StepBasic_DateAndTime)& dt)
+void STEPConstruct_AP203Context::SetDefaultDateAndTime(const occ::handle<StepBasic_DateAndTime>& dt)
 {
   defDateAndTime = dt;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPersonAndOrganization()
+occ::handle<StepBasic_PersonAndOrganization> STEPConstruct_AP203Context::
+  DefaultPersonAndOrganization()
 {
   if (defPersonAndOrganization.IsNull())
   {
     // get IP address as a unique id of organization
-    Handle(TCollection_HAsciiString) orgId = new TCollection_HAsciiString("IP");
-    OSD_Host                         aHost;
-    TCollection_AsciiString          anIP = aHost.InternetAddress();
+    occ::handle<TCollection_HAsciiString> orgId = new TCollection_HAsciiString("IP");
+    OSD_Host                              aHost;
+    TCollection_AsciiString               anIP = aHost.InternetAddress();
     // cut off last number
-    Standard_Integer aLastDotIndex = anIP.SearchFromEnd(".");
+    int aLastDotIndex = anIP.SearchFromEnd(".");
     if (aLastDotIndex > 0)
     {
       anIP.Trunc(aLastDotIndex - 1);
@@ -154,10 +158,10 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
     }
 
     // create organization
-    Handle(StepBasic_Organization)   aOrg   = new StepBasic_Organization;
-    Handle(TCollection_HAsciiString) oName  = new TCollection_HAsciiString("Unspecified");
-    Handle(TCollection_HAsciiString) oDescr = new TCollection_HAsciiString("");
-    aOrg->Init(Standard_True, orgId, oName, oDescr);
+    occ::handle<StepBasic_Organization>   aOrg   = new StepBasic_Organization;
+    occ::handle<TCollection_HAsciiString> oName  = new TCollection_HAsciiString("Unspecified");
+    occ::handle<TCollection_HAsciiString> oDescr = new TCollection_HAsciiString("");
+    aOrg->Init(true, orgId, oName, oDescr);
 
     // construct person`s name
     OSD_Process             sys;
@@ -176,11 +180,11 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
       user = "Unknown";
     }
 #endif
-    Handle(TCollection_HAsciiString)        fname = new TCollection_HAsciiString("");
-    Handle(TCollection_HAsciiString)        lname = new TCollection_HAsciiString("");
-    Handle(Interface_HArray1OfHAsciiString) mname;
-    TColStd_SequenceOfAsciiString           names;
-    Standard_Integer                        i; // svv Jan11 2000 : porting on DEC
+    occ::handle<TCollection_HAsciiString> fname = new TCollection_HAsciiString("");
+    occ::handle<TCollection_HAsciiString> lname = new TCollection_HAsciiString("");
+    occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> mname;
+    NCollection_Sequence<TCollection_AsciiString>                           names;
+    int i; // svv Jan11 2000 : porting on DEC
     for (i = 1;; i++)
     {
       TCollection_AsciiString token = user.Token(" \t", i);
@@ -194,28 +198,19 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
       lname->AssignCat(names.Value(names.Length()).ToCString());
     if (names.Length() > 2)
     {
-      mname = new Interface_HArray1OfHAsciiString(1, names.Length() - 2);
+      mname = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, names.Length() - 2);
       for (i = 2; i < names.Length(); i++)
         mname->SetValue(i - 1, new TCollection_HAsciiString(names.Value(i)));
     }
 
     // create a person
-    Handle(StepBasic_Person)         aPerson = new StepBasic_Person;
-    Handle(TCollection_HAsciiString) uid     = new TCollection_HAsciiString(orgId);
+    occ::handle<StepBasic_Person>         aPerson = new StepBasic_Person;
+    occ::handle<TCollection_HAsciiString> uid     = new TCollection_HAsciiString(orgId);
     uid->AssignCat(",");
     uid->AssignCat(sys.UserName().ToCString());
-    Handle(Interface_HArray1OfHAsciiString) suffix, prefix;
-    aPerson->Init(uid,
-                  Standard_True,
-                  lname,
-                  Standard_True,
-                  fname,
-                  (!mname.IsNull()),
-                  mname,
-                  Standard_False,
-                  suffix,
-                  Standard_False,
-                  prefix);
+    occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> suffix, prefix;
+    aPerson
+      ->Init(uid, true, lname, true, fname, (!mname.IsNull()), mname, false, suffix, false, prefix);
 
     defPersonAndOrganization = new StepBasic_PersonAndOrganization;
     defPersonAndOrganization->Init(aPerson, aOrg);
@@ -226,20 +221,20 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
 //=================================================================================================
 
 void STEPConstruct_AP203Context::SetDefaultPersonAndOrganization(
-  const Handle(StepBasic_PersonAndOrganization)& po)
+  const occ::handle<StepBasic_PersonAndOrganization>& po)
 {
   defPersonAndOrganization = po;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_SecurityClassificationLevel) STEPConstruct_AP203Context::
+occ::handle<StepBasic_SecurityClassificationLevel> STEPConstruct_AP203Context::
   DefaultSecurityClassificationLevel()
 {
   if (defSecurityClassificationLevel.IsNull())
   {
-    defSecurityClassificationLevel           = new StepBasic_SecurityClassificationLevel;
-    Handle(TCollection_HAsciiString) levName = new TCollection_HAsciiString("unclassified");
+    defSecurityClassificationLevel                = new StepBasic_SecurityClassificationLevel;
+    occ::handle<TCollection_HAsciiString> levName = new TCollection_HAsciiString("unclassified");
     defSecurityClassificationLevel->Init(levName);
   }
   return defSecurityClassificationLevel;
@@ -248,64 +243,66 @@ Handle(StepBasic_SecurityClassificationLevel) STEPConstruct_AP203Context::
 //=================================================================================================
 
 void STEPConstruct_AP203Context::SetDefaultSecurityClassificationLevel(
-  const Handle(StepBasic_SecurityClassificationLevel)& scl)
+  const occ::handle<StepBasic_SecurityClassificationLevel>& scl)
 {
   defSecurityClassificationLevel = scl;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_PersonAndOrganizationRole) STEPConstruct_AP203Context::RoleCreator() const
+occ::handle<StepBasic_PersonAndOrganizationRole> STEPConstruct_AP203Context::RoleCreator() const
 {
   return roleCreator;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_PersonAndOrganizationRole) STEPConstruct_AP203Context::RoleDesignOwner() const
+occ::handle<StepBasic_PersonAndOrganizationRole> STEPConstruct_AP203Context::RoleDesignOwner() const
 {
   return roleDesignOwner;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_PersonAndOrganizationRole) STEPConstruct_AP203Context::RoleDesignSupplier() const
+occ::handle<StepBasic_PersonAndOrganizationRole> STEPConstruct_AP203Context::RoleDesignSupplier()
+  const
 {
   return roleDesignSupplier;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_PersonAndOrganizationRole) STEPConstruct_AP203Context::RoleClassificationOfficer()
-  const
+occ::handle<StepBasic_PersonAndOrganizationRole> STEPConstruct_AP203Context::
+  RoleClassificationOfficer() const
 {
   return roleClassificationOfficer;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_DateTimeRole) STEPConstruct_AP203Context::RoleCreationDate() const
+occ::handle<StepBasic_DateTimeRole> STEPConstruct_AP203Context::RoleCreationDate() const
 {
   return roleCreationDate;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_DateTimeRole) STEPConstruct_AP203Context::RoleClassificationDate() const
+occ::handle<StepBasic_DateTimeRole> STEPConstruct_AP203Context::RoleClassificationDate() const
 {
   return roleClassificationDate;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ApprovalRole) STEPConstruct_AP203Context::RoleApprover() const
+occ::handle<StepBasic_ApprovalRole> STEPConstruct_AP203Context::RoleApprover() const
 {
   return roleApprover;
 }
 
 //=================================================================================================
 
-void STEPConstruct_AP203Context::Init(const Handle(StepShape_ShapeDefinitionRepresentation)& sdr)
+void STEPConstruct_AP203Context::Init(
+  const occ::handle<StepShape_ShapeDefinitionRepresentation>& sdr)
 {
   Clear();
   STEPConstruct_Part SDRTool;
@@ -324,11 +321,11 @@ void STEPConstruct_AP203Context::Init(const STEPConstruct_Part& SDRTool)
 //=================================================================================================
 
 // void STEPConstruct_AP203Context::Init (const STEPConstruct_Part &SDRTool, const
-// Handle(Interface_Model) &Model) {}
+// occ::handle<Interface_Model> &Model) {}
 
 //=================================================================================================
 
-void STEPConstruct_AP203Context::Init(const Handle(StepRepr_NextAssemblyUsageOccurrence)& NAUO)
+void STEPConstruct_AP203Context::Init(const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& NAUO)
 {
   Clear();
   InitAssembly(NAUO);
@@ -336,15 +333,15 @@ void STEPConstruct_AP203Context::Init(const Handle(StepRepr_NextAssemblyUsageOcc
 
 //=================================================================================================
 
-Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) STEPConstruct_AP203Context::GetCreator()
-  const
+occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> STEPConstruct_AP203Context::
+  GetCreator() const
 {
   return myCreator;
 }
 
 //=================================================================================================
 
-Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) STEPConstruct_AP203Context::
+occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> STEPConstruct_AP203Context::
   GetDesignOwner() const
 {
   return myDesignOwner;
@@ -352,7 +349,7 @@ Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) STEPConstruct_AP203Con
 
 //=================================================================================================
 
-Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) STEPConstruct_AP203Context::
+occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> STEPConstruct_AP203Context::
   GetDesignSupplier() const
 {
   return myDesignSupplier;
@@ -360,7 +357,7 @@ Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) STEPConstruct_AP203Con
 
 //=================================================================================================
 
-Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) STEPConstruct_AP203Context::
+occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> STEPConstruct_AP203Context::
   GetClassificationOfficer() const
 {
   return myClassificationOfficer;
@@ -368,50 +365,52 @@ Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) STEPConstruct_AP203Con
 
 //=================================================================================================
 
-Handle(StepAP203_CcDesignSecurityClassification) STEPConstruct_AP203Context::GetSecurity() const
+occ::handle<StepAP203_CcDesignSecurityClassification> STEPConstruct_AP203Context::GetSecurity()
+  const
 {
   return mySecurity;
 }
 
 //=================================================================================================
 
-Handle(StepAP203_CcDesignDateAndTimeAssignment) STEPConstruct_AP203Context::GetCreationDate() const
+occ::handle<StepAP203_CcDesignDateAndTimeAssignment> STEPConstruct_AP203Context::GetCreationDate()
+  const
 {
   return myCreationDate;
 }
 
 //=================================================================================================
 
-Handle(StepAP203_CcDesignDateAndTimeAssignment) STEPConstruct_AP203Context::GetClassificationDate()
-  const
+occ::handle<StepAP203_CcDesignDateAndTimeAssignment> STEPConstruct_AP203Context::
+  GetClassificationDate() const
 {
   return myClassificationDate;
 }
 
 //=================================================================================================
 
-Handle(StepAP203_CcDesignApproval) STEPConstruct_AP203Context::GetApproval() const
+occ::handle<StepAP203_CcDesignApproval> STEPConstruct_AP203Context::GetApproval() const
 {
   return myApproval;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ApprovalPersonOrganization) STEPConstruct_AP203Context::GetApprover() const
+occ::handle<StepBasic_ApprovalPersonOrganization> STEPConstruct_AP203Context::GetApprover() const
 {
   return myApprover;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ApprovalDateTime) STEPConstruct_AP203Context::GetApprovalDateTime() const
+occ::handle<StepBasic_ApprovalDateTime> STEPConstruct_AP203Context::GetApprovalDateTime() const
 {
   return myApprovalDateTime;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductCategoryRelationship) STEPConstruct_AP203Context::
+occ::handle<StepBasic_ProductCategoryRelationship> STEPConstruct_AP203Context::
   GetProductCategoryRelationship() const
 {
   return myProductCategoryRelationship;
@@ -464,8 +463,8 @@ void STEPConstruct_AP203Context::InitPart(const STEPConstruct_Part& SDRTool)
   if (myCreator.IsNull())
   {
     myCreator = new StepAP203_CcDesignPersonAndOrganizationAssignment;
-    Handle(StepAP203_HArray1OfPersonOrganizationItem) items =
-      new StepAP203_HArray1OfPersonOrganizationItem(1, 2);
+    occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> items =
+      new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, 2);
     items->ChangeValue(1).SetValue(SDRTool.PDF());
     items->ChangeValue(2).SetValue(SDRTool.PD());
     myCreator->Init(DefaultPersonAndOrganization(), RoleCreator(), items);
@@ -474,8 +473,8 @@ void STEPConstruct_AP203Context::InitPart(const STEPConstruct_Part& SDRTool)
   if (myDesignOwner.IsNull())
   {
     myDesignOwner = new StepAP203_CcDesignPersonAndOrganizationAssignment;
-    Handle(StepAP203_HArray1OfPersonOrganizationItem) items =
-      new StepAP203_HArray1OfPersonOrganizationItem(1, 1);
+    occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> items =
+      new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, 1);
     items->ChangeValue(1).SetValue(SDRTool.Product());
     myDesignOwner->Init(DefaultPersonAndOrganization(), RoleDesignOwner(), items);
   }
@@ -483,16 +482,17 @@ void STEPConstruct_AP203Context::InitPart(const STEPConstruct_Part& SDRTool)
   if (myDesignSupplier.IsNull())
   {
     myDesignSupplier = new StepAP203_CcDesignPersonAndOrganizationAssignment;
-    Handle(StepAP203_HArray1OfPersonOrganizationItem) items =
-      new StepAP203_HArray1OfPersonOrganizationItem(1, 1);
+    occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> items =
+      new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, 1);
     items->ChangeValue(1).SetValue(SDRTool.PDF());
     myDesignSupplier->Init(DefaultPersonAndOrganization(), RoleDesignSupplier(), items);
   }
 
   if (myCreationDate.IsNull())
   {
-    myCreationDate                                = new StepAP203_CcDesignDateAndTimeAssignment;
-    Handle(StepAP203_HArray1OfDateTimeItem) items = new StepAP203_HArray1OfDateTimeItem(1, 1);
+    myCreationDate = new StepAP203_CcDesignDateAndTimeAssignment;
+    occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>> items =
+      new NCollection_HArray1<StepAP203_DateTimeItem>(1, 1);
     items->ChangeValue(1).SetValue(SDRTool.PD());
     myCreationDate->Init(DefaultDateAndTime(), RoleCreationDate(), items);
   }
@@ -500,13 +500,14 @@ void STEPConstruct_AP203Context::InitPart(const STEPConstruct_Part& SDRTool)
   if (mySecurity.IsNull())
   {
 
-    Handle(TCollection_HAsciiString)         aName    = new TCollection_HAsciiString("");
-    Handle(TCollection_HAsciiString)         aPurpose = new TCollection_HAsciiString("");
-    Handle(StepBasic_SecurityClassification) sc       = new StepBasic_SecurityClassification;
+    occ::handle<TCollection_HAsciiString>         aName    = new TCollection_HAsciiString("");
+    occ::handle<TCollection_HAsciiString>         aPurpose = new TCollection_HAsciiString("");
+    occ::handle<StepBasic_SecurityClassification> sc       = new StepBasic_SecurityClassification;
     sc->Init(aName, aPurpose, DefaultSecurityClassificationLevel());
 
-    mySecurity                                      = new StepAP203_CcDesignSecurityClassification;
-    Handle(StepAP203_HArray1OfClassifiedItem) items = new StepAP203_HArray1OfClassifiedItem(1, 1);
+    mySecurity = new StepAP203_CcDesignSecurityClassification;
+    occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>> items =
+      new NCollection_HArray1<StepAP203_ClassifiedItem>(1, 1);
     items->ChangeValue(1).SetValue(SDRTool.PDF());
     mySecurity->Init(sc, items);
   }
@@ -514,8 +515,9 @@ void STEPConstruct_AP203Context::InitPart(const STEPConstruct_Part& SDRTool)
 
   if (myApproval.IsNull())
   {
-    myApproval                                    = new StepAP203_CcDesignApproval;
-    Handle(StepAP203_HArray1OfApprovedItem) items = new StepAP203_HArray1OfApprovedItem(1, 3);
+    myApproval = new StepAP203_CcDesignApproval;
+    occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> items =
+      new NCollection_HArray1<StepAP203_ApprovedItem>(1, 3);
     items->ChangeValue(1).SetValue(SDRTool.PDF());
     items->ChangeValue(2).SetValue(SDRTool.PD());
     items->ChangeValue(3).SetValue(mySecurity->AssignedSecurityClassification());
@@ -525,32 +527,33 @@ void STEPConstruct_AP203Context::InitPart(const STEPConstruct_Part& SDRTool)
 
   if (myProductCategoryRelationship.IsNull())
   {
-    Handle(StepBasic_ProductCategory) PC     = new StepBasic_ProductCategory;
-    Handle(TCollection_HAsciiString)  PCName = new TCollection_HAsciiString("part");
-    PC->Init(PCName, Standard_False, 0);
+    occ::handle<StepBasic_ProductCategory> PC     = new StepBasic_ProductCategory;
+    occ::handle<TCollection_HAsciiString>  PCName = new TCollection_HAsciiString("part");
+    PC->Init(PCName, false, 0);
 
-    myProductCategoryRelationship             = new StepBasic_ProductCategoryRelationship;
-    Handle(TCollection_HAsciiString) PCRName  = new TCollection_HAsciiString("");
-    Handle(TCollection_HAsciiString) PCRDescr = new TCollection_HAsciiString("");
-    myProductCategoryRelationship->Init(PCRName, Standard_True, PCRDescr, PC, SDRTool.PRPC());
+    myProductCategoryRelationship                  = new StepBasic_ProductCategoryRelationship;
+    occ::handle<TCollection_HAsciiString> PCRName  = new TCollection_HAsciiString("");
+    occ::handle<TCollection_HAsciiString> PCRDescr = new TCollection_HAsciiString("");
+    myProductCategoryRelationship->Init(PCRName, true, PCRDescr, PC, SDRTool.PRPC());
   }
 }
 
 //=================================================================================================
 
 void STEPConstruct_AP203Context::InitAssembly(
-  const Handle(StepRepr_NextAssemblyUsageOccurrence)& NAUO)
+  const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& NAUO)
 {
   if (mySecurity.IsNull())
   {
 
-    Handle(TCollection_HAsciiString)         aName    = new TCollection_HAsciiString("");
-    Handle(TCollection_HAsciiString)         aPurpose = new TCollection_HAsciiString("");
-    Handle(StepBasic_SecurityClassification) sc       = new StepBasic_SecurityClassification;
+    occ::handle<TCollection_HAsciiString>         aName    = new TCollection_HAsciiString("");
+    occ::handle<TCollection_HAsciiString>         aPurpose = new TCollection_HAsciiString("");
+    occ::handle<StepBasic_SecurityClassification> sc       = new StepBasic_SecurityClassification;
     sc->Init(aName, aPurpose, DefaultSecurityClassificationLevel());
 
-    mySecurity                                      = new StepAP203_CcDesignSecurityClassification;
-    Handle(StepAP203_HArray1OfClassifiedItem) items = new StepAP203_HArray1OfClassifiedItem(1, 1);
+    mySecurity = new StepAP203_CcDesignSecurityClassification;
+    occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>> items =
+      new NCollection_HArray1<StepAP203_ClassifiedItem>(1, 1);
     items->ChangeValue(1).SetValue(NAUO);
     mySecurity->Init(sc, items);
   }
@@ -558,8 +561,9 @@ void STEPConstruct_AP203Context::InitAssembly(
 
   if (myApproval.IsNull())
   {
-    myApproval                                    = new StepAP203_CcDesignApproval;
-    Handle(StepAP203_HArray1OfApprovedItem) items = new StepAP203_HArray1OfApprovedItem(1, 1);
+    myApproval = new StepAP203_CcDesignApproval;
+    occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> items =
+      new NCollection_HArray1<StepAP203_ApprovedItem>(1, 1);
     items->ChangeValue(1).SetValue(mySecurity->AssignedSecurityClassification());
     myApproval->Init(DefaultApproval(), items);
   }
@@ -575,8 +579,8 @@ void STEPConstruct_AP203Context::InitSecurityRequisites()
            != mySecurity->AssignedSecurityClassification())
   {
     myClassificationOfficer = new StepAP203_CcDesignPersonAndOrganizationAssignment;
-    Handle(StepAP203_HArray1OfPersonOrganizationItem) items =
-      new StepAP203_HArray1OfPersonOrganizationItem(1, 1);
+    occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> items =
+      new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, 1);
     items->ChangeValue(1).SetValue(mySecurity->AssignedSecurityClassification());
     myClassificationOfficer->Init(DefaultPersonAndOrganization(),
                                   RoleClassificationOfficer(),
@@ -587,8 +591,9 @@ void STEPConstruct_AP203Context::InitSecurityRequisites()
       || myClassificationDate->Items()->Value(1).Value()
            != mySecurity->AssignedSecurityClassification())
   {
-    myClassificationDate                          = new StepAP203_CcDesignDateAndTimeAssignment;
-    Handle(StepAP203_HArray1OfDateTimeItem) items = new StepAP203_HArray1OfDateTimeItem(1, 1);
+    myClassificationDate = new StepAP203_CcDesignDateAndTimeAssignment;
+    occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>> items =
+      new NCollection_HArray1<StepAP203_DateTimeItem>(1, 1);
     items->ChangeValue(1).SetValue(mySecurity->AssignedSecurityClassification());
     myClassificationDate->Init(DefaultDateAndTime(), RoleClassificationDate(), items);
   }

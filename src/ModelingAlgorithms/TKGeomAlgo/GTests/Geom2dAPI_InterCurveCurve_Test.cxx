@@ -25,10 +25,10 @@
 TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
 {
   // Create two ellipses
-  gp_Elips2d             e1(gp_Ax2d(gp_Pnt2d(0., 0.), gp_Dir2d(gp_Dir2d::D::X)), 2., 1.);
-  Handle(Geom2d_Ellipse) Ge1 = new Geom2d_Ellipse(e1);
-  gp_Elips2d             e2(gp_Ax2d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1., 1.)), 2., 1.);
-  Handle(Geom2d_Ellipse) Ge2 = new Geom2d_Ellipse(e2);
+  gp_Elips2d                  e1(gp_Ax2d(gp_Pnt2d(0., 0.), gp_Dir2d(gp_Dir2d::D::X)), 2., 1.);
+  occ::handle<Geom2d_Ellipse> Ge1 = new Geom2d_Ellipse(e1);
+  gp_Elips2d                  e2(gp_Ax2d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1., 1.)), 2., 1.);
+  occ::handle<Geom2d_Ellipse> Ge2 = new Geom2d_Ellipse(e2);
 
   // Find intersection points
   Geom2dAPI_InterCurveCurve Intersector;
@@ -36,7 +36,7 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
   EXPECT_GT(Intersector.NbPoints(), 0) << "Error: intersector found no points";
 
   // Setup trigonometric equation: A*std::cos(x) + B*Sin(x) + C*std::cos(2*x) + D*Sin(2*x) + E
-  Standard_Real A, B, C, D, E;
+  double A, B, C, D, E;
   A = 1.875;
   B = -.75;
   C = -.5;
@@ -44,23 +44,23 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
   E = -.25;
   math_TrigonometricEquationFunction MyF(A, B, C, D, E);
 
-  Standard_Real    Tol1  = 1.e-15;
-  Standard_Real    Eps   = 1.5e-12;
-  Standard_Integer Nit[] = {5, 6, 7, 6};
+  double Tol1  = 1.e-15;
+  double Eps   = 1.5e-12;
+  int    Nit[] = {5, 6, 7, 6};
 
   // For each intersection point, verify Newton root finding
-  Standard_Real    TetaPrev = 0.;
-  Standard_Integer i;
+  double TetaPrev = 0.;
+  int    i;
   for (i = 1; i <= Intersector.NbPoints(); i++)
   {
-    Standard_Real Teta = Intersector.Intersector().Point(i).ParamOnFirst();
-    Standard_Real X    = Teta - 0.1 * (Teta - TetaPrev);
-    TetaPrev           = Teta;
+    double Teta = Intersector.Intersector().Point(i).ParamOnFirst();
+    double X    = Teta - 0.1 * (Teta - TetaPrev);
+    TetaPrev    = Teta;
 
     math_NewtonFunctionRoot Resol(MyF, X, Tol1, Eps, Nit[i - 1]);
     ASSERT_TRUE(Resol.IsDone()) << "Error: Newton is not done for " << Teta;
 
-    Standard_Real TetaNewton = Resol.Root();
+    double TetaNewton = Resol.Root();
     EXPECT_LE(std::abs(Teta - TetaNewton), 1.e-7) << "Error: Newton root is wrong for " << Teta;
   }
 }

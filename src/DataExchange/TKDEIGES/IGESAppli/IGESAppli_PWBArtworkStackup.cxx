@@ -25,9 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PWBArtworkStackup, IGESData_IGESEntity)
 
 IGESAppli_PWBArtworkStackup::IGESAppli_PWBArtworkStackup() {}
 
-void IGESAppli_PWBArtworkStackup::Init(const Standard_Integer                  nbPropVal,
-                                       const Handle(TCollection_HAsciiString)& anArtIdent,
-                                       const Handle(TColStd_HArray1OfInteger)& allLevelNums)
+void IGESAppli_PWBArtworkStackup::Init(const int                                    nbPropVal,
+                                       const occ::handle<TCollection_HAsciiString>& anArtIdent,
+                                       const occ::handle<NCollection_HArray1<int>>& allLevelNums)
 {
   if (allLevelNums->Lower() != 1)
     throw Standard_DimensionMismatch("IGESAppli_PWBArtworkStackup : Init");
@@ -37,22 +37,22 @@ void IGESAppli_PWBArtworkStackup::Init(const Standard_Integer                  n
   InitTypeAndForm(406, 25);
 }
 
-Standard_Integer IGESAppli_PWBArtworkStackup::NbPropertyValues() const
+int IGESAppli_PWBArtworkStackup::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Handle(TCollection_HAsciiString) IGESAppli_PWBArtworkStackup::Identification() const
+occ::handle<TCollection_HAsciiString> IGESAppli_PWBArtworkStackup::Identification() const
 {
   return theArtworkStackupIdent;
 }
 
-Standard_Integer IGESAppli_PWBArtworkStackup::NbLevelNumbers() const
+int IGESAppli_PWBArtworkStackup::NbLevelNumbers() const
 {
   return theLevelNumbers->Length();
 }
 
-Standard_Integer IGESAppli_PWBArtworkStackup::LevelNumber(const Standard_Integer Index) const
+int IGESAppli_PWBArtworkStackup::LevelNumber(const int Index) const
 {
   return theLevelNumbers->Value(Index);
 }

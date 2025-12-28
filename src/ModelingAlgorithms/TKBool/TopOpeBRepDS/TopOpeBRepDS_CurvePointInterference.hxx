@@ -26,9 +26,6 @@
 #include <Standard_OStream.hxx>
 class TopOpeBRepDS_Transition;
 
-class TopOpeBRepDS_CurvePointInterference;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_CurvePointInterference, TopOpeBRepDS_Interference)
-
 //! An interference with a parameter.
 class TopOpeBRepDS_CurvePointInterference : public TopOpeBRepDS_Interference
 {
@@ -36,20 +33,19 @@ class TopOpeBRepDS_CurvePointInterference : public TopOpeBRepDS_Interference
 public:
   Standard_EXPORT TopOpeBRepDS_CurvePointInterference(const TopOpeBRepDS_Transition& T,
                                                       const TopOpeBRepDS_Kind        ST,
-                                                      const Standard_Integer         S,
+                                                      const int                      S,
                                                       const TopOpeBRepDS_Kind        GT,
-                                                      const Standard_Integer         G,
-                                                      const Standard_Real            P);
+                                                      const int                      G,
+                                                      const double                   P);
 
-  Standard_EXPORT Standard_Real Parameter() const;
+  Standard_EXPORT double Parameter() const;
 
-  Standard_EXPORT void Parameter(const Standard_Real P);
+  Standard_EXPORT void Parameter(const double P);
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_CurvePointInterference, TopOpeBRepDS_Interference)
 
-protected:
 private:
-  Standard_Real myParam;
+  double myParam;
 };
 
 #endif // _TopOpeBRepDS_CurvePointInterference_HeaderFile

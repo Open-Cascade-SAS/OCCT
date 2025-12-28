@@ -34,27 +34,27 @@
 // function : DsgPrs_DiameterPresentation::Add
 // purpose  : it is possible to choose the symbol of extremities of the face (arrow, point ...)
 //==========================================================================
-void DsgPrs_DiameterPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                      const Handle(Prs3d_Drawer)&       aDrawer,
-                                      const TCollection_ExtendedString& aText,
-                                      const gp_Pnt&                     AttachmentPoint,
-                                      const gp_Circ&                    aCircle,
-                                      const DsgPrs_ArrowSide            ArrowPrs,
-                                      const Standard_Boolean            IsDiamSymbol)
+void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                      const TCollection_ExtendedString&      aText,
+                                      const gp_Pnt&                          AttachmentPoint,
+                                      const gp_Circ&                         aCircle,
+                                      const DsgPrs_ArrowSide                 ArrowPrs,
+                                      const bool                             IsDiamSymbol)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Standard_Real parat    = ElCLib::Parameter(aCircle, AttachmentPoint);
-  gp_Pnt        ptoncirc = ElCLib::Value(parat, aCircle);
+  double parat    = ElCLib::Parameter(aCircle, AttachmentPoint);
+  gp_Pnt ptoncirc = ElCLib::Value(parat, aCircle);
 
   // sideline
   gp_Pnt center = aCircle.Location();
   gp_Vec vecrap(ptoncirc, center);
 
-  Standard_Real    dist    = center.Distance(AttachmentPoint);
-  Standard_Real    aRadius = aCircle.Radius();
-  Standard_Boolean inside  = (dist < aRadius);
+  double dist    = center.Distance(AttachmentPoint);
+  double aRadius = aCircle.Radius();
+  bool   inside  = (dist < aRadius);
 
   gp_Pnt pt1 = AttachmentPoint;
   if (inside)
@@ -66,7 +66,7 @@ void DsgPrs_DiameterPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
   vecrap *= (dist + aRadius);
   gp_Pnt OppositePoint = pt1.Translated(vecrap);
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(pt1);
   aPrims->AddVertex(OppositePoint);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
@@ -93,9 +93,7 @@ void DsgPrs_DiameterPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
   DsgPrs::ComputeSymbol(aPresentation, LA, ptoncirc, ptoncirc2, arrdir, arrdir2, ArrowPrs);
 }
 
-static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
-                                        const Standard_Real lpar,
-                                        const Standard_Real para)
+static bool DsgPrs_InDomain(const double fpar, const double lpar, const double para)
 {
   if (fpar >= 0.)
   {
@@ -103,8 +101,8 @@ static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
       return ((para >= fpar) && (para <= lpar));
     else
     { // fpar > lpar
-      Standard_Real delta = 2. * M_PI - fpar;
-      Standard_Real lp, par, fp;
+      double delta = 2. * M_PI - fpar;
+      double lp, par, fp;
       lp  = lpar + delta;
       par = para + delta;
       while (lp > 2 * M_PI)
@@ -116,10 +114,10 @@ static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
     }
   }
   if (para >= (fpar + 2 * M_PI))
-    return Standard_True;
+    return true;
   if (para <= lpar)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 //=======================================================================
@@ -127,29 +125,29 @@ static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
 // purpose  : SZY 12-february-98
 //=======================================================================
 
-void DsgPrs_DiameterPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                      const Handle(Prs3d_Drawer)&       aDrawer,
-                                      const TCollection_ExtendedString& aText,
-                                      const gp_Pnt&                     AttachmentPoint,
-                                      const gp_Circ&                    aCircle,
-                                      const Standard_Real               uFirst,
-                                      const Standard_Real               uLast,
-                                      const DsgPrs_ArrowSide            ArrowPrs, // ArrowSide
-                                      const Standard_Boolean            IsDiamSymbol)
+void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                      const TCollection_ExtendedString&      aText,
+                                      const gp_Pnt&                          AttachmentPoint,
+                                      const gp_Circ&                         aCircle,
+                                      const double                           uFirst,
+                                      const double                           uLast,
+                                      const DsgPrs_ArrowSide                 ArrowPrs, // ArrowSide
+                                      const bool                             IsDiamSymbol)
 {
-  Standard_Real fpara = uFirst;
-  Standard_Real lpara = uLast;
+  double fpara = uFirst;
+  double lpara = uLast;
   while (lpara > 2. * M_PI)
   {
     fpara -= 2. * M_PI;
     lpara -= 2. * M_PI;
   }
 
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Standard_Real parEndOfArrow = ElCLib::Parameter(aCircle, AttachmentPoint);
-  gp_Pnt        EndOfArrow;
-  gp_Pnt        DrawPosition = AttachmentPoint; // point of attachment
+  double parEndOfArrow = ElCLib::Parameter(aCircle, AttachmentPoint);
+  gp_Pnt EndOfArrow;
+  gp_Pnt DrawPosition = AttachmentPoint; // point of attachment
 
   gp_Pnt Center      = aCircle.Location();
   gp_Pnt FirstPoint  = ElCLib::Value(uFirst, aCircle);
@@ -157,7 +155,7 @@ void DsgPrs_DiameterPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
 
   if (!DsgPrs_InDomain(fpara, lpara, parEndOfArrow))
   {
-    Standard_Real otherpar = parEndOfArrow + M_PI; // not in domain
+    double otherpar = parEndOfArrow + M_PI; // not in domain
     if (otherpar > 2 * M_PI)
       otherpar -= 2 * M_PI;
     if (DsgPrs_InDomain(fpara, lpara, otherpar))
@@ -189,7 +187,7 @@ void DsgPrs_DiameterPresentation::Add(const Handle(Prs3d_Presentation)& aPresent
     DrawPosition = AttachmentPoint;
   }
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(DrawPosition);
   aPrims->AddVertex(EndOfArrow);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);

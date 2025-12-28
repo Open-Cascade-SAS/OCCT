@@ -16,26 +16,26 @@
 
 #include <Approx_SweepFunction.hxx>
 #include <BRepBlend_AppSurface.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
 
-BRepBlend_AppSurface::BRepBlend_AppSurface(const Handle(Approx_SweepFunction)& Func,
-                                           const Standard_Real                 First,
-                                           const Standard_Real                 Last,
-                                           const Standard_Real                 Tol3d,
-                                           const Standard_Real                 Tol2d,
-                                           const Standard_Real                 TolAngular,
-                                           const GeomAbs_Shape                 Continuity,
-                                           const Standard_Integer              Degmax,
-                                           const Standard_Integer              Segmax)
+BRepBlend_AppSurface::BRepBlend_AppSurface(const occ::handle<Approx_SweepFunction>& Func,
+                                           const double                             First,
+                                           const double                             Last,
+                                           const double                             Tol3d,
+                                           const double                             Tol2d,
+                                           const double                             TolAngular,
+                                           const GeomAbs_Shape                      Continuity,
+                                           const int                                Degmax,
+                                           const int                                Segmax)
     : approx(Func)
 {
-  Standard_Integer Nb2d = Func->Nb2dCurves();
-  Standard_Integer NbPolSect, NbKnotSect, udeg;
-  GeomAbs_Shape    continuity = Continuity;
+  int           Nb2d = Func->Nb2dCurves();
+  int           NbPolSect, NbKnotSect, udeg;
+  GeomAbs_Shape continuity = Continuity;
 
   // (1) Verification de la possibilite de derivation
   if (continuity != GeomAbs_C0)
@@ -43,12 +43,12 @@ BRepBlend_AppSurface::BRepBlend_AppSurface(const Handle(Approx_SweepFunction)& F
     if (Nb2d == 0)
       Nb2d = 1;
     Func->SectionShape(NbPolSect, NbKnotSect, udeg);
-    TColStd_Array1OfReal W(1, NbPolSect);
-    TColgp_Array1OfPnt   P(1, NbPolSect);
-    TColgp_Array1OfPnt2d P2d(1, Nb2d);
-    TColgp_Array1OfVec   V(1, NbPolSect);
-    TColgp_Array1OfVec2d V2d(1, Nb2d);
-    Standard_Boolean     Ok;
+    NCollection_Array1<double>   W(1, NbPolSect);
+    NCollection_Array1<gp_Pnt>   P(1, NbPolSect);
+    NCollection_Array1<gp_Pnt2d> P2d(1, Nb2d);
+    NCollection_Array1<gp_Vec>   V(1, NbPolSect);
+    NCollection_Array1<gp_Vec2d> V2d(1, Nb2d);
+    bool                         Ok;
     if (continuity == GeomAbs_C2)
     {
       Ok = Func->D2(First, First, Last, P, V, V, P2d, V2d, V2d, W, W, W);
@@ -71,62 +71,60 @@ BRepBlend_AppSurface::BRepBlend_AppSurface(const Handle(Approx_SweepFunction)& F
   approx.Perform(First, Last, Tol3d, Tol3d, Tol2d, TolAngular, continuity, Degmax, Segmax);
 }
 
-void BRepBlend_AppSurface::SurfShape(Standard_Integer& UDegree,
-                                     Standard_Integer& VDegree,
-                                     Standard_Integer& NbUPoles,
-                                     Standard_Integer& NbVPoles,
-                                     Standard_Integer& NbUKnots,
-                                     Standard_Integer& NbVKnots) const
+void BRepBlend_AppSurface::SurfShape(int& UDegree,
+                                     int& VDegree,
+                                     int& NbUPoles,
+                                     int& NbVPoles,
+                                     int& NbUKnots,
+                                     int& NbVKnots) const
 {
   approx.SurfShape(UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots);
 }
 
-void BRepBlend_AppSurface::Surface(TColgp_Array2OfPnt&      TPoles,
-                                   TColStd_Array2OfReal&    TWeights,
-                                   TColStd_Array1OfReal&    TUKnots,
-                                   TColStd_Array1OfReal&    TVKnots,
-                                   TColStd_Array1OfInteger& TUMults,
-                                   TColStd_Array1OfInteger& TVMults) const
+void BRepBlend_AppSurface::Surface(NCollection_Array2<gp_Pnt>& TPoles,
+                                   NCollection_Array2<double>& TWeights,
+                                   NCollection_Array1<double>& TUKnots,
+                                   NCollection_Array1<double>& TVKnots,
+                                   NCollection_Array1<int>&    TUMults,
+                                   NCollection_Array1<int>&    TVMults) const
 
 {
   approx.Surface(TPoles, TWeights, TUKnots, TVKnots, TUMults, TVMults);
 }
 
-Standard_Real BRepBlend_AppSurface::MaxErrorOnSurf() const
+double BRepBlend_AppSurface::MaxErrorOnSurf() const
 {
   return approx.MaxErrorOnSurf();
 }
 
-void BRepBlend_AppSurface::Curves2dShape(Standard_Integer& Degree,
-                                         Standard_Integer& NbPoles,
-                                         Standard_Integer& NbKnots) const
+void BRepBlend_AppSurface::Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const
 {
   approx.Curves2dShape(Degree, NbPoles, NbKnots);
 }
 
-void BRepBlend_AppSurface::Curve2d(const Standard_Integer   Index,
-                                   TColgp_Array1OfPnt2d&    TPoles,
-                                   TColStd_Array1OfReal&    TKnots,
-                                   TColStd_Array1OfInteger& TMults) const
+void BRepBlend_AppSurface::Curve2d(const int                     Index,
+                                   NCollection_Array1<gp_Pnt2d>& TPoles,
+                                   NCollection_Array1<double>&   TKnots,
+                                   NCollection_Array1<int>&      TMults) const
 {
   approx.Curve2d(Index, TPoles, TKnots, TMults);
 }
 
-Standard_Real BRepBlend_AppSurface::Max2dError(const Standard_Integer Index) const
+double BRepBlend_AppSurface::Max2dError(const int Index) const
 {
   return approx.Max2dError(Index);
 }
 
-Standard_Real BRepBlend_AppSurface::TolCurveOnSurf(const Standard_Integer Index) const
+double BRepBlend_AppSurface::TolCurveOnSurf(const int Index) const
 {
   return approx.TolCurveOnSurf(Index);
 }
 
-void BRepBlend_AppSurface::TolReached(Standard_Real& Tol3d, Standard_Real& Tol2d) const
+void BRepBlend_AppSurface::TolReached(double& Tol3d, double& Tol2d) const
 {
   Tol3d = approx.MaxErrorOnSurf();
   Tol2d = 0;
-  for (Standard_Integer ii = 1; ii <= approx.NbCurves2d(); ii++)
+  for (int ii = 1; ii <= approx.NbCurves2d(); ii++)
   {
     Tol2d = std::max(Tol2d, approx.Max2dError(ii));
   }

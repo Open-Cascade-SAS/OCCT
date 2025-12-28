@@ -22,9 +22,6 @@
 
 #include <StepRepr_RepresentationMap.hxx>
 
-class StepVisual_CameraUsage;
-DEFINE_STANDARD_HANDLE(StepVisual_CameraUsage, StepRepr_RepresentationMap)
-
 class StepVisual_CameraUsage : public StepRepr_RepresentationMap
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepVisual_CameraUsage();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraUsage, StepRepr_RepresentationMap)
-
-protected:
-private:
 };
 
 #endif // _StepVisual_CameraUsage_HeaderFile

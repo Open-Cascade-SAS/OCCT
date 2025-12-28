@@ -30,13 +30,12 @@ public:
   //! @param[in] theNbStacks   number of stacks within V parameter
   //! @param[in] theTrsf       optional transformation to apply
   //! @return generated triangulation
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create(
-    const Standard_Real    theBottomRad,
-    const Standard_Real    theTopRad,
-    const Standard_Real    theHeight,
-    const Standard_Integer theNbSlices,
-    const Standard_Integer theNbStacks,
-    const gp_Trsf&         theTrsf);
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfTriangles> Create(const double   theBottomRad,
+                                                                        const double   theTopRad,
+                                                                        const double   theHeight,
+                                                                        const int      theNbSlices,
+                                                                        const int      theNbStacks,
+                                                                        const gp_Trsf& theTrsf);
 
 public:
   //! Initializes the algorithm creating a cylinder.
@@ -45,25 +44,23 @@ public:
   //! @param[in] theHeight     cylinder height
   //! @param[in] theNbSlices   number of slices within U parameter
   //! @param[in] theNbStacks   number of stacks within V parameter
-  Standard_EXPORT Prs3d_ToolCylinder(const Standard_Real    theBottomRad,
-                                     const Standard_Real    theTopRad,
-                                     const Standard_Real    theHeight,
-                                     const Standard_Integer theNbSlices,
-                                     const Standard_Integer theNbStacks);
+  Standard_EXPORT Prs3d_ToolCylinder(const double theBottomRad,
+                                     const double theTopRad,
+                                     const double theHeight,
+                                     const int    theNbSlices,
+                                     const int    theNbStacks);
 
 protected:
   //! Computes vertex at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Pnt Vertex(const Standard_Real theU,
-                                        const Standard_Real theV) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt Vertex(const double theU, const double theV) const override;
 
   //! Computes normal at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Dir Normal(const Standard_Real theU,
-                                        const Standard_Real theV) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Dir Normal(const double theU, const double theV) const override;
 
 protected:
-  Standard_Real myBottomRadius; //!< cylinder bottom radius
-  Standard_Real myTopRadius;    //!< cylinder top radius
-  Standard_Real myHeight;       //!< cylinder height
+  double myBottomRadius; //!< cylinder bottom radius
+  double myTopRadius;    //!< cylinder top radius
+  double myHeight;       //!< cylinder height
 };
 
 #endif // _Prs3d_ToolCylinder_HeaderFile

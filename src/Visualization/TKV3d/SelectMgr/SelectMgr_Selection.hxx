@@ -65,7 +65,7 @@ class SelectMgr_Selection : public Standard_Transient
 public:
   //! Constructs a selection object defined by the selection mode IdMode.
   //! The default setting 0 is the selection mode for a shape in its entirety.
-  Standard_EXPORT SelectMgr_Selection(const Standard_Integer theModeIdx = 0);
+  Standard_EXPORT SelectMgr_Selection(const int theModeIdx = 0);
 
   Standard_EXPORT ~SelectMgr_Selection();
 
@@ -73,25 +73,28 @@ public:
 
   //! Adds the sensitive primitive to the list of stored entities in this object.
   //! Raises NullObject if the primitive is a null handle.
-  Standard_EXPORT void Add(const Handle(Select3D_SensitiveEntity)& theSensitive);
+  Standard_EXPORT void Add(const occ::handle<Select3D_SensitiveEntity>& theSensitive);
 
   //! empties the selection from all the stored entities
   Standard_EXPORT void Clear();
 
   //! returns true if no sensitive entity is stored.
-  Standard_Boolean IsEmpty() const { return myEntities.IsEmpty(); }
+  bool IsEmpty() const { return myEntities.IsEmpty(); }
 
   //! returns the selection mode represented by this selection
-  Standard_Integer Mode() const { return myMode; }
+  int Mode() const { return myMode; }
 
   //! Return entities.
-  const NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>& Entities() const
+  const NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>& Entities() const
   {
     return myEntities;
   }
 
   //! Return entities.
-  NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>& ChangeEntities() { return myEntities; }
+  NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>& ChangeEntities()
+  {
+    return myEntities;
+  }
 
   //! Returns the flag UpdateFlag.
   //! This flag gives the update status of this framework
@@ -117,27 +120,24 @@ public:
   }
 
   //! Returns sensitivity of the selection
-  Standard_Integer Sensitivity() const { return mySensFactor; }
+  int Sensitivity() const { return mySensFactor; }
 
   //! Changes sensitivity of the selection and all its entities to the given value.
   //! IMPORTANT: This method does not update any outer selection structures, so for
   //! proper updates use SelectMgr_SelectionManager::SetSelectionSensitivity method.
-  Standard_EXPORT void SetSensitivity(const Standard_Integer theNewSens);
+  Standard_EXPORT void SetSensitivity(const int theNewSens);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  NCollection_Vector<Handle(SelectMgr_SensitiveEntity)> myEntities;
-  Standard_Integer                                      myMode;
-  SelectMgr_TypeOfUpdate                                myUpdateStatus;
-  mutable SelectMgr_StateOfSelection                    mySelectionState;
-  mutable SelectMgr_TypeOfBVHUpdate                     myBVHUpdateStatus;
-  Standard_Integer                                      mySensFactor;
-  Standard_Boolean                                      myIsCustomSens;
+  NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>> myEntities;
+  int                                                        myMode;
+  SelectMgr_TypeOfUpdate                                     myUpdateStatus;
+  mutable SelectMgr_StateOfSelection                         mySelectionState;
+  mutable SelectMgr_TypeOfBVHUpdate                          myBVHUpdateStatus;
+  int                                                        mySensFactor;
+  bool                                                       myIsCustomSens;
 };
-
-DEFINE_STANDARD_HANDLE(SelectMgr_Selection, Standard_Transient)
 
 #endif

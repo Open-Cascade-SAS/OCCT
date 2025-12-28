@@ -40,13 +40,13 @@ const Standard_GUID& TDataStd_IntegerArray::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_IntegerArray) SetAttr(const TDF_Label&       label,
-                                             const Standard_Integer lower,
-                                             const Standard_Integer upper,
-                                             const Standard_Boolean isDelta,
-                                             const Standard_GUID&   theGuid)
+static occ::handle<TDataStd_IntegerArray> SetAttr(const TDF_Label&     label,
+                                                  const int            lower,
+                                                  const int            upper,
+                                                  const bool           isDelta,
+                                                  const Standard_GUID& theGuid)
 {
-  Handle(TDataStd_IntegerArray) A;
+  occ::handle<TDataStd_IntegerArray> A;
   if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_IntegerArray;
@@ -65,18 +65,18 @@ static Handle(TDataStd_IntegerArray) SetAttr(const TDF_Label&       label,
 //=================================================================================================
 
 TDataStd_IntegerArray::TDataStd_IntegerArray()
-    : myIsDelta(Standard_False),
+    : myIsDelta(false),
       myID(GetID())
 {
 }
 
 //=================================================================================================
 
-void TDataStd_IntegerArray::Init(const Standard_Integer lower, const Standard_Integer upper)
+void TDataStd_IntegerArray::Init(const int lower, const int upper)
 {
   Standard_RangeError_Raise_if(upper < lower, "TDataStd_IntegerArray::Init");
   Backup();
-  myValue = new TColStd_HArray1OfInteger(lower, upper, 0);
+  myValue = new NCollection_HArray1<int>(lower, upper, 0);
 }
 
 //=======================================================================
@@ -84,10 +84,10 @@ void TDataStd_IntegerArray::Init(const Standard_Integer lower, const Standard_In
 // purpose  : isDelta applicable only for new attributes
 //=======================================================================
 
-Handle(TDataStd_IntegerArray) TDataStd_IntegerArray::Set(const TDF_Label&       label,
-                                                         const Standard_Integer lower,
-                                                         const Standard_Integer upper,
-                                                         const Standard_Boolean isDelta)
+occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label& label,
+                                                              const int        lower,
+                                                              const int        upper,
+                                                              const bool       isDelta)
 
 {
   return SetAttr(label, lower, upper, isDelta, GetID());
@@ -98,11 +98,11 @@ Handle(TDataStd_IntegerArray) TDataStd_IntegerArray::Set(const TDF_Label&       
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
 
-Handle(TDataStd_IntegerArray) TDataStd_IntegerArray::Set(const TDF_Label&       label,
-                                                         const Standard_GUID&   theGuid,
-                                                         const Standard_Integer lower,
-                                                         const Standard_Integer upper,
-                                                         const Standard_Boolean isDelta)
+occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label&     label,
+                                                              const Standard_GUID& theGuid,
+                                                              const int            lower,
+                                                              const int            upper,
+                                                              const bool           isDelta)
 
 {
   return SetAttr(label, lower, upper, isDelta, theGuid);
@@ -110,7 +110,7 @@ Handle(TDataStd_IntegerArray) TDataStd_IntegerArray::Set(const TDF_Label&       
 
 //=================================================================================================
 
-void TDataStd_IntegerArray::SetValue(const Standard_Integer index, const Standard_Integer value)
+void TDataStd_IntegerArray::SetValue(const int index, const int value)
 {
   if (myValue.IsNull())
     return;
@@ -122,7 +122,7 @@ void TDataStd_IntegerArray::SetValue(const Standard_Integer index, const Standar
 
 //=================================================================================================
 
-Standard_Integer TDataStd_IntegerArray::Value(const Standard_Integer index) const
+int TDataStd_IntegerArray::Value(const int index) const
 {
   if (myValue.IsNull())
     return 0;
@@ -131,7 +131,7 @@ Standard_Integer TDataStd_IntegerArray::Value(const Standard_Integer index) cons
 
 //=================================================================================================
 
-Standard_Integer TDataStd_IntegerArray::Lower(void) const
+int TDataStd_IntegerArray::Lower(void) const
 {
   if (myValue.IsNull())
     return 0;
@@ -140,7 +140,7 @@ Standard_Integer TDataStd_IntegerArray::Lower(void) const
 
 //=================================================================================================
 
-Standard_Integer TDataStd_IntegerArray::Upper(void) const
+int TDataStd_IntegerArray::Upper(void) const
 {
   if (myValue.IsNull())
     return 0;
@@ -149,7 +149,7 @@ Standard_Integer TDataStd_IntegerArray::Upper(void) const
 
 //=================================================================================================
 
-Standard_Integer TDataStd_IntegerArray::Length(void) const
+int TDataStd_IntegerArray::Length(void) const
 {
   if (myValue.IsNull())
     return 0;
@@ -163,25 +163,25 @@ Standard_Integer TDataStd_IntegerArray::Length(void) const
 //         : that holds <newArray>
 //=======================================================================
 
-void TDataStd_IntegerArray::ChangeArray(const Handle(TColStd_HArray1OfInteger)& newArray,
-                                        const Standard_Boolean                  isCheckItems)
+void TDataStd_IntegerArray::ChangeArray(const occ::handle<NCollection_HArray1<int>>& newArray,
+                                        const bool                                   isCheckItems)
 {
-  Standard_Integer aLower    = newArray->Lower();
-  Standard_Integer anUpper   = newArray->Upper();
-  Standard_Boolean aDimEqual = Standard_False;
-  Standard_Integer i;
+  int  aLower    = newArray->Lower();
+  int  anUpper   = newArray->Upper();
+  bool aDimEqual = false;
+  int  i;
 
   if (Lower() == aLower && Upper() == anUpper)
   {
-    aDimEqual = Standard_True;
+    aDimEqual = true;
     if (isCheckItems)
     {
-      Standard_Boolean isEqual = Standard_True;
+      bool isEqual = true;
       for (i = aLower; i <= anUpper; i++)
       {
         if (myValue->Value(i) != newArray->Value(i))
         {
-          isEqual = Standard_False;
+          isEqual = false;
           break;
         }
       }
@@ -193,7 +193,7 @@ void TDataStd_IntegerArray::ChangeArray(const Handle(TColStd_HArray1OfInteger)& 
   Backup();
   // Handles of myValue of current and backuped attributes will be different!
   if (myValue.IsNull() || !aDimEqual)
-    myValue = new TColStd_HArray1OfInteger(aLower, anUpper);
+    myValue = new NCollection_HArray1<int>(aLower, anUpper);
 
   for (i = aLower; i <= anUpper; i++)
     myValue->SetValue(i, newArray->Value(i));
@@ -226,22 +226,22 @@ void TDataStd_IntegerArray::SetID()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_IntegerArray::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_IntegerArray::NewEmpty() const
 {
   return new TDataStd_IntegerArray();
 }
 
 //=================================================================================================
 
-void TDataStd_IntegerArray::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_IntegerArray::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  Standard_Integer              i, lower, upper;
-  Handle(TDataStd_IntegerArray) anArray = Handle(TDataStd_IntegerArray)::DownCast(With);
+  int                                i, lower, upper;
+  occ::handle<TDataStd_IntegerArray> anArray = occ::down_cast<TDataStd_IntegerArray>(With);
   if (!anArray->myValue.IsNull())
   {
     lower   = anArray->Lower();
     upper   = anArray->Upper();
-    myValue = new TColStd_HArray1OfInteger(lower, upper);
+    myValue = new NCollection_HArray1<int>(lower, upper);
     for (i = lower; i <= upper; i++)
       myValue->SetValue(i, anArray->Value(i));
     myIsDelta = anArray->myIsDelta;
@@ -253,16 +253,16 @@ void TDataStd_IntegerArray::Restore(const Handle(TDF_Attribute)& With)
 
 //=================================================================================================
 
-void TDataStd_IntegerArray::Paste(const Handle(TDF_Attribute)& Into,
-                                  const Handle(TDF_RelocationTable)&) const
+void TDataStd_IntegerArray::Paste(const occ::handle<TDF_Attribute>& Into,
+                                  const occ::handle<TDF_RelocationTable>&) const
 {
 
   if (!myValue.IsNull())
   {
-    Handle(TDataStd_IntegerArray) anAtt = Handle(TDataStd_IntegerArray)::DownCast(Into);
+    occ::handle<TDataStd_IntegerArray> anAtt = occ::down_cast<TDataStd_IntegerArray>(Into);
     if (!anAtt.IsNull())
     {
-      anAtt->ChangeArray(myValue, Standard_False);
+      anAtt->ChangeArray(myValue, false);
       anAtt->SetDelta(myIsDelta);
       anAtt->SetID(myID);
     }
@@ -276,14 +276,14 @@ Standard_OStream& TDataStd_IntegerArray::Dump(Standard_OStream& anOS) const
   anOS << "\nIntegerArray:: " << this << " :";
   if (!myValue.IsNull())
   {
-    Standard_Integer i, lower, upper;
+    int i, lower, upper;
     lower = myValue->Lower();
     upper = myValue->Upper();
     for (i = lower; i <= upper; i++)
       anOS << " " << myValue->Value(i);
   }
   anOS << " Delta is " << (myIsDelta ? "ON" : "OFF");
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
   anOS << std::endl;
@@ -296,19 +296,19 @@ Standard_OStream& TDataStd_IntegerArray::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-Handle(TDF_DeltaOnModification) TDataStd_IntegerArray::DeltaOnModification(
-  const Handle(TDF_Attribute)& OldAttribute) const
+occ::handle<TDF_DeltaOnModification> TDataStd_IntegerArray::DeltaOnModification(
+  const occ::handle<TDF_Attribute>& OldAttribute) const
 {
   if (myIsDelta)
     return new TDataStd_DeltaOnModificationOfIntArray(
-      Handle(TDataStd_IntegerArray)::DownCast(OldAttribute));
+      occ::down_cast<TDataStd_IntegerArray>(OldAttribute));
   else
     return new TDF_DefaultDeltaOnModification(OldAttribute);
 }
 
 //=================================================================================================
 
-void TDataStd_IntegerArray::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_IntegerArray::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -319,10 +319,10 @@ void TDataStd_IntegerArray::DumpJson(Standard_OStream& theOStream, Standard_Inte
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue->Lower())
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue->Upper())
 
-    for (TColStd_Array1OfInteger::Iterator aValueIt(myValue->Array1()); aValueIt.More();
+    for (NCollection_Array1<int>::Iterator aValueIt(myValue->Array1()); aValueIt.More();
          aValueIt.Next())
     {
-      const Standard_Integer& aValue = aValueIt.Value();
+      const int& aValue = aValueIt.Value();
       OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aValue)
     }
   }

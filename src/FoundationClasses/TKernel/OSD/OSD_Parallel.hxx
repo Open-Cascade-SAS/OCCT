@@ -91,17 +91,14 @@ private:
     {
     }
 
-    virtual bool IsEqual(const IteratorInterface& theOther) const Standard_OVERRIDE
+    virtual bool IsEqual(const IteratorInterface& theOther) const override
     {
       return myValue == dynamic_cast<const IteratorWrapper<Type>&>(theOther).myValue;
     }
 
-    virtual void Increment() Standard_OVERRIDE { ++myValue; }
+    virtual void Increment() override { ++myValue; }
 
-    virtual IteratorInterface* Clone() const Standard_OVERRIDE
-    {
-      return new IteratorWrapper<Type>(myValue);
-    }
+    virtual IteratorInterface* Clone() const override { return new IteratorWrapper<Type>(myValue); }
 
     const Type& Value() const { return myValue; }
 
@@ -208,7 +205,7 @@ private:
     {
     }
 
-    virtual void operator()(IteratorInterface* theIterator) const Standard_OVERRIDE
+    virtual void operator()(IteratorInterface* theIterator) const override
     {
       const Iterator& anIt = DownCast<Iterator>(theIterator);
       myFunctor(*anIt);
@@ -230,9 +227,9 @@ private:
     {
     }
 
-    virtual void operator()(IteratorInterface* theIterator) const Standard_OVERRIDE
+    virtual void operator()(IteratorInterface* theIterator) const override
     {
-      Standard_Integer anIndex = DownCast<Standard_Integer>(theIterator);
+      int anIndex = DownCast<int>(theIterator);
       myFunctor(anIndex);
     }
 
@@ -279,26 +276,26 @@ private:
   Standard_EXPORT static void forEachOcct(UniversalIterator&      theBegin,
                                           UniversalIterator&      theEnd,
                                           const FunctorInterface& theFunctor,
-                                          Standard_Integer        theNbItems);
+                                          int                     theNbItems);
 
   //! Same as forEachOcct() but can be implemented using external threads library.
   Standard_EXPORT static void forEachExternal(UniversalIterator&      theBegin,
                                               UniversalIterator&      theEnd,
                                               const FunctorInterface& theFunctor,
-                                              Standard_Integer        theNbItems);
+                                              int                     theNbItems);
 
 public: //! @name public methods
   //! Returns TRUE if OCCT threads should be used instead of auxiliary threads library;
   //! default value is FALSE if alternative library has been enabled while OCCT building and TRUE
   //! otherwise.
-  Standard_EXPORT static Standard_Boolean ToUseOcctThreads();
+  Standard_EXPORT static bool ToUseOcctThreads();
 
   //! Sets if OCCT threads should be used instead of auxiliary threads library.
   //! Has no effect if OCCT has been built with no auxiliary threads library.
-  Standard_EXPORT static void SetUseOcctThreads(Standard_Boolean theToUseOcct);
+  Standard_EXPORT static void SetUseOcctThreads(bool theToUseOcct);
 
   //! Returns number of logical processors.
-  Standard_EXPORT static Standard_Integer NbLogicalProcessors();
+  Standard_EXPORT static int NbLogicalProcessors();
 
   //! Simple primitive for parallelization of "foreach" loops, equivalent to:
   //! @code
@@ -313,11 +310,11 @@ public: //! @name public methods
   //! @param isForceSingleThreadExecution if true, then no threads will be created
   //! @param theNbItems number of items passed by iterator, -1 if unknown
   template <typename InputIterator, typename Functor>
-  static void ForEach(InputIterator          theBegin,
-                      InputIterator          theEnd,
-                      const Functor&         theFunctor,
-                      const Standard_Boolean isForceSingleThreadExecution = Standard_False,
-                      Standard_Integer       theNbItems                   = -1)
+  static void ForEach(InputIterator  theBegin,
+                      InputIterator  theEnd,
+                      const Functor& theFunctor,
+                      const bool     isForceSingleThreadExecution = false,
+                      int            theNbItems                   = -1)
   {
     if (isForceSingleThreadExecution || theNbItems == 1)
     {
@@ -352,28 +349,28 @@ public: //! @name public methods
   //!                   performing task for specified index
   //! @param isForceSingleThreadExecution if true, then no threads will be created
   template <typename Functor>
-  static void For(const Standard_Integer theBegin,
-                  const Standard_Integer theEnd,
-                  const Functor&         theFunctor,
-                  const Standard_Boolean isForceSingleThreadExecution = Standard_False)
+  static void For(const int      theBegin,
+                  const int      theEnd,
+                  const Functor& theFunctor,
+                  const bool     isForceSingleThreadExecution = false)
   {
-    const Standard_Integer aRange = theEnd - theBegin;
+    const int aRange = theEnd - theBegin;
     if (isForceSingleThreadExecution || aRange == 1)
     {
-      for (Standard_Integer it(theBegin); it != theEnd; ++it)
+      for (int it(theBegin); it != theEnd; ++it)
         theFunctor(it);
     }
     else if (ToUseOcctThreads())
     {
-      const Handle(OSD_ThreadPool)&        aThreadPool = OSD_ThreadPool::DefaultPool();
+      const occ::handle<OSD_ThreadPool>&   aThreadPool = OSD_ThreadPool::DefaultPool();
       OSD_ThreadPool::Launcher             aPoolLauncher(*aThreadPool, aRange);
       FunctorWrapperForThreadPool<Functor> aFunctor(theFunctor);
       aPoolLauncher.Perform(theBegin, theEnd, aFunctor);
     }
     else
     {
-      UniversalIterator          aBegin(new IteratorWrapper<Standard_Integer>(theBegin));
-      UniversalIterator          aEnd(new IteratorWrapper<Standard_Integer>(theEnd));
+      UniversalIterator          aBegin(new IteratorWrapper<int>(theBegin));
+      UniversalIterator          aEnd(new IteratorWrapper<int>(theEnd));
       FunctorWrapperInt<Functor> aFunctor(theFunctor);
       forEachExternal(aBegin, aEnd, aFunctor, aRange);
     }

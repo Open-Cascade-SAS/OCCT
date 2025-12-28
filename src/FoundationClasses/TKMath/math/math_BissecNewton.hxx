@@ -36,7 +36,7 @@ public:
 
   //! Constructor.
   //! @param theXTolerance - algorithm tolerance.
-  Standard_EXPORT math_BissecNewton(const Standard_Real theXTolerance);
+  Standard_EXPORT math_BissecNewton(const double theXTolerance);
 
   //! A combination of Newton-Raphson and bissection methods is done to find
   //! the root of the function F between the bounds Bound1 and Bound2
@@ -46,30 +46,30 @@ public:
   //! abs(Xi - Xi-1) <= TolX and F(Xi) * F(Xi-1) <= 0
   //! The maximum number of iterations allowed is given by NbIterations.
   Standard_EXPORT void Perform(math_FunctionWithDerivative& F,
-                               const Standard_Real          Bound1,
-                               const Standard_Real          Bound2,
-                               const Standard_Integer       NbIterations = 100);
+                               const double                 Bound1,
+                               const double                 Bound2,
+                               const int                    NbIterations = 100);
 
   //! This method is called at the end of each iteration to check if the
   //! solution has been found.
   //! It can be redefined in a sub-class to implement a specific test to
   //! stop the iterations.
-  virtual Standard_Boolean IsSolutionReached(math_FunctionWithDerivative& theFunction);
+  virtual bool IsSolutionReached(math_FunctionWithDerivative& theFunction);
 
   //! Tests is the root has been successfully found.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the value of the root.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Root() const;
+  double Root() const;
 
   //! returns the value of the derivative at the root.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Derivative() const;
+  double Derivative() const;
 
   //! returns the value of the function at the root.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Value() const;
+  double Value() const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
@@ -80,15 +80,15 @@ public:
   Standard_EXPORT virtual ~math_BissecNewton();
 
 protected:
-  math_Status   TheStatus;
-  Standard_Real XTol;
-  Standard_Real x;
-  Standard_Real dx;
-  Standard_Real f;
-  Standard_Real df;
+  math_Status TheStatus;
+  double      XTol;
+  double      x;
+  double      dx;
+  double      f;
+  double      df;
 
 private:
-  Standard_Boolean Done;
+  bool Done;
 };
 
 #include <math_BissecNewton.lxx>

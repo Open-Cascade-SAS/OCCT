@@ -39,8 +39,7 @@ StepAP214_ExternalIdentificationItem::StepAP214_ExternalIdentificationItem() {}
 
 //=================================================================================================
 
-Standard_Integer StepAP214_ExternalIdentificationItem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepAP214_ExternalIdentificationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -79,113 +78,114 @@ Standard_Integer StepAP214_ExternalIdentificationItem::CaseNum(
 
 //=================================================================================================
 
-Handle(StepBasic_DocumentFile) StepAP214_ExternalIdentificationItem::DocumentFile() const
+occ::handle<StepBasic_DocumentFile> StepAP214_ExternalIdentificationItem::DocumentFile() const
 {
-  return Handle(StepBasic_DocumentFile)::DownCast(Value());
+  return occ::down_cast<StepBasic_DocumentFile>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP214_ExternallyDefinedClass) StepAP214_ExternalIdentificationItem::
+occ::handle<StepAP214_ExternallyDefinedClass> StepAP214_ExternalIdentificationItem::
   ExternallyDefinedClass() const
 {
-  return Handle(StepAP214_ExternallyDefinedClass)::DownCast(Value());
+  return occ::down_cast<StepAP214_ExternallyDefinedClass>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP214_ExternallyDefinedGeneralProperty) StepAP214_ExternalIdentificationItem::
+occ::handle<StepAP214_ExternallyDefinedGeneralProperty> StepAP214_ExternalIdentificationItem::
   ExternallyDefinedGeneralProperty() const
 {
-  return Handle(StepAP214_ExternallyDefinedGeneralProperty)::DownCast(Value());
+  return occ::down_cast<StepAP214_ExternallyDefinedGeneralProperty>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepAP214_ExternalIdentificationItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP214_ExternalIdentificationItem::ProductDefinition()
+  const
 {
-  return Handle(StepBasic_ProductDefinition)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinition>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP214_AppliedOrganizationAssignment) StepAP214_ExternalIdentificationItem::
+occ::handle<StepAP214_AppliedOrganizationAssignment> StepAP214_ExternalIdentificationItem::
   AppliedOrganizationAssignment() const
 {
-  return Handle(StepAP214_AppliedOrganizationAssignment)::DownCast(Value());
+  return occ::down_cast<StepAP214_AppliedOrganizationAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP214_AppliedPersonAndOrganizationAssignment) StepAP214_ExternalIdentificationItem::
+occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> StepAP214_ExternalIdentificationItem::
   AppliedPersonAndOrganizationAssignment() const
 {
-  return Handle(StepAP214_AppliedPersonAndOrganizationAssignment)::DownCast(Value());
+  return occ::down_cast<StepAP214_AppliedPersonAndOrganizationAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Approval) StepAP214_ExternalIdentificationItem::Approval() const
+occ::handle<StepBasic_Approval> StepAP214_ExternalIdentificationItem::Approval() const
 {
-  return Handle(StepBasic_Approval)::DownCast(Value());
+  return occ::down_cast<StepBasic_Approval>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ApprovalStatus) StepAP214_ExternalIdentificationItem::ApprovalStatus() const
+occ::handle<StepBasic_ApprovalStatus> StepAP214_ExternalIdentificationItem::ApprovalStatus() const
 {
-  return Handle(StepBasic_ApprovalStatus)::DownCast(Value());
+  return occ::down_cast<StepBasic_ApprovalStatus>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ExternalSource) StepAP214_ExternalIdentificationItem::ExternalSource() const
+occ::handle<StepBasic_ExternalSource> StepAP214_ExternalIdentificationItem::ExternalSource() const
 {
-  return Handle(StepBasic_ExternalSource)::DownCast(Value());
+  return occ::down_cast<StepBasic_ExternalSource>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_OrganizationalAddress) StepAP214_ExternalIdentificationItem::
+occ::handle<StepBasic_OrganizationalAddress> StepAP214_ExternalIdentificationItem::
   OrganizationalAddress() const
 {
-  return Handle(StepBasic_OrganizationalAddress)::DownCast(Value());
+  return occ::down_cast<StepBasic_OrganizationalAddress>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_SecurityClassification) StepAP214_ExternalIdentificationItem::
+occ::handle<StepBasic_SecurityClassification> StepAP214_ExternalIdentificationItem::
   SecurityClassification() const
 {
-  return Handle(StepBasic_SecurityClassification)::DownCast(Value());
+  return occ::down_cast<StepBasic_SecurityClassification>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepGeom_TrimmedCurve) StepAP214_ExternalIdentificationItem::TrimmedCurve() const
+occ::handle<StepGeom_TrimmedCurve> StepAP214_ExternalIdentificationItem::TrimmedCurve() const
 {
-  return Handle(StepGeom_TrimmedCurve)::DownCast(Value());
+  return occ::down_cast<StepGeom_TrimmedCurve>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_VersionedActionRequest) StepAP214_ExternalIdentificationItem::
+occ::handle<StepBasic_VersionedActionRequest> StepAP214_ExternalIdentificationItem::
   VersionedActionRequest() const
 {
-  return Handle(StepBasic_VersionedActionRequest)::DownCast(Value());
+  return occ::down_cast<StepBasic_VersionedActionRequest>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_DateAndTimeAssignment) StepAP214_ExternalIdentificationItem::
+occ::handle<StepBasic_DateAndTimeAssignment> StepAP214_ExternalIdentificationItem::
   DateAndTimeAssignment() const
 {
-  return Handle(StepBasic_DateAndTimeAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_DateAndTimeAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_DateAssignment) StepAP214_ExternalIdentificationItem::DateAssignment() const
+occ::handle<StepBasic_DateAssignment> StepAP214_ExternalIdentificationItem::DateAssignment() const
 {
-  return Handle(StepBasic_DateAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_DateAssignment>(Value());
 }

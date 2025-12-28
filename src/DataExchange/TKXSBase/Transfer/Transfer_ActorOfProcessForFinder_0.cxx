@@ -26,7 +26,7 @@
 #include <Transfer_IteratorOfProcessForFinder.hxx>
 #include <Transfer_ProcessForFinder.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
-#include <Transfer_TransferMapOfProcessForFinder.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 //=================================================================================================
 
@@ -34,17 +34,16 @@ Transfer_ActorOfProcessForFinder::Transfer_ActorOfProcessForFinder() {}
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ActorOfProcessForFinder::Recognize(
-  const Handle(Transfer_Finder)& /*start*/)
+bool Transfer_ActorOfProcessForFinder::Recognize(const occ::handle<Transfer_Finder>& /*start*/)
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ActorOfProcessForFinder::Transferring(
-  const Handle(Transfer_Finder)& /*start*/,
-  const Handle(Transfer_ProcessForFinder)& /*TP*/,
+occ::handle<Transfer_Binder> Transfer_ActorOfProcessForFinder::Transferring(
+  const occ::handle<Transfer_Finder>& /*start*/,
+  const occ::handle<Transfer_ProcessForFinder>& /*TP*/,
   const Message_ProgressRange& /*theProgress*/)
 {
   return NullResult();
@@ -52,10 +51,10 @@ Handle(Transfer_Binder) Transfer_ActorOfProcessForFinder::Transferring(
 
 //=================================================================================================
 
-Handle(Transfer_SimpleBinderOfTransient) Transfer_ActorOfProcessForFinder::TransientResult(
-  const Handle(Standard_Transient)& res) const
+occ::handle<Transfer_SimpleBinderOfTransient> Transfer_ActorOfProcessForFinder::TransientResult(
+  const occ::handle<Standard_Transient>& res) const
 {
-  Handle(Transfer_SimpleBinderOfTransient) binder;
+  occ::handle<Transfer_SimpleBinderOfTransient> binder;
   if (res.IsNull())
     return binder;
   binder = new Transfer_SimpleBinderOfTransient;
@@ -65,15 +64,16 @@ Handle(Transfer_SimpleBinderOfTransient) Transfer_ActorOfProcessForFinder::Trans
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ActorOfProcessForFinder::NullResult() const
+occ::handle<Transfer_Binder> Transfer_ActorOfProcessForFinder::NullResult() const
 {
-  Handle(Transfer_Binder) binder;
+  occ::handle<Transfer_Binder> binder;
   return binder;
 }
 
 //=================================================================================================
 
-void Transfer_ActorOfProcessForFinder::SetNext(const Handle(Transfer_ActorOfProcessForFinder)& next)
+void Transfer_ActorOfProcessForFinder::SetNext(
+  const occ::handle<Transfer_ActorOfProcessForFinder>& next)
 {
   if (thenext == next)
     return;
@@ -90,21 +90,21 @@ void Transfer_ActorOfProcessForFinder::SetNext(const Handle(Transfer_ActorOfProc
 
 //=================================================================================================
 
-Handle(Transfer_ActorOfProcessForFinder) Transfer_ActorOfProcessForFinder::Next() const
+occ::handle<Transfer_ActorOfProcessForFinder> Transfer_ActorOfProcessForFinder::Next() const
 {
   return thenext;
 }
 
 //=================================================================================================
 
-void Transfer_ActorOfProcessForFinder::SetLast(const Standard_Boolean mode)
+void Transfer_ActorOfProcessForFinder::SetLast(const bool mode)
 {
   thelast = mode;
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ActorOfProcessForFinder::IsLast() const
+bool Transfer_ActorOfProcessForFinder::IsLast() const
 {
   return thelast;
 }

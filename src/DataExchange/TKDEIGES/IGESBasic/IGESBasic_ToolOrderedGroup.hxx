@@ -45,44 +45,42 @@ public:
 
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams(const Handle(IGESBasic_OrderedGroup)&  ent,
-                                     const Handle(IGESData_IGESReaderData)& IR,
-                                     IGESData_ParamReader&                  PR) const;
+  Standard_EXPORT void ReadOwnParams(const occ::handle<IGESBasic_OrderedGroup>&  ent,
+                                     const occ::handle<IGESData_IGESReaderData>& IR,
+                                     IGESData_ParamReader&                       PR) const;
 
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams(const Handle(IGESBasic_OrderedGroup)& ent,
-                                      IGESData_IGESWriter&                  IW) const;
+  Standard_EXPORT void WriteOwnParams(const occ::handle<IGESBasic_OrderedGroup>& ent,
+                                      IGESData_IGESWriter&                       IW) const;
 
   //! Lists the Entities shared by a OrderedGroup <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared(const Handle(IGESBasic_OrderedGroup)& ent,
-                                 Interface_EntityIterator&             iter) const;
+  Standard_EXPORT void OwnShared(const occ::handle<IGESBasic_OrderedGroup>& ent,
+                                 Interface_EntityIterator&                  iter) const;
 
   //! Sets automatic unambiguous Correction on an OrderedGroup
   //! (Null Elements are removed from list)
-  Standard_EXPORT Standard_Boolean OwnCorrect(const Handle(IGESBasic_OrderedGroup)& ent) const;
+  Standard_EXPORT bool OwnCorrect(const occ::handle<IGESBasic_OrderedGroup>& ent) const;
 
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESBasic_OrderedGroup)& ent) const;
+  Standard_EXPORT IGESData_DirChecker
+    DirChecker(const occ::handle<IGESBasic_OrderedGroup>& ent) const;
 
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck(const Handle(IGESBasic_OrderedGroup)& ent,
-                                const Interface_ShareTool&            shares,
-                                Handle(Interface_Check)&              ach) const;
+  Standard_EXPORT void OwnCheck(const occ::handle<IGESBasic_OrderedGroup>& ent,
+                                const Interface_ShareTool&                 shares,
+                                occ::handle<Interface_Check>&              ach) const;
 
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy(const Handle(IGESBasic_OrderedGroup)& entfrom,
-                               const Handle(IGESBasic_OrderedGroup)& entto,
-                               Interface_CopyTool&                   TC) const;
+  Standard_EXPORT void OwnCopy(const occ::handle<IGESBasic_OrderedGroup>& entfrom,
+                               const occ::handle<IGESBasic_OrderedGroup>& entto,
+                               Interface_CopyTool&                        TC) const;
 
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump(const Handle(IGESBasic_OrderedGroup)& ent,
-                               const IGESData_IGESDumper&            dumper,
-                               Standard_OStream&                     S,
-                               const Standard_Integer                own) const;
-
-protected:
-private:
+  Standard_EXPORT void OwnDump(const occ::handle<IGESBasic_OrderedGroup>& ent,
+                               const IGESData_IGESDumper&                 dumper,
+                               Standard_OStream&                          S,
+                               const int                                  own) const;
 };
 
 #endif // _IGESBasic_ToolOrderedGroup_HeaderFile

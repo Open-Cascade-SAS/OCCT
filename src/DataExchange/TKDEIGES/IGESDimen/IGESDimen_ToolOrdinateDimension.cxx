@@ -29,38 +29,38 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
 IGESDimen_ToolOrdinateDimension::IGESDimen_ToolOrdinateDimension() {}
 
 void IGESDimen_ToolOrdinateDimension::ReadOwnParams(
-  const Handle(IGESDimen_OrdinateDimension)& theEnt,
-  const Handle(IGESData_IGESReaderData)&     IR,
-  IGESData_ParamReader&                      PR) const
+  const occ::handle<IGESDimen_OrdinateDimension>& theEnt,
+  const occ::handle<IGESData_IGESReaderData>&     IR,
+  IGESData_ParamReader&                           PR) const
 {
-  Handle(IGESDimen_GeneralNote) tempNote;
-  Handle(IGESDimen_WitnessLine) witLine;
-  Handle(IGESDimen_LeaderArrow) leadArr;
-  Standard_Boolean              isLine = Standard_False;
+  occ::handle<IGESDimen_GeneralNote> tempNote;
+  occ::handle<IGESDimen_WitnessLine> witLine;
+  occ::handle<IGESDimen_LeaderArrow> leadArr;
+  bool                               isLine = false;
 
   PR.ReadEntity(IR, PR.Current(), "General Note", STANDARD_TYPE(IGESDimen_GeneralNote), tempNote);
 
   if (theEnt->FormNumber() == 0)
   {
-    Handle(IGESData_IGESEntity) ent;
+    occ::handle<IGESData_IGESEntity> ent;
     if (!PR.ReadEntity(IR, PR.Current(), "Line or Leader", ent))
     {
     } // WARNING : Two possible Types allowed :
     else if (ent->IsKind(STANDARD_TYPE(IGESDimen_WitnessLine)))
     {
       witLine = GetCasted(IGESDimen_WitnessLine, ent);
-      isLine  = Standard_True;
+      isLine  = true;
     }
     else if (ent->IsKind(STANDARD_TYPE(IGESDimen_LeaderArrow)))
     {
       leadArr = GetCasted(IGESDimen_LeaderArrow, ent);
-      isLine  = Standard_False;
+      isLine  = false;
     }
     else
       PR.AddFail("Line or Leader : Type is incorrect");
@@ -75,8 +75,9 @@ void IGESDimen_ToolOrdinateDimension::ReadOwnParams(
   theEnt->Init(tempNote, isLine, witLine, leadArr);
 }
 
-void IGESDimen_ToolOrdinateDimension::WriteOwnParams(const Handle(IGESDimen_OrdinateDimension)& ent,
-                                                     IGESData_IGESWriter& IW) const
+void IGESDimen_ToolOrdinateDimension::WriteOwnParams(
+  const occ::handle<IGESDimen_OrdinateDimension>& ent,
+  IGESData_IGESWriter&                            IW) const
 {
   IW.Send(ent->Note());
   if (ent->FormNumber() == 0) // either WitnessLine or  LeaderArrow
@@ -93,7 +94,7 @@ void IGESDimen_ToolOrdinateDimension::WriteOwnParams(const Handle(IGESDimen_Ordi
   }
 }
 
-void IGESDimen_ToolOrdinateDimension::OwnShared(const Handle(IGESDimen_OrdinateDimension)& ent,
+void IGESDimen_ToolOrdinateDimension::OwnShared(const occ::handle<IGESDimen_OrdinateDimension>& ent,
                                                 Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Note());
@@ -101,9 +102,10 @@ void IGESDimen_ToolOrdinateDimension::OwnShared(const Handle(IGESDimen_OrdinateD
   iter.GetOneItem(ent->Leader());
 }
 
-void IGESDimen_ToolOrdinateDimension::OwnCopy(const Handle(IGESDimen_OrdinateDimension)& another,
-                                              const Handle(IGESDimen_OrdinateDimension)& ent,
-                                              Interface_CopyTool&                        TC) const
+void IGESDimen_ToolOrdinateDimension::OwnCopy(
+  const occ::handle<IGESDimen_OrdinateDimension>& another,
+  const occ::handle<IGESDimen_OrdinateDimension>& ent,
+  Interface_CopyTool&                             TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, tempNote, TC.Transferred(another->Note()));
   DeclareAndCast(IGESDimen_WitnessLine, witLine, TC.Transferred(another->WitnessLine()));
@@ -112,7 +114,7 @@ void IGESDimen_ToolOrdinateDimension::OwnCopy(const Handle(IGESDimen_OrdinateDim
 }
 
 IGESData_DirChecker IGESDimen_ToolOrdinateDimension::DirChecker(
-  const Handle(IGESDimen_OrdinateDimension)& /*ent*/) const
+  const occ::handle<IGESDimen_OrdinateDimension>& /*ent*/) const
 {
   IGESData_DirChecker DC(218, 0, 1);
   DC.Structure(IGESData_DefVoid);
@@ -125,12 +127,12 @@ IGESData_DirChecker IGESDimen_ToolOrdinateDimension::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolOrdinateDimension::OwnCheck(const Handle(IGESDimen_OrdinateDimension)& ent,
+void IGESDimen_ToolOrdinateDimension::OwnCheck(const occ::handle<IGESDimen_OrdinateDimension>& ent,
                                                const Interface_ShareTool&,
-                                               Handle(Interface_Check)& ach) const
+                                               occ::handle<Interface_Check>& ach) const
 {
-  Standard_Boolean nowitnes = ent->WitnessLine().IsNull();
-  Standard_Boolean noleader = ent->Leader().IsNull();
+  bool nowitnes = ent->WitnessLine().IsNull();
+  bool noleader = ent->Leader().IsNull();
   if (nowitnes && noleader)
     ach->AddFail("Neither WitnessLine nor LeaderArrow is defined");
   else if (ent->FormNumber() == 0)
@@ -145,19 +147,19 @@ void IGESDimen_ToolOrdinateDimension::OwnCheck(const Handle(IGESDimen_OrdinateDi
   }
 }
 
-void IGESDimen_ToolOrdinateDimension::OwnDump(const Handle(IGESDimen_OrdinateDimension)& ent,
-                                              const IGESData_IGESDumper&                 dumper,
-                                              Standard_OStream&                          S,
-                                              const Standard_Integer level) const
+void IGESDimen_ToolOrdinateDimension::OwnDump(const occ::handle<IGESDimen_OrdinateDimension>& ent,
+                                              const IGESData_IGESDumper& dumper,
+                                              Standard_OStream&          S,
+                                              const int                  level) const
 {
   S << "IGESDimen_OrdinateDimension\n";
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "General Note : ";
   dumper.Dump(ent->Note(), S, sublevel);
   S << "\n";
-  Handle(IGESDimen_WitnessLine) witLine = ent->WitnessLine();
-  Handle(IGESDimen_LeaderArrow) leadArr = ent->Leader();
+  occ::handle<IGESDimen_WitnessLine> witLine = ent->WitnessLine();
+  occ::handle<IGESDimen_LeaderArrow> leadArr = ent->Leader();
   if (!witLine.IsNull())
   {
     S << "Witness line : ";

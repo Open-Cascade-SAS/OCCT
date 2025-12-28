@@ -13,7 +13,7 @@
 
 #include <IFSelect_SessionPilot.hxx>
 #include <IFSelect_WorkSession.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_Plex.hxx>
@@ -45,13 +45,13 @@ StepSelect_Activator::StepSelect_Activator()
   AddSet(40, "floatformat");
 }
 
-IFSelect_ReturnStatus StepSelect_Activator::Do(const Standard_Integer               number,
-                                               const Handle(IFSelect_SessionPilot)& pilot)
+IFSelect_ReturnStatus StepSelect_Activator::Do(const int                                 number,
+                                               const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  Standard_Integer       argc = pilot->NbWords();
-  const Standard_CString arg1 = pilot->Word(1).ToCString();
-  const Standard_CString arg2 = pilot->Word(2).ToCString();
-  //  const Standard_CString arg3 = pilot->Word(3).ToCString();
+  int         argc = pilot->NbWords();
+  const char* arg1 = pilot->Word(1).ToCString();
+  const char* arg2 = pilot->Word(2).ToCString();
+  //  const char* arg3 = pilot->Word(3).ToCString();
 
   switch (number)
   {
@@ -62,13 +62,13 @@ IFSelect_ReturnStatus StepSelect_Activator::Do(const Standard_Integer           
         std::cout << "Identify an entity" << std::endl;
         return IFSelect_RetError;
       }
-      Standard_Integer num = pilot->Number(arg1);
+      int num = pilot->Number(arg1);
       if (num <= 0)
       {
         std::cout << "Not an entity : " << arg2 << std::endl;
         return IFSelect_RetError;
       }
-      Handle(Standard_Transient) ent = pilot->Session()->StartingEntity(num);
+      occ::handle<Standard_Transient> ent = pilot->Session()->StartingEntity(num);
       DeclareAndCast(StepData_UndefinedEntity, und, ent);
       if (!und.IsNull())
       {
@@ -105,12 +105,12 @@ IFSelect_ReturnStatus StepSelect_Activator::Do(const Standard_Integer           
       }
       else
         prem = arg1[0];
-      Standard_Boolean zerosup = Standard_False;
-      Standard_Integer digits  = 0;
+      bool zerosup = false;
+      int  digits  = 0;
       if (prem == 'N' || prem == 'n')
-        zerosup = Standard_False;
+        zerosup = false;
       else if (prem == 'Z' || prem == 'z')
-        zerosup = Standard_True;
+        zerosup = true;
       else if (prem >= 48 && prem <= 57)
         digits = atoi(arg1);
       else
@@ -125,7 +125,7 @@ IFSelect_ReturnStatus StepSelect_Activator::Do(const Standard_Integer           
                   << std::flush;
         return (prem == '?' ? IFSelect_RetVoid : IFSelect_RetError);
       }
-      Standard_Real Rmin = 0., Rmax = 0.;
+      double Rmin = 0., Rmax = 0.;
       if (argc > 4)
       {
         Rmin = Atof(pilot->Word(4).ToCString());
@@ -136,7 +136,7 @@ IFSelect_ReturnStatus StepSelect_Activator::Do(const Standard_Integer           
           return IFSelect_RetError;
         }
       }
-      Handle(StepSelect_FloatFormat) fm = new StepSelect_FloatFormat;
+      occ::handle<StepSelect_FloatFormat> fm = new StepSelect_FloatFormat;
       if (argc == 2)
         fm->SetDefault(digits);
       else
@@ -159,7 +159,7 @@ IFSelect_ReturnStatus StepSelect_Activator::Do(const Standard_Integer           
   return IFSelect_RetVoid;
 }
 
-Standard_CString StepSelect_Activator::Help(const Standard_Integer number) const
+const char* StepSelect_Activator::Help(const int number) const
 {
   switch (number)
   {

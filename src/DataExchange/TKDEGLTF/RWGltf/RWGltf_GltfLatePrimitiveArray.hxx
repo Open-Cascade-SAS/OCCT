@@ -60,19 +60,22 @@ public:
   Standard_EXPORT Quantity_ColorRGBA BaseColor() const;
 
   //! Return PBR material definition.
-  const Handle(RWGltf_MaterialMetallicRoughness)& MaterialPbr() const { return myMaterialPbr; }
+  const occ::handle<RWGltf_MaterialMetallicRoughness>& MaterialPbr() const { return myMaterialPbr; }
 
   //! Set PBR material definition.
-  void SetMaterialPbr(const Handle(RWGltf_MaterialMetallicRoughness)& theMat)
+  void SetMaterialPbr(const occ::handle<RWGltf_MaterialMetallicRoughness>& theMat)
   {
     myMaterialPbr = theMat;
   }
 
   //! Return common (obsolete) material definition.
-  const Handle(RWGltf_MaterialCommon)& MaterialCommon() const { return myMaterialCommon; }
+  const occ::handle<RWGltf_MaterialCommon>& MaterialCommon() const { return myMaterialCommon; }
 
   //! Set common (obsolete) material definition.
-  void SetMaterialCommon(const Handle(RWGltf_MaterialCommon)& theMat) { myMaterialCommon = theMat; }
+  void SetMaterialCommon(const occ::handle<RWGltf_MaterialCommon>& theMat)
+  {
+    myMaterialCommon = theMat;
+  }
 
   //! Return primitive array data elements.
   const NCollection_Sequence<RWGltf_GltfPrimArrayData>& Data() const { return myData; }
@@ -82,18 +85,18 @@ public:
 
   //! Return TRUE if there is deferred storage and some triangulation data
   //! that can be loaded using LoadDeferredData().
-  virtual Standard_Boolean HasDeferredData() const Standard_OVERRIDE
+  virtual bool HasDeferredData() const override
   {
     return !myData.IsEmpty() && (NbDeferredTriangles() > 0 || NbDeferredNodes() > 0);
   }
 
   //! Load primitive array saved as stream buffer to new triangulation object.
-  Standard_EXPORT Handle(Poly_Triangulation) LoadStreamData() const;
+  Standard_EXPORT occ::handle<Poly_Triangulation> LoadStreamData() const;
 
 protected:
   NCollection_Sequence<RWGltf_GltfPrimArrayData> myData;
-  Handle(RWGltf_MaterialMetallicRoughness)       myMaterialPbr;    //!< PBR material
-  Handle(RWGltf_MaterialCommon)                  myMaterialCommon; //!< common (obsolete) material
+  occ::handle<RWGltf_MaterialMetallicRoughness>  myMaterialPbr;    //!< PBR material
+  occ::handle<RWGltf_MaterialCommon>             myMaterialCommon; //!< common (obsolete) material
   TCollection_AsciiString                        myId;             //!< entity id
   TCollection_AsciiString                        myName;           //!< entity name
   RWGltf_GltfPrimitiveMode                       myPrimMode;       //!< type of primitive array

@@ -24,7 +24,7 @@
 
 // IsEmpty
 //=========
-inline Standard_Boolean TDF_DataSet::IsEmpty() const
+inline bool TDF_DataSet::IsEmpty() const
 {
   return (myLabelMap.IsEmpty() && myAttributeMap.IsEmpty());
 }
@@ -37,12 +37,12 @@ inline void TDF_DataSet::AddLabel(const TDF_Label& aLabel)
     myLabelMap.Add(aLabel);
 }
 
-inline Standard_Boolean TDF_DataSet::ContainsLabel(const TDF_Label& aLabel) const
+inline bool TDF_DataSet::ContainsLabel(const TDF_Label& aLabel) const
 {
   return myLabelMap.Contains(aLabel);
 }
 
-inline TDF_LabelMap& TDF_DataSet::Labels()
+inline NCollection_Map<TDF_Label>& TDF_DataSet::Labels()
 {
   return myLabelMap;
 }
@@ -50,19 +50,18 @@ inline TDF_LabelMap& TDF_DataSet::Labels()
 // Attributes
 //============
 
-inline void TDF_DataSet::AddAttribute(const Handle(TDF_Attribute)& anAttribute)
+inline void TDF_DataSet::AddAttribute(const occ::handle<TDF_Attribute>& anAttribute)
 {
   if (!anAttribute.IsNull())
     myAttributeMap.Add(anAttribute);
 }
 
-inline Standard_Boolean TDF_DataSet::ContainsAttribute(
-  const Handle(TDF_Attribute)& anAttribute) const
+inline bool TDF_DataSet::ContainsAttribute(const occ::handle<TDF_Attribute>& anAttribute) const
 {
   return myAttributeMap.Contains(anAttribute);
 }
 
-inline TDF_AttributeMap& TDF_DataSet::Attributes()
+inline NCollection_Map<occ::handle<TDF_Attribute>>& TDF_DataSet::Attributes()
 {
   return myAttributeMap;
 }
@@ -76,7 +75,7 @@ inline void TDF_DataSet::AddRoot(const TDF_Label& aLabel)
     myRootLabels.Append(aLabel);
 }
 
-inline TDF_LabelList& TDF_DataSet::Roots()
+inline NCollection_List<TDF_Label>& TDF_DataSet::Roots()
 {
   return myRootLabels;
 }

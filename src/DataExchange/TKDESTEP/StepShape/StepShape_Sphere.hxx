@@ -24,9 +24,6 @@
 class StepGeom_Point;
 class TCollection_HAsciiString;
 
-class StepShape_Sphere;
-DEFINE_STANDARD_HANDLE(StepShape_Sphere, StepGeom_GeometricRepresentationItem)
-
 class StepShape_Sphere : public StepGeom_GeometricRepresentationItem
 {
 
@@ -34,24 +31,23 @@ public:
   //! Returns a Sphere
   Standard_EXPORT StepShape_Sphere();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Standard_Real                     aRadius,
-                            const Handle(StepGeom_Point)&           aCentre);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const double                                 aRadius,
+                            const occ::handle<StepGeom_Point>&           aCentre);
 
-  Standard_EXPORT void SetRadius(const Standard_Real aRadius);
+  Standard_EXPORT void SetRadius(const double aRadius);
 
-  Standard_EXPORT Standard_Real Radius() const;
+  Standard_EXPORT double Radius() const;
 
-  Standard_EXPORT void SetCentre(const Handle(StepGeom_Point)& aCentre);
+  Standard_EXPORT void SetCentre(const occ::handle<StepGeom_Point>& aCentre);
 
-  Standard_EXPORT Handle(StepGeom_Point) Centre() const;
+  Standard_EXPORT occ::handle<StepGeom_Point> Centre() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_Sphere, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Standard_Real          radius;
-  Handle(StepGeom_Point) centre;
+  double                      radius;
+  occ::handle<StepGeom_Point> centre;
 };
 
 #endif // _StepShape_Sphere_HeaderFile

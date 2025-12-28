@@ -54,7 +54,7 @@ public:
   //!
   //! Interface_MSG("...mykey...") which returns a CString
   //! See also some help which follow
-  Standard_EXPORT Interface_MSG(const Standard_CString key);
+  Standard_EXPORT Interface_MSG(const char* key);
 
   //! Translates a message which contains one integer variable
   //! It is just a help which avoid the following :
@@ -64,16 +64,14 @@ public:
   //!
   //! The basic message is intended to be in C-Sprintf format,
   //! with one %d form in it
-  Standard_EXPORT Interface_MSG(const Standard_CString key, const Standard_Integer i1);
+  Standard_EXPORT Interface_MSG(const char* key, const int i1);
 
   //! Translates a message which contains two integer variables
   //! As for one integer, it is just a writing help
   //!
   //! The basic message is intended to be in C-Sprintf format
   //! with two %d forms in it
-  Standard_EXPORT Interface_MSG(const Standard_CString key,
-                                const Standard_Integer i1,
-                                const Standard_Integer i2);
+  Standard_EXPORT Interface_MSG(const char* key, const int i1, const int i2);
 
   //! Translates a message which contains one real variable
   //! <intervals> if set, commands the variable to be rounded to an
@@ -82,16 +80,14 @@ public:
   //!
   //! The basic message is intended to be in C-Sprintf format
   //! with one %f form (or equivalent : %e etc) in it
-  Standard_EXPORT Interface_MSG(const Standard_CString key,
-                                const Standard_Real    r1,
-                                const Standard_Integer intervals = -1);
+  Standard_EXPORT Interface_MSG(const char* key, const double r1, const int intervals = -1);
 
   //! Translates a message which contains one string variable
   //! As for one integer, it is just a writing help
   //!
   //! The basic message is intended to be in C-Sprintf format
   //! with one %s form in it
-  Standard_EXPORT Interface_MSG(const Standard_CString key, const Standard_CString str);
+  Standard_EXPORT Interface_MSG(const char* key, const char* str);
 
   //! Translates a message which contains one integer and one
   //! string variables
@@ -100,9 +96,7 @@ public:
   //!
   //! The basic message is intended to be in C-Sprintf format
   //! with one %d then one %s forms in it
-  Standard_EXPORT Interface_MSG(const Standard_CString key,
-                                const Standard_Integer ival,
-                                const Standard_CString str);
+  Standard_EXPORT Interface_MSG(const char* key, const int ival, const char* str);
 
   //! Optimised destructor (applies for additional forms of Create)
   Standard_EXPORT void Destroy();
@@ -112,43 +106,41 @@ public:
   //! Returns the translated message, in a functional form with
   //! operator ()
   //! was C++ : return const
-  Standard_EXPORT Standard_CString Value() const;
-  operator Standard_CString() const;
+  Standard_EXPORT const char* Value() const;
+  operator const char*() const;
 
   //! Reads a list of messages from a stream, returns read count
   //! 0 means empty file, -1 means error
-  Standard_EXPORT static Standard_Integer Read(Standard_IStream& S);
+  Standard_EXPORT static int Read(Standard_IStream& S);
 
   //! Reads a list of messages from a file defined by its name
-  Standard_EXPORT static Standard_Integer Read(const Standard_CString file);
+  Standard_EXPORT static int Read(const char* file);
 
   //! Writes the list of messages recorded to be translated, to a
   //! stream. Writes all the list (Default) or only keys which begin
   //! by <rootkey>. Returns the count of written messages
-  Standard_EXPORT static Standard_Integer Write(Standard_OStream&      S,
-                                                const Standard_CString rootkey = "");
+  Standard_EXPORT static int Write(Standard_OStream& S, const char* rootkey = "");
 
   //! Returns True if a given message is surely a key
   //! (according to the form adopted for keys)
   //! (before activating messages, answer is false)
-  Standard_EXPORT static Standard_Boolean IsKey(const Standard_CString mess);
+  Standard_EXPORT static bool IsKey(const char* mess);
 
   //! Returns the item recorded for a key.
   //! Returns the key itself if :
   //! - it is not recorded (then, the trace system is activated)
   //! - MSG has been required to be hung on
-  Standard_EXPORT static Standard_CString Translated(const Standard_CString key);
+  Standard_EXPORT static const char* Translated(const char* key);
 
   //! Fills the dictionary with a couple (key-item)
   //! If a key is already recorded, it is possible to :
   //! - keep the last definition, and activate the trace system
-  Standard_EXPORT static void Record(const Standard_CString key, const Standard_CString item);
+  Standard_EXPORT static void Record(const char* key, const char* item);
 
   //! Sets the trace system to work when activated, as follow :
   //! - if <toprint>  is True, print immediately on standard output
   //! - if <torecord> is True, record it for further print
-  Standard_EXPORT static void SetTrace(const Standard_Boolean toprint,
-                                       const Standard_Boolean torecord);
+  Standard_EXPORT static void SetTrace(const bool toprint, const bool torecord);
 
   //! Sets the main modes for MSG :
   //! - if <running> is True, translation works normally
@@ -157,8 +149,7 @@ public:
   //! cause MSG to raise an exception
   //! - if <raising> is False, MSG runs without exception, then
   //! see also Trace Modes above
-  Standard_EXPORT static void SetMode(const Standard_Boolean running,
-                                      const Standard_Boolean raising);
+  Standard_EXPORT static void SetMode(const bool running, const bool raising);
 
   //! Prints the recorded errors (without title; can be empty, this
   //! is the normally expected case)
@@ -179,71 +170,67 @@ public:
   //! 4   : 1 2 3 6 10 20 30 60 100 ...
   //! 6   : 1 1.5 2 3 5 7 10 15 20 ...
   //! 10  : 1 1.2 1.5 2 2.5 3 4 5 6 8 10 12 15 20 25 ...
-  Standard_EXPORT static Standard_Real Intervalled(const Standard_Real    val,
-                                                   const Standard_Integer order = 3,
-                                                   const Standard_Boolean upper = Standard_False);
+  Standard_EXPORT static double Intervalled(const double val,
+                                            const int    order = 3,
+                                            const bool   upper = false);
 
   //! Codes a date as a text, from its numeric value (-> seconds) :
   //! YYYY-MM-DD:HH-MN-SS fixed format, completed by leading zeros
   //! Another format can be provided, as follows :
   //! C:%d ...   C like format, preceded by C:
   //! S:...      format to call system (not yet implemented)
-  Standard_EXPORT static void TDate(const Standard_CString text,
-                                    const Standard_Integer yy,
-                                    const Standard_Integer mm,
-                                    const Standard_Integer dd,
-                                    const Standard_Integer hh,
-                                    const Standard_Integer mn,
-                                    const Standard_Integer ss,
-                                    const Standard_CString format = "");
+  Standard_EXPORT static void TDate(const char* text,
+                                    const int   yy,
+                                    const int   mm,
+                                    const int   dd,
+                                    const int   hh,
+                                    const int   mn,
+                                    const int   ss,
+                                    const char* format = "");
 
   //! Decodes a date to numeric integer values
   //! Returns True if OK, False if text does not fit with required
   //! format. Incomplete forms are allowed (for instance, for only
   //! YYYY-MM-DD, hour is zero)
-  Standard_EXPORT static Standard_Boolean NDate(const Standard_CString text,
-                                                Standard_Integer&      yy,
-                                                Standard_Integer&      mm,
-                                                Standard_Integer&      dd,
-                                                Standard_Integer&      hh,
-                                                Standard_Integer&      mn,
-                                                Standard_Integer&      ss);
+  Standard_EXPORT static bool NDate(const char* text,
+                                    int&        yy,
+                                    int&        mm,
+                                    int&        dd,
+                                    int&        hh,
+                                    int&        mn,
+                                    int&        ss);
 
   //! Returns a value about comparison of two dates
   //! 0 : equal. <0 text1 anterior. >0 text1 posterior
-  Standard_EXPORT static Standard_Integer CDate(const Standard_CString text1,
-                                                const Standard_CString text2);
+  Standard_EXPORT static int CDate(const char* text1, const char* text2);
 
   //! Returns a blank string, of length between 0 and <max>, to fill
   //! the printing of a numeric value <val>, i.e.
   //! If val < 10 , max-1 blanks
   //! If val between 10 and 99, max-2 blanks ... etc...
-  Standard_EXPORT static Standard_CString Blanks(const Standard_Integer val,
-                                                 const Standard_Integer max);
+  Standard_EXPORT static const char* Blanks(const int val, const int max);
 
   //! Returns a blank string, to complete a given string <val> up to
   //! <max> characters:
   //! If strlen(val) is 0, max blanks
   //! If strlen(val) is 5, max-5 blanks etc...
-  Standard_EXPORT static Standard_CString Blanks(const Standard_CString val,
-                                                 const Standard_Integer max);
+  Standard_EXPORT static const char* Blanks(const char* val, const int max);
 
   //! Returns a blank string of <count> blanks (mini 0, maxi 76)
-  Standard_EXPORT static Standard_CString Blanks(const Standard_Integer count);
+  Standard_EXPORT static const char* Blanks(const int count);
 
   //! Prints a String on an Output Stream, as follows:
   //! Accompanied with blanks, to give up to <max> chars at all,
   //! justified accordingly:
   //! -1 (D) : left 0 : center 1 : right
   //! Maximum 76 characters
-  Standard_EXPORT static void Print(Standard_OStream&      S,
-                                    const Standard_CString val,
-                                    const Standard_Integer max,
-                                    const Standard_Integer just = -1);
+  Standard_EXPORT static void Print(Standard_OStream& S,
+                                    const char*       val,
+                                    const int         max,
+                                    const int         just = -1);
 
-protected:
 private:
-  Standard_CString    thekey;
+  const char*         thekey;
   Standard_PCharacter theval;
 };
 

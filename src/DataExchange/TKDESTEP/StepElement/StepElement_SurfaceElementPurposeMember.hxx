@@ -22,9 +22,6 @@
 #include <StepData_SelectNamed.hxx>
 #include <Standard_CString.hxx>
 
-class StepElement_SurfaceElementPurposeMember;
-DEFINE_STANDARD_HANDLE(StepElement_SurfaceElementPurposeMember, StepData_SelectNamed)
-
 //! Representation of member for STEP SELECT type SurfaceElementPurpose
 class StepElement_SurfaceElementPurposeMember : public StepData_SelectNamed
 {
@@ -34,23 +31,21 @@ public:
   Standard_EXPORT StepElement_SurfaceElementPurposeMember();
 
   //! Returns True if has name
-  Standard_EXPORT virtual Standard_Boolean HasName() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool HasName() const override;
 
   //! Returns set name
-  Standard_EXPORT virtual Standard_CString Name() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const char* Name() const override;
 
   //! Set name
-  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool SetName(const char* name) override;
 
   //! Tells if the name of a SelectMember matches a given one;
-  Standard_EXPORT virtual Standard_Boolean Matches(const Standard_CString name) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Matches(const char* name) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceElementPurposeMember, StepData_SelectNamed)
 
-protected:
 private:
-  Standard_Integer mycase;
+  int mycase;
 };
 
 #endif // _StepElement_SurfaceElementPurposeMember_HeaderFile

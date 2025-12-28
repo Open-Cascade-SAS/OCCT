@@ -43,21 +43,21 @@
   public:                                                                                          \
     inline ClassName();                                                                            \
     inline ClassName(const ClassName& anOther);                                                    \
-    inline ClassName&       operator=(const ClassName& anOther);                                   \
-    inline Standard_Integer Length() const;                                                        \
-    inline const Type&      First() const;                                                         \
-    inline const Type&      Last() const;                                                          \
-    inline const Type&      Value(const Standard_Integer) const;                                   \
-    inline Type&            ChangeValue(const Standard_Integer);                                   \
-    inline const Type&      operator()(const Standard_Integer) const;                              \
-    inline Type&            operator()(const Standard_Integer);                                    \
+    inline ClassName&  operator=(const ClassName& anOther);                                        \
+    inline int         Length() const;                                                             \
+    inline const Type& First() const;                                                              \
+    inline const Type& Last() const;                                                               \
+    inline const Type& Value(const int) const;                                                     \
+    inline Type&       ChangeValue(const int);                                                     \
+    inline const Type& operator()(const int) const;                                                \
+    inline Type&       operator()(const int);                                                      \
                                                                                                    \
     Standard_EXPORT virtual ~ClassName();                                                          \
     Standard_EXPORT void Append(const Type& aVal);                                                 \
     Standard_EXPORT void Prepend(const Type& aVal);                                                \
-    Standard_EXPORT void InsertAt(const Standard_Integer, const Type& aVal);                       \
+    Standard_EXPORT void InsertAt(const int, const Type& aVal);                                    \
     Standard_EXPORT void Clear();                                                                  \
-    Standard_EXPORT void Remove(const Standard_Integer);                                           \
+    Standard_EXPORT void Remove(const int);                                                        \
                                                                                                    \
   private:                                                                                         \
     class Node                                                                                     \
@@ -85,14 +85,14 @@
       friend class ClassName;                                                                      \
     };                                                                                             \
                                                                                                    \
-    Standard_EXPORT const void* FindItem(const Standard_Integer) const;                            \
+    Standard_EXPORT const void* FindItem(const int) const;                                         \
     Standard_EXPORT void        Assign(const ClassName& anOther);                                  \
                                                                                                    \
-    Node*            myFirst;                                                                      \
-    Node*            myLast;                                                                       \
-    Node*            myCurrent;                                                                    \
-    Standard_Integer myICur;                                                                       \
-    Standard_Integer myLength;                                                                     \
+    Node* myFirst;                                                                                 \
+    Node* myLast;                                                                                  \
+    Node* myCurrent;                                                                               \
+    int   myICur;                                                                                  \
+    int   myLength;                                                                                \
   };                                                                                               \
                                                                                                    \
   inline ClassName::ClassName()                                                                    \
@@ -116,7 +116,7 @@
     return *this;                                                                                  \
   }                                                                                                \
                                                                                                    \
-  inline Standard_Integer ClassName::Length() const                                                \
+  inline int ClassName::Length() const                                                             \
   {                                                                                                \
     return myLength;                                                                               \
   }                                                                                                \
@@ -131,24 +131,24 @@
     return myLast->Value(); /* exception if out of range */                                        \
   }                                                                                                \
                                                                                                    \
-  inline const Type& ClassName::Value(const Standard_Integer anI) const                            \
+  inline const Type& ClassName::Value(const int anI) const                                         \
   {                                                                                                \
     const Node* anItem = (const Node*)FindItem(anI);                                               \
     return anItem->Value(); /* exception if out of range */                                        \
   }                                                                                                \
                                                                                                    \
-  inline Type& ClassName::ChangeValue(const Standard_Integer anI)                                  \
+  inline Type& ClassName::ChangeValue(const int anI)                                               \
   {                                                                                                \
     Node* anItem = (Node*)FindItem(anI);                                                           \
     return anItem->ChangeValue(); /* exception if out of range */                                  \
   }                                                                                                \
                                                                                                    \
-  inline const Type& ClassName::operator()(const Standard_Integer anI) const                       \
+  inline const Type& ClassName::operator()(const int anI) const                                    \
   {                                                                                                \
     return Value(anI);                                                                             \
   }                                                                                                \
                                                                                                    \
-  inline Type& ClassName::operator()(const Standard_Integer anI)                                   \
+  inline Type& ClassName::operator()(const int anI)                                                \
   {                                                                                                \
     return ChangeValue(anI);                                                                       \
   }
@@ -158,18 +158,18 @@
 //
 // *******************************************************************
 #define IMPLEMENT_SEQUENCE(ClassName, Type)                                                        \
-  const void* ClassName::FindItem(const Standard_Integer anI) const                                \
+  const void* ClassName::FindItem(const int anI) const                                             \
   {                                                                                                \
     if (anI < 1 || anI > myLength)                                                                 \
       return NULL;                                                                                 \
-    Standard_Integer aCounter;                                                                     \
-    Node*            aCurrent = (Node*)myCurrent;                                                  \
-    Standard_Boolean aDir(Standard_False);                                                         \
+    int   aCounter;                                                                                \
+    Node* aCurrent = (Node*)myCurrent;                                                             \
+    bool  aDir(false);                                                                             \
     if (aCurrent == NULL)                                                                          \
     {                                                                                              \
       aCurrent = myFirst;                                                                          \
       aCounter = anI - 1;                                                                          \
-      aDir     = Standard_True;                                                                    \
+      aDir     = true;                                                                             \
     }                                                                                              \
     else                                                                                           \
     {                                                                                              \
@@ -178,7 +178,7 @@
       {                                                                                            \
         aCurrent = myFirst;                                                                        \
         aCounter = anI - 1;                                                                        \
-        aDir     = Standard_True;                                                                  \
+        aDir     = true;                                                                           \
       }                                                                                            \
       else if (myLength - anI < aCounter)                                                          \
       {                                                                                            \
@@ -186,7 +186,7 @@
         aCounter = myLength - anI;                                                                 \
       }                                                                                            \
       else if (anI > myICur)                                                                       \
-        aDir = Standard_True;                                                                      \
+        aDir = true;                                                                               \
     }                                                                                              \
     if (aDir)                                                                                      \
       while (aCounter--)                                                                           \
@@ -194,8 +194,8 @@
     else                                                                                           \
       while (aCounter--)                                                                           \
         aCurrent = aCurrent->myPrev;                                                               \
-    (Standard_Integer&)myICur = anI;                                                               \
-    (Node*&)myCurrent         = aCurrent;                                                          \
+    (int&)myICur      = anI;                                                                       \
+    (Node*&)myCurrent = aCurrent;                                                                  \
     return aCurrent;                                                                               \
   }                                                                                                \
                                                                                                    \
@@ -228,7 +228,7 @@
       myICur++;                                                                                    \
   }                                                                                                \
                                                                                                    \
-  void ClassName::InsertAt(const Standard_Integer anI, const Type& aVal)                           \
+  void ClassName::InsertAt(const int anI, const Type& aVal)                                        \
   {                                                                                                \
     if (anI <= 1)                                                                                  \
       Prepend(aVal);                                                                               \
@@ -258,7 +258,7 @@
     myICur                       = 0;                                                              \
   }                                                                                                \
                                                                                                    \
-  void ClassName::Remove(const Standard_Integer anI)                                               \
+  void ClassName::Remove(const int anI)                                                            \
   {                                                                                                \
     Node* anItem = (Node*)FindItem(anI);                                                           \
     if (anItem)                                                                                    \

@@ -31,16 +31,15 @@ TCollection_AsciiString IFSelect_DispPerOne::Label() const
   return TCollection_AsciiString("One File per Input Entity");
 }
 
-Standard_Boolean IFSelect_DispPerOne::LimitedMax(const Standard_Integer nbent,
-                                                 Standard_Integer&      pcount) const
+bool IFSelect_DispPerOne::LimitedMax(const int nbent, int& pcount) const
 {
   pcount = nbent;
-  return Standard_True;
+  return true;
 }
 
 void IFSelect_DispPerOne::Packets(const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const
 {
-  IFGraph_SCRoots packsc(G, Standard_False); // OK for SubPartsIterator
+  IFGraph_SCRoots packsc(G, false); // OK for SubPartsIterator
   packsc.SetLoad();
   packsc.GetFromIter(FinalSelection()->UniqueResult(G));
   //   SCRoots initiated the resolution: splitting into StrongComponents + selection

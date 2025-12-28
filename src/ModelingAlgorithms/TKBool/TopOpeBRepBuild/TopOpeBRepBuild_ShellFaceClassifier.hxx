@@ -22,8 +22,9 @@
 
 #include <gp_Pnt.hxx>
 #include <TopOpeBRepTool_SolidClassifier.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopOpeBRepBuild_CompositeClassifier.hxx>
 #include <TopAbs_State.hxx>
 class TopOpeBRepBuild_BlockBuilder;
@@ -60,21 +61,20 @@ public:
   //! Add the face <F> in the set of faces used in 3D point
   //! classification. Returns FALSE if the face <F> has been already
   //! added to the set of faces, otherwise returns TRUE.
-  Standard_EXPORT Standard_Boolean CompareElement(const TopoDS_Shape& F);
+  Standard_EXPORT bool CompareElement(const TopoDS_Shape& F);
 
   //! Returns state of classification of 3D point, defined by
   //! ResetElement, with the current set of faces, defined by Compare.
   Standard_EXPORT TopAbs_State State();
 
-protected:
 private:
-  Standard_Boolean               myFirstCompare;
-  gp_Pnt                         myPoint3d;
-  TopoDS_Shell                   myShell;
-  BRep_Builder                   myBuilder;
-  TopOpeBRepTool_SolidClassifier mySolidClassifier;
-  TopTools_DataMapOfShapeShape   myFaceShellMap;
-  TopoDS_Shape                   myShape;
+  bool                                                                     myFirstCompare;
+  gp_Pnt                                                                   myPoint3d;
+  TopoDS_Shell                                                             myShell;
+  BRep_Builder                                                             myBuilder;
+  TopOpeBRepTool_SolidClassifier                                           mySolidClassifier;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myFaceShellMap;
+  TopoDS_Shape                                                             myShape;
 };
 
 #endif // _TopOpeBRepBuild_ShellFaceClassifier_HeaderFile

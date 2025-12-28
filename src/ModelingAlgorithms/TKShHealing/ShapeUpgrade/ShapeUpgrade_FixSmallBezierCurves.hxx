@@ -23,25 +23,19 @@
 class Geom_Curve;
 class Geom2d_Curve;
 
-class ShapeUpgrade_FixSmallBezierCurves;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_FixSmallBezierCurves, ShapeUpgrade_FixSmallCurves)
-
 class ShapeUpgrade_FixSmallBezierCurves : public ShapeUpgrade_FixSmallCurves
 {
 
 public:
   Standard_EXPORT ShapeUpgrade_FixSmallBezierCurves();
 
-  Standard_EXPORT virtual Standard_Boolean Approx(Handle(Geom_Curve)&   Curve3d,
-                                                  Handle(Geom2d_Curve)& Curve2d,
-                                                  Handle(Geom2d_Curve)& Curve2dR,
-                                                  Standard_Real&        First,
-                                                  Standard_Real&        Last) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Approx(occ::handle<Geom_Curve>&   Curve3d,
+                                      occ::handle<Geom2d_Curve>& Curve2d,
+                                      occ::handle<Geom2d_Curve>& Curve2dR,
+                                      double&                    First,
+                                      double&                    Last) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallBezierCurves, ShapeUpgrade_FixSmallCurves)
-
-protected:
-private:
 };
 
 #endif // _ShapeUpgrade_FixSmallBezierCurves_HeaderFile

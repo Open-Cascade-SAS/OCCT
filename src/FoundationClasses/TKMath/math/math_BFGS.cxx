@@ -66,7 +66,7 @@ public:
 
   void TheGradient(math_Vector& Grad) { Grad = *G; }
 
-  virtual Standard_Boolean Value(const Standard_Real x, Standard_Real& fval)
+  virtual bool Value(const double x, double& fval)
   {
     *P = *Dir;
     P->Multiply(x);
@@ -75,7 +75,7 @@ public:
     return F->Value(*P, fval);
   }
 
-  virtual Standard_Boolean Values(const Standard_Real x, Standard_Real& fval, Standard_Real& D)
+  virtual bool Values(const double x, double& fval, double& D)
   {
     *P = *Dir;
     P->Multiply(x);
@@ -84,26 +84,26 @@ public:
     if (F->Values(*P, fval, *G))
     {
       D = (*G).Multiplied(*Dir);
-      return Standard_True;
+      return true;
     }
 
-    return Standard_False;
+    return false;
   }
 
-  virtual Standard_Boolean Derivative(const Standard_Real x, Standard_Real& D)
+  virtual bool Derivative(const double x, double& D)
   {
     *P = *Dir;
     P->Multiply(x);
     P->Add(*P0);
-    Standard_Real fval;
+    double fval;
     D = 0.;
     if (F->Values(*P, fval, *G))
     {
       D = (*G).Multiplied(*Dir);
-      return Standard_True;
+      return true;
     }
 
-    return Standard_False;
+    return false;
   }
 };
 
@@ -112,22 +112,22 @@ public:
 // purpose  : Compute the appropriate initial value of scale factor to apply
 //           to the direction to approach to the minimum of the function
 //=============================================================================
-static Standard_Boolean ComputeInitScale(const Standard_Real theF0,
-                                         const math_Vector&  theDir,
-                                         const math_Vector&  theGr,
-                                         Standard_Real&      theScale)
+static bool ComputeInitScale(const double       theF0,
+                             const math_Vector& theDir,
+                             const math_Vector& theGr,
+                             double&            theScale)
 {
-  const Standard_Real dy1 = theGr * theDir;
+  const double dy1 = theGr * theDir;
   if (std::abs(dy1) < RealSmall())
-    return Standard_False;
+    return false;
 
-  const Standard_Real aHnr1 = theDir.Norm2();
-  const Standard_Real alfa  = 0.7 * (-theF0) / dy1;
-  theScale                  = 0.015 / std::sqrt(aHnr1);
+  const double aHnr1 = theDir.Norm2();
+  const double alfa  = 0.7 * (-theF0) / dy1;
+  theScale           = 0.015 / std::sqrt(aHnr1);
   if (theScale > alfa)
     theScale = alfa;
 
-  return Standard_True;
+  return true;
 }
 
 //=============================================================================
@@ -137,23 +137,23 @@ static Standard_Boolean ComputeInitScale(const Standard_Real theF0,
 //           if we apply translation Point+Dir*Scale.
 // return   : True if found, False if point is out of bounds.
 //=============================================================================
-static Standard_Boolean ComputeMinMaxScale(const math_Vector& thePoint,
-                                           const math_Vector& theDir,
-                                           const math_Vector& theLeft,
-                                           const math_Vector& theRight,
-                                           Standard_Real&     theMinScale,
-                                           Standard_Real&     theMaxScale)
+static bool ComputeMinMaxScale(const math_Vector& thePoint,
+                               const math_Vector& theDir,
+                               const math_Vector& theLeft,
+                               const math_Vector& theRight,
+                               double&            theMinScale,
+                               double&            theMaxScale)
 {
-  for (Standard_Integer anIdx = 1; anIdx <= theLeft.Upper(); anIdx++)
+  for (int anIdx = 1; anIdx <= theLeft.Upper(); anIdx++)
   {
-    const Standard_Real aLeft  = theLeft(anIdx) - thePoint(anIdx);
-    const Standard_Real aRight = theRight(anIdx) - thePoint(anIdx);
+    const double aLeft  = theLeft(anIdx) - thePoint(anIdx);
+    const double aRight = theRight(anIdx) - thePoint(anIdx);
     if (std::abs(theDir(anIdx)) > RealSmall())
     {
       // Use PConfusion to get off a little from the bounds to prevent
       // possible refuse in Value function.
-      const Standard_Real aLScale = (aLeft + Precision::PConfusion()) / theDir(anIdx);
-      const Standard_Real aRScale = (aRight - Precision::PConfusion()) / theDir(anIdx);
+      const double aLScale = (aLeft + Precision::PConfusion()) / theDir(anIdx);
+      const double aRScale = (aRight - Precision::PConfusion()) / theDir(anIdx);
       if (std::abs(aLeft) < Precision::PConfusion())
       {
         // Point is on the left border.
@@ -174,7 +174,7 @@ static Standard_Boolean ComputeMinMaxScale(const math_Vector& thePoint,
       }
       else
         // point is out of bounds
-        return Standard_False;
+        return false;
     }
     else
     {
@@ -182,11 +182,11 @@ static Standard_Boolean ComputeMinMaxScale(const math_Vector& thePoint,
       // Check that the point is not out of bounds
       if (aLeft > Precision::PConfusion() || aRight < -Precision::PConfusion())
       {
-        return Standard_False;
+        return false;
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=============================================================================
@@ -194,34 +194,34 @@ static Standard_Boolean ComputeMinMaxScale(const math_Vector& thePoint,
 // purpose  : Solves 1D minimization problem when point and directions
 //           are known.
 //=============================================================================
-static Standard_Boolean MinimizeDirection(math_Vector&       P,
-                                          Standard_Real      F0,
-                                          math_Vector&       Gr,
-                                          math_Vector&       Dir,
-                                          Standard_Real&     Result,
-                                          DirFunction&       F,
-                                          Standard_Boolean   isBounds,
-                                          const math_Vector& theLeft,
-                                          const math_Vector& theRight)
+static bool MinimizeDirection(math_Vector&       P,
+                              double             F0,
+                              math_Vector&       Gr,
+                              math_Vector&       Dir,
+                              double&            Result,
+                              DirFunction&       F,
+                              bool               isBounds,
+                              const math_Vector& theLeft,
+                              const math_Vector& theRight)
 {
-  Standard_Real lambda;
+  double lambda;
   if (!ComputeInitScale(F0, Dir, Gr, lambda))
-    return Standard_False;
+    return false;
 
   // by default the scaling range is unlimited
-  Standard_Real aMinLambda = -Precision::Infinite();
-  Standard_Real aMaxLambda = Precision::Infinite();
+  double aMinLambda = -Precision::Infinite();
+  double aMaxLambda = Precision::Infinite();
   if (isBounds)
   {
     // limit the scaling range taking into account the bounds
     if (!ComputeMinMaxScale(P, Dir, theLeft, theRight, aMinLambda, aMaxLambda))
-      return Standard_False;
+      return false;
 
     if (aMinLambda > -Precision::PConfusion() && aMaxLambda < Precision::PConfusion())
     {
       // Point is on the border and the direction shows outside.
       // Make direction to go along the border
-      for (Standard_Integer anIdx = 1; anIdx <= theLeft.Upper(); anIdx++)
+      for (int anIdx = 1; anIdx <= theLeft.Upper(); anIdx++)
       {
         if ((std::abs(P(anIdx) - theRight(anIdx)) < Precision::PConfusion() && Dir(anIdx) > 0.0)
             || (std::abs(P(anIdx) - theLeft(anIdx)) < Precision::PConfusion() && Dir(anIdx) < 0.0))
@@ -232,18 +232,18 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
 
       // re-compute scale values with new direction
       if (!ComputeInitScale(F0, Dir, Gr, lambda))
-        return Standard_False;
+        return false;
       if (!ComputeMinMaxScale(P, Dir, theLeft, theRight, aMinLambda, aMaxLambda))
-        return Standard_False;
+        return false;
     }
     lambda = std::min(lambda, aMaxLambda);
     lambda = std::max(lambda, aMinLambda);
   }
 
   F.Initialize(P, Dir);
-  Standard_Real F1;
+  double F1;
   if (!F.Value(lambda, F1))
-    return Standard_False;
+    return false;
 
   math_BracketMinimum Bracket(0.0, lambda);
   if (isBounds)
@@ -254,33 +254,33 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
   if (Bracket.IsDone())
   {
     // find minimum inside the bracket
-    Standard_Real ax, xx, bx, Fax, Fxx, Fbx;
+    double ax, xx, bx, Fax, Fxx, Fbx;
     Bracket.Values(ax, xx, bx);
     Bracket.FunctionValues(Fax, Fxx, Fbx);
 
-    Standard_Integer  niter = 100;
-    Standard_Real     tol   = 1.e-03;
+    int               niter = 100;
+    double            tol   = 1.e-03;
     math_BrentMinimum Sol(tol, Fxx, niter, 1.e-08);
     Sol.Perform(F, ax, xx, bx);
     if (Sol.IsDone())
     {
-      Standard_Real Scale = Sol.Location();
-      Result              = Sol.Minimum();
+      double Scale = Sol.Location();
+      Result       = Sol.Minimum();
       Dir.Multiply(Scale);
       P.Add(Dir);
-      return Standard_True;
+      return true;
     }
   }
   else if (isBounds)
   {
     // Bracket definition is failure. If the bounds are defined then
     // set current point to intersection with bounds
-    Standard_Real aFMin, aFMax;
+    double aFMin, aFMax;
     if (!F.Value(aMinLambda, aFMin))
-      return Standard_False;
+      return false;
     if (!F.Value(aMaxLambda, aFMax))
-      return Standard_False;
-    Standard_Real aBestLambda;
+      return false;
+    double aBestLambda;
     if (aFMin < aFMax)
     {
       aBestLambda = aMinLambda;
@@ -293,9 +293,9 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
     }
     Dir.Multiply(aBestLambda);
     P.Add(Dir);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=============================================================================
@@ -304,10 +304,10 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
 //=============================================================================
 void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vector& StartingPoint)
 {
-  const Standard_Integer n    = TheLocation.Length();
-  Standard_Boolean       Good = Standard_True;
-  Standard_Integer       j, i;
-  Standard_Real          fae, fad, fac;
+  const int n    = TheLocation.Length();
+  bool      Good = true;
+  int       j, i;
+  double    fae, fad, fac;
 
   math_Vector xi(1, n), dg(1, n), hdg(1, n);
   math_Matrix hessin(1, n, 1, n);
@@ -323,7 +323,7 @@ void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
   Good        = F.Values(TheLocation, PreviousMinimum, TheGradient);
   if (!Good)
   {
-    Done      = Standard_False;
+    Done      = false;
     TheStatus = math_FunctionError;
     return;
   }
@@ -335,27 +335,27 @@ void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
 
   for (nbiter = 1; nbiter <= Itermax; nbiter++)
   {
-    TheMinimum                    = PreviousMinimum;
-    const Standard_Boolean IsGood = MinimizeDirection(TheLocation,
-                                                      TheMinimum,
-                                                      TheGradient,
-                                                      xi,
-                                                      TheMinimum,
-                                                      F_Dir,
-                                                      myIsBoundsDefined,
-                                                      myLeft,
-                                                      myRight);
+    TheMinimum        = PreviousMinimum;
+    const bool IsGood = MinimizeDirection(TheLocation,
+                                          TheMinimum,
+                                          TheGradient,
+                                          xi,
+                                          TheMinimum,
+                                          F_Dir,
+                                          myIsBoundsDefined,
+                                          myLeft,
+                                          myRight);
 
     if (IsSolutionReached(F))
     {
-      Done      = Standard_True;
+      Done      = true;
       TheStatus = math_OK;
       return;
     }
 
     if (!IsGood)
     {
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_DirectionSearchError;
       return;
     }
@@ -366,7 +366,7 @@ void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
     Good = F.Values(TheLocation, TheMinimum, TheGradient);
     if (!Good)
     {
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_FunctionError;
       return;
     }
@@ -406,7 +406,7 @@ void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
         xi(i) -= hessin(i, j) * TheGradient(j);
     }
   }
-  Done      = Standard_False;
+  Done      = false;
   TheStatus = math_TooManyIterations;
   return;
 }
@@ -415,7 +415,7 @@ void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
 // function : IsSolutionReached
 // purpose  : Checks whether solution reached or not.
 //=============================================================================
-Standard_Boolean math_BFGS::IsSolutionReached(math_MultipleVarFunctionWithGradient&) const
+bool math_BFGS::IsSolutionReached(math_MultipleVarFunctionWithGradient&) const
 {
 
   return 2.0 * fabs(TheMinimum - PreviousMinimum)
@@ -424,10 +424,10 @@ Standard_Boolean math_BFGS::IsSolutionReached(math_MultipleVarFunctionWithGradie
 
 //=================================================================================================
 
-math_BFGS::math_BFGS(const Standard_Integer NbVariables,
-                     const Standard_Real    Tolerance,
-                     const Standard_Integer NbIterations,
-                     const Standard_Real    ZEPS)
+math_BFGS::math_BFGS(const int    NbVariables,
+                     const double Tolerance,
+                     const int    NbIterations,
+                     const double ZEPS)
     : TheStatus(math_OK),
       TheLocation(1, NbVariables),
       TheGradient(1, NbVariables),
@@ -436,10 +436,10 @@ math_BFGS::math_BFGS(const Standard_Integer NbVariables,
       XTol(Tolerance),
       EPSZ(ZEPS),
       nbiter(0),
-      myIsBoundsDefined(Standard_False),
+      myIsBoundsDefined(false),
       myLeft(1, NbVariables, 0.0),
       myRight(1, NbVariables, 0.0),
-      Done(Standard_False),
+      Done(false),
       Itermax(NbIterations)
 {
 }
@@ -462,7 +462,7 @@ void math_BFGS::Dump(Standard_OStream& o) const
     o << " Number of iterations = " << NbIterations() << "\n";
   }
   else
-    o << " Status = not Done because " << (Standard_Integer)TheStatus << "\n";
+    o << " Status = not Done because " << (int)TheStatus << "\n";
 }
 
 //=============================================================================
@@ -473,5 +473,5 @@ void math_BFGS::SetBoundary(const math_Vector& theLeftBorder, const math_Vector&
 {
   myLeft            = theLeftBorder;
   myRight           = theRightBorder;
-  myIsBoundsDefined = Standard_True;
+  myIsBoundsDefined = true;
 }

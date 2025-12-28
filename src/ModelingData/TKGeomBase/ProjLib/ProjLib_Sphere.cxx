@@ -56,8 +56,8 @@ void ProjLib_Sphere::Init(const gp_Sphere& Sp)
 {
   myType       = GeomAbs_OtherCurve;
   mySphere     = Sp;
-  myIsPeriodic = Standard_False;
-  isDone       = Standard_False;
+  myIsPeriodic = false;
+  isDone       = false;
 }
 
 //=======================================================================
@@ -74,15 +74,15 @@ void ProjLib_Sphere::Init(const gp_Sphere& Sp)
 
 static gp_Pnt2d EvalPnt2d(const gp_Vec& P, const gp_Sphere& Sp)
 {
-  Standard_Real X = P.Dot(gp_Vec(Sp.Position().XDirection()));
-  Standard_Real Y = P.Dot(gp_Vec(Sp.Position().YDirection()));
-  Standard_Real Z = P.Dot(gp_Vec(Sp.Position().Direction()));
-  Standard_Real U, V;
+  double X = P.Dot(gp_Vec(Sp.Position().XDirection()));
+  double Y = P.Dot(gp_Vec(Sp.Position().YDirection()));
+  double Z = P.Dot(gp_Vec(Sp.Position().Direction()));
+  double U, V;
 
   if (std::abs(X) > Precision::PConfusion() || std::abs(Y) > Precision::PConfusion())
   {
-    Standard_Real UU = std::atan2(Y, X);
-    U                = ElCLib::InPeriod(UU, 0., 2 * M_PI);
+    double UU = std::atan2(Y, X);
+    U         = ElCLib::InPeriod(UU, 0., 2 * M_PI);
   }
   else
   {
@@ -118,8 +118,8 @@ void ProjLib_Sphere::Project(const gp_Circ& C)
   Ys = mySphere.Position().YDirection();
   Zs = mySphere.Position().Direction();
 
-  Standard_Boolean        isIsoU, isIsoV;
-  constexpr Standard_Real Tol = Precision::Confusion();
+  bool             isIsoU, isIsoV;
+  constexpr double Tol = Precision::Confusion();
 
   isIsoU = Zc.IsNormal(Zs, Tol) && O.IsEqual(C.Location(), Tol);
   isIsoV = Xc.IsNormal(Zs, Tol) && Yc.IsNormal(Zs, Tol);
@@ -159,21 +159,21 @@ void ProjLib_Sphere::Project(const gp_Circ& C)
     }
 
     D2d    = gp_Dir2d(gp_Vec2d(P2d1, P2d2));
-    isDone = Standard_True;
+    isDone = true;
   }
   else if (isIsoV)
   {
     myType = GeomAbs_Line;
 
     // P2d(U,V) :first point of the PCurve.
-    Standard_Real U = Xs.AngleWithRef(Xc, Xs ^ Ys);
+    double U = Xs.AngleWithRef(Xc, Xs ^ Ys);
     if (U < 0)
       U += 2 * M_PI;
-    Standard_Real Z = gp_Vec(O, C.Location()).Dot(Zs);
-    Standard_Real V = std::asin(Z / mySphere.Radius());
-    P2d1            = gp_Pnt2d(U, V);
-    D2d             = gp_Dir2d((Xc ^ Yc).Dot(Xs ^ Ys), 0.);
-    isDone          = Standard_True;
+    double Z = gp_Vec(O, C.Location()).Dot(Zs);
+    double V = std::asin(Z / mySphere.Radius());
+    P2d1     = gp_Pnt2d(U, V);
+    D2d      = gp_Dir2d((Xc ^ Yc).Dot(Xs ^ Ys), 0.);
+    isDone   = true;
   }
   myLin = gp_Lin2d(P2d1, D2d);
 }
@@ -200,21 +200,21 @@ void ProjLib_Sphere::Project(const gp_Hypr& H)
 
 //=================================================================================================
 
-void ProjLib_Sphere::SetInBounds(const Standard_Real U)
+void ProjLib_Sphere::SetInBounds(const double U)
 {
   StdFail_NotDone_Raise_if(!isDone, "ProjLib_Sphere:SetInBounds");
 
   // first set the y of the first point in -pi/2 pi/2
-  Standard_Real newY, Y = ElCLib::Value(U, myLin).Y();
+  double newY, Y = ElCLib::Value(U, myLin).Y();
   newY = ElCLib::InPeriod(Y, -M_PI, M_PI);
 
   myLin.Translate(gp_Vec2d(0., newY - Y));
 
-  gp_Pnt2d      P = ElCLib::Value(U, myLin);
-  gp_Trsf2d     Trsf;
-  gp_Ax2d       Axis;
-  Standard_Real Tol = 1.e-7;
-  gp_Dir2d      D2d = myLin.Direction();
+  gp_Pnt2d  P = ElCLib::Value(U, myLin);
+  gp_Trsf2d Trsf;
+  gp_Ax2d   Axis;
+  double    Tol = 1.e-7;
+  gp_Dir2d  D2d = myLin.Direction();
   //  Modified by skv - Tue Aug  1 16:29:59 2006 OCC13116 Begin
   //   if ((P.Y() > M_PI/2) ||
   if ((P.Y() - M_PI / 2 > Tol) ||
@@ -240,7 +240,7 @@ void ProjLib_Sphere::SetInBounds(const Standard_Real U)
   myLin.Translate(gp_Vec2d(M_PI, 0.));
 
   // il faut maintenant recadrer en U
-  Standard_Real newX, X = ElCLib::Value(U, myLin).X();
+  double newX, X = ElCLib::Value(U, myLin).X();
   newX = ElCLib::InPeriod(X, 0., 2. * M_PI);
   myLin.Translate(gp_Vec2d(newX - X, 0.));
 }

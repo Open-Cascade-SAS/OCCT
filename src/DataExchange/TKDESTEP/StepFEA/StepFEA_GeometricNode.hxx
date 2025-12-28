@@ -21,9 +21,6 @@
 
 #include <StepFEA_NodeRepresentation.hxx>
 
-class StepFEA_GeometricNode;
-DEFINE_STANDARD_HANDLE(StepFEA_GeometricNode, StepFEA_NodeRepresentation)
-
 //! Representation of STEP entity GeometricNode
 class StepFEA_GeometricNode : public StepFEA_NodeRepresentation
 {
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepFEA_GeometricNode();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_GeometricNode, StepFEA_NodeRepresentation)
-
-protected:
-private:
 };
 
 #endif // _StepFEA_GeometricNode_HeaderFile

@@ -50,32 +50,32 @@ public:
                                                 const IntRes2d_Domain&  D1,
                                                 const HLRBRep_CurvePtr& PCurve,
                                                 const IntRes2d_Domain&  D2,
-                                                const Standard_Real     TolConf,
-                                                const Standard_Real     Tol);
+                                                const double            TolConf,
+                                                const double            Tol);
 
   //! Intersection between a line and a parametric curve.
   Standard_EXPORT HLRBRep_IntConicCurveOfCInter(const gp_Circ2d&        C,
                                                 const IntRes2d_Domain&  D1,
                                                 const HLRBRep_CurvePtr& PCurve,
                                                 const IntRes2d_Domain&  D2,
-                                                const Standard_Real     TolConf,
-                                                const Standard_Real     Tol);
+                                                const double            TolConf,
+                                                const double            Tol);
 
   //! Intersection between an ellipse and a parametric curve.
   Standard_EXPORT HLRBRep_IntConicCurveOfCInter(const gp_Elips2d&       E,
                                                 const IntRes2d_Domain&  D1,
                                                 const HLRBRep_CurvePtr& PCurve,
                                                 const IntRes2d_Domain&  D2,
-                                                const Standard_Real     TolConf,
-                                                const Standard_Real     Tol);
+                                                const double            TolConf,
+                                                const double            Tol);
 
   //! Intersection between a parabola and a parametric curve.
   Standard_EXPORT HLRBRep_IntConicCurveOfCInter(const gp_Parab2d&       Prb,
                                                 const IntRes2d_Domain&  D1,
                                                 const HLRBRep_CurvePtr& PCurve,
                                                 const IntRes2d_Domain&  D2,
-                                                const Standard_Real     TolConf,
-                                                const Standard_Real     Tol);
+                                                const double            TolConf,
+                                                const double            Tol);
 
   //! Intersection between the main branch of an hyperbola
   //! and a parametric curve.
@@ -83,40 +83,40 @@ public:
                                                 const IntRes2d_Domain&  D1,
                                                 const HLRBRep_CurvePtr& PCurve,
                                                 const IntRes2d_Domain&  D2,
-                                                const Standard_Real     TolConf,
-                                                const Standard_Real     Tol);
+                                                const double            TolConf,
+                                                const double            Tol);
 
   //! Intersection between a line and a parametric curve.
   Standard_EXPORT void Perform(const gp_Lin2d&         L,
                                const IntRes2d_Domain&  D1,
                                const HLRBRep_CurvePtr& PCurve,
                                const IntRes2d_Domain&  D2,
-                               const Standard_Real     TolConf,
-                               const Standard_Real     Tol);
+                               const double            TolConf,
+                               const double            Tol);
 
   //! Intersection between a line and a parametric curve.
   Standard_EXPORT void Perform(const gp_Circ2d&        C,
                                const IntRes2d_Domain&  D1,
                                const HLRBRep_CurvePtr& PCurve,
                                const IntRes2d_Domain&  D2,
-                               const Standard_Real     TolConf,
-                               const Standard_Real     Tol);
+                               const double            TolConf,
+                               const double            Tol);
 
   //! Intersection between an ellipse and a parametric curve.
   Standard_EXPORT void Perform(const gp_Elips2d&       E,
                                const IntRes2d_Domain&  D1,
                                const HLRBRep_CurvePtr& PCurve,
                                const IntRes2d_Domain&  D2,
-                               const Standard_Real     TolConf,
-                               const Standard_Real     Tol);
+                               const double            TolConf,
+                               const double            Tol);
 
   //! Intersection between a parabola and a parametric curve.
   Standard_EXPORT void Perform(const gp_Parab2d&       Prb,
                                const IntRes2d_Domain&  D1,
                                const HLRBRep_CurvePtr& PCurve,
                                const IntRes2d_Domain&  D2,
-                               const Standard_Real     TolConf,
-                               const Standard_Real     Tol);
+                               const double            TolConf,
+                               const double            Tol);
 
   //! Intersection between the main branch of an hyperbola
   //! and a parametric curve.
@@ -124,55 +124,54 @@ public:
                                const IntRes2d_Domain&  D1,
                                const HLRBRep_CurvePtr& PCurve,
                                const IntRes2d_Domain&  D2,
-                               const Standard_Real     TolConf,
-                               const Standard_Real     Tol);
+                               const double            TolConf,
+                               const double            Tol);
 
-protected:
 private:
   Standard_EXPORT void InternalPerform(const gp_Lin2d&         Lin1,
                                        const IntRes2d_Domain&  D1,
                                        const HLRBRep_CurvePtr& PCurve,
                                        const IntRes2d_Domain&  D2,
-                                       const Standard_Real     TolConf,
-                                       const Standard_Real     Tol,
-                                       const Standard_Boolean  Composite);
+                                       const double            TolConf,
+                                       const double            Tol,
+                                       const bool              Composite);
 
   Standard_EXPORT void InternalPerform(const gp_Circ2d&        Circ1,
                                        const IntRes2d_Domain&  D1,
                                        const HLRBRep_CurvePtr& PCurve,
                                        const IntRes2d_Domain&  D2,
-                                       const Standard_Real     TolConf,
-                                       const Standard_Real     Tol,
-                                       const Standard_Boolean  Composite);
+                                       const double            TolConf,
+                                       const double            Tol,
+                                       const bool              Composite);
 
   Standard_EXPORT void InternalPerform(const gp_Elips2d&       Eli1,
                                        const IntRes2d_Domain&  D1,
                                        const HLRBRep_CurvePtr& PCurve,
                                        const IntRes2d_Domain&  D2,
-                                       const Standard_Real     TolConf,
-                                       const Standard_Real     Tol,
-                                       const Standard_Boolean  Composite);
+                                       const double            TolConf,
+                                       const double            Tol,
+                                       const bool              Composite);
 
   Standard_EXPORT void InternalPerform(const gp_Parab2d&       Prb1,
                                        const IntRes2d_Domain&  D1,
                                        const HLRBRep_CurvePtr& PCurve,
                                        const IntRes2d_Domain&  D2,
-                                       const Standard_Real     TolConf,
-                                       const Standard_Real     Tol,
-                                       const Standard_Boolean  Composite);
+                                       const double            TolConf,
+                                       const double            Tol,
+                                       const bool              Composite);
 
   Standard_EXPORT void InternalPerform(const gp_Hypr2d&        Hpr1,
                                        const IntRes2d_Domain&  D1,
                                        const HLRBRep_CurvePtr& PCurve,
                                        const IntRes2d_Domain&  D2,
-                                       const Standard_Real     TolConf,
-                                       const Standard_Real     Tol,
-                                       const Standard_Boolean  Composite);
+                                       const double            TolConf,
+                                       const double            Tol,
+                                       const bool              Composite);
 
-  Standard_Real                    param1inf;
-  Standard_Real                    param1sup;
-  Standard_Real                    param2inf;
-  Standard_Real                    param2sup;
+  double                           param1inf;
+  double                           param1sup;
+  double                           param2inf;
+  double                           param2sup;
   IntCurve_IntConicConic           intconiconi;
   HLRBRep_TheIntConicCurveOfCInter intconicurv;
 };

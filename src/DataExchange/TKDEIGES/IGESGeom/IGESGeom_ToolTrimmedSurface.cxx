@@ -28,7 +28,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 
@@ -39,22 +39,22 @@ IGESGeom_ToolTrimmedSurface::IGESGeom_ToolTrimmedSurface() {}
 
 //=================================================================================================
 
-void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const Handle(IGESGeom_TrimmedSurface)& ent,
-                                                const Handle(IGESData_IGESReaderData)& IR,
-                                                IGESData_ParamReader&                  PR) const
+void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const occ::handle<IGESGeom_TrimmedSurface>& ent,
+                                                const occ::handle<IGESData_IGESReaderData>& IR,
+                                                IGESData_ParamReader& PR) const
 {
   // MGE 31/07/98
   // Building of messages
   //========================================
   //========================================
 
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer                         aFlag;
-  Standard_Integer                         count;
-  Handle(IGESData_IGESEntity)              aSurface;
-  Handle(IGESGeom_CurveOnSurface)          anOuter;
-  Handle(IGESGeom_HArray1OfCurveOnSurface) anInner;
-  IGESData_Status                          aStatus;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int                                                                    aFlag;
+  int                                                                    count;
+  occ::handle<IGESData_IGESEntity>                                       aSurface;
+  occ::handle<IGESGeom_CurveOnSurface>                                   anOuter;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>> anInner;
+  IGESData_Status                                                        aStatus;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, aSurface))
@@ -98,7 +98,7 @@ void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const Handle(IGESGeom_TrimmedSur
       PR.SendFail(Msg171);
     }
     else if (count > 0)
-      anInner = new IGESGeom_HArray1OfCurveOnSurface(1, count);
+      anInner = new NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>(1, count);
   }
   else
   {
@@ -111,7 +111,7 @@ void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const Handle(IGESGeom_TrimmedSur
                      aStatus,
                      STANDARD_TYPE(IGESGeom_CurveOnSurface),
                      anOuter,
-                     Standard_True))
+                     true))
   {
     Message_Msg Msg172("XSTEP_172");
     switch (aStatus)
@@ -139,14 +139,14 @@ void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const Handle(IGESGeom_TrimmedSur
     }
   } // szv#4:S4163:12Mar99 `st=` not needed
   /*  st = PR.ReadEntity(IR, PR.Current(), "Outer boundary curve",
-               STANDARD_TYPE(IGESGeom_CurveOnSurface), anOuter,Standard_True);
+               STANDARD_TYPE(IGESGeom_CurveOnSurface), anOuter,true);
   */
   if (!anInner.IsNull())
   {
-    Standard_Integer I;
+    int I;
     for (I = 1; I <= count; I++)
     {
-      Handle(IGESGeom_CurveOnSurface) tempEnt;
+      occ::handle<IGESGeom_CurveOnSurface> tempEnt;
       // st = PR.ReadEntity(IR, PR.Current(), Msg173,
       // STANDARD_TYPE(IGESGeom_CurveOnSurface), tempEnt); //szv#4:S4163:12Mar99 moved in if
       /*      st = PR.ReadEntity(IR, PR.Current(), "Inner boundary curves",
@@ -190,10 +190,10 @@ void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const Handle(IGESGeom_TrimmedSur
 
 //=================================================================================================
 
-void IGESGeom_ToolTrimmedSurface::WriteOwnParams(const Handle(IGESGeom_TrimmedSurface)& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+void IGESGeom_ToolTrimmedSurface::WriteOwnParams(const occ::handle<IGESGeom_TrimmedSurface>& ent,
+                                                 IGESData_IGESWriter& IW) const
 {
-  Standard_Integer up = ent->NbInnerContours();
+  int up = ent->NbInnerContours();
   IW.Send(ent->Surface());
   IW.Send(ent->OuterBoundaryType());
   IW.Send(up);
@@ -202,41 +202,41 @@ void IGESGeom_ToolTrimmedSurface::WriteOwnParams(const Handle(IGESGeom_TrimmedSu
     IW.Send(ent->OuterContour());
   else
     IW.Send(0);
-  Standard_Integer I;
+  int I;
   for (I = 1; I <= up; I++)
     IW.Send(ent->InnerContour(I));
 }
 
 //=================================================================================================
 
-void IGESGeom_ToolTrimmedSurface::OwnShared(const Handle(IGESGeom_TrimmedSurface)& ent,
-                                            Interface_EntityIterator&              iter) const
+void IGESGeom_ToolTrimmedSurface::OwnShared(const occ::handle<IGESGeom_TrimmedSurface>& ent,
+                                            Interface_EntityIterator&                   iter) const
 {
-  Standard_Integer up = ent->NbInnerContours();
+  int up = ent->NbInnerContours();
   iter.GetOneItem(ent->Surface());
   iter.GetOneItem(ent->OuterContour());
-  Standard_Integer I;
+  int I;
   for (I = 1; I <= up; I++)
     iter.GetOneItem(ent->InnerContour(I));
 }
 
 //=================================================================================================
 
-void IGESGeom_ToolTrimmedSurface::OwnCopy(const Handle(IGESGeom_TrimmedSurface)& another,
-                                          const Handle(IGESGeom_TrimmedSurface)& ent,
-                                          Interface_CopyTool&                    TC) const
+void IGESGeom_ToolTrimmedSurface::OwnCopy(const occ::handle<IGESGeom_TrimmedSurface>& another,
+                                          const occ::handle<IGESGeom_TrimmedSurface>& ent,
+                                          Interface_CopyTool&                         TC) const
 {
-  Handle(IGESGeom_HArray1OfCurveOnSurface) anInner;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>> anInner;
 
   DeclareAndCast(IGESData_IGESEntity, aSurface, TC.Transferred(another->Surface()));
-  Standard_Integer aFlag = another->OuterBoundaryType();
+  int aFlag = another->OuterBoundaryType();
   DeclareAndCast(IGESGeom_CurveOnSurface, anOuter, TC.Transferred(another->OuterContour()));
-  Standard_Integer count = another->NbInnerContours();
+  int count = another->NbInnerContours();
 
   if (count > 0)
   {
-    anInner = new IGESGeom_HArray1OfCurveOnSurface(1, count);
-    Standard_Integer I;
+    anInner = new NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>(1, count);
+    int I;
     for (I = 1; I <= count; I++)
     {
       DeclareAndCast(IGESGeom_CurveOnSurface, temp, TC.Transferred(another->InnerContour(I)));
@@ -250,7 +250,7 @@ void IGESGeom_ToolTrimmedSurface::OwnCopy(const Handle(IGESGeom_TrimmedSurface)&
 //=================================================================================================
 
 IGESData_DirChecker IGESGeom_ToolTrimmedSurface::DirChecker(
-  const Handle(IGESGeom_TrimmedSurface)& /* ent */) const
+  const occ::handle<IGESGeom_TrimmedSurface>& /* ent */) const
 {
   IGESData_DirChecker DC(144, 0);
   DC.Structure(IGESData_DefVoid);
@@ -265,9 +265,9 @@ IGESData_DirChecker IGESGeom_ToolTrimmedSurface::DirChecker(
 
 //=================================================================================================
 
-void IGESGeom_ToolTrimmedSurface::OwnCheck(const Handle(IGESGeom_TrimmedSurface)& ent,
+void IGESGeom_ToolTrimmedSurface::OwnCheck(const occ::handle<IGESGeom_TrimmedSurface>& ent,
                                            const Interface_ShareTool&,
-                                           Handle(Interface_Check)& ach) const
+                                           occ::handle<Interface_Check>& ach) const
 {
   // MGE 31/07/98
   // Building of messages
@@ -284,12 +284,12 @@ void IGESGeom_ToolTrimmedSurface::OwnCheck(const Handle(IGESGeom_TrimmedSurface)
 
 //=================================================================================================
 
-void IGESGeom_ToolTrimmedSurface::OwnDump(const Handle(IGESGeom_TrimmedSurface)& ent,
-                                          const IGESData_IGESDumper&             dumper,
-                                          Standard_OStream&                      S,
-                                          const Standard_Integer                 level) const
+void IGESGeom_ToolTrimmedSurface::OwnDump(const occ::handle<IGESGeom_TrimmedSurface>& ent,
+                                          const IGESData_IGESDumper&                  dumper,
+                                          Standard_OStream&                           S,
+                                          const int                                   level) const
 {
-  Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
+  int tempSubLevel = (level <= 4) ? 0 : 1;
 
   S << "IGESGeom_TrimmedSurface\n"
     << "Surface to be trimmed : ";

@@ -28,8 +28,9 @@ StepRepr_ConfigurationDesign::StepRepr_ConfigurationDesign() {}
 
 //=================================================================================================
 
-void StepRepr_ConfigurationDesign::Init(const Handle(StepRepr_ConfigurationItem)& aConfiguration,
-                                        const StepRepr_ConfigurationDesignItem&   aDesign)
+void StepRepr_ConfigurationDesign::Init(
+  const occ::handle<StepRepr_ConfigurationItem>& aConfiguration,
+  const StepRepr_ConfigurationDesignItem&        aDesign)
 {
 
   theConfiguration = aConfiguration;
@@ -39,7 +40,7 @@ void StepRepr_ConfigurationDesign::Init(const Handle(StepRepr_ConfigurationItem)
 
 //=================================================================================================
 
-Handle(StepRepr_ConfigurationItem) StepRepr_ConfigurationDesign::Configuration() const
+occ::handle<StepRepr_ConfigurationItem> StepRepr_ConfigurationDesign::Configuration() const
 {
   return theConfiguration;
 }
@@ -47,7 +48,7 @@ Handle(StepRepr_ConfigurationItem) StepRepr_ConfigurationDesign::Configuration()
 //=================================================================================================
 
 void StepRepr_ConfigurationDesign::SetConfiguration(
-  const Handle(StepRepr_ConfigurationItem)& aConfiguration)
+  const occ::handle<StepRepr_ConfigurationItem>& aConfiguration)
 {
   theConfiguration = aConfiguration;
 }

@@ -50,10 +50,10 @@ void ShapeUpgrade_ShellSewing::Init(const TopoDS_Shape& shape)
 
 //=================================================================================================
 
-Standard_Integer ShapeUpgrade_ShellSewing::Prepare(const Standard_Real tol)
+int ShapeUpgrade_ShellSewing::Prepare(const double tol)
 {
-  Standard_Integer nb = myShells.Extent(), ns = 0;
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = myShells.Extent(), ns = 0;
+  for (int i = 1; i <= nb; i++)
   {
     TopoDS_Shell          sl = TopoDS::Shell(myShells.FindKey(i));
     BRepBuilderAPI_Sewing ss(tol);
@@ -73,7 +73,7 @@ Standard_Integer ShapeUpgrade_ShellSewing::Prepare(const Standard_Real tol)
 
 //=================================================================================================
 
-TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& shape, const Standard_Real tol)
+TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& shape, const double tol)
 {
   if (shape.IsNull() || myShells.Extent() == 0)
     return shape;
@@ -82,7 +82,7 @@ TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& shape, const St
 
   //  A present orienter les solides correctement
   myReShape->Clear();
-  Standard_Integer ns = 0;
+  int ns = 0;
   for (TopExp_Explorer exd(shape, TopAbs_SOLID); exd.More(); exd.Next())
   {
     TopoDS_Solid                sd = TopoDS::Solid(exd.Current());
@@ -104,13 +104,12 @@ TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& shape, const St
 
 //=================================================================================================
 
-TopoDS_Shape ShapeUpgrade_ShellSewing::ApplySewing(const TopoDS_Shape& shape,
-                                                   const Standard_Real tol)
+TopoDS_Shape ShapeUpgrade_ShellSewing::ApplySewing(const TopoDS_Shape& shape, const double tol)
 {
   if (shape.IsNull())
     return shape;
 
-  Standard_Real t = tol;
+  double t = tol;
   if (t <= 0.)
   {
     ShapeAnalysis_ShapeTolerance stu;

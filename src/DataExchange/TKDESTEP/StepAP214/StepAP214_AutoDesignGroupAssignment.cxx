@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignGroupAssignment, StepBasic_GroupA
 StepAP214_AutoDesignGroupAssignment::StepAP214_AutoDesignGroupAssignment() {}
 
 void StepAP214_AutoDesignGroupAssignment::Init(
-  const Handle(StepBasic_Group)&                          aAssignedGroup,
-  const Handle(StepAP214_HArray1OfAutoDesignGroupedItem)& aItems)
+  const occ::handle<StepBasic_Group>&                                      aAssignedGroup,
+  const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>>& aItems)
 {
   // --- classe own fields ---
   items = aItems;
@@ -30,23 +30,23 @@ void StepAP214_AutoDesignGroupAssignment::Init(
 }
 
 void StepAP214_AutoDesignGroupAssignment::SetItems(
-  const Handle(StepAP214_HArray1OfAutoDesignGroupedItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>>& aItems)
 {
   items = aItems;
 }
 
-Handle(StepAP214_HArray1OfAutoDesignGroupedItem) StepAP214_AutoDesignGroupAssignment::Items() const
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>>
+  StepAP214_AutoDesignGroupAssignment::Items() const
 {
   return items;
 }
 
-StepAP214_AutoDesignGroupedItem StepAP214_AutoDesignGroupAssignment::ItemsValue(
-  const Standard_Integer num) const
+StepAP214_AutoDesignGroupedItem StepAP214_AutoDesignGroupAssignment::ItemsValue(const int num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepAP214_AutoDesignGroupAssignment::NbItems() const
+int StepAP214_AutoDesignGroupAssignment::NbItems() const
 {
   return items->Length();
 }

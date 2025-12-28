@@ -45,29 +45,31 @@ public:
   static Standard_EXPORT const Standard_GUID& GetID();
 
   //! Returns the ID of TObj_TReference attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
 public:
   //! Method for create TObj_TReference object
 
   //! Creates reference on TDF_Label <theLabel> to the object <theObject> and
   //! creates backreference from the object <theObject> to <theMaster> one.
-  static Standard_EXPORT Handle(TObj_TReference) Set(const TDF_Label&           theLabel,
-                                                     const Handle(TObj_Object)& theObject,
-                                                     const Handle(TObj_Object)& theMaster);
+  static Standard_EXPORT occ::handle<TObj_TReference> Set(
+    const TDF_Label&                theLabel,
+    const occ::handle<TObj_Object>& theObject,
+    const occ::handle<TObj_Object>& theMaster);
 
 public:
   //! Methods for setting and obtaining referenced object
 
   //! Sets the reference to the theObject
-  Standard_EXPORT void Set(const Handle(TObj_Object)& theObject, const TDF_Label& theMasterLabel);
+  Standard_EXPORT void Set(const occ::handle<TObj_Object>& theObject,
+                           const TDF_Label&                theMasterLabel);
 
   //! Sets the reference to the theObject at indicated Label.
   //! It is method for persistent only. Don`t use anywhere else.
   Standard_EXPORT void Set(const TDF_Label& theLabel, const TDF_Label& theMasterLabel);
 
   //! Returns the referenced theObject
-  Standard_EXPORT Handle(TObj_Object) Get() const;
+  Standard_EXPORT occ::handle<TObj_Object> Get() const;
 
   //! Returns the Label of master object.
   TDF_Label GetMasterLabel() const { return myMasterLabel; }
@@ -80,36 +82,33 @@ public:
 
   //! Returns an new empty TObj_TReference attribute. It is used by the
   //! copy algorithm.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Restores the backuped contents from <theWith> into this one. It is used
   //! when aborting a transaction.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theWith) override;
 
   //! This method is used when copying an attribute from a source structure
   //! into a target structure.
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theInto,
-                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theInto,
+                             const occ::handle<TDF_RelocationTable>& theRT) const override;
 
   //! Remove back references of it reference if it is in other document.
-  virtual Standard_EXPORT void BeforeForget() Standard_OVERRIDE;
+  virtual Standard_EXPORT void BeforeForget() override;
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
-  virtual Standard_EXPORT Standard_Boolean
-    BeforeUndo(const Handle(TDF_AttributeDelta)& theDelta,
-               const Standard_Boolean            isForced = Standard_False) Standard_OVERRIDE;
+  virtual Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
+                                          const bool isForced = false) override;
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
-  virtual Standard_EXPORT Standard_Boolean
-    AfterUndo(const Handle(TDF_AttributeDelta)& theDelta,
-              const Standard_Boolean            isForced = Standard_False) Standard_OVERRIDE;
+  virtual Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
+                                         const bool isForced = false) override;
 
   //! Check if back reference exists for reference.
-  virtual Standard_EXPORT void AfterResume() Standard_OVERRIDE;
+  virtual Standard_EXPORT void AfterResume() override;
 
   //! Called after retrieval reference from file.
-  virtual Standard_EXPORT Standard_Boolean
-    AfterRetrieval(const Standard_Boolean forceIt = Standard_False) Standard_OVERRIDE;
+  virtual Standard_EXPORT bool AfterRetrieval(const bool forceIt = false) override;
 
 private:
   //! Fields
@@ -122,8 +121,6 @@ public:
 };
 
 //! Define handle class for TObj_TReference
-DEFINE_STANDARD_HANDLE(TObj_TReference, TDF_Attribute)
-
 #endif
 
 #ifdef _MSC_VER

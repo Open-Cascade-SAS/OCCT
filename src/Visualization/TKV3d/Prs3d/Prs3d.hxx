@@ -20,7 +20,10 @@
 #include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_NListOfSequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_List.hxx>
 #include <Prs3d_Presentation.hxx>
 
 class Poly_Triangulation;
@@ -45,13 +48,13 @@ public:
 
   //! draws an arrow at a given location, with respect
   //! to a given direction.
-  Standard_EXPORT static Standard_Boolean MatchSegment(const Standard_Real X,
-                                                       const Standard_Real Y,
-                                                       const Standard_Real Z,
-                                                       const Standard_Real aDistance,
-                                                       const gp_Pnt&       p1,
-                                                       const gp_Pnt&       p2,
-                                                       Standard_Real&      dist);
+  Standard_EXPORT static bool MatchSegment(const double  X,
+                                           const double  Y,
+                                           const double  Z,
+                                           const double  aDistance,
+                                           const gp_Pnt& p1,
+                                           const gp_Pnt& p2,
+                                           double&       dist);
 
   //! Computes the absolute deflection value based on relative deflection
   //! Prs3d_Drawer::DeviationCoefficient().
@@ -60,11 +63,11 @@ public:
   //! @param[in] theDeviationCoefficient  relative deflection coefficient from
   //! Prs3d_Drawer::DeviationCoefficient()
   //! @return absolute deflection coefficient based on bounding box dimensions
-  static Standard_Real GetDeflection(const Graphic3d_Vec3d& theBndMin,
-                                     const Graphic3d_Vec3d& theBndMax,
-                                     const Standard_Real    theDeviationCoefficient)
+  static double GetDeflection(const NCollection_Vec3<double>& theBndMin,
+                              const NCollection_Vec3<double>& theBndMax,
+                              const double                    theDeviationCoefficient)
   {
-    const Graphic3d_Vec3d aDiag = theBndMax - theBndMin;
+    const NCollection_Vec3<double> aDiag = theBndMax - theBndMin;
     return (std::max)(aDiag.maxComp() * theDeviationCoefficient * 4.0, Precision::Confusion());
   }
 
@@ -77,9 +80,9 @@ public:
   //! Prs3d_Drawer::MaximalChordialDeviation()
   //! @return absolute deflection coefficient based on bounding box dimensions or
   //! theMaximalChordialDeviation if bounding box is Void or Infinite
-  static Standard_Real GetDeflection(const Bnd_Box&      theBndBox,
-                                     const Standard_Real theDeviationCoefficient,
-                                     const Standard_Real theMaximalChordialDeviation)
+  static double GetDeflection(const Bnd_Box& theBndBox,
+                              const double   theDeviationCoefficient,
+                              const double   theMaximalChordialDeviation)
   {
     if (theBndBox.IsVoid())
     {
@@ -96,7 +99,7 @@ public:
       aBndBox = theBndBox.FinitePart();
     }
 
-    Graphic3d_Vec3d aVecMin, aVecMax;
+    NCollection_Vec3<double> aVecMin, aVecMax;
     aBndBox.Get(aVecMin.x(), aVecMin.y(), aVecMin.z(), aVecMax.x(), aVecMax.y(), aVecMax.z());
     return GetDeflection(aVecMin, aVecMax, theDeviationCoefficient);
   }
@@ -104,21 +107,22 @@ public:
   //! Assembles array of primitives for sequence of polylines.
   //! @param[in] thePoints  the polylines sequence
   //! @return array of primitives
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfPrimitives) PrimitivesFromPolylines(
-    const Prs3d_NListOfSequenceOfPnt& thePoints);
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfPrimitives> PrimitivesFromPolylines(
+    const NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& thePoints);
 
   //! Add primitives into new group in presentation and clear the list of polylines.
-  Standard_EXPORT static void AddPrimitivesGroup(const Handle(Prs3d_Presentation)& thePrs,
-                                                 const Handle(Prs3d_LineAspect)&   theAspect,
-                                                 Prs3d_NListOfSequenceOfPnt&       thePolylines);
+  Standard_EXPORT static void AddPrimitivesGroup(
+    const occ::handle<Prs3d_Presentation>&                        thePrs,
+    const occ::handle<Prs3d_LineAspect>&                          theAspect,
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& thePolylines);
 
   //! Add triangulation free edges into sequence of line segments.
   //! @param[out] theSegments  sequence of line segments to fill
   //! @param[in] thePolyTri    triangulation to process
   //! @param[in] theLocation   transformation to apply
-  Standard_EXPORT static void AddFreeEdges(TColgp_SequenceOfPnt&             theSegments,
-                                           const Handle(Poly_Triangulation)& thePolyTri,
-                                           const gp_Trsf&                    theLocation);
+  Standard_EXPORT static void AddFreeEdges(NCollection_Sequence<gp_Pnt>&          theSegments,
+                                           const occ::handle<Poly_Triangulation>& thePolyTri,
+                                           const gp_Trsf&                         theLocation);
 };
 
 #endif // _Prs3d_HeaderFile

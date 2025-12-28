@@ -24,8 +24,7 @@ StepVisual_RenderingPropertiesSelect::StepVisual_RenderingPropertiesSelect() {}
 
 //=================================================================================================
 
-Standard_Integer StepVisual_RenderingPropertiesSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_RenderingPropertiesSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -38,16 +37,16 @@ Standard_Integer StepVisual_RenderingPropertiesSelect::CaseNum(
 
 //=================================================================================================
 
-Handle(StepVisual_SurfaceStyleReflectanceAmbient) StepVisual_RenderingPropertiesSelect::
+occ::handle<StepVisual_SurfaceStyleReflectanceAmbient> StepVisual_RenderingPropertiesSelect::
   SurfaceStyleReflectanceAmbient() const
 {
-  return Handle(StepVisual_SurfaceStyleReflectanceAmbient)::DownCast(Value());
+  return occ::down_cast<StepVisual_SurfaceStyleReflectanceAmbient>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepVisual_SurfaceStyleTransparent) StepVisual_RenderingPropertiesSelect::
+occ::handle<StepVisual_SurfaceStyleTransparent> StepVisual_RenderingPropertiesSelect::
   SurfaceStyleTransparent() const
 {
-  return Handle(StepVisual_SurfaceStyleTransparent)::DownCast(Value());
+  return occ::down_cast<StepVisual_SurfaceStyleTransparent>(Value());
 }

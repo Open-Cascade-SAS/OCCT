@@ -31,10 +31,10 @@ RWStepBasic_RWActionRequestSolution::RWStepBasic_RWActionRequestSolution() {}
 //=================================================================================================
 
 void RWStepBasic_RWActionRequestSolution::ReadStep(
-  const Handle(StepData_StepReaderData)&         data,
-  const Standard_Integer                         num,
-  Handle(Interface_Check)&                       ach,
-  const Handle(StepBasic_ActionRequestSolution)& ent) const
+  const occ::handle<StepData_StepReaderData>&         data,
+  const int                                           num,
+  occ::handle<Interface_Check>&                       ach,
+  const occ::handle<StepBasic_ActionRequestSolution>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "action_request_solution"))
@@ -42,10 +42,10 @@ void RWStepBasic_RWActionRequestSolution::ReadStep(
 
   // Own fields of ActionRequestSolution
 
-  Handle(StepBasic_ActionMethod) aMethod;
+  occ::handle<StepBasic_ActionMethod> aMethod;
   data->ReadEntity(num, 1, "method", ach, STANDARD_TYPE(StepBasic_ActionMethod), aMethod);
 
-  Handle(StepBasic_VersionedActionRequest) aRequest;
+  occ::handle<StepBasic_VersionedActionRequest> aRequest;
   data
     ->ReadEntity(num, 2, "request", ach, STANDARD_TYPE(StepBasic_VersionedActionRequest), aRequest);
 
@@ -56,8 +56,8 @@ void RWStepBasic_RWActionRequestSolution::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWActionRequestSolution::WriteStep(
-  StepData_StepWriter&                           SW,
-  const Handle(StepBasic_ActionRequestSolution)& ent) const
+  StepData_StepWriter&                                SW,
+  const occ::handle<StepBasic_ActionRequestSolution>& ent) const
 {
 
   // Own fields of ActionRequestSolution
@@ -69,8 +69,9 @@ void RWStepBasic_RWActionRequestSolution::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWActionRequestSolution::Share(const Handle(StepBasic_ActionRequestSolution)& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepBasic_RWActionRequestSolution::Share(
+  const occ::handle<StepBasic_ActionRequestSolution>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   // Own fields of ActionRequestSolution

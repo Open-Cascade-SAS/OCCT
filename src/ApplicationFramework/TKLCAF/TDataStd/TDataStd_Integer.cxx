@@ -38,11 +38,11 @@ const Standard_GUID& TDataStd_Integer::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_Integer) SetAttr(const TDF_Label&       label,
-                                        const Standard_Integer V,
-                                        const Standard_GUID&   theGuid)
+static occ::handle<TDataStd_Integer> SetAttr(const TDF_Label&     label,
+                                             const int            V,
+                                             const Standard_GUID& theGuid)
 {
-  Handle(TDataStd_Integer) A;
+  occ::handle<TDataStd_Integer> A;
   if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_Integer();
@@ -55,7 +55,7 @@ static Handle(TDataStd_Integer) SetAttr(const TDF_Label&       label,
 
 //=================================================================================================
 
-Handle(TDataStd_Integer) TDataStd_Integer::Set(const TDF_Label& L, const Standard_Integer V)
+occ::handle<TDataStd_Integer> TDataStd_Integer::Set(const TDF_Label& L, const int V)
 
 {
   return SetAttr(L, V, GetID());
@@ -66,9 +66,9 @@ Handle(TDataStd_Integer) TDataStd_Integer::Set(const TDF_Label& L, const Standar
 // purpose  : Set user defined attribute
 //=======================================================================
 
-Handle(TDataStd_Integer) TDataStd_Integer::Set(const TDF_Label&       L,
-                                               const Standard_GUID&   theGuid,
-                                               const Standard_Integer V)
+occ::handle<TDataStd_Integer> TDataStd_Integer::Set(const TDF_Label&     L,
+                                                    const Standard_GUID& theGuid,
+                                                    const int            V)
 {
   return SetAttr(L, V, theGuid);
 }
@@ -83,7 +83,7 @@ TDataStd_Integer::TDataStd_Integer()
 
 //=================================================================================================
 
-void TDataStd_Integer::Set(const Standard_Integer v)
+void TDataStd_Integer::Set(const int v)
 {
   // OCC2932 correction
   if (myValue == v)
@@ -95,16 +95,16 @@ void TDataStd_Integer::Set(const Standard_Integer v)
 
 //=================================================================================================
 
-Standard_Integer TDataStd_Integer::Get() const
+int TDataStd_Integer::Get() const
 {
   return myValue;
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_Integer::IsCaptured() const
+bool TDataStd_Integer::IsCaptured() const
 {
-  Handle(TDF_Reference) R;
+  occ::handle<TDF_Reference> R;
   return (Label().FindAttribute(TDF_Reference::GetID(), R));
 }
 
@@ -136,26 +136,26 @@ void TDataStd_Integer::SetID()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_Integer::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_Integer::NewEmpty() const
 {
   return new TDataStd_Integer();
 }
 
 //=================================================================================================
 
-void TDataStd_Integer::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_Integer::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  Handle(TDataStd_Integer) anInt = Handle(TDataStd_Integer)::DownCast(With);
-  myValue                        = anInt->Get();
-  myID                           = anInt->ID();
+  occ::handle<TDataStd_Integer> anInt = occ::down_cast<TDataStd_Integer>(With);
+  myValue                             = anInt->Get();
+  myID                                = anInt->ID();
 }
 
 //=================================================================================================
 
-void TDataStd_Integer::Paste(const Handle(TDF_Attribute)& Into,
-                             const Handle(TDF_RelocationTable)& /*RT*/) const
+void TDataStd_Integer::Paste(const occ::handle<TDF_Attribute>& Into,
+                             const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
-  Handle(TDataStd_Integer) anInt = Handle(TDataStd_Integer)::DownCast(Into);
+  occ::handle<TDataStd_Integer> anInt = occ::down_cast<TDataStd_Integer>(Into);
   anInt->Set(myValue);
   anInt->SetID(myID);
 }
@@ -166,7 +166,7 @@ Standard_OStream& TDataStd_Integer::Dump(Standard_OStream& anOS) const
 {
   anOS << "Integer:: " << this << " : ";
   anOS << myValue;
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
   //
@@ -177,7 +177,7 @@ Standard_OStream& TDataStd_Integer::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_Integer::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_Integer::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

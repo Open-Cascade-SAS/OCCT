@@ -23,9 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESAppli_PinNumber;
-DEFINE_STANDARD_HANDLE(IGESAppli_PinNumber, IGESData_IGESEntity)
-
 //! defines PinNumber, Type <406> Form <8>
 //! in package IGESAppli
 //! Used to attach a text string representing a component
@@ -41,22 +38,21 @@ public:
   //! PinNumber
   //! - nbPropVal : Number of property values (always = 1)
   //! - aValue    : Pin Number value
-  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
-                            const Handle(TCollection_HAsciiString)& aValue);
+  Standard_EXPORT void Init(const int                                    nbPropVal,
+                            const occ::handle<TCollection_HAsciiString>& aValue);
 
   //! returns the number of property values
   //! is always 1
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the pin number value
-  Standard_EXPORT Handle(TCollection_HAsciiString) PinNumberVal() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> PinNumberVal() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_PinNumber, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbPropertyValues;
-  Handle(TCollection_HAsciiString) thePinNumber;
+  int                                   theNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> thePinNumber;
 };
 
 #endif // _IGESAppli_PinNumber_HeaderFile

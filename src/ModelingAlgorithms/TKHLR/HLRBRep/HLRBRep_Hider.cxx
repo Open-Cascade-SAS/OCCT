@@ -22,23 +22,25 @@
 #include <HLRBRep_EdgeIList.hxx>
 #include <HLRBRep_Hider.hxx>
 #include <HLRBRep_VertexList.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 //=================================================================================================
 
-HLRBRep_Hider::HLRBRep_Hider(const Handle(HLRBRep_Data)& DS)
+HLRBRep_Hider::HLRBRep_Hider(const occ::handle<HLRBRep_Data>& DS)
     : myDS(DS)
 {
 }
 
 //=================================================================================================
 
-void HLRBRep_Hider::OwnHiding(const Standard_Integer) {}
+void HLRBRep_Hider::OwnHiding(const int) {}
 
 //=================================================================================================
 
-void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeTool& MST)
+void HLRBRep_Hider::Hide(
+  const int                                                                        FI,
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
 {
   // *****************************************************************
   //
@@ -88,19 +90,19 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
     return;              // **********************
   if (myDS->IsBadFace())
     return;
-  HLRBRep_EdgeInterferenceTool EIT(myDS); // List of Intersections
-  HLRBRep_Array1OfEData&       myEData = myDS->EDataArray();
+  HLRBRep_EdgeInterferenceTool          EIT(myDS); // List of Intersections
+  NCollection_Array1<HLRBRep_EdgeData>& myEData = myDS->EDataArray();
 
   for (; myDS->MoreEdge(); myDS->NextEdge())
-  {                                    // loop on the Edges
-    Standard_Integer E = myDS->Edge(); // *****************
+  {                       // loop on the Edges
+    int E = myDS->Edge(); // *****************
 
     try
     {
       OCC_CATCH_SIGNALS
-      Standard_Boolean         hasOut = Standard_False;
-      HLRAlgo_InterferenceList ILHidden;
-      HLRAlgo_InterferenceList ILOn;
+      bool                                   hasOut = false;
+      NCollection_List<HLRAlgo_Interference> ILHidden;
+      NCollection_List<HLRAlgo_Interference> ILOn;
       EIT.LoadEdge();
 
       for (myDS->InitInterference(); // intersections with face-edges
@@ -111,7 +113,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
         {
           if (myDS->AboveInterference() && myDS->SimpleHidingFace())
           {
-            hasOut = Standard_True;
+            hasOut = true;
           }
         }
         else
@@ -133,22 +135,22 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
       }
 
       //-- ============================================================
-      Standard_Boolean Modif;
+      bool Modif;
       do
       {
-        Modif = Standard_False;
-        HLRAlgo_ListIteratorOfInterferenceList ItSegHidden1(ILHidden);
-        while (ItSegHidden1.More() && Modif == Standard_False)
+        Modif = false;
+        NCollection_List<HLRAlgo_Interference>::Iterator ItSegHidden1(ILHidden);
+        while (ItSegHidden1.More() && Modif == false)
         {
           HLRAlgo_Interference& Int1    = ItSegHidden1.ChangeValue();
-          Standard_Integer      numseg1 = Int1.Intersection().SegIndex();
+          int                   numseg1 = Int1.Intersection().SegIndex();
           if (numseg1 != 0)
           {
-            HLRAlgo_ListIteratorOfInterferenceList ItSegHidden2(ILHidden);
-            while (ItSegHidden2.More() && Modif == Standard_False)
+            NCollection_List<HLRAlgo_Interference>::Iterator ItSegHidden2(ILHidden);
+            while (ItSegHidden2.More() && Modif == false)
             {
               HLRAlgo_Interference& Int2    = ItSegHidden2.ChangeValue();
-              Standard_Integer      numseg2 = Int2.Intersection().SegIndex();
+              int                   numseg2 = Int2.Intersection().SegIndex();
               if (numseg1 + numseg2 == 0)
               {
                 //--printf("\nHidden Traitement du segment %d  %d\n",numseg1,numseg2);
@@ -165,7 +167,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                     {
                       //-- printf("\n Index1 = %d  Index2 =
                       //%d\n",Int1.Intersection().Index(),Int2.Intersection().Index());
-                      Standard_Integer nind = -1;
+                      int nind = -1;
                       if (Int1.Intersection().Index() != 0)
                       {
                         nind = Int1.Intersection().Index();
@@ -192,25 +194,25 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                         //-- printf("\n Segment Supprime\n"); fflush(stdout);
                         HLRAlgo_Intersection& inter = Int1.ChangeIntersection();
                         inter.SegIndex(nind);
-                        Standard_Real p1 = Int1.Intersection().Parameter();
-                        Standard_Real p2 = Int2.Intersection().Parameter();
+                        double p1 = Int1.Intersection().Parameter();
+                        double p2 = Int2.Intersection().Parameter();
                         inter.Parameter((p1 + p2) * 0.5);
                         Int1.BoundaryTransition(TopAbs_EXTERNAL);
 
                         ILHidden.Remove(ItSegHidden2);
-                        Modif = Standard_True;
+                        Modif = true;
                       }
                     }
                   }
                 }
               }
-              if (Modif == Standard_False)
+              if (Modif == false)
               {
                 ItSegHidden2.Next();
               }
             }
           }
-          if (Modif == Standard_False)
+          if (Modif == false)
           {
             ItSegHidden1.Next();
           }
@@ -226,7 +228,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
         HLRBRep_EdgeIList::ProcessComplex // complex transition on ILOn
           (ILOn, EIT);                    // **************************
 
-        HLRAlgo_ListIteratorOfInterferenceList It(ILOn);
+        NCollection_List<HLRAlgo_Interference>::Iterator It(ILOn);
 
         while (It.More())
         { // process Intersections on the Face
@@ -383,29 +385,29 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
       }
       else
       {
-        Standard_Real      p1 = 0., p2 = 0.;
-        Standard_ShortReal tol1 = 0., tol2 = 0.;
+        double p1 = 0., p2 = 0.;
+        float  tol1 = 0., tol2 = 0.;
 
         HLRBRep_EdgeData&   ed = myEData(E);
         HLRAlgo_EdgeStatus& ES = ed.Status();
 
-        Standard_Boolean foundHidden = Standard_False;
+        bool foundHidden = false;
 
         if (!ILHidden.IsEmpty())
         {
 
           HLRBRep_EdgeIList::ProcessComplex // complex transition on ILHidden
             (ILHidden, EIT);                // ******************************
-          Standard_Integer level = 0;
+          int level = 0;
           if (!myDS->SimpleHidingFace())                     // Level at Start
             level = myDS->HidingStartLevel(E, ed, ILHidden); // **************
 
-          HLRAlgo_ListIteratorOfInterferenceList It(ILHidden);
+          NCollection_List<HLRAlgo_Interference>::Iterator It(ILHidden);
           if (myDS->SimpleHidingFace()) // remove excess interferences
           {
-            TColStd_SequenceOfReal ToRemove;
-            TopAbs_Orientation     PrevTrans = TopAbs_EXTERNAL;
-            Standard_Real          PrevParam = 0.;
+            NCollection_Sequence<double> ToRemove;
+            TopAbs_Orientation           PrevTrans = TopAbs_EXTERNAL;
+            double                       PrevParam = 0.;
             for (; It.More(); It.Next())
             {
               const HLRAlgo_Interference& Int    = It.Value();
@@ -433,12 +435,12 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
             It.Initialize(ILHidden);
             while (It.More())
             {
-              Standard_Real    aParam = It.Value().Intersection().Parameter();
-              Standard_Boolean found  = Standard_False;
-              for (Standard_Integer i = 1; i <= ToRemove.Length(); i++)
+              double aParam = It.Value().Intersection().Parameter();
+              bool   found  = false;
+              for (int i = 1; i <= ToRemove.Length(); i++)
                 if (aParam == ToRemove(i))
                 {
-                  found = Standard_True;
+                  found = true;
                   ILHidden.Remove(It);
                   ToRemove.Remove(i);
                   break;
@@ -458,7 +460,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
             {
 
               case TopAbs_FORWARD: {
-                Standard_Integer decal = Int.Intersection().Level();
+                int decal = Int.Intersection().Level();
                 if (level > 0)
                   ILHidden.Remove(It);
                 else
@@ -488,35 +490,35 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
           if (ILHidden.IsEmpty()) // Edge hidden
             ES.HideAll();         // ***********
           else
-            foundHidden = Standard_True;
+            foundHidden = true;
         }
 
         if (!ILHidden.IsEmpty())
         {
           // IFV
 
-          TopAbs_State     aBuildIN    = TopAbs_IN;
-          Standard_Boolean IsSuspicion = Standard_True;
+          TopAbs_State aBuildIN    = TopAbs_IN;
+          bool         IsSuspicion = true;
 
-          Standard_Real    pmax, pmin;
-          Standard_Boolean allInt = Standard_False;
-          Standard_Boolean allFor = Standard_False;
-          Standard_Boolean allRev = Standard_False;
-          pmin                    = RealLast();
-          pmax                    = -pmin;
+          double pmax, pmin;
+          bool   allInt = false;
+          bool   allFor = false;
+          bool   allRev = false;
+          pmin          = RealLast();
+          pmax          = -pmin;
 
           if (ILHidden.Extent() > 1)
           {
-            allInt = Standard_True;
-            allFor = Standard_True;
-            allRev = Standard_True;
-            HLRAlgo_ListIteratorOfInterferenceList It(ILHidden);
+            allInt = true;
+            allFor = true;
+            allRev = true;
+            NCollection_List<HLRAlgo_Interference>::Iterator It(ILHidden);
             for (; It.More(); It.Next())
             {
-              Standard_Real p = It.Value().Intersection().Parameter();
-              allFor          = allFor && (It.Value().Transition() == TopAbs_FORWARD);
-              allRev          = allRev && (It.Value().Transition() == TopAbs_REVERSED);
-              allInt          = allInt && (It.Value().Transition() == TopAbs_INTERNAL);
+              double p = It.Value().Intersection().Parameter();
+              allFor   = allFor && (It.Value().Transition() == TopAbs_FORWARD);
+              allRev   = allRev && (It.Value().Transition() == TopAbs_REVERSED);
+              allInt   = allInt && (It.Value().Transition() == TopAbs_INTERNAL);
               if (p < pmin)
                 pmin = p;
               if (p > pmax)
@@ -524,8 +526,8 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
             }
           }
 
-          HLRAlgo_ListIteratorOfInterferenceList Itl(ILHidden);
-          HLRBRep_VertexList                     IL(EIT, Itl);
+          NCollection_List<HLRAlgo_Interference>::Iterator Itl(ILHidden);
+          HLRBRep_VertexList                               IL(EIT, Itl);
 
           HLRBRep_EdgeBuilder EB(IL);
 
@@ -533,9 +535,9 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                                // ******************
           while (EB.MoreEdges())
           {
-            p1                         = 0.;
-            p2                         = 0.;
-            Standard_Integer aMaskP1P2 = 0;
+            p1            = 0.;
+            p2            = 0.;
+            int aMaskP1P2 = 0;
             while (EB.MoreVertices())
             {
               switch (EB.Orientation())
@@ -576,10 +578,10 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
             TopAbs_State aTestState = TopAbs_IN;
             if (IsSuspicion)
             {
-              // Standard_Integer aNbp = 1;
+              // int aNbp = 1;
               // aTestState = myDS->SimplClassify(E, ed, aNbp, p1, p2);
-              Standard_Integer tmplevel = 0;
-              aTestState = myDS->Classify(E, ed, Standard_True, tmplevel, (p1 + p2) / 2.);
+              int tmplevel = 0;
+              aTestState   = myDS->Classify(E, ed, true, tmplevel, (p1 + p2) / 2.);
             }
 
             if (aTestState != TopAbs_OUT)
@@ -588,8 +590,8 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                       tol1,
                       p2,
                       tol2,
-                      Standard_False,  // under  the Face
-                      Standard_False); // inside the Face
+                      false,  // under  the Face
+                      false); // inside the Face
             }
 
             EB.NextEdge();
@@ -599,9 +601,9 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                                 // ******************************
           while (EB.MoreEdges())
           {
-            p1                         = 0.;
-            p2                         = 0.;
-            Standard_Integer aMaskP1P2 = 0;
+            p1            = 0.;
+            p2            = 0.;
+            int aMaskP1P2 = 0;
             while (EB.MoreVertices())
             {
               switch (EB.Orientation())
@@ -632,10 +634,10 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
             TopAbs_State aTestState = TopAbs_IN;
             if (IsSuspicion)
             {
-              // Standard_Integer aNbp = 1;
+              // int aNbp = 1;
               // aTestState = myDS->SimplClassify(E, ed, aNbp, p1, p2);
-              Standard_Integer tmplevel = 0;
-              aTestState = myDS->Classify(E, ed, Standard_True, tmplevel, (p1 + p2) / 2.);
+              int tmplevel = 0;
+              aTestState   = myDS->Classify(E, ed, true, tmplevel, (p1 + p2) / 2.);
             }
 
             if (aTestState != TopAbs_OUT)
@@ -643,8 +645,8 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                       tol1,
                       p2,
                       tol2,
-                      Standard_False, // under the Face
-                      Standard_True); // on the boundary
+                      false, // under the Face
+                      true); // on the boundary
 
             EB.NextEdge();
           }
@@ -652,12 +654,12 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
 
         if (!ILOn.IsEmpty())
         {
-          Standard_Integer level = 0;
+          int level = 0;
           if (!myDS->SimpleHidingFace())                 // Level at Start
             level = myDS->HidingStartLevel(E, ed, ILOn); // **************
           if (level > 0)
           {
-            HLRAlgo_ListIteratorOfInterferenceList It(ILOn);
+            NCollection_List<HLRAlgo_Interference>::Iterator It(ILOn);
 
             while (It.More())
             { // suppress multi-inside Intersections
@@ -668,7 +670,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
               {
 
                 case TopAbs_FORWARD: {
-                  Standard_Integer decal = Int.Intersection().Level();
+                  int decal = Int.Intersection().Level();
                   if (level > 0)
                     ILOn.Remove(It);
                   else
@@ -704,9 +706,9 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                                 // ***********************
           while (EB.MoreEdges())
           {
-            p1                         = 0.;
-            p2                         = 0.;
-            Standard_Integer aMaskP1P2 = 0;
+            p1            = 0.;
+            p2            = 0.;
+            int aMaskP1P2 = 0;
             while (EB.MoreVertices())
             {
               switch (EB.Orientation())
@@ -738,8 +740,8 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                     tol1,
                     p2,
                     tol2,
-                    Standard_True,   // on     the Face
-                    Standard_False); // inside the Face
+                    true,   // on     the Face
+                    false); // inside the Face
             EB.NextEdge();
           }
 
@@ -747,9 +749,9 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                                 // *************************************
           while (EB.MoreEdges())
           {
-            p1                         = 0.;
-            p2                         = 0.;
-            Standard_Integer aMaskP1P2 = 0;
+            p1            = 0.;
+            p2            = 0.;
+            int aMaskP1P2 = 0;
             while (EB.MoreVertices())
             {
               switch (EB.Orientation())
@@ -781,8 +783,8 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI, BRepTopAdaptor_MapOfShapeToo
                     tol1,
                     p2,
                     tol2,
-                    Standard_True,  // on the Face
-                    Standard_True); // on the boundary
+                    true,  // on the Face
+                    true); // on the boundary
             EB.NextEdge();
           }
         }

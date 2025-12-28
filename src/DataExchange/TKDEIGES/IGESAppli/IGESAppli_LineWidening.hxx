@@ -23,9 +23,6 @@
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESAppli_LineWidening;
-DEFINE_STANDARD_HANDLE(IGESAppli_LineWidening, IGESData_IGESEntity)
-
 //! defines LineWidening, Type <406> Form <5>
 //! in package IGESAppli
 //! Defines the characteristics of entities when they are
@@ -52,50 +49,49 @@ public:
   //! 1 = left justified
   //! 2 = right justified
   //! - aExtnVal    : Extension value if aExtnFlag = 2
-  Standard_EXPORT void Init(const Standard_Integer nbPropVal,
-                            const Standard_Real    aWidth,
-                            const Standard_Integer aCornering,
-                            const Standard_Integer aExtnFlag,
-                            const Standard_Integer aJustifFlag,
-                            const Standard_Real    aExtnVal);
+  Standard_EXPORT void Init(const int    nbPropVal,
+                            const double aWidth,
+                            const int    aCornering,
+                            const int    aExtnFlag,
+                            const int    aJustifFlag,
+                            const double aExtnVal);
 
   //! returns the number of property values
   //! is always 5
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the width of metallization
-  Standard_EXPORT Standard_Real WidthOfMetalization() const;
+  Standard_EXPORT double WidthOfMetalization() const;
 
   //! returns the cornering code
   //! 0 = Rounded  / 1 = Squared
-  Standard_EXPORT Standard_Integer CorneringCode() const;
+  Standard_EXPORT int CorneringCode() const;
 
   //! returns the extension flag
   //! 0 = No extension
   //! 1 = One-half width extension
   //! 2 = Extension set by theExtnVal
-  Standard_EXPORT Standard_Integer ExtensionFlag() const;
+  Standard_EXPORT int ExtensionFlag() const;
 
   //! returns the justification flag
   //! 0 = Centre justified
   //! 1 = Left justified
   //! 2 = Right justified
-  Standard_EXPORT Standard_Integer JustificationFlag() const;
+  Standard_EXPORT int JustificationFlag() const;
 
   //! returns the Extension Value
   //! Present only if theExtnFlag = 2
-  Standard_EXPORT Standard_Real ExtensionValue() const;
+  Standard_EXPORT double ExtensionValue() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_LineWidening, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Real    theWidth;
-  Standard_Integer theCorneringCode;
-  Standard_Integer theExtensionFlag;
-  Standard_Integer theJustificationFlag;
-  Standard_Real    theExtensionValue;
+  int    theNbPropertyValues;
+  double theWidth;
+  int    theCorneringCode;
+  int    theExtensionFlag;
+  int    theJustificationFlag;
+  double theExtensionValue;
 };
 
 #endif // _IGESAppli_LineWidening_HeaderFile

@@ -17,9 +17,9 @@
 #define _SelectMgr_TriangularFrustumSet_HeaderFile
 
 #include <SelectMgr_TriangularFrustum.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-
-typedef NCollection_List<Handle(SelectMgr_TriangularFrustum)> SelectMgr_TriangFrustums;
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! This class is used to handle polyline selection. The main principle of polyline selection
 //! algorithm is to split the polygon defined by polyline onto triangles.
@@ -34,7 +34,7 @@ public:
   //! Auxiliary structure to define selection polyline
   struct SelectionPolyline
   {
-    Handle(TColgp_HArray1OfPnt2d) Points;
+    occ::handle<NCollection_HArray1<gp_Pnt2d>> Points;
   };
 
 public:
@@ -45,21 +45,21 @@ public:
   Standard_EXPORT virtual ~SelectMgr_TriangularFrustumSet();
 
   //! Initializes set of triangular frustums by polyline
-  Standard_EXPORT void Init(const TColgp_Array1OfPnt2d& thePoints);
+  Standard_EXPORT void Init(const NCollection_Array1<gp_Pnt2d>& thePoints);
 
   //! Meshes polygon bounded by polyline. Than organizes a set of triangular frustums,
   //! where each triangle's projection onto near and far view frustum planes is considered as a
   //! frustum base NOTE: it should be called after Init() method
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build() override;
 
   //! Returns FALSE (not applicable to this volume).
-  virtual Standard_Boolean IsScalable() const Standard_OVERRIDE { return false; }
+  virtual bool IsScalable() const override { return false; }
 
   //! Returns a copy of the frustum with all sub-volumes transformed according to the matrix given
-  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform(
-    const Standard_Integer                  theScale,
-    const gp_GTrsf&                         theTrsf,
-    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<SelectMgr_BaseIntersector> ScaleAndTransform(
+    const int                                    theScale,
+    const gp_GTrsf&                              theTrsf,
+    const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const override;
 
   //! Returns a copy of the frustum using the given frustum builder configuration.
   //! Returned frustum should be re-constructed before being used.
@@ -67,163 +67,153 @@ public:
   //! transformed frustum from scratch;
   //!                        should NOT be NULL.
   //! @return a copy of the frustum with the input builder assigned
-  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) CopyWithBuilder(
-    const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<SelectMgr_BaseIntersector> CopyWithBuilder(
+    const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const override;
 
 public:
-  Standard_EXPORT virtual Standard_Boolean OverlapsBox(const SelectMgr_Vec3&          theMinPnt,
-                                                       const SelectMgr_Vec3&          theMaxPnt,
-                                                       const SelectMgr_ViewClipRange& theClipRange,
-                                                       SelectBasics_PickResult& thePickResult) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool OverlapsBox(const NCollection_Vec3<double>& theMinPnt,
+                                           const NCollection_Vec3<double>& theMaxPnt,
+                                           const SelectMgr_ViewClipRange&  theClipRange,
+                                           SelectBasics_PickResult& thePickResult) const override;
 
-  Standard_EXPORT virtual Standard_Boolean OverlapsBox(const SelectMgr_Vec3& theMinPnt,
-                                                       const SelectMgr_Vec3& theMaxPnt,
-                                                       Standard_Boolean*     theInside) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool OverlapsBox(const NCollection_Vec3<double>& theMinPnt,
+                                           const NCollection_Vec3<double>& theMaxPnt,
+                                           bool* theInside) const override;
 
-  Standard_EXPORT virtual Standard_Boolean OverlapsPoint(
-    const gp_Pnt&                  thePnt,
-    const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool OverlapsPoint(const gp_Pnt&                  thePnt,
+                                             const SelectMgr_ViewClipRange& theClipRange,
+                                             SelectBasics_PickResult& thePickResult) const override;
 
   //! Always returns FALSE (not applicable to this selector).
-  virtual Standard_Boolean OverlapsPoint(const gp_Pnt&) const Standard_OVERRIDE
-  {
-    return Standard_False;
-  }
+  virtual bool OverlapsPoint(const gp_Pnt&) const override { return false; }
 
-  Standard_EXPORT virtual Standard_Boolean OverlapsPolygon(
-    const TColgp_Array1OfPnt&      theArrayOfPnts,
-    Select3D_TypeOfSensitivity     theSensType,
-    const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool OverlapsPolygon(
+    const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
+    Select3D_TypeOfSensitivity        theSensType,
+    const SelectMgr_ViewClipRange&    theClipRange,
+    SelectBasics_PickResult&          thePickResult) const override;
 
-  Standard_EXPORT virtual Standard_Boolean OverlapsSegment(
+  Standard_EXPORT virtual bool OverlapsSegment(
     const gp_Pnt&                  thePnt1,
     const gp_Pnt&                  thePnt2,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
-  Standard_EXPORT virtual Standard_Boolean OverlapsTriangle(
+  Standard_EXPORT virtual bool OverlapsTriangle(
     const gp_Pnt&                  thePnt1,
     const gp_Pnt&                  thePnt2,
     const gp_Pnt&                  thePnt3,
     Select3D_TypeOfSensitivity     theSensType,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
 public:
   //! Calculates the point on a view ray that was detected during the run of selection algo by given
   //! depth
-  Standard_EXPORT virtual gp_Pnt DetectedPoint(const Standard_Real theDepth) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt DetectedPoint(const double theDepth) const override;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
-  Standard_EXPORT virtual Standard_Boolean OverlapsSphere(const gp_Pnt&       theCenter,
-                                                          const Standard_Real theRadius,
-                                                          Standard_Boolean* theInside = NULL) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool OverlapsSphere(const gp_Pnt& theCenter,
+                                              const double  theRadius,
+                                              bool*         theInside = NULL) const override;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
-  Standard_EXPORT virtual Standard_Boolean OverlapsSphere(
+  Standard_EXPORT virtual bool OverlapsSphere(
     const gp_Pnt&                  theCenter,
-    const Standard_Real            theRadius,
+    const double                   theRadius,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  Standard_EXPORT virtual Standard_Boolean OverlapsCylinder(
-    const Standard_Real            theBottomRad,
-    const Standard_Real            theTopRad,
-    const Standard_Real            theHeight,
+  Standard_EXPORT virtual bool OverlapsCylinder(
+    const double                   theBottomRad,
+    const double                   theTopRad,
+    const double                   theHeight,
     const gp_Trsf&                 theTrsf,
-    const Standard_Boolean         theIsHollow,
+    const bool                     theIsHollow,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  Standard_EXPORT virtual Standard_Boolean OverlapsCylinder(
-    const Standard_Real    theBottomRad,
-    const Standard_Real    theTopRad,
-    const Standard_Real    theHeight,
-    const gp_Trsf&         theTrsf,
-    const Standard_Boolean theIsHollow,
-    Standard_Boolean*      theInside = NULL) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool OverlapsCylinder(const double   theBottomRad,
+                                                const double   theTopRad,
+                                                const double   theHeight,
+                                                const gp_Trsf& theTrsf,
+                                                const bool     theIsHollow,
+                                                bool*          theInside = NULL) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  Standard_EXPORT virtual Standard_Boolean OverlapsCircle(
-    const Standard_Real            theBottomRad,
+  Standard_EXPORT virtual bool OverlapsCircle(
+    const double                   theBottomRad,
     const gp_Trsf&                 theTrsf,
-    const Standard_Boolean         theIsFilled,
+    const bool                     theIsFilled,
     const SelectMgr_ViewClipRange& theClipRange,
-    SelectBasics_PickResult&       thePickResult) const Standard_OVERRIDE;
+    SelectBasics_PickResult&       thePickResult) const override;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  Standard_EXPORT virtual Standard_Boolean OverlapsCircle(const Standard_Real    theBottomRad,
-                                                          const gp_Trsf&         theTrsf,
-                                                          const Standard_Boolean theIsFilled,
-                                                          Standard_Boolean* theInside = NULL) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool OverlapsCircle(const double   theBottomRad,
+                                              const gp_Trsf& theTrsf,
+                                              const bool     theIsFilled,
+                                              bool*          theInside = NULL) const override;
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
   Standard_EXPORT virtual void GetPlanes(
-    NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE;
+    NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const override;
 
   //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the
   //! algorithm will mark both included and overlapped entities as matched
-  Standard_EXPORT virtual void SetAllowOverlapDetection(const Standard_Boolean theIsToAllow);
+  Standard_EXPORT virtual void SetAllowOverlapDetection(const bool theIsToAllow);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 private:
   //! Checks whether the segment intersects with the boundary of the current volume selection
-  Standard_EXPORT Standard_Boolean isIntersectBoundary(const gp_Pnt& thePnt1,
-                                                       const gp_Pnt& thePnt2) const;
+  Standard_EXPORT bool isIntersectBoundary(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2) const;
 
   //! Checks whether the circle intersects with the boundary of the current volume selection
-  Standard_EXPORT Standard_Boolean isIntersectBoundary(const Standard_Real    theRadius,
-                                                       const gp_Trsf&         theTrsf,
-                                                       const Standard_Boolean theIsFilled) const;
+  Standard_EXPORT bool isIntersectBoundary(const double   theRadius,
+                                           const gp_Trsf& theTrsf,
+                                           const bool     theIsFilled) const;
 
   //! Checks whether the triangle intersects with a segment
-  Standard_EXPORT static Standard_Boolean segmentTriangleIntersection(const gp_Pnt& theOrig,
-                                                                      const gp_Vec& theDir,
-                                                                      const gp_Pnt& theV1,
-                                                                      const gp_Pnt& theV2,
-                                                                      const gp_Pnt& theV3);
-
-  Standard_EXPORT static Standard_Boolean segmentSegmentIntersection(const gp_Pnt& theStartPnt1,
-                                                                     const gp_Pnt& theEndPnt1,
-                                                                     const gp_Pnt& theStartPnt2,
-                                                                     const gp_Pnt& theEndPnt2);
-
-  Standard_EXPORT static Standard_Boolean pointInTriangle(const gp_Pnt& thePnt,
+  Standard_EXPORT static bool segmentTriangleIntersection(const gp_Pnt& theOrig,
+                                                          const gp_Vec& theDir,
                                                           const gp_Pnt& theV1,
                                                           const gp_Pnt& theV2,
                                                           const gp_Pnt& theV3);
 
+  Standard_EXPORT static bool segmentSegmentIntersection(const gp_Pnt& theStartPnt1,
+                                                         const gp_Pnt& theEndPnt1,
+                                                         const gp_Pnt& theStartPnt2,
+                                                         const gp_Pnt& theEndPnt2);
+
+  Standard_EXPORT static bool pointInTriangle(const gp_Pnt& thePnt,
+                                              const gp_Pnt& theV1,
+                                              const gp_Pnt& theV2,
+                                              const gp_Pnt& theV3);
+
 private:
-  SelectMgr_TriangFrustums myFrustums; //!< set of triangular frustums
+  NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>
+    myFrustums; //!< set of triangular frustums
   // clang-format off
   SelectionPolyline             mySelPolyline;       //!< parameters of selection polyline (it is used to build triangle frustum set)
-  TColgp_Array1OfPnt            myBoundaryPoints;    //!< boundary points
+  NCollection_Array1<gp_Pnt>            myBoundaryPoints;    //!< boundary points
                                                      //!       1_____2
                                                      //!      /|     |\ .
                                                      //!    4/_|_____|_\3
                                                      //!    | 5|_____|6 |
                                                      //!    | /       \ |
                                                      //!   8|/_________\|7
-  Standard_Boolean              myToAllowOverlap;    //!< flag to detect only fully included sensitives or not
+  bool              myToAllowOverlap;    //!< flag to detect only fully included sensitives or not
   // clang-format on
 };
 

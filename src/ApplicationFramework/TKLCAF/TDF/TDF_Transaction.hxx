@@ -46,13 +46,13 @@ public:
 
   //! Creates a transaction context on <aDF>, ready to
   //! be opened.
-  Standard_EXPORT TDF_Transaction(const Handle(TDF_Data)&        aDF,
+  Standard_EXPORT TDF_Transaction(const occ::handle<TDF_Data>&   aDF,
                                   const TCollection_AsciiString& aName = "");
 
   //! Aborts all the transactions on <myDF> and sets
   //! <aDF> to build a transaction context on <aDF>,
   //! ready to be opened.
-  Standard_EXPORT void Initialize(const Handle(TDF_Data)& aDF);
+  Standard_EXPORT void Initialize(const occ::handle<TDF_Data>& aDF);
 
   //! If not yet done, opens a new transaction on
   //! <myDF>. Returns the index of the just opened
@@ -61,11 +61,11 @@ public:
   //! It raises DomainError if the transaction is
   //! already open, and NullObject if there is no
   //! current Data framework.
-  Standard_EXPORT Standard_Integer Open();
+  Standard_EXPORT int Open();
 
   //! Commits the transactions until AND including the
   //! current opened one.
-  Standard_EXPORT Handle(TDF_Delta) Commit(const Standard_Boolean withDelta = Standard_False);
+  Standard_EXPORT occ::handle<TDF_Delta> Commit(const bool withDelta = false);
 
   //! Aborts the transactions until AND including the
   //! current opened one.
@@ -74,19 +74,19 @@ public:
   ~TDF_Transaction() { Abort(); }
 
   //! Returns the Data from TDF.
-  Handle(TDF_Data) Data() const;
+  occ::handle<TDF_Data> Data() const;
 
   //! Returns the number of the transaction opened by <me>.
-  Standard_Integer Transaction() const;
+  int Transaction() const;
 
   //! Returns the transaction name.
   const TCollection_AsciiString& Name() const;
 
   //! Returns true if the transaction is open.
-  Standard_Boolean IsOpen() const;
+  bool IsOpen() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   //! Private to avoid copy.
@@ -94,9 +94,9 @@ private:
   TDF_Transaction& operator=(const TDF_Transaction& theOther);
 
 private:
-  Handle(TDF_Data)        myDF;
+  occ::handle<TDF_Data>   myDF;
   TCollection_AsciiString myName;
-  Standard_Integer        myUntilTransaction;
+  int                     myUntilTransaction;
 };
 
 #include <TDF_Transaction.lxx>

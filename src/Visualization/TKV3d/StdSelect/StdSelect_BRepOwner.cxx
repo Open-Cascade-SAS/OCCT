@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StdSelect_BRepOwner, SelectMgr_EntityOwner)
 
 //=================================================================================================
 
-StdSelect_BRepOwner::StdSelect_BRepOwner(const Standard_Integer thePriority)
+StdSelect_BRepOwner::StdSelect_BRepOwner(const int thePriority)
     : SelectMgr_EntityOwner(thePriority),
       myCurMode(0)
 {
@@ -39,9 +39,9 @@ StdSelect_BRepOwner::StdSelect_BRepOwner(const Standard_Integer thePriority)
 
 //=================================================================================================
 
-StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape&    theShape,
-                                         const Standard_Integer thePriority,
-                                         const Standard_Boolean theComesFromDecomposition)
+StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape& theShape,
+                                         const int           thePriority,
+                                         const bool          theComesFromDecomposition)
     : SelectMgr_EntityOwner(thePriority),
       myShape(theShape),
       myCurMode(0)
@@ -51,10 +51,10 @@ StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape&    theShape,
 
 //=================================================================================================
 
-StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape&                       theShape,
-                                         const Handle(SelectMgr_SelectableObject)& theOrigin,
-                                         const Standard_Integer                    thePriority,
-                                         const Standard_Boolean theComesFromDecomposition)
+StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape&                            theShape,
+                                         const occ::handle<SelectMgr_SelectableObject>& theOrigin,
+                                         const int                                      thePriority,
+                                         const bool theComesFromDecomposition)
     : SelectMgr_EntityOwner(theOrigin, thePriority),
       myShape(theShape),
       myCurMode(0)
@@ -64,10 +64,10 @@ StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape&                    
 
 //=================================================================================================
 
-Standard_Boolean StdSelect_BRepOwner::IsHilighted(const Handle(PrsMgr_PresentationManager)& PM,
-                                                  const Standard_Integer aMode) const
+bool StdSelect_BRepOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManager>& PM,
+                                      const int                                      aMode) const
 {
-  Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
+  int M = (aMode < 0) ? myCurMode : aMode;
   if (myPrsSh.IsNull())
     return PM->IsHighlighted(Selectable(), M);
   return PM->IsHighlighted(myPrsSh, M);
@@ -75,18 +75,18 @@ Standard_Boolean StdSelect_BRepOwner::IsHilighted(const Handle(PrsMgr_Presentati
 
 //=================================================================================================
 
-void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
-                                           const Handle(Prs3d_Drawer)&               theStyle,
-                                           const Standard_Integer                    theMode)
+void StdSelect_BRepOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                           const occ::handle<Prs3d_Drawer>&               theStyle,
+                                           const int                                      theMode)
 {
   if (!HasSelectable())
   {
     return;
   }
 
-  const Standard_Integer             aDispMode = (theMode < 0) ? myCurMode : theMode;
-  Handle(SelectMgr_SelectableObject) aSel      = Selectable();
-  const Graphic3d_ZLayerId           aHiLayer =
+  const int                               aDispMode = (theMode < 0) ? myCurMode : theMode;
+  occ::handle<SelectMgr_SelectableObject> aSel      = Selectable();
+  const Graphic3d_ZLayerId                aHiLayer =
     theStyle->ZLayer() != Graphic3d_ZLayerId_UNKNOWN ? theStyle->ZLayer() : aSel->ZLayer();
   if (!myFromDecomposition)
   {
@@ -119,8 +119,8 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
   thePM->Color(myPrsSh, theStyle, aDispMode, aSel, aHiLayer);
 }
 
-void StdSelect_BRepOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                    const Standard_Integer)
+void StdSelect_BRepOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                    const int)
 {
   if (myPrsSh.IsNull() || !myFromDecomposition)
   {
@@ -132,10 +132,9 @@ void StdSelect_BRepOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& th
   }
 }
 
-void StdSelect_BRepOwner::Clear(const Handle(PrsMgr_PresentationManager)& PM,
-                                const Standard_Integer                    aMode)
+void StdSelect_BRepOwner::Clear(const occ::handle<PrsMgr_PresentationManager>& PM, const int aMode)
 {
-  Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
+  int M = (aMode < 0) ? myCurMode : aMode;
   if (!myPrsSh.IsNull())
     PM->Clear(myPrsSh, M);
   myPrsSh.Nullify();
@@ -152,9 +151,10 @@ void StdSelect_BRepOwner::SetLocation(const TopLoc_Location& aLoc)
 
 //=================================================================================================
 
-void StdSelect_BRepOwner::UpdateHighlightTrsf(const Handle(V3d_Viewer)&                 theViewer,
-                                              const Handle(PrsMgr_PresentationManager)& theManager,
-                                              const Standard_Integer                    theDispMode)
+void StdSelect_BRepOwner::UpdateHighlightTrsf(
+  const occ::handle<V3d_Viewer>&                 theViewer,
+  const occ::handle<PrsMgr_PresentationManager>& theManager,
+  const int                                      theDispMode)
 {
   if (!myPrsSh.IsNull() || HasSelectable())
   {
@@ -164,7 +164,7 @@ void StdSelect_BRepOwner::UpdateHighlightTrsf(const Handle(V3d_Viewer)&         
 
 //=================================================================================================
 
-void StdSelect_BRepOwner::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void StdSelect_BRepOwner::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

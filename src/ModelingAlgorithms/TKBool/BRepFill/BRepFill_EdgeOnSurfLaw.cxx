@@ -25,38 +25,38 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomFill_CurveAndTrihedron.hxx>
 #include <GeomFill_Darboux.hxx>
-#include <GeomFill_HArray1OfLocationLaw.hxx>
 #include <GeomFill_LocationLaw.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Type.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_HArray1OfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_EdgeOnSurfLaw, BRepFill_LocationLaw)
 
 BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path, const TopoDS_Shape& Surf)
 {
-  hasresult = Standard_True;
+  hasresult = true;
   Init(Path);
 
-  Standard_Boolean       Trouve;
-  Standard_Integer       ipath; //  ,NbEdge;
+  bool                   Trouve;
+  int                    ipath; //  ,NbEdge;
   TopAbs_Orientation     Or;
   BRepTools_WireExplorer wexp;
   TopExp_Explorer        exp;
   // Class BRep_Tool without fields and without Constructor :
   //  BRep_Tool B;
-  TopoDS_Edge                        E;
-  Handle(Geom2d_Curve)               C;
-  Handle(Geom2dAdaptor_Curve)        AC2d;
-  Handle(Adaptor3d_CurveOnSurface)   AC;
-  Handle(BRepAdaptor_Surface)        AS;
-  Standard_Real                      First = 0., Last = 0.;
-  Handle(GeomFill_Darboux)           TLaw = new (GeomFill_Darboux)();
-  Handle(GeomFill_CurveAndTrihedron) Law  = new (GeomFill_CurveAndTrihedron)(TLaw);
+  TopoDS_Edge                             E;
+  occ::handle<Geom2d_Curve>               C;
+  occ::handle<Geom2dAdaptor_Curve>        AC2d;
+  occ::handle<Adaptor3d_CurveOnSurface>   AC;
+  occ::handle<BRepAdaptor_Surface>        AS;
+  double                                  First = 0., Last = 0.;
+  occ::handle<GeomFill_Darboux>           TLaw = new (GeomFill_Darboux)();
+  occ::handle<GeomFill_CurveAndTrihedron> Law  = new (GeomFill_CurveAndTrihedron)(TLaw);
 
   for (ipath = 0, wexp.Init(myPath); wexp.More(); wexp.Next())
   {
@@ -66,19 +66,19 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path, const To
     {
       ipath++;
       myEdges->SetValue(ipath, E);
-      for (Trouve = Standard_False, exp.Init(Surf, TopAbs_FACE); exp.More() && !Trouve; exp.Next())
+      for (Trouve = false, exp.Init(Surf, TopAbs_FACE); exp.More() && !Trouve; exp.Next())
       {
         const TopoDS_Face& F = TopoDS::Face(exp.Current());
         C                    = BRep_Tool::CurveOnSurface(E, F, First, Last);
         if (!C.IsNull())
         {
-          Trouve = Standard_True;
+          Trouve = true;
           AS     = new (BRepAdaptor_Surface)(F);
         }
       }
       if (!Trouve)
       { // Impossible to construct the law.
-        hasresult = Standard_False;
+        hasresult = false;
         myLaws.Nullify();
         return;
       }
@@ -86,7 +86,7 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path, const To
       Or = E.Orientation();
       if (Or == TopAbs_REVERSED)
       {
-        Handle(Geom2d_TrimmedCurve) CBis = new (Geom2d_TrimmedCurve)(C, First, Last);
+        occ::handle<Geom2d_TrimmedCurve> CBis = new (Geom2d_TrimmedCurve)(C, First, Last);
         CBis->Reverse(); // To avoid spoiling the topology
         C     = CBis;
         First = C->FirstParameter();
@@ -101,7 +101,7 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path, const To
   }
 }
 
-Standard_Boolean BRepFill_EdgeOnSurfLaw::HasResult() const
+bool BRepFill_EdgeOnSurfLaw::HasResult() const
 {
   return hasresult;
 }

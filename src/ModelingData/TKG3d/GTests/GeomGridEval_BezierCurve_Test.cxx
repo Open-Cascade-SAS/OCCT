@@ -16,8 +16,7 @@
 #include <Geom_BezierCurve.hxx>
 #include <GeomGridEval_BezierCurve.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -25,10 +24,10 @@ namespace
 {
 const double THE_TOLERANCE = 1e-10;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
-  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
+  NCollection_Array1<double> aParams(1, theNbPoints);
+  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -40,19 +39,19 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_BezierCurveTest, BasicEvaluation)
 {
   // Create a cubic Bezier curve
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 2, 0));
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
 
   GeomGridEval_BezierCurve anEval(aBezier);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   // Test at 0, 0.5, 1
-  TColStd_Array1OfReal aParams(1, 3);
+  NCollection_Array1<double> aParams(1, 3);
   aParams.SetValue(1, 0.0);
   aParams.SetValue(2, 0.5);
   aParams.SetValue(3, 1.0);
@@ -70,16 +69,16 @@ TEST(GeomGridEval_BezierCurveTest, BasicEvaluation)
 
 TEST(GeomGridEval_BezierCurveTest, DerivativeD1)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 2, 0));
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
-  GeomGridEval_BezierCurve anEval(aBezier);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve      anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
 
@@ -95,16 +94,16 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeD1)
 
 TEST(GeomGridEval_BezierCurveTest, DerivativeD2)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 2, 0));
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
-  GeomGridEval_BezierCurve anEval(aBezier);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve      anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2(aParams);
 
@@ -121,16 +120,16 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeD2)
 
 TEST(GeomGridEval_BezierCurveTest, DerivativeD3)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 2, 0));
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
-  GeomGridEval_BezierCurve anEval(aBezier);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve      anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 
@@ -149,8 +148,8 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeD3)
 TEST(GeomGridEval_BezierCurveTest, RationalEvaluation)
 {
   // Rational Bezier curve (quarter circle)
-  TColgp_Array1OfPnt   aPoles(1, 3);
-  TColStd_Array1OfReal aWeights(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  NCollection_Array1<double> aWeights(1, 3);
 
   aPoles.SetValue(1, gp_Pnt(1, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 1, 0));
@@ -160,10 +159,10 @@ TEST(GeomGridEval_BezierCurveTest, RationalEvaluation)
   aWeights.SetValue(2, 1.0 / std::sqrt(2.0));
   aWeights.SetValue(3, 1.0);
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles, aWeights);
-  GeomGridEval_BezierCurve anEval(aBezier);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles, aWeights);
+  GeomGridEval_BezierCurve      anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
@@ -176,16 +175,16 @@ TEST(GeomGridEval_BezierCurveTest, RationalEvaluation)
 
 TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order1)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 2, 0));
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
-  GeomGridEval_BezierCurve anEval(aBezier);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve      anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 1);
 
@@ -198,16 +197,16 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order1)
 
 TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order2)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 2, 0));
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
-  GeomGridEval_BezierCurve anEval(aBezier);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve      anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 2);
 
@@ -220,16 +219,16 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order2)
 
 TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order3)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 2, 0));
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
-  GeomGridEval_BezierCurve anEval(aBezier);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve      anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 3);
 
@@ -243,16 +242,16 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order3)
 TEST(GeomGridEval_BezierCurveTest, DerivativeDN_BeyondDegree)
 {
   // Cubic Bezier (degree 3), test DN for N > 3 should return zero vectors
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 2, 0));
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
-  GeomGridEval_BezierCurve anEval(aBezier);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve      anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   // 4th derivative of cubic Bezier should be zero
   NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 4);
@@ -266,8 +265,8 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_BeyondDegree)
 TEST(GeomGridEval_BezierCurveTest, DerivativeDN_RationalCurve)
 {
   // Rational Bezier curve (quarter circle)
-  TColgp_Array1OfPnt   aPoles(1, 3);
-  TColStd_Array1OfReal aWeights(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  NCollection_Array1<double> aWeights(1, 3);
 
   aPoles.SetValue(1, gp_Pnt(1, 0, 0));
   aPoles.SetValue(2, gp_Pnt(1, 1, 0));
@@ -277,10 +276,10 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_RationalCurve)
   aWeights.SetValue(2, 1.0 / std::sqrt(2.0));
   aWeights.SetValue(3, 1.0);
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles, aWeights);
-  GeomGridEval_BezierCurve anEval(aBezier);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles, aWeights);
+  GeomGridEval_BezierCurve      anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
   // Test DN for orders 1, 2
   for (int aOrder = 1; aOrder <= 2; ++aOrder)

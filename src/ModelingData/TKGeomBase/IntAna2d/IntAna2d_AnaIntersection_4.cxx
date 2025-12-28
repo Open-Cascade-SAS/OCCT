@@ -25,16 +25,16 @@
 
 void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const IntAna2d_Conic& Conic)
 {
-  Standard_Real    A, B, C, D, E, F;
-  Standard_Real    px0, px1, px2;
-  Standard_Real    DR_A, DR_B, DR_C, X0, Y0;
-  Standard_Integer i;
-  Standard_Real    tx, ty, S;
+  double A, B, C, D, E, F;
+  double px0, px1, px2;
+  double DR_A, DR_B, DR_C, X0, Y0;
+  int    i;
+  double tx, ty, S;
 
-  done = Standard_False;
+  done = false;
   nbp  = 0;
-  para = Standard_False;
-  iden = Standard_False;
+  para = false;
+  iden = false;
 
   Conic.Coefficients(A, B, C, D, E, F);
   L.Coefficients(DR_A, DR_B, DR_C);
@@ -52,15 +52,15 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const IntAna2d_Conic& 
 
   if (!Sol.IsDone())
   {
-    done = Standard_False;
+    done = false;
     return;
   }
   else
   {
     if (Sol.InfiniteRoots())
     {
-      iden = Standard_True;
-      done = Standard_True;
+      iden = true;
+      done = true;
       return;
     }
     nbp = Sol.NbSolutions();
@@ -73,5 +73,5 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const IntAna2d_Conic& 
     }
     Traitement_Points_Confondus(nbp, lpnt);
   }
-  done = Standard_True;
+  done = true;
 }

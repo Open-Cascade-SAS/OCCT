@@ -30,7 +30,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
@@ -38,25 +38,25 @@
 
 IGESDraw_ToolConnectPoint::IGESDraw_ToolConnectPoint() {}
 
-void IGESDraw_ToolConnectPoint::ReadOwnParams(const Handle(IGESDraw_ConnectPoint)&   ent,
-                                              const Handle(IGESData_IGESReaderData)& IR,
-                                              IGESData_ParamReader&                  PR) const
+void IGESDraw_ToolConnectPoint::ReadOwnParams(const occ::handle<IGESDraw_ConnectPoint>&   ent,
+                                              const occ::handle<IGESData_IGESReaderData>& IR,
+                                              IGESData_ParamReader&                       PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
-  gp_XYZ                                tempPoint;
-  Standard_Integer                      tempTypeFlag, tempFunctionFlag;
-  Standard_Integer                      tempPointIdentifier, tempFunctionCode, tempSwapFlag;
-  Handle(IGESData_IGESEntity)           tempDisplaySymbol, tempOwnerSubfigure;
-  Handle(TCollection_HAsciiString)      tempFunctionIdentifier, tempFunctionName;
-  Handle(IGESGraph_TextDisplayTemplate) tempFunctionTemplate;
-  Handle(IGESGraph_TextDisplayTemplate) tempIdentifierTemplate;
+  gp_XYZ                                     tempPoint;
+  int                                        tempTypeFlag, tempFunctionFlag;
+  int                                        tempPointIdentifier, tempFunctionCode, tempSwapFlag;
+  occ::handle<IGESData_IGESEntity>           tempDisplaySymbol, tempOwnerSubfigure;
+  occ::handle<TCollection_HAsciiString>      tempFunctionIdentifier, tempFunctionName;
+  occ::handle<IGESGraph_TextDisplayTemplate> tempFunctionTemplate;
+  occ::handle<IGESGraph_TextDisplayTemplate> tempIdentifierTemplate;
 
   // clang-format off
   PR.ReadXYZ(PR.CurrentList(1, 3), "Connect Point Coordinate", tempPoint); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR, PR.Current(), "Display Symbol Geometry Entity",
-		tempDisplaySymbol,Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		tempDisplaySymbol,true); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadInteger(PR.Current(), "Type Flag", tempTypeFlag); //szv#4:S4163:12Mar99 `st=` not needed
 
@@ -72,7 +72,7 @@ void IGESDraw_ToolConnectPoint::ReadOwnParams(const Handle(IGESDraw_ConnectPoint
                 "Text Display Identifier Template",
                 STANDARD_TYPE(IGESGraph_TextDisplayTemplate),
                 tempIdentifierTemplate,
-                Standard_True); // szv#4:S4163:12Mar99 `st=` not needed
+                true); // szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadText(PR.Current(),
               "Connect Point Function Name",
@@ -83,7 +83,7 @@ void IGESDraw_ToolConnectPoint::ReadOwnParams(const Handle(IGESDraw_ConnectPoint
                 "Text Display Function Template",
                 STANDARD_TYPE(IGESGraph_TextDisplayTemplate),
                 tempFunctionTemplate,
-                Standard_True); // szv#4:S4163:12Mar99 `st=` not needed
+                true); // szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadInteger(PR.Current(),
                  "Unique Connect Point Identifier",
@@ -104,7 +104,7 @@ void IGESDraw_ToolConnectPoint::ReadOwnParams(const Handle(IGESDraw_ConnectPoint
                 PR.Current(),
                 "Owner Network Subfigure Entity",
                 tempOwnerSubfigure,
-                Standard_True); // szv#4:S4163:12Mar99 `st=` not needed
+                true); // szv#4:S4163:12Mar99 `st=` not needed
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempPoint,
@@ -121,8 +121,8 @@ void IGESDraw_ToolConnectPoint::ReadOwnParams(const Handle(IGESDraw_ConnectPoint
             tempOwnerSubfigure);
 }
 
-void IGESDraw_ToolConnectPoint::WriteOwnParams(const Handle(IGESDraw_ConnectPoint)& ent,
-                                               IGESData_IGESWriter&                 IW) const
+void IGESDraw_ToolConnectPoint::WriteOwnParams(const occ::handle<IGESDraw_ConnectPoint>& ent,
+                                               IGESData_IGESWriter&                      IW) const
 {
   IW.Send(ent->Point().X());
   IW.Send(ent->Point().Y());
@@ -140,8 +140,8 @@ void IGESDraw_ToolConnectPoint::WriteOwnParams(const Handle(IGESDraw_ConnectPoin
   IW.Send(ent->OwnerSubfigure());
 }
 
-void IGESDraw_ToolConnectPoint::OwnShared(const Handle(IGESDraw_ConnectPoint)& ent,
-                                          Interface_EntityIterator&            iter) const
+void IGESDraw_ToolConnectPoint::OwnShared(const occ::handle<IGESDraw_ConnectPoint>& ent,
+                                          Interface_EntityIterator&                 iter) const
 {
   iter.GetOneItem(ent->DisplaySymbol());
   iter.GetOneItem(ent->IdentifierTemplate());
@@ -149,27 +149,27 @@ void IGESDraw_ToolConnectPoint::OwnShared(const Handle(IGESDraw_ConnectPoint)& e
   iter.GetOneItem(ent->OwnerSubfigure());
 }
 
-void IGESDraw_ToolConnectPoint::OwnCopy(const Handle(IGESDraw_ConnectPoint)& another,
-                                        const Handle(IGESDraw_ConnectPoint)& ent,
-                                        Interface_CopyTool&                  TC) const
+void IGESDraw_ToolConnectPoint::OwnCopy(const occ::handle<IGESDraw_ConnectPoint>& another,
+                                        const occ::handle<IGESDraw_ConnectPoint>& ent,
+                                        Interface_CopyTool&                       TC) const
 {
   gp_XYZ tempPoint = (another->Point()).XYZ();
   DeclareAndCast(IGESData_IGESEntity, tempDisplaySymbol, TC.Transferred(another->DisplaySymbol()));
-  Standard_Integer                 tempTypeFlag     = another->TypeFlag();
-  Standard_Integer                 tempFunctionFlag = another->FunctionFlag();
-  Handle(TCollection_HAsciiString) tempFunctionIdentifier =
+  int                                   tempTypeFlag     = another->TypeFlag();
+  int                                   tempFunctionFlag = another->FunctionFlag();
+  occ::handle<TCollection_HAsciiString> tempFunctionIdentifier =
     new TCollection_HAsciiString(another->FunctionIdentifier());
   DeclareAndCast(IGESGraph_TextDisplayTemplate,
                  tempIdentifierTemplate,
                  TC.Transferred(another->FunctionTemplate()));
-  Handle(TCollection_HAsciiString) tempFunctionName =
+  occ::handle<TCollection_HAsciiString> tempFunctionName =
     new TCollection_HAsciiString(another->FunctionName());
   DeclareAndCast(IGESGraph_TextDisplayTemplate,
                  tempFunctionTemplate,
                  TC.Transferred(another->FunctionTemplate()));
-  Standard_Integer tempPointIdentifier = another->PointIdentifier();
-  Standard_Integer tempFunctionCode    = another->FunctionCode();
-  Standard_Integer tempSwapFlag        = (another->SwapFlag() ? 1 : 0);
+  int tempPointIdentifier = another->PointIdentifier();
+  int tempFunctionCode    = another->FunctionCode();
+  int tempSwapFlag        = (another->SwapFlag() ? 1 : 0);
   DeclareAndCast(IGESData_IGESEntity,
                  tempOwnerSubfigure,
                  TC.Transferred(another->OwnerSubfigure()));
@@ -189,7 +189,7 @@ void IGESDraw_ToolConnectPoint::OwnCopy(const Handle(IGESDraw_ConnectPoint)& ano
 }
 
 IGESData_DirChecker IGESDraw_ToolConnectPoint::DirChecker(
-  const Handle(IGESDraw_ConnectPoint)& ent) const
+  const occ::handle<IGESDraw_ConnectPoint>& ent) const
 {
   IGESData_DirChecker DC(132, 0);
   DC.Structure(IGESData_DefVoid);
@@ -212,9 +212,9 @@ IGESData_DirChecker IGESDraw_ToolConnectPoint::DirChecker(
   return DC;
 }
 
-void IGESDraw_ToolConnectPoint::OwnCheck(const Handle(IGESDraw_ConnectPoint)& ent,
+void IGESDraw_ToolConnectPoint::OwnCheck(const occ::handle<IGESDraw_ConnectPoint>& ent,
                                          const Interface_ShareTool&,
-                                         Handle(Interface_Check)& ach) const
+                                         occ::handle<Interface_Check>& ach) const
 {
   if ((ent->TypeFlag() < 0) || (ent->TypeFlag() > 9999)
       || ((ent->TypeFlag() > 2) && (ent->TypeFlag() < 101))
@@ -235,12 +235,12 @@ void IGESDraw_ToolConnectPoint::OwnCheck(const Handle(IGESDraw_ConnectPoint)& en
     ach->AddFail("SwapFlag has Invalid value");
 }
 
-void IGESDraw_ToolConnectPoint::OwnDump(const Handle(IGESDraw_ConnectPoint)& ent,
-                                        const IGESData_IGESDumper&           dumper,
-                                        Standard_OStream&                    S,
-                                        const Standard_Integer               level) const
+void IGESDraw_ToolConnectPoint::OwnDump(const occ::handle<IGESDraw_ConnectPoint>& ent,
+                                        const IGESData_IGESDumper&                dumper,
+                                        Standard_OStream&                         S,
+                                        const int                                 level) const
 {
-  Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
+  int tempSubLevel = (level <= 4) ? 0 : 1;
 
   S << "IGESDraw_ConnectPoint\n"
     << "Connection Point Coordinate : ";

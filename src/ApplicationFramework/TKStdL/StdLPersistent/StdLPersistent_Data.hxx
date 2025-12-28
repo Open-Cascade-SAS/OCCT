@@ -40,16 +40,16 @@ public:
   }
 
   //! Returns persistent type name
-  virtual Standard_CString PName() const { return "PDF_Data"; }
+  virtual const char* PName() const { return "PDF_Data"; }
 
   //! Import transient data from the persistent data.
-  Standard_EXPORT Handle(TDF_Data) Import() const;
+  Standard_EXPORT occ::handle<TDF_Data> Import() const;
 
 private:
   class Parser;
 
 private:
-  Standard_Integer                           myVersion;
+  int                                        myVersion;
   Handle(StdLPersistent_HArray1::Integer)    myLabels;
   Handle(StdLPersistent_HArray1::Persistent) myAttributes;
 };

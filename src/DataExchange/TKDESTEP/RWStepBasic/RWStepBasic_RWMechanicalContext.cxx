@@ -23,10 +23,11 @@
 
 RWStepBasic_RWMechanicalContext::RWStepBasic_RWMechanicalContext() {}
 
-void RWStepBasic_RWMechanicalContext::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepBasic_MechanicalContext)& ent) const
+void RWStepBasic_RWMechanicalContext::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepBasic_MechanicalContext>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -36,14 +37,14 @@ void RWStepBasic_RWMechanicalContext::ReadStep(const Handle(StepData_StepReaderD
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : frameOfReference ---
 
-  Handle(StepBasic_ApplicationContext) aFrameOfReference;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepBasic_ApplicationContext> aFrameOfReference;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "frame_of_reference",
@@ -53,8 +54,8 @@ void RWStepBasic_RWMechanicalContext::ReadStep(const Handle(StepData_StepReaderD
 
   // --- own field : disciplineType ---
 
-  Handle(TCollection_HAsciiString) aDisciplineType;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<TCollection_HAsciiString> aDisciplineType;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadString(num, 3, "discipline_type", ach, aDisciplineType);
 
   //--- Initialisation of the read entity ---
@@ -63,8 +64,8 @@ void RWStepBasic_RWMechanicalContext::ReadStep(const Handle(StepData_StepReaderD
 }
 
 void RWStepBasic_RWMechanicalContext::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepBasic_MechanicalContext)& ent) const
+  StepData_StepWriter&                            SW,
+  const occ::handle<StepBasic_MechanicalContext>& ent) const
 {
 
   // --- inherited field name ---
@@ -80,8 +81,8 @@ void RWStepBasic_RWMechanicalContext::WriteStep(
   SW.Send(ent->DisciplineType());
 }
 
-void RWStepBasic_RWMechanicalContext::Share(const Handle(StepBasic_MechanicalContext)& ent,
-                                            Interface_EntityIterator&                  iter) const
+void RWStepBasic_RWMechanicalContext::Share(const occ::handle<StepBasic_MechanicalContext>& ent,
+                                            Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->FrameOfReference());

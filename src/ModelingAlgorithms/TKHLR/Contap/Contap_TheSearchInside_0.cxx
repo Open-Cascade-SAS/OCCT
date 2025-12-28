@@ -25,11 +25,11 @@
 #include <Contap_SurfFunction.hxx>
 #include <IntSurf_InteriorPoint.hxx>
 
-#define ThePSurface Handle(Adaptor3d_Surface)
+#define ThePSurface occ::handle<Adaptor3d_Surface>
 #define ThePSurface_hxx <Adaptor3d_Surface.hxx>
 #define ThePSurfaceTool Adaptor3d_HSurfaceTool
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
-#define Handle_TheTopolTool Handle(Adaptor3d_TopolTool)
+#define Handle_TheTopolTool occ::handle<Adaptor3d_TopolTool>
 #define TheTopolTool Adaptor3d_TopolTool
 #define TheTopolTool_hxx <Adaptor3d_TopolTool.hxx>
 #define TheSITool Contap_HContTool

@@ -40,22 +40,20 @@
 
 //=================================================================================================
 
-static Standard_Integer WritePly(Draw_Interpretor& theDI,
-                                 Standard_Integer  theNbArgs,
-                                 const char**      theArgVec)
+static int WritePly(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
-  Handle(TDocStd_Document)    aDoc;
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
-  TCollection_AsciiString     aShapeName, aFileName;
+  occ::handle<TDocStd_Document>    aDoc;
+  occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
+  TCollection_AsciiString          aShapeName, aFileName;
 
-  Standard_Real aDist     = 0.0;
-  Standard_Real aDens     = Precision::Infinite();
-  Standard_Real aTol      = Precision::Confusion();
-  bool          hasColors = true, hasNormals = true, hasTexCoords = false, hasPartId = true,
-       hasFaceId                                = false;
-  bool                                 isPntSet = false, isDensityPoints = false;
-  TColStd_IndexedDataMapOfStringString aFileInfo;
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  double aDist     = 0.0;
+  double aDens     = Precision::Infinite();
+  double aTol      = Precision::Confusion();
+  bool   hasColors = true, hasNormals = true, hasTexCoords = false, hasPartId = true,
+       hasFaceId = false;
+  bool isPntSet = false, isDensityPoints = false;
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> aFileInfo;
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.LowerCase();
@@ -106,7 +104,7 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
              && Draw::ParseReal(theArgVec[anArgIter + 1], aDens))
     {
       ++anArgIter;
-      isDensityPoints = Standard_True;
+      isDensityPoints = true;
       isPntSet        = true;
       if (aDens <= 0.0)
       {
@@ -140,7 +138,7 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
         aShapeName = theArgVec[anArgIter];
       }
 
-      Standard_CString aNameVar = theArgVec[anArgIter];
+      const char* aNameVar = theArgVec[anArgIter];
       DDocStd::GetDocument(aNameVar, aDoc, false);
       if (aDoc.IsNull())
       {
@@ -148,7 +146,7 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
         if (!aShape.IsNull())
         {
           anApp->NewDocument(TCollection_ExtendedString("BinXCAF"), aDoc);
-          Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+          occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
           aShapeTool->AddShape(aShape);
         }
       }
@@ -174,8 +172,8 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
     return 1;
   }
 
-  TDF_LabelSequence         aRootLabels;
-  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  NCollection_Sequence<TDF_Label> aRootLabels;
+  occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
   aShapeTool->GetFreeShapes(aRootLabels);
   if (aRootLabels.IsEmpty())
   {
@@ -188,12 +186,12 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
     class PointCloudPlyWriter : public BRepLib_PointCloudShape, public RWPly_PlyWriterContext
     {
     public:
-      PointCloudPlyWriter(Standard_Real theTol)
+      PointCloudPlyWriter(double theTol)
           : BRepLib_PointCloudShape(TopoDS_Shape(), theTol)
       {
       }
 
-      void AddFaceColor(const TopoDS_Shape& theFace, const Graphic3d_Vec4ub& theColor)
+      void AddFaceColor(const TopoDS_Shape& theFace, const NCollection_Vec4<uint8_t>& theColor)
       {
         myFaceColor.Bind(theFace, theColor);
       }
@@ -204,17 +202,17 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
                             const gp_Pnt2d&     theUV,
                             const TopoDS_Shape& theFace)
       {
-        Graphic3d_Vec4ub aColor;
+        NCollection_Vec4<uint8_t> aColor;
         myFaceColor.Find(theFace, aColor);
         RWPly_PlyWriterContext::WriteVertex(
           thePoint,
-          Graphic3d_Vec3((float)theNorm.X(), (float)theNorm.Y(), (float)theNorm.Z()),
-          Graphic3d_Vec2((float)theUV.X(), (float)theUV.Y()),
+          NCollection_Vec3<float>((float)theNorm.X(), (float)theNorm.Y(), (float)theNorm.Z()),
+          NCollection_Vec2<float>((float)theUV.X(), (float)theUV.Y()),
           aColor);
       }
 
     private:
-      NCollection_DataMap<TopoDS_Shape, Graphic3d_Vec4ub> myFaceColor;
+      NCollection_DataMap<TopoDS_Shape, NCollection_Vec4<uint8_t>> myFaceColor;
     };
 
     PointCloudPlyWriter aPlyCtx(aTol);
@@ -239,10 +237,10 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
            aFaceIter.Next())
       {
         BRep_Builder().Add(aComp, aFaceIter.Face());
-        Graphic3d_Vec4ub aColorVec(255);
+        NCollection_Vec4<uint8_t> aColorVec(255);
         if (aFaceIter.HasFaceColor())
         {
-          Graphic3d_Vec4 aColorF = aFaceIter.FaceColor();
+          NCollection_Vec4<float> aColorF = aFaceIter.FaceColor();
           aColorVec.SetValues((unsigned char)int(aColorF.r() * 255.0f),
                               (unsigned char)int(aColorF.g() * 255.0f),
                               (unsigned char)int(aColorF.b() * 255.0f),
@@ -253,7 +251,7 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
     }
     aPlyCtx.SetShape(aComp);
 
-    Standard_Integer aNbPoints =
+    int aNbPoints =
       isDensityPoints ? aPlyCtx.NbPointsByDensity(aDens) : aPlyCtx.NbPointsByTriangulation();
     if (aNbPoints <= 0)
     {
@@ -262,14 +260,17 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
     }
 
     if (!aPlyCtx.Open(aFileName)
-        || !aPlyCtx.WriteHeader(aNbPoints, 0, TColStd_IndexedDataMapOfStringString()))
+        || !aPlyCtx.WriteHeader(
+          aNbPoints,
+          0,
+          NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>()))
     {
       theDI << "Error: unable to create file '" << aFileName << "'";
       return 0;
     }
 
-    Standard_Boolean isDone = isDensityPoints ? aPlyCtx.GeneratePointsByDensity(aDens)
-                                              : aPlyCtx.GeneratePointsByTriangulation();
+    bool isDone = isDensityPoints ? aPlyCtx.GeneratePointsByDensity(aDens)
+                                  : aPlyCtx.GeneratePointsByTriangulation();
     if (!isDone)
     {
       theDI << "Error: Point cloud was not generated in file '" << aFileName << "'";
@@ -285,8 +286,8 @@ static Standard_Integer WritePly(Draw_Interpretor& theDI,
   }
   else
   {
-    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
-    RWPly_CafWriter                aPlyCtx(aFileName);
+    occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI, 1);
+    RWPly_CafWriter                     aPlyCtx(aFileName);
     aPlyCtx.SetNormals(hasNormals);
     aPlyCtx.SetColors(hasColors);
     aPlyCtx.SetTexCoords(hasTexCoords);
@@ -311,12 +312,12 @@ void DEPLYSingleton()
 
 void XSDRAWPLY::Factory(Draw_Interpretor& theDI)
 {
-  static Standard_Boolean aIsActivated = Standard_False;
+  static bool aIsActivated = false;
   if (aIsActivated)
   {
     return;
   }
-  aIsActivated = Standard_True;
+  aIsActivated = true;
 
   //! Ensure DEPLY plugin is registered
   DEPLYSingleton();

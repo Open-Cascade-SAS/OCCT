@@ -20,12 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Poly_ListOfTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_Real.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
 
 class Poly_Triangulation;
 class Poly_Polygon3D;
@@ -52,60 +53,60 @@ public:
   //! The new triangulation is just a mechanical sum of input
   //! triangulations, without node sharing. UV coordinates are
   //! dropped in the result.
-  Standard_EXPORT static Handle(Poly_Triangulation) Catenate(
-    const Poly_ListOfTriangulation& lstTri);
+  Standard_EXPORT static occ::handle<Poly_Triangulation> Catenate(
+    const NCollection_List<occ::handle<Poly_Triangulation>>& lstTri);
 
   //! Writes the content of the triangulation <T> on the
   //! stream <OS>. If <Compact> is true this is a "save"
   //! format intended to be read back with the Read
   //! method. If compact is False it is a "Dump" format
   //! intended to be informative.
-  Standard_EXPORT static void Write(const Handle(Poly_Triangulation)& T,
-                                    Standard_OStream&                 OS,
-                                    const Standard_Boolean            Compact = Standard_True);
+  Standard_EXPORT static void Write(const occ::handle<Poly_Triangulation>& T,
+                                    Standard_OStream&                      OS,
+                                    const bool                             Compact = true);
 
   //! Writes the content of the 3D polygon <P> on the
   //! stream <OS>. If <Compact> is true this is a "save"
   //! format intended to be read back with the Read
   //! method. If compact is False it is a "Dump" format
   //! intended to be informative.
-  Standard_EXPORT static void Write(const Handle(Poly_Polygon3D)& P,
-                                    Standard_OStream&             OS,
-                                    const Standard_Boolean        Compact = Standard_True);
+  Standard_EXPORT static void Write(const occ::handle<Poly_Polygon3D>& P,
+                                    Standard_OStream&                  OS,
+                                    const bool                         Compact = true);
 
   //! Writes the content of the 2D polygon <P> on the
   //! stream <OS>. If <Compact> is true this is a "save"
   //! format intended to be read back with the Read
   //! method. If compact is False it is a "Dump" format
   //! intended to be informative.
-  Standard_EXPORT static void Write(const Handle(Poly_Polygon2D)& P,
-                                    Standard_OStream&             OS,
-                                    const Standard_Boolean        Compact = Standard_True);
+  Standard_EXPORT static void Write(const occ::handle<Poly_Polygon2D>& P,
+                                    Standard_OStream&                  OS,
+                                    const bool                         Compact = true);
 
   //! Dumps the triangulation. This is a call to the
   //! previous method with Comapct set to False.
-  Standard_EXPORT static void Dump(const Handle(Poly_Triangulation)& T, Standard_OStream& OS);
+  Standard_EXPORT static void Dump(const occ::handle<Poly_Triangulation>& T, Standard_OStream& OS);
 
   //! Dumps the 3D polygon. This is a call to the
   //! previous method with Comapct set to False.
-  Standard_EXPORT static void Dump(const Handle(Poly_Polygon3D)& P, Standard_OStream& OS);
+  Standard_EXPORT static void Dump(const occ::handle<Poly_Polygon3D>& P, Standard_OStream& OS);
 
   //! Dumps the 2D polygon. This is a call to the
   //! previous method with Comapct set to False.
-  Standard_EXPORT static void Dump(const Handle(Poly_Polygon2D)& P, Standard_OStream& OS);
+  Standard_EXPORT static void Dump(const occ::handle<Poly_Polygon2D>& P, Standard_OStream& OS);
 
   //! Reads a triangulation from the stream <IS>.
-  Standard_EXPORT static Handle(Poly_Triangulation) ReadTriangulation(Standard_IStream& IS);
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ReadTriangulation(Standard_IStream& IS);
 
   //! Reads a 3d polygon from the stream <IS>.
-  Standard_EXPORT static Handle(Poly_Polygon3D) ReadPolygon3D(Standard_IStream& IS);
+  Standard_EXPORT static occ::handle<Poly_Polygon3D> ReadPolygon3D(Standard_IStream& IS);
 
   //! Reads a 2D polygon from the stream <IS>.
-  Standard_EXPORT static Handle(Poly_Polygon2D) ReadPolygon2D(Standard_IStream& IS);
+  Standard_EXPORT static occ::handle<Poly_Polygon2D> ReadPolygon2D(Standard_IStream& IS);
 
   //! Compute node normals for face triangulation
   //! as mean normal of surrounding triangles
-  Standard_EXPORT static void ComputeNormals(const Handle(Poly_Triangulation)& Tri);
+  Standard_EXPORT static void ComputeNormals(const occ::handle<Poly_Triangulation>& Tri);
 
   //! Computes parameters of the point P on triangle
   //! defined by points P1, P2, and P3, in 2d.
@@ -117,11 +118,11 @@ public:
   //! to closest point, and returned value is square of
   //! the distance from original point to triangle (0 if
   //! point is inside).
-  Standard_EXPORT static Standard_Real PointOnTriangle(const gp_XY& P1,
-                                                       const gp_XY& P2,
-                                                       const gp_XY& P3,
-                                                       const gp_XY& P,
-                                                       gp_XY&       UV);
+  Standard_EXPORT static double PointOnTriangle(const gp_XY& P1,
+                                                const gp_XY& P2,
+                                                const gp_XY& P3,
+                                                const gp_XY& P,
+                                                gp_XY&       UV);
 
   //! Computes the intersection between axis and triangulation.
   //! @param[in] theTri   input triangulation
@@ -131,11 +132,11 @@ public:
   //! @param[out] theTriangle  intersected triangle
   //! @param[out] theDistance  distance along ray to intersection point
   //! @return TRUE if intersection takes place, FALSE otherwise.
-  Standard_EXPORT static Standard_Boolean Intersect(const Handle(Poly_Triangulation)& theTri,
-                                                    const gp_Ax1&                     theAxis,
-                                                    const Standard_Boolean            theIsClosest,
-                                                    Poly_Triangle&                    theTriangle,
-                                                    Standard_Real&                    theDistance);
+  Standard_EXPORT static bool Intersect(const occ::handle<Poly_Triangulation>& theTri,
+                                        const gp_Ax1&                          theAxis,
+                                        const bool                             theIsClosest,
+                                        Poly_Triangle&                         theTriangle,
+                                        double&                                theDistance);
 
   //! Computes the intersection between a triangle defined by three vertexes and a line.
   //! @param[in] theStart  picking ray origin
@@ -145,12 +146,12 @@ public:
   //! @param[in] theV2     third triangle node
   //! @param[out] theParam  param on line of the intersection point
   //! @return 1 if intersection was found, 0 otherwise.
-  Standard_EXPORT static Standard_Integer IntersectTriLine(const gp_XYZ&  theStart,
-                                                           const gp_Dir&  theDir,
-                                                           const gp_XYZ&  theV0,
-                                                           const gp_XYZ&  theV1,
-                                                           const gp_XYZ&  theV2,
-                                                           Standard_Real& theParam);
+  Standard_EXPORT static int IntersectTriLine(const gp_XYZ& theStart,
+                                              const gp_Dir& theDir,
+                                              const gp_XYZ& theV0,
+                                              const gp_XYZ& theV1,
+                                              const gp_XYZ& theV2,
+                                              double&       theParam);
 
   //! Returns area and perimeter of 2D-polygon given by its vertices.
   //! theArea will be negative if the polygon is bypassed clockwise
@@ -158,31 +159,31 @@ public:
   //!
   //! ATTENTION!!!
   //! The container theSeqPnts of 2D-points gp_Pnt2d must have definition
-  //! for following methods: Length(), Lower(), Upper() and Value(Standard_Integer)
+  //! for following methods: Length(), Lower(), Upper() and Value(int)
   //! (e.g. it can be either NCollection_Sequence<gp_Pnt2d> or
   //! NCollection_Array1<gp_Pnt2d>).
   template <class TypeSequencePnts>
-  Standard_EXPORT static Standard_Boolean PolygonProperties(const TypeSequencePnts& theSeqPnts,
-                                                            Standard_Real&          theArea,
-                                                            Standard_Real&          thePerimeter)
+  Standard_EXPORT static bool PolygonProperties(const TypeSequencePnts& theSeqPnts,
+                                                double&                 theArea,
+                                                double&                 thePerimeter)
   {
     if (theSeqPnts.Length() < 2)
     {
       theArea = thePerimeter = 0.0;
-      return Standard_True;
+      return true;
     }
 
-    Standard_Integer aStartIndex = theSeqPnts.Lower();
-    const gp_XY&     aRefPnt     = theSeqPnts.Value(aStartIndex++).XY();
-    gp_XY            aPrevPt     = theSeqPnts.Value(aStartIndex++).XY() - aRefPnt, aCurrPt;
+    int          aStartIndex = theSeqPnts.Lower();
+    const gp_XY& aRefPnt     = theSeqPnts.Value(aStartIndex++).XY();
+    gp_XY        aPrevPt     = theSeqPnts.Value(aStartIndex++).XY() - aRefPnt, aCurrPt;
 
     theArea      = 0.0;
     thePerimeter = aPrevPt.Modulus();
 
-    for (Standard_Integer i = aStartIndex; i <= theSeqPnts.Upper(); i++)
+    for (int i = aStartIndex; i <= theSeqPnts.Upper(); i++)
     {
-      aCurrPt                    = theSeqPnts.Value(i).XY() - aRefPnt;
-      const Standard_Real aDelta = aPrevPt.Crossed(aCurrPt);
+      aCurrPt             = theSeqPnts.Value(i).XY() - aRefPnt;
+      const double aDelta = aPrevPt.Crossed(aCurrPt);
 
       theArea += aDelta;
       thePerimeter += (aPrevPt - aCurrPt).Modulus();
@@ -191,7 +192,7 @@ public:
 
     thePerimeter += aPrevPt.Modulus();
     theArea *= 0.5;
-    return Standard_True;
+    return true;
   }
 };
 

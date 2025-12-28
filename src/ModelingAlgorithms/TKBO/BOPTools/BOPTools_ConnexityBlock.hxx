@@ -16,7 +16,8 @@
 #define BOPTools_ConnexityBlock_HeaderFile
 
 #include <NCollection_BaseAllocator.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
@@ -25,40 +26,40 @@ class BOPTools_ConnexityBlock
 public:
   BOPTools_ConnexityBlock()
       : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-        myRegular(Standard_True),
+        myRegular(true),
         myShapes(myAllocator),
         myLoops(myAllocator) {};
   //
-  BOPTools_ConnexityBlock(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPTools_ConnexityBlock(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : myAllocator(theAllocator),
-        myRegular(Standard_True),
+        myRegular(true),
         myShapes(myAllocator),
         myLoops(myAllocator) {};
 
   //
-  const TopTools_ListOfShape& Shapes() const { return myShapes; };
+  const NCollection_List<TopoDS_Shape>& Shapes() const { return myShapes; };
 
   //
-  TopTools_ListOfShape& ChangeShapes() { return myShapes; };
+  NCollection_List<TopoDS_Shape>& ChangeShapes() { return myShapes; };
 
   //
-  void SetRegular(const Standard_Boolean theFlag) { myRegular = theFlag; }
+  void SetRegular(const bool theFlag) { myRegular = theFlag; }
 
   //
-  Standard_Boolean IsRegular() const { return myRegular; }
+  bool IsRegular() const { return myRegular; }
 
   //
-  const TopTools_ListOfShape& Loops() const { return myLoops; };
+  const NCollection_List<TopoDS_Shape>& Loops() const { return myLoops; };
 
   //
-  TopTools_ListOfShape& ChangeLoops() { return myLoops; };
+  NCollection_List<TopoDS_Shape>& ChangeLoops() { return myLoops; };
 
   //
 protected:
-  Handle(NCollection_BaseAllocator) myAllocator;
-  Standard_Boolean                  myRegular;
-  TopTools_ListOfShape              myShapes;
-  TopTools_ListOfShape              myLoops;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
+  bool                                   myRegular;
+  NCollection_List<TopoDS_Shape>         myShapes;
+  NCollection_List<TopoDS_Shape>         myLoops;
 };
 
 #endif

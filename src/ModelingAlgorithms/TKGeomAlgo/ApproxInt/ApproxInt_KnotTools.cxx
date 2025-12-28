@@ -20,23 +20,20 @@
 #include <NCollection_Vector.hxx>
 #include <PLib.hxx>
 #include <Precision.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <math_Vector.hxx>
 
-static const Standard_Real aSinCoeff2 =
-  0.09549150281252627; // aSinCoeff^2 = (3. - std::sqrt(5.)) / 8.
-static const Standard_Integer aMaxPntCoeff = 15;
+static const double aSinCoeff2   = 0.09549150281252627; // aSinCoeff^2 = (3. - std::sqrt(5.)) / 8.
+static const int    aMaxPntCoeff = 15;
 
 //=================================================================================================
 // function : EvalCurv
 // purpose  : Evaluate curvature in dim-dimension point.
 //=================================================================================================
 
-static Standard_Real EvalCurv(const Standard_Real  dim,
-                              const Standard_Real* V1,
-                              const Standard_Real* V2)
+static double EvalCurv(const double dim, const double* V1, const double* V2)
 {
   // Really V1 and V2 are arrays of size dim;
   // V1 is first derivative, V2 is second derivative
@@ -44,9 +41,9 @@ static Standard_Real EvalCurv(const Standard_Real  dim,
   // Curvature is curv = |V1^V2|/|V1|^3
   // V1^V2 is outer product of two vectors:
   // P(i,j) = V1(i)*V2(j) - V1(j)*V2(i);
-  Standard_Real    mp = 0.;
-  Standard_Integer i, j;
-  Standard_Real    p;
+  double mp = 0.;
+  int    i, j;
+  double p;
   for (i = 1; i < dim; ++i)
   {
     for (j = 0; j < i; ++j)
@@ -56,7 +53,7 @@ static Standard_Real EvalCurv(const Standard_Real  dim,
     }
   }
   //
-  Standard_Real q = 0.;
+  double q = 0.;
   for (i = 0; i < dim; ++i)
   {
     q += V1[i] * V1[i];
@@ -81,23 +78,23 @@ static Standard_Real EvalCurv(const Standard_Real  dim,
   q *= q * q;
 
   //
-  Standard_Real curv = std::sqrt(mp / q);
+  double curv = std::sqrt(mp / q);
 
   return curv;
 }
 
 //=================================================================================================
 
-void ApproxInt_KnotTools::BuildCurvature(const NCollection_LocalArray<Standard_Real>& theCoords,
-                                         const Standard_Integer                       theDim,
-                                         const math_Vector&                           thePars,
-                                         TColStd_Array1OfReal&                        theCurv,
-                                         Standard_Real&                               theMaxCurv)
+void ApproxInt_KnotTools::BuildCurvature(const NCollection_LocalArray<double>& theCoords,
+                                         const int                             theDim,
+                                         const math_Vector&                    thePars,
+                                         NCollection_Array1<double>&           theCurv,
+                                         double&                               theMaxCurv)
 {
   // Arrays are allocated for max theDim = 7: 1 3d curve + 2 2d curves.
-  Standard_Real    Val[21], Par[3], Res[21];
-  Standard_Integer i, j, m, ic;
-  Standard_Integer dim = theDim;
+  double Val[21], Par[3], Res[21];
+  int    i, j, m, ic;
+  int    dim = theDim;
   //
   theMaxCurv = 0.;
   if (theCurv.Length() < 3)
@@ -108,9 +105,9 @@ void ApproxInt_KnotTools::BuildCurvature(const NCollection_LocalArray<Standard_R
   i = theCurv.Lower();
   for (j = 0; j < 3; ++j)
   {
-    Standard_Integer k = i + j;
-    ic                 = (k - theCurv.Lower()) * dim;
-    Standard_Integer l = dim * j;
+    int k = i + j;
+    ic    = (k - theCurv.Lower()) * dim;
+    int l = dim * j;
     for (m = 0; m < dim; ++m)
     {
       Val[l + m] = theCoords[ic + m];
@@ -130,9 +127,9 @@ void ApproxInt_KnotTools::BuildCurvature(const NCollection_LocalArray<Standard_R
   {
     for (j = 0; j < 3; ++j)
     {
-      Standard_Integer k = i + j - 1;
-      ic                 = (k - theCurv.Lower()) * dim;
-      Standard_Integer l = dim * j;
+      int k = i + j - 1;
+      ic    = (k - theCurv.Lower()) * dim;
+      int l = dim * j;
       for (m = 0; m < dim; ++m)
       {
         Val[l + m] = theCoords[ic + m];
@@ -151,9 +148,9 @@ void ApproxInt_KnotTools::BuildCurvature(const NCollection_LocalArray<Standard_R
   i = theCurv.Upper();
   for (j = 0; j < 3; ++j)
   {
-    Standard_Integer k = i + j - 2;
-    ic                 = (k - theCurv.Lower()) * dim;
-    Standard_Integer l = dim * j;
+    int k = i + j - 2;
+    ic    = (k - theCurv.Lower()) * dim;
+    int l = dim * j;
     for (m = 0; m < dim; ++m)
     {
       Val[l + m] = theCoords[ic + m];
@@ -171,18 +168,18 @@ void ApproxInt_KnotTools::BuildCurvature(const NCollection_LocalArray<Standard_R
 
 //=================================================================================================
 
-void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_Real>& theCoords,
-                                          const Standard_Integer                       theDim,
-                                          const math_Vector&                           thePars,
-                                          NCollection_Sequence<Standard_Integer>&      theInds)
+void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<double>& theCoords,
+                                          const int                             theDim,
+                                          const math_Vector&                    thePars,
+                                          NCollection_Sequence<int>&            theInds)
 {
   // I: Create discrete curvature.
-  NCollection_Sequence<Standard_Integer> aFeatureInds;
-  TColStd_Array1OfReal                   aCurv(thePars.Lower(), thePars.Upper());
-  Standard_Real                          aMaxCurv = 0.;
+  NCollection_Sequence<int>  aFeatureInds;
+  NCollection_Array1<double> aCurv(thePars.Lower(), thePars.Upper());
+  double                     aMaxCurv = 0.;
   BuildCurvature(theCoords, theDim, thePars, aCurv, aMaxCurv);
   //
-  Standard_Integer i, j, dim = theDim;
+  int i, j, dim = theDim;
 #ifdef APPROXINT_KNOTTOOLS_DEBUG
   std::cout << "Discrete curvature array is" << std::endl;
   for (i = aCurv.Lower(); i <= aCurv.Upper(); ++i)
@@ -201,11 +198,11 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
 
   // II: Find extremas of curvature.
   // Not used Precision::PConfusion, by different from "param space" eps nature.
-  Standard_Real eps = 1.0e-9, eps1 = 1.0e3 * eps;
+  double eps = 1.0e-9, eps1 = 1.0e3 * eps;
   for (i = aCurv.Lower() + 1; i < aCurv.Upper(); ++i)
   {
-    Standard_Real d1 = aCurv(i) - aCurv(i - 1), d2 = aCurv(i) - aCurv(i + 1), ad1 = std::abs(d1),
-                  ad2 = std::abs(d2);
+    double d1 = aCurv(i) - aCurv(i - 1), d2 = aCurv(i) - aCurv(i + 1), ad1 = std::abs(d1),
+           ad2 = std::abs(d2);
 
     if (d1 * d2 > 0. && ad1 > eps && ad2 > eps)
     {
@@ -241,13 +238,13 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
 #endif
 
   // III: Put knots in monotone intervals of curvature.
-  Standard_Boolean Ok;
+  bool Ok;
   i = 1;
   do
   {
     i++;
     //
-    Ok = InsKnotBefI(i, aCurv, theCoords, dim, theInds, Standard_True);
+    Ok = InsKnotBefI(i, aCurv, theCoords, dim, theInds, true);
     if (Ok)
     {
       i--;
@@ -258,29 +255,28 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
   j = 2;
   for (i = 1; i <= aFeatureInds.Length(); ++i)
   {
-    Standard_Integer anInd = aFeatureInds(i);
+    int anInd = aFeatureInds(i);
     for (; j <= theInds.Length() - 1;)
     {
       if (theInds(j) == anInd)
       {
-        Standard_Integer anIndPrev = theInds(j - 1);
-        Standard_Integer anIndNext = theInds(j + 1);
-        Standard_Integer ici       = (anIndPrev - aCurv.Lower()) * theDim,
-                         ici1      = (anIndNext - aCurv.Lower()) * theDim,
-                         icm       = (anInd - aCurv.Lower()) * theDim;
-        NCollection_LocalArray<Standard_Real> V1(theDim), V2(theDim);
-        Standard_Real                         mp = 0., m1 = 0., m2 = 0.;
-        Standard_Real                         p;
-        for (Standard_Integer k = 0; k < theDim; ++k)
+        int anIndPrev = theInds(j - 1);
+        int anIndNext = theInds(j + 1);
+        int ici = (anIndPrev - aCurv.Lower()) * theDim, ici1 = (anIndNext - aCurv.Lower()) * theDim,
+            icm = (anInd - aCurv.Lower()) * theDim;
+        NCollection_LocalArray<double> V1(theDim), V2(theDim);
+        double                         mp = 0., m1 = 0., m2 = 0.;
+        double                         p;
+        for (int k = 0; k < theDim; ++k)
         {
           V1[k] = theCoords[icm + k] - theCoords[ici + k];
           m1 += V1[k] * V1[k];
           V2[k] = theCoords[ici1 + k] - theCoords[icm + k];
           m2 += V2[k] * V2[k];
         }
-        for (Standard_Integer k = 1; k < theDim; ++k)
+        for (int k = 1; k < theDim; ++k)
         {
-          for (Standard_Integer l = 0; l < k; ++l)
+          for (int l = 0; l < k; ++l)
           {
             p = V1[k] * V2[l] - V1[l] * V2[k];
             mp += p * p;
@@ -292,11 +288,11 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
         if (mp > aSinCoeff2 * m1 * m2) // std::sqrt(mp/(m1*m2)) > aSinCoeff
         {
           // Insert new knots
-          Standard_Real d1 = std::abs(aCurv(anInd) - aCurv(anIndPrev));
-          Standard_Real d2 = std::abs(aCurv(anInd) - aCurv(anIndNext));
+          double d1 = std::abs(aCurv(anInd) - aCurv(anIndPrev));
+          double d2 = std::abs(aCurv(anInd) - aCurv(anIndNext));
           if (d1 > d2)
           {
-            Ok = InsKnotBefI(j, aCurv, theCoords, dim, theInds, Standard_False);
+            Ok = InsKnotBefI(j, aCurv, theCoords, dim, theInds, false);
             if (Ok)
             {
               j++;
@@ -308,7 +304,7 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
           }
           else
           {
-            Ok = InsKnotBefI(j + 1, aCurv, theCoords, dim, theInds, Standard_False);
+            Ok = InsKnotBefI(j + 1, aCurv, theCoords, dim, theInds, false);
             if (!Ok)
             {
               break;
@@ -332,19 +328,19 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
 
 //=================================================================================================
 
-void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& theInds,
-                                      const Standard_Integer                  theMinNbPnts,
-                                      NCollection_Vector<Standard_Integer>&   theLKnots)
+void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<int>& theInds,
+                                      const int                  theMinNbPnts,
+                                      NCollection_Vector<int>&   theLKnots)
 {
   // Maximum number of points per knot interval.
-  Standard_Integer aMaxNbPnts = aMaxPntCoeff * theMinNbPnts;
-  Standard_Integer i          = 1;
-  Standard_Integer aMinNbStep = theMinNbPnts / 2;
+  int aMaxNbPnts = aMaxPntCoeff * theMinNbPnts;
+  int i          = 1;
+  int aMinNbStep = theMinNbPnts / 2;
 
   // I: Filter too big number of points per knot interval.
   while (i < theInds.Length())
   {
-    Standard_Integer nbint = theInds(i + 1) - theInds(i) + 1;
+    int nbint = theInds(i + 1) - theInds(i) + 1;
     if (nbint <= aMaxNbPnts)
     {
       ++i;
@@ -352,7 +348,7 @@ void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& th
     }
     else
     {
-      Standard_Integer ind = theInds(i) + nbint / 2;
+      int ind = theInds(i) + nbint / 2;
       theInds.InsertAfter(i, ind);
     }
   }
@@ -360,14 +356,14 @@ void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& th
   // II: Filter points with too small amount of points per knot interval.
   i = 1;
   theLKnots.Append(theInds(i));
-  Standard_Integer anIndsPrev = theInds(i);
+  int anIndsPrev = theInds(i);
   for (i = 2; i <= theInds.Length(); ++i)
   {
     if (theInds(i) - anIndsPrev <= theMinNbPnts)
     {
       if (i != theInds.Length())
       {
-        Standard_Integer anIdx = i + 1;
+        int anIdx = i + 1;
         for (; anIdx <= theInds.Length(); ++anIdx)
         {
           if (theInds(anIdx) - anIndsPrev >= theMinNbPnts)
@@ -375,7 +371,7 @@ void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& th
         }
         anIdx--;
 
-        Standard_Integer aMidIdx = (theInds(anIdx) + anIndsPrev) / 2;
+        int aMidIdx = (theInds(anIdx) + anIndsPrev) / 2;
         if (aMidIdx - anIndsPrev < theMinNbPnts && aMidIdx - theInds(anIdx) < theMinNbPnts
             && theInds(anIdx) - anIndsPrev >= aMinNbStep)
         {
@@ -416,7 +412,7 @@ void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& th
           // Current bad interval from i to last.
           // Trying to add knot to divide sequence on two parts:
           // Last good index -> Last index - theMinNbPnts -> Last index
-          Standard_Integer aLastGoodIdx = theLKnots.Value(theLKnots.Upper() - 1);
+          int aLastGoodIdx = theLKnots.Value(theLKnots.Upper() - 1);
           if (theInds.Last() - 2 * theMinNbPnts >= aLastGoodIdx)
           {
             theLKnots(theLKnots.Upper()) = theInds.Last() - theMinNbPnts;
@@ -451,25 +447,24 @@ void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& th
 
 //=================================================================================================
 
-Standard_Boolean ApproxInt_KnotTools::InsKnotBefI(
-  const Standard_Integer                       theI,
-  const TColStd_Array1OfReal&                  theCurv,
-  const NCollection_LocalArray<Standard_Real>& theCoords,
-  const Standard_Integer                       theDim,
-  NCollection_Sequence<Standard_Integer>&      theInds,
-  const Standard_Boolean                       ChkCurv)
+bool ApproxInt_KnotTools::InsKnotBefI(const int                             theI,
+                                      const NCollection_Array1<double>&     theCurv,
+                                      const NCollection_LocalArray<double>& theCoords,
+                                      const int                             theDim,
+                                      NCollection_Sequence<int>&            theInds,
+                                      const bool                            ChkCurv)
 {
-  Standard_Integer anInd1 = theInds(theI);
-  Standard_Integer anInd  = theInds(theI - 1);
+  int anInd1 = theInds(theI);
+  int anInd  = theInds(theI - 1);
   //
   if ((anInd1 - anInd) == 1)
   {
-    return Standard_False;
+    return false;
   }
   //
-  Standard_Real       curv                  = 0.5 * (theCurv(anInd) + theCurv(anInd1));
-  Standard_Integer    mid                   = 0, j, jj;
-  const Standard_Real aLimitCurvatureChange = 3.0;
+  double       curv                  = 0.5 * (theCurv(anInd) + theCurv(anInd1));
+  int          mid                   = 0, j, jj;
+  const double aLimitCurvatureChange = 3.0;
   for (j = anInd + 1; j < anInd1; ++j)
   {
     mid = 0;
@@ -484,12 +479,12 @@ Standard_Boolean ApproxInt_KnotTools::InsKnotBefI(
         // Curvature on current interval changed more than 3 times.
         mid = j;
         theInds.InsertBefore(theI, mid);
-        return Standard_True;
+        return true;
       }
     }
 
     // II: Angular criteria:
-    Standard_Real ac = theCurv(j - 1), ac1 = theCurv(j);
+    double ac = theCurv(j - 1), ac1 = theCurv(j);
     if ((curv >= ac && curv <= ac1) || (curv >= ac1 && curv <= ac))
     {
       if (std::abs(curv - ac) < std::abs(curv - ac1))
@@ -513,13 +508,12 @@ Standard_Boolean ApproxInt_KnotTools::InsKnotBefI(
     {
       if (ChkCurv)
       {
-        Standard_Integer ici  = (anInd - theCurv.Lower()) * theDim,
-                         ici1 = (anInd1 - theCurv.Lower()) * theDim,
-                         icm  = (mid - theCurv.Lower()) * theDim;
-        NCollection_LocalArray<Standard_Real> V1(theDim), V2(theDim);
-        Standard_Integer                      i;
-        Standard_Real                         mp = 0., m1 = 0., m2 = 0.;
-        Standard_Real                         p;
+        int ici = (anInd - theCurv.Lower()) * theDim, ici1 = (anInd1 - theCurv.Lower()) * theDim,
+            icm = (mid - theCurv.Lower()) * theDim;
+        NCollection_LocalArray<double> V1(theDim), V2(theDim);
+        int                            i;
+        double                         mp = 0., m1 = 0., m2 = 0.;
+        double                         p;
         for (i = 0; i < theDim; ++i)
         {
           V1[i] = theCoords[icm + i] - theCoords[ici + i];
@@ -541,34 +535,34 @@ Standard_Boolean ApproxInt_KnotTools::InsKnotBefI(
         if (mp > aSinCoeff2 * m1 * m2) // std::sqrt(mp / m1m2) > aSinCoeff
         {
           theInds.InsertBefore(theI, mid);
-          return Standard_True;
+          return true;
         }
       }
       else
       {
         theInds.InsertBefore(theI, mid);
-        return Standard_True;
+        return true;
       }
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void ApproxInt_KnotTools::BuildKnots(const TColgp_Array1OfPnt&             thePntsXYZ,
-                                     const TColgp_Array1OfPnt2d&           thePntsU1V1,
-                                     const TColgp_Array1OfPnt2d&           thePntsU2V2,
-                                     const math_Vector&                    thePars,
-                                     const Standard_Boolean                theApproxXYZ,
-                                     const Standard_Boolean                theApproxU1V1,
-                                     const Standard_Boolean                theApproxU2V2,
-                                     const Standard_Integer                theMinNbPnts,
-                                     NCollection_Vector<Standard_Integer>& theKnots)
+void ApproxInt_KnotTools::BuildKnots(const NCollection_Array1<gp_Pnt>&   thePntsXYZ,
+                                     const NCollection_Array1<gp_Pnt2d>& thePntsU1V1,
+                                     const NCollection_Array1<gp_Pnt2d>& thePntsU2V2,
+                                     const math_Vector&                  thePars,
+                                     const bool                          theApproxXYZ,
+                                     const bool                          theApproxU1V1,
+                                     const bool                          theApproxU2V2,
+                                     const int                           theMinNbPnts,
+                                     NCollection_Vector<int>&            theKnots)
 {
-  NCollection_Sequence<Standard_Integer> aKnots;
-  Standard_Integer                       aDim = 0;
+  NCollection_Sequence<int> aKnots;
+  int                       aDim = 0;
 
   // I: Convert input data to the corresponding format.
   if (theApproxXYZ)
@@ -578,8 +572,8 @@ void ApproxInt_KnotTools::BuildKnots(const TColgp_Array1OfPnt&             thePn
   if (theApproxU2V2)
     aDim += 2;
 
-  NCollection_LocalArray<Standard_Real> aCoords(thePars.Length() * aDim);
-  Standard_Integer                      i, j;
+  NCollection_LocalArray<double> aCoords(thePars.Length() * aDim);
+  int                            i, j;
   for (i = thePars.Lower(); i <= thePars.Upper(); ++i)
   {
     j = (i - thePars.Lower()) * aDim;
@@ -633,14 +627,14 @@ void ApproxInt_KnotTools::BuildKnots(const TColgp_Array1OfPnt&             thePn
 
 //=================================================================================================
 
-static Standard_Real MaxParamRatio(const math_Vector& thePars)
+static double MaxParamRatio(const math_Vector& thePars)
 {
-  Standard_Integer i;
-  Standard_Real    aMaxRatio = 0.;
+  int    i;
+  double aMaxRatio = 0.;
   //
   for (i = thePars.Lower() + 1; i < thePars.Upper(); ++i)
   {
-    Standard_Real aRat = (thePars(i + 1) - thePars(i)) / (thePars(i) - thePars(i - 1));
+    double aRat = (thePars(i + 1) - thePars(i)) / (thePars(i) - thePars(i - 1));
     if (aRat < 1.)
       aRat = 1. / aRat;
 
@@ -651,18 +645,18 @@ static Standard_Real MaxParamRatio(const math_Vector& thePars)
 
 //=================================================================================================
 
-Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(const Handle(IntPatch_WLine)& theWL,
-                                                              const Standard_Integer        theFpar,
-                                                              const Standard_Integer        theLpar,
-                                                              const Standard_Boolean theApproxXYZ,
-                                                              const Standard_Boolean theApproxU1V1,
-                                                              const Standard_Boolean theApproxU2V2)
+Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(
+  const occ::handle<IntPatch_WLine>& theWL,
+  const int                          theFpar,
+  const int                          theLpar,
+  const bool                         theApproxXYZ,
+  const bool                         theApproxU1V1,
+  const bool                         theApproxU2V2)
 {
   if (theLpar - theFpar == 1)
     return Approx_IsoParametric;
 
-  const Standard_Integer nbp3d = theApproxXYZ ? 1 : 0,
-                         nbp2d = (theApproxU1V1 ? 1 : 0) + (theApproxU2V2 ? 1 : 0);
+  const int nbp3d = theApproxXYZ ? 1 : 0, nbp2d = (theApproxU1V1 ? 1 : 0) + (theApproxU2V2 ? 1 : 0);
 
   GeomInt_TheMultiLineOfWLApprox aTestLine(theWL,
                                            nbp3d,
@@ -680,13 +674,13 @@ Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(const Handle(IntPa
                                            theFpar,
                                            theLpar);
 
-  TColgp_Array1OfPnt   aTabPnt3d(1, std::max(1, nbp3d));
-  TColgp_Array1OfPnt2d aTabPnt2d(1, std::max(1, nbp2d));
-  TColgp_Array1OfPnt   aPntXYZ(theFpar, theLpar);
-  TColgp_Array1OfPnt2d aPntU1V1(theFpar, theLpar);
-  TColgp_Array1OfPnt2d aPntU2V2(theFpar, theLpar);
+  NCollection_Array1<gp_Pnt>   aTabPnt3d(1, std::max(1, nbp3d));
+  NCollection_Array1<gp_Pnt2d> aTabPnt2d(1, std::max(1, nbp2d));
+  NCollection_Array1<gp_Pnt>   aPntXYZ(theFpar, theLpar);
+  NCollection_Array1<gp_Pnt2d> aPntU1V1(theFpar, theLpar);
+  NCollection_Array1<gp_Pnt2d> aPntU2V2(theFpar, theLpar);
 
-  Standard_Integer i, j;
+  int i, j;
 
   for (i = theFpar; i <= theLpar; ++i)
   {
@@ -719,7 +713,7 @@ Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(const Handle(IntPa
     }
   }
 
-  Standard_Integer aDim = 0;
+  int aDim = 0;
 
   if (theApproxXYZ)
     aDim += 3;
@@ -728,8 +722,8 @@ Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(const Handle(IntPa
   if (theApproxU2V2)
     aDim += 2;
 
-  Standard_Integer                      aLength = theLpar - theFpar + 1;
-  NCollection_LocalArray<Standard_Real> aCoords(aLength * aDim);
+  int                            aLength = theLpar - theFpar + 1;
+  NCollection_LocalArray<double> aCoords(aLength * aDim);
   for (i = theFpar; i <= theLpar; ++i)
   {
     j = (i - theFpar) * aDim;
@@ -759,13 +753,13 @@ Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(const Handle(IntPa
   }
 
   // Analysis of curvature
-  const Standard_Real        aCritRat    = 500.;
-  const Standard_Real        aCritParRat = 100.;
+  const double               aCritRat    = 500.;
+  const double               aCritParRat = 100.;
   math_Vector                aPars(theFpar, theLpar);
   Approx_ParametrizationType aParType = Approx_ChordLength;
   GeomInt_WLApprox::Parameters(aTestLine, theFpar, theLpar, aParType, aPars);
-  TColStd_Array1OfReal aCurv(aPars.Lower(), aPars.Upper());
-  Standard_Real        aMaxCurv = 0.;
+  NCollection_Array1<double> aCurv(aPars.Lower(), aPars.Upper());
+  double                     aMaxCurv = 0.;
   BuildCurvature(aCoords, aDim, aPars, aCurv, aMaxCurv);
 
   if (aMaxCurv < Precision::PConfusion() || Precision::IsPositiveInfinite(aMaxCurv))
@@ -774,9 +768,9 @@ Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(const Handle(IntPa
     return aParType;
   }
 
-  Standard_Real aMidCurv = 0.;
-  Standard_Real eps      = Epsilon(1.);
-  j                      = 0;
+  double aMidCurv = 0.;
+  double eps      = Epsilon(1.);
+  j               = 0;
   for (i = aCurv.Lower(); i <= aCurv.Upper(); ++i)
   {
     if (aMaxCurv - aCurv(i) < eps)
@@ -795,7 +789,7 @@ Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(const Handle(IntPa
   if (aMidCurv <= eps)
     return aParType;
 
-  Standard_Real aRat = aMaxCurv / aMidCurv;
+  double aRat = aMaxCurv / aMidCurv;
 
   if (aRat > aCritRat)
   {
@@ -803,7 +797,7 @@ Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(const Handle(IntPa
       aParType = Approx_Centripetal;
     else
     {
-      Standard_Real aParRat = MaxParamRatio(aPars);
+      double aParRat = MaxParamRatio(aPars);
       if (aParRat > aCritParRat)
         aParType = Approx_Centripetal;
     }

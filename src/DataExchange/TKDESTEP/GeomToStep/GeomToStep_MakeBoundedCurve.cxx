@@ -34,18 +34,18 @@
 //=============================================================================
 // Creation d' une BoundedCurve de prostep a partir d' une BoundedCurve de Geom
 //=============================================================================
-GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const Handle(Geom_BoundedCurve)& C,
+GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const occ::handle<Geom_BoundedCurve>& C,
                                                          const StepData_Factors& theLocalFactors)
 {
-  done = Standard_True;
+  done = true;
 
   if (C->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) Bspli = Handle(Geom_BSplineCurve)::DownCast(C);
+    occ::handle<Geom_BSplineCurve> Bspli = occ::down_cast<Geom_BSplineCurve>(C);
     // UPDATE FMA 1-04-96
     if (C->IsPeriodic())
     {
-      Handle(Geom_BSplineCurve) newBspli = Handle(Geom_BSplineCurve)::DownCast(Bspli->Copy());
+      occ::handle<Geom_BSplineCurve> newBspli = occ::down_cast<Geom_BSplineCurve>(Bspli->Copy());
       newBspli->SetNotPeriodic();
       Bspli = newBspli;
     }
@@ -63,8 +63,8 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const Handle(Geom_Bound
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
-    Handle(Geom_BezierCurve)  Cur   = Handle(Geom_BezierCurve)::DownCast(C);
-    Handle(Geom_BSplineCurve) Bspli = GeomConvert::CurveToBSplineCurve(Cur);
+    occ::handle<Geom_BezierCurve>  Cur   = occ::down_cast<Geom_BezierCurve>(C);
+    occ::handle<Geom_BSplineCurve> Bspli = GeomConvert::CurveToBSplineCurve(Cur);
     if (Bspli->IsRational())
     {
       GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve MkRatBSplineC(Bspli,
@@ -83,7 +83,7 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const Handle(Geom_Bound
     std::cout << "MakeBoundedCurve, type : " << C->DynamicType()->Name() << " not processed"
               << std::endl;
 #endif
-    done = Standard_False;
+    done = false;
   }
 }
 
@@ -92,17 +92,18 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const Handle(Geom_Bound
 // Geom2d
 //=============================================================================
 
-GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const Handle(Geom2d_BoundedCurve)& C,
+GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const occ::handle<Geom2d_BoundedCurve>& C,
                                                          const StepData_Factors& theLocalFactors)
 {
-  done = Standard_True;
+  done = true;
   if (C->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
-    Handle(Geom2d_BSplineCurve) Bspli = Handle(Geom2d_BSplineCurve)::DownCast(C);
+    occ::handle<Geom2d_BSplineCurve> Bspli = occ::down_cast<Geom2d_BSplineCurve>(C);
     // UPDATE FMA 1-04-96
     if (C->IsPeriodic())
     {
-      Handle(Geom2d_BSplineCurve) newBspli = Handle(Geom2d_BSplineCurve)::DownCast(Bspli->Copy());
+      occ::handle<Geom2d_BSplineCurve> newBspli =
+        occ::down_cast<Geom2d_BSplineCurve>(Bspli->Copy());
       newBspli->SetNotPeriodic();
       Bspli = newBspli;
     }
@@ -120,20 +121,20 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const Handle(Geom2d_Bou
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
   {
-    Handle(Geom2d_BezierCurve)           Cur   = Handle(Geom2d_BezierCurve)::DownCast(C);
-    Handle(Geom2d_BSplineCurve)          Bspli = Geom2dConvert::CurveToBSplineCurve(Cur);
+    occ::handle<Geom2d_BezierCurve>      Cur   = occ::down_cast<Geom2d_BezierCurve>(C);
+    occ::handle<Geom2d_BSplineCurve>     Bspli = Geom2dConvert::CurveToBSplineCurve(Cur);
     GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli, theLocalFactors);
     theBoundedCurve = MkBSplineC.Value();
   }
   else
-    done = Standard_False;
+    done = false;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_BoundedCurve)& GeomToStep_MakeBoundedCurve::Value() const
+const occ::handle<StepGeom_BoundedCurve>& GeomToStep_MakeBoundedCurve::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeBoundedCurve::Value() - no result");
   return theBoundedCurve;

@@ -12,7 +12,9 @@
 // commercial license or contractual agreement.
 
 #include <HeaderSection_FileDescription.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <RWHeaderSection_RWFileDescription.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -20,10 +22,10 @@
 RWHeaderSection_RWFileDescription::RWHeaderSection_RWFileDescription() {}
 
 void RWHeaderSection_RWFileDescription::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(HeaderSection_FileDescription)& ent) const
+  const occ::handle<StepData_StepReaderData>&       data,
+  const int                                         num,
+  occ::handle<Interface_Check>&                     ach,
+  const occ::handle<HeaderSection_FileDescription>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,18 +35,18 @@ void RWHeaderSection_RWFileDescription::ReadStep(
 
   // --- own field : description ---
 
-  Handle(Interface_HArray1OfHAsciiString) aDescription;
-  Handle(TCollection_HAsciiString)        aDescriptionItem;
-  Standard_Integer                        nsub1 = data->SubListNumber(num, 1, Standard_False);
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aDescription;
+  occ::handle<TCollection_HAsciiString>                                   aDescriptionItem;
+  int nsub1 = data->SubListNumber(num, 1, false);
   if (nsub1 != 0)
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
+    int nb1 = data->NbParams(nsub1);
     if (nb1 > 0)
     {
-      aDescription = new Interface_HArray1OfHAsciiString(1, nb1);
-      for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+      aDescription = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb1);
+      for (int i1 = 1; i1 <= nb1; i1++)
       {
-        Standard_Boolean stat1 = data->ReadString(nsub1, i1, "description", ach, aDescriptionItem);
+        bool stat1 = data->ReadString(nsub1, i1, "description", ach, aDescriptionItem);
         if (stat1)
           aDescription->SetValue(i1, aDescriptionItem);
       }
@@ -57,7 +59,7 @@ void RWHeaderSection_RWFileDescription::ReadStep(
 
   // --- own field : implementationLevel ---
 
-  Handle(TCollection_HAsciiString) aImplementationLevel;
+  occ::handle<TCollection_HAsciiString> aImplementationLevel;
   data->ReadString(num, 2, "implementation_level", ach, aImplementationLevel);
 
   //--- Initialisation of the read entity ---
@@ -67,14 +69,14 @@ void RWHeaderSection_RWFileDescription::ReadStep(
 }
 
 void RWHeaderSection_RWFileDescription::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(HeaderSection_FileDescription)& ent) const
+  StepData_StepWriter&                              SW,
+  const occ::handle<HeaderSection_FileDescription>& ent) const
 {
 
   // --- own field : description ---
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->NbDescription(); i1++)
+  for (int i1 = 1; i1 <= ent->NbDescription(); i1++)
   {
     SW.Send(ent->DescriptionValue(i1));
   }

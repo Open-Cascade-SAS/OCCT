@@ -20,12 +20,12 @@
 #define TOLERANCE_ANGULAIRE 0.00000001
 
 //----------------------------------------------------------------------
-Standard_Real NormalizeOnDomain(Standard_Real& Param, const IntRes2d_Domain& TheDomain)
+double NormalizeOnDomain(double& Param, const IntRes2d_Domain& TheDomain)
 {
-  Standard_Real modParam = Param;
+  double modParam = Param;
   if (TheDomain.IsClosed())
   {
-    Standard_Real Periode, t;
+    double Periode, t;
     TheDomain.EquivalentParameters(t, Periode);
     Periode -= t;
     if (TheDomain.HasFirstPoint())
@@ -50,7 +50,7 @@ Standard_Real NormalizeOnDomain(Standard_Real& Param, const IntRes2d_Domain& The
 void Determine_Position(IntRes2d_Position&     Pos1,
                         const IntRes2d_Domain& TheDomain,
                         const gp_Pnt2d&        Pnt1,
-                        const Standard_Real    Param1)
+                        const double           Param1)
 {
 
   Pos1 = IntRes2d_Middle;
@@ -90,30 +90,30 @@ void Determine_Transition(const IntRes2d_Position Pos1,
                           gp_Vec2d&               Tan2,
                           const gp_Vec2d&         Norm2,
                           IntRes2d_Transition&    T2,
-                          //			  const Standard_Real        Tolerance_Angulaire) {
-                          const Standard_Real)
+                          //			  const double        Tolerance_Angulaire) {
+                          const double)
 {
 
-  Standard_Boolean courbure1 = Standard_True;
-  Standard_Boolean courbure2 = Standard_True;
-  Standard_Boolean decide    = Standard_True;
+  bool courbure1 = true;
+  bool courbure2 = true;
+  bool decide    = true;
   if (Tan1.Magnitude() <= gp::Resolution())
   {
     Tan1      = Norm1;
-    courbure1 = Standard_False;
+    courbure1 = false;
     if (Tan1.Magnitude() <= gp::Resolution())
     { // transition undecided
-      decide = Standard_False;
+      decide = false;
     }
   }
 
   if (Tan2.Magnitude() <= gp::Resolution())
   {
     Tan2      = Norm2;
-    courbure2 = Standard_False;
+    courbure2 = false;
     if (Tan2.Magnitude() <= gp::Resolution())
     { // transition undecided
-      decide = Standard_False;
+      decide = false;
     }
   }
 
@@ -124,22 +124,22 @@ void Determine_Transition(const IntRes2d_Position Pos1,
   }
   else
   {
-    Standard_Real sgn  = Tan1.Crossed(Tan2);
-    Standard_Real norm = Tan1.Magnitude() * Tan2.Magnitude();
+    double sgn  = Tan1.Crossed(Tan2);
+    double norm = Tan1.Magnitude() * Tan2.Magnitude();
 
     if (std::abs(sgn) <= TOLERANCE_ANGULAIRE * norm)
     { // Transition TOUCH #########
-      Standard_Boolean opos = (Tan1.Dot(Tan2)) < 0;
+      bool opos = (Tan1.Dot(Tan2)) < 0;
       if (!(courbure1 || courbure2))
       {
-        T1.SetValue(Standard_True, Pos1, IntRes2d_Unknown, opos);
-        T2.SetValue(Standard_True, Pos2, IntRes2d_Unknown, opos);
+        T1.SetValue(true, Pos1, IntRes2d_Unknown, opos);
+        T2.SetValue(true, Pos2, IntRes2d_Unknown, opos);
       }
       else
       {
         gp_Vec2d Norm;
         Norm.SetCoord(-Tan1.Y(), Tan1.X());
-        Standard_Real Val1, Val2;
+        double Val1, Val2;
         if (!courbure1)
         {
           Val1 = 0.0;
@@ -159,44 +159,44 @@ void Determine_Transition(const IntRes2d_Position Pos1,
 
         if (std::abs(Val1 - Val2) <= gp::Resolution())
         {
-          T1.SetValue(Standard_True, Pos1, IntRes2d_Unknown, opos);
-          T2.SetValue(Standard_True, Pos2, IntRes2d_Unknown, opos);
+          T1.SetValue(true, Pos1, IntRes2d_Unknown, opos);
+          T2.SetValue(true, Pos2, IntRes2d_Unknown, opos);
         }
         else if (Val2 > Val1)
         {
-          T2.SetValue(Standard_True, Pos2, IntRes2d_Inside, opos);
+          T2.SetValue(true, Pos2, IntRes2d_Inside, opos);
           if (opos)
           {
-            T1.SetValue(Standard_True, Pos1, IntRes2d_Inside, opos);
+            T1.SetValue(true, Pos1, IntRes2d_Inside, opos);
           }
           else
           {
-            T1.SetValue(Standard_True, Pos1, IntRes2d_Outside, opos);
+            T1.SetValue(true, Pos1, IntRes2d_Outside, opos);
           }
         }
         else
         { // Val1 > Val2
-          T2.SetValue(Standard_True, Pos2, IntRes2d_Outside, opos);
+          T2.SetValue(true, Pos2, IntRes2d_Outside, opos);
           if (opos)
           {
-            T1.SetValue(Standard_True, Pos1, IntRes2d_Outside, opos);
+            T1.SetValue(true, Pos1, IntRes2d_Outside, opos);
           }
           else
           {
-            T1.SetValue(Standard_True, Pos1, IntRes2d_Inside, opos);
+            T1.SetValue(true, Pos1, IntRes2d_Inside, opos);
           }
         }
       }
     }
     else if (sgn < 0)
     {
-      T1.SetValue(Standard_False, Pos1, IntRes2d_In);
-      T2.SetValue(Standard_False, Pos2, IntRes2d_Out);
+      T1.SetValue(false, Pos1, IntRes2d_In);
+      T2.SetValue(false, Pos2, IntRes2d_Out);
     }
     else
     { // sgn>0
-      T1.SetValue(Standard_False, Pos1, IntRes2d_Out);
-      T2.SetValue(Standard_False, Pos2, IntRes2d_In);
+      T1.SetValue(false, Pos1, IntRes2d_Out);
+      T2.SetValue(false, Pos2, IntRes2d_In);
     }
   }
 }

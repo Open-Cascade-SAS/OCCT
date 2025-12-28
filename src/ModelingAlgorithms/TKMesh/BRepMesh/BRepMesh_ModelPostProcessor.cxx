@@ -33,13 +33,13 @@ class PolygonCommitter
 {
 public:
   //! Constructor
-  PolygonCommitter(const Handle(IMeshData_Model)& theModel)
+  PolygonCommitter(const occ::handle<IMeshData_Model>& theModel)
       : myModel(theModel)
   {
   }
 
   //! Main functor.
-  void operator()(const Standard_Integer theEdgeIndex) const
+  void operator()(const int theEdgeIndex) const
   {
     const IMeshData::IEdgeHandle& aDEdge = myModel->GetEdge(theEdgeIndex);
     if (aDEdge->GetCurve()->ParametersNb() == 0)
@@ -64,15 +64,15 @@ private:
   {
     const IMeshData::ICurveHandle& aCurve = theDEdge->GetCurve();
 
-    TColgp_Array1OfPnt   aNodes(1, aCurve->ParametersNb());
-    TColStd_Array1OfReal aUVNodes(1, aCurve->ParametersNb());
-    for (Standard_Integer i = 1; i <= aCurve->ParametersNb(); ++i)
+    NCollection_Array1<gp_Pnt> aNodes(1, aCurve->ParametersNb());
+    NCollection_Array1<double> aUVNodes(1, aCurve->ParametersNb());
+    for (int i = 1; i <= aCurve->ParametersNb(); ++i)
     {
       aNodes(i)   = aCurve->GetPoint(i - 1);
       aUVNodes(i) = aCurve->GetParameter(i - 1);
     }
 
-    Handle(Poly_Polygon3D) aPoly3D = new Poly_Polygon3D(aNodes, aUVNodes);
+    occ::handle<Poly_Polygon3D> aPoly3D = new Poly_Polygon3D(aNodes, aUVNodes);
     aPoly3D->Deflection(theDEdge->GetDeflection());
 
     BRepMesh_ShapeTool::UpdateEdge(theDEdge->GetEdge(), aPoly3D);
@@ -83,7 +83,7 @@ private:
   {
     // Collect pcurves associated with the given edge on the specific surface.
     IMeshData::IDMapOfIFacePtrsListOfIPCurves aMapOfPCurves;
-    for (Standard_Integer aPCurveIt = 0; aPCurveIt < theDEdge->PCurvesNb(); ++aPCurveIt)
+    for (int aPCurveIt = 0; aPCurveIt < theDEdge->PCurvesNb(); ++aPCurveIt)
     {
       const IMeshData::IPCurveHandle& aPCurve   = theDEdge->GetPCurve(aPCurveIt);
       const IMeshData::IFacePtr&      aDFacePtr = aPCurve->GetFace();
@@ -109,8 +109,8 @@ private:
     {
       const TopoDS_Face& aFace = aPolygonIt.Key()->GetFace();
 
-      TopLoc_Location                   aLoc;
-      const Handle(Poly_Triangulation)& aTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
+      TopLoc_Location                        aLoc;
+      const occ::handle<Poly_Triangulation>& aTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
 
       if (!aTriangulation.IsNull())
       {
@@ -137,25 +137,26 @@ private:
   }
 
   //! Collects polygonal data for the given pcurve
-  Handle(Poly_PolygonOnTriangulation) collectPolygon(const IMeshData::IPCurveHandle& thePCurve,
-                                                     const Standard_Real theDeflection) const
+  occ::handle<Poly_PolygonOnTriangulation> collectPolygon(const IMeshData::IPCurveHandle& thePCurve,
+                                                          const double theDeflection) const
   {
-    TColStd_Array1OfInteger aNodes(1, thePCurve->ParametersNb());
-    TColStd_Array1OfReal    aParams(1, thePCurve->ParametersNb());
-    for (Standard_Integer i = 1; i <= thePCurve->ParametersNb(); ++i)
+    NCollection_Array1<int>    aNodes(1, thePCurve->ParametersNb());
+    NCollection_Array1<double> aParams(1, thePCurve->ParametersNb());
+    for (int i = 1; i <= thePCurve->ParametersNb(); ++i)
     {
       aNodes(i)  = thePCurve->GetIndex(i - 1);
       aParams(i) = thePCurve->GetParameter(i - 1);
     }
 
-    Handle(Poly_PolygonOnTriangulation) aPolygon = new Poly_PolygonOnTriangulation(aNodes, aParams);
+    occ::handle<Poly_PolygonOnTriangulation> aPolygon =
+      new Poly_PolygonOnTriangulation(aNodes, aParams);
 
     aPolygon->Deflection(theDeflection);
     return aPolygon;
   }
 
 private:
-  Handle(IMeshData_Model) myModel;
+  occ::handle<IMeshData_Model> myModel;
 };
 
 //! Estimates and updates deflection of triangulations for corresponding faces.
@@ -163,8 +164,8 @@ class DeflectionEstimator
 {
 public:
   //! Constructor
-  DeflectionEstimator(const Handle(IMeshData_Model)& theModel,
-                      const IMeshTools_Parameters&   theParams)
+  DeflectionEstimator(const occ::handle<IMeshData_Model>& theModel,
+                      const IMeshTools_Parameters&        theParams)
       : myModel(theModel),
         myParams(new Poly_TriangulationParameters(theParams.Deflection,
                                                   theParams.Angle,
@@ -173,7 +174,7 @@ public:
   }
 
   //! Main functor.
-  void operator()(const Standard_Integer theFaceIndex) const
+  void operator()(const int theFaceIndex) const
   {
     const IMeshData::IFaceHandle& aDFace = myModel->GetFace(theFaceIndex);
     if (aDFace->IsSet(IMeshData_Failure) || aDFace->IsSet(IMeshData_Reused))
@@ -183,8 +184,8 @@ public:
 
     BRepLib::UpdateDeflection(aDFace->GetFace());
 
-    TopLoc_Location                   aLoc;
-    const Handle(Poly_Triangulation)& aTriangulation =
+    TopLoc_Location                        aLoc;
+    const occ::handle<Poly_Triangulation>& aTriangulation =
       BRep_Tool::Triangulation(aDFace->GetFace(), aLoc);
 
     if (!aTriangulation.IsNull())
@@ -194,8 +195,8 @@ public:
   }
 
 private:
-  Handle(IMeshData_Model)              myModel;
-  Handle(Poly_TriangulationParameters) myParams;
+  occ::handle<IMeshData_Model>              myModel;
+  occ::handle<Poly_TriangulationParameters> myParams;
 };
 } // namespace
 
@@ -209,22 +210,21 @@ BRepMesh_ModelPostProcessor::~BRepMesh_ModelPostProcessor() {}
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_ModelPostProcessor::performInternal(
-  const Handle(IMeshData_Model)& theModel,
-  const IMeshTools_Parameters&   theParameters,
-  const Message_ProgressRange&   theRange)
+bool BRepMesh_ModelPostProcessor::performInternal(const occ::handle<IMeshData_Model>& theModel,
+                                                  const IMeshTools_Parameters&        theParameters,
+                                                  const Message_ProgressRange&        theRange)
 {
   (void)theRange;
   if (theModel.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   // TODO: Force single threaded solution due to data races on edges sharing the same TShape
   OSD_Parallel::For(0,
                     theModel->EdgesNb(),
                     PolygonCommitter(theModel),
-                    Standard_True /*!theParameters.InParallel*/);
+                    true /*!theParameters.InParallel*/);
 
   // Estimate deflection here due to BRepLib::EstimateDeflection requires
   // existence of both Poly_Triangulation and Poly_PolygonOnTriangulation.
@@ -232,5 +232,5 @@ Standard_Boolean BRepMesh_ModelPostProcessor::performInternal(
                     theModel->FacesNb(),
                     DeflectionEstimator(theModel, theParameters),
                     !theParameters.InParallel);
-  return Standard_True;
+  return true;
 }

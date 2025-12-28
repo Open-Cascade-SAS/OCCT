@@ -4,17 +4,7 @@ set(OCCT_StepElement_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_StepElement_FILES
   StepElement_AnalysisItemWithinRepresentation.cxx
   StepElement_AnalysisItemWithinRepresentation.hxx
-  StepElement_Array1OfCurveElementEndReleasePacket.hxx
-  StepElement_Array1OfCurveElementSectionDefinition.hxx
-  StepElement_Array1OfHSequenceOfCurveElementPurposeMember.hxx
-  StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember.hxx
-  StepElement_Array1OfMeasureOrUnspecifiedValue.hxx
-  StepElement_Array1OfSurfaceSection.hxx
-  StepElement_Array1OfVolumeElementPurpose.hxx
-  StepElement_Array1OfVolumeElementPurposeMember.hxx
-  StepElement_Array2OfCurveElementPurposeMember.hxx
-  StepElement_Array2OfSurfaceElementPurpose.hxx
-  StepElement_Array2OfSurfaceElementPurposeMember.hxx
+
   StepElement_Curve3dElementDescriptor.cxx
   StepElement_Curve3dElementDescriptor.hxx
   StepElement_CurveEdge.hxx
@@ -47,29 +37,12 @@ set(OCCT_StepElement_FILES
   StepElement_EnumeratedCurveElementPurpose.hxx
   StepElement_EnumeratedSurfaceElementPurpose.hxx
   StepElement_EnumeratedVolumeElementPurpose.hxx
-  StepElement_HArray1OfCurveElementEndReleasePacket.hxx
-  StepElement_HArray1OfCurveElementSectionDefinition.hxx
-  StepElement_HArray1OfHSequenceOfCurveElementPurposeMember.hxx
-  StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember.hxx
-  StepElement_HArray1OfMeasureOrUnspecifiedValue.hxx
-  StepElement_HArray1OfSurfaceSection.hxx
-  StepElement_HArray1OfVolumeElementPurpose.hxx
-  StepElement_HArray1OfVolumeElementPurposeMember.hxx
-  StepElement_HArray2OfCurveElementPurposeMember.hxx
-  StepElement_HArray2OfSurfaceElementPurpose.hxx
-  StepElement_HArray2OfSurfaceElementPurposeMember.hxx
-  StepElement_HSequenceOfCurveElementPurposeMember.hxx
-  StepElement_HSequenceOfCurveElementSectionDefinition.hxx
-  StepElement_HSequenceOfElementMaterial.hxx
-  StepElement_HSequenceOfSurfaceElementPurposeMember.hxx
+
   StepElement_MeasureOrUnspecifiedValue.cxx
   StepElement_MeasureOrUnspecifiedValue.hxx
   StepElement_MeasureOrUnspecifiedValueMember.cxx
   StepElement_MeasureOrUnspecifiedValueMember.hxx
-  StepElement_SequenceOfCurveElementPurposeMember.hxx
-  StepElement_SequenceOfCurveElementSectionDefinition.hxx
-  StepElement_SequenceOfElementMaterial.hxx
-  StepElement_SequenceOfSurfaceElementPurposeMember.hxx
+
   StepElement_Surface3dElementDescriptor.cxx
   StepElement_Surface3dElementDescriptor.hxx
   StepElement_SurfaceElementProperty.cxx

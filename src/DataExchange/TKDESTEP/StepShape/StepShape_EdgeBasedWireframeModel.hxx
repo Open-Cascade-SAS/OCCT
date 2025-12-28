@@ -19,12 +19,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepShape_HArray1OfConnectedEdgeSet.hxx>
+#include <StepShape_ConnectedEdgeSet.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 class TCollection_HAsciiString;
-
-class StepShape_EdgeBasedWireframeModel;
-DEFINE_STANDARD_HANDLE(StepShape_EdgeBasedWireframeModel, StepGeom_GeometricRepresentationItem)
 
 //! Representation of STEP entity EdgeBasedWireframeModel
 class StepShape_EdgeBasedWireframeModel : public StepGeom_GeometricRepresentationItem
@@ -35,21 +34,22 @@ public:
   Standard_EXPORT StepShape_EdgeBasedWireframeModel();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-                            const Handle(StepShape_HArray1OfConnectedEdgeSet)& aEbwmBoundary);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>>& aEbwmBoundary);
 
   //! Returns field EbwmBoundary
-  Standard_EXPORT Handle(StepShape_HArray1OfConnectedEdgeSet) EbwmBoundary() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>>
+                  EbwmBoundary() const;
 
   //! Set field EbwmBoundary
   Standard_EXPORT void SetEbwmBoundary(
-    const Handle(StepShape_HArray1OfConnectedEdgeSet)& EbwmBoundary);
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>>& EbwmBoundary);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeModel, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(StepShape_HArray1OfConnectedEdgeSet) theEbwmBoundary;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>> theEbwmBoundary;
 };
 
 #endif // _StepShape_EdgeBasedWireframeModel_HeaderFile

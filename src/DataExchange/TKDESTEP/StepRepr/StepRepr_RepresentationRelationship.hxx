@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepRepr_Representation;
 
-class StepRepr_RepresentationRelationship;
-DEFINE_STANDARD_HANDLE(StepRepr_RepresentationRelationship, Standard_Transient)
-
 class StepRepr_RepresentationRelationship : public Standard_Transient
 {
 
@@ -34,37 +31,36 @@ public:
   //! Returns a RepresentationRelationship
   Standard_EXPORT StepRepr_RepresentationRelationship();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(TCollection_HAsciiString)& aDescription,
-                            const Handle(StepRepr_Representation)&  aRep1,
-                            const Handle(StepRepr_Representation)&  aRep2);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
+                            const occ::handle<StepRepr_Representation>&  aRep1,
+                            const occ::handle<StepRepr_Representation>&  aRep2);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_Boolean HasDescription() { return !description.IsNull(); }
+  bool HasDescription() { return !description.IsNull(); }
 
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
-  Standard_EXPORT void SetRep1(const Handle(StepRepr_Representation)& aRep1);
+  Standard_EXPORT void SetRep1(const occ::handle<StepRepr_Representation>& aRep1);
 
-  Standard_EXPORT Handle(StepRepr_Representation) Rep1() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> Rep1() const;
 
-  Standard_EXPORT void SetRep2(const Handle(StepRepr_Representation)& aRep2);
+  Standard_EXPORT void SetRep2(const occ::handle<StepRepr_Representation>& aRep2);
 
-  Standard_EXPORT Handle(StepRepr_Representation) Rep2() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> Rep2() const;
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationRelationship, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) name;
-  Handle(TCollection_HAsciiString) description;
-  Handle(StepRepr_Representation)  rep1;
-  Handle(StepRepr_Representation)  rep2;
+  occ::handle<TCollection_HAsciiString> name;
+  occ::handle<TCollection_HAsciiString> description;
+  occ::handle<StepRepr_Representation>  rep1;
+  occ::handle<StepRepr_Representation>  rep2;
 };
 
 #endif // _StepRepr_RepresentationRelationship_HeaderFile

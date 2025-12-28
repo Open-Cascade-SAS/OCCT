@@ -26,8 +26,9 @@ IGESDraw_ViewsVisible::IGESDraw_ViewsVisible() {}
 
 // This class inherits from IGESData_ViewKindEntity
 
-void IGESDraw_ViewsVisible::Init(const Handle(IGESDraw_HArray1OfViewKindEntity)& allViewEntities,
-                                 const Handle(IGESData_HArray1OfIGESEntity)&     allDisplayEntity)
+void IGESDraw_ViewsVisible::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViewEntities,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allDisplayEntity)
 {
   if (!allDisplayEntity.IsNull())
     if (allDisplayEntity->Lower() != 1)
@@ -41,7 +42,7 @@ void IGESDraw_ViewsVisible::Init(const Handle(IGESDraw_HArray1OfViewKindEntity)&
 }
 
 void IGESDraw_ViewsVisible::InitImplied(
-  const Handle(IGESData_HArray1OfIGESEntity)& allDisplayEntity)
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayEntity)
 {
   if (!allDisplayEntity.IsNull())
     if (allDisplayEntity->Lower() != 1)
@@ -49,31 +50,30 @@ void IGESDraw_ViewsVisible::InitImplied(
   theDisplayEntity = allDisplayEntity;
 }
 
-Standard_Boolean IGESDraw_ViewsVisible::IsSingle() const
+bool IGESDraw_ViewsVisible::IsSingle() const
 {
-  return Standard_False;
+  return false;
   // Is Redefined to return FALSE
 }
 
-Standard_Integer IGESDraw_ViewsVisible::NbViews() const
+int IGESDraw_ViewsVisible::NbViews() const
 {
   return (theViewEntities.IsNull() ? 0 : theViewEntities->Length());
 }
 
-Standard_Integer IGESDraw_ViewsVisible::NbDisplayedEntities() const
+int IGESDraw_ViewsVisible::NbDisplayedEntities() const
 {
   return (theDisplayEntity.IsNull() ? 0 : theDisplayEntity->Length());
   // return 0 if HArray1 theDisplayEntity is NULL Handle
 }
 
-Handle(IGESData_ViewKindEntity) IGESDraw_ViewsVisible::ViewItem(const Standard_Integer Index) const
+occ::handle<IGESData_ViewKindEntity> IGESDraw_ViewsVisible::ViewItem(const int Index) const
 {
   return theViewEntities->Value(Index);
   // if Index is out of bound HArray1 will raise OutOfRange exception
 }
 
-Handle(IGESData_IGESEntity) IGESDraw_ViewsVisible::DisplayedEntity(
-  const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESDraw_ViewsVisible::DisplayedEntity(const int Index) const
 {
   return theDisplayEntity->Value(Index);
   // if Index is out of bound HArray1 will raise OutOfRange exception

@@ -35,10 +35,10 @@
 //  of found solutions.                                                   +
 //  Create solutions cirsol.                                              +
 //=========================================================================
-GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
-                                             const gp_Circ2d&    OnCirc,
-                                             const Standard_Real Radius,
-                                             const Standard_Real Tolerance)
+GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&  Point1,
+                                             const gp_Circ2d& OnCirc,
+                                             const double     Radius,
+                                             const double     Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       TheSame1(1, 2),
@@ -49,13 +49,13 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
       parcen3(1, 2)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol     = std::abs(Tolerance);
-  WellDone              = Standard_False;
-  NbrSol                = 0;
-  Standard_Real Roncirc = OnCirc.Radius();
-  Standard_Real dist1   = Point1.Distance(OnCirc.Location()) - Roncirc;
-  Standard_Real dist2   = Point1.Distance(OnCirc.Location()) + Roncirc;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol   = std::abs(Tolerance);
+  WellDone       = false;
+  NbrSol         = 0;
+  double Roncirc = OnCirc.Radius();
+  double dist1   = Point1.Distance(OnCirc.Location()) - Roncirc;
+  double dist2   = Point1.Distance(OnCirc.Location()) + Roncirc;
 
   if (Radius < 0.0)
   {
@@ -63,11 +63,11 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
   }
   else if ((dist1 - Radius > Tol) || (Tol < Radius - dist2))
   {
-    WellDone = Standard_True;
+    WellDone = true;
   }
   else
   {
-    Standard_Integer signe = 0;
+    int signe = 0;
     if (std::abs(dist1 - Radius) < Tol)
     {
       signe = 1;
@@ -93,7 +93,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
       pararg1(1)    = 0.0;
       par1sol(1)    = ElCLib::Parameter(cirsol(1), pnttg1sol(1));
       parcen3(1)    = ElCLib::Parameter(OnCirc, pntcen3(1));
-      WellDone      = Standard_True;
+      WellDone      = true;
       NbrSol        = 1;
     }
     else
@@ -103,7 +103,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+          for (int i = 1; i <= Intp.NbPoints(); i++)
           {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
@@ -118,7 +118,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
             pararg1(1)    = 0.0;
           }
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
   }

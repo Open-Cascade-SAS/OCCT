@@ -48,7 +48,8 @@ public:
   //! Fills GlobalSection from a ParamSet (i.e. taken from file)
   //! undefined parameters do not change default values when defined
   //! Fills Check about Corrections or Fails
-  Standard_EXPORT void Init(const Handle(Interface_ParamSet)& params, Handle(Interface_Check)& ach);
+  Standard_EXPORT void Init(const occ::handle<Interface_ParamSet>& params,
+                            occ::handle<Interface_Check>&          ach);
 
   //! Copies data referenced by Handle (that is, Strings)
   //! useful to "isolate" a GlobalSection after copy by "="
@@ -57,106 +58,106 @@ public:
 
   //! Returns all contained data in the form of a ParamSet
   //! Remark : Strings are given under Hollerith form
-  Standard_EXPORT Handle(Interface_ParamSet) Params() const;
+  Standard_EXPORT occ::handle<Interface_ParamSet> Params() const;
 
   //! Returns a string withpout its Hollerith marks (nnnH ahead).
   //! Remark : all strings stored in GlobalSection are expurged
   //! from Hollerith information (without nnnH)
   //! If <astr> is not Hollerith form, it is simply copied
-  Standard_EXPORT Handle(TCollection_HAsciiString) TranslatedFromHollerith(
-    const Handle(TCollection_HAsciiString)& astr) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> TranslatedFromHollerith(
+    const occ::handle<TCollection_HAsciiString>& astr) const;
 
   //! Returns the parameter delimiter character.
-  Standard_EXPORT Standard_Character Separator() const;
+  Standard_EXPORT char Separator() const;
 
   //! Returns the record delimiter character.
-  Standard_EXPORT Standard_Character EndMark() const;
+  Standard_EXPORT char EndMark() const;
 
   //! Returns the name of the sending system.
-  Standard_EXPORT Handle(TCollection_HAsciiString) SendName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> SendName() const;
 
   //! Returns the name of the IGES file.
-  Standard_EXPORT Handle(TCollection_HAsciiString) FileName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> FileName() const;
 
   //! Returns the Native System ID of the system that created the IGES file.
-  Standard_EXPORT Handle(TCollection_HAsciiString) SystemId() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> SystemId() const;
 
   //! Returns the name of the pre-processor used to write the IGES file.
-  Standard_EXPORT Handle(TCollection_HAsciiString) InterfaceVersion() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> InterfaceVersion() const;
 
   //! Returns the number of binary bits for integer representations.
-  Standard_EXPORT Standard_Integer IntegerBits() const;
+  Standard_EXPORT int IntegerBits() const;
 
   //! Returns the maximum power of a decimal representation of a
   //! single-precision floating point number in the sending system.
-  Standard_EXPORT Standard_Integer MaxPower10Single() const;
+  Standard_EXPORT int MaxPower10Single() const;
 
-  Standard_EXPORT Standard_Integer MaxDigitsSingle() const;
+  Standard_EXPORT int MaxDigitsSingle() const;
 
   //! Returns the maximum power of a decimal representation of a
   //! double-precision floating point number in the sending system.
-  Standard_EXPORT Standard_Integer MaxPower10Double() const;
+  Standard_EXPORT int MaxPower10Double() const;
 
-  Standard_EXPORT Standard_Integer MaxDigitsDouble() const;
+  Standard_EXPORT int MaxDigitsDouble() const;
 
   //! Returns the name of the receiving system.
-  Standard_EXPORT Handle(TCollection_HAsciiString) ReceiveName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ReceiveName() const;
 
   //! Returns the scale used in the IGES file.
-  Standard_EXPORT Standard_Real Scale() const;
+  Standard_EXPORT double Scale() const;
 
   //! Returns the system length unit
-  Standard_EXPORT Standard_Real CascadeUnit() const;
+  Standard_EXPORT double CascadeUnit() const;
 
   //! Returns the unit flag that was used to write the IGES file.
-  Standard_EXPORT Standard_Integer UnitFlag() const;
+  Standard_EXPORT int UnitFlag() const;
 
   //! Returns the name of the unit the IGES file was written in.
-  Standard_EXPORT Handle(TCollection_HAsciiString) UnitName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> UnitName() const;
 
   //! Returns the maximum number of line weight gradations.
-  Standard_EXPORT Standard_Integer LineWeightGrad() const;
+  Standard_EXPORT int LineWeightGrad() const;
 
   //! Returns the of maximum line weight width in IGES file units.
-  Standard_EXPORT Standard_Real MaxLineWeight() const;
+  Standard_EXPORT double MaxLineWeight() const;
 
   //! Returns the IGES file creation date.
-  Standard_EXPORT Handle(TCollection_HAsciiString) Date() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Date() const;
 
   //! Returns the resolution used in the IGES file.
-  Standard_EXPORT Standard_Real Resolution() const;
+  Standard_EXPORT double Resolution() const;
 
   //! Returns the approximate maximum coordinate value found in the model.
-  Standard_EXPORT Standard_Real MaxCoord() const;
+  Standard_EXPORT double MaxCoord() const;
 
   //! Returns True if the approximate maximum coordinate value found in
   //! the model is greater than 0.
-  Standard_EXPORT Standard_Boolean HasMaxCoord() const;
+  Standard_EXPORT bool HasMaxCoord() const;
 
   //! Returns the name of the IGES file author.
-  Standard_EXPORT Handle(TCollection_HAsciiString) AuthorName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> AuthorName() const;
 
   //! Returns the name of the company where the IGES file was written.
-  Standard_EXPORT Handle(TCollection_HAsciiString) CompanyName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> CompanyName() const;
 
   //! Returns the IGES version that the IGES file was written in.
-  Standard_EXPORT Standard_Integer IGESVersion() const;
+  Standard_EXPORT int IGESVersion() const;
 
-  Standard_EXPORT Standard_Integer DraftingStandard() const;
+  Standard_EXPORT int DraftingStandard() const;
 
   //! Returns the date and time when the model was created or last
   //! modified (for IGES 5.1 and later).
-  Standard_EXPORT Handle(TCollection_HAsciiString) LastChangeDate() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> LastChangeDate() const;
 
   //! Returns True if the date and time when the model was created or
   //! last modified are specified, i.e. not defaulted to NULL.
-  Standard_EXPORT Standard_Boolean HasLastChangeDate() const;
+  Standard_EXPORT bool HasLastChangeDate() const;
 
   Standard_EXPORT void SetLastChangeDate();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) ApplicationProtocol() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ApplicationProtocol() const;
 
-  Standard_EXPORT Standard_Boolean HasApplicationProtocol() const;
+  Standard_EXPORT bool HasApplicationProtocol() const;
 
   //! Returns a string built from year,
   //! month, day, hour, minute and second values. The form of the
@@ -170,113 +171,112 @@ public:
   //! - NN is minute (00-59)
   //! - DD is day (01-31),
   //! - SS is second (00-59).
-  Standard_EXPORT static Handle(TCollection_HAsciiString) NewDateString(
-    const Standard_Integer year,
-    const Standard_Integer month,
-    const Standard_Integer day,
-    const Standard_Integer hour,
-    const Standard_Integer minut,
-    const Standard_Integer second,
-    const Standard_Integer mode = -1);
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> NewDateString(const int year,
+                                                                             const int month,
+                                                                             const int day,
+                                                                             const int hour,
+                                                                             const int minut,
+                                                                             const int second,
+                                                                             const int mode = -1);
 
   //! Converts the string given in the
   //! form YYMMDD.HHNNSS or YYYYMMDD.HHNNSS to either
   //! YYMMDD.HHNNSS, YYYYMMDD.HHNNSS or YYYY-MM-DD:HH-NN-SS.
-  Standard_EXPORT static Handle(TCollection_HAsciiString) NewDateString(
-    const Handle(TCollection_HAsciiString)& date,
-    const Standard_Integer                  mode = 1);
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> NewDateString(
+    const occ::handle<TCollection_HAsciiString>& date,
+    const int                                    mode = 1);
 
   //! Returns the unit value (in
   //! meters) that the IGES file was written in.
-  Standard_EXPORT Standard_Real UnitValue() const;
+  Standard_EXPORT double UnitValue() const;
 
-  Standard_EXPORT void SetSeparator(const Standard_Character val);
+  Standard_EXPORT void SetSeparator(const char val);
 
-  Standard_EXPORT void SetEndMark(const Standard_Character val);
+  Standard_EXPORT void SetEndMark(const char val);
 
-  Standard_EXPORT void SetSendName(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetSendName(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetFileName(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetFileName(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetSystemId(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetSystemId(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetInterfaceVersion(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetInterfaceVersion(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetIntegerBits(const Standard_Integer val);
+  Standard_EXPORT void SetIntegerBits(const int val);
 
-  Standard_EXPORT void SetMaxPower10Single(const Standard_Integer val);
+  Standard_EXPORT void SetMaxPower10Single(const int val);
 
-  Standard_EXPORT void SetMaxDigitsSingle(const Standard_Integer val);
+  Standard_EXPORT void SetMaxDigitsSingle(const int val);
 
-  Standard_EXPORT void SetMaxPower10Double(const Standard_Integer val);
+  Standard_EXPORT void SetMaxPower10Double(const int val);
 
-  Standard_EXPORT void SetMaxDigitsDouble(const Standard_Integer val);
+  Standard_EXPORT void SetMaxDigitsDouble(const int val);
 
-  Standard_EXPORT void SetReceiveName(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetReceiveName(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetCascadeUnit(const Standard_Real theUnit);
+  Standard_EXPORT void SetCascadeUnit(const double theUnit);
 
-  Standard_EXPORT void SetScale(const Standard_Real val);
+  Standard_EXPORT void SetScale(const double val);
 
-  Standard_EXPORT void SetUnitFlag(const Standard_Integer val);
+  Standard_EXPORT void SetUnitFlag(const int val);
 
-  Standard_EXPORT void SetUnitName(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetUnitName(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetLineWeightGrad(const Standard_Integer val);
+  Standard_EXPORT void SetLineWeightGrad(const int val);
 
-  Standard_EXPORT void SetMaxLineWeight(const Standard_Real val);
+  Standard_EXPORT void SetMaxLineWeight(const double val);
 
-  Standard_EXPORT void SetDate(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetDate(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetResolution(const Standard_Real val);
+  Standard_EXPORT void SetResolution(const double val);
 
-  Standard_EXPORT void SetMaxCoord(const Standard_Real val = 0.0);
+  Standard_EXPORT void SetMaxCoord(const double val = 0.0);
 
-  Standard_EXPORT void MaxMaxCoord(const Standard_Real val = 0.0);
+  Standard_EXPORT void MaxMaxCoord(const double val = 0.0);
 
   Standard_EXPORT void MaxMaxCoords(const gp_XYZ& xyz);
 
-  Standard_EXPORT void SetAuthorName(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetAuthorName(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetCompanyName(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetCompanyName(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetIGESVersion(const Standard_Integer val);
+  Standard_EXPORT void SetIGESVersion(const int val);
 
-  Standard_EXPORT void SetDraftingStandard(const Standard_Integer val);
+  Standard_EXPORT void SetDraftingStandard(const int val);
 
-  Standard_EXPORT void SetLastChangeDate(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetLastChangeDate(const occ::handle<TCollection_HAsciiString>& val);
 
-  Standard_EXPORT void SetApplicationProtocol(const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void SetApplicationProtocol(const occ::handle<TCollection_HAsciiString>& val);
 
 private:
-  Standard_Character               theSeparator;
-  Standard_Character               theEndMark;
-  Handle(TCollection_HAsciiString) theSendName;
-  Handle(TCollection_HAsciiString) theFileName;
-  Handle(TCollection_HAsciiString) theSystemId;
-  Handle(TCollection_HAsciiString) theInterfaceVersion;
-  Standard_Integer                 theIntegerBits;
-  Standard_Integer                 theMaxPower10Single;
-  Standard_Integer                 theMaxDigitsSingle;
-  Standard_Integer                 theMaxPower10Double;
-  Standard_Integer                 theMaxDigitsDouble;
-  Handle(TCollection_HAsciiString) theReceiveName;
-  Standard_Real                    theScale;
-  Standard_Real                    theCascadeUnit;
-  Standard_Integer                 theUnitFlag;
-  Handle(TCollection_HAsciiString) theUnitName;
-  Standard_Integer                 theLineWeightGrad;
-  Standard_Real                    theMaxLineWeight;
-  Handle(TCollection_HAsciiString) theDate;
-  Standard_Real                    theResolution;
-  Standard_Real                    theMaxCoord;
-  Standard_Boolean                 hasMaxCoord;
-  Handle(TCollection_HAsciiString) theAuthorName;
-  Handle(TCollection_HAsciiString) theCompanyName;
-  Standard_Integer                 theIGESVersion;
-  Standard_Integer                 theDraftingStandard;
-  Handle(TCollection_HAsciiString) theLastChangeDate;
-  Handle(TCollection_HAsciiString) theAppliProtocol;
+  char                                  theSeparator;
+  char                                  theEndMark;
+  occ::handle<TCollection_HAsciiString> theSendName;
+  occ::handle<TCollection_HAsciiString> theFileName;
+  occ::handle<TCollection_HAsciiString> theSystemId;
+  occ::handle<TCollection_HAsciiString> theInterfaceVersion;
+  int                                   theIntegerBits;
+  int                                   theMaxPower10Single;
+  int                                   theMaxDigitsSingle;
+  int                                   theMaxPower10Double;
+  int                                   theMaxDigitsDouble;
+  occ::handle<TCollection_HAsciiString> theReceiveName;
+  double                                theScale;
+  double                                theCascadeUnit;
+  int                                   theUnitFlag;
+  occ::handle<TCollection_HAsciiString> theUnitName;
+  int                                   theLineWeightGrad;
+  double                                theMaxLineWeight;
+  occ::handle<TCollection_HAsciiString> theDate;
+  double                                theResolution;
+  double                                theMaxCoord;
+  bool                                  hasMaxCoord;
+  occ::handle<TCollection_HAsciiString> theAuthorName;
+  occ::handle<TCollection_HAsciiString> theCompanyName;
+  int                                   theIGESVersion;
+  int                                   theDraftingStandard;
+  occ::handle<TCollection_HAsciiString> theLastChangeDate;
+  occ::handle<TCollection_HAsciiString> theAppliProtocol;
 };
 
 #endif // _IGESData_GlobalSection_HeaderFile

@@ -39,9 +39,9 @@ typedef gp_XYZ  XYZ;
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_Ellipse::Copy() const
+occ::handle<Geom_Geometry> Geom_Ellipse::Copy() const
 {
-  Handle(Geom_Ellipse) E;
+  occ::handle<Geom_Ellipse> E;
   E = new Geom_Ellipse(pos, majorRadius, minorRadius);
   return E;
 }
@@ -57,9 +57,7 @@ Geom_Ellipse::Geom_Ellipse(const gp_Elips& E)
 
 //=================================================================================================
 
-Geom_Ellipse::Geom_Ellipse(const Ax2&          A,
-                           const Standard_Real MajorRadius,
-                           const Standard_Real MinorRadius)
+Geom_Ellipse::Geom_Ellipse(const Ax2& A, const double MajorRadius, const double MinorRadius)
     : majorRadius(MajorRadius),
       minorRadius(MinorRadius)
 {
@@ -73,42 +71,42 @@ Geom_Ellipse::Geom_Ellipse(const Ax2&          A,
 
 //=================================================================================================
 
-Standard_Boolean Geom_Ellipse::IsClosed() const
+bool Geom_Ellipse::IsClosed() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_Ellipse::IsPeriodic() const
+bool Geom_Ellipse::IsPeriodic() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Ellipse::FirstParameter() const
+double Geom_Ellipse::FirstParameter() const
 {
   return 0.0;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Ellipse::LastParameter() const
+double Geom_Ellipse::LastParameter() const
 {
   return 2.0 * M_PI;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Ellipse::MajorRadius() const
+double Geom_Ellipse::MajorRadius() const
 {
   return majorRadius;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Ellipse::MinorRadius() const
+double Geom_Ellipse::MinorRadius() const
 {
   return minorRadius;
 }
@@ -125,7 +123,7 @@ void Geom_Ellipse::SetElips(const gp_Elips& E)
 
 //=================================================================================================
 
-void Geom_Ellipse::SetMajorRadius(const Standard_Real MajorRadius)
+void Geom_Ellipse::SetMajorRadius(const double MajorRadius)
 {
 
   if (MajorRadius < minorRadius)
@@ -136,7 +134,7 @@ void Geom_Ellipse::SetMajorRadius(const Standard_Real MajorRadius)
 
 //=================================================================================================
 
-void Geom_Ellipse::SetMinorRadius(const Standard_Real MinorRadius)
+void Geom_Ellipse::SetMinorRadius(const double MinorRadius)
 {
 
   if (MinorRadius < 0 || majorRadius < MinorRadius)
@@ -159,7 +157,7 @@ gp_Elips Geom_Ellipse::Elips() const
 
 //=================================================================================================
 
-Standard_Real Geom_Ellipse::ReversedParameter(const Standard_Real U) const
+double Geom_Ellipse::ReversedParameter(const double U) const
 {
   return (2. * M_PI - U);
 }
@@ -184,7 +182,7 @@ Ax1 Geom_Ellipse::Directrix2() const
 
 //=================================================================================================
 
-void Geom_Ellipse::D0(const Standard_Real U, gp_Pnt& P) const
+void Geom_Ellipse::D0(const double U, gp_Pnt& P) const
 {
 
   P = ElCLib::EllipseValue(U, pos, majorRadius, minorRadius);
@@ -192,7 +190,7 @@ void Geom_Ellipse::D0(const Standard_Real U, gp_Pnt& P) const
 
 //=================================================================================================
 
-void Geom_Ellipse::D1(const Standard_Real U, Pnt& P, Vec& V1) const
+void Geom_Ellipse::D1(const double U, Pnt& P, Vec& V1) const
 {
 
   ElCLib::EllipseD1(U, pos, majorRadius, minorRadius, P, V1);
@@ -200,7 +198,7 @@ void Geom_Ellipse::D1(const Standard_Real U, Pnt& P, Vec& V1) const
 
 //=================================================================================================
 
-void Geom_Ellipse::D2(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const
+void Geom_Ellipse::D2(const double U, Pnt& P, Vec& V1, Vec& V2) const
 {
 
   ElCLib::EllipseD2(U, pos, majorRadius, minorRadius, P, V1, V2);
@@ -208,7 +206,7 @@ void Geom_Ellipse::D2(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const
 
 //=================================================================================================
 
-void Geom_Ellipse::D3(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
+void Geom_Ellipse::D3(const double U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
 {
 
   ElCLib::EllipseD3(U, pos, majorRadius, minorRadius, P, V1, V2, V3);
@@ -216,7 +214,7 @@ void Geom_Ellipse::D3(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) 
 
 //=================================================================================================
 
-Vec Geom_Ellipse::DN(const Standard_Real U, const Standard_Integer N) const
+Vec Geom_Ellipse::DN(const double U, const int N) const
 {
 
   Standard_RangeError_Raise_if(N < 1, " ");
@@ -225,7 +223,7 @@ Vec Geom_Ellipse::DN(const Standard_Real U, const Standard_Integer N) const
 
 //=================================================================================================
 
-Standard_Real Geom_Ellipse::Eccentricity() const
+double Geom_Ellipse::Eccentricity() const
 {
 
   if (majorRadius == 0.0)
@@ -240,7 +238,7 @@ Standard_Real Geom_Ellipse::Eccentricity() const
 
 //=================================================================================================
 
-Standard_Real Geom_Ellipse::Focal() const
+double Geom_Ellipse::Focal() const
 {
 
   return 2.0 * std::sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
@@ -251,8 +249,8 @@ Standard_Real Geom_Ellipse::Focal() const
 Pnt Geom_Ellipse::Focus1() const
 {
 
-  Standard_Real C = std::sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
-  Standard_Real Xp, Yp, Zp, Xd, Yd, Zd;
+  double C = std::sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
+  double Xp, Yp, Zp, Xd, Yd, Zd;
   pos.Location().Coord(Xp, Yp, Zp);
   pos.XDirection().Coord(Xd, Yd, Zd);
   return Pnt(Xp + C * Xd, Yp + C * Yd, Zp + C * Zd);
@@ -263,8 +261,8 @@ Pnt Geom_Ellipse::Focus1() const
 Pnt Geom_Ellipse::Focus2() const
 {
 
-  Standard_Real C = std::sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
-  Standard_Real Xp, Yp, Zp, Xd, Yd, Zd;
+  double C = std::sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
+  double Xp, Yp, Zp, Xd, Yd, Zd;
   pos.Location().Coord(Xp, Yp, Zp);
   pos.XDirection().Coord(Xd, Yd, Zd);
   return Pnt(Xp - C * Xd, Yp - C * Yd, Zp - C * Zd);
@@ -272,7 +270,7 @@ Pnt Geom_Ellipse::Focus2() const
 
 //=================================================================================================
 
-Standard_Real Geom_Ellipse::Parameter() const
+double Geom_Ellipse::Parameter() const
 {
 
   if (majorRadius == 0.0)
@@ -293,7 +291,7 @@ void Geom_Ellipse::Transform(const Trsf& T)
 
 //=================================================================================================
 
-void Geom_Ellipse::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Ellipse::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

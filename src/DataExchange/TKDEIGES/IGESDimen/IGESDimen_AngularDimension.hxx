@@ -27,9 +27,6 @@ class IGESDimen_WitnessLine;
 class IGESDimen_LeaderArrow;
 class gp_Pnt2d;
 
-class IGESDimen_AngularDimension;
-DEFINE_STANDARD_HANDLE(IGESDimen_AngularDimension, IGESData_IGESEntity)
-
 //! defines AngularDimension, Type <202> Form <0>
 //! in package IGESDimen
 //! Used to dimension angles
@@ -50,28 +47,28 @@ public:
   //! - aRadius       : Radius of leader arcs
   //! - aLeader       : First Leader Entity
   //! - anotherLeader : Second Leader Entity
-  Standard_EXPORT void Init(const Handle(IGESDimen_GeneralNote)& aNote,
-                            const Handle(IGESDimen_WitnessLine)& aLine,
-                            const Handle(IGESDimen_WitnessLine)& anotherLine,
-                            const gp_XY&                         aVertex,
-                            const Standard_Real                  aRadius,
-                            const Handle(IGESDimen_LeaderArrow)& aLeader,
-                            const Handle(IGESDimen_LeaderArrow)& anotherLeader);
+  Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
+                            const occ::handle<IGESDimen_WitnessLine>& aLine,
+                            const occ::handle<IGESDimen_WitnessLine>& anotherLine,
+                            const gp_XY&                              aVertex,
+                            const double                              aRadius,
+                            const occ::handle<IGESDimen_LeaderArrow>& aLeader,
+                            const occ::handle<IGESDimen_LeaderArrow>& anotherLeader);
 
   //! returns the General Note Entity of the Dimension.
-  Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
+  Standard_EXPORT occ::handle<IGESDimen_GeneralNote> Note() const;
 
   //! returns False if theFirstWitnessLine is Null Handle.
-  Standard_EXPORT Standard_Boolean HasFirstWitnessLine() const;
+  Standard_EXPORT bool HasFirstWitnessLine() const;
 
   //! returns the First Witness Line Entity or Null Handle.
-  Standard_EXPORT Handle(IGESDimen_WitnessLine) FirstWitnessLine() const;
+  Standard_EXPORT occ::handle<IGESDimen_WitnessLine> FirstWitnessLine() const;
 
   //! returns False if theSecondWitnessLine is Null Handle.
-  Standard_EXPORT Standard_Boolean HasSecondWitnessLine() const;
+  Standard_EXPORT bool HasSecondWitnessLine() const;
 
   //! returns the Second Witness Line Entity or Null Handle.
-  Standard_EXPORT Handle(IGESDimen_WitnessLine) SecondWitnessLine() const;
+  Standard_EXPORT occ::handle<IGESDimen_WitnessLine> SecondWitnessLine() const;
 
   //! returns the coordinates of the Vertex point as Pnt2d from gp.
   Standard_EXPORT gp_Pnt2d Vertex() const;
@@ -81,25 +78,24 @@ public:
   Standard_EXPORT gp_Pnt2d TransformedVertex() const;
 
   //! returns the Radius of the Leader arcs.
-  Standard_EXPORT Standard_Real Radius() const;
+  Standard_EXPORT double Radius() const;
 
   //! returns the First Leader Entity.
-  Standard_EXPORT Handle(IGESDimen_LeaderArrow) FirstLeader() const;
+  Standard_EXPORT occ::handle<IGESDimen_LeaderArrow> FirstLeader() const;
 
   //! returns the Second Leader Entity.
-  Standard_EXPORT Handle(IGESDimen_LeaderArrow) SecondLeader() const;
+  Standard_EXPORT occ::handle<IGESDimen_LeaderArrow> SecondLeader() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_AngularDimension, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESDimen_GeneralNote) theNote;
-  Handle(IGESDimen_WitnessLine) theFirstWitnessLine;
-  Handle(IGESDimen_WitnessLine) theSecondWitnessLine;
-  gp_XY                         theVertex;
-  Standard_Real                 theRadius;
-  Handle(IGESDimen_LeaderArrow) theFirstLeader;
-  Handle(IGESDimen_LeaderArrow) theSecondLeader;
+  occ::handle<IGESDimen_GeneralNote> theNote;
+  occ::handle<IGESDimen_WitnessLine> theFirstWitnessLine;
+  occ::handle<IGESDimen_WitnessLine> theSecondWitnessLine;
+  gp_XY                              theVertex;
+  double                             theRadius;
+  occ::handle<IGESDimen_LeaderArrow> theFirstLeader;
+  occ::handle<IGESDimen_LeaderArrow> theSecondLeader;
 };
 
 #endif // _IGESDimen_AngularDimension_HeaderFile

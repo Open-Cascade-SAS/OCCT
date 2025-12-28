@@ -48,7 +48,7 @@ public:
   {
   }
 
-  void Set2D(const Standard_Integer FE, const Standard_Real Param)
+  void Set2D(const int FE, const double Param)
   {
     myFE    = FE;
     myParam = Param;
@@ -60,7 +60,7 @@ public:
     myStAft = staft;
   }
 
-  void Value2D(Standard_Integer& FE, Standard_Real& Param) const
+  void Value2D(int& FE, double& Param) const
   {
     FE    = myFE;
     Param = myParam;
@@ -73,10 +73,10 @@ public:
   }
 
 private:
-  Standard_Integer myFE;
-  Standard_Real    myParam;
-  TopAbs_State     myStBef;
-  TopAbs_State     myStAft;
+  int          myFE;
+  double       myParam;
+  TopAbs_State myStBef;
+  TopAbs_State myStAft;
 };
 
 #endif // _HLRAlgo_Coincidence_HeaderFile

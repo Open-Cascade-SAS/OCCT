@@ -24,9 +24,6 @@
 #include <TopOpeBRepBuild_BlockIterator.hxx>
 #include <Standard_Transient.hxx>
 
-class TopOpeBRepBuild_Loop;
-DEFINE_STANDARD_HANDLE(TopOpeBRepBuild_Loop, Standard_Transient)
-
 //! a Loop is an existing shape (Shell,Wire) or a set
 //! of shapes (Faces,Edges) which are connex.
 //! a set of connex shape is represented by a BlockIterator
@@ -38,7 +35,7 @@ public:
 
   Standard_EXPORT TopOpeBRepBuild_Loop(const TopOpeBRepBuild_BlockIterator& BI);
 
-  Standard_EXPORT virtual Standard_Boolean IsShape() const;
+  Standard_EXPORT virtual bool IsShape() const;
 
   Standard_EXPORT virtual const TopoDS_Shape& Shape() const;
 
@@ -49,11 +46,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop, Standard_Transient)
 
 protected:
-  Standard_Boolean              myIsShape;
+  bool                          myIsShape;
   TopoDS_Shape                  myShape;
   TopOpeBRepBuild_BlockIterator myBlockIterator;
-
-private:
 };
 
 #endif // _TopOpeBRepBuild_Loop_HeaderFile

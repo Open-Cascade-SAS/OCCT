@@ -15,7 +15,7 @@
 
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
+#include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Image_Texture.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -28,8 +28,8 @@ class AIS_XRTrackedDevice::XRTexture : public Graphic3d_Texture2D
 {
 public:
   //! Constructor.
-  XRTexture(const Handle(Image_Texture)& theImageSource,
-            const Graphic3d_TextureUnit  theUnit = Graphic3d_TextureUnit_BaseColor)
+  XRTexture(const occ::handle<Image_Texture>& theImageSource,
+            const Graphic3d_TextureUnit       theUnit = Graphic3d_TextureUnit_BaseColor)
       : Graphic3d_Texture2D(""),
         myImageSource(theImageSource)
   {
@@ -43,22 +43,22 @@ public:
   }
 
   //! Image reader.
-  virtual Handle(Image_PixMap) GetImage(const Handle(Image_SupportedFormats)& theSupported)
-    Standard_OVERRIDE
+  virtual occ::handle<Image_PixMap> GetImage(
+    const occ::handle<Image_SupportedFormats>& theSupported) override
   {
     return myImageSource->ReadImage(theSupported);
   }
 
 protected:
-  Handle(Image_Texture) myImageSource;
+  occ::handle<Image_Texture> myImageSource;
 };
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_XRTrackedDevice, AIS_InteractiveObject)
 
 //=================================================================================================
 
-AIS_XRTrackedDevice::AIS_XRTrackedDevice(const Handle(Graphic3d_ArrayOfTriangles)& theTris,
-                                         const Handle(Image_Texture)&              theTexture)
+AIS_XRTrackedDevice::AIS_XRTrackedDevice(const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
+                                         const occ::handle<Image_Texture>&              theTexture)
     : myTris(theTris),
       myLaserColor(Quantity_NOC_BLUE),
       myLaserLength(0.0f),
@@ -101,7 +101,7 @@ void AIS_XRTrackedDevice::SetLaserColor(const Quantity_Color& theColor)
 
 //=================================================================================================
 
-void AIS_XRTrackedDevice::SetLaserLength(Standard_ShortReal theLength)
+void AIS_XRTrackedDevice::SetLaserLength(float theLength)
 {
   if (myLaserLength != theLength)
   {
@@ -128,7 +128,7 @@ void AIS_XRTrackedDevice::computeLaserRay()
     return;
   }
 
-  Handle(Graphic3d_ArrayOfPrimitives) aLines =
+  occ::handle<Graphic3d_ArrayOfPrimitives> aLines =
     new Graphic3d_ArrayOfSegments(2, 0, Graphic3d_ArrayFlags_VertexColor);
   aLines->AddVertex(gp_Pnt(0.0, 0.0, 0.0), myLaserColor);
   aLines->AddVertex(gp_Pnt(0.0, 0.0, -myLaserLength), myLaserColor);
@@ -138,9 +138,9 @@ void AIS_XRTrackedDevice::computeLaserRay()
 
 //=================================================================================================
 
-void AIS_XRTrackedDevice::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                  const Handle(Prs3d_Presentation)& thePrs,
-                                  const Standard_Integer            theMode)
+void AIS_XRTrackedDevice::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                  const occ::handle<Prs3d_Presentation>& thePrs,
+                                  const int                              theMode)
 {
   if (theMode != 0)
   {
@@ -148,7 +148,7 @@ void AIS_XRTrackedDevice::Compute(const Handle(PrsMgr_PresentationManager)&,
   }
 
   thePrs->SetInfiniteState(myInfiniteState);
-  Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+  occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
   if (!myTris.IsNull())
   {
     aGroup->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
@@ -159,7 +159,7 @@ void AIS_XRTrackedDevice::Compute(const Handle(PrsMgr_PresentationManager)&,
   {
     const float aSize = 0.1f * myUnitFactor;
     aGroup->SetGroupPrimitivesAspect(myDrawer->LineAspect()->Aspect());
-    Handle(Graphic3d_ArrayOfPrimitives) aLines =
+    occ::handle<Graphic3d_ArrayOfPrimitives> aLines =
       new Graphic3d_ArrayOfSegments(6, 0, Graphic3d_ArrayFlags_VertexColor);
     aLines->AddVertex(gp_Pnt(0.0, 0.0, 0.0), Quantity_Color(Quantity_NOC_RED));
     aLines->AddVertex(gp_Pnt(aSize, 0.0, 0.0), Quantity_Color(Quantity_NOC_RED));
@@ -176,8 +176,8 @@ void AIS_XRTrackedDevice::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void AIS_XRTrackedDevice::ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                           const Standard_Integer             theMode)
+void AIS_XRTrackedDevice::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                           const int                               theMode)
 {
   if (theMode != 0)
   {
@@ -186,8 +186,8 @@ void AIS_XRTrackedDevice::ComputeSelection(const Handle(SelectMgr_Selection)& th
 
   if (!myTris.IsNull())
   {
-    Handle(SelectMgr_EntityOwner)            anOwner = new SelectMgr_EntityOwner(this);
-    Handle(Select3D_SensitivePrimitiveArray) aSensitive =
+    occ::handle<SelectMgr_EntityOwner>            anOwner = new SelectMgr_EntityOwner(this);
+    occ::handle<Select3D_SensitivePrimitiveArray> aSensitive =
       new Select3D_SensitivePrimitiveArray(anOwner);
     aSensitive->InitTriangulation(myTris->Attributes(), myTris->Indices(), TopLoc_Location(), true);
     theSel->Add(aSensitive);

@@ -31,10 +31,10 @@ public:
 
   Standard_EXPORT IntTools_SurfaceRangeSample();
 
-  Standard_EXPORT IntTools_SurfaceRangeSample(const Standard_Integer theIndexU,
-                                              const Standard_Integer theDepthU,
-                                              const Standard_Integer theIndexV,
-                                              const Standard_Integer theDepthV);
+  Standard_EXPORT IntTools_SurfaceRangeSample(const int theIndexU,
+                                              const int theDepthU,
+                                              const int theIndexV,
+                                              const int theDepthV);
 
   Standard_EXPORT IntTools_SurfaceRangeSample(const IntTools_CurveRangeSample& theRangeU,
                                               const IntTools_CurveRangeSample& theRangeV);
@@ -53,11 +53,11 @@ public:
 
   void GetRanges(IntTools_CurveRangeSample& theRangeU, IntTools_CurveRangeSample& theRangeV) const;
 
-  void SetIndexes(const Standard_Integer theIndexU, const Standard_Integer theIndexV);
+  void SetIndexes(const int theIndexU, const int theIndexV);
 
-  void GetIndexes(Standard_Integer& theIndexU, Standard_Integer& theIndexV) const;
+  void GetIndexes(int& theIndexU, int& theIndexV) const;
 
-  void GetDepths(Standard_Integer& theDepthU, Standard_Integer& theDepthV) const;
+  void GetDepths(int& theDepthU, int& theDepthV) const;
 
   void SetSampleRangeU(const IntTools_CurveRangeSample& theRangeSampleU);
 
@@ -67,39 +67,38 @@ public:
 
   const IntTools_CurveRangeSample& GetSampleRangeV() const;
 
-  void SetIndexU(const Standard_Integer theIndexU);
+  void SetIndexU(const int theIndexU);
 
-  Standard_Integer GetIndexU() const;
+  int GetIndexU() const;
 
-  void SetIndexV(const Standard_Integer theIndexV);
+  void SetIndexV(const int theIndexV);
 
-  Standard_Integer GetIndexV() const;
+  int GetIndexV() const;
 
-  void SetDepthU(const Standard_Integer theDepthU);
+  void SetDepthU(const int theDepthU);
 
-  Standard_Integer GetDepthU() const;
+  int GetDepthU() const;
 
-  void SetDepthV(const Standard_Integer theDepthV);
+  void SetDepthV(const int theDepthV);
 
-  Standard_Integer GetDepthV() const;
+  int GetDepthV() const;
 
-  Standard_EXPORT IntTools_Range GetRangeU(const Standard_Real    theFirstU,
-                                           const Standard_Real    theLastU,
-                                           const Standard_Integer theNbSampleU) const;
+  Standard_EXPORT IntTools_Range GetRangeU(const double theFirstU,
+                                           const double theLastU,
+                                           const int    theNbSampleU) const;
 
-  Standard_EXPORT IntTools_Range GetRangeV(const Standard_Real    theFirstV,
-                                           const Standard_Real    theLastV,
-                                           const Standard_Integer theNbSampleV) const;
+  Standard_EXPORT IntTools_Range GetRangeV(const double theFirstV,
+                                           const double theLastV,
+                                           const int    theNbSampleV) const;
 
-  Standard_Boolean IsEqual(const IntTools_SurfaceRangeSample& Other) const;
+  bool IsEqual(const IntTools_SurfaceRangeSample& Other) const;
 
-  Standard_Integer GetRangeIndexUDeeper(const Standard_Integer theNbSampleU) const;
+  int GetRangeIndexUDeeper(const int theNbSampleU) const;
 
-  Standard_Integer GetRangeIndexVDeeper(const Standard_Integer theNbSampleV) const;
+  int GetRangeIndexVDeeper(const int theNbSampleV) const;
 
   bool operator==(const IntTools_SurfaceRangeSample& theOther) const { return IsEqual(theOther); }
 
-protected:
 private:
   IntTools_CurveRangeSample myRangeU;
   IntTools_CurveRangeSample myRangeV;

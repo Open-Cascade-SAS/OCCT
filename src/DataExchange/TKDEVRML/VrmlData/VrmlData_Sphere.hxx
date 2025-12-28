@@ -39,7 +39,7 @@ public:
    */
   inline VrmlData_Sphere(const VrmlData_Scene& theScene,
                          const char*           theName,
-                         const Standard_Real   theRadius = 1.)
+                         const double          theRadius = 1.)
       : VrmlData_Geometry(theScene, theName),
         myRadius(theRadius)
   {
@@ -48,12 +48,12 @@ public:
   /**
    * Query the sphere radius
    */
-  inline Standard_Real Radius() const { return myRadius; }
+  inline double Radius() const { return myRadius; }
 
   /**
    * Set the sphere radius
    */
-  inline void SetRadius(const Standard_Real theRadius)
+  inline void SetRadius(const double theRadius)
   {
     myRadius = theRadius;
     SetModified();
@@ -63,30 +63,30 @@ public:
    * Query the primitive topology. This method returns a Null shape if there
    * is an internal error during the primitive creation (zero radius, etc.)
    */
-  Standard_EXPORT virtual const Handle(TopoDS_TShape)& TShape() Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<TopoDS_TShape>& TShape() override;
 
   /**
    * Create a copy of this node.
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+    const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Fill the Node internal data from the given input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
 
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  Standard_Real myRadius;
+  double myRadius;
 
 public:
   // Declaration of CASCADE RTTI
@@ -94,6 +94,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(VrmlData_Sphere, VrmlData_Geometry)
-
 #endif

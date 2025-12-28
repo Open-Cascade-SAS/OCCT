@@ -19,54 +19,57 @@
 
 #include <Standard.hxx>
 #include <Standard_Integer.hxx>
-#include <HLRAlgo_HArray1OfTData.hxx>
-#include <HLRAlgo_HArray1OfPISeg.hxx>
-#include <HLRAlgo_HArray1OfPINod.hxx>
+#include <HLRAlgo_TriangleData.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <HLRAlgo_PolyInternalSegment.hxx>
+#include <HLRAlgo_PolyInternalNode.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-
-class HLRAlgo_PolyInternalData;
-DEFINE_STANDARD_HANDLE(HLRAlgo_PolyInternalData, Standard_Transient)
 
 //! to Update OutLines.
 class HLRAlgo_PolyInternalData : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT HLRAlgo_PolyInternalData(const Standard_Integer nbNod,
-                                           const Standard_Integer nbTri);
+  Standard_EXPORT HLRAlgo_PolyInternalData(const int nbNod, const int nbTri);
 
-  Standard_EXPORT void UpdateLinks(HLRAlgo_Array1OfTData& theTData,
-                                   HLRAlgo_Array1OfPISeg& thePISeg,
-                                   HLRAlgo_Array1OfPINod& thePINod);
+  Standard_EXPORT void UpdateLinks(
+    NCollection_Array1<HLRAlgo_TriangleData>&                  theTData,
+    NCollection_Array1<HLRAlgo_PolyInternalSegment>&           thePISeg,
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& thePINod);
 
-  Standard_EXPORT Standard_Integer AddNode(HLRAlgo_PolyInternalNode::NodeData& theNod1RValues,
-                                           HLRAlgo_PolyInternalNode::NodeData& theNod2RValues,
-                                           HLRAlgo_Array1OfPINod*&             thePINod1,
-                                           HLRAlgo_Array1OfPINod*&             thePINod2,
-                                           const Standard_Real                 theCoef1,
-                                           const Standard_Real                 theX3,
-                                           const Standard_Real                 theY3,
-                                           const Standard_Real                 theZ3);
+  Standard_EXPORT int AddNode(HLRAlgo_PolyInternalNode::NodeData& theNod1RValues,
+                              HLRAlgo_PolyInternalNode::NodeData& theNod2RValues,
+                              NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& thePINod1,
+                              NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& thePINod2,
+                              const double                                                theCoef1,
+                              const double                                                theX3,
+                              const double                                                theY3,
+                              const double                                                theZ3);
 
-  Standard_EXPORT void UpdateLinks(const Standard_Integer  theIp1,
-                                   const Standard_Integer  theIp2,
-                                   const Standard_Integer  theIp3,
-                                   HLRAlgo_Array1OfTData*& theTData1,
-                                   HLRAlgo_Array1OfTData*& theTData2,
-                                   HLRAlgo_Array1OfPISeg*& thePISeg1,
-                                   HLRAlgo_Array1OfPISeg*& thePISeg2,
-                                   HLRAlgo_Array1OfPINod*& thePINod1,
-                                   HLRAlgo_Array1OfPINod*& thePINod2);
+  Standard_EXPORT void UpdateLinks(
+    const int                                                   theIp1,
+    const int                                                   theIp2,
+    const int                                                   theIp3,
+    NCollection_Array1<HLRAlgo_TriangleData>*&                  theTData1,
+    NCollection_Array1<HLRAlgo_TriangleData>*&                  theTData2,
+    NCollection_Array1<HLRAlgo_PolyInternalSegment>*&           thePISeg1,
+    NCollection_Array1<HLRAlgo_PolyInternalSegment>*&           thePISeg2,
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& thePINod1,
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& thePINod2);
 
   Standard_EXPORT void Dump() const;
 
-  Standard_EXPORT void IncTData(HLRAlgo_Array1OfTData*& TData1, HLRAlgo_Array1OfTData*& TData2);
+  Standard_EXPORT void IncTData(NCollection_Array1<HLRAlgo_TriangleData>*& TData1,
+                                NCollection_Array1<HLRAlgo_TriangleData>*& TData2);
 
-  Standard_EXPORT void IncPISeg(HLRAlgo_Array1OfPISeg*& PISeg1, HLRAlgo_Array1OfPISeg*& PISeg2);
+  Standard_EXPORT void IncPISeg(NCollection_Array1<HLRAlgo_PolyInternalSegment>*& PISeg1,
+                                NCollection_Array1<HLRAlgo_PolyInternalSegment>*& PISeg2);
 
-  Standard_EXPORT void IncPINod(HLRAlgo_Array1OfPINod*& thePINod1,
-                                HLRAlgo_Array1OfPINod*& thePINod2);
+  Standard_EXPORT void IncPINod(
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& thePINod1,
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& thePINod2);
 
   void DecTData();
 
@@ -74,40 +77,40 @@ public:
 
   void DecPINod();
 
-  Standard_Integer NbTData() const;
+  int NbTData() const;
 
-  Standard_Integer NbPISeg() const;
+  int NbPISeg() const;
 
-  Standard_Integer NbPINod() const;
+  int NbPINod() const;
 
-  Standard_Boolean Planar() const;
+  bool Planar() const;
 
-  void Planar(const Standard_Boolean B);
+  void Planar(const bool B);
 
-  Standard_Boolean IntOutL() const;
+  bool IntOutL() const;
 
-  void IntOutL(const Standard_Boolean B);
+  void IntOutL(const bool B);
 
-  HLRAlgo_Array1OfTData& TData() const;
+  NCollection_Array1<HLRAlgo_TriangleData>& TData() const;
 
-  HLRAlgo_Array1OfPISeg& PISeg() const;
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>& PISeg() const;
 
-  HLRAlgo_Array1OfPINod& PINod() const;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& PINod() const;
 
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData, Standard_Transient)
 
 private:
-  Standard_Integer               myNbTData;
-  Standard_Integer               myNbPISeg;
-  Standard_Integer               myNbPINod;
-  Standard_Integer               myMxTData;
-  Standard_Integer               myMxPISeg;
-  Standard_Integer               myMxPINod;
-  Standard_Boolean               myIntOutL;
-  Standard_Boolean               myPlanar;
-  Handle(HLRAlgo_HArray1OfTData) myTData;
-  Handle(HLRAlgo_HArray1OfPISeg) myPISeg;
-  Handle(HLRAlgo_HArray1OfPINod) myPINod;
+  int                                                                     myNbTData;
+  int                                                                     myNbPISeg;
+  int                                                                     myNbPINod;
+  int                                                                     myMxTData;
+  int                                                                     myMxPISeg;
+  int                                                                     myMxPINod;
+  bool                                                                    myIntOutL;
+  bool                                                                    myPlanar;
+  occ::handle<NCollection_HArray1<HLRAlgo_TriangleData>>                  myTData;
+  occ::handle<NCollection_HArray1<HLRAlgo_PolyInternalSegment>>           myPISeg;
+  occ::handle<NCollection_HArray1<occ::handle<HLRAlgo_PolyInternalNode>>> myPINod;
 };
 
 #include <HLRAlgo_PolyInternalData.lxx>

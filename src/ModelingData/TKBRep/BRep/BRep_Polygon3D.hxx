@@ -24,35 +24,31 @@
 class Poly_Polygon3D;
 class TopLoc_Location;
 
-class BRep_Polygon3D;
-DEFINE_STANDARD_HANDLE(BRep_Polygon3D, BRep_CurveRepresentation)
-
 //! Representation by a 3D polygon.
 class BRep_Polygon3D : public BRep_CurveRepresentation
 {
 
 public:
-  Standard_EXPORT BRep_Polygon3D(const Handle(Poly_Polygon3D)& P, const TopLoc_Location& L);
+  Standard_EXPORT BRep_Polygon3D(const occ::handle<Poly_Polygon3D>& P, const TopLoc_Location& L);
 
   //! Returns True.
-  Standard_EXPORT virtual Standard_Boolean IsPolygon3D() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsPolygon3D() const override;
 
-  Standard_EXPORT virtual const Handle(Poly_Polygon3D)& Polygon3D() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<Poly_Polygon3D>& Polygon3D() const override;
 
-  Standard_EXPORT virtual void Polygon3D(const Handle(Poly_Polygon3D)& P) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Polygon3D(const occ::handle<Poly_Polygon3D>& P) override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_Polygon3D, BRep_CurveRepresentation)
 
-protected:
 private:
-  Handle(Poly_Polygon3D) myPolygon3D;
+  occ::handle<Poly_Polygon3D> myPolygon3D;
 };
 
 #endif // _BRep_Polygon3D_HeaderFile

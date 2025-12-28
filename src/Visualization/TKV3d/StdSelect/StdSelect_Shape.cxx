@@ -25,8 +25,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StdSelect_Shape, PrsMgr_PresentableObject)
 
-StdSelect_Shape::StdSelect_Shape(const TopoDS_Shape&         theShape,
-                                 const Handle(Prs3d_Drawer)& theDrawer)
+StdSelect_Shape::StdSelect_Shape(const TopoDS_Shape&              theShape,
+                                 const occ::handle<Prs3d_Drawer>& theDrawer)
     : mysh(theShape)
 {
   if (!theDrawer.IsNull())
@@ -35,16 +35,16 @@ StdSelect_Shape::StdSelect_Shape(const TopoDS_Shape&         theShape,
   }
 }
 
-void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager)&,
-                              const Handle(Prs3d_Presentation)& thePrs,
-                              const Standard_Integer            theMode)
+void StdSelect_Shape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                              const occ::handle<Prs3d_Presentation>& thePrs,
+                              const int                              theMode)
 {
   if (mysh.IsNull())
   {
     return;
   }
 
-  Standard_Boolean canShade = (mysh.ShapeType() < 5 || mysh.ShapeType() == 8);
+  bool canShade = (mysh.ShapeType() < 5 || mysh.ShapeType() == 8);
   if (theMode == 1)
   {
     if (canShade)
@@ -62,7 +62,7 @@ void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager)&,
   }
 }
 
-void StdSelect_Shape::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void StdSelect_Shape::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
-
-class Vrml_IndexedLineSet;
-DEFINE_STANDARD_HANDLE(Vrml_IndexedLineSet, Standard_Transient)
 
 //! defines a IndexedLineSet node of VRML specifying geometry shapes.
 //! This node represents a 3D shape formed by constructing polylines from vertices
@@ -44,40 +43,41 @@ class Vrml_IndexedLineSet : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT Vrml_IndexedLineSet(const Handle(TColStd_HArray1OfInteger)& aCoordIndex,
-                                      const Handle(TColStd_HArray1OfInteger)& aMaterialIndex,
-                                      const Handle(TColStd_HArray1OfInteger)& aNormalIndex,
-                                      const Handle(TColStd_HArray1OfInteger)& aTextureCoordIndex);
+  Standard_EXPORT Vrml_IndexedLineSet(
+    const occ::handle<NCollection_HArray1<int>>& aCoordIndex,
+    const occ::handle<NCollection_HArray1<int>>& aMaterialIndex,
+    const occ::handle<NCollection_HArray1<int>>& aNormalIndex,
+    const occ::handle<NCollection_HArray1<int>>& aTextureCoordIndex);
 
   Standard_EXPORT Vrml_IndexedLineSet();
 
-  Standard_EXPORT void SetCoordIndex(const Handle(TColStd_HArray1OfInteger)& aCoordIndex);
+  Standard_EXPORT void SetCoordIndex(const occ::handle<NCollection_HArray1<int>>& aCoordIndex);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) CoordIndex() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<int>> CoordIndex() const;
 
-  Standard_EXPORT void SetMaterialIndex(const Handle(TColStd_HArray1OfInteger)& aMaterialIndex);
+  Standard_EXPORT void SetMaterialIndex(
+    const occ::handle<NCollection_HArray1<int>>& aMaterialIndex);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) MaterialIndex() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<int>> MaterialIndex() const;
 
-  Standard_EXPORT void SetNormalIndex(const Handle(TColStd_HArray1OfInteger)& aNormalIndex);
+  Standard_EXPORT void SetNormalIndex(const occ::handle<NCollection_HArray1<int>>& aNormalIndex);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) NormalIndex() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<int>> NormalIndex() const;
 
   Standard_EXPORT void SetTextureCoordIndex(
-    const Handle(TColStd_HArray1OfInteger)& aTextureCoordIndex);
+    const occ::handle<NCollection_HArray1<int>>& aTextureCoordIndex);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) TextureCoordIndex() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<int>> TextureCoordIndex() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
   DEFINE_STANDARD_RTTIEXT(Vrml_IndexedLineSet, Standard_Transient)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfInteger) myCoordIndex;
-  Handle(TColStd_HArray1OfInteger) myMaterialIndex;
-  Handle(TColStd_HArray1OfInteger) myNormalIndex;
-  Handle(TColStd_HArray1OfInteger) myTextureCoordIndex;
+  occ::handle<NCollection_HArray1<int>> myCoordIndex;
+  occ::handle<NCollection_HArray1<int>> myMaterialIndex;
+  occ::handle<NCollection_HArray1<int>> myNormalIndex;
+  occ::handle<NCollection_HArray1<int>> myTextureCoordIndex;
 };
 
 #endif // _Vrml_IndexedLineSet_HeaderFile

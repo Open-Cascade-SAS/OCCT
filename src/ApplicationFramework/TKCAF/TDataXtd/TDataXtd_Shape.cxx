@@ -29,12 +29,12 @@ IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Shape, TDataStd_GenericEmpty)
 
 //=================================================================================================
 
-Standard_Boolean TDataXtd_Shape::Find(const TDF_Label& current, Handle(TDataXtd_Shape)& S)
+bool TDataXtd_Shape::Find(const TDF_Label& current, occ::handle<TDataXtd_Shape>& S)
 {
-  TDF_Label              L = current;
-  Handle(TDataXtd_Shape) SA;
+  TDF_Label                   L = current;
+  occ::handle<TDataXtd_Shape> SA;
   if (L.IsNull())
-    return Standard_False;
+    return false;
   for (;;)
   {
     if (L.FindAttribute(TDataXtd_Shape::GetID(), SA))
@@ -47,35 +47,35 @@ Standard_Boolean TDataXtd_Shape::Find(const TDF_Label& current, Handle(TDataXtd_
   if (!SA.IsNull())
   {
     S = SA;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(TDataXtd_Shape) TDataXtd_Shape::New(const TDF_Label& label)
+occ::handle<TDataXtd_Shape> TDataXtd_Shape::New(const TDF_Label& label)
 {
   if (label.HasAttribute())
   {
     throw Standard_DomainError("TDataXtd_Shape::New : not an empty label");
   }
-  Handle(TDataXtd_Shape) A = new TDataXtd_Shape();
+  occ::handle<TDataXtd_Shape> A = new TDataXtd_Shape();
   label.AddAttribute(A);
   return A;
 }
 
 //=================================================================================================
 
-Handle(TDataXtd_Shape) TDataXtd_Shape::Set(const TDF_Label& label, const TopoDS_Shape& shape)
+occ::handle<TDataXtd_Shape> TDataXtd_Shape::Set(const TDF_Label& label, const TopoDS_Shape& shape)
 {
-  Handle(TDataXtd_Shape) A;
+  occ::handle<TDataXtd_Shape> A;
   if (!label.FindAttribute(TDataXtd_Shape::GetID(), A))
   {
     A = TDataXtd_Shape::New(label);
   }
 
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   if (label.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
     if (!aNS->Get().IsNull())
@@ -94,7 +94,7 @@ TopoDS_Shape TDataXtd_Shape::Get(const TDF_Label& label)
 {
   TopoDS_Shape shape;
 
-  Handle(TNaming_NamedShape) NS;
+  occ::handle<TNaming_NamedShape> NS;
   if (label.FindAttribute(TNaming_NamedShape::GetID(), NS))
   {
     shape = TNaming_Tool::GetShape(NS);
@@ -126,7 +126,7 @@ const Standard_GUID& TDataXtd_Shape::ID() const
 
 //=================================================================================================
 
-void TDataXtd_Shape::References(const Handle(TDF_DataSet)&) const {}
+void TDataXtd_Shape::References(const occ::handle<TDF_DataSet>&) const {}
 
 //=================================================================================================
 

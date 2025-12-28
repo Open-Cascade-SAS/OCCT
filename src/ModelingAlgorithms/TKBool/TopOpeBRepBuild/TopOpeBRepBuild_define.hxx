@@ -31,11 +31,11 @@
 #include <TopOpeBRepBuild_EdgeBuilder.hxx>
 #include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_PBuilder.hxx>
-#include <TopOpeBRepBuild_DataMapIteratorOfDataMapOfShapeListOfShapeListOfShape.hxx>
-#include <TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape.hxx>
-#include <TopOpeBRepBuild_ListIteratorOfListOfShapeListOfShape.hxx>
-#include <TopOpeBRepBuild_ListOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_ShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 
 #define MTBpwes TopOpeBRepBuild_PWireEdgeSet
@@ -44,7 +44,7 @@
 #define MTBgt TopOpeBRepBuild_GTopo
 #define MTBpvc TopOpeBRepBuild_PaveClassifier
 #define MTBpvs TopOpeBRepBuild_PaveSet
-#define MTBhpv Handle(TopOpeBRepBuild_Pave)
+#define MTBhpv occ::handle<TopOpeBRepBuild_Pave>
 #define MTBpv TopOpeBRepBuild_Pave
 #define MTBsb TopOpeBRepBuild_SolidBuilder
 #define MTBfb TopOpeBRepBuild_FaceBuilder
@@ -52,11 +52,17 @@
 #define MTBbON TopOpeBRepBuild_BuilderON
 #define MTBb TopOpeBRepBuild_Builder
 #define MTBpb TopOpeBRepBuild_PBuilder
-#define MTBdmiodmosloslos TopOpeBRepBuild_DataMapIteratorOfDataMapOfShapeListOfShapeListOfShape
-#define MTBdmosloslos TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape
-#define MTBlioloslos TopOpeBRepBuild_ListIteratorOfListOfShapeListOfShape
-#define MTBloslos TopOpeBRepBuild_ListOfShapeListOfShape
+#define MTBdmiodmosloslos                                                                          \
+  NCollection_DataMap<TopoDS_Shape,                                                                \
+                      NCollection_List<TopOpeBRepBuild_ShapeListOfShape>,                          \
+                      TopTools_ShapeMapHasher>::Iterator
+#define MTBdmosloslos                                                                              \
+  NCollection_DataMap<TopoDS_Shape,                                                                \
+                      NCollection_List<TopOpeBRepBuild_ShapeListOfShape>,                          \
+                      TopTools_ShapeMapHasher>
+#define MTBlioloslos NCollection_List<TopOpeBRepBuild_ShapeListOfShape>::Iterator
+#define MTBloslos NCollection_List<TopOpeBRepBuild_ShapeListOfShape>
 #define MTBslos TopOpeBRepBuild_ShapeListOfShape
-#define MTBhb Handle(TopOpeBRepBuild_HBuilder)
+#define MTBhb occ::handle<TopOpeBRepBuild_HBuilder>
 
 #endif

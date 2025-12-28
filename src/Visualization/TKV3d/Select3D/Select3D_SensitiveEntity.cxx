@@ -22,7 +22,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveEntity, Standard_Transient)
 
 //=================================================================================================
 
-Select3D_SensitiveEntity::Select3D_SensitiveEntity(const Handle(SelectMgr_EntityOwner)& theOwnerId)
+Select3D_SensitiveEntity::Select3D_SensitiveEntity(
+  const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
     : myOwnerId(theOwnerId),
       mySFactor(2)
 {
@@ -31,8 +32,7 @@ Select3D_SensitiveEntity::Select3D_SensitiveEntity(const Handle(SelectMgr_Entity
 
 //=================================================================================================
 
-void Select3D_SensitiveEntity::DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth) const
+void Select3D_SensitiveEntity::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -45,7 +45,7 @@ void Select3D_SensitiveEntity::DumpJson(Standard_OStream& theOStream,
   gp_Pnt aCenterOfGeometry = CenterOfGeometry();
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &aCenterOfGeometry)
 
-  Standard_Boolean aHasInitLocation = HasInitLocation();
+  bool aHasInitLocation = HasInitLocation();
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aHasInitLocation)
 
   gp_GTrsf anInvInitLocation = InvInitLocation();

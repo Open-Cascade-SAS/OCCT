@@ -30,9 +30,6 @@ public:
 
   //! Loads commands defined in ShapeProc
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
-
-protected:
-private:
 };
 
 #endif // _SWDRAW_ShapeProcess_HeaderFile

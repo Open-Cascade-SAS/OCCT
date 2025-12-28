@@ -52,7 +52,7 @@ public:
   //! Destructor. Detaches the thread if it wasn't done already.
   Standard_EXPORT ~OSD_Thread();
 
-  Standard_EXPORT void SetPriority(const Standard_Integer thePriority);
+  Standard_EXPORT void SetPriority(const int thePriority);
 
   //! Initialize the tool by the thread function.
   //! If the current thread handle is not null, nullifies it.
@@ -67,8 +67,7 @@ public:
   //! specifies size of the stack to be allocated for the thread
   //! (by default - the same as for the current executable).
   //! Returns True if thread started successfully
-  Standard_EXPORT Standard_Boolean Run(const Standard_Address data         = 0,
-                                       const Standard_Integer WNTStackSize = 0);
+  Standard_EXPORT bool Run(void* const data = 0, const int WNTStackSize = 0);
 
   //! Detaches the execution thread from this Thread object,
   //! so that it cannot be waited.
@@ -80,9 +79,9 @@ public:
   Standard_EXPORT void Detach();
 
   //! Waits till the thread finishes execution.
-  Standard_Boolean Wait()
+  bool Wait()
   {
-    Standard_Address aRes = 0;
+    void* aRes = 0;
     return Wait(aRes);
   }
 
@@ -95,12 +94,12 @@ public:
   //! Note however that it is advisable not to rely upon returned result
   //! value, as it is not always the value actually returned by the thread
   //! function. In addition, on Windows it is converted via DWORD.
-  Standard_EXPORT Standard_Boolean Wait(Standard_Address& theResult);
+  Standard_EXPORT bool Wait(void*& theResult);
 
   //! Waits for some time and if the thread is finished,
   //! it returns the result.
   //! The function returns false if the thread is not finished yet.
-  Standard_EXPORT Standard_Boolean Wait(const Standard_Integer time, Standard_Address& theResult);
+  Standard_EXPORT bool Wait(const int time, void*& theResult);
 
   //! Returns ID of the currently controlled thread ID,
   //! or 0 if no thread is run
@@ -113,7 +112,7 @@ private:
   OSD_ThreadFunction myFunc;
   OSD_PThread        myThread;
   Standard_ThreadId  myThreadId;
-  Standard_Integer   myPriority;
+  int                myPriority;
 };
 
 #endif // _OSD_Thread_HeaderFile

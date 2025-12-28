@@ -20,14 +20,13 @@
 #include <Standard_Type.hxx>
 
 #include <IGESToBRep_IGESBoundary.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 class IGESToBRep_CurveAndSurface;
 class IGESData_IGESEntity;
 class ShapeExtend_WireData;
-
-class IGESControl_IGESBoundary;
-DEFINE_STANDARD_HANDLE(IGESControl_IGESBoundary, IGESToBRep_IGESBoundary)
 
 //! Translates IGES boundary entity (types 141, 142 and 508)
 //! in Advanced Data Exchange.
@@ -50,26 +49,26 @@ public:
   //! Checks the closure of resulting wire and if it is not closed,
   //! checks 2D and 3D representation and updates the resulting
   //! wire to contain only closed representation.
-  Standard_EXPORT virtual void Check(const Standard_Boolean result,
-                                     const Standard_Boolean checkclosure,
-                                     const Standard_Boolean okCurve3d,
-                                     const Standard_Boolean okCurve2d) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Check(const bool result,
+                                     const bool checkclosure,
+                                     const bool okCurve3d,
+                                     const bool okCurve2d) override;
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_IGESBoundary, IGESToBRep_IGESBoundary)
 
 protected:
-  Standard_EXPORT virtual Standard_Boolean Transfer(
-    Standard_Boolean&                           okCurve,
-    Standard_Boolean&                           okCurve3d,
-    Standard_Boolean&                           okCurve2d,
-    const Handle(IGESData_IGESEntity)&          icurve3d,
-    const Handle(ShapeExtend_WireData)&         scurve3d,
-    const Standard_Boolean                      usescurve,
-    const Standard_Boolean                      toreverse3d,
-    const Handle(IGESData_HArray1OfIGESEntity)& curves2d,
-    const Standard_Boolean                      toreverse2d,
-    const Standard_Integer                      number,
-    Handle(ShapeExtend_WireData)&               lsewd) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Transfer(
+    bool&                                                                     okCurve,
+    bool&                                                                     okCurve3d,
+    bool&                                                                     okCurve2d,
+    const occ::handle<IGESData_IGESEntity>&                                   icurve3d,
+    const occ::handle<ShapeExtend_WireData>&                                  scurve3d,
+    const bool                                                                usescurve,
+    const bool                                                                toreverse3d,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
+    const bool                                                                toreverse2d,
+    const int                                                                 number,
+    occ::handle<ShapeExtend_WireData>&                                        lsewd) override;
 };
 
 #endif // _IGESControl_IGESBoundary_HeaderFile

@@ -26,9 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-class IGESSelect_RebuildGroups;
-DEFINE_STANDARD_HANDLE(IGESSelect_RebuildGroups, IGESSelect_ModelModifier)
-
 //! Rebuilds Groups which were bypassed to produce new models.
 //! If a set of entities, all put into a same IGESModel, were
 //! part of a same Group in the starting Model, this Modifier
@@ -47,18 +44,15 @@ public:
   Standard_EXPORT IGESSelect_RebuildGroups();
 
   //! Specific action : Rebuilds the original groups
-  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
-                                  const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+                                  const occ::handle<IGESData_IGESModel>& target,
+                                  Interface_CopyTool&                    TC) const override;
 
   //! Returns a text which is
   //! "Rebuild Groups"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_RebuildGroups, IGESSelect_ModelModifier)
-
-protected:
-private:
 };
 
 #endif // _IGESSelect_RebuildGroups_HeaderFile

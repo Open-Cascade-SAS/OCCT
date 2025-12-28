@@ -24,9 +24,8 @@ StepVisual_SurfaceStyleReflectanceAmbientDiffuse::StepVisual_SurfaceStyleReflect
 
 //=================================================================================================
 
-void StepVisual_SurfaceStyleReflectanceAmbientDiffuse::Init(
-  const Standard_Real theAmbientReflectance,
-  const Standard_Real theDiffuseReflectance)
+void StepVisual_SurfaceStyleReflectanceAmbientDiffuse::Init(const double theAmbientReflectance,
+                                                            const double theDiffuseReflectance)
 {
   StepVisual_SurfaceStyleReflectanceAmbient::Init(theAmbientReflectance);
   myDiffuseReflectance = theDiffuseReflectance;
@@ -34,7 +33,7 @@ void StepVisual_SurfaceStyleReflectanceAmbientDiffuse::Init(
 
 //=================================================================================================
 
-Standard_Real StepVisual_SurfaceStyleReflectanceAmbientDiffuse::DiffuseReflectance() const
+double StepVisual_SurfaceStyleReflectanceAmbientDiffuse::DiffuseReflectance() const
 {
   return myDiffuseReflectance;
 }
@@ -42,7 +41,7 @@ Standard_Real StepVisual_SurfaceStyleReflectanceAmbientDiffuse::DiffuseReflectan
 //=================================================================================================
 
 void StepVisual_SurfaceStyleReflectanceAmbientDiffuse::SetDiffuseReflectance(
-  const Standard_Real theDiffuseReflectance)
+  const double theDiffuseReflectance)
 {
   myDiffuseReflectance = theDiffuseReflectance;
 }

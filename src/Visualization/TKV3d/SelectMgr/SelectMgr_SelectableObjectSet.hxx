@@ -68,7 +68,8 @@ public:
   class Iterator
   {
     //! Short-cut definition of map iterator type
-    typedef NCollection_IndexedMap<Handle(SelectMgr_SelectableObject)>::Iterator ObjectMapIterator;
+    typedef NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>>::Iterator
+      ObjectMapIterator;
 
   public:
     //! Default constructor without initialization.
@@ -91,15 +92,15 @@ public:
     }
 
     //! Returns false when there is no more objects to iterate over.
-    Standard_Boolean More()
+    bool More()
     {
       if (mySubsetIt.More())
       {
-        return Standard_True;
+        return true;
       }
       else if ((mySubsetIdx == BVHSubsetNb - 1) || mySet == NULL)
       {
-        return Standard_False;
+        return false;
       }
       mySubsetIt = ObjectMapIterator(mySet->myObjects[++mySubsetIdx]);
       return More();
@@ -109,11 +110,11 @@ public:
     void Next() { mySubsetIt.Next(); }
 
     //! Returns current object.
-    const Handle(SelectMgr_SelectableObject)& Value() const { return mySubsetIt.Value(); }
+    const occ::handle<SelectMgr_SelectableObject>& Value() const { return mySubsetIt.Value(); }
 
   private:
     const SelectMgr_SelectableObjectSet* mySet;
-    Standard_Integer                     mySubsetIdx;
+    int                                  mySubsetIdx;
     ObjectMapIterator                    mySubsetIt;
   };
 
@@ -129,30 +130,30 @@ public:
   //! marks the corresponding BVH tree for rebuild.
   //! @return true if selectable object is added, otherwise returns false (selectable object is
   //! already in the set).
-  Standard_EXPORT Standard_Boolean Append(const Handle(SelectMgr_SelectableObject)& theObject);
+  Standard_EXPORT bool Append(const occ::handle<SelectMgr_SelectableObject>& theObject);
 
   //! Removes the selectable object from the set. The selectable object is removed from the subset
   //! it has been placed into. After removing an object, this method marks the corresponding
   //! BVH tree for rebuild.
   //! @return true if selectable object is removed, otherwise returns false (selectable object is
   //! not in the set).
-  Standard_EXPORT Standard_Boolean Remove(const Handle(SelectMgr_SelectableObject)& theObject);
+  Standard_EXPORT bool Remove(const occ::handle<SelectMgr_SelectableObject>& theObject);
 
   //! Performs necessary updates when object's persistence types changes.
   //! This method should be called right after changing transformation persistence flags of the
   //! objects and before updating BVH tree - to provide up-to-date state of the object set.
-  Standard_EXPORT void ChangeSubset(const Handle(SelectMgr_SelectableObject)& theObject);
+  Standard_EXPORT void ChangeSubset(const occ::handle<SelectMgr_SelectableObject>& theObject);
 
   //! Updates outdated BVH trees and remembers the last state of the
   //! camera view-projection matrices and viewport (window) dimensions.
-  Standard_EXPORT void UpdateBVH(const Handle(Graphic3d_Camera)& theCam,
-                                 const Graphic3d_Vec2i&          theWinSize);
+  Standard_EXPORT void UpdateBVH(const occ::handle<Graphic3d_Camera>& theCam,
+                                 const NCollection_Vec2<int>&         theWinSize);
 
   //! Marks every BVH subset for update.
   Standard_EXPORT void MarkDirty();
 
   //! Returns true if this objects set contains theObject given.
-  Standard_Boolean Contains(const Handle(SelectMgr_SelectableObject)& theObject) const
+  bool Contains(const occ::handle<SelectMgr_SelectableObject>& theObject) const
   {
     return myObjects[BVHSubset_3d].Contains(theObject)
            || myObjects[BVHSubset_3dPersistent].Contains(theObject)
@@ -162,7 +163,7 @@ public:
   }
 
   //! Returns true if the object set does not contain any selectable objects.
-  Standard_Boolean IsEmpty() const
+  bool IsEmpty() const
   {
     return myObjects[BVHSubset_3d].IsEmpty() && myObjects[BVHSubset_3dPersistent].IsEmpty()
            && myObjects[BVHSubset_2dPersistent].IsEmpty()
@@ -171,39 +172,39 @@ public:
   }
 
   //! Returns true if the specified object subset is empty.
-  Standard_Boolean IsEmpty(const BVHSubset theSubset) const
-  {
-    return myObjects[theSubset].IsEmpty();
-  }
+  bool IsEmpty(const BVHSubset theSubset) const { return myObjects[theSubset].IsEmpty(); }
 
   //! Returns object from subset theSubset by theIndex given. The method allows to get selectable
   //! object referred by the index of an element of the subset's BVH tree.
-  const Handle(SelectMgr_SelectableObject)& GetObjectById(const BVHSubset        theSubset,
-                                                          const Standard_Integer theIndex) const
+  const occ::handle<SelectMgr_SelectableObject>& GetObjectById(const BVHSubset theSubset,
+                                                               const int       theIndex) const
   {
     return myObjects[theSubset].FindKey(theIndex + 1);
   }
 
   //! Returns computed BVH for the theSubset given.
-  const opencascade::handle<BVH_Tree<Standard_Real, 3>>& BVH(const BVHSubset theSubset) const
+  const opencascade::handle<BVH_Tree<double, 3>>& BVH(const BVHSubset theSubset) const
   {
     return myBVH[theSubset];
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   //! Returns an appropriate subset of theObject given depending on its persistence type.
-  Standard_Integer appropriateSubset(const Handle(SelectMgr_SelectableObject)& theObject)
+  int appropriateSubset(const occ::handle<SelectMgr_SelectableObject>& theObject)
   {
     if (theObject->TransformPersistence().IsNull())
     {
-      const PrsMgr_Presentations& aPresentations = theObject->Presentations();
-      for (PrsMgr_Presentations::Iterator aPrsIter(aPresentations); aPrsIter.More();
+      const NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPresentations =
+        theObject->Presentations();
+      for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(
+             aPresentations);
+           aPrsIter.More();
            aPrsIter.Next())
       {
-        const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.ChangeValue();
+        const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.ChangeValue();
         if (aPrs3d->CStructure()->HasGroupTransformPersistence())
         {
           return SelectMgr_SelectableObjectSet::BVHSubset_3dPersistent;
@@ -230,9 +231,9 @@ private:
   }
 
   //! Returns current subset of theObject given.
-  Standard_Integer currentSubset(const Handle(SelectMgr_SelectableObject)& theObject)
+  int currentSubset(const occ::handle<SelectMgr_SelectableObject>& theObject)
   {
-    for (Standard_Integer aSubsetIdx = 0; aSubsetIdx < BVHSubsetNb; ++aSubsetIdx)
+    for (int aSubsetIdx = 0; aSubsetIdx < BVHSubsetNb; ++aSubsetIdx)
     {
       if (myObjects[aSubsetIdx].Contains(theObject))
       {
@@ -244,12 +245,12 @@ private:
 
 private:
   // clang-format off
-  NCollection_IndexedMap<Handle(SelectMgr_SelectableObject)> myObjects[BVHSubsetNb]; //!< Map of objects for each subset
-  opencascade::handle<BVH_Tree<Standard_Real, 3> >           myBVH[BVHSubsetNb];     //!< BVH tree computed for each subset
-  Handle(Select3D_BVHBuilder3d)                              myBuilder[BVHSubsetNb]; //!< Builder allocated for each subset
-  Standard_Boolean                                           myIsDirty[BVHSubsetNb]; //!< Dirty flag for each subset
+  NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>> myObjects[BVHSubsetNb]; //!< Map of objects for each subset
+  opencascade::handle<BVH_Tree<double, 3> >           myBVH[BVHSubsetNb];     //!< BVH tree computed for each subset
+  occ::handle<Select3D_BVHBuilder3d>                              myBuilder[BVHSubsetNb]; //!< Builder allocated for each subset
+  bool                                           myIsDirty[BVHSubsetNb]; //!< Dirty flag for each subset
   Graphic3d_WorldViewProjState                               myLastViewState;        //!< Last view-projection state used for construction of BVH
-  Graphic3d_Vec2i                                            myLastWinSize;          //!< Last viewport's (window's) width used for construction of BVH
+  NCollection_Vec2<int>                                            myLastWinSize;          //!< Last viewport's (window's) width used for construction of BVH
   // clang-format on
   friend class Iterator;
 };

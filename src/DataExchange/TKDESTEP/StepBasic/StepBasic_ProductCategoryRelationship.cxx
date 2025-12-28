@@ -26,17 +26,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductCategoryRelationship, Standard_Trans
 
 StepBasic_ProductCategoryRelationship::StepBasic_ProductCategoryRelationship()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
 void StepBasic_ProductCategoryRelationship::Init(
-  const Handle(TCollection_HAsciiString)&  aName,
-  const Standard_Boolean                   hasDescription,
-  const Handle(TCollection_HAsciiString)&  aDescription,
-  const Handle(StepBasic_ProductCategory)& aCategory,
-  const Handle(StepBasic_ProductCategory)& aSubCategory)
+  const occ::handle<TCollection_HAsciiString>&  aName,
+  const bool                                    hasDescription,
+  const occ::handle<TCollection_HAsciiString>&  aDescription,
+  const occ::handle<StepBasic_ProductCategory>& aCategory,
+  const occ::handle<StepBasic_ProductCategory>& aSubCategory)
 {
 
   theName = aName;
@@ -56,21 +56,22 @@ void StepBasic_ProductCategoryRelationship::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductCategoryRelationship::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductCategoryRelationship::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_ProductCategoryRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_ProductCategoryRelationship::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductCategoryRelationship::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductCategoryRelationship::Description() const
 {
   return theDescription;
 }
@@ -78,21 +79,21 @@ Handle(TCollection_HAsciiString) StepBasic_ProductCategoryRelationship::Descript
 //=================================================================================================
 
 void StepBasic_ProductCategoryRelationship::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_ProductCategoryRelationship::HasDescription() const
+bool StepBasic_ProductCategoryRelationship::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductCategory) StepBasic_ProductCategoryRelationship::Category() const
+occ::handle<StepBasic_ProductCategory> StepBasic_ProductCategoryRelationship::Category() const
 {
   return theCategory;
 }
@@ -100,14 +101,14 @@ Handle(StepBasic_ProductCategory) StepBasic_ProductCategoryRelationship::Categor
 //=================================================================================================
 
 void StepBasic_ProductCategoryRelationship::SetCategory(
-  const Handle(StepBasic_ProductCategory)& aCategory)
+  const occ::handle<StepBasic_ProductCategory>& aCategory)
 {
   theCategory = aCategory;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductCategory) StepBasic_ProductCategoryRelationship::SubCategory() const
+occ::handle<StepBasic_ProductCategory> StepBasic_ProductCategoryRelationship::SubCategory() const
 {
   return theSubCategory;
 }
@@ -115,7 +116,7 @@ Handle(StepBasic_ProductCategory) StepBasic_ProductCategoryRelationship::SubCate
 //=================================================================================================
 
 void StepBasic_ProductCategoryRelationship::SetSubCategory(
-  const Handle(StepBasic_ProductCategory)& aSubCategory)
+  const occ::handle<StepBasic_ProductCategory>& aSubCategory)
 {
   theSubCategory = aSubCategory;
 }

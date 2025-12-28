@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepBasic_ObjectRole;
 
-class StepBasic_RoleAssociation;
-DEFINE_STANDARD_HANDLE(StepBasic_RoleAssociation, Standard_Transient)
-
 //! Representation of STEP entity RoleAssociation
 class StepBasic_RoleAssociation : public Standard_Transient
 {
@@ -35,14 +32,14 @@ public:
   Standard_EXPORT StepBasic_RoleAssociation();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepBasic_ObjectRole)& aRole,
-                            const StepBasic_RoleSelect&         aItemWithRole);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_ObjectRole>& aRole,
+                            const StepBasic_RoleSelect&              aItemWithRole);
 
   //! Returns field Role
-  Standard_EXPORT Handle(StepBasic_ObjectRole) Role() const;
+  Standard_EXPORT occ::handle<StepBasic_ObjectRole> Role() const;
 
   //! Set field Role
-  Standard_EXPORT void SetRole(const Handle(StepBasic_ObjectRole)& Role);
+  Standard_EXPORT void SetRole(const occ::handle<StepBasic_ObjectRole>& Role);
 
   //! Returns field ItemWithRole
   Standard_EXPORT StepBasic_RoleSelect ItemWithRole() const;
@@ -52,10 +49,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_RoleAssociation, Standard_Transient)
 
-protected:
 private:
-  Handle(StepBasic_ObjectRole) theRole;
-  StepBasic_RoleSelect         theItemWithRole;
+  occ::handle<StepBasic_ObjectRole> theRole;
+  StepBasic_RoleSelect              theItemWithRole;
 };
 
 #endif // _StepBasic_RoleAssociation_HeaderFile

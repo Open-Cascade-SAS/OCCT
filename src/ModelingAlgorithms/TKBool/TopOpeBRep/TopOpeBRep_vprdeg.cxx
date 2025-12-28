@@ -39,64 +39,70 @@
 #include <TopOpeBRep_define.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_GEOMETRY.hxx>
+#include <TopOpeBRepTool_PROJECT.hxx>
+#include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_mkTondgE.hxx>
 
 #define M_ON(st) (st == TopAbs_ON)
 #define M_REVERSED(st) (st == TopAbs_REVERSED)
 
 // modified by NIZHNY-MKK  Tue Nov 21 17:30:23 2000.BEGIN
-static TopTools_DataMapOfShapeListOfShape aMapOfTreatedVertexListOfEdge;
-static TopOpeBRep_PLineInter              localCurrentLine = NULL;
+static NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                             aMapOfTreatedVertexListOfEdge;
+static TopOpeBRep_PLineInter localCurrentLine = NULL;
 
-static Standard_Boolean local_FindTreatedEdgeOnVertex(const TopoDS_Edge&   theEdge,
-                                                      const TopoDS_Vertex& theVertex);
+static bool local_FindTreatedEdgeOnVertex(const TopoDS_Edge&   theEdge,
+                                          const TopoDS_Vertex& theVertex);
 
 static void local_ReduceMapOfTreatedVertices(const TopOpeBRep_PLineInter& theCurrentLine);
 
-static Standard_Boolean local_FindVertex(
-  const TopOpeBRep_VPointInter&                    theVP,
-  const TopTools_IndexedDataMapOfShapeListOfShape& theMapOfVertexEdges,
-  TopoDS_Vertex&                                   theVertex);
+static bool local_FindVertex(
+  const TopOpeBRep_VPointInter&                              theVP,
+  const NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>& theMapOfVertexEdges,
+  TopoDS_Vertex&                                             theVertex);
 // modified by NIZHNY-MKK  Tue Nov 21 17:30:27 2000.END
 
 #ifdef OCCT_DEBUG
-Standard_EXPORT Standard_Boolean FUN_debnull(const TopoDS_Shape& s);
+Standard_EXPORT bool FUN_debnull(const TopoDS_Shape& s);
 #endif
 
-Standard_EXPORT Handle(TopOpeBRepDS_Interference) MakeEPVInterference(
+Standard_EXPORT occ::handle<TopOpeBRepDS_Interference> MakeEPVInterference(
   const TopOpeBRepDS_Transition& T, // transition
-  const Standard_Integer         S, // curve/edge index
-  const Standard_Integer         G, // point/vertex index
-  const Standard_Real            P, // parameter of G on S
+  const int                      S, // curve/edge index
+  const int                      G, // point/vertex index
+  const double                   P, // parameter of G on S
   const TopOpeBRepDS_Kind        GK,
-  const Standard_Boolean         B); // G is a vertex (or not) of the interference master
+  const bool                     B); // G is a vertex (or not) of the interference master
 
-Standard_EXPORT Handle(TopOpeBRepDS_Interference) MakeEPVInterference(
+Standard_EXPORT occ::handle<TopOpeBRepDS_Interference> MakeEPVInterference(
   const TopOpeBRepDS_Transition& T,  // transition
-  const Standard_Integer         S,  // curve/edge index
-  const Standard_Integer         G,  // point/vertex index
-  const Standard_Real            P,  // parameter of G on S
+  const int                      S,  // curve/edge index
+  const int                      G,  // point/vertex index
+  const double                   P,  // parameter of G on S
   const TopOpeBRepDS_Kind        GK, // POINT/VERTEX
   const TopOpeBRepDS_Kind        SK,
-  const Standard_Boolean         B); // G is a vertex (or not) of the interference master
+  const bool                     B); // G is a vertex (or not) of the interference master
 
 #define M_FINDVP (0)  // only look for new vp
 #define M_MKNEWVP (1) // only make newvp
 #define M_GETVP (2)   // steps (0) [+(1) if (O) fails]
-Standard_EXPORT void FUN_VPIndex(TopOpeBRep_FacesFiller&                    FF,
-                                 const TopOpeBRep_LineInter&                L,
-                                 const TopOpeBRep_VPointInter&              VP,
-                                 const Standard_Integer                     ShapeIndex,
-                                 const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                 const TopOpeBRepDS_ListOfInterference&     DSCIL,
-                                 TopOpeBRepDS_Kind&                         PVKind,
-                                 Standard_Integer&                          PVIndex, // out
-                                 Standard_Boolean&                          EPIfound,
-                                 Handle(TopOpeBRepDS_Interference)&         IEPI, // out
-                                 Standard_Boolean&                          CPIfound,
-                                 Handle(TopOpeBRepDS_Interference)&         ICPI, // out
-                                 const Standard_Integer                     mkVP);
+Standard_EXPORT void FUN_VPIndex(
+  TopOpeBRep_FacesFiller&                                         FF,
+  const TopOpeBRep_LineInter&                                     L,
+  const TopOpeBRep_VPointInter&                                   VP,
+  const int                                                       ShapeIndex,
+  const occ::handle<TopOpeBRepDS_HDataStructure>&                 HDS,
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& DSCIL,
+  TopOpeBRepDS_Kind&                                              PVKind,
+  int&                                                            PVIndex, // out
+  bool&                                                           EPIfound,
+  occ::handle<TopOpeBRepDS_Interference>&                         IEPI, // out
+  bool&                                                           CPIfound,
+  occ::handle<TopOpeBRepDS_Interference>&                         ICPI, // out
+  const int                                                       mkVP);
 
 Standard_EXPORT void FUN_FillVof12(const TopOpeBRep_LineInter& L, TopOpeBRepDS_PDataStructure pDS)
 {
@@ -104,12 +110,12 @@ Standard_EXPORT void FUN_FillVof12(const TopOpeBRep_LineInter& L, TopOpeBRepDS_P
   for (; itvp.More(); itvp.Next())
   {
     const TopOpeBRep_VPointInter& vp   = itvp.CurrentVP();
-    Standard_Integer              sind = vp.ShapeIndex();
+    int                           sind = vp.ShapeIndex();
     if (sind != 3)
       continue;
-    Standard_Boolean isvon1  = vp.IsVertexOnS1();
-    Standard_Boolean isvon2  = vp.IsVertexOnS2();
-    Standard_Boolean isvon12 = isvon1 && isvon2;
+    bool isvon1  = vp.IsVertexOnS1();
+    bool isvon2  = vp.IsVertexOnS2();
+    bool isvon12 = isvon1 && isvon2;
     if (!isvon12)
       continue;
     const TopoDS_Shape& v1 = vp.VertexOnS1();
@@ -118,43 +124,44 @@ Standard_EXPORT void FUN_FillVof12(const TopOpeBRep_LineInter& L, TopOpeBRepDS_P
   }
 }
 
-static void FUN_addmapve(TopTools_DataMapOfShapeListOfShape& mapve,
-                         const TopoDS_Shape&                 v,
-                         const TopoDS_Shape&                 e)
+static void FUN_addmapve(
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapve,
+  const TopoDS_Shape&                                                                         v,
+  const TopoDS_Shape&                                                                         e)
 {
-  Standard_Boolean visb = mapve.IsBound(v);
-  Standard_Boolean eisb = mapve.IsBound(e);
+  bool visb = mapve.IsBound(v);
+  bool eisb = mapve.IsBound(e);
   if (!visb && !eisb)
   {
-    TopTools_ListOfShape le;
+    NCollection_List<TopoDS_Shape> le;
     le.Append(e);
     mapve.Bind(v, le);
-    TopTools_ListOfShape lv;
+    NCollection_List<TopoDS_Shape> lv;
     lv.Append(v);
     mapve.Bind(e, lv);
   }
   else if (visb && !eisb)
   {
     mapve.ChangeFind(v).Append(e);
-    TopTools_ListOfShape lv;
+    NCollection_List<TopoDS_Shape> lv;
     lv.Append(v);
     mapve.Bind(e, lv);
   }
   else if (!visb && eisb)
   {
     mapve.ChangeFind(e).Append(v);
-    TopTools_ListOfShape le;
+    NCollection_List<TopoDS_Shape> le;
     le.Append(e);
     mapve.Bind(v, le);
   }
   else
   {
-    Standard_Boolean                   found = Standard_False;
-    TopTools_ListIteratorOfListOfShape it(mapve.Find(v));
+    bool                                     found = false;
+    NCollection_List<TopoDS_Shape>::Iterator it(mapve.Find(v));
     for (; it.More(); it.Next())
       if (it.Value().IsSame(e))
       {
-        found = Standard_True;
+        found = true;
         break;
       }
     if (!found)
@@ -165,47 +172,51 @@ static void FUN_addmapve(TopTools_DataMapOfShapeListOfShape& mapve,
   }
 }
 
-Standard_EXPORT void FUN_GetdgData(TopOpeBRepDS_PDataStructure&        pDS,
-                                   const TopOpeBRep_LineInter&         L,
-                                   const TopoDS_Face&                  F1,
-                                   const TopoDS_Face&                  F2,
-                                   TopTools_DataMapOfShapeListOfShape& datamap)
+Standard_EXPORT void FUN_GetdgData(
+  TopOpeBRepDS_PDataStructure& pDS,
+  const TopOpeBRep_LineInter&  L,
+  const TopoDS_Face&           F1,
+  const TopoDS_Face&           F2,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    datamap)
 {
   // purpose : fills up map datamap = {(v, (closinge,degeneratede))}
   //           with shapes with same rank
 
-  TopTools_DataMapOfShapeInteger shaperk; // rkshape = {shape,rank=1,2}
-                                          // clang-format off
-  TopTools_DataMapOfShapeListOfShape mapvec, mapved; // mapvec = {(v,lec),(ec,lv)}, mapved = {(v,led),(ed,lv)}
-                                          // clang-format on
-  TopTools_DataMapOfShapeShape mapvvsd;   // mapvvsd = {(v,v)}
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>
+    shaperk; // rkshape = {shape,rank=1,2}
+             // clang-format off
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapvec, mapved; // mapvec = {(v,lec),(ec,lv)}, mapved = {(v,led),(ed,lv)}
+             // clang-format on
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>
+    mapvvsd; // mapvvsd = {(v,v)}
 
   TopOpeBRep_VPointInterIterator itvp(L);
   for (; itvp.More(); itvp.Next())
   {
     const TopOpeBRep_VPointInter& vp   = itvp.CurrentVP();
-    Standard_Boolean              isv1 = vp.IsVertex(1), isv2 = vp.IsVertex(2);
-    Standard_Boolean              isv = isv1 || isv2;
+    bool                          isv1 = vp.IsVertex(1), isv2 = vp.IsVertex(2);
+    bool                          isv = isv1 || isv2;
     if (!isv)
       continue;
 
-    Standard_Integer sind = vp.ShapeIndex();
-    TopoDS_Shape     v    = isv1 ? vp.Vertex(1) : vp.Vertex(2);
-    for (Standard_Integer i = 1; i <= 2; i++)
+    int          sind = vp.ShapeIndex();
+    TopoDS_Shape v    = isv1 ? vp.Vertex(1) : vp.Vertex(2);
+    for (int i = 1; i <= 2; i++)
     {
       TopoDS_Face f = (i == 1) ? F1 : F2;
 
-      Standard_Boolean isvi = vp.IsVertex(i);
+      bool isvi = vp.IsVertex(i);
       if (isvi)
       {
         v = vp.Vertex(i);
         shaperk.Bind(v, i);
       }
 
-      TopoDS_Edge      e;
-      Standard_Boolean isdg, iscl;
-      isdg = iscl           = Standard_False;
-      Standard_Boolean ison = (sind == i) || (sind == 3);
+      TopoDS_Edge e;
+      bool        isdg, iscl;
+      isdg = iscl = false;
+      bool ison   = (sind == i) || (sind == 3);
       if (ison)
       {
         e = TopoDS::Edge(vp.Edge(i));
@@ -223,19 +234,20 @@ Standard_EXPORT void FUN_GetdgData(TopOpeBRepDS_PDataStructure&        pDS,
   } // itvp
 
   // filling up map mapvvsd
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm(mapved);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+    Iterator itm(mapved);
   for (; itm.More(); itm.Next())
   {
     const TopoDS_Shape& v = itm.Key();
     if (v.ShapeType() != TopAbs_VERTEX)
       continue;
-    Standard_Integer rkv = shaperk.Find(v);
+    int rkv = shaperk.Find(v);
 
-    TopTools_ListIteratorOfListOfShape ite(itm.Value());
+    NCollection_List<TopoDS_Shape>::Iterator ite(itm.Value());
     for (; ite.More(); ite.Next())
     {
       const TopoDS_Edge& e   = TopoDS::Edge(ite.Value());
-      Standard_Integer   rke = shaperk.Find(e);
+      int                rke = shaperk.Find(e);
       if (rke != rkv)
       {
         TopExp_Explorer     ex(e, TopAbs_VERTEX);
@@ -252,60 +264,62 @@ Standard_EXPORT void FUN_GetdgData(TopOpeBRepDS_PDataStructure&        pDS,
   for (; itm.More(); itm.Next())
   {
     const TopoDS_Shape& dge = itm.Key();
-    Standard_Integer    rk  = shaperk.Find(dge);
+    int                 rk  = shaperk.Find(dge);
     TopoDS_Face         f   = (rk == 1) ? F1 : F2;
     if (dge.ShapeType() != TopAbs_EDGE)
       continue;
 
     TopExp_Explorer      ex(dge, TopAbs_VERTEX);
     const TopoDS_Vertex& v     = TopoDS::Vertex(ex.Current());
-    Standard_Integer     rkv   = shaperk.Find(v);
-    Standard_Boolean     hassd = mapvvsd.IsBound(v);
+    int                  rkv   = shaperk.Find(v);
+    bool                 hassd = mapvvsd.IsBound(v);
     TopoDS_Vertex        vsd;
     if (hassd)
       vsd = TopoDS::Vertex(mapvvsd.Find(v));
 
-    Standard_Boolean hasecl = Standard_False;
-    TopoDS_Shape     cle;
-    Standard_Boolean isbv   = mapvec.IsBound(v),
-                     isbvsd = hassd ? mapvec.IsBound(vsd) : Standard_False;
+    bool         hasecl = false;
+    TopoDS_Shape cle;
+    bool         isbv = mapvec.IsBound(v), isbvsd = hassd ? mapvec.IsBound(vsd) : false;
     if (!isbv && !isbvsd)
     {
       // **************************************************
       // interference with closing edge is not found,
       // adding new information to the ds
       // **************************************************
-      TopTools_IndexedDataMapOfShapeListOfShape mapve;
+      NCollection_IndexedDataMap<TopoDS_Shape,
+                                 NCollection_List<TopoDS_Shape>,
+                                 TopTools_ShapeMapHasher>
+        mapve;
       TopExp::MapShapesAndAncestors(f, TopAbs_VERTEX, TopAbs_EDGE, mapve);
-      TopTools_ListIteratorOfListOfShape iteds(mapve.FindFromKey(v));
+      NCollection_List<TopoDS_Shape>::Iterator iteds(mapve.FindFromKey(v));
       for (; iteds.More(); iteds.Next())
       {
         const TopoDS_Edge& ee = TopoDS::Edge(iteds.Value());
         if (ee.IsSame(dge))
           continue;
-        Standard_Boolean iscl = TopOpeBRepTool_ShapeTool::Closed(ee, f);
+        bool iscl = TopOpeBRepTool_ShapeTool::Closed(ee, f);
         if (!iscl)
           continue;
-        isbv   = Standard_True;
+        isbv   = true;
         cle    = ee;
-        hasecl = Standard_True;
+        hasecl = true;
         break;
       }
     }
     if (!hasecl && (isbv || isbvsd))
     {
-      TopoDS_Vertex                      vv = isbv ? v : vsd;
-      TopTools_ListIteratorOfListOfShape ite;
+      TopoDS_Vertex                            vv = isbv ? v : vsd;
+      NCollection_List<TopoDS_Shape>::Iterator ite;
       if (isbv)
         ite.Initialize(mapvec.Find(v));
       for (; ite.More(); ite.Next())
       {
         const TopoDS_Shape& e   = ite.Value();
-        Standard_Integer    rke = shaperk.Find(e);
+        int                 rke = shaperk.Find(e);
         if (rke == rk)
         {
           cle    = e;
-          hasecl = Standard_True;
+          hasecl = true;
           break;
         }
       }
@@ -313,20 +327,20 @@ Standard_EXPORT void FUN_GetdgData(TopOpeBRepDS_PDataStructure&        pDS,
     if (!hasecl)
       continue;
 
-    TopoDS_Vertex        vv = (rkv == rk) ? v : vsd;
-    TopTools_ListOfShape ls;
+    TopoDS_Vertex                  vv = (rkv == rk) ? v : vsd;
+    NCollection_List<TopoDS_Shape> ls;
     ls.Append(cle);
     ls.Append(dge);
     datamap.Bind(vv, ls);
   } // itm(mapved)
 
   // filling sdm shapes
-  TopTools_DataMapIteratorOfDataMapOfShapeShape ittm(mapvvsd);
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator ittm(mapvvsd);
   for (; ittm.More(); ittm.Next())
   {
     const TopoDS_Vertex& v   = TopoDS::Vertex(ittm.Value());
     const TopoDS_Vertex& ov  = TopoDS::Vertex(mapvvsd.Find(v));
-    Standard_Integer     rkv = shaperk.Find(v);
+    int                  rkv = shaperk.Find(v);
     TopoDS_Vertex        v1  = (rkv == 1) ? v : ov;
     TopoDS_Vertex        v2  = (rkv == 2) ? v : ov;
     pDS->FillShapesSameDomain(v1, v2);
@@ -338,42 +352,43 @@ Standard_EXPORT void FUN_GetdgData(TopOpeBRepDS_PDataStructure&        pDS,
 #define MKI2 (2)
 #define MKI12 (3)
 
-static Standard_Integer FUN_putInterfonDegenEd(
-  const TopOpeBRep_VPointInter&        VP,
-  const TopoDS_Face&                   F1,
-  const TopoDS_Face&                   F2,
-  TopTools_DataMapOfShapeListOfShape&  DataforDegenEd, // const but for copy &
-  Handle(TopOpeBRepDS_HDataStructure)& HDS,
-  Standard_Integer&                    is,
-  TopoDS_Edge&                         dgE,
-  // Standard_Integer& makeinterf, // 1,2,3 : compute interf1, or2 or the 2 interfs
-  Standard_Integer&, // 1,2,3 : compute interf1, or2 or the 2 interfs
+static int FUN_putInterfonDegenEd(
+  const TopOpeBRep_VPointInter& VP,
+  const TopoDS_Face&            F1,
+  const TopoDS_Face&            F2,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                                            DataforDegenEd, // const but for copy &
+  occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+  int&                                      is,
+  TopoDS_Edge&                              dgE,
+  // int& makeinterf, // 1,2,3 : compute interf1, or2 or the 2 interfs
+  int&, // 1,2,3 : compute interf1, or2 or the 2 interfs
   TopOpeBRepDS_Transition& Trans1,
-  Standard_Real&           param1,
+  double&                  param1,
   TopOpeBRepDS_Transition& Trans2,
-  Standard_Real&           param2,
+  double&                  param2,
   TopoDS_Edge&             OOEi,
-  Standard_Real&           paronOOEi,
-  Standard_Boolean&        hasOOEi,
-  Standard_Boolean&        isT2d)
+  double&                  paronOOEi,
+  bool&                    hasOOEi,
+  bool&                    isT2d)
 {
   OOEi.Nullify();
 
-  Standard_Boolean on3   = (VP.ShapeIndex() == 3); // <VP> is shared by edge of 1 and edge of 2.
-  Standard_Boolean onv12 = VP.IsVertexOnS1() && VP.IsVertexOnS2();
+  bool on3   = (VP.ShapeIndex() == 3); // <VP> is shared by edge of 1 and edge of 2.
+  bool onv12 = VP.IsVertexOnS1() && VP.IsVertexOnS2();
 
   const TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
   TopoDS_Vertex                     v;
-  Standard_Integer                  rkv = 0;
-  //  Standard_Integer iv;
+  int                               rkv = 0;
+  //  int iv;
   TopoDS_Vertex ov;
-  for (Standard_Integer ShapeIndex = 1; ShapeIndex <= 2; ShapeIndex++)
+  for (int ShapeIndex = 1; ShapeIndex <= 2; ShapeIndex++)
   {
-    Standard_Boolean isv = (ShapeIndex == 1) ? (VP.IsVertexOnS1()) : (VP.IsVertexOnS2());
+    bool isv = (ShapeIndex == 1) ? (VP.IsVertexOnS1()) : (VP.IsVertexOnS2());
     if (!isv)
       continue;
     v = (ShapeIndex == 1) ? TopoDS::Vertex(VP.VertexOnS1()) : TopoDS::Vertex(VP.VertexOnS2());
-    Standard_Boolean hasdegened = DataforDegenEd.IsBound(v);
+    bool hasdegened = DataforDegenEd.IsBound(v);
     if (!hasdegened)
       continue;
     rkv = ShapeIndex;
@@ -381,36 +396,36 @@ static Standard_Integer FUN_putInterfonDegenEd(
   } // ShapeIndex = 1..2
   if (rkv == 0)
     return NOI; // compute interference once only.
-  Standard_Boolean isvsd = HDS->HasSameDomain(v);
+  bool isvsd = HDS->HasSameDomain(v);
 
   // edges dge, cle on shape<rkdg>
-  const TopTools_ListOfShape& loe = DataforDegenEd.Find(v);
-  const TopoDS_Edge&          cle = TopoDS::Edge(loe.First());
-  const TopoDS_Edge&          dge = TopoDS::Edge(loe.Last());
-  dgE                             = dge;
-  Standard_Integer rkdg           = 0;
+  const NCollection_List<TopoDS_Shape>& loe = DataforDegenEd.Find(v);
+  const TopoDS_Edge&                    cle = TopoDS::Edge(loe.First());
+  const TopoDS_Edge&                    dge = TopoDS::Edge(loe.Last());
+  dgE                                       = dge;
+  int rkdg                                  = 0;
   if (BDS.HasShape(dge))
     rkdg = BDS.AncestorRank(dge);
   else
   {
-    Standard_Boolean vindge = FUN_tool_inS(v, dge);
+    bool vindge = FUN_tool_inS(v, dge);
     if (vindge)
       rkdg = rkv;
     else
       rkdg = (rkv == 1) ? 2 : 1;
   }
-  is                   = rkdg;
-  Standard_Integer rki = (rkdg == 1) ? 2 : 1;
+  is      = rkdg;
+  int rki = (rkdg == 1) ? 2 : 1;
 
   gp_Pnt2d    uvi;
   TopoDS_Face fi, f;
   {
-    //     Standard_Real u,v;
+    //     double u,v;
     //     if (rki == 1) VP.ParametersOnS1(u,v);
     //     else          VP.ParametersOnS2(u,v);
     //     uvi = gp_Pnt2d(u,v);
     // modified by NIZHNY-MKK  Tue Nov 21 17:44:56 2000.BEGIN
-    Standard_Real upar, vpar;
+    double upar, vpar;
     if (rki == 1)
       VP.ParametersOnS1(upar, vpar);
     else
@@ -421,7 +436,7 @@ static Standard_Integer FUN_putInterfonDegenEd(
     f  = (rkdg == 1) ? F1 : F2;
   }
   TopOpeBRepTool_mkTondgE mktdg;
-  Standard_Boolean        ok = mktdg.Initialize(dge, f, uvi, fi);
+  bool                    ok = mktdg.Initialize(dge, f, uvi, fi);
   if (!ok)
     return NOI;
   ok = mktdg.SetclE(cle);
@@ -435,9 +450,9 @@ static Standard_Integer FUN_putInterfonDegenEd(
     else
     {
       // modified by NIZHNY-MKK  Tue Nov 21 17:45:46 2000.BEGIN
-      //       Standard_Boolean ok = FUN_ds_getoov(v,HDS,ov);
-      //       if (!ok) return Standard_False;
-      Standard_Boolean found = FUN_ds_getoov(v, HDS, ov);
+      //       bool ok = FUN_ds_getoov(v,HDS,ov);
+      //       if (!ok) return false;
+      bool found = FUN_ds_getoov(v, HDS, ov);
       if (!found)
         return NOI;
       // modified by NIZHNY-MKK  Tue Nov 21 17:45:50 2000.END
@@ -447,12 +462,12 @@ static Standard_Integer FUN_putInterfonDegenEd(
     // clang-format on
   }
 
-  Standard_Integer mkt  = 0;
-  Standard_Real    par1 = 0., par2 = 0.;
+  int    mkt  = 0;
+  double par1 = 0., par2 = 0.;
   if (on3)
   {
-    TopoDS_Edge   ei   = (rki == 1) ? TopoDS::Edge(VP.ArcOnS1()) : TopoDS::Edge(VP.ArcOnS2());
-    Standard_Real pari = (rki == 1) ? VP.ParameterOnArc1() : VP.ParameterOnArc2();
+    TopoDS_Edge ei   = (rki == 1) ? TopoDS::Edge(VP.ArcOnS1()) : TopoDS::Edge(VP.ArcOnS2());
+    double      pari = (rki == 1) ? VP.ParameterOnArc1() : VP.ParameterOnArc2();
     // if okrest, ei interfers in the compute of transitions for dge
     mktdg.SetRest(pari, ei);
     ok = mktdg.MkTonE(ei, mkt, par1, par2);
@@ -460,7 +475,7 @@ static Standard_Integer FUN_putInterfonDegenEd(
       return NOI;
     OOEi      = ei;
     paronOOEi = pari;
-    hasOOEi   = Standard_True;
+    hasOOEi   = true;
   } // on3
   else
   {
@@ -468,33 +483,36 @@ static Standard_Integer FUN_putInterfonDegenEd(
     // This search, compute and check the data which was not computed by intersector.
     if ((rki == 1 && VP.IsOnDomS1()) || (rki == 2 && VP.IsOnDomS2()))
     {
-      TopoDS_Edge   ei   = (rki == 1) ? TopoDS::Edge(VP.ArcOnS1()) : TopoDS::Edge(VP.ArcOnS2());
-      Standard_Real pari = (rki == 1) ? VP.ParameterOnArc1() : VP.ParameterOnArc2();
+      TopoDS_Edge ei   = (rki == 1) ? TopoDS::Edge(VP.ArcOnS1()) : TopoDS::Edge(VP.ArcOnS2());
+      double      pari = (rki == 1) ? VP.ParameterOnArc1() : VP.ParameterOnArc2();
       mktdg.SetRest(pari, ei);
       ok = mktdg.MkTonE(ei, mkt, par1, par2);
       if (ok && mkt != NOI)
       {
         OOEi      = ei;
         paronOOEi = pari;
-        hasOOEi   = Standard_True;
+        hasOOEi   = true;
       }
     }
     else
     {
-      Standard_Boolean                          edgefound = Standard_False;
-      TopoDS_Face                               aFace     = (rki == 1) ? F1 : F2;
-      TopTools_IndexedDataMapOfShapeListOfShape aMapOfVertexEdges;
+      bool        edgefound = false;
+      TopoDS_Face aFace     = (rki == 1) ? F1 : F2;
+      NCollection_IndexedDataMap<TopoDS_Shape,
+                                 NCollection_List<TopoDS_Shape>,
+                                 TopTools_ShapeMapHasher>
+        aMapOfVertexEdges;
       TopExp::MapShapesAndAncestors(aFace, TopAbs_VERTEX, TopAbs_EDGE, aMapOfVertexEdges);
-      TopoDS_Vertex    aVertex;
-      Standard_Boolean vertexfound = local_FindVertex(VP, aMapOfVertexEdges, aVertex);
+      TopoDS_Vertex aVertex;
+      bool          vertexfound = local_FindVertex(VP, aMapOfVertexEdges, aVertex);
 
       if (vertexfound && !aVertex.IsNull())
       {
-        TopTools_ListIteratorOfListOfShape anIt(aMapOfVertexEdges.FindFromKey(aVertex));
+        NCollection_List<TopoDS_Shape>::Iterator anIt(aMapOfVertexEdges.FindFromKey(aVertex));
         for (; !edgefound && anIt.More(); anIt.Next())
         {
           const TopoDS_Edge& ei   = TopoDS::Edge(anIt.Value());
-          Standard_Real      pari = BRep_Tool::Parameter(aVertex, ei);
+          double             pari = BRep_Tool::Parameter(aVertex, ei);
           if (!BRep_Tool::Degenerated(ei))
           {
             edgefound = !local_FindTreatedEdgeOnVertex(ei, aVertex);
@@ -507,11 +525,11 @@ static Standard_Integer FUN_putInterfonDegenEd(
             {
               OOEi      = ei;
               paronOOEi = pari;
-              hasOOEi   = Standard_True;
+              hasOOEi   = true;
             }
             if (!aMapOfTreatedVertexListOfEdge.IsBound(aVertex))
             {
-              TopTools_ListOfShape thelist;
+              NCollection_List<TopoDS_Shape> thelist;
               aMapOfTreatedVertexListOfEdge.Bind(aVertex, thelist);
             }
             aMapOfTreatedVertexListOfEdge(aVertex).Append(ei);
@@ -541,10 +559,10 @@ static Standard_Integer FUN_putInterfonDegenEd(
   }
   return mkt;
   //  **********   iterate on restrictions of fi  **********
-  //  TopTools_ListOfShape lei; mktdg.GetAllRest(lei);
-  //  TopTools_ListIteratorOfListOfShape ite(lei);
+  //  NCollection_List<TopoDS_Shape> lei; mktdg.GetAllRest(lei);
+  //  NCollection_List<TopoDS_Shape>::Iterator ite(lei);
   //  for (; ite.More(); ite.Next()){
-  //    Standard_Boolean oki = mktdg.MkTonE(ei,mkt,par1,par2);
+  //    bool oki = mktdg.MkTonE(ei,mkt,par1,par2);
   //    ... NYI
   //  }
 } // FUN_putInterfonDegenEd
@@ -558,15 +576,14 @@ static Standard_Integer FUN_putInterfonDegenEd(
 #define s_IdgE (1)   // compute interference(s) on dgE
 #define s_IOOEi (2)  // compute interference(s) on OOEi
 
-Standard_Boolean TopOpeBRep_FacesFiller::ProcessVPondgE(
-  const TopOpeBRep_VPointInter&      VP,
-  const Standard_Integer             ShapeIndex,
-  TopOpeBRepDS_Kind&                 PVKind,
-  Standard_Integer&                  PVIndex, // out
-  Standard_Boolean&                  EPIfound,
-  Handle(TopOpeBRepDS_Interference)& IEPI, // out
-  Standard_Boolean&                  CPIfound,
-  Handle(TopOpeBRepDS_Interference)& ICPI) // out
+bool TopOpeBRep_FacesFiller::ProcessVPondgE(const TopOpeBRep_VPointInter&           VP,
+                                            const int                               ShapeIndex,
+                                            TopOpeBRepDS_Kind&                      PVKind,
+                                            int&                                    PVIndex, // out
+                                            bool&                                   EPIfound,
+                                            occ::handle<TopOpeBRepDS_Interference>& IEPI, // out
+                                            bool&                                   CPIfound,
+                                            occ::handle<TopOpeBRepDS_Interference>& ICPI) // out
 {
   if (PVIndex == 0)
     FUN_VPIndex((*this),
@@ -591,42 +608,42 @@ Standard_Boolean TopOpeBRep_FacesFiller::ProcessVPondgE(
   // in existing interferences (see out parameters <EPIfound>..);
   // adds a new point/vertex to the DS if necessary.
 
-  Standard_Boolean        hasOOEi = Standard_False;
+  bool                    hasOOEi = false;
   TopoDS_Edge             OOEi;
-  Standard_Real           parOOEi;
+  double                  parOOEi;
   TopOpeBRepDS_Transition T1ondg, T2ondg;
-  Standard_Integer        rankdg = 0, Iiondg = 0;
-  Standard_Real           par1ondg = 0., par2ondg = 0.;
-  Standard_Boolean        hasdgdata = !myDataforDegenEd.IsEmpty();
+  int                     rankdg = 0, Iiondg = 0;
+  double                  par1ondg = 0., par2ondg = 0.;
+  bool                    hasdgdata = !myDataforDegenEd.IsEmpty();
   if (!hasdgdata)
   {
-    return Standard_False;
+    return false;
   }
 
   // modified by NIZHNY-MKK  Tue Nov 21 17:35:29 2000
   local_ReduceMapOfTreatedVertices(myLine);
 
-  Standard_Boolean isT2d = Standard_False;
-  TopoDS_Edge      dgEd;
-  Standard_Integer makeI = FUN_putInterfonDegenEd(VP,
-                                                  myF1,
-                                                  myF2,
-                                                  myDataforDegenEd,
-                                                  myHDS,
-                                                  rankdg,
-                                                  dgEd,
-                                                  Iiondg,
-                                                  T1ondg,
-                                                  par1ondg,
-                                                  T2ondg,
-                                                  par2ondg,
-                                                  OOEi,
-                                                  parOOEi,
-                                                  hasOOEi,
-                                                  isT2d);
+  bool        isT2d = false;
+  TopoDS_Edge dgEd;
+  int         makeI = FUN_putInterfonDegenEd(VP,
+                                     myF1,
+                                     myF2,
+                                     myDataforDegenEd,
+                                     myHDS,
+                                     rankdg,
+                                     dgEd,
+                                     Iiondg,
+                                     T1ondg,
+                                     par1ondg,
+                                     T2ondg,
+                                     par2ondg,
+                                     OOEi,
+                                     parOOEi,
+                                     hasOOEi,
+                                     isT2d);
   if (makeI == NOI)
   {
-    return Standard_False;
+    return false;
   }
 
   // -------------------------------------------------------------------
@@ -653,28 +670,28 @@ Standard_Boolean TopOpeBRep_FacesFiller::ProcessVPondgE(
   //             ---       on OOEi           ---
   // -------------------------------------------------------------------
 
-  Standard_Integer rankFi = (rankdg == 1) ? 2 : 1;
+  int rankFi = (rankdg == 1) ? 2 : 1;
   //  TopoDS_Shape dgEd = VP.Edge(rankdg);
   TopoDS_Face Fi;
   if (rankFi == 1)
     Fi = myF1;
   else
     Fi = myF2;
-  Standard_Integer iFi = myDS->AddShape(Fi, rankFi);
+  int iFi = myDS->AddShape(Fi, rankFi);
   myDS->AddShape(dgEd, rankdg);
-  //  Standard_Integer iOOEi = 0;
+  //  int iOOEi = 0;
   //  if (hasOOEi) iOOEi = myDS->AddShape(OOEi,rankFi);
 
-  Standard_Integer rkv = myDS->AncestorRank(myDS->Shape(PVIndex));
+  int rkv = myDS->AncestorRank(myDS->Shape(PVIndex));
 
   if ((makeI == MKI1) || (makeI == MKI12))
   {
     T1ondg.Index(iFi);
-    Standard_Boolean isvertex1 = (rkv == 1);
+    bool isvertex1 = (rkv == 1);
 
     /*
         if (hasOOEi) {
-          Handle(TopOpeBRepDS_Interference) EVI1i =
+          occ::handle<TopOpeBRepDS_Interference> EVI1i =
        ::MakeEPVInterference(T1ondg,iOOEi,PVIndex,par1ondg,
                           TopOpeBRepDS_VERTEX,TopOpeBRepDS_EDGE,isvertex1);
           myHDS->StoreInterference(EVI1i,dgEd);
@@ -682,24 +699,24 @@ Standard_Boolean TopOpeBRep_FacesFiller::ProcessVPondgE(
     */
     if (!isT2d)
     {
-      Handle(TopOpeBRepDS_Interference) EVI1 = ::MakeEPVInterference(T1ondg,
-                                                                     iFi,
-                                                                     PVIndex,
-                                                                     par1ondg,
-                                                                     TopOpeBRepDS_VERTEX,
-                                                                     TopOpeBRepDS_FACE,
-                                                                     isvertex1);
+      occ::handle<TopOpeBRepDS_Interference> EVI1 = ::MakeEPVInterference(T1ondg,
+                                                                          iFi,
+                                                                          PVIndex,
+                                                                          par1ondg,
+                                                                          TopOpeBRepDS_VERTEX,
+                                                                          TopOpeBRepDS_FACE,
+                                                                          isvertex1);
       myHDS->StoreInterference(EVI1, dgEd);
     }
   }
   if ((makeI == MKI2) || (makeI == MKI12))
   {
     T2ondg.Index(iFi);
-    Standard_Boolean isvertex2 = (rkv == 2);
+    bool isvertex2 = (rkv == 2);
 
     /*
         if (hasOOEi) {
-          Handle(TopOpeBRepDS_Interference) EVI2i =
+          occ::handle<TopOpeBRepDS_Interference> EVI2i =
        ::MakeEPVInterference(T2ondg,iOOEi,PVIndex,par2ondg,
                           TopOpeBRepDS_VERTEX,TopOpeBRepDS_EDGE,isvertex2);
           myHDS->StoreInterference(EVI2i,dgEd);
@@ -707,55 +724,56 @@ Standard_Boolean TopOpeBRep_FacesFiller::ProcessVPondgE(
     */
     if (!isT2d)
     {
-      Handle(TopOpeBRepDS_Interference) EVI2 = ::MakeEPVInterference(T2ondg,
-                                                                     iFi,
-                                                                     PVIndex,
-                                                                     par2ondg,
-                                                                     TopOpeBRepDS_VERTEX,
-                                                                     TopOpeBRepDS_FACE,
-                                                                     isvertex2);
+      occ::handle<TopOpeBRepDS_Interference> EVI2 = ::MakeEPVInterference(T2ondg,
+                                                                          iFi,
+                                                                          PVIndex,
+                                                                          par2ondg,
+                                                                          TopOpeBRepDS_VERTEX,
+                                                                          TopOpeBRepDS_FACE,
+                                                                          isvertex2);
       myHDS->StoreInterference(EVI2, dgEd);
     }
   }
 
-  return Standard_True;
+  return true;
 } // ProcessVPondgE
 
 // modified by NIZHNY-MKK  Tue Nov 21 17:32:52 2000.BEGIN
-static Standard_Boolean local_FindTreatedEdgeOnVertex(const TopoDS_Edge&   theEdge,
-                                                      const TopoDS_Vertex& theVertex)
+static bool local_FindTreatedEdgeOnVertex(const TopoDS_Edge&   theEdge,
+                                          const TopoDS_Vertex& theVertex)
 {
-  Standard_Boolean found = Standard_False;
+  bool found = false;
   if (aMapOfTreatedVertexListOfEdge.IsBound(theVertex))
   {
-    TopTools_ListIteratorOfListOfShape anIt(aMapOfTreatedVertexListOfEdge(theVertex));
+    NCollection_List<TopoDS_Shape>::Iterator anIt(aMapOfTreatedVertexListOfEdge(theVertex));
     for (; !found && anIt.More(); anIt.Next())
     {
       if (theEdge.IsSame(anIt.Value()))
       {
-        found = Standard_True;
+        found = true;
       }
     }
   }
   return found;
 }
 
-static Standard_Boolean local_FindVertex(
-  const TopOpeBRep_VPointInter&                    theVP,
-  const TopTools_IndexedDataMapOfShapeListOfShape& theMapOfVertexEdges,
-  TopoDS_Vertex&                                   theVertex)
+static bool local_FindVertex(
+  const TopOpeBRep_VPointInter&                              theVP,
+  const NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>& theMapOfVertexEdges,
+  TopoDS_Vertex&                                             theVertex)
 {
-  gp_Pnt           aVPPoint     = theVP.Value();
-  Standard_Real    aVPTolerance = theVP.Tolerance();
-  Standard_Boolean vertexfound  = Standard_False;
-  for (Standard_Integer itVertex = 1; !vertexfound && itVertex <= theMapOfVertexEdges.Extent();
-       itVertex++)
+  gp_Pnt aVPPoint     = theVP.Value();
+  double aVPTolerance = theVP.Tolerance();
+  bool   vertexfound  = false;
+  for (int itVertex = 1; !vertexfound && itVertex <= theMapOfVertexEdges.Extent(); itVertex++)
   {
     theVertex     = TopoDS::Vertex(theMapOfVertexEdges.FindKey(itVertex));
     gp_Pnt aPoint = BRep_Tool::Pnt(theVertex);
     if (aVPPoint.IsEqual(aPoint, aVPTolerance))
     {
-      vertexfound = Standard_True;
+      vertexfound = true;
     }
   }
   return vertexfound;

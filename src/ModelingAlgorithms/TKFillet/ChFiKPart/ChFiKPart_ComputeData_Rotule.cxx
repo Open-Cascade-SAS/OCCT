@@ -40,16 +40,16 @@
 
 //=================================================================================================
 
-Standard_Boolean ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
-                                      const Handle(ChFiDS_SurfData)& Data,
-                                      const gp_Pln&                  pl,
-                                      const gp_Pln&                  pl1,
-                                      const gp_Pln&                  pl2,
-                                      const TopAbs_Orientation       opl,
-                                      const TopAbs_Orientation       opl1,
-                                      const TopAbs_Orientation       opl2,
-                                      const Standard_Real            r,
-                                      const TopAbs_Orientation       ofpl)
+bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&         DStr,
+                          const occ::handle<ChFiDS_SurfData>& Data,
+                          const gp_Pln&                       pl,
+                          const gp_Pln&                       pl1,
+                          const gp_Pln&                       pl2,
+                          const TopAbs_Orientation            opl,
+                          const TopAbs_Orientation            opl1,
+                          const TopAbs_Orientation            opl2,
+                          const double                        r,
+                          const TopAbs_Orientation            ofpl)
 {
 
   // calcul du tore.
@@ -79,7 +79,7 @@ Standard_Boolean ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
     dpl2.Reverse();
   }
 
-  Standard_Real alpha = dpl1.Angle(dpl2);
+  double alpha = dpl1.Angle(dpl2);
 
   IntAna_QuadQuadGeo LInt(pl1, pl2, Precision::Angular(), Precision::Confusion());
   gp_Pnt             ptor, pcirc;
@@ -91,13 +91,13 @@ Standard_Boolean ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 
   gp_Ax3 ppos(ptor, dpl.Reversed(), dpl1);
   if (ppos.YDirection().Dot(dpl2) < 0.)
     ppos.YReverse();
-  Handle(Geom_ToroidalSurface) gtor = new Geom_ToroidalSurface(ppos, r, r);
+  occ::handle<Geom_ToroidalSurface> gtor = new Geom_ToroidalSurface(ppos, r, r);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gtor, DStr));
 
   // on compare l orientation du tore a celle de la face en bout.
@@ -105,9 +105,9 @@ Standard_Boolean ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
   gp_Pnt pp;
   gp_Vec du, dv;
   ElSLib::TorusD1(0., M_PI / 2, ppos, r, r, pp, du, dv);
-  gp_Dir           drot(du.Crossed(dv));
-  Standard_Boolean reversecur = (drot.Dot(dplnat) <= 0.);
-  Standard_Boolean reversefil = (drot.Dot(dfpl) <= 0.);
+  gp_Dir drot(du.Crossed(dv));
+  bool   reversecur = (drot.Dot(dplnat) <= 0.);
+  bool   reversefil = (drot.Dot(dfpl) <= 0.);
   if (reversefil)
   {
     Data->ChangeOrientation() = TopAbs_REVERSED;
@@ -124,18 +124,18 @@ Standard_Boolean ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
   //---------------
   gp_Ax2 circAx2 = ppos.Ax2();
   circAx2.SetLocation(pcirc);
-  Handle(Geom_Circle) GC = new Geom_Circle(circAx2, r);
-  Standard_Real       u, v;
+  occ::handle<Geom_Circle> GC = new Geom_Circle(circAx2, r);
+  double                   u, v;
   ElSLib::Parameters(pl, pcirc, u, v);
   gp_Pnt2d p2dcirc(u, v);
   gp_Dir2d dx2d(dpl1.Dot(pl.Position().XDirection()), dpl1.Dot(pl.Position().YDirection()));
   gp_Dir2d dy2d(ppos.YDirection().Dot(pl.Position().XDirection()),
                 ppos.YDirection().Dot(pl.Position().YDirection()));
   gp_Ax22d circ2dax(p2dcirc, dx2d, dy2d);
-  Handle(Geom2d_Circle) GC2d = new Geom2d_Circle(circ2dax, r);
-  gp_Pnt2d              p2dlin(0., M_PI / 2);
-  Handle(Geom2d_Line)   GL2d  = new Geom2d_Line(p2dlin, gp::DX2d());
-  TopAbs_Orientation    trans = TopAbs_REVERSED;
+  occ::handle<Geom2d_Circle> GC2d = new Geom2d_Circle(circ2dax, r);
+  gp_Pnt2d                   p2dlin(0., M_PI / 2);
+  occ::handle<Geom2d_Line>   GL2d  = new Geom2d_Line(p2dlin, gp::DX2d());
+  TopAbs_Orientation         trans = TopAbs_REVERSED;
   if (reversecur)
     trans = TopAbs_FORWARD;
   Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(GC, DStr),
@@ -145,10 +145,10 @@ Standard_Boolean ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
 
   // du cote pointu
   //--------------
-  Handle(Geom_Curve)   bid;
-  Handle(Geom2d_Curve) bid2d;
+  occ::handle<Geom_Curve>   bid;
+  occ::handle<Geom2d_Curve> bid2d;
   p2dlin.SetCoord(0., M_PI);
-  Handle(Geom2d_Line) GL2dcoin = new Geom2d_Line(p2dlin, gp::DX2d());
+  occ::handle<Geom2d_Line> GL2dcoin = new Geom2d_Line(p2dlin, gp::DX2d());
   Data->ChangeInterferenceOnS2().SetInterference(ChFiKPart_IndexCurveInDS(bid, DStr),
                                                  trans,
                                                  bid2d,
@@ -164,5 +164,5 @@ Standard_Boolean ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
   Data->ChangeInterferenceOnS2().SetFirstParameter(0.);
   Data->ChangeInterferenceOnS2().SetLastParameter(alpha);
 
-  return Standard_True;
+  return true;
 }

@@ -20,15 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 class IGESBasic_HArray1OfHArray1OfInteger;
 class IGESBasic_HArray1OfHArray1OfIGESEntity;
-
-class IGESSolid_Loop;
-DEFINE_STANDARD_HANDLE(IGESSolid_Loop, IGESData_IGESEntity)
 
 //! defines Loop, Type <508> Form Number <1>
 //! in package IGESSolid
@@ -58,66 +55,64 @@ public:
   //! raises exception if length of types, edges, index, orient and
   //! nbParameterCurves do not match or the length of
   //! isoparametricFlags and curves do not match
-  Standard_EXPORT void Init(const Handle(TColStd_HArray1OfInteger)&            types,
-                            const Handle(IGESData_HArray1OfIGESEntity)&        edges,
-                            const Handle(TColStd_HArray1OfInteger)&            index,
-                            const Handle(TColStd_HArray1OfInteger)&            orient,
-                            const Handle(TColStd_HArray1OfInteger)&            nbParameterCurves,
-                            const Handle(IGESBasic_HArray1OfHArray1OfInteger)& isoparametricFlags,
-                            const Handle(IGESBasic_HArray1OfHArray1OfIGESEntity)& curves);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<int>>&                              types,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& edges,
+    const occ::handle<NCollection_HArray1<int>>&                              index,
+    const occ::handle<NCollection_HArray1<int>>&                              orient,
+    const occ::handle<NCollection_HArray1<int>>&                              nbParameterCurves,
+    const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>&                   isoparametricFlags,
+    const occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>&                curves);
 
   //! Tells if a Loop is a Bound (FN 1) else it is free (FN 0)
-  Standard_EXPORT Standard_Boolean IsBound() const;
+  Standard_EXPORT bool IsBound() const;
 
   //! Sets or Unset the Bound Status (from Form Number)
   //! Default is True
-  Standard_EXPORT void SetBound(const Standard_Boolean bound);
+  Standard_EXPORT void SetBound(const bool bound);
 
   //! returns the number of edge tuples
-  Standard_EXPORT Standard_Integer NbEdges() const;
+  Standard_EXPORT int NbEdges() const;
 
   //! returns the type of Index'th edge (0 = Edge, 1 = Vertex)
   //! raises exception if Index <= 0 or Index > NbEdges()
-  Standard_EXPORT Standard_Integer EdgeType(const Standard_Integer Index) const;
+  Standard_EXPORT int EdgeType(const int Index) const;
 
   //! return the EdgeList or VertexList corresponding to the Index
   //! raises exception if Index <= 0 or Index > NbEdges()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Edge(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Edge(const int Index) const;
 
   //! returns the orientation flag corresponding to Index'th edge
   //! raises exception if Index <= 0 or Index > NbEdges()
-  Standard_EXPORT Standard_Boolean Orientation(const Standard_Integer Index) const;
+  Standard_EXPORT bool Orientation(const int Index) const;
 
   //! return the number of parameter space curves associated with
   //! Index'th Edge
   //! raises exception if Index <= 0 or Index > NbEdges()
-  Standard_EXPORT Standard_Integer NbParameterCurves(const Standard_Integer Index) const;
+  Standard_EXPORT int NbParameterCurves(const int Index) const;
 
-  Standard_EXPORT Standard_Boolean IsIsoparametric(const Standard_Integer EdgeIndex,
-                                                   const Standard_Integer CurveIndex) const;
+  Standard_EXPORT bool IsIsoparametric(const int EdgeIndex, const int CurveIndex) const;
 
   //! returns the CurveIndex'th parameter space curve associated with
   //! EdgeIndex'th edge
   //! raises exception if EdgeIndex <= 0 or EdgeIndex > NbEdges() or
   //! if CurveIndex <= 0 or CurveIndex > NbParameterCurves(EdgeIndex)
-  Standard_EXPORT Handle(IGESData_IGESEntity) ParametricCurve(
-    const Standard_Integer EdgeIndex,
-    const Standard_Integer CurveIndex) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> ParametricCurve(const int EdgeIndex,
+                                                                   const int CurveIndex) const;
 
   //! raises exception If num <= 0 or num > NbEdges()
-  Standard_EXPORT Standard_Integer ListIndex(const Standard_Integer num) const;
+  Standard_EXPORT int ListIndex(const int num) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Loop, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfInteger)               theTypes;
-  Handle(IGESData_HArray1OfIGESEntity)           theEdges;
-  Handle(TColStd_HArray1OfInteger)               theIndex;
-  Handle(TColStd_HArray1OfInteger)               theOrientationFlags;
-  Handle(TColStd_HArray1OfInteger)               theNbParameterCurves;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger)    theIsoparametricFlags;
-  Handle(IGESBasic_HArray1OfHArray1OfIGESEntity) theCurves;
+  occ::handle<NCollection_HArray1<int>>                              theTypes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theEdges;
+  occ::handle<NCollection_HArray1<int>>                              theIndex;
+  occ::handle<NCollection_HArray1<int>>                              theOrientationFlags;
+  occ::handle<NCollection_HArray1<int>>                              theNbParameterCurves;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>                   theIsoparametricFlags;
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>                theCurves;
 };
 
 #endif // _IGESSolid_Loop_HeaderFile

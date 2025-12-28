@@ -21,9 +21,6 @@
 
 #include <StepRepr_CompositeShapeAspect.hxx>
 
-class StepRepr_CompositeGroupShapeAspect;
-DEFINE_STANDARD_HANDLE(StepRepr_CompositeGroupShapeAspect, StepRepr_CompositeShapeAspect)
-
 //! Added for Dimensional Tolerances
 class StepRepr_CompositeGroupShapeAspect : public StepRepr_CompositeShapeAspect
 {

@@ -29,10 +29,10 @@ RWStepDimTol_RWCommonDatum::RWStepDimTol_RWCommonDatum() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWCommonDatum::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepDimTol_CommonDatum)&  ent) const
+void RWStepDimTol_RWCommonDatum::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                                   num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepDimTol_CommonDatum>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 9, ach, "common_datum"))
@@ -40,16 +40,16 @@ void RWStepDimTol_RWCommonDatum::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of ShapeAspect
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Name;
   data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Description;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Description;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
   }
 
-  Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
+  occ::handle<StepRepr_ProductDefinitionShape> aShapeAspect_OfShape;
   data->ReadEntity(num,
                    3,
                    "shape_aspect.of_shape",
@@ -66,16 +66,16 @@ void RWStepDimTol_RWCommonDatum::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of Datum
 
-  Handle(TCollection_HAsciiString) aDatum_Name;
+  occ::handle<TCollection_HAsciiString> aDatum_Name;
   data->ReadString(num, 5, "shape_aspect.name", ach, aDatum_Name);
 
-  Handle(TCollection_HAsciiString) aDatum_Description;
+  occ::handle<TCollection_HAsciiString> aDatum_Description;
   if (data->IsParamDefined(num, 6))
   {
     data->ReadString(num, 6, "shape_aspect.description", ach, aDatum_Description);
   }
 
-  Handle(StepRepr_ProductDefinitionShape) aDatum_OfShape;
+  occ::handle<StepRepr_ProductDefinitionShape> aDatum_OfShape;
   data->ReadEntity(num,
                    7,
                    "shape_aspect.of_shape",
@@ -88,7 +88,7 @@ void RWStepDimTol_RWCommonDatum::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of Datum
 
-  Handle(TCollection_HAsciiString) aDatum_Identification;
+  occ::handle<TCollection_HAsciiString> aDatum_Identification;
   data->ReadString(num, 9, "datum.identification", ach, aDatum_Identification);
 
   // Initialize entity
@@ -105,8 +105,8 @@ void RWStepDimTol_RWCommonDatum::ReadStep(const Handle(StepData_StepReaderData)&
 
 //=================================================================================================
 
-void RWStepDimTol_RWCommonDatum::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepDimTol_CommonDatum)& ent) const
+void RWStepDimTol_RWCommonDatum::WriteStep(StepData_StepWriter&                       SW,
+                                           const occ::handle<StepDimTol_CommonDatum>& ent) const
 {
 
   // Inherited fields of ShapeAspect
@@ -136,8 +136,8 @@ void RWStepDimTol_RWCommonDatum::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepDimTol_RWCommonDatum::Share(const Handle(StepDimTol_CommonDatum)& ent,
-                                       Interface_EntityIterator&             iter) const
+void RWStepDimTol_RWCommonDatum::Share(const occ::handle<StepDimTol_CommonDatum>& ent,
+                                       Interface_EntityIterator&                  iter) const
 {
 
   // Inherited fields of ShapeAspect

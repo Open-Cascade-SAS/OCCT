@@ -18,15 +18,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawFairCurve_MinimalVariation, DrawFairCurve_Batten)
 
-DrawFairCurve_MinimalVariation::DrawFairCurve_MinimalVariation(const Standard_Address TheMVC)
+DrawFairCurve_MinimalVariation::DrawFairCurve_MinimalVariation(void* const TheMVC)
     : DrawFairCurve_Batten(TheMVC)
 
 {
   SetColor(Draw_jaune);
 }
 
-void DrawFairCurve_MinimalVariation::SetCurvature(const Standard_Integer Side,
-                                                  const Standard_Real    Rho)
+void DrawFairCurve_MinimalVariation::SetCurvature(const int Side, const double Rho)
 {
   if (Side == 1)
   {
@@ -41,7 +40,7 @@ void DrawFairCurve_MinimalVariation::SetCurvature(const Standard_Integer Side,
   Compute();
 }
 
-void DrawFairCurve_MinimalVariation::FreeCurvature(const Standard_Integer Side)
+void DrawFairCurve_MinimalVariation::FreeCurvature(const int Side)
 {
   if (Side == 1)
   {
@@ -60,13 +59,13 @@ void DrawFairCurve_MinimalVariation::FreeCurvature(const Standard_Integer Side)
   Compute();
 }
 
-void DrawFairCurve_MinimalVariation::SetPhysicalRatio(const Standard_Real Ratio)
+void DrawFairCurve_MinimalVariation::SetPhysicalRatio(const double Ratio)
 {
   ((FairCurve_MinimalVariation*)MyBatten)->SetPhysicalRatio(Ratio);
   Compute();
 }
 
-Standard_Real DrawFairCurve_MinimalVariation::GetCurvature(const Standard_Integer Side) const
+double DrawFairCurve_MinimalVariation::GetCurvature(const int Side) const
 {
   if (Side == 1)
   {
@@ -78,7 +77,7 @@ Standard_Real DrawFairCurve_MinimalVariation::GetCurvature(const Standard_Intege
   }
 }
 
-Standard_Real DrawFairCurve_MinimalVariation::GetPhysicalRatio() const
+double DrawFairCurve_MinimalVariation::GetPhysicalRatio() const
 {
   return ((FairCurve_MinimalVariation*)MyBatten)->GetPhysicalRatio();
 }

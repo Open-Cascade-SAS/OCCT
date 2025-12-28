@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_IntegerRepresentationItem, StepRepr_Represen
 
 StepRepr_IntegerRepresentationItem::StepRepr_IntegerRepresentationItem() {}
 
-void StepRepr_IntegerRepresentationItem::Init(const Handle(TCollection_HAsciiString)& theName,
-                                              const Standard_Integer                  theValue)
+void StepRepr_IntegerRepresentationItem::Init(const occ::handle<TCollection_HAsciiString>& theName,
+                                              const int                                    theValue)
 {
   value = theValue;
   StepRepr_RepresentationItem::Init(theName);

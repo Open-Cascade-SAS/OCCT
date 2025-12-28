@@ -14,7 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+
+#include <iostream>
+
+#include <iomanip>
+
+#include <fstream>
 #include <BRepTest.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
@@ -30,7 +36,7 @@
 Standard_IMPORT Draw_Viewer dout;
 #endif
 
-Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int props(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -49,22 +55,22 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 1;
   }
 
-  Standard_Boolean UseTriangulation = Standard_False;
+  bool UseTriangulation = false;
   if (n >= 2 && strcmp(a[n - 1], "-tri") == 0)
   {
-    UseTriangulation = Standard_True;
+    UseTriangulation = true;
     --n;
   }
-  Standard_Boolean isFullMode = Standard_False;
+  bool isFullMode = false;
   if (n >= 2 && strcmp(a[n - 1], "-full") == 0)
   {
-    isFullMode = Standard_True;
+    isFullMode = true;
     --n;
   }
-  Standard_Boolean SkipShared = Standard_False;
+  bool SkipShared = false;
   if (n >= 2 && strcmp(a[n - 1], "-skip") == 0)
   {
-    SkipShared = Standard_True;
+    SkipShared = true;
     --n;
   }
 
@@ -74,15 +80,15 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
   GProp_GProps G;
 
-  Standard_Boolean onlyClosed = Standard_False;
-  Standard_Real    eps        = 1.0;
-  Standard_Boolean witheps    = Standard_False;
+  bool   onlyClosed = false;
+  double eps        = 1.0;
+  bool   witheps    = false;
   if ((n > 2 && *a[2] == 'c') || (n > 3 && *a[3] == 'c'))
-    onlyClosed = Standard_True;
+    onlyClosed = true;
   if (n > 2 && *a[2] != 'c' && n != 5)
   {
     eps     = Draw::Atof(a[2]);
-    witheps = Standard_True;
+    witheps = true;
   }
 
   if (witheps)
@@ -111,14 +117,14 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
   if (n >= 5)
   {
-    Standard_Integer shift = n - 5;
+    int shift = n - 5;
     Draw::Set(a[shift + 2], P.X());
     Draw::Set(a[shift + 3], P.Y());
     Draw::Set(a[shift + 4], P.Z());
   }
 
   GProp_PrincipalProps Pr = G.PrincipalProperties();
-  Standard_Real        Ix, Iy, Iz;
+  double               Ix, Iy, Iz;
   Pr.Moments(Ix, Iy, Iz);
 
   if (!isFullMode)
@@ -185,14 +191,14 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
   // if (n == 2) {
   gp_Ax2 axes(P, Pr.ThirdAxisOfInertia(), Pr.FirstAxisOfInertia());
 
-  Handle(Draw_Axis3D) Dax = new Draw_Axis3D(axes, Draw_orange, 30);
+  occ::handle<Draw_Axis3D> Dax = new Draw_Axis3D(axes, Draw_orange, 30);
   dout << Dax;
   //}
 
   return 0;
 }
 
-Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int vpropsgk(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -219,35 +225,35 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
   if (S.IsNull())
     return 0;
 
-  GProp_GProps     G;
-  Standard_Boolean SkipShared = Standard_False;
+  GProp_GProps G;
+  bool         SkipShared = false;
   if (n >= 2 && strcmp(a[n - 1], "-skip") == 0)
   {
-    SkipShared = Standard_True;
+    SkipShared = true;
     --n;
   }
 
-  Standard_Boolean onlyClosed = Standard_False;
-  Standard_Boolean isUseSpan  = Standard_False;
-  Standard_Boolean CGFlag     = Standard_False;
-  Standard_Boolean IFlag      = Standard_False;
-  Standard_Real    eps        = 1.e-3;
-  // Standard_Real    aDefaultTol = 1.e-3;
-  Standard_Integer mode = 0;
+  bool   onlyClosed = false;
+  bool   isUseSpan  = false;
+  bool   CGFlag     = false;
+  bool   IFlag      = false;
+  double eps        = 1.e-3;
+  // double    aDefaultTol = 1.e-3;
+  int mode = 0;
 
   eps  = Draw::Atof(a[2]);
   mode = Draw::Atoi(a[3]);
   if (mode > 0)
-    onlyClosed = Standard_True;
+    onlyClosed = true;
   mode = Draw::Atoi(a[4]);
   if (mode > 0)
-    isUseSpan = Standard_True;
+    isUseSpan = true;
 
   mode = Draw::Atoi(a[5]);
   if (mode == 1 || mode == 3)
-    CGFlag = Standard_True;
+    CGFlag = true;
   if (mode == 2 || mode == 3)
-    IFlag = Standard_True;
+    IFlag = true;
 
   // OSD_Chronometer aChrono;
 
@@ -257,7 +263,7 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
   // aChrono.Stop();
 
   Standard_SStream aSStream0;
-  Standard_Integer anOutWidth = 24;
+  int              anOutWidth = 24;
 
   aSStream0.precision(15);
   aSStream0 << "\n\n";
@@ -315,7 +321,7 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
 
     GProp_PrincipalProps Pr = G.PrincipalProperties();
 
-    Standard_Real Ix, Iy, Iz;
+    double Ix, Iy, Iz;
     Pr.Moments(Ix, Iy, Iz);
     gp_Pnt P = G.CentreOfMass();
 
@@ -333,7 +339,7 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
 
     gp_Ax2 axes(P, Pr.ThirdAxisOfInertia(), Pr.FirstAxisOfInertia());
 
-    Handle(Draw_Axis3D) Dax = new Draw_Axis3D(axes, Draw_orange, 30);
+    occ::handle<Draw_Axis3D> Dax = new Draw_Axis3D(axes, Draw_orange, 30);
     dout << Dax;
   }
   return 0;
@@ -343,10 +349,10 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
 
 void BRepTest::GPropCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DBRep::BasicCommands(theCommands);
 

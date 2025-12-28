@@ -21,7 +21,9 @@
 #include <Standard_Handle.hxx>
 
 #include <VrmlAPI_RepresentationOfShape.hxx>
-#include <Quantity_HArray1OfColor.hxx>
+#include <Quantity_Color.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 
 class VrmlConverter_Drawer;
@@ -46,7 +48,7 @@ public:
   Standard_EXPORT void ResetToDefaults();
 
   //! Returns drawer object
-  Standard_EXPORT Handle(VrmlConverter_Drawer) Drawer() const;
+  Standard_EXPORT occ::handle<VrmlConverter_Drawer> Drawer() const;
 
   //! Sets the deflection aDef of
   //! the mesh algorithm which is used to compute the shaded
@@ -54,7 +56,7 @@ public:
   //! value is -1. When the deflection value is less than
   //! 0, the deflection is calculated from the relative
   //! size of the shaped.
-  Standard_EXPORT void SetDeflection(const Standard_Real aDef);
+  Standard_EXPORT void SetDeflection(const double aDef);
 
   //! Sets the representation of the
   //! shape aRep which is written to the VRML file. The three options are :
@@ -65,103 +67,105 @@ public:
   Standard_EXPORT void SetRepresentation(const VrmlAPI_RepresentationOfShape aRep);
 
   //! Set transparency to given material
-  Standard_EXPORT void SetTransparencyToMaterial(Handle(Vrml_Material)& aMaterial,
-                                                 const Standard_Real    aTransparency);
+  Standard_EXPORT void SetTransparencyToMaterial(occ::handle<Vrml_Material>& aMaterial,
+                                                 const double                aTransparency);
 
-  Standard_EXPORT void SetShininessToMaterial(Handle(Vrml_Material)& aMaterial,
-                                              const Standard_Real    aShininess);
+  Standard_EXPORT void SetShininessToMaterial(occ::handle<Vrml_Material>& aMaterial,
+                                              const double                aShininess);
 
-  Standard_EXPORT void SetAmbientColorToMaterial(Handle(Vrml_Material)&                 aMaterial,
-                                                 const Handle(Quantity_HArray1OfColor)& Color);
+  Standard_EXPORT void SetAmbientColorToMaterial(
+    occ::handle<Vrml_Material>&                             aMaterial,
+    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
 
-  Standard_EXPORT void SetDiffuseColorToMaterial(Handle(Vrml_Material)&                 aMaterial,
-                                                 const Handle(Quantity_HArray1OfColor)& Color);
+  Standard_EXPORT void SetDiffuseColorToMaterial(
+    occ::handle<Vrml_Material>&                             aMaterial,
+    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
 
-  Standard_EXPORT void SetSpecularColorToMaterial(Handle(Vrml_Material)&                 aMaterial,
-                                                  const Handle(Quantity_HArray1OfColor)& Color);
+  Standard_EXPORT void SetSpecularColorToMaterial(
+    occ::handle<Vrml_Material>&                             aMaterial,
+    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
 
-  Standard_EXPORT void SetEmissiveColorToMaterial(Handle(Vrml_Material)&                 aMaterial,
-                                                  const Handle(Quantity_HArray1OfColor)& Color);
+  Standard_EXPORT void SetEmissiveColorToMaterial(
+    occ::handle<Vrml_Material>&                             aMaterial,
+    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
 
   //! Returns the representation of the shape which is
   //! written to the VRML file. Types of representation are set through the
   //! VrmlAPI_RepresentationOfShape enumeration.
   Standard_EXPORT VrmlAPI_RepresentationOfShape GetRepresentation() const;
 
-  Standard_EXPORT Handle(Vrml_Material) GetFrontMaterial() const;
+  Standard_EXPORT occ::handle<Vrml_Material> GetFrontMaterial() const;
 
-  Standard_EXPORT Handle(Vrml_Material) GetPointsMaterial() const;
+  Standard_EXPORT occ::handle<Vrml_Material> GetPointsMaterial() const;
 
-  Standard_EXPORT Handle(Vrml_Material) GetUisoMaterial() const;
+  Standard_EXPORT occ::handle<Vrml_Material> GetUisoMaterial() const;
 
-  Standard_EXPORT Handle(Vrml_Material) GetVisoMaterial() const;
+  Standard_EXPORT occ::handle<Vrml_Material> GetVisoMaterial() const;
 
-  Standard_EXPORT Handle(Vrml_Material) GetLineMaterial() const;
+  Standard_EXPORT occ::handle<Vrml_Material> GetLineMaterial() const;
 
-  Standard_EXPORT Handle(Vrml_Material) GetWireMaterial() const;
+  Standard_EXPORT occ::handle<Vrml_Material> GetWireMaterial() const;
 
-  Standard_EXPORT Handle(Vrml_Material) GetFreeBoundsMaterial() const;
+  Standard_EXPORT occ::handle<Vrml_Material> GetFreeBoundsMaterial() const;
 
-  Standard_EXPORT Handle(Vrml_Material) GetUnfreeBoundsMaterial() const;
+  Standard_EXPORT occ::handle<Vrml_Material> GetUnfreeBoundsMaterial() const;
 
   //! Converts the shape aShape to
   //! VRML format of the passed version and writes it to the file identified by aFile.
-  Standard_EXPORT Standard_Boolean Write(const TopoDS_Shape&    aShape,
-                                         const Standard_CString aFile,
-                                         const Standard_Integer aVersion = 2) const;
+  Standard_EXPORT bool Write(const TopoDS_Shape& aShape,
+                             const char*         aFile,
+                             const int           aVersion = 2) const;
 
   //! Converts the document to VRML format of the passed version
   //! and writes it to the file identified by aFile.
-  Standard_EXPORT Standard_Boolean WriteDoc(const Handle(TDocStd_Document)& theDoc,
-                                            const Standard_CString          theFile,
-                                            const Standard_Real             theScale) const;
+  Standard_EXPORT bool WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
+                                const char*                          theFile,
+                                const double                         theScale) const;
 
   //! Converts the shape aShape to
   //! VRML format of the passed version and writes it to the given stream.
-  Standard_EXPORT Standard_Boolean Write(const TopoDS_Shape&    aShape,
-                                         Standard_OStream&      theOStream,
-                                         const Standard_Integer aVersion = 2) const;
+  Standard_EXPORT bool Write(const TopoDS_Shape& aShape,
+                             Standard_OStream&   theOStream,
+                             const int           aVersion = 2) const;
 
   //! Converts the document to VRML format of the passed version
   //! and writes it to the given stream.
-  Standard_EXPORT Standard_Boolean WriteDoc(const Handle(TDocStd_Document)& theDoc,
-                                            Standard_OStream&               theOStream,
-                                            const Standard_Real             theScale) const;
+  Standard_EXPORT bool WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
+                                Standard_OStream&                    theOStream,
+                                const double                         theScale) const;
 
 protected:
   //! Converts the shape aShape to VRML format of version 1.0 and writes it
   //! to the given stream using default parameters.
-  Standard_EXPORT Standard_Boolean write_v1(const TopoDS_Shape& aShape,
-                                            Standard_OStream&   theOStream) const;
+  Standard_EXPORT bool write_v1(const TopoDS_Shape& aShape, Standard_OStream& theOStream) const;
 
   //! Converts the shape aShape to VRML format of version 2.0 and writes it
   //! to the given stream using default parameters.
-  Standard_EXPORT Standard_Boolean write_v2(const TopoDS_Shape& aShape,
-                                            Standard_OStream&   theOStream) const;
+  Standard_EXPORT bool write_v2(const TopoDS_Shape& aShape, Standard_OStream& theOStream) const;
 
 private:
-  VrmlAPI_RepresentationOfShape   myRepresentation;
-  Handle(VrmlConverter_Drawer)    myDrawer;
-  Standard_Real                   myDeflection;
-  Handle(VrmlConverter_Projector) myPerespectiveCamera;
-  Handle(VrmlConverter_Projector) myOrthographicCamera;
-  Standard_Real                   myTransparency;
-  Standard_Real                   myShininess;
-  Handle(Vrml_Material)           myFrontMaterial;
-  Handle(Vrml_Material)           myPointsMaterial;
-  Handle(Vrml_Material)           myUisoMaterial;
-  Handle(Vrml_Material)           myVisoMaterial;
-  Handle(Vrml_Material)           myLineMaterial;
-  Handle(Vrml_Material)           myWireMaterial;
-  Handle(Vrml_Material)           myFreeBoundsMaterial;
-  Handle(Vrml_Material)           myUnfreeBoundsMaterial;
-  Standard_Real                   DX;
-  Standard_Real                   DY;
-  Standard_Real                   DZ;
-  Standard_Real                   XUp;
-  Standard_Real                   YUp;
-  Standard_Real                   ZUp;
-  Standard_Real                   Focus;
+  VrmlAPI_RepresentationOfShape        myRepresentation;
+  occ::handle<VrmlConverter_Drawer>    myDrawer;
+  double                               myDeflection;
+  occ::handle<VrmlConverter_Projector> myPerespectiveCamera;
+  occ::handle<VrmlConverter_Projector> myOrthographicCamera;
+  double                               myTransparency;
+  double                               myShininess;
+  occ::handle<Vrml_Material>           myFrontMaterial;
+  occ::handle<Vrml_Material>           myPointsMaterial;
+  occ::handle<Vrml_Material>           myUisoMaterial;
+  occ::handle<Vrml_Material>           myVisoMaterial;
+  occ::handle<Vrml_Material>           myLineMaterial;
+  occ::handle<Vrml_Material>           myWireMaterial;
+  occ::handle<Vrml_Material>           myFreeBoundsMaterial;
+  occ::handle<Vrml_Material>           myUnfreeBoundsMaterial;
+  double                               DX;
+  double                               DY;
+  double                               DZ;
+  double                               XUp;
+  double                               YUp;
+  double                               ZUp;
+  double                               Focus;
 };
 
 #endif // _VrmlAPI_Writer_HeaderFile

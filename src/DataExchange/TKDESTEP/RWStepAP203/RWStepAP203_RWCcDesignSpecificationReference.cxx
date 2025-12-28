@@ -20,8 +20,9 @@
 #include <Interface_EntityIterator.hxx>
 #include "RWStepAP203_RWCcDesignSpecificationReference.pxx"
 #include <StepAP203_CcDesignSpecificationReference.hxx>
-#include <StepAP203_HArray1OfSpecifiedItem.hxx>
 #include <StepAP203_SpecifiedItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_Document.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -33,10 +34,10 @@ RWStepAP203_RWCcDesignSpecificationReference::RWStepAP203_RWCcDesignSpecificatio
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignSpecificationReference::ReadStep(
-  const Handle(StepData_StepReaderData)&                  data,
-  const Standard_Integer                                  num,
-  Handle(Interface_Check)&                                ach,
-  const Handle(StepAP203_CcDesignSpecificationReference)& ent) const
+  const occ::handle<StepData_StepReaderData>&                  data,
+  const int                                                    num,
+  occ::handle<Interface_Check>&                                ach,
+  const occ::handle<StepAP203_CcDesignSpecificationReference>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "cc_design_specification_reference"))
@@ -44,7 +45,7 @@ void RWStepAP203_RWCcDesignSpecificationReference::ReadStep(
 
   // Inherited fields of DocumentReference
 
-  Handle(StepBasic_Document) aDocumentReference_AssignedDocument;
+  occ::handle<StepBasic_Document> aDocumentReference_AssignedDocument;
   data->ReadEntity(num,
                    1,
                    "document_reference.assigned_document",
@@ -52,19 +53,19 @@ void RWStepAP203_RWCcDesignSpecificationReference::ReadStep(
                    STANDARD_TYPE(StepBasic_Document),
                    aDocumentReference_AssignedDocument);
 
-  Handle(TCollection_HAsciiString) aDocumentReference_Source;
+  occ::handle<TCollection_HAsciiString> aDocumentReference_Source;
   data->ReadString(num, 2, "document_reference.source", ach, aDocumentReference_Source);
 
   // Own fields of CcDesignSpecificationReference
 
-  Handle(StepAP203_HArray1OfSpecifiedItem) aItems;
-  Standard_Integer                         sub3 = 0;
+  occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>> aItems;
+  int                                                       sub3 = 0;
   if (data->ReadSubList(num, 3, "items", ach, sub3))
   {
-    Standard_Integer num2 = sub3;
-    Standard_Integer nb0  = data->NbParams(num2);
-    aItems                = new StepAP203_HArray1OfSpecifiedItem(1, nb0);
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int num2 = sub3;
+    int nb0  = data->NbParams(num2);
+    aItems   = new NCollection_HArray1<StepAP203_SpecifiedItem>(1, nb0);
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_SpecifiedItem anIt0;
       data->ReadEntity(num2, i0, "items", ach, anIt0);
@@ -79,8 +80,8 @@ void RWStepAP203_RWCcDesignSpecificationReference::ReadStep(
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignSpecificationReference::WriteStep(
-  StepData_StepWriter&                                    SW,
-  const Handle(StepAP203_CcDesignSpecificationReference)& ent) const
+  StepData_StepWriter&                                         SW,
+  const occ::handle<StepAP203_CcDesignSpecificationReference>& ent) const
 {
 
   // Inherited fields of DocumentReference
@@ -92,7 +93,7 @@ void RWStepAP203_RWCcDesignSpecificationReference::WriteStep(
   // Own fields of CcDesignSpecificationReference
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->Items()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Items()->Length(); i2++)
   {
     StepAP203_SpecifiedItem Var0 = ent->Items()->Value(i2);
     SW.Send(Var0.Value());
@@ -103,8 +104,8 @@ void RWStepAP203_RWCcDesignSpecificationReference::WriteStep(
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignSpecificationReference::Share(
-  const Handle(StepAP203_CcDesignSpecificationReference)& ent,
-  Interface_EntityIterator&                               iter) const
+  const occ::handle<StepAP203_CcDesignSpecificationReference>& ent,
+  Interface_EntityIterator&                                    iter) const
 {
 
   // Inherited fields of DocumentReference
@@ -113,7 +114,7 @@ void RWStepAP203_RWCcDesignSpecificationReference::Share(
 
   // Own fields of CcDesignSpecificationReference
 
-  for (Standard_Integer i2 = 1; i2 <= ent->Items()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Items()->Length(); i2++)
   {
     StepAP203_SpecifiedItem Var0 = ent->Items()->Value(i2);
     iter.AddItem(Var0.Value());

@@ -33,28 +33,28 @@ public:
   //! Constructor.
   //! Initializes selector by the mesh.
   Standard_EXPORT BRepMesh_SelectorOfDataStructureOfDelaun(
-    const Handle(BRepMesh_DataStructureOfDelaun)& theMesh);
+    const occ::handle<BRepMesh_DataStructureOfDelaun>& theMesh);
 
   //! Initializes selector by the mesh.
-  Standard_EXPORT void Initialize(const Handle(BRepMesh_DataStructureOfDelaun)& theMesh);
+  Standard_EXPORT void Initialize(const occ::handle<BRepMesh_DataStructureOfDelaun>& theMesh);
 
   //! Selects all neighboring elements of the given node.
   Standard_EXPORT void NeighboursOf(const BRepMesh_Vertex& theNode);
 
   //! Selects all neighboring elements of node with the given index.
-  Standard_EXPORT void NeighboursOfNode(const Standard_Integer theNodeIndex);
+  Standard_EXPORT void NeighboursOfNode(const int theNodeIndex);
 
   //! Selects all neighboring elements of the given link.
   Standard_EXPORT void NeighboursOf(const BRepMesh_Edge& theLink);
 
   //! Selects all neighboring elements of link with the given index.
-  Standard_EXPORT void NeighboursOfLink(const Standard_Integer theLinkIndex);
+  Standard_EXPORT void NeighboursOfLink(const int theLinkIndex);
 
   //! Selects all neighboring elements of the given element.
   Standard_EXPORT void NeighboursOf(const BRepMesh_Triangle& theElement);
 
   //! Selects all neighboring elements by nodes of the given element.
-  Standard_EXPORT void NeighboursOfElement(const Standard_Integer theElementIndex);
+  Standard_EXPORT void NeighboursOfElement(const int theElementIndex);
 
   //! Selects all neighboring elements by links of the given element.
   Standard_EXPORT void NeighboursByEdgeOf(const BRepMesh_Triangle& theElement);
@@ -81,14 +81,14 @@ public:
 
 private:
   //! Collects elements connected to link with the given index.
-  void elementsOfLink(const Standard_Integer theIndex);
+  void elementsOfLink(const int theIndex);
 
 private:
-  Handle(BRepMesh_DataStructureOfDelaun) myMesh;
-  IMeshData::MapOfInteger                myNodes;
-  IMeshData::MapOfInteger                myLinks;
-  IMeshData::MapOfInteger                myElements;
-  IMeshData::MapOfInteger                myFrontier;
+  occ::handle<BRepMesh_DataStructureOfDelaun> myMesh;
+  IMeshData::MapOfInteger                     myNodes;
+  IMeshData::MapOfInteger                     myLinks;
+  IMeshData::MapOfInteger                     myElements;
+  IMeshData::MapOfInteger                     myFrontier;
 };
 
 #endif

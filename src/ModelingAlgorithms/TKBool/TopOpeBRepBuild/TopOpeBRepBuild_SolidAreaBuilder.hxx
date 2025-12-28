@@ -41,17 +41,13 @@ public:
 
   //! Creates a SolidAreaBuilder to build Solids on
   //! the (shells,blocks of face) of <LS>, using the classifier <LC>.
-  Standard_EXPORT TopOpeBRepBuild_SolidAreaBuilder(
-    TopOpeBRepBuild_LoopSet&        LS,
-    TopOpeBRepBuild_LoopClassifier& LC,
-    const Standard_Boolean          ForceClass = Standard_False);
+  Standard_EXPORT TopOpeBRepBuild_SolidAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
+                                                   TopOpeBRepBuild_LoopClassifier& LC,
+                                                   const bool ForceClass = false);
 
   Standard_EXPORT void InitSolidAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                             TopOpeBRepBuild_LoopClassifier& LC,
-                                            const Standard_Boolean ForceClass = Standard_False);
-
-protected:
-private:
+                                            const bool                      ForceClass = false);
 };
 
 #endif // _TopOpeBRepBuild_SolidAreaBuilder_HeaderFile

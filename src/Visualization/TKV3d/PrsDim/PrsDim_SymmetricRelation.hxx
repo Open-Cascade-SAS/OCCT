@@ -21,8 +21,6 @@
 #include <gp_Dir.hxx>
 #include <PrsDim_Relation.hxx>
 
-DEFINE_STANDARD_HANDLE(PrsDim_SymmetricRelation, PrsDim_Relation)
-
 //! A framework to display constraints of symmetricity
 //! between two or more datum Interactive Objects.
 //! A plane serves as the axis of symmetry between the
@@ -39,13 +37,13 @@ public:
   //! SecondShape and aPlane. It may be queried and
   //! edited using the functions GetTool and SetTool.
   //! The two shapes are typically two edges, two vertices or two points.
-  Standard_EXPORT PrsDim_SymmetricRelation(const TopoDS_Shape&       aSymmTool,
-                                           const TopoDS_Shape&       FirstShape,
-                                           const TopoDS_Shape&       SecondShape,
-                                           const Handle(Geom_Plane)& aPlane);
+  Standard_EXPORT PrsDim_SymmetricRelation(const TopoDS_Shape&            aSymmTool,
+                                           const TopoDS_Shape&            FirstShape,
+                                           const TopoDS_Shape&            SecondShape,
+                                           const occ::handle<Geom_Plane>& aPlane);
 
   //! Returns true if the symmetric constraint display is movable.
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool IsMovable() const override { return true; }
 
   //! Sets the tool aSymmetricTool composed of a first
   //! shape, a second shape, and a plane.
@@ -57,18 +55,18 @@ public:
   const TopoDS_Shape& GetTool() const { return myTool; }
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
-  Standard_EXPORT void ComputeTwoFacesSymmetric(const Handle(Prs3d_Presentation)& aprs);
+  Standard_EXPORT void ComputeTwoFacesSymmetric(const occ::handle<Prs3d_Presentation>& aprs);
 
-  Standard_EXPORT void ComputeTwoEdgesSymmetric(const Handle(Prs3d_Presentation)& aprs);
+  Standard_EXPORT void ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_Presentation>& aprs);
 
-  Standard_EXPORT void ComputeTwoVerticesSymmetric(const Handle(Prs3d_Presentation)& aprs);
+  Standard_EXPORT void ComputeTwoVerticesSymmetric(const occ::handle<Prs3d_Presentation>& aprs);
 
 private:
   TopoDS_Shape myTool;

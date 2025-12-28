@@ -25,41 +25,42 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 //=================================================================================================
 
-HLRBRep_HLRToShape::HLRBRep_HLRToShape(const Handle(HLRBRep_Algo)& A)
+HLRBRep_HLRToShape::HLRBRep_HLRToShape(const occ::handle<HLRBRep_Algo>& A)
     : myAlgo(A)
 {
 }
 
 //=================================================================================================
 
-TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const Standard_Integer typ,
-                                                  const Standard_Boolean visible,
-                                                  const TopoDS_Shape&    S,
-                                                  const Standard_Boolean In3d)
+TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const int           typ,
+                                                  const bool          visible,
+                                                  const TopoDS_Shape& S,
+                                                  const bool          In3d)
 {
-  Standard_Boolean     added = Standard_False;
-  TopoDS_Shape         Result;
-  Handle(HLRBRep_Data) DS = myAlgo->DataStructure();
+  bool                      added = false;
+  TopoDS_Shape              Result;
+  occ::handle<HLRBRep_Data> DS = myAlgo->DataStructure();
 
   if (!DS.IsNull())
   {
-    DS->Projector().Scaled(Standard_True);
-    Standard_Integer e1     = 1;
-    Standard_Integer e2     = DS->NbEdges();
-    Standard_Integer f1     = 1;
-    Standard_Integer f2     = DS->NbFaces();
-    Standard_Boolean explor = Standard_False;
-    //    Standard_Boolean todraw;
+    DS->Projector().Scaled(true);
+    int  e1     = 1;
+    int  e2     = DS->NbEdges();
+    int  f1     = 1;
+    int  f2     = DS->NbFaces();
+    bool explor = false;
+    //    bool todraw;
     if (!S.IsNull())
     {
-      Standard_Integer v1, v2;
-      Standard_Integer index = myAlgo->Index(S);
+      int v1, v2;
+      int index = myAlgo->Index(S);
       if (index == 0)
-        explor = Standard_True;
+        explor = true;
       else
         myAlgo->ShapeBounds(index).Bounds(v1, v2, e1, e2, f1, f2);
     }
@@ -67,26 +68,26 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const Standard_Integer typ,
     B.MakeCompound(TopoDS::Compound(Result));
     HLRBRep_EdgeData* ed = &(DS->EDataArray().ChangeValue(e1 - 1));
 
-    for (Standard_Integer ie = e1; ie <= e2; ie++)
+    for (int ie = e1; ie <= e2; ie++)
     {
       ed++;
       if (ed->Selected() && !ed->Vertical())
       {
-        ed->Used(Standard_False);
+        ed->Used(false);
         ed->HideCount(0);
       }
       else
-        ed->Used(Standard_True);
+        ed->Used(true);
     }
     if (explor)
     {
-      TopTools_IndexedMapOfShape& Edges = DS->EdgeMap();
-      TopTools_IndexedMapOfShape& Faces = DS->FaceMap();
-      TopExp_Explorer             Exp;
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Edges = DS->EdgeMap();
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Faces = DS->FaceMap();
+      TopExp_Explorer                                                Exp;
 
       for (Exp.Init(S, TopAbs_FACE); Exp.More(); Exp.Next())
       {
-        Standard_Integer iface = Faces.FindIndex(Exp.Current());
+        int iface = Faces.FindIndex(Exp.Current());
         if (iface != 0)
           DrawFace(visible, typ, iface, DS, Result, added, In3d);
       }
@@ -95,14 +96,14 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const Standard_Integer typ,
 
         for (Exp.Init(S, TopAbs_EDGE, TopAbs_FACE); Exp.More(); Exp.Next())
         {
-          Standard_Integer ie = Edges.FindIndex(Exp.Current());
+          int ie = Edges.FindIndex(Exp.Current());
           if (ie != 0)
           {
             HLRBRep_EdgeData& EDataIE = DS->EDataArray().ChangeValue(ie);
             if (!EDataIE.Used())
             {
-              DrawEdge(visible, Standard_False, typ, EDataIE, Result, added, In3d);
-              EDataIE.Used(Standard_True);
+              DrawEdge(visible, false, typ, EDataIE, Result, added, In3d);
+              EDataIE.Used(true);
             }
           }
         }
@@ -111,25 +112,25 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const Standard_Integer typ,
     else
     {
 
-      for (Standard_Integer iface = f1; iface <= f2; iface++)
+      for (int iface = f1; iface <= f2; iface++)
         DrawFace(visible, typ, iface, DS, Result, added, In3d);
 
       if (typ >= 3)
       {
         HLRBRep_EdgeData* EDataE11 = &(DS->EDataArray().ChangeValue(e1 - 1));
 
-        for (Standard_Integer ie = e1; ie <= e2; ie++)
+        for (int ie = e1; ie <= e2; ie++)
         {
           EDataE11++;
           if (!EDataE11->Used())
           {
-            DrawEdge(visible, Standard_False, typ, *EDataE11, Result, added, In3d);
-            EDataE11->Used(Standard_True);
+            DrawEdge(visible, false, typ, *EDataE11, Result, added, In3d);
+            EDataE11->Used(true);
           }
         }
       }
     }
-    DS->Projector().Scaled(Standard_False);
+    DS->Projector().Scaled(false);
   }
   if (!added)
     Result = TopoDS_Shape();
@@ -138,23 +139,23 @@ TopoDS_Shape HLRBRep_HLRToShape::InternalCompound(const Standard_Integer typ,
 
 //=================================================================================================
 
-void HLRBRep_HLRToShape::DrawFace(const Standard_Boolean visible,
-                                  const Standard_Integer typ,
-                                  const Standard_Integer iface,
-                                  Handle(HLRBRep_Data)&  DS,
-                                  TopoDS_Shape&          Result,
-                                  Standard_Boolean&      added,
-                                  const Standard_Boolean In3d) const
+void HLRBRep_HLRToShape::DrawFace(const bool                 visible,
+                                  const int                  typ,
+                                  const int                  iface,
+                                  occ::handle<HLRBRep_Data>& DS,
+                                  TopoDS_Shape&              Result,
+                                  bool&                      added,
+                                  const bool                 In3d) const
 {
   HLRBRep_FaceIterator Itf;
 
   for (Itf.InitEdge(DS->FDataArray().ChangeValue(iface)); Itf.MoreEdge(); Itf.NextEdge())
   {
-    Standard_Integer  ie  = Itf.Edge();
+    int               ie  = Itf.Edge();
     HLRBRep_EdgeData& edf = DS->EDataArray().ChangeValue(ie);
     if (!edf.Used())
     {
-      Standard_Boolean todraw;
+      bool todraw;
       if (typ == 1)
         todraw = Itf.IsoLine();
       else if (typ == 2) // outlines
@@ -173,18 +174,18 @@ void HLRBRep_HLRToShape::DrawFace(const Standard_Boolean visible,
 
       if (todraw)
       {
-        DrawEdge(visible, Standard_True, typ, edf, Result, added, In3d);
-        edf.Used(Standard_True);
+        DrawEdge(visible, true, typ, edf, Result, added, In3d);
+        edf.Used(true);
       }
       else
       {
         if ((typ > 4 || typ == 2) && // sharp or outlines
             (edf.Rg1Line() && !Itf.OutLine()))
         {
-          Standard_Integer hc = edf.HideCount();
+          int hc = edf.HideCount();
           if (hc > 0)
           {
-            edf.Used(Standard_True);
+            edf.Used(true);
           }
           else
           {
@@ -194,7 +195,7 @@ void HLRBRep_HLRToShape::DrawFace(const Standard_Boolean visible,
         }
         else
         {
-          edf.Used(Standard_True);
+          edf.Used(true);
         }
       }
     }
@@ -203,17 +204,17 @@ void HLRBRep_HLRToShape::DrawFace(const Standard_Boolean visible,
 
 //=================================================================================================
 
-void HLRBRep_HLRToShape::DrawEdge(const Standard_Boolean visible,
-                                  const Standard_Boolean inFace,
-                                  const Standard_Integer typ,
-                                  HLRBRep_EdgeData&      ed,
-                                  TopoDS_Shape&          Result,
-                                  Standard_Boolean&      added,
-                                  const Standard_Boolean In3d) const
+void HLRBRep_HLRToShape::DrawEdge(const bool        visible,
+                                  const bool        inFace,
+                                  const int         typ,
+                                  HLRBRep_EdgeData& ed,
+                                  TopoDS_Shape&     Result,
+                                  bool&             added,
+                                  const bool        In3d) const
 {
-  Standard_Boolean todraw = Standard_False;
+  bool todraw = false;
   if (inFace)
-    todraw = Standard_True;
+    todraw = true;
   else if (typ == 3)
     todraw = ed.Rg1Line() && !ed.RgNLine();
   else if (typ == 4)
@@ -223,8 +224,8 @@ void HLRBRep_HLRToShape::DrawEdge(const Standard_Boolean visible,
 
   if (todraw)
   {
-    Standard_Real        sta, end;
-    Standard_ShortReal   tolsta, tolend;
+    double               sta, end;
+    float                tolsta, tolend;
     BRep_Builder         B;
     TopoDS_Edge          E;
     HLRAlgo_EdgeIterator It;
@@ -240,7 +241,7 @@ void HLRBRep_HLRToShape::DrawEdge(const Standard_Boolean visible,
         if (!E.IsNull())
         {
           B.Add(Result, E);
-          added = Standard_True;
+          added = true;
         }
       }
     }
@@ -256,7 +257,7 @@ void HLRBRep_HLRToShape::DrawEdge(const Standard_Boolean visible,
         if (!E.IsNull())
         {
           B.Add(Result, E);
-          added = Standard_True;
+          added = true;
         }
       }
     }

@@ -26,9 +26,6 @@ class BinMDF_ADriverTable;
 class Message_Messenger;
 class BinLDrivers_DocumentSection;
 
-class BinDrivers_DocumentRetrievalDriver;
-DEFINE_STANDARD_HANDLE(BinDrivers_DocumentRetrievalDriver, BinLDrivers_DocumentRetrievalDriver)
-
 class BinDrivers_DocumentRetrievalDriver : public BinLDrivers_DocumentRetrievalDriver
 {
 
@@ -36,25 +33,25 @@ public:
   //! Constructor
   Standard_EXPORT BinDrivers_DocumentRetrievalDriver();
 
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<BinMDF_ADriverTable> AttributeDrivers(
+    const occ::handle<Message_Messenger>& theMsgDriver) override;
 
   Standard_EXPORT virtual void ReadShapeSection(
     BinLDrivers_DocumentSection& theSection,
     Standard_IStream&            theIS,
-    const Standard_Boolean       isMess   = Standard_False,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const bool                   isMess   = false,
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual void CheckShapeSection(const Storage_Position& thePos,
-                                                 Standard_IStream&       theIS) Standard_OVERRIDE;
+                                                 Standard_IStream&       theIS) override;
 
   //! Clears the NamedShape driver
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Enables reading in the quick part access mode.
   Standard_EXPORT virtual void EnableQuickPartReading(
-    const Handle(Message_Messenger)& theMessageDriver,
-    Standard_Boolean                 theValue) Standard_OVERRIDE;
+    const occ::handle<Message_Messenger>& theMessageDriver,
+    bool                                  theValue) override;
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver, BinLDrivers_DocumentRetrievalDriver)
 };

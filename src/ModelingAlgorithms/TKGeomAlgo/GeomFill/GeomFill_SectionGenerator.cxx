@@ -23,8 +23,9 @@ GeomFill_SectionGenerator::GeomFill_SectionGenerator()
 {
   if (mySequence.Length() > 1)
   {
-    Handle(TColStd_HArray1OfReal) HPar = new (TColStd_HArray1OfReal)(1, mySequence.Length());
-    for (Standard_Integer i = 1; i <= mySequence.Length(); i++)
+    occ::handle<NCollection_HArray1<double>> HPar =
+      new (NCollection_HArray1<double>)(1, mySequence.Length());
+    for (int i = 1; i <= mySequence.Length(); i++)
     {
       HPar->ChangeValue(i) = i - 1;
     }
@@ -34,9 +35,9 @@ GeomFill_SectionGenerator::GeomFill_SectionGenerator()
 
 //=================================================================================================
 
-void GeomFill_SectionGenerator::SetParam(const Handle(TColStd_HArray1OfReal)& Params)
+void GeomFill_SectionGenerator::SetParam(const occ::handle<NCollection_HArray1<double>>& Params)
 {
-  Standard_Integer ii, L = Params->Upper() - Params->Lower() + 1;
+  int ii, L = Params->Upper() - Params->Lower() + 1;
   myParams = Params;
   for (ii = 1; ii <= L; ii++)
   {
@@ -46,55 +47,55 @@ void GeomFill_SectionGenerator::SetParam(const Handle(TColStd_HArray1OfReal)& Pa
 
 //=================================================================================================
 
-void GeomFill_SectionGenerator::GetShape(Standard_Integer& NbPoles,
-                                         Standard_Integer& NbKnots,
-                                         Standard_Integer& Degree,
-                                         Standard_Integer& NbPoles2d) const
+void GeomFill_SectionGenerator::GetShape(int& NbPoles,
+                                         int& NbKnots,
+                                         int& Degree,
+                                         int& NbPoles2d) const
 {
-  Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(mySequence(1));
-  NbPoles                     = C->NbPoles();
-  NbKnots                     = C->NbKnots();
-  Degree                      = C->Degree();
-  NbPoles2d                   = 0;
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
+  NbPoles                          = C->NbPoles();
+  NbKnots                          = C->NbKnots();
+  Degree                           = C->Degree();
+  NbPoles2d                        = 0;
 }
 
 //=================================================================================================
 
-void GeomFill_SectionGenerator::Knots(TColStd_Array1OfReal& TKnots) const
+void GeomFill_SectionGenerator::Knots(NCollection_Array1<double>& TKnots) const
 {
-  (Handle(Geom_BSplineCurve)::DownCast(mySequence(1)))->Knots(TKnots);
+  (occ::down_cast<Geom_BSplineCurve>(mySequence(1)))->Knots(TKnots);
 }
 
 //=================================================================================================
 
-void GeomFill_SectionGenerator::Mults(TColStd_Array1OfInteger& TMults) const
+void GeomFill_SectionGenerator::Mults(NCollection_Array1<int>& TMults) const
 {
-  (Handle(Geom_BSplineCurve)::DownCast(mySequence(1)))->Multiplicities(TMults);
+  (occ::down_cast<Geom_BSplineCurve>(mySequence(1)))->Multiplicities(TMults);
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_SectionGenerator::Section(const Standard_Integer P,
-                                                    TColgp_Array1OfPnt&    Poles,
-                                                    TColgp_Array1OfVec&, // DPoles,
-                                                    TColgp_Array1OfPnt2d& Poles2d,
-                                                    TColgp_Array1OfVec2d&, // DPoles2d,
-                                                    TColStd_Array1OfReal& Weigths,
-                                                    TColStd_Array1OfReal& // DWeigths
+bool GeomFill_SectionGenerator::Section(const int                   P,
+                                        NCollection_Array1<gp_Pnt>& Poles,
+                                        NCollection_Array1<gp_Vec>&, // DPoles,
+                                        NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                        NCollection_Array1<gp_Vec2d>&, // DPoles2d,
+                                        NCollection_Array1<double>& Weigths,
+                                        NCollection_Array1<double>& // DWeigths
 ) const
 {
   Section(P, Poles, Poles2d, Weigths);
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void GeomFill_SectionGenerator::Section(const Standard_Integer P,
-                                        TColgp_Array1OfPnt&    Poles,
-                                        TColgp_Array1OfPnt2d&, // Poles2d,
-                                        TColStd_Array1OfReal& Weigths) const
+void GeomFill_SectionGenerator::Section(const int                   P,
+                                        NCollection_Array1<gp_Pnt>& Poles,
+                                        NCollection_Array1<gp_Pnt2d>&, // Poles2d,
+                                        NCollection_Array1<double>& Weigths) const
 {
-  Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(mySequence(P));
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(P));
 
   C->Poles(Poles);
   C->Weights(Weigths);
@@ -102,7 +103,7 @@ void GeomFill_SectionGenerator::Section(const Standard_Integer P,
 
 //=================================================================================================
 
-Standard_Real GeomFill_SectionGenerator::Parameter(const Standard_Integer P) const
+double GeomFill_SectionGenerator::Parameter(const int P) const
 {
   return myParams->Value(P);
 }

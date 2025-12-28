@@ -26,13 +26,13 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_GuideTrihedronAC, GeomFill_TrihedronWithGuide)
 
 //=================================================================================================
 
-GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_Curve)& guide)
+GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const occ::handle<Adaptor3d_Curve>& guide)
 {
   myCurve.Nullify();
   myGuide   = guide;
@@ -49,7 +49,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_Curv
 // purpose  : calculation of trihedron
 //=======================================================================
 
-Handle(Adaptor3d_Curve) GeomFill_GuideTrihedronAC::Guide() const
+occ::handle<Adaptor3d_Curve> GeomFill_GuideTrihedronAC::Guide() const
 {
   return myGuide;
 }
@@ -58,14 +58,14 @@ Handle(Adaptor3d_Curve) GeomFill_GuideTrihedronAC::Guide() const
 // function : D0
 // purpose  : calculation of trihedron
 //=======================================================================
-Standard_Boolean GeomFill_GuideTrihedronAC::D0(const Standard_Real Param,
-                                               gp_Vec&             Tangent,
-                                               gp_Vec&             Normal,
-                                               gp_Vec&             BiNormal)
+bool GeomFill_GuideTrihedronAC::D0(const double Param,
+                                   gp_Vec&      Tangent,
+                                   gp_Vec&      Normal,
+                                   gp_Vec&      BiNormal)
 {
-  Standard_Real s     = myCurveAC->GetSParameter(Param); // abscisse curviligne <=> Param
-  Standard_Real OrigG = Orig1 + s * (Orig2 - Orig1); // abscisse curv sur le guide (cas multi-edges)
-  Standard_Real tG    = myGuideAC->GetUParameter(*myGuide, OrigG, 1); // param <=> s sur theGuide
+  double s     = myCurveAC->GetSParameter(Param); // abscisse curviligne <=> Param
+  double OrigG = Orig1 + s * (Orig2 - Orig1);     // abscisse curv sur le guide (cas multi-edges)
+  double tG    = myGuideAC->GetUParameter(*myGuide, OrigG, 1); // param <=> s sur theGuide
 
   gp_Pnt P, PG;
   gp_Vec To, B;
@@ -81,23 +81,23 @@ Standard_Boolean GeomFill_GuideTrihedronAC::D0(const Standard_Real Param,
   Tangent  = Normal.Crossed(BiNormal);
   Tangent.Normalize();
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : D1
 // purpose  : calculation of trihedron and first derivative
 //=======================================================================
-Standard_Boolean GeomFill_GuideTrihedronAC::D1(const Standard_Real Param,
-                                               gp_Vec&             Tangent,
-                                               gp_Vec&             DTangent,
-                                               gp_Vec&             Normal,
-                                               gp_Vec&             DNormal,
-                                               gp_Vec&             BiNormal,
-                                               gp_Vec&             DBiNormal)
+bool GeomFill_GuideTrihedronAC::D1(const double Param,
+                                   gp_Vec&      Tangent,
+                                   gp_Vec&      DTangent,
+                                   gp_Vec&      Normal,
+                                   gp_Vec&      DNormal,
+                                   gp_Vec&      BiNormal,
+                                   gp_Vec&      DBiNormal)
 {
   // triedre
-  Standard_Real s, OrigG, tG, dtg;
+  double s, OrigG, tG, dtg;
   // abscisse curviligne <=> Param
   s = myCurveAC->GetSParameter(Param);
   // parametre <=> s sur theGuide
@@ -112,8 +112,8 @@ Standard_Boolean GeomFill_GuideTrihedronAC::D1(const Standard_Real Param,
   myTrimG->D1(tG, PG, TG);
   myCurPointOnGuide = PG;
 
-  gp_Vec        n(P, PG), dn;
-  Standard_Real Norm = n.Magnitude();
+  gp_Vec n(P, PG), dn;
+  double Norm = n.Magnitude();
   if (Norm < 1.e-12)
   {
     Norm = 1;
@@ -129,9 +129,9 @@ Standard_Boolean GeomFill_GuideTrihedronAC::D1(const Standard_Real Param,
   dn /= Norm;
 
   // triedre
-  Normal              = n;
-  B                   = To.Crossed(Normal);
-  Standard_Real NormB = B.Magnitude();
+  Normal       = n;
+  B            = To.Crossed(Normal);
+  double NormB = B.Magnitude();
   B /= NormB;
 
   BiNormal = B;
@@ -149,29 +149,29 @@ Standard_Boolean GeomFill_GuideTrihedronAC::D1(const Standard_Real Param,
 
   DTangent.SetLinearForm(Normal.Crossed(DBiNormal), DNormal.Crossed(BiNormal));
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : D2
 // purpose  : calculation of trihedron and derivatives
 //=======================================================================
-Standard_Boolean GeomFill_GuideTrihedronAC::D2(const Standard_Real Param,
-                                               gp_Vec&             Tangent,
-                                               gp_Vec&             DTangent,
-                                               gp_Vec&             D2Tangent,
-                                               gp_Vec&             Normal,
-                                               gp_Vec&             DNormal,
-                                               gp_Vec&             D2Normal,
-                                               gp_Vec&             BiNormal,
-                                               gp_Vec&             DBiNormal,
-                                               gp_Vec&             D2BiNormal)
+bool GeomFill_GuideTrihedronAC::D2(const double Param,
+                                   gp_Vec&      Tangent,
+                                   gp_Vec&      DTangent,
+                                   gp_Vec&      D2Tangent,
+                                   gp_Vec&      Normal,
+                                   gp_Vec&      DNormal,
+                                   gp_Vec&      D2Normal,
+                                   gp_Vec&      BiNormal,
+                                   gp_Vec&      DBiNormal,
+                                   gp_Vec&      D2BiNormal)
 {
   // abscisse curviligne <=> Param
-  Standard_Real s = myCurveAC->GetSParameter(Param);
+  double s = myCurveAC->GetSParameter(Param);
   // parametre <=> s sur theGuide
-  Standard_Real OrigG = Orig1 + s * (Orig2 - Orig1);
-  Standard_Real tG    = myGuideAC->GetUParameter(*myGuide, OrigG, 1);
+  double OrigG = Orig1 + s * (Orig2 - Orig1);
+  double tG    = myGuideAC->GetUParameter(*myGuide, OrigG, 1);
 
   gp_Pnt P, PG;
   gp_Vec TG, DTG;
@@ -182,15 +182,15 @@ Standard_Boolean GeomFill_GuideTrihedronAC::D2(const Standard_Real Param,
   myTrimG->D2(tG, PG, TG, DTG);
   myCurPointOnGuide = PG;
 
-  Standard_Real NTo  = To.Magnitude();
-  Standard_Real N2To = To.SquareMagnitude();
-  Standard_Real NTG  = TG.Magnitude();
-  Standard_Real N2Tp = TG.SquareMagnitude();
-  Standard_Real d2tp_dt2, dtg_dt;
+  double NTo  = To.Magnitude();
+  double N2To = To.SquareMagnitude();
+  double NTG  = TG.Magnitude();
+  double N2Tp = TG.SquareMagnitude();
+  double d2tp_dt2, dtg_dt;
   dtg_dt = (Orig2 - Orig1) * (NTo / NTG) * (Lguide / L);
 
-  gp_Vec        n(P, PG); // vecteur definissant la normale
-  Standard_Real Norm = n.Magnitude(), ndn;
+  gp_Vec n(P, PG); // vecteur definissant la normale
+  double Norm = n.Magnitude(), ndn;
   // derivee de n par rapport a Param
   gp_Vec dn, d2n;
   dn.SetLinearForm(dtg_dt, TG, -1, To);
@@ -213,7 +213,7 @@ Standard_Boolean GeomFill_GuideTrihedronAC::D2(const Standard_Real Param,
   gp_Vec TN, DTN, D2TN;
   TN = To.Crossed(Normal);
 
-  Standard_Real Norma = TN.Magnitude();
+  double Norma = TN.Magnitude();
   if (Norma > 1.e-9)
     TN /= Norma;
 
@@ -232,7 +232,7 @@ Standard_Boolean GeomFill_GuideTrihedronAC::D2(const Standard_Real Param,
 
   DTN.SetLinearForm(DTo.Crossed(Normal), To.Crossed(DNormal));
   DTN /= Norma;
-  Standard_Real TNDTN = TN.Dot(DTN);
+  double TNDTN = TN.Dot(DTN);
 
   DBiNormal.SetLinearForm(-TNDTN, TN, DTN);
 
@@ -243,7 +243,7 @@ Standard_Boolean GeomFill_GuideTrihedronAC::D2(const Standard_Real Param,
   gp_Vec DTDN = DTo.Crossed(DNormal);
   (void)DTDN;
 #endif
-  Standard_Real TN2 = TN.SquareMagnitude();
+  double TN2 = TN.SquareMagnitude();
 
   D2Normal.SetLinearForm(-2 * ndn, dn, 3 * ndn * ndn - (dn.SquareMagnitude() + n.Dot(d2n)), n, d2n);
 
@@ -258,15 +258,15 @@ Standard_Boolean GeomFill_GuideTrihedronAC::D2(const Standard_Real Param,
                           DNormal.Crossed(DBiNormal),
                           Normal.Crossed(D2BiNormal));
 
-  //  return Standard_True;
-  return Standard_False;
+  //  return true;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(GeomFill_TrihedronLaw) GeomFill_GuideTrihedronAC::Copy() const
+occ::handle<GeomFill_TrihedronLaw> GeomFill_GuideTrihedronAC::Copy() const
 {
-  Handle(GeomFill_GuideTrihedronAC) copy = new (GeomFill_GuideTrihedronAC)(myGuide);
+  occ::handle<GeomFill_GuideTrihedronAC> copy = new (GeomFill_GuideTrihedronAC)(myGuide);
   copy->SetCurve(myCurve);
   copy->Origine(Orig1, Orig2);
   return copy;
@@ -274,7 +274,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_GuideTrihedronAC::Copy() const
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_GuideTrihedronAC::SetCurve(const Handle(Adaptor3d_Curve)& C)
+bool GeomFill_GuideTrihedronAC::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   myCurve   = C;
   myTrimmed = C;
@@ -284,22 +284,22 @@ Standard_Boolean GeomFill_GuideTrihedronAC::SetCurve(const Handle(Adaptor3d_Curv
     L         = myCurveAC->GetLength();
     //    CorrectOrient(myGuide);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_GuideTrihedronAC::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_GuideTrihedronAC::NbIntervals(const GeomAbs_Shape S) const
 {
-  Standard_Integer Nb;
+  int Nb;
   Nb = myCurveAC->NbIntervals(S);
-  TColStd_Array1OfReal DiscC(1, Nb + 1);
+  NCollection_Array1<double> DiscC(1, Nb + 1);
   myCurveAC->Intervals(DiscC, S);
   Nb = myGuideAC->NbIntervals(S);
-  TColStd_Array1OfReal DiscG(1, Nb + 1);
+  NCollection_Array1<double> DiscG(1, Nb + 1);
   myGuideAC->Intervals(DiscG, S);
 
-  TColStd_SequenceOfReal Seq;
+  NCollection_Sequence<double> Seq;
   GeomLib::FuseIntervals(DiscC, DiscG, Seq);
 
   return Seq.Length() - 1;
@@ -307,17 +307,18 @@ Standard_Integer GeomFill_GuideTrihedronAC::NbIntervals(const GeomAbs_Shape S) c
 
 //=================================================================================================
 
-void GeomFill_GuideTrihedronAC::Intervals(TColStd_Array1OfReal& TT, const GeomAbs_Shape S) const
+void GeomFill_GuideTrihedronAC::Intervals(NCollection_Array1<double>& TT,
+                                          const GeomAbs_Shape         S) const
 {
-  Standard_Integer Nb, ii;
+  int Nb, ii;
   Nb = myCurveAC->NbIntervals(S);
-  TColStd_Array1OfReal DiscC(1, Nb + 1);
+  NCollection_Array1<double> DiscC(1, Nb + 1);
   myCurveAC->Intervals(DiscC, S);
   Nb = myGuideAC->NbIntervals(S);
-  TColStd_Array1OfReal DiscG(1, Nb + 1);
+  NCollection_Array1<double> DiscG(1, Nb + 1);
   myGuideAC->Intervals(DiscG, S);
 
-  TColStd_SequenceOfReal Seq;
+  NCollection_Sequence<double> Seq;
   GeomLib::FuseIntervals(DiscC, DiscG, Seq);
   Nb = Seq.Length();
 
@@ -329,10 +330,10 @@ void GeomFill_GuideTrihedronAC::Intervals(TColStd_Array1OfReal& TT, const GeomAb
 
 //=================================================================================================
 
-void GeomFill_GuideTrihedronAC::SetInterval(const Standard_Real First, const Standard_Real Last)
+void GeomFill_GuideTrihedronAC::SetInterval(const double First, const double Last)
 {
   myTrimmed = myCurve->Trim(First, Last, UTol);
-  Standard_Real Sf, Sl, U;
+  double Sf, Sl, U;
 
   Sf = myCurveAC->GetSParameter(First);
   Sl = myCurveAC->GetSParameter(Last);
@@ -350,8 +351,8 @@ void GeomFill_GuideTrihedronAC::SetInterval(const Standard_Real First, const Sta
 
 void GeomFill_GuideTrihedronAC::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal)
 {
-  Standard_Integer ii;
-  Standard_Real    t, Delta = (myCurve->LastParameter() - myCurve->FirstParameter()) / 20.001;
+  int    ii;
+  double t, Delta = (myCurve->LastParameter() - myCurve->FirstParameter()) / 20.001;
 
   ATangent.SetCoord(0., 0., 0.);
   ANormal.SetCoord(0., 0., 0.);
@@ -373,21 +374,21 @@ void GeomFill_GuideTrihedronAC::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal,
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_GuideTrihedronAC::IsConstant() const
+bool GeomFill_GuideTrihedronAC::IsConstant() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_GuideTrihedronAC::IsOnlyBy3dCurve() const
+bool GeomFill_GuideTrihedronAC::IsOnlyBy3dCurve() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void GeomFill_GuideTrihedronAC::Origine(const Standard_Real OrACR1, const Standard_Real OrACR2)
+void GeomFill_GuideTrihedronAC::Origine(const double OrACR1, const double OrACR2)
 {
   Orig1 = OrACR1;
   Orig2 = OrACR2;

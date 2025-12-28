@@ -20,10 +20,9 @@
 #include <TopoDS_Wire.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Plane.hxx>
-#include <TColStd_ListOfReal.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TColStd_SequenceOfBoolean.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
 
 class FilletPoint;
 
@@ -79,32 +78,32 @@ public:
 
   //! Constructs a fillet edge.
   //! Returns true, if at least one result was found
-  Standard_EXPORT Standard_Boolean Perform(const Standard_Real theRadius);
+  Standard_EXPORT bool Perform(const double theRadius);
 
   //! Returns number of possible solutions.
   //! <thePoint> chooses a particular fillet in case of several fillets
   //! may be constructed (for example, a circle intersecting a segment in 2 points).
   //! Put the intersecting (or common) point of the edges.
-  Standard_EXPORT Standard_Integer NbResults(const gp_Pnt& thePoint);
+  Standard_EXPORT int NbResults(const gp_Pnt& thePoint);
 
   //! Returns result (fillet edge, modified edge1, modified edge2),
   //! nearest to the given point <thePoint> if iSolution == -1.
   //! <thePoint> chooses a particular fillet in case of several fillets
   //! may be constructed (for example, a circle intersecting a segment in 2 points).
   //! Put the intersecting (or common) point of the edges.
-  Standard_EXPORT TopoDS_Edge Result(const gp_Pnt&          thePoint,
-                                     TopoDS_Edge&           theEdge1,
-                                     TopoDS_Edge&           theEdge2,
-                                     const Standard_Integer iSolution = -1);
+  Standard_EXPORT TopoDS_Edge Result(const gp_Pnt& thePoint,
+                                     TopoDS_Edge&  theEdge1,
+                                     TopoDS_Edge&  theEdge2,
+                                     const int     iSolution = -1);
 
 private:
   //! Computes the value the function in the current point.
   //! <theLimit> is end parameter of the segment
-  void FillPoint(FilletPoint*, const Standard_Real theLimit);
+  void FillPoint(FilletPoint*, const double theLimit);
   //! Computes the derivative value of the function in the current point.
   //! <theDiffStep> is small step for approximate derivative computation
   //! <theFront> is direction of the step: from or reversed
-  void FillDiff(FilletPoint*, Standard_Real theDiffStep, Standard_Boolean theFront);
+  void FillDiff(FilletPoint*, double theDiffStep, bool theFront);
   //! Using Newton methods computes optimal point, that can be root of the
   //! function taking into account two input points, functions value and derivatives.
   //! Performs iteration until root is found or failed to find root.
@@ -113,27 +112,27 @@ private:
   //! Splits segment by the parameter and calls Newton method for both segments.
   //! It supplies recursive iterations of the Newton methods calls
   //! (PerformNewton calls this function and this calls Netwton two times).
-  Standard_Boolean ProcessPoint(FilletPoint*, FilletPoint*, Standard_Real);
+  bool ProcessPoint(FilletPoint*, FilletPoint*, double);
 
   //! Initial edges where the fillet must be computed.
   TopoDS_Edge myEdge1, myEdge2;
   //! Plane where fillet arc must be created.
-  Handle(Geom_Plane) myPlane;
+  occ::handle<Geom_Plane> myPlane;
   //! Underlying curves of the initial edges
-  Handle(Geom2d_Curve) myCurve1, myCurve2;
+  occ::handle<Geom2d_Curve> myCurve1, myCurve2;
   //! Start and end parameters of curves of initial edges.
-  Standard_Real myStart1, myEnd1, myStart2, myEnd2, myRadius;
+  double myStart1, myEnd1, myStart2, myEnd2, myRadius;
   //! List of params where roots were found.
-  TColStd_ListOfReal myResultParams;
+  NCollection_List<double> myResultParams;
   //! sequence of 0 or 1: position of the fillet relatively to the first curve
-  TColStd_SequenceOfInteger myResultOrientation;
+  NCollection_Sequence<int> myResultOrientation;
   //! position of the fillet relatively to the first curve
-  Standard_Boolean myStartSide;
+  bool myStartSide;
   //! are initial edges where exchanged in the beginning: to make first edge
   //! more simple and minimize number of iterations
-  Standard_Boolean myEdgesExchnged;
+  bool myEdgesExchnged;
   //! Number to avoid infinity recursion: indicates how deep the recursion is performed.
-  Standard_Integer myDegreeOfRecursion;
+  int myDegreeOfRecursion;
 };
 
 //! Private class. Corresponds to the point on the first curve, computed
@@ -142,34 +141,34 @@ class FilletPoint
 {
 public:
   //! Creates a point on a first curve by parameter on this curve.
-  FilletPoint(const Standard_Real theParam);
+  FilletPoint(const double theParam);
 
   //! Changes the point position by changing point parameter on the first curve.
-  void setParam(Standard_Real theParam) { myParam = theParam; }
+  void setParam(double theParam) { myParam = theParam; }
 
   //! Returns the point parameter on the first curve.
-  Standard_Real getParam() const { return myParam; }
+  double getParam() const { return myParam; }
 
   //! Returns number of found values of function in this point.
-  Standard_Integer getNBValues() { return myV.Length(); }
+  int getNBValues() { return myV.Length(); }
 
   //! Returns value of function in this point.
-  Standard_Real getValue(int theIndex) { return myV.Value(theIndex); }
+  double getValue(int theIndex) { return myV.Value(theIndex); }
 
   //! Returns derivatives of function in this point.
-  Standard_Real getDiff(int theIndex) { return myD.Value(theIndex); }
+  double getDiff(int theIndex) { return myD.Value(theIndex); }
 
   //! Returns true if function is valid (rediuses vectors of fillet do not intersect any curve).
-  Standard_Boolean isValid(int theIndex) { return myValid.Value(theIndex); }
+  bool isValid(int theIndex) { return myValid.Value(theIndex); }
 
   //! Returns the index of the nearest value
   int getNear(int theIndex) { return myNear.Value(theIndex); }
 
   //! Defines the parameter of the projected point on the second curve.
-  void setParam2(const Standard_Real theParam2) { myParam2 = theParam2; }
+  void setParam2(const double theParam2) { myParam2 = theParam2; }
 
   //! Returns the parameter of the projected point on the second curve.
-  Standard_Real getParam2() { return myParam2; }
+  double getParam2() { return myParam2; }
 
   //! Center of the fillet.
   void setCenter(const gp_Pnt2d thePoint) { myCenter = thePoint; }
@@ -178,10 +177,10 @@ public:
   const gp_Pnt2d getCenter() { return myCenter; }
 
   //! Appends value of the function.
-  void appendValue(Standard_Real theValue, Standard_Boolean theValid);
+  void appendValue(double theValue, bool theValid);
 
   //! Computes difference between this point and the given. Stores difference in myD.
-  Standard_Boolean calculateDiff(FilletPoint*);
+  bool calculateDiff(FilletPoint*);
 
   //! Filters out the values and leaves the most optimal one.
   void FilterPoints(FilletPoint*);
@@ -191,13 +190,13 @@ public:
   FilletPoint* Copy();
 
   //! Returns the index of the solution or zero if there is no solution
-  Standard_Integer hasSolution(Standard_Real theRadius);
+  int hasSolution(double theRadius);
 
   //! For debug only
-  Standard_Real LowerValue()
+  double LowerValue()
   {
-    Standard_Integer a, aResultIndex = 0;
-    Standard_Real    aValue;
+    int    a, aResultIndex = 0;
+    double aValue;
     for (a = myV.Length(); a > 0; a--)
     {
       if (aResultIndex == 0 || std::abs(aValue) > std::abs(myV.Value(a)))
@@ -210,22 +209,22 @@ public:
   }
 
   //! Removes the found value by the given index.
-  void remove(Standard_Integer theIndex);
+  void remove(int theIndex);
 
 private:
   //! Parameter on the first curve (start fillet point).
-  Standard_Real myParam;
+  double myParam;
   //! Parameter on the second curve (end fillet point).
-  Standard_Real myParam2;
+  double myParam2;
   //! Values and derivative values of the fillet function.
   //! May be several if there are many projections on the second curve.
-  TColStd_SequenceOfReal myV, myD;
+  NCollection_Sequence<double> myV, myD;
   //! Center of the fillet arc.
   gp_Pnt2d myCenter;
   //! Flags for storage the validity of solutions. Indexes corresponds to indexes
   //! in sequences myV, myD.
-  TColStd_SequenceOfBoolean myValid;
-  TColStd_SequenceOfInteger myNear;
+  NCollection_Sequence<bool> myValid;
+  NCollection_Sequence<int>  myNear;
 };
 
 #endif // _FILLETALGO_H_

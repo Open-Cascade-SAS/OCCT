@@ -38,9 +38,9 @@ HLRBRep_EdgeBuilder::HLRBRep_EdgeBuilder(HLRBRep_VertexList& VList)
 
   Standard_DomainError_Raise_if(!VList.More(), "EdgeBuilder  : Empty vertex list");
 
-  Handle(HLRBRep_AreaLimit) last, cur;
-  TopAbs_State              before, after, ebefore, eafter;
-  HLRAlgo_Intersection      V;
+  occ::handle<HLRBRep_AreaLimit> last, cur;
+  TopAbs_State                   before, after, ebefore, eafter;
+  HLRAlgo_Intersection           V;
 
   // loop on the Vertices
   for (; VList.More(); VList.Next())
@@ -239,14 +239,14 @@ void HLRBRep_EdgeBuilder::PreviousArea()
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_EdgeBuilder::HasArea() const
+bool HLRBRep_EdgeBuilder::HasArea() const
 {
   if (left.IsNull())
     if (right.IsNull())
-      return Standard_False;
+      return false;
   if (right == myLimits)
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //=================================================================================================
@@ -275,14 +275,14 @@ TopAbs_State HLRBRep_EdgeBuilder::AreaEdgeState() const
 
 //=================================================================================================
 
-Handle(HLRBRep_AreaLimit) HLRBRep_EdgeBuilder::LeftLimit() const
+occ::handle<HLRBRep_AreaLimit> HLRBRep_EdgeBuilder::LeftLimit() const
 {
   return left;
 }
 
 //=================================================================================================
 
-Handle(HLRBRep_AreaLimit) HLRBRep_EdgeBuilder::RightLimit() const
+occ::handle<HLRBRep_AreaLimit> HLRBRep_EdgeBuilder::RightLimit() const
 {
   return right;
 }
@@ -310,7 +310,7 @@ void HLRBRep_EdgeBuilder::Builds(const TopAbs_State ToBuild)
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_EdgeBuilder::MoreEdges() const
+bool HLRBRep_EdgeBuilder::MoreEdges() const
 {
   return HasArea();
 }
@@ -339,7 +339,7 @@ void HLRBRep_EdgeBuilder::NextEdge()
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_EdgeBuilder::MoreVertices() const
+bool HLRBRep_EdgeBuilder::MoreVertices() const
 {
   return (current < 3);
 }
@@ -380,7 +380,7 @@ const HLRAlgo_Intersection& HLRBRep_EdgeBuilder::Current() const
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_EdgeBuilder::IsBoundary() const
+bool HLRBRep_EdgeBuilder::IsBoundary() const
 {
   if (current == 1)
     return left->IsBoundary();
@@ -392,7 +392,7 @@ Standard_Boolean HLRBRep_EdgeBuilder::IsBoundary() const
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_EdgeBuilder::IsInterference() const
+bool HLRBRep_EdgeBuilder::IsInterference() const
 {
   if (current == 1)
     return left->IsInterference();
@@ -428,10 +428,10 @@ TopAbs_Orientation HLRBRep_EdgeBuilder::Orientation() const
 
 void HLRBRep_EdgeBuilder::Destroy()
 {
-  Handle(HLRBRep_AreaLimit) cur = myLimits;
+  occ::handle<HLRBRep_AreaLimit> cur = myLimits;
   while (!cur.IsNull())
   {
-    Handle(HLRBRep_AreaLimit) n = cur->Next();
+    occ::handle<HLRBRep_AreaLimit> n = cur->Next();
     cur->Clear();
     cur = n;
   }

@@ -11,17 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Integer Interface_ParamList::Length() const
+inline int Interface_ParamList::Length() const
 {
   return myVector.Length();
 }
 
-inline Standard_Integer Interface_ParamList::Lower() const
+inline int Interface_ParamList::Lower() const
 {
   return 1;
 }
 
-inline Standard_Integer Interface_ParamList::Upper() const
+inline int Interface_ParamList::Upper() const
 {
   return (myVector.Length());
 }

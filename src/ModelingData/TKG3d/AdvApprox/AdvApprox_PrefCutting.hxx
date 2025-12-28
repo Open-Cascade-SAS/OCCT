@@ -21,7 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <AdvApprox_Cutting.hxx>
 #include <Standard_Boolean.hxx>
 
@@ -32,16 +32,14 @@ class AdvApprox_PrefCutting : public AdvApprox_Cutting
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT AdvApprox_PrefCutting(const TColStd_Array1OfReal& CutPnts);
+  Standard_EXPORT AdvApprox_PrefCutting(const NCollection_Array1<double>& CutPnts);
 
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real a,
-                                                 const Standard_Real b,
-                                                 Standard_Real&      cuttingvalue) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Value(const double a,
+                                     const double b,
+                                     double&      cuttingvalue) const override;
 
-protected:
 private:
-  TColStd_Array1OfReal myPntOfCutting;
+  NCollection_Array1<double> myPntOfCutting;
 };
 
 #endif // _AdvApprox_PrefCutting_HeaderFile

@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <HLRAlgo_InterferenceList.hxx>
+#include <HLRAlgo_Interference.hxx>
+#include <NCollection_List.hxx>
 class HLRAlgo_Interference;
 class HLRBRep_EdgeInterferenceTool;
 
@@ -31,16 +32,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Add the interference <I> to the list <IL>.
-  Standard_EXPORT static void AddInterference(HLRAlgo_InterferenceList&           IL,
-                                              const HLRAlgo_Interference&         I,
-                                              const HLRBRep_EdgeInterferenceTool& T);
+  Standard_EXPORT static void AddInterference(NCollection_List<HLRAlgo_Interference>& IL,
+                                              const HLRAlgo_Interference&             I,
+                                              const HLRBRep_EdgeInterferenceTool&     T);
 
   //! Process complex transitions on the list IL.
-  Standard_EXPORT static void ProcessComplex(HLRAlgo_InterferenceList&           IL,
-                                             const HLRBRep_EdgeInterferenceTool& T);
-
-protected:
-private:
+  Standard_EXPORT static void ProcessComplex(NCollection_List<HLRAlgo_Interference>& IL,
+                                             const HLRBRep_EdgeInterferenceTool&     T);
 };
 
 #endif // _HLRBRep_EdgeIList_HeaderFile

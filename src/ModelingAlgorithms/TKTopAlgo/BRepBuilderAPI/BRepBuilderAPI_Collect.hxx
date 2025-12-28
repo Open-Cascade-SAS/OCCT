@@ -22,8 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_DataMap.hxx>
 class BRepBuilderAPI_MakeShape;
 
 class BRepBuilderAPI_Collect
@@ -41,16 +43,21 @@ public:
 
   Standard_EXPORT void Filter(const TopoDS_Shape& SF);
 
-  Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Modification() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape,
+                                            NCollection_List<TopoDS_Shape>,
+                                            TopTools_ShapeMapHasher>&
+                        Modification() const;
 
-  Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Generated() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape,
+                                            NCollection_List<TopoDS_Shape>,
+                                            TopTools_ShapeMapHasher>&
+                        Generated() const;
 
-protected:
 private:
-  TopoDS_Shape                       myInitialShape;
-  TopTools_MapOfShape                myDeleted;
-  TopTools_DataMapOfShapeListOfShape myMod;
-  TopTools_DataMapOfShapeListOfShape myGen;
+  TopoDS_Shape                                           myInitialShape;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myDeleted;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMod;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myGen;
 };
 
 #endif // _BRepBuilderAPI_Collect_HeaderFile

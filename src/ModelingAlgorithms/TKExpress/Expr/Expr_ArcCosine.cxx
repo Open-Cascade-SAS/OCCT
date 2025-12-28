@@ -29,77 +29,78 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_ArcCosine, Expr_UnaryExpression)
 
-Expr_ArcCosine::Expr_ArcCosine(const Handle(Expr_GeneralExpression)& exp)
+Expr_ArcCosine::Expr_ArcCosine(const occ::handle<Expr_GeneralExpression>& exp)
 {
   CreateOperand(exp);
 }
 
-Handle(Expr_GeneralExpression) Expr_ArcCosine::ShallowSimplified() const
+occ::handle<Expr_GeneralExpression> Expr_ArcCosine::ShallowSimplified() const
 {
-  Handle(Expr_GeneralExpression) op = Operand();
+  occ::handle<Expr_GeneralExpression> op = Operand();
   if (op->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
-    Handle(Expr_NumericValue) valop = Handle(Expr_NumericValue)::DownCast(op);
+    occ::handle<Expr_NumericValue> valop = occ::down_cast<Expr_NumericValue>(op);
     return new Expr_NumericValue(std::acos(valop->GetValue()));
   }
   if (op->IsKind(STANDARD_TYPE(Expr_Cosine)))
   {
     return op->SubExpression(1);
   }
-  Handle(Expr_ArcCosine) me = this;
+  occ::handle<Expr_ArcCosine> me = this;
   return me;
 }
 
-Handle(Expr_GeneralExpression) Expr_ArcCosine::Copy() const
+occ::handle<Expr_GeneralExpression> Expr_ArcCosine::Copy() const
 {
   return new Expr_ArcCosine(Expr::CopyShare(Operand()));
 }
 
-Standard_Boolean Expr_ArcCosine::IsIdentical(const Handle(Expr_GeneralExpression)& Other) const
+bool Expr_ArcCosine::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const
 {
   if (!Other->IsKind(STANDARD_TYPE(Expr_ArcCosine)))
   {
-    return Standard_False;
+    return false;
   }
-  Handle(Expr_GeneralExpression) op = Operand();
+  occ::handle<Expr_GeneralExpression> op = Operand();
   return op->IsIdentical(Other->SubExpression(1));
 }
 
-Standard_Boolean Expr_ArcCosine::IsLinear() const
+bool Expr_ArcCosine::IsLinear() const
 {
   if (ContainsUnknowns())
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
-Handle(Expr_GeneralExpression) Expr_ArcCosine::Derivative(const Handle(Expr_NamedUnknown)& X) const
+occ::handle<Expr_GeneralExpression> Expr_ArcCosine::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
     return new Expr_NumericValue(0.0);
   }
-  Handle(Expr_GeneralExpression) op    = Operand();
-  Handle(Expr_GeneralExpression) derop = op->Derivative(X);
+  occ::handle<Expr_GeneralExpression> op    = Operand();
+  occ::handle<Expr_GeneralExpression> derop = op->Derivative(X);
 
-  Handle(Expr_Square) sq = new Expr_Square(Expr::CopyShare(op));
+  occ::handle<Expr_Square> sq = new Expr_Square(Expr::CopyShare(op));
   // 1 - X2
-  Handle(Expr_Difference) thedif = 1.0 - sq->ShallowSimplified();
+  occ::handle<Expr_Difference> thedif = 1.0 - sq->ShallowSimplified();
 
-  Handle(Expr_SquareRoot) theroot = new Expr_SquareRoot(thedif->ShallowSimplified());
+  occ::handle<Expr_SquareRoot> theroot = new Expr_SquareRoot(thedif->ShallowSimplified());
   // 1/ sqrt(1-X2)
-  Handle(Expr_UnaryMinus) theder = -(1.0 / theroot->ShallowSimplified());
+  occ::handle<Expr_UnaryMinus> theder = -(1.0 / theroot->ShallowSimplified());
 
   // ArcCosine'(F(X)) = -1/sqrt(1-F(X)2) * F'(X)
 
-  Handle(Expr_Product) result = theder->ShallowSimplified() * derop;
+  occ::handle<Expr_Product> result = theder->ShallowSimplified() * derop;
 
   return result->ShallowSimplified();
 }
 
-Standard_Real Expr_ArcCosine::Evaluate(const Expr_Array1OfNamedUnknown& vars,
-                                       const TColStd_Array1OfReal&      vals) const
+double Expr_ArcCosine::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                const NCollection_Array1<double>& vals) const
 {
   return std::acos(Operand()->Evaluate(vars, vals));
 }

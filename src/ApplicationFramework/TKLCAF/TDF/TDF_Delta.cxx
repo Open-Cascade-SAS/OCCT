@@ -23,9 +23,9 @@
 #include <Standard_Type.hxx>
 #include <TDF_AttributeDelta.hxx>
 #include <TDF_Delta.hxx>
-#include <TDF_ListIteratorOfAttributeDeltaList.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
+#include <NCollection_List.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDF_Delta, Standard_Transient)
 
@@ -45,7 +45,7 @@ TDF_Delta::TDF_Delta()
 
 //=================================================================================================
 
-void TDF_Delta::Validity(const Standard_Integer aBeginTime, const Standard_Integer anEndTime)
+void TDF_Delta::Validity(const int aBeginTime, const int anEndTime)
 {
   myBeginTime = aBeginTime;
   myEndTime   = anEndTime;
@@ -53,7 +53,7 @@ void TDF_Delta::Validity(const Standard_Integer aBeginTime, const Standard_Integ
 
 //=================================================================================================
 
-void TDF_Delta::AddAttributeDelta(const Handle(TDF_AttributeDelta)& anAttributeDelta)
+void TDF_Delta::AddAttributeDelta(const occ::handle<TDF_AttributeDelta>& anAttributeDelta)
 {
   if (!anAttributeDelta.IsNull())
     myAttDeltaList.Append(anAttributeDelta);
@@ -61,26 +61,26 @@ void TDF_Delta::AddAttributeDelta(const Handle(TDF_AttributeDelta)& anAttributeD
 
 //=================================================================================================
 
-void TDF_Delta::BeforeOrAfterApply(const Standard_Boolean before) const
+void TDF_Delta::BeforeOrAfterApply(const bool before) const
 {
-  TDF_AttributeDeltaList ADlist;
-  //  for (TDF_ListIteratorOfAttributeDeltaList itr(myAttDeltaList);
-  TDF_ListIteratorOfAttributeDeltaList itr(myAttDeltaList);
+  NCollection_List<occ::handle<TDF_AttributeDelta>> ADlist;
+  //  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator itr(myAttDeltaList);
+  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator itr(myAttDeltaList);
   for (; itr.More(); itr.Next())
     ADlist.Append(itr.Value());
 
-  Handle(TDF_AttributeDelta) attDelta;
-  Handle(TDF_Attribute)      att;
+  occ::handle<TDF_AttributeDelta> attDelta;
+  occ::handle<TDF_Attribute>      att;
 
-  Standard_Boolean noDeadLock = Standard_True;
-  Standard_Integer nbAD       = ADlist.Extent();
-  Standard_Boolean next;
+  bool noDeadLock = true;
+  int  nbAD       = ADlist.Extent();
+  bool next;
   while (noDeadLock && (nbAD != 0))
   {
     itr.Initialize(ADlist);
     while (itr.More())
     {
-      next     = Standard_True;
+      next     = true;
       attDelta = itr.Value();
       att      = attDelta->Attribute();
       if (before)
@@ -121,9 +121,9 @@ void TDF_Delta::BeforeOrAfterApply(const Standard_Boolean before) const
       attDelta = itr.Value();
       att      = attDelta->Attribute();
       if (before)
-        att->BeforeUndo(attDelta, Standard_True);
+        att->BeforeUndo(attDelta, true);
       else
-        att->AfterUndo(attDelta, Standard_True);
+        att->AfterUndo(attDelta, true);
     }
   }
 }
@@ -132,26 +132,26 @@ void TDF_Delta::BeforeOrAfterApply(const Standard_Boolean before) const
 
 void TDF_Delta::Apply()
 {
-  TDF_ListIteratorOfAttributeDeltaList itr;
+  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator itr;
   for (itr.Initialize(myAttDeltaList); itr.More(); itr.Next())
   {
-    const Handle(TDF_AttributeDelta)& attDelta = itr.Value();
+    const occ::handle<TDF_AttributeDelta>& attDelta = itr.Value();
     attDelta->Apply();
   }
 }
 
 //=================================================================================================
 
-void TDF_Delta::Labels(TDF_LabelList& aLabelList) const
+void TDF_Delta::Labels(NCollection_List<TDF_Label>& aLabelList) const
 {
-  TDF_LabelMap labMap;
+  NCollection_Map<TDF_Label> labMap;
   // If <aLabelList> is not empty...
 #ifdef OCCT_DEBUG_DELTA
-  Standard_Boolean inList;
+  bool inList;
   if (aLabelList.Extent() > 0)
     std::cout << "Previously added as modified label(s) ";
 #endif
-  for (TDF_ListIteratorOfLabelList it1(aLabelList); it1.More(); it1.Next())
+  for (NCollection_List<TDF_Label>::Iterator it1(aLabelList); it1.More(); it1.Next())
   {
 #ifdef OCCT_DEBUG_DELTA
     const TDF_Label& lab1 = it1.Value();
@@ -172,7 +172,8 @@ void TDF_Delta::Labels(TDF_LabelList& aLabelList) const
   if (myAttDeltaList.Extent() > 0)
     std::cout << "New added as modified label(s) ";
 #endif
-  for (TDF_ListIteratorOfAttributeDeltaList it2(myAttDeltaList); it2.More(); it2.Next())
+  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator it2(myAttDeltaList); it2.More();
+       it2.Next())
   {
 #ifdef OCCT_DEBUG_DELTA
     const TDF_Label& lab1 = it2.Value()->Label();
@@ -190,7 +191,7 @@ void TDF_Delta::Labels(TDF_LabelList& aLabelList) const
 
   // Now put labels into <aLabelList>.
   aLabelList.Clear();
-  for (TDF_MapIteratorOfLabelMap it3(labMap); it3.More(); it3.Next())
+  for (NCollection_Map<TDF_Label>::Iterator it3(labMap); it3.More(); it3.Next())
   {
     aLabelList.Append(it3.Key());
   }
@@ -201,15 +202,15 @@ void TDF_Delta::Labels(TDF_LabelList& aLabelList) const
 void TDF_Delta::Dump(Standard_OStream& OS) const
 {
   OS << "DELTA available from time \t#" << myBeginTime << " to time \t#" << myEndTime << std::endl;
-  Standard_Integer n = 0;
-  //  for (TDF_ListIteratorOfAttributeDeltaList itr(myAttDeltaList);
-  TDF_ListIteratorOfAttributeDeltaList itr(myAttDeltaList);
+  int n = 0;
+  //  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator itr(myAttDeltaList);
+  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator itr(myAttDeltaList);
   for (; itr.More(); itr.Next())
     ++n;
   OS << "Nb Attribute Delta(s): " << n << std::endl;
   for (itr.Initialize(myAttDeltaList); itr.More(); itr.Next())
   {
-    const Handle(TDF_AttributeDelta)& attDelta = itr.Value();
+    const occ::handle<TDF_AttributeDelta>& attDelta = itr.Value();
     OS << "| ";
     attDelta->Dump(OS);
     OS << std::endl;
@@ -218,17 +219,18 @@ void TDF_Delta::Dump(Standard_OStream& OS) const
 
 //=================================================================================================
 
-void TDF_Delta::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDF_Delta::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myBeginTime)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myEndTime)
 
-  for (TDF_AttributeDeltaList::Iterator anAttDeltaListIt(myAttDeltaList); anAttDeltaListIt.More();
+  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anAttDeltaListIt(myAttDeltaList);
+       anAttDeltaListIt.More();
        anAttDeltaListIt.Next())
   {
-    const Handle(TDF_AttributeDelta)& anAttDeltaList = anAttDeltaListIt.Value();
+    const occ::handle<TDF_AttributeDelta>& anAttDeltaList = anAttDeltaListIt.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anAttDeltaList.get())
   }
 

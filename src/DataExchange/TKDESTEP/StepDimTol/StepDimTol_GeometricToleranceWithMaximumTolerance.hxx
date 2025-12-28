@@ -20,15 +20,13 @@
 
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>
-#include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
+#include <StepDimTol_GeometricToleranceModifier.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 class StepDimTol_GeometricToleranceTarget;
-
-class StepDimTol_GeometricToleranceWithMaximumTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_GeometricToleranceWithMaximumTolerance,
-                       StepDimTol_GeometricToleranceWithModifiers)
 
 //! Representation of STEP entity GeometricToleranceWithMaximumTolerance
 class StepDimTol_GeometricToleranceWithMaximumTolerance
@@ -41,22 +39,22 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                       theName,
-    const Handle(TCollection_HAsciiString)&                       theDescription,
-    const Handle(Standard_Transient)&                             theMagnitude,
-    const StepDimTol_GeometricToleranceTarget&                    theTolerancedShapeAspect,
-    const Handle(StepDimTol_HArray1OfGeometricToleranceModifier)& theModifiers,
-    const Handle(StepBasic_LengthMeasureWithUnit)&                theUnitSize);
+    const occ::handle<TCollection_HAsciiString>& theName,
+    const occ::handle<TCollection_HAsciiString>& theDescription,
+    const occ::handle<Standard_Transient>&       theMagnitude,
+    const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect,
+    const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>>& theModifiers,
+    const occ::handle<StepBasic_LengthMeasureWithUnit>&                            theUnitSize);
 
   //! Returns field MaximumUpperTolerance
-  inline Handle(StepBasic_LengthMeasureWithUnit) MaximumUpperTolerance() const
+  inline occ::handle<StepBasic_LengthMeasureWithUnit> MaximumUpperTolerance() const
   {
     return myMaximumUpperTolerance;
   }
 
   //! Set field MaximumUpperTolerance
   inline void SetMaximumUpperTolerance(
-    const Handle(StepBasic_LengthMeasureWithUnit)& theMaximumUpperTolerance)
+    const occ::handle<StepBasic_LengthMeasureWithUnit>& theMaximumUpperTolerance)
   {
     myMaximumUpperTolerance = theMaximumUpperTolerance;
   }
@@ -65,6 +63,6 @@ public:
                           StepDimTol_GeometricToleranceWithModifiers)
 
 private:
-  Handle(StepBasic_LengthMeasureWithUnit) myMaximumUpperTolerance;
+  occ::handle<StepBasic_LengthMeasureWithUnit> myMaximumUpperTolerance;
 };
 #endif // _StepDimTol_GeometricToleranceWithMaximumTolerance_HeaderFile

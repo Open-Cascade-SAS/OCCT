@@ -22,7 +22,8 @@
 
 #include <StepData_SelectType.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class Standard_Transient;
 class StepData_SelectMember;
 
@@ -37,40 +38,37 @@ public:
 
   //! Recognizes a kind of SymmetricTensor23d select type
   //! return 0
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Recognizes a items of select member SymmetricTensor23dMember
   //! 1 -> IsotropicSymmetricTensor23d
   //! 2 -> OrthotropicSymmetricTensor23d
   //! 3 -> AnisotropicSymmetricTensor23d
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
   //! Returns a new select member the type SymmetricTensor23dMember
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Set Value for IsotropicSymmetricTensor23d
-  Standard_EXPORT void SetIsotropicSymmetricTensor23d(const Standard_Real aVal);
+  Standard_EXPORT void SetIsotropicSymmetricTensor23d(const double aVal);
 
   //! Returns Value as IsotropicSymmetricTensor23d (or Null if another type)
-  Standard_EXPORT Standard_Real IsotropicSymmetricTensor23d() const;
+  Standard_EXPORT double IsotropicSymmetricTensor23d() const;
 
   //! Set Value for OrthotropicSymmetricTensor23d
-  Standard_EXPORT void SetOrthotropicSymmetricTensor23d(const Handle(TColStd_HArray1OfReal)& aVal);
+  Standard_EXPORT void SetOrthotropicSymmetricTensor23d(
+    const occ::handle<NCollection_HArray1<double>>& aVal);
 
   //! Returns Value as OrthotropicSymmetricTensor23d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) OrthotropicSymmetricTensor23d() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> OrthotropicSymmetricTensor23d() const;
 
   //! Set Value for AnisotropicSymmetricTensor23d
-  Standard_EXPORT void SetAnisotropicSymmetricTensor23d(const Handle(TColStd_HArray1OfReal)& aVal);
+  Standard_EXPORT void SetAnisotropicSymmetricTensor23d(
+    const occ::handle<NCollection_HArray1<double>>& aVal);
 
   //! Returns Value as AnisotropicSymmetricTensor23d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) AnisotropicSymmetricTensor23d() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> AnisotropicSymmetricTensor23d() const;
 };
 
 #endif // _StepFEA_SymmetricTensor23d_HeaderFile

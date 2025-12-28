@@ -31,7 +31,7 @@ DrawTrSurf_Point::DrawTrSurf_Point(const gp_Pnt&          P,
                                    const Draw_MarkerShape Shape,
                                    const Draw_Color&      Col)
     : myPoint(P),
-      is3D(Standard_True),
+      is3D(true),
       myShape(Shape),
       myColor(Col)
 {
@@ -44,7 +44,7 @@ DrawTrSurf_Point::DrawTrSurf_Point(const gp_Pnt2d&        P,
                                    const Draw_MarkerShape Shape,
                                    const Draw_Color&      Col)
     : myPoint(P.X(), P.Y(), 0.),
-      is3D(Standard_False),
+      is3D(false),
       myShape(Shape),
       myColor(Col)
 {
@@ -53,7 +53,7 @@ DrawTrSurf_Point::DrawTrSurf_Point(const gp_Pnt2d&        P,
 
 //=================================================================================================
 
-Standard_Boolean DrawTrSurf_Point::Is3D() const
+bool DrawTrSurf_Point::Is3D() const
 {
   return is3D;
 }
@@ -74,7 +74,7 @@ void DrawTrSurf_Point::DrawOn(Draw_Display& dis) const
 void DrawTrSurf_Point::Point(const gp_Pnt& P)
 {
   myPoint = P;
-  is3D    = Standard_True;
+  is3D    = true;
 }
 
 //=================================================================================================
@@ -82,14 +82,14 @@ void DrawTrSurf_Point::Point(const gp_Pnt& P)
 void DrawTrSurf_Point::Point2d(const gp_Pnt2d& P)
 {
   myPoint.SetCoord(P.X(), P.Y(), 0);
-  is3D = Standard_False;
+  is3D = false;
 }
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DrawTrSurf_Point::Copy() const
+occ::handle<Draw_Drawable3D> DrawTrSurf_Point::Copy() const
 {
-  Handle(DrawTrSurf_Point) P;
+  occ::handle<DrawTrSurf_Point> P;
   if (is3D)
     P = new DrawTrSurf_Point(myPoint, myShape, myColor);
   else
@@ -152,12 +152,12 @@ void DrawTrSurf_Point::Save(Standard_OStream& theStream) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DrawTrSurf_Point::Restore(Standard_IStream& theStream)
+occ::handle<Draw_Drawable3D> DrawTrSurf_Point::Restore(Standard_IStream& theStream)
 {
   const DrawTrSurf_Params& aParams = DrawTrSurf::Parameters();
-  Standard_Integer         is3d    = 0;
+  int                      is3d    = 0;
   theStream >> is3d;
-  Standard_Real x, y, z = 0.0;
+  double x, y, z = 0.0;
   if (is3d)
   {
     theStream >> x >> y >> z;
@@ -166,7 +166,7 @@ Handle(Draw_Drawable3D) DrawTrSurf_Point::Restore(Standard_IStream& theStream)
   {
     theStream >> x >> y;
   }
-  Handle(DrawTrSurf_Point) aDrawPoint;
+  occ::handle<DrawTrSurf_Point> aDrawPoint;
   if (is3d)
   {
     aDrawPoint = new DrawTrSurf_Point(gp_Pnt(x, y, z), aParams.PntMarker, aParams.PntColor);

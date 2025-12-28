@@ -41,19 +41,16 @@ public:
   //! 2 -> LocalTime
   //! 3 -> DateAndTime
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Date (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Date) Date() const;
+  Standard_EXPORT occ::handle<StepBasic_Date> Date() const;
 
   //! returns Value as a LocalTime (Null if another type)
-  Standard_EXPORT Handle(StepBasic_LocalTime) LocalTime() const;
+  Standard_EXPORT occ::handle<StepBasic_LocalTime> LocalTime() const;
 
   //! returns Value as a DateAndTime (Null if another type)
-  Standard_EXPORT Handle(StepBasic_DateAndTime) DateAndTime() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepBasic_DateAndTime> DateAndTime() const;
 };
 
 #endif // _StepBasic_DateTimeSelect_HeaderFile

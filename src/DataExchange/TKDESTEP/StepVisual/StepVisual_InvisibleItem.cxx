@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepVisual_InvisibleItem.hxx>
 #include <StepVisual_PresentationLayerAssignment.hxx>
@@ -20,7 +20,7 @@
 
 StepVisual_InvisibleItem::StepVisual_InvisibleItem() {}
 
-Standard_Integer StepVisual_InvisibleItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepVisual_InvisibleItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -33,19 +33,19 @@ Standard_Integer StepVisual_InvisibleItem::CaseNum(const Handle(Standard_Transie
   return 0;
 }
 
-Handle(StepVisual_StyledItem) StepVisual_InvisibleItem::StyledItem() const
+occ::handle<StepVisual_StyledItem> StepVisual_InvisibleItem::StyledItem() const
 {
   return GetCasted(StepVisual_StyledItem, Value());
 }
 
-Handle(StepVisual_PresentationLayerAssignment) StepVisual_InvisibleItem::
+occ::handle<StepVisual_PresentationLayerAssignment> StepVisual_InvisibleItem::
   PresentationLayerAssignment() const
 {
   return GetCasted(StepVisual_PresentationLayerAssignment, Value());
 }
 
-Handle(StepVisual_PresentationRepresentation) StepVisual_InvisibleItem::PresentationRepresentation()
-  const
+occ::handle<StepVisual_PresentationRepresentation> StepVisual_InvisibleItem::
+  PresentationRepresentation() const
 {
   return GetCasted(StepVisual_PresentationRepresentation, Value());
 }

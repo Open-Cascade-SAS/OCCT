@@ -48,25 +48,25 @@ public:
 
   //! Extracts the parameter of a 3D point lying on a 3D curve
   //! or at a distance less than the MaxDist value.
-  Standard_EXPORT static Standard_Boolean Parameter(const Handle(Geom_Curve)& Curve,
-                                                    const gp_Pnt&             Point,
-                                                    const Standard_Real       MaxDist,
-                                                    Standard_Real&            U);
+  Standard_EXPORT static bool Parameter(const occ::handle<Geom_Curve>& Curve,
+                                        const gp_Pnt&                  Point,
+                                        const double                   MaxDist,
+                                        double&                        U);
 
   //! Extracts the parameter of a 3D point lying on a surface
   //! or at a distance less than the MaxDist value.
-  Standard_EXPORT static Standard_Boolean Parameters(const Handle(Geom_Surface)& Surface,
-                                                     const gp_Pnt&               Point,
-                                                     const Standard_Real         MaxDist,
-                                                     Standard_Real&              U,
-                                                     Standard_Real&              V);
+  Standard_EXPORT static bool Parameters(const occ::handle<Geom_Surface>& Surface,
+                                         const gp_Pnt&                    Point,
+                                         const double                     MaxDist,
+                                         double&                          U,
+                                         double&                          V);
 
   //! Extracts the parameter of a 2D point lying on a 2D curve
   //! or at a distance less than the MaxDist value.
-  Standard_EXPORT static Standard_Boolean Parameter(const Handle(Geom2d_Curve)& Curve,
-                                                    const gp_Pnt2d&             Point,
-                                                    const Standard_Real         MaxDist,
-                                                    Standard_Real&              U);
+  Standard_EXPORT static bool Parameter(const occ::handle<Geom2d_Curve>& Curve,
+                                        const gp_Pnt2d&                  Point,
+                                        const double                     MaxDist,
+                                        double&                          U);
 
   //! Computes parameter in theCurve (*thePrmOnCurve) where maximal deviation
   //! between theCurve and the linear segment joining its points with
@@ -85,15 +85,15 @@ public:
   //!                         perpendicular theLine);
   //! @param theLine - the linear segment joining the point of theCurve having parameters
   //!                  theFPar and theLPar.
-  Standard_EXPORT static Standard_Real ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
-                                                        const Standard_Real        theFPar,
-                                                        const Standard_Real        theLPar,
-                                                        const Standard_Real    theStartParameter,
-                                                        const Standard_Integer theNbIters    = 100,
-                                                        Standard_Real* const   thePrmOnCurve = NULL,
-                                                        gp_Pnt2d* const        thePtOnCurve  = NULL,
-                                                        gp_Vec2d* const theVecCurvLine       = NULL,
-                                                        gp_Lin2d* const theLine = NULL);
+  Standard_EXPORT static double ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
+                                                 const double               theFPar,
+                                                 const double               theLPar,
+                                                 const double               theStartParameter,
+                                                 const int                  theNbIters     = 100,
+                                                 double* const              thePrmOnCurve  = NULL,
+                                                 gp_Pnt2d* const            thePtOnCurve   = NULL,
+                                                 gp_Vec2d* const            theVecCurvLine = NULL,
+                                                 gp_Lin2d* const            theLine        = NULL);
 
   //! Computes parameter in theCurve (*thePrmOnCurve) where maximal deviation
   //! between theCurve and the linear segment joining its points with
@@ -113,12 +113,12 @@ public:
   //! This algorithm cannot compute deviation precisely (so, there is no point in
   //! setting big value of theNbIters). But it can give some start point for
   //! the overloaded method.
-  Standard_EXPORT static Standard_Real ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
-                                                        const Standard_Real        theFPar,
-                                                        const Standard_Real        theLPar,
-                                                        const Standard_Integer theNbSubIntervals,
-                                                        const Standard_Integer theNbIters  = 10,
-                                                        Standard_Real* const thePrmOnCurve = NULL);
+  Standard_EXPORT static double ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
+                                                 const double               theFPar,
+                                                 const double               theLPar,
+                                                 const int                  theNbSubIntervals,
+                                                 const int                  theNbIters    = 10,
+                                                 double* const              thePrmOnCurve = NULL);
 };
 
 #endif // _GeomLib_Tool_HeaderFile

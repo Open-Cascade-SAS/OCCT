@@ -22,22 +22,22 @@
 #include <Contap_ThePathPointOfTheSearch.hxx>
 
 Contap_TheSegmentOfTheSearch::Contap_TheSegmentOfTheSearch()
-    : hasfp(Standard_False),
-      haslp(Standard_False)
+    : hasfp(false),
+      haslp(false)
 {
 }
 
 void Contap_TheSegmentOfTheSearch::SetLimitPoint(const Contap_ThePathPointOfTheSearch& V,
-                                                 const Standard_Boolean                First)
+                                                 const bool                            First)
 {
   if (First)
   {
-    hasfp = Standard_True;
+    hasfp = true;
     thefp = V;
   }
   else
   {
-    haslp = Standard_True;
+    haslp = true;
     thelp = V;
   }
 }

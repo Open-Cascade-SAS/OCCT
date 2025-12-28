@@ -41,42 +41,42 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfOrientedShape.hxx>
+#include <Standard_Integer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Map.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 
-static Standard_Boolean IsInside(const TopoDS_Face&, const TopoDS_Wire&, const TopoDS_Wire&);
+static bool IsInside(const TopoDS_Face&, const TopoDS_Wire&, const TopoDS_Wire&);
 
-static Standard_Boolean IsInside(const TopoDS_Face&, const TopoDS_Wire&);
+static bool IsInside(const TopoDS_Face&, const TopoDS_Wire&);
 
 static void GetDirection(const TopoDS_Edge&,
                          const TopoDS_Face&,
                          gp_Pnt2d&,
                          gp_Vec2d&,
-                         Standard_Boolean isFirstEnd);
+                         bool isFirstEnd);
 
-static Standard_Boolean ChoixUV(const TopoDS_Edge&,
-                                const TopoDS_Face&,
-                                const TopTools_IndexedMapOfShape&,
-                                TopoDS_Edge&,
-                                gp_Pnt2d&,
-                                gp_Vec2d&);
+static bool ChoixUV(const TopoDS_Edge&,
+                    const TopoDS_Face&,
+                    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&,
+                    TopoDS_Edge&,
+                    gp_Pnt2d&,
+                    gp_Vec2d&);
 
 static TopoDS_Shape ChooseDirection(const TopoDS_Shape&,
                                     const TopoDS_Vertex&,
                                     const TopoDS_Face&,
-                                    const TopTools_ListOfShape&);
+                                    const NCollection_List<TopoDS_Shape>&);
 
-inline Standard_Boolean SameUV(const gp_Pnt2d&            P1,
-                               const gp_Pnt2d&            P2,
-                               const BRepAdaptor_Surface& theBAS) // const Standard_Real tol)
+inline bool SameUV(const gp_Pnt2d&            P1,
+                   const gp_Pnt2d&            P2,
+                   const BRepAdaptor_Surface& theBAS) // const double tol)
 {
-  Standard_Boolean isSame = Standard_True;
+  bool isSame = true;
   if (theBAS.IsUPeriodic())
     isSame = (fabs(P1.X() - P2.X()) < theBAS.UPeriod() * 0.5);
   if (theBAS.IsVPeriodic())
@@ -89,7 +89,7 @@ inline Standard_Boolean SameUV(const gp_Pnt2d&            P1,
 
 void LocOpe_SplitShape::Init(const TopoDS_Shape& S)
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myShape = S;
   myDblE.Clear();
   myMap.Clear();
@@ -98,25 +98,26 @@ void LocOpe_SplitShape::Init(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_SplitShape::CanSplit(const TopoDS_Edge& E) const
+bool LocOpe_SplitShape::CanSplit(const TopoDS_Edge& E) const
 {
   if (myDone)
   {
-    return Standard_False;
+    return false;
   }
   if (myMap.IsEmpty())
   {
-    return Standard_False;
+    return false;
   }
 
   if (!myMap.IsBound(E))
   {
-    return Standard_False;
+    return false;
   }
 
   // On verifie que l`edge n`appartient pas a un wire deja reconstruit
-  TopExp_Explorer                                     exp;
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm(myMap);
+  TopExp_Explorer exp;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+    Iterator itm(myMap);
   for (; itm.More(); itm.Next())
   {
     if (itm.Key().ShapeType() == TopAbs_WIRE && !itm.Value().IsEmpty())
@@ -125,32 +126,32 @@ Standard_Boolean LocOpe_SplitShape::CanSplit(const TopoDS_Edge& E) const
       {
         if (exp.Current().IsSame(E))
         {
-          return Standard_False;
+          return false;
         }
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void LocOpe_SplitShape::Add(const TopoDS_Vertex& V, const Standard_Real P, const TopoDS_Edge& E)
+void LocOpe_SplitShape::Add(const TopoDS_Vertex& V, const double P, const TopoDS_Edge& E)
 {
   if (!CanSplit(E))
   {
     return;
   }
 
-  BRep_Builder          B;
-  TopTools_ListOfShape& le = myMap(E);
+  BRep_Builder                    B;
+  NCollection_List<TopoDS_Shape>& le = myMap(E);
   if (le.IsEmpty())
   {
     le.Append(E);
   }
-  TopTools_ListIteratorOfListOfShape itl(le);
-  Standard_Real                      f, l;
-  TopTools_ListOfShape               aNewList;
+  NCollection_List<TopoDS_Shape>::Iterator itl(le);
+  double                                   f, l;
+  NCollection_List<TopoDS_Shape>           aNewList;
   for (; itl.More(); itl.Next())
   {
     const TopoDS_Edge& edg = TopoDS::Edge(itl.Value());
@@ -173,9 +174,9 @@ void LocOpe_SplitShape::Add(const TopoDS_Vertex& V, const Standard_Real P, const
     edg.Orientation(TopAbs_FORWARD);
     TopoDS_Vertex aCurV1, aCurV2;
     TopExp::Vertices(edg, aCurV1, aCurV2);
-    Standard_Real aPar1 = BRep_Tool::Parameter(aCurV1, edg);
+    double aPar1 = BRep_Tool::Parameter(aCurV1, edg);
 
-    Standard_Real aPar2 = BRep_Tool::Parameter(aCurV2, edg);
+    double aPar2 = BRep_Tool::Parameter(aCurV2, edg);
 
     TopoDS_Shape aLocalShape = edg.EmptyCopied();
     TopoDS_Edge  E1          = TopoDS::Edge(aLocalShape);
@@ -186,14 +187,14 @@ void LocOpe_SplitShape::Add(const TopoDS_Vertex& V, const Standard_Real P, const
     E1.Orientation(TopAbs_FORWARD);
     E2.Orientation(TopAbs_FORWARD);
     TopoDS_Vertex newVtx     = V;
-    Standard_Real aTolSplitV = BRep_Tool::Tolerance(V);
+    double        aTolSplitV = BRep_Tool::Tolerance(V);
 
     aCurV1.Orientation(TopAbs_FORWARD);
 
     B.Add(E1, aCurV1);
     // for degenerated edges tolerance of vertices should be set to maximal value
     // from tolerance of the vertex of the edge and tolerance of splitting vertex
-    Standard_Real aTolV1 =
+    double aTolV1 =
       (BRep_Tool::Degenerated(edg) ? std::max(BRep_Tool::Tolerance(aCurV1), aTolSplitV)
                                    : BRep_Tool::Tolerance(aCurV1));
 
@@ -210,7 +211,7 @@ void LocOpe_SplitShape::Add(const TopoDS_Vertex& V, const Standard_Real P, const
 
     // for degenerated edges tolerance of vertices should be set to maximal value
     // from tolerance of the vertex of the edge and tolerance of splitting vertex
-    Standard_Real aTolV2 = (BRep_Tool::Degenerated(edg) ? aTolV1 : BRep_Tool::Tolerance(aCurV2));
+    double aTolV2 = (BRep_Tool::Degenerated(edg) ? aTolV1 : BRep_Tool::Tolerance(aCurV2));
     B.UpdateVertex(aCurV2, aPar2, E2, aTolV2);
 
     aNewList.Append(E1);
@@ -248,15 +249,15 @@ void LocOpe_SplitShape::Add(const TopoDS_Vertex& V, const Standard_Real P, const
 // purpose  : adds the list of wires on the face <F>
 //=======================================================================
 
-Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, const TopoDS_Face& F)
+bool LocOpe_SplitShape::Add(const NCollection_List<TopoDS_Shape>& Lwires, const TopoDS_Face& F)
 {
 
   if (myDone)
   {
-    return Standard_False;
+    return false;
   }
 
-  TopTools_ListOfShape& lf = myMap(F);
+  NCollection_List<TopoDS_Shape>& lf = myMap(F);
   if (lf.IsEmpty())
   {
     Rebuild(F);
@@ -264,16 +265,16 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
 
   // On cherche la face descendante de F qui continent le wire
   lf = myMap(F);
-  TopTools_ListIteratorOfListOfShape itl(lf);
-  TopoDS_Vertex                      Vfirst, Vlast;
+  NCollection_List<TopoDS_Shape>::Iterator itl(lf);
+  TopoDS_Vertex                            Vfirst, Vlast;
 
   BRepTools::Update(F);
 
-  TopTools_ListOfShape aLInside;
+  NCollection_List<TopoDS_Shape> aLInside;
   for (; itl.More(); itl.Next())
   {
-    const TopoDS_Face&                 fac = TopoDS::Face(itl.Value());
-    TopTools_ListIteratorOfListOfShape itwires(Lwires);
+    const TopoDS_Face&                       fac = TopoDS::Face(itl.Value());
+    NCollection_List<TopoDS_Shape>::Iterator itwires(Lwires);
     for (; itwires.More(); itwires.Next())
     {
       const TopoDS_Wire& aWire = TopoDS::Wire(itwires.Value());
@@ -287,25 +288,25 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
   }
   if (!aLInside.Extent() || !itl.More())
   {
-    return Standard_False;
+    return false;
   }
 
   TopoDS_Face FaceRef = TopoDS::Face(itl.Value());
   FaceRef.Orientation(TopAbs_FORWARD);
   lf.Remove(itl);
 
-  TopTools_ListOfShape NewWires;
+  NCollection_List<TopoDS_Shape> NewWires;
 
-  TopTools_DataMapOfShapeInteger SectionsTimes;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> SectionsTimes;
   for (itl.Initialize(aLInside); itl.More(); itl.Next())
     SectionsTimes.Bind(itl.Value(), 2);
 
-  TopTools_ListOfShape BreakVertices;
-  TopTools_ListOfShape BreakOnWires;
+  NCollection_List<TopoDS_Shape> BreakVertices;
+  NCollection_List<TopoDS_Shape> BreakOnWires;
 
-  TopTools_DataMapOfShapeShape VerWireMap;
-  Standard_Integer             i;
-  TopExp_Explorer              ExploF, ExploW;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> VerWireMap;
+  int                                                                      i;
+  TopExp_Explorer                                                          ExploF, ExploW;
   for (itl.Initialize(aLInside); itl.More(); itl.Next())
   {
     const TopoDS_Wire& aSection = TopoDS::Wire(itl.Value());
@@ -334,13 +335,14 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
     }
   }
 
-  TopTools_DataMapOfShapeListOfShape VerSecMap;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    VerSecMap;
   for (itl.Initialize(aLInside); itl.More(); itl.Next())
   {
     const TopoDS_Wire& aWire = TopoDS::Wire(itl.Value());
     TopoDS_Vertex      V1, V2;
     TopExp::Vertices(aWire, V1, V2);
-    TopTools_ListOfShape LW1, LW2;
+    NCollection_List<TopoDS_Shape> LW1, LW2;
     if (!VerSecMap.IsBound(V1))
       VerSecMap.Bind(V1, LW1);
     VerSecMap(V1).Append(aWire);
@@ -349,7 +351,8 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
     VerSecMap(V2).Append(aWire);
   }
 
-  // TopTools_IndexedDataMapOfShapeShape InnerTouchingWiresOnVertex;
+  // NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>
+  // InnerTouchingWiresOnVertex;
 
   TopoDS_Wire       outerW  = BRepTools::OuterWire(FaceRef);
   TopoDS_Wire       CurWire = outerW;
@@ -434,7 +437,7 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
         while (!wexp.CurrentVertex().IsSame(aStartVertex))
           wexp.Next();
 
-        const TopTools_ListOfShape& Lsections = VerSecMap(aStartVertex);
+        const NCollection_List<TopoDS_Shape>& Lsections = VerSecMap(aStartVertex);
         if (Lsections.Extent() == 1)
           break;
 
@@ -442,8 +445,9 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
         TopoDS_Wire NextSectionWire = TopoDS::Wire(
           (aSectionWire.IsSame(Lsections.First())) ? Lsections.Last() : Lsections.First());
 
-        Standard_Integer                              Times = 0;
-        TopTools_DataMapIteratorOfDataMapOfShapeShape itVW(VerWireMap);
+        int Times = 0;
+        NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itVW(
+          VerWireMap);
         for (; itVW.More(); itVW.Next())
           if (itVW.Value().IsSame(CurWire))
             Times++;
@@ -454,8 +458,8 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
         else
         {
           // we have to choose the direction
-          const TopoDS_Edge&   aStartEdge = wexp.Current();
-          TopTools_ListOfShape Ldirs;
+          const TopoDS_Edge&             aStartEdge = wexp.Current();
+          NCollection_List<TopoDS_Shape> Ldirs;
           Ldirs.Append(aStartEdge);
           Ldirs.Append(NextSectionWire);
           TopoDS_Shape theDirection = ChooseDirection(aSectionWire, aStartVertex, FaceRef, Ldirs);
@@ -470,8 +474,8 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
       break;
   } // end of global for (;;)
 
-  TopTools_ListOfShape NewFaces;
-  BRep_Builder         BB;
+  NCollection_List<TopoDS_Shape> NewFaces;
+  BRep_Builder                   BB;
   for (itl.Initialize(NewWires); itl.More(); itl.Next())
   {
     TopoDS_Shape aLocalFace = FaceRef.EmptyCopied();
@@ -482,13 +486,13 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
   }
 
   // Inserting holes
-  TopTools_ListOfShape Holes;
+  NCollection_List<TopoDS_Shape> Holes;
   for (ExploF.Init(FaceRef, TopAbs_WIRE); ExploF.More(); ExploF.Next())
   {
     const TopoDS_Shape& aWire = ExploF.Current();
     ExploW.Init(aWire, TopAbs_EDGE);
-    TopoDS_Shape     anEdge = ExploW.Current();
-    Standard_Boolean found  = Standard_False;
+    TopoDS_Shape anEdge = ExploW.Current();
+    bool         found  = false;
     for (itl.Initialize(NewWires); itl.More(); itl.Next())
     {
       const TopoDS_Shape& aNewWire = itl.Value();
@@ -496,7 +500,7 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
       {
         if (anEdge.IsSame(ExploW.Current()))
         {
-          found = Standard_True;
+          found = true;
           break;
         }
       }
@@ -506,7 +510,7 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
     if (!found)
       Holes.Append(aWire);
   }
-  TopTools_ListIteratorOfListOfShape itlNewF;
+  NCollection_List<TopoDS_Shape>::Iterator itlNewF;
   for (itl.Initialize(Holes); itl.More(); itl.Next())
   {
     const TopoDS_Wire& aHole = TopoDS::Wire(itl.Value());
@@ -527,7 +531,7 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
   // Update of descendants of wires
   for (ExploF.Init(F, TopAbs_WIRE); ExploF.More(); ExploF.Next())
   {
-    TopTools_ListOfShape& ls = myMap(ExploF.Current());
+    NCollection_List<TopoDS_Shape>& ls = myMap(ExploF.Current());
     ls.Clear();
   }
   ///////////////////
@@ -542,21 +546,21 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires, cons
         BB.Continuity(edg, F, F, GeomAbs_CN);
       }
     }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_SplitShape::Add(const TopoDS_Wire& W, const TopoDS_Face& F)
+bool LocOpe_SplitShape::Add(const TopoDS_Wire& W, const TopoDS_Face& F)
 {
 
   if (myDone)
   {
-    return Standard_False;
+    return false;
   }
 
-  TopExp_Explorer       exp;
-  TopTools_ListOfShape& lf = myMap(F);
+  TopExp_Explorer                 exp;
+  NCollection_List<TopoDS_Shape>& lf = myMap(F);
   if (lf.IsEmpty())
   {
     Rebuild(F);
@@ -567,12 +571,12 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopoDS_Wire& W, const TopoDS_Face&
     if (!LocOpe::Closed(W, F))
     {
       if (!AddOpenWire(W, F))
-        return Standard_False;
+        return false;
     }
     else
     {
       if (!AddClosedWire(W, F))
-        return Standard_False;
+        return false;
     }
   }
   catch (Standard_Failure const&)
@@ -582,7 +586,7 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopoDS_Wire& W, const TopoDS_Face&
                  "input edges/wires"
               << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
   // JAG 10.11.95 Codage des regularites
   BRep_Builder B;
@@ -594,19 +598,19 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopoDS_Wire& W, const TopoDS_Face&
       B.Continuity(edg, F, F, GeomAbs_CN);
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_SplitShape::AddClosedWire(const TopoDS_Wire& W, const TopoDS_Face& F)
+bool LocOpe_SplitShape::AddClosedWire(const TopoDS_Wire& W, const TopoDS_Face& F)
 {
   TopExp_Explorer exp;
 
   // On cherche la face descendante de F qui continent le wire
-  TopTools_ListOfShape&              lf = myMap(F);
-  TopTools_ListIteratorOfListOfShape itl(lf);
-  TopoDS_Wire                        outerW;
+  NCollection_List<TopoDS_Shape>&          lf = myMap(F);
+  NCollection_List<TopoDS_Shape>::Iterator itl(lf);
+  TopoDS_Wire                              outerW;
   for (; itl.More(); itl.Next())
   {
     const TopoDS_Face& fac = TopoDS::Face(itl.Value());
@@ -618,7 +622,7 @@ Standard_Boolean LocOpe_SplitShape::AddClosedWire(const TopoDS_Wire& W, const To
   }
   if (!itl.More())
   {
-    return Standard_False;
+    return false;
   }
 
   BRep_Builder B;
@@ -671,63 +675,63 @@ Standard_Boolean LocOpe_SplitShape::AddClosedWire(const TopoDS_Wire& W, const To
   B.Add(newRef, W.Oriented(TopAbs::Reverse(orWire)));
   lf.Append(newRef);
   lf.Append(newFace);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean checkOverlapping(const TopoDS_Edge& theEdge1,
-                                         const TopoDS_Edge& theEdge2,
-                                         const TopoDS_Face& theFace)
+static bool checkOverlapping(const TopoDS_Edge& theEdge1,
+                             const TopoDS_Edge& theEdge2,
+                             const TopoDS_Face& theFace)
 {
 
-  BRepAdaptor_Surface anAdS(theFace, Standard_False);
+  BRepAdaptor_Surface anAdS(theFace, false);
 
-  Standard_Real MaxTol = (BRep_Tool::Tolerance(theEdge1) + BRep_Tool::Tolerance(theEdge2));
+  double MaxTol = (BRep_Tool::Tolerance(theEdge1) + BRep_Tool::Tolerance(theEdge2));
 
-  Standard_Real aMaxTol2d = std::max(anAdS.UResolution(MaxTol), anAdS.VResolution(MaxTol));
-  Standard_Real aTolAng   = M_PI / 180.;
+  double aMaxTol2d = std::max(anAdS.UResolution(MaxTol), anAdS.VResolution(MaxTol));
+  double aTolAng   = M_PI / 180.;
   Geom2dAPI_ProjectPointOnCurve proj;
-  Standard_Real                 aF1, aL1, aF2, aL2;
+  double                        aF1, aL1, aF2, aL2;
 
-  Handle(Geom2d_Curve) aCrv1 = BRep_Tool::CurveOnSurface(theEdge1, theFace, aF1, aL1);
-  Handle(Geom2d_Curve) aCrv2 = BRep_Tool::CurveOnSurface(theEdge2, theFace, aF2, aL2);
-  Standard_Integer     j = 1, nbP = 4;
-  Standard_Real        aStep = (aL2 - aF2) / nbP;
+  occ::handle<Geom2d_Curve> aCrv1 = BRep_Tool::CurveOnSurface(theEdge1, theFace, aF1, aL1);
+  occ::handle<Geom2d_Curve> aCrv2 = BRep_Tool::CurveOnSurface(theEdge2, theFace, aF2, aL2);
+  int                       j = 1, nbP = 4;
+  double                    aStep = (aL2 - aF2) / nbP;
   for (; j < nbP; j++)
   {
-    Standard_Real par2 = aF2 + aStep * j;
-    gp_Pnt2d      aP2d;
-    gp_Vec2d      aV2;
+    double   par2 = aF2 + aStep * j;
+    gp_Pnt2d aP2d;
+    gp_Vec2d aV2;
     aCrv2->D1(par2, aP2d, aV2);
 
     proj.Init(aP2d, aCrv1, aF1, aL1);
     // check intermediate points
     if (!proj.NbPoints() || proj.LowerDistance() > aMaxTol2d)
-      return Standard_False;
-    Standard_Real par1 = proj.LowerDistanceParameter();
-    gp_Pnt2d      aP2d1;
-    gp_Vec2d      aV1;
+      return false;
+    double   par1 = proj.LowerDistanceParameter();
+    gp_Pnt2d aP2d1;
+    gp_Vec2d aV1;
     aCrv1->D1(par1, aP2d1, aV1);
 
     if (!aV1.IsParallel(aV2, aTolAng))
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
+bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
 {
   // On cherche la face descendante de F qui continent le wire
-  TopTools_ListOfShape&              lf = myMap(F);
-  TopTools_ListIteratorOfListOfShape itl(lf);
-  TopoDS_Vertex                      Vfirst, Vlast;
+  NCollection_List<TopoDS_Shape>&          lf = myMap(F);
+  NCollection_List<TopoDS_Shape>::Iterator itl(lf);
+  TopoDS_Vertex                            Vfirst, Vlast;
 
   BRepTools::Update(F);
 
-  Standard_Real tolf, toll, tol1;
+  double tolf, toll, tol1;
 
   TopoDS_Shape aLocalShape = W.Oriented(TopAbs_FORWARD);
   TopExp::Vertices(TopoDS::Wire(aLocalShape), Vfirst, Vlast);
@@ -748,8 +752,8 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
     }
 
     fac.Orientation(TopAbs_FORWARD);
-    Standard_Boolean ffound = Standard_False;
-    Standard_Boolean lfound = Standard_False;
+    bool ffound = false;
+    bool lfound = false;
     for (exp.Init(fac, TopAbs_WIRE); exp.More(); exp.Next())
     {
       const TopoDS_Wire& wir = TopoDS::Wire(exp.Current());
@@ -757,12 +761,12 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
       {
         if (!ffound && exp2.Current().IsSame(Vfirst))
         {
-          ffound = Standard_True;
+          ffound = true;
           wfirst = wir;
         }
         else if (!lfound && exp2.Current().IsSame(Vlast))
         {
-          lfound = Standard_True;
+          lfound = true;
           wlast  = wir;
         }
         if (ffound && lfound)
@@ -782,7 +786,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
   }
   if (!itl.More())
   {
-    return Standard_False;
+    return false;
   }
 
   TopoDS_Face FaceRef = TopoDS::Face(itl.Value());
@@ -790,9 +794,9 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
   lf.Remove(itl);
   BRep_Builder B;
 
-  BRepAdaptor_Surface BAS(FaceRef, Standard_False);
+  BRepAdaptor_Surface BAS(FaceRef, false);
 
-  Standard_Boolean IsPeriodic = BAS.IsUPeriodic() || BAS.IsVPeriodic();
+  bool IsPeriodic = BAS.IsUPeriodic() || BAS.IsVPeriodic();
 
   tol1 = std::max(BAS.UResolution(tol1), BAS.VResolution(tol1));
 
@@ -800,7 +804,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
   {
     // on cree 2 faces en remplacement de itl.Value()
     // Essai JAG
-    TopTools_ListOfShape WiresFirst;
+    NCollection_List<TopoDS_Shape> WiresFirst;
     for (exp.Init(wfirst, TopAbs_EDGE); exp.More(); exp.Next())
     {
       if (BRep_Tool::IsClosed(TopoDS::Edge(exp.Current()), FaceRef))
@@ -817,7 +821,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
     B.MakeWire(newW2);
     newW2.Orientation(TopAbs_FORWARD);
 
-    Standard_Integer nbE = 0;
+    int nbE = 0;
     for (exp.Init(W.Oriented(TopAbs_FORWARD), TopAbs_EDGE); exp.More(); exp.Next())
     {
       nbE++;
@@ -828,17 +832,17 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
       myDblE.Add(edg);
     }
 
-    TopTools_IndexedMapOfShape  PossE;
-    TopTools_MapOfOrientedShape MapE;
-    TopoDS_Vertex               vdeb, vfin;
-    Standard_Integer            nbPoss;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> PossE;
+    NCollection_Map<TopoDS_Shape>                                 MapE;
+    TopoDS_Vertex                                                 vdeb, vfin;
+    int                                                           nbPoss;
 
     // On recherche l`edge contenant Vlast
-    TopoDS_Edge          LastEdge;
-    gp_Pnt2d             pfirst, plast;
-    gp_Vec2d             dlast;
-    Handle(Geom2d_Curve) C2d;
-    Standard_Real        f, l;
+    TopoDS_Edge               LastEdge;
+    gp_Pnt2d                  pfirst, plast;
+    gp_Vec2d                  dlast;
+    occ::handle<Geom2d_Curve> C2d;
+    double                    f, l;
 
     for (exp.Init(W.Oriented(TopAbs_FORWARD), TopAbs_EDGE); exp.More(); exp.Next())
     {
@@ -890,9 +894,9 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
       }
     }
     aLocalFace = FaceRef.Oriented(wfirst.Orientation());
-    GetDirection(LastEdge, TopoDS::Face(aLocalFace), plast, dlast, Standard_False);
+    GetDirection(LastEdge, TopoDS::Face(aLocalFace), plast, dlast, false);
 
-    Standard_Boolean cond = Standard_True;
+    bool cond = true;
 
     if (IsPeriodic)
     {
@@ -909,7 +913,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
       PossE.Clear();
 
       // On enchaine par la fin
-      TopTools_ListIteratorOfListOfShape lexp(WiresFirst);
+      NCollection_List<TopoDS_Shape>::Iterator lexp(WiresFirst);
       for (; lexp.More(); lexp.Next())
       {
         const TopoDS_Edge& edg = TopoDS::Edge(lexp.Value());
@@ -932,7 +936,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
       {
         aNextEdge                   = TopoDS::Edge(PossE.FindKey(1));
         TopoDS_Shape aLocalFaceTemp = FaceRef.Oriented(wfirst.Orientation());
-        GetDirection(aNextEdge, TopoDS::Face(aLocalFaceTemp), plast, dlast, Standard_False);
+        GetDirection(aNextEdge, TopoDS::Face(aLocalFaceTemp), plast, dlast, false);
       }
       else if (nbPoss > 1)
       {
@@ -940,7 +944,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
         TopoDS_Shape aLocalFaceTemp = FaceRef.Oriented(wfirst.Orientation());
 
         if (!ChoixUV(LastEdge, TopoDS::Face(aLocalFaceTemp), PossE, aNextEdge, plast, dlast))
-          return Standard_False;
+          return false;
       }
 
       if (nbPoss >= 1)
@@ -948,7 +952,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
         if (aNextEdge.IsNull())
         {
           // loop is not closed. Split is not possible
-          return Standard_False;
+          return false;
         }
 
         if (MapE.Contains(aNextEdge))
@@ -973,16 +977,16 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
       else
       {
         std::cout << "erreur Spliter : pas de chainage du wire" << std::endl;
-        return Standard_False;
+        return false;
       }
       // fin MODIF.
 
       tol1 = std::max(BAS.UResolution(tol1), BAS.VResolution(tol1));
     }
 
-    Standard_Integer                   nbAddBound = 0;
-    TopTools_ListIteratorOfListOfShape lexp(WiresFirst);
-    TopoDS_Shape                       anE1, anE2;
+    int                                      nbAddBound = 0;
+    NCollection_List<TopoDS_Shape>::Iterator lexp(WiresFirst);
+    TopoDS_Shape                             anE1, anE2;
     for (; lexp.More(); lexp.Next())
     {
       const TopoDS_Edge& edg = TopoDS::Edge(lexp.Value());
@@ -999,17 +1003,17 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
     }
     // check overlapping edges for second face
     if (nbAddBound < 2)
-      return Standard_False;
+      return false;
     if (nbAddBound == 2 && !anE1.IsNull() && !anE2.IsNull())
     {
       if (checkOverlapping(TopoDS::Edge(anE1), TopoDS::Edge(anE2), FaceRef))
-        return Standard_False;
+        return false;
     }
 
     nbAddBound = 0;
 
     TopoDS_Shape    anE11, anE12;
-    TopoDS_Iterator anItE(newW1, Standard_False);
+    TopoDS_Iterator anItE(newW1, false);
     for (; anItE.More(); anItE.Next())
     {
       if (anItE.Value().ShapeType() != TopAbs_EDGE)
@@ -1022,11 +1026,11 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
     }
     // check overlapping edges for first face
     if (nbAddBound < 2)
-      return Standard_False;
+      return false;
     if (nbAddBound == 2 && !anE11.IsNull() && !anE12.IsNull())
     {
       if (checkOverlapping(TopoDS::Edge(anE11), TopoDS::Edge(anE12), FaceRef))
-        return Standard_False;
+        return false;
     }
 
     TopoDS_Face newF1, newF2;
@@ -1069,7 +1073,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
     // Mise a jour des descendants des wires
     for (exp.Init(F, TopAbs_WIRE); exp.More(); exp.Next())
     {
-      TopTools_ListOfShape& ls = myMap(exp.Current());
+      NCollection_List<TopoDS_Shape>& ls = myMap(exp.Current());
       itl.Initialize(ls);
       for (; itl.More(); itl.Next())
       {
@@ -1158,15 +1162,15 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
     // Mise a jour des descendants des wires
     for (exp.Init(F, TopAbs_WIRE); exp.More(); exp.Next())
     {
-      TopTools_ListOfShape& ls = myMap(exp.Current());
+      NCollection_List<TopoDS_Shape>& ls = myMap(exp.Current());
       itl.Initialize(ls);
-      Standard_Boolean touch = Standard_False;
+      bool touch = false;
       while (itl.More())
       {
         if (itl.Value().IsSame(wfirst) || itl.Value().IsSame(wlast))
         {
           ls.Remove(itl);
-          touch = Standard_True;
+          touch = true;
         }
         else
         {
@@ -1179,12 +1183,13 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const Topo
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_SplitShape::LeftOf(const TopoDS_Wire& W, const TopoDS_Face& F)
+const NCollection_List<TopoDS_Shape>& LocOpe_SplitShape::LeftOf(const TopoDS_Wire& W,
+                                                                const TopoDS_Face& F)
 {
   if (myShape.IsNull())
   {
@@ -1206,9 +1211,9 @@ const TopTools_ListOfShape& LocOpe_SplitShape::LeftOf(const TopoDS_Wire& W, cons
   }
   myLeft.Clear();
 
-  const TopoDS_Face&                 theFace = TopoDS::Face(exp.Current());
-  TopAbs_Orientation                 orFace  = theFace.Orientation();
-  TopTools_ListIteratorOfListOfShape itl, itl2;
+  const TopoDS_Face&                       theFace = TopoDS::Face(exp.Current());
+  TopAbs_Orientation                       orFace  = theFace.Orientation();
+  NCollection_List<TopoDS_Shape>::Iterator itl, itl2;
 
   for (expw.Init(W, TopAbs_EDGE); expw.More(); expw.Next())
   {
@@ -1247,12 +1252,12 @@ const TopTools_ListOfShape& LocOpe_SplitShape::LeftOf(const TopoDS_Wire& W, cons
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_SplitShape::DescendantShapes(const TopoDS_Shape& S)
+const NCollection_List<TopoDS_Shape>& LocOpe_SplitShape::DescendantShapes(const TopoDS_Shape& S)
 {
   if (!myDone)
   {
     Rebuild(myShape);
-    myDone = Standard_True;
+    myDone = true;
   }
 #ifdef OCCT_DEBUG
   if (!myDblE.IsEmpty())
@@ -1269,7 +1274,7 @@ void LocOpe_SplitShape::Put(const TopoDS_Shape& S)
 {
   if (!myMap.IsBound(S))
   {
-    TopTools_ListOfShape thelist;
+    NCollection_List<TopoDS_Shape> thelist;
     myMap.Bind(S, thelist);
     if (S.ShapeType() != TopAbs_VERTEX)
     {
@@ -1285,25 +1290,27 @@ void LocOpe_SplitShape::Put(const TopoDS_Shape& S)
   }
 }
 
-static void updateToleraces(const TopoDS_Face&                        theFace,
-                            const TopTools_DataMapOfShapeListOfShape& theMap)
+static void updateToleraces(
+  const TopoDS_Face& theFace,
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    theMap)
 {
   TopExp_Explorer aExpE(theFace, TopAbs_EDGE);
   for (; aExpE.More(); aExpE.Next())
   {
     if (!theMap.IsBound(aExpE.Current()))
       continue;
-    const TopTools_ListOfShape& lEdges = theMap(aExpE.Current());
+    const NCollection_List<TopoDS_Shape>& lEdges = theMap(aExpE.Current());
     if (lEdges.Extent() <= 1)
       continue;
 
-    TopTools_ListIteratorOfListOfShape itrE(lEdges);
-    ShapeAnalysis_Edge                 aSae;
+    NCollection_List<TopoDS_Shape>::Iterator itrE(lEdges);
+    ShapeAnalysis_Edge                       aSae;
 
     for (; itrE.More(); itrE.Next())
     {
-      TopoDS_Edge   aCurE   = TopoDS::Edge(itrE.Value());
-      Standard_Real amaxdev = 0.;
+      TopoDS_Edge aCurE   = TopoDS::Edge(itrE.Value());
+      double      amaxdev = 0.;
       if (aSae.CheckSameParameter(aCurE, theFace, amaxdev))
       {
         BRep_Builder aB;
@@ -1315,22 +1322,22 @@ static void updateToleraces(const TopoDS_Face&                        theFace,
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_SplitShape::Rebuild(const TopoDS_Shape& S)
+bool LocOpe_SplitShape::Rebuild(const TopoDS_Shape& S)
 
 {
   if (S.ShapeType() == TopAbs_FACE)
     updateToleraces(TopoDS::Face(S), myMap);
-  TopTools_ListIteratorOfListOfShape itr(myMap(S));
+  NCollection_List<TopoDS_Shape>::Iterator itr(myMap(S));
   if (itr.More())
   {
     if (itr.Value().IsSame(S))
     {
-      return Standard_False;
+      return false;
     }
-    return Standard_True;
+    return true;
   }
-  Standard_Boolean rebuild = Standard_False;
-  TopoDS_Iterator  it;
+  bool            rebuild = false;
+  TopoDS_Iterator it;
   for (it.Initialize(S); it.More(); it.Next())
   {
     rebuild = Rebuild(it.Value()) || rebuild;
@@ -1363,7 +1370,7 @@ Standard_Boolean LocOpe_SplitShape::Rebuild(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-static Standard_Boolean IsInside(const TopoDS_Face& F, const TopoDS_Wire& W1, const TopoDS_Wire& W2)
+static bool IsInside(const TopoDS_Face& F, const TopoDS_Wire& W1, const TopoDS_Wire& W2)
 {
   // Attention, c`est tres boeuf !!!!
   BRep_Builder B;
@@ -1379,7 +1386,7 @@ static Standard_Boolean IsInside(const TopoDS_Face& F, const TopoDS_Wire& W1, co
   //  BRepGProp::SurfaceProperties(newFace,GP);
   //  if (GP.Mass() < 0) {
   BRepTopAdaptor_FClass2d classif(newFace, Precision::PConfusion());
-  Standard_Boolean        Reversed = Standard_False;
+  bool                    Reversed = false;
   if (classif.PerformInfinitePoint() == TopAbs_IN)
   {
     // le wire donne defini un trou
@@ -1387,23 +1394,23 @@ static Standard_Boolean IsInside(const TopoDS_Face& F, const TopoDS_Wire& W1, co
     //     newFace.Orientation(TopAbs_FORWARD);
     //     orWire = TopAbs::Reverse(orWire);
     //     B.Add(newFace,W2.Oriented(orWire));
-    Reversed = Standard_True;
+    Reversed = true;
   }
 
-  //  Standard_Real U,V;
-  TopExp_Explorer      exp(W1, TopAbs_EDGE);
-  const TopoDS_Edge&   edg = TopoDS::Edge(exp.Current());
-  TopExp_Explorer      exp2(edg, TopAbs_VERTEX);
-  const TopoDS_Vertex& vtx = TopoDS::Vertex(exp2.Current());
-  Standard_Real        prm = BRep_Tool::Parameter(vtx, edg);
-  Standard_Real        f, l;
-  Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(edg, F, f, l);
+  //  double U,V;
+  TopExp_Explorer           exp(W1, TopAbs_EDGE);
+  const TopoDS_Edge&        edg = TopoDS::Edge(exp.Current());
+  TopExp_Explorer           exp2(edg, TopAbs_VERTEX);
+  const TopoDS_Vertex&      vtx = TopoDS::Vertex(exp2.Current());
+  double                    prm = BRep_Tool::Parameter(vtx, edg);
+  double                    f, l;
+  occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(edg, F, f, l);
   if (C2d.IsNull())
   {
 #ifdef OCCT_DEBUG
     std::cout << "Edge is not on surface" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
   gp_Pnt2d pt2d(C2d->Value(prm));
   //  BRepClass_FaceClassifier classif(newFace,pt2d,Precision::PConfusion());
@@ -1420,7 +1427,7 @@ static Standard_Boolean IsInside(const TopoDS_Face& F, const TopoDS_Wire& W1, co
 
 //=================================================================================================
 
-static Standard_Boolean IsInside(const TopoDS_Face& F, const TopoDS_Wire& W)
+static bool IsInside(const TopoDS_Face& F, const TopoDS_Wire& W)
 {
   // Attention, c`est tres boeuf !!!!
   TopExp_Explorer exp(W, TopAbs_EDGE);
@@ -1429,9 +1436,9 @@ static Standard_Boolean IsInside(const TopoDS_Face& F, const TopoDS_Wire& W)
     const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
     //  TopExp_Explorer exp2(edg,TopAbs_VERTEX);
     //  const TopoDS_Vertex& vtx = TopoDS::Vertex(exp2.Current());
-    //  Standard_Real prm = BRep_Tool::Parameter(vtx,edg);
-    Standard_Real        f, l, prm;
-    Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(edg, F, f, l);
+    //  double prm = BRep_Tool::Parameter(vtx,edg);
+    double                    f, l, prm;
+    occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(edg, F, f, l);
     if (!Precision::IsNegativeInfinite(f) && !Precision::IsPositiveInfinite(l))
     {
       prm = (f + l) / 2.;
@@ -1459,13 +1466,13 @@ static Standard_Boolean IsInside(const TopoDS_Face& F, const TopoDS_Wire& W)
     TopAbs_State            stat = classif.Perform(pt2d);
     //  return (classif.Perform(pt2d) != TopAbs_OUT);
     if (stat == TopAbs_OUT)
-      return Standard_False;
+      return false;
 
     if (stat == TopAbs_ON)
     {
-      Standard_Integer nbPnt = 10;
-      Standard_Integer nbOut = 0, nbIn = 0, nbOn = 0;
-      Standard_Integer j = 1;
+      int nbPnt = 10;
+      int nbOut = 0, nbIn = 0, nbOn = 0;
+      int j = 1;
       for (; j <= nbPnt; j++)
       {
         // check neighbouring point
@@ -1481,10 +1488,10 @@ static Standard_Boolean IsInside(const TopoDS_Face& F, const TopoDS_Wire& W)
           nbOn++;
       }
       if (nbOut > nbIn + nbOn)
-        return Standard_False;
+        return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -1493,17 +1500,17 @@ static void GetDirection(const TopoDS_Edge& theEdge,
                          const TopoDS_Face& theFace,
                          gp_Pnt2d&          thePnt,
                          gp_Vec2d&          theDir,
-                         Standard_Boolean   isFirstEnd)
+                         bool               isFirstEnd)
 {
-  Standard_Real        aFirst, aLast;
-  Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(theEdge, theFace, aFirst, aLast);
+  double                    aFirst, aLast;
+  occ::handle<Geom2d_Curve> aC2d = BRep_Tool::CurveOnSurface(theEdge, theFace, aFirst, aLast);
 
   TopAbs_Orientation anOr = theEdge.Orientation();
   TopoDS_Vertex      aVtx;
-  Standard_Boolean   takeFirst =
+  bool               takeFirst =
     ((anOr == TopAbs_FORWARD && isFirstEnd) || (anOr == TopAbs_REVERSED && !isFirstEnd));
 
-  Standard_Real dpar = (aLast - aFirst) * 0.01;
+  double dpar = (aLast - aFirst) * 0.01;
   if (takeFirst)
   {
     aC2d->D0(aFirst, thePnt);
@@ -1523,32 +1530,32 @@ static void GetDirection(const TopoDS_Edge& theEdge,
 
 //=================================================================================================
 
-Standard_Boolean ChoixUV(const TopoDS_Edge&                Last,
-                         const TopoDS_Face&                F,
-                         const TopTools_IndexedMapOfShape& Poss,
-                         TopoDS_Edge&                      theResEdge,
-                         gp_Pnt2d&                         plst,
-                         gp_Vec2d&                         dlst)
+bool ChoixUV(const TopoDS_Edge&                                                   Last,
+             const TopoDS_Face&                                                   F,
+             const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Poss,
+             TopoDS_Edge&                                                         theResEdge,
+             gp_Pnt2d&                                                            plst,
+             gp_Vec2d&                                                            dlst)
 {
   gp_Pnt2d p2d;
   gp_Vec2d v2d;
   gp_Pnt   aPCur, aPlst;
 
-  BRepAdaptor_Surface surf(F, Standard_False); // no restriction
+  BRepAdaptor_Surface surf(F, false); // no restriction
   surf.D0(plst.X(), plst.Y(), aPlst);
 
   gp_Dir2d ref2d(dlst);
 
-  Handle(Geom2d_Curve) C2d;
+  occ::handle<Geom2d_Curve> C2d;
 
-  Standard_Integer index = 0, imin = 0;
-  Standard_Real    angmax = -M_PI, ang;
+  int    index = 0, imin = 0;
+  double angmax = -M_PI, ang;
 
   for (index = 1; index <= Poss.Extent(); index++)
   {
     TopoDS_Edge anEdge = TopoDS::Edge(Poss.FindKey(index));
 
-    GetDirection(anEdge, F, p2d, v2d, Standard_True);
+    GetDirection(anEdge, F, p2d, v2d, true);
     if (!SameUV(plst, p2d, surf))
       continue;
 
@@ -1573,7 +1580,7 @@ Standard_Boolean ChoixUV(const TopoDS_Edge&                Last,
   if (imin)
   {
     theResEdge = TopoDS::Edge(Poss.FindKey(imin));
-    GetDirection(theResEdge, F, plst, dlst, Standard_False);
+    GetDirection(theResEdge, F, plst, dlst, false);
   }
 
   return imin != 0;
@@ -1581,10 +1588,10 @@ Standard_Boolean ChoixUV(const TopoDS_Edge&                Last,
 
 //=================================================================================================
 
-static TopoDS_Shape ChooseDirection(const TopoDS_Shape&         RefDir,
-                                    const TopoDS_Vertex&        RefVertex,
-                                    const TopoDS_Face&          theFace,
-                                    const TopTools_ListOfShape& Ldirs)
+static TopoDS_Shape ChooseDirection(const TopoDS_Shape&                   RefDir,
+                                    const TopoDS_Vertex&                  RefVertex,
+                                    const TopoDS_Face&                    theFace,
+                                    const NCollection_List<TopoDS_Shape>& Ldirs)
 {
   TopExp_Explorer    Explo(RefDir, TopAbs_EDGE);
   TopoDS_Edge        RefEdge;
@@ -1606,23 +1613,24 @@ static TopoDS_Shape ChooseDirection(const TopoDS_Shape&         RefDir,
     }
   }
 
-  Standard_Real        RefFirst, RefLast;
-  Handle(Geom2d_Curve) RefCurve = BRep_Tool::CurveOnSurface(RefEdge, theFace, RefFirst, RefLast);
-  gp_Pnt2d             RefPnt;
-  gp_Vec2d             RefVec;
+  double                    RefFirst, RefLast;
+  occ::handle<Geom2d_Curve> RefCurve =
+    BRep_Tool::CurveOnSurface(RefEdge, theFace, RefFirst, RefLast);
+  gp_Pnt2d RefPnt;
+  gp_Vec2d RefVec;
 
-  // Standard_Real RefPar = (RefEdge.Orientation() == TopAbs_FORWARD)? RefLast : RefFirst;
-  Standard_Real RefPar = (anOr == TopAbs_FORWARD) ? RefLast : RefFirst;
+  // double RefPar = (RefEdge.Orientation() == TopAbs_FORWARD)? RefLast : RefFirst;
+  double RefPar = (anOr == TopAbs_FORWARD) ? RefLast : RefFirst;
   RefCurve->D1(RefPar, RefPnt, RefVec);
   if (anOr == TopAbs_FORWARD)
     RefVec.Reverse();
 
-  Handle(Geom2d_Curve)               aCurve;
-  Standard_Real                      aFirst, aLast, aPar;
-  gp_Vec2d                           aVec;
-  Standard_Real                      MinAngle = RealLast(), anAngle;
-  TopoDS_Shape                       TargetDir;
-  TopTools_ListIteratorOfListOfShape itl(Ldirs);
+  occ::handle<Geom2d_Curve>                aCurve;
+  double                                   aFirst, aLast, aPar;
+  gp_Vec2d                                 aVec;
+  double                                   MinAngle = RealLast(), anAngle;
+  TopoDS_Shape                             TargetDir;
+  NCollection_List<TopoDS_Shape>::Iterator itl(Ldirs);
   for (; itl.More(); itl.Next())
   {
     const TopoDS_Shape& aShape = itl.Value();

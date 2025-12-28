@@ -27,9 +27,9 @@ IFGraph_ExternalSources::IFGraph_ExternalSources(const Interface_Graph& agraph)
 {
 }
 
-void IFGraph_ExternalSources::GetFromEntity(const Handle(Standard_Transient)& ent)
+void IFGraph_ExternalSources::GetFromEntity(const occ::handle<Standard_Transient>& ent)
 {
-  thegraph.GetFromEntity(ent, Standard_True);
+  thegraph.GetFromEntity(ent, true);
 }
 
 void IFGraph_ExternalSources::GetFromIter(const Interface_EntityIterator& iter)
@@ -47,8 +47,8 @@ void IFGraph_ExternalSources::Evaluate()
 {
   Reset();
   thegraph.RemoveStatus(1);
-  Standard_Integer nb = thegraph.Size();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = thegraph.Size();
+  for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) && thegraph.Status(i) == 0)
       thegraph.GetFromIter(thegraph.Sharings(thegraph.Entity(i)), 1);
@@ -56,14 +56,14 @@ void IFGraph_ExternalSources::Evaluate()
   GetFromGraph(thegraph, 1);
 }
 
-Standard_Boolean IFGraph_ExternalSources::IsEmpty()
+bool IFGraph_ExternalSources::IsEmpty()
 {
   Evaluate();
-  Standard_Integer nb = thegraph.Size();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = thegraph.Size();
+  for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) || thegraph.Status(i) == 1)
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }

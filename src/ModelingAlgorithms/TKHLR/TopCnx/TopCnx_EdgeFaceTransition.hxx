@@ -38,7 +38,7 @@ public:
 
   //! Initialize the algorithm with the local
   //! description of the edge.
-  Standard_EXPORT void Reset(const gp_Dir& Tgt, const gp_Dir& Norm, const Standard_Real Curv);
+  Standard_EXPORT void Reset(const gp_Dir& Tgt, const gp_Dir& Norm, const double Curv);
 
   //! Initialize the algorithm with a linear Edge.
   Standard_EXPORT void Reset(const gp_Dir& Tgt);
@@ -48,10 +48,10 @@ public:
   //! curve. Tr is the transition of the interference.
   //! BTr is the boundary transition of the
   //! interference.
-  Standard_EXPORT void AddInterference(const Standard_Real      Tole,
+  Standard_EXPORT void AddInterference(const double             Tole,
                                        const gp_Dir&            Tang,
                                        const gp_Dir&            Norm,
-                                       const Standard_Real      Curv,
+                                       const double             Curv,
                                        const TopAbs_Orientation Or,
                                        const TopAbs_Orientation Tr,
                                        const TopAbs_Orientation BTr);
@@ -62,11 +62,10 @@ public:
   //! Returns the current cumulated BoundaryTransition.
   Standard_EXPORT TopAbs_Orientation BoundaryTransition() const;
 
-protected:
 private:
   TopTrans_CurveTransition myCurveTransition;
-  Standard_Integer         nbBoundForward;
-  Standard_Integer         nbBoundReversed;
+  int                      nbBoundForward;
+  int                      nbBoundReversed;
 };
 
 #endif // _TopCnx_EdgeFaceTransition_HeaderFile

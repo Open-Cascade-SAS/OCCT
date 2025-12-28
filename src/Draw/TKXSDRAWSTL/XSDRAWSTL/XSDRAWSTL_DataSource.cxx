@@ -17,23 +17,24 @@
 
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_DataMapOfIntegerReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XSDRAWSTL_DataSource, MeshVS_DataSource)
 
 //=================================================================================================
 
-XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const Handle(Poly_Triangulation)& aMesh)
+XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const occ::handle<Poly_Triangulation>& aMesh)
 {
   myMesh = aMesh;
 
   if (!myMesh.IsNull())
   {
-    const Standard_Integer aNbNodes = myMesh->NbNodes();
-    myNodeCoords                    = new TColStd_HArray2OfReal(1, aNbNodes, 1, 3);
+    const int aNbNodes = myMesh->NbNodes();
+    myNodeCoords       = new NCollection_HArray2<double>(1, aNbNodes, 1, 3);
     std::cout << "Nodes : " << aNbNodes << std::endl;
 
-    for (Standard_Integer i = 1; i <= aNbNodes; i++)
+    for (int i = 1; i <= aNbNodes; i++)
     {
       myNodes.Add(i);
       gp_Pnt xyz = myMesh->Node(i);
@@ -43,19 +44,19 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const Handle(Poly_Triangulation)& aMe
       myNodeCoords->SetValue(i, 3, xyz.Z());
     }
 
-    const Standard_Integer aNbTris = myMesh->NbTriangles();
-    myElemNormals                  = new TColStd_HArray2OfReal(1, aNbTris, 1, 3);
-    myElemNodes                    = new TColStd_HArray2OfInteger(1, aNbTris, 1, 3);
+    const int aNbTris = myMesh->NbTriangles();
+    myElemNormals     = new NCollection_HArray2<double>(1, aNbTris, 1, 3);
+    myElemNodes       = new NCollection_HArray2<int>(1, aNbTris, 1, 3);
 
     std::cout << "Elements : " << aNbTris << std::endl;
 
-    for (Standard_Integer i = 1; i <= aNbTris; i++)
+    for (int i = 1; i <= aNbTris; i++)
     {
       myElements.Add(i);
 
       const Poly_Triangle aTri = myMesh->Triangle(i);
 
-      Standard_Integer V[3];
+      int V[3];
       aTri.Get(V[0], V[1], V[2]);
 
       const gp_Pnt aP1 = myMesh->Node(V[0]);
@@ -71,7 +72,7 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const Handle(Poly_Triangulation)& aMe
       else
         aN.SetCoord(0.0, 0.0, 0.0);
 
-      for (Standard_Integer j = 0; j < 3; j++)
+      for (int j = 0; j < 3; j++)
       {
         myElemNodes->SetValue(i, j + 1, V[j]);
       }
@@ -86,14 +87,14 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const Handle(Poly_Triangulation)& aMe
 
 //=================================================================================================
 
-Standard_Boolean XSDRAWSTL_DataSource::GetGeom(const Standard_Integer ID,
-                                               const Standard_Boolean IsElement,
-                                               TColStd_Array1OfReal&  Coords,
-                                               Standard_Integer&      NbNodes,
-                                               MeshVS_EntityType&     Type) const
+bool XSDRAWSTL_DataSource::GetGeom(const int                   ID,
+                                   const bool                  IsElement,
+                                   NCollection_Array1<double>& Coords,
+                                   int&                        NbNodes,
+                                   MeshVS_EntityType&          Type) const
 {
   if (myMesh.IsNull())
-    return Standard_False;
+    return false;
 
   if (IsElement)
   {
@@ -102,17 +103,17 @@ Standard_Boolean XSDRAWSTL_DataSource::GetGeom(const Standard_Integer ID,
       Type    = MeshVS_ET_Face;
       NbNodes = 3;
 
-      for (Standard_Integer i = 1, k = 1; i <= 3; i++)
+      for (int i = 1, k = 1; i <= 3; i++)
       {
-        Standard_Integer IdxNode = myElemNodes->Value(ID, i);
-        for (Standard_Integer j = 1; j <= 3; j++, k++)
+        int IdxNode = myElemNodes->Value(ID, i);
+        for (int j = 1; j <= 3; j++, k++)
           Coords(k) = myNodeCoords->Value(IdxNode, j);
       }
 
-      return Standard_True;
+      return true;
     }
     else
-      return Standard_False;
+      return false;
   }
   else if (ID >= 1 && ID <= myNodes.Extent())
   {
@@ -122,55 +123,55 @@ Standard_Boolean XSDRAWSTL_DataSource::GetGeom(const Standard_Integer ID,
     Coords(1) = myNodeCoords->Value(ID, 1);
     Coords(2) = myNodeCoords->Value(ID, 2);
     Coords(3) = myNodeCoords->Value(ID, 3);
-    return Standard_True;
+    return true;
   }
   else
-    return Standard_False;
+    return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean XSDRAWSTL_DataSource::GetGeomType(const Standard_Integer,
-                                                   const Standard_Boolean IsElement,
-                                                   MeshVS_EntityType&     Type) const
+bool XSDRAWSTL_DataSource::GetGeomType(const int,
+                                       const bool         IsElement,
+                                       MeshVS_EntityType& Type) const
 {
   if (IsElement)
   {
     Type = MeshVS_ET_Face;
-    return Standard_True;
+    return true;
   }
   else
   {
     Type = MeshVS_ET_Node;
-    return Standard_True;
+    return true;
   }
 }
 
 //=================================================================================================
 
-Standard_Address XSDRAWSTL_DataSource::GetAddr(const Standard_Integer, const Standard_Boolean) const
+void* XSDRAWSTL_DataSource::GetAddr(const int, const bool) const
 {
   return NULL;
 }
 
 //=================================================================================================
 
-Standard_Boolean XSDRAWSTL_DataSource::GetNodesByElement(const Standard_Integer   ID,
-                                                         TColStd_Array1OfInteger& theNodeIDs,
-                                                         Standard_Integer& /*theNbNodes*/) const
+bool XSDRAWSTL_DataSource::GetNodesByElement(const int                ID,
+                                             NCollection_Array1<int>& theNodeIDs,
+                                             int& /*theNbNodes*/) const
 {
   if (myMesh.IsNull())
-    return Standard_False;
+    return false;
 
   if (ID >= 1 && ID <= myElements.Extent() && theNodeIDs.Length() >= 3)
   {
-    Standard_Integer aLow = theNodeIDs.Lower();
-    theNodeIDs(aLow)      = myElemNodes->Value(ID, 1);
-    theNodeIDs(aLow + 1)  = myElemNodes->Value(ID, 2);
-    theNodeIDs(aLow + 2)  = myElemNodes->Value(ID, 3);
-    return Standard_True;
+    int aLow             = theNodeIDs.Lower();
+    theNodeIDs(aLow)     = myElemNodes->Value(ID, 1);
+    theNodeIDs(aLow + 1) = myElemNodes->Value(ID, 2);
+    theNodeIDs(aLow + 2) = myElemNodes->Value(ID, 3);
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -189,22 +190,22 @@ const TColStd_PackedMapOfInteger& XSDRAWSTL_DataSource::GetAllElements() const
 
 //=================================================================================================
 
-Standard_Boolean XSDRAWSTL_DataSource::GetNormal(const Standard_Integer Id,
-                                                 const Standard_Integer Max,
-                                                 Standard_Real&         nx,
-                                                 Standard_Real&         ny,
-                                                 Standard_Real&         nz) const
+bool XSDRAWSTL_DataSource::GetNormal(const int Id,
+                                     const int Max,
+                                     double&   nx,
+                                     double&   ny,
+                                     double&   nz) const
 {
   if (myMesh.IsNull())
-    return Standard_False;
+    return false;
 
   if (Id >= 1 && Id <= myElements.Extent() && Max >= 3)
   {
     nx = myElemNormals->Value(Id, 1);
     ny = myElemNormals->Value(Id, 2);
     nz = myElemNormals->Value(Id, 3);
-    return Standard_True;
+    return true;
   }
   else
-    return Standard_False;
+    return false;
 }

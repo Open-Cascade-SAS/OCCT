@@ -18,7 +18,7 @@
 #include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd_ListIteratorOfListOfByte.hxx>
+#include <NCollection_List.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
@@ -37,9 +37,10 @@ const Standard_GUID& TDataStd_BooleanList::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_BooleanList) SetAttr(const TDF_Label& label, const Standard_GUID& theGuid)
+static occ::handle<TDataStd_BooleanList> SetAttr(const TDF_Label&     label,
+                                                 const Standard_GUID& theGuid)
 {
-  Handle(TDataStd_BooleanList) A;
+  occ::handle<TDataStd_BooleanList> A;
   if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_BooleanList;
@@ -58,7 +59,7 @@ TDataStd_BooleanList::TDataStd_BooleanList()
 
 //=================================================================================================
 
-Handle(TDataStd_BooleanList) TDataStd_BooleanList::Set(const TDF_Label& label)
+occ::handle<TDataStd_BooleanList> TDataStd_BooleanList::Set(const TDF_Label& label)
 {
   return SetAttr(label, GetID());
 }
@@ -67,29 +68,29 @@ Handle(TDataStd_BooleanList) TDataStd_BooleanList::Set(const TDF_Label& label)
 // function : Set
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
-Handle(TDataStd_BooleanList) TDataStd_BooleanList::Set(const TDF_Label&     label,
-                                                       const Standard_GUID& theGuid)
+occ::handle<TDataStd_BooleanList> TDataStd_BooleanList::Set(const TDF_Label&     label,
+                                                            const Standard_GUID& theGuid)
 {
   return SetAttr(label, theGuid);
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_BooleanList::IsEmpty() const
+bool TDataStd_BooleanList::IsEmpty() const
 {
   return myList.IsEmpty();
 }
 
 //=================================================================================================
 
-Standard_Integer TDataStd_BooleanList::Extent() const
+int TDataStd_BooleanList::Extent() const
 {
   return myList.Extent();
 }
 
 //=================================================================================================
 
-void TDataStd_BooleanList::Prepend(const Standard_Boolean value)
+void TDataStd_BooleanList::Prepend(const bool value)
 {
   Backup();
   myList.Prepend(value ? 1 : 0);
@@ -97,7 +98,7 @@ void TDataStd_BooleanList::Prepend(const Standard_Boolean value)
 
 //=================================================================================================
 
-void TDataStd_BooleanList::Append(const Standard_Boolean value)
+void TDataStd_BooleanList::Append(const bool value)
 {
   Backup();
   myList.Append(value ? 1 : 0);
@@ -113,21 +114,21 @@ void TDataStd_BooleanList::Clear()
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_BooleanList::First() const
+bool TDataStd_BooleanList::First() const
 {
   return myList.First() == 1;
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_BooleanList::Last() const
+bool TDataStd_BooleanList::Last() const
 {
   return myList.Last() == 1;
 }
 
 //=================================================================================================
 
-const TDataStd_ListOfByte& TDataStd_BooleanList::List() const
+const NCollection_List<uint8_t>& TDataStd_BooleanList::List() const
 {
   return myList;
 }
@@ -136,19 +137,18 @@ const TDataStd_ListOfByte& TDataStd_BooleanList::List() const
 // function : InsertBefore
 // purpose  : Inserts the <value> before the <index> position.
 //=======================================================================
-Standard_Boolean TDataStd_BooleanList::InsertBefore(const Standard_Integer index,
-                                                    const Standard_Boolean before_value)
+bool TDataStd_BooleanList::InsertBefore(const int index, const bool before_value)
 {
-  Standard_Integer                  i(1);
-  Standard_Boolean                  found(Standard_False);
-  TDataStd_ListIteratorOfListOfByte itr(myList);
+  int                                 i(1);
+  bool                                found(false);
+  NCollection_List<uint8_t>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
     if (i == index)
     {
       Backup();
       myList.InsertBefore(before_value ? 1 : 0, itr);
-      found = Standard_True;
+      found = true;
       break;
     }
   }
@@ -159,19 +159,18 @@ Standard_Boolean TDataStd_BooleanList::InsertBefore(const Standard_Integer index
 // function : InsertAfter
 // purpose  : Inserts the <value> after the <index> position.
 //=======================================================================
-Standard_Boolean TDataStd_BooleanList::InsertAfter(const Standard_Integer index,
-                                                   const Standard_Boolean after_value)
+bool TDataStd_BooleanList::InsertAfter(const int index, const bool after_value)
 {
-  Standard_Integer                  i(1);
-  Standard_Boolean                  found(Standard_False);
-  TDataStd_ListIteratorOfListOfByte itr(myList);
+  int                                 i(1);
+  bool                                found(false);
+  NCollection_List<uint8_t>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
     if (i == index)
     {
       Backup();
       myList.InsertAfter(after_value ? 1 : 0, itr);
-      found = Standard_True;
+      found = true;
       break;
     }
   }
@@ -182,18 +181,18 @@ Standard_Boolean TDataStd_BooleanList::InsertAfter(const Standard_Integer index,
 // function : Remove
 // purpose  : Removes the <value> at the <index> position.
 //=======================================================================
-Standard_Boolean TDataStd_BooleanList::Remove(const Standard_Integer index)
+bool TDataStd_BooleanList::Remove(const int index)
 {
-  Standard_Integer                  i(1);
-  Standard_Boolean                  found(Standard_False);
-  TDataStd_ListIteratorOfListOfByte itr(myList);
+  int                                 i(1);
+  bool                                found(false);
+  NCollection_List<uint8_t>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
     if (i == index)
     {
       Backup();
       myList.Remove(itr);
-      found = Standard_True;
+      found = true;
       break;
     }
   }
@@ -227,18 +226,18 @@ void TDataStd_BooleanList::SetID()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_BooleanList::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_BooleanList::NewEmpty() const
 {
   return new TDataStd_BooleanList();
 }
 
 //=================================================================================================
 
-void TDataStd_BooleanList::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_BooleanList::Restore(const occ::handle<TDF_Attribute>& With)
 {
   myList.Clear();
-  Handle(TDataStd_BooleanList)      aList = Handle(TDataStd_BooleanList)::DownCast(With);
-  TDataStd_ListIteratorOfListOfByte itr(aList->List());
+  occ::handle<TDataStd_BooleanList>   aList = occ::down_cast<TDataStd_BooleanList>(With);
+  NCollection_List<uint8_t>::Iterator itr(aList->List());
   for (; itr.More(); itr.Next())
   {
     myList.Append(itr.Value() ? 1 : 0);
@@ -248,12 +247,12 @@ void TDataStd_BooleanList::Restore(const Handle(TDF_Attribute)& With)
 
 //=================================================================================================
 
-void TDataStd_BooleanList::Paste(const Handle(TDF_Attribute)& Into,
-                                 const Handle(TDF_RelocationTable)&) const
+void TDataStd_BooleanList::Paste(const occ::handle<TDF_Attribute>& Into,
+                                 const occ::handle<TDF_RelocationTable>&) const
 {
-  Handle(TDataStd_BooleanList) aList = Handle(TDataStd_BooleanList)::DownCast(Into);
+  occ::handle<TDataStd_BooleanList> aList = occ::down_cast<TDataStd_BooleanList>(Into);
   aList->Clear();
-  TDataStd_ListIteratorOfListOfByte itr(myList);
+  NCollection_List<uint8_t>::Iterator itr(myList);
   for (; itr.More(); itr.Next())
   {
     aList->Append(itr.Value() != 0);
@@ -266,7 +265,7 @@ void TDataStd_BooleanList::Paste(const Handle(TDF_Attribute)& Into,
 Standard_OStream& TDataStd_BooleanList::Dump(Standard_OStream& anOS) const
 {
   anOS << "\nBooleanList: ";
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
   anOS << std::endl;
@@ -275,15 +274,15 @@ Standard_OStream& TDataStd_BooleanList::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_BooleanList::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_BooleanList::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  for (TDataStd_ListOfByte::Iterator aListIt(myList); aListIt.More(); aListIt.Next())
+  for (NCollection_List<uint8_t>::Iterator aListIt(myList); aListIt.More(); aListIt.Next())
   {
-    const Standard_Byte& aValue = aListIt.Value();
+    const uint8_t& aValue = aListIt.Value();
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aValue)
   }
 }

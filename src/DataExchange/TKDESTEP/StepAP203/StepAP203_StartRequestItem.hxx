@@ -38,13 +38,11 @@ public:
   //! Recognizes a kind of StartRequestItem select type
   //! 1 -> ProductDefinitionFormation from StepBasic
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as ProductDefinitionFormation (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 };
 
 #endif // _StepAP203_StartRequestItem_HeaderFile

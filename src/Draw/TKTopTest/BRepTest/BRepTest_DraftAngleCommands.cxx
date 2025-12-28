@@ -50,7 +50,7 @@ static void Print(Draw_Interpretor& di, const Draft_ErrorStatus St)
   }
 }
 
-static Standard_Integer DEP(Draw_Interpretor& theCommands, Standard_Integer narg, const char** a)
+static int DEP(Draw_Interpretor& theCommands, int narg, const char** a)
 {
   if ((narg < 14) || (narg % 8 != 6))
     return 1;
@@ -59,11 +59,11 @@ static Standard_Integer DEP(Draw_Interpretor& theCommands, Standard_Integer narg
 
   gp_Dir Dirextract(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
 
-  TopoDS_Face   F;
-  Standard_Real Angle;
-  gp_Pnt        Pax;
-  gp_Dir        Dax;
-  for (Standard_Integer ii = 0; ii < (narg - 6) / 8; ii++)
+  TopoDS_Face F;
+  double      Angle;
+  gp_Pnt      Pax;
+  gp_Dir      Dax;
+  for (int ii = 0; ii < (narg - 6) / 8; ii++)
   {
     TopoDS_Shape aLocalShape(DBRep::Get(a[8 * ii + 6], TopAbs_FACE));
     F = TopoDS::Face(aLocalShape);
@@ -100,7 +100,7 @@ static Standard_Integer DEP(Draw_Interpretor& theCommands, Standard_Integer narg
   return 1;
 }
 
-static Standard_Integer NDEP(Draw_Interpretor& theCommands, Standard_Integer narg, const char** a)
+static int NDEP(Draw_Interpretor& theCommands, int narg, const char** a)
 {
   if ((narg < 15) || ((narg) % 9 != 6))
     return 1;
@@ -116,12 +116,12 @@ static Standard_Integer NDEP(Draw_Interpretor& theCommands, Standard_Integer nar
 
   gp_Dir Dirextract(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
 
-  TopoDS_Face      F;
-  Standard_Real    Angle;
-  gp_Pnt           Pax;
-  gp_Dir           Dax;
-  Standard_Boolean Flag;
-  for (Standard_Integer ii = 0; ii < (narg - 6) / 9; ii++)
+  TopoDS_Face F;
+  double      Angle;
+  gp_Pnt      Pax;
+  gp_Dir      Dax;
+  bool        Flag;
+  for (int ii = 0; ii < (narg - 6) / 9; ii++)
   {
     TopoDS_Shape aLocalFace(DBRep::Get(a[9 * ii + 6], TopAbs_FACE));
     F = TopoDS::Face(aLocalFace);
@@ -167,15 +167,15 @@ static Standard_Integer NDEP(Draw_Interpretor& theCommands, Standard_Integer nar
   return 1;
 }
 
-static Standard_Integer draft(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int draft(Draw_Interpretor& di, int n, const char** a)
 {
-  Standard_Integer Inside   = -1;
-  Standard_Boolean Internal = Standard_False;
+  int  Inside   = -1;
+  bool Internal = false;
   if (n < 8)
     return 1;
 
-  Standard_Real x, y, z, teta;
-  TopoDS_Shape  SInit = DBRep::Get(a[2]); // shape d'arret
+  double       x, y, z, teta;
+  TopoDS_Shape SInit = DBRep::Get(a[2]); // shape d'arret
 
   x    = Draw::Atof(a[3]);
   y    = Draw::Atof(a[4]); // direction de depouille
@@ -188,7 +188,7 @@ static Standard_Integer draft(Draw_Interpretor& di, Standard_Integer n, const ch
 
   if (n > 8)
   {
-    Standard_Integer cur = 8;
+    int cur = 8;
     if (!strcmp(a[cur], "-IN"))
     {
       Inside = 1;
@@ -217,7 +217,7 @@ static Standard_Integer draft(Draw_Interpretor& di, Standard_Integer n, const ch
     {
       if (!strcmp(a[cur], "-Internal"))
       {
-        Internal = Standard_True;
+        Internal = true;
         cur++;
       }
     }
@@ -236,24 +236,24 @@ static Standard_Integer draft(Draw_Interpretor& di, Standard_Integer n, const ch
   TopoDS_Shape Stop = DBRep::Get(a[7]); // shape d'arret
   if (!Stop.IsNull())
   {
-    Standard_Boolean KeepOutside = Standard_True;
+    bool KeepOutside = true;
     if (Inside == 0)
-      KeepOutside = Standard_False;
+      KeepOutside = false;
     MkDraft.Perform(Stop, KeepOutside);
   }
   else
   {
-    Handle(Geom_Surface) Surf = DrawTrSurf::GetSurface(a[7]);
+    occ::handle<Geom_Surface> Surf = DrawTrSurf::GetSurface(a[7]);
     if (!Surf.IsNull())
     { // surface d'arret
-      Standard_Boolean KeepInside = Standard_True;
+      bool KeepInside = true;
       if (Inside == 1)
-        KeepInside = Standard_False;
+        KeepInside = false;
       MkDraft.Perform(Surf, KeepInside);
     }
     else
     { // by Length
-      Standard_Real L = Draw::Atof(a[7]);
+      double L = Draw::Atof(a[7]);
       if (L > 1.e-7)
       {
         MkDraft.Perform(L);
@@ -273,10 +273,10 @@ static Standard_Integer draft(Draw_Interpretor& di, Standard_Integer n, const ch
 
 void BRepTest::DraftAngleCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DBRep::BasicCommands(theCommands);
 

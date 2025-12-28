@@ -33,32 +33,30 @@ class ChFi3d_SearchSing : public math_FunctionWithDerivative
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT ChFi3d_SearchSing(const Handle(Geom_Curve)& C1, const Handle(Geom_Curve)& C2);
+  Standard_EXPORT ChFi3d_SearchSing(const occ::handle<Geom_Curve>& C1,
+                                    const occ::handle<Geom_Curve>& C2);
 
   //! computes the value of the function <F> for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
+  Standard_EXPORT bool Value(const double X, double& F);
 
   //! computes the derivative <D> of the function
   //! for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D);
+  Standard_EXPORT bool Derivative(const double X, double& D);
 
   //! computes the value <F> and the derivative <D> of the
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values(const Standard_Real X,
-                                          Standard_Real&      F,
-                                          Standard_Real&      D);
+  Standard_EXPORT bool Values(const double X, double& F, double& D);
 
-protected:
 private:
-  Handle(Geom_Curve) myC1;
-  Handle(Geom_Curve) myC2;
+  occ::handle<Geom_Curve> myC1;
+  occ::handle<Geom_Curve> myC2;
 };
 
 #endif // _ChFi3d_SearchSing_HeaderFile

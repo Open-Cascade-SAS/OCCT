@@ -42,13 +42,13 @@ public:
   Standard_EXPORT BOPAlgo_Options();
 
   //! Constructor with allocator
-  Standard_EXPORT BOPAlgo_Options(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPAlgo_Options(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Destructor
   Standard_EXPORT virtual ~BOPAlgo_Options();
 
   //! Returns allocator
-  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
+  const occ::handle<NCollection_BaseAllocator>& Allocator() const { return myAllocator; }
 
   //! Clears all warnings and errors, and any data cached by the algorithm.
   //! User defined options are not cleared.
@@ -58,37 +58,37 @@ public:
   //!@name Error reporting mechanism
 
   //! Adds the alert as error (fail)
-  void AddError(const Handle(Message_Alert)& theAlert)
+  void AddError(const occ::handle<Message_Alert>& theAlert)
   {
     myReport->AddAlert(Message_Fail, theAlert);
   }
 
   //! Adds the alert as warning
-  void AddWarning(const Handle(Message_Alert)& theAlert)
+  void AddWarning(const occ::handle<Message_Alert>& theAlert)
   {
     myReport->AddAlert(Message_Warning, theAlert);
   }
 
   //! Returns true if algorithm has failed
-  Standard_Boolean HasErrors() const { return !myReport->GetAlerts(Message_Fail).IsEmpty(); }
+  bool HasErrors() const { return !myReport->GetAlerts(Message_Fail).IsEmpty(); }
 
   //! Returns true if algorithm has generated error of specified type
-  Standard_Boolean HasError(const Handle(Standard_Type)& theType) const
+  bool HasError(const occ::handle<Standard_Type>& theType) const
   {
     return myReport->HasAlert(theType, Message_Fail);
   }
 
   //! Returns true if algorithm has generated some warning alerts
-  Standard_Boolean HasWarnings() const { return !myReport->GetAlerts(Message_Warning).IsEmpty(); }
+  bool HasWarnings() const { return !myReport->GetAlerts(Message_Warning).IsEmpty(); }
 
   //! Returns true if algorithm has generated warning of specified type
-  Standard_Boolean HasWarning(const Handle(Standard_Type)& theType) const
+  bool HasWarning(const occ::handle<Standard_Type>& theType) const
   {
     return myReport->HasAlert(theType, Message_Warning);
   }
 
   //! Returns report collecting all errors and warnings
-  const Handle(Message_Report)& GetReport() const { return myReport; }
+  const occ::handle<Message_Report>& GetReport() const { return myReport; }
 
   //! Dumps the error status into the given stream
   Standard_EXPORT void DumpErrors(Standard_OStream& theOS) const;
@@ -103,48 +103,48 @@ public:
   //!@name Parallel processing mode
 
   //! Gets the global parallel mode
-  Standard_EXPORT static Standard_Boolean GetParallelMode();
+  Standard_EXPORT static bool GetParallelMode();
 
   //! Sets the global parallel mode
-  Standard_EXPORT static void SetParallelMode(const Standard_Boolean theNewMode);
+  Standard_EXPORT static void SetParallelMode(const bool theNewMode);
 
   //! Set the flag of parallel processing
   //! if <theFlag> is true  the parallel processing is switched on
   //! if <theFlag> is false the parallel processing is switched off
-  void SetRunParallel(const Standard_Boolean theFlag) { myRunParallel = theFlag; }
+  void SetRunParallel(const bool theFlag) { myRunParallel = theFlag; }
 
   //! Returns the flag of parallel processing
-  Standard_Boolean RunParallel() const { return myRunParallel; }
+  bool RunParallel() const { return myRunParallel; }
 
 public:
   //!@name Fuzzy tolerance
 
   //! Sets the additional tolerance
-  Standard_EXPORT void SetFuzzyValue(const Standard_Real theFuzz);
+  Standard_EXPORT void SetFuzzyValue(const double theFuzz);
 
   //! Returns the additional tolerance
-  Standard_Real FuzzyValue() const { return myFuzzyValue; }
+  double FuzzyValue() const { return myFuzzyValue; }
 
 public:
   //!@name Usage of Oriented Bounding boxes
 
   //! Enables/Disables the usage of OBB
-  void SetUseOBB(const Standard_Boolean theUseOBB) { myUseOBB = theUseOBB; }
+  void SetUseOBB(const bool theUseOBB) { myUseOBB = theUseOBB; }
 
   //! Returns the flag defining usage of OBB
-  Standard_Boolean UseOBB() const { return myUseOBB; }
+  bool UseOBB() const { return myUseOBB; }
 
 protected:
   //! Adds error to the report if the break signal was caught. Returns true in this case, false
   //! otherwise.
-  Standard_EXPORT Standard_Boolean UserBreak(const Message_ProgressScope& thePS);
+  Standard_EXPORT bool UserBreak(const Message_ProgressScope& thePS);
 
 protected:
-  Handle(NCollection_BaseAllocator) myAllocator;
-  Handle(Message_Report)            myReport;
-  Standard_Boolean                  myRunParallel;
-  Standard_Real                     myFuzzyValue;
-  Standard_Boolean                  myUseOBB;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
+  occ::handle<Message_Report>            myReport;
+  bool                                   myRunParallel;
+  double                                 myFuzzyValue;
+  bool                                   myUseOBB;
 };
 
 #endif // _BOPAlgo_Options_HeaderFile

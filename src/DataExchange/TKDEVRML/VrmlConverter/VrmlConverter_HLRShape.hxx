@@ -45,13 +45,10 @@ class VrmlConverter_HLRShape
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static void Add(Standard_OStream&                      anOStream,
-                                  const TopoDS_Shape&                    aShape,
-                                  const Handle(VrmlConverter_Drawer)&    aDrawer,
-                                  const Handle(VrmlConverter_Projector)& aProjector);
-
-protected:
-private:
+  Standard_EXPORT static void Add(Standard_OStream&                           anOStream,
+                                  const TopoDS_Shape&                         aShape,
+                                  const occ::handle<VrmlConverter_Drawer>&    aDrawer,
+                                  const occ::handle<VrmlConverter_Projector>& aProjector);
 };
 
 #endif // _VrmlConverter_HLRShape_HeaderFile

@@ -52,7 +52,7 @@ public:
   //! Creates a cylinder of radius Radius, whose axis is the "main
   //! Axis" of theA3. theA3 is the local coordinate system of the cylinder.
   //! Raises ConstructionErrord if theRadius < 0.0
-  constexpr gp_Cylinder(const gp_Ax3& theA3, const Standard_Real theRadius)
+  constexpr gp_Cylinder(const gp_Ax3& theA3, const double theRadius)
       : pos(theA3),
         radius(theRadius)
   {
@@ -73,7 +73,7 @@ public:
   //! Modifies the radius of this cylinder.
   //! Exceptions
   //! Standard_ConstructionError if theR is negative.
-  void SetRadius(const Standard_Real theR)
+  void SetRadius(const double theR)
   {
     Standard_ConstructionError_Raise_if(
       theR < 0.0,
@@ -90,7 +90,7 @@ public:
   constexpr void VReverse() noexcept { pos.ZReverse(); }
 
   //! Returns true if the local coordinate system of this cylinder is right-handed.
-  Standard_Boolean Direct() const { return pos.Direct(); }
+  bool Direct() const { return pos.Direct(); }
 
   //! Returns the symmetry axis of the cylinder.
   constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }
@@ -99,16 +99,16 @@ public:
   //! in the absolute cartesian coordinate system :
   //! theA1.X**2 + theA2.Y**2 + theA3.Z**2 + 2.(theB1.X.Y + theB2.X.Z + theB3.Y.Z) +
   //! 2.(theC1.X + theC2.Y + theC3.Z) + theD = 0.0
-  Standard_EXPORT void Coefficients(Standard_Real& theA1,
-                                    Standard_Real& theA2,
-                                    Standard_Real& theA3,
-                                    Standard_Real& theB1,
-                                    Standard_Real& theB2,
-                                    Standard_Real& theB3,
-                                    Standard_Real& theC1,
-                                    Standard_Real& theC2,
-                                    Standard_Real& theC3,
-                                    Standard_Real& theD) const;
+  Standard_EXPORT void Coefficients(double& theA1,
+                                    double& theA2,
+                                    double& theA3,
+                                    double& theB1,
+                                    double& theB2,
+                                    double& theB3,
+                                    double& theC1,
+                                    double& theC2,
+                                    double& theC3,
+                                    double& theD) const;
 
   //! Returns the "Location" point of the cylinder.
   constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
@@ -117,7 +117,7 @@ public:
   constexpr const gp_Ax3& Position() const noexcept { return pos; }
 
   //! Returns the radius of the cylinder.
-  constexpr Standard_Real Radius() const noexcept { return radius; }
+  constexpr double Radius() const noexcept { return radius; }
 
   //! Returns the axis X of the cylinder.
   constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
@@ -130,49 +130,49 @@ public:
   //! Performs the symmetrical transformation of a cylinder
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Cylinder Mirrored(const gp_Pnt& theP) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Cylinder Mirrored(const gp_Pnt& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
 
   //! Performs the symmetrical transformation of a cylinder with
   //! respect to an axis placement which is the axis of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Cylinder Mirrored(const gp_Ax1& theA1) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Cylinder Mirrored(const gp_Ax1& theA1) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Performs the symmetrical transformation of a cylinder with respect
   //! to a plane. The axis placement theA2 locates the plane of the
   //! of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Cylinder Mirrored(const gp_Ax2& theA2) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Cylinder Mirrored(const gp_Ax2& theA2) const noexcept;
 
-  void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
+  void Rotate(const gp_Ax1& theA1, const double theAng) { pos.Rotate(theA1, theAng); }
 
   //! Rotates a cylinder. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Cylinder Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  [[nodiscard]] gp_Cylinder Rotated(const gp_Ax1& theA1, const double theAng) const
   {
     gp_Cylinder aCyl = *this;
     aCyl.pos.Rotate(theA1, theAng);
     return aCyl;
   }
 
-  void Scale(const gp_Pnt& theP, const Standard_Real theS);
+  void Scale(const gp_Pnt& theP, const double theS);
 
   //! Scales a cylinder. theS is the scaling value.
   //! The absolute value of theS is used to scale the cylinder
-  Standard_NODISCARD gp_Cylinder Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
+  [[nodiscard]] gp_Cylinder Scaled(const gp_Pnt& theP, const double theS) const;
 
   void Transform(const gp_Trsf& theT);
 
   //! Transforms a cylinder with the transformation theT from class Trsf.
-  Standard_NODISCARD gp_Cylinder Transformed(const gp_Trsf& theT) const;
+  [[nodiscard]] gp_Cylinder Transformed(const gp_Trsf& theT) const;
 
   constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a cylinder in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD constexpr gp_Cylinder Translated(const gp_Vec& theV) const noexcept
+  [[nodiscard]] constexpr gp_Cylinder Translated(const gp_Vec& theV) const noexcept
   {
     gp_Cylinder aCyl = *this;
     aCyl.pos.Translate(theV);
@@ -185,8 +185,8 @@ public:
   }
 
   //! Translates a cylinder from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Cylinder Translated(const gp_Pnt& theP1,
-                                                      const gp_Pnt& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Cylinder Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Cylinder aCyl = *this;
     aCyl.pos.Translate(theP1, theP2);
@@ -194,13 +194,13 @@ public:
   }
 
 private:
-  gp_Ax3        pos;
-  Standard_Real radius;
+  gp_Ax3 pos;
+  double radius;
 };
 
 //=================================================================================================
 
-inline void gp_Cylinder::Scale(const gp_Pnt& theP, const Standard_Real theS)
+inline void gp_Cylinder::Scale(const gp_Pnt& theP, const double theS)
 {
   pos.Scale(theP, theS);
   radius *= theS;
@@ -212,7 +212,7 @@ inline void gp_Cylinder::Scale(const gp_Pnt& theP, const Standard_Real theS)
 
 //=================================================================================================
 
-inline gp_Cylinder gp_Cylinder::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+inline gp_Cylinder gp_Cylinder::Scaled(const gp_Pnt& theP, const double theS) const
 {
   gp_Cylinder aCyl = *this;
   aCyl.pos.Scale(theP, theS);

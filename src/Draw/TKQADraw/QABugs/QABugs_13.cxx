@@ -50,11 +50,11 @@
 
 //=================================================================================================
 
-static Standard_Integer OCC332bug(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC332bug(Draw_Interpretor& di, int argc, const char** argv)
 {
   // Used to Display Geometry or Topolgy
-  char             name[255];
-  Standard_Boolean check = Standard_True;
+  char name[255];
+  bool check = true;
 
   // Set default arguments
   double wall_thickness = 10.0;
@@ -159,16 +159,16 @@ static Standard_Integer OCC332bug(Draw_Interpretor& di, Standard_Integer argc, c
 
   // SUPPORT:
   // - It is better to use bend angle calculated above
-  // Handle(Geom_Curve) SpineCurve = GC_MakeArcOfCircle(circle,
+  // occ::handle<Geom_Curve> SpineCurve = GC_MakeArcOfCircle(circle,
   //						     endPoint,
   //						     origin.Location(),
-  //						     Standard_True).Value();
-  Handle(Geom_Curve) SpineCurve(GC_MakeArcOfCircle(circle, 0.0, bend_angle, Standard_True).Value());
+  //						     true).Value();
+  occ::handle<Geom_Curve> SpineCurve(GC_MakeArcOfCircle(circle, 0.0, bend_angle, true).Value());
 
   // SUPPORT:
   // - Use correct formula for scaling laws
-  Handle(Law_Linear) myLaw1 = new Law_Linear();
-  Handle(Law_Linear) myLaw2 = new Law_Linear();
+  occ::handle<Law_Linear> myLaw1 = new Law_Linear();
+  occ::handle<Law_Linear> myLaw2 = new Law_Linear();
   // if ((radius_r - radius_l) < Precision::Confusion())
   //{
   // myLaw1->Set(SpineCurve->FirstParameter(), 1.0,
@@ -225,7 +225,7 @@ static Standard_Integer OCC332bug(Draw_Interpretor& di, Standard_Integer argc, c
   BRepOffsetAPI_MakePipeShell mkPipe1(SpineWire);
   mkPipe1.SetTolerance(1.0e-8, 1.0e-8, 1.0e-6);
   // mkPipe1.SetTransitionMode(BRepBuilderAPI_Transformed); // Default mode !!
-  mkPipe1.SetLaw(Wire1_, myLaw1 /*, Location2*/, Standard_False, Standard_False);
+  mkPipe1.SetLaw(Wire1_, myLaw1 /*, Location2*/, false, false);
   mkPipe1.Build();
   if (!mkPipe1.IsDone())
     return 0;
@@ -234,14 +234,14 @@ static Standard_Integer OCC332bug(Draw_Interpretor& di, Standard_Integer argc, c
   BRepOffsetAPI_MakePipeShell mkPipe2(SpineWire);
   mkPipe2.SetTolerance(1.0e-8, 1.0e-8, 1.0e-6);
   // mkPipe2.SetTransitionMode(BRepBuilderAPI_Transformed); // Default mode !!
-  mkPipe2.SetLaw(outerWire1_, myLaw2 /*, Location2*/, Standard_False, Standard_False);
+  mkPipe2.SetLaw(outerWire1_, myLaw2 /*, Location2*/, false, false);
   mkPipe2.Build();
   if (!mkPipe2.IsDone())
     return 0;
 
   // Make face for first opening
-  Handle(Geom_Plane) Plane1 = new Geom_Plane(circ1Plane);
-  mkFace.Init(Plane1, Standard_False, Precision::Confusion());
+  occ::handle<Geom_Plane> Plane1 = new Geom_Plane(circ1Plane);
+  mkFace.Init(Plane1, false, Precision::Confusion());
   // SUPPORT:
   // - Use wires created by MakePipeShell
   // mkFace.Add(TopoDS::Wire(outerWire1_));
@@ -253,8 +253,8 @@ static Standard_Integer OCC332bug(Draw_Interpretor& di, Standard_Integer argc, c
   TopoDS_Face Face1 = mkFace.Face();
 
   // Make face for second opening
-  Handle(Geom_Plane) Plane2 = new Geom_Plane(circ2Plane);
-  mkFace.Init(Plane2, Standard_False, Precision::Confusion());
+  occ::handle<Geom_Plane> Plane2 = new Geom_Plane(circ2Plane);
+  mkFace.Init(Plane2, false, Precision::Confusion());
   // SUPPORT:
   // - Use wires created by MakePipeShell
   // mkFace.Add(TopoDS::Wire(outerWire2_));
@@ -277,7 +277,7 @@ static Standard_Integer OCC332bug(Draw_Interpretor& di, Standard_Integer argc, c
   // while (getFaces.More())
   //  {
   //    test_face = TopoDS::Face(getFaces.Current());
-  //    Handle(Geom_Surface) S = BRep_Tool::Surface(test_face);
+  //    occ::handle<Geom_Surface> S = BRep_Tool::Surface(test_face);
   //    GeomLib_IsPlanarSurface IsPl(S);
   //    if (!IsPl.IsPlanar()) {
   //	B.Add(TubeShell,getFaces.Current().Reversed());
@@ -404,7 +404,7 @@ static Standard_Integer OCC332bug(Draw_Interpretor& di, Standard_Integer argc, c
 
 //=================================================================================================
 
-static Standard_Integer OCC544(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc > 6)
   {
@@ -413,8 +413,8 @@ static Standard_Integer OCC544(Draw_Interpretor& di, Standard_Integer argc, cons
   }
 
   // Used to Display Geometry or Topolgy
-  char             name[255];
-  Standard_Boolean check = Standard_True;
+  char name[255];
+  bool check = true;
 
   // Set default arguments
   double radius_l = 20.0;
@@ -496,10 +496,10 @@ static Standard_Integer OCC544(Draw_Interpretor& di, Standard_Integer argc, cons
 
   BRepBuilderAPI_MakeFace mkFace;
 
-  Handle(Geom_Curve) SpineCurve(
-    GC_MakeArcOfCircle(circle, endPoint, origin.Location(), Standard_True).Value());
-  Handle(Law_Linear) myLaw  = new Law_Linear();
-  Handle(Law_Linear) myLaw2 = new Law_Linear();
+  occ::handle<Geom_Curve> SpineCurve(
+    GC_MakeArcOfCircle(circle, endPoint, origin.Location(), true).Value());
+  occ::handle<Law_Linear> myLaw  = new Law_Linear();
+  occ::handle<Law_Linear> myLaw2 = new Law_Linear();
 
   myLaw->Set(SpineCurve->FirstParameter(), radius_r / radius_l, SpineCurve->LastParameter(), 1.0);
 
@@ -552,8 +552,8 @@ static Standard_Integer OCC544(Draw_Interpretor& di, Standard_Integer argc, cons
   BRepOffsetAPI_MakePipeShell mkPipe1(SpineWire);
   mkPipe1.SetTolerance(1.0e-8, 1.0e-8, 1.0e-6);
   mkPipe1.SetTransitionMode(BRepBuilderAPI_Transformed);
-  mkPipe1.SetMode(Standard_False);
-  mkPipe1.SetLaw(Wire1_, myLaw, Location1, Standard_False, Standard_False);
+  mkPipe1.SetMode(false);
+  mkPipe1.SetLaw(Wire1_, myLaw, Location1, false, false);
   mkPipe1.Build();
   if (!mkPipe1.IsDone())
     return 1;
@@ -562,8 +562,8 @@ static Standard_Integer OCC544(Draw_Interpretor& di, Standard_Integer argc, cons
   BRepOffsetAPI_MakePipeShell mkPipe2(SpineWire);
   mkPipe2.SetTolerance(1.0e-8, 1.0e-8, 1.0e-6);
   mkPipe2.SetTransitionMode(BRepBuilderAPI_Transformed);
-  mkPipe2.SetMode(Standard_False);
-  mkPipe2.SetLaw(outerWire1_, myLaw2, Location1, Standard_False, Standard_False);
+  mkPipe2.SetMode(false);
+  mkPipe2.SetLaw(outerWire1_, myLaw2, Location1, false, false);
   mkPipe2.Build();
   if (!mkPipe2.IsDone())
     return 1;
@@ -593,8 +593,8 @@ static Standard_Integer OCC544(Draw_Interpretor& di, Standard_Integer argc, cons
   }
 
   // Make face for first opening
-  Handle(Geom_Plane) Plane1 = new Geom_Plane(circ1Plane);
-  mkFace.Init(Plane1, Standard_False, Precision::Confusion());
+  occ::handle<Geom_Plane> Plane1 = new Geom_Plane(circ1Plane);
+  mkFace.Init(Plane1, false, Precision::Confusion());
   mkFace.Add(TopoDS::Wire(outerWire1_));
   mkFace.Add(TopoDS::Wire(Wire1_.Reversed()));
   if (!mkFace.IsDone())
@@ -602,8 +602,8 @@ static Standard_Integer OCC544(Draw_Interpretor& di, Standard_Integer argc, cons
   TopoDS_Face Face1 = mkFace.Face();
 
   // Make face for second opening
-  Handle(Geom_Plane) Plane2 = new Geom_Plane(circ2Plane);
-  mkFace.Init(Plane2, Standard_False, Precision::Confusion());
+  occ::handle<Geom_Plane> Plane2 = new Geom_Plane(circ2Plane);
+  mkFace.Init(Plane2, false, Precision::Confusion());
   mkFace.Add(TopoDS::Wire(outerWire2_));
   mkFace.Add(TopoDS::Wire(Wire2_.Reversed()));
   if (!mkFace.IsDone())
@@ -785,14 +785,13 @@ static Standard_Integer OCC544(Draw_Interpretor& di, Standard_Integer argc, cons
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepBndLib.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <Precision.hxx>
 
-static Standard_Integer OCC817(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC817(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -800,8 +799,8 @@ static Standard_Integer OCC817(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  constexpr Standard_Real delt      = 5.0 * Precision::Confusion();
-  Standard_Real           mesh_delt = Draw::Atof(argv[2]);
+  constexpr double delt      = 5.0 * Precision::Confusion();
+  double           mesh_delt = Draw::Atof(argv[2]);
   if (mesh_delt <= 0.0)
   {
     di << "Error: mesh_delta must be positive value\n";
@@ -829,9 +828,9 @@ static Standard_Integer OCC817(Draw_Interpretor& di, Standard_Integer argc, cons
   const TopoDS_Shape& cut_shape = cut.Shape();
 
   // see if we have a solid
-  Standard_Integer found_solid = 0;
-  TopoDS_Solid     cutSolid;
-  TopExp_Explorer  Ex;
+  int             found_solid = 0;
+  TopoDS_Solid    cutSolid;
+  TopExp_Explorer Ex;
   for (Ex.Init(cut_shape, TopAbs_SOLID); Ex.More(); Ex.Next())
   {
     TopoDS_Solid sol = TopoDS::Solid(Ex.Current());
@@ -858,7 +857,7 @@ static Standard_Integer OCC817(Draw_Interpretor& di, Standard_Integer argc, cons
   //
   Bnd_Box bndBox;
   BRepBndLib::Add(cutSolid, bndBox);
-  Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
+  double Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
   bndBox.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
   Xmin -= delt;
   Ymin -= delt;
@@ -870,19 +869,19 @@ static Standard_Integer OCC817(Draw_Interpretor& di, Standard_Integer argc, cons
      << "," << Zmax << ")\n";
 
   // grid the bounding box
-  Standard_Integer NumXsubvolumes = (Standard_Integer)((Xmax - Xmin) / mesh_delt);
+  int NumXsubvolumes = (int)((Xmax - Xmin) / mesh_delt);
   if (NumXsubvolumes <= 0)
     NumXsubvolumes = 1;
-  Standard_Integer NumYsubvolumes = (Standard_Integer)((Ymax - Ymin) / mesh_delt);
+  int NumYsubvolumes = (int)((Ymax - Ymin) / mesh_delt);
   if (NumYsubvolumes <= 0)
     NumYsubvolumes = 1;
-  Standard_Integer NumZsubvolumes = (Standard_Integer)((Zmax - Zmin) / mesh_delt);
+  int NumZsubvolumes = (int)((Zmax - Zmin) / mesh_delt);
   if (NumZsubvolumes <= 0)
     NumZsubvolumes = 1;
-  const Standard_Real    StepX         = (Xmax - Xmin) / NumXsubvolumes;
-  const Standard_Real    StepY         = (Ymax - Ymin) / NumYsubvolumes;
-  const Standard_Real    StepZ         = (Zmax - Zmin) / NumZsubvolumes;
-  const Standard_Integer NumSubvolumes = NumXsubvolumes * NumYsubvolumes * NumZsubvolumes;
+  const double StepX         = (Xmax - Xmin) / NumXsubvolumes;
+  const double StepY         = (Ymax - Ymin) / NumYsubvolumes;
+  const double StepZ         = (Zmax - Zmin) / NumZsubvolumes;
+  const int    NumSubvolumes = NumXsubvolumes * NumYsubvolumes * NumZsubvolumes;
   di << "Info: NumSubvolumesX = " << NumXsubvolumes << "\n";
   di << "Info: NumSubvolumesY = " << NumYsubvolumes << "\n";
   di << "Info: NumSubvolumesZ = " << NumZsubvolumes << "\n";
@@ -891,17 +890,17 @@ static Standard_Integer OCC817(Draw_Interpretor& di, Standard_Integer argc, cons
   //
   // construct initial mesh of cutSolid
   //
-  TopTools_Array1OfShape SubvolumeSolid(0, NumSubvolumes - 1);
-  TColStd_Array1OfReal   SubvolumeVol(0, NumSubvolumes - 1);
-  Standard_Real          accumulatedVolume = 0.0;
-  Standard_Integer       i, j, k, l = 0;
-  Standard_Real          x = Xmin;
+  NCollection_Array1<TopoDS_Shape> SubvolumeSolid(0, NumSubvolumes - 1);
+  NCollection_Array1<double>       SubvolumeVol(0, NumSubvolumes - 1);
+  double                           accumulatedVolume = 0.0;
+  int                              i, j, k, l = 0;
+  double                           x = Xmin;
   for (i = 0; i < NumXsubvolumes; i++)
   {
-    Standard_Real y = Ymin;
+    double y = Ymin;
     for (j = 0; j < NumYsubvolumes; j++)
     {
-      Standard_Real z = Zmin;
+      double z = Zmin;
       for (k = 0; k < NumZsubvolumes; k++)
       {
         P.SetX(x);
@@ -918,7 +917,7 @@ static Standard_Integer OCC817(Draw_Interpretor& di, Standard_Integer argc, cons
         SubvolumeSolid.SetValue(l, aSubvolume);
         GProp_GProps subvolumeVProps;
         BRepGProp::VolumeProperties(SubvolumeSolid(l), subvolumeVProps);
-        const Standard_Real vol = subvolumeVProps.Mass();
+        const double vol = subvolumeVProps.Mass();
         di << "Info: original subvolume " << l << " volume = " << vol << "\n";
         SubvolumeVol.SetValue(l, vol);
         accumulatedVolume += vol;
@@ -971,8 +970,8 @@ static Standard_Integer OCC817(Draw_Interpretor& di, Standard_Integer argc, cons
       SubvolumeSolid.SetValue(l, commonShape);
       GProp_GProps subvolumeVProps;
       BRepGProp::VolumeProperties(SubvolumeSolid(l), subvolumeVProps);
-      const Standard_Real    vol = subvolumeVProps.Mass();
-      const Standard_Boolean err = (vol > SubvolumeVol(l)) || (vol <= 0.0);
+      const double vol = subvolumeVProps.Mass();
+      const bool   err = (vol > SubvolumeVol(l)) || (vol <= 0.0);
       // std::cout << (err? "ERROR" : "Info") << ": final subvolume " << l << " volume = " << vol <<
       // std::endl;
       if (err)

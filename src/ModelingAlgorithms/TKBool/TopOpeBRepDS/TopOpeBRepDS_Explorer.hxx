@@ -36,23 +36,23 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_Explorer();
 
-  Standard_EXPORT TopOpeBRepDS_Explorer(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                        const TopAbs_ShapeEnum                     T = TopAbs_SHAPE,
-                                        const Standard_Boolean findkeep = Standard_True);
+  Standard_EXPORT TopOpeBRepDS_Explorer(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                        const TopAbs_ShapeEnum T        = TopAbs_SHAPE,
+                                        const bool             findkeep = true);
 
-  Standard_EXPORT void Init(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                            const TopAbs_ShapeEnum                     T        = TopAbs_SHAPE,
-                            const Standard_Boolean                     findkeep = Standard_True);
+  Standard_EXPORT void Init(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                            const TopAbs_ShapeEnum                          T        = TopAbs_SHAPE,
+                            const bool                                      findkeep = true);
 
   Standard_EXPORT TopAbs_ShapeEnum Type() const;
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
   Standard_EXPORT const TopoDS_Shape& Current() const;
 
-  Standard_EXPORT Standard_Integer Index() const;
+  Standard_EXPORT int Index() const;
 
   Standard_EXPORT const TopoDS_Face& Face() const;
 
@@ -60,16 +60,15 @@ public:
 
   Standard_EXPORT const TopoDS_Vertex& Vertex() const;
 
-protected:
 private:
   Standard_EXPORT void Find();
 
-  Handle(TopOpeBRepDS_HDataStructure) myHDS;
-  TopAbs_ShapeEnum                    myT;
-  Standard_Integer                    myI;
-  Standard_Integer                    myN;
-  Standard_Boolean                    myB;
-  Standard_Boolean                    myFK;
+  occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
+  TopAbs_ShapeEnum                         myT;
+  int                                      myI;
+  int                                      myN;
+  bool                                     myB;
+  bool                                     myFK;
 };
 
 #endif // _TopOpeBRepDS_Explorer_HeaderFile

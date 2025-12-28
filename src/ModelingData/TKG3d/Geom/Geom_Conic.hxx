@@ -20,9 +20,6 @@
 #include <gp_Ax2.hxx>
 #include <Geom_Curve.hxx>
 
-class Geom_Conic;
-DEFINE_STANDARD_HANDLE(Geom_Conic, Geom_Curve)
-
 //! The abstract class Conic describes the common
 //! behavior of conic curves in 3D space and, in
 //! particular, their general characteristics. The Geom
@@ -85,7 +82,7 @@ public:
   //! Exceptions
   //! Standard_DomainError in the case of a hyperbola if
   //! its major radius is null.
-  virtual Standard_Real Eccentricity() const = 0;
+  virtual double Eccentricity() const = 0;
 
   //! Returns the XAxis of the conic.
   //! This axis defines the origin of parametrization of the conic.
@@ -100,23 +97,22 @@ public:
 
   //! Reverses the direction of parameterization of <me>.
   //! The local coordinate system of the conic is modified.
-  Standard_EXPORT void Reverse() Standard_OVERRIDE;
+  Standard_EXPORT void Reverse() override;
 
   //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
-  Standard_EXPORT virtual Standard_Real ReversedParameter(const Standard_Real U) const
-    Standard_OVERRIDE = 0;
+  Standard_EXPORT virtual double ReversedParameter(const double U) const override = 0;
 
   //! The continuity of the conic is Cn.
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! Returns True.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT bool IsCN(const int N) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Conic, Geom_Curve)
 

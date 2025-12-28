@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <StepAP242_ItemIdentifiedRepresentationUsageDefinition.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepAP214_AppliedApprovalAssignment.hxx>
 #include <StepAP214_AppliedDateAndTimeAssignment.hxx>
 #include <StepAP214_AppliedDateAssignment.hxx>
@@ -42,8 +42,8 @@ StepAP242_ItemIdentifiedRepresentationUsageDefinition::
 
 //=================================================================================================
 
-Standard_Integer StepAP242_ItemIdentifiedRepresentationUsageDefinition::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepAP242_ItemIdentifiedRepresentationUsageDefinition::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -84,107 +84,107 @@ Standard_Integer StepAP242_ItemIdentifiedRepresentationUsageDefinition::CaseNum(
   return 0;
 }
 
-Handle(StepAP214_AppliedApprovalAssignment) StepAP242_ItemIdentifiedRepresentationUsageDefinition::
-  AppliedApprovalAssignment() const
+occ::handle<StepAP214_AppliedApprovalAssignment>
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedApprovalAssignment() const
 {
   return GetCasted(StepAP214_AppliedApprovalAssignment, Value());
 }
 
-Handle(StepAP214_AppliedDateAndTimeAssignment)
+occ::handle<StepAP214_AppliedDateAndTimeAssignment>
   StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedDateAndTimeAssignment() const
 {
   return GetCasted(StepAP214_AppliedDateAndTimeAssignment, Value());
 }
 
-Handle(StepAP214_AppliedDateAssignment) StepAP242_ItemIdentifiedRepresentationUsageDefinition::
+occ::handle<StepAP214_AppliedDateAssignment> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
   AppliedDateAssignment() const
 {
   return GetCasted(StepAP214_AppliedDateAssignment, Value());
 }
 
-Handle(StepAP214_AppliedDocumentReference) StepAP242_ItemIdentifiedRepresentationUsageDefinition::
-  AppliedDocumentReference() const
+occ::handle<StepAP214_AppliedDocumentReference>
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedDocumentReference() const
 {
   return GetCasted(StepAP214_AppliedDocumentReference, Value());
 }
 
-Handle(StepAP214_AppliedExternalIdentificationAssignment)
+occ::handle<StepAP214_AppliedExternalIdentificationAssignment>
   StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedExternalIdentificationAssignment()
     const
 {
   return GetCasted(StepAP214_AppliedExternalIdentificationAssignment, Value());
 }
 
-Handle(StepAP214_AppliedGroupAssignment) StepAP242_ItemIdentifiedRepresentationUsageDefinition::
-  AppliedGroupAssignment() const
+occ::handle<StepAP214_AppliedGroupAssignment>
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedGroupAssignment() const
 {
   return GetCasted(StepAP214_AppliedGroupAssignment, Value());
 }
 
-Handle(StepAP214_AppliedOrganizationAssignment)
+occ::handle<StepAP214_AppliedOrganizationAssignment>
   StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedOrganizationAssignment() const
 {
   return GetCasted(StepAP214_AppliedOrganizationAssignment, Value());
 }
 
-Handle(StepAP214_AppliedPersonAndOrganizationAssignment)
+occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment>
   StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedPersonAndOrganizationAssignment()
     const
 {
   return GetCasted(StepAP214_AppliedPersonAndOrganizationAssignment, Value());
 }
 
-Handle(StepAP214_AppliedSecurityClassificationAssignment)
+occ::handle<StepAP214_AppliedSecurityClassificationAssignment>
   StepAP242_ItemIdentifiedRepresentationUsageDefinition::AppliedSecurityClassificationAssignment()
     const
 {
   return GetCasted(StepAP214_AppliedSecurityClassificationAssignment, Value());
 }
 
-Handle(StepShape_DimensionalSize) StepAP242_ItemIdentifiedRepresentationUsageDefinition::
+occ::handle<StepShape_DimensionalSize> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
   DimensionalSize() const
 {
   return GetCasted(StepShape_DimensionalSize, Value());
 }
 
-Handle(StepBasic_GeneralProperty) StepAP242_ItemIdentifiedRepresentationUsageDefinition::
+occ::handle<StepBasic_GeneralProperty> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
   GeneralProperty() const
 {
   return GetCasted(StepBasic_GeneralProperty, Value());
 }
 
-Handle(StepDimTol_GeometricTolerance) StepAP242_ItemIdentifiedRepresentationUsageDefinition::
+occ::handle<StepDimTol_GeometricTolerance> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
   GeometricTolerance() const
 {
   return GetCasted(StepDimTol_GeometricTolerance, Value());
 }
 
-Handle(StepBasic_ProductDefinitionRelationship)
+occ::handle<StepBasic_ProductDefinitionRelationship>
   StepAP242_ItemIdentifiedRepresentationUsageDefinition::ProductDefinitionRelationship() const
 {
   return GetCasted(StepBasic_ProductDefinitionRelationship, Value());
 }
 
-Handle(StepRepr_PropertyDefinition) StepAP242_ItemIdentifiedRepresentationUsageDefinition::
+occ::handle<StepRepr_PropertyDefinition> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
   PropertyDefinition() const
 {
   return GetCasted(StepRepr_PropertyDefinition, Value());
 }
 
-Handle(StepRepr_PropertyDefinitionRelationship)
+occ::handle<StepRepr_PropertyDefinitionRelationship>
   StepAP242_ItemIdentifiedRepresentationUsageDefinition::PropertyDefinitionRelationship() const
 {
   return GetCasted(StepRepr_PropertyDefinitionRelationship, Value());
 }
 
-Handle(StepRepr_ShapeAspect) StepAP242_ItemIdentifiedRepresentationUsageDefinition::ShapeAspect()
-  const
+occ::handle<StepRepr_ShapeAspect> StepAP242_ItemIdentifiedRepresentationUsageDefinition::
+  ShapeAspect() const
 {
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-Handle(StepRepr_ShapeAspectRelationship) StepAP242_ItemIdentifiedRepresentationUsageDefinition::
-  ShapeAspectRelationship() const
+occ::handle<StepRepr_ShapeAspectRelationship>
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition::ShapeAspectRelationship() const
 {
   return GetCasted(StepRepr_ShapeAspectRelationship, Value());
 }

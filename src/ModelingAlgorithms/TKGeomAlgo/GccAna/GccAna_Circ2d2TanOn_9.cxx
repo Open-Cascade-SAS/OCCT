@@ -31,7 +31,7 @@
 GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
                                          const GccEnt_QualifiedLin& Qualified2,
                                          const gp_Circ2d&           OnCirc,
-                                         const Standard_Real)
+                                         const double)
     : cirsol(1, 4),
       qualifier1(1, 4),
       qualifier2(1, 4),
@@ -48,7 +48,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
 {
   TheSame1.Init(0);
   TheSame2.Init(0);
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
 
   gp_Dir2d dirx(gp_Dir2d::D::X);
@@ -61,11 +61,11 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
   gp_Lin2d          L1(Qualified1.Qualified());
   gp_Lin2d          L2(Qualified2.Qualified());
   GccAna_Lin2dBisec Bis(L1, L2);
-  Standard_Integer  i = 0, j = 0;
-  Standard_Integer  nbsol = 0;
-  Standard_Real     sgn   = 1.;
-  Standard_Real     s     = 1.;
-  Standard_Boolean  ok    = Standard_False;
+  int               i = 0, j = 0;
+  int               nbsol = 0;
+  double            sgn   = 1.;
+  double            s     = 1.;
+  bool              ok    = false;
   gp_Dir2d          D1(L1.Direction());
   gp_Dir2d          D2(L2.Direction());
   gp_Dir2d          Dnor1(-D1.Y(), D1.X());
@@ -81,63 +81,63 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     {
       if (Dloc.Dot(XYnor1) <= 0.)
       {
-        ok = Standard_True;
+        ok = true;
       }
       else
       {
-        ok = Standard_False;
+        ok = false;
       }
     }
     else if (Qualified1.IsOutside())
     {
       if (Dloc.Dot(XYnor1) >= 0.)
       {
-        ok = Standard_True;
+        ok = true;
       }
       else
       {
-        ok = Standard_False;
+        ok = false;
       }
     }
     else
     {
-      ok = Standard_True;
+      ok = true;
     }
     if (Qualified2.IsEnclosed())
     {
       if (Dloc.Dot(XYnor2) >= 0.)
       {
-        ok = Standard_True;
+        ok = true;
       }
       else
       {
-        ok = Standard_False;
+        ok = false;
       }
     }
     else if (Qualified2.IsOutside())
     {
       if (Dloc.Dot(XYnor2) <= 0.)
       {
-        ok = Standard_True;
+        ok = true;
       }
       else
       {
-        ok = Standard_False;
+        ok = false;
       }
     }
     else
     {
-      ok = Standard_True;
+      ok = true;
     }
     if (ok)
     {
       IntAna2d_AnaIntersection Intp(Bis.ThisSolution(1), OnCirc);
       if (Intp.IsDone())
       {
-        WellDone = Standard_True;
+        WellDone = true;
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer l = 1; l <= Intp.NbPoints(); l++)
+          for (int l = 1; l <= Intp.NbPoints(); l++)
           {
             NbrSol++;
             gp_Pnt2d pt(Intp.Point(l).Value());
@@ -325,8 +325,8 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
   {
     if (Bis.IsDone())
     {
-      Standard_Integer kk = 0;
-      for (Standard_Integer k = i; k <= i + j - 1; k++)
+      int kk = 0;
+      for (int k = i; k <= i + j - 1; k++)
       {
         kk++;
         IntAna2d_AnaIntersection Intp(Bis.ThisSolution(k), OnCirc);
@@ -334,7 +334,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
         {
           if (!Intp.IsEmpty())
           {
-            for (Standard_Integer l = 1; l <= Intp.NbPoints(); l++)
+            for (int l = 1; l <= Intp.NbPoints(); l++)
             {
               gp_Vec2d V(Intp.Point(l).Value(), Bis.ThisSolution(k).Location());
               if ((kk == 1 && sgn * V.Dot(Bis.ThisSolution(k).Direction()) >= 0.0)
@@ -377,7 +377,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
               }
             }
           }
-          WellDone = Standard_True;
+          WellDone = true;
         }
       }
     }
@@ -386,22 +386,22 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
   {
     for (i = 1; i <= NbrSol; i++)
     {
-      gp_Pnt2d      pbid(cirsol(i).Location());
-      Standard_Real Radius = cirsol(i).Radius();
-      gp_Dir2d      dc2(originL1.XY() - pbid.XY());
-      Standard_Real sign = dc2.Dot(gp_Dir2d(-L1.Direction().Y(), L1.Direction().X()));
-      dc2                = gp_Dir2d(sign * gp_XY(-L1.Direction().Y(), L1.Direction().X()));
-      pnttg1sol(i)       = gp_Pnt2d(pbid.XY() + Radius * dc2.XY());
-      dc2                = gp_Dir2d(originL2.XY() - pbid.XY());
-      sign               = dc2.Dot(gp_Dir2d(-L2.Direction().Y(), L2.Direction().X()));
-      dc2                = gp_Dir2d(sign * gp_XY(-L2.Direction().Y(), L2.Direction().X()));
-      pnttg2sol(i)       = gp_Pnt2d(pbid.XY() + Radius * dc2.XY());
-      pntcen(i)          = pbid;
-      par1sol(i)         = ElCLib::Parameter(cirsol(i), pnttg1sol(i));
-      pararg1(i)         = ElCLib::Parameter(L1, pnttg1sol(i));
-      par2sol(i)         = ElCLib::Parameter(cirsol(i), pnttg2sol(i));
-      pararg2(i)         = ElCLib::Parameter(L2, pnttg2sol(i));
-      parcen3(i)         = ElCLib::Parameter(OnCirc, pntcen(i));
+      gp_Pnt2d pbid(cirsol(i).Location());
+      double   Radius = cirsol(i).Radius();
+      gp_Dir2d dc2(originL1.XY() - pbid.XY());
+      double   sign = dc2.Dot(gp_Dir2d(-L1.Direction().Y(), L1.Direction().X()));
+      dc2           = gp_Dir2d(sign * gp_XY(-L1.Direction().Y(), L1.Direction().X()));
+      pnttg1sol(i)  = gp_Pnt2d(pbid.XY() + Radius * dc2.XY());
+      dc2           = gp_Dir2d(originL2.XY() - pbid.XY());
+      sign          = dc2.Dot(gp_Dir2d(-L2.Direction().Y(), L2.Direction().X()));
+      dc2           = gp_Dir2d(sign * gp_XY(-L2.Direction().Y(), L2.Direction().X()));
+      pnttg2sol(i)  = gp_Pnt2d(pbid.XY() + Radius * dc2.XY());
+      pntcen(i)     = pbid;
+      par1sol(i)    = ElCLib::Parameter(cirsol(i), pnttg1sol(i));
+      pararg1(i)    = ElCLib::Parameter(L1, pnttg1sol(i));
+      par2sol(i)    = ElCLib::Parameter(cirsol(i), pnttg2sol(i));
+      pararg2(i)    = ElCLib::Parameter(L2, pnttg2sol(i));
+      parcen3(i)    = ElCLib::Parameter(OnCirc, pntcen(i));
     }
   }
 }

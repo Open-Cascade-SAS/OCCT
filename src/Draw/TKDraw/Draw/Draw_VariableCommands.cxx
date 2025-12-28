@@ -23,12 +23,15 @@
 #include <Draw_Grid.hxx>
 #include <Draw_Number.hxx>
 #include <Draw_ProgressIndicator.hxx>
-#include <Draw_SequenceOfDrawable3D.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Message.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_SStream.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <Standard_NotImplemented.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -44,34 +47,32 @@ extern Draw_Viewer dout;
 #include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 
-Standard_Boolean Draw_ParseFailed = Standard_True;
+bool Draw_ParseFailed = true;
 
-static Standard_Boolean autodisp  = Standard_True;
-static Standard_Boolean repaint2d = Standard_False, repaint3d = Standard_False;
+static bool autodisp  = true;
+static bool repaint2d = false, repaint3d = false;
 
 //! Returns dictionary of variables
 //! Variables are stored in a map Integer, Transient.
 //! The Integer Value is the content of the Tcl variable.
-static NCollection_Map<Handle(Draw_Drawable3D)>& Draw_changeDrawables()
+static NCollection_Map<occ::handle<Draw_Drawable3D>>& Draw_changeDrawables()
 {
-  static NCollection_Map<Handle(Draw_Drawable3D)> theVariables;
+  static NCollection_Map<occ::handle<Draw_Drawable3D>> theVariables;
   return theVariables;
 }
 
 //=================================================================================================
 
-static Standard_Integer p_id   = 0;
-static Standard_Integer p_X    = 0;
-static Standard_Integer p_Y    = 0;
-static Standard_Integer p_b    = 0;
-static const char*      p_Name = "";
+static int         p_id   = 0;
+static int         p_X    = 0;
+static int         p_Y    = 0;
+static int         p_b    = 0;
+static const char* p_Name = "";
 
 //=======================================================================
 // save
 //=======================================================================
-static Standard_Integer save(Draw_Interpretor& theDI,
-                             Standard_Integer  theNbArgs,
-                             const char**      theArgVec)
+static int save(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 3)
   {
@@ -80,16 +81,16 @@ static Standard_Integer save(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Draw_Drawable3D) aDrawable = Draw::Get(theArgVec[1]);
+  occ::handle<Draw_Drawable3D> aDrawable = Draw::Get(theArgVec[1]);
   if (aDrawable.IsNull())
   {
     theDI << "Syntax error: '" << theArgVec[1] << "' is not a drawable";
     return 1;
   }
 
-  const char*                   aName       = theArgVec[2];
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aStream =
+  const char*                        aName       = theArgVec[2];
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(aName, std::ios::out | std::ios::binary);
   aStream->precision(15);
   if (aStream.get() == NULL || !aStream->good())
@@ -100,8 +101,8 @@ static Standard_Integer save(Draw_Interpretor& theDI,
 
   try
   {
-    Handle(Draw_ProgressIndicator) aProgress     = new Draw_ProgressIndicator(theDI, 1);
-    Standard_CString               aToolTypeName = aDrawable->DynamicType()->Name();
+    occ::handle<Draw_ProgressIndicator> aProgress     = new Draw_ProgressIndicator(theDI, 1);
+    const char*                         aToolTypeName = aDrawable->DynamicType()->Name();
     *aStream << aToolTypeName << "\n";
     Draw::SetProgressBar(aProgress);
     aDrawable->Save(*aStream);
@@ -113,10 +114,10 @@ static Standard_Integer save(Draw_Interpretor& theDI,
   }
   *aStream << "\n";
   *aStream << "0\n\n";
-  Draw::SetProgressBar(Handle(Draw_ProgressIndicator)());
+  Draw::SetProgressBar(occ::handle<Draw_ProgressIndicator>());
 
-  errno                       = 0;
-  const Standard_Boolean aRes = aStream->good() && !errno;
+  errno           = 0;
+  const bool aRes = aStream->good() && !errno;
   if (!aRes)
   {
     theDI << "Error: file has not been written";
@@ -130,9 +131,7 @@ static Standard_Integer save(Draw_Interpretor& theDI,
 //=======================================================================
 // read
 //=======================================================================
-static Standard_Integer restore(Draw_Interpretor& theDI,
-                                Standard_Integer  theNbArgs,
-                                const char**      theArgVec)
+static int restore(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 3)
   {
@@ -142,8 +141,8 @@ static Standard_Integer restore(Draw_Interpretor& theDI,
   const char* aFileName = theArgVec[1];
   const char* aVarName  = theArgVec[2];
 
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aStream     = aFileSystem->OpenIStream(aFileName, std::ios::in);
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::istream>      aStream = aFileSystem->OpenIStream(aFileName, std::ios::in);
   if (aStream.get() == NULL)
   {
     theDI << "Error: cannot open file for reading: '" << aFileName << "'";
@@ -158,9 +157,9 @@ static Standard_Integer restore(Draw_Interpretor& theDI,
   }
 
   {
-    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
+    occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI, 1);
     Draw::SetProgressBar(aProgress);
-    Handle(Draw_Drawable3D) aDrawable = Draw_Drawable3D::Restore(aType, *aStream);
+    occ::handle<Draw_Drawable3D> aDrawable = Draw_Drawable3D::Restore(aType, *aStream);
     if (aDrawable.IsNull())
     {
       // assume that this file stores a DBRep_DrawableShape variable
@@ -174,7 +173,7 @@ static Standard_Integer restore(Draw_Interpretor& theDI,
     }
 
     Draw::Set(aVarName, aDrawable, aDrawable->IsDisplayable() && autodisp);
-    Draw::SetProgressBar(Handle(Draw_ProgressIndicator)());
+    Draw::SetProgressBar(occ::handle<Draw_ProgressIndicator>());
   }
 
   theDI << aVarName;
@@ -185,15 +184,15 @@ static Standard_Integer restore(Draw_Interpretor& theDI,
 // display
 //=======================================================================
 
-static Standard_Integer display(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int display(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
     return 1;
   else
   {
-    for (Standard_Integer i = 1; i < n; i++)
+    for (int i = 1; i < n; i++)
     {
-      Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
+      occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
       if (!D.IsNull())
       {
         if (!D->Visible())
@@ -211,31 +210,31 @@ static Standard_Integer display(Draw_Interpretor& di, Standard_Integer n, const 
 // erase, clear, donly
 //=======================================================================
 
-static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int erase(Draw_Interpretor& di, int n, const char** a)
 {
-  static Standard_Boolean draw_erase_mute = Standard_False;
+  static bool draw_erase_mute = false;
   if (n == 2)
   {
     if (!strcasecmp(a[1], "-mute"))
     {
-      draw_erase_mute = Standard_True;
+      draw_erase_mute = true;
       return 0;
     }
   }
 
-  Standard_Boolean donly = !strcasecmp(a[0], "donly");
+  bool donly = !strcasecmp(a[0], "donly");
 
   if (n <= 1 || donly)
   {
     // clear, 2dclear, donly, erase (without arguments)
-    Standard_Integer i;
+    int i;
 
     // solve the names for "." before erasing
     if (donly)
     {
       for (i = 1; i < n; i++)
       {
-        Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
+        occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
         if (D.IsNull())
         {
           if ((a[i][0] == '.') && (a[i][1] == '\0'))
@@ -246,12 +245,12 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
     }
 
     // sauvegarde des proteges visibles
-    Draw_SequenceOfDrawable3D prot;
-    for (NCollection_Map<Handle(Draw_Drawable3D)>::Iterator aMapIt(Draw::Drawables());
+    NCollection_Sequence<occ::handle<Draw_Drawable3D>> prot;
+    for (NCollection_Map<occ::handle<Draw_Drawable3D>>::Iterator aMapIt(Draw::Drawables());
          aMapIt.More();
          aMapIt.Next())
     {
-      const Handle(Draw_Drawable3D)& D = aMapIt.Key();
+      const occ::handle<Draw_Drawable3D>& D = aMapIt.Key();
       if (!D.IsNull())
       {
         if (D->Protected() && D->Visible())
@@ -262,7 +261,7 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
     }
 
     // effacement de toutes les variables
-    Standard_Integer erasemode = 1;
+    int erasemode = 1;
     if (a[0][0] == '2')
       erasemode = 2;
     if (a[0][0] == 'c')
@@ -281,7 +280,7 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
     {
       for (i = 1; i < n; i++)
       {
-        Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
+        occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
         if (!D.IsNull())
         {
           if (!D->Visible())
@@ -300,9 +299,9 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
   }
   else
   {
-    for (Standard_Integer i = 1; i < n; i++)
+    for (int i = 1; i < n; i++)
     {
-      Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
+      occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
       if (!D.IsNull())
       {
         if (D->Visible())
@@ -316,9 +315,9 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
     dout.Repaint2D();
     dout.Repaint3D();
   }
-  draw_erase_mute = Standard_False;
-  repaint2d       = Standard_False;
-  repaint3d       = Standard_False;
+  draw_erase_mute = false;
+  repaint2d       = false;
+  repaint3d       = false;
   dout.Flush();
   return 0;
 }
@@ -327,23 +326,23 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
 // draw
 //=======================================================================
 
-static Standard_Integer draw(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int draw(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  Standard_Integer id = Draw::Atoi(a[1]);
+  int id = Draw::Atoi(a[1]);
   if (!dout.HasView(id))
   {
     Message::SendFail() << "bad view number in draw";
     return 1;
   }
-  Standard_Integer mo = Draw::Atoi(a[2]);
-  Draw_Display     d  = dout.MakeDisplay(id);
+  int          mo = Draw::Atoi(a[2]);
+  Draw_Display d  = dout.MakeDisplay(id);
   d.SetMode(mo);
-  Standard_Integer i;
+  int i;
   for (i = 3; i < n; i++)
   {
-    Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
+    occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
     if (!D.IsNull())
       D->DrawOn(d);
   }
@@ -355,14 +354,14 @@ static Standard_Integer draw(Draw_Interpretor&, Standard_Integer n, const char**
 // protect, unprotect
 //=======================================================================
 
-static Standard_Integer protect(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int protect(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
     return 1;
-  Standard_Boolean prot = *a[0] != 'u';
-  for (Standard_Integer i = 1; i < n; i++)
+  bool prot = *a[0] != 'u';
+  for (int i = 1; i < n; i++)
   {
-    Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
+    occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
     if (!D.IsNull())
     {
       D->Protected(prot);
@@ -376,7 +375,7 @@ static Standard_Integer protect(Draw_Interpretor& di, Standard_Integer n, const 
 // autodisplay
 //=======================================================================
 
-static Standard_Integer autodisplay(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int autodisplay(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
     autodisp = !autodisp;
@@ -395,13 +394,13 @@ static Standard_Integer autodisplay(Draw_Interpretor& di, Standard_Integer n, co
 // whatis
 //=======================================================================
 
-static Standard_Integer whatis(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int whatis(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
     return 1;
-  for (Standard_Integer i = 1; i < n; i++)
+  for (int i = 1; i < n; i++)
   {
-    Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
+    occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
     if (!D.IsNull())
     {
       D->Whatis(di);
@@ -414,7 +413,7 @@ static Standard_Integer whatis(Draw_Interpretor& di, Standard_Integer n, const c
 // value
 //=======================================================================
 
-static Standard_Integer value(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int value(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
     return 1;
@@ -425,16 +424,16 @@ static Standard_Integer value(Draw_Interpretor& di, Standard_Integer n, const ch
 
 //=================================================================================================
 
-static Standard_Integer dname(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int dname(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
   {
     return 1;
   }
   //
-  Standard_PCharacter     pC;
-  Standard_Integer        i;
-  Handle(Draw_Drawable3D) aD;
+  Standard_PCharacter          pC;
+  int                          i;
+  occ::handle<Draw_Drawable3D> aD;
   //
   for (i = 1; i < n; ++i)
   {
@@ -455,14 +454,14 @@ static Standard_Integer dname(Draw_Interpretor& di, Standard_Integer n, const ch
 // dump
 //=======================================================================
 
-static Standard_Integer dump(Draw_Interpretor& DI, Standard_Integer n, const char** a)
+static int dump(Draw_Interpretor& DI, int n, const char** a)
 {
   if (n < 2)
     return 1;
-  Standard_Integer i;
+  int i;
   for (i = 1; i < n; i++)
   {
-    Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
+    occ::handle<Draw_Drawable3D> D = Draw::Get(a[i]);
     if (!D.IsNull())
     {
       Standard_SStream sss;
@@ -479,14 +478,14 @@ static Standard_Integer dump(Draw_Interpretor& DI, Standard_Integer n, const cha
 // copy
 //=======================================================================
 
-static Standard_Integer copy(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int copy(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  Standard_Boolean cop = !strcasecmp(a[0], "copy");
+  bool cop = !strcasecmp(a[0], "copy");
 
-  Handle(Draw_Drawable3D) D;
-  for (Standard_Integer i = 1; i < n; i += 2)
+  occ::handle<Draw_Drawable3D> D;
+  for (int i = 1; i < n; i += 2)
   {
     if (i + 1 >= n)
       return 0;
@@ -497,7 +496,7 @@ static Standard_Integer copy(Draw_Interpretor&, Standard_Integer n, const char**
         D = D->Copy();
       else
         // clear old name
-        Draw::Set(a[i], Handle(Draw_Drawable3D)());
+        Draw::Set(a[i], occ::handle<Draw_Drawable3D>());
 
       Draw::Set(a[i + 1], D);
     }
@@ -507,26 +506,26 @@ static Standard_Integer copy(Draw_Interpretor&, Standard_Integer n, const char**
 
 //=================================================================================================
 
-static Standard_Integer repaintall(Draw_Interpretor&, Standard_Integer, const char**)
+static int repaintall(Draw_Interpretor&, int, const char**)
 {
   if (repaint2d)
     dout.Repaint2D();
-  repaint2d = Standard_False;
+  repaint2d = false;
   if (repaint3d)
     dout.Repaint3D();
-  repaint3d = Standard_False;
+  repaint3d = false;
   dout.Flush();
   return 0;
 }
 
 //=================================================================================================
 
-static Standard_Integer set(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int set(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
-  Standard_Integer i   = 1;
-  Standard_Real    val = 0;
+  int    i   = 1;
+  double val = 0;
   for (i = 1; i < n; i += 2)
   {
     val = 0;
@@ -540,7 +539,7 @@ static Standard_Integer set(Draw_Interpretor& di, Standard_Integer n, const char
 
 //=================================================================================================
 
-static Standard_Integer dsetenv(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
+static int dsetenv(Draw_Interpretor& /*di*/, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -561,7 +560,7 @@ static Standard_Integer dsetenv(Draw_Interpretor& /*di*/, Standard_Integer argc,
 
 //=================================================================================================
 
-static Standard_Integer dgetenv(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int dgetenv(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -576,11 +575,11 @@ static Standard_Integer dgetenv(Draw_Interpretor& di, Standard_Integer argc, con
 
 //=================================================================================================
 
-static Standard_Integer isdraw(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int isdraw(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
     return 1;
-  Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
+  occ::handle<Draw_Drawable3D> D = Draw::Get(a[1]);
   if (D.IsNull())
     di << "0";
   else
@@ -590,11 +589,11 @@ static Standard_Integer isdraw(Draw_Interpretor& di, Standard_Integer n, const c
 
 //=================================================================================================
 
-Standard_Integer isprot(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int isprot(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
     return 1;
-  Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
+  occ::handle<Draw_Drawable3D> D = Draw::Get(a[1]);
   if (D.IsNull())
     di << "0";
   else
@@ -609,19 +608,19 @@ Standard_Integer isprot(Draw_Interpretor& di, Standard_Integer n, const char** a
 
 //=================================================================================================
 
-static Standard_Integer pick(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int pick(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 6)
     return 1;
-  Standard_Integer id;
-  Standard_Integer X, Y, b;
-  Standard_Boolean wait = (n == 6);
+  int  id;
+  int  X, Y, b;
+  bool wait = (n == 6);
   if (!wait)
     id = Draw::Atoi(a[1]);
   dout.Select(id, X, Y, b, wait);
-  Standard_Real z = dout.Zoom(id);
-  gp_Pnt        P((Standard_Real)X / z, (Standard_Real)Y / z, 0);
-  gp_Trsf       T;
+  double  z = dout.Zoom(id);
+  gp_Pnt  P((double)X / z, (double)Y / z, 0);
+  gp_Trsf T;
   dout.GetTrsf(id, T);
   T.Invert();
   P.Transform(T);
@@ -635,7 +634,7 @@ static Standard_Integer pick(Draw_Interpretor&, Standard_Integer n, const char**
 
 //=================================================================================================
 
-static Standard_Integer lastrep(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int lastrep(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 5)
     return 1;
@@ -648,9 +647,9 @@ static Standard_Integer lastrep(Draw_Interpretor& di, Standard_Integer n, const 
   }
   else if (n == 6)
   {
-    Standard_Real z = dout.Zoom(p_id);
-    gp_Pnt        P((Standard_Real)p_X / z, (Standard_Real)p_Y / z, 0);
-    gp_Trsf       T;
+    double  z = dout.Zoom(p_id);
+    gp_Pnt  P((double)p_X / z, (double)p_Y / z, 0);
+    gp_Trsf T;
     dout.GetTrsf(p_id, T);
     T.Invert();
     P.Transform(T);
@@ -670,7 +669,7 @@ static Standard_Integer lastrep(Draw_Interpretor& di, Standard_Integer n, const 
 
 //=================================================================================================
 
-void Draw::Set(const Standard_CString name, const Handle(Draw_Drawable3D)& D)
+void Draw::Set(const char* name, const occ::handle<Draw_Drawable3D>& D)
 {
   Draw::Set(name, D, autodisp);
 }
@@ -687,7 +686,7 @@ static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*,
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
 
   // MSV 9.10.14 CR25344
-  Handle(Draw_Drawable3D) D(reinterpret_cast<Draw_Drawable3D*>(CD));
+  occ::handle<Draw_Drawable3D> D(reinterpret_cast<Draw_Drawable3D*>(CD));
   if (D.IsNull())
   {
     Tcl_UntraceVar(aCommands.Interp(), name, TCL_TRACE_UNSETS | TCL_TRACE_WRITES, tracevar, CD);
@@ -704,9 +703,9 @@ static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*,
     {
       dout.RemoveDrawable(D);
       if (D->Is3D())
-        repaint3d = Standard_True;
+        repaint3d = true;
       else
-        repaint2d = Standard_True;
+        repaint2d = true;
     }
     Tcl_UntraceVar(aCommands.Interp(), name, TCL_TRACE_UNSETS | TCL_TRACE_WRITES, tracevar, CD);
     Draw_changeDrawables().Remove(D);
@@ -716,9 +715,7 @@ static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*,
 
 //=================================================================================================
 
-void Draw::Set(const Standard_CString         name,
-               const Handle(Draw_Drawable3D)& D,
-               const Standard_Boolean         displ)
+void Draw::Set(const char* name, const occ::handle<Draw_Drawable3D>& D, const bool displ)
 {
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
 
@@ -734,12 +731,12 @@ void Draw::Set(const Standard_CString         name,
   else
   {
     // Check if the variable with the same name exists
-    ClientData              aCD = Tcl_VarTraceInfo(aCommands.Interp(),
+    ClientData                   aCD = Tcl_VarTraceInfo(aCommands.Interp(),
                                       name,
                                       TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                                       tracevar,
                                       NULL);
-    Handle(Draw_Drawable3D) anOldD(reinterpret_cast<Draw_Drawable3D*>(aCD));
+    occ::handle<Draw_Drawable3D> anOldD(reinterpret_cast<Draw_Drawable3D*>(aCD));
     if (!anOldD.IsNull())
     {
       if (Draw::Drawables().Contains(anOldD) && anOldD->Protected())
@@ -776,42 +773,41 @@ void Draw::Set(const Standard_CString         name,
 
 //=================================================================================================
 
-void Draw::Set(const Standard_CString theName, const Standard_Real theValue)
+void Draw::Set(const char* theName, const double theValue)
 {
-  if (Handle(Draw_Number) aNumber = Handle(Draw_Number)::DownCast(Draw::GetExisting(theName)))
+  if (occ::handle<Draw_Number> aNumber = occ::down_cast<Draw_Number>(Draw::GetExisting(theName)))
   {
     aNumber->Value(theValue);
   }
   else
   {
     aNumber = new Draw_Number(theValue);
-    Draw::Set(theName, aNumber, Standard_False);
+    Draw::Set(theName, aNumber, false);
   }
 }
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) Draw::getDrawable(Standard_CString& theName,
-                                          Standard_Boolean  theToAllowPick)
+occ::handle<Draw_Drawable3D> Draw::getDrawable(const char*& theName, bool theToAllowPick)
 {
-  const Standard_Boolean toPick = ((theName[0] == '.') && (theName[1] == '\0'));
+  const bool toPick = ((theName[0] == '.') && (theName[1] == '\0'));
   if (!toPick)
   {
-    ClientData              aCD       = Tcl_VarTraceInfo(Draw::GetInterpretor().Interp(),
+    ClientData                   aCD       = Tcl_VarTraceInfo(Draw::GetInterpretor().Interp(),
                                       theName,
                                       TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                                       tracevar,
                                       NULL);
-    Handle(Draw_Drawable3D) aDrawable = reinterpret_cast<Draw_Drawable3D*>(aCD);
-    return Draw::Drawables().Contains(aDrawable) ? aDrawable : Handle(Draw_Drawable3D)();
+    occ::handle<Draw_Drawable3D> aDrawable = reinterpret_cast<Draw_Drawable3D*>(aCD);
+    return Draw::Drawables().Contains(aDrawable) ? aDrawable : occ::handle<Draw_Drawable3D>();
   }
   else if (!theToAllowPick)
   {
-    return Handle(Draw_Drawable3D)();
+    return occ::handle<Draw_Drawable3D>();
   }
 
   std::cout << "Pick an object" << std::endl;
-  Handle(Draw_Drawable3D) aDrawable;
+  occ::handle<Draw_Drawable3D> aDrawable;
   dout.Select(p_id, p_X, p_Y, p_b);
   dout.Pick(p_id, p_X, p_Y, 5, aDrawable, 0);
   if (!aDrawable.IsNull() && aDrawable->Name() != NULL)
@@ -823,22 +819,19 @@ Handle(Draw_Drawable3D) Draw::getDrawable(Standard_CString& theName,
 
 //=================================================================================================
 
-Standard_Boolean Draw::Get(const Standard_CString theName, Standard_Real& theValue)
+bool Draw::Get(const char* theName, double& theValue)
 {
-  if (Handle(Draw_Number) aNumber = Handle(Draw_Number)::DownCast(Draw::GetExisting(theName)))
+  if (occ::handle<Draw_Number> aNumber = occ::down_cast<Draw_Number>(Draw::GetExisting(theName)))
   {
     theValue = aNumber->Value();
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void Draw::LastPick(Standard_Integer& view,
-                    Standard_Integer& X,
-                    Standard_Integer& Y,
-                    Standard_Integer& button)
+void Draw::LastPick(int& view, int& X, int& Y, int& button)
 {
   view   = p_id;
   X      = p_X;
@@ -850,17 +843,17 @@ void Draw::LastPick(Standard_Integer& view,
 
 void Draw::Repaint()
 {
-  repaint2d = Standard_True;
-  repaint3d = Standard_True;
+  repaint2d = true;
+  repaint3d = true;
 }
 
 //=================================================================================================
 
-// static Standard_Integer trigo (Draw_Interpretor& di, Standard_Integer n, const char** a)
-static Standard_Integer trigo(Draw_Interpretor& di, Standard_Integer, const char** a)
+// static int trigo (Draw_Interpretor& di, int n, const char** a)
+static int trigo(Draw_Interpretor& di, int, const char** a)
 {
 
-  Standard_Real x = Draw::Atof(a[1]);
+  double x = Draw::Atof(a[1]);
 
   if (!strcasecmp(a[0], "cos"))
     di << std::cos(x);
@@ -884,25 +877,25 @@ static Standard_Integer trigo(Draw_Interpretor& di, Standard_Integer, const char
 // Atof and Atoi
 //=======================================================================
 
-static Standard_Boolean Numeric(char c)
+static bool Numeric(char c)
 {
   return (c == '.' || (c >= '0' && c <= '9'));
 }
 
-static Standard_Boolean Alphabetic(char c)
+static bool Alphabetic(char c)
 {
   return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_'));
 }
 
-static Standard_Real Parse(char*&);
+static double Parse(char*&);
 
-static Standard_Real ParseValue(char*& theName)
+static double ParseValue(char*& theName)
 {
   while (*theName == ' ' || *theName == '\t')
   {
     ++theName;
   }
-  Standard_Real x = 0;
+  double x = 0;
   switch (*theName)
   {
     case '\0': {
@@ -954,21 +947,21 @@ static Standard_Real ParseValue(char*& theName)
       {
         x = Atof(theName);
       }
-      else if (!Draw::Get((Standard_CString)theName, x)) // variable
+      else if (!Draw::Get((const char*)theName, x)) // variable
       {
         // search for a function ...
         *p = c;
         // count arguments
-        Standard_Integer argc = 1;
-        char*            q    = p;
+        int   argc = 1;
+        char* q    = p;
         while ((*q == ' ') || (*q == '\t'))
         {
           ++q;
         }
         if (*q == '(')
         {
-          Standard_Integer pc = 1;
-          argc                = 2;
+          int pc = 1;
+          argc   = 2;
           q++;
           while ((pc > 0) && *q)
           {
@@ -1054,7 +1047,7 @@ static Standard_Real ParseValue(char*& theName)
         }
         else
         {
-          Draw_ParseFailed = Standard_True;
+          Draw_ParseFailed = true;
         }
       }
       *p      = c;
@@ -1070,9 +1063,9 @@ static Standard_Real ParseValue(char*& theName)
   return x;
 }
 
-static Standard_Real ParseFactor(char*& name)
+static double ParseFactor(char*& name)
 {
-  Standard_Real x = ParseValue(name);
+  double x = ParseValue(name);
 
   for (;;)
   {
@@ -1098,9 +1091,9 @@ static Standard_Real ParseFactor(char*& name)
   }
 }
 
-static Standard_Real Parse(char*& name)
+static double Parse(char*& name)
 {
-  Standard_Real x = ParseFactor(name);
+  double x = ParseFactor(name);
 
   for (;;)
   {
@@ -1128,29 +1121,29 @@ static Standard_Real Parse(char*& name)
 
 //=================================================================================================
 
-Standard_Real Draw::Atof(const Standard_CString theName)
+double Draw::Atof(const char* theName)
 {
   // copy the string
-  NCollection_Array1<char> aBuff(0, (Standard_Integer)strlen(theName));
+  NCollection_Array1<char> aBuff(0, (int)strlen(theName));
   char*                    n = &aBuff.ChangeFirst();
   strcpy(n, theName);
-  Draw_ParseFailed = Standard_False;
-  Standard_Real x  = Parse(n);
+  Draw_ParseFailed = false;
+  double x         = Parse(n);
   while ((*n == ' ') || (*n == '\t'))
     n++;
   if (*n)
-    Draw_ParseFailed = Standard_True;
+    Draw_ParseFailed = true;
   return x;
 }
 
 //=================================================================================================
 
-bool Draw::ParseReal(const Standard_CString theExpressionString, Standard_Real& theParsedRealValue)
+bool Draw::ParseReal(const char* theExpressionString, double& theParsedRealValue)
 {
-  const Standard_Real aParsedRealValue = Atof(theExpressionString);
+  const double aParsedRealValue = Atof(theExpressionString);
   if (Draw_ParseFailed)
   {
-    Draw_ParseFailed = Standard_False;
+    Draw_ParseFailed = false;
     return false;
   }
   theParsedRealValue = aParsedRealValue;
@@ -1159,23 +1152,22 @@ bool Draw::ParseReal(const Standard_CString theExpressionString, Standard_Real& 
 
 //=================================================================================================
 
-Standard_Integer Draw::Atoi(const Standard_CString name)
+int Draw::Atoi(const char* name)
 {
-  return (Standard_Integer)Draw::Atof(name);
+  return (int)Draw::Atof(name);
 }
 
 //=================================================================================================
 
-bool Draw::ParseInteger(const Standard_CString theExpressionString,
-                        Standard_Integer&      theParsedIntegerValue)
+bool Draw::ParseInteger(const char* theExpressionString, int& theParsedIntegerValue)
 {
-  Standard_Real aParsedRealValue = 0.0;
+  double aParsedRealValue = 0.0;
   if (!ParseReal(theExpressionString, aParsedRealValue))
   {
     return false;
   }
-  const Standard_Integer aParsedIntegerValue = static_cast<Standard_Integer>(aParsedRealValue);
-  if (static_cast<Standard_Real>(aParsedIntegerValue) != aParsedRealValue)
+  const int aParsedIntegerValue = static_cast<int>(aParsedRealValue);
+  if (static_cast<double>(aParsedIntegerValue) != aParsedRealValue)
   {
     return false;
   }
@@ -1185,7 +1177,7 @@ bool Draw::ParseInteger(const Standard_CString theExpressionString,
 
 //=================================================================================================
 
-void Draw::Set(const Standard_CString Name, const Standard_CString val)
+void Draw::Set(const char* Name, const char* val)
 {
   Standard_PCharacter pName, pVal;
   //
@@ -1197,7 +1189,7 @@ void Draw::Set(const Standard_CString Name, const Standard_CString val)
 
 //=================================================================================================
 
-const NCollection_Map<Handle(Draw_Drawable3D)>& Draw::Drawables()
+const NCollection_Map<occ::handle<Draw_Drawable3D>>& Draw::Drawables()
 {
   return Draw_changeDrawables();
 }
@@ -1209,8 +1201,8 @@ const NCollection_Map<Handle(Draw_Drawable3D)>& Draw::Drawables()
 
 static void before()
 {
-  repaint2d = Standard_False;
-  repaint3d = Standard_False;
+  repaint2d = false;
+  repaint3d = false;
 }
 
 void Draw_RepaintNowIfNecessary()
@@ -1219,26 +1211,26 @@ void Draw_RepaintNowIfNecessary()
     dout.Repaint2D();
   if (repaint3d)
     dout.Repaint3D();
-  repaint2d = Standard_False;
-  repaint3d = Standard_False;
+  repaint2d = false;
+  repaint3d = false;
 }
 
-static void after(Standard_Integer)
+static void after(int)
 {
   Draw_RepaintNowIfNecessary();
 }
 
 extern void (*Draw_BeforeCommand)();
-extern void (*Draw_AfterCommand)(Standard_Integer);
+extern void (*Draw_AfterCommand)(int);
 
 //=================================================================================================
 
 void Draw::VariableCommands(Draw_Interpretor& theCommandsArg)
 {
-  static Standard_Boolean Done = Standard_False;
+  static bool Done = false;
   if (Done)
     return;
-  Done = Standard_True;
+  Done = true;
 
   // set up start and stop command
   Draw_BeforeCommand = &before;
@@ -1248,33 +1240,33 @@ void Draw::VariableCommands(Draw_Interpretor& theCommandsArg)
   Draw_Number::RegisterFactory();
 
   // set up some variables
-  const char*         n;
-  Handle(Draw_Axis3D) theAxes3d = new Draw_Axis3D(gp_Pnt(0, 0, 0), Draw_bleu, 20);
-  n                             = "axes";
+  const char*              n;
+  occ::handle<Draw_Axis3D> theAxes3d = new Draw_Axis3D(gp_Pnt(0, 0, 0), Draw_bleu, 20);
+  n                                  = "axes";
   Draw::Set(n, theAxes3d);
-  theAxes3d->Protected(Standard_True);
+  theAxes3d->Protected(true);
 
-  Handle(Draw_Axis2D) theAxes2d = new Draw_Axis2D(gp_Pnt2d(0, 0), Draw_bleu, 20);
-  n                             = "axes2d";
+  occ::handle<Draw_Axis2D> theAxes2d = new Draw_Axis2D(gp_Pnt2d(0, 0), Draw_bleu, 20);
+  n                                  = "axes2d";
   Draw::Set(n, theAxes2d);
-  theAxes2d->Protected(Standard_True);
+  theAxes2d->Protected(true);
 
   n = "pi";
   Draw::Set(n, M_PI);
-  Draw::Get(n)->Protected(Standard_True);
+  Draw::Get(n)->Protected(true);
 
   n = "pinf";
   Draw::Set(n, RealLast());
-  Draw::Get(n)->Protected(Standard_True);
+  Draw::Get(n)->Protected(true);
 
   n = "minf";
   Draw::Set(n, RealFirst());
-  Draw::Get(n)->Protected(Standard_True);
+  Draw::Get(n)->Protected(true);
 
-  n                         = "grid";
-  Handle(Draw_Grid) theGrid = new Draw_Grid();
+  n                              = "grid";
+  occ::handle<Draw_Grid> theGrid = new Draw_Grid();
   Draw::Set(n, theGrid);
-  theGrid->Protected(Standard_True);
+  theGrid->Protected(true);
 
   const char* g;
 

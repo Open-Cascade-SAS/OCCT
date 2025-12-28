@@ -36,33 +36,33 @@ Intrv_Interval::Intrv_Interval()
     : myStart(RealFirst()),
       myEnd(RealLast())
 {
-  myTolStart = (Standard_ShortReal)Epsilon(RealFirst());
-  myTolEnd   = (Standard_ShortReal)Epsilon(RealLast());
+  myTolStart = (float)Epsilon(RealFirst());
+  myTolEnd   = (float)Epsilon(RealLast());
 }
 
 //=================================================================================================
 
-Intrv_Interval::Intrv_Interval(const Standard_Real Start, const Standard_Real End)
+Intrv_Interval::Intrv_Interval(const double Start, const double End)
     : myStart(Start),
       myEnd(End)
 {
-  myTolStart = (Standard_ShortReal)Epsilon(myStart);
-  myTolEnd   = (Standard_ShortReal)Epsilon(myEnd);
+  myTolStart = (float)Epsilon(myStart);
+  myTolEnd   = (float)Epsilon(myEnd);
 }
 
 //=================================================================================================
 
-Intrv_Interval::Intrv_Interval(const Standard_Real      Start,
-                               const Standard_ShortReal TolStart,
-                               const Standard_Real      End,
-                               const Standard_ShortReal TolEnd)
+Intrv_Interval::Intrv_Interval(const double Start,
+                               const float  TolStart,
+                               const double End,
+                               const float  TolEnd)
     : myStart(Start),
       myEnd(End),
       myTolStart(TolStart),
       myTolEnd(TolEnd)
 {
-  Standard_ShortReal epsStart = (Standard_ShortReal)Epsilon(myStart);
-  Standard_ShortReal epsEnd   = (Standard_ShortReal)Epsilon(myEnd);
+  float epsStart = (float)Epsilon(myStart);
+  float epsEnd   = (float)Epsilon(myEnd);
   if (myTolStart < epsStart)
     myTolStart = epsStart;
   if (myTolEnd < epsEnd)
@@ -73,14 +73,14 @@ Intrv_Interval::Intrv_Interval(const Standard_Real      Start,
 
 Intrv_Position Intrv_Interval::Position(const Intrv_Interval& Other) const
 {
-  Standard_Real  mySMin = myStart - myTolStart;
-  Standard_Real  mySMax = myStart + myTolStart;
-  Standard_Real  myEMin = myEnd - myTolEnd;
-  Standard_Real  myEMax = myEnd + myTolEnd;
-  Standard_Real  otSMin = Other.myStart - Other.myTolStart;
-  Standard_Real  otSMax = Other.myStart + Other.myTolStart;
-  Standard_Real  otEMin = Other.myEnd - Other.myTolEnd;
-  Standard_Real  otEMax = Other.myEnd + Other.myTolEnd;
+  double         mySMin = myStart - myTolStart;
+  double         mySMax = myStart + myTolStart;
+  double         myEMin = myEnd - myTolEnd;
+  double         myEMax = myEnd + myTolEnd;
+  double         otSMin = Other.myStart - Other.myTolStart;
+  double         otSMax = Other.myStart + Other.myTolStart;
+  double         otEMin = Other.myEnd - Other.myTolEnd;
+  double         otEMax = Other.myEnd + Other.myTolEnd;
   Intrv_Position P;
   if (mySMax < otSMin)
   {

@@ -22,10 +22,9 @@
 #include <Precision.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_Real.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <algorithm>
 
@@ -34,18 +33,18 @@
 // purpose  : calculate  the Hermite coefficients of degree 3 from BS and
 //    	     store them in TAB(4 coefficients)
 //=======================================================================
-static void HermiteCoeff(const Handle(Geom_BSplineCurve)& BS, TColStd_Array1OfReal& TAB)
+static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_Array1<double>& TAB)
 
 {
-  TColStd_Array1OfReal    Knots(1, BS->NbKnots());
-  TColStd_Array1OfReal    Weights(1, BS->NbPoles());
-  TColStd_Array1OfInteger Mults(1, BS->NbKnots());
+  NCollection_Array1<double> Knots(1, BS->NbKnots());
+  NCollection_Array1<double> Weights(1, BS->NbPoles());
+  NCollection_Array1<int>    Mults(1, BS->NbKnots());
   // clang-format off
-  Standard_Integer        Degree,Index0,Index1;                     // denominateur value for u=0 & u=1
-  Standard_Real           Denom0,Denom1,                            // denominator value for u=0 & u=1
+  int        Degree,Index0,Index1;                     // denominateur value for u=0 & u=1
+  double           Denom0,Denom1,                            // denominator value for u=0 & u=1
                           Deriv0,Deriv1 ;                           // derivative denominator value for u=0 & 1
   // clang-format on
-  Standard_Boolean Periodic;
+  bool Periodic;
 
   BS->Knots(Knots);
   BSplCLib::Reparametrize(0.0, 1.0, Knots); // affinity on the nodal vector
@@ -88,18 +87,19 @@ static void HermiteCoeff(const Handle(Geom_BSplineCurve)& BS, TColStd_Array1OfRe
 //    	     store them in TAB(4 coefficients)
 //=======================================================================
 
-static void HermiteCoeff(const Handle(Geom2d_BSplineCurve)& BS, TColStd_Array1OfReal& TAB)
+static void HermiteCoeff(const occ::handle<Geom2d_BSplineCurve>& BS,
+                         NCollection_Array1<double>&             TAB)
 
 {
-  TColStd_Array1OfReal    Knots(1, BS->NbKnots());
-  TColStd_Array1OfReal    Weights(1, BS->NbPoles());
-  TColStd_Array1OfInteger Mults(1, BS->NbKnots());
-  Standard_Integer        Degree, Index0, Index1;
-  Standard_Real           Denom0, Denom1, // denominateur value for u=0 & u=1
-                                          // clang-format off
+  NCollection_Array1<double> Knots(1, BS->NbKnots());
+  NCollection_Array1<double> Weights(1, BS->NbPoles());
+  NCollection_Array1<int>    Mults(1, BS->NbKnots());
+  int                        Degree, Index0, Index1;
+  double                     Denom0, Denom1, // denominateur value for u=0 & u=1
+                                             // clang-format off
                           Deriv0,Deriv1 ; // denominator value for u=0 & u=1
-  Standard_Boolean        Periodic;       // derivative denominatur value for u=0 & 1
-                                          // clang-format on
+  bool        Periodic;       // derivative denominatur value for u=0 & 1
+                                             // clang-format on
 
   BS->Knots(Knots);
   BSplCLib::Reparametrize(0.0, 1.0, Knots); // affinity on the nodal vector
@@ -141,15 +141,15 @@ static void HermiteCoeff(const Handle(Geom2d_BSplineCurve)& BS, TColStd_Array1Of
 // purpose  : give the sign of Herm(0) True=Positive
 //=======================================================================
 
-static Standard_Boolean SignDenom(const TColgp_Array1OfPnt2d& Poles)
+static bool SignDenom(const NCollection_Array1<gp_Pnt2d>& Poles)
 
 {
-  Standard_Boolean Result;
+  bool Result;
 
   if (Poles(0).Y() < 0)
-    Result = Standard_False;
+    Result = false;
   else
-    Result = Standard_True;
+    Result = true;
   return Result;
 }
 
@@ -158,13 +158,13 @@ static Standard_Boolean SignDenom(const TColgp_Array1OfPnt2d& Poles)
 // purpose  : give the max and the min of the Poles (by their index)
 //=======================================================================
 
-static void Polemax(const TColgp_Array1OfPnt2d& Poles, Standard_Integer& min, Standard_Integer& max)
+static void Polemax(const NCollection_Array1<gp_Pnt2d>& Poles, int& min, int& max)
 
 {
-  //  Standard_Integer i,index=0;
-  Standard_Integer i;
+  //  int i,index=0;
+  int i;
   // clang-format off
-  Standard_Real Max,Min;                                         //intermediate value of max and min ordinates
+  double Max,Min;                                         //intermediate value of max and min ordinates
   min=0;max=0;                                                   //initialisation of the indices
   
   Min=Poles(0).Y();                                              //initialisation of the intermediate value
@@ -190,25 +190,25 @@ static void Polemax(const TColgp_Array1OfPnt2d& Poles, Standard_Integer& min, St
 // purpose  : give the knots U4 and U5 to insert to a(u)
 //=======================================================================
 
-static void PolyTest(const TColStd_Array1OfReal&      Herm,
-                     const Handle(Geom_BSplineCurve)& BS,
-                     Standard_Real&                   U4,
-                     Standard_Real&                   U5,
-                     Standard_Integer&                boucle,
-                     const Standard_Real              TolPoles,
-                     //		     const Standard_Real                 TolKnots,
-                     const Standard_Real,
-                     const Standard_Real Ux,
-                     const Standard_Real Uy)
+static void PolyTest(const NCollection_Array1<double>&     Herm,
+                     const occ::handle<Geom_BSplineCurve>& BS,
+                     double&                               U4,
+                     double&                               U5,
+                     int&                                  boucle,
+                     const double                          TolPoles,
+                     //		     const double                 TolKnots,
+                     const double,
+                     const double Ux,
+                     const double Uy)
 
 {
-  Standard_Integer     index, i, I1 = 0, I2 = 0, I3 = 0, I4 = 0; // knots index
-  TColgp_Array1OfPnt2d Polesinit(0, 3);
+  int                          index, i, I1 = 0, I2 = 0, I3 = 0, I4 = 0; // knots index
+  NCollection_Array1<gp_Pnt2d> Polesinit(0, 3);
   // clang-format off
-  Handle(TColStd_HArray1OfReal)  Knots;                  //array of the BSpline knots + the ones inserted
-  Standard_Integer               cas=0,mark=0,dercas=0,  //loop marks
+  occ::handle<NCollection_HArray1<double>>  Knots;                  //array of the BSpline knots + the ones inserted
+  int               cas=0,mark=0,dercas=0,  //loop marks
                                  min,max;                //Pole min and max indices
-  Standard_Real                  Us1,Us2,a;              //boundaries value of the knots to be inserted
+  double                  Us1,Us2,a;              //boundaries value of the knots to be inserted
   // clang-format on
 
   U4 = 0.0;
@@ -223,13 +223,13 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
   if (I1 == I2) // definition and filling of the
     if ((I3 == I4) || (I3 == 0))
     { // array of knots
-      Knots = new TColStd_HArray1OfReal(1, BS->NbKnots());
+      Knots = new NCollection_HArray1<double>(1, BS->NbKnots());
       for (i = 1; i <= BS->NbKnots(); i++)
         Knots->SetValue(i, BS->Knot(i));
     }
     else
     {
-      Knots = new TColStd_HArray1OfReal(1, BS->NbKnots() + 1);
+      Knots = new NCollection_HArray1<double>(1, BS->NbKnots() + 1);
       for (i = 1; i <= BS->NbKnots(); i++)
         Knots->SetValue(i, BS->Knot(i));
       Knots->SetValue(BS->NbKnots() + 1, Uy);
@@ -238,14 +238,14 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
   {
     if ((I3 == I4) || (I3 == 0))
     {
-      Knots = new TColStd_HArray1OfReal(1, BS->NbKnots() + 1);
+      Knots = new NCollection_HArray1<double>(1, BS->NbKnots() + 1);
       for (i = 1; i <= BS->NbKnots(); i++)
         Knots->SetValue(i, BS->Knot(i));
       Knots->SetValue(BS->NbKnots() + 1, Ux);
     }
     else
     {
-      Knots = new TColStd_HArray1OfReal(1, BS->NbKnots() + 2);
+      Knots = new NCollection_HArray1<double>(1, BS->NbKnots() + 2);
       for (i = 1; i <= BS->NbKnots(); i++)
         Knots->SetValue(i, BS->Knot(i));
       Knots->SetValue(BS->NbKnots() + 1, Ux);
@@ -253,7 +253,7 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
     }
   }
 
-  TColStd_Array1OfReal knots(1, Knots->Length());
+  NCollection_Array1<double> knots(1, Knots->Length());
   knots = Knots->ChangeArray1();
 
   // sort of the array of knots
@@ -270,8 +270,8 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
   if (TolPoles != 0.0)
   {
     Polemax(Polesinit, min, max);
-    Standard_Real Polemin = Polesinit(min).Y();
-    Standard_Real Polemax = Polesinit(max).Y();
+    double Polemin = Polesinit(min).Y();
+    double Polemax = Polesinit(max).Y();
     if (((Polemax) >= ((1 / TolPoles) * Polemin))
         || ((Polemin == 0.0) && (Polemax >= (1 / TolPoles))))
     {
@@ -307,7 +307,7 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
           }
           if (mark == 0)
           {
-            Standard_Real Pole0, Pole3;
+            double Pole0, Pole3;
             Pole0 = Polesinit(0).Y();
             Pole3 = Polesinit(3).Y();
             if (Pole0 < 3)
@@ -373,7 +373,7 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
     if (boucle == 1)
       if (Ux != 0.0)
         Us1 = Us1 * Ux;
-    BSplCLib::LocateParameter(3, knots, Us1, Standard_False, 1, knots.Length(), I1, Us1);
+    BSplCLib::LocateParameter(3, knots, Us1, false, 1, knots.Length(), I1, Us1);
     if (I1 < 2)
       U4 = Us1;
     else
@@ -388,7 +388,7 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
     if (boucle == 1)
       if (Ux != 0.0)
         Us2 = Uy + Us2 * (1 - Uy);
-    BSplCLib::LocateParameter(3, knots, Us2, Standard_False, 1, knots.Length(), I1, Us2);
+    BSplCLib::LocateParameter(3, knots, Us2, false, 1, knots.Length(), I1, Us2);
     if (I1 >= (knots.Length() - 1))
       U5 = Us2;
     else
@@ -410,7 +410,7 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
       }
     if (Us2 <= Us1)
     {
-      BSplCLib::LocateParameter(3, knots, Us1, Standard_False, 1, knots.Length(), I1, Us1);
+      BSplCLib::LocateParameter(3, knots, Us1, false, 1, knots.Length(), I1, Us1);
       if (knots(I1) >= Us2) // insertion of one knot for the two poles
         U4 = knots(I1);
       else
@@ -418,7 +418,7 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
         if (I1 >= 2)
         {                 // insertion to the left and
           U4 = knots(I1); // to the right without a new knot
-          BSplCLib::LocateParameter(3, knots, Us2, Standard_False, 1, knots.Length(), I3, Us2);
+          BSplCLib::LocateParameter(3, knots, Us2, false, 1, knots.Length(), I3, Us2);
           if (I3 < (BS->NbKnots() - 1))
           {
             U5  = knots(I3 + 1);
@@ -431,12 +431,12 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
     }
     else
     { // insertion of two knots
-      BSplCLib::LocateParameter(3, knots, Us1, Standard_False, 1, knots.Length(), I1, Us1);
+      BSplCLib::LocateParameter(3, knots, Us1, false, 1, knots.Length(), I1, Us1);
       if (I1 >= 2)
         U4 = knots(I1);
       else
         U4 = Us1;
-      BSplCLib::LocateParameter(3, knots, Us2, Standard_False, 1, knots.Length(), I3, Us2);
+      BSplCLib::LocateParameter(3, knots, Us2, false, 1, knots.Length(), I3, Us2);
       if (I3 < (BS->NbKnots() - 1))
         U5 = knots(I3 + 1);
       else
@@ -450,25 +450,25 @@ static void PolyTest(const TColStd_Array1OfReal&      Herm,
 // purpose  : give the knots U4 and U5 to insert to a(u)
 //=======================================================================
 
-static void PolyTest(const TColStd_Array1OfReal&        Herm,
-                     const Handle(Geom2d_BSplineCurve)& BS,
-                     Standard_Real&                     U4,
-                     Standard_Real&                     U5,
-                     Standard_Integer&                  boucle,
-                     const Standard_Real                TolPoles,
-                     //		     const Standard_Real                TolKnots,
-                     const Standard_Real,
-                     const Standard_Real Ux,
-                     const Standard_Real Uy)
+static void PolyTest(const NCollection_Array1<double>&       Herm,
+                     const occ::handle<Geom2d_BSplineCurve>& BS,
+                     double&                                 U4,
+                     double&                                 U5,
+                     int&                                    boucle,
+                     const double                            TolPoles,
+                     //		     const double                TolKnots,
+                     const double,
+                     const double Ux,
+                     const double Uy)
 
 {
-  Standard_Integer     index, i, I1 = 0, I2 = 0, I3 = 0, I4 = 0; // knots index
-  TColgp_Array1OfPnt2d Polesinit(0, 3);
+  int                          index, i, I1 = 0, I2 = 0, I3 = 0, I4 = 0; // knots index
+  NCollection_Array1<gp_Pnt2d> Polesinit(0, 3);
   // clang-format off
-  Handle(TColStd_HArray1OfReal)  Knots;                  //array of the BSpline knots + the ones inserted
-  Standard_Integer               cas=0,mark=0,dercas=0,  //loop marks
+  occ::handle<NCollection_HArray1<double>>  Knots;                  //array of the BSpline knots + the ones inserted
+  int               cas=0,mark=0,dercas=0,  //loop marks
                                  min,max;                //Pole min and max indices
-  Standard_Real                  Us1,Us2,a;              //boundaries value of the knots to be inserted
+  double                  Us1,Us2,a;              //boundaries value of the knots to be inserted
   // clang-format on
 
   U4 = 0.0;
@@ -484,13 +484,13 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
   {
     if ((I3 == I4) || (I3 == 0))
     { // array of knots
-      Knots = new TColStd_HArray1OfReal(1, BS->NbKnots());
+      Knots = new NCollection_HArray1<double>(1, BS->NbKnots());
       for (i = 1; i <= BS->NbKnots(); i++)
         Knots->SetValue(i, BS->Knot(i));
     }
     else
     {
-      Knots = new TColStd_HArray1OfReal(1, BS->NbKnots() + 1);
+      Knots = new NCollection_HArray1<double>(1, BS->NbKnots() + 1);
       for (i = 1; i <= BS->NbKnots(); i++)
         Knots->SetValue(i, BS->Knot(i));
       Knots->SetValue(BS->NbKnots() + 1, Uy);
@@ -500,14 +500,14 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
   {
     if ((I3 == I4) || (I3 == 0))
     {
-      Knots = new TColStd_HArray1OfReal(1, BS->NbKnots() + 1);
+      Knots = new NCollection_HArray1<double>(1, BS->NbKnots() + 1);
       for (i = 1; i <= BS->NbKnots(); i++)
         Knots->SetValue(i, BS->Knot(i));
       Knots->SetValue(BS->NbKnots() + 1, Ux);
     }
     else
     {
-      Knots = new TColStd_HArray1OfReal(1, BS->NbKnots() + 2);
+      Knots = new NCollection_HArray1<double>(1, BS->NbKnots() + 2);
       for (i = 1; i <= BS->NbKnots(); i++)
         Knots->SetValue(i, BS->Knot(i));
       Knots->SetValue(BS->NbKnots() + 1, Ux);
@@ -515,7 +515,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
     }
   }
 
-  TColStd_Array1OfReal knots(1, Knots->Length());
+  NCollection_Array1<double> knots(1, Knots->Length());
   knots = Knots->ChangeArray1();
 
   // sort of the array of knots
@@ -532,8 +532,8 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
   if (TolPoles != 0.0)
   {
     Polemax(Polesinit, min, max);
-    Standard_Real Polemin = Polesinit(min).Y();
-    Standard_Real Polemax = Polesinit(max).Y();
+    double Polemin = Polesinit(min).Y();
+    double Polemax = Polesinit(max).Y();
     if (((Polemax) >= ((1 / TolPoles) * Polemin))
         || ((Polemin == 0.0) && (Polemax >= (1 / TolPoles))))
     {
@@ -570,7 +570,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
           }
           if (mark == 0)
           {
-            Standard_Real Pole0, Pole3;
+            double Pole0, Pole3;
             Pole0 = Polesinit(0).Y();
             Pole3 = Polesinit(3).Y();
             if (Pole0 < 3)
@@ -636,7 +636,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
     if (boucle == 1)
       if (Ux != 0.0)
         Us1 = Us1 * Ux;
-    BSplCLib::LocateParameter(3, knots, Us1, Standard_False, 1, knots.Length(), I1, Us1);
+    BSplCLib::LocateParameter(3, knots, Us1, false, 1, knots.Length(), I1, Us1);
     if (I1 < 2)
       U4 = Us1;
     else
@@ -651,7 +651,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
     if (boucle == 1)
       if (Ux != 0.0)
         Us2 = Uy + Us2 * (1 - Uy);
-    BSplCLib::LocateParameter(3, knots, Us2, Standard_False, 1, knots.Length(), I1, Us2);
+    BSplCLib::LocateParameter(3, knots, Us2, false, 1, knots.Length(), I1, Us2);
     if (I1 >= (knots.Length() - 1))
       U5 = Us2;
     else
@@ -673,7 +673,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
       }
     if (Us2 <= Us1)
     {
-      BSplCLib::LocateParameter(3, knots, Us1, Standard_False, 1, knots.Length(), I1, Us1);
+      BSplCLib::LocateParameter(3, knots, Us1, false, 1, knots.Length(), I1, Us1);
       if (knots(I1) >= Us2) // insertion of one knot for the two poles
         U4 = knots(I1);
       else
@@ -681,7 +681,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
         if (I1 >= 2)
         {                 // insertion to the left and
           U4 = knots(I1); // to the right without a new knot
-          BSplCLib::LocateParameter(3, knots, Us2, Standard_False, 1, knots.Length(), I3, Us2);
+          BSplCLib::LocateParameter(3, knots, Us2, false, 1, knots.Length(), I3, Us2);
           if (I3 < (BS->NbKnots() - 1))
           {
             U5  = knots(I3 + 1);
@@ -694,12 +694,12 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
     }
     else
     { // insertion of two knots
-      BSplCLib::LocateParameter(3, knots, Us1, Standard_False, 1, knots.Length(), I1, Us1);
+      BSplCLib::LocateParameter(3, knots, Us1, false, 1, knots.Length(), I1, Us1);
       if (I1 >= 2)
         U4 = knots(I1);
       else
         U4 = Us1;
-      BSplCLib::LocateParameter(3, knots, Us2, Standard_False, 1, knots.Length(), I3, Us2);
+      BSplCLib::LocateParameter(3, knots, Us2, false, 1, knots.Length(), I3, Us2);
       if (I3 < (BS->NbKnots() - 1))
         U5 = knots(I3 + 1);
       else
@@ -713,9 +713,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
 // purpose  : insert the knots in BS knot sequence if they are not null.
 //=======================================================================
 
-static void InsertKnots(Handle(Geom2d_BSplineCurve)& BS,
-                        const Standard_Real          U4,
-                        const Standard_Real          U5)
+static void InsertKnots(occ::handle<Geom2d_BSplineCurve>& BS, const double U4, const double U5)
 
 {
   if (U4 != 0.0)                 // insertion of :0 knot if U4=0
@@ -729,12 +727,12 @@ static void InsertKnots(Handle(Geom2d_BSplineCurve)& BS,
 // purpose  : move the poles above the x axis
 //=======================================================================
 
-static void MovePoles(Handle(Geom2d_BSplineCurve)& BS)
+static void MovePoles(occ::handle<Geom2d_BSplineCurve>& BS)
 
 {
   gp_Pnt2d P;
-  //  Standard_Integer i,index;
-  Standard_Integer i;
+  //  int i,index;
+  int i;
 
   for (i = 3; i <= (BS->NbPoles() - 2); i++)
   {
@@ -746,20 +744,20 @@ static void MovePoles(Handle(Geom2d_BSplineCurve)& BS)
 
 //=================================================================================================
 
-Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom_BSplineCurve)& BS,
-                                             const Standard_Real              TolPoles,
-                                             const Standard_Real              TolKnots)
+occ::handle<Geom2d_BSplineCurve> Hermit::Solution(const occ::handle<Geom_BSplineCurve>& BS,
+                                                  const double                          TolPoles,
+                                                  const double                          TolKnots)
 
 {
-  TColStd_Array1OfReal Herm(0, 3);
-  Standard_Real        Upos1 = 0.0, Upos2 = 1.0,  // positivity knots
-    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0, // tolerance knots
-    Uint1 = 0.0, Uint2 = 1.0;                     // tolerance knots for the first loop
-  Standard_Integer        boucle = 1;             // loop mark
-  TColStd_Array1OfReal    Knots(1, 2);
-  TColStd_Array1OfInteger Multiplicities(1, 2);
-  TColgp_Array1OfPnt2d    Poles(1, 4);
-  Standard_Integer        zeroboucle = 0;
+  NCollection_Array1<double> Herm(0, 3);
+  double                     Upos1 = 0.0, Upos2 = 1.0, // positivity knots
+    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0,      // tolerance knots
+    Uint1 = 0.0, Uint2 = 1.0;                          // tolerance knots for the first loop
+  int                          boucle = 1;             // loop mark
+  NCollection_Array1<double>   Knots(1, 2);
+  NCollection_Array1<int>      Multiplicities(1, 2);
+  NCollection_Array1<gp_Pnt2d> Poles(1, 4);
+  int                          zeroboucle = 0;
   HermiteCoeff(BS, Herm); // computation of the Hermite coefficient
 
   // clang-format off
@@ -772,8 +770,8 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom_BSplineCurve)& BS
   Multiplicities(1)=4;
   Multiplicities(2)=4;
 
-  Handle(Geom2d_BSplineCurve)  BS1=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//creation of the basic
-  Handle(Geom2d_BSplineCurve)  BS2=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//BSpline without modif
+  occ::handle<Geom2d_BSplineCurve>  BS1=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//creation of the basic
+  occ::handle<Geom2d_BSplineCurve>  BS2=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//BSpline without modif
 
   PolyTest(Herm,BS,Upos1,Upos2,zeroboucle,Precision::Confusion(),Precision::Confusion(),1.0,0.0);//computation of the positivity knots
   // clang-format on
@@ -847,20 +845,20 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom_BSplineCurve)& BS
 // Solution
 //=======================================================================
 
-Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom2d_BSplineCurve)& BS,
-                                             const Standard_Real                TolPoles,
-                                             const Standard_Real                TolKnots)
+occ::handle<Geom2d_BSplineCurve> Hermit::Solution(const occ::handle<Geom2d_BSplineCurve>& BS,
+                                                  const double                            TolPoles,
+                                                  const double                            TolKnots)
 
 {
-  TColStd_Array1OfReal Herm(0, 3);
-  Standard_Real        Upos1 = 0.0, Upos2 = 1.0,  // positivity knots
-    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0, // tolerance knots
-    Uint1 = 0.0, Uint2 = 1.0;                     // tolerance knots for the first loop
-  Standard_Integer        boucle = 1;             // loop mark
-  TColStd_Array1OfReal    Knots(1, 2);
-  TColStd_Array1OfInteger Multiplicities(1, 2);
-  TColgp_Array1OfPnt2d    Poles(1, 4);
-  Standard_Integer        zeroboucle = 0;
+  NCollection_Array1<double> Herm(0, 3);
+  double                     Upos1 = 0.0, Upos2 = 1.0, // positivity knots
+    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0,      // tolerance knots
+    Uint1 = 0.0, Uint2 = 1.0;                          // tolerance knots for the first loop
+  int                          boucle = 1;             // loop mark
+  NCollection_Array1<double>   Knots(1, 2);
+  NCollection_Array1<int>      Multiplicities(1, 2);
+  NCollection_Array1<gp_Pnt2d> Poles(1, 4);
+  int                          zeroboucle = 0;
   HermiteCoeff(BS, Herm); // computation of the Hermite coefficient
 
   // clang-format off
@@ -873,8 +871,8 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom2d_BSplineCurve)& 
   Multiplicities(1)=4;
   Multiplicities(2)=4;
 
-  Handle(Geom2d_BSplineCurve)  BS1=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//creation of the basic
-  Handle(Geom2d_BSplineCurve)  BS2=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//BSpline without modif
+  occ::handle<Geom2d_BSplineCurve>  BS1=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//creation of the basic
+  occ::handle<Geom2d_BSplineCurve>  BS2=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//BSpline without modif
 
   PolyTest(Herm,BS,Upos1,Upos2,zeroboucle,Precision::Confusion(),Precision::Confusion(),1.0,0.0);//computation of the positivity knots
   // clang-format on
@@ -946,22 +944,22 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom2d_BSplineCurve)& 
 
 //=================================================================================================
 
-void Hermit::Solutionbis(const Handle(Geom_BSplineCurve)& BS,
-                         Standard_Real&                   Knotmin,
-                         Standard_Real&                   Knotmax,
-                         const Standard_Real              TolPoles,
-                         const Standard_Real              TolKnots)
+void Hermit::Solutionbis(const occ::handle<Geom_BSplineCurve>& BS,
+                         double&                               Knotmin,
+                         double&                               Knotmax,
+                         const double                          TolPoles,
+                         const double                          TolKnots)
 
 {
-  TColStd_Array1OfReal Herm(0, 3);
-  Standard_Real        Upos1 = 0.0, Upos2 = 1.0,  // positivity knots
-    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0, // tolerance knots
-    Uint1 = 0.0, Uint2 = 1.0;                     // tolerance knots for the first loop
-  Standard_Integer        boucle = 1;             // loop mark
-  TColStd_Array1OfReal    Knots(1, 2);
-  TColStd_Array1OfInteger Multiplicities(1, 2);
-  TColgp_Array1OfPnt2d    Poles(1, 4);
-  Standard_Integer        zeroboucle = 0;
+  NCollection_Array1<double> Herm(0, 3);
+  double                     Upos1 = 0.0, Upos2 = 1.0, // positivity knots
+    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0,      // tolerance knots
+    Uint1 = 0.0, Uint2 = 1.0;                          // tolerance knots for the first loop
+  int                          boucle = 1;             // loop mark
+  NCollection_Array1<double>   Knots(1, 2);
+  NCollection_Array1<int>      Multiplicities(1, 2);
+  NCollection_Array1<gp_Pnt2d> Poles(1, 4);
+  int                          zeroboucle = 0;
   HermiteCoeff(BS, Herm); // computation of the Hermite coefficient
 
   // clang-format off
@@ -974,7 +972,7 @@ void Hermit::Solutionbis(const Handle(Geom_BSplineCurve)& BS,
   Multiplicities(1)=4;
   Multiplicities(2)=4;
   
-  Handle(Geom2d_BSplineCurve)  BS2=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//creation of the basic
+  occ::handle<Geom2d_BSplineCurve>  BS2=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//creation of the basic
                                                                                          //BSpline without modif
   
   PolyTest(Herm,BS,Upos1,Upos2,zeroboucle,Precision::Confusion(),Precision::Confusion(),1.0,0.0);//computation of the positivity knots

@@ -25,7 +25,7 @@
 struct GeomHash_BSplineSurfaceHasher
 {
   // Hashes the B-spline surface metadata only.
-  std::size_t operator()(const Handle(Geom_BSplineSurface)& theSurface) const noexcept
+  std::size_t operator()(const occ::handle<Geom_BSplineSurface>& theSurface) const noexcept
   {
     const std::size_t aHashes[7] = {
       opencascade::hash(theSurface->UDegree()),
@@ -40,8 +40,8 @@ struct GeomHash_BSplineSurfaceHasher
   }
 
   // Compares two B-spline surfaces by full geometric data.
-  bool operator()(const Handle(Geom_BSplineSurface)& theSurface1,
-                  const Handle(Geom_BSplineSurface)& theSurface2) const noexcept
+  bool operator()(const occ::handle<Geom_BSplineSurface>& theSurface1,
+                  const occ::handle<Geom_BSplineSurface>& theSurface2) const noexcept
   {
     constexpr double aTolerance = 1e-12;
 

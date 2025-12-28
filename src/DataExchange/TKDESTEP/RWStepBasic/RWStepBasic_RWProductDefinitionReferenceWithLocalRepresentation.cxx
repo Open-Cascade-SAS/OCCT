@@ -32,32 +32,32 @@ RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)&                                     data,
-  const Standard_Integer                                                     num,
-  Handle(Interface_Check)&                                                   ach,
-  const Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)& ent) const
+  const occ::handle<StepData_StepReaderData>&                                     data,
+  const int                                                                       num,
+  occ::handle<Interface_Check>&                                                   ach,
+  const occ::handle<StepBasic_ProductDefinitionReferenceWithLocalRepresentation>& ent) const
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 5, ach, "product_definition_reference_with_local_representation"))
     return;
 
   // Own field source
-  Handle(StepBasic_ExternalSource) aSource;
+  occ::handle<StepBasic_ExternalSource> aSource;
   data->ReadEntity(num, 1, "source", ach, STANDARD_TYPE(StepBasic_ExternalSource), aSource);
 
   // Inherited field : id
-  Handle(TCollection_HAsciiString) aId;
+  occ::handle<TCollection_HAsciiString> aId;
   data->ReadString(num, 2, "id", ach, aId);
 
   // Inherited field : description
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "description", ach, aDescription);
   }
 
   // Inherited field : formation
-  Handle(StepBasic_ProductDefinitionFormation) aFormation;
+  occ::handle<StepBasic_ProductDefinitionFormation> aFormation;
   data->ReadEntity(num,
                    4,
                    "formation",
@@ -66,7 +66,7 @@ void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::ReadStep(
                    aFormation);
 
   // Inherited : frame_of_reference
-  Handle(StepBasic_ProductDefinitionContext) aFrameOfReference;
+  occ::handle<StepBasic_ProductDefinitionContext> aFrameOfReference;
   data->ReadEntity(num,
                    5,
                    "frame_of_reference",
@@ -81,8 +81,8 @@ void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::WriteStep(
-  StepData_StepWriter&                                                       SW,
-  const Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)& ent) const
+  StepData_StepWriter&                                                            SW,
+  const occ::handle<StepBasic_ProductDefinitionReferenceWithLocalRepresentation>& ent) const
 {
   // Own field : source
   SW.Send(ent->Source());
@@ -103,8 +103,8 @@ void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::Share(
-  const Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)& ent,
-  Interface_EntityIterator&                                                  iter) const
+  const occ::handle<StepBasic_ProductDefinitionReferenceWithLocalRepresentation>& ent,
+  Interface_EntityIterator&                                                       iter) const
 {
   iter.GetOneItem(ent->Source());
   iter.GetOneItem(ent->Formation());

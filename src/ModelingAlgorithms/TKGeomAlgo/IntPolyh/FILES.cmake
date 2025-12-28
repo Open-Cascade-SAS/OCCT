@@ -15,7 +15,7 @@ set(OCCT_IntPolyh_FILES
   IntPolyh_Edge.hxx
   IntPolyh_Intersection.cxx
   IntPolyh_Intersection.hxx
-  IntPolyh_ListOfCouples.hxx
+
   IntPolyh_MaillageAffinage.cxx
   IntPolyh_MaillageAffinage.hxx
   IntPolyh_PMaillageAffinage.hxx
@@ -23,7 +23,7 @@ set(OCCT_IntPolyh_FILES
   IntPolyh_Point.hxx
   IntPolyh_SectionLine.cxx
   IntPolyh_SectionLine.hxx
-  IntPolyh_SeqOfStartPoints.hxx
+
   IntPolyh_StartPoint.cxx
   IntPolyh_StartPoint.hxx
   IntPolyh_Tools.cxx

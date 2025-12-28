@@ -26,7 +26,10 @@
 #include <FSD_FileHeader.hxx>
 #include <OSD_FileSystem.hxx>
 #include <PCDM_ReadWriter.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <Standard_Type.hxx>
 #include <Storage_HeaderData.hxx>
 #include <Storage_Schema.hxx>
@@ -60,19 +63,19 @@ BinLDrivers_DocumentRetrievalDriver::BinLDrivers_DocumentRetrievalDriver()
 
 //=================================================================================================
 
-void BinLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
-                                               const Handle(CDM_Document)&       theNewDocument,
-                                               const Handle(CDM_Application)&    theApplication,
-                                               const Handle(PCDM_ReaderFilter)&  theFilter,
-                                               const Message_ProgressRange&      theRange)
+void BinLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString&     theFileName,
+                                               const occ::handle<CDM_Document>&      theNewDocument,
+                                               const occ::handle<CDM_Application>&   theApplication,
+                                               const occ::handle<PCDM_ReaderFilter>& theFilter,
+                                               const Message_ProgressRange&          theRange)
 {
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aFileStream =
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::istream>      aFileStream =
     aFileSystem->OpenIStream(theFileName, std::ios::in | std::ios::binary);
 
   if (aFileStream.get() != NULL && aFileStream->good())
   {
-    Handle(Storage_Data)       dData;
+    occ::handle<Storage_Data>  dData;
     TCollection_ExtendedString aFormat = PCDM_ReadWriter::FileFormat(*aFileStream, dData);
 
     Read(*aFileStream, dData, theNewDocument, theApplication, theFilter, theRange);
@@ -96,19 +99,19 @@ void BinLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString&
 
 //=================================================================================================
 
-void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                theIStream,
-                                               const Handle(Storage_Data)&      theStorageData,
-                                               const Handle(CDM_Document)&      theDoc,
-                                               const Handle(CDM_Application)&   theApplication,
-                                               const Handle(PCDM_ReaderFilter)& theFilter,
-                                               const Message_ProgressRange&     theRange)
+void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                     theIStream,
+                                               const occ::handle<Storage_Data>&      theStorageData,
+                                               const occ::handle<CDM_Document>&      theDoc,
+                                               const occ::handle<CDM_Application>&   theApplication,
+                                               const occ::handle<PCDM_ReaderFilter>& theFilter,
+                                               const Message_ProgressRange&          theRange)
 {
   myReaderStatus = PCDM_RS_DriverFailure;
   myMsgDriver    = theApplication->MessageDriver();
 
   const TCollection_ExtendedString aMethStr("BinLDrivers_DocumentRetrievalDriver: ");
 
-  Handle(TDocStd_Document) aDoc = Handle(TDocStd_Document)::DownCast(theDoc);
+  occ::handle<TDocStd_Document> aDoc = occ::down_cast<TDocStd_Document>(theDoc);
   if (aDoc.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -119,7 +122,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   }
 
   // 1. the information section
-  Handle(Storage_HeaderData) aHeaderData;
+  occ::handle<Storage_HeaderData> aHeaderData;
 
   if (!theStorageData.IsNull())
   {
@@ -128,7 +131,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
 
   if (!aHeaderData.IsNull())
   {
-    for (Standard_Integer i = 1; i <= aHeaderData->UserInfo().Length(); i++)
+    for (int i = 1; i <= aHeaderData->UserInfo().Length(); i++)
     {
       const TCollection_AsciiString& aLine = aHeaderData->UserInfo().Value(i);
 
@@ -166,15 +169,15 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   }
 
   // 1.b Retrieve the Types table
-  TColStd_SequenceOfAsciiString        aTypeNames; // Sequence of types in file
-  const TColStd_SequenceOfAsciiString& aUserInfo = aHeaderData->UserInfo();
-  Standard_Boolean                     begin     = Standard_False;
-  Standard_Integer                     i;
+  NCollection_Sequence<TCollection_AsciiString>        aTypeNames; // Sequence of types in file
+  const NCollection_Sequence<TCollection_AsciiString>& aUserInfo = aHeaderData->UserInfo();
+  bool                                                 begin     = false;
+  int                                                  i;
   for (i = 1; i <= aUserInfo.Length(); i++)
   {
     TCollection_AsciiString aStr = aUserInfo(i);
     if (aStr == START_TYPES)
-      begin = Standard_True;
+      begin = true;
     else if (aStr == END_TYPES)
       break;
     else if (begin)
@@ -224,11 +227,11 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   myRelocTable.SetHeaderData(aHeaderData);
   mySections.Clear();
   myPAtt.Init();
-  Handle(TDF_Data) aData =
+  occ::handle<TDF_Data> aData =
     (!theFilter.IsNull() && theFilter->IsAppendMode()) ? aDoc->GetData() : new TDF_Data();
 
   Message_ProgressScope aPS(theRange, "Reading data", 3);
-  Standard_Boolean      aQuickPart = IsQuickPart(aFileVer);
+  bool                  aQuickPart = IsQuickPart(aFileVer);
 
   // 2b. Read the TOC of Sections
   if (aFileVer >= TDocStd_FormatVersion_VERSION_3)
@@ -250,7 +253,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
       return;
     }
 
-    BinLDrivers_VectorOfDocumentSection::Iterator anIterS(mySections);
+    NCollection_Vector<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
     // if there is only empty section, do not call tellg and seekg
     if (!mySections.IsEmpty()
         && (mySections.Size() > 1 || !anIterS.Value().Name().IsEqual(ENDSECTION_POS)))
@@ -259,7 +262,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
       for (; anIterS.More(); anIterS.Next())
       {
         BinLDrivers_DocumentSection& aCurSection = anIterS.ChangeValue();
-        if (aCurSection.IsPostRead() == Standard_False)
+        if (aCurSection.IsPostRead() == false)
         {
           theIStream.seekg((std::streampos)aCurSection.Offset());
           if (aCurSection.Name().IsEqual(SHAPESECTION_POS))
@@ -299,8 +302,8 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
       }
 
       // retrieve ShapeSection Position
-      Standard_Integer aShapeSectionPos; // go to ShapeSection
-      theIStream.read((char*)&aShapeSectionPos, sizeof(Standard_Integer));
+      int aShapeSectionPos; // go to ShapeSection
+      theIStream.read((char*)&aShapeSectionPos, sizeof(int));
 
 #ifdef DO_INVERSE
       aShapeSectionPos = InverseInt(aShapeSectionPos);
@@ -316,7 +319,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
         CheckShapeSection(aShapeSectionPos, theIStream);
         // Read Shapes
         BinLDrivers_DocumentSection aCurSection;
-        ReadShapeSection(aCurSection, theIStream, Standard_False, aPS.Next());
+        ReadShapeSection(aCurSection, theIStream, false, aPS.Next());
         if (!aPS.More())
         {
           myReaderStatus = PCDM_RS_UserBreak;
@@ -330,8 +333,8 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   // Return to read of the Document structure
 
   // read the header (tag) of the root label
-  Standard_Integer aTag;
-  theIStream.read((char*)&aTag, sizeof(Standard_Integer));
+  int aTag;
+  theIStream.read((char*)&aTag, sizeof(int));
 
   if (aQuickPart)
     myPAtt.SetIStream(theIStream); // for reading shapes data from the stream directly
@@ -340,17 +343,15 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   // read sub-tree of the root label
   if (!theFilter.IsNull())
     theFilter->StartIteration();
-  const auto       aStreamStartPosition = theIStream.tellg();
-  Standard_Integer nbRead =
-    ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, Standard_False, aPS.Next());
+  const auto aStreamStartPosition = theIStream.tellg();
+  int nbRead = ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, false, aPS.Next());
   if (!myUnresolvedLinks.IsEmpty())
   {
     // In case we have skipped some linked TreeNodes before getting to
     // their children.
     theFilter->StartIteration();
     theIStream.seekg(aStreamStartPosition, std::ios_base::beg);
-    nbRead +=
-      ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, Standard_True, aPS.Next());
+    nbRead += ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, true, aPS.Next());
   }
   if (!aPS.More())
   {
@@ -381,7 +382,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   // Read Sections (post-reading type)
   if (aFileVer >= TDocStd_FormatVersion_VERSION_3)
   {
-    BinLDrivers_VectorOfDocumentSection::Iterator aSectIter(mySections);
+    NCollection_Vector<BinLDrivers_DocumentSection>::Iterator aSectIter(mySections);
     for (; aSectIter.More(); aSectIter.Next())
     {
       BinLDrivers_DocumentSection& aCurSection = aSectIter.ChangeValue();
@@ -396,20 +397,20 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
 
 //=================================================================================================
 
-Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
-  Standard_IStream&                theIS,
-  const TDF_Label&                 theLabel,
-  const Handle(PCDM_ReaderFilter)& theFilter,
-  const Standard_Boolean&          theQuickPart,
-  const Standard_Boolean           theReadMissing,
-  const Message_ProgressRange&     theRange)
+int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
+  Standard_IStream&                     theIS,
+  const TDF_Label&                      theLabel,
+  const occ::handle<PCDM_ReaderFilter>& theFilter,
+  const bool&                           theQuickPart,
+  const bool                            theReadMissing,
+  const Message_ProgressRange&          theRange)
 {
-  Standard_Integer           nbRead = 0;
+  int                        nbRead = 0;
   TCollection_ExtendedString aMethStr("BinLDrivers_DocumentRetrievalDriver: ");
 
   Message_ProgressScope aPS(theRange, "Reading sub tree", 2, true);
 
-  bool aSkipAttrs = Standard_False;
+  bool aSkipAttrs = false;
   if (!theFilter.IsNull() && theFilter->IsPartTree())
     aSkipAttrs = !theFilter->IsPassed();
 
@@ -433,7 +434,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
 
   if (theReadMissing)
   {
-    aSkipAttrs = Standard_True;
+    aSkipAttrs = true;
   }
   const auto anAttStartPosition = theIS.tellg();
   // Read attributes:
@@ -449,7 +450,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
     }
     if (myUnresolvedLinks.Remove(myPAtt.Id()) && aSkipAttrs)
     {
-      aSkipAttrs = Standard_False;
+      aSkipAttrs = false;
       theIS.seekg(anAttStartPosition, std::ios_base::beg);
       continue;
     }
@@ -466,15 +467,15 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
     }
 
     // get a driver according to TypeId
-    Handle(BinMDF_ADriver) aDriver = myDrivers->GetDriver(myPAtt.TypeId());
+    occ::handle<BinMDF_ADriver> aDriver = myDrivers->GetDriver(myPAtt.TypeId());
     if (!aDriver.IsNull())
     {
       // create transient attribute
-      Standard_Integer      anID = myPAtt.Id();
-      Handle(TDF_Attribute) tAtt;
-      Standard_Boolean      isBound = myRelocTable.IsBound(anID);
+      int                        anID = myPAtt.Id();
+      occ::handle<TDF_Attribute> tAtt;
+      bool                       isBound = myRelocTable.IsBound(anID);
       if (isBound)
-        tAtt = Handle(TDF_Attribute)::DownCast(myRelocTable.Find(anID));
+        tAtt = occ::down_cast<TDF_Attribute>(myRelocTable.Find(anID));
       else
         tAtt = aDriver->NewEmpty();
 
@@ -521,7 +522,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
                             + " to a second label",
                           Message_Warning);
 
-      Standard_Boolean ok = aDriver->Paste(myPAtt, tAtt, myRelocTable);
+      bool ok = aDriver->Paste(myPAtt, tAtt, myRelocTable);
       if (!ok)
       {
         // error converting persistent to transient
@@ -531,11 +532,11 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
       else if (!isBound)
       {
         myRelocTable.Bind(anID, tAtt);
-        Handle(TDataStd_TreeNode) aNode = Handle(TDataStd_TreeNode)::DownCast(tAtt);
+        occ::handle<TDataStd_TreeNode> aNode = occ::down_cast<TDataStd_TreeNode>(tAtt);
         if (!theFilter.IsNull() && !aNode.IsNull() && !aNode->Father().IsNull()
             && aNode->Father()->IsNew())
         {
-          Standard_Integer anUnresolvedLink;
+          int anUnresolvedLink;
           myPAtt.SetPosition(BP_HEADSIZE);
           myPAtt >> anUnresolvedLink;
           myUnresolvedLinks.Add(anUnresolvedLink);
@@ -556,8 +557,8 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
 
   // Read children:
   // read the tag of a child label
-  Standard_Integer aTag = BinLDrivers_ENDLABEL;
-  theIS.read((char*)&aTag, sizeof(Standard_Integer));
+  int aTag = BinLDrivers_ENDLABEL;
+  theIS.read((char*)&aTag, sizeof(int));
 #ifdef DO_INVERSE
   aTag = InverseInt(aTag);
 #endif
@@ -565,7 +566,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
   while (theIS && aTag >= 0 && !theIS.eof())
   { // not an end marker ?
     // create sub-label
-    TDF_Label aLab = theLabel.FindChild(aTag, Standard_True);
+    TDF_Label aLab = theLabel.FindChild(aTag, true);
     if (!aPS.More())
     {
       myReaderStatus = PCDM_RS_UserBreak;
@@ -575,15 +576,14 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
     // read sub-tree
     if (!theFilter.IsNull())
       theFilter->Down(aTag);
-    Standard_Integer nbSubRead =
-      ReadSubTree(theIS, aLab, theFilter, theQuickPart, theReadMissing, aPS.Next());
+    int nbSubRead = ReadSubTree(theIS, aLab, theFilter, theQuickPart, theReadMissing, aPS.Next());
     // check for error
     if (nbSubRead == -1)
       return -1;
     nbRead += nbSubRead;
 
     // read the tag of the next child
-    theIS.read((char*)&aTag, sizeof(Standard_Integer));
+    theIS.read((char*)&aTag, sizeof(int));
 #ifdef DO_INVERSE
     aTag = InverseInt(aTag);
 #endif
@@ -604,17 +604,18 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
 
 //=================================================================================================
 
-Handle(BinMDF_ADriverTable) BinLDrivers_DocumentRetrievalDriver::AttributeDrivers(
-  const Handle(Message_Messenger)& theMessageDriver)
+occ::handle<BinMDF_ADriverTable> BinLDrivers_DocumentRetrievalDriver::AttributeDrivers(
+  const occ::handle<Message_Messenger>& theMessageDriver)
 {
   return BinLDrivers::AttributeDrivers(theMessageDriver);
 }
 
 //=================================================================================================
 
-void BinLDrivers_DocumentRetrievalDriver::ReadSection(BinLDrivers_DocumentSection& /*theSection*/,
-                                                      const Handle(CDM_Document)& /*theDocument*/,
-                                                      Standard_IStream& /*theIS*/)
+void BinLDrivers_DocumentRetrievalDriver::ReadSection(
+  BinLDrivers_DocumentSection& /*theSection*/,
+  const occ::handle<CDM_Document>& /*theDocument*/,
+  Standard_IStream& /*theIS*/)
 {
   // empty; should be redefined in subclasses
 }
@@ -624,7 +625,7 @@ void BinLDrivers_DocumentRetrievalDriver::ReadSection(BinLDrivers_DocumentSectio
 void BinLDrivers_DocumentRetrievalDriver::ReadShapeSection(
   BinLDrivers_DocumentSection& theSection,
   Standard_IStream& /*theIS*/,
-  const Standard_Boolean isMess,
+  const bool isMess,
   const Message_ProgressRange& /*theRange*/)
 
 {
@@ -667,21 +668,20 @@ void BinLDrivers_DocumentRetrievalDriver::Clear()
 
 //=================================================================================================
 
-Standard_Boolean BinLDrivers_DocumentRetrievalDriver::CheckDocumentVersion(
-  const Standard_Integer theFileVersion,
-  const Standard_Integer theCurVersion)
+bool BinLDrivers_DocumentRetrievalDriver::CheckDocumentVersion(const int theFileVersion,
+                                                               const int theCurVersion)
 {
   if (theFileVersion < TDocStd_FormatVersion_LOWER || theFileVersion > theCurVersion)
   {
     // file was written with another version
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BinLDrivers_DocumentRetrievalDriver::IsQuickPart(const Standard_Integer theFileVer)
+bool BinLDrivers_DocumentRetrievalDriver::IsQuickPart(const int theFileVer)
 {
   return theFileVer >= TDocStd_FormatVersion_VERSION_12;
 }

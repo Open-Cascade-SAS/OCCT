@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_PointReplica, StepGeom_Point)
 StepGeom_PointReplica::StepGeom_PointReplica() {}
 
 void StepGeom_PointReplica::Init(
-  const Handle(TCollection_HAsciiString)&                 aName,
-  const Handle(StepGeom_Point)&                           aParentPt,
-  const Handle(StepGeom_CartesianTransformationOperator)& aTransformation)
+  const occ::handle<TCollection_HAsciiString>&                 aName,
+  const occ::handle<StepGeom_Point>&                           aParentPt,
+  const occ::handle<StepGeom_CartesianTransformationOperator>& aTransformation)
 {
   // --- classe own fields ---
   parentPt       = aParentPt;
@@ -31,23 +31,23 @@ void StepGeom_PointReplica::Init(
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_PointReplica::SetParentPt(const Handle(StepGeom_Point)& aParentPt)
+void StepGeom_PointReplica::SetParentPt(const occ::handle<StepGeom_Point>& aParentPt)
 {
   parentPt = aParentPt;
 }
 
-Handle(StepGeom_Point) StepGeom_PointReplica::ParentPt() const
+occ::handle<StepGeom_Point> StepGeom_PointReplica::ParentPt() const
 {
   return parentPt;
 }
 
 void StepGeom_PointReplica::SetTransformation(
-  const Handle(StepGeom_CartesianTransformationOperator)& aTransformation)
+  const occ::handle<StepGeom_CartesianTransformationOperator>& aTransformation)
 {
   transformation = aTransformation;
 }
 
-Handle(StepGeom_CartesianTransformationOperator) StepGeom_PointReplica::Transformation() const
+occ::handle<StepGeom_CartesianTransformationOperator> StepGeom_PointReplica::Transformation() const
 {
   return transformation;
 }

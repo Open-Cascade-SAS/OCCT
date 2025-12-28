@@ -27,15 +27,16 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_NewDimensionedGeometry, IGESData_IGESEntity
 
 IGESDimen_NewDimensionedGeometry::IGESDimen_NewDimensionedGeometry() {}
 
-void IGESDimen_NewDimensionedGeometry::Init(const Standard_Integer             nbDimens,
-                                            const Handle(IGESData_IGESEntity)& aDimen,
-                                            const Standard_Integer             anOrientation,
-                                            const Standard_Real                anAngle,
-                                            const Handle(IGESData_HArray1OfIGESEntity)& allEntities,
-                                            const Handle(TColStd_HArray1OfInteger)& allLocations,
-                                            const Handle(TColgp_HArray1OfXYZ)&      allPoints)
+void IGESDimen_NewDimensionedGeometry::Init(
+  const int                                                                 nbDimens,
+  const occ::handle<IGESData_IGESEntity>&                                   aDimen,
+  const int                                                                 anOrientation,
+  const double                                                              anAngle,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities,
+  const occ::handle<NCollection_HArray1<int>>&                              allLocations,
+  const occ::handle<NCollection_HArray1<gp_XYZ>>&                           allPoints)
 {
-  Standard_Integer num = allEntities->Length();
+  int num = allEntities->Length();
   if (allEntities->Lower() != 1 || allLocations->Lower() != 1 || allLocations->Length() != num
       || allPoints->Lower() != 1 || allPoints->Length() != num)
     throw Standard_DimensionMismatch("IGESDimen_NewDimensionedGeometry: Init");
@@ -49,49 +50,48 @@ void IGESDimen_NewDimensionedGeometry::Init(const Standard_Integer             n
   InitTypeAndForm(402, 21);
 }
 
-Standard_Integer IGESDimen_NewDimensionedGeometry::NbDimensions() const
+int IGESDimen_NewDimensionedGeometry::NbDimensions() const
 {
   return theNbDimensions;
 }
 
-Standard_Integer IGESDimen_NewDimensionedGeometry::NbGeometries() const
+int IGESDimen_NewDimensionedGeometry::NbGeometries() const
 {
   return theGeometryEntities->Length();
 }
 
-Handle(IGESData_IGESEntity) IGESDimen_NewDimensionedGeometry::DimensionEntity() const
+occ::handle<IGESData_IGESEntity> IGESDimen_NewDimensionedGeometry::DimensionEntity() const
 {
   return theDimensionEntity;
 }
 
-Standard_Integer IGESDimen_NewDimensionedGeometry::DimensionOrientationFlag() const
+int IGESDimen_NewDimensionedGeometry::DimensionOrientationFlag() const
 {
   return theDimensionOrientationFlag;
 }
 
-Standard_Real IGESDimen_NewDimensionedGeometry::AngleValue() const
+double IGESDimen_NewDimensionedGeometry::AngleValue() const
 {
   return theAngleValue;
 }
 
-Handle(IGESData_IGESEntity) IGESDimen_NewDimensionedGeometry::GeometryEntity(
-  const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESDimen_NewDimensionedGeometry::GeometryEntity(
+  const int Index) const
 {
   return theGeometryEntities->Value(Index);
 }
 
-Standard_Integer IGESDimen_NewDimensionedGeometry::DimensionLocationFlag(
-  const Standard_Integer Index) const
+int IGESDimen_NewDimensionedGeometry::DimensionLocationFlag(const int Index) const
 {
   return theDimensionLocationFlags->Value(Index);
 }
 
-gp_Pnt IGESDimen_NewDimensionedGeometry::Point(const Standard_Integer Index) const
+gp_Pnt IGESDimen_NewDimensionedGeometry::Point(const int Index) const
 {
   return gp_Pnt(thePoints->Value(Index));
 }
 
-gp_Pnt IGESDimen_NewDimensionedGeometry::TransformedPoint(const Standard_Integer Index) const
+gp_Pnt IGESDimen_NewDimensionedGeometry::TransformedPoint(const int Index) const
 {
   gp_XYZ point = thePoints->Value(Index);
   if (HasTransf())

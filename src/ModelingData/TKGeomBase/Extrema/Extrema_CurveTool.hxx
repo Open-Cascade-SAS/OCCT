@@ -32,8 +32,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class Extrema_CurveTool
 {
@@ -56,14 +56,16 @@ public:
   //! Stores in <T> the parameters bounding the intervals of continuity <S>.
   //! The array must provide enough room to accommodate for the parameters.
   //! i.e. T.Length() > NbIntervals()
-  static void Intervals(Adaptor3d_Curve& theC, TColStd_Array1OfReal& theT, const GeomAbs_Shape theS)
+  static void Intervals(Adaptor3d_Curve&            theC,
+                        NCollection_Array1<double>& theT,
+                        const GeomAbs_Shape         theS)
   {
     theC.Intervals(theT, theS);
   }
 
   //! Returns the parameters bounding the intervals of subdivision of curve
   //! according to Curvature deflection. Value of deflection is defined in method.
-  Standard_EXPORT static Handle(TColStd_HArray1OfReal) DeflCurvIntervals(
+  Standard_EXPORT static occ::handle<NCollection_HArray1<double>> DeflCurvIntervals(
     const Adaptor3d_Curve& theC);
 
   Standard_EXPORT static bool IsPeriodic(const Adaptor3d_Curve& theC);
@@ -131,9 +133,12 @@ public:
 
   static int NbKnots(const Adaptor3d_Curve& theC) { return theC.NbKnots(); }
 
-  static Handle(Geom_BezierCurve) Bezier(const Adaptor3d_Curve& theC) { return theC.Bezier(); }
+  static occ::handle<Geom_BezierCurve> Bezier(const Adaptor3d_Curve& theC) { return theC.Bezier(); }
 
-  static Handle(Geom_BSplineCurve) BSpline(const Adaptor3d_Curve& theC) { return theC.BSpline(); }
+  static occ::handle<Geom_BSplineCurve> BSpline(const Adaptor3d_Curve& theC)
+  {
+    return theC.BSpline();
+  }
 };
 
 #endif // _Extrema_CurveTool_HeaderFile

@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESGraph_HighLight;
-DEFINE_STANDARD_HANDLE(IGESGraph_HighLight, IGESData_IGESEntity)
-
 //! defines IGESHighLight, Type <406> Form <20>
 //! in package IGESGraph
 //!
@@ -40,25 +37,23 @@ public:
   //! HighLight
   //! - nbProps          : Number of property values (NP = 1)
   //! - aHighLightStatus : HighLight Flag
-  Standard_EXPORT void Init(const Standard_Integer nbProps,
-                            const Standard_Integer aHighLightStatus);
+  Standard_EXPORT void Init(const int nbProps, const int aHighLightStatus);
 
   //! returns the number of property values in <me>
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns 0 if <me> is not highlighted(default),
   //! 1 if <me> is highlighted
-  Standard_EXPORT Standard_Integer HighLightStatus() const;
+  Standard_EXPORT int HighLightStatus() const;
 
   //! returns True if entity is highlighted
-  Standard_EXPORT Standard_Boolean IsHighLighted() const;
+  Standard_EXPORT bool IsHighLighted() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_HighLight, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Integer theHighLight;
+  int theNbPropertyValues;
+  int theHighLight;
 };
 
 #endif // _IGESGraph_HighLight_HeaderFile

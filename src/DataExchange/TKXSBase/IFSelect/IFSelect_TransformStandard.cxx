@@ -21,95 +21,96 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Protocol.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_TransformStandard, IFSelect_Transformer)
 
 IFSelect_TransformStandard::IFSelect_TransformStandard()
 {
-  thecopy = Standard_True;
+  thecopy = true;
 }
 
-void IFSelect_TransformStandard::SetCopyOption(const Standard_Boolean option)
+void IFSelect_TransformStandard::SetCopyOption(const bool option)
 {
   thecopy = option;
 }
 
-Standard_Boolean IFSelect_TransformStandard::CopyOption() const
+bool IFSelect_TransformStandard::CopyOption() const
 {
   return thecopy;
 }
 
-void IFSelect_TransformStandard::SetSelection(const Handle(IFSelect_Selection)& sel)
+void IFSelect_TransformStandard::SetSelection(const occ::handle<IFSelect_Selection>& sel)
 {
   thesel = sel;
 }
 
-Handle(IFSelect_Selection) IFSelect_TransformStandard::Selection() const
+occ::handle<IFSelect_Selection> IFSelect_TransformStandard::Selection() const
 {
   return thesel;
 }
 
-Standard_Integer IFSelect_TransformStandard::NbModifiers() const
+int IFSelect_TransformStandard::NbModifiers() const
 {
   return themodifs.Length();
 }
 
-Handle(IFSelect_Modifier) IFSelect_TransformStandard::Modifier(const Standard_Integer num) const
+occ::handle<IFSelect_Modifier> IFSelect_TransformStandard::Modifier(const int num) const
 {
   return GetCasted(IFSelect_Modifier, themodifs.Value(num));
 }
 
-Standard_Integer IFSelect_TransformStandard::ModifierRank(
-  const Handle(IFSelect_Modifier)& modif) const
+int IFSelect_TransformStandard::ModifierRank(const occ::handle<IFSelect_Modifier>& modif) const
 {
-  for (Standard_Integer i = themodifs.Length(); i >= 1; i--)
+  for (int i = themodifs.Length(); i >= 1; i--)
     if (modif == themodifs.Value(i))
       return i;
   return 0;
 }
 
-Standard_Boolean IFSelect_TransformStandard::AddModifier(const Handle(IFSelect_Modifier)& modif,
-                                                         const Standard_Integer           atnum)
+bool IFSelect_TransformStandard::AddModifier(const occ::handle<IFSelect_Modifier>& modif,
+                                             const int                             atnum)
 {
   if (atnum < 0 || atnum > themodifs.Length())
-    return Standard_False;
+    return false;
   if (atnum == 0)
     themodifs.Append(modif);
   else
     themodifs.InsertBefore(atnum, modif);
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_TransformStandard::RemoveModifier(const Handle(IFSelect_Modifier)& modif)
+bool IFSelect_TransformStandard::RemoveModifier(const occ::handle<IFSelect_Modifier>& modif)
 {
-  Standard_Integer num = ModifierRank(modif);
+  int num = ModifierRank(modif);
   return RemoveModifier(num);
 }
 
-Standard_Boolean IFSelect_TransformStandard::RemoveModifier(const Standard_Integer num)
+bool IFSelect_TransformStandard::RemoveModifier(const int num)
 {
   if (num <= 0 || num > themodifs.Length())
-    return Standard_False;
+    return false;
   themodifs.Remove(num);
-  return Standard_True;
+  return true;
 }
 
 //  #################################################################
 //  ########                     ACTION                      ########
 
-Standard_Boolean IFSelect_TransformStandard::Perform(const Interface_Graph&            G,
-                                                     const Handle(Interface_Protocol)& protocol,
-                                                     Interface_CheckIterator&          checks,
-                                                     Handle(Interface_InterfaceModel)& newmod)
+bool IFSelect_TransformStandard::Perform(const Interface_Graph&                 G,
+                                         const occ::handle<Interface_Protocol>& protocol,
+                                         Interface_CheckIterator&               checks,
+                                         occ::handle<Interface_InterfaceModel>& newmod)
 {
   Interface_CopyTool TC(G.Model(), protocol);
   themap = TC.Control();
@@ -117,9 +118,9 @@ Standard_Boolean IFSelect_TransformStandard::Perform(const Interface_Graph&     
   return ApplyModifiers(G, protocol, TC, checks, newmod);
 }
 
-void IFSelect_TransformStandard::Copy(const Interface_Graph&            G,
-                                      Interface_CopyTool&               TC,
-                                      Handle(Interface_InterfaceModel)& newmod) const
+void IFSelect_TransformStandard::Copy(const Interface_Graph&                 G,
+                                      Interface_CopyTool&                    TC,
+                                      occ::handle<Interface_InterfaceModel>& newmod) const
 {
   if (CopyOption())
     StandardCopy(G, TC, newmod);
@@ -127,17 +128,17 @@ void IFSelect_TransformStandard::Copy(const Interface_Graph&            G,
     OnTheSpot(G, TC, newmod);
 }
 
-void IFSelect_TransformStandard::StandardCopy(const Interface_Graph&            G,
-                                              Interface_CopyTool&               TC,
-                                              Handle(Interface_InterfaceModel)& newmod) const
+void IFSelect_TransformStandard::StandardCopy(const Interface_Graph&                 G,
+                                              Interface_CopyTool&                    TC,
+                                              occ::handle<Interface_InterfaceModel>& newmod) const
 {
-  const Handle(Interface_InterfaceModel)& original = G.Model();
-  newmod                                           = original->NewEmptyModel();
+  const occ::handle<Interface_InterfaceModel>& original = G.Model();
+  newmod                                                = original->NewEmptyModel();
   TC.Clear();
-  Standard_Integer                 nb     = G.Size();
-  Handle(TColStd_HArray1OfInteger) remain = new TColStd_HArray1OfInteger(0, nb + 1);
+  int                                   nb     = G.Size();
+  occ::handle<NCollection_HArray1<int>> remain = new NCollection_HArray1<int>(0, nb + 1);
   remain->Init(0);
-  for (Standard_Integer i = 1; i <= nb; i++)
+  for (int i = 1; i <= nb; i++)
   {
     //    if (G.Status(i) == 0) TC.TransferEntity (original->Value(i));
     TC.TransferEntity(original->Value(i));
@@ -145,34 +146,33 @@ void IFSelect_TransformStandard::StandardCopy(const Interface_Graph&            
   TC.FillModel(newmod);
 }
 
-void IFSelect_TransformStandard::OnTheSpot(const Interface_Graph&            G,
-                                           Interface_CopyTool&               TC,
-                                           Handle(Interface_InterfaceModel)& newmod) const
+void IFSelect_TransformStandard::OnTheSpot(const Interface_Graph&                 G,
+                                           Interface_CopyTool&                    TC,
+                                           occ::handle<Interface_InterfaceModel>& newmod) const
 {
-  Standard_Integer nb = G.Size();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = G.Size();
+  for (int i = 1; i <= nb; i++)
     TC.Bind(G.Entity(i), G.Entity(i));
   newmod = G.Model();
 }
 
-Standard_Boolean IFSelect_TransformStandard::ApplyModifiers(
-  const Interface_Graph&            G,
-  const Handle(Interface_Protocol)& protocol,
-  Interface_CopyTool&               TC,
-  Interface_CheckIterator&          checks,
-  Handle(Interface_InterfaceModel)& newmod) const
+bool IFSelect_TransformStandard::ApplyModifiers(const Interface_Graph&                 G,
+                                                const occ::handle<Interface_Protocol>& protocol,
+                                                Interface_CopyTool&                    TC,
+                                                Interface_CheckIterator&               checks,
+                                                occ::handle<Interface_InterfaceModel>& newmod) const
 {
-  Message_Messenger::StreamBuffer         sout     = Message::SendInfo();
-  Standard_Boolean                        res      = Standard_True;
-  Standard_Boolean                        chg      = Standard_False;
-  Standard_Integer                        nb       = NbModifiers();
-  const Handle(Interface_InterfaceModel)& original = G.Model();
+  Message_Messenger::StreamBuffer              sout     = Message::SendInfo();
+  bool                                         res      = true;
+  bool                                         chg      = false;
+  int                                          nb       = NbModifiers();
+  const occ::handle<Interface_InterfaceModel>& original = G.Model();
 
-  for (Standard_Integer i = 1; i <= nb; i++)
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(IFSelect_Modifier) unmod = Modifier(i);
+    occ::handle<IFSelect_Modifier> unmod = Modifier(i);
     if (unmod->MayChangeGraph())
-      chg = Standard_True;
+      chg = true;
 
     //    Apply this Modifier (nb : the Dispatch, we don't care about it)
     //    First, the Selection
@@ -180,7 +180,7 @@ Standard_Boolean IFSelect_TransformStandard::ApplyModifiers(
     //    Then, the Selection
     //    If there is one here, it has priority. Otherwise, each Modifier has its own
 
-    Handle(IFSelect_Selection) sel = thesel;
+    occ::handle<IFSelect_Selection> sel = thesel;
     if (sel.IsNull())
       sel = unmod->Selection();
     if (!sel.IsNull())
@@ -195,17 +195,17 @@ Standard_Boolean IFSelect_TransformStandard::ApplyModifiers(
     //    Error Reporting
     //    Should we record them in newmod ? good question
     Interface_CheckIterator checklist = ctx.CheckList();
-    if (!checklist.IsEmpty(Standard_False))
+    if (!checklist.IsEmpty(false))
     {
       checks.Merge(checklist);
       sout << "IFSelect_TransformStandard :  Messages from Modifier n0 " << i << " of " << nb
            << std::endl;
-      checklist.Print(sout, newmod, Standard_False);
+      checklist.Print(sout, newmod, false);
     }
-    if (!checklist.IsEmpty(Standard_True))
+    if (!checklist.IsEmpty(true))
     {
       sout << " --  Abandon TransformStandard  --" << std::endl;
-      res = Standard_False;
+      res = false;
       break;
     }
   }
@@ -216,11 +216,11 @@ Standard_Boolean IFSelect_TransformStandard::ApplyModifiers(
   return res;
 }
 
-Standard_Boolean IFSelect_TransformStandard::Updated(const Handle(Standard_Transient)& entfrom,
-                                                     Handle(Standard_Transient)&       entto) const
+bool IFSelect_TransformStandard::Updated(const occ::handle<Standard_Transient>& entfrom,
+                                         occ::handle<Standard_Transient>&       entto) const
 {
   if (themap.IsNull())
-    return Standard_False;
+    return false;
   return themap->Search(entfrom, entto);
 }
 
@@ -232,7 +232,7 @@ TCollection_AsciiString IFSelect_TransformStandard::Label() const
     labl.AssignCat("Standard Copy");
   else
     labl.AssignCat("On the spot Edition");
-  Standard_Integer nb = NbModifiers();
+  int nb = NbModifiers();
   if (nb == 0)
     Sprintf(lab, " (no Modifier)");
   if (nb == 1)

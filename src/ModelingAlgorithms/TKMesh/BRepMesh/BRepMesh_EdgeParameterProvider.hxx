@@ -41,7 +41,7 @@ public:
 
   //! Constructor. Initializes empty provider.
   BRepMesh_EdgeParameterProvider()
-      : myIsSameParam(Standard_False),
+      : myIsSameParam(false),
         myFirstParam(0.0),
         myOldFirstParam(0.0),
         myScale(0.0),
@@ -81,14 +81,14 @@ public:
       return;
     }
 
-    myFirstParam                   = myCurveAdaptor.FirstParameter();
-    const Standard_Real aLastParam = myCurveAdaptor.LastParameter();
+    myFirstParam            = myCurveAdaptor.FirstParameter();
+    const double aLastParam = myCurveAdaptor.LastParameter();
 
     myFoundParam = myCurParam = myFirstParam;
 
     // Extract parameters stored in polygon
-    myOldFirstParam                   = myParameters->Value(myParameters->Lower());
-    const Standard_Real aOldLastParam = myParameters->Value(myParameters->Upper());
+    myOldFirstParam            = myParameters->Value(myParameters->Lower());
+    const double aOldLastParam = myParameters->Value(myParameters->Upper());
 
     // Calculate scale factor between actual and stored parameters
     if ((myOldFirstParam != myFirstParam || aOldLastParam != aLastParam)
@@ -107,7 +107,7 @@ public:
   //! If SameParameter is TRUE returns value from parameters w/o changes,
   //! elsewhere scales initial parameter and tries to determine resulting
   //! value using projection of the corresponded 3D point on PCurve.
-  Standard_Real Parameter(const Standard_Integer theIndex, const gp_Pnt& thePoint3d) const
+  double Parameter(const int theIndex, const gp_Pnt& thePoint3d) const
   {
     if (myIsSameParam)
     {
@@ -115,18 +115,18 @@ public:
     }
 
     // Use scaled
-    const Standard_Real aParam = myParameters->Value(theIndex);
+    const double aParam = myParameters->Value(theIndex);
 
-    const Standard_Real aPrevParam = myCurParam;
-    myCurParam                     = myFirstParam + myScale * (aParam - myOldFirstParam);
+    const double aPrevParam = myCurParam;
+    myCurParam              = myFirstParam + myScale * (aParam - myOldFirstParam);
 
-    const Standard_Real aPrevFoundParam = myFoundParam;
+    const double aPrevFoundParam = myFoundParam;
     myFoundParam += (myCurParam - aPrevParam);
 
     myProjector.Perform(thePoint3d, myFoundParam);
     if (myProjector.IsDone())
     {
-      const Standard_Real aFoundParam = myProjector.Point().Parameter();
+      const double aFoundParam = myProjector.Point().Parameter();
       if ((aPrevFoundParam < myFoundParam && aPrevFoundParam < aFoundParam)
           || (aPrevFoundParam > myFoundParam && aPrevFoundParam > aFoundParam))
       {
@@ -141,7 +141,7 @@ public:
   }
 
   //! Returns pcurve used to compute parameters.
-  const Handle(Adaptor2d_Curve2d)& GetPCurve() const
+  const occ::handle<Adaptor2d_Curve2d>& GetPCurve() const
   {
     return myCurveAdaptor.CurveOnSurface().GetCurve();
   }
@@ -149,14 +149,14 @@ public:
 private:
   ParametersCollection myParameters;
 
-  Standard_Boolean myIsSameParam;
-  Standard_Real    myFirstParam;
+  bool   myIsSameParam;
+  double myFirstParam;
 
-  Standard_Real myOldFirstParam;
-  Standard_Real myScale;
+  double myOldFirstParam;
+  double myScale;
 
-  mutable Standard_Real myCurParam;
-  mutable Standard_Real myFoundParam;
+  mutable double myCurParam;
+  mutable double myFoundParam;
 
   BRepAdaptor_Curve myCurveAdaptor;
 

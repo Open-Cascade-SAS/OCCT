@@ -33,33 +33,28 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the number of variables of the function.
-  Standard_EXPORT virtual Standard_Integer NbVariables() const = 0;
+  Standard_EXPORT virtual int NbVariables() const = 0;
 
   //! Returns the number of equations of the function.
-  Standard_EXPORT virtual Standard_Integer NbEquations() const = 0;
+  Standard_EXPORT virtual int NbEquations() const = 0;
 
   //! Computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X, math_Vector& F) = 0;
+  Standard_EXPORT virtual bool Value(const math_Vector& X, math_Vector& F) = 0;
 
   //! Returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D) = 0;
+  Standard_EXPORT virtual bool Derivatives(const math_Vector& X, math_Matrix& D) = 0;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
-                                                  math_Vector&       F,
-                                                  math_Matrix&       D) = 0;
-
-protected:
-private:
+  Standard_EXPORT virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) = 0;
 };
 
 #endif // _math_FunctionSetWithDerivatives_HeaderFile

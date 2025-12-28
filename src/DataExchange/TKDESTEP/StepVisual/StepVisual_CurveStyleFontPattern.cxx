@@ -18,32 +18,31 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CurveStyleFontPattern, Standard_Transient)
 
 StepVisual_CurveStyleFontPattern::StepVisual_CurveStyleFontPattern() {}
 
-void StepVisual_CurveStyleFontPattern::Init(const Standard_Real aVisibleSegmentLength,
-                                            const Standard_Real aInvisibleSegmentLength)
+void StepVisual_CurveStyleFontPattern::Init(const double aVisibleSegmentLength,
+                                            const double aInvisibleSegmentLength)
 {
   // --- classe own fields ---
   visibleSegmentLength   = aVisibleSegmentLength;
   invisibleSegmentLength = aInvisibleSegmentLength;
 }
 
-void StepVisual_CurveStyleFontPattern::SetVisibleSegmentLength(
-  const Standard_Real aVisibleSegmentLength)
+void StepVisual_CurveStyleFontPattern::SetVisibleSegmentLength(const double aVisibleSegmentLength)
 {
   visibleSegmentLength = aVisibleSegmentLength;
 }
 
-Standard_Real StepVisual_CurveStyleFontPattern::VisibleSegmentLength() const
+double StepVisual_CurveStyleFontPattern::VisibleSegmentLength() const
 {
   return visibleSegmentLength;
 }
 
 void StepVisual_CurveStyleFontPattern::SetInvisibleSegmentLength(
-  const Standard_Real aInvisibleSegmentLength)
+  const double aInvisibleSegmentLength)
 {
   invisibleSegmentLength = aInvisibleSegmentLength;
 }
 
-Standard_Real StepVisual_CurveStyleFontPattern::InvisibleSegmentLength() const
+double StepVisual_CurveStyleFontPattern::InvisibleSegmentLength() const
 {
   return invisibleSegmentLength;
 }

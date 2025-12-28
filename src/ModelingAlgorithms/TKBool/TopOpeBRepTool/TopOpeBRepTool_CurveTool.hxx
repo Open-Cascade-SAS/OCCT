@@ -23,8 +23,9 @@
 
 #include <TopOpeBRepTool_GeomTool.hxx>
 #include <TopOpeBRepTool_OutCurveType.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
 class Geom_Curve;
 class Geom2d_Curve;
 class TopoDS_Shape;
@@ -48,36 +49,37 @@ public:
 
   //! Approximates curves.
   //! Returns False in the case of failure
-  Standard_EXPORT Standard_Boolean MakeCurves(const Standard_Real         min,
-                                              const Standard_Real         max,
-                                              const Handle(Geom_Curve)&   C3D,
-                                              const Handle(Geom2d_Curve)& PC1,
-                                              const Handle(Geom2d_Curve)& PC2,
-                                              const TopoDS_Shape&         S1,
-                                              const TopoDS_Shape&         S2,
-                                              Handle(Geom_Curve)&         C3DN,
-                                              Handle(Geom2d_Curve)&       PC1N,
-                                              Handle(Geom2d_Curve)&       PC2N,
-                                              Standard_Real&              Tol3d,
-                                              Standard_Real&              Tol2d) const;
+  Standard_EXPORT bool MakeCurves(const double                     min,
+                                  const double                     max,
+                                  const occ::handle<Geom_Curve>&   C3D,
+                                  const occ::handle<Geom2d_Curve>& PC1,
+                                  const occ::handle<Geom2d_Curve>& PC2,
+                                  const TopoDS_Shape&              S1,
+                                  const TopoDS_Shape&              S2,
+                                  occ::handle<Geom_Curve>&         C3DN,
+                                  occ::handle<Geom2d_Curve>&       PC1N,
+                                  occ::handle<Geom2d_Curve>&       PC2N,
+                                  double&                          Tol3d,
+                                  double&                          Tol2d) const;
 
-  Standard_EXPORT static Handle(Geom_Curve) MakeBSpline1fromPnt(const TColgp_Array1OfPnt& P);
+  Standard_EXPORT static occ::handle<Geom_Curve> MakeBSpline1fromPnt(
+    const NCollection_Array1<gp_Pnt>& P);
 
-  Standard_EXPORT static Handle(Geom2d_Curve) MakeBSpline1fromPnt2d(const TColgp_Array1OfPnt2d& P);
+  Standard_EXPORT static occ::handle<Geom2d_Curve> MakeBSpline1fromPnt2d(
+    const NCollection_Array1<gp_Pnt2d>& P);
 
-  Standard_EXPORT static Standard_Boolean IsProjectable(const TopoDS_Shape&       S,
-                                                        const Handle(Geom_Curve)& C);
+  Standard_EXPORT static bool IsProjectable(const TopoDS_Shape&            S,
+                                            const occ::handle<Geom_Curve>& C);
 
-  Standard_EXPORT static Handle(Geom2d_Curve) MakePCurveOnFace(const TopoDS_Shape&       S,
-                                                               const Handle(Geom_Curve)& C,
-                                                               Standard_Real&      TolReached2d,
-                                                               const Standard_Real first = 0.0,
-                                                               const Standard_Real last  = 0.0);
+  Standard_EXPORT static occ::handle<Geom2d_Curve> MakePCurveOnFace(
+    const TopoDS_Shape&            S,
+    const occ::handle<Geom_Curve>& C,
+    double&                        TolReached2d,
+    const double                   first = 0.0,
+    const double                   last  = 0.0);
 
 protected:
   TopOpeBRepTool_GeomTool myGeomTool;
-
-private:
 };
 
 #endif // _TopOpeBRepTool_CurveTool_HeaderFile

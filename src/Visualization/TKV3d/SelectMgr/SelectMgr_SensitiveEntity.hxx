@@ -26,7 +26,7 @@ class SelectMgr_SensitiveEntity : public Standard_Transient
 {
 public:
   //! Creates new inactive for selection object with base entity theEntity
-  Standard_EXPORT SelectMgr_SensitiveEntity(const Handle(Select3D_SensitiveEntity)& theEntity);
+  Standard_EXPORT SelectMgr_SensitiveEntity(const occ::handle<Select3D_SensitiveEntity>& theEntity);
 
   ~SelectMgr_SensitiveEntity() {}
 
@@ -34,29 +34,26 @@ public:
   Standard_EXPORT void Clear();
 
   //! Returns related instance of SelectBasics class
-  const Handle(Select3D_SensitiveEntity)& BaseSensitive() const { return mySensitive; }
+  const occ::handle<Select3D_SensitiveEntity>& BaseSensitive() const { return mySensitive; }
 
   //! Returns true if this entity belongs to the active selection
   //! mode of parent object
-  Standard_Boolean IsActiveForSelection() const { return myIsActiveForSelection; }
+  bool IsActiveForSelection() const { return myIsActiveForSelection; }
 
   //! Marks entity as inactive for selection
-  void ResetSelectionActiveStatus() const { myIsActiveForSelection = Standard_False; }
+  void ResetSelectionActiveStatus() const { myIsActiveForSelection = false; }
 
   //! Marks entity as active for selection
-  void SetActiveForSelection() const { myIsActiveForSelection = Standard_True; }
+  void SetActiveForSelection() const { myIsActiveForSelection = true; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity, Standard_Transient) // Type definition
 
 private:
-  Handle(Select3D_SensitiveEntity) mySensitive;            //!< Related SelectBasics entity
-  mutable Standard_Boolean         myIsActiveForSelection; //!< Selection activity status
+  occ::handle<Select3D_SensitiveEntity> mySensitive;            //!< Related SelectBasics entity
+  mutable bool                          myIsActiveForSelection; //!< Selection activity status
 };
-
-DEFINE_STANDARD_HANDLE(SelectMgr_SensitiveEntity, Standard_Transient)
 
 #endif // _SelectMgr_SensitiveEntity_HeaderFile

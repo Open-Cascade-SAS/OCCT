@@ -40,9 +40,9 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_ConcentricRelation, PrsDim_Relation)
 
 //=================================================================================================
 
-PrsDim_ConcentricRelation::PrsDim_ConcentricRelation(const TopoDS_Shape&       aFShape,
-                                                     const TopoDS_Shape&       aSShape,
-                                                     const Handle(Geom_Plane)& aPlane)
+PrsDim_ConcentricRelation::PrsDim_ConcentricRelation(const TopoDS_Shape&            aFShape,
+                                                     const TopoDS_Shape&            aSShape,
+                                                     const occ::handle<Geom_Plane>& aPlane)
 {
   myFShape = aFShape;
   mySShape = aSShape;
@@ -52,12 +52,12 @@ PrsDim_ConcentricRelation::PrsDim_ConcentricRelation(const TopoDS_Shape&       a
 
 //=================================================================================================
 
-void PrsDim_ConcentricRelation::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                        const Handle(Prs3d_Presentation)& aPresentation,
-                                        const Standard_Integer)
+void PrsDim_ConcentricRelation::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                        const occ::handle<Prs3d_Presentation>& aPresentation,
+                                        const int)
 {
   TopAbs_ShapeEnum type2(mySShape.ShapeType());
-  aPresentation->SetInfiniteState(Standard_True);
+  aPresentation->SetInfiniteState(true);
   switch (myFShape.ShapeType())
   {
     case TopAbs_EDGE: {
@@ -84,7 +84,7 @@ void PrsDim_ConcentricRelation::Compute(const Handle(PrsMgr_PresentationManager)
 //=================================================================================================
 
 void PrsDim_ConcentricRelation::ComputeEdgeVertexConcentric(
-  const Handle(Prs3d_Presentation)& aPresentation)
+  const occ::handle<Prs3d_Presentation>& aPresentation)
 {
   TopoDS_Edge   E;
   TopoDS_Vertex V;
@@ -98,17 +98,17 @@ void PrsDim_ConcentricRelation::ComputeEdgeVertexConcentric(
     E = TopoDS::Edge(mySShape);
     V = TopoDS::Vertex(myFShape);
   }
-  gp_Pnt             p1, p2;
-  Handle(Geom_Curve) C;
-  Handle(Geom_Curve) extCurv;
-  Standard_Boolean   isInfinite;
-  Standard_Boolean   isOnPlanEdge, isOnPlanVertex;
+  gp_Pnt                  p1, p2;
+  occ::handle<Geom_Curve> C;
+  occ::handle<Geom_Curve> extCurv;
+  bool                    isInfinite;
+  bool                    isOnPlanEdge, isOnPlanVertex;
   if (!PrsDim::ComputeGeometry(E, C, p1, p2, extCurv, isInfinite, isOnPlanEdge, myPlane))
     return;
   gp_Pnt P;
   PrsDim::ComputeGeometry(V, P, myPlane, isOnPlanVertex);
 
-  Handle(Geom_Circle) CIRCLE(Handle(Geom_Circle)::DownCast(C));
+  occ::handle<Geom_Circle> CIRCLE(occ::down_cast<Geom_Circle>(C));
   myCenter = CIRCLE->Location();
   myRad    = std::min(CIRCLE->Radius() / 5., 15.);
   gp_Dir vec(p1.XYZ() - myCenter.XYZ());
@@ -124,13 +124,13 @@ void PrsDim_ConcentricRelation::ComputeEdgeVertexConcentric(
 //=================================================================================================
 
 void PrsDim_ConcentricRelation::ComputeTwoVerticesConcentric(
-  const Handle(Prs3d_Presentation)& aPresentation)
+  const occ::handle<Prs3d_Presentation>& aPresentation)
 {
   TopoDS_Vertex V1, V2;
   V1 = TopoDS::Vertex(myFShape);
   V2 = TopoDS::Vertex(myFShape);
-  Standard_Boolean isOnPlanVertex1(Standard_True), isOnPlanVertex2(Standard_True);
-  gp_Pnt           P1, P2;
+  bool   isOnPlanVertex1(true), isOnPlanVertex2(true);
+  gp_Pnt P1, P2;
   PrsDim::ComputeGeometry(V1, P1, myPlane, isOnPlanVertex1);
   PrsDim::ComputeGeometry(V2, P2, myPlane, isOnPlanVertex2);
   myCenter = P1;
@@ -148,15 +148,15 @@ void PrsDim_ConcentricRelation::ComputeTwoVerticesConcentric(
 //=================================================================================================
 
 void PrsDim_ConcentricRelation::ComputeTwoEdgesConcentric(
-  const Handle(Prs3d_Presentation)& aPresentation)
+  const occ::handle<Prs3d_Presentation>& aPresentation)
 {
   BRepAdaptor_Curve curv1(TopoDS::Edge(myFShape));
   BRepAdaptor_Curve curv2(TopoDS::Edge(mySShape));
 
-  gp_Pnt             ptat11, ptat12, ptat21, ptat22;
-  Handle(Geom_Curve) geom1, geom2;
-  Standard_Boolean   isInfinite1, isInfinite2;
-  Handle(Geom_Curve) extCurv;
+  gp_Pnt                  ptat11, ptat12, ptat21, ptat22;
+  occ::handle<Geom_Curve> geom1, geom2;
+  bool                    isInfinite1, isInfinite2;
+  occ::handle<Geom_Curve> extCurv;
   if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape),
                                TopoDS::Edge(mySShape),
                                myExtShape,
@@ -174,16 +174,16 @@ void PrsDim_ConcentricRelation::ComputeTwoEdgesConcentric(
     return;
   }
 
-  Handle(Geom_Circle) gcirc1(Handle(Geom_Circle)::DownCast(geom1));
-  Handle(Geom_Circle) gcirc2(Handle(Geom_Circle)::DownCast(geom2));
+  occ::handle<Geom_Circle> gcirc1(occ::down_cast<Geom_Circle>(geom1));
+  occ::handle<Geom_Circle> gcirc2(occ::down_cast<Geom_Circle>(geom2));
 
   myCenter = gcirc1->Location();
 
   // choose the radius equal to 1/5 of the smallest radius of
   // 2 circles. Limit is imposed ( 0.02 by chance)
-  Standard_Real aRad1 = gcirc1->Radius();
-  Standard_Real aRad2 = gcirc2->Radius();
-  myRad               = (aRad1 > aRad2) ? aRad2 : aRad1;
+  double aRad1 = gcirc1->Radius();
+  double aRad2 = gcirc2->Radius();
+  myRad        = (aRad1 > aRad2) ? aRad2 : aRad1;
   myRad /= 5;
   if (myRad > 15.)
     myRad = 15.;
@@ -220,17 +220,17 @@ void PrsDim_ConcentricRelation::ComputeTwoEdgesConcentric(
 
 //=================================================================================================
 
-void PrsDim_ConcentricRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                                 const Standard_Integer)
+void PrsDim_ConcentricRelation::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                                 const int)
 {
-  Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner(this, 7);
+  occ::handle<SelectMgr_EntityOwner> anOwner = new SelectMgr_EntityOwner(this, 7);
 
   // Creation of 2 sensitive circles
 
   // the greater
-  gp_Ax2                           anAx(myCenter, myDir);
-  gp_Circ                          aCirc(anAx, myRad);
-  Handle(Select3D_SensitiveCircle) sensit = new Select3D_SensitiveCircle(anOwner, aCirc);
+  gp_Ax2                                anAx(myCenter, myDir);
+  gp_Circ                               aCirc(anAx, myRad);
+  occ::handle<Select3D_SensitiveCircle> sensit = new Select3D_SensitiveCircle(anOwner, aCirc);
   aSelection->Add(sensit);
 
   // the smaller
@@ -239,8 +239,8 @@ void PrsDim_ConcentricRelation::ComputeSelection(const Handle(SelectMgr_Selectio
   aSelection->Add(sensit);
 
   // Creation of 2 segments sensitive for the cross
-  Handle(Select3D_SensitiveSegment) seg;
-  gp_Pnt                            otherPnt = myPnt.Mirrored(myCenter);
+  occ::handle<Select3D_SensitiveSegment> seg;
+  gp_Pnt                                 otherPnt = myPnt.Mirrored(myCenter);
   seg = new Select3D_SensitiveSegment(anOwner, otherPnt, myPnt);
   aSelection->Add(seg);
 

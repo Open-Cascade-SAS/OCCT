@@ -25,53 +25,54 @@
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDraw_Drawing.hxx>
-#include <IGESDraw_HArray1OfViewKindEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESDraw_PerspectiveView.hxx>
 #include <IGESDraw_ToolDrawing.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfXY.hxx>
 
 IGESDraw_ToolDrawing::IGESDraw_ToolDrawing() {}
 
-void IGESDraw_ToolDrawing::ReadOwnParams(const Handle(IGESDraw_Drawing)&        ent,
-                                         const Handle(IGESData_IGESReaderData)& IR,
-                                         IGESData_ParamReader&                  PR) const
+void IGESDraw_ToolDrawing::ReadOwnParams(const occ::handle<IGESDraw_Drawing>&        ent,
+                                         const occ::handle<IGESData_IGESReaderData>& IR,
+                                         IGESData_ParamReader&                       PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer nbval;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  int nbval;
 
-  Handle(IGESDraw_HArray1OfViewKindEntity) views;
-  Handle(TColgp_HArray1OfXY)               viewOrigins;
-  Handle(IGESData_HArray1OfIGESEntity)     annotations;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
+  occ::handle<NCollection_HArray1<gp_XY>>                                viewOrigins;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     annotations;
 
   // Reading nbval(No. of View pointers)
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Count of array of view entities", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "Count of array of view entities", nbval);
   if (st && nbval > 0)
   {
-    views       = new IGESDraw_HArray1OfViewKindEntity(1, nbval);
-    viewOrigins = new TColgp_HArray1OfXY(1, nbval);
+    views       = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbval);
+    viewOrigins = new NCollection_HArray1<gp_XY>(1, nbval);
 
-    Handle(IGESData_ViewKindEntity) tempView;
-    gp_XY                           tempXY;
+    occ::handle<IGESData_ViewKindEntity> tempView;
+    gp_XY                                tempXY;
 
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
       // Reading views(HArray1OfView)
       // st = PR.ReadEntity (IR, PR.Current(), "View Entity",
-      // STANDARD_TYPE(IGESData_ViewKindEntity), tempView,Standard_True); //szv#4:S4163:12Mar99
+      // STANDARD_TYPE(IGESData_ViewKindEntity), tempView,true); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadEntity(IR,
                         PR.Current(),
                         "View Entity",
                         STANDARD_TYPE(IGESData_ViewKindEntity),
                         tempView,
-                        Standard_True))
+                        true))
         views->SetValue(i, tempView);
 
       // Reading viewOrigins(HArray1OfXY)
@@ -96,12 +97,12 @@ void IGESDraw_ToolDrawing::ReadOwnParams(const Handle(IGESDraw_Drawing)&        
     /*
           {
         // Reading annotations(HArray1OfIGESEntity)
-        annotations = new IGESData_HArray1OfIGESEntity(1, nbval);
-        Handle(IGESData_IGESEntity) tempAnnotation;
-        for (Standard_Integer i = 1; i <= nbval; i++)
+        annotations = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbval);
+        occ::handle<IGESData_IGESEntity> tempAnnotation;
+        for (int i = 1; i <= nbval; i++)
               {
             st = PR.ReadEntity
-              (IR, PR.Current(), "annotation entity", tempAnnotation,Standard_True);
+              (IR, PR.Current(), "annotation entity", tempAnnotation,true);
             if (st) annotations->SetValue(i, tempAnnotation);
               }
           }
@@ -114,12 +115,12 @@ void IGESDraw_ToolDrawing::ReadOwnParams(const Handle(IGESDraw_Drawing)&        
   ent->Init(views, viewOrigins, annotations);
 }
 
-void IGESDraw_ToolDrawing::WriteOwnParams(const Handle(IGESDraw_Drawing)& ent,
-                                          IGESData_IGESWriter&            IW) const
+void IGESDraw_ToolDrawing::WriteOwnParams(const occ::handle<IGESDraw_Drawing>& ent,
+                                          IGESData_IGESWriter&                 IW) const
 {
-  Standard_Integer Up = ent->NbViews();
+  int Up = ent->NbViews();
   IW.Send(Up);
-  Standard_Integer i; // svv Jan 10 2000 : porting on DEC
+  int i; // svv Jan 10 2000 : porting on DEC
   for (i = 1; i <= Up; i++)
   {
     IW.Send(ent->ViewItem(i));
@@ -133,11 +134,11 @@ void IGESDraw_ToolDrawing::WriteOwnParams(const Handle(IGESDraw_Drawing)& ent,
     IW.Send(ent->Annotation(i));
 }
 
-void IGESDraw_ToolDrawing::OwnShared(const Handle(IGESDraw_Drawing)& ent,
-                                     Interface_EntityIterator&       iter) const
+void IGESDraw_ToolDrawing::OwnShared(const occ::handle<IGESDraw_Drawing>& ent,
+                                     Interface_EntityIterator&            iter) const
 {
-  Standard_Integer Up = ent->NbViews();
-  Standard_Integer i; // svv Jan 10 2000 : porting on DEC
+  int Up = ent->NbViews();
+  int i; // svv Jan 10 2000 : porting on DEC
   for (i = 1; i <= Up; i++)
     iter.GetOneItem(ent->ViewItem(i));
 
@@ -146,34 +147,34 @@ void IGESDraw_ToolDrawing::OwnShared(const Handle(IGESDraw_Drawing)& ent,
     iter.GetOneItem(ent->Annotation(i));
 }
 
-void IGESDraw_ToolDrawing::OwnCopy(const Handle(IGESDraw_Drawing)& another,
-                                   const Handle(IGESDraw_Drawing)& ent,
-                                   Interface_CopyTool&             TC) const
+void IGESDraw_ToolDrawing::OwnCopy(const occ::handle<IGESDraw_Drawing>& another,
+                                   const occ::handle<IGESDraw_Drawing>& ent,
+                                   Interface_CopyTool&                  TC) const
 {
-  Standard_Integer                         nbanot;
-  Standard_Integer                         nbval;
-  Handle(IGESDraw_HArray1OfViewKindEntity) views;
-  Handle(TColgp_HArray1OfXY)               viewOrigins;
-  Handle(IGESData_HArray1OfIGESEntity)     annotations;
+  int                                                                    nbanot;
+  int                                                                    nbval;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
+  occ::handle<NCollection_HArray1<gp_XY>>                                viewOrigins;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     annotations;
 
   nbanot = another->NbAnnotations();
   nbval  = another->NbViews();
   if (nbval > 0)
   {
-    views       = new IGESDraw_HArray1OfViewKindEntity(1, nbval);
-    viewOrigins = new TColgp_HArray1OfXY(1, nbval);
+    views       = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbval);
+    viewOrigins = new NCollection_HArray1<gp_XY>(1, nbval);
   }
   if (nbanot > 0)
   {
-    annotations = new IGESData_HArray1OfIGESEntity(1, nbanot);
-    for (Standard_Integer i = 1; i <= nbanot; i++)
+    annotations = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbanot);
+    for (int i = 1; i <= nbanot; i++)
     {
       DeclareAndCast(IGESData_IGESEntity, tempAnnotation, TC.Transferred(another->Annotation(i)));
       annotations->SetValue(i, tempAnnotation);
     }
   }
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
     DeclareAndCast(IGESData_ViewKindEntity, tempView, TC.Transferred(another->ViewItem(i)));
     views->SetValue(i, tempView);
@@ -184,32 +185,32 @@ void IGESDraw_ToolDrawing::OwnCopy(const Handle(IGESDraw_Drawing)& another,
   ent->Init(views, viewOrigins, annotations);
 }
 
-Standard_Boolean IGESDraw_ToolDrawing::OwnCorrect(const Handle(IGESDraw_Drawing)& ent) const
+bool IGESDraw_ToolDrawing::OwnCorrect(const occ::handle<IGESDraw_Drawing>& ent) const
 {
   //  Empty views: remove them
-  Standard_Integer i, nb = ent->NbViews();
-  Standard_Integer nbtrue = nb;
+  int i, nb = ent->NbViews();
+  int nbtrue = nb;
   for (i = 1; i <= nb; i++)
   {
-    Handle(IGESData_ViewKindEntity) val = ent->ViewItem(i);
+    occ::handle<IGESData_ViewKindEntity> val = ent->ViewItem(i);
     if (val.IsNull())
       nbtrue--;
     else if (val->TypeNumber() == 0)
       nbtrue--;
   }
   if (nbtrue == nb)
-    return Standard_False;
-  Handle(IGESDraw_HArray1OfViewKindEntity) views;
-  Handle(TColgp_HArray1OfXY)               viewOrigins;
+    return false;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
+  occ::handle<NCollection_HArray1<gp_XY>>                                viewOrigins;
   if (nbtrue > 0)
   {
-    views       = new IGESDraw_HArray1OfViewKindEntity(1, nbtrue);
-    viewOrigins = new TColgp_HArray1OfXY(1, nbtrue);
+    views       = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbtrue);
+    viewOrigins = new NCollection_HArray1<gp_XY>(1, nbtrue);
   }
   nbtrue = 0;
   for (i = 1; i <= nb; i++)
   {
-    Handle(IGESData_ViewKindEntity) val = ent->ViewItem(i);
+    occ::handle<IGESData_ViewKindEntity> val = ent->ViewItem(i);
     if (val.IsNull())
       continue;
     else if (val->TypeNumber() == 0)
@@ -220,16 +221,18 @@ Standard_Boolean IGESDraw_ToolDrawing::OwnCorrect(const Handle(IGESDraw_Drawing)
   }
 
   //  Don't forget the annotations ...
-  Standard_Integer                     nbanot      = ent->NbAnnotations();
-  Handle(IGESData_HArray1OfIGESEntity) annotations = new IGESData_HArray1OfIGESEntity(1, nbanot);
+  int                                                                nbanot = ent->NbAnnotations();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> annotations =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbanot);
   for (i = 1; i <= nbanot; i++)
     annotations->SetValue(i, ent->Annotation(i));
 
   ent->Init(views, viewOrigins, annotations);
-  return Standard_True;
+  return true;
 }
 
-IGESData_DirChecker IGESDraw_ToolDrawing::DirChecker(const Handle(IGESDraw_Drawing)& /*ent*/) const
+IGESData_DirChecker IGESDraw_ToolDrawing::DirChecker(
+  const occ::handle<IGESDraw_Drawing>& /*ent*/) const
 {
   IGESData_DirChecker DC(404, 0);
   DC.Structure(IGESData_DefVoid);
@@ -243,19 +246,19 @@ IGESData_DirChecker IGESDraw_ToolDrawing::DirChecker(const Handle(IGESDraw_Drawi
   return DC;
 }
 
-void IGESDraw_ToolDrawing::OwnCheck(const Handle(IGESDraw_Drawing)& ent,
+void IGESDraw_ToolDrawing::OwnCheck(const occ::handle<IGESDraw_Drawing>& ent,
                                     const Interface_ShareTool&,
-                                    Handle(Interface_Check)& ach) const
+                                    occ::handle<Interface_Check>& ach) const
 {
-  Standard_Boolean ianul = Standard_False;
-  Standard_Integer i, nb = ent->NbViews();
+  bool ianul = false;
+  int  i, nb = ent->NbViews();
   for (i = 1; i <= nb; i++)
   {
-    Handle(IGESData_ViewKindEntity) tempView = ent->ViewItem(i);
+    occ::handle<IGESData_ViewKindEntity> tempView = ent->ViewItem(i);
     if (tempView.IsNull())
-      ianul = Standard_True;
+      ianul = true;
     else if (tempView->TypeNumber() == 0)
-      ianul = Standard_True;
+      ianul = true;
     if (ianul)
     {
       ach->AddWarning("At least one View is Null");
@@ -265,11 +268,11 @@ void IGESDraw_ToolDrawing::OwnCheck(const Handle(IGESDraw_Drawing)& ent,
   nb = ent->NbAnnotations();
   for (i = 1; i <= nb; i++)
   {
-    Handle(IGESData_IGESEntity) ann = ent->Annotation(i);
+    occ::handle<IGESData_IGESEntity> ann = ent->Annotation(i);
     if (ann.IsNull())
-      ianul = Standard_True;
+      ianul = true;
     else if (ann->TypeNumber() == 0)
-      ianul = Standard_True;
+      ianul = true;
     if (ianul)
     {
       ach->AddWarning("At least one Annotation is Null");
@@ -278,12 +281,12 @@ void IGESDraw_ToolDrawing::OwnCheck(const Handle(IGESDraw_Drawing)& ent,
   }
 }
 
-void IGESDraw_ToolDrawing::OwnDump(const Handle(IGESDraw_Drawing)& ent,
-                                   const IGESData_IGESDumper&      dumper,
-                                   Standard_OStream&               S,
-                                   const Standard_Integer          level) const
+void IGESDraw_ToolDrawing::OwnDump(const occ::handle<IGESDraw_Drawing>& ent,
+                                   const IGESData_IGESDumper&           dumper,
+                                   Standard_OStream&                    S,
+                                   const int                            level) const
 {
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "IGESDraw_Drawing\n"
     << "View Entities            :\n"
@@ -296,10 +299,10 @@ void IGESDraw_ToolDrawing::OwnDump(const Handle(IGESDraw_Drawing)& ent,
       break; // Nothing to be dumped here
     case 5:  // Presently level 5 and 6 have the same Dump
       S << "\n";
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 6: {
-      Standard_Integer I;
-      Standard_Integer up = ent->NbViews();
+      int I;
+      int up = ent->NbViews();
       for (I = 1; I <= up; I++)
       {
         S << "\n[" << I << "] "

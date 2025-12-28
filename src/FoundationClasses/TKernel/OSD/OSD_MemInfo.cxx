@@ -42,9 +42,9 @@ EM_JS(double, OSD_MemInfo_getModuleHeapLength, (), { return Module.HEAP8.length;
 
 //=================================================================================================
 
-OSD_MemInfo::OSD_MemInfo(const Standard_Boolean theImmediateUpdate)
+OSD_MemInfo::OSD_MemInfo(const bool theImmediateUpdate)
 {
-  SetActive(Standard_True);
+  SetActive(true);
   if (theImmediateUpdate)
   {
     Update();
@@ -57,9 +57,9 @@ OSD_MemInfo::OSD_MemInfo(const Standard_Boolean theImmediateUpdate)
 
 //=================================================================================================
 
-void OSD_MemInfo::SetActive(const Standard_Boolean theActive)
+void OSD_MemInfo::SetActive(const bool theActive)
 {
-  for (Standard_Integer anIter = 0; anIter < MemCounter_NB; ++anIter)
+  for (int anIter = 0; anIter < MemCounter_NB; ++anIter)
   {
     SetActive((Counter)anIter, theActive);
   }
@@ -69,9 +69,9 @@ void OSD_MemInfo::SetActive(const Standard_Boolean theActive)
 
 void OSD_MemInfo::Clear()
 {
-  for (Standard_Integer anIter = 0; anIter < MemCounter_NB; ++anIter)
+  for (int anIter = 0; anIter < MemCounter_NB; ++anIter)
   {
-    myCounters[anIter] = Standard_Size(-1);
+    myCounters[anIter] = size_t(-1);
   }
 }
 
@@ -88,7 +88,7 @@ void OSD_MemInfo::Update()
     MEMORYSTATUSEX aStatEx;
     aStatEx.dwLength = sizeof(aStatEx);
     GlobalMemoryStatusEx(&aStatEx);
-    myCounters[MemVirtual] = Standard_Size(aStatEx.ullTotalVirtual - aStatEx.ullAvailVirtual);
+    myCounters[MemVirtual] = size_t(aStatEx.ullTotalVirtual - aStatEx.ullAvailVirtual);
   }
     #else
   if (IsActive(MemVirtual))
@@ -96,7 +96,7 @@ void OSD_MemInfo::Update()
     MEMORYSTATUS aStat;
     aStat.dwLength = sizeof(aStat);
     GlobalMemoryStatus(&aStat);
-    myCounters[MemVirtual] = Standard_Size(aStat.dwTotalVirtual - aStat.dwAvailVirtual);
+    myCounters[MemVirtual] = size_t(aStat.dwTotalVirtual - aStat.dwAvailVirtual);
   }
     #endif
 
@@ -228,13 +228,13 @@ void OSD_MemInfo::Update()
     }
     else if (IsActive(MemPrivate) && strncmp(aBuff, "VmData:", strlen("VmData:")) == 0)
     {
-      if (myCounters[MemPrivate] == Standard_Size(-1))
+      if (myCounters[MemPrivate] == size_t(-1))
         ++myCounters[MemPrivate];
       myCounters[MemPrivate] += atol(aBuff + strlen("VmData:")) * 1024;
     }
     else if (IsActive(MemPrivate) && strncmp(aBuff, "VmStk:", strlen("VmStk:")) == 0)
     {
-      if (myCounters[MemPrivate] == Standard_Size(-1))
+      if (myCounters[MemPrivate] == size_t(-1))
         ++myCounters[MemPrivate];
       myCounters[MemPrivate] += atol(aBuff + strlen("VmStk:")) * 1024;
     }
@@ -270,78 +270,76 @@ TCollection_AsciiString OSD_MemInfo::ToString() const
   TCollection_AsciiString anInfo;
   if (hasValue(MemPrivate))
   {
-    anInfo += TCollection_AsciiString("  Private memory:     ")
-              + Standard_Integer(ValueMiB(MemPrivate)) + " MiB\n";
+    anInfo +=
+      TCollection_AsciiString("  Private memory:     ") + int(ValueMiB(MemPrivate)) + " MiB\n";
   }
   if (hasValue(MemWorkingSet))
   {
-    anInfo += TCollection_AsciiString("  Working Set:        ")
-              + Standard_Integer(ValueMiB(MemWorkingSet)) + " MiB";
+    anInfo +=
+      TCollection_AsciiString("  Working Set:        ") + int(ValueMiB(MemWorkingSet)) + " MiB";
     if (hasValue(MemWorkingSetPeak))
     {
-      anInfo += TCollection_AsciiString(" (peak: ") + Standard_Integer(ValueMiB(MemWorkingSetPeak))
-                + " MiB)";
+      anInfo += TCollection_AsciiString(" (peak: ") + int(ValueMiB(MemWorkingSetPeak)) + " MiB)";
     }
     anInfo += "\n";
   }
   if (hasValue(MemSwapUsage))
   {
-    anInfo += TCollection_AsciiString("  Pagefile usage:     ")
-              + Standard_Integer(ValueMiB(MemSwapUsage)) + " MiB";
+    anInfo +=
+      TCollection_AsciiString("  Pagefile usage:     ") + int(ValueMiB(MemSwapUsage)) + " MiB";
     if (hasValue(MemSwapUsagePeak))
     {
-      anInfo += TCollection_AsciiString(" (peak: ") + Standard_Integer(ValueMiB(MemSwapUsagePeak))
-                + " MiB)";
+      anInfo += TCollection_AsciiString(" (peak: ") + int(ValueMiB(MemSwapUsagePeak)) + " MiB)";
     }
     anInfo += "\n";
   }
   if (hasValue(MemVirtual))
   {
-    anInfo += TCollection_AsciiString("  Virtual memory:     ")
-              + Standard_Integer(ValueMiB(MemVirtual)) + " MiB\n";
+    anInfo +=
+      TCollection_AsciiString("  Virtual memory:     ") + int(ValueMiB(MemVirtual)) + " MiB\n";
   }
   if (hasValue(MemHeapUsage))
   {
-    anInfo += TCollection_AsciiString("  Heap memory:     ")
-              + Standard_Integer(ValueMiB(MemHeapUsage)) + " MiB\n";
+    anInfo +=
+      TCollection_AsciiString("  Heap memory:     ") + int(ValueMiB(MemHeapUsage)) + " MiB\n";
   }
   return anInfo;
 }
 
 //=================================================================================================
 
-Standard_Size OSD_MemInfo::Value(const OSD_MemInfo::Counter theCounter) const
+size_t OSD_MemInfo::Value(const OSD_MemInfo::Counter theCounter) const
 {
   if (theCounter < 0 || theCounter >= MemCounter_NB || !IsActive(theCounter))
   {
-    return Standard_Size(-1);
+    return size_t(-1);
   }
   return myCounters[theCounter];
 }
 
 //=================================================================================================
 
-Standard_Size OSD_MemInfo::ValueMiB(const OSD_MemInfo::Counter theCounter) const
+size_t OSD_MemInfo::ValueMiB(const OSD_MemInfo::Counter theCounter) const
 {
   if (theCounter < 0 || theCounter >= MemCounter_NB || !IsActive(theCounter))
   {
-    return Standard_Size(-1);
+    return size_t(-1);
   }
-  return (myCounters[theCounter] == Standard_Size(-1)) ? Standard_Size(-1)
-                                                       : (myCounters[theCounter] / (1024 * 1024));
+  return (myCounters[theCounter] == size_t(-1)) ? size_t(-1)
+                                                : (myCounters[theCounter] / (1024 * 1024));
 }
 
 //=================================================================================================
 
-Standard_Real OSD_MemInfo::ValuePreciseMiB(const OSD_MemInfo::Counter theCounter) const
+double OSD_MemInfo::ValuePreciseMiB(const OSD_MemInfo::Counter theCounter) const
 {
   if (theCounter < 0 || theCounter >= MemCounter_NB || !IsActive(theCounter))
   {
     return -1.0;
   }
-  return (myCounters[theCounter] == Standard_Size(-1))
+  return (myCounters[theCounter] == size_t(-1))
            ? -1.0
-           : ((Standard_Real)myCounters[theCounter] / (1024.0 * 1024.0));
+           : ((double)myCounters[theCounter] / (1024.0 * 1024.0));
 }
 
 //=================================================================================================

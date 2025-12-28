@@ -36,13 +36,13 @@
 
 IGESSolid_ToolConeFrustum::IGESSolid_ToolConeFrustum() {}
 
-void IGESSolid_ToolConeFrustum::ReadOwnParams(const Handle(IGESSolid_ConeFrustum)& ent,
-                                              const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESSolid_ToolConeFrustum::ReadOwnParams(const occ::handle<IGESSolid_ConeFrustum>& ent,
+                                              const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                               IGESData_ParamReader& PR) const
 {
-  Standard_Real tempHeight, tempR1, tempR2, tempreal;
-  gp_XYZ        tempCenter, tempAxis;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  double tempHeight, tempR1, tempR2, tempreal;
+  gp_XYZ tempCenter, tempAxis;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadReal(PR.Current(), "Height", tempHeight); // szv#4:S4163:12Mar99 `st=` not needed
 
@@ -117,13 +117,13 @@ void IGESSolid_ToolConeFrustum::ReadOwnParams(const Handle(IGESSolid_ConeFrustum
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempHeight, tempR1, tempR2, tempCenter, tempAxis);
-  Standard_Real eps = 1.E-05;
+  double eps = 1.E-05;
   if (!tempAxis.IsEqual(ent->Axis().XYZ(), eps))
     PR.AddWarning("Axis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolConeFrustum::WriteOwnParams(const Handle(IGESSolid_ConeFrustum)& ent,
-                                               IGESData_IGESWriter&                 IW) const
+void IGESSolid_ToolConeFrustum::WriteOwnParams(const occ::handle<IGESSolid_ConeFrustum>& ent,
+                                               IGESData_IGESWriter&                      IW) const
 {
   IW.Send(ent->Height());
   IW.Send(ent->LargerRadius());
@@ -136,13 +136,13 @@ void IGESSolid_ToolConeFrustum::WriteOwnParams(const Handle(IGESSolid_ConeFrustu
   IW.Send(ent->Axis().Z());
 }
 
-void IGESSolid_ToolConeFrustum::OwnShared(const Handle(IGESSolid_ConeFrustum)& /* ent */,
+void IGESSolid_ToolConeFrustum::OwnShared(const occ::handle<IGESSolid_ConeFrustum>& /* ent */,
                                           Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESSolid_ToolConeFrustum::OwnCopy(const Handle(IGESSolid_ConeFrustum)& another,
-                                        const Handle(IGESSolid_ConeFrustum)& ent,
+void IGESSolid_ToolConeFrustum::OwnCopy(const occ::handle<IGESSolid_ConeFrustum>& another,
+                                        const occ::handle<IGESSolid_ConeFrustum>& ent,
                                         Interface_CopyTool& /* TC */) const
 {
   ent->Init(another->Height(),
@@ -153,7 +153,7 @@ void IGESSolid_ToolConeFrustum::OwnCopy(const Handle(IGESSolid_ConeFrustum)& ano
 }
 
 IGESData_DirChecker IGESSolid_ToolConeFrustum::DirChecker(
-  const Handle(IGESSolid_ConeFrustum)& /* ent */) const
+  const occ::handle<IGESSolid_ConeFrustum>& /* ent */) const
 {
   IGESData_DirChecker DC(156, 0);
 
@@ -166,9 +166,9 @@ IGESData_DirChecker IGESSolid_ToolConeFrustum::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolConeFrustum::OwnCheck(const Handle(IGESSolid_ConeFrustum)& ent,
+void IGESSolid_ToolConeFrustum::OwnCheck(const occ::handle<IGESSolid_ConeFrustum>& ent,
                                          const Interface_ShareTool&,
-                                         Handle(Interface_Check)& ach) const
+                                         occ::handle<Interface_Check>& ach) const
 {
   if (ent->Height() <= 0.0)
     ach->AddFail("Height : Value Not Positive");
@@ -180,10 +180,10 @@ void IGESSolid_ToolConeFrustum::OwnCheck(const Handle(IGESSolid_ConeFrustum)& en
     ach->AddFail("Smaller face radius : is greater than Larger face radius");
 }
 
-void IGESSolid_ToolConeFrustum::OwnDump(const Handle(IGESSolid_ConeFrustum)& ent,
+void IGESSolid_ToolConeFrustum::OwnDump(const occ::handle<IGESSolid_ConeFrustum>& ent,
                                         const IGESData_IGESDumper& /* dumper */,
-                                        Standard_OStream&      S,
-                                        const Standard_Integer level) const
+                                        Standard_OStream& S,
+                                        const int         level) const
 {
   S << "IGESSolid_ConeFrustum\n"
     << "Height : " << ent->Height() << "  "

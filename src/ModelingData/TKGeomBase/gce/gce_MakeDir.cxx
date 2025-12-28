@@ -64,7 +64,7 @@ gce_MakeDir::gce_MakeDir(const gp_Vec& V)
   }
 }
 
-gce_MakeDir::gce_MakeDir(const Standard_Real Xv, const Standard_Real Yv, const Standard_Real Zv)
+gce_MakeDir::gce_MakeDir(const double Xv, const double Yv, const double Zv)
 {
   if (Xv * Xv + Yv * Yv + Zv * Zv <= gp::Resolution())
   {

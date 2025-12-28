@@ -42,9 +42,9 @@ static TCollection_AsciiString PRODINS("dins ");
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRepBuild_Builder::GdumpLS(const TopTools_ListOfShape& L) const
+void TopOpeBRepBuild_Builder::GdumpLS(const NCollection_List<TopoDS_Shape>& L) const
 {
-  TopTools_ListIteratorOfListOfShape it(L);
+  NCollection_List<TopoDS_Shape>::Iterator it(L);
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& SL = it.Value();
@@ -52,7 +52,7 @@ void TopOpeBRepBuild_Builder::GdumpLS(const TopTools_ListOfShape& L) const
   }
 }
 #else
-void TopOpeBRepBuild_Builder::GdumpLS(const TopTools_ListOfShape&) const {}
+void TopOpeBRepBuild_Builder::GdumpLS(const NCollection_List<TopoDS_Shape>&) const {}
 #endif
 
 //=================================================================================================
@@ -127,9 +127,9 @@ void TopOpeBRepBuild_Builder::PrintSur(const TopoDS_Face&) {}
 #ifdef OCCT_DEBUG
 void TopOpeBRepBuild_Builder::PrintCur(const TopoDS_Edge& E)
 {
-  TopLoc_Location    L;
-  Standard_Real      f, l;
-  Handle(Geom_Curve) C = BRep_Tool::Curve(E, L, f, l);
+  TopLoc_Location         L;
+  double                  f, l;
+  occ::handle<Geom_Curve> C = BRep_Tool::Curve(E, L, f, l);
   if (C.IsNull())
     return;
   GeomAdaptor_Curve GC(C);
@@ -239,7 +239,7 @@ void TopOpeBRepBuild_Builder::GdumpPNT(const gp_Pnt&) {}
 
 #ifdef OCCT_DEBUG
 void TopOpeBRepBuild_Builder::GdumpORIPARPNT(const TopAbs_Orientation o,
-                                             const Standard_Real      p,
+                                             const double             p,
                                              const gp_Pnt&            Pnt)
 {
   TopAbs::Print(o, std::cout);
@@ -248,9 +248,7 @@ void TopOpeBRepBuild_Builder::GdumpORIPARPNT(const TopAbs_Orientation o,
   std::cout.flush();
 }
 #else
-void TopOpeBRepBuild_Builder::GdumpORIPARPNT(const TopAbs_Orientation,
-                                             const Standard_Real,
-                                             const gp_Pnt&)
+void TopOpeBRepBuild_Builder::GdumpORIPARPNT(const TopAbs_Orientation, const double, const gp_Pnt&)
 {
 }
 #endif
@@ -258,16 +256,16 @@ void TopOpeBRepBuild_Builder::GdumpORIPARPNT(const TopAbs_Orientation,
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRepBuild_Builder::GdumpEDGVER(const TopoDS_Shape&    E,
-                                          const TopoDS_Shape&    V,
-                                          const Standard_Address s) const
+void TopOpeBRepBuild_Builder::GdumpEDGVER(const TopoDS_Shape& E,
+                                          const TopoDS_Shape& V,
+                                          void* const         s) const
 {
   char* c = (char*)s;
   if (c)
     std::cout << c;
   const TopoDS_Edge&   EE  = TopoDS::Edge(E);
   const TopoDS_Vertex& VV  = TopoDS::Vertex(V);
-  Standard_Real        par = BRep_Tool::Parameter(VV, EE);
+  double               par = BRep_Tool::Parameter(VV, EE);
   gp_Pnt               P   = BRep_Tool::Pnt(VV);
   GdumpORIPARPNT(VV.Orientation(), par, P);
   std::cout.flush();
@@ -275,7 +273,7 @@ void TopOpeBRepBuild_Builder::GdumpEDGVER(const TopoDS_Shape&    E,
 #else
 void TopOpeBRepBuild_Builder::GdumpEDGVER(const TopoDS_Shape&,
                                           const TopoDS_Shape&,
-                                          const Standard_Address) const
+                                          void* const) const
 {
 }
 #endif
@@ -283,13 +281,13 @@ void TopOpeBRepBuild_Builder::GdumpEDGVER(const TopoDS_Shape&,
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape& E, const Standard_Address s) const
+void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape& E, void* const s) const
 {
   char* c = (char*)s;
   if (c)
     std::cout << c;
   const TopoDS_Edge& EE = TopoDS::Edge(E);
-  Standard_Integer   n  = 0;
+  int                n  = 0;
   GdumpSHAORI(E, (char*)"vertices of ");
   std::cout << std::endl;
   TopOpeBRepTool_ShapeExplorer ex(E, TopAbs_VERTEX);
@@ -311,8 +309,8 @@ void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape& E, const Standard_Add
     std::cout << ++n << " ";
     TopOpeBRepBuild_Builder::PrintPnt(VV);
     std::cout << ";";
-    Standard_Real par = BRep_Tool::Parameter(VV, EE);
-    char          spar[255];
+    double par = BRep_Tool::Parameter(VV, EE);
+    char   spar[255];
     Sprintf(spar, " par%d %f", n, par);
     strcat(strpar, spar);
   }
@@ -321,13 +319,13 @@ void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape& E, const Standard_Add
   std::cout.flush();
 }
 #else
-void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape&, const Standard_Address) const {}
+void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape&, void* const) const {}
 #endif
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::GdumpSAMDOM(const TopTools_ListOfShape& L,
-                                          const Standard_Address      astr) const
+void TopOpeBRepBuild_Builder::GdumpSAMDOM(const NCollection_List<TopoDS_Shape>& L,
+                                          void* const                           astr) const
 {
   TopOpeBRepDS_Dumper Dumper(myDataStructure);
   std::cout << Dumper.SPrintShapeRefOri(L, (char*)astr) << std::endl;
@@ -337,7 +335,7 @@ void TopOpeBRepBuild_Builder::GdumpSAMDOM(const TopTools_ListOfShape& L,
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRepBuild_Builder::GdumpSHA(const TopoDS_Shape& S, const Standard_Address str) const
+void TopOpeBRepBuild_Builder::GdumpSHA(const TopoDS_Shape& S, void* const str) const
 {
   char* c = (char*)str;
   if (c)
@@ -345,20 +343,20 @@ void TopOpeBRepBuild_Builder::GdumpSHA(const TopoDS_Shape& S, const Standard_Add
   if (S.IsNull())
     return;
   TopAbs_ShapeEnum tS = S.ShapeType();
-  Standard_Integer iS = 0;
+  int              iS = 0;
   if (!myDataStructure.IsNull())
     iS = myDataStructure->Shape(S);
   TopOpeBRepDS::Print(tS, iS, std::cout);
   std::cout.flush();
 }
 #else
-void TopOpeBRepBuild_Builder::GdumpSHA(const TopoDS_Shape&, const Standard_Address) const {}
+void TopOpeBRepBuild_Builder::GdumpSHA(const TopoDS_Shape&, void* const) const {}
 #endif
 
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRepBuild_Builder::GdumpSHAORI(const TopoDS_Shape& S, const Standard_Address str) const
+void TopOpeBRepBuild_Builder::GdumpSHAORI(const TopoDS_Shape& S, void* const str) const
 {
   char* c = (char*)str;
   if (c)
@@ -369,13 +367,12 @@ void TopOpeBRepBuild_Builder::GdumpSHAORI(const TopoDS_Shape& S, const Standard_
   std::cout.flush();
 }
 #else
-void TopOpeBRepBuild_Builder::GdumpSHAORI(const TopoDS_Shape&, const Standard_Address) const {}
+void TopOpeBRepBuild_Builder::GdumpSHAORI(const TopoDS_Shape&, void* const) const {}
 #endif
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRepBuild_Builder::GdumpSHAORIGEO(const TopoDS_Shape&    S,
-                                             const Standard_Address str) const
+void TopOpeBRepBuild_Builder::GdumpSHAORIGEO(const TopoDS_Shape& S, void* const str) const
 {
   char* c = (char*)str;
   if (c)
@@ -386,7 +383,7 @@ void TopOpeBRepBuild_Builder::GdumpSHAORIGEO(const TopoDS_Shape&    S,
   std::cout.flush();
 }
 #else
-void TopOpeBRepBuild_Builder::GdumpSHAORIGEO(const TopoDS_Shape&, const Standard_Address) const {}
+void TopOpeBRepBuild_Builder::GdumpSHAORIGEO(const TopoDS_Shape&, void* const) const {}
 #endif
 //=================================================================================================
 
@@ -414,7 +411,7 @@ void TopOpeBRepBuild_Builder::GdumpSHASTA(const TopoDS_Shape&,
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer         iS,
+void TopOpeBRepBuild_Builder::GdumpSHASTA(const int                      iS,
                                           const TopAbs_State             T,
                                           const TCollection_AsciiString& a,
                                           const TCollection_AsciiString& b) const
@@ -424,7 +421,7 @@ void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer         iS,
   std::cout.flush();
 }
 #else
-void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer,
+void TopOpeBRepBuild_Builder::GdumpSHASTA(const int,
                                           const TopAbs_State,
                                           const TCollection_AsciiString&,
                                           const TCollection_AsciiString&) const
@@ -435,7 +432,7 @@ void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer,
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer          iS,
+void TopOpeBRepBuild_Builder::GdumpSHASTA(const int                       iS,
                                           const TopAbs_State              T,
                                           const TopOpeBRepBuild_ShapeSet& SS,
                                           const TCollection_AsciiString&  a,
@@ -448,7 +445,7 @@ void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer          iS,
   std::cout.flush();
 }
 #else
-void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer,
+void TopOpeBRepBuild_Builder::GdumpSHASTA(const int,
                                           const TopAbs_State,
                                           const TopOpeBRepBuild_ShapeSet&,
                                           const TCollection_AsciiString&,
@@ -469,9 +466,9 @@ void TopOpeBRepBuild_Builder::GdumpSHASETreset()
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepBuild_Builder::GdumpSHASETindex()
+int TopOpeBRepBuild_Builder::GdumpSHASETindex()
 {
-  Standard_Integer n = 0;
+  int n = 0;
 #ifdef OCCT_DEBUG
   n = ++mySHASETindex;
 #endif
@@ -495,7 +492,7 @@ void TopOpeBRepBuild_Builder::GdumpEXP(const TopOpeBRepTool_ShapeExplorer& Ex) c
   else
     std::cout << "??";
   Ex.DumpCurrent(std::cout);
-  Standard_Integer I = myDataStructure->Shape(Ex.Current());
+  int I = myDataStructure->Shape(Ex.Current());
   if (I != 0)
     std::cout << " :  shape " << I;
   std::cout << std::endl;
@@ -523,12 +520,12 @@ void* GFABUMAKEFACEPWES_DEB = NULL;
 void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ME) const
 {
   const TopoDS_Shape& face = ME.Face();
-  Standard_Integer    iF;
-  //  Standard_Boolean tSPS =
+  int                 iF;
+  //  bool tSPS =
   GtraceSPS(face, iF);
   TopOpeBRepBuild_WireEdgeSet* PWES = (TopOpeBRepBuild_WireEdgeSet*)GFABUMAKEFACEPWES_DEB;
 
-  Standard_Integer nf, nw, ne;
+  int nf, nw, ne;
   ME.InitFace();
   if (ME.MoreFace())
     std::cout << "clear;" << std::endl;
@@ -539,7 +536,7 @@ void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ME) const
     for (nw = 0, ME.InitWire(); ME.MoreWire(); ME.NextWire())
     {
       nw++;
-      Standard_Boolean ow = ME.IsOldWire();
+      bool ow = ME.IsOldWire();
       std::cout << "#  wire " << nw;
       if (ow)
         std::cout << " (old)";
@@ -610,14 +607,14 @@ void TopOpeBRepBuild_Builder::GdumpEDBU(TopOpeBRepBuild_EdgeBuilder& /*ME*/) con
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const Standard_Integer iS) const
+bool TopOpeBRepBuild_Builder::GtraceSPS(const int iS) const
 #else
-Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const Standard_Integer) const
+bool TopOpeBRepBuild_Builder::GtraceSPS(const int) const
 #endif
 {
-  Standard_Boolean b = Standard_False;
+  bool b = false;
 #ifdef OCCT_DEBUG
-  Standard_Integer ibid;
+  int ibid;
   b = GtraceSPS(myDataStructure->Shape(iS), ibid);
 #endif
   return b;
@@ -625,23 +622,22 @@ Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const Standard_Integer) cons
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const Standard_Integer,
-                                                    const Standard_Integer) const
+bool TopOpeBRepBuild_Builder::GtraceSPS(const int, const int) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape& S) const
+bool TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape& S) const
 #else
-Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape&) const
+bool TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape&) const
 #endif
 {
-  Standard_Boolean b = Standard_False;
+  bool b = false;
 #ifdef OCCT_DEBUG
-  Standard_Integer iS;
+  int iS;
   b = GtraceSPS(S, iS);
 #endif
   return b;
@@ -649,23 +645,23 @@ Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape&) const
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape&, Standard_Integer& IS) const
+bool TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape&, int& IS) const
 {
   IS = 0;
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-Standard_Boolean TopOpeBRepBuild_Builder::GcheckNBOUNDS(const TopoDS_Shape& E)
+bool TopOpeBRepBuild_Builder::GcheckNBOUNDS(const TopoDS_Shape& E)
 #else
-Standard_Boolean TopOpeBRepBuild_Builder::GcheckNBOUNDS(const TopoDS_Shape&)
+bool TopOpeBRepBuild_Builder::GcheckNBOUNDS(const TopoDS_Shape&)
 #endif
 {
-  Standard_Boolean res = Standard_False;
+  bool res = false;
 #ifdef OCCT_DEBUG
-  Standard_Integer             nf = 0, nr = 0;
+  int                          nf = 0, nr = 0;
   TopOpeBRepTool_ShapeExplorer ex(E, TopAbs_VERTEX);
   for (; ex.More(); ex.Next())
   {
@@ -676,7 +672,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GcheckNBOUNDS(const TopoDS_Shape&)
       nr++;
   }
   if (nf == 1 && nr == 1)
-    res = Standard_True;
+    res = true;
 #endif
   return res;
 }

@@ -27,54 +27,54 @@ MAT_Edge::MAT_Edge()
 {
 }
 
-void MAT_Edge::EdgeNumber(const Standard_Integer anumber)
+void MAT_Edge::EdgeNumber(const int anumber)
 {
   theedgenumber = anumber;
 }
 
-void MAT_Edge::FirstBisector(const Handle(MAT_Bisector)& abisector)
+void MAT_Edge::FirstBisector(const occ::handle<MAT_Bisector>& abisector)
 {
   thefirstbisector = abisector;
 }
 
-void MAT_Edge::SecondBisector(const Handle(MAT_Bisector)& abisector)
+void MAT_Edge::SecondBisector(const occ::handle<MAT_Bisector>& abisector)
 {
   thesecondbisector = abisector;
 }
 
-void MAT_Edge::Distance(const Standard_Real adistance)
+void MAT_Edge::Distance(const double adistance)
 {
   thedistance = adistance;
 }
 
-void MAT_Edge::IntersectionPoint(const Standard_Integer apoint)
+void MAT_Edge::IntersectionPoint(const int apoint)
 {
   theintersectionpoint = apoint;
 }
 
-Standard_Integer MAT_Edge::EdgeNumber() const
+int MAT_Edge::EdgeNumber() const
 {
   return theedgenumber;
 }
 
-Handle(MAT_Bisector) MAT_Edge::FirstBisector() const
+occ::handle<MAT_Bisector> MAT_Edge::FirstBisector() const
 {
   return thefirstbisector;
 }
 
-Handle(MAT_Bisector) MAT_Edge::SecondBisector() const
+occ::handle<MAT_Bisector> MAT_Edge::SecondBisector() const
 {
   return thesecondbisector;
 }
 
-Standard_Real MAT_Edge::Distance() const
+double MAT_Edge::Distance() const
 {
   return thedistance;
 }
 
-Standard_Integer MAT_Edge::IntersectionPoint() const
+int MAT_Edge::IntersectionPoint() const
 {
   return theintersectionpoint;
 }
 
-void MAT_Edge::Dump(const Standard_Integer, const Standard_Integer) const {}
+void MAT_Edge::Dump(const int, const int) const {}

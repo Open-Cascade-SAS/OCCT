@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Axis2Placement2d, StepGeom_Placement)
 
 StepGeom_Axis2Placement2d::StepGeom_Axis2Placement2d() {}
 
-void StepGeom_Axis2Placement2d::Init(const Handle(TCollection_HAsciiString)& aName,
-                                     const Handle(StepGeom_CartesianPoint)&  aLocation,
-                                     const Standard_Boolean                  hasArefDirection,
-                                     const Handle(StepGeom_Direction)&       aRefDirection)
+void StepGeom_Axis2Placement2d::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                     const occ::handle<StepGeom_CartesianPoint>&  aLocation,
+                                     const bool                                   hasArefDirection,
+                                     const occ::handle<StepGeom_Direction>&       aRefDirection)
 {
   // --- classe own fields ---
   hasRefDirection = hasArefDirection;
@@ -32,24 +32,25 @@ void StepGeom_Axis2Placement2d::Init(const Handle(TCollection_HAsciiString)& aNa
   StepGeom_Placement::Init(aName, aLocation);
 }
 
-void StepGeom_Axis2Placement2d::SetRefDirection(const Handle(StepGeom_Direction)& aRefDirection)
+void StepGeom_Axis2Placement2d::SetRefDirection(
+  const occ::handle<StepGeom_Direction>& aRefDirection)
 {
   refDirection    = aRefDirection;
-  hasRefDirection = Standard_True;
+  hasRefDirection = true;
 }
 
 void StepGeom_Axis2Placement2d::UnSetRefDirection()
 {
-  hasRefDirection = Standard_False;
+  hasRefDirection = false;
   refDirection.Nullify();
 }
 
-Handle(StepGeom_Direction) StepGeom_Axis2Placement2d::RefDirection() const
+occ::handle<StepGeom_Direction> StepGeom_Axis2Placement2d::RefDirection() const
 {
   return refDirection;
 }
 
-Standard_Boolean StepGeom_Axis2Placement2d::HasRefDirection() const
+bool StepGeom_Axis2Placement2d::HasRefDirection() const
 {
   return hasRefDirection;
 }

@@ -22,9 +22,6 @@
 
 #include <Standard_Transient.hxx>
 
-class StepVisual_PresentationSet;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentationSet, Standard_Transient)
-
 class StepVisual_PresentationSet : public Standard_Transient
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepVisual_PresentationSet();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationSet, Standard_Transient)
-
-protected:
-private:
 };
 
 #endif // _StepVisual_PresentationSet_HeaderFile

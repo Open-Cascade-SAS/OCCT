@@ -19,12 +19,13 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurve, StepGeom_BoundedCurve)
 
 StepGeom_BSplineCurve::StepGeom_BSplineCurve() {}
 
-void StepGeom_BSplineCurve::Init(const Handle(TCollection_HAsciiString)&         aName,
-                                 const Standard_Integer                          aDegree,
-                                 const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
-                                 const StepGeom_BSplineCurveForm                 aCurveForm,
-                                 const StepData_Logical                          aClosedCurve,
-                                 const StepData_Logical                          aSelfIntersect)
+void StepGeom_BSplineCurve::Init(
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aDegree,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+  const StepGeom_BSplineCurveForm                                               aCurveForm,
+  const StepData_Logical                                                        aClosedCurve,
+  const StepData_Logical                                                        aSelfIntersect)
 {
   // --- classe own fields ---
   degree            = aDegree;
@@ -36,34 +37,35 @@ void StepGeom_BSplineCurve::Init(const Handle(TCollection_HAsciiString)&        
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_BSplineCurve::SetDegree(const Standard_Integer aDegree)
+void StepGeom_BSplineCurve::SetDegree(const int aDegree)
 {
   degree = aDegree;
 }
 
-Standard_Integer StepGeom_BSplineCurve::Degree() const
+int StepGeom_BSplineCurve::Degree() const
 {
   return degree;
 }
 
 void StepGeom_BSplineCurve::SetControlPointsList(
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList)
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList)
 {
   controlPointsList = aControlPointsList;
 }
 
-Handle(StepGeom_HArray1OfCartesianPoint) StepGeom_BSplineCurve::ControlPointsList() const
+occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> StepGeom_BSplineCurve::
+  ControlPointsList() const
 {
   return controlPointsList;
 }
 
-Handle(StepGeom_CartesianPoint) StepGeom_BSplineCurve::ControlPointsListValue(
-  const Standard_Integer num) const
+occ::handle<StepGeom_CartesianPoint> StepGeom_BSplineCurve::ControlPointsListValue(
+  const int num) const
 {
   return controlPointsList->Value(num);
 }
 
-Standard_Integer StepGeom_BSplineCurve::NbControlPointsList() const
+int StepGeom_BSplineCurve::NbControlPointsList() const
 {
   if (controlPointsList.IsNull())
     return 0;

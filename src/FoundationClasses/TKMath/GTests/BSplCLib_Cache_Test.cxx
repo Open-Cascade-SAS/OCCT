@@ -19,10 +19,8 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
 
@@ -41,9 +39,9 @@ protected:
   void SetUp() override {}
 
   //! Creates flat knots array from knots and multiplicities
-  void createFlatKnots(const TColStd_Array1OfReal&    theKnots,
-                       const TColStd_Array1OfInteger& theMults,
-                       TColStd_Array1OfReal&          theFlatKnots) const
+  void createFlatKnots(const NCollection_Array1<double>& theKnots,
+                       const NCollection_Array1<int>&    theMults,
+                       NCollection_Array1<double>&       theFlatKnots) const
   {
     int aFlatIndex = theFlatKnots.Lower();
     for (int i = theKnots.Lower(); i <= theKnots.Upper(); ++i)
@@ -63,27 +61,28 @@ protected:
 TEST_F(BSplCLib_CacheTest, D0_NonRationalCurve3D)
 {
   // Create a cubic Bezier curve
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(2, 2, 0);
   aPoles(4) = gp_Pnt(3, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  TColStd_Array1OfReal aFlatKnots(1, 8);
+  NCollection_Array1<double> aFlatKnots(1, 8);
   createFlatKnots(aKnots, aMults, aFlatKnots);
 
   const int aDegree = 3;
 
   // Create cache
-  Handle(BSplCLib_Cache) aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
+  occ::handle<BSplCLib_Cache> aCache =
+    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, nullptr);
 
   // Test at several parameter values
@@ -111,27 +110,28 @@ TEST_F(BSplCLib_CacheTest, D0_NonRationalCurve3D)
 TEST_F(BSplCLib_CacheTest, D1_NonRationalCurve3D)
 {
   // Create a cubic Bezier curve
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 1);
   aPoles(3) = gp_Pnt(2, 2, 1);
   aPoles(4) = gp_Pnt(3, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  TColStd_Array1OfReal aFlatKnots(1, 8);
+  NCollection_Array1<double> aFlatKnots(1, 8);
   createFlatKnots(aKnots, aMults, aFlatKnots);
 
   const int aDegree = 3;
 
   // Create cache
-  Handle(BSplCLib_Cache) aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
+  occ::handle<BSplCLib_Cache> aCache =
+    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, nullptr);
 
   // Test at several parameter values
@@ -165,27 +165,28 @@ TEST_F(BSplCLib_CacheTest, D1_NonRationalCurve3D)
 TEST_F(BSplCLib_CacheTest, D2_NonRationalCurve3D)
 {
   // Create a cubic Bezier curve
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 1);
   aPoles(3) = gp_Pnt(2, 2, 1);
   aPoles(4) = gp_Pnt(3, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  TColStd_Array1OfReal aFlatKnots(1, 8);
+  NCollection_Array1<double> aFlatKnots(1, 8);
   createFlatKnots(aKnots, aMults, aFlatKnots);
 
   const int aDegree = 3;
 
   // Create cache
-  Handle(BSplCLib_Cache) aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
+  occ::handle<BSplCLib_Cache> aCache =
+    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, nullptr);
 
   // Test at several parameter values
@@ -242,31 +243,32 @@ TEST_F(BSplCLib_CacheTest, D2_NonRationalCurve3D)
 TEST_F(BSplCLib_CacheTest, D0_RationalCurve3D)
 {
   // Create a rational quadratic Bezier curve (can represent a circle arc)
-  TColgp_Array1OfPnt aPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(1, 0, 0);
   aPoles(2) = gp_Pnt(1, 1, 0);
   aPoles(3) = gp_Pnt(0, 1, 0);
 
-  TColStd_Array1OfReal aWeights(1, 3);
+  NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
   aWeights(2) = 0.707106781186548; // sqrt(2)/2
   aWeights(3) = 1.0;
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 3;
   aMults(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnots(1, 6);
+  NCollection_Array1<double> aFlatKnots(1, 6);
   createFlatKnots(aKnots, aMults, aFlatKnots);
 
   const int aDegree = 2;
 
   // Create cache
-  Handle(BSplCLib_Cache) aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
+  occ::handle<BSplCLib_Cache> aCache =
+    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, &aWeights);
 
   // Test at several parameter values
@@ -297,31 +299,32 @@ TEST_F(BSplCLib_CacheTest, D0_RationalCurve3D)
 TEST_F(BSplCLib_CacheTest, D1_RationalCurve3D)
 {
   // Create a rational quadratic Bezier curve
-  TColgp_Array1OfPnt aPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(1, 0, 0);
   aPoles(2) = gp_Pnt(1, 1, 0);
   aPoles(3) = gp_Pnt(0, 1, 0);
 
-  TColStd_Array1OfReal aWeights(1, 3);
+  NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
   aWeights(2) = 0.707106781186548; // sqrt(2)/2
   aWeights(3) = 1.0;
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 3;
   aMults(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnots(1, 6);
+  NCollection_Array1<double> aFlatKnots(1, 6);
   createFlatKnots(aKnots, aMults, aFlatKnots);
 
   const int aDegree = 2;
 
   // Create cache
-  Handle(BSplCLib_Cache) aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
+  occ::handle<BSplCLib_Cache> aCache =
+    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, &aWeights);
 
   // Test at several parameter values
@@ -361,31 +364,32 @@ TEST_F(BSplCLib_CacheTest, D1_RationalCurve3D)
 TEST_F(BSplCLib_CacheTest, D2_RationalCurve3D)
 {
   // Create a rational quadratic Bezier curve
-  TColgp_Array1OfPnt aPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(1, 0, 0);
   aPoles(2) = gp_Pnt(1, 1, 0);
   aPoles(3) = gp_Pnt(0, 1, 0);
 
-  TColStd_Array1OfReal aWeights(1, 3);
+  NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
   aWeights(2) = 0.707106781186548; // sqrt(2)/2
   aWeights(3) = 1.0;
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 3;
   aMults(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnots(1, 6);
+  NCollection_Array1<double> aFlatKnots(1, 6);
   createFlatKnots(aKnots, aMults, aFlatKnots);
 
   const int aDegree = 2;
 
   // Create cache
-  Handle(BSplCLib_Cache) aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
+  occ::handle<BSplCLib_Cache> aCache =
+    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, &aWeights);
 
   // Test at several parameter values
@@ -448,27 +452,28 @@ TEST_F(BSplCLib_CacheTest, D2_RationalCurve3D)
 TEST_F(BSplCLib_CacheTest, D3_NonRationalCurve3D)
 {
   // Create a cubic Bezier curve
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 1);
   aPoles(3) = gp_Pnt(2, 2, 1);
   aPoles(4) = gp_Pnt(3, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  TColStd_Array1OfReal aFlatKnots(1, 8);
+  NCollection_Array1<double> aFlatKnots(1, 8);
   createFlatKnots(aKnots, aMults, aFlatKnots);
 
   const int aDegree = 3;
 
   // Create cache
-  Handle(BSplCLib_Cache) aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
+  occ::handle<BSplCLib_Cache> aCache =
+    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, nullptr);
 
   // Test at several parameter values

@@ -16,42 +16,42 @@
 
 //=================================================================================================
 
-inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceIntL() const
+inline const NCollection_List<TopoDS_Shape>& HLRTopoBRep_FaceData::FaceIntL() const
 {
   return myIntL;
 }
 
 //=================================================================================================
 
-inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceOutL() const
+inline const NCollection_List<TopoDS_Shape>& HLRTopoBRep_FaceData::FaceOutL() const
 {
   return myOutL;
 }
 
 //=================================================================================================
 
-inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceIsoL() const
+inline const NCollection_List<TopoDS_Shape>& HLRTopoBRep_FaceData::FaceIsoL() const
 {
   return myIsoL;
 }
 
 //=================================================================================================
 
-inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddIntL()
+inline NCollection_List<TopoDS_Shape>& HLRTopoBRep_FaceData::AddIntL()
 {
   return myIntL;
 }
 
 //=================================================================================================
 
-inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddOutL()
+inline NCollection_List<TopoDS_Shape>& HLRTopoBRep_FaceData::AddOutL()
 {
   return myOutL;
 }
 
 //=================================================================================================
 
-inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddIsoL()
+inline NCollection_List<TopoDS_Shape>& HLRTopoBRep_FaceData::AddIsoL()
 {
   return myIsoL;
 }

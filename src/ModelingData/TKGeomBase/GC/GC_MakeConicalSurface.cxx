@@ -25,9 +25,9 @@
 #include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>
 
-GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Ax2&       A2,
-                                             const Standard_Real Ang,
-                                             const Standard_Real Radius)
+GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Ax2& A2,
+                                             const double  Ang,
+                                             const double  Radius)
 {
   if (Radius < 0.)
   {
@@ -73,10 +73,10 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt& P1,
 //=========================================================================
 //=========================================================================
 
-GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt&       P1,
-                                             const gp_Pnt&       P2,
-                                             const Standard_Real R1,
-                                             const Standard_Real R2)
+GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt& P1,
+                                             const gp_Pnt& P2,
+                                             const double  R1,
+                                             const double  R2)
 {
   gce_MakeCone C = gce_MakeCone(P1, P2, R1, R2);
   TheError       = C.Status();
@@ -86,7 +86,7 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt&       P1,
   }
 }
 
-const Handle(Geom_ConicalSurface)& GC_MakeConicalSurface::Value() const
+const occ::handle<Geom_ConicalSurface>& GC_MakeConicalSurface::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeConicalSurface::Value() - no result");
   return TheCone;

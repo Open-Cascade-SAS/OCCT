@@ -31,14 +31,14 @@ public:
 
   //! Adds the value given to map, checks if the current tolerance value
   //! should be replaced by theTolerance
-  Standard_EXPORT void Add(const Standard_Integer& theTolerance);
+  Standard_EXPORT void Add(const int& theTolerance);
 
   //! Decrements a counter of the tolerance given, checks if the current tolerance value
   //! should be recalculated
-  Standard_EXPORT void Decrement(const Standard_Integer& theTolerance);
+  Standard_EXPORT void Decrement(const int& theTolerance);
 
   //! Returns a current tolerance that must be applied
-  Standard_Integer Tolerance() const
+  int Tolerance() const
   {
     if (myLargestKey < 0)
     {
@@ -48,21 +48,21 @@ public:
   }
 
   //! Sets tolerance to the given one and disables adaptive checks
-  void SetCustomTolerance(const Standard_Integer theTolerance) { myCustomTolerance = theTolerance; }
+  void SetCustomTolerance(const int theTolerance) { myCustomTolerance = theTolerance; }
 
   //! Unsets a custom tolerance and enables adaptive checks
   void ResetDefaults() { myCustomTolerance = -1; }
 
   //! Returns the value of custom tolerance regardless of it validity
-  Standard_Integer CustomTolerance() const { return myCustomTolerance; }
+  int CustomTolerance() const { return myCustomTolerance; }
 
   //! Returns true if custom tolerance value is greater than zero
-  Standard_Boolean IsCustomTolSet() const { return myCustomTolerance > 0; }
+  bool IsCustomTolSet() const { return myCustomTolerance > 0; }
 
 private:
-  NCollection_DataMap<Standard_Integer, Standard_Integer> myTolerances;
-  Standard_Integer                                        myLargestKey;
-  Standard_Integer                                        myCustomTolerance;
+  NCollection_DataMap<int, int> myTolerances;
+  int                           myLargestKey;
+  int                           myCustomTolerance;
 };
 
 #endif // _SelectMgr_ToleranceMap_HeaderFile

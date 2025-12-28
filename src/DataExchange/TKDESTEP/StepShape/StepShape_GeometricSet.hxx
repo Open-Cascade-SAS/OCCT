@@ -19,14 +19,13 @@
 
 #include <Standard.hxx>
 
-#include <StepShape_HArray1OfGeometricSetSelect.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepShape_GeometricSetSelect;
-
-class StepShape_GeometricSet;
-DEFINE_STANDARD_HANDLE(StepShape_GeometricSet, StepGeom_GeometricRepresentationItem)
 
 class StepShape_GeometricSet : public StepGeom_GeometricRepresentationItem
 {
@@ -35,22 +34,23 @@ public:
   //! Returns a GeometricSet
   Standard_EXPORT StepShape_GeometricSet();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&              aName,
-                            const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                          aName,
+    const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements);
 
-  Standard_EXPORT void SetElements(const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements);
+  Standard_EXPORT void SetElements(
+    const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements);
 
-  Standard_EXPORT Handle(StepShape_HArray1OfGeometricSetSelect) Elements() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> Elements() const;
 
-  Standard_EXPORT StepShape_GeometricSetSelect ElementsValue(const Standard_Integer num) const;
+  Standard_EXPORT StepShape_GeometricSetSelect ElementsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbElements() const;
+  Standard_EXPORT int NbElements() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_GeometricSet, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(StepShape_HArray1OfGeometricSetSelect) elements;
+  occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> elements;
 };
 
 #endif // _StepShape_GeometricSet_HeaderFile

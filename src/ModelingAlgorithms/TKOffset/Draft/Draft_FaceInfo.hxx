@@ -33,12 +33,11 @@ public:
 
   Standard_EXPORT Draft_FaceInfo();
 
-  Standard_EXPORT Draft_FaceInfo(const Handle(Geom_Surface)& S,
-                                 const Standard_Boolean      HasNewGeometry);
+  Standard_EXPORT Draft_FaceInfo(const occ::handle<Geom_Surface>& S, const bool HasNewGeometry);
 
   Standard_EXPORT void RootFace(const TopoDS_Face& F);
 
-  Standard_EXPORT Standard_Boolean NewGeometry() const;
+  Standard_EXPORT bool NewGeometry() const;
 
   Standard_EXPORT void Add(const TopoDS_Face& F);
 
@@ -46,24 +45,23 @@ public:
 
   Standard_EXPORT const TopoDS_Face& SecondFace() const;
 
-  Standard_EXPORT const Handle(Geom_Surface)& Geometry() const;
+  Standard_EXPORT const occ::handle<Geom_Surface>& Geometry() const;
 
-  Standard_EXPORT Handle(Geom_Surface)& ChangeGeometry();
+  Standard_EXPORT occ::handle<Geom_Surface>& ChangeGeometry();
 
   Standard_EXPORT const TopoDS_Face& RootFace() const;
 
-  Standard_EXPORT Handle(Geom_Curve)& ChangeCurve();
+  Standard_EXPORT occ::handle<Geom_Curve>& ChangeCurve();
 
-  Standard_EXPORT const Handle(Geom_Curve)& Curve() const;
+  Standard_EXPORT const occ::handle<Geom_Curve>& Curve() const;
 
-protected:
 private:
-  Standard_Boolean     myNewGeom;
-  Handle(Geom_Surface) myGeom;
-  TopoDS_Face          myRootFace;
-  TopoDS_Face          myF1;
-  TopoDS_Face          myF2;
-  Handle(Geom_Curve)   myCurv;
+  bool                      myNewGeom;
+  occ::handle<Geom_Surface> myGeom;
+  TopoDS_Face               myRootFace;
+  TopoDS_Face               myF1;
+  TopoDS_Face               myF2;
+  occ::handle<Geom_Curve>   myCurv;
 };
 
 #endif // _Draft_FaceInfo_HeaderFile

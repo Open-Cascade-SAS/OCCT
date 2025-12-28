@@ -43,17 +43,17 @@ gp_XYZ IGESSolid_Ellipsoid::Size() const
   return theSize;
 }
 
-Standard_Real IGESSolid_Ellipsoid::XLength() const
+double IGESSolid_Ellipsoid::XLength() const
 {
   return theSize.X();
 }
 
-Standard_Real IGESSolid_Ellipsoid::YLength() const
+double IGESSolid_Ellipsoid::YLength() const
 {
   return theSize.Y();
 }
 
-Standard_Real IGESSolid_Ellipsoid::ZLength() const
+double IGESSolid_Ellipsoid::ZLength() const
 {
   return theSize.Z();
 }

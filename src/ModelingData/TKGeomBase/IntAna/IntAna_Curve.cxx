@@ -33,7 +33,7 @@
 //--       (Selon les cas, on prend V+ ou V-)
 //--
 //-- D1u   calcule le vecteur tangent a la courbe
-//--       et retourne le booleen Standard_False si ce calcul ne peut
+//--       et retourne le booleen false si ce calcul ne peut
 //--       pas etre mene a bien.
 //----------------------------------------------------------------------
 
@@ -71,15 +71,15 @@ IntAna_Curve::IntAna_Curve()
       Z2SinSin(0.0),
       Z2CosCos(0.0),
       Z2CosSin(0.0),
-      TwoCurves(Standard_False),
-      TakeZPositive(Standard_False),
+      TwoCurves(false),
+      TakeZPositive(false),
       Tolerance(0.0),
       DomainInf(0.0),
       DomainSup(0.0),
-      RestrictedInf(Standard_False),
-      RestrictedSup(Standard_False),
-      firstbounded(Standard_False),
-      lastbounded(Standard_False),
+      RestrictedInf(false),
+      RestrictedSup(false),
+      firstbounded(false),
+      lastbounded(false),
       typequadric(GeomAbs_OtherSurface),
       RCyl(0.0),
       Angle(0.0),
@@ -92,29 +92,29 @@ IntAna_Curve::IntAna_Curve()
 // function : SetConeQuadValues
 // purpose  : Description de l intersection Cone Quadrique
 //=======================================================================
-void IntAna_Curve::SetConeQuadValues(const gp_Cone&         Cone,
-                                     const Standard_Real    Qxx,
-                                     const Standard_Real    Qyy,
-                                     const Standard_Real    Qzz,
-                                     const Standard_Real    Qxy,
-                                     const Standard_Real    Qxz,
-                                     const Standard_Real    Qyz,
-                                     const Standard_Real    Qx,
-                                     const Standard_Real    Qy,
-                                     const Standard_Real    Qz,
-                                     const Standard_Real    Q1,
-                                     const Standard_Real    TOL,
-                                     const Standard_Real    DomInf,
-                                     const Standard_Real    DomSup,
-                                     const Standard_Boolean twocurves,
-                                     const Standard_Boolean takezpositive)
+void IntAna_Curve::SetConeQuadValues(const gp_Cone& Cone,
+                                     const double   Qxx,
+                                     const double   Qyy,
+                                     const double   Qzz,
+                                     const double   Qxy,
+                                     const double   Qxz,
+                                     const double   Qyz,
+                                     const double   Qx,
+                                     const double   Qy,
+                                     const double   Qz,
+                                     const double   Q1,
+                                     const double   TOL,
+                                     const double   DomInf,
+                                     const double   DomSup,
+                                     const bool     twocurves,
+                                     const bool     takezpositive)
 {
 
   Ax3  = Cone.Position();
   RCyl = Cone.RefRadius();
 
-  Angle                      = Cone.SemiAngle();
-  Standard_Real UnSurTgAngle = 1.0 / (std::tan(Cone.SemiAngle()));
+  Angle               = Cone.SemiAngle();
+  double UnSurTgAngle = 1.0 / (std::tan(Cone.SemiAngle()));
 
   typequadric = GeomAbs_Cone;
 
@@ -147,8 +147,8 @@ void IntAna_Curve::SetConeQuadValues(const gp_Cone&         Cone,
   DomainInf = DomInf;
   DomainSup = DomSup;
 
-  RestrictedInf = RestrictedSup = Standard_True; //-- Le Domaine est Borne
-  firstbounded = lastbounded = Standard_False;
+  RestrictedInf = RestrictedSup = true; //-- Le Domaine est Borne
+  firstbounded = lastbounded = false;
 
   myFirstParameter = DomainInf;
   myLastParameter  = (TwoCurves) ? DomainSup + DomainSup - DomainInf : DomainSup;
@@ -158,31 +158,31 @@ void IntAna_Curve::SetConeQuadValues(const gp_Cone&         Cone,
 // function : SetCylinderQuadValues
 // purpose  : Description de l intersection Cylindre Quadrique
 //=======================================================================
-void IntAna_Curve::SetCylinderQuadValues(const gp_Cylinder&     Cyl,
-                                         const Standard_Real    Qxx,
-                                         const Standard_Real    Qyy,
-                                         const Standard_Real    Qzz,
-                                         const Standard_Real    Qxy,
-                                         const Standard_Real    Qxz,
-                                         const Standard_Real    Qyz,
-                                         const Standard_Real    Qx,
-                                         const Standard_Real    Qy,
-                                         const Standard_Real    Qz,
-                                         const Standard_Real    Q1,
-                                         const Standard_Real    TOL,
-                                         const Standard_Real    DomInf,
-                                         const Standard_Real    DomSup,
-                                         const Standard_Boolean twocurves,
-                                         const Standard_Boolean takezpositive)
+void IntAna_Curve::SetCylinderQuadValues(const gp_Cylinder& Cyl,
+                                         const double       Qxx,
+                                         const double       Qyy,
+                                         const double       Qzz,
+                                         const double       Qxy,
+                                         const double       Qxz,
+                                         const double       Qyz,
+                                         const double       Qx,
+                                         const double       Qy,
+                                         const double       Qz,
+                                         const double       Q1,
+                                         const double       TOL,
+                                         const double       DomInf,
+                                         const double       DomSup,
+                                         const bool         twocurves,
+                                         const bool         takezpositive)
 {
 
   Ax3         = Cyl.Position();
   RCyl        = Cyl.Radius();
   typequadric = GeomAbs_Cylinder;
 
-  TwoCurves              = twocurves;     //-- deux  Z pour un meme parametre
-  TakeZPositive          = takezpositive; //-- Prendre sur la courbe le Z Positif
-  Standard_Real RCylmul2 = RCyl + RCyl;   //--   ( -B + std::sqrt())
+  TwoCurves       = twocurves;     //-- deux  Z pour un meme parametre
+  TakeZPositive   = takezpositive; //-- Prendre sur la courbe le Z Positif
+  double RCylmul2 = RCyl + RCyl;   //--   ( -B + std::sqrt())
 
   Z0Cte    = Q1;
   Z0Sin    = RCylmul2 * Qy;
@@ -209,8 +209,8 @@ void IntAna_Curve::SetCylinderQuadValues(const gp_Cylinder&     Cyl,
   DomainInf = DomInf;
   DomainSup = DomSup;
 
-  RestrictedInf = RestrictedSup = Standard_True;
-  firstbounded = lastbounded = Standard_False;
+  RestrictedInf = RestrictedSup = true;
+  firstbounded = lastbounded = false;
 
   myFirstParameter = DomainInf;
   myLastParameter  = (TwoCurves) ? DomainSup + DomainSup - DomainInf : DomainSup;
@@ -218,14 +218,14 @@ void IntAna_Curve::SetCylinderQuadValues(const gp_Cylinder&     Cyl,
 
 //=================================================================================================
 
-Standard_Boolean IntAna_Curve::IsOpen() const
+bool IntAna_Curve::IsOpen() const
 {
   return (RestrictedInf && RestrictedSup);
 }
 
 //=================================================================================================
 
-void IntAna_Curve::Domain(Standard_Real& theFirst, Standard_Real& theLast) const
+void IntAna_Curve::Domain(double& theFirst, double& theLast) const
 {
   if (RestrictedInf && RestrictedSup)
   {
@@ -240,59 +240,59 @@ void IntAna_Curve::Domain(Standard_Real& theFirst, Standard_Real& theLast) const
 
 //=================================================================================================
 
-Standard_Boolean IntAna_Curve::IsConstant() const
+bool IntAna_Curve::IsConstant() const
 {
   //-- ???  Pas facile de decider a la seule vue des Param.
-  return (Standard_False);
+  return (false);
 }
 
 //=================================================================================================
 
-Standard_Boolean IntAna_Curve::IsFirstOpen() const
+bool IntAna_Curve::IsFirstOpen() const
 {
   return (firstbounded);
 }
 
 //=================================================================================================
 
-Standard_Boolean IntAna_Curve::IsLastOpen() const
+bool IntAna_Curve::IsLastOpen() const
 {
   return (lastbounded);
 }
 
 //=================================================================================================
 
-void IntAna_Curve::SetIsFirstOpen(const Standard_Boolean Flag)
+void IntAna_Curve::SetIsFirstOpen(const bool Flag)
 {
   firstbounded = Flag;
 }
 
 //=================================================================================================
 
-void IntAna_Curve::SetIsLastOpen(const Standard_Boolean Flag)
+void IntAna_Curve::SetIsLastOpen(const bool Flag)
 {
   lastbounded = Flag;
 }
 
 //=================================================================================================
 
-void IntAna_Curve::InternalUVValue(const Standard_Real theta,
-                                   Standard_Real&      Param1,
-                                   Standard_Real&      Param2,
-                                   Standard_Real&      A,
-                                   Standard_Real&      B,
-                                   Standard_Real&      C,
-                                   Standard_Real&      cost,
-                                   Standard_Real&      sint,
-                                   Standard_Real&      SigneSqrtDis) const
+void IntAna_Curve::InternalUVValue(const double theta,
+                                   double&      Param1,
+                                   double&      Param2,
+                                   double&      A,
+                                   double&      B,
+                                   double&      C,
+                                   double&      cost,
+                                   double&      sint,
+                                   double&      SigneSqrtDis) const
 {
-  const Standard_Real aRelTolp = 1.0 + Epsilon(1.0), aRelTolm = 1.0 - Epsilon(1.0);
+  const double aRelTolp = 1.0 + Epsilon(1.0), aRelTolm = 1.0 - Epsilon(1.0);
 
   // Infinitesimal step of increasing curve parameter. See comment below.
-  const Standard_Real aDT = 100.0 * Epsilon(DomainSup + DomainSup - DomainInf);
+  const double aDT = 100.0 * Epsilon(DomainSup + DomainSup - DomainInf);
 
-  Standard_Real    Theta          = theta;
-  Standard_Boolean SecondSolution = Standard_False;
+  double Theta          = theta;
+  bool   SecondSolution = false;
 
   if ((Theta < DomainInf * aRelTolm) || ((Theta > DomainSup * aRelTolp) && (!TwoCurves))
       || (Theta > (DomainSup + DomainSup - DomainInf) * aRelTolp))
@@ -309,7 +309,7 @@ void IntAna_Curve::InternalUVValue(const Standard_Real theta,
   else if (Theta > DomainSup)
   {
     Theta          = DomainSup + DomainSup - Theta;
-    SecondSolution = Standard_True;
+    SecondSolution = true;
   }
 
   Param1 = Theta;
@@ -319,36 +319,36 @@ void IntAna_Curve::InternalUVValue(const Standard_Real theta,
     SecondSolution = TakeZPositive;
   }
   //
-  cost                       = std::cos(Theta);
-  sint                       = std::sin(Theta);
-  const Standard_Real aSin2t = std::sin(Theta + Theta);
-  const Standard_Real aCos2t = std::cos(Theta + Theta);
+  cost                = std::cos(Theta);
+  sint                = std::sin(Theta);
+  const double aSin2t = std::sin(Theta + Theta);
+  const double aCos2t = std::cos(Theta + Theta);
 
   A =
     Z2Cte + sint * (Z2Sin + sint * Z2SinSin) + cost * (Z2Cos + cost * Z2CosCos) + Z2CosSin * aSin2t;
 
-  const Standard_Real aDA =
+  const double aDA =
     cost * Z2Sin - sint * Z2Cos + aSin2t * (Z2SinSin - Z2CosCos) + aCos2t * (Z2CosSin * Z2CosSin);
 
   B =
     Z1Cte + sint * (Z1Sin + sint * Z1SinSin) + cost * (Z1Cos + cost * Z1CosCos) + Z1CosSin * aSin2t;
 
-  const Standard_Real aDB =
+  const double aDB =
     Z1Sin * cost - Z1Cos * sint + aSin2t * (Z1SinSin - Z1CosCos) + aCos2t * (Z1CosSin + Z1CosSin);
 
   C =
     Z0Cte + sint * (Z0Sin + sint * Z0SinSin) + cost * (Z0Cos + cost * Z0CosCos) + Z0CosSin * aSin2t;
 
-  const Standard_Real aDC =
+  const double aDC =
     Z0Sin * cost - Z0Cos * sint + aSin2t * (Z0SinSin - Z0CosCos) + aCos2t * (Z0CosSin + Z0CosSin);
 
-  Standard_Real aDiscriminant = B * B - 4.0 * A * C;
+  double aDiscriminant = B * B - 4.0 * A * C;
 
   // We consider that infinitesimal dt = aDT.
   // Error of discriminant computation is equal to
   // (d(Disc)/dt)*dt, where 1st derivative d(Disc)/dt = 2*B*aDB - 4*(A*aDC + C*aDA).
 
-  const Standard_Real aTolD = 2.0 * aDT * std::abs(B * aDB - 2.0 * (A * aDC + C * aDA));
+  const double aTolD = 2.0 * aDT * std::abs(B * aDB - 2.0 * (A * aDC + C * aDA));
 
   if (aDiscriminant < aTolD)
     aDiscriminant = 0.0;
@@ -373,9 +373,9 @@ void IntAna_Curve::InternalUVValue(const Standard_Real theta,
 
 //=================================================================================================
 
-gp_Pnt IntAna_Curve::Value(const Standard_Real theta)
+gp_Pnt IntAna_Curve::Value(const double theta)
 {
-  Standard_Real A, B, C, U, V, sint, cost, SigneSqrtDis;
+  double A, B, C, U, V, sint, cost, SigneSqrtDis;
   //
   A            = 0.0;
   B            = 0.0;
@@ -392,10 +392,10 @@ gp_Pnt IntAna_Curve::Value(const Standard_Real theta)
 
 //=================================================================================================
 
-Standard_Boolean IntAna_Curve::D1u(const Standard_Real theta, gp_Pnt& Pt, gp_Vec& Vec)
+bool IntAna_Curve::D1u(const double theta, gp_Pnt& Pt, gp_Vec& Vec)
 {
   //-- Pour detecter le cas ou le calcul est impossible
-  Standard_Real A, B, C, U, V, sint, cost, SigneSqrtDis;
+  double A, B, C, U, V, sint, cost, SigneSqrtDis;
   A    = 0.0;
   B    = 0.0;
   C    = 0.0;
@@ -408,11 +408,11 @@ Standard_Boolean IntAna_Curve::D1u(const Standard_Real theta, gp_Pnt& Pt, gp_Vec
   //
   Pt = Value(theta);
   if (std::abs(A) < 1.0e-7 || std::abs(SigneSqrtDis) < 1.0e-10)
-    return (Standard_False);
+    return (false);
 
   //-- Approximation de la derivee (mieux que le calcul mathematique!)
-  Standard_Real dtheta = (DomainSup - DomainInf) * 1.0e-6;
-  Standard_Real theta2 = theta + dtheta;
+  double dtheta = (DomainSup - DomainInf) * 1.0e-6;
+  double theta2 = theta + dtheta;
   if ((theta2 < DomainInf) || ((theta2 > DomainSup) && (!TwoCurves))
       || (theta2 > (DomainSup + DomainSup - DomainInf + 1.0e-14)))
   {
@@ -423,7 +423,7 @@ Standard_Boolean IntAna_Curve::D1u(const Standard_Real theta, gp_Pnt& Pt, gp_Vec
   dtheta    = 1.0 / dtheta;
   Vec.SetCoord((P2.X() - Pt.X()) * dtheta, (P2.Y() - Pt.Y()) * dtheta, (P2.Z() - Pt.Z()) * dtheta);
 
-  return (Standard_True);
+  return (true);
 }
 
 //=======================================================================
@@ -433,27 +433,26 @@ Standard_Boolean IntAna_Curve::D1u(const Standard_Real theta, gp_Pnt& Pt, gp_Vec
 //           Sometimes aline can be self-intersected line (see bug #29807 where
 //            ALine goes through the cone apex).
 //=======================================================================
-void IntAna_Curve::FindParameter(const gp_Pnt& theP, TColStd_ListOfReal& theParams) const
+void IntAna_Curve::FindParameter(const gp_Pnt& theP, NCollection_List<double>& theParams) const
 {
-  const Standard_Real aPIpPI = M_PI + M_PI, anEpsAng = 1.e-8,
-                      InternalPrecision =
-                        1.e-8; // precision of internal algorithm of values computation
+  const double aPIpPI = M_PI + M_PI, anEpsAng = 1.e-8,
+               InternalPrecision = 1.e-8; // precision of internal algorithm of values computation
   // clang-format off
-  constexpr Standard_Real aSqTolPrecision = Precision::SquareConfusion(); //for boundary points to check their coincidence with others
+  constexpr double aSqTolPrecision = Precision::SquareConfusion(); //for boundary points to check their coincidence with others
   // clang-format on
 
-  Standard_Real aTheta = 0.0;
+  double aTheta = 0.0;
   //
   switch (typequadric)
   {
     case GeomAbs_Cylinder: {
-      Standard_Real aZ;
+      double aZ;
       ElSLib::CylinderParameters(Ax3, RCyl, theP, aTheta, aZ);
     }
     break;
 
     case GeomAbs_Cone: {
-      Standard_Real aZ;
+      double aZ;
       ElSLib::ConeParameters(Ax3, RCyl, Angle, theP, aTheta, aZ);
     }
     break;
@@ -480,16 +479,16 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP, TColStd_ListOfReal& thePara
     aTheta = aTheta - aPIpPI;
   }
 
-  const Standard_Integer aMaxPar          = 5;
-  Standard_Real          aParams[aMaxPar] = {DomainInf,
-                                             DomainSup,
-                                             aTheta,
-                                    (TwoCurves) ? DomainSup + DomainSup - aTheta : RealLast(),
-                                    (TwoCurves) ? DomainSup + DomainSup - DomainInf : RealLast()};
+  const int aMaxPar          = 5;
+  double    aParams[aMaxPar] = {DomainInf,
+                                DomainSup,
+                                aTheta,
+                             (TwoCurves) ? DomainSup + DomainSup - aTheta : RealLast(),
+                             (TwoCurves) ? DomainSup + DomainSup - DomainInf : RealLast()};
 
   std::sort(aParams, aParams + aMaxPar - 1);
 
-  for (Standard_Integer i = 0; i < aMaxPar; i++)
+  for (int i = 0; i < aMaxPar; i++)
   {
     if (aParams[i] > myLastParameter)
       break;
@@ -500,12 +499,11 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP, TColStd_ListOfReal& thePara
     if (i && (aParams[i] - aParams[i - 1]) < Precision::PConfusion())
       continue;
 
-    Standard_Real U = 0.0, V = 0.0, A = 0.0, B = 0.0, C = 0.0, sint = 0.0, cost = 0.0,
-                  SigneSqrtDis = 0.0;
+    double U = 0.0, V = 0.0, A = 0.0, B = 0.0, C = 0.0, sint = 0.0, cost = 0.0, SigneSqrtDis = 0.0;
     InternalUVValue(aParams[i], U, V, A, B, C, cost, sint, SigneSqrtDis);
     const gp_Pnt aP(InternalValue(U, V));
 
-    Standard_Real aSqTol;
+    double aSqTol;
     if (aParams[i] == aTheta || (TwoCurves && aParams[i] == DomainSup + DomainSup - aTheta))
       aSqTol = InternalPrecision;
     else
@@ -520,10 +518,10 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP, TColStd_ListOfReal& thePara
 
 //=================================================================================================
 
-gp_Pnt IntAna_Curve::InternalValue(const Standard_Real U, const Standard_Real _V) const
+gp_Pnt IntAna_Curve::InternalValue(const double U, const double _V) const
 {
   //-- std::cout<<" ["<<U<<","<<V<<"]";
-  Standard_Real V = _V;
+  double V = _V;
   if (V > 100000.0)
   {
     V = 100000.0;
@@ -558,7 +556,7 @@ gp_Pnt IntAna_Curve::InternalValue(const Standard_Real U, const Standard_Real _V
 //
 //=================================================================================================
 
-void IntAna_Curve::SetDomain(const Standard_Real theFirst, const Standard_Real theLast)
+void IntAna_Curve::SetDomain(const double theFirst, const double theLast)
 {
   if (theLast <= theFirst)
   {

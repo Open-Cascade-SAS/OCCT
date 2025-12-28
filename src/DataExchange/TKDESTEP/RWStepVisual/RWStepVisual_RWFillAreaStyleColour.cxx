@@ -21,10 +21,10 @@
 RWStepVisual_RWFillAreaStyleColour::RWStepVisual_RWFillAreaStyleColour() {}
 
 void RWStepVisual_RWFillAreaStyleColour::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepVisual_FillAreaStyleColour)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepVisual_FillAreaStyleColour>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,14 +34,14 @@ void RWStepVisual_RWFillAreaStyleColour::ReadStep(
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : fillColour ---
 
-  Handle(StepVisual_Colour) aFillColour;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepVisual_Colour> aFillColour;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "fill_colour", ach, STANDARD_TYPE(StepVisual_Colour), aFillColour);
 
   //--- Initialisation of the read entity ---
@@ -50,8 +50,8 @@ void RWStepVisual_RWFillAreaStyleColour::ReadStep(
 }
 
 void RWStepVisual_RWFillAreaStyleColour::WriteStep(
-  StepData_StepWriter&                          SW,
-  const Handle(StepVisual_FillAreaStyleColour)& ent) const
+  StepData_StepWriter&                               SW,
+  const occ::handle<StepVisual_FillAreaStyleColour>& ent) const
 {
 
   // --- own field : name ---
@@ -63,8 +63,9 @@ void RWStepVisual_RWFillAreaStyleColour::WriteStep(
   SW.Send(ent->FillColour());
 }
 
-void RWStepVisual_RWFillAreaStyleColour::Share(const Handle(StepVisual_FillAreaStyleColour)& ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepVisual_RWFillAreaStyleColour::Share(
+  const occ::handle<StepVisual_FillAreaStyleColour>& ent,
+  Interface_EntityIterator&                          iter) const
 {
 
   iter.GetOneItem(ent->FillColour());

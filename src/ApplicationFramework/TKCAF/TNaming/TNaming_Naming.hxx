@@ -22,7 +22,8 @@
 
 #include <TNaming_Name.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDF_LabelMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
 #include <Standard_OStream.hxx>
 #include <TDF_AttributeIndexedMap.hxx>
 class Standard_GUID;
@@ -32,9 +33,6 @@ class TopoDS_Shape;
 class TDF_RelocationTable;
 class TDF_DataSet;
 class TDF_IDFilter;
-
-class TNaming_Naming;
-DEFINE_STANDARD_HANDLE(TNaming_Naming, TDF_Attribute)
 
 //! This attribute store the topological naming of any
 //! selected shape, when this shape is not already
@@ -49,10 +47,10 @@ public:
   //! ==============================
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  Standard_EXPORT static Handle(TNaming_Naming) Insert(const TDF_Label& under);
+  Standard_EXPORT static occ::handle<TNaming_Naming> Insert(const TDF_Label& under);
 
   //! Creates a Naming attribute at label <where> to identify
-  //! the shape <Selection>. Geometry is Standard_True if we
+  //! the shape <Selection>. Geometry is true if we
   //! are only interested by the underlying geometry (e.g.
   //! setting a constraint).
   //! <Context> is used to find neighbours of <S> when required
@@ -63,57 +61,54 @@ public:
 
   //! instance method
   //! ===============
-  Standard_EXPORT static Handle(TNaming_NamedShape) Name(
-    const TDF_Label&       where,
-    const TopoDS_Shape&    Selection,
-    const TopoDS_Shape&    Context,
-    const Standard_Boolean Geometry        = Standard_False,
-    const Standard_Boolean KeepOrientation = Standard_False,
-    const Standard_Boolean BNproblem       = Standard_False);
+  Standard_EXPORT static occ::handle<TNaming_NamedShape> Name(const TDF_Label&    where,
+                                                              const TopoDS_Shape& Selection,
+                                                              const TopoDS_Shape& Context,
+                                                              const bool          Geometry = false,
+                                                              const bool KeepOrientation   = false,
+                                                              const bool BNproblem         = false);
 
   Standard_EXPORT TNaming_Naming();
 
-  Standard_EXPORT Standard_Boolean IsDefined() const;
+  Standard_EXPORT bool IsDefined() const;
 
   Standard_EXPORT const TNaming_Name& GetName() const;
 
   Standard_EXPORT TNaming_Name& ChangeName();
 
   //! regenerate only the Name associated to me
-  Standard_EXPORT Standard_Boolean Regenerate(TDF_LabelMap& scope);
+  Standard_EXPORT bool Regenerate(NCollection_Map<TDF_Label>& scope);
 
   //! Regenerate recursively the whole name with scope. If
   //! scope is empty it means that all the labels of the
   //! framework are valid.
-  Standard_EXPORT Standard_Boolean Solve(TDF_LabelMap& scope);
+  Standard_EXPORT bool Solve(NCollection_Map<TDF_Label>& scope);
 
   //! Deferred methods from TDF_Attribute
   //! ===================================
-  Standard_EXPORT virtual const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Standard_GUID& ID() const override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual void References(const Handle(TDF_DataSet)& aDataSet) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
-  Standard_EXPORT virtual void ExtendedDump(Standard_OStream&        anOS,
-                                            const TDF_IDFilter&      aFilter,
-                                            TDF_AttributeIndexedMap& aMap) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void ExtendedDump(
+    Standard_OStream&                                   anOS,
+    const TDF_IDFilter&                                 aFilter,
+    NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TNaming_Naming, TDF_Attribute)
 
-protected:
 private:
   TNaming_Name myName;
 };

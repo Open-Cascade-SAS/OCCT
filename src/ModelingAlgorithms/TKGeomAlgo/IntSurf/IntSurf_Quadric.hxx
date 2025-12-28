@@ -64,11 +64,11 @@ public:
 
   Standard_EXPORT void SetValue(const gp_Torus& T);
 
-  Standard_EXPORT Standard_Real Distance(const gp_Pnt& P) const;
+  Standard_EXPORT double Distance(const gp_Pnt& P) const;
 
   Standard_EXPORT gp_Vec Gradient(const gp_Pnt& P) const;
 
-  Standard_EXPORT void ValAndGrad(const gp_Pnt& P, Standard_Real& Dist, gp_Vec& Grad) const;
+  Standard_EXPORT void ValAndGrad(const gp_Pnt& P, double& Dist, gp_Vec& Grad) const;
 
   GeomAbs_SurfaceType TypeQuadric() const;
 
@@ -82,35 +82,31 @@ public:
 
   gp_Torus Torus() const;
 
-  Standard_EXPORT gp_Pnt Value(const Standard_Real U, const Standard_Real V) const;
+  Standard_EXPORT gp_Pnt Value(const double U, const double V) const;
 
-  Standard_EXPORT void D1(const Standard_Real U,
-                          const Standard_Real V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V) const;
+  Standard_EXPORT void D1(const double U,
+                          const double V,
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V) const;
 
-  Standard_EXPORT gp_Vec DN(const Standard_Real    U,
-                            const Standard_Real    V,
-                            const Standard_Integer Nu,
-                            const Standard_Integer Nv) const;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const;
 
-  Standard_EXPORT gp_Vec Normale(const Standard_Real U, const Standard_Real V) const;
+  Standard_EXPORT gp_Vec Normale(const double U, const double V) const;
 
-  Standard_EXPORT void Parameters(const gp_Pnt& P, Standard_Real& U, Standard_Real& V) const;
+  Standard_EXPORT void Parameters(const gp_Pnt& P, double& U, double& V) const;
 
   Standard_EXPORT gp_Vec Normale(const gp_Pnt& P) const;
 
-protected:
 private:
   gp_Ax3              ax3;
   gp_Lin              lin;
   GeomAbs_SurfaceType typ;
-  Standard_Real       prm1;
-  Standard_Real       prm2;
-  Standard_Real       prm3;
-  Standard_Real       prm4;
-  Standard_Boolean    ax3direc;
+  double              prm1;
+  double              prm2;
+  double              prm3;
+  double              prm4;
+  bool                ax3direc;
 };
 
 #include <IntSurf_Quadric.lxx>

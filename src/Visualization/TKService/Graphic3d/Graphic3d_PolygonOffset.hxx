@@ -22,8 +22,8 @@
 struct Graphic3d_PolygonOffset
 {
   Aspect_PolygonOffsetMode Mode;
-  Standard_ShortReal       Factor;
-  Standard_ShortReal       Units;
+  float                    Factor;
+  float                    Units;
 
   //! Empty constructor.
   Graphic3d_PolygonOffset()
@@ -40,7 +40,7 @@ struct Graphic3d_PolygonOffset
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 };
 
 #endif // _Graphic3d_PolygonOffset_HeaderFile

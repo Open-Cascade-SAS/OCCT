@@ -25,9 +25,6 @@
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-class IGESSelect_SignColor;
-DEFINE_STANDARD_HANDLE(IGESSelect_SignColor, IFSelect_Signature)
-
 //! Gives Color attached to an entity
 //! Several forms are possible, according to <mode>
 //! 1 : number : "Dnn" for entity, "Snn" for standard, "(none)" for 0
@@ -47,18 +44,17 @@ public:
   //! mode : see above for the meaning
   //! modes 4,5,6 give a numeric integer value
   //! Name is initialised according to the mode
-  Standard_EXPORT IGESSelect_SignColor(const Standard_Integer mode);
+  Standard_EXPORT IGESSelect_SignColor(const int mode);
 
   //! Returns the value (see above)
-  Standard_EXPORT Standard_CString
-    Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SignColor, IFSelect_Signature)
 
-protected:
 private:
-  Standard_Integer themode;
+  int themode;
 };
 
 #endif // _IGESSelect_SignColor_HeaderFile

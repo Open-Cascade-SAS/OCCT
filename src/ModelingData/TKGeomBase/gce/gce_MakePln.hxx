@@ -67,10 +67,7 @@ public:
   //!
   //! the status is "BadEquation" if std::sqrt(A*A + B*B + C*C) <=
   //! Resolution from gp.
-  Standard_EXPORT gce_MakePln(const Standard_Real A,
-                              const Standard_Real B,
-                              const Standard_Real C,
-                              const Standard_Real D);
+  Standard_EXPORT gce_MakePln(const double A, const double B, const double C, const double D);
 
   //! Make a Pln from gp <ThePln> parallel to another
   //! Pln <Pln> and passing through a Pnt <Point>.
@@ -83,7 +80,7 @@ public:
   //! <Dist> to the plane <Pln> in the direction of the
   //! normal to <Pln>.
   //! Otherwise it is in the opposite direction.
-  Standard_EXPORT gce_MakePln(const gp_Pln& Pln, const Standard_Real Dist);
+  Standard_EXPORT gce_MakePln(const gp_Pln& Pln, const double Dist);
 
   //! Make a Pln from gp <ThePln> passing through 3
   //! Pnt <P1>,<P2>,<P3>.
@@ -112,7 +109,6 @@ public:
   Standard_EXPORT const gp_Pln& Operator() const;
   Standard_EXPORT               operator gp_Pln() const;
 
-protected:
 private:
   gp_Pln ThePln;
 };

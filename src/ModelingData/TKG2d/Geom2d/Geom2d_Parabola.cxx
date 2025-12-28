@@ -41,9 +41,9 @@ typedef gp_XY           XY;
 
 //=================================================================================================
 
-Handle(Geom2d_Geometry) Geom2d_Parabola::Copy() const
+occ::handle<Geom2d_Geometry> Geom2d_Parabola::Copy() const
 {
-  Handle(Geom2d_Parabola) Prb;
+  occ::handle<Geom2d_Parabola> Prb;
   Prb = new Parabola(pos, focalLength);
   return Prb;
 }
@@ -58,9 +58,7 @@ Geom2d_Parabola::Geom2d_Parabola(const gp_Parab2d& Prb)
 
 //=================================================================================================
 
-Geom2d_Parabola::Geom2d_Parabola(const Ax2d&            MirrorAxis,
-                                 const Standard_Real    Focal,
-                                 const Standard_Boolean Sense)
+Geom2d_Parabola::Geom2d_Parabola(const Ax2d& MirrorAxis, const double Focal, const bool Sense)
     : focalLength(Focal)
 {
   if (Focal < 0.0)
@@ -72,7 +70,7 @@ Geom2d_Parabola::Geom2d_Parabola(const Ax2d&            MirrorAxis,
 
 //=================================================================================================
 
-Geom2d_Parabola::Geom2d_Parabola(const gp_Ax22d& Axis, const Standard_Real Focal)
+Geom2d_Parabola::Geom2d_Parabola(const gp_Ax22d& Axis, const double Focal)
     : focalLength(Focal)
 {
   if (Focal < 0.0)
@@ -94,7 +92,7 @@ Geom2d_Parabola::Geom2d_Parabola(const Ax2d& D, const Pnt2d& F)
 
 //=================================================================================================
 
-void Geom2d_Parabola::SetFocal(const Standard_Real Focal)
+void Geom2d_Parabola::SetFocal(const double Focal)
 {
   if (Focal < 0.0)
     throw Standard_ConstructionError();
@@ -118,37 +116,37 @@ gp_Parab2d Geom2d_Parabola::Parab2d() const
 
 //=================================================================================================
 
-Standard_Real Geom2d_Parabola::ReversedParameter(const Standard_Real U) const
+double Geom2d_Parabola::ReversedParameter(const double U) const
 {
   return (-U);
 }
 
 //=================================================================================================
 
-Standard_Real Geom2d_Parabola::FirstParameter() const
+double Geom2d_Parabola::FirstParameter() const
 {
   return -Precision::Infinite();
 }
 
 //=================================================================================================
 
-Standard_Real Geom2d_Parabola::LastParameter() const
+double Geom2d_Parabola::LastParameter() const
 {
   return Precision::Infinite();
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom2d_Parabola::IsClosed() const
+bool Geom2d_Parabola::IsClosed() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom2d_Parabola::IsPeriodic() const
+bool Geom2d_Parabola::IsPeriodic() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -161,7 +159,7 @@ Ax2d Geom2d_Parabola::Directrix() const
 
 //=================================================================================================
 
-Standard_Real Geom2d_Parabola::Eccentricity() const
+double Geom2d_Parabola::Eccentricity() const
 {
   return 1.0;
 }
@@ -178,42 +176,42 @@ Pnt2d Geom2d_Parabola::Focus() const
 
 //=================================================================================================
 
-Standard_Real Geom2d_Parabola::Focal() const
+double Geom2d_Parabola::Focal() const
 {
   return focalLength;
 }
 
 //=================================================================================================
 
-Standard_Real Geom2d_Parabola::Parameter() const
+double Geom2d_Parabola::Parameter() const
 {
   return 2.0 * focalLength;
 }
 
 //=================================================================================================
 
-void Geom2d_Parabola::D0(const Standard_Real U, Pnt2d& P) const
+void Geom2d_Parabola::D0(const double U, Pnt2d& P) const
 {
   P = ElCLib::ParabolaValue(U, pos, focalLength);
 }
 
 //=================================================================================================
 
-void Geom2d_Parabola::D1(const Standard_Real U, Pnt2d& P, Vec2d& V1) const
+void Geom2d_Parabola::D1(const double U, Pnt2d& P, Vec2d& V1) const
 {
   ElCLib::ParabolaD1(U, pos, focalLength, P, V1);
 }
 
 //=================================================================================================
 
-void Geom2d_Parabola::D2(const Standard_Real U, Pnt2d& P, Vec2d& V1, Vec2d& V2) const
+void Geom2d_Parabola::D2(const double U, Pnt2d& P, Vec2d& V1, Vec2d& V2) const
 {
   ElCLib::ParabolaD2(U, pos, focalLength, P, V1, V2);
 }
 
 //=================================================================================================
 
-void Geom2d_Parabola::D3(const Standard_Real U, Pnt2d& P, Vec2d& V1, Vec2d& V2, Vec2d& V3) const
+void Geom2d_Parabola::D3(const double U, Pnt2d& P, Vec2d& V1, Vec2d& V2, Vec2d& V3) const
 {
   ElCLib::ParabolaD2(U, pos, focalLength, P, V1, V2);
   V3.SetCoord(0.0, 0.0);
@@ -221,7 +219,7 @@ void Geom2d_Parabola::D3(const Standard_Real U, Pnt2d& P, Vec2d& V1, Vec2d& V2, 
 
 //=================================================================================================
 
-Vec2d Geom2d_Parabola::DN(const Standard_Real U, const Standard_Integer N) const
+Vec2d Geom2d_Parabola::DN(const double U, const int N) const
 {
   Standard_RangeError_Raise_if(N < 1, " ");
   return ElCLib::ParabolaDN(U, pos, focalLength, N);
@@ -237,7 +235,7 @@ void Geom2d_Parabola::Transform(const Trsf2d& T)
 
 //=================================================================================================
 
-Standard_Real Geom2d_Parabola::TransformedParameter(const Standard_Real U, const gp_Trsf2d& T) const
+double Geom2d_Parabola::TransformedParameter(const double U, const gp_Trsf2d& T) const
 {
   if (Precision::IsInfinite(U))
     return U;
@@ -246,14 +244,14 @@ Standard_Real Geom2d_Parabola::TransformedParameter(const Standard_Real U, const
 
 //=================================================================================================
 
-Standard_Real Geom2d_Parabola::ParametricTransformation(const gp_Trsf2d& T) const
+double Geom2d_Parabola::ParametricTransformation(const gp_Trsf2d& T) const
 {
   return std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
 
-void Geom2d_Parabola::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom2d_Parabola::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom2d_Conic)

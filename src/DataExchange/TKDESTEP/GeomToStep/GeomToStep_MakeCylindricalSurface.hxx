@@ -35,14 +35,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeCylindricalSurface(
-    const Handle(Geom_CylindricalSurface)& CSurf,
-    const StepData_Factors&                theLocalFactors = StepData_Factors());
+    const occ::handle<Geom_CylindricalSurface>& CSurf,
+    const StepData_Factors&                     theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_CylindricalSurface)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_CylindricalSurface>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_CylindricalSurface) theCylindricalSurface;
+  occ::handle<StepGeom_CylindricalSurface> theCylindricalSurface;
 };
 
 #endif // _GeomToStep_MakeCylindricalSurface_HeaderFile

@@ -25,9 +25,6 @@
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
 
-class IGESDimen_SpecificModule;
-DEFINE_STANDARD_HANDLE(IGESDimen_SpecificModule, IGESData_SpecificModule)
-
 //! Defines Services attached to IGES Entities :
 //! Dump & OwnCorrect, for IGESDimen
 class IGESDimen_SpecificModule : public IGESData_SpecificModule
@@ -38,24 +35,20 @@ public:
   Standard_EXPORT IGESDimen_SpecificModule();
 
   //! Specific Dump (own parameters) for IGESDimen
-  Standard_EXPORT void OwnDump(const Standard_Integer             CN,
-                               const Handle(IGESData_IGESEntity)& ent,
-                               const IGESData_IGESDumper&         dumper,
-                               Standard_OStream&                  S,
-                               const Standard_Integer             own) const Standard_OVERRIDE;
+  Standard_EXPORT void OwnDump(const int                               CN,
+                               const occ::handle<IGESData_IGESEntity>& ent,
+                               const IGESData_IGESDumper&              dumper,
+                               Standard_OStream&                       S,
+                               const int                               own) const override;
 
   //! Performs non-ambiguous Corrections on Entities which support
   //! them (BasicDimension,CenterLine,DimensionDisplayData,
   //! DimensionTolerance,DimensionUnits,DimensionedGeometry,
   //! NewDimensionedGeometry,Section,WitnessLine)
-  Standard_EXPORT virtual Standard_Boolean OwnCorrect(const Standard_Integer             CN,
-                                                      const Handle(IGESData_IGESEntity)& ent) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
+    const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_SpecificModule, IGESData_SpecificModule)
-
-protected:
-private:
 };
 
 #endif // _IGESDimen_SpecificModule_HeaderFile

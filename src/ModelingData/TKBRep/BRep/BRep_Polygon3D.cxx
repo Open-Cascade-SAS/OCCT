@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_Polygon3D, BRep_CurveRepresentation)
 
 //=================================================================================================
 
-BRep_Polygon3D::BRep_Polygon3D(const Handle(Poly_Polygon3D)& P, const TopLoc_Location& L)
+BRep_Polygon3D::BRep_Polygon3D(const occ::handle<Poly_Polygon3D>& P, const TopLoc_Location& L)
     : BRep_CurveRepresentation(L),
       myPolygon3D(P)
 {
@@ -33,36 +33,36 @@ BRep_Polygon3D::BRep_Polygon3D(const Handle(Poly_Polygon3D)& P, const TopLoc_Loc
 
 //=================================================================================================
 
-Standard_Boolean BRep_Polygon3D::IsPolygon3D() const
+bool BRep_Polygon3D::IsPolygon3D() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-const Handle(Poly_Polygon3D)& BRep_Polygon3D::Polygon3D() const
+const occ::handle<Poly_Polygon3D>& BRep_Polygon3D::Polygon3D() const
 {
   return myPolygon3D;
 }
 
 //=================================================================================================
 
-void BRep_Polygon3D::Polygon3D(const Handle(Poly_Polygon3D)& P)
+void BRep_Polygon3D::Polygon3D(const occ::handle<Poly_Polygon3D>& P)
 {
   myPolygon3D = P;
 }
 
 //=================================================================================================
 
-Handle(BRep_CurveRepresentation) BRep_Polygon3D::Copy() const
+occ::handle<BRep_CurveRepresentation> BRep_Polygon3D::Copy() const
 {
-  Handle(BRep_Polygon3D) P = new BRep_Polygon3D(myPolygon3D, Location());
+  occ::handle<BRep_Polygon3D> P = new BRep_Polygon3D(myPolygon3D, Location());
   return P;
 }
 
 //=================================================================================================
 
-void BRep_Polygon3D::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void BRep_Polygon3D::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

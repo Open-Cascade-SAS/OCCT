@@ -22,20 +22,20 @@ VrmlConverter_IsoAspect::VrmlConverter_IsoAspect()
   myNumber = 10;
 }
 
-VrmlConverter_IsoAspect::VrmlConverter_IsoAspect(const Handle(Vrml_Material)& aMaterial,
-                                                 const Standard_Boolean       OnOff,
-                                                 const Standard_Integer       aNumber)
+VrmlConverter_IsoAspect::VrmlConverter_IsoAspect(const occ::handle<Vrml_Material>& aMaterial,
+                                                 const bool                        OnOff,
+                                                 const int                         aNumber)
     : VrmlConverter_LineAspect(aMaterial, OnOff)
 {
   myNumber = aNumber;
 }
 
-void VrmlConverter_IsoAspect::SetNumber(const Standard_Integer aNumber)
+void VrmlConverter_IsoAspect::SetNumber(const int aNumber)
 {
   myNumber = aNumber;
 }
 
-Standard_Integer VrmlConverter_IsoAspect::Number() const
+int VrmlConverter_IsoAspect::Number() const
 {
   return myNumber;
 }

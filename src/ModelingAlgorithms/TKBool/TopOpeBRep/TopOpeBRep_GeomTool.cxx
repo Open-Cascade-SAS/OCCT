@@ -18,9 +18,10 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Standard_ProgramError.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_Integer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_GeomTool.hxx>
@@ -33,17 +34,17 @@
 
 //=================================================================================================
 
-void TopOpeBRep_GeomTool::MakeCurves(const Standard_Real         min,
-                                     const Standard_Real         max,
+void TopOpeBRep_GeomTool::MakeCurves(const double                min,
+                                     const double                max,
                                      const TopOpeBRep_LineInter& L,
                                      const TopoDS_Shape& /*S1*/,
                                      const TopoDS_Shape& /*S2*/,
-                                     TopOpeBRepDS_Curve&   C,
-                                     Handle(Geom2d_Curve)& PC1,
-                                     Handle(Geom2d_Curve)& PC2)
+                                     TopOpeBRepDS_Curve&        C,
+                                     occ::handle<Geom2d_Curve>& PC1,
+                                     occ::handle<Geom2d_Curve>& PC2)
 {
-  Standard_Boolean         IsWalk = Standard_False;
-  Handle(Geom_Curve)       C3D;
+  bool                     IsWalk = false;
+  occ::handle<Geom_Curve>  C3D;
   TopOpeBRep_TypeLineCurve typeline = L.TypeLineCurve();
 
   switch (typeline)
@@ -58,7 +59,7 @@ void TopOpeBRep_GeomTool::MakeCurves(const Standard_Real         min,
         C.Curve1(PC1);
       if (!PC2.IsNull())
         C.Curve2(PC2);
-      IsWalk = Standard_True;
+      IsWalk = true;
       break;
     }
     case TopOpeBRep_LINE:
@@ -80,17 +81,17 @@ void TopOpeBRep_GeomTool::MakeCurves(const Standard_Real         min,
       break;
   }
 
-  Standard_Real tol = C.Tolerance();
+  double tol = C.Tolerance();
   C.DefineCurve(C3D, tol, IsWalk);
   C.SetRange(min, max);
 }
 
 //=================================================================================================
 
-void TopOpeBRep_GeomTool::MakeCurve(const Standard_Real         min,
-                                    const Standard_Real         max,
+void TopOpeBRep_GeomTool::MakeCurve(const double                min,
+                                    const double                max,
                                     const TopOpeBRep_LineInter& L,
-                                    Handle(Geom_Curve)&         C3D)
+                                    occ::handle<Geom_Curve>&    C3D)
 {
   TopOpeBRep_TypeLineCurve typeline = L.TypeLineCurve();
 
@@ -132,31 +133,33 @@ void TopOpeBRep_GeomTool::MakeCurve(const Standard_Real         min,
 
 //=================================================================================================
 
-Handle(Geom_Curve) TopOpeBRep_GeomTool::MakeBSpline1fromWALKING3d(const TopOpeBRep_LineInter& L)
+occ::handle<Geom_Curve> TopOpeBRep_GeomTool::MakeBSpline1fromWALKING3d(
+  const TopOpeBRep_LineInter& L)
 {
-  Standard_Integer               ip;
+  int                            ip;
   TopOpeBRep_WPointInterIterator itW(L);
-  Standard_Integer               nbpoints = L.NbWPoint();
+  int                            nbpoints = L.NbWPoint();
   // Define points3d with the walking 3d points of <L>
-  TColgp_Array1OfPnt points3d(1, nbpoints);
+  NCollection_Array1<gp_Pnt> points3d(1, nbpoints);
   for (ip = 1, itW.Init(); itW.More(); ip++, itW.Next())
   {
     points3d.SetValue(ip, itW.CurrentWP().Value());
   }
-  Handle(Geom_Curve) C = TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt(points3d);
+  occ::handle<Geom_Curve> C = TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt(points3d);
   return C;
 }
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) TopOpeBRep_GeomTool::MakeBSpline1fromWALKING2d(const TopOpeBRep_LineInter& L,
-                                                                    const Standard_Integer      SI)
+occ::handle<Geom2d_Curve> TopOpeBRep_GeomTool::MakeBSpline1fromWALKING2d(
+  const TopOpeBRep_LineInter& L,
+  const int                   SI)
 {
-  Standard_Integer               ip;
+  int                            ip;
   TopOpeBRep_WPointInterIterator itW(L);
-  Standard_Integer               nbpoints = L.NbWPoint();
+  int                            nbpoints = L.NbWPoint();
   // Define points2d with the walking 2d points of <L>
-  TColgp_Array1OfPnt2d points2d(1, nbpoints);
+  NCollection_Array1<gp_Pnt2d> points2d(1, nbpoints);
   for (ip = 1, itW.Init(); itW.More(); ip++, itW.Next())
   {
     if (SI == 1)
@@ -164,6 +167,6 @@ Handle(Geom2d_Curve) TopOpeBRep_GeomTool::MakeBSpline1fromWALKING2d(const TopOpe
     else if (SI == 2)
       points2d.SetValue(ip, itW.CurrentWP().ValueOnS2());
   }
-  Handle(Geom2d_Curve) C = TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt2d(points2d);
+  occ::handle<Geom2d_Curve> C = TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt2d(points2d);
   return C;
 }

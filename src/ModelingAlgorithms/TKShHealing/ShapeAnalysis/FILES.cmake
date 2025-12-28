@@ -11,8 +11,7 @@ set(OCCT_ShapeAnalysis_FILES
   ShapeAnalysis_CheckSmallFace.lxx
   ShapeAnalysis_Curve.cxx
   ShapeAnalysis_Curve.hxx
-  ShapeAnalysis_DataMapIteratorOfDataMapOfShapeListOfReal.hxx
-  ShapeAnalysis_DataMapOfShapeListOfReal.hxx
+
   ShapeAnalysis_Edge.cxx
   ShapeAnalysis_Edge.hxx
   ShapeAnalysis_FreeBoundData.cxx
@@ -26,8 +25,7 @@ set(OCCT_ShapeAnalysis_FILES
   ShapeAnalysis_FreeBoundsProperties.lxx
   ShapeAnalysis_Geom.cxx
   ShapeAnalysis_Geom.hxx
-  ShapeAnalysis_HSequenceOfFreeBounds.hxx
-  ShapeAnalysis_SequenceOfFreeBounds.hxx
+
   ShapeAnalysis_ShapeContents.cxx
   ShapeAnalysis_ShapeContents.hxx
   ShapeAnalysis_ShapeTolerance.cxx

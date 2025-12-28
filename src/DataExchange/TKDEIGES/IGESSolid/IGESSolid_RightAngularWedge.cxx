@@ -26,11 +26,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_RightAngularWedge, IGESData_IGESEntity)
 
 IGESSolid_RightAngularWedge::IGESSolid_RightAngularWedge() {}
 
-void IGESSolid_RightAngularWedge::Init(const gp_XYZ&       aSize,
-                                       const Standard_Real LowX,
-                                       const gp_XYZ&       aCorner,
-                                       const gp_XYZ&       anXAxis,
-                                       const gp_XYZ&       anZAxis)
+void IGESSolid_RightAngularWedge::Init(const gp_XYZ& aSize,
+                                       const double  LowX,
+                                       const gp_XYZ& aCorner,
+                                       const gp_XYZ& anXAxis,
+                                       const gp_XYZ& anZAxis)
 {
   theSize         = aSize;
   theXSmallLength = LowX;
@@ -45,22 +45,22 @@ gp_XYZ IGESSolid_RightAngularWedge::Size() const
   return theSize;
 }
 
-Standard_Real IGESSolid_RightAngularWedge::XBigLength() const
+double IGESSolid_RightAngularWedge::XBigLength() const
 {
   return theSize.X();
 }
 
-Standard_Real IGESSolid_RightAngularWedge::XSmallLength() const
+double IGESSolid_RightAngularWedge::XSmallLength() const
 {
   return theXSmallLength;
 }
 
-Standard_Real IGESSolid_RightAngularWedge::YLength() const
+double IGESSolid_RightAngularWedge::YLength() const
 {
   return theSize.Y();
 }
 
-Standard_Real IGESSolid_RightAngularWedge::ZLength() const
+double IGESSolid_RightAngularWedge::ZLength() const
 {
   return theSize.Z();
 }

@@ -33,42 +33,35 @@ public:
 
   Standard_EXPORT void InitHidden(HLRAlgo_EdgeStatus& status);
 
-  Standard_Boolean MoreHidden() const;
+  bool MoreHidden() const;
 
   Standard_EXPORT void NextHidden();
 
   //! Returns the bounds and the tolerances
   //! of the current Hidden Interval
-  void Hidden(Standard_Real&      Start,
-              Standard_ShortReal& TolStart,
-              Standard_Real&      End,
-              Standard_ShortReal& TolEnd) const;
+  void Hidden(double& Start, float& TolStart, double& End, float& TolEnd) const;
 
   void InitVisible(HLRAlgo_EdgeStatus& status);
 
-  Standard_Boolean MoreVisible() const;
+  bool MoreVisible() const;
 
   void NextVisible();
 
   //! Returns the bounds and the tolerances
   //! of the current Visible Interval
-  void Visible(Standard_Real&      Start,
-               Standard_ShortReal& TolStart,
-               Standard_Real&      End,
-               Standard_ShortReal& TolEnd);
+  void Visible(double& Start, float& TolStart, double& End, float& TolEnd);
 
-protected:
 private:
-  Standard_Integer    myNbVis;
-  Standard_Integer    myNbHid;
+  int                 myNbVis;
+  int                 myNbHid;
   HLRAlgo_EdgeStatus* EVis;
   HLRAlgo_EdgeStatus* EHid;
-  Standard_Integer    iVis;
-  Standard_Integer    iHid;
-  Standard_Real       myHidStart;
-  Standard_Real       myHidEnd;
-  Standard_ShortReal  myHidTolStart;
-  Standard_ShortReal  myHidTolEnd;
+  int                 iVis;
+  int                 iHid;
+  double              myHidStart;
+  double              myHidEnd;
+  float               myHidTolStart;
+  float               myHidTolEnd;
 };
 
 #include <HLRAlgo_EdgeIterator.lxx>

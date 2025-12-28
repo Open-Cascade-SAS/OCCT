@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_Integer.hxx>
 class ShapeBuild_ReShape;
 class TopoDS_Shape;
@@ -45,19 +46,17 @@ public:
   //!
   //! If no shell has been sewed, this method returns the input
   //! shape
-  Standard_EXPORT TopoDS_Shape ApplySewing(const TopoDS_Shape& shape,
-                                           const Standard_Real tol = 0.0);
+  Standard_EXPORT TopoDS_Shape ApplySewing(const TopoDS_Shape& shape, const double tol = 0.0);
 
-protected:
 private:
   Standard_EXPORT void Init(const TopoDS_Shape& shape);
 
-  Standard_EXPORT Standard_Integer Prepare(const Standard_Real tol);
+  Standard_EXPORT int Prepare(const double tol);
 
-  Standard_EXPORT TopoDS_Shape Apply(const TopoDS_Shape& shape, const Standard_Real tol);
+  Standard_EXPORT TopoDS_Shape Apply(const TopoDS_Shape& shape, const double tol);
 
-  TopTools_IndexedMapOfShape myShells;
-  Handle(ShapeBuild_ReShape) myReShape;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myShells;
+  occ::handle<ShapeBuild_ReShape>                               myReShape;
 };
 
 #endif // _ShapeUpgrade_ShellSewing_HeaderFile

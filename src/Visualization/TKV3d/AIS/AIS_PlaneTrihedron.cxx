@@ -41,24 +41,24 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <UnitsAPI.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_PlaneTrihedron, AIS_InteractiveObject)
 
-void ExtremityPoints(TColgp_Array1OfPnt&         PP,
-                     const Handle(Geom_Plane)&   myPlane,
-                     const Handle(Prs3d_Drawer)& myDrawer);
+void ExtremityPoints(NCollection_Array1<gp_Pnt>&      PP,
+                     const occ::handle<Geom_Plane>&   myPlane,
+                     const occ::handle<Prs3d_Drawer>& myDrawer);
 
 //=================================================================================================
 
-AIS_PlaneTrihedron::AIS_PlaneTrihedron(const Handle(Geom_Plane)& aPlane)
+AIS_PlaneTrihedron::AIS_PlaneTrihedron(const occ::handle<Geom_Plane>& aPlane)
     : myPlane(aPlane)
 {
-  Handle(Prs3d_DatumAspect) DA = new Prs3d_DatumAspect();
-  // POP  Standard_Real aLength = UnitsAPI::CurrentFromLS (100. ,"LENGTH");
-  Standard_Real aLength = UnitsAPI::AnyToLS(100., "mm");
+  occ::handle<Prs3d_DatumAspect> DA = new Prs3d_DatumAspect();
+  // POP  double aLength = UnitsAPI::CurrentFromLS (100. ,"LENGTH");
+  double aLength = UnitsAPI::AnyToLS(100., "mm");
   DA->SetAxisLength(aLength, aLength, aLength);
   Quantity_Color col(Quantity_NOC_ROYALBLUE1);
   DA->LineAspect(Prs3d_DatumParts_XAxis)->SetColor(col);
@@ -75,72 +75,72 @@ AIS_PlaneTrihedron::AIS_PlaneTrihedron(const Handle(Geom_Plane)& aPlane)
 
 //=================================================================================================
 
-Handle(Geom_Plane) AIS_PlaneTrihedron::Component()
+occ::handle<Geom_Plane> AIS_PlaneTrihedron::Component()
 {
   return myPlane;
 }
 
 //=================================================================================================
 
-void AIS_PlaneTrihedron::SetComponent(const Handle(Geom_Plane)& aPlane)
+void AIS_PlaneTrihedron::SetComponent(const occ::handle<Geom_Plane>& aPlane)
 {
   myPlane = aPlane;
 }
 
 //=================================================================================================
 
-Handle(AIS_Line) AIS_PlaneTrihedron::XAxis() const
+occ::handle<AIS_Line> AIS_PlaneTrihedron::XAxis() const
 {
-  Handle(Geom_Line) aGLine = new Geom_Line(myPlane->Pln().XAxis());
-  Handle(AIS_Line)  aLine  = new AIS_Line(aGLine);
+  occ::handle<Geom_Line> aGLine = new Geom_Line(myPlane->Pln().XAxis());
+  occ::handle<AIS_Line>  aLine  = new AIS_Line(aGLine);
   aLine->SetColor(Quantity_NOC_ROYALBLUE1);
   return aLine;
 }
 
 //=================================================================================================
 
-Handle(AIS_Line) AIS_PlaneTrihedron::YAxis() const
+occ::handle<AIS_Line> AIS_PlaneTrihedron::YAxis() const
 {
-  Handle(Geom_Line) aGLine = new Geom_Line(myPlane->Pln().YAxis());
-  Handle(AIS_Line)  aLine  = new AIS_Line(aGLine);
+  occ::handle<Geom_Line> aGLine = new Geom_Line(myPlane->Pln().YAxis());
+  occ::handle<AIS_Line>  aLine  = new AIS_Line(aGLine);
   aLine->SetColor(Quantity_NOC_ROYALBLUE1);
   return aLine;
 }
 
 //=================================================================================================
 
-Handle(AIS_Point) AIS_PlaneTrihedron::Position() const
+occ::handle<AIS_Point> AIS_PlaneTrihedron::Position() const
 {
-  gp_Pnt             aPnt   = myPlane->Pln().Location();
-  Handle(Geom_Point) aPoint = new Geom_CartesianPoint(aPnt);
-  Handle(AIS_Point)  aPt    = new AIS_Point(aPoint);
+  gp_Pnt                  aPnt   = myPlane->Pln().Location();
+  occ::handle<Geom_Point> aPoint = new Geom_CartesianPoint(aPnt);
+  occ::handle<AIS_Point>  aPt    = new AIS_Point(aPoint);
   return aPt;
 }
 
-void AIS_PlaneTrihedron::SetLength(const Standard_Real theLength)
+void AIS_PlaneTrihedron::SetLength(const double theLength)
 {
   myDrawer->DatumAspect()->SetAxisLength(theLength, theLength, theLength);
   SetToUpdate();
 }
 
-Standard_Real AIS_PlaneTrihedron::GetLength() const
+double AIS_PlaneTrihedron::GetLength() const
 {
   return myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
 }
 
 //=================================================================================================
 
-void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                 const Handle(Prs3d_Presentation)& thePrs,
-                                 const Standard_Integer)
+void AIS_PlaneTrihedron::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                 const occ::handle<Prs3d_Presentation>& thePrs,
+                                 const int)
 {
   // drawing axis in X direction
-  gp_Pnt        first, last;
-  Standard_Real value = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
-  gp_Dir        xDir  = myPlane->Position().Ax2().XDirection();
+  gp_Pnt first, last;
+  double value = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
+  gp_Dir xDir  = myPlane->Position().Ax2().XDirection();
 
-  gp_Pnt        orig = myPlane->Position().Ax2().Location();
-  Standard_Real xo, yo, zo, x, y, z;
+  gp_Pnt orig = myPlane->Position().Ax2().Location();
+  double xo, yo, zo, x, y, z;
   orig.Coord(xo, yo, zo);
   xDir.Coord(x, y, z);
   first.SetCoord(xo, yo, zo);
@@ -172,17 +172,17 @@ void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager)&,
                                   first,
                                   last);
 
-  thePrs->SetInfiniteState(Standard_True);
+  thePrs->SetInfiniteState(true);
 }
 
 //=================================================================================================
 
-void AIS_PlaneTrihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                          const Standard_Integer             aMode)
+void AIS_PlaneTrihedron::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                          const int                               aMode)
 {
-  Standard_Integer              Prior;
-  Handle(SelectMgr_EntityOwner) eown;
-  TColgp_Array1OfPnt            PP(1, 4), PO(1, 4);
+  int                                Prior;
+  occ::handle<SelectMgr_EntityOwner> eown;
+  NCollection_Array1<gp_Pnt>         PP(1, 4), PO(1, 4);
   //  ExtremityPoints(PP);
   ExtremityPoints(PP, myPlane, myDrawer);
   switch (aMode)
@@ -193,25 +193,25 @@ void AIS_PlaneTrihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSe
       //      gp_Pnt p1 = theax.Location();
 
       eown = new SelectMgr_EntityOwner(this, Prior);
-      for (Standard_Integer i = 1; i <= 2; i++)
+      for (int i = 1; i <= 2; i++)
         aSelection->Add(new Select3D_SensitiveSegment(eown, PP(1), PP(i + 1)));
 
       break;
     }
     case 1: { // origine
-      Prior                                           = 8;
-      const Handle(SelectMgr_SelectableObject)& anObj = myShapes[0]; // to avoid ambiguity
-      eown                                            = new SelectMgr_EntityOwner(anObj, Prior);
+      Prior                                                = 8;
+      const occ::handle<SelectMgr_SelectableObject>& anObj = myShapes[0]; // to avoid ambiguity
+      eown = new SelectMgr_EntityOwner(anObj, Prior);
       aSelection->Add(new Select3D_SensitivePoint(eown, myPlane->Location()));
 
       break;
     }
     case 2: { // axes ... priorite 7
       Prior = 7;
-      for (Standard_Integer i = 1; i <= 2; i++)
+      for (int i = 1; i <= 2; i++)
       {
-        const Handle(SelectMgr_SelectableObject)& anObj = myShapes[i]; // to avoid ambiguity
-        eown                                            = new SelectMgr_EntityOwner(anObj, Prior);
+        const occ::handle<SelectMgr_SelectableObject>& anObj = myShapes[i]; // to avoid ambiguity
+        eown = new SelectMgr_EntityOwner(anObj, Prior);
         aSelection->Add(new Select3D_SensitiveSegment(eown, PP(1), PP(i + 1)));
       }
       break;
@@ -226,7 +226,7 @@ void AIS_PlaneTrihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSe
 
 void AIS_PlaneTrihedron::SetColor(const Quantity_Color& aCol)
 {
-  hasOwnColor = Standard_True;
+  hasOwnColor = true;
   myDrawer->SetColor(aCol);
   myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_XAxis)->SetColor(aCol);
   myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_YAxis)->SetColor(aCol);
@@ -235,17 +235,17 @@ void AIS_PlaneTrihedron::SetColor(const Quantity_Color& aCol)
 
 //=================================================================================================
 
-// void  AIS_Trihedron::ExtremityPoints(TColgp_Array1OfPnt& PP) const
-void ExtremityPoints(TColgp_Array1OfPnt&         PP,
-                     const Handle(Geom_Plane)&   myPlane,
-                     const Handle(Prs3d_Drawer)& myDrawer)
+// void  AIS_Trihedron::ExtremityPoints(NCollection_Array1<gp_Pnt>& PP) const
+void ExtremityPoints(NCollection_Array1<gp_Pnt>&      PP,
+                     const occ::handle<Geom_Plane>&   myPlane,
+                     const occ::handle<Prs3d_Drawer>& myDrawer)
 {
   //  gp_Ax2 theax(myPlane->Ax2());
   gp_Ax2 theax(myPlane->Position().Ax2());
   PP(1) = theax.Location();
 
-  Standard_Real len = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
-  gp_Vec        vec = theax.XDirection();
+  double len = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
+  gp_Vec vec = theax.XDirection();
   vec *= len;
   PP(2) = PP(1).Translated(vec);
 
@@ -257,7 +257,7 @@ void ExtremityPoints(TColgp_Array1OfPnt&         PP,
 
 //=================================================================================================
 
-Standard_Boolean AIS_PlaneTrihedron::AcceptDisplayMode(const Standard_Integer aMode) const
+bool AIS_PlaneTrihedron::AcceptDisplayMode(const int aMode) const
 {
   return aMode == 0;
 }

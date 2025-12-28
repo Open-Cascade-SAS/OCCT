@@ -42,27 +42,27 @@
     #include <DrawTrSurf.hxx>
     #include <DBRep.hxx>
     #include <Geom2d_Point.hxx>
-static Standard_Boolean Affich    = Standard_False;
-static Standard_Boolean AffichInt = Standard_False;
-static Standard_Integer intind    = 0;
+static bool Affich    = false;
+static bool AffichInt = false;
+static int  intind    = 0;
   #endif
 #endif
 
 //=================================================================================================
 
-static void SimpleExpression(const Bisector_Bisec& B, Handle(Geom2d_Curve)& Bis)
+static void SimpleExpression(const Bisector_Bisec& B, occ::handle<Geom2d_Curve>& Bis)
 {
   Bis = B.Value();
 
-  Handle(Standard_Type) BT = Bis->DynamicType();
+  occ::handle<Standard_Type> BT = Bis->DynamicType();
   if (BT == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
-    Handle(Geom2d_TrimmedCurve) TrBis  = Handle(Geom2d_TrimmedCurve)::DownCast(Bis);
-    Handle(Geom2d_Curve)        BasBis = TrBis->BasisCurve();
-    BT                                 = BasBis->DynamicType();
+    occ::handle<Geom2d_TrimmedCurve> TrBis  = occ::down_cast<Geom2d_TrimmedCurve>(Bis);
+    occ::handle<Geom2d_Curve>        BasBis = TrBis->BasisCurve();
+    BT                                      = BasBis->DynamicType();
     if (BT == STANDARD_TYPE(Bisector_BisecAna))
     {
-      Bis = Handle(Bisector_BisecAna)::DownCast(BasBis)->Geom2dCurve();
+      Bis = occ::down_cast<Bisector_BisecAna>(BasBis)->Geom2dCurve();
       Bis = new Geom2d_TrimmedCurve(Bis, TrBis->FirstParameter(), TrBis->LastParameter());
     }
   }
@@ -74,10 +74,10 @@ BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool() {}
 
 //=================================================================================================
 
-BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool(const Bisector_Bisec&          Bisec,
-                                             const Handle(Geom2d_Geometry)& S1,
-                                             const Handle(Geom2d_Geometry)& S2,
-                                             const Standard_Real            Offset)
+BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool(const Bisector_Bisec&               Bisec,
+                                             const occ::handle<Geom2d_Geometry>& S1,
+                                             const occ::handle<Geom2d_Geometry>& S2,
+                                             const double                        Offset)
     : myOffset(Offset),
       myBisec(Bisec)
 {
@@ -85,14 +85,14 @@ BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool(const Bisector_Bisec&          Bise
   isPoint2 = (S2->DynamicType() == STANDARD_TYPE(Geom2d_CartesianPoint));
 
   // return geometries of shapes.
-  //  Standard_Real f,l;
+  //  double f,l;
   if (isPoint1)
   {
-    myP1 = Handle(Geom2d_Point)::DownCast(S1)->Pnt2d();
+    myP1 = occ::down_cast<Geom2d_Point>(S1)->Pnt2d();
   }
   else
   {
-    myC1 = Handle(Geom2d_Curve)::DownCast(S1);
+    myC1 = occ::down_cast<Geom2d_Curve>(S1);
 #ifdef DRAW
     if (Affich)
     {
@@ -105,11 +105,11 @@ BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool(const Bisector_Bisec&          Bise
   }
   if (isPoint2)
   {
-    myP2 = Handle(Geom2d_Point)::DownCast(S2)->Pnt2d();
+    myP2 = occ::down_cast<Geom2d_Point>(S2)->Pnt2d();
   }
   else
   {
-    myC2 = Handle(Geom2d_Curve)::DownCast(S2);
+    myC2 = occ::down_cast<Geom2d_Curve>(S2);
 #ifdef DRAW
     if (Affich)
     {
@@ -120,7 +120,7 @@ BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool(const Bisector_Bisec&          Bise
 #endif
   }
   // return the simple expression of the bissectrice
-  Handle(Geom2d_Curve) Bis;
+  occ::handle<Geom2d_Curve> Bis;
   SimpleExpression(myBisec, Bis);
   myBis = Geom2dAdaptor_Curve(Bis);
 #ifdef DRAW
@@ -137,21 +137,21 @@ BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool(const Bisector_Bisec&          Bise
 // purpose  : Order the sequence of points by increasing x.
 //=======================================================================
 
-static void Bubble(TColgp_SequenceOfPnt& Seq)
+static void Bubble(NCollection_Sequence<gp_Pnt>& Seq)
 {
-  Standard_Boolean Invert   = Standard_True;
-  Standard_Integer NbPoints = Seq.Length();
+  bool Invert   = true;
+  int  NbPoints = Seq.Length();
   while (Invert)
   {
-    Invert = Standard_False;
-    for (Standard_Integer i = 1; i < NbPoints; i++)
+    Invert = false;
+    for (int i = 1; i < NbPoints; i++)
     {
       gp_Pnt P1 = Seq.Value(i);
       gp_Pnt P2 = Seq.Value(i + 1);
       if (P2.X() < P1.X())
       {
         Seq.Exchange(i, i + 1);
-        Invert = Standard_True;
+        Invert = true;
       }
     }
   }
@@ -159,13 +159,13 @@ static void Bubble(TColgp_SequenceOfPnt& Seq)
 
 //=================================================================================================
 
-static void EvalParameters(const Geom2dAdaptor_Curve& Bis,
-                           const Geom2dAdaptor_Curve& AC,
-                           TColgp_SequenceOfPnt&      Params)
+static void EvalParameters(const Geom2dAdaptor_Curve&    Bis,
+                           const Geom2dAdaptor_Curve&    AC,
+                           NCollection_Sequence<gp_Pnt>& Params)
 {
-  Geom2dInt_GInter        Intersector;
-  constexpr Standard_Real Tol = Precision::Confusion();
-  //  Standard_Real TolC = 1.e-9;
+  Geom2dInt_GInter Intersector;
+  constexpr double Tol = Precision::Confusion();
+  //  double TolC = 1.e-9;
 
   const Geom2dAdaptor_Curve& CBis(Bis);
   const Geom2dAdaptor_Curve& CAC(AC);
@@ -173,9 +173,9 @@ static void EvalParameters(const Geom2dAdaptor_Curve& Bis,
   // Intersector = Geom2dInt_GInter(CBis, CAC, TolC, Tol);
   Intersector = Geom2dInt_GInter(CAC, CBis, Tol, Tol);
 
-  Standard_Integer NbPoints, NbSegments;
-  Standard_Real    U1, U2;
-  gp_Pnt           P;
+  int    NbPoints, NbSegments;
+  double U1, U2;
+  gp_Pnt P;
 
   if (!Intersector.IsDone())
   {
@@ -186,7 +186,7 @@ static void EvalParameters(const Geom2dAdaptor_Curve& Bis,
 
   if (NbPoints > 0)
   {
-    for (Standard_Integer i = 1; i <= NbPoints; i++)
+    for (int i = 1; i <= NbPoints; i++)
     {
       U1 = Intersector.Point(i).ParamOnSecond();
       U2 = Intersector.Point(i).ParamOnFirst();
@@ -200,11 +200,11 @@ static void EvalParameters(const Geom2dAdaptor_Curve& Bis,
   if (NbSegments > 0)
   {
     IntRes2d_IntersectionSegment Seg;
-    for (Standard_Integer i = 1; i <= NbSegments; i++)
+    for (int i = 1; i <= NbSegments; i++)
     {
-      Seg                 = Intersector.Segment(i);
-      U1                  = Seg.FirstPoint().ParamOnSecond();
-      Standard_Real Ulast = Seg.LastPoint().ParamOnSecond();
+      Seg          = Intersector.Segment(i);
+      U1           = Seg.FirstPoint().ParamOnSecond();
+      double Ulast = Seg.LastPoint().ParamOnSecond();
       if (std::abs(U1 - CBis.FirstParameter()) <= Tol
           && std::abs(Ulast - CBis.LastParameter()) <= Tol)
       {
@@ -230,22 +230,22 @@ static void EvalParameters(const Geom2dAdaptor_Curve& Bis,
   Bubble(Params);
 }
 
-static void EvalParametersBis(const Geom2dAdaptor_Curve& Bis,
-                              const Geom2dAdaptor_Curve& AC,
-                              TColgp_SequenceOfPnt&      Params,
-                              const Standard_Real        Tol)
+static void EvalParametersBis(const Geom2dAdaptor_Curve&    Bis,
+                              const Geom2dAdaptor_Curve&    AC,
+                              NCollection_Sequence<gp_Pnt>& Params,
+                              const double                  Tol)
 {
   Geom2dInt_GInter Intersector;
-  Standard_Real    TolC = Tol;
+  double           TolC = Tol;
 
   const Geom2dAdaptor_Curve& CBis(Bis);
   const Geom2dAdaptor_Curve& CAC(AC);
 
   Intersector = Geom2dInt_GInter(CAC, CBis, TolC, Tol);
 
-  Standard_Integer NbPoints, NbSegments;
-  Standard_Real    U1, U2;
-  gp_Pnt           P;
+  int    NbPoints, NbSegments;
+  double U1, U2;
+  gp_Pnt P;
 
   if (!Intersector.IsDone())
   {
@@ -256,7 +256,7 @@ static void EvalParametersBis(const Geom2dAdaptor_Curve& Bis,
 
   if (NbPoints > 0)
   {
-    for (Standard_Integer i = 1; i <= NbPoints; i++)
+    for (int i = 1; i <= NbPoints; i++)
     {
       U1 = Intersector.Point(i).ParamOnSecond();
       U2 = Intersector.Point(i).ParamOnFirst();
@@ -270,11 +270,11 @@ static void EvalParametersBis(const Geom2dAdaptor_Curve& Bis,
   if (NbSegments > 0)
   {
     IntRes2d_IntersectionSegment Seg;
-    for (Standard_Integer i = 1; i <= NbSegments; i++)
+    for (int i = 1; i <= NbSegments; i++)
     {
-      Seg                 = Intersector.Segment(i);
-      U1                  = Seg.FirstPoint().ParamOnSecond();
-      Standard_Real Ulast = Seg.LastPoint().ParamOnSecond();
+      Seg          = Intersector.Segment(i);
+      U1           = Seg.FirstPoint().ParamOnSecond();
+      double Ulast = Seg.LastPoint().ParamOnSecond();
       if (std::abs(U1 - CBis.FirstParameter()) <= Tol
           && std::abs(Ulast - CBis.LastParameter()) <= Tol)
       {
@@ -302,28 +302,28 @@ static void EvalParametersBis(const Geom2dAdaptor_Curve& Bis,
 
 //=================================================================================================
 
-void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
-                                          const TopoDS_Edge&     Edge2,
-                                          const TopoDS_Shape&    InitShape1,
-                                          const TopoDS_Shape&    InitShape2,
-                                          const TopoDS_Vertex&   End1,
-                                          const TopoDS_Vertex&   End2,
-                                          const GeomAbs_JoinType theJoinType,
-                                          const Standard_Boolean IsOpenResult,
-                                          TColgp_SequenceOfPnt&  Params)
+void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&            Edge1,
+                                          const TopoDS_Edge&            Edge2,
+                                          const TopoDS_Shape&           InitShape1,
+                                          const TopoDS_Shape&           InitShape2,
+                                          const TopoDS_Vertex&          End1,
+                                          const TopoDS_Vertex&          End2,
+                                          const GeomAbs_JoinType        theJoinType,
+                                          const bool                    IsOpenResult,
+                                          NCollection_Sequence<gp_Pnt>& Params)
 {
   Params.Clear();
 
   // return curves associated to edges.
-  TopLoc_Location      L;
-  Standard_Real        f, l;
-  Handle(Geom_Surface) Surf;
+  TopLoc_Location           L;
+  double                    f, l;
+  occ::handle<Geom_Surface> Surf;
 
-  Handle(Geom2d_Curve) C1;
+  occ::handle<Geom2d_Curve> C1;
   BRep_Tool::CurveOnSurface(Edge1, C1, Surf, L, f, l);
   Geom2dAdaptor_Curve AC1(C1, f, l);
 
-  Handle(Geom2d_Curve) C2;
+  occ::handle<Geom2d_Curve> C2;
   BRep_Tool::CurveOnSurface(Edge2, C2, Surf, L, f, l);
   Geom2dAdaptor_Curve AC2(C2, f, l);
 
@@ -351,15 +351,15 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
 #endif
 
   // Calculate intersection
-  TColgp_SequenceOfPnt Points2;
-  gp_Pnt               PSeq;
+  NCollection_Sequence<gp_Pnt> Points2;
+  gp_Pnt                       PSeq;
 
   EvalParameters(myBis, AC1, Params);
   EvalParameters(myBis, AC2, Points2);
 
-  Standard_Integer SeanceDeRattrapage = 0;
-  Standard_Real    TolInit            = 1.e-9;
-  Standard_Integer nn                 = 7;
+  int    SeanceDeRattrapage = 0;
+  double TolInit            = 1.e-9;
+  int    nn                 = 7;
 
   if ((AC1.GetType() != GeomAbs_Circle && AC1.GetType() != GeomAbs_Line)
       || (AC2.GetType() != GeomAbs_Circle && AC2.GetType() != GeomAbs_Line))
@@ -375,8 +375,8 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
     //  for case myBis == Line
     if (myBis.GetType() == GeomAbs_Line)
     {
-      Standard_Real    dmax = TolInit;
-      Standard_Integer n    = 0;
+      double dmax = TolInit;
+      int    n    = 0;
       while (n < nn)
       {
         dmax *= 10.0;
@@ -384,14 +384,14 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
       }
       dmax *= dmax;
       //
-      gp_Lin2d         anL    = myBis.Line();
-      Standard_Boolean isFar1 = Standard_True;
-      Standard_Boolean isFar2 = Standard_True;
-      gp_Pnt2d         aP;
+      gp_Lin2d anL    = myBis.Line();
+      bool     isFar1 = true;
+      bool     isFar2 = true;
+      gp_Pnt2d aP;
       //
-      Standard_Real d = RealLast();
+      double d = RealLast();
       AC1.D0(AC1.FirstParameter(), aP);
-      Standard_Real par = ElCLib::Parameter(anL, aP);
+      double par = ElCLib::Parameter(anL, aP);
       if (par >= myBis.FirstParameter() && par <= myBis.LastParameter())
       {
         d = anL.SquareDistance(aP);
@@ -459,22 +459,22 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
   {
 
     // std::cout << "Params.Length() == 0 && Points2.Length() == 1" << std::endl;
-    Standard_Real dmin, dmax = 0.25 * myOffset * myOffset;
-    Standard_Real tBis = Points2(1).X();
-    gp_Pnt2d      PBis = myBis.Value(tBis);
+    double   dmin, dmax = 0.25 * myOffset * myOffset;
+    double   tBis = Points2(1).X();
+    gp_Pnt2d PBis = myBis.Value(tBis);
 
-    Standard_Real t  = AC1.FirstParameter();
-    gp_Pnt2d      PC = AC1.Value(t);
-    dmin             = PC.SquareDistance(PBis);
+    double   t  = AC1.FirstParameter();
+    gp_Pnt2d PC = AC1.Value(t);
+    dmin        = PC.SquareDistance(PBis);
     gp_Pnt P(tBis, t, 0.);
     if (dmin < dmax)
     {
       Params.Append(P);
     }
 
-    t                   = AC1.LastParameter();
-    PC                  = AC1.Value(t);
-    Standard_Real dmin1 = PC.SquareDistance(PBis);
+    t            = AC1.LastParameter();
+    PC           = AC1.Value(t);
+    double dmin1 = PC.SquareDistance(PBis);
     if (dmin > dmin1 && dmin1 < dmax)
     {
       P.SetY(t);
@@ -488,22 +488,22 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
   {
 
     // std::cout << "Params.Length() == 1 && Points2.Length() == 0" << std::endl;
-    Standard_Real dmin, dmax = 0.25 * myOffset * myOffset;
-    Standard_Real tBis = Params(1).X();
-    gp_Pnt2d      PBis = myBis.Value(tBis);
+    double   dmin, dmax = 0.25 * myOffset * myOffset;
+    double   tBis = Params(1).X();
+    gp_Pnt2d PBis = myBis.Value(tBis);
 
-    Standard_Real t  = AC2.FirstParameter();
-    gp_Pnt2d      PC = AC2.Value(t);
-    dmin             = PC.SquareDistance(PBis);
+    double   t  = AC2.FirstParameter();
+    gp_Pnt2d PC = AC2.Value(t);
+    dmin        = PC.SquareDistance(PBis);
     gp_Pnt P(tBis, t, 0.);
     if (dmin < dmax)
     {
       Points2.Append(P);
     }
 
-    t                   = AC2.LastParameter();
-    PC                  = AC2.Value(t);
-    Standard_Real dmin1 = PC.SquareDistance(PBis);
+    t            = AC2.LastParameter();
+    PC           = AC2.Value(t);
+    double dmin1 = PC.SquareDistance(PBis);
     if (dmin > dmin1 && dmin1 < dmax)
     {
       P.SetY(t);
@@ -519,10 +519,10 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
   // on the bissectrice.).
   // The tolerance can be eventually changed.
 
-  gp_Pnt                  P1, P2;
-  constexpr Standard_Real Tol      = 4 * 100 * Precision::PConfusion();
-  Standard_Integer        i        = 1;
-  Standard_Integer        NbPoints = Params.Length();
+  gp_Pnt           P1, P2;
+  constexpr double Tol      = 4 * 100 * Precision::PConfusion();
+  int              i        = 1;
+  int              NbPoints = Params.Length();
 
   if (NbPoints == 1 && Points2.Length() == 1)
   {
@@ -539,9 +539,9 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
   i = 1;
   while (i <= std::min(Params.Length(), Points2.Length()))
   {
-    P1                   = Params(i);
-    P2                   = Points2(i);
-    Standard_Real P1xP2x = std::abs(P1.X() - P2.X());
+    P1            = Params(i);
+    P2            = Points2(i);
+    double P1xP2x = std::abs(P1.X() - P2.X());
 
     if (P1xP2x > Tol)
     {
@@ -580,7 +580,7 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
 
   // Now we define: if there are more than one point of intersection
   // is it Ok ?
-  Standard_Real init_fpar = RealFirst(), init_lpar = RealLast();
+  double init_fpar = RealFirst(), init_lpar = RealLast();
   if (NbPoints > 1 && theJoinType == GeomAbs_Intersection && InitShape1.ShapeType() != TopAbs_VERTEX
       && InitShape2.ShapeType() != TopAbs_VERTEX)
   {
@@ -588,21 +588,21 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
     // this is inverse procedure to extension of parameters
     //(see BRepFill_OffsetWire, function MakeOffset, case of Circle)
     const TopoDS_Edge& InitEdge1        = TopoDS::Edge(InitShape1);
-    Standard_Boolean   ToExtendFirstPar = Standard_True;
-    Standard_Boolean   ToExtendLastPar  = Standard_True;
+    bool               ToExtendFirstPar = true;
+    bool               ToExtendLastPar  = true;
     if (IsOpenResult)
     {
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(InitEdge1, V1, V2);
       if (V1.IsSame(End1) || V1.IsSame(End2))
-        ToExtendFirstPar = Standard_False;
+        ToExtendFirstPar = false;
       if (V2.IsSame(End1) || V2.IsSame(End2))
-        ToExtendLastPar = Standard_False;
+        ToExtendLastPar = false;
     }
     BRepAdaptor_Curve IC1(InitEdge1);
     if (IC1.GetType() == GeomAbs_Circle)
     {
-      Standard_Real Delta = 2 * M_PI - IC1.LastParameter() + IC1.FirstParameter();
+      double Delta = 2 * M_PI - IC1.LastParameter() + IC1.FirstParameter();
       if (ToExtendFirstPar && ToExtendLastPar)
         init_fpar = AC1.FirstParameter() + Delta / 2;
       else if (ToExtendFirstPar)
@@ -617,13 +617,13 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
   {
     // Remove all vertices with non-minimal parameter
     // if they are out of initial range
-    Standard_Integer imin = 1;
+    int imin = 1;
     for (i = 2; i <= NbPoints; i++)
       if (Params(i).X() < Params(imin).X())
         imin = i;
 
-    TColgp_SequenceOfPnt ParamsCopy  = Params;
-    TColgp_SequenceOfPnt Points2Copy = Points2;
+    NCollection_Sequence<gp_Pnt> ParamsCopy  = Params;
+    NCollection_Sequence<gp_Pnt> Points2Copy = Points2;
     Params.Clear();
     Points2.Clear();
     for (i = 1; i <= ParamsCopy.Length(); i++)
@@ -659,21 +659,21 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&     Edge1,
 //           it is projected on parallel lines and added in the parameters
 //=======================================================================
 
-void BRepFill_TrimEdgeTool::AddOrConfuse(const Standard_Boolean Start,
-                                         const TopoDS_Edge&     Edge1,
-                                         const TopoDS_Edge&     Edge2,
-                                         TColgp_SequenceOfPnt&  Params) const
+void BRepFill_TrimEdgeTool::AddOrConfuse(const bool                    Start,
+                                         const TopoDS_Edge&            Edge1,
+                                         const TopoDS_Edge&            Edge2,
+                                         NCollection_Sequence<gp_Pnt>& Params) const
 {
-  Standard_Boolean        ToProj = Standard_True;
-  gp_Pnt2d                PBis;
-  constexpr Standard_Real Tol = 10 * Precision::Confusion();
+  bool             ToProj = true;
+  gp_Pnt2d         PBis;
+  constexpr double Tol = 10 * Precision::Confusion();
 
   // return curves associated to edges.
-  TopLoc_Location      L;
-  Standard_Real        f, l;
-  Handle(Geom_Surface) Surf;
+  TopLoc_Location           L;
+  double                    f, l;
+  occ::handle<Geom_Surface> Surf;
 
-  Handle(Geom2d_Curve) C1;
+  occ::handle<Geom2d_Curve> C1;
   BRep_Tool::CurveOnSurface(Edge1, C1, Surf, L, f, l);
   Geom2dAdaptor_Curve AC1(C1, f, l);
 
@@ -701,8 +701,8 @@ void BRepFill_TrimEdgeTool::AddOrConfuse(const Standard_Boolean Start,
 
     // Project point on parallels and add in Params
 
-    Standard_Real        f2, l2;
-    Handle(Geom2d_Curve) C2;
+    double                    f2, l2;
+    occ::handle<Geom2d_Curve> C2;
     BRep_Tool::CurveOnSurface(Edge2, C2, Surf, L, f2, l2);
 
     Geom2dAPI_ProjectPointOnCurve Projector1(PBis, C1, f, l);
@@ -752,11 +752,11 @@ void BRepFill_TrimEdgeTool::AddOrConfuse(const Standard_Boolean Start,
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_TrimEdgeTool::IsInside(const gp_Pnt2d& P) const
+bool BRepFill_TrimEdgeTool::IsInside(const gp_Pnt2d& P) const
 {
   //  Modified by Sergey KHROMOV - Fri Sep 27 11:43:12 2002 Begin
-  //   Standard_Real Dist;
-  Standard_Real Dist = RealLast();
+  //   double Dist;
+  double Dist = RealLast();
   //  Modified by Sergey KHROMOV - Fri Sep 27 11:43:12 2002 End
   if (isPoint1)
     Dist = P.Distance(myP1);
@@ -778,9 +778,9 @@ Standard_Boolean BRepFill_TrimEdgeTool::IsInside(const gp_Pnt2d& P) const
 
     // Check of distances between P and first and last point of the first curve
     // should be performed in any case, despite of the results of projection.
-    gp_Pnt2d      PF       = myC1->Value(myC1->FirstParameter());
-    gp_Pnt2d      PL       = myC1->Value(myC1->LastParameter());
-    Standard_Real aDistMin = std::min(P.Distance(PF), P.Distance(PL));
+    gp_Pnt2d PF       = myC1->Value(myC1->FirstParameter());
+    gp_Pnt2d PL       = myC1->Value(myC1->LastParameter());
+    double   aDistMin = std::min(P.Distance(PF), P.Distance(PL));
 
     if (Dist > aDistMin)
       Dist = aDistMin;

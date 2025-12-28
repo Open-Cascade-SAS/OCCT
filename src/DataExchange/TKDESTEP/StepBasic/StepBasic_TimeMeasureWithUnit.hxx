@@ -21,9 +21,6 @@
 
 #include <StepBasic_MeasureWithUnit.hxx>
 
-class StepBasic_TimeMeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_TimeMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 class StepBasic_TimeMeasureWithUnit : public StepBasic_MeasureWithUnit
 {
 
@@ -32,9 +29,6 @@ public:
   Standard_EXPORT StepBasic_TimeMeasureWithUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_TimeMeasureWithUnit, StepBasic_MeasureWithUnit)
-
-protected:
-private:
 };
 
 #endif // _StepBasic_TimeMeasureWithUnit_HeaderFile

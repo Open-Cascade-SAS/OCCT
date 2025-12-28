@@ -25,19 +25,19 @@
 
 void IntAna2d_AnaIntersection::Perform(const gp_Elips2d& Elips, const IntAna2d_Conic& Conic)
 {
-  Standard_Boolean EIsDirect = Elips.IsDirect();
-  Standard_Real    A, B, C, D, E, F;
-  Standard_Real    pcte, ps, pc, p2sc, pcc, pss;
-  Standard_Real    minor_radius = Elips.MinorRadius();
-  Standard_Real    major_radius = Elips.MajorRadius();
-  Standard_Integer i;
-  Standard_Real    tx, ty, S;
+  bool   EIsDirect = Elips.IsDirect();
+  double A, B, C, D, E, F;
+  double pcte, ps, pc, p2sc, pcc, pss;
+  double minor_radius = Elips.MinorRadius();
+  double major_radius = Elips.MajorRadius();
+  int    i;
+  double tx, ty, S;
 
-  done = Standard_False;
+  done = false;
   nbp  = 0;
-  para = Standard_False;
-  iden = Standard_False;
-  empt = Standard_False;
+  para = false;
+  iden = false;
+  empt = false;
 
   gp_Ax2d Axe_rep(Elips.XAxis());
 
@@ -57,15 +57,15 @@ void IntAna2d_AnaIntersection::Perform(const gp_Elips2d& Elips, const IntAna2d_C
 
   if (!Sol.IsDone())
   {
-    done = Standard_False;
+    done = false;
     return;
   }
   else
   {
     if (Sol.InfiniteRoots())
     {
-      iden = Standard_True;
-      done = Standard_True;
+      iden = true;
+      done = true;
       return;
     }
     nbp = Sol.NbSolutions();
@@ -81,5 +81,5 @@ void IntAna2d_AnaIntersection::Perform(const gp_Elips2d& Elips, const IntAna2d_C
     }
     Traitement_Points_Confondus(nbp, lpnt);
   }
-  done = Standard_True;
+  done = true;
 }

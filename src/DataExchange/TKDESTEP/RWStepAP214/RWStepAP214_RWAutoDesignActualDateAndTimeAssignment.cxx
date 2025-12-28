@@ -16,7 +16,8 @@
 #include "RWStepAP214_RWAutoDesignActualDateAndTimeAssignment.pxx"
 #include <StepAP214_AutoDesignActualDateAndTimeAssignment.hxx>
 #include <StepAP214_AutoDesignDateAndTimeItem.hxx>
-#include <StepAP214_HArray1OfAutoDesignDateAndTimeItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_DateAndTime.hxx>
 #include <StepBasic_DateTimeRole.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -28,10 +29,10 @@ RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::
 }
 
 void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                         data,
-  const Standard_Integer                                         num,
-  Handle(Interface_Check)&                                       ach,
-  const Handle(StepAP214_AutoDesignActualDateAndTimeAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                         data,
+  const int                                                           num,
+  occ::handle<Interface_Check>&                                       ach,
+  const occ::handle<StepAP214_AutoDesignActualDateAndTimeAssignment>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -41,7 +42,7 @@ void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::ReadStep(
 
   // --- inherited field : assignedDateAndTime ---
 
-  Handle(StepBasic_DateAndTime) aAssignedDateAndTime;
+  occ::handle<StepBasic_DateAndTime> aAssignedDateAndTime;
   data->ReadEntity(num,
                    1,
                    "assigned_date_and_time",
@@ -51,21 +52,21 @@ void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::ReadStep(
 
   // --- inherited field : role ---
 
-  Handle(StepBasic_DateTimeRole) aRole;
+  occ::handle<StepBasic_DateTimeRole> aRole;
   data->ReadEntity(num, 2, "role", ach, STANDARD_TYPE(StepBasic_DateTimeRole), aRole);
 
   // --- own field : items ---
 
-  Handle(StepAP214_HArray1OfAutoDesignDateAndTimeItem) aItems;
-  StepAP214_AutoDesignDateAndTimeItem                  aItemsItem;
-  Standard_Integer                                     nsub3;
+  occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>> aItems;
+  StepAP214_AutoDesignDateAndTimeItem                                   aItemsItem;
+  int                                                                   nsub3;
   if (data->ReadSubList(num, 3, "items", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aItems               = new StepAP214_HArray1OfAutoDesignDateAndTimeItem(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aItems  = new NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      Standard_Boolean stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
+      bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
       if (stat3)
         aItems->SetValue(i3, aItemsItem);
     }
@@ -77,8 +78,8 @@ void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::WriteStep(
-  StepData_StepWriter&                                           SW,
-  const Handle(StepAP214_AutoDesignActualDateAndTimeAssignment)& ent) const
+  StepData_StepWriter&                                                SW,
+  const occ::handle<StepAP214_AutoDesignActualDateAndTimeAssignment>& ent) const
 {
 
   // --- inherited field assignedDateAndTime ---
@@ -92,7 +93,7 @@ void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::WriteStep(
   // --- own field : items ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbItems(); i3++)
+  for (int i3 = 1; i3 <= ent->NbItems(); i3++)
   {
     SW.Send(ent->ItemsValue(i3).Value());
   }
@@ -100,16 +101,16 @@ void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::WriteStep(
 }
 
 void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::Share(
-  const Handle(StepAP214_AutoDesignActualDateAndTimeAssignment)& ent,
-  Interface_EntityIterator&                                      iter) const
+  const occ::handle<StepAP214_AutoDesignActualDateAndTimeAssignment>& ent,
+  Interface_EntityIterator&                                           iter) const
 {
 
   iter.GetOneItem(ent->AssignedDateAndTime());
 
   iter.GetOneItem(ent->Role());
 
-  Standard_Integer nbElem3 = ent->NbItems();
-  for (Standard_Integer is3 = 1; is3 <= nbElem3; is3++)
+  int nbElem3 = ent->NbItems();
+  for (int is3 = 1; is3 <= nbElem3; is3++)
   {
     iter.GetOneItem(ent->ItemsValue(is3).Value());
   }

@@ -21,8 +21,7 @@
 
 //=================================================================================================
 
-Geom2dLProp_FuncCurExt::Geom2dLProp_FuncCurExt(const Handle(Geom2d_Curve)& C,
-                                               const Standard_Real         Tol)
+Geom2dLProp_FuncCurExt::Geom2dLProp_FuncCurExt(const occ::handle<Geom2d_Curve>& C, const double Tol)
     : theCurve(C)
 {
   epsX = Tol;
@@ -33,45 +32,43 @@ Geom2dLProp_FuncCurExt::Geom2dLProp_FuncCurExt(const Handle(Geom2d_Curve)& C,
 // purpose : KC = (V1^V2.Z) / ||V1||^3  avec V1 tangente etV2 derivee seconde.
 //           F  = d KC/ dU.
 //=============================================================================
-Standard_Boolean Geom2dLProp_FuncCurExt::Value(const Standard_Real X, Standard_Real& F)
+bool Geom2dLProp_FuncCurExt::Value(const double X, double& F)
 {
   gp_Pnt2d P1;
   gp_Vec2d V1, V2, V3;
 
   Geom2dLProp_Curve2dTool::D3(theCurve, X, P1, V1, V2, V3);
-  Standard_Real CPV1V2 = V1.Crossed(V2);
-  Standard_Real CPV1V3 = V1.Crossed(V3);
-  Standard_Real V1V2   = V1.Dot(V2);
-  Standard_Real V1V1   = V1.SquareMagnitude();
-  Standard_Real NV1    = std::sqrt(V1V1);
-  Standard_Real V13    = V1V1 * NV1;
-  Standard_Real V15    = V13 * V1V1;
+  double CPV1V2 = V1.Crossed(V2);
+  double CPV1V3 = V1.Crossed(V3);
+  double V1V2   = V1.Dot(V2);
+  double V1V1   = V1.SquareMagnitude();
+  double NV1    = std::sqrt(V1V1);
+  double V13    = V1V1 * NV1;
+  double V15    = V13 * V1V1;
 
   if (V15 < gp::Resolution())
   {
-    return Standard_False;
+    return false;
   }
   F = CPV1V3 / V13 - 3 * CPV1V2 * V1V2 / V15;
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom2dLProp_FuncCurExt::Derivative(const Standard_Real X, Standard_Real& D)
+bool Geom2dLProp_FuncCurExt::Derivative(const double X, double& D)
 {
-  Standard_Real F;
+  double F;
   return Values(X, F, D);
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom2dLProp_FuncCurExt::Values(const Standard_Real X,
-                                                Standard_Real&      F,
-                                                Standard_Real&      D)
+bool Geom2dLProp_FuncCurExt::Values(const double X, double& F, double& D)
 {
-  Standard_Real F2;
-  Standard_Real Dx = epsX / 100.;
+  double F2;
+  double Dx = epsX / 100.;
 
   if (X + Dx > Geom2dLProp_Curve2dTool::LastParameter(theCurve))
   {
@@ -82,7 +79,7 @@ Standard_Boolean Geom2dLProp_FuncCurExt::Values(const Standard_Real X,
   Value(X + Dx, F2);
   D = (F2 - F) / Dx;
 
-  return Standard_True;
+  return true;
 }
 
 //=============================================================================
@@ -90,22 +87,22 @@ Standard_Boolean Geom2dLProp_FuncCurExt::Values(const Standard_Real X,
 // purpose : Teste si le parametere coorespond a un minimum du rayon de courbure
 //           par comparaison avec un point voisin.
 //=============================================================================
-Standard_Boolean Geom2dLProp_FuncCurExt::IsMinKC(const Standard_Real X) const
+bool Geom2dLProp_FuncCurExt::IsMinKC(const double X) const
 {
-  gp_Pnt2d      P1;
-  gp_Vec2d      V1, V2, V3;
-  Standard_Real Dx = epsX;
-  Standard_Real KC, KP;
+  gp_Pnt2d P1;
+  gp_Vec2d V1, V2, V3;
+  double   Dx = epsX;
+  double   KC, KP;
 
   Geom2dLProp_Curve2dTool::D3(theCurve, X, P1, V1, V2, V3);
-  Standard_Real CPV1V2 = V1.Crossed(V2);
-  Standard_Real V1V1   = V1.SquareMagnitude();
-  Standard_Real NV1    = std::sqrt(V1V1);
-  Standard_Real V13    = V1V1 * NV1;
+  double CPV1V2 = V1.Crossed(V2);
+  double V1V1   = V1.SquareMagnitude();
+  double NV1    = std::sqrt(V1V1);
+  double V13    = V1V1 * NV1;
 
   if (V13 < gp::Resolution())
   {
-    return Standard_False;
+    return false;
   }
 
   KC = CPV1V2 / V13;
@@ -123,16 +120,16 @@ Standard_Boolean Geom2dLProp_FuncCurExt::IsMinKC(const Standard_Real X) const
 
   if (V13 < gp::Resolution())
   {
-    return Standard_False;
+    return false;
   }
   KP = CPV1V2 / V13;
 
   if (std::abs(KC) > std::abs(KP))
   {
-    return Standard_True;
+    return true;
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 }

@@ -22,9 +22,6 @@
 
 #include <Geom_Surface.hxx>
 
-class Geom_BoundedSurface;
-DEFINE_STANDARD_HANDLE(Geom_BoundedSurface, Geom_Surface)
-
 //! The root class for bounded surfaces in 3D space. A
 //! bounded surface is defined by a rectangle in its 2D parametric space, i.e.
 //! - its u parameter, which ranges between two finite
@@ -55,9 +52,6 @@ class Geom_BoundedSurface : public Geom_Surface
 
 public:
   DEFINE_STANDARD_RTTIEXT(Geom_BoundedSurface, Geom_Surface)
-
-protected:
-private:
 };
 
 #endif // _Geom_BoundedSurface_HeaderFile

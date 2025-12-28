@@ -35,18 +35,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeHyperbola(
-    const Handle(Geom2d_Hyperbola)& C,
-    const StepData_Factors&         theLocalFactors = StepData_Factors());
+    const occ::handle<Geom2d_Hyperbola>& C,
+    const StepData_Factors&              theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeHyperbola(
-    const Handle(Geom_Hyperbola)& C,
-    const StepData_Factors&       theLocalFactors = StepData_Factors());
+    const occ::handle<Geom_Hyperbola>& C,
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_Hyperbola)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_Hyperbola>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_Hyperbola) theHyperbola;
+  occ::handle<StepGeom_Hyperbola> theHyperbola;
 };
 
 #endif // _GeomToStep_MakeHyperbola_HeaderFile

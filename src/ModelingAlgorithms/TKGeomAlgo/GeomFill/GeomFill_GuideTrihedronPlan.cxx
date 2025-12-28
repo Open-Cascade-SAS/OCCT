@@ -43,7 +43,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_GuideTrihedronPlan, GeomFill_TrihedronWithGu
 #endif
 
 #ifdef OCCT_DEBUG
-static void TracePlan(const Handle(Geom_Surface)& /*Plan*/)
+static void TracePlan(const occ::handle<Geom_Surface>& /*Plan*/)
 {
   std::cout << "Pas d'intersection Guide/Plan" << std::endl;
   #if DRAW
@@ -56,12 +56,10 @@ static void TracePlan(const Handle(Geom_Surface)& /*Plan*/)
 
 //=================================================================================================
 
-static void InGoodPeriod(const Standard_Real Prec,
-                         const Standard_Real Period,
-                         Standard_Real&      Current)
+static void InGoodPeriod(const double Prec, const double Period, double& Current)
 {
-  Standard_Real    Diff = Current - Prec;
-  Standard_Integer nb   = (Standard_Integer)std::trunc(Diff / Period);
+  double Diff = Current - Prec;
+  int    nb   = (int)std::trunc(Diff / Period);
   Current -= nb * Period;
   Diff = Current - Prec;
   if (Diff > Period / 2)
@@ -72,7 +70,8 @@ static void InGoodPeriod(const Standard_Real Prec,
 
 //=================================================================================================
 
-GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan(const Handle(Adaptor3d_Curve)& theGuide)
+GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan(
+  const occ::handle<Adaptor3d_Curve>& theGuide)
     : X(1, 1),
       XTol(1, 1),
       Inf(1, 1),
@@ -82,9 +81,10 @@ GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan(const Handle(Adaptor3d_
   myCurve.Nullify();
   myGuide = theGuide; // guide
   myTrimG = theGuide;
-  myNbPts = 20;                                            // nb points pour calculs
-  Pole    = new (TColgp_HArray2OfPnt2d)(1, 1, 1, myNbPts); // tab pr stocker Pprime (pt sur guide)
-  frenet  = new (GeomFill_Frenet)();
+  myNbPts = 20; // nb points pour calculs
+  Pole =
+    new (NCollection_HArray2<gp_Pnt2d>)(1, 1, 1, myNbPts); // tab pr stocker Pprime (pt sur guide)
+  frenet = new (GeomFill_Frenet)();
   XTol.Init(1.e-6);
   XTol(1) = myGuide->Resolution(1.e-6);
 }
@@ -99,14 +99,14 @@ void GeomFill_GuideTrihedronPlan::Init()
   gp_Pnt P;
   //  Bnd_Box2d Box;
   //  Box.Update(-0.1, -0.1, 0.1, 0.1); // Taille minimal
-  gp_Vec           Tangent, Normal, BiNormal;
-  Standard_Integer ii;
-  Standard_Real    t, DeltaG, w = 0.;
-  Standard_Real    f = myCurve->FirstParameter();
-  Standard_Real    l = myCurve->LastParameter();
+  gp_Vec Tangent, Normal, BiNormal;
+  int    ii;
+  double t, DeltaG, w = 0.;
+  double f = myCurve->FirstParameter();
+  double l = myCurve->LastParameter();
 
-  Handle(Geom_Plane)                Plan;
-  Handle(GeomAdaptor_Surface)       Pl;
+  occ::handle<Geom_Plane>           Plan;
+  occ::handle<GeomAdaptor_Surface>  Pl;
   IntCurveSurface_IntersectionPoint PInt;
   IntCurveSurface_HInter            Int;
   frenet->SetCurve(myCurve);
@@ -125,11 +125,11 @@ void GeomFill_GuideTrihedronPlan::Init()
   {
     myTrimG = myGuide;
   }
-  //  Standard_Real Step = DeltaG/100;
+  //  double Step = DeltaG/100;
   DeltaG /= 3;
   for (ii = 1; ii <= myNbPts; ii++)
   {
-    t = Standard_Real(myNbPts - ii) * f + Standard_Real(ii - 1) * l;
+    t = double(myNbPts - ii) * f + double(ii - 1) * l;
     t /= (myNbPts - 1);
     myCurve->D0(t, P);
     frenet->D0(t, Tangent, Normal, BiNormal);
@@ -152,10 +152,10 @@ void GeomFill_GuideTrihedronPlan::Init()
     else
     {
       gp_Pnt Pmin;
-      PInt               = Int.Point(1);
-      Pmin               = PInt.Pnt();
-      Standard_Real Dmin = P.Distance(Pmin);
-      for (Standard_Integer jj = 2; jj <= Int.NbPoints(); jj++)
+      PInt        = Int.Point(1);
+      Pmin        = PInt.Pnt();
+      double Dmin = P.Distance(Pmin);
+      for (int jj = 2; jj <= Int.NbPoints(); jj++)
       {
         Pmin = Int.Point(jj).Pnt();
         if (P.Distance(Pmin) < Dmin)
@@ -169,7 +169,7 @@ void GeomFill_GuideTrihedronPlan::Init()
     }
     if (ii > 1)
     {
-      Standard_Real Diff = w - Pole->Value(1, ii - 1).Y();
+      double Diff = w - Pole->Value(1, ii - 1).Y();
       if (std::abs(Diff) > DeltaG)
       {
         if (myGuide->IsPeriodic())
@@ -198,12 +198,12 @@ void GeomFill_GuideTrihedronPlan::Init()
 // function : SetCurve
 // purpose  : calculation of trihedron
 //=======================================================================
-Standard_Boolean GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_Curve)& C)
+bool GeomFill_GuideTrihedronPlan::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   myCurve = C;
   if (!myCurve.IsNull())
     Init();
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -211,7 +211,7 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_Cu
 // purpose  : calculation of trihedron
 //=======================================================================
 
-Handle(Adaptor3d_Curve) GeomFill_GuideTrihedronPlan::Guide() const
+occ::handle<Adaptor3d_Curve> GeomFill_GuideTrihedronPlan::Guide() const
 {
   return myGuide;
 }
@@ -220,10 +220,10 @@ Handle(Adaptor3d_Curve) GeomFill_GuideTrihedronPlan::Guide() const
 // function : D0
 // purpose  : calculation of trihedron
 //=======================================================================
-Standard_Boolean GeomFill_GuideTrihedronPlan::D0(const Standard_Real Param,
-                                                 gp_Vec&             Tangent,
-                                                 gp_Vec&             Normal,
-                                                 gp_Vec&             BiNormal)
+bool GeomFill_GuideTrihedronPlan::D0(const double Param,
+                                     gp_Vec&      Tangent,
+                                     gp_Vec&      Normal,
+                                     gp_Vec&      BiNormal)
 {
   gp_Pnt P, Pprime;
   //  gp_Vec To;
@@ -235,7 +235,7 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D0(const Standard_Real Param,
   // initialisation de la recherche
   InitX(Param);
 
-  Standard_Integer Iter = 50;
+  int Iter = 50;
 
   // fonction dont il faut trouver la racine : G(W)-Pl(U,V)=0
   GeomFill_PlanFunc E(P, Tangent, myGuide);
@@ -245,7 +245,7 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D0(const Standard_Real Param,
 
   if (Result.IsDone())
   {
-    Standard_Real Res = Result.Root();
+    double Res = Result.Root();
     //      R = Result.Root();    // solution
 
     Pprime = myTrimG->Value(Res); // pt sur courbe guide
@@ -260,29 +260,29 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D0(const Standard_Real Param,
 #ifdef OCCT_DEBUG
     std::cout << "D0 :";
     // plan ortho a la trajectoire pour determiner Pprime
-    Handle(Geom_Plane) Plan = new (Geom_Plane)(P, Tangent);
+    occ::handle<Geom_Plane> Plan = new (Geom_Plane)(P, Tangent);
     TracePlan(Plan);
 #endif
     myStatus = GeomFill_PlaneNotIntersectGuide;
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : D1
 // purpose  : calculation of trihedron and first derivative
 //=======================================================================
-Standard_Boolean GeomFill_GuideTrihedronPlan::D1(const Standard_Real Param,
-                                                 gp_Vec&             Tangent,
-                                                 gp_Vec&             DTangent,
-                                                 gp_Vec&             Normal,
-                                                 gp_Vec&             DNormal,
-                                                 gp_Vec&             BiNormal,
-                                                 gp_Vec&             DBiNormal)
+bool GeomFill_GuideTrihedronPlan::D1(const double Param,
+                                     gp_Vec&      Tangent,
+                                     gp_Vec&      DTangent,
+                                     gp_Vec&      Normal,
+                                     gp_Vec&      DNormal,
+                                     gp_Vec&      BiNormal,
+                                     gp_Vec&      DBiNormal)
 {
-  //  return Standard_False;
+  //  return false;
   gp_Pnt P, PG;
   gp_Vec To, TG;
 
@@ -291,7 +291,7 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D1(const Standard_Real Param,
   frenet->D1(Param, Tangent, DTangent, Normal, DNormal, BiNormal, DBiNormal);
 
   // tolerance sur E
-  Standard_Integer Iter = 50;
+  int Iter = 50;
 
   // fonction dont il faut trouver la racine : G(W)-Pl(U,V)=0
   InitX(Param);
@@ -302,11 +302,11 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D1(const Standard_Real Param,
 
   if (Result.IsDone())
   {
-    Standard_Real Res = Result.Root();
+    double Res = Result.Root();
     //      R = Result.Root();    // solution
     myTrimG->D1(Res, PG, TG);
-    gp_Vec        n(P, PG), dn; // vecteur definissant la normale du triedre
-    Standard_Real Norm = n.Magnitude();
+    gp_Vec n(P, PG), dn; // vecteur definissant la normale du triedre
+    double Norm = n.Magnitude();
     if (Norm < 1.e-12)
     {
       Norm = 1.0;
@@ -317,12 +317,12 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D1(const Standard_Real Param,
     BiNormal = Tangent.Crossed(Normal);
 
     // derivee premiere du triedre
-    Standard_Real dedx, dedt, dtg_dt;
+    double dedx, dedt, dtg_dt;
     E.Derivative(Res, dedx);
     E.DEDT(Res, To, DTangent, dedt);
     dtg_dt = -dedt / dedx;
 
-    /*      Standard_Real h=1.e-7, e, etg, etc;
+    /*      double h=1.e-7, e, etg, etc;
           E.Value(Res, e);
           E.Value(Res+h, etg);
           if ( std::abs( (etg-e)/h - dedx) > 1.e-4) {
@@ -350,30 +350,30 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D1(const Standard_Real Param,
 #ifdef OCCT_DEBUG
     std::cout << "D1 :";
     // plan ortho a la trajectoire
-    Handle(Geom_Plane) Plan = new (Geom_Plane)(P, Tangent);
+    occ::handle<Geom_Plane> Plan = new (Geom_Plane)(P, Tangent);
     TracePlan(Plan);
 #endif
     myStatus = GeomFill_PlaneNotIntersectGuide;
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : D2
 // purpose  : calculation of trihedron and derivatives
 //=======================================================================
-Standard_Boolean GeomFill_GuideTrihedronPlan::D2(const Standard_Real Param,
-                                                 gp_Vec&             Tangent,
-                                                 gp_Vec&             DTangent,
-                                                 gp_Vec&             D2Tangent,
-                                                 gp_Vec&             Normal,
-                                                 gp_Vec&             DNormal,
-                                                 gp_Vec&             D2Normal,
-                                                 gp_Vec&             BiNormal,
-                                                 gp_Vec&             DBiNormal,
-                                                 gp_Vec&             D2BiNormal)
+bool GeomFill_GuideTrihedronPlan::D2(const double Param,
+                                     gp_Vec&      Tangent,
+                                     gp_Vec&      DTangent,
+                                     gp_Vec&      D2Tangent,
+                                     gp_Vec&      Normal,
+                                     gp_Vec&      DNormal,
+                                     gp_Vec&      D2Normal,
+                                     gp_Vec&      BiNormal,
+                                     gp_Vec&      DBiNormal,
+                                     gp_Vec&      D2BiNormal)
 {
   //  gp_Pnt P, PG;
   gp_Pnt P;
@@ -394,14 +394,14 @@ Standard_Boolean GeomFill_GuideTrihedronPlan::D2(const Standard_Real Param,
              DBiNormal,
              D2BiNormal);
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(GeomFill_TrihedronLaw) GeomFill_GuideTrihedronPlan::Copy() const
+occ::handle<GeomFill_TrihedronLaw> GeomFill_GuideTrihedronPlan::Copy() const
 {
-  Handle(GeomFill_GuideTrihedronPlan) copy = new (GeomFill_GuideTrihedronPlan)(myGuide);
+  occ::handle<GeomFill_GuideTrihedronPlan> copy = new (GeomFill_GuideTrihedronPlan)(myGuide);
   copy->SetCurve(myCurve);
   return copy;
 }
@@ -417,10 +417,10 @@ GeomFill_PipeError GeomFill_GuideTrihedronPlan::ErrorStatus() const
 // function : NbIntervals
 // purpose  : Version provisoire : Il faut tenir compte du guide
 //=======================================================================
-Standard_Integer GeomFill_GuideTrihedronPlan::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_GuideTrihedronPlan::NbIntervals(const GeomAbs_Shape S) const
 {
-  Standard_Integer Nb;
-  GeomAbs_Shape    tmpS;
+  int           Nb;
+  GeomAbs_Shape tmpS;
   switch (S)
   {
     case GeomAbs_C0:
@@ -442,7 +442,8 @@ Standard_Integer GeomFill_GuideTrihedronPlan::NbIntervals(const GeomAbs_Shape S)
 
 //=================================================================================================
 
-void GeomFill_GuideTrihedronPlan::Intervals(TColStd_Array1OfReal& TT, const GeomAbs_Shape S) const
+void GeomFill_GuideTrihedronPlan::Intervals(NCollection_Array1<double>& TT,
+                                            const GeomAbs_Shape         S) const
 {
   GeomAbs_Shape tmpS;
   switch (S)
@@ -464,7 +465,7 @@ void GeomFill_GuideTrihedronPlan::Intervals(TColStd_Array1OfReal& TT, const Geom
 
 //=================================================================================================
 
-void GeomFill_GuideTrihedronPlan::SetInterval(const Standard_Real First, const Standard_Real Last)
+void GeomFill_GuideTrihedronPlan::SetInterval(const double First, const double Last)
 {
   myTrimmed = myCurve->Trim(First, Last, Precision::Confusion());
 }
@@ -475,8 +476,8 @@ void GeomFill_GuideTrihedronPlan::GetAverageLaw(gp_Vec& ATangent,
                                                 gp_Vec& ANormal,
                                                 gp_Vec& ABiNormal)
 {
-  Standard_Integer ii;
-  Standard_Real    t, Delta = (myCurve->LastParameter() - myCurve->FirstParameter()) / 20.001;
+  int    ii;
+  double t, Delta = (myCurve->LastParameter() - myCurve->FirstParameter()) / 20.001;
 
   ATangent.SetCoord(0., 0., 0.);
   ANormal.SetCoord(0., 0., 0.);
@@ -498,41 +499,41 @@ void GeomFill_GuideTrihedronPlan::GetAverageLaw(gp_Vec& ATangent,
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_GuideTrihedronPlan::IsConstant() const
+bool GeomFill_GuideTrihedronPlan::IsConstant() const
 {
   if ((myCurve->GetType() == GeomAbs_Line) && (myGuide->GetType() == GeomAbs_Line))
   {
-    Standard_Real Angle;
+    double Angle;
     Angle = myCurve->Line().Angle(myGuide->Line());
     if ((Angle < 1.e-12) || ((2 * M_PI - Angle) < 1.e-12))
-      return Standard_True;
+      return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_GuideTrihedronPlan::IsOnlyBy3dCurve() const
+bool GeomFill_GuideTrihedronPlan::IsOnlyBy3dCurve() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
 // function : Origine
 // purpose  : Nothing!!
 //=======================================================================
-void GeomFill_GuideTrihedronPlan::Origine(const Standard_Real, const Standard_Real) {}
+void GeomFill_GuideTrihedronPlan::Origine(const double, const double) {}
 
 //==================================================================
 // Function : InitX
 // Purpose : recherche par interpolation d'une valeur initiale
 //==================================================================
-void GeomFill_GuideTrihedronPlan::InitX(const Standard_Real Param)
+void GeomFill_GuideTrihedronPlan::InitX(const double Param)
 {
 
-  Standard_Integer Ideb = 1, Ifin = Pole->RowLength(), Idemi;
-  Standard_Real    Valeur, t1, t2;
+  int    Ideb = 1, Ifin = Pole->RowLength(), Idemi;
+  double Valeur, t1, t2;
 
   Valeur = Pole->Value(1, Ideb).X();
   if (Param == Valeur)
@@ -568,12 +569,12 @@ void GeomFill_GuideTrihedronPlan::InitX(const Standard_Real Param)
     }
   }
 
-  t1                 = Pole->Value(1, Ideb).X();
-  t2                 = Pole->Value(1, Ifin).X();
-  Standard_Real diff = t2 - t1;
+  t1          = Pole->Value(1, Ideb).X();
+  t2          = Pole->Value(1, Ifin).X();
+  double diff = t2 - t1;
   if (diff > 1.e-7)
   {
-    Standard_Real b = (Param - t1) / diff, a = (t2 - Param) / diff;
+    double b = (Param - t1) / diff, a = (t2 - Param) / diff;
 
     X(1) = Pole->Value(1, Ideb).Coord(2) * a + Pole->Value(1, Ifin).Coord(2) * b; // param guide
   }

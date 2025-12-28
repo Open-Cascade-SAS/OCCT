@@ -24,7 +24,9 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir2d.hxx>
-#include <TColgp_HSequenceOfXY.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 
 class IntSurf_PathPoint
@@ -34,42 +36,41 @@ public:
 
   Standard_EXPORT IntSurf_PathPoint();
 
-  Standard_EXPORT IntSurf_PathPoint(const gp_Pnt& P, const Standard_Real U, const Standard_Real V);
+  Standard_EXPORT IntSurf_PathPoint(const gp_Pnt& P, const double U, const double V);
 
-  Standard_EXPORT void SetValue(const gp_Pnt& P, const Standard_Real U, const Standard_Real V);
+  Standard_EXPORT void SetValue(const gp_Pnt& P, const double U, const double V);
 
-  void AddUV(const Standard_Real U, const Standard_Real V);
+  void AddUV(const double U, const double V);
 
   void SetDirections(const gp_Vec& V, const gp_Dir2d& D);
 
-  void SetTangency(const Standard_Boolean Tang);
+  void SetTangency(const bool Tang);
 
-  void SetPassing(const Standard_Boolean Pass);
+  void SetPassing(const bool Pass);
 
   const gp_Pnt& Value() const;
 
-  void Value2d(Standard_Real& U, Standard_Real& V) const;
+  void Value2d(double& U, double& V) const;
 
-  Standard_Boolean IsPassingPnt() const;
+  bool IsPassingPnt() const;
 
-  Standard_Boolean IsTangent() const;
+  bool IsTangent() const;
 
   const gp_Vec& Direction3d() const;
 
   const gp_Dir2d& Direction2d() const;
 
-  Standard_Integer Multiplicity() const;
+  int Multiplicity() const;
 
-  void Parameters(const Standard_Integer Index, Standard_Real& U, Standard_Real& V) const;
+  void Parameters(const int Index, double& U, double& V) const;
 
-protected:
 private:
-  gp_Pnt                       pt;
-  Standard_Boolean             ispass;
-  Standard_Boolean             istgt;
-  gp_Vec                       vectg;
-  gp_Dir2d                     dirtg;
-  Handle(TColgp_HSequenceOfXY) sequv;
+  gp_Pnt                                    pt;
+  bool                                      ispass;
+  bool                                      istgt;
+  gp_Vec                                    vectg;
+  gp_Dir2d                                  dirtg;
+  occ::handle<NCollection_HSequence<gp_XY>> sequv;
 };
 
 #include <IntSurf_PathPoint.lxx>

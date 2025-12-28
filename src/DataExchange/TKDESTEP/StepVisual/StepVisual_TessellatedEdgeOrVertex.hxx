@@ -40,13 +40,12 @@ public:
   //! Recognizes a kind of TessellatedEdgeOrVertex select type
   //! -- 1 -> TessellatedEdge
   //! -- 2 -> TessellatedVertex
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as TessellatedEdge (or Null if another type)
-  Standard_EXPORT Handle(StepVisual_TessellatedEdge) TessellatedEdge() const;
+  Standard_EXPORT occ::handle<StepVisual_TessellatedEdge> TessellatedEdge() const;
 
   //! Returns Value as TessellatedVertex (or Null if another type)
-  Standard_EXPORT Handle(StepVisual_TessellatedVertex) TessellatedVertex() const;
+  Standard_EXPORT occ::handle<StepVisual_TessellatedVertex> TessellatedVertex() const;
 };
 #endif // _StepVisual_TessellatedEdgeOrVertex_HeaderFile

@@ -33,17 +33,17 @@ Geom2dHatch_Intersector::Geom2dHatch_Intersector()
 //=================================================================================================
 
 void Geom2dHatch_Intersector::Perform(const gp_Lin2d&            L,
-                                      const Standard_Real        P,
-                                      const Standard_Real        Tol,
+                                      const double               P,
+                                      const double               Tol,
                                       const Geom2dAdaptor_Curve& C)
 {
 
-  // Standard_Real pfbid,plbid;
+  // double pfbid,plbid;
   IntRes2d_Domain DL;
   if (P != RealLast())
     DL.SetValues(L.Location(), 0., Tol, ElCLib::Value(P, L), P, Tol);
   else
-    DL.SetValues(L.Location(), 0., Tol, Standard_True);
+    DL.SetValues(L.Location(), 0., Tol, true);
 
   IntRes2d_Domain DE(C.Value(C.FirstParameter()),
                      C.FirstParameter(),
@@ -52,9 +52,9 @@ void Geom2dHatch_Intersector::Perform(const gp_Lin2d&            L,
                      C.LastParameter(),
                      Precision::PIntersection());
 
-  Handle(Geom2d_Line) GL = new Geom2d_Line(L);
-  Geom2dAdaptor_Curve CGA(GL);
-  void*               ptrpoureviterlesproblemesdeconst = (void*)(&C);
+  occ::handle<Geom2d_Line> GL = new Geom2d_Line(L);
+  Geom2dAdaptor_Curve      CGA(GL);
+  void*                    ptrpoureviterlesproblemesdeconst = (void*)(&C);
 
   Geom2dInt_GInter Inter(CGA,
                          DL,
@@ -68,12 +68,12 @@ void Geom2dHatch_Intersector::Perform(const gp_Lin2d&            L,
 //=================================================================================================
 
 void Geom2dHatch_Intersector::LocalGeometry(const Geom2dAdaptor_Curve& E,
-                                            const Standard_Real        U,
+                                            const double               U,
                                             gp_Dir2d&                  Tang,
                                             gp_Dir2d&                  Norm,
-                                            Standard_Real&             C) const
+                                            double&                    C) const
 {
-  // Standard_Real f,l;
+  // double f,l;
   Geom2dLProp_CLProps2d Prop(E.Curve(), U, 2, Precision::PConfusion());
 
   if (!Prop.IsTangentDefined())

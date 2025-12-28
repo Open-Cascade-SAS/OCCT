@@ -19,10 +19,11 @@
 #include <ChFi3d_Builder_0.hxx>
 #include <ChFi3d_ChBuilder.hxx>
 #include <ChFiDS_ChamfSpine.hxx>
-#include <ChFiDS_HData.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <ChFiDS_Regul.hxx>
 #include <ChFiDS_Stripe.hxx>
-#include <ChFiDS_SurfData.hxx>
 #include <ChFiKPart_ComputeData_Fcts.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
@@ -46,7 +47,8 @@
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -59,31 +61,28 @@
 //           la distance de PntD par rapport au plan passant par les trois
 //           points PntA, PntB, PntC
 //=======================================================================
-static Standard_Boolean CoPlanar(const gp_Pnt& PntA,
-                                 const gp_Pnt& PntB,
-                                 const gp_Pnt& PntC,
-                                 const gp_Pnt& PntD)
+static bool CoPlanar(const gp_Pnt& PntA, const gp_Pnt& PntB, const gp_Pnt& PntC, const gp_Pnt& PntD)
 {
   gp_Vec vecAB(PntA, PntB);
   gp_Vec vecAC(PntA, PntC);
   gp_Vec vecAD(PntA, PntD);
 
-  Standard_Real nor2AB  = vecAB.SquareMagnitude();
-  Standard_Real nor2AC  = vecAC.SquareMagnitude();
-  Standard_Real ProABAC = vecAB.Dot(vecAC);
+  double nor2AB  = vecAB.SquareMagnitude();
+  double nor2AC  = vecAC.SquareMagnitude();
+  double ProABAC = vecAB.Dot(vecAC);
 
-  Standard_Real Alpha = nor2AB * nor2AC - ProABAC * ProABAC;
+  double Alpha = nor2AB * nor2AC - ProABAC * ProABAC;
 
   if (Alpha < Precision::Confusion())
   {
-    return Standard_True;
+    return true;
   }
 
-  Standard_Real ProABAD = vecAB.Dot(vecAD);
-  Standard_Real ProACAD = vecAC.Dot(vecAD);
-  Standard_Real Alpha1  = ProABAD * nor2AC - ProABAC * ProACAD;
-  Standard_Real Alpha2  = ProACAD * nor2AB - ProABAC * ProABAD;
-  gp_Vec        vecDABC = Alpha1 * vecAB + Alpha2 * vecAC - Alpha * vecAD;
+  double ProABAD = vecAB.Dot(vecAD);
+  double ProACAD = vecAC.Dot(vecAD);
+  double Alpha1  = ProABAD * nor2AC - ProABAC * ProACAD;
+  double Alpha2  = ProACAD * nor2AB - ProABAC * ProABAD;
+  gp_Vec vecDABC = Alpha1 * vecAB + Alpha2 * vecAC - Alpha * vecAD;
 
   return (vecDABC.Magnitude() / Alpha) < Precision::Confusion();
 }
@@ -94,19 +93,19 @@ static Standard_Boolean CoPlanar(const gp_Pnt& PntA,
 //           it to allow the intersection computation
 //=======================================================================
 
-static Handle(GeomAdaptor_Surface) BoundSurf(const Handle(Geom_Surface)& S,
-                                             const gp_Pnt2d&             Pdeb,
-                                             const gp_Pnt2d&             Pfin)
+static occ::handle<GeomAdaptor_Surface> BoundSurf(const occ::handle<Geom_Surface>& S,
+                                                  const gp_Pnt2d&                  Pdeb,
+                                                  const gp_Pnt2d&                  Pfin)
 {
-  Handle(GeomAdaptor_Surface) HS  = new GeomAdaptor_Surface();
-  GeomAdaptor_Surface&        GAS = *HS;
+  occ::handle<GeomAdaptor_Surface> HS  = new GeomAdaptor_Surface();
+  GeomAdaptor_Surface&             GAS = *HS;
   GAS.Load(S);
 
-  Standard_Real uu1, uu2, vv1, vv2;
-  Standard_Real uuu1, uuu2, vvv1, vvv2;
+  double uu1, uu2, vv1, vv2;
+  double uuu1, uuu2, vvv1, vvv2;
   S->Bounds(uuu1, uuu2, vvv1, vvv2);
   ChFi3d_Boite(Pdeb, Pfin, uu1, uu2, vv1, vv2);
-  Standard_Real Step = std::max((uu2 - uu1), (vv2 - vv1));
+  double Step = std::max((uu2 - uu1), (vv2 - vv1));
   Step *= 0.2;
   uuu1 = std::max((uu1 - Step), uuu1);
   uuu2 = std::min((uu2 + Step), uuu2);
@@ -129,37 +128,37 @@ static Handle(GeomAdaptor_Surface) BoundSurf(const Handle(Geom_Surface)& S,
 //            SurfData <SD> at the point <ptdeb>
 //=======================================================================
 
-static Standard_Boolean ComputeIntersection(TopOpeBRepDS_DataStructure&    DStr,
-                                            const Handle(ChFiDS_SurfData)& SD,
-                                            const Handle(ChFiDS_SurfData)& SDCoin,
-                                            const gp_Pnt&                  pdeb,
-                                            const gp_Pnt2d&                p2ddeb,
-                                            const gp_Pnt&                  pfin,
-                                            const gp_Pnt2d&                p2dfin,
-                                            Handle(Geom_Curve)&            gc,
-                                            Handle(Geom2d_Curve)&          pc1,
-                                            Handle(Geom2d_Curve)&          pc2,
-                                            gp_Vec&                        derudeb,
-                                            gp_Vec&                        dervdeb,
-                                            gp_Pnt2d&                      ptcoindeb,
-                                            const Standard_Real            tol3d,
-                                            const Standard_Real            tol2d,
-                                            Standard_Real&                 tolreached)
+static bool ComputeIntersection(TopOpeBRepDS_DataStructure&         DStr,
+                                const occ::handle<ChFiDS_SurfData>& SD,
+                                const occ::handle<ChFiDS_SurfData>& SDCoin,
+                                const gp_Pnt&                       pdeb,
+                                const gp_Pnt2d&                     p2ddeb,
+                                const gp_Pnt&                       pfin,
+                                const gp_Pnt2d&                     p2dfin,
+                                occ::handle<Geom_Curve>&            gc,
+                                occ::handle<Geom2d_Curve>&          pc1,
+                                occ::handle<Geom2d_Curve>&          pc2,
+                                gp_Vec&                             derudeb,
+                                gp_Vec&                             dervdeb,
+                                gp_Pnt2d&                           ptcoindeb,
+                                const double                        tol3d,
+                                const double                        tol2d,
+                                double&                             tolreached)
 {
   //  gp_Pnt2d UVf1,UVf2,UVl1,UVl2;
 
   // take the surface of the pivot SurfData and trim it to allow
   // the intersection computation if it's an analytic surface
-  Handle(GeomAdaptor_Surface) HS1;
+  occ::handle<GeomAdaptor_Surface> HS1;
   HS1 = ChFi3d_BoundSurf(DStr, SD, 1, 2);
 
-  const Handle(Geom_Surface)& gpl = DStr.Surface(SDCoin->Surf()).Surface();
-  const Handle(Geom_Surface)& gSD = DStr.Surface(SD->Surf()).Surface();
+  const occ::handle<Geom_Surface>& gpl = DStr.Surface(SDCoin->Surf()).Surface();
+  const occ::handle<Geom_Surface>& gSD = DStr.Surface(SD->Surf()).Surface();
 
   // compute pardeb
-  TColStd_Array1OfReal Pardeb(1, 4), Parfin(1, 4);
-  Standard_Real        u, v;
-  gp_Pnt               Pbidon;
+  NCollection_Array1<double> Pardeb(1, 4), Parfin(1, 4);
+  double                     u, v;
+  gp_Pnt                     Pbidon;
   u = p2ddeb.X();
   v = p2ddeb.Y();
   gSD->D1(u, v, Pbidon, derudeb, dervdeb);
@@ -187,7 +186,7 @@ static Standard_Boolean ComputeIntersection(TopOpeBRepDS_DataStructure&    DStr,
   // Trims the chamfer surface to allow the intersection computation
   // and computes a GeomAdaptor_Surface for using the ComputeCurves
   // function
-  Handle(GeomAdaptor_Surface) HS2;
+  occ::handle<GeomAdaptor_Surface> HS2;
   HS2 = BoundSurf(gpl, ptcoindeb, cpf2);
 
   // compute the intersection curves and pcurves
@@ -200,30 +199,30 @@ static Standard_Boolean ComputeIntersection(TopOpeBRepDS_DataStructure&    DStr,
 //            vertex of index <Jndex> in myVDataMap
 //======================================================================
 
-void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
+void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
 {
 
   // modifier pour le passer en option dans le cdl!!!!!!!!!!!!
-  Standard_Boolean issmooth = Standard_False;
+  bool issmooth = false;
 
-  TopOpeBRepDS_DataStructure&       DStr = myDS->ChangeDS();
-  const TopoDS_Vertex&              Vtx  = myVDataMap.FindKey(Jndex);
-  ChFiDS_ListIteratorOfListOfStripe It;
-  //  Standard_Integer Index[3],pivot,deb,fin,ii,jj,kk;
-  Standard_Integer      Index[3], pivot = 0, deb = 0, fin = 0, ii;
-  Handle(ChFiDS_Stripe) CD[3];
-  TopoDS_Face           face[3];
-  Standard_Integer      jf[3][3];
-  Standard_Boolean      sameside[3], oksea[3];
-  for (Standard_Integer g = 0; g <= 2; g++)
+  TopOpeBRepDS_DataStructure&                            DStr = myDS->ChangeDS();
+  const TopoDS_Vertex&                                   Vtx  = myVDataMap.FindKey(Jndex);
+  NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator It;
+  //  int Index[3],pivot,deb,fin,ii,jj,kk;
+  int                        Index[3], pivot = 0, deb = 0, fin = 0, ii;
+  occ::handle<ChFiDS_Stripe> CD[3];
+  TopoDS_Face                face[3];
+  int                        jf[3][3];
+  bool                       sameside[3], oksea[3];
+  for (int g = 0; g <= 2; g++)
   {
-    oksea[g] = Standard_False;
+    oksea[g] = false;
   }
-  Standard_Integer i[3][3];
-  Standard_Integer sens[3];
-  Standard_Real    p[3][3];
+  int    i[3][3];
+  int    sens[3];
+  double p[3][3];
 
-  Standard_Boolean c1triangle = Standard_False;
+  bool c1triangle = false;
 
   for (It.Initialize(myVDataMap(Jndex)), ii = 0; It.More() && ii < 3; It.Next(), ii++)
   {
@@ -298,9 +297,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   //        - 2 concavites identiques et 1 inverse.
   //        - 3 concavites identiques
   //
-  Standard_Boolean CornerAllSame = Standard_False;
-  Standard_Boolean okinter       = Standard_True;
-  Standard_Boolean visavis;
+  bool CornerAllSame = false;
+  bool okinter       = true;
+  bool visavis;
 
   if (oksea[2] && oksea[1] && !sameside[2] && !sameside[1])
   {
@@ -324,7 +323,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
                                  jf[2][1],
                                  visavis,
                                  Vtx,
-                                 Standard_False,
+                                 false,
                                  1);
   }
   else if (oksea[2] && oksea[0] && !sameside[2] && !sameside[0])
@@ -348,7 +347,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
                                  jf[2][0],
                                  visavis,
                                  Vtx,
-                                 Standard_False,
+                                 false,
                                  1);
   }
   else if (oksea[1] && oksea[0] && !sameside[1] && !sameside[0])
@@ -372,7 +371,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
                                  jf[1][0],
                                  visavis,
                                  Vtx,
-                                 Standard_False,
+                                 false,
                                  1);
   }
   else if (oksea[0] && oksea[1] && oksea[2])
@@ -384,7 +383,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       pivot = 0;
     deb           = (pivot + 1) % 3;
     fin           = (pivot + 2) % 3;
-    CornerAllSame = Standard_True;
+    CornerAllSame = true;
   }
   else
     throw Standard_Failure("FD en vis a vis non trouvees");
@@ -413,34 +412,37 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     throw Standard_NotImplemented("coin sur plusieurs faces non programme");
   }
 
-  Handle(ChFiDS_SurfData)& fddeb = CD[deb]->ChangeSetOfSurfData()->ChangeValue(i[deb][pivot]);
-  Handle(ChFiDS_SurfData)& fdfin = CD[fin]->ChangeSetOfSurfData()->ChangeValue(i[fin][pivot]);
-  Handle(ChFiDS_SurfData)& fdpiv = CD[pivot]->ChangeSetOfSurfData()->ChangeValue(i[pivot][deb]);
+  occ::handle<ChFiDS_SurfData>& fddeb = CD[deb]->ChangeSetOfSurfData()->ChangeValue(i[deb][pivot]);
+  occ::handle<ChFiDS_SurfData>& fdfin = CD[fin]->ChangeSetOfSurfData()->ChangeValue(i[fin][pivot]);
+  occ::handle<ChFiDS_SurfData>& fdpiv =
+    CD[pivot]->ChangeSetOfSurfData()->ChangeValue(i[pivot][deb]);
 
   // On construit les HSurfaces et autres outils qui vont bien.
   // ----------------------------------------------------------
 
-  Handle(BRepAdaptor_Surface) Fac     = new BRepAdaptor_Surface(face[pivot]);
-  Handle(GeomAdaptor_Surface) bidsurf = new GeomAdaptor_Surface(Fac->Surface());
-  Handle(Adaptor3d_TopolTool) IFac    = new Adaptor3d_TopolTool(bidsurf);
+  occ::handle<BRepAdaptor_Surface> Fac     = new BRepAdaptor_Surface(face[pivot]);
+  occ::handle<GeomAdaptor_Surface> bidsurf = new GeomAdaptor_Surface(Fac->Surface());
+  occ::handle<Adaptor3d_TopolTool> IFac    = new Adaptor3d_TopolTool(bidsurf);
 
-  Handle(GeomAdaptor_Surface) Surf  = ChFi3d_BoundSurf(DStr, fdpiv, jf[pivot][deb], jf[pivot][fin]);
-  Handle(Adaptor3d_TopolTool) ISurf = new Adaptor3d_TopolTool(Surf);
+  occ::handle<GeomAdaptor_Surface> Surf =
+    ChFi3d_BoundSurf(DStr, fdpiv, jf[pivot][deb], jf[pivot][fin]);
+  occ::handle<Adaptor3d_TopolTool> ISurf = new Adaptor3d_TopolTool(Surf);
 
   // Creation of a new Stripe for the corner
-  Handle(ChFiDS_Stripe) corner    = new ChFiDS_Stripe();
-  Handle(ChFiDS_HData)& cornerset = corner->ChangeSetOfSurfData();
-  cornerset                       = new ChFiDS_HData();
-  Handle(ChFiDS_SurfData) coin    = new ChFiDS_SurfData();
+  occ::handle<ChFiDS_Stripe>                                        corner = new ChFiDS_Stripe();
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& cornerset =
+    corner->ChangeSetOfSurfData();
+  cornerset                         = new NCollection_HSequence<occ::handle<ChFiDS_SurfData>>();
+  occ::handle<ChFiDS_SurfData> coin = new ChFiDS_SurfData();
   cornerset->Append(coin);
 
   // Pour plus de surete, on verifie les intersections des pcurves des chanfreins sur leur
   // face commune
-  Handle(GeomAdaptor_Surface) HSdeb =
+  occ::handle<GeomAdaptor_Surface> HSdeb =
     new GeomAdaptor_Surface(GeomAdaptor_Surface(DStr.Surface(fddeb->Surf()).Surface()));
-  Handle(GeomAdaptor_Surface) HSfin =
+  occ::handle<GeomAdaptor_Surface> HSfin =
     new GeomAdaptor_Surface(GeomAdaptor_Surface(DStr.Surface(fdfin->Surf()).Surface()));
-  Handle(GeomAdaptor_Surface) HSpiv =
+  occ::handle<GeomAdaptor_Surface> HSpiv =
     new GeomAdaptor_Surface(GeomAdaptor_Surface(DStr.Surface(fdpiv->Surf()).Surface()));
 
   gp_Pnt2d p2d[4];
@@ -512,9 +514,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   //  if (!c1triangle)
   p3d[3] = Fac->Value(p2d[3].X(), p2d[3].Y());
 
-  Standard_Real DistMin    = (p3d[3]).Distance(p3d[fin]);
-  Standard_Real DistTmp    = (p3d[pivot]).Distance(p3d[deb]);
-  Standard_Real DistDebFin = (p3d[pivot]).Distance(p3d[3]);
+  double DistMin    = (p3d[3]).Distance(p3d[fin]);
+  double DistTmp    = (p3d[pivot]).Distance(p3d[deb]);
+  double DistDebFin = (p3d[pivot]).Distance(p3d[3]);
 
   if (DistTmp > DistMin)
     DistMin = DistTmp;
@@ -533,15 +535,15 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   // Si c1triangle ou les 4 points p3d sont coplanaires, alors
   // le chanfrein est porte par le plan passant par les 3  premiers p3d.
   // Sinon, on construit le chanfrein par la methode GeomFill_ConstrainedFilling
-  Standard_Boolean c1plan = c1triangle;
-  gp_Vec           v1(p3d[pivot], p3d[deb]);
-  gp_Vec           v2(p3d[pivot], p3d[fin]);
-  gp_Vec           nor = v1.Crossed(v2);
+  bool   c1plan = c1triangle;
+  gp_Vec v1(p3d[pivot], p3d[deb]);
+  gp_Vec v2(p3d[pivot], p3d[fin]);
+  gp_Vec nor = v1.Crossed(v2);
 
-  done = Standard_False;
+  done = false;
 
-  Standard_Integer     Icf = 0, Icl = 0;
-  Handle(Geom2d_Curve) debpc1, finpc1;
+  int                       Icf = 0, Icl = 0;
+  occ::handle<Geom2d_Curve> debpc1, finpc1;
 
   if (!c1triangle)
   {
@@ -560,7 +562,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     gp_Ax3 planAx3(p3d[pivot], ndir, xdir);
     if (planAx3.YDirection().Dot(v1) <= 0.)
       planAx3.YReverse();
-    Handle(Geom_Plane) gpl = new Geom_Plane(planAx3);
+    occ::handle<Geom_Plane> gpl = new Geom_Plane(planAx3);
     coin->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gpl, DStr));
 
     // on oriente coin
@@ -574,13 +576,13 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       coin->ChangeOrientation() = TopAbs_FORWARD;
 
     // on calcule les intersections
-    Handle(Geom_Curve)        gcpiv, gcdeb, gcfin;
-    Handle(Geom_TrimmedCurve) gcface;
-    Handle(Geom2d_Curve)      pivpc1, pivpc2, debpc2, finpc2, facepc1, facepc2;
-    gp_Pnt2d                  ptbid;
+    occ::handle<Geom_Curve>        gcpiv, gcdeb, gcfin;
+    occ::handle<Geom_TrimmedCurve> gcface;
+    occ::handle<Geom2d_Curve>      pivpc1, pivpc2, debpc2, finpc2, facepc1, facepc2;
+    gp_Pnt2d                       ptbid;
 
     // intersection coin-pivot
-    Standard_Real tolrcoinpiv;
+    double tolrcoinpiv;
     if (!ComputeIntersection(DStr,
                              fdpiv,
                              coin,
@@ -601,8 +603,8 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     gp_Vec norpiv = deru.Crossed(derv);
 
     // intersection coin-deb
-    Standard_Real tolrcoindeb;
-    gp_Pnt2d      p2d1, p2d2;
+    double   tolrcoindeb;
+    gp_Pnt2d p2d1, p2d2;
     if (c1triangle)
       p2d1 = fddeb->Interference(jf[deb][fin]).PCurveOnSurf()->Value(p[deb][fin]);
     else
@@ -630,8 +632,8 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     Icf = DStr.AddCurve(TopOpeBRepDS_Curve(gcdeb, tolrcoindeb));
 
     // intersection coin-fin
-    Standard_Real tolrcoinfin;
-    gp_Pnt        p3dface;
+    double tolrcoinfin;
+    gp_Pnt p3dface;
     if (c1triangle)
     {
       p3dface = p3d[pivot];
@@ -665,14 +667,14 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     //! c1triangle: intersection coin-face[pivot]
     if (!c1triangle)
     {
-      GeomInt_IntSS        inter;
-      BRepAdaptor_Surface  facebid(face[pivot]);
-      Handle(Geom_Surface) surfbid =
-        Handle(Geom_Surface)::DownCast(facebid.Surface().Surface()->Transformed(facebid.Trsf()));
+      GeomInt_IntSS             inter;
+      BRepAdaptor_Surface       facebid(face[pivot]);
+      occ::handle<Geom_Surface> surfbid =
+        occ::down_cast<Geom_Surface>(facebid.Surface().Surface()->Transformed(facebid.Trsf()));
       inter.Perform(gpl, surfbid, Precision::Intersection());
       if (inter.IsDone())
       {
-        Standard_Integer nbl = inter.NbLines();
+        int nbl = inter.NbLines();
         if (nbl > 1)
         {
 #ifdef OCCT_DEBUG
@@ -683,14 +685,14 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
         {
           ChFi3d_TrimCurve(inter.Line(1), p3d[pivot], p3dface, gcface);
 
-          Handle(GeomAdaptor_Curve) gac = new GeomAdaptor_Curve();
+          occ::handle<GeomAdaptor_Curve> gac = new GeomAdaptor_Curve();
           gac->Load(gcface);
-          Handle(GeomAdaptor_Surface) gas = new GeomAdaptor_Surface;
+          occ::handle<GeomAdaptor_Surface> gas = new GeomAdaptor_Surface;
           gas->Load(gpl);
-          Handle(BRepAdaptor_Surface) gaf = new BRepAdaptor_Surface;
+          occ::handle<BRepAdaptor_Surface> gaf = new BRepAdaptor_Surface;
           gaf->Initialize(face[pivot]);
 
-          Standard_Real tolr;
+          double tolr;
           ChFi3d_ProjectPCurv(gac, gaf, facepc1, tolapp3d, tolr);
           ChFi3d_ProjectPCurv(gac, gas, facepc2, tolapp3d, tolr);
         }
@@ -710,8 +712,8 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     coin->ChangeVertexLastOnS2().SetPoint(p3d[deb]);
 
     // avec les FaceInterference
-    //    Standard_Integer Igcpiv,Igcdeb,Igcfin,Igcface;
-    Standard_Integer         Igcpiv, Igcface;
+    //    int Igcpiv,Igcdeb,Igcfin,Igcface;
+    int                      Igcpiv, Igcface;
     ChFiDS_FaceInterference& fi1 = coin->ChangeInterferenceOnS1();
     ChFiDS_FaceInterference& fi2 = coin->ChangeInterferenceOnS2();
 
@@ -720,7 +722,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       trans = TopAbs_FORWARD;
     else
       trans = TopAbs_REVERSED;
-    Handle(Geom2d_Curve) bidpc;
+    occ::handle<Geom2d_Curve> bidpc;
     if (c1triangle)
       fi1.SetInterference(0, trans, bidpc, bidpc);
     else
@@ -740,23 +742,23 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     fi2.SetFirstParameter(gcpiv->FirstParameter());
     fi2.SetLastParameter(gcpiv->LastParameter());
 
-    done = Standard_True;
+    done = true;
   }
   else
   {
     // !c1plan
     //--------
 
-    Handle(Geom_Surface) Surfcoin;
-    Handle(Geom2d_Curve) PCurveOnFace, PCurveOnPiv;
+    occ::handle<Geom_Surface> Surfcoin;
+    occ::handle<Geom2d_Curve> PCurveOnFace, PCurveOnPiv;
 
     // le contour a remplir est constitue de courbes isos sur deb et fin
     // de deux pcurves calculees sur piv et la face opposee.
-    Handle(GeomFill_Boundary) Bdeb, Bfin, Bpiv, Bfac;
-    Standard_Integer          ind1 = fddeb->Interference(jf[deb][pivot]).LineIndex();
-    Standard_Integer          ind2 = fdfin->Interference(jf[fin][pivot]).LineIndex();
-    gp_Pnt                    Pfin, Pdeb;
-    gp_Vec                    vpfin, vpdeb;
+    occ::handle<GeomFill_Boundary> Bdeb, Bfin, Bpiv, Bfac;
+    int                            ind1 = fddeb->Interference(jf[deb][pivot]).LineIndex();
+    int                            ind2 = fdfin->Interference(jf[fin][pivot]).LineIndex();
+    gp_Pnt                         Pfin, Pdeb;
+    gp_Vec                         vpfin, vpdeb;
 
     DStr.Curve(ind1).Curve()->D1(p[deb][pivot], Pfin, vpfin);
     DStr.Curve(ind2).Curve()->D1(p[fin][pivot], Pdeb, vpdeb);
@@ -809,18 +811,10 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     else
     {
       // ou les 4 bords de type "FreeBoundary"
-      Bdeb = ChFi3d_mkbound(DStr.Surface(fddeb->Surf()).Surface(),
-                            pdeb1,
-                            pdeb2,
-                            tolapp3d,
-                            2.e-4,
-                            Standard_True);
-      Bfin = ChFi3d_mkbound(DStr.Surface(fdfin->Surf()).Surface(),
-                            pfin1,
-                            pfin2,
-                            tolapp3d,
-                            2.e-4,
-                            Standard_True);
+      Bdeb =
+        ChFi3d_mkbound(DStr.Surface(fddeb->Surf()).Surface(), pdeb1, pdeb2, tolapp3d, 2.e-4, true);
+      Bfin =
+        ChFi3d_mkbound(DStr.Surface(fdfin->Surf()).Surface(), pfin1, pfin2, tolapp3d, 2.e-4, true);
     }
     GeomFill_ConstrainedFilling fil(8, 20);
     fil.Init(Bpiv, Bfin, Bfac, Bdeb);
@@ -842,11 +836,11 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
                         0,
                         0);
   }
-  Standard_Real P1deb, P2deb, P1fin, P2fin;
+  double P1deb, P2deb, P1fin, P2fin;
 
   if (done)
   {
-    Standard_Integer If1, If2, Il1, Il2;
+    int If1, If2, Il1, Il2;
 
     // Mise a jour des 4 Stripes et de la DS
     // -------------------------------------
@@ -885,8 +879,8 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
         coin->InterferenceOnS1().PCurveOnSurf()->Value(coin->InterferenceOnS1().FirstParameter());
       pp2 =
         coin->InterferenceOnS2().PCurveOnSurf()->Value(coin->InterferenceOnS2().FirstParameter());
-      Handle(Geom_Curve) C3d;
-      Standard_Real      tolreached;
+      occ::handle<Geom_Curve> C3d;
+      double                  tolreached;
       ChFi3d_ComputeArete(Pf1,
                           pp1,
                           Pf2,
@@ -925,8 +919,8 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
         coin->InterferenceOnS1().PCurveOnSurf()->Value(coin->InterferenceOnS1().LastParameter());
       pp2 =
         coin->InterferenceOnS2().PCurveOnSurf()->Value(coin->InterferenceOnS2().LastParameter());
-      Handle(Geom_Curve) C3d;
-      Standard_Real      tolreached;
+      occ::handle<Geom_Curve> C3d;
+      double                  tolreached;
       ChFi3d_ComputeArete(Pl1,
                           pp1,
                           Pl2,
@@ -954,9 +948,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 
     // puis la CornerData du debut,
     // ----------------------------
-    Standard_Boolean isfirst = (sens[deb] == 1), rev = (jf[deb][fin] == 2);
-    Standard_Integer isurf1 = 1, isurf2 = 2;
-    Standard_Real    par = p[deb][pivot], par2 = p[deb][pivot];
+    bool   isfirst = (sens[deb] == 1), rev = (jf[deb][fin] == 2);
+    int    isurf1 = 1, isurf2 = 2;
+    double par = p[deb][pivot], par2 = p[deb][pivot];
     if (c1triangle)
       par2 = p[deb][fin];
     if (rev)
@@ -1076,7 +1070,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   }
   if (!myEVIMap.IsBound(Vtx))
   {
-    TColStd_ListOfInteger li;
+    NCollection_List<int> li;
     myEVIMap.Bind(Vtx, li);
   }
   myEVIMap.ChangeFind(Vtx).Append(coin->Surf());

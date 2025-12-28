@@ -17,7 +17,10 @@
 //             AGV 130302: bug corr: was error if strlen(root_elem_name) < 7
 
 #include <LDOM_XmlReader.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <LDOM_MemManager.hxx>
 #include <LDOM_BasicAttribute.hxx>
 #include <LDOM_CharReference.hxx>
@@ -53,17 +56,17 @@ typedef enum
 
 #define TEXT_COMPARE(aPtr, aPattern) (memcmp((aPtr), (aPattern), sizeof(aPattern) - 1) == 0)
 
-static Standard_Boolean isName(const char* aString, const char* aStringEnd, const char*& aNameEnd);
+static bool isName(const char* aString, const char* aStringEnd, const char*& aNameEnd);
 
 //=======================================================================
 // function : LDOM_XmlReader()
 // purpose  : Constructor (file descriptor)
 //=======================================================================
 
-LDOM_XmlReader::LDOM_XmlReader(const Handle(LDOM_MemManager)& theDocument,
-                               TCollection_AsciiString&       theErrorString,
-                               const Standard_Boolean         theTagPerStep)
-    : myEOF(Standard_False),
+LDOM_XmlReader::LDOM_XmlReader(const occ::handle<LDOM_MemManager>& theDocument,
+                               TCollection_AsciiString&            theErrorString,
+                               const bool                          theTagPerStep)
+    : myEOF(false),
       myError(theErrorString),
       myDocument(theDocument),
       myElement(NULL),
@@ -82,25 +85,25 @@ LDOM_XmlReader::LDOM_XmlReader(const Handle(LDOM_MemManager)& theDocument,
 
 LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStream,
                                                       LDOM_OSStream&    theData,
-                                                      Standard_Boolean& theDocStart)
+                                                      bool&             theDocStart)
 {
   theData.Clear();
   myError.Clear();
-  ParserState      aState     = STATE_WAITING;
-  const char *     aStartData = NULL, *aNameEnd = NULL, *aPtr;
-  LDOMBasicString  anAttrName, anAttrValue;
-  char             anAttDelimiter = '\0';
-  Standard_Boolean aHasRead       = Standard_False;
+  ParserState     aState     = STATE_WAITING;
+  const char *    aStartData = NULL, *aNameEnd = NULL, *aPtr;
+  LDOMBasicString anAttrName, anAttrValue;
+  char            anAttDelimiter = '\0';
+  bool            aHasRead       = false;
 
   for (;;)
   {
     //  Check if the current file buffer is exhausted
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  There should always be some bytes available in the buffer for analysis
-    Standard_Integer aBytesRest = (Standard_Integer)(myEndPtr - myPtr);
+    int aBytesRest = (int)(myEndPtr - myPtr);
     if (aBytesRest < XML_MIN_BUFFER)
     {
-      if (myEOF == Standard_True)
+      if (myEOF == true)
       {
         if (aBytesRest <= 0)
           break; // END of processing
@@ -129,22 +132,22 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
 
         // Read the full buffer and reset start and end buffer pointers
         myPtr = &myBuffer[0];
-        Standard_Size aNBytes;
+        size_t aNBytes;
 
         if (myTagPerStep)
         {
           theIStream.getline(&myBuffer[aBytesRest], XML_BUFFER_SIZE - aBytesRest, '>');
-          aHasRead = Standard_True;
+          aHasRead = true;
         }
         else
         {
           theIStream.read(&myBuffer[aBytesRest], XML_BUFFER_SIZE - aBytesRest);
         }
-        aNBytes = (Standard_Size)theIStream.gcount();
+        aNBytes = (size_t)theIStream.gcount();
 
         if (aNBytes == 0)
         {
-          myEOF = Standard_True; // END-OF-FILE
+          myEOF = true; // END-OF-FILE
         }
         else if (myTagPerStep)
         {
@@ -157,27 +160,28 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
     }
     if (theDocStart && !myEOF)
     {
-      theDocStart = Standard_False;
+      theDocStart = false;
       // check for BOM block
-      Standard_Utf8UChar aFirstChar = Standard_Utf8UChar(myPtr[0]);
+      unsigned char aFirstChar = static_cast<unsigned char>(myPtr[0]);
       switch (aFirstChar)
       {
         case 0xEF:
-          if (Standard_Utf8UChar(myPtr[1]) == 0xBB && Standard_Utf8UChar(myPtr[2]) == 0xBF)
+          if (static_cast<unsigned char>(myPtr[1]) == 0xBB
+              && static_cast<unsigned char>(myPtr[2]) == 0xBF)
           {
             myBOM = LDOM_OSStream::BOM_UTF8;
             myPtr += 3;
           }
           break;
         case 0xFE:
-          if (Standard_Utf8UChar(myPtr[1]) == 0xFF)
+          if (static_cast<unsigned char>(myPtr[1]) == 0xFF)
           {
             myBOM = LDOM_OSStream::BOM_UTF16BE;
             myPtr += 2;
           }
           break;
         case 0xFF:
-          if (Standard_Utf8UChar(myPtr[1]) == 0xFE)
+          if (static_cast<unsigned char>(myPtr[1]) == 0xFE)
           {
             if (myPtr[2] == 0 && myPtr[3] == 0)
             {
@@ -192,8 +196,8 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           }
           break;
         case 0x00:
-          if (myPtr[1] == 0 && Standard_Utf8UChar(myPtr[2]) == 0xFE
-              && Standard_Utf8UChar(myPtr[3]) == 0xFF)
+          if (myPtr[1] == 0 && static_cast<unsigned char>(myPtr[2]) == 0xFE
+              && static_cast<unsigned char>(myPtr[3]) == 0xFF)
           {
             myBOM = LDOM_OSStream::BOM_UTF32BE;
             myPtr += 4;
@@ -225,21 +229,22 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           }
           break;
         case 0x0E:
-          if (Standard_Utf8UChar(myPtr[1]) == 0xFE && Standard_Utf8UChar(myPtr[2]) == 0xFF)
+          if (static_cast<unsigned char>(myPtr[1]) == 0xFE
+              && static_cast<unsigned char>(myPtr[2]) == 0xFF)
           {
             myBOM = LDOM_OSStream::BOM_SCSU;
             myPtr += 3;
           }
           break;
         case 0xFB:
-          if (Standard_Utf8UChar(myPtr[1]) == 0xEE && myPtr[2] == 40)
+          if (static_cast<unsigned char>(myPtr[1]) == 0xEE && myPtr[2] == 40)
           {
             myBOM = LDOM_OSStream::BOM_BOCU1;
             myPtr += 3;
           }
           break;
         case 0x84:
-          if (myPtr[1] == 49 && Standard_Utf8UChar(myPtr[2]) == 0x95 && myPtr[3] == 51)
+          if (myPtr[1] == 49 && static_cast<unsigned char>(myPtr[2]) == 0x95 && myPtr[3] == 51)
           {
             myBOM = LDOM_OSStream::BOM_GB18030;
             myPtr += 4;
@@ -309,9 +314,8 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                   myPtr      = aNameEnd;
                   if (myPtr < myEndPtr)
                   {
-                    myElement   = &LDOM_BasicElement::Create(aStartData,
-                                                           (Standard_Integer)(myPtr - aStartData),
-                                                           myDocument);
+                    myElement =
+                      &LDOM_BasicElement::Create(aStartData, (int)(myPtr - aStartData), myDocument);
                     myLastChild = NULL;
                     aState      = STATE_ATTRIBUTE_NAME;
                     aStartData  = NULL;
@@ -325,9 +329,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             myError += TCollection_AsciiString(myPtr, XML_MIN_BUFFER);
             return XML_UNKNOWN;
           case '\0':
-            if (myEOF == Standard_True)
+            if (myEOF == true)
               continue;
-            Standard_FALLTHROUGH
+            [[fallthrough]];
           default:
             //      Limitation: we do not treat '&' as special character
             aPtr = (const char*)memchr(myPtr, '<', myEndPtr - myPtr);
@@ -341,7 +345,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             aState     = STATE_TEXT;
             aStartData = myPtr;
             myPtr      = myEndPtr;
-            aHasRead   = Standard_False;
+            aHasRead   = false;
         } // end of checking in STATE_WAITING
         continue;
 
@@ -363,7 +367,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           return XML_HEADER;
         }
         myPtr    = myEndPtr - 1;
-        aHasRead = Standard_False;
+        aHasRead = false;
         continue;
 
         // Checking the characters in STATE_DOCTYPE, seek for "]>" sequence
@@ -387,7 +391,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           }
         }
         myPtr    = myEndPtr - 1;
-        aHasRead = Standard_False;
+        aHasRead = false;
         continue;
 
       state_doctype_markup:
@@ -407,7 +411,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           return XML_DOCTYPE;
         }
         myPtr    = myEndPtr - 1;
-        aHasRead = Standard_False;
+        aHasRead = false;
         continue;
 
         // Checking the characters in STATE_COMMENT, seek for "-->" sequence
@@ -434,7 +438,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           }
         }
         myPtr    = myEndPtr - 2;
-        aHasRead = Standard_False;
+        aHasRead = false;
         continue;
 
         // Checking the characters in STATE_TEXT, seek for "<"
@@ -449,7 +453,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           return XML_TEXT;
         }
         myPtr    = myEndPtr;
-        aHasRead = Standard_False;
+        aHasRead = false;
         continue;
 
         // Checking the characters in STATE_CDATA, seek for "]]"
@@ -471,13 +475,13 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           return XML_CDATA;
         }
         myPtr    = myEndPtr - 1;
-        aHasRead = Standard_False;
+        aHasRead = false;
         continue;
 
         // Checking the characters in STATE_ELEMENT, seek the end of TagName
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       case STATE_ELEMENT:
-        if (::isName(myPtr, myEndPtr, aNameEnd) == Standard_False)
+        if (::isName(myPtr, myEndPtr, aNameEnd) == false)
           if (theData.Length() == 0 || aNameEnd != myPtr)
           {
             myError = "Invalid tag name";
@@ -536,7 +540,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
 #endif
             return XML_START_ELEMENT;
           default:
-            if (::isName(myPtr, myEndPtr, aNameEnd) == Standard_False)
+            if (::isName(myPtr, myEndPtr, aNameEnd) == false)
               if (theData.Length() == 0 || aNameEnd != myPtr)
               {
                 myError = "Invalid attribute name";
@@ -547,8 +551,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             else
             {
               if (theData.Length() == 0)
-                anAttrName =
-                  LDOMBasicString(myPtr, (Standard_Integer)(aNameEnd - myPtr), myDocument);
+                anAttrName = LDOMBasicString(myPtr, (int)(aNameEnd - myPtr), myDocument);
               else
               {
                 theData.rdbuf()->sputn(myPtr, aNameEnd - myPtr);
@@ -569,7 +572,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         {
           case '=':
             aState = STATE_ATTRIBUTE_VALUE;
-            Standard_FALLTHROUGH
+            [[fallthrough]];
           case ' ':
           case '\t':
           case '\n':
@@ -624,7 +627,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                 ePtr        = strchr(aDataString, '\0');
               }
 
-              Standard_Integer aDataLen;
+              int aDataLen;
               aDataString = LDOM_CharReference::Decode(aDataString, aDataLen);
               if (IsDigit(aDataString[0]))
               {
@@ -649,7 +652,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             else
             {
               myPtr    = myEndPtr;
-              aHasRead = Standard_False;
+              aHasRead = false;
             }
             continue;
         }
@@ -665,7 +668,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           return XML_END_ELEMENT;
         }
         myPtr    = myEndPtr;
-        aHasRead = Standard_False;
+        aHasRead = false;
         continue;
     }
   }
@@ -683,10 +686,10 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
 // purpose  : Check if aString is a valid XML Name
 //=======================================================================
 
-static Standard_Boolean isName(const char* aString, const char* aStringEnd, const char*& aNameEnd)
+static bool isName(const char* aString, const char* aStringEnd, const char*& aNameEnd)
 {
-  Standard_Boolean aResult;
-  char             aCh = aString[0];
+  bool aResult;
+  char aCh = aString[0];
   if (IsAlphabetic(aCh) || aCh == '_' || aCh == ':')
   {
     const char* aPtr = &aString[1];
@@ -704,14 +707,14 @@ static Standard_Boolean isName(const char* aString, const char* aStringEnd, cons
         case '/':
         case '>':
           aNameEnd = aPtr;
-          return Standard_True;
+          return true;
         default:
           if (IsAlphanumeric(aCh) == 0)
           {
             aNameEnd = aPtr;
-            return Standard_False;
+            return false;
           }
-          Standard_FALLTHROUGH
+          [[fallthrough]];
         case '.':
         case '-':
         case '_':
@@ -720,19 +723,19 @@ static Standard_Boolean isName(const char* aString, const char* aStringEnd, cons
       }
     }
     aNameEnd = aPtr;
-    aResult  = Standard_True;
+    aResult  = true;
   }
   else
   {
     aNameEnd = aString;
-    aResult  = Standard_False;
+    aResult  = false;
   }
   return aResult;
 }
 
 //=================================================================================================
 
-void LDOM_XmlReader::CreateElement(const char* theName, const Standard_Integer theLen)
+void LDOM_XmlReader::CreateElement(const char* theName, const int theLen)
 {
   myElement = &LDOM_BasicElement::Create(theName, theLen, myDocument);
 }
@@ -742,9 +745,7 @@ void LDOM_XmlReader::CreateElement(const char* theName, const Standard_Integer t
 // purpose  : Try to initialize theValue as Integer; return False on success
 //=======================================================================
 
-Standard_Boolean LDOM_XmlReader::getInteger(LDOMBasicString& theValue,
-                                            const char*      theStart,
-                                            const char*      theEnd)
+bool LDOM_XmlReader::getInteger(LDOMBasicString& theValue, const char* theStart, const char* theEnd)
 {
   char* ptr;
   errno = 0;
@@ -753,9 +754,9 @@ Standard_Boolean LDOM_XmlReader::getInteger(LDOMBasicString& theValue,
     long aResult = strtol(theStart, &ptr, 10);
     if (ptr == theEnd && errno == 0)
     {
-      theValue = Standard_Integer(aResult);
-      return Standard_False;
+      theValue = int(aResult);
+      return false;
     }
   }
-  return Standard_True;
+  return true;
 }

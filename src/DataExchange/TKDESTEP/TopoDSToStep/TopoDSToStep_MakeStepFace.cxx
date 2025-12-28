@@ -55,11 +55,12 @@
 #include <StepGeom_ToroidalSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <StepRepr_DefinitionalRepresentation.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_AdvancedFace.hxx>
 #include <StepShape_EdgeCurve.hxx>
 #include <StepShape_FaceBound.hxx>
-#include <StepShape_HArray1OfFaceBound.hxx>
 #include <StepShape_Loop.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -81,24 +82,24 @@
 TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace()
     : myError(TopoDSToStep_FaceOther)
 {
-  done = Standard_False;
+  done = false;
 }
 
-TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace(const TopoDS_Face&                    F,
-                                                     TopoDSToStep_Tool&                    T,
-                                                     const Handle(Transfer_FinderProcess)& FP,
+TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace(const TopoDS_Face&                         F,
+                                                     TopoDSToStep_Tool&                         T,
+                                                     const occ::handle<Transfer_FinderProcess>& FP,
                                                      const StepData_Factors& theLocalFactors)
 {
-  done = Standard_False;
+  done = false;
   Init(F, T, FP, theLocalFactors);
 }
 
 //=================================================================================================
 
-void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace,
-                                     TopoDSToStep_Tool&                    aTool,
-                                     const Handle(Transfer_FinderProcess)& FP,
-                                     const StepData_Factors&               theLocalFactors)
+void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                         aFace,
+                                     TopoDSToStep_Tool&                         aTool,
+                                     const occ::handle<Transfer_FinderProcess>& FP,
+                                     const StepData_Factors&                    theLocalFactors)
 {
   // --------------------------------------------------------------
   // the face is given with its relative orientation (in the Shell)
@@ -108,23 +109,23 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
   TopoDS_Shape      sh          = aFace.Oriented(TopAbs_FORWARD);
   const TopoDS_Face ForwardFace = TopoDS::Face(sh);
   aTool.SetCurrentFace(ForwardFace);
-  Handle(TransferBRep_ShapeMapper) errShape =
+  occ::handle<TransferBRep_ShapeMapper> errShape =
     new TransferBRep_ShapeMapper(aFace); // on ne sait jamais
 
   // [BEGIN] Processing non-manifold topology (another approach) (ssv; 10.11.2010)
-  if (Handle(StepData_StepModel)::DownCast(FP->Model())->InternalParameters.WriteNonmanifold != 0)
+  if (occ::down_cast<StepData_StepModel>(FP->Model())->InternalParameters.WriteNonmanifold != 0)
   {
-    Handle(StepShape_AdvancedFace)   anAF;
-    Handle(TransferBRep_ShapeMapper) aSTEPMapper = TransferBRep::ShapeMapper(FP, aFace);
+    occ::handle<StepShape_AdvancedFace>   anAF;
+    occ::handle<TransferBRep_ShapeMapper> aSTEPMapper = TransferBRep::ShapeMapper(FP, aFace);
     if (FP->FindTypedTransient(aSTEPMapper, STANDARD_TYPE(StepShape_AdvancedFace), anAF))
     {
       // Non-manifold topology detected
-      Handle(StepShape_AdvancedFace) aLinkingAF = new StepShape_AdvancedFace;
+      occ::handle<StepShape_AdvancedFace> aLinkingAF = new StepShape_AdvancedFace;
       aLinkingAF->Init(anAF->Name(), anAF->Bounds(), anAF->FaceGeometry(), !anAF->SameSense());
 
       myError  = TopoDSToStep_FaceDone;
       myResult = aLinkingAF;
-      done     = Standard_True;
+      done     = true;
       return;
     }
   }
@@ -133,7 +134,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
   if (aTool.IsBound(aFace))
   {
     myError  = TopoDSToStep_FaceDone;
-    done     = Standard_True;
+    done     = true;
     myResult = aTool.Find(aFace);
     return;
   }
@@ -142,7 +143,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
   {
     FP->AddWarning(errShape, " Face from Non Manifold Topology");
     myError = TopoDSToStep_NonManifoldFace;
-    done    = Standard_False;
+    done    = false;
     return;
   }
 
@@ -154,7 +155,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
   {
     FP->AddWarning(errShape, " Face without wire not mapped");
     myError = TopoDSToStep_InfiniteFace;
-    done    = Standard_False;
+    done    = false;
     return;
   }
 
@@ -163,52 +164,52 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
     // -----------------
     // Translate Surface
     // -----------------
-    Handle(Geom_Surface) Su = BRep_Tool::Surface(ForwardFace);
+    occ::handle<Geom_Surface> Su = BRep_Tool::Surface(ForwardFace);
     if (Su.IsNull())
     {
       FP->AddWarning(errShape, " Face without geometry not mapped");
       myError = TopoDSToStep_FaceOther;
-      done    = Standard_False;
+      done    = false;
       return;
     }
 
     //  CKY  23 SEP 1996 : une FACE de Step n a pas droit a RECTANGULAR_TRIMMED...
     //  Il faut donc d abord "demonter" la RectangularTrimmedSurface pour
     //  passer la Surface de base
-    Handle(Geom_RectangularTrimmedSurface) aRTS =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(Su);
+    occ::handle<Geom_RectangularTrimmedSurface> aRTS =
+      occ::down_cast<Geom_RectangularTrimmedSurface>(Su);
     if (!aRTS.IsNull())
       Su = aRTS->BasisSurface();
 
     // Surfaces with indirect Axes are already reversed
-    aTool.SetSurfaceReversed(Standard_False);
+    aTool.SetSurfaceReversed(false);
 
-    GeomToStep_MakeSurface   MkSurface(Su, theLocalFactors);
-    Handle(StepGeom_Surface) Spms = MkSurface.Value();
+    GeomToStep_MakeSurface        MkSurface(Su, theLocalFactors);
+    occ::handle<StepGeom_Surface> Spms = MkSurface.Value();
 
     //%pdn 30 Nov 98: TestRally 9 issue on r1001_ec.stp:
     // toruses with major_radius < minor are re-coded as degenerate
     // rln 19.01.99: uncomment %30 pdn for integration into K4L
     {
       // If the surface is Offset it is necessary to check the base surface
-      Standard_Boolean           aSurfaceIsOffset = Standard_False;
-      Handle(Geom_OffsetSurface) anOffsetSu;
+      bool                            aSurfaceIsOffset = false;
+      occ::handle<Geom_OffsetSurface> anOffsetSu;
       if (Su->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
       {
-        aSurfaceIsOffset = Standard_True;
-        anOffsetSu       = Handle(Geom_OffsetSurface)::DownCast(Su);
+        aSurfaceIsOffset = true;
+        anOffsetSu       = occ::down_cast<Geom_OffsetSurface>(Su);
       }
       if ((Spms->IsKind(STANDARD_TYPE(StepGeom_ToroidalSurface)))
           || ((aSurfaceIsOffset)
               && anOffsetSu->BasisSurface()->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))))
       {
-        Handle(Geom_ToroidalSurface) TS;
+        occ::handle<Geom_ToroidalSurface> TS;
         if (aSurfaceIsOffset)
-          TS = Handle(Geom_ToroidalSurface)::DownCast(anOffsetSu->BasisSurface());
+          TS = occ::down_cast<Geom_ToroidalSurface>(anOffsetSu->BasisSurface());
         else
-          TS = Handle(Geom_ToroidalSurface)::DownCast(Su);
-        Standard_Real R = TS->MajorRadius();
-        Standard_Real r = TS->MinorRadius();
+          TS = occ::down_cast<Geom_ToroidalSurface>(Su);
+        double R = TS->MajorRadius();
+        double r = TS->MinorRadius();
         if (R < r) // if torus is degenerate or base surface is degenerate, make revolution instead
         {
           gp_Ax3 Ax3 = TS->Position();
@@ -216,10 +217,10 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
           gp_Dir dir = Ax3.Direction();
           gp_Dir X   = Ax3.XDirection();
           // create basis curve
-          Standard_Real UF, VF, UL, VL;
+          double UF, VF, UL, VL;
           ShapeAlgo::AlgoContainer()->GetFaceUVBounds(aFace, UF, UL, VF, VL);
-          gp_Ax2             Ax2(pos.XYZ() + X.XYZ() * TS->MajorRadius(), X ^ dir, X);
-          Handle(Geom_Curve) BasisCurve = new Geom_Circle(Ax2, TS->MinorRadius());
+          gp_Ax2                  Ax2(pos.XYZ() + X.XYZ() * TS->MajorRadius(), X ^ dir, X);
+          occ::handle<Geom_Curve> BasisCurve = new Geom_Circle(Ax2, TS->MinorRadius());
           // convert basis curve to bspline in order to avoid self-intersecting
           // surface of revolution (necessary e.g. for CATIA)
           if (VL - VF - 2 * M_PI < -Precision::PConfusion())
@@ -236,7 +237,8 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
           gp_Ax1 Axis = Ax3.Axis();
           if (!Ax3.Direct())
             Axis.Reverse();
-          Handle(Geom_SurfaceOfRevolution) Rev = new Geom_SurfaceOfRevolution(BasisCurve, Axis);
+          occ::handle<Geom_SurfaceOfRevolution> Rev =
+            new Geom_SurfaceOfRevolution(BasisCurve, Axis);
 
           // and translate it
           if (aSurfaceIsOffset)
@@ -257,10 +259,10 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
     // ----------------
     // Translates Wires
     // ----------------
-    Handle(StepShape_Loop) Loop;
+    occ::handle<StepShape_Loop> Loop;
 
-    TopoDSToStep_MakeStepWire   MkWire;
-    TColStd_SequenceOfTransient mySeq;
+    TopoDSToStep_MakeStepWire                             MkWire;
+    NCollection_Sequence<occ::handle<Standard_Transient>> mySeq;
 
     // Initialize the Wire Explorer with the forward face
     TopExp_Explorer WireExp;
@@ -272,7 +274,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
       {
         MkWire.Init(CurrentWire, aTool, FP, theLocalFactors);
         if (MkWire.IsDone())
-          Loop = Handle(StepShape_Loop)::DownCast(MkWire.Value());
+          Loop = occ::down_cast<StepShape_Loop>(MkWire.Value());
         else
         {
           FP->AddWarning(errShape, " a Wire not mapped");
@@ -280,7 +282,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
         }
       }
 
-      Handle(StepShape_FaceBound) FaceBound = new StepShape_FaceBound();
+      occ::handle<StepShape_FaceBound> FaceBound = new StepShape_FaceBound();
 
       // ----------------------------------------------------
       // When the geometric normal of a Surface is reversed :
@@ -292,7 +294,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
       // If face orientation is Reversed => the underlying (Step mapped) wire
       // are explicitly reversed
 
-      Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
+      occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
 
       // Ajoute le 30 Juin pour TEST
       // Il convient de reprendre a la base ce probleme d'orientation
@@ -322,9 +324,9 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
       // ------------------------------------------------
       for (; Ex.More(); Ex.Next())
       {
-        TopoDS_Edge          E = TopoDS::Edge(Ex.Current());
-        Standard_Real        cf, cl;
-        Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(E, ForwardFace, cf, cl);
+        TopoDS_Edge               E = TopoDS::Edge(Ex.Current());
+        double                    cf, cl;
+        occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(E, ForwardFace, cf, cl);
         if (BRep_Tool::Degenerated(E) || C2d.IsNull())
         {
           // The edge 2D Geometry degenerates in 3D
@@ -333,13 +335,13 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
           continue;
         }
         // Copy the Curve2d which might be changed
-        C2d = Handle(Geom2d_Curve)::DownCast(C2d->Copy());
+        C2d = occ::down_cast<Geom2d_Curve>(C2d->Copy());
 
         // for writing VERTEX_LOOP
         if (!aTool.IsBound(E))
           continue;
-        Handle(StepGeom_Curve) Cpms =
-          Handle(StepShape_EdgeCurve)::DownCast(aTool.Find(E))->EdgeGeometry();
+        occ::handle<StepGeom_Curve> Cpms =
+          occ::down_cast<StepShape_EdgeCurve>(aTool.Find(E))->EdgeGeometry();
         if (Cpms.IsNull())
           continue;
 
@@ -353,7 +355,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
                 || Su->IsKind(STANDARD_TYPE(Geom_ConicalSurface))
                 || Su->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)))
             {
-              C2d = new Geom2d_TrimmedCurve(C2d, cf, cl, Standard_True);
+              C2d = new Geom2d_TrimmedCurve(C2d, cf, cl, true);
             }
           }
 
@@ -367,11 +369,11 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
           // use the BasisSurface.
           //   CKY  23 SEP 1996 : on reste en Radian car on code des Radians
           //    sauf que ca ne marche pas bien ...
-          Handle(Geom2d_Curve) C2dMapped;
+          occ::handle<Geom2d_Curve> C2dMapped;
           if (Su->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
           {
-            Handle(Geom_RectangularTrimmedSurface) alocalRTS =
-              Handle(Geom_RectangularTrimmedSurface)::DownCast(Su);
+            occ::handle<Geom_RectangularTrimmedSurface> alocalRTS =
+              occ::down_cast<Geom_RectangularTrimmedSurface>(Su);
             C2dMapped = GeomConvert_Units::RadianToDegree(C2d,
                                                           alocalRTS->BasisSurface(),
                                                           theLocalFactors.LengthFactor(),
@@ -391,28 +393,30 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
           // --------------------
           // Translate the Pcurve
           // --------------------
-          Handle(StepGeom_Pcurve)                     Pc  = new StepGeom_Pcurve;
-          Handle(StepRepr_DefinitionalRepresentation) DRI = new StepRepr_DefinitionalRepresentation;
-          Handle(StepRepr_HArray1OfRepresentationItem) aItems =
-            new StepRepr_HArray1OfRepresentationItem(1, 1);
+          occ::handle<StepGeom_Pcurve>                     Pc = new StepGeom_Pcurve;
+          occ::handle<StepRepr_DefinitionalRepresentation> DRI =
+            new StepRepr_DefinitionalRepresentation;
+          occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aItems =
+            new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
           aItems->SetValue(1, MkCurve.Value());
-          Handle(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext)
+          occ::handle<StepGeom_GeometricRepresentationContextAndParametricRepresentationContext>
             aContext =
               new StepGeom_GeometricRepresentationContextAndParametricRepresentationContext();
-          Handle(TCollection_HAsciiString) aContextIdentifier =
+          occ::handle<TCollection_HAsciiString> aContextIdentifier =
             new TCollection_HAsciiString("2D SPACE");
-          Handle(TCollection_HAsciiString) aContextType   = new TCollection_HAsciiString("");
-          Standard_Integer                 aCoordSpaceDim = 2;
+          occ::handle<TCollection_HAsciiString> aContextType   = new TCollection_HAsciiString("");
+          int                                   aCoordSpaceDim = 2;
           aContext->Init(aContextIdentifier, aContextType, aCoordSpaceDim);
 
-          Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
+          occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
 
           DRI->Init(aName, aItems, aContext);
           Pc->Init(aName, Spms, DRI);
-          Handle(StepGeom_SurfaceCurve) C1pms = Handle(StepGeom_SurfaceCurve)::DownCast(Cpms);
-          Handle(StepGeom_HArray1OfPcurveOrSurface) aGeom = C1pms->AssociatedGeometry();
+          occ::handle<StepGeom_SurfaceCurve> C1pms = occ::down_cast<StepGeom_SurfaceCurve>(Cpms);
+          occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> aGeom =
+            C1pms->AssociatedGeometry();
           if (aGeom.IsNull())
-            aGeom = new StepGeom_HArray1OfPcurveOrSurface(1, 2);
+            aGeom = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, 2);
           StepGeom_PcurveOrSurface PcOrSur;
           PcOrSur.SetValue(Pc);
           if ((aGeom->Value(1)).IsNull())
@@ -436,24 +440,25 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
     // ------------------
     // Translate the Face
     // ------------------
-    Standard_Integer nbWires = mySeq.Length();
+    int nbWires = mySeq.Length();
     if (nbWires)
     {
-      Handle(StepShape_HArray1OfFaceBound) aBounds = new StepShape_HArray1OfFaceBound(1, nbWires);
-      for (Standard_Integer i = 1; i <= nbWires; i++)
+      occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> aBounds =
+        new NCollection_HArray1<occ::handle<StepShape_FaceBound>>(1, nbWires);
+      for (int i = 1; i <= nbWires; i++)
       {
-        aBounds->SetValue(i, Handle(StepShape_FaceBound)::DownCast(mySeq.Value(i)));
+        aBounds->SetValue(i, occ::down_cast<StepShape_FaceBound>(mySeq.Value(i)));
       }
-      Handle(StepShape_AdvancedFace) Fpms = new StepShape_AdvancedFace;
+      occ::handle<StepShape_AdvancedFace> Fpms = new StepShape_AdvancedFace;
       // The underlying surface has always a direct axis (see above)
-      Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
+      occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
 
       Fpms->Init(aName, aBounds, Spms, aFace.Orientation() == TopAbs_FORWARD);
 
       aTool.Bind(aFace, Fpms);
       myError  = TopoDSToStep_FaceDone;
       myResult = Fpms;
-      done     = Standard_True;
+      done     = true;
     }
     else
     {
@@ -462,20 +467,20 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face&                    aFace
       // ----------------------------
       FP->AddWarning(errShape, " No Wires of this Face were mapped");
       myError = TopoDSToStep_NoWireMapped;
-      done    = Standard_False;
+      done    = false;
     }
   }
   catch (Standard_Failure const& theFailure)
   {
     FP->AddFail(errShape, theFailure.GetMessageString());
     myError = TopoDSToStep_FaceOther;
-    done    = Standard_False;
+    done    = false;
   }
 }
 
 //=================================================================================================
 
-const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepFace::Value() const
+const occ::handle<StepShape_TopologicalRepresentationItem>& TopoDSToStep_MakeStepFace::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeStepFace::Value() - no result");
   return myResult;

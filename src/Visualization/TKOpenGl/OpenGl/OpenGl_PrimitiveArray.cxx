@@ -72,7 +72,7 @@ public:
 
   virtual bool HasColorAttribute() const
   {
-    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
       if (anAttrib.Id == Graphic3d_TOA_COLOR)
@@ -85,7 +85,7 @@ public:
 
   virtual bool HasNormalAttribute() const
   {
-    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
       if (anAttrib.Id == Graphic3d_TOA_NORM)
@@ -96,7 +96,7 @@ public:
     return false;
   }
 
-  virtual void BindPositionAttribute(const Handle(OpenGl_Context)& theGlCtx) const
+  virtual void BindPositionAttribute(const occ::handle<OpenGl_Context>& theGlCtx) const
   {
     if (!TheBaseClass::IsValid())
     {
@@ -104,10 +104,10 @@ public:
     }
 
     TheBaseClass::Bind(theGlCtx);
-    GLint               aNbComp;
-    const GLubyte*      anOffset   = TheBaseClass::myOffset;
-    const Standard_Size aMuliplier = Stride != 0 ? 1 : TheBaseClass::myElemsNb;
-    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    GLint          aNbComp;
+    const GLubyte* anOffset   = TheBaseClass::myOffset;
+    const size_t   aMuliplier = Stride != 0 ? 1 : TheBaseClass::myElemsNb;
+    for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib  = Attribs[anAttribIter];
       const GLenum               aDataType = toGlDataType(anAttrib.DataType, aNbComp);
@@ -126,7 +126,7 @@ public:
     }
   }
 
-  virtual void BindAllAttributes(const Handle(OpenGl_Context)& theGlCtx) const
+  virtual void BindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const
   {
     if (!TheBaseClass::IsValid())
     {
@@ -134,10 +134,10 @@ public:
     }
 
     TheBaseClass::Bind(theGlCtx);
-    GLint               aNbComp;
-    const GLubyte*      anOffset   = TheBaseClass::myOffset;
-    const Standard_Size aMuliplier = Stride != 0 ? 1 : TheBaseClass::myElemsNb;
-    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    GLint          aNbComp;
+    const GLubyte* anOffset   = TheBaseClass::myOffset;
+    const size_t   aMuliplier = Stride != 0 ? 1 : TheBaseClass::myElemsNb;
+    for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib  = Attribs[anAttribIter];
       const GLenum               aDataType = toGlDataType(anAttrib.DataType, aNbComp);
@@ -149,7 +149,7 @@ public:
     }
   }
 
-  virtual void UnbindAllAttributes(const Handle(OpenGl_Context)& theGlCtx) const
+  virtual void UnbindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const
   {
     if (!TheBaseClass::IsValid())
     {
@@ -157,7 +157,7 @@ public:
     }
     TheBaseClass::Unbind(theGlCtx);
 
-    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
       TheBaseClass::unbindAttribute(theGlCtx, anAttrib.Id);
@@ -166,12 +166,12 @@ public:
 
 private:
   Graphic3d_Attribute Attribs[NbAttributes];
-  Standard_Integer    Stride;
+  int                 Stride;
 };
 
 //=================================================================================================
 
-void OpenGl_PrimitiveArray::clearMemoryGL(const Handle(OpenGl_Context)& theGlCtx) const
+void OpenGl_PrimitiveArray::clearMemoryGL(const occ::handle<OpenGl_Context>& theGlCtx) const
 {
   if (!myVboIndices.IsNull())
   {
@@ -187,7 +187,7 @@ void OpenGl_PrimitiveArray::clearMemoryGL(const Handle(OpenGl_Context)& theGlCtx
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo(const Handle(OpenGl_Context)& theCtx) const
+bool OpenGl_PrimitiveArray::initNormalVbo(const occ::handle<OpenGl_Context>& theCtx) const
 {
   switch (myAttribs->NbAttributes)
   {
@@ -223,8 +223,8 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo(const Handle(OpenGl_Contex
       break;
   }
 
-  const Standard_Boolean isAttribMutable     = myAttribs->IsMutable();
-  const Standard_Boolean isAttribInterleaved = myAttribs->IsInterleaved();
+  const bool isAttribMutable     = myAttribs->IsMutable();
+  const bool isAttribInterleaved = myAttribs->IsInterleaved();
   if (myAttribs->NbElements != myAttribs->NbMaxElements() && myIndices.IsNull()
       && (!isAttribInterleaved || isAttribMutable))
   {
@@ -234,7 +234,7 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo(const Handle(OpenGl_Contex
 
   // specify data type as Byte and NbComponents as Stride, so that
   // OpenGl_VertexBuffer::EstimatedDataSize() will return correct value
-  const Standard_Integer aNbVertexes =
+  const int aNbVertexes =
     (isAttribMutable || !isAttribInterleaved) ? myAttribs->NbMaxElements() : myAttribs->NbElements;
   if (!myVboAttribs->init(theCtx,
                           myAttribs->Stride,
@@ -253,7 +253,7 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo(const Handle(OpenGl_Contex
                         aMsg);
 
     clearMemoryGL(theCtx);
-    return Standard_False;
+    return false;
   }
   else if (myIndices.IsNull())
   {
@@ -263,10 +263,10 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo(const Handle(OpenGl_Contex
       // just skipped at the end of buffer); this doesn't matter in case if we have indexed array
       myVboAttribs->SetElemsNb(myAttribs->NbElements);
     }
-    return Standard_True;
+    return true;
   }
 
-  const Standard_Integer aNbIndexes =
+  const int aNbIndexes =
     !myIndices->IsMutable() ? myIndices->NbElements : myIndices->NbMaxElements();
   myVboIndices = new OpenGl_IndexBuffer();
   bool isOk    = false;
@@ -292,7 +292,7 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo(const Handle(OpenGl_Contex
     }
     default: {
       clearMemoryGL(theCtx);
-      return Standard_False;
+      return false;
     }
   }
   if (!isOk)
@@ -306,15 +306,15 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo(const Handle(OpenGl_Contex
                         GL_DEBUG_SEVERITY_LOW,
                         aMsg);
     clearMemoryGL(theCtx);
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_PrimitiveArray::buildVBO(const Handle(OpenGl_Context)& theCtx,
-                                                 const Standard_Boolean        theToKeepData) const
+bool OpenGl_PrimitiveArray::buildVBO(const occ::handle<OpenGl_Context>& theCtx,
+                                     const bool                         theToKeepData) const
 {
   bool isNormalMode = theCtx->ToUseVbo();
   clearMemoryGL(theCtx);
@@ -322,7 +322,7 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO(const Handle(OpenGl_Context)& t
       || myAttribs->NbAttributes < 1 || myAttribs->NbAttributes > 10)
   {
     // vertices should be always defined - others are optional
-    return Standard_False;
+    return false;
   }
 
   if (isNormalMode && initNormalVbo(theCtx))
@@ -336,10 +336,10 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO(const Handle(OpenGl_Context)& t
     {
       myAttribs->Validate();
     }
-    return Standard_True;
+    return true;
   }
 
-  Handle(OpenGl_VertexBufferCompat) aVboAttribs;
+  occ::handle<OpenGl_VertexBufferCompat> aVboAttribs;
   switch (myAttribs->NbAttributes)
   {
     case 1:
@@ -376,7 +376,7 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO(const Handle(OpenGl_Context)& t
   aVboAttribs->initLink(myAttribs, 0, myAttribs->NbElements, GL_NONE);
   if (!myIndices.IsNull())
   {
-    Handle(OpenGl_IndexBufferCompat) aVboIndices = new OpenGl_IndexBufferCompat();
+    occ::handle<OpenGl_IndexBufferCompat> aVboIndices = new OpenGl_IndexBufferCompat();
     switch (myIndices->Stride)
     {
       case 2: {
@@ -388,7 +388,7 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO(const Handle(OpenGl_Context)& t
         break;
       }
       default: {
-        return Standard_False;
+        return false;
       }
     }
     myVboIndices = aVboIndices;
@@ -401,12 +401,12 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO(const Handle(OpenGl_Context)& t
     // myAttribs.Nullify();
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void OpenGl_PrimitiveArray::updateVBO(const Handle(OpenGl_Context)& theCtx) const
+void OpenGl_PrimitiveArray::updateVBO(const occ::handle<OpenGl_Context>& theCtx) const
 {
   if (!myAttribs.IsNull())
   {
@@ -445,11 +445,11 @@ void OpenGl_PrimitiveArray::updateVBO(const Handle(OpenGl_Context)& theCtx) cons
 
 //=================================================================================================
 
-void OpenGl_PrimitiveArray::drawArray(const Handle(OpenGl_Workspace)& theWorkspace,
-                                      const Graphic3d_Vec4*           theFaceColors,
-                                      const Standard_Boolean          theHasVertColor) const
+void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                      const NCollection_Vec4<float>*       theFaceColors,
+                                      const bool                           theHasVertColor) const
 {
-  const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aGlContext = theWorkspace->GetGlContext();
   if (myVboAttribs.IsNull())
   {
     if (myDrawMode == GL_POINTS && aGlContext->core11ffp != NULL)
@@ -481,7 +481,7 @@ void OpenGl_PrimitiveArray::drawArray(const Handle(OpenGl_Workspace)& theWorkspa
       const size_t aStride = myVboIndices->GetDataType() == GL_UNSIGNED_SHORT
                                ? sizeof(unsigned short)
                                : sizeof(unsigned int);
-      for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
+      for (int aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
         if (theFaceColors != NULL)
@@ -506,7 +506,7 @@ void OpenGl_PrimitiveArray::drawArray(const Handle(OpenGl_Workspace)& theWorkspa
   else if (!myBounds.IsNull())
   {
     GLint aFirstElem = 0;
-    for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
+    for (int aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
       if (theFaceColors != NULL)
@@ -533,24 +533,24 @@ void OpenGl_PrimitiveArray::drawArray(const Handle(OpenGl_Workspace)& theWorkspa
 
 //=================================================================================================
 
-void OpenGl_PrimitiveArray::drawEdges(const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_PrimitiveArray::drawEdges(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
-  const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aGlContext = theWorkspace->GetGlContext();
   if (myVboAttribs.IsNull())
   {
     return;
   }
 
-  const OpenGl_Aspects*  anAspect     = theWorkspace->Aspects();
-  const Standard_Integer aPolyModeOld = aGlContext->SetPolygonMode(GL_LINE);
+  const OpenGl_Aspects* anAspect     = theWorkspace->Aspects();
+  const int             aPolyModeOld = aGlContext->SetPolygonMode(GL_LINE);
 
   if (aGlContext->core20fwd != NULL)
   {
-    aGlContext->ShaderManager()->BindLineProgram(Handle(OpenGl_TextureSet)(),
+    aGlContext->ShaderManager()->BindLineProgram(occ::handle<OpenGl_TextureSet>(),
                                                  anAspect->Aspect()->EdgeLineType(),
                                                  Graphic3d_TypeOfShadingModel_Unlit,
                                                  Graphic3d_AlphaMode_Opaque,
-                                                 Standard_False,
+                                                 false,
                                                  anAspect->ShaderProgramRes(aGlContext));
   }
   aGlContext->SetSampleAlphaToCoverage(
@@ -588,7 +588,7 @@ void OpenGl_PrimitiveArray::drawEdges(const Handle(OpenGl_Workspace)& theWorkspa
       const size_t aStride = myVboIndices->GetDataType() == GL_UNSIGNED_SHORT
                                ? sizeof(unsigned short)
                                : sizeof(unsigned int);
-      for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
+      for (int aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
         aGlContext->core11fwd->glDrawElements(aDrawMode,
@@ -611,7 +611,7 @@ void OpenGl_PrimitiveArray::drawEdges(const Handle(OpenGl_Workspace)& theWorkspa
   else if (!myBounds.IsNull())
   {
     GLint aFirstElem = 0;
-    for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
+    for (int aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
       aGlContext->core11fwd->glDrawArrays(aDrawMode, aFirstElem, aNbElemsInGroup);
@@ -635,13 +635,13 @@ void OpenGl_PrimitiveArray::drawEdges(const Handle(OpenGl_Workspace)& theWorkspa
 
 //=================================================================================================
 
-void OpenGl_PrimitiveArray::drawMarkers(const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_PrimitiveArray::drawMarkers(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
-  const OpenGl_Aspects*         anAspectMarker = theWorkspace->Aspects();
-  const Handle(OpenGl_Context)& aCtx           = theWorkspace->GetGlContext();
-  const GLenum                  aDrawMode =
+  const OpenGl_Aspects*              anAspectMarker = theWorkspace->Aspects();
+  const occ::handle<OpenGl_Context>& aCtx           = theWorkspace->GetGlContext();
+  const GLenum                       aDrawMode =
     !aCtx->ActiveProgram().IsNull() && aCtx->ActiveProgram()->HasTessellationStage() ? GL_PATCHES
-                                                                                                      : myDrawMode;
+                                                                                                           : myDrawMode;
   if (anAspectMarker->Aspect()->MarkerType() == Aspect_TOM_POINT)
   {
     aCtx->SetPointSize(anAspectMarker->MarkerSize());
@@ -676,12 +676,12 @@ void OpenGl_PrimitiveArray::drawMarkers(const Handle(OpenGl_Workspace)& theWorks
     aCtx->SetPointSize(1.0f);
   }
   // Textured markers will be drawn with the glBitmap
-  else if (const Handle(OpenGl_PointSprite)& aSprite =
+  else if (const occ::handle<OpenGl_PointSprite>& aSprite =
              anAspectMarker->SpriteRes(aCtx, theWorkspace->ToHighlight()))
   {
-    for (Standard_Integer anIter = 0; anIter < myAttribs->NbElements; anIter++)
+    for (int anIter = 0; anIter < myAttribs->NbElements; anIter++)
     {
-      aCtx->core11ffp->glRasterPos3fv(myAttribs->Value<Graphic3d_Vec3>(anIter).GetData());
+      aCtx->core11ffp->glRasterPos3fv(myAttribs->Value<NCollection_Vec3<float>>(anIter).GetData());
       aSprite->DrawBitmap(theWorkspace->GetGlContext());
     }
   }
@@ -705,8 +705,8 @@ void OpenGl_PrimitiveArray::drawMarkers(const Handle(OpenGl_Workspace)& theWorks
 OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver* theDriver)
 
     : myDrawMode(DRAW_MODE_NONE),
-      myIsFillType(Standard_False),
-      myIsVboInit(Standard_False)
+      myIsFillType(false),
+      myIsVboInit(false)
 {
   if (theDriver != NULL)
   {
@@ -716,18 +716,18 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver* theDriv
 
 //=================================================================================================
 
-OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver*          theDriver,
-                                             const Graphic3d_TypeOfPrimitiveArray theType,
-                                             const Handle(Graphic3d_IndexBuffer)& theIndices,
-                                             const Handle(Graphic3d_Buffer)&      theAttribs,
-                                             const Handle(Graphic3d_BoundBuffer)& theBounds)
+OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver*               theDriver,
+                                             const Graphic3d_TypeOfPrimitiveArray      theType,
+                                             const occ::handle<Graphic3d_IndexBuffer>& theIndices,
+                                             const occ::handle<Graphic3d_Buffer>&      theAttribs,
+                                             const occ::handle<Graphic3d_BoundBuffer>& theBounds)
 
     : myIndices(theIndices),
       myAttribs(theAttribs),
       myBounds(theBounds),
       myDrawMode(DRAW_MODE_NONE),
-      myIsFillType(Standard_False),
-      myIsVboInit(Standard_False)
+      myIsFillType(false),
+      myIsVboInit(false)
 {
   if (!myIndices.IsNull() && myIndices->NbElements < 1)
   {
@@ -737,8 +737,8 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver*        
 
   if (theDriver != NULL)
   {
-    myUID                              = theDriver->GetNextPrimitiveArrayUID();
-    const Handle(OpenGl_Context)& aCtx = theDriver->GetSharedContext();
+    myUID                                   = theDriver->GetNextPrimitiveArrayUID();
+    const occ::handle<OpenGl_Context>& aCtx = theDriver->GetSharedContext();
     if (!aCtx.IsNull() && aCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
     {
       processIndices(aCtx);
@@ -759,7 +759,7 @@ OpenGl_PrimitiveArray::~OpenGl_PrimitiveArray()
 
 void OpenGl_PrimitiveArray::Release(OpenGl_Context* theContext)
 {
-  myIsVboInit = Standard_False;
+  myIsVboInit = false;
   if (!myVboIndices.IsNull())
   {
     if (theContext)
@@ -780,9 +780,9 @@ void OpenGl_PrimitiveArray::Release(OpenGl_Context* theContext)
 
 //=================================================================================================
 
-Standard_Size OpenGl_PrimitiveArray::EstimatedDataSize() const
+size_t OpenGl_PrimitiveArray::EstimatedDataSize() const
 {
-  Standard_Size aSize = 0;
+  size_t aSize = 0;
   if (!myVboAttribs.IsNull())
   {
     aSize += myVboAttribs->EstimatedDataSize();
@@ -818,9 +818,9 @@ void OpenGl_PrimitiveArray::UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStat
     return;
   }
 
-  const Standard_Integer aNbIndices =
+  const int aNbIndices =
     !myVboIndices.IsNull() ? myVboIndices->GetElemsNb() : myVboAttribs->GetElemsNb();
-  const Standard_Integer aNbBounds = !myBounds.IsNull() ? myBounds->NbBounds : 1;
+  const int aNbBounds = !myBounds.IsNull() ? myBounds->NbBounds : 1;
   switch (myDrawMode)
   {
     case GL_POINTS: {
@@ -874,15 +874,15 @@ void OpenGl_PrimitiveArray::UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStat
 
 //=================================================================================================
 
-void OpenGl_PrimitiveArray::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
   if (myDrawMode == DRAW_MODE_NONE)
   {
     return;
   }
 
-  const OpenGl_Aspects*         anAspectFace = theWorkspace->Aspects();
-  const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
+  const OpenGl_Aspects*              anAspectFace = theWorkspace->Aspects();
+  const occ::handle<OpenGl_Context>& aCtx         = theWorkspace->GetGlContext();
 
   bool toDrawArray = true, toSetLinePolygMode = false;
   int  toDrawInteriorEdges = 0; // 0 - no edges, 1 - glsl edges, 2 - polygonMode
@@ -935,14 +935,13 @@ void OpenGl_PrimitiveArray::Render(const Handle(OpenGl_Workspace)& theWorkspace)
   if (!myIsVboInit)
   {
     // compatibility - keep data to draw markers using display lists
-    Standard_Boolean toKeepData =
-      myDrawMode == GL_POINTS && anAspectFace->IsDisplayListSprite(aCtx);
+    bool toKeepData = myDrawMode == GL_POINTS && anAspectFace->IsDisplayListSprite(aCtx);
     if (aCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
     {
       processIndices(aCtx);
     }
     buildVBO(aCtx, toKeepData);
-    myIsVboInit = Standard_True;
+    myIsVboInit = true;
   }
   else if ((!myAttribs.IsNull() && myAttribs->IsMutable())
            || (!myIndices.IsNull() && myIndices->IsMutable()))
@@ -954,8 +953,8 @@ void OpenGl_PrimitiveArray::Render(const Handle(OpenGl_Workspace)& theWorkspace)
   // clang-format off
   anAspectFace = theWorkspace->ApplyAspects (false); // do not bind textures before binding the program
   // clang-format on
-  const Handle(OpenGl_TextureSet)& aTextureSet = theWorkspace->TextureSet();
-  const bool                       toEnableEnvMap =
+  const occ::handle<OpenGl_TextureSet>& aTextureSet = theWorkspace->TextureSet();
+  const bool                            toEnableEnvMap =
     !aTextureSet.IsNull() && aTextureSet == theWorkspace->EnvironmentTexture();
   if (toDrawArray)
   {
@@ -980,7 +979,7 @@ void OpenGl_PrimitiveArray::Render(const Handle(OpenGl_Workspace)& theWorkspace)
       case GL_LINE_STRIP: {
         aShadingModel =
           aCtx->ShaderManager()->ChooseLineShadingModel(anAspectFace->ShadingModel(), hasVertNorm);
-        aCtx->ShaderManager()->BindLineProgram(Handle(OpenGl_TextureSet)(),
+        aCtx->ShaderManager()->BindLineProgram(occ::handle<OpenGl_TextureSet>(),
                                                anAspectFace->Aspect()->LineType(),
                                                aShadingModel,
                                                Graphic3d_AlphaMode_Opaque,
@@ -1018,7 +1017,7 @@ void OpenGl_PrimitiveArray::Render(const Handle(OpenGl_Workspace)& theWorkspace)
     if (!aTextureSet.IsNull() && !aTextureSet->IsEmpty()
         && myDrawMode != GL_POINTS) // transformation is not supported within point sprites
     {
-      if (const Handle(OpenGl_Texture)& aFirstTexture = aTextureSet->First())
+      if (const occ::handle<OpenGl_Texture>& aFirstTexture = aTextureSet->First())
       {
         aCtx->SetTextureMatrix(aFirstTexture->Sampler()->Parameters(), aFirstTexture->IsTopDown());
       }
@@ -1032,12 +1031,12 @@ void OpenGl_PrimitiveArray::Render(const Handle(OpenGl_Workspace)& theWorkspace)
       aCtx->core11fwd->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    const Graphic3d_Vec4* aFaceColors =
+    const NCollection_Vec4<float>* aFaceColors =
       !myBounds.IsNull() && !toHilight
           && anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_HIDDENLINE
         ? myBounds->Colors
         : NULL;
-    const OpenGl_Vec4& anInteriorColor = theWorkspace->InteriorColor();
+    const NCollection_Vec4<float>& anInteriorColor = theWorkspace->InteriorColor();
     aCtx->SetColor4fv(anInteriorColor);
     if (!myIsFillType)
     {
@@ -1062,14 +1061,14 @@ void OpenGl_PrimitiveArray::Render(const Handle(OpenGl_Workspace)& theWorkspace)
     if (anAspectFace->Aspect()->ToDrawSilhouette() && aCtx->ToCullBackFaces()
         && aCtx->ShaderManager()->BindOutlineProgram())
     {
-      const Graphic3d_Vec2i  aViewSize(aCtx->Viewport()[2], aCtx->Viewport()[3]);
-      const Standard_Integer aMin = aViewSize.minComp();
-      const GLfloat          anEdgeWidth =
+      const NCollection_Vec2<int> aViewSize(aCtx->Viewport()[2], aCtx->Viewport()[3]);
+      const int                   aMin = aViewSize.minComp();
+      const GLfloat               anEdgeWidth =
         (GLfloat)anAspectFace->Aspect()->EdgeWidth() * aCtx->LineWidthScale() / (GLfloat)aMin;
       const GLfloat anOrthoScale =
         aCtx->Camera()->IsOrthographic() ? (GLfloat)aCtx->Camera()->Scale() : -1.0f;
 
-      const Handle(OpenGl_ShaderProgram)& anOutlineProgram = aCtx->ActiveProgram();
+      const occ::handle<OpenGl_ShaderProgram>& anOutlineProgram = aCtx->ActiveProgram();
       anOutlineProgram->SetUniform(
         aCtx,
         anOutlineProgram->GetStateLocation(OpenGl_OCCT_SILHOUETTE_THICKNESS),
@@ -1181,27 +1180,27 @@ void OpenGl_PrimitiveArray::setDrawMode(const Graphic3d_TypeOfPrimitiveArray the
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_PrimitiveArray::processIndices(
-  const Handle(OpenGl_Context)& theContext) const
+bool OpenGl_PrimitiveArray::processIndices(const occ::handle<OpenGl_Context>& theContext) const
 {
   if (myIndices.IsNull() || myAttribs.IsNull() || theContext->hasUintIndex)
   {
-    return Standard_True;
+    return true;
   }
 
   if (myAttribs->NbElements > std::numeric_limits<GLushort>::max())
   {
-    Handle(Graphic3d_Buffer) anAttribs = new Graphic3d_Buffer(Graphic3d_Buffer::DefaultAllocator());
+    occ::handle<Graphic3d_Buffer> anAttribs =
+      new Graphic3d_Buffer(Graphic3d_Buffer::DefaultAllocator());
     if (!anAttribs->Init(myIndices->NbElements,
                          myAttribs->AttributesArray(),
                          myAttribs->NbAttributes))
     {
-      return Standard_False; // failed to initialize attribute array
+      return false; // failed to initialize attribute array
     }
 
-    for (Standard_Integer anIdxIdx = 0; anIdxIdx < myIndices->NbElements; ++anIdxIdx)
+    for (int anIdxIdx = 0; anIdxIdx < myIndices->NbElements; ++anIdxIdx)
     {
-      const Standard_Integer anIndex = myIndices->Index(anIdxIdx);
+      const int anIndex = myIndices->Index(anIdxIdx);
       memcpy(anAttribs->ChangeData() + myAttribs->Stride * anIdxIdx,
              myAttribs->Data() + myAttribs->Stride * anIndex,
              myAttribs->Stride);
@@ -1211,16 +1210,16 @@ Standard_Boolean OpenGl_PrimitiveArray::processIndices(
     myAttribs = anAttribs;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void OpenGl_PrimitiveArray::InitBuffers(const Handle(OpenGl_Context)&        theContext,
-                                        const Graphic3d_TypeOfPrimitiveArray theType,
-                                        const Handle(Graphic3d_IndexBuffer)& theIndices,
-                                        const Handle(Graphic3d_Buffer)&      theAttribs,
-                                        const Handle(Graphic3d_BoundBuffer)& theBounds)
+void OpenGl_PrimitiveArray::InitBuffers(const occ::handle<OpenGl_Context>&        theContext,
+                                        const Graphic3d_TypeOfPrimitiveArray      theType,
+                                        const occ::handle<Graphic3d_IndexBuffer>& theIndices,
+                                        const occ::handle<Graphic3d_Buffer>&      theAttribs,
+                                        const occ::handle<Graphic3d_BoundBuffer>& theBounds)
 {
   // Release old graphic resources
   Release(theContext.get());
@@ -1238,7 +1237,7 @@ void OpenGl_PrimitiveArray::InitBuffers(const Handle(OpenGl_Context)&        the
 
 //=================================================================================================
 
-void OpenGl_PrimitiveArray::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void OpenGl_PrimitiveArray::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_PrimitiveArray)
 

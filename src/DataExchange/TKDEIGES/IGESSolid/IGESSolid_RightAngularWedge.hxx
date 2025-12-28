@@ -25,9 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-class IGESSolid_RightAngularWedge;
-DEFINE_STANDARD_HANDLE(IGESSolid_RightAngularWedge, IGESData_IGESEntity)
-
 //! defines RightAngularWedge, Type <152> Form Number <0>
 //! in package IGESSolid
 //! A right angular wedge is a triangular/trapezoidal prism
@@ -47,26 +44,26 @@ public:
   //! default (1,0,0)
   //! - anZAxis  : the unit vector defining local Z-axis
   //! default (0,0,1)
-  Standard_EXPORT void Init(const gp_XYZ&       aSize,
-                            const Standard_Real lowX,
-                            const gp_XYZ&       aCorner,
-                            const gp_XYZ&       anXAxis,
-                            const gp_XYZ&       anZAxis);
+  Standard_EXPORT void Init(const gp_XYZ& aSize,
+                            const double  lowX,
+                            const gp_XYZ& aCorner,
+                            const gp_XYZ& anXAxis,
+                            const gp_XYZ& anZAxis);
 
   //! returns the size
   Standard_EXPORT gp_XYZ Size() const;
 
   //! returns the length along the local X-axis
-  Standard_EXPORT Standard_Real XBigLength() const;
+  Standard_EXPORT double XBigLength() const;
 
   //! returns the smaller length along the local X-direction at Y=LY
-  Standard_EXPORT Standard_Real XSmallLength() const;
+  Standard_EXPORT double XSmallLength() const;
 
   //! returns the length along the local Y-axis
-  Standard_EXPORT Standard_Real YLength() const;
+  Standard_EXPORT double YLength() const;
 
   //! returns the length along the local Z-axis
-  Standard_EXPORT Standard_Real ZLength() const;
+  Standard_EXPORT double ZLength() const;
 
   //! returns the corner point coordinates
   Standard_EXPORT gp_Pnt Corner() const;
@@ -99,13 +96,12 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_RightAngularWedge, IGESData_IGESEntity)
 
-protected:
 private:
-  gp_XYZ        theSize;
-  Standard_Real theXSmallLength;
-  gp_XYZ        theCorner;
-  gp_XYZ        theXAxis;
-  gp_XYZ        theZAxis;
+  gp_XYZ theSize;
+  double theXSmallLength;
+  gp_XYZ theCorner;
+  gp_XYZ theXAxis;
+  gp_XYZ theZAxis;
 };
 
 #endif // _IGESSolid_RightAngularWedge_HeaderFile

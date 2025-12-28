@@ -22,23 +22,23 @@
 
 //=================================================================================================
 
-HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
-                                 const Standard_Real    Y1,
-                                 const Standard_Real    Z1,
-                                 const Standard_Real    X2,
-                                 const Standard_Real    Y2,
-                                 const Standard_Real    Z2,
-                                 const Standard_Real    XT1,
-                                 const Standard_Real    YT1,
-                                 const Standard_Real    ZT1,
-                                 const Standard_Real    XT2,
-                                 const Standard_Real    YT2,
-                                 const Standard_Real    ZT2,
-                                 const Standard_Integer Index,
-                                 const Standard_Boolean reg1,
-                                 const Standard_Boolean regn,
-                                 const Standard_Boolean outl,
-                                 const Standard_Boolean intl)
+HLRAlgo_BiPoint::HLRAlgo_BiPoint(const double X1,
+                                 const double Y1,
+                                 const double Z1,
+                                 const double X2,
+                                 const double Y2,
+                                 const double Z2,
+                                 const double XT1,
+                                 const double YT1,
+                                 const double ZT1,
+                                 const double XT2,
+                                 const double YT2,
+                                 const double ZT2,
+                                 const int    Index,
+                                 const bool   reg1,
+                                 const bool   regn,
+                                 const bool   outl,
+                                 const bool   intl)
 {
   myPoints.Pnt1.SetCoord(X1, Y1, Z1);
   myPoints.Pnt2.SetCoord(X2, Y2, Z2);
@@ -52,25 +52,25 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
   RgNLine(regn);
   OutLine(outl);
   IntLine(intl);
-  Hidden(Standard_False);
+  Hidden(false);
 }
 
 //=================================================================================================
 
-HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
-                                 const Standard_Real    Y1,
-                                 const Standard_Real    Z1,
-                                 const Standard_Real    X2,
-                                 const Standard_Real    Y2,
-                                 const Standard_Real    Z2,
-                                 const Standard_Real    XT1,
-                                 const Standard_Real    YT1,
-                                 const Standard_Real    ZT1,
-                                 const Standard_Real    XT2,
-                                 const Standard_Real    YT2,
-                                 const Standard_Real    ZT2,
-                                 const Standard_Integer Index,
-                                 const Standard_Integer flag)
+HLRAlgo_BiPoint::HLRAlgo_BiPoint(const double X1,
+                                 const double Y1,
+                                 const double Z1,
+                                 const double X2,
+                                 const double Y2,
+                                 const double Z2,
+                                 const double XT1,
+                                 const double YT1,
+                                 const double ZT1,
+                                 const double XT2,
+                                 const double YT2,
+                                 const double ZT2,
+                                 const int    Index,
+                                 const int    flag)
 {
   myPoints.Pnt1        = gp_XYZ(X1, Y1, Z1);
   myPoints.Pnt2        = gp_XYZ(X2, Y2, Z2);
@@ -80,31 +80,31 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
   myIndices.FaceConex1 = myIndices.Face1Pt1 = myIndices.Face1Pt2 = myIndices.FaceConex2 =
     myIndices.Face2Pt1 = myIndices.Face2Pt2 = 0;
   myIndices.SegFlags                        = flag;
-  Hidden(Standard_False);
+  Hidden(false);
 }
 
 //=================================================================================================
 
-HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
-                                 const Standard_Real    Y1,
-                                 const Standard_Real    Z1,
-                                 const Standard_Real    X2,
-                                 const Standard_Real    Y2,
-                                 const Standard_Real    Z2,
-                                 const Standard_Real    XT1,
-                                 const Standard_Real    YT1,
-                                 const Standard_Real    ZT1,
-                                 const Standard_Real    XT2,
-                                 const Standard_Real    YT2,
-                                 const Standard_Real    ZT2,
-                                 const Standard_Integer Index,
-                                 const Standard_Integer i1,
-                                 const Standard_Integer i1p1,
-                                 const Standard_Integer i1p2,
-                                 const Standard_Boolean reg1,
-                                 const Standard_Boolean regn,
-                                 const Standard_Boolean outl,
-                                 const Standard_Boolean intl)
+HLRAlgo_BiPoint::HLRAlgo_BiPoint(const double X1,
+                                 const double Y1,
+                                 const double Z1,
+                                 const double X2,
+                                 const double Y2,
+                                 const double Z2,
+                                 const double XT1,
+                                 const double YT1,
+                                 const double ZT1,
+                                 const double XT2,
+                                 const double YT2,
+                                 const double ZT2,
+                                 const int    Index,
+                                 const int    i1,
+                                 const int    i1p1,
+                                 const int    i1p2,
+                                 const bool   reg1,
+                                 const bool   regn,
+                                 const bool   outl,
+                                 const bool   intl)
 {
   myPoints.Pnt1.SetCoord(X1, Y1, Z1);
   myPoints.Pnt2.SetCoord(X2, Y2, Z2);
@@ -120,28 +120,28 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
   RgNLine(regn);
   OutLine(outl);
   IntLine(intl);
-  Hidden(Standard_False);
+  Hidden(false);
 }
 
 //=================================================================================================
 
-HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
-                                 const Standard_Real    Y1,
-                                 const Standard_Real    Z1,
-                                 const Standard_Real    X2,
-                                 const Standard_Real    Y2,
-                                 const Standard_Real    Z2,
-                                 const Standard_Real    XT1,
-                                 const Standard_Real    YT1,
-                                 const Standard_Real    ZT1,
-                                 const Standard_Real    XT2,
-                                 const Standard_Real    YT2,
-                                 const Standard_Real    ZT2,
-                                 const Standard_Integer Index,
-                                 const Standard_Integer i1,
-                                 const Standard_Integer i1p1,
-                                 const Standard_Integer i1p2,
-                                 const Standard_Integer flag)
+HLRAlgo_BiPoint::HLRAlgo_BiPoint(const double X1,
+                                 const double Y1,
+                                 const double Z1,
+                                 const double X2,
+                                 const double Y2,
+                                 const double Z2,
+                                 const double XT1,
+                                 const double YT1,
+                                 const double ZT1,
+                                 const double XT2,
+                                 const double YT2,
+                                 const double ZT2,
+                                 const int    Index,
+                                 const int    i1,
+                                 const int    i1p1,
+                                 const int    i1p2,
+                                 const int    flag)
 {
   myPoints.Pnt1.SetCoord(X1, Y1, Z1);
   myPoints.Pnt2.SetCoord(X2, Y2, Z2);
@@ -153,34 +153,34 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
   myIndices.Face1Pt2   = i1p2;
   myIndices.FaceConex2 = myIndices.Face2Pt1 = myIndices.Face2Pt2 = 0;
   myIndices.SegFlags                                             = flag;
-  Hidden(Standard_False);
+  Hidden(false);
 }
 
 //=================================================================================================
 
-HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
-                                 const Standard_Real    Y1,
-                                 const Standard_Real    Z1,
-                                 const Standard_Real    X2,
-                                 const Standard_Real    Y2,
-                                 const Standard_Real    Z2,
-                                 const Standard_Real    XT1,
-                                 const Standard_Real    YT1,
-                                 const Standard_Real    ZT1,
-                                 const Standard_Real    XT2,
-                                 const Standard_Real    YT2,
-                                 const Standard_Real    ZT2,
-                                 const Standard_Integer Index,
-                                 const Standard_Integer i1,
-                                 const Standard_Integer i1p1,
-                                 const Standard_Integer i1p2,
-                                 const Standard_Integer i2,
-                                 const Standard_Integer i2p1,
-                                 const Standard_Integer i2p2,
-                                 const Standard_Boolean reg1,
-                                 const Standard_Boolean regn,
-                                 const Standard_Boolean outl,
-                                 const Standard_Boolean intl)
+HLRAlgo_BiPoint::HLRAlgo_BiPoint(const double X1,
+                                 const double Y1,
+                                 const double Z1,
+                                 const double X2,
+                                 const double Y2,
+                                 const double Z2,
+                                 const double XT1,
+                                 const double YT1,
+                                 const double ZT1,
+                                 const double XT2,
+                                 const double YT2,
+                                 const double ZT2,
+                                 const int    Index,
+                                 const int    i1,
+                                 const int    i1p1,
+                                 const int    i1p2,
+                                 const int    i2,
+                                 const int    i2p1,
+                                 const int    i2p2,
+                                 const bool   reg1,
+                                 const bool   regn,
+                                 const bool   outl,
+                                 const bool   intl)
 {
   myPoints.Pnt1.SetCoord(X1, Y1, Z1);
   myPoints.Pnt2.SetCoord(X2, Y2, Z2);
@@ -198,31 +198,31 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
   RgNLine(regn);
   OutLine(outl);
   IntLine(intl);
-  Hidden(Standard_False);
+  Hidden(false);
 }
 
 //=================================================================================================
 
-HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
-                                 const Standard_Real    Y1,
-                                 const Standard_Real    Z1,
-                                 const Standard_Real    X2,
-                                 const Standard_Real    Y2,
-                                 const Standard_Real    Z2,
-                                 const Standard_Real    XT1,
-                                 const Standard_Real    YT1,
-                                 const Standard_Real    ZT1,
-                                 const Standard_Real    XT2,
-                                 const Standard_Real    YT2,
-                                 const Standard_Real    ZT2,
-                                 const Standard_Integer Index,
-                                 const Standard_Integer i1,
-                                 const Standard_Integer i1p1,
-                                 const Standard_Integer i1p2,
-                                 const Standard_Integer i2,
-                                 const Standard_Integer i2p1,
-                                 const Standard_Integer i2p2,
-                                 const Standard_Integer flag)
+HLRAlgo_BiPoint::HLRAlgo_BiPoint(const double X1,
+                                 const double Y1,
+                                 const double Z1,
+                                 const double X2,
+                                 const double Y2,
+                                 const double Z2,
+                                 const double XT1,
+                                 const double YT1,
+                                 const double ZT1,
+                                 const double XT2,
+                                 const double YT2,
+                                 const double ZT2,
+                                 const int    Index,
+                                 const int    i1,
+                                 const int    i1p1,
+                                 const int    i1p2,
+                                 const int    i2,
+                                 const int    i2p1,
+                                 const int    i2p2,
+                                 const int    flag)
 {
   myPoints.Pnt1.SetCoord(X1, Y1, Z1);
   myPoints.Pnt2.SetCoord(X2, Y2, Z2);
@@ -236,5 +236,5 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint(const Standard_Real    X1,
   myIndices.Face2Pt1   = i2p1;
   myIndices.Face2Pt2   = i2p2;
   myIndices.SegFlags   = flag;
-  Hidden(Standard_False);
+  Hidden(false);
 }

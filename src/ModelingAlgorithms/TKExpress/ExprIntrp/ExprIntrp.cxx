@@ -24,12 +24,12 @@
 
 static TCollection_AsciiString ExprIntrp_thestring;
 
-Standard_Boolean ExprIntrp::Parse(const Handle(ExprIntrp_Generator)& gen,
-                                  const TCollection_AsciiString&     str)
+bool ExprIntrp::Parse(const occ::handle<ExprIntrp_Generator>& gen,
+                      const TCollection_AsciiString&          str)
 {
   ExprIntrp_Recept.SetMaster(gen);
   if (str.Length() == 0)
-    return Standard_False;
+    return false;
   ExprIntrp_thestring = str;
   ExprIntrp_start_string(ExprIntrp_thestring.ToCString());
 
@@ -44,12 +44,12 @@ Standard_Boolean ExprIntrp::Parse(const Handle(ExprIntrp_Generator)& gen,
         kerror = ExprIntrpparse();
       }
       ExprIntrp_stop_string();
-      return Standard_True;
+      return true;
     }
     catch (Standard_Failure const&)
     {
     }
   }
   ExprIntrp_stop_string();
-  return Standard_False;
+  return false;
 }

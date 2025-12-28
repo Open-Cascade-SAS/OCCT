@@ -31,15 +31,15 @@ void Determine_Transition_LC(const IntRes2d_Position Pos1,
                              gp_Vec2d&               Tan2,
                              const gp_Vec2d&         Norm2,
                              IntRes2d_Transition&    T2,
-                             const Standard_Real)
+                             const double)
 {
 
-  Standard_Real sgn  = Tan1.Crossed(Tan2);
-  Standard_Real norm = Tan1.Magnitude() * Tan2.Magnitude();
+  double sgn  = Tan1.Crossed(Tan2);
+  double norm = Tan1.Magnitude() * Tan2.Magnitude();
 
   if (std::abs(sgn) <= TOLERANCE_ANGULAIRE * norm)
   { // Transition TOUCH #########
-    Standard_Boolean opos = (Tan1.Dot(Tan2)) < 0;
+    bool opos = (Tan1.Dot(Tan2)) < 0;
 
     gp_Vec2d Norm;
     //  Modified by Sergey KHROMOV - Thu Nov  2 17:57:15 2000 Begin
@@ -47,55 +47,55 @@ void Determine_Transition_LC(const IntRes2d_Position Pos1,
     //  Modified by Sergey KHROMOV - Thu Nov  2 17:57:16 2000 End
     Norm.SetCoord(-Tan1.Y(), Tan1.X());
 
-    Standard_Real Val1 = Norm.Dot(Norm1);
-    Standard_Real Val2 = Norm.Dot(Norm2);
+    double Val1 = Norm.Dot(Norm1);
+    double Val2 = Norm.Dot(Norm2);
 
     if (std::abs(Val1 - Val2) <= gp::Resolution())
     {
-      T1.SetValue(Standard_True, Pos1, IntRes2d_Unknown, opos);
-      T2.SetValue(Standard_True, Pos2, IntRes2d_Unknown, opos);
+      T1.SetValue(true, Pos1, IntRes2d_Unknown, opos);
+      T2.SetValue(true, Pos2, IntRes2d_Unknown, opos);
     }
     else if (Val2 > Val1)
     {
-      T2.SetValue(Standard_True, Pos2, IntRes2d_Inside, opos);
+      T2.SetValue(true, Pos2, IntRes2d_Inside, opos);
       if (opos)
       {
-        T1.SetValue(Standard_True, Pos1, IntRes2d_Inside, opos);
+        T1.SetValue(true, Pos1, IntRes2d_Inside, opos);
       }
       else
       {
-        T1.SetValue(Standard_True, Pos1, IntRes2d_Outside, opos);
+        T1.SetValue(true, Pos1, IntRes2d_Outside, opos);
       }
     }
     else
     { // Val1 > Val2
-      T2.SetValue(Standard_True, Pos2, IntRes2d_Outside, opos);
+      T2.SetValue(true, Pos2, IntRes2d_Outside, opos);
       if (opos)
       {
-        T1.SetValue(Standard_True, Pos1, IntRes2d_Outside, opos);
+        T1.SetValue(true, Pos1, IntRes2d_Outside, opos);
       }
       else
       {
-        T1.SetValue(Standard_True, Pos1, IntRes2d_Inside, opos);
+        T1.SetValue(true, Pos1, IntRes2d_Inside, opos);
       }
     }
   }
   else if (sgn < 0)
   {
-    T1.SetValue(Standard_False, Pos1, IntRes2d_In);
-    T2.SetValue(Standard_False, Pos2, IntRes2d_Out);
+    T1.SetValue(false, Pos1, IntRes2d_In);
+    T2.SetValue(false, Pos2, IntRes2d_Out);
   }
   else
   {
-    T1.SetValue(Standard_False, Pos1, IntRes2d_Out);
-    T2.SetValue(Standard_False, Pos2, IntRes2d_In);
+    T1.SetValue(false, Pos1, IntRes2d_Out);
+    T2.SetValue(false, Pos2, IntRes2d_In);
   }
 }
 
 //----------------------------------------------------------------------
-Standard_Real NormalizeOnCircleDomain(const Standard_Real _Param, const IntRes2d_Domain& TheDomain)
+double NormalizeOnCircleDomain(const double _Param, const IntRes2d_Domain& TheDomain)
 {
-  Standard_Real Param = _Param;
+  double Param = _Param;
   while (Param < TheDomain.FirstParameter())
   {
     Param += PIpPI;
@@ -110,7 +110,7 @@ Standard_Real NormalizeOnCircleDomain(const Standard_Real _Param, const IntRes2d
 //----------------------------------------------------------------------
 PeriodicInterval PeriodicInterval::FirstIntersection(PeriodicInterval& PInter)
 {
-  Standard_Real a, b;
+  double a, b;
   if (PInter.isnull || isnull)
   {
     PeriodicInterval PourSGI;
@@ -154,7 +154,7 @@ PeriodicInterval PeriodicInterval::FirstIntersection(PeriodicInterval& PInter)
 //----------------------------------------------------------------------
 PeriodicInterval PeriodicInterval::SecondIntersection(PeriodicInterval& PInter)
 {
-  Standard_Real a, b;
+  double a, b;
 
   if (PInter.isnull || isnull || this->Length() >= PIpPI || PInter.Length() >= PIpPI)
   {
@@ -162,8 +162,8 @@ PeriodicInterval PeriodicInterval::SecondIntersection(PeriodicInterval& PInter)
     return (PourSGI);
   }
 
-  Standard_Real PInter_inf = PInter.Binf + PIpPI;
-  Standard_Real PInter_sup = PInter.Bsup + PIpPI;
+  double PInter_inf = PInter.Binf + PIpPI;
+  double PInter_sup = PInter.Bsup + PIpPI;
   if (PInter_inf > Bsup)
   {
     PInter_inf = PInter.Binf - PIpPI;
@@ -186,15 +186,15 @@ PeriodicInterval PeriodicInterval::SecondIntersection(PeriodicInterval& PInter)
 Interval::Interval()
     : Binf(0.),
       Bsup(0.),
-      HasFirstBound(Standard_False),
-      HasLastBound(Standard_False)
+      HasFirstBound(false),
+      HasLastBound(false)
 {
-  IsNull = Standard_True;
+  IsNull = true;
 }
 
-Interval::Interval(const Standard_Real a, const Standard_Real b)
+Interval::Interval(const double a, const double b)
 {
-  HasFirstBound = HasLastBound = Standard_True;
+  HasFirstBound = HasLastBound = true;
   if (a < b)
   {
     Binf = a;
@@ -205,43 +205,40 @@ Interval::Interval(const Standard_Real a, const Standard_Real b)
     Binf = b;
     Bsup = a;
   }
-  IsNull = Standard_False;
+  IsNull = false;
 }
 
 Interval::Interval(const IntRes2d_Domain& Domain)
     : Binf(0.0),
       Bsup(0.0)
 {
-  IsNull = Standard_False;
+  IsNull = false;
   if (Domain.HasFirstPoint())
   {
-    HasFirstBound = Standard_True;
+    HasFirstBound = true;
     Binf          = Domain.FirstParameter() - Domain.FirstTolerance();
   }
   else
-    HasFirstBound = Standard_False;
+    HasFirstBound = false;
   if (Domain.HasLastPoint())
   {
-    HasLastBound = Standard_True;
+    HasLastBound = true;
     Bsup         = Domain.LastParameter() + Domain.LastTolerance();
   }
   else
-    HasLastBound = Standard_False;
+    HasLastBound = false;
 }
 
-Interval::Interval(const Standard_Real    a,
-                   const Standard_Boolean hf,
-                   const Standard_Real    b,
-                   const Standard_Boolean hl)
+Interval::Interval(const double a, const bool hf, const double b, const bool hl)
 {
   Binf          = a;
   Bsup          = b;
-  IsNull        = Standard_False;
+  IsNull        = false;
   HasFirstBound = hf;
   HasLastBound  = hl;
 }
 
-Standard_Real Interval::Length()
+double Interval::Length()
 {
   return ((IsNull) ? -1.0 : std::abs(Bsup - Binf));
 }
@@ -255,7 +252,7 @@ Interval Interval::IntersectionWithBounded(const Interval& Inter)
   }
   if (!(HasFirstBound || HasLastBound))
     return (Interval(Inter.Binf, Inter.Bsup));
-  Standard_Real a, b;
+  double a, b;
   if (HasFirstBound)
   {
     if (Inter.Bsup < Binf)

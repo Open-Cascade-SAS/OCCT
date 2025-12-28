@@ -18,9 +18,6 @@
 
 class StepGeom_Axis2Placement3d;
 
-DEFINE_STANDARD_HANDLE(StepVisual_RepositionedTessellatedGeometricSet,
-                       StepVisual_TessellatedGeometricSet)
-
 //! Representation of complex STEP entity RepositionedTessellatedGeometricSet
 class StepVisual_RepositionedTessellatedGeometricSet : public StepVisual_TessellatedGeometricSet
 {
@@ -34,20 +31,21 @@ public:
   StepVisual_RepositionedTessellatedGeometricSet() {};
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&                       theName,
-                            const NCollection_Handle<StepVisual_Array1OfTessellatedItem>& theItems,
-                            const Handle(StepGeom_Axis2Placement3d)& theLocation);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                                           theName,
+    const NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>& theItems,
+    const occ::handle<StepGeom_Axis2Placement3d>& theLocation);
 
   //! Returns location
-  Handle(StepGeom_Axis2Placement3d) Location() const { return myLocation; }
+  occ::handle<StepGeom_Axis2Placement3d> Location() const { return myLocation; }
 
   //! Sets location
-  void SetLocation(const Handle(StepGeom_Axis2Placement3d)& theLocation)
+  void SetLocation(const occ::handle<StepGeom_Axis2Placement3d>& theLocation)
   {
     myLocation = theLocation;
   }
 
 private:
-  Handle(StepGeom_Axis2Placement3d) myLocation;
+  occ::handle<StepGeom_Axis2Placement3d> myLocation;
 };
 #endif // StepVisual_RepositionedTessellatedGeometricSet_HeaderFile

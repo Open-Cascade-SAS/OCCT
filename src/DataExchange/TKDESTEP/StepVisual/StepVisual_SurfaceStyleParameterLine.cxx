@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine, Standard_Transi
 StepVisual_SurfaceStyleParameterLine::StepVisual_SurfaceStyleParameterLine() {}
 
 void StepVisual_SurfaceStyleParameterLine::Init(
-  const Handle(StepVisual_CurveStyle)&                    aStyleOfParameterLines,
-  const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts)
+  const occ::handle<StepVisual_CurveStyle>&                                aStyleOfParameterLines,
+  const occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>& aDirectionCounts)
 {
   // --- classe own fields ---
   styleOfParameterLines = aStyleOfParameterLines;
@@ -28,35 +28,36 @@ void StepVisual_SurfaceStyleParameterLine::Init(
 }
 
 void StepVisual_SurfaceStyleParameterLine::SetStyleOfParameterLines(
-  const Handle(StepVisual_CurveStyle)& aStyleOfParameterLines)
+  const occ::handle<StepVisual_CurveStyle>& aStyleOfParameterLines)
 {
   styleOfParameterLines = aStyleOfParameterLines;
 }
 
-Handle(StepVisual_CurveStyle) StepVisual_SurfaceStyleParameterLine::StyleOfParameterLines() const
+occ::handle<StepVisual_CurveStyle> StepVisual_SurfaceStyleParameterLine::StyleOfParameterLines()
+  const
 {
   return styleOfParameterLines;
 }
 
 void StepVisual_SurfaceStyleParameterLine::SetDirectionCounts(
-  const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts)
+  const occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>& aDirectionCounts)
 {
   directionCounts = aDirectionCounts;
 }
 
-Handle(StepVisual_HArray1OfDirectionCountSelect) StepVisual_SurfaceStyleParameterLine::
-  DirectionCounts() const
+occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>
+  StepVisual_SurfaceStyleParameterLine::DirectionCounts() const
 {
   return directionCounts;
 }
 
 StepVisual_DirectionCountSelect StepVisual_SurfaceStyleParameterLine::DirectionCountsValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return directionCounts->Value(num);
 }
 
-Standard_Integer StepVisual_SurfaceStyleParameterLine::NbDirectionCounts() const
+int StepVisual_SurfaceStyleParameterLine::NbDirectionCounts() const
 {
   return directionCounts->Length();
 }

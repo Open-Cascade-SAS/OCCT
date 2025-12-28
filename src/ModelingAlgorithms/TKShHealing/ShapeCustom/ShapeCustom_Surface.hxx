@@ -36,13 +36,13 @@ public:
 
   Standard_EXPORT ShapeCustom_Surface();
 
-  Standard_EXPORT ShapeCustom_Surface(const Handle(Geom_Surface)& S);
+  Standard_EXPORT ShapeCustom_Surface(const occ::handle<Geom_Surface>& S);
 
-  Standard_EXPORT void Init(const Handle(Geom_Surface)& S);
+  Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S);
 
   //! Returns maximal deviation of converted surface from the original
   //! one computed by last call to ConvertToAnalytical
-  Standard_Real Gap() const;
+  double Gap() const;
 
   //! Tries to convert the Surface to an Analytic form
   //! Returns the result
@@ -55,21 +55,20 @@ public:
   //! It works by analysing the case which can apply, creating the
   //! corresponding analytic surface, then checking coincidence
   //! Warning: Parameter laws are not kept, hence PCurves should be redone
-  Standard_EXPORT Handle(Geom_Surface) ConvertToAnalytical(const Standard_Real    tol,
-                                                           const Standard_Boolean substitute);
+  Standard_EXPORT occ::handle<Geom_Surface> ConvertToAnalytical(const double tol,
+                                                                const bool   substitute);
 
   //! Tries to convert the Surface to the Periodic form
   //! Returns the resulting surface
   //! Works only if the Surface is BSpline and is closed with
   //! Precision::Confusion()
   //! Else, or in case of failure, returns a Null Handle
-  Standard_EXPORT Handle(Geom_Surface) ConvertToPeriodic(const Standard_Boolean substitute,
-                                                         const Standard_Real    preci = -1);
+  Standard_EXPORT occ::handle<Geom_Surface> ConvertToPeriodic(const bool   substitute,
+                                                              const double preci = -1);
 
-protected:
 private:
-  Handle(Geom_Surface) mySurf;
-  Standard_Real        myGap;
+  occ::handle<Geom_Surface> mySurf;
+  double                    myGap;
 };
 
 #include <ShapeCustom_Surface.lxx>

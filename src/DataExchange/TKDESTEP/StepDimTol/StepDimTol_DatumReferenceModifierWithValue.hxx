@@ -24,9 +24,6 @@
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepDimTol_DatumReferenceModifierType.hxx>
 
-class StepDimTol_DatumReferenceModifierWithValue;
-DEFINE_STANDARD_HANDLE(StepDimTol_DatumReferenceModifierWithValue, Standard_Transient)
-
 //! Representation of STEP entity DatumReferenceModifierWithValue
 class StepDimTol_DatumReferenceModifierWithValue : public Standard_Transient
 {
@@ -36,8 +33,8 @@ public:
   Standard_EXPORT StepDimTol_DatumReferenceModifierWithValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const StepDimTol_DatumReferenceModifierType&   theModifierType,
-                            const Handle(StepBasic_LengthMeasureWithUnit)& theModifierValue);
+  Standard_EXPORT void Init(const StepDimTol_DatumReferenceModifierType&        theModifierType,
+                            const occ::handle<StepBasic_LengthMeasureWithUnit>& theModifierValue);
 
   //! Returns field ModifierType
   inline StepDimTol_DatumReferenceModifierType ModifierType() const { return myModifierType; }
@@ -49,10 +46,10 @@ public:
   }
 
   //! Returns field ModifierValue
-  inline Handle(StepBasic_LengthMeasureWithUnit) ModifierValue() { return myModifierValue; }
+  inline occ::handle<StepBasic_LengthMeasureWithUnit> ModifierValue() { return myModifierValue; }
 
   //! Set field ModifierValue
-  inline void SetModifierValue(const Handle(StepBasic_LengthMeasureWithUnit)& theModifierValue)
+  inline void SetModifierValue(const occ::handle<StepBasic_LengthMeasureWithUnit>& theModifierValue)
   {
     myModifierValue = theModifierValue;
   }
@@ -60,7 +57,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue, Standard_Transient)
 
 private:
-  StepDimTol_DatumReferenceModifierType   myModifierType;
-  Handle(StepBasic_LengthMeasureWithUnit) myModifierValue;
+  StepDimTol_DatumReferenceModifierType        myModifierType;
+  occ::handle<StepBasic_LengthMeasureWithUnit> myModifierValue;
 };
 #endif // _StepDimTol_DatumReferenceModifierWithValue_HeaderFile

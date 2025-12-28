@@ -34,33 +34,34 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfXY.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
 
 IGESGraph_ToolTextFontDef::IGESGraph_ToolTextFontDef() {}
 
-void IGESGraph_ToolTextFontDef::ReadOwnParams(const Handle(IGESGraph_TextFontDef)&   ent,
-                                              const Handle(IGESData_IGESReaderData)& IR,
-                                              IGESData_ParamReader&                  PR) const
+void IGESGraph_ToolTextFontDef::ReadOwnParams(const occ::handle<IGESGraph_TextFontDef>&   ent,
+                                              const occ::handle<IGESData_IGESReaderData>& IR,
+                                              IGESData_ParamReader&                       PR) const
 {
-  // Standard_Boolean                            st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer nbval;
+  // bool                            st; //szv#4:S4163:12Mar99 moved down
+  int nbval;
 
-  Standard_Integer                            fontCode;
-  Handle(TCollection_HAsciiString)            fontName;
-  Standard_Integer                            supersededFont;
-  Handle(IGESGraph_TextFontDef)               supersededEntity;
-  Standard_Integer                            scale;
-  Handle(TColStd_HArray1OfInteger)            aSCIICodes;
-  Handle(TColStd_HArray1OfInteger)            nextCharX, nextCharY;
-  Handle(TColStd_HArray1OfInteger)            penMotions;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) penFlags;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) movePenX, movePenY;
+  int                                              fontCode;
+  occ::handle<TCollection_HAsciiString>            fontName;
+  int                                              supersededFont;
+  occ::handle<IGESGraph_TextFontDef>               supersededEntity;
+  int                                              scale;
+  occ::handle<NCollection_HArray1<int>>            aSCIICodes;
+  occ::handle<NCollection_HArray1<int>>            nextCharX, nextCharY;
+  occ::handle<NCollection_HArray1<int>>            penMotions;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> penFlags;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> movePenX, movePenY;
 
-  Standard_Integer tempCode, tempNextX, tempNextY;
-  Standard_Integer tempMotion;
-  Standard_Integer tempFlag, tempMoveX, tempMoveY;
+  int tempCode, tempNextX, tempNextY;
+  int tempMotion;
+  int tempFlag, tempMoveX, tempMoveY;
 
   // Reading fontCode(Integer)
   PR.ReadInteger(PR.Current(), "Font Code", fontCode); // szv#4:S4163:12Mar99 `st=` not needed
@@ -88,18 +89,18 @@ void IGESGraph_ToolTextFontDef::ReadOwnParams(const Handle(IGESGraph_TextFontDef
   // clang-format on
 
   // Reading nbval(Integer)
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "No. of characters in this defn", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "No. of characters in this defn", nbval);
   if (st && nbval > 0)
   {
-    aSCIICodes = new TColStd_HArray1OfInteger(1, nbval);
-    nextCharX  = new TColStd_HArray1OfInteger(1, nbval);
-    nextCharY  = new TColStd_HArray1OfInteger(1, nbval);
-    penMotions = new TColStd_HArray1OfInteger(1, nbval);
+    aSCIICodes = new NCollection_HArray1<int>(1, nbval);
+    nextCharX  = new NCollection_HArray1<int>(1, nbval);
+    nextCharY  = new NCollection_HArray1<int>(1, nbval);
+    penMotions = new NCollection_HArray1<int>(1, nbval);
     penFlags   = new IGESBasic_HArray1OfHArray1OfInteger(1, nbval);
     movePenX   = new IGESBasic_HArray1OfHArray1OfInteger(1, nbval);
     movePenY   = new IGESBasic_HArray1OfHArray1OfInteger(1, nbval);
 
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
       // Reading aSCIICodes(HArray1OfInteger)
       if (PR.ReadInteger(PR.Current(),
@@ -123,13 +124,13 @@ void IGESGraph_ToolTextFontDef::ReadOwnParams(const Handle(IGESGraph_TextFontDef
         penMotions->SetValue(i, tempMotion);
         if (tempMotion > 0)
         {
-          Handle(TColStd_HArray1OfInteger) intarray, xarray, yarray;
+          occ::handle<NCollection_HArray1<int>> intarray, xarray, yarray;
 
-          intarray = new TColStd_HArray1OfInteger(1, tempMotion);
-          xarray   = new TColStd_HArray1OfInteger(1, tempMotion);
-          yarray   = new TColStd_HArray1OfInteger(1, tempMotion);
+          intarray = new NCollection_HArray1<int>(1, tempMotion);
+          xarray   = new NCollection_HArray1<int>(1, tempMotion);
+          yarray   = new NCollection_HArray1<int>(1, tempMotion);
 
-          for (Standard_Integer j = 1; j <= tempMotion; j++)
+          for (int j = 1; j <= tempMotion; j++)
           {
             if (PR.DefinedElseSkip())
             {
@@ -179,30 +180,30 @@ void IGESGraph_ToolTextFontDef::ReadOwnParams(const Handle(IGESGraph_TextFontDef
             movePenY);
 }
 
-void IGESGraph_ToolTextFontDef::WriteOwnParams(const Handle(IGESGraph_TextFontDef)& ent,
-                                               IGESData_IGESWriter&                 IW) const
+void IGESGraph_ToolTextFontDef::WriteOwnParams(const occ::handle<IGESGraph_TextFontDef>& ent,
+                                               IGESData_IGESWriter&                      IW) const
 {
-  Standard_Integer IX, IY;
+  int IX, IY;
   IW.Send(ent->FontCode());
   IW.Send(ent->FontName());
 
   if (ent->IsSupersededFontEntity())
-    IW.Send(ent->SupersededFontEntity(), Standard_True); // negative
+    IW.Send(ent->SupersededFontEntity(), true); // negative
   else
     IW.Send(ent->SupersededFontCode());
 
   IW.Send(ent->Scale());
 
-  Standard_Integer Up = ent->NbCharacters();
+  int Up = ent->NbCharacters();
   IW.Send(Up);
-  for (Standard_Integer i = 1; i <= Up; i++)
+  for (int i = 1; i <= Up; i++)
   {
     IW.Send(ent->ASCIICode(i));
     ent->NextCharOrigin(i, IX, IY);
     IW.Send(IX);
     IW.Send(IY);
     IW.Send(ent->NbPenMotions(i));
-    for (Standard_Integer j = 1; j <= ent->NbPenMotions(i); j++)
+    for (int j = 1; j <= ent->NbPenMotions(i); j++)
     {
       IW.SendBoolean(ent->IsPenUp(i, j));
       ent->NextPenPosition(i, j, IX, IY);
@@ -212,35 +213,35 @@ void IGESGraph_ToolTextFontDef::WriteOwnParams(const Handle(IGESGraph_TextFontDe
   }
 }
 
-void IGESGraph_ToolTextFontDef::OwnShared(const Handle(IGESGraph_TextFontDef)& ent,
-                                          Interface_EntityIterator&            iter) const
+void IGESGraph_ToolTextFontDef::OwnShared(const occ::handle<IGESGraph_TextFontDef>& ent,
+                                          Interface_EntityIterator&                 iter) const
 {
   if (ent->IsSupersededFontEntity())
     iter.GetOneItem(ent->SupersededFontEntity());
 }
 
-void IGESGraph_ToolTextFontDef::OwnCopy(const Handle(IGESGraph_TextFontDef)& another,
-                                        const Handle(IGESGraph_TextFontDef)& ent,
-                                        Interface_CopyTool&                  TC) const
+void IGESGraph_ToolTextFontDef::OwnCopy(const occ::handle<IGESGraph_TextFontDef>& another,
+                                        const occ::handle<IGESGraph_TextFontDef>& ent,
+                                        Interface_CopyTool&                       TC) const
 {
-  Standard_Integer                            nbval;
-  Standard_Integer                            fontCode;
-  Handle(TCollection_HAsciiString)            fontName;
-  Standard_Integer                            supersededFont = 0;
-  Handle(IGESGraph_TextFontDef)               supersededEntity;
-  Standard_Integer                            scale;
-  Handle(TColStd_HArray1OfInteger)            aSCIICodes, nextCharX, nextCharY;
-  Handle(TColStd_HArray1OfInteger)            penMotions;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) penFlags, movePenX, movePenY;
+  int                                              nbval;
+  int                                              fontCode;
+  occ::handle<TCollection_HAsciiString>            fontName;
+  int                                              supersededFont = 0;
+  occ::handle<IGESGraph_TextFontDef>               supersededEntity;
+  int                                              scale;
+  occ::handle<NCollection_HArray1<int>>            aSCIICodes, nextCharX, nextCharY;
+  occ::handle<NCollection_HArray1<int>>            penMotions;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> penFlags, movePenX, movePenY;
 
-  Standard_Integer                 tempMotion;
-  Handle(TColStd_HArray1OfInteger) intarray, xarray, yarray;
+  int                                   tempMotion;
+  occ::handle<NCollection_HArray1<int>> intarray, xarray, yarray;
 
   nbval      = another->NbCharacters();
-  aSCIICodes = new TColStd_HArray1OfInteger(1, nbval);
-  nextCharX  = new TColStd_HArray1OfInteger(1, nbval);
-  nextCharY  = new TColStd_HArray1OfInteger(1, nbval);
-  penMotions = new TColStd_HArray1OfInteger(1, nbval);
+  aSCIICodes = new NCollection_HArray1<int>(1, nbval);
+  nextCharX  = new NCollection_HArray1<int>(1, nbval);
+  nextCharY  = new NCollection_HArray1<int>(1, nbval);
+  penMotions = new NCollection_HArray1<int>(1, nbval);
   penFlags   = new IGESBasic_HArray1OfHArray1OfInteger(1, nbval);
   movePenX   = new IGESBasic_HArray1OfHArray1OfInteger(1, nbval);
   movePenY   = new IGESBasic_HArray1OfHArray1OfInteger(1, nbval);
@@ -250,15 +251,15 @@ void IGESGraph_ToolTextFontDef::OwnCopy(const Handle(IGESGraph_TextFontDef)& ano
 
   if (another->IsSupersededFontEntity())
     supersededEntity =
-      Handle(IGESGraph_TextFontDef)::DownCast(TC.Transferred(another->SupersededFontEntity()));
+      occ::down_cast<IGESGraph_TextFontDef>(TC.Transferred(another->SupersededFontEntity()));
   else
     supersededFont = another->SupersededFontCode();
 
   scale = another->Scale();
 
-  Standard_Integer j, IX, IY;
+  int j, IX, IY;
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
     aSCIICodes->SetValue(i, another->ASCIICode(i));
     ent->NextCharOrigin(i, IX, IY);
@@ -268,9 +269,9 @@ void IGESGraph_ToolTextFontDef::OwnCopy(const Handle(IGESGraph_TextFontDef)& ano
     tempMotion = another->NbPenMotions(i);
     penMotions->SetValue(i, tempMotion);
 
-    intarray = new TColStd_HArray1OfInteger(1, tempMotion);
-    xarray   = new TColStd_HArray1OfInteger(1, tempMotion);
-    yarray   = new TColStd_HArray1OfInteger(1, tempMotion);
+    intarray = new NCollection_HArray1<int>(1, tempMotion);
+    xarray   = new NCollection_HArray1<int>(1, tempMotion);
+    yarray   = new NCollection_HArray1<int>(1, tempMotion);
 
     for (j = 1; j <= tempMotion; j++)
     {
@@ -303,7 +304,7 @@ void IGESGraph_ToolTextFontDef::OwnCopy(const Handle(IGESGraph_TextFontDef)& ano
 }
 
 IGESData_DirChecker IGESGraph_ToolTextFontDef::DirChecker(
-  const Handle(IGESGraph_TextFontDef)& /*ent*/) const
+  const occ::handle<IGESGraph_TextFontDef>& /*ent*/) const
 {
   IGESData_DirChecker DC(310, 0);
   DC.Structure(IGESData_DefVoid);
@@ -317,19 +318,19 @@ IGESData_DirChecker IGESGraph_ToolTextFontDef::DirChecker(
   return DC;
 }
 
-void IGESGraph_ToolTextFontDef::OwnCheck(const Handle(IGESGraph_TextFontDef)& /*ent*/,
+void IGESGraph_ToolTextFontDef::OwnCheck(const occ::handle<IGESGraph_TextFontDef>& /*ent*/,
                                          const Interface_ShareTool&,
-                                         Handle(Interface_Check)& /*ach*/) const
+                                         occ::handle<Interface_Check>& /*ach*/) const
 {
 }
 
-void IGESGraph_ToolTextFontDef::OwnDump(const Handle(IGESGraph_TextFontDef)& ent,
-                                        const IGESData_IGESDumper&           dumper,
-                                        Standard_OStream&                    S,
-                                        const Standard_Integer               level) const
+void IGESGraph_ToolTextFontDef::OwnDump(const occ::handle<IGESGraph_TextFontDef>& ent,
+                                        const IGESData_IGESDumper&                dumper,
+                                        Standard_OStream&                         S,
+                                        const int                                 level) const
 {
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
-  Standard_Integer nbchars  = ent->NbCharacters();
+  int sublevel = (level <= 4) ? 0 : 1;
+  int nbchars  = ent->NbCharacters();
 
   S << "IGESGraph_TextFontDef\n"
     << "Font Code : " << ent->FontCode() << "\n"
@@ -355,11 +356,11 @@ void IGESGraph_ToolTextFontDef::OwnDump(const Handle(IGESGraph_TextFontDef)& ent
   S << "\n";
   if (level > 4)
   {
-    Handle(TColgp_HArray1OfXY) arrXY;
-    Standard_Integer           I, J, nbmotions;
+    occ::handle<NCollection_HArray1<gp_XY>> arrXY;
+    int                                     I, J, nbmotions;
     for (I = 1; I <= nbchars; I++)
     {
-      Standard_Integer IX, IY;
+      int IX, IY;
       S << "[" << I << "]: "
         << "ASCII Code : " << ent->ASCIICode(I) << "\n"
         << "Grid Location of next character's origin : ";
@@ -374,8 +375,7 @@ void IGESGraph_ToolTextFontDef::OwnDump(const Handle(IGESGraph_TextFontDef)& ent
         S << "\n";
         for (J = 1; J <= nbmotions; J++)
         {
-          S << "Pen up(1) / down(0) flag : " << (Standard_Integer)ent->IsPenUp(I, J)
-            << " Next Pen Position : ";
+          S << "Pen up(1) / down(0) flag : " << (int)ent->IsPenUp(I, J) << " Next Pen Position : ";
           ent->NextPenPosition(I, J, IX, IY);
           S << " X=" << IX << " Y=" << IY << "\n";
         }

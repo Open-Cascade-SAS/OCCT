@@ -16,7 +16,7 @@
 
 #include <TopOpeBRepDS_GeometryData.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
@@ -36,7 +36,7 @@ void TopOpeBRepDS_GeometryData::Assign(const TopOpeBRepDS_GeometryData& Other)
 {
   myInterferences.Clear();
 
-  TopOpeBRepDS_ListIteratorOfListOfInterference anIt(Other.myInterferences);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator anIt(Other.myInterferences);
   for (; anIt.More(); anIt.Next())
   {
     myInterferences.Append(anIt.Value());
@@ -47,21 +47,23 @@ void TopOpeBRepDS_GeometryData::Assign(const TopOpeBRepDS_GeometryData& Other)
 
 //=================================================================================================
 
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_GeometryData::Interferences() const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_GeometryData::
+  Interferences() const
 {
   return myInterferences;
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_GeometryData::ChangeInterferences()
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_GeometryData::
+  ChangeInterferences()
 {
   return myInterferences;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_GeometryData::AddInterference(const Handle(TopOpeBRepDS_Interference)& I)
+void TopOpeBRepDS_GeometryData::AddInterference(const occ::handle<TopOpeBRepDS_Interference>& I)
 {
   myInterferences.Append(I);
 }

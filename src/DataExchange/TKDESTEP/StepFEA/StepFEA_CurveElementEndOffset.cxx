@@ -26,8 +26,8 @@ StepFEA_CurveElementEndOffset::StepFEA_CurveElementEndOffset() {}
 //=================================================================================================
 
 void StepFEA_CurveElementEndOffset::Init(
-  const StepFEA_CurveElementEndCoordinateSystem& aCoordinateSystem,
-  const Handle(TColStd_HArray1OfReal)&           aOffsetVector)
+  const StepFEA_CurveElementEndCoordinateSystem&  aCoordinateSystem,
+  const occ::handle<NCollection_HArray1<double>>& aOffsetVector)
 {
 
   theCoordinateSystem = aCoordinateSystem;
@@ -52,7 +52,7 @@ void StepFEA_CurveElementEndOffset::SetCoordinateSystem(
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_CurveElementEndOffset::OffsetVector() const
+occ::handle<NCollection_HArray1<double>> StepFEA_CurveElementEndOffset::OffsetVector() const
 {
   return theOffsetVector;
 }
@@ -60,7 +60,7 @@ Handle(TColStd_HArray1OfReal) StepFEA_CurveElementEndOffset::OffsetVector() cons
 //=================================================================================================
 
 void StepFEA_CurveElementEndOffset::SetOffsetVector(
-  const Handle(TColStd_HArray1OfReal)& aOffsetVector)
+  const occ::handle<NCollection_HArray1<double>>& aOffsetVector)
 {
   theOffsetVector = aOffsetVector;
 }

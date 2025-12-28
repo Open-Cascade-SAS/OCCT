@@ -15,7 +15,21 @@
 // commercial license or contractual agreement.
 
 #include <TopOpeBRepBuild_ShapeListOfShape.hxx>
-#include <TopOpeBRepTool_define.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //=================================================================================================
 
@@ -30,8 +44,9 @@ TopOpeBRepBuild_ShapeListOfShape::TopOpeBRepBuild_ShapeListOfShape(const TopoDS_
 
 //=================================================================================================
 
-TopOpeBRepBuild_ShapeListOfShape::TopOpeBRepBuild_ShapeListOfShape(const TopoDS_Shape&         S,
-                                                                   const TopTools_ListOfShape& L)
+TopOpeBRepBuild_ShapeListOfShape::TopOpeBRepBuild_ShapeListOfShape(
+  const TopoDS_Shape&                   S,
+  const NCollection_List<TopoDS_Shape>& L)
 {
   myShape = S;
   myList  = L;
@@ -39,14 +54,14 @@ TopOpeBRepBuild_ShapeListOfShape::TopOpeBRepBuild_ShapeListOfShape(const TopoDS_
 
 //=================================================================================================
 
-const TopTools_ListOfShape& TopOpeBRepBuild_ShapeListOfShape::List() const
+const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_ShapeListOfShape::List() const
 {
   return myList;
 }
 
 //=================================================================================================
 
-TopTools_ListOfShape& TopOpeBRepBuild_ShapeListOfShape::ChangeList()
+NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_ShapeListOfShape::ChangeList()
 {
   return myList;
 }

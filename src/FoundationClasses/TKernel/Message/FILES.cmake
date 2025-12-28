@@ -24,12 +24,11 @@ set(OCCT_Message_FILES
   Message_CompositeAlerts.hxx
   Message_ExecStatus.hxx
   Message_Gravity.hxx
-  Message_HArrayOfMsg.hxx
+
   Message_LazyProgressScope.hxx
   Message_Level.cxx
   Message_Level.hxx
-  Message_ListIteratorOfListOfMsg.hxx
-  Message_ListOfMsg.hxx
+
   Message_Messenger.cxx
   Message_Messenger.hxx
   Message_MetricType.hxx
@@ -51,10 +50,10 @@ set(OCCT_Message_FILES
   Message_ProgressRange.hxx
   Message_ProgressScope.hxx
   Message_ProgressSentry.hxx
-  Message_SequenceOfPrinters.hxx
+
   Message_Status.hxx
   Message_StatusType.hxx
-  Message_ListOfAlert.hxx
+
   Message_Report.cxx
   Message_Report.hxx
 )

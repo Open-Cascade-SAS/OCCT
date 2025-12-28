@@ -24,9 +24,6 @@
 class IFSelect_SessionFile;
 class TCollection_AsciiString;
 
-class IFSelect_SessionDumper;
-DEFINE_STANDARD_HANDLE(IFSelect_SessionDumper, Standard_Transient)
-
 //! A SessionDumper is called by SessionFile. It takes into
 //! account a set of classes (such as Selections, Dispatches ...).
 //! SessionFile writes the Type (as defined by cdl) of each Item
@@ -58,11 +55,11 @@ class IFSelect_SessionDumper : public Standard_Transient
 public:
   //! Returns the First item of the Library of Dumper. The Next ones
   //! are then obtained by Next on the returned items
-  Standard_EXPORT static Handle(IFSelect_SessionDumper) First();
+  Standard_EXPORT static occ::handle<IFSelect_SessionDumper> First();
 
   //! Returns the Next SesionDumper in the Library. Returns a Null
   //! Handle at the End.
-  Standard_EXPORT Handle(IFSelect_SessionDumper) Next() const;
+  Standard_EXPORT occ::handle<IFSelect_SessionDumper> Next() const;
 
   //! Writes the Own Parameters of a given Item, if it forecast to
   //! manage its Type.
@@ -72,9 +69,8 @@ public:
   //! try another SessionDumper in the Library.
   //! WriteOwn can use these methods from SessionFile : SendVoid,
   //! SendItem, SendText, and if necessary, WorkSession.
-  Standard_EXPORT virtual Standard_Boolean WriteOwn(
-    IFSelect_SessionFile&             file,
-    const Handle(Standard_Transient)& item) const = 0;
+  Standard_EXPORT virtual bool WriteOwn(IFSelect_SessionFile&                  file,
+                                        const occ::handle<Standard_Transient>& item) const = 0;
 
   //! Recognizes a Type (given as <type>) then Creates an Item of
   //! this Type with the Own Parameter, as required.
@@ -84,9 +80,9 @@ public:
   //! SessionDumper in the Library.
   //! ReadOwn can use these methods from SessionFile to access Own
   //! Parameters : NbOwnParams, IsVoid, IsText, TextValue, ItemValue
-  Standard_EXPORT virtual Standard_Boolean ReadOwn(IFSelect_SessionFile&          file,
-                                                   const TCollection_AsciiString& type,
-                                                   Handle(Standard_Transient)&    item) const = 0;
+  Standard_EXPORT virtual bool ReadOwn(IFSelect_SessionFile&            file,
+                                       const TCollection_AsciiString&   type,
+                                       occ::handle<Standard_Transient>& item) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SessionDumper, Standard_Transient)
 
@@ -97,7 +93,7 @@ protected:
   Standard_EXPORT IFSelect_SessionDumper();
 
 private:
-  Handle(IFSelect_SessionDumper) thenext;
+  occ::handle<IFSelect_SessionDumper> thenext;
 };
 
 #endif // _IFSelect_SessionDumper_HeaderFile

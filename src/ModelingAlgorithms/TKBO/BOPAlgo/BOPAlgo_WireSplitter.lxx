@@ -24,9 +24,9 @@ class BOPAlgo_EdgeInfo
 public:
   //
   BOPAlgo_EdgeInfo()
-      : myPassed(Standard_False),
-        myInFlag(Standard_False),
-        myIsInside(Standard_False),
+      : myPassed(false),
+        myInFlag(false),
+        myIsInside(false),
         myAngle(-1.) {};
 
   //
@@ -36,56 +36,51 @@ public:
   const TopoDS_Edge& Edge() const { return myEdge; };
 
   //
-  void SetPassed(const Standard_Boolean theFlag) { myPassed = theFlag; };
+  void SetPassed(const bool theFlag) { myPassed = theFlag; };
 
   //
-  Standard_Boolean Passed() const { return myPassed; };
+  bool Passed() const { return myPassed; };
 
   //
-  void SetInFlag(const Standard_Boolean theFlag) { myInFlag = theFlag; };
+  void SetInFlag(const bool theFlag) { myInFlag = theFlag; };
 
   //
-  Standard_Boolean IsIn() const { return myInFlag; };
+  bool IsIn() const { return myInFlag; };
 
   //
-  void SetAngle(const Standard_Real theAngle) { myAngle = theAngle; };
+  void SetAngle(const double theAngle) { myAngle = theAngle; };
 
   //
-  Standard_Real Angle() const { return myAngle; };
+  double Angle() const { return myAngle; };
 
   //
-  Standard_Boolean IsInside() const { return myIsInside; };
+  bool IsInside() const { return myIsInside; };
 
   //
-  void SetIsInside(const Standard_Boolean theIsInside) { myIsInside = theIsInside; };
+  void SetIsInside(const bool theIsInside) { myIsInside = theIsInside; };
 
   //
 protected:
-  TopoDS_Edge      myEdge;
-  Standard_Boolean myPassed;
-  Standard_Boolean myInFlag;
-  Standard_Boolean myIsInside;
-  Standard_Real    myAngle;
+  TopoDS_Edge myEdge;
+  bool        myPassed;
+  bool        myInFlag;
+  bool        myIsInside;
+  double      myAngle;
 };
 
 #include <NCollection_List.hxx>
-typedef NCollection_List<BOPAlgo_EdgeInfo> BOPAlgo_ListOfEdgeInfo;
-typedef BOPAlgo_ListOfEdgeInfo::Iterator   BOPAlgo_ListIteratorOfListOfEdgeInfo;
 
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape, BOPAlgo_ListOfEdgeInfo, TopTools_ShapeMapHasher>
-  BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo;
-
 //=================================================================================================
 
-inline void BOPAlgo_WireSplitter::MakeWire(TopTools_ListOfShape& aLE, TopoDS_Wire& aWire)
+inline void BOPAlgo_WireSplitter::MakeWire(NCollection_List<TopoDS_Shape>& aLE, TopoDS_Wire& aWire)
 {
   BRep_Builder aBB;
   aBB.MakeWire(aWire);
   //
-  TopTools_ListIteratorOfListOfShape aIt(aLE);
+  NCollection_List<TopoDS_Shape>::Iterator aIt(aLE);
   for (; aIt.More(); aIt.Next())
   {
     aBB.Add(aWire, aIt.Value());

@@ -60,12 +60,12 @@ public:
   //! Returns the string name for a given position.
   //! @param thePosition position type
   //! @return string identifier from the list UNQUALIFIED ENCLOSING ENCLOSED OUTSIDE NOQUALIFIER
-  Standard_EXPORT static Standard_CString PositionToString(GccEnt_Position thePosition);
+  Standard_EXPORT static const char* PositionToString(GccEnt_Position thePosition);
 
   //! Returns the position from the given string identifier (using case-insensitive comparison).
   //! @param thePositionString string identifier
   //! @return position or GccEnt_unqualified if string identifier is invalid
-  static GccEnt_Position PositionFromString(Standard_CString thePositionString)
+  static GccEnt_Position PositionFromString(const char* thePositionString)
   {
     GccEnt_Position aPosition = GccEnt_unqualified;
     PositionFromString(thePositionString, aPosition);
@@ -76,8 +76,8 @@ public:
   //! @param thePositionString string identifier
   //! @param thePosition detected shape type
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static Standard_Boolean PositionFromString(Standard_CString thePositionString,
-                                                             GccEnt_Position& thePosition);
+  Standard_EXPORT static bool PositionFromString(const char*      thePositionString,
+                                                 GccEnt_Position& thePosition);
 
   //! Constructs a qualified line,
   //! so that the relative position to the circle or line of the

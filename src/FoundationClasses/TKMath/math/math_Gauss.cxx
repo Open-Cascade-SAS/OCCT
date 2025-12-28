@@ -21,23 +21,23 @@
 #include <StdFail_NotDone.hxx>
 
 math_Gauss::math_Gauss(const math_Matrix&           A,
-                       const Standard_Real          MinPivot,
+                       const double                 MinPivot,
                        const Message_ProgressRange& theProgress)
     : LU(1, A.RowNumber(), 1, A.ColNumber()),
       Index(1, A.RowNumber()),
       D(0.0),
-      Done(Standard_False)
+      Done(false)
 {
   math_NotSquare_Raise_if(A.RowNumber() != A.ColNumber(), " ");
-  LU                     = A;
-  Standard_Integer Error = LU_Decompose(LU, Index, D, MinPivot, theProgress);
+  LU        = A;
+  int Error = LU_Decompose(LU, Index, D, MinPivot, theProgress);
   if (!Error)
   {
-    Done = Standard_True;
+    Done = true;
   }
   else
   {
-    Done = Standard_False;
+    Done = false;
   }
 }
 
@@ -62,13 +62,13 @@ void math_Gauss::Solve(math_Vector& X) const
   LU_Solve(LU, Index, X);
 }
 
-Standard_Real math_Gauss::Determinant() const
+double math_Gauss::Determinant() const
 {
 
   StdFail_NotDone_Raise_if(!Done, " ");
 
-  Standard_Real Result = D;
-  for (Standard_Integer J = 1; J <= LU.UpperRow(); J++)
+  double Result = D;
+  for (int J = 1; J <= LU.UpperRow(); J++)
   {
     Result *= LU(J, J);
   }
@@ -84,11 +84,11 @@ void math_Gauss::Invert(math_Matrix& Inv) const
                                      || (Inv.ColNumber() != LU.ColNumber()),
                                    " ");
 
-  Standard_Integer LowerRow = Inv.LowerRow();
-  Standard_Integer LowerCol = Inv.LowerCol();
-  math_Vector      Column(1, LU.UpperRow());
+  int         LowerRow = Inv.LowerRow();
+  int         LowerCol = Inv.LowerCol();
+  math_Vector Column(1, LU.UpperRow());
 
-  Standard_Integer I, J;
+  int I, J;
   for (J = 1; J <= LU.UpperRow(); J++)
   {
     for (I = 1; I <= LU.UpperRow(); I++)

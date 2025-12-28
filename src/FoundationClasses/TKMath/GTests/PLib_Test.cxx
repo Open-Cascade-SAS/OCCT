@@ -17,20 +17,19 @@
 
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array2OfPnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Precision.hxx>
 
 namespace
 {
 // Helper function for comparing points with tolerance
-void checkPointsEqual(const gp_Pnt&       thePnt1,
-                      const gp_Pnt&       thePnt2,
-                      const Standard_Real theTolerance = Precision::Confusion())
+void checkPointsEqual(const gp_Pnt& thePnt1,
+                      const gp_Pnt& thePnt2,
+                      const double  theTolerance = Precision::Confusion())
 {
   EXPECT_NEAR(thePnt1.X(), thePnt2.X(), theTolerance) << "X coordinates differ";
   EXPECT_NEAR(thePnt1.Y(), thePnt2.Y(), theTolerance) << "Y coordinates differ";
@@ -38,9 +37,9 @@ void checkPointsEqual(const gp_Pnt&       thePnt1,
 }
 
 // Helper function for comparing 2D points with tolerance
-void checkPoint2dEqual(const gp_Pnt2d&     thePnt1,
-                       const gp_Pnt2d&     thePnt2,
-                       const Standard_Real theTolerance = Precision::Confusion())
+void checkPoint2dEqual(const gp_Pnt2d& thePnt1,
+                       const gp_Pnt2d& thePnt2,
+                       const double    theTolerance = Precision::Confusion())
 {
   EXPECT_NEAR(thePnt1.X(), thePnt2.X(), theTolerance) << "X coordinates differ";
   EXPECT_NEAR(thePnt1.Y(), thePnt2.Y(), theTolerance) << "Y coordinates differ";
@@ -66,28 +65,28 @@ protected:
 TEST_F(PLibTest, NoWeightsPointers)
 {
   // Test that NoWeights() returns NULL as expected
-  EXPECT_EQ(PLib::NoWeights(), static_cast<TColStd_Array1OfReal*>(nullptr));
-  EXPECT_EQ(PLib::NoWeights2(), static_cast<TColStd_Array2OfReal*>(nullptr));
+  EXPECT_EQ(PLib::NoWeights(), static_cast<NCollection_Array1<double>*>(nullptr));
+  EXPECT_EQ(PLib::NoWeights2(), static_cast<NCollection_Array2<double>*>(nullptr));
 }
 
 // Tests for 3D pole conversion functions
 TEST_F(PLibTest, SetGetPoles3D)
 {
   // Create test data
-  TColgp_Array1OfPnt aPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(1.0, 2.0, 3.0);
   aPoles(2) = gp_Pnt(4.0, 5.0, 6.0);
   aPoles(3) = gp_Pnt(7.0, 8.0, 9.0);
 
   // Test SetPoles and GetPoles without weights
-  TColStd_Array1OfReal aFP(1, 9); // 3 poles * 3 coordinates
+  NCollection_Array1<double> aFP(1, 9); // 3 poles * 3 coordinates
   PLib::SetPoles(aPoles, aFP);
 
-  TColgp_Array1OfPnt aResultPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aResultPoles(1, 3);
   PLib::GetPoles(aFP, aResultPoles);
 
   // Verify results
-  for (Standard_Integer i = 1; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
     checkPointsEqual(aPoles(i), aResultPoles(i));
   }
@@ -96,24 +95,24 @@ TEST_F(PLibTest, SetGetPoles3D)
 TEST_F(PLibTest, SetGetPoles3DWithWeights)
 {
   // Create test data
-  TColgp_Array1OfPnt aPoles(1, 2);
+  NCollection_Array1<gp_Pnt> aPoles(1, 2);
   aPoles(1) = gp_Pnt(1.0, 2.0, 3.0);
   aPoles(2) = gp_Pnt(4.0, 5.0, 6.0);
 
-  TColStd_Array1OfReal aWeights(1, 2);
+  NCollection_Array1<double> aWeights(1, 2);
   aWeights(1) = 0.5;
   aWeights(2) = 2.0;
 
   // Test SetPoles and GetPoles with weights
-  TColStd_Array1OfReal aFP(1, 8); // 2 poles * (3 coords + 1 weight)
+  NCollection_Array1<double> aFP(1, 8); // 2 poles * (3 coords + 1 weight)
   PLib::SetPoles(aPoles, aWeights, aFP);
 
-  TColgp_Array1OfPnt   aResultPoles(1, 2);
-  TColStd_Array1OfReal aResultWeights(1, 2);
+  NCollection_Array1<gp_Pnt> aResultPoles(1, 2);
+  NCollection_Array1<double> aResultWeights(1, 2);
   PLib::GetPoles(aFP, aResultPoles, aResultWeights);
 
   // Verify results
-  for (Standard_Integer i = 1; i <= 2; i++)
+  for (int i = 1; i <= 2; i++)
   {
     checkPointsEqual(aPoles(i), aResultPoles(i));
     EXPECT_NEAR(aWeights(i), aResultWeights(i), Precision::Confusion());
@@ -124,20 +123,20 @@ TEST_F(PLibTest, SetGetPoles3DWithWeights)
 TEST_F(PLibTest, SetGetPoles2D)
 {
   // Create test data
-  TColgp_Array1OfPnt2d aPoles(1, 3);
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
   aPoles(1) = gp_Pnt2d(1.0, 2.0);
   aPoles(2) = gp_Pnt2d(3.0, 4.0);
   aPoles(3) = gp_Pnt2d(5.0, 6.0);
 
   // Test SetPoles and GetPoles without weights
-  TColStd_Array1OfReal aFP(1, 6); // 3 poles * 2 coordinates
+  NCollection_Array1<double> aFP(1, 6); // 3 poles * 2 coordinates
   PLib::SetPoles(aPoles, aFP);
 
-  TColgp_Array1OfPnt2d aResultPoles(1, 3);
+  NCollection_Array1<gp_Pnt2d> aResultPoles(1, 3);
   PLib::GetPoles(aFP, aResultPoles);
 
   // Verify results
-  for (Standard_Integer i = 1; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
     checkPoint2dEqual(aPoles(i), aResultPoles(i));
   }
@@ -146,24 +145,24 @@ TEST_F(PLibTest, SetGetPoles2D)
 TEST_F(PLibTest, SetGetPoles2DWithWeights)
 {
   // Create test data
-  TColgp_Array1OfPnt2d aPoles(1, 2);
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 2);
   aPoles(1) = gp_Pnt2d(1.0, 2.0);
   aPoles(2) = gp_Pnt2d(3.0, 4.0);
 
-  TColStd_Array1OfReal aWeights(1, 2);
+  NCollection_Array1<double> aWeights(1, 2);
   aWeights(1) = 0.8;
   aWeights(2) = 1.5;
 
   // Test SetPoles and GetPoles with weights
-  TColStd_Array1OfReal aFP(1, 6); // 2 poles * (2 coords + 1 weight)
+  NCollection_Array1<double> aFP(1, 6); // 2 poles * (2 coords + 1 weight)
   PLib::SetPoles(aPoles, aWeights, aFP);
 
-  TColgp_Array1OfPnt2d aResultPoles(1, 2);
-  TColStd_Array1OfReal aResultWeights(1, 2);
+  NCollection_Array1<gp_Pnt2d> aResultPoles(1, 2);
+  NCollection_Array1<double>   aResultWeights(1, 2);
   PLib::GetPoles(aFP, aResultPoles, aResultWeights);
 
   // Verify results
-  for (Standard_Integer i = 1; i <= 2; i++)
+  for (int i = 1; i <= 2; i++)
   {
     checkPoint2dEqual(aPoles(i), aResultPoles(i));
     EXPECT_NEAR(aWeights(i), aResultWeights(i), Precision::Confusion());
@@ -174,15 +173,15 @@ TEST_F(PLibTest, SetGetPoles2DWithWeights)
 TEST_F(PLibTest, ZeroWeightsHandling)
 {
   // Create test data with zero weight - this should not crash
-  TColgp_Array1OfPnt2d aPoles(1, 2);
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 2);
   aPoles(1) = gp_Pnt2d(1.0, 2.0);
   aPoles(2) = gp_Pnt2d(3.0, 4.0);
 
-  TColStd_Array1OfReal aWeights(1, 2);
+  NCollection_Array1<double> aWeights(1, 2);
   aWeights(1) = 1.0;
   aWeights(2) = 0.0; // Zero weight - potential division by zero
 
-  TColStd_Array1OfReal aFP(1, 6);
+  NCollection_Array1<double> aFP(1, 6);
   PLib::SetPoles(aPoles, aWeights, aFP);
 
   // This test should complete without crashing
@@ -221,9 +220,9 @@ TEST_F(PLibTest, BinomialCoefficient_BasicValues)
 TEST_F(PLibTest, BinomialCoefficient_Symmetry)
 {
   // Test symmetry property: C(n,k) = C(n,n-k)
-  for (Standard_Integer n = 0; n <= 20; n++)
+  for (int n = 0; n <= 20; n++)
   {
-    for (Standard_Integer k = 0; k <= n; k++)
+    for (int k = 0; k <= n; k++)
     {
       EXPECT_NEAR(PLib::Bin(n, k), PLib::Bin(n, n - k), Precision::Confusion())
         << "Binomial coefficient symmetry failed for C(" << n << "," << k << ")";
@@ -235,12 +234,12 @@ TEST_F(PLibTest, BinomialCoefficient_Symmetry)
 TEST_F(PLibTest, BinomialCoefficient_Recurrence)
 {
   // Test Pascal's triangle recurrence: C(n,k) = C(n-1,k-1) + C(n-1,k)
-  for (Standard_Integer n = 2; n <= 20; n++)
+  for (int n = 2; n <= 20; n++)
   {
-    for (Standard_Integer k = 1; k < n; k++)
+    for (int k = 1; k < n; k++)
     {
-      Standard_Real expected = PLib::Bin(n - 1, k - 1) + PLib::Bin(n - 1, k);
-      Standard_Real actual   = PLib::Bin(n, k);
+      double expected = PLib::Bin(n - 1, k - 1) + PLib::Bin(n - 1, k);
+      double actual   = PLib::Bin(n, k);
       EXPECT_NEAR(actual, expected, Precision::Confusion())
         << "Pascal recurrence failed for C(" << n << "," << k << ")";
     }
@@ -266,22 +265,22 @@ TEST_F(PLibTest, BinomialCoefficient_LargeValues)
 TEST_F(PLibTest, BinomialCoefficient_EdgeColumns)
 {
   // Test first column: C(n,0) = 1 for all n
-  for (Standard_Integer n = 0; n <= 25; n++)
+  for (int n = 0; n <= 25; n++)
   {
     EXPECT_NEAR(PLib::Bin(n, 0), 1.0, Precision::Confusion()) << "C(" << n << ",0) should be 1";
   }
 
   // Test diagonal: C(n,n) = 1 for all n
-  for (Standard_Integer n = 0; n <= 25; n++)
+  for (int n = 0; n <= 25; n++)
   {
     EXPECT_NEAR(PLib::Bin(n, n), 1.0, Precision::Confusion())
       << "C(" << n << "," << n << ") should be 1";
   }
 
   // Test second column: C(n,1) = n for all n >= 1
-  for (Standard_Integer n = 1; n <= 25; n++)
+  for (int n = 1; n <= 25; n++)
   {
-    EXPECT_NEAR(PLib::Bin(n, 1), Standard_Real(n), Precision::Confusion())
+    EXPECT_NEAR(PLib::Bin(n, 1), double(n), Precision::Confusion())
       << "C(" << n << ",1) should be " << n;
   }
 }
@@ -290,16 +289,16 @@ TEST_F(PLibTest, BinomialCoefficient_EdgeColumns)
 TEST_F(PLibTest, BinomialCoefficient_CompleteRows)
 {
   // Verify complete row n=6: [1, 6, 15, 20, 15, 6, 1]
-  const Standard_Real row6[] = {1.0, 6.0, 15.0, 20.0, 15.0, 6.0, 1.0};
-  for (Standard_Integer k = 0; k <= 6; k++)
+  const double row6[] = {1.0, 6.0, 15.0, 20.0, 15.0, 6.0, 1.0};
+  for (int k = 0; k <= 6; k++)
   {
     EXPECT_NEAR(PLib::Bin(6, k), row6[k], Precision::Confusion())
       << "C(6," << k << ") verification failed";
   }
 
   // Verify complete row n=8: [1, 8, 28, 56, 70, 56, 28, 8, 1]
-  const Standard_Real row8[] = {1.0, 8.0, 28.0, 56.0, 70.0, 56.0, 28.0, 8.0, 1.0};
-  for (Standard_Integer k = 0; k <= 8; k++)
+  const double row8[] = {1.0, 8.0, 28.0, 56.0, 70.0, 56.0, 28.0, 8.0, 1.0};
+  for (int k = 0; k <= 8; k++)
   {
     EXPECT_NEAR(PLib::Bin(8, k), row8[k], Precision::Confusion())
       << "C(8," << k << ") verification failed";
@@ -310,12 +309,12 @@ TEST_F(PLibTest, BinomialCoefficient_CompleteRows)
 TEST_F(PLibTest, BinomialCoefficient_SumProperty)
 {
   // Test sum property: Sum of C(n,k) for k=0 to n equals 2^n
-  for (Standard_Integer n = 0; n <= 20; n++)
+  for (int n = 0; n <= 20; n++)
   {
-    Standard_Real sum      = 0.0;
-    Standard_Real expected = std::pow(2.0, n);
+    double sum      = 0.0;
+    double expected = std::pow(2.0, n);
 
-    for (Standard_Integer k = 0; k <= n; k++)
+    for (int k = 0; k <= n; k++)
     {
       sum += PLib::Bin(n, k);
     }
@@ -329,16 +328,16 @@ TEST_F(PLibTest, BinomialCoefficient_SumProperty)
 TEST_F(PLibTest, EvalPolynomial)
 {
   // Test simple polynomial evaluation: f(x) = 1 + 2x + 3x^2
-  const Standard_Integer aDegree     = 2;
-  const Standard_Integer aDimension  = 1;
-  const Standard_Integer aDerivOrder = 0;
+  const int aDegree     = 2;
+  const int aDimension  = 1;
+  const int aDerivOrder = 0;
 
-  TColStd_Array1OfReal aCoeffs(1, 3);
+  NCollection_Array1<double> aCoeffs(1, 3);
   aCoeffs(1) = 1.0; // constant term
   aCoeffs(2) = 2.0; // linear term
   aCoeffs(3) = 3.0; // quadratic term
 
-  TColStd_Array1OfReal aResults(1, 1);
+  NCollection_Array1<double> aResults(1, 1);
 
   // Test at x = 0: f(0) = 1
   PLib::EvalPolynomial(0.0,
@@ -374,16 +373,16 @@ TEST_F(PLibTest, EvalPolynomialWithDerivatives)
   // Test polynomial f(x) = 1 + 2x + 3x^2
   // f'(x) = 2 + 6x
   // f''(x) = 6
-  const Standard_Integer aDegree     = 2;
-  const Standard_Integer aDimension  = 1;
-  const Standard_Integer aDerivOrder = 2;
+  const int aDegree     = 2;
+  const int aDimension  = 1;
+  const int aDerivOrder = 2;
 
-  TColStd_Array1OfReal aCoeffs(1, 3);
+  NCollection_Array1<double> aCoeffs(1, 3);
   aCoeffs(1) = 1.0;
   aCoeffs(2) = 2.0;
   aCoeffs(3) = 3.0;
 
-  TColStd_Array1OfReal aResults(1, 3); // value + 1st + 2nd derivative
+  NCollection_Array1<double> aResults(1, 3); // value + 1st + 2nd derivative
 
   // Test at x = 1
   PLib::EvalPolynomial(1.0,
@@ -412,10 +411,10 @@ TEST_F(PLibTest, ConstraintOrderConversion)
   EXPECT_EQ(PLib::ConstraintOrder(2), GeomAbs_C2);
 
   // Test round-trip consistency
-  for (Standard_Integer i = 0; i <= 2; i++)
+  for (int i = 0; i <= 2; i++)
   {
-    GeomAbs_Shape    aShape = PLib::ConstraintOrder(i);
-    Standard_Integer aLevel = PLib::NivConstr(aShape);
+    GeomAbs_Shape aShape = PLib::ConstraintOrder(i);
+    int           aLevel = PLib::NivConstr(aShape);
     EXPECT_EQ(aLevel, i) << "Round-trip conversion failed for level " << i;
   }
 }
@@ -424,36 +423,36 @@ TEST_F(PLibTest, ConstraintOrderConversion)
 TEST_F(PLibTest, HermiteInterpolate)
 {
 
-  const Standard_Integer aDimension  = 1;
-  const Standard_Real    aFirstParam = 0.0;
-  const Standard_Real    aLastParam  = 1.0;
-  const Standard_Integer aFirstOrder = 1; // value + 1st derivative
-  const Standard_Integer aLastOrder  = 1; // value + 1st derivative
+  const int    aDimension  = 1;
+  const double aFirstParam = 0.0;
+  const double aLastParam  = 1.0;
+  const int    aFirstOrder = 1; // value + 1st derivative
+  const int    aLastOrder  = 1; // value + 1st derivative
 
   // Define constraints: f(0) = 0, f'(0) = 1, f(1) = 1, f'(1) = 0
-  TColStd_Array2OfReal aFirstConstr(1, aDimension, 0, aFirstOrder);
+  NCollection_Array2<double> aFirstConstr(1, aDimension, 0, aFirstOrder);
   aFirstConstr(1, 0) = 0.0; // f(0) = 0
   aFirstConstr(1, 1) = 1.0; // f'(0) = 1
 
-  TColStd_Array2OfReal aLastConstr(1, aDimension, 0, aLastOrder);
+  NCollection_Array2<double> aLastConstr(1, aDimension, 0, aLastOrder);
   aLastConstr(1, 0) = 1.0; // f(1) = 1
   aLastConstr(1, 1) = 0.0; // f'(1) = 0
 
-  const Standard_Integer aCoeffCount = aFirstOrder + aLastOrder + 2;
+  const int aCoeffCount = aFirstOrder + aLastOrder + 2;
 
-  TColStd_Array1OfReal aCoeffs(0,
-                               aCoeffCount
-                                 - 1); // 0-based indexing as expected by HermiteInterpolate
+  NCollection_Array1<double> aCoeffs(0,
+                                     aCoeffCount
+                                       - 1); // 0-based indexing as expected by HermiteInterpolate
 
   // Perform Hermite interpolation
-  Standard_Boolean aResult = PLib::HermiteInterpolate(aDimension,
-                                                      aFirstParam,
-                                                      aLastParam,
-                                                      aFirstOrder,
-                                                      aLastOrder,
-                                                      aFirstConstr,
-                                                      aLastConstr,
-                                                      aCoeffs);
+  bool aResult = PLib::HermiteInterpolate(aDimension,
+                                          aFirstParam,
+                                          aLastParam,
+                                          aFirstOrder,
+                                          aLastOrder,
+                                          aFirstConstr,
+                                          aLastConstr,
+                                          aCoeffs);
 
   EXPECT_TRUE(aResult) << "Hermite interpolation failed";
 
@@ -461,7 +460,7 @@ TEST_F(PLibTest, HermiteInterpolate)
   {
 
     // Verify that the resulting polynomial satisfies the constraints
-    TColStd_Array1OfReal aResults(1, 2); // value + 1st derivative
+    NCollection_Array1<double> aResults(1, 2); // value + 1st derivative
 
     // Check at first parameter
     PLib::EvalPolynomial(aFirstParam,
@@ -489,19 +488,19 @@ TEST_F(PLibTest, HermiteInterpolate)
 TEST_F(PLibTest, EdgeCases)
 {
   // Test with very small coefficients
-  TColStd_Array1OfReal aSmallCoeffs(1, 3);
+  NCollection_Array1<double> aSmallCoeffs(1, 3);
   aSmallCoeffs(1) = 1.0e-12;
   aSmallCoeffs(2) = 1.0e-12;
   aSmallCoeffs(3) = 1.0e-12;
 
-  TColStd_Array1OfReal aResults(1, 1);
+  NCollection_Array1<double> aResults(1, 1);
 
   // This should not crash even with very small coefficients
   EXPECT_NO_THROW(
     { PLib::EvalPolynomial(1.0, 0, 2, 1, aSmallCoeffs.ChangeValue(1), aResults.ChangeValue(1)); });
 
   // Test with large coefficients
-  TColStd_Array1OfReal aLargeCoeffs(1, 3);
+  NCollection_Array1<double> aLargeCoeffs(1, 3);
   aLargeCoeffs(1) = 1.0e10;
   aLargeCoeffs(2) = 1.0e10;
   aLargeCoeffs(3) = 1.0e10;
@@ -513,7 +512,7 @@ TEST_F(PLibTest, EdgeCases)
 // Test for Jacobi parameter calculation
 TEST_F(PLibTest, JacobiParameters)
 {
-  Standard_Integer aNbGaussPoints, aWorkDegree;
+  int aNbGaussPoints, aWorkDegree;
 
   // Test various constraint orders and codes
   PLib::JacobiParameters(GeomAbs_C0, 10, 1, aNbGaussPoints, aWorkDegree);

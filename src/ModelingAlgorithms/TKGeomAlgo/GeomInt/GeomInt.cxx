@@ -18,15 +18,15 @@
 
 //=================================================================================================
 
-Standard_Boolean GeomInt::AdjustPeriodic(const Standard_Real thePar,
-                                         const Standard_Real theParMin,
-                                         const Standard_Real theParMax,
-                                         const Standard_Real thePeriod,
-                                         Standard_Real&      theNewPar,
-                                         Standard_Real&      theOffset,
-                                         const Standard_Real theEps)
+bool GeomInt::AdjustPeriodic(const double thePar,
+                             const double theParMin,
+                             const double theParMax,
+                             const double thePeriod,
+                             double&      theNewPar,
+                             double&      theOffset,
+                             const double theEps)
 {
-  Standard_Boolean bMin, bMax;
+  bool bMin, bMax;
   //
   theOffset = 0.;
   theNewPar = thePar;
@@ -35,7 +35,7 @@ Standard_Boolean GeomInt::AdjustPeriodic(const Standard_Real thePar,
   //
   if (bMin || bMax)
   {
-    Standard_Real dp, aNbPer;
+    double dp, aNbPer;
     //
     dp = (bMin) ? (theParMax - thePar) : (theParMin - thePar);
     modf(dp / thePeriod, &aNbPer);

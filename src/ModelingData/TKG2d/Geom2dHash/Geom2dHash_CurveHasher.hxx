@@ -24,11 +24,11 @@ class Geom2d_Curve;
 struct Geom2dHash_CurveHasher
 {
   // Hashes any Geom2d_Curve by dispatching to the appropriate specific hasher.
-  Standard_EXPORT std::size_t operator()(const Handle(Geom2d_Curve)& theCurve) const noexcept;
+  Standard_EXPORT std::size_t operator()(const occ::handle<Geom2d_Curve>& theCurve) const noexcept;
 
   // Compares two curves using polymorphic dispatch.
-  Standard_EXPORT bool operator()(const Handle(Geom2d_Curve)& theCurve1,
-                                  const Handle(Geom2d_Curve)& theCurve2) const noexcept;
+  Standard_EXPORT bool operator()(const occ::handle<Geom2d_Curve>& theCurve1,
+                                  const occ::handle<Geom2d_Curve>& theCurve2) const noexcept;
 };
 
 #endif // _Geom2dHash_CurveHasher_HeaderFile

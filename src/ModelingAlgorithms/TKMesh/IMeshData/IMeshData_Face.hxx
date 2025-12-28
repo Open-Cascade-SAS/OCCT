@@ -36,25 +36,23 @@ public:
   virtual ~IMeshData_Face() {}
 
   //! Returns number of wires.
-  Standard_EXPORT virtual Standard_Integer WiresNb() const = 0;
+  Standard_EXPORT virtual int WiresNb() const = 0;
 
   //! Adds wire to discrete model of face.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& AddWire(
-    const TopoDS_Wire&     theWire,
-    const Standard_Integer theEdgeNb = 0) = 0;
+  Standard_EXPORT virtual const IMeshData::IWireHandle& AddWire(const TopoDS_Wire& theWire,
+                                                                const int theEdgeNb = 0) = 0;
 
   //! Returns discrete edge with the given index.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& GetWire(
-    const Standard_Integer theIndex) const = 0;
+  Standard_EXPORT virtual const IMeshData::IWireHandle& GetWire(const int theIndex) const = 0;
 
   //! Returns face's surface.
-  const Handle(BRepAdaptor_Surface)& GetSurface() const { return mySurface; }
+  const occ::handle<BRepAdaptor_Surface>& GetSurface() const { return mySurface; }
 
   //! Returns TopoDS_Face attached to model.
   const TopoDS_Face& GetFace() const { return TopoDS::Face(GetShape()); }
 
   //! Returns whether the face discrete model is valid.
-  Standard_Boolean IsValid() const
+  bool IsValid() const
   {
     return (IsEqual(IMeshData_NoError) || IsEqual(IMeshData_ReMesh)
             || IsEqual(IMeshData_UnorientedWire));
@@ -68,12 +66,12 @@ protected:
   IMeshData_Face(const TopoDS_Face& theFace)
       : IMeshData_TessellatedShape(theFace)
   {
-    BRepAdaptor_Surface aSurfAdaptor(GetFace(), Standard_False);
+    BRepAdaptor_Surface aSurfAdaptor(GetFace(), false);
     mySurface = new BRepAdaptor_Surface(aSurfAdaptor);
   }
 
 private:
-  mutable Handle(BRepAdaptor_Surface) mySurface;
+  mutable occ::handle<BRepAdaptor_Surface> mySurface;
 };
 
 #endif

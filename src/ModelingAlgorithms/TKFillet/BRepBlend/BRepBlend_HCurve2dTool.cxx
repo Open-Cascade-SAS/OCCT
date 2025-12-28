@@ -22,13 +22,13 @@
 #include <GeomAbs_CurveType.hxx>
 
 //============================================================
-Standard_Integer BRepBlend_HCurve2dTool::NbSamples(const Handle(Adaptor2d_Curve2d)& C,
-                                                   const Standard_Real              U0,
-                                                   const Standard_Real              U1)
+int BRepBlend_HCurve2dTool::NbSamples(const occ::handle<Adaptor2d_Curve2d>& C,
+                                      const double                          U0,
+                                      const double                          U1)
 {
-  GeomAbs_CurveType    typC     = C->GetType();
-  static Standard_Real nbsOther = 10.0;
-  Standard_Real        nbs      = nbsOther;
+  GeomAbs_CurveType typC     = C->GetType();
+  static double     nbsOther = 10.0;
+  double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -36,8 +36,8 @@ Standard_Integer BRepBlend_HCurve2dTool::NbSamples(const Handle(Adaptor2d_Curve2
     nbs = 3 + C->Bezier()->NbPoles();
   else if (typC == GeomAbs_BSplineCurve)
   {
-    Handle(Geom2d_BSplineCurve) BSC = C->BSpline();
-    nbs                             = BSC->NbKnots();
+    occ::handle<Geom2d_BSplineCurve> BSC = C->BSpline();
+    nbs                                  = BSC->NbKnots();
     nbs *= BSC->Degree();
     nbs *= BSC->LastParameter() - BSC->FirstParameter();
     nbs /= U1 - U0;
@@ -46,5 +46,5 @@ Standard_Integer BRepBlend_HCurve2dTool::NbSamples(const Handle(Adaptor2d_Curve2
   }
   if (nbs > 50)
     nbs = 50;
-  return ((Standard_Integer)nbs);
+  return ((int)nbs);
 }

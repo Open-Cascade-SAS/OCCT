@@ -44,7 +44,7 @@
 #define TheISurface_hxx <IntSurf_Quadric.hxx>
 #define TheISurfaceTool IntSurf_QuadricTool
 #define TheISurfaceTool_hxx <IntSurf_QuadricTool.hxx>
-#define Handle_TheWLine Handle(BRepApprox_ApproxLine)
+#define Handle_TheWLine occ::handle<BRepApprox_ApproxLine>
 #define TheWLine BRepApprox_ApproxLine
 #define TheWLine_hxx <BRepApprox_ApproxLine.hxx>
 #define ApproxInt_ThePrmPrmSvSurfaces BRepApprox_ThePrmPrmSvSurfacesOfApprox

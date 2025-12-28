@@ -33,16 +33,16 @@ public:
   //! This constructor calls perform method. This constructor is deprecated.
   Standard_DEPRECATED(
     "This constructor is deprecated. Use other constructor and perform method instead.")
-  Standard_EXPORT Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& C2D,
-                                        const Handle(Adaptor3d_Surface)& Surf,
-                                        const Standard_Real              First,
-                                        const Standard_Real              Last,
-                                        const Standard_Real              Tol,
-                                        const GeomAbs_Shape              Continuity,
-                                        const Standard_Integer           MaxDegree,
-                                        const Standard_Integer           MaxSegments,
-                                        const Standard_Boolean           Only3d = Standard_False,
-                                        const Standard_Boolean           Only2d = Standard_False);
+  Standard_EXPORT Approx_CurveOnSurface(const occ::handle<Adaptor2d_Curve2d>& C2D,
+                                        const occ::handle<Adaptor3d_Surface>& Surf,
+                                        const double                          First,
+                                        const double                          Last,
+                                        const double                          Tol,
+                                        const GeomAbs_Shape                   Continuity,
+                                        const int                             MaxDegree,
+                                        const int                             MaxSegments,
+                                        const bool                            Only3d = false,
+                                        const bool                            Only2d = false);
 
   //! This constructor does not call perform method.
   //! @param theC2D   2D Curve to be approximated in 3D.
@@ -50,27 +50,27 @@ public:
   //! @param theFirst First parameter of resulting curve.
   //! @param theFirst Last parameter of resulting curve.
   //! @param theTol   Computation tolerance.
-  Standard_EXPORT Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& theC2D,
-                                        const Handle(Adaptor3d_Surface)& theSurf,
-                                        const Standard_Real              theFirst,
-                                        const Standard_Real              theLast,
-                                        const Standard_Real              theTol);
+  Standard_EXPORT Approx_CurveOnSurface(const occ::handle<Adaptor2d_Curve2d>& theC2D,
+                                        const occ::handle<Adaptor3d_Surface>& theSurf,
+                                        const double                          theFirst,
+                                        const double                          theLast,
+                                        const double                          theTol);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Boolean HasResult() const;
+  Standard_EXPORT bool HasResult() const;
 
-  Standard_EXPORT Handle(Geom_BSplineCurve) Curve3d() const;
+  Standard_EXPORT occ::handle<Geom_BSplineCurve> Curve3d() const;
 
-  Standard_EXPORT Standard_Real MaxError3d() const;
+  Standard_EXPORT double MaxError3d() const;
 
-  Standard_EXPORT Handle(Geom2d_BSplineCurve) Curve2d() const;
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> Curve2d() const;
 
-  Standard_EXPORT Standard_Real MaxError2dU() const;
+  Standard_EXPORT double MaxError2dU() const;
 
   //! returns the maximum errors relatively to the U component or the V component of the
   //! 2d Curve
-  Standard_EXPORT Standard_Real MaxError2dV() const;
+  Standard_EXPORT double MaxError2dV() const;
 
   //! Constructs the 3d curve. Input parameters are ignored when the input curve is
   //! U-isoline or V-isoline.
@@ -79,11 +79,11 @@ public:
   //! @param theContinuity  Resulting continuity.
   //! @param theOnly3d      Determines building only 3D curve.
   //! @param theOnly2d      Determines building only 2D curve.
-  Standard_EXPORT void Perform(const Standard_Integer theMaxSegments,
-                               const Standard_Integer theMaxDegree,
-                               const GeomAbs_Shape    theContinuity,
-                               const Standard_Boolean theOnly3d = Standard_False,
-                               const Standard_Boolean theOnly2d = Standard_False);
+  Standard_EXPORT void Perform(const int           theMaxSegments,
+                               const int           theMaxDegree,
+                               const GeomAbs_Shape theContinuity,
+                               const bool          theOnly3d = false,
+                               const bool          theOnly2d = false);
 
 protected:
   //! Checks whether the 2d curve is a isoline. It can be represented by b-spline, bezier,
@@ -92,11 +92,11 @@ protected:
   //! @param theIsU       Flag indicating that line is u const.
   //! @param theParam     Line parameter.
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
-  //! @return Standard_True when 2d curve is a line and Standard_False otherwise.
-  Standard_Boolean isIsoLine(const Handle(Adaptor2d_Curve2d)& theC2D,
-                             Standard_Boolean&                theIsU,
-                             Standard_Real&                   theParam,
-                             Standard_Boolean&                theIsForward) const;
+  //! @return true when 2d curve is a line and false otherwise.
+  bool isIsoLine(const occ::handle<Adaptor2d_Curve2d>& theC2D,
+                 bool&                                 theIsU,
+                 double&                               theParam,
+                 bool&                                 theIsForward) const;
 
   //! Builds 3D curve for a isoline. This method takes corresponding isoline from
   //! the input surface.
@@ -104,38 +104,38 @@ protected:
   //! @param theIsU   Flag indicating that line is u const.
   //! @param theParam Line parameter.
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
-  //! @return Standard_True when 3d curve is built and Standard_False otherwise.
-  Standard_Boolean buildC3dOnIsoLine(const Handle(Adaptor2d_Curve2d)& theC2D,
-                                     const Standard_Boolean           theIsU,
-                                     const Standard_Real              theParam,
-                                     const Standard_Boolean           theIsForward);
+  //! @return true when 3d curve is built and false otherwise.
+  bool buildC3dOnIsoLine(const occ::handle<Adaptor2d_Curve2d>& theC2D,
+                         const bool                            theIsU,
+                         const double                          theParam,
+                         const bool                            theIsForward);
 
 private:
   Approx_CurveOnSurface& operator=(const Approx_CurveOnSurface&);
 
 private:
   //! Input curve.
-  const Handle(Adaptor2d_Curve2d) myC2D;
+  const occ::handle<Adaptor2d_Curve2d> myC2D;
 
   //! Input surface.
-  const Handle(Adaptor3d_Surface) mySurf;
+  const occ::handle<Adaptor3d_Surface> mySurf;
 
   //! First parameter of the result.
-  const Standard_Real myFirst;
+  const double myFirst;
 
   //! Last parameter of the result.
-  const Standard_Real myLast;
+  const double myLast;
 
   //! Tolerance.
-  Standard_Real myTol;
+  double myTol;
 
-  Handle(Geom2d_BSplineCurve) myCurve2d;
-  Handle(Geom_BSplineCurve)   myCurve3d;
-  Standard_Boolean            myIsDone;
-  Standard_Boolean            myHasResult;
-  Standard_Real               myError3d;
-  Standard_Real               myError2dU;
-  Standard_Real               myError2dV;
+  occ::handle<Geom2d_BSplineCurve> myCurve2d;
+  occ::handle<Geom_BSplineCurve>   myCurve3d;
+  bool                             myIsDone;
+  bool                             myHasResult;
+  double                           myError3d;
+  double                           myError2dU;
+  double                           myError2dV;
 };
 
 #endif // _Approx_CurveOnSurface_HeaderFile

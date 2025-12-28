@@ -55,7 +55,7 @@ public:
   //! Warnings:
   //! It is not forbidden to create a sphere with null radius.
   //! Raises ConstructionError if theRadius < 0.0
-  constexpr gp_Sphere(const gp_Ax3& theA3, const Standard_Real theRadius)
+  constexpr gp_Sphere(const gp_Ax3& theA3, const double theRadius)
       : pos(theA3),
         radius(theRadius)
   {
@@ -72,7 +72,7 @@ public:
   //! Warnings :
   //! It is not forbidden to create a sphere with null radius.
   //! Raises ConstructionError if theR < 0.0
-  void SetRadius(const Standard_Real theR)
+  void SetRadius(const double theR)
   {
     Standard_ConstructionError_Raise_if(theR < 0.0,
                                         "gp_Sphere::SetRadius() - radius should be >= 0");
@@ -80,7 +80,7 @@ public:
   }
 
   //! Computes the area of the sphere.
-  constexpr Standard_Real Area() const noexcept { return 4.0 * M_PI * radius * radius; }
+  constexpr double Area() const noexcept { return 4.0 * M_PI * radius * radius; }
 
   //! Computes the coefficients of the implicit equation of the quadric
   //! in the absolute cartesian coordinates system :
@@ -88,16 +88,16 @@ public:
   //! theA1.X**2 + theA2.Y**2 + theA3.Z**2 + 2.(theB1.X.Y + theB2.X.Z + theB3.Y.Z) +
   //! 2.(theC1.X + theC2.Y + theC3.Z) + theD = 0.0
   //! @endcode
-  Standard_EXPORT void Coefficients(Standard_Real& theA1,
-                                    Standard_Real& theA2,
-                                    Standard_Real& theA3,
-                                    Standard_Real& theB1,
-                                    Standard_Real& theB2,
-                                    Standard_Real& theB3,
-                                    Standard_Real& theC1,
-                                    Standard_Real& theC2,
-                                    Standard_Real& theC3,
-                                    Standard_Real& theD) const;
+  Standard_EXPORT void Coefficients(double& theA1,
+                                    double& theA2,
+                                    double& theA3,
+                                    double& theB1,
+                                    double& theB2,
+                                    double& theB3,
+                                    double& theC1,
+                                    double& theC2,
+                                    double& theC3,
+                                    double& theD) const;
 
   //! Reverses the U parametrization of the sphere
   //! reversing the YAxis.
@@ -109,7 +109,7 @@ public:
 
   //! Returns true if the local coordinate system of this sphere
   //! is right-handed.
-  Standard_Boolean Direct() const { return pos.Direct(); }
+  bool Direct() const { return pos.Direct(); }
 
   //! --- Purpose ;
   //! Returns the center of the sphere.
@@ -119,13 +119,10 @@ public:
   constexpr const gp_Ax3& Position() const noexcept { return pos; }
 
   //! Returns the radius of the sphere.
-  constexpr Standard_Real Radius() const noexcept { return radius; }
+  constexpr double Radius() const noexcept { return radius; }
 
   //! Computes the volume of the sphere
-  constexpr Standard_Real Volume() const noexcept
-  {
-    return (4.0 * M_PI * radius * radius * radius) / 3.0;
-  }
+  constexpr double Volume() const noexcept { return (4.0 * M_PI * radius * radius * radius) / 3.0; }
 
   //! Returns the axis X of the sphere.
   constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
@@ -138,49 +135,49 @@ public:
   //! Performs the symmetrical transformation of a sphere
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Sphere Mirrored(const gp_Pnt& theP) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Sphere Mirrored(const gp_Pnt& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
 
   //! Performs the symmetrical transformation of a sphere with
   //! respect to an axis placement which is the axis of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Sphere Mirrored(const gp_Ax1& theA1) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Sphere Mirrored(const gp_Ax1& theA1) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Performs the symmetrical transformation of a sphere with respect
   //! to a plane. The axis placement theA2 locates the plane of the
   //! of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Sphere Mirrored(const gp_Ax2& theA2) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Sphere Mirrored(const gp_Ax2& theA2) const noexcept;
 
-  void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
+  void Rotate(const gp_Ax1& theA1, const double theAng) { pos.Rotate(theA1, theAng); }
 
   //! Rotates a sphere. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Sphere Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  [[nodiscard]] gp_Sphere Rotated(const gp_Ax1& theA1, const double theAng) const
   {
     gp_Sphere aC = *this;
     aC.pos.Rotate(theA1, theAng);
     return aC;
   }
 
-  void Scale(const gp_Pnt& theP, const Standard_Real theS);
+  void Scale(const gp_Pnt& theP, const double theS);
 
   //! Scales a sphere. theS is the scaling value.
   //! The absolute value of S is used to scale the sphere
-  Standard_NODISCARD gp_Sphere Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
+  [[nodiscard]] gp_Sphere Scaled(const gp_Pnt& theP, const double theS) const;
 
   void Transform(const gp_Trsf& theT);
 
   //! Transforms a sphere with the transformation theT from class Trsf.
-  Standard_NODISCARD gp_Sphere Transformed(const gp_Trsf& theT) const;
+  [[nodiscard]] gp_Sphere Transformed(const gp_Trsf& theT) const;
 
   constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a sphere in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD constexpr gp_Sphere Translated(const gp_Vec& theV) const noexcept
+  [[nodiscard]] constexpr gp_Sphere Translated(const gp_Vec& theV) const noexcept
   {
     gp_Sphere aC = *this;
     aC.pos.Translate(theV);
@@ -193,8 +190,8 @@ public:
   }
 
   //! Translates a sphere from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Sphere Translated(const gp_Pnt& theP1,
-                                                    const gp_Pnt& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Sphere Translated(const gp_Pnt& theP1,
+                                               const gp_Pnt& theP2) const noexcept
   {
     gp_Sphere aC = *this;
     aC.pos.Translate(theP1, theP2);
@@ -202,13 +199,13 @@ public:
   }
 
 private:
-  gp_Ax3        pos;
-  Standard_Real radius;
+  gp_Ax3 pos;
+  double radius;
 };
 
 //=================================================================================================
 
-inline void gp_Sphere::Scale(const gp_Pnt& theP, const Standard_Real theS)
+inline void gp_Sphere::Scale(const gp_Pnt& theP, const double theS)
 {
   pos.Scale(theP, theS);
   radius *= theS;
@@ -220,7 +217,7 @@ inline void gp_Sphere::Scale(const gp_Pnt& theP, const Standard_Real theS)
 
 //=================================================================================================
 
-inline gp_Sphere gp_Sphere::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+inline gp_Sphere gp_Sphere::Scaled(const gp_Pnt& theP, const double theS) const
 {
   gp_Sphere aC = *this;
   aC.pos.Scale(theP, theS);

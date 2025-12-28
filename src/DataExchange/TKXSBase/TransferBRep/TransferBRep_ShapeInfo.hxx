@@ -33,14 +33,11 @@ public:
 
   //! Returns the Type attached to an object
   //! Here, TShape (Shape has no Dynamic Type)
-  Standard_EXPORT static Handle(Standard_Type) Type(const TopoDS_Shape& ent);
+  Standard_EXPORT static occ::handle<Standard_Type> Type(const TopoDS_Shape& ent);
 
   //! Returns Type Name (string)
   //! Here, the true name of the Type of a Shape
-  Standard_EXPORT static Standard_CString TypeName(const TopoDS_Shape& ent);
-
-protected:
-private:
+  Standard_EXPORT static const char* TypeName(const TopoDS_Shape& ent);
 };
 
 #endif // _TransferBRep_ShapeInfo_HeaderFile

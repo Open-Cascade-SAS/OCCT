@@ -66,31 +66,30 @@ public:
   //! Constructor. If aClear is True, the allocated emmory will be
   //! nullified. For description of other parameters, see description
   //! of the class above.
-  Standard_EXPORT Standard_MMgrOpt(const Standard_Boolean aClear     = Standard_True,
-                                   const Standard_Boolean aMMap      = Standard_True,
-                                   const Standard_Size    aCellSize  = 200,
-                                   const Standard_Integer aNbPages   = 10000,
-                                   const Standard_Size    aThreshold = 40000);
+  Standard_EXPORT Standard_MMgrOpt(const bool   aClear     = true,
+                                   const bool   aMMap      = true,
+                                   const size_t aCellSize  = 200,
+                                   const int    aNbPages   = 10000,
+                                   const size_t aThreshold = 40000);
 
   //! Frees all free lists and pools allocated for small blocks
   Standard_EXPORT virtual ~Standard_MMgrOpt();
 
   //! Allocate aSize bytes; see class description above
-  Standard_EXPORT virtual Standard_Address Allocate(const Standard_Size aSize);
+  Standard_EXPORT virtual void* Allocate(const size_t aSize);
 
   //! Reallocate previously allocated aPtr to a new size; new address is returned.
   //! In case that aPtr is null, the function behaves exactly as Allocate.
-  Standard_EXPORT virtual Standard_Address Reallocate(Standard_Address    thePtr,
-                                                      const Standard_Size theSize);
+  Standard_EXPORT virtual void* Reallocate(void* thePtr, const size_t theSize);
 
   //! Free previously allocated block.
   //! Note that block can not all blocks are released to the OS by this
   //! method (see class description)
-  Standard_EXPORT virtual void Free(Standard_Address thePtr);
+  Standard_EXPORT virtual void Free(void* thePtr);
 
   //! Release medium-sized blocks of memory in free lists to the system.
   //! Returns number of actually freed blocks
-  Standard_EXPORT virtual Standard_Integer Purge(Standard_Boolean isDestroyed);
+  Standard_EXPORT virtual int Purge(bool isDestroyed);
 
   //! Declaration of a type pointer to the callback function that should accept the following
   //! arguments:
@@ -99,10 +98,10 @@ public:
   //! @param theRoundSize the real rounded size of the block
   //! @param theSize      the size of the block that was requested by application (this value is
   //! correct only if theIsAlloc is true)
-  typedef void (*TPCallBackFunc)(const Standard_Boolean theIsAlloc,
-                                 const Standard_Address theStorage,
-                                 const Standard_Size    theRoundSize,
-                                 const Standard_Size    theSize);
+  typedef void (*TPCallBackFunc)(const bool   theIsAlloc,
+                                 void* const  theStorage,
+                                 const size_t theRoundSize,
+                                 const size_t theSize);
 
   //! Set the callback function. You may pass 0 there to turn off the callback.
   //! The callback function, if set, will be automatically called from within
@@ -116,31 +115,31 @@ protected:
   //! Internal - allocation of memory using either malloc or memory mapped files.
   //! The size of the actually allocated block may be greater than requested one
   //! when memory mapping is used, since it is aligned to page size
-  Standard_Size* AllocMemory(Standard_Size& aSize);
+  size_t* AllocMemory(size_t& aSize);
 
   //! Internal - deallocation of memory taken by AllocMemory
-  void FreeMemory(Standard_Address aPtr, const Standard_Size aSize);
+  void FreeMemory(void* aPtr, const size_t aSize);
 
   //! Internal - free memory pools allocated for small size blocks
   void FreePools();
 
 protected:
-  Standard_Boolean myClear; //!< option to clear allocated memory
+  bool myClear; //!< option to clear allocated memory
 
-  Standard_Size   myFreeListMax; //!< last allocated index in the free blocks list
-  Standard_Size** myFreeList;    //!< free blocks list
+  size_t   myFreeListMax; //!< last allocated index in the free blocks list
+  size_t** myFreeList;    //!< free blocks list
 
-  Standard_Size    myCellSize;  //!< small blocks size
-  Standard_Integer myNbPages;   //!< size (pages) for small block memory pools
-  Standard_Size    myPageSize;  //!< system-dependent memory page size
-  Standard_Size*   myAllocList; //!< list of memory pools for small blocks
-  Standard_Size*   myNextAddr;  //!< next free address in the active memory pool
-  Standard_Size*   myEndBlock;  //!< end of the active memory pool
+  size_t  myCellSize;  //!< small blocks size
+  int     myNbPages;   //!< size (pages) for small block memory pools
+  size_t  myPageSize;  //!< system-dependent memory page size
+  size_t* myAllocList; //!< list of memory pools for small blocks
+  size_t* myNextAddr;  //!< next free address in the active memory pool
+  size_t* myEndBlock;  //!< end of the active memory pool
 
   // clang-format off
-  Standard_Integer myMMap;          //!< non-null if using memory mapped files for allocation of large blocks
+  int myMMap;          //!< non-null if using memory mapped files for allocation of large blocks
   // clang-format on
-  Standard_Size myThreshold; //!< large block size
+  size_t myThreshold; //!< large block size
 
   std::mutex myMutex;      //!< Mutex to protect free lists data
   std::mutex myMutexPools; //!< Mutex to protect small block pools data

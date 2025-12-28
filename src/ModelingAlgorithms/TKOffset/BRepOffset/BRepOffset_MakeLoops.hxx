@@ -23,8 +23,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 class BRepAlgo_AsDes;
 class BRepAlgo_Image;
 class BRepOffset_Analyse;
@@ -36,27 +38,26 @@ public:
 
   Standard_EXPORT BRepOffset_MakeLoops();
 
-  Standard_EXPORT void Build(const TopTools_ListOfShape&   LF,
-                             const Handle(BRepAlgo_AsDes)& AsDes,
-                             BRepAlgo_Image&               Image,
-                             BRepAlgo_Image&               theImageVV,
-                             const Message_ProgressRange&  theRange);
+  Standard_EXPORT void Build(const NCollection_List<TopoDS_Shape>& LF,
+                             const occ::handle<BRepAlgo_AsDes>&    AsDes,
+                             BRepAlgo_Image&                       Image,
+                             BRepAlgo_Image&                       theImageVV,
+                             const Message_ProgressRange&          theRange);
 
-  Standard_EXPORT void BuildOnContext(const TopTools_ListOfShape&   LContext,
-                                      const BRepOffset_Analyse&     Analyse,
-                                      const Handle(BRepAlgo_AsDes)& AsDes,
-                                      BRepAlgo_Image&               Image,
-                                      const Standard_Boolean        InSide,
-                                      const Message_ProgressRange&  theRange);
+  Standard_EXPORT void BuildOnContext(const NCollection_List<TopoDS_Shape>& LContext,
+                                      const BRepOffset_Analyse&             Analyse,
+                                      const occ::handle<BRepAlgo_AsDes>&    AsDes,
+                                      BRepAlgo_Image&                       Image,
+                                      const bool                            InSide,
+                                      const Message_ProgressRange&          theRange);
 
-  Standard_EXPORT void BuildFaces(const TopTools_ListOfShape&   LF,
-                                  const Handle(BRepAlgo_AsDes)& AsDes,
-                                  BRepAlgo_Image&               Image,
-                                  const Message_ProgressRange&  theRange);
+  Standard_EXPORT void BuildFaces(const NCollection_List<TopoDS_Shape>& LF,
+                                  const occ::handle<BRepAlgo_AsDes>&    AsDes,
+                                  BRepAlgo_Image&                       Image,
+                                  const Message_ProgressRange&          theRange);
 
-protected:
 private:
-  TopTools_DataMapOfShapeShape myVerVerMap;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVerVerMap;
 };
 
 #endif // _BRepOffset_MakeLoops_HeaderFile

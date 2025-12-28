@@ -26,8 +26,8 @@ class RWObj
 public:
   //! Read specified OBJ file and returns its content as triangulation.
   //! In case of error, returns Null handle.
-  Standard_EXPORT static Handle(Poly_Triangulation) ReadFile(
-    const Standard_CString       theFile,
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ReadFile(
+    const char*                  theFile,
     const Message_ProgressRange& aProgress = Message_ProgressRange());
 };
 

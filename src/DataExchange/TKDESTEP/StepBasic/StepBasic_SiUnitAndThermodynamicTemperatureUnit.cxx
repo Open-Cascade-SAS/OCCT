@@ -26,7 +26,7 @@ StepBasic_SiUnitAndThermodynamicTemperatureUnit::StepBasic_SiUnitAndThermodynami
 
 //=================================================================================================
 
-void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const Standard_Boolean     hasAprefix,
+void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const bool                 hasAprefix,
                                                            const StepBasic_SiPrefix   aPrefix,
                                                            const StepBasic_SiUnitName aName)
 {
@@ -36,7 +36,7 @@ void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const Standard_Boolea
 
   // --- ANDOR component fields ---
   thermodynamicTemperatureUnit = new StepBasic_ThermodynamicTemperatureUnit();
-  Handle(StepBasic_DimensionalExponents) aDimensions;
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
   aDimensions.Nullify();
   thermodynamicTemperatureUnit->Init(aDimensions);
 }
@@ -44,15 +44,15 @@ void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const Standard_Boolea
 //=================================================================================================
 
 void StepBasic_SiUnitAndThermodynamicTemperatureUnit::SetThermodynamicTemperatureUnit(
-  const Handle(StepBasic_ThermodynamicTemperatureUnit)& aThermodynamicTemperatureUnit)
+  const occ::handle<StepBasic_ThermodynamicTemperatureUnit>& aThermodynamicTemperatureUnit)
 {
   thermodynamicTemperatureUnit = aThermodynamicTemperatureUnit;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ThermodynamicTemperatureUnit) StepBasic_SiUnitAndThermodynamicTemperatureUnit::
-  ThermodynamicTemperatureUnit() const
+occ::handle<StepBasic_ThermodynamicTemperatureUnit>
+  StepBasic_SiUnitAndThermodynamicTemperatureUnit::ThermodynamicTemperatureUnit() const
 {
   return thermodynamicTemperatureUnit;
 }

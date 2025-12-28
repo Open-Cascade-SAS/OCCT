@@ -15,19 +15,19 @@
 #include <IntSurf_Quadric.hxx>
 #include <gp_Vec.hxx>
 
-inline Standard_Real IntSurf_QuadricTool::Value(const IntSurf_Quadric& Quad,
-                                                const Standard_Real    X,
-                                                const Standard_Real    Y,
-                                                const Standard_Real    Z)
+inline double IntSurf_QuadricTool::Value(const IntSurf_Quadric& Quad,
+                                         const double           X,
+                                         const double           Y,
+                                         const double           Z)
 {
 
   return Quad.Distance(gp_Pnt(X, Y, Z));
 }
 
 inline void IntSurf_QuadricTool::Gradient(const IntSurf_Quadric& Quad,
-                                          const Standard_Real    X,
-                                          const Standard_Real    Y,
-                                          const Standard_Real    Z,
+                                          const double           X,
+                                          const double           Y,
+                                          const double           Z,
                                           gp_Vec&                V)
 {
 
@@ -35,10 +35,10 @@ inline void IntSurf_QuadricTool::Gradient(const IntSurf_Quadric& Quad,
 }
 
 inline void IntSurf_QuadricTool::ValueAndGradient(const IntSurf_Quadric& Quad,
-                                                  const Standard_Real    X,
-                                                  const Standard_Real    Y,
-                                                  const Standard_Real    Z,
-                                                  Standard_Real&         Val,
+                                                  const double           X,
+                                                  const double           Y,
+                                                  const double           Z,
+                                                  double&                Val,
                                                   gp_Vec&                V)
 {
 

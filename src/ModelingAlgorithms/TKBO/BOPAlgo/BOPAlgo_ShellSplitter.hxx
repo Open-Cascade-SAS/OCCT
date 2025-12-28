@@ -19,11 +19,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPTools_ListOfConnexityBlock.hxx>
-#include <BOPAlgo_Algo.hxx>
+#include <NCollection_List.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
+#include <BOPAlgo_Algo.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
 class TopoDS_Shape;
 
 //! The class provides the splitting of the set of connected faces
@@ -38,31 +38,29 @@ public:
   Standard_EXPORT virtual ~BOPAlgo_ShellSplitter();
 
   //! constructor
-  Standard_EXPORT BOPAlgo_ShellSplitter(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPAlgo_ShellSplitter(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! adds a face <theS> to process
   Standard_EXPORT void AddStartElement(const TopoDS_Shape& theS);
 
   //! return the faces to process
-  Standard_EXPORT const TopTools_ListOfShape& StartElements() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& StartElements() const;
 
   //! performs the algorithm
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! returns the loops
-  Standard_EXPORT const TopTools_ListOfShape& Shells() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Shells() const;
 
   Standard_EXPORT static void SplitBlock(BOPTools_ConnexityBlock& theCB);
 
 protected:
   Standard_EXPORT void MakeShells(const Message_ProgressRange& theRange);
 
-  TopTools_ListOfShape          myStartShapes;
-  TopTools_ListOfShape          myShells;
-  BOPTools_ListOfConnexityBlock myLCB;
-
-private:
+  NCollection_List<TopoDS_Shape>            myStartShapes;
+  NCollection_List<TopoDS_Shape>            myShells;
+  NCollection_List<BOPTools_ConnexityBlock> myLCB;
 };
 
 #endif // _BOPAlgo_ShellSplitter_HeaderFile

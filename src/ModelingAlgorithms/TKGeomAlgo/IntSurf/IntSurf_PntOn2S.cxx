@@ -23,10 +23,7 @@ IntSurf_PntOn2S::IntSurf_PntOn2S()
 {
 }
 
-void IntSurf_PntOn2S::SetValue(const gp_Pnt&          Pt,
-                               const Standard_Boolean OnFirst,
-                               const Standard_Real    U,
-                               const Standard_Real    V)
+void IntSurf_PntOn2S::SetValue(const gp_Pnt& Pt, const bool OnFirst, const double U, const double V)
 {
 
   pt = Pt;
@@ -42,9 +39,7 @@ void IntSurf_PntOn2S::SetValue(const gp_Pnt&          Pt,
   }
 }
 
-void IntSurf_PntOn2S::SetValue(const Standard_Boolean OnFirst,
-                               const Standard_Real    U,
-                               const Standard_Real    V)
+void IntSurf_PntOn2S::SetValue(const bool OnFirst, const double U, const double V)
 {
 
   if (OnFirst)
@@ -59,7 +54,7 @@ void IntSurf_PntOn2S::SetValue(const Standard_Boolean OnFirst,
   }
 }
 
-gp_Pnt2d IntSurf_PntOn2S::ValueOnSurface(const Standard_Boolean OnFirst) const
+gp_Pnt2d IntSurf_PntOn2S::ValueOnSurface(const bool OnFirst) const
 {
   gp_Pnt2d PointOnSurf;
   if (OnFirst)
@@ -69,9 +64,7 @@ gp_Pnt2d IntSurf_PntOn2S::ValueOnSurface(const Standard_Boolean OnFirst) const
   return PointOnSurf;
 }
 
-void IntSurf_PntOn2S::ParametersOnSurface(const Standard_Boolean OnFirst,
-                                          Standard_Real&         U,
-                                          Standard_Real&         V) const
+void IntSurf_PntOn2S::ParametersOnSurface(const bool OnFirst, double& U, double& V) const
 {
   if (OnFirst)
   {
@@ -85,31 +78,31 @@ void IntSurf_PntOn2S::ParametersOnSurface(const Standard_Boolean OnFirst,
   }
 }
 
-Standard_Boolean IntSurf_PntOn2S::IsSame(const IntSurf_PntOn2S& theOterPoint,
-                                         const Standard_Real    theTol3D,
-                                         const Standard_Real    theTol2D) const
+bool IntSurf_PntOn2S::IsSame(const IntSurf_PntOn2S& theOterPoint,
+                             const double           theTol3D,
+                             const double           theTol2D) const
 {
   if (pt.SquareDistance(theOterPoint.Value()) > theTol3D * theTol3D)
-    return Standard_False;
+    return false;
 
   if (theTol2D < 0.0)
   { // We need not compare 2D-coordinates of the points
-    return Standard_True;
+    return true;
   }
 
-  Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
+  double aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
   theOterPoint.Parameters(aU1, aV1, aU2, aV2);
 
   gp_Pnt2d aP1(u1, v1), aP2(aU1, aV1);
 
   if (!aP1.IsEqual(aP2, theTol2D))
-    return Standard_False;
+    return false;
 
   aP1.SetCoord(u2, v2);
   aP2.SetCoord(aU2, aV2);
 
   if (!aP1.IsEqual(aP2, theTol2D))
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }

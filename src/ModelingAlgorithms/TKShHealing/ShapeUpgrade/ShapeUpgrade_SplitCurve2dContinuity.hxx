@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_SplitCurve2d.hxx>
 
-class ShapeUpgrade_SplitCurve2dContinuity;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitCurve2dContinuity, ShapeUpgrade_SplitCurve2d)
-
 //! Corrects/splits a 2d curve with a continuity criterion.
 //! Tolerance is used to correct the curve at a knot that respects
 //! geometrically the criterion, in order to reduce the
@@ -42,18 +39,17 @@ public:
   Standard_EXPORT void SetCriterion(const GeomAbs_Shape Criterion);
 
   //! Sets tolerance.
-  Standard_EXPORT void SetTolerance(const Standard_Real Tol);
+  Standard_EXPORT void SetTolerance(const double Tol);
 
   //! Calculates points for correction/splitting of the curve
-  Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute() override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2dContinuity, ShapeUpgrade_SplitCurve2d)
 
-protected:
 private:
-  GeomAbs_Shape    myCriterion;
-  Standard_Integer myCont;
-  Standard_Real    myTolerance;
+  GeomAbs_Shape myCriterion;
+  int           myCont;
+  double        myTolerance;
 };
 
 #endif // _ShapeUpgrade_SplitCurve2dContinuity_HeaderFile

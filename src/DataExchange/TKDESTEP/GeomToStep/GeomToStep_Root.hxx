@@ -31,12 +31,10 @@ class GeomToStep_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
 protected:
-  Standard_Boolean done;
-
-private:
+  bool done;
 };
 
 #endif // _GeomToStep_Root_HeaderFile

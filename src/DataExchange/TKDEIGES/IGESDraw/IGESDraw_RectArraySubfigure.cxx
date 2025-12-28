@@ -27,16 +27,16 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_RectArraySubfigure, IGESData_IGESEntity)
 
 IGESDraw_RectArraySubfigure::IGESDraw_RectArraySubfigure() {}
 
-void IGESDraw_RectArraySubfigure::Init(const Handle(IGESData_IGESEntity)&      aBase,
-                                       const Standard_Real                     aScale,
-                                       const gp_XYZ&                           aCorner,
-                                       const Standard_Integer                  nbCols,
-                                       const Standard_Integer                  nbRows,
-                                       const Standard_Real                     hDisp,
-                                       const Standard_Real                     vtDisp,
-                                       const Standard_Real                     rotationAngle,
-                                       const Standard_Integer                  doDont,
-                                       const Handle(TColStd_HArray1OfInteger)& allNumPos)
+void IGESDraw_RectArraySubfigure::Init(const occ::handle<IGESData_IGESEntity>&      aBase,
+                                       const double                                 aScale,
+                                       const gp_XYZ&                                aCorner,
+                                       const int                                    nbCols,
+                                       const int                                    nbRows,
+                                       const double                                 hDisp,
+                                       const double                                 vtDisp,
+                                       const double                                 rotationAngle,
+                                       const int                                    doDont,
+                                       const occ::handle<NCollection_HArray1<int>>& allNumPos)
 {
   if (!allNumPos.IsNull())
     if (allNumPos->Lower() != 1)
@@ -54,12 +54,12 @@ void IGESDraw_RectArraySubfigure::Init(const Handle(IGESData_IGESEntity)&      a
   InitTypeAndForm(412, 0);
 }
 
-Handle(IGESData_IGESEntity) IGESDraw_RectArraySubfigure::BaseEntity() const
+occ::handle<IGESData_IGESEntity> IGESDraw_RectArraySubfigure::BaseEntity() const
 {
   return theBaseEntity;
 }
 
-Standard_Real IGESDraw_RectArraySubfigure::ScaleFactor() const
+double IGESDraw_RectArraySubfigure::ScaleFactor() const
 {
   return theScaleFactor;
 }
@@ -80,48 +80,48 @@ gp_Pnt IGESDraw_RectArraySubfigure::TransformedLowerLeftCorner() const
   return (tempRes);
 }
 
-Standard_Integer IGESDraw_RectArraySubfigure::NbColumns() const
+int IGESDraw_RectArraySubfigure::NbColumns() const
 {
   return theNbColumns;
 }
 
-Standard_Integer IGESDraw_RectArraySubfigure::NbRows() const
+int IGESDraw_RectArraySubfigure::NbRows() const
 {
   return theNbRows;
 }
 
-Standard_Real IGESDraw_RectArraySubfigure::ColumnSeparation() const
+double IGESDraw_RectArraySubfigure::ColumnSeparation() const
 {
   return theColumnSeparation;
 }
 
-Standard_Real IGESDraw_RectArraySubfigure::RowSeparation() const
+double IGESDraw_RectArraySubfigure::RowSeparation() const
 {
   return theRowSeparation;
 }
 
-Standard_Real IGESDraw_RectArraySubfigure::RotationAngle() const
+double IGESDraw_RectArraySubfigure::RotationAngle() const
 {
   return theRotationAngle;
 }
 
-Standard_Boolean IGESDraw_RectArraySubfigure::DisplayFlag() const
+bool IGESDraw_RectArraySubfigure::DisplayFlag() const
 {
   return (thePositions.IsNull());
 }
 
-Standard_Integer IGESDraw_RectArraySubfigure::ListCount() const
+int IGESDraw_RectArraySubfigure::ListCount() const
 {
   return (thePositions.IsNull() ? 0 : thePositions->Length());
   // Return 0 if HArray1 thePositions is NULL Handle
 }
 
-Standard_Boolean IGESDraw_RectArraySubfigure::DoDontFlag() const
+bool IGESDraw_RectArraySubfigure::DoDontFlag() const
 {
   return (theDoDontFlag);
 }
 
-Standard_Boolean IGESDraw_RectArraySubfigure::PositionNum(const Standard_Integer Index) const
+bool IGESDraw_RectArraySubfigure::PositionNum(const int Index) const
 {
   // Method : If thePositions array length is Zero return theDoDontFlag;
   //          else Search Index in to the Array. If 'Index' found in the
@@ -130,8 +130,8 @@ Standard_Boolean IGESDraw_RectArraySubfigure::PositionNum(const Standard_Integer
   if (thePositions.IsNull())
     return theDoDontFlag;
 
-  Standard_Integer I;
-  Standard_Integer up = thePositions->Upper();
+  int I;
+  int up = thePositions->Upper();
   for (I = 1; I <= up; I++)
   {
     if (thePositions->Value(I) == Index)
@@ -140,7 +140,7 @@ Standard_Boolean IGESDraw_RectArraySubfigure::PositionNum(const Standard_Integer
   return (!theDoDontFlag);
 }
 
-Standard_Integer IGESDraw_RectArraySubfigure::ListPosition(const Standard_Integer Index) const
+int IGESDraw_RectArraySubfigure::ListPosition(const int Index) const
 {
   return thePositions->Value(Index);
   // raise OutOfRange from Standard if Index is out-of-bound

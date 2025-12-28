@@ -25,15 +25,15 @@ StepVisual_ComplexTriangulatedFace::StepVisual_ComplexTriangulatedFace() {}
 //=================================================================================================
 
 void StepVisual_ComplexTriangulatedFace::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
-  const Standard_Integer                    theTessellatedFace_Pnmax,
-  const Handle(TColStd_HArray2OfReal)&      theTessellatedFace_Normals,
-  const Standard_Boolean                    theHasTessellatedFace_GeometricLink,
-  const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
-  const Handle(TColStd_HArray1OfInteger)&   thePnindex,
-  const Handle(TColStd_HArray1OfTransient)& theTriangleStrips,
-  const Handle(TColStd_HArray1OfTransient)& theTriangleFans)
+  const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>&  theTessellatedFace_Coordinates,
+  const int                                       theTessellatedFace_Pnmax,
+  const occ::handle<NCollection_HArray2<double>>& theTessellatedFace_Normals,
+  const bool                                      theHasTessellatedFace_GeometricLink,
+  const StepVisual_FaceOrSurface&                 theTessellatedFace_GeometricLink,
+  const occ::handle<NCollection_HArray1<int>>&    thePnindex,
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleStrips,
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleFans)
 {
   StepVisual_TessellatedFace::Init(theRepresentationItem_Name,
                                    theTessellatedFace_Coordinates,
@@ -51,7 +51,7 @@ void StepVisual_ComplexTriangulatedFace::Init(
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_ComplexTriangulatedFace::Pnindex() const
+occ::handle<NCollection_HArray1<int>> StepVisual_ComplexTriangulatedFace::Pnindex() const
 {
   return myPnindex;
 }
@@ -59,14 +59,14 @@ Handle(TColStd_HArray1OfInteger) StepVisual_ComplexTriangulatedFace::Pnindex() c
 //=================================================================================================
 
 void StepVisual_ComplexTriangulatedFace::SetPnindex(
-  const Handle(TColStd_HArray1OfInteger)& thePnindex)
+  const occ::handle<NCollection_HArray1<int>>& thePnindex)
 {
   myPnindex = thePnindex;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_ComplexTriangulatedFace::NbPnindex() const
+int StepVisual_ComplexTriangulatedFace::NbPnindex() const
 {
   if (myPnindex.IsNull())
   {
@@ -77,15 +77,15 @@ Standard_Integer StepVisual_ComplexTriangulatedFace::NbPnindex() const
 
 //=================================================================================================
 
-Standard_Integer StepVisual_ComplexTriangulatedFace::PnindexValue(
-  const Standard_Integer theNum) const
+int StepVisual_ComplexTriangulatedFace::PnindexValue(const int theNum) const
 {
   return myPnindex->Value(theNum);
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedFace::TriangleStrips() const
+occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>
+  StepVisual_ComplexTriangulatedFace::TriangleStrips() const
 {
   return myTriangleStrips;
 }
@@ -93,14 +93,14 @@ Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedFace::TriangleS
 //=================================================================================================
 
 void StepVisual_ComplexTriangulatedFace::SetTriangleStrips(
-  const Handle(TColStd_HArray1OfTransient)& theTriangleStrips)
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleStrips)
 {
   myTriangleStrips = theTriangleStrips;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_ComplexTriangulatedFace::NbTriangleStrips() const
+int StepVisual_ComplexTriangulatedFace::NbTriangleStrips() const
 {
   if (myTriangleStrips.IsNull())
   {
@@ -111,7 +111,8 @@ Standard_Integer StepVisual_ComplexTriangulatedFace::NbTriangleStrips() const
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedFace::TriangleFans() const
+occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>
+  StepVisual_ComplexTriangulatedFace::TriangleFans() const
 {
   return myTriangleFans;
 }
@@ -119,14 +120,14 @@ Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedFace::TriangleF
 //=================================================================================================
 
 void StepVisual_ComplexTriangulatedFace::SetTriangleFans(
-  const Handle(TColStd_HArray1OfTransient)& theTriangleFans)
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleFans)
 {
   myTriangleFans = theTriangleFans;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_ComplexTriangulatedFace::NbTriangleFans() const
+int StepVisual_ComplexTriangulatedFace::NbTriangleFans() const
 {
   if (myTriangleFans.IsNull())
   {

@@ -21,8 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <NLPlate_SequenceOfHGPPConstraint.hxx>
-#include <NLPlate_StackOfPlate.hxx>
+#include <NLPlate_HGPPConstraint.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Plate_Plate.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Surface;
 class NLPlate_HGPPConstraint;
@@ -34,23 +36,21 @@ class NLPlate_NLPlate
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT NLPlate_NLPlate(const Handle(Geom_Surface)& InitialSurface);
+  Standard_EXPORT NLPlate_NLPlate(const occ::handle<Geom_Surface>& InitialSurface);
 
-  Standard_EXPORT void Load(const Handle(NLPlate_HGPPConstraint)& GConst);
+  Standard_EXPORT void Load(const occ::handle<NLPlate_HGPPConstraint>& GConst);
 
-  Standard_EXPORT void Solve(const Standard_Integer ord                   = 2,
-                             const Standard_Integer InitialConsraintOrder = 1);
+  Standard_EXPORT void Solve(const int ord = 2, const int InitialConsraintOrder = 1);
 
-  Standard_EXPORT void Solve2(const Standard_Integer ord                   = 2,
-                              const Standard_Integer InitialConsraintOrder = 1);
+  Standard_EXPORT void Solve2(const int ord = 2, const int InitialConsraintOrder = 1);
 
-  Standard_EXPORT void IncrementalSolve(const Standard_Integer ord                   = 2,
-                                        const Standard_Integer InitialConsraintOrder = 1,
-                                        const Standard_Integer NbIncrements          = 4,
-                                        const Standard_Boolean UVSliding = Standard_False);
+  Standard_EXPORT void IncrementalSolve(const int  ord                   = 2,
+                                        const int  InitialConsraintOrder = 1,
+                                        const int  NbIncrements          = 4,
+                                        const bool UVSliding             = false);
 
   //! returns True if all has been correctly done.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   Standard_EXPORT void destroy();
 
@@ -62,26 +62,23 @@ public:
 
   Standard_EXPORT gp_XYZ Evaluate(const gp_XY& point2d) const;
 
-  Standard_EXPORT gp_XYZ EvaluateDerivative(const gp_XY&           point2d,
-                                            const Standard_Integer iu,
-                                            const Standard_Integer iv) const;
+  Standard_EXPORT gp_XYZ EvaluateDerivative(const gp_XY& point2d, const int iu, const int iv) const;
 
-  Standard_EXPORT Standard_Integer Continuity() const;
+  Standard_EXPORT int Continuity() const;
 
-  Standard_EXPORT void ConstraintsSliding(const Standard_Integer NbIterations = 3);
+  Standard_EXPORT void ConstraintsSliding(const int NbIterations = 3);
 
-  Standard_EXPORT Standard_Integer MaxActiveConstraintOrder() const;
+  Standard_EXPORT int MaxActiveConstraintOrder() const;
 
-protected:
 private:
-  Standard_EXPORT Standard_Boolean Iterate(const Standard_Integer ConstraintOrder,
-                                           const Standard_Integer ResolutionOrder,
-                                           const Standard_Real    IncrementalLoading = 1.0);
+  Standard_EXPORT bool Iterate(const int    ConstraintOrder,
+                               const int    ResolutionOrder,
+                               const double IncrementalLoading = 1.0);
 
-  Handle(Geom_Surface)             myInitialSurface;
-  NLPlate_SequenceOfHGPPConstraint myHGPPConstraints;
-  NLPlate_StackOfPlate             mySOP;
-  Standard_Boolean                 OK;
+  occ::handle<Geom_Surface>                                 myInitialSurface;
+  NCollection_Sequence<occ::handle<NLPlate_HGPPConstraint>> myHGPPConstraints;
+  NCollection_List<Plate_Plate>                             mySOP;
+  bool                                                      OK;
 };
 
 #endif // _NLPlate_NLPlate_HeaderFile

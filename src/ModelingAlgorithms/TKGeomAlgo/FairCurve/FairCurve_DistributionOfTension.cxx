@@ -26,14 +26,14 @@
 #include <math_Vector.hxx>
 
 FairCurve_DistributionOfTension::FairCurve_DistributionOfTension(
-  const Standard_Integer               BSplOrder,
-  const Handle(TColStd_HArray1OfReal)& FlatKnots,
-  const Handle(TColgp_HArray1OfPnt2d)& Poles,
-  const Standard_Integer               DerivativeOrder,
-  const Standard_Real                  LengthSliding,
-  const FairCurve_BattenLaw&           Law,
-  const Standard_Integer               NbValAux,
-  const Standard_Boolean               Uniform)
+  const int                                         BSplOrder,
+  const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
+  const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+  const int                                         DerivativeOrder,
+  const double                                      LengthSliding,
+  const FairCurve_BattenLaw&                        Law,
+  const int                                         NbValAux,
+  const bool                                        Uniform)
     : FairCurve_DistributionOfEnergy(BSplOrder, FlatKnots, Poles, DerivativeOrder, NbValAux),
       MyLengthSliding(LengthSliding),
       MyLaw(Law)
@@ -48,13 +48,12 @@ FairCurve_DistributionOfTension::FairCurve_DistributionOfTension(
   }
 }
 
-Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TParam,
-                                                        math_Vector&       FTension)
+bool FairCurve_DistributionOfTension::Value(const math_Vector& TParam, math_Vector& FTension)
 {
-  Standard_Boolean Ok = Standard_True;
-  Standard_Integer ier, ii, jj, kk;
-  gp_XY            CPrim(0., 0.);
-  Standard_Integer LastGradientIndex, FirstNonZero, LastZero;
+  bool  Ok = true;
+  int   ier, ii, jj, kk;
+  gp_XY CPrim(0., 0.);
+  int   LastGradientIndex, FirstNonZero, LastZero;
 
   // (0.0) initialisations generales
   FTension.Init(0.0);
@@ -72,7 +71,7 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
                                    FirstNonZero,
                                    Base);
   if (ier != 0)
-    return Standard_False;
+    return false;
   LastZero     = FirstNonZero - 1;
   FirstNonZero = 2 * LastZero + 1;
 
@@ -83,8 +82,8 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
   }
 
   // (1) Evaluation de la tension locale --------------------------------
-  Standard_Real NormeCPrim = CPrim.Modulus();
-  Standard_Real Hauteur, Difference;
+  double NormeCPrim = CPrim.Modulus();
+  double Hauteur, Difference;
 
   if (MyHeight > 0)
   {
@@ -103,8 +102,8 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
   if (MyDerivativeOrder >= 1)
   {
     // (2) Evaluation du gradient de la tension locale ----------------------
-    math_Vector   GradDifference(1, 2 * MyBSplOrder + MyNbValAux);
-    Standard_Real Xaux, Yaux, Facteur;
+    math_Vector GradDifference(1, 2 * MyBSplOrder + MyNbValAux);
+    double      Xaux, Yaux, Facteur;
 
     Xaux    = CPrim.X() / NormeCPrim;
     Yaux    = CPrim.Y() / NormeCPrim;
@@ -139,11 +138,11 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
 
       // (3) Evaluation du Hessien de la tension locale ----------------------
 
-      Standard_Real    FacteurX  = Difference * (1 - pow(Xaux, 2)) / NormeCPrim;
-      Standard_Real    FacteurY  = Difference * (1 - pow(Yaux, 2)) / NormeCPrim;
-      Standard_Real    FacteurXY = -Difference * Xaux * Yaux / NormeCPrim;
-      Standard_Real    Produit;
-      Standard_Integer k1, k2;
+      double FacteurX  = Difference * (1 - pow(Xaux, 2)) / NormeCPrim;
+      double FacteurY  = Difference * (1 - pow(Yaux, 2)) / NormeCPrim;
+      double FacteurXY = -Difference * Xaux * Yaux / NormeCPrim;
+      double Produit;
+      int    k1, k2;
 
       Facteur = 2 * Hauteur / MyLengthSliding;
 

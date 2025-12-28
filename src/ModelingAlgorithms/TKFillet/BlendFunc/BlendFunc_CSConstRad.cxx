@@ -36,16 +36,16 @@
 
 //=================================================================================================
 
-BlendFunc_CSConstRad::BlendFunc_CSConstRad(const Handle(Adaptor3d_Surface)& S,
-                                           const Handle(Adaptor3d_Curve)&   C,
-                                           const Handle(Adaptor3d_Curve)&   CG)
+BlendFunc_CSConstRad::BlendFunc_CSConstRad(const occ::handle<Adaptor3d_Surface>& S,
+                                           const occ::handle<Adaptor3d_Curve>&   C,
+                                           const occ::handle<Adaptor3d_Curve>&   CG)
     :
 
       surf(S),
       curv(C),
       guide(CG),
       prmc(0.0),
-      istangent(Standard_True),
+      istangent(true),
       ray(0.0),
       choix(0),
       normtg(0.0),
@@ -59,14 +59,14 @@ BlendFunc_CSConstRad::BlendFunc_CSConstRad(const Handle(Adaptor3d_Surface)& S,
 
 //=================================================================================================
 
-Standard_Integer BlendFunc_CSConstRad::NbEquations() const
+int BlendFunc_CSConstRad::NbEquations() const
 {
   return 3;
 }
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::Set(const Standard_Real Radius, const Standard_Integer Choix)
+void BlendFunc_CSConstRad::Set(const double Radius, const int Choix)
 {
   choix = Choix;
   ray   = -std::abs(Radius);
@@ -81,7 +81,7 @@ void BlendFunc_CSConstRad::Set(const BlendFunc_SectionShape TypeSection)
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::Set(const Standard_Real Param)
+void BlendFunc_CSConstRad::Set(const double Param)
 {
   guide->D2(Param, ptgui, d1gui, d2gui);
   normtg = d1gui.Magnitude();
@@ -91,14 +91,14 @@ void BlendFunc_CSConstRad::Set(const Standard_Real Param)
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::Set(const Standard_Real, const Standard_Real)
+void BlendFunc_CSConstRad::Set(const double, const double)
 {
   throw Standard_NotImplemented("BlendFunc_CSConstRad::Set");
 }
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
+void BlendFunc_CSConstRad::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = surf->UResolution(Tol);
   Tolerance(2) = surf->VResolution(Tol);
@@ -118,13 +118,13 @@ void BlendFunc_CSConstRad::GetBounds(math_Vector& InfBound, math_Vector& SupBoun
 
   if (!Precision::IsInfinite(InfBound(1)) && !Precision::IsInfinite(SupBound(1)))
   {
-    const Standard_Real range = (SupBound(1) - InfBound(1));
+    const double range = (SupBound(1) - InfBound(1));
     InfBound(1) -= range;
     SupBound(1) += range;
   }
   if (!Precision::IsInfinite(InfBound(2)) && !Precision::IsInfinite(SupBound(2)))
   {
-    const Standard_Real range = (SupBound(2) - InfBound(2));
+    const double range = (SupBound(2) - InfBound(2));
     InfBound(2) -= range;
     SupBound(2) += range;
   }
@@ -132,14 +132,14 @@ void BlendFunc_CSConstRad::GetBounds(math_Vector& InfBound, math_Vector& SupBoun
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_CSConstRad::IsSolution(const math_Vector& Sol, const Standard_Real Tol)
+bool BlendFunc_CSConstRad::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector valsol(1, 3), secmember(1, 3);
   math_Matrix gradsol(1, 3, 1, 3);
 
-  gp_Vec        dnplan, d1u1, d1v1, d1, temp, ns, ns2, ncrossns, resul;
-  Standard_Real norm, ndotns, grosterme;
-  Standard_Real Cosa, Sina, Angle;
+  gp_Vec dnplan, d1u1, d1v1, d1, temp, ns, ns2, ncrossns, resul;
+  double norm, ndotns, grosterme;
+  double Cosa, Sina, Angle;
 
   Values(Sol, valsol, gradsol);
   if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol * Tol)
@@ -185,11 +185,11 @@ Standard_Boolean BlendFunc_CSConstRad::IsSolution(const math_Vector& Sol, const 
       tgs.SetLinearForm(secmember(1), d1u1, secmember(2), d1v1);
       tgc = secmember(3) * d1;
       tg2d.SetCoord(secmember(1), secmember(2));
-      istangent = Standard_False;
+      istangent = false;
     }
     else
     {
-      istangent = Standard_True;
+      istangent = true;
     }
     // mise a jour de maxang
 
@@ -217,15 +217,15 @@ Standard_Boolean BlendFunc_CSConstRad::IsSolution(const math_Vector& Sol, const 
       minang = Angle;
     }
 
-    return Standard_True;
+    return true;
   }
-  istangent = Standard_True;
-  return Standard_False;
+  istangent = true;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_CSConstRad::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_CSConstRad::Value(const math_Vector& X, math_Vector& F)
 {
   gp_Vec d1u1, d1v1;
   surf->D1(X(1), X(2), pts, d1u1, d1v1);
@@ -234,25 +234,25 @@ Standard_Boolean BlendFunc_CSConstRad::Value(const math_Vector& X, math_Vector& 
   F(1) = nplan.XYZ().Dot(pts.XYZ()) + theD;
   F(2) = nplan.XYZ().Dot(ptc.XYZ()) + theD;
 
-  gp_Vec              vref, ns = d1u1.Crossed(d1v1);
-  const Standard_Real norm = nplan.Crossed(ns).Magnitude();
+  gp_Vec       vref, ns = d1u1.Crossed(d1v1);
+  const double norm = nplan.Crossed(ns).Magnitude();
   ns.SetLinearForm(nplan.Dot(ns) / norm, nplan, -1. / norm, ns);
   vref.SetLinearForm(ray, ns, gp_Vec(ptc, pts));
 
   F(3) = vref.SquareMagnitude() - ray * ray;
 
   pt2d = gp_Pnt2d(X(1), X(2));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_CSConstRad::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_CSConstRad::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Vec d1u1, d1v1, d2u1, d2v1, d2uv1, d1;
   gp_Vec ns, ncrossns, resul, temp, vref;
 
-  Standard_Real norm, ndotns, grosterme;
+  double norm, ndotns, grosterme;
 
   surf->D2(X(1), X(2), pts, d1u1, d1v1, d2u1, d2v1, d2uv1);
   curv->D1(X(3), ptc, d1);
@@ -303,18 +303,18 @@ Standard_Boolean BlendFunc_CSConstRad::Derivatives(const math_Vector& X, math_Ma
   D(3, 3) = -2. * (d1.Dot(vref));
 
   pt2d = gp_Pnt2d(X(1), X(2));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_CSConstRad::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool BlendFunc_CSConstRad::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   gp_Vec d1u1, d1v1, d1;
   gp_Vec d2u1, d2v1, d2uv1;
   gp_Vec ns, ncrossns, resul, temp, vref;
 
-  Standard_Real norm, ndotns, grosterme;
+  double norm, ndotns, grosterme;
 
   surf->D2(X(1), X(2), pts, d1u1, d1v1, d2u1, d2v1, d2uv1);
   curv->D1(X(3), ptc, d1);
@@ -370,7 +370,7 @@ Standard_Boolean BlendFunc_CSConstRad::Values(const math_Vector& X, math_Vector&
   D(3, 3) = -2. * (d1.Dot(vref));
 
   pt2d = gp_Pnt2d(X(1), X(2));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -396,14 +396,14 @@ const gp_Pnt2d& BlendFunc_CSConstRad::Pnt2d() const
 
 //=================================================================================================
 
-Standard_Real BlendFunc_CSConstRad::ParameterOnC() const
+double BlendFunc_CSConstRad::ParameterOnC() const
 {
   return prmc;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_CSConstRad::IsTangencyPoint() const
+bool BlendFunc_CSConstRad::IsTangencyPoint() const
 {
   return istangent;
 }
@@ -437,10 +437,7 @@ const gp_Vec2d& BlendFunc_CSConstRad::Tangent2d() const
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::Tangent(const Standard_Real U,
-                                   const Standard_Real V,
-                                   gp_Vec&             TgS,
-                                   gp_Vec&             NmS) const
+void BlendFunc_CSConstRad::Tangent(const double U, const double V, gp_Vec& TgS, gp_Vec& NmS) const
 {
   gp_Pnt bid;
   gp_Vec d1u, d1v;
@@ -449,7 +446,7 @@ void BlendFunc_CSConstRad::Tangent(const Standard_Real U,
   gp_Vec ns;
   NmS = ns = d1u.Crossed(d1v);
 
-  const Standard_Real norm = nplan.Crossed(ns).Magnitude();
+  const double norm = nplan.Crossed(ns).Magnitude();
   ns.SetLinearForm(nplan.Dot(ns) / norm, nplan, -1. / norm, ns);
 
   gp_Pnt Center(bid.XYZ() + ray * ns.XYZ());
@@ -460,18 +457,18 @@ void BlendFunc_CSConstRad::Tangent(const Standard_Real U,
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::Section(const Standard_Real Param,
-                                   const Standard_Real U,
-                                   const Standard_Real V,
-                                   const Standard_Real W,
-                                   Standard_Real&      Pdeb,
-                                   Standard_Real&      Pfin,
-                                   gp_Circ&            C)
+void BlendFunc_CSConstRad::Section(const double Param,
+                                   const double U,
+                                   const double V,
+                                   const double W,
+                                   double&      Pdeb,
+                                   double&      Pfin,
+                                   gp_Circ&     C)
 {
-  gp_Vec        d1u1, d1v1;
-  gp_Vec        ns;
-  Standard_Real norm;
-  gp_Pnt        Center;
+  gp_Vec d1u1, d1v1;
+  gp_Vec ns;
+  double norm;
+  gp_Pnt Center;
 
   guide->D1(Param, ptgui, d1gui);
   nplan = d1gui.Normalized();
@@ -498,47 +495,47 @@ void BlendFunc_CSConstRad::Section(const Standard_Real Param,
   Pfin = ElCLib::Parameter(C, ptc);
 }
 
-Standard_Boolean BlendFunc_CSConstRad::Section(const Blend_Point&,
-                                               TColgp_Array1OfPnt&,
-                                               TColgp_Array1OfVec&,
-                                               TColgp_Array1OfVec&,
-                                               TColgp_Array1OfPnt2d&,
-                                               TColgp_Array1OfVec2d&,
-                                               TColgp_Array1OfVec2d&,
-                                               TColStd_Array1OfReal&,
-                                               TColStd_Array1OfReal&,
-                                               TColStd_Array1OfReal&)
+bool BlendFunc_CSConstRad::Section(const Blend_Point&,
+                                   NCollection_Array1<gp_Pnt>&,
+                                   NCollection_Array1<gp_Vec>&,
+                                   NCollection_Array1<gp_Vec>&,
+                                   NCollection_Array1<gp_Pnt2d>&,
+                                   NCollection_Array1<gp_Vec2d>&,
+                                   NCollection_Array1<gp_Vec2d>&,
+                                   NCollection_Array1<double>&,
+                                   NCollection_Array1<double>&,
+                                   NCollection_Array1<double>&)
 {
   throw Standard_DomainError("BlendFunc_CSConstRad::Section : Not implemented");
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_CSConstRad::GetSection(const Standard_Real Param,
-                                                  const Standard_Real U,
-                                                  const Standard_Real V,
-                                                  const Standard_Real W,
-                                                  TColgp_Array1OfPnt& tabP,
-                                                  TColgp_Array1OfVec& tabV)
+bool BlendFunc_CSConstRad::GetSection(const double                Param,
+                                      const double                U,
+                                      const double                V,
+                                      const double                W,
+                                      NCollection_Array1<gp_Pnt>& tabP,
+                                      NCollection_Array1<gp_Vec>& tabV)
 {
-  Standard_Integer NbPoint = tabP.Length();
+  int NbPoint = tabP.Length();
   if (NbPoint != tabV.Length() || NbPoint < 2)
   {
     throw Standard_RangeError();
   }
 
-  Standard_Integer i, lowp = tabP.Lower(), lowv = tabV.Lower();
+  int i, lowp = tabP.Lower(), lowv = tabV.Lower();
 
   gp_Vec d1u1, d1v1, d2u1, d2v1, d2uv1, d1; //,d1u2,d1v2;
   gp_Vec ns, dnplan, dnw, dn2w, ncrn, dncrn, ns2;
   gp_Vec ncrossns, resul;
   gp_Vec resulu, resulv, temp;
 
-  Standard_Real norm, ndotns, grosterme;
-  Standard_Real lambda, Cosa, Sina;
-  Standard_Real Angle = 0., Dangle = 0.;
-  math_Vector   sol(1, 3), valsol(1, 3), secmember(1, 3);
-  math_Matrix   gradsol(1, 3, 1, 3);
+  double      norm, ndotns, grosterme;
+  double      lambda, Cosa, Sina;
+  double      Angle = 0., Dangle = 0.;
+  math_Vector sol(1, 3), valsol(1, 3), secmember(1, 3);
+  math_Matrix gradsol(1, 3, 1, 3);
 
   guide->D2(Param, ptgui, d1gui, d2gui);
   normtg = d1gui.Magnitude();
@@ -646,7 +643,7 @@ Standard_Boolean BlendFunc_CSConstRad::GetSection(const Standard_Real Param,
 
     for (i = 2; i <= NbPoint - 1; i++)
     {
-      lambda = (Standard_Real)(i - 1) / (Standard_Real)(NbPoint - 1);
+      lambda = (double)(i - 1) / (double)(NbPoint - 1);
       Cosa   = std::cos(lambda * Angle);
       Sina   = std::sin(lambda * Angle);
       tabP(lowp + i - 1)
@@ -659,28 +656,28 @@ Standard_Boolean BlendFunc_CSConstRad::GetSection(const Standard_Real Param,
       temp.Add(tgs);
       tabV(lowv + i - 1) = temp;
     }
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_CSConstRad::IsRational() const
+bool BlendFunc_CSConstRad::IsRational() const
 {
   return (mySShape == BlendFunc_Rational || mySShape == BlendFunc_QuasiAngular);
 }
 
 //=================================================================================================
 
-Standard_Real BlendFunc_CSConstRad::GetSectionSize() const
+double BlendFunc_CSConstRad::GetSectionSize() const
 {
   return maxang * std::abs(ray);
 }
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::GetMinimalWeight(TColStd_Array1OfReal& Weights) const
+void BlendFunc_CSConstRad::GetMinimalWeight(NCollection_Array1<double>& Weights) const
 {
   BlendFunc::GetMinimalWeights(mySShape, myTConv, minang, maxang, Weights);
   // On suppose que cela ne depend pas du Rayon!
@@ -688,24 +685,21 @@ void BlendFunc_CSConstRad::GetMinimalWeight(TColStd_Array1OfReal& Weights) const
 
 //=================================================================================================
 
-Standard_Integer BlendFunc_CSConstRad::NbIntervals(const GeomAbs_Shape S) const
+int BlendFunc_CSConstRad::NbIntervals(const GeomAbs_Shape S) const
 {
   return curv->NbIntervals(BlendFunc::NextShape(S));
 }
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void BlendFunc_CSConstRad::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   curv->Intervals(T, BlendFunc::NextShape(S));
 }
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::GetShape(Standard_Integer& NbPoles,
-                                    Standard_Integer& NbKnots,
-                                    Standard_Integer& Degree,
-                                    Standard_Integer& NbPoles2d)
+void BlendFunc_CSConstRad::GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d)
 {
   NbPoles2d = 1;
   BlendFunc::GetShape(mySShape, maxang, NbPoles, NbKnots, Degree, myTConv);
@@ -715,16 +709,15 @@ void BlendFunc_CSConstRad::GetShape(Standard_Integer& NbPoles,
 // function : GetTolerance
 // purpose  : Determine les Tolerance a utiliser dans les approximations.
 //=======================================================================
-void BlendFunc_CSConstRad::GetTolerance(const Standard_Real BoundTol,
-                                        const Standard_Real SurfTol,
-                                        const Standard_Real AngleTol,
-                                        math_Vector&        Tol3d,
-                                        math_Vector&        Tol1d) const
+void BlendFunc_CSConstRad::GetTolerance(const double BoundTol,
+                                        const double SurfTol,
+                                        const double AngleTol,
+                                        math_Vector& Tol3d,
+                                        math_Vector& Tol1d) const
 {
-  const Standard_Integer low = Tol3d.Lower();
-  const Standard_Integer up  = Tol3d.Upper();
-  const Standard_Real    Tol =
-    GeomFill::GetTolerance(myTConv, minang, std::abs(ray), AngleTol, SurfTol);
+  const int    low = Tol3d.Lower();
+  const int    up  = Tol3d.Upper();
+  const double Tol = GeomFill::GetTolerance(myTConv, minang, std::abs(ray), AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
   Tol3d(low + 1) = Tol3d(up - 1) = std::min(Tol, SurfTol);
@@ -733,34 +726,34 @@ void BlendFunc_CSConstRad::GetTolerance(const Standard_Real BoundTol,
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::Knots(TColStd_Array1OfReal& TKnots)
+void BlendFunc_CSConstRad::Knots(NCollection_Array1<double>& TKnots)
 {
   GeomFill::Knots(myTConv, TKnots);
 }
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::Mults(TColStd_Array1OfInteger& TMults)
+void BlendFunc_CSConstRad::Mults(NCollection_Array1<int>& TMults)
 {
   GeomFill::Mults(myTConv, TMults);
 }
 
 //=================================================================================================
 
-void BlendFunc_CSConstRad::Section(const Blend_Point&    P,
-                                   TColgp_Array1OfPnt&   Poles,
-                                   TColgp_Array1OfPnt2d& Poles2d,
-                                   TColStd_Array1OfReal& Weights)
+void BlendFunc_CSConstRad::Section(const Blend_Point&            P,
+                                   NCollection_Array1<gp_Pnt>&   Poles,
+                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                   NCollection_Array1<double>&   Weights)
 {
   gp_Vec d1u1, d1v1; //,d1;
   gp_Vec ns, ns2;    //,temp,np2;
   gp_Pnt Center;
 
-  Standard_Real norm, u1, v1, w;
+  double norm, u1, v1, w;
 
-  Standard_Real    prm = P.Parameter();
-  Standard_Integer low = Poles.Lower();
-  Standard_Integer upp = Poles.Upper();
+  double prm = P.Parameter();
+  int    low = Poles.Lower();
+  int    upp = Poles.Upper();
 
   guide->D1(prm, ptgui, d1gui);
   nplan = d1gui.Normalized();
@@ -802,13 +795,13 @@ void BlendFunc_CSConstRad::Section(const Blend_Point&    P,
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_CSConstRad::Section(const Blend_Point&    P,
-                                               TColgp_Array1OfPnt&   Poles,
-                                               TColgp_Array1OfVec&   DPoles,
-                                               TColgp_Array1OfPnt2d& Poles2d,
-                                               TColgp_Array1OfVec2d& DPoles2d,
-                                               TColStd_Array1OfReal& Weights,
-                                               TColStd_Array1OfReal& DWeights)
+bool BlendFunc_CSConstRad::Section(const Blend_Point&            P,
+                                   NCollection_Array1<gp_Pnt>&   Poles,
+                                   NCollection_Array1<gp_Vec>&   DPoles,
+                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                   NCollection_Array1<double>&   Weights,
+                                   NCollection_Array1<double>&   DWeights)
 {
 
   gp_Vec d1u1, d1v1, d2u1, d2v1, d2uv1, d1;
@@ -818,15 +811,15 @@ Standard_Boolean BlendFunc_CSConstRad::Section(const Blend_Point&    P,
 
   gp_Pnt Center;
 
-  Standard_Real norm, ndotns, grosterme;
+  double norm, ndotns, grosterme;
 
   math_Vector sol(1, 3), valsol(1, 3), secmember(1, 3);
   math_Matrix gradsol(1, 3, 1, 3);
 
-  Standard_Real    prm = P.Parameter();
-  Standard_Integer low = Poles.Lower();
-  Standard_Integer upp = Poles.Upper();
-  Standard_Boolean istgt;
+  double prm = P.Parameter();
+  int    low = Poles.Lower();
+  int    upp = Poles.Upper();
+  bool   istgt;
 
   guide->D2(prm, ptgui, d1gui, d2gui);
   normtg = d1gui.Magnitude();
@@ -905,13 +898,13 @@ Standard_Boolean BlendFunc_CSConstRad::Section(const Blend_Point&    P,
     ns2 = -resul.Normalized();
     dn2w.SetLinearForm(ns2.Dot(dn2w), ns2, -1., dn2w);
 
-    istgt = Standard_False;
+    istgt = false;
   }
   else
   {
     ns.SetLinearForm(ndotns / norm, nplan, -1. / norm, ns);
     ns2   = -resul.Normalized();
-    istgt = Standard_True;
+    istgt = true;
   }
 
   // Les poles 2d
@@ -976,14 +969,11 @@ Standard_Boolean BlendFunc_CSConstRad::Section(const Blend_Point&    P,
   else
   {
     GeomFill::GetCircle(myTConv, ns, ns2, nplan, pts, ptc, std::abs(ray), Center, Poles, Weights);
-    return Standard_False;
+    return false;
   }
 }
 
-void BlendFunc_CSConstRad::Resolution(const Standard_Integer,
-                                      const Standard_Real Tol,
-                                      Standard_Real&      TolU,
-                                      Standard_Real&      TolV) const
+void BlendFunc_CSConstRad::Resolution(const int, const double Tol, double& TolU, double& TolV) const
 {
   TolU = surf->UResolution(Tol);
   TolV = surf->VResolution(Tol);

@@ -21,11 +21,9 @@
 
 #include <StepVisual_StyleContextSelect.hxx>
 #include <StepVisual_PresentationStyleAssignment.hxx>
-#include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
-
-class StepVisual_PresentationStyleByContext;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentationStyleByContext,
-                       StepVisual_PresentationStyleAssignment)
+#include <StepVisual_PresentationStyleSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class StepVisual_PresentationStyleByContext : public StepVisual_PresentationStyleAssignment
 {
@@ -34,8 +32,9 @@ public:
   //! Returns a PresentationStyleByContext
   Standard_EXPORT StepVisual_PresentationStyleByContext();
 
-  Standard_EXPORT void Init(const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles,
-                            const StepVisual_StyleContextSelect& aStyleContext);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>>& aStyles,
+    const StepVisual_StyleContextSelect&                                        aStyleContext);
 
   Standard_EXPORT void SetStyleContext(const StepVisual_StyleContextSelect& aStyleContext);
 
@@ -44,7 +43,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationStyleByContext,
                           StepVisual_PresentationStyleAssignment)
 
-protected:
 private:
   StepVisual_StyleContextSelect styleContext;
 };

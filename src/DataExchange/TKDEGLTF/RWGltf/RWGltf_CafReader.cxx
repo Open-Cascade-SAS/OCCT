@@ -53,11 +53,11 @@ public:
   //! Execute task for a face with specified index.
   void operator()(int theThreadIndex, int theFaceIndex) const
   {
-    TopLoc_Location                       aDummyLoc;
-    TopoDS_Face&                          aFace = myFaceList->ChangeValue(theFaceIndex);
-    Handle(RWGltf_GltfLatePrimitiveArray) aLateData =
-      Handle(RWGltf_GltfLatePrimitiveArray)::DownCast(BRep_Tool::Triangulation(aFace, aDummyLoc));
-    Handle(Poly_Triangulation) aPolyData = loadData(aLateData, theThreadIndex);
+    TopLoc_Location                            aDummyLoc;
+    TopoDS_Face&                               aFace = myFaceList->ChangeValue(theFaceIndex);
+    occ::handle<RWGltf_GltfLatePrimitiveArray> aLateData =
+      occ::down_cast<RWGltf_GltfLatePrimitiveArray>(BRep_Tool::Triangulation(aFace, aDummyLoc));
+    occ::handle<Poly_Triangulation> aPolyData = loadData(aLateData, theThreadIndex);
     if (!aPolyData.IsNull())
     {
       BRep_Builder aBuilder;
@@ -78,9 +78,9 @@ public:
 
 protected:
   //! Load primitive array.
-  virtual Handle(Poly_Triangulation) loadData(
-    const Handle(RWGltf_GltfLatePrimitiveArray)& theLateData,
-    int                                          theThreadIndex) const = 0;
+  virtual occ::handle<Poly_Triangulation> loadData(
+    const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
+    int                                               theThreadIndex) const = 0;
 
 protected:
   NCollection_Vector<TopoDS_Face>* myFaceList;
@@ -96,7 +96,7 @@ class RWGltf_CafReader::CafReader_GltfFullDataLoadingFunctor
 public:
   struct GltfReaderTLS
   {
-    Handle(OSD_FileSystem) FileSystem;
+    occ::handle<OSD_FileSystem> FileSystem;
   };
 
   //! Main constructor.
@@ -113,9 +113,9 @@ public:
 
 protected:
   //! Load primitive array.
-  virtual Handle(Poly_Triangulation) loadData(
-    const Handle(RWGltf_GltfLatePrimitiveArray)& theLateData,
-    int                                          theThreadIndex) const Standard_OVERRIDE
+  virtual occ::handle<Poly_Triangulation> loadData(
+    const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
+    int                                               theThreadIndex) const override
   {
     GltfReaderTLS& aTlsData = myTlsData.ChangeValue(theThreadIndex);
     if (aTlsData.FileSystem.IsNull())
@@ -123,7 +123,7 @@ protected:
       aTlsData.FileSystem = new OSD_CachedFileSystem();
     }
     // Load stream data if exists
-    if (Handle(Poly_Triangulation) aStreamLoadedData = theLateData->LoadStreamData())
+    if (occ::handle<Poly_Triangulation> aStreamLoadedData = theLateData->LoadStreamData())
     {
       return aStreamLoadedData;
     }
@@ -131,7 +131,7 @@ protected:
     if (myCafReader->ToKeepLateData())
     {
       theLateData->LoadDeferredData(aTlsData.FileSystem);
-      return Handle(Poly_Triangulation)();
+      return occ::handle<Poly_Triangulation>();
     }
     return theLateData->DetachedLoadDeferredData(aTlsData.FileSystem);
   }
@@ -157,9 +157,9 @@ public:
 
 protected:
   //! Load primitive array.
-  virtual Handle(Poly_Triangulation) loadData(
-    const Handle(RWGltf_GltfLatePrimitiveArray)& theLateData,
-    int                                          theThreadIndex) const Standard_OVERRIDE
+  virtual occ::handle<Poly_Triangulation> loadData(
+    const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
+    int                                               theThreadIndex) const override
   {
     (void)theThreadIndex;
     return theLateData->LoadStreamData();
@@ -185,10 +185,10 @@ RWGltf_CafReader::RWGltf_CafReader()
 
 //=================================================================================================
 
-Standard_Boolean RWGltf_CafReader::performMesh(std::istream&                  theStream,
-                                               const TCollection_AsciiString& theFile,
-                                               const Message_ProgressRange&   theProgress,
-                                               const Standard_Boolean         theToProbe)
+bool RWGltf_CafReader::performMesh(std::istream&                  theStream,
+                                   const TCollection_AsciiString& theFile,
+                                   const Message_ProgressRange&   theProgress,
+                                   const bool                     theToProbe)
 {
   Message_ProgressScope aPSentry(theProgress, "Reading glTF", 2);
   aPSentry.Show();
@@ -353,9 +353,9 @@ Standard_Boolean RWGltf_CafReader::performMesh(std::istream&                  th
 
 //=================================================================================================
 
-Handle(RWMesh_TriangulationReader) RWGltf_CafReader::createMeshReaderContext() const
+occ::handle<RWMesh_TriangulationReader> RWGltf_CafReader::createMeshReaderContext() const
 {
-  Handle(RWGltf_TriangulationReader) aReader = new RWGltf_TriangulationReader();
+  occ::handle<RWGltf_TriangulationReader> aReader = new RWGltf_TriangulationReader();
   aReader->SetDoublePrecision(myIsDoublePrecision);
   aReader->SetCoordinateSystemConverter(myCoordSysConverter);
   aReader->SetToSkipDegenerates(false);
@@ -365,12 +365,12 @@ Handle(RWMesh_TriangulationReader) RWGltf_CafReader::createMeshReaderContext() c
 
 //=================================================================================================
 
-Standard_Boolean RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
-                                                const TCollection_AsciiString&   theFile,
-                                                const Message_ProgressRange&     theProgress)
+bool RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
+                                    const TCollection_AsciiString&   theFile,
+                                    const Message_ProgressRange&     theProgress)
 {
-  Handle(RWGltf_TriangulationReader) aReader =
-    Handle(RWGltf_TriangulationReader)::DownCast(createMeshReaderContext());
+  occ::handle<RWGltf_TriangulationReader> aReader =
+    occ::down_cast<RWGltf_TriangulationReader>(createMeshReaderContext());
   aReader->SetFileName(theFile);
   updateLateDataReader(theFaces, aReader);
 
@@ -378,20 +378,20 @@ Standard_Boolean RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>&
   {
     // Load glTF data encoded in base64. It should not be skipped and saved in "proxy" object to be
     // loaded later.
-    const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
-    const int                     aNbThreads =
+    const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
+    const int                          aNbThreads =
       myToParallel ? std::min(theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
     OSD_ThreadPool::Launcher               aLauncher(*aThreadPool, aNbThreads);
     CafReader_GltfStreamDataLoadingFunctor aFunctor(theFaces, theProgress, aLauncher);
     aLauncher.Perform(theFaces.Lower(), theFaces.Upper() + 1, aFunctor);
 
-    return Standard_True;
+    return true;
   }
 
   aReader->StartStatistic();
 
-  const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
-  const int                     aNbThreads =
+  const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
+  const int                          aNbThreads =
     myToParallel ? std::min(theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
   OSD_ThreadPool::Launcher aLauncher(*aThreadPool, aNbThreads);
 
@@ -401,26 +401,27 @@ Standard_Boolean RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>&
   aReader->PrintStatistic();
   aReader->StopStatistic();
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 void RWGltf_CafReader::updateLateDataReader(
-  NCollection_Vector<TopoDS_Face>&          theFaces,
-  const Handle(RWMesh_TriangulationReader)& theReader) const
+  NCollection_Vector<TopoDS_Face>&               theFaces,
+  const occ::handle<RWMesh_TriangulationReader>& theReader) const
 {
   TopLoc_Location aDummyLoc;
   for (NCollection_Vector<TopoDS_Face>::Iterator aFaceIter(theFaces); aFaceIter.More();
        aFaceIter.Next())
   {
     const TopoDS_Face& aFace = aFaceIter.Value();
-    for (Poly_ListOfTriangulation::Iterator anIter(BRep_Tool::Triangulations(aFace, aDummyLoc));
+    for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(
+           BRep_Tool::Triangulations(aFace, aDummyLoc));
          anIter.More();
          anIter.Next())
     {
-      Handle(RWGltf_GltfLatePrimitiveArray) aData =
-        Handle(RWGltf_GltfLatePrimitiveArray)::DownCast(anIter.Value());
+      occ::handle<RWGltf_GltfLatePrimitiveArray> aData =
+        occ::down_cast<RWGltf_GltfLatePrimitiveArray>(anIter.Value());
       if (!aData.IsNull())
       {
         aData->SetReader(theReader);
@@ -438,7 +439,7 @@ void RWGltf_CafReader::fillDocument()
     return;
   }
   // set units
-  Standard_Real aLengthUnit = 1.;
+  double aLengthUnit = 1.;
   if (!XCAFDoc_DocumentTool::GetLengthUnit(myXdeDoc, aLengthUnit))
   {
     XCAFDoc_DocumentTool::SetLengthUnit(myXdeDoc, SystemLengthUnit());
@@ -448,14 +449,14 @@ void RWGltf_CafReader::fillDocument()
     Message::SendWarning("Warning: Length unit of document not equal to the system length unit");
   }
 
-  const Standard_Boolean wasAutoNaming = XCAFDoc_ShapeTool::AutoNaming();
-  XCAFDoc_ShapeTool::SetAutoNaming(Standard_False);
+  const bool wasAutoNaming = XCAFDoc_ShapeTool::AutoNaming();
+  XCAFDoc_ShapeTool::SetAutoNaming(false);
   const TCollection_AsciiString aRootName; // = generateRootName (theFile);
   CafDocumentTools              aTools;
   aTools.ShapeTool       = XCAFDoc_DocumentTool::ShapeTool(myXdeDoc->Main());
   aTools.ColorTool       = XCAFDoc_DocumentTool::ColorTool(myXdeDoc->Main());
   aTools.VisMaterialTool = XCAFDoc_DocumentTool::VisMaterialTool(myXdeDoc->Main());
-  for (TopTools_SequenceOfShape::Iterator aRootIter(myRootShapes); aRootIter.More();
+  for (NCollection_Sequence<TopoDS_Shape>::Iterator aRootIter(myRootShapes); aRootIter.More();
        aRootIter.Next())
   {
     addShapeIntoDoc(aTools, aRootIter.Value(), TDF_Label(), aRootName);
@@ -466,22 +467,22 @@ void RWGltf_CafReader::fillDocument()
 
 //=================================================================================================
 
-Standard_Boolean RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&              theTools,
-                                                   const TopoDS_Shape&            theShape,
-                                                   const TDF_Label&               theLabel,
-                                                   const TCollection_AsciiString& theParentName,
-                                                   const Standard_Boolean         theHasScale,
-                                                   const gp_XYZ&                  theScale)
+bool RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&              theTools,
+                                       const TopoDS_Shape&            theShape,
+                                       const TDF_Label&               theLabel,
+                                       const TCollection_AsciiString& theParentName,
+                                       const bool                     theHasScale,
+                                       const gp_XYZ&                  theScale)
 {
   if (theShape.IsNull() || myXdeDoc.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   const TopAbs_ShapeEnum aShapeType     = theShape.ShapeType();
   TopoDS_Shape           aShapeToAdd    = theShape;
   const TopoDS_Shape     aShapeNoLoc    = theShape.Located(TopLoc_Location());
-  Standard_Boolean       toMakeAssembly = Standard_False;
+  bool                   toMakeAssembly = false;
   bool                   isShapeScaled  = myShapeScaleMap->IsBound(theShape);
   gp_XYZ                 aCurScale;
 
@@ -504,7 +505,7 @@ Standard_Boolean RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&            
     TopLoc_Location aLoc;
     TopoDS_Face     aFace = TopoDS::Face(aShapeToAdd);
     myShapeScaleMap->UnBind(theShape);
-    const Handle(Poly_Triangulation)& aPolyTri = BRep_Tool::Triangulation(aFace, aLoc);
+    const occ::handle<Poly_Triangulation>& aPolyTri = BRep_Tool::Triangulation(aFace, aLoc);
     if (!aPolyTri.IsNull())
     {
       for (int aNodeIdx = 1; aNodeIdx <= aPolyTri->NbNodes(); ++aNodeIdx)
@@ -521,13 +522,13 @@ Standard_Boolean RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&            
   if (theShape.ShapeType() == TopAbs_COMPOUND)
   {
     RWMesh_NodeAttributes aSubFaceAttribs;
-    for (TopoDS_Iterator aSubShapeIter(theShape, Standard_True, Standard_False);
+    for (TopoDS_Iterator aSubShapeIter(theShape, true, false);
          !toMakeAssembly && aSubShapeIter.More();
          aSubShapeIter.Next())
     {
       if (aSubShapeIter.Value().ShapeType() != TopAbs_FACE)
       {
-        toMakeAssembly = Standard_True;
+        toMakeAssembly = true;
         break;
       }
 
@@ -544,7 +545,7 @@ Standard_Boolean RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&            
       TopoDS_Compound aCompound;
       BRep_Builder    aBuilder;
       aBuilder.MakeCompound(aCompound);
-      aCompound.Location(theShape.Location(), Standard_False);
+      aCompound.Location(theShape.Location(), false);
       aShapeToAdd = aCompound;
     }
   }
@@ -580,13 +581,13 @@ Standard_Boolean RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&            
     aNewLabel = theTools.ShapeTool->AddSubShape(theLabel, theShape);
     if (!aNewLabel.IsNull())
     {
-      Handle(XCAFDoc_ShapeMapTool) aShapeMapTool = XCAFDoc_ShapeMapTool::Set(aNewLabel);
+      occ::handle<XCAFDoc_ShapeMapTool> aShapeMapTool = XCAFDoc_ShapeMapTool::Set(aNewLabel);
       aShapeMapTool->SetShape(theShape);
     }
   }
   if (aNewLabel.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   if (toMakeAssembly)
@@ -645,7 +646,7 @@ Standard_Boolean RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&            
   if (!anOldLabel.IsNull())
   {
     // already defined in the document
-    return Standard_True;
+    return true;
   }
 
   // put attributes to the Product (shared across Instances)
@@ -668,8 +669,7 @@ Standard_Boolean RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&            
     }
     // store sub-shapes (iterator is set to not inherit Location of parent object)
     TCollection_AsciiString aDummyName;
-    for (TopoDS_Iterator aSubShapeIter(theShape, Standard_True, Standard_False);
-         aSubShapeIter.More();
+    for (TopoDS_Iterator aSubShapeIter(theShape, true, false); aSubShapeIter.More();
          aSubShapeIter.Next())
     {
       addShapeIntoDoc(theTools, aSubShapeIter.Value(), aNewRefLabel, aDummyName, aHasScale, aScale);
@@ -679,12 +679,11 @@ Standard_Boolean RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&            
   {
     // store a plain list of sub-shapes in case if they have custom attributes (usually per-face
     // color)
-    for (TopoDS_Iterator aSubShapeIter(theShape, Standard_True, Standard_False);
-         aSubShapeIter.More();
+    for (TopoDS_Iterator aSubShapeIter(theShape, true, false); aSubShapeIter.More();
          aSubShapeIter.Next())
     {
       addSubShapeIntoDoc(theTools, aSubShapeIter.Value(), aNewRefLabel);
     }
   }
-  return Standard_True;
+  return true;
 }

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_VisMaterialToolDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMXCAFDoc_VisMaterialToolDriver::BinMXCAFDoc_VisMaterialToolDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_VisMaterialTool)->Name())
 {
   //
@@ -28,25 +28,26 @@ BinMXCAFDoc_VisMaterialToolDriver::BinMXCAFDoc_VisMaterialToolDriver(
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMXCAFDoc_VisMaterialToolDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMXCAFDoc_VisMaterialToolDriver::NewEmpty() const
 {
   return new XCAFDoc_VisMaterialTool();
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_VisMaterialToolDriver::Paste(const BinObjMgt_Persistent&,
-                                                          const Handle(TDF_Attribute)&,
-                                                          BinObjMgt_RRelocationTable&) const
+bool BinMXCAFDoc_VisMaterialToolDriver::Paste(const BinObjMgt_Persistent&,
+                                              const occ::handle<TDF_Attribute>&,
+                                              BinObjMgt_RRelocationTable&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BinMXCAFDoc_VisMaterialToolDriver::Paste(const Handle(TDF_Attribute)&,
-                                              BinObjMgt_Persistent&,
-                                              BinObjMgt_SRelocationTable&) const
+void BinMXCAFDoc_VisMaterialToolDriver::Paste(
+  const occ::handle<TDF_Attribute>&,
+  BinObjMgt_Persistent&,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   //
 }

@@ -28,10 +28,11 @@ RWStepBasic_RWRoleAssociation::RWStepBasic_RWRoleAssociation() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWRoleAssociation::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepBasic_RoleAssociation)& ent) const
+void RWStepBasic_RWRoleAssociation::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepBasic_RoleAssociation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "role_association"))
@@ -39,7 +40,7 @@ void RWStepBasic_RWRoleAssociation::ReadStep(const Handle(StepData_StepReaderDat
 
   // Own fields of RoleAssociation
 
-  Handle(StepBasic_ObjectRole) aRole;
+  occ::handle<StepBasic_ObjectRole> aRole;
   data->ReadEntity(num, 1, "role", ach, STANDARD_TYPE(StepBasic_ObjectRole), aRole);
 
   StepBasic_RoleSelect aItemWithRole;
@@ -51,8 +52,9 @@ void RWStepBasic_RWRoleAssociation::ReadStep(const Handle(StepData_StepReaderDat
 
 //=================================================================================================
 
-void RWStepBasic_RWRoleAssociation::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepBasic_RoleAssociation)& ent) const
+void RWStepBasic_RWRoleAssociation::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepBasic_RoleAssociation>& ent) const
 {
 
   // Own fields of RoleAssociation
@@ -64,8 +66,8 @@ void RWStepBasic_RWRoleAssociation::WriteStep(StepData_StepWriter&              
 
 //=================================================================================================
 
-void RWStepBasic_RWRoleAssociation::Share(const Handle(StepBasic_RoleAssociation)& ent,
-                                          Interface_EntityIterator&                iter) const
+void RWStepBasic_RWRoleAssociation::Share(const occ::handle<StepBasic_RoleAssociation>& ent,
+                                          Interface_EntityIterator&                     iter) const
 {
 
   // Own fields of RoleAssociation

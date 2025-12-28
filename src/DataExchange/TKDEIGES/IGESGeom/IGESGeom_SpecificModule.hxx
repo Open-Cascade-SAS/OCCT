@@ -25,9 +25,6 @@
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
 
-class IGESGeom_SpecificModule;
-DEFINE_STANDARD_HANDLE(IGESGeom_SpecificModule, IGESData_SpecificModule)
-
 //! Defines Services attached to IGES Entities :
 //! Dump & OwnCorrect, for IGESGeom
 class IGESGeom_SpecificModule : public IGESData_SpecificModule
@@ -38,22 +35,18 @@ public:
   Standard_EXPORT IGESGeom_SpecificModule();
 
   //! Specific Dump (own parameters) for IGESGeom
-  Standard_EXPORT void OwnDump(const Standard_Integer             CN,
-                               const Handle(IGESData_IGESEntity)& ent,
-                               const IGESData_IGESDumper&         dumper,
-                               Standard_OStream&                  S,
-                               const Standard_Integer             own) const Standard_OVERRIDE;
+  Standard_EXPORT void OwnDump(const int                               CN,
+                               const occ::handle<IGESData_IGESEntity>& ent,
+                               const IGESData_IGESDumper&              dumper,
+                               Standard_OStream&                       S,
+                               const int                               own) const override;
 
   //! Performs non-ambiguous Correction on Entities which support
   //! them (Boundary,ConicArc,Flash,OffsetCurve,TransformationMatrix)
-  Standard_EXPORT virtual Standard_Boolean OwnCorrect(const Standard_Integer             CN,
-                                                      const Handle(IGESData_IGESEntity)& ent) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
+    const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_SpecificModule, IGESData_SpecificModule)
-
-protected:
-private:
 };
 
 #endif // _IGESGeom_SpecificModule_HeaderFile

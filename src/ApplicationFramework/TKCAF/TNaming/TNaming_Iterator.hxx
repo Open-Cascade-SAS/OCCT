@@ -48,7 +48,7 @@ public:
 
   //! Iterates on all the history records in
   //! <anAtt>.
-  Standard_EXPORT TNaming_Iterator(const Handle(TNaming_NamedShape)& anAtt);
+  Standard_EXPORT TNaming_Iterator(const occ::handle<TNaming_NamedShape>& anAtt);
 
   //! Iterates on all the history records in
   //! the current transaction
@@ -56,11 +56,11 @@ public:
 
   //! Iterates on all the history records in
   //! the transaction <aTrans>
-  Standard_EXPORT TNaming_Iterator(const TDF_Label& aLabel, const Standard_Integer aTrans);
+  Standard_EXPORT TNaming_Iterator(const TDF_Label& aLabel, const int aTrans);
 
   //! Returns True if there is a current Item in
   //! the iteration.
-  Standard_Boolean More() const;
+  bool More() const;
 
   //! Moves the iteration to the next Item
   Standard_EXPORT void Next();
@@ -74,17 +74,16 @@ public:
 
   //! Returns true if the new shape is a modification
   //! (split, fuse, etc...) of the old shape.
-  Standard_EXPORT Standard_Boolean IsModification() const;
+  Standard_EXPORT bool IsModification() const;
 
   Standard_EXPORT TNaming_Evolution Evolution() const;
 
   friend class TNaming_NewShapeIterator;
   friend class TNaming_OldShapeIterator;
 
-protected:
 private:
-  TNaming_PtrNode  myNode;
-  Standard_Integer myTrans;
+  TNaming_PtrNode myNode;
+  int             myTrans;
 };
 
 #include <TNaming_Iterator.lxx>

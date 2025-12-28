@@ -74,9 +74,7 @@ public:
   //! the "outside region" of the surface.
   //! Status is "NegativeRadius" if Radius < 0.0 or "BadAngle" if
   //! Ang < Resolution from gp or Ang >= PI/ - Resolution
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2&       A2,
-                                        const Standard_Real Ang,
-                                        const Standard_Real Radius);
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2& A2, const double Ang, const double Radius);
 
   //! Creates a ConicalSurface from a non persistent Cone from package gp.
   Standard_EXPORT GC_MakeConicalSurface(const gp_Cone& C);
@@ -100,20 +98,20 @@ public:
   //! <P1> and <P2>.
   //! <R1> is the radius of the section passing through <P1>
   //! and <R2> the radius of the section passing through <P2>.
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt&       P1,
-                                        const gp_Pnt&       P2,
-                                        const Standard_Real R1,
-                                        const Standard_Real R2);
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& P1,
+                                        const gp_Pnt& P2,
+                                        const double  R1,
+                                        const double  R2);
 
   //! Returns the constructed cone.
   //! Exceptions
   //! StdFail_NotDone if no cone is constructed.
-  Standard_EXPORT const Handle(Geom_ConicalSurface)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_ConicalSurface>& Value() const;
 
-  operator const Handle(Geom_ConicalSurface)&() const { return Value(); }
+  operator const occ::handle<Geom_ConicalSurface>&() const { return Value(); }
 
 private:
-  Handle(Geom_ConicalSurface) TheCone;
+  occ::handle<Geom_ConicalSurface> TheCone;
 };
 
 #endif // _GC_MakeConicalSurface_HeaderFile

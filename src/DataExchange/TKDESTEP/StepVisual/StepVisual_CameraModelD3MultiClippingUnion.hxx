@@ -20,11 +20,10 @@
 #include <Standard_Type.hxx>
 
 #include <StepGeom_GeometricRepresentationItem.hxx>
-#include <StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect.hxx>
+#include <StepVisual_CameraModelD3MultiClippingUnionSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class TCollection_HAsciiString;
-
-DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClippingUnion,
-                       StepGeom_GeometricRepresentationItem)
 
 class StepVisual_CameraModelD3MultiClippingUnion : public StepGeom_GeometricRepresentationItem
 {
@@ -33,16 +32,19 @@ public:
   Standard_EXPORT StepVisual_CameraModelD3MultiClippingUnion();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                                  theName,
-    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect)& theShapeClipping);
+    const occ::handle<TCollection_HAsciiString>& theName,
+    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>&
+      theShapeClipping);
 
   void SetShapeClipping(
-    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect)& theShapeClipping)
+    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>&
+      theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
 
-  const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect) ShapeClipping()
+  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>
+    ShapeClipping()
   {
     return myShapeClipping;
   }
@@ -50,6 +52,7 @@ public:
                           StepGeom_GeometricRepresentationItem)
 
 private:
-  Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect) myShapeClipping;
+  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>
+    myShapeClipping;
 };
 #endif // _StepVisual_CameraModelD3MultiClippingUnion_HeaderFile

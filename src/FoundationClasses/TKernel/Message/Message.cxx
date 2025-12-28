@@ -23,34 +23,32 @@
 
 namespace
 {
-static Standard_CString Message_Table_PrintMetricTypeEnum[13] = {"NONE",
-                                                                 "ThreadCPUUserTime",
-                                                                 "ThreadCPUSystemTime",
-                                                                 "ProcessCPUUserTime",
-                                                                 "ProcessCPUSystemTime",
-                                                                 "WallClock",
-                                                                 "MemPrivate",
-                                                                 "MemVirtual",
-                                                                 "MemWorkingSet",
-                                                                 "MemWorkingSetPeak",
-                                                                 "MemSwapUsage",
-                                                                 "MemSwapUsagePeak",
-                                                                 "MemHeapUsage"};
+static const char* Message_Table_PrintMetricTypeEnum[13] = {"NONE",
+                                                            "ThreadCPUUserTime",
+                                                            "ThreadCPUSystemTime",
+                                                            "ProcessCPUUserTime",
+                                                            "ProcessCPUSystemTime",
+                                                            "WallClock",
+                                                            "MemPrivate",
+                                                            "MemVirtual",
+                                                            "MemWorkingSet",
+                                                            "MemWorkingSetPeak",
+                                                            "MemSwapUsage",
+                                                            "MemSwapUsagePeak",
+                                                            "MemHeapUsage"};
 }
 
 //=================================================================================================
 
-const Handle(Message_Messenger)& Message::DefaultMessenger()
+const occ::handle<Message_Messenger>& Message::DefaultMessenger()
 {
-  static Handle(Message_Messenger) aMessenger = new Message_Messenger;
+  static occ::handle<Message_Messenger> aMessenger = new Message_Messenger;
   return aMessenger;
 }
 
 //=================================================================================================
 
-TCollection_AsciiString Message::FillTime(const Standard_Integer hour,
-                                          const Standard_Integer minute,
-                                          const Standard_Real    second)
+TCollection_AsciiString Message::FillTime(const int hour, const int minute, const double second)
 {
   char t[30];
   if (hour > 0)
@@ -64,9 +62,9 @@ TCollection_AsciiString Message::FillTime(const Standard_Integer hour,
 
 //=================================================================================================
 
-const Handle(Message_Report)& Message::DefaultReport(const Standard_Boolean theToCreate)
+const occ::handle<Message_Report>& Message::DefaultReport(const bool theToCreate)
 {
-  static Handle(Message_Report) MyReport;
+  static occ::handle<Message_Report> MyReport;
   if (MyReport.IsNull() && theToCreate)
   {
     MyReport = new Message_Report();
@@ -76,34 +74,31 @@ const Handle(Message_Report)& Message::DefaultReport(const Standard_Boolean theT
 
 //=================================================================================================
 
-Standard_CString Message::MetricToString(const Message_MetricType theType)
+const char* Message::MetricToString(const Message_MetricType theType)
 {
   return Message_Table_PrintMetricTypeEnum[theType];
 }
 
 //=================================================================================================
 
-Standard_Boolean Message::MetricFromString(const Standard_CString theString,
-                                           Message_MetricType&    theGravity)
+bool Message::MetricFromString(const char* theString, Message_MetricType& theGravity)
 {
   TCollection_AsciiString aName(theString);
-  for (Standard_Integer aMetricIter = 0; aMetricIter <= Message_MetricType_MemHeapUsage;
-       ++aMetricIter)
+  for (int aMetricIter = 0; aMetricIter <= Message_MetricType_MemHeapUsage; ++aMetricIter)
   {
-    Standard_CString aMetricName = Message_Table_PrintMetricTypeEnum[aMetricIter];
+    const char* aMetricName = Message_Table_PrintMetricTypeEnum[aMetricIter];
     if (aName == aMetricName)
     {
       theGravity = Message_MetricType(aMetricIter);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Message::ToOSDMetric(const Message_MetricType theMetric,
-                                      OSD_MemInfo::Counter&    theMemInfo)
+bool Message::ToOSDMetric(const Message_MetricType theMetric, OSD_MemInfo::Counter& theMemInfo)
 {
   switch (theMetric)
   {
@@ -129,15 +124,14 @@ Standard_Boolean Message::ToOSDMetric(const Message_MetricType theMetric,
       theMemInfo = OSD_MemInfo::MemHeapUsage;
       break;
     default:
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Message::ToMessageMetric(const OSD_MemInfo::Counter theMemInfo,
-                                          Message_MetricType&        theMetric)
+bool Message::ToMessageMetric(const OSD_MemInfo::Counter theMemInfo, Message_MetricType& theMetric)
 {
   switch (theMemInfo)
   {
@@ -163,7 +157,7 @@ Standard_Boolean Message::ToMessageMetric(const OSD_MemInfo::Counter theMemInfo,
       theMetric = Message_MetricType_MemHeapUsage;
       break;
     default:
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }

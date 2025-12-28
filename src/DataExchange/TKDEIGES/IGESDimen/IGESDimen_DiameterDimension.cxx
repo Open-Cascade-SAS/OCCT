@@ -29,10 +29,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DiameterDimension, IGESData_IGESEntity)
 
 IGESDimen_DiameterDimension::IGESDimen_DiameterDimension() {}
 
-void IGESDimen_DiameterDimension::Init(const Handle(IGESDimen_GeneralNote)& aNote,
-                                       const Handle(IGESDimen_LeaderArrow)& aLeader,
-                                       const Handle(IGESDimen_LeaderArrow)& anotherLeader,
-                                       const gp_XY&                         aCenter)
+void IGESDimen_DiameterDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
+                                       const occ::handle<IGESDimen_LeaderArrow>& aLeader,
+                                       const occ::handle<IGESDimen_LeaderArrow>& anotherLeader,
+                                       const gp_XY&                              aCenter)
 {
   theNote         = aNote;
   theFirstLeader  = aLeader;
@@ -41,22 +41,22 @@ void IGESDimen_DiameterDimension::Init(const Handle(IGESDimen_GeneralNote)& aNot
   InitTypeAndForm(206, 0);
 }
 
-Handle(IGESDimen_GeneralNote) IGESDimen_DiameterDimension::Note() const
+occ::handle<IGESDimen_GeneralNote> IGESDimen_DiameterDimension::Note() const
 {
   return theNote;
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_DiameterDimension::FirstLeader() const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_DiameterDimension::FirstLeader() const
 {
   return theFirstLeader;
 }
 
-Standard_Boolean IGESDimen_DiameterDimension::HasSecondLeader() const
+bool IGESDimen_DiameterDimension::HasSecondLeader() const
 {
   return (!theSecondLeader.IsNull());
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_DiameterDimension::SecondLeader() const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_DiameterDimension::SecondLeader() const
 {
   return theSecondLeader;
 }

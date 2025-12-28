@@ -33,8 +33,8 @@ D3DHost_FrameBuffer::D3DHost_FrameBuffer()
       myGlD3dDevice(NULL),
       myGlD3dSurf(NULL),
       myLockCount(0),
-      myD3dFallback(Standard_False),
-      myIsSRGBReady(Standard_False)
+      myD3dFallback(false),
+      myIsSRGBReady(false)
 {
   //
 }
@@ -82,37 +82,37 @@ void D3DHost_FrameBuffer::Release(OpenGl_Context* theCtx)
 
 //=================================================================================================
 
-Standard_Boolean D3DHost_FrameBuffer::Init(const Handle(OpenGl_Context)& theCtx,
-                                           IDirect3DDevice9*             theD3DDevice,
-                                           const Standard_Boolean        theIsD3dEx,
-                                           const Standard_Integer        theSizeX,
-                                           const Standard_Integer        theSizeY)
+bool D3DHost_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theCtx,
+                               IDirect3DDevice9*                  theD3DDevice,
+                               const bool                         theIsD3dEx,
+                               const int                          theSizeX,
+                               const int                          theSizeY)
 {
   if (InitD3dInterop(theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY, GL_DEPTH24_STENCIL8))
   {
-    return Standard_True;
+    return true;
   }
   return InitD3dFallback(theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY, GL_DEPTH24_STENCIL8);
 }
 
 //=================================================================================================
 
-Standard_Boolean D3DHost_FrameBuffer::InitD3dFallback(const Handle(OpenGl_Context)& theCtx,
-                                                      IDirect3DDevice9*             theD3DDevice,
-                                                      const Standard_Boolean        theIsD3dEx,
-                                                      const Standard_Integer        theSizeX,
-                                                      const Standard_Integer        theSizeY,
-                                                      const Standard_Integer        theDepthFormat)
+bool D3DHost_FrameBuffer::InitD3dFallback(const occ::handle<OpenGl_Context>& theCtx,
+                                          IDirect3DDevice9*                  theD3DDevice,
+                                          const bool                         theIsD3dEx,
+                                          const int                          theSizeX,
+                                          const int                          theSizeY,
+                                          const int                          theDepthFormat)
 {
-  const Standard_Boolean isGlInit = OpenGl_FrameBuffer::Init(theCtx,
-                                                             Graphic3d_Vec2i(theSizeX, theSizeY),
-                                                             GL_RGBA8,
-                                                             theDepthFormat,
-                                                             0);
-  myD3dFallback                   = Standard_True;
+  const bool isGlInit = OpenGl_FrameBuffer::Init(theCtx,
+                                                 NCollection_Vec2<int>(theSizeX, theSizeY),
+                                                 GL_RGBA8,
+                                                 theDepthFormat,
+                                                 0);
+  myD3dFallback       = true;
 
-  const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
-  const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
+  const int aSizeX = theSizeX > 0 ? theSizeX : 2;
+  const int aSizeY = theSizeY > 0 ? theSizeY : 2;
   if (theD3DDevice->CreateRenderTarget(aSizeX,
                                        aSizeY,
                                        D3DFMT_X8R8G8B8,
@@ -131,29 +131,29 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dFallback(const Handle(OpenGl_Contex
                         TCollection_AsciiString(
                           "D3DHost_FrameBuffer, could not create D3DFMT_X8R8G8B8 render target ")
                           + aSizeX + "x" + aSizeY);
-    return Standard_False;
+    return false;
   }
   return isGlInit;
 }
 
 //=================================================================================================
 
-Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop(const Handle(OpenGl_Context)& theCtx,
-                                                     IDirect3DDevice9*             theD3DDevice,
-                                                     const Standard_Boolean        theIsD3dEx,
-                                                     const Standard_Integer        theSizeX,
-                                                     const Standard_Integer        theSizeY,
-                                                     const Standard_Integer        theDepthFormat)
+bool D3DHost_FrameBuffer::InitD3dInterop(const occ::handle<OpenGl_Context>& theCtx,
+                                         IDirect3DDevice9*                  theD3DDevice,
+                                         const bool                         theIsD3dEx,
+                                         const int                          theSizeX,
+                                         const int                          theSizeY,
+                                         const int                          theDepthFormat)
 {
   Release(theCtx.operator->());
 
-  myDepthFormat                 = theDepthFormat;
-  myVPSizeX                     = theSizeX;
-  myVPSizeY                     = theSizeY;
-  myInitVPSizeX                 = theSizeX;
-  myInitVPSizeY                 = theSizeY;
-  const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
-  const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
+  myDepthFormat    = theDepthFormat;
+  myVPSizeX        = theSizeX;
+  myVPSizeY        = theSizeY;
+  myInitVPSizeX    = theSizeX;
+  myInitVPSizeY    = theSizeY;
+  const int aSizeX = theSizeX > 0 ? theSizeX : 2;
+  const int aSizeY = theSizeY > 0 ? theSizeY : 2;
 
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (aFuncs->wglDXOpenDeviceNV == NULL)
@@ -164,7 +164,7 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop(const Handle(OpenGl_Context
                         0,
                         GL_DEBUG_SEVERITY_HIGH,
                         "D3DHost_FrameBuffer, WGL_NV_DX_interop is unavailable!");
-    return Standard_False;
+    return false;
   }
 
   // Render target surface should be lockable on
@@ -187,7 +187,7 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop(const Handle(OpenGl_Context
                         TCollection_AsciiString(
                           "D3DHost_FrameBuffer, could not create D3DFMT_X8R8G8B8 render target ")
                           + aSizeX + "x" + aSizeY);
-    return Standard_False;
+    return false;
   }
 
   myGlD3dDevice = aFuncs->wglDXOpenDeviceNV(theD3DDevice);
@@ -200,13 +200,13 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop(const Handle(OpenGl_Context
       0,
       GL_DEBUG_SEVERITY_HIGH,
       "D3DHost_FrameBuffer, could not create the GL <-> DirectX Interop using wglDXOpenDeviceNV()");
-    return Standard_False;
+    return false;
   }
 
   if (!registerD3dBuffer(theCtx))
   {
     Release(theCtx.operator->());
-    return Standard_False;
+    return false;
   }
 
   myIsOwnBuffer = true;
@@ -218,7 +218,7 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop(const Handle(OpenGl_Context
   if (aDepthFormat.IsValid()
       && !myDepthStencilTexture->Init(theCtx,
                                       aDepthFormat,
-                                      Graphic3d_Vec2i(aSizeX, aSizeY),
+                                      NCollection_Vec2<int>(aSizeX, aSizeY),
                                       Graphic3d_TypeOfTexture_2D))
   {
     Release(theCtx.get());
@@ -229,16 +229,16 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop(const Handle(OpenGl_Context
                         TCollection_AsciiString(
                           "D3DHost_FrameBuffer, could not initialize GL_DEPTH24_STENCIL8 texture ")
                           + aSizeX + "x" + aSizeY);
-    return Standard_False;
+    return false;
   }
 
-  myD3dFallback = Standard_False;
-  return Standard_True;
+  myD3dFallback = false;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer(const Handle(OpenGl_Context)& theCtx)
+bool D3DHost_FrameBuffer::registerD3dBuffer(const occ::handle<OpenGl_Context>& theCtx)
 {
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (myGlD3dSurf != NULL)
@@ -250,7 +250,7 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer(const Handle(OpenGl_Cont
                           0,
                           GL_DEBUG_SEVERITY_HIGH,
                           "D3DHost_FrameBuffer, can not unregister color buffer");
-      return Standard_False;
+      return false;
     }
     myGlD3dSurf = NULL;
   }
@@ -262,7 +262,7 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer(const Handle(OpenGl_Cont
                         0,
                         GL_DEBUG_SEVERITY_HIGH,
                         "D3DHost_FrameBuffer, wglDXSetResourceShareHandleNV() has failed");
-    return Standard_False;
+    return false;
   }
 
   myIsOwnColor = true;
@@ -282,15 +282,15 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer(const Handle(OpenGl_Cont
                         0,
                         GL_DEBUG_SEVERITY_HIGH,
                         "D3DHost_FrameBuffer, can not register color buffer");
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void D3DHost_FrameBuffer::BindBuffer(const Handle(OpenGl_Context)& theCtx)
+void D3DHost_FrameBuffer::BindBuffer(const occ::handle<OpenGl_Context>& theCtx)
 {
   Standard_ProgramError_Raise_if(
     myLockCount < 1,
@@ -362,7 +362,7 @@ void D3DHost_FrameBuffer::BindBuffer(const Handle(OpenGl_Context)& theCtx)
 
 //=================================================================================================
 
-void D3DHost_FrameBuffer::LockSurface(const Handle(OpenGl_Context)& theCtx)
+void D3DHost_FrameBuffer::LockSurface(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (++myLockCount > 1)
   {
@@ -386,7 +386,7 @@ void D3DHost_FrameBuffer::LockSurface(const Handle(OpenGl_Context)& theCtx)
 
 //=================================================================================================
 
-void D3DHost_FrameBuffer::UnlockSurface(const Handle(OpenGl_Context)& theCtx)
+void D3DHost_FrameBuffer::UnlockSurface(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (--myLockCount != 0)
   {
@@ -413,7 +413,7 @@ void D3DHost_FrameBuffer::UnlockSurface(const Handle(OpenGl_Context)& theCtx)
 
     Image_PixMap anImg;
     if (anImg.InitWrapper(Image_Format_BGRA,
-                          (Standard_Byte*)aLockedRect.pBits,
+                          (uint8_t*)aLockedRect.pBits,
                           myInitVPSizeX,
                           myInitVPSizeY,
                           aLockedRect.Pitch))

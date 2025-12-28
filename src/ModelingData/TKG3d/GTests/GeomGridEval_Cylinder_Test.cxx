@@ -18,7 +18,7 @@
 #include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -26,10 +26,10 @@ namespace
 {
 const double THE_TOLERANCE = 1e-10;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
-  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
+  NCollection_Array1<double> aParams(1, theNbPoints);
+  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -45,14 +45,14 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_CylinderTest, GridBasicEvaluation)
 {
   // Cylinder radius 2 along Z axis
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
   GeomGridEval_Cylinder anEval(aCyl);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Angle
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);      // Height
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Angle
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);      // Height
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_EQ(aGrid.RowLength(), 6);
@@ -71,12 +71,12 @@ TEST(GeomGridEval_CylinderTest, GridBasicEvaluation)
 
 TEST(GeomGridEval_CylinderTest, GridDerivativeD1)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -96,12 +96,12 @@ TEST(GeomGridEval_CylinderTest, GridDerivativeD1)
 
 TEST(GeomGridEval_CylinderTest, GridDerivativeD2)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -124,12 +124,12 @@ TEST(GeomGridEval_CylinderTest, GridDerivativeD2)
 
 TEST(GeomGridEval_CylinderTest, GridDerivativeD3)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -167,12 +167,12 @@ TEST(GeomGridEval_CylinderTest, GridDerivativeD3)
 
 TEST(GeomGridEval_CylinderTest, GridDerivativeDN)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 4);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 4);
 
   // Test D4U (4th derivative in U)
   NCollection_Array2<gp_Vec> aD4U = anEval.EvaluateGridDN(aUParams, aVParams, 4, 0);
@@ -192,7 +192,7 @@ TEST(GeomGridEval_CylinderTest, GridDerivativeDN)
 
 TEST(GeomGridEval_CylinderTest, PointsBasicEvaluation)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
@@ -222,7 +222,7 @@ TEST(GeomGridEval_CylinderTest, PointsBasicEvaluation)
 
 TEST(GeomGridEval_CylinderTest, PointsDerivativeD1)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
@@ -249,7 +249,7 @@ TEST(GeomGridEval_CylinderTest, PointsDerivativeD1)
 
 TEST(GeomGridEval_CylinderTest, PointsDerivativeD2)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
@@ -279,7 +279,7 @@ TEST(GeomGridEval_CylinderTest, PointsDerivativeD2)
 
 TEST(GeomGridEval_CylinderTest, PointsDerivativeD3)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
@@ -313,7 +313,7 @@ TEST(GeomGridEval_CylinderTest, PointsDerivativeD3)
 
 TEST(GeomGridEval_CylinderTest, PointsDerivativeDN)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
@@ -337,9 +337,9 @@ TEST(GeomGridEval_CylinderTest, PointsDerivativeDN)
 TEST(GeomGridEval_CylinderTest, PointsTransformedCylinder)
 {
   // Cylinder with offset center and tilted axis
-  gp_Ax3                          anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
-  Handle(Geom_CylindricalSurface) aCyl = new Geom_CylindricalSurface(anAxis, 3.0);
-  GeomGridEval_Cylinder           anEval(aCyl);
+  gp_Ax3                               anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
+  occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 3.0);
+  GeomGridEval_Cylinder                anEval(aCyl);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 8);
   for (int i = 1; i <= 8; ++i)

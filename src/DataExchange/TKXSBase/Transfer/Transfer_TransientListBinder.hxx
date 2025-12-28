@@ -20,13 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Transfer_Binder.hxx>
 #include <Standard_Integer.hxx>
 class Standard_Transient;
-
-class Transfer_TransientListBinder;
-DEFINE_STANDARD_HANDLE(Transfer_TransientListBinder, Transfer_Binder)
 
 //! This binder binds several (a list of) Transients with a starting
 //! entity, when this entity itself corresponds to a simple list
@@ -38,31 +37,32 @@ class Transfer_TransientListBinder : public Transfer_Binder
 public:
   Standard_EXPORT Transfer_TransientListBinder();
 
-  Standard_EXPORT Transfer_TransientListBinder(const Handle(TColStd_HSequenceOfTransient)& list);
+  Standard_EXPORT Transfer_TransientListBinder(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
-  Standard_EXPORT virtual Standard_Boolean IsMultiple() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsMultiple() const override;
 
-  Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Standard_Type> ResultType() const override;
 
-  Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
+  Standard_EXPORT const char* ResultTypeName() const override;
 
   //! Adds an item to the result list
-  Standard_EXPORT void AddResult(const Handle(Standard_Transient)& res);
+  Standard_EXPORT void AddResult(const occ::handle<Standard_Transient>& res);
 
-  Standard_EXPORT Handle(TColStd_HSequenceOfTransient) Result() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Result()
+    const;
 
   //! Changes an already defined sub-result
-  Standard_EXPORT void SetResult(const Standard_Integer num, const Handle(Standard_Transient)& res);
+  Standard_EXPORT void SetResult(const int num, const occ::handle<Standard_Transient>& res);
 
-  Standard_EXPORT Standard_Integer NbTransients() const;
+  Standard_EXPORT int NbTransients() const;
 
-  Standard_EXPORT const Handle(Standard_Transient)& Transient(const Standard_Integer num) const;
+  Standard_EXPORT const occ::handle<Standard_Transient>& Transient(const int num) const;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_TransientListBinder, Transfer_Binder)
 
-protected:
 private:
-  Handle(TColStd_HSequenceOfTransient) theres;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> theres;
 };
 
 #endif // _Transfer_TransientListBinder_HeaderFile

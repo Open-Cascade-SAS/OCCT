@@ -22,14 +22,13 @@
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 #include <variant>
 
 //! @brief Fallback evaluator for any surface type.
 //!
 //! Uses D0/D1/D2/D3/DN methods for point-by-point evaluation. Supports both
-//! Adaptor3d_Surface (by pointer) and Handle(Geom_Surface) as input.
+//! Adaptor3d_Surface (by pointer) and occ::handle<Geom_Surface> as input.
 //! This is the slowest evaluator but handles any surface type.
 //!
 //! @note When using adaptor pointer, the adaptor must remain valid
@@ -55,7 +54,7 @@ public:
 
   //! Constructor with geometry handle.
   //! @param theSurface handle to Geom_Surface
-  GeomGridEval_OtherSurface(const Handle(Geom_Surface)& theSurface)
+  GeomGridEval_OtherSurface(const occ::handle<Geom_Surface>& theSurface)
       : mySurface(theSurface)
   {
   }
@@ -71,32 +70,32 @@ public:
   //! @param theVParams array of V parameter values
   //! @return 2D array of evaluated points (1-based indexing)
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate grid points with first partial derivatives.
   //! @param theUParams array of U parameter values
   //! @param theVParams array of V parameter values
   //! @return 2D array of SurfD1 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate grid points with first and second partial derivatives.
   //! @param theUParams array of U parameter values
   //! @param theVParams array of V parameter values
   //! @return 2D array of SurfD2 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate grid points with derivatives up to third order.
   //! @param theUParams array of U parameter values
   //! @param theVParams array of V parameter values
   //! @return 2D array of SurfD3 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate partial derivative at all grid points.
   //! @param theUParams array of U parameter values
@@ -104,10 +103,11 @@ public:
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
-                                                            const TColStd_Array1OfReal& theVParams,
-                                                            int                         theNU,
-                                                            int theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams,
+    int                               theNU,
+    int                               theNV) const;
 
   //! Evaluate points at arbitrary UV pairs.
   //! @param theUVPairs array of UV coordinate pairs
@@ -179,7 +179,7 @@ private:
 
 private:
   //! Surface source: either adaptor pointer or geometry handle.
-  std::variant<const Adaptor3d_Surface*, Handle(Geom_Surface)> mySurface;
+  std::variant<const Adaptor3d_Surface*, occ::handle<Geom_Surface>> mySurface;
 };
 
 #endif // _GeomGridEval_OtherSurface_HeaderFile

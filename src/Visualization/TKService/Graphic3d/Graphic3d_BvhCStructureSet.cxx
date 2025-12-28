@@ -24,66 +24,64 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_BvhCStructureSet, BVH_PrimitiveSet3d)
 
 Graphic3d_BvhCStructureSet::Graphic3d_BvhCStructureSet()
 {
-  myBuilder = new BVH_BinnedBuilder<Standard_Real, 3>(BVH_Constants_LeafNodeSizeSingle,
-                                                      BVH_Constants_MaxTreeDepth);
+  myBuilder =
+    new BVH_BinnedBuilder<double, 3>(BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
 }
 
 //=================================================================================================
 
-Standard_Integer Graphic3d_BvhCStructureSet::Size() const
+int Graphic3d_BvhCStructureSet::Size() const
 {
   return myStructs.Size();
 }
 
 //=================================================================================================
 
-Graphic3d_BndBox3d Graphic3d_BvhCStructureSet::Box(const Standard_Integer theIdx) const
+Graphic3d_BndBox3d Graphic3d_BvhCStructureSet::Box(const int theIdx) const
 {
   return myStructs.FindKey(theIdx + 1)->BoundingBox();
 }
 
 //=================================================================================================
 
-Standard_Real Graphic3d_BvhCStructureSet::Center(const Standard_Integer theIdx,
-                                                 const Standard_Integer theAxis) const
+double Graphic3d_BvhCStructureSet::Center(const int theIdx, const int theAxis) const
 {
   Graphic3d_BndBox3d aBndBox = myStructs.FindKey(theIdx + 1)->BoundingBox();
 
-  const Standard_Real aMin    = aBndBox.CornerMin()[theAxis];
-  const Standard_Real aMax    = aBndBox.CornerMax()[theAxis];
-  const Standard_Real aCenter = (aMin + aMax) * 0.5;
+  const double aMin    = aBndBox.CornerMin()[theAxis];
+  const double aMax    = aBndBox.CornerMax()[theAxis];
+  const double aCenter = (aMin + aMax) * 0.5;
   return aCenter;
 }
 
 //=================================================================================================
 
-void Graphic3d_BvhCStructureSet::Swap(const Standard_Integer theIdx1,
-                                      const Standard_Integer theIdx2)
+void Graphic3d_BvhCStructureSet::Swap(const int theIdx1, const int theIdx2)
 {
   myStructs.Swap(theIdx1 + 1, theIdx2 + 1);
 }
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_BvhCStructureSet::Add(const Graphic3d_CStructure* theStruct)
+bool Graphic3d_BvhCStructureSet::Add(const Graphic3d_CStructure* theStruct)
 {
-  const Standard_Integer aSize = myStructs.Size();
+  const int aSize = myStructs.Size();
 
   if (myStructs.Add(theStruct) > aSize) // new structure?
   {
     MarkDirty();
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_BvhCStructureSet::Remove(const Graphic3d_CStructure* theStruct)
+bool Graphic3d_BvhCStructureSet::Remove(const Graphic3d_CStructure* theStruct)
 {
-  const Standard_Integer anIndex = myStructs.FindIndex(theStruct);
+  const int anIndex = myStructs.FindIndex(theStruct);
 
   if (anIndex != 0)
   {
@@ -91,10 +89,10 @@ Standard_Boolean Graphic3d_BvhCStructureSet::Remove(const Graphic3d_CStructure* 
     myStructs.RemoveLast();
     MarkDirty();
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -107,7 +105,7 @@ void Graphic3d_BvhCStructureSet::Clear()
 
 //=================================================================================================
 
-const Graphic3d_CStructure* Graphic3d_BvhCStructureSet::GetStructureById(Standard_Integer theId)
+const Graphic3d_CStructure* Graphic3d_BvhCStructureSet::GetStructureById(int theId)
 {
   return myStructs.FindKey(theId + 1);
 }

@@ -37,23 +37,22 @@ public:
 
 protected:
   //! Generates mesh for the contour stored in data structure.
-  virtual void generateMesh(const Message_ProgressRange& theRange) Standard_OVERRIDE
+  virtual void generateMesh(const Message_ProgressRange& theRange) override
   {
-    const Handle(BRepMesh_DataStructureOfDelaun)& aStructure = this->getStructure();
-    const Standard_Integer                        aNodesNb   = aStructure->NbNodes();
+    const occ::handle<BRepMesh_DataStructureOfDelaun>& aStructure = this->getStructure();
+    const int                                          aNodesNb   = aStructure->NbNodes();
 
     buildBaseTriangulation();
 
-    std::pair<Standard_Integer, Standard_Integer> aCellsCount =
-      this->getCellsCount(aStructure->NbNodes());
-    BRepMesh_Delaun aMesher(aStructure, aCellsCount.first, aCellsCount.second, Standard_False);
+    std::pair<int, int> aCellsCount = this->getCellsCount(aStructure->NbNodes());
+    BRepMesh_Delaun     aMesher(aStructure, aCellsCount.first, aCellsCount.second, false);
 
-    const Standard_Integer aNewNodesNb = aStructure->NbNodes();
-    const Standard_Boolean isRemoveAux = aNewNodesNb > aNodesNb;
+    const int  aNewNodesNb = aStructure->NbNodes();
+    const bool isRemoveAux = aNewNodesNb > aNodesNb;
     if (isRemoveAux)
     {
       IMeshData::VectorOfInteger aAuxVertices(aNewNodesNb - aNodesNb);
-      for (Standard_Integer aExtNodesIt = aNodesNb + 1; aExtNodesIt <= aNewNodesNb; ++aExtNodesIt)
+      for (int aExtNodesIt = aNodesNb + 1; aExtNodesIt <= aNewNodesNb; ++aExtNodesIt)
       {
         aAuxVertices.Append(aExtNodesIt);
       }

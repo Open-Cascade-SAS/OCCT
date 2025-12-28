@@ -22,9 +22,6 @@
 
 #include <StepVisual_CameraImage.hxx>
 
-class StepVisual_CameraImage3dWithScale;
-DEFINE_STANDARD_HANDLE(StepVisual_CameraImage3dWithScale, StepVisual_CameraImage)
-
 class StepVisual_CameraImage3dWithScale : public StepVisual_CameraImage
 {
 
@@ -32,9 +29,6 @@ public:
   Standard_EXPORT StepVisual_CameraImage3dWithScale();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraImage3dWithScale, StepVisual_CameraImage)
-
-protected:
-private:
 };
 
 #endif // _StepVisual_CameraImage3dWithScale_HeaderFile

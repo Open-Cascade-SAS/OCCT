@@ -18,9 +18,9 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_TrihedronOwner, SelectMgr_EntityOwner)
 
 //=================================================================================================
 
-AIS_TrihedronOwner::AIS_TrihedronOwner(const Handle(SelectMgr_SelectableObject)& theSelObject,
-                                       const Prs3d_DatumParts                    thePart,
-                                       const Standard_Integer                    thePriority)
+AIS_TrihedronOwner::AIS_TrihedronOwner(const occ::handle<SelectMgr_SelectableObject>& theSelObject,
+                                       const Prs3d_DatumParts                         thePart,
+                                       const int                                      thePriority)
     : SelectMgr_EntityOwner(theSelObject, thePriority),
       myDatumPart(thePart)
 {
@@ -28,21 +28,21 @@ AIS_TrihedronOwner::AIS_TrihedronOwner(const Handle(SelectMgr_SelectableObject)&
 
 //=================================================================================================
 
-void AIS_TrihedronOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
-                                          const Handle(Prs3d_Drawer)&               theStyle,
-                                          const Standard_Integer /*theMode*/)
+void AIS_TrihedronOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                          const occ::handle<Prs3d_Drawer>&               theStyle,
+                                          const int /*theMode*/)
 {
   Selectable()->HilightOwnerWithColor(thePM, theStyle, this);
 }
 
 //=================================================================================================
 
-Standard_Boolean AIS_TrihedronOwner::IsHilighted(const Handle(PrsMgr_PresentationManager)& thePM,
-                                                 const Standard_Integer theMode) const
+bool AIS_TrihedronOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                     const int                                      theMode) const
 {
   if (!HasSelectable())
   {
-    return Standard_False;
+    return false;
   }
 
   return thePM->IsHighlighted(Selectable(), theMode);
@@ -50,8 +50,8 @@ Standard_Boolean AIS_TrihedronOwner::IsHilighted(const Handle(PrsMgr_Presentatio
 
 //=================================================================================================
 
-void AIS_TrihedronOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
-                                   const Standard_Integer                    theMode)
+void AIS_TrihedronOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                   const int                                      theMode)
 {
   (void)theMode;
   if (!HasSelectable())

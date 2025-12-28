@@ -46,7 +46,7 @@ public:
 
   //! Checks if a texture class is valid or not.
   //! @return true if the construction of the class is correct
-  Standard_EXPORT virtual Standard_Boolean IsDone() const;
+  Standard_EXPORT virtual bool IsDone() const;
 
   //! Returns the full path of the defined texture.
   //! It could be empty path if GetImage() is overridden to load image not from file.
@@ -74,7 +74,7 @@ public:
   const TCollection_AsciiString& GetId() const { return myTexId; }
 
   //! Return image revision.
-  Standard_Size Revision() const { return myRevision; }
+  size_t Revision() const { return myRevision; }
 
   //! Update image revision.
   //! Can be used for signaling changes in the texture source (e.g. file update, pixmap update)
@@ -88,8 +88,8 @@ public:
   //!                          returning image in unsupported format will result in texture upload
   //!                          failure
   //! @return compressed pixmap or NULL if image is not in supported compressed format
-  Standard_EXPORT virtual Handle(Image_CompressedPixMap) GetCompressedImage(
-    const Handle(Image_SupportedFormats)& theSupported);
+  Standard_EXPORT virtual occ::handle<Image_CompressedPixMap> GetCompressedImage(
+    const occ::handle<Image_SupportedFormats>& theSupported);
 
   //! This method will be called by graphic driver each time when texture resource should be
   //! created. Default constructors allow defining the texture source as path to texture image or
@@ -98,11 +98,11 @@ public:
   //! Inheritors may dynamically generate the image.
   //! Notice, image data should be in Bottom-Up order (see Image_PixMap::IsTopDown())!
   //! @return the image for texture.
-  Standard_EXPORT virtual Handle(Image_PixMap) GetImage(
-    const Handle(Image_SupportedFormats)& theSupported);
+  Standard_EXPORT virtual occ::handle<Image_PixMap> GetImage(
+    const occ::handle<Image_SupportedFormats>& theSupported);
 
   //! @return low-level texture parameters
-  const Handle(Graphic3d_TextureParams)& GetParams() const { return myParams; }
+  const occ::handle<Graphic3d_TextureParams>& GetParams() const { return myParams; }
 
   //! Return flag indicating color nature of values within the texture; TRUE by default.
   //!
@@ -113,22 +113,19 @@ public:
   //! When set to FALSE, such images will be interpreted as textures will be linear component
   //! values, which is useful for RGB(A) textures defining non-color properties (like
   //! Normalmap/Metalness/Roughness).
-  Standard_Boolean IsColorMap() const { return myIsColorMap; }
+  bool IsColorMap() const { return myIsColorMap; }
 
   //! Set flag indicating color nature of values within the texture.
-  void SetColorMap(Standard_Boolean theIsColor) { myIsColorMap = theIsColor; }
+  void SetColorMap(bool theIsColor) { myIsColorMap = theIsColor; }
 
   //! Returns whether mipmaps should be generated or not.
-  Standard_Boolean HasMipmaps() const { return myHasMipmaps; }
+  bool HasMipmaps() const { return myHasMipmaps; }
 
   //! Sets whether to generate mipmaps or not.
-  void SetMipmapsGeneration(Standard_Boolean theToGenerateMipmaps)
-  {
-    myHasMipmaps = theToGenerateMipmaps;
-  }
+  void SetMipmapsGeneration(bool theToGenerateMipmaps) { myHasMipmaps = theToGenerateMipmaps; }
 
   //! Returns whether row's memory layout is top-down.
-  Standard_Boolean IsTopDown() const { return myIsTopDown; }
+  bool IsTopDown() const { return myIsTopDown; }
 
 protected:
   //! Creates a texture from a file
@@ -140,34 +137,32 @@ protected:
   //! Creates a texture from pixmap.
   //! Please note that the implementation expects the image data
   //! to be in Bottom-Up order (see Image_PixMap::IsTopDown()).
-  Standard_EXPORT Graphic3d_TextureRoot(const Handle(Image_PixMap)&   thePixmap,
-                                        const Graphic3d_TypeOfTexture theType);
+  Standard_EXPORT Graphic3d_TextureRoot(const occ::handle<Image_PixMap>& thePixmap,
+                                        const Graphic3d_TypeOfTexture    theType);
 
   //! Unconditionally generate new texture id. Should be called only within constructor.
   Standard_EXPORT void generateId();
 
   //! Try converting image to compatible format.
   Standard_EXPORT static void convertToCompatible(
-    const Handle(Image_SupportedFormats)& theSupported,
-    const Handle(Image_PixMap)&           theImage);
+    const occ::handle<Image_SupportedFormats>& theSupported,
+    const occ::handle<Image_PixMap>&           theImage);
 
   //! Method for supporting old API; another GetImage() method should be implemented instead.
-  virtual Handle(Image_PixMap) GetImage() const { return Handle(Image_PixMap)(); }
+  virtual occ::handle<Image_PixMap> GetImage() const { return occ::handle<Image_PixMap>(); }
 
 protected:
-  Handle(Graphic3d_TextureParams) myParams; //!< associated texture parameters
+  occ::handle<Graphic3d_TextureParams> myParams; //!< associated texture parameters
   // clang-format off
   TCollection_AsciiString         myTexId;      //!< unique identifier of this resource (for sharing graphic resource); should never be modified outside constructor
-  Handle(Image_PixMap)            myPixMap;     //!< image pixmap - as one of the ways for defining the texture source
+  occ::handle<Image_PixMap>            myPixMap;     //!< image pixmap - as one of the ways for defining the texture source
   OSD_Path                        myPath;       //!< image file path - as one of the ways for defining the texture source
-  Standard_Size                   myRevision;   //!< image revision - for signaling changes in the texture source (e.g. file update, pixmap update)
+  size_t                   myRevision;   //!< image revision - for signaling changes in the texture source (e.g. file update, pixmap update)
   Graphic3d_TypeOfTexture         myType;       //!< texture type
-  Standard_Boolean                myIsColorMap; //!< flag indicating color nature of values within the texture
-  Standard_Boolean                myIsTopDown;  //!< Stores rows's memory layout
-  Standard_Boolean                myHasMipmaps; //!< Indicates whether mipmaps should be generated or not
+  bool                myIsColorMap; //!< flag indicating color nature of values within the texture
+  bool                myIsTopDown;  //!< Stores rows's memory layout
+  bool                myHasMipmaps; //!< Indicates whether mipmaps should be generated or not
   // clang-format on
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_TextureRoot, Standard_Transient)
 
 #endif // _Graphic3d_TextureRoot_HeaderFile

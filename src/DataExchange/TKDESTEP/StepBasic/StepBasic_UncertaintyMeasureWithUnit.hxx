@@ -25,9 +25,6 @@ class TCollection_HAsciiString;
 class StepBasic_MeasureValueMember;
 class StepBasic_Unit;
 
-class StepBasic_UncertaintyMeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_UncertaintyMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 class StepBasic_UncertaintyMeasureWithUnit : public StepBasic_MeasureWithUnit
 {
 
@@ -35,25 +32,24 @@ public:
   //! Returns a UncertaintyMeasureWithUnit
   Standard_EXPORT StepBasic_UncertaintyMeasureWithUnit();
 
-  Standard_EXPORT void Init(const Handle(StepBasic_MeasureValueMember)& aValueComponent,
-                            const StepBasic_Unit&                       aUnitComponent,
-                            const Handle(TCollection_HAsciiString)&     aName,
-                            const Handle(TCollection_HAsciiString)&     aDescription);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
+                            const StepBasic_Unit&                            aUnitComponent,
+                            const occ::handle<TCollection_HAsciiString>&     aName,
+                            const occ::handle<TCollection_HAsciiString>&     aDescription);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_UncertaintyMeasureWithUnit, StepBasic_MeasureWithUnit)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) name;
-  Handle(TCollection_HAsciiString) description;
+  occ::handle<TCollection_HAsciiString> name;
+  occ::handle<TCollection_HAsciiString> description;
 };
 
 #endif // _StepBasic_UncertaintyMeasureWithUnit_HeaderFile

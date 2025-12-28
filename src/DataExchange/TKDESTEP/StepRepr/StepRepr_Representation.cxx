@@ -20,9 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_Representation, Standard_Transient)
 
 StepRepr_Representation::StepRepr_Representation() {}
 
-void StepRepr_Representation::Init(const Handle(TCollection_HAsciiString)&             aName,
-                                   const Handle(StepRepr_HArray1OfRepresentationItem)& aItems,
-                                   const Handle(StepRepr_RepresentationContext)& aContextOfItems)
+void StepRepr_Representation::Init(
+  const occ::handle<TCollection_HAsciiString>&                                      aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aItems,
+  const occ::handle<StepRepr_RepresentationContext>&                                aContextOfItems)
 {
   // --- classe own fields ---
   name           = aName;
@@ -30,33 +31,34 @@ void StepRepr_Representation::Init(const Handle(TCollection_HAsciiString)&      
   contextOfItems = aContextOfItems;
 }
 
-void StepRepr_Representation::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepRepr_Representation::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepRepr_Representation::Name() const
+occ::handle<TCollection_HAsciiString> StepRepr_Representation::Name() const
 {
   return name;
 }
 
-void StepRepr_Representation::SetItems(const Handle(StepRepr_HArray1OfRepresentationItem)& aItems)
+void StepRepr_Representation::SetItems(
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aItems)
 {
   items = aItems;
 }
 
-Handle(StepRepr_HArray1OfRepresentationItem) StepRepr_Representation::Items() const
+occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> StepRepr_Representation::
+  Items() const
 {
   return items;
 }
 
-Handle(StepRepr_RepresentationItem) StepRepr_Representation::ItemsValue(
-  const Standard_Integer num) const
+occ::handle<StepRepr_RepresentationItem> StepRepr_Representation::ItemsValue(const int num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepRepr_Representation::NbItems() const
+int StepRepr_Representation::NbItems() const
 {
   if (items.IsNull())
     return 0;
@@ -64,12 +66,12 @@ Standard_Integer StepRepr_Representation::NbItems() const
 }
 
 void StepRepr_Representation::SetContextOfItems(
-  const Handle(StepRepr_RepresentationContext)& aContextOfItems)
+  const occ::handle<StepRepr_RepresentationContext>& aContextOfItems)
 {
   contextOfItems = aContextOfItems;
 }
 
-Handle(StepRepr_RepresentationContext) StepRepr_Representation::ContextOfItems() const
+occ::handle<StepRepr_RepresentationContext> StepRepr_Representation::ContextOfItems() const
 {
   return contextOfItems;
 }

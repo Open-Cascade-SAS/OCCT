@@ -22,61 +22,63 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <Precision.hxx>
 #include <Standard_Real.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 class GeomConvert_ApproxSurface_Eval : public AdvApp2Var_EvaluatorFunc2Var
 {
 
 public:
-  GeomConvert_ApproxSurface_Eval(const Handle(Adaptor3d_Surface)& theAdaptor)
+  GeomConvert_ApproxSurface_Eval(const occ::handle<Adaptor3d_Surface>& theAdaptor)
       : myAdaptor(theAdaptor)
   {
   }
 
-  virtual void Evaluate(Standard_Integer* theDimension,
-                        Standard_Real*    theUStartEnd,
-                        Standard_Real*    theVStartEnd,
-                        Standard_Integer* theFavorIso,
-                        Standard_Real*    theConstParam,
-                        Standard_Integer* theNbParams,
-                        Standard_Real*    theParameters,
-                        Standard_Integer* theUOrder,
-                        Standard_Integer* theVOrder,
-                        Standard_Real*    theResult,
-                        Standard_Integer* theErrorCode) const;
+  virtual void Evaluate(int*    theDimension,
+                        double* theUStartEnd,
+                        double* theVStartEnd,
+                        int*    theFavorIso,
+                        double* theConstParam,
+                        int*    theNbParams,
+                        double* theParameters,
+                        int*    theUOrder,
+                        int*    theVOrder,
+                        double* theResult,
+                        int*    theErrorCode) const;
 
 private:
-  mutable Handle(Adaptor3d_Surface) myAdaptor;
+  mutable occ::handle<Adaptor3d_Surface> myAdaptor;
 };
 
-void GeomConvert_ApproxSurface_Eval::Evaluate(Standard_Integer* Dimension,
+void GeomConvert_ApproxSurface_Eval::Evaluate(int* Dimension,
                                               // Dimension
-                                              Standard_Real* UStartEnd,
+                                              double* UStartEnd,
                                               // StartEnd[2] in U
-                                              Standard_Real* VStartEnd,
+                                              double* VStartEnd,
                                               // StartEnd[2] in V
-                                              Standard_Integer* FavorIso,
+                                              int* FavorIso,
                                               // Choice of constante, 1 for U, 2 for V
-                                              Standard_Real* ConstParam,
+                                              double* ConstParam,
                                               // Value of constant parameter
-                                              Standard_Integer* NbParams,
+                                              int* NbParams,
                                               // Number of parameters N
-                                              Standard_Real* Parameters,
+                                              double* Parameters,
                                               // Values of parameters,
-                                              Standard_Integer* UOrder,
+                                              int* UOrder,
                                               // Derivative Request in U
-                                              Standard_Integer* VOrder,
+                                              int* VOrder,
                                               // Derivative Request in V
-                                              Standard_Real* Result,
+                                              double* Result,
                                               // Result[Dimension,N]
-                                              Standard_Integer* ErrorCode) const
+                                              int* ErrorCode) const
 // Error Code
 {
   *ErrorCode = 0;
-  //  Standard_Integer idim;
-  Standard_Integer jpar;
-  Standard_Real    Upar, Vpar;
+  //  int idim;
+  int    jpar;
+  double Upar, Vpar;
 
   // Dimension incorrecte
   if (*Dimension != 3)
@@ -121,9 +123,9 @@ void GeomConvert_ApproxSurface_Eval::Evaluate(Standard_Integer* Dimension,
       }
     }*/
 
-  Standard_Integer Order = *UOrder + *VOrder;
-  gp_Pnt           pnt;
-  gp_Vec           vect, v1, v2, v3, v4, v5, v6, v7, v8, v9;
+  int    Order = *UOrder + *VOrder;
+  gp_Pnt pnt;
+  gp_Vec vect, v1, v2, v3, v4, v5, v6, v7, v8, v9;
 
   if (*FavorIso == 1)
   {
@@ -309,16 +311,16 @@ void GeomConvert_ApproxSurface_Eval::Evaluate(Standard_Integer* Dimension,
 
 //=================================================================================================
 
-GeomConvert_ApproxSurface::GeomConvert_ApproxSurface(const Handle(Geom_Surface)& Surf,
-                                                     const Standard_Real         Tol3d,
-                                                     const GeomAbs_Shape         UContinuity,
-                                                     const GeomAbs_Shape         VContinuity,
-                                                     const Standard_Integer      MaxDegU,
-                                                     const Standard_Integer      MaxDegV,
-                                                     const Standard_Integer      MaxSegments,
-                                                     const Standard_Integer      PrecisCode)
+GeomConvert_ApproxSurface::GeomConvert_ApproxSurface(const occ::handle<Geom_Surface>& Surf,
+                                                     const double                     Tol3d,
+                                                     const GeomAbs_Shape              UContinuity,
+                                                     const GeomAbs_Shape              VContinuity,
+                                                     const int                        MaxDegU,
+                                                     const int                        MaxDegV,
+                                                     const int                        MaxSegments,
+                                                     const int                        PrecisCode)
 {
-  Handle(Adaptor3d_Surface) aSurfAdaptor = new GeomAdaptor_Surface(Surf);
+  occ::handle<Adaptor3d_Surface> aSurfAdaptor = new GeomAdaptor_Surface(Surf);
   Approximate(aSurfAdaptor,
               Tol3d,
               UContinuity,
@@ -329,66 +331,66 @@ GeomConvert_ApproxSurface::GeomConvert_ApproxSurface(const Handle(Geom_Surface)&
               PrecisCode);
 }
 
-GeomConvert_ApproxSurface::GeomConvert_ApproxSurface(const Handle(Adaptor3d_Surface)& Surf,
-                                                     const Standard_Real              Tol3d,
-                                                     const GeomAbs_Shape              UContinuity,
-                                                     const GeomAbs_Shape              VContinuity,
-                                                     const Standard_Integer           MaxDegU,
-                                                     const Standard_Integer           MaxDegV,
-                                                     const Standard_Integer           MaxSegments,
-                                                     const Standard_Integer           PrecisCode)
+GeomConvert_ApproxSurface::GeomConvert_ApproxSurface(const occ::handle<Adaptor3d_Surface>& Surf,
+                                                     const double                          Tol3d,
+                                                     const GeomAbs_Shape UContinuity,
+                                                     const GeomAbs_Shape VContinuity,
+                                                     const int           MaxDegU,
+                                                     const int           MaxDegV,
+                                                     const int           MaxSegments,
+                                                     const int           PrecisCode)
 {
   Approximate(Surf, Tol3d, UContinuity, VContinuity, MaxDegU, MaxDegV, MaxSegments, PrecisCode);
 }
 
-void GeomConvert_ApproxSurface::Approximate(const Handle(Adaptor3d_Surface)& theSurf,
-                                            const Standard_Real              theTol3d,
-                                            const GeomAbs_Shape              theUContinuity,
-                                            const GeomAbs_Shape              theVContinuity,
-                                            const Standard_Integer           theMaxDegU,
-                                            const Standard_Integer           theMaxDegV,
-                                            const Standard_Integer           theMaxSegments,
-                                            const Standard_Integer           thePrecisCode)
+void GeomConvert_ApproxSurface::Approximate(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                            const double                          theTol3d,
+                                            const GeomAbs_Shape                   theUContinuity,
+                                            const GeomAbs_Shape                   theVContinuity,
+                                            const int                             theMaxDegU,
+                                            const int                             theMaxDegV,
+                                            const int                             theMaxSegments,
+                                            const int                             thePrecisCode)
 {
-  Standard_Real U0 = theSurf->FirstUParameter();
-  Standard_Real U1 = theSurf->LastUParameter();
-  Standard_Real V0 = theSurf->FirstVParameter();
-  Standard_Real V1 = theSurf->LastVParameter();
+  double U0 = theSurf->FirstUParameter();
+  double U1 = theSurf->LastUParameter();
+  double V0 = theSurf->FirstVParameter();
+  double V1 = theSurf->LastVParameter();
 
   // " Init des nombres de sous-espaces et des tolerances"
-  Standard_Integer              nb1 = 0, nb2 = 0, nb3 = 1;
-  Handle(TColStd_HArray1OfReal) nul1 = new TColStd_HArray1OfReal(1, 1);
+  int                                      nb1 = 0, nb2 = 0, nb3 = 1;
+  occ::handle<NCollection_HArray1<double>> nul1 = new NCollection_HArray1<double>(1, 1);
   nul1->SetValue(1, 0.);
-  Handle(TColStd_HArray2OfReal) nul2 = new TColStd_HArray2OfReal(1, 1, 1, 4);
+  occ::handle<NCollection_HArray2<double>> nul2 = new NCollection_HArray2<double>(1, 1, 1, 4);
   nul2->SetValue(1, 1, 0.);
   nul2->SetValue(1, 2, 0.);
   nul2->SetValue(1, 3, 0.);
   nul2->SetValue(1, 4, 0.);
-  Handle(TColStd_HArray1OfReal) eps3D = new TColStd_HArray1OfReal(1, 1);
+  occ::handle<NCollection_HArray1<double>> eps3D = new NCollection_HArray1<double>(1, 1);
   eps3D->SetValue(1, theTol3d);
-  Handle(TColStd_HArray2OfReal) epsfr = new TColStd_HArray2OfReal(1, 1, 1, 4);
+  occ::handle<NCollection_HArray2<double>> epsfr = new NCollection_HArray2<double>(1, 1, 1, 4);
   epsfr->SetValue(1, 1, theTol3d);
   epsfr->SetValue(1, 2, theTol3d);
   epsfr->SetValue(1, 3, theTol3d);
   epsfr->SetValue(1, 4, theTol3d);
 
   // " Init du type d'iso"
-  GeomAbs_IsoType  IsoType = GeomAbs_IsoV;
-  Standard_Integer NbDec;
+  GeomAbs_IsoType IsoType = GeomAbs_IsoV;
+  int             NbDec;
 
   NbDec = theSurf->NbUIntervals(GeomAbs_C2);
-  TColStd_Array1OfReal UDec_C2(1, NbDec + 1);
+  NCollection_Array1<double> UDec_C2(1, NbDec + 1);
   theSurf->UIntervals(UDec_C2, GeomAbs_C2);
   NbDec = theSurf->NbVIntervals(GeomAbs_C2);
-  TColStd_Array1OfReal VDec_C2(1, NbDec + 1);
+  NCollection_Array1<double> VDec_C2(1, NbDec + 1);
   theSurf->VIntervals(VDec_C2, GeomAbs_C2);
 
   NbDec = theSurf->NbUIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal UDec_C3(1, NbDec + 1);
+  NCollection_Array1<double> UDec_C3(1, NbDec + 1);
   theSurf->UIntervals(UDec_C3, GeomAbs_C3);
 
   NbDec = theSurf->NbVIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal VDec_C3(1, NbDec + 1);
+  NCollection_Array1<double> VDec_C3(1, NbDec + 1);
   theSurf->VIntervals(VDec_C3, GeomAbs_C3);
   // Approximation avec decoupe preferentiel
   // aux lieux de discontinuitees C2
@@ -429,28 +431,28 @@ void GeomConvert_ApproxSurface::Approximate(const Handle(Adaptor3d_Surface)& the
 
 //=================================================================================================
 
-Handle(Geom_BSplineSurface) GeomConvert_ApproxSurface::Surface() const
+occ::handle<Geom_BSplineSurface> GeomConvert_ApproxSurface::Surface() const
 {
   return myBSplSurf;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomConvert_ApproxSurface::IsDone() const
+bool GeomConvert_ApproxSurface::IsDone() const
 {
   return myIsDone;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomConvert_ApproxSurface::HasResult() const
+bool GeomConvert_ApproxSurface::HasResult() const
 {
   return myHasResult;
 }
 
 //=================================================================================================
 
-Standard_Real GeomConvert_ApproxSurface::MaxError() const
+double GeomConvert_ApproxSurface::MaxError() const
 {
   return myMaxError;
 }

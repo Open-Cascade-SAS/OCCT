@@ -19,7 +19,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class TopOpeBRepDS_HDataStructure;
 
 //! reduce interferences of a data structure (HDS)
@@ -29,16 +32,17 @@ class TopOpeBRepDS_Reducer
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT TopOpeBRepDS_Reducer(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
+  Standard_EXPORT TopOpeBRepDS_Reducer(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 
   Standard_EXPORT void ProcessFaceInterferences(
-    const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& M);
+    const NCollection_DataMap<TopoDS_Shape,
+                              TopOpeBRepDS_ListOfShapeOn1State,
+                              TopTools_ShapeMapHasher>& M);
 
   Standard_EXPORT void ProcessEdgeInterferences();
 
-protected:
 private:
-  Handle(TopOpeBRepDS_HDataStructure) myHDS;
+  occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
 };
 
 #endif // _TopOpeBRepDS_Reducer_HeaderFile

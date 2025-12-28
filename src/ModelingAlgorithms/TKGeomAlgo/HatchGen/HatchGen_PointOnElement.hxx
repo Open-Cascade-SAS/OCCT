@@ -54,20 +54,18 @@ public:
   //! P1.mySegBeg = P2.mySegBeg
   //! P1.mySegEnd = P2.mySegEnd
   //! P1.myType   = P2.myType
-  Standard_EXPORT Standard_Boolean IsIdentical(const HatchGen_PointOnElement& Point,
-                                               const Standard_Real            Confusion) const;
+  Standard_EXPORT bool IsIdentical(const HatchGen_PointOnElement& Point,
+                                   const double                   Confusion) const;
 
   //! Tests if the point is different from an other.
-  Standard_EXPORT Standard_Boolean IsDifferent(const HatchGen_PointOnElement& Point,
-                                               const Standard_Real            Confusion) const;
+  Standard_EXPORT bool IsDifferent(const HatchGen_PointOnElement& Point,
+                                   const double                   Confusion) const;
 
   //! Dump of the point on element.
-  Standard_EXPORT void Dump(const Standard_Integer Index = 0) const;
+  Standard_EXPORT void Dump(const int Index = 0) const;
 
 protected:
   HatchGen_IntersectionType myType;
-
-private:
 };
 
 #include <HatchGen_PointOnElement.lxx>

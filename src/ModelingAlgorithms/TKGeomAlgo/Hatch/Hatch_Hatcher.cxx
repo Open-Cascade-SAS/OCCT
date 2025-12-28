@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-Hatch_Hatcher::Hatch_Hatcher(const Standard_Real Tol, const Standard_Boolean Oriented)
+Hatch_Hatcher::Hatch_Hatcher(const double Tol, const bool Oriented)
     : myToler(Tol),
       myOrient(Oriented)
 {
@@ -42,18 +42,18 @@ void Hatch_Hatcher::AddLine(const gp_Lin2d& L, const Hatch_LineForm T)
 
 //=================================================================================================
 
-void Hatch_Hatcher::AddLine(const gp_Dir2d& D, const Standard_Real Dist)
+void Hatch_Hatcher::AddLine(const gp_Dir2d& D, const double Dist)
 {
-  Standard_Real X = D.X();
-  Standard_Real Y = D.Y();
-  gp_Pnt2d      O(-Y * Dist, X * Dist);
-  gp_Lin2d      L(O, D);
+  double   X = D.X();
+  double   Y = D.Y();
+  gp_Pnt2d O(-Y * Dist, X * Dist);
+  gp_Lin2d L(O, D);
   AddLine(L, Hatch_ANYLINE);
 }
 
 //=================================================================================================
 
-void Hatch_Hatcher::AddXLine(const Standard_Real X)
+void Hatch_Hatcher::AddXLine(const double X)
 {
   gp_Pnt2d O(X, 0);
   gp_Dir2d D(gp_Dir2d::D::Y);
@@ -63,7 +63,7 @@ void Hatch_Hatcher::AddXLine(const Standard_Real X)
 
 //=================================================================================================
 
-void Hatch_Hatcher::AddYLine(const Standard_Real Y)
+void Hatch_Hatcher::AddYLine(const double Y)
 {
   gp_Pnt2d O(0, Y);
   gp_Dir2d D(gp_Dir2d::D::X);
@@ -73,21 +73,18 @@ void Hatch_Hatcher::AddYLine(const Standard_Real Y)
 
 //=================================================================================================
 
-void Hatch_Hatcher::Trim(const gp_Lin2d& L, const Standard_Integer Index)
+void Hatch_Hatcher::Trim(const gp_Lin2d& L, const int Index)
 {
   Trim(L, RealFirst(), RealLast(), Index);
 }
 
 //=================================================================================================
 
-void Hatch_Hatcher::Trim(const gp_Lin2d&        L,
-                         const Standard_Real    Start,
-                         const Standard_Real    End,
-                         const Standard_Integer Index)
+void Hatch_Hatcher::Trim(const gp_Lin2d& L, const double Start, const double End, const int Index)
 {
   IntAna2d_IntPoint        Pinter;
   IntAna2d_AnaIntersection Inters;
-  Standard_Integer         iLine;
+  int                      iLine;
   for (iLine = 1; iLine <= myLines.Length(); iLine++)
   {
     Inters.Perform(myLines(iLine).myLin, L);
@@ -96,13 +93,13 @@ void Hatch_Hatcher::Trim(const gp_Lin2d&        L,
       if (!Inters.IdenticalElements() && !Inters.ParallelElements())
       {
         // we have got something
-        Pinter                = Inters.Point(1);
-        Standard_Real linePar = Pinter.ParamOnSecond();
+        Pinter         = Inters.Point(1);
+        double linePar = Pinter.ParamOnSecond();
         if (linePar - Start < -myToler)
           continue;
         if (linePar - End > myToler)
           continue;
-        Standard_Real norm = L.Direction() ^ myLines(iLine).myLin.Direction();
+        double norm = L.Direction() ^ myLines(iLine).myLin.Direction();
         if (linePar - Start < myToler)
         {
           // on the limit of the trimming segment
@@ -130,7 +127,7 @@ void Hatch_Hatcher::Trim(const gp_Lin2d&        L,
 
 //=================================================================================================
 
-void Hatch_Hatcher::Trim(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const Standard_Integer Index)
+void Hatch_Hatcher::Trim(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const int Index)
 {
   gp_Vec2d V(P1, P2);
   if (std::abs(V.X()) > .9 * RealLast())
@@ -147,9 +144,9 @@ void Hatch_Hatcher::Trim(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const Standard_
 
 //=================================================================================================
 
-Standard_Integer Hatch_Hatcher::NbIntervals() const
+int Hatch_Hatcher::NbIntervals() const
 {
-  Standard_Integer i, nb = 0;
+  int i, nb = 0;
   for (i = 1; i <= myLines.Length(); i++)
     nb += NbIntervals(i);
   return nb;
@@ -157,28 +154,28 @@ Standard_Integer Hatch_Hatcher::NbIntervals() const
 
 //=================================================================================================
 
-Standard_Integer Hatch_Hatcher::NbLines() const
+int Hatch_Hatcher::NbLines() const
 {
   return myLines.Length();
 }
 
 //=================================================================================================
 
-const gp_Lin2d& Hatch_Hatcher::Line(const Standard_Integer I) const
+const gp_Lin2d& Hatch_Hatcher::Line(const int I) const
 {
   return myLines(I).myLin;
 }
 
 //=================================================================================================
 
-Hatch_LineForm Hatch_Hatcher::LineForm(const Standard_Integer I) const
+Hatch_LineForm Hatch_Hatcher::LineForm(const int I) const
 {
   return myLines(I).myForm;
 }
 
 //=================================================================================================
 
-Standard_Real Hatch_Hatcher::Coordinate(const Standard_Integer I) const
+double Hatch_Hatcher::Coordinate(const int I) const
 {
   switch (myLines(I).myForm)
   {
@@ -198,9 +195,9 @@ Standard_Real Hatch_Hatcher::Coordinate(const Standard_Integer I) const
 
 //=================================================================================================
 
-Standard_Integer Hatch_Hatcher::NbIntervals(const Standard_Integer I) const
+int Hatch_Hatcher::NbIntervals(const int I) const
 {
-  Standard_Integer l = myLines(I).myInters.Length();
+  int l = myLines(I).myInters.Length();
   if (l == 0)
     l = myOrient ? 1 : 0;
   else
@@ -215,7 +212,7 @@ Standard_Integer Hatch_Hatcher::NbIntervals(const Standard_Integer I) const
 
 //=================================================================================================
 
-Standard_Real Hatch_Hatcher::Start(const Standard_Integer I, const Standard_Integer J) const
+double Hatch_Hatcher::Start(const int I, const int J) const
 {
   if (myLines(I).myInters.IsEmpty())
   {
@@ -225,7 +222,7 @@ Standard_Real Hatch_Hatcher::Start(const Standard_Integer I, const Standard_Inte
   }
   else
   {
-    Standard_Integer jj = 2 * J - 1;
+    int jj = 2 * J - 1;
     if (!myLines(I).myInters(1).myStart && myOrient)
       jj--;
     if (jj == 0)
@@ -236,10 +233,7 @@ Standard_Real Hatch_Hatcher::Start(const Standard_Integer I, const Standard_Inte
 
 //=================================================================================================
 
-void Hatch_Hatcher::StartIndex(const Standard_Integer I,
-                               const Standard_Integer J,
-                               Standard_Integer&      Index,
-                               Standard_Real&         Par2) const
+void Hatch_Hatcher::StartIndex(const int I, const int J, int& Index, double& Par2) const
 {
   if (myLines(I).myInters.IsEmpty())
   {
@@ -250,7 +244,7 @@ void Hatch_Hatcher::StartIndex(const Standard_Integer I,
   }
   else
   {
-    Standard_Integer jj = 2 * J - 1;
+    int jj = 2 * J - 1;
     if (!myLines(I).myInters(1).myStart && myOrient)
       jj--;
     if (jj == 0)
@@ -268,7 +262,7 @@ void Hatch_Hatcher::StartIndex(const Standard_Integer I,
 
 //=================================================================================================
 
-Standard_Real Hatch_Hatcher::End(const Standard_Integer I, const Standard_Integer J) const
+double Hatch_Hatcher::End(const int I, const int J) const
 {
   if (myLines(I).myInters.IsEmpty())
   {
@@ -278,7 +272,7 @@ Standard_Real Hatch_Hatcher::End(const Standard_Integer I, const Standard_Intege
   }
   else
   {
-    Standard_Integer jj = 2 * J;
+    int jj = 2 * J;
     if (!myLines(I).myInters(1).myStart && myOrient)
       jj--;
     if (jj > myLines(I).myInters.Length())
@@ -289,10 +283,7 @@ Standard_Real Hatch_Hatcher::End(const Standard_Integer I, const Standard_Intege
 
 //=================================================================================================
 
-void Hatch_Hatcher::EndIndex(const Standard_Integer I,
-                             const Standard_Integer J,
-                             Standard_Integer&      Index,
-                             Standard_Real&         Par2) const
+void Hatch_Hatcher::EndIndex(const int I, const int J, int& Index, double& Par2) const
 {
   if (myLines(I).myInters.IsEmpty())
   {
@@ -303,7 +294,7 @@ void Hatch_Hatcher::EndIndex(const Standard_Integer I,
   }
   else
   {
-    Standard_Integer jj = 2 * J;
+    int jj = 2 * J;
     if (!myLines(I).myInters(1).myStart && myOrient)
       jj--;
     if (jj > myLines(I).myInters.Length())

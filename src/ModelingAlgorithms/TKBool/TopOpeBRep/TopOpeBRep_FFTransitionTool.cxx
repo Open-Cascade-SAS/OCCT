@@ -29,9 +29,9 @@
 
 //=================================================================================================
 
-static Standard_Boolean TransitionToOrientation(const IntSurf_Transition& T, TopAbs_Orientation& O)
+static bool TransitionToOrientation(const IntSurf_Transition& T, TopAbs_Orientation& O)
 {
-  Standard_Boolean   Odefined = Standard_True;
+  bool               Odefined = true;
   TopAbs_Orientation result   = TopAbs_FORWARD;
   IntSurf_TypeTrans  trans;
   IntSurf_Situation  situa;
@@ -59,13 +59,13 @@ static Standard_Boolean TransitionToOrientation(const IntSurf_Transition& T, Top
           result = TopAbs_EXTERNAL;
           break;
         case IntSurf_Unknown:
-          Odefined = Standard_False;
+          Odefined = false;
           break;
       }
       break;
 
     case IntSurf_Undecided:
-      Odefined = Standard_False;
+      Odefined = false;
       break;
   }
 
@@ -82,7 +82,7 @@ static Standard_Boolean TransitionToOrientation(const IntSurf_Transition& T, Top
 
 TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessLineTransition(
   const TopOpeBRep_VPointInter& P,
-  const Standard_Integer        Index,
+  const int                     Index,
   const TopAbs_Orientation      EdgeOrientation)
 {
   TopOpeBRepDS_Transition TT;
@@ -106,7 +106,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessLineTransition(
           T = P.TransitionLineArc2();
           break;
       }
-      Standard_Boolean Odefined = ::TransitionToOrientation(T, O);
+      bool Odefined = ::TransitionToOrientation(T, O);
       if (Odefined)
       {
         if (EdgeOrientation == TopAbs_REVERSED)
@@ -137,13 +137,13 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessLineTransition(
 
   // P.IsOnDomS1() and P.IsOnDomS2() are both false
 
-  Standard_Integer              nbv  = LI.NbVPoint();
+  int                           nbv  = LI.NbVPoint();
   const TopOpeBRep_VPointInter& P1   = LI.VPoint(1);
-  Standard_Real                 par1 = P1.ParameterOnLine();
+  double                        par1 = P1.ParameterOnLine();
   const TopOpeBRep_VPointInter& Pn   = LI.VPoint(nbv);
-  Standard_Real                 parn = Pn.ParameterOnLine();
+  double                        parn = Pn.ParameterOnLine();
 
-  Standard_Real par = P.ParameterOnLine();
+  double par = P.ParameterOnLine();
   if (par == par1)
     result = TopAbs_FORWARD;
   else if (par == parn)
@@ -164,7 +164,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessLineTransition(
 
 TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessEdgeTransition(
   const TopOpeBRep_VPointInter& P,
-  const Standard_Integer        Index,
+  const int                     Index,
   const TopAbs_Orientation      FaceTransition)
 {
   TopOpeBRepDS_Transition TT;
@@ -182,7 +182,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessEdgeTransition(
       T = P.TransitionOnS2();
 
     TopAbs_Orientation O;
-    Standard_Boolean   defined = ::TransitionToOrientation(T, O);
+    bool               defined = ::TransitionToOrientation(T, O);
     if (defined)
     {
       if (FaceTransition == TopAbs_REVERSED)
@@ -205,7 +205,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessEdgeTransition(
 
 TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessFaceTransition(
   const TopOpeBRep_LineInter& L,
-  const Standard_Integer      Index,
+  const int                   Index,
   const TopAbs_Orientation    FaceOrientation)
 {
   // If Index == 1, on first shape
@@ -218,7 +218,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessFaceTransition(
   }
   else
   {
-    Standard_Boolean Odefined = Standard_True;
+    bool Odefined = true;
 
     TopAbs_Orientation O = TopAbs_FORWARD;
 
@@ -254,14 +254,14 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessFaceTransition(
 
           case IntSurf_Unknown:
 
-            Odefined = Standard_False;
+            Odefined = false;
             break;
         }
         break;
       } // case Touch
 
       case IntSurf_Undecided:
-        Odefined = Standard_False;
+        Odefined = false;
         break;
 
     } // trans
@@ -286,15 +286,15 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessFaceTransition(
 // input : C2 : courbe, FC2,LC2 : bornes de C2
 // output : T2 = parametre de P1 sur C2
 // -------------------------------------------------
-static Standard_Boolean FUN_ProjectPoint(const gp_Pnt&             P1,
-                                         const Handle(Geom_Curve)& C2,
-                                         const Standard_Real       FC2,
-                                         const Standard_Real       LC2,
-                                         Standard_Real&            T2)
+static bool FUN_ProjectPoint(const gp_Pnt&                  P1,
+                             const occ::handle<Geom_Curve>& C2,
+                             const double                   FC2,
+                             const double                   LC2,
+                             double&                        T2)
 {
   if (C2.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   GeomAPI_ProjectPointOnCurve mydist(P1, C2, FC2, LC2);
@@ -303,11 +303,11 @@ static Standard_Boolean FUN_ProjectPoint(const gp_Pnt&             P1,
     if (mydist.NbPoints())
     {
       T2 = mydist.LowerDistanceParameter();
-      return Standard_True;
+      return true;
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 // -------------------------------------------------
@@ -315,19 +315,19 @@ static Standard_Boolean FUN_ProjectPoint(const gp_Pnt&             P1,
 // input : C2,FC2,LC2 : courbe, bornes de C2
 // output : Trans : transition sur C1 en T1 en croisant C2
 // -------------------------------------------------
-static Standard_Boolean FUN_GeomTrans(const Handle(Geom_Surface)& S1,
-                                      const Standard_Real         U1,
-                                      const Standard_Real         V1,
-                                      const Handle(Geom_Curve)&   C1,
-                                      const Standard_Real         T1,
-                                      const Handle(Geom_Curve)&   C2,
-                                      const Standard_Real         FC2,
-                                      const Standard_Real         LC2,
-                                      TopOpeBRepDS_Transition&    Trans)
+static bool FUN_GeomTrans(const occ::handle<Geom_Surface>& S1,
+                          const double                     U1,
+                          const double                     V1,
+                          const occ::handle<Geom_Curve>&   C1,
+                          const double                     T1,
+                          const occ::handle<Geom_Curve>&   C2,
+                          const double                     FC2,
+                          const double                     LC2,
+                          TopOpeBRepDS_Transition&         Trans)
 {
   if (C1.IsNull() || C2.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   // P1 : D0(C1(T1), D1_C1 : D1(C1(T1))
@@ -336,11 +336,11 @@ static Standard_Boolean FUN_GeomTrans(const Handle(Geom_Surface)& S1,
   C1->D1(T1, P1, D1_C1);
 
   // D1_C2 : D1(C2(P1))
-  Standard_Real    T2     = 0.0;
-  Standard_Boolean projok = ::FUN_ProjectPoint(P1, C2, FC2, LC2, T2);
+  double T2     = 0.0;
+  bool   projok = ::FUN_ProjectPoint(P1, C2, FC2, LC2, T2);
   if (!projok)
   {
-    return Standard_False;
+    return false;
   }
   gp_Pnt P2;
   gp_Vec D1_C2;
@@ -355,8 +355,8 @@ static Standard_Boolean FUN_GeomTrans(const Handle(Geom_Surface)& S1,
   N1 = D1U.Crossed(D1V);
   N1.Normalize();
 
-  gp_Vec        N1D1_C1 = N1.Crossed(D1_C1);
-  Standard_Real dot     = N1D1_C1.Dot(D1_C2);
+  gp_Vec N1D1_C1 = N1.Crossed(D1_C1);
+  double dot     = N1D1_C1.Dot(D1_C2);
   if (dot > 0)
   {
     Trans.Before(TopAbs_OUT);
@@ -368,14 +368,14 @@ static Standard_Boolean FUN_GeomTrans(const Handle(Geom_Surface)& S1,
     Trans.After(TopAbs_OUT);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessEdgeONTransition(
   const TopOpeBRep_VPointInter& VP,
-  const Standard_Integer        ShapeIndex,
+  const int                     ShapeIndex,
   const TopoDS_Shape&           RR,
   const TopoDS_Shape&           EE,
   const TopoDS_Shape&           FF)
@@ -386,22 +386,22 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessEdgeONTransition(
 
   TopAbs_Orientation oriE = E.Orientation();
 
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(F);
-  Standard_Real               U = 0., V = 0.;
+  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F);
+  double                           U = 0., V = 0.;
   if (ShapeIndex == 1)
     VP.ParametersOnS1(U, V);
   else if (ShapeIndex == 2)
     VP.ParametersOnS2(U, V);
 
-  Standard_Real             fE, lE;
-  const Handle(Geom_Curve)& CE = BRep_Tool::Curve(E, fE, lE);
-  Standard_Real             TE = VP.EdgeParameter(ShapeIndex);
+  double                         fE, lE;
+  const occ::handle<Geom_Curve>& CE = BRep_Tool::Curve(E, fE, lE);
+  double                         TE = VP.EdgeParameter(ShapeIndex);
 
-  Standard_Real             fR, lR;
-  const Handle(Geom_Curve)& CR = BRep_Tool::Curve(R, fR, lR);
+  double                         fR, lR;
+  const occ::handle<Geom_Curve>& CR = BRep_Tool::Curve(R, fR, lR);
 
   TopOpeBRepDS_Transition Trans;
-  Standard_Boolean        transok = ::FUN_GeomTrans(S, U, V, CE, TE, CR, fR, lR, Trans);
+  bool                    transok = ::FUN_GeomTrans(S, U, V, CE, TE, CR, fR, lR, Trans);
   if (transok)
   {
     // Trans : transition sur R en croisant l'arete E orientee dans la face F

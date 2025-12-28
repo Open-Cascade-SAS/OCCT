@@ -19,14 +19,13 @@
 
 #include <Standard.hxx>
 
-#include <StepVisual_HArray1OfTextOrCharacter.hxx>
+#include <StepVisual_TextOrCharacter.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepVisual_TextOrCharacter;
-
-class StepVisual_CompositeText;
-DEFINE_STANDARD_HANDLE(StepVisual_CompositeText, StepGeom_GeometricRepresentationItem)
 
 class StepVisual_CompositeText : public StepGeom_GeometricRepresentationItem
 {
@@ -35,23 +34,24 @@ public:
   //! Returns a CompositeText
   Standard_EXPORT StepVisual_CompositeText();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&            aName,
-                            const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                        aName,
+    const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText);
 
   Standard_EXPORT void SetCollectedText(
-    const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText);
+    const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfTextOrCharacter) CollectedText() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> CollectedText()
+    const;
 
-  Standard_EXPORT StepVisual_TextOrCharacter CollectedTextValue(const Standard_Integer num) const;
+  Standard_EXPORT StepVisual_TextOrCharacter CollectedTextValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbCollectedText() const;
+  Standard_EXPORT int NbCollectedText() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CompositeText, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(StepVisual_HArray1OfTextOrCharacter) collectedText;
+  occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> collectedText;
 };
 
 #endif // _StepVisual_CompositeText_HeaderFile

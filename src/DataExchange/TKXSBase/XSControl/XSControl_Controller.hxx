@@ -21,10 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Vector.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <NCollection_DataMap.hxx>
@@ -38,9 +40,6 @@ class XSControl_WorkSession;
 class Interface_InterfaceModel;
 class Transfer_FinderProcess;
 class TopoDS_Shape;
-
-class XSControl_Controller;
-DEFINE_STANDARD_HANDLE(XSControl_Controller, Standard_Transient)
 
 //! This class allows a general X-STEP engine to run generic
 //! functions on any interface norm, in the same way. It includes
@@ -63,97 +62,87 @@ public:
   //! Changes names
   //! if a name is empty, the formerly set one remains
   //! Remark : Does not call Record or AutoRecord
-  Standard_EXPORT void SetNames(const Standard_CString theLongName,
-                                const Standard_CString theShortName);
+  Standard_EXPORT void SetNames(const char* theLongName, const char* theShortName);
 
   //! Records <me> is a general dictionary under Short and Long
   //! Names (see method Name)
   void AutoRecord() const
   {
-    Record(Name(Standard_True));
-    Record(Name(Standard_False));
+    Record(Name(true));
+    Record(Name(false));
   }
 
   //! Records <me> in a general dictionary under a name
   //! Error if <name> already used for another one
-  Standard_EXPORT void Record(const Standard_CString name) const;
+  Standard_EXPORT void Record(const char* name) const;
 
   //! Returns the Controller attached to a given name
   //! Returns a Null Handle if <name> is unknown
-  Standard_EXPORT static Handle(XSControl_Controller) Recorded(const Standard_CString name);
+  Standard_EXPORT static occ::handle<XSControl_Controller> Recorded(const char* name);
 
   //! Returns a name, as given when initializing :
   //! rsc = False (D) : True Name attached to the Norm (long name)
   //! rsc = True : Name of the resource set (i.e. short name)
-  Standard_CString Name(const Standard_Boolean rsc = Standard_False) const
+  const char* Name(const bool rsc = false) const
   {
     return (rsc ? myShortName.ToCString() : myLongName.ToCString());
   }
 
   //! Returns the Protocol attached to the Norm (from field)
-  const Handle(Interface_Protocol)& Protocol() const { return myAdaptorProtocol; }
+  const occ::handle<Interface_Protocol>& Protocol() const { return myAdaptorProtocol; }
 
   //! Returns the SignType attached to the norm (from field)
-  // szv:const Handle(IFSelect_Signature) & SignType1() const
+  // szv:const occ::handle<IFSelect_Signature> & SignType1() const
   // szv:{ return mySignType; }
 
   //! Returns the WorkLibrary attached to the Norm. Remark that it
   //! has to be in phase with the Protocol (read from field)
-  const Handle(IFSelect_WorkLibrary)& WorkLibrary() const { return myAdaptorLibrary; }
+  const occ::handle<IFSelect_WorkLibrary>& WorkLibrary() const { return myAdaptorLibrary; }
 
   //! Creates a new empty Model ready to receive data of the Norm
   //! Used to write data from Imagine to an interface file
-  Standard_EXPORT virtual Handle(Interface_InterfaceModel) NewModel() const = 0;
+  Standard_EXPORT virtual occ::handle<Interface_InterfaceModel> NewModel() const = 0;
 
   //! Returns the Actor for Read attached to the pair (norm,appli)
   //! It can be adapted for data of the input Model, as required
   //! Can be read from field then adapted with Model as required
-  Standard_EXPORT virtual Handle(Transfer_ActorOfTransientProcess) ActorRead(
-    const Handle(Interface_InterfaceModel)& model) const;
+  Standard_EXPORT virtual occ::handle<Transfer_ActorOfTransientProcess> ActorRead(
+    const occ::handle<Interface_InterfaceModel>& model) const;
 
   //! Returns the Actor for Write attached to the pair (norm,appli)
   //! Read from field. Can be redefined
-  Standard_EXPORT virtual Handle(Transfer_ActorOfFinderProcess) ActorWrite() const;
+  Standard_EXPORT virtual occ::handle<Transfer_ActorOfFinderProcess> ActorWrite() const;
 
   //! Sets minimum and maximum values for modetrans (write)
   //! Erases formerly recorded bounds and values
   //! Actually only for shape
   //! Then, for each value a little help can be attached
-  Standard_EXPORT void SetModeWrite(const Standard_Integer modemin,
-                                    const Standard_Integer modemax,
-                                    const Standard_Boolean shape = Standard_True);
+  Standard_EXPORT void SetModeWrite(const int modemin, const int modemax, const bool shape = true);
 
   //! Attaches a short line of help to a value of modetrans (write)
-  Standard_EXPORT void SetModeWriteHelp(const Standard_Integer modetrans,
-                                        const Standard_CString help,
-                                        const Standard_Boolean shape = Standard_True);
+  Standard_EXPORT void SetModeWriteHelp(const int   modetrans,
+                                        const char* help,
+                                        const bool  shape = true);
 
   //! Returns recorded min and max values for modetrans (write)
   //! Actually only for shapes
   //! Returns True if bounds are set, False else (then, free value)
-  Standard_EXPORT Standard_Boolean
-    ModeWriteBounds(Standard_Integer&      modemin,
-                    Standard_Integer&      modemax,
-                    const Standard_Boolean shape = Standard_True) const;
+  Standard_EXPORT bool ModeWriteBounds(int& modemin, int& modemax, const bool shape = true) const;
 
   //! Tells if a value of <modetrans> is a good value(within bounds)
   //! Actually only for shapes
-  Standard_EXPORT Standard_Boolean IsModeWrite(const Standard_Integer modetrans,
-                                               const Standard_Boolean shape = Standard_True) const;
+  Standard_EXPORT bool IsModeWrite(const int modetrans, const bool shape = true) const;
 
   //! Returns the help line recorded for a value of modetrans
   //! empty if help not defined or not within bounds or if values are free
-  Standard_EXPORT Standard_CString
-    ModeWriteHelp(const Standard_Integer modetrans,
-                  const Standard_Boolean shape = Standard_True) const;
+  Standard_EXPORT const char* ModeWriteHelp(const int modetrans, const bool shape = true) const;
 
   //! Tells if <obj> (an application object) is a valid candidate
   //! for a transfer to a Model.
   //! By default, asks the ActorWrite if known (through a
   //! TransientMapper). Can be redefined
-  Standard_EXPORT virtual Standard_Boolean RecognizeWriteTransient(
-    const Handle(Standard_Transient)& obj,
-    const Standard_Integer            modetrans = 0) const;
+  Standard_EXPORT virtual bool RecognizeWriteTransient(const occ::handle<Standard_Transient>& obj,
+                                                       const int modetrans = 0) const;
 
   //! Takes one Transient Object and transfers it to an
   //! InterfaceModel (already created, e.g. by NewModel)
@@ -166,17 +155,16 @@ public:
   //! -1 bad conditions ,  -2 bad model or null model
   //! For type of object not recognized : should return 1
   Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteTransient(
-    const Handle(Standard_Transient)&       obj,
-    const Handle(Transfer_FinderProcess)&   FP,
-    const Handle(Interface_InterfaceModel)& model,
-    const Standard_Integer                  modetrans   = 0,
-    const Message_ProgressRange&            theProgress = Message_ProgressRange()) const;
+    const occ::handle<Standard_Transient>&       obj,
+    const occ::handle<Transfer_FinderProcess>&   FP,
+    const occ::handle<Interface_InterfaceModel>& model,
+    const int                                    modetrans   = 0,
+    const Message_ProgressRange&                 theProgress = Message_ProgressRange()) const;
 
   //! Tells if a shape is valid for a transfer to a model
   //! Asks the ActorWrite (through a ShapeMapper)
-  Standard_EXPORT virtual Standard_Boolean RecognizeWriteShape(
-    const TopoDS_Shape&    shape,
-    const Standard_Integer modetrans = 0) const;
+  Standard_EXPORT virtual bool RecognizeWriteShape(const TopoDS_Shape& shape,
+                                                   const int           modetrans = 0) const;
 
   //! Takes one Shape and transfers it to an
   //! InterfaceModel (already created, e.g. by NewModel)
@@ -185,11 +173,11 @@ public:
   //! Done  OK ,  Void : No Result ,  Fail : Fail (e.g. exception)
   //! Error : bad conditions , bad model or null model
   Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape(
-    const TopoDS_Shape&                     shape,
-    const Handle(Transfer_FinderProcess)&   FP,
-    const Handle(Interface_InterfaceModel)& model,
-    const Standard_Integer                  modetrans   = 0,
-    const Message_ProgressRange&            theProgress = Message_ProgressRange()) const;
+    const TopoDS_Shape&                          shape,
+    const occ::handle<Transfer_FinderProcess>&   FP,
+    const occ::handle<Interface_InterfaceModel>& model,
+    const int                                    modetrans   = 0,
+    const Message_ProgressRange&                 theProgress = Message_ProgressRange()) const;
 
   //! Records a Session Item, to be added for customisation of the Work Session.
   //! It must have a specific name.
@@ -199,19 +187,19 @@ public:
   //! Remark : this method is to be called at Create time,
   //! the recorded items will be used by Customise
   //! Warning : if <name> conflicts, the last recorded item is kept
-  Standard_EXPORT void AddSessionItem(const Handle(Standard_Transient)& theItem,
-                                      const Standard_CString            theName,
-                                      const Standard_Boolean            toApply = Standard_False);
+  Standard_EXPORT void AddSessionItem(const occ::handle<Standard_Transient>& theItem,
+                                      const char*                            theName,
+                                      const bool                             toApply = false);
 
   //! Returns an item given its name to record in a Session
   //! If <name> is unknown, returns a Null Handle
-  Standard_EXPORT Handle(Standard_Transient) SessionItem(const Standard_CString theName) const;
+  Standard_EXPORT occ::handle<Standard_Transient> SessionItem(const char* theName) const;
 
   //! Customises a WorkSession, by adding to it the recorded items (by AddSessionItem)
-  Standard_EXPORT virtual void Customise(Handle(XSControl_WorkSession)& WS);
+  Standard_EXPORT virtual void Customise(occ::handle<XSControl_WorkSession>& WS);
 
-  const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& AdaptorSession()
-    const
+  const NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>&
+    AdaptorSession() const
   {
     return myAdaptorSession;
   }
@@ -222,26 +210,25 @@ protected:
   //! Initializing with names
   //! <theLongName>  is for the complete, official, long name
   //! <theShortName> is for the short name used for resources
-  Standard_EXPORT XSControl_Controller(const Standard_CString theLongName,
-                                       const Standard_CString theShortName);
+  Standard_EXPORT XSControl_Controller(const char* theLongName, const char* theShortName);
 
   //! Records the name of a Static to be traced for a given use
-  Standard_EXPORT void TraceStatic(const Standard_CString theName, const Standard_Integer theUse);
+  Standard_EXPORT void TraceStatic(const char* theName, const int theUse);
 
-  TCollection_AsciiString      myShortName;
-  TCollection_AsciiString      myLongName;
-  Handle(IFSelect_WorkLibrary) myAdaptorLibrary;
-  Handle(Interface_Protocol)   myAdaptorProtocol;
-  // szv:Handle(IFSelect_Signature) mySignType;
-  Handle(Transfer_ActorOfTransientProcess)                                 myAdaptorRead;
-  Handle(Transfer_ActorOfFinderProcess)                                    myAdaptorWrite;
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> myAdaptorSession;
+  TCollection_AsciiString           myShortName;
+  TCollection_AsciiString           myLongName;
+  occ::handle<IFSelect_WorkLibrary> myAdaptorLibrary;
+  occ::handle<Interface_Protocol>   myAdaptorProtocol;
+  // szv:occ::handle<IFSelect_Signature> mySignType;
+  occ::handle<Transfer_ActorOfTransientProcess>                                 myAdaptorRead;
+  occ::handle<Transfer_ActorOfFinderProcess>                                    myAdaptorWrite;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> myAdaptorSession;
 
 private:
-  TColStd_SequenceOfTransient                    myAdaptorApplied;
-  NCollection_Vector<Handle(Standard_Transient)> myParams;
-  NCollection_Vector<Standard_Integer>           myParamUses;
-  Handle(Interface_HArray1OfHAsciiString)        myModeWriteShapeN;
+  NCollection_Sequence<occ::handle<Standard_Transient>>                   myAdaptorApplied;
+  NCollection_Vector<occ::handle<Standard_Transient>>                     myParams;
+  NCollection_Vector<int>                                                 myParamUses;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> myModeWriteShapeN;
 };
 
 #endif // _XSControl_Controller_HeaderFile

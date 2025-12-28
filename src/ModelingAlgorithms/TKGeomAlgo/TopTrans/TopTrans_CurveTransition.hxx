@@ -52,7 +52,7 @@ public:
 
   //! Initialize a Transition with the local description
   //! of a Curve.
-  Standard_EXPORT void Reset(const gp_Dir& Tgt, const gp_Dir& Norm, const Standard_Real Curv);
+  Standard_EXPORT void Reset(const gp_Dir& Tgt, const gp_Dir& Norm, const double Curv);
 
   //! Initialize a Transition with the local description of a straight line.
   Standard_EXPORT void Reset(const gp_Dir& Tgt);
@@ -62,10 +62,10 @@ public:
   //! else if Or is FORWARD the curv is after the
   //! intersection and if Or is INTERNAL the
   //! intersection is in the middle of the curv.
-  Standard_EXPORT void Compare(const Standard_Real      Tole,
+  Standard_EXPORT void Compare(const double             Tole,
                                const gp_Dir&            Tang,
                                const gp_Dir&            Norm,
-                               const Standard_Real      Curv,
+                               const double             Curv,
                                const TopAbs_Orientation S,
                                const TopAbs_Orientation Or);
 
@@ -81,33 +81,30 @@ public:
   //! on the positive side of the tangent.
   Standard_EXPORT TopAbs_State StateAfter() const;
 
-protected:
 private:
   //! Compare two curvature and return true if N1,C1 is
   //! before N2,C2 in the edge orientation
-  Standard_EXPORT Standard_Boolean IsBefore(const Standard_Real Tole,
-                                            const Standard_Real Angl,
-                                            const gp_Dir&       Nor1,
-                                            const Standard_Real Cur1,
-                                            const gp_Dir&       Nor2,
-                                            const Standard_Real Cur2) const;
+  Standard_EXPORT bool IsBefore(const double  Tole,
+                                const double  Angl,
+                                const gp_Dir& Nor1,
+                                const double  Cur1,
+                                const gp_Dir& Nor2,
+                                const double  Cur2) const;
 
   //! Compare two angles at tolerance Tole
-  Standard_EXPORT Standard_Integer Compare(const Standard_Real Ang1,
-                                           const Standard_Real Ang2,
-                                           const Standard_Real Tole) const;
+  Standard_EXPORT int Compare(const double Ang1, const double Ang2, const double Tole) const;
 
   gp_Dir             myTgt;
   gp_Dir             myNorm;
-  Standard_Real      myCurv;
-  Standard_Boolean   Init;
+  double             myCurv;
+  bool               Init;
   gp_Dir             TgtFirst;
   gp_Dir             NormFirst;
-  Standard_Real      CurvFirst;
+  double             CurvFirst;
   TopAbs_Orientation TranFirst;
   gp_Dir             TgtLast;
   gp_Dir             NormLast;
-  Standard_Real      CurvLast;
+  double             CurvLast;
   TopAbs_Orientation TranLast;
 };
 

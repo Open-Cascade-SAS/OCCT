@@ -24,22 +24,22 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_Integer.hxx>
 
 //=================================================================================================
 
 BRepFill_ApproxSeewing::BRepFill_ApproxSeewing()
-    : myIsDone(Standard_False)
+    : myIsDone(false)
 {
 }
 
 //=================================================================================================
 
 BRepFill_ApproxSeewing::BRepFill_ApproxSeewing(const BRepFill_MultiLine& ML)
-    : myIsDone(Standard_False)
+    : myIsDone(false)
 {
   Perform(ML);
 }
@@ -51,15 +51,15 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
   myML = ML;
 
   // evaluate the approximative length of the 3dCurve
-  Standard_Integer i;
-  Standard_Real    Length   = 0.;
-  Standard_Real    U1       = myML.FirstParameter();
-  Standard_Real    U2       = myML.LastParameter();
-  Standard_Integer NbPoints = 50;
-  Standard_Real    Dist, dU = (U2 - U1) / (2 * NbPoints - 1);
+  int    i;
+  double Length   = 0.;
+  double U1       = myML.FirstParameter();
+  double U2       = myML.LastParameter();
+  int    NbPoints = 50;
+  double Dist, dU = (U2 - U1) / (2 * NbPoints - 1);
 
-  TColgp_Array1OfPnt2d LP(1, 2 * NbPoints); // tableau Longueur <-> Param
-  gp_Pnt               aPnt1, aPnt2;
+  NCollection_Array1<gp_Pnt2d> LP(1, 2 * NbPoints); // tableau Longueur <-> Param
+  gp_Pnt                       aPnt1, aPnt2;
   aPnt1 = myML.Value(U1);
 
   for (i = 0; i < 2 * NbPoints; i++)
@@ -93,10 +93,10 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
             << std::endl;
 #endif
 
-  Standard_Real    DCorde = Length / (NbPoints - 1);
-  Standard_Real    Corde  = DCorde;
-  Standard_Integer Index  = 1;
-  Standard_Real    U, Alpha;
+  double DCorde = Length / (NbPoints - 1);
+  double Corde  = DCorde;
+  int    Index  = 1;
+  double U, Alpha;
   for (i = 2; i < NbPoints; i++)
   {
     while (LP(Index).X() < Corde)
@@ -133,8 +133,8 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
 
   AppDef_Compute Fit(MLS);
 
-  Standard_Integer NbCurves = Fit.NbMultiCurves();
-  //  Standard_Integer MaxDeg = 0;
+  int NbCurves = Fit.NbMultiCurves();
+  //  int MaxDeg = 0;
 
   if (NbCurves == 0)
   {
@@ -142,17 +142,17 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
     std::cout << " TrimSurfaceTool : Approx echoue, on met les polygones" << std::endl;
 #endif
 
-    TColStd_Array1OfReal    Knots(1, NbPoints);
-    TColStd_Array1OfInteger Mults(1, NbPoints);
+    NCollection_Array1<double> Knots(1, NbPoints);
+    NCollection_Array1<int>    Mults(1, NbPoints);
     Mults.Init(1);
     Mults(1) = Mults(NbPoints) = 2;
-    TColgp_Array1OfPnt   P(1, NbPoints);
-    TColgp_Array1OfPnt2d P1(1, NbPoints);
-    TColgp_Array1OfPnt2d P2(1, NbPoints);
+    NCollection_Array1<gp_Pnt>   P(1, NbPoints);
+    NCollection_Array1<gp_Pnt2d> P1(1, NbPoints);
+    NCollection_Array1<gp_Pnt2d> P2(1, NbPoints);
 
-    Standard_Real               Uf   = ML.FirstParameter();
-    Standard_Real               Ul   = ML.LastParameter();
-    Standard_Real               dUlf = (Ul - Uf) / (NbPoints - 1);
+    double                      Uf   = ML.FirstParameter();
+    double                      Ul   = ML.LastParameter();
+    double                      dUlf = (Ul - Uf) / (NbPoints - 1);
     AppDef_MultiPointConstraint MPC;
     for (i = 1; i <= NbPoints - 1; i++)
     {
@@ -174,7 +174,7 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
     myPCurve1 = new Geom2d_BSplineCurve(P1, Knots, Mults, 1);
     myPCurve2 = new Geom2d_BSplineCurve(P2, Knots, Mults, 1);
 
-    myIsDone = Standard_True;
+    myIsDone = true;
 
     return;
   }
@@ -182,61 +182,61 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
   // Les approx sont a priori OK.
 
   const AppParCurves_MultiBSpCurve& MBSp    = Fit.SplineValue();
-  Standard_Integer                  NbPoles = MBSp.NbPoles();
-  TColgp_Array1OfPnt                Poles(1, NbPoles);
-  TColgp_Array1OfPnt2d              Poles2d1(1, NbPoles);
-  TColgp_Array1OfPnt2d              Poles2d2(1, NbPoles);
+  int                               NbPoles = MBSp.NbPoles();
+  NCollection_Array1<gp_Pnt>        Poles(1, NbPoles);
+  NCollection_Array1<gp_Pnt2d>      Poles2d1(1, NbPoles);
+  NCollection_Array1<gp_Pnt2d>      Poles2d2(1, NbPoles);
 
   MBSp.Curve(1, Poles);
   MBSp.Curve(2, Poles2d1);
   MBSp.Curve(3, Poles2d2);
 
-  const TColStd_Array1OfReal&    Knots  = MBSp.Knots();
-  const TColStd_Array1OfInteger& Mults  = MBSp.Multiplicities();
-  Standard_Integer               Degree = MBSp.Degree();
+  const NCollection_Array1<double>& Knots  = MBSp.Knots();
+  const NCollection_Array1<int>&    Mults  = MBSp.Multiplicities();
+  int                               Degree = MBSp.Degree();
 
   myCurve   = new Geom_BSplineCurve(Poles, Knots, Mults, Degree);
   myPCurve1 = new Geom2d_BSplineCurve(Poles2d1, Knots, Mults, Degree);
   myPCurve2 = new Geom2d_BSplineCurve(Poles2d2, Knots, Mults, Degree);
 
-  myIsDone = Standard_True;
+  myIsDone = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_ApproxSeewing::IsDone() const
+bool BRepFill_ApproxSeewing::IsDone() const
 {
   return myIsDone;
 }
 
 //=======================================================================
-// function : Handle(Geom_Curve)&
+// function : occ::handle<Geom_Curve>&
 // purpose  :
 //=======================================================================
 
-const Handle(Geom_Curve)& BRepFill_ApproxSeewing::Curve() const
+const occ::handle<Geom_Curve>& BRepFill_ApproxSeewing::Curve() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "BRepFill_ApproxSeewing::Curve");
   return myCurve;
 }
 
 //=======================================================================
-// function : Handle(Geom2d_Curve)&
+// function : occ::handle<Geom2d_Curve>&
 // purpose  :
 //=======================================================================
 
-const Handle(Geom2d_Curve)& BRepFill_ApproxSeewing::CurveOnF1() const
+const occ::handle<Geom2d_Curve>& BRepFill_ApproxSeewing::CurveOnF1() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "BRepFill_ApproxSeewing::CurveOnF1");
   return myPCurve1;
 }
 
 //=======================================================================
-// function : Handle(Geom2d_Curve)&
+// function : occ::handle<Geom2d_Curve>&
 // purpose  :
 //=======================================================================
 
-const Handle(Geom2d_Curve)& BRepFill_ApproxSeewing::CurveOnF2() const
+const occ::handle<Geom2d_Curve>& BRepFill_ApproxSeewing::CurveOnF2() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "BRepFill_ApproxSeewing::CurveOnF2");
   return myPCurve2;

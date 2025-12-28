@@ -42,7 +42,7 @@ public:
   //! @param thePoint   the solution point
   //! @param theSolType the type of solution
   //! @param theVertex  and the Vertex
-  BRepExtrema_SolutionElem(const Standard_Real           theDist,
+  BRepExtrema_SolutionElem(const double                  theDist,
                            const gp_Pnt&                 thePoint,
                            const BRepExtrema_SupportType theSolType,
                            const TopoDS_Vertex&          theVertex)
@@ -62,11 +62,11 @@ public:
   //! @param theSolType the type of solution
   //! @param theEdge    the Edge
   //! @param theParam   the parameter to locate the solution
-  BRepExtrema_SolutionElem(const Standard_Real           theDist,
+  BRepExtrema_SolutionElem(const double                  theDist,
                            const gp_Pnt&                 thePoint,
                            const BRepExtrema_SupportType theSolType,
                            const TopoDS_Edge&            theEdge,
-                           const Standard_Real           theParam)
+                           const double                  theParam)
       : myDist(theDist),
         myPoint(thePoint),
         mySupType(theSolType),
@@ -84,12 +84,12 @@ public:
   //! @param theFace    the Face
   //! @param theU       U parameter to locate the solution
   //! @param theV       V parameter to locate the solution
-  BRepExtrema_SolutionElem(const Standard_Real           theDist,
+  BRepExtrema_SolutionElem(const double                  theDist,
                            const gp_Pnt&                 thePoint,
                            const BRepExtrema_SupportType theSolType,
                            const TopoDS_Face&            theFace,
-                           const Standard_Real           theU,
-                           const Standard_Real           theV)
+                           const double                  theU,
+                           const double                  theV)
       : myDist(theDist),
         myPoint(thePoint),
         mySupType(theSolType),
@@ -100,7 +100,7 @@ public:
   }
 
   //! Returns the value of the minimum distance.
-  Standard_Real Dist() const { return myDist; }
+  double Dist() const { return myDist; }
 
   //! Returns the solution point.
   const gp_Pnt& Point() const { return myPoint; }
@@ -121,24 +121,24 @@ public:
   const TopoDS_Face& Face() const { return myFace; }
 
   //! Returns the parameter value if the solution is on Edge.
-  void EdgeParameter(Standard_Real& theParam) const { theParam = myPar1; }
+  void EdgeParameter(double& theParam) const { theParam = myPar1; }
 
   //! Returns the parameters U and V if the solution is in a Face.
-  void FaceParameter(Standard_Real& theU, Standard_Real& theV) const
+  void FaceParameter(double& theU, double& theV) const
   {
     theU = myPar1;
     theV = myPar2;
   }
 
 private:
-  Standard_Real           myDist;
+  double                  myDist;
   gp_Pnt                  myPoint;
   BRepExtrema_SupportType mySupType;
   TopoDS_Vertex           myVertex;
   TopoDS_Edge             myEdge;
   TopoDS_Face             myFace;
-  Standard_Real           myPar1;
-  Standard_Real           myPar2;
+  double                  myPar1;
+  double                  myPar2;
 };
 
 #endif

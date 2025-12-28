@@ -24,9 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Dir;
 
-class IGESSolid_SolidOfLinearExtrusion;
-DEFINE_STANDARD_HANDLE(IGESSolid_SolidOfLinearExtrusion, IGESData_IGESEntity)
-
 //! defines SolidOfLinearExtrusion, Type <164> Form Number <0>
 //! in package IGESSolid
 //! Solid of linear extrusion is defined by translating an
@@ -43,15 +40,15 @@ public:
   //! - aLength    : the length of extrusion
   //! - aDirection : the vector specifying the direction of extrusion
   //! default (0,0,1)
-  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)& aCurve,
-                            const Standard_Real                aLength,
-                            const gp_XYZ&                      aDirection);
+  Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>& aCurve,
+                            const double                            aLength,
+                            const gp_XYZ&                           aDirection);
 
   //! returns the planar curve that is to be translated
-  Standard_EXPORT Handle(IGESData_IGESEntity) Curve() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Curve() const;
 
   //! returns the Extrusion Length
-  Standard_EXPORT Standard_Real ExtrusionLength() const;
+  Standard_EXPORT double ExtrusionLength() const;
 
   //! returns the Extrusion direction
   Standard_EXPORT gp_Dir ExtrusionDirection() const;
@@ -61,11 +58,10 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidOfLinearExtrusion, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_IGESEntity) theCurve;
-  Standard_Real               theLength;
-  gp_XYZ                      theDirection;
+  occ::handle<IGESData_IGESEntity> theCurve;
+  double                           theLength;
+  gp_XYZ                           theDirection;
 };
 
 #endif // _IGESSolid_SolidOfLinearExtrusion_HeaderFile

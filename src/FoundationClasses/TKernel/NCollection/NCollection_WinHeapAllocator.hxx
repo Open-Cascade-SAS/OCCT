@@ -41,13 +41,13 @@ public:
   Standard_EXPORT virtual ~NCollection_WinHeapAllocator();
 
   //! Allocate memory
-  Standard_EXPORT virtual void* Allocate(const Standard_Size theSize) Standard_OVERRIDE;
+  Standard_EXPORT virtual void* Allocate(const size_t theSize) override;
 
   //! Allocate memory
-  void* AllocateOptimal(const Standard_Size theSize) Standard_OVERRIDE { return Allocate(theSize); }
+  void* AllocateOptimal(const size_t theSize) override { return Allocate(theSize); }
 
   //! Release memory
-  Standard_EXPORT virtual void Free(void* theAddress) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Free(void* theAddress) override;
 
   // Declaration of CASCADE RTTI
   DEFINE_STANDARD_RTTIEXT(NCollection_WinHeapAllocator, NCollection_BaseAllocator)
@@ -60,10 +60,8 @@ private:
 #if (defined(_WIN32) || defined(__WIN32__))
   void* myHeapH;
 #endif
-  Standard_Boolean myToZeroMemory;
+  bool myToZeroMemory;
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(NCollection_WinHeapAllocator, NCollection_BaseAllocator)
-
 #endif // NCollection_WinHeapAllocator_HeaderFile

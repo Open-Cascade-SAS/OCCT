@@ -27,9 +27,6 @@ class Interface_GeneralLib;
 class Interface_Protocol;
 class Interface_GTool;
 
-class Interface_HGraph;
-DEFINE_STANDARD_HANDLE(Interface_HGraph, Standard_Transient)
-
 //! This class allows to store a redefinable Graph, via a Handle
 //! (useful for an Object which can work on several successive
 //! Models, with the same general conditions)
@@ -42,25 +39,25 @@ public:
   Standard_EXPORT Interface_HGraph(const Interface_Graph& agraph);
 
   //! Creates an HGraph with a Graph created from <amodel> and <lib>
-  Standard_EXPORT Interface_HGraph(const Handle(Interface_InterfaceModel)& amodel,
-                                   const Interface_GeneralLib&             lib,
-                                   const Standard_Boolean theModeStats = Standard_True);
+  Standard_EXPORT Interface_HGraph(const occ::handle<Interface_InterfaceModel>& amodel,
+                                   const Interface_GeneralLib&                  lib,
+                                   const bool theModeStats = true);
 
   //! Creates an HGraph with a graph itself created from <amodel>
   //! and <protocol>
-  Standard_EXPORT Interface_HGraph(const Handle(Interface_InterfaceModel)& amodel,
-                                   const Handle(Interface_Protocol)&       protocol,
-                                   const Standard_Boolean theModeStats = Standard_True);
+  Standard_EXPORT Interface_HGraph(const occ::handle<Interface_InterfaceModel>& amodel,
+                                   const occ::handle<Interface_Protocol>&       protocol,
+                                   const bool theModeStats = true);
 
   //! Creates an HGraph with a graph itself created from <amodel>
   //! and <protocol>
-  Standard_EXPORT Interface_HGraph(const Handle(Interface_InterfaceModel)& amodel,
-                                   const Handle(Interface_GTool)&          gtool,
-                                   const Standard_Boolean theModeStats = Standard_True);
+  Standard_EXPORT Interface_HGraph(const occ::handle<Interface_InterfaceModel>& amodel,
+                                   const occ::handle<Interface_GTool>&          gtool,
+                                   const bool theModeStats = true);
 
   //! Same a above, but works with the GTool in the model
-  Standard_EXPORT Interface_HGraph(const Handle(Interface_InterfaceModel)& amodel,
-                                   const Standard_Boolean theModeStats = Standard_True);
+  Standard_EXPORT Interface_HGraph(const occ::handle<Interface_InterfaceModel>& amodel,
+                                   const bool theModeStats = true);
 
   //! Returns the Graph contained in <me>, for Read Only Operations
   //! Remark that it is returns as "const &"
@@ -74,7 +71,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Interface_HGraph, Standard_Transient)
 
-protected:
 private:
   Interface_Graph thegraph;
 };

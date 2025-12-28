@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <StepDimTol_DatumReferenceModifier.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 #include <StepDimTol_SimpleDatumReferenceModifierMember.hxx>
 
@@ -24,8 +24,7 @@ StepDimTol_DatumReferenceModifier::StepDimTol_DatumReferenceModifier() {}
 
 //=================================================================================================
 
-Standard_Integer StepDimTol_DatumReferenceModifier::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepDimTol_DatumReferenceModifier::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -36,13 +35,13 @@ Standard_Integer StepDimTol_DatumReferenceModifier::CaseNum(
   return 0;
 }
 
-Handle(StepDimTol_DatumReferenceModifierWithValue) StepDimTol_DatumReferenceModifier::
+occ::handle<StepDimTol_DatumReferenceModifierWithValue> StepDimTol_DatumReferenceModifier::
   DatumReferenceModifierWithValue() const
 {
   return GetCasted(StepDimTol_DatumReferenceModifierWithValue, Value());
 }
 
-Handle(StepDimTol_SimpleDatumReferenceModifierMember) StepDimTol_DatumReferenceModifier::
+occ::handle<StepDimTol_SimpleDatumReferenceModifierMember> StepDimTol_DatumReferenceModifier::
   SimpleDatumReferenceModifierMember() const
 {
   return GetCasted(StepDimTol_SimpleDatumReferenceModifierMember, Value());

@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepBasic_SecurityClassificationLevel;
 
-class StepBasic_SecurityClassification;
-DEFINE_STANDARD_HANDLE(StepBasic_SecurityClassification, Standard_Transient)
-
 class StepBasic_SecurityClassification : public Standard_Transient
 {
 
@@ -34,30 +31,30 @@ public:
   //! Returns a SecurityClassification
   Standard_EXPORT StepBasic_SecurityClassification();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&              aName,
-                            const Handle(TCollection_HAsciiString)&              aPurpose,
-                            const Handle(StepBasic_SecurityClassificationLevel)& aSecurityLevel);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&              aName,
+    const occ::handle<TCollection_HAsciiString>&              aPurpose,
+    const occ::handle<StepBasic_SecurityClassificationLevel>& aSecurityLevel);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetPurpose(const Handle(TCollection_HAsciiString)& aPurpose);
+  Standard_EXPORT void SetPurpose(const occ::handle<TCollection_HAsciiString>& aPurpose);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Purpose() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Purpose() const;
 
   Standard_EXPORT void SetSecurityLevel(
-    const Handle(StepBasic_SecurityClassificationLevel)& aSecurityLevel);
+    const occ::handle<StepBasic_SecurityClassificationLevel>& aSecurityLevel);
 
-  Standard_EXPORT Handle(StepBasic_SecurityClassificationLevel) SecurityLevel() const;
+  Standard_EXPORT occ::handle<StepBasic_SecurityClassificationLevel> SecurityLevel() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SecurityClassification, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)              name;
-  Handle(TCollection_HAsciiString)              purpose;
-  Handle(StepBasic_SecurityClassificationLevel) securityLevel;
+  occ::handle<TCollection_HAsciiString>              name;
+  occ::handle<TCollection_HAsciiString>              purpose;
+  occ::handle<StepBasic_SecurityClassificationLevel> securityLevel;
 };
 
 #endif // _StepBasic_SecurityClassification_HeaderFile

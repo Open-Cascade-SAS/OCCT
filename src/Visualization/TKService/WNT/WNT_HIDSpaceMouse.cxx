@@ -148,9 +148,9 @@ static SpaceVKey hidToSpaceKey(unsigned long theProductId, unsigned short theKey
 
 //=================================================================================================
 
-WNT_HIDSpaceMouse::WNT_HIDSpaceMouse(unsigned long        theProductId,
-                                     const Standard_Byte* theData,
-                                     Standard_Size        theSize)
+WNT_HIDSpaceMouse::WNT_HIDSpaceMouse(unsigned long  theProductId,
+                                     const uint8_t* theData,
+                                     size_t         theSize)
     : myData(theData),
       mySize(theSize),
       myProductId(theProductId),
@@ -184,17 +184,17 @@ bool WNT_HIDSpaceMouse::IsKnownProduct(unsigned long theProductId)
 
 //=================================================================================================
 
-Graphic3d_Vec3d WNT_HIDSpaceMouse::Translation(bool& theIsIdle, bool theIsQuadric) const
+NCollection_Vec3<double> WNT_HIDSpaceMouse::Translation(bool& theIsIdle, bool theIsQuadric) const
 {
   theIsIdle = true;
   return myData[0] == SpaceRawInput_Translation && (mySize == 7 || mySize == 13)
            ? fromRawVec3(theIsIdle, myData + 1, true, theIsQuadric)
-           : Graphic3d_Vec3d();
+           : NCollection_Vec3<double>();
 }
 
 //=================================================================================================
 
-Graphic3d_Vec3d WNT_HIDSpaceMouse::Rotation(bool& theIsIdle, bool theIsQuadric) const
+NCollection_Vec3<double> WNT_HIDSpaceMouse::Rotation(bool& theIsIdle, bool theIsQuadric) const
 {
   theIsIdle = true;
   if (myData[0] == SpaceRawInput_Rotation && mySize == 7)
@@ -205,20 +205,20 @@ Graphic3d_Vec3d WNT_HIDSpaceMouse::Rotation(bool& theIsIdle, bool theIsQuadric) 
   {
     return fromRawVec3(theIsIdle, myData + 7, false, theIsQuadric);
   }
-  return Graphic3d_Vec3d();
+  return NCollection_Vec3<double>();
 }
 
 //=================================================================================================
 
-Graphic3d_Vec3d WNT_HIDSpaceMouse::fromRawVec3(bool&                theIsIdle,
-                                               const Standard_Byte* theData,
-                                               bool                 theIsTrans,
-                                               bool                 theIsQuadric) const
+NCollection_Vec3<double> WNT_HIDSpaceMouse::fromRawVec3(bool&          theIsIdle,
+                                                        const uint8_t* theData,
+                                                        bool           theIsTrans,
+                                                        bool           theIsQuadric) const
 {
   theIsIdle = true;
   const NCollection_Vec3<int16_t>& aRaw16 =
     *reinterpret_cast<const NCollection_Vec3<int16_t>*>(theData);
-  Graphic3d_Vec3d aVec(aRaw16.x(), aRaw16.y(), aRaw16.z());
+  NCollection_Vec3<double> aVec(aRaw16.x(), aRaw16.y(), aRaw16.z());
   if (theIsTrans)
   {
     static const int16_t THE_MIN_RAW_TRANS   = 4;

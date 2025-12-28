@@ -16,7 +16,8 @@
 
 #include <GProp_GProps.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 
 class Poly_Triangulation;
 class TopLoc_Location;
@@ -52,25 +53,25 @@ public:
   //! over triangle surfaces using Gauss cubature formulas.
   //! Depending on the mesh object type used in constructor this method can
   //! calculate the surface or volume properties of the mesh.
-  Standard_EXPORT void Perform(const Handle(Poly_Triangulation)& theMesh,
-                               const TopLoc_Location&            theLoc,
-                               const TopAbs_Orientation          theOri);
+  Standard_EXPORT void Perform(const occ::handle<Poly_Triangulation>& theMesh,
+                               const TopLoc_Location&                 theLoc,
+                               const TopAbs_Orientation               theOri);
 
-  Standard_EXPORT void Perform(const Handle(Poly_Triangulation)& theMesh,
-                               const TopAbs_Orientation          theOri);
+  Standard_EXPORT void Perform(const occ::handle<Poly_Triangulation>& theMesh,
+                               const TopAbs_Orientation               theOri);
 
   //! Computes the global properties of triangle {p1, p2, p3} relatively
   //! point Apex
   //! If isVolume = true, volume properties are calculated
   //! otherwise - surface ones
-  Standard_EXPORT static void CalculateProps(const gp_Pnt&          p1,
-                                             const gp_Pnt&          p2,
-                                             const gp_Pnt&          p3,
-                                             const gp_Pnt&          Apex,
-                                             const Standard_Boolean isVolume,
-                                             Standard_Real          GProps[10],
-                                             const Standard_Integer NbGaussPoints,
-                                             const Standard_Real*   GaussPnts);
+  Standard_EXPORT static void CalculateProps(const gp_Pnt& p1,
+                                             const gp_Pnt& p2,
+                                             const gp_Pnt& p3,
+                                             const gp_Pnt& Apex,
+                                             const bool    isVolume,
+                                             double        GProps[10],
+                                             const int     NbGaussPoints,
+                                             const double* GaussPnts);
 
   //! Get type of mesh object
   BRepGProp_MeshObjType GetMeshObjType() const { return myType; }

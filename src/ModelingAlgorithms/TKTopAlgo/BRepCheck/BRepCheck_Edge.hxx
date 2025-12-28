@@ -25,26 +25,23 @@ class BRep_CurveRepresentation;
 class TopoDS_Edge;
 class TopoDS_Shape;
 
-class BRepCheck_Edge;
-DEFINE_STANDARD_HANDLE(BRepCheck_Edge, BRepCheck_Result)
-
 class BRepCheck_Edge : public BRepCheck_Result
 {
 
 public:
   Standard_EXPORT BRepCheck_Edge(const TopoDS_Edge& E);
 
-  Standard_EXPORT void InContext(const TopoDS_Shape& ContextShape) Standard_OVERRIDE;
+  Standard_EXPORT void InContext(const TopoDS_Shape& ContextShape) override;
 
-  Standard_EXPORT void Minimum() Standard_OVERRIDE;
+  Standard_EXPORT void Minimum() override;
 
-  Standard_EXPORT void Blind() Standard_OVERRIDE;
+  Standard_EXPORT void Blind() override;
 
-  Standard_EXPORT Standard_Boolean GeometricControls() const;
+  Standard_EXPORT bool GeometricControls() const;
 
-  Standard_EXPORT void GeometricControls(const Standard_Boolean B);
+  Standard_EXPORT void GeometricControls(const bool B);
 
-  Standard_EXPORT Standard_Real Tolerance();
+  Standard_EXPORT double Tolerance();
 
   //! Sets status of Edge;
   Standard_EXPORT void SetStatus(const BRepCheck_Status theStatus);
@@ -54,10 +51,10 @@ public:
   //! BRepLib_CheckCurveOnSurface class (if theIsExact is true, slowly, but more correctly).
   //! Exact method is used only when edge is SameParameter.
   //! Default method is calculating in finite number of points
-  void SetExactMethod(Standard_Boolean theIsExact) { myIsExactMethod = theIsExact; }
+  void SetExactMethod(bool theIsExact) { myIsExactMethod = theIsExact; }
 
   //! Returns true if exact method selected
-  Standard_Boolean IsExactMethod() { return myIsExactMethod; }
+  bool IsExactMethod() { return myIsExactMethod; }
 
   //! Checks, if polygon on triangulation of heEdge
   //! is out of 3D-curve of this edge.
@@ -66,10 +63,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepCheck_Edge, BRepCheck_Result)
 
 private:
-  Handle(BRep_CurveRepresentation) myCref;
-  Handle(Adaptor3d_Curve)          myHCurve;
-  Standard_Boolean                 myGctrl;
-  Standard_Boolean                 myIsExactMethod;
+  occ::handle<BRep_CurveRepresentation> myCref;
+  occ::handle<Adaptor3d_Curve>          myHCurve;
+  bool                                  myGctrl;
+  bool                                  myIsExactMethod;
 };
 
 #endif // _BRepCheck_Edge_HeaderFile

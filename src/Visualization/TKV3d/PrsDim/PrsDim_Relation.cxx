@@ -52,26 +52,26 @@ PrsDim_Relation::PrsDim_Relation(const PrsMgr_TypeOfPresentation3d aTypeOfPresen
       myVal(1.),
       myPosition(0., 0., 0.),
       myArrowSize(myVal / 10.),
-      myAutomaticPosition(Standard_True),
+      myAutomaticPosition(true),
       myExtShape(0),
       myFirstOffset(0.),
       mySecondOffset(0.),
-      myIsSetBndBox(Standard_False),
-      myArrowSizeIsDefined(Standard_False)
+      myIsSetBndBox(false),
+      myArrowSizeIsDefined(false)
 {
 }
 
 //=================================================================================================
 
-void PrsDim_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentation)& aPrs,
-                                                  const TopoDS_Edge&                anEdge,
-                                                  const Handle(Geom_Curve)&         ProjCurv,
-                                                  const gp_Pnt&                     FirstP,
-                                                  const gp_Pnt&                     LastP,
-                                                  const Quantity_NameOfColor        aColor,
-                                                  const Standard_Real               width,
-                                                  const Aspect_TypeOfLine           aProjTOL,
-                                                  const Aspect_TypeOfLine           aCallTOL) const
+void PrsDim_Relation::ComputeProjEdgePresentation(const occ::handle<Prs3d_Presentation>& aPrs,
+                                                  const TopoDS_Edge&                     anEdge,
+                                                  const occ::handle<Geom_Curve>&         ProjCurv,
+                                                  const gp_Pnt&                          FirstP,
+                                                  const gp_Pnt&                          LastP,
+                                                  const Quantity_NameOfColor             aColor,
+                                                  const double                           width,
+                                                  const Aspect_TypeOfLine                aProjTOL,
+                                                  const Aspect_TypeOfLine aCallTOL) const
 {
   if (!myDrawer->HasOwnWireAspect())
   {
@@ -79,16 +79,16 @@ void PrsDim_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentatio
   }
   else
   {
-    const Handle(Prs3d_LineAspect)& li = myDrawer->WireAspect();
+    const occ::handle<Prs3d_LineAspect>& li = myDrawer->WireAspect();
     li->SetColor(aColor);
     li->SetTypeOfLine(aProjTOL);
     li->SetWidth(width);
   }
 
-  Standard_Real      pf, pl;
-  TopLoc_Location    loc;
-  Handle(Geom_Curve) curve;
-  Standard_Boolean   isInfinite;
+  double                  pf, pl;
+  TopLoc_Location         loc;
+  occ::handle<Geom_Curve> curve;
+  bool                    isInfinite;
   curve      = BRep_Tool::Curve(anEdge, loc, pf, pl);
   isInfinite = (Precision::IsInfinite(pf) || Precision::IsInfinite(pl));
 
@@ -97,7 +97,7 @@ void PrsDim_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentatio
   // Calcul de la presentation de l'edge
   if (ProjCurv->IsInstance(STANDARD_TYPE(Geom_Line)))
   {
-    Handle(Geom_Line) gl(Handle(Geom_Line)::DownCast(ProjCurv));
+    occ::handle<Geom_Line> gl(occ::down_cast<Geom_Line>(ProjCurv));
     if (!isInfinite)
     {
       pf = ElCLib::Parameter(gl->Lin(), FirstP);
@@ -113,7 +113,7 @@ void PrsDim_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentatio
   }
   else if (ProjCurv->IsInstance(STANDARD_TYPE(Geom_Circle)))
   {
-    Handle(Geom_Circle) gc(Handle(Geom_Circle)::DownCast(ProjCurv));
+    occ::handle<Geom_Circle> gc(occ::down_cast<Geom_Circle>(ProjCurv));
     pf = ElCLib::Parameter(gc->Circ(), FirstP);
     pl = ElCLib::Parameter(gc->Circ(), LastP);
     BRepBuilderAPI_MakeEdge MakEd(gc->Circ(), pf, pl);
@@ -159,13 +159,13 @@ void PrsDim_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentatio
 
 //=================================================================================================
 
-void PrsDim_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation)& aPrs,
-                                                    const TopoDS_Vertex&              aVertex,
-                                                    const gp_Pnt&                     ProjPoint,
-                                                    const Quantity_NameOfColor        aColor,
-                                                    const Standard_Real               width,
-                                                    const Aspect_TypeOfMarker         aProjTOM,
-                                                    const Aspect_TypeOfLine aCallTOL) const
+void PrsDim_Relation::ComputeProjVertexPresentation(const occ::handle<Prs3d_Presentation>& aPrs,
+                                                    const TopoDS_Vertex&                   aVertex,
+                                                    const gp_Pnt&              ProjPoint,
+                                                    const Quantity_NameOfColor aColor,
+                                                    const double               width,
+                                                    const Aspect_TypeOfMarker  aProjTOM,
+                                                    const Aspect_TypeOfLine    aCallTOL) const
 {
   if (!myDrawer->HasOwnPointAspect())
   {
@@ -173,14 +173,14 @@ void PrsDim_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentat
   }
   else
   {
-    const Handle(Prs3d_PointAspect)& pa = myDrawer->PointAspect();
+    const occ::handle<Prs3d_PointAspect>& pa = myDrawer->PointAspect();
     pa->SetColor(aColor);
     pa->SetTypeOfMarker(aProjTOM);
   }
 
   {
-    Handle(Graphic3d_Group)         aGroup          = aPrs->NewGroup();
-    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
+    occ::handle<Graphic3d_Group>         aGroup          = aPrs->NewGroup();
+    occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
     anArrayOfPoints->AddVertex(ProjPoint);
     aGroup->SetGroupPrimitivesAspect(myDrawer->PointAspect()->Aspect());
     aGroup->AddPrimitiveArray(anArrayOfPoints);
@@ -192,7 +192,7 @@ void PrsDim_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentat
   }
   else
   {
-    const Handle(Prs3d_LineAspect)& li = myDrawer->WireAspect();
+    const occ::handle<Prs3d_LineAspect>& li = myDrawer->WireAspect();
     li->SetColor(aColor);
     li->SetTypeOfLine(aCallTOL);
     li->SetWidth(width);
@@ -201,8 +201,8 @@ void PrsDim_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentat
   // Si les points ne sont pas confondus...
   if (!ProjPoint.IsEqual(BRep_Tool::Pnt(aVertex), Precision::Confusion()))
   {
-    Handle(Graphic3d_Group)           aGroup         = aPrs->NewGroup();
-    Handle(Graphic3d_ArrayOfSegments) anArrayOfLines = new Graphic3d_ArrayOfSegments(2);
+    occ::handle<Graphic3d_Group>           aGroup         = aPrs->NewGroup();
+    occ::handle<Graphic3d_ArrayOfSegments> anArrayOfLines = new Graphic3d_ArrayOfSegments(2);
     anArrayOfLines->AddVertex(ProjPoint);
     anArrayOfLines->AddVertex(BRep_Tool::Pnt(aVertex));
     aGroup->SetGroupPrimitivesAspect(myDrawer->WireAspect()->Aspect());
@@ -219,14 +219,13 @@ void PrsDim_Relation::SetColor(const Quantity_Color& aCol)
 
   if (!myDrawer->HasOwnTextAspect())
     myDrawer->SetTextAspect(new Prs3d_TextAspect());
-  hasOwnColor = Standard_True;
+  hasOwnColor = true;
   myDrawer->SetColor(aCol);
   myDrawer->TextAspect()->SetColor(aCol);
 
-  Standard_Real WW = HasWidth() ? Width()
-                     : myDrawer->HasLink()
-                       ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
-                       : 1.;
+  double WW = HasWidth()            ? Width()
+              : myDrawer->HasLink() ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+                                    : 1.;
   if (!myDrawer->HasOwnLineAspect())
   {
     myDrawer->SetLineAspect(new Prs3d_LineAspect(aCol, Aspect_TOL_SOLID, WW));
@@ -237,9 +236,9 @@ void PrsDim_Relation::SetColor(const Quantity_Color& aCol)
   }
 
   myDrawer->LineAspect()->SetColor(aCol);
-  const Handle(Prs3d_DimensionAspect)& DIMENSION = myDrawer->DimensionAspect();
-  const Handle(Prs3d_LineAspect)&      LINE      = myDrawer->LineAspect();
-  const Handle(Prs3d_TextAspect)&      TEXT      = myDrawer->TextAspect();
+  const occ::handle<Prs3d_DimensionAspect>& DIMENSION = myDrawer->DimensionAspect();
+  const occ::handle<Prs3d_LineAspect>&      LINE      = myDrawer->LineAspect();
+  const occ::handle<Prs3d_TextAspect>&      TEXT      = myDrawer->TextAspect();
 
   DIMENSION->SetLineAspect(LINE);
   DIMENSION->SetTextAspect(TEXT);
@@ -251,9 +250,9 @@ void PrsDim_Relation::UnsetColor()
 {
   if (!hasOwnColor)
     return;
-  hasOwnColor                        = Standard_False;
-  const Handle(Prs3d_LineAspect)& LA = myDrawer->LineAspect();
-  Quantity_Color                  CC = Quantity_NOC_YELLOW;
+  hasOwnColor                             = false;
+  const occ::handle<Prs3d_LineAspect>& LA = myDrawer->LineAspect();
+  Quantity_Color                       CC = Quantity_NOC_YELLOW;
   if (myDrawer->HasLink())
   {
     AIS_GraphicTool::GetLineColor(myDrawer->Link(), AIS_TOA_Line, CC);

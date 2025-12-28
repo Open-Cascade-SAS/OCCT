@@ -24,22 +24,7 @@ set(OCCT_StepVisual_FILES
   StepVisual_AreaInSet.hxx
   StepVisual_AreaOrView.cxx
   StepVisual_AreaOrView.hxx
-  StepVisual_Array1OfAnnotationPlaneElement.hxx
-  StepVisual_Array1OfBoxCharacteristicSelect.hxx
-  StepVisual_Array1OfCameraModelD3MultiClippingInterectionSelect.hxx
-  StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect.hxx
-  StepVisual_Array1OfCurveStyleFontPattern.hxx
-  StepVisual_Array1OfDirectionCountSelect.hxx
-  StepVisual_Array1OfDraughtingCalloutElement.hxx
-  StepVisual_Array1OfFillStyleSelect.hxx
-  StepVisual_Array1OfInvisibleItem.hxx
-  StepVisual_Array1OfLayeredItem.hxx
-  StepVisual_Array1OfPresentationStyleAssignment.hxx
-  StepVisual_Array1OfPresentationStyleSelect.hxx
-  StepVisual_Array1OfRenderingPropertiesSelect.hxx
-  StepVisual_Array1OfStyleContextSelect.hxx
-  StepVisual_Array1OfSurfaceStyleElementSelect.hxx
-  StepVisual_Array1OfTextOrCharacter.hxx
+
   StepVisual_BackgroundColour.cxx
   StepVisual_BackgroundColour.hxx
   StepVisual_BoxCharacteristicSelect.cxx
@@ -119,22 +104,7 @@ set(OCCT_StepVisual_FILES
   StepVisual_FillStyleSelect.hxx
   StepVisual_FontSelect.cxx
   StepVisual_FontSelect.hxx
-  StepVisual_HArray1OfAnnotationPlaneElement.hxx
-  StepVisual_HArray1OfBoxCharacteristicSelect.hxx
-  StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect.hxx
-  StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect.hxx
-  StepVisual_HArray1OfCurveStyleFontPattern.hxx
-  StepVisual_HArray1OfDirectionCountSelect.hxx
-  StepVisual_HArray1OfDraughtingCalloutElement.hxx
-  StepVisual_HArray1OfFillStyleSelect.hxx
-  StepVisual_HArray1OfInvisibleItem.hxx
-  StepVisual_HArray1OfLayeredItem.hxx
-  StepVisual_HArray1OfPresentationStyleAssignment.hxx
-  StepVisual_HArray1OfPresentationStyleSelect.hxx
-  StepVisual_HArray1OfRenderingPropertiesSelect.hxx
-  StepVisual_HArray1OfStyleContextSelect.hxx
-  StepVisual_HArray1OfSurfaceStyleElementSelect.hxx
-  StepVisual_HArray1OfTextOrCharacter.hxx
+
   StepVisual_Invisibility.cxx
   StepVisual_Invisibility.hxx
   StepVisual_InvisibilityContext.cxx
@@ -270,8 +240,7 @@ set(OCCT_StepVisual_FILES
   StepVisual_TessellatedCurveSet.cxx
   StepVisual_CoordinatesList.hxx
   StepVisual_CoordinatesList.cxx
-  StepVisual_Array1OfTessellatedEdgeOrVertex.hxx
-  StepVisual_Array1OfTessellatedStructuredItem.hxx
+
   StepVisual_ComplexTriangulatedFace.cxx
   StepVisual_ComplexTriangulatedFace.hxx
   StepVisual_ComplexTriangulatedSurfaceSet.cxx
@@ -284,8 +253,7 @@ set(OCCT_StepVisual_FILES
   StepVisual_EdgeOrCurve.hxx
   StepVisual_FaceOrSurface.cxx
   StepVisual_FaceOrSurface.hxx
-  StepVisual_HArray1OfTessellatedEdgeOrVertex.hxx
-  StepVisual_HArray1OfTessellatedStructuredItem.hxx
+
   StepVisual_PathOrCompositeCurve.cxx
   StepVisual_PathOrCompositeCurve.hxx
   StepVisual_TessellatedConnectingEdge.cxx

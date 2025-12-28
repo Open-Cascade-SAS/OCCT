@@ -60,9 +60,9 @@ public:
   //! -   the major radius computed with Center and S1
   //! is less than the minor radius computed with Center, S1 and S2, or
   //! -   Center, S1 and S2 are collinear.
-  Standard_EXPORT GC_MakeEllipse(const gp_Ax2&       A2,
-                                 const Standard_Real MajorRadius,
-                                 const Standard_Real MinorRadius);
+  Standard_EXPORT GC_MakeEllipse(const gp_Ax2& A2,
+                                 const double  MajorRadius,
+                                 const double  MinorRadius);
 
   //! Constructs an ellipse centered on the point Center, where
   //! -   the plane of the ellipse is defined by Center, S1 and S2,
@@ -73,12 +73,12 @@ public:
 
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
-  Standard_EXPORT const Handle(Geom_Ellipse)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_Ellipse>& Value() const;
 
-  operator const Handle(Geom_Ellipse)&() const { return Value(); }
+  operator const occ::handle<Geom_Ellipse>&() const { return Value(); }
 
 private:
-  Handle(Geom_Ellipse) TheEllipse;
+  occ::handle<Geom_Ellipse> TheEllipse;
 };
 
 #endif // _GC_MakeEllipse_HeaderFile

@@ -19,8 +19,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateAndTimeAssignment, Standard_Transient)
 
 void StepBasic_DateAndTimeAssignment::Init(
-  const Handle(StepBasic_DateAndTime)&  aAssignedDateAndTime,
-  const Handle(StepBasic_DateTimeRole)& aRole)
+  const occ::handle<StepBasic_DateAndTime>&  aAssignedDateAndTime,
+  const occ::handle<StepBasic_DateTimeRole>& aRole)
 {
   // --- classe own fields ---
   assignedDateAndTime = aAssignedDateAndTime;
@@ -28,22 +28,22 @@ void StepBasic_DateAndTimeAssignment::Init(
 }
 
 void StepBasic_DateAndTimeAssignment::SetAssignedDateAndTime(
-  const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime)
+  const occ::handle<StepBasic_DateAndTime>& aAssignedDateAndTime)
 {
   assignedDateAndTime = aAssignedDateAndTime;
 }
 
-Handle(StepBasic_DateAndTime) StepBasic_DateAndTimeAssignment::AssignedDateAndTime() const
+occ::handle<StepBasic_DateAndTime> StepBasic_DateAndTimeAssignment::AssignedDateAndTime() const
 {
   return assignedDateAndTime;
 }
 
-void StepBasic_DateAndTimeAssignment::SetRole(const Handle(StepBasic_DateTimeRole)& aRole)
+void StepBasic_DateAndTimeAssignment::SetRole(const occ::handle<StepBasic_DateTimeRole>& aRole)
 {
   role = aRole;
 }
 
-Handle(StepBasic_DateTimeRole) StepBasic_DateAndTimeAssignment::Role() const
+occ::handle<StepBasic_DateTimeRole> StepBasic_DateAndTimeAssignment::Role() const
 {
   return role;
 }

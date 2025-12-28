@@ -33,25 +33,26 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDefs_ToolTabularData::IGESDefs_ToolTabularData() {}
 
-void IGESDefs_ToolTabularData::ReadOwnParams(const Handle(IGESDefs_TabularData)& ent,
-                                             const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESDefs_ToolTabularData::ReadOwnParams(const occ::handle<IGESDefs_TabularData>& ent,
+                                             const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                              IGESData_ParamReader& PR) const
 {
-  Standard_Integer                         nbProps;
-  Standard_Integer                         propType;
-  Standard_Integer                         nbDeps;
-  Standard_Integer                         nbIndeps;
-  Handle(TColStd_HArray1OfInteger)         typesInd;
-  Handle(TColStd_HArray1OfInteger)         nbValuesInd;
-  Handle(IGESBasic_HArray1OfHArray1OfReal) valuesInd;
-  Handle(IGESBasic_HArray1OfHArray1OfReal) valuesDep;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer i;
+  int                                           nbProps;
+  int                                           propType;
+  int                                           nbDeps;
+  int                                           nbIndeps;
+  occ::handle<NCollection_HArray1<int>>         typesInd;
+  occ::handle<NCollection_HArray1<int>>         nbValuesInd;
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal> valuesInd;
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal> valuesDep;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  int i;
 
   // clang-format off
   PR.ReadInteger(PR.Current(), "Number of Property values", nbProps); //szv#4:S4163:12Mar99 `st=` not needed
@@ -59,7 +60,7 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const Handle(IGESDefs_TabularData)&
 
   PR.ReadInteger(PR.Current(), "Property type", propType); // szv#4:S4163:12Mar99 `st=` not needed
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "No. of dependent variables", nbDeps);
+  bool st = PR.ReadInteger(PR.Current(), "No. of dependent variables", nbDeps);
   if (st && nbDeps > 0)
     valuesDep = new IGESBasic_HArray1OfHArray1OfReal(1, nbDeps);
 
@@ -67,8 +68,8 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const Handle(IGESDefs_TabularData)&
   if (st && nbIndeps > 0)
   {
     valuesInd   = new IGESBasic_HArray1OfHArray1OfReal(1, nbIndeps);
-    typesInd    = new TColStd_HArray1OfInteger(1, nbIndeps);
-    nbValuesInd = new TColStd_HArray1OfInteger(1, nbIndeps);
+    typesInd    = new NCollection_HArray1<int>(1, nbIndeps);
+    nbValuesInd = new NCollection_HArray1<int>(1, nbIndeps);
   }
 
   PR.ReadInts(PR.CurrentList(nbIndeps),
@@ -82,14 +83,14 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const Handle(IGESDefs_TabularData)&
 
   for (i = 1; i <= nbIndeps; i++)
   {
-    Handle(TColStd_HArray1OfReal) tarr;
-    Standard_Integer              nb = nbValuesInd->Value(i), j;
+    occ::handle<NCollection_HArray1<double>> tarr;
+    int                                      nb = nbValuesInd->Value(i), j;
     if (nb > 0)
     {
-      tarr = new TColStd_HArray1OfReal(1, nb);
+      tarr = new NCollection_HArray1<double>(1, nb);
       for (j = 1; j <= nb; j++)
       {
-        Standard_Real treal;
+        double treal;
         PR.ReadReal(PR.Current(),
                     "Value of independent variable",
                     treal); // szv#4:S4163:12Mar99 `st=` not needed
@@ -102,21 +103,21 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const Handle(IGESDefs_TabularData)&
   //  Dependents : definition not clear, we accumulate everything on a single
   //  HArray1OfReal, put in 1st position of the HArray1OfHArray1OfReal
   //  We put all the remaining floats there
-  Standard_Integer curnum = PR.CurrentNumber();
-  Standard_Integer nbpars = PR.NbParams();
-  Standard_Integer nbd    = 0;
+  int curnum = PR.CurrentNumber();
+  int nbpars = PR.NbParams();
+  int nbd    = 0;
   for (i = curnum; i <= nbpars; i++)
   {
     if (PR.ParamType(i) != Interface_ParamReal)
       break;
     nbd = i - curnum + 1;
   }
-  Handle(TColStd_HArray1OfReal) somedeps;
+  occ::handle<NCollection_HArray1<double>> somedeps;
   if (nbd > 0)
-    somedeps = new TColStd_HArray1OfReal(1, nbd);
+    somedeps = new NCollection_HArray1<double>(1, nbd);
   for (i = 1; i <= nbd; i++)
   {
-    Standard_Real treal;
+    double treal;
     // clang-format off
     PR.ReadReal(PR.Current(), "Value of dependent variable", treal); //szv#4:S4163:12Mar99 `st=` not needed
     // clang-format on
@@ -140,11 +141,11 @@ void IGESDefs_ToolTabularData::ReadOwnParams(const Handle(IGESDefs_TabularData)&
   ent->Init(nbProps, propType, typesInd, nbValuesInd, valuesInd, valuesDep);
 }
 
-void IGESDefs_ToolTabularData::WriteOwnParams(const Handle(IGESDefs_TabularData)& ent,
-                                              IGESData_IGESWriter&                IW) const
+void IGESDefs_ToolTabularData::WriteOwnParams(const occ::handle<IGESDefs_TabularData>& ent,
+                                              IGESData_IGESWriter&                     IW) const
 {
-  Standard_Integer i, nbIndeps = ent->NbIndependents();
-  Standard_Integer j, nbDeps   = ent->NbDependents();
+  int i, nbIndeps = ent->NbIndependents();
+  int j, nbDeps   = ent->NbDependents();
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->PropertyType());
   IW.Send(nbDeps);
@@ -159,7 +160,7 @@ void IGESDefs_ToolTabularData::WriteOwnParams(const Handle(IGESDefs_TabularData)
   // UNFINISHED
   if (nbDeps == 0)
     return;
-  Handle(TColStd_HArray1OfReal) deps = ent->DependentValues(1);
+  occ::handle<NCollection_HArray1<double>> deps = ent->DependentValues(1);
   for (i = 1; i <= deps->Length(); i++)
     IW.Send(deps->Value(i));
   /*
@@ -169,33 +170,33 @@ void IGESDefs_ToolTabularData::WriteOwnParams(const Handle(IGESDefs_TabularData)
     */
 }
 
-void IGESDefs_ToolTabularData::OwnShared(const Handle(IGESDefs_TabularData)& /* ent */,
+void IGESDefs_ToolTabularData::OwnShared(const occ::handle<IGESDefs_TabularData>& /* ent */,
                                          Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESDefs_ToolTabularData::OwnCopy(const Handle(IGESDefs_TabularData)& another,
-                                       const Handle(IGESDefs_TabularData)& ent,
+void IGESDefs_ToolTabularData::OwnCopy(const occ::handle<IGESDefs_TabularData>& another,
+                                       const occ::handle<IGESDefs_TabularData>& ent,
                                        Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer                         nbProps     = another->NbPropertyValues();
-  Standard_Integer                         propType    = another->PropertyType();
-  Standard_Integer                         nbDeps      = another->NbDependents();
-  Standard_Integer                         nbIndeps    = another->NbIndependents();
-  Handle(TColStd_HArray1OfInteger)         typesInd    = new TColStd_HArray1OfInteger(1, nbIndeps);
-  Handle(TColStd_HArray1OfInteger)         nbValuesInd = new TColStd_HArray1OfInteger(1, nbIndeps);
-  Handle(IGESBasic_HArray1OfHArray1OfReal) valuesInd =
+  int                                   nbProps     = another->NbPropertyValues();
+  int                                   propType    = another->PropertyType();
+  int                                   nbDeps      = another->NbDependents();
+  int                                   nbIndeps    = another->NbIndependents();
+  occ::handle<NCollection_HArray1<int>> typesInd    = new NCollection_HArray1<int>(1, nbIndeps);
+  occ::handle<NCollection_HArray1<int>> nbValuesInd = new NCollection_HArray1<int>(1, nbIndeps);
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal> valuesInd =
     new IGESBasic_HArray1OfHArray1OfReal(1, nbIndeps);
-  Handle(IGESBasic_HArray1OfHArray1OfReal) valuesDep =
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal> valuesDep =
     new IGESBasic_HArray1OfHArray1OfReal(1, nbDeps);
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= nbIndeps; i++)
   {
-    Standard_Integer j, nval;
+    int j, nval;
     typesInd->SetValue(i, another->TypeOfIndependents(i));
     nval = another->NbValues(i);
     nbValuesInd->SetValue(i, nval);
-    Handle(TColStd_HArray1OfReal) tmparr = new TColStd_HArray1OfReal(1, nval);
+    occ::handle<NCollection_HArray1<double>> tmparr = new NCollection_HArray1<double>(1, nval);
     for (j = 1; j <= nval; j++)
       tmparr->SetValue(j, another->IndependentValue(i, j));
     valuesInd->SetValue(i, tmparr);
@@ -210,7 +211,7 @@ void IGESDefs_ToolTabularData::OwnCopy(const Handle(IGESDefs_TabularData)& anoth
 }
 
 IGESData_DirChecker IGESDefs_ToolTabularData::DirChecker(
-  const Handle(IGESDefs_TabularData)& /* ent */) const
+  const occ::handle<IGESDefs_TabularData>& /* ent */) const
 {
   IGESData_DirChecker DC(406, 11);
   DC.Structure(IGESData_DefVoid);
@@ -224,19 +225,19 @@ IGESData_DirChecker IGESDefs_ToolTabularData::DirChecker(
   return DC;
 }
 
-void IGESDefs_ToolTabularData::OwnCheck(const Handle(IGESDefs_TabularData)& /* ent */,
+void IGESDefs_ToolTabularData::OwnCheck(const occ::handle<IGESDefs_TabularData>& /* ent */,
                                         const Interface_ShareTool&,
-                                        Handle(Interface_Check)& /* ach */) const
+                                        occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESDefs_ToolTabularData::OwnDump(const Handle(IGESDefs_TabularData)& ent,
+void IGESDefs_ToolTabularData::OwnDump(const occ::handle<IGESDefs_TabularData>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       Standard_OStream&      S,
-                                       const Standard_Integer level) const
+                                       Standard_OStream& S,
+                                       const int         level) const
 {
-  Standard_Integer nbIndeps = ent->NbIndependents(); // szv#4:S4163:12Mar99 i unused
-  Standard_Integer nbDeps   = ent->NbDependents();
+  int nbIndeps = ent->NbIndependents(); // szv#4:S4163:12Mar99 i unused
+  int nbDeps   = ent->NbDependents();
 
   S << "IGESDefs_TabularData\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"
@@ -253,11 +254,11 @@ void IGESDefs_ToolTabularData::OwnDump(const Handle(IGESDefs_TabularData)& ent,
     S << " [ask level > 4]";
   else
   {
-    for (Standard_Integer ind = 1; ind <= nbIndeps; ind++)
+    for (int ind = 1; ind <= nbIndeps; ind++)
     {
       S << std::endl << "[" << ind << "]:";
-      Standard_Integer nbi = ent->NbValues(ind);
-      for (Standard_Integer iv = 1; iv <= nbi; iv++)
+      int nbi = ent->NbValues(ind);
+      for (int iv = 1; iv <= nbi; iv++)
         S << " " << ent->IndependentValue(ind, iv);
     }
   }

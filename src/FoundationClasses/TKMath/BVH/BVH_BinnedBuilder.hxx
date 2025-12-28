@@ -36,8 +36,8 @@ struct BVH_Bin
   {
   }
 
-  Standard_Integer Count; //!< Number of primitives in the bin
-  BVH_Box<T, N>    Box;   //!< AABB of primitives in the bin
+  int           Count; //!< Number of primitives in the bin
+  BVH_Box<T, N> Box;   //!< AABB of primitives in the bin
 };
 
 //! Performs construction of BVH tree using binned SAH algorithm. Number
@@ -65,10 +65,10 @@ public:
 
 public:
   //! Creates binned SAH BVH builder.
-  BVH_BinnedBuilder(const Standard_Integer theLeafNodeSize = BVH_Constants_LeafNodeSizeDefault,
-                    const Standard_Integer theMaxTreeDepth = BVH_Constants_MaxTreeDepth,
-                    const Standard_Boolean theDoMainSplits = Standard_False,
-                    const Standard_Integer theNumOfThreads = 1)
+  BVH_BinnedBuilder(const int  theLeafNodeSize = BVH_Constants_LeafNodeSizeDefault,
+                    const int  theMaxTreeDepth = BVH_Constants_MaxTreeDepth,
+                    const bool theDoMainSplits = false,
+                    const int  theNumOfThreads = 1)
       : BVH_QueueBuilder<T, N>(theLeafNodeSize, theMaxTreeDepth, theNumOfThreads),
         myUseMainAxis(theDoMainSplits)
   {
@@ -81,42 +81,39 @@ public:
 protected:
   //! Performs splitting of the given BVH node.
   virtual typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(
-    BVH_Set<T, N>*         theSet,
-    BVH_Tree<T, N>*        theBVH,
-    const Standard_Integer theNode) const Standard_OVERRIDE;
+    BVH_Set<T, N>*  theSet,
+    BVH_Tree<T, N>* theBVH,
+    const int       theNode) const override;
 
   //! Arranges node primitives into bins.
-  virtual void getSubVolumes(BVH_Set<T, N>*         theSet,
-                             BVH_Tree<T, N>*        theBVH,
-                             const Standard_Integer theNode,
-                             BVH_BinVector&         theBins,
-                             const Standard_Integer theAxis) const;
+  virtual void getSubVolumes(BVH_Set<T, N>*  theSet,
+                             BVH_Tree<T, N>* theBVH,
+                             const int       theNode,
+                             BVH_BinVector&  theBins,
+                             const int       theAxis) const;
 
 private:
   // clang-format off
-  Standard_Boolean myUseMainAxis; //!< Defines whether to search for the best split or use the widest axis
+  bool myUseMainAxis; //!< Defines whether to search for the best split or use the widest axis
   // clang-format on
 };
 
 //=================================================================================================
 
 template <class T, int N, int Bins>
-void BVH_BinnedBuilder<T, N, Bins>::getSubVolumes(BVH_Set<T, N>*         theSet,
-                                                  BVH_Tree<T, N>*        theBVH,
-                                                  const Standard_Integer theNode,
-                                                  BVH_BinVector&         theBins,
-                                                  const Standard_Integer theAxis) const
+void BVH_BinnedBuilder<T, N, Bins>::getSubVolumes(BVH_Set<T, N>*  theSet,
+                                                  BVH_Tree<T, N>* theBVH,
+                                                  const int       theNode,
+                                                  BVH_BinVector&  theBins,
+                                                  const int       theAxis) const
 {
   const T aMin          = BVH::VecComp<T, N>::Get(theBVH->MinPoint(theNode), theAxis);
   const T aMax          = BVH::VecComp<T, N>::Get(theBVH->MaxPoint(theNode), theAxis);
   const T anInverseStep = static_cast<T>(Bins) / (aMax - aMin);
-  for (Standard_Integer anIdx = theBVH->BegPrimitive(theNode);
-       anIdx <= theBVH->EndPrimitive(theNode);
-       ++anIdx)
+  for (int anIdx = theBVH->BegPrimitive(theNode); anIdx <= theBVH->EndPrimitive(theNode); ++anIdx)
   {
     typename BVH_Set<T, N>::BVH_BoxNt aBox = theSet->Box(anIdx);
-    Standard_Integer                  aBinIndex =
-      BVH::IntFloor<T>((theSet->Center(anIdx, theAxis) - aMin) * anInverseStep);
+    int aBinIndex = BVH::IntFloor<T>((theSet->Center(anIdx, theAxis) - aMin) * anInverseStep);
     if (aBinIndex < 0)
     {
       aBinIndex = 0;
@@ -134,21 +131,21 @@ void BVH_BinnedBuilder<T, N, Bins>::getSubVolumes(BVH_Set<T, N>*         theSet,
 namespace BVH
 {
 template <class T, int N>
-Standard_Integer SplitPrimitives(BVH_Set<T, N>*         theSet,
-                                 const BVH_Box<T, N>&   theBox,
-                                 const Standard_Integer theBeg,
-                                 const Standard_Integer theEnd,
-                                 const Standard_Integer theBin,
-                                 const Standard_Integer theAxis,
-                                 const Standard_Integer theBins)
+int SplitPrimitives(BVH_Set<T, N>*       theSet,
+                    const BVH_Box<T, N>& theBox,
+                    const int            theBeg,
+                    const int            theEnd,
+                    const int            theBin,
+                    const int            theAxis,
+                    const int            theBins)
 {
   const T aMin = BVH::VecComp<T, N>::Get(theBox.CornerMin(), theAxis);
   const T aMax = BVH::VecComp<T, N>::Get(theBox.CornerMax(), theAxis);
 
   const T anInverseStep = static_cast<T>(theBins) / (aMax - aMin);
 
-  Standard_Integer aLftIdx(theBeg);
-  Standard_Integer aRghIdx(theEnd);
+  int aLftIdx(theBeg);
+  int aRghIdx(theEnd);
 
   do
   {
@@ -183,7 +180,7 @@ struct BVH_AxisSelector
 {
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
-  static Standard_Integer MainAxis(const BVH_VecNt& theSize)
+  static int MainAxis(const BVH_VecNt& theSize)
   {
     if (theSize.y() > theSize.x())
     {
@@ -201,10 +198,7 @@ struct BVH_AxisSelector<T, 2>
 {
   typedef typename BVH::VectorType<T, 2>::Type BVH_VecNt;
 
-  static Standard_Integer MainAxis(const BVH_VecNt& theSize)
-  {
-    return theSize.x() > theSize.y() ? 0 : 1;
-  }
+  static int MainAxis(const BVH_VecNt& theSize) { return theSize.x() > theSize.y() ? 0 : 1; }
 };
 } // namespace BVH
 
@@ -212,13 +206,13 @@ struct BVH_AxisSelector<T, 2>
 
 template <class T, int N, int Bins>
 typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::buildNode(
-  BVH_Set<T, N>*         theSet,
-  BVH_Tree<T, N>*        theBVH,
-  const Standard_Integer theNode) const
+  BVH_Set<T, N>*  theSet,
+  BVH_Tree<T, N>* theBVH,
+  const int       theNode) const
 {
-  const Standard_Integer aNodeBegPrimitive = theBVH->BegPrimitive(theNode);
-  const Standard_Integer aNodeEndPrimitive = theBVH->EndPrimitive(theNode);
-  const Standard_Integer aNodeNbPrimitives = theBVH->NbPrimitives(theNode);
+  const int aNodeBegPrimitive = theBVH->BegPrimitive(theNode);
+  const int aNodeEndPrimitive = theBVH->EndPrimitive(theNode);
+  const int aNodeNbPrimitives = theBVH->NbPrimitives(theNode);
   if (aNodeNbPrimitives <= BVH_Builder<T, N>::myLeafNodeSize)
   {
     // clang-format off
@@ -230,19 +224,19 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::b
   const typename BVH_Box<T, N>::BVH_VecNt aSize = anAABB.Size();
 
   // Parameters for storing best split
-  Standard_Integer aMinSplitAxis   = -1;
-  Standard_Integer aMinSplitIndex  = 0;
-  Standard_Integer aMinSplitNumLft = 0;
-  Standard_Integer aMinSplitNumRgh = 0;
+  int aMinSplitAxis   = -1;
+  int aMinSplitIndex  = 0;
+  int aMinSplitNumLft = 0;
+  int aMinSplitNumRgh = 0;
 
   BVH_Box<T, N> aMinSplitBoxLft;
   BVH_Box<T, N> aMinSplitBoxRgh;
 
-  Standard_Real          aMinSplitCost = std::numeric_limits<Standard_Real>::max();
-  const Standard_Integer aMainAxis     = BVH::BVH_AxisSelector<T, N>::MainAxis(aSize);
+  double    aMinSplitCost = std::numeric_limits<double>::max();
+  const int aMainAxis     = BVH::BVH_AxisSelector<T, N>::MainAxis(aSize);
 
   // Find best split
-  for (Standard_Integer anAxis = myUseMainAxis ? aMainAxis : 0;
+  for (int anAxis = myUseMainAxis ? aMainAxis : 0;
        anAxis <= (myUseMainAxis ? aMainAxis : (std::min)(N - 1, 2));
        ++anAxis)
   {
@@ -255,8 +249,7 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::b
     getSubVolumes(theSet, theBVH, theNode, aBinVector, anAxis);
 
     BVH_SplitPlanes aSplitPlanes;
-    for (Standard_Integer aLftSplit = 1, aRghSplit = Bins - 1; aLftSplit < Bins;
-         ++aLftSplit, --aRghSplit)
+    for (int aLftSplit = 1, aRghSplit = Bins - 1; aLftSplit < Bins; ++aLftSplit, --aRghSplit)
     {
       aSplitPlanes[aLftSplit].LftVoxel.Count =
         aSplitPlanes[aLftSplit - 1].LftVoxel.Count + aBinVector[aLftSplit - 1].Count;
@@ -271,16 +264,14 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::b
     }
 
     // Choose the best split (with minimum SAH cost)
-    const Standard_Real aParentArea = static_cast<Standard_Real>(anAABB.Area());
-    for (Standard_Integer aSplit = 1; aSplit < Bins; ++aSplit)
+    const double aParentArea = static_cast<double>(anAABB.Area());
+    for (int aSplit = 1; aSplit < Bins; ++aSplit)
     {
       // SAH evaluation with proper normalization by parent surface area
-      const Standard_Real aLftArea =
-        static_cast<Standard_Real>(aSplitPlanes[aSplit].LftVoxel.Box.Area());
-      const Standard_Real aRghArea =
-        static_cast<Standard_Real>(aSplitPlanes[aSplit].RghVoxel.Box.Area());
-      Standard_Real aCost = (aLftArea / aParentArea) * aSplitPlanes[aSplit].LftVoxel.Count
-                            + (aRghArea / aParentArea) * aSplitPlanes[aSplit].RghVoxel.Count;
+      const double aLftArea = static_cast<double>(aSplitPlanes[aSplit].LftVoxel.Box.Area());
+      const double aRghArea = static_cast<double>(aSplitPlanes[aSplit].RghVoxel.Box.Area());
+      double       aCost    = (aLftArea / aParentArea) * aSplitPlanes[aSplit].LftVoxel.Count
+                     + (aRghArea / aParentArea) * aSplitPlanes[aSplit].RghVoxel.Count;
 
       if (aCost <= aMinSplitCost)
       {
@@ -296,25 +287,24 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::b
   }
 
   theBVH->SetInner(theNode);
-  Standard_Integer aMiddle = -1;
+  int aMiddle = -1;
   if (aMinSplitNumLft == 0 || aMinSplitNumRgh == 0
       || aMinSplitAxis == -1) // case of objects with the same center
   {
     aMinSplitBoxLft.Clear();
     aMinSplitBoxRgh.Clear();
 
-    aMiddle =
-      (std::max)(aNodeBegPrimitive + 1,
-                 static_cast<Standard_Integer>((aNodeBegPrimitive + aNodeEndPrimitive) / 2.f));
+    aMiddle = (std::max)(aNodeBegPrimitive + 1,
+                         static_cast<int>((aNodeBegPrimitive + aNodeEndPrimitive) / 2.f));
 
     aMinSplitNumLft = aMiddle - aNodeBegPrimitive;
-    for (Standard_Integer anIndex = aNodeBegPrimitive; anIndex < aMiddle; ++anIndex)
+    for (int anIndex = aNodeBegPrimitive; anIndex < aMiddle; ++anIndex)
     {
       aMinSplitBoxLft.Combine(theSet->Box(anIndex));
     }
 
     aMinSplitNumRgh = aNodeEndPrimitive - aMiddle + 1;
-    for (Standard_Integer anIndex = aNodeEndPrimitive; anIndex >= aMiddle; --anIndex)
+    for (int anIndex = aNodeEndPrimitive; anIndex >= aMiddle; --anIndex)
     {
       aMinSplitBoxRgh.Combine(theSet->Box(anIndex));
     }

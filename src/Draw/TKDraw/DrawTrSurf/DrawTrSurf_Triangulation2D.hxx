@@ -19,16 +19,15 @@
 
 #include <Standard.hxx>
 
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Draw_Drawable2D.hxx>
 #include <Standard_OStream.hxx>
 #include <Draw_Interpretor.hxx>
 class Poly_Triangulation;
 class Draw_Display;
 class Draw_Drawable3D;
-
-class DrawTrSurf_Triangulation2D;
-DEFINE_STANDARD_HANDLE(DrawTrSurf_Triangulation2D, Draw_Drawable2D)
 
 //! Used to display a 2d triangulation.
 //!
@@ -39,29 +38,28 @@ class DrawTrSurf_Triangulation2D : public Draw_Drawable2D
 {
 
 public:
-  Standard_EXPORT DrawTrSurf_Triangulation2D(const Handle(Poly_Triangulation)& T);
+  Standard_EXPORT DrawTrSurf_Triangulation2D(const occ::handle<Poly_Triangulation>& T);
 
-  Standard_EXPORT Handle(Poly_Triangulation) Triangulation() const;
+  Standard_EXPORT occ::handle<Poly_Triangulation> Triangulation() const;
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
   //! For variable whatis command. Set as a result the
   //! type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Triangulation2D, Draw_Drawable2D)
 
-protected:
 private:
-  Handle(Poly_Triangulation)       myTriangulation;
-  Handle(TColStd_HArray1OfInteger) myInternals;
-  Handle(TColStd_HArray1OfInteger) myFree;
+  occ::handle<Poly_Triangulation>       myTriangulation;
+  occ::handle<NCollection_HArray1<int>> myInternals;
+  occ::handle<NCollection_HArray1<int>> myFree;
 };
 
 #endif // _DrawTrSurf_Triangulation2D_HeaderFile

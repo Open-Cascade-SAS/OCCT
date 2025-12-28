@@ -29,9 +29,6 @@ class TopoDS_Shape;
 class Transfer_FinderProcess;
 class XSControl_WorkSession;
 
-class IGESControl_Controller;
-DEFINE_STANDARD_HANDLE(IGESControl_Controller, XSControl_Controller)
-
 //! Controller for IGES-5.1
 class IGESControl_Controller : public XSControl_Controller
 {
@@ -40,17 +37,17 @@ public:
   //! Initializes the use of IGES Norm (the first time) and returns
   //! a Controller for IGES-5.1
   //! If <modefnes> is True, sets it to internal FNES format
-  Standard_EXPORT IGESControl_Controller(const Standard_Boolean modefnes = Standard_False);
+  Standard_EXPORT IGESControl_Controller(const bool modefnes = false);
 
   //! Creates a new empty Model ready to receive data of the Norm.
   //! It is taken from IGES Template Model
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> NewModel() const override;
 
   //! Returns the Actor for Read attached to the pair (norm,appli)
   //! It is an Actor from IGESToBRep, adapted from an IGESModel :
   //! Unit, tolerances
-  Standard_EXPORT Handle(Transfer_ActorOfTransientProcess) ActorRead(
-    const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Transfer_ActorOfTransientProcess> ActorRead(
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Takes one Shape and transfers it to the InterfaceModel
   //! (already created by NewModel for instance)
@@ -60,25 +57,24 @@ public:
   //! modeshape : 0 group of face (version < 5.1)
   //! 1  BREP-version 5.1 of IGES
   Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape(
-    const TopoDS_Shape&                     shape,
-    const Handle(Transfer_FinderProcess)&   FP,
-    const Handle(Interface_InterfaceModel)& model,
-    const Standard_Integer                  modetrans = 0,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) const Standard_OVERRIDE;
+    const TopoDS_Shape&                          shape,
+    const occ::handle<Transfer_FinderProcess>&   FP,
+    const occ::handle<Interface_InterfaceModel>& model,
+    const int                                    modetrans = 0,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) const override;
 
   //! Standard Initialisation. It creates a Controller for IGES and
   //! records it to various names, available to select it later
   //! Returns True when done, False if could not be done
   //! Also, it creates and records an Adaptor for FNES
-  Standard_EXPORT static Standard_Boolean Init();
+  Standard_EXPORT static bool Init();
 
-  Standard_EXPORT virtual void Customise(Handle(XSControl_WorkSession)& WS) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Customise(occ::handle<XSControl_WorkSession>& WS) override;
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_Controller, XSControl_Controller)
 
-protected:
 private:
-  Standard_Boolean themode;
+  bool themode;
 };
 
 #endif // _IGESControl_Controller_HeaderFile

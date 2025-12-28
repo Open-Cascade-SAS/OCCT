@@ -26,10 +26,10 @@ StepKinematics_PairRepresentationRelationship::StepKinematics_PairRepresentation
 //=================================================================================================
 
 void StepKinematics_PairRepresentationRelationship::Init(
-  const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Name,
-  const Standard_Boolean /*hasRepresentationRelationship_Description*/,
-  const Handle(TCollection_HAsciiString)&                 theRepresentationRelationship_Description,
+  const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>& theRepresentationRelationship_Name,
+  const bool /*hasRepresentationRelationship_Description*/,
+  const occ::handle<TCollection_HAsciiString>&            theRepresentationRelationship_Description,
   const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep1,
   const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep2,
   const StepRepr_Transformation&
@@ -49,7 +49,7 @@ void StepKinematics_PairRepresentationRelationship::Init(
 
 //=================================================================================================
 
-Handle(StepRepr_RepresentationRelationshipWithTransformation)
+occ::handle<StepRepr_RepresentationRelationshipWithTransformation>
   StepKinematics_PairRepresentationRelationship::RepresentationRelationshipWithTransformation()
     const
 {
@@ -59,7 +59,7 @@ Handle(StepRepr_RepresentationRelationshipWithTransformation)
 //=================================================================================================
 
 void StepKinematics_PairRepresentationRelationship::SetRepresentationRelationshipWithTransformation(
-  const Handle(StepRepr_RepresentationRelationshipWithTransformation)&
+  const occ::handle<StepRepr_RepresentationRelationshipWithTransformation>&
     theRepresentationRelationshipWithTransformation)
 {
   myRepresentationRelationshipWithTransformation = theRepresentationRelationshipWithTransformation;

@@ -18,8 +18,7 @@
 
 StepShape_ToleranceMethodDefinition::StepShape_ToleranceMethodDefinition() {}
 
-Standard_Integer StepShape_ToleranceMethodDefinition::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepShape_ToleranceMethodDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -30,12 +29,12 @@ Standard_Integer StepShape_ToleranceMethodDefinition::CaseNum(
   return 0;
 }
 
-Handle(StepShape_ToleranceValue) StepShape_ToleranceMethodDefinition::ToleranceValue() const
+occ::handle<StepShape_ToleranceValue> StepShape_ToleranceMethodDefinition::ToleranceValue() const
 {
-  return Handle(StepShape_ToleranceValue)::DownCast(Value());
+  return occ::down_cast<StepShape_ToleranceValue>(Value());
 }
 
-Handle(StepShape_LimitsAndFits) StepShape_ToleranceMethodDefinition::LimitsAndFits() const
+occ::handle<StepShape_LimitsAndFits> StepShape_ToleranceMethodDefinition::LimitsAndFits() const
 {
-  return Handle(StepShape_LimitsAndFits)::DownCast(Value());
+  return occ::down_cast<StepShape_LimitsAndFits>(Value());
 }

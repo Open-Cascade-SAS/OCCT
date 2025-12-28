@@ -20,10 +20,11 @@
 
 RWStepGeom_RWSphericalSurface::RWStepGeom_RWSphericalSurface() {}
 
-void RWStepGeom_RWSphericalSurface::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepGeom_SphericalSurface)& ent) const
+void RWStepGeom_RWSphericalSurface::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepGeom_SphericalSurface>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,20 +34,20 @@ void RWStepGeom_RWSphericalSurface::ReadStep(const Handle(StepData_StepReaderDat
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : position ---
 
-  Handle(StepGeom_Axis2Placement3d) aPosition;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Axis2Placement3d> aPosition;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "position", ach, STANDARD_TYPE(StepGeom_Axis2Placement3d), aPosition);
 
   // --- own field : radius ---
 
-  Standard_Real aRadius;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aRadius;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "radius", ach, aRadius);
 
   //--- Initialisation of the read entity ---
@@ -54,8 +55,9 @@ void RWStepGeom_RWSphericalSurface::ReadStep(const Handle(StepData_StepReaderDat
   ent->Init(aName, aPosition, aRadius);
 }
 
-void RWStepGeom_RWSphericalSurface::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepGeom_SphericalSurface)& ent) const
+void RWStepGeom_RWSphericalSurface::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepGeom_SphericalSurface>& ent) const
 {
 
   // --- inherited field name ---
@@ -71,8 +73,8 @@ void RWStepGeom_RWSphericalSurface::WriteStep(StepData_StepWriter&              
   SW.Send(ent->Radius());
 }
 
-void RWStepGeom_RWSphericalSurface::Share(const Handle(StepGeom_SphericalSurface)& ent,
-                                          Interface_EntityIterator&                iter) const
+void RWStepGeom_RWSphericalSurface::Share(const occ::handle<StepGeom_SphericalSurface>& ent,
+                                          Interface_EntityIterator&                     iter) const
 {
 
   iter.GetOneItem(ent->Position());

@@ -28,10 +28,11 @@ RWStepBasic_RWGroupRelationship::RWStepBasic_RWGroupRelationship() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWGroupRelationship::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepBasic_GroupRelationship)& ent) const
+void RWStepBasic_RWGroupRelationship::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepBasic_GroupRelationship>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "group_relationship"))
@@ -39,24 +40,24 @@ void RWStepBasic_RWGroupRelationship::ReadStep(const Handle(StepData_StepReaderD
 
   // Own fields of GroupRelationship
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasDescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   else
   {
-    hasDescription = Standard_False;
+    hasDescription = false;
   }
 
-  Handle(StepBasic_Group) aRelatingGroup;
+  occ::handle<StepBasic_Group> aRelatingGroup;
   data->ReadEntity(num, 3, "relating_group", ach, STANDARD_TYPE(StepBasic_Group), aRelatingGroup);
 
-  Handle(StepBasic_Group) aRelatedGroup;
+  occ::handle<StepBasic_Group> aRelatedGroup;
   data->ReadEntity(num, 4, "related_group", ach, STANDARD_TYPE(StepBasic_Group), aRelatedGroup);
 
   // Initialize entity
@@ -66,8 +67,8 @@ void RWStepBasic_RWGroupRelationship::ReadStep(const Handle(StepData_StepReaderD
 //=================================================================================================
 
 void RWStepBasic_RWGroupRelationship::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepBasic_GroupRelationship)& ent) const
+  StepData_StepWriter&                            SW,
+  const occ::handle<StepBasic_GroupRelationship>& ent) const
 {
 
   // Own fields of GroupRelationship
@@ -88,8 +89,8 @@ void RWStepBasic_RWGroupRelationship::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWGroupRelationship::Share(const Handle(StepBasic_GroupRelationship)& ent,
-                                            Interface_EntityIterator&                  iter) const
+void RWStepBasic_RWGroupRelationship::Share(const occ::handle<StepBasic_GroupRelationship>& ent,
+                                            Interface_EntityIterator& iter) const
 {
 
   // Own fields of GroupRelationship

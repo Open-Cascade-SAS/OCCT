@@ -27,10 +27,10 @@
 TopOpeBRepDS_Curve::TopOpeBRepDS_Curve()
     : myFirst(0.0),
       myLast(0.0),
-      myRangeDefined(Standard_False),
+      myRangeDefined(false),
       myTolerance(Precision::Confusion()),
-      myIsWalk(Standard_False),
-      myKeep(Standard_True),
+      myIsWalk(false),
+      myKeep(true),
       myMother(0),
       myDSIndex(0)
 {
@@ -38,13 +38,13 @@ TopOpeBRepDS_Curve::TopOpeBRepDS_Curve()
 
 //=================================================================================================
 
-TopOpeBRepDS_Curve::TopOpeBRepDS_Curve(const Handle(Geom_Curve)& C,
-                                       const Standard_Real       T,
-                                       const Standard_Boolean    IsWalk)
+TopOpeBRepDS_Curve::TopOpeBRepDS_Curve(const occ::handle<Geom_Curve>& C,
+                                       const double                   T,
+                                       const bool                     IsWalk)
     : myFirst(0.0),
       myLast(0.0),
-      myRangeDefined(Standard_False),
-      myKeep(Standard_True),
+      myRangeDefined(false),
+      myKeep(true),
       myMother(0),
       myDSIndex(0)
 {
@@ -53,9 +53,9 @@ TopOpeBRepDS_Curve::TopOpeBRepDS_Curve(const Handle(Geom_Curve)& C,
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::DefineCurve(const Handle(Geom_Curve)& C,
-                                     const Standard_Real       T,
-                                     const Standard_Boolean    IsWalk)
+void TopOpeBRepDS_Curve::DefineCurve(const occ::handle<Geom_Curve>& C,
+                                     const double                   T,
+                                     const bool                     IsWalk)
 {
   myCurve     = C;
   myTolerance = T;
@@ -64,15 +64,15 @@ void TopOpeBRepDS_Curve::DefineCurve(const Handle(Geom_Curve)& C,
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::Tolerance(const Standard_Real T)
+void TopOpeBRepDS_Curve::Tolerance(const double T)
 {
   myTolerance = T;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::SetSCI(const Handle(TopOpeBRepDS_Interference)& SCI1,
-                                const Handle(TopOpeBRepDS_Interference)& SCI2)
+void TopOpeBRepDS_Curve::SetSCI(const occ::handle<TopOpeBRepDS_Interference>& SCI1,
+                                const occ::handle<TopOpeBRepDS_Interference>& SCI2)
 {
   mySCI1 = SCI1;
   mySCI2 = SCI2;
@@ -80,8 +80,8 @@ void TopOpeBRepDS_Curve::SetSCI(const Handle(TopOpeBRepDS_Interference)& SCI1,
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::GetSCI(Handle(TopOpeBRepDS_Interference)& SCI1,
-                                Handle(TopOpeBRepDS_Interference)& SCI2) const
+void TopOpeBRepDS_Curve::GetSCI(occ::handle<TopOpeBRepDS_Interference>& SCI1,
+                                occ::handle<TopOpeBRepDS_Interference>& SCI2) const
 {
   SCI1 = mySCI1;
   SCI2 = mySCI2;
@@ -89,14 +89,14 @@ void TopOpeBRepDS_Curve::GetSCI(Handle(TopOpeBRepDS_Interference)& SCI1,
 
 //=================================================================================================
 
-const Handle(TopOpeBRepDS_Interference)& TopOpeBRepDS_Curve::GetSCI1() const
+const occ::handle<TopOpeBRepDS_Interference>& TopOpeBRepDS_Curve::GetSCI1() const
 {
   return mySCI1;
 }
 
 //=================================================================================================
 
-const Handle(TopOpeBRepDS_Interference)& TopOpeBRepDS_Curve::GetSCI2() const
+const occ::handle<TopOpeBRepDS_Interference>& TopOpeBRepDS_Curve::GetSCI2() const
 {
   return mySCI2;
 }
@@ -147,30 +147,30 @@ TopoDS_Shape& TopOpeBRepDS_Curve::ChangeShape2()
 
 //=================================================================================================
 
-Handle(Geom_Curve)& TopOpeBRepDS_Curve::ChangeCurve()
+occ::handle<Geom_Curve>& TopOpeBRepDS_Curve::ChangeCurve()
 {
   return myCurve;
 }
 
 //=================================================================================================
 
-const Handle(Geom_Curve)& TopOpeBRepDS_Curve::Curve() const
+const occ::handle<Geom_Curve>& TopOpeBRepDS_Curve::Curve() const
 {
   return myCurve;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::SetRange(const Standard_Real First, const Standard_Real Last)
+void TopOpeBRepDS_Curve::SetRange(const double First, const double Last)
 {
   myFirst        = First;
   myLast         = Last;
-  myRangeDefined = Standard_True;
+  myRangeDefined = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_Curve::Range(Standard_Real& First, Standard_Real& Last) const
+bool TopOpeBRepDS_Curve::Range(double& First, double& Last) const
 {
   if (myRangeDefined)
   {
@@ -182,14 +182,14 @@ Standard_Boolean TopOpeBRepDS_Curve::Range(Standard_Real& First, Standard_Real& 
 
 //=================================================================================================
 
-Standard_Real TopOpeBRepDS_Curve::Tolerance() const
+double TopOpeBRepDS_Curve::Tolerance() const
 {
   return myTolerance;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::Curve(const Handle(Geom_Curve)& C3D, const Standard_Real Tol)
+void TopOpeBRepDS_Curve::Curve(const occ::handle<Geom_Curve>& C3D, const double Tol)
 {
   myCurve     = C3D;
   myTolerance = Tol;
@@ -197,106 +197,106 @@ void TopOpeBRepDS_Curve::Curve(const Handle(Geom_Curve)& C3D, const Standard_Rea
 
 //=================================================================================================
 
-const Handle(Geom2d_Curve)& TopOpeBRepDS_Curve::Curve1() const
+const occ::handle<Geom2d_Curve>& TopOpeBRepDS_Curve::Curve1() const
 {
   if (!mySCI1.IsNull())
   {
-    return Handle(TopOpeBRepDS_SurfaceCurveInterference)::DownCast(mySCI1)->PCurve();
+    return occ::down_cast<TopOpeBRepDS_SurfaceCurveInterference>(mySCI1)->PCurve();
   }
   else
   {
-    static Handle(Geom2d_Curve) STALOC_Geom2dCurveNull1;
+    static occ::handle<Geom2d_Curve> STALOC_Geom2dCurveNull1;
     return STALOC_Geom2dCurveNull1;
   }
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::Curve1(const Handle(Geom2d_Curve)& PC1)
+void TopOpeBRepDS_Curve::Curve1(const occ::handle<Geom2d_Curve>& PC1)
 {
   if (!mySCI1.IsNull())
   {
-    Handle(TopOpeBRepDS_SurfaceCurveInterference)::DownCast(mySCI1)->PCurve(PC1);
+    occ::down_cast<TopOpeBRepDS_SurfaceCurveInterference>(mySCI1)->PCurve(PC1);
   }
 }
 
 //=================================================================================================
 
-const Handle(Geom2d_Curve)& TopOpeBRepDS_Curve::Curve2() const
+const occ::handle<Geom2d_Curve>& TopOpeBRepDS_Curve::Curve2() const
 {
   if (!mySCI2.IsNull())
   {
-    return Handle(TopOpeBRepDS_SurfaceCurveInterference)::DownCast(mySCI2)->PCurve();
+    return occ::down_cast<TopOpeBRepDS_SurfaceCurveInterference>(mySCI2)->PCurve();
   }
   else
   {
-    static Handle(Geom2d_Curve) STALOC_Geom2dCurveNull2;
+    static occ::handle<Geom2d_Curve> STALOC_Geom2dCurveNull2;
     return STALOC_Geom2dCurveNull2;
   }
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::Curve2(const Handle(Geom2d_Curve)& PC2)
+void TopOpeBRepDS_Curve::Curve2(const occ::handle<Geom2d_Curve>& PC2)
 {
   if (!mySCI2.IsNull())
   {
-    Handle(TopOpeBRepDS_SurfaceCurveInterference)::DownCast(mySCI2)->PCurve(PC2);
+    occ::down_cast<TopOpeBRepDS_SurfaceCurveInterference>(mySCI2)->PCurve(PC2);
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_Curve::IsWalk() const
+bool TopOpeBRepDS_Curve::IsWalk() const
 {
   return myIsWalk;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::ChangeIsWalk(const Standard_Boolean B)
+void TopOpeBRepDS_Curve::ChangeIsWalk(const bool B)
 {
   myIsWalk = B;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_Curve::Keep() const
+bool TopOpeBRepDS_Curve::Keep() const
 {
   return myKeep;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::ChangeKeep(const Standard_Boolean b)
+void TopOpeBRepDS_Curve::ChangeKeep(const bool b)
 {
   myKeep = b;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_Curve::Mother() const
+int TopOpeBRepDS_Curve::Mother() const
 {
   return myMother;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::ChangeMother(const Standard_Integer b)
+void TopOpeBRepDS_Curve::ChangeMother(const int b)
 {
   myMother = b;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_Curve::DSIndex() const
+int TopOpeBRepDS_Curve::DSIndex() const
 {
   return myDSIndex;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::ChangeDSIndex(const Standard_Integer b)
+void TopOpeBRepDS_Curve::ChangeDSIndex(const int b)
 {
   myDSIndex = b;
 }

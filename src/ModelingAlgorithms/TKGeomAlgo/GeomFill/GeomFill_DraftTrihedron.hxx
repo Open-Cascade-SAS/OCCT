@@ -23,83 +23,78 @@
 #include <GeomFill_TrihedronLaw.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TColStd_Array1OfReal.hxx>
-
-class GeomFill_DraftTrihedron;
-DEFINE_STANDARD_HANDLE(GeomFill_DraftTrihedron, GeomFill_TrihedronLaw)
+#include <NCollection_Array1.hxx>
 
 class GeomFill_DraftTrihedron : public GeomFill_TrihedronLaw
 {
 
 public:
-  Standard_EXPORT GeomFill_DraftTrihedron(const gp_Vec& BiNormal, const Standard_Real Angle);
+  Standard_EXPORT GeomFill_DraftTrihedron(const gp_Vec& BiNormal, const double Angle);
 
-  Standard_EXPORT void SetAngle(const Standard_Real Angle);
+  Standard_EXPORT void SetAngle(const double Angle);
 
-  Standard_EXPORT virtual Handle(GeomFill_TrihedronLaw) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<GeomFill_TrihedronLaw> Copy() const override;
 
   //! compute Triedrhon and derivative Trihedron on curve at
   //! parameter <Param>
   //! Warning: It used only for C1 or C2 approximation
-  Standard_EXPORT virtual Standard_Boolean D0(const Standard_Real Param,
-                                              gp_Vec&             Tangent,
-                                              gp_Vec&             Normal,
-                                              gp_Vec&             BiNormal) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool D0(const double Param,
+                                  gp_Vec&      Tangent,
+                                  gp_Vec&      Normal,
+                                  gp_Vec&      BiNormal) override;
 
   //! compute Trihedron on curve
   //! first and second derivatives.
   //! Warning: It used only for C2 approximation
-  Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real Param,
-                                              gp_Vec&             Tangent,
-                                              gp_Vec&             DTangent,
-                                              gp_Vec&             Normal,
-                                              gp_Vec&             DNormal,
-                                              gp_Vec&             BiNormal,
-                                              gp_Vec&             DBiNormal) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool D1(const double Param,
+                                  gp_Vec&      Tangent,
+                                  gp_Vec&      DTangent,
+                                  gp_Vec&      Normal,
+                                  gp_Vec&      DNormal,
+                                  gp_Vec&      BiNormal,
+                                  gp_Vec&      DBiNormal) override;
 
-  Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real Param,
-                                              gp_Vec&             Tangent,
-                                              gp_Vec&             DTangent,
-                                              gp_Vec&             D2Tangent,
-                                              gp_Vec&             Normal,
-                                              gp_Vec&             DNormal,
-                                              gp_Vec&             D2Normal,
-                                              gp_Vec&             BiNormal,
-                                              gp_Vec&             DBiNormal,
-                                              gp_Vec&             D2BiNormal) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool D2(const double Param,
+                                  gp_Vec&      Tangent,
+                                  gp_Vec&      DTangent,
+                                  gp_Vec&      D2Tangent,
+                                  gp_Vec&      Normal,
+                                  gp_Vec&      DNormal,
+                                  gp_Vec&      D2Normal,
+                                  gp_Vec&      BiNormal,
+                                  gp_Vec&      DBiNormal,
+                                  gp_Vec&      D2BiNormal) override;
 
   //! Returns the number of intervals for continuity <S>.
   //! May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
-                                         const GeomAbs_Shape   S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
+                                         const GeomAbs_Shape         S) const override;
 
   //! Get average value of Tangent(t) and Normal(t) it is useful to
   //! make fast approximation of rational surfaces.
   Standard_EXPORT virtual void GetAverageLaw(gp_Vec& ATangent,
                                              gp_Vec& ANormal,
-                                             gp_Vec& ABiNormal) Standard_OVERRIDE;
+                                             gp_Vec& ABiNormal) override;
 
   //! Say if the law is Constant.
-  Standard_EXPORT virtual Standard_Boolean IsConstant() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsConstant() const override;
 
   //! Return True.
-  Standard_EXPORT virtual Standard_Boolean IsOnlyBy3dCurve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOnlyBy3dCurve() const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_DraftTrihedron, GeomFill_TrihedronLaw)
 
-protected:
 private:
-  gp_Vec        B;
-  Standard_Real myAngle;
-  Standard_Real myCos;
+  gp_Vec B;
+  double myAngle;
+  double myCos;
 };
 
 #endif // _GeomFill_DraftTrihedron_HeaderFile

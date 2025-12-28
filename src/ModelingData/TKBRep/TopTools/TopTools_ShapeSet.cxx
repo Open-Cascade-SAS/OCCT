@@ -33,7 +33,7 @@
 
 #include <string.h>
 
-const Standard_CString TopTools_ShapeSet::THE_ASCII_VERSIONS[TopTools_FormatVersion_UPPER + 1] = {
+const char* TopTools_ShapeSet::THE_ASCII_VERSIONS[TopTools_FormatVersion_UPPER + 1] = {
   "",
   "CASCADE Topology V1, (c) Matra-Datavision",
   "CASCADE Topology V2, (c) Matra-Datavision",
@@ -50,7 +50,7 @@ TopTools_ShapeSet::~TopTools_ShapeSet() {}
 
 //=================================================================================================
 
-void TopTools_ShapeSet::SetFormatNb(const Standard_Integer theFormatNb)
+void TopTools_ShapeSet::SetFormatNb(const int theFormatNb)
 {
   Standard_ASSERT_RETURN(theFormatNb >= TopTools_FormatVersion_LOWER
                            && theFormatNb <= TopTools_FormatVersion_UPPER,
@@ -61,7 +61,7 @@ void TopTools_ShapeSet::SetFormatNb(const Standard_Integer theFormatNb)
 
 //=================================================================================================
 
-Standard_Integer TopTools_ShapeSet::FormatNb() const
+int TopTools_ShapeSet::FormatNb() const
 {
   return myFormatNb;
 }
@@ -76,19 +76,19 @@ void TopTools_ShapeSet::Clear()
 
 //=================================================================================================
 
-Standard_Integer TopTools_ShapeSet::Add(const TopoDS_Shape& S)
+int TopTools_ShapeSet::Add(const TopoDS_Shape& S)
 {
   if (S.IsNull())
     return 0;
   myLocations.Add(S.Location());
   TopoDS_Shape S2 = S;
   S2.Location(TopLoc_Location());
-  Standard_Integer index = myShapes.FindIndex(S2);
+  int index = myShapes.FindIndex(S2);
   if (index == 0)
   {
     AddGeometry(S2);
 
-    for (TopoDS_Iterator its(S2, Standard_False, Standard_False); its.More(); its.Next())
+    for (TopoDS_Iterator its(S2, false, false); its.More(); its.Next())
       Add(its.Value());
     index = myShapes.Add(S2);
   }
@@ -97,14 +97,14 @@ Standard_Integer TopTools_ShapeSet::Add(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-const TopoDS_Shape& TopTools_ShapeSet::Shape(const Standard_Integer I) const
+const TopoDS_Shape& TopTools_ShapeSet::Shape(const int I) const
 {
   return myShapes(I);
 }
 
 //=================================================================================================
 
-Standard_Integer TopTools_ShapeSet::Index(const TopoDS_Shape& S) const
+int TopTools_ShapeSet::Index(const TopoDS_Shape& S) const
 {
   return myShapes.FindIndex(S);
 }
@@ -125,7 +125,7 @@ TopTools_LocationSet& TopTools_ShapeSet::ChangeLocations()
 
 //=================================================================================================
 
-static void PrintShapeEnum(const TopAbs_ShapeEnum T, Standard_OStream& S, Standard_Boolean C)
+static void PrintShapeEnum(const TopAbs_ShapeEnum T, Standard_OStream& S, bool C)
 {
   switch (T)
   {
@@ -197,7 +197,7 @@ static void PrintShapeEnum(const TopAbs_ShapeEnum T, Standard_OStream& S, Standa
 
 //=================================================================================================
 
-static void PrintOrientation(const TopAbs_Orientation O, Standard_OStream& S, Standard_Boolean C)
+static void PrintOrientation(const TopAbs_Orientation O, Standard_OStream& S, bool C)
 {
   switch (O)
   {
@@ -240,17 +240,17 @@ static void PrintOrientation(const TopAbs_Orientation O, Standard_OStream& S, St
 Standard_OStream& TopTools_ShapeSet::DumpExtent(Standard_OStream& OS) const
 {
 
-  Standard_Integer nbVERTEX    = 0;
-  Standard_Integer nbEDGE      = 0;
-  Standard_Integer nbWIRE      = 0;
-  Standard_Integer nbFACE      = 0;
-  Standard_Integer nbSHELL     = 0;
-  Standard_Integer nbSOLID     = 0;
-  Standard_Integer nbCOMPSOLID = 0;
-  Standard_Integer nbCOMPOUND  = 0;
-  Standard_Integer nbSHAPE     = myShapes.Extent();
+  int nbVERTEX    = 0;
+  int nbEDGE      = 0;
+  int nbWIRE      = 0;
+  int nbFACE      = 0;
+  int nbSHELL     = 0;
+  int nbSOLID     = 0;
+  int nbCOMPSOLID = 0;
+  int nbCOMPOUND  = 0;
+  int nbSHAPE     = myShapes.Extent();
 
-  for (Standard_Integer i = 1; i <= nbSHAPE; i++)
+  for (int i = 1; i <= nbSHAPE; i++)
   {
 
     switch (myShapes(i).ShapeType())
@@ -314,17 +314,17 @@ Standard_OStream& TopTools_ShapeSet::DumpExtent(Standard_OStream& OS) const
 void TopTools_ShapeSet::DumpExtent(TCollection_AsciiString& S) const
 {
 
-  Standard_Integer nbVERTEX    = 0;
-  Standard_Integer nbEDGE      = 0;
-  Standard_Integer nbWIRE      = 0;
-  Standard_Integer nbFACE      = 0;
-  Standard_Integer nbSHELL     = 0;
-  Standard_Integer nbSOLID     = 0;
-  Standard_Integer nbCOMPSOLID = 0;
-  Standard_Integer nbCOMPOUND  = 0;
-  Standard_Integer nbSHAPE     = myShapes.Extent();
+  int nbVERTEX    = 0;
+  int nbEDGE      = 0;
+  int nbWIRE      = 0;
+  int nbFACE      = 0;
+  int nbSHELL     = 0;
+  int nbSOLID     = 0;
+  int nbCOMPSOLID = 0;
+  int nbCOMPOUND  = 0;
+  int nbSHAPE     = myShapes.Extent();
 
-  for (Standard_Integer i = 1; i <= nbSHAPE; i++)
+  for (int i = 1; i <= nbSHAPE; i++)
   {
 
     switch (myShapes(i).ShapeType())
@@ -386,7 +386,7 @@ void TopTools_ShapeSet::Dump(Standard_OStream& OS) const
   // dump the shapes
   //-----------------------------------------
 
-  Standard_Integer i, nbShapes = myShapes.Extent();
+  int i, nbShapes = myShapes.Extent();
 
   OS << "\nDump of " << nbShapes << " TShapes";
   OS << "\n\n-----------------\n\n";
@@ -402,7 +402,7 @@ void TopTools_ShapeSet::Dump(Standard_OStream& OS) const
 
     // Type and flags
 
-    PrintShapeEnum(S.ShapeType(), OS, Standard_False);
+    PrintShapeEnum(S.ShapeType(), OS, false);
     OS << " ";
     OS << (S.Free() ? 1 : 0);
     OS << (S.Modified() ? 1 : 0);
@@ -416,11 +416,11 @@ void TopTools_ShapeSet::Dump(Standard_OStream& OS) const
 
     // sub-shapes
     OS << "    ";
-    TopoDS_Iterator its(S, Standard_False, Standard_False);
+    TopoDS_Iterator its(S, false, false);
     while (its.More())
     {
       const TopoDS_Shape& sub = its.Value();
-      PrintOrientation(sub.Orientation(), OS, Standard_True);
+      PrintOrientation(sub.Orientation(), OS, true);
       OS << nbShapes - myShapes.FindIndex(sub.Located(TopLoc_Location())) + 1;
       if (!sub.Location().IsIdentity())
         OS << "(L" << myLocations.Index(sub.Location()) << ")";
@@ -494,7 +494,7 @@ void TopTools_ShapeSet::Write(Standard_OStream& OS, const Message_ProgressRange&
   // write the shapes
   //-----------------------------------------
 
-  Standard_Integer i, nbShapes = myShapes.Extent();
+  int i, nbShapes = myShapes.Extent();
 
   OS << "\nTShapes " << nbShapes << "\n";
 
@@ -505,7 +505,7 @@ void TopTools_ShapeSet::Write(Standard_OStream& OS, const Message_ProgressRange&
     const TopoDS_Shape& S = myShapes(i);
 
     // Type
-    PrintShapeEnum(S.ShapeType(), OS, Standard_True);
+    PrintShapeEnum(S.ShapeType(), OS, true);
     OS << "\n";
 
     // Geometry
@@ -524,8 +524,8 @@ void TopTools_ShapeSet::Write(Standard_OStream& OS, const Message_ProgressRange&
 
     // sub-shapes
 
-    Standard_Integer l = 0;
-    TopoDS_Iterator  its(S, Standard_False, Standard_False);
+    int             l = 0;
+    TopoDS_Iterator its(S, false, false);
     while (its.More())
     {
       Write(its.Value(), OS);
@@ -596,29 +596,29 @@ void TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   Clear();
 
   // Check the version
-  char             vers[101];
-  Standard_Boolean anIsSetFormat = Standard_False;
+  char vers[101];
+  bool anIsSetFormat = false;
   do
   {
     IS.getline(vers, 100, '\n');
     // BUC60769 PTV 18.10.2000: remove possible '\r' at the end of the line
-    // Standard_Integer lv = strlen(vers);
+    // int lv = strlen(vers);
     // char *pm;
     // if(pm = strchr(vers,'\r'))
     //  *pm ='\0';
 
-    Standard_Size lv = strlen(vers);
+    size_t lv = strlen(vers);
     if (lv > 0)
     {
       for (lv--; lv > 0 && (vers[lv] == '\r' || vers[lv] == '\n'); lv--)
         vers[lv] = '\0';
     }
-    for (Standard_Integer i = TopTools_FormatVersion_LOWER; i <= TopTools_FormatVersion_UPPER; ++i)
+    for (int i = TopTools_FormatVersion_LOWER; i <= TopTools_FormatVersion_UPPER; ++i)
     {
       if (!strcmp(vers, THE_ASCII_VERSIONS[i]))
       {
         SetFormatNb(i);
-        anIsSetFormat = Standard_True;
+        anIsSetFormat = true;
         break;
       }
     }
@@ -677,7 +677,7 @@ void TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
     return;
   }
 
-  Standard_Integer i, nbShapes;
+  int i, nbShapes;
   IS >> nbShapes;
 
   // OCC19559
@@ -737,7 +737,7 @@ void TopTools_ShapeSet::Dump(const TopoDS_Shape& S, Standard_OStream& OS) const
     OS << "Null shape\n";
   OS << "Shape : " << myShapes.FindIndex(S.Located(TopLoc_Location()));
   OS << ", ";
-  PrintOrientation(S.Orientation(), OS, Standard_False);
+  PrintOrientation(S.Orientation(), OS, false);
   if (!S.Location().IsIdentity())
     OS << ", location : " << myLocations.Index(S.Location());
   OS << "\n";
@@ -751,7 +751,7 @@ void TopTools_ShapeSet::Write(const TopoDS_Shape& S, Standard_OStream& OS) const
     OS << "*";
   else
   {
-    PrintOrientation(S.Orientation(), OS, Standard_True);
+    PrintOrientation(S.Orientation(), OS, true);
     OS << myShapes.Extent() - myShapes.FindIndex(S.Located(TopLoc_Location())) + 1;
     OS << " " << myLocations.Index(S.Location()) << " ";
   }
@@ -766,9 +766,7 @@ void TopTools_ShapeSet::Read(TopoDS_Shape& S, Standard_IStream& IS) const
 
 //=================================================================================================
 
-void TopTools_ShapeSet::Read(TopoDS_Shape&          S,
-                             Standard_IStream&      IS,
-                             const Standard_Integer nbshapes) const
+void TopTools_ShapeSet::Read(TopoDS_Shape& S, Standard_IStream& IS, const int nbshapes) const
 {
   if (nbshapes < 1)
   {
@@ -802,9 +800,9 @@ void TopTools_ShapeSet::Read(TopoDS_Shape&          S,
         break;
     }
 
-    Standard_Integer l;
+    int l;
     IS >> l;
-    S.Location(myLocations.Location(l), Standard_False);
+    S.Location(myLocations.Location(l), false);
   }
 }
 
@@ -846,7 +844,7 @@ void TopTools_ShapeSet::Check(const TopAbs_ShapeEnum, TopoDS_Shape&) {}
 
 //=================================================================================================
 
-Standard_Integer TopTools_ShapeSet::NbShapes() const
+int TopTools_ShapeSet::NbShapes() const
 {
   return myShapes.Extent();
 }

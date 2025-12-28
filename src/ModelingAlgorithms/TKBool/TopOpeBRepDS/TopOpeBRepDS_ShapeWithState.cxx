@@ -15,21 +15,23 @@
 // commercial license or contractual agreement.
 
 #include <TopOpeBRepDS_ShapeWithState.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
 TopOpeBRepDS_ShapeWithState::TopOpeBRepDS_ShapeWithState()
     : myState(TopAbs_UNKNOWN),
-      myIsSplitted(Standard_False)
+      myIsSplitted(false)
 {
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& TopOpeBRepDS_ShapeWithState::Part(const TopAbs_State aState) const
+const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_ShapeWithState::Part(
+  const TopAbs_State aState) const
 {
-  static TopTools_ListOfShape myEmptyListOfShape;
+  static NCollection_List<TopoDS_Shape> myEmptyListOfShape;
   switch (aState)
   {
     case TopAbs_IN:
@@ -65,10 +67,10 @@ void TopOpeBRepDS_ShapeWithState::AddPart(const TopoDS_Shape& aShape, const TopA
 
 //=================================================================================================
 
-void TopOpeBRepDS_ShapeWithState::AddParts(const TopTools_ListOfShape& aListOfShape,
-                                           const TopAbs_State          aState)
+void TopOpeBRepDS_ShapeWithState::AddParts(const NCollection_List<TopoDS_Shape>& aListOfShape,
+                                           const TopAbs_State                    aState)
 {
-  TopTools_ListIteratorOfListOfShape anIt(aListOfShape);
+  NCollection_List<TopoDS_Shape>::Iterator anIt(aListOfShape);
 
   switch (aState)
   {
@@ -112,14 +114,14 @@ TopAbs_State TopOpeBRepDS_ShapeWithState::State() const
 
 //=================================================================================================
 
-void TopOpeBRepDS_ShapeWithState::SetIsSplitted(const Standard_Boolean aFlag)
+void TopOpeBRepDS_ShapeWithState::SetIsSplitted(const bool aFlag)
 {
   myIsSplitted = aFlag;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_ShapeWithState::IsSplitted() const
+bool TopOpeBRepDS_ShapeWithState::IsSplitted() const
 {
   return myIsSplitted;
 }

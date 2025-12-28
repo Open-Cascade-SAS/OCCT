@@ -26,14 +26,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_NamedDataDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_NamedDataDriver::BinMDataStd_NamedDataDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_NamedData)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_NamedDataDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_NamedDataDriver::NewEmpty() const
 {
   return new TDataStd_NamedData();
 }
@@ -42,47 +42,47 @@ Handle(TDF_Attribute) BinMDataStd_NamedDataDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                    const Handle(TDF_Attribute)& theTarget,
-                                                    BinObjMgt_RRelocationTable&) const
+bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                        const occ::handle<TDF_Attribute>& theTarget,
+                                        BinObjMgt_RRelocationTable&) const
 {
 
-  Handle(TDataStd_NamedData) T = Handle(TDataStd_NamedData)::DownCast(theTarget);
+  occ::handle<TDataStd_NamedData> T = occ::down_cast<TDataStd_NamedData>(theTarget);
   if (T.IsNull())
-    return Standard_False;
-  Standard_Integer aLower, anUpper, i;
+    return false;
+  int aLower, anUpper, i;
   if (!(theSource >> aLower >> anUpper))
-    return Standard_False;
-  //  const Standard_Integer aLength = anUpper - aLower + 1;
+    return false;
+  //  const int aLength = anUpper - aLower + 1;
   if (anUpper < aLower)
-    return Standard_False;
+    return false;
   if (anUpper | aLower)
   {
-    TColStd_DataMapOfStringInteger anIntegers;
+    NCollection_DataMap<TCollection_ExtendedString, int> anIntegers;
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
-      Standard_Integer           aValue;
+      int                        aValue;
       if (!(theSource >> aKey >> aValue))
-        return Standard_False;
+        return false;
       anIntegers.Bind(aKey, aValue);
     }
     T->ChangeIntegers(anIntegers);
   }
 
   if (!(theSource >> aLower >> anUpper))
-    return Standard_False;
+    return false;
   if (anUpper < aLower)
-    return Standard_False;
+    return false;
   if (anUpper | aLower)
   {
-    TDataStd_DataMapOfStringReal aReals;
+    NCollection_DataMap<TCollection_ExtendedString, double> aReals;
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
-      Standard_Real              aValue;
+      double                     aValue;
       if (!(theSource >> aKey >> aValue))
-        return Standard_False;
+        return false;
       aReals.Bind(aKey, aValue);
     }
     T->ChangeReals(aReals);
@@ -90,18 +90,18 @@ Standard_Boolean BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent& 
 
   // strings
   if (!(theSource >> aLower >> anUpper))
-    return Standard_False;
+    return false;
   if (anUpper < aLower)
-    return Standard_False;
+    return false;
   if (anUpper | aLower)
   {
-    TDataStd_DataMapOfStringString aStrings;
+    NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> aStrings;
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
       TCollection_ExtendedString aValue;
       if (!(theSource >> aKey >> aValue))
-        return Standard_False;
+        return false;
       aStrings.Bind(aKey, aValue);
     }
     T->ChangeStrings(aStrings);
@@ -109,49 +109,50 @@ Standard_Boolean BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent& 
 
   // Bytes
   if (!(theSource >> aLower >> anUpper))
-    return Standard_False;
+    return false;
   if (anUpper < aLower)
-    return Standard_False;
+    return false;
   if (anUpper | aLower)
   {
-    TDataStd_DataMapOfStringByte aBytes;
+    NCollection_DataMap<TCollection_ExtendedString, uint8_t> aBytes;
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
-      Standard_Byte              aValue;
+      uint8_t                    aValue;
       if (!(theSource >> aKey >> aValue))
-        return Standard_False;
-      aBytes.Bind(aKey, (Standard_Byte)aValue);
+        return false;
+      aBytes.Bind(aKey, (uint8_t)aValue);
     }
     T->ChangeBytes(aBytes);
   }
 
   // arrays of integers
   if (!(theSource >> aLower >> anUpper))
-    return Standard_False;
+    return false;
   if (anUpper < aLower)
-    return Standard_False;
-  Standard_Boolean aResult = Standard_False;
+    return false;
+  bool aResult = false;
   if (anUpper | aLower)
   {
-    TDataStd_DataMapOfStringHArray1OfInteger anIntArrays;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>
+      anIntArrays;
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
       if (!(theSource >> aKey))
-        return Standard_False;
-      Standard_Integer low, up;
+        return false;
+      int low, up;
       if (!(theSource >> low >> up))
-        return Standard_False;
+        return false;
       if (up < low)
-        return Standard_False;
+        return false;
       if (up | low)
       {
-        Handle(TColStd_HArray1OfInteger) aTargetArray = new TColStd_HArray1OfInteger(low, up);
+        occ::handle<NCollection_HArray1<int>> aTargetArray = new NCollection_HArray1<int>(low, up);
         if (!theSource.GetIntArray(&(aTargetArray->ChangeArray1())(low), up - low + 1))
-          return Standard_False;
+          return false;
 
-        Standard_Boolean Ok = anIntArrays.Bind(aKey, aTargetArray);
+        bool Ok = anIntArrays.Bind(aKey, aTargetArray);
         aResult |= Ok;
       }
     }
@@ -161,56 +162,59 @@ Standard_Boolean BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent& 
 
   // arrays of reals
   if (!(theSource >> aLower >> anUpper))
-    return Standard_False;
+    return false;
   if (anUpper < aLower)
-    return Standard_False;
-  aResult = Standard_False;
+    return false;
+  aResult = false;
   if (anUpper | aLower)
   {
-    TDataStd_DataMapOfStringHArray1OfReal aRealArrays;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>
+      aRealArrays;
     for (i = aLower; i <= anUpper; i++)
     {
       TCollection_ExtendedString aKey;
       if (!(theSource >> aKey))
-        return Standard_False;
-      Standard_Integer low, up;
+        return false;
+      int low, up;
       if (!(theSource >> low >> up))
-        return Standard_False;
+        return false;
       if (up < low)
-        return Standard_False;
+        return false;
       if (low | up)
       {
-        Handle(TColStd_HArray1OfReal) aTargetArray = new TColStd_HArray1OfReal(low, up);
+        occ::handle<NCollection_HArray1<double>> aTargetArray =
+          new NCollection_HArray1<double>(low, up);
         if (!theSource.GetRealArray(&(aTargetArray->ChangeArray1())(low), up - low + 1))
-          return Standard_False;
-        Standard_Boolean Ok = aRealArrays.Bind(aKey, aTargetArray);
+          return false;
+        bool Ok = aRealArrays.Bind(aKey, aTargetArray);
         aResult |= Ok;
       }
     }
     if (aResult)
       T->ChangeArraysOfReals(aRealArrays);
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                        BinObjMgt_Persistent&        theTarget,
-                                        BinObjMgt_SRelocationTable&) const
+void BinMDataStd_NamedDataDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDataStd_NamedData) S = Handle(TDataStd_NamedData)::DownCast(theSource);
+  occ::handle<TDataStd_NamedData> S = occ::down_cast<TDataStd_NamedData>(theSource);
   if (S.IsNull())
     return;
-  //  Standard_Integer i=0;
+  //  int i=0;
 
   S->LoadDeferredData();
   if (S->HasIntegers() && !S->GetIntegersContainer().IsEmpty())
   {
     theTarget.PutInteger(1) << S->GetIntegersContainer().Extent(); // dim
-    TColStd_DataMapIteratorOfDataMapOfStringInteger itr(S->GetIntegersContainer());
+    NCollection_DataMap<TCollection_ExtendedString, int>::Iterator itr(S->GetIntegersContainer());
     for (; itr.More(); itr.Next())
     {
       theTarget << itr.Key() << itr.Value(); // key - value;
@@ -224,7 +228,7 @@ void BinMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
   if (S->HasReals() && !S->GetRealsContainer().IsEmpty())
   {
     theTarget.PutInteger(1) << S->GetRealsContainer().Extent();
-    TDataStd_DataMapIteratorOfDataMapOfStringReal itr(S->GetRealsContainer());
+    NCollection_DataMap<TCollection_ExtendedString, double>::Iterator itr(S->GetRealsContainer());
     for (; itr.More(); itr.Next())
     {
       theTarget << itr.Key() << itr.Value();
@@ -238,7 +242,8 @@ void BinMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
   if (S->HasStrings() && !S->GetStringsContainer().IsEmpty())
   {
     theTarget.PutInteger(1) << S->GetStringsContainer().Extent();
-    TDataStd_DataMapIteratorOfDataMapOfStringString itr(S->GetStringsContainer());
+    NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator itr(
+      S->GetStringsContainer());
     for (; itr.More(); itr.Next())
     {
       theTarget << itr.Key() << itr.Value();
@@ -252,10 +257,10 @@ void BinMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
   if (S->HasBytes() && !S->GetBytesContainer().IsEmpty())
   {
     theTarget.PutInteger(1) << S->GetBytesContainer().Extent();
-    TDataStd_DataMapIteratorOfDataMapOfStringByte itr(S->GetBytesContainer());
+    NCollection_DataMap<TCollection_ExtendedString, uint8_t>::Iterator itr(S->GetBytesContainer());
     for (; itr.More(); itr.Next())
     {
-      theTarget << itr.Key() << (Standard_Byte)itr.Value();
+      theTarget << itr.Key() << (uint8_t)itr.Value();
     }
   }
   else
@@ -266,14 +271,14 @@ void BinMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
   if (S->HasArraysOfIntegers() && !S->GetArraysOfIntegersContainer().IsEmpty())
   {
     theTarget.PutInteger(1) << S->GetArraysOfIntegersContainer().Extent();
-    TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger itr(
-      S->GetArraysOfIntegersContainer());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator
+      itr(S->GetArraysOfIntegersContainer());
     for (; itr.More(); itr.Next())
     {
       theTarget << itr.Key(); // key
-      const TColStd_Array1OfInteger& anArr1 = itr.Value()->Array1();
+      const NCollection_Array1<int>& anArr1 = itr.Value()->Array1();
       theTarget << anArr1.Lower() << anArr1.Upper(); // value Arr1 dimensions
-      Standard_Integer* aPtr = (Standard_Integer*)&anArr1(anArr1.Lower());
+      int* aPtr = (int*)&anArr1(anArr1.Lower());
       theTarget.PutIntArray(aPtr, anArr1.Length());
     }
   }
@@ -285,13 +290,15 @@ void BinMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
   if (S->HasArraysOfReals() && !S->GetArraysOfRealsContainer().IsEmpty())
   {
     theTarget.PutInteger(1) << S->GetArraysOfRealsContainer().Extent(); // dim
-    TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal itr(S->GetArraysOfRealsContainer());
+    NCollection_DataMap<TCollection_ExtendedString,
+                        occ::handle<NCollection_HArray1<double>>>::Iterator
+      itr(S->GetArraysOfRealsContainer());
     for (; itr.More(); itr.Next())
     {
       theTarget << itr.Key(); // key
-      const TColStd_Array1OfReal& anArr1 = itr.Value()->Array1();
+      const NCollection_Array1<double>& anArr1 = itr.Value()->Array1();
       theTarget << anArr1.Lower() << anArr1.Upper(); // value Arr1 dimensions
-      Standard_Real* aPtr = (Standard_Real*)&anArr1(anArr1.Lower());
+      double* aPtr = (double*)&anArr1(anArr1.Lower());
       theTarget.PutRealArray(aPtr, anArr1.Length());
     }
   }

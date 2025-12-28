@@ -40,13 +40,13 @@ public:
   Standard_EXPORT virtual ~OpenGl_LayerList();
 
   //! Method returns the number of available priorities
-  Standard_Integer NbPriorities() const { return Graphic3d_DisplayPriority_NB; }
+  int NbPriorities() const { return Graphic3d_DisplayPriority_NB; }
 
   //! Number of displayed structures
-  Standard_Integer NbStructures() const { return myNbStructures; }
+  int NbStructures() const { return myNbStructures; }
 
   //! Return number of structures within immediate layers
-  Standard_Integer NbImmediateStructures() const { return myImmediateNbStructures; }
+  int NbImmediateStructures() const { return myImmediateNbStructures; }
 
   //! Insert a new layer with id.
   Standard_EXPORT void InsertLayerBefore(const Graphic3d_ZLayerId        theNewLayerId,
@@ -67,7 +67,7 @@ public:
   Standard_EXPORT void AddStructure(const OpenGl_Structure*         theStruct,
                                     const Graphic3d_ZLayerId        theLayerId,
                                     const Graphic3d_DisplayPriority thePriority,
-                                    Standard_Boolean isForChangePriority = Standard_False);
+                                    bool                            isForChangePriority = false);
 
   //! Remove structure from structure list and return its previous priority
   Standard_EXPORT void RemoveStructure(const OpenGl_Structure* theStructure);
@@ -98,22 +98,22 @@ public:
                                         const Graphic3d_ZLayerSettings& theSettings);
 
   //! Update culling state - should be called before rendering.
-  Standard_EXPORT void UpdateCulling(const Handle(OpenGl_Workspace)& theWorkspace,
-                                     const Standard_Boolean          theToDrawImmediate);
+  Standard_EXPORT void UpdateCulling(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                     const bool                           theToDrawImmediate);
 
   //! Render this element
-  Standard_EXPORT void Render(const Handle(OpenGl_Workspace)& theWorkspace,
-                              const Standard_Boolean          theToDrawImmediate,
-                              const OpenGl_LayerFilter        theFilterMode,
-                              const Graphic3d_ZLayerId        theLayersToProcess,
-                              OpenGl_FrameBuffer*             theReadDrawFbo,
-                              OpenGl_FrameBuffer*             theOitAccumFbo) const;
+  Standard_EXPORT void Render(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                              const bool                           theToDrawImmediate,
+                              const OpenGl_LayerFilter             theFilterMode,
+                              const Graphic3d_ZLayerId             theLayersToProcess,
+                              OpenGl_FrameBuffer*                  theReadDrawFbo,
+                              OpenGl_FrameBuffer*                  theOitAccumFbo) const;
 
   //! Returns the set of OpenGL Z-layers.
-  const NCollection_List<Handle(Graphic3d_Layer)>& Layers() const { return myLayers; }
+  const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers() const { return myLayers; }
 
   //! Returns the map of Z-layer IDs to indexes.
-  const NCollection_DataMap<Graphic3d_ZLayerId, Handle(Graphic3d_Layer)>& LayerIDs() const
+  const NCollection_DataMap<Graphic3d_ZLayerId, occ::handle<Graphic3d_Layer>>& LayerIDs() const
   {
     return myLayerIds;
   }
@@ -123,16 +123,16 @@ public:
   Standard_EXPORT void InvalidateBVHData(const Graphic3d_ZLayerId theLayerId);
 
   //! Returns structure modification state (for ray-tracing).
-  Standard_Size ModificationStateOfRaytracable() const { return myModifStateOfRaytraceable; }
+  size_t ModificationStateOfRaytracable() const { return myModifStateOfRaytraceable; }
 
   //! Returns BVH tree builder for frustum culling.
-  const Handle(BVH_Builder3d)& FrustumCullingBVHBuilder() const { return myBVHBuilder; }
+  const occ::handle<BVH_Builder3d>& FrustumCullingBVHBuilder() const { return myBVHBuilder; }
 
   //! Assigns BVH tree builder for frustum culling.
-  Standard_EXPORT void SetFrustumCullingBVHBuilder(const Handle(BVH_Builder3d)& theBuilder);
+  Standard_EXPORT void SetFrustumCullingBVHBuilder(const occ::handle<BVH_Builder3d>& theBuilder);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected:
   //! Stack of references to existing layers of predefined maximum size.
@@ -143,7 +143,7 @@ protected:
     typedef NCollection_Array1<const Graphic3d_Layer*>::iterator       iterator;
 
     //! Reallocate internal buffer of the stack.
-    void Allocate(Standard_Integer theSize)
+    void Allocate(int theSize)
     {
       if (theSize > 0)
       {
@@ -182,7 +182,7 @@ protected:
     iterator Origin() { return myStackSpace.IsEmpty() ? iterator() : myStackSpace.begin(); }
 
     //! Returns true if nothing has been pushed into the stack.
-    Standard_Boolean IsEmpty() const { return Back() == Origin(); }
+    bool IsEmpty() const { return Back() == Origin(); }
 
   private:
     NCollection_Array1<const OpenGl_Layer*> myStackSpace;
@@ -199,28 +199,28 @@ protected:
   //! @param[in] theReadDrawFbo  the framebuffer for reading depth and writing final color.
   //! @param[in] theOitAccumFbo  the framebuffer for accumulating color and coverage for OIT
   //! process.
-  Standard_EXPORT void renderTransparent(const Handle(OpenGl_Workspace)&   theWorkspace,
-                                         OpenGl_LayerStack::iterator&      theLayerIter,
-                                         const OpenGl_GlobalLayerSettings& theGlobalSettings,
-                                         OpenGl_FrameBuffer*               theReadDrawFbo,
-                                         OpenGl_FrameBuffer*               theOitAccumFbo) const;
+  Standard_EXPORT void renderTransparent(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                         OpenGl_LayerStack::iterator&         theLayerIter,
+                                         const OpenGl_GlobalLayerSettings&    theGlobalSettings,
+                                         OpenGl_FrameBuffer*                  theReadDrawFbo,
+                                         OpenGl_FrameBuffer*                  theOitAccumFbo) const;
 
   // Render structures within specified layer.
-  Standard_EXPORT void renderLayer(const Handle(OpenGl_Workspace)&   theWorkspace,
-                                   const OpenGl_GlobalLayerSettings& theDefaultSettings,
-                                   const Graphic3d_Layer&            theLayer) const;
+  Standard_EXPORT void renderLayer(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                   const OpenGl_GlobalLayerSettings&    theDefaultSettings,
+                                   const Graphic3d_Layer&               theLayer) const;
 
 protected:
-  NCollection_List<Handle(Graphic3d_Layer)>                        myLayers;
-  NCollection_DataMap<Graphic3d_ZLayerId, Handle(Graphic3d_Layer)> myLayerIds;
-  Handle(BVH_Builder3d) myBVHBuilder; //!< BVH tree builder for frustum culling
+  NCollection_List<occ::handle<Graphic3d_Layer>>                        myLayers;
+  NCollection_DataMap<Graphic3d_ZLayerId, occ::handle<Graphic3d_Layer>> myLayerIds;
+  occ::handle<BVH_Builder3d> myBVHBuilder; //!< BVH tree builder for frustum culling
 
-  Standard_Integer myNbStructures;
+  int myNbStructures;
   // clang-format off
-  Standard_Integer        myImmediateNbStructures; //!< number of structures within immediate layers
+  int        myImmediateNbStructures; //!< number of structures within immediate layers
   // clang-format on
 
-  mutable Standard_Size myModifStateOfRaytraceable;
+  mutable size_t myModifStateOfRaytraceable;
 
   //! Collection of references to layers with transparency gathered during rendering pass.
   mutable OpenGl_LayerStack myTransparentToProcess;

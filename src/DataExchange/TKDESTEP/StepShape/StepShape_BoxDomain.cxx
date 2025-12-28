@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_BoxDomain, Standard_Transient)
 
 StepShape_BoxDomain::StepShape_BoxDomain() {}
 
-void StepShape_BoxDomain::Init(const Handle(StepGeom_CartesianPoint)& aCorner,
-                               const Standard_Real                    aXlength,
-                               const Standard_Real                    aYlength,
-                               const Standard_Real                    aZlength)
+void StepShape_BoxDomain::Init(const occ::handle<StepGeom_CartesianPoint>& aCorner,
+                               const double                                aXlength,
+                               const double                                aYlength,
+                               const double                                aZlength)
 {
   // --- classe own fields ---
   corner  = aCorner;
@@ -31,42 +31,42 @@ void StepShape_BoxDomain::Init(const Handle(StepGeom_CartesianPoint)& aCorner,
   zlength = aZlength;
 }
 
-void StepShape_BoxDomain::SetCorner(const Handle(StepGeom_CartesianPoint)& aCorner)
+void StepShape_BoxDomain::SetCorner(const occ::handle<StepGeom_CartesianPoint>& aCorner)
 {
   corner = aCorner;
 }
 
-Handle(StepGeom_CartesianPoint) StepShape_BoxDomain::Corner() const
+occ::handle<StepGeom_CartesianPoint> StepShape_BoxDomain::Corner() const
 {
   return corner;
 }
 
-void StepShape_BoxDomain::SetXlength(const Standard_Real aXlength)
+void StepShape_BoxDomain::SetXlength(const double aXlength)
 {
   xlength = aXlength;
 }
 
-Standard_Real StepShape_BoxDomain::Xlength() const
+double StepShape_BoxDomain::Xlength() const
 {
   return xlength;
 }
 
-void StepShape_BoxDomain::SetYlength(const Standard_Real aYlength)
+void StepShape_BoxDomain::SetYlength(const double aYlength)
 {
   ylength = aYlength;
 }
 
-Standard_Real StepShape_BoxDomain::Ylength() const
+double StepShape_BoxDomain::Ylength() const
 {
   return ylength;
 }
 
-void StepShape_BoxDomain::SetZlength(const Standard_Real aZlength)
+void StepShape_BoxDomain::SetZlength(const double aZlength)
 {
   zlength = aZlength;
 }
 
-Standard_Real StepShape_BoxDomain::Zlength() const
+double StepShape_BoxDomain::Zlength() const
 {
   return zlength;
 }

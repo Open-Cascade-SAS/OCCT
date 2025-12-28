@@ -27,9 +27,9 @@ StepBasic_ConversionBasedUnitAndMassUnit::StepBasic_ConversionBasedUnitAndMassUn
 //=================================================================================================
 
 void StepBasic_ConversionBasedUnitAndMassUnit::Init(
-  const Handle(StepBasic_DimensionalExponents)& aDimensions,
-  const Handle(TCollection_HAsciiString)&       aName,
-  const Handle(Standard_Transient)&             aConversionFactor)
+  const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
+  const occ::handle<TCollection_HAsciiString>&       aName,
+  const occ::handle<Standard_Transient>&             aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
@@ -42,14 +42,14 @@ void StepBasic_ConversionBasedUnitAndMassUnit::Init(
 //=================================================================================================
 
 void StepBasic_ConversionBasedUnitAndMassUnit::SetMassUnit(
-  const Handle(StepBasic_MassUnit)& aMassUnit)
+  const occ::handle<StepBasic_MassUnit>& aMassUnit)
 {
   massUnit = aMassUnit;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_MassUnit) StepBasic_ConversionBasedUnitAndMassUnit::MassUnit() const
+occ::handle<StepBasic_MassUnit> StepBasic_ConversionBasedUnitAndMassUnit::MassUnit() const
 {
   return massUnit;
 }

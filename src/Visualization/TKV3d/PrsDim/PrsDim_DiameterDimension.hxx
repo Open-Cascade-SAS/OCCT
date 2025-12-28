@@ -22,8 +22,6 @@
 #include <Standard_Macro.hxx>
 #include <Standard_Type.hxx>
 
-DEFINE_STANDARD_HANDLE(PrsDim_DiameterDimension, PrsDim_Dimension)
-
 //! Diameter dimension. Can be constructed:
 //! - On generic circle.
 //! - On generic circle with user-defined anchor point on that circle
@@ -101,20 +99,18 @@ public:
   Standard_EXPORT void SetMeasuredGeometry(const TopoDS_Shape& theShape);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
 
-  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
 
 protected:
   //! Override this method to change logic of anchor point computation.
@@ -129,18 +125,17 @@ protected:
   Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if the center of the circle is on the plane.
-  Standard_EXPORT virtual Standard_Boolean CheckPlane(const gp_Pln& thePlane) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool CheckPlane(const gp_Pln& thePlane) const override;
 
-  Standard_EXPORT virtual Standard_Real ComputeValue() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double ComputeValue() const override;
 
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePresentation,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>& thePresentation,
+                                       const int                              theMode) override;
 
   Standard_EXPORT virtual void ComputeFlyoutSelection(
-    const Handle(SelectMgr_Selection)&   theSelection,
-    const Handle(SelectMgr_EntityOwner)& theEntityOwner) Standard_OVERRIDE;
+    const occ::handle<SelectMgr_Selection>&   theSelection,
+    const occ::handle<SelectMgr_EntityOwner>& theEntityOwner) override;
 
 protected:
   //! Compute points on the circle sides for the dimension plane.
@@ -154,10 +149,9 @@ protected:
                                          gp_Pnt&        theFirstPnt,
                                          gp_Pnt&        theSecondPnt);
 
-  Standard_EXPORT Standard_Boolean IsValidCircle(const gp_Circ& theCircle) const;
+  Standard_EXPORT bool IsValidCircle(const gp_Circ& theCircle) const;
 
-  Standard_EXPORT Standard_Boolean IsValidAnchor(const gp_Circ& theCircle,
-                                                 const gp_Pnt&  thePnt) const;
+  Standard_EXPORT bool IsValidAnchor(const gp_Circ& theCircle, const gp_Pnt& thePnt) const;
 
 private:
   gp_Circ      myCircle;

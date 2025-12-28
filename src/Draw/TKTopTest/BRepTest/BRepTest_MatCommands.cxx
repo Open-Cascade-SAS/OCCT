@@ -55,15 +55,15 @@ static BRepMAT2d_BisectingLocus MapBiLo;
 static BRepMAT2d_Explorer       anExplo;
 static BRepMAT2d_LinkTopoBilo   TopoBilo;
 static MAT_Side                 SideOfMat = MAT_Left;
-static Standard_Boolean         LinkComputed;
+static bool                     LinkComputed;
 
-static void DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer Indice);
+static void DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice);
 
 //==========================================================================
 // function : topoLoad
 //           loading of a face in the explorer.
 //==========================================================================
-static Standard_Integer topoload(Draw_Interpretor&, Standard_Integer argc, const char** argv)
+static int topoload(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 2)
     return 1;
@@ -77,8 +77,8 @@ static Standard_Integer topoload(Draw_Interpretor&, Standard_Integer argc, const
 
   if (argc >= 3 && (strcmp(argv[2], "-approx") == 0))
   {
-    Standard_Real aTol = 0.1;
-    aFace              = BRepOffsetAPI_MakeOffset::ConvertFace(aFace, aTol);
+    double aTol = 0.1;
+    aFace       = BRepOffsetAPI_MakeOffset::ConvertFace(aFace, aTol);
   }
 
   anExplo.Perform(aFace);
@@ -89,11 +89,11 @@ static Standard_Integer topoload(Draw_Interpretor&, Standard_Integer argc, const
 // function : drawcont
 //           visualization of the contour defined by the explorer.
 //==========================================================================
-static Standard_Integer drawcont(Draw_Interpretor&, Standard_Integer, const char**)
+static int drawcont(Draw_Interpretor&, int, const char**)
 {
-  Handle(Geom2d_TrimmedCurve) C;
+  occ::handle<Geom2d_TrimmedCurve> C;
 
-  for (Standard_Integer j = 1; j <= anExplo.NumberOfContours(); j++)
+  for (int j = 1; j <= anExplo.NumberOfContours(); j++)
   {
     for (anExplo.Init(j); anExplo.More(); anExplo.Next())
     {
@@ -108,18 +108,18 @@ static Standard_Integer drawcont(Draw_Interpretor&, Standard_Integer, const char
 //           calculate the map of locations bisector on the contour defined by
 //           the explorer.
 //==========================================================================
-static Standard_Integer mat(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int mat(Draw_Interpretor&, int n, const char** a)
 {
   GeomAbs_JoinType theJoinType = GeomAbs_Arc;
   if (n >= 2 && strcmp(a[1], "i") == 0)
     theJoinType = GeomAbs_Intersection;
 
-  Standard_Boolean IsOpenResult = Standard_False;
+  bool IsOpenResult = false;
   if (n == 3 && strcmp(a[2], "o") == 0)
-    IsOpenResult = Standard_True;
+    IsOpenResult = true;
 
   MapBiLo.Compute(anExplo, 1, SideOfMat, theJoinType, IsOpenResult);
-  LinkComputed = Standard_False;
+  LinkComputed = false;
 
   return 0;
 }
@@ -129,7 +129,7 @@ static Standard_Integer mat(Draw_Interpretor&, Standard_Integer n, const char** 
 //           construction and display of the proximity zone associated to the
 //           base elements defined by the edge or the vertex.
 //============================================================================
-static Standard_Integer zone(Draw_Interpretor&, Standard_Integer argc, const char** argv)
+static int zone(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 2)
     return 1;
@@ -143,17 +143,17 @@ static Standard_Integer zone(Draw_Interpretor&, Standard_Integer argc, const cha
   if (!LinkComputed)
   {
     TopoBilo.Perform(anExplo, MapBiLo);
-    LinkComputed = Standard_True;
+    LinkComputed = true;
   }
 
-  Standard_Boolean Reverse;
-  Handle(MAT_Zone) TheZone = new MAT_Zone();
+  bool                  Reverse;
+  occ::handle<MAT_Zone> TheZone = new MAT_Zone();
 
   for (TopoBilo.Init(S); TopoBilo.More(); TopoBilo.Next())
   {
-    const Handle(MAT_BasicElt)& BE = TopoBilo.Value();
+    const occ::handle<MAT_BasicElt>& BE = TopoBilo.Value();
     TheZone->Perform(BE);
-    for (Standard_Integer i = 1; i <= TheZone->NumberOfArcs(); i++)
+    for (int i = 1; i <= TheZone->NumberOfArcs(); i++)
     {
       DrawCurve(MapBiLo.GeomBis(TheZone->ArcOnFrontier(i), Reverse).Value(), 2);
     }
@@ -167,7 +167,7 @@ static Standard_Integer zone(Draw_Interpretor&, Standard_Integer argc, const cha
 //           side = right => calculation to the right of the contour.
 //==========================================================================
 
-static Standard_Integer side(Draw_Interpretor&, Standard_Integer, const char** argv)
+static int side(Draw_Interpretor&, int, const char** argv)
 {
   if (!strcmp(argv[1], "right"))
     SideOfMat = MAT_Right;
@@ -181,10 +181,10 @@ static Standard_Integer side(Draw_Interpretor&, Standard_Integer, const char** a
 // function : result
 //           Complete display of the calculated map.
 //==========================================================================
-static Standard_Integer result(Draw_Interpretor&, Standard_Integer, const char**)
+static int result(Draw_Interpretor&, int, const char**)
 {
-  Standard_Integer i, NbArcs = 0;
-  Standard_Boolean Rev;
+  int  i, NbArcs = 0;
+  bool Rev;
 
   NbArcs = MapBiLo.Graph()->NumberOfArcs();
 
@@ -203,28 +203,28 @@ static Standard_Integer result(Draw_Interpretor&, Standard_Integer, const char**
 //  Indice = 3 red,
 //  Indice = 4 green.
 //==========================================================================
-void DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer Indice)
+void DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice)
 {
-  Handle(Standard_Type)      type = aCurve->DynamicType();
-  Handle(Geom2d_Curve)       curve, CurveDraw;
-  Handle(DrawTrSurf_Curve2d) dr;
-  Draw_Color                 Couleur;
+  occ::handle<Standard_Type>      type = aCurve->DynamicType();
+  occ::handle<Geom2d_Curve>       curve, CurveDraw;
+  occ::handle<DrawTrSurf_Curve2d> dr;
+  Draw_Color                      Couleur;
 
   if (type == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
-    curve = Handle(Geom2d_TrimmedCurve)::DownCast(aCurve)->BasisCurve();
+    curve = occ::down_cast<Geom2d_TrimmedCurve>(aCurve)->BasisCurve();
     type  = curve->DynamicType();
     if (type == STANDARD_TYPE(Bisector_BisecAna))
     {
-      curve = Handle(Bisector_BisecAna)::DownCast(curve)->Geom2dCurve();
+      curve = occ::down_cast<Bisector_BisecAna>(curve)->Geom2dCurve();
       type  = curve->DynamicType();
     }
     // PB of representation of semi_infinite curves.
-    gp_Parab2d    gpParabola;
-    gp_Hypr2d     gpHyperbola;
-    Standard_Real Focus;
-    Standard_Real Limit = 50000.;
-    Standard_Real delta = 400;
+    gp_Parab2d gpParabola;
+    gp_Hypr2d  gpHyperbola;
+    double     Focus;
+    double     Limit = 50000.;
+    double     delta = 400;
 
     // PB of representation of semi_infinite curves.
     if (aCurve->LastParameter() == Precision::Infinite())
@@ -232,22 +232,22 @@ void DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer Indice
 
       if (type == STANDARD_TYPE(Geom2d_Parabola))
       {
-        gpParabola         = Handle(Geom2d_Parabola)::DownCast(curve)->Parab2d();
-        Focus              = gpParabola.Focal();
-        Standard_Real Val1 = std::sqrt(Limit * Focus);
-        Standard_Real Val2 = std::sqrt(Limit * Limit);
-        delta              = (Val1 <= Val2 ? Val1 : Val2);
+        gpParabola  = occ::down_cast<Geom2d_Parabola>(curve)->Parab2d();
+        Focus       = gpParabola.Focal();
+        double Val1 = std::sqrt(Limit * Focus);
+        double Val2 = std::sqrt(Limit * Limit);
+        delta       = (Val1 <= Val2 ? Val1 : Val2);
       }
       else if (type == STANDARD_TYPE(Geom2d_Hyperbola))
       {
-        gpHyperbola         = Handle(Geom2d_Hyperbola)::DownCast(curve)->Hypr2d();
-        Standard_Real Majr  = gpHyperbola.MajorRadius();
-        Standard_Real Minr  = gpHyperbola.MinorRadius();
-        Standard_Real Valu1 = Limit / Majr;
-        Standard_Real Valu2 = Limit / Minr;
-        Standard_Real Val1  = std::log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
-        Standard_Real Val2  = std::log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
-        delta               = (Val1 <= Val2 ? Val1 : Val2);
+        gpHyperbola  = occ::down_cast<Geom2d_Hyperbola>(curve)->Hypr2d();
+        double Majr  = gpHyperbola.MajorRadius();
+        double Minr  = gpHyperbola.MinorRadius();
+        double Valu1 = Limit / Majr;
+        double Valu2 = Limit / Minr;
+        double Val1  = std::log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
+        double Val2  = std::log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
+        delta        = (Val1 <= Val2 ? Val1 : Val2);
       }
       if (aCurve->FirstParameter() == -Precision::Infinite())
         CurveDraw = new Geom2d_TrimmedCurve(aCurve, -delta, delta);
@@ -276,14 +276,14 @@ void DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer Indice
   else if (Indice == 4)
     Couleur = Draw_vert;
 
-  Standard_Integer Discret = 50;
+  int Discret = 50;
 
   if (type == STANDARD_TYPE(Geom2d_Circle))
-    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 30, Standard_False);
+    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 30, false);
   else if (type == STANDARD_TYPE(Geom2d_Line))
-    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 2, Standard_False);
+    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 2, false);
   else
-    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, Discret, Standard_False);
+    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, Discret, false);
 
   dout << dr;
   dout.Flush();

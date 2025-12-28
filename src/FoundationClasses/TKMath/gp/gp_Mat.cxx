@@ -42,7 +42,7 @@ gp_Mat::gp_Mat(const gp_XYZ& theCol1, const gp_XYZ& theCol2, const gp_XYZ& theCo
 
 //=================================================================================================
 
-void gp_Mat::SetCol(const Standard_Integer theCol, const gp_XYZ& theValue)
+void gp_Mat::SetCol(const int theCol, const gp_XYZ& theValue)
 {
   Standard_OutOfRange_Raise_if(theCol < 1 || theCol > 3, " ");
   if (theCol == 1)
@@ -84,9 +84,9 @@ void gp_Mat::SetCols(const gp_XYZ& theCol1, const gp_XYZ& theCol2, const gp_XYZ&
 
 void gp_Mat::SetCross(const gp_XYZ& theRef)
 {
-  const Standard_Real X = theRef.X();
-  const Standard_Real Y = theRef.Y();
-  const Standard_Real Z = theRef.Z();
+  const double X = theRef.X();
+  const double Y = theRef.Y();
+  const double Z = theRef.Z();
   myMat[0][0] = myMat[1][1] = myMat[2][2] = 0.0;
 
   myMat[0][1] = -Z;
@@ -101,9 +101,9 @@ void gp_Mat::SetCross(const gp_XYZ& theRef)
 
 void gp_Mat::SetDot(const gp_XYZ& theRef) noexcept
 {
-  const Standard_Real X = theRef.X();
-  const Standard_Real Y = theRef.Y();
-  const Standard_Real Z = theRef.Z();
+  const double X = theRef.X();
+  const double Y = theRef.Y();
+  const double Z = theRef.Z();
 
   myMat[0][0] = X * X;
   myMat[1][1] = Y * Y;
@@ -119,28 +119,28 @@ void gp_Mat::SetDot(const gp_XYZ& theRef) noexcept
 
 //=================================================================================================
 
-void gp_Mat::SetRotation(const gp_XYZ& theAxis, const Standard_Real theAng)
+void gp_Mat::SetRotation(const gp_XYZ& theAxis, const double theAng)
 {
   // Rodrigues' rotation formula: R = I + sin(theta)K + (1-cos(theta))K^2
   // Where K is the skew-symmetric matrix of the normalized axis
   const gp_XYZ aV = theAxis.Normalized();
 
-  const Standard_Real A = aV.X();
-  const Standard_Real B = aV.Y();
-  const Standard_Real C = aV.Z();
+  const double A = aV.X();
+  const double B = aV.Y();
+  const double C = aV.Z();
 
   // Precompute trigonometric values
-  const Standard_Real aCos   = cos(theAng);
-  const Standard_Real aSin   = sin(theAng);
-  const Standard_Real aOmCos = 1.0 - aCos; // One minus cosine
+  const double aCos   = cos(theAng);
+  const double aSin   = sin(theAng);
+  const double aOmCos = 1.0 - aCos; // One minus cosine
 
   // Precompute terms
-  const Standard_Real A2 = A * A;
-  const Standard_Real B2 = B * B;
-  const Standard_Real C2 = C * C;
-  const Standard_Real AB = A * B;
-  const Standard_Real AC = A * C;
-  const Standard_Real BC = B * C;
+  const double A2 = A * A;
+  const double B2 = B * B;
+  const double C2 = C * C;
+  const double AB = A * B;
+  const double AC = A * C;
+  const double BC = B * C;
 
   // Direct matrix computation: R = I + sin(theta)K + (1-cos(theta))K^2
   // K^2 diagonal terms are -(sum of other two squared components)
@@ -160,7 +160,7 @@ void gp_Mat::SetRotation(const gp_XYZ& theAxis, const Standard_Real theAng)
 
 //=================================================================================================
 
-void gp_Mat::SetRow(const Standard_Integer theRow, const gp_XYZ& theValue)
+void gp_Mat::SetRow(const int theRow, const gp_XYZ& theValue)
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3, " ");
   if (theRow == 1)
@@ -200,7 +200,7 @@ void gp_Mat::SetRows(const gp_XYZ& theRow1, const gp_XYZ& theRow2, const gp_XYZ&
 
 //=================================================================================================
 
-gp_XYZ gp_Mat::Column(const Standard_Integer theCol) const
+gp_XYZ gp_Mat::Column(const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theCol < 1 || theCol > 3, "gp_Mat::Column() - wrong index");
   if (theCol == 1)
@@ -219,7 +219,7 @@ gp_XYZ gp_Mat::Diagonal() const
 
 //=================================================================================================
 
-gp_XYZ gp_Mat::Row(const Standard_Integer theRow) const
+gp_XYZ gp_Mat::Row(const int theRow) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3, "gp_Mat::Row() - wrong index");
   if (theRow == 1)
@@ -234,29 +234,29 @@ gp_XYZ gp_Mat::Row(const Standard_Integer theRow) const
 void gp_Mat::Invert()
 {
   // Optimized matrix inversion using cached elements
-  const Standard_Real a00 = myMat[0][0], a01 = myMat[0][1], a02 = myMat[0][2];
-  const Standard_Real a10 = myMat[1][0], a11 = myMat[1][1], a12 = myMat[1][2];
-  const Standard_Real a20 = myMat[2][0], a21 = myMat[2][1], a22 = myMat[2][2];
+  const double a00 = myMat[0][0], a01 = myMat[0][1], a02 = myMat[0][2];
+  const double a10 = myMat[1][0], a11 = myMat[1][1], a12 = myMat[1][2];
+  const double a20 = myMat[2][0], a21 = myMat[2][1], a22 = myMat[2][2];
 
   // Compute adjugate matrix (transpose of cofactor matrix)
-  const Standard_Real adj00 = a11 * a22 - a12 * a21;
-  const Standard_Real adj10 = a12 * a20 - a10 * a22;
-  const Standard_Real adj20 = a10 * a21 - a11 * a20;
-  const Standard_Real adj01 = a02 * a21 - a01 * a22;
-  const Standard_Real adj11 = a00 * a22 - a02 * a20;
-  const Standard_Real adj21 = a01 * a20 - a00 * a21;
-  const Standard_Real adj02 = a01 * a12 - a02 * a11;
-  const Standard_Real adj12 = a02 * a10 - a00 * a12;
-  const Standard_Real adj22 = a00 * a11 - a01 * a10;
+  const double adj00 = a11 * a22 - a12 * a21;
+  const double adj10 = a12 * a20 - a10 * a22;
+  const double adj20 = a10 * a21 - a11 * a20;
+  const double adj01 = a02 * a21 - a01 * a22;
+  const double adj11 = a00 * a22 - a02 * a20;
+  const double adj21 = a01 * a20 - a00 * a21;
+  const double adj02 = a01 * a12 - a02 * a11;
+  const double adj12 = a02 * a10 - a00 * a12;
+  const double adj22 = a00 * a11 - a01 * a10;
 
   // Compute determinant using first row expansion (reuse computed cofactors)
-  const Standard_Real aDet = a00 * adj00 + a01 * adj10 + a02 * adj20;
+  const double aDet = a00 * adj00 + a01 * adj10 + a02 * adj20;
 
   Standard_ConstructionError_Raise_if(std::abs(aDet) <= gp::Resolution(),
                                       "gp_Mat::Invert() - matrix has zero determinant");
 
   // Compute inverse: inv(A) = adj(A) / det(A)
-  const Standard_Real aInvDet = 1.0 / aDet;
+  const double aInvDet = 1.0 / aDet;
 
   // Direct assignment with scaling
   myMat[0][0] = adj00 * aInvDet;
@@ -281,7 +281,7 @@ gp_Mat gp_Mat::Inverted() const
 
 //=================================================================================================
 
-void gp_Mat::Power(const Standard_Integer theN)
+void gp_Mat::Power(const int theN)
 {
   // Optimized matrix exponentiation using fast binary exponentiation
   if (theN == 0)
@@ -302,16 +302,16 @@ void gp_Mat::Power(const Standard_Integer theN)
   }
 
   // Handle negative powers: A^(-n) = (A^(-1))^n
-  const Standard_Boolean isNegative = (theN < 0);
+  const bool isNegative = (theN < 0);
   if (isNegative)
   {
     Invert();
   }
 
   // Fast binary exponentiation for |theN| > 1
-  Standard_Integer power = isNegative ? -theN : theN;
-  gp_Mat           aBase = *this; // Base for exponentiation
-  SetIdentity();                  // Result starts as identity
+  int    power = isNegative ? -theN : theN;
+  gp_Mat aBase = *this; // Base for exponentiation
+  SetIdentity();        // Result starts as identity
 
   // Binary exponentiation: repeatedly square base and multiply when bit is set
   while (power > 0)
@@ -327,7 +327,7 @@ void gp_Mat::Power(const Standard_Integer theN)
 
 //=================================================================================================
 
-void gp_Mat::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void gp_Mat::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_VECTOR_CLASS(theOStream,
                          "gp_Mat",

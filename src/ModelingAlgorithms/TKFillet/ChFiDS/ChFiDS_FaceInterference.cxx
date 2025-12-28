@@ -27,7 +27,7 @@ ChFiDS_FaceInterference::ChFiDS_FaceInterference()
 {
 }
 
-void ChFiDS_FaceInterference::SetParameter(const Standard_Real U1, const Standard_Boolean IsFirst)
+void ChFiDS_FaceInterference::SetParameter(const double U1, const bool IsFirst)
 {
   if (IsFirst)
     SetFirstParameter(U1);
@@ -40,7 +40,7 @@ void ChFiDS_FaceInterference::SetTransition(const TopAbs_Orientation Trans)
   LineTransition = Trans;
 }
 
-Standard_Real ChFiDS_FaceInterference::Parameter(const Standard_Boolean IsFirst) const
+double ChFiDS_FaceInterference::Parameter(const bool IsFirst) const
 {
   if (IsFirst)
     return FirstParameter();

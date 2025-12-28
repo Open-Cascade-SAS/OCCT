@@ -23,9 +23,6 @@
 
 class StepBasic_ExternalSource;
 
-DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionReferenceWithLocalRepresentation,
-                       StepBasic_ProductDefinition)
-
 class StepBasic_ProductDefinitionReferenceWithLocalRepresentation
     : public StepBasic_ProductDefinition
 {
@@ -34,22 +31,26 @@ public:
   //! Returns a ProductDefinitionReferenceWithLocalRepresentation
   Standard_EXPORT StepBasic_ProductDefinitionReferenceWithLocalRepresentation();
 
-  Standard_EXPORT void Init(const Handle(StepBasic_ExternalSource)&             theSource,
-                            const Handle(TCollection_HAsciiString)&             theId,
-                            const Handle(TCollection_HAsciiString)&             theDescription,
-                            const Handle(StepBasic_ProductDefinitionFormation)& theFormation,
-                            const Handle(StepBasic_ProductDefinitionContext)& theFrameOfReference);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_ExternalSource>&             theSource,
+    const occ::handle<TCollection_HAsciiString>&             theId,
+    const occ::handle<TCollection_HAsciiString>&             theDescription,
+    const occ::handle<StepBasic_ProductDefinitionFormation>& theFormation,
+    const occ::handle<StepBasic_ProductDefinitionContext>&   theFrameOfReference);
 
   //! Returns field Source
-  inline Handle(StepBasic_ExternalSource) Source() const { return mySource; }
+  inline occ::handle<StepBasic_ExternalSource> Source() const { return mySource; }
 
   //! Set field Source
-  inline void SetSource(const Handle(StepBasic_ExternalSource)& theSource) { mySource = theSource; }
+  inline void SetSource(const occ::handle<StepBasic_ExternalSource>& theSource)
+  {
+    mySource = theSource;
+  }
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReferenceWithLocalRepresentation,
                           StepBasic_ProductDefinition)
 
 private:
-  Handle(StepBasic_ExternalSource) mySource;
+  occ::handle<StepBasic_ExternalSource> mySource;
 };
 #endif // _StepBasic_ProductDefinitionReferenceWithLocalRepresentation_HeaderFile

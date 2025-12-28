@@ -43,7 +43,7 @@ public:
                                            const math_IntegerVector& Order);
 
   //! returns True if all has been correctly done.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the value of the integral.
   const math_Vector& Value() const;
@@ -51,10 +51,9 @@ public:
   //! Prints information on the current state of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
-  math_Vector      Val;
-  Standard_Boolean Done;
+  math_Vector Val;
+  bool        Done;
 };
 
 #include <math_GaussSetIntegration.lxx>

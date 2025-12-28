@@ -31,16 +31,16 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_Application, TDocStd_Application)
 
 //=================================================================================================
 
-Handle(TObj_Application) TObj_Application::GetInstance()
+occ::handle<TObj_Application> TObj_Application::GetInstance()
 {
-  static Handle(TObj_Application) THE_TOBJ_APP(new TObj_Application);
+  static occ::handle<TObj_Application> THE_TOBJ_APP(new TObj_Application);
   return THE_TOBJ_APP;
 }
 
 //=================================================================================================
 
 TObj_Application::TObj_Application()
-    : myIsError(Standard_False)
+    : myIsError(false)
 {
   if (!Message_MsgFile::HasMsg("TObj_Appl_SUnknownFailure"))
   {
@@ -54,14 +54,14 @@ TObj_Application::TObj_Application()
   }
 
   myMessenger = new Message_Messenger;
-  myIsVerbose = Standard_False;
+  myIsVerbose = false;
 }
 
 //=================================================================================================
 
-Standard_CString TObj_Application::ResourcesName()
+const char* TObj_Application::ResourcesName()
 {
-  return Standard_CString("TObj");
+  return static_cast<const char*>("TObj");
 }
 
 //=======================================================================
@@ -69,8 +69,8 @@ Standard_CString TObj_Application::ResourcesName()
 // purpose  : Saving the OCAF document
 //=======================================================================
 
-Standard_Boolean TObj_Application::SaveDocument(const Handle(TDocStd_Document)&   theSourceDoc,
-                                                const TCollection_ExtendedString& theTargetFile)
+bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>& theSourceDoc,
+                                    const TCollection_ExtendedString&    theTargetFile)
 {
   const PCDM_StoreStatus aStatus = SaveAs(theSourceDoc, theTargetFile);
   myIsError                      = (aStatus != PCDM_SS_OK);
@@ -79,7 +79,7 @@ Standard_Boolean TObj_Application::SaveDocument(const Handle(TDocStd_Document)& 
 
   // Release free memory
   Standard::Purge();
-  return myIsError ? Standard_False : Standard_True;
+  return myIsError ? false : true;
 }
 
 //=======================================================================
@@ -87,8 +87,8 @@ Standard_Boolean TObj_Application::SaveDocument(const Handle(TDocStd_Document)& 
 // purpose  : Saving the OCAF document to a stream
 //=======================================================================
 
-Standard_Boolean TObj_Application::SaveDocument(const Handle(TDocStd_Document)& theSourceDoc,
-                                                Standard_OStream&               theOStream)
+bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>& theSourceDoc,
+                                    Standard_OStream&                    theOStream)
 {
   const PCDM_StoreStatus aStatus = SaveAs(theSourceDoc, theOStream);
   myIsError                      = (aStatus != PCDM_SS_OK);
@@ -97,7 +97,7 @@ Standard_Boolean TObj_Application::SaveDocument(const Handle(TDocStd_Document)& 
 
   // Release free memory
   Standard::Purge();
-  return myIsError ? Standard_False : Standard_True;
+  return myIsError ? false : true;
 }
 
 //=======================================================================
@@ -105,8 +105,8 @@ Standard_Boolean TObj_Application::SaveDocument(const Handle(TDocStd_Document)& 
 // purpose  : Loading the OCAF document
 //=======================================================================
 
-Standard_Boolean TObj_Application::LoadDocument(const TCollection_ExtendedString& theSourceFile,
-                                                Handle(TDocStd_Document)&         theTargetDoc)
+bool TObj_Application::LoadDocument(const TCollection_ExtendedString& theSourceFile,
+                                    occ::handle<TDocStd_Document>&    theTargetDoc)
 {
   PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;
   {
@@ -128,7 +128,7 @@ Standard_Boolean TObj_Application::LoadDocument(const TCollection_ExtendedString
 
   // Release free memory
   Standard::Purge();
-  return myIsError ? Standard_False : Standard_True;
+  return myIsError ? false : true;
 }
 
 //=======================================================================
@@ -136,8 +136,8 @@ Standard_Boolean TObj_Application::LoadDocument(const TCollection_ExtendedString
 // purpose  : Loading the OCAF document from a stream
 //=======================================================================
 
-Standard_Boolean TObj_Application::LoadDocument(Standard_IStream&         theIStream,
-                                                Handle(TDocStd_Document)& theTargetDoc)
+bool TObj_Application::LoadDocument(Standard_IStream&              theIStream,
+                                    occ::handle<TDocStd_Document>& theTargetDoc)
 {
   PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;
   {
@@ -159,20 +159,20 @@ Standard_Boolean TObj_Application::LoadDocument(Standard_IStream&         theISt
 
   // Release free memory
   Standard::Purge();
-  return myIsError ? Standard_False : Standard_True;
+  return myIsError ? false : true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Application::CreateNewDocument(Handle(TDocStd_Document)&         theDoc,
-                                                     const TCollection_ExtendedString& theFormat)
+bool TObj_Application::CreateNewDocument(occ::handle<TDocStd_Document>&    theDoc,
+                                         const TCollection_ExtendedString& theFormat)
 {
-  myIsError = Standard_False;
+  myIsError = false;
 
   // Create the Document
   NewDocument(theFormat, theDoc);
 
-  return myIsError ? Standard_False : Standard_True;
+  return myIsError ? false : true;
 }
 
 //=================================================================================================
@@ -185,7 +185,7 @@ void TObj_Application::ErrorMessage(const TCollection_ExtendedString& theMsg,
 
 //=================================================================================================
 
-void TObj_Application::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TObj_Application::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

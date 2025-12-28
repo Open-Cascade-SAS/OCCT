@@ -19,7 +19,8 @@
 #define TObj_ModelIterator_HeaderFile
 
 #include <TObj_Object.hxx>
-#include <TObj_SequenceOfIterator.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TObj_ObjectIterator.hxx>
 
 /**
  * This class provides an iterator by all objects in the model.
@@ -32,7 +33,7 @@ public:
    * Constructor
    */
   //! Creates Iterator and initialize it by Model`s label
-  Standard_EXPORT TObj_ModelIterator(const Handle(TObj_Model)& theModel);
+  Standard_EXPORT TObj_ModelIterator(const occ::handle<TObj_Model>& theModel);
 
 public:
   /**
@@ -41,13 +42,13 @@ public:
 
   //! Returns True if iteration is not finished and method Value()
   //! will give the object
-  virtual Standard_EXPORT Standard_Boolean More() const Standard_OVERRIDE;
+  virtual Standard_EXPORT bool More() const override;
 
   //! Iterates to the next object
-  virtual Standard_EXPORT void Next() Standard_OVERRIDE;
+  virtual Standard_EXPORT void Next() override;
 
   //! Returns current object (or MainObj of Model if iteration has finished)
-  virtual Standard_EXPORT Handle(TObj_Object) Value() const Standard_OVERRIDE;
+  virtual Standard_EXPORT occ::handle<TObj_Object> Value() const override;
 
 protected:
   /**
@@ -55,14 +56,15 @@ protected:
    */
 
   //! Add iterator on children of indicated object recursively.
-  virtual Standard_EXPORT void addIterator(const Handle(TObj_Object)& theObj);
+  virtual Standard_EXPORT void addIterator(const occ::handle<TObj_Object>& theObj);
 
 protected:
   /**
    * Fields
    */
-  Handle(TObj_Object)     myObject;  //!< Current object
-  TObj_SequenceOfIterator myIterSeq; //!< Sequence of iterators in model
+  occ::handle<TObj_Object> myObject; //!< Current object
+  NCollection_Sequence<occ::handle<TObj_ObjectIterator>>
+    myIterSeq; //!< Sequence of iterators in model
 
 public:
   //! CASCADE RTTI
@@ -70,8 +72,6 @@ public:
 };
 
 //! Define handle class for TObj_ObjectIterator
-DEFINE_STANDARD_HANDLE(TObj_ModelIterator, TObj_ObjectIterator)
-
 #endif
 
 #ifdef _MSC_VER

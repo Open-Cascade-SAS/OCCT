@@ -31,10 +31,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_Line, Geom_Curve)
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_Line::Copy() const
+occ::handle<Geom_Geometry> Geom_Line::Copy() const
 {
 
-  Handle(Geom_Line) L;
+  occ::handle<Geom_Line> L;
   L = new Geom_Line(pos);
   return L;
 }
@@ -69,7 +69,7 @@ void Geom_Line::Reverse()
 
 //=================================================================================================
 
-Standard_Real Geom_Line::ReversedParameter(const Standard_Real U) const
+double Geom_Line::ReversedParameter(const double U) const
 {
   return (-U);
 }
@@ -111,16 +111,16 @@ const gp_Ax1& Geom_Line::Position() const
 
 //=================================================================================================
 
-Standard_Boolean Geom_Line::IsClosed() const
+bool Geom_Line::IsClosed() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_Line::IsPeriodic() const
+bool Geom_Line::IsPeriodic() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -132,14 +132,14 @@ GeomAbs_Shape Geom_Line::Continuity() const
 
 //=================================================================================================
 
-Standard_Real Geom_Line::FirstParameter() const
+double Geom_Line::FirstParameter() const
 {
   return -Precision::Infinite();
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Line::LastParameter() const
+double Geom_Line::LastParameter() const
 {
   return Precision::Infinite();
 }
@@ -153,9 +153,9 @@ gp_Lin Geom_Line::Lin() const
 
 //=================================================================================================
 
-Standard_Boolean Geom_Line::IsCN(const Standard_Integer) const
+bool Geom_Line::IsCN(const int) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -167,14 +167,14 @@ void Geom_Line::Transform(const gp_Trsf& T)
 
 //=================================================================================================
 
-void Geom_Line::D0(const Standard_Real U, gp_Pnt& P) const
+void Geom_Line::D0(const double U, gp_Pnt& P) const
 {
   P = ElCLib::LineValue(U, pos);
 }
 
 //=================================================================================================
 
-void Geom_Line::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const
+void Geom_Line::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 {
 
   ElCLib::LineD1(U, pos, P, V1);
@@ -182,7 +182,7 @@ void Geom_Line::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const
 
 //=================================================================================================
 
-void Geom_Line::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+void Geom_Line::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
 
   ElCLib::LineD1(U, pos, P, V1);
@@ -191,7 +191,7 @@ void Geom_Line::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) con
 
 //=================================================================================================
 
-void Geom_Line::D3(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
+void Geom_Line::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
 
   ElCLib::LineD1(U, pos, P, V1);
@@ -201,7 +201,7 @@ void Geom_Line::D3(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_
 
 //=================================================================================================
 
-gp_Vec Geom_Line::DN(const Standard_Real, const Standard_Integer N) const
+gp_Vec Geom_Line::DN(const double, const int N) const
 {
 
   Standard_RangeError_Raise_if(N <= 0, " ");
@@ -213,7 +213,7 @@ gp_Vec Geom_Line::DN(const Standard_Real, const Standard_Integer N) const
 
 //=================================================================================================
 
-Standard_Real Geom_Line::TransformedParameter(const Standard_Real U, const gp_Trsf& T) const
+double Geom_Line::TransformedParameter(const double U, const gp_Trsf& T) const
 {
   if (Precision::IsInfinite(U))
     return U;
@@ -222,14 +222,14 @@ Standard_Real Geom_Line::TransformedParameter(const Standard_Real U, const gp_Tr
 
 //=================================================================================================
 
-Standard_Real Geom_Line::ParametricTransformation(const gp_Trsf& T) const
+double Geom_Line::ParametricTransformation(const gp_Trsf& T) const
 {
   return std::abs(T.ScaleFactor());
 }
 
 //=================================================================================================
 
-void Geom_Line::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Line::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_Curve)

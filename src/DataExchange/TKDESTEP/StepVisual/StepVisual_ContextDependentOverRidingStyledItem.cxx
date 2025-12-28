@@ -24,11 +24,12 @@ StepVisual_ContextDependentOverRidingStyledItem::StepVisual_ContextDependentOver
 }
 
 void StepVisual_ContextDependentOverRidingStyledItem::Init(
-  const Handle(TCollection_HAsciiString)&                        aName,
-  const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
-  const Handle(Standard_Transient)&                              aItem,
-  const Handle(StepVisual_StyledItem)&                           aOverRiddenStyle,
-  const Handle(StepVisual_HArray1OfStyleContextSelect)&          aStyleContext)
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>&
+                                                                         aStyles,
+  const occ::handle<Standard_Transient>&                                 aItem,
+  const occ::handle<StepVisual_StyledItem>&                              aOverRiddenStyle,
+  const occ::handle<NCollection_HArray1<StepVisual_StyleContextSelect>>& aStyleContext)
 {
   // --- classe own fields ---
   styleContext = aStyleContext;
@@ -37,24 +38,24 @@ void StepVisual_ContextDependentOverRidingStyledItem::Init(
 }
 
 void StepVisual_ContextDependentOverRidingStyledItem::SetStyleContext(
-  const Handle(StepVisual_HArray1OfStyleContextSelect)& aStyleContext)
+  const occ::handle<NCollection_HArray1<StepVisual_StyleContextSelect>>& aStyleContext)
 {
   styleContext = aStyleContext;
 }
 
-Handle(StepVisual_HArray1OfStyleContextSelect) StepVisual_ContextDependentOverRidingStyledItem::
-  StyleContext() const
+occ::handle<NCollection_HArray1<StepVisual_StyleContextSelect>>
+  StepVisual_ContextDependentOverRidingStyledItem::StyleContext() const
 {
   return styleContext;
 }
 
 StepVisual_StyleContextSelect StepVisual_ContextDependentOverRidingStyledItem::StyleContextValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return styleContext->Value(num);
 }
 
-Standard_Integer StepVisual_ContextDependentOverRidingStyledItem::NbStyleContext() const
+int StepVisual_ContextDependentOverRidingStyledItem::NbStyleContext() const
 {
   return styleContext->Length();
 }

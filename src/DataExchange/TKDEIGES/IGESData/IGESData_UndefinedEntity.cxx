@@ -22,7 +22,7 @@
 #include <IGESData_UndefinedEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
 #include <Interface_Check.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_UndefinedContent.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_Type.hxx>
@@ -40,21 +40,21 @@ IGESData_UndefinedEntity::IGESData_UndefinedEntity()
 
 //=================================================================================================
 
-Handle(Interface_UndefinedContent) IGESData_UndefinedEntity::UndefinedContent() const
+occ::handle<Interface_UndefinedContent> IGESData_UndefinedEntity::UndefinedContent() const
 {
   return thecont;
 }
 
 //=================================================================================================
 
-Handle(Interface_UndefinedContent) IGESData_UndefinedEntity::ChangeableContent()
+occ::handle<Interface_UndefinedContent> IGESData_UndefinedEntity::ChangeableContent()
 {
   return thecont;
 }
 
 //=================================================================================================
 
-void IGESData_UndefinedEntity::SetNewContent(const Handle(Interface_UndefinedContent)& cont)
+void IGESData_UndefinedEntity::SetNewContent(const occ::handle<Interface_UndefinedContent>& cont)
 {
   thecont = cont;
 }
@@ -63,14 +63,14 @@ void IGESData_UndefinedEntity::SetNewContent(const Handle(Interface_UndefinedCon
 
 //=================================================================================================
 
-Standard_Boolean IGESData_UndefinedEntity::IsOKDirPart() const
+bool IGESData_UndefinedEntity::IsOKDirPart() const
 {
   return (thedstat == 0);
 }
 
 //=================================================================================================
 
-Standard_Integer IGESData_UndefinedEntity::DirStatus() const
+int IGESData_UndefinedEntity::DirStatus() const
 {
   return thedstat;
 }
@@ -86,7 +86,7 @@ void IGESData_UndefinedEntity::SetOKDirPart()
 
 IGESData_DefType IGESData_UndefinedEntity::DefLineFont() const
 {
-  Standard_Integer st = ((thedstat / 4) & 3);
+  int st = ((thedstat / 4) & 3);
   if (st == 0)
     return IGESData_IGESEntity::DefLineFont();
   else if (st == 1)
@@ -99,7 +99,7 @@ IGESData_DefType IGESData_UndefinedEntity::DefLineFont() const
 
 IGESData_DefList IGESData_UndefinedEntity::DefLevel() const
 {
-  Standard_Integer st = ((thedstat / 16) & 3);
+  int st = ((thedstat / 16) & 3);
   if (st == 0)
     return IGESData_IGESEntity::DefLevel();
   else if (st == 1)
@@ -112,7 +112,7 @@ IGESData_DefList IGESData_UndefinedEntity::DefLevel() const
 
 IGESData_DefList IGESData_UndefinedEntity::DefView() const
 {
-  Standard_Integer st = ((thedstat / 64) & 3);
+  int st = ((thedstat / 64) & 3);
   if (st == 0)
     return IGESData_IGESEntity::DefView();
   else if (st == 1)
@@ -125,7 +125,7 @@ IGESData_DefList IGESData_UndefinedEntity::DefView() const
 
 IGESData_DefType IGESData_UndefinedEntity::DefColor() const
 {
-  Standard_Integer st = ((thedstat / 256) & 3);
+  int st = ((thedstat / 256) & 3);
   if (st == 0)
     return IGESData_IGESEntity::DefColor();
   else if (st == 1)
@@ -136,13 +136,13 @@ IGESData_DefType IGESData_UndefinedEntity::DefColor() const
 
 //=================================================================================================
 
-Standard_Boolean IGESData_UndefinedEntity::HasSubScriptNumber() const
+bool IGESData_UndefinedEntity::HasSubScriptNumber() const
 {
-  Standard_Integer st = ((thedstat / 1024) & 1);
+  int st = ((thedstat / 1024) & 1);
   if (st == 0)
     return IGESData_IGESEntity::HasSubScriptNumber();
   else
-    return Standard_False;
+    return false;
 }
 
 //   ReadDir verifies the data, if there are errors notes them (status),
@@ -150,9 +150,9 @@ Standard_Boolean IGESData_UndefinedEntity::HasSubScriptNumber() const
 
 //=================================================================================================
 
-Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESReaderData)& IR,
-                                                   IGESData_DirPart&                      DP,
-                                                   Handle(Interface_Check)&               ach)
+bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData>& IR,
+                                       IGESData_DirPart&                           DP,
+                                       occ::handle<Interface_Check>&               ach)
 {
   // MGE 23/07/98
   // =====================================
@@ -165,13 +165,13 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
   // Message_Msg Msg72 ("XSTEP_72");
   // =====================================
 
-  Standard_Integer   v[17];
-  Standard_Character res1[9], res2[9], lab[9], subs[9];
-  Standard_Integer   max = 2 * IR->NbRecords(); // max value for DSectNum
-  thedstat               = 0;
+  int  v[17];
+  char res1[9], res2[9], lab[9], subs[9];
+  int  max = 2 * IR->NbRecords(); // max value for DSectNum
+  thedstat = 0;
 
-  Handle(IGESData_IGESEntity) anent;
-  Standard_Boolean            iapb;
+  occ::handle<IGESData_IGESEntity> anent;
+  bool                             iapb;
   DP.Values(v[0],
             v[1],
             v[2],
@@ -194,14 +194,14 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
             lab,
             subs);
 
-  iapb = Standard_False;
+  iapb = false;
   if (v[3] < -max)
-    iapb = Standard_True;
+    iapb = true;
   else if (v[3] < 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[3]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_LineFontEntity)))
-      iapb = Standard_True;
+      iapb = true;
   }
   // Sending of message : Line Font Pattern field is incorrect.
   if (iapb)
@@ -212,14 +212,14 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
     v[3] = 0;
   }
 
-  iapb = Standard_False;
+  iapb = false;
   if (v[4] < -max)
-    iapb = Standard_True;
+    iapb = true;
   else if (v[4] < 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[4]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_LevelListEntity)))
-      iapb = Standard_True;
+      iapb = true;
   }
 
   // Sending of message : Level field is incorrect.
@@ -231,14 +231,14 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
     v[3] = 0;
   }
 
-  iapb = Standard_False;
+  iapb = false;
   if (v[5] < 0 || v[5] > max)
-    iapb = Standard_True;
+    iapb = true;
   else if (v[5] > 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 + v[5]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_ViewKindEntity)))
-      iapb = Standard_True;
+      iapb = true;
   }
 
   // Sending of message : View field is incorrect.
@@ -250,14 +250,14 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
     v[5] = 0;
   }
 
-  iapb = Standard_False;
+  iapb = false;
   if (v[6] < 0 || v[6] > max)
-    iapb = Standard_True;
+    iapb = true;
   else if (v[6] > 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 + v[6]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_TransfEntity)))
-      iapb = Standard_True;
+      iapb = true;
   }
 
   // Sending of message : Transformation Matrix field is incorrect
@@ -269,14 +269,14 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
     v[6] = 0;
   }
 
-  iapb = Standard_False;
+  iapb = false;
   if (v[7] < 0 || v[7] > max)
-    iapb = Standard_True;
+    iapb = true;
   else if (v[7] > 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 + v[7]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_LabelDisplayEntity)))
-      iapb = Standard_True;
+      iapb = true;
   }
 
   // Sending of message : Label Display Entity  field is incorrect.
@@ -288,9 +288,9 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
     v[7] = 0;
   }
 
-  iapb = Standard_False;
+  iapb = false;
   if (v[14] < -max || v[14] > max)
-    iapb = Standard_True;
+    iapb = true;
   else if (v[14] < 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[14]) / 2));
@@ -310,14 +310,14 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
     v[14] = 0;
   }
 
-  iapb = Standard_False;
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  iapb = false;
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = 0; i < 8; i++)
   {
     if (subs[i] == '\0')
       break; // end of line
     if (subs[i] != ' ' && (subs[i] < 48 || subs[i] > 57))
-      iapb = Standard_True;
+      iapb = true;
   }
 
   // Sending of message : Entity Subscript Number field is incorrect.
@@ -332,7 +332,7 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
 
   //  ...  End of this analysis : if necessary we rebuild DP  ...
   if (thedstat == 0)
-    return Standard_True;
+    return true;
   else
   {
     DP.Init(v[0],
@@ -356,7 +356,7 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
             res2,
             lab,
             subs);
-    return Standard_False;
+    return false;
   }
 }
 
@@ -364,13 +364,13 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir(const Handle(IGESData_IGESRea
 
 //=================================================================================================
 
-void IGESData_UndefinedEntity::ReadOwnParams(const Handle(IGESData_IGESReaderData)& /*IR*/,
+void IGESData_UndefinedEntity::ReadOwnParams(const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                              IGESData_ParamReader& PR)
 {
-  Standard_Integer nb = PR.NbParams();
+  int nb = PR.NbParams();
 
   thecont->Reservate(nb, nb);
-  for (Standard_Integer i = 1; i <= nb; i++)
+  for (int i = 1; i <= nb; i++)
   {
     Interface_ParamType ptyp = PR.ParamType(i);
     /*    if (PR.IsParamEntity(i)) {
@@ -388,8 +388,8 @@ void IGESData_UndefinedEntity::ReadOwnParams(const Handle(IGESData_IGESReaderDat
 
 void IGESData_UndefinedEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
 {
-  Standard_Integer nb = thecont->NbParams();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = thecont->NbParams();
+  for (int i = 1; i <= nb; i++)
   {
     Interface_ParamType ptyp = thecont->ParamType(i);
     if (ptyp == Interface_ParamVoid)

@@ -18,10 +18,10 @@
 
 RWStepShape_RWTypeQualifier::RWStepShape_RWTypeQualifier() {}
 
-void RWStepShape_RWTypeQualifier::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepShape_TypeQualifier)& ent) const
+void RWStepShape_RWTypeQualifier::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                                   num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepShape_TypeQualifier>& ent) const
 {
   // --- Number of Parameter Control ---
 
@@ -30,7 +30,7 @@ void RWStepShape_RWTypeQualifier::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   //--- Initialisation of the read entity ---
@@ -38,8 +38,8 @@ void RWStepShape_RWTypeQualifier::ReadStep(const Handle(StepData_StepReaderData)
   ent->Init(aName);
 }
 
-void RWStepShape_RWTypeQualifier::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepShape_TypeQualifier)& ent) const
+void RWStepShape_RWTypeQualifier::WriteStep(StepData_StepWriter&                        SW,
+                                            const occ::handle<StepShape_TypeQualifier>& ent) const
 {
   SW.Send(ent->Name());
 }

@@ -35,7 +35,7 @@ public:
   vtkTypeMacro(IVtkTools_DisplayModeFilter, IVtkTools_SubPolyDataFilter)
 
     static IVtkTools_DisplayModeFilter* New();
-  void PrintSelf(std::ostream& os, vtkIndent indent) Standard_OVERRIDE;
+  void PrintSelf(std::ostream& os, vtkIndent indent) override;
 
   //! Set display mode to define cells types to be passed through this filter.
   void SetDisplayMode(const IVtk_DisplayMode aMode);
@@ -47,10 +47,11 @@ public:
   IVtk_DisplayMode GetDisplayMode() const;
 
   //! Returns list of displaying mesh element types for the given display mode
-  const IVtk_IdTypeMap& MeshTypesForMode(IVtk_DisplayMode theMode) const;
+  const NCollection_Map<IVtk_IdType>& MeshTypesForMode(IVtk_DisplayMode theMode) const;
 
   //! Set a list of displaying mesh element types for the given display mode
-  void SetMeshTypesForMode(IVtk_DisplayMode theMode, const IVtk_IdTypeMap& theMeshTypes);
+  void SetMeshTypesForMode(IVtk_DisplayMode                    theMode,
+                           const NCollection_Map<IVtk_IdType>& theMeshTypes);
 
   //! Draw Boundary of faces for shading mode
   void SetFaceBoundaryDraw(bool theToDraw);
@@ -67,9 +68,7 @@ public:
 
 protected:
   //! Filter cells according to the given set of ids.
-  virtual int RequestData(vtkInformation*,
-                          vtkInformationVector**,
-                          vtkInformationVector*) Standard_OVERRIDE;
+  virtual int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) override;
 
   IVtkTools_DisplayModeFilter();
   virtual ~IVtkTools_DisplayModeFilter();
@@ -77,7 +76,7 @@ protected:
 protected:
   // clang-format off
   IVtk_DisplayMode      myDisplayMode;             //!< Display mode defining mesh types to pass through this filter
-  IVtk_IdTypeMap        myModesDefinition[2];
+  NCollection_Map<IVtk_IdType>        myModesDefinition[2];
   bool                  myDoDisplaySharedVertices;
 
   bool                  myDrawFaceBoundaries;      //!< Draw Face boundaries within shading display mode

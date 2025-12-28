@@ -26,18 +26,17 @@ namespace
 //! Auxiliary structure defining vertex with two attributes.
 struct OpenGl_Vec3Vec4ub
 {
-  Graphic3d_Vec3   Pos;
-  Graphic3d_Vec4ub Color;
+  NCollection_Vec3<float>   Pos;
+  NCollection_Vec4<uint8_t> Color;
 };
 
 //! Auxiliary function formatting rendering time in " 10 ms (100 FPS)" format.
-static TCollection_AsciiString formatTimeMs(Standard_Real theSeconds)
+static TCollection_AsciiString formatTimeMs(double theSeconds)
 {
-  const Standard_Real aFpsVal = theSeconds != 0.0 ? 1.0 / theSeconds : 0.0;
-  char                aFps[50];
+  const double aFpsVal = theSeconds != 0.0 ? 1.0 / theSeconds : 0.0;
+  char         aFps[50];
   Sprintf(aFps, "%.1f", aFpsVal);
-  return TCollection_AsciiString() + Standard_Integer(theSeconds * 1000.0) + " ms (" + aFps
-         + " FPS)";
+  return TCollection_AsciiString() + int(theSeconds * 1000.0) + " ms (" + aFps + " FPS)";
 }
 } // namespace
 
@@ -47,10 +46,10 @@ OpenGl_FrameStatsPrs::OpenGl_FrameStatsPrs()
     : myStatsPrev(new OpenGl_FrameStats()),
       myCountersTrsfPers(new Graphic3d_TransformPers(Graphic3d_TMF_2d,
                                                      Aspect_TOTP_LEFT_UPPER,
-                                                     Graphic3d_Vec2i(20, 20))),
+                                                     NCollection_Vec2<int>(20, 20))),
       myChartTrsfPers(new Graphic3d_TransformPers(Graphic3d_TMF_2d,
                                                   Aspect_TOTP_RIGHT_UPPER,
-                                                  Graphic3d_Vec2i(20, 20))),
+                                                  NCollection_Vec2<int>(20, 20))),
       myChartVertices(new OpenGl_VertexBuffer()),
       myChartIndices(new OpenGl_IndexBuffer()),
       myChartLines(new OpenGl_VertexBuffer())
@@ -80,17 +79,17 @@ void OpenGl_FrameStatsPrs::Release(OpenGl_Context* theCtx)
 
 //=================================================================================================
 
-void OpenGl_FrameStatsPrs::Update(const Handle(OpenGl_Workspace)& theWorkspace)
+void OpenGl_FrameStatsPrs::Update(const occ::handle<OpenGl_Workspace>& theWorkspace)
 {
-  const Handle(OpenGl_Context)&    aCtx        = theWorkspace->GetGlContext();
-  const Handle(OpenGl_FrameStats)& aStats      = aCtx->FrameStats();
-  const Graphic3d_RenderingParams& aRendParams = theWorkspace->View()->RenderingParams();
+  const occ::handle<OpenGl_Context>&    aCtx        = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_FrameStats>& aStats      = aCtx->FrameStats();
+  const Graphic3d_RenderingParams&      aRendParams = theWorkspace->View()->RenderingParams();
   myCountersTrsfPers = theWorkspace->View()->RenderingParams().StatsPosition;
   myChartTrsfPers    = theWorkspace->View()->RenderingParams().ChartPosition;
   myTextAspect.SetAspect(aRendParams.StatsTextAspect);
 
   // adjust text alignment depending on corner
-  Graphic3d_Text aParams((Standard_ShortReal)aRendParams.StatsTextHeight);
+  Graphic3d_Text aParams((float)aRendParams.StatsTextHeight);
   aParams.SetHorizontalAlignment(Graphic3d_HTA_CENTER);
   aParams.SetVerticalAlignment(Graphic3d_VTA_CENTER);
   if (!myCountersTrsfPers.IsNull() && (myCountersTrsfPers->Corner2d() & Aspect_TOTP_LEFT) != 0)
@@ -123,7 +122,7 @@ void OpenGl_FrameStatsPrs::Update(const Handle(OpenGl_Workspace)& theWorkspace)
     return;
   }
 
-  Handle(Graphic3d_Text) aText = myCountersText.Text();
+  occ::handle<Graphic3d_Text> aText = myCountersText.Text();
   aText->SetText(aStats->FormatStats(aRendParams.CollectedStats).ToCString());
   aText->SetHeight(aParams.Height());
   aText->SetPosition(gp_Pnt());
@@ -136,13 +135,13 @@ void OpenGl_FrameStatsPrs::Update(const Handle(OpenGl_Workspace)& theWorkspace)
 
 //=================================================================================================
 
-void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorkspace)
+void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theWorkspace)
 {
-  const Handle(OpenGl_Context)&    aCtx        = theWorkspace->GetGlContext();
-  const Handle(OpenGl_FrameStats)& aStats      = aCtx->FrameStats();
-  const Graphic3d_RenderingParams& aRendParams = theWorkspace->View()->RenderingParams();
+  const occ::handle<OpenGl_Context>&    aCtx        = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_FrameStats>& aStats      = aCtx->FrameStats();
+  const Graphic3d_RenderingParams&      aRendParams = theWorkspace->View()->RenderingParams();
 
-  const Standard_Integer aNbBins = aStats->DataFrames().Size();
+  const int aNbBins = aStats->DataFrames().Size();
   if (aNbBins <= 1)
   {
     myChartIndices->Release(aCtx.get());
@@ -151,11 +150,10 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
     return;
   }
 
-  Standard_Real aMaxDuration = aRendParams.StatsMaxChartTime;
+  double aMaxDuration = aRendParams.StatsMaxChartTime;
   if (aMaxDuration <= 0.0f)
   {
-    for (Standard_Integer aFrameIter = aStats->DataFrames().Lower();
-         aFrameIter <= aStats->DataFrames().Upper();
+    for (int aFrameIter = aStats->DataFrames().Lower(); aFrameIter <= aStats->DataFrames().Upper();
          ++aFrameIter)
     {
       const Graphic3d_FrameStatsData& aFrame = aStats->DataFrames().Value(aFrameIter);
@@ -168,23 +166,23 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
                                                                           // clang-format on
   }
 
-  const Standard_Integer          aNbTimers  = 4;
+  const int                       aNbTimers  = 4;
   const Graphic3d_FrameStatsTimer aTimers[4] = {
     Graphic3d_FrameStatsTimer_CpuDynamics,
     Graphic3d_FrameStatsTimer_CpuPicking,
     Graphic3d_FrameStatsTimer_CpuCulling,
     Graphic3d_FrameStatsTimer_ElapsedFrame,
   };
-  const Graphic3d_Vec4ub aColors[4] = {
-    Graphic3d_Vec4ub(255, 0, 0, 127),
-    Graphic3d_Vec4ub(255, 127, 39, 127),
-    Graphic3d_Vec4ub(255, 0, 0, 127),
-    Graphic3d_Vec4ub(0, 255, 0, 127),
+  const NCollection_Vec4<uint8_t> aColors[4] = {
+    NCollection_Vec4<uint8_t>(255, 0, 0, 127),
+    NCollection_Vec4<uint8_t>(255, 127, 39, 127),
+    NCollection_Vec4<uint8_t>(255, 0, 0, 127),
+    NCollection_Vec4<uint8_t>(0, 255, 0, 127),
   };
 
-  const Standard_Integer aNbVerts    = aNbBins * 4 * aNbTimers;
-  const Standard_Integer aNbIndexes  = aNbBins * 2 * 3 * aNbTimers;
-  bool                   toFillEdges = false;
+  const int aNbVerts    = aNbBins * 4 * aNbTimers;
+  const int aNbIndexes  = aNbBins * 2 * 3 * aNbTimers;
+  bool      toFillEdges = false;
   if (myChartArray.IsNull() || myChartArray->VertexNumber() != aNbVerts
       || myChartArray->EdgeNumber() != aNbIndexes)
   {
@@ -192,20 +190,20 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
     toFillEdges  = true;
   }
 
-  const Graphic3d_Vec2i aViewSize(aCtx->VirtualViewport()[2], aCtx->VirtualViewport()[3]);
-  Graphic3d_Vec2i       aCharSize(aRendParams.ChartSize);
+  const NCollection_Vec2<int> aViewSize(aCtx->VirtualViewport()[2], aCtx->VirtualViewport()[3]);
+  NCollection_Vec2<int>       aCharSize(aRendParams.ChartSize);
   if (aCharSize.x() <= 0)
   {
     aCharSize.x() = aViewSize.x() / 2;
   }
   if (aCharSize.y() <= 0)
   {
-    aCharSize.y() = Standard_Integer(0.15 * aViewSize.y());
+    aCharSize.y() = int(0.15 * aViewSize.y());
   }
 
-  const Graphic3d_Vec2d aBinSize(Standard_Real(aCharSize.x()) / Standard_Real(aNbBins),
-                                 0.15 * aViewSize.y());
-  Graphic3d_Vec2i       anOffset;
+  const NCollection_Vec2<double> aBinSize(double(aCharSize.x()) / double(aNbBins),
+                                          0.15 * aViewSize.y());
+  NCollection_Vec2<int>          anOffset;
   if (!myChartTrsfPers.IsNull() && myChartTrsfPers->IsTrihedronOr2d())
   {
     if ((myChartTrsfPers->Corner2d() & Aspect_TOTP_LEFT) != 0)
@@ -235,21 +233,20 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
     }
   }
 
-  Standard_Integer aVertLast = 1;
-  const bool       isTopDown = false;
-  for (Standard_Integer aFrameIter = 0; aFrameIter < aNbBins; ++aFrameIter)
+  int        aVertLast = 1;
+  const bool isTopDown = false;
+  for (int aFrameIter = 0; aFrameIter < aNbBins; ++aFrameIter)
   {
-    Standard_Integer aFrameIndex =
-      aStats->DataFrames().Lower() + aStats->LastDataFrameIndex() + 1 + aFrameIter;
+    int aFrameIndex = aStats->DataFrames().Lower() + aStats->LastDataFrameIndex() + 1 + aFrameIter;
     if (aFrameIndex > aStats->DataFrames().Upper())
     {
       aFrameIndex -= aNbBins;
     }
 
     const Graphic3d_FrameStatsData& aFrame       = aStats->DataFrames().Value(aFrameIndex);
-    Standard_Real                   aTimeElapsed = 0.0;
-    Standard_Real                   aCurrY       = 0.0;
-    for (Standard_Integer aTimerIter = 0; aTimerIter < aNbTimers; ++aTimerIter)
+    double                          aTimeElapsed = 0.0;
+    double                          aCurrY       = 0.0;
+    for (int aTimerIter = 0; aTimerIter < aNbTimers; ++aTimerIter)
     {
       if (aTimers[aTimerIter] == Graphic3d_FrameStatsTimer_ElapsedFrame)
       {
@@ -260,12 +257,12 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
         aTimeElapsed += aFrame.TimerValue(aTimers[aTimerIter]);
       }
 
-      const Standard_Real aBinX1     = anOffset.x() + Standard_Real(aFrameIter) * aBinSize.x();
-      const Standard_Real aBinX2     = aBinX1 + aBinSize.x();
-      const Standard_Real aCurrSizeY = std::min(aTimeElapsed / aMaxDuration, 1.2) * aBinSize.y();
-      const Standard_Real aBinY1 =
+      const double aBinX1     = anOffset.x() + double(aFrameIter) * aBinSize.x();
+      const double aBinX2     = aBinX1 + aBinSize.x();
+      const double aCurrSizeY = std::min(aTimeElapsed / aMaxDuration, 1.2) * aBinSize.y();
+      const double aBinY1 =
         isTopDown ? (anOffset.y() - aCurrY) : (anOffset.y() - aBinSize.y() + aCurrY);
-      const Standard_Real aBinY2 =
+      const double aBinY2 =
         isTopDown ? (anOffset.y() - aCurrSizeY) : (anOffset.y() - aBinSize.y() + aCurrSizeY);
       myChartArray->SetVertice(aVertLast + 0, gp_Pnt(aBinX1, aBinY2, 0.0));
       myChartArray->SetVertice(aVertLast + 1, gp_Pnt(aBinX1, aBinY1, 0.0));
@@ -274,7 +271,7 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
 
       if (toFillEdges)
       {
-        const Graphic3d_Vec4ub& aTimerColor = aColors[aTimerIter];
+        const NCollection_Vec4<uint8_t>& aTimerColor = aColors[aTimerIter];
         myChartArray->SetVertexColor(aVertLast + 0, aTimerColor);
         myChartArray->SetVertexColor(aVertLast + 1, aTimerColor);
         myChartArray->SetVertexColor(aVertLast + 2, aTimerColor);
@@ -318,15 +315,17 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
   }
 
   {
-    const Graphic3d_Vec4ub  aWhite(255, 255, 255, 255);
-    const OpenGl_Vec3Vec4ub aLines[4] = {
-      {Graphic3d_Vec3((float)anOffset.x(), (float)anOffset.y(), 0.0f), aWhite},
-      {Graphic3d_Vec3(float(anOffset.x() + aCharSize.x()), (float)anOffset.y(), 0.0f), aWhite},
-      {Graphic3d_Vec3((float)anOffset.x(), float(anOffset.y() - aBinSize.y()), 0.0f), aWhite},
-      {Graphic3d_Vec3(float(anOffset.x() + aCharSize.x()),
-                      float(anOffset.y() - aBinSize.y()),
-                      +0.0f),
-       aWhite},
+    const NCollection_Vec4<uint8_t> aWhite(255, 255, 255, 255);
+    const OpenGl_Vec3Vec4ub         aLines[4] = {
+      {NCollection_Vec3<float>((float)anOffset.x(), (float)anOffset.y(), 0.0f), aWhite},
+      {NCollection_Vec3<float>(float(anOffset.x() + aCharSize.x()), (float)anOffset.y(), 0.0f),
+               aWhite},
+      {NCollection_Vec3<float>((float)anOffset.x(), float(anOffset.y() - aBinSize.y()), 0.0f),
+               aWhite},
+      {NCollection_Vec3<float>(float(anOffset.x() + aCharSize.x()),
+                               float(anOffset.y() - aBinSize.y()),
+                               +0.0f),
+               aWhite},
     };
     myChartLines->init(aCtx,
                        sizeof(OpenGl_Vec3Vec4ub),
@@ -337,7 +336,7 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
   }
 
   {
-    Graphic3d_Text aParams((Standard_ShortReal)aRendParams.StatsTextHeight);
+    Graphic3d_Text aParams((float)aRendParams.StatsTextHeight);
     aParams.SetHorizontalAlignment((!myChartTrsfPers.IsNull() && myChartTrsfPers->IsTrihedronOr2d()
                                     && (myChartTrsfPers->Corner2d() & Aspect_TOTP_RIGHT) != 0)
                                      ? Graphic3d_HTA_RIGHT
@@ -374,13 +373,13 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
 
 //=================================================================================================
 
-void OpenGl_FrameStatsPrs::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_FrameStatsPrs::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
-  const Handle(OpenGl_Context)& aCtx            = theWorkspace->GetGlContext();
-  const Standard_Boolean        wasEnabledDepth = theWorkspace->UseDepthWrite();
+  const occ::handle<OpenGl_Context>& aCtx            = theWorkspace->GetGlContext();
+  const bool                         wasEnabledDepth = theWorkspace->UseDepthWrite();
   if (theWorkspace->UseDepthWrite())
   {
-    theWorkspace->UseDepthWrite() = Standard_False;
+    theWorkspace->UseDepthWrite() = false;
     aCtx->core11fwd->glDepthMask(GL_FALSE);
   }
   const bool wasDepthClamped = aCtx->arbDepthClamp && aCtx->core11fwd->glIsEnabled(GL_DEPTH_CLAMP);
@@ -424,13 +423,13 @@ void OpenGl_FrameStatsPrs::Render(const Handle(OpenGl_Workspace)& theWorkspace) 
     }
     aCtx->ApplyModelViewMatrix();
 
-    aCtx->ShaderManager()->BindFaceProgram(Handle(OpenGl_TextureSet)(),
+    aCtx->ShaderManager()->BindFaceProgram(occ::handle<OpenGl_TextureSet>(),
                                            Graphic3d_TypeOfShadingModel_Unlit,
                                            Graphic3d_AlphaMode_Blend,
                                            true,
                                            false,
-                                           Handle(OpenGl_ShaderProgram)());
-    aCtx->SetColor4fv(OpenGl_Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+                                           occ::handle<OpenGl_ShaderProgram>());
+    aCtx->SetColor4fv(NCollection_Vec4<float>(1.0f, 1.0f, 1.0f, 1.0f));
     aCtx->core15fwd->glEnable(GL_BLEND);
     aCtx->core15fwd->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     myChartVertices->Bind(aCtx);
@@ -445,7 +444,7 @@ void OpenGl_FrameStatsPrs::Render(const Handle(OpenGl_Workspace)& theWorkspace) 
                                    4,
                                    GL_UNSIGNED_BYTE,
                                    myChartVertices->GetComponentsNb(),
-                                   (void*)sizeof(Graphic3d_Vec3));
+                                   (void*)sizeof(NCollection_Vec3<float>));
 
     myChartIndices->Bind(aCtx);
     aCtx->core15fwd->glDrawElements(GL_TRIANGLES,
@@ -466,7 +465,7 @@ void OpenGl_FrameStatsPrs::Render(const Handle(OpenGl_Workspace)& theWorkspace) 
                                 4,
                                 GL_UNSIGNED_BYTE,
                                 myChartLines->GetComponentsNb(),
-                                (void*)sizeof(Graphic3d_Vec3));
+                                (void*)sizeof(NCollection_Vec3<float>));
     aCtx->core15fwd->glDrawArrays(GL_LINES, 0, myChartLines->GetElemsNb());
     myChartLines->Unbind(aCtx);
     myChartLines->unbindAttribute(aCtx, Graphic3d_TOA_COLOR);
@@ -496,7 +495,7 @@ void OpenGl_FrameStatsPrs::Render(const Handle(OpenGl_Workspace)& theWorkspace) 
 
 //=================================================================================================
 
-void OpenGl_FrameStatsPrs::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void OpenGl_FrameStatsPrs::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_FrameStatsPrs)
 

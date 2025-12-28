@@ -48,7 +48,7 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve()
 
 //=================================================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S)
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const occ::handle<Adaptor3d_Surface>& S)
     : mySurface(S),
       myIso(GeomAbs_NoneIso),
       myFirst(0.0),
@@ -59,9 +59,9 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S)
 
 //=================================================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S,
-                                       const GeomAbs_IsoType            theIso,
-                                       const Standard_Real              theParam)
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const occ::handle<Adaptor3d_Surface>& S,
+                                       const GeomAbs_IsoType                 theIso,
+                                       const double                          theParam)
     : mySurface(S),
       myIso(GeomAbs_NoneIso),
       myFirst(0.0),
@@ -73,11 +73,11 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S,
 
 //=================================================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& theS,
-                                       const GeomAbs_IsoType            theIso,
-                                       const Standard_Real              theParam,
-                                       const Standard_Real              theWFirst,
-                                       const Standard_Real              theWLast)
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const occ::handle<Adaptor3d_Surface>& theS,
+                                       const GeomAbs_IsoType                 theIso,
+                                       const double                          theParam,
+                                       const double                          theWFirst,
+                                       const double                          theWLast)
     : mySurface(theS),
       myIso(theIso),
       myFirst(theWFirst),
@@ -89,9 +89,9 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& theS,
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) Adaptor3d_IsoCurve::ShallowCopy() const
+occ::handle<Adaptor3d_Curve> Adaptor3d_IsoCurve::ShallowCopy() const
 {
-  Handle(Adaptor3d_IsoCurve) aCopy = new Adaptor3d_IsoCurve();
+  occ::handle<Adaptor3d_IsoCurve> aCopy = new Adaptor3d_IsoCurve();
 
   if (!mySurface.IsNull())
   {
@@ -107,7 +107,7 @@ Handle(Adaptor3d_Curve) Adaptor3d_IsoCurve::ShallowCopy() const
 
 //=================================================================================================
 
-void Adaptor3d_IsoCurve::Load(const Handle(Adaptor3d_Surface)& S)
+void Adaptor3d_IsoCurve::Load(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurface = S;
   myIso     = GeomAbs_NoneIso;
@@ -115,7 +115,7 @@ void Adaptor3d_IsoCurve::Load(const Handle(Adaptor3d_Surface)& S)
 
 //=================================================================================================
 
-void Adaptor3d_IsoCurve::Load(const GeomAbs_IsoType Iso, const Standard_Real Param)
+void Adaptor3d_IsoCurve::Load(const GeomAbs_IsoType Iso, const double Param)
 {
   switch (Iso)
   {
@@ -137,9 +137,9 @@ void Adaptor3d_IsoCurve::Load(const GeomAbs_IsoType Iso, const Standard_Real Par
 //=================================================================================================
 
 void Adaptor3d_IsoCurve::Load(const GeomAbs_IsoType Iso,
-                              const Standard_Real   Param,
-                              const Standard_Real   WFirst,
-                              const Standard_Real   WLast)
+                              const double          Param,
+                              const double          WFirst,
+                              const double          WLast)
 {
   myIso       = Iso;
   myParameter = Param;
@@ -159,7 +159,7 @@ void Adaptor3d_IsoCurve::Load(const GeomAbs_IsoType Iso,
 
   // Adjust the parameters on periodic surfaces
 
-  Standard_Real dummy = myParameter;
+  double dummy = myParameter;
 
   if (mySurface->IsUPeriodic())
   {
@@ -224,15 +224,15 @@ GeomAbs_Shape Adaptor3d_IsoCurve::Continuity() const
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
+int Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
 {
   if (myIso == GeomAbs_NoneIso)
     throw Standard_NoSuchObject();
-  Standard_Boolean UIso = (myIso == GeomAbs_IsoU);
+  bool UIso = (myIso == GeomAbs_IsoU);
 
-  Standard_Integer nbInter = UIso ? mySurface->NbVIntervals(S) : mySurface->NbUIntervals(S);
+  int nbInter = UIso ? mySurface->NbVIntervals(S) : mySurface->NbUIntervals(S);
 
-  TColStd_Array1OfReal T(1, nbInter + 1);
+  NCollection_Array1<double> T(1, nbInter + 1);
 
   if (UIso)
     mySurface->VIntervals(T, S);
@@ -242,10 +242,10 @@ Standard_Integer Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
   if (nbInter == 1)
     return nbInter;
 
-  Standard_Integer first = 1;
+  int first = 1;
   while (T(first) <= myFirst)
     first++;
-  Standard_Integer last = nbInter + 1;
+  int last = nbInter + 1;
   while (T(last) >= myLast)
     last--;
   return (last - first + 2);
@@ -253,15 +253,15 @@ Standard_Integer Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
 
 //=================================================================================================
 
-void Adaptor3d_IsoCurve::Intervals(TColStd_Array1OfReal& TI, const GeomAbs_Shape S) const
+void Adaptor3d_IsoCurve::Intervals(NCollection_Array1<double>& TI, const GeomAbs_Shape S) const
 {
   if (myIso == GeomAbs_NoneIso)
     throw Standard_NoSuchObject();
-  Standard_Boolean UIso = (myIso == GeomAbs_IsoU);
+  bool UIso = (myIso == GeomAbs_IsoU);
 
-  Standard_Integer nbInter = UIso ? mySurface->NbVIntervals(S) : mySurface->NbUIntervals(S);
+  int nbInter = UIso ? mySurface->NbVIntervals(S) : mySurface->NbUIntervals(S);
 
-  TColStd_Array1OfReal T(1, nbInter + 1);
+  NCollection_Array1<double> T(1, nbInter + 1);
 
   if (UIso)
     mySurface->VIntervals(T, S);
@@ -275,14 +275,14 @@ void Adaptor3d_IsoCurve::Intervals(TColStd_Array1OfReal& TI, const GeomAbs_Shape
     return;
   }
 
-  Standard_Integer first = 1;
+  int first = 1;
   while (T(first) <= myFirst)
     first++;
-  Standard_Integer last = nbInter + 1;
+  int last = nbInter + 1;
   while (T(last) >= myLast)
     last--;
 
-  Standard_Integer i = TI.Lower(), j;
+  int i = TI.Lower(), j;
   for (j = first - 1; j <= last + 1; j++)
   {
     TI(i) = T(j);
@@ -294,18 +294,18 @@ void Adaptor3d_IsoCurve::Intervals(TColStd_Array1OfReal& TI, const GeomAbs_Shape
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) Adaptor3d_IsoCurve::Trim(const Standard_Real First,
-                                                 const Standard_Real Last,
-                                                 const Standard_Real) const
+occ::handle<Adaptor3d_Curve> Adaptor3d_IsoCurve::Trim(const double First,
+                                                      const double Last,
+                                                      const double) const
 {
-  Handle(Adaptor3d_IsoCurve) HI = new Adaptor3d_IsoCurve(*this);
+  occ::handle<Adaptor3d_IsoCurve> HI = new Adaptor3d_IsoCurve(*this);
   HI->Load(myIso, myParameter, First, Last);
   return HI;
 }
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_IsoCurve::IsClosed() const
+bool Adaptor3d_IsoCurve::IsClosed() const
 {
   switch (myIso)
   {
@@ -323,7 +323,7 @@ Standard_Boolean Adaptor3d_IsoCurve::IsClosed() const
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_IsoCurve::IsPeriodic() const
+bool Adaptor3d_IsoCurve::IsPeriodic() const
 {
   switch (myIso)
   {
@@ -341,7 +341,7 @@ Standard_Boolean Adaptor3d_IsoCurve::IsPeriodic() const
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_IsoCurve::Period() const
+double Adaptor3d_IsoCurve::Period() const
 {
   switch (myIso)
   {
@@ -359,7 +359,7 @@ Standard_Real Adaptor3d_IsoCurve::Period() const
 
 //=================================================================================================
 
-gp_Pnt Adaptor3d_IsoCurve::Value(const Standard_Real T) const
+gp_Pnt Adaptor3d_IsoCurve::Value(const double T) const
 {
   switch (myIso)
   {
@@ -381,7 +381,7 @@ gp_Pnt Adaptor3d_IsoCurve::Value(const Standard_Real T) const
 
 //=================================================================================================
 
-void Adaptor3d_IsoCurve::D0(const Standard_Real T, gp_Pnt& P) const
+void Adaptor3d_IsoCurve::D0(const double T, gp_Pnt& P) const
 {
   switch (myIso)
   {
@@ -402,7 +402,7 @@ void Adaptor3d_IsoCurve::D0(const Standard_Real T, gp_Pnt& P) const
 
 //=================================================================================================
 
-void Adaptor3d_IsoCurve::D1(const Standard_Real T, gp_Pnt& P, gp_Vec& V) const
+void Adaptor3d_IsoCurve::D1(const double T, gp_Pnt& P, gp_Vec& V) const
 {
   gp_Vec dummy;
   switch (myIso)
@@ -424,7 +424,7 @@ void Adaptor3d_IsoCurve::D1(const Standard_Real T, gp_Pnt& P, gp_Vec& V) const
 
 //=================================================================================================
 
-void Adaptor3d_IsoCurve::D2(const Standard_Real T, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+void Adaptor3d_IsoCurve::D2(const double T, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
   gp_Vec dummy1, dummy2, dummy3;
   switch (myIso)
@@ -444,11 +444,7 @@ void Adaptor3d_IsoCurve::D2(const Standard_Real T, gp_Pnt& P, gp_Vec& V1, gp_Vec
 
 //=================================================================================================
 
-void Adaptor3d_IsoCurve::D3(const Standard_Real T,
-                            gp_Pnt&             P,
-                            gp_Vec&             V1,
-                            gp_Vec&             V2,
-                            gp_Vec&             V3) const
+void Adaptor3d_IsoCurve::D3(const double T, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
   gp_Vec dummy[6];
   switch (myIso)
@@ -492,7 +488,7 @@ void Adaptor3d_IsoCurve::D3(const Standard_Real T,
 
 //=================================================================================================
 
-gp_Vec Adaptor3d_IsoCurve::DN(const Standard_Real T, const Standard_Integer N) const
+gp_Vec Adaptor3d_IsoCurve::DN(const double T, const int N) const
 {
   switch (myIso)
   {
@@ -513,7 +509,7 @@ gp_Vec Adaptor3d_IsoCurve::DN(const Standard_Real T, const Standard_Integer N) c
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_IsoCurve::Resolution(const Standard_Real R3D) const
+double Adaptor3d_IsoCurve::Resolution(const double R3D) const
 {
   // Peut-on faire mieux ??
   return Precision::Parametric(R3D);
@@ -608,7 +604,7 @@ gp_Lin Adaptor3d_IsoCurve::Line() const
 
 //=================================================================================================
 
-static void computeHR(const gp_Ax3& axes, const gp_Pnt& P, Standard_Real& h, Standard_Real& radius)
+static void computeHR(const gp_Ax3& axes, const gp_Pnt& P, double& h, double& radius)
 {
   gp_Vec V(axes.Location(), P);
   h      = V * axes.Direction();
@@ -619,8 +615,8 @@ static void computeHR(const gp_Ax3& axes, const gp_Pnt& P, Standard_Real& h, Sta
 
 gp_Circ Adaptor3d_IsoCurve::Circle() const
 {
-  gp_Ax3        axes;
-  Standard_Real radius, h = 0.;
+  gp_Ax3 axes;
+  double radius, h = 0.;
 
   switch (mySurface->GetType())
   {
@@ -781,9 +777,9 @@ gp_Parab Adaptor3d_IsoCurve::Parabola() const
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_IsoCurve::Degree() const
+int Adaptor3d_IsoCurve::Degree() const
 {
-  Standard_Integer    degree = 0;
+  int                 degree = 0;
   GeomAbs_SurfaceType type   = mySurface->GetType();
   switch (type)
   {
@@ -835,9 +831,9 @@ Standard_Integer Adaptor3d_IsoCurve::Degree() const
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_IsoCurve::IsRational() const
+bool Adaptor3d_IsoCurve::IsRational() const
 {
-  Standard_Boolean    is_rational = Standard_False;
+  bool                is_rational = false;
   GeomAbs_SurfaceType type        = mySurface->GetType();
   switch (type)
   {
@@ -888,9 +884,9 @@ Standard_Boolean Adaptor3d_IsoCurve::IsRational() const
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_IsoCurve::NbPoles() const
+int Adaptor3d_IsoCurve::NbPoles() const
 {
-  Standard_Integer    nb_poles = 0;
+  int                 nb_poles = 0;
   GeomAbs_SurfaceType type     = mySurface->GetType();
   switch (type)
   {
@@ -944,9 +940,9 @@ Standard_Integer Adaptor3d_IsoCurve::NbPoles() const
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_IsoCurve::NbKnots() const
+int Adaptor3d_IsoCurve::NbKnots() const
 {
-  Standard_Integer    nb_knots = 0;
+  int                 nb_knots = 0;
   GeomAbs_SurfaceType type     = mySurface->GetType();
   switch (type)
   {
@@ -999,28 +995,28 @@ Standard_Integer Adaptor3d_IsoCurve::NbKnots() const
 
 //=================================================================================================
 
-Handle(Geom_BezierCurve) Adaptor3d_IsoCurve::Bezier() const
+occ::handle<Geom_BezierCurve> Adaptor3d_IsoCurve::Bezier() const
 {
-  Handle(Geom_BezierCurve) C;
+  occ::handle<Geom_BezierCurve> C;
   if (mySurface->GetType() == GeomAbs_SurfaceOfRevolution)
   {
     C = mySurface->BasisCurve()->Bezier();
-    C = Handle(Geom_BezierCurve)::DownCast(C->Copy());
+    C = occ::down_cast<Geom_BezierCurve>(C->Copy());
     C->Rotate(mySurface->AxeOfRevolution(), myParameter);
   }
   else if (mySurface->GetType() == GeomAbs_SurfaceOfExtrusion)
   {
     C = mySurface->BasisCurve()->Bezier();
-    C = Handle(Geom_BezierCurve)::DownCast(C->Copy());
+    C = occ::down_cast<Geom_BezierCurve>(C->Copy());
     C->Translate(myParameter * gp_Vec(mySurface->Direction()));
   }
   else if (myIso == GeomAbs_IsoU)
   {
-    C = Handle(Geom_BezierCurve)::DownCast(mySurface->Bezier()->UIso(myParameter));
+    C = occ::down_cast<Geom_BezierCurve>(mySurface->Bezier()->UIso(myParameter));
   }
   else
   {
-    C = Handle(Geom_BezierCurve)::DownCast(mySurface->Bezier()->VIso(myParameter));
+    C = occ::down_cast<Geom_BezierCurve>(mySurface->Bezier()->VIso(myParameter));
   }
   //  C->Segment(myFirst,myLast);
   return C;
@@ -1028,28 +1024,28 @@ Handle(Geom_BezierCurve) Adaptor3d_IsoCurve::Bezier() const
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) Adaptor3d_IsoCurve::BSpline() const
+occ::handle<Geom_BSplineCurve> Adaptor3d_IsoCurve::BSpline() const
 {
-  Handle(Geom_BSplineCurve) C;
+  occ::handle<Geom_BSplineCurve> C;
   if (mySurface->GetType() == GeomAbs_SurfaceOfRevolution)
   {
     C = mySurface->BasisCurve()->BSpline();
-    C = Handle(Geom_BSplineCurve)::DownCast(C->Copy());
+    C = occ::down_cast<Geom_BSplineCurve>(C->Copy());
     C->Rotate(mySurface->AxeOfRevolution(), myParameter);
   }
   else if (mySurface->GetType() == GeomAbs_SurfaceOfExtrusion)
   {
     C = mySurface->BasisCurve()->BSpline();
-    C = Handle(Geom_BSplineCurve)::DownCast(C->Copy());
+    C = occ::down_cast<Geom_BSplineCurve>(C->Copy());
     C->Translate(myParameter * gp_Vec(mySurface->Direction()));
   }
   else if (myIso == GeomAbs_IsoU)
   {
-    C = Handle(Geom_BSplineCurve)::DownCast(mySurface->BSpline()->UIso(myParameter));
+    C = occ::down_cast<Geom_BSplineCurve>(mySurface->BSpline()->UIso(myParameter));
   }
   else
   {
-    C = Handle(Geom_BSplineCurve)::DownCast(mySurface->BSpline()->VIso(myParameter));
+    C = occ::down_cast<Geom_BSplineCurve>(mySurface->BSpline()->VIso(myParameter));
   }
   //  C->Segment(myFirst,myLast);
   return C;

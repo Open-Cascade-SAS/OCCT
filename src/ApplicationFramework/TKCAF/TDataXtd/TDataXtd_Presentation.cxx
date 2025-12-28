@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Presentation, TDF_Attribute)
 
 //=================================================================================================
 
-Quantity_NameOfColor TDataXtd_Presentation::getColorNameFromOldEnum(Standard_Integer theOld)
+Quantity_NameOfColor TDataXtd_Presentation::getColorNameFromOldEnum(int theOld)
 {
-  Standard_Integer aNew = theOld;
+  int aNew = theOld;
   if (theOld >= 43)
   {
     --aNew;
@@ -157,9 +157,9 @@ Quantity_NameOfColor TDataXtd_Presentation::getColorNameFromOldEnum(Standard_Int
 
 //=================================================================================================
 
-Standard_Integer TDataXtd_Presentation::getOldColorNameFromNewEnum(Quantity_NameOfColor theNew)
+int TDataXtd_Presentation::getOldColorNameFromNewEnum(Quantity_NameOfColor theNew)
 {
-  Standard_Integer anOld = theNew;
+  int anOld = theNew;
   // clang-format off
   if (theNew >= Quantity_NOC_CHARTREUSE2)  { ++anOld; }  // Quantity_NOC_CHARTREUSE1 merged to Quantity_NOC_CHARTREUSE1
   if (theNew >= Quantity_NOC_GOLD2)        { ++anOld; }  // Quantity_NOC_GOLD1 merged to Quantity_NOC_GOLD
@@ -270,22 +270,22 @@ TDataXtd_Presentation::TDataXtd_Presentation()
       myMode(0),
       myTransparency(0.0),
       myWidth(0.0),
-      myIsDisplayed(Standard_False),
-      myHasOwnColor(Standard_False),
-      myHasOwnMaterial(Standard_False),
-      myHasOwnTransparency(Standard_False),
-      myHasOwnWidth(Standard_False),
-      myHasOwnMode(Standard_False),
-      myHasOwnSelectionMode(Standard_False)
+      myIsDisplayed(false),
+      myHasOwnColor(false),
+      myHasOwnMaterial(false),
+      myHasOwnTransparency(false),
+      myHasOwnWidth(false),
+      myHasOwnMode(false),
+      myHasOwnSelectionMode(false)
 {
 }
 
 //=================================================================================================
 
-Handle(TDataXtd_Presentation) TDataXtd_Presentation::Set(const TDF_Label&     theLabel,
-                                                         const Standard_GUID& theDriverId)
+occ::handle<TDataXtd_Presentation> TDataXtd_Presentation::Set(const TDF_Label&     theLabel,
+                                                              const Standard_GUID& theDriverId)
 {
-  Handle(TDataXtd_Presentation) aPresentation;
+  occ::handle<TDataXtd_Presentation> aPresentation;
 
   if (!theLabel.FindAttribute(TDataXtd_Presentation::GetID(), aPresentation))
   {
@@ -301,7 +301,7 @@ Handle(TDataXtd_Presentation) TDataXtd_Presentation::Set(const TDF_Label&     th
 
 void TDataXtd_Presentation::Unset(const TDF_Label& theLabel)
 {
-  Handle(TDataXtd_Presentation) aPresentation;
+  occ::handle<TDataXtd_Presentation> aPresentation;
   if (theLabel.FindAttribute(TDataXtd_Presentation::GetID(), aPresentation))
     theLabel.ForgetAttribute(aPresentation);
 }
@@ -341,56 +341,56 @@ void TDataXtd_Presentation::SetDriverGUID(const Standard_GUID& theGUID)
 
 //=================================================================================================
 
-Standard_Boolean TDataXtd_Presentation::IsDisplayed() const
+bool TDataXtd_Presentation::IsDisplayed() const
 {
   return myIsDisplayed;
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataXtd_Presentation::HasOwnMaterial() const
+bool TDataXtd_Presentation::HasOwnMaterial() const
 {
   return myHasOwnMaterial;
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataXtd_Presentation::HasOwnTransparency() const
+bool TDataXtd_Presentation::HasOwnTransparency() const
 {
   return myHasOwnTransparency;
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataXtd_Presentation::HasOwnColor() const
+bool TDataXtd_Presentation::HasOwnColor() const
 {
   return myHasOwnColor;
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataXtd_Presentation::HasOwnWidth() const
+bool TDataXtd_Presentation::HasOwnWidth() const
 {
   return myHasOwnWidth;
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataXtd_Presentation::HasOwnMode() const
+bool TDataXtd_Presentation::HasOwnMode() const
 {
   return myHasOwnMode;
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataXtd_Presentation::HasOwnSelectionMode() const
+bool TDataXtd_Presentation::HasOwnSelectionMode() const
 {
   return myHasOwnSelectionMode;
 }
 
 //=================================================================================================
 
-void TDataXtd_Presentation::SetDisplayed(const Standard_Boolean theIsDisplayed)
+void TDataXtd_Presentation::SetDisplayed(const bool theIsDisplayed)
 {
   if (myIsDisplayed != theIsDisplayed)
   {
@@ -401,25 +401,25 @@ void TDataXtd_Presentation::SetDisplayed(const Standard_Boolean theIsDisplayed)
 
 //=================================================================================================
 
-void TDataXtd_Presentation::SetMaterialIndex(const Standard_Integer theMaterialIndex)
+void TDataXtd_Presentation::SetMaterialIndex(const int theMaterialIndex)
 {
   if (!myHasOwnMaterial || myMaterialIndex != theMaterialIndex)
   {
     Backup();
     myMaterialIndex  = theMaterialIndex;
-    myHasOwnMaterial = Standard_True;
+    myHasOwnMaterial = true;
   }
 }
 
 //=================================================================================================
 
-void TDataXtd_Presentation::SetTransparency(const Standard_Real theValue)
+void TDataXtd_Presentation::SetTransparency(const double theValue)
 {
   if (!myHasOwnTransparency || myTransparency != theValue)
   {
     Backup();
     myTransparency       = theValue;
-    myHasOwnTransparency = Standard_True;
+    myHasOwnTransparency = true;
   }
 }
 
@@ -431,31 +431,31 @@ void TDataXtd_Presentation::SetColor(const Quantity_NameOfColor theColor)
   {
     Backup();
     myColor       = theColor;
-    myHasOwnColor = Standard_True;
+    myHasOwnColor = true;
   }
 }
 
 //=================================================================================================
 
-void TDataXtd_Presentation::SetWidth(const Standard_Real theWidth)
+void TDataXtd_Presentation::SetWidth(const double theWidth)
 {
   if (!myHasOwnWidth || myWidth != theWidth)
   {
     Backup();
     myWidth       = theWidth;
-    myHasOwnWidth = Standard_True;
+    myHasOwnWidth = true;
   }
 }
 
 //=================================================================================================
 
-void TDataXtd_Presentation::SetMode(const Standard_Integer theMode)
+void TDataXtd_Presentation::SetMode(const int theMode)
 {
   if (!myHasOwnMode || myMode != theMode)
   {
     Backup();
     myMode       = theMode;
-    myHasOwnMode = Standard_True;
+    myHasOwnMode = true;
   }
 }
 
@@ -464,15 +464,14 @@ void TDataXtd_Presentation::SetMode(const Standard_Integer theMode)
 // purpose  : Returns the number of selection modes of the attribute.
 //         : It starts with 1 .. GetNbSelectionModes().
 //=======================================================================
-Standard_EXPORT Standard_Integer TDataXtd_Presentation::GetNbSelectionModes() const
+Standard_EXPORT int TDataXtd_Presentation::GetNbSelectionModes() const
 {
   return mySelectionModes.Extent();
 }
 
 //=================================================================================================
 
-void TDataXtd_Presentation::SetSelectionMode(const Standard_Integer theSelectionMode,
-                                             const Standard_Boolean theTransaction)
+void TDataXtd_Presentation::SetSelectionMode(const int theSelectionMode, const bool theTransaction)
 {
   if (!myHasOwnSelectionMode || GetNbSelectionModes() > 1
       || (GetNbSelectionModes() > 0 && mySelectionModes.First() != theSelectionMode))
@@ -481,34 +480,33 @@ void TDataXtd_Presentation::SetSelectionMode(const Standard_Integer theSelection
       Backup();
     mySelectionModes.Clear();
     mySelectionModes.Append(theSelectionMode);
-    myHasOwnSelectionMode = Standard_True;
+    myHasOwnSelectionMode = true;
   }
 }
 
 //=================================================================================================
 
-void TDataXtd_Presentation::AddSelectionMode(const Standard_Integer theSelectionMode,
-                                             const Standard_Boolean theTransaction)
+void TDataXtd_Presentation::AddSelectionMode(const int theSelectionMode, const bool theTransaction)
 {
   if (!myHasOwnSelectionMode || !HasSelectionMode(theSelectionMode))
   {
     if (theTransaction)
       Backup();
     mySelectionModes.Append(theSelectionMode);
-    myHasOwnSelectionMode = Standard_True;
+    myHasOwnSelectionMode = true;
   }
 }
 
 //=================================================================================================
 
-Standard_Integer TDataXtd_Presentation::MaterialIndex() const
+int TDataXtd_Presentation::MaterialIndex() const
 {
   return myMaterialIndex;
 }
 
 //=================================================================================================
 
-Standard_Real TDataXtd_Presentation::Transparency() const
+double TDataXtd_Presentation::Transparency() const
 {
   return myTransparency;
 }
@@ -522,25 +520,25 @@ Quantity_NameOfColor TDataXtd_Presentation::Color() const
 
 //=================================================================================================
 
-Standard_Real TDataXtd_Presentation::Width() const
+double TDataXtd_Presentation::Width() const
 {
   return myWidth;
 }
 
 //=================================================================================================
 
-Standard_Integer TDataXtd_Presentation::Mode() const
+int TDataXtd_Presentation::Mode() const
 {
   return myMode;
 }
 
 //=================================================================================================
 
-Standard_Integer TDataXtd_Presentation::SelectionMode(const Standard_Integer index) const
+int TDataXtd_Presentation::SelectionMode(const int index) const
 {
-  Standard_Integer                aSelectionMode(0);
-  TColStd_ListOfInteger::Iterator itr(mySelectionModes);
-  for (Standard_Integer i = 1; itr.More() && i <= index; itr.Next(), i++)
+  int                             aSelectionMode(0);
+  NCollection_List<int>::Iterator itr(mySelectionModes);
+  for (int i = 1; itr.More() && i <= index; itr.Next(), i++)
   {
     if (i == index)
       aSelectionMode = itr.Value();
@@ -555,7 +553,7 @@ void TDataXtd_Presentation::UnsetMaterial()
   if (myHasOwnMaterial)
   {
     Backup();
-    myHasOwnMaterial = Standard_False;
+    myHasOwnMaterial = false;
   }
 }
 
@@ -566,7 +564,7 @@ void TDataXtd_Presentation::UnsetTransparency()
   if (myHasOwnTransparency)
   {
     Backup();
-    myHasOwnTransparency = Standard_False;
+    myHasOwnTransparency = false;
   }
 }
 
@@ -577,7 +575,7 @@ void TDataXtd_Presentation::UnsetColor()
   if (myHasOwnColor)
   {
     Backup();
-    myHasOwnColor = Standard_False;
+    myHasOwnColor = false;
   }
 }
 
@@ -588,7 +586,7 @@ void TDataXtd_Presentation::UnsetWidth()
   if (myHasOwnWidth)
   {
     Backup();
-    myHasOwnWidth = Standard_False;
+    myHasOwnWidth = false;
   }
 }
 
@@ -599,7 +597,7 @@ void TDataXtd_Presentation::UnsetMode()
   if (myHasOwnMode)
   {
     Backup();
-    myHasOwnMode = Standard_False;
+    myHasOwnMode = false;
   }
 }
 
@@ -610,16 +608,16 @@ void TDataXtd_Presentation::UnsetSelectionMode()
   if (myHasOwnSelectionMode)
   {
     Backup();
-    myHasOwnSelectionMode = Standard_False;
+    myHasOwnSelectionMode = false;
     mySelectionModes.Clear();
   }
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataXtd_Presentation::BackupCopy() const
+occ::handle<TDF_Attribute> TDataXtd_Presentation::BackupCopy() const
 {
-  Handle(TDataXtd_Presentation) aCopy = new TDataXtd_Presentation;
+  occ::handle<TDataXtd_Presentation> aCopy = new TDataXtd_Presentation;
 
   aCopy->myIsDisplayed    = myIsDisplayed;
   aCopy->myDriverGUID     = myDriverGUID;
@@ -642,17 +640,17 @@ Handle(TDF_Attribute) TDataXtd_Presentation::BackupCopy() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataXtd_Presentation::NewEmpty() const
+occ::handle<TDF_Attribute> TDataXtd_Presentation::NewEmpty() const
 {
   return new TDataXtd_Presentation();
 }
 
 //=================================================================================================
 
-void TDataXtd_Presentation::Restore(const Handle(TDF_Attribute)& theAttribute)
+void TDataXtd_Presentation::Restore(const occ::handle<TDF_Attribute>& theAttribute)
 {
-  Handle(TDataXtd_Presentation) aPresentation =
-    Handle(TDataXtd_Presentation)::DownCast(theAttribute);
+  occ::handle<TDataXtd_Presentation> aPresentation =
+    occ::down_cast<TDataXtd_Presentation>(theAttribute);
 
   myHasOwnMaterial = aPresentation->HasOwnMaterial();
   myMaterialIndex  = aPresentation->MaterialIndex();
@@ -678,71 +676,71 @@ void TDataXtd_Presentation::Restore(const Handle(TDF_Attribute)& theAttribute)
 
 //=================================================================================================
 
-void TDataXtd_Presentation::Paste(const Handle(TDF_Attribute)& theInto,
-                                  const Handle(TDF_RelocationTable)&) const
+void TDataXtd_Presentation::Paste(const occ::handle<TDF_Attribute>& theInto,
+                                  const occ::handle<TDF_RelocationTable>&) const
 {
-  Handle(TDataXtd_Presentation) anInto = Handle(TDataXtd_Presentation)::DownCast(theInto);
+  occ::handle<TDataXtd_Presentation> anInto = occ::down_cast<TDataXtd_Presentation>(theInto);
 
   anInto->Backup();
 
   if (myHasOwnMaterial)
   {
     anInto->myMaterialIndex  = myMaterialIndex;
-    anInto->myHasOwnMaterial = Standard_True;
+    anInto->myHasOwnMaterial = true;
   }
   else
   {
-    anInto->myHasOwnMaterial = Standard_False;
+    anInto->myHasOwnMaterial = false;
   }
 
   if (myHasOwnColor)
   {
     anInto->myColor       = myColor;
-    anInto->myHasOwnColor = Standard_True;
+    anInto->myHasOwnColor = true;
   }
   else
   {
-    anInto->myHasOwnColor = Standard_False;
+    anInto->myHasOwnColor = false;
   }
 
   if (myHasOwnWidth)
   {
     anInto->myWidth       = myWidth;
-    anInto->myHasOwnWidth = Standard_True;
+    anInto->myHasOwnWidth = true;
   }
   else
   {
-    anInto->myHasOwnWidth = Standard_False;
+    anInto->myHasOwnWidth = false;
   }
 
   if (myHasOwnMode)
   {
     anInto->myMode       = myMode;
-    anInto->myHasOwnMode = Standard_True;
+    anInto->myHasOwnMode = true;
   }
   else
   {
-    anInto->myHasOwnMode = Standard_False;
+    anInto->myHasOwnMode = false;
   }
 
   if (myHasOwnSelectionMode)
   {
     anInto->mySelectionModes      = mySelectionModes;
-    anInto->myHasOwnSelectionMode = Standard_True;
+    anInto->myHasOwnSelectionMode = true;
   }
   else
   {
-    anInto->myHasOwnSelectionMode = Standard_False;
+    anInto->myHasOwnSelectionMode = false;
   }
 
   if (myHasOwnTransparency)
   {
     anInto->myTransparency       = myTransparency;
-    anInto->myHasOwnTransparency = Standard_True;
+    anInto->myHasOwnTransparency = true;
   }
   else
   {
-    anInto->myHasOwnTransparency = Standard_False;
+    anInto->myHasOwnTransparency = false;
   }
 
   anInto->myIsDisplayed = myIsDisplayed;
@@ -753,15 +751,14 @@ void TDataXtd_Presentation::Paste(const Handle(TDF_Attribute)& theInto,
 // function : HasSelectionMode
 // purpose  : Checks a list of selection modes.
 //=======================================================================
-Standard_Boolean TDataXtd_Presentation::HasSelectionMode(
-  const Standard_Integer theSelectionMode) const
+bool TDataXtd_Presentation::HasSelectionMode(const int theSelectionMode) const
 {
-  Standard_Boolean                ret(Standard_False);
-  TColStd_ListOfInteger::Iterator itr(mySelectionModes);
+  bool                            ret(false);
+  NCollection_List<int>::Iterator itr(mySelectionModes);
   for (; itr.More(); itr.Next())
   {
     if (theSelectionMode == itr.Value())
-      ret = Standard_True;
+      ret = true;
   }
   return ret;
 }

@@ -25,11 +25,10 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <math_IntegerVector.hxx>
 #include <AppParCurves_Constraint.hxx>
 class GeomInt_TheMultiLineOfWLApprox;
@@ -47,32 +46,32 @@ public:
   //! initializes the fields of the function. The approximating
   //! curve has <NbPol> control points.
   Standard_EXPORT GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox(
-    const GeomInt_TheMultiLineOfWLApprox&                 SSP,
-    const Standard_Integer                                FirstPoint,
-    const Standard_Integer                                LastPoint,
-    const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
-    const math_Vector&                                    Parameters,
-    const TColStd_Array1OfReal&                           Knots,
-    const TColStd_Array1OfInteger&                        Mults,
-    const Standard_Integer                                NbPol);
+    const GeomInt_TheMultiLineOfWLApprox&                                  SSP,
+    const int                                                              FirstPoint,
+    const int                                                              LastPoint,
+    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+    const math_Vector&                                                     Parameters,
+    const NCollection_Array1<double>&                                      Knots,
+    const NCollection_Array1<int>&                                         Mults,
+    const int                                                              NbPol);
 
   //! returns the number of variables of the function. It
   //! corresponds to the number of MultiPoints.
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
   //! this method computes the new approximation of the
   //! MultiLine
   //! SSP and calculates F = sum (||Pui - Bi*Pi||2) for each
   //! point of the MultiLine.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F);
+  Standard_EXPORT bool Value(const math_Vector& X, double& F);
 
   //! returns the gradient G of the sum above for the
   //! parameters Xi.
-  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X, math_Vector& G);
+  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G);
 
   //! returns the value F=sum(||Pui - Bi*Pi||)2.
   //! returns the value G = grad(F) for the parameters Xi.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, Standard_Real& F, math_Vector& G);
+  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G);
 
   //! returns the new parameters of the MultiLine.
   Standard_EXPORT const math_Vector& NewParameters() const;
@@ -83,16 +82,15 @@ public:
 
   //! returns the distance between the MultiPoint of range
   //! IPoint and the curve CurveIndex.
-  Standard_EXPORT Standard_Real Error(const Standard_Integer IPoint,
-                                      const Standard_Integer CurveIndex);
+  Standard_EXPORT double Error(const int IPoint, const int CurveIndex);
 
   //! returns the maximum distance between the points
   //! and the MultiBSpCurve.
-  Standard_EXPORT Standard_Real MaxError3d() const;
+  Standard_EXPORT double MaxError3d() const;
 
   //! returns the maximum distance between the points
   //! and the MultiBSpCurve.
-  Standard_EXPORT Standard_Real MaxError2d() const;
+  Standard_EXPORT double MaxError2d() const;
 
   //! returns the function matrix used to approximate the
   //! multiline.
@@ -108,17 +106,17 @@ public:
   //! to Index(ieme point) + degree +1.
   Standard_EXPORT const math_IntegerVector& Index() const;
 
-  Standard_EXPORT AppParCurves_Constraint
-    FirstConstraint(const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
-                    const Standard_Integer                                FirstPoint) const;
+  Standard_EXPORT AppParCurves_Constraint FirstConstraint(
+    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+    const int                                                              FirstPoint) const;
 
-  Standard_EXPORT AppParCurves_Constraint
-    LastConstraint(const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
-                   const Standard_Integer                                LastPoint) const;
+  Standard_EXPORT AppParCurves_Constraint LastConstraint(
+    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+    const int                                                              LastPoint) const;
 
-  Standard_EXPORT void SetFirstLambda(const Standard_Real l1);
+  Standard_EXPORT void SetFirstLambda(const double l1);
 
-  Standard_EXPORT void SetLastLambda(const Standard_Real l2);
+  Standard_EXPORT void SetLastLambda(const double l2);
 
 protected:
   //! this method is used each time Value or Gradient is
@@ -126,12 +124,12 @@ protected:
   Standard_EXPORT void Perform(const math_Vector& X);
 
 private:
-  Standard_Boolean                                                    Done;
+  bool                                                                Done;
   GeomInt_TheMultiLineOfWLApprox                                      MyMultiLine;
   AppParCurves_MultiBSpCurve                                          MyMultiBSpCurve;
-  Standard_Integer                                                    nbpoles;
+  int                                                                 nbpoles;
   math_Vector                                                         myParameters;
-  Standard_Real                                                       FVal;
+  double                                                              FVal;
   math_Vector                                                         ValGrad_F;
   math_Matrix                                                         MyF;
   math_Matrix                                                         PTLX;
@@ -140,19 +138,19 @@ private:
   math_Matrix                                                         A;
   math_Matrix                                                         DA;
   GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox MyLeastSquare;
-  Standard_Boolean                                                    Contraintes;
-  Standard_Integer                                                    NbP;
-  Standard_Integer                                                    NbCu;
-  Standard_Integer                                                    Adeb;
-  Standard_Integer                                                    Afin;
-  Handle(TColStd_HArray1OfInteger)                                    tabdim;
-  Standard_Real                                                       ERR3d;
-  Standard_Real                                                       ERR2d;
-  Standard_Integer                                                    FirstP;
-  Standard_Integer                                                    LastP;
-  Handle(AppParCurves_HArray1OfConstraintCouple)                      myConstraints;
-  Standard_Real                                                       mylambda1;
-  Standard_Real                                                       mylambda2;
+  bool                                                                Contraintes;
+  int                                                                 NbP;
+  int                                                                 NbCu;
+  int                                                                 Adeb;
+  int                                                                 Afin;
+  occ::handle<NCollection_HArray1<int>>                               tabdim;
+  double                                                              ERR3d;
+  double                                                              ERR2d;
+  int                                                                 FirstP;
+  int                                                                 LastP;
+  occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>     myConstraints;
+  double                                                              mylambda1;
+  double                                                              mylambda2;
 };
 
 #endif // _GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox_HeaderFile

@@ -31,28 +31,28 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
 IGESGraph_ToolTextDisplayTemplate::IGESGraph_ToolTextDisplayTemplate() {}
 
 void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams(
-  const Handle(IGESGraph_TextDisplayTemplate)& ent,
-  const Handle(IGESData_IGESReaderData)&       IR,
-  IGESData_ParamReader&                        PR) const
+  const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
+  const occ::handle<IGESData_IGESReaderData>&       IR,
+  IGESData_ParamReader&                             PR) const
 {
-  // Standard_Boolean              st; //szv#4:S4163:12Mar99 not needed
+  // bool              st; //szv#4:S4163:12Mar99 not needed
 
-  Standard_Real                 boxWidth;
-  Standard_Real                 boxHeight;
-  Standard_Integer              fontCode;
-  Handle(IGESGraph_TextFontDef) fontEnt;
-  Standard_Real                 slantAngle;
-  Standard_Real                 rotationAngle;
-  Standard_Integer              mirrorFlag;
-  Standard_Integer              rotateFlag;
-  gp_XYZ                        corner;
+  double                             boxWidth;
+  double                             boxHeight;
+  int                                fontCode;
+  occ::handle<IGESGraph_TextFontDef> fontEnt;
+  double                             slantAngle;
+  double                             rotationAngle;
+  int                                mirrorFlag;
+  int                                rotateFlag;
+  gp_XYZ                             corner;
 
   // Reading boxWidth(Real)
   // clang-format off
@@ -62,7 +62,7 @@ void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams(
   PR.ReadReal(PR.Current(), "Character box height", boxHeight); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
 
-  Standard_Integer curnum = PR.CurrentNumber();
+  int curnum = PR.CurrentNumber();
   if (PR.DefinedElseSkip())
   {
     // Reading fontCode(Integer, must be positive)
@@ -113,14 +113,14 @@ void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams(
 }
 
 void IGESGraph_ToolTextDisplayTemplate::WriteOwnParams(
-  const Handle(IGESGraph_TextDisplayTemplate)& ent,
-  IGESData_IGESWriter&                         IW) const
+  const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
+  IGESData_IGESWriter&                              IW) const
 {
   IW.Send(ent->BoxWidth());
   IW.Send(ent->BoxHeight());
 
   if (ent->IsFontEntity())
-    IW.Send(ent->FontEntity(), Standard_True); // negative
+    IW.Send(ent->FontEntity(), true); // negative
   else
     IW.Send(ent->FontCode());
 
@@ -133,33 +133,34 @@ void IGESGraph_ToolTextDisplayTemplate::WriteOwnParams(
   IW.Send(ent->StartingCorner().Z());
 }
 
-void IGESGraph_ToolTextDisplayTemplate::OwnShared(const Handle(IGESGraph_TextDisplayTemplate)& ent,
-                                                  Interface_EntityIterator& iter) const
+void IGESGraph_ToolTextDisplayTemplate::OwnShared(
+  const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
+  Interface_EntityIterator&                         iter) const
 {
   if (ent->IsFontEntity())
     iter.GetOneItem(ent->FontEntity());
 }
 
 void IGESGraph_ToolTextDisplayTemplate::OwnCopy(
-  const Handle(IGESGraph_TextDisplayTemplate)& another,
-  const Handle(IGESGraph_TextDisplayTemplate)& ent,
-  Interface_CopyTool&                          TC) const
+  const occ::handle<IGESGraph_TextDisplayTemplate>& another,
+  const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
+  Interface_CopyTool&                               TC) const
 {
-  Standard_Real                 boxWidth;
-  Standard_Real                 boxHeight;
-  Standard_Integer              fontCode = 0;
-  Handle(IGESGraph_TextFontDef) fontEntity;
-  Standard_Real                 slantAngle;
-  Standard_Real                 rotationAngle;
-  Standard_Integer              mirrorFlag;
-  Standard_Integer              rotateFlag;
-  gp_XYZ                        corner;
+  double                             boxWidth;
+  double                             boxHeight;
+  int                                fontCode = 0;
+  occ::handle<IGESGraph_TextFontDef> fontEntity;
+  double                             slantAngle;
+  double                             rotationAngle;
+  int                                mirrorFlag;
+  int                                rotateFlag;
+  gp_XYZ                             corner;
 
   boxWidth  = another->BoxWidth();
   boxHeight = another->BoxHeight();
 
   if (another->IsFontEntity())
-    fontEntity = Handle(IGESGraph_TextFontDef)::DownCast(TC.Transferred(another->FontEntity()));
+    fontEntity = occ::down_cast<IGESGraph_TextFontDef>(TC.Transferred(another->FontEntity()));
   else
     fontCode = another->FontCode();
 
@@ -181,7 +182,7 @@ void IGESGraph_ToolTextDisplayTemplate::OwnCopy(
 }
 
 IGESData_DirChecker IGESGraph_ToolTextDisplayTemplate::DirChecker(
-  const Handle(IGESGraph_TextDisplayTemplate)& /*ent*/) const
+  const occ::handle<IGESGraph_TextDisplayTemplate>& /*ent*/) const
 {
   IGESData_DirChecker DC(312, 0, 1);
   DC.Structure(IGESData_DefVoid);
@@ -195,18 +196,19 @@ IGESData_DirChecker IGESGraph_ToolTextDisplayTemplate::DirChecker(
 }
 
 void IGESGraph_ToolTextDisplayTemplate::OwnCheck(
-  const Handle(IGESGraph_TextDisplayTemplate)& /*ent*/,
+  const occ::handle<IGESGraph_TextDisplayTemplate>& /*ent*/,
   const Interface_ShareTool&,
-  Handle(Interface_Check)& /*ach*/) const
+  occ::handle<Interface_Check>& /*ach*/) const
 {
 }
 
-void IGESGraph_ToolTextDisplayTemplate::OwnDump(const Handle(IGESGraph_TextDisplayTemplate)& ent,
-                                                const IGESData_IGESDumper&                   dumper,
-                                                Standard_OStream&                            S,
-                                                const Standard_Integer level) const
+void IGESGraph_ToolTextDisplayTemplate::OwnDump(
+  const occ::handle<IGESGraph_TextDisplayTemplate>& ent,
+  const IGESData_IGESDumper&                        dumper,
+  Standard_OStream&                                 S,
+  const int                                         level) const
 {
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "IGESGraph_TextDisplayTemplate\n"
     << "Character box width  : " << ent->BoxWidth() << "  "

@@ -64,13 +64,13 @@ void Aspect_WindowInputListener::KeyFromAxis(Aspect_VKey theNegative,
 
 //=================================================================================================
 
-void Aspect_WindowInputListener::AddTouchPoint(Standard_Size          theId,
-                                               const Graphic3d_Vec2d& thePnt,
-                                               Standard_Boolean       theClearBefore)
+void Aspect_WindowInputListener::AddTouchPoint(size_t                          theId,
+                                               const NCollection_Vec2<double>& thePnt,
+                                               bool                            theClearBefore)
 {
   if (theClearBefore)
   {
-    RemoveTouchPoint((Standard_Size)-1);
+    RemoveTouchPoint((size_t)-1);
   }
 
   myTouchPoints.Add(theId, Aspect_Touch(thePnt, false));
@@ -78,17 +78,16 @@ void Aspect_WindowInputListener::AddTouchPoint(Standard_Size          theId,
 
 //=================================================================================================
 
-bool Aspect_WindowInputListener::RemoveTouchPoint(Standard_Size    theId,
-                                                  Standard_Boolean theClearSelectPnts)
+bool Aspect_WindowInputListener::RemoveTouchPoint(size_t theId, bool theClearSelectPnts)
 {
   (void)theClearSelectPnts;
-  if (theId == (Standard_Size)-1)
+  if (theId == (size_t)-1)
   {
     myTouchPoints.Clear(false);
   }
   else
   {
-    const Standard_Integer anOldExtent = myTouchPoints.Extent();
+    const int anOldExtent = myTouchPoints.Extent();
     myTouchPoints.RemoveKey(theId);
     if (myTouchPoints.Extent() == anOldExtent)
     {
@@ -107,8 +106,8 @@ bool Aspect_WindowInputListener::RemoveTouchPoint(Standard_Size    theId,
 
 //=================================================================================================
 
-void Aspect_WindowInputListener::UpdateTouchPoint(Standard_Size          theId,
-                                                  const Graphic3d_Vec2d& thePnt)
+void Aspect_WindowInputListener::UpdateTouchPoint(size_t                          theId,
+                                                  const NCollection_Vec2<double>& thePnt)
 {
   if (Aspect_Touch* aTouch = myTouchPoints.ChangeSeek(theId))
   {
@@ -129,9 +128,9 @@ bool Aspect_WindowInputListener::update3dMouseTranslation(const WNT_HIDSpaceMous
     return false;
   }
 
-  bool                  isIdle     = true;
-  const double          aTimeStamp = EventTime();
-  const Graphic3d_Vec3d aTrans =
+  bool                           isIdle     = true;
+  const double                   aTimeStamp = EventTime();
+  const NCollection_Vec3<double> aTrans =
     theEvent.Translation(isIdle, my3dMouseIsQuadric) * my3dMouseAccelTrans;
   myKeys.KeyFromAxis(Aspect_VKey_NavSlideLeft, Aspect_VKey_NavSlideRight, aTimeStamp, aTrans.x());
   myKeys.KeyFromAxis(Aspect_VKey_NavForward, Aspect_VKey_NavBackward, aTimeStamp, aTrans.y());
@@ -148,9 +147,9 @@ bool Aspect_WindowInputListener::update3dMouseRotation(const WNT_HIDSpaceMouse& 
     return false;
   }
 
-  bool                  isIdle = true, toUpdate = false;
-  const double          aTimeStamp = EventTime();
-  const Graphic3d_Vec3d aRot3 =
+  bool                           isIdle = true, toUpdate = false;
+  const double                   aTimeStamp = EventTime();
+  const NCollection_Vec3<double> aRot3 =
     theEvent.Rotation(isIdle, my3dMouseIsQuadric) * my3dMouseAccelRotate;
   if (!my3dMouseNoRotate.x())
   {

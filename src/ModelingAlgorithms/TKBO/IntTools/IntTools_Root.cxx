@@ -32,7 +32,7 @@ IntTools_Root::IntTools_Root()
 
 //=================================================================================================
 
-IntTools_Root::IntTools_Root(const Standard_Real aRoot, const Standard_Integer aType)
+IntTools_Root::IntTools_Root(const double aRoot, const int aType)
     : myLayerHeight(0.),
       myStateBefore(TopAbs_UNKNOWN),
       myStateAfter(TopAbs_UNKNOWN),
@@ -47,14 +47,14 @@ IntTools_Root::IntTools_Root(const Standard_Real aRoot, const Standard_Integer a
 
 //=================================================================================================
 
-void IntTools_Root::SetRoot(const Standard_Real aRoot)
+void IntTools_Root::SetRoot(const double aRoot)
 {
   myRoot = aRoot;
 }
 
 //=================================================================================================
 
-void IntTools_Root::SetType(const Standard_Integer aType)
+void IntTools_Root::SetType(const int aType)
 {
   myType = aType;
 }
@@ -75,17 +75,14 @@ void IntTools_Root::SetStateAfter(const TopAbs_State aState)
 
 //=================================================================================================
 
-void IntTools_Root::SetLayerHeight(const Standard_Real aHeight)
+void IntTools_Root::SetLayerHeight(const double aHeight)
 {
   myLayerHeight = aHeight;
 }
 
 //=================================================================================================
 
-void IntTools_Root::SetInterval(const Standard_Real t1,
-                                const Standard_Real t2,
-                                const Standard_Real f1,
-                                const Standard_Real f2)
+void IntTools_Root::SetInterval(const double t1, const double t2, const double f1, const double f2)
 {
   myt1 = t1;
   myt2 = t2;
@@ -95,10 +92,7 @@ void IntTools_Root::SetInterval(const Standard_Real t1,
 
 //=================================================================================================
 
-void IntTools_Root::Interval(Standard_Real& t1,
-                             Standard_Real& t2,
-                             Standard_Real& f1,
-                             Standard_Real& f2) const
+void IntTools_Root::Interval(double& t1, double& t2, double& f1, double& f2) const
 {
   t1 = myt1;
   t2 = myt2;
@@ -108,14 +102,14 @@ void IntTools_Root::Interval(Standard_Real& t1,
 
 //=================================================================================================
 
-Standard_Real IntTools_Root::Root() const
+double IntTools_Root::Root() const
 {
   return myRoot;
 }
 
 //=================================================================================================
 
-Standard_Integer IntTools_Root::Type() const
+int IntTools_Root::Type() const
 {
   return myType;
 }
@@ -136,23 +130,23 @@ TopAbs_State IntTools_Root::StateAfter() const
 
 //=================================================================================================
 
-Standard_Real IntTools_Root::LayerHeight() const
+double IntTools_Root::LayerHeight() const
 {
   return myLayerHeight;
 }
 
 //=================================================================================================
 
-Standard_Boolean IntTools_Root::IsValid() const
+bool IntTools_Root::IsValid() const
 {
   if (myStateBefore == TopAbs_OUT && myStateAfter == TopAbs_IN)
-    return Standard_True;
+    return true;
   if (myStateBefore == TopAbs_OUT && myStateAfter == TopAbs_ON)
-    return Standard_True;
+    return true;
   if (myStateBefore == TopAbs_ON && myStateAfter == TopAbs_OUT)
-    return Standard_True;
+    return true;
   if (myStateBefore == TopAbs_IN && myStateAfter == TopAbs_OUT)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }

@@ -20,8 +20,6 @@
 class gp_Pnt;
 class gp_Vec;
 
-DEFINE_STANDARD_HANDLE(HelixGeom_HelixCurve, Adaptor3d_Curve)
-
 //! Adaptor class for calculation of helix curves with analytical expressions.
 //!
 //! This class provides parametric representation of helix curves including:
@@ -47,75 +45,66 @@ public:
   Standard_EXPORT void Load();
 
   //! Sets helix parameters
-  Standard_EXPORT void Load(const Standard_Real    aT1,
-                            const Standard_Real    aT2,
-                            const Standard_Real    aPitch,
-                            const Standard_Real    aRStart,
-                            const Standard_Real    aTaperAngle,
-                            const Standard_Boolean aIsCW);
+  Standard_EXPORT void Load(const double aT1,
+                            const double aT2,
+                            const double aPitch,
+                            const double aRStart,
+                            const double aTaperAngle,
+                            const bool   aIsCW);
 
   //! Gets first parameter
-  Standard_EXPORT virtual Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double FirstParameter() const override;
 
   //! Gets last parameter
-  Standard_EXPORT virtual Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double LastParameter() const override;
 
   //! Gets continuity
-  Standard_EXPORT virtual GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT virtual GeomAbs_Shape Continuity() const override;
 
   //! Gets number of intervals
-  Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Gets parametric intervals
-  Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
-                                         const GeomAbs_Shape   S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
+                                         const GeomAbs_Shape         S) const override;
 
   //! Gets parametric resolution
-  Standard_EXPORT virtual Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
+  Standard_EXPORT virtual double Resolution(const double R3d) const override;
 
   //! Returns False
-  Standard_EXPORT virtual Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsClosed() const override;
 
   //! Returns False
-  Standard_EXPORT virtual Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsPeriodic() const override;
 
   //! Returns 2*PI
-  Standard_EXPORT virtual Standard_Real Period() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double Period() const override;
 
   //! Gets curve point for parameter U
-  Standard_EXPORT virtual gp_Pnt Value(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt Value(const double U) const override;
 
   //! Gets curve point for parameter U
-  Standard_EXPORT virtual void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void D0(const double U, gp_Pnt& P) const override;
 
   //! Gets curve point and first derivatives for parameter U
-  Standard_EXPORT virtual void D1(const Standard_Real U,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
 
   //! Gets curve point, first and second derivatives for parameter U
-  Standard_EXPORT virtual void D2(const Standard_Real U,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1,
-                                  gp_Vec&             V2) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
   //! Gets curve derivative of demanded order for parameter U
-  Standard_EXPORT virtual gp_Vec DN(const Standard_Real    U,
-                                    const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Vec DN(const double U, const int N) const override;
 
 protected:
-  Standard_Real    myFirst;
-  Standard_Real    myLast;
-  Standard_Real    myPitch;
-  Standard_Real    myRStart;
-  Standard_Real    myTaperAngle;
-  Standard_Boolean myIsClockWise;
-  Standard_Real    myC1;
-  Standard_Real    myTgBeta;
-  Standard_Real    myTolAngle;
-
-private:
+  double myFirst;
+  double myLast;
+  double myPitch;
+  double myRStart;
+  double myTaperAngle;
+  bool   myIsClockWise;
+  double myC1;
+  double myTgBeta;
+  double myTolAngle;
 };
 
 #endif // _HelixGeom_HelixCurve_HeaderFile

@@ -20,10 +20,10 @@
 
 RWStepBasic_RWSolidAngleUnit::RWStepBasic_RWSolidAngleUnit() {}
 
-void RWStepBasic_RWSolidAngleUnit::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepBasic_SolidAngleUnit)& ent) const
+void RWStepBasic_RWSolidAngleUnit::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                                    num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepBasic_SolidAngleUnit>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,8 +33,8 @@ void RWStepBasic_RWSolidAngleUnit::ReadStep(const Handle(StepData_StepReaderData
 
   // --- inherited field : dimensions ---
 
-  Handle(StepBasic_DimensionalExponents) aDimensions;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "dimensions",
@@ -47,8 +47,8 @@ void RWStepBasic_RWSolidAngleUnit::ReadStep(const Handle(StepData_StepReaderData
   ent->Init(aDimensions);
 }
 
-void RWStepBasic_RWSolidAngleUnit::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepBasic_SolidAngleUnit)& ent) const
+void RWStepBasic_RWSolidAngleUnit::WriteStep(StepData_StepWriter&                         SW,
+                                             const occ::handle<StepBasic_SolidAngleUnit>& ent) const
 {
 
   // --- inherited field dimensions ---
@@ -56,8 +56,8 @@ void RWStepBasic_RWSolidAngleUnit::WriteStep(StepData_StepWriter&               
   SW.Send(ent->Dimensions());
 }
 
-void RWStepBasic_RWSolidAngleUnit::Share(const Handle(StepBasic_SolidAngleUnit)& ent,
-                                         Interface_EntityIterator&               iter) const
+void RWStepBasic_RWSolidAngleUnit::Share(const occ::handle<StepBasic_SolidAngleUnit>& ent,
+                                         Interface_EntityIterator&                    iter) const
 {
 
   iter.GetOneItem(ent->Dimensions());

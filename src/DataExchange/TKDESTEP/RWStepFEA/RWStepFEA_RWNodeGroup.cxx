@@ -30,10 +30,10 @@ RWStepFEA_RWNodeGroup::RWStepFEA_RWNodeGroup() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                     const Standard_Integer                 num,
-                                     Handle(Interface_Check)&               ach,
-                                     const Handle(StepFEA_NodeGroup)&       ent) const
+void RWStepFEA_RWNodeGroup::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                     const int                                   num,
+                                     occ::handle<Interface_Check>&               ach,
+                                     const occ::handle<StepFEA_NodeGroup>&       ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "node_group"))
@@ -41,15 +41,15 @@ void RWStepFEA_RWNodeGroup::ReadStep(const Handle(StepData_StepReaderData)& data
 
   // Inherited fields of Group
 
-  Handle(TCollection_HAsciiString) aGroup_Name;
+  occ::handle<TCollection_HAsciiString> aGroup_Name;
   data->ReadString(num, 1, "group.name", ach, aGroup_Name);
 
-  Handle(TCollection_HAsciiString) aGroup_Description;
+  occ::handle<TCollection_HAsciiString> aGroup_Description;
   data->ReadString(num, 2, "group.description", ach, aGroup_Description);
 
   // Inherited fields of FeaGroup
 
-  Handle(StepFEA_FeaModel) aFeaGroup_ModelRef;
+  occ::handle<StepFEA_FeaModel> aFeaGroup_ModelRef;
   data->ReadEntity(num,
                    3,
                    "fea_group.model_ref",
@@ -59,16 +59,16 @@ void RWStepFEA_RWNodeGroup::ReadStep(const Handle(StepData_StepReaderData)& data
 
   // Own fields of NodeGroup
 
-  Handle(StepFEA_HArray1OfNodeRepresentation) aNodes;
-  Standard_Integer                            sub4 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>> aNodes;
+  int                                                                       sub4 = 0;
   if (data->ReadSubList(num, 4, "nodes", ach, sub4))
   {
-    Standard_Integer nb0  = data->NbParams(sub4);
-    aNodes                = new StepFEA_HArray1OfNodeRepresentation(1, nb0);
-    Standard_Integer num2 = sub4;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0  = data->NbParams(sub4);
+    aNodes   = new NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>(1, nb0);
+    int num2 = sub4;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepFEA_NodeRepresentation) anIt0;
+      occ::handle<StepFEA_NodeRepresentation> anIt0;
       data->ReadEntity(num2,
                        i0,
                        "node_representation",
@@ -85,8 +85,8 @@ void RWStepFEA_RWNodeGroup::ReadStep(const Handle(StepData_StepReaderData)& data
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeGroup::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepFEA_NodeGroup)& ent) const
+void RWStepFEA_RWNodeGroup::WriteStep(StepData_StepWriter&                  SW,
+                                      const occ::handle<StepFEA_NodeGroup>& ent) const
 {
 
   // Inherited fields of Group
@@ -102,9 +102,9 @@ void RWStepFEA_RWNodeGroup::WriteStep(StepData_StepWriter&             SW,
   // Own fields of NodeGroup
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->Nodes()->Length(); i3++)
+  for (int i3 = 1; i3 <= ent->Nodes()->Length(); i3++)
   {
-    Handle(StepFEA_NodeRepresentation) Var0 = ent->Nodes()->Value(i3);
+    occ::handle<StepFEA_NodeRepresentation> Var0 = ent->Nodes()->Value(i3);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -112,8 +112,8 @@ void RWStepFEA_RWNodeGroup::WriteStep(StepData_StepWriter&             SW,
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeGroup::Share(const Handle(StepFEA_NodeGroup)& ent,
-                                  Interface_EntityIterator&        iter) const
+void RWStepFEA_RWNodeGroup::Share(const occ::handle<StepFEA_NodeGroup>& ent,
+                                  Interface_EntityIterator&             iter) const
 {
 
   // Inherited fields of Group
@@ -124,9 +124,9 @@ void RWStepFEA_RWNodeGroup::Share(const Handle(StepFEA_NodeGroup)& ent,
 
   // Own fields of NodeGroup
 
-  for (Standard_Integer i2 = 1; i2 <= ent->Nodes()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Nodes()->Length(); i2++)
   {
-    Handle(StepFEA_NodeRepresentation) Var0 = ent->Nodes()->Value(i2);
+    occ::handle<StepFEA_NodeRepresentation> Var0 = ent->Nodes()->Value(i2);
     iter.AddItem(Var0);
   }
 }

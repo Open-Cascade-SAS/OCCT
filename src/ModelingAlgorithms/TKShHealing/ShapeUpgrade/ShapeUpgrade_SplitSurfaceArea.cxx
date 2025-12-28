@@ -14,7 +14,8 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <ShapeUpgrade_SplitSurfaceArea.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceArea, ShapeUpgrade_SplitSurface)
 
@@ -25,12 +26,12 @@ ShapeUpgrade_SplitSurfaceArea::ShapeUpgrade_SplitSurfaceArea()
 {
   myNbParts  = 1;
   myUnbSplit = myVnbSplit  = -1;
-  myIsSplittingIntoSquares = Standard_False;
+  myIsSplittingIntoSquares = false;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitSurfaceArea::Compute(const Standard_Boolean /*Segment*/)
+void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
 {
   if (myNbParts <= 1)
     return;
@@ -40,30 +41,32 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const Standard_Boolean /*Segment*/)
                           myUSplitValues->Value(2),
                           myVSplitValues->Value(1),
                           myVSplitValues->Value(2));
-  Standard_Real       aKoefU = ads.UResolution(1.);
-  Standard_Real       aKoefV = ads.VResolution(1.);
+  double              aKoefU = ads.UResolution(1.);
+  double              aKoefV = ads.VResolution(1.);
   if (aKoefU == 0)
     aKoefU = 1.;
   if (aKoefV == 0)
     aKoefV = 1.;
-  Standard_Real aUSize = fabs(myUSplitValues->Value(2) - myUSplitValues->Value(1)) / aKoefU;
-  Standard_Real aVSize = fabs(myVSplitValues->Value(2) - myVSplitValues->Value(1)) / aKoefV;
-  Standard_Real aNbUV  = aUSize / aVSize;
-  Handle(TColStd_HSequenceOfReal) aFirstSplit  = (aNbUV < 1. ? myVSplitValues : myUSplitValues);
-  Handle(TColStd_HSequenceOfReal) aSecondSplit = (aNbUV < 1. ? myUSplitValues : myVSplitValues);
-  Standard_Boolean                anIsUFirst   = (aNbUV > 1.);
+  double aUSize = fabs(myUSplitValues->Value(2) - myUSplitValues->Value(1)) / aKoefU;
+  double aVSize = fabs(myVSplitValues->Value(2) - myVSplitValues->Value(1)) / aKoefV;
+  double aNbUV  = aUSize / aVSize;
+  occ::handle<NCollection_HSequence<double>> aFirstSplit =
+    (aNbUV < 1. ? myVSplitValues : myUSplitValues);
+  occ::handle<NCollection_HSequence<double>> aSecondSplit =
+    (aNbUV < 1. ? myUSplitValues : myVSplitValues);
+  bool anIsUFirst = (aNbUV > 1.);
   if (aNbUV < 1)
     aNbUV = 1. / aNbUV;
 
-  Standard_Boolean anIsFixedUVnbSplits = (myUnbSplit > 0 && myVnbSplit > 0);
-  Standard_Integer nbSplitF, nbSplitS;
+  bool anIsFixedUVnbSplits = (myUnbSplit > 0 && myVnbSplit > 0);
+  int  nbSplitF, nbSplitS;
   if (myIsSplittingIntoSquares && myNbParts > 0)
   {
     if (!anIsFixedUVnbSplits) //(myUnbSplit <= 0 || myVnbSplit <= 0)
     {
-      Standard_Real aSquareSize = std::sqrt(myArea / myNbParts);
-      myUnbSplit                = (Standard_Integer)(myUsize / aSquareSize);
-      myVnbSplit                = (Standard_Integer)(myVsize / aSquareSize);
+      double aSquareSize = std::sqrt(myArea / myNbParts);
+      myUnbSplit         = (int)(myUsize / aSquareSize);
+      myVnbSplit         = (int)(myVsize / aSquareSize);
       if (myUnbSplit == 0)
         myUnbSplit = 1;
       if (myVnbSplit == 0)
@@ -84,20 +87,18 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const Standard_Boolean /*Segment*/)
   else
   {
     nbSplitF = (aNbUV >= myNbParts ? myNbParts : RealToInt(ceil(sqrt(myNbParts * ceil(aNbUV)))));
-    nbSplitS =
-      (aNbUV >= myNbParts ? 0
-                          : RealToInt(ceil((Standard_Real)myNbParts / (Standard_Real)nbSplitF)));
+    nbSplitS = (aNbUV >= myNbParts ? 0 : RealToInt(ceil((double)myNbParts / (double)nbSplitF)));
   }
   if (nbSplitS == 1 && !anIsFixedUVnbSplits)
     nbSplitS++;
   if (!nbSplitF)
     return;
-  Standard_Real    aStep    = (aFirstSplit->Value(2) - aFirstSplit->Value(1)) / nbSplitF;
-  Standard_Real    aPrevPar = aFirstSplit->Value(1);
-  Standard_Integer i        = 1;
+  double aStep    = (aFirstSplit->Value(2) - aFirstSplit->Value(1)) / nbSplitF;
+  double aPrevPar = aFirstSplit->Value(1);
+  int    i        = 1;
   for (; i < nbSplitF; i++)
   {
-    Standard_Real aNextPar = aPrevPar + aStep;
+    double aNextPar = aPrevPar + aStep;
     aFirstSplit->InsertBefore(i + 1, aNextPar);
     aPrevPar = aNextPar;
   }
@@ -108,7 +109,7 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const Standard_Boolean /*Segment*/)
     aPrevPar = aSecondSplit->Value(1);
     for (i = 1; i < nbSplitS; i++)
     {
-      Standard_Real aNextPar = aPrevPar + aStep;
+      double aNextPar = aPrevPar + aStep;
       aSecondSplit->InsertBefore(i + 1, aNextPar);
       aPrevPar = aNextPar;
     }

@@ -42,7 +42,7 @@ public:
 
   const LDOMBasicString& GetData() const { return myValue; }
 
-  void SetData(const LDOMBasicString& aValue, const Handle(LDOM_MemManager)& aDoc)
+  void SetData(const LDOMBasicString& aValue, const occ::handle<LDOM_MemManager>& aDoc)
   {
     myValue = LDOMString(aValue, aDoc);
   }
@@ -64,9 +64,9 @@ private:
 
   LDOM_BasicText(const LDOM_CharacterData& aText);
 
-  static LDOM_BasicText& Create(const LDOM_Node::NodeType      aType,
-                                const LDOMBasicString&         aData,
-                                const Handle(LDOM_MemManager)& aDoc);
+  static LDOM_BasicText& Create(const LDOM_Node::NodeType           aType,
+                                const LDOMBasicString&              aData,
+                                const occ::handle<LDOM_MemManager>& aDoc);
   // Creation
 
 private:

@@ -81,14 +81,12 @@ public:
   //! transforms any point P into a point P' such that if H is
   //! the orthogonal projection of P on the axis theA, the vectors
   //! HP and HP' satisfy: HP' = theRatio * HP.
-  Standard_EXPORT void SetAffinity(const gp_Ax2d& theA, const Standard_Real theRatio);
+  Standard_EXPORT void SetAffinity(const gp_Ax2d& theA, const double theRatio);
 
   //! Replaces the coefficient (theRow, theCol) of the matrix representing
   //! this transformation by theValue,
   //! Raises OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 3
-  void SetValue(const Standard_Integer theRow,
-                const Standard_Integer theCol,
-                const Standard_Real    theValue);
+  void SetValue(const int theRow, const int theCol, const double theValue);
 
   //! Replaces the translation part of this
   //! transformation by the coordinates of the number pair theCoord.
@@ -107,7 +105,7 @@ public:
 
   //! Returns true if the determinant of the vectorial part of
   //! this transformation is negative.
-  constexpr Standard_Boolean IsNegative() const noexcept { return matrix.Determinant() < 0.0; }
+  constexpr bool IsNegative() const noexcept { return matrix.Determinant() < 0.0; }
 
   //! Returns true if this transformation is singular (and
   //! therefore, cannot be inverted).
@@ -117,7 +115,7 @@ public:
   //! than or equal to gp::Resolution().
   //! Warning
   //! If this transformation is singular, it cannot be inverted.
-  constexpr Standard_Boolean IsSingular() const noexcept { return matrix.IsSingular(); }
+  constexpr bool IsSingular() const noexcept { return matrix.IsSingular(); }
 
   //! Returns the nature of the transformation. It can be
   //! an identity transformation, a rotation, a translation, a mirror
@@ -135,19 +133,16 @@ public:
 
   //! Returns the coefficients of the global matrix of transformation.
   //! Raised OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 3
-  constexpr Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
+  constexpr double Value(const int theRow, const int theCol) const;
 
-  Standard_Real operator()(const Standard_Integer theRow, const Standard_Integer theCol) const
-  {
-    return Value(theRow, theCol);
-  }
+  double operator()(const int theRow, const int theCol) const { return Value(theRow, theCol); }
 
   Standard_EXPORT void Invert();
 
   //! Computes the reverse transformation.
   //! Raised an exception if the matrix of the transformation
   //! is not inversible.
-  Standard_NODISCARD gp_GTrsf2d Inverted() const
+  [[nodiscard]] gp_GTrsf2d Inverted() const
   {
     gp_GTrsf2d aT = *this;
     aT.Invert();
@@ -169,14 +164,14 @@ public:
   //! T1.Transforms(P2);                  //using T1 then T2
   //! T2.Transforms(P2);                  // P1 = P2 !!!
   //! @endcode
-  Standard_NODISCARD gp_GTrsf2d Multiplied(const gp_GTrsf2d& theT) const
+  [[nodiscard]] gp_GTrsf2d Multiplied(const gp_GTrsf2d& theT) const
   {
     gp_GTrsf2d aTres = *this;
     aTres.Multiply(theT);
     return aTres;
   }
 
-  Standard_NODISCARD gp_GTrsf2d operator*(const gp_GTrsf2d& theT) const { return Multiplied(theT); }
+  [[nodiscard]] gp_GTrsf2d operator*(const gp_GTrsf2d& theT) const { return Multiplied(theT); }
 
   Standard_EXPORT void Multiply(const gp_GTrsf2d& theT);
 
@@ -187,7 +182,7 @@ public:
   //! this = theT * this
   Standard_EXPORT void PreMultiply(const gp_GTrsf2d& theT);
 
-  Standard_EXPORT void Power(const Standard_Integer theN);
+  Standard_EXPORT void Power(const int theN);
 
   //! Computes the following composition of transformations
   //! <me> * <me> * .......* <me>, theN time.
@@ -196,7 +191,7 @@ public:
   //!
   //! Raises an exception if theN < 0 and if the matrix of the
   //! transformation is not inversible.
-  Standard_NODISCARD gp_GTrsf2d Powered(const Standard_Integer theN) const
+  [[nodiscard]] gp_GTrsf2d Powered(const int theN) const
   {
     gp_GTrsf2d aT = *this;
     aT.Power(theN);
@@ -205,7 +200,7 @@ public:
 
   constexpr void Transforms(gp_XY& theCoord) const noexcept;
 
-  Standard_NODISCARD constexpr gp_XY Transformed(const gp_XY& theCoord) const noexcept
+  [[nodiscard]] constexpr gp_XY Transformed(const gp_XY& theCoord) const noexcept
   {
     gp_XY aNewCoord = theCoord;
     Transforms(aNewCoord);
@@ -219,7 +214,7 @@ public:
   //! Note:
   //! -   Transforms modifies theX, theY, or the coordinate pair Coord, while
   //! -   Transformed creates a new coordinate pair.
-  constexpr void Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept;
+  constexpr void Transforms(double& theX, double& theY) const noexcept;
 
   //! Converts this transformation into a gp_Trsf2d transformation.
   //! Exceptions
@@ -228,10 +223,10 @@ public:
   Standard_EXPORT gp_Trsf2d Trsf2d() const;
 
 private:
-  gp_Mat2d      matrix;
-  gp_XY         loc;
-  gp_TrsfForm   shape;
-  Standard_Real scale;
+  gp_Mat2d    matrix;
+  gp_XY       loc;
+  gp_TrsfForm shape;
+  double      scale;
 };
 
 #include <gp_Trsf2d.hxx>
@@ -258,9 +253,7 @@ inline gp_GTrsf2d::gp_GTrsf2d(const gp_Trsf2d& theT)
 
 //=================================================================================================
 
-inline void gp_GTrsf2d::SetValue(const Standard_Integer theRow,
-                                 const Standard_Integer theCol,
-                                 const Standard_Real    theValue)
+inline void gp_GTrsf2d::SetValue(const int theRow, const int theCol, const double theValue)
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2 || theCol < 1 || theCol > 3, " ");
   if (theCol == 3)
@@ -276,8 +269,7 @@ inline void gp_GTrsf2d::SetValue(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline constexpr Standard_Real gp_GTrsf2d::Value(const Standard_Integer theRow,
-                                                 const Standard_Integer theCol) const
+inline constexpr double gp_GTrsf2d::Value(const int theRow, const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2 || theCol < 1 || theCol > 3, " ");
   if (theCol == 3)
@@ -305,8 +297,7 @@ inline constexpr void gp_GTrsf2d::Transforms(gp_XY& theCoord) const noexcept
 
 //=================================================================================================
 
-inline constexpr void gp_GTrsf2d::Transforms(Standard_Real& theX,
-                                             Standard_Real& theY) const noexcept
+inline constexpr void gp_GTrsf2d::Transforms(double& theX, double& theY) const noexcept
 {
   gp_XY aDoublet(theX, theY);
   aDoublet.Multiply(matrix);

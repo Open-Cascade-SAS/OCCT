@@ -31,10 +31,10 @@ RWStepKinematics_RWSlidingCurvePairValue::RWStepKinematics_RWSlidingCurvePairVal
 //=================================================================================================
 
 void RWStepKinematics_RWSlidingCurvePairValue::ReadStep(
-  const Handle(StepData_StepReaderData)&              theData,
-  const Standard_Integer                              theNum,
-  Handle(Interface_Check)&                            theArch,
-  const Handle(StepKinematics_SlidingCurvePairValue)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&              theData,
+  const int                                                theNum,
+  occ::handle<Interface_Check>&                            theArch,
+  const occ::handle<StepKinematics_SlidingCurvePairValue>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "sliding_curve_pair_value"))
@@ -42,12 +42,12 @@ void RWStepKinematics_RWSlidingCurvePairValue::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of PairValue
 
-  Handle(StepKinematics_KinematicPair) aPairValue_AppliesToPair;
+  occ::handle<StepKinematics_KinematicPair> aPairValue_AppliesToPair;
   theData->ReadEntity(theNum,
                       2,
                       "pair_value.applies_to_pair",
@@ -57,7 +57,7 @@ void RWStepKinematics_RWSlidingCurvePairValue::ReadStep(
 
   // Own fields of SlidingCurvePairValue
 
-  Handle(StepGeom_PointOnCurve) aActualPointOnCurve1;
+  occ::handle<StepGeom_PointOnCurve> aActualPointOnCurve1;
   theData->ReadEntity(theNum,
                       3,
                       "actual_point_on_curve1",
@@ -65,7 +65,7 @@ void RWStepKinematics_RWSlidingCurvePairValue::ReadStep(
                       STANDARD_TYPE(StepGeom_PointOnCurve),
                       aActualPointOnCurve1);
 
-  Handle(StepGeom_PointOnCurve) aActualPointOnCurve2;
+  occ::handle<StepGeom_PointOnCurve> aActualPointOnCurve2;
   theData->ReadEntity(theNum,
                       4,
                       "actual_point_on_curve2",
@@ -83,8 +83,8 @@ void RWStepKinematics_RWSlidingCurvePairValue::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWSlidingCurvePairValue::WriteStep(
-  StepData_StepWriter&                                theSW,
-  const Handle(StepKinematics_SlidingCurvePairValue)& theEnt) const
+  StepData_StepWriter&                                     theSW,
+  const occ::handle<StepKinematics_SlidingCurvePairValue>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -105,8 +105,8 @@ void RWStepKinematics_RWSlidingCurvePairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWSlidingCurvePairValue::Share(
-  const Handle(StepKinematics_SlidingCurvePairValue)& theEnt,
-  Interface_EntityIterator&                           iter) const
+  const occ::handle<StepKinematics_SlidingCurvePairValue>& theEnt,
+  Interface_EntityIterator&                                iter) const
 {
 
   // Inherited fields of RepresentationItem

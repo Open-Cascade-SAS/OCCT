@@ -16,7 +16,7 @@
 
 #include <MAT_Arc.hxx>
 #include <MAT_Node.hxx>
-#include <MAT_SequenceOfArc.hxx>
+#include <NCollection_Sequence.hxx>
 #include <MAT_Zone.hxx>
 #include <Standard_Type.hxx>
 
@@ -25,25 +25,25 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT_Zone, Standard_Transient)
 //=================================================================================================
 
 MAT_Zone::MAT_Zone()
-    : limited(Standard_True)
+    : limited(true)
 {
 }
 
 //=================================================================================================
 
-MAT_Zone::MAT_Zone(const Handle(MAT_BasicElt)& aBasicElt)
+MAT_Zone::MAT_Zone(const occ::handle<MAT_BasicElt>& aBasicElt)
 {
   Perform(aBasicElt);
 }
 
 //=================================================================================================
 
-void MAT_Zone::Perform(const Handle(MAT_BasicElt)& aBasicElt)
+void MAT_Zone::Perform(const occ::handle<MAT_BasicElt>& aBasicElt)
 {
-  Handle(MAT_Node) NextNode, StartNode;
-  Handle(MAT_Arc)  CurrentArc;
+  occ::handle<MAT_Node> NextNode, StartNode;
+  occ::handle<MAT_Arc>  CurrentArc;
 
-  limited = Standard_True;
+  limited = true;
   frontier.Clear();
   // ------------------------------------------------------------------------
   // Si le premier arc correspondant a la zone est Null => Sequence vide.
@@ -93,7 +93,7 @@ void MAT_Zone::Perform(const Handle(MAT_BasicElt)& aBasicElt)
 
   if (NextNode->Infinite())
   {
-    limited    = Standard_False;
+    limited    = false;
     CurrentArc = aBasicElt->StartArc();
     frontier.Append(CurrentArc);
     // --------------------------------------------------------------------------
@@ -116,40 +116,40 @@ void MAT_Zone::Perform(const Handle(MAT_BasicElt)& aBasicElt)
 
 //=================================================================================================
 
-Standard_Integer MAT_Zone::NumberOfArcs() const
+int MAT_Zone::NumberOfArcs() const
 {
   return frontier.Length();
 }
 
 //=================================================================================================
 
-Handle(MAT_Arc) MAT_Zone::ArcOnFrontier(const Standard_Integer Index) const
+occ::handle<MAT_Arc> MAT_Zone::ArcOnFrontier(const int Index) const
 {
   return frontier.Value(Index);
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT_Zone::NoEmptyZone() const
+bool MAT_Zone::NoEmptyZone() const
 {
   return (!frontier.IsEmpty());
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT_Zone::Limited() const
+bool MAT_Zone::Limited() const
 {
   return limited;
 }
 
 //=================================================================================================
 
-Handle(MAT_Node) MAT_Zone::NodeForTurn(const Handle(MAT_Arc)&      anArc,
-                                       const Handle(MAT_BasicElt)& aBE,
-                                       const MAT_Side              aSide) const
+occ::handle<MAT_Node> MAT_Zone::NodeForTurn(const occ::handle<MAT_Arc>&      anArc,
+                                            const occ::handle<MAT_BasicElt>& aBE,
+                                            const MAT_Side                   aSide) const
 {
-  Handle(MAT_Arc)  NeighbourArc;
-  Handle(MAT_Node) NodeSol;
+  occ::handle<MAT_Arc>  NeighbourArc;
+  occ::handle<MAT_Node> NodeSol;
 
   NodeSol      = anArc->FirstNode();
   NeighbourArc = anArc->Neighbour(NodeSol, aSide);

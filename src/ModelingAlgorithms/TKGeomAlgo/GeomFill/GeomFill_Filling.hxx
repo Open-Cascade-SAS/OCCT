@@ -22,11 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <Standard_Integer.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
 
 //! Root class for Filling;
 class GeomFill_Filling
@@ -36,22 +35,20 @@ public:
 
   Standard_EXPORT GeomFill_Filling();
 
-  Standard_EXPORT Standard_Integer NbUPoles() const;
+  Standard_EXPORT int NbUPoles() const;
 
-  Standard_EXPORT Standard_Integer NbVPoles() const;
+  Standard_EXPORT int NbVPoles() const;
 
-  Standard_EXPORT void Poles(TColgp_Array2OfPnt& Poles) const;
+  Standard_EXPORT void Poles(NCollection_Array2<gp_Pnt>& Poles) const;
 
-  Standard_EXPORT Standard_Boolean isRational() const;
+  Standard_EXPORT bool isRational() const;
 
-  Standard_EXPORT void Weights(TColStd_Array2OfReal& Weights) const;
+  Standard_EXPORT void Weights(NCollection_Array2<double>& Weights) const;
 
 protected:
-  Standard_Boolean              IsRational;
-  Handle(TColgp_HArray2OfPnt)   myPoles;
-  Handle(TColStd_HArray2OfReal) myWeights;
-
-private:
+  bool                                     IsRational;
+  occ::handle<NCollection_HArray2<gp_Pnt>> myPoles;
+  occ::handle<NCollection_HArray2<double>> myWeights;
 };
 
 #endif // _GeomFill_Filling_HeaderFile

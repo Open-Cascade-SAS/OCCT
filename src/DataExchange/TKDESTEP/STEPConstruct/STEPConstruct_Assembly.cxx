@@ -42,15 +42,15 @@ STEPConstruct_Assembly::STEPConstruct_Assembly() {}
 
 //=================================================================================================
 
-void STEPConstruct_Assembly::Init(const Handle(StepShape_ShapeDefinitionRepresentation)& aSDR,
-                                  const Handle(StepShape_ShapeDefinitionRepresentation)& SDR0,
-                                  const Handle(StepGeom_Axis2Placement3d)&               Ax0,
-                                  const Handle(StepGeom_Axis2Placement3d)&               AxLoc)
+void STEPConstruct_Assembly::Init(const occ::handle<StepShape_ShapeDefinitionRepresentation>& aSDR,
+                                  const occ::handle<StepShape_ShapeDefinitionRepresentation>& SDR0,
+                                  const occ::handle<StepGeom_Axis2Placement3d>&               Ax0,
+                                  const occ::handle<StepGeom_Axis2Placement3d>&               AxLoc)
 {
   thesdr  = aSDR;
   thesdr0 = SDR0;
-  thesr   = Handle(StepShape_ShapeRepresentation)::DownCast(aSDR->UsedRepresentation());
-  thesr0  = Handle(StepShape_ShapeRepresentation)::DownCast(SDR0->UsedRepresentation());
+  thesr   = occ::down_cast<StepShape_ShapeRepresentation>(aSDR->UsedRepresentation());
+  thesr0  = occ::down_cast<StepShape_ShapeRepresentation>(SDR0->UsedRepresentation());
   theval.Nullify();
   theax0            = Ax0;
   theloc            = AxLoc;
@@ -60,14 +60,14 @@ void STEPConstruct_Assembly::Init(const Handle(StepShape_ShapeDefinitionRepresen
 //=================================================================================================
 
 void STEPConstruct_Assembly::Init(
-  const Handle(StepShape_ShapeDefinitionRepresentation)&    aSDR,
-  const Handle(StepShape_ShapeDefinitionRepresentation)&    SDR0,
-  const Handle(StepGeom_CartesianTransformationOperator3d)& theTrsfOp)
+  const occ::handle<StepShape_ShapeDefinitionRepresentation>&    aSDR,
+  const occ::handle<StepShape_ShapeDefinitionRepresentation>&    SDR0,
+  const occ::handle<StepGeom_CartesianTransformationOperator3d>& theTrsfOp)
 {
   thesdr  = aSDR;
   thesdr0 = SDR0;
-  thesr   = Handle(StepShape_ShapeRepresentation)::DownCast(aSDR->UsedRepresentation());
-  thesr0  = Handle(StepShape_ShapeRepresentation)::DownCast(SDR0->UsedRepresentation());
+  thesr   = occ::down_cast<StepShape_ShapeRepresentation>(aSDR->UsedRepresentation());
+  thesr0  = occ::down_cast<StepShape_ShapeRepresentation>(SDR0->UsedRepresentation());
   theval.Nullify();
   myTrsfOp          = theTrsfOp;
   myIsCartesianTrsf = true;
@@ -85,36 +85,38 @@ void STEPConstruct_Assembly::Init(
 void STEPConstruct_Assembly::MakeRelationship()
 {
   // get PDs for assembly (sdr0) and component (sdr)
-  Handle(StepBasic_ProductDefinition) PDED =
+  occ::handle<StepBasic_ProductDefinition> PDED =
     thesdr->Definition().PropertyDefinition()->Definition().ProductDefinition();
-  Handle(StepBasic_ProductDefinition) PDING =
+  occ::handle<StepBasic_ProductDefinition> PDING =
     thesdr0->Definition().PropertyDefinition()->Definition().ProductDefinition();
 
   // create NAUO
   //: k8 abv 06 Jan 99: TR10: writing unique names for NAUOs  !!!!!
-  Handle(StepRepr_NextAssemblyUsageOccurrence) NAUO   = new StepRepr_NextAssemblyUsageOccurrence;
-  static Standard_Integer                      id     = 0;
-  Handle(TCollection_HAsciiString)             ocid   = new TCollection_HAsciiString(++id);
-  Handle(TCollection_HAsciiString)             ocname = new TCollection_HAsciiString("");
-  Handle(TCollection_HAsciiString)             ocdesc = new TCollection_HAsciiString("");
-  Handle(TCollection_HAsciiString)             refdes; // reste nulle
-  NAUO->Init(ocid, ocname, Standard_True, ocdesc, PDING, PDED, Standard_False, refdes);
+  occ::handle<StepRepr_NextAssemblyUsageOccurrence> NAUO = new StepRepr_NextAssemblyUsageOccurrence;
+  static int                                        id   = 0;
+  occ::handle<TCollection_HAsciiString>             ocid = new TCollection_HAsciiString(++id);
+  occ::handle<TCollection_HAsciiString>             ocname = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString>             ocdesc = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString>             refdes; // reste nulle
+  NAUO->Init(ocid, ocname, true, ocdesc, PDING, PDED, false, refdes);
 
   // create PDS for link CDSR->PDS->NAUO
-  Handle(StepRepr_ProductDefinitionShape) PDS     = new StepRepr_ProductDefinitionShape;
-  Handle(TCollection_HAsciiString)        pdsname = new TCollection_HAsciiString("Placement");
-  Handle(TCollection_HAsciiString) pdsdesc = new TCollection_HAsciiString("Placement of an item");
+  occ::handle<StepRepr_ProductDefinitionShape> PDS     = new StepRepr_ProductDefinitionShape;
+  occ::handle<TCollection_HAsciiString>        pdsname = new TCollection_HAsciiString("Placement");
+  occ::handle<TCollection_HAsciiString>        pdsdesc =
+    new TCollection_HAsciiString("Placement of an item");
   StepRepr_CharacterizedDefinition CD;
   CD.SetValue(NAUO);
-  PDS->Init(pdsname, Standard_True, pdsdesc, CD);
+  PDS->Init(pdsname, true, pdsdesc, CD);
 
   // create transformation
-  Handle(Standard_Transient) aTrsfItem;
+  occ::handle<Standard_Transient> aTrsfItem;
   if (!myIsCartesianTrsf)
   {
-    Handle(StepRepr_ItemDefinedTransformation) ItemDef = new StepRepr_ItemDefinedTransformation;
-    Handle(TCollection_HAsciiString)           idname  = new TCollection_HAsciiString("");
-    Handle(TCollection_HAsciiString)           idescr  = new TCollection_HAsciiString("");
+    occ::handle<StepRepr_ItemDefinedTransformation> ItemDef =
+      new StepRepr_ItemDefinedTransformation;
+    occ::handle<TCollection_HAsciiString> idname = new TCollection_HAsciiString("");
+    occ::handle<TCollection_HAsciiString> idescr = new TCollection_HAsciiString("");
     ItemDef->Init(idname, idescr, theax0, theloc);
     aTrsfItem = ItemDef;
   }
@@ -124,16 +126,16 @@ void STEPConstruct_Assembly::MakeRelationship()
   }
 
   // create SRRWT
-  Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation) SRRWT =
+  occ::handle<StepRepr_ShapeRepresentationRelationshipWithTransformation> SRRWT =
     new StepRepr_ShapeRepresentationRelationshipWithTransformation;
-  Handle(TCollection_HAsciiString) stname = new TCollection_HAsciiString("");
-  Handle(TCollection_HAsciiString) stescr = new TCollection_HAsciiString("");
-  StepRepr_Transformation          StepTrans;
+  occ::handle<TCollection_HAsciiString> stname = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> stescr = new TCollection_HAsciiString("");
+  StepRepr_Transformation               StepTrans;
   StepTrans.SetValue(aTrsfItem);
   SRRWT->Init(stname, stescr, thesr, thesr0, StepTrans);
 
   // create CDSR (final result, root)
-  Handle(StepShape_ContextDependentShapeRepresentation) CDSR =
+  occ::handle<StepShape_ContextDependentShapeRepresentation> CDSR =
     new StepShape_ContextDependentShapeRepresentation;
   CDSR->Init(SRRWT, PDS);
 
@@ -142,68 +144,68 @@ void STEPConstruct_Assembly::MakeRelationship()
 
 //=================================================================================================
 
-Handle(Standard_Transient) STEPConstruct_Assembly::ItemValue() const
+occ::handle<Standard_Transient> STEPConstruct_Assembly::ItemValue() const
 {
   if (theval.IsNull())
-    return Handle(Standard_Transient)(thesr);
+    return occ::handle<Standard_Transient>(thesr);
   return theval;
 }
 
 //=================================================================================================
 
-Handle(StepGeom_Axis2Placement3d) STEPConstruct_Assembly::ItemLocation() const
+occ::handle<StepGeom_Axis2Placement3d> STEPConstruct_Assembly::ItemLocation() const
 {
   return theloc;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_NextAssemblyUsageOccurrence) STEPConstruct_Assembly::GetNAUO() const
+occ::handle<StepRepr_NextAssemblyUsageOccurrence> STEPConstruct_Assembly::GetNAUO() const
 {
-  Handle(StepShape_ContextDependentShapeRepresentation) CDSR =
-    Handle(StepShape_ContextDependentShapeRepresentation)::DownCast(ItemValue());
+  occ::handle<StepShape_ContextDependentShapeRepresentation> CDSR =
+    occ::down_cast<StepShape_ContextDependentShapeRepresentation>(ItemValue());
   if (!CDSR.IsNull())
   {
-    Handle(StepBasic_ProductDefinitionRelationship) PDR =
+    occ::handle<StepBasic_ProductDefinitionRelationship> PDR =
       CDSR->RepresentedProductRelation()->Definition().ProductDefinitionRelationship();
-    return Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(PDR);
+    return occ::down_cast<StepRepr_NextAssemblyUsageOccurrence>(PDR);
   }
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(
-  const Interface_Graph&                                       theGraph,
-  const Handle(StepShape_ContextDependentShapeRepresentation)& CDSR)
+bool STEPConstruct_Assembly::CheckSRRReversesNAUO(
+  const Interface_Graph&                                            theGraph,
+  const occ::handle<StepShape_ContextDependentShapeRepresentation>& CDSR)
 {
-  Handle(StepRepr_NextAssemblyUsageOccurrence) nauo =
-    Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(
+  occ::handle<StepRepr_NextAssemblyUsageOccurrence> nauo =
+    occ::down_cast<StepRepr_NextAssemblyUsageOccurrence>(
       CDSR->RepresentedProductRelation()->Definition().ProductDefinitionRelationship());
   if (nauo.IsNull())
   {
 #ifdef OCCT_DEBUG
     std::cout << "Warning: No NAUO found in CDSR !" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
 
-  Handle(StepBasic_ProductDefinition) pd1, pd2;
-  Handle(StepRepr_Representation)     rep1 = CDSR->RepresentationRelation()->Rep1();
-  Handle(StepRepr_Representation)     rep2 = CDSR->RepresentationRelation()->Rep2();
+  occ::handle<StepBasic_ProductDefinition> pd1, pd2;
+  occ::handle<StepRepr_Representation>     rep1 = CDSR->RepresentationRelation()->Rep1();
+  occ::handle<StepRepr_Representation>     rep2 = CDSR->RepresentationRelation()->Rep2();
   if (rep1.IsNull() || rep2.IsNull())
-    return Standard_False;
+    return false;
 
   // find SDRs corresponding to Rep1 and Rep2 and remember their PDs
-  Handle(Standard_Type)    tSDR   = STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation);
-  Interface_EntityIterator anIter = theGraph.Sharings(rep1);
+  occ::handle<Standard_Type> tSDR   = STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation);
+  Interface_EntityIterator   anIter = theGraph.Sharings(rep1);
   for (; anIter.More() && pd1.IsNull(); anIter.Next())
   {
-    const Handle(Standard_Transient)& enti = anIter.Value();
+    const occ::handle<Standard_Transient>& enti = anIter.Value();
     if (enti->DynamicType() == tSDR)
     {
-      Handle(StepShape_ShapeDefinitionRepresentation) SDR =
-        Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(enti);
+      occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+        occ::down_cast<StepShape_ShapeDefinitionRepresentation>(enti);
       if (SDR->UsedRepresentation() == rep1)
         pd1 = SDR->Definition().PropertyDefinition()->Definition().ProductDefinition();
     }
@@ -212,11 +214,11 @@ Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(
   anIter = theGraph.Sharings(rep2);
   for (; anIter.More() && pd2.IsNull(); anIter.Next())
   {
-    const Handle(Standard_Transient)& enti = anIter.Value();
+    const occ::handle<Standard_Transient>& enti = anIter.Value();
     if (enti->DynamicType() == tSDR)
     {
-      Handle(StepShape_ShapeDefinitionRepresentation) SDR =
-        Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(enti);
+      occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+        occ::down_cast<StepShape_ShapeDefinitionRepresentation>(enti);
       if (SDR->UsedRepresentation() == rep2)
         pd2 = SDR->Definition().PropertyDefinition()->Definition().ProductDefinition();
     }
@@ -226,12 +228,12 @@ Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(
 
   if (pd1 == nauo->RelatedProductDefinition() && // OK
       pd2 == nauo->RelatingProductDefinition())
-    return Standard_False;
+    return false;
 
   if (pd2 == nauo->RelatedProductDefinition() && // Reversed
       pd1 == nauo->RelatingProductDefinition())
   {
-    return Standard_True;
+    return true;
   }
 
 #ifdef OCCT_DEBUG
@@ -250,8 +252,8 @@ Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(
   if (pd2 == nauo->RelatedProductDefinition() || //: k3 abv 25 Nov 98: rp1sd.stp - bad assemblies
       pd1 == nauo->RelatingProductDefinition())
   {
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }

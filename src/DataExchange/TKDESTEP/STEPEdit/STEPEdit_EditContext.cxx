@@ -27,26 +27,26 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPEdit_EditContext, IFSelect_Editor)
 STEPEdit_EditContext::STEPEdit_EditContext()
     : IFSelect_Editor(5)
 {
-  Handle(Interface_TypedValue) ac_val =
+  occ::handle<Interface_TypedValue> ac_val =
     new Interface_TypedValue("Application Context", Interface_ParamIdent);
   SetValue(1, ac_val, "AC", IFSelect_EditRead);
 
-  Handle(Interface_TypedValue) ac_status = new Interface_TypedValue("AppliContext_Status");
+  occ::handle<Interface_TypedValue> ac_status = new Interface_TypedValue("AppliContext_Status");
   SetValue(2, ac_status, "AC_Status");
-  Handle(Interface_TypedValue) ac_sche = new Interface_TypedValue("AppliContext_Schema");
+  occ::handle<Interface_TypedValue> ac_sche = new Interface_TypedValue("AppliContext_Schema");
   SetValue(3, ac_sche, "AC_Schema");
-  Handle(Interface_TypedValue) ac_year =
+  occ::handle<Interface_TypedValue> ac_year =
     new Interface_TypedValue("AppliContext_Year", Interface_ParamInteger);
   SetValue(4, ac_year, "AC_Year");
-  Handle(Interface_TypedValue) ac_name = new Interface_TypedValue("AppliContext_Name");
+  occ::handle<Interface_TypedValue> ac_name = new Interface_TypedValue("AppliContext_Name");
   SetValue(5, ac_name, "AC_Name");
 
-  //  Handle(Interface_TypedValue) prpc_val = new Interface_TypedValue("Product Related Product
+  //  occ::handle<Interface_TypedValue> prpc_val = new Interface_TypedValue("Product Related Product
   //  Category",Interface_ParamIdent); SetValue(6,ac_val,"PRPC",IFSelect_EditRead);
 
-  //  Handle(Interface_TypedValue) prpc_name = new Interface_TypedValue("PRPC_Name");
+  //  occ::handle<Interface_TypedValue> prpc_name = new Interface_TypedValue("PRPC_Name");
   //  SetValue(7,prpc_name,"PRPC_Name");
-  //  Handle(Interface_TypedValue) prpc_descr = new Interface_TypedValue("PRPC_Description");
+  //  occ::handle<Interface_TypedValue> prpc_descr = new Interface_TypedValue("PRPC_Description");
   //  SetValue(8,prpc_descr,"PRPC_Descr");
 }
 
@@ -55,17 +55,17 @@ TCollection_AsciiString STEPEdit_EditContext::Label() const
   return TCollection_AsciiString("STEP : Product Definition Context");
 }
 
-Standard_Boolean STEPEdit_EditContext::Recognize(const Handle(IFSelect_EditForm)& /*form*/) const
+bool STEPEdit_EditContext::Recognize(const occ::handle<IFSelect_EditForm>& /*form*/) const
 {
   // il faut 17 parametres
-  return Standard_True;
+  return true;
 }
 
-Handle(TCollection_HAsciiString) STEPEdit_EditContext::StringValue(
-  const Handle(IFSelect_EditForm)& /*form*/,
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> STEPEdit_EditContext::StringValue(
+  const occ::handle<IFSelect_EditForm>& /*form*/,
+  const int num) const
 {
-  Handle(TCollection_HAsciiString) str;
+  occ::handle<TCollection_HAsciiString> str;
   switch (num)
   {
     case 2:
@@ -86,13 +86,13 @@ Handle(TCollection_HAsciiString) STEPEdit_EditContext::StringValue(
   return str;
 }
 
-Standard_Boolean STEPEdit_EditContext::Load(const Handle(IFSelect_EditForm)& form,
-                                            const Handle(Standard_Transient)& /*ent*/,
-                                            const Handle(Interface_InterfaceModel)& model) const
+bool STEPEdit_EditContext::Load(const occ::handle<IFSelect_EditForm>& form,
+                                const occ::handle<Standard_Transient>& /*ent*/,
+                                const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(StepData_StepModel) modl = Handle(StepData_StepModel)::DownCast(model);
+  occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
-    return Standard_False;
+    return false;
 
   STEPConstruct_ContextTool ctx(modl);
   StepData_Factors          aLocalFactors;
@@ -110,16 +110,16 @@ Standard_Boolean STEPEdit_EditContext::Load(const Handle(IFSelect_EditForm)& for
   //  form->LoadValue (7, ctx.GetPRPCName());
   //  form->LoadValue (8, ctx.GetPRPCDescription());
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean STEPEdit_EditContext::Apply(const Handle(IFSelect_EditForm)& form,
-                                             const Handle(Standard_Transient)& /*ent*/,
-                                             const Handle(Interface_InterfaceModel)& model) const
+bool STEPEdit_EditContext::Apply(const occ::handle<IFSelect_EditForm>& form,
+                                 const occ::handle<Standard_Transient>& /*ent*/,
+                                 const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(StepData_StepModel) modl = Handle(StepData_StepModel)::DownCast(model);
+  occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
-    return Standard_False;
+    return false;
 
   STEPConstruct_ContextTool ctx(modl);
   StepData_Factors          aLocalFactors;
@@ -140,5 +140,5 @@ Standard_Boolean STEPEdit_EditContext::Apply(const Handle(IFSelect_EditForm)& fo
   //  if (form->IsModified(7)) ctx.SetPRPCName        (form->EditedValue(7));
   //  if (form->IsModified(8)) ctx.SetPRPCDescription (form->EditedValue(8));
 
-  return Standard_True;
+  return true;
 }

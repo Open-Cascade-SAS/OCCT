@@ -28,9 +28,7 @@ GC_MakeEllipse::GC_MakeEllipse(const gp_Elips& E)
   TheEllipse = new Geom_Ellipse(E);
 }
 
-GC_MakeEllipse::GC_MakeEllipse(const gp_Ax2&       A2,
-                               const Standard_Real MajorRadius,
-                               const Standard_Real MinorRadius)
+GC_MakeEllipse::GC_MakeEllipse(const gp_Ax2& A2, const double MajorRadius, const double MinorRadius)
 {
   if (MinorRadius < 0.0)
   {
@@ -57,7 +55,7 @@ GC_MakeEllipse::GC_MakeEllipse(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt&
   }
 }
 
-const Handle(Geom_Ellipse)& GC_MakeEllipse::Value() const
+const occ::handle<Geom_Ellipse>& GC_MakeEllipse::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeEllipse::Value() - no result");
   return TheEllipse;

@@ -22,11 +22,10 @@
 
 //=================================================================================================
 
-Standard_Integer Standard_GUID_MatchChar(const Standard_CString   buffer,
-                                         const Standard_Character aChar)
+int Standard_GUID_MatchChar(const char* buffer, const char aChar)
 {
-  Standard_CString tmpbuffer = buffer;
-  Standard_Integer result    = -1;
+  const char* tmpbuffer = buffer;
+  int         result    = -1;
 
   while (*tmpbuffer != '\0' && *tmpbuffer != aChar)
   {
@@ -45,17 +44,17 @@ Standard_Integer Standard_GUID_MatchChar(const Standard_CString   buffer,
 
 //=================================================================================================
 
-Standard_PCharacter Standard_GUID_GetValue32(Standard_PCharacter tmpBuffer, Standard_Integer& my32b)
+Standard_PCharacter Standard_GUID_GetValue32(Standard_PCharacter tmpBuffer, int& my32b)
 {
-  Standard_Character strtmp[Standard_GUID_SIZE_ALLOC];
-  Standard_Integer   pos = 0;
+  char strtmp[Standard_GUID_SIZE_ALLOC];
+  int  pos = 0;
 
   pos = Standard_GUID_MatchChar(tmpBuffer, '-');
   if (pos >= 0)
   {
     strncpy(strtmp, tmpBuffer, pos);
     strtmp[pos] = '\0';
-    my32b       = (Standard_Integer)strtoul(strtmp, (char**)NULL, 16);
+    my32b       = (int)strtoul(strtmp, (char**)NULL, 16);
   }
   else
     return NULL;
@@ -64,18 +63,17 @@ Standard_PCharacter Standard_GUID_GetValue32(Standard_PCharacter tmpBuffer, Stan
 
 //=================================================================================================
 
-Standard_PCharacter Standard_GUID_GetValue16(Standard_PCharacter    tmpBuffer,
-                                             Standard_ExtCharacter& my32b)
+Standard_PCharacter Standard_GUID_GetValue16(Standard_PCharacter tmpBuffer, char16_t& my32b)
 {
-  Standard_Character strtmp[Standard_GUID_SIZE_ALLOC];
-  Standard_Integer   pos = 0;
+  char strtmp[Standard_GUID_SIZE_ALLOC];
+  int  pos = 0;
 
   pos = Standard_GUID_MatchChar(tmpBuffer, '-');
   if (pos >= 0)
   {
     strncpy(strtmp, tmpBuffer, pos);
     strtmp[pos] = '\0';
-    my32b       = (Standard_ExtCharacter)strtoul(strtmp, (char**)NULL, 16);
+    my32b       = (char16_t)strtoul(strtmp, (char**)NULL, 16);
   }
   else
     return NULL;
@@ -85,91 +83,91 @@ Standard_PCharacter Standard_GUID_GetValue16(Standard_PCharacter    tmpBuffer,
 
 //=================================================================================================
 
-Standard_PCharacter Standard_GUID_GetValue8(Standard_PCharacter tmpBuffer, Standard_Byte& my32b)
+Standard_PCharacter Standard_GUID_GetValue8(Standard_PCharacter tmpBuffer, uint8_t& my32b)
 {
-  Standard_Character strtmp[Standard_GUID_SIZE_ALLOC];
+  char strtmp[Standard_GUID_SIZE_ALLOC];
 
   strncpy(strtmp, tmpBuffer, 2);
   strtmp[2] = '\0';
-  my32b     = (Standard_Byte)strtoul(strtmp, (char**)NULL, 16);
+  my32b     = (uint8_t)strtoul(strtmp, (char**)NULL, 16);
   //  std::cout << "V8 :" << hex(my32b) << std::endl;
   return &tmpBuffer[2];
 }
 
 //=================================================================================================
 
-Standard_Boolean Standard_GUID::CheckGUIDFormat(const Standard_CString aGuid)
+bool Standard_GUID::CheckGUIDFormat(const char* aGuid)
 {
-  Standard_Boolean result = Standard_True;
+  bool result = true;
 
   if (aGuid == NULL)
-    return Standard_False;
+    return false;
 
   if (strlen(aGuid) == Standard_GUID_SIZE)
   {
-    Standard_Integer i;
+    int i;
 
     for (i = 0; i < 8 && result; i++)
     {
       if (!IsXDigit(aGuid[i]))
       {
-        return Standard_False;
+        return false;
       }
     }
 
     if (aGuid[8] != '-')
-      return Standard_False;
+      return false;
 
     for (i = 9; i < 13 && result; i++)
     {
       if (!IsXDigit(aGuid[i]))
       {
-        return Standard_False;
+        return false;
       }
     }
 
     if (aGuid[13] != '-')
-      return Standard_False;
+      return false;
 
     for (i = 14; i < 18 && result; i++)
     {
       if (!IsXDigit(aGuid[i]))
       {
-        return Standard_False;
+        return false;
       }
     }
 
     if (aGuid[18] != '-')
-      return Standard_False;
+      return false;
 
     for (i = 19; i < 23; i++)
     {
       if (!IsXDigit(aGuid[i]))
       {
-        return Standard_False;
+        return false;
       }
     }
 
     if (aGuid[23] != '-')
-      return Standard_False;
+      return false;
 
     for (i = 24; i < 36; i++)
     {
       if (!IsXDigit(aGuid[i]))
       {
-        return Standard_False;
+        return false;
       }
     }
   }
   else
-    result = Standard_False;
+    result = false;
 
   return result;
 }
 
 //=================================================================================================
 
-Standard_GUID::Standard_GUID(const Standard_CString aGuid)
+Standard_GUID::Standard_GUID(const char* aGuid)
     : my32b(0),
       my16b1(0),
       my16b2(0),
@@ -202,7 +200,7 @@ Standard_GUID::Standard_GUID(const Standard_CString aGuid)
   Standard_GUID_GetValue8(tmpBuffer, my8b6);
 }
 
-Standard_GUID::Standard_GUID(const Standard_ExtString aGuid)
+Standard_GUID::Standard_GUID(const char16_t* aGuid)
     : my32b(0),
       my16b1(0),
       my16b2(0),
@@ -214,9 +212,9 @@ Standard_GUID::Standard_GUID(const Standard_ExtString aGuid)
       my8b5(0),
       my8b6(0)
 {
-  char             tpb[Standard_GUID_SIZE_ALLOC];
-  char*            tmpBuffer = tpb;
-  Standard_Integer i         = 0;
+  char  tpb[Standard_GUID_SIZE_ALLOC];
+  char* tmpBuffer = tpb;
+  int   i         = 0;
   while (i < Standard_GUID_SIZE)
   {
     tmpBuffer[i] = (char)aGuid[i];
@@ -266,22 +264,22 @@ void Standard_GUID::ToCString(const Standard_PCharacter aStrGuid) const
 
 void Standard_GUID::ToExtString(const Standard_PExtCharacter aStrGuid) const
 {
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   ToCString(sguid);
 
-  for (Standard_Integer i = 0; i < Standard_GUID_SIZE; i++)
+  for (int i = 0; i < Standard_GUID_SIZE; i++)
   {
-    aStrGuid[i] = (Standard_ExtCharacter)sguid[i];
+    aStrGuid[i] = (char16_t)sguid[i];
   }
 
-  aStrGuid[Standard_GUID_SIZE] = (Standard_ExtCharacter)0;
+  aStrGuid[Standard_GUID_SIZE] = (char16_t)0;
 }
 
 //=================================================================================================
 
 void Standard_GUID::ShallowDump(Standard_OStream& aStream) const
 {
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   ToCString(sguid);
   aStream << sguid;
 }

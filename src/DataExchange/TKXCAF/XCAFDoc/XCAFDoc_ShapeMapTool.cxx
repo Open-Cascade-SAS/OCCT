@@ -37,9 +37,9 @@ const Standard_GUID& XCAFDoc_ShapeMapTool::GetID()
 
 //=================================================================================================
 
-Handle(XCAFDoc_ShapeMapTool) XCAFDoc_ShapeMapTool::Set(const TDF_Label& L)
+occ::handle<XCAFDoc_ShapeMapTool> XCAFDoc_ShapeMapTool::Set(const TDF_Label& L)
 {
-  Handle(XCAFDoc_ShapeMapTool) A;
+  occ::handle<XCAFDoc_ShapeMapTool> A;
   if (!L.FindAttribute(XCAFDoc_ShapeMapTool::GetID(), A))
   {
     A = new XCAFDoc_ShapeMapTool();
@@ -57,19 +57,19 @@ const Standard_GUID& XCAFDoc_ShapeMapTool::ID() const
 
 //=================================================================================================
 
-void XCAFDoc_ShapeMapTool::Restore(const Handle(TDF_Attribute)& /*with*/) {}
+void XCAFDoc_ShapeMapTool::Restore(const occ::handle<TDF_Attribute>& /*with*/) {}
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XCAFDoc_ShapeMapTool::NewEmpty() const
+occ::handle<TDF_Attribute> XCAFDoc_ShapeMapTool::NewEmpty() const
 {
   return new XCAFDoc_ShapeMapTool;
 }
 
 //=================================================================================================
 
-void XCAFDoc_ShapeMapTool::Paste(const Handle(TDF_Attribute)& /*into*/,
-                                 const Handle(TDF_RelocationTable)& /*RT*/) const
+void XCAFDoc_ShapeMapTool::Paste(const occ::handle<TDF_Attribute>& /*into*/,
+                                 const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
 }
 
@@ -79,14 +79,15 @@ XCAFDoc_ShapeMapTool::XCAFDoc_ShapeMapTool() {}
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ShapeMapTool::IsSubShape(const TopoDS_Shape& sub) const
+bool XCAFDoc_ShapeMapTool::IsSubShape(const TopoDS_Shape& sub) const
 {
   return myMap.Contains(sub);
 }
 
 //=================================================================================================
 
-static void AddSubShape(const TopoDS_Shape& S, TopTools_IndexedMapOfShape& myMap)
+static void AddSubShape(const TopoDS_Shape&                                            S,
+                        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& myMap)
 {
   myMap.Add(S);
   for (TopoDS_Iterator it(S); it.More(); it.Next())
@@ -104,22 +105,25 @@ void XCAFDoc_ShapeMapTool::SetShape(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-const TopTools_IndexedMapOfShape& XCAFDoc_ShapeMapTool::GetMap() const
+const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& XCAFDoc_ShapeMapTool::GetMap()
+  const
 {
   return myMap;
 }
 
 //=================================================================================================
 
-void XCAFDoc_ShapeMapTool::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_ShapeMapTool::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  for (TopTools_IndexedMapOfShape::Iterator aMapIt(myMap); aMapIt.More(); aMapIt.Next())
+  for (NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aMapIt(myMap);
+       aMapIt.More();
+       aMapIt.Next())
   {
-    const Handle(TopoDS_TShape)& aShape = aMapIt.Value().TShape();
+    const occ::handle<TopoDS_TShape>& aShape = aMapIt.Value().TShape();
     OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, aShape)
   }
 }

@@ -26,11 +26,11 @@
 
 void ShapeExtend::Init()
 {
-  static Standard_Boolean init = Standard_False;
+  static bool init = false;
   if (init)
     return;
 
-  init = Standard_True;
+  init = true;
 
   // load Message File for Shape Healing
   if (!Message_MsgFile::HasMsg("ShapeFix.FixSmallSolid.MSG0"))
@@ -49,7 +49,7 @@ void ShapeExtend::Init()
 
 //=================================================================================================
 
-Standard_Integer ShapeExtend::EncodeStatus(const ShapeExtend_Status status)
+int ShapeExtend::EncodeStatus(const ShapeExtend_Status status)
 {
   switch (status)
   {
@@ -97,10 +97,9 @@ Standard_Integer ShapeExtend::EncodeStatus(const ShapeExtend_Status status)
 
 //=================================================================================================
 
-Standard_Boolean ShapeExtend::DecodeStatus(const Standard_Integer   flag,
-                                           const ShapeExtend_Status status)
+bool ShapeExtend::DecodeStatus(const int flag, const ShapeExtend_Status status)
 {
   if (status == ShapeExtend_OK)
     return (flag == 0);
-  return (flag & ShapeExtend::EncodeStatus(status) ? Standard_True : Standard_False);
+  return (flag & ShapeExtend::EncodeStatus(status) ? true : false);
 }

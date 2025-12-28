@@ -25,73 +25,69 @@ Aspect_NeutralWindow::Aspect_NeutralWindow()
       myPosY(0),
       myWidth(0),
       myHeight(0),
-      myIsMapped(Standard_True)
+      myIsMapped(true)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean Aspect_NeutralWindow::SetNativeHandles(Aspect_Drawable theWindow,
-                                                        Aspect_Drawable theParentWindow,
-                                                        Aspect_FBConfig theFbConfig)
+bool Aspect_NeutralWindow::SetNativeHandles(Aspect_Drawable theWindow,
+                                            Aspect_Drawable theParentWindow,
+                                            Aspect_FBConfig theFbConfig)
 {
   if (myHandle == theWindow && myParentHandle == theParentWindow && myFBConfig == theFbConfig)
   {
-    return Standard_False;
+    return false;
   }
 
   myHandle       = theWindow;
   myParentHandle = theParentWindow;
   myFBConfig     = theFbConfig;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Aspect_NeutralWindow::SetPosition(Standard_Integer theX1, Standard_Integer theY1)
+bool Aspect_NeutralWindow::SetPosition(int theX1, int theY1)
 {
   if (myPosX == theX1 && myPosY == theY1)
   {
-    return Standard_False;
+    return false;
   }
 
   myPosX = theX1;
   myPosY = theY1;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Aspect_NeutralWindow::SetPosition(Standard_Integer theX1,
-                                                   Standard_Integer theY1,
-                                                   Standard_Integer theX2,
-                                                   Standard_Integer theY2)
+bool Aspect_NeutralWindow::SetPosition(int theX1, int theY1, int theX2, int theY2)
 {
-  Standard_Integer aWidthNew  = theX2 - theX1;
-  Standard_Integer aHeightNew = theY2 - theY1;
+  int aWidthNew  = theX2 - theX1;
+  int aHeightNew = theY2 - theY1;
   if (myPosX == theX1 && myPosY == theY1 && myWidth == aWidthNew && myHeight == aHeightNew)
   {
-    return Standard_False;
+    return false;
   }
 
   myPosX   = theX1;
   myWidth  = aWidthNew;
   myPosY   = theY1;
   myHeight = aHeightNew;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Aspect_NeutralWindow::SetSize(const Standard_Integer theWidth,
-                                               const Standard_Integer theHeight)
+bool Aspect_NeutralWindow::SetSize(const int theWidth, const int theHeight)
 {
   if (myWidth == theWidth && myHeight == theHeight)
   {
-    return Standard_False;
+    return false;
   }
 
   myWidth  = theWidth;
   myHeight = theHeight;
-  return Standard_True;
+  return true;
 }

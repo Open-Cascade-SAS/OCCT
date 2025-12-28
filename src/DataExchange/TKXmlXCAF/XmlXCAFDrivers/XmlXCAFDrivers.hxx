@@ -38,11 +38,11 @@ public:
   //! ed8793f8-3142-11d4-b9b5-0060b0ee281b Transient-Persistent
   //! ed8793f9-3142-11d4-b9b5-0060b0ee281b Persistent-Transient
   //! ed8793fa-3142-11d4-b9b5-0060b0ee281b XCAFSchema
-  Standard_EXPORT static const Handle(Standard_Transient)& Factory(const Standard_GUID& aGUID);
+  Standard_EXPORT static const occ::handle<Standard_Transient>& Factory(const Standard_GUID& aGUID);
 
   //! Defines format "XmlXCAF" and registers its read and write drivers
   //! in the specified application
-  Standard_EXPORT static void DefineFormat(const Handle(TDocStd_Application)& theApp);
+  Standard_EXPORT static void DefineFormat(const occ::handle<TDocStd_Application>& theApp);
 };
 
 #endif // _XmlXCAFDrivers_HeaderFile

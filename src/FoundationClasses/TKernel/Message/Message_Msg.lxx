@@ -37,7 +37,7 @@ inline Message_Msg& Message_Msg::Arg(const TCollection_AsciiString& theString)
 // purpose  :
 //=======================================================================
 
-inline Message_Msg& Message_Msg::Arg(const Handle(TCollection_HAsciiString)& theString)
+inline Message_Msg& Message_Msg::Arg(const occ::handle<TCollection_HAsciiString>& theString)
 {
   return Arg(theString->String().ToCString());
 }
@@ -47,7 +47,7 @@ inline Message_Msg& Message_Msg::Arg(const Handle(TCollection_HAsciiString)& the
 // purpose  :
 //=======================================================================
 
-inline Message_Msg& Message_Msg::Arg(const Handle(TCollection_HExtendedString)& theString)
+inline Message_Msg& Message_Msg::Arg(const occ::handle<TCollection_HExtendedString>& theString)
 {
   return Arg(theString->String());
 }
@@ -68,7 +68,7 @@ inline const TCollection_ExtendedString& Message_Msg::Value() const
 
 //=================================================================================================
 
-inline Standard_Boolean Message_Msg::IsEdited() const
+inline bool Message_Msg::IsEdited() const
 {
   return !myOriginal.IsEqual(myMessageBody);
 }

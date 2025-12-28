@@ -21,11 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColgp_Array1OfLin2d.hxx>
-#include <GccEnt_Array1OfPosition.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Lin2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <gp_Pnt2d.hxx>
 class gp_Pnt2d;
 class gp_Lin2d;
 class GccEnt_QualifiedCirc;
@@ -60,11 +59,11 @@ public:
   Standard_EXPORT GccAna_Lin2dTanPar(const GccEnt_QualifiedCirc& Qualified1, const gp_Lin2d& Lin1);
 
   //! Returns True if the algorithm succeeded.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the number of solutions.
   //! Raises NotDone if the construction algorithm didn't succeed.
-  Standard_EXPORT Standard_Integer NbSolutions() const;
+  Standard_EXPORT int NbSolutions() const;
 
   //! Returns the solution number Index and raises OutOfRange
   //! exception if Index is greater than the number of solutions.
@@ -75,7 +74,7 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT gp_Lin2d ThisSolution(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Lin2d ThisSolution(const int Index) const;
 
   //! Returns the information about the qualifiers of the
   //! tangency arguments concerning the solution number Index.
@@ -86,7 +85,7 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT void WhichQualifier(const Standard_Integer Index, GccEnt_Position& Qualif1) const;
+  Standard_EXPORT void WhichQualifier(const int Index, GccEnt_Position& Qualif1) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
@@ -99,20 +98,19 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT void Tangency1(const Standard_Integer Index,
-                                 Standard_Real&         ParSol,
-                                 Standard_Real&         ParArg,
-                                 gp_Pnt2d&              Pnt) const;
+  Standard_EXPORT void Tangency1(const int Index,
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& Pnt) const;
 
-protected:
 private:
-  Standard_Boolean        WellDone;
-  Standard_Integer        NbrSol;
-  TColgp_Array1OfLin2d    linsol;
-  GccEnt_Array1OfPosition qualifier1;
-  TColgp_Array1OfPnt2d    pnttg1sol;
-  TColStd_Array1OfReal    par1sol;
-  TColStd_Array1OfReal    pararg1;
+  bool                                WellDone;
+  int                                 NbrSol;
+  NCollection_Array1<gp_Lin2d>        linsol;
+  NCollection_Array1<GccEnt_Position> qualifier1;
+  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
+  NCollection_Array1<double>          par1sol;
+  NCollection_Array1<double>          pararg1;
 };
 
 #endif // _GccAna_Lin2dTanPar_HeaderFile

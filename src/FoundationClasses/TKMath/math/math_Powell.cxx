@@ -27,7 +27,7 @@
 
 namespace
 {
-static inline Standard_Real SQR(const Standard_Real a)
+static inline double SQR(const double a)
 {
   return a * a;
 }
@@ -46,7 +46,7 @@ public:
 
   void Initialize(const math_Vector& p0, const math_Vector& dir);
 
-  virtual Standard_Boolean Value(const Standard_Real x, Standard_Real& fval);
+  virtual bool Value(const double x, double& fval);
 };
 
 DirFunctionBis::DirFunctionBis(math_Vector&              V1,
@@ -67,7 +67,7 @@ void DirFunctionBis::Initialize(const math_Vector& p0, const math_Vector& dir)
   *Dir = dir;
 }
 
-Standard_Boolean DirFunctionBis::Value(const Standard_Real x, Standard_Real& fval)
+bool DirFunctionBis::Value(const double x, double& fval)
 {
   *P = *Dir;
   P->Multiply(x);
@@ -77,15 +77,12 @@ Standard_Boolean DirFunctionBis::Value(const Standard_Real x, Standard_Real& fva
   return F->Value(*P, fval);
 }
 
-static Standard_Boolean MinimizeDirection(math_Vector&    P,
-                                          math_Vector&    Dir,
-                                          Standard_Real&  Result,
-                                          DirFunctionBis& F)
+static bool MinimizeDirection(math_Vector& P, math_Vector& Dir, double& Result, DirFunctionBis& F)
 {
 
-  Standard_Real ax;
-  Standard_Real xx;
-  Standard_Real bx;
+  double ax;
+  double xx;
+  double bx;
 
   F.Initialize(P, Dir);
 
@@ -97,29 +94,29 @@ static Standard_Boolean MinimizeDirection(math_Vector&    P,
     Sol.Perform(F, ax, xx, bx);
     if (Sol.IsDone())
     {
-      Standard_Real Scale = Sol.Location();
-      Result              = Sol.Minimum();
+      double Scale = Sol.Location();
+      Result       = Sol.Minimum();
       Dir.Multiply(Scale);
       P.Add(Dir);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 math_Powell::math_Powell(const math_MultipleVarFunction& theFunction,
-                         const Standard_Real             theTolerance,
-                         const Standard_Integer          theNbIterations,
-                         const Standard_Real             theZEPS)
+                         const double                    theTolerance,
+                         const int                       theNbIterations,
+                         const double                    theZEPS)
     : TheLocation(1, theFunction.NbVariables()),
       TheMinimum(RealLast()),
       TheLocationError(RealLast()),
       PreviousMinimum(RealLast()),
       XTol(theTolerance),
       EPSZ(theZEPS),
-      Done(Standard_False),
+      Done(false),
       Iter(0),
       TheStatus(math_NotBracketed),
       TheDirections(1, theFunction.NbVariables(), 1, theFunction.NbVariables()),
@@ -138,17 +135,17 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
                           const math_Vector&        StartingPoint,
                           const math_Matrix&        StartingDirections)
 {
-  Done = Standard_False;
-  Standard_Integer i, ibig, j;
-  Standard_Real    t, fptt, del;
-  Standard_Integer n = TheLocation.Length();
-  math_Vector      pt(1, n);
-  math_Vector      ptt(1, n);
-  math_Vector      xit(1, n);
-  math_Vector      Temp1(1, n);
-  math_Vector      Temp2(1, n);
-  math_Vector      Temp3(1, n);
-  DirFunctionBis   F_Dir(Temp1, Temp2, Temp3, F);
+  Done = false;
+  int            i, ibig, j;
+  double         t, fptt, del;
+  int            n = TheLocation.Length();
+  math_Vector    pt(1, n);
+  math_Vector    ptt(1, n);
+  math_Vector    xit(1, n);
+  math_Vector    Temp1(1, n);
+  math_Vector    Temp2(1, n);
+  math_Vector    Temp3(1, n);
+  DirFunctionBis F_Dir(Temp1, Temp2, Temp3, F);
 
   TheLocation   = StartingPoint;
   TheDirections = StartingDirections;
@@ -164,11 +161,11 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
       for (j = 1; j <= n; j++)
         xit(j) = TheDirections(j, i);
       F.Value(TheLocation, fptt);
-      Standard_Boolean IsGood = MinimizeDirection(TheLocation, xit, TheMinimum, F_Dir);
+      bool IsGood = MinimizeDirection(TheLocation, xit, TheMinimum, F_Dir);
 
       if (!IsGood)
       {
-        Done      = Standard_False;
+        Done      = false;
         TheStatus = math_DirectionSearchError;
         return;
       }
@@ -184,14 +181,14 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
     {
       // Termination criterion
       State     = F.GetStateNumber();
-      Done      = Standard_True;
+      Done      = true;
       TheStatus = math_OK;
       return;
     }
 
     if (Iter == Itermax)
     {
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_TooManyIterations;
       return;
     }
@@ -212,10 +209,10 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
       if (t < 0.0)
       {
         // Minimisation along the direction
-        Standard_Boolean IsGood = MinimizeDirection(TheLocation, xit, TheMinimum, F_Dir);
+        bool IsGood = MinimizeDirection(TheLocation, xit, TheMinimum, F_Dir);
         if (!IsGood)
         {
-          Done      = Standard_False;
+          Done      = false;
           TheStatus = math_FunctionError;
           return;
         }
@@ -243,6 +240,6 @@ void math_Powell::Dump(Standard_OStream& o) const
   }
   else
   {
-    o << " Status = not Done because " << (Standard_Integer)TheStatus << "\n";
+    o << " Status = not Done because " << (int)TheStatus << "\n";
   }
 }

@@ -24,27 +24,28 @@ class Prs3d_PresentationShadow : public Graphic3d_Structure
   DEFINE_STANDARD_RTTIEXT(Prs3d_PresentationShadow, Graphic3d_Structure)
 public:
   //! Constructs a shadow of existing presentation object.
-  Standard_EXPORT Prs3d_PresentationShadow(const Handle(Graphic3d_StructureManager)& theViewer,
-                                           const Handle(Graphic3d_Structure)&        thePrs);
+  Standard_EXPORT Prs3d_PresentationShadow(const occ::handle<Graphic3d_StructureManager>& theViewer,
+                                           const occ::handle<Graphic3d_Structure>&        thePrs);
 
   //! Returns the id of the parent presentation
-  inline Standard_Integer ParentId() const { return myParentStructId; }
+  inline int ParentId() const { return myParentStructId; }
 
   //! Returns view affinity of the parent presentation
-  inline const Handle(Graphic3d_ViewAffinity)& ParentAffinity() const { return myParentAffinity; }
+  inline const occ::handle<Graphic3d_ViewAffinity>& ParentAffinity() const
+  {
+    return myParentAffinity;
+  }
 
   //! Do nothing - axis-aligned bounding box should be initialized from parent structure.
-  Standard_EXPORT virtual void CalculateBoundBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CalculateBoundBox() override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 private:
-  Handle(Graphic3d_ViewAffinity) myParentAffinity;
-  Standard_Integer               myParentStructId;
+  occ::handle<Graphic3d_ViewAffinity> myParentAffinity;
+  int                                 myParentStructId;
 };
-
-DEFINE_STANDARD_HANDLE(Prs3d_PresentationShadow, Graphic3d_Structure)
 
 #endif // _Prs3d_PresentationShadow_HeaderFile

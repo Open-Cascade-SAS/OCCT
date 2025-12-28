@@ -22,7 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 #include <BRepLib_Command.hxx>
 #include <BRepLib_ShapeModification.hxx>
 class TopoDS_Face;
@@ -50,31 +50,31 @@ public:
   Standard_EXPORT virtual BRepLib_ShapeModification FaceStatus(const TopoDS_Face& F) const;
 
   //! Returns True if the Face generates new topology.
-  Standard_EXPORT virtual Standard_Boolean HasDescendants(const TopoDS_Face& F) const;
+  Standard_EXPORT virtual bool HasDescendants(const TopoDS_Face& F) const;
 
   //! returns the list of generated Faces.
-  Standard_EXPORT virtual const TopTools_ListOfShape& DescendantFaces(const TopoDS_Face& F);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& DescendantFaces(
+    const TopoDS_Face& F);
 
   //! returns the number of surfaces
   //! after the shape creation.
-  Standard_EXPORT virtual Standard_Integer NbSurfaces() const;
+  Standard_EXPORT virtual int NbSurfaces() const;
 
   //! Return the faces created for surface I.
-  Standard_EXPORT virtual const TopTools_ListOfShape& NewFaces(const Standard_Integer I);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& NewFaces(const int I);
 
   //! returns a list of the created faces
   //! from the edge <E>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& FacesFromEdges(const TopoDS_Edge& E);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& FacesFromEdges(
+    const TopoDS_Edge& E);
 
 protected:
   Standard_EXPORT BRepLib_MakeShape();
 
-  TopoDS_Shape         myShape;
-  TopTools_ListOfShape myGenFaces;
-  TopTools_ListOfShape myNewFaces;
-  TopTools_ListOfShape myEdgFaces;
-
-private:
+  TopoDS_Shape                   myShape;
+  NCollection_List<TopoDS_Shape> myGenFaces;
+  NCollection_List<TopoDS_Shape> myNewFaces;
+  NCollection_List<TopoDS_Shape> myEdgFaces;
 };
 
 #endif // _BRepLib_MakeShape_HeaderFile

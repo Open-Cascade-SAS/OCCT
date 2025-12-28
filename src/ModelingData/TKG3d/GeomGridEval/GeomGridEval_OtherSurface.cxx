@@ -110,8 +110,8 @@ gp_Vec GeomGridEval_OtherSurface::evaluateDN(double theU, double theV, int theNU
 //==================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_OtherSurface::EvaluateGrid(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
@@ -140,8 +140,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OtherSurface::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OtherSurface::EvaluateGridD1(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
@@ -171,8 +171,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OtherSurface::EvaluateGrid
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluateGridD2(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
@@ -202,8 +202,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluateGrid
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGridD3(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
@@ -234,10 +234,10 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGrid
 //==================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_OtherSurface::EvaluateGridDN(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams,
-  int                         theNU,
-  int                         theNV) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams,
+  int                               theNU,
+  int                               theNV) const
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();

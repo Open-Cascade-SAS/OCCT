@@ -84,8 +84,8 @@ BRepMesh_DiscretFactory& BRepMesh_DiscretFactory::Get()
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
-                                                     const TCollection_AsciiString& theFuncName)
+bool BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
+                                         const TCollection_AsciiString& theFuncName)
 {
   myErrorStatus = BRepMesh_FE_NOERROR;
   if (theName == THE_FAST_DISCRET_MESH)
@@ -94,7 +94,7 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiStri
     myPluginEntry  = NULL;
     myDefaultName  = theName;
     myFunctionName = theFuncName;
-    return Standard_True;
+    return true;
   }
   else if (theName == myDefaultName && theFuncName == myFunctionName)
   {
@@ -118,7 +118,7 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiStri
     {
       // library is not found
       myErrorStatus = BRepMesh_FE_LIBRARYNOTFOUND;
-      return Standard_False;
+      return false;
     }
 
     // retrieve the function from plugin
@@ -130,18 +130,18 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiStri
   {
     // function is not found - invalid plugin?
     myErrorStatus = BRepMesh_FE_FUNCTIONNOTFOUND;
-    return Standard_False;
+    return false;
   }
 
   // try to create dummy tool
   BRepMesh_DiscretRoot* anInstancePtr = NULL;
-  Standard_Integer      anErr         = aFunc(TopoDS_Shape(), 0.001, 0.1, anInstancePtr);
+  int                   anErr         = aFunc(TopoDS_Shape(), 0.001, 0.1, anInstancePtr);
   if (anErr != 0 || anInstancePtr == NULL)
   {
     // can not create the algo specified
     myErrorStatus = BRepMesh_FE_CANNOTCREATEALGO;
     delete anInstancePtr;
-    return Standard_False;
+    return false;
   }
   delete anInstancePtr;
 
@@ -150,21 +150,21 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiStri
   myDefaultName  = theName;
   myFunctionName = theFuncName;
   myNames.Add(theName);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(BRepMesh_DiscretRoot) BRepMesh_DiscretFactory::Discret(const TopoDS_Shape& theShape,
-                                                              const Standard_Real theDeflection,
-                                                              const Standard_Real theAngle)
+occ::handle<BRepMesh_DiscretRoot> BRepMesh_DiscretFactory::Discret(const TopoDS_Shape& theShape,
+                                                                   const double theDeflection,
+                                                                   const double theAngle)
 {
-  Handle(BRepMesh_DiscretRoot) aDiscretRoot;
-  BRepMesh_DiscretRoot*        anInstancePtr = NULL;
+  occ::handle<BRepMesh_DiscretRoot> aDiscretRoot;
+  BRepMesh_DiscretRoot*             anInstancePtr = NULL;
   if (myPluginEntry != NULL)
   {
     // use plugin
-    Standard_Integer anErr = myPluginEntry(theShape, theDeflection, theAngle, anInstancePtr);
+    int anErr = myPluginEntry(theShape, theDeflection, theAngle, anInstancePtr);
 
     if (anErr != 0 || anInstancePtr == NULL)
     {

@@ -58,75 +58,74 @@
 
 #include <Standard_ErrorHandler.hxx>
 
-static Standard_Integer BUC60842(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
+static int BUC60842(Draw_Interpretor& di, int /*argc*/, const char** /*argv*/)
 {
-  Standard_Character abuf[16];
-  // Standard_Character * abuf = new Standard_Character[16];
+  char abuf[16];
+  // char * abuf = new char[16];
 
-  Standard_CString st = abuf;
+  const char* st = abuf;
 
-  Handle(Geom_Circle)  cir = new Geom_Circle(gp_Ax2(gp_Pnt(823.687192, 502.366825, 478.960440),
-                                                   gp_Dir(0.173648, 0.984808, 0.000000),
-                                                   gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                            50);
-  Handle(Geom_Ellipse) ell = new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                                                     gp_Dir(0.173648, 0.984808, 0.000000),
-                                                     gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                              150,
-                                              100);
-  Handle(Geom_Plane)   plne =
+  occ::handle<Geom_Circle>  cir = new Geom_Circle(gp_Ax2(gp_Pnt(823.687192, 502.366825, 478.960440),
+                                                        gp_Dir(0.173648, 0.984808, 0.000000),
+                                                        gp_Dir(-0.932169, 0.164367, -0.322560)),
+                                                 50);
+  occ::handle<Geom_Ellipse> ell =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
+                            gp_Dir(0.173648, 0.984808, 0.000000),
+                            gp_Dir(-0.932169, 0.164367, -0.322560)),
+                     150,
+                     100);
+  occ::handle<Geom_Plane> plne =
     new Geom_Plane(gp_Ax3(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
                                  gp_Dir(0.173648, 0.984808, 0.000000),
                                  gp_Dir(-0.932169, 0.164367, -0.322560))));
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
-  gp_Pln               pln     = plne->Pln();
-  Handle(Geom2d_Curve) curve2d = GeomAPI::To2d(ell, pln);
+  gp_Pln                    pln     = plne->Pln();
+  occ::handle<Geom2d_Curve> curve2d = GeomAPI::To2d(ell, pln);
   Sprintf(abuf, "ell");
   DrawTrSurf::Set(st, curve2d);
   if (!aContext.IsNull())
   {
-    Handle(AIS_Shape) aisp =
+    occ::handle<AIS_Shape> aisp =
       new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(curve2d, pln)).Edge());
-    aContext->Display(aisp, Standard_False);
+    aContext->Display(aisp, false);
   }
 
-  Handle(Geom2d_Curve) fromcurve2d = GeomAPI::To2d(cir, pln);
+  occ::handle<Geom2d_Curve> fromcurve2d = GeomAPI::To2d(cir, pln);
   Sprintf(abuf, "cil");
   DrawTrSurf::Set(st, fromcurve2d);
   if (!aContext.IsNull())
   {
-    Handle(AIS_Shape) aisp =
+    occ::handle<AIS_Shape> aisp =
       new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(fromcurve2d, pln)).Edge());
-    aContext->Display(aisp, Standard_False);
+    aContext->Display(aisp, false);
   }
 
   Geom2dAdaptor_Curve      acur(curve2d), afromcur(fromcurve2d);
   Geom2dGcc_QualifiedCurve qcur(acur, GccEnt_outside);
   Geom2dGcc_QualifiedCurve qfromcur(afromcur, GccEnt_outside);
   Geom2dGcc_Lin2d2Tan      lintan(qcur, qfromcur, 0.1, 0.0, 0.0);
-  Standard_Integer         i = 0;
+  int                      i = 0;
   for (i = 0; i < lintan.NbSolutions(); i++)
   {
     Sprintf(abuf, "lintan_%d", i);
-    Handle(Geom2d_Line) glin = new Geom2d_Line(lintan.ThisSolution(i));
+    occ::handle<Geom2d_Line> glin = new Geom2d_Line(lintan.ThisSolution(i));
     DrawTrSurf::Set(st, glin);
     if (!aContext.IsNull())
     {
-      Handle(AIS_Shape) aisp =
+      occ::handle<AIS_Shape> aisp =
         new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());
-      aContext->Display(aisp, Standard_False);
+      aContext->Display(aisp, false);
     }
   }
   aContext->UpdateCurrentViewer();
-  di << " Is Done = \n" << (Standard_Integer)lintan.IsDone();
+  di << " Is Done = \n" << (int)lintan.IsDone();
   return 0;
 }
 
-static Standard_Integer BUC60843(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60843(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4 && argc != 5 && argc != 6 && argc != 7)
   {
@@ -134,26 +133,26 @@ static Standard_Integer BUC60843(Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  Standard_Real par1 = 0.0, par2 = 0.0;
-  Standard_Real tol = Precision::Angular();
+  double par1 = 0.0, par2 = 0.0;
+  double tol = Precision::Angular();
   if (argc >= 5)
     par1 = Draw::Atof(argv[4]);
   if (argc == 6)
     par2 = Draw::Atof(argv[5]);
   if (argc == 7)
     tol = Draw::Atof(argv[6]);
-  Handle(Geom2d_Curve) aCur2d1 = DrawTrSurf::GetCurve2d(argv[2]);
-  Handle(Geom2d_Curve) aCur2d2 = DrawTrSurf::GetCurve2d(argv[3]);
+  occ::handle<Geom2d_Curve> aCur2d1 = DrawTrSurf::GetCurve2d(argv[2]);
+  occ::handle<Geom2d_Curve> aCur2d2 = DrawTrSurf::GetCurve2d(argv[3]);
   if (aCur2d1.IsNull() || aCur2d2.IsNull())
   {
     di << "Faulty : not curves\n";
     return 1;
   }
-  Standard_Boolean      c1IsCircle = Standard_False;
-  Handle(Geom2d_Circle) aCir2d     = Handle(Geom2d_Circle)::DownCast(aCur2d1);
+  bool                       c1IsCircle = false;
+  occ::handle<Geom2d_Circle> aCir2d     = occ::down_cast<Geom2d_Circle>(aCur2d1);
   if (!aCir2d.IsNull())
   {
-    c1IsCircle = Standard_True;
+    c1IsCircle = true;
     if (argc == 6)
       tol = Draw::Atof(argv[5]);
   }
@@ -165,8 +164,8 @@ static Standard_Integer BUC60843(Draw_Interpretor& di, Standard_Integer argc, co
     Geom2dGcc_Lin2d2TanIter lintan(qfromcur, qcur, par1, tol);
     if (lintan.IsDone())
     {
-      gp_Lin2d            lin  = lintan.ThisSolution();
-      Handle(Geom2d_Line) glin = new Geom2d_Line(lin);
+      gp_Lin2d                 lin  = lintan.ThisSolution();
+      occ::handle<Geom2d_Line> glin = new Geom2d_Line(lin);
       DrawTrSurf::Set(argv[1], glin);
     }
     else
@@ -183,8 +182,8 @@ static Standard_Integer BUC60843(Draw_Interpretor& di, Standard_Integer argc, co
     Geom2dGcc_Lin2d2TanIter lintan(qcur1, qcur2, par1, par2, tol);
     if (lintan.IsDone())
     {
-      gp_Lin2d            lin  = lintan.ThisSolution();
-      Handle(Geom2d_Line) glin = new Geom2d_Line(lin);
+      gp_Lin2d                 lin  = lintan.ThisSolution();
+      occ::handle<Geom2d_Line> glin = new Geom2d_Line(lin);
       DrawTrSurf::Set(argv[1], glin);
     }
     else
@@ -195,7 +194,7 @@ static Standard_Integer BUC60843(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer BUC60970(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60970(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -203,7 +202,7 @@ static Standard_Integer BUC60970(Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -215,7 +214,7 @@ static Standard_Integer BUC60970(Draw_Interpretor& di, Standard_Integer argc, co
   BRepBuilderAPI_MakeWire bRepSpineWire;
   TopExp_Explorer         exp_(aResult, TopAbs_WIRE);
 
-  Standard_Integer i = 0;
+  int i = 0;
   for (; exp_.More(); exp_.Next())
   {
     i++;
@@ -226,15 +225,16 @@ static Standard_Integer BUC60970(Draw_Interpretor& di, Standard_Integer argc, co
   di << "total no of wires are ............. " << i << "\n";
 
   TopoDS_Wire spineWire = bRepSpineWire.Wire();
-  aContext->Display(new AIS_Shape(spineWire), Standard_False);
+  aContext->Display(new AIS_Shape(spineWire), false);
 
   DBRep::Set("slineW", spineWire);
 
-  TopExp_Explorer    spineWireExp(spineWire, TopAbs_EDGE);
-  Standard_Real      first, last;
-  Handle(Geom_Curve) curl_ = BRep_Tool::Curve(TopoDS::Edge(spineWireExp.Current()), first, last);
-  gp_Pnt             firstPnt;
-  gp_Vec             tanVec;
+  TopExp_Explorer         spineWireExp(spineWire, TopAbs_EDGE);
+  double                  first, last;
+  occ::handle<Geom_Curve> curl_ =
+    BRep_Tool::Curve(TopoDS::Edge(spineWireExp.Current()), first, last);
+  gp_Pnt firstPnt;
+  gp_Vec tanVec;
   curl_->D1(first, firstPnt, tanVec);
   tanVec.Normalize();
   gp_Dir                  tanDir(tanVec.X(), tanVec.Y(), tanVec.Z());
@@ -242,7 +242,7 @@ static Standard_Integer BUC60970(Draw_Interpretor& di, Standard_Integer argc, co
   gp_Circ                 gpCirc(gpAx2, 2.5);
   BRepBuilderAPI_MakeWire aMWire(BRepBuilderAPI_MakeEdge(new Geom_Circle(gpCirc)).Edge());
   TopoDS_Wire             topoWire(aMWire);
-  aContext->Display(new AIS_Shape(topoWire), Standard_False);
+  aContext->Display(new AIS_Shape(topoWire), false);
 
   DBRep::Set("topoW", topoWire);
 
@@ -250,14 +250,14 @@ static Standard_Integer BUC60970(Draw_Interpretor& di, Standard_Integer argc, co
   bRepPipe.Add(topoWire);
   bRepPipe.Build();
 
-  aContext->Display(new AIS_Shape(bRepPipe.Shape()), Standard_True);
+  aContext->Display(new AIS_Shape(bRepPipe.Shape()), true);
 
   DBRep::Set(argv[2], bRepPipe.Shape());
 
   return 0;
 }
 
-static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60915_1(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc > 1)
   {
@@ -270,64 +270,64 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
     di << "View was not created. Use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-  Handle(AIS_InteractiveContext) context = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> context = ViewerTest::GetAISContext();
 
   // The following dimension code has problems regarding arrow_size. The desired effect is not
   // produced.
   /***************************************/
   // First view
   /***************************************/
-  gp_Pnt                        p1 = gp_Pnt(602.51, 50., 0.);
-  gp_Pnt                        p2 = gp_Pnt(602.51, 200., 0.);
-  gp_Pnt                        p3 = gp_Pnt(102.51, 200., 0.);
-  gp_Pnt                        p4 = gp_Pnt(102.51, 170., 0.);
-  gp_Pnt                        p5 = gp_Pnt(502.51, 170., 0.);
-  gp_Pnt                        p6 = gp_Pnt(502.51, 80., 0.);
-  gp_Pnt                        p7 = gp_Pnt(102.51, 80., 0.);
-  gp_Pnt                        p8 = gp_Pnt(102.51, 50., 0.);
-  TopoDS_Vertex                 V1 = BRepBuilderAPI_MakeVertex(p1);
-  TopoDS_Vertex                 V2 = BRepBuilderAPI_MakeVertex(p2);
-  TopoDS_Vertex                 V3 = BRepBuilderAPI_MakeVertex(p3);
-  TopoDS_Vertex                 V4 = BRepBuilderAPI_MakeVertex(p4);
-  TopoDS_Vertex                 V5 = BRepBuilderAPI_MakeVertex(p5);
-  TopoDS_Vertex                 V6 = BRepBuilderAPI_MakeVertex(p6);
-  TopoDS_Vertex                 V7 = BRepBuilderAPI_MakeVertex(p7);
-  TopoDS_Vertex                 V8 = BRepBuilderAPI_MakeVertex(p8);
-  gp_Pnt                        plnpt(0, 0, 0);
-  gp_Dir                        plndir(gp_Dir::D::Z);
-  Handle(Geom_Plane)            pln      = new Geom_Plane(plnpt, plndir);
-  Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
-  anAspect->MakeArrows3d(Standard_True);
+  gp_Pnt                             p1 = gp_Pnt(602.51, 50., 0.);
+  gp_Pnt                             p2 = gp_Pnt(602.51, 200., 0.);
+  gp_Pnt                             p3 = gp_Pnt(102.51, 200., 0.);
+  gp_Pnt                             p4 = gp_Pnt(102.51, 170., 0.);
+  gp_Pnt                             p5 = gp_Pnt(502.51, 170., 0.);
+  gp_Pnt                             p6 = gp_Pnt(502.51, 80., 0.);
+  gp_Pnt                             p7 = gp_Pnt(102.51, 80., 0.);
+  gp_Pnt                             p8 = gp_Pnt(102.51, 50., 0.);
+  TopoDS_Vertex                      V1 = BRepBuilderAPI_MakeVertex(p1);
+  TopoDS_Vertex                      V2 = BRepBuilderAPI_MakeVertex(p2);
+  TopoDS_Vertex                      V3 = BRepBuilderAPI_MakeVertex(p3);
+  TopoDS_Vertex                      V4 = BRepBuilderAPI_MakeVertex(p4);
+  TopoDS_Vertex                      V5 = BRepBuilderAPI_MakeVertex(p5);
+  TopoDS_Vertex                      V6 = BRepBuilderAPI_MakeVertex(p6);
+  TopoDS_Vertex                      V7 = BRepBuilderAPI_MakeVertex(p7);
+  TopoDS_Vertex                      V8 = BRepBuilderAPI_MakeVertex(p8);
+  gp_Pnt                             plnpt(0, 0, 0);
+  gp_Dir                             plndir(gp_Dir::D::Z);
+  occ::handle<Geom_Plane>            pln      = new Geom_Plane(plnpt, plndir);
+  occ::handle<Prs3d_DimensionAspect> anAspect = new Prs3d_DimensionAspect();
+  anAspect->MakeArrows3d(true);
   anAspect->ArrowAspect()->SetAngle(M_PI / 180.0 * 10.0);
   /***************************************/
   // dimension "L 502.51"
   /***************************************/
-  Handle(PrsDim_LengthDimension) len = new PrsDim_LengthDimension(V2, V3, pln->Pln());
+  occ::handle<PrsDim_LengthDimension> len = new PrsDim_LengthDimension(V2, V3, pln->Pln());
   anAspect->ArrowAspect()->SetLength(30.0);
   len->SetDimensionAspect(anAspect);
-  context->Display(len, Standard_False);
+  context->Display(len, false);
   /***************************************/
   // dimension "L 90"
   /***************************************/
-  Handle(PrsDim_LengthDimension) len1 = new PrsDim_LengthDimension(V7, V4, pln->Pln());
+  occ::handle<PrsDim_LengthDimension> len1 = new PrsDim_LengthDimension(V7, V4, pln->Pln());
   len1->SetDimensionAspect(anAspect);
   len1->SetFlyout(30.0);
   anAspect->ArrowAspect()->SetLength(100.0);
-  context->Display(len1, Standard_False);
+  context->Display(len1, false);
   /***************************************/
   // dimension "L 150"
   /***************************************/
-  Handle(PrsDim_LengthDimension) len2 = new PrsDim_LengthDimension(V1, V2, pln->Pln());
+  occ::handle<PrsDim_LengthDimension> len2 = new PrsDim_LengthDimension(V1, V2, pln->Pln());
   len2->SetDimensionAspect(anAspect);
-  context->Display(len2, Standard_False);
+  context->Display(len2, false);
   /***************************************/
   // dimension "R 88.58"
   /***************************************/
   gp_Circ     cir = gp_Circ(gp_Ax2(gp_Pnt(191.09, -88.58, 0), gp_Dir(gp_Dir::D::Z)), 88.58);
   TopoDS_Edge E1 = BRepBuilderAPI_MakeEdge(cir, gp_Pnt(191.09, 0, 0.), gp_Pnt(191.09, -177.16, 0.));
-  Handle(PrsDim_RadiusDimension) dim1 = new PrsDim_RadiusDimension(E1);
+  occ::handle<PrsDim_RadiusDimension> dim1 = new PrsDim_RadiusDimension(E1);
   dim1->SetDimensionAspect(anAspect);
-  context->Display(dim1, Standard_False);
+  context->Display(dim1, false);
   /***************************************/
   // dimension "R 43.80"
   /***************************************/
@@ -336,7 +336,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   dim1               = new PrsDim_RadiusDimension(E_cir1);
   anAspect->ArrowAspect()->SetLength(60.0);
   dim1->SetDimensionAspect(anAspect);
-  context->Display(dim1, Standard_False);
+  context->Display(dim1, false);
   /***************************************/
   // dimension "R 17.86"
   /***************************************/
@@ -345,14 +345,14 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   dim1               = new PrsDim_RadiusDimension(E_cir2);
   anAspect->ArrowAspect()->SetLength(40.0);
   dim1->SetDimensionAspect(anAspect);
-  context->Display(dim1, Standard_True);
+  context->Display(dim1, true);
 
   return 0;
 }
 
-static Standard_Integer OCC138(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
+static int OCC138(Draw_Interpretor& di, int /*argc*/, const char** argv)
 {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -363,17 +363,17 @@ static Standard_Integer OCC138(Draw_Interpretor& di, Standard_Integer /*argc*/, 
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120, 120), gp_Pnt(300, 300, 300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320, 320), gp_Pnt(500, 500, 500));
 
-  Handle(AIS_InteractiveObject) ais1 = new AIS_Shape(box1.Shape());
-  Handle(AIS_InteractiveObject) ais2 = new AIS_Shape(box2.Shape());
-  Handle(AIS_InteractiveObject) ais3 = new AIS_Shape(box3.Shape());
+  occ::handle<AIS_InteractiveObject> ais1 = new AIS_Shape(box1.Shape());
+  occ::handle<AIS_InteractiveObject> ais2 = new AIS_Shape(box2.Shape());
+  occ::handle<AIS_InteractiveObject> ais3 = new AIS_Shape(box3.Shape());
 
-  aContext->Display(ais1, Standard_False);
-  aContext->Display(ais2, Standard_False);
-  aContext->Display(ais3, Standard_False);
+  aContext->Display(ais1, false);
+  aContext->Display(ais2, false);
+  aContext->Display(ais3, false);
 
-  aContext->AddOrRemoveSelected(ais1, Standard_False);
-  aContext->AddOrRemoveSelected(ais2, Standard_False);
-  aContext->AddOrRemoveSelected(ais3, Standard_False);
+  aContext->AddOrRemoveSelected(ais1, false);
+  aContext->AddOrRemoveSelected(ais2, false);
+  aContext->AddOrRemoveSelected(ais3, false);
 
   di << "\n No of currents = " << aContext->NbSelected();
 
@@ -383,8 +383,8 @@ static Standard_Integer OCC138(Draw_Interpretor& di, Standard_Integer /*argc*/, 
   while (aContext->MoreSelected())
   {
     di << "\n count is = " << count++;
-    Handle(AIS_InteractiveObject) ais = aContext->SelectedInteractive();
-    aContext->AddOrRemoveSelected(ais, Standard_False);
+    occ::handle<AIS_InteractiveObject> ais = aContext->SelectedInteractive();
+    aContext->AddOrRemoveSelected(ais, false);
     aContext->InitSelected();
   }
 
@@ -393,9 +393,9 @@ static Standard_Integer OCC138(Draw_Interpretor& di, Standard_Integer /*argc*/, 
   return 0;
 }
 
-static Standard_Integer OCC138LC(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
+static int OCC138LC(Draw_Interpretor& di, int /*argc*/, const char** argv)
 {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -406,17 +406,17 @@ static Standard_Integer OCC138LC(Draw_Interpretor& di, Standard_Integer /*argc*/
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120, 120), gp_Pnt(300, 300, 300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320, 320), gp_Pnt(500, 500, 500));
 
-  Handle(AIS_InteractiveObject) ais1 = new AIS_Shape(box1.Shape());
-  Handle(AIS_InteractiveObject) ais2 = new AIS_Shape(box2.Shape());
-  Handle(AIS_InteractiveObject) ais3 = new AIS_Shape(box3.Shape());
+  occ::handle<AIS_InteractiveObject> ais1 = new AIS_Shape(box1.Shape());
+  occ::handle<AIS_InteractiveObject> ais2 = new AIS_Shape(box2.Shape());
+  occ::handle<AIS_InteractiveObject> ais3 = new AIS_Shape(box3.Shape());
 
-  aContext->Display(ais1, Standard_False);
-  aContext->Display(ais2, Standard_False);
-  aContext->Display(ais3, Standard_False);
+  aContext->Display(ais1, false);
+  aContext->Display(ais2, false);
+  aContext->Display(ais3, false);
 
-  aContext->AddOrRemoveSelected(ais1, Standard_False);
-  aContext->AddOrRemoveSelected(ais2, Standard_False);
-  aContext->AddOrRemoveSelected(ais3, Standard_False);
+  aContext->AddOrRemoveSelected(ais1, false);
+  aContext->AddOrRemoveSelected(ais2, false);
+  aContext->AddOrRemoveSelected(ais3, false);
 
   di << "\n No of selected = " << aContext->NbSelected();
 
@@ -426,8 +426,8 @@ static Standard_Integer OCC138LC(Draw_Interpretor& di, Standard_Integer /*argc*/
   while (aContext->MoreSelected())
   {
     di << "\n count is = %d" << count++;
-    Handle(AIS_InteractiveObject) ais = aContext->SelectedInteractive();
-    aContext->AddOrRemoveSelected(ais, Standard_False);
+    occ::handle<AIS_InteractiveObject> ais = aContext->SelectedInteractive();
+    aContext->AddOrRemoveSelected(ais, false);
     aContext->InitSelected();
   }
 
@@ -440,7 +440,7 @@ static Standard_Integer OCC138LC(Draw_Interpretor& di, Standard_Integer /*argc*/
 
 //=================================================================================================
 
-static Standard_Integer OCC566(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int OCC566(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -452,7 +452,7 @@ static Standard_Integer OCC566(Draw_Interpretor& di, Standard_Integer n, const c
     return 1;
   Bnd_Box B;
   BRepBndLib::AddClose(S, B);
-  Standard_Real axmin, aymin, azmin, axmax, aymax, azmax;
+  double axmin, aymin, azmin, axmax, aymax, azmax;
   B.Get(axmin, aymin, azmin, axmax, aymax, azmax);
   di << axmin << " " << aymin << " " << azmin << " " << axmax << " " << aymax << " " << azmax;
   if (n >= 8)
@@ -471,7 +471,7 @@ static Standard_Integer OCC566(Draw_Interpretor& di, Standard_Integer n, const c
 
 //=================================================================================================
 
-static Standard_Integer OCC570(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC570(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -504,7 +504,7 @@ static Standard_Integer OCC570(Draw_Interpretor& di, Standard_Integer argc, cons
       mkFillet.SetContinuity(GeomAbs_C1, .001);
 
       // Setup variable fillet data
-      TColgp_Array1OfPnt2d t_pnt(1, 4);
+      NCollection_Array1<gp_Pnt2d> t_pnt(1, 4);
       t_pnt.SetValue(1, gp_Pnt2d(0.0, 5.0));
       t_pnt.SetValue(2, gp_Pnt2d(0.3, 15.0));
       t_pnt.SetValue(3, gp_Pnt2d(0.7, 15.0));
@@ -535,12 +535,12 @@ static Standard_Integer OCC570(Draw_Interpretor& di, Standard_Integer argc, cons
 
 #include <Law_Interpol.hxx>
 
-static Standard_Real tesp       = 1.e-4;
-static Standard_Real t3d        = 1.e-4;
-static Standard_Real t2d        = 1.e-5;
-static Standard_Real ta         = 1.e-2;
-static Standard_Real fl         = 1.e-3;
-static Standard_Real tapp_angle = 1.e-2;
+static double        tesp       = 1.e-4;
+static double        t3d        = 1.e-4;
+static double        t2d        = 1.e-5;
+static double        ta         = 1.e-2;
+static double        fl         = 1.e-3;
+static double        tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
 static BRepFilletAPI_MakeFillet* Rake = 0;
@@ -556,7 +556,7 @@ static void printtolblend(Draw_Interpretor& di)
   di << "tolblend " << ta << " " << t3d << " " << t2d << " " << fl << "\n";
 }
 
-static Standard_Integer MKEVOL(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
   if (Rake != 0)
   {
@@ -587,7 +587,7 @@ static Standard_Integer MKEVOL(Draw_Interpretor& di, Standard_Integer narg, cons
   return 0;
 }
 
-static Standard_Integer UPDATEVOL(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
   if (Rake == 0)
   {
@@ -596,22 +596,22 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di, Standard_Integer narg, c
   }
   if (narg % 2 != 0 || narg < 4)
     return 1;
-  TColgp_Array1OfPnt2d uandr(1, (narg / 2) - 1);
-  Standard_Real        Rad, Par;
-  TopoDS_Shape         aLocalEdge(DBRep::Get(a[1], TopAbs_EDGE));
-  TopoDS_Edge          E = TopoDS::Edge(aLocalEdge);
-  for (Standard_Integer ii = 1; ii <= (narg / 2) - 1; ii++)
+  NCollection_Array1<gp_Pnt2d> uandr(1, (narg / 2) - 1);
+  double                       Rad, Par;
+  TopoDS_Shape                 aLocalEdge(DBRep::Get(a[1], TopAbs_EDGE));
+  TopoDS_Edge                  E = TopoDS::Edge(aLocalEdge);
+  for (int ii = 1; ii <= (narg / 2) - 1; ii++)
   {
     Par = Draw::Atof(a[2 * ii]);
     Rad = Draw::Atof(a[2 * ii + 1]);
     uandr.ChangeValue(ii).SetCoord(Par, Rad);
   }
   // HELPDESK: Add law creation
-  const Standard_Boolean aLawMode = !strcmp(a[0], "OCC570evollaw");
+  const bool aLawMode = !strcmp(a[0], "OCC570evollaw");
   if (aLawMode)
   {
     di << "INFO: Using law to define variable fillet\n";
-    Handle(Law_Interpol) law = new Law_Interpol;
+    occ::handle<Law_Interpol> law = new Law_Interpol;
     law->Set(uandr);
     Rake->Add(law, E);
   }
@@ -621,7 +621,7 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di, Standard_Integer narg, c
   return 0;
 }
 
-static Standard_Integer BUILDEVOL(Draw_Interpretor& di, Standard_Integer, const char**)
+static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
 {
   if (Rake == 0)
   {
@@ -654,7 +654,7 @@ static Standard_Integer BUILDEVOL(Draw_Interpretor& di, Standard_Integer, const 
 
 //=================================================================================================
 
-static Standard_Integer OCC606(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int OCC606(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 3 && n != 4)
   {
@@ -662,7 +662,7 @@ static Standard_Integer OCC606(Draw_Interpretor& di, Standard_Integer n, const c
     return 0;
   }
 
-  Standard_Boolean TrimMode = (n == 4);
+  bool TrimMode = (n == 4);
   if (TrimMode)
     di << "INFO: Using trimmed curves...\n";
   else
@@ -670,15 +670,15 @@ static Standard_Integer OCC606(Draw_Interpretor& di, Standard_Integer n, const c
 
   TopoDS_Shape S = DBRep::Get(a[2]);
 
-  TopExp_Explorer          t_exp(S, TopAbs_EDGE);
-  TColGeom_SequenceOfCurve n_curves1;
-  TColStd_SequenceOfReal   np;
-  Standard_Real            param = 5.0;
+  TopExp_Explorer                               t_exp(S, TopAbs_EDGE);
+  NCollection_Sequence<occ::handle<Geom_Curve>> n_curves1;
+  NCollection_Sequence<double>                  np;
+  double                                        param = 5.0;
 
   for (; t_exp.More(); t_exp.Next())
   {
-    Standard_Real      f, l;
-    Handle(Geom_Curve) h_cur = BRep_Tool::Curve(TopoDS::Edge(t_exp.Current()), f, l);
+    double                  f, l;
+    occ::handle<Geom_Curve> h_cur = BRep_Tool::Curve(TopoDS::Edge(t_exp.Current()), f, l);
     if (!h_cur.IsNull())
     {
       if (TrimMode)
@@ -695,8 +695,8 @@ static Standard_Integer OCC606(Draw_Interpretor& di, Standard_Integer n, const c
     try
     {
       OCC_CATCH_SIGNALS
-      GeomFill_NSections          b_surface1(n_curves1, np);
-      Handle(Geom_BSplineSurface) result_surf1 = b_surface1.BSplineSurface();
+      GeomFill_NSections               b_surface1(n_curves1, np);
+      occ::handle<Geom_BSplineSurface> result_surf1 = b_surface1.BSplineSurface();
       if (!result_surf1.IsNull())
       {
         BRepBuilderAPI_MakeFace b_face1(result_surf1, Precision::Confusion());
@@ -715,7 +715,7 @@ static Standard_Integer OCC606(Draw_Interpretor& di, Standard_Integer n, const c
 
 //=================================================================================================
 
-static Standard_Integer OCC813(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC813(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -723,23 +723,24 @@ static Standard_Integer OCC813(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  Standard_CString str;
-  Standard_Real    U = Draw::Atof(argv[1]);
-  Standard_Real    V = Draw::Atof(argv[2]);
+  const char* str;
+  double      U = Draw::Atof(argv[1]);
+  double      V = Draw::Atof(argv[2]);
 
   // Between ellipse and point:
 
-  Handle(Geom_Ellipse) ell = new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                                                     gp_Dir(0.173648, 0.984808, 0.000000),
-                                                     gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                              150,
-                                              100);
-  Handle(Geom_Plane)   plne =
+  occ::handle<Geom_Ellipse> ell =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
+                            gp_Dir(0.173648, 0.984808, 0.000000),
+                            gp_Dir(-0.932169, 0.164367, -0.322560)),
+                     150,
+                     100);
+  occ::handle<Geom_Plane> plne =
     new Geom_Plane(gp_Ax3(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
                                  gp_Dir(0.173648, 0.984808, 0.000000),
                                  gp_Dir(-0.932169, 0.164367, -0.322560))));
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
   gp_Pnt2d pt2d(U, V);
   gp_Pln   pln = plne->Pln();
@@ -747,37 +748,37 @@ static Standard_Integer OCC813(Draw_Interpretor& di, Standard_Integer argc, cons
   str = "OCC813_pnt";
   DrawTrSurf::Set(str, pt2d);
 
-  Handle(Geom2d_Curve)     curve2d = GeomAPI::To2d(ell, pln);
-  Geom2dAdaptor_Curve      acur(curve2d);
-  Geom2dGcc_QualifiedCurve qcur(acur, GccEnt_outside);
+  occ::handle<Geom2d_Curve> curve2d = GeomAPI::To2d(ell, pln);
+  Geom2dAdaptor_Curve       acur(curve2d);
+  Geom2dGcc_QualifiedCurve  qcur(acur, GccEnt_outside);
 
   str = "OCC813_ell";
   DrawTrSurf::Set(str, curve2d);
   if (!aContext.IsNull())
   {
-    Handle(AIS_Shape) aisp =
+    occ::handle<AIS_Shape> aisp =
       new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(curve2d, pln)).Edge());
-    aContext->Display(aisp, Standard_False);
+    aContext->Display(aisp, false);
   }
 
   // This does not give any solutions.
   Geom2dGcc_Lin2d2Tan lintan(qcur, pt2d, 0.1);
   di << "OCC813 nb of solutions = " << lintan.NbSolutions() << "\n";
 
-  Standard_Character abuf[16];
-  Standard_CString   st = abuf;
+  char        abuf[16];
+  const char* st = abuf;
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= lintan.NbSolutions(); i++)
   {
     Sprintf(abuf, "lintan_%d", i);
-    Handle(Geom2d_Line) glin = new Geom2d_Line(lintan.ThisSolution(i));
+    occ::handle<Geom2d_Line> glin = new Geom2d_Line(lintan.ThisSolution(i));
     DrawTrSurf::Set(st, glin);
     if (!aContext.IsNull())
     {
-      Handle(AIS_Shape) aisp =
+      occ::handle<AIS_Shape> aisp =
         new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());
-      aContext->Display(aisp, Standard_False);
+      aContext->Display(aisp, false);
     }
   }
 
@@ -791,7 +792,7 @@ static Standard_Integer OCC813(Draw_Interpretor& di, Standard_Integer argc, cons
 
 //=================================================================================================
 
-static Standard_Integer OCC814(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC814(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc > 1)
   {
@@ -799,29 +800,30 @@ static Standard_Integer OCC814(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  Standard_CString str;
+  const char* str;
 
   // Between Ellipse and Circle:
 
-  Handle(Geom_Circle)  cir = new Geom_Circle(gp_Ax2(gp_Pnt(823.687192, 502.366825, 478.960440),
-                                                   gp_Dir(0.173648, 0.984808, 0.000000),
-                                                   gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                            50);
-  Handle(Geom_Ellipse) ell = new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                                                     gp_Dir(0.173648, 0.984808, 0.000000),
-                                                     gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                              150,
-                                              100);
-  Handle(Geom_Plane)   plne =
+  occ::handle<Geom_Circle>  cir = new Geom_Circle(gp_Ax2(gp_Pnt(823.687192, 502.366825, 478.960440),
+                                                        gp_Dir(0.173648, 0.984808, 0.000000),
+                                                        gp_Dir(-0.932169, 0.164367, -0.322560)),
+                                                 50);
+  occ::handle<Geom_Ellipse> ell =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
+                            gp_Dir(0.173648, 0.984808, 0.000000),
+                            gp_Dir(-0.932169, 0.164367, -0.322560)),
+                     150,
+                     100);
+  occ::handle<Geom_Plane> plne =
     new Geom_Plane(gp_Ax3(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
                                  gp_Dir(0.173648, 0.984808, 0.000000),
                                  gp_Dir(-0.932169, 0.164367, -0.322560))));
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
-  gp_Pln               pln         = plne->Pln();
-  Handle(Geom2d_Curve) curve2d     = GeomAPI::To2d(ell, pln);
-  Handle(Geom2d_Curve) fromcurve2d = GeomAPI::To2d(cir, pln);
+  gp_Pln                    pln         = plne->Pln();
+  occ::handle<Geom2d_Curve> curve2d     = GeomAPI::To2d(ell, pln);
+  occ::handle<Geom2d_Curve> fromcurve2d = GeomAPI::To2d(cir, pln);
 
   str = "OCC814_cir";
   DrawTrSurf::Set(str, curve2d);
@@ -829,15 +831,15 @@ static Standard_Integer OCC814(Draw_Interpretor& di, Standard_Integer argc, cons
   DrawTrSurf::Set(str, fromcurve2d);
   if (!aContext.IsNull())
   {
-    Handle(AIS_Shape) aisp =
+    occ::handle<AIS_Shape> aisp =
       new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(curve2d, pln)).Edge());
-    aContext->Display(aisp, Standard_False);
+    aContext->Display(aisp, false);
   }
   if (!aContext.IsNull())
   {
-    Handle(AIS_Shape) aisp =
+    occ::handle<AIS_Shape> aisp =
       new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(fromcurve2d, pln)).Edge());
-    aContext->Display(aisp, Standard_False);
+    aContext->Display(aisp, false);
   }
 
   Geom2dAdaptor_Curve acur(curve2d), afromcur(fromcurve2d);
@@ -849,20 +851,20 @@ static Standard_Integer OCC814(Draw_Interpretor& di, Standard_Integer argc, cons
   Geom2dGcc_Lin2d2Tan lintan(qcur, qfromcur, 0.1);
   di << "OCC814 nb of solutions = " << lintan.NbSolutions() << "\n";
 
-  Standard_Character abuf[16];
-  Standard_CString   st = abuf;
+  char        abuf[16];
+  const char* st = abuf;
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= lintan.NbSolutions(); i++)
   {
     Sprintf(abuf, "lintan_%d", i);
-    Handle(Geom2d_Line) glin = new Geom2d_Line(lintan.ThisSolution(i));
+    occ::handle<Geom2d_Line> glin = new Geom2d_Line(lintan.ThisSolution(i));
     DrawTrSurf::Set(st, glin);
     if (!aContext.IsNull())
     {
-      Handle(AIS_Shape) aisp =
+      occ::handle<AIS_Shape> aisp =
         new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());
-      aContext->Display(aisp, Standard_False);
+      aContext->Display(aisp, false);
     }
   }
 
@@ -878,7 +880,7 @@ static Standard_Integer OCC814(Draw_Interpretor& di, Standard_Integer argc, cons
 
 //=================================================================================================
 
-static Standard_Integer OCC884(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC884(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3 || argc > 5)
   {
@@ -901,18 +903,18 @@ static Standard_Integer OCC884(Draw_Interpretor& di, Standard_Integer argc, cons
   builder.Add(wire, TopoDS::Edge(exp.Current()));
 
   // HelpDesk: Create planar face if possible
-  TopoDS_Face face = BRepBuilderAPI_MakeFace(wire, Standard_True);
+  TopoDS_Face face = BRepBuilderAPI_MakeFace(wire, true);
 
-  Handle(ShapeAnalysis_Wire) advWA = new ShapeAnalysis_Wire;
+  occ::handle<ShapeAnalysis_Wire> advWA = new ShapeAnalysis_Wire;
   advWA->Load(wire);
   advWA->SetFace(face);
   advWA->SetPrecision(0.001);
 
-  IntRes2d_SequenceOfIntersectionPoint points2d;
-  TColgp_SequenceOfPnt                 points3d;
+  NCollection_Sequence<IntRes2d_IntersectionPoint> points2d;
+  NCollection_Sequence<gp_Pnt>                     points3d;
 
   di << "Info: CheckSelfIntersectingEdge = "
-     << (Standard_Integer)advWA->CheckSelfIntersectingEdge(1, points2d, points3d) << "\n";
+     << (int)advWA->CheckSelfIntersectingEdge(1, points2d, points3d) << "\n";
 
   ShapeExtend_Status status = ShapeExtend_FAIL1;
   if (advWA->StatusSelfIntersection(status))
@@ -926,11 +928,11 @@ static Standard_Integer OCC884(Draw_Interpretor& di, Standard_Integer argc, cons
   if (advWA->StatusSelfIntersection(status))
     di << "Info: Self-intersection found in the edge\n";
 
-  Standard_Integer i, num = points2d.Length();
+  int i, num = points2d.Length();
   di << "Info: No. of self-intersection points : " << num << "\n";
 
-  char             str[80];
-  Standard_CString aName = str;
+  char        str[80];
+  const char* aName = str;
   for (i = 1; i <= num; ++i)
   {
     gp_Pnt pt = points3d(i);
@@ -939,7 +941,7 @@ static Standard_Integer OCC884(Draw_Interpretor& di, Standard_Integer argc, cons
     DrawTrSurf::Set(aName, pt);
   }
 
-  Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
+  occ::handle<ShapeFix_Wire> sfw = new ShapeFix_Wire;
   sfw->Load(wire);
   sfw->SetFace(face);
 
@@ -954,7 +956,7 @@ static Standard_Integer OCC884(Draw_Interpretor& di, Standard_Integer argc, cons
   sfw->ModifyGeometryMode()          = 1;
   sfw->FixSelfIntersectingEdgeMode() = 1;
   // printf("Info: FixSelfIntersection = %d\n",sfw->FixSelfIntersection());
-  di << "Info: FixSelfIntersection = " << (Standard_Integer)sfw->FixSelfIntersection() << "\n";
+  di << "Info: FixSelfIntersection = " << (int)sfw->FixSelfIntersection() << "\n";
 
   DBRep::Set(argv[1], sfw->Wire());
 
@@ -1016,7 +1018,7 @@ static Standard_Integer OCC884(Draw_Interpretor& di, Standard_Integer argc, cons
 // function : OCCN1
 // purpose  : FEATURE OPERATION (BOSS and SLOT)
 //=======================================================================
-static Standard_Integer OCCN1(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCCN1(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
   {
@@ -1024,15 +1026,15 @@ static Standard_Integer OCCN1(Draw_Interpretor& di, Standard_Integer argc, const
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-  Standard_Real    angle  = Draw::Atof(argv[1]);
-  Standard_Integer fuse   = Draw::Atoi(argv[2]);
-  Standard_Real    length = Draw::Atof(argv[3]);
+  double angle  = Draw::Atof(argv[1]);
+  int    fuse   = Draw::Atoi(argv[2]);
+  double length = Draw::Atof(argv[3]);
 
   BRepBuilderAPI_MakeEdge edge1(gp_Pnt(0, 0, 0), gp_Pnt(50, 0, 0));
   BRepBuilderAPI_MakeEdge edge2(gp_Pnt(50, 0, 0), gp_Pnt(50, 50, 0));
@@ -1048,7 +1050,7 @@ static Standard_Integer OCCN1(Draw_Interpretor& di, Standard_Integer argc, const
 
   BRepBuilderAPI_MakeFace face(twire);
   const TopoDS_Face&      tface = face.Face();
-  ////////Handle(AIS_Shape) face_ais = new AIS_Shape( tface );
+  ////////occ::handle<AIS_Shape> face_ais = new AIS_Shape( tface );
   ////////aContext->Display(face_ais);
 
   TopoDS_Solid        box;
@@ -1058,7 +1060,7 @@ static Standard_Integer OCCN1(Draw_Interpretor& di, Standard_Integer argc, const
   TopoDS_Face top_face;
   top_face = block.TopFace();
 
-  BRepFeat_MakeDPrism slot(box, tface, top_face, angle, fuse, Standard_True);
+  BRepFeat_MakeDPrism slot(box, tface, top_face, angle, fuse, true);
 
   slot.Perform(length);
   TopoDS_Shape S2 = slot.Shape();
@@ -1075,7 +1077,7 @@ static Standard_Integer OCCN1(Draw_Interpretor& di, Standard_Integer argc, const
 
 //=================================================================================================
 
-static Standard_Integer OCCN2(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCCN2(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc > 2)
   {
@@ -1083,7 +1085,7 @@ static Standard_Integer OCCN2(Draw_Interpretor& di, Standard_Integer argc, const
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -1111,12 +1113,13 @@ static Standard_Integer OCCN2(Draw_Interpretor& di, Standard_Integer argc, const
   return 0;
 }
 
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <Geom_BezierCurve.hxx>
 
-static Standard_Integer OCC2569(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC2569(Draw_Interpretor& di, int argc, const char** argv)
 {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -1130,11 +1133,11 @@ static Standard_Integer OCC2569(Draw_Interpretor& di, Standard_Integer argc, con
 
   int poles = Draw::Atoi(argv[1]);
 
-  TColgp_Array1OfPnt arr(1, poles);
+  NCollection_Array1<gp_Pnt> arr(1, poles);
   for (int i = 1; i <= poles; i++)
     arr.SetValue(i, gp_Pnt(i + 10, i * 2 + 20, i * 3 + 45));
 
-  Handle(Geom_BezierCurve) bez = new Geom_BezierCurve(arr);
+  occ::handle<Geom_BezierCurve> bez = new Geom_BezierCurve(arr);
   if (bez.IsNull())
   {
     di << "\n The curve is not created.\n";
@@ -1143,17 +1146,18 @@ static Standard_Integer OCC2569(Draw_Interpretor& di, Standard_Integer argc, con
   {
     di << "\n Degree = " << bez->Degree() << "\n";
   }
-  TopoDS_Edge       sh  = BRepBuilderAPI_MakeEdge(bez).Edge();
-  Handle(AIS_Shape) ais = new AIS_Shape(sh);
-  aContext->Display(ais, Standard_True);
+  TopoDS_Edge            sh  = BRepBuilderAPI_MakeEdge(bez).Edge();
+  occ::handle<AIS_Shape> ais = new AIS_Shape(sh);
+  aContext->Display(ais, true);
   DrawTrSurf::Set(argv[2], bez);
   return 0;
 }
 
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopExp.hxx>
 
-static Standard_Integer OCC1642(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC1642(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 10)
   {
@@ -1168,28 +1172,28 @@ static Standard_Integer OCC1642(Draw_Interpretor& di, Standard_Integer argc, con
   TopExp_Explorer exp(shape, TopAbs_WIRE);
   TopoDS_Shape    wire = exp.Current();
 
-  Handle(ShapeAnalysis_Wire) advWA = new ShapeAnalysis_Wire;
+  occ::handle<ShapeAnalysis_Wire> advWA = new ShapeAnalysis_Wire;
   advWA->Load(TopoDS::Wire(wire));
 
   DBRep::Set(argv[3], wire);
 
-  TopoDS_Face face = BRepBuilderAPI_MakeFace(TopoDS::Wire(wire), Standard_True);
+  TopoDS_Face face = BRepBuilderAPI_MakeFace(TopoDS::Wire(wire), true);
 
   DBRep::Set(argv[4], face);
 
   advWA->SetFace(face);
-  Standard_Real precision_to_ana = 0.0001;
+  double precision_to_ana = 0.0001;
   advWA->SetPrecision(precision_to_ana);
 
-  TopTools_IndexedMapOfShape M;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> M;
   TopExp::MapShapes(wire, TopAbs_EDGE, M);
 
   int j = 1;
   for (j = 1; j <= M.Extent(); ++j)
   {
-    Standard_Integer                     num = 1;
-    IntRes2d_SequenceOfIntersectionPoint points2d;
-    TColgp_SequenceOfPnt                 points3d;
+    int                                              num = 1;
+    NCollection_Sequence<IntRes2d_IntersectionPoint> points2d;
+    NCollection_Sequence<gp_Pnt>                     points3d;
 
     std::cout << "\n j =" << j << ",  CheckSelfIntersectingEdge = "
               << advWA->CheckSelfIntersectingEdge(j, points2d, points3d);
@@ -1215,7 +1219,7 @@ static Standard_Integer OCC1642(Draw_Interpretor& di, Standard_Integer argc, con
     }
   }
 
-  Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
+  occ::handle<ShapeFix_Wire> sfw = new ShapeFix_Wire;
   sfw->Load(TopoDS::Wire(wire));
   sfw->SetFace(face);
   sfw->SetPrecision(Precision::Confusion());
@@ -1235,11 +1239,11 @@ static Standard_Integer OCC1642(Draw_Interpretor& di, Standard_Integer argc, con
   sfw->ModifyRemoveLoopMode() = 1;
   sfw->SetMaxTolerance(1.0);
 
-  di << "\n FixReorder = " << (Standard_Integer)sfw->FixReorder();
-  di << "\n FixDegenerated = " << (Standard_Integer)sfw->FixDegenerated();
-  di << "\n FixConnected = " << (Standard_Integer)sfw->FixConnected();
+  di << "\n FixReorder = " << (int)sfw->FixReorder();
+  di << "\n FixDegenerated = " << (int)sfw->FixDegenerated();
+  di << "\n FixConnected = " << (int)sfw->FixConnected();
   di << "\n";
-  di << "\n FixSelfIntersection = " << (Standard_Integer)sfw->FixSelfIntersection();
+  di << "\n FixSelfIntersection = " << (int)sfw->FixSelfIntersection();
   di << "\n";
 
   Draw::Set(argv[6], sfw->FixReorder());
@@ -1300,23 +1304,23 @@ static Standard_Integer OCC1642(Draw_Interpretor& di, Standard_Integer argc, con
 
   advWA->Load(TopoDS::Wire(finalwire));
 
-  TopoDS_Face fface = BRepBuilderAPI_MakeFace(TopoDS::Wire(finalwire), Standard_True);
+  TopoDS_Face fface = BRepBuilderAPI_MakeFace(TopoDS::Wire(finalwire), true);
 
   DBRep::Set(argv[2], fface);
 
   advWA->SetFace(fface);
 
-  TopTools_IndexedMapOfShape fM;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> fM;
   TopExp::MapShapes(finalwire, TopAbs_EDGE, fM);
 
   for (j = 1; j <= fM.Extent(); ++j)
   {
-    Standard_Integer                     num = 1;
-    IntRes2d_SequenceOfIntersectionPoint points2d;
-    TColgp_SequenceOfPnt                 points3d;
+    int                                              num = 1;
+    NCollection_Sequence<IntRes2d_IntersectionPoint> points2d;
+    NCollection_Sequence<gp_Pnt>                     points3d;
 
     di << "\n j =" << j << ",  CheckSelfIntersectingEdge = "
-       << (Standard_Integer)advWA->CheckSelfIntersectingEdge(j, points2d, points3d);
+       << (int)advWA->CheckSelfIntersectingEdge(j, points2d, points3d);
 
     status = ShapeExtend_FAIL1;
     if (advWA->StatusSelfIntersection(status))

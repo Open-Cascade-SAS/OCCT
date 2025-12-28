@@ -26,15 +26,12 @@
   #undef Convex
 #endif
 
-class TopoDS_TVertex;
-DEFINE_STANDARD_HANDLE(TopoDS_TVertex, TopoDS_TShape)
-
 //! A Vertex is a topological point in two or three dimensions.
 class TopoDS_TVertex : public TopoDS_TShape
 {
 public:
   //! Returns VERTEX.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TVertex, TopoDS_TShape)
 
@@ -43,8 +40,8 @@ protected:
   TopoDS_TVertex()
       : TopoDS_TShape()
   {
-    Closed(Standard_True);
-    Convex(Standard_True);
+    Closed(true);
+    Convex(true);
   }
 };
 

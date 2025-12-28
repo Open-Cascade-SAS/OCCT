@@ -8,20 +8,17 @@ set(OCCT_MoniTool_FILES
   MoniTool_CaseData.hxx
   MoniTool_DataInfo.cxx
   MoniTool_DataInfo.hxx
-  MoniTool_DataMapIteratorOfDataMapOfShapeTransient.hxx
-  MoniTool_DataMapIteratorOfDataMapOfTimer.hxx
-  MoniTool_DataMapOfShapeTransient.hxx
+
   MoniTool_DataMapOfTimer.hxx
   MoniTool_Element.cxx
   MoniTool_Element.hxx
-  MoniTool_HSequenceOfElement.hxx
-  MoniTool_IndexedDataMapOfShapeTransient.hxx
+
   MoniTool_IntVal.cxx
   MoniTool_IntVal.hxx
   MoniTool_Macros.hxx
   MoniTool_RealVal.cxx
   MoniTool_RealVal.hxx
-  MoniTool_SequenceOfElement.hxx
+
   MoniTool_SignShape.cxx
   MoniTool_SignShape.hxx
   MoniTool_SignText.cxx

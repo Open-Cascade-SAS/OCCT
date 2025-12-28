@@ -19,11 +19,11 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OffsetCurve3d, StepGeom_Curve)
 
 StepGeom_OffsetCurve3d::StepGeom_OffsetCurve3d() {}
 
-void StepGeom_OffsetCurve3d::Init(const Handle(TCollection_HAsciiString)& aName,
-                                  const Handle(StepGeom_Curve)&           aBasisCurve,
-                                  const Standard_Real                     aDistance,
-                                  const StepData_Logical                  aSelfIntersect,
-                                  const Handle(StepGeom_Direction)&       aRefDirection)
+void StepGeom_OffsetCurve3d::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                  const occ::handle<StepGeom_Curve>&           aBasisCurve,
+                                  const double                                 aDistance,
+                                  const StepData_Logical                       aSelfIntersect,
+                                  const occ::handle<StepGeom_Direction>&       aRefDirection)
 {
   // --- classe own fields ---
   basisCurve    = aBasisCurve;
@@ -34,22 +34,22 @@ void StepGeom_OffsetCurve3d::Init(const Handle(TCollection_HAsciiString)& aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_OffsetCurve3d::SetBasisCurve(const Handle(StepGeom_Curve)& aBasisCurve)
+void StepGeom_OffsetCurve3d::SetBasisCurve(const occ::handle<StepGeom_Curve>& aBasisCurve)
 {
   basisCurve = aBasisCurve;
 }
 
-Handle(StepGeom_Curve) StepGeom_OffsetCurve3d::BasisCurve() const
+occ::handle<StepGeom_Curve> StepGeom_OffsetCurve3d::BasisCurve() const
 {
   return basisCurve;
 }
 
-void StepGeom_OffsetCurve3d::SetDistance(const Standard_Real aDistance)
+void StepGeom_OffsetCurve3d::SetDistance(const double aDistance)
 {
   distance = aDistance;
 }
 
-Standard_Real StepGeom_OffsetCurve3d::Distance() const
+double StepGeom_OffsetCurve3d::Distance() const
 {
   return distance;
 }
@@ -64,12 +64,12 @@ StepData_Logical StepGeom_OffsetCurve3d::SelfIntersect() const
   return selfIntersect;
 }
 
-void StepGeom_OffsetCurve3d::SetRefDirection(const Handle(StepGeom_Direction)& aRefDirection)
+void StepGeom_OffsetCurve3d::SetRefDirection(const occ::handle<StepGeom_Direction>& aRefDirection)
 {
   refDirection = aRefDirection;
 }
 
-Handle(StepGeom_Direction) StepGeom_OffsetCurve3d::RefDirection() const
+occ::handle<StepGeom_Direction> StepGeom_OffsetCurve3d::RefDirection() const
 {
   return refDirection;
 }

@@ -49,19 +49,19 @@
 // function : MakeFillet
 // purpose  : case cylinder/plane or plane/cylinder.
 //=======================================================================
-Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
-                                      const Handle(ChFiDS_SurfData)& Data,
-                                      const gp_Pln&                  Pln,
-                                      const gp_Cylinder&             Cyl,
-                                      const Standard_Real            fu,
-                                      const Standard_Real            lu,
-                                      const TopAbs_Orientation       Or1,
-                                      const TopAbs_Orientation       Or2,
-                                      const Standard_Real            Radius,
-                                      const gp_Lin&                  Spine,
-                                      const Standard_Real            First,
-                                      const TopAbs_Orientation       Ofpl,
-                                      const Standard_Boolean         plandab)
+bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
+                          const occ::handle<ChFiDS_SurfData>& Data,
+                          const gp_Pln&                       Pln,
+                          const gp_Cylinder&                  Cyl,
+                          const double                        fu,
+                          const double                        lu,
+                          const TopAbs_Orientation            Or1,
+                          const TopAbs_Orientation            Or2,
+                          const double                        Radius,
+                          const gp_Lin&                       Spine,
+                          const double                        First,
+                          const TopAbs_Orientation            Ofpl,
+                          const bool                          plandab)
 {
   // calculate the cylinder fillet.
 
@@ -78,7 +78,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   gp_Pln PlanOffset = Pln.Translated(Radius * gp_Vec(NorF));
 
   // Parallel cylinder
-  Standard_Real ROff = Cyl.Radius();
+  double ROff = Cyl.Radius();
 
   if ((Or2 == TopAbs_FORWARD && Cyl.Direct()) || (Or2 == TopAbs_REVERSED && !Cyl.Direct()))
     ROff += Radius;
@@ -91,7 +91,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
 #ifdef OCCT_DEBUG
     std::cout << "the fillet does not pass" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
   // intersection of the parallel plane and of the parallel cylinder.
   gp_Cylinder        CylOffset(Cyl.Position(), ROff);
@@ -122,7 +122,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 
   // Construction fillet
@@ -131,9 +131,9 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
     DirFillet.Reverse();
   }
 
-  Standard_Real UOnCyl, VOnCyl, UOnPln, VOnPln;
+  double UOnCyl, VOnCyl, UOnPln, VOnPln;
   ElSLib::Parameters(Cyl, OrFillet, UOnCyl, VOnCyl);
-  constexpr Standard_Real tesp = Precision::Confusion();
+  constexpr double tesp = Precision::Confusion();
   if (UOnCyl < fu - tesp || UOnCyl > lu + tesp)
     UOnCyl = ElCLib::InPeriod(UOnCyl, fu, fu + 2 * M_PI);
   ElSLib::Parameters(Pln, OrFillet, UOnPln, VOnPln);
@@ -157,7 +157,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   if (aProd.Dot(DirFillet) < 0.)
     AxFil.YReverse();
 
-  Handle(Geom_CylindricalSurface) Fillet = new Geom_CylindricalSurface(AxFil, Radius);
+  occ::handle<Geom_CylindricalSurface> Fillet = new Geom_CylindricalSurface(AxFil, Radius);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(Fillet, DStr));
 
   // FaceInterferences are loaded with pcurves and curves 3D.
@@ -168,20 +168,20 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   gp_Pnt   POnPln = ElSLib::Value(UOnPln, VOnPln, Pln);
   gp_Lin   C3d(POnPln, DirFillet);
 
-  Standard_Real UOnFillet, V;
+  double UOnFillet, V;
   ElSLib::CylinderParameters(AxFil, Radius, POnPln, UOnFillet, V);
 
   if (UOnFillet > M_PI)
     UOnFillet = 0.;
-  gp_Lin2d            LOnFillet(gp_Pnt2d(UOnFillet, V), gp::DY2d());
-  Handle(Geom_Line)   L3d  = new Geom_Line(C3d);
-  Handle(Geom2d_Line) LFac = new Geom2d_Line(Lin2dPln);
-  Handle(Geom2d_Line) LFil = new Geom2d_Line(LOnFillet);
-  gp_Pnt              P;
-  gp_Vec              deru, derv;
+  gp_Lin2d                 LOnFillet(gp_Pnt2d(UOnFillet, V), gp::DY2d());
+  occ::handle<Geom_Line>   L3d  = new Geom_Line(C3d);
+  occ::handle<Geom2d_Line> LFac = new Geom2d_Line(Lin2dPln);
+  occ::handle<Geom2d_Line> LFil = new Geom2d_Line(LOnFillet);
+  gp_Pnt                   P;
+  gp_Vec                   deru, derv;
   ElSLib::CylinderD1(UOnFillet, V, AxFil, Radius, P, deru, derv);
-  gp_Dir           NorFil(deru.Crossed(derv));
-  Standard_Boolean toreverse = (NorFil.Dot(NorPln) <= 0.);
+  gp_Dir NorFil(deru.Crossed(derv));
+  bool   toreverse = (NorFil.Dot(NorPln) <= 0.);
   // It is checked if the orientation of the cylinder is the same as of the plane.
   if (toreverse)
   {
@@ -252,7 +252,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
                                                    trans,
                                                    LFac,
                                                    LFil);
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -260,27 +260,27 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
 // purpose  : case cylinder/plane or plane/cylinder.
 //=======================================================================
 
-Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
-                                      const Handle(ChFiDS_SurfData)& Data,
-                                      const gp_Pln&                  Pln,
-                                      const gp_Cylinder&             Cyl,
-                                      const Standard_Real            fu,
-                                      const Standard_Real            lu,
-                                      const TopAbs_Orientation       Or1,
-                                      const TopAbs_Orientation       Or2,
-                                      const Standard_Real            Radius,
-                                      const gp_Circ&                 Spine,
-                                      const Standard_Real            First,
-                                      const TopAbs_Orientation       Ofpl,
-                                      const Standard_Boolean         plandab)
+bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
+                          const occ::handle<ChFiDS_SurfData>& Data,
+                          const gp_Pln&                       Pln,
+                          const gp_Cylinder&                  Cyl,
+                          const double                        fu,
+                          const double                        lu,
+                          const TopAbs_Orientation            Or1,
+                          const TopAbs_Orientation            Or2,
+                          const double                        Radius,
+                          const gp_Circ&                      Spine,
+                          const double                        First,
+                          const TopAbs_Orientation            Ofpl,
+                          const bool                          plandab)
 {
 
   // calculation of the fillet (torus or sphere).
-  Standard_Boolean c1sphere = Standard_False;
-  gp_Ax3           PosPl    = Pln.Position();
-  gp_Dir           Dpnat    = PosPl.XDirection().Crossed(PosPl.YDirection());
-  gp_Dir           Dp       = Dpnat;
-  gp_Dir           Df       = Dp;
+  bool   c1sphere = false;
+  gp_Ax3 PosPl    = Pln.Position();
+  gp_Dir Dpnat    = PosPl.XDirection().Crossed(PosPl.YDirection());
+  gp_Dir Dp       = Dpnat;
+  gp_Dir Df       = Dp;
   if (Or1 == TopAbs_REVERSED)
   {
     Dp.Reverse();
@@ -290,8 +290,8 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
     Df.Reverse();
   }
 
-  gp_Pnt        Or = Cyl.Location();
-  Standard_Real u, v;
+  gp_Pnt Or = Cyl.Location();
+  double u, v;
   ElSLib::PlaneParameters(PosPl, Or, u, v);
   gp_Pnt2d c2dPln(u, v);
   ElSLib::PlaneD0(u, v, PosPl, Or);
@@ -300,21 +300,21 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   gp_Pnt PtSp;
   gp_Vec DSp;
   // Modification for the PtSp found at the wrong side of the sewing edge.
-  gp_Pnt        PtSp2;
-  gp_Vec        DSp2;
-  Standard_Real acote = 1e-7;
+  gp_Pnt PtSp2;
+  gp_Vec DSp2;
+  double acote = 1e-7;
   ElCLib::D1(First, Spine, PtSp, DSp);
   ElSLib::Parameters(Cyl, PtSp, u, v);
   if ((std::abs(u) < acote) || (std::abs(u - (2 * M_PI)) < acote))
   {
     ElCLib::D1(First + 0.2, Spine, PtSp2, DSp2);
-    Standard_Real u2, v2;
+    double u2, v2;
     ElSLib::Parameters(Cyl, PtSp2, u2, v2);
     if (std::abs(u2 - u) > M_PI)
     {
       u    = (2 * M_PI) - u;
       PtSp = ElSLib::Value(u, v, Cyl);
-      Standard_Real PR;
+      double PR;
       PR = ElCLib::Parameter(Spine, PtSp);
       ElCLib::D1(PR, Spine, PtSp2, DSp);
     }
@@ -331,9 +331,9 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   {
     Dc.Reverse();
   }
-  gp_Dir           Dz = Dp;
-  Standard_Real    Rad, cylrad = Cyl.Radius();
-  Standard_Boolean dedans = (Dx.Dot(Dc) <= 0.);
+  gp_Dir Dz = Dp;
+  double Rad, cylrad = Cyl.Radius();
+  bool   dedans = (Dx.Dot(Dc) <= 0.);
   if (dedans)
   {
     if (!plandab)
@@ -343,14 +343,14 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
     Rad = cylrad - Radius;
     if (std::abs(Rad) <= Precision::Confusion())
     {
-      c1sphere = Standard_True;
+      c1sphere = true;
     }
     else if (Rad < 0)
     {
 #ifdef OCCT_DEBUG
       std::cout << "the fillet can't pass" << std::endl;
 #endif
-      return Standard_False;
+      return false;
     }
   }
   else
@@ -369,12 +369,12 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
 
   if (c1sphere)
   {
-    Handle(Geom_SphericalSurface) gsph = new Geom_SphericalSurface(FilAx3, Radius);
+    occ::handle<Geom_SphericalSurface> gsph = new Geom_SphericalSurface(FilAx3, Radius);
     Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gsph, DStr));
   }
   else
   {
-    Handle(Geom_ToroidalSurface) gtor = new Geom_ToroidalSurface(FilAx3, Rad, Radius);
+    occ::handle<Geom_ToroidalSurface> gtor = new Geom_ToroidalSurface(FilAx3, Rad, Radius);
     Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gtor, DStr));
   }
 
@@ -411,8 +411,8 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
     ElSLib::TorusD1(u, v, FilAx3, Rad, Radius, PP, deru, derv);
     norFil = gp_Dir(deru.Crossed(derv));
   }
-  gp_Pnt2d         p2dFil(0., v);
-  Standard_Boolean toreverse = (norFil.Dot(Df) <= 0.);
+  gp_Pnt2d p2dFil(0., v);
+  bool     toreverse = (norFil.Dot(Df) <= 0.);
   if (toreverse)
   {
     Data->ChangeOrientation() = TopAbs_REVERSED;
@@ -425,9 +425,9 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   // FaceInterferences are loaded with pcurves and curves 3d.
 
   // The plane face.
-  Handle(Geom2d_Circle) GCirc2dPln;
-  Handle(Geom_Circle)   GCircPln;
-  gp_Ax2                circAx2 = FilAx3.Ax2();
+  occ::handle<Geom2d_Circle> GCirc2dPln;
+  occ::handle<Geom_Circle>   GCircPln;
+  gp_Ax2                     circAx2 = FilAx3.Ax2();
   if (!c1sphere)
   {
     ElSLib::PlaneParameters(PosPl, P, u, v);
@@ -453,9 +453,9 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
       Data->Set2dPoints(pbid, pbid, p2dPln, p2dPln);
     }
   }
-  gp_Lin2d            lin2dFil(p2dFil, gp::DX2d());
-  Handle(Geom2d_Line) GLin2dFil1 = new Geom2d_Line(lin2dFil);
-  toreverse                      = (norFil.Dot(Dpnat) <= 0.);
+  gp_Lin2d                 lin2dFil(p2dFil, gp::DX2d());
+  occ::handle<Geom2d_Line> GLin2dFil1 = new Geom2d_Line(lin2dFil);
+  toreverse                           = (norFil.Dot(Dpnat) <= 0.);
   TopAbs_Orientation trans;
   if ((toreverse && plandab) || (!toreverse && !plandab))
   {
@@ -509,10 +509,10 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   }
   norFil = deru.Crossed(derv);
   lin2dFil.SetLocation(p2dFil);
-  Handle(Geom2d_Line) GLin2dFil2 = new Geom2d_Line(lin2dFil);
+  occ::handle<Geom2d_Line> GLin2dFil2 = new Geom2d_Line(lin2dFil);
   ElSLib::Parameters(Cyl, P, u, v);
-  Standard_Real    tol           = Precision::PConfusion();
-  Standard_Boolean careaboutsens = 0;
+  double tol           = Precision::PConfusion();
+  bool   careaboutsens = 0;
   if (std::abs(lu - fu - 2 * M_PI) < tol)
     careaboutsens = 1;
   if (u >= fu - tol && u < fu)
@@ -532,13 +532,13 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
   }
   else if (careaboutsens && std::abs(lu - u) < tol)
     u = fu;
-  gp_Pnt2d            p2dCyl(u, v);
-  gp_Lin2d            lin2dCyl(p2dCyl, d2dCyl);
-  Handle(Geom2d_Line) GLin2dCyl = new Geom2d_Line(lin2dCyl);
+  gp_Pnt2d                 p2dCyl(u, v);
+  gp_Lin2d                 lin2dCyl(p2dCyl, d2dCyl);
+  occ::handle<Geom2d_Line> GLin2dCyl = new Geom2d_Line(lin2dCyl);
   circAx2.SetLocation(Or);
-  gp_Circ             circCyl(circAx2, cylrad);
-  Handle(Geom_Circle) GCircCyl = new Geom_Circle(circCyl);
-  toreverse                    = (norFil.Dot(norcyl) <= 0.);
+  gp_Circ                  circCyl(circAx2, cylrad);
+  occ::handle<Geom_Circle> GCircCyl = new Geom_Circle(circCyl);
+  toreverse                         = (norFil.Dot(norcyl) <= 0.);
   if ((toreverse && plandab) || (!toreverse && !plandab))
   {
     trans = TopAbs_REVERSED;
@@ -561,5 +561,5 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
                                                    GLin2dCyl,
                                                    GLin2dFil2);
   }
-  return Standard_True;
+  return true;
 }

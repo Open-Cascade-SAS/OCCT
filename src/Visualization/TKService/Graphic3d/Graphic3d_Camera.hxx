@@ -19,9 +19,9 @@
 #include <Aspect_Eye.hxx>
 #include <Aspect_FrustumLRBT.hxx>
 #include <Graphic3d_CameraTile.hxx>
-#include <Graphic3d_Mat4d.hxx>
-#include <Graphic3d_Mat4.hxx>
-#include <Graphic3d_Vec3.hxx>
+#include <NCollection_Mat4.hxx>
+#include <Standard_TypeDef.hxx>
+#include <NCollection_Vec3.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <NCollection_Lerp.hxx>
 #include <NCollection_Array1.hxx>
@@ -30,7 +30,6 @@
 #include <gp_Pnt.hxx>
 
 #include <Standard_Macro.hxx>
-#include <Standard_TypeDef.hxx>
 
 #include <Bnd_Box.hxx>
 
@@ -48,41 +47,41 @@ private:
 
     //! Default constructor.
     TransformMatrices()
-        : myIsOrientationValid(Standard_False),
-          myIsProjectionValid(Standard_False)
+        : myIsOrientationValid(false),
+          myIsProjectionValid(false)
     {
     }
 
     //! Initialize orientation.
     void InitOrientation()
     {
-      myIsOrientationValid = Standard_True;
+      myIsOrientationValid = true;
       Orientation.InitIdentity();
     }
 
     //! Initialize projection.
     void InitProjection()
     {
-      myIsProjectionValid = Standard_True;
+      myIsProjectionValid = true;
       MProjection.InitIdentity();
       LProjection.InitIdentity();
       RProjection.InitIdentity();
     }
 
     //! Invalidate orientation.
-    void ResetOrientation() { myIsOrientationValid = Standard_False; }
+    void ResetOrientation() { myIsOrientationValid = false; }
 
     //! Invalidate projection.
-    void ResetProjection() { myIsProjectionValid = Standard_False; }
+    void ResetProjection() { myIsProjectionValid = false; }
 
     //! Return true if Orientation was not invalidated.
-    Standard_Boolean IsOrientationValid() const { return myIsOrientationValid; }
+    bool IsOrientationValid() const { return myIsOrientationValid; }
 
     //! Return true if Projection was not invalidated.
-    Standard_Boolean IsProjectionValid() const { return myIsProjectionValid; }
+    bool IsProjectionValid() const { return myIsProjectionValid; }
 
     //! Dumps the content of me into the stream
-    void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+    void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const
     {
       if (IsOrientationValid())
       {
@@ -105,8 +104,8 @@ private:
     NCollection_Mat4<Elem_t> RProjection;
 
   private:
-    Standard_Boolean myIsOrientationValid;
-    Standard_Boolean myIsProjectionValid;
+    bool myIsOrientationValid;
+    bool myIsProjectionValid;
   };
 
 public:
@@ -149,7 +148,7 @@ public:
   //! Linear interpolation tool for camera orientation and position.
   //! This tool interpolates camera parameters scale, eye, center, rotation (up and direction
   //! vectors) independently.
-  //! @sa Graphic3d_CameraLerp
+  //! @sa NCollection_Lerp<occ::handle<Graphic3d_Camera>>
   //!
   //! Eye/Center interpolation is performed through defining an anchor point in-between Center and
   //! Eye. The anchor position is defined as point near to the camera point which has smaller
@@ -171,10 +170,10 @@ public:
   //! @param[in] theEnd     final   camera position
   //! @param[in] theT       step between initial and final positions within [0,1] range
   //! @param[out] theCamera  interpolation result
-  Standard_EXPORT static void Interpolate(const Handle(Graphic3d_Camera)& theStart,
-                                          const Handle(Graphic3d_Camera)& theEnd,
-                                          const double                    theT,
-                                          Handle(Graphic3d_Camera)&       theCamera);
+  Standard_EXPORT static void Interpolate(const occ::handle<Graphic3d_Camera>& theStart,
+                                          const occ::handle<Graphic3d_Camera>& theEnd,
+                                          const double                         theT,
+                                          occ::handle<Graphic3d_Camera>&       theCamera);
 
 public:
   //! Default constructor.
@@ -187,17 +186,17 @@ public:
 
   //! Copy constructor.
   //! @param[in] theOther  the camera to copy from.
-  Standard_EXPORT Graphic3d_Camera(const Handle(Graphic3d_Camera)& theOther);
+  Standard_EXPORT Graphic3d_Camera(const occ::handle<Graphic3d_Camera>& theOther);
 
   //! Initialize mapping related parameters from other camera handle.
-  Standard_EXPORT void CopyMappingData(const Handle(Graphic3d_Camera)& theOtherCamera);
+  Standard_EXPORT void CopyMappingData(const occ::handle<Graphic3d_Camera>& theOtherCamera);
 
   //! Initialize orientation related parameters from other camera handle.
-  Standard_EXPORT void CopyOrientationData(const Handle(Graphic3d_Camera)& theOtherCamera);
+  Standard_EXPORT void CopyOrientationData(const occ::handle<Graphic3d_Camera>& theOtherCamera);
 
   //! Copy properties of another camera.
   //! @param[in] theOther  the camera to copy from.
-  Standard_EXPORT void Copy(const Handle(Graphic3d_Camera)& theOther);
+  Standard_EXPORT void Copy(const occ::handle<Graphic3d_Camera>& theOther);
 
   //! @name Public camera properties
 public:
@@ -272,15 +271,15 @@ public:
 
   //! Get distance of Eye from camera Center.
   //! @return the distance.
-  Standard_Real Distance() const { return myDistance; }
+  double Distance() const { return myDistance; }
 
   //! Set distance of Eye from camera Center.
   //! @param[in] theDistance  the distance.
-  Standard_EXPORT void SetDistance(const Standard_Real theDistance);
+  Standard_EXPORT void SetDistance(const double theDistance);
 
   //! Get camera scale.
   //! @return camera scale factor.
-  Standard_EXPORT Standard_Real Scale() const;
+  Standard_EXPORT double Scale() const;
 
   //! Sets camera scale. For orthographic projection the scale factor
   //! corresponds to parallel scale of view mapping (i.e. size
@@ -290,7 +289,7 @@ public:
   //! and width are specified with the scale and correspondingly multiplied
   //! by the aspect.
   //! @param[in] theScale  the scale factor.
-  Standard_EXPORT void SetScale(const Standard_Real theScale);
+  Standard_EXPORT void SetScale(const double theScale);
 
   //! Get camera axial scale.
   //! @return Camera's axial scale.
@@ -313,42 +312,42 @@ public:
   //! Check that the camera projection is orthographic.
   //! @return boolean flag that indicates whether the camera's projection is
   //! orthographic or not.
-  Standard_Boolean IsOrthographic() const { return (myProjType == Projection_Orthographic); }
+  bool IsOrthographic() const { return (myProjType == Projection_Orthographic); }
 
   //! Check whether the camera projection is stereo.
   //! Please note that stereo rendering is now implemented with support of
   //! Quad buffering.
   //! @return boolean flag indicating whether the stereographic L/R projection
   //! is chosen.
-  Standard_Boolean IsStereo() const { return (myProjType == Projection_Stereo); }
+  bool IsStereo() const { return (myProjType == Projection_Stereo); }
 
   //! Set Field Of View (FOV) in y axis for perspective projection.
   //! Field of View in x axis is automatically scaled from view aspect ratio.
   //! @param[in] theFOVy  the FOV in degrees.
-  Standard_EXPORT void SetFOVy(const Standard_Real theFOVy);
+  Standard_EXPORT void SetFOVy(const double theFOVy);
 
   //! Get Field Of View (FOV) in y axis.
   //! @return the FOV value in degrees.
-  Standard_Real FOVy() const { return myFOVy; }
+  double FOVy() const { return myFOVy; }
 
   //! Get Field Of View (FOV) in x axis.
   //! @return the FOV value in degrees.
-  Standard_Real FOVx() const { return myFOVx; }
+  double FOVx() const { return myFOVx; }
 
   //! Get Field Of View (FOV) restriction for 2D on-screen elements; 180 degrees by default.
   //! When 2D FOV is smaller than FOVy or FOVx, 2D elements defined within offset from view corner
   //! will be extended to fit into specified 2D FOV.
   //! This can be useful to make 2D elements sharply visible, like in case of HMD normally having
   //! extra large FOVy.
-  Standard_Real FOV2d() const { return myFOV2d; }
+  double FOV2d() const { return myFOV2d; }
 
   //! Set Field Of View (FOV) restriction for 2D on-screen elements.
-  Standard_EXPORT void SetFOV2d(Standard_Real theFOV);
+  Standard_EXPORT void SetFOV2d(double theFOV);
 
   //! Adjust camera to fit in specified AABB.
-  Standard_EXPORT bool FitMinMax(const Bnd_Box&      theBox,
-                                 const Standard_Real theResolution,
-                                 const bool          theToEnlargeIfLine);
+  Standard_EXPORT bool FitMinMax(const Bnd_Box& theBox,
+                                 const double   theResolution,
+                                 const bool     theToEnlargeIfLine);
 
   //! Estimate Z-min and Z-max planes of projection volume to match the
   //! displayed objects. The methods ensures that view volume will
@@ -362,18 +361,16 @@ public:
   //!   Program error exception is thrown if negative or zero value is passed.
   //! @param[in] theMinMax applicative min max boundaries.
   //! @param[in] theGraphicBB real graphical boundaries (not accounting infinite flag).
-  Standard_EXPORT bool ZFitAll(const Standard_Real theScaleFactor,
-                               const Bnd_Box&      theMinMax,
-                               const Bnd_Box&      theGraphicBB,
-                               Standard_Real&      theZNear,
-                               Standard_Real&      theZFar) const;
+  Standard_EXPORT bool ZFitAll(const double   theScaleFactor,
+                               const Bnd_Box& theMinMax,
+                               const Bnd_Box& theGraphicBB,
+                               double&        theZNear,
+                               double&        theZFar) const;
 
   //! Change Z-min and Z-max planes of projection volume to match the displayed objects.
-  void ZFitAll(const Standard_Real theScaleFactor,
-               const Bnd_Box&      theMinMax,
-               const Bnd_Box&      theGraphicBB)
+  void ZFitAll(const double theScaleFactor, const Bnd_Box& theMinMax, const Bnd_Box& theGraphicBB)
   {
-    Standard_Real aZNear = 0.0, aZFar = 1.0;
+    double aZNear = 0.0, aZFar = 1.0;
     ZFitAll(theScaleFactor, theMinMax, theGraphicBB, aZNear, aZFar);
     SetZRange(aZNear, aZFar);
   }
@@ -385,22 +382,22 @@ public:
   //! specified for perspective projection or theZNear >= theZFar.
   //! @param[in] theZNear  the distance of the plane from the Eye.
   //! @param[in] theZFar  the distance of the plane from the Eye.
-  Standard_EXPORT void SetZRange(const Standard_Real theZNear, const Standard_Real theZFar);
+  Standard_EXPORT void SetZRange(const double theZNear, const double theZFar);
 
   //! Get the Near Z-clipping plane position.
   //! @return the distance of the plane from the Eye.
-  Standard_Real ZNear() const { return myZNear; }
+  double ZNear() const { return myZNear; }
 
   //! Get the Far Z-clipping plane position.
   //! @return the distance of the plane from the Eye.
-  Standard_Real ZFar() const { return myZFar; }
+  double ZFar() const { return myZFar; }
 
   //! Return TRUE if camera should calculate projection matrix for [0, 1] depth range or for [-1, 1]
   //! range. FALSE by default.
-  Standard_Boolean IsZeroToOneDepth() const { return myIsZeroToOneDepth; }
+  bool IsZeroToOneDepth() const { return myIsZeroToOneDepth; }
 
   //! Set using [0, 1] depth range or [-1, 1] range.
-  void SetZeroToOneDepth(Standard_Boolean theIsZeroToOne)
+  void SetZeroToOneDepth(bool theIsZeroToOne)
   {
     if (myIsZeroToOneDepth != theIsZeroToOne)
     {
@@ -411,11 +408,11 @@ public:
 
   //! Changes width / height display ratio.
   //! @param[in] theAspect  the display ratio.
-  Standard_EXPORT void SetAspect(const Standard_Real theAspect);
+  Standard_EXPORT void SetAspect(const double theAspect);
 
   //! Get camera display ratio.
   //! @return display ratio.
-  Standard_Real Aspect() const { return myAspect; }
+  double Aspect() const { return myAspect; }
 
   //! Sets stereographic focus distance.
   //! @param[in] theType  the focus definition type. Focus can be defined
@@ -423,12 +420,12 @@ public:
   //! camera focal length.
   //! @param[in] theZFocus  the focus absolute value or coefficient depending
   //! on the passed definition type.
-  Standard_EXPORT void SetZFocus(const FocusType theType, const Standard_Real theZFocus);
+  Standard_EXPORT void SetZFocus(const FocusType theType, const double theZFocus);
 
   //! Get stereographic focus value.
   //! @return absolute or relative stereographic focus value
   //! depending on its definition type.
-  Standard_Real ZFocus() const { return myZFocus; }
+  double ZFocus() const { return myZFocus; }
 
   //! Get stereographic focus definition type.
   //! @return definition type used for stereographic focus.
@@ -438,11 +435,11 @@ public:
   //! @param[in] theType  the IOD definition type. IOD can be defined as
   //! absolute value or relatively to (as coefficient of) camera focal length.
   //! @param[in] theIOD  the Intraocular distance.
-  Standard_EXPORT void SetIOD(const IODType theType, const Standard_Real theIOD);
+  Standard_EXPORT void SetIOD(const IODType theType, const double theIOD);
 
   //! Get Intraocular distance value.
   //! @return absolute or relative IOD value depending on its definition type.
-  Standard_Real IOD() const { return myIOD; }
+  double IOD() const { return myIOD; }
 
   //! Get Intraocular distance definition type.
   //! @return definition type used for Intraocular distance.
@@ -476,15 +473,15 @@ public:
   //! and distance between ZFar and ZNear planes.
   //! @param[in] theZValue  the distance from the eye in eye-to-center direction
   //! @return values in form of gp_Pnt (Width, Height, Depth).
-  Standard_EXPORT gp_XYZ ViewDimensions(const Standard_Real theZValue) const;
+  Standard_EXPORT gp_XYZ ViewDimensions(const double theZValue) const;
 
   //! Return offset to the view corner in NDC space within dimension X for 2d on-screen elements,
   //! which is normally 0.5. Can be clamped when FOVx exceeds FOV2d.
-  Standard_Real NDC2dOffsetX() const { return myFOV2d >= myFOVx ? 0.5 : 0.5 * myFOV2d / myFOVx; }
+  double NDC2dOffsetX() const { return myFOV2d >= myFOVx ? 0.5 : 0.5 * myFOV2d / myFOVx; }
 
   //! Return offset to the view corner in NDC space within dimension X for 2d on-screen elements,
   //! which is normally 0.5. Can be clamped when FOVy exceeds FOV2d.
-  Standard_Real NDC2dOffsetY() const { return myFOV2d >= myFOVy ? 0.5 : 0.5 * myFOV2d / myFOVy; }
+  double NDC2dOffsetY() const { return myFOV2d >= myFOVy ? 0.5 : 0.5 * myFOV2d / myFOVy; }
 
   //! Calculate WCS frustum planes for the camera projection volume.
   //! Frustum is a convex volume determined by six planes directing
@@ -549,46 +546,46 @@ public:
   const Graphic3d_WorldViewProjState& WorldViewProjState() const { return myWorldViewProjState; }
 
   //! Returns modification state of camera projection matrix
-  Standard_Size ProjectionState() const { return myWorldViewProjState.ProjectionState(); }
+  size_t ProjectionState() const { return myWorldViewProjState.ProjectionState(); }
 
   //! Returns modification state of camera world view transformation matrix.
-  Standard_Size WorldViewState() const { return myWorldViewProjState.WorldViewState(); }
+  size_t WorldViewState() const { return myWorldViewProjState.WorldViewState(); }
 
   //! @name Lazily-computed orientation and projection matrices derived from camera parameters
 public:
   //! Get orientation matrix.
   //! @return camera orientation matrix.
-  Standard_EXPORT const Graphic3d_Mat4d& OrientationMatrix() const;
+  Standard_EXPORT const NCollection_Mat4<double>& OrientationMatrix() const;
 
-  //! Get orientation matrix of Standard_ShortReal precision.
+  //! Get orientation matrix of float precision.
   //! @return camera orientation matrix.
-  Standard_EXPORT const Graphic3d_Mat4& OrientationMatrixF() const;
+  Standard_EXPORT const NCollection_Mat4<float>& OrientationMatrixF() const;
 
   //! Get monographic or middle point projection matrix used for monographic
   //! rendering and for point projection / unprojection.
   //! @return monographic projection matrix.
-  Standard_EXPORT const Graphic3d_Mat4d& ProjectionMatrix() const;
+  Standard_EXPORT const NCollection_Mat4<double>& ProjectionMatrix() const;
 
-  //! Get monographic or middle point projection matrix of Standard_ShortReal precision used for
+  //! Get monographic or middle point projection matrix of float precision used for
   //! monographic rendering and for point projection / unprojection.
   //! @return monographic projection matrix.
-  Standard_EXPORT const Graphic3d_Mat4& ProjectionMatrixF() const;
+  Standard_EXPORT const NCollection_Mat4<float>& ProjectionMatrixF() const;
 
   //! @return stereographic matrix computed for left eye. Please note
   //! that this method is used for rendering for <i>Projection_Stereo</i>.
-  Standard_EXPORT const Graphic3d_Mat4d& ProjectionStereoLeft() const;
+  Standard_EXPORT const NCollection_Mat4<double>& ProjectionStereoLeft() const;
 
-  //! @return stereographic matrix of Standard_ShortReal precision computed for left eye.
+  //! @return stereographic matrix of float precision computed for left eye.
   //! Please note that this method is used for rendering for <i>Projection_Stereo</i>.
-  Standard_EXPORT const Graphic3d_Mat4& ProjectionStereoLeftF() const;
+  Standard_EXPORT const NCollection_Mat4<float>& ProjectionStereoLeftF() const;
 
   //! @return stereographic matrix computed for right eye. Please note
   //! that this method is used for rendering for <i>Projection_Stereo</i>.
-  Standard_EXPORT const Graphic3d_Mat4d& ProjectionStereoRight() const;
+  Standard_EXPORT const NCollection_Mat4<double>& ProjectionStereoRight() const;
 
-  //! @return stereographic matrix of Standard_ShortReal precision computed for right eye.
+  //! @return stereographic matrix of float precision computed for right eye.
   //! Please note that this method is used for rendering for <i>Projection_Stereo</i>.
-  Standard_EXPORT const Graphic3d_Mat4& ProjectionStereoRightF() const;
+  Standard_EXPORT const NCollection_Mat4<float>& ProjectionStereoRightF() const;
 
   //! Invalidate state of projection matrix.
   //! The matrix will be updated on request.
@@ -604,20 +601,20 @@ public:
   //! @param[out] theHeadToEyeL  left  head to eye translation matrix
   //! @param[out] theProjR       right eye projection matrix
   //! @param[out] theHeadToEyeR  right head to eye translation matrix
-  Standard_EXPORT void StereoProjection(Graphic3d_Mat4d& theProjL,
-                                        Graphic3d_Mat4d& theHeadToEyeL,
-                                        Graphic3d_Mat4d& theProjR,
-                                        Graphic3d_Mat4d& theHeadToEyeR) const;
+  Standard_EXPORT void StereoProjection(NCollection_Mat4<double>& theProjL,
+                                        NCollection_Mat4<double>& theHeadToEyeL,
+                                        NCollection_Mat4<double>& theProjR,
+                                        NCollection_Mat4<double>& theHeadToEyeR) const;
 
   //! Get stereo projection matrices.
   //! @param[out] theProjL       left  eye projection matrix
   //! @param[out] theHeadToEyeL  left  head to eye translation matrix
   //! @param[out] theProjR       right eye projection matrix
   //! @param[out] theHeadToEyeR  right head to eye translation matrix
-  Standard_EXPORT void StereoProjectionF(Graphic3d_Mat4& theProjL,
-                                         Graphic3d_Mat4& theHeadToEyeL,
-                                         Graphic3d_Mat4& theProjR,
-                                         Graphic3d_Mat4& theHeadToEyeR) const;
+  Standard_EXPORT void StereoProjectionF(NCollection_Mat4<float>& theProjL,
+                                         NCollection_Mat4<float>& theHeadToEyeL,
+                                         NCollection_Mat4<float>& theProjR,
+                                         NCollection_Mat4<float>& theHeadToEyeR) const;
 
   //! Unset all custom frustums and projection matrices.
   Standard_EXPORT void ResetCustomProjection();
@@ -627,9 +624,8 @@ public:
 
   //! Set custom stereo frustums.
   //! These can be retrieved from APIs like OpenVR.
-  Standard_EXPORT void SetCustomStereoFrustums(
-    const Aspect_FrustumLRBT<Standard_Real>& theFrustumL,
-    const Aspect_FrustumLRBT<Standard_Real>& theFrustumR);
+  Standard_EXPORT void SetCustomStereoFrustums(const Aspect_FrustumLRBT<double>& theFrustumL,
+                                               const Aspect_FrustumLRBT<double>& theFrustumR);
 
   //! Return TRUE if custom stereo projection matrices are set.
   bool IsCustomStereoProjection() const { return myIsCustomProjMatLR; }
@@ -639,19 +635,19 @@ public:
   //! @param[in] theHeadToEyeL  left  head to eye translation matrix
   //! @param[in] theProjR       right eye projection matrix
   //! @param[in] theHeadToEyeR  right head to eye translation matrix
-  Standard_EXPORT void SetCustomStereoProjection(const Graphic3d_Mat4d& theProjL,
-                                                 const Graphic3d_Mat4d& theHeadToEyeL,
-                                                 const Graphic3d_Mat4d& theProjR,
-                                                 const Graphic3d_Mat4d& theHeadToEyeR);
+  Standard_EXPORT void SetCustomStereoProjection(const NCollection_Mat4<double>& theProjL,
+                                                 const NCollection_Mat4<double>& theHeadToEyeL,
+                                                 const NCollection_Mat4<double>& theProjR,
+                                                 const NCollection_Mat4<double>& theHeadToEyeR);
 
   //! Return TRUE if custom projection matrix is set.
   bool IsCustomMonoProjection() const { return myIsCustomProjMatM; }
 
   //! Set custom projection matrix.
-  Standard_EXPORT void SetCustomMonoProjection(const Graphic3d_Mat4d& theProj);
+  Standard_EXPORT void SetCustomMonoProjection(const NCollection_Mat4<double>& theProj);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! @name Managing projection and orientation cache
 private:
@@ -773,51 +769,51 @@ public:
   //! The size of this array is equal to FrustumVerticesNB.
   //! The order of vertices is as defined in FrustumVert_* enumeration.
   Standard_EXPORT void FrustumPoints(
-    NCollection_Array1<Graphic3d_Vec3d>& thePoints,
-    const Graphic3d_Mat4d&               theModelWorld = Graphic3d_Mat4d()) const;
+    NCollection_Array1<NCollection_Vec3<double>>& thePoints,
+    const NCollection_Mat4<double>&               theModelWorld = NCollection_Mat4<double>()) const;
 
 private:
-  gp_Dir        myUp;        //!< Camera up direction vector
-  gp_Dir        myDirection; //!< Camera view direction (from eye)
-  gp_Pnt        myEye;       //!< Camera eye position
-  Standard_Real myDistance;  //!< distance from Eye to Center
+  gp_Dir myUp;        //!< Camera up direction vector
+  gp_Dir myDirection; //!< Camera view direction (from eye)
+  gp_Pnt myEye;       //!< Camera eye position
+  double myDistance;  //!< distance from Eye to Center
 
   gp_XYZ myAxialScale; //!< World axial scale.
 
-  Projection       myProjType;         //!< Projection type used for rendering.
-  Standard_Real    myFOVy;             //!< Field Of View in y axis.
-  Standard_Real    myFOVx;             //!< Field Of View in x axis.
-  Standard_Real    myFOV2d;            //!< Field Of View limit for 2d on-screen elements
-  Standard_Real    myFOVyTan;          //!< Field Of View as std::tan(DTR_HALF * myFOVy)
-  Standard_Real    myZNear;            //!< Distance to near clipping plane.
-  Standard_Real    myZFar;             //!< Distance to far clipping plane.
-  Standard_Real    myAspect;           //!< Width to height display ratio.
-  Standard_Boolean myIsZeroToOneDepth; //!< use [0, 1] depth range or [-1, 1]
+  Projection myProjType;         //!< Projection type used for rendering.
+  double     myFOVy;             //!< Field Of View in y axis.
+  double     myFOVx;             //!< Field Of View in x axis.
+  double     myFOV2d;            //!< Field Of View limit for 2d on-screen elements
+  double     myFOVyTan;          //!< Field Of View as std::tan(DTR_HALF * myFOVy)
+  double     myZNear;            //!< Distance to near clipping plane.
+  double     myZFar;             //!< Distance to far clipping plane.
+  double     myAspect;           //!< Width to height display ratio.
+  bool       myIsZeroToOneDepth; //!< use [0, 1] depth range or [-1, 1]
 
-  Standard_Real myScale;      //!< Specifies parallel scale for orthographic projection.
-  Standard_Real myZFocus;     //!< Stereographic focus value.
-  FocusType     myZFocusType; //!< Stereographic focus definition type.
+  double    myScale;      //!< Specifies parallel scale for orthographic projection.
+  double    myZFocus;     //!< Stereographic focus value.
+  FocusType myZFocusType; //!< Stereographic focus definition type.
 
-  Standard_Real myIOD;     //!< Intraocular distance value.
-  IODType       myIODType; //!< Intraocular distance definition type.
+  double  myIOD;     //!< Intraocular distance value.
+  IODType myIODType; //!< Intraocular distance definition type.
 
   Graphic3d_CameraTile myTile; //!< Tile defining sub-area for drawing
 
-  Graphic3d_Mat4d                   myCustomProjMatM;
-  Graphic3d_Mat4d                   myCustomProjMatL;
-  Graphic3d_Mat4d                   myCustomProjMatR;
-  Graphic3d_Mat4d                   myCustomHeadToEyeMatL;
-  Graphic3d_Mat4d                   myCustomHeadToEyeMatR;
-  Aspect_FrustumLRBT<Standard_Real> myCustomFrustumL; //!< left  custom frustum
-  Aspect_FrustumLRBT<Standard_Real> myCustomFrustumR; //!< right custom frustum
-  Standard_Boolean myIsCustomProjMatM;  //!< flag indicating usage of custom projection matrix
-                                        // clang-format off
-  Standard_Boolean myIsCustomProjMatLR; //!< flag indicating usage of custom stereo projection matrices
-                                        // clang-format on
-  Standard_Boolean myIsCustomFrustomLR; //!< flag indicating usage of custom stereo frustums
+  NCollection_Mat4<double>   myCustomProjMatM;
+  NCollection_Mat4<double>   myCustomProjMatL;
+  NCollection_Mat4<double>   myCustomProjMatR;
+  NCollection_Mat4<double>   myCustomHeadToEyeMatL;
+  NCollection_Mat4<double>   myCustomHeadToEyeMatR;
+  Aspect_FrustumLRBT<double> myCustomFrustumL; //!< left  custom frustum
+  Aspect_FrustumLRBT<double> myCustomFrustumR; //!< right custom frustum
+  bool myIsCustomProjMatM;  //!< flag indicating usage of custom projection matrix
+                            // clang-format off
+  bool myIsCustomProjMatLR; //!< flag indicating usage of custom stereo projection matrices
+                            // clang-format on
+  bool myIsCustomFrustomLR; //!< flag indicating usage of custom stereo frustums
 
-  mutable TransformMatrices<Standard_Real>      myMatricesD;
-  mutable TransformMatrices<Standard_ShortReal> myMatricesF;
+  mutable TransformMatrices<double> myMatricesD;
+  mutable TransformMatrices<float>  myMatricesF;
 
   mutable Graphic3d_WorldViewProjState myWorldViewProjState;
 
@@ -825,16 +821,14 @@ public:
   DEFINE_STANDARD_RTTIEXT(Graphic3d_Camera, Standard_Transient)
 };
 
-DEFINE_STANDARD_HANDLE(Graphic3d_Camera, Standard_Transient)
-
 //! Linear interpolation tool for camera orientation and position.
 //! This tool interpolates camera parameters scale, eye, center, rotation (up and direction vectors)
 //! independently.
 //! @sa Graphic3d_Camera::Interpolate()
 template <>
-inline void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate(
-  const double              theT,
-  Handle(Graphic3d_Camera)& theResult) const
+inline void NCollection_Lerp<occ::handle<Graphic3d_Camera>>::Interpolate(
+  const double                   theT,
+  occ::handle<Graphic3d_Camera>& theResult) const
 {
   Graphic3d_Camera::Interpolate(myStart, myEnd, theT, theResult);
 }
@@ -843,6 +837,5 @@ inline void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate(
 //! This tool interpolates camera parameters scale, eye, center, rotation (up and direction vectors)
 //! independently.
 //! @sa Graphic3d_Camera::Interpolate()
-typedef NCollection_Lerp<Handle(Graphic3d_Camera)> Graphic3d_CameraLerp;
 
 #endif

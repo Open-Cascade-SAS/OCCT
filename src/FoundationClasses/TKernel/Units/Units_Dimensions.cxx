@@ -24,15 +24,15 @@ IMPLEMENT_STANDARD_RTTIEXT(Units_Dimensions, Standard_Transient)
 
 //=================================================================================================
 
-Units_Dimensions::Units_Dimensions(const Standard_Real amass,
-                                   const Standard_Real alength,
-                                   const Standard_Real atime,
-                                   const Standard_Real anelectriccurrent,
-                                   const Standard_Real athermodynamictemperature,
-                                   const Standard_Real anamountofsubstance,
-                                   const Standard_Real aluminousintensity,
-                                   const Standard_Real aplaneangle,
-                                   const Standard_Real asolidangle)
+Units_Dimensions::Units_Dimensions(const double amass,
+                                   const double alength,
+                                   const double atime,
+                                   const double anelectriccurrent,
+                                   const double athermodynamictemperature,
+                                   const double anamountofsubstance,
+                                   const double aluminousintensity,
+                                   const double aplaneangle,
+                                   const double asolidangle)
 {
   themass                     = amass;
   thelength                   = alength;
@@ -53,17 +53,17 @@ Units_Dimensions::Units_Dimensions(const Standard_Real amass,
 //	     If you found a more simple way ,phone to GG,thanks ...
 //=======================================================================
 
-static Handle(Units_QuantitiesSequence) quantitySequence;
-static TCollection_AsciiString          quantityName;
+static occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> quantitySequence;
+static TCollection_AsciiString                                         quantityName;
 
-Standard_CString Units_Dimensions::Quantity() const
+const char* Units_Dimensions::Quantity() const
 {
   if (quantitySequence.IsNull())
   {
-    quantitySequence = Units::DictionaryOfUnits(Standard_False)->Sequence();
+    quantitySequence = Units::DictionaryOfUnits(false)->Sequence();
   }
-  Handle(Units_Dimensions) dim;
-  for (Standard_Integer i = 1; i <= quantitySequence->Length(); i++)
+  occ::handle<Units_Dimensions> dim;
+  for (int i = 1; i <= quantitySequence->Length(); i++)
   {
     dim = quantitySequence->Value(i)->Dimensions();
     if (themass == dim->Mass() && thelength == dim->Length() && thetime == dim->Time()
@@ -82,8 +82,8 @@ Standard_CString Units_Dimensions::Quantity() const
 
 //=================================================================================================
 
-Handle(Units_Dimensions) Units_Dimensions::Multiply(
-  const Handle(Units_Dimensions)& adimensions) const
+occ::handle<Units_Dimensions> Units_Dimensions::Multiply(
+  const occ::handle<Units_Dimensions>& adimensions) const
 {
   return new Units_Dimensions(themass + adimensions->Mass(),
                               thelength + adimensions->Length(),
@@ -98,7 +98,8 @@ Handle(Units_Dimensions) Units_Dimensions::Multiply(
 
 //=================================================================================================
 
-Handle(Units_Dimensions) Units_Dimensions::Divide(const Handle(Units_Dimensions)& adimensions) const
+occ::handle<Units_Dimensions> Units_Dimensions::Divide(
+  const occ::handle<Units_Dimensions>& adimensions) const
 {
   return new Units_Dimensions(themass - adimensions->Mass(),
                               thelength - adimensions->Length(),
@@ -113,7 +114,7 @@ Handle(Units_Dimensions) Units_Dimensions::Divide(const Handle(Units_Dimensions)
 
 //=================================================================================================
 
-Handle(Units_Dimensions) Units_Dimensions::Power(const Standard_Real anexponent) const
+occ::handle<Units_Dimensions> Units_Dimensions::Power(const double anexponent) const
 {
   return new Units_Dimensions(themass * anexponent,
                               thelength * anexponent,
@@ -128,7 +129,7 @@ Handle(Units_Dimensions) Units_Dimensions::Power(const Standard_Real anexponent)
 
 //=================================================================================================
 
-Standard_Boolean Units_Dimensions::IsEqual(const Handle(Units_Dimensions)& adimensions) const
+bool Units_Dimensions::IsEqual(const occ::handle<Units_Dimensions>& adimensions) const
 {
   return (
     themass == adimensions->Mass() && thelength == adimensions->Length()
@@ -137,20 +138,20 @@ Standard_Boolean Units_Dimensions::IsEqual(const Handle(Units_Dimensions)& adime
         && theamountofsubstance == adimensions->AmountOfSubstance()
         && theluminousintensity == adimensions->LuminousIntensity()
         && theplaneangle == adimensions->PlaneAngle() && thesolidangle == adimensions->SolidAngle()
-      ? Standard_True
-      : Standard_False);
+      ? true
+      : false);
 }
 
 //=================================================================================================
 
-Standard_Boolean Units_Dimensions::IsNotEqual(const Handle(Units_Dimensions)& adimensions) const
+bool Units_Dimensions::IsNotEqual(const occ::handle<Units_Dimensions>& adimensions) const
 {
-  return !(IsEqual(adimensions)) ? Standard_True : Standard_False;
+  return !(IsEqual(adimensions)) ? true : false;
 }
 
 //=================================================================================================
 
-void Units_Dimensions::Dump(const Standard_Integer ashift) const
+void Units_Dimensions::Dump(const int ashift) const
 {
   int i;
   for (i = 0; i < ashift; i++)
@@ -190,8 +191,8 @@ void Units_Dimensions::Dump(const Standard_Integer ashift) const
 // purpose  :
 //=======================================================================
 
-Handle(Units_Dimensions) operator*(const Handle(Units_Dimensions)& adimension1,
-                                   const Handle(Units_Dimensions)& adimension2)
+occ::handle<Units_Dimensions> operator*(const occ::handle<Units_Dimensions>& adimension1,
+                                        const occ::handle<Units_Dimensions>& adimension2)
 {
   return adimension1->Multiply(adimension2);
 }
@@ -201,15 +202,16 @@ Handle(Units_Dimensions) operator*(const Handle(Units_Dimensions)& adimension1,
 // purpose  :
 //=======================================================================
 
-Handle(Units_Dimensions) operator/(const Handle(Units_Dimensions)& adimension1,
-                                   const Handle(Units_Dimensions)& adimension2)
+occ::handle<Units_Dimensions> operator/(const occ::handle<Units_Dimensions>& adimension1,
+                                        const occ::handle<Units_Dimensions>& adimension2)
 {
   return adimension1->Divide(adimension2);
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) pow(const Handle(Units_Dimensions)& adimension, const Standard_Real areal)
+occ::handle<Units_Dimensions> pow(const occ::handle<Units_Dimensions>& adimension,
+                                  const double                         areal)
 {
   return adimension->Power(areal);
 }
@@ -219,8 +221,8 @@ Handle(Units_Dimensions) pow(const Handle(Units_Dimensions)& adimension, const S
 // purpose  :
 //=======================================================================
 
-// Standard_Boolean operator ==(const Handle(Units_Dimensions)& adimension1,
-//			     const Handle(Units_Dimensions)& adimension2)
+// bool operator ==(const occ::handle<Units_Dimensions>& adimension1,
+//			     const occ::handle<Units_Dimensions>& adimension2)
 //{
 //   return adimension1->IsEqual(adimension2);
 // }
@@ -230,87 +232,87 @@ Handle(Units_Dimensions) pow(const Handle(Units_Dimensions)& adimension, const S
 // purpose  :
 //=======================================================================
 
-// Standard_Boolean operator !=(const Handle(Units_Dimensions)& adimension1,
-//			     const Handle(Units_Dimensions)& adimension2)
+// bool operator !=(const occ::handle<Units_Dimensions>& adimension1,
+//			     const occ::handle<Units_Dimensions>& adimension2)
 //{
 //   return adimension1->IsNotEqual(adimension2);
 // }
 
-Handle(Units_Dimensions) Units_Dimensions::ALess()
+occ::handle<Units_Dimensions> Units_Dimensions::ALess()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 0.);
   return aDim;
 }
 
-Handle(Units_Dimensions) Units_Dimensions::AMass()
+occ::handle<Units_Dimensions> Units_Dimensions::AMass()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(1., 0., 0., 0., 0., 0., 0., 0., 0.);
   return aDim;
 }
 
-Handle(Units_Dimensions) Units_Dimensions::ALength()
+occ::handle<Units_Dimensions> Units_Dimensions::ALength()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(0., 1., 0., 0., 0., 0., 0., 0., 0.);
   return aDim;
 }
 
-Handle(Units_Dimensions) Units_Dimensions::ATime()
+occ::handle<Units_Dimensions> Units_Dimensions::ATime()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(0., 0., 1., 0., 0., 0., 0., 0., 0.);
   return aDim;
 }
 
-Handle(Units_Dimensions) Units_Dimensions::AElectricCurrent()
+occ::handle<Units_Dimensions> Units_Dimensions::AElectricCurrent()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(0., 0., 0., 1., 0., 0., 0., 0., 0.);
   return aDim;
 }
 
-Handle(Units_Dimensions) Units_Dimensions::AThermodynamicTemperature()
+occ::handle<Units_Dimensions> Units_Dimensions::AThermodynamicTemperature()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(0., 0., 0., 0., 1., 0., 0., 0., 0.);
   return aDim;
 }
 
-Handle(Units_Dimensions) Units_Dimensions::AAmountOfSubstance()
+occ::handle<Units_Dimensions> Units_Dimensions::AAmountOfSubstance()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 1., 0., 0., 0.);
   return aDim;
 }
 
-Handle(Units_Dimensions) Units_Dimensions::ALuminousIntensity()
+occ::handle<Units_Dimensions> Units_Dimensions::ALuminousIntensity()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 0., 1., 0., 0.);
   return aDim;
 }
 
-Handle(Units_Dimensions) Units_Dimensions::APlaneAngle()
+occ::handle<Units_Dimensions> Units_Dimensions::APlaneAngle()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 1., 0.);
   return aDim;
 }
 
-Handle(Units_Dimensions) Units_Dimensions::ASolidAngle()
+occ::handle<Units_Dimensions> Units_Dimensions::ASolidAngle()
 {
-  static Handle(Units_Dimensions) aDim;
+  static occ::handle<Units_Dimensions> aDim;
   if (aDim.IsNull())
     aDim = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 1.);
   return aDim;

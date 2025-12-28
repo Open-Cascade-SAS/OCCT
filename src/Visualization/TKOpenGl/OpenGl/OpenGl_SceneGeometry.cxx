@@ -84,20 +84,16 @@ const QuadBvhHandle& OpenGl_TriangleSet::QuadBVH()
 // function : Center
 // purpose  : Returns centroid position along the given axis
 // =======================================================================
-Standard_ShortReal OpenGl_TriangleSet::Center(const Standard_Integer theIndex,
-                                              const Standard_Integer theAxis) const
+float OpenGl_TriangleSet::Center(const int theIndex, const int theAxis) const
 {
   // Note: Experiments show that the use of the box centroid (instead
   // of the triangle centroid) increases render performance up to 12%
 
   const BVH_Vec4i& aTriangle = Elements[theIndex];
 
-  const Standard_ShortReal aVertex0 =
-    BVH::VecComp<Standard_ShortReal, 3>::Get(Vertices[aTriangle.x()], theAxis);
-  const Standard_ShortReal aVertex1 =
-    BVH::VecComp<Standard_ShortReal, 3>::Get(Vertices[aTriangle.y()], theAxis);
-  const Standard_ShortReal aVertex2 =
-    BVH::VecComp<Standard_ShortReal, 3>::Get(Vertices[aTriangle.z()], theAxis);
+  const float aVertex0 = BVH::VecComp<float, 3>::Get(Vertices[aTriangle.x()], theAxis);
+  const float aVertex1 = BVH::VecComp<float, 3>::Get(Vertices[aTriangle.y()], theAxis);
+  const float aVertex2 = BVH::VecComp<float, 3>::Get(Vertices[aTriangle.z()], theAxis);
 
   return (std::min(std::min(aVertex0, aVertex1), aVertex2)
           + std::max(std::max(aVertex0, aVertex1), aVertex2))
@@ -110,20 +106,20 @@ Standard_ShortReal OpenGl_TriangleSet::Center(const Standard_Integer theIndex,
 // =======================================================================
 OpenGl_TriangleSet::BVH_BoxNt OpenGl_TriangleSet::Box() const
 {
-  BVH_BoxNt                                   aBox = BVH_PrimitiveSet<Standard_ShortReal, 3>::Box();
-  const BVH_Transform<Standard_ShortReal, 4>* aTransform =
-    dynamic_cast<const BVH_Transform<Standard_ShortReal, 4>*>(Properties().get());
+  BVH_BoxNt                      aBox = BVH_PrimitiveSet<float, 3>::Box();
+  const BVH_Transform<float, 4>* aTransform =
+    dynamic_cast<const BVH_Transform<float, 4>*>(Properties().get());
   if (aTransform == NULL)
   {
     return aBox;
   }
 
   BVH_BoxNt aTransformedBox;
-  for (Standard_Integer aX = 0; aX <= 1; ++aX)
+  for (int aX = 0; aX <= 1; ++aX)
   {
-    for (Standard_Integer aY = 0; aY <= 1; ++aY)
+    for (int aY = 0; aY <= 1; ++aY)
     {
-      for (Standard_Integer aZ = 0; aZ <= 1; ++aZ)
+      for (int aZ = 0; aZ <= 1; ++aZ)
       {
         BVH_Vec4f aCorner = aTransform->Transform()
                             * BVH_Vec4f(aX == 0 ? aBox.CornerMin().x() : aBox.CornerMax().x(),
@@ -142,10 +138,9 @@ OpenGl_TriangleSet::BVH_BoxNt OpenGl_TriangleSet::Box() const
 // function : OpenGl_TriangleSet
 // purpose  : Creates new OpenGL element triangulation
 // =======================================================================
-OpenGl_TriangleSet::OpenGl_TriangleSet(
-  const Standard_Size                                            theArrayID,
-  const opencascade::handle<BVH_Builder<Standard_ShortReal, 3>>& theBuilder)
-    : BVH_Triangulation<Standard_ShortReal, 3>(theBuilder),
+OpenGl_TriangleSet::OpenGl_TriangleSet(const size_t                                      theArrayID,
+                                       const opencascade::handle<BVH_Builder<float, 3>>& theBuilder)
+    : BVH_Triangulation<float, 3>(theBuilder),
       myArrayID(theArrayID)
 {
   //
@@ -157,7 +152,7 @@ OpenGl_TriangleSet::OpenGl_TriangleSet(
 // =======================================================================
 void OpenGl_RaytraceGeometry::Clear()
 {
-  BVH_Geometry<Standard_ShortReal, 3>::BVH_Geometry::Clear();
+  BVH_Geometry<float, 3>::BVH_Geometry::Clear();
 
   std::vector<OpenGl_RaytraceLight, NCollection_OccAllocator<OpenGl_RaytraceLight>> anEmptySources;
 
@@ -171,18 +166,18 @@ void OpenGl_RaytraceGeometry::Clear()
 
 struct OpenGL_BVHParallelBuilder
 {
-  BVH_ObjectSet<Standard_ShortReal, 3>* Set;
+  BVH_ObjectSet<float, 3>* Set;
 
-  OpenGL_BVHParallelBuilder(BVH_ObjectSet<Standard_ShortReal, 3>* theSet)
+  OpenGL_BVHParallelBuilder(BVH_ObjectSet<float, 3>* theSet)
       : Set(theSet)
   {
     //
   }
 
-  void operator()(const Standard_Integer theObjectIdx) const
+  void operator()(const int theObjectIdx) const
   {
     OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*>(
-      Set->Objects().ChangeValue(static_cast<Standard_Integer>(theObjectIdx)).operator->());
+      Set->Objects().ChangeValue(static_cast<int>(theObjectIdx)).operator->());
 
     if (aTriangleSet != NULL)
       aTriangleSet->QuadBVH();
@@ -193,7 +188,7 @@ struct OpenGL_BVHParallelBuilder
 // function : ProcessAcceleration
 // purpose  : Performs post-processing of high-level BVH
 // =======================================================================
-Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
+bool OpenGl_RaytraceGeometry::ProcessAcceleration()
 {
 #ifdef RAY_TRACE_PRINT_INFO
   OSD_Timer aTimer;
@@ -210,24 +205,24 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 
   myBotLevelTreeDepth = 1;
 
-  for (Standard_Integer anObjectIdx = 0; anObjectIdx < Size(); ++anObjectIdx)
+  for (int anObjectIdx = 0; anObjectIdx < Size(); ++anObjectIdx)
   {
     OpenGl_TriangleSet* aTriangleSet =
       dynamic_cast<OpenGl_TriangleSet*>(myObjects.ChangeValue(anObjectIdx).operator->());
 
     Standard_ASSERT_RETURN(aTriangleSet != NULL,
                            "Error! Failed to get triangulation of OpenGL element",
-                           Standard_False);
+                           false);
 
     Standard_ASSERT_RETURN(!aTriangleSet->QuadBVH().IsNull(),
                            "Error! Failed to update bottom-level BVH of OpenGL element",
-                           Standard_False);
+                           false);
 
     QuadBvhHandle aBVH = aTriangleSet->QuadBVH();
 
     // correct data array of bottom-level BVH to set special flag for outer
     // nodes in order to distinguish them from outer nodes of top-level BVH
-    for (Standard_Integer aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
+    for (int aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
     {
       if (aBVH->IsOuter(aNodeIdx))
       {
@@ -253,7 +248,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 
   Standard_ASSERT_RETURN(!aBVH.IsNull(),
                          "Error! Failed to update high-level BVH of ray-tracing scene",
-                         Standard_False);
+                         false);
 
   myTopLevelTreeDepth = aBVH->Depth();
 
@@ -263,25 +258,25 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
   std::cout << "Updating high-level BVH (sec): " << aTimer.ElapsedTime() << std::endl;
 #endif
 
-  Standard_Integer aVerticesOffset = 0;
-  Standard_Integer aElementsOffset = 0;
-  Standard_Integer aBvhNodesOffset = QuadBVH()->Length();
+  int aVerticesOffset = 0;
+  int aElementsOffset = 0;
+  int aBvhNodesOffset = QuadBVH()->Length();
 
-  for (Standard_Integer aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
+  for (int aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
   {
     if (aBVH->IsOuter(aNodeIdx))
     {
       Standard_ASSERT_RETURN(
         aBVH->BegPrimitive(aNodeIdx) == aBVH->EndPrimitive(aNodeIdx),
         "Error! Invalid leaf node in high-level BVH (contains several objects)",
-        Standard_False);
+        false);
 
-      const Standard_Integer anObjectIdx = aBVH->BegPrimitive(aNodeIdx);
+      const int anObjectIdx = aBVH->BegPrimitive(aNodeIdx);
 
       Standard_ASSERT_RETURN(
         anObjectIdx < myObjects.Size(),
         "Error! Invalid leaf node in high-level BVH (contains out-of-range object)",
-        Standard_False);
+        false);
 
       OpenGl_TriangleSet* aTriangleSet =
         dynamic_cast<OpenGl_TriangleSet*>(myObjects(anObjectIdx).get());
@@ -294,14 +289,14 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
                                                    aVerticesOffset,
                                                    aElementsOffset);
 
-      aVerticesOffset += static_cast<Standard_Integer>(aTriangleSet->Vertices.size());
-      aElementsOffset += static_cast<Standard_Integer>(aTriangleSet->Elements.size());
+      aVerticesOffset += static_cast<int>(aTriangleSet->Vertices.size());
+      aElementsOffset += static_cast<int>(aTriangleSet->Elements.size());
 
       aBvhNodesOffset += aTriangleSet->QuadBVH()->Length();
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 // =======================================================================
@@ -328,7 +323,7 @@ const QuadBvhHandle& OpenGl_RaytraceGeometry::QuadBVH()
 // function : AccelerationOffset
 // purpose  : Returns offset of bottom-level BVH for given leaf node
 // =======================================================================
-Standard_Integer OpenGl_RaytraceGeometry::AccelerationOffset(Standard_Integer theNodeIdx)
+int OpenGl_RaytraceGeometry::AccelerationOffset(int theNodeIdx)
 {
   const QuadBvhHandle& aBVH = QuadBVH();
 
@@ -342,7 +337,7 @@ Standard_Integer OpenGl_RaytraceGeometry::AccelerationOffset(Standard_Integer th
 // function : VerticesOffset
 // purpose  : Returns offset of triangulation vertices for given leaf node
 // =======================================================================
-Standard_Integer OpenGl_RaytraceGeometry::VerticesOffset(Standard_Integer theNodeIdx)
+int OpenGl_RaytraceGeometry::VerticesOffset(int theNodeIdx)
 {
   const QuadBvhHandle& aBVH = QuadBVH();
 
@@ -356,7 +351,7 @@ Standard_Integer OpenGl_RaytraceGeometry::VerticesOffset(Standard_Integer theNod
 // function : ElementsOffset
 // purpose  : Returns offset of triangulation elements for given leaf node
 // =======================================================================
-Standard_Integer OpenGl_RaytraceGeometry::ElementsOffset(Standard_Integer theNodeIdx)
+int OpenGl_RaytraceGeometry::ElementsOffset(int theNodeIdx)
 {
   const QuadBvhHandle& aBVH = QuadBVH();
 
@@ -370,7 +365,7 @@ Standard_Integer OpenGl_RaytraceGeometry::ElementsOffset(Standard_Integer theNod
 // function : TriangleSet
 // purpose  : Returns triangulation data for given leaf node
 // =======================================================================
-OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet(Standard_Integer theNodeIdx)
+OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet(int theNodeIdx)
 {
   const QuadBvhHandle& aBVH = QuadBVH();
 
@@ -388,20 +383,20 @@ OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet(Standard_Integer theNod
 // function : AcquireTextures
 // purpose  : Makes the OpenGL texture handles resident
 // =======================================================================
-Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures(const Handle(OpenGl_Context)& theContext)
+bool OpenGl_RaytraceGeometry::AcquireTextures(const occ::handle<OpenGl_Context>& theContext)
 {
   if (theContext->arbTexBindless == NULL)
   {
-    return Standard_True;
+    return true;
   }
 
-  Standard_Integer aTexIter = 0;
-  for (NCollection_Vector<Handle(OpenGl_Texture)>::Iterator aTexSrcIter(myTextures);
+  int aTexIter = 0;
+  for (NCollection_Vector<occ::handle<OpenGl_Texture>>::Iterator aTexSrcIter(myTextures);
        aTexSrcIter.More();
        aTexSrcIter.Next(), ++aTexIter)
   {
-    GLuint64&                     aHandle  = myTextureHandles[aTexIter];
-    const Handle(OpenGl_Texture)& aTexture = aTexSrcIter.Value();
+    GLuint64&                          aHandle  = myTextureHandles[aTexIter];
+    const occ::handle<OpenGl_Texture>& aTexture = aTexSrcIter.Value();
     if (!aTexture->Sampler()->IsValid() || !aTexture->Sampler()->IsImmutable())
     {
       // need to recreate texture sampler handle
@@ -428,7 +423,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures(const Handle(OpenGl_Co
           TCollection_AsciiString("Error: Failed to get 64-bit handle of OpenGL texture ")
             + OpenGl_Context::FormatGlError(anErr));
         myTextureHandles.clear();
-        return Standard_False;
+        return false;
       }
     }
 
@@ -443,23 +438,22 @@ Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures(const Handle(OpenGl_Co
         GL_DEBUG_SEVERITY_HIGH,
         TCollection_AsciiString("Error: Failed to make OpenGL texture resident ")
           + OpenGl_Context::FormatGlError(anErr));
-      return Standard_False;
+      return false;
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 // =======================================================================
 // function : ReleaseTextures
 // purpose  : Makes the OpenGL texture handles non-resident
 // =======================================================================
-Standard_Boolean OpenGl_RaytraceGeometry::ReleaseTextures(
-  const Handle(OpenGl_Context)& theContext) const
+bool OpenGl_RaytraceGeometry::ReleaseTextures(const occ::handle<OpenGl_Context>& theContext) const
 {
   if (theContext->arbTexBindless == NULL)
   {
-    return Standard_True;
+    return true;
   }
 
   for (size_t aTexIter = 0; aTexIter < myTextureHandles.size(); ++aTexIter)
@@ -475,25 +469,25 @@ Standard_Boolean OpenGl_RaytraceGeometry::ReleaseTextures(
         GL_DEBUG_SEVERITY_HIGH,
         TCollection_AsciiString("Error: Failed to make OpenGL texture non-resident ")
           + OpenGl_Context::FormatGlError(anErr));
-      return Standard_False;
+      return false;
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 // =======================================================================
 // function : AddTexture
 // purpose  : Adds new OpenGL texture to the scene and returns its index
 // =======================================================================
-Standard_Integer OpenGl_RaytraceGeometry::AddTexture(const Handle(OpenGl_Texture)& theTexture)
+int OpenGl_RaytraceGeometry::AddTexture(const occ::handle<OpenGl_Texture>& theTexture)
 {
   if (theTexture->TextureId() == OpenGl_Texture::NO_TEXTURE)
   {
     return -1;
   }
 
-  NCollection_Vector<Handle(OpenGl_Texture)>::iterator anIter =
+  NCollection_Vector<occ::handle<OpenGl_Texture>>::iterator anIter =
     std::find(myTextures.begin(), myTextures.end(), theTexture);
 
   if (anIter == myTextures.end())
@@ -506,26 +500,25 @@ Standard_Integer OpenGl_RaytraceGeometry::AddTexture(const Handle(OpenGl_Texture
     myTextures.Append(theTexture);
   }
 
-  return static_cast<Standard_Integer>(anIter - myTextures.begin());
+  return static_cast<int>(anIter - myTextures.begin());
 }
 
 // =======================================================================
 // function : UpdateTextureHandles
 // purpose  : Updates unique 64-bit texture handles to use in shaders
 // =======================================================================
-Standard_Boolean OpenGl_RaytraceGeometry::UpdateTextureHandles(
-  const Handle(OpenGl_Context)& theContext)
+bool OpenGl_RaytraceGeometry::UpdateTextureHandles(const occ::handle<OpenGl_Context>& theContext)
 {
   if (theContext->arbTexBindless == NULL)
   {
-    return Standard_False;
+    return false;
   }
 
   myTextureHandles.clear();
   myTextureHandles.resize(myTextures.Size());
 
-  Standard_Integer aTexIter = 0;
-  for (NCollection_Vector<Handle(OpenGl_Texture)>::Iterator aTexSrcIter(myTextures);
+  int aTexIter = 0;
+  for (NCollection_Vector<occ::handle<OpenGl_Texture>>::Iterator aTexSrcIter(myTextures);
        aTexSrcIter.More();
        aTexSrcIter.Next(), ++aTexIter)
   {
@@ -534,7 +527,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::UpdateTextureHandles(
     aHandle = GLuint64(-1); // specs do not define value for invalid handle, set -1 to initialize something
     // clang-format on
 
-    const Handle(OpenGl_Texture)& aTexture = aTexSrcIter.Value();
+    const occ::handle<OpenGl_Texture>& aTexture = aTexSrcIter.Value();
     if (!aTexture->Sampler()->IsValid() && !aTexture->InitSamplerObject(theContext))
     {
       continue;
@@ -555,11 +548,11 @@ Standard_Boolean OpenGl_RaytraceGeometry::UpdateTextureHandles(
         TCollection_AsciiString("Error: Failed to get 64-bit handle of OpenGL texture ")
           + OpenGl_Context::FormatGlError(anErr));
       myTextureHandles.clear();
-      return Standard_False;
+      return false;
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 namespace OpenGl_Raytrace
@@ -568,7 +561,7 @@ namespace OpenGl_Raytrace
 // function : IsRaytracedElement
 // purpose  : Checks to see if the element contains ray-trace geometry
 // =======================================================================
-Standard_Boolean IsRaytracedElement(const OpenGl_ElementNode* theNode)
+bool IsRaytracedElement(const OpenGl_ElementNode* theNode)
 {
   OpenGl_PrimitiveArray* anArray = dynamic_cast<OpenGl_PrimitiveArray*>(theNode->elem);
   return anArray != NULL && anArray->DrawMode() >= GL_TRIANGLES;
@@ -578,7 +571,7 @@ Standard_Boolean IsRaytracedElement(const OpenGl_ElementNode* theNode)
 // function : IsRaytracedElement
 // purpose  : Checks to see if the element contains ray-trace geometry
 // =======================================================================
-Standard_Boolean IsRaytracedElement(const OpenGl_Element* theElement)
+bool IsRaytracedElement(const OpenGl_Element* theElement)
 {
   const OpenGl_PrimitiveArray* anArray = dynamic_cast<const OpenGl_PrimitiveArray*>(theElement);
   return anArray != NULL && anArray->DrawMode() >= GL_TRIANGLES;
@@ -588,20 +581,20 @@ Standard_Boolean IsRaytracedElement(const OpenGl_Element* theElement)
 // function : IsRaytracedGroup
 // purpose  : Checks to see if the group contains ray-trace geometry
 // =======================================================================
-Standard_Boolean IsRaytracedGroup(const OpenGl_Group* theGroup)
+bool IsRaytracedGroup(const OpenGl_Group* theGroup)
 {
   if (theGroup->HasPersistence())
   {
-    return Standard_False;
+    return false;
   }
 
   for (const OpenGl_ElementNode* aNode = theGroup->FirstNode(); aNode != NULL; aNode = aNode->next)
   {
     if (IsRaytracedElement(aNode))
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 } // namespace OpenGl_Raytrace

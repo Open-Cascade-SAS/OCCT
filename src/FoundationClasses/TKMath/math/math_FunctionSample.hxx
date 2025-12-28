@@ -31,26 +31,23 @@ class math_FunctionSample
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT math_FunctionSample(const Standard_Real    A,
-                                      const Standard_Real    B,
-                                      const Standard_Integer N);
+  Standard_EXPORT math_FunctionSample(const double A, const double B, const int N);
 
   //! Returns the bounds of parameters.
-  Standard_EXPORT virtual void Bounds(Standard_Real& A, Standard_Real& B) const;
+  Standard_EXPORT virtual void Bounds(double& A, double& B) const;
 
   //! Returns the number of sample points.
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   //! Returns the value of parameter of the point of
   //! range Index : A + ((Index-1)/(NbPoints-1))*B.
   //! An exception is raised if Index<=0 or Index>NbPoints.
-  Standard_EXPORT virtual Standard_Real GetParameter(const Standard_Integer Index) const;
+  Standard_EXPORT virtual double GetParameter(const int Index) const;
 
-protected:
 private:
-  Standard_Real    a;
-  Standard_Real    b;
-  Standard_Integer n;
+  double a;
+  double b;
+  int    n;
 };
 
 #endif // _math_FunctionSample_HeaderFile

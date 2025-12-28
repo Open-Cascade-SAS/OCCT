@@ -77,19 +77,19 @@ void DrawDim_Angle::DrawOn(Draw_Display&) const
 {
 
   // input
-  TopoDS_Shape  myFShape = myPlane1;
-  TopoDS_Shape  mySShape = myPlane2;
-  Standard_Real myVal    = GetValue();
-  gp_Ax1        myAxis;
+  TopoDS_Shape myFShape = myPlane1;
+  TopoDS_Shape mySShape = myPlane2;
+  double       myVal    = GetValue();
+  gp_Ax1       myAxis;
 
   // output
-  gp_Pnt           myFAttach;
-  gp_Pnt           mySAttach;
-  gp_Pnt           myPosition(0., 0., 0.);
-  gp_Pnt           myCenter;
-  gp_Dir           myFDir;
-  gp_Dir           mySDir;
-  Standard_Boolean myAutomaticPosition = Standard_True;
+  gp_Pnt myFAttach;
+  gp_Pnt mySAttach;
+  gp_Pnt myPosition(0., 0., 0.);
+  gp_Pnt myCenter;
+  gp_Dir myFDir;
+  gp_Dir mySDir;
+  bool   myAutomaticPosition = true;
 
   // calculation of myAxis
   gp_Pln pln1, pln2;
@@ -109,7 +109,7 @@ void DrawDim_Angle::DrawOn(Draw_Display&) const
   if (myAutomaticPosition)
   {
     TopExp_Explorer explo1(myFShape, TopAbs_VERTEX);
-    Standard_Real   curdist = 0;
+    double          curdist = 0;
     while (explo1.More())
     {
       TopoDS_Vertex vertref = TopoDS::Vertex(explo1.Current());
@@ -121,22 +121,22 @@ void DrawDim_Angle::DrawOn(Draw_Display&) const
       }
       explo1.Next();
     }
-    curpos                 = myFAttach.Rotated(AxePos, myVal / 2.);
-    myCenter               = ElCLib::Value(ElCLib::Parameter(theaxis, curpos), theaxis);
-    Standard_Real thedista = myCenter.Distance(myFAttach);
+    curpos          = myFAttach.Rotated(AxePos, myVal / 2.);
+    myCenter        = ElCLib::Value(ElCLib::Parameter(theaxis, curpos), theaxis);
+    double thedista = myCenter.Distance(myFAttach);
     if (thedista > Precision::Confusion())
     {
       curpos.Scale(myCenter, 1.05);
     }
     myPosition          = curpos;
-    myAutomaticPosition = Standard_True;
+    myAutomaticPosition = true;
   }
   else
   {
     curpos = myPosition;
     // myFAttach  = the point of myFShape closest to curpos (except for the case when this is a
     // point on the axis)
-    Standard_Real   dist = RealLast();
+    double          dist = RealLast();
     TopExp_Explorer explo1(myFShape, TopAbs_VERTEX);
     gp_Pnt          AxePosition = AxePos.Location();
     gp_Vec          AxeVector(theAxisDir);
@@ -150,7 +150,7 @@ void DrawDim_Angle::DrawOn(Draw_Display&) const
 
       if (Norm.Modulus() > gp::Resolution())
       {
-        Standard_Real curdist = curpos.Distance(curpt);
+        double curdist = curpos.Distance(curpt);
         if (curdist < dist)
         {
           myFAttach = curpt;
@@ -172,8 +172,8 @@ void DrawDim_Angle::DrawOn(Draw_Display&) const
   if (!myAutomaticPosition)
   {
     // Projection of the position on the plane defined by myFDir mySDir and normal theAxisDir
-    gp_Pln        aPln(myCenter, theAxisDir);
-    Standard_Real U, V;
+    gp_Pln aPln(myCenter, theAxisDir);
+    double U, V;
     ElSLib::Parameters(aPln, curpos, U, V);
     curpos = ElSLib::Value(U, V, aPln);
   }

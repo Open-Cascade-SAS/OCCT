@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveFace, Select3D_SensitiveEntity)
 // Function: Hide this constructor to the next version...
 // Purpose : simply avoid interfering with the version update
 //==================================================
-Select3D_SensitiveFace::Select3D_SensitiveFace(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                               const TColgp_Array1OfPnt&            thePoints,
-                                               const Select3D_TypeOfSensitivity     theType)
+Select3D_SensitiveFace::Select3D_SensitiveFace(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                               const NCollection_Array1<gp_Pnt>&         thePoints,
+                                               const Select3D_TypeOfSensitivity          theType)
     : Select3D_SensitiveEntity(theOwnerId),
       mySensType(theType)
 {
@@ -36,15 +36,16 @@ Select3D_SensitiveFace::Select3D_SensitiveFace(const Handle(SelectMgr_EntityOwne
   }
   else
   {
-    myFacePoints = new Select3D_SensitivePoly(theOwnerId, thePoints, Standard_True);
+    myFacePoints = new Select3D_SensitivePoly(theOwnerId, thePoints, true);
   }
 }
 
 //=================================================================================================
 
-Select3D_SensitiveFace::Select3D_SensitiveFace(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                               const Handle(TColgp_HArray1OfPnt)&   thePoints,
-                                               const Select3D_TypeOfSensitivity     theType)
+Select3D_SensitiveFace::Select3D_SensitiveFace(
+  const occ::handle<SelectMgr_EntityOwner>&       theOwnerId,
+  const occ::handle<NCollection_HArray1<gp_Pnt>>& thePoints,
+  const Select3D_TypeOfSensitivity                theType)
     : Select3D_SensitiveEntity(theOwnerId),
       mySensType(theType)
 {
@@ -54,7 +55,7 @@ Select3D_SensitiveFace::Select3D_SensitiveFace(const Handle(SelectMgr_EntityOwne
   }
   else
   {
-    myFacePoints = new Select3D_SensitivePoly(theOwnerId, thePoints->Array1(), Standard_True);
+    myFacePoints = new Select3D_SensitivePoly(theOwnerId, thePoints->Array1(), true);
   }
 }
 
@@ -63,15 +64,15 @@ Select3D_SensitiveFace::Select3D_SensitiveFace(const Handle(SelectMgr_EntityOwne
 // purpose  : Initializes the given array theHArrayOfPnt by 3d
 //            coordinates of vertices of the face
 //=======================================================================
-void Select3D_SensitiveFace::GetPoints(Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt)
+void Select3D_SensitiveFace::GetPoints(occ::handle<NCollection_HArray1<gp_Pnt>>& theHArrayOfPnt)
 {
   if (myFacePoints->IsKind(STANDARD_TYPE(Select3D_SensitivePoly)))
   {
-    Handle(Select3D_SensitivePoly)::DownCast(myFacePoints)->Points3D(theHArrayOfPnt);
+    occ::down_cast<Select3D_SensitivePoly>(myFacePoints)->Points3D(theHArrayOfPnt);
   }
   else
   {
-    Handle(Select3D_InteriorSensitivePointSet)::DownCast(myFacePoints)->GetPoints(theHArrayOfPnt);
+    occ::down_cast<Select3D_InteriorSensitivePointSet>(myFacePoints)->GetPoints(theHArrayOfPnt);
   }
 }
 
@@ -88,21 +89,21 @@ void Select3D_SensitiveFace::BVH()
 // function : Matches
 // purpose  : Checks whether the face overlaps current selecting volume
 //=======================================================================
-Standard_Boolean Select3D_SensitiveFace::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                 SelectBasics_PickResult&             thePickResult)
+bool Select3D_SensitiveFace::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                     SelectBasics_PickResult&             thePickResult)
 {
   return myFacePoints->Matches(theMgr, thePickResult);
 }
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveFace::GetConnected()
+occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveFace::GetConnected()
 {
   // Create a copy of this
-  Handle(TColgp_HArray1OfPnt) aPoints;
+  occ::handle<NCollection_HArray1<gp_Pnt>> aPoints;
   GetPoints(aPoints);
 
-  Handle(Select3D_SensitiveEntity) aNewEntity =
+  occ::handle<Select3D_SensitiveEntity> aNewEntity =
     new Select3D_SensitiveFace(myOwnerId, aPoints, mySensType);
 
   return aNewEntity;
@@ -133,14 +134,14 @@ gp_Pnt Select3D_SensitiveFace::CenterOfGeometry() const
 // purpose  : Returns the amount of sub-entities (points or planar convex
 //            polygons)
 //=======================================================================
-Standard_Integer Select3D_SensitiveFace::NbSubElements() const
+int Select3D_SensitiveFace::NbSubElements() const
 {
   return myFacePoints->NbSubElements();
 }
 
 //=================================================================================================
 
-void Select3D_SensitiveFace::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Select3D_SensitiveFace::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)

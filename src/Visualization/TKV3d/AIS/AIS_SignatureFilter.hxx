@@ -25,9 +25,6 @@
 #include <AIS_KindOfInteractive.hxx>
 class SelectMgr_EntityOwner;
 
-class AIS_SignatureFilter;
-DEFINE_STANDARD_HANDLE(AIS_SignatureFilter, AIS_TypeFilter)
-
 //! Selects Interactive Objects through their signatures
 //! and types. The signature provides an
 //! additional characterization of an object's type, and
@@ -63,19 +60,17 @@ public:
   //! specification, aGivenSignature, to that for type,
   //! aGivenKind, in AIS_TypeFilter.
   Standard_EXPORT AIS_SignatureFilter(const AIS_KindOfInteractive aGivenKind,
-                                      const Standard_Integer      aGivenSignature);
+                                      const int                   aGivenSignature);
 
   //! Returns False if the transient is not an AIS_InteractiveObject.
   //! Returns False if the signature of InteractiveObject
   //! is not the same as the stored one in the filter...
-  Standard_EXPORT Standard_Boolean
-    IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
+  Standard_EXPORT bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_SignatureFilter, AIS_TypeFilter)
 
-protected:
 private:
-  Standard_Integer mySig;
+  int mySig;
 };
 
 #endif // _AIS_SignatureFilter_HeaderFile

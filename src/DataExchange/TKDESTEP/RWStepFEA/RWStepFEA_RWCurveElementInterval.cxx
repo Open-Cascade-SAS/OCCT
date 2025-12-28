@@ -30,10 +30,10 @@ RWStepFEA_RWCurveElementInterval::RWStepFEA_RWCurveElementInterval() {}
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementInterval::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepFEA_CurveElementInterval)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                                        num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepFEA_CurveElementInterval>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "curve_element_interval"))
@@ -41,7 +41,7 @@ void RWStepFEA_RWCurveElementInterval::ReadStep(
 
   // Own fields of CurveElementInterval
 
-  Handle(StepFEA_CurveElementLocation) aFinishPosition;
+  occ::handle<StepFEA_CurveElementLocation> aFinishPosition;
   data->ReadEntity(num,
                    1,
                    "finish_position",
@@ -49,7 +49,7 @@ void RWStepFEA_RWCurveElementInterval::ReadStep(
                    STANDARD_TYPE(StepFEA_CurveElementLocation),
                    aFinishPosition);
 
-  Handle(StepBasic_EulerAngles) aEuAngles;
+  occ::handle<StepBasic_EulerAngles> aEuAngles;
   data->ReadEntity(num, 2, "eu_angles", ach, STANDARD_TYPE(StepBasic_EulerAngles), aEuAngles);
 
   // Initialize entity
@@ -59,8 +59,8 @@ void RWStepFEA_RWCurveElementInterval::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementInterval::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepFEA_CurveElementInterval)& ent) const
+  StepData_StepWriter&                             SW,
+  const occ::handle<StepFEA_CurveElementInterval>& ent) const
 {
 
   // Own fields of CurveElementInterval
@@ -72,8 +72,8 @@ void RWStepFEA_RWCurveElementInterval::WriteStep(
 
 //=================================================================================================
 
-void RWStepFEA_RWCurveElementInterval::Share(const Handle(StepFEA_CurveElementInterval)& ent,
-                                             Interface_EntityIterator&                   iter) const
+void RWStepFEA_RWCurveElementInterval::Share(const occ::handle<StepFEA_CurveElementInterval>& ent,
+                                             Interface_EntityIterator& iter) const
 {
 
   // Own fields of CurveElementInterval

@@ -29,14 +29,14 @@ IGESDraw_View::IGESDraw_View() {}
 
 // This class inherits from IGESData_ViewKindEntity
 
-void IGESDraw_View::Init(const Standard_Integer        aViewNum,
-                         const Standard_Real           aScale,
-                         const Handle(IGESGeom_Plane)& aLeftPlane,
-                         const Handle(IGESGeom_Plane)& aTopPlane,
-                         const Handle(IGESGeom_Plane)& aRightPlane,
-                         const Handle(IGESGeom_Plane)& aBottomPlane,
-                         const Handle(IGESGeom_Plane)& aBackPlane,
-                         const Handle(IGESGeom_Plane)& aFrontPlane)
+void IGESDraw_View::Init(const int                          aViewNum,
+                         const double                       aScale,
+                         const occ::handle<IGESGeom_Plane>& aLeftPlane,
+                         const occ::handle<IGESGeom_Plane>& aTopPlane,
+                         const occ::handle<IGESGeom_Plane>& aRightPlane,
+                         const occ::handle<IGESGeom_Plane>& aBottomPlane,
+                         const occ::handle<IGESGeom_Plane>& aBackPlane,
+                         const occ::handle<IGESGeom_Plane>& aFrontPlane)
 {
   theViewNumber  = aViewNum;
   theScaleFactor = aScale;
@@ -49,93 +49,93 @@ void IGESDraw_View::Init(const Standard_Integer        aViewNum,
   InitTypeAndForm(410, 0);
 }
 
-Standard_Boolean IGESDraw_View::IsSingle() const
+bool IGESDraw_View::IsSingle() const
 {
-  return Standard_True;
+  return true;
   // Redefined to return TRUE
 }
 
-Standard_Integer IGESDraw_View::NbViews() const
+int IGESDraw_View::NbViews() const
 {
   return 1;
 }
 
-Handle(IGESData_ViewKindEntity) IGESDraw_View::ViewItem(const Standard_Integer) const
+occ::handle<IGESData_ViewKindEntity> IGESDraw_View::ViewItem(const int) const
 {
-  return Handle(IGESData_ViewKindEntity)::DownCast(This());
+  return occ::down_cast<IGESData_ViewKindEntity>(This());
 }
 
-Standard_Integer IGESDraw_View::ViewNumber() const
+int IGESDraw_View::ViewNumber() const
 {
   return theViewNumber;
 }
 
-Standard_Real IGESDraw_View::ScaleFactor() const
+double IGESDraw_View::ScaleFactor() const
 {
   return theScaleFactor;
 }
 
-Standard_Boolean IGESDraw_View::HasLeftPlane() const
+bool IGESDraw_View::HasLeftPlane() const
 {
   return (!theLeftPlane.IsNull());
 }
 
-Handle(IGESGeom_Plane) IGESDraw_View::LeftPlane() const
+occ::handle<IGESGeom_Plane> IGESDraw_View::LeftPlane() const
 {
   return theLeftPlane;
 }
 
-Standard_Boolean IGESDraw_View::HasTopPlane() const
+bool IGESDraw_View::HasTopPlane() const
 {
   return (!theTopPlane.IsNull());
 }
 
-Handle(IGESGeom_Plane) IGESDraw_View::TopPlane() const
+occ::handle<IGESGeom_Plane> IGESDraw_View::TopPlane() const
 {
   return theTopPlane;
 }
 
-Standard_Boolean IGESDraw_View::HasRightPlane() const
+bool IGESDraw_View::HasRightPlane() const
 {
   return (!theRightPlane.IsNull());
 }
 
-Handle(IGESGeom_Plane) IGESDraw_View::RightPlane() const
+occ::handle<IGESGeom_Plane> IGESDraw_View::RightPlane() const
 {
   return theRightPlane;
 }
 
-Standard_Boolean IGESDraw_View::HasBottomPlane() const
+bool IGESDraw_View::HasBottomPlane() const
 {
   return (!theBottomPlane.IsNull());
 }
 
-Handle(IGESGeom_Plane) IGESDraw_View::BottomPlane() const
+occ::handle<IGESGeom_Plane> IGESDraw_View::BottomPlane() const
 {
   return theBottomPlane;
 }
 
-Standard_Boolean IGESDraw_View::HasBackPlane() const
+bool IGESDraw_View::HasBackPlane() const
 {
   return (!theBackPlane.IsNull());
 }
 
-Handle(IGESGeom_Plane) IGESDraw_View::BackPlane() const
+occ::handle<IGESGeom_Plane> IGESDraw_View::BackPlane() const
 {
   return theBackPlane;
 }
 
-Standard_Boolean IGESDraw_View::HasFrontPlane() const
+bool IGESDraw_View::HasFrontPlane() const
 {
   return (!theFrontPlane.IsNull());
 }
 
-Handle(IGESGeom_Plane) IGESDraw_View::FrontPlane() const
+occ::handle<IGESGeom_Plane> IGESDraw_View::FrontPlane() const
 {
   return theFrontPlane;
 }
 
-Handle(IGESData_TransfEntity) IGESDraw_View::ViewMatrix() const
+occ::handle<IGESData_TransfEntity> IGESDraw_View::ViewMatrix() const
 {
   return (Transf());
 }

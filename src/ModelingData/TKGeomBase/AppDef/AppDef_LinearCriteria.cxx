@@ -29,13 +29,13 @@
 #include <PLib_HermitJacobi.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AppDef_LinearCriteria, AppDef_SmoothCriterion)
 
-static Standard_Integer order(const PLib_HermitJacobi& B)
+static int order(const PLib_HermitJacobi& B)
 {
   return B.NivConstr();
 }
@@ -43,8 +43,8 @@ static Standard_Integer order(const PLib_HermitJacobi& B)
 //=================================================================================================
 
 AppDef_LinearCriteria::AppDef_LinearCriteria(const AppDef_MultiLine& SSP,
-                                             const Standard_Integer  FirstPoint,
-                                             const Standard_Integer  LastPoint)
+                                             const int               FirstPoint,
+                                             const int               LastPoint)
     : mySSP(SSP),
       myQuadraticWeight(0.0),
       myQualityWeight(0.0),
@@ -61,7 +61,8 @@ AppDef_LinearCriteria::AppDef_LinearCriteria(const AppDef_MultiLine& SSP,
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::SetParameters(const Handle(TColStd_HArray1OfReal)& Parameters)
+void AppDef_LinearCriteria::SetParameters(
+  const occ::handle<NCollection_HArray1<double>>& Parameters)
 {
   myParameters = Parameters;
   myE          = 0; // Cache become invalid.
@@ -69,15 +70,15 @@ void AppDef_LinearCriteria::SetParameters(const Handle(TColStd_HArray1OfReal)& P
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C)
+void AppDef_LinearCriteria::SetCurve(const occ::handle<FEmTool_Curve>& C)
 {
 
   if (myCurve.IsNull())
   {
     myCurve = C;
 
-    Standard_Integer MxDeg = myCurve->Base().WorkDegree(), NbDim = myCurve->Dimension(),
-                     Order = order(myCurve->Base());
+    int MxDeg = myCurve->Base().WorkDegree(), NbDim = myCurve->Dimension(),
+        Order = order(myCurve->Base());
 
     GeomAbs_Shape ConstraintOrder = GeomAbs_C0;
     switch (Order)
@@ -96,7 +97,8 @@ void AppDef_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C)
     myCriteria[1] = new FEmTool_LinearFlexion(MxDeg, ConstraintOrder);
     myCriteria[2] = new FEmTool_LinearJerk(MxDeg, ConstraintOrder);
 
-    Handle(TColStd_HArray2OfReal) Coeff = new TColStd_HArray2OfReal(0, 0, 1, NbDim);
+    occ::handle<NCollection_HArray2<double>> Coeff =
+      new NCollection_HArray2<double>(0, 0, 1, NbDim);
 
     myCriteria[0]->Set(Coeff);
     myCriteria[1]->Set(Coeff);
@@ -105,13 +107,13 @@ void AppDef_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C)
   else if (myCurve != C)
   {
 
-    Standard_Integer OldMxDeg = myCurve->Base().WorkDegree(), OldNbDim = myCurve->Dimension(),
-                     OldOrder = order(myCurve->Base());
+    int OldMxDeg = myCurve->Base().WorkDegree(), OldNbDim = myCurve->Dimension(),
+        OldOrder = order(myCurve->Base());
 
     myCurve = C;
 
-    Standard_Integer MxDeg = myCurve->Base().WorkDegree(), NbDim = myCurve->Dimension(),
-                     Order = order(myCurve->Base());
+    int MxDeg = myCurve->Base().WorkDegree(), NbDim = myCurve->Dimension(),
+        Order = order(myCurve->Base());
 
     if (MxDeg != OldMxDeg || Order != OldOrder)
     {
@@ -133,7 +135,8 @@ void AppDef_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C)
       myCriteria[1] = new FEmTool_LinearFlexion(MxDeg, ConstraintOrder);
       myCriteria[2] = new FEmTool_LinearJerk(MxDeg, ConstraintOrder);
 
-      Handle(TColStd_HArray2OfReal) Coeff = new TColStd_HArray2OfReal(0, 0, 1, NbDim);
+      occ::handle<NCollection_HArray2<double>> Coeff =
+        new NCollection_HArray2<double>(0, 0, 1, NbDim);
 
       myCriteria[0]->Set(Coeff);
       myCriteria[1]->Set(Coeff);
@@ -142,7 +145,8 @@ void AppDef_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C)
     else if (NbDim != OldNbDim)
     {
 
-      Handle(TColStd_HArray2OfReal) Coeff = new TColStd_HArray2OfReal(0, 0, 1, NbDim);
+      occ::handle<NCollection_HArray2<double>> Coeff =
+        new NCollection_HArray2<double>(0, 0, 1, NbDim);
 
       myCriteria[0]->Set(Coeff);
       myCriteria[1]->Set(Coeff);
@@ -153,32 +157,28 @@ void AppDef_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C)
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::GetCurve(Handle(FEmTool_Curve)& C) const
+void AppDef_LinearCriteria::GetCurve(occ::handle<FEmTool_Curve>& C) const
 {
   C = myCurve;
 }
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::SetEstimation(const Standard_Real E1,
-                                          const Standard_Real E2,
-                                          const Standard_Real E3)
+void AppDef_LinearCriteria::SetEstimation(const double E1, const double E2, const double E3)
 {
   myEstimation[0] = E1;
   myEstimation[1] = E2;
   myEstimation[2] = E3;
 }
 
-Standard_Real& AppDef_LinearCriteria::EstLength()
+double& AppDef_LinearCriteria::EstLength()
 {
   return myLength;
 }
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::GetEstimation(Standard_Real& E1,
-                                          Standard_Real& E2,
-                                          Standard_Real& E3) const
+void AppDef_LinearCriteria::GetEstimation(double& E1, double& E2, double& E3) const
 {
   E1 = myEstimation[0];
   E2 = myEstimation[1];
@@ -187,24 +187,25 @@ void AppDef_LinearCriteria::GetEstimation(Standard_Real& E1,
 
 //=================================================================================================
 
-Handle(FEmTool_HAssemblyTable) AppDef_LinearCriteria::AssemblyTable() const
+occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>> AppDef_LinearCriteria::
+  AssemblyTable() const
 {
   if (myCurve.IsNull())
     throw Standard_DomainError("AppDef_LinearCriteria::AssemblyTable");
 
-  Standard_Integer NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements(),
-                   nc1   = order(myCurve->Base()) + 1;
-  Standard_Integer MxDeg = myCurve->Base().WorkDegree();
+  int NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements(), nc1 = order(myCurve->Base()) + 1;
+  int MxDeg = myCurve->Base().WorkDegree();
 
-  Handle(FEmTool_HAssemblyTable) AssTable = new FEmTool_HAssemblyTable(1, NbDim, 1, NbElm);
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>> AssTable =
+    new NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>(1, NbDim, 1, NbElm);
 
-  Handle(TColStd_HArray1OfInteger) GlobIndex, Aux;
+  occ::handle<NCollection_HArray1<int>> GlobIndex, Aux;
 
-  Standard_Integer i, el = 1, dim = 1, NbGlobVar = 0, gi0;
+  int i, el = 1, dim = 1, NbGlobVar = 0, gi0;
 
   // For dim = 1
   // For first element (el = 1)
-  GlobIndex = new TColStd_HArray1OfInteger(0, MxDeg);
+  GlobIndex = new NCollection_HArray1<int>(0, MxDeg);
 
   for (i = 0; i < nc1; i++)
   {
@@ -228,7 +229,7 @@ Handle(FEmTool_HAssemblyTable) AppDef_LinearCriteria::AssemblyTable() const
   // For rest elements
   for (el = 2; el <= NbElm; el++)
   {
-    GlobIndex = new TColStd_HArray1OfInteger(0, MxDeg);
+    GlobIndex = new NCollection_HArray1<int>(0, MxDeg);
     for (i = 0; i < nc1; i++)
       GlobIndex->SetValue(i, gi0 + i);
 
@@ -254,7 +255,7 @@ Handle(FEmTool_HAssemblyTable) AppDef_LinearCriteria::AssemblyTable() const
     for (el = 1; el <= NbElm; el++)
     {
       Aux       = AssTable->Value(1, el);
-      GlobIndex = new TColStd_HArray1OfInteger(0, MxDeg);
+      GlobIndex = new NCollection_HArray1<int>(0, MxDeg);
       for (i = 0; i <= MxDeg; i++)
         GlobIndex->SetValue(i, Aux->Value(i) + NbGlobVar);
       AssTable->SetValue(dim, el, GlobIndex);
@@ -267,15 +268,15 @@ Handle(FEmTool_HAssemblyTable) AppDef_LinearCriteria::AssemblyTable() const
 
 //=================================================================================================
 
-Handle(TColStd_HArray2OfInteger) AppDef_LinearCriteria::DependenceTable() const
+occ::handle<NCollection_HArray2<int>> AppDef_LinearCriteria::DependenceTable() const
 {
   if (myCurve.IsNull())
     throw Standard_DomainError("AppDef_LinearCriteria::DependenceTable");
 
-  Standard_Integer Dim = myCurve->Dimension();
+  int Dim = myCurve->Dimension();
 
-  Handle(TColStd_HArray2OfInteger) DepTab = new TColStd_HArray2OfInteger(1, Dim, 1, Dim, 0);
-  Standard_Integer                 i;
+  occ::handle<NCollection_HArray2<int>> DepTab = new NCollection_HArray2<int>(1, Dim, 1, Dim, 0);
+  int                                   i;
   for (i = 1; i <= Dim; i++)
     DepTab->SetValue(i, i, 1);
 
@@ -284,23 +285,23 @@ Handle(TColStd_HArray2OfInteger) AppDef_LinearCriteria::DependenceTable() const
 
 //=================================================================================================
 
-Standard_Integer AppDef_LinearCriteria::QualityValues(const Standard_Real J1min,
-                                                      const Standard_Real J2min,
-                                                      const Standard_Real J3min,
-                                                      Standard_Real&      J1,
-                                                      Standard_Real&      J2,
-                                                      Standard_Real&      J3)
+int AppDef_LinearCriteria::QualityValues(const double J1min,
+                                         const double J2min,
+                                         const double J3min,
+                                         double&      J1,
+                                         double&      J2,
+                                         double&      J3)
 {
   if (myCurve.IsNull())
     throw Standard_DomainError("AppDef_LinearCriteria::QualityValues");
 
-  Standard_Integer NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements();
+  int NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements();
 
-  TColStd_Array1OfReal&         Knots = myCurve->Knots();
-  Handle(TColStd_HArray2OfReal) Coeff;
+  NCollection_Array1<double>&              Knots = myCurve->Knots();
+  occ::handle<NCollection_HArray2<double>> Coeff;
 
-  Standard_Integer el, deg = 0, curdeg, i;
-  Standard_Real    UFirst, ULast;
+  int    el, deg = 0, curdeg, i;
+  double UFirst, ULast;
 
   J1 = J2 = J3 = 0.;
   for (el = 1; el <= NbElm; el++)
@@ -310,7 +311,7 @@ Standard_Integer AppDef_LinearCriteria::QualityValues(const Standard_Real J1min,
     if (deg != curdeg)
     {
       deg   = curdeg;
-      Coeff = new TColStd_HArray2OfReal(0, deg, 1, NbDim);
+      Coeff = new NCollection_HArray2<double>(0, deg, 1, NbDim);
     }
 
     myCurve->GetElement(el, Coeff->ChangeArray2());
@@ -332,17 +333,17 @@ Standard_Integer AppDef_LinearCriteria::QualityValues(const Standard_Real J1min,
   }
 
   // Calculation of ICDANA - see MOTEST.f
-  //  Standard_Real JEsMin[3] = {.01, .001, .001}; // from MOTLIS.f
-  Standard_Real JEsMin[3];
+  //  double JEsMin[3] = {.01, .001, .001}; // from MOTLIS.f
+  double JEsMin[3];
   JEsMin[0] = J1min;
   JEsMin[1] = J2min;
   JEsMin[2] = J3min;
-  Standard_Real ValCri[3];
+  double ValCri[3];
   ValCri[0] = J1;
   ValCri[1] = J2;
   ValCri[2] = J3;
 
-  Standard_Integer ICDANA = 0;
+  int ICDANA = 0;
 
   //   (2) Test l'amelioration des estimations
   //       (critere sureleve => Non minimisation )
@@ -424,29 +425,28 @@ Standard_Integer AppDef_LinearCriteria::QualityValues(const Standard_Real J1min,
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::ErrorValues(Standard_Real& MaxError,
-                                        Standard_Real& QuadraticError,
-                                        Standard_Real& AverageError)
+void AppDef_LinearCriteria::ErrorValues(double& MaxError,
+                                        double& QuadraticError,
+                                        double& AverageError)
 {
   if (myCurve.IsNull())
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
-  Standard_Integer NbDim = myCurve->Dimension();
+  int NbDim = myCurve->Dimension();
 
-  Standard_Integer myNbP2d = AppDef_MyLineTool::NbP2d(mySSP),
-                   myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
+  int myNbP2d = AppDef_MyLineTool::NbP2d(mySSP), myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
 
   if (NbDim != (2 * myNbP2d + 3 * myNbP3d))
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
-  TColgp_Array1OfPnt   TabP3d(1, std::max(1, myNbP3d));
-  TColgp_Array1OfPnt2d TabP2d(1, std::max(1, myNbP2d));
-  TColStd_Array1OfReal BasePoint(1, NbDim);
-  gp_Pnt2d             P2d;
-  gp_Pnt               P3d;
+  NCollection_Array1<gp_Pnt>   TabP3d(1, std::max(1, myNbP3d));
+  NCollection_Array1<gp_Pnt2d> TabP2d(1, std::max(1, myNbP2d));
+  NCollection_Array1<double>   BasePoint(1, NbDim);
+  gp_Pnt2d                     P2d;
+  gp_Pnt                       P3d;
 
-  Standard_Integer i, ipnt, c0 = 0;
-  Standard_Real    SqrDist, Dist;
+  int    i, ipnt, c0 = 0;
+  double SqrDist, Dist;
 
   MaxError = QuadraticError = AverageError = 0.;
 
@@ -487,10 +487,10 @@ void AppDef_LinearCriteria::ErrorValues(Standard_Real& MaxError,
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
-                                    const Standard_Integer Dimension1,
-                                    const Standard_Integer Dimension2,
-                                    math_Matrix&           H)
+void AppDef_LinearCriteria::Hessian(const int    Element,
+                                    const int    Dimension1,
+                                    const int    Dimension2,
+                                    math_Matrix& H)
 {
   if (myCurve.IsNull())
     throw Standard_DomainError("AppDef_LinearCriteria::Hessian");
@@ -498,20 +498,20 @@ void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
   if (DependenceTable()->Value(Dimension1, Dimension2) == 0)
     throw Standard_DomainError("AppDef_LinearCriteria::Hessian");
 
-  Standard_Integer // NbDim = myCurve->Dimension(),
+  int // NbDim = myCurve->Dimension(),
     MxDeg = myCurve->Base().WorkDegree(),
     //                   Deg   = myCurve->Degree(Element),
     Order = order(myCurve->Base());
 
   math_Matrix AuxH(0, H.RowNumber() - 1, 0, H.ColNumber() - 1, 0.);
 
-  TColStd_Array1OfReal& Knots = myCurve->Knots();
-  Standard_Real         UFirst, ULast;
+  NCollection_Array1<double>& Knots = myCurve->Knots();
+  double                      UFirst, ULast;
 
   UFirst = Knots(Element);
   ULast  = Knots(Element + 1);
 
-  Standard_Integer icrit;
+  int icrit;
 
   // Quality criterion part of Hessian
 
@@ -528,11 +528,11 @@ void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
 
   AuxH.Init(0.);
 
-  Standard_Real    coeff = (ULast - UFirst) / 2., curcoeff, poid;
-  Standard_Integer ipnt, ii, degH = 2 * Order + 1;
+  double coeff = (ULast - UFirst) / 2., curcoeff, poid;
+  int    ipnt, ii, degH = 2 * Order + 1;
 
-  Standard_Integer k1, k2, i, j, i0 = H.LowerRow(), j0 = H.LowerCol(), i1, j1,
-                                 di = myPntWeight.Lower() - myParameters->Lower();
+  int k1, k2, i, j, i0 = H.LowerRow(), j0 = H.LowerCol(), i1, j1,
+                    di = myPntWeight.Lower() - myParameters->Lower();
 
   // BuilCache
   if (myE != Element)
@@ -541,8 +541,8 @@ void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
   // Compute the least square Hessian
   for (ii = 1, ipnt = IF; ipnt <= IL; ipnt++, ii += (MxDeg + 1))
   {
-    poid                    = myPntWeight(di + ipnt) * 2.;
-    const Standard_Real* BV = &myCache->Value(ii);
+    poid             = myPntWeight(di + ipnt) * 2.;
+    const double* BV = &myCache->Value(ii);
 
     // Hermite*Hermite part of matrix
     for (i = 0; i <= degH; i++)
@@ -590,28 +590,25 @@ void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
-                                     const Standard_Integer Dimension,
-                                     math_Vector&           G)
+void AppDef_LinearCriteria::Gradient(const int Element, const int Dimension, math_Vector& G)
 {
   if (myCurve.IsNull())
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
-  Standard_Integer myNbP2d = AppDef_MyLineTool::NbP2d(mySSP),
-                   myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
+  int myNbP2d = AppDef_MyLineTool::NbP2d(mySSP), myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
 
   if (Dimension > (2 * myNbP2d + 3 * myNbP3d))
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
-  TColgp_Array1OfPnt   TabP3d(1, std::max(1, myNbP3d));
-  TColgp_Array1OfPnt2d TabP2d(1, std::max(1, myNbP2d));
+  NCollection_Array1<gp_Pnt>   TabP3d(1, std::max(1, myNbP3d));
+  NCollection_Array1<gp_Pnt2d> TabP2d(1, std::max(1, myNbP2d));
 
-  Standard_Boolean In3d;
-  Standard_Integer IndPnt, IndCrd;
+  bool In3d;
+  int  IndPnt, IndCrd;
 
   if (Dimension <= 3 * myNbP3d)
   {
-    In3d   = Standard_True;
+    In3d   = true;
     IndCrd = Dimension % 3;
     IndPnt = Dimension / 3;
     if (IndCrd == 0)
@@ -621,7 +618,7 @@ void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
   }
   else
   {
-    In3d   = Standard_False;
+    In3d   = false;
     IndCrd = (Dimension - 3 * myNbP3d) % 2;
     IndPnt = (Dimension - 3 * myNbP3d) / 2;
     if (IndCrd == 0)
@@ -630,28 +627,28 @@ void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
       IndPnt++;
   }
 
-  TColStd_Array1OfReal& Knots = myCurve->Knots();
-  Standard_Real         UFirst, ULast, Pnt;
-  UFirst              = Knots(Element);
-  ULast               = Knots(Element + 1);
-  Standard_Real coeff = (ULast - UFirst) / 2;
+  NCollection_Array1<double>& Knots = myCurve->Knots();
+  double                      UFirst, ULast, Pnt;
+  UFirst       = Knots(Element);
+  ULast        = Knots(Element + 1);
+  double coeff = (ULast - UFirst) / 2;
 
-  Standard_Integer // Deg   = myCurve->Degree(Element),
+  int // Deg   = myCurve->Degree(Element),
     Order = order(myCurve->Base());
 
   const PLib_HermitJacobi& myBase = myCurve->Base();
-  Standard_Integer         MxDeg  = myBase.WorkDegree();
+  int                      MxDeg  = myBase.WorkDegree();
 
-  Standard_Real    curcoeff;
-  Standard_Integer degH = 2 * Order + 1;
-  Standard_Integer ipnt, k, i, ii, i0 = G.Lower(), di = myPntWeight.Lower() - myParameters->Lower();
+  double curcoeff;
+  int    degH = 2 * Order + 1;
+  int    ipnt, k, i, ii, i0 = G.Lower(), di = myPntWeight.Lower() - myParameters->Lower();
 
   if (myE != Element)
     BuildCache(Element);
 
   G.Init(0.);
 
-  const Standard_Real* BV = &myCache->Value(1);
+  const double* BV = &myCache->Value(1);
   BV--;
 
   for (ii = 1, ipnt = IF; ipnt <= IL; ipnt++)
@@ -687,17 +684,18 @@ void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::InputVector(const math_Vector&                    X,
-                                        const Handle(FEmTool_HAssemblyTable)& AssTable)
+void AppDef_LinearCriteria::InputVector(
+  const math_Vector&                                                             X,
+  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& AssTable)
 {
-  Standard_Integer NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements();
-  Standard_Integer MxDeg = 0;
-  MxDeg                  = myCurve->Base().WorkDegree();
-  TColStd_Array2OfReal CoeffEl(0, MxDeg, 1, NbDim);
+  int NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements();
+  int MxDeg = 0;
+  MxDeg     = myCurve->Base().WorkDegree();
+  NCollection_Array2<double> CoeffEl(0, MxDeg, 1, NbDim);
 
-  Handle(TColStd_HArray1OfInteger) GlobIndex;
+  occ::handle<NCollection_HArray1<int>> GlobIndex;
 
-  Standard_Integer el, dim, i, i0 = X.Lower() - 1;
+  int el, dim, i, i0 = X.Lower() - 1;
 
   for (el = 1; el <= NbElm; el++)
   {
@@ -714,11 +712,11 @@ void AppDef_LinearCriteria::InputVector(const math_Vector&                    X,
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::SetWeight(const Standard_Real QuadraticWeight,
-                                      const Standard_Real QualityWeight,
-                                      const Standard_Real percentJ1,
-                                      const Standard_Real percentJ2,
-                                      const Standard_Real percentJ3)
+void AppDef_LinearCriteria::SetWeight(const double QuadraticWeight,
+                                      const double QualityWeight,
+                                      const double percentJ1,
+                                      const double percentJ2,
+                                      const double percentJ3)
 {
   if (QuadraticWeight < 0. || QualityWeight < 0.)
     throw Standard_DomainError("AppDef_LinearCriteria::SetWeight");
@@ -728,16 +726,15 @@ void AppDef_LinearCriteria::SetWeight(const Standard_Real QuadraticWeight,
   myQuadraticWeight = QuadraticWeight;
   myQualityWeight   = QualityWeight;
 
-  Standard_Real Total = percentJ1 + percentJ2 + percentJ3;
-  myPercent[0]        = percentJ1 / Total;
-  myPercent[1]        = percentJ2 / Total;
-  myPercent[2]        = percentJ3 / Total;
+  double Total = percentJ1 + percentJ2 + percentJ3;
+  myPercent[0] = percentJ1 / Total;
+  myPercent[1] = percentJ2 / Total;
+  myPercent[2] = percentJ3 / Total;
 }
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::GetWeight(Standard_Real& QuadraticWeight,
-                                      Standard_Real& QualityWeight) const
+void AppDef_LinearCriteria::GetWeight(double& QuadraticWeight, double& QualityWeight) const
 {
 
   QuadraticWeight = myQuadraticWeight;
@@ -746,23 +743,23 @@ void AppDef_LinearCriteria::GetWeight(Standard_Real& QuadraticWeight,
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::SetWeight(const TColStd_Array1OfReal& Weight)
+void AppDef_LinearCriteria::SetWeight(const NCollection_Array1<double>& Weight)
 {
   myPntWeight = Weight;
 }
 
 //=================================================================================================
 
-void AppDef_LinearCriteria::BuildCache(const Standard_Integer Element)
+void AppDef_LinearCriteria::BuildCache(const int Element)
 {
-  Standard_Real t;
-  Standard_Real UFirst, ULast;
+  double t;
+  double UFirst, ULast;
 
   UFirst = myCurve->Knots()(Element);
   ULast  = myCurve->Knots()(Element + 1);
 
   IF = 0;
-  for (Standard_Integer ipnt = myParameters->Lower(); ipnt <= myParameters->Upper(); ipnt++)
+  for (int ipnt = myParameters->Lower(); ipnt <= myParameters->Upper(); ipnt++)
   {
     t = myParameters->Value(ipnt);
     if ((t > UFirst && t <= ULast) || (Element == 1 && t == UFirst))
@@ -778,15 +775,15 @@ void AppDef_LinearCriteria::BuildCache(const Standard_Integer Element)
   if (IF != 0)
   {
     const PLib_HermitJacobi& myBase = myCurve->Base();
-    Standard_Integer         order  = myBase.WorkDegree() + 1;
-    myCache                         = new TColStd_HArray1OfReal(1, (IL - IF + 1) * (order));
+    int                      order  = myBase.WorkDegree() + 1;
+    myCache                         = new NCollection_HArray1<double>(1, (IL - IF + 1) * (order));
 
-    for (Standard_Integer ipnt = IF, ii = 1; ipnt <= IL; ipnt++, ii += order)
+    for (int ipnt = IF, ii = 1; ipnt <= IL; ipnt++, ii += order)
     {
-      Standard_Real*       cache = &myCache->ChangeValue(ii);
-      TColStd_Array1OfReal BasicValue(cache[0], 0, order - 1);
-      t                   = myParameters->Value(ipnt);
-      Standard_Real coeff = 2. / (ULast - UFirst), c0 = -(ULast + UFirst) / 2., s;
+      double*                    cache = &myCache->ChangeValue(ii);
+      NCollection_Array1<double> BasicValue(cache[0], 0, order - 1);
+      t            = myParameters->Value(ipnt);
+      double coeff = 2. / (ULast - UFirst), c0 = -(ULast + UFirst) / 2., s;
       s = (t + c0) * coeff;
       myBase.D0(s, BasicValue);
     }

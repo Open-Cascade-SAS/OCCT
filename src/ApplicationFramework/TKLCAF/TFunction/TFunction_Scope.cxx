@@ -36,9 +36,9 @@ const Standard_GUID& TFunction_Scope::GetID()
 // purpose  : Finds or creates a Scope attribute
 //=======================================================================
 
-Handle(TFunction_Scope) TFunction_Scope::Set(const TDF_Label& Access)
+occ::handle<TFunction_Scope> TFunction_Scope::Set(const TDF_Label& Access)
 {
-  Handle(TFunction_Scope) S;
+  occ::handle<TFunction_Scope> S;
   if (!Access.Root().FindAttribute(TFunction_Scope::GetID(), S))
   {
     S = new TFunction_Scope();
@@ -69,15 +69,15 @@ TFunction_Scope::TFunction_Scope()
 // purpose  : Adds a function to the scope.
 //=======================================================================
 
-Standard_Boolean TFunction_Scope::AddFunction(const TDF_Label& L)
+bool TFunction_Scope::AddFunction(const TDF_Label& L)
 {
   if (myFunctions.IsBound2(L))
-    return Standard_False;
+    return false;
 
   Backup();
 
   myFunctions.Bind(myFreeID++, L);
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -85,10 +85,10 @@ Standard_Boolean TFunction_Scope::AddFunction(const TDF_Label& L)
 // purpose  : Removes a function from the scope.
 //=======================================================================
 
-Standard_Boolean TFunction_Scope::RemoveFunction(const TDF_Label& L)
+bool TFunction_Scope::RemoveFunction(const TDF_Label& L)
 {
   if (!myFunctions.IsBound2(L))
-    return Standard_False;
+    return false;
 
   Backup();
 
@@ -100,10 +100,10 @@ Standard_Boolean TFunction_Scope::RemoveFunction(const TDF_Label& L)
 // purpose  : Removes a function from the scope.
 //=======================================================================
 
-Standard_Boolean TFunction_Scope::RemoveFunction(const Standard_Integer ID)
+bool TFunction_Scope::RemoveFunction(const int ID)
 {
   if (!myFunctions.IsBound1(ID))
-    return Standard_False;
+    return false;
 
   Backup();
 
@@ -130,7 +130,7 @@ void TFunction_Scope::RemoveAllFunctions()
 // purpose  : Checks presence of a function.
 //=======================================================================
 
-Standard_Boolean TFunction_Scope::HasFunction(const Standard_Integer ID) const
+bool TFunction_Scope::HasFunction(const int ID) const
 {
   return myFunctions.IsBound1(ID);
 }
@@ -140,39 +140,39 @@ Standard_Boolean TFunction_Scope::HasFunction(const Standard_Integer ID) const
 // purpose  : Checks presence of a function.
 //=======================================================================
 
-Standard_Boolean TFunction_Scope::HasFunction(const TDF_Label& L) const
+bool TFunction_Scope::HasFunction(const TDF_Label& L) const
 {
   return myFunctions.IsBound2(L);
 }
 
 //=================================================================================================
 
-Standard_Integer TFunction_Scope::GetFunction(const TDF_Label& L) const
+int TFunction_Scope::GetFunction(const TDF_Label& L) const
 {
   return myFunctions.Find2(L);
 }
 
 //=================================================================================================
 
-const TDF_Label& TFunction_Scope::GetFunction(const Standard_Integer ID) const
+const TDF_Label& TFunction_Scope::GetFunction(const int ID) const
 {
   return myFunctions.Find1(ID);
 }
 
 //=================================================================================================
 
-Handle(TFunction_Logbook) TFunction_Scope::GetLogbook() const
+occ::handle<TFunction_Logbook> TFunction_Scope::GetLogbook() const
 {
-  Handle(TFunction_Logbook) logbook;
+  occ::handle<TFunction_Logbook> logbook;
   FindAttribute(TFunction_Logbook::GetID(), logbook);
   return logbook;
 }
 
 //=================================================================================================
 
-void TFunction_Scope::Restore(const Handle(TDF_Attribute)& other)
+void TFunction_Scope::Restore(const occ::handle<TDF_Attribute>& other)
 {
-  Handle(TFunction_Scope) S = Handle(TFunction_Scope)::DownCast(other);
+  occ::handle<TFunction_Scope> S = occ::down_cast<TFunction_Scope>(other);
 
   // Functions
   myFunctions = S->myFunctions; // copying...
@@ -184,8 +184,8 @@ void TFunction_Scope::Restore(const Handle(TDF_Attribute)& other)
 // purpose  : Method for Copy mechanism
 //=======================================================================
 
-void TFunction_Scope::Paste(const Handle(TDF_Attribute)& /*into*/,
-                            const Handle(TDF_RelocationTable)& /*RT*/) const
+void TFunction_Scope::Paste(const occ::handle<TDF_Attribute>& /*into*/,
+                            const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
   // Do we need to copy a Scope attribute somewhere?
 }
@@ -195,7 +195,7 @@ void TFunction_Scope::Paste(const Handle(TDF_Attribute)& /*into*/,
 // purpose  : Returns new empty graph node attribute
 //=======================================================================
 
-Handle(TDF_Attribute) TFunction_Scope::NewEmpty() const
+occ::handle<TDF_Attribute> TFunction_Scope::NewEmpty() const
 {
   return new TFunction_Scope();
 }
@@ -216,7 +216,7 @@ Standard_OStream& TFunction_Scope::Dump(Standard_OStream& anOS) const
 // purpose  : Returns the scope of functions.
 //=======================================================================
 
-const TFunction_DoubleMapOfIntegerLabel& TFunction_Scope::GetFunctions() const
+const NCollection_DoubleMap<int, TDF_Label>& TFunction_Scope::GetFunctions() const
 {
   return myFunctions;
 }
@@ -226,7 +226,7 @@ const TFunction_DoubleMapOfIntegerLabel& TFunction_Scope::GetFunctions() const
 // purpose  : Returns the scope of functions.
 //=======================================================================
 
-TFunction_DoubleMapOfIntegerLabel& TFunction_Scope::ChangeFunctions()
+NCollection_DoubleMap<int, TDF_Label>& TFunction_Scope::ChangeFunctions()
 {
   return myFunctions;
 }
@@ -236,7 +236,7 @@ TFunction_DoubleMapOfIntegerLabel& TFunction_Scope::ChangeFunctions()
 // purpose  : Defines a free function ID
 //=======================================================================
 
-void TFunction_Scope::SetFreeID(const Standard_Integer ID)
+void TFunction_Scope::SetFreeID(const int ID)
 {
   if (myFreeID == ID)
     return;
@@ -251,7 +251,7 @@ void TFunction_Scope::SetFreeID(const Standard_Integer ID)
 // purpose  : Returns a free function ID
 //=======================================================================
 
-Standard_Integer TFunction_Scope::GetFreeID() const
+int TFunction_Scope::GetFreeID() const
 {
   return myFreeID;
 }

@@ -22,10 +22,10 @@
 RWStepBasic_RWProductRelatedProductCategory::RWStepBasic_RWProductRelatedProductCategory() {}
 
 void RWStepBasic_RWProductRelatedProductCategory::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepBasic_ProductRelatedProductCategory)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                                   num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepBasic_ProductRelatedProductCategory>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,37 +35,37 @@ void RWStepBasic_RWProductRelatedProductCategory::ReadStep(
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasAdescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                                  hasAdescription = true;
   if (data->IsParamDefined(num, 2))
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat2 =` not needed
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   else
   {
-    hasAdescription = Standard_False;
+    hasAdescription = false;
     aDescription.Nullify();
   }
 
   // --- own field : products ---
 
-  Handle(StepBasic_HArray1OfProduct) aProducts;
-  Handle(StepBasic_Product)          anent3;
-  Standard_Integer                   nsub3;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> aProducts;
+  occ::handle<StepBasic_Product>                                   anent3;
+  int                                                              nsub3;
   if (data->ReadSubList(num, 3, "products", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aProducts            = new StepBasic_HArray1OfProduct(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3   = data->NbParams(nsub3);
+    aProducts = new NCollection_HArray1<occ::handle<StepBasic_Product>>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "product", ach, STANDARD_TYPE(StepBasic_Product), anent3))
         aProducts->SetValue(i3, anent3);
     }
@@ -77,8 +77,8 @@ void RWStepBasic_RWProductRelatedProductCategory::ReadStep(
 }
 
 void RWStepBasic_RWProductRelatedProductCategory::WriteStep(
-  StepData_StepWriter&                                   SW,
-  const Handle(StepBasic_ProductRelatedProductCategory)& ent) const
+  StepData_StepWriter&                                        SW,
+  const occ::handle<StepBasic_ProductRelatedProductCategory>& ent) const
 {
 
   // --- inherited field name ---
@@ -87,7 +87,7 @@ void RWStepBasic_RWProductRelatedProductCategory::WriteStep(
 
   // --- inherited field description ---
 
-  Standard_Boolean hasAdescription = ent->HasDescription();
+  bool hasAdescription = ent->HasDescription();
   if (hasAdescription)
   {
     SW.Send(ent->Description());
@@ -100,7 +100,7 @@ void RWStepBasic_RWProductRelatedProductCategory::WriteStep(
   // --- own field : products ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbProducts(); i3++)
+  for (int i3 = 1; i3 <= ent->NbProducts(); i3++)
   {
     SW.Send(ent->ProductsValue(i3));
   }
@@ -108,12 +108,12 @@ void RWStepBasic_RWProductRelatedProductCategory::WriteStep(
 }
 
 void RWStepBasic_RWProductRelatedProductCategory::Share(
-  const Handle(StepBasic_ProductRelatedProductCategory)& ent,
-  Interface_EntityIterator&                              iter) const
+  const occ::handle<StepBasic_ProductRelatedProductCategory>& ent,
+  Interface_EntityIterator&                                   iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbProducts();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbProducts();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->ProductsValue(is1));
   }

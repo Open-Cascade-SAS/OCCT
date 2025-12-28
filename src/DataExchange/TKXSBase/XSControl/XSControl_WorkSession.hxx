@@ -32,11 +32,8 @@ class Transfer_FinderProcess;
 class TopoDS_Shape;
 class Interface_CheckIterator;
 
-class XSControl_WorkSession;
-DEFINE_STANDARD_HANDLE(XSControl_WorkSession, IFSelect_WorkSession)
-
 using XSControl_WorkSessionMap =
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>;
 
 //! This WorkSession completes the basic one, by adding :
 //! - use of Controller, with norm selection...
@@ -58,27 +55,26 @@ public:
   //! Plus : mode = 5 to clear Transfers (both ways) only
   //! mode = 6 to clear enforced results
   //! mode = 7 to clear transfers, results
-  Standard_EXPORT virtual void ClearData(const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ClearData(const int theMode) override;
 
   //! Selects a Norm defined by its name.
   //! A Norm is described and handled by a Controller
   //! Returns True if done, False if <normname> is unknown
   //!
   //! The current Profile for this Norm is taken.
-  Standard_EXPORT Standard_Boolean SelectNorm(const Standard_CString theNormName);
+  Standard_EXPORT bool SelectNorm(const char* theNormName);
 
   //! Selects a Norm defined by its Controller itself
-  Standard_EXPORT void SetController(const Handle(XSControl_Controller)& theCtl);
+  Standard_EXPORT void SetController(const occ::handle<XSControl_Controller>& theCtl);
 
   //! Returns the name of the last Selected Norm. If none is
   //! defined, returns an empty string
   //! By default, returns the complete name of the norm
   //! If <rsc> is True, returns the short name used for resource
-  Standard_EXPORT Standard_CString
-    SelectedNorm(const Standard_Boolean theRsc = Standard_False) const;
+  Standard_EXPORT const char* SelectedNorm(const bool theRsc = false) const;
 
   //! Returns the norm controller itself
-  const Handle(XSControl_Controller)& NormAdaptor() const { return myController; }
+  const occ::handle<XSControl_Controller>& NormAdaptor() const { return myController; }
 
   //! Returns the current Context List, Null if not defined
   //! The Context is given to the TransientProcess for TransferRead
@@ -95,9 +91,9 @@ public:
   //! the Mapped n0 <num>, from MapWriter if <wri> is True, or
   //! from MapReader if <wri> is False
   //! Returns True when done, False else (i.e. num out of range)
-  Standard_EXPORT Standard_Boolean PrintTransferStatus(const Standard_Integer theNum,
-                                                       const Standard_Boolean theWri,
-                                                       Standard_OStream&      theS) const;
+  Standard_EXPORT bool PrintTransferStatus(const int         theNum,
+                                           const bool        theWri,
+                                           Standard_OStream& theS) const;
 
   //! Sets a Transfer Reader, by internal ways, according mode :
   //! 0 recreates it clear
@@ -106,22 +102,22 @@ public:
   //! 3 aligns final Results from Roots of TransientProcess
   //! 4 begins a new transfer (by BeginTransfer)
   //! 5 recreates TransferReader then begins a new transfer
-  Standard_EXPORT void InitTransferReader(const Standard_Integer theMode);
+  Standard_EXPORT void InitTransferReader(const int theMode);
 
   //! Sets a Transfer Reader, which manages transfers on reading
-  Standard_EXPORT void SetTransferReader(const Handle(XSControl_TransferReader)& theTR);
+  Standard_EXPORT void SetTransferReader(const occ::handle<XSControl_TransferReader>& theTR);
 
   //! Returns the Transfer Reader, Null if not set
-  const Handle(XSControl_TransferReader)& TransferReader() const { return myTransferReader; }
+  const occ::handle<XSControl_TransferReader>& TransferReader() const { return myTransferReader; }
 
   //! Returns the TransientProcess(internal data for TransferReader)
-  Standard_EXPORT Handle(Transfer_TransientProcess) MapReader() const;
+  Standard_EXPORT occ::handle<Transfer_TransientProcess> MapReader() const;
 
   //! Changes the Map Reader, i.e. considers that the new one
   //! defines the relevant read results (forgets the former ones)
   //! Returns True when done, False in case of bad definition, i.e.
   //! if Model from TP differs from that of Session
-  Standard_EXPORT Standard_Boolean SetMapReader(const Handle(Transfer_TransientProcess)& theTP);
+  Standard_EXPORT bool SetMapReader(const occ::handle<Transfer_TransientProcess>& theTP);
 
   //! Returns the result attached to a starting entity
   //! If <mode> = 0, returns Final Result
@@ -132,8 +128,9 @@ public:
   //! <mode> = 10,11,12 idem but returns the Binder itself
   //! (if it is not, e.g. Shape, returns the Binder)
   //! <mode> = 20, returns the ResultFromModel
-  Standard_EXPORT Handle(Standard_Transient) Result(const Handle(Standard_Transient)& theEnt,
-                                                    const Standard_Integer theMode) const;
+  Standard_EXPORT occ::handle<Standard_Transient> Result(
+    const occ::handle<Standard_Transient>& theEnt,
+    const int                              theMode) const;
 
   //! Commands the transfer of, either one entity, or a list
   //! I.E. calls the TransferReader after having analysed <ents>
@@ -143,33 +140,33 @@ public:
   //! - <ents> a HSequenceOfTransient : this list
   //! - <ents> the Model : in this specific case, all the roots,
   //! with no cumulation of former transfers (TransferReadRoots)
-  Standard_EXPORT Standard_Integer
-    TransferReadOne(const Handle(Standard_Transient)& theEnts,
-                    const Message_ProgressRange&      theProgress = Message_ProgressRange());
+  Standard_EXPORT int TransferReadOne(
+    const occ::handle<Standard_Transient>& theEnts,
+    const Message_ProgressRange&           theProgress = Message_ProgressRange());
 
   //! Commands the transfer of all the root entities of the model
   //! i.e. calls TransferRoot from the TransferReader with the Graph
   //! No cumulation with former calls to TransferReadOne
-  Standard_EXPORT Standard_Integer
-    TransferReadRoots(const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT int TransferReadRoots(
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! produces and returns a new Model well conditioned
   //! It is produced by the Norm Controller
   //! It can be Null (if this function is not implemented)
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel();
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> NewModel();
 
   //! Returns the Transfer Reader, Null if not set
-  const Handle(XSControl_TransferWriter)& TransferWriter() const { return myTransferWriter; }
+  const occ::handle<XSControl_TransferWriter>& TransferWriter() const { return myTransferWriter; }
 
   //! Changes the Map Reader, i.e. considers that the new one
   //! defines the relevant read results (forgets the former ones)
   //! Returns True when done, False if <FP> is Null
-  Standard_Boolean SetMapWriter(const Handle(Transfer_FinderProcess)& theFP)
+  bool SetMapWriter(const occ::handle<Transfer_FinderProcess>& theFP)
   {
     if (theFP.IsNull())
-      return Standard_False;
+      return false;
     myTransferWriter->SetFinderProcess(theFP);
-    return Standard_True;
+    return true;
   }
 
   //! Transfers a Shape from CasCade to a model of current norm,
@@ -178,7 +175,7 @@ public:
   //! Error if transfer badly initialised
   Standard_EXPORT IFSelect_ReturnStatus
     TransferWriteShape(const TopoDS_Shape&          theShape,
-                       const Standard_Boolean       theCompGraph = Standard_True,
+                       const bool                   theCompGraph = true,
                        const Message_ProgressRange& theProgress  = Message_ProgressRange());
 
   //! Returns the check-list of last transfer (write)
@@ -187,9 +184,9 @@ public:
   //! with original objects (in fact, their mappers)
   Standard_EXPORT Interface_CheckIterator TransferWriteCheckList() const;
 
-  const Handle(XSControl_Vars)& Vars() const { return myVars; }
+  const occ::handle<XSControl_Vars>& Vars() const { return myVars; }
 
-  void SetVars(const Handle(XSControl_Vars)& theVars) { myVars = theVars; }
+  void SetVars(const occ::handle<XSControl_Vars>& theVars) { myVars = theVars; }
 
   DEFINE_STANDARD_RTTIEXT(XSControl_WorkSession, IFSelect_WorkSession)
 
@@ -198,11 +195,11 @@ private:
   Standard_EXPORT void ClearBinders();
 
 private:
-  Handle(XSControl_Controller)     myController;
-  Handle(XSControl_TransferReader) myTransferReader;
-  Handle(XSControl_TransferWriter) myTransferWriter;
-  XSControl_WorkSessionMap         myContext;
-  Handle(XSControl_Vars)           myVars;
+  occ::handle<XSControl_Controller>     myController;
+  occ::handle<XSControl_TransferReader> myTransferReader;
+  occ::handle<XSControl_TransferWriter> myTransferWriter;
+  XSControl_WorkSessionMap              myContext;
+  occ::handle<XSControl_Vars>           myVars;
 };
 
 #endif // _XSControl_WorkSession_HeaderFile

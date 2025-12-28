@@ -33,9 +33,9 @@ LDOMBasicString::LDOMBasicString(const char* aValue)
   }
   else
   {
-    myType             = LDOM_AsciiFree;
-    Standard_Size aLen = strlen(aValue) + 1;
-    myVal.ptr          = new char[aLen];
+    myType      = LDOM_AsciiFree;
+    size_t aLen = strlen(aValue) + 1;
+    myVal.ptr   = new char[aLen];
     memcpy(myVal.ptr, aValue, aLen);
   }
 }
@@ -45,7 +45,7 @@ LDOMBasicString::LDOMBasicString(const char* aValue)
 // purpose  : Create an Ascii string managed by LDOM_Document
 //=======================================================================
 
-LDOMBasicString::LDOMBasicString(const char* aValue, const Handle(LDOM_MemManager)& aDoc)
+LDOMBasicString::LDOMBasicString(const char* aValue, const occ::handle<LDOM_MemManager>& aDoc)
 {
   if (aValue == NULL /*|| aValue[0] == '\0'*/)
   {
@@ -54,9 +54,9 @@ LDOMBasicString::LDOMBasicString(const char* aValue, const Handle(LDOM_MemManage
   }
   else
   {
-    myType                = LDOM_AsciiDoc;
-    Standard_Integer aLen = (Standard_Integer)strlen(aValue) + 1;
-    myVal.ptr             = aDoc->Allocate(aLen);
+    myType    = LDOM_AsciiDoc;
+    int aLen  = (int)strlen(aValue) + 1;
+    myVal.ptr = aDoc->Allocate(aLen);
     memcpy(myVal.ptr, aValue, aLen);
   }
 }
@@ -66,9 +66,9 @@ LDOMBasicString::LDOMBasicString(const char* aValue, const Handle(LDOM_MemManage
 // purpose  : Create an Ascii string managed by LDOM_Document
 //=======================================================================
 
-LDOMBasicString::LDOMBasicString(const char*                    aValue,
-                                 const Standard_Integer         aLen,
-                                 const Handle(LDOM_MemManager)& aDoc)
+LDOMBasicString::LDOMBasicString(const char*                         aValue,
+                                 const int                           aLen,
+                                 const occ::handle<LDOM_MemManager>& aDoc)
 {
   if (aValue == NULL || aLen == 0)
   {
@@ -94,12 +94,12 @@ LDOMBasicString::LDOMBasicString(const LDOMBasicString& anOther)
     case LDOM_AsciiFree:
       if (anOther.myVal.ptr)
       {
-        Standard_Size aLen = strlen((const char*)anOther.myVal.ptr) + 1;
-        myVal.ptr          = new char[aLen];
+        size_t aLen = strlen((const char*)anOther.myVal.ptr) + 1;
+        myVal.ptr   = new char[aLen];
         memcpy(myVal.ptr, anOther.myVal.ptr, aLen);
         break;
       }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case LDOM_AsciiDoc:
     case LDOM_AsciiDocClear:
     case LDOM_AsciiHashed:
@@ -156,12 +156,12 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
     case LDOM_AsciiFree:
       if (anOther.myVal.ptr)
       {
-        Standard_Size aLen = strlen((const char*)anOther.myVal.ptr) + 1;
-        myVal.ptr          = new char[aLen];
+        size_t aLen = strlen((const char*)anOther.myVal.ptr) + 1;
+        myVal.ptr   = new char[aLen];
         memcpy(myVal.ptr, anOther.myVal.ptr, aLen);
         break;
       }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case LDOM_AsciiDoc:
     case LDOM_AsciiDocClear:
     case LDOM_AsciiHashed:
@@ -181,9 +181,9 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
 // purpose  : Compare two strings by content
 //=======================================================================
 
-Standard_Boolean LDOMBasicString::equals(const LDOMBasicString& anOther) const
+bool LDOMBasicString::equals(const LDOMBasicString& anOther) const
 {
-  Standard_Boolean aResult = Standard_False;
+  bool aResult = false;
   switch (myType)
   {
     case LDOM_NULL:
@@ -237,7 +237,7 @@ LDOMBasicString::operator TCollection_AsciiString() const
     case LDOM_AsciiDoc:
     case LDOM_AsciiDocClear:
     case LDOM_AsciiHashed:
-      return TCollection_AsciiString(Standard_CString(myVal.ptr));
+      return TCollection_AsciiString(static_cast<const char*>(myVal.ptr));
     default:;
   }
   return TCollection_AsciiString();
@@ -255,10 +255,10 @@ LDOMBasicString::operator TCollection_ExtendedString() const
     case LDOM_AsciiDoc:
     case LDOM_AsciiDocClear:
     case LDOM_AsciiHashed: {
-      char             buf[6]         = {'\0', '\0', '\0', '\0', '\0', '\0'};
-      const long       aUnicodeHeader = 0xfeff;
-      Standard_CString ptr            = Standard_CString(myVal.ptr);
-      errno                           = 0;
+      char        buf[6]         = {'\0', '\0', '\0', '\0', '\0', '\0'};
+      const long  aUnicodeHeader = 0xfeff;
+      const char* ptr            = static_cast<const char*>(myVal.ptr);
+      errno                      = 0;
       // Check if ptr is ascii string
       if (ptr[0] != '#' || ptr[1] != '#')
         return TCollection_ExtendedString(ptr);
@@ -271,8 +271,8 @@ LDOMBasicString::operator TCollection_ExtendedString() const
 
       // convert Unicode to Extended String
       ptr += 2;
-      Standard_Size          aLength = (strlen(ptr) / 4), j = 0;
-      Standard_ExtCharacter* aResult = new Standard_ExtCharacter[aLength--];
+      size_t    aLength = (strlen(ptr) / 4), j = 0;
+      char16_t* aResult = new char16_t[aLength--];
       while (aLength--)
       {
         ptr += 4;
@@ -281,7 +281,7 @@ LDOMBasicString::operator TCollection_ExtendedString() const
         buf[2]       = ptr[2];
         buf[3]       = ptr[3];
         errno        = 0;
-        aResult[j++] = Standard_ExtCharacter(strtol(&buf[0], NULL, 16));
+        aResult[j++] = char16_t(strtol(&buf[0], NULL, 16));
         if (errno)
         {
           delete[] aResult;
@@ -300,7 +300,7 @@ LDOMBasicString::operator TCollection_ExtendedString() const
 
 //=================================================================================================
 
-Standard_Boolean LDOMBasicString::GetInteger(Standard_Integer& aResult) const
+bool LDOMBasicString::GetInteger(int& aResult) const
 {
   switch (myType)
   {
@@ -315,14 +315,14 @@ Standard_Boolean LDOMBasicString::GetInteger(Standard_Integer& aResult) const
       errno       = 0;
       long aValue = strtol((const char*)myVal.ptr, &ptr, 10);
       if (ptr == myVal.ptr || errno == ERANGE || errno == EINVAL)
-        return Standard_False;
-      aResult = Standard_Integer(aValue);
+        return false;
+      aResult = int(aValue);
       break;
     }
     default:
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 #ifdef OCCT_DEBUG

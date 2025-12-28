@@ -28,10 +28,10 @@ RWStepFEA_RWNodeDefinition::RWStepFEA_RWNodeDefinition() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeDefinition::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepFEA_NodeDefinition)&  ent) const
+void RWStepFEA_RWNodeDefinition::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                                   num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepFEA_NodeDefinition>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "node_definition"))
@@ -39,13 +39,13 @@ void RWStepFEA_RWNodeDefinition::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of ShapeAspect
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Name;
   data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Description;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Description;
   data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
 
-  Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
+  occ::handle<StepRepr_ProductDefinitionShape> aShapeAspect_OfShape;
   data->ReadEntity(num,
                    3,
                    "shape_aspect.of_shape",
@@ -69,8 +69,8 @@ void RWStepFEA_RWNodeDefinition::ReadStep(const Handle(StepData_StepReaderData)&
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeDefinition::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepFEA_NodeDefinition)& ent) const
+void RWStepFEA_RWNodeDefinition::WriteStep(StepData_StepWriter&                       SW,
+                                           const occ::handle<StepFEA_NodeDefinition>& ent) const
 {
 
   // Inherited fields of ShapeAspect
@@ -86,8 +86,8 @@ void RWStepFEA_RWNodeDefinition::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeDefinition::Share(const Handle(StepFEA_NodeDefinition)& ent,
-                                       Interface_EntityIterator&             iter) const
+void RWStepFEA_RWNodeDefinition::Share(const occ::handle<StepFEA_NodeDefinition>& ent,
+                                       Interface_EntityIterator&                  iter) const
 {
 
   // Inherited fields of ShapeAspect

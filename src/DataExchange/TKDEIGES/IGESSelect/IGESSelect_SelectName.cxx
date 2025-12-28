@@ -14,7 +14,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <IGESSelect_SelectName.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -25,49 +25,48 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectName, IFSelect_SelectExtract)
 
 IGESSelect_SelectName::IGESSelect_SelectName() {}
 
-void IGESSelect_SelectName::SetName(const Handle(TCollection_HAsciiString)& levnum)
+void IGESSelect_SelectName::SetName(const occ::handle<TCollection_HAsciiString>& levnum)
 {
   thename = levnum;
 }
 
-Handle(TCollection_HAsciiString) IGESSelect_SelectName::Name() const
+occ::handle<TCollection_HAsciiString> IGESSelect_SelectName::Name() const
 {
   return thename;
 }
 
-Standard_Boolean IGESSelect_SelectName::Sort(
-  const Standard_Integer /*rank*/,
-  const Handle(Standard_Transient)& ent,
-  const Handle(Interface_InterfaceModel)& /*model*/) const
+bool IGESSelect_SelectName::Sort(const int /*rank*/,
+                                 const occ::handle<Standard_Transient>& ent,
+                                 const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
-    return Standard_False;
+    return false;
   if (!igesent->HasName())
-    return Standard_False;
+    return false;
   if (thename.IsNull())
-    return Standard_False;
-  Handle(TCollection_HAsciiString) name = igesent->NameValue();
+    return false;
+  occ::handle<TCollection_HAsciiString> name = igesent->NameValue();
   //  std::cout<<"SelectName:"<<thename->ToCString()<<",with:"<<name->ToCString()<<",IsSameString="<<thename->IsSameString
-  //  (name,Standard_False)<<std::endl;
-  Standard_Integer nb0 = thename->Length();
-  Standard_Integer nb1 = name->Length();
-  Standard_Integer nbf = (nb1 <= nb0 ? nb1 : nb0);
-  Standard_Integer nbt = (nb1 >= nb0 ? nb1 : nb0);
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  //  (name,false)<<std::endl;
+  int nb0 = thename->Length();
+  int nb1 = name->Length();
+  int nbf = (nb1 <= nb0 ? nb1 : nb0);
+  int nbt = (nb1 >= nb0 ? nb1 : nb0);
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nbf; i++)
   {
     if (name->Value(i) != thename->Value(i))
-      return Standard_False;
+      return false;
   }
   if (nb0 > nb1)
     name = thename;
   for (i = nbf + 1; i <= nbt; i++)
   {
     if (name->Value(i) != ' ')
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 TCollection_AsciiString IGESSelect_SelectName::ExtractLabel() const

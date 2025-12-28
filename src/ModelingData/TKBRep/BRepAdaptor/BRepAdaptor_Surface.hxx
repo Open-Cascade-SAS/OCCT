@@ -20,7 +20,7 @@
 #include <GeomAdaptor_TransformedSurface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS_Face.hxx>
 
 class gp_Pln;
@@ -32,8 +32,6 @@ class Geom_BezierSurface;
 class Geom_BSplineSurface;
 class gp_Ax1;
 class gp_Dir;
-
-DEFINE_STANDARD_HANDLE(BRepAdaptor_Surface, GeomAdaptor_TransformedSurface)
 
 //! The Surface from BRepAdaptor allows to use a Face
 //! of the BRep topology look like a 3D surface.
@@ -58,21 +56,19 @@ public:
   //! If <Restriction> is true the parameter range is
   //! the parameter range in the UV space of the
   //! restriction.
-  Standard_EXPORT BRepAdaptor_Surface(const TopoDS_Face&     F,
-                                      const Standard_Boolean R = Standard_True);
+  Standard_EXPORT BRepAdaptor_Surface(const TopoDS_Face& F, const bool R = true);
 
   //! Shallow copy of adaptor.
-  Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
 
   //! Sets the surface to the geometry of <F>.
-  Standard_EXPORT void Initialize(const TopoDS_Face&     F,
-                                  const Standard_Boolean Restriction = Standard_True);
+  Standard_EXPORT void Initialize(const TopoDS_Face& F, const bool Restriction = true);
 
   //! Returns the face.
   Standard_EXPORT const TopoDS_Face& Face() const;
 
   //! Returns the face tolerance.
-  Standard_EXPORT Standard_Real Tolerance() const;
+  Standard_EXPORT double Tolerance() const;
 
   // Note: Most methods are inherited from GeomAdaptor_TransformedSurface.
   // The following methods provide access to the underlying surface/transformation:

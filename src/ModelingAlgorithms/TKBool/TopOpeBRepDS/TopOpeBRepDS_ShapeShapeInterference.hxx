@@ -27,9 +27,6 @@
 #include <Standard_OStream.hxx>
 class TopOpeBRepDS_Transition;
 
-class TopOpeBRepDS_ShapeShapeInterference;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_ShapeShapeInterference, TopOpeBRepDS_Interference)
-
 //! Interference
 class TopOpeBRepDS_ShapeShapeInterference : public TopOpeBRepDS_Interference
 {
@@ -59,23 +56,22 @@ public:
   //! <S> and <Ancestor> orientations are DIFFERENT.
   Standard_EXPORT TopOpeBRepDS_ShapeShapeInterference(const TopOpeBRepDS_Transition& T,
                                                       const TopOpeBRepDS_Kind        ST,
-                                                      const Standard_Integer         S,
+                                                      const int                      S,
                                                       const TopOpeBRepDS_Kind        GT,
-                                                      const Standard_Integer         G,
-                                                      const Standard_Boolean         GBound,
+                                                      const int                      G,
+                                                      const bool                     GBound,
                                                       const TopOpeBRepDS_Config      C);
 
   Standard_EXPORT TopOpeBRepDS_Config Config() const;
 
-  Standard_EXPORT Standard_Boolean GBound() const;
+  Standard_EXPORT bool GBound() const;
 
-  Standard_EXPORT void SetGBound(const Standard_Boolean b);
+  Standard_EXPORT void SetGBound(const bool b);
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_ShapeShapeInterference, TopOpeBRepDS_Interference)
 
-protected:
 private:
-  Standard_Boolean    myGBound;
+  bool                myGBound;
   TopOpeBRepDS_Config myC;
 };
 

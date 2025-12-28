@@ -25,8 +25,8 @@
 //=======================================================================
 static Standard_IStream& operator>>(Standard_IStream& IS, gp_Trsf& T)
 {
-  Standard_Real V1[3], V2[3], V3[3];
-  Standard_Real V[3];
+  double V1[3], V2[3], V3[3];
+  double V[3];
 
   BinTools::GetReal(IS, V1[0]);
   BinTools::GetReal(IS, V1[1]);
@@ -87,11 +87,11 @@ void BinTools_LocationSet::Clear()
 
 //=================================================================================================
 
-Standard_Integer BinTools_LocationSet::Add(const TopLoc_Location& L)
+int BinTools_LocationSet::Add(const TopLoc_Location& L)
 {
   if (L.IsIdentity())
     return 0;
-  Standard_Integer n = myMap.FindIndex(L);
+  int n = myMap.FindIndex(L);
   if (n > 0)
     return n;
   TopLoc_Location N = L;
@@ -105,7 +105,7 @@ Standard_Integer BinTools_LocationSet::Add(const TopLoc_Location& L)
 
 //=================================================================================================
 
-const TopLoc_Location& BinTools_LocationSet::Location(const Standard_Integer I) const
+const TopLoc_Location& BinTools_LocationSet::Location(const int I) const
 {
   static TopLoc_Location identity;
   if (I == 0)
@@ -116,7 +116,7 @@ const TopLoc_Location& BinTools_LocationSet::Location(const Standard_Integer I) 
 
 //=================================================================================================
 
-Standard_Integer BinTools_LocationSet::Index(const TopLoc_Location& L) const
+int BinTools_LocationSet::Index(const TopLoc_Location& L) const
 {
   if (L.IsIdentity())
     return 0;
@@ -125,7 +125,7 @@ Standard_Integer BinTools_LocationSet::Index(const TopLoc_Location& L) const
 
 //=================================================================================================
 
-Standard_Integer BinTools_LocationSet::NbLocations() const
+int BinTools_LocationSet::NbLocations() const
 {
   return myMap.Extent();
 }
@@ -135,7 +135,7 @@ Standard_Integer BinTools_LocationSet::NbLocations() const
 void BinTools_LocationSet::Write(Standard_OStream& OS) const
 {
 
-  Standard_Integer i, nbLoc = myMap.Extent();
+  int i, nbLoc = myMap.Extent();
   OS << "Locations " << nbLoc << "\n";
   try
   {
@@ -144,20 +144,20 @@ void BinTools_LocationSet::Write(Standard_OStream& OS) const
     {
       TopLoc_Location L = myMap(i);
 
-      TopLoc_Location  L2         = L.NextLocation();
-      Standard_Boolean simple     = L2.IsIdentity();
-      Standard_Integer p          = L.FirstPower();
-      TopLoc_Location  L1         = L.FirstDatum();
-      Standard_Boolean elementary = (simple && p == 1);
+      TopLoc_Location L2         = L.NextLocation();
+      bool            simple     = L2.IsIdentity();
+      int             p          = L.FirstPower();
+      TopLoc_Location L1         = L.FirstDatum();
+      bool            elementary = (simple && p == 1);
       if (elementary)
       {
 
-        OS.put((Standard_Byte)1); // 1
+        OS.put((uint8_t)1); // 1
         OS << L.Transformation();
       }
       else
       {
-        OS.put((Standard_Byte)2); // 2
+        OS.put((uint8_t)2); // 2
         BinTools::PutInteger(OS, myMap.FindIndex(L1));
         BinTools::PutInteger(OS, p);
         while (!L2.IsIdentity())
@@ -188,8 +188,8 @@ void BinTools_LocationSet::Read(Standard_IStream& IS)
 {
 
   myMap.Clear();
-  char             buffer[255];
-  Standard_Integer l1, p;
+  char buffer[255];
+  int  l1, p;
 
   IS >> buffer;
   if (IS.fail() || (strcmp(buffer, "Locations")))
@@ -200,7 +200,7 @@ void BinTools_LocationSet::Read(Standard_IStream& IS)
     return;
   }
 
-  Standard_Integer i, nbLoc;
+  int i, nbLoc;
   IS >> nbLoc;
   IS.get(); // remove lf
   TopLoc_Location L;
@@ -212,7 +212,7 @@ void BinTools_LocationSet::Read(Standard_IStream& IS)
     for (i = 1; i <= nbLoc; i++)
     {
 
-      const Standard_Byte aTypLoc = (Standard_Byte)IS.get();
+      const uint8_t aTypLoc = (uint8_t)IS.get();
       if (aTypLoc == 1)
       {
         IS >> T;

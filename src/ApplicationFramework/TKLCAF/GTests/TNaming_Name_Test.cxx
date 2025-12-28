@@ -15,7 +15,7 @@
 
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelMap.hxx>
+#include <NCollection_Map.hxx>
 #include <TNaming_Name.hxx>
 #include <TNaming_NamedShape.hxx>
 
@@ -23,17 +23,17 @@
 TEST(TNaming_Name_Test, BUC60925_SolveWithEmptyNamedShape)
 {
   // Create TDF document
-  Handle(TDF_Data) aDF = new TDF_Data();
+  occ::handle<TDF_Data> aDF = new TDF_Data();
 
   // Create a label
-  TDF_Label aLabel = aDF->Root().FindChild(2, Standard_True);
+  TDF_Label aLabel = aDF->Root().FindChild(2, true);
 
   // Create label map
-  TDF_LabelMap aLabelMap;
+  NCollection_Map<TDF_Label> aLabelMap;
   aLabelMap.Add(aLabel);
 
   // Create an empty NamedShape
-  Handle(TNaming_NamedShape) aNS = new TNaming_NamedShape;
+  occ::handle<TNaming_NamedShape> aNS = new TNaming_NamedShape;
 
   // Create TNaming_Name and configure it
   TNaming_Name aNN;
@@ -41,7 +41,7 @@ TEST(TNaming_Name_Test, BUC60925_SolveWithEmptyNamedShape)
   aNN.Append(aNS);
 
   // Test that Solve returns false for empty NamedShape
-  Standard_Boolean aResult = aNN.Solve(aLabel, aLabelMap);
+  bool aResult = aNN.Solve(aLabel, aLabelMap);
 
   EXPECT_FALSE(aResult) << "Solve should return false for empty NamedShape";
 }

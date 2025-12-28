@@ -25,9 +25,6 @@
 #include <ShapeUpgrade_SplitCurve3d.hxx>
 class Geom_Curve;
 
-class ShapeUpgrade_SplitCurve3dContinuity;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitCurve3dContinuity, ShapeUpgrade_SplitCurve3d)
-
 //! Corrects/splits a 2d curve with a continuity criterion.
 //! Tolerance is used to correct the curve at a knot that respects
 //! geometrically the criterion, in order to reduce the
@@ -43,20 +40,19 @@ public:
   Standard_EXPORT void SetCriterion(const GeomAbs_Shape Criterion);
 
   //! Sets tolerance.
-  Standard_EXPORT void SetTolerance(const Standard_Real Tol);
+  Standard_EXPORT void SetTolerance(const double Tol);
 
   //! Calculates points for correction/splitting of the curve
-  Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute() override;
 
-  Standard_EXPORT const Handle(Geom_Curve)& GetCurve() const;
+  Standard_EXPORT const occ::handle<Geom_Curve>& GetCurve() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve3dContinuity, ShapeUpgrade_SplitCurve3d)
 
-protected:
 private:
-  GeomAbs_Shape    myCriterion;
-  Standard_Real    myTolerance;
-  Standard_Integer myCont;
+  GeomAbs_Shape myCriterion;
+  double        myTolerance;
+  int           myCont;
 };
 
 #endif // _ShapeUpgrade_SplitCurve3dContinuity_HeaderFile

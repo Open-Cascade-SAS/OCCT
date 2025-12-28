@@ -24,9 +24,6 @@
 class StepGeom_CartesianTransformationOperator3d;
 class TCollection_HAsciiString;
 
-class StepGeom_SurfaceReplica;
-DEFINE_STANDARD_HANDLE(StepGeom_SurfaceReplica, StepGeom_Surface)
-
 class StepGeom_SurfaceReplica : public StepGeom_Surface
 {
 
@@ -35,25 +32,24 @@ public:
   Standard_EXPORT StepGeom_SurfaceReplica();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                   aName,
-    const Handle(StepGeom_Surface)&                           aParentSurface,
-    const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation);
+    const occ::handle<TCollection_HAsciiString>&                   aName,
+    const occ::handle<StepGeom_Surface>&                           aParentSurface,
+    const occ::handle<StepGeom_CartesianTransformationOperator3d>& aTransformation);
 
-  Standard_EXPORT void SetParentSurface(const Handle(StepGeom_Surface)& aParentSurface);
+  Standard_EXPORT void SetParentSurface(const occ::handle<StepGeom_Surface>& aParentSurface);
 
-  Standard_EXPORT Handle(StepGeom_Surface) ParentSurface() const;
+  Standard_EXPORT occ::handle<StepGeom_Surface> ParentSurface() const;
 
   Standard_EXPORT void SetTransformation(
-    const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation);
+    const occ::handle<StepGeom_CartesianTransformationOperator3d>& aTransformation);
 
-  Standard_EXPORT Handle(StepGeom_CartesianTransformationOperator3d) Transformation() const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianTransformationOperator3d> Transformation() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceReplica, StepGeom_Surface)
 
-protected:
 private:
-  Handle(StepGeom_Surface)                           parentSurface;
-  Handle(StepGeom_CartesianTransformationOperator3d) transformation;
+  occ::handle<StepGeom_Surface>                           parentSurface;
+  occ::handle<StepGeom_CartesianTransformationOperator3d> transformation;
 };
 
 #endif // _StepGeom_SurfaceReplica_HeaderFile

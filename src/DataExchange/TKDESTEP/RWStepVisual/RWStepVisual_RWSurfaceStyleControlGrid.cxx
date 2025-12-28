@@ -21,10 +21,10 @@
 RWStepVisual_RWSurfaceStyleControlGrid::RWStepVisual_RWSurfaceStyleControlGrid() {}
 
 void RWStepVisual_RWSurfaceStyleControlGrid::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepVisual_SurfaceStyleControlGrid)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                                              num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepVisual_SurfaceStyleControlGrid>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,8 +34,8 @@ void RWStepVisual_RWSurfaceStyleControlGrid::ReadStep(
 
   // --- own field : styleOfControlGrid ---
 
-  Handle(StepVisual_CurveStyle) aStyleOfControlGrid;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepVisual_CurveStyle> aStyleOfControlGrid;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "style_of_control_grid",
@@ -49,8 +49,8 @@ void RWStepVisual_RWSurfaceStyleControlGrid::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleControlGrid::WriteStep(
-  StepData_StepWriter&                              SW,
-  const Handle(StepVisual_SurfaceStyleControlGrid)& ent) const
+  StepData_StepWriter&                                   SW,
+  const occ::handle<StepVisual_SurfaceStyleControlGrid>& ent) const
 {
 
   // --- own field : styleOfControlGrid ---
@@ -59,8 +59,8 @@ void RWStepVisual_RWSurfaceStyleControlGrid::WriteStep(
 }
 
 void RWStepVisual_RWSurfaceStyleControlGrid::Share(
-  const Handle(StepVisual_SurfaceStyleControlGrid)& ent,
-  Interface_EntityIterator&                         iter) const
+  const occ::handle<StepVisual_SurfaceStyleControlGrid>& ent,
+  Interface_EntityIterator&                              iter) const
 {
 
   iter.GetOneItem(ent->StyleOfControlGrid());

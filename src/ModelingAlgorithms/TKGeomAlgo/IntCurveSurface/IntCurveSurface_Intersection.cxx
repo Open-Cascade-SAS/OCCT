@@ -24,25 +24,25 @@
 
 //================================================================================
 IntCurveSurface_Intersection::IntCurveSurface_Intersection()
-    : done(Standard_False),
-      myIsParallel(Standard_False)
+    : done(false),
+      myIsParallel(false)
 {
 }
 
 //================================================================================
-Standard_Boolean IntCurveSurface_Intersection::IsDone() const
+bool IntCurveSurface_Intersection::IsDone() const
 {
   return (done);
 }
 
 //================================================================================
-Standard_Boolean IntCurveSurface_Intersection::IsParallel() const
+bool IntCurveSurface_Intersection::IsParallel() const
 {
   return (myIsParallel);
 }
 
 //================================================================================
-Standard_Integer IntCurveSurface_Intersection::NbPoints() const
+int IntCurveSurface_Intersection::NbPoints() const
 {
   if (!done)
   {
@@ -52,7 +52,7 @@ Standard_Integer IntCurveSurface_Intersection::NbPoints() const
 }
 
 //================================================================================
-Standard_Integer IntCurveSurface_Intersection::NbSegments() const
+int IntCurveSurface_Intersection::NbSegments() const
 {
   if (!done)
   {
@@ -62,8 +62,7 @@ Standard_Integer IntCurveSurface_Intersection::NbSegments() const
 }
 
 //================================================================================
-const IntCurveSurface_IntersectionPoint& IntCurveSurface_Intersection::Point(
-  const Standard_Integer N) const
+const IntCurveSurface_IntersectionPoint& IntCurveSurface_Intersection::Point(const int N) const
 {
   if (!done)
   {
@@ -73,8 +72,7 @@ const IntCurveSurface_IntersectionPoint& IntCurveSurface_Intersection::Point(
 }
 
 //================================================================================
-const IntCurveSurface_IntersectionSegment& IntCurveSurface_Intersection::Segment(
-  const Standard_Integer N) const
+const IntCurveSurface_IntersectionSegment& IntCurveSurface_Intersection::Segment(const int N) const
 {
   if (!done)
   {
@@ -90,8 +88,8 @@ void IntCurveSurface_Intersection::SetValues(const IntCurveSurface_Intersection&
   {
     lseg.Clear();
     lpnt.Clear();
-    Standard_Integer N = Other.lpnt.Length();
-    Standard_Integer i;
+    int N = Other.lpnt.Length();
+    int i;
     for (i = 1; i <= N; i++)
     {
       lpnt.Append(Other.lpnt.Value(i));
@@ -101,22 +99,22 @@ void IntCurveSurface_Intersection::SetValues(const IntCurveSurface_Intersection&
     {
       lseg.Append(Other.lseg.Value(i));
     }
-    done = Standard_True;
+    done = true;
   }
   else
   {
-    done = Standard_False;
+    done = false;
   }
 }
 
 //================================================================================
 void IntCurveSurface_Intersection::Append(const IntCurveSurface_Intersection& Other,
-                                          //					  const Standard_Real a,
-                                          const Standard_Real,
-                                          //					  const Standard_Real b)
-                                          const Standard_Real)
+                                          //					  const double a,
+                                          const double,
+                                          //					  const double b)
+                                          const double)
 {
-  Standard_Integer i, ni;
+  int i, ni;
   if (Other.done)
   {
     ni = Other.lpnt.Length();
@@ -135,8 +133,8 @@ void IntCurveSurface_Intersection::Append(const IntCurveSurface_Intersection& Ot
 //================================================================================
 void IntCurveSurface_Intersection::Append(const IntCurveSurface_IntersectionPoint& OtherPoint)
 {
-  Standard_Integer                  i, ni;
-  Standard_Real                     anu, anv, anw, u, v, w;
+  int                               i, ni;
+  double                            anu, anv, anw, u, v, w;
   IntCurveSurface_TransitionOnCurve TrOnCurve, anTrOnCurve;
   gp_Pnt                            P, anP;
   ni = lpnt.Length();
@@ -174,8 +172,8 @@ void IntCurveSurface_Intersection::ResetFields()
   {
     lseg.Clear();
     lpnt.Clear();
-    done         = Standard_False;
-    myIsParallel = Standard_False;
+    done         = false;
+    myIsParallel = false;
   }
 }
 
@@ -184,7 +182,7 @@ void IntCurveSurface_Intersection::Dump() const
 {
   if (done)
   {
-    Standard_Integer i, ni;
+    int i, ni;
     ni = lpnt.Length();
     for (i = 1; i <= ni; i++)
     {

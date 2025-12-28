@@ -28,53 +28,52 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
-#include <Interface_Macros.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Integer.hxx>
 
 #include <stdio.h>
 
 IGESDimen_ToolNewGeneralNote::IGESDimen_ToolNewGeneralNote() {}
 
-void IGESDimen_ToolNewGeneralNote::ReadOwnParams(const Handle(IGESDimen_NewGeneralNote)& ent,
-                                                 const Handle(IGESData_IGESReaderData)&  IR,
-                                                 IGESData_ParamReader&                   PR) const
+void IGESDimen_ToolNewGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_NewGeneralNote>& ent,
+                                                 const occ::handle<IGESData_IGESReaderData>&  IR,
+                                                 IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  // bool st; //szv#4:S4163:12Mar99 moved down
 
-  Standard_Integer                        nbval;
-  Standard_Real                           width;
-  Standard_Real                           height;
-  Standard_Integer                        justifyCode;
-  gp_XYZ                                  areaLoc;
-  Standard_Real                           areaRotationAngle;
-  gp_XYZ                                  baseLinePos;
-  Standard_Real                           normalInterlineSpace;
-  Handle(TColStd_HArray1OfInteger)        charDisplays;
-  Handle(TColStd_HArray1OfReal)           charWidths;
-  Handle(TColStd_HArray1OfReal)           charHeights;
-  Handle(TColStd_HArray1OfReal)           interCharSpaces;
-  Handle(TColStd_HArray1OfReal)           interlineSpaces;
-  Handle(TColStd_HArray1OfInteger)        fontStyles;
-  Handle(TColStd_HArray1OfReal)           charAngles;
-  Handle(Interface_HArray1OfHAsciiString) controlCodeStrings;
-  Handle(TColStd_HArray1OfInteger)        nbChars;
-  Handle(TColStd_HArray1OfReal)           boxWidths;
-  Handle(TColStd_HArray1OfReal)           boxHeights;
-  Handle(TColStd_HArray1OfInteger)        charSetCodes;
-  Handle(IGESData_HArray1OfIGESEntity)    charSetEntities;
-  Handle(TColStd_HArray1OfReal)           slantAngles;
-  Handle(TColStd_HArray1OfReal)           rotationAngles;
-  Handle(TColStd_HArray1OfInteger)        mirrorFlags;
-  Handle(TColStd_HArray1OfInteger)        rotateFlags;
-  Handle(TColgp_HArray1OfXYZ)             startPoints;
-  Handle(Interface_HArray1OfHAsciiString) texts;
+  int                                                                     nbval;
+  double                                                                  width;
+  double                                                                  height;
+  int                                                                     justifyCode;
+  gp_XYZ                                                                  areaLoc;
+  double                                                                  areaRotationAngle;
+  gp_XYZ                                                                  baseLinePos;
+  double                                                                  normalInterlineSpace;
+  occ::handle<NCollection_HArray1<int>>                                   charDisplays;
+  occ::handle<NCollection_HArray1<double>>                                charWidths;
+  occ::handle<NCollection_HArray1<double>>                                charHeights;
+  occ::handle<NCollection_HArray1<double>>                                interCharSpaces;
+  occ::handle<NCollection_HArray1<double>>                                interlineSpaces;
+  occ::handle<NCollection_HArray1<int>>                                   fontStyles;
+  occ::handle<NCollection_HArray1<double>>                                charAngles;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> controlCodeStrings;
+  occ::handle<NCollection_HArray1<int>>                                   nbChars;
+  occ::handle<NCollection_HArray1<double>>                                boxWidths;
+  occ::handle<NCollection_HArray1<double>>                                boxHeights;
+  occ::handle<NCollection_HArray1<int>>                                   charSetCodes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      charSetEntities;
+  occ::handle<NCollection_HArray1<double>>                                slantAngles;
+  occ::handle<NCollection_HArray1<double>>                                rotationAngles;
+  occ::handle<NCollection_HArray1<int>>                                   mirrorFlags;
+  occ::handle<NCollection_HArray1<int>>                                   rotateFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                                startPoints;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> texts;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadReal(PR.Current(), "Text Width", width);
@@ -85,54 +84,54 @@ void IGESDimen_ToolNewGeneralNote::ReadOwnParams(const Handle(IGESDimen_NewGener
   PR.ReadXYZ(PR.CurrentList(1, 3), "Base Line Position", baseLinePos);
   PR.ReadReal(PR.Current(), "NormalInterline Spacing", normalInterlineSpace);
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of Text Strings", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "Number of Text Strings", nbval);
   if (st && nbval > 0)
   {
-    charDisplays       = new TColStd_HArray1OfInteger(1, nbval);
-    charWidths         = new TColStd_HArray1OfReal(1, nbval);
-    charHeights        = new TColStd_HArray1OfReal(1, nbval);
-    interCharSpaces    = new TColStd_HArray1OfReal(1, nbval);
-    interlineSpaces    = new TColStd_HArray1OfReal(1, nbval);
-    fontStyles         = new TColStd_HArray1OfInteger(1, nbval);
-    charAngles         = new TColStd_HArray1OfReal(1, nbval);
-    controlCodeStrings = new Interface_HArray1OfHAsciiString(1, nbval);
-    nbChars            = new TColStd_HArray1OfInteger(1, nbval);
-    boxWidths          = new TColStd_HArray1OfReal(1, nbval);
-    boxHeights         = new TColStd_HArray1OfReal(1, nbval);
-    charSetCodes       = new TColStd_HArray1OfInteger(1, nbval);
-    charSetEntities    = new IGESData_HArray1OfIGESEntity(1, nbval);
-    slantAngles        = new TColStd_HArray1OfReal(1, nbval);
-    rotationAngles     = new TColStd_HArray1OfReal(1, nbval);
-    mirrorFlags        = new TColStd_HArray1OfInteger(1, nbval);
-    rotateFlags        = new TColStd_HArray1OfInteger(1, nbval);
-    startPoints        = new TColgp_HArray1OfXYZ(1, nbval);
-    texts              = new Interface_HArray1OfHAsciiString(1, nbval);
+    charDisplays       = new NCollection_HArray1<int>(1, nbval);
+    charWidths         = new NCollection_HArray1<double>(1, nbval);
+    charHeights        = new NCollection_HArray1<double>(1, nbval);
+    interCharSpaces    = new NCollection_HArray1<double>(1, nbval);
+    interlineSpaces    = new NCollection_HArray1<double>(1, nbval);
+    fontStyles         = new NCollection_HArray1<int>(1, nbval);
+    charAngles         = new NCollection_HArray1<double>(1, nbval);
+    controlCodeStrings = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
+    nbChars            = new NCollection_HArray1<int>(1, nbval);
+    boxWidths          = new NCollection_HArray1<double>(1, nbval);
+    boxHeights         = new NCollection_HArray1<double>(1, nbval);
+    charSetCodes       = new NCollection_HArray1<int>(1, nbval);
+    charSetEntities    = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbval);
+    slantAngles        = new NCollection_HArray1<double>(1, nbval);
+    rotationAngles     = new NCollection_HArray1<double>(1, nbval);
+    mirrorFlags        = new NCollection_HArray1<int>(1, nbval);
+    rotateFlags        = new NCollection_HArray1<int>(1, nbval);
+    startPoints        = new NCollection_HArray1<gp_XYZ>(1, nbval);
+    texts              = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
   }
   else
     PR.AddFail("Number of Text Strings: Not Positive");
 
   if (!charDisplays.IsNull())
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
-      Standard_Integer                 charDisplay;
-      Standard_Real                    charWidth;
-      Standard_Real                    charHeight;
-      Standard_Real                    interCharSpace;
-      Standard_Real                    interlineSpace;
-      Standard_Integer                 fontStyle;
-      Standard_Real                    charAngle;
-      Handle(TCollection_HAsciiString) controlCodeString;
-      Standard_Integer                 nbChar;
-      Standard_Real                    boxWidth;
-      Standard_Real                    boxHeight;
-      Standard_Integer                 charSetCode;
-      Handle(IGESData_IGESEntity)      charSetEntity;
-      Standard_Real                    slantAngle;
-      Standard_Real                    rotationAngle;
-      Standard_Integer                 mirrorFlag;
-      Standard_Integer                 rotateFlag;
-      gp_XYZ                           startPoint;
-      Handle(TCollection_HAsciiString) text;
+      int                                   charDisplay;
+      double                                charWidth;
+      double                                charHeight;
+      double                                interCharSpace;
+      double                                interlineSpace;
+      int                                   fontStyle;
+      double                                charAngle;
+      occ::handle<TCollection_HAsciiString> controlCodeString;
+      int                                   nbChar;
+      double                                boxWidth;
+      double                                boxHeight;
+      int                                   charSetCode;
+      occ::handle<IGESData_IGESEntity>      charSetEntity;
+      double                                slantAngle;
+      double                                rotationAngle;
+      int                                   mirrorFlag;
+      int                                   rotateFlag;
+      gp_XYZ                                startPoint;
+      occ::handle<TCollection_HAsciiString> text;
 
       // st = PR.ReadInteger(PR.Current(), "Character Display",charDisplay); //szv#4:S4163:12Mar99
       // moved in if
@@ -187,7 +186,7 @@ void IGESDimen_ToolNewGeneralNote::ReadOwnParams(const Handle(IGESDimen_NewGener
       if (PR.ReadReal(PR.Current(), "Box Height", boxHeight))
         boxHeights->SetValue(i, boxHeight);
 
-      Standard_Integer curnum = PR.CurrentNumber();
+      int curnum = PR.CurrentNumber();
       if (PR.DefinedElseSkip())
       {
         // Reading fontCode(Integer, must be positive)
@@ -276,8 +275,8 @@ void IGESDimen_ToolNewGeneralNote::ReadOwnParams(const Handle(IGESDimen_NewGener
             texts);
 }
 
-void IGESDimen_ToolNewGeneralNote::WriteOwnParams(const Handle(IGESDimen_NewGeneralNote)& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+void IGESDimen_ToolNewGeneralNote::WriteOwnParams(const occ::handle<IGESDimen_NewGeneralNote>& ent,
+                                                  IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->TextWidth());
   IW.Send(ent->TextHeight());
@@ -290,10 +289,10 @@ void IGESDimen_ToolNewGeneralNote::WriteOwnParams(const Handle(IGESDimen_NewGene
   IW.Send(ent->BaseLinePosition().Y());
   IW.Send(ent->BaseLinePosition().Z());
   IW.Send(ent->NormalInterlineSpace());
-  Standard_Integer nbval = ent->NbStrings();
+  int nbval = ent->NbStrings();
   IW.Send(nbval);
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
     IW.Send(ent->CharacterDisplay(i));
     IW.Send(ent->CharacterWidth(i));
@@ -307,7 +306,7 @@ void IGESDimen_ToolNewGeneralNote::WriteOwnParams(const Handle(IGESDimen_NewGene
     IW.Send(ent->BoxWidth(i));
     IW.Send(ent->BoxHeight(i));
     if (ent->IsCharSetEntity(i))
-      IW.Send(ent->CharSetEntity(i), Standard_True); // negative
+      IW.Send(ent->CharSetEntity(i), true); // negative
     else
       IW.Send(ent->CharSetCode(i));
     IW.Send(ent->SlantAngle(i));
@@ -321,11 +320,11 @@ void IGESDimen_ToolNewGeneralNote::WriteOwnParams(const Handle(IGESDimen_NewGene
   }
 }
 
-void IGESDimen_ToolNewGeneralNote::OwnShared(const Handle(IGESDimen_NewGeneralNote)& ent,
-                                             Interface_EntityIterator&               iter) const
+void IGESDimen_ToolNewGeneralNote::OwnShared(const occ::handle<IGESDimen_NewGeneralNote>& ent,
+                                             Interface_EntityIterator& iter) const
 {
-  Standard_Integer nbval = ent->NbStrings();
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  int nbval = ent->NbStrings();
+  for (int i = 1; i <= nbval; i++)
   {
 
     if (ent->IsCharSetEntity(i))
@@ -333,60 +332,60 @@ void IGESDimen_ToolNewGeneralNote::OwnShared(const Handle(IGESDimen_NewGeneralNo
   }
 }
 
-void IGESDimen_ToolNewGeneralNote::OwnCopy(const Handle(IGESDimen_NewGeneralNote)& another,
-                                           const Handle(IGESDimen_NewGeneralNote)& ent,
-                                           Interface_CopyTool&                     TC) const
+void IGESDimen_ToolNewGeneralNote::OwnCopy(const occ::handle<IGESDimen_NewGeneralNote>& another,
+                                           const occ::handle<IGESDimen_NewGeneralNote>& ent,
+                                           Interface_CopyTool&                          TC) const
 {
-  Standard_Real    width                = another->TextWidth();
-  Standard_Real    height               = another->TextHeight();
-  Standard_Integer justifyCode          = another->JustifyCode();
-  gp_XYZ           areaLoc              = (another->AreaLocation()).XYZ();
-  Standard_Real    areaRotationAngle    = another->AreaRotationAngle();
-  gp_XYZ           baseLinePos          = (another->BaseLinePosition()).XYZ();
-  Standard_Real    normalInterlineSpace = another->NormalInterlineSpace();
-  Standard_Integer nbval                = another->NbStrings();
+  double width                = another->TextWidth();
+  double height               = another->TextHeight();
+  int    justifyCode          = another->JustifyCode();
+  gp_XYZ areaLoc              = (another->AreaLocation()).XYZ();
+  double areaRotationAngle    = another->AreaRotationAngle();
+  gp_XYZ baseLinePos          = (another->BaseLinePosition()).XYZ();
+  double normalInterlineSpace = another->NormalInterlineSpace();
+  int    nbval                = another->NbStrings();
 
-  Handle(TColStd_HArray1OfInteger)        charDisplays;
-  Handle(TColStd_HArray1OfReal)           charWidths;
-  Handle(TColStd_HArray1OfReal)           charHeights;
-  Handle(TColStd_HArray1OfReal)           interCharSpaces;
-  Handle(TColStd_HArray1OfReal)           interlineSpaces;
-  Handle(TColStd_HArray1OfInteger)        fontStyles;
-  Handle(TColStd_HArray1OfReal)           charAngles;
-  Handle(Interface_HArray1OfHAsciiString) controlCodeStrings;
-  Handle(TColStd_HArray1OfInteger)        nbChars;
-  Handle(TColStd_HArray1OfReal)           boxWidths;
-  Handle(TColStd_HArray1OfReal)           boxHeights;
-  Handle(TColStd_HArray1OfInteger)        charSetCodes;
-  Handle(IGESData_HArray1OfIGESEntity)    charSetEntities;
-  Handle(TColStd_HArray1OfReal)           slantAngles;
-  Handle(TColStd_HArray1OfReal)           rotationAngles;
-  Handle(TColStd_HArray1OfInteger)        mirrorFlags;
-  Handle(TColStd_HArray1OfInteger)        rotateFlags;
-  Handle(TColgp_HArray1OfXYZ)             startPoints;
-  Handle(Interface_HArray1OfHAsciiString) texts;
+  occ::handle<NCollection_HArray1<int>>                                   charDisplays;
+  occ::handle<NCollection_HArray1<double>>                                charWidths;
+  occ::handle<NCollection_HArray1<double>>                                charHeights;
+  occ::handle<NCollection_HArray1<double>>                                interCharSpaces;
+  occ::handle<NCollection_HArray1<double>>                                interlineSpaces;
+  occ::handle<NCollection_HArray1<int>>                                   fontStyles;
+  occ::handle<NCollection_HArray1<double>>                                charAngles;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> controlCodeStrings;
+  occ::handle<NCollection_HArray1<int>>                                   nbChars;
+  occ::handle<NCollection_HArray1<double>>                                boxWidths;
+  occ::handle<NCollection_HArray1<double>>                                boxHeights;
+  occ::handle<NCollection_HArray1<int>>                                   charSetCodes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      charSetEntities;
+  occ::handle<NCollection_HArray1<double>>                                slantAngles;
+  occ::handle<NCollection_HArray1<double>>                                rotationAngles;
+  occ::handle<NCollection_HArray1<int>>                                   mirrorFlags;
+  occ::handle<NCollection_HArray1<int>>                                   rotateFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                                startPoints;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> texts;
 
-  charDisplays       = new TColStd_HArray1OfInteger(1, nbval);
-  charWidths         = new TColStd_HArray1OfReal(1, nbval);
-  charHeights        = new TColStd_HArray1OfReal(1, nbval);
-  interCharSpaces    = new TColStd_HArray1OfReal(1, nbval);
-  interlineSpaces    = new TColStd_HArray1OfReal(1, nbval);
-  fontStyles         = new TColStd_HArray1OfInteger(1, nbval);
-  charAngles         = new TColStd_HArray1OfReal(1, nbval);
-  controlCodeStrings = new Interface_HArray1OfHAsciiString(1, nbval);
-  nbChars            = new TColStd_HArray1OfInteger(1, nbval);
-  boxWidths          = new TColStd_HArray1OfReal(1, nbval);
-  boxHeights         = new TColStd_HArray1OfReal(1, nbval);
-  charSetCodes       = new TColStd_HArray1OfInteger(1, nbval);
-  charSetEntities    = new IGESData_HArray1OfIGESEntity(1, nbval);
-  slantAngles        = new TColStd_HArray1OfReal(1, nbval);
-  rotationAngles     = new TColStd_HArray1OfReal(1, nbval);
-  mirrorFlags        = new TColStd_HArray1OfInteger(1, nbval);
-  rotateFlags        = new TColStd_HArray1OfInteger(1, nbval);
-  startPoints        = new TColgp_HArray1OfXYZ(1, nbval);
-  texts              = new Interface_HArray1OfHAsciiString(1, nbval);
+  charDisplays       = new NCollection_HArray1<int>(1, nbval);
+  charWidths         = new NCollection_HArray1<double>(1, nbval);
+  charHeights        = new NCollection_HArray1<double>(1, nbval);
+  interCharSpaces    = new NCollection_HArray1<double>(1, nbval);
+  interlineSpaces    = new NCollection_HArray1<double>(1, nbval);
+  fontStyles         = new NCollection_HArray1<int>(1, nbval);
+  charAngles         = new NCollection_HArray1<double>(1, nbval);
+  controlCodeStrings = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
+  nbChars            = new NCollection_HArray1<int>(1, nbval);
+  boxWidths          = new NCollection_HArray1<double>(1, nbval);
+  boxHeights         = new NCollection_HArray1<double>(1, nbval);
+  charSetCodes       = new NCollection_HArray1<int>(1, nbval);
+  charSetEntities    = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbval);
+  slantAngles        = new NCollection_HArray1<double>(1, nbval);
+  rotationAngles     = new NCollection_HArray1<double>(1, nbval);
+  mirrorFlags        = new NCollection_HArray1<int>(1, nbval);
+  rotateFlags        = new NCollection_HArray1<int>(1, nbval);
+  startPoints        = new NCollection_HArray1<gp_XYZ>(1, nbval);
+  texts              = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
     charDisplays->SetValue(i, another->CharacterDisplay(i));
     charWidths->SetValue(i, another->CharacterWidth(i));
@@ -445,7 +444,7 @@ void IGESDimen_ToolNewGeneralNote::OwnCopy(const Handle(IGESDimen_NewGeneralNote
 }
 
 IGESData_DirChecker IGESDimen_ToolNewGeneralNote::DirChecker(
-  const Handle(IGESDimen_NewGeneralNote)& /* ent */) const
+  const occ::handle<IGESDimen_NewGeneralNote>& /* ent */) const
 {
   IGESData_DirChecker DC(213, 0);
   DC.Structure(IGESData_DefVoid);
@@ -457,16 +456,16 @@ IGESData_DirChecker IGESDimen_ToolNewGeneralNote::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolNewGeneralNote::OwnCheck(const Handle(IGESDimen_NewGeneralNote)& ent,
+void IGESDimen_ToolNewGeneralNote::OwnCheck(const occ::handle<IGESDimen_NewGeneralNote>& ent,
                                             const Interface_ShareTool&,
-                                            Handle(Interface_Check)& ach) const
+                                            occ::handle<Interface_Check>& ach) const
 {
 
-  Standard_Integer jcode = ent->JustifyCode();
+  int jcode = ent->JustifyCode();
   if ((jcode < 0) || (jcode > 3))
     ach->AddFail("Justify Code != 0, 1, 2, 3");
-  Standard_Integer upper = ent->NbStrings();
-  for (Standard_Integer i = 1; i <= upper; i++)
+  int upper = ent->NbStrings();
+  for (int i = 1; i <= upper; i++)
   {
     if (ent->NbCharacters(i) != ent->Text(i)->Length())
     {
@@ -475,7 +474,7 @@ void IGESDimen_ToolNewGeneralNote::OwnCheck(const Handle(IGESDimen_NewGeneralNot
       ach->AddFail(mess);
     }
 
-    Standard_Integer charcode = ent->CharSetCode(i);
+    int charcode = ent->CharSetCode(i);
     if ((charcode >= 0) && (charcode != 1) && ((charcode < 1001) || (charcode > 1003)))
     {
       char mess[80];
@@ -483,7 +482,7 @@ void IGESDimen_ToolNewGeneralNote::OwnCheck(const Handle(IGESDimen_NewGeneralNot
       ach->AddFail(mess);
     }
 
-    Standard_Integer chardisp = ent->CharacterDisplay(i);
+    int chardisp = ent->CharacterDisplay(i);
     if ((chardisp < 0) || (chardisp > 1))
     {
       char mess[80];
@@ -491,7 +490,7 @@ void IGESDimen_ToolNewGeneralNote::OwnCheck(const Handle(IGESDimen_NewGeneralNot
       ach->AddFail(mess);
     }
 
-    Standard_Integer mflag = ent->MirrorFlag(i);
+    int mflag = ent->MirrorFlag(i);
     if ((mflag < 0) || (mflag > 2))
     {
       char mess[80];
@@ -499,7 +498,7 @@ void IGESDimen_ToolNewGeneralNote::OwnCheck(const Handle(IGESDimen_NewGeneralNot
       ach->AddFail(mess);
     }
 
-    Standard_Integer rflag = ent->RotateFlag(i);
+    int rflag = ent->RotateFlag(i);
     if ((rflag < 0) || (rflag > 1))
     {
       char mess[80];
@@ -509,13 +508,13 @@ void IGESDimen_ToolNewGeneralNote::OwnCheck(const Handle(IGESDimen_NewGeneralNot
   }
 }
 
-void IGESDimen_ToolNewGeneralNote::OwnDump(const Handle(IGESDimen_NewGeneralNote)& ent,
-                                           const IGESData_IGESDumper&              dumper,
-                                           Standard_OStream&                       S,
-                                           const Standard_Integer                  level) const
+void IGESDimen_ToolNewGeneralNote::OwnDump(const occ::handle<IGESDimen_NewGeneralNote>& ent,
+                                           const IGESData_IGESDumper&                   dumper,
+                                           Standard_OStream&                            S,
+                                           const int                                    level) const
 {
-  Standard_Integer sublevel = (level > 4) ? 1 : 0;
-  Standard_Integer nbval    = ent->NbStrings();
+  int sublevel = (level > 4) ? 1 : 0;
+  int nbval    = ent->NbStrings();
 
   S << "IGESDimen_NewGeneralNote\n"
     << "Text Area  : Width : " << ent->TextWidth() << "  "
@@ -553,7 +552,7 @@ void IGESDimen_ToolNewGeneralNote::OwnDump(const Handle(IGESDimen_NewGeneralNote
   if (level > 4)
   {
     S << "Details of each String\n";
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
       S << "[" << i << "]:\n"
         << "Character Display : " << ent->CharacterDisplay(i) << "  "

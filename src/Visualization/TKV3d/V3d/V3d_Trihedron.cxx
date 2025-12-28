@@ -32,20 +32,20 @@ namespace
 {
 //! Compensates difference between old implementation (without transform persistence) and current
 //! implementation.
-constexpr Standard_Real THE_INTERNAL_SCALE_FACTOR = 500.0;
+constexpr double THE_INTERNAL_SCALE_FACTOR = 500.0;
 
-constexpr Standard_ShortReal THE_CYLINDER_LENGTH      = 0.75f;
-constexpr Standard_Integer   THE_CIRCLE_SERMENTS_NB   = 24;
-constexpr Standard_Real      THE_CIRCLE_SEGMENT_ANGLE = 2.0 * M_PI / THE_CIRCLE_SERMENTS_NB;
+constexpr float  THE_CYLINDER_LENGTH      = 0.75f;
+constexpr int    THE_CIRCLE_SERMENTS_NB   = 24;
+constexpr double THE_CIRCLE_SEGMENT_ANGLE = 2.0 * M_PI / THE_CIRCLE_SERMENTS_NB;
 
 //! Create new or return existing group in the structure at specified position.
 //! @param theStruct     [in]     structure holding graphic groups
 //! @param theGroupIndex [in/out] group position, will be incremented as output
-static Handle(Graphic3d_Group) addGroup(const Handle(Graphic3d_Structure)& theStruct,
-                                        Standard_Integer&                  theGroupIter)
+static occ::handle<Graphic3d_Group> addGroup(const occ::handle<Graphic3d_Structure>& theStruct,
+                                             int&                                    theGroupIter)
 {
-  const Graphic3d_SequenceOfGroup& aGroups     = theStruct->Groups();
-  const Standard_Integer           aGroupIndex = theGroupIter++;
+  const NCollection_Sequence<occ::handle<Graphic3d_Group>>& aGroups     = theStruct->Groups();
+  const int                                                 aGroupIndex = theGroupIter++;
   if (!aGroups.IsEmpty() && aGroupIndex <= aGroups.Upper())
   {
     return aGroups.Value(aGroupIndex);
@@ -61,15 +61,15 @@ class V3d_Trihedron::TrihedronStructure : public Graphic3d_Structure
 {
 public:
   //! Main constructor.
-  TrihedronStructure(const Handle(Graphic3d_StructureManager)& theManager,
-                     V3d_Trihedron*                            theTrihedron)
+  TrihedronStructure(const occ::handle<Graphic3d_StructureManager>& theManager,
+                     V3d_Trihedron*                                 theTrihedron)
       : Graphic3d_Structure(theManager),
         myTrihedron(theTrihedron)
   {
   }
 
   //! Override method to redirect to V3d_Trihedron.
-  virtual void Compute() Standard_OVERRIDE { myTrihedron->compute(); }
+  virtual void Compute() override { myTrihedron->compute(); }
 
 private:
   V3d_Trihedron* myTrihedron;
@@ -82,8 +82,8 @@ V3d_Trihedron::V3d_Trihedron()
       myRatio(0.8),
       myDiameter(0.05),
       myNbFacettes(12),
-      myIsWireframe(Standard_False),
-      myToCompute(Standard_True)
+      myIsWireframe(false),
+      myToCompute(true)
 {
   myTransformPers = new Graphic3d_TransformPers(Graphic3d_TMF_TriedronPers, Aspect_TOTP_LEFT_LOWER);
   SetPosition(Aspect_TOTP_LEFT_LOWER);
@@ -93,7 +93,7 @@ V3d_Trihedron::V3d_Trihedron()
   aShadingMaterial.SetSpecularColor(Quantity_NOC_BLACK);
   aShadingMaterial.SetMaterialType(Graphic3d_MATERIAL_ASPECT);
 
-  for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
+  for (int anIt = 0; anIt < 3; ++anIt)
   {
     myArrowShadingAspects[anIt] = new Prs3d_ShadingAspect();
     myTextAspects[anIt]         = new Prs3d_TextAspect();
@@ -174,7 +174,7 @@ void V3d_Trihedron::SetArrowsColor(const Quantity_Color& theXColor,
                                    const Quantity_Color& theZColor)
 {
   const Quantity_Color aColors[3] = {theXColor, theYColor, theZColor};
-  for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
+  for (int anIt = 0; anIt < 3; ++anIt)
   {
     myArrowShadingAspects[anIt]->SetColor(aColors[anIt]);
   }
@@ -182,7 +182,7 @@ void V3d_Trihedron::SetArrowsColor(const Quantity_Color& theXColor,
 
 //=================================================================================================
 
-void V3d_Trihedron::SetScale(const Standard_Real theScale)
+void V3d_Trihedron::SetScale(const double theScale)
 {
   if (std::abs(myScale - theScale) > Precision::Confusion())
   {
@@ -193,7 +193,7 @@ void V3d_Trihedron::SetScale(const Standard_Real theScale)
 
 //=================================================================================================
 
-void V3d_Trihedron::SetSizeRatio(const Standard_Real theRatio)
+void V3d_Trihedron::SetSizeRatio(const double theRatio)
 {
   if (std::abs(myRatio - theRatio) > Precision::Confusion())
   {
@@ -204,7 +204,7 @@ void V3d_Trihedron::SetSizeRatio(const Standard_Real theRatio)
 
 //=================================================================================================
 
-void V3d_Trihedron::SetArrowDiameter(const Standard_Real theDiam)
+void V3d_Trihedron::SetArrowDiameter(const double theDiam)
 {
   if (std::abs(myDiameter - theDiam) > Precision::Confusion())
   {
@@ -215,7 +215,7 @@ void V3d_Trihedron::SetArrowDiameter(const Standard_Real theDiam)
 
 //=================================================================================================
 
-void V3d_Trihedron::SetNbFacets(const Standard_Integer theNbFacets)
+void V3d_Trihedron::SetNbFacets(const int theNbFacets)
 {
   if (std::abs(myNbFacettes - theNbFacets) > 0)
   {
@@ -234,11 +234,11 @@ void V3d_Trihedron::Display(const V3d_View& theView)
     myStructure->SetTransformPersistence(myTransformPers);
     myStructure->SetZLayer(Graphic3d_ZLayerId_Topmost);
     myStructure->SetDisplayPriority(Graphic3d_DisplayPriority_Highlight);
-    myStructure->SetInfiniteState(Standard_True);
+    myStructure->SetInfiniteState(true);
     myStructure->CStructure()->ViewAffinity = new Graphic3d_ViewAffinity();
-    myStructure->CStructure()->ViewAffinity->SetVisible(Standard_False);
+    myStructure->CStructure()->ViewAffinity->SetVisible(false);
     myStructure->CStructure()->ViewAffinity->SetVisible(theView.View()->Identification(), true);
-    myToCompute = Standard_True;
+    myToCompute = true;
   }
   if (myToCompute)
   {
@@ -263,14 +263,14 @@ void V3d_Trihedron::Erase()
 
 void V3d_Trihedron::SetPosition(const Aspect_TypeOfTriedronPosition thePosition)
 {
-  Graphic3d_Vec2i anOffset(0, 0);
+  NCollection_Vec2<int> anOffset(0, 0);
   if ((thePosition & (Aspect_TOTP_LEFT | Aspect_TOTP_RIGHT)) != 0)
   {
-    anOffset.x() = static_cast<Standard_Integer>(myScale * THE_INTERNAL_SCALE_FACTOR);
+    anOffset.x() = static_cast<int>(myScale * THE_INTERNAL_SCALE_FACTOR);
   }
   if ((thePosition & (Aspect_TOTP_TOP | Aspect_TOTP_BOTTOM)) != 0)
   {
-    anOffset.y() = static_cast<Standard_Integer>(myScale * THE_INTERNAL_SCALE_FACTOR);
+    anOffset.y() = static_cast<int>(myScale * THE_INTERNAL_SCALE_FACTOR);
   }
 
   myTransformPers->SetCorner2d(thePosition);
@@ -281,28 +281,28 @@ void V3d_Trihedron::SetPosition(const Aspect_TypeOfTriedronPosition thePosition)
 
 void V3d_Trihedron::compute()
 {
-  myToCompute = Standard_False;
-  myStructure->GraphicClear(Standard_False);
+  myToCompute = false;
+  myStructure->GraphicClear(false);
 
   // Create trihedron.
-  const Standard_Real aScale          = myScale * myRatio * THE_INTERNAL_SCALE_FACTOR;
-  const Standard_Real aCylinderLength = aScale * THE_CYLINDER_LENGTH;
-  const Standard_Real aCylinderRadius = aScale * myDiameter;
-  const Standard_Real aConeRadius     = myIsWireframe ? aCylinderRadius : (aCylinderRadius * 2.0);
-  const Standard_Real aConeLength     = aScale * (1.0 - THE_CYLINDER_LENGTH);
-  const Standard_Real aSphereRadius   = aCylinderRadius * 2.0;
-  const Standard_Real aRayon          = aScale / 30.0;
-  Standard_Integer    aGroupIter      = myStructure->Groups().Lower();
+  const double aScale          = myScale * myRatio * THE_INTERNAL_SCALE_FACTOR;
+  const double aCylinderLength = aScale * THE_CYLINDER_LENGTH;
+  const double aCylinderRadius = aScale * myDiameter;
+  const double aConeRadius     = myIsWireframe ? aCylinderRadius : (aCylinderRadius * 2.0);
+  const double aConeLength     = aScale * (1.0 - THE_CYLINDER_LENGTH);
+  const double aSphereRadius   = aCylinderRadius * 2.0;
+  const double aRayon          = aScale / 30.0;
+  int          aGroupIter      = myStructure->Groups().Lower();
   {
-    Handle(Graphic3d_Group) aSphereGroup = addGroup(myStructure, aGroupIter);
+    occ::handle<Graphic3d_Group> aSphereGroup = addGroup(myStructure, aGroupIter);
     aSphereGroup->SetClosed(!myIsWireframe);
 
     // Display origin.
     if (myIsWireframe)
     {
-      Handle(Graphic3d_ArrayOfPolylines) anCircleArray =
+      occ::handle<Graphic3d_ArrayOfPolylines> anCircleArray =
         new Graphic3d_ArrayOfPolylines(THE_CIRCLE_SERMENTS_NB + 2);
-      for (Standard_Integer anIt = THE_CIRCLE_SERMENTS_NB; anIt >= 0; --anIt)
+      for (int anIt = THE_CIRCLE_SERMENTS_NB; anIt >= 0; --anIt)
       {
         anCircleArray->AddVertex(aRayon * std::sin(anIt * THE_CIRCLE_SEGMENT_ANGLE),
                                  aRayon * std::cos(anIt * THE_CIRCLE_SEGMENT_ANGLE),
@@ -327,14 +327,14 @@ void V3d_Trihedron::compute()
   // Display axes.
   {
     const gp_Ax1 anAxes[3] = {gp::OX(), gp::OY(), gp::OZ()};
-    for (Standard_Integer anIter = 0; anIter < 3; ++anIter)
+    for (int anIter = 0; anIter < 3; ++anIter)
     {
-      Handle(Graphic3d_Group) anAxisGroup = addGroup(myStructure, aGroupIter);
+      occ::handle<Graphic3d_Group> anAxisGroup = addGroup(myStructure, aGroupIter);
       anAxisGroup->SetClosed(!myIsWireframe);
       if (myIsWireframe)
       {
         // create a tube
-        Handle(Graphic3d_ArrayOfPrimitives) anArray = new Graphic3d_ArrayOfSegments(2);
+        occ::handle<Graphic3d_ArrayOfPrimitives> anArray = new Graphic3d_ArrayOfSegments(2);
         anArray->AddVertex(0.0f, 0.0f, 0.0f);
         anArray->AddVertex(anAxes[anIter].Direction().XYZ() * aCylinderLength);
 
@@ -342,7 +342,7 @@ void V3d_Trihedron::compute()
         anAxisGroup->AddPrimitiveArray(anArray);
       }
 
-      Handle(Graphic3d_ArrayOfTriangles) aTriangles =
+      occ::handle<Graphic3d_ArrayOfTriangles> aTriangles =
         Prs3d_Arrow::DrawShaded(anAxes[anIter],
                                 myIsWireframe ? 0.0 : aCylinderRadius,
                                 aCylinderLength + aConeLength,
@@ -356,11 +356,11 @@ void V3d_Trihedron::compute()
 
   // Display labels.
   {
-    Handle(Graphic3d_Group) aLabelGroup = addGroup(myStructure, aGroupIter);
-    const gp_Pnt            aPoints[3]  = {gp_Pnt(aScale + 2.0 * aRayon, 0.0, -aRayon),
-                                           gp_Pnt(aRayon, aScale + 3.0 * aRayon, 2.0 * aRayon),
-                                           gp_Pnt(-2.0 * aRayon, 0.5 * aRayon, aScale + 3.0 * aRayon)};
-    for (Standard_Integer anAxisIter = 0; anAxisIter < 3; ++anAxisIter)
+    occ::handle<Graphic3d_Group> aLabelGroup = addGroup(myStructure, aGroupIter);
+    const gp_Pnt                 aPoints[3]  = {gp_Pnt(aScale + 2.0 * aRayon, 0.0, -aRayon),
+                                                gp_Pnt(aRayon, aScale + 3.0 * aRayon, 2.0 * aRayon),
+                                                gp_Pnt(-2.0 * aRayon, 0.5 * aRayon, aScale + 3.0 * aRayon)};
+    for (int anAxisIter = 0; anAxisIter < 3; ++anAxisIter)
     {
       Prs3d_Text::Draw(aLabelGroup,
                        myTextAspects[anAxisIter],
@@ -372,20 +372,20 @@ void V3d_Trihedron::compute()
 
 //=================================================================================================
 
-void V3d_Trihedron::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void V3d_Trihedron::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, mySphereShadingAspect.get())
 
-  for (Standard_Integer anIter = 0; anIter < 3; anIter++)
+  for (int anIter = 0; anIter < 3; anIter++)
   {
-    const Handle(Prs3d_TextAspect)& aTextAspect = myTextAspects[anIter];
+    const occ::handle<Prs3d_TextAspect>& aTextAspect = myTextAspects[anIter];
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aTextAspect.get())
   }
-  for (Standard_Integer anIter = 0; anIter < 3; anIter++)
+  for (int anIter = 0; anIter < 3; anIter++)
   {
-    const Handle(Prs3d_ShadingAspect)& anArrowShadinAspect = myArrowShadingAspects[anIter];
+    const occ::handle<Prs3d_ShadingAspect>& anArrowShadinAspect = myArrowShadingAspects[anIter];
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anArrowShadinAspect.get())
   }
 

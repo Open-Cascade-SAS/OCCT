@@ -40,19 +40,19 @@ public: //! @name general methods
 
   //! Setup list of global (for entire view) clipping planes
   //! and clears local plane list if it was not released before.
-  Standard_EXPORT void Reset(const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
+  Standard_EXPORT void Reset(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes);
 
   //! Setup list of local (for current object) clipping planes.
-  Standard_EXPORT void SetLocalPlanes(const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
+  Standard_EXPORT void SetLocalPlanes(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes);
 
   //! @return true if there are enabled capping planes
-  Standard_Boolean IsCappingOn() const { return myNbCapping > 0; }
+  bool IsCappingOn() const { return myNbCapping > 0; }
 
   //! @return true if there are enabled clipping or capping planes
-  Standard_Boolean IsClippingOrCappingOn() const { return NbClippingOrCappingOn() > 0; }
+  bool IsClippingOrCappingOn() const { return NbClippingOrCappingOn() > 0; }
 
   //! @return number of enabled clipping + capping planes
-  Standard_Integer NbClippingOrCappingOn() const
+  int NbClippingOrCappingOn() const
   {
     if (IsCappingDisableAllExcept())
     {
@@ -63,12 +63,12 @@ public: //! @name general methods
   }
 
   //! Return TRUE if there are clipping chains in the list (defining more than 1 sub-plane)
-  Standard_Boolean HasClippingChains() const
+  bool HasClippingChains() const
   {
     if (IsCappingDisableAllExcept() // all chains are disabled - only single (sub) plane is active;
         || myNbChains == (myNbClipping + myNbCapping)) // no sub-planes
     {
-      return Standard_False;
+      return false;
     }
     return !IsCappingEnableAllExcept() || myCappedChain->NbChainNextPlanes() == 1
            || myNbChains > 1; // if capping filter ON - chains counter should be decremented
@@ -76,11 +76,10 @@ public: //! @name general methods
 
 public: //! @name advanced method for disabling defined planes
   //! Return true if some clipping planes have been temporarily disabled.
-  Standard_Boolean HasDisabled() const { return myNbDisabled > 0; }
+  bool HasDisabled() const { return myNbDisabled > 0; }
 
   //! Disable plane temporarily.
-  Standard_EXPORT Standard_Boolean SetEnabled(const OpenGl_ClippingIterator& thePlane,
-                                              const Standard_Boolean         theIsEnabled);
+  Standard_EXPORT bool SetEnabled(const OpenGl_ClippingIterator& thePlane, const bool theIsEnabled);
 
   //! Temporarily disable all planes from the global (view) list, keep only local (object) list.
   Standard_EXPORT void DisableGlobal();
@@ -92,11 +91,11 @@ public: //! @name advanced method for disabling defined planes
   //! @name capping algorithm filter
 public:
   //! Chain which is either temporary disabled or the only one enabled for Capping algorithm.
-  const Handle(Graphic3d_ClipPlane)& CappedChain() const { return myCappedChain; }
+  const occ::handle<Graphic3d_ClipPlane>& CappedChain() const { return myCappedChain; }
 
   //! Sub-plane index within filtered Chain; positive number for DisableAllExcept and negative for
   //! EnableAllExcept.
-  Standard_Integer CappedSubPlane() const { return myCappedSubPlane; }
+  int CappedSubPlane() const { return myCappedSubPlane; }
 
   //! Return TRUE if capping algorithm is in state, when all clipping planes are temporarily
   //! disabled except currently processed one.
@@ -112,13 +111,13 @@ public:
 
   //! Temporarily disable all planes except specified one for Capping algorithm.
   //! Does not affect already disabled planes.
-  Standard_EXPORT void DisableAllExcept(const Handle(Graphic3d_ClipPlane)& theChain,
-                                        const Standard_Integer             theSubPlaneIndex);
+  Standard_EXPORT void DisableAllExcept(const occ::handle<Graphic3d_ClipPlane>& theChain,
+                                        const int                               theSubPlaneIndex);
 
   //! Enable back planes disabled by ::DisableAllExcept() for Capping algorithm.
   //! Keeps only specified plane enabled.
-  Standard_EXPORT void EnableAllExcept(const Handle(Graphic3d_ClipPlane)& theChain,
-                                       const Standard_Integer             theSubPlaneIndex);
+  Standard_EXPORT void EnableAllExcept(const occ::handle<Graphic3d_ClipPlane>& theChain,
+                                       const int                               theSubPlaneIndex);
 
   //! Resets chain filter for Capping algorithm.
   Standard_EXPORT void ResetCappingFilter();
@@ -136,27 +135,27 @@ protected: //! @name clipping state modification commands
   //! @param thePlanes [in/out] the list of planes to be added
   //! The list then provides information on which planes were really added to clipping state.
   //! This list then can be used to fall back to previous state.
-  Standard_EXPORT void add(const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes,
-                           const Standard_Integer                        theStartIndex);
+  Standard_EXPORT void add(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes,
+                           const int                                          theStartIndex);
 
   //! Remove the passed set of clipping planes from the context state.
   //! @param[in] thePlanes  the planes to remove from list.
-  Standard_EXPORT void remove(const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes,
-                              const Standard_Integer                        theStartIndex);
+  Standard_EXPORT void remove(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes,
+                              const int                                          theStartIndex);
 
 private:
-  Handle(Graphic3d_SequenceOfHClipPlane) myPlanesGlobal;   //!< global clipping planes
-  Handle(Graphic3d_SequenceOfHClipPlane) myPlanesLocal;    //!< object clipping planes
-  NCollection_Vector<Standard_Boolean>   myDisabledPlanes; //!< ids of disabled planes
+  occ::handle<Graphic3d_SequenceOfHClipPlane> myPlanesGlobal;   //!< global clipping planes
+  occ::handle<Graphic3d_SequenceOfHClipPlane> myPlanesLocal;    //!< object clipping planes
+  NCollection_Vector<bool>                    myDisabledPlanes; //!< ids of disabled planes
 
   // clang-format off
-  Handle(Graphic3d_ClipPlane)              myCappedChain;    //!< chain which is either temporary disabled or the only one enabled for Capping algorithm
-  Standard_Integer                         myCappedSubPlane; //!< sub-plane index within filtered chain; positive number for DisableAllExcept and negative for EnableAllExcept
+  occ::handle<Graphic3d_ClipPlane>              myCappedChain;    //!< chain which is either temporary disabled or the only one enabled for Capping algorithm
+  int                         myCappedSubPlane; //!< sub-plane index within filtered chain; positive number for DisableAllExcept and negative for EnableAllExcept
 
-  Standard_Integer                         myNbClipping;     //!< number of enabled clipping-only planes (NOT capping)
-  Standard_Integer                         myNbCapping;      //!< number of enabled capping planes
-  Standard_Integer                         myNbChains;       //!< number of enabled chains
-  Standard_Integer                         myNbDisabled;     //!< number of defined but disabled planes
+  int                         myNbClipping;     //!< number of enabled clipping-only planes (NOT capping)
+  int                         myNbCapping;      //!< number of enabled capping planes
+  int                         myNbChains;       //!< number of enabled chains
+  int                         myNbDisabled;     //!< number of defined but disabled planes
   // clang-format on
 
 private:

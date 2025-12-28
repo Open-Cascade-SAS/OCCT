@@ -68,64 +68,65 @@ public:
   //! 16 -> ShapeAspect
   //! 17 -> ShapeAspectRelationship
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a AppliedApprovalAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedApprovalAssignment) AppliedApprovalAssignment() const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedApprovalAssignment> AppliedApprovalAssignment()
+    const;
 
   //! returns Value as a AppliedDateAndTimeAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedDateAndTimeAssignment) AppliedDateAndTimeAssignment()
+  Standard_EXPORT occ::handle<StepAP214_AppliedDateAndTimeAssignment> AppliedDateAndTimeAssignment()
     const;
 
   //! returns Value as a AppliedDateAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedDateAssignment) AppliedDateAssignment() const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedDateAssignment> AppliedDateAssignment() const;
 
   //! returns Value as a AppliedDocumentReference (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedDocumentReference) AppliedDocumentReference() const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedDocumentReference> AppliedDocumentReference() const;
 
   //! returns Value as a AppliedExternalIdentificationAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedExternalIdentificationAssignment)
-    AppliedExternalIdentificationAssignment() const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedExternalIdentificationAssignment>
+                  AppliedExternalIdentificationAssignment() const;
 
   //! returns Value as a AppliedGroupAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedGroupAssignment) AppliedGroupAssignment() const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedGroupAssignment> AppliedGroupAssignment() const;
 
   //! returns Value as a AppliedOrganizationAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment()
-    const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedOrganizationAssignment>
+                  AppliedOrganizationAssignment() const;
 
   //! returns Value as a AppliedPersonAndOrganizationAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedPersonAndOrganizationAssignment)
-    AppliedPersonAndOrganizationAssignment() const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment>
+                  AppliedPersonAndOrganizationAssignment() const;
 
   //! returns Value as a AppliedSecurityClassificationAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedSecurityClassificationAssignment)
-    AppliedSecurityClassificationAssignment() const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedSecurityClassificationAssignment>
+                  AppliedSecurityClassificationAssignment() const;
 
   //! returns Value as a DimensionalSize (Null if another type)
-  Standard_EXPORT Handle(StepShape_DimensionalSize) DimensionalSize() const;
+  Standard_EXPORT occ::handle<StepShape_DimensionalSize> DimensionalSize() const;
 
   //! returns Value as a GeneralProperty (Null if another type)
-  Standard_EXPORT Handle(StepBasic_GeneralProperty) GeneralProperty() const;
+  Standard_EXPORT occ::handle<StepBasic_GeneralProperty> GeneralProperty() const;
 
   //! returns Value as a GeometricTolerance (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_GeometricTolerance) GeometricTolerance() const;
+  Standard_EXPORT occ::handle<StepDimTol_GeometricTolerance> GeometricTolerance() const;
 
   //! returns Value as a ProductDefinitionRelationship (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship>
+                  ProductDefinitionRelationship() const;
 
   //! returns Value as a PropertyDefinition (Null if another type)
-  Standard_EXPORT Handle(StepRepr_PropertyDefinition) PropertyDefinition() const;
+  Standard_EXPORT occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;
 
   //! returns Value as a PropertyDefinitionRelationship (Null if another type)
-  Standard_EXPORT Handle(StepRepr_PropertyDefinitionRelationship) PropertyDefinitionRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepRepr_PropertyDefinitionRelationship>
+                  PropertyDefinitionRelationship() const;
 
   //! returns Value as a ShapeAspect (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 
   //! returns Value as a ShapeAspectRelationship (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship() const;
 };
 #endif // _StepAP242_ItemIdentifiedRepresentationUsageDefinition_HeaderFile

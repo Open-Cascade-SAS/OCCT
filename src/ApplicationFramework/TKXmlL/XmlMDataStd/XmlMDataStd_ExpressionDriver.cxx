@@ -18,7 +18,7 @@
 #include <TDataStd_Expression.hxx>
 #include <TDataStd_Variable.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
+#include <NCollection_List.hxx>
 #include <XmlMDataStd_ExpressionDriver.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
@@ -29,14 +29,14 @@ IMPLEMENT_DOMSTRING(VariablesString, "variables")
 //=================================================================================================
 
 XmlMDataStd_ExpressionDriver::XmlMDataStd_ExpressionDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_ExpressionDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_ExpressionDriver::NewEmpty() const
 {
   return (new TDataStd_Expression());
 }
@@ -45,15 +45,14 @@ Handle(TDF_Attribute) XmlMDataStd_ExpressionDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataStd_ExpressionDriver::Paste(
-  const XmlObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  XmlObjMgt_RRelocationTable&  theRelocTable) const
+bool XmlMDataStd_ExpressionDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                         const occ::handle<TDF_Attribute>& theTarget,
+                                         XmlObjMgt_RRelocationTable&       theRelocTable) const
 {
-  Handle(TDataStd_Expression) aC     = Handle(TDataStd_Expression)::DownCast(theTarget);
-  const XmlObjMgt_Element&    anElem = theSource;
+  occ::handle<TDataStd_Expression> aC     = occ::down_cast<TDataStd_Expression>(theTarget);
+  const XmlObjMgt_Element&         anElem = theSource;
 
-  Standard_Integer           aNb;
+  int                        aNb;
   TCollection_ExtendedString aMsgString;
 
   // expression
@@ -62,7 +61,7 @@ Standard_Boolean XmlMDataStd_ExpressionDriver::Paste(
   {
     myMessageDriver->Send("error retrieving ExtendedString for type TDataStd_Expression",
                           Message_Fail);
-    return Standard_False;
+    return false;
   }
   aC->SetExpression(aString);
 
@@ -70,7 +69,7 @@ Standard_Boolean XmlMDataStd_ExpressionDriver::Paste(
   XmlObjMgt_DOMString aDOMStr = anElem.getAttribute(::VariablesString());
   if (aDOMStr != NULL)
   {
-    Standard_CString aVs = Standard_CString(aDOMStr.GetString());
+    const char* aVs = static_cast<const char*>(aDOMStr.GetString());
 
     // first variable
     if (!XmlObjMgt::GetInteger(aVs, aNb))
@@ -80,13 +79,13 @@ Standard_Boolean XmlMDataStd_ExpressionDriver::Paste(
           "XmlMDataStd_ExpressionDriver: Cannot retrieve reference on first variable from \"")
         + aDOMStr + "\"";
       myMessageDriver->Send(aMsgString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     while (aNb > 0)
     {
-      Handle(TDF_Attribute) aV;
+      occ::handle<TDF_Attribute> aV;
       if (theRelocTable.IsBound(aNb))
-        aV = Handle(TDataStd_Variable)::DownCast(theRelocTable.Find(aNb));
+        aV = occ::down_cast<TDataStd_Variable>(theRelocTable.Find(aNb));
       else
       {
         aV = new TDataStd_Variable;
@@ -100,32 +99,32 @@ Standard_Boolean XmlMDataStd_ExpressionDriver::Paste(
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataStd_ExpressionDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                         XmlObjMgt_Persistent&        theTarget,
-                                         XmlObjMgt_SRelocationTable&  theRelocTable) const
+void XmlMDataStd_ExpressionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                         XmlObjMgt_Persistent&             theTarget,
+                                         XmlObjMgt_SRelocationTable&       theRelocTable) const
 {
-  Handle(TDataStd_Expression) aC     = Handle(TDataStd_Expression)::DownCast(theSource);
-  XmlObjMgt_Element&          anElem = theTarget;
+  occ::handle<TDataStd_Expression> aC     = occ::down_cast<TDataStd_Expression>(theSource);
+  XmlObjMgt_Element&               anElem = theTarget;
 
-  Standard_Integer      aNb;
-  Handle(TDF_Attribute) TV;
+  int                        aNb;
+  occ::handle<TDF_Attribute> TV;
 
   // expression
   XmlObjMgt::SetExtendedString(theTarget, aC->Name());
 
   // variables
-  Standard_Integer nbvar = aC->GetVariables().Extent();
+  int nbvar = aC->GetVariables().Extent();
   if (nbvar >= 1)
   {
-    TCollection_AsciiString         aGsStr;
-    TDF_ListIteratorOfAttributeList it;
+    TCollection_AsciiString                                aGsStr;
+    NCollection_List<occ::handle<TDF_Attribute>>::Iterator it;
     for (it.Initialize(aC->GetVariables()); it.More(); it.Next())
     {
       TV = it.Value();

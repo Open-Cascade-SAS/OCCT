@@ -26,9 +26,7 @@ protected:
   void TearDown() override {}
 
   // Helper to compare floating point values
-  bool IsNear(Standard_Real theValue1,
-              Standard_Real theValue2,
-              Standard_Real theTolerance = 0.001) const
+  bool IsNear(double theValue1, double theValue2, double theTolerance = 0.001) const
   {
     return std::abs(theValue1 - theValue2) < theTolerance;
   }
@@ -65,7 +63,7 @@ TEST_F(Quantity_ColorRGBATest, ConstexprGetters)
   const Quantity_ColorRGBA aColor(0.2f, 0.4f, 0.6f, 0.8f);
 
   // These should work with constexpr
-  Standard_ShortReal aAlpha = aColor.Alpha();
+  float aAlpha = aColor.Alpha();
   EXPECT_TRUE(IsNear(0.8f, aAlpha));
 }
 

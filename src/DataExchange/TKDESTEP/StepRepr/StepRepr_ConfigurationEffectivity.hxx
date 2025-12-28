@@ -25,9 +25,6 @@ class StepRepr_ConfigurationDesign;
 class TCollection_HAsciiString;
 class StepBasic_ProductDefinitionRelationship;
 
-class StepRepr_ConfigurationEffectivity;
-DEFINE_STANDARD_HANDLE(StepRepr_ConfigurationEffectivity, StepBasic_ProductDefinitionEffectivity)
-
 //! Representation of STEP entity ConfigurationEffectivity
 class StepRepr_ConfigurationEffectivity : public StepBasic_ProductDefinitionEffectivity
 {
@@ -38,21 +35,21 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                aEffectivity_Id,
-    const Handle(StepBasic_ProductDefinitionRelationship)& aProductDefinitionEffectivity_Usage,
-    const Handle(StepRepr_ConfigurationDesign)&            aConfiguration);
+    const occ::handle<TCollection_HAsciiString>&                aEffectivity_Id,
+    const occ::handle<StepBasic_ProductDefinitionRelationship>& aProductDefinitionEffectivity_Usage,
+    const occ::handle<StepRepr_ConfigurationDesign>&            aConfiguration);
 
   //! Returns field Configuration
-  Standard_EXPORT Handle(StepRepr_ConfigurationDesign) Configuration() const;
+  Standard_EXPORT occ::handle<StepRepr_ConfigurationDesign> Configuration() const;
 
   //! Set field Configuration
-  Standard_EXPORT void SetConfiguration(const Handle(StepRepr_ConfigurationDesign)& Configuration);
+  Standard_EXPORT void SetConfiguration(
+    const occ::handle<StepRepr_ConfigurationDesign>& Configuration);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ConfigurationEffectivity, StepBasic_ProductDefinitionEffectivity)
 
-protected:
 private:
-  Handle(StepRepr_ConfigurationDesign) theConfiguration;
+  occ::handle<StepRepr_ConfigurationDesign> theConfiguration;
 };
 
 #endif // _StepRepr_ConfigurationEffectivity_HeaderFile

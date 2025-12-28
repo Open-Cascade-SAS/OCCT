@@ -33,7 +33,7 @@ void StdLPersistent_Value::integer<AttribClass>::ImportAttribute()
 template <class AttribClass, class HStringClass>
 void StdLPersistent_Value::string<AttribClass, HStringClass>::ImportAttribute()
 {
-  Handle(HStringClass) anHString = Handle(HStringClass)::DownCast(this->myData);
+  occ::handle<HStringClass> anHString = occ::down_cast<HStringClass>(this->myData);
   if (anHString)
   {
     this->myTransient->Set(anHString->Value()->String());
@@ -70,13 +70,13 @@ void StdLPersistent_Value::string<TDataStd_UAttribute>::ImportAttribute()
 // function : CreateAttribute
 // purpose  : Create an empty transient attribute
 //=======================================================================
-Handle(TDF_Attribute) StdLPersistent_Value::UAttribute::CreateAttribute()
+occ::handle<TDF_Attribute> StdLPersistent_Value::UAttribute::CreateAttribute()
 {
   string<TDataStd_UAttribute, StdLPersistent_HString::Extended>::CreateAttribute();
 
   if (this->myData)
   {
-    Handle(TCollection_HExtendedString) aString = this->myData->ExtString();
+    occ::handle<TCollection_HExtendedString> aString = this->myData->ExtString();
     if (aString)
       this->myTransient->SetID(Standard_GUID(aString->String().ToExtString()));
     this->myData.Nullify();
@@ -86,7 +86,7 @@ Handle(TDF_Attribute) StdLPersistent_Value::UAttribute::CreateAttribute()
 }
 
 //=======================================================================
-Handle(TDF_Attribute) StdLPersistent_Value::Integer::CreateAttribute()
+occ::handle<TDF_Attribute> StdLPersistent_Value::Integer::CreateAttribute()
 {
   integer<TDataStd_Integer>::CreateAttribute();
 
@@ -99,7 +99,7 @@ Handle(TDF_Attribute) StdLPersistent_Value::Integer::CreateAttribute()
 }
 
 //=======================================================================
-Handle(TDF_Attribute) StdLPersistent_Value::Name::CreateAttribute()
+occ::handle<TDF_Attribute> StdLPersistent_Value::Name::CreateAttribute()
 {
   string<TDataStd_Name>::CreateAttribute();
 
@@ -112,7 +112,7 @@ Handle(TDF_Attribute) StdLPersistent_Value::Name::CreateAttribute()
 }
 
 //=======================================================================
-Handle(TDF_Attribute) StdLPersistent_Value::AsciiString::CreateAttribute()
+occ::handle<TDF_Attribute> StdLPersistent_Value::AsciiString::CreateAttribute()
 {
   string<TDataStd_AsciiString, StdLPersistent_HString::Ascii>::CreateAttribute();
 

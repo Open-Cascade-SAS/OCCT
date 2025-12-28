@@ -21,11 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <BRepFill_ThruSectionErrorStatus.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopoDS_Shell.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BRepTools_ReShape.hxx>
 class TopoDS_Wire;
 class TopoDS_Shape;
@@ -49,11 +50,15 @@ public:
   const TopoDS_Shell& Shell() const;
 
   //! Returns all the shapes created
-  Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Generated() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape,
+                                            NCollection_List<TopoDS_Shape>,
+                                            TopTools_ShapeMapHasher>&
+                        Generated() const;
 
   //! Returns the shapes created from a subshape
   //! <SSection> of a section.
-  Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Shape& SSection) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(
+    const TopoDS_Shape& SSection) const;
 
   //! Returns a modified shape in the constructed shell,
   //! If shape is not changed (replaced) during operation => returns the same shape
@@ -62,23 +67,22 @@ public:
   //! Sets the mutable input state
   //! If true then the input profile can be modified
   //! inside the operation. Default value is true.
-  Standard_EXPORT void SetMutableInput(const Standard_Boolean theIsMutableInput);
+  Standard_EXPORT void SetMutableInput(const bool theIsMutableInput);
 
   //! Returns the current mutable input state
-  Standard_EXPORT Standard_Boolean IsMutableInput() const;
+  Standard_EXPORT bool IsMutableInput() const;
 
   //! Returns status of the operation
   BRepFill_ThruSectionErrorStatus GetStatus() const { return myStatus; }
 
-protected:
 private:
-  TopTools_SequenceOfShape           myWires;
+  NCollection_Sequence<TopoDS_Shape> myWires;
   TopoDS_Shell                       myShell;
-  TopTools_DataMapOfShapeListOfShape myMap;
-  TopTools_DataMapOfShapeShape       myOldNewShapes;
-  BRepTools_ReShape                  myReshaper;
-  Standard_Boolean                   myMutableInput;
-  BRepFill_ThruSectionErrorStatus    myStatus;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myOldNewShapes;
+  BRepTools_ReShape                                                        myReshaper;
+  bool                                                                     myMutableInput;
+  BRepFill_ThruSectionErrorStatus                                          myStatus;
 };
 
 #include <BRepFill_Generator.lxx>

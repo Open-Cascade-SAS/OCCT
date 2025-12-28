@@ -20,11 +20,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectInList, IFSelect_SelectAnyList)
 
 // ....    Specialization of SelectAnyList in which we process a list
 //         where each item is an Entity
-void IFSelect_SelectInList::FillResult(const Standard_Integer            n1,
-                                       const Standard_Integer            n2,
-                                       const Handle(Standard_Transient)& ent,
-                                       Interface_EntityIterator&         result) const
+void IFSelect_SelectInList::FillResult(const int                              n1,
+                                       const int                              n2,
+                                       const occ::handle<Standard_Transient>& ent,
+                                       Interface_EntityIterator&              result) const
 {
-  for (Standard_Integer i = n1; i <= n2; i++)
+  for (int i = n1; i <= n2; i++)
     result.GetOneItem(ListedEntity(i, ent));
 }

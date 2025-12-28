@@ -23,9 +23,6 @@
 #include <IFSelect_Selection.hxx>
 class IFSelect_SelectionIterator;
 
-class IFSelect_SelectBase;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectBase, IFSelect_Selection)
-
 //! SelectBase works directly from an InterfaceModel : it is the
 //! first base for other Selections.
 class IFSelect_SelectBase : public IFSelect_Selection
@@ -34,12 +31,9 @@ class IFSelect_SelectBase : public IFSelect_Selection
 public:
   //! Puts in an Iterator the Selections from which "me" depends
   //! This list is empty for all SelectBase type Selections
-  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const Standard_OVERRIDE;
+  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectBase, IFSelect_Selection)
-
-protected:
-private:
 };
 
 #endif // _IFSelect_SelectBase_HeaderFile

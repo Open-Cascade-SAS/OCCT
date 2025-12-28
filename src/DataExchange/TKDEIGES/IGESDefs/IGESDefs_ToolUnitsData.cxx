@@ -27,40 +27,40 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
-#include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Interface_ShareTool.hxx>
 
 IGESDefs_ToolUnitsData::IGESDefs_ToolUnitsData() {}
 
-void IGESDefs_ToolUnitsData::ReadOwnParams(const Handle(IGESDefs_UnitsData)& ent,
-                                           const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESDefs_ToolUnitsData::ReadOwnParams(const occ::handle<IGESDefs_UnitsData>& ent,
+                                           const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                            IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  // bool st; //szv#4:S4163:12Mar99 moved down
 
-  Standard_Integer                        nbval;
-  Handle(Interface_HArray1OfHAsciiString) unitTypes;
-  Handle(Interface_HArray1OfHAsciiString) unitValues;
-  Handle(TColStd_HArray1OfReal)           unitScales;
+  int                                                                     nbval;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> unitTypes;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> unitValues;
+  occ::handle<NCollection_HArray1<double>>                                unitScales;
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of Units", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "Number of Units", nbval);
   if (st && nbval > 0)
   {
-    unitTypes  = new Interface_HArray1OfHAsciiString(1, nbval);
-    unitValues = new Interface_HArray1OfHAsciiString(1, nbval);
-    unitScales = new TColStd_HArray1OfReal(1, nbval);
+    unitTypes  = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
+    unitValues = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
+    unitScales = new NCollection_HArray1<double>(1, nbval);
   }
   else
     PR.AddFail("Number of Units: Less than or Equal or zero");
 
   if (!unitTypes.IsNull())
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
-      Handle(TCollection_HAsciiString) unitType;
-      Handle(TCollection_HAsciiString) unitValue;
-      Standard_Real                    unitScale;
+      occ::handle<TCollection_HAsciiString> unitType;
+      occ::handle<TCollection_HAsciiString> unitValue;
+      double                                unitScale;
 
       // st = PR.ReadText(PR.Current(), "Type of Unit", unitType); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadText(PR.Current(), "Type of Unit", unitType))
@@ -81,13 +81,13 @@ void IGESDefs_ToolUnitsData::ReadOwnParams(const Handle(IGESDefs_UnitsData)& ent
   ent->Init(unitTypes, unitValues, unitScales);
 }
 
-void IGESDefs_ToolUnitsData::WriteOwnParams(const Handle(IGESDefs_UnitsData)& ent,
-                                            IGESData_IGESWriter&              IW) const
+void IGESDefs_ToolUnitsData::WriteOwnParams(const occ::handle<IGESDefs_UnitsData>& ent,
+                                            IGESData_IGESWriter&                   IW) const
 {
-  Standard_Integer upper = ent->NbUnits();
+  int upper = ent->NbUnits();
   IW.Send(upper);
 
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
   {
     IW.Send(ent->UnitType(i));
     IW.Send(ent->UnitValue(i));
@@ -95,40 +95,41 @@ void IGESDefs_ToolUnitsData::WriteOwnParams(const Handle(IGESDefs_UnitsData)& en
   }
 }
 
-void IGESDefs_ToolUnitsData::OwnShared(const Handle(IGESDefs_UnitsData)& /* ent */,
+void IGESDefs_ToolUnitsData::OwnShared(const occ::handle<IGESDefs_UnitsData>& /* ent */,
                                        Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESDefs_ToolUnitsData::OwnCopy(const Handle(IGESDefs_UnitsData)& another,
-                                     const Handle(IGESDefs_UnitsData)& ent,
+void IGESDefs_ToolUnitsData::OwnCopy(const occ::handle<IGESDefs_UnitsData>& another,
+                                     const occ::handle<IGESDefs_UnitsData>& ent,
                                      Interface_CopyTool& /* TC */) const
 {
-  Handle(Interface_HArray1OfHAsciiString) unitTypes;
-  Handle(Interface_HArray1OfHAsciiString) unitValues;
-  Handle(TColStd_HArray1OfReal)           unitScales;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> unitTypes;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> unitValues;
+  occ::handle<NCollection_HArray1<double>>                                unitScales;
 
-  Standard_Integer nbval = another->NbUnits();
+  int nbval = another->NbUnits();
 
-  unitTypes  = new Interface_HArray1OfHAsciiString(1, nbval);
-  unitValues = new Interface_HArray1OfHAsciiString(1, nbval);
-  unitScales = new TColStd_HArray1OfReal(1, nbval);
+  unitTypes  = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
+  unitValues = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
+  unitScales = new NCollection_HArray1<double>(1, nbval);
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
-    Handle(TCollection_HAsciiString) unitType = new TCollection_HAsciiString(another->UnitType(i));
+    occ::handle<TCollection_HAsciiString> unitType =
+      new TCollection_HAsciiString(another->UnitType(i));
     unitTypes->SetValue(i, unitType);
-    Handle(TCollection_HAsciiString) unitValue =
+    occ::handle<TCollection_HAsciiString> unitValue =
       new TCollection_HAsciiString(another->UnitValue(i));
     unitValues->SetValue(i, unitValue);
-    Standard_Real unitScale = another->ScaleFactor(i);
+    double unitScale = another->ScaleFactor(i);
     unitScales->SetValue(i, unitScale);
   }
   ent->Init(unitTypes, unitValues, unitScales);
 }
 
 IGESData_DirChecker IGESDefs_ToolUnitsData::DirChecker(
-  const Handle(IGESDefs_UnitsData)& /* ent */) const
+  const occ::handle<IGESDefs_UnitsData>& /* ent */) const
 {
   IGESData_DirChecker DC(316, 0);
   DC.Structure(IGESData_DefVoid);
@@ -142,16 +143,16 @@ IGESData_DirChecker IGESDefs_ToolUnitsData::DirChecker(
   return DC;
 }
 
-void IGESDefs_ToolUnitsData::OwnCheck(const Handle(IGESDefs_UnitsData)& /* ent */,
+void IGESDefs_ToolUnitsData::OwnCheck(const occ::handle<IGESDefs_UnitsData>& /* ent */,
                                       const Interface_ShareTool&,
-                                      Handle(Interface_Check)& /* ach */) const
+                                      occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESDefs_ToolUnitsData::OwnDump(const Handle(IGESDefs_UnitsData)& ent,
+void IGESDefs_ToolUnitsData::OwnDump(const occ::handle<IGESDefs_UnitsData>& ent,
                                      const IGESData_IGESDumper& /* dumper */,
-                                     Standard_OStream&      S,
-                                     const Standard_Integer level) const
+                                     Standard_OStream& S,
+                                     const int         level) const
 {
   S << "IGESDefs_UnitsData\n"
     << "Number of Units : " << ent->NbUnits() << "\n"
@@ -163,8 +164,8 @@ void IGESDefs_ToolUnitsData::OwnDump(const Handle(IGESDefs_UnitsData)& ent,
   if (level > 4)
   {
     S << "Details of the Units\n";
-    Standard_Integer upper = ent->NbUnits();
-    for (Standard_Integer i = 1; i <= upper; i++)
+    int upper = ent->NbUnits();
+    for (int i = 1; i <= upper; i++)
     {
       S << "[" << i << "] Type  : ";
       IGESData_DumpString(S, ent->UnitType(i));

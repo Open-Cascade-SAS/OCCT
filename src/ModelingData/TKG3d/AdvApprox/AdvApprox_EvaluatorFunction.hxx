@@ -17,7 +17,23 @@
 #ifndef _AdvApprox_EvaluatorFunction_HeaderFile
 #define _AdvApprox_EvaluatorFunction_HeaderFile
 
-#include <Standard_PrimitiveTypes.hxx>
+#include <stddef.h>
+
+#include <stdlib.h>
+
+#include <Standard_Macro.hxx>
+
+#include <Standard_Boolean.hxx>
+
+#include <Standard_Integer.hxx>
+
+#include <Standard_Real.hxx>
+
+#include <Standard_Character.hxx>
+
+#include <Standard_ExtCharacter.hxx>
+
+#include <Standard_CString.hxx>
 
 // abv 01.04.2009: the C function pointer converted to a virtual class
 // in order to get rid of usage of static functions and static data
@@ -34,20 +50,20 @@ public:
   virtual ~AdvApprox_EvaluatorFunction() {}
 
   //! Function evaluation method to be defined by descendant
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode) = 0;
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode) = 0;
 
   //! Shortcut for function-call style usage
-  void operator()(Standard_Integer* Dimension,
-                  Standard_Real     StartEnd[2],
-                  Standard_Real*    Parameter,
-                  Standard_Integer* DerivativeRequest,
-                  Standard_Real*    Result, // [Dimension]
-                  Standard_Integer* ErrorCode)
+  void operator()(int*    Dimension,
+                  double  StartEnd[2],
+                  double* Parameter,
+                  int*    DerivativeRequest,
+                  double* Result, // [Dimension]
+                  int*    ErrorCode)
   {
     Evaluate(Dimension, StartEnd, Parameter, DerivativeRequest, Result, ErrorCode);
   }

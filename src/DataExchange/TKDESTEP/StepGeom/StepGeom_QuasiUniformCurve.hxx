@@ -22,9 +22,6 @@
 
 #include <StepGeom_BSplineCurve.hxx>
 
-class StepGeom_QuasiUniformCurve;
-DEFINE_STANDARD_HANDLE(StepGeom_QuasiUniformCurve, StepGeom_BSplineCurve)
-
 class StepGeom_QuasiUniformCurve : public StepGeom_BSplineCurve
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepGeom_QuasiUniformCurve();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_QuasiUniformCurve, StepGeom_BSplineCurve)
-
-protected:
-private:
 };
 
 #endif // _StepGeom_QuasiUniformCurve_HeaderFile

@@ -19,11 +19,11 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfacePatch, Standard_Transient)
 
 StepGeom_SurfacePatch::StepGeom_SurfacePatch() {}
 
-void StepGeom_SurfacePatch::Init(const Handle(StepGeom_BoundedSurface)& aParentSurface,
-                                 const StepGeom_TransitionCode          aUTransition,
-                                 const StepGeom_TransitionCode          aVTransition,
-                                 const Standard_Boolean                 aUSense,
-                                 const Standard_Boolean                 aVSense)
+void StepGeom_SurfacePatch::Init(const occ::handle<StepGeom_BoundedSurface>& aParentSurface,
+                                 const StepGeom_TransitionCode               aUTransition,
+                                 const StepGeom_TransitionCode               aVTransition,
+                                 const bool                                  aUSense,
+                                 const bool                                  aVSense)
 {
   // --- classe own fields ---
   parentSurface = aParentSurface;
@@ -33,12 +33,13 @@ void StepGeom_SurfacePatch::Init(const Handle(StepGeom_BoundedSurface)& aParentS
   vSense        = aVSense;
 }
 
-void StepGeom_SurfacePatch::SetParentSurface(const Handle(StepGeom_BoundedSurface)& aParentSurface)
+void StepGeom_SurfacePatch::SetParentSurface(
+  const occ::handle<StepGeom_BoundedSurface>& aParentSurface)
 {
   parentSurface = aParentSurface;
 }
 
-Handle(StepGeom_BoundedSurface) StepGeom_SurfacePatch::ParentSurface() const
+occ::handle<StepGeom_BoundedSurface> StepGeom_SurfacePatch::ParentSurface() const
 {
   return parentSurface;
 }
@@ -63,22 +64,22 @@ StepGeom_TransitionCode StepGeom_SurfacePatch::VTransition() const
   return vTransition;
 }
 
-void StepGeom_SurfacePatch::SetUSense(const Standard_Boolean aUSense)
+void StepGeom_SurfacePatch::SetUSense(const bool aUSense)
 {
   uSense = aUSense;
 }
 
-Standard_Boolean StepGeom_SurfacePatch::USense() const
+bool StepGeom_SurfacePatch::USense() const
 {
   return uSense;
 }
 
-void StepGeom_SurfacePatch::SetVSense(const Standard_Boolean aVSense)
+void StepGeom_SurfacePatch::SetVSense(const bool aVSense)
 {
   vSense = aVSense;
 }
 
-Standard_Boolean StepGeom_SurfacePatch::VSense() const
+bool StepGeom_SurfacePatch::VSense() const
 {
   return vSense;
 }

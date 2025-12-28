@@ -25,9 +25,6 @@
 class MAT_TListNodeOfListOfBisector;
 class MAT_Bisector;
 
-class MAT_ListOfBisector;
-DEFINE_STANDARD_HANDLE(MAT_ListOfBisector, Standard_Transient)
-
 class MAT_ListOfBisector : public Standard_Transient
 {
 
@@ -40,71 +37,70 @@ public:
 
   Standard_EXPORT void Last();
 
-  Standard_EXPORT void Init(const Handle(MAT_Bisector)& aniten);
+  Standard_EXPORT void Init(const occ::handle<MAT_Bisector>& aniten);
 
   Standard_EXPORT void Next();
 
   Standard_EXPORT void Previous();
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
-  Standard_EXPORT Handle(MAT_Bisector) Current() const;
+  Standard_EXPORT occ::handle<MAT_Bisector> Current() const;
 
-  Standard_EXPORT void Current(const Handle(MAT_Bisector)& anitem) const;
+  Standard_EXPORT void Current(const occ::handle<MAT_Bisector>& anitem) const;
 
-  Standard_EXPORT Handle(MAT_Bisector) FirstItem() const;
+  Standard_EXPORT occ::handle<MAT_Bisector> FirstItem() const;
 
-  Standard_EXPORT Handle(MAT_Bisector) LastItem() const;
+  Standard_EXPORT occ::handle<MAT_Bisector> LastItem() const;
 
-  Standard_EXPORT Handle(MAT_Bisector) PreviousItem() const;
+  Standard_EXPORT occ::handle<MAT_Bisector> PreviousItem() const;
 
-  Standard_EXPORT Handle(MAT_Bisector) NextItem() const;
+  Standard_EXPORT occ::handle<MAT_Bisector> NextItem() const;
 
-  Standard_Integer Number() const;
+  int Number() const;
 
-  Standard_Integer Index() const;
+  int Index() const;
 
-  Standard_EXPORT Handle(MAT_Bisector) Brackets(const Standard_Integer anindex);
+  Standard_EXPORT occ::handle<MAT_Bisector> Brackets(const int anindex);
 
-  Handle(MAT_Bisector) operator()(const Standard_Integer anindex) { return Brackets(anindex); }
+  occ::handle<MAT_Bisector> operator()(const int anindex) { return Brackets(anindex); }
 
   Standard_EXPORT void Unlink();
 
-  Standard_EXPORT void LinkBefore(const Handle(MAT_Bisector)& anitem);
+  Standard_EXPORT void LinkBefore(const occ::handle<MAT_Bisector>& anitem);
 
-  Standard_EXPORT void LinkAfter(const Handle(MAT_Bisector)& anitem);
+  Standard_EXPORT void LinkAfter(const occ::handle<MAT_Bisector>& anitem);
 
-  Standard_EXPORT void FrontAdd(const Handle(MAT_Bisector)& anitem);
+  Standard_EXPORT void FrontAdd(const occ::handle<MAT_Bisector>& anitem);
 
-  Standard_EXPORT void BackAdd(const Handle(MAT_Bisector)& anitem);
+  Standard_EXPORT void BackAdd(const occ::handle<MAT_Bisector>& anitem);
 
   Standard_EXPORT void Permute();
 
   Standard_EXPORT void Loop() const;
 
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
-  Standard_EXPORT void Dump(const Standard_Integer ashift, const Standard_Integer alevel);
+  Standard_EXPORT void Dump(const int ashift, const int alevel);
 
   DEFINE_STANDARD_RTTI_INLINE(MAT_ListOfBisector, Standard_Transient)
 
-protected:
 private:
-  Handle(MAT_TListNodeOfListOfBisector) thefirstnode;
-  Handle(MAT_TListNodeOfListOfBisector) thelastnode;
-  Handle(MAT_TListNodeOfListOfBisector) thecurrentnode;
-  Standard_Integer                      thecurrentindex;
-  Standard_Integer                      thenumberofitems;
+  occ::handle<MAT_TListNodeOfListOfBisector> thefirstnode;
+  occ::handle<MAT_TListNodeOfListOfBisector> thelastnode;
+  occ::handle<MAT_TListNodeOfListOfBisector> thecurrentnode;
+  int                                        thecurrentindex;
+  int                                        thenumberofitems;
 };
 
-#define Item Handle(MAT_Bisector)
+#define Item occ::handle<MAT_Bisector>
 #define Item_hxx <MAT_Bisector.hxx>
 #define MAT_TListNode MAT_TListNodeOfListOfBisector
 #define MAT_TListNode_hxx <MAT_TListNodeOfListOfBisector.hxx>
-#define Handle_MAT_TListNode Handle(MAT_TListNodeOfListOfBisector)
+#define Handle_MAT_TListNode occ::handle<MAT_TListNodeOfListOfBisector>
 #define MAT_TList MAT_ListOfBisector
 #define MAT_TList_hxx <MAT_ListOfBisector.hxx>
-#define Handle_MAT_TList Handle(MAT_ListOfBisector)
+#define Handle_MAT_TList occ::handle<MAT_ListOfBisector>
 
 #include <MAT_TList.lxx>
 

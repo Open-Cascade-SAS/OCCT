@@ -14,9 +14,11 @@
 #ifndef _RWPly_CafWriter_HeaderFiler
 #define _RWPly_CafWriter_HeaderFiler
 
-#include <TColStd_IndexedDataMapOfStringString.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_Map.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
 #include <XCAFPrs_Style.hxx>
@@ -120,11 +122,12 @@ public:
   //! @param[in] theFileInfo    map with file metadata to put into PLY header section
   //! @param[in] theProgress    optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const Handle(TDocStd_Document)&             theDocument,
-                                       const TDF_LabelSequence&                    theRootLabels,
-                                       const TColStd_MapOfAsciiString*             theLabelFilter,
-                                       const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                       const Message_ProgressRange&                theProgress);
+  Standard_EXPORT virtual bool Perform(
+    const occ::handle<TDocStd_Document>&            theDocument,
+    const NCollection_Sequence<TDF_Label>&          theRootLabels,
+    const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+    const Message_ProgressRange& theProgress);
 
   //! Write PLY file and associated MTL material file.
   //! Triangulation data should be precomputed within shapes!
@@ -132,21 +135,22 @@ public:
   //! @param[in] theFileInfo map with file metadata to put into PLY header section
   //! @param[in] theProgress optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const Handle(TDocStd_Document)&             theDocument,
-                                       const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                       const Message_ProgressRange&                theProgress);
+  Standard_EXPORT virtual bool Perform(
+    const occ::handle<TDocStd_Document>&                                                theDocument,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+    const Message_ProgressRange& theProgress);
 
 protected:
   //! Return TRUE if face mesh should be skipped (e.g. because it is invalid or empty).
-  Standard_EXPORT virtual Standard_Boolean toSkipFaceMesh(const RWMesh_FaceIterator& theFaceIter);
+  Standard_EXPORT virtual bool toSkipFaceMesh(const RWMesh_FaceIterator& theFaceIter);
 
   //! Collect face triangulation info.
   //! @param[in] theFace face to process
   //! @param[in,out] theNbNodes overall number of triangulation nodes (should be appended)
   //! @param[in,out] theNbElems overall number of triangulation elements (should be appended)
   Standard_EXPORT virtual void addFaceInfo(const RWMesh_FaceIterator& theFace,
-                                           Standard_Integer&          theNbNodes,
-                                           Standard_Integer&          theNbElems);
+                                           int&                       theNbNodes,
+                                           int&                       theNbElems);
 
   //! Write the shape.
   //! @param[in] theWriter      PLY writer context
@@ -157,7 +161,7 @@ protected:
   //! @param[in] theParentStyle parent node style
   Standard_EXPORT virtual bool writeShape(RWPly_PlyWriterContext&    theWriter,
                                           Message_LazyProgressScope& thePSentry,
-                                          const Standard_Integer     theWriteStep,
+                                          const int                  theWriteStep,
                                           const TDF_Label&           theLabel,
                                           const TopLoc_Location&     theParentTrsf,
                                           const XCAFPrs_Style&       theParentStyle);
@@ -186,12 +190,12 @@ protected:
   RWMesh_CoordinateSystemConverter myCSTrsf;       //!< transformation from OCCT to PLY coordinate system
   XCAFPrs_Style                    myDefaultStyle; //!< default material definition to be used for nodes with only color defined
                                   // clang-format on
-  Standard_Boolean myIsDoublePrec;
-  Standard_Boolean myHasNormals;
-  Standard_Boolean myHasColors;
-  Standard_Boolean myHasTexCoords;
-  Standard_Boolean myHasPartId;
-  Standard_Boolean myHasFaceId;
+  bool myIsDoublePrec;
+  bool myHasNormals;
+  bool myHasColors;
+  bool myHasTexCoords;
+  bool myHasPartId;
+  bool myHasFaceId;
 };
 
 #endif // _RWPly_CafWriter_HeaderFiler

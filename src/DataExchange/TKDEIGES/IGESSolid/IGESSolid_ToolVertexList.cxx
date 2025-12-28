@@ -32,7 +32,8 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // MGE 03/08/98
 //=================================================================================================
@@ -41,8 +42,8 @@ IGESSolid_ToolVertexList::IGESSolid_ToolVertexList() {}
 
 //=================================================================================================
 
-void IGESSolid_ToolVertexList::ReadOwnParams(const Handle(IGESSolid_VertexList)& ent,
-                                             const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESSolid_ToolVertexList::ReadOwnParams(const occ::handle<IGESSolid_VertexList>& ent,
+                                             const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                              IGESData_ParamReader& PR) const
 {
   // MGE 03/08/98
@@ -52,23 +53,23 @@ void IGESSolid_ToolVertexList::ReadOwnParams(const Handle(IGESSolid_VertexList)&
   //  Message_Msg Msg183("XSTEP_183");
   //========================================
 
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer nbitems = 0; // szv#4:S4163:12Mar99 `i` moved in for
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int nbitems = 0; // szv#4:S4163:12Mar99 `i` moved in for
   // gp_XYZ anXYZ; //szv#4:S4163:12Mar99 moved down
-  Handle(TColgp_HArray1OfXYZ) tempVertices;
+  occ::handle<NCollection_HArray1<gp_XYZ>> tempVertices;
 
   // st = PR.ReadInteger(PR.Current(), Msg182, nbitems); //szv#4:S4163:12Mar99 moved in if
   // st = PR.ReadInteger(PR.Current(), "Number of Vertices", nbitems);
-  Standard_Boolean sb = PR.ReadInteger(PR.Current(), nbitems);
+  bool sb = PR.ReadInteger(PR.Current(), nbitems);
   if (sb && (nbitems > 0))
   {
 
     Message_Msg Msg183("XSTEP_183");
 
-    tempVertices = new TColgp_HArray1OfXYZ(1, nbitems);
+    tempVertices = new NCollection_HArray1<gp_XYZ>(1, nbitems);
 
     gp_XYZ anXYZ;
-    for (Standard_Integer i = 1; i <= nbitems; i++)
+    for (int i = 1; i <= nbitems; i++)
     {
       // st = PR.ReadXYZ(PR.CurrentList(1, 3), Msg183, anXYZ); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadXYZ(PR.CurrentList(1, 3), "Vertices", anXYZ);
@@ -89,11 +90,11 @@ void IGESSolid_ToolVertexList::ReadOwnParams(const Handle(IGESSolid_VertexList)&
 
 //=================================================================================================
 
-void IGESSolid_ToolVertexList::WriteOwnParams(const Handle(IGESSolid_VertexList)& ent,
-                                              IGESData_IGESWriter&                IW) const
+void IGESSolid_ToolVertexList::WriteOwnParams(const occ::handle<IGESSolid_VertexList>& ent,
+                                              IGESData_IGESWriter&                     IW) const
 {
-  Standard_Integer nbitems = ent->NbVertices();
-  Standard_Integer i;
+  int nbitems = ent->NbVertices();
+  int i;
 
   IW.Send(nbitems);
   for (i = 1; i <= nbitems; i++)
@@ -106,21 +107,22 @@ void IGESSolid_ToolVertexList::WriteOwnParams(const Handle(IGESSolid_VertexList)
 
 //=================================================================================================
 
-void IGESSolid_ToolVertexList::OwnShared(const Handle(IGESSolid_VertexList)& /* ent */,
+void IGESSolid_ToolVertexList::OwnShared(const occ::handle<IGESSolid_VertexList>& /* ent */,
                                          Interface_EntityIterator& /* iter */) const
 {
 }
 
 //=================================================================================================
 
-void IGESSolid_ToolVertexList::OwnCopy(const Handle(IGESSolid_VertexList)& another,
-                                       const Handle(IGESSolid_VertexList)& ent,
+void IGESSolid_ToolVertexList::OwnCopy(const occ::handle<IGESSolid_VertexList>& another,
+                                       const occ::handle<IGESSolid_VertexList>& ent,
                                        Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer nbitems, i;
+  int nbitems, i;
 
-  nbitems                                  = another->NbVertices();
-  Handle(TColgp_HArray1OfXYZ) tempVertices = new TColgp_HArray1OfXYZ(1, nbitems);
+  nbitems = another->NbVertices();
+  occ::handle<NCollection_HArray1<gp_XYZ>> tempVertices =
+    new NCollection_HArray1<gp_XYZ>(1, nbitems);
 
   for (i = 1; i <= nbitems; i++)
   {
@@ -132,7 +134,7 @@ void IGESSolid_ToolVertexList::OwnCopy(const Handle(IGESSolid_VertexList)& anoth
 //=================================================================================================
 
 IGESData_DirChecker IGESSolid_ToolVertexList::DirChecker(
-  const Handle(IGESSolid_VertexList)& /* ent */) const
+  const occ::handle<IGESSolid_VertexList>& /* ent */) const
 {
   IGESData_DirChecker DC(502, 1);
 
@@ -148,9 +150,9 @@ IGESData_DirChecker IGESSolid_ToolVertexList::DirChecker(
 
 //=================================================================================================
 
-void IGESSolid_ToolVertexList::OwnCheck(const Handle(IGESSolid_VertexList)& ent,
+void IGESSolid_ToolVertexList::OwnCheck(const occ::handle<IGESSolid_VertexList>& ent,
                                         const Interface_ShareTool&,
-                                        Handle(Interface_Check)& ach) const
+                                        occ::handle<Interface_Check>& ach) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -167,10 +169,10 @@ void IGESSolid_ToolVertexList::OwnCheck(const Handle(IGESSolid_VertexList)& ent,
 
 //=================================================================================================
 
-void IGESSolid_ToolVertexList::OwnDump(const Handle(IGESSolid_VertexList)& ent,
+void IGESSolid_ToolVertexList::OwnDump(const occ::handle<IGESSolid_VertexList>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       Standard_OStream&      S,
-                                       const Standard_Integer level) const
+                                       Standard_OStream& S,
+                                       const int         level) const
 {
   S << "IGESSolid_VertexList\n"
     << "Vertices : ";

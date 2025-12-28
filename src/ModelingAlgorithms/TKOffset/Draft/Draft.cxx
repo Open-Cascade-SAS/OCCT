@@ -31,15 +31,15 @@
 
 //=================================================================================================
 
-Standard_Real Draft::Angle(const TopoDS_Face& F, const gp_Dir& D)
+double Draft::Angle(const TopoDS_Face& F, const gp_Dir& D)
 {
 
-  TopLoc_Location       Lo;
-  Handle(Geom_Surface)  S     = BRep_Tool::Surface(F, Lo);
-  Handle(Standard_Type) TypeS = S->DynamicType();
+  TopLoc_Location            Lo;
+  occ::handle<Geom_Surface>  S     = BRep_Tool::Surface(F, Lo);
+  occ::handle<Standard_Type> TypeS = S->DynamicType();
   if (TypeS == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    S     = Handle(Geom_RectangularTrimmedSurface)::DownCast(S)->BasisSurface();
+    S     = occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface();
     TypeS = S->DynamicType();
   }
 
@@ -49,11 +49,11 @@ Standard_Real Draft::Angle(const TopoDS_Face& F, const gp_Dir& D)
     throw Standard_DomainError();
   }
 
-  Standard_Real Angle;
-  S = Handle(Geom_Surface)::DownCast(S->Transformed(Lo.Transformation()));
+  double Angle;
+  S = occ::down_cast<Geom_Surface>(S->Transformed(Lo.Transformation()));
   if (TypeS == STANDARD_TYPE(Geom_Plane))
   {
-    gp_Ax3 ax3(Handle(Geom_Plane)::DownCast(S)->Pln().Position());
+    gp_Ax3 ax3(occ::down_cast<Geom_Plane>(S)->Pln().Position());
     gp_Vec normale(ax3.Direction());
     if (!ax3.Direct())
     {
@@ -67,8 +67,8 @@ Standard_Real Draft::Angle(const TopoDS_Face& F, const gp_Dir& D)
   }
   else if (TypeS == STANDARD_TYPE(Geom_CylindricalSurface))
   {
-    gp_Cylinder   Cy(Handle(Geom_CylindricalSurface)::DownCast(S)->Cylinder());
-    Standard_Real testdir = D.Dot(Cy.Axis().Direction());
+    gp_Cylinder Cy(occ::down_cast<Geom_CylindricalSurface>(S)->Cylinder());
+    double      testdir = D.Dot(Cy.Axis().Direction());
     if (std::abs(testdir) <= 1. - Precision::Angular())
     {
       throw Standard_DomainError();
@@ -77,13 +77,13 @@ Standard_Real Draft::Angle(const TopoDS_Face& F, const gp_Dir& D)
   }
   else
   { // STANDARD_TYPE(Geom_ConicalSurface)
-    gp_Cone       Co(Handle(Geom_ConicalSurface)::DownCast(S)->Cone());
-    Standard_Real testdir = D.Dot(Co.Axis().Direction());
+    gp_Cone Co(occ::down_cast<Geom_ConicalSurface>(S)->Cone());
+    double  testdir = D.Dot(Co.Axis().Direction());
     if (std::abs(testdir) <= 1. - Precision::Angular())
     {
       throw Standard_DomainError();
     }
-    Standard_Real umin, umax, vmin, vmax;
+    double umin, umax, vmin, vmax;
     BRepTools::UVBounds(F, umin, umax, vmin, vmax);
     gp_Pnt ptbid;
     gp_Vec d1u, d1v;

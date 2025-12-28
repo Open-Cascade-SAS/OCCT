@@ -30,7 +30,7 @@ public:
 
   struct TriangleIndices
   {
-    Standard_Integer Index, Min, Max;
+    int Index, Min, Max;
   };
 
   struct PlaneT
@@ -40,19 +40,19 @@ public:
     {
     }
 
-    gp_XYZ        Normal;
-    Standard_Real D;
+    gp_XYZ Normal;
+    double D;
   };
 
   HLRAlgo_PolyHidingData() {}
 
-  void Set(const Standard_Integer Index,
-           const Standard_Integer Minim,
-           const Standard_Integer Maxim,
-           const Standard_Real    A,
-           const Standard_Real    B,
-           const Standard_Real    C,
-           const Standard_Real    D)
+  void Set(const int    Index,
+           const int    Minim,
+           const int    Maxim,
+           const double A,
+           const double B,
+           const double C,
+           const double D)
   {
     myIndices.Index = Index;
     myIndices.Min   = Minim;

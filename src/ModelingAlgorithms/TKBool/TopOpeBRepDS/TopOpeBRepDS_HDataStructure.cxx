@@ -26,7 +26,7 @@
 #include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <NCollection_List.hxx>
 #include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS_PointIterator.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
@@ -34,15 +34,14 @@
 #include <TopOpeBRepDS_SurfaceIterator.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
-#include <TopTools_ListOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_HDataStructure, Standard_Transient)
 
-static void FUN_HDS_data(const Handle(TopOpeBRepDS_Interference)& I,
-                         TopOpeBRepDS_Kind&                       GT1,
-                         Standard_Integer&                        G1,
-                         TopOpeBRepDS_Kind&                       ST1,
-                         Standard_Integer&                        S1)
+static void FUN_HDS_data(const occ::handle<TopOpeBRepDS_Interference>& I,
+                         TopOpeBRepDS_Kind&                            GT1,
+                         int&                                          G1,
+                         TopOpeBRepDS_Kind&                            ST1,
+                         int&                                          S1)
 {
   if (I.IsNull())
     return;
@@ -52,36 +51,35 @@ static void FUN_HDS_data(const Handle(TopOpeBRepDS_Interference)& I,
   S1  = I->Support();
 }
 
-Standard_EXPORT Standard_Boolean
-  FUN_HDS_FACESINTERFER(const TopoDS_Shape&                        F1,
-                        const TopoDS_Shape&                        F2,
-                        const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+Standard_EXPORT bool FUN_HDS_FACESINTERFER(const TopoDS_Shape&                             F1,
+                                           const TopoDS_Shape&                             F2,
+                                           const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
-  Standard_Boolean                  yainterf = Standard_False;
+  bool                              yainterf = false;
   const TopOpeBRepDS_DataStructure& DS       = HDS->DS();
-  Standard_Boolean                  ya       = DS.HasShape(F1);
+  bool                              ya       = DS.HasShape(F1);
   if (!ya)
-    return Standard_False;
+    return false;
 
   //                         DS.Shape(F1);
-  Standard_Integer iF2 = DS.Shape(F2);
+  int iF2 = DS.Shape(F2);
 
-  const TopOpeBRepDS_ListOfInterference&        L1 = DS.ShapeInterferences(F1);
-  TopOpeBRepDS_ListIteratorOfListOfInterference itL1(L1);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&    L1 = DS.ShapeInterferences(F1);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itL1(L1);
   for (; itL1.More(); itL1.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& I  = itL1.Value();
-    TopOpeBRepDS_Kind                        GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN;
-    Standard_Integer                         G, S                          = 0;
+    const occ::handle<TopOpeBRepDS_Interference>& I = itL1.Value();
+    TopOpeBRepDS_Kind GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN;
+    int               G, S                          = 0;
     FUN_HDS_data(I, GT, G, ST, S);
     // interference face1/edge/face2
-    Standard_Boolean fef = Standard_True;
-    fef                  = fef && (GT == TopOpeBRepDS_EDGE);
-    fef                  = fef && (ST == TopOpeBRepDS_FACE);
-    fef                  = fef && (S == iF2);
+    bool fef = true;
+    fef      = fef && (GT == TopOpeBRepDS_EDGE);
+    fef      = fef && (ST == TopOpeBRepDS_FACE);
+    fef      = fef && (S == iF2);
     if (fef)
     {
-      yainterf = Standard_True;
+      yainterf = true;
       break;
     }
   }
@@ -109,7 +107,7 @@ void TopOpeBRepDS_HDataStructure::AddAncestors(const TopoDS_Shape&    S,
                                                const TopAbs_ShapeEnum T2)
 {
   TopOpeBRepDS_DataStructure& BDS   = ChangeDS();
-  Standard_Integer            rankS = myDS.AncestorRank(S);
+  int                         rankS = myDS.AncestorRank(S);
   // find the shapes of type T1 containing HasShape() of type T2
   for (TopOpeBRepTool_ShapeExplorer eT1(S, T1); eT1.More(); eT1.Next())
   {
@@ -131,7 +129,7 @@ void TopOpeBRepDS_HDataStructure::AddAncestors(const TopoDS_Shape&    S,
 void TopOpeBRepDS_HDataStructure::ChkIntg()
 {
   // Check the integrity of the DS
-  Handle(TopOpeBRepDS_Check) chk = new TopOpeBRepDS_Check(this);
+  occ::handle<TopOpeBRepDS_Check> chk = new TopOpeBRepDS_Check(this);
   chk->ChkIntg();
   //  chk->PrintIntg(std::cout);
 }
@@ -152,106 +150,103 @@ TopOpeBRepDS_DataStructure& TopOpeBRepDS_HDataStructure::ChangeDS()
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::NbSurfaces() const
+int TopOpeBRepDS_HDataStructure::NbSurfaces() const
 {
   return myDS.NbSurfaces();
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::NbCurves() const
+int TopOpeBRepDS_HDataStructure::NbCurves() const
 {
   return myDS.NbCurves();
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::NbPoints() const
+int TopOpeBRepDS_HDataStructure::NbPoints() const
 {
   return myDS.NbPoints();
 }
 
 //=================================================================================================
 
-const TopOpeBRepDS_Surface& TopOpeBRepDS_HDataStructure::Surface(const Standard_Integer I) const
+const TopOpeBRepDS_Surface& TopOpeBRepDS_HDataStructure::Surface(const int I) const
 {
   return myDS.Surface(I);
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_CurveIterator TopOpeBRepDS_HDataStructure::SurfaceCurves(
-  const Standard_Integer I) const
+TopOpeBRepDS_CurveIterator TopOpeBRepDS_HDataStructure::SurfaceCurves(const int I) const
 {
-  const TopOpeBRepDS_ListOfInterference& L = myDS.SurfaceInterferences(I);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L = myDS.SurfaceInterferences(I);
   return TopOpeBRepDS_CurveIterator(L);
 }
 
 //=================================================================================================
 
-const TopOpeBRepDS_Curve& TopOpeBRepDS_HDataStructure::Curve(const Standard_Integer I) const
+const TopOpeBRepDS_Curve& TopOpeBRepDS_HDataStructure::Curve(const int I) const
 {
   return myDS.Curve(I);
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_Curve& TopOpeBRepDS_HDataStructure::ChangeCurve(const Standard_Integer I)
+TopOpeBRepDS_Curve& TopOpeBRepDS_HDataStructure::ChangeCurve(const int I)
 {
   return myDS.ChangeCurve(I);
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_PointIterator TopOpeBRepDS_HDataStructure::CurvePoints(const Standard_Integer I) const
+TopOpeBRepDS_PointIterator TopOpeBRepDS_HDataStructure::CurvePoints(const int I) const
 {
-  const TopOpeBRepDS_ListOfInterference& L = myDS.CurveInterferences(I);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L = myDS.CurveInterferences(I);
   return TopOpeBRepDS_PointIterator(L);
 }
 
 //=================================================================================================
 
-const TopOpeBRepDS_Point& TopOpeBRepDS_HDataStructure::Point(const Standard_Integer I) const
+const TopOpeBRepDS_Point& TopOpeBRepDS_HDataStructure::Point(const int I) const
 {
   return myDS.Point(I);
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_HDataStructure::HasGeometry(const TopoDS_Shape& S) const
+bool TopOpeBRepDS_HDataStructure::HasGeometry(const TopoDS_Shape& S) const
 {
-  Standard_Boolean b = myDS.HasGeometry(S);
+  bool b = myDS.HasGeometry(S);
   return b;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_HDataStructure::HasShape(const TopoDS_Shape&    S,
-                                                       const Standard_Boolean FindKeep) const
+bool TopOpeBRepDS_HDataStructure::HasShape(const TopoDS_Shape& S, const bool FindKeep) const
 {
-  Standard_Boolean b = myDS.HasShape(S, FindKeep);
+  bool b = myDS.HasShape(S, FindKeep);
   return b;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_HDataStructure::HasSameDomain(const TopoDS_Shape&    S,
-                                                            const Standard_Boolean FindKeep) const
+bool TopOpeBRepDS_HDataStructure::HasSameDomain(const TopoDS_Shape& S, const bool FindKeep) const
 {
   if (!HasShape(S, FindKeep))
-    return Standard_False;
-  const TopTools_ListOfShape& l   = myDS.ShapeSameDomain(S);
-  Standard_Boolean            res = !l.IsEmpty();
+    return false;
+  const NCollection_List<TopoDS_Shape>& l   = myDS.ShapeSameDomain(S);
+  bool                                  res = !l.IsEmpty();
   return res;
 }
 
 //=================================================================================================
 
-TopTools_ListIteratorOfListOfShape TopOpeBRepDS_HDataStructure::SameDomain(
+NCollection_List<TopoDS_Shape>::Iterator TopOpeBRepDS_HDataStructure::SameDomain(
   const TopoDS_Shape& S) const
 {
-  const TopTools_ListOfShape& L = myDS.ShapeSameDomain(S);
-  return TopTools_ListIteratorOfListOfShape(L);
+  const NCollection_List<TopoDS_Shape>& L = myDS.ShapeSameDomain(S);
+  return NCollection_List<TopoDS_Shape>::Iterator(L);
 }
 
 //=================================================================================================
@@ -265,7 +260,7 @@ TopOpeBRepDS_Config TopOpeBRepDS_HDataStructure::SameDomainOrientation(const Top
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::SameDomainReference(const TopoDS_Shape& S) const
+int TopOpeBRepDS_HDataStructure::SameDomainReference(const TopoDS_Shape& S) const
 {
   if (!HasShape(S))
     return 0;
@@ -274,23 +269,21 @@ Standard_Integer TopOpeBRepDS_HDataStructure::SameDomainReference(const TopoDS_S
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::NbShapes() const
+int TopOpeBRepDS_HDataStructure::NbShapes() const
 {
   return myDS.NbShapes();
 }
 
 //=================================================================================================
 
-const TopoDS_Shape& TopOpeBRepDS_HDataStructure::Shape(const Standard_Integer I,
-                                                       const Standard_Boolean FindKeep) const
+const TopoDS_Shape& TopOpeBRepDS_HDataStructure::Shape(const int I, const bool FindKeep) const
 {
   return myDS.Shape(I, FindKeep);
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::Shape(const TopoDS_Shape&    S,
-                                                    const Standard_Boolean FindKeep) const
+int TopOpeBRepDS_HDataStructure::Shape(const TopoDS_Shape& S, const bool FindKeep) const
 {
   return myDS.Shape(S, FindKeep);
 }
@@ -299,16 +292,15 @@ Standard_Integer TopOpeBRepDS_HDataStructure::Shape(const TopoDS_Shape&    S,
 
 TopOpeBRepDS_SurfaceIterator TopOpeBRepDS_HDataStructure::SolidSurfaces(const TopoDS_Shape& S) const
 {
-  const TopOpeBRepDS_ListOfInterference& L = myDS.ShapeInterferences(S);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L = myDS.ShapeInterferences(S);
   return TopOpeBRepDS_SurfaceIterator(L);
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_SurfaceIterator TopOpeBRepDS_HDataStructure::SolidSurfaces(
-  const Standard_Integer I) const
+TopOpeBRepDS_SurfaceIterator TopOpeBRepDS_HDataStructure::SolidSurfaces(const int I) const
 {
-  const TopOpeBRepDS_ListOfInterference& L = myDS.ShapeInterferences(I);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L = myDS.ShapeInterferences(I);
   return TopOpeBRepDS_SurfaceIterator(L);
 }
 
@@ -316,15 +308,15 @@ TopOpeBRepDS_SurfaceIterator TopOpeBRepDS_HDataStructure::SolidSurfaces(
 
 TopOpeBRepDS_CurveIterator TopOpeBRepDS_HDataStructure::FaceCurves(const TopoDS_Shape& F) const
 {
-  const TopOpeBRepDS_ListOfInterference& L = myDS.ShapeInterferences(F);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L = myDS.ShapeInterferences(F);
   return TopOpeBRepDS_CurveIterator(L);
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_CurveIterator TopOpeBRepDS_HDataStructure::FaceCurves(const Standard_Integer I) const
+TopOpeBRepDS_CurveIterator TopOpeBRepDS_HDataStructure::FaceCurves(const int I) const
 {
-  const TopOpeBRepDS_ListOfInterference& L = myDS.ShapeInterferences(I);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L = myDS.ShapeInterferences(I);
   return TopOpeBRepDS_CurveIterator(L);
 }
 
@@ -332,20 +324,19 @@ TopOpeBRepDS_CurveIterator TopOpeBRepDS_HDataStructure::FaceCurves(const Standar
 
 TopOpeBRepDS_PointIterator TopOpeBRepDS_HDataStructure::EdgePoints(const TopoDS_Shape& E) const
 {
-  const TopOpeBRepDS_ListOfInterference& L = myDS.ShapeInterferences(E);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L = myDS.ShapeInterferences(E);
   return TopOpeBRepDS_PointIterator(L);
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::MakeCurve(const TopOpeBRepDS_Curve& curC,
-                                                        TopOpeBRepDS_Curve&       newC)
+int TopOpeBRepDS_HDataStructure::MakeCurve(const TopOpeBRepDS_Curve& curC, TopOpeBRepDS_Curve& newC)
 {
   // SCI1, SCI2 = new surface/curve interf. build from
   // the surface/curve interf. of the curve curC
-  const Handle(TopOpeBRepDS_Interference)&      I1 = curC.GetSCI1();
-  const Handle(TopOpeBRepDS_Interference)&      I2 = curC.GetSCI2();
-  Handle(TopOpeBRepDS_SurfaceCurveInterference) SCI1, SCI2;
+  const occ::handle<TopOpeBRepDS_Interference>&      I1 = curC.GetSCI1();
+  const occ::handle<TopOpeBRepDS_Interference>&      I2 = curC.GetSCI2();
+  occ::handle<TopOpeBRepDS_SurfaceCurveInterference> SCI1, SCI2;
   if (!I1.IsNull())
     SCI1 = new TopOpeBRepDS_SurfaceCurveInterference(I1);
   if (!I2.IsNull())
@@ -370,7 +361,7 @@ Standard_Integer TopOpeBRepDS_HDataStructure::MakeCurve(const TopOpeBRepDS_Curve
   newC.ChangeMother(curC.DSIndex());
 
   // add the new curve in the DS
-  Standard_Integer inewC = myDS.AddCurve(newC);
+  int inewC = myDS.AddCurve(newC);
 
   // the geometry of the new surface/curve interf. is new curve inewC
   if (!SCI1.IsNull())
@@ -383,19 +374,19 @@ Standard_Integer TopOpeBRepDS_HDataStructure::MakeCurve(const TopOpeBRepDS_Curve
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::RemoveCurve(const Standard_Integer icurC)
+void TopOpeBRepDS_HDataStructure::RemoveCurve(const int icurC)
 {
   myDS.RemoveCurve(icurC);
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::NbGeometry(const TopOpeBRepDS_Kind K) const
+int TopOpeBRepDS_HDataStructure::NbGeometry(const TopOpeBRepDS_Kind K) const
 {
   if (!TopOpeBRepDS::IsGeometry(K))
     return 0;
 
-  Standard_Integer n = 0;
+  int n = 0;
   switch (K)
   {
     case TopOpeBRepDS_POINT:
@@ -416,23 +407,23 @@ Standard_Integer TopOpeBRepDS_HDataStructure::NbGeometry(const TopOpeBRepDS_Kind
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::NbTopology() const
+int TopOpeBRepDS_HDataStructure::NbTopology() const
 {
-  Standard_Integer n = myDS.NbShapes();
+  int n = myDS.NbShapes();
   return n;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_HDataStructure::NbTopology(const TopOpeBRepDS_Kind K) const
+int TopOpeBRepDS_HDataStructure::NbTopology(const TopOpeBRepDS_Kind K) const
 {
   if (!TopOpeBRepDS::IsTopology(K))
     return 0;
-  Standard_Integer       res      = 0;
-  const Standard_Boolean FindKeep = Standard_False;
+  int        res      = 0;
+  const bool FindKeep = false;
 
   TopAbs_ShapeEnum S = TopOpeBRepDS::KindToShape(K);
-  for (Standard_Integer i = 1; i <= NbTopology(); i++)
+  for (int i = 1; i <= NbTopology(); i++)
     if (myDS.KeepShape(i, FindKeep))
       if (myDS.Shape(i, FindKeep).ShapeType() == S)
         res++;
@@ -441,9 +432,9 @@ Standard_Integer TopOpeBRepDS_HDataStructure::NbTopology(const TopOpeBRepDS_Kind
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_HDataStructure::EdgesSameParameter() const
+bool TopOpeBRepDS_HDataStructure::EdgesSameParameter() const
 {
-  Standard_Integer i, n = myDS.NbShapes();
+  int i, n = myDS.NbShapes();
   for (i = 1; i <= n; i++)
   {
     const TopoDS_Shape& s = myDS.Shape(i);
@@ -452,41 +443,42 @@ Standard_Boolean TopOpeBRepDS_HDataStructure::EdgesSameParameter() const
       const TopoDS_Edge& e = TopoDS::Edge(s);
       if (!BRep_Tool::SameParameter(e))
       {
-        return Standard_False;
+        return false;
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
-Standard_EXPORT void FUN_TopOpeBRepDS_SortOnParameter(const TopOpeBRepDS_ListOfInterference& List,
-                                                      TopOpeBRepDS_ListOfInterference&       SList)
+Standard_EXPORT void FUN_TopOpeBRepDS_SortOnParameter(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& List,
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       SList)
 {
   // NYI : sort a list of Items, giving a sorting FUNCTION is impossible
   // NYI : --> foobar method complexity n2.
 
-  Standard_Integer iIntf = 0, nIntf = List.Extent();
+  int iIntf = 0, nIntf = List.Extent();
   if (nIntf == 0)
     return;
 
-  Handle(TColStd_HArray1OfBoolean) HT;
-  HT                         = new TColStd_HArray1OfBoolean(1, nIntf, Standard_False);
-  TColStd_Array1OfBoolean& T = HT->ChangeArray1();
+  occ::handle<NCollection_HArray1<bool>> HT;
+  HT                          = new NCollection_HArray1<bool>(1, nIntf, false);
+  NCollection_Array1<bool>& T = HT->ChangeArray1();
 
-  Handle(TopOpeBRepDS_Interference) Intf;
+  occ::handle<TopOpeBRepDS_Interference> Intf;
 
-  for (Standard_Integer i = 1; i <= nIntf; i++)
+  for (int i = 1; i <= nIntf; i++)
   {
-    Standard_Real              parmin = RealLast();
+    double                     parmin = RealLast();
     TopOpeBRepDS_PointIterator it(List);
-    for (Standard_Integer itest = 1; it.More(); it.Next(), itest++)
+    for (int itest = 1; it.More(); it.Next(), itest++)
     {
       if (!T(itest))
       {
-        Standard_Real par = it.Parameter();
+        double par = it.Parameter();
         if (par < parmin)
         {
           parmin = par;
@@ -496,14 +488,15 @@ Standard_EXPORT void FUN_TopOpeBRepDS_SortOnParameter(const TopOpeBRepDS_ListOfI
       }
     }
     SList.Append(Intf);
-    T(iIntf) = Standard_True;
+    T(iIntf) = true;
   }
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::SortOnParameter(const TopOpeBRepDS_ListOfInterference& List,
-                                                  TopOpeBRepDS_ListOfInterference& SList) const
+void TopOpeBRepDS_HDataStructure::SortOnParameter(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& List,
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       SList) const
 {
   // NYI : sort a list of Items, giving a sorting FUNCTION is impossible
   // NYI : --> foobar method complexity n2.
@@ -512,19 +505,19 @@ void TopOpeBRepDS_HDataStructure::SortOnParameter(const TopOpeBRepDS_ListOfInter
 
   // tete = interf FORWARD :
   // modifier TopOpeBRepBuild_ParametrizedVertexSet ::SortParametrizedVertex()
-  Standard_Boolean                              found = Standard_False;
-  TopOpeBRepDS_ListIteratorOfListOfInterference it(SList);
-  TopOpeBRepDS_ListOfInterference               L1, L2;
+  bool                                                               found = false;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(SList);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>           L1, L2;
 
   for (; it.More(); it.Next())
   {
-    Handle(TopOpeBRepDS_Interference) I = it.Value();
+    occ::handle<TopOpeBRepDS_Interference> I = it.Value();
     if (!found)
     {
       TopAbs_Orientation o = I->Transition().Orientation(TopAbs_IN);
       if (o == TopAbs_FORWARD)
       {
-        found = Standard_True;
+        found = true;
         L1.Append(I);
       }
       else
@@ -541,12 +534,13 @@ void TopOpeBRepDS_HDataStructure::SortOnParameter(const TopOpeBRepDS_ListOfInter
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::SortOnParameter(TopOpeBRepDS_ListOfInterference& List) const
+void TopOpeBRepDS_HDataStructure::SortOnParameter(
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& List) const
 {
   TopOpeBRepDS_PointIterator it(List);
   if (it.More())
   {
-    TopOpeBRepDS_ListOfInterference SList;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> SList;
     SortOnParameter(List, SList);
     List.Assign(SList);
   }
@@ -554,13 +548,14 @@ void TopOpeBRepDS_HDataStructure::SortOnParameter(TopOpeBRepDS_ListOfInterferenc
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::MinMaxOnParameter(const TopOpeBRepDS_ListOfInterference& List,
-                                                    Standard_Real&                         parmin,
-                                                    Standard_Real& parmax) const
+void TopOpeBRepDS_HDataStructure::MinMaxOnParameter(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& List,
+  double&                                                         parmin,
+  double&                                                         parmax) const
 {
   if (!List.IsEmpty())
   {
-    Standard_Real parline;
+    double parline;
     parmin = RealLast();
     parmax = RealFirst();
     TopOpeBRepDS_PointIterator it(List);
@@ -582,41 +577,41 @@ void TopOpeBRepDS_HDataStructure::MinMaxOnParameter(const TopOpeBRepDS_ListOfInt
 //-----------------------------------------------------------------------
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_HDataStructure::ScanInterfList(
-  TopOpeBRepDS_ListIteratorOfListOfInterference& IT,
-  const TopOpeBRepDS_Point&                      PDS) const
+bool TopOpeBRepDS_HDataStructure::ScanInterfList(
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
+  const TopOpeBRepDS_Point&                                           PDS) const
 {
   for (; IT.More(); IT.Next())
   {
     TopOpeBRepDS_Kind GT = IT.Value()->GeometryType();
-    Standard_Integer  G  = IT.Value()->Geometry();
+    int               G  = IT.Value()->Geometry();
     if (GT == TopOpeBRepDS_POINT)
     {
       const TopOpeBRepDS_Point& OOPDS = myDS.Point(G);
-      Standard_Boolean          iseq  = PDS.IsEqual(OOPDS);
+      bool                      iseq  = PDS.IsEqual(OOPDS);
       if (iseq)
         return iseq;
     }
     else if (GT == TopOpeBRepDS_VERTEX)
     {
       TopOpeBRepDS_Point OOPDS(myDS.Shape(G));
-      Standard_Boolean   iseq = PDS.IsEqual(OOPDS);
+      bool               iseq = PDS.IsEqual(OOPDS);
       if (iseq)
         return iseq;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_HDataStructure::GetGeometry(
-  TopOpeBRepDS_ListIteratorOfListOfInterference& IT,
-  const TopOpeBRepDS_Point&                      PDS,
-  Standard_Integer&                              G,
-  TopOpeBRepDS_Kind&                             K) const
+bool TopOpeBRepDS_HDataStructure::GetGeometry(
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
+  const TopOpeBRepDS_Point&                                           PDS,
+  int&                                                                G,
+  TopOpeBRepDS_Kind&                                                  K) const
 {
-  Standard_Boolean found = ScanInterfList(IT, PDS);
+  bool found = ScanInterfList(IT, PDS);
   if (found)
   {
     G = IT.Value()->Geometry();
@@ -630,13 +625,14 @@ Standard_Boolean TopOpeBRepDS_HDataStructure::GetGeometry(
 // purpose  : Append an interference I to a list of interference LI
 //           Append I to the interf. list connected to I Geometry()
 //=======================================================================
-void TopOpeBRepDS_HDataStructure::StoreInterference(const Handle(TopOpeBRepDS_Interference)& I,
-                                                    TopOpeBRepDS_ListOfInterference&         LI,
-                                                    const TCollection_AsciiString&)
+void TopOpeBRepDS_HDataStructure::StoreInterference(
+  const occ::handle<TopOpeBRepDS_Interference>&             I,
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+  const TCollection_AsciiString&)
 {
   // append I to list LI
   LI.Append(I);
-  Standard_Integer G = I->Geometry();
+  int G = I->Geometry();
 
   // append I to list of interference connected to G = I->Geometry()
   switch (I->GeometryType())
@@ -646,7 +642,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference(const Handle(TopOpeBRepDS_In
     case TopOpeBRepDS_FACE:
     case TopOpeBRepDS_EDGE:
     case TopOpeBRepDS_VERTEX:
-      //    appendtoG = Standard_True;
+      //    appendtoG = true;
       //    myDS.ChangeShapeInterferences(G).Append(I);
       break;
 
@@ -659,7 +655,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference(const Handle(TopOpeBRepDS_In
       break;
 
     case TopOpeBRepDS_POINT:
-      //    appendtoG = Standard_True;
+      //    appendtoG = true;
       //    myDS.ChangePointInterferences(G).Append(I);
       break;
     default:
@@ -669,11 +665,11 @@ void TopOpeBRepDS_HDataStructure::StoreInterference(const Handle(TopOpeBRepDS_In
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::StoreInterference(const Handle(TopOpeBRepDS_Interference)& I,
-                                                    const TopoDS_Shape&                      S,
+void TopOpeBRepDS_HDataStructure::StoreInterference(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                                    const TopoDS_Shape&                           S,
                                                     const TCollection_AsciiString&)
 {
-  Standard_Boolean h = myDS.HasShape(S);
+  bool h = myDS.HasShape(S);
   if (!h)
   {
     throw Standard_ProgramError("StoreInterference on shape out of DS");
@@ -684,11 +680,11 @@ void TopOpeBRepDS_HDataStructure::StoreInterference(const Handle(TopOpeBRepDS_In
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::StoreInterference(const Handle(TopOpeBRepDS_Interference)& I,
-                                                    const Standard_Integer                   IS,
+void TopOpeBRepDS_HDataStructure::StoreInterference(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                                    const int IS,
                                                     const TCollection_AsciiString&)
 {
-  Standard_Integer n = myDS.NbShapes();
+  int n = myDS.NbShapes();
   if (IS < 1 || IS > n)
   {
     throw Standard_ProgramError("StoreInterference on index out of DS");
@@ -700,70 +696,76 @@ void TopOpeBRepDS_HDataStructure::StoreInterference(const Handle(TopOpeBRepDS_In
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::StoreInterferences(const TopOpeBRepDS_ListOfInterference& LI,
-                                                     const Standard_Integer                 IS
-                                                     // ,const TCollection_AsciiString& str)
-                                                     ,
-                                                     const TCollection_AsciiString&)
+void TopOpeBRepDS_HDataStructure::StoreInterferences(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+  const int                                                       IS
+  // ,const TCollection_AsciiString& str)
+  ,
+  const TCollection_AsciiString&)
 {
-  TopOpeBRepDS_ListOfInterference&              lids = myDS.ChangeShapeInterferences(IS);
-  TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lids =
+    myDS.ChangeShapeInterferences(IS);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI);
   for (; it.More(); it.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+    const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
     StoreInterference(I, lids);
   }
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::StoreInterferences(const TopOpeBRepDS_ListOfInterference& LI,
-                                                     const TopoDS_Shape&                    S
-                                                     // ,const TCollection_AsciiString& str)
-                                                     ,
-                                                     const TCollection_AsciiString&)
+void TopOpeBRepDS_HDataStructure::StoreInterferences(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+  const TopoDS_Shape&                                             S
+  // ,const TCollection_AsciiString& str)
+  ,
+  const TCollection_AsciiString&)
 {
-  TopOpeBRepDS_ListOfInterference&              lids = myDS.ChangeShapeInterferences(S);
-  TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lids = myDS.ChangeShapeInterferences(S);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI);
   for (; it.More(); it.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+    const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
     StoreInterference(I, lids);
   }
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::ClearStoreInterferences(const TopOpeBRepDS_ListOfInterference& LI,
-                                                          const Standard_Integer                 IS
-                                                          // ,const TCollection_AsciiString& str)
-                                                          ,
-                                                          const TCollection_AsciiString&)
+void TopOpeBRepDS_HDataStructure::ClearStoreInterferences(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+  const int                                                       IS
+  // ,const TCollection_AsciiString& str)
+  ,
+  const TCollection_AsciiString&)
 {
-  TopOpeBRepDS_ListOfInterference& lids = myDS.ChangeShapeInterferences(IS);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lids =
+    myDS.ChangeShapeInterferences(IS);
   lids.Clear();
-  TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI);
   for (; it.More(); it.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+    const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
     StoreInterference(I, lids);
   }
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_HDataStructure::ClearStoreInterferences(const TopOpeBRepDS_ListOfInterference& LI,
-                                                          const TopoDS_Shape&                    S
-                                                          // ,const TCollection_AsciiString& str)
-                                                          ,
-                                                          const TCollection_AsciiString&)
+void TopOpeBRepDS_HDataStructure::ClearStoreInterferences(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+  const TopoDS_Shape&                                             S
+  // ,const TCollection_AsciiString& str)
+  ,
+  const TCollection_AsciiString&)
 {
-  TopOpeBRepDS_ListOfInterference& lids = myDS.ChangeShapeInterferences(S);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lids = myDS.ChangeShapeInterferences(S);
   lids.Clear();
-  TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI);
   for (; it.More(); it.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& I = it.Value();
+    const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
     StoreInterference(I, lids);
   }
 }

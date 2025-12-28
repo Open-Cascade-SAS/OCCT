@@ -53,7 +53,7 @@ class AIS_Trihedron : public AIS_InteractiveObject
   DEFINE_STANDARD_RTTIEXT(AIS_Trihedron, AIS_InteractiveObject)
 public:
   //! Initializes a trihedron entity.
-  Standard_EXPORT AIS_Trihedron(const Handle(Geom_Axis2Placement)& theComponent);
+  Standard_EXPORT AIS_Trihedron(const occ::handle<Geom_Axis2Placement>& theComponent);
 
   //! Returns datum display mode.
   Prs3d_DatumMode DatumDisplayMode() const { return myTrihDispMode; }
@@ -62,20 +62,20 @@ public:
   void SetDatumDisplayMode(Prs3d_DatumMode theMode) { myTrihDispMode = theMode; }
 
   //! Returns the right-handed coordinate system set in SetComponent.
-  const Handle(Geom_Axis2Placement)& Component() const { return myComponent; }
+  const occ::handle<Geom_Axis2Placement>& Component() const { return myComponent; }
 
   //! Constructs the right-handed coordinate system aComponent.
-  Standard_EXPORT void SetComponent(const Handle(Geom_Axis2Placement)& theComponent);
+  Standard_EXPORT void SetComponent(const occ::handle<Geom_Axis2Placement>& theComponent);
 
   //! Returns true if the trihedron object has a size other
   //! than the default size of 100 mm. along each axis.
-  Standard_Boolean HasOwnSize() const { return myHasOwnSize; }
+  bool HasOwnSize() const { return myHasOwnSize; }
 
   //! Returns the size of trihedron object; 100.0 by DEFAULT.
-  Standard_EXPORT Standard_Real Size() const;
+  Standard_EXPORT double Size() const;
 
   //! Sets the size of trihedron object.
-  Standard_EXPORT void SetSize(const Standard_Real theValue);
+  Standard_EXPORT void SetSize(const double theValue);
 
   //! Removes any non-default settings for size of this trihedron object.
   //! If the object has 1 color, the default size of the
@@ -83,7 +83,7 @@ public:
   Standard_EXPORT void UnsetSize();
 
   //! Returns true if trihedron has own text color
-  Standard_Boolean HasTextColor() const { return myHasOwnTextColor; }
+  bool HasTextColor() const { return myHasOwnTextColor; }
 
   //! Returns trihedron text color
   Standard_EXPORT Quantity_Color TextColor() const;
@@ -95,7 +95,7 @@ public:
   Standard_EXPORT void SetTextColor(const Prs3d_DatumParts thePart, const Quantity_Color& theColor);
 
   //! Returns true if trihedron has own arrow color
-  Standard_Boolean HasArrowColor() const { return myHasOwnArrowColor; }
+  bool HasArrowColor() const { return myHasOwnArrowColor; }
 
   //! Returns trihedron arrow color
   Standard_EXPORT Quantity_Color ArrowColor() const;
@@ -131,19 +131,16 @@ public:
   Standard_EXPORT void SetAxisColor(const Quantity_Color& theColor);
 
   //! Returns true if arrows are to be drawn
-  Standard_EXPORT Standard_Boolean ToDrawArrows() const;
+  Standard_EXPORT bool ToDrawArrows() const;
 
   //! Sets whether to draw the arrows in visualization
-  Standard_EXPORT void SetDrawArrows(const Standard_Boolean theToDraw);
+  Standard_EXPORT void SetDrawArrows(const bool theToDraw);
 
   //! Returns priority of selection for owner of the given type
-  Standard_Integer SelectionPriority(Prs3d_DatumParts thePart)
-  {
-    return mySelectionPriority[thePart];
-  }
+  int SelectionPriority(Prs3d_DatumParts thePart) { return mySelectionPriority[thePart]; }
 
   //! Sets priority of selection for owner of the given type
-  void SetSelectionPriority(Prs3d_DatumParts thePart, Standard_Integer thePriority)
+  void SetSelectionPriority(Prs3d_DatumParts thePart, int thePriority)
   {
     mySelectionPriority[thePart] = thePriority;
   }
@@ -159,102 +156,95 @@ public:
 
 public:
   //! Sets the color theColor for this trihedron object, it changes color of axes.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   //! Returns true if the display mode selected, aMode, is valid for trihedron datums.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
-  {
-    return theMode == 0;
-  }
+  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Returns index 3, selection of the planes XOY, YOZ, XOZ.
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 3; }
+  virtual int Signature() const override { return 3; }
 
   //! Indicates that the type of Interactive Object is datum.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
-  {
-    return AIS_KindOfInteractive_Datum;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Removes the settings for color.
-  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetColor() override;
 
 public:
   //! Method which clear all selected owners belonging
   //! to this selectable object (for fast presentation draw).
-  Standard_EXPORT virtual void ClearSelected() Standard_OVERRIDE;
+  Standard_EXPORT virtual void ClearSelected() override;
 
   //! Method which draws selected owners (for fast presentation draw).
-  Standard_EXPORT virtual void HilightSelected(const Handle(PrsMgr_PresentationManager)& thePM,
-                                               const SelectMgr_SequenceOfOwner&          theOwners)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightSelected(
+    const occ::handle<PrsMgr_PresentationManager>&                  thePM,
+    const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theOwners) override;
 
   //! Method which highlights an owner belonging to
   //! this selectable object (for fast presentation draw).
   Standard_EXPORT virtual void HilightOwnerWithColor(
-    const Handle(PrsMgr_PresentationManager)& thePM,
-    const Handle(Prs3d_Drawer)&               theStyle,
-    const Handle(SelectMgr_EntityOwner)&      theOwner) Standard_OVERRIDE;
+    const occ::handle<PrsMgr_PresentationManager>& thePM,
+    const occ::handle<Prs3d_Drawer>&               theStyle,
+    const occ::handle<SelectMgr_EntityOwner>&      theOwner) override;
 
 protected:
   //! Compute trihedron presentation.
-  Standard_EXPORT void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                               const Handle(Prs3d_Presentation)&         thePrs,
-                               const Standard_Integer                    theMode) Standard_OVERRIDE;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(
+    const occ::handle<SelectMgr_Selection>& theSelection,
+    const int                               theMode) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Creates a sensitive entity for the datum part that will be used in selection owner creation.
-  Standard_EXPORT Handle(Select3D_SensitiveEntity) createSensitiveEntity(
-    const Prs3d_DatumParts               thePart,
-    const Handle(SelectMgr_EntityOwner)& theOwner) const;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> createSensitiveEntity(
+    const Prs3d_DatumParts                    thePart,
+    const occ::handle<SelectMgr_EntityOwner>& theOwner) const;
 
   //! Computes presentation for display mode equal 1.
-  Standard_EXPORT void computePresentation(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                           const Handle(Prs3d_Presentation)&         thePrs);
+  Standard_EXPORT void computePresentation(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                           const occ::handle<Prs3d_Presentation>&         thePrs);
 
   //! Returns own datum aspect of trihedron, create this aspect if it was not created yet.
   Standard_EXPORT void setOwnDatumAspect();
 
   //! Returns primitives.
-  const Handle(Graphic3d_ArrayOfPrimitives)& arrayOfPrimitives(Prs3d_DatumParts thePart) const
+  const occ::handle<Graphic3d_ArrayOfPrimitives>& arrayOfPrimitives(Prs3d_DatumParts thePart) const
   {
     return myPrimitives[thePart];
   }
 
   //! Updates graphic groups for the current datum mode
   //! Parameters of datum position and orientation
-  Standard_EXPORT void updatePrimitives(const Handle(Prs3d_DatumAspect)& theAspect,
-                                        Prs3d_DatumMode                  theMode,
-                                        const gp_Pnt&                    theOrigin,
-                                        const gp_Dir&                    theXDir,
-                                        const gp_Dir&                    theYDir,
-                                        const gp_Dir&                    theZDir);
+  Standard_EXPORT void updatePrimitives(const occ::handle<Prs3d_DatumAspect>& theAspect,
+                                        Prs3d_DatumMode                       theMode,
+                                        const gp_Pnt&                         theOrigin,
+                                        const gp_Dir&                         theXDir,
+                                        const gp_Dir&                         theYDir,
+                                        const gp_Dir&                         theZDir);
 
 protected:
-  Handle(Geom_Axis2Placement) myComponent;
-  Prs3d_DatumMode             myTrihDispMode;
-  Standard_Boolean            myHasOwnSize;
-  Standard_Boolean            myHasOwnTextColor;
-  Standard_Boolean            myHasOwnArrowColor;
+  occ::handle<Geom_Axis2Placement> myComponent;
+  Prs3d_DatumMode                  myTrihDispMode;
+  bool                             myHasOwnSize;
+  bool                             myHasOwnTextColor;
+  bool                             myHasOwnArrowColor;
 
   TCollection_ExtendedString myLabels[Prs3d_DatumParts_NB];
-  Standard_Integer           mySelectionPriority[Prs3d_DatumParts_NB];
+  int                        mySelectionPriority[Prs3d_DatumParts_NB];
 
-  Handle(Graphic3d_Group)            myPartToGroup[Prs3d_DatumParts_NB];
-  NCollection_List<Prs3d_DatumParts> mySelectedParts;
-  Handle(Graphic3d_AspectLine3d)     myHiddenLineAspect;
+  occ::handle<Graphic3d_Group>        myPartToGroup[Prs3d_DatumParts_NB];
+  NCollection_List<Prs3d_DatumParts>  mySelectedParts;
+  occ::handle<Graphic3d_AspectLine3d> myHiddenLineAspect;
 
-  Handle(Graphic3d_ArrayOfPrimitives) myPrimitives[Prs3d_DatumParts_NB];
+  occ::handle<Graphic3d_ArrayOfPrimitives> myPrimitives[Prs3d_DatumParts_NB];
 };
-
-DEFINE_STANDARD_HANDLE(AIS_Trihedron, AIS_InteractiveObject)
 
 #endif // _AIS_Trihedron_HeaderFile

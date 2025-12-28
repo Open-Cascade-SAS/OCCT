@@ -28,25 +28,24 @@
 #include <Convert_CompPolynomialToPoles.hxx>
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
 Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
-  const Standard_Integer                  NumCurves,
-  const Standard_Integer                  Continuity,
-  const Standard_Integer                  Dimension,
-  const Standard_Integer                  MaxDegree,
-  const Handle(TColStd_HArray1OfInteger)& NumCoeffPerCurve,
-  const Handle(TColStd_HArray1OfReal)&    Coefficients,
-  const Handle(TColStd_HArray2OfReal)&    PolynomialIntervals,
-  const Handle(TColStd_HArray1OfReal)&    TrueIntervals)
-    : myDone(Standard_False)
+  const int                                       NumCurves,
+  const int                                       Continuity,
+  const int                                       Dimension,
+  const int                                       MaxDegree,
+  const occ::handle<NCollection_HArray1<int>>&    NumCoeffPerCurve,
+  const occ::handle<NCollection_HArray1<double>>& Coefficients,
+  const occ::handle<NCollection_HArray2<double>>& PolynomialIntervals,
+  const occ::handle<NCollection_HArray1<double>>& TrueIntervals)
+    : myDone(false)
 {
-  Standard_Integer ii, delta;
+  int ii, delta;
   if (NumCurves <= 0 || NumCoeffPerCurve.IsNull() || Coefficients.IsNull()
       || PolynomialIntervals.IsNull() || TrueIntervals.IsNull() || Continuity < 0 || MaxDegree <= 0
       || Dimension <= 0 || PolynomialIntervals->RowLength() != 2)
@@ -67,16 +66,16 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   //
   //  prepare output
   //
-  Standard_Integer Tindex, multiplicities;
+  int Tindex, multiplicities;
 
-  myKnots = new TColStd_HArray1OfReal(1, NumCurves + 1);
+  myKnots = new NCollection_HArray1<double>(1, NumCurves + 1);
   for (ii = 1, Tindex = TrueIntervals->Lower(); ii <= NumCurves + 1; ii++, Tindex++)
   {
     myKnots->ChangeArray1().SetValue(ii, TrueIntervals->Value(Tindex));
   }
 
   multiplicities = myDegree - Continuity;
-  myMults        = new TColStd_HArray1OfInteger(1, NumCurves + 1);
+  myMults        = new NCollection_HArray1<int>(1, NumCurves + 1);
   for (ii = 2; ii < NumCurves + 1; ii++)
   {
     myMults->SetValue(ii, multiplicities);
@@ -94,17 +93,17 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
 }
 
 Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
-  const Standard_Integer         NumCurves,
-  const Standard_Integer         Dimension,
-  const Standard_Integer         MaxDegree,
-  const TColStd_Array1OfInteger& Continuity,
-  const TColStd_Array1OfInteger& NumCoeffPerCurve,
-  const TColStd_Array1OfReal&    Coefficients,
-  const TColStd_Array2OfReal&    PolynomialIntervals,
-  const TColStd_Array1OfReal&    TrueIntervals)
-    : myDone(Standard_False)
+  const int                         NumCurves,
+  const int                         Dimension,
+  const int                         MaxDegree,
+  const NCollection_Array1<int>&    Continuity,
+  const NCollection_Array1<int>&    NumCoeffPerCurve,
+  const NCollection_Array1<double>& Coefficients,
+  const NCollection_Array2<double>& PolynomialIntervals,
+  const NCollection_Array1<double>& TrueIntervals)
+    : myDone(false)
 {
-  Standard_Integer ii, delta;
+  int ii, delta;
   if (NumCurves <= 0 || MaxDegree <= 0 || Dimension <= 0 || PolynomialIntervals.RowLength() != 2)
   {
     throw Standard_ConstructionError("Convert_CompPolynomialToPoles:bad arguments");
@@ -119,15 +118,15 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   //
   //  prepare output
   //
-  Standard_Integer Tindex;
+  int Tindex;
 
-  myKnots = new TColStd_HArray1OfReal(1, NumCurves + 1);
+  myKnots = new NCollection_HArray1<double>(1, NumCurves + 1);
   for (ii = 1, Tindex = TrueIntervals.Lower(); ii <= NumCurves + 1; ii++, Tindex++)
   {
     myKnots->ChangeArray1().SetValue(ii, TrueIntervals.Value(Tindex));
   }
 
-  myMults = new TColStd_HArray1OfInteger(1, NumCurves + 1);
+  myMults = new NCollection_HArray1<int>(1, NumCurves + 1);
   for (ii = 2; ii < NumCurves + 1; ii++)
   {
     if ((Continuity(ii) > myDegree) && (NumCurves > 1))
@@ -151,14 +150,14 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
 }
 
 Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
-  const Standard_Integer      Dimension,
-  const Standard_Integer      MaxDegree,
-  const Standard_Integer      Degree,
-  const TColStd_Array1OfReal& Coefficients,
-  const TColStd_Array1OfReal& PolynomialIntervals,
-  const TColStd_Array1OfReal& TrueIntervals)
+  const int                         Dimension,
+  const int                         MaxDegree,
+  const int                         Degree,
+  const NCollection_Array1<double>& Coefficients,
+  const NCollection_Array1<double>& PolynomialIntervals,
+  const NCollection_Array1<double>& TrueIntervals)
     : myDegree(Degree),
-      myDone(Standard_False)
+      myDone(false)
 
 {
   if (MaxDegree <= 0 || Dimension <= 0 || PolynomialIntervals.Length() != 2)
@@ -166,18 +165,18 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
     throw Standard_ConstructionError("Convert_CompPolynomialToPoles:bad arguments");
   }
 
-  TColStd_Array2OfReal ThePolynomialIntervals(1, 1, 1, 2);
+  NCollection_Array2<double> ThePolynomialIntervals(1, 1, 1, 2);
   ThePolynomialIntervals.SetValue(1, 1, PolynomialIntervals(PolynomialIntervals.Lower()));
   ThePolynomialIntervals.SetValue(1, 2, PolynomialIntervals(PolynomialIntervals.Upper()));
 
-  TColStd_Array1OfInteger NumCoeffPerCurve(1, 1);
+  NCollection_Array1<int> NumCoeffPerCurve(1, 1);
   NumCoeffPerCurve(1) = Degree + 1;
 
-  myKnots = new TColStd_HArray1OfReal(1, 2);
+  myKnots = new NCollection_HArray1<double>(1, 2);
   myKnots->ChangeArray1().SetValue(1, TrueIntervals.Value(TrueIntervals.Lower()));
   myKnots->ChangeArray1().SetValue(2, TrueIntervals.Value(TrueIntervals.Lower() + 1));
 
-  myMults = new TColStd_HArray1OfInteger(1, 2);
+  myMults = new NCollection_HArray1<int>(1, 2);
   myMults->Init(myDegree + 1);
 
   // Calculs
@@ -190,17 +189,17 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
           TrueIntervals);
 }
 
-void Convert_CompPolynomialToPoles::Perform(const Standard_Integer         NumCurves,
-                                            const Standard_Integer         MaxDegree,
-                                            const Standard_Integer         Dimension,
-                                            const TColStd_Array1OfInteger& NumCoeffPerCurve,
-                                            const TColStd_Array1OfReal&    Coefficients,
-                                            const TColStd_Array2OfReal&    PolynomialIntervals,
-                                            const TColStd_Array1OfReal&    TrueIntervals)
+void Convert_CompPolynomialToPoles::Perform(const int                         NumCurves,
+                                            const int                         MaxDegree,
+                                            const int                         Dimension,
+                                            const NCollection_Array1<int>&    NumCoeffPerCurve,
+                                            const NCollection_Array1<double>& Coefficients,
+                                            const NCollection_Array2<double>& PolynomialIntervals,
+                                            const NCollection_Array1<double>& TrueIntervals)
 {
-  Standard_Integer ii, num_flat_knots, index, Tindex, Pindex, coeff_index, inversion_problem,
-    poles_index, num_poles;
-  Standard_Real normalized_value, *coefficient_array, *poles_array;
+  int ii, num_flat_knots, index, Tindex, Pindex, coeff_index, inversion_problem, poles_index,
+    num_poles;
+  double normalized_value, *coefficient_array, *poles_array;
 
   num_flat_knots = 2 * myDegree + 2;
   for (ii = 2; ii < myMults->Length(); ii++)
@@ -209,22 +208,22 @@ void Convert_CompPolynomialToPoles::Perform(const Standard_Integer         NumCu
   }
   num_poles = num_flat_knots - myDegree - 1;
 
-  myFlatKnots = new TColStd_HArray1OfReal(1, num_flat_knots);
+  myFlatKnots = new NCollection_HArray1<double>(1, num_flat_knots);
   BSplCLib::KnotSequence(myKnots->Array1(),
                          myMults->Array1(),
                          myDegree,
-                         Standard_False,
+                         false,
                          myFlatKnots->ChangeArray1());
 
-  TColStd_Array1OfReal parameters(1, num_poles);
+  NCollection_Array1<double> parameters(1, num_poles);
   BSplCLib::BuildSchoenbergPoints(myDegree, myFlatKnots->Array1(), parameters);
-  myPoles     = new TColStd_HArray2OfReal(1, num_poles, 1, Dimension);
+  myPoles     = new NCollection_HArray2<double>(1, num_poles, 1, Dimension);
   index       = 2;
   Tindex      = TrueIntervals.Lower() + 1;
   Pindex      = PolynomialIntervals.LowerRow();
-  poles_array = (Standard_Real*)&(myPoles->ChangeArray2()).Value(1, 1);
+  poles_array = (double*)&(myPoles->ChangeArray2()).Value(1, 1);
 
-  TColStd_Array1OfInteger contact_array(1, num_poles);
+  NCollection_Array1<int> contact_array(1, num_poles);
 
   poles_index = 0;
   for (ii = 1; ii <= num_poles; ii++, poles_index += Dimension)
@@ -248,8 +247,8 @@ void Convert_CompPolynomialToPoles::Perform(const Standard_Integer         NumCu
     coeff_index =
       ((index - 2) * Dimension * (std::max(MaxDegree, myDegree) + 1)) + Coefficients.Lower();
 
-    coefficient_array    = (Standard_Real*)&(Coefficients(coeff_index));
-    Standard_Integer Deg = NumCoeffPerCurve(NumCoeffPerCurve.Lower() + index - 2) - 1;
+    coefficient_array = (double*)&(Coefficients(coeff_index));
+    int Deg           = NumCoeffPerCurve(NumCoeffPerCurve.Lower() + index - 2) - 1;
 
     PLib::NoDerivativeEvalPolynomial(normalized_value,
                                      Deg,
@@ -273,12 +272,12 @@ void Convert_CompPolynomialToPoles::Perform(const Standard_Integer         NumCu
   {
     throw Standard_ConstructionError("Convert_CompPolynomialToPoles:inversion_problem");
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
-Standard_Integer Convert_CompPolynomialToPoles::NbPoles() const
+int Convert_CompPolynomialToPoles::NbPoles() const
 {
   if (myDone)
   {
@@ -290,7 +289,7 @@ Standard_Integer Convert_CompPolynomialToPoles::NbPoles() const
 
 //=================================================================================================
 
-void Convert_CompPolynomialToPoles::Poles(Handle(TColStd_HArray2OfReal)& P) const
+void Convert_CompPolynomialToPoles::Poles(occ::handle<NCollection_HArray2<double>>& P) const
 {
   if (myDone)
   {
@@ -300,7 +299,7 @@ void Convert_CompPolynomialToPoles::Poles(Handle(TColStd_HArray2OfReal)& P) cons
 
 //=================================================================================================
 
-Standard_Integer Convert_CompPolynomialToPoles::NbKnots() const
+int Convert_CompPolynomialToPoles::NbKnots() const
 {
   if (myDone)
   {
@@ -312,7 +311,7 @@ Standard_Integer Convert_CompPolynomialToPoles::NbKnots() const
 
 //=================================================================================================
 
-void Convert_CompPolynomialToPoles::Knots(Handle(TColStd_HArray1OfReal)& K) const
+void Convert_CompPolynomialToPoles::Knots(occ::handle<NCollection_HArray1<double>>& K) const
 {
   if (myDone)
   {
@@ -322,7 +321,7 @@ void Convert_CompPolynomialToPoles::Knots(Handle(TColStd_HArray1OfReal)& K) cons
 
 //=================================================================================================
 
-void Convert_CompPolynomialToPoles::Multiplicities(Handle(TColStd_HArray1OfInteger)& M) const
+void Convert_CompPolynomialToPoles::Multiplicities(occ::handle<NCollection_HArray1<int>>& M) const
 {
   if (myDone)
   {
@@ -332,14 +331,14 @@ void Convert_CompPolynomialToPoles::Multiplicities(Handle(TColStd_HArray1OfInteg
 
 //=================================================================================================
 
-Standard_Boolean Convert_CompPolynomialToPoles::IsDone() const
+bool Convert_CompPolynomialToPoles::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
 
-Standard_Integer Convert_CompPolynomialToPoles::Degree() const
+int Convert_CompPolynomialToPoles::Degree() const
 {
   if (myDone)
   {

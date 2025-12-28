@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_XYZDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinTObjDrivers_XYZDriver::BinTObjDrivers_XYZDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : BinMDF_ADriver(theMessageDriver, NULL)
 {
 }
@@ -36,7 +36,7 @@ BinTObjDrivers_XYZDriver::BinTObjDrivers_XYZDriver(
 // purpose  : Creates a new attribute
 //=======================================================================
 
-Handle(TDF_Attribute) BinTObjDrivers_XYZDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinTObjDrivers_XYZDriver::NewEmpty() const
 {
   return new TObj_TXYZ;
 }
@@ -47,16 +47,16 @@ Handle(TDF_Attribute) BinTObjDrivers_XYZDriver::NewEmpty() const
 //           into <theTarget>.
 //=======================================================================
 
-Standard_Boolean BinTObjDrivers_XYZDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                 const Handle(TDF_Attribute)& theTarget,
-                                                 BinObjMgt_RRelocationTable&) const
+bool BinTObjDrivers_XYZDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                     const occ::handle<TDF_Attribute>& theTarget,
+                                     BinObjMgt_RRelocationTable&) const
 {
-  Handle(TObj_TXYZ) aTarget = Handle(TObj_TXYZ)::DownCast(theTarget);
-  Standard_Real     aX, aY, aZ;
+  occ::handle<TObj_TXYZ> aTarget = occ::down_cast<TObj_TXYZ>(theTarget);
+  double                 aX, aY, aZ;
   if (!(theSource >> aX >> aY >> aZ))
-    return Standard_False;
+    return false;
   aTarget->Set(gp_XYZ(aX, aY, aZ));
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -65,11 +65,11 @@ Standard_Boolean BinTObjDrivers_XYZDriver::Paste(const BinObjMgt_Persistent&  th
 //           into <theTarget>
 //=======================================================================
 
-void BinTObjDrivers_XYZDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                     BinObjMgt_Persistent&        theTarget,
-                                     BinObjMgt_SRelocationTable&) const
+void BinTObjDrivers_XYZDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                     BinObjMgt_Persistent&             theTarget,
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TObj_TXYZ) aSource = Handle(TObj_TXYZ)::DownCast(theSource);
-  gp_XYZ            aXYZ    = aSource->Get();
+  occ::handle<TObj_TXYZ> aSource = occ::down_cast<TObj_TXYZ>(theSource);
+  gp_XYZ                 aXYZ    = aSource->Get();
   theTarget << aXYZ.X() << aXYZ.Y() << aXYZ.Z();
 }

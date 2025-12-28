@@ -23,10 +23,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <Standard_Transient.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-
-class ShapeAnalysis_TransferParameters;
-DEFINE_STANDARD_HANDLE(ShapeAnalysis_TransferParameters, Standard_Transient)
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 //! This tool is used for transferring parameters
 //! from 3d curve of the edge to pcurve and vice versa.
@@ -58,44 +56,43 @@ public:
 
   //! Sets maximal tolerance to use linear recomputation of
   //! parameters.
-  Standard_EXPORT void SetMaxTolerance(const Standard_Real maxtol);
+  Standard_EXPORT void SetMaxTolerance(const double maxtol);
 
   //! Transfers parameters given by sequence Params from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
-  Standard_EXPORT virtual Handle(TColStd_HSequenceOfReal) Perform(
-    const Handle(TColStd_HSequenceOfReal)& Params,
-    const Standard_Boolean                 To2d);
+  Standard_EXPORT virtual occ::handle<NCollection_HSequence<double>> Perform(
+    const occ::handle<NCollection_HSequence<double>>& Params,
+    const bool                                        To2d);
 
   //! Transfers parameter given by sequence Params from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
-  Standard_EXPORT virtual Standard_Real Perform(const Standard_Real    Param,
-                                                const Standard_Boolean To2d);
+  Standard_EXPORT virtual double Perform(const double Param, const bool To2d);
 
   //! Recomputes range of curves from NewEdge.
   //! If Is2d equals True parameters are recomputed by curve2d else by curve3d.
-  Standard_EXPORT virtual void TransferRange(TopoDS_Edge&           newEdge,
-                                             const Standard_Real    prevPar,
-                                             const Standard_Real    currPar,
-                                             const Standard_Boolean To2d);
+  Standard_EXPORT virtual void TransferRange(TopoDS_Edge& newEdge,
+                                             const double prevPar,
+                                             const double currPar,
+                                             const bool   To2d);
 
   //! Returns True if 3d curve of edge and pcurve are SameRange
   //! (in default implementation, if myScale == 1 and myShift == 0)
-  Standard_EXPORT virtual Standard_Boolean IsSameRange() const;
+  Standard_EXPORT virtual bool IsSameRange() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_TransferParameters, Standard_Transient)
 
 protected:
-  Standard_Real myFirst;
-  Standard_Real myLast;
-  TopoDS_Edge   myEdge;
-  Standard_Real myMaxTolerance;
+  double      myFirst;
+  double      myLast;
+  TopoDS_Edge myEdge;
+  double      myMaxTolerance;
 
 private:
-  Standard_Real myShift;
-  Standard_Real myScale;
-  Standard_Real myFirst2d;
-  Standard_Real myLast2d;
-  TopoDS_Face   myFace;
+  double      myShift;
+  double      myScale;
+  double      myFirst2d;
+  double      myLast2d;
+  TopoDS_Face myFace;
 };
 
 #endif // _ShapeAnalysis_TransferParameters_HeaderFile

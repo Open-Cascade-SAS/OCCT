@@ -29,8 +29,8 @@ StepFEA_FeaMoistureAbsorption::StepFEA_FeaMoistureAbsorption() {}
 //=================================================================================================
 
 void StepFEA_FeaMoistureAbsorption::Init(
-  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-  const StepFEA_SymmetricTensor23d&       aFeaConstants)
+  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+  const StepFEA_SymmetricTensor23d&            aFeaConstants)
 {
   StepFEA_FeaMaterialPropertyRepresentationItem::Init(aRepresentationItem_Name);
 

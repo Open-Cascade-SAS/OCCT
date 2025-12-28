@@ -30,10 +30,10 @@ RWStepShape_RWContextDependentShapeRepresentation::
 //=================================================================================================
 
 void RWStepShape_RWContextDependentShapeRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)&                       data,
-  const Standard_Integer                                       num,
-  Handle(Interface_Check)&                                     ach,
-  const Handle(StepShape_ContextDependentShapeRepresentation)& ent) const
+  const occ::handle<StepData_StepReaderData>&                       data,
+  const int                                                         num,
+  occ::handle<Interface_Check>&                                     ach,
+  const occ::handle<StepShape_ContextDependentShapeRepresentation>& ent) const
 {
   // --- Number of Parameter Control ---
 
@@ -42,8 +42,8 @@ void RWStepShape_RWContextDependentShapeRepresentation::ReadStep(
 
   // --- own field : representation_relation ---
 
-  Handle(StepRepr_ShapeRepresentationRelationship) aRepRel;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepRepr_ShapeRepresentationRelationship> aRepRel;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "representation_relation",
@@ -53,8 +53,8 @@ void RWStepShape_RWContextDependentShapeRepresentation::ReadStep(
 
   // --- own field : represented_product_relation ---
 
-  Handle(StepRepr_ProductDefinitionShape) aProRel;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepRepr_ProductDefinitionShape> aProRel;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "represented_product_relation",
@@ -68,8 +68,8 @@ void RWStepShape_RWContextDependentShapeRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWContextDependentShapeRepresentation::WriteStep(
-  StepData_StepWriter&                                         SW,
-  const Handle(StepShape_ContextDependentShapeRepresentation)& ent) const
+  StepData_StepWriter&                                              SW,
+  const occ::handle<StepShape_ContextDependentShapeRepresentation>& ent) const
 {
   SW.Send(ent->RepresentationRelation());
   SW.Send(ent->RepresentedProductRelation());
@@ -78,8 +78,8 @@ void RWStepShape_RWContextDependentShapeRepresentation::WriteStep(
 //=================================================================================================
 
 void RWStepShape_RWContextDependentShapeRepresentation::Share(
-  const Handle(StepShape_ContextDependentShapeRepresentation)& ent,
-  Interface_EntityIterator&                                    iter) const
+  const occ::handle<StepShape_ContextDependentShapeRepresentation>& ent,
+  Interface_EntityIterator&                                         iter) const
 {
   iter.AddItem(ent->RepresentationRelation());
   iter.AddItem(ent->RepresentedProductRelation());

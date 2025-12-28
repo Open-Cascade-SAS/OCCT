@@ -2,15 +2,7 @@
 set(OCCT_StepGeom_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_StepGeom_FILES
-  StepGeom_Array1OfBoundaryCurve.hxx
-  StepGeom_Array1OfCartesianPoint.hxx
-  StepGeom_Array1OfCompositeCurveSegment.hxx
-  StepGeom_Array1OfCurve.hxx
-  StepGeom_Array1OfPcurveOrSurface.hxx
-  StepGeom_Array1OfSurfaceBoundary.hxx
-  StepGeom_Array1OfTrimmingSelect.hxx
-  StepGeom_Array2OfCartesianPoint.hxx
-  StepGeom_Array2OfSurfacePatch.hxx
+
   StepGeom_Axis1Placement.cxx
   StepGeom_Axis1Placement.hxx
   StepGeom_Axis2Placement.cxx
@@ -99,15 +91,7 @@ set(OCCT_StepGeom_FILES
   StepGeom_GeometricRepresentationItem.hxx
   StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.cxx
   StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx
-  StepGeom_HArray1OfBoundaryCurve.hxx
-  StepGeom_HArray1OfCartesianPoint.hxx
-  StepGeom_HArray1OfCompositeCurveSegment.hxx
-  StepGeom_HArray1OfCurve.hxx
-  StepGeom_HArray1OfPcurveOrSurface.hxx
-  StepGeom_HArray1OfSurfaceBoundary.hxx
-  StepGeom_HArray1OfTrimmingSelect.hxx
-  StepGeom_HArray2OfCartesianPoint.hxx
-  StepGeom_HArray2OfSurfacePatch.hxx
+
   StepGeom_Hyperbola.cxx
   StepGeom_Hyperbola.hxx
   StepGeom_IntersectionCurve.cxx

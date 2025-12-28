@@ -47,25 +47,25 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_DirectModification, ShapeCustom_Modificat
 ShapeCustom_DirectModification::ShapeCustom_DirectModification() {}
 
 // S4181 returns 0 - none, 1 - indirect, 2 - negative cone, 3 - indirect negative cone
-static Standard_Integer IsIndirectSurface(Handle(Geom_Surface)& S, TopLoc_Location& L)
+static int IsIndirectSurface(occ::handle<Geom_Surface>& S, TopLoc_Location& L)
 {
-  Standard_Integer result = 0;
+  int result = 0;
 
-  Handle(Geom_Surface) TS = S;
+  occ::handle<Geom_Surface> TS = S;
   while (TS->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
-    TS = Handle(Geom_RectangularTrimmedSurface)::DownCast(TS)->BasisSurface();
+    TS = occ::down_cast<Geom_RectangularTrimmedSurface>(TS)->BasisSurface();
 
-  Handle(Geom_ElementarySurface) ES = Handle(Geom_ElementarySurface)::DownCast(TS);
+  occ::handle<Geom_ElementarySurface> ES = occ::down_cast<Geom_ElementarySurface>(TS);
   if (!ES.IsNull())
   {
     // is the surface indirect ?
-    gp_Trsf          t   = L.Transformation();
-    Standard_Boolean neg = t.IsNegative();
-    Standard_Boolean det = (t.VectorialPart().Determinant() < 0.0);
-    Standard_Boolean dir = ES->Position().Direct();
+    gp_Trsf t   = L.Transformation();
+    bool    neg = t.IsNegative();
+    bool    det = (t.VectorialPart().Determinant() < 0.0);
+    bool    dir = ES->Position().Direct();
     if ((neg != det) == dir)
       result = 1;
-    Handle(Geom_ConicalSurface) CS = Handle(Geom_ConicalSurface)::DownCast(ES);
+    occ::handle<Geom_ConicalSurface> CS = occ::down_cast<Geom_ConicalSurface>(ES);
     if (!CS.IsNull())
     {
       // does the cone have negative semiangle ?
@@ -81,12 +81,12 @@ static Standard_Integer IsIndirectSurface(Handle(Geom_Surface)& S, TopLoc_Locati
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_DirectModification::NewSurface(const TopoDS_Face&    F,
-                                                            Handle(Geom_Surface)& S,
-                                                            TopLoc_Location&      L,
-                                                            Standard_Real&        Tol,
-                                                            Standard_Boolean&     RevWires,
-                                                            Standard_Boolean&     RevFace)
+bool ShapeCustom_DirectModification::NewSurface(const TopoDS_Face&         F,
+                                                occ::handle<Geom_Surface>& S,
+                                                TopLoc_Location&           L,
+                                                double&                    Tol,
+                                                bool&                      RevWires,
+                                                bool&                      RevFace)
 {
   S = BRep_Tool::Surface(F, L);
 
@@ -95,94 +95,94 @@ Standard_Boolean ShapeCustom_DirectModification::NewSurface(const TopoDS_Face&  
     case 1: { // Indirect surface
       // UReverse a copy of S
       S        = S->UReversed();
-      RevWires = Standard_True;
-      RevFace  = Standard_True;
+      RevWires = true;
+      RevFace  = true;
       break;
     }
     case 2: { // Negative cone
       // U- and VReverse a copy of S
       S = S->VReversed();
       S->UReverse();
-      RevWires = Standard_False;
-      RevFace  = Standard_False;
+      RevWires = false;
+      RevFace  = false;
       break;
     }
     case 3: { // Indirect negative cone
       // VReverse a copy of S
       S        = S->VReversed();
-      RevWires = Standard_True;
-      RevFace  = Standard_True;
+      RevWires = true;
+      RevFace  = true;
       break;
     }
     default:
-      return Standard_False;
+      return false;
   }
 
   SendMsg(F, Message_Msg("DirectModification.NewSurface.MSG0"));
 
   Tol = BRep_Tool::Tolerance(F);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_DirectModification::NewCurve(const TopoDS_Edge&  E,
-                                                          Handle(Geom_Curve)& C,
-                                                          TopLoc_Location&    L,
-                                                          Standard_Real&      Tol)
+bool ShapeCustom_DirectModification::NewCurve(const TopoDS_Edge&       E,
+                                              occ::handle<Geom_Curve>& C,
+                                              TopLoc_Location&         L,
+                                              double&                  Tol)
 {
   //: p5 abv 26 Feb 99: force copying of edge if any its pcurve will be replaced
-  Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&E.TShape());
+  occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
 
   // iterate on pcurves
-  BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   for (; itcr.More(); itcr.Next())
   {
-    Handle(BRep_GCurve) GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
+    occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
     if (GC.IsNull() || !GC->IsCurveOnSurface())
       continue;
-    Handle(Geom_Surface) S   = GC->Surface();
-    TopLoc_Location      Loc = GC->Location();
+    occ::handle<Geom_Surface> S   = GC->Surface();
+    TopLoc_Location           Loc = GC->Location();
     if (!IsIndirectSurface(S, Loc))
       continue;
-    Standard_Real f, l;
+    double f, l;
     C = BRep_Tool::Curve(E, L, f, l);
     if (!C.IsNull())
-      C = Handle(Geom_Curve)::DownCast(C->Copy());
+      C = occ::down_cast<Geom_Curve>(C->Copy());
     Tol = BRep_Tool::Tolerance(E);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_DirectModification::NewPoint(const TopoDS_Vertex& /*V*/,
-                                                          gp_Pnt& /*P*/,
-                                                          Standard_Real& /*Tol*/)
+bool ShapeCustom_DirectModification::NewPoint(const TopoDS_Vertex& /*V*/,
+                                              gp_Pnt& /*P*/,
+                                              double& /*Tol*/)
 {
   // 3d points are never modified
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&    E,
-                                                            const TopoDS_Face&    F,
-                                                            const TopoDS_Edge&    NewE,
-                                                            const TopoDS_Face&    NewF,
-                                                            Handle(Geom2d_Curve)& C,
-                                                            Standard_Real&        Tol)
+bool ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&         E,
+                                                const TopoDS_Face&         F,
+                                                const TopoDS_Edge&         NewE,
+                                                const TopoDS_Face&         NewF,
+                                                occ::handle<Geom2d_Curve>& C,
+                                                double&                    Tol)
 {
-  TopLoc_Location      L;
-  Handle(Geom_Surface) S = BRep_Tool::Surface(F, L);
+  TopLoc_Location           L;
+  occ::handle<Geom_Surface> S = BRep_Tool::Surface(F, L);
 
-  Standard_Integer result = IsIndirectSurface(S, L);
+  int result = IsIndirectSurface(S, L);
   if (!result && E.IsSame(NewE))
-    return Standard_False;
+    return false;
 
-  Standard_Real f, l;
+  double f, l;
   C   = BRep_Tool::CurveOnSurface(E, F, f, l);
   Tol = BRep_Tool::Tolerance(E);
 
@@ -196,13 +196,13 @@ Standard_Boolean ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&  
       case 1: { // Indirect surface
         // mirror the PCurve about the V axis
         T.SetMirror(gp::OY2d());
-        C = Handle(Geom2d_Curve)::DownCast(C->Transformed(T));
+        C = occ::down_cast<Geom2d_Curve>(C->Transformed(T));
         break;
       }
       case 2: { // Negative cone
         // mirror the PCurve about the U and V axis
         T.SetMirror(gp::OX2d());
-        C = Handle(Geom2d_Curve)::DownCast(C->Transformed(T));
+        C = occ::down_cast<Geom2d_Curve>(C->Transformed(T));
         T.SetMirror(gp::OY2d());
         C->Transform(T);
         break;
@@ -210,7 +210,7 @@ Standard_Boolean ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&  
       case 3: { // Indirect negative cone
         // mirror the PCurve about the U axis
         T.SetMirror(gp::OX2d());
-        C = Handle(Geom2d_Curve)::DownCast(C->Transformed(T));
+        C = occ::down_cast<Geom2d_Curve>(C->Transformed(T));
         break;
       }
     }
@@ -219,8 +219,8 @@ Standard_Boolean ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&  
     if (BRepTools::IsReallyClosed(E, F))
     {
       // szv#4:S4163:12Mar99 SGI warning
-      TopoDS_Shape         sh  = NewE.Reversed();
-      Handle(Geom2d_Curve) tmp = BRep_Tool::CurveOnSurface(TopoDS::Edge(sh), NewF, f, l);
+      TopoDS_Shape              sh  = NewE.Reversed();
+      occ::handle<Geom2d_Curve> tmp = BRep_Tool::CurveOnSurface(TopoDS::Edge(sh), NewF, f, l);
       if (tmp.IsNull())
       {
         tmp = BRep_Tool::CurveOnSurface(E, F, f, l);
@@ -235,20 +235,20 @@ Standard_Boolean ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&  
   {
     //: p5 abv 26 Feb 99: force copying of pcurves if edge was copied
     if (!C.IsNull())
-      C = Handle(Geom2d_Curve)::DownCast(C->Copy());
+      C = occ::down_cast<Geom2d_Curve>(C->Copy());
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_DirectModification::NewParameter(const TopoDS_Vertex& /*V*/,
-                                                              const TopoDS_Edge& /*E*/,
-                                                              Standard_Real& /*P*/,
-                                                              Standard_Real& /*Tol*/)
+bool ShapeCustom_DirectModification::NewParameter(const TopoDS_Vertex& /*V*/,
+                                                  const TopoDS_Edge& /*E*/,
+                                                  double& /*P*/,
+                                                  double& /*Tol*/)
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================

@@ -31,15 +31,16 @@ IGESBasic_Group::IGESBasic_Group()
   InitTypeAndForm(402, 1);
 }
 
-IGESBasic_Group::IGESBasic_Group(const Standard_Integer nb)
+IGESBasic_Group::IGESBasic_Group(const int nb)
 {
   InitTypeAndForm(402, 1);
   if (nb <= 0)
     return;
-  theEntities = new IGESData_HArray1OfIGESEntity(1, nb);
+  theEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
 }
 
-void IGESBasic_Group::Init(const Handle(IGESData_HArray1OfIGESEntity)& allEntities)
+void IGESBasic_Group::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities)
 {
   // ptv and rln September 14, 2000 BUC60743
   // Protection against empty groups
@@ -50,9 +51,9 @@ void IGESBasic_Group::Init(const Handle(IGESData_HArray1OfIGESEntity)& allEntiti
     InitTypeAndForm(402, 1);
 }
 
-void IGESBasic_Group::SetOrdered(const Standard_Boolean mode)
+void IGESBasic_Group::SetOrdered(const bool mode)
 {
-  Standard_Integer fn = FormNumber();
+  int fn = FormNumber();
   if (mode)
   {
     if (fn == 0 || fn == 1)
@@ -69,9 +70,9 @@ void IGESBasic_Group::SetOrdered(const Standard_Boolean mode)
   }
 }
 
-void IGESBasic_Group::SetWithoutBackP(const Standard_Boolean mode)
+void IGESBasic_Group::SetWithoutBackP(const bool mode)
 {
-  Standard_Integer fn = FormNumber();
+  int fn = FormNumber();
   if (mode)
   {
     if (fn == 0 || fn == 1)
@@ -88,32 +89,33 @@ void IGESBasic_Group::SetWithoutBackP(const Standard_Boolean mode)
   }
 }
 
-Standard_Boolean IGESBasic_Group::IsOrdered() const
+bool IGESBasic_Group::IsOrdered() const
 {
-  Standard_Integer fn = FormNumber();
+  int fn = FormNumber();
   return (fn > 7);
 }
 
-Standard_Boolean IGESBasic_Group::IsWithoutBackP() const
+bool IGESBasic_Group::IsWithoutBackP() const
 {
-  Standard_Integer fn = FormNumber();
+  int fn = FormNumber();
   return (fn == 7 || fn == 15);
 }
 
-void IGESBasic_Group::SetUser(const Standard_Integer type, const Standard_Integer form)
+void IGESBasic_Group::SetUser(const int type, const int form)
 {
   if (type <= 5000)
     throw Standard_OutOfRange("IGESBasic_Group::SetUser");
   InitTypeAndForm(type, form);
 }
 
-void IGESBasic_Group::SetNb(const Standard_Integer nb)
+void IGESBasic_Group::SetNb(const int nb)
 {
-  Standard_Integer i, oldnb = NbEntities();
+  int i, oldnb = NbEntities();
   if (nb == oldnb || nb <= 0)
     return;
 
-  Handle(IGESData_HArray1OfIGESEntity) newents = new IGESData_HArray1OfIGESEntity(1, nb);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> newents =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   if (oldnb > nb)
     oldnb = nb;
   for (i = 1; i <= oldnb; i++)
@@ -121,22 +123,22 @@ void IGESBasic_Group::SetNb(const Standard_Integer nb)
   theEntities = newents;
 }
 
-Standard_Integer IGESBasic_Group::NbEntities() const
+int IGESBasic_Group::NbEntities() const
 {
   return (theEntities.IsNull() ? 0 : theEntities->Length());
 }
 
-Handle(IGESData_IGESEntity) IGESBasic_Group::Entity(const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESBasic_Group::Entity(const int Index) const
 {
   return theEntities->Value(Index);
 }
 
-Handle(Standard_Transient) IGESBasic_Group::Value(const Standard_Integer Index) const
+occ::handle<Standard_Transient> IGESBasic_Group::Value(const int Index) const
 {
-  return Handle(Standard_Transient)(theEntities->Value(Index));
+  return occ::handle<Standard_Transient>(theEntities->Value(Index));
 }
 
-void IGESBasic_Group::SetValue(const Standard_Integer Index, const Handle(IGESData_IGESEntity)& ent)
+void IGESBasic_Group::SetValue(const int Index, const occ::handle<IGESData_IGESEntity>& ent)
 {
   theEntities->SetValue(Index, ent);
 }

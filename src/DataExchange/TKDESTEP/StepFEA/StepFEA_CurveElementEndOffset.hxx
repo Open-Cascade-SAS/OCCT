@@ -19,11 +19,9 @@
 #include <Standard.hxx>
 
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
-
-class StepFEA_CurveElementEndOffset;
-DEFINE_STANDARD_HANDLE(StepFEA_CurveElementEndOffset, Standard_Transient)
 
 //! Representation of STEP entity CurveElementEndOffset
 class StepFEA_CurveElementEndOffset : public Standard_Transient
@@ -34,8 +32,8 @@ public:
   Standard_EXPORT StepFEA_CurveElementEndOffset();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const StepFEA_CurveElementEndCoordinateSystem& aCoordinateSystem,
-                            const Handle(TColStd_HArray1OfReal)&           aOffsetVector);
+  Standard_EXPORT void Init(const StepFEA_CurveElementEndCoordinateSystem&  aCoordinateSystem,
+                            const occ::handle<NCollection_HArray1<double>>& aOffsetVector);
 
   //! Returns field CoordinateSystem
   Standard_EXPORT StepFEA_CurveElementEndCoordinateSystem CoordinateSystem() const;
@@ -45,17 +43,17 @@ public:
     const StepFEA_CurveElementEndCoordinateSystem& CoordinateSystem);
 
   //! Returns field OffsetVector
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) OffsetVector() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> OffsetVector() const;
 
   //! Set field OffsetVector
-  Standard_EXPORT void SetOffsetVector(const Handle(TColStd_HArray1OfReal)& OffsetVector);
+  Standard_EXPORT void SetOffsetVector(
+    const occ::handle<NCollection_HArray1<double>>& OffsetVector);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset, Standard_Transient)
 
-protected:
 private:
-  StepFEA_CurveElementEndCoordinateSystem theCoordinateSystem;
-  Handle(TColStd_HArray1OfReal)           theOffsetVector;
+  StepFEA_CurveElementEndCoordinateSystem  theCoordinateSystem;
+  occ::handle<NCollection_HArray1<double>> theOffsetVector;
 };
 
 #endif // _StepFEA_CurveElementEndOffset_HeaderFile

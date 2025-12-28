@@ -51,7 +51,7 @@ public:
   //! -   the services provided by a 2D curve from the package Geom2d,
   //! -   and those required on the curve by a computation algorithm.
   //! The adapted curve is created in the following way:
-  //! Handle(Geom2d_Curve) mycurve = ...
+  //! occ::handle<Geom2d_Curve> mycurve = ...
   //! ;
   //! Geom2dAdaptor_Curve Obj ( mycurve )
   //! ;
@@ -68,7 +68,7 @@ public:
   //! -   the services provided by a 2D curve from the package Geom2d,
   //! -   and those required on the curve by a computation algorithm.
   //! The adapted curve is created in the following way:
-  //! Handle(Geom2d_Curve) mycurve = ...
+  //! occ::handle<Geom2d_Curve> mycurve = ...
   //! ;
   //! Geom2dAdaptor_Curve Obj ( mycurve )
   //! ;
@@ -85,7 +85,7 @@ public:
   //! -   the services provided by a 2D curve from the package Geom2d,
   //! -   and those required on the curve by a computation algorithm.
   //! The adapted curve is created in the following way:
-  //! Handle(Geom2d_Curve) mycurve = ...
+  //! occ::handle<Geom2d_Curve> mycurve = ...
   //! ;
   //! Geom2dAdaptor_Curve Obj ( mycurve )
   //! ;
@@ -102,7 +102,7 @@ public:
   //! -   the services provided by a 2D curve from the package Geom2d,
   //! -   and those required on the curve by a computation algorithm.
   //! The adapted curve is created in the following way:
-  //! Handle(Geom2d_Curve) mycurve = ...
+  //! occ::handle<Geom2d_Curve> mycurve = ...
   //! ;
   //! Geom2dAdaptor_Curve Obj ( mycurve )
   //! ;

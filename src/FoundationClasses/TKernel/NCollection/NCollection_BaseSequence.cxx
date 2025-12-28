@@ -189,8 +189,7 @@ void NCollection_BaseSequence::PInsertAfter(NCollection_BaseSequence::Iterator& 
 
 //=================================================================================================
 
-void NCollection_BaseSequence::PInsertAfter(const Standard_Integer theIndex,
-                                            NCollection_SeqNode*   theItem)
+void NCollection_BaseSequence::PInsertAfter(const int theIndex, NCollection_SeqNode* theItem)
 {
   if (theIndex == 0)
     PPrepend(theItem);
@@ -215,8 +214,7 @@ void NCollection_BaseSequence::PInsertAfter(const Standard_Integer theIndex,
 // purpose  : insert a sequence after a given index in the sequence
 //=======================================================================
 
-void NCollection_BaseSequence::PInsertAfter(const Standard_Integer    theIndex,
-                                            NCollection_BaseSequence& Other)
+void NCollection_BaseSequence::PInsertAfter(const int theIndex, NCollection_BaseSequence& Other)
 {
   if (theIndex < 0 || theIndex > mySize)
     throw Standard_OutOfRange();
@@ -247,7 +245,7 @@ void NCollection_BaseSequence::PInsertAfter(const Standard_Integer    theIndex,
 // purpose  : exchange two elements in the sequence
 //=======================================================================
 
-void NCollection_BaseSequence::PExchange(const Standard_Integer I, const Standard_Integer J)
+void NCollection_BaseSequence::PExchange(const int I, const int J)
 {
   Standard_OutOfRange_Raise_if(I <= 0 || J <= 0 || I > mySize || J > mySize, "");
 
@@ -302,8 +300,7 @@ void NCollection_BaseSequence::PExchange(const Standard_Integer I, const Standar
 
 //=================================================================================================
 
-void NCollection_BaseSequence::PSplit(const Standard_Integer    theIndex,
-                                      NCollection_BaseSequence& Sub)
+void NCollection_BaseSequence::PSplit(const int theIndex, NCollection_BaseSequence& Sub)
 {
   Standard_OutOfRange_Raise_if(theIndex <= 0 || theIndex > mySize, "");
   Standard_DomainError_Raise_if(this == &Sub, "No Split on myself!!");
@@ -364,8 +361,7 @@ void NCollection_BaseSequence::RemoveSeq(NCollection_BaseSequence::Iterator& the
 
 //=================================================================================================
 
-void NCollection_BaseSequence::RemoveSeq(const Standard_Integer theIndex,
-                                         NCollection_DelSeqNode fDel)
+void NCollection_BaseSequence::RemoveSeq(const int theIndex, NCollection_DelSeqNode fDel)
 {
   Standard_OutOfRange_Raise_if(theIndex <= 0 || theIndex > mySize,
                                "NCollection_BaseSequence::RemoveSeq() - index is out of range");
@@ -398,9 +394,7 @@ void NCollection_BaseSequence::RemoveSeq(const Standard_Integer theIndex,
 
 //=================================================================================================
 
-void NCollection_BaseSequence::RemoveSeq(const Standard_Integer From,
-                                         const Standard_Integer To,
-                                         NCollection_DelSeqNode fDel)
+void NCollection_BaseSequence::RemoveSeq(const int From, const int To, NCollection_DelSeqNode fDel)
 {
   Standard_OutOfRange_Raise_if(From <= 0 || To > mySize || From > To,
                                "NCollection_BaseSequence::RemoveSeq() - invalid input range");
@@ -434,7 +428,7 @@ void NCollection_BaseSequence::RemoveSeq(const Standard_Integer From,
     }
   }
 
-  for (Standard_Integer i = From; i <= To; i++)
+  for (int i = From; i <= To; i++)
   {
     NCollection_SeqNode* tmp = pfrom;
     pfrom                    = pfrom->Next();
@@ -444,9 +438,9 @@ void NCollection_BaseSequence::RemoveSeq(const Standard_Integer From,
 
 //=================================================================================================
 
-NCollection_SeqNode* NCollection_BaseSequence::Find(const Standard_Integer theIndex) const noexcept
+NCollection_SeqNode* NCollection_BaseSequence::Find(const int theIndex) const noexcept
 {
-  Standard_Integer     i;
+  int                  i;
   NCollection_SeqNode* p;
   if (theIndex <= myCurrentIndex)
   {

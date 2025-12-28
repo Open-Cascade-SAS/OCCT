@@ -20,25 +20,24 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DummySensitiveEntity, Select3D_SensitiveEntity
 //=================================================================================================
 
 MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity(
-  const Handle(SelectMgr_EntityOwner)& theOwnerId)
+  const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
     : Select3D_SensitiveEntity(theOwnerId)
 {
 }
 
 //=================================================================================================
 
-Standard_Integer MeshVS_DummySensitiveEntity::NbSubElements() const
+int MeshVS_DummySensitiveEntity::NbSubElements() const
 {
   return -1;
 }
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_DummySensitiveEntity::Matches(
-  SelectBasics_SelectingVolumeManager& /*theMgr*/,
-  SelectBasics_PickResult& /*thePickResult*/)
+bool MeshVS_DummySensitiveEntity::Matches(SelectBasics_SelectingVolumeManager& /*theMgr*/,
+                                          SelectBasics_PickResult& /*thePickResult*/)
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -58,9 +57,9 @@ void MeshVS_DummySensitiveEntity::Clear() {}
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_DummySensitiveEntity::HasInitLocation() const
+bool MeshVS_DummySensitiveEntity::HasInitLocation() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================

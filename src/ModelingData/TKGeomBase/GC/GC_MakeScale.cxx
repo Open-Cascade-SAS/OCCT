@@ -22,13 +22,13 @@
 //=========================================================================
 //   Creation d un homothetie de gp de centre Point et de rapport Scale.  +
 //=========================================================================
-GC_MakeScale::GC_MakeScale(const gp_Pnt& Point, const Standard_Real Scale)
+GC_MakeScale::GC_MakeScale(const gp_Pnt& Point, const double Scale)
 {
   TheScale = new Geom_Transformation();
   TheScale->SetScale(Point, Scale);
 }
 
-const Handle(Geom_Transformation)& GC_MakeScale::Value() const
+const occ::handle<Geom_Transformation>& GC_MakeScale::Value() const
 {
   return TheScale;
 }

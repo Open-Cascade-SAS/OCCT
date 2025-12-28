@@ -25,7 +25,7 @@
 #include <Standard_DimensionError.hxx>
 #include <StdFail_NotDone.hxx>
 
-math_GaussLeastSquare::math_GaussLeastSquare(const math_Matrix& A, const Standard_Real MinPivot)
+math_GaussLeastSquare::math_GaussLeastSquare(const math_Matrix& A, const double MinPivot)
     : LU(1, A.ColNumber(), 1, A.ColNumber()),
       A2(1, A.ColNumber(), 1, A.RowNumber()),
       Index(1, A.ColNumber())
@@ -33,8 +33,8 @@ math_GaussLeastSquare::math_GaussLeastSquare(const math_Matrix& A, const Standar
   A2 = A.Transposed();
   LU.Multiply(A2, A);
 
-  Standard_Integer Error = LU_Decompose(LU, Index, D, MinPivot);
-  Done                   = (!Error) ? Standard_True : Standard_False;
+  int Error = LU_Decompose(LU, Index, D, MinPivot);
+  Done      = (!Error) ? true : false;
 }
 
 void math_GaussLeastSquare::Solve(const math_Vector& B, math_Vector& X) const

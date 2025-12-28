@@ -40,7 +40,7 @@ public:
   //! @param theLocation3d index of 3d point to be associated with vertex.
   //! @param theMovability movability of the vertex.
   BRepMesh_Vertex(const gp_XY&                   theUV,
-                  const Standard_Integer         theLocation3d,
+                  const int                      theLocation3d,
                   const BRepMesh_DegreeOfFreedom theMovability)
   {
     Initialize(theUV, theLocation3d, theMovability);
@@ -50,8 +50,8 @@ public:
   //! @param theU U position of vertex in parametric space.
   //! @param theV V position of vertex in parametric space.
   //! @param theMovability movability of the vertex.
-  BRepMesh_Vertex(const Standard_Real            theU,
-                  const Standard_Real            theV,
+  BRepMesh_Vertex(const double                   theU,
+                  const double                   theV,
                   const BRepMesh_DegreeOfFreedom theMovability)
       : myUV(theU, theV),
         myLocation3d(0),
@@ -64,7 +64,7 @@ public:
   //! @param theLocation3d index of 3d point to be associated with vertex.
   //! @param theMovability movability of the vertex.
   void Initialize(const gp_XY&                   theUV,
-                  const Standard_Integer         theLocation3d,
+                  const int                      theLocation3d,
                   const BRepMesh_DegreeOfFreedom theMovability)
   {
     myUV         = theUV;
@@ -79,7 +79,7 @@ public:
   gp_XY& ChangeCoord() { return myUV; }
 
   //! Returns index of 3d point associated with the vertex.
-  Standard_Integer Location3d() const { return myLocation3d; }
+  int Location3d() const { return myLocation3d; }
 
   //! Returns movability of the vertex.
   BRepMesh_DegreeOfFreedom Movability() const { return myMovability; }
@@ -90,22 +90,22 @@ public:
   //! Checks for equality with another vertex.
   //! @param theOther vertex to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
-  Standard_Boolean IsEqual(const BRepMesh_Vertex& theOther) const
+  bool IsEqual(const BRepMesh_Vertex& theOther) const
   {
     if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
     {
-      return Standard_False;
+      return false;
     }
 
     return (myUV.IsEqual(theOther.myUV, Precision::PConfusion()));
   }
 
   //! Alias for IsEqual.
-  Standard_Boolean operator==(const BRepMesh_Vertex& Other) const { return IsEqual(Other); }
+  bool operator==(const BRepMesh_Vertex& Other) const { return IsEqual(Other); }
 
 private:
   gp_XY                    myUV;
-  Standard_Integer         myLocation3d;
+  int                      myLocation3d;
   BRepMesh_DegreeOfFreedom myMovability;
 };
 

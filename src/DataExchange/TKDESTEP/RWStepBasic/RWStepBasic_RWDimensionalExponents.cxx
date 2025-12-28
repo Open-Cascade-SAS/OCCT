@@ -19,10 +19,10 @@
 RWStepBasic_RWDimensionalExponents::RWStepBasic_RWDimensionalExponents() {}
 
 void RWStepBasic_RWDimensionalExponents::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepBasic_DimensionalExponents)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepBasic_DimensionalExponents>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -32,32 +32,32 @@ void RWStepBasic_RWDimensionalExponents::ReadStep(
 
   // --- own field : lengthExponent ---
 
-  Standard_Real aLengthExponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  double aLengthExponent;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadReal(num, 1, "length_exponent", ach, aLengthExponent);
 
   // --- own field : massExponent ---
 
-  Standard_Real aMassExponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  double aMassExponent;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadReal(num, 2, "mass_exponent", ach, aMassExponent);
 
   // --- own field : timeExponent ---
 
-  Standard_Real aTimeExponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aTimeExponent;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "time_exponent", ach, aTimeExponent);
 
   // --- own field : electricCurrentExponent ---
 
-  Standard_Real aElectricCurrentExponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  double aElectricCurrentExponent;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadReal(num, 4, "electric_current_exponent", ach, aElectricCurrentExponent);
 
   // --- own field : thermodynamicTemperatureExponent ---
 
-  Standard_Real aThermodynamicTemperatureExponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  double aThermodynamicTemperatureExponent;
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadReal(num,
                  5,
                  "thermodynamic_temperature_exponent",
@@ -66,14 +66,14 @@ void RWStepBasic_RWDimensionalExponents::ReadStep(
 
   // --- own field : amountOfSubstanceExponent ---
 
-  Standard_Real aAmountOfSubstanceExponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  double aAmountOfSubstanceExponent;
+  // szv#4:S4163:12Mar99 `bool stat6 =` not needed
   data->ReadReal(num, 6, "amount_of_substance_exponent", ach, aAmountOfSubstanceExponent);
 
   // --- own field : luminousIntensityExponent ---
 
-  Standard_Real aLuminousIntensityExponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
+  double aLuminousIntensityExponent;
+  // szv#4:S4163:12Mar99 `bool stat7 =` not needed
   data->ReadReal(num, 7, "luminous_intensity_exponent", ach, aLuminousIntensityExponent);
 
   //--- Initialisation of the read entity ---
@@ -88,8 +88,8 @@ void RWStepBasic_RWDimensionalExponents::ReadStep(
 }
 
 void RWStepBasic_RWDimensionalExponents::WriteStep(
-  StepData_StepWriter&                          SW,
-  const Handle(StepBasic_DimensionalExponents)& ent) const
+  StepData_StepWriter&                               SW,
+  const occ::handle<StepBasic_DimensionalExponents>& ent) const
 {
 
   // --- own field : lengthExponent ---

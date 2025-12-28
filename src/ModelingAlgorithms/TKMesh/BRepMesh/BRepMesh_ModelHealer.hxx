@@ -43,7 +43,7 @@ public:
   Standard_EXPORT virtual ~BRepMesh_ModelHealer();
 
   //! Functor API to discretize the given edge.
-  void operator()(const Standard_Integer theEdgeIndex) const { process(theEdgeIndex); }
+  void operator()(const int theEdgeIndex) const { process(theEdgeIndex); }
 
   //! Functor API to discretize the given edge.
   void operator()(const IMeshData::IFaceHandle& theDFace) const { process(theDFace); }
@@ -52,14 +52,13 @@ public:
 
 protected:
   //! Performs processing of edges of the given model.
-  Standard_EXPORT virtual Standard_Boolean performInternal(
-    const Handle(IMeshData_Model)& theModel,
-    const IMeshTools_Parameters&   theParameters,
-    const Message_ProgressRange&   theRange) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool performInternal(const occ::handle<IMeshData_Model>& theModel,
+                                               const IMeshTools_Parameters&        theParameters,
+                                               const Message_ProgressRange& theRange) override;
 
 private:
   //! Checks existing discretization of the face and updates data model.
-  void process(const Standard_Integer theFaceIndex) const
+  void process(const int theFaceIndex) const
   {
     const IMeshData::IFaceHandle& aDFace = myModel->GetFace(theFaceIndex);
     process(aDFace);
@@ -79,21 +78,21 @@ private:
   //! according to topological connectivity. Uses next edge in order to
   //! identify closest point in case of single vertex shared between both
   //! ends of edge (degenerative edge)
-  Standard_Boolean connectClosestPoints(const IMeshData::IPCurveHandle& thePrevDEdge,
-                                        const IMeshData::IPCurveHandle& theCurrDEdge,
-                                        const IMeshData::IPCurveHandle& theNextDEdge) const;
+  bool connectClosestPoints(const IMeshData::IPCurveHandle& thePrevDEdge,
+                            const IMeshData::IPCurveHandle& theCurrDEdge,
+                            const IMeshData::IPCurveHandle& theNextDEdge) const;
 
   //! Chooses the most closest point to reference one from the given pair.
   //! Returns square distance between reference point and closest one as
   //! well as pointer to closest point.
-  Standard_Real closestPoint(gp_Pnt2d&  theRefPnt,
-                             gp_Pnt2d&  theFristPnt,
-                             gp_Pnt2d&  theSecondPnt,
-                             gp_Pnt2d*& theClosestPnt) const
+  double closestPoint(gp_Pnt2d&  theRefPnt,
+                      gp_Pnt2d&  theFristPnt,
+                      gp_Pnt2d&  theSecondPnt,
+                      gp_Pnt2d*& theClosestPnt) const
   {
     // Find the most closest end-points.
-    const Standard_Real aSqDist1 = theRefPnt.SquareDistance(theFristPnt);
-    const Standard_Real aSqDist2 = theRefPnt.SquareDistance(theSecondPnt);
+    const double aSqDist1 = theRefPnt.SquareDistance(theFristPnt);
+    const double aSqDist2 = theRefPnt.SquareDistance(theSecondPnt);
     if (aSqDist1 < aSqDist2)
     {
       theClosestPnt = &theFristPnt;
@@ -107,18 +106,16 @@ private:
   //! Chooses the most closest points among the given to reference one from the given pair.
   //! Returns square distance between reference point and closest one as
   //! well as pointer to closest point.
-  Standard_Real closestPoints(gp_Pnt2d&  theFirstPnt1,
-                              gp_Pnt2d&  theSecondPnt1,
-                              gp_Pnt2d&  theFirstPnt2,
-                              gp_Pnt2d&  theSecondPnt2,
-                              gp_Pnt2d*& theClosestPnt1,
-                              gp_Pnt2d*& theClosestPnt2) const
+  double closestPoints(gp_Pnt2d&  theFirstPnt1,
+                       gp_Pnt2d&  theSecondPnt1,
+                       gp_Pnt2d&  theFirstPnt2,
+                       gp_Pnt2d&  theSecondPnt2,
+                       gp_Pnt2d*& theClosestPnt1,
+                       gp_Pnt2d*& theClosestPnt2) const
   {
-    gp_Pnt2d *          aCurrPrevUV1 = NULL, *aCurrPrevUV2 = NULL;
-    const Standard_Real aSqDist1 =
-      closestPoint(theFirstPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV1);
-    const Standard_Real aSqDist2 =
-      closestPoint(theSecondPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV2);
+    gp_Pnt2d *   aCurrPrevUV1 = NULL, *aCurrPrevUV2 = NULL;
+    const double aSqDist1 = closestPoint(theFirstPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV1);
+    const double aSqDist2 = closestPoint(theSecondPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV2);
     if (aSqDist1 - aSqDist2 < gp::Resolution())
     {
       theClosestPnt1 = &theFirstPnt1;
@@ -158,16 +155,13 @@ private:
   void fixFaceBoundaries(const IMeshData::IFaceHandle& theDFace) const;
 
   //! Returns True if check can be done in parallel.
-  Standard_Boolean isParallel() const
-  {
-    return (myParameters.InParallel && myModel->FacesNb() > 1);
-  }
+  bool isParallel() const { return (myParameters.InParallel && myModel->FacesNb() > 1); }
 
   //! Collects unique edges to be updated from face map. Clears data stored in face map.
-  Standard_Boolean popEdgesToUpdate(IMeshData::MapOfIEdgePtr& theEdgesToUpdate);
+  bool popEdgesToUpdate(IMeshData::MapOfIEdgePtr& theEdgesToUpdate);
 
 private:
-  Handle(IMeshData_Model)                          myModel;
+  occ::handle<IMeshData_Model>                     myModel;
   IMeshTools_Parameters                            myParameters;
   Handle(IMeshData::DMapOfIFacePtrsMapOfIEdgePtrs) myFaceIntersectingEdges;
 };

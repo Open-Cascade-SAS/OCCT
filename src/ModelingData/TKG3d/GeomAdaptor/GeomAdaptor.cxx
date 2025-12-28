@@ -42,9 +42,9 @@
 
 //=================================================================================================
 
-Handle(Geom_Curve) GeomAdaptor::MakeCurve(const Adaptor3d_Curve& HC)
+occ::handle<Geom_Curve> GeomAdaptor::MakeCurve(const Adaptor3d_Curve& HC)
 {
-  Handle(Geom_Curve) C;
+  occ::handle<Geom_Curve> C;
 
   switch (HC.GetType())
   {
@@ -69,11 +69,11 @@ Handle(Geom_Curve) GeomAdaptor::MakeCurve(const Adaptor3d_Curve& HC)
       break;
 
     case GeomAbs_BezierCurve:
-      C = Handle(Geom_BezierCurve)::DownCast(HC.Bezier()->Copy());
+      C = occ::down_cast<Geom_BezierCurve>(HC.Bezier()->Copy());
       break;
 
     case GeomAbs_BSplineCurve:
-      C = Handle(Geom_BSplineCurve)::DownCast(HC.BSpline()->Copy());
+      C = occ::down_cast<Geom_BSplineCurve>(HC.BSpline()->Copy());
       break;
 
     default:
@@ -93,10 +93,10 @@ Handle(Geom_Curve) GeomAdaptor::MakeCurve(const Adaptor3d_Curve& HC)
 
 //=================================================================================================
 
-Handle(Geom_Surface) GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS,
-                                              const Standard_Boolean   theTrimFlag)
+occ::handle<Geom_Surface> GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS,
+                                                   const bool               theTrimFlag)
 {
-  Handle(Geom_Surface) S;
+  occ::handle<Geom_Surface> S;
 
   switch (HS.GetType())
   {
@@ -121,11 +121,11 @@ Handle(Geom_Surface) GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS,
       break;
 
     case GeomAbs_BezierSurface:
-      S = Handle(Geom_BezierSurface)::DownCast(HS.Bezier()->Copy());
+      S = occ::down_cast<Geom_BezierSurface>(HS.Bezier()->Copy());
       break;
 
     case GeomAbs_BSplineSurface:
-      S = Handle(Geom_BSplineSurface)::DownCast(HS.BSpline()->Copy());
+      S = occ::down_cast<Geom_BSplineSurface>(HS.BSpline()->Copy());
       break;
 
     case GeomAbs_SurfaceOfRevolution:
@@ -151,7 +151,7 @@ Handle(Geom_Surface) GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS,
     return S;
 
   // trim the surface if necassary.
-  Standard_Real U1, U2, V1, V2;
+  double U1, U2, V1, V2;
   S->Bounds(U1, U2, V1, V2);
   if ((HS.FirstUParameter() != U1) || (HS.LastUParameter() != U2) || (HS.FirstVParameter() != V1)
       || (HS.LastVParameter() != V2))

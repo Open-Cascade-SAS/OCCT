@@ -20,12 +20,12 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Integer GLOBAL_iexE;
-extern Standard_Integer GLOBAL_iexF;
-Standard_Boolean        STATIC_trace_iexE = Standard_False;
-Standard_Boolean        STATIC_trace_iexF = Standard_False;
+extern int GLOBAL_iexE;
+extern int GLOBAL_iexF;
+bool       STATIC_trace_iexE = false;
+bool       STATIC_trace_iexF = false;
 
-Standard_EXPORT void debkeep(const Standard_Integer i)
+Standard_EXPORT void debkeep(const int i)
 {
   std::cout << "++ debkeep " << i << std::endl;
 }
@@ -38,22 +38,22 @@ Standard_EXPORT void debkeep(const Standard_Integer i)
 // return true if LS is not empty && (position == TB)
 // (return always true if LS is empty)
 //=======================================================================
-Standard_Boolean TopOpeBRepBuild_Builder::GKeepShape(const TopoDS_Shape&         S,
-                                                     const TopTools_ListOfShape& LSclass,
-                                                     const TopAbs_State          TB)
+bool TopOpeBRepBuild_Builder::GKeepShape(const TopoDS_Shape&                   S,
+                                         const NCollection_List<TopoDS_Shape>& LSclass,
+                                         const TopAbs_State                    TB)
 {
   TopAbs_State pos;
   return GKeepShape1(S, LSclass, TB, pos);
 }
 
-Standard_Boolean TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&         S,
-                                                      const TopTools_ListOfShape& LSclass,
-                                                      const TopAbs_State          TB,
-                                                      TopAbs_State&               pos)
+bool TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&                   S,
+                                          const NCollection_List<TopoDS_Shape>& LSclass,
+                                          const TopAbs_State                    TB,
+                                          TopAbs_State&                         pos)
 {
-  Standard_Boolean keep       = Standard_True;
-  pos                         = TopAbs_UNKNOWN;
-  Standard_Boolean toclassify = Standard_True;
+  bool keep       = true;
+  pos             = TopAbs_UNKNOWN;
+  bool toclassify = true;
   if (S.ShapeType() == TopAbs_FACE && !myDataStructure->HasShape(S) && myClassifyDef)
   {
     toclassify = myClassifyVal;
@@ -64,14 +64,14 @@ Standard_Boolean TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&       
   {
     pos = ShapePosition(S, LSclass);
     if (pos != TB)
-      keep = Standard_False;
+      keep = false;
   }
 #ifdef OCCT_DEBUG
-  Standard_Integer iS;
-  Standard_Boolean tSPS  = GtraceSPS(S, iS);
-  Standard_Integer iface = 0, isoli = 0;
-  Standard_Boolean tSPSface = Standard_False;
-  Standard_Boolean tSPSsoli = Standard_False;
+  int  iS;
+  bool tSPS  = GtraceSPS(S, iS);
+  int  iface = 0, isoli = 0;
+  bool tSPSface = false;
+  bool tSPSsoli = false;
   if (S.ShapeType() == TopAbs_EDGE)
   {
     tSPSface = GtraceSPS(myFaceToFill, iface);
@@ -83,7 +83,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&       
     tSPSsoli = tSPSsoli && STATIC_trace_iexF;
   }
 
-  Standard_Boolean tr = tSPS || tSPSface || tSPSsoli;
+  bool tr = tSPS || tSPSface || tSPSsoli;
   if (tr)
   {
     if (tSPS)
@@ -126,32 +126,32 @@ void TopOpeBRepBuild_Builder::GKeepShapes
 #else
   (const TopoDS_Shape&,
 #endif
-   const TopTools_ListOfShape& LSclass,
-   const TopAbs_State          TB,
-   const TopTools_ListOfShape& Lin,
-   TopTools_ListOfShape&       Lou)
+   const NCollection_List<TopoDS_Shape>& LSclass,
+   const TopAbs_State                    TB,
+   const NCollection_List<TopoDS_Shape>& Lin,
+   NCollection_List<TopoDS_Shape>&       Lou)
 {
 #ifdef OCCT_DEBUG
-  Standard_Integer iS;
-  Standard_Boolean tSPS = GtraceSPS(S, iS);
+  int  iS;
+  bool tSPS = GtraceSPS(S, iS);
   if (tSPS)
     debkeep(iS);
 #endif
 
 #ifdef OCCT_DEBUG
-  Standard_Integer n = 0;
+  int n = 0;
 #endif
-  TopTools_ListIteratorOfListOfShape it(Lin);
+  NCollection_List<TopoDS_Shape>::Iterator it(Lin);
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& SL = it.Value();
 
-    Standard_Boolean keep = Standard_True;
+    bool keep = true;
     if (!LSclass.IsEmpty())
     {
       TopAbs_State pos = ShapePosition(SL, LSclass);
       if (pos != TB)
-        keep = Standard_False;
+        keep = false;
     }
 
 #ifdef OCCT_DEBUG

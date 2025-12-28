@@ -26,29 +26,29 @@ IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_GenExp, ExprIntrp_Generator)
 
 ExprIntrp_GenExp::ExprIntrp_GenExp()
 {
-  done = Standard_False;
+  done = false;
 }
 
-Handle(ExprIntrp_GenExp) ExprIntrp_GenExp::Create()
+occ::handle<ExprIntrp_GenExp> ExprIntrp_GenExp::Create()
 {
   return new ExprIntrp_GenExp();
 }
 
 void ExprIntrp_GenExp::Process(const TCollection_AsciiString& str)
 {
-  Handle(ExprIntrp_GenExp) me = this;
-  done                        = Standard_False;
+  occ::handle<ExprIntrp_GenExp> me = this;
+  done                             = false;
   if (ExprIntrp::Parse(me, str))
   {
     if (!ExprIntrp_Recept.IsExpStackEmpty())
     {
       myExpression = ExprIntrp_Recept.Pop();
-      done         = Standard_True;
+      done         = true;
     }
     else
     {
       myExpression.Nullify();
-      done = Standard_True;
+      done = true;
     }
   }
   else
@@ -57,12 +57,12 @@ void ExprIntrp_GenExp::Process(const TCollection_AsciiString& str)
   }
 }
 
-Standard_Boolean ExprIntrp_GenExp::IsDone() const
+bool ExprIntrp_GenExp::IsDone() const
 {
   return done;
 }
 
-Handle(Expr_GeneralExpression) ExprIntrp_GenExp::Expression() const
+occ::handle<Expr_GeneralExpression> ExprIntrp_GenExp::Expression() const
 {
   if (!done)
   {

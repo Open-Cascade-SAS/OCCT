@@ -23,9 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <StepBasic_Date.hxx>
 
-class StepBasic_WeekOfYearAndDayDate;
-DEFINE_STANDARD_HANDLE(StepBasic_WeekOfYearAndDayDate, StepBasic_Date)
-
 class StepBasic_WeekOfYearAndDayDate : public StepBasic_Date
 {
 
@@ -33,30 +30,29 @@ public:
   //! Returns a WeekOfYearAndDayDate
   Standard_EXPORT StepBasic_WeekOfYearAndDayDate();
 
-  Standard_EXPORT void Init(const Standard_Integer aYearComponent,
-                            const Standard_Integer aWeekComponent,
-                            const Standard_Boolean hasAdayComponent,
-                            const Standard_Integer aDayComponent);
+  Standard_EXPORT void Init(const int  aYearComponent,
+                            const int  aWeekComponent,
+                            const bool hasAdayComponent,
+                            const int  aDayComponent);
 
-  Standard_EXPORT void SetWeekComponent(const Standard_Integer aWeekComponent);
+  Standard_EXPORT void SetWeekComponent(const int aWeekComponent);
 
-  Standard_EXPORT Standard_Integer WeekComponent() const;
+  Standard_EXPORT int WeekComponent() const;
 
-  Standard_EXPORT void SetDayComponent(const Standard_Integer aDayComponent);
+  Standard_EXPORT void SetDayComponent(const int aDayComponent);
 
   Standard_EXPORT void UnSetDayComponent();
 
-  Standard_EXPORT Standard_Integer DayComponent() const;
+  Standard_EXPORT int DayComponent() const;
 
-  Standard_EXPORT Standard_Boolean HasDayComponent() const;
+  Standard_EXPORT bool HasDayComponent() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_WeekOfYearAndDayDate, StepBasic_Date)
 
-protected:
 private:
-  Standard_Integer weekComponent;
-  Standard_Integer dayComponent;
-  Standard_Boolean hasDayComponent;
+  int  weekComponent;
+  int  dayComponent;
+  bool hasDayComponent;
 };
 
 #endif // _StepBasic_WeekOfYearAndDayDate_HeaderFile

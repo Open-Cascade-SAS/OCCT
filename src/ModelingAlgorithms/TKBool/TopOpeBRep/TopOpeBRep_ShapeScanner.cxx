@@ -16,7 +16,21 @@
 
 #include <TopOpeBRep_ShapeScanner.hxx>
 #include <TopOpeBRepTool_BoxSort.hxx>
-#include <TopOpeBRepTool_define.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 //=================================================================================================
@@ -43,7 +57,7 @@ void TopOpeBRep_ShapeScanner::AddBoxesMakeCOB(const TopoDS_Shape&    S,
 
 void TopOpeBRep_ShapeScanner::Init(TopOpeBRepTool_ShapeExplorer& E)
 {
-  TColStd_ListOfInteger anEmptyList;
+  NCollection_List<int> anEmptyList;
 
   myListIterator.Initialize(anEmptyList);
 
@@ -52,7 +66,7 @@ void TopOpeBRep_ShapeScanner::Init(TopOpeBRepTool_ShapeExplorer& E)
     const TopoDS_Shape& cur = E.Current();
     //    TopAbs_ShapeEnum t = cur.ShapeType();
     Init(cur);
-    Standard_Boolean b = More();
+    bool b = More();
     if (b)
       break;
   }
@@ -67,9 +81,9 @@ void TopOpeBRep_ShapeScanner::Init(const TopoDS_Shape& E)
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_ShapeScanner::More() const
+bool TopOpeBRep_ShapeScanner::More() const
 {
-  Standard_Boolean b = myListIterator.More();
+  bool b = myListIterator.More();
   return b;
 }
 
@@ -104,9 +118,9 @@ TopOpeBRepTool_BoxSort& TopOpeBRep_ShapeScanner::ChangeBoxSort()
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRep_ShapeScanner::Index() const
+int TopOpeBRep_ShapeScanner::Index() const
 {
-  Standard_Integer n = 0;
+  int n = 0;
   if (myListIterator.More())
     n = myListIterator.Value();
   return n;
@@ -122,7 +136,7 @@ Standard_OStream& TopOpeBRep_ShapeScanner::DumpCurrent(Standard_OStream& OS) con
     const TopoDS_Shape& S = Current();
     TopAbs_ShapeEnum    T = S.ShapeType();
     TopAbs_Orientation  O = S.Orientation();
-    Standard_Integer    I = Index();
+    int                 I = Index();
     TopAbs::Print(T, std::cout);
     std::cout << "(" << I << ",";
     TopAbs::Print(O, std::cout);

@@ -32,8 +32,8 @@ StepFEA_ParametricCurve3dElementCoordinateDirection::
 //=================================================================================================
 
 void StepFEA_ParametricCurve3dElementCoordinateDirection::Init(
-  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-  const Handle(StepGeom_Direction)&       aOrientation)
+  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+  const occ::handle<StepGeom_Direction>&       aOrientation)
 {
   StepFEA_FeaRepresentationItem::Init(aRepresentationItem_Name);
 
@@ -42,7 +42,8 @@ void StepFEA_ParametricCurve3dElementCoordinateDirection::Init(
 
 //=================================================================================================
 
-Handle(StepGeom_Direction) StepFEA_ParametricCurve3dElementCoordinateDirection::Orientation() const
+occ::handle<StepGeom_Direction> StepFEA_ParametricCurve3dElementCoordinateDirection::Orientation()
+  const
 {
   return theOrientation;
 }
@@ -50,7 +51,7 @@ Handle(StepGeom_Direction) StepFEA_ParametricCurve3dElementCoordinateDirection::
 //=================================================================================================
 
 void StepFEA_ParametricCurve3dElementCoordinateDirection::SetOrientation(
-  const Handle(StepGeom_Direction)& aOrientation)
+  const occ::handle<StepGeom_Direction>& aOrientation)
 {
   theOrientation = aOrientation;
 }

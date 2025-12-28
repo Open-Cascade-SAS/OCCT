@@ -101,7 +101,7 @@
 #include <IGESToBRep_CurveAndSurface.hxx>
 #include <IGESToBRep_TopoCurve.hxx>
 #include <IGESToBRep_TopoSurface.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Message_Msg.hxx>
 #include <Precision.hxx>
 #include <ShapeAlgo.hxx>
@@ -109,7 +109,7 @@
 #include <ShapeAnalysis.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
@@ -143,21 +143,21 @@ IGESToBRep_TopoSurface::IGESToBRep_TopoSurface(const IGESToBRep_CurveAndSurface&
 
 //=================================================================================================
 
-IGESToBRep_TopoSurface::IGESToBRep_TopoSurface(const Standard_Real    eps,
-                                               const Standard_Real    epsCoeff,
-                                               const Standard_Real    epsGeom,
-                                               const Standard_Boolean mode,
-                                               const Standard_Boolean modeapprox,
-                                               const Standard_Boolean optimized)
+IGESToBRep_TopoSurface::IGESToBRep_TopoSurface(const double eps,
+                                               const double epsCoeff,
+                                               const double epsGeom,
+                                               const bool   mode,
+                                               const bool   modeapprox,
+                                               const bool   optimized)
     : IGESToBRep_CurveAndSurface(eps, epsCoeff, epsGeom, mode, modeapprox, optimized)
 {
 }
 
-static Standard_Boolean extractCurve3d(const TopoDS_Shape& theEdges, Handle(Geom_Curve)& theCurve)
+static bool extractCurve3d(const TopoDS_Shape& theEdges, occ::handle<Geom_Curve>& theCurve)
 {
-  TopExp_Explorer  anExp(theEdges, TopAbs_EDGE);
-  Standard_Integer howMuch = 0;
-  Standard_Real    f = 0., l = 0.;
+  TopExp_Explorer anExp(theEdges, TopAbs_EDGE);
+  int             howMuch = 0;
+  double          f = 0., l = 0.;
   for (; anExp.More(); anExp.Next())
   {
     TopoDS_Edge anEdge = TopoDS::Edge(anExp.Current());
@@ -167,16 +167,16 @@ static Standard_Boolean extractCurve3d(const TopoDS_Shape& theEdges, Handle(Geom
     theCurve = BRep_Tool::Curve(anEdge, f, l);
   }
   if (howMuch != 1 || theCurve.IsNull())
-    return Standard_False;
+    return false;
 
   if (f != theCurve->FirstParameter() || l != theCurve->LastParameter())
     theCurve = new Geom_TrimmedCurve(theCurve, f, l);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoSurface(const Handle(IGESData_IGESEntity)& st)
+TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoSurface(const occ::handle<IGESData_IGESEntity>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -252,7 +252,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoSurface(const Handle(IGESData_I
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoBasicSurface(const Handle(IGESData_IGESEntity)& st)
+TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoBasicSurface(
+  const occ::handle<IGESData_IGESEntity>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -275,7 +276,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoBasicSurface(const Handle(IGESD
 
   IGESToBRep_BasicSurface BS(*this);
 
-  Handle(Geom_Surface) surf = BS.TransferBasicSurface(st);
+  occ::handle<Geom_Surface> surf = BS.TransferBasicSurface(st);
   if (surf.IsNull())
   {
     // AddFail(st, "Surface Conversion Error"); Messages have ever been Added in the called
@@ -313,7 +314,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoBasicSurface(const Handle(IGESD
                                                GetUnitFactor()))
     {
       TopLoc_Location locFace(trsf);
-      res.Move(locFace, Standard_False);
+      res.Move(locFace, false);
     }
     else
     {
@@ -326,11 +327,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoBasicSurface(const Handle(IGESD
 
 //=================================================================================================
 
-static void reparamBSpline(Handle(Geom_Curve)& curve,
-                           const Standard_Real First,
-                           const Standard_Real Last)
+static void reparamBSpline(occ::handle<Geom_Curve>& curve, const double First, const double Last)
 {
-  Handle(Geom_BSplineCurve) bscurve;
+  occ::handle<Geom_BSplineCurve> bscurve;
   if (!curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
     if (curve->FirstParameter() < First || curve->LastParameter() > Last)
@@ -339,14 +338,14 @@ static void reparamBSpline(Handle(Geom_Curve)& curve,
   }
   else
   {
-    bscurve = Handle(Geom_BSplineCurve)::DownCast(curve);
+    bscurve = occ::down_cast<Geom_BSplineCurve>(curve);
     bscurve->Segment(First, Last);
   }
 
   if (bscurve.IsNull())
     return;
 
-  TColStd_Array1OfReal Knots(1, bscurve->NbKnots());
+  NCollection_Array1<double> Knots(1, bscurve->NbKnots());
   bscurve->Knots(Knots);
   BSplCLib::Reparametrize(0., 1., Knots);
   bscurve->SetKnots(Knots);
@@ -356,10 +355,10 @@ static void reparamBSpline(Handle(Geom_Curve)& curve,
 static void ReparamCurve(TopoDS_Edge& edge)
 {
   TopLoc_Location L;
-  Standard_Real   First, Last;
+  double          First, Last;
 
-  Handle(Geom_Curve) curve =
-    Handle(Geom_Curve)::DownCast(BRep_Tool::Curve(edge, L, First, Last)->Copy());
+  occ::handle<Geom_Curve> curve =
+    occ::down_cast<Geom_Curve>(BRep_Tool::Curve(edge, L, First, Last)->Copy());
   // if ( Abs (First) <= Precision::PConfusion() && Abs (Last - 1.) <= Precision::PConfusion() )
   // return;
   if (!curve->IsKind(STANDARD_TYPE(Geom_Line)))
@@ -374,7 +373,8 @@ static void ReparamCurve(TopoDS_Edge& edge)
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_RuledSurface)& st)
+TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(
+  const occ::handle<IGESGeom_RuledSurface>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -391,8 +391,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
   IGESToBRep_TopoCurve TC(*this);
   //%13 pdn 12.02.99
   TC.SetContinuity(0);
-  Handle(IGESData_IGESEntity) igesCurve1 = st->FirstCurve();
-  Handle(IGESData_IGESEntity) igesCurve2 = st->SecondCurve();
+  occ::handle<IGESData_IGESEntity> igesCurve1 = st->FirstCurve();
+  occ::handle<IGESData_IGESEntity> igesCurve2 = st->SecondCurve();
 
   if (igesCurve1.IsNull())
   {
@@ -407,10 +407,10 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
     return res;
   }
 
-  Standard_Integer nbEdges1, nbEdges2;
-  TopoDS_Shape     shape1, shape2;
-  TopoDS_Wire      wire1, wire2;
-  TopoDS_Wire      newWire1, newWire2;
+  int          nbEdges1, nbEdges2;
+  TopoDS_Shape shape1, shape2;
+  TopoDS_Wire  wire1, wire2;
+  TopoDS_Wire  newWire1, newWire2;
   // TopoDS_Edge      edge1,      edge2; // skl
 
   if (IGESToBRep::IsTopoCurve(igesCurve1))
@@ -418,9 +418,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
     shape1 = TC.TransferTopoCurve(igesCurve1);
     if (shape1.IsNull())
     {
-      Message_Msg                      msg1156("IGES_1156");
-      const Standard_CString           typeName(igesCurve1->DynamicType()->Name());
-      Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesCurve1);
+      Message_Msg                           msg1156("IGES_1156");
+      const char*                           typeName(igesCurve1->DynamicType()->Name());
+      occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesCurve1);
       msg1156.Arg(typeName);
       msg1156.Arg(label);
       SendFail(st, msg1156);
@@ -439,8 +439,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
     //      shape1  = TC.TransferTopoCurve(igesCurve1);
     //      if (shape1.IsNull()) {
     //	Message_Msg msg1156("IGES_1156");
-    //	const Standard_CString typeName(igesCurve1->DynamicType()->Name());
-    //	Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesCurve1);
+    //	const char* typeName(igesCurve1->DynamicType()->Name());
+    //	occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesCurve1);
     //	msg1156.Arg(typeName);
     //	msg1156.Arg(label);
     //	SendFail(st, msg1156);
@@ -495,16 +495,16 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
 
     if (shape2.IsNull())
     {
-      Message_Msg                      msg1156("IGES_1156");
-      const Standard_CString           typeName(igesCurve2->DynamicType()->Name());
-      Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesCurve2);
+      Message_Msg                           msg1156("IGES_1156");
+      const char*                           typeName(igesCurve2->DynamicType()->Name());
+      occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesCurve2);
       msg1156.Arg(typeName);
       msg1156.Arg(label);
       SendFail(st, msg1156);
       // Curve Conversion Error.
       return res;
     }
-    Standard_Integer dirflag = st->DirectionFlag();
+    int dirflag = st->DirectionFlag();
     // if (dirflag == 1){ // gka BUC60685
 
     //  shape2.Reverse();
@@ -532,7 +532,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
         }
         if (dirflag == 1)
         { // gka BUC60685
-          Handle(ShapeExtend_WireData) sewd2 = new ShapeExtend_WireData;
+          occ::handle<ShapeExtend_WireData> sewd2 = new ShapeExtend_WireData;
           sewd2->Add(shape2);
           sewd2->Reverse();
           wire2 = sewd2->Wire();
@@ -558,13 +558,13 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
   {
     if (nbEdges1 == 1)
     {
-      Handle(ShapeExtend_WireData) sewd1 = new ShapeExtend_WireData;
+      occ::handle<ShapeExtend_WireData> sewd1 = new ShapeExtend_WireData;
       sewd1->Add(shape1);
       wire1 = sewd1->Wire();
     }
     else if (nbEdges2 == 1)
     {
-      Handle(ShapeExtend_WireData) sewd2 = new ShapeExtend_WireData;
+      occ::handle<ShapeExtend_WireData> sewd2 = new ShapeExtend_WireData;
       sewd2->Add(shape2);
       wire2 = sewd2->Wire();
     }
@@ -595,21 +595,21 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
     //: e3 abv 31 Mar 98: UK4.igs 3170: ruled surface with directixes - line
     // In IGES, line is parametrised [0;1] - this should have been kept !
     // Let us detect the case and remake curve as bspline [0;1]
-    for (Standard_Integer i = 1; i <= 2; i++)
+    for (int i = 1; i <= 2; i++)
     {
       // #43 rln 20.11.98 S4054 BUC50047 entity D463 (circles as generatrices [0, 2*PI])
       // reparameterisation should be for all curves not with range [0, 1] (see IGES)
       TopoDS_Edge edge = TopoDS::Edge(i == 1 ? shape1 : shape2);
       // ReparamCurve(edge);
-      TopLoc_Location    L;
-      Standard_Real      First, Last;
-      Handle(Geom_Curve) curve =
-        Handle(Geom_Curve)::DownCast(BRep_Tool::Curve(edge, L, First, Last)->Copy());
+      TopLoc_Location         L;
+      double                  First, Last;
+      occ::handle<Geom_Curve> curve =
+        occ::down_cast<Geom_Curve>(BRep_Tool::Curve(edge, L, First, Last)->Copy());
       if (std::abs(First) <= Precision::PConfusion()
           && std::abs(Last - 1.) <= Precision::PConfusion())
         continue;
 
-      Handle(Geom_BSplineCurve) bscurve;
+      occ::handle<Geom_BSplineCurve> bscurve;
       if (!curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
       {
         if (curve->FirstParameter() < First || curve->LastParameter() > Last)
@@ -618,10 +618,10 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
       }
       else
       {
-        bscurve = Handle(Geom_BSplineCurve)::DownCast(curve);
+        bscurve = occ::down_cast<Geom_BSplineCurve>(curve);
         bscurve->Segment(First, Last);
       }
-      TColStd_Array1OfReal Knots(1, bscurve->NbKnots());
+      NCollection_Array1<double> Knots(1, bscurve->NbKnots());
       bscurve->Knots(Knots);
       BSplCLib::Reparametrize(0., 1., Knots);
       bscurve->SetKnots(Knots);
@@ -635,8 +635,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
         shape2 = edge;
     }
 
-    res                       = BRepFill::Face(TopoDS::Edge(shape1), TopoDS::Edge(shape2));
-    Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(res));
+    res                            = BRepFill::Face(TopoDS::Edge(shape1), TopoDS::Edge(shape2));
+    occ::handle<Geom_Surface> surf = BRep_Tool::Surface(TopoDS::Face(res));
     if (surf->Continuity() == GeomAbs_C0)
     {
       Message_Msg msg1250("IGES_1250");
@@ -664,7 +664,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
                                                GetUnitFactor()))
     {
       TopLoc_Location shapeLoc(trsf);
-      res.Move(shapeLoc, Standard_False);
+      res.Move(shapeLoc, false);
     }
     else
     {
@@ -678,7 +678,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(const Handle(IGESGeom_
 //=================================================================================================
 
 TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
-  const Handle(IGESGeom_SurfaceOfRevolution)& st)
+  const occ::handle<IGESGeom_SurfaceOfRevolution>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -691,10 +691,10 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
     return res;
   }
 
-  IGESToBRep_TopoCurve        TC(*this);
-  IGESToBRep_BasicCurve       BC(*this);
-  Handle(IGESData_IGESEntity) igesGeneratrix = st->Generatrix();
-  Handle(IGESGeom_Line)       igesAxis       = st->AxisOfRevolution();
+  IGESToBRep_TopoCurve             TC(*this);
+  IGESToBRep_BasicCurve            BC(*this);
+  occ::handle<IGESData_IGESEntity> igesGeneratrix = st->Generatrix();
+  occ::handle<IGESGeom_Line>       igesAxis       = st->AxisOfRevolution();
 
   if (igesGeneratrix.IsNull() || !IGESToBRep::IsTopoCurve(igesGeneratrix))
   {
@@ -725,9 +725,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
   TopoDS_Shape generatrix = TC.TransferTopoCurve(igesGeneratrix);
   if (generatrix.IsNull())
   {
-    Message_Msg                      msg1156("IGES_1156");
-    const Standard_CString           typeName("generatrix");
-    Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesGeneratrix);
+    Message_Msg                           msg1156("IGES_1156");
+    const char*                           typeName("generatrix");
+    occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesGeneratrix);
     msg1156.Arg(typeName);
     msg1156.Arg(label);
     SendFail(st, msg1156);
@@ -744,13 +744,13 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
   // CAS.CADE SA = 2*PI - IGES TA
   // CAS.CADE TA = 2*PI - IGES SA
   // gp_Ax1 revolAxis(pt1, gp_Dir(gp_Vec(pt1, pt2)));
-  // Standard_Real startAngle = st->StartAngle();
-  // Standard_Real endAngle = st->EndAngle();
-  gp_Ax1           revolAxis(pt1, gp_Dir(gp_Vec(pt2, pt1)));
-  Standard_Real    startAngle  = 2 * M_PI - st->EndAngle();
-  Standard_Real    endAngle    = 2 * M_PI - st->StartAngle();
-  Standard_Real    deltaAngle  = endAngle - startAngle;
-  Standard_Boolean IsFullAngle = (deltaAngle > 2. * M_PI - Precision::PConfusion());
+  // double startAngle = st->StartAngle();
+  // double endAngle = st->EndAngle();
+  gp_Ax1 revolAxis(pt1, gp_Dir(gp_Vec(pt2, pt1)));
+  double startAngle  = 2 * M_PI - st->EndAngle();
+  double endAngle    = 2 * M_PI - st->StartAngle();
+  double deltaAngle  = endAngle - startAngle;
+  bool   IsFullAngle = (deltaAngle > 2. * M_PI - Precision::PConfusion());
   if (IsFullAngle)
     deltaAngle = 2. * M_PI; // ** CKY 18-SEP-1996
   // il faudra translater les courbes 2d de startAngle pour
@@ -763,7 +763,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
   // file NIC_file5.igs
   // (BRepPrimAPI_MakeRevol replace surface of revolution by plane then 3D and 2D curves are
   // inconsistent; and 3D is ignored. As result shape is rectangle instead circle shape.
-  Handle(Geom_Curve) aBasisCurve;
+  occ::handle<Geom_Curve> aBasisCurve;
 
   {
     try
@@ -771,26 +771,27 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
       OCC_CATCH_SIGNALS
       if (extractCurve3d(generatrix, aBasisCurve))
       {
-        BRepBuilderAPI_MakeFace aMakeF;
-        Handle(Geom_Surface)    aResultSurf = new Geom_SurfaceOfRevolution(aBasisCurve, revolAxis);
+        BRepBuilderAPI_MakeFace   aMakeF;
+        occ::handle<Geom_Surface> aResultSurf =
+          new Geom_SurfaceOfRevolution(aBasisCurve, revolAxis);
 
         if (!aResultSurf.IsNull())
         {
           if (!IsFullAngle)
           {
-            const Standard_Real VF = aBasisCurve->FirstParameter();
-            const Standard_Real VL = aBasisCurve->LastParameter();
+            const double VF = aBasisCurve->FirstParameter();
+            const double VL = aBasisCurve->LastParameter();
 
             // PTV 29.08.2002  begin of OCC663 Trim surface by correct parameters
-            const Standard_Real UF = 0;
-            const Standard_Real UL = endAngle - startAngle;
+            const double UF = 0;
+            const double UL = endAngle - startAngle;
             // PTV 29.08.2002  end of OCC663
 
             aMakeF.Init(aResultSurf, UF, UL, VF, VL, Precision::Confusion());
           } // if (!IsFullAngle)
           else
           {
-            aMakeF.Init(aResultSurf, Standard_True, Precision::Confusion());
+            aMakeF.Init(aResultSurf, true, Precision::Confusion());
           }
 
           if (aMakeF.IsDone())
@@ -825,7 +826,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
   //%13 pdn 15.02.99
   if (res.ShapeType() == TopAbs_FACE)
   {
-    Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(res));
+    occ::handle<Geom_Surface> surf = BRep_Tool::Surface(TopoDS::Face(res));
     if (surf->Continuity() == GeomAbs_C0)
     {
       Message_Msg msg1250("IGES_1250");
@@ -843,7 +844,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
                                                GetUnitFactor()))
     {
       TopLoc_Location shapeLoc(trsf);
-      res.Move(shapeLoc, Standard_False);
+      res.Move(shapeLoc, false);
     }
     else
     {
@@ -858,7 +859,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
 //=================================================================================================
 
 TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder(
-  const Handle(IGESGeom_TabulatedCylinder)& st)
+  const occ::handle<IGESGeom_TabulatedCylinder>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -874,7 +875,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder(
   IGESToBRep_TopoCurve TC(*this);
   //  TopoDS_Edge  firstEdge;//commented by rln on 02/12/97
 
-  Handle(IGESData_IGESEntity) igesDirectrix = st->Directrix();
+  occ::handle<IGESData_IGESEntity> igesDirectrix = st->Directrix();
   if (igesDirectrix.IsNull() || !IGESToBRep::IsTopoCurve(igesDirectrix))
   {
     Message_Msg msg153("XSTEP_153");
@@ -889,9 +890,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder(
   TopoDS_Shape directrix = TC.TransferTopoCurve(igesDirectrix);
   if (directrix.IsNull())
   {
-    Message_Msg                      msg1156("IGES_1156");
-    const Standard_CString           typeName("directrix");
-    Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesDirectrix);
+    Message_Msg                           msg1156("IGES_1156");
+    const char*                           typeName("directrix");
+    occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesDirectrix);
     msg1156.Arg(typeName);
     msg1156.Arg(label);
     SendFail(st, msg1156);
@@ -918,15 +919,15 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder(
   // PTV file D44-11325-6.igs OCC660 depends on OCC450
   // PTV 29.05.2002 OCC450 create Surface of LinearExtrusion by native API
   // see description about problem in Surface of Revolution
-  Handle(Geom_Curve) aBasisCurve;
+  occ::handle<Geom_Curve> aBasisCurve;
   {
     try
     {
       OCC_CATCH_SIGNALS
       if (extractCurve3d(directrix, aBasisCurve))
       {
-        gp_Vec               dir(pt1, pt2);
-        Handle(Geom_Surface) aResultSurf = new Geom_SurfaceOfLinearExtrusion(aBasisCurve, dir);
+        gp_Vec                    dir(pt1, pt2);
+        occ::handle<Geom_Surface> aResultSurf = new Geom_SurfaceOfLinearExtrusion(aBasisCurve, dir);
         if (!aResultSurf.IsNull())
         {
           // aResultSurf =
@@ -974,14 +975,14 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder(
   // direction exactly in the direction Vec(pt1, pt2)
   if (res.ShapeType() == TopAbs_FACE)
   {
-    Standard_Real UMin, UMax, VMin, VMax;
+    double UMin, UMax, VMin, VMax;
     BRepTools::UVBounds(TopoDS::Face(res), UMin, UMax, VMin, VMax);
     if (VMax <= Precision::PConfusion() && VMin < -Precision::PConfusion())
     {
       TheULength *= -1;
       res.Reverse();
     }
-    Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(res));
+    occ::handle<Geom_Surface> surf = BRep_Tool::Surface(TopoDS::Face(res));
     if (surf->Continuity() == GeomAbs_C0)
     {
       Message_Msg msg1250("IGES_1250");
@@ -999,7 +1000,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder(
                                                GetUnitFactor()))
     {
       TopLoc_Location shapeLoc(trsf);
-      res.Move(shapeLoc, Standard_False);
+      res.Move(shapeLoc, false);
     }
     else
     {
@@ -1012,7 +1013,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder(
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom_OffsetSurface)& st)
+TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(
+  const occ::handle<IGESGeom_OffsetSurface>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -1029,7 +1031,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom
   TopoDS_Face     face;
   TopLoc_Location basisLoc;
 
-  Handle(IGESData_IGESEntity) igesSrf = st->Surface();
+  occ::handle<IGESData_IGESEntity> igesSrf = st->Surface();
   if (igesSrf.IsNull() || !IGESToBRep::IsTopoSurface(igesSrf))
   {
     Message_Msg msg164("XSTEP_164");
@@ -1042,9 +1044,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom
   igesShape = TransferTopoSurface(igesSrf);
   if (igesShape.IsNull())
   {
-    Message_Msg                      msg1156("IGES_1156");
-    const Standard_CString           typeName("basis surface");
-    Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesSrf);
+    Message_Msg                           msg1156("IGES_1156");
+    const char*                           typeName("basis surface");
+    occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSrf);
     msg1156.Arg(typeName);
     msg1156.Arg(label);
     SendFail(st, msg1156); // Basis Surface Conversion Error.
@@ -1068,11 +1070,11 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom
       }
       /* else  AddF("... */
     }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     default: {
-      Message_Msg                      msg1156("IGES_1156");
-      const Standard_CString           typeName("basis surface");
-      Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesSrf);
+      Message_Msg                           msg1156("IGES_1156");
+      const char*                           typeName("basis surface");
+      occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSrf);
       msg1156.Arg(typeName);
       msg1156.Arg(label);
       SendFail(st, msg1156); // Basis Surface Conversion Error.
@@ -1080,13 +1082,13 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom
     }
   }
 
-  // Handle(Geom_Surface) geomSupport = BRep_Tool::Surface(face, basisLoc);
+  // occ::handle<Geom_Surface> geomSupport = BRep_Tool::Surface(face, basisLoc);
   //  attention on ne peut construire une Geom_OffsetSurface que
   //  si la surface de base est au moins C1, sinon on plante !
   // #56 rln 25.12.98 UKI60878 entity D593 (Offset surface on C0 B-Spline)
   // Trying to eliminate previous limitation on processing only C1 surfaces
-  Handle(Geom_Surface)       geomSupport = BRep_Tool::Surface(face);
-  Handle(Geom_OffsetSurface) basisSrf;
+  occ::handle<Geom_Surface>       geomSupport = BRep_Tool::Surface(face);
+  occ::handle<Geom_OffsetSurface> basisSrf;
 
   if (geomSupport->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
@@ -1129,16 +1131,16 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom
     if (res.IsNull())
       res = face;
     geomSupport = BRep_Tool::Surface(TopoDS::Face(res));
-    Standard_Real umin, umax, vmin, vmax;
+    double umin, umax, vmin, vmax;
     geomSupport->Bounds(umin, umax, vmin, vmax);
     if (Precision::IsInfinite(umin) || Precision::IsInfinite(umax) || Precision::IsInfinite(vmin)
         || Precision::IsInfinite(vmax))
     {
       // convert to C1 B-Spline
       BRepTools::UVBounds(face, umin, umax, vmin, vmax);
-      Handle(Geom_RectangularTrimmedSurface) TS =
+      occ::handle<Geom_RectangularTrimmedSurface> TS =
         new Geom_RectangularTrimmedSurface(geomSupport, umin, umax, vmin, vmax);
-      Handle(Geom_BSplineSurface) BS =
+      occ::handle<Geom_BSplineSurface> BS =
         ShapeAlgo::AlgoContainer()->ConvertSurfaceToBSpline(TS, umin, umax, vmin, vmax);
       if (BS.IsNull() || BS->Continuity() == GeomAbs_C0)
       {
@@ -1174,7 +1176,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom
                                                GetUnitFactor()))
     {
       TopLoc_Location loc2(trsf);
-      res.Move(loc2, Standard_False);
+      res.Move(loc2, false);
     }
     else
     {
@@ -1188,7 +1190,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(const Handle(IGESGeom
 //=================================================================================================
 
 TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
-  const Handle(IGESGeom_TrimmedSurface)& st)
+  const occ::handle<IGESGeom_TrimmedSurface>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -1204,7 +1206,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
   TopAbs_ShapeEnum     shapeEnum;
   IGESToBRep_TopoCurve TC(*this);
 
-  Handle(IGESData_IGESEntity) igesSurface = st->Surface();
+  occ::handle<IGESData_IGESEntity> igesSurface = st->Surface();
   if (igesSurface.IsNull() || !IGESToBRep::IsTopoSurface(igesSurface))
   {
     Message_Msg msg169("XSTEP_169");
@@ -1213,9 +1215,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
     // Basis Surface, not Allowed IGESEntity.
     return res;
   }
-  gp_Trsf2d     trans;
-  Standard_Real uFact;
-  TopoDS_Face   face, faceres;
+  gp_Trsf2d   trans;
+  double      uFact;
+  TopoDS_Face face, faceres;
 
   TopoDS_Shape myshape = ParamSurface(igesSurface, trans, uFact);
 
@@ -1230,8 +1232,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
         break;
       }
       case TopAbs_SHELL: {
-        TopoDS_Iterator  IT(myshape);
-        Standard_Integer nbfaces = 0;
+        TopoDS_Iterator IT(myshape);
+        int             nbfaces = 0;
         for (; IT.More(); IT.Next())
         {
           nbfaces++;
@@ -1241,9 +1243,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
         // szv#4:S4163:12Mar99 optimized
         if (nbfaces != 1)
         {
-          Message_Msg                      msg1156("IGES_1156");
-          const Standard_CString           typeName("basis surface");
-          Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesSurface);
+          Message_Msg                           msg1156("IGES_1156");
+          const char*                           typeName("basis surface");
+          occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSurface);
           msg1156.Arg(typeName);
           msg1156.Arg(label);
           SendFail(st, msg1156); // Not Implemented Trimmed Composite Surface.
@@ -1252,9 +1254,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
       }
       break;
       default: {
-        Message_Msg                      msg1156("IGES_1156");
-        const Standard_CString           typeName("basis surface");
-        Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesSurface);
+        Message_Msg                           msg1156("IGES_1156");
+        const char*                           typeName("basis surface");
+        occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSurface);
         msg1156.Arg(typeName);
         msg1156.Arg(label);
         SendFail(st, msg1156); // Basis Surface Conversion Error.
@@ -1268,46 +1270,44 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
   }
 
   // obtaining a surface
-  TopLoc_Location      L;
-  Handle(Geom_Surface) aSurf = BRep_Tool::Surface(face, L);
+  TopLoc_Location           L;
+  occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(face, L);
   TC.SetSurface(aSurf);
 
   if (st->HasOuterContour())
   {
     face.EmptyCopy();
-    TopoDS_Shape myshape1 =
-      TC.TransferCurveOnFace(face, st->OuterContour(), trans, uFact, Standard_False);
+    TopoDS_Shape myshape1 = TC.TransferCurveOnFace(face, st->OuterContour(), trans, uFact, false);
     // si ca se passe mal , on recupere au moins la face avec NaturalRestriction
     if (myshape1.IsNull())
     {
       face = faceres;
       BRep_Builder B;
-      B.NaturalRestriction(face, Standard_False);
+      B.NaturalRestriction(face, false);
     }
   }
-  for (Standard_Integer i = 1; i <= st->NbInnerContours(); i++)
+  for (int i = 1; i <= st->NbInnerContours(); i++)
   {
-    TopoDS_Shape myshape2 =
-      TC.TransferCurveOnFace(face, st->InnerContour(i), trans, uFact, Standard_False);
+    TopoDS_Shape myshape2 = TC.TransferCurveOnFace(face, st->InnerContour(i), trans, uFact, false);
   }
 
-  Handle(IGESData_TransfEntity) aTransf = st->Transf();
+  occ::handle<IGESData_TransfEntity> aTransf = st->Transf();
   if (!aTransf.IsNull())
   {
     // make transformation
-    gp_GTrsf      aGT    = aTransf->Value();
-    gp_XYZ        aTrans = aGT.TranslationPart();
-    gp_Mat        aMat   = aGT.VectorialPart();
-    Standard_Real s1     = aMat.Value(1, 1) * aMat.Value(1, 1) + aMat.Value(2, 1) * aMat.Value(2, 1)
-                       + aMat.Value(3, 1) * aMat.Value(3, 1);
-    Standard_Real s2 = aMat.Value(1, 2) * aMat.Value(1, 2) + aMat.Value(2, 2) * aMat.Value(2, 2)
-                       + aMat.Value(3, 2) * aMat.Value(3, 2);
-    Standard_Real s3 = aMat.Value(1, 3) * aMat.Value(1, 3) + aMat.Value(2, 3) * aMat.Value(2, 3)
-                       + aMat.Value(3, 3) * aMat.Value(3, 3);
+    gp_GTrsf aGT    = aTransf->Value();
+    gp_XYZ   aTrans = aGT.TranslationPart();
+    gp_Mat   aMat   = aGT.VectorialPart();
+    double   s1     = aMat.Value(1, 1) * aMat.Value(1, 1) + aMat.Value(2, 1) * aMat.Value(2, 1)
+                + aMat.Value(3, 1) * aMat.Value(3, 1);
+    double s2 = aMat.Value(1, 2) * aMat.Value(1, 2) + aMat.Value(2, 2) * aMat.Value(2, 2)
+                + aMat.Value(3, 2) * aMat.Value(3, 2);
+    double s3 = aMat.Value(1, 3) * aMat.Value(1, 3) + aMat.Value(2, 3) * aMat.Value(2, 3)
+                + aMat.Value(3, 3) * aMat.Value(3, 3);
     if (fabs(s1 - s2) > Precision::Confusion() || fabs(s1 - s3) > Precision::Confusion())
     {
       BRepBuilderAPI_GTransform aTransform(aGT);
-      aTransform.Perform(face, Standard_True);
+      aTransform.Perform(face, true);
       if (aTransform.IsDone())
       {
         if (aTransform.Shape().ShapeType() == TopAbs_FACE)
@@ -1318,10 +1318,10 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
     }
     else
     {
-      Standard_Real tmpVal =
-        fabs(aMat.Value(1, 1) - 1.) + fabs(aMat.Value(1, 2)) + fabs(aMat.Value(1, 3))
-        + fabs(aMat.Value(2, 1)) + fabs(aMat.Value(2, 2) - 1.) + fabs(aMat.Value(2, 3))
-        + fabs(aMat.Value(3, 1)) + fabs(aMat.Value(3, 2)) + fabs(aMat.Value(3, 3) - 1.);
+      double tmpVal = fabs(aMat.Value(1, 1) - 1.) + fabs(aMat.Value(1, 2)) + fabs(aMat.Value(1, 3))
+                      + fabs(aMat.Value(2, 1)) + fabs(aMat.Value(2, 2) - 1.)
+                      + fabs(aMat.Value(2, 3)) + fabs(aMat.Value(3, 1)) + fabs(aMat.Value(3, 2))
+                      + fabs(aMat.Value(3, 3) - 1.);
       if ((tmpVal + aTrans.Modulus()) > Precision::Confusion())
       {
         // not Identity
@@ -1339,7 +1339,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
                      aMat.Value(3, 3),
                      aTrans.Z());
         TopLoc_Location aLoc(aT);
-        face.Move(aLoc, Standard_False);
+        face.Move(aLoc, false);
       }
     }
   }
@@ -1352,7 +1352,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
 //=================================================================================================
 
 TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
-  const Handle(IGESGeom_BoundedSurface)& st)
+  const occ::handle<IGESGeom_BoundedSurface>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -1372,9 +1372,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
     // Model Space Representation Not Implemented : the result will be the basis surface
   }
 
-  TopAbs_ShapeEnum            shapeEnum;
-  IGESToBRep_TopoCurve        TC(*this);
-  Handle(IGESData_IGESEntity) igesSrf = st->Surface();
+  TopAbs_ShapeEnum                 shapeEnum;
+  IGESToBRep_TopoCurve             TC(*this);
+  occ::handle<IGESData_IGESEntity> igesSrf = st->Surface();
   if (igesSrf.IsNull() || !IGESToBRep::IsTopoSurface(igesSrf))
   {
     Message_Msg msg166("XSTEP_166");
@@ -1383,9 +1383,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
     // Basis Surface Transfer Error : Not Allowed IGESEntity.
     return res;
   }
-  gp_Trsf2d     trans;
-  Standard_Real uFact;
-  TopoDS_Face   face;
+  gp_Trsf2d   trans;
+  double      uFact;
+  TopoDS_Face face;
 
   TopoDS_Shape myshape = ParamSurface(igesSrf, trans, uFact);
 
@@ -1409,8 +1409,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
       }
       break;
       case TopAbs_SHELL: {
-        TopoDS_Iterator  IT(myshape);
-        Standard_Integer nbfaces = 0;
+        TopoDS_Iterator IT(myshape);
+        int             nbfaces = 0;
         for (; IT.More(); IT.Next())
         {
           nbfaces++;
@@ -1419,9 +1419,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
         // szv#4:S4163:12Mar99 optimized
         if (nbfaces != 1)
         {
-          Message_Msg                      msg1156("IGES_1156");
-          const Standard_CString           typeName("basis surface");
-          Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesSrf);
+          Message_Msg                           msg1156("IGES_1156");
+          const char*                           typeName("basis surface");
+          occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSrf);
           msg1156.Arg(typeName);
           msg1156.Arg(label);
           SendFail(st, msg1156);
@@ -1431,9 +1431,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
       }
       break;
       default: {
-        Message_Msg                      msg1156("IGES_1156");
-        const Standard_CString           typeName("basis surface");
-        Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(igesSrf);
+        Message_Msg                           msg1156("IGES_1156");
+        const char*                           typeName("basis surface");
+        occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSrf);
         msg1156.Arg(typeName);
         msg1156.Arg(label);
         SendFail(st, msg1156);
@@ -1443,7 +1443,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
   }
 
   face.EmptyCopy();
-  for (Standard_Integer i = 1; i <= st->NbBoundaries(); i++)
+  for (int i = 1; i <= st->NbBoundaries(); i++)
     TC.TransferBoundaryOnFace(face, st->Boundary(i), trans, uFact);
 
   BRepTools::Update(face); //: p4
@@ -1461,7 +1461,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_TopoSurface::TransferPlane(const Handle(IGESGeom_Plane)& st)
+TopoDS_Shape IGESToBRep_TopoSurface::TransferPlane(const occ::handle<IGESGeom_Plane>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -1476,13 +1476,13 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlane(const Handle(IGESGeom_Plane)&
 
   gp_Pln  pln;
   gp_Trsf trsf;
-  res = TransferPlaneParts(st, pln, trsf, Standard_True);
+  res = TransferPlaneParts(st, pln, trsf, true);
   //   res contains (in principle ...) a Face with possibly a Wire
   //   it remains to position it
   if (trsf.Form() != gp_Identity)
   {
     TopLoc_Location loc(trsf);
-    res.Location(loc, Standard_False);
+    res.Location(loc, false);
   }
   return res;
 }
@@ -1494,7 +1494,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlane(const Handle(IGESGeom_Plane)&
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_TopoSurface::TransferPerforate(const Handle(IGESBasic_SingleParent)& st)
+TopoDS_Shape IGESToBRep_TopoSurface::TransferPerforate(
+  const occ::handle<IGESBasic_SingleParent>& st)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -1519,10 +1520,10 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPerforate(const Handle(IGESBasic_Si
     // SingleParent does not describe a holed face
     return res;
   }
-  res = TransferPlaneParts(p0, pln, trsf, Standard_True);
+  res = TransferPlaneParts(p0, pln, trsf, true);
   // res starts with the face and its external contour
-  Standard_Integer nb = st->NbChildren();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = st->NbChildren();
+  for (int i = 1; i <= nb; i++)
   {
     DeclareAndCast(IGESGeom_Plane, pi, st->Child(i));
     if (pi.IsNull())
@@ -1535,13 +1536,13 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPerforate(const Handle(IGESBasic_Si
     }
     gp_Pln       pli;
     gp_Trsf      trsi;
-    TopoDS_Shape wire = TransferPlaneParts(pi, pli, trsi, Standard_False);
+    TopoDS_Shape wire = TransferPlaneParts(pi, pli, trsi, false);
     //    si ce n est pas un Wire, sauter
     if (wire.ShapeType() != TopAbs_WIRE)
     {
-      Message_Msg                      msg1156("IGES_1156");
-      const Standard_CString           typeName("hole");
-      Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(pi);
+      Message_Msg                           msg1156("IGES_1156");
+      const char*                           typeName("hole");
+      occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(pi);
       msg1156.Arg(typeName);
       msg1156.Arg(label);
       SendWarning(st, msg1156);
@@ -1560,7 +1561,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPerforate(const Handle(IGESBasic_Si
     if (trsi.Form() != gp_Identity)
     {
       TopLoc_Location locw(trsi);
-      wire.Location(locw, Standard_False);
+      wire.Location(locw, false);
     }
     B.Add(res, wire);
   }
@@ -1568,17 +1569,17 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPerforate(const Handle(IGESBasic_Si
   if (trsf.Form() != gp_Identity)
   {
     TopLoc_Location loc(trsf);
-    res.Location(loc, Standard_False);
+    res.Location(loc, false);
   }
   return res;
 }
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Plane)& st,
-                                                        gp_Pln&                       pln,
-                                                        gp_Trsf&                      trsf,
-                                                        const Standard_Boolean        first)
+TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const occ::handle<IGESGeom_Plane>& st,
+                                                        gp_Pln&                            pln,
+                                                        gp_Trsf&                           trsf,
+                                                        const bool                         first)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -1591,7 +1592,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
     return res;
   }
 
-  Standard_Real a, b, c, d;
+  double a, b, c, d;
   // equation de Geom : ax + by + cz + d = 0.0;
   // equation de IGES : ax + by + cz = d;
   st->Equation(a, b, c, d);
@@ -1603,14 +1604,14 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
   if (first)
   {
     B.MakeFace(plane); // Just to create a empty Plane with a Tshape.
-    Handle(Geom_Plane) geomPln = new Geom_Plane(pln);
+    occ::handle<Geom_Plane> geomPln = new Geom_Plane(pln);
     geomPln->Scale(gp_Pnt(0, 0, 0), GetUnitFactor());
     //   ATTENTION, ici on CALCULE la trsf, on ne l`applique pas ...
     // S4054: B.UpdateFace (plane, geomPln, TopLoc_Location(),
     // GetEpsGeom()*GetUnitFactor());
     B.UpdateFace(plane, geomPln, TopLoc_Location(), Precision::Confusion());
     //: 3 by ABV 5 Nov 97: set Infinite() flag (see below for unsetting)
-    plane.Infinite(Standard_True); //: 3
+    plane.Infinite(true); //: 3
   }
 
   //   ATTENTION, ici on CALCULE la trsf, on ne l'appliquera qu'a la fin !
@@ -1629,8 +1630,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
 
   if (st->HasBoundingCurve())
   {
-    IGESToBRep_TopoCurve        TC(*this);
-    Handle(IGESData_IGESEntity) crv = st->BoundingCurve();
+    IGESToBRep_TopoCurve             TC(*this);
+    occ::handle<IGESData_IGESEntity> crv = st->BoundingCurve();
 
     if (crv.IsNull())
     {
@@ -1648,15 +1649,14 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
         if (crv->IsKind(STANDARD_TYPE(IGESGeom_CurveOnSurface)))
         {
           DeclareAndCast(IGESGeom_CurveOnSurface, crv142, crv);
-          TopoDS_Shape myshape =
-            TC.TransferCurveOnFace(plane, crv142, trans, TheULength, Standard_False);
+          TopoDS_Shape myshape = TC.TransferCurveOnFace(plane, crv142, trans, TheULength, false);
 
           //: 3 by ABV 5 Nov 97: set plane to be finite
           if (first)
           {
             TopExp_Explorer ws(plane, TopAbs_WIRE);
             if (ws.More())
-              plane.Infinite(Standard_False);
+              plane.Infinite(false);
           }
         }
         else
@@ -1666,8 +1666,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
           switch (shapeEnum)
           {
             case TopAbs_EDGE: {
-              TopoDS_Edge                  edge = TopoDS::Edge(shape);
-              Handle(ShapeExtend_WireData) sewd = new ShapeExtend_WireData;
+              TopoDS_Edge                       edge = TopoDS::Edge(shape);
+              occ::handle<ShapeExtend_WireData> sewd = new ShapeExtend_WireData;
               sewd->Add(edge);
               wire = sewd->Wire();
             }
@@ -1677,9 +1677,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
             }
             break;
             default: {
-              Message_Msg                      msg1156("IGES_1156");
-              const Standard_CString           typeName("Bounding curve");
-              Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(crv);
+              Message_Msg                           msg1156("IGES_1156");
+              const char*                           typeName("Bounding curve");
+              occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(crv);
               msg1156.Arg(typeName);
               msg1156.Arg(label);
               SendWarning(st, msg1156);
@@ -1691,11 +1691,11 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
             }
           }
           // S4054 CTS18953 entity 14
-          Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
+          occ::handle<ShapeFix_Wire> sfw = new ShapeFix_Wire;
           sfw->Load(wire);
           sfw->FixConnected(GetMaxTol());
           wire = sfw->Wire();
-          BRepLib_MakeFace MF(pln, wire, Standard_False);
+          BRepLib_MakeFace MF(pln, wire, false);
           if (!MF.IsDone())
           {
             // AddFail(st, "Plane Construction Error.");
@@ -1717,7 +1717,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
           if (first)
           {
             B.Add(plane, wire);
-            plane.Infinite(Standard_False);
+            plane.Infinite(false);
           }
           // BRepLib_MakeFace MP(pln, wire);
           // plane = MP.Face();
@@ -1725,9 +1725,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
       }
       else
       {
-        Message_Msg                      msg1156("IGES_1156");
-        const Standard_CString           typeName("Bounding curve");
-        Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(crv);
+        Message_Msg                           msg1156("IGES_1156");
+        const char*                           typeName("Bounding curve");
+        occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(crv);
         msg1156.Arg(typeName);
         msg1156.Arg(label);
         SendWarning(st, msg1156);
@@ -1744,9 +1744,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
 
 //=================================================================================================
 
-TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEntity)& st,
-                                                  gp_Trsf2d&                         trans,
-                                                  Standard_Real&                     uFact)
+TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const occ::handle<IGESData_IGESEntity>& st,
+                                                  gp_Trsf2d&                              trans,
+                                                  double&                                 uFact)
 { // Declaration of messages//
   // DCE 22/12/98
   // Message_Msg msg1005("IGES_1005");
@@ -1754,9 +1754,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
 
   TopoDS_Shape res;
 
-  TopoDS_Shape  basisSurface = TransferTopoSurface(st);
-  Standard_Real uscale       = 1.;
-  Standard_Real cscale       = TheULength;
+  TopoDS_Shape basisSurface = TransferTopoSurface(st);
+  double       uscale       = 1.;
+  double       cscale       = TheULength;
   if (basisSurface.IsNull())
   {
     Message_Msg msg1005("IGES_1005");
@@ -1774,8 +1774,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
       break;
     }
     case TopAbs_SHELL: {
-      TopoDS_Iterator  IT(basisSurface);
-      Standard_Integer nbfaces = 0;
+      TopoDS_Iterator IT(basisSurface);
+      int             nbfaces = 0;
       for (; IT.More(); IT.Next())
       {
         nbfaces++;
@@ -1784,9 +1784,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
       // szv#4:S4163:12Mar99 optimized
       if (nbfaces != 1)
       {
-        Message_Msg                      msg1156("IGES_1156");
-        const Standard_CString           typeName("basis surface");
-        Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(st);
+        Message_Msg                           msg1156("IGES_1156");
+        const char*                           typeName("basis surface");
+        occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(st);
         msg1156.Arg(typeName);
         msg1156.Arg(label);
         SendWarning(st, msg1156);
@@ -1802,10 +1802,10 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
 
   // S4181 pdn 19.04.99 defining shift of parametric space on base
   //  of CAS.CADE type of surface
-  Standard_Real        paramu = 0., paramv = 0.;
-  TopLoc_Location      L;
-  TopoDS_Edge          theedge;
-  Handle(Geom_Surface) Surf = BRep_Tool::Surface(face);
+  double                    paramu = 0., paramv = 0.;
+  TopLoc_Location           L;
+  TopoDS_Edge               theedge;
+  occ::handle<Geom_Surface> Surf = BRep_Tool::Surface(face);
 
   if (Surf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
@@ -1821,9 +1821,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
     TopExp_Explorer TE;
     for (TE.Init(face, TopAbs_EDGE); TE.More(); TE.Next())
     {
-      TopoDS_Edge          myedge = TopoDS::Edge(TE.Current());
-      Standard_Real        First, Last;
-      Handle(Geom2d_Curve) Curve2d = BRep_Tool::CurveOnSurface(myedge, face, First, Last);
+      TopoDS_Edge               myedge = TopoDS::Edge(TE.Current());
+      double                    First, Last;
+      occ::handle<Geom2d_Curve> Curve2d = BRep_Tool::CurveOnSurface(myedge, face, First, Last);
       if (Curve2d->IsKind(STANDARD_TYPE(Geom2d_Line)))
       {
         DeclareAndCast(Geom2d_Line, Line2d, Curve2d);
@@ -1835,8 +1835,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
       }
     }
 
-    Standard_Real      First, Last;
-    Handle(Geom_Curve) Curve3d = BRep_Tool::Curve(theedge, First, Last);
+    double                  First, Last;
+    occ::handle<Geom_Curve> Curve3d = BRep_Tool::Curve(theedge, First, Last);
     if (Precision::IsNegativeInfinite(First))
       First = 0.;
 
@@ -1894,7 +1894,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
     if (st->IsKind(STANDARD_TYPE(IGESGeom_SurfaceOfRevolution)))
     {
       DeclareAndCast(IGESGeom_SurfaceOfRevolution, revol, st);
-      Handle(IGESData_IGESEntity) generatrix = revol->Generatrix();
+      occ::handle<IGESData_IGESEntity> generatrix = revol->Generatrix();
       if (generatrix->IsKind(STANDARD_TYPE(IGESGeom_CircularArc)))
       {
         DeclareAndCast(IGESGeom_CircularArc, circ, generatrix);
@@ -1911,7 +1911,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
     else if (st->IsKind(STANDARD_TYPE(IGESGeom_TabulatedCylinder)))
     {
       DeclareAndCast(IGESGeom_TabulatedCylinder, cylinder, st);
-      Handle(IGESData_IGESEntity) directrix = cylinder->Directrix();
+      occ::handle<IGESData_IGESEntity> directrix = cylinder->Directrix();
       if (directrix->IsKind(STANDARD_TYPE(IGESGeom_CircularArc)))
       {
         DeclareAndCast(IGESGeom_CircularArc, circ, directrix);
@@ -1931,7 +1931,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
 
   // S4181 pdn 16.04.99 computation of transformation depending on
   // IGES Type of surface
-  Handle(IGESData_IGESEntity) isrf = st;
+  occ::handle<IGESData_IGESEntity> isrf = st;
   if (isrf->IsKind(STANDARD_TYPE(IGESGeom_OffsetSurface)))
   {
     DeclareAndCast(IGESGeom_OffsetSurface, offsurf, isrf);
@@ -1965,10 +1965,10 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
   // corrected skl 13.11.2001 for BUC61054
   if (isrf->IsKind(STANDARD_TYPE(IGESGeom_TabulatedCylinder)))
   {
-    Handle(IGESGeom_TabulatedCylinder) igtc = Handle(IGESGeom_TabulatedCylinder)::DownCast(isrf);
-    Handle(IGESData_IGESEntity)        idie = igtc->Directrix();
-    Standard_Real                      uln  = 1;
-    Standard_Real                      Umin, Umax, Vmin, Vmax;
+    occ::handle<IGESGeom_TabulatedCylinder> igtc = occ::down_cast<IGESGeom_TabulatedCylinder>(isrf);
+    occ::handle<IGESData_IGESEntity>        idie = igtc->Directrix();
+    double                                  uln  = 1;
+    double                                  Umin, Umax, Vmin, Vmax;
     // scaling parameterization from [0,1]
     Surf->Bounds(Umin, Umax, Vmin, Vmax);
     uln = std::abs(Umax - Umin);

@@ -29,16 +29,17 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pln.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomAPI::To2d(const Handle(Geom_Curve)& C, const gp_Pln& P)
+occ::handle<Geom2d_Curve> GeomAPI::To2d(const occ::handle<Geom_Curve>& C, const gp_Pln& P)
 {
-  Handle(Geom2d_Curve)        result;
-  Handle(GeomAdaptor_Curve)   HC    = new GeomAdaptor_Curve(C);
-  Handle(Geom_Plane)          Plane = new Geom_Plane(P);
-  Handle(GeomAdaptor_Surface) HS    = new GeomAdaptor_Surface(Plane);
+  occ::handle<Geom2d_Curve>        result;
+  occ::handle<GeomAdaptor_Curve>   HC    = new GeomAdaptor_Curve(C);
+  occ::handle<Geom_Plane>          Plane = new Geom_Plane(P);
+  occ::handle<GeomAdaptor_Surface> HS    = new GeomAdaptor_Surface(Plane);
 
   ProjLib_ProjectedCurve Proj(HS, HC);
 
@@ -52,12 +53,12 @@ Handle(Geom2d_Curve) GeomAPI::To2d(const Handle(Geom_Curve)& C, const gp_Pln& P)
 
 //=================================================================================================
 
-Handle(Geom_Curve) GeomAPI::To3d(const Handle(Geom2d_Curve)& C, const gp_Pln& P)
+occ::handle<Geom_Curve> GeomAPI::To3d(const occ::handle<Geom2d_Curve>& C, const gp_Pln& P)
 {
-  Handle(Geom2dAdaptor_Curve) AHC = new Geom2dAdaptor_Curve(C);
+  occ::handle<Geom2dAdaptor_Curve> AHC = new Geom2dAdaptor_Curve(C);
 
-  Handle(Geom_Plane)          ThePlane = new Geom_Plane(P);
-  Handle(GeomAdaptor_Surface) AHS      = new GeomAdaptor_Surface(ThePlane);
+  occ::handle<Geom_Plane>          ThePlane = new Geom_Plane(P);
+  occ::handle<GeomAdaptor_Surface> AHS      = new GeomAdaptor_Surface(ThePlane);
 
   Adaptor3d_CurveOnSurface COS(AHC, AHS);
   return GeomAdaptor::MakeCurve(COS);

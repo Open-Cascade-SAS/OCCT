@@ -37,44 +37,43 @@ public:
   //! Begin an exploration of the edges of the face <fd>
   Standard_EXPORT void InitEdge(HLRBRep_FaceData& fd);
 
-  Standard_Boolean MoreEdge() const;
+  bool MoreEdge() const;
 
   Standard_EXPORT void NextEdge();
 
   //! Returns True if the current edge is the first of a
   //! wire.
-  Standard_Boolean BeginningOfWire() const;
+  bool BeginningOfWire() const;
 
   //! Returns True if the current edge is the last of a
   //! wire.
-  Standard_Boolean EndOfWire() const;
+  bool EndOfWire() const;
 
   //! Skip the current wire in the exploration.
   void SkipWire();
 
   //! Returns the edges of the current wire.
-  Handle(HLRAlgo_EdgesBlock) Wire() const;
+  occ::handle<HLRAlgo_EdgesBlock> Wire() const;
 
-  Standard_Integer Edge() const;
+  int Edge() const;
 
   TopAbs_Orientation Orientation() const;
 
-  Standard_Boolean OutLine() const;
+  bool OutLine() const;
 
-  Standard_Boolean Internal() const;
+  bool Internal() const;
 
-  Standard_Boolean Double() const;
+  bool Double() const;
 
-  Standard_Boolean IsoLine() const;
+  bool IsoLine() const;
 
-protected:
 private:
-  Standard_Integer           iWire;
-  Standard_Integer           nbWires;
-  Standard_Integer           iEdge;
-  Standard_Integer           nbEdges;
-  Handle(HLRAlgo_WiresBlock) myWires;
-  Handle(HLRAlgo_EdgesBlock) myEdges;
+  int                             iWire;
+  int                             nbWires;
+  int                             iEdge;
+  int                             nbEdges;
+  occ::handle<HLRAlgo_WiresBlock> myWires;
+  occ::handle<HLRAlgo_EdgesBlock> myEdges;
 };
 
 #include <HLRBRep_FaceIterator.lxx>

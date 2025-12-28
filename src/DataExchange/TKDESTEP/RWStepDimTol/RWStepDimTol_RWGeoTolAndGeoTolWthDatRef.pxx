@@ -35,15 +35,15 @@ public:
 
   Standard_HIDDEN RWStepDimTol_RWGeoTolAndGeoTolWthDatRef();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&             data,
-                                const Standard_Integer                             num,
-                                Handle(Interface_Check)&                           ach,
-                                const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&             data,
+                                const int                                               num,
+                                occ::handle<Interface_Check>&                           ach,
+                                const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRef>& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                               SW,
-                                 const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                    SW,
+                                 const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRef>& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent,
-                             Interface_EntityIterator&                          iter) const;
+  Standard_HIDDEN void Share(const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRef>& ent,
+                             Interface_EntityIterator&                               iter) const;
 };
 #endif // _RWStepDimTol_RWGeoTolAndGeoTolWthDatRef_HeaderFile

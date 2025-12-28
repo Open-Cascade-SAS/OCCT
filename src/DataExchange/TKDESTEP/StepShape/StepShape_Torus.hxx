@@ -24,9 +24,6 @@
 class StepGeom_Axis1Placement;
 class TCollection_HAsciiString;
 
-class StepShape_Torus;
-DEFINE_STANDARD_HANDLE(StepShape_Torus, StepGeom_GeometricRepresentationItem)
-
 class StepShape_Torus : public StepGeom_GeometricRepresentationItem
 {
 
@@ -34,30 +31,29 @@ public:
   //! Returns a Torus
   Standard_EXPORT StepShape_Torus();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepGeom_Axis1Placement)&  aPosition,
-                            const Standard_Real                     aMajorRadius,
-                            const Standard_Real                     aMinorRadius);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepGeom_Axis1Placement>&  aPosition,
+                            const double                                 aMajorRadius,
+                            const double                                 aMinorRadius);
 
-  Standard_EXPORT void SetPosition(const Handle(StepGeom_Axis1Placement)& aPosition);
+  Standard_EXPORT void SetPosition(const occ::handle<StepGeom_Axis1Placement>& aPosition);
 
-  Standard_EXPORT Handle(StepGeom_Axis1Placement) Position() const;
+  Standard_EXPORT occ::handle<StepGeom_Axis1Placement> Position() const;
 
-  Standard_EXPORT void SetMajorRadius(const Standard_Real aMajorRadius);
+  Standard_EXPORT void SetMajorRadius(const double aMajorRadius);
 
-  Standard_EXPORT Standard_Real MajorRadius() const;
+  Standard_EXPORT double MajorRadius() const;
 
-  Standard_EXPORT void SetMinorRadius(const Standard_Real aMinorRadius);
+  Standard_EXPORT void SetMinorRadius(const double aMinorRadius);
 
-  Standard_EXPORT Standard_Real MinorRadius() const;
+  Standard_EXPORT double MinorRadius() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_Torus, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(StepGeom_Axis1Placement) position;
-  Standard_Real                   majorRadius;
-  Standard_Real                   minorRadius;
+  occ::handle<StepGeom_Axis1Placement> position;
+  double                               majorRadius;
+  double                               minorRadius;
 };
 
 #endif // _StepShape_Torus_HeaderFile

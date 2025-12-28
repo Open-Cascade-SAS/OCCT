@@ -23,7 +23,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Edge;
 
 class LocOpe_FindEdgesInFace
@@ -39,18 +39,17 @@ public:
 
   void Init();
 
-  Standard_Boolean More() const;
+  bool More() const;
 
   const TopoDS_Edge& Edge() const;
 
   void Next();
 
-protected:
 private:
-  TopoDS_Shape                       myShape;
-  TopoDS_Face                        myFace;
-  TopTools_ListOfShape               myList;
-  TopTools_ListIteratorOfListOfShape myIt;
+  TopoDS_Shape                             myShape;
+  TopoDS_Face                              myFace;
+  NCollection_List<TopoDS_Shape>           myList;
+  NCollection_List<TopoDS_Shape>::Iterator myIt;
 };
 
 #include <LocOpe_FindEdgesInFace.lxx>

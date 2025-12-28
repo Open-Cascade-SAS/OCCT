@@ -22,7 +22,8 @@
 #include <Standard_Integer.hxx>
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_OStream.hxx>
 class Message_Messenger;
@@ -30,26 +31,24 @@ class TDF_Attribute;
 class BinObjMgt_Persistent;
 class BinTools_LocationSet;
 
-class BinMNaming_NamedShapeDriver;
-DEFINE_STANDARD_HANDLE(BinMNaming_NamedShapeDriver, BinMDF_ADriver)
-
 //! NamedShape Attribute Driver.
 class BinMNaming_NamedShapeDriver : public BinMDF_ADriver
 {
 
 public:
-  Standard_EXPORT BinMNaming_NamedShapeDriver(const Handle(Message_Messenger)& theMessageDriver);
+  Standard_EXPORT BinMNaming_NamedShapeDriver(
+    const occ::handle<Message_Messenger>& theMessageDriver);
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT Standard_Boolean
-    Paste(const BinObjMgt_Persistent&  Source,
-          const Handle(TDF_Attribute)& Target,
-          BinObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       Source,
+                             const occ::handle<TDF_Attribute>& Target,
+                             BinObjMgt_RRelocationTable&       RelocTable) const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
-                             BinObjMgt_Persistent&        Target,
-                             BinObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(
+    const occ::handle<TDF_Attribute>&                        Source,
+    BinObjMgt_Persistent&                                    Target,
+    NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;
 
   //! Input the shapes from Bin Document file
   Standard_EXPORT void ReadShapeSection(
@@ -59,46 +58,43 @@ public:
   //! Output the shapes into Bin Document file
   Standard_EXPORT void WriteShapeSection(
     Standard_OStream&            theOS,
-    const Standard_Integer       theDocVer,
+    const int                    theDocVer,
     const Message_ProgressRange& therange = Message_ProgressRange());
 
   //! Clear myShapeSet
   Standard_EXPORT void Clear();
 
   //! Return true if shape should be stored with triangles.
-  Standard_Boolean IsWithTriangles() const { return myWithTriangles; }
+  bool IsWithTriangles() const { return myWithTriangles; }
 
   //! Return true if shape should be stored with triangulation normals.
-  Standard_Boolean IsWithNormals() const { return myWithNormals; }
+  bool IsWithNormals() const { return myWithNormals; }
 
   //! set whether to store triangulation
-  void SetWithTriangles(const Standard_Boolean isWithTriangles);
+  void SetWithTriangles(const bool isWithTriangles);
   //! set whether to store triangulation with normals
-  void SetWithNormals(const Standard_Boolean isWithNormals);
+  void SetWithNormals(const bool isWithNormals);
   //! get the shapes locations
   Standard_EXPORT BinTools_LocationSet& GetShapesLocations() const;
 
   //! Sets the flag for quick part of the document access: shapes are stored in the attribute.
-  Standard_EXPORT void EnableQuickPart(const Standard_Boolean theValue)
-  {
-    myIsQuickPart = theValue;
-  }
+  Standard_EXPORT void EnableQuickPart(const bool theValue) { myIsQuickPart = theValue; }
 
   //! Returns true if quick part of the document access is enabled: shapes are stored in the
   //! attribute.
-  Standard_EXPORT Standard_Boolean IsQuickPart() { return myIsQuickPart; }
+  Standard_EXPORT bool IsQuickPart() { return myIsQuickPart; }
 
   //! Returns shape-set of the needed type
-  Standard_EXPORT BinTools_ShapeSetBase* ShapeSet(const Standard_Boolean theReading);
+  Standard_EXPORT BinTools_ShapeSetBase* ShapeSet(const bool theReading);
 
   DEFINE_STANDARD_RTTIEXT(BinMNaming_NamedShapeDriver, BinMDF_ADriver)
 
 private:
   BinTools_ShapeSetBase* myShapeSet;
-  Standard_Boolean       myWithTriangles;
-  Standard_Boolean       myWithNormals;
+  bool                   myWithTriangles;
+  bool                   myWithNormals;
   //! Enables storing of whole shape data just in the attribute, not in a separated shapes section
-  Standard_Boolean myIsQuickPart;
+  bool myIsQuickPart;
 };
 
 #include <BinMNaming_NamedShapeDriver.lxx>

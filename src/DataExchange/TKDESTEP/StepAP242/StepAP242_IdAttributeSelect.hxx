@@ -57,39 +57,39 @@ public:
   //! 11 -> ShapeAspect
   //! 12 -> ShapeAspectRelationship
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Action (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Action) Action() const;
+  Standard_EXPORT occ::handle<StepBasic_Action> Action() const;
 
   //! returns Value as a Address (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Address) Address() const;
+  Standard_EXPORT occ::handle<StepBasic_Address> Address() const;
 
   //! returns Value as a ApplicationContext (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ApplicationContext) ApplicationContext() const;
+  Standard_EXPORT occ::handle<StepBasic_ApplicationContext> ApplicationContext() const;
 
   //! returns Value as a DimensionalSize (Null if another type)
-  Standard_EXPORT Handle(StepShape_DimensionalSize) DimensionalSize() const;
+  Standard_EXPORT occ::handle<StepShape_DimensionalSize> DimensionalSize() const;
 
   //! returns Value as a GeometricTolerance (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_GeometricTolerance) GeometricTolerance() const;
+  Standard_EXPORT occ::handle<StepDimTol_GeometricTolerance> GeometricTolerance() const;
 
   //! returns Value as a Group (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Group) Group() const;
+  Standard_EXPORT occ::handle<StepBasic_Group> Group() const;
 
   //! returns Value as a ProductCategory (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductCategory) ProductCategory() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductCategory> ProductCategory() const;
 
   //! returns Value as a PropertyDefinition (Null if another type)
-  Standard_EXPORT Handle(StepRepr_PropertyDefinition) PropertyDefinition() const;
+  Standard_EXPORT occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;
 
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
   //! returns Value as a ShapeAspect (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 
   //! returns Value as a ShapeAspectRelationship (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship() const;
 };
 #endif // _StepAP242_IdAttributeSelect_HeaderFile

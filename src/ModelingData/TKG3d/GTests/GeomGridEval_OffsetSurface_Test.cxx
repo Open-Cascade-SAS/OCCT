@@ -22,7 +22,7 @@
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -30,10 +30,10 @@ namespace
 {
 const double THE_TOLERANCE = 1e-9;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
-  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
+  NCollection_Array1<double> aParams(1, theNbPoints);
+  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -45,15 +45,15 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_OffsetSurfaceTest, PlaneOffset)
 {
   // Plane at Z=0
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
   // Offset by 10.0 -> Plane at Z=10
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aPlane, 10.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aPlane, 10.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 10.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 10.0, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 10.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -71,16 +71,16 @@ TEST(GeomGridEval_OffsetSurfaceTest, PlaneOffset)
 TEST(GeomGridEval_OffsetSurfaceTest, CylinderOffset)
 {
   // Cylinder radius 5
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
   // Offset by 2.0 -> Cylinder radius 7 (outward)
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -102,14 +102,14 @@ TEST(GeomGridEval_OffsetSurfaceTest, CylinderOffset)
 TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD1)
 {
   // Cylinder offset
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 3);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -131,8 +131,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD1)
 TEST(GeomGridEval_OffsetSurfaceTest, NestedDispatch)
 {
   // Test that GeomGridEval_Surface correctly dispatches to GeomGridEval_OffsetSurface
-  Handle(Geom_Plane)         aPlane   = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aPlane, 5.0);
+  occ::handle<Geom_Plane>         aPlane   = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aPlane, 5.0);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anOffset);
@@ -142,8 +142,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, NestedDispatch)
   // (GeomGridEval_Surface::GetType logic might need checking, usually delegates to adaptor or
   // stored type) Since we added OffsetSurface to variant, it should be supported.
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 3);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 3);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 3);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 3);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_EQ(aGrid.RowLength(), 3);
@@ -155,14 +155,14 @@ TEST(GeomGridEval_OffsetSurfaceTest, NestedDispatch)
 TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD2)
 {
   // Cylinder offset
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 3);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -187,14 +187,14 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD2)
 TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD3)
 {
   // Cylinder offset
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 3);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -235,14 +235,14 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD3)
 TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U1V0)
 {
   // Cylinder offset
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 3);
 
   NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 1, 0);
 
@@ -261,14 +261,14 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U1V0)
 TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U0V1)
 {
   // Cylinder offset
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 3);
 
   NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 0, 1);
 
@@ -285,14 +285,14 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U0V1)
 TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U1V1)
 {
   // Cylinder offset
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 3);
 
   NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 1, 1);
 
@@ -309,14 +309,14 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U1V1)
 TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U2V0)
 {
   // Cylinder offset
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 3);
 
   NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 2, 0);
 
@@ -333,13 +333,13 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U2V0)
 TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_PlaneOffset)
 {
   // Plane offset - simpler case for testing
-  Handle(Geom_Plane)         aPlane   = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aPlane, 10.0);
+  occ::handle<Geom_Plane>         aPlane   = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aPlane, 10.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 10.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 10.0, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 10.0, 5);
 
   // Test DN(1,0) and DN(0,1) - use Geom_OffsetSurface::DN as reference
   NCollection_Array2<gp_Vec> aGridU = anEval.EvaluateGridDN(aUParams, aVParams, 1, 0);
@@ -370,16 +370,16 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_PlaneOffset)
 TEST(GeomGridEval_OffsetSurfaceTest, IsolineU_CompareToGeomD0)
 {
   // Cylinder offset
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
   // U-isoline: 1 U param, multiple V params (triggers isoline path)
-  TColStd_Array1OfReal aUParams(1, 1);
+  NCollection_Array1<double> aUParams(1, 1);
   aUParams.SetValue(1, M_PI / 4);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 15);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 15);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -399,15 +399,15 @@ TEST(GeomGridEval_OffsetSurfaceTest, IsolineU_CompareToGeomD0)
 TEST(GeomGridEval_OffsetSurfaceTest, IsolineV_CompareToGeomD0)
 {
   // Cylinder offset
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aCyl, 2.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
   // V-isoline: multiple U params, 1 V param (triggers isoline path)
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 15);
-  TColStd_Array1OfReal aVParams(1, 1);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 15);
+  NCollection_Array1<double> aVParams(1, 1);
   aVParams.SetValue(1, 2.5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
@@ -428,15 +428,15 @@ TEST(GeomGridEval_OffsetSurfaceTest, IsolineV_CompareToGeomD0)
 TEST(GeomGridEval_OffsetSurfaceTest, IsolinePlane_CompareToGeomD0)
 {
   // Plane offset (simple case)
-  Handle(Geom_Plane)         aPlane   = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aPlane, 3.0);
+  occ::handle<Geom_Plane>         aPlane   = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aPlane, 3.0);
 
   GeomGridEval_OffsetSurface anEval(anOffset);
 
   // U-isoline on plane offset
-  TColStd_Array1OfReal aUParams(1, 1);
+  NCollection_Array1<double> aUParams(1, 1);
   aUParams.SetValue(1, 5.0);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-10.0, 10.0, 20);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-10.0, 10.0, 20);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 

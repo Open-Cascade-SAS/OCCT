@@ -34,9 +34,6 @@ class ShapeExtend_BasicMsgRegistrator;
   #undef Status
 #endif
 
-class ShapeFix_Solid;
-DEFINE_STANDARD_HANDLE(ShapeFix_Solid, ShapeFix_Root)
-
 //! Provides method to build a solid from a shells and
 //! orients them in order to have a valid solid with finite volume
 class ShapeFix_Solid : public ShapeFix_Root
@@ -56,48 +53,48 @@ public:
   //! (calls ShapeFix_Shell for each subshell). The passed
   //! progress indicator allows user to consult the current
   //! progress stage and abort algorithm if needed.
-  Standard_EXPORT virtual Standard_Boolean Perform(
+  Standard_EXPORT virtual bool Perform(
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Calls MakeSolid and orients the solid to be "not infinite"
   Standard_EXPORT TopoDS_Solid SolidFromShell(const TopoDS_Shell& shell);
 
   //! Returns the status of the last Fix.
-  Standard_EXPORT Standard_Boolean Status(const ShapeExtend_Status status) const;
+  Standard_EXPORT bool Status(const ShapeExtend_Status status) const;
 
   //! Returns resulting solid.
   Standard_EXPORT TopoDS_Shape Solid() const;
 
   //! Returns tool for fixing shells.
-  Handle(ShapeFix_Shell) FixShellTool() const { return myFixShell; }
+  occ::handle<ShapeFix_Shell> FixShellTool() const { return myFixShell; }
 
   //! Sets message registrator
   Standard_EXPORT virtual void SetMsgRegistrator(
-    const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg) Standard_OVERRIDE;
+    const occ::handle<ShapeExtend_BasicMsgRegistrator>& msgreg) override;
 
   //! Sets basic precision value (also to FixShellTool)
-  Standard_EXPORT virtual void SetPrecision(const Standard_Real preci) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetPrecision(const double preci) override;
 
   //! Sets minimal allowed tolerance (also to FixShellTool)
-  Standard_EXPORT virtual void SetMinTolerance(const Standard_Real mintol) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetMinTolerance(const double mintol) override;
 
   //! Sets maximal allowed tolerance (also to FixShellTool)
-  Standard_EXPORT virtual void SetMaxTolerance(const Standard_Real maxtol) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetMaxTolerance(const double maxtol) override;
 
   //! Returns (modifiable) the mode for applying fixes of
   //! ShapeFix_Shell, by default True.
-  Standard_Integer& FixShellMode() { return myFixShellMode; }
+  int& FixShellMode() { return myFixShellMode; }
 
   //! Returns (modifiable) the mode for applying analysis and fixes of
   //! orientation of shells in the solid; by default True.
-  Standard_Integer& FixShellOrientationMode() { return myFixShellOrientationMode; }
+  int& FixShellOrientationMode() { return myFixShellOrientationMode; }
 
   //! Returns (modifiable) the mode for creation of solids.
   //! If mode myCreateOpenSolidMode is equal to true
   //! solids are created from open shells
   //! else solids are created from closed shells only.
   //! ShapeFix_Shell, by default False.
-  Standard_Boolean& CreateOpenSolidMode() { return myCreateOpenSolidMode; }
+  bool& CreateOpenSolidMode() { return myCreateOpenSolidMode; }
 
   //! In case of multiconnexity returns compound of fixed solids
   //! else returns one solid.
@@ -106,12 +103,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeFix_Solid, ShapeFix_Root)
 
 protected:
-  TopoDS_Shape           mySolid;
-  Handle(ShapeFix_Shell) myFixShell;
-  Standard_Integer       myStatus;
-  Standard_Integer       myFixShellMode;
-  Standard_Integer       myFixShellOrientationMode;
-  Standard_Boolean       myCreateOpenSolidMode;
+  TopoDS_Shape                mySolid;
+  occ::handle<ShapeFix_Shell> myFixShell;
+  int                         myStatus;
+  int                         myFixShellMode;
+  int                         myFixShellOrientationMode;
+  bool                        myCreateOpenSolidMode;
 };
 
 #endif // _ShapeFix_Solid_HeaderFile

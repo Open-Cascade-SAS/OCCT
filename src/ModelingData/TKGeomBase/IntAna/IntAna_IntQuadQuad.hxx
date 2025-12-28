@@ -48,53 +48,47 @@ public:
   //! Tol est a definir plus precisemment.
   Standard_EXPORT IntAna_IntQuadQuad(const gp_Cylinder&    C,
                                      const IntAna_Quadric& Q,
-                                     const Standard_Real   Tol);
+                                     const double          Tol);
 
   //! Creates the intersection between a cone and a quadric.
   //! Tol est a definir plus precisemment.
-  Standard_EXPORT IntAna_IntQuadQuad(const gp_Cone&        C,
-                                     const IntAna_Quadric& Q,
-                                     const Standard_Real   Tol);
+  Standard_EXPORT IntAna_IntQuadQuad(const gp_Cone& C, const IntAna_Quadric& Q, const double Tol);
 
   //! Intersects a cylinder and a quadric .
   //! Tol est a definir plus precisemment.
-  Standard_EXPORT void Perform(const gp_Cylinder&    C,
-                               const IntAna_Quadric& Q,
-                               const Standard_Real   Tol);
+  Standard_EXPORT void Perform(const gp_Cylinder& C, const IntAna_Quadric& Q, const double Tol);
 
   //! Intersects a cone and a quadric.
   //! Tol est a definir plus precisemment.
-  Standard_EXPORT void Perform(const gp_Cone& C, const IntAna_Quadric& Q, const Standard_Real Tol);
+  Standard_EXPORT void Perform(const gp_Cone& C, const IntAna_Quadric& Q, const double Tol);
 
   //! Returns True if the computation was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns TRUE if the cylinder, the cone or the sphere
   //! is identical to the quadric.
-  Standard_Boolean IdenticalElements() const;
+  bool IdenticalElements() const;
 
   //! Returns the number of curves solution.
-  Standard_Integer NbCurve() const;
+  int NbCurve() const;
 
   //! Returns the curve of range N.
-  Standard_EXPORT const IntAna_Curve& Curve(const Standard_Integer N) const;
+  Standard_EXPORT const IntAna_Curve& Curve(const int N) const;
 
   //! Returns the number of contact point.
-  Standard_Integer NbPnt() const;
+  int NbPnt() const;
 
   //! Returns the point of range N.
-  Standard_EXPORT const gp_Pnt& Point(const Standard_Integer N) const;
+  Standard_EXPORT const gp_Pnt& Point(const int N) const;
 
   //! Returns the parameters on the "explicit quadric"
   //! (i.e. the cylinder or the cone, the first argument given to the constructor)
   //! of the point of range N.
-  Standard_EXPORT void Parameters(const Standard_Integer N,
-                                  Standard_Real&         U1,
-                                  Standard_Real&         U2) const;
+  Standard_EXPORT void Parameters(const int N, double& U1, double& U2) const;
 
   //! Returns True if the Curve I shares its last bound
   //! with another curve.
-  Standard_EXPORT Standard_Boolean HasNextCurve(const Standard_Integer I) const;
+  Standard_EXPORT bool HasNextCurve(const int I) const;
 
   //! If HasNextCurve(I) returns True, this function
   //! returns the Index J of the curve which has a
@@ -104,12 +98,11 @@ public:
   //! point. Else the last parameter of the curve I and
   //! the first parameter of the curve J are the same
   //! point.
-  Standard_EXPORT Standard_Integer NextCurve(const Standard_Integer I,
-                                             Standard_Boolean&      theOpposite) const;
+  Standard_EXPORT int NextCurve(const int I, bool& theOpposite) const;
 
   //! Returns True if the Curve I shares its first bound
   //! with another curve.
-  Standard_EXPORT Standard_Boolean HasPreviousCurve(const Standard_Integer I) const;
+  Standard_EXPORT bool HasPreviousCurve(const int I) const;
 
   //! if HasPreviousCurve(I) returns True, this function
   //! returns the Index J of the curve which has a common
@@ -119,25 +112,24 @@ public:
   //! point. Else the first parameter of the curve I and
   //! the last parameter of the curve J are the same
   //! point.
-  Standard_EXPORT Standard_Integer PreviousCurve(const Standard_Integer I,
-                                                 Standard_Boolean&      theOpposite) const;
+  Standard_EXPORT int PreviousCurve(const int I, bool& theOpposite) const;
 
 protected:
   //! Set the next and previous fields. Private method.
   Standard_EXPORT void InternalSetNextAndPrevious();
 
 protected:
-  Standard_Boolean done;
-  Standard_Boolean identical;
-  IntAna_Curve     TheCurve[12];
-  Standard_Integer previouscurve[12];
-  Standard_Integer nextcurve[12];
-  Standard_Integer NbCurves;
-  Standard_Integer Nbpoints;
-  gp_Pnt           Thepoints[2];
-  Standard_Integer myNbMaxCurves;
-  Standard_Real    myEpsilon;
-  Standard_Real    myEpsilonCoeffPolyNull;
+  bool         done;
+  bool         identical;
+  IntAna_Curve TheCurve[12];
+  int          previouscurve[12];
+  int          nextcurve[12];
+  int          NbCurves;
+  int          Nbpoints;
+  gp_Pnt       Thepoints[2];
+  int          myNbMaxCurves;
+  double       myEpsilon;
+  double       myEpsilonCoeffPolyNull;
 };
 
 #include <IntAna_IntQuadQuad.lxx>

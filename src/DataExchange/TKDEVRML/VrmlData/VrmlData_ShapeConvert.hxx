@@ -40,9 +40,9 @@ class VrmlData_ShapeConvert
 public:
   typedef struct
   {
-    TCollection_AsciiString Name;
-    TopoDS_Shape            Shape;
-    Handle(VrmlData_Node)   Node;
+    TCollection_AsciiString    Name;
+    TopoDS_Shape               Shape;
+    occ::handle<VrmlData_Node> Node;
   } ShapeData;
 
   // ---------- PUBLIC METHODS ----------
@@ -55,7 +55,7 @@ public:
    *   Scale factor, considering that VRML standard specifies coordinates in
    *   meters. So if your data are in mm, you should provide theScale=0.001
    */
-  inline VrmlData_ShapeConvert(VrmlData_Scene& theScene, const Standard_Real theScale = 1.)
+  inline VrmlData_ShapeConvert(VrmlData_Scene& theScene, const double theScale = 1.)
       : myScene(theScene),
         myScale(theScale),
         myDeflection(0.0),
@@ -83,61 +83,61 @@ public:
    * @param theDeflAngle
    *   Angular deflection for tessellation of geometrical lines.
    */
-  Standard_EXPORT void Convert(const Standard_Boolean theExtractFaces,
-                               const Standard_Boolean theExtractEdges,
-                               const Standard_Real    theDeflection = 0.01,
-                               const Standard_Real    theDeflAngle  = 20. * M_PI / 180.);
+  Standard_EXPORT void Convert(const bool   theExtractFaces,
+                               const bool   theExtractEdges,
+                               const double theDeflection = 0.01,
+                               const double theDeflAngle  = 20. * M_PI / 180.);
   // this value of theDeflAngle is used by default
   // for tessellation while shading (Drawer->HLRAngle())
 
   /**
    * Add all shapes start from given document with colors and names to the internal structure
    */
-  Standard_EXPORT void ConvertDocument(const Handle(TDocStd_Document)& theDoc);
+  Standard_EXPORT void ConvertDocument(const occ::handle<TDocStd_Document>& theDoc);
 
 protected:
   // ---------- PROTECTED METHODS ----------
 
-  Handle(VrmlData_Geometry) triToIndexedFaceSet(const Handle(Poly_Triangulation)&,
-                                                const TopoDS_Face&,
-                                                const Handle(VrmlData_Coordinate)&);
+  occ::handle<VrmlData_Geometry> triToIndexedFaceSet(const occ::handle<Poly_Triangulation>&,
+                                                     const TopoDS_Face&,
+                                                     const occ::handle<VrmlData_Coordinate>&);
 
-  Handle(VrmlData_Geometry) polToIndexedLineSet(const Handle(Poly_Polygon3D)&);
+  occ::handle<VrmlData_Geometry> polToIndexedLineSet(const occ::handle<Poly_Polygon3D>&);
 
-  Handle(VrmlData_Appearance) defaultMaterialFace() const;
+  occ::handle<VrmlData_Appearance> defaultMaterialFace() const;
 
-  Handle(VrmlData_Appearance) defaultMaterialEdge() const;
+  occ::handle<VrmlData_Appearance> defaultMaterialEdge() const;
 
-  Handle(VrmlData_Geometry) makeTShapeNode(const TopoDS_Shape&    theShape,
-                                           const TopAbs_ShapeEnum theShapeType,
-                                           TopLoc_Location&       theLoc);
+  occ::handle<VrmlData_Geometry> makeTShapeNode(const TopoDS_Shape&    theShape,
+                                                const TopAbs_ShapeEnum theShapeType,
+                                                TopLoc_Location&       theLoc);
 
-  void addAssembly(const Handle(VrmlData_Group)&   theParent,
-                   const TDF_Label&                theLabel,
-                   const Handle(TDocStd_Document)& theDoc,
-                   const Standard_Boolean          theNeedCreateGroup);
+  void addAssembly(const occ::handle<VrmlData_Group>&   theParent,
+                   const TDF_Label&                     theLabel,
+                   const occ::handle<TDocStd_Document>& theDoc,
+                   const bool                           theNeedCreateGroup);
 
-  void addInstance(const Handle(VrmlData_Group)&   theParent,
-                   const TDF_Label&                theLabel,
-                   const Handle(TDocStd_Document)& theDoc);
+  void addInstance(const occ::handle<VrmlData_Group>&   theParent,
+                   const TDF_Label&                     theLabel,
+                   const occ::handle<TDocStd_Document>& theDoc);
 
-  void addShape(const Handle(VrmlData_Group)&   theParent,
-                const TDF_Label&                theLabel,
-                const Handle(TDocStd_Document)& theDoc);
+  void addShape(const occ::handle<VrmlData_Group>&   theParent,
+                const TDF_Label&                     theLabel,
+                const occ::handle<TDocStd_Document>& theDoc);
 
-  Handle(VrmlData_Appearance) makeMaterialFromStyle(const XCAFPrs_Style& theStyle,
-                                                    const TDF_Label&     theAttribLab) const;
+  occ::handle<VrmlData_Appearance> makeMaterialFromStyle(const XCAFPrs_Style& theStyle,
+                                                         const TDF_Label&     theAttribLab) const;
 
 private:
   // ---------- PRIVATE FIELDS ----------
 
   VrmlData_Scene&             myScene;
-  Standard_Real               myScale;
+  double                      myScale;
   NCollection_List<ShapeData> myShapes;
 
-  Standard_Real                                                myDeflection;
-  Standard_Real                                                myDeflAngle;
-  NCollection_DataMap<TopoDS_Shape, Handle(VrmlData_Geometry)> myRelMap;
+  double                                                            myDeflection;
+  double                                                            myDeflAngle;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<VrmlData_Geometry>> myRelMap;
 
   // ---------- PRIVATE METHODS ----------
   void operator=(const VrmlData_ShapeConvert&);

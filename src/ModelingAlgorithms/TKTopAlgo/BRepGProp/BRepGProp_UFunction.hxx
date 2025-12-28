@@ -41,7 +41,7 @@ class gp_XYZ;
 //! GProp_InertiaXY, GProp_InertiaXZ, GProp_InertiaYZ
 //! - moments of inertia computation.
 //!
-//! If the flag IsByPoint is set to Standard_True, the value is
+//! If the flag IsByPoint is set to true, the value is
 //! returned for the region of space that is delimited by a
 //! surface and a point. Otherwise all computations are
 //! performed for the region of space delimited by a surface
@@ -55,29 +55,28 @@ public:
   //! location point, the flag IsByPoint and the coefficients
   //! theCoeff that have different meaning depending on the value
   //! of IsByPoint.
-  //! If IsByPoint is equal to Standard_True, the number of the
+  //! If IsByPoint is equal to true, the number of the
   //! coefficients is equal to 3 and they represent X, Y and Z
   //! coordinates (theCoeff[0], theCoeff[1] and theCoeff[2]
   //! correspondingly) of the shift, if the inertia is computed
   //! with respect to the point different then the location.
-  //! If IsByPoint is equal to Standard_False, the number of the
+  //! If IsByPoint is equal to false, the number of the
   //! coefficients is 4 and they represent the combination of
   //! plane parameters and shift values.
-  Standard_EXPORT BRepGProp_UFunction(const BRepGProp_Face&  theSurface,
-                                      const gp_Pnt&          theVertex,
-                                      const Standard_Boolean IsByPoint,
-                                      const Standard_Real*   theCoeffs);
+  Standard_EXPORT BRepGProp_UFunction(const BRepGProp_Face& theSurface,
+                                      const gp_Pnt&         theVertex,
+                                      const bool            IsByPoint,
+                                      const double*         theCoeffs);
 
   //! Setting the type of the value to be returned.
   void SetValueType(const GProp_ValueType theType);
 
   //! Setting the V parameter that is constant during the
   //! integral computation.
-  void SetVParam(const Standard_Real theVParam);
+  void SetVParam(const double theVParam);
 
   //! Returns a value of the function.
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X,
-                                                 Standard_Real&      F) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Value(const double X, double& F) override;
 
 private:
   //! Private method. Returns the value for volume computation.
@@ -86,32 +85,29 @@ private:
   //! -  theS and theD1 coefficients that are computed and used
   //! for computation of center of mass and inertia values
   //! by plane.
-  Standard_EXPORT Standard_Real VolumeValue(const Standard_Real X,
-                                            gp_XYZ&             thePMP0,
-                                            Standard_Real&      theS,
-                                            Standard_Real&      theD1);
+  Standard_EXPORT double VolumeValue(const double X, gp_XYZ& thePMP0, double& theS, double& theD1);
 
   //! Private method. Returns a value for the center of mass
   //! computation. If the value type other then GProp_CenterMassX,
   //! GProp_CenterMassY or GProp_CenterMassZ this method returns
-  //! Standard_False. Returns Standard_True in case of successful
+  //! false. Returns true in case of successful
   //! computation of a value.
-  Standard_EXPORT Standard_Boolean CenterMassValue(const Standard_Real X, Standard_Real& F);
+  Standard_EXPORT bool CenterMassValue(const double X, double& F);
 
   //! Private method. Computes the value of inertia. The type of
   //! a value returned is defined by the value type. If it is
   //! other then GProp_InertiaXX, GProp_InertiaYY,
   //! GProp_InertiaZZ, GProp_InertiaXY, GProp_InertiaXZ or
-  //! GProp_InertiaYZ, the method returns Standard_False. Returns
-  //! Standard_True in case of successful computation of a value
-  Standard_EXPORT Standard_Boolean InertiaValue(const Standard_Real X, Standard_Real& F);
+  //! GProp_InertiaYZ, the method returns false. Returns
+  //! true in case of successful computation of a value
+  Standard_EXPORT bool InertiaValue(const double X, double& F);
 
-  BRepGProp_Face       mySurface;
-  gp_Pnt               myVertex;
-  const Standard_Real* myCoeffs;
-  Standard_Real        myVParam;
-  GProp_ValueType      myValueType;
-  Standard_Boolean     myIsByPoint;
+  BRepGProp_Face  mySurface;
+  gp_Pnt          myVertex;
+  const double*   myCoeffs;
+  double          myVParam;
+  GProp_ValueType myValueType;
+  bool            myIsByPoint;
 };
 
 #include <BRepGProp_UFunction.lxx>

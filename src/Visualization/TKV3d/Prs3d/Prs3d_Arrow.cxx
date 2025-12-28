@@ -27,26 +27,26 @@
 
 //=================================================================================================
 
-void Prs3d_Arrow::Draw(const Handle(Graphic3d_Group)& theGroup,
-                       const gp_Pnt&                  theLocation,
-                       const gp_Dir&                  theDirection,
-                       const Standard_Real            theAngle,
-                       const Standard_Real            theLength)
+void Prs3d_Arrow::Draw(const occ::handle<Graphic3d_Group>& theGroup,
+                       const gp_Pnt&                       theLocation,
+                       const gp_Dir&                       theDirection,
+                       const double                        theAngle,
+                       const double                        theLength)
 {
-  Handle(Graphic3d_ArrayOfSegments) aPrimitives =
+  occ::handle<Graphic3d_ArrayOfSegments> aPrimitives =
     Prs3d_Arrow::DrawSegments(theLocation, theDirection, theAngle, theLength, 15);
   theGroup->AddPrimitiveArray(aPrimitives);
 }
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments(const gp_Pnt&          theLocation,
-                                                            const gp_Dir&          theDir,
-                                                            const Standard_Real    theAngle,
-                                                            const Standard_Real    theLength,
-                                                            const Standard_Integer theNbSegments)
+occ::handle<Graphic3d_ArrayOfSegments> Prs3d_Arrow::DrawSegments(const gp_Pnt& theLocation,
+                                                                 const gp_Dir& theDir,
+                                                                 const double  theAngle,
+                                                                 const double  theLength,
+                                                                 const int     theNbSegments)
 {
-  Handle(Graphic3d_ArrayOfSegments) aSegments =
+  occ::handle<Graphic3d_ArrayOfSegments> aSegments =
     new Graphic3d_ArrayOfSegments(theNbSegments + 1, 2 * (2 * theNbSegments));
 
   // center of the base circle of the arrow
@@ -72,11 +72,11 @@ Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments(const gp_Pnt&       
   const gp_XYZ anXYZj = theDir.XYZ().Crossed(anXYZi.XYZ());
   aSegments->AddVertex(theLocation);
 
-  const Standard_Real Tg = std::tan(theAngle);
-  for (Standard_Integer aVertIter = 1; aVertIter <= theNbSegments; ++aVertIter)
+  const double Tg = std::tan(theAngle);
+  for (int aVertIter = 1; aVertIter <= theNbSegments; ++aVertIter)
   {
-    const Standard_Real aCos = std::cos(2.0 * M_PI / theNbSegments * (aVertIter - 1));
-    const Standard_Real aSin = std::sin(2.0 * M_PI / theNbSegments * (aVertIter - 1));
+    const double aCos = std::cos(2.0 * M_PI / theNbSegments * (aVertIter - 1));
+    const double aSin = std::sin(2.0 * M_PI / theNbSegments * (aVertIter - 1));
 
     const gp_Pnt pp(aC.X() + (aCos * anXYZi.X() + aSin * anXYZj.X()) * theLength * Tg,
                     aC.Y() + (aCos * anXYZi.Y() + aSin * anXYZj.Y()) * theLength * Tg,
@@ -85,9 +85,9 @@ Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments(const gp_Pnt&       
     aSegments->AddVertex(pp);
   }
 
-  Standard_Integer aNbVertices         = theNbSegments + 1;
-  Standard_Integer aFirstContourVertex = 2;
-  for (Standard_Integer aVertIter = aFirstContourVertex; aVertIter <= aNbVertices; ++aVertIter)
+  int aNbVertices         = theNbSegments + 1;
+  int aFirstContourVertex = 2;
+  for (int aVertIter = aFirstContourVertex; aVertIter <= aNbVertices; ++aVertIter)
   {
     aSegments->AddEdge(1);
     aSegments->AddEdge(aVertIter);
@@ -95,7 +95,7 @@ Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments(const gp_Pnt&       
   aSegments->AddEdge(aNbVertices);
   aSegments->AddEdge(aFirstContourVertex);
 
-  for (Standard_Integer aVertIter = aFirstContourVertex; aVertIter <= aNbVertices - 1; ++aVertIter)
+  for (int aVertIter = aFirstContourVertex; aVertIter <= aNbVertices - 1; ++aVertIter)
   {
     aSegments->AddEdge(aVertIter);
     aSegments->AddEdge(aVertIter + 1);
@@ -105,29 +105,29 @@ Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments(const gp_Pnt&       
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfTriangles) Prs3d_Arrow::DrawShaded(const gp_Ax1&          theAxis,
-                                                           const Standard_Real    theTubeRadius,
-                                                           const Standard_Real    theAxisLength,
-                                                           const Standard_Real    theConeRadius,
-                                                           const Standard_Real    theConeLength,
-                                                           const Standard_Integer theNbFacettes)
+occ::handle<Graphic3d_ArrayOfTriangles> Prs3d_Arrow::DrawShaded(const gp_Ax1& theAxis,
+                                                                const double  theTubeRadius,
+                                                                const double  theAxisLength,
+                                                                const double  theConeRadius,
+                                                                const double  theConeLength,
+                                                                const int     theNbFacettes)
 {
-  const Standard_Real    aTubeLength = std::max(0.0, theAxisLength - theConeLength);
-  const Standard_Integer aNbTrisTube = (theTubeRadius > 0.0 && aTubeLength > 0.0)
-                                         ? Prs3d_ToolCylinder::TrianglesNb(theNbFacettes, 1)
-                                         : 0;
-  const Standard_Integer aNbTrisCone = (theConeRadius > 0.0 && theConeLength > 0.0)
-                                         ? (Prs3d_ToolDisk ::TrianglesNb(theNbFacettes, 1)
-                                            + Prs3d_ToolCylinder::TrianglesNb(theNbFacettes, 1))
-                                         : 0;
+  const double aTubeLength = std::max(0.0, theAxisLength - theConeLength);
+  const int    aNbTrisTube = (theTubeRadius > 0.0 && aTubeLength > 0.0)
+                               ? Prs3d_ToolCylinder::TrianglesNb(theNbFacettes, 1)
+                               : 0;
+  const int    aNbTrisCone = (theConeRadius > 0.0 && theConeLength > 0.0)
+                               ? (Prs3d_ToolDisk ::TrianglesNb(theNbFacettes, 1)
+                               + Prs3d_ToolCylinder::TrianglesNb(theNbFacettes, 1))
+                               : 0;
 
-  const Standard_Integer aNbTris = aNbTrisTube + aNbTrisCone;
+  const int aNbTris = aNbTrisTube + aNbTrisCone;
   if (aNbTris == 0)
   {
-    return Handle(Graphic3d_ArrayOfTriangles)();
+    return occ::handle<Graphic3d_ArrayOfTriangles>();
   }
 
-  Standard_Integer aMaxVertexs = 0;
+  int aMaxVertexs = 0;
   if (aNbTrisTube > 0)
   {
     aMaxVertexs += Prs3d_ToolCylinder::VerticesNb(theNbFacettes, 1);
@@ -139,7 +139,7 @@ Handle(Graphic3d_ArrayOfTriangles) Prs3d_Arrow::DrawShaded(const gp_Ax1&        
     aMaxVertexs += Prs3d_ToolCylinder::VerticesNb(theNbFacettes, 1);
   }
 
-  Handle(Graphic3d_ArrayOfTriangles) anArray =
+  occ::handle<Graphic3d_ArrayOfTriangles> anArray =
     new Graphic3d_ArrayOfTriangles(aMaxVertexs, aNbTris * 3, Graphic3d_ArrayFlags_VertexNormal);
   if (aNbTrisTube != 0)
   {

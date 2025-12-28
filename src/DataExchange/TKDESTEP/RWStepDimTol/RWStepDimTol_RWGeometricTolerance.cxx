@@ -30,10 +30,10 @@ RWStepDimTol_RWGeometricTolerance::RWStepDimTol_RWGeometricTolerance() {}
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepDimTol_GeometricTolerance)& ent) const
+  const occ::handle<StepData_StepReaderData>&       data,
+  const int                                         num,
+  occ::handle<Interface_Check>&                     ach,
+  const occ::handle<StepDimTol_GeometricTolerance>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance"))
@@ -41,13 +41,13 @@ void RWStepDimTol_RWGeometricTolerance::ReadStep(
 
   // Own fields of GeometricTolerance
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
 
-  Handle(Standard_Transient) aMagnitude;
+  occ::handle<Standard_Transient> aMagnitude;
   data->ReadEntity(num, 3, "magnitude", ach, STANDARD_TYPE(Standard_Transient), aMagnitude);
 
   StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
@@ -60,8 +60,8 @@ void RWStepDimTol_RWGeometricTolerance::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricTolerance::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepDimTol_GeometricTolerance)& ent) const
+  StepData_StepWriter&                              SW,
+  const occ::handle<StepDimTol_GeometricTolerance>& ent) const
 {
 
   // Own fields of GeometricTolerance
@@ -77,7 +77,7 @@ void RWStepDimTol_RWGeometricTolerance::WriteStep(
 
 //=================================================================================================
 
-void RWStepDimTol_RWGeometricTolerance::Share(const Handle(StepDimTol_GeometricTolerance)& ent,
+void RWStepDimTol_RWGeometricTolerance::Share(const occ::handle<StepDimTol_GeometricTolerance>& ent,
                                               Interface_EntityIterator& iter) const
 {
 

@@ -40,27 +40,27 @@
 // -----------------------------------------------------------------
 void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic& Conic)
 {
-  Standard_Boolean HIsDirect = H.IsDirect();
-  Standard_Real    A, B, C, D, E, F;
-  Standard_Real    px0, px1, px2, px3, px4;
-  Standard_Real    minor_radius = H.MinorRadius();
-  Standard_Real    major_radius = H.MajorRadius();
-  Standard_Integer i;
-  Standard_Real    tx, ty, S;
+  bool   HIsDirect = H.IsDirect();
+  double A, B, C, D, E, F;
+  double px0, px1, px2, px3, px4;
+  double minor_radius = H.MinorRadius();
+  double major_radius = H.MajorRadius();
+  int    i;
+  double tx, ty, S;
 
-  done = Standard_False;
+  done = false;
   nbp  = 0;
-  para = Standard_False;
-  iden = Standard_False;
-  empt = Standard_False;
+  para = false;
+  iden = false;
+  empt = false;
 
   gp_Ax2d Axe_rep(H.XAxis());
   Conic.Coefficients(A, B, C, D, E, F);
   Conic.NewCoefficients(A, B, C, D, E, F, Axe_rep);
 
-  Standard_Real A_major_radiusP2       = A * major_radius * major_radius;
-  Standard_Real B_minor_radiusP2       = B * minor_radius * minor_radius;
-  Standard_Real C_2_major_minor_radius = C * 2.0 * major_radius * minor_radius;
+  double A_major_radiusP2       = A * major_radius * major_radius;
+  double B_minor_radiusP2       = B * minor_radius * minor_radius;
+  double C_2_major_minor_radius = C * 2.0 * major_radius * minor_radius;
 
   // Parametre : t avec x=MajorRadius*Ch(t)  y=:minorRadius*Sh(t)
   // Le polynome est reecrit en Exp(t)
@@ -77,21 +77,21 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
   if (!Sol.IsDone())
   {
     //-- std::cout<<" Done = False ds IntAna2d_AnaIntersection_8.cxx "<<std::endl;
-    done = Standard_False;
+    done = false;
     return;
   }
   else
   {
     if (Sol.InfiniteRoots())
     {
-      iden = Standard_True;
-      done = Standard_True;
+      iden = true;
+      done = true;
       return;
     }
     // On a X=(CosH(t)*major_radius)/2 , Y=(SinH(t)*minor_radius)/2
     //      la Resolution est en S=Exp(t)
-    nbp                             = Sol.NbSolutions();
-    Standard_Integer nb_sol_valides = 0;
+    nbp                = Sol.NbSolutions();
+    int nb_sol_valides = 0;
     for (i = 1; i <= nbp; i++)
     {
       S = Sol.Value(i);
@@ -107,7 +107,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
         //--- ??? la tolerance a ete fixee a 1e-10 ?????????????
 
 #if 0 
-          Standard_Real ecart_sur_courbe2;
+          double ecart_sur_courbe2;
           ecart_sur_courbe2=Conic.Value(tx,ty);
           if(ecart_sur_courbe2<=1e-10 && ecart_sur_courbe2>=-1e-10) {
 	    nb_sol_valides++;
@@ -128,5 +128,5 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
     nbp = nb_sol_valides;
     Traitement_Points_Confondus(nbp, lpnt);
   }
-  done = Standard_True;
+  done = true;
 }

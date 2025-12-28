@@ -20,7 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepBasic_HArray1OfDocument.hxx>
+#include <StepBasic_Document.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
@@ -28,39 +30,35 @@ class StepBasic_ProductDefinitionFormation;
 class StepBasic_ProductDefinitionContext;
 class StepBasic_Document;
 
-class StepBasic_ProductDefinitionWithAssociatedDocuments;
-DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionWithAssociatedDocuments,
-                       StepBasic_ProductDefinition)
-
 class StepBasic_ProductDefinitionWithAssociatedDocuments : public StepBasic_ProductDefinition
 {
 
 public:
   Standard_EXPORT StepBasic_ProductDefinitionWithAssociatedDocuments();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&             aId,
-                            const Handle(TCollection_HAsciiString)&             aDescription,
-                            const Handle(StepBasic_ProductDefinitionFormation)& aFormation,
-                            const Handle(StepBasic_ProductDefinitionContext)&   aFrame,
-                            const Handle(StepBasic_HArray1OfDocument)&          aDocIds);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                             aId,
+    const occ::handle<TCollection_HAsciiString>&                             aDescription,
+    const occ::handle<StepBasic_ProductDefinitionFormation>&                 aFormation,
+    const occ::handle<StepBasic_ProductDefinitionContext>&                   aFrame,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>>& aDocIds);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfDocument) DocIds() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>> DocIds() const;
 
-  Standard_EXPORT void SetDocIds(const Handle(StepBasic_HArray1OfDocument)& DocIds);
+  Standard_EXPORT void SetDocIds(
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>>& DocIds);
 
-  Standard_EXPORT Standard_Integer NbDocIds() const;
+  Standard_EXPORT int NbDocIds() const;
 
-  Standard_EXPORT Handle(StepBasic_Document) DocIdsValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_Document> DocIdsValue(const int num) const;
 
-  Standard_EXPORT void SetDocIdsValue(const Standard_Integer            num,
-                                      const Handle(StepBasic_Document)& adoc);
+  Standard_EXPORT void SetDocIdsValue(const int num, const occ::handle<StepBasic_Document>& adoc);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionWithAssociatedDocuments,
                           StepBasic_ProductDefinition)
 
-protected:
 private:
-  Handle(StepBasic_HArray1OfDocument) theDocIds;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>> theDocIds;
 };
 
 #endif // _StepBasic_ProductDefinitionWithAssociatedDocuments_HeaderFile

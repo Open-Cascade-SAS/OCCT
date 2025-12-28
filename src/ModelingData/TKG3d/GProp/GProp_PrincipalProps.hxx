@@ -56,23 +56,23 @@ public:
   //! For comparing moments relative tolerance 1.e-10 is used.
   //! Usually it is enough for objects, restricted by faces with
   //! analytical geometry.
-  Standard_EXPORT Standard_Boolean HasSymmetryAxis() const;
+  Standard_EXPORT bool HasSymmetryAxis() const;
 
   //! returns true if the geometric system has an axis of symmetry.
   //! aTol is relative tolerance for checking equality of moments
   //! If aTol == 0, relative tolerance is ~ 1.e-16 (Epsilon(I))
-  Standard_EXPORT Standard_Boolean HasSymmetryAxis(const Standard_Real aTol) const;
+  Standard_EXPORT bool HasSymmetryAxis(const double aTol) const;
 
   //! returns true if the geometric system has a point of symmetry.
   //! For comparing moments relative tolerance 1.e-10 is used.
   //! Usually it is enough for objects, restricted by faces with
   //! analytical geometry.
-  Standard_EXPORT Standard_Boolean HasSymmetryPoint() const;
+  Standard_EXPORT bool HasSymmetryPoint() const;
 
   //! returns true if the geometric system has a point of symmetry.
   //! aTol is relative tolerance for checking equality of moments
   //! If aTol == 0, relative tolerance is ~ 1.e-16 (Epsilon(I))
-  Standard_EXPORT Standard_Boolean HasSymmetryPoint(const Standard_Real aTol) const;
+  Standard_EXPORT bool HasSymmetryPoint(const double aTol) const;
 
   //! Ixx, Iyy and Izz return the principal moments of inertia
   //! in the current system.
@@ -83,7 +83,7 @@ public:
   //! axes of principal inertia.
   //! - If the current system has a center of symmetry, Ixx,
   //! Iyy and Izz are equal.
-  Standard_EXPORT void Moments(Standard_Real& Ixx, Standard_Real& Iyy, Standard_Real& Izz) const;
+  Standard_EXPORT void Moments(double& Ixx, double& Iyy, double& Izz) const;
 
   //! returns the first axis of inertia.
   //!
@@ -133,9 +133,7 @@ public:
   //! two of the three values Rxx, Ryy and Rzz are equal.
   //! - If the current system has a center of symmetry,
   //! Rxx, Ryy and Rzz are equal.
-  Standard_EXPORT void RadiusOfGyration(Standard_Real& Rxx,
-                                        Standard_Real& Ryy,
-                                        Standard_Real& Rzz) const;
+  Standard_EXPORT void RadiusOfGyration(double& Rxx, double& Ryy, double& Rzz) const;
 
   friend
     //! Computes the principal properties of inertia of the current system.
@@ -154,29 +152,28 @@ public:
     Standard_EXPORT GProp_PrincipalProps
     GProp_GProps::PrincipalProperties() const;
 
-protected:
 private:
-  Standard_EXPORT GProp_PrincipalProps(const Standard_Real Ixx,
-                                       const Standard_Real Iyy,
-                                       const Standard_Real Izz,
-                                       const Standard_Real Rxx,
-                                       const Standard_Real Ryy,
-                                       const Standard_Real Rzz,
-                                       const gp_Vec&       Vxx,
-                                       const gp_Vec&       Vyy,
-                                       const gp_Vec&       Vzz,
-                                       const gp_Pnt&       G);
+  Standard_EXPORT GProp_PrincipalProps(const double  Ixx,
+                                       const double  Iyy,
+                                       const double  Izz,
+                                       const double  Rxx,
+                                       const double  Ryy,
+                                       const double  Rzz,
+                                       const gp_Vec& Vxx,
+                                       const gp_Vec& Vyy,
+                                       const gp_Vec& Vzz,
+                                       const gp_Pnt& G);
 
-  Standard_Real i1;
-  Standard_Real i2;
-  Standard_Real i3;
-  Standard_Real r1;
-  Standard_Real r2;
-  Standard_Real r3;
-  gp_Vec        v1;
-  gp_Vec        v2;
-  gp_Vec        v3;
-  gp_Pnt        g;
+  double i1;
+  double i2;
+  double i3;
+  double r1;
+  double r2;
+  double r3;
+  gp_Vec v1;
+  gp_Vec v2;
+  gp_Vec v3;
+  gp_Pnt g;
 };
 
 #endif // _GProp_PrincipalProps_HeaderFile

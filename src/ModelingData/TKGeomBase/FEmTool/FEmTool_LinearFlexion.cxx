@@ -27,19 +27,20 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(FEmTool_LinearFlexion, FEmTool_ElementaryCriterion)
 
 //=================================================================================================
 
-FEmTool_LinearFlexion::FEmTool_LinearFlexion(const Standard_Integer WorkDegree,
-                                             const GeomAbs_Shape    ConstraintOrder)
+FEmTool_LinearFlexion::FEmTool_LinearFlexion(const int           WorkDegree,
+                                             const GeomAbs_Shape ConstraintOrder)
     : RefMatrix(0, WorkDegree, 0, WorkDegree)
 {
-  static Standard_Integer Order = -333, WDeg = 14;
-  static math_Vector      MatrixElemts(0, ((WDeg + 2) * (WDeg + 1)) / 2 - 1);
+  static int         Order = -333, WDeg = 14;
+  static math_Vector MatrixElemts(0, ((WDeg + 2) * (WDeg + 1)) / 2 - 1);
 
   myOrder = PLib::NivConstr(ConstraintOrder);
 
@@ -49,10 +50,10 @@ FEmTool_LinearFlexion::FEmTool_LinearFlexion(const Standard_Integer WorkDegree,
     if (WorkDegree > WDeg)
       throw Standard_ConstructionError("Degree too high");
     Order                                = myOrder;
-    Standard_Integer            DerOrder = 2;
+    int                         DerOrder = 2;
     PLib_HermitJacobi           theBase(WDeg, ConstraintOrder);
     FEmTool_ElementsOfRefMatrix Elem      = FEmTool_ElementsOfRefMatrix(theBase, DerOrder);
-    Standard_Integer            maxDegree = WDeg + 1;
+    int                         maxDegree = WDeg + 1;
     math_IntegerVector anOrder(1, 1, std::min(4 * (maxDegree / 2 + 1), math::GaussPointsMax()));
     math_Vector        Lower(1, 1, -1.), Upper(1, 1, 1.);
     math_GaussSetIntegration anInt(Elem, Lower, Upper, anOrder);
@@ -60,7 +61,7 @@ FEmTool_LinearFlexion::FEmTool_LinearFlexion(const Standard_Integer WorkDegree,
     MatrixElemts = anInt.Value();
   }
 
-  Standard_Integer i, j, ii, jj;
+  int i, j, ii, jj;
   for (ii = i = 0; i <= WorkDegree; i++)
   {
     RefMatrix(i, i) = MatrixElemts(ii);
@@ -74,17 +75,17 @@ FEmTool_LinearFlexion::FEmTool_LinearFlexion(const Standard_Integer WorkDegree,
 
 //=================================================================================================
 
-Handle(TColStd_HArray2OfInteger) FEmTool_LinearFlexion::DependenceTable() const
+occ::handle<NCollection_HArray2<int>> FEmTool_LinearFlexion::DependenceTable() const
 {
   if (myCoeff.IsNull())
     throw Standard_DomainError("FEmTool_LinearFlexion::DependenceTable");
 
-  Handle(TColStd_HArray2OfInteger) DepTab = new TColStd_HArray2OfInteger(myCoeff->LowerCol(),
-                                                                         myCoeff->UpperCol(),
-                                                                         myCoeff->LowerCol(),
-                                                                         myCoeff->UpperCol(),
-                                                                         0);
-  Standard_Integer                 i;
+  occ::handle<NCollection_HArray2<int>> DepTab = new NCollection_HArray2<int>(myCoeff->LowerCol(),
+                                                                              myCoeff->UpperCol(),
+                                                                              myCoeff->LowerCol(),
+                                                                              myCoeff->UpperCol(),
+                                                                              0);
+  int                                   i;
   for (i = myCoeff->LowerCol(); i <= myCoeff->UpperCol(); i++)
     DepTab->SetValue(i, i, 1);
 
@@ -93,19 +94,19 @@ Handle(TColStd_HArray2OfInteger) FEmTool_LinearFlexion::DependenceTable() const
 
 //=================================================================================================
 
-Standard_Real FEmTool_LinearFlexion::Value()
+double FEmTool_LinearFlexion::Value()
 {
-  Standard_Integer deg = std::min(myCoeff->ColLength() - 1, RefMatrix.UpperRow()), i, j,
-                   j0 = myCoeff->LowerRow(), degH = std::min(2 * myOrder + 1, deg),
-                   NbDim = myCoeff->RowLength(), dim;
+  int deg = std::min(myCoeff->ColLength() - 1, RefMatrix.UpperRow()), i, j,
+      j0 = myCoeff->LowerRow(), degH = std::min(2 * myOrder + 1, deg), NbDim = myCoeff->RowLength(),
+      dim;
 
-  TColStd_Array2OfReal NewCoeff(1, NbDim, 0, deg);
+  NCollection_Array2<double> NewCoeff(1, NbDim, 0, deg);
 
-  Standard_Real coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 3), mfact, Jline;
+  double coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 3), mfact, Jline;
 
-  Standard_Integer k1;
+  int k1;
 
-  Standard_Real J = 0.;
+  double J = 0.;
 
   for (i = 0; i <= degH; i++)
   {
@@ -139,12 +140,10 @@ Standard_Real FEmTool_LinearFlexion::Value()
 
 //=================================================================================================
 
-void FEmTool_LinearFlexion::Hessian(const Standard_Integer Dimension1,
-                                    const Standard_Integer Dimension2,
-                                    math_Matrix&           H)
+void FEmTool_LinearFlexion::Hessian(const int Dimension1, const int Dimension2, math_Matrix& H)
 {
 
-  Handle(TColStd_HArray2OfInteger) DepTab = DependenceTable();
+  occ::handle<NCollection_HArray2<int>> DepTab = DependenceTable();
 
   if (Dimension1 < DepTab->LowerRow() || Dimension1 > DepTab->UpperRow()
       || Dimension2 < DepTab->LowerCol() || Dimension2 > DepTab->UpperCol())
@@ -153,11 +152,11 @@ void FEmTool_LinearFlexion::Hessian(const Standard_Integer Dimension1,
   if (DepTab->Value(Dimension1, Dimension2) == 0)
     throw Standard_DomainError("FEmTool_LinearJerk::Hessian");
 
-  Standard_Integer deg  = std::min(RefMatrix.UpperRow(), H.RowNumber() - 1),
-                   degH = std::min(2 * myOrder + 1, deg);
+  int deg  = std::min(RefMatrix.UpperRow(), H.RowNumber() - 1),
+      degH = std::min(2 * myOrder + 1, deg);
 
-  Standard_Real    coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 3), mfact;
-  Standard_Integer k1, k2, i, j;
+  double coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 3), mfact;
+  int    k1, k2, i, j;
 
   H.Init(0.);
 
@@ -194,16 +193,16 @@ void FEmTool_LinearFlexion::Hessian(const Standard_Integer Dimension1,
 
 //=================================================================================================
 
-void FEmTool_LinearFlexion::Gradient(const Standard_Integer Dimension, math_Vector& G)
+void FEmTool_LinearFlexion::Gradient(const int Dimension, math_Vector& G)
 {
   if (Dimension < myCoeff->LowerCol() || Dimension > myCoeff->UpperCol())
     throw Standard_OutOfRange("FEmTool_LinearFlexion::Gradient");
 
-  Standard_Integer deg = std::min(G.Length() - 1, myCoeff->ColLength() - 1);
+  int deg = std::min(G.Length() - 1, myCoeff->ColLength() - 1);
 
-  math_Vector      X(0, deg);
-  math_Matrix      H(0, deg, 0, deg);
-  Standard_Integer i, i1 = myCoeff->LowerRow();
+  math_Vector X(0, deg);
+  math_Matrix H(0, deg, 0, deg);
+  int         i, i1 = myCoeff->LowerRow();
   for (i = 0; i <= deg; i++)
     X(i) = myCoeff->Value(i1 + i, Dimension);
 

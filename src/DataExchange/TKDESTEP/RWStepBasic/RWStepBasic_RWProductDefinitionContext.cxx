@@ -21,10 +21,10 @@
 RWStepBasic_RWProductDefinitionContext::RWStepBasic_RWProductDefinitionContext() {}
 
 void RWStepBasic_RWProductDefinitionContext::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepBasic_ProductDefinitionContext)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                                              num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepBasic_ProductDefinitionContext>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,14 +34,14 @@ void RWStepBasic_RWProductDefinitionContext::ReadStep(
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : frameOfReference ---
 
-  Handle(StepBasic_ApplicationContext) aFrameOfReference;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepBasic_ApplicationContext> aFrameOfReference;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "frame_of_reference",
@@ -51,8 +51,8 @@ void RWStepBasic_RWProductDefinitionContext::ReadStep(
 
   // --- own field : lifeCycleStage ---
 
-  Handle(TCollection_HAsciiString) aLifeCycleStage;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<TCollection_HAsciiString> aLifeCycleStage;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadString(num, 3, "life_cycle_stage", ach, aLifeCycleStage);
 
   //--- Initialisation of the read entity ---
@@ -61,8 +61,8 @@ void RWStepBasic_RWProductDefinitionContext::ReadStep(
 }
 
 void RWStepBasic_RWProductDefinitionContext::WriteStep(
-  StepData_StepWriter&                              SW,
-  const Handle(StepBasic_ProductDefinitionContext)& ent) const
+  StepData_StepWriter&                                   SW,
+  const occ::handle<StepBasic_ProductDefinitionContext>& ent) const
 {
 
   // --- inherited field name ---
@@ -79,8 +79,8 @@ void RWStepBasic_RWProductDefinitionContext::WriteStep(
 }
 
 void RWStepBasic_RWProductDefinitionContext::Share(
-  const Handle(StepBasic_ProductDefinitionContext)& ent,
-  Interface_EntityIterator&                         iter) const
+  const occ::handle<StepBasic_ProductDefinitionContext>& ent,
+  Interface_EntityIterator&                              iter) const
 {
 
   iter.GetOneItem(ent->FrameOfReference());

@@ -28,46 +28,46 @@
 //           point on the curve that is an intersection with the sphere with
 //           center theVertPnt and radius theTol.
 //=======================================================================
-static Standard_Boolean findNearestValidPoint(const Adaptor3d_Curve& theCurve,
-                                              const Standard_Real    theFirst,
-                                              const Standard_Real    theLast,
-                                              const Standard_Boolean isFirst,
-                                              const gp_Pnt&          theVertPnt,
-                                              const Standard_Real    theTol,
-                                              const Standard_Real    theEps,
-                                              Standard_Real&         thePar)
+static bool findNearestValidPoint(const Adaptor3d_Curve& theCurve,
+                                  const double           theFirst,
+                                  const double           theLast,
+                                  const bool             isFirst,
+                                  const gp_Pnt&          theVertPnt,
+                                  const double           theTol,
+                                  const double           theEps,
+                                  double&                thePar)
 {
   // 1. Check that the needed end is inside the sphere
 
-  Standard_Real aStartU = theFirst;
-  Standard_Real anEndU  = theLast;
+  double aStartU = theFirst;
+  double anEndU  = theLast;
   if (!isFirst)
     std::swap(aStartU, anEndU);
-  gp_Pnt              aP     = theCurve.Value(aStartU);
-  const Standard_Real aSqTol = theTol * theTol;
+  gp_Pnt       aP     = theCurve.Value(aStartU);
+  const double aSqTol = theTol * theTol;
   if (aP.SquareDistance(theVertPnt) > aSqTol)
     // the vertex does not cover the corresponding to this vertex end of the curve
-    return Standard_False;
+    return false;
 
   // 2. Find a nearest point that is outside
 
   // stepping along the curve by theTol till go out
   //
   // the general step is computed using general curve resolution
-  Standard_Real aStep = theCurve.Resolution(theTol) * 1.01;
+  double aStep = theCurve.Resolution(theTol) * 1.01;
   if (aStep < theEps)
     aStep = theEps;
   // aD1Mag is a threshold to consider local derivative magnitude too small
   // and to accelerate going out of sphere
   // (inverse of resolution is the maximal derivative);
   // this is actual for bezier and b-spline types only
-  Standard_Real     aD1Mag = 0.;
+  double            aD1Mag = 0.;
   GeomAbs_CurveType aType  = theCurve.GetType();
   if (aType == GeomAbs_OffsetCurve)
   {
-    Handle(Geom_OffsetCurve) anOffsetCurve = theCurve.OffsetCurve();
-    Handle(Geom_Curve)       aBaseCurve    = anOffsetCurve->BasisCurve();
-    aType                                  = GeomAdaptor_Curve(aBaseCurve).GetType();
+    occ::handle<Geom_OffsetCurve> anOffsetCurve = theCurve.OffsetCurve();
+    occ::handle<Geom_Curve>       aBaseCurve    = anOffsetCurve->BasisCurve();
+    aType                                       = GeomAdaptor_Curve(aBaseCurve).GetType();
   }
   if (aType == GeomAbs_BezierCurve || aType == GeomAbs_BSplineCurve)
   {
@@ -76,9 +76,9 @@ static Standard_Boolean findNearestValidPoint(const Adaptor3d_Curve& theCurve,
   }
   if (!isFirst)
     aStep = -aStep;
-  Standard_Boolean isOut  = Standard_False;
-  Standard_Real    anUIn  = aStartU;
-  Standard_Real    anUOut = anUIn;
+  bool   isOut  = false;
+  double anUIn  = aStartU;
+  double anUOut = anUIn;
   while (!isOut)
   {
     anUIn = anUOut;
@@ -91,13 +91,13 @@ static Standard_Boolean findNearestValidPoint(const Adaptor3d_Curve& theCurve,
       isOut = (aP.SquareDistance(theVertPnt) > aSqTol);
       if (!isOut)
         // all range is inside sphere
-        return Standard_False;
+        return false;
       anUOut = anEndU;
       break;
     }
     if (aD1Mag > 0.)
     {
-      Standard_Real aStepLocal = aStep;
+      double aStepLocal = aStep;
       for (;;)
       {
         // cycle to go out of local singularity
@@ -117,7 +117,7 @@ static Standard_Boolean findNearestValidPoint(const Adaptor3d_Curve& theCurve,
           isOut  = (aP.SquareDistance(theVertPnt) > aSqTol);
           if (!isOut)
             // all range is inside sphere
-            return Standard_False;
+            return false;
         }
         break;
       }
@@ -132,12 +132,12 @@ static Standard_Boolean findNearestValidPoint(const Adaptor3d_Curve& theCurve,
 
   // 3. Precise solution with binary search
 
-  Standard_Real aDelta = std::abs(anUOut - anUIn);
+  double aDelta = std::abs(anUOut - anUIn);
   while (aDelta > theEps)
   {
-    Standard_Real aMidU = (anUIn + anUOut) * 0.5;
-    aP                  = theCurve.Value(aMidU);
-    isOut               = (aP.SquareDistance(theVertPnt) > aSqTol);
+    double aMidU = (anUIn + anUOut) * 0.5;
+    aP           = theCurve.Value(aMidU);
+    isOut        = (aP.SquareDistance(theVertPnt) > aSqTol);
     if (isOut)
       anUOut = aMidU;
     else
@@ -145,36 +145,35 @@ static Standard_Boolean findNearestValidPoint(const Adaptor3d_Curve& theCurve,
     aDelta = std::abs(anUOut - anUIn);
   }
   thePar = (anUIn + anUOut) * 0.5;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepLib::FindValidRange(const Adaptor3d_Curve& theCurve,
-                                         const Standard_Real    theTolE,
-                                         const Standard_Real    theParV1,
-                                         const gp_Pnt&          thePntV1,
-                                         const Standard_Real    theTolV1,
-                                         const Standard_Real    theParV2,
-                                         const gp_Pnt&          thePntV2,
-                                         const Standard_Real    theTolV2,
-                                         Standard_Real&         theFirst,
-                                         Standard_Real&         theLast)
+bool BRepLib::FindValidRange(const Adaptor3d_Curve& theCurve,
+                             const double           theTolE,
+                             const double           theParV1,
+                             const gp_Pnt&          thePntV1,
+                             const double           theTolV1,
+                             const double           theParV2,
+                             const gp_Pnt&          thePntV2,
+                             const double           theTolV2,
+                             double&                theFirst,
+                             double&                theLast)
 {
   if (theParV2 - theParV1 < Precision::PConfusion())
-    return Standard_False;
+    return false;
 
-  Standard_Boolean isInfParV1 = Precision::IsInfinite(theParV1),
-                   isInfParV2 = Precision::IsInfinite(theParV2);
+  bool isInfParV1 = Precision::IsInfinite(theParV1), isInfParV2 = Precision::IsInfinite(theParV2);
 
-  Standard_Real aMaxPar = 0.0;
+  double aMaxPar = 0.0;
   if (!isInfParV1)
     aMaxPar = std::abs(theParV1);
   if (!isInfParV2)
     aMaxPar = std::max(aMaxPar, std::abs(theParV2));
 
-  Standard_Real anEps = std::max(std::max(theCurve.Resolution(theTolE) * 0.1, Epsilon(aMaxPar)),
-                                 Precision::PConfusion());
+  double anEps = std::max(std::max(theCurve.Resolution(theTolE) * 0.1, Epsilon(aMaxPar)),
+                          Precision::PConfusion());
 
   if (isInfParV1)
     theFirst = theParV1;
@@ -183,14 +182,14 @@ Standard_Boolean BRepLib::FindValidRange(const Adaptor3d_Curve& theCurve,
     if (!findNearestValidPoint(theCurve,
                                theParV1,
                                theParV2,
-                               Standard_True,
+                               true,
                                thePntV1,
                                theTolV1,
                                anEps,
                                theFirst))
-      return Standard_False;
+      return false;
     if (theParV2 - theFirst < anEps)
-      return Standard_False;
+      return false;
   }
 
   if (isInfParV2)
@@ -200,51 +199,49 @@ Standard_Boolean BRepLib::FindValidRange(const Adaptor3d_Curve& theCurve,
     if (!findNearestValidPoint(theCurve,
                                theParV1,
                                theParV2,
-                               Standard_False,
+                               false,
                                thePntV2,
                                theTolV2,
                                anEps,
                                theLast))
-      return Standard_False;
+      return false;
     if (theLast - theParV1 < anEps)
-      return Standard_False;
+      return false;
   }
 
   // check found parameters
   if (theFirst > theLast)
   {
     // overlapping, not valid range
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepLib::FindValidRange(const TopoDS_Edge& theEdge,
-                                         Standard_Real&     theFirst,
-                                         Standard_Real&     theLast)
+bool BRepLib::FindValidRange(const TopoDS_Edge& theEdge, double& theFirst, double& theLast)
 {
   TopLoc_Location aLoc;
-  Standard_Real   f, l;
+  double          f, l;
   if (BRep_Tool::Curve(theEdge, aLoc, f, l).IsNull())
-    return Standard_False;
+    return false;
   BRepAdaptor_Curve anAC(theEdge);
-  Standard_Real     aParV[2] = {anAC.FirstParameter(), anAC.LastParameter()};
+  double            aParV[2] = {anAC.FirstParameter(), anAC.LastParameter()};
   if (aParV[1] - aParV[0] < Precision::PConfusion())
-    return Standard_False;
+    return false;
 
   // get vertices
   TopoDS_Vertex aV[2];
   TopExp::Vertices(theEdge, aV[0], aV[1]);
 
-  Standard_Real aTolE = BRep_Tool::Tolerance(theEdge);
+  double aTolE = BRep_Tool::Tolerance(theEdge);
   // to have correspondence with intersection precision
   // the tolerances of vertices are increased on Precision::Confusion()
-  Standard_Real aTolV[2] = {Precision::Confusion(), Precision::Confusion()};
-  gp_Pnt        aPntV[2];
-  for (Standard_Integer i = 0; i < 2; i++)
+  double aTolV[2] = {Precision::Confusion(), Precision::Confusion()};
+  gp_Pnt aPntV[2];
+  for (int i = 0; i < 2; i++)
   {
     if (!aV[i].IsNull())
     {
@@ -273,10 +270,10 @@ Standard_Boolean BRepLib::FindValidRange(const TopoDS_Edge& theEdge,
 
 void BRepLib::BuildPCurveForEdgeOnPlane(const TopoDS_Edge& aE, const TopoDS_Face& aF)
 {
-  Standard_Boolean     bToUpdate;
-  Standard_Real        aTolE;
-  Handle(Geom2d_Curve) aC2D;
-  BRep_Builder         aBB;
+  bool                      bToUpdate;
+  double                    aTolE;
+  occ::handle<Geom2d_Curve> aC2D;
+  BRep_Builder              aBB;
   //
   BuildPCurveForEdgeOnPlane(aE, aF, aC2D, bToUpdate);
   if (bToUpdate)
@@ -288,13 +285,13 @@ void BRepLib::BuildPCurveForEdgeOnPlane(const TopoDS_Edge& aE, const TopoDS_Face
 
 //=================================================================================================
 
-void BRepLib::BuildPCurveForEdgeOnPlane(const TopoDS_Edge&    aE,
-                                        const TopoDS_Face&    aF,
-                                        Handle(Geom2d_Curve)& aC2D,
-                                        Standard_Boolean&     bToUpdate)
+void BRepLib::BuildPCurveForEdgeOnPlane(const TopoDS_Edge&         aE,
+                                        const TopoDS_Face&         aF,
+                                        occ::handle<Geom2d_Curve>& aC2D,
+                                        bool&                      bToUpdate)
 {
-  Standard_Real    aT1, aT2;
-  Standard_Boolean isStored;
+  double aT1, aT2;
+  bool   isStored;
   aC2D      = BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2, &isStored);
   bToUpdate = !isStored && !aC2D.IsNull();
 }

@@ -27,7 +27,7 @@ StepBasic_ContractType::StepBasic_ContractType() {}
 
 //=================================================================================================
 
-void StepBasic_ContractType::Init(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_ContractType::Init(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 
   theDescription = aDescription;
@@ -35,14 +35,15 @@ void StepBasic_ContractType::Init(const Handle(TCollection_HAsciiString)& aDescr
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ContractType::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_ContractType::Description() const
 {
   return theDescription;
 }
 
 //=================================================================================================
 
-void StepBasic_ContractType::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_ContractType::SetDescription(
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }

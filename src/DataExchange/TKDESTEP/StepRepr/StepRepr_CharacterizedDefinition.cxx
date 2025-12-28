@@ -31,8 +31,7 @@ StepRepr_CharacterizedDefinition::StepRepr_CharacterizedDefinition() {}
 
 //=================================================================================================
 
-Standard_Integer StepRepr_CharacterizedDefinition::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepRepr_CharacterizedDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -55,52 +54,53 @@ Standard_Integer StepRepr_CharacterizedDefinition::CaseNum(
 
 //=================================================================================================
 
-Handle(StepBasic_CharacterizedObject) StepRepr_CharacterizedDefinition::CharacterizedObject() const
+occ::handle<StepBasic_CharacterizedObject> StepRepr_CharacterizedDefinition::CharacterizedObject()
+  const
 {
-  return Handle(StepBasic_CharacterizedObject)::DownCast(Value());
+  return occ::down_cast<StepBasic_CharacterizedObject>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepRepr_CharacterizedDefinition::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepRepr_CharacterizedDefinition::ProductDefinition() const
 {
-  return Handle(StepBasic_ProductDefinition)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinition>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionRelationship) StepRepr_CharacterizedDefinition::
+occ::handle<StepBasic_ProductDefinitionRelationship> StepRepr_CharacterizedDefinition::
   ProductDefinitionRelationship() const
 {
-  return Handle(StepBasic_ProductDefinitionRelationship)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinitionRelationship>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ProductDefinitionShape) StepRepr_CharacterizedDefinition::ProductDefinitionShape()
-  const
+occ::handle<StepRepr_ProductDefinitionShape> StepRepr_CharacterizedDefinition::
+  ProductDefinitionShape() const
 {
-  return Handle(StepRepr_ProductDefinitionShape)::DownCast(Value());
+  return occ::down_cast<StepRepr_ProductDefinitionShape>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ShapeAspect) StepRepr_CharacterizedDefinition::ShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepRepr_CharacterizedDefinition::ShapeAspect() const
 {
-  return Handle(StepRepr_ShapeAspect)::DownCast(Value());
+  return occ::down_cast<StepRepr_ShapeAspect>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ShapeAspectRelationship) StepRepr_CharacterizedDefinition::ShapeAspectRelationship()
-  const
+occ::handle<StepRepr_ShapeAspectRelationship> StepRepr_CharacterizedDefinition::
+  ShapeAspectRelationship() const
 {
-  return Handle(StepRepr_ShapeAspectRelationship)::DownCast(Value());
+  return occ::down_cast<StepRepr_ShapeAspectRelationship>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_DocumentFile) StepRepr_CharacterizedDefinition::DocumentFile() const
+occ::handle<StepBasic_DocumentFile> StepRepr_CharacterizedDefinition::DocumentFile() const
 {
-  return Handle(StepBasic_DocumentFile)::DownCast(Value());
+  return occ::down_cast<StepBasic_DocumentFile>(Value());
 }

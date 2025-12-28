@@ -24,11 +24,11 @@
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::ValidateConfigurationNode(
-  const Handle(DE_ConfigurationNode)& theNode,
-  const Handle(Standard_Type)&        theExpectedType,
-  const TCollection_AsciiString&      theContext,
-  const Standard_Boolean              theIsVerbose)
+bool DE_ValidationUtils::ValidateConfigurationNode(
+  const occ::handle<DE_ConfigurationNode>& theNode,
+  const occ::handle<Standard_Type>&        theExpectedType,
+  const TCollection_AsciiString&           theContext,
+  const bool                               theIsVerbose)
 {
   if (theNode.IsNull())
   {
@@ -36,7 +36,7 @@ Standard_Boolean DE_ValidationUtils::ValidateConfigurationNode(
     {
       Message::SendFail() << "Error during " << theContext << ": Configuration Node is null";
     }
-    return Standard_False;
+    return false;
   }
 
   if (!theNode->IsKind(theExpectedType))
@@ -47,18 +47,17 @@ Standard_Boolean DE_ValidationUtils::ValidateConfigurationNode(
                           << ": Configuration Node is not of expected type. Expected: "
                           << theExpectedType->Name() << ", got: " << theNode->DynamicType()->Name();
     }
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
-  const TCollection_AsciiString& thePath,
-  const TCollection_AsciiString& theContext,
-  const Standard_Boolean         theIsVerbose)
+bool DE_ValidationUtils::ValidateFileForReading(const TCollection_AsciiString& thePath,
+                                                const TCollection_AsciiString& theContext,
+                                                const bool                     theIsVerbose)
 {
   if (thePath.IsEmpty())
   {
@@ -66,7 +65,7 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
     {
       Message::SendFail() << "Error during " << theContext << ": File path is empty";
     }
-    return Standard_False;
+    return false;
   }
 
   try
@@ -82,7 +81,7 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
         Message::SendFail() << "Error during " << theContext << ": File '" << thePath
                             << "' does not exist";
       }
-      return Standard_False;
+      return false;
     }
 
     // Try to open for reading to verify permissions
@@ -94,7 +93,7 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
         Message::SendFail() << "Error during " << theContext << ": Cannot open file '" << thePath
                             << "' for reading";
       }
-      return Standard_False;
+      return false;
     }
   }
   catch (const std::exception& anException)
@@ -104,18 +103,17 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
       Message::SendFail() << "Error during " << theContext << ": Cannot access file '" << thePath
                           << "': " << anException.what();
     }
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
-  const TCollection_AsciiString& thePath,
-  const TCollection_AsciiString& theContext,
-  const Standard_Boolean         theIsVerbose)
+bool DE_ValidationUtils::ValidateFileForWriting(const TCollection_AsciiString& thePath,
+                                                const TCollection_AsciiString& theContext,
+                                                const bool                     theIsVerbose)
 {
   if (thePath.IsEmpty())
   {
@@ -123,7 +121,7 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
     {
       Message::SendFail() << "Error during " << theContext << ": File path is empty";
     }
-    return Standard_False;
+    return false;
   }
 
   try
@@ -137,7 +135,7 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
         Message::SendFail() << "Error during " << theContext << ": Cannot open file '" << thePath
                             << "' for writing";
       }
-      return Standard_False;
+      return false;
     }
     // File will be closed automatically when aTestFile goes out of scope
   }
@@ -148,18 +146,17 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
       Message::SendFail() << "Error during " << theContext << ": Cannot access file '" << thePath
                           << "': " << anException.what();
     }
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::ValidateReadStreamList(
-  const DE_Provider::ReadStreamList& theStreams,
-  const TCollection_AsciiString&     theContext,
-  const Standard_Boolean             theIsVerbose)
+bool DE_ValidationUtils::ValidateReadStreamList(const DE_Provider::ReadStreamList& theStreams,
+                                                const TCollection_AsciiString&     theContext,
+                                                const bool                         theIsVerbose)
 {
   if (theStreams.IsEmpty())
   {
@@ -167,7 +164,7 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamList(
     {
       Message::SendFail() << "Error during " << theContext << ": Stream list is empty";
     }
-    return Standard_False;
+    return false;
   }
 
   if (theStreams.Size() > 1)
@@ -191,7 +188,7 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamList(
         Message::SendFail() << "Error during " << theContext << ": Input stream '" << aKeyInfo
                             << "' is in invalid state";
       }
-      return Standard_False;
+      return false;
     }
   }
   catch (const std::exception&)
@@ -203,18 +200,17 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamList(
       Message::SendFail() << "Error during " << theContext << ": Cannot access input stream '"
                           << aKeyInfo << "'";
     }
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::ValidateWriteStreamList(
-  DE_Provider::WriteStreamList&  theStreams,
-  const TCollection_AsciiString& theContext,
-  const Standard_Boolean         theIsVerbose)
+bool DE_ValidationUtils::ValidateWriteStreamList(DE_Provider::WriteStreamList&  theStreams,
+                                                 const TCollection_AsciiString& theContext,
+                                                 const bool                     theIsVerbose)
 {
   if (theStreams.IsEmpty())
   {
@@ -222,7 +218,7 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamList(
     {
       Message::SendFail() << "Error during " << theContext << ": Stream list is empty";
     }
-    return Standard_False;
+    return false;
   }
 
   if (theStreams.Size() > 1)
@@ -246,7 +242,7 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamList(
         Message::SendFail() << "Error during " << theContext << ": Output stream '" << aKeyInfo
                             << "' is in invalid state";
       }
-      return Standard_False;
+      return false;
     }
   }
   catch (const std::exception&)
@@ -258,17 +254,17 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamList(
       Message::SendFail() << "Error during " << theContext << ": Cannot access output stream '"
                           << aKeyInfo << "'";
     }
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::ValidateDocument(const Handle(TDocStd_Document)& theDocument,
-                                                      const TCollection_AsciiString&  theContext,
-                                                      const Standard_Boolean          theIsVerbose)
+bool DE_ValidationUtils::ValidateDocument(const occ::handle<TDocStd_Document>& theDocument,
+                                          const TCollection_AsciiString&       theContext,
+                                          const bool                           theIsVerbose)
 {
   if (theDocument.IsNull())
   {
@@ -276,18 +272,17 @@ Standard_Boolean DE_ValidationUtils::ValidateDocument(const Handle(TDocStd_Docum
     {
       Message::SendFail() << "Error during " << theContext << ": Document handle is null";
     }
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::WarnLengthUnitNotSupported(
-  const Standard_Real            theLengthUnit,
-  const TCollection_AsciiString& theContext,
-  const Standard_Boolean         theIsVerbose)
+bool DE_ValidationUtils::WarnLengthUnitNotSupported(const double                   theLengthUnit,
+                                                    const TCollection_AsciiString& theContext,
+                                                    const bool                     theIsVerbose)
 {
   if (theIsVerbose && theLengthUnit != 1.0)
   {
@@ -296,22 +291,22 @@ Standard_Boolean DE_ValidationUtils::WarnLengthUnitNotSupported(
                            << theLengthUnit << ")";
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::CreateContentBuffer(const TCollection_AsciiString& thePath,
-                                                         Handle(NCollection_Buffer)&    theBuffer)
+bool DE_ValidationUtils::CreateContentBuffer(const TCollection_AsciiString&   thePath,
+                                             occ::handle<NCollection_Buffer>& theBuffer)
 {
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aStream =
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
 
   if (aStream.get() == nullptr)
   {
     theBuffer.Nullify();
-    return Standard_False;
+    return false;
   }
 
   return CreateContentBuffer(*aStream, theBuffer);
@@ -319,8 +314,8 @@ Standard_Boolean DE_ValidationUtils::CreateContentBuffer(const TCollection_Ascii
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::CreateContentBuffer(std::istream&               theStream,
-                                                         Handle(NCollection_Buffer)& theBuffer)
+bool DE_ValidationUtils::CreateContentBuffer(std::istream&                    theStream,
+                                             occ::handle<NCollection_Buffer>& theBuffer)
 {
   constexpr std::streamsize aBufferLength = 2048;
 
@@ -341,5 +336,5 @@ Standard_Boolean DE_ValidationUtils::CreateContentBuffer(std::istream&          
   // Reset stream to original position for subsequent reads
   theStream.seekg(aOriginalPos);
 
-  return Standard_True;
+  return true;
 }

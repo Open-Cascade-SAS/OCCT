@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReferenceIterator, Standard_Transient)
 
 //=================================================================================================
 
-PCDM_ReferenceIterator::PCDM_ReferenceIterator(const Handle(Message_Messenger)& theMsgDriver)
+PCDM_ReferenceIterator::PCDM_ReferenceIterator(const occ::handle<Message_Messenger>& theMsgDriver)
     : myIterator(0)
 {
   myMessageDriver = theMsgDriver;
@@ -38,10 +38,10 @@ PCDM_ReferenceIterator::PCDM_ReferenceIterator(const Handle(Message_Messenger)& 
 
 //=================================================================================================
 
-void PCDM_ReferenceIterator::LoadReferences(const Handle(CDM_Document)&    aDocument,
-                                            const Handle(CDM_MetaData)&    aMetaData,
-                                            const Handle(CDM_Application)& anApplication,
-                                            const Standard_Boolean         UseStorageConfiguration)
+void PCDM_ReferenceIterator::LoadReferences(const occ::handle<CDM_Document>&    aDocument,
+                                            const occ::handle<CDM_MetaData>&    aMetaData,
+                                            const occ::handle<CDM_Application>& anApplication,
+                                            const bool UseStorageConfiguration)
 {
   for (Init(aMetaData); More(); Next())
   {
@@ -56,7 +56,7 @@ void PCDM_ReferenceIterator::LoadReferences(const Handle(CDM_Document)&    aDocu
 
 //=================================================================================================
 
-void PCDM_ReferenceIterator::Init(const Handle(CDM_MetaData)& theMetaData)
+void PCDM_ReferenceIterator::Init(const occ::handle<CDM_MetaData>& theMetaData)
 {
 
   myReferences.Clear();
@@ -67,7 +67,7 @@ void PCDM_ReferenceIterator::Init(const Handle(CDM_MetaData)& theMetaData)
 
 //=================================================================================================
 
-Standard_Boolean PCDM_ReferenceIterator::More() const
+bool PCDM_ReferenceIterator::More() const
 {
   return myIterator <= myReferences.Length();
 }
@@ -81,8 +81,9 @@ void PCDM_ReferenceIterator::Next()
 
 //=================================================================================================
 
-Handle(CDM_MetaData) PCDM_ReferenceIterator::MetaData(CDM_MetaDataLookUpTable& theLookUpTable,
-                                                      const Standard_Boolean) const
+occ::handle<CDM_MetaData> PCDM_ReferenceIterator::MetaData(
+  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+  const bool) const
 {
 
   TCollection_ExtendedString theFolder, theName;
@@ -90,14 +91,14 @@ Handle(CDM_MetaData) PCDM_ReferenceIterator::MetaData(CDM_MetaDataLookUpTable& t
   TCollection_ExtendedString f(theFile);
 #ifndef _WIN32
 
-  Standard_Integer           i = f.SearchFromEnd("/");
+  int                        i = f.SearchFromEnd("/");
   TCollection_ExtendedString n = f.Split(i);
   f.Trunc(f.Length() - 1);
   theFolder = f;
   theName   = n;
 #else
   OSD_Path                   p = UTL::Path(f);
-  Standard_ExtCharacter      chr;
+  char16_t                   chr;
   TCollection_ExtendedString dir, dirRet, name;
 
   dir = UTL::Disk(p);
@@ -139,14 +140,14 @@ Handle(CDM_MetaData) PCDM_ReferenceIterator::MetaData(CDM_MetaDataLookUpTable& t
 
 //=================================================================================================
 
-Standard_Integer PCDM_ReferenceIterator::ReferenceIdentifier() const
+int PCDM_ReferenceIterator::ReferenceIdentifier() const
 {
   return myReferences(myIterator).ReferenceIdentifier();
 }
 
 //=================================================================================================
 
-Standard_Integer PCDM_ReferenceIterator::DocumentVersion() const
+int PCDM_ReferenceIterator::DocumentVersion() const
 {
   return myReferences(myIterator).DocumentVersion();
 }

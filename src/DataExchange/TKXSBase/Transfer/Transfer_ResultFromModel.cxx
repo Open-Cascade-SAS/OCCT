@@ -14,11 +14,11 @@
 #include <Interface_Check.hxx>
 #include <Interface_CheckIterator.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Transfer_ResultFromModel.hxx>
 #include <Transfer_ResultFromTransient.hxx>
 #include <Transfer_TransientProcess.hxx>
@@ -31,35 +31,35 @@ Transfer_ResultFromModel::Transfer_ResultFromModel()
   themchk = Interface_CheckAny;
 }
 
-void Transfer_ResultFromModel::SetModel(const Handle(Interface_InterfaceModel)& model)
+void Transfer_ResultFromModel::SetModel(const occ::handle<Interface_InterfaceModel>& model)
 {
   themodel = model;
 }
 
-void Transfer_ResultFromModel::SetFileName(const Standard_CString filename)
+void Transfer_ResultFromModel::SetFileName(const char* filename)
 {
   thename.Clear();
   thename.AssignCat(filename);
 }
 
-Handle(Interface_InterfaceModel) Transfer_ResultFromModel::Model() const
+occ::handle<Interface_InterfaceModel> Transfer_ResultFromModel::Model() const
 {
   return themodel;
 }
 
-Standard_CString Transfer_ResultFromModel::FileName() const
+const char* Transfer_ResultFromModel::FileName() const
 {
   return thename.ToCString();
 }
 
-Standard_Boolean Transfer_ResultFromModel::Fill(const Handle(Transfer_TransientProcess)& TP,
-                                                const Handle(Standard_Transient)&        ent)
+bool Transfer_ResultFromModel::Fill(const occ::handle<Transfer_TransientProcess>& TP,
+                                    const occ::handle<Standard_Transient>&        ent)
 {
   if (TP.IsNull() || ent.IsNull())
-    return Standard_False;
-  Handle(Transfer_Binder) binder = TP->Find(ent);
+    return false;
+  occ::handle<Transfer_Binder> binder = TP->Find(ent);
   if (binder.IsNull())
-    return Standard_False;
+    return false;
   themain = new Transfer_ResultFromTransient;
   themain->SetStart(ent);
   themain->SetBinder(binder);
@@ -69,49 +69,49 @@ Standard_Boolean Transfer_ResultFromModel::Fill(const Handle(Transfer_TransientP
   if (!TP->Model().IsNull())
     themodel = TP->Model();
   if (themodel.IsNull())
-    return Standard_True;
+    return true;
   themnum = themodel->Number(ent);
   themlab.Clear();
   if (themnum > 0)
     themlab.AssignCat(themodel->StringLabel(ent)->ToCString());
-  return Standard_True;
+  return true;
 }
 
-void Transfer_ResultFromModel::Strip(const Standard_Integer mode)
+void Transfer_ResultFromModel::Strip(const int mode)
 {
   if (themain.IsNull())
     return;
   themain->Strip();
   if (mode >= 10)
   {
-    themchk = ComputeCheckStatus(Standard_False);
+    themchk = ComputeCheckStatus(false);
     themodel.Nullify();
     themain->ClearSubs();
-    Handle(Standard_Transient) nulh;
+    occ::handle<Standard_Transient> nulh;
     themain->SetStart(nulh);
     if (mode > 10)
       themain.Nullify();
   }
 }
 
-void Transfer_ResultFromModel::FillBack(const Handle(Transfer_TransientProcess)& TP) const
+void Transfer_ResultFromModel::FillBack(const occ::handle<Transfer_TransientProcess>& TP) const
 {
   if (!themodel.IsNull())
     TP->SetModel(themodel);
   themain->FillBack(TP);
 }
 
-Standard_Boolean Transfer_ResultFromModel::HasResult() const
+bool Transfer_ResultFromModel::HasResult() const
 {
-  return (themain.IsNull() ? Standard_False : themain->HasResult());
+  return (themain.IsNull() ? false : themain->HasResult());
 }
 
-Handle(Transfer_ResultFromTransient) Transfer_ResultFromModel::MainResult() const
+occ::handle<Transfer_ResultFromTransient> Transfer_ResultFromModel::MainResult() const
 {
   return themain;
 }
 
-void Transfer_ResultFromModel::SetMainResult(const Handle(Transfer_ResultFromTransient)& amain)
+void Transfer_ResultFromModel::SetMainResult(const occ::handle<Transfer_ResultFromTransient>& amain)
 {
   themchk = Interface_CheckAny;
   themain = amain;
@@ -123,32 +123,34 @@ void Transfer_ResultFromModel::SetMainResult(const Handle(Transfer_ResultFromTra
     themlab.AssignCat(themodel->StringLabel(themain->Start())->ToCString());
 }
 
-Standard_CString Transfer_ResultFromModel::MainLabel() const
+const char* Transfer_ResultFromModel::MainLabel() const
 {
   return themlab.ToCString();
 }
 
-Standard_Integer Transfer_ResultFromModel::MainNumber() const
+int Transfer_ResultFromModel::MainNumber() const
 {
   return themnum;
 }
 
 //  ############  INFORMATIONS  GLOBALES  ###########
 
-Handle(Transfer_ResultFromTransient) Transfer_ResultFromModel::ResultFromKey(
-  const Handle(Standard_Transient)& start) const
+occ::handle<Transfer_ResultFromTransient> Transfer_ResultFromModel::ResultFromKey(
+  const occ::handle<Standard_Transient>& start) const
 {
   return themain->ResultFromKey(start);
 }
 
-Handle(TColStd_HSequenceOfTransient) Transfer_ResultFromModel::Results(
-  const Standard_Integer level) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_ResultFromModel::
+  Results(const int level) const
 {
-  Standard_Integer                     i, nb;
-  Handle(TColStd_HSequenceOfTransient) list = new TColStd_HSequenceOfTransient();
+  int                                                                 i, nb;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
   if (level > 1)
   {
-    TColStd_IndexedMapOfTransient map(themodel.IsNull() ? 1000 : themodel->NbEntities());
+    NCollection_IndexedMap<occ::handle<Standard_Transient>> map(
+      themodel.IsNull() ? 1000 : themodel->NbEntities());
     map.Add(themain);
     themain->FillMap(map);
     nb = map.Extent();
@@ -167,13 +169,14 @@ Handle(TColStd_HSequenceOfTransient) Transfer_ResultFromModel::Results(
   return list;
 }
 
-Handle(TColStd_HSequenceOfTransient) Transfer_ResultFromModel::TransferredList(
-  const Standard_Integer level) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_ResultFromModel::
+  TransferredList(const int level) const
 {
-  Standard_Integer                     i, nb;
-  Handle(TColStd_HSequenceOfTransient) list = new TColStd_HSequenceOfTransient();
-  Handle(TColStd_HSequenceOfTransient) res  = Results(level);
-  nb                                        = res->Length();
+  int                                                                 i, nb;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res = Results(level);
+  nb                                                                      = res->Length();
   for (i = 1; i <= nb; i++)
   {
     DeclareAndCast(Transfer_ResultFromTransient, unres, res->Value(i));
@@ -185,14 +188,14 @@ Handle(TColStd_HSequenceOfTransient) Transfer_ResultFromModel::TransferredList(
   return list;
 }
 
-Handle(TColStd_HSequenceOfTransient) Transfer_ResultFromModel::CheckedList(
-  const Interface_CheckStatus check,
-  const Standard_Boolean      result) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_ResultFromModel::
+  CheckedList(const Interface_CheckStatus check, const bool result) const
 {
-  Standard_Integer                     i, nb;
-  Handle(TColStd_HSequenceOfTransient) list = new TColStd_HSequenceOfTransient();
-  Handle(TColStd_HSequenceOfTransient) res  = Results(2);
-  nb                                        = res->Length();
+  int                                                                 i, nb;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res = Results(2);
+  nb                                                                      = res->Length();
   for (i = 1; i <= nb; i++)
   {
     DeclareAndCast(Transfer_ResultFromTransient, unres, res->Value(i));
@@ -200,21 +203,22 @@ Handle(TColStd_HSequenceOfTransient) Transfer_ResultFromModel::CheckedList(
       continue;
     if (result && !unres->HasResult())
       continue;
-    const Handle(Interface_Check) ach = unres->Check();
+    const occ::handle<Interface_Check> ach = unres->Check();
     if (ach->Complies(check))
       list->Append(unres->Start());
   }
   return list;
 }
 
-Interface_CheckIterator Transfer_ResultFromModel::CheckList(const Standard_Boolean erronly,
-                                                            const Standard_Integer level) const
+Interface_CheckIterator Transfer_ResultFromModel::CheckList(const bool erronly,
+                                                            const int  level) const
 {
-  Interface_CheckIterator              chl;
-  Standard_Integer                     i, nb;
-  Handle(TColStd_HSequenceOfTransient) list = new TColStd_HSequenceOfTransient();
-  Handle(TColStd_HSequenceOfTransient) res  = Results(level);
-  nb                                        = res->Length();
+  Interface_CheckIterator                                             chl;
+  int                                                                 i, nb;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res = Results(level);
+  nb                                                                      = res->Length();
   for (i = 1; i <= nb; i++)
   {
     DeclareAndCast(Transfer_ResultFromTransient, unres, res->Value(i));
@@ -223,8 +227,8 @@ Interface_CheckIterator Transfer_ResultFromModel::CheckList(const Standard_Boole
     Interface_CheckStatus stat = unres->CheckStatus();
     if (stat == Interface_CheckOK || (stat == Interface_CheckWarning && erronly))
       continue;
-    Handle(Transfer_Binder) binder = unres->Binder();
-    Handle(Interface_Check) bch    = binder->Check();
+    occ::handle<Transfer_Binder> binder = unres->Binder();
+    occ::handle<Interface_Check> bch    = binder->Check();
     bch->SetEntity(unres->Start());
     chl.Add(bch, (themodel.IsNull() ? 0 : themodel->Number(unres->Start())));
   }
@@ -235,11 +239,11 @@ Interface_CheckStatus Transfer_ResultFromModel::CheckStatus() const
 {
   if (themchk != Interface_CheckAny)
     return themchk;
-  Interface_CheckIterator chl = CheckList(Standard_False, 2);
+  Interface_CheckIterator chl = CheckList(false, 2);
   return chl.Status();
 }
 
-Interface_CheckStatus Transfer_ResultFromModel::ComputeCheckStatus(const Standard_Boolean enforce)
+Interface_CheckStatus Transfer_ResultFromModel::ComputeCheckStatus(const bool enforce)
 {
   if (themchk == Interface_CheckAny || enforce)
     themchk = CheckStatus();

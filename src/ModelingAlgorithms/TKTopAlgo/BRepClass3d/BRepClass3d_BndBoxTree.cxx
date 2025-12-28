@@ -22,19 +22,19 @@
 
 //=================================================================================================
 
-Standard_Boolean BRepClass3d_BndBoxTreeSelectorPoint::Accept(const Standard_Integer& theObj)
+bool BRepClass3d_BndBoxTreeSelectorPoint::Accept(const int& theObj)
 {
   // Box-point collision.
   if (theObj > myMapOfShape.Extent())
-    return Standard_False;
+    return false;
   const TopoDS_Shape& shp = myMapOfShape(theObj);
   TopAbs_ShapeEnum    sht = shp.ShapeType();
   if (sht == TopAbs_EDGE)
   {
     const TopoDS_Edge& E       = TopoDS::Edge(shp);
-    Standard_Real      EdgeTSq = BRep_Tool::Tolerance(E);
+    double             EdgeTSq = BRep_Tool::Tolerance(E);
     EdgeTSq *= EdgeTSq;
-    Standard_Real     f, l;
+    double            f, l;
     BRepAdaptor_Curve C(E);
     BRep_Tool::Range(E, f, l);
 
@@ -42,11 +42,11 @@ Standard_Boolean BRepClass3d_BndBoxTreeSelectorPoint::Accept(const Standard_Inte
     Extrema_ExtPC ExtPC(myP, C, f, l);
     if (ExtPC.IsDone() && ExtPC.NbExt() > 0)
     {
-      for (Standard_Integer i = 1; i <= ExtPC.NbExt(); i++)
+      for (int i = 1; i <= ExtPC.NbExt(); i++)
         if (ExtPC.SquareDistance(i) < EdgeTSq)
         {
           myStop = 1; // exit from selector
-          return Standard_True;
+          return true;
         }
     }
   }
@@ -54,33 +54,33 @@ Standard_Boolean BRepClass3d_BndBoxTreeSelectorPoint::Accept(const Standard_Inte
   {
     const TopoDS_Vertex& V       = TopoDS::Vertex(shp);
     gp_Pnt               VPnt    = BRep_Tool::Pnt(V);
-    Standard_Real        VertTSq = BRep_Tool::Tolerance(V);
+    double               VertTSq = BRep_Tool::Tolerance(V);
     VertTSq *= VertTSq;
     // Vertex-Point interference.
     if (VPnt.SquareDistance(myP) < VertTSq)
     {
       myStop = 1;
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepClass3d_BndBoxTreeSelectorLine::Accept(const Standard_Integer& theObj)
+bool BRepClass3d_BndBoxTreeSelectorLine::Accept(const int& theObj)
 {
   // box-line collision
   if (theObj > myMapOfShape.Extent())
-    return Standard_False;
+    return false;
   const TopoDS_Shape& shp = myMapOfShape(theObj);
   TopAbs_ShapeEnum    sht = shp.ShapeType();
   if (sht == TopAbs_EDGE)
   {
     const TopoDS_Edge& E       = TopoDS::Edge(shp);
-    Standard_Real      EdgeTSq = BRep_Tool::Tolerance(E);
+    double             EdgeTSq = BRep_Tool::Tolerance(E);
     EdgeTSq *= EdgeTSq;
-    Standard_Real     f, l;
+    double            f, l;
     BRepAdaptor_Curve C(E);
     BRep_Tool::Range(E, f, l);
 
@@ -91,12 +91,12 @@ Standard_Boolean BRepClass3d_BndBoxTreeSelectorLine::Accept(const Standard_Integ
       if (ExtCC.IsParallel())
       {
         // Tangent case is invalid for classification
-        myIsValid = Standard_False;
+        myIsValid = false;
       }
       else if (ExtCC.NbExt() > 0)
       {
-        Standard_Boolean IsInside = Standard_False;
-        for (Standard_Integer i = 1; i <= ExtCC.NbExt(); i++)
+        bool IsInside = false;
+        for (int i = 1; i <= ExtCC.NbExt(); i++)
         {
           if (ExtCC.SquareDistance(i) < EdgeTSq)
           {
@@ -109,18 +109,18 @@ Standard_Boolean BRepClass3d_BndBoxTreeSelectorLine::Accept(const Standard_Integ
             EP.myLParam = P2.Parameter(); // Linear curve is the second parameter.
 
             myEP.Append(EP);
-            IsInside = Standard_True;
+            IsInside = true;
           }
         }
         if (IsInside)
-          return Standard_True;
+          return true;
       }
     }
   }
   else if (sht == TopAbs_VERTEX)
   {
     const TopoDS_Vertex& V       = TopoDS::Vertex(shp);
-    Standard_Real        VertTSq = BRep_Tool::Tolerance(V);
+    double               VertTSq = BRep_Tool::Tolerance(V);
     VertTSq *= VertTSq;
     // Vertex-Line interference.
     Extrema_ExtPElC ExtPL(BRep_Tool::Pnt(V),
@@ -132,15 +132,15 @@ Standard_Boolean BRepClass3d_BndBoxTreeSelectorLine::Accept(const Standard_Integ
       if (ExtPL.SquareDistance(1) < VertTSq)
       {
         Extrema_POnCurv PP;
-        Standard_Real   paramL;
+        double          paramL;
         PP     = ExtPL.Point(1);
         paramL = PP.Parameter();
         VertParam VP;
         VP.myV      = V;
         VP.myLParam = paramL;
         myVP.Append(VP);
-        return Standard_True;
+        return true;
       }
   }
-  return Standard_False;
+  return false;
 }

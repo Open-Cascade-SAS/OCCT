@@ -16,9 +16,11 @@
 
 #include <Message_ProgressScope.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TColStd_IndexedDataMapOfStringString.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_Map.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <RWGltf_DracoParameters.hxx>
 #include <RWGltf_GltfArrayType.hxx>
@@ -52,17 +54,16 @@ public:
   //! Mesh
   struct Mesh
   {
-    std::vector<Graphic3d_Vec3> NodesVec;     //!< vector for mesh nodes
-    std::vector<Graphic3d_Vec3> NormalsVec;   //!< vector for mesh normals
-    std::vector<Graphic3d_Vec2> TexCoordsVec; //!< vector for mesh texture UV coordinates
-    std::vector<Poly_Triangle>  IndicesVec;   //!< vector for mesh indices
+    std::vector<NCollection_Vec3<float>> NodesVec;     //!< vector for mesh nodes
+    std::vector<NCollection_Vec3<float>> NormalsVec;   //!< vector for mesh normals
+    std::vector<NCollection_Vec2<float>> TexCoordsVec; //!< vector for mesh texture UV coordinates
+    std::vector<Poly_Triangle>           IndicesVec;   //!< vector for mesh indices
   };
 
   //! Main constructor.
   //! @param[in] theFile      path to output glTF file
   //! @param[in] theIsBinary  flag to write into binary glTF format (.glb)
-  Standard_EXPORT RWGltf_CafWriter(const TCollection_AsciiString& theFile,
-                                   Standard_Boolean               theIsBinary);
+  Standard_EXPORT RWGltf_CafWriter(const TCollection_AsciiString& theFile, bool theIsBinary);
 
   //! Destructor.
   Standard_EXPORT virtual ~RWGltf_CafWriter();
@@ -116,10 +117,10 @@ public:
   //! Return flag to write image textures into GLB file (binary gltf export); TRUE by default.
   //! When set to FALSE, texture images will be written as separate files.
   //! Has no effect on writing into non-binary format.
-  Standard_Boolean ToEmbedTexturesInGlb() { return myToEmbedTexturesInGlb; }
+  bool ToEmbedTexturesInGlb() { return myToEmbedTexturesInGlb; }
 
   //! Set flag to write image textures into GLB file (binary gltf export).
-  void SetToEmbedTexturesInGlb(Standard_Boolean theToEmbedTexturesInGlb)
+  void SetToEmbedTexturesInGlb(bool theToEmbedTexturesInGlb)
   {
     myToEmbedTexturesInGlb = theToEmbedTexturesInGlb;
   }
@@ -166,11 +167,12 @@ public:
   //! @param[in] theFileInfo     map with file metadata to put into glTF header section
   //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const Handle(TDocStd_Document)&             theDocument,
-                                       const TDF_LabelSequence&                    theRootLabels,
-                                       const TColStd_MapOfAsciiString*             theLabelFilter,
-                                       const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                       const Message_ProgressRange&                theProgress);
+  Standard_EXPORT virtual bool Perform(
+    const occ::handle<TDocStd_Document>&            theDocument,
+    const NCollection_Sequence<TDF_Label>&          theRootLabels,
+    const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+    const Message_ProgressRange& theProgress);
 
   //! Write glTF file and associated binary file.
   //! Triangulation data should be precomputed within shapes!
@@ -178,9 +180,10 @@ public:
   //! @param[in] theFileInfo     map with file metadata to put into glTF header section
   //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const Handle(TDocStd_Document)&             theDocument,
-                                       const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                       const Message_ProgressRange&                theProgress);
+  Standard_EXPORT virtual bool Perform(
+    const occ::handle<TDocStd_Document>&                                                theDocument,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+    const Message_ProgressRange& theProgress);
 
 protected:
   //! Write binary data file with triangulation data.
@@ -190,10 +193,11 @@ protected:
   //! @param[in] theLabelFilter  optional filter with document nodes to export
   //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool writeBinData(const Handle(TDocStd_Document)& theDocument,
-                                            const TDF_LabelSequence&        theRootLabels,
-                                            const TColStd_MapOfAsciiString* theLabelFilter,
-                                            const Message_ProgressRange&    theProgress);
+  Standard_EXPORT virtual bool writeBinData(
+    const occ::handle<TDocStd_Document>&            theDocument,
+    const NCollection_Sequence<TDF_Label>&          theRootLabels,
+    const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
+    const Message_ProgressRange&                    theProgress);
 
   //! Write JSON file with glTF structure (should be called after writeBinData()).
   //! @param[in] theDocument     input document
@@ -202,22 +206,22 @@ protected:
   //! @param[in] theFileInfo     map with file metadata to put into glTF header section
   //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool writeJson(const Handle(TDocStd_Document)&             theDocument,
-                                         const TDF_LabelSequence&                    theRootLabels,
-                                         const TColStd_MapOfAsciiString*             theLabelFilter,
-                                         const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                         const Message_ProgressRange&                theProgress);
+  Standard_EXPORT virtual bool writeJson(
+    const occ::handle<TDocStd_Document>&            theDocument,
+    const NCollection_Sequence<TDF_Label>&          theRootLabels,
+    const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+    const Message_ProgressRange& theProgress);
 
 protected:
   //! Returns the underlying shape in case of a compound.
   Standard_EXPORT virtual TopAbs_ShapeEnum getShapeType(const TopoDS_Shape& theShape) const;
 
   //! Return TRUE if face shape should be skipped (e.g. because it is invalid or empty).
-  Standard_EXPORT virtual Standard_Boolean toSkipShape(
-    const RWMesh_ShapeIterator& theShapeIter) const;
+  Standard_EXPORT virtual bool toSkipShape(const RWMesh_ShapeIterator& theShapeIter) const;
 
   //! Return TRUE if shape has triangulation (not vertex or edge).
-  Standard_EXPORT virtual Standard_Boolean hasTriangulation(const RWGltf_GltfFace& theShape) const;
+  Standard_EXPORT virtual bool hasTriangulation(const RWGltf_GltfFace& theShape) const;
 
   //! Generate name for specified labels.
   //! @param[in] theFormat   name format to apply
@@ -237,7 +241,7 @@ protected:
     RWGltf_GltfFace&                               theGltfFace,
     std::ostream&                                  theBinFile,
     const RWMesh_ShapeIterator&                    theShapeIter,
-    Standard_Integer&                              theAccessorNb,
+    int&                                           theAccessorNb,
     const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
   //! Write mesh normals into binary file.
@@ -250,7 +254,7 @@ protected:
     RWGltf_GltfFace&                               theGltfFace,
     std::ostream&                                  theBinFile,
     const RWMesh_FaceIterator&                     theFaceIter,
-    Standard_Integer&                              theAccessorNb,
+    int&                                           theAccessorNb,
     const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
   //! Write mesh texture UV coordinates into binary file.
@@ -263,7 +267,7 @@ protected:
     RWGltf_GltfFace&                               theGltfFace,
     std::ostream&                                  theBinFile,
     const RWMesh_FaceIterator&                     theFaceIter,
-    Standard_Integer&                              theAccessorNb,
+    int&                                           theAccessorNb,
     const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
   //! Write mesh indexes into binary file.
@@ -275,7 +279,7 @@ protected:
   Standard_EXPORT virtual void saveIndices(RWGltf_GltfFace&            theGltfFace,
                                            std::ostream&               theBinFile,
                                            const RWMesh_ShapeIterator& theShapeIter,
-                                           Standard_Integer&           theAccessorNb,
+                                           int&                        theAccessorNb,
                                            const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh);
 
   //! Write triangle indexes into binary file.
@@ -333,11 +337,13 @@ protected:
 
   //! Write RWGltf_GltfRootElement_Asset section.
   //! @param[in] theFileInfo  optional metadata to write into file header
-  Standard_EXPORT virtual void writeAsset(const TColStd_IndexedDataMapOfStringString& theFileInfo);
+  Standard_EXPORT virtual void writeAsset(
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>&
+      theFileInfo);
 
   //! Write RWGltf_GltfRootElement_BufferViews section.
   //! @param[in] theBinDataBufferId  index of binary buffer with vertex data
-  Standard_EXPORT virtual void writeBufferViews(const Standard_Integer theBinDataBufferId);
+  Standard_EXPORT virtual void writeBufferViews(const int theBinDataBufferId);
 
   //! Write RWGltf_GltfRootElement_Buffers section.
   Standard_EXPORT virtual void writeBuffers();
@@ -360,7 +366,7 @@ protected:
   //! @param[in]  theShapeIter         Shape iterator to traverse shapes
   //! @param[out] theIsStarted         Flag indicating that writing material has been started
   Standard_EXPORT virtual void writeMaterial(RWMesh_ShapeIterator& theShapeIter,
-                                             Standard_Boolean&     theIsStarted);
+                                             bool&                 theIsStarted);
 
   //! Write RWGltf_GltfRootElement_Meshes section.
   //! @param[in] theSceneNodeMap  ordered map of scene nodes
@@ -385,23 +391,22 @@ protected:
   //! @param[out] theSceneRootNodeInds  sequence of scene nodes pointing to root shapes (to be used
   //! for writeScenes())
   Standard_EXPORT virtual void writeNodes(
-    const Handle(TDocStd_Document)&         theDocument,
-    const TDF_LabelSequence&                theRootLabels,
-    const TColStd_MapOfAsciiString*         theLabelFilter,
-    const RWGltf_GltfSceneNodeMap&          theSceneNodeMap,
-    NCollection_Sequence<Standard_Integer>& theSceneRootNodeInds);
+    const occ::handle<TDocStd_Document>&            theDocument,
+    const NCollection_Sequence<TDF_Label>&          theRootLabels,
+    const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
+    const RWGltf_GltfSceneNodeMap&                  theSceneNodeMap,
+    NCollection_Sequence<int>&                      theSceneRootNodeInds);
 
   //! Write RWGltf_GltfRootElement_Samplers section.
   Standard_EXPORT virtual void writeSamplers();
 
   //! Write RWGltf_GltfRootElement_Scene section.
   //! @param[in] theDefSceneId  index of default scene (0)
-  Standard_EXPORT virtual void writeScene(const Standard_Integer theDefSceneId);
+  Standard_EXPORT virtual void writeScene(const int theDefSceneId);
 
   //! Write RWGltf_GltfRootElement_Scenes section.
   //! @param[in] theSceneRootNodeInds  sequence of scene nodes pointing to root shapes
-  Standard_EXPORT virtual void writeScenes(
-    const NCollection_Sequence<Standard_Integer>& theSceneRootNodeInds);
+  Standard_EXPORT virtual void writeScenes(const NCollection_Sequence<int>& theSceneRootNodeInds);
 
   //! Write RWGltf_GltfRootElement_Skins section (reserved).
   Standard_EXPORT virtual void writeSkins();
@@ -414,7 +419,7 @@ protected:
   //! Write nodes.extras section with key-value attributes.
   //! @param[in] theNamedData  attributes map to process.
   Standard_EXPORT virtual void writeExtrasAttributes(
-    const Handle(TDataStd_NamedData)& theNamedData);
+    const occ::handle<TDataStd_NamedData>& theNamedData);
 
   //! Dispatch shapes
   //! @param[in] theDocNode         Document node containing shape data
@@ -422,10 +427,10 @@ protected:
   //! @param[in,out] theMergedFaces Data map to store merged faces
   //! @param[in,out] theShapeIter   Shape iterator to traverse shapes
   Standard_EXPORT virtual void dispatchShapes(
-    const XCAFPrs_DocumentNode&                                  theDocNode,
-    const Message_ProgressScope&                                 thePSentryBin,
-    NCollection_DataMap<XCAFPrs_Style, Handle(RWGltf_GltfFace)>& theMergedFaces,
-    RWMesh_ShapeIterator&                                        theShapeIter);
+    const XCAFPrs_DocumentNode&                                       theDocNode,
+    const Message_ProgressScope&                                      thePSentryBin,
+    NCollection_DataMap<XCAFPrs_Style, occ::handle<RWGltf_GltfFace>>& theMergedFaces,
+    RWMesh_ShapeIterator&                                             theShapeIter);
 
   //! Write shape into binary file
   //! @param[out] theGltfFace      glTF face definition
@@ -439,7 +444,7 @@ protected:
   Standard_EXPORT bool writeShapesToBin(RWGltf_GltfFace&      theGltfFace,
                                         std::ostream&         theBinFile,
                                         RWMesh_ShapeIterator& theShapeIter,
-                                        Standard_Integer&     theAccessorNb,
+                                        int&                  theAccessorNb,
                                         const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh,
                                         const RWGltf_GltfArrayType                     theArrType,
                                         const Message_ProgressScope& thePSentryBin);
@@ -452,12 +457,14 @@ protected:
   //! @param[in,out] theWrittenShapes  Map to store written shapes
   //! @param[in,out] theDracoBufIndMap Map to store Draco buffer indices
   Standard_EXPORT virtual void writeShapes(
-    RWMesh_ShapeIterator&                         theShapeIter,
-    Standard_Integer&                             theDracoBufInd,
-    Standard_Boolean&                             theToStartPrims,
-    const TCollection_AsciiString&                theNodeName,
-    NCollection_Map<Handle(RWGltf_GltfFaceList)>& theWrittenShapes,
-    NCollection_IndexedDataMap<int, int>&         theDracoBufIndMap);
+    RWMesh_ShapeIterator&          theShapeIter,
+    int&                           theDracoBufInd,
+    bool&                          theToStartPrims,
+    const TCollection_AsciiString& theNodeName,
+    NCollection_Map<
+      occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>>&
+                                          theWrittenShapes,
+    NCollection_IndexedDataMap<int, int>& theDracoBufIndMap);
 
 protected:
   //! Shape + Style pair.
@@ -499,7 +506,10 @@ protected:
     }
   };
 
-  typedef NCollection_IndexedDataMap<RWGltf_StyledShape, Handle(RWGltf_GltfFaceList), Hasher>
+  typedef NCollection_IndexedDataMap<
+    RWGltf_StyledShape,
+    occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>,
+    Hasher>
     ShapeToGltfFaceMap;
 
 protected:
@@ -510,16 +520,16 @@ protected:
   RWGltf_WriterTrsfFormat                       myTrsfFormat;        //!< transformation format to write into glTF file
   RWMesh_NameFormat                             myNodeNameFormat;    //!< name format for exporting Nodes
   RWMesh_NameFormat                             myMeshNameFormat;    //!< name format for exporting Meshes
-  Standard_Boolean                              myIsBinary;          //!< flag to write into binary glTF format (.glb)
-  Standard_Boolean                              myIsForcedUVExport;  //!< export UV coordinates even if there are no mapped texture
-  Standard_Boolean                              myToEmbedTexturesInGlb; //!< flag to write image textures into GLB file
-  Standard_Boolean                              myToMergeFaces;      //!< flag to merge faces within a single part
-  Standard_Boolean                              myToSplitIndices16;  //!< flag to prefer keeping 16-bit indexes while merging face
+  bool                              myIsBinary;          //!< flag to write into binary glTF format (.glb)
+  bool                              myIsForcedUVExport;  //!< export UV coordinates even if there are no mapped texture
+  bool                              myToEmbedTexturesInGlb; //!< flag to write image textures into GLB file
+  bool                              myToMergeFaces;      //!< flag to merge faces within a single part
+  bool                              myToSplitIndices16;  //!< flag to prefer keeping 16-bit indexes while merging face
   RWMesh_CoordinateSystemConverter              myCSTrsf;            //!< transformation from OCCT to glTF coordinate system
   XCAFPrs_Style                                 myDefaultStyle;      //!< default material definition to be used for nodes with only color defined
 
   std::shared_ptr<RWGltf_GltfOStreamWriter>     myWriter;            //!< JSON writer
-  Handle(RWGltf_GltfMaterialMap)                myMaterialMap;       //!< map of defined materials
+  occ::handle<RWGltf_GltfMaterialMap>                myMaterialMap;       //!< map of defined materials
   RWGltf_GltfBufferView                         myBuffViewPos;       //!< current buffer view with nodes positions
   RWGltf_GltfBufferView                         myBuffViewNorm;      //!< current buffer view with nodes normals
   RWGltf_GltfBufferView                         myBuffViewTextCoord; //!< current buffer view with nodes UV coordinates
@@ -528,7 +538,7 @@ protected:
   int64_t                                       myBinDataLen64;      //!< length of binary file
 
   std::vector<RWGltf_GltfBufferView>            myBuffViewsDraco;    //!< vector of buffers view with compression data
-  Standard_Boolean                              myToParallel;        //!< flag to use multithreading; FALSE by default
+  bool                              myToParallel;        //!< flag to use multithreading; FALSE by default
                                             // clang-format on
   RWGltf_DracoParameters myDracoParameters; //!< Draco parameters
 };

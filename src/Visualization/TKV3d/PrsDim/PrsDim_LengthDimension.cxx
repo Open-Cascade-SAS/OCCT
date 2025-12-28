@@ -42,7 +42,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_LengthDimension, PrsDim_Dimension)
 
 PrsDim_LengthDimension::PrsDim_LengthDimension()
     : PrsDim_Dimension(PrsDim_KOD_LENGTH),
-      myHasCustomDirection(Standard_False)
+      myHasCustomDirection(false)
 {
   SetFlyout(15.0);
 }
@@ -54,7 +54,7 @@ PrsDim_LengthDimension::PrsDim_LengthDimension()
 PrsDim_LengthDimension::PrsDim_LengthDimension(const TopoDS_Face& theFirstFace,
                                                const TopoDS_Face& theSecondFace)
     : PrsDim_Dimension(PrsDim_KOD_LENGTH),
-      myHasCustomDirection(Standard_False)
+      myHasCustomDirection(false)
 {
   SetMeasuredGeometry(theFirstFace, theSecondFace);
   SetFlyout(15.0);
@@ -67,7 +67,7 @@ PrsDim_LengthDimension::PrsDim_LengthDimension(const TopoDS_Face& theFirstFace,
 PrsDim_LengthDimension::PrsDim_LengthDimension(const TopoDS_Face& theFace,
                                                const TopoDS_Edge& theEdge)
     : PrsDim_Dimension(PrsDim_KOD_LENGTH),
-      myHasCustomDirection(Standard_False)
+      myHasCustomDirection(false)
 {
   SetMeasuredGeometry(theFace, theEdge);
   SetFlyout(15.0);
@@ -81,7 +81,7 @@ PrsDim_LengthDimension::PrsDim_LengthDimension(const gp_Pnt& theFirstPoint,
                                                const gp_Pnt& theSecondPoint,
                                                const gp_Pln& thePlane)
     : PrsDim_Dimension(PrsDim_KOD_LENGTH),
-      myHasCustomDirection(Standard_False)
+      myHasCustomDirection(false)
 {
   SetMeasuredGeometry(theFirstPoint, theSecondPoint, thePlane);
   SetFlyout(15.0);
@@ -95,7 +95,7 @@ PrsDim_LengthDimension::PrsDim_LengthDimension(const TopoDS_Shape& theFirstShape
                                                const TopoDS_Shape& theSecondShape,
                                                const gp_Pln&       thePlane)
     : PrsDim_Dimension(PrsDim_KOD_LENGTH),
-      myHasCustomDirection(Standard_False)
+      myHasCustomDirection(false)
 {
   SetCustomPlane(thePlane);
   SetMeasuredShapes(theFirstShape, theSecondShape);
@@ -106,7 +106,7 @@ PrsDim_LengthDimension::PrsDim_LengthDimension(const TopoDS_Shape& theFirstShape
 
 PrsDim_LengthDimension::PrsDim_LengthDimension(const TopoDS_Edge& theEdge, const gp_Pln& thePlane)
     : PrsDim_Dimension(PrsDim_KOD_LENGTH),
-      myHasCustomDirection(Standard_False)
+      myHasCustomDirection(false)
 {
   SetMeasuredGeometry(theEdge, thePlane);
   SetFlyout(15.0);
@@ -163,8 +163,8 @@ void PrsDim_LengthDimension::SetMeasuredGeometry(const TopoDS_Face& theFace,
 void PrsDim_LengthDimension::SetMeasuredShapes(const TopoDS_Shape& theFirstShape,
                                                const TopoDS_Shape& theSecondShape)
 {
-  gp_Pln           aComputedPlane;
-  Standard_Boolean isPlaneReturned = Standard_False;
+  gp_Pln aComputedPlane;
+  bool   isPlaneReturned = false;
 
   myFirstShape  = theFirstShape;
   mySecondShape = theSecondShape;
@@ -179,7 +179,7 @@ void PrsDim_LengthDimension::SetMeasuredShapes(const TopoDS_Shape& theFirstShape
     }
     else
     {
-      myIsGeometryValid = Standard_False;
+      myIsGeometryValid = false;
     }
   }
 
@@ -188,9 +188,9 @@ void PrsDim_LengthDimension::SetMeasuredShapes(const TopoDS_Shape& theFirstShape
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_LengthDimension::CheckPlane(const gp_Pln& thePlane) const
+bool PrsDim_LengthDimension::CheckPlane(const gp_Pln& thePlane) const
 {
-  Standard_Boolean anIsFaultyNormal =
+  bool anIsFaultyNormal =
     thePlane.Axis().Direction().IsParallel(gce_MakeDir(myFirstPoint, mySecondPoint),
                                            Precision::Angular());
 
@@ -198,10 +198,10 @@ Standard_Boolean PrsDim_LengthDimension::CheckPlane(const gp_Pln& thePlane) cons
        && !thePlane.Contains(mySecondPoint, Precision::Confusion()))
       || anIsFaultyNormal)
   {
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -248,7 +248,7 @@ void PrsDim_LengthDimension::SetDisplayUnits(const TCollection_AsciiString& theU
 
 //=================================================================================================
 
-Standard_Real PrsDim_LengthDimension::ComputeValue() const
+double PrsDim_LengthDimension::ComputeValue() const
 {
   if (!IsValid())
     return 0.0;
@@ -261,9 +261,9 @@ Standard_Real PrsDim_LengthDimension::ComputeValue() const
 
 //=================================================================================================
 
-void PrsDim_LengthDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                     const Handle(Prs3d_Presentation)& thePresentation,
-                                     const Standard_Integer            theMode)
+void PrsDim_LengthDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                     const occ::handle<Prs3d_Presentation>& thePresentation,
+                                     const int                              theMode)
 {
   mySelectionGeom.Clear(theMode);
 
@@ -295,8 +295,7 @@ void PrsDim_LengthDimension::ComputeFlyoutLinePoints(const gp_Pnt& theFirstPoint
   gp_Ax1 aPlaneNormal = GetPlane().Axis();
   gp_Vec aFlyoutNormalizedDir(aPlaneNormal.Direction() ^ myDirection);
   aFlyoutNormalizedDir.Normalize();
-  Standard_Real aTargetProjectedToFlyout =
-    gp_Vec(theFirstPoint, theSecondPoint).Dot(aFlyoutNormalizedDir);
+  double aTargetProjectedToFlyout = gp_Vec(theFirstPoint, theSecondPoint).Dot(aFlyoutNormalizedDir);
 
   gp_Dir aFlyoutVector = aFlyoutNormalizedDir;
   // create lines for layouts
@@ -313,8 +312,8 @@ void PrsDim_LengthDimension::ComputeFlyoutLinePoints(const gp_Pnt& theFirstPoint
 //=================================================================================================
 
 void PrsDim_LengthDimension::ComputeFlyoutSelection(
-  const Handle(SelectMgr_Selection)&   theSelection,
-  const Handle(SelectMgr_EntityOwner)& theEntityOwner)
+  const occ::handle<SelectMgr_Selection>&   theSelection,
+  const occ::handle<SelectMgr_EntityOwner>& theEntityOwner)
 {
   if (!IsValid())
   {
@@ -326,8 +325,8 @@ void PrsDim_LengthDimension::ComputeFlyoutSelection(
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_LengthDimension::IsValidPoints(const gp_Pnt& theFirstPoint,
-                                                       const gp_Pnt& theSecondPoint) const
+bool PrsDim_LengthDimension::IsValidPoints(const gp_Pnt& theFirstPoint,
+                                           const gp_Pnt& theSecondPoint) const
 {
   return theFirstPoint.Distance(theSecondPoint) > Precision::Confusion();
 }
@@ -336,14 +335,14 @@ Standard_Boolean PrsDim_LengthDimension::IsValidPoints(const gp_Pnt& theFirstPoi
 // function : InitTwoEdgesLength
 // purpose  : Initialization of dimension between two linear edges
 //=======================================================================
-Standard_Boolean PrsDim_LengthDimension::InitTwoEdgesLength(const TopoDS_Edge& theFirstEdge,
-                                                            const TopoDS_Edge& theSecondEdge,
-                                                            gp_Dir&            theDirAttach)
+bool PrsDim_LengthDimension::InitTwoEdgesLength(const TopoDS_Edge& theFirstEdge,
+                                                const TopoDS_Edge& theSecondEdge,
+                                                gp_Dir&            theDirAttach)
 {
-  Handle(Geom_Curve) aFirstCurve, aSecondCurve;
-  gp_Pnt             aPoint11, aPoint12, aPoint21, aPoint22;
-  Standard_Boolean   isFirstInfinite  = Standard_False;
-  Standard_Boolean   isSecondInfinite = Standard_False;
+  occ::handle<Geom_Curve> aFirstCurve, aSecondCurve;
+  gp_Pnt                  aPoint11, aPoint12, aPoint21, aPoint22;
+  bool                    isFirstInfinite  = false;
+  bool                    isSecondInfinite = false;
   if (!PrsDim::ComputeGeometry(theFirstEdge,
                                theSecondEdge,
                                aFirstCurve,
@@ -355,17 +354,17 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoEdgesLength(const TopoDS_Edge& t
                                isFirstInfinite,
                                isSecondInfinite))
   {
-    return Standard_False;
+    return false;
   }
 
-  const Handle(Geom_Line) aFirstLine  = Handle(Geom_Line)::DownCast(aFirstCurve);
-  const Handle(Geom_Line) aSecondLine = Handle(Geom_Line)::DownCast(aSecondCurve);
+  const occ::handle<Geom_Line> aFirstLine  = occ::down_cast<Geom_Line>(aFirstCurve);
+  const occ::handle<Geom_Line> aSecondLine = occ::down_cast<Geom_Line>(aSecondCurve);
   if (!aFirstLine.IsNull() && !aSecondLine.IsNull())
   {
     if (!aFirstLine->Lin().Direction().IsParallel(aSecondLine->Lin().Direction(),
                                                   Precision::Angular()))
     {
-      return Standard_False;
+      return false;
     }
 
     theDirAttach = aFirstLine->Lin().Direction();
@@ -418,7 +417,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoEdgesLength(const TopoDS_Edge& t
 
   if (aFirstLine.IsNull() || aSecondLine.IsNull())
   {
-    Standard_Real aParam1 = 0.0, aParam2 = 0.0;
+    double aParam1 = 0.0, aParam2 = 0.0;
     anExtrema.LowerDistanceParameters(aParam1, aParam2);
     BRepAdaptor_Curve aCurveAdaptor(theFirstEdge);
     gp_Pnt            aPoint;
@@ -438,21 +437,21 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoEdgesLength(const TopoDS_Edge& t
 // function : InitEdgeVertexLength
 // purpose  : for first edge and second vertex shapes
 //=======================================================================
-Standard_Boolean PrsDim_LengthDimension::InitEdgeVertexLength(const TopoDS_Edge&   theEdge,
-                                                              const TopoDS_Vertex& theVertex,
-                                                              gp_Dir&              theEdgeDir,
-                                                              Standard_Boolean     isInfinite)
+bool PrsDim_LengthDimension::InitEdgeVertexLength(const TopoDS_Edge&   theEdge,
+                                                  const TopoDS_Vertex& theVertex,
+                                                  gp_Dir&              theEdgeDir,
+                                                  bool                 isInfinite)
 {
-  gp_Pnt             anEdgePoint1, anEdgePoint2;
-  Handle(Geom_Curve) aCurve;
+  gp_Pnt                  anEdgePoint1, anEdgePoint2;
+  occ::handle<Geom_Curve> aCurve;
   if (!PrsDim::ComputeGeometry(theEdge, aCurve, anEdgePoint1, anEdgePoint2, isInfinite))
   {
-    return Standard_False;
+    return false;
   }
 
   myFirstPoint = BRep_Tool::Pnt(theVertex);
 
-  if (Handle(Geom_Line) aGeomLine = Handle(Geom_Line)::DownCast(aCurve))
+  if (occ::handle<Geom_Line> aGeomLine = occ::down_cast<Geom_Line>(aCurve))
   {
     const gp_Lin aLin = aGeomLine->Lin();
 
@@ -489,9 +488,9 @@ Standard_Boolean PrsDim_LengthDimension::InitEdgeVertexLength(const TopoDS_Edge&
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_LengthDimension::InitEdgeFaceLength(const TopoDS_Edge& theEdge,
-                                                            const TopoDS_Face& theFace,
-                                                            gp_Dir&            theEdgeDir)
+bool PrsDim_LengthDimension::InitEdgeFaceLength(const TopoDS_Edge& theEdge,
+                                                const TopoDS_Face& theFace,
+                                                gp_Dir&            theEdgeDir)
 {
   theEdgeDir = gp::DX();
 
@@ -499,25 +498,23 @@ Standard_Boolean PrsDim_LengthDimension::InitEdgeFaceLength(const TopoDS_Edge& t
   BRepExtrema_DistShapeShape aDistAdaptor(theEdge, theFace, Extrema_ExtFlag_MIN);
   if (!aDistAdaptor.IsDone() || aDistAdaptor.NbSolution() < 1)
   {
-    return Standard_False;
+    return false;
   }
   myFirstPoint  = aDistAdaptor.PointOnShape1(1);
   mySecondPoint = aDistAdaptor.PointOnShape2(1);
 
   // Take direction for dimension line (will be orthogonalized later) parallel to edge
   BRepAdaptor_Curve aCurveAdaptor(theEdge);
-  Standard_Real     aParam;
+  double            aParam;
   if (aDistAdaptor.SupportOnShape1(1).ShapeType() == TopAbs_EDGE)
   {
     aDistAdaptor.ParOnEdgeS1(1, aParam);
   }
   else
   {
-    Standard_Real aD1 =
-      aCurveAdaptor.Value(aCurveAdaptor.FirstParameter()).SquareDistance(myFirstPoint);
-    Standard_Real aD2 =
-      aCurveAdaptor.Value(aCurveAdaptor.LastParameter()).SquareDistance(myFirstPoint);
-    aParam = (aD1 < aD2 ? aCurveAdaptor.FirstParameter() : aCurveAdaptor.LastParameter());
+    double aD1 = aCurveAdaptor.Value(aCurveAdaptor.FirstParameter()).SquareDistance(myFirstPoint);
+    double aD2 = aCurveAdaptor.Value(aCurveAdaptor.LastParameter()).SquareDistance(myFirstPoint);
+    aParam     = (aD1 < aD2 ? aCurveAdaptor.FirstParameter() : aCurveAdaptor.LastParameter());
   }
   gp_Pnt aP;
   gp_Vec aV;
@@ -543,23 +540,23 @@ Standard_Boolean PrsDim_LengthDimension::InitEdgeFaceLength(const TopoDS_Edge& t
 // purpose  : Initialization of two points where dimension layouts
 //           will be attached
 //=======================================================================
-Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape& theFirstShape,
-                                                             const TopoDS_Shape& theSecondShape,
-                                                             gp_Pln&             theComputedPlane,
-                                                             Standard_Boolean&   theIsPlaneComputed)
+bool PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape& theFirstShape,
+                                                 const TopoDS_Shape& theSecondShape,
+                                                 gp_Pln&             theComputedPlane,
+                                                 bool&               theIsPlaneComputed)
 {
-  theIsPlaneComputed = Standard_False;
-  gp_Dir           aDirAttach;
-  Standard_Boolean isInfinite = Standard_False;
-  Standard_Boolean isSuccess  = Standard_False;
+  theIsPlaneComputed = false;
+  gp_Dir aDirAttach;
+  bool   isInfinite = false;
+  bool   isSuccess  = false;
   switch (theFirstShape.ShapeType())
   {
     case TopAbs_FACE: {
       // Initialization for face
-      gp_Pln               aFirstPlane;
-      Handle(Geom_Surface) aFirstSurface;
-      PrsDim_KindOfSurface aFirstSurfKind;
-      Standard_Real        aFirstOffset;
+      gp_Pln                    aFirstPlane;
+      occ::handle<Geom_Surface> aFirstSurface;
+      PrsDim_KindOfSurface      aFirstSurfKind;
+      double                    aFirstOffset;
 
       TopoDS_Face aFirstFace = TopoDS::Face(theFirstShape);
 
@@ -573,10 +570,10 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
       {
         // Initialization for face
         myGeometryType = GeometryType_Faces;
-        gp_Pln               aSecondPlane;
-        Handle(Geom_Surface) aSecondSurface;
-        PrsDim_KindOfSurface aSecondSurfKind;
-        Standard_Real        aSecondOffset;
+        gp_Pln                    aSecondPlane;
+        occ::handle<Geom_Surface> aSecondSurface;
+        PrsDim_KindOfSurface      aSecondSurfKind;
+        double                    aSecondOffset;
 
         TopoDS_Face aSecondFace = TopoDS::Face(theSecondShape);
 
@@ -591,7 +588,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
           if (!aFirstPlane.Axis().Direction().IsParallel(aSecondPlane.Axis().Direction(),
                                                          Precision::Angular()))
           {
-            return Standard_False;
+            return false;
           }
 
           TopExp_Explorer anExplorer(theFirstShape, TopAbs_VERTEX);
@@ -608,11 +605,11 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
 
           mySecondPoint = PrsDim::ProjectPointOnPlane(myFirstPoint, aSecondPlane);
 
-          Standard_Real anU, aV;
+          double anU, aV;
           ElSLib::Parameters(aSecondPlane, mySecondPoint, anU, aV);
 
           BRepTopAdaptor_FClass2d aClassifier(aSecondFace, Precision::Confusion());
-          TopAbs_State            aState = aClassifier.Perform(gp_Pnt2d(anU, aV), Standard_False);
+          TopAbs_State            aState = aClassifier.Perform(gp_Pnt2d(anU, aV), false);
 
           if (aState == TopAbs_OUT || aState == TopAbs_UNKNOWN)
           {
@@ -623,13 +620,13 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
           if (isSuccess)
           {
             theComputedPlane   = ComputePlane(aFirstPlane.Position().XDirection());
-            theIsPlaneComputed = Standard_True;
+            theIsPlaneComputed = true;
           }
         }
         else // curvilinear faces
         {
-          Standard_Real aU1Min, aV1Min, aU1Max, aV1Max;
-          Standard_Real aU2Min, aV2Min, aU2Max, aV2Max;
+          double aU1Min, aV1Min, aU1Max, aV1Max;
+          double aU2Min, aV2Min, aU2Max, aV2Max;
           BRepTools::UVBounds(aFirstFace, aU1Min, aU1Max, aV1Min, aV1Max);
           BRepTools::UVBounds(aSecondFace, aU2Min, aU2Max, aV2Min, aV2Max);
 
@@ -644,7 +641,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
                                                   aV2Min,
                                                   aV2Max);
 
-          Standard_Real aU1, aV1, aU2, aV2;
+          double aU1, aV1, aU2, aV2;
           anExtrema.LowerDistanceParameters(aU1, aV1, aU2, aV2);
           myFirstPoint  = BRep_Tool::Surface(aFirstFace)->Value(aU1, aV1);
           mySecondPoint = BRep_Tool::Surface(aSecondFace)->Value(aU2, aV2);
@@ -658,7 +655,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
           if (isSuccess)
           {
             theComputedPlane   = ComputePlane(aDirAttach);
-            theIsPlaneComputed = Standard_True;
+            theIsPlaneComputed = true;
           }
         }
 
@@ -673,7 +670,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
         if (isSuccess)
         {
           theComputedPlane   = ComputePlane(aDirAttach);
-          theIsPlaneComputed = Standard_True;
+          theIsPlaneComputed = true;
         }
 
         return isSuccess;
@@ -693,7 +690,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
         if (isSuccess)
         {
           theComputedPlane   = ComputePlane(aDirAttach);
-          theIsPlaneComputed = Standard_True;
+          theIsPlaneComputed = true;
         }
 
         return isSuccess;
@@ -707,7 +704,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
         if (isSuccess)
         {
           theComputedPlane   = ComputePlane(aDirAttach);
-          theIsPlaneComputed = Standard_True;
+          theIsPlaneComputed = true;
         }
 
         return isSuccess;
@@ -721,7 +718,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
         if (isSuccess)
         {
           theComputedPlane   = ComputePlane(aDirAttach);
-          theIsPlaneComputed = Standard_True;
+          theIsPlaneComputed = true;
         }
 
         return isSuccess;
@@ -748,7 +745,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
         if (isSuccess)
         {
           theComputedPlane   = ComputePlane(aDirAttach);
-          theIsPlaneComputed = Standard_True;
+          theIsPlaneComputed = true;
         }
 
         return isSuccess;
@@ -765,7 +762,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
       break;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -775,28 +772,28 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape&
 // Attention: 1) <theShape> can be only the edge in current implementation
 //            2) No length for infinite edge
 //=======================================================================
-Standard_Boolean PrsDim_LengthDimension::InitOneShapePoints(const TopoDS_Shape& theShape)
+bool PrsDim_LengthDimension::InitOneShapePoints(const TopoDS_Shape& theShape)
 {
   if (theShape.ShapeType() != TopAbs_EDGE)
   {
-    return Standard_False;
+    return false;
   }
 
   TopoDS_Edge anEdge = TopoDS::Edge(theShape);
 
   BRepAdaptor_Curve aBrepCurve(anEdge);
-  Standard_Real     aFirst = aBrepCurve.FirstParameter();
-  Standard_Real     aLast  = aBrepCurve.LastParameter();
+  double            aFirst = aBrepCurve.FirstParameter();
+  double            aLast  = aBrepCurve.LastParameter();
 
   if (aBrepCurve.GetType() != GeomAbs_Line)
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Boolean isInfinite = (Precision::IsInfinite(aFirst) || Precision::IsInfinite(aLast));
+  bool isInfinite = (Precision::IsInfinite(aFirst) || Precision::IsInfinite(aLast));
   if (isInfinite)
   {
-    return Standard_False;
+    return false;
   }
 
   myFirstPoint  = aBrepCurve.Value(aBrepCurve.FirstParameter());
@@ -827,7 +824,7 @@ void PrsDim_LengthDimension::SetTextPosition(const gp_Pnt& theTextPos)
     return;
   }
 
-  myIsTextPositionFixed = Standard_True;
+  myIsTextPositionFixed = true;
   myFixedTextPosition   = theTextPos;
 
   SetToUpdate();
@@ -835,8 +832,7 @@ void PrsDim_LengthDimension::SetTextPosition(const gp_Pnt& theTextPos)
 
 //=================================================================================================
 
-void PrsDim_LengthDimension::SetDirection(const gp_Dir&          theDirection,
-                                          const Standard_Boolean theUseDirection)
+void PrsDim_LengthDimension::SetDirection(const gp_Dir& theDirection, const bool theUseDirection)
 {
   myHasCustomDirection = theUseDirection;
   if (myHasCustomDirection)

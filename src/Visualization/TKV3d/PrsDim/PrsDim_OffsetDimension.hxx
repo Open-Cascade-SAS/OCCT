@@ -20,8 +20,6 @@
 #include <PrsDim_Relation.hxx>
 #include <PrsDim_KindOfDimension.hxx>
 
-DEFINE_STANDARD_HANDLE(PrsDim_OffsetDimension, PrsDim_Relation)
-
 //! A framework to display dimensions of offsets.
 //! The relation between the offset and the basis shape
 //! is indicated. This relation is displayed with arrows and
@@ -36,38 +34,35 @@ public:
   //! dimension aVal, and the text aText.
   Standard_EXPORT PrsDim_OffsetDimension(const TopoDS_Shape&               FistShape,
                                          const TopoDS_Shape&               SecondShape,
-                                         const Standard_Real               aVal,
+                                         const double                      aVal,
                                          const TCollection_ExtendedString& aText);
 
   //! Indicates that the dimension we are concerned with is an offset.
-  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE
-  {
-    return PrsDim_KOD_OFFSET;
-  }
+  virtual PrsDim_KindOfDimension KindOfDimension() const override { return PrsDim_KOD_OFFSET; }
 
   //! Returns true if the offset datum is movable.
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool IsMovable() const override { return true; }
 
   //! Sets a transformation aTrsf for presentation and
   //! selection to a relative position.
   void SetRelativePos(const gp_Trsf& aTrsf) { myRelativePos = aTrsf; }
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
-  Standard_EXPORT void ComputeTwoFacesOffset(const Handle(Prs3d_Presentation)& aPresentation,
-                                             const gp_Trsf&                    aTrsf);
+  Standard_EXPORT void ComputeTwoFacesOffset(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                             const gp_Trsf&                         aTrsf);
 
-  Standard_EXPORT void ComputeTwoAxesOffset(const Handle(Prs3d_Presentation)& aPresentation,
-                                            const gp_Trsf&                    aTrsf);
+  Standard_EXPORT void ComputeTwoAxesOffset(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                            const gp_Trsf&                         aTrsf);
 
-  Standard_EXPORT void ComputeAxeFaceOffset(const Handle(Prs3d_Presentation)& aPresentation,
-                                            const gp_Trsf&                    aTrsf);
+  Standard_EXPORT void ComputeAxeFaceOffset(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                            const gp_Trsf&                         aTrsf);
 
 private:
   gp_Pnt  myFAttach;

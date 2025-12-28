@@ -32,12 +32,12 @@ RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::
 //=================================================================================================
 
 void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&                         data,
-  const Standard_Integer                                         num0,
-  Handle(Interface_Check)&                                       ach,
-  const Handle(StepBasic_SiUnitAndThermodynamicTemperatureUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&                         data,
+  const int                                                           num0,
+  occ::handle<Interface_Check>&                                       ach,
+  const occ::handle<StepBasic_SiUnitAndThermodynamicTemperatureUnit>& ent) const
 {
-  Standard_Integer num = num0;
+  int num = num0;
 
   // --- Instance of common supertype NamedUnit ---
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
@@ -45,8 +45,8 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep(
 
   // --- field : dimensions ---
   // --- This field is redefined ---
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-  data->CheckDerived(num, 1, "dimensions", ach, Standard_False);
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
+  data->CheckDerived(num, 1, "dimensions", ach, false);
 
   // --- Instance of plex component SiUnit ---
   num = data->NextForComplex(num);
@@ -55,13 +55,13 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep(
 
   // --- field : prefix ---
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
-  Standard_Boolean   hasAprefix = Standard_False;
+  bool               hasAprefix = false;
   if (data->IsParamDefined(num, 1))
   {
     if (data->ParamType(num, 1) == Interface_ParamEnum)
     {
-      Standard_CString text = data->ParamCValue(num, 1);
-      hasAprefix            = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
+      const char* text = data->ParamCValue(num, 1);
+      hasAprefix       = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
       if (!hasAprefix)
       {
         ach->AddFail("Enumeration si_prefix has not an allowed value");
@@ -79,7 +79,7 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep(
   StepBasic_SiUnitName aName;
   if (data->ParamType(num, 2) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 2);
+    const char* text = data->ParamCValue(num, 2);
     if (!RWStepBasic_RWSiUnitName::ConvertToEnum(text, aName))
     {
       ach->AddFail("Enumeration si_unit_name has not an allowed value");
@@ -104,8 +104,8 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::WriteStep(
-  StepData_StepWriter&                                           SW,
-  const Handle(StepBasic_SiUnitAndThermodynamicTemperatureUnit)& ent) const
+  StepData_StepWriter&                                                SW,
+  const occ::handle<StepBasic_SiUnitAndThermodynamicTemperatureUnit>& ent) const
 {
   // --- Instance of common supertype NamedUnit ---
   SW.StartEntity("NAMED_UNIT");
@@ -118,7 +118,7 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::WriteStep(
   SW.StartEntity("SI_UNIT");
 
   // --- field : prefix ---
-  Standard_Boolean hasAprefix = ent->HasPrefix();
+  bool hasAprefix = ent->HasPrefix();
   if (hasAprefix)
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
   else

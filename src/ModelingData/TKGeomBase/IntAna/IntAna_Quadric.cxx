@@ -97,7 +97,7 @@ IntAna_Quadric::IntAna_Quadric(const gp_Cone& Cone)
 void IntAna_Quadric::SetQuadric(const gp_Cone& Cone)
 {
   Cone.Coefficients(CXX, CYY, CZZ, CXY, CXZ, CYZ, CX, CY, CZ, CCte);
-  const Standard_Real aVParam = -Cone.RefRadius() / std::sin(Cone.SemiAngle());
+  const double aVParam = -Cone.RefRadius() / std::sin(Cone.SemiAngle());
   mySpecialPoints.Append(ElSLib::Value(0.0, aVParam, Cone));
 }
 
@@ -119,16 +119,16 @@ IntAna_Quadric::IntAna_Quadric(const gp_Sphere& Sph)
 //----------------------------------------------------------------------
 //-- Returns the Coefficients of the Quadric
 //----------------------------------------------------------------------
-void IntAna_Quadric::Coefficients(Standard_Real& _CXX,
-                                  Standard_Real& _CYY,
-                                  Standard_Real& _CZZ,
-                                  Standard_Real& _CXY,
-                                  Standard_Real& _CXZ,
-                                  Standard_Real& _CYZ,
-                                  Standard_Real& _CX,
-                                  Standard_Real& _CY,
-                                  Standard_Real& _CZ,
-                                  Standard_Real& _CCte) const
+void IntAna_Quadric::Coefficients(double& _CXX,
+                                  double& _CYY,
+                                  double& _CZZ,
+                                  double& _CXY,
+                                  double& _CXZ,
+                                  double& _CYZ,
+                                  double& _CX,
+                                  double& _CY,
+                                  double& _CZ,
+                                  double& _CCte) const
 {
   _CXX  = CXX;
   _CYY  = CYY;
@@ -145,25 +145,25 @@ void IntAna_Quadric::Coefficients(Standard_Real& _CXX,
 //----------------------------------------------------------------------
 //-- Computes the Coefficients in a new coordinate system
 //----------------------------------------------------------------------
-void IntAna_Quadric::NewCoefficients(Standard_Real& _CXX,
-                                     Standard_Real& _CYY,
-                                     Standard_Real& _CZZ,
-                                     Standard_Real& _CXY,
-                                     Standard_Real& _CXZ,
-                                     Standard_Real& _CYZ,
-                                     Standard_Real& _CX,
-                                     Standard_Real& _CY,
-                                     Standard_Real& _CZ,
-                                     Standard_Real& _CCte,
-                                     const gp_Ax3&  Axis) const
+void IntAna_Quadric::NewCoefficients(double&       _CXX,
+                                     double&       _CYY,
+                                     double&       _CZZ,
+                                     double&       _CXY,
+                                     double&       _CXZ,
+                                     double&       _CYZ,
+                                     double&       _CX,
+                                     double&       _CY,
+                                     double&       _CZ,
+                                     double&       _CCte,
+                                     const gp_Ax3& Axis) const
 {
-  Standard_Real t11, t12, t13, t14; // x = t11 X + t12 Y + t13 Z + t14
-  Standard_Real t21, t22, t23, t24; // y = t21 X + t22 Y + t23 Z + t24
-  Standard_Real t31, t32, t33, t34; // z = t31 X + t32 Y + t33 Z + t34
+  double t11, t12, t13, t14; // x = t11 X + t12 Y + t13 Z + t14
+  double t21, t22, t23, t24; // y = t21 X + t22 Y + t23 Z + t24
+  double t31, t32, t33, t34; // z = t31 X + t32 Y + t33 Z + t34
 
   //   = X DirX + Y DirY + Z DirZ + Loc
 
-  Standard_Real Cxx, Cyy, Czz, Cxy, Cxz, Cyz, Cx, Cy, Cz, Ccte;
+  double Cxx, Cyy, Czz, Cxy, Cxz, Cyz, Cx, Cy, Cz, Ccte;
 
   gp_Trsf Trans;
   Trans.SetTransformation(Axis);
@@ -187,18 +187,18 @@ void IntAna_Quadric::NewCoefficients(Standard_Real& _CXX,
   // with P1(X,Y,Z)= Cxx X X + Cyy Y Y + Czz Z Z + 2 Cxy X Y ... + Ccte
   //               = _CXX  x x + _CYY  y y  +  ...  +  _CCte
 
-  Standard_Real t11_P2 = t11 * t11;
-  Standard_Real t21_P2 = t21 * t21;
-  Standard_Real t31_P2 = t31 * t31;
-  Standard_Real t12_P2 = t12 * t12;
-  Standard_Real t22_P2 = t22 * t22;
-  Standard_Real t32_P2 = t32 * t32;
-  Standard_Real t13_P2 = t13 * t13;
-  Standard_Real t23_P2 = t23 * t23;
-  Standard_Real t33_P2 = t33 * t33;
-  Standard_Real t14_P2 = t14 * t14;
-  Standard_Real t24_P2 = t24 * t24;
-  Standard_Real t34_P2 = t34 * t34;
+  double t11_P2 = t11 * t11;
+  double t21_P2 = t21 * t21;
+  double t31_P2 = t31 * t31;
+  double t12_P2 = t12 * t12;
+  double t22_P2 = t22 * t22;
+  double t32_P2 = t32 * t32;
+  double t13_P2 = t13 * t13;
+  double t23_P2 = t23 * t23;
+  double t33_P2 = t33 * t33;
+  double t14_P2 = t14 * t14;
+  double t24_P2 = t24 * t24;
+  double t34_P2 = t34 * t34;
 
   Ccte = ((_CCte) + t14_P2 * (_CXX) + t24_P2 * (_CYY) + t34_P2 * (_CZZ)
           + 2.0

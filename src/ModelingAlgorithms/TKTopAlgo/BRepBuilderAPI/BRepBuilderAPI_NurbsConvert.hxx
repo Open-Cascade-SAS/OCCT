@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <BRepBuilderAPI_ModifyShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BRepTools_ReShape.hxx>
 
 class TopoDS_Shape;
@@ -51,8 +53,7 @@ public:
   //! Note: the constructed framework can be reused to
   //! convert other shapes. You specify these with the
   //! function Perform.
-  Standard_EXPORT BRepBuilderAPI_NurbsConvert(const TopoDS_Shape&    S,
-                                              const Standard_Boolean Copy = Standard_False);
+  Standard_EXPORT BRepBuilderAPI_NurbsConvert(const TopoDS_Shape& S, const bool Copy = false);
 
   //! Builds a new shape by converting the geometry of the
   //! shape S into NURBS geometry.
@@ -62,11 +63,11 @@ public:
   //! Use the function Shape to access the new shape.
   //! Note: this framework can be reused to convert other
   //! shapes: you specify them by calling the function Perform again.
-  Standard_EXPORT void Perform(const TopoDS_Shape& S, const Standard_Boolean Copy = Standard_False);
+  Standard_EXPORT void Perform(const TopoDS_Shape& S, const bool Copy = false);
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S);
 
   //! Returns the modified shape corresponding to <S>.
   //! S can correspond to the entire initial shape or to its subshape.
@@ -76,12 +77,11 @@ public:
   //! transformation has been applied.
   Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const;
 
-protected:
 private:
   Standard_EXPORT void CorrectVertexTol();
 
-  TopTools_DataMapOfShapeShape myVtxToReplace;
-  BRepTools_ReShape            mySubs;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVtxToReplace;
+  BRepTools_ReShape                                                        mySubs;
 };
 
 #endif // _BRepBuilderAPI_NurbsConvert_HeaderFile

@@ -19,7 +19,8 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <Graphic3d_Vec2.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
 
 struct SwsContext;
 
@@ -42,24 +43,24 @@ public:
   //! @param theSrcFormat pixel format (AVPixelFormat) of input frame
   //! @param theResDims   dimensions of destination frame
   //! @param theResFormat pixel format (AVPixelFormat) of destination frame
-  Standard_EXPORT bool Init(const Graphic3d_Vec2i& theSrcDims,
-                            int                    theSrcFormat,
-                            const Graphic3d_Vec2i& theResDims,
-                            int                    theResFormat);
+  Standard_EXPORT bool Init(const NCollection_Vec2<int>& theSrcDims,
+                            int                          theSrcFormat,
+                            const NCollection_Vec2<int>& theResDims,
+                            int                          theResFormat);
 
   //! Convert one frame to another.
-  Standard_EXPORT bool Convert(const Handle(Media_Frame)& theSrc,
-                               const Handle(Media_Frame)& theRes);
+  Standard_EXPORT bool Convert(const occ::handle<Media_Frame>& theSrc,
+                               const occ::handle<Media_Frame>& theRes);
 
   //! Return TRUE if context was initialized.
   bool IsValid() const { return mySwsContext != NULL; }
 
 protected:
-  SwsContext*     mySwsContext; //!< conversion context
-  Graphic3d_Vec2i mySrcDims;    //!< dimensions of input frame
-  int             mySrcFormat;  //!< pixel format (AVPixelFormat) of input frame
-  Graphic3d_Vec2i myResDims;    //!< dimensions of destination frame
-  int             myResFormat;  //!< pixel format (AVPixelFormat) of destination frame
+  SwsContext*           mySwsContext; //!< conversion context
+  NCollection_Vec2<int> mySrcDims;    //!< dimensions of input frame
+  int                   mySrcFormat;  //!< pixel format (AVPixelFormat) of input frame
+  NCollection_Vec2<int> myResDims;    //!< dimensions of destination frame
+  int                   myResFormat;  //!< pixel format (AVPixelFormat) of destination frame
 };
 
 #endif // _Media_Scaler_HeaderFile

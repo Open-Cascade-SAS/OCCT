@@ -27,14 +27,14 @@ TDocStd_PathParser::TDocStd_PathParser(const TCollection_ExtendedString& path)
 void TDocStd_PathParser::Parse()
 {
   TCollection_ExtendedString temp          = myPath;
-  Standard_Integer           PointPosition = myPath.SearchFromEnd(TCollection_ExtendedString("."));
+  int                        PointPosition = myPath.SearchFromEnd(TCollection_ExtendedString("."));
   if (PointPosition > 0)
     myExtension = temp.Split(PointPosition);
   else
     return;
   temp.Trunc(PointPosition - 1);
-  Standard_Boolean isFileName = (temp.Length()) ? Standard_True : Standard_False;
-  Standard_Boolean isTrek     = Standard_True;
+  bool isFileName = (temp.Length()) ? true : false;
+  bool isTrek     = true;
 #ifdef _WIN32
   PointPosition = temp.SearchFromEnd(TCollection_ExtendedString("\\"));
   if (!(PointPosition > 0))
@@ -46,7 +46,7 @@ void TDocStd_PathParser::Parse()
     if (isFileName)
     {
       myName = temp;
-      isTrek = Standard_False;
+      isTrek = false;
     }
     else
       return;
@@ -60,7 +60,7 @@ void TDocStd_PathParser::Parse()
     if (isFileName)
     {
       myName = temp;
-      isTrek = Standard_False;
+      isTrek = false;
     }
     else
       return;
@@ -99,7 +99,7 @@ TCollection_ExtendedString TDocStd_PathParser::Path() const
   return myPath;
 }
 
-Standard_Integer TDocStd_PathParser::Length() const
+int TDocStd_PathParser::Length() const
 {
   return myPath.Length();
 }

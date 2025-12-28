@@ -23,10 +23,10 @@
 RWStepBasic_RWProductDefinitionFormation::RWStepBasic_RWProductDefinitionFormation() {}
 
 void RWStepBasic_RWProductDefinitionFormation::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_ProductDefinitionFormation)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                                                num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepBasic_ProductDefinitionFormation>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -36,22 +36,22 @@ void RWStepBasic_RWProductDefinitionFormation::ReadStep(
 
   // --- own field : id ---
 
-  Handle(TCollection_HAsciiString) aId;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aId;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "id", ach, aId);
 
   // --- own field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   if (data->IsParamDefined(num, 2))
   { // gka 05.03.99 S4134 upgrade from CD to DIS
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat2 =` not needed
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   // --- own field : ofProduct ---
 
-  Handle(StepBasic_Product) aOfProduct;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepBasic_Product> aOfProduct;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "of_product", ach, STANDARD_TYPE(StepBasic_Product), aOfProduct);
 
   //--- Initialisation of the read entity ---
@@ -60,8 +60,8 @@ void RWStepBasic_RWProductDefinitionFormation::ReadStep(
 }
 
 void RWStepBasic_RWProductDefinitionFormation::WriteStep(
-  StepData_StepWriter&                                SW,
-  const Handle(StepBasic_ProductDefinitionFormation)& ent) const
+  StepData_StepWriter&                                     SW,
+  const occ::handle<StepBasic_ProductDefinitionFormation>& ent) const
 {
 
   // --- own field : id ---
@@ -85,8 +85,8 @@ void RWStepBasic_RWProductDefinitionFormation::WriteStep(
 }
 
 void RWStepBasic_RWProductDefinitionFormation::Share(
-  const Handle(StepBasic_ProductDefinitionFormation)& ent,
-  Interface_EntityIterator&                           iter) const
+  const occ::handle<StepBasic_ProductDefinitionFormation>& ent,
+  Interface_EntityIterator&                                iter) const
 {
 
   iter.GetOneItem(ent->OfProduct());

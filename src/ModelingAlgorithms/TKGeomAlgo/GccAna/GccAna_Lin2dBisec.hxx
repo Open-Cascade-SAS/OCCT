@@ -21,9 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColgp_Array1OfLin2d.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Lin2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
 class gp_Lin2d;
 class gp_Pnt2d;
 
@@ -54,11 +54,11 @@ public:
   Standard_EXPORT GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2);
 
   //! Returns True when the algorithm succeeded.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the number of solutions and raise NotDone if
   //! the constructor wasn't called before.
-  Standard_EXPORT Standard_Integer NbSolutions() const;
+  Standard_EXPORT int NbSolutions() const;
 
   //! Returns the solution number Index .
   //! The first solution is the inside one and the second is the
@@ -71,17 +71,17 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT gp_Lin2d ThisSolution(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Lin2d ThisSolution(const int Index) const;
 
   //! Returns information about the intersection point between
   //! the result number Index and the first argument.
   //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT void Intersection1(const Standard_Integer Index,
-                                     Standard_Real&         ParSol,
-                                     Standard_Real&         ParArg,
-                                     gp_Pnt2d&              PntSol) const;
+  Standard_EXPORT void Intersection1(const int Index,
+                                     double&   ParSol,
+                                     double&   ParArg,
+                                     gp_Pnt2d& PntSol) const;
 
   //! Returns information about the intersection point between
   //! the result number Index and the second argument.
@@ -89,22 +89,21 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT void Intersection2(const Standard_Integer Index,
-                                     Standard_Real&         ParSol,
-                                     Standard_Real&         ParArg,
-                                     gp_Pnt2d&              PntSol) const;
+  Standard_EXPORT void Intersection2(const int Index,
+                                     double&   ParSol,
+                                     double&   ParArg,
+                                     gp_Pnt2d& PntSol) const;
 
-protected:
 private:
-  Standard_Boolean     WellDone;
-  Standard_Integer     NbrSol;
-  TColgp_Array1OfLin2d linsol;
-  TColgp_Array1OfPnt2d pntint1sol;
-  TColgp_Array1OfPnt2d pntint2sol;
-  TColStd_Array1OfReal par1sol;
-  TColStd_Array1OfReal par2sol;
-  TColStd_Array1OfReal pararg1;
-  TColStd_Array1OfReal pararg2;
+  bool                         WellDone;
+  int                          NbrSol;
+  NCollection_Array1<gp_Lin2d> linsol;
+  NCollection_Array1<gp_Pnt2d> pntint1sol;
+  NCollection_Array1<gp_Pnt2d> pntint2sol;
+  NCollection_Array1<double>   par1sol;
+  NCollection_Array1<double>   par2sol;
+  NCollection_Array1<double>   pararg1;
+  NCollection_Array1<double>   pararg2;
 };
 
 #endif // _GccAna_Lin2dBisec_HeaderFile

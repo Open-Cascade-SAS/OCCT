@@ -23,9 +23,6 @@
 #include <ShapeUpgrade_SplitSurface.hxx>
 class ShapeExtend_CompositeSurface;
 
-class ShapeUpgrade_ConvertSurfaceToBezierBasis;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_ConvertSurfaceToBezierBasis, ShapeUpgrade_SplitSurface)
-
 //! Converts a plane, bspline surface, surface of revolution, surface
 //! of extrusion, offset surface to grid of bezier basis surface (
 //! bezier surface,
@@ -40,49 +37,48 @@ public:
 
   //! Splits a list of beziers computed by Compute method according
   //! the split values and splitting parameters.
-  Standard_EXPORT virtual void Build(const Standard_Boolean Segment) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const bool Segment) override;
 
   //! Converts surface into a grid of bezier based surfaces, and
   //! stores this grid.
-  Standard_EXPORT virtual void Compute(const Standard_Boolean Segment) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const bool Segment) override;
 
   //! Returns the grid of bezier based surfaces correspondent to
   //! original surface.
-  Standard_EXPORT Handle(ShapeExtend_CompositeSurface) Segments() const;
+  Standard_EXPORT occ::handle<ShapeExtend_CompositeSurface> Segments() const;
 
   //! Sets mode for conversion Geom_Plane to Bezier
-  void SetPlaneMode(const Standard_Boolean mode);
+  void SetPlaneMode(const bool mode);
 
   //! Returns the Geom_Pline conversion mode.
-  Standard_Boolean GetPlaneMode() const;
+  bool GetPlaneMode() const;
 
   //! Sets mode for conversion Geom_SurfaceOfRevolution to Bezier
-  void SetRevolutionMode(const Standard_Boolean mode);
+  void SetRevolutionMode(const bool mode);
 
   //! Returns the Geom_SurfaceOfRevolution conversion mode.
-  Standard_Boolean GetRevolutionMode() const;
+  bool GetRevolutionMode() const;
 
   //! Sets mode for conversion Geom_SurfaceOfLinearExtrusion to Bezier
-  void SetExtrusionMode(const Standard_Boolean mode);
+  void SetExtrusionMode(const bool mode);
 
   //! Returns the Geom_SurfaceOfLinearExtrusion conversion mode.
-  Standard_Boolean GetExtrusionMode() const;
+  bool GetExtrusionMode() const;
 
   //! Sets mode for conversion Geom_BSplineSurface to Bezier
-  void SetBSplineMode(const Standard_Boolean mode);
+  void SetBSplineMode(const bool mode);
 
   //! Returns the Geom_BSplineSurface conversion mode.
-  Standard_Boolean GetBSplineMode() const;
+  bool GetBSplineMode() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ConvertSurfaceToBezierBasis, ShapeUpgrade_SplitSurface)
 
-protected:
 private:
-  Handle(ShapeExtend_CompositeSurface) mySegments;
-  Standard_Boolean                     myPlaneMode;
-  Standard_Boolean                     myRevolutionMode;
-  Standard_Boolean                     myExtrusionMode;
-  Standard_Boolean                     myBSplineMode;
+  occ::handle<ShapeExtend_CompositeSurface> mySegments;
+  bool                                      myPlaneMode;
+  bool                                      myRevolutionMode;
+  bool                                      myExtrusionMode;
+  bool                                      myBSplineMode;
 };
 
 #include <ShapeUpgrade_ConvertSurfaceToBezierBasis.lxx>

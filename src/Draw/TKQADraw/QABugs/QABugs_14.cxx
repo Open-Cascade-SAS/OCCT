@@ -26,7 +26,8 @@
 #include <TopoDS_Shape.hxx>
 
 #include <Geom2d_Line.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
 #include <Geom2dGcc_Circ2d2TanRad.hxx>
@@ -42,7 +43,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeEdge.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_HArray1.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <Precision.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -53,29 +55,29 @@
 #include <ShapeAnalysis_WireOrder.hxx>
 #include <ShapeAnalysis_Wire.hxx>
 #include <TopExp.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <BRep_Tool.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <V3d_View.hxx>
 #include <TDF_Label.hxx>
 #include <TDataStd_Expression.hxx>
 
-static Standard_Integer BUC60897(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
+static int BUC60897(Draw_Interpretor& di, int /*argc*/, const char** /*argv*/)
 {
-  Standard_Character abuf[16];
+  char abuf[16];
 
-  Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(100, 0), gp_Dir2d(gp_Dir2d::D::NX));
+  occ::handle<Geom2d_Line> aLine = new Geom2d_Line(gp_Pnt2d(100, 0), gp_Dir2d(gp_Dir2d::D::NX));
   Sprintf(abuf, "line");
-  Standard_CString st = abuf;
+  const char* st = abuf;
   DrawTrSurf::Set(st, aLine);
 
-  TColgp_Array1OfPnt2d aPoints(1, 3);
+  NCollection_Array1<gp_Pnt2d> aPoints(1, 3);
   aPoints.SetValue(1, gp_Pnt2d(0, 0));
   aPoints.SetValue(2, gp_Pnt2d(50, 50));
   aPoints.SetValue(3, gp_Pnt2d(0, 100));
-  Handle(Geom2d_BezierCurve) aCurve = new Geom2d_BezierCurve(aPoints);
+  occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoints);
   Sprintf(abuf, "curve");
   DrawTrSurf::Set(st, aCurve);
 
@@ -89,20 +91,20 @@ static Standard_Integer BUC60897(Draw_Interpretor& di,
     di << "Faulty: can not create a circle.\n";
     return 1;
   }
-  for (Standard_Integer i = 1; i <= aGccCirc2d.NbSolutions(); i++)
+  for (int i = 1; i <= aGccCirc2d.NbSolutions(); i++)
   {
     gp_Circ2d aCirc2d = aGccCirc2d.ThisSolution(i);
     di << "circle : X " << aCirc2d.Location().X() << " Y " << aCirc2d.Location().Y() << " R "
        << aCirc2d.Radius();
-    Standard_Real aTmpR1, aTmpR2;
-    gp_Pnt2d      aPnt2d1, aPnt2d2;
+    double   aTmpR1, aTmpR2;
+    gp_Pnt2d aPnt2d1, aPnt2d2;
     aGccCirc2d.Tangency1(i, aTmpR1, aTmpR2, aPnt2d1);
     aGccCirc2d.Tangency2(i, aTmpR1, aTmpR2, aPnt2d2);
     di << "\ntangency1 : X " << aPnt2d1.X() << " Y " << aPnt2d1.Y();
     di << "\ntangency2 : X " << aPnt2d2.X() << " Y " << aPnt2d2.Y() << "\n";
 
     Sprintf(abuf, "circle_%d", i);
-    Handle(Geom2d_Curve) circ_res = new Geom2d_Circle(aCirc2d);
+    occ::handle<Geom2d_Curve> circ_res = new Geom2d_Circle(aCirc2d);
     DrawTrSurf::Set(st, circ_res);
   }
 
@@ -110,7 +112,7 @@ static Standard_Integer BUC60897(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer BUC60889(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60889(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 10)
   {
@@ -151,7 +153,7 @@ static Standard_Integer BUC60889(Draw_Interpretor& di, Standard_Integer argc, co
   }
 }
 
-static Standard_Integer BUC60852(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60852(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 8)
     di << "Usage : " << argv[0]
@@ -181,17 +183,17 @@ static Standard_Integer BUC60852(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer BUC60854(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
+static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
 {
-  Standard_Integer newnarg;
+  int newnarg;
   if (argc < 3)
     return 1;
   TopoDS_Shape        S = DBRep::Get(argv[2]);
   BRepFeat_SplitShape Spls(S);
-  Standard_Boolean    pick = Standard_False;
+  bool                pick = false;
   TopoDS_Shape        EF;
-  Standard_Real       u, v;
-  Standard_Integer    i = 3;
+  double              u, v;
+  int                 i = 3;
   for (newnarg = 3; newnarg < argc; newnarg++)
   {
     if (argv[newnarg][0] == '@')
@@ -221,21 +223,21 @@ static Standard_Integer BUC60854(Draw_Interpretor& /*di*/, Standard_Integer argc
       i++;
       while (i < newnarg)
       {
-        TopoDS_Shape     W;
-        Standard_Boolean rever = Standard_False;
+        TopoDS_Shape W;
+        bool         rever = false;
         if (argv[i][0] == '-')
         {
           if (argv[i][1] == '\0')
             return 1;
           pick             = (argv[i][1] == '.');
           const char* Temp = argv[i] + 1;
-          W                = DBRep::Get(Temp, TopAbs_SHAPE, Standard_False);
-          rever            = Standard_True;
+          W                = DBRep::Get(Temp, TopAbs_SHAPE, false);
+          rever            = true;
         }
         else
         {
           pick = (argv[i][0] == '.');
-          W    = DBRep::Get(argv[i], TopAbs_SHAPE, Standard_False);
+          W    = DBRep::Get(argv[i], TopAbs_SHAPE, false);
         }
         if (W.IsNull())
         {
@@ -244,7 +246,7 @@ static Standard_Integer BUC60854(Draw_Interpretor& /*di*/, Standard_Integer argc
         TopAbs_ShapeEnum wtyp = W.ShapeType();
         if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE && pick)
         {
-          Standard_Real aTempU, aTempV;
+          double aTempU, aTempV;
           DBRep_DrawableShape::LastPick(W, aTempU, aTempV);
           wtyp = W.ShapeType();
         }
@@ -294,12 +296,12 @@ static Standard_Integer BUC60854(Draw_Interpretor& /*di*/, Standard_Integer argc
     i += 2;
   }
   Spls.Build();
-  const TopTools_ListOfShape& aLeftPart  = Spls.Left();
-  const TopTools_ListOfShape& aRightPart = Spls.Right();
-  BRep_Builder                BB;
-  TopoDS_Shape                aShell;
+  const NCollection_List<TopoDS_Shape>& aLeftPart  = Spls.Left();
+  const NCollection_List<TopoDS_Shape>& aRightPart = Spls.Right();
+  BRep_Builder                          BB;
+  TopoDS_Shape                          aShell;
   BB.MakeShell(TopoDS::Shell(aShell));
-  TopTools_ListIteratorOfListOfShape anIter;
+  NCollection_List<TopoDS_Shape>::Iterator anIter;
   if (argv[argc - 1][0] == 'L')
   {
     anIter.Initialize(aLeftPart);
@@ -319,9 +321,9 @@ static Standard_Integer BUC60854(Draw_Interpretor& /*di*/, Standard_Integer argc
   return 0;
 }
 
-static Standard_Integer BUC60870(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60870(Draw_Interpretor& di, int argc, const char** argv)
 {
-  Standard_Integer i1;
+  int i1;
   if (argc != 5)
   {
     di << "Usage : " << argv[0] << " result name_of_shape_1 name_of_shape_2 dev\n";
@@ -329,7 +331,7 @@ static Standard_Integer BUC60870(Draw_Interpretor& di, Standard_Integer argc, co
   }
   const char *               ns1 = (argv[2]), *ns2 = (argv[3]), *ns0 = (argv[1]);
   TopoDS_Shape               S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
-  Standard_Real              dev = Draw::Atof(argv[4]);
+  double                     dev = Draw::Atof(argv[4]);
   BRepExtrema_DistShapeShape dst(S1, S2, dev);
   if (dst.IsDone())
   {
@@ -384,7 +386,7 @@ static Standard_Integer BUC60870(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer BUC60944(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60944(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -404,24 +406,24 @@ static Standard_Integer BUC60944(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-Standard_Boolean BuildWiresWithReshape(const Handle(ShapeBuild_ReShape)& theReshape,
-                                       const TopTools_ListOfShape&       theListOfEdges,
-                                       TopTools_ListOfShape&             theListOfWires,
-                                       const Standard_Boolean            isFixConnectedMode,
-                                       const Standard_Boolean            isKeepLoopsMode,
-                                       const Standard_Real               theTolerance)
+bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
+                           const NCollection_List<TopoDS_Shape>&  theListOfEdges,
+                           NCollection_List<TopoDS_Shape>&        theListOfWires,
+                           const bool                             isFixConnectedMode,
+                           const bool                             isKeepLoopsMode,
+                           const double                           theTolerance)
 {
-  TopTools_ListIteratorOfListOfShape anEdgeIter;
-  Standard_Boolean                   isDone;
-  TopoDS_Wire                        aWire;
+  NCollection_List<TopoDS_Shape>::Iterator anEdgeIter;
+  bool                                     isDone;
+  TopoDS_Wire                              aWire;
 
   theListOfWires.Clear();
-  Handle(ShapeExtend_WireData) aWireData  = new ShapeExtend_WireData;
-  Handle(ShapeFix_Wire)        aShFixWire = new ShapeFix_Wire;
+  occ::handle<ShapeExtend_WireData> aWireData  = new ShapeExtend_WireData;
+  occ::handle<ShapeFix_Wire>        aShFixWire = new ShapeFix_Wire;
   aShFixWire->SetContext(theReshape);
 
-  Handle(ShapeAnalysis_Wire) aWireAnalyzer;
-  ShapeAnalysis_WireOrder    aWireOrder;
+  occ::handle<ShapeAnalysis_Wire> aWireAnalyzer;
+  ShapeAnalysis_WireOrder         aWireOrder;
 
   aShFixWire->Load(aWireData);
   aShFixWire->SetPrecision(theTolerance);
@@ -431,16 +433,16 @@ Standard_Boolean BuildWiresWithReshape(const Handle(ShapeBuild_ReShape)& theResh
 
   aWireOrder.KeepLoopsMode() = isKeepLoopsMode;
   aWireAnalyzer              = aShFixWire->Analyzer();
-  aWireAnalyzer->CheckOrder(aWireOrder, Standard_True);
+  aWireAnalyzer->CheckOrder(aWireOrder, true);
 
   aShFixWire->FixReorder(aWireOrder);
   isDone = !aShFixWire->StatusReorder(ShapeExtend_FAIL);
   if (!isDone)
-    return Standard_False;
+    return false;
 
   if (isFixConnectedMode)
   {
-    aShFixWire->ModifyTopologyMode() = Standard_True;
+    aShFixWire->ModifyTopologyMode() = true;
     aShFixWire->FixConnected(theTolerance);
   }
 
@@ -449,29 +451,29 @@ Standard_Boolean BuildWiresWithReshape(const Handle(ShapeBuild_ReShape)& theResh
   //   if (aWire.Closed())
   //   {
   //     theListOfWires.Append(aWire);
-  //     return Standard_True;
+  //     return true;
   //   }
 
-  Standard_Integer i;
-  BRep_Builder     aBuilder;
-  TopoDS_Wire      aCurWire;
-  TopoDS_Vertex    aVf;
-  TopoDS_Vertex    aVl;
-  TopoDS_Vertex    aVlast;
-  Standard_Integer aNbEdges = aWireData->NbEdges();
+  int           i;
+  BRep_Builder  aBuilder;
+  TopoDS_Wire   aCurWire;
+  TopoDS_Vertex aVf;
+  TopoDS_Vertex aVl;
+  TopoDS_Vertex aVlast;
+  int           aNbEdges = aWireData->NbEdges();
 
   aBuilder.MakeWire(aCurWire);
   if (aNbEdges >= 1)
   {
     TopoDS_Edge anE = aWireData->Edge(1);
-    TopExp::Vertices(anE, aVf, aVlast, Standard_True);
+    TopExp::Vertices(anE, aVf, aVlast, true);
     aBuilder.Add(aCurWire, anE);
   }
 
   for (i = 2; i <= aNbEdges; i++)
   {
     TopoDS_Edge anE = aWireData->Edge(i);
-    TopExp::Vertices(anE, aVf, aVl, Standard_True);
+    TopExp::Vertices(anE, aVf, aVl, true);
     if (aVf.IsSame(aVlast))
     {
       aBuilder.Add(aCurWire, anE);
@@ -482,7 +484,7 @@ Standard_Boolean BuildWiresWithReshape(const Handle(ShapeBuild_ReShape)& theResh
       aVlast = aVl;
       TopExp::Vertices(aCurWire, aVf, aVl);
       if (aVf.IsSame(aVl))
-        aCurWire.Closed(Standard_True);
+        aCurWire.Closed(true);
       theListOfWires.Append(aCurWire);
       aBuilder.MakeWire(aCurWire);
       aBuilder.Add(aCurWire, anE);
@@ -491,19 +493,19 @@ Standard_Boolean BuildWiresWithReshape(const Handle(ShapeBuild_ReShape)& theResh
 
   TopExp::Vertices(aCurWire, aVf, aVl);
   if (aVf.IsSame(aVl))
-    aCurWire.Closed(Standard_True);
+    aCurWire.Closed(true);
   theListOfWires.Append(aCurWire);
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean BuildWires(const TopTools_ListOfShape& theListOfEdges,
-                            TopTools_ListOfShape&       theListOfWires,
-                            const Standard_Boolean      isFixConnectedMode = Standard_False,
-                            const Standard_Boolean      isKeepLoopsMode    = Standard_True,
-                            const Standard_Real         theTolerance       = Precision::Confusion())
+bool BuildWires(const NCollection_List<TopoDS_Shape>& theListOfEdges,
+                NCollection_List<TopoDS_Shape>&       theListOfWires,
+                const bool                            isFixConnectedMode = false,
+                const bool                            isKeepLoopsMode    = true,
+                const double                          theTolerance       = Precision::Confusion())
 {
-  Handle(ShapeBuild_ReShape) aReshape = new ShapeBuild_ReShape;
+  occ::handle<ShapeBuild_ReShape> aReshape = new ShapeBuild_ReShape;
   return BuildWiresWithReshape(aReshape,
                                theListOfEdges,
                                theListOfWires,
@@ -512,37 +514,38 @@ Standard_Boolean BuildWires(const TopTools_ListOfShape& theListOfEdges,
                                theTolerance);
 }
 
-Standard_Boolean BuildBoundWires(const TopoDS_Shape& theShell, TopTools_ListOfShape& theListOfWires)
+bool BuildBoundWires(const TopoDS_Shape& theShell, NCollection_List<TopoDS_Shape>& theListOfWires)
 {
-  TopTools_IndexedDataMapOfShapeListOfShape anEdgeFaceMap;
-  Standard_Integer                          i;
-  Standard_Boolean                          isBound;
-  TopTools_ListOfShape                      aBoundaryEdges;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                 anEdgeFaceMap;
+  int                            i;
+  bool                           isBound;
+  NCollection_List<TopoDS_Shape> aBoundaryEdges;
 
   TopExp::MapShapesAndAncestors(theShell, TopAbs_EDGE, TopAbs_FACE, anEdgeFaceMap);
 
-  isBound = Standard_False;
+  isBound = false;
   for (i = 1; i <= anEdgeFaceMap.Extent(); i++)
   {
-    const TopTools_ListOfShape& anAncestFaces = anEdgeFaceMap.FindFromIndex(i);
+    const NCollection_List<TopoDS_Shape>& anAncestFaces = anEdgeFaceMap.FindFromIndex(i);
     if (anAncestFaces.Extent() == 1)
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeFaceMap.FindKey(i));
       if (!BRep_Tool::Degenerated(anEdge))
       {
         aBoundaryEdges.Append(anEdge);
-        isBound = Standard_True;
+        isBound = true;
       }
     }
   }
 
   if (!isBound)
-    return Standard_True;
+    return true;
 
   return BuildWires(aBoundaryEdges, theListOfWires);
 }
 
-static Standard_Integer BUC60868(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60868(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -558,7 +561,7 @@ static Standard_Integer BUC60868(Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  TopTools_ListOfShape aListOfWires;
+  NCollection_List<TopoDS_Shape> aListOfWires;
   BuildBoundWires(aShell, aListOfWires);
 
   TopoDS_Shape aRes;
@@ -570,7 +573,7 @@ static Standard_Integer BUC60868(Draw_Interpretor& di, Standard_Integer argc, co
   {
     BRep_Builder aBld;
     aBld.MakeCompound(TopoDS::Compound(aRes));
-    TopTools_ListIteratorOfListOfShape aWireIter(aListOfWires);
+    NCollection_List<TopoDS_Shape>::Iterator aWireIter(aListOfWires);
     for (; aWireIter.More(); aWireIter.Next())
       aBld.Add(aRes, aWireIter.Value());
   }
@@ -579,7 +582,7 @@ static Standard_Integer BUC60868(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer BUC60924(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60924(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 5)
   {
@@ -587,7 +590,7 @@ static Standard_Integer BUC60924(Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  Handle(Geom_Curve) aCurve = DrawTrSurf::GetCurve(argv[1]);
+  occ::handle<Geom_Curve> aCurve = DrawTrSurf::GetCurve(argv[1]);
 
   if (aCurve.IsNull())
   {
@@ -597,8 +600,8 @@ static Standard_Integer BUC60924(Draw_Interpretor& di, Standard_Integer argc, co
 
   gp_XYZ aVec(Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]));
 
-  Standard_Boolean isPlanar = Standard_False;
-  isPlanar                  = ShapeAnalysis_Curve::IsPlanar(aCurve, aVec, 1e-7);
+  bool isPlanar = false;
+  isPlanar      = ShapeAnalysis_Curve::IsPlanar(aCurve, aVec, 1e-7);
 
   if (isPlanar)
     di << "The curve is planar !\n";
@@ -608,10 +611,10 @@ static Standard_Integer BUC60924(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer BUC60920(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
+static int BUC60920(Draw_Interpretor& di, int /*argc*/, const char** argv)
 {
 
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> myAISContext = ViewerTest::GetAISContext();
   if (myAISContext.IsNull())
   {
     std::cerr << "use 'vinit' command before " << argv[0] << "\n";
@@ -628,20 +631,20 @@ static Standard_Integer BUC60920(Draw_Interpretor& di, Standard_Integer /*argc*/
   const char*  Shname   = "w_11";
   TopoDS_Shape theShape = DBRep::Get(Shname);
 
-  Handle(AIS_Shape) anAISShape = new AIS_Shape(theShape);
-  myAISContext->Display(anAISShape, Standard_True);
+  occ::handle<AIS_Shape> anAISShape = new AIS_Shape(theShape);
+  myAISContext->Display(anAISShape, true);
 
-  Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
+  occ::handle<V3d_View> myV3dView = ViewerTest::CurrentView();
 
   double Xv, Yv;
   myV3dView->Project(20, 20, 0, Xv, Yv);
   //  std::cout<<Xv<<"\t"<<Yv<<std::endl;
 
-  Standard_Integer Xp, Yp;
+  int Xp, Yp;
   myV3dView->Convert(Xv, Yv, Xp, Yp);
   //  std::cout<<Xp<<"\t"<<Yp<<std::endl;
 
-  myAISContext->MoveTo(Xp, Yp, myV3dView, Standard_True);
+  myAISContext->MoveTo(Xp, Yp, myV3dView, true);
 
   //   if (myAISContext->IsHilighted(anAISShape))
   //              std::cout << "has hilighted shape : OK"   << std::endl;
@@ -652,7 +655,7 @@ static Standard_Integer BUC60920(Draw_Interpretor& di, Standard_Integer /*argc*/
 
 #include <LDOMParser.hxx>
 
-static Standard_Integer OCC983(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC983(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -687,7 +690,7 @@ static Standard_Integer OCC983(Draw_Interpretor& di, Standard_Integer argc, cons
   TCollection_AsciiString RootName = root.getTagName();
   di << "   RootName = " << RootName.ToCString() << "\n";
   LDOM_NodeList aChildList = root.GetAttributesList();
-  for (Standard_Integer i = 0, n = aChildList.getLength(); i < n; i++)
+  for (int i = 0, n = aChildList.getLength(); i < n; i++)
   {
     LDOM_Node               item      = aChildList.item(i);
     TCollection_AsciiString itemName  = item.getNodeName();
@@ -704,7 +707,7 @@ static Standard_Integer OCC983(Draw_Interpretor& di, Standard_Integer argc, cons
     TCollection_AsciiString ElementName = element.getTagName();
     di << "   ElementName = " << ElementName.ToCString() << "\n";
     LDOM_NodeList aChildList2 = element.GetAttributesList();
-    for (Standard_Integer i2 = 0, n2 = aChildList2.getLength(); i2 < n2; i2++)
+    for (int i2 = 0, n2 = aChildList2.getLength(); i2 < n2; i2++)
     {
       LDOM_Node               item2      = aChildList2.item(i2);
       TCollection_AsciiString itemName2  = item2.getNodeName();
@@ -760,7 +763,7 @@ static Standard_Integer OCC983(Draw_Interpretor& di, Standard_Integer argc, cons
   return 0;
 }
 
-static Standard_Integer OCC984(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC984(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -771,7 +774,7 @@ static Standard_Integer OCC984(Draw_Interpretor& di, Standard_Integer argc, cons
   LDOMParser    aParser;
   LDOM_Document myDOM;
 
-  // Standard_Character  *File = new Standard_Character [100];
+  // char  *File = new char [100];
   // Sprintf(File,"%s",argv[1]);
   const char* File = (argv[1]);
 
@@ -790,7 +793,7 @@ static Standard_Integer OCC984(Draw_Interpretor& di, Standard_Integer argc, cons
 
 // #include <math.h>
 //  See QAOCC.cxx OCC6143
-// static Standard_Integer OCC1723 (Draw_Interpretor& /*di*/, Standard_Integer argc, const char **
+// static int OCC1723 (Draw_Interpretor& /*di*/, int argc, const char **
 // argv)
 //{
 //   if( argc != 1)
@@ -799,50 +802,50 @@ static Standard_Integer OCC984(Draw_Interpretor& di, Standard_Integer argc, cons
 //     return 1;
 //   }
 //
-//   Standard_Boolean isBad = Standard_False, isCaught;
+//   bool isBad = false, isCaught;
 //
 //   // Case 1
-//   isCaught = Standard_False;
+//   isCaught = false;
 //   {
 //     try {
 //       OCC_CATCH_SIGNALS
-//       Standard_Integer a = 1;
-//       Standard_Integer b = 0;
-//       Standard_Integer c = a / b;
+//       int a = 1;
+//       int b = 0;
+//       int c = a / b;
 //     }
 //     catch ( Standard_Failure ) {
-//       isCaught = Standard_True;
+//       isCaught = true;
 //       std::cout << "OCC1723 Case 1 : OK" << std::endl;
 //     }
 //   }
 //   isBad = isBad || !isCaught;
 //
 //   // Case 2
-//   isCaught = Standard_False;
+//   isCaught = false;
 //   {
 //     try {
 //       OCC_CATCH_SIGNALS
-//       Standard_Real d = -1.0;
-//       Standard_Real e = sqrt(d);
+//       double d = -1.0;
+//       double e = sqrt(d);
 //     }
 //     catch ( Standard_Failure ) {
-//       isCaught = Standard_True;
+//       isCaught = true;
 //       std::cout << "OCC1723 Case 2 : OK" << std::endl;
 //     }
 //   }
 //   isBad = isBad || !isCaught;
 //
 //   // Case 3
-//   isCaught = Standard_False;
+//   isCaught = false;
 //   {
 //     try {
 //       OCC_CATCH_SIGNALS
-//       Standard_Real f = 1.0e-200;
-//       Standard_Real g = 1.0e-200;
-//       Standard_Real h = f * g;
+//       double f = 1.0e-200;
+//       double g = 1.0e-200;
+//       double h = f * g;
 //     }
 //     catch ( Standard_Failure ) {
-//       isCaught = Standard_True;
+//       isCaught = true;
 //       std::cout << "OCC1723 Case 3 : OK" << std::endl;
 //     }
 //   }
@@ -850,16 +853,16 @@ static Standard_Integer OCC984(Draw_Interpretor& di, Standard_Integer argc, cons
 //   //isBad = isBad || !isCaught;
 //
 //   // Case 4
-//   isCaught = Standard_False;
+//   isCaught = false;
 //   {
 //     try {
 //       OCC_CATCH_SIGNALS
-//       Standard_Real i = 1.0e+200;
-//       Standard_Real j = 1.0e+200;
-//       Standard_Real k = i * j;
+//       double i = 1.0e+200;
+//       double j = 1.0e+200;
+//       double k = i * j;
 //     }
 //     catch ( Standard_Failure ) {
-//       isCaught = Standard_True;
+//       isCaught = true;
 //       std::cout << "OCC1723 Case 4 : OK" << std::endl;
 //     }
 //   }
@@ -876,19 +879,19 @@ static Standard_Integer OCC984(Draw_Interpretor& di, Standard_Integer argc, cons
 
 #include <locale.h>
 
-static Standard_Integer OCC1919_get(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC1919_get(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 1)
   {
     di << "Usage : " << argv[0] << "\n";
     return 1;
   }
-  const TCollection_AsciiString anOldNumLocale = (Standard_CString)setlocale(LC_NUMERIC, NULL);
+  const TCollection_AsciiString anOldNumLocale = (const char*)setlocale(LC_NUMERIC, NULL);
   di << "LC_NUMERIC = " << anOldNumLocale.ToCString() << "\n";
   return 0;
 }
 
-static Standard_Integer OCC1919_set(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC1919_set(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -904,11 +907,11 @@ static Standard_Integer OCC1919_set(Draw_Interpretor& di, Standard_Integer argc,
 #include <DDF.hxx>
 #include <TDataStd_Real.hxx>
 
-static Standard_Integer OCC1919_real(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC1919_real(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(argv[1], DF))
       return 1;
     TDF_Label L;
@@ -918,7 +921,7 @@ static Standard_Integer OCC1919_real(Draw_Interpretor& di, Standard_Integer argc
     TCollection_AsciiString AsciiStringReal(argv[3]);
     if (!AsciiStringReal.IsRealValue())
       return 1;
-    Standard_Real aReal = AsciiStringReal.RealValue();
+    double aReal = AsciiStringReal.RealValue();
     di << "aReal = " << aReal << "\n";
 
     TDataStd_Real::Set(L, aReal);
@@ -929,16 +932,14 @@ static Standard_Integer OCC1919_real(Draw_Interpretor& di, Standard_Integer argc
 
 #include <TDataStd_UAttribute.hxx>
 
-static Standard_Integer OCC2932_SetIDUAttribute(Draw_Interpretor& di,
-                                                Standard_Integer  argc,
-                                                const char**      argv)
+static int OCC2932_SetIDUAttribute(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 5)
   {
     di << "Usage : " << argv[0] << " (DF, entry, oldLocalID, newLocalID)\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
     return 1;
   TDF_Label label;
@@ -950,13 +951,13 @@ static Standard_Integer OCC2932_SetIDUAttribute(Draw_Interpretor& di,
   Standard_GUID old_guid(argv[3]); //"00000000-0000-0000-2222-000000000000");
   Standard_GUID new_guid(argv[4]); //"00000000-0000-0000-2222-000000000001");
 
-  Handle(TDataStd_UAttribute) UA;
+  occ::handle<TDataStd_UAttribute> UA;
   if (!label.FindAttribute(old_guid, UA))
   {
     di << "No UAttribute Attribute on label " << argv[2] << "\n";
     return 0;
   }
-  Handle(TDataStd_UAttribute) anotherUA;
+  occ::handle<TDataStd_UAttribute> anotherUA;
   if (label.FindAttribute(new_guid, anotherUA))
   {
     di << "There is this UAttribute Attribute on label " << argv[2] << "\n";
@@ -966,38 +967,34 @@ static Standard_Integer OCC2932_SetIDUAttribute(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer OCC2932_SetTag(Draw_Interpretor& di,
-                                       Standard_Integer  argc,
-                                       const char**      argv)
+static int OCC2932_SetTag(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
   {
     di << "Usage : " << argv[0] << " (DF, entry, Tag)\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
     return 1;
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
-  Standard_Integer      Tag = Draw::Atoi(argv[3]);
-  Handle(TDF_TagSource) A   = TDF_TagSource::Set(L);
+  int                        Tag = Draw::Atoi(argv[3]);
+  occ::handle<TDF_TagSource> A   = TDF_TagSource::Set(L);
   A->Set(Tag);
   return 0;
 }
 
 #include <TDataStd_Current.hxx>
 
-static Standard_Integer OCC2932_SetCurrent(Draw_Interpretor& di,
-                                           Standard_Integer  argc,
-                                           const char**      argv)
+static int OCC2932_SetCurrent(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
     di << "Usage : " << argv[0] << " (DF, entry)\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
     return 1;
   TDF_Label L;
@@ -1006,44 +1003,40 @@ static Standard_Integer OCC2932_SetCurrent(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer OCC2932_SetExpression(Draw_Interpretor& di,
-                                              Standard_Integer  argc,
-                                              const char**      argv)
+static int OCC2932_SetExpression(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
   {
     di << "Usage : " << argv[0] << " (DF, entry, Expression)\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
     return 1;
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
-  TCollection_ExtendedString  Expression(argv[3]);
-  Handle(TDataStd_Expression) A = TDataStd_Expression::Set(L);
+  TCollection_ExtendedString       Expression(argv[3]);
+  occ::handle<TDataStd_Expression> A = TDataStd_Expression::Set(L);
   A->SetExpression(Expression);
   return 0;
 }
 
 #include <TDataStd_Relation.hxx>
 
-static Standard_Integer OCC2932_SetRelation(Draw_Interpretor& di,
-                                            Standard_Integer  argc,
-                                            const char**      argv)
+static int OCC2932_SetRelation(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
   {
     di << "Usage : " << argv[0] << " (DF, entry, Relation)\n";
     return 1;
   }
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
     return 1;
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
-  TCollection_ExtendedString Relation(argv[3]);
-  Handle(TDataStd_Relation)  A = TDataStd_Relation::Set(L);
+  TCollection_ExtendedString     Relation(argv[3]);
+  occ::handle<TDataStd_Relation> A = TDataStd_Relation::Set(L);
   A->SetRelation(Relation);
   return 0;
 }

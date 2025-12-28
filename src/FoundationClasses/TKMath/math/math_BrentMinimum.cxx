@@ -23,7 +23,7 @@ constexpr double CGOLD = 0.3819660; // 0.5*(3 - sqrt(5))
 
 //=================================================================================================
 
-inline void SHFT(Standard_Real& theA, Standard_Real& theB, Standard_Real& theC, Standard_Real& theD)
+inline void SHFT(double& theA, double& theB, double& theC, double& theD)
 {
   theA = theB;
   theB = theC;
@@ -32,9 +32,9 @@ inline void SHFT(Standard_Real& theA, Standard_Real& theB, Standard_Real& theC, 
 
 //=================================================================================================
 
-math_BrentMinimum::math_BrentMinimum(const Standard_Real    theTolX,
-                                     const Standard_Integer theNbIterations,
-                                     const Standard_Real    theZEPS)
+math_BrentMinimum::math_BrentMinimum(const double theTolX,
+                                     const int    theNbIterations,
+                                     const double theZEPS)
     : a(0.0),
       b(0.0),
       x(0.0),
@@ -43,19 +43,19 @@ math_BrentMinimum::math_BrentMinimum(const Standard_Real    theTolX,
       fw(0.0),
       XTol(theTolX),
       EPSZ(theZEPS),
-      Done(Standard_False),
+      Done(false),
       iter(0),
       Itermax(theNbIterations),
-      myF(Standard_False)
+      myF(false)
 {
 }
 
 //=================================================================================================
 
-math_BrentMinimum::math_BrentMinimum(const Standard_Real    theTolX,
-                                     const Standard_Real    theFbx,
-                                     const Standard_Integer theNbIterations,
-                                     const Standard_Real    theZEPS)
+math_BrentMinimum::math_BrentMinimum(const double theTolX,
+                                     const double theFbx,
+                                     const int    theNbIterations,
+                                     const double theZEPS)
     : a(0.0),
       b(0.0),
       x(0.0),
@@ -64,10 +64,10 @@ math_BrentMinimum::math_BrentMinimum(const Standard_Real    theTolX,
       fw(0.0),
       XTol(theTolX),
       EPSZ(theZEPS),
-      Done(Standard_False),
+      Done(false),
       iter(0),
       Itermax(theNbIterations),
-      myF(Standard_True)
+      myF(true)
 {
 }
 
@@ -77,16 +77,13 @@ math_BrentMinimum::~math_BrentMinimum() {}
 
 //=================================================================================================
 
-void math_BrentMinimum::Perform(math_Function&      F,
-                                const Standard_Real ax,
-                                const Standard_Real bx,
-                                const Standard_Real cx)
+void math_BrentMinimum::Perform(math_Function& F, const double ax, const double bx, const double cx)
 {
-  Standard_Boolean OK;
-  Standard_Real    etemp, fu, p, q, r;
-  Standard_Real    tol1, tol2, u, v, w, xm;
-  Standard_Real    e = 0.0;
-  Standard_Real    d = RealLast();
+  bool   OK;
+  double etemp, fu, p, q, r;
+  double tol1, tol2, u, v, w, xm;
+  double e = 0.0;
+  double d = RealLast();
 
   a = ((ax < cx) ? ax : cx);
   b = ((ax > cx) ? ax : cx);
@@ -105,7 +102,7 @@ void math_BrentMinimum::Perform(math_Function&      F,
     tol2 = 2.0 * tol1;
     if (IsSolutionReached(F))
     {
-      Done = Standard_True;
+      Done = true;
       return;
     }
     if (fabs(e) > tol1)
@@ -170,7 +167,7 @@ void math_BrentMinimum::Perform(math_Function&      F,
       }
     }
   }
-  Done = Standard_False;
+  Done = false;
   return;
 }
 

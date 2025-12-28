@@ -36,9 +36,6 @@ class XCAFDoc_NotesTool;
 class XCAFDoc_ViewTool;
 class XCAFDoc_VisMaterialTool;
 
-class XCAFDoc_DocumentTool;
-DEFINE_STANDARD_HANDLE(XCAFDoc_DocumentTool, TDataStd_GenericEmpty)
-
 //! Defines sections structure of an XDE document.
 //! attribute marking CAF document as being DECAF document.
 //! Creates the sections structure of the document.
@@ -55,11 +52,10 @@ public:
   //! If the attribute is already set it won't be reset on
   //! <L> even if <IsAcces> is false.
   //! ColorTool and ShapeTool attributes are also set by this method.
-  Standard_EXPORT static Handle(XCAFDoc_DocumentTool) Set(
-    const TDF_Label&       L,
-    const Standard_Boolean IsAcces = Standard_True);
+  Standard_EXPORT static occ::handle<XCAFDoc_DocumentTool> Set(const TDF_Label& L,
+                                                               const bool       IsAcces = true);
 
-  Standard_EXPORT static Standard_Boolean IsXCAFDocument(const Handle(TDocStd_Document)& Doc);
+  Standard_EXPORT static bool IsXCAFDocument(const occ::handle<TDocStd_Document>& Doc);
 
   //! Returns label where the DocumentTool attribute is or
   //! 0.1 if DocumentTool is not yet set.
@@ -93,89 +89,90 @@ public:
   Standard_EXPORT static TDF_Label VisMaterialLabel(const TDF_Label& theLabel);
 
   //! Creates (if it does not exist) ShapeTool attribute on ShapesLabel().
-  Standard_EXPORT static Handle(XCAFDoc_ShapeTool) ShapeTool(const TDF_Label& acces);
+  Standard_EXPORT static occ::handle<XCAFDoc_ShapeTool> ShapeTool(const TDF_Label& acces);
 
   //! Checks for the ShapeTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
-  Standard_EXPORT static Standard_Boolean CheckShapeTool(const TDF_Label& theAcces);
+  Standard_EXPORT static bool CheckShapeTool(const TDF_Label& theAcces);
 
   //! Creates (if it does not exist) ColorTool attribute on ColorsLabel().
-  Standard_EXPORT static Handle(XCAFDoc_ColorTool) ColorTool(const TDF_Label& acces);
+  Standard_EXPORT static occ::handle<XCAFDoc_ColorTool> ColorTool(const TDF_Label& acces);
 
   //! Checks for the ColorTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
-  Standard_EXPORT static Standard_Boolean CheckColorTool(const TDF_Label& theAcces);
+  Standard_EXPORT static bool CheckColorTool(const TDF_Label& theAcces);
 
   //! Creates (if it does not exist) XCAFDoc_VisMaterialTool attribute on VisMaterialLabel().
   //! Should not be confused with MaterialTool() defining physical/manufacturing materials.
-  Standard_EXPORT static Handle(XCAFDoc_VisMaterialTool) VisMaterialTool(const TDF_Label& theLabel);
+  Standard_EXPORT static occ::handle<XCAFDoc_VisMaterialTool> VisMaterialTool(
+    const TDF_Label& theLabel);
 
   //! Checks for the VisMaterialTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
-  Standard_EXPORT static Standard_Boolean CheckVisMaterialTool(const TDF_Label& theAcces);
+  Standard_EXPORT static bool CheckVisMaterialTool(const TDF_Label& theAcces);
 
   //! Creates (if it does not exist) LayerTool attribute on LayersLabel().
-  Standard_EXPORT static Handle(XCAFDoc_LayerTool) LayerTool(const TDF_Label& acces);
+  Standard_EXPORT static occ::handle<XCAFDoc_LayerTool> LayerTool(const TDF_Label& acces);
 
   //! Checks for the LayerTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
-  Standard_EXPORT static Standard_Boolean CheckLayerTool(const TDF_Label& theAcces);
+  Standard_EXPORT static bool CheckLayerTool(const TDF_Label& theAcces);
 
   //! Creates (if it does not exist) DimTolTool attribute on DGTsLabel().
-  Standard_EXPORT static Handle(XCAFDoc_DimTolTool) DimTolTool(const TDF_Label& acces);
+  Standard_EXPORT static occ::handle<XCAFDoc_DimTolTool> DimTolTool(const TDF_Label& acces);
 
   //! Checks for the DimTolTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
-  Standard_EXPORT static Standard_Boolean CheckDimTolTool(const TDF_Label& theAcces);
+  Standard_EXPORT static bool CheckDimTolTool(const TDF_Label& theAcces);
 
   //! Creates (if it does not exist) DimTolTool attribute on DGTsLabel().
-  Standard_EXPORT static Handle(XCAFDoc_MaterialTool) MaterialTool(const TDF_Label& acces);
+  Standard_EXPORT static occ::handle<XCAFDoc_MaterialTool> MaterialTool(const TDF_Label& acces);
 
   //! Checks for the MaterialTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
-  Standard_EXPORT static Standard_Boolean CheckMaterialTool(const TDF_Label& theAcces);
+  Standard_EXPORT static bool CheckMaterialTool(const TDF_Label& theAcces);
 
   //! Creates (if it does not exist) ViewTool attribute on ViewsLabel().
-  Standard_EXPORT static Handle(XCAFDoc_ViewTool) ViewTool(const TDF_Label& acces);
+  Standard_EXPORT static occ::handle<XCAFDoc_ViewTool> ViewTool(const TDF_Label& acces);
 
   //! Checks for the ViewTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
-  Standard_EXPORT static Standard_Boolean CheckViewTool(const TDF_Label& theAcces);
+  Standard_EXPORT static bool CheckViewTool(const TDF_Label& theAcces);
 
   //! Creates (if it does not exist) ClippingPlaneTool attribute on ClippingPlanesLabel().
-  Standard_EXPORT static Handle(XCAFDoc_ClippingPlaneTool) ClippingPlaneTool(
+  Standard_EXPORT static occ::handle<XCAFDoc_ClippingPlaneTool> ClippingPlaneTool(
     const TDF_Label& acces);
 
   //! Checks for the ClippingPlaneTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
-  Standard_EXPORT static Standard_Boolean CheckClippingPlaneTool(const TDF_Label& theAcces);
+  Standard_EXPORT static bool CheckClippingPlaneTool(const TDF_Label& theAcces);
 
   //! Creates (if it does not exist) NotesTool attribute on NotesLabel().
-  Standard_EXPORT static Handle(XCAFDoc_NotesTool) NotesTool(const TDF_Label& acces);
+  Standard_EXPORT static occ::handle<XCAFDoc_NotesTool> NotesTool(const TDF_Label& acces);
 
   //! Checks for the NotesTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
-  Standard_EXPORT static Standard_Boolean CheckNotesTool(const TDF_Label& theAcces);
+  Standard_EXPORT static bool CheckNotesTool(const TDF_Label& theAcces);
 
   //! Returns value of current internal unit for the document
   //! converted to base unit type.
-  Standard_EXPORT static Standard_Boolean GetLengthUnit(const Handle(TDocStd_Document)& theDoc,
-                                                        Standard_Real&                  theResut,
-                                                        const UnitsMethods_LengthUnit theBaseUnit);
+  Standard_EXPORT static bool GetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
+                                            double&                              theResut,
+                                            const UnitsMethods_LengthUnit        theBaseUnit);
 
   //! Returns value of current internal unit for the document in meter
-  Standard_EXPORT static Standard_Boolean GetLengthUnit(const Handle(TDocStd_Document)& theDoc,
-                                                        Standard_Real&                  theResut);
+  Standard_EXPORT static bool GetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
+                                            double&                              theResut);
 
   //! Sets value of current internal unit to the document in meter
-  Standard_EXPORT static void SetLengthUnit(const Handle(TDocStd_Document)& theDoc,
-                                            const Standard_Real             theUnitValue);
+  Standard_EXPORT static void SetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
+                                            const double                         theUnitValue);
 
   //! Sets value of current internal unit to the document
   //! @param theUnitValue must be represented in the base unit type
-  Standard_EXPORT static void SetLengthUnit(const Handle(TDocStd_Document)& theDoc,
-                                            const Standard_Real             theUnitValue,
-                                            const UnitsMethods_LengthUnit   theBaseUnit);
+  Standard_EXPORT static void SetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
+                                            const double                         theUnitValue,
+                                            const UnitsMethods_LengthUnit        theBaseUnit);
 
 public:
   Standard_EXPORT XCAFDoc_DocumentTool();
@@ -183,11 +180,10 @@ public:
   //! to be called when reading this attribute from file
   Standard_EXPORT void Init() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! To init this derived attribute after the attribute restore using the base restore-methods
-  Standard_EXPORT Standard_Boolean AfterRetrieval(const Standard_Boolean forceIt = Standard_False)
-    Standard_OVERRIDE;
+  Standard_EXPORT bool AfterRetrieval(const bool forceIt = false) override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_DocumentTool, TDataStd_GenericEmpty)
 };

@@ -23,131 +23,132 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(APIHeaderSection_EditHeader, IFSelect_Editor)
 
-static Standard_Boolean IsTimeStamp(const Handle(TCollection_HAsciiString)& val)
+static bool IsTimeStamp(const occ::handle<TCollection_HAsciiString>& val)
 {
   if (val.IsNull())
-    return Standard_False;
+    return false;
   if (val->Length() != 19)
-    return Standard_False;
+    return false;
   //  On y va
   char dizmois = val->Value(6);
   char dizjour = val->Value(9);
   char dizheur = val->Value(12);
-  for (Standard_Integer i = 1; i <= 19; i++)
+  for (int i = 1; i <= 19; i++)
   {
     char uncar = val->Value(i);
     switch (i)
     {
       case 1:
         if (uncar != '1' && uncar != '2')
-          return Standard_False;
+          return false;
         break;
       case 2:
       case 3:
       case 4:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         break;
       case 5:
         if (uncar != '-')
-          return Standard_False;
-        Standard_FALLTHROUGH
+          return false;
+        [[fallthrough]];
       case 6:
         if (uncar != '0' && uncar != '1')
-          return Standard_False;
+          return false;
         break;
       case 7:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         if (dizmois == '1' && (uncar < '0' || uncar > '2'))
-          return Standard_False;
+          return false;
         break;
       case 8:
         if (uncar != '-')
-          return Standard_False;
-        Standard_FALLTHROUGH
+          return false;
+        [[fallthrough]];
       case 9:
         if (uncar < '0' || uncar > '3')
-          return Standard_False;
+          return false;
         break;
       case 10:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         if (dizjour == '3' && (uncar != '0' && uncar != '1'))
-          return Standard_False;
+          return false;
         break;
       case 11:
         if (uncar != 'T')
-          return Standard_False;
-        Standard_FALLTHROUGH
+          return false;
+        [[fallthrough]];
       case 12:
         if (uncar < '0' || uncar > '2')
-          return Standard_False;
+          return false;
         break;
       case 13:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         if (dizheur == '2' && (uncar < '0' || uncar > '3'))
-          return Standard_False;
+          return false;
         break;
       case 14:
         if (uncar != ':')
-          return Standard_False;
-        Standard_FALLTHROUGH
+          return false;
+        [[fallthrough]];
       case 15:
         if (uncar < '0' || uncar > '5')
-          return Standard_False;
+          return false;
         break;
       case 16:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         break;
       case 17:
         if (uncar != ':')
-          return Standard_False;
-        Standard_FALLTHROUGH
+          return false;
+        [[fallthrough]];
       case 18:
         if (uncar < '0' || uncar > '5')
-          return Standard_False;
+          return false;
         break;
       case 19:
         if (uncar < '0' || uncar > '9')
-          return Standard_False;
+          return false;
         break;
       default:
         break;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 APIHeaderSection_EditHeader::APIHeaderSection_EditHeader()
     : IFSelect_Editor(10)
 {
   //  Definition
-  Handle(Interface_TypedValue) fn_name = new Interface_TypedValue("fn_name");
+  occ::handle<Interface_TypedValue> fn_name = new Interface_TypedValue("fn_name");
   SetValue(1, fn_name, "name");
-  Handle(Interface_TypedValue) fn_time = new Interface_TypedValue("fn_time_stamp");
+  occ::handle<Interface_TypedValue> fn_time = new Interface_TypedValue("fn_time_stamp");
   fn_time->SetSatisfies(IsTimeStamp, "IsTimeStamp");
   SetValue(2, fn_time, "time");
-  Handle(Interface_TypedValue) fn_author = new Interface_TypedValue("fn_author");
+  occ::handle<Interface_TypedValue> fn_author = new Interface_TypedValue("fn_author");
   SetValue(3, fn_author, "author"); // 1 seul (1er de liste)
-  Handle(Interface_TypedValue) fn_org = new Interface_TypedValue("fn_organization");
+  occ::handle<Interface_TypedValue> fn_org = new Interface_TypedValue("fn_organization");
   SetValue(4, fn_org, "org"); // 1 seul (1er de liste)
-  Handle(Interface_TypedValue) fn_preproc = new Interface_TypedValue("fn_preprocessor_version");
+  occ::handle<Interface_TypedValue> fn_preproc =
+    new Interface_TypedValue("fn_preprocessor_version");
   SetValue(5, fn_preproc, "preproc");
-  Handle(Interface_TypedValue) fn_orig = new Interface_TypedValue("fn_originating_system");
+  occ::handle<Interface_TypedValue> fn_orig = new Interface_TypedValue("fn_originating_system");
   SetValue(6, fn_orig, "orig");
-  Handle(Interface_TypedValue) fn_autorize = new Interface_TypedValue("fn_authorization");
+  occ::handle<Interface_TypedValue> fn_autorize = new Interface_TypedValue("fn_authorization");
   SetValue(7, fn_autorize, "autorize");
 
-  Handle(Interface_TypedValue) fs_schema = new Interface_TypedValue("fs_schema_identifiers");
+  occ::handle<Interface_TypedValue> fs_schema = new Interface_TypedValue("fs_schema_identifiers");
   SetValue(8, fs_schema, "schema"); // 1 seul (1er de liste)
 
-  Handle(Interface_TypedValue) fd_descr = new Interface_TypedValue("fd_description");
+  occ::handle<Interface_TypedValue> fd_descr = new Interface_TypedValue("fd_description");
   SetValue(9, fd_descr, "descr"); // 1 seul (1er de liste)
 
-  Handle(Interface_TypedValue) fd_level = new Interface_TypedValue("fd_implementation_level");
+  occ::handle<Interface_TypedValue> fd_level = new Interface_TypedValue("fd_implementation_level");
   SetValue(10, fd_level, "level");
 }
 
@@ -156,28 +157,26 @@ TCollection_AsciiString APIHeaderSection_EditHeader::Label() const
   return TCollection_AsciiString("Step Header");
 }
 
-Standard_Boolean APIHeaderSection_EditHeader::Recognize(
-  const Handle(IFSelect_EditForm)& /*form*/) const
+bool APIHeaderSection_EditHeader::Recognize(const occ::handle<IFSelect_EditForm>& /*form*/) const
 {
-  return Standard_True;
+  return true;
 } // ??
 
-Handle(TCollection_HAsciiString) APIHeaderSection_EditHeader::StringValue(
-  const Handle(IFSelect_EditForm)& /*form*/,
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> APIHeaderSection_EditHeader::StringValue(
+  const occ::handle<IFSelect_EditForm>& /*form*/,
+  const int num) const
 {
   //  Default Values
   return TypedValue(num)->HStringValue();
 }
 
-Standard_Boolean APIHeaderSection_EditHeader::Load(
-  const Handle(IFSelect_EditForm)& form,
-  const Handle(Standard_Transient)& /*ent*/,
-  const Handle(Interface_InterfaceModel)& model) const
+bool APIHeaderSection_EditHeader::Load(const occ::handle<IFSelect_EditForm>& form,
+                                       const occ::handle<Standard_Transient>& /*ent*/,
+                                       const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(StepData_StepModel) modl = Handle(StepData_StepModel)::DownCast(model);
+  occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
-    return Standard_False;
+    return false;
 
   APIHeaderSection_MakeHeader mkh(modl);
 
@@ -194,17 +193,16 @@ Standard_Boolean APIHeaderSection_EditHeader::Load(
   form->LoadValue(9, mkh.DescriptionValue(1));
   form->LoadValue(10, mkh.ImplementationLevel());
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean APIHeaderSection_EditHeader::Apply(
-  const Handle(IFSelect_EditForm)& form,
-  const Handle(Standard_Transient)& /*ent*/,
-  const Handle(Interface_InterfaceModel)& model) const
+bool APIHeaderSection_EditHeader::Apply(const occ::handle<IFSelect_EditForm>& form,
+                                        const occ::handle<Standard_Transient>& /*ent*/,
+                                        const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(StepData_StepModel) modl = Handle(StepData_StepModel)::DownCast(model);
+  occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
-    return Standard_False;
+    return false;
 
   APIHeaderSection_MakeHeader mkh(modl);
 
@@ -231,7 +229,7 @@ Standard_Boolean APIHeaderSection_EditHeader::Apply(
   if (form->IsModified(10))
     mkh.SetImplementationLevel(form->EditedValue(10));
 
-  mkh.Apply(Handle(StepData_StepModel)::DownCast(model));
+  mkh.Apply(occ::down_cast<StepData_StepModel>(model));
 
-  return Standard_True;
+  return true;
 }

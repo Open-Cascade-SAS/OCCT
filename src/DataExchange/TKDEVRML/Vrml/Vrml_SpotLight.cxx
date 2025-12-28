@@ -14,7 +14,7 @@
 #include <Vrml_SpotLight.hxx>
 
 Vrml_SpotLight::Vrml_SpotLight()
-    : myOnOff(Standard_True),
+    : myOnOff(true),
       myIntensity(1),
       myColor(Quantity_NOC_WHITE),
       myLocation(0, 0, 1),
@@ -25,13 +25,13 @@ Vrml_SpotLight::Vrml_SpotLight()
   //
 }
 
-Vrml_SpotLight::Vrml_SpotLight(const Standard_Boolean aOnOff,
-                               const Standard_Real    aIntensity,
-                               const Quantity_Color&  aColor,
-                               const gp_Vec&          aLocation,
-                               const gp_Vec&          aDirection,
-                               const Standard_Real    aDropOffRate,
-                               const Standard_Real    aCutOffAngle)
+Vrml_SpotLight::Vrml_SpotLight(const bool            aOnOff,
+                               const double          aIntensity,
+                               const Quantity_Color& aColor,
+                               const gp_Vec&         aLocation,
+                               const gp_Vec&         aDirection,
+                               const double          aDropOffRate,
+                               const double          aCutOffAngle)
 {
   myOnOff = aOnOff;
   if (aIntensity < 0. || aIntensity > 1.)
@@ -46,17 +46,17 @@ Vrml_SpotLight::Vrml_SpotLight(const Standard_Boolean aOnOff,
   myCutOffAngle = aCutOffAngle;
 }
 
-void Vrml_SpotLight::SetOnOff(const Standard_Boolean aOnOff)
+void Vrml_SpotLight::SetOnOff(const bool aOnOff)
 {
   myOnOff = aOnOff;
 }
 
-Standard_Boolean Vrml_SpotLight::OnOff() const
+bool Vrml_SpotLight::OnOff() const
 {
   return myOnOff;
 }
 
-void Vrml_SpotLight::SetIntensity(const Standard_Real aIntensity)
+void Vrml_SpotLight::SetIntensity(const double aIntensity)
 {
   if (aIntensity < 0. || aIntensity > 1.)
   {
@@ -65,7 +65,7 @@ void Vrml_SpotLight::SetIntensity(const Standard_Real aIntensity)
   myIntensity = aIntensity;
 }
 
-Standard_Real Vrml_SpotLight::Intensity() const
+double Vrml_SpotLight::Intensity() const
 {
   return myIntensity;
 }
@@ -100,22 +100,22 @@ gp_Vec Vrml_SpotLight::Direction() const
   return myDirection;
 }
 
-void Vrml_SpotLight::SetDropOffRate(const Standard_Real aDropOffRate)
+void Vrml_SpotLight::SetDropOffRate(const double aDropOffRate)
 {
   myDropOffRate = aDropOffRate;
 }
 
-Standard_Real Vrml_SpotLight::DropOffRate() const
+double Vrml_SpotLight::DropOffRate() const
 {
   return myDropOffRate;
 }
 
-void Vrml_SpotLight::SetCutOffAngle(const Standard_Real aCutOffAngle)
+void Vrml_SpotLight::SetCutOffAngle(const double aCutOffAngle)
 {
   myCutOffAngle = aCutOffAngle;
 }
 
-Standard_Real Vrml_SpotLight::CutOffAngle() const
+double Vrml_SpotLight::CutOffAngle() const
 {
   return myCutOffAngle;
 }
@@ -124,7 +124,7 @@ Standard_OStream& Vrml_SpotLight::Print(Standard_OStream& anOStream) const
 {
   anOStream << "SpotLight {\n";
 
-  if (myOnOff != Standard_True)
+  if (myOnOff != true)
   {
     anOStream << "    on\t\tFALSE\n";
     //    anOStream << myOnOff << "\n";
@@ -139,7 +139,7 @@ Standard_OStream& Vrml_SpotLight::Print(Standard_OStream& anOStream) const
   if (std::abs(myColor.Red() - 1) > 0.0001 || std::abs(myColor.Green() - 1) > 0.0001
       || std::abs(myColor.Blue() - 1) > 0.0001)
   {
-    NCollection_Vec3<Standard_Real> aColor_sRGB;
+    NCollection_Vec3<double> aColor_sRGB;
     myColor.Values(aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
     anOStream << "    color\t";
     anOStream << aColor_sRGB.r() << " " << aColor_sRGB.g() << " " << aColor_sRGB.b() << "\n";

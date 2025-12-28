@@ -24,9 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Vec;
 
-class IGESGeom_OffsetSurface;
-DEFINE_STANDARD_HANDLE(IGESGeom_OffsetSurface, IGESData_IGESEntity)
-
 //! defines IGESOffsetSurface, Type <140> Form <0>
 //! in package IGESGeom
 //! An offset surface is a surface defined in terms of an
@@ -48,9 +45,9 @@ public:
   //! - anIndicator : Offset indicator
   //! - aDistance   : Offset distance
   //! - aSurface    : Surface that is offset
-  Standard_EXPORT void Init(const gp_XYZ&                      anIndicatoR,
-                            const Standard_Real                aDistance,
-                            const Handle(IGESData_IGESEntity)& aSurface);
+  Standard_EXPORT void Init(const gp_XYZ&                           anIndicatoR,
+                            const double                            aDistance,
+                            const occ::handle<IGESData_IGESEntity>& aSurface);
 
   //! returns the offset indicator
   Standard_EXPORT gp_Vec OffsetIndicator() const;
@@ -59,18 +56,17 @@ public:
   Standard_EXPORT gp_Vec TransformedOffsetIndicator() const;
 
   //! returns the distance by which surface is offset
-  Standard_EXPORT Standard_Real Distance() const;
+  Standard_EXPORT double Distance() const;
 
   //! returns the surface that has been offset
-  Standard_EXPORT Handle(IGESData_IGESEntity) Surface() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Surface() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_OffsetSurface, IGESData_IGESEntity)
 
-protected:
 private:
-  gp_XYZ                      theIndicator;
-  Standard_Real               theDistance;
-  Handle(IGESData_IGESEntity) theSurface;
+  gp_XYZ                           theIndicator;
+  double                           theDistance;
+  occ::handle<IGESData_IGESEntity> theSurface;
 };
 
 #endif // _IGESGeom_OffsetSurface_HeaderFile

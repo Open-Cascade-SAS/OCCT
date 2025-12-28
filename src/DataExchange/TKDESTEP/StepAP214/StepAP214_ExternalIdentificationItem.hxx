@@ -65,58 +65,55 @@ public:
   //! 14 -> DateAndTimeAssignment from StepBasic
   //! 15 -> DateAssignment from StepBasic
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as DocumentFile (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_DocumentFile) DocumentFile() const;
+  Standard_EXPORT occ::handle<StepBasic_DocumentFile> DocumentFile() const;
 
   //! Returns Value as ExternallyDefinedClass (or Null if another type)
-  Standard_EXPORT Handle(StepAP214_ExternallyDefinedClass) ExternallyDefinedClass() const;
+  Standard_EXPORT occ::handle<StepAP214_ExternallyDefinedClass> ExternallyDefinedClass() const;
 
   //! Returns Value as ExternallyDefinedGeneralProperty (or Null if another type)
-  Standard_EXPORT Handle(StepAP214_ExternallyDefinedGeneralProperty)
-    ExternallyDefinedGeneralProperty() const;
+  Standard_EXPORT occ::handle<StepAP214_ExternallyDefinedGeneralProperty>
+                  ExternallyDefinedGeneralProperty() const;
 
   //! Returns Value as ProductDefinition (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! Returns Value as AppliedOrganizationAssignment (or Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment()
-    const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedOrganizationAssignment>
+                  AppliedOrganizationAssignment() const;
 
   //! Returns Value as AppliedPersonAndOrganizationAssignment (or Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedPersonAndOrganizationAssignment)
-    AppliedPersonAndOrganizationAssignment() const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment>
+                  AppliedPersonAndOrganizationAssignment() const;
 
   //! Returns Value as Approval (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_Approval) Approval() const;
+  Standard_EXPORT occ::handle<StepBasic_Approval> Approval() const;
 
   //! Returns Value as ApprovalStatus (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ApprovalStatus) ApprovalStatus() const;
+  Standard_EXPORT occ::handle<StepBasic_ApprovalStatus> ApprovalStatus() const;
 
   //! Returns Value as ExternalSource (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ExternalSource) ExternalSource() const;
+  Standard_EXPORT occ::handle<StepBasic_ExternalSource> ExternalSource() const;
 
   //! Returns Value as OrganizationalAddress (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_OrganizationalAddress) OrganizationalAddress() const;
+  Standard_EXPORT occ::handle<StepBasic_OrganizationalAddress> OrganizationalAddress() const;
 
   //! Returns Value as SecurityClassification (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_SecurityClassification) SecurityClassification() const;
+  Standard_EXPORT occ::handle<StepBasic_SecurityClassification> SecurityClassification() const;
 
   //! Returns Value as TrimmedCurve (or Null if another type)
-  Standard_EXPORT Handle(StepGeom_TrimmedCurve) TrimmedCurve() const;
+  Standard_EXPORT occ::handle<StepGeom_TrimmedCurve> TrimmedCurve() const;
 
   //! Returns Value as VersionedActionRequest (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_VersionedActionRequest) VersionedActionRequest() const;
+  Standard_EXPORT occ::handle<StepBasic_VersionedActionRequest> VersionedActionRequest() const;
 
   //! Returns Value as DateAndTimeAssignment (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_DateAndTimeAssignment) DateAndTimeAssignment() const;
+  Standard_EXPORT occ::handle<StepBasic_DateAndTimeAssignment> DateAndTimeAssignment() const;
 
   //! Returns Value as DateAssignment (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_DateAssignment) DateAssignment() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepBasic_DateAssignment> DateAssignment() const;
 };
 
 #endif // _StepAP214_ExternalIdentificationItem_HeaderFile

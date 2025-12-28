@@ -87,92 +87,91 @@ public:
 
   //! Make a face from a Surface. Accepts tolerance value (TolDegen)
   //! for resolution of degenerated edges.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
-                                          const Standard_Real         TolDegen);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const occ::handle<Geom_Surface>& S,
+                                          const double                     TolDegen);
 
   //! Make a face from a plane.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Pln&       P,
-                                          const Standard_Real UMin,
-                                          const Standard_Real UMax,
-                                          const Standard_Real VMin,
-                                          const Standard_Real VMax);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Pln& P,
+                                          const double  UMin,
+                                          const double  UMax,
+                                          const double  VMin,
+                                          const double  VMax);
 
   //! Make a face from a cylinder.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Cylinder&  C,
-                                          const Standard_Real UMin,
-                                          const Standard_Real UMax,
-                                          const Standard_Real VMin,
-                                          const Standard_Real VMax);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Cylinder& C,
+                                          const double       UMin,
+                                          const double       UMax,
+                                          const double       VMin,
+                                          const double       VMax);
 
   //! Make a face from a cone.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Cone&      C,
-                                          const Standard_Real UMin,
-                                          const Standard_Real UMax,
-                                          const Standard_Real VMin,
-                                          const Standard_Real VMax);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Cone& C,
+                                          const double   UMin,
+                                          const double   UMax,
+                                          const double   VMin,
+                                          const double   VMax);
 
   //! Make a face from a sphere.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Sphere&    S,
-                                          const Standard_Real UMin,
-                                          const Standard_Real UMax,
-                                          const Standard_Real VMin,
-                                          const Standard_Real VMax);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Sphere& S,
+                                          const double     UMin,
+                                          const double     UMax,
+                                          const double     VMin,
+                                          const double     VMax);
 
   //! Make a face from a torus.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Torus&     C,
-                                          const Standard_Real UMin,
-                                          const Standard_Real UMax,
-                                          const Standard_Real VMin,
-                                          const Standard_Real VMax);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Torus& C,
+                                          const double    UMin,
+                                          const double    UMax,
+                                          const double    VMin,
+                                          const double    VMax);
 
   //! Make a face from a Surface. Accepts tolerance value (TolDegen)
   //! for resolution of degenerated edges.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
-                                          const Standard_Real         UMin,
-                                          const Standard_Real         UMax,
-                                          const Standard_Real         VMin,
-                                          const Standard_Real         VMax,
-                                          const Standard_Real         TolDegen);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const occ::handle<Geom_Surface>& S,
+                                          const double                     UMin,
+                                          const double                     UMax,
+                                          const double                     VMin,
+                                          const double                     VMax,
+                                          const double                     TolDegen);
 
   //! Find a surface from the wire and make a face.
   //! if <OnlyPlane> is true, the computed surface will be
   //! a plane. If it is not possible to find a plane, the
   //! flag NotDone will be set.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const TopoDS_Wire&     W,
-                                          const Standard_Boolean OnlyPlane = Standard_False);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const TopoDS_Wire& W, const bool OnlyPlane = false);
 
   //! Make a face from a plane and a wire.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Pln&          P,
-                                          const TopoDS_Wire&     W,
-                                          const Standard_Boolean Inside = Standard_True);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Pln&      P,
+                                          const TopoDS_Wire& W,
+                                          const bool         Inside = true);
 
   //! Make a face from a cylinder and a wire.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Cylinder&     C,
-                                          const TopoDS_Wire&     W,
-                                          const Standard_Boolean Inside = Standard_True);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Cylinder& C,
+                                          const TopoDS_Wire& W,
+                                          const bool         Inside = true);
 
   //! Make a face from a cone and a wire.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Cone&         C,
-                                          const TopoDS_Wire&     W,
-                                          const Standard_Boolean Inside = Standard_True);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Cone&     C,
+                                          const TopoDS_Wire& W,
+                                          const bool         Inside = true);
 
   //! Make a face from a sphere and a wire.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Sphere&       S,
-                                          const TopoDS_Wire&     W,
-                                          const Standard_Boolean Inside = Standard_True);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Sphere&   S,
+                                          const TopoDS_Wire& W,
+                                          const bool         Inside = true);
 
   //! Make a face from a torus and a wire.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Torus&        C,
-                                          const TopoDS_Wire&     W,
-                                          const Standard_Boolean Inside = Standard_True);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Torus&    C,
+                                          const TopoDS_Wire& W,
+                                          const bool         Inside = true);
 
   //! Make a face from a Surface and a wire.
   //! If the surface S is not plane,
   //! it must contain pcurves for all edges in W,
   //! otherwise the wrong shape will be created.
-  Standard_EXPORT BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
-                                          const TopoDS_Wire&          W,
-                                          const Standard_Boolean      Inside = Standard_True);
+  Standard_EXPORT BRepBuilderAPI_MakeFace(const occ::handle<Geom_Surface>& S,
+                                          const TopoDS_Wire&               W,
+                                          const bool                       Inside = true);
 
   //! Adds the wire <W> in the face <F>
   //! A general method to create a face is to give
@@ -235,9 +234,9 @@ public:
   //! the face after this initialization, using the function Add.
   //! TolDegen parameter is used for resolution of degenerated edges
   //! if calculation of natural bounds is turned on.
-  Standard_EXPORT void Init(const Handle(Geom_Surface)& S,
-                            const Standard_Boolean      Bound,
-                            const Standard_Real         TolDegen);
+  Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S,
+                            const bool                       Bound,
+                            const double                     TolDegen);
 
   //! Initializes (or reinitializes) the construction of a face on
   //! the surface S, limited in the u parametric direction by
@@ -249,12 +248,12 @@ public:
   //! when the parameters given are outside the bounds of the
   //! surface or the basis surface of a trimmed surface.
   //! TolDegen parameter is used for resolution of degenerated edges.
-  Standard_EXPORT void Init(const Handle(Geom_Surface)& S,
-                            const Standard_Real         UMin,
-                            const Standard_Real         UMax,
-                            const Standard_Real         VMin,
-                            const Standard_Real         VMax,
-                            const Standard_Real         TolDegen);
+  Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S,
+                            const double                     UMin,
+                            const double                     UMax,
+                            const double                     VMin,
+                            const double                     VMax,
+                            const double                     TolDegen);
 
   //! Adds the wire W to the constructed face as a hole.
   //! Warning
@@ -272,7 +271,7 @@ public:
   Standard_EXPORT void Add(const TopoDS_Wire& W);
 
   //! Returns true if this algorithm has a valid face.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsDone() const override;
 
   //! Returns the construction status
   //! BRepBuilderAPI_FaceDone if the face is built, or
@@ -288,7 +287,6 @@ public:
   Standard_EXPORT const TopoDS_Face& Face() const;
   Standard_EXPORT                    operator TopoDS_Face() const;
 
-protected:
 private:
   BRepLib_MakeFace myMakeFace;
 };

@@ -26,46 +26,46 @@ IMPLEMENT_DOMSTRING(GuidString, "guid")
 //=================================================================================================
 
 XmlMDataStd_UAttributeDriver::XmlMDataStd_UAttributeDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_UAttributeDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_UAttributeDriver::NewEmpty() const
 {
   return (new TDataStd_UAttribute());
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMDataStd_UAttributeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                     const Handle(TDF_Attribute)& theTarget,
-                                                     XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_UAttributeDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                         const occ::handle<TDF_Attribute>& theTarget,
+                                         XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString aGuidDomStr = theSource.Element().getAttribute(::GuidString());
-  Standard_CString    aGuidStr    = (Standard_CString)aGuidDomStr.GetString();
+  const char*         aGuidStr    = (const char*)aGuidDomStr.GetString();
   if (aGuidStr[0] == '\0')
   {
     myMessageDriver->Send("error retrieving GUID for type TDataStd_UAttribute", Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(TDataStd_UAttribute)::DownCast(theTarget)->SetID(aGuidStr);
-  return Standard_True;
+  occ::down_cast<TDataStd_UAttribute>(theTarget)->SetID(aGuidStr);
+  return true;
 }
 
 //=================================================================================================
 
-void XmlMDataStd_UAttributeDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                         XmlObjMgt_Persistent&        theTarget,
+void XmlMDataStd_UAttributeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                         XmlObjMgt_Persistent&             theTarget,
                                          XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_UAttribute) aName = Handle(TDataStd_UAttribute)::DownCast(theSource);
+  occ::handle<TDataStd_UAttribute> aName = occ::down_cast<TDataStd_UAttribute>(theSource);
 
   // convert GUID into attribute value
-  Standard_Character  aGuidStr[40];
+  char                aGuidStr[40];
   Standard_PCharacter pGuidStr;
   pGuidStr = aGuidStr;
   aName->ID().ToCString(pGuidStr);

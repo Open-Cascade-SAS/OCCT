@@ -27,8 +27,8 @@ StepFEA_FeaParametricPoint::StepFEA_FeaParametricPoint() {}
 //=================================================================================================
 
 void StepFEA_FeaParametricPoint::Init(
-  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-  const Handle(TColStd_HArray1OfReal)&    aCoordinates)
+  const occ::handle<TCollection_HAsciiString>&    aRepresentationItem_Name,
+  const occ::handle<NCollection_HArray1<double>>& aCoordinates)
 {
   StepGeom_Point::Init(aRepresentationItem_Name);
 
@@ -37,14 +37,15 @@ void StepFEA_FeaParametricPoint::Init(
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_FeaParametricPoint::Coordinates() const
+occ::handle<NCollection_HArray1<double>> StepFEA_FeaParametricPoint::Coordinates() const
 {
   return theCoordinates;
 }
 
 //=================================================================================================
 
-void StepFEA_FeaParametricPoint::SetCoordinates(const Handle(TColStd_HArray1OfReal)& aCoordinates)
+void StepFEA_FeaParametricPoint::SetCoordinates(
+  const occ::handle<NCollection_HArray1<double>>& aCoordinates)
 {
   theCoordinates = aCoordinates;
 }

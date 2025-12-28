@@ -23,9 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity, Standard_Transient)
 //            theEntity
 //=======================================================================
 SelectMgr_SensitiveEntity::SelectMgr_SensitiveEntity(
-  const Handle(Select3D_SensitiveEntity)& theEntity)
+  const occ::handle<Select3D_SensitiveEntity>& theEntity)
     : mySensitive(theEntity),
-      myIsActiveForSelection(Standard_False)
+      myIsActiveForSelection(false)
 {
   //
 }
@@ -42,8 +42,7 @@ void SelectMgr_SensitiveEntity::Clear()
 
 //=================================================================================================
 
-void SelectMgr_SensitiveEntity::DumpJson(Standard_OStream& theOStream,
-                                         Standard_Integer  theDepth) const
+void SelectMgr_SensitiveEntity::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

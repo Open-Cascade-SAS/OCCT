@@ -21,19 +21,18 @@
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis_WireOrder.hxx>
-#include <TColgp_Array1OfXYZ.hxx>
-#include <TColgp_Array1OfXY.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Standard_Transient.hxx>
 
 //=================================================================================================
 
 ShapeAnalysis_WireOrder::ShapeAnalysis_WireOrder()
     : myGap(0.0),
       myStat(0),
-      myKeepLoops(Standard_False),
+      myKeepLoops(false),
       myMode(Mode3D)
 {
   myTol = Precision::Confusion();
@@ -42,13 +41,13 @@ ShapeAnalysis_WireOrder::ShapeAnalysis_WireOrder()
 
 //=================================================================================================
 
-ShapeAnalysis_WireOrder::ShapeAnalysis_WireOrder(const Standard_Boolean theMode3D,
-                                                 const Standard_Real    theTolerance,
-                                                 const Standard_Boolean theModeBoth)
+ShapeAnalysis_WireOrder::ShapeAnalysis_WireOrder(const bool   theMode3D,
+                                                 const double theTolerance,
+                                                 const bool   theModeBoth)
     : myTol(theTolerance),
       myGap(0.0),
       myStat(0),
-      myKeepLoops(Standard_False)
+      myKeepLoops(false)
 {
   if (theModeBoth)
   {
@@ -70,9 +69,9 @@ ShapeAnalysis_WireOrder::ShapeAnalysis_WireOrder(const Standard_Boolean theMode3
 
 //=================================================================================================
 
-void ShapeAnalysis_WireOrder::SetMode(const Standard_Boolean theMode3D,
-                                      const Standard_Real    theTolerance,
-                                      const Standard_Boolean theModeBoth)
+void ShapeAnalysis_WireOrder::SetMode(const bool   theMode3D,
+                                      const double theTolerance,
+                                      const bool   theModeBoth)
 {
   ModeType aNewMode;
 
@@ -104,7 +103,7 @@ void ShapeAnalysis_WireOrder::SetMode(const Standard_Boolean theMode3D,
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_WireOrder::Tolerance() const
+double ShapeAnalysis_WireOrder::Tolerance() const
 {
   return myTol;
 }
@@ -113,8 +112,8 @@ Standard_Real ShapeAnalysis_WireOrder::Tolerance() const
 
 void ShapeAnalysis_WireOrder::Clear()
 {
-  myXYZ  = new TColgp_HSequenceOfXYZ();
-  myXY   = new TColgp_HSequenceOfXY();
+  myXYZ  = new NCollection_HSequence<gp_XYZ>();
+  myXY   = new NCollection_HSequence<gp_XY>();
   myStat = 0;
   myGap  = 0.0;
 }
@@ -163,12 +162,12 @@ void ShapeAnalysis_WireOrder::Add(const gp_XYZ& theStart3d,
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireOrder::NbEdges() const
+int ShapeAnalysis_WireOrder::NbEdges() const
 {
   return myXYZ->Length() / 2;
 }
 
-static Standard_Real DISTABS(const gp_XYZ& v1, const gp_XYZ& v2)
+static double DISTABS(const gp_XYZ& v1, const gp_XYZ& v2)
 {
   return std::abs(v1.X() - v2.X()) + std::abs(v1.Y() - v2.Y()) + std::abs(v1.Z() - v2.Z());
 }
@@ -192,7 +191,7 @@ static Standard_Real DISTABS(const gp_XYZ& v1, const gp_XYZ& v2)
 
 //=================================================================================================
 
-Standard_Boolean& ShapeAnalysis_WireOrder::KeepLoopsMode()
+bool& ShapeAnalysis_WireOrder::KeepLoopsMode()
 {
   return myKeepLoops;
 }
@@ -203,28 +202,28 @@ Standard_Boolean& ShapeAnalysis_WireOrder::KeepLoopsMode()
 //           taking into account the gaps between edges.
 //=======================================================================
 
-void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
+void ShapeAnalysis_WireOrder::Perform(const bool /*closed*/)
 {
-  myStat                    = 0;
-  Standard_Integer aNbEdges = NbEdges();
+  myStat       = 0;
+  int aNbEdges = NbEdges();
   // no edges loaded, nothing to do -- return with status OK
   if (aNbEdges == 0)
   {
     return;
   }
-  myOrd = new TColStd_HArray1OfInteger(1, aNbEdges);
+  myOrd = new NCollection_HArray1<int>(1, aNbEdges);
   myOrd->Init(0);
 
   // sequence of the edge nums in the right order
-  Handle(TColStd_HSequenceOfInteger) anEdgeSeq = new TColStd_HSequenceOfInteger;
-  NCollection_Sequence<Handle(TColStd_HSequenceOfInteger)> aLoops;
+  occ::handle<NCollection_HSequence<int>> anEdgeSeq = new NCollection_HSequence<int>;
+  NCollection_Sequence<occ::handle<NCollection_HSequence<int>>> aLoops;
 
   // the beginnings and ends of the edges
-  TColgp_Array1OfXYZ aBegins3D(1, aNbEdges);
-  TColgp_Array1OfXYZ anEnds3D(1, aNbEdges);
-  TColgp_Array1OfXY  aBegins2D(1, aNbEdges);
-  TColgp_Array1OfXY  anEnds2D(1, aNbEdges);
-  for (Standard_Integer i = 1; i <= aNbEdges; i++)
+  NCollection_Array1<gp_XYZ> aBegins3D(1, aNbEdges);
+  NCollection_Array1<gp_XYZ> anEnds3D(1, aNbEdges);
+  NCollection_Array1<gp_XY>  aBegins2D(1, aNbEdges);
+  NCollection_Array1<gp_XY>  anEnds2D(1, aNbEdges);
+  for (int i = 1; i <= aNbEdges; i++)
   {
     aBegins3D(i) = myXYZ->Value(2 * i - 1);
     anEnds3D(i)  = myXYZ->Value(2 * i);
@@ -235,14 +234,14 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
     }
   }
   // the flags that the edges was considered
-  TColStd_Array1OfBoolean isEdgeUsed(1, aNbEdges);
-  isEdgeUsed.Init(Standard_False);
+  NCollection_Array1<bool> isEdgeUsed(1, aNbEdges);
+  isEdgeUsed.Init(false);
 
-  constexpr Standard_Real aTol2  = Precision::SquareConfusion();
-  constexpr Standard_Real aTolP2 = Precision::SquarePConfusion();
+  constexpr double aTol2  = Precision::SquareConfusion();
+  constexpr double aTolP2 = Precision::SquarePConfusion();
 
   // take the first edge to the constructed chain
-  isEdgeUsed(1)        = Standard_True;
+  isEdgeUsed(1)        = true;
   gp_Pnt   aFirstPnt3D = aBegins3D(1);
   gp_Pnt   aLastPnt3D  = anEnds3D(1);
   gp_Pnt2d aFirstPnt2D;
@@ -263,16 +262,16 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
     // 2 - the end of the best edge to the end of constructed sequence (need to reverse)
     // 3 - the start of the best edge to the start of constructed sequence (need to reverse and move
     // the edge)
-    Standard_Integer aBestJointType = 3;
+    int aBestJointType = 3;
     // the best minimum distance between constructed sequence and the best edge
-    Standard_Real aBestMin3D = RealLast();
+    double aBestMin3D = RealLast();
     // number of the best edge
-    Standard_Integer aBestEdgeNum = 0;
+    int aBestEdgeNum = 0;
     // the best edge was found
-    Standard_Boolean isFound     = Standard_False;
-    Standard_Boolean isConnected = Standard_False;
+    bool isFound     = false;
+    bool isConnected = false;
     // loop to find the best edge among all the remaining
-    for (Standard_Integer i = 1; i <= aNbEdges; i++)
+    for (int i = 1; i <= aNbEdges; i++)
     {
       if (isEdgeUsed(i))
       {
@@ -280,16 +279,16 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
       }
 
       // find minimum distance and joint type for 3D and 2D (if necessary) modes
-      Standard_Integer aCurJointType;
-      Standard_Real    aCurMin;
+      int    aCurJointType;
+      double aCurMin;
       // distance for four possible cases
-      Standard_Real aSeqTailEdgeHead = aLastPnt3D.SquareDistance(aBegins3D(i));
-      Standard_Real aSeqTailEdgeTail = aLastPnt3D.SquareDistance(anEnds3D(i));
-      Standard_Real aSeqHeadEdgeTail = aFirstPnt3D.SquareDistance(anEnds3D(i));
-      Standard_Real aSeqHeadEdgeHead = aFirstPnt3D.SquareDistance(aBegins3D(i));
+      double aSeqTailEdgeHead = aLastPnt3D.SquareDistance(aBegins3D(i));
+      double aSeqTailEdgeTail = aLastPnt3D.SquareDistance(anEnds3D(i));
+      double aSeqHeadEdgeTail = aFirstPnt3D.SquareDistance(anEnds3D(i));
+      double aSeqHeadEdgeHead = aFirstPnt3D.SquareDistance(aBegins3D(i));
       // the best distances for joints with head and tail of sequence
-      Standard_Real    aMinDistToTail, aMinDistToHead;
-      Standard_Integer aTailJoinType, aHeadJointType;
+      double aMinDistToTail, aMinDistToHead;
+      int    aTailJoinType, aHeadJointType;
       if (aSeqTailEdgeHead <= aSeqTailEdgeTail)
       {
         aTailJoinType  = 0;
@@ -342,7 +341,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
       if (myMode == ModeBoth)
       {
         // distances in 2D
-        Standard_Integer aJointMask3D = 0, aJointMask2D = 0;
+        int aJointMask3D = 0, aJointMask2D = 0;
         if (aSeqTailEdgeHead < aTol2)
         {
           aJointMask3D |= (1 << 0);
@@ -359,10 +358,10 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
         {
           aJointMask3D |= (1 << 3);
         }
-        Standard_Real aSeqTailEdgeHead2D = aLastPnt2D.SquareDistance(aBegins2D(i));
-        Standard_Real aSeqTailEdgeTail2D = aLastPnt2D.SquareDistance(anEnds2D(i));
-        Standard_Real aSeqHeadEdgeTail2D = aFirstPnt2D.SquareDistance(anEnds2D(i));
-        Standard_Real aSeqHeadEdgeHead2D = aFirstPnt2D.SquareDistance(aBegins2D(i));
+        double aSeqTailEdgeHead2D = aLastPnt2D.SquareDistance(aBegins2D(i));
+        double aSeqTailEdgeTail2D = aLastPnt2D.SquareDistance(anEnds2D(i));
+        double aSeqHeadEdgeTail2D = aFirstPnt2D.SquareDistance(anEnds2D(i));
+        double aSeqHeadEdgeHead2D = aFirstPnt2D.SquareDistance(aBegins2D(i));
         if (aSeqTailEdgeHead2D < aTolP2)
         {
           aJointMask2D |= (1 << 0);
@@ -381,12 +380,12 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
         }
         // new approch for detecting best edge connection, for all other cases used old 3D
         // algorithm
-        Standard_Integer aFullMask = aJointMask3D & aJointMask2D;
+        int aFullMask = aJointMask3D & aJointMask2D;
         if (aFullMask != 0)
         {
           // find the best current joint type
           aCurJointType = 3;
-          for (Standard_Integer j = 0; j < 4; j++)
+          for (int j = 0; j < 4; j++)
           {
             if (aFullMask & (1 << j))
             {
@@ -396,8 +395,8 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
           }
           if (!isConnected || aCurJointType < aBestJointType)
           {
-            isFound     = Standard_True;
-            isConnected = Standard_True;
+            isFound     = true;
+            isConnected = true;
             switch (aCurJointType)
             {
               case 0:
@@ -434,7 +433,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
         if (aCurMin < aBestMin3D
             || ((aCurMin == aBestMin3D || aCurMin < aTol2) && (aCurJointType < aBestJointType)))
         {
-          isFound        = Standard_True;
+          isFound        = true;
           aBestMin3D     = aCurMin;
           aBestJointType = aCurJointType;
           aBestEdgeNum   = i;
@@ -446,7 +445,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
     if (isFound)
     {
       // distance between first and last point in sequence
-      Standard_Real aCloseDist = aFirstPnt3D.SquareDistance(aLastPnt3D);
+      double aCloseDist = aFirstPnt3D.SquareDistance(aLastPnt3D);
       // if it's better to insert the edge than to close the loop, just insert the edge according to
       // joint type
       if (aBestMin3D <= RealSmall() || aBestMin3D < aCloseDist)
@@ -493,7 +492,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
       else
       {
         aLoops.Append(anEdgeSeq);
-        anEdgeSeq   = new TColStd_HSequenceOfInteger;
+        anEdgeSeq   = new NCollection_HSequence<int>;
         aFirstPnt3D = aBegins3D(aBestEdgeNum);
         aLastPnt3D  = anEnds3D(aBestEdgeNum);
         if (myMode == ModeBoth)
@@ -504,7 +503,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
         anEdgeSeq->Append(aBestEdgeNum);
       }
       // mark the edge as used
-      isEdgeUsed(aBestEdgeNum) = Standard_True;
+      isEdgeUsed(aBestEdgeNum) = true;
     }
     else
     {
@@ -516,14 +515,14 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
   aLoops.Append(anEdgeSeq);
 
   // handling with constructed loops
-  Handle(TColStd_HSequenceOfInteger) aMainLoop;
+  occ::handle<NCollection_HSequence<int>> aMainLoop;
   if (myKeepLoops)
   {
     // keeping the loops, adding one after another.
-    aMainLoop = new TColStd_HSequenceOfInteger;
-    for (Standard_Integer i = 1; i <= aLoops.Length(); i++)
+    aMainLoop = new NCollection_HSequence<int>;
+    for (int i = 1; i <= aLoops.Length(); i++)
     {
-      const Handle(TColStd_HSequenceOfInteger)& aCurLoop = aLoops(i);
+      const occ::handle<NCollection_HSequence<int>>& aCurLoop = aLoops(i);
       aMainLoop->Append(aCurLoop);
     }
   }
@@ -535,56 +534,55 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
     while (aLoops.Length())
     {
       // iterate over all loops to find the closest one
-      Standard_Real    aMinDist1    = RealLast();
-      Standard_Integer aLoopNum1    = 0;
-      Standard_Integer aCurLoopIt1  = 0;
-      Standard_Boolean aDirect1     = Standard_False;
-      Standard_Integer aMainLoopIt1 = 0;
-      for (Standard_Integer aLoopIt = 1; aLoopIt <= aLoops.Length(); aLoopIt++)
+      double aMinDist1    = RealLast();
+      int    aLoopNum1    = 0;
+      int    aCurLoopIt1  = 0;
+      bool   aDirect1     = false;
+      int    aMainLoopIt1 = 0;
+      for (int aLoopIt = 1; aLoopIt <= aLoops.Length(); aLoopIt++)
       {
-        const Handle(TColStd_HSequenceOfInteger)& aCurLoop = aLoops.Value(aLoopIt);
+        const occ::handle<NCollection_HSequence<int>>& aCurLoop = aLoops.Value(aLoopIt);
         // iterate over all gaps between edges in current loop
-        Standard_Integer aCurLoopIt2    = 0;
-        Standard_Integer aMainLoopIt2   = 0;
-        Standard_Boolean aDirect2       = Standard_False;
-        Standard_Real    aMinDist2      = RealLast();
-        Standard_Integer aCurLoopLength = aCurLoop->Length();
-        for (Standard_Integer aCurEdgeIt = 1; aCurEdgeIt <= aCurLoopLength; aCurEdgeIt++)
+        int    aCurLoopIt2    = 0;
+        int    aMainLoopIt2   = 0;
+        bool   aDirect2       = false;
+        double aMinDist2      = RealLast();
+        int    aCurLoopLength = aCurLoop->Length();
+        for (int aCurEdgeIt = 1; aCurEdgeIt <= aCurLoopLength; aCurEdgeIt++)
         {
           // get the distance between the current edge and the previous edge taking into account the
           // edge's orientation
-          Standard_Integer aPrevEdgeIt  = aCurEdgeIt == 1 ? aCurLoopLength : aCurEdgeIt - 1;
-          Standard_Integer aCurEdgeIdx  = aCurLoop->Value(aCurEdgeIt);
-          Standard_Integer aPrevEdgeIdx = aCurLoop->Value(aPrevEdgeIt);
+          int    aPrevEdgeIt   = aCurEdgeIt == 1 ? aCurLoopLength : aCurEdgeIt - 1;
+          int    aCurEdgeIdx   = aCurLoop->Value(aCurEdgeIt);
+          int    aPrevEdgeIdx  = aCurLoop->Value(aPrevEdgeIt);
           gp_Pnt aCurLoopFirst = aCurEdgeIdx > 0 ? aBegins3D(aCurEdgeIdx) : anEnds3D(-aCurEdgeIdx);
           gp_Pnt aCurLoopLast =
             aPrevEdgeIdx > 0 ? anEnds3D(aPrevEdgeIdx) : aBegins3D(-aPrevEdgeIdx);
           // iterate over all gaps between edges in main loop
-          Standard_Real    aMinDist3       = RealLast();
-          Standard_Integer aMainLoopIt3    = 0;
-          Standard_Boolean aDirect3        = Standard_False;
-          Standard_Integer aMainLoopLength = aMainLoop->Length();
-          for (Standard_Integer aCurEdgeIt2 = 1;
-               (aCurEdgeIt2 <= aMainLoopLength) && aMinDist3 != 0.0;
+          double aMinDist3       = RealLast();
+          int    aMainLoopIt3    = 0;
+          bool   aDirect3        = false;
+          int    aMainLoopLength = aMainLoop->Length();
+          for (int aCurEdgeIt2 = 1; (aCurEdgeIt2 <= aMainLoopLength) && aMinDist3 != 0.0;
                aCurEdgeIt2++)
           {
             // get the distance between the current edge and the next edge taking into account the
             // edge's orientation
-            Standard_Integer aNextEdgeIt2  = aCurEdgeIt2 == aMainLoopLength ? 1 : aCurEdgeIt2 + 1;
-            Standard_Integer aCurEdgeIdx2  = aMainLoop->Value(aCurEdgeIt2);
-            Standard_Integer aNextEdgeIdx2 = aMainLoop->Value(aNextEdgeIt2);
-            gp_Pnt           aMainLoopFirst =
+            int    aNextEdgeIt2  = aCurEdgeIt2 == aMainLoopLength ? 1 : aCurEdgeIt2 + 1;
+            int    aCurEdgeIdx2  = aMainLoop->Value(aCurEdgeIt2);
+            int    aNextEdgeIdx2 = aMainLoop->Value(aNextEdgeIt2);
+            gp_Pnt aMainLoopFirst =
               (aCurEdgeIdx2 > 0 ? anEnds3D(aCurEdgeIdx2) : aBegins3D(-aCurEdgeIdx2));
             gp_Pnt aMainLoopLast =
               (aNextEdgeIdx2 > 0 ? aBegins3D(aNextEdgeIdx2) : anEnds3D(-aNextEdgeIdx2));
             // getting the sum of square distances if we try to sew the current loop with the main
             // loop in current positions
-            Standard_Real aDirectDist = aCurLoopFirst.SquareDistance(aMainLoopFirst)
-                                        + aCurLoopLast.SquareDistance(aMainLoopLast);
-            Standard_Real aReverseDist = aCurLoopFirst.SquareDistance(aMainLoopLast)
-                                         + aCurLoopLast.SquareDistance(aMainLoopFirst);
+            double aDirectDist = aCurLoopFirst.SquareDistance(aMainLoopFirst)
+                                 + aCurLoopLast.SquareDistance(aMainLoopLast);
+            double aReverseDist = aCurLoopFirst.SquareDistance(aMainLoopLast)
+                                  + aCurLoopLast.SquareDistance(aMainLoopFirst);
             // take the best result
-            Standard_Real aJoinDist;
+            double aJoinDist;
             if ((aDirectDist < aTol2) || (aDirectDist < 2.0 * aReverseDist))
             {
               aJoinDist    = aDirectDist;
@@ -622,11 +620,11 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
         }
       }
       // insert the found loop into main loop
-      Handle(TColStd_HSequenceOfInteger) aLoop   = aLoops.Value(aLoopNum1);
-      Standard_Integer                   aFactor = (aDirect1 ? 1 : -1);
-      for (Standard_Integer i = 0; i < aLoop->Length(); i++)
+      occ::handle<NCollection_HSequence<int>> aLoop   = aLoops.Value(aLoopNum1);
+      int                                     aFactor = (aDirect1 ? 1 : -1);
+      for (int i = 0; i < aLoop->Length(); i++)
       {
-        Standard_Integer anIdx =
+        int anIdx =
           (aCurLoopIt1 + i > aLoop->Length() ? aCurLoopIt1 + i - aLoop->Length() : aCurLoopIt1 + i);
         aMainLoop->InsertAfter(aMainLoopIt1 + i, aLoop->Value(anIdx) * aFactor);
       }
@@ -638,8 +636,8 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
   //  0 - order is the same
   //  1 - some edges were reordered
   // -1 - some edges were reversed
-  Standard_Integer aTempStatus = 0;
-  for (Standard_Integer i = 1; i <= aMainLoop->Length(); i++)
+  int aTempStatus = 0;
+  for (int i = 1; i <= aMainLoop->Length(); i++)
   {
     if (i != aMainLoop->Value(i) && aTempStatus >= 0)
     {
@@ -655,32 +653,32 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
   else
   {
     // check if edges were only shifted in reverse or forward, not reordered
-    Standard_Boolean isShiftReverse = Standard_True;
-    Standard_Boolean isShiftForward = Standard_True;
-    Standard_Integer aFirstIdx, aSecondIdx;
-    Standard_Integer aLength = aMainLoop->Length();
-    for (Standard_Integer i = 1; i <= aLength - 1; i++)
+    bool isShiftReverse = true;
+    bool isShiftForward = true;
+    int  aFirstIdx, aSecondIdx;
+    int  aLength = aMainLoop->Length();
+    for (int i = 1; i <= aLength - 1; i++)
     {
       aFirstIdx  = aMainLoop->Value(i);
       aSecondIdx = aMainLoop->Value(i + 1);
       if (!(aSecondIdx - aFirstIdx == 1 || (aFirstIdx == aLength && aSecondIdx == 1)))
       {
-        isShiftForward = Standard_False;
+        isShiftForward = false;
       }
       if (!(aFirstIdx - aSecondIdx == 1 || (aSecondIdx == aLength && aFirstIdx == 1)))
       {
-        isShiftReverse = Standard_False;
+        isShiftReverse = false;
       }
     }
     aFirstIdx  = aMainLoop->Value(aLength);
     aSecondIdx = aMainLoop->Value(1);
     if (!(aSecondIdx - aFirstIdx == 1 || (aFirstIdx == aLength && aSecondIdx == 1)))
     {
-      isShiftForward = Standard_False;
+      isShiftForward = false;
     }
     if (!(aFirstIdx - aSecondIdx == 1 || (aSecondIdx == aLength && aFirstIdx == 1)))
     {
-      isShiftReverse = Standard_False;
+      isShiftReverse = false;
     }
     if (isShiftForward || isShiftReverse)
     {
@@ -693,33 +691,31 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_WireOrder::IsDone() const
+bool ShapeAnalysis_WireOrder::IsDone() const
 {
   return !myOrd.IsNull();
 }
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireOrder::Status() const
+int ShapeAnalysis_WireOrder::Status() const
 {
   return myStat;
 }
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireOrder::Ordered(const Standard_Integer theIdx) const
+int ShapeAnalysis_WireOrder::Ordered(const int theIdx) const
 {
   if (myOrd.IsNull() || myOrd->Upper() < theIdx)
     return theIdx;
-  Standard_Integer anOldIdx = myOrd->Value(theIdx);
+  int anOldIdx = myOrd->Value(theIdx);
   return (anOldIdx == 0 ? theIdx : anOldIdx);
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_WireOrder::XYZ(const Standard_Integer theIdx,
-                                  gp_XYZ&                theStart3D,
-                                  gp_XYZ&                theEnd3D) const
+void ShapeAnalysis_WireOrder::XYZ(const int theIdx, gp_XYZ& theStart3D, gp_XYZ& theEnd3D) const
 {
   theStart3D = myXYZ->Value((theIdx > 0 ? 2 * theIdx - 1 : -2 * theIdx));
   theEnd3D   = myXYZ->Value((theIdx > 0 ? 2 * theIdx : -2 * theIdx - 1));
@@ -727,9 +723,7 @@ void ShapeAnalysis_WireOrder::XYZ(const Standard_Integer theIdx,
 
 //=================================================================================================
 
-void ShapeAnalysis_WireOrder::XY(const Standard_Integer theIdx,
-                                 gp_XY&                 theStart2D,
-                                 gp_XY&                 theEnd2D) const
+void ShapeAnalysis_WireOrder::XY(const int theIdx, gp_XY& theStart2D, gp_XY& theEnd2D) const
 {
   if (myMode == ModeBoth)
   {
@@ -747,12 +741,12 @@ void ShapeAnalysis_WireOrder::XY(const Standard_Integer theIdx,
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_WireOrder::Gap(const Standard_Integer num) const
+double ShapeAnalysis_WireOrder::Gap(const int num) const
 {
   if (num == 0)
     return myGap;
-  Standard_Integer n1 = Ordered(num);
-  Standard_Integer n0 = Ordered(num == 1 ? NbEdges() : num - 1);
+  int n1 = Ordered(num);
+  int n0 = Ordered(num == 1 ? NbEdges() : num - 1);
   //  Distance entre fin (n0) et debut (n1)
   return DISTABS(myXYZ->Value((n0 > 0 ? 2 * n0 : -2 * n0 - 1)),
                  myXYZ->Value((n1 > 0 ? 2 * n1 - 1 : -2 * n1)));
@@ -761,12 +755,12 @@ Standard_Real ShapeAnalysis_WireOrder::Gap(const Standard_Integer num) const
 
 //=================================================================================================
 
-void ShapeAnalysis_WireOrder::SetChains(const Standard_Real gap)
+void ShapeAnalysis_WireOrder::SetChains(const double gap)
 {
-  Standard_Integer n0, n1, n2, nb = NbEdges(); // szv#4:S4163:12Mar99 o0,o1,o2 not needed
+  int n0, n1, n2, nb = NbEdges(); // szv#4:S4163:12Mar99 o0,o1,o2 not needed
   if (nb == 0)
     return;
-  TColStd_SequenceOfInteger chain;
+  NCollection_Sequence<int> chain;
   n0 = 0;
   chain.Append(1);             // On demarre la partie
   gp_XYZ f3d, l3d, f13d, l13d; // szv#4:S4163:12Mar99 f03d,l03d unused
@@ -792,28 +786,26 @@ void ShapeAnalysis_WireOrder::SetChains(const Standard_Real gap)
   nb = chain.Length();
   if (nb == 0)
     return;
-  myChains = new TColStd_HArray1OfInteger(1, nb);
+  myChains = new NCollection_HArray1<int>(1, nb);
   for (n1 = 1; n1 <= nb; n1++)
     myChains->SetValue(n1, chain.Value(n1));
 }
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireOrder::NbChains() const
+int ShapeAnalysis_WireOrder::NbChains() const
 {
   return (myChains.IsNull() ? 0 : myChains->Length());
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_WireOrder::Chain(const Standard_Integer num,
-                                    Standard_Integer&      n1,
-                                    Standard_Integer&      n2) const
+void ShapeAnalysis_WireOrder::Chain(const int num, int& n1, int& n2) const
 {
   n1 = n2 = 0;
   if (myChains.IsNull())
     return;
-  Standard_Integer nb = myChains->Upper();
+  int nb = myChains->Upper();
   if (num == 0 || num > nb)
     return;
   n1 = myChains->Value(num);
@@ -825,7 +817,7 @@ void ShapeAnalysis_WireOrder::Chain(const Standard_Integer num,
 
 //=================================================================================================
 
-void ShapeAnalysis_WireOrder::SetCouples(const Standard_Real /*gap*/)
+void ShapeAnalysis_WireOrder::SetCouples(const double /*gap*/)
 {
 #ifdef OCCT_DEBUG
   std::cout << "ShapeAnalysis_WireOrder:SetCouple not yet implemented" << std::endl;
@@ -834,21 +826,19 @@ void ShapeAnalysis_WireOrder::SetCouples(const Standard_Real /*gap*/)
 
 //=================================================================================================
 
-Standard_Integer ShapeAnalysis_WireOrder::NbCouples() const
+int ShapeAnalysis_WireOrder::NbCouples() const
 {
   return (myCouples.IsNull() ? 0 : myCouples->Length());
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_WireOrder::Couple(const Standard_Integer num,
-                                     Standard_Integer&      n1,
-                                     Standard_Integer&      n2) const
+void ShapeAnalysis_WireOrder::Couple(const int num, int& n1, int& n2) const
 {
   n1 = n2 = 0;
   if (myCouples.IsNull())
     return;
-  Standard_Integer nb = myCouples->Upper();
+  int nb = myCouples->Upper();
   if (num == 0 || num * 2 > nb)
     return;
   n1 = myCouples->Value(2 * num - 1);

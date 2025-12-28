@@ -20,9 +20,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>
 
-class OSD_Exception_INVALID_DISPOSITION;
-DEFINE_STANDARD_HANDLE(OSD_Exception_INVALID_DISPOSITION, OSD_Exception)
-
 #if !defined No_Exception && !defined No_OSD_Exception_INVALID_DISPOSITION
   #define OSD_Exception_INVALID_DISPOSITION_Raise_if(CONDITION, MESSAGE)                           \
     if (CONDITION)                                                                                 \

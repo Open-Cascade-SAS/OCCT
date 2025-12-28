@@ -29,17 +29,19 @@ public:
          anObjIter.More();
          anObjIter.Next())
     {
-      const Handle(SelectMgr_SelectableObject)& anObj = anObjIter.Value();
-      for (SelectMgr_SequenceOfSelection::Iterator aSelIter(anObj->Selections()); aSelIter.More();
+      const occ::handle<SelectMgr_SelectableObject>& anObj = anObjIter.Value();
+      for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+             anObj->Selections());
+           aSelIter.More();
            aSelIter.Next())
       {
-        const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
-        for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+        const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+        for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
                aSel->Entities());
              aSelEntIter.More();
              aSelEntIter.Next())
         {
-          const Handle(SelectMgr_SensitiveEntity)& aSens = aSelEntIter.Value();
+          const occ::handle<SelectMgr_SensitiveEntity>& aSens = aSelEntIter.Value();
           if (!myMapEntityColors.IsBound(aSens->BaseSensitive()))
           {
             Quantity_Color aColor;
@@ -51,9 +53,7 @@ public:
     }
   }
 
-  virtual void Fill(const Standard_Integer theCol,
-                    const Standard_Integer theRow,
-                    const Standard_Integer thePicked) Standard_OVERRIDE
+  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -61,14 +61,14 @@ public:
       return;
     }
 
-    const Handle(Select3D_SensitiveEntity)& aPickedEntity = myMainSel->PickedEntity(thePicked);
-    Quantity_Color                          aColor(Quantity_NOC_BLACK);
+    const occ::handle<Select3D_SensitiveEntity>& aPickedEntity = myMainSel->PickedEntity(thePicked);
+    Quantity_Color                               aColor(Quantity_NOC_BLACK);
     myMapEntityColors.Find(aPickedEntity, aColor);
     myImage->SetPixelColor(theCol, theRow, aColor);
   }
 
 protected:
-  NCollection_DataMap<Handle(Select3D_SensitiveEntity), Quantity_Color> myMapEntityColors;
+  NCollection_DataMap<occ::handle<Select3D_SensitiveEntity>, Quantity_Color> myMapEntityColors;
 };
 
 //! Help class for filling pixel with random color.
@@ -83,17 +83,19 @@ public:
          anObjIter.More();
          anObjIter.Next())
     {
-      const Handle(SelectMgr_SelectableObject)& anObj = anObjIter.Value();
-      for (SelectMgr_SequenceOfSelection::Iterator aSelIter(anObj->Selections()); aSelIter.More();
+      const occ::handle<SelectMgr_SelectableObject>& anObj = anObjIter.Value();
+      for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+             anObj->Selections());
+           aSelIter.More();
            aSelIter.Next())
       {
-        const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
-        for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+        const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+        for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
                aSel->Entities());
              aSelEntIter.More();
              aSelEntIter.Next())
         {
-          const Handle(SelectMgr_SensitiveEntity)& aSens = aSelEntIter.Value();
+          const occ::handle<SelectMgr_SensitiveEntity>& aSens = aSelEntIter.Value();
           if (!myMapEntityColors.IsBound(aSens->BaseSensitive()->DynamicType()))
           {
             Quantity_Color aColor;
@@ -105,9 +107,7 @@ public:
     }
   }
 
-  virtual void Fill(const Standard_Integer theCol,
-                    const Standard_Integer theRow,
-                    const Standard_Integer thePicked) Standard_OVERRIDE
+  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -115,14 +115,14 @@ public:
       return;
     }
 
-    const Handle(Select3D_SensitiveEntity)& aPickedEntity = myMainSel->PickedEntity(thePicked);
-    Quantity_Color                          aColor(Quantity_NOC_BLACK);
+    const occ::handle<Select3D_SensitiveEntity>& aPickedEntity = myMainSel->PickedEntity(thePicked);
+    Quantity_Color                               aColor(Quantity_NOC_BLACK);
     myMapEntityColors.Find(aPickedEntity->DynamicType(), aColor);
     myImage->SetPixelColor(theCol, theRow, aColor);
   }
 
 protected:
-  NCollection_DataMap<Handle(Standard_Type), Quantity_Color> myMapEntityColors;
+  NCollection_DataMap<occ::handle<Standard_Type>, Quantity_Color> myMapEntityColors;
 };
 
 //! Help class for filling pixel with normalized depth of ray.
@@ -131,7 +131,7 @@ class NormalizedDepthFiller : public SelectMgr_SelectionImageFiller
 public:
   NormalizedDepthFiller(Image_PixMap&             thePixMap,
                         SelectMgr_ViewerSelector* theSelector,
-                        const Standard_Boolean    theToInverse)
+                        const bool                theToInverse)
       : SelectMgr_SelectionImageFiller(thePixMap, theSelector),
         myDepthMin(RealLast()),
         myDepthMax(-RealLast()),
@@ -141,9 +141,7 @@ public:
   }
 
   //! Accumulate the data.
-  virtual void Fill(const Standard_Integer theCol,
-                    const Standard_Integer theRow,
-                    const Standard_Integer thePicked) Standard_OVERRIDE
+  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (myUnnormImage.IsEmpty())
     {
@@ -163,7 +161,7 @@ public:
   }
 
   //! Normalize the depth values.
-  virtual void Flush() Standard_OVERRIDE
+  virtual void Flush() override
   {
     float aFrom  = 0.0f;
     float aDelta = 1.0f;
@@ -176,15 +174,15 @@ public:
         aDelta = 1.0f;
       }
     }
-    for (Standard_Size aRowIter = 0; aRowIter < myUnnormImage.SizeY(); ++aRowIter)
+    for (size_t aRowIter = 0; aRowIter < myUnnormImage.SizeY(); ++aRowIter)
     {
-      for (Standard_Size aColIter = 0; aColIter < myUnnormImage.SizeX(); ++aColIter)
+      for (size_t aColIter = 0; aColIter < myUnnormImage.SizeX(); ++aColIter)
       {
         float aDepth = myUnnormImage.Value<float>(aRowIter, aColIter);
         if (aDepth <= -ShortRealLast() || aDepth >= ShortRealLast())
         {
-          myImage->SetPixelColor(Standard_Integer(aColIter),
-                                 Standard_Integer(aRowIter),
+          myImage->SetPixelColor(int(aColIter),
+                                 int(aRowIter),
                                  Quantity_ColorRGBA(0.0f, 0.0f, 0.0f, 1.0f));
           continue;
         }
@@ -194,18 +192,18 @@ public:
         {
           aNormDepth = 1.0f - aNormDepth;
         }
-        myImage->SetPixelColor(Standard_Integer(aColIter),
-                               Standard_Integer(aRowIter),
+        myImage->SetPixelColor(int(aColIter),
+                               int(aRowIter),
                                Quantity_ColorRGBA(aNormDepth, aNormDepth, aNormDepth, 1.0f));
       }
     }
   }
 
 private:
-  Image_PixMap     myUnnormImage;
-  Standard_Real    myDepthMin;
-  Standard_Real    myDepthMax;
-  Standard_Boolean myToInverse;
+  Image_PixMap myUnnormImage;
+  double       myDepthMin;
+  double       myDepthMax;
+  bool         myToInverse;
 };
 
 //! Help class for filling pixel with unnormalized depth of ray.
@@ -217,9 +215,7 @@ public:
   {
   }
 
-  virtual void Fill(const Standard_Integer theCol,
-                    const Standard_Integer theRow,
-                    const Standard_Integer thePicked) Standard_OVERRIDE
+  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -229,9 +225,10 @@ public:
 
     const SelectMgr_SortCriterion& aSortCriterion = myMainSel->PickedData(thePicked);
     const float                    aDepth         = float(aSortCriterion.Depth);
-    myImage->SetPixelColor(theCol,
-                           theRow,
-                           Quantity_ColorRGBA(Graphic3d_Vec4(aDepth, aDepth, aDepth, 1.0f)));
+    myImage->SetPixelColor(
+      theCol,
+      theRow,
+      Quantity_ColorRGBA(NCollection_Vec4<float>(aDepth, aDepth, aDepth, 1.0f)));
   }
 };
 
@@ -247,18 +244,20 @@ public:
          anObjIter.More();
          anObjIter.Next())
     {
-      const Handle(SelectMgr_SelectableObject)& anObj = anObjIter.Value();
-      for (SelectMgr_SequenceOfSelection::Iterator aSelIter(anObj->Selections()); aSelIter.More();
+      const occ::handle<SelectMgr_SelectableObject>& anObj = anObjIter.Value();
+      for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+             anObj->Selections());
+           aSelIter.More();
            aSelIter.Next())
       {
-        const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
-        for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+        const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+        for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
                aSel->Entities());
              aSelEntIter.More();
              aSelEntIter.Next())
         {
-          const Handle(SelectMgr_SensitiveEntity)& aSens   = aSelEntIter.Value();
-          const Handle(SelectMgr_EntityOwner)&     anOwner = aSens->BaseSensitive()->OwnerId();
+          const occ::handle<SelectMgr_SensitiveEntity>& aSens   = aSelEntIter.Value();
+          const occ::handle<SelectMgr_EntityOwner>&     anOwner = aSens->BaseSensitive()->OwnerId();
           if (!myMapOwnerColors.IsBound(anOwner))
           {
             Quantity_Color aColor;
@@ -270,9 +269,7 @@ public:
     }
   }
 
-  virtual void Fill(const Standard_Integer theCol,
-                    const Standard_Integer theRow,
-                    const Standard_Integer thePicked) Standard_OVERRIDE
+  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -280,14 +277,14 @@ public:
       return;
     }
 
-    const Handle(SelectMgr_EntityOwner)& aPickedOwner = myMainSel->Picked(thePicked);
-    Quantity_Color                       aColor(Quantity_NOC_BLACK);
+    const occ::handle<SelectMgr_EntityOwner>& aPickedOwner = myMainSel->Picked(thePicked);
+    Quantity_Color                            aColor(Quantity_NOC_BLACK);
     myMapOwnerColors.Find(aPickedOwner, aColor);
     myImage->SetPixelColor(theCol, theRow, aColor);
   }
 
 protected:
-  NCollection_DataMap<Handle(SelectMgr_EntityOwner), Quantity_Color> myMapOwnerColors;
+  NCollection_DataMap<occ::handle<SelectMgr_EntityOwner>, Quantity_Color> myMapOwnerColors;
 };
 
 //! Help class for filling pixel with random color for each selection mode.
@@ -315,9 +312,7 @@ public:
     myMapSelectionModeColors.Bind(0x0100, Quantity_NOC_GOLD);           // MeshVS_SMF_Group
   }
 
-  virtual void Fill(const Standard_Integer theCol,
-                    const Standard_Integer theRow,
-                    const Standard_Integer thePicked) Standard_OVERRIDE
+  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -325,16 +320,17 @@ public:
       return;
     }
 
-    Standard_Integer                          aSelectionMode = -1;
-    const Handle(SelectMgr_SelectableObject)& aSelectable =
+    int                                            aSelectionMode = -1;
+    const occ::handle<SelectMgr_SelectableObject>& aSelectable =
       myMainSel->Picked(thePicked)->Selectable();
-    const Handle(Select3D_SensitiveEntity)& anEntity = myMainSel->PickedEntity(thePicked);
-    for (SelectMgr_SequenceOfSelection::Iterator aSelIter(aSelectable->Selections());
+    const occ::handle<Select3D_SensitiveEntity>& anEntity = myMainSel->PickedEntity(thePicked);
+    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
+           aSelectable->Selections());
          aSelIter.More();
          aSelIter.Next())
     {
-      const Handle(SelectMgr_Selection)& aSelection = aSelIter.Value();
-      for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+      const occ::handle<SelectMgr_Selection>& aSelection = aSelIter.Value();
+      for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
              aSelection->Entities());
            aSelEntIter.More();
            aSelEntIter.Next())
@@ -364,7 +360,7 @@ public:
   }
 
 protected:
-  NCollection_DataMap<Standard_Integer, Quantity_Color> myMapSelectionModeColors;
+  NCollection_DataMap<int, Quantity_Color> myMapSelectionModeColors;
 };
 
 //! Help class for filling pixel with color of detected shape.
@@ -376,14 +372,12 @@ public:
   {
   }
 
-  virtual void Fill(const Standard_Integer theCol,
-                    const Standard_Integer theRow,
-                    const Standard_Integer thePicked) Standard_OVERRIDE
+  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     Quantity_Color aColor(Quantity_NOC_BLACK);
     if (thePicked > 0 && thePicked <= myMainSel->NbPicked())
     {
-      const Handle(SelectMgr_SelectableObject)& aSelectable =
+      const occ::handle<SelectMgr_SelectableObject>& aSelectable =
         myMainSel->Picked(thePicked)->Selectable();
       aColor = aSelectable->Attributes()->Color();
     }
@@ -400,9 +394,7 @@ public:
   {
   }
 
-  virtual void Fill(const Standard_Integer theCol,
-                    const Standard_Integer theRow,
-                    const Standard_Integer thePicked) Standard_OVERRIDE
+  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked <= 0 || thePicked > myMainSel->NbPicked())
     {
@@ -411,7 +403,7 @@ public:
     else
     {
       const SelectMgr_SortCriterion& aPickedData = myMainSel->PickedData(thePicked);
-      Graphic3d_Vec3                 aNormal     = aPickedData.Normal;
+      NCollection_Vec3<float>        aNormal     = aPickedData.Normal;
       aNormal.Normalize();
       if (aNormal.Modulus() > 0.0f)
       {
@@ -433,7 +425,7 @@ public:
 
 //=================================================================================================
 
-Handle(SelectMgr_SelectionImageFiller) SelectMgr_SelectionImageFiller::CreateFiller(
+occ::handle<SelectMgr_SelectionImageFiller> SelectMgr_SelectionImageFiller::CreateFiller(
   Image_PixMap&                  thePixMap,
   SelectMgr_ViewerSelector*      theSelector,
   StdSelect_TypeOfSelectionImage theType)
@@ -469,5 +461,5 @@ Handle(SelectMgr_SelectionImageFiller) SelectMgr_SelectionImageFiller::CreateFil
       return new SurfaceNormalFiller(thePixMap, theSelector);
     }
   }
-  return Handle(SelectMgr_SelectionImageFiller)();
+  return occ::handle<SelectMgr_SelectionImageFiller>();
 }

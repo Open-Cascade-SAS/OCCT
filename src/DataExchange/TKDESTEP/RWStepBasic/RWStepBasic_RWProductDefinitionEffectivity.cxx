@@ -22,10 +22,10 @@
 RWStepBasic_RWProductDefinitionEffectivity::RWStepBasic_RWProductDefinitionEffectivity() {}
 
 void RWStepBasic_RWProductDefinitionEffectivity::ReadStep(
-  const Handle(StepData_StepReaderData)&                data,
-  const Standard_Integer                                num,
-  Handle(Interface_Check)&                              ach,
-  const Handle(StepBasic_ProductDefinitionEffectivity)& ent) const
+  const occ::handle<StepData_StepReaderData>&                data,
+  const int                                                  num,
+  occ::handle<Interface_Check>&                              ach,
+  const occ::handle<StepBasic_ProductDefinitionEffectivity>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,14 +35,14 @@ void RWStepBasic_RWProductDefinitionEffectivity::ReadStep(
 
   // --- inherited field : product_data_type ---
 
-  Handle(TCollection_HAsciiString) aId;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aId;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "id", ach, aId);
 
   // --- own field : kind ---
 
-  Handle(StepBasic_ProductDefinitionRelationship) aUsage;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepBasic_ProductDefinitionRelationship> aUsage;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "kind",
@@ -56,8 +56,8 @@ void RWStepBasic_RWProductDefinitionEffectivity::ReadStep(
 }
 
 void RWStepBasic_RWProductDefinitionEffectivity::WriteStep(
-  StepData_StepWriter&                                  SW,
-  const Handle(StepBasic_ProductDefinitionEffectivity)& ent) const
+  StepData_StepWriter&                                       SW,
+  const occ::handle<StepBasic_ProductDefinitionEffectivity>& ent) const
 {
 
   // --- own field : id ---
@@ -67,8 +67,8 @@ void RWStepBasic_RWProductDefinitionEffectivity::WriteStep(
 }
 
 void RWStepBasic_RWProductDefinitionEffectivity::Share(
-  const Handle(StepBasic_ProductDefinitionEffectivity)& ent,
-  Interface_EntityIterator&                             iter) const
+  const occ::handle<StepBasic_ProductDefinitionEffectivity>& ent,
+  Interface_EntityIterator&                                  iter) const
 {
   iter.AddItem(ent->Usage());
 }

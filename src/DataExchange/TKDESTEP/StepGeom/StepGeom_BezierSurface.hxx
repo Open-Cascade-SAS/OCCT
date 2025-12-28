@@ -22,9 +22,6 @@
 
 #include <StepGeom_BSplineSurface.hxx>
 
-class StepGeom_BezierSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_BezierSurface, StepGeom_BSplineSurface)
-
 class StepGeom_BezierSurface : public StepGeom_BSplineSurface
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepGeom_BezierSurface();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_BezierSurface, StepGeom_BSplineSurface)
-
-protected:
-private:
 };
 
 #endif // _StepGeom_BezierSurface_HeaderFile

@@ -30,9 +30,9 @@
 
 Geom2dGcc_Lin2dTanObl::Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qualified1,
                                              const gp_Lin2d&                 TheLine,
-                                             const Standard_Real             TolAng,
-                                             const Standard_Real             Angle)
-    : Paral2(Standard_False),
+                                             const double                    TolAng,
+                                             const double                    Angle)
+    : Paral2(false),
       linsol(1, 2),
       qualifier1(1, 2),
       pnttg1sol(1, 2),
@@ -42,27 +42,27 @@ Geom2dGcc_Lin2dTanObl::Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qua
       pararg1(1, 2),
       pararg2(1, 2)
 {
-  Geom2dAdaptor_Curve         C1    = Qualified1.Qualified();
-  const Handle(Geom2d_Curve)& CC1   = C1.Curve();
-  GeomAbs_CurveType           Type1 = C1.GetType();
+  Geom2dAdaptor_Curve              C1    = Qualified1.Qualified();
+  const occ::handle<Geom2d_Curve>& CC1   = C1.Curve();
+  GeomAbs_CurveType                Type1 = C1.GetType();
 
   //=============================================================================
   //                            Appel a GccAna.                                 +
   //=============================================================================
 
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
   if (Type1 == GeomAbs_Circle)
   {
-    Handle(Geom2d_Circle) CCC1 = Handle(Geom2d_Circle)::DownCast(CC1);
-    gp_Circ2d             c1(CCC1->Circ2d());
-    GccEnt_QualifiedCirc  Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
-    GccAna_Lin2dTanObl    Lin(Qc1, TheLine, Angle);
+    occ::handle<Geom2d_Circle> CCC1 = occ::down_cast<Geom2d_Circle>(CC1);
+    gp_Circ2d                  c1(CCC1->Circ2d());
+    GccEnt_QualifiedCirc       Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
+    GccAna_Lin2dTanObl         Lin(Qc1, TheLine, Angle);
     WellDone = Lin.IsDone();
     if (WellDone)
     {
       NbrSol = Lin.NbSolutions();
-      for (Standard_Integer i = 1; i <= NbrSol; i++)
+      for (int i = 1; i <= NbrSol; i++)
       {
         linsol(i) = Lin.ThisSolution(i);
         Lin.Tangency1(i, par1sol(i), pararg1(i), pnttg1sol(i));
@@ -74,12 +74,12 @@ Geom2dGcc_Lin2dTanObl::Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qua
   else
   {
     Geom2dGcc_QCurve Qc1(C1, Qualified1.Qualifier());
-    Standard_Real    aFirstPar  = Geom2dGcc_CurveTool::FirstParameter(C1);
-    Standard_Real    aLastPar   = Geom2dGcc_CurveTool::LastParameter(C1);
-    Standard_Integer aNbSamples = Geom2dGcc_CurveTool::NbSamples(C1);
-    Standard_Real    aStep      = (aLastPar - aFirstPar) / aNbSamples;
-    Standard_Real    Param1     = aFirstPar;
-    Standard_Integer i;
+    double           aFirstPar  = Geom2dGcc_CurveTool::FirstParameter(C1);
+    double           aLastPar   = Geom2dGcc_CurveTool::LastParameter(C1);
+    int              aNbSamples = Geom2dGcc_CurveTool::NbSamples(C1);
+    double           aStep      = (aLastPar - aFirstPar) / aNbSamples;
+    double           Param1     = aFirstPar;
+    int              i;
 
     for (i = 0; i <= aNbSamples && NbrSol < 2; i++)
     {
@@ -100,10 +100,10 @@ Geom2dGcc_Lin2dTanObl::Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qua
 
 Geom2dGcc_Lin2dTanObl::Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qualified1,
                                              const gp_Lin2d&                 TheLine,
-                                             const Standard_Real             TolAng,
-                                             const Standard_Real             Param1,
-                                             const Standard_Real             Angle)
-    : Paral2(Standard_False),
+                                             const double                    TolAng,
+                                             const double                    Param1,
+                                             const double                    Angle)
+    : Paral2(false),
       linsol(1, 2),
       qualifier1(1, 2),
       pnttg1sol(1, 2),
@@ -113,27 +113,27 @@ Geom2dGcc_Lin2dTanObl::Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qua
       pararg1(1, 2),
       pararg2(1, 2)
 {
-  Geom2dAdaptor_Curve         C1    = Qualified1.Qualified();
-  const Handle(Geom2d_Curve)& CC1   = C1.Curve();
-  GeomAbs_CurveType           Type1 = C1.GetType();
+  Geom2dAdaptor_Curve              C1    = Qualified1.Qualified();
+  const occ::handle<Geom2d_Curve>& CC1   = C1.Curve();
+  GeomAbs_CurveType                Type1 = C1.GetType();
 
   //=============================================================================
   //                            Appel a GccAna.                                 +
   //=============================================================================
 
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
   if (Type1 == GeomAbs_Circle)
   {
-    Handle(Geom2d_Circle) CCC1 = Handle(Geom2d_Circle)::DownCast(CC1);
-    gp_Circ2d             c1(CCC1->Circ2d());
-    GccEnt_QualifiedCirc  Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
-    GccAna_Lin2dTanObl    Lin(Qc1, TheLine, Angle);
+    occ::handle<Geom2d_Circle> CCC1 = occ::down_cast<Geom2d_Circle>(CC1);
+    gp_Circ2d                  c1(CCC1->Circ2d());
+    GccEnt_QualifiedCirc       Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
+    GccAna_Lin2dTanObl         Lin(Qc1, TheLine, Angle);
     WellDone = Lin.IsDone();
     if (WellDone)
     {
       NbrSol = Lin.NbSolutions();
-      for (Standard_Integer i = 1; i <= NbrSol; i++)
+      for (int i = 1; i <= NbrSol; i++)
       {
         linsol(i) = Lin.ThisSolution(i);
         Lin.Tangency1(i, par1sol(i), pararg1(i), pnttg1sol(i));
@@ -157,17 +157,17 @@ Geom2dGcc_Lin2dTanObl::Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qua
   }
 }
 
-Standard_Boolean Geom2dGcc_Lin2dTanObl::IsDone() const
+bool Geom2dGcc_Lin2dTanObl::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer Geom2dGcc_Lin2dTanObl::NbSolutions() const
+int Geom2dGcc_Lin2dTanObl::NbSolutions() const
 {
   return NbrSol;
 }
 
-gp_Lin2d Geom2dGcc_Lin2dTanObl::ThisSolution(const Standard_Integer Index) const
+gp_Lin2d Geom2dGcc_Lin2dTanObl::ThisSolution(const int Index) const
 {
 
   if (Index > NbrSol || Index <= 0)
@@ -177,8 +177,7 @@ gp_Lin2d Geom2dGcc_Lin2dTanObl::ThisSolution(const Standard_Integer Index) const
   return linsol(Index);
 }
 
-void Geom2dGcc_Lin2dTanObl::WhichQualifier(const Standard_Integer Index,
-                                           GccEnt_Position&       Qualif1) const
+void Geom2dGcc_Lin2dTanObl::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -194,10 +193,10 @@ void Geom2dGcc_Lin2dTanObl::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void Geom2dGcc_Lin2dTanObl::Tangency1(const Standard_Integer Index,
-                                      Standard_Real&         ParSol,
-                                      Standard_Real&         ParArg,
-                                      gp_Pnt2d&              PntSol) const
+void Geom2dGcc_Lin2dTanObl::Tangency1(const int Index,
+                                      double&   ParSol,
+                                      double&   ParArg,
+                                      gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -215,10 +214,10 @@ void Geom2dGcc_Lin2dTanObl::Tangency1(const Standard_Integer Index,
   }
 }
 
-void Geom2dGcc_Lin2dTanObl::Intersection2(const Standard_Integer Index,
-                                          Standard_Real&         ParSol,
-                                          Standard_Real&         ParArg,
-                                          gp_Pnt2d&              PntSol) const
+void Geom2dGcc_Lin2dTanObl::Intersection2(const int Index,
+                                          double&   ParSol,
+                                          double&   ParArg,
+                                          gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -236,19 +235,19 @@ void Geom2dGcc_Lin2dTanObl::Intersection2(const Standard_Integer Index,
   }
 }
 
-Standard_Boolean Geom2dGcc_Lin2dTanObl::Add(const Standard_Integer           theIndex,
-                                            const Geom2dGcc_Lin2dTanOblIter& theLin,
-                                            const Standard_Real              theTol,
-                                            const Geom2dAdaptor_Curve&       theC1)
+bool Geom2dGcc_Lin2dTanObl::Add(const int                        theIndex,
+                                const Geom2dGcc_Lin2dTanOblIter& theLin,
+                                const double                     theTol,
+                                const Geom2dAdaptor_Curve&       theC1)
 {
-  Standard_Integer i;
-  Standard_Real    aPar1sol;
-  Standard_Real    aPar2sol;
-  Standard_Real    aPar1arg;
-  Standard_Real    aPar2arg;
-  gp_Pnt2d         aPnt1Sol;
-  gp_Pnt2d         aPnt2Sol;
-  gp_Lin2d         aLin = theLin.ThisSolution();
+  int      i;
+  double   aPar1sol;
+  double   aPar2sol;
+  double   aPar1arg;
+  double   aPar2arg;
+  gp_Pnt2d aPnt1Sol;
+  gp_Pnt2d aPnt2Sol;
+  gp_Lin2d aLin = theLin.ThisSolution();
 
   theLin.Tangency1(aPar1sol, aPar1arg, aPnt1Sol);
   theLin.Intersection2(aPar2sol, aPar2arg, aPnt2Sol);
@@ -256,7 +255,7 @@ Standard_Boolean Geom2dGcc_Lin2dTanObl::Add(const Standard_Integer           the
   for (i = 1; i < theIndex; i++)
   {
     if (std::abs(aPar1arg - pararg1(i)) <= theTol && std::abs(aPar2arg - pararg2(i)) <= theTol)
-      return Standard_False;
+      return false;
   }
 
   gp_Dir2d aLinDir = aLin.Direction();
@@ -266,7 +265,7 @@ Standard_Boolean Geom2dGcc_Lin2dTanObl::Add(const Standard_Integer           the
   Geom2dGcc_CurveTool::D1(theC1, aPar1arg, aPoint, aVTan);
 
   if (std::abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
-    return Standard_False;
+    return false;
 
   linsol(theIndex)     = aLin;
   par1sol(theIndex)    = aPar1sol;
@@ -278,5 +277,5 @@ Standard_Boolean Geom2dGcc_Lin2dTanObl::Add(const Standard_Integer           the
 
   theLin.WhichQualifier(qualifier1(theIndex));
 
-  return Standard_True;
+  return true;
 }

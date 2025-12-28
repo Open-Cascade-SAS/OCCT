@@ -37,14 +37,13 @@ public:
   //! handled by reference.
   //! Build a Geom_Curve using the information from the
   //! Curve from Adaptor3d
-  Standard_EXPORT static Handle(Geom_Curve) MakeCurve(const Adaptor3d_Curve& C);
+  Standard_EXPORT static occ::handle<Geom_Curve> MakeCurve(const Adaptor3d_Curve& C);
 
   //! Build a Geom_Surface using the information from the Surface from Adaptor3d
   //! @param theS - Surface adaptor to convert.
   //! @param theTrimFlag - True if perform trim surface values by adaptor and false otherwise.
-  Standard_EXPORT static Handle(Geom_Surface) MakeSurface(
-    const Adaptor3d_Surface& theS,
-    const Standard_Boolean   theTrimFlag = Standard_True);
+  Standard_EXPORT static occ::handle<Geom_Surface> MakeSurface(const Adaptor3d_Surface& theS,
+                                                               const bool theTrimFlag = true);
 };
 
 #endif // _GeomAdaptor_HeaderFile

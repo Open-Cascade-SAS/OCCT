@@ -22,9 +22,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignDateAndPersonAssignment,
 StepAP214_AutoDesignDateAndPersonAssignment::StepAP214_AutoDesignDateAndPersonAssignment() {}
 
 void StepAP214_AutoDesignDateAndPersonAssignment::Init(
-  const Handle(StepBasic_PersonAndOrganization)&                aAssignedPersonAndOrganization,
-  const Handle(StepBasic_PersonAndOrganizationRole)&            aRole,
-  const Handle(StepAP214_HArray1OfAutoDesignDateAndPersonItem)& aItems)
+  const occ::handle<StepBasic_PersonAndOrganization>&     aAssignedPersonAndOrganization,
+  const occ::handle<StepBasic_PersonAndOrganizationRole>& aRole,
+  const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndPersonItem>>& aItems)
 {
   // --- classe own fields ---
   items = aItems;
@@ -33,24 +33,24 @@ void StepAP214_AutoDesignDateAndPersonAssignment::Init(
 }
 
 void StepAP214_AutoDesignDateAndPersonAssignment::SetItems(
-  const Handle(StepAP214_HArray1OfAutoDesignDateAndPersonItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndPersonItem>>& aItems)
 {
   items = aItems;
 }
 
-Handle(StepAP214_HArray1OfAutoDesignDateAndPersonItem) StepAP214_AutoDesignDateAndPersonAssignment::
-  Items() const
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndPersonItem>>
+  StepAP214_AutoDesignDateAndPersonAssignment::Items() const
 {
   return items;
 }
 
 StepAP214_AutoDesignDateAndPersonItem StepAP214_AutoDesignDateAndPersonAssignment::ItemsValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepAP214_AutoDesignDateAndPersonAssignment::NbItems() const
+int StepAP214_AutoDesignDateAndPersonAssignment::NbItems() const
 {
   return items->Length();
 }

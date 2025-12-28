@@ -18,9 +18,6 @@
 
 #include <V3d_View.hxx>
 
-class V3d_Plane;
-DEFINE_STANDARD_HANDLE(V3d_Plane, Standard_Transient)
-
 //! Obsolete clip plane presentation class.
 //! Ported on new core of Graphic3d_ClipPlane approach.
 //! Please access Graphic3d_ClipPlane via ClipPlane() method
@@ -28,8 +25,8 @@ DEFINE_STANDARD_HANDLE(V3d_Plane, Standard_Transient)
 //! Example of use:
 //! @code
 //!
-//! Handle(V3d_Plane) aPlane (0, 1, 0, -20);
-//! Handle(V3d_View) aView;
+//! occ::handle<V3d_Plane> aPlane (0, 1, 0, -20);
+//! occ::handle<V3d_View> aView;
 //! aView->AddClipPlane (aPlane->ClipPlane());
 //!
 //! aPlane->Display (aView);
@@ -43,47 +40,44 @@ class V3d_Plane : public Standard_Transient
 {
 public:
   //! Creates a clipping plane from plane coefficients.
-  Standard_EXPORT V3d_Plane(const Standard_Real theA = 0.0,
-                            const Standard_Real theB = 0.0,
-                            const Standard_Real theC = 1.0,
-                            const Standard_Real theD = 0.0);
+  Standard_EXPORT V3d_Plane(const double theA = 0.0,
+                            const double theB = 0.0,
+                            const double theC = 1.0,
+                            const double theD = 0.0);
 
   //! Change plane equation.
-  Standard_EXPORT void SetPlane(const Standard_Real theA,
-                                const Standard_Real theB,
-                                const Standard_Real theC,
-                                const Standard_Real theD);
+  Standard_EXPORT void SetPlane(const double theA,
+                                const double theB,
+                                const double theC,
+                                const double theD);
 
   //! Display the plane representation in the chosen view.
-  Standard_EXPORT virtual void Display(const Handle(V3d_View)& theView,
-                                       const Quantity_Color&   theColor = Quantity_NOC_GRAY);
+  Standard_EXPORT virtual void Display(const occ::handle<V3d_View>& theView,
+                                       const Quantity_Color&        theColor = Quantity_NOC_GRAY);
 
   //! Erase the plane representation.
   Standard_EXPORT void Erase();
 
   //! Returns the parameters of the plane.
-  Standard_EXPORT void Plane(Standard_Real& theA,
-                             Standard_Real& theB,
-                             Standard_Real& theC,
-                             Standard_Real& theD) const;
+  Standard_EXPORT void Plane(double& theA, double& theB, double& theC, double& theD) const;
 
   //! Returns TRUE when the plane representation is displayed.
-  Standard_EXPORT Standard_Boolean IsDisplayed() const;
+  Standard_EXPORT bool IsDisplayed() const;
 
   //! Use this method to pass clipping plane implementation for
   //! standard clipping workflow.
   //! @return clipping plane implementation handle.
-  const Handle(Graphic3d_ClipPlane)& ClipPlane() const { return myPlane; }
+  const occ::handle<Graphic3d_ClipPlane>& ClipPlane() const { return myPlane; }
 
 private:
   //! Updates the plane representation.
   Standard_EXPORT void Update();
 
 protected:
-  Handle(Graphic3d_Structure) myGraphicStructure;
+  occ::handle<Graphic3d_Structure> myGraphicStructure;
 
 private:
-  Handle(Graphic3d_ClipPlane) myPlane; //!< clip plane implementation.
+  occ::handle<Graphic3d_ClipPlane> myPlane; //!< clip plane implementation.
 
 public:
   DEFINE_STANDARD_RTTIEXT(V3d_Plane, Standard_Transient)

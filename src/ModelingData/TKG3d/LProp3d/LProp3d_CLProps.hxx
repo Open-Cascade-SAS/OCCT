@@ -45,17 +45,17 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  Standard_EXPORT LProp3d_CLProps(const Handle(Adaptor3d_Curve)& C,
-                                  const Standard_Integer         N,
-                                  const Standard_Real            Resolution);
+  Standard_EXPORT LProp3d_CLProps(const occ::handle<Adaptor3d_Curve>& C,
+                                  const int                           N,
+                                  const double                        Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
-  Standard_EXPORT LProp3d_CLProps(const Handle(Adaptor3d_Curve)& C,
-                                  const Standard_Real            U,
-                                  const Standard_Integer         N,
-                                  const Standard_Real            Resolution);
+  Standard_EXPORT LProp3d_CLProps(const occ::handle<Adaptor3d_Curve>& C,
+                                  const double                        U,
+                                  const int                           N,
+                                  const double                        Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U> and the curve is set
@@ -63,15 +63,15 @@ public:
   //! the curve can have a empty constructor
   //! All the computations done will be related to <C> and <U>
   //! when the functions "set" will be done.
-  Standard_EXPORT LProp3d_CLProps(const Standard_Integer N, const Standard_Real Resolution);
+  Standard_EXPORT LProp3d_CLProps(const int N, const double Resolution);
 
   //! Initializes the local properties of the curve
   //! for the parameter value <U>.
-  Standard_EXPORT void SetParameter(const Standard_Real U);
+  Standard_EXPORT void SetParameter(const double U);
 
   //! Initializes the local properties of the curve
   //! for the new curve.
-  Standard_EXPORT void SetCurve(const Handle(Adaptor3d_Curve)& C);
+  Standard_EXPORT void SetCurve(const occ::handle<Adaptor3d_Curve>& C);
 
   //! Returns the Point.
   Standard_EXPORT const gp_Pnt& Value() const;
@@ -91,13 +91,13 @@ public:
   //! Returns True if the tangent is defined.
   //! For example, the tangent is not defined if the
   //! three first derivatives are all null.
-  Standard_EXPORT Standard_Boolean IsTangentDefined();
+  Standard_EXPORT bool IsTangentDefined();
 
   //! output the tangent direction <D>
   Standard_EXPORT void Tangent(gp_Dir& D);
 
   //! Returns the curvature.
-  Standard_EXPORT Standard_Real Curvature();
+  Standard_EXPORT double Curvature();
 
   //! Returns the normal direction <N>.
   Standard_EXPORT void Normal(gp_Dir& N);
@@ -105,19 +105,18 @@ public:
   //! Returns the centre of curvature <P>.
   Standard_EXPORT void CentreOfCurvature(gp_Pnt& P);
 
-protected:
 private:
-  Handle(Adaptor3d_Curve) myCurve;
-  Standard_Real           myU;
-  Standard_Integer        myDerOrder;
-  Standard_Real           myCN;
-  Standard_Real           myLinTol;
-  gp_Pnt                  myPnt;
-  gp_Vec                  myDerivArr[3];
-  gp_Dir                  myTangent;
-  Standard_Real           myCurvature;
-  LProp_Status            myTangentStatus;
-  Standard_Integer        mySignificantFirstDerivativeOrder;
+  occ::handle<Adaptor3d_Curve> myCurve;
+  double                       myU;
+  int                          myDerOrder;
+  double                       myCN;
+  double                       myLinTol;
+  gp_Pnt                       myPnt;
+  gp_Vec                       myDerivArr[3];
+  gp_Dir                       myTangent;
+  double                       myCurvature;
+  LProp_Status                 myTangentStatus;
+  int                          mySignificantFirstDerivativeOrder;
 };
 
 #endif // _LProp3d_CLProps_HeaderFile

@@ -48,9 +48,9 @@ public:
   //! of curves computation. For most cases the value 1.0e-7 is recommended to use.
   //! Warning
   //! Use the function IsDone to verify that the intersections are successfully computed.I
-  GeomAPI_IntSS(const Handle(Geom_Surface)& S1,
-                const Handle(Geom_Surface)& S2,
-                const Standard_Real         Tol);
+  GeomAPI_IntSS(const occ::handle<Geom_Surface>& S1,
+                const occ::handle<Geom_Surface>& S2,
+                const double                     Tol);
 
   //! Initializes an algorithm with the
   //! given arguments and computes the intersection curves between the two surfaces S1 and S2.
@@ -58,26 +58,25 @@ public:
   //! cases the value 1.0e-7 is recommended to use.
   //! Warning
   //! Use function IsDone to verify that the intersections are successfully computed.
-  void Perform(const Handle(Geom_Surface)& S1,
-               const Handle(Geom_Surface)& S2,
-               const Standard_Real         Tol);
+  void Perform(const occ::handle<Geom_Surface>& S1,
+               const occ::handle<Geom_Surface>& S2,
+               const double                     Tol);
 
   //! Returns True if the intersection was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the number of computed intersection curves.
   //! Exceptions
   //! StdFail_NotDone if the computation fails.
-  Standard_Integer NbLines() const;
+  int NbLines() const;
 
   //! Returns the computed intersection curve of index Index.
   //! Exceptions
   //! StdFail_NotDone if the computation fails.
   //! Standard_OutOfRange if Index is out of range [1, NbLines] where NbLines
   //! is the number of computed intersection curves.
-  const Handle(Geom_Curve)& Line(const Standard_Integer Index) const;
+  const occ::handle<Geom_Curve>& Line(const int Index) const;
 
-protected:
 private:
   GeomInt_IntSS myIntersec;
 };

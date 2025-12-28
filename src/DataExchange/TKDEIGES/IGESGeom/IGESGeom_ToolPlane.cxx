@@ -30,7 +30,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_MSG.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
@@ -45,17 +45,17 @@ IGESGeom_ToolPlane::IGESGeom_ToolPlane() {}
 
 //=================================================================================================
 
-void IGESGeom_ToolPlane::ReadOwnParams(const Handle(IGESGeom_Plane)&          ent,
-                                       const Handle(IGESData_IGESReaderData)& IR,
-                                       IGESData_ParamReader&                  PR) const
+void IGESGeom_ToolPlane::ReadOwnParams(const occ::handle<IGESGeom_Plane>&          ent,
+                                       const occ::handle<IGESData_IGESReaderData>& IR,
+                                       IGESData_ParamReader&                       PR) const
 {
   // MGE 30/07/98
 
-  Standard_Real               A, B = 0., C = 0., D = 0., aSize = 0.;
-  Handle(IGESData_IGESEntity) aCurve;
-  gp_XYZ                      attach(0., 0., 0.);
-  IGESData_Status             aStatus;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  double                           A, B = 0., C = 0., D = 0., aSize = 0.;
+  occ::handle<IGESData_IGESEntity> aCurve;
+  gp_XYZ                           attach(0., 0., 0.);
+  IGESData_Status                  aStatus;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   /*  PR.ReadReal(PR.Current(), Msg135, A); //szv#4:S4163:12Mar99 `st=` not needed
     PR.ReadReal(PR.Current(), Msg135, B); //szv#4:S4163:12Mar99 `st=` not needed
@@ -76,7 +76,7 @@ void IGESGeom_ToolPlane::ReadOwnParams(const Handle(IGESGeom_Plane)&          en
   */
   if (PR.IsParamDefined(PR.CurrentNumber()))
   {
-    if (!PR.ReadEntity(IR, PR.Current(), aStatus, aCurve, Standard_True))
+    if (!PR.ReadEntity(IR, PR.Current(), aStatus, aCurve, true))
     {
       Message_Msg Msg136("XSTEP_136");
       switch (aStatus)
@@ -98,7 +98,7 @@ void IGESGeom_ToolPlane::ReadOwnParams(const Handle(IGESGeom_Plane)&          en
       }
     }
   } // szv#4:S4163:12Mar99 `st=` not needed
-    // st = PR.ReadEntity(IR, PR.Current(), "Bounding Curve", aCurve,Standard_True);
+    // st = PR.ReadEntity(IR, PR.Current(), "Bounding Curve", aCurve,true);
   //  in principle required if FormNumber != 0 ... see OwnCheck (Load accepts)
 
   if (PR.IsParamDefined(PR.CurrentNumber()))
@@ -126,10 +126,10 @@ void IGESGeom_ToolPlane::ReadOwnParams(const Handle(IGESGeom_Plane)&          en
 
 //=================================================================================================
 
-void IGESGeom_ToolPlane::WriteOwnParams(const Handle(IGESGeom_Plane)& ent,
-                                        IGESData_IGESWriter&          IW) const
+void IGESGeom_ToolPlane::WriteOwnParams(const occ::handle<IGESGeom_Plane>& ent,
+                                        IGESData_IGESWriter&               IW) const
 {
-  Standard_Real A, B, C, D;
+  double A, B, C, D;
   ent->Equation(A, B, C, D);
   IW.Send(A);
   IW.Send(B);
@@ -146,22 +146,22 @@ void IGESGeom_ToolPlane::WriteOwnParams(const Handle(IGESGeom_Plane)& ent,
 
 //=================================================================================================
 
-void IGESGeom_ToolPlane::OwnShared(const Handle(IGESGeom_Plane)& ent,
-                                   Interface_EntityIterator&     iter) const
+void IGESGeom_ToolPlane::OwnShared(const occ::handle<IGESGeom_Plane>& ent,
+                                   Interface_EntityIterator&          iter) const
 {
   iter.GetOneItem(ent->BoundingCurve());
 }
 
 //=================================================================================================
 
-void IGESGeom_ToolPlane::OwnCopy(const Handle(IGESGeom_Plane)& another,
-                                 const Handle(IGESGeom_Plane)& ent,
-                                 Interface_CopyTool&           TC) const
+void IGESGeom_ToolPlane::OwnCopy(const occ::handle<IGESGeom_Plane>& another,
+                                 const occ::handle<IGESGeom_Plane>& ent,
+                                 Interface_CopyTool&                TC) const
 {
-  Standard_Real A, B, C, D;
+  double A, B, C, D;
   another->Equation(A, B, C, D);
-  gp_XYZ        attach = (another->SymbolAttach()).XYZ();
-  Standard_Real aSize  = another->SymbolSize();
+  gp_XYZ attach = (another->SymbolAttach()).XYZ();
+  double aSize  = another->SymbolSize();
   DeclareAndCast(IGESData_IGESEntity, aCurve, TC.Transferred(another->BoundingCurve()));
   ent->Init(A, B, C, D, aCurve, attach, aSize);
   ent->SetFormNumber(another->FormNumber());
@@ -169,7 +169,7 @@ void IGESGeom_ToolPlane::OwnCopy(const Handle(IGESGeom_Plane)& another,
 
 //=================================================================================================
 
-IGESData_DirChecker IGESGeom_ToolPlane::DirChecker(const Handle(IGESGeom_Plane)& ent) const
+IGESData_DirChecker IGESGeom_ToolPlane::DirChecker(const occ::handle<IGESGeom_Plane>& ent) const
 {
   IGESData_DirChecker DC(108, -1, 1);
   DC.Structure(IGESData_DefVoid);
@@ -190,9 +190,9 @@ IGESData_DirChecker IGESGeom_ToolPlane::DirChecker(const Handle(IGESGeom_Plane)&
 
 //=================================================================================================
 
-void IGESGeom_ToolPlane::OwnCheck(const Handle(IGESGeom_Plane)& ent,
+void IGESGeom_ToolPlane::OwnCheck(const occ::handle<IGESGeom_Plane>& ent,
                                   const Interface_ShareTool&,
-                                  Handle(Interface_Check)& ach) const
+                                  occ::handle<Interface_Check>& ach) const
 {
   // MGE 30/07/98
   // Building of messages
@@ -202,17 +202,17 @@ void IGESGeom_ToolPlane::OwnCheck(const Handle(IGESGeom_Plane)& ent,
   //========================================
 
   // szv#4:S4163:12Mar99 not needed
-  // Standard_Real eps = 1.E-06;  // ?? Precision
-  // Standard_Real A,B,C,D;
+  // double eps = 1.E-06;  // ?? Precision
+  // double A,B,C,D;
   // ent->Equation(A,B,C,D);
   if (ent->FormNumber() < -1 || ent->FormNumber() > 1)
   {
     Message_Msg Msg71("XSTEP_71");
     ach->SendFail(Msg71);
   }
-  // szv#4:S4163:12Mar99 `!=` wrong operation on Standard_Boolean
-  Standard_Boolean unbounded1 = ent->BoundingCurve().IsNull();
-  Standard_Boolean unbounded2 = (ent->FormNumber() == 0);
+  // szv#4:S4163:12Mar99 `!=` wrong operation on bool
+  bool unbounded1 = ent->BoundingCurve().IsNull();
+  bool unbounded2 = (ent->FormNumber() == 0);
   if ((unbounded1 && !unbounded2) || (!unbounded1 && unbounded2))
   {
     Message_Msg Msg137("XSTEP_137");
@@ -224,7 +224,7 @@ void IGESGeom_ToolPlane::OwnCheck(const Handle(IGESGeom_Plane)& ent,
   if (!ent->HasBoundingCurve())
     return;
   //  Symbol : check if Size defined > 0 (otherwise, has no meaning)
-  /*  Standard_Real ec = 0.;
+  /*  double ec = 0.;
     if (ent->SymbolSize() > 0.) ec = A*ent->SymbolAttach().X() + B*ent->SymbolAttach().Y() +
         C * ent->SymbolAttach().Z() - D;
     if ( ec > eps || ec < -eps) {
@@ -239,13 +239,13 @@ void IGESGeom_ToolPlane::OwnCheck(const Handle(IGESGeom_Plane)& ent,
 
 //=================================================================================================
 
-void IGESGeom_ToolPlane::OwnDump(const Handle(IGESGeom_Plane)& ent,
-                                 const IGESData_IGESDumper&    dumper,
-                                 Standard_OStream&             S,
-                                 const Standard_Integer        level) const
+void IGESGeom_ToolPlane::OwnDump(const occ::handle<IGESGeom_Plane>& ent,
+                                 const IGESData_IGESDumper&         dumper,
+                                 Standard_OStream&                  S,
+                                 const int                          level) const
 {
   S << "IGESGeom_Plane\n";
-  Standard_Real A, B, C, D;
+  double A, B, C, D;
   ent->Equation(A, B, C, D);
 
   S << "Plane Coefficient A : " << A << "\n"

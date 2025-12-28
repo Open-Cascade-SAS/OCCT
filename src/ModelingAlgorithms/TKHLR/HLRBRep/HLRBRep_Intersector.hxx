@@ -69,20 +69,19 @@ public:
 
   Standard_EXPORT void Perform(const gp_Lin& theL, const double theP);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
-  Standard_EXPORT const IntRes2d_IntersectionPoint& Point(const Standard_Integer N) const;
+  Standard_EXPORT const IntRes2d_IntersectionPoint& Point(const int N) const;
 
-  Standard_EXPORT const IntCurveSurface_IntersectionPoint& CSPoint(const Standard_Integer N) const;
+  Standard_EXPORT const IntCurveSurface_IntersectionPoint& CSPoint(const int N) const;
 
-  Standard_EXPORT Standard_Integer NbSegments() const;
+  Standard_EXPORT int NbSegments() const;
 
-  Standard_EXPORT const IntRes2d_IntersectionSegment& Segment(const Standard_Integer N) const;
+  Standard_EXPORT const IntRes2d_IntersectionSegment& Segment(const int N) const;
 
-  Standard_EXPORT const IntCurveSurface_IntersectionSegment& CSSegment(
-    const Standard_Integer N) const;
+  Standard_EXPORT const IntCurveSurface_IntersectionSegment& CSSegment(const int N) const;
 
   Standard_EXPORT void Destroy();
 

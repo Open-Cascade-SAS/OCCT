@@ -22,16 +22,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedSolid, StepVisual_TessellatedIt
 
 StepVisual_TessellatedSolid::StepVisual_TessellatedSolid()
 {
-  myHasGeometricLink = Standard_False;
+  myHasGeometricLink = false;
 }
 
 //=================================================================================================
 
 void StepVisual_TessellatedSolid::Init(
-  const Handle(TCollection_HAsciiString)&                      theRepresentationItem_Name,
-  const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems,
-  const Standard_Boolean                                       theHasGeometricLink,
-  const Handle(StepShape_ManifoldSolidBrep)&                   theGeometricLink)
+  const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>&
+                                                  theItems,
+  const bool                                      theHasGeometricLink,
+  const occ::handle<StepShape_ManifoldSolidBrep>& theGeometricLink)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -50,7 +51,8 @@ void StepVisual_TessellatedSolid::Init(
 
 //=================================================================================================
 
-Handle(StepVisual_HArray1OfTessellatedStructuredItem) StepVisual_TessellatedSolid::Items() const
+occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>
+  StepVisual_TessellatedSolid::Items() const
 {
   return myItems;
 }
@@ -58,14 +60,15 @@ Handle(StepVisual_HArray1OfTessellatedStructuredItem) StepVisual_TessellatedSoli
 //=================================================================================================
 
 void StepVisual_TessellatedSolid::SetItems(
-  const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems)
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>&
+    theItems)
 {
   myItems = theItems;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedSolid::NbItems() const
+int StepVisual_TessellatedSolid::NbItems() const
 {
   if (myItems.IsNull())
   {
@@ -76,15 +79,15 @@ Standard_Integer StepVisual_TessellatedSolid::NbItems() const
 
 //=================================================================================================
 
-Handle(StepVisual_TessellatedStructuredItem) StepVisual_TessellatedSolid::ItemsValue(
-  const Standard_Integer theNum) const
+occ::handle<StepVisual_TessellatedStructuredItem> StepVisual_TessellatedSolid::ItemsValue(
+  const int theNum) const
 {
   return myItems->Value(theNum);
 }
 
 //=================================================================================================
 
-Handle(StepShape_ManifoldSolidBrep) StepVisual_TessellatedSolid::GeometricLink() const
+occ::handle<StepShape_ManifoldSolidBrep> StepVisual_TessellatedSolid::GeometricLink() const
 {
   return myGeometricLink;
 }
@@ -92,14 +95,14 @@ Handle(StepShape_ManifoldSolidBrep) StepVisual_TessellatedSolid::GeometricLink()
 //=================================================================================================
 
 void StepVisual_TessellatedSolid::SetGeometricLink(
-  const Handle(StepShape_ManifoldSolidBrep)& theGeometricLink)
+  const occ::handle<StepShape_ManifoldSolidBrep>& theGeometricLink)
 {
   myGeometricLink = theGeometricLink;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedSolid::HasGeometricLink() const
+bool StepVisual_TessellatedSolid::HasGeometricLink() const
 {
   return myHasGeometricLink;
 }

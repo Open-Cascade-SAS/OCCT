@@ -45,16 +45,16 @@ Graphic3d_MediaTextureSet::Graphic3d_MediaTextureSet()
       myProgress(0.0),
       myDuration(0.0),
       myFront(0),
-      myToPresentFrame(Standard_False),
-      myIsPlanarYUV(Standard_False),
-      myIsFullRangeYUV(Standard_True)
+      myToPresentFrame(false),
+      myIsPlanarYUV(false),
+      myIsFullRangeYUV(true)
 {
   myFramePair[0] = new Media_Frame();
   myFramePair[1] = new Media_Frame();
 
-  for (Standard_Integer aPlaneIter = 0; aPlaneIter < Size(); ++aPlaneIter)
+  for (int aPlaneIter = 0; aPlaneIter < Size(); ++aPlaneIter)
   {
-    Handle(Graphic3d_MediaTexture) aTexture = new Graphic3d_MediaTexture(myMutex, aPlaneIter);
+    occ::handle<Graphic3d_MediaTexture> aTexture = new Graphic3d_MediaTexture(myMutex, aPlaneIter);
     SetValue(Lower() + aPlaneIter, aTexture);
   }
 
@@ -130,8 +130,7 @@ void Graphic3d_MediaTextureSet::Notify()
 
 //=================================================================================================
 
-void Graphic3d_MediaTextureSet::OpenInput(const TCollection_AsciiString& thePath,
-                                          Standard_Boolean               theToWait)
+void Graphic3d_MediaTextureSet::OpenInput(const TCollection_AsciiString& thePath, bool theToWait)
 {
   if (myPlayerCtx.IsNull())
   {
@@ -153,16 +152,16 @@ void Graphic3d_MediaTextureSet::OpenInput(const TCollection_AsciiString& thePath
 
 //=================================================================================================
 
-Handle(Media_Frame) Graphic3d_MediaTextureSet::LockFrame()
+occ::handle<Media_Frame> Graphic3d_MediaTextureSet::LockFrame()
 {
   {
     std::lock_guard<std::mutex> aLock(myMutex);
     if (!myToPresentFrame)
     {
-      Handle(Media_Frame) aFrame = myFramePair[myFront == 0 ? 1 : 0];
+      occ::handle<Media_Frame> aFrame = myFramePair[myFront == 0 ? 1 : 0];
       if (aFrame->IsLocked())
       {
-        return Handle(Media_Frame)();
+        return occ::handle<Media_Frame>();
       }
 
       aFrame->SetLocked(true);
@@ -171,12 +170,12 @@ Handle(Media_Frame) Graphic3d_MediaTextureSet::LockFrame()
   }
 
   Notify();
-  return Handle(Media_Frame)();
+  return occ::handle<Media_Frame>();
 }
 
 //=================================================================================================
 
-void Graphic3d_MediaTextureSet::ReleaseFrame(const Handle(Media_Frame)& theFrame)
+void Graphic3d_MediaTextureSet::ReleaseFrame(const occ::handle<Media_Frame>& theFrame)
 {
   {
     std::lock_guard<std::mutex> aLock(myMutex);
@@ -193,25 +192,25 @@ void Graphic3d_MediaTextureSet::ReleaseFrame(const Handle(Media_Frame)& theFrame
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_MediaTextureSet::SwapFrames()
+bool Graphic3d_MediaTextureSet::SwapFrames()
 {
   if (myPlayerCtx.IsNull())
   {
-    return Standard_False;
+    return false;
   }
-  Standard_Boolean isPaused = Standard_False;
+  bool isPaused = false;
   myPlayerCtx->PlaybackState(isPaused, myProgress, myDuration);
 
   std::lock_guard<std::mutex> aLock(myMutex);
   if (!myToPresentFrame)
   {
-    return Standard_False;
+    return false;
   }
 
-  myToPresentFrame                  = false;
-  myFront                           = myFront == 0 ? 1 : 0;
-  const Handle(Media_Frame)& aFront = myFramePair[myFront];
-  myFrameSize                       = aFront->Size();
+  myToPresentFrame                       = false;
+  myFront                                = myFront == 0 ? 1 : 0;
+  const occ::handle<Media_Frame>& aFront = myFramePair[myFront];
+  myFrameSize                            = aFront->Size();
 #ifdef HAVE_FFMPEG
   myIsPlanarYUV = aFront->Format() == AV_PIX_FMT_YUV420P || aFront->Format() == AV_PIX_FMT_YUVJ420P;
 #endif
@@ -225,5 +224,5 @@ Standard_Boolean Graphic3d_MediaTextureSet::SwapFrames()
       aTexture->UpdateRevision();
     }
   }
-  return Standard_True;
+  return true;
 }

@@ -50,43 +50,41 @@ public:
   //! command has the same effect as a cut operation
   //! with an infinite cylinder defined by the given
   //! axis and <Radius>.
-  Standard_EXPORT void Perform(const Standard_Real Radius);
+  Standard_EXPORT void Perform(const double Radius);
 
   //! Performs every hole of radius <Radius> located
   //! between PFrom and PTo on the given axis. If
-  //! <WithControl> is set to Standard_False no control
+  //! <WithControl> is set to false no control
   //! are done on the resulting shape after the
   //! operation is performed.
-  Standard_EXPORT void Perform(const Standard_Real    Radius,
-                               const Standard_Real    PFrom,
-                               const Standard_Real    PTo,
-                               const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT void Perform(const double Radius,
+                               const double PFrom,
+                               const double PTo,
+                               const bool   WithControl = true);
 
   //! Performs the first hole of radius <Radius>, in the
   //! direction of the defined axis. First hole signify
   //! first encountered after the origin of the axis. If
-  //! <WithControl> is set to Standard_False no control
+  //! <WithControl> is set to false no control
   //! are done on the resulting shape after the
   //! operation is performed.
-  Standard_EXPORT void PerformThruNext(const Standard_Real    Radius,
-                                       const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT void PerformThruNext(const double Radius, const bool WithControl = true);
 
   //! Performs every hole of radius <Radius> located
   //! after the origin of the given axis. If
-  //! <WithControl> is set to Standard_False no control
+  //! <WithControl> is set to false no control
   //! are done on the resulting shape after the
   //! operation is performed.
-  Standard_EXPORT void PerformUntilEnd(const Standard_Real    Radius,
-                                       const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT void PerformUntilEnd(const double Radius, const bool WithControl = true);
 
   //! Performs a blind hole of radius <Radius> and
   //! length <Length>. The length is measured from the
   //! origin of the given axis. If <WithControl> is set
-  //! to Standard_False no control are done after the
+  //! to false no control are done after the
   //! operation is performed.
-  Standard_EXPORT void PerformBlind(const Standard_Real    Radius,
-                                    const Standard_Real    Length,
-                                    const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT void PerformBlind(const double Radius,
+                                    const double Length,
+                                    const bool   WithControl = true);
 
   //! Returns the status after a hole is performed.
   BRepFeat_Status Status() const;
@@ -104,13 +102,13 @@ protected:
 private:
   Standard_EXPORT BRepFeat_Status Validate();
 
-  gp_Ax1           myAxis;
-  Standard_Boolean myAxDef;
-  BRepFeat_Status  myStatus;
-  Standard_Boolean myIsBlind;
-  Standard_Boolean myValidate;
-  TopoDS_Face      myTopFace;
-  TopoDS_Face      myBotFace;
+  gp_Ax1          myAxis;
+  bool            myAxDef;
+  BRepFeat_Status myStatus;
+  bool            myIsBlind;
+  bool            myValidate;
+  TopoDS_Face     myTopFace;
+  TopoDS_Face     myBotFace;
 };
 
 #include <BRepFeat_MakeCylindricalHole.lxx>

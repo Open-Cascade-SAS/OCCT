@@ -19,9 +19,11 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <IntTools_MapOfCurveSample.hxx>
-#include <IntTools_DataMapOfCurveSampleBox.hxx>
-#include <IntTools_ListOfCurveRangeSample.hxx>
+#include <IntTools_CurveRangeSample.hxx>
+#include <NCollection_Map.hxx>
+#include <Bnd_Box.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 
 class IntTools_CurveRangeSample;
 class Bnd_Box;
@@ -31,29 +33,27 @@ class IntTools_CurveRangeLocalizeData
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT IntTools_CurveRangeLocalizeData(const Standard_Integer theNbSample,
-                                                  const Standard_Real    theMinRange);
+  Standard_EXPORT IntTools_CurveRangeLocalizeData(const int theNbSample, const double theMinRange);
 
-  Standard_Integer GetNbSample() const { return myNbSampleC; }
+  int GetNbSample() const { return myNbSampleC; }
 
-  Standard_Real GetMinRange() const { return myMinRangeC; }
+  double GetMinRange() const { return myMinRangeC; }
 
   Standard_EXPORT void AddOutRange(const IntTools_CurveRangeSample& theRange);
 
   Standard_EXPORT void AddBox(const IntTools_CurveRangeSample& theRange, const Bnd_Box& theBox);
 
-  Standard_EXPORT Standard_Boolean FindBox(const IntTools_CurveRangeSample& theRange,
-                                           Bnd_Box&                         theBox) const;
+  Standard_EXPORT bool FindBox(const IntTools_CurveRangeSample& theRange, Bnd_Box& theBox) const;
 
-  Standard_EXPORT Standard_Boolean IsRangeOut(const IntTools_CurveRangeSample& theRange) const;
+  Standard_EXPORT bool IsRangeOut(const IntTools_CurveRangeSample& theRange) const;
 
-  Standard_EXPORT void ListRangeOut(IntTools_ListOfCurveRangeSample& theList) const;
+  Standard_EXPORT void ListRangeOut(NCollection_List<IntTools_CurveRangeSample>& theList) const;
 
 private:
-  Standard_Integer                 myNbSampleC;
-  Standard_Real                    myMinRangeC;
-  IntTools_MapOfCurveSample        myMapRangeOut;
-  IntTools_DataMapOfCurveSampleBox myMapBox;
+  int                                                     myNbSampleC;
+  double                                                  myMinRangeC;
+  NCollection_Map<IntTools_CurveRangeSample>              myMapRangeOut;
+  NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box> myMapBox;
 };
 
 #endif // _IntTools_CurveRangeLocalizeData_HeaderFile

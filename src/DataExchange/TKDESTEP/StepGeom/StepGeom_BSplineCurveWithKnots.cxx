@@ -19,15 +19,15 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurveWithKnots, StepGeom_BSplineCurve
 StepGeom_BSplineCurveWithKnots::StepGeom_BSplineCurveWithKnots() {}
 
 void StepGeom_BSplineCurveWithKnots::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aDegree,
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
-  const StepGeom_BSplineCurveForm                 aCurveForm,
-  const StepData_Logical                          aClosedCurve,
-  const StepData_Logical                          aSelfIntersect,
-  const Handle(TColStd_HArray1OfInteger)&         aKnotMultiplicities,
-  const Handle(TColStd_HArray1OfReal)&            aKnots,
-  const StepGeom_KnotType                         aKnotSpec)
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aDegree,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+  const StepGeom_BSplineCurveForm                                               aCurveForm,
+  const StepData_Logical                                                        aClosedCurve,
+  const StepData_Logical                                                        aSelfIntersect,
+  const occ::handle<NCollection_HArray1<int>>&                                  aKnotMultiplicities,
+  const occ::handle<NCollection_HArray1<double>>&                               aKnots,
+  const StepGeom_KnotType                                                       aKnotSpec)
 {
   // --- classe own fields ---
   knotMultiplicities = aKnotMultiplicities;
@@ -43,43 +43,43 @@ void StepGeom_BSplineCurveWithKnots::Init(
 }
 
 void StepGeom_BSplineCurveWithKnots::SetKnotMultiplicities(
-  const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities)
+  const occ::handle<NCollection_HArray1<int>>& aKnotMultiplicities)
 {
   knotMultiplicities = aKnotMultiplicities;
 }
 
-Handle(TColStd_HArray1OfInteger) StepGeom_BSplineCurveWithKnots::KnotMultiplicities() const
+occ::handle<NCollection_HArray1<int>> StepGeom_BSplineCurveWithKnots::KnotMultiplicities() const
 {
   return knotMultiplicities;
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnots::KnotMultiplicitiesValue(
-  const Standard_Integer num) const
+int StepGeom_BSplineCurveWithKnots::KnotMultiplicitiesValue(const int num) const
 {
   return knotMultiplicities->Value(num);
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnots::NbKnotMultiplicities() const
+int StepGeom_BSplineCurveWithKnots::NbKnotMultiplicities() const
 {
   return knotMultiplicities->Length();
 }
 
-void StepGeom_BSplineCurveWithKnots::SetKnots(const Handle(TColStd_HArray1OfReal)& aKnots)
+void StepGeom_BSplineCurveWithKnots::SetKnots(
+  const occ::handle<NCollection_HArray1<double>>& aKnots)
 {
   knots = aKnots;
 }
 
-Handle(TColStd_HArray1OfReal) StepGeom_BSplineCurveWithKnots::Knots() const
+occ::handle<NCollection_HArray1<double>> StepGeom_BSplineCurveWithKnots::Knots() const
 {
   return knots;
 }
 
-Standard_Real StepGeom_BSplineCurveWithKnots::KnotsValue(const Standard_Integer num) const
+double StepGeom_BSplineCurveWithKnots::KnotsValue(const int num) const
 {
   return knots->Value(num);
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnots::NbKnots() const
+int StepGeom_BSplineCurveWithKnots::NbKnots() const
 {
   return knots->Length();
 }

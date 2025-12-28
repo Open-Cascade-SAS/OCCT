@@ -44,61 +44,60 @@ ShapeUpgrade_RemoveLocations::ShapeUpgrade_RemoveLocations()
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_RemoveLocations::Remove(const TopoDS_Shape& theShape)
+bool ShapeUpgrade_RemoveLocations::Remove(const TopoDS_Shape& theShape)
 {
-  const TopoDS_Shape& aShape = theShape;
-  myShape                    = aShape;
-  TopAbs_ShapeEnum shtype    = theShape.ShapeType();
-  Standard_Boolean isRemoveLoc =
-    ((shtype != TopAbs_COMPOUND && myLevelRemoving == TopAbs_SHAPE)
-     || ((Standard_Integer)myLevelRemoving <= ((Standard_Integer)shtype)));
+  const TopoDS_Shape& aShape   = theShape;
+  myShape                      = aShape;
+  TopAbs_ShapeEnum shtype      = theShape.ShapeType();
+  bool             isRemoveLoc = ((shtype != TopAbs_COMPOUND && myLevelRemoving == TopAbs_SHAPE)
+                      || ((int)myLevelRemoving <= ((int)shtype)));
   TopoDS_Shape     S;
-  Standard_Boolean isDone = MakeNewShape(theShape, S, myShape, isRemoveLoc);
+  bool             isDone = MakeNewShape(theShape, S, myShape, isRemoveLoc);
 
   return isDone;
 }
 
 //=================================================================================================
 
-static Standard_Boolean RebuildShape(const TopoDS_Face& theFace, TopoDS_Face& theNewFace)
+static bool RebuildShape(const TopoDS_Face& theFace, TopoDS_Face& theNewFace)
 {
-  BRep_Builder         aB;
-  TopLoc_Location      aLoc;
-  Handle(Geom_Surface) aSurf     = BRep_Tool::Surface(theFace, aLoc);
-  Standard_Boolean     isRebuild = Standard_False;
+  BRep_Builder              aB;
+  TopLoc_Location           aLoc;
+  occ::handle<Geom_Surface> aSurf     = BRep_Tool::Surface(theFace, aLoc);
+  bool                      isRebuild = false;
   if (!aLoc.IsIdentity())
   {
-    Handle(Geom_Surface) anewSurf =
-      Handle(Geom_Surface)::DownCast(aSurf->Transformed(aLoc.Transformation()));
+    occ::handle<Geom_Surface> anewSurf =
+      occ::down_cast<Geom_Surface>(aSurf->Transformed(aLoc.Transformation()));
     aB.MakeFace(theNewFace, anewSurf, BRep_Tool::Tolerance(theFace));
-    isRebuild = Standard_True;
+    isRebuild = true;
   }
   return isRebuild;
 }
 
 //=================================================================================================
 
-static Standard_Boolean RebuildShape(const TopoDS_Edge& theEdge,
-                                     TopoDS_Edge&       theNewEdge,
-                                     const TopoDS_Face& theFace,
-                                     TopoDS_Face&       theNewFace,
-                                     Standard_Boolean   isBound)
+static bool RebuildShape(const TopoDS_Edge& theEdge,
+                         TopoDS_Edge&       theNewEdge,
+                         const TopoDS_Face& theFace,
+                         TopoDS_Face&       theNewFace,
+                         bool               isBound)
 {
-  Standard_Boolean isRebuild = Standard_False;
-  BRep_Builder     aB;
+  bool         isRebuild = false;
+  BRep_Builder aB;
   if (!isBound)
   {
-    Handle(Geom_Curve) C3d;
-    TopLoc_Location    aLoc;
-    Standard_Real      First3d, Last3d;
+    occ::handle<Geom_Curve> C3d;
+    TopLoc_Location         aLoc;
+    double                  First3d, Last3d;
     C3d = BRep_Tool::Curve(theEdge, aLoc, First3d, Last3d);
     aB.MakeEdge(theNewEdge);
     if (!C3d.IsNull())
     {
       if (!aLoc.IsIdentity())
       {
-        Handle(Geom_Curve) anewC3d =
-          Handle(Geom_Curve)::DownCast(C3d->Transformed(aLoc.Transformation()));
+        occ::handle<Geom_Curve> anewC3d =
+          occ::down_cast<Geom_Curve>(C3d->Transformed(aLoc.Transformation()));
         C3d = anewC3d;
       }
 
@@ -107,16 +106,16 @@ static Standard_Boolean RebuildShape(const TopoDS_Edge& theEdge,
     }
     theNewEdge.Orientation(theEdge.Orientation());
     if (BRep_Tool::Degenerated(theEdge))
-      aB.Degenerated(theNewEdge, Standard_True);
-    isRebuild = Standard_True;
+      aB.Degenerated(theNewEdge, true);
+    isRebuild = true;
   }
   if (!theFace.IsNull())
   {
-    Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theFace);
+    occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(theFace);
     if (!aSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
     {
-      Handle(Geom2d_Curve) c2d, c2d1;
-      Standard_Real        First2d, Last2d;
+      occ::handle<Geom2d_Curve> c2d, c2d1;
+      double                    First2d, Last2d;
 
       c2d = BRep_Tool::CurveOnSurface(theEdge, theFace, First2d, Last2d);
       if (BRep_Tool::IsClosed(theEdge, theFace))
@@ -148,24 +147,24 @@ static Standard_Boolean RebuildShape(const TopoDS_Edge& theEdge,
 
 //=================================================================================================
 
-static Standard_Boolean RebuildShape(const TopoDS_Vertex& theVertex, TopoDS_Vertex& theNewVertex)
+static bool RebuildShape(const TopoDS_Vertex& theVertex, TopoDS_Vertex& theNewVertex)
 {
   BRep_Builder aB;
   aB.MakeVertex(theNewVertex);
   theNewVertex.Orientation(theVertex.Orientation());
   gp_Pnt p1 = BRep_Tool::Pnt(theVertex);
   aB.UpdateVertex(theNewVertex, p1, BRep_Tool::Tolerance(theVertex));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape&    theShape,
-                                                            const TopoDS_Shape&    theAncShape,
-                                                            TopoDS_Shape&          theNewShape,
-                                                            const Standard_Boolean theRemoveLoc)
+bool ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& theShape,
+                                                const TopoDS_Shape& theAncShape,
+                                                TopoDS_Shape&       theNewShape,
+                                                const bool          theRemoveLoc)
 {
-  Standard_Boolean isDone = Standard_False;
+  bool             isDone = false;
   TopoDS_Shape     aNewShape;
   TopAbs_ShapeEnum shtype = theShape.ShapeType();
   BRep_Builder     aB;
@@ -175,7 +174,7 @@ Standard_Boolean ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& 
     TopLoc_Location nulLoc;
     aShape.Location(nulLoc);
   }
-  Standard_Boolean isBound = myMapNewShapes.IsBound(aShape);
+  bool isBound = myMapNewShapes.IsBound(aShape);
   if (isBound)
   {
     aNewShape = myMapNewShapes.Find(aShape);
@@ -188,19 +187,19 @@ Standard_Boolean ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& 
     if (shtype != TopAbs_EDGE)
     {
       theNewShape = aNewShape;
-      return Standard_True;
+      return true;
     }
   }
 
-  Standard_Boolean isRemoveLoc = theRemoveLoc;
+  bool isRemoveLoc = theRemoveLoc;
   if (!theRemoveLoc)
   {
     isRemoveLoc = ((shtype != TopAbs_COMPOUND && myLevelRemoving == TopAbs_SHAPE)
-                   || ((Standard_Integer)myLevelRemoving <= ((Standard_Integer)shtype)));
+                   || ((int)myLevelRemoving <= ((int)shtype)));
   }
 
-  Standard_Boolean aRebuild   = Standard_False;
-  TopoDS_Shape     anAncShape = theAncShape;
+  bool         aRebuild   = false;
+  TopoDS_Shape anAncShape = theAncShape;
   if (shtype == TopAbs_FACE)
     anAncShape = aShape;
   if (isRemoveLoc
@@ -264,14 +263,13 @@ Standard_Boolean ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& 
       aNewShape.Location(nullloc);
     TopAbs_Orientation orient = theShape.Orientation();
     aNewShape.Orientation(TopAbs_FORWARD);
-    TopoDS_Iterator aIt(aShape, Standard_False, isRemoveLoc);
+    TopoDS_Iterator aIt(aShape, false, isRemoveLoc);
     for (; aIt.More(); aIt.Next())
     {
       const TopoDS_Shape& subshape = aIt.Value();
       TopoDS_Shape        anewsubshape;
-      Standard_Boolean    isDoneSubShape =
-        MakeNewShape(subshape, anAncShape, anewsubshape, isRemoveLoc);
-      isDone = (isDone || isDoneSubShape);
+      bool isDoneSubShape = MakeNewShape(subshape, anAncShape, anewsubshape, isRemoveLoc);
+      isDone              = (isDone || isDoneSubShape);
       aB.Add(aNewShape, anewsubshape);
     }
     if (isDone)

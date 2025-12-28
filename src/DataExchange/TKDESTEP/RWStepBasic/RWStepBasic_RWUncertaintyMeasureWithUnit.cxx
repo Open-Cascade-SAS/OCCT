@@ -29,10 +29,10 @@ RWStepBasic_RWUncertaintyMeasureWithUnit::RWStepBasic_RWUncertaintyMeasureWithUn
 //=================================================================================================
 
 void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_UncertaintyMeasureWithUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                                                num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepBasic_UncertaintyMeasureWithUnit>& ent) const
 {
   if (data->IsComplex(num))
   {
@@ -48,7 +48,7 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
     //    REMARQUE : le ReadWriteModule a deja fait le filtrage des types
 
     //    LENGTH_MEASURE_WITH_UNIT : on passe
-    Standard_Integer num1 = num;
+    int num1 = num;
 
     //  MEASURE_WITH_UNIT
     num1 = data->NextForComplex(num1);
@@ -57,7 +57,7 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
       return;
 
     // --- inherited field : valueComponent ---
-    Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+    occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
     data->ReadMember(num1, 1, "value_component", ach, mvc);
 
     // --- inherited field : unitComponent ---
@@ -71,11 +71,11 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
       return;
 
     // --- own field : name ---
-    Handle(TCollection_HAsciiString) aName;
+    occ::handle<TCollection_HAsciiString> aName;
     data->ReadString(num1, 1, "name", ach, aName);
 
     // --- own field : description ---
-    Handle(TCollection_HAsciiString) aDescription;
+    occ::handle<TCollection_HAsciiString> aDescription;
     if (data->IsParamDefined(num1, 2))
     { // gka 05.03.99 S4134 upgrade from CD to DIS
       data->ReadString(num1, 2, "description", ach, aDescription);
@@ -92,11 +92,11 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
     return;
 
   // --- inherited field : valueComponent ---
-  // Standard_Real aValueComponent;
-  // Standard_Boolean stat1;
+  // double aValueComponent;
+  // bool stat1;
   // stat1 = data->ReadReal (num,1,"value_component",ach,aValueComponent);
   // --- Update 12-02-96 by FMA  =>  31-MAR-1997 by CKY
-  Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 1, "value_component", ach, mvc);
 
   // --- inherited field : unitComponent ---
@@ -104,11 +104,11 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
   data->ReadEntity(num, 2, "unit_component", ach, aUnitComponent);
 
   // --- own field : name ---
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 3, "name", ach, aName);
 
   // --- own field : description ---
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 4, "description", ach, aDescription);
 
   //--- Initialisation of the read entity ---
@@ -118,8 +118,8 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWUncertaintyMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                                SW,
-  const Handle(StepBasic_UncertaintyMeasureWithUnit)& ent) const
+  StepData_StepWriter&                                     SW,
+  const occ::handle<StepBasic_UncertaintyMeasureWithUnit>& ent) const
 {
 
   // --- inherited field valueComponent ---
@@ -132,8 +132,8 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::WriteStep(
 
   //  char lm[100],lmv[50];
   //  Interface_FloatWriter::Convert
-  //    (Interface_MSG::Intervalled(ent->ValueComponent()*0.98,5,Standard_True),
-  //     lmv,Standard_True, 10.,0.1,"%E","%E");
+  //    (Interface_MSG::Intervalled(ent->ValueComponent()*0.98,5,true),
+  //     lmv,true, 10.,0.1,"%E","%E");
   //  Sprintf (lm,"LENGTH_MEASURE(%s)",lmv);
   //  SW.SendString(lm);
 
@@ -157,8 +157,8 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWUncertaintyMeasureWithUnit::Share(
-  const Handle(StepBasic_UncertaintyMeasureWithUnit)& ent,
-  Interface_EntityIterator&                           iter) const
+  const occ::handle<StepBasic_UncertaintyMeasureWithUnit>& ent,
+  Interface_EntityIterator&                                iter) const
 {
 
   iter.GetOneItem(ent->UnitComponent().Value());

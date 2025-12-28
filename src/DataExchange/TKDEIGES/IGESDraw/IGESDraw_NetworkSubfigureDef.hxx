@@ -20,15 +20,13 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESDraw_HArray1OfConnectPoint.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESDraw_ConnectPoint.hxx>
 class TCollection_HAsciiString;
 class IGESGraph_TextDisplayTemplate;
 class IGESDraw_ConnectPoint;
-
-class IGESDraw_NetworkSubfigureDef;
-DEFINE_STANDARD_HANDLE(IGESDraw_NetworkSubfigureDef, IGESData_IGESEntity)
 
 //! defines IGESNetworkSubfigureDef,
 //! Type <320> Form Number <0> in package IGESDraw
@@ -61,71 +59,71 @@ public:
   //! (Logical design or Physical design)
   //! - aDesignator      : Designator HAsciiString and its Template
   //! - allPointEntities : Associated Connect Point Entities
-  Standard_EXPORT void Init(const Standard_Integer                        aDepth,
-                            const Handle(TCollection_HAsciiString)&       aName,
-                            const Handle(IGESData_HArray1OfIGESEntity)&   allEntities,
-                            const Standard_Integer                        aTypeFlag,
-                            const Handle(TCollection_HAsciiString)&       aDesignator,
-                            const Handle(IGESGraph_TextDisplayTemplate)&  aTemplate,
-                            const Handle(IGESDraw_HArray1OfConnectPoint)& allPointEntities);
+  Standard_EXPORT void Init(
+    const int                                                                   aDepth,
+    const occ::handle<TCollection_HAsciiString>&                                aName,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&   allEntities,
+    const int                                                                   aTypeFlag,
+    const occ::handle<TCollection_HAsciiString>&                                aDesignator,
+    const occ::handle<IGESGraph_TextDisplayTemplate>&                           aTemplate,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allPointEntities);
 
   //! returns Depth of Subfigure(indication the amount of nesting)
   //! Note : The Depth is inclusive of both Network Subfigure Definition
   //! Entity and the Ordinary Subfigure Definition Entity.
   //! Thus, the two may be nested.
-  Standard_EXPORT Standard_Integer Depth() const;
+  Standard_EXPORT int Depth() const;
 
   //! returns the Subfigure Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   //! returns Number of Associated(child) entries in subfigure exclusive
   //! of primary reference designator and Control Points
-  Standard_EXPORT Standard_Integer NbEntities() const;
+  Standard_EXPORT int NbEntities() const;
 
   //! returns the Index'th IGESEntity in subfigure exclusive of primary
   //! reference designator and Control Points
   //! raises exception if Index <=0 or Index > NbEntities()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Entity(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Entity(const int Index) const;
 
   //! return value = 0 : Not Specified
   //! = 1 : Logical  design
   //! = 2 : Physical design
-  Standard_EXPORT Standard_Integer TypeFlag() const;
+  Standard_EXPORT int TypeFlag() const;
 
   //! returns Primary Reference Designator
-  Standard_EXPORT Handle(TCollection_HAsciiString) Designator() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Designator() const;
 
   //! returns True if Text Display Template is specified for
   //! primary designator else returns False
-  Standard_EXPORT Standard_Boolean HasDesignatorTemplate() const;
+  Standard_EXPORT bool HasDesignatorTemplate() const;
 
   //! if Text Display Template specified then return TextDisplayTemplate
   //! else return NULL Handle
-  Standard_EXPORT Handle(IGESGraph_TextDisplayTemplate) DesignatorTemplate() const;
+  Standard_EXPORT occ::handle<IGESGraph_TextDisplayTemplate> DesignatorTemplate() const;
 
   //! returns the Number Of Associated(child) Connect Point Entities
-  Standard_EXPORT Standard_Integer NbPointEntities() const;
+  Standard_EXPORT int NbPointEntities() const;
 
   //! returns True is Index'th Associated Connect Point Entity is present
   //! else returns False
   //! raises exception if Index is out of bound
-  Standard_EXPORT Standard_Boolean HasPointEntity(const Standard_Integer Index) const;
+  Standard_EXPORT bool HasPointEntity(const int Index) const;
 
   //! returns the Index'th Associated Connect Point Entity
   //! raises exception if Index <= 0 or Index > NbPointEntities()
-  Standard_EXPORT Handle(IGESDraw_ConnectPoint) PointEntity(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESDraw_ConnectPoint> PointEntity(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigureDef, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                       theDepth;
-  Handle(TCollection_HAsciiString)       theName;
-  Handle(IGESData_HArray1OfIGESEntity)   theEntities;
-  Standard_Integer                       theTypeFlag;
-  Handle(TCollection_HAsciiString)       theDesignator;
-  Handle(IGESGraph_TextDisplayTemplate)  theDesignatorTemplate;
-  Handle(IGESDraw_HArray1OfConnectPoint) thePointEntities;
+  int                                                                  theDepth;
+  occ::handle<TCollection_HAsciiString>                                theName;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>   theEntities;
+  int                                                                  theTypeFlag;
+  occ::handle<TCollection_HAsciiString>                                theDesignator;
+  occ::handle<IGESGraph_TextDisplayTemplate>                           theDesignatorTemplate;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>> thePointEntities;
 };
 
 #endif // _IGESDraw_NetworkSubfigureDef_HeaderFile

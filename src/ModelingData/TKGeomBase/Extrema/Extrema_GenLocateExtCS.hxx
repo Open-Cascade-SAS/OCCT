@@ -43,25 +43,25 @@ public:
   //! a zero near the close points.
   Standard_EXPORT Extrema_GenLocateExtCS(const Adaptor3d_Curve&   C,
                                          const Adaptor3d_Surface& S,
-                                         const Standard_Real      T,
-                                         const Standard_Real      U,
-                                         const Standard_Real      V,
-                                         const Standard_Real      Tol1,
-                                         const Standard_Real      Tol2);
+                                         const double             T,
+                                         const double             U,
+                                         const double             V,
+                                         const double             Tol1,
+                                         const double             Tol2);
 
   Standard_EXPORT void Perform(const Adaptor3d_Curve&   C,
                                const Adaptor3d_Surface& S,
-                               const Standard_Real      T,
-                               const Standard_Real      U,
-                               const Standard_Real      V,
-                               const Standard_Real      Tol1,
-                               const Standard_Real      Tol2);
+                               const double             T,
+                               const double             U,
+                               const double             V,
+                               const double             Tol1,
+                               const double             Tol2);
 
   //! Returns True if the distance is found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the value of the extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance() const;
+  Standard_EXPORT double SquareDistance() const;
 
   //! Returns the point of the extremum distance on C.
   Standard_EXPORT const Extrema_POnCurv& PointOnCurve() const;
@@ -69,12 +69,11 @@ public:
   //! Returns the point of the extremum distance on S.
   Standard_EXPORT const Extrema_POnSurf& PointOnSurface() const;
 
-protected:
 private:
-  Standard_Boolean myDone;
-  Standard_Real    mySqDist;
-  Extrema_POnCurv  myPoint1;
-  Extrema_POnSurf  myPoint2;
+  bool            myDone;
+  double          mySqDist;
+  Extrema_POnCurv myPoint1;
+  Extrema_POnSurf myPoint2;
 };
 
 #endif // _Extrema_GenLocateExtCS_HeaderFile

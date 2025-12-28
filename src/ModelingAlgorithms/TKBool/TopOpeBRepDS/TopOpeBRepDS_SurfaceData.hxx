@@ -34,7 +34,6 @@ public:
 
   friend class TopOpeBRepDS_DataStructure;
 
-protected:
 private:
   TopOpeBRepDS_Surface mySurface;
 };

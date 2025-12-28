@@ -44,28 +44,28 @@ public:
   //! first point of the segment is near the face. In
   //! that case, the parameter of the intersection point
   //! on the line can be a negative value (greater than -Tol).
-  Standard_EXPORT void Perform(const gp_Lin&       L,
-                               const Standard_Real Prm,
-                               const Standard_Real Tol,
-                               const TopoDS_Face&  F);
+  Standard_EXPORT void Perform(const gp_Lin&      L,
+                               const double       Prm,
+                               const double       Tol,
+                               const TopoDS_Face& F);
 
   //! True is returned when the intersection have been computed.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! True is returned if a point has been found.
-  Standard_Boolean HasAPoint() const;
+  bool HasAPoint() const;
 
   //! Returns the U parameter of the intersection point
   //! on the surface.
-  Standard_Real UParameter() const;
+  double UParameter() const;
 
   //! Returns the V parameter of the intersection point
   //! on the surface.
-  Standard_Real VParameter() const;
+  double VParameter() const;
 
   //! Returns the parameter of the intersection point
   //! on the line.
-  Standard_Real WParameter() const;
+  double WParameter() const;
 
   //! Returns the geometric point of the intersection
   //! between the line and the surface.
@@ -85,15 +85,14 @@ public:
   //! the intersection.
   const TopoDS_Face& Face() const;
 
-protected:
 private:
   gp_Pnt                            pnt;
-  Standard_Real                     U;
-  Standard_Real                     V;
-  Standard_Real                     W;
+  double                            U;
+  double                            V;
+  double                            W;
   IntCurveSurface_TransitionOnCurve transition;
-  Standard_Boolean                  done;
-  Standard_Boolean                  hasapoint;
+  bool                              done;
+  bool                              hasapoint;
   TopAbs_State                      state;
   TopoDS_Face                       face;
 };

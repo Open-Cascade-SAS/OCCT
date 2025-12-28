@@ -20,8 +20,8 @@
 //==================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasis.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -32,7 +32,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid(
   // (e.g., offset of plane/sphere/cylinder/cone/torus with same parameters)
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       // Use the equivalent surface directly
@@ -91,8 +91,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGridD1(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasis.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -102,7 +102,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
   // Fast path: check if offset surface has an equivalent simple surface
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       GeomGridEval_Surface anEquivEval;
@@ -160,8 +160,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGridD2(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasis.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -171,7 +171,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
   // Fast path: check if offset surface has an equivalent simple surface
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       GeomGridEval_Surface anEquivEval;
@@ -236,8 +236,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGridD3(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasis.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -247,7 +247,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGri
   // Fast path: check if offset surface has an equivalent simple surface
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       GeomGridEval_Surface anEquivEval;
@@ -296,10 +296,10 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGri
 //==================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams,
-  int                         theNU,
-  int                         theNV) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams,
+  int                               theNU,
+  int                               theNV) const
 {
   if (myBasis.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty() || theNU < 0 || theNV < 0
       || (theNU + theNV) < 1)
@@ -310,7 +310,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(
   // Fast path: check if offset surface has an equivalent simple surface
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       GeomGridEval_Surface anEquivEval;
@@ -376,7 +376,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_OffsetSurface::EvaluatePoints(
   // Fast path: check if offset surface has an equivalent simple surface
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       GeomGridEval_Surface anEquivEval;
@@ -434,7 +434,7 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluatePoi
   // Fast path: check if offset surface has an equivalent simple surface
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       GeomGridEval_Surface anEquivEval;
@@ -496,7 +496,7 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluatePoi
   // Fast path: check if offset surface has an equivalent simple surface
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       GeomGridEval_Surface anEquivEval;
@@ -565,7 +565,7 @@ NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluatePoi
   // Fast path: check if offset surface has an equivalent simple surface
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       GeomGridEval_Surface anEquivEval;
@@ -621,7 +621,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_OffsetSurface::EvaluatePointsDN(
   // Fast path: check if offset surface has an equivalent simple surface
   if (!myGeom.IsNull())
   {
-    Handle(Geom_Surface) anEquivSurf = myGeom->Surface();
+    occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       GeomGridEval_Surface anEquivEval;

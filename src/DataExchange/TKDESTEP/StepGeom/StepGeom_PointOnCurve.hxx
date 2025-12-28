@@ -24,9 +24,6 @@
 class StepGeom_Curve;
 class TCollection_HAsciiString;
 
-class StepGeom_PointOnCurve;
-DEFINE_STANDARD_HANDLE(StepGeom_PointOnCurve, StepGeom_Point)
-
 class StepGeom_PointOnCurve : public StepGeom_Point
 {
 
@@ -34,24 +31,23 @@ public:
   //! Returns a PointOnCurve
   Standard_EXPORT StepGeom_PointOnCurve();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepGeom_Curve)&           aBasisCurve,
-                            const Standard_Real                     aPointParameter);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepGeom_Curve>&           aBasisCurve,
+                            const double                                 aPointParameter);
 
-  Standard_EXPORT void SetBasisCurve(const Handle(StepGeom_Curve)& aBasisCurve);
+  Standard_EXPORT void SetBasisCurve(const occ::handle<StepGeom_Curve>& aBasisCurve);
 
-  Standard_EXPORT Handle(StepGeom_Curve) BasisCurve() const;
+  Standard_EXPORT occ::handle<StepGeom_Curve> BasisCurve() const;
 
-  Standard_EXPORT void SetPointParameter(const Standard_Real aPointParameter);
+  Standard_EXPORT void SetPointParameter(const double aPointParameter);
 
-  Standard_EXPORT Standard_Real PointParameter() const;
+  Standard_EXPORT double PointParameter() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_PointOnCurve, StepGeom_Point)
 
-protected:
 private:
-  Handle(StepGeom_Curve) basisCurve;
-  Standard_Real          pointParameter;
+  occ::handle<StepGeom_Curve> basisCurve;
+  double                      pointParameter;
 };
 
 #endif // _StepGeom_PointOnCurve_HeaderFile

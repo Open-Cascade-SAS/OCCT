@@ -19,8 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Face, StepShape_TopologicalRepresentationIt
 
 StepShape_Face::StepShape_Face() {}
 
-void StepShape_Face::Init(const Handle(TCollection_HAsciiString)&     aName,
-                          const Handle(StepShape_HArray1OfFaceBound)& aBounds)
+void StepShape_Face::Init(
+  const occ::handle<TCollection_HAsciiString>&                              aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds)
 {
   // --- classe own fields ---
   bounds = aBounds;
@@ -28,22 +29,23 @@ void StepShape_Face::Init(const Handle(TCollection_HAsciiString)&     aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_Face::SetBounds(const Handle(StepShape_HArray1OfFaceBound)& aBounds)
+void StepShape_Face::SetBounds(
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds)
 {
   bounds = aBounds;
 }
 
-Handle(StepShape_HArray1OfFaceBound) StepShape_Face::Bounds() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> StepShape_Face::Bounds() const
 {
   return bounds;
 }
 
-Handle(StepShape_FaceBound) StepShape_Face::BoundsValue(const Standard_Integer num) const
+occ::handle<StepShape_FaceBound> StepShape_Face::BoundsValue(const int num) const
 {
   return bounds->Value(num);
 }
 
-Standard_Integer StepShape_Face::NbBounds() const
+int StepShape_Face::NbBounds() const
 {
   if (bounds.IsNull())
     return 0;

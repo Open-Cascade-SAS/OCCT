@@ -45,18 +45,18 @@ IMPLEMENT_STANDARD_RTTIEXT(DDataStd_DrawDriver, Standard_Transient)
 
 // attribut affichable
 // drawable object
-static Standard_Integer DISCRET = 100;
-static Standard_Integer NBISOS  = 10;
-static Standard_Real    THESIZE = 1000.;
+static int    DISCRET = 100;
+static int    NBISOS  = 10;
+static double THESIZE = 1000.;
 
-static Handle(DDataStd_DrawDriver) DrawDriver;
+static occ::handle<DDataStd_DrawDriver> DrawDriver;
 
-Handle(DDataStd_DrawDriver) DDataStd_DrawDriver::Get()
+occ::handle<DDataStd_DrawDriver> DDataStd_DrawDriver::Get()
 {
   return DrawDriver;
 }
 
-void DDataStd_DrawDriver::Set(const Handle(DDataStd_DrawDriver)& DD)
+void DDataStd_DrawDriver::Set(const occ::handle<DDataStd_DrawDriver>& DD)
 {
   DrawDriver = DD;
 }
@@ -67,9 +67,9 @@ DDataStd_DrawDriver::DDataStd_DrawDriver() {}
 
 //=================================================================================================
 
-static TopoDS_Shape Geometry(const Handle(TDataXtd_Constraint)& A,
-                             const Standard_Integer             i,
-                             TopAbs_ShapeEnum                   T)
+static TopoDS_Shape Geometry(const occ::handle<TDataXtd_Constraint>& A,
+                             const int                               i,
+                             TopAbs_ShapeEnum                        T)
 {
   TopoDS_Shape S = TNaming_Tool::GetShape(A->GetGeometry(i));
   if (!S.IsNull())
@@ -82,11 +82,11 @@ static TopoDS_Shape Geometry(const Handle(TDataXtd_Constraint)& A,
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DDataStd_DrawDriver::Drawable(const TDF_Label& L) const
+occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::Drawable(const TDF_Label& L) const
 {
   // CONSTRAINT
 
-  Handle(TDataXtd_Constraint) CTR;
+  occ::handle<TDataXtd_Constraint> CTR;
   if (L.FindAttribute(TDataXtd_Constraint::GetID(), CTR))
   {
     return DrawableConstraint(CTR);
@@ -96,46 +96,46 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::Drawable(const TDF_Label& L) const
 
   TopoDS_Shape s;
 
-  // Handle(TDataStd_Object) OBJ;
+  // occ::handle<TDataStd_Object> OBJ;
   // if (L.FindAttribute(TDataStd_Object::GetID(),OBJ)) {
   //   return DrawableShape (L,Draw_vert);
   // }
 
   // DATUM
 
-  Handle(TDataXtd_Point) POINT;
+  occ::handle<TDataXtd_Point> POINT;
   if (L.FindAttribute(TDataXtd_Point::GetID(), POINT))
   {
-    return DrawableShape(L, Draw_magenta, Standard_False);
+    return DrawableShape(L, Draw_magenta, false);
   }
 
-  Handle(TDataXtd_Axis) AXIS;
+  occ::handle<TDataXtd_Axis> AXIS;
   if (L.FindAttribute(TDataXtd_Axis::GetID(), AXIS))
   {
-    return DrawableShape(L, Draw_magenta, Standard_False);
+    return DrawableShape(L, Draw_magenta, false);
   }
 
-  Handle(TDataXtd_Plane) PLANE;
+  occ::handle<TDataXtd_Plane> PLANE;
   if (L.FindAttribute(TDataXtd_Plane::GetID(), PLANE))
   {
-    return DrawableShape(L, Draw_magenta, Standard_False);
+    return DrawableShape(L, Draw_magenta, false);
   }
 
   // Standard GEOMETRY
 
-  Handle(TDataXtd_Geometry) STD_GEOM;
+  occ::handle<TDataXtd_Geometry> STD_GEOM;
   if (L.FindAttribute(TDataXtd_Geometry::GetID(), STD_GEOM))
   {
     switch (STD_GEOM->GetType())
     {
       case TDataXtd_POINT: {
-        return DrawableShape(L, Draw_jaune, Standard_False);
+        return DrawableShape(L, Draw_jaune, false);
       }
       case TDataXtd_LINE:
       case TDataXtd_CIRCLE:
       case TDataXtd_ELLIPSE:
       case TDataXtd_SPLINE: {
-        return DrawableShape(L, Draw_cyan, Standard_False);
+        return DrawableShape(L, Draw_cyan, false);
       }
       case TDataXtd_ANY_GEOM: {
         break;
@@ -148,22 +148,22 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::Drawable(const TDF_Label& L) const
 
   // PURE SHAPE
 
-  Handle(TNaming_NamedShape) NS;
+  occ::handle<TNaming_NamedShape> NS;
   if (L.FindAttribute(TNaming_NamedShape::GetID(), NS))
   {
     return DrawableShape(NS->Label(), Draw_jaune);
   }
 
-  Handle(Draw_Drawable3D) D3D;
+  occ::handle<Draw_Drawable3D> D3D;
   return D3D;
 }
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DDataStd_DrawDriver::DrawableConstraint(
-  const Handle(TDataXtd_Constraint)& A) const
+occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableConstraint(
+  const occ::handle<TDataXtd_Constraint>& A) const
 {
-  Handle(DrawDim_Dimension) D;
+  occ::handle<DrawDim_Dimension> D;
 
   switch (A->GetType())
   {
@@ -223,7 +223,7 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::DrawableConstraint(
     case TDataXtd_ANGLE: {
       if (A->IsPlanar())
       {
-        Handle(DrawDim_PlanarAngle) DAng =
+        occ::handle<DrawDim_PlanarAngle> DAng =
           new DrawDim_PlanarAngle(TNaming_Tool::GetShape(A->GetGeometry(1)),
                                   TNaming_Tool::GetShape(A->GetGeometry(2)));
         DAng->Sector(A->Reversed(), A->Inverted());
@@ -316,7 +316,7 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::DrawableConstraint(
   {
     if (!A->GetValue().IsNull())
     {
-      Standard_Real val = A->GetValue()->Get();
+      double val = A->GetValue()->Get();
       Standard_DISABLE_DEPRECATION_WARNINGS if (A->GetValue()->GetDimension() == TDataStd_ANGULAR)
         val = (180. * val) / M_PI;
       Standard_ENABLE_DEPRECATION_WARNINGS D->SetValue(val);
@@ -330,12 +330,12 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::DrawableConstraint(
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DDataStd_DrawDriver::DrawableShape(const TDF_Label&       L,
-                                                           const Draw_ColorKind   color,
-                                                           const Standard_Boolean current) const
+occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableShape(const TDF_Label&     L,
+                                                                const Draw_ColorKind color,
+                                                                const bool           current) const
 {
-  Handle(Draw_Drawable3D)    DS;
-  Handle(TNaming_NamedShape) NS;
+  occ::handle<Draw_Drawable3D>    DS;
+  occ::handle<TNaming_NamedShape> NS;
   if (L.FindAttribute(TNaming_NamedShape::GetID(), NS))
   {
     TopoDS_Shape S;
@@ -350,10 +350,10 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::DrawableShape(const TDF_Label&     
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DDataStd_DrawDriver::DrawableShape(const TopoDS_Shape&  s,
-                                                           const Draw_ColorKind color)
+occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableShape(const TopoDS_Shape&  s,
+                                                                const Draw_ColorKind color)
 {
-  Handle(DBRep_DrawableShape) DS;
+  occ::handle<DBRep_DrawableShape> DS;
   DS = new DBRep_DrawableShape(s, color, color, color, Draw_bleu, THESIZE, NBISOS, DISCRET);
   return DS;
 }

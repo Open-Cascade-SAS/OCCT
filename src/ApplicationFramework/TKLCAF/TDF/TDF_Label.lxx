@@ -52,32 +52,32 @@ inline void TDF_Label::Nullify()
   myLabelNode = NULL;
 }
 
-inline Standard_Boolean TDF_Label::IsRoot() const
+inline bool TDF_Label::IsRoot() const
 {
   return myLabelNode->IsRoot();
 }
 
-inline Standard_Boolean TDF_Label::IsNull() const
+inline bool TDF_Label::IsNull() const
 {
   return (myLabelNode == NULL);
 }
 
-inline Standard_Boolean TDF_Label::IsImported() const
+inline bool TDF_Label::IsImported() const
 {
   return myLabelNode->IsImported();
 }
 
-inline Standard_Boolean TDF_Label::IsEqual(const TDF_Label& aLabel) const
+inline bool TDF_Label::IsEqual(const TDF_Label& aLabel) const
 {
   return (myLabelNode == aLabel.myLabelNode);
 }
 
-inline Standard_Boolean TDF_Label::IsDifferent(const TDF_Label& aLabel) const
+inline bool TDF_Label::IsDifferent(const TDF_Label& aLabel) const
 {
   return (myLabelNode != aLabel.myLabelNode);
 }
 
-inline Standard_Integer TDF_Label::Tag() const
+inline int TDF_Label::Tag() const
 {
   return myLabelNode->Tag();
 }
@@ -87,22 +87,22 @@ inline const TDF_Label TDF_Label::Father() const
   return TDF_Label(myLabelNode->Father());
 }
 
-inline Standard_Boolean TDF_Label::HasChild() const
+inline bool TDF_Label::HasChild() const
 {
   return (myLabelNode->FirstChild() != NULL);
 }
 
-inline Standard_Boolean TDF_Label::AttributesModified() const
+inline bool TDF_Label::AttributesModified() const
 {
   return myLabelNode->AttributesModified();
 }
 
-inline Standard_Boolean TDF_Label::MayBeModified() const
+inline bool TDF_Label::MayBeModified() const
 {
   return myLabelNode->MayBeModified();
 }
 
-inline Handle(TDF_Data) TDF_Label::Data() const
+inline occ::handle<TDF_Data> TDF_Label::Data() const
 {
   return myLabelNode->Data();
 }

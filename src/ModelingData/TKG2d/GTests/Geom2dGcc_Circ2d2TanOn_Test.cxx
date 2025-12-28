@@ -19,9 +19,9 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GccEnt.hxx>
 #include <NCollection_List.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Vec2d.hxx>
 
 #include <gtest/gtest.h>
@@ -31,25 +31,25 @@ TEST(Geom2dGcc_Circ2d2TanOn_Test, OCC27357_NoExceptions)
   // Bug OCC27357: Geom2dGcc_Circ2d2TanOn: check status of sub-algorithms to avoid exceptions
   // This test verifies that the algorithm handles edge cases without throwing exceptions
 
-  TColgp_Array1OfPnt2d aPoles(1, 3);
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
   aPoles.SetValue(1, gp_Pnt2d(0., 0.));
   aPoles.SetValue(2, gp_Pnt2d(0., 1.));
   aPoles.SetValue(3, gp_Pnt2d(6., 0.));
 
-  Handle(Geom2d_BezierCurve) aCurve1 = new Geom2d_BezierCurve(aPoles);
+  occ::handle<Geom2d_BezierCurve> aCurve1 = new Geom2d_BezierCurve(aPoles);
   aPoles.SetValue(2, gp_Pnt2d(0., 1.5));
-  Handle(Geom2d_BezierCurve)         aCurve2 = new Geom2d_BezierCurve(aPoles);
-  NCollection_List<Standard_Integer> aDummyList;
-  int                                nP = 100;
+  occ::handle<Geom2d_BezierCurve> aCurve2 = new Geom2d_BezierCurve(aPoles);
+  NCollection_List<int>           aDummyList;
+  int                             nP = 100;
 
   for (int i = 0; i < nP; i++)
   {
-    Standard_Real u = i / (nP - 1.);
-    gp_Pnt2d      aP1;
-    gp_Vec2d      aTangent;
+    double   u = i / (nP - 1.);
+    gp_Pnt2d aP1;
+    gp_Vec2d aTangent;
     aCurve1->D1(u, aP1, aTangent);
     gp_Vec2d                 aNormal(-aTangent.Y(), aTangent.X());
-    Handle(Geom2d_Line)      aNormalLine = new Geom2d_Line(aP1, gp_Dir2d(aNormal));
+    occ::handle<Geom2d_Line> aNormalLine = new Geom2d_Line(aP1, gp_Dir2d(aNormal));
     Geom2dGcc_QualifiedCurve aQualifiedC1(Geom2dAdaptor_Curve(aCurve1), GccEnt_unqualified);
     Geom2dGcc_QualifiedCurve aQualifiedC2(Geom2dAdaptor_Curve(aCurve2), GccEnt_unqualified);
 

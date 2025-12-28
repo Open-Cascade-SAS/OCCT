@@ -27,8 +27,8 @@ StepDimTol_DatumReference::StepDimTol_DatumReference() {}
 
 //=================================================================================================
 
-void StepDimTol_DatumReference::Init(const Standard_Integer          thePrecedence,
-                                     const Handle(StepDimTol_Datum)& theReferencedDatum)
+void StepDimTol_DatumReference::Init(const int                            thePrecedence,
+                                     const occ::handle<StepDimTol_Datum>& theReferencedDatum)
 {
 
   myPrecedence = thePrecedence;
@@ -38,21 +38,21 @@ void StepDimTol_DatumReference::Init(const Standard_Integer          thePreceden
 
 //=================================================================================================
 
-Standard_Integer StepDimTol_DatumReference::Precedence() const
+int StepDimTol_DatumReference::Precedence() const
 {
   return myPrecedence;
 }
 
 //=================================================================================================
 
-void StepDimTol_DatumReference::SetPrecedence(const Standard_Integer thePrecedence)
+void StepDimTol_DatumReference::SetPrecedence(const int thePrecedence)
 {
   myPrecedence = thePrecedence;
 }
 
 //=================================================================================================
 
-Handle(StepDimTol_Datum) StepDimTol_DatumReference::ReferencedDatum() const
+occ::handle<StepDimTol_Datum> StepDimTol_DatumReference::ReferencedDatum() const
 {
   return myReferencedDatum;
 }
@@ -60,7 +60,7 @@ Handle(StepDimTol_Datum) StepDimTol_DatumReference::ReferencedDatum() const
 //=================================================================================================
 
 void StepDimTol_DatumReference::SetReferencedDatum(
-  const Handle(StepDimTol_Datum)& theReferencedDatum)
+  const occ::handle<StepDimTol_Datum>& theReferencedDatum)
 {
   myReferencedDatum = theReferencedDatum;
 }

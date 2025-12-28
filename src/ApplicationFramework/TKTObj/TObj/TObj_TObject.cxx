@@ -44,7 +44,7 @@ const Standard_GUID& TObj_TObject::ID() const
 
 //=================================================================================================
 
-void TObj_TObject::Set(const Handle(TObj_Object)& theElem)
+void TObj_TObject::Set(const occ::handle<TObj_Object>& theElem)
 {
   Backup();
   myElem = theElem;
@@ -52,10 +52,10 @@ void TObj_TObject::Set(const Handle(TObj_Object)& theElem)
 
 //=================================================================================================
 
-Handle(TObj_TObject) TObj_TObject::Set(const TDF_Label&           theLabel,
-                                       const Handle(TObj_Object)& theElem)
+occ::handle<TObj_TObject> TObj_TObject::Set(const TDF_Label&                theLabel,
+                                            const occ::handle<TObj_Object>& theElem)
 {
-  Handle(TObj_TObject) A;
+  occ::handle<TObj_TObject> A;
   if (!theLabel.FindAttribute(TObj_TObject::GetID(), A))
   {
     A = new TObj_TObject;
@@ -67,32 +67,32 @@ Handle(TObj_TObject) TObj_TObject::Set(const TDF_Label&           theLabel,
 
 //=================================================================================================
 
-Handle(TObj_Object) TObj_TObject::Get() const
+occ::handle<TObj_Object> TObj_TObject::Get() const
 {
   return myElem;
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TObj_TObject::NewEmpty() const
+occ::handle<TDF_Attribute> TObj_TObject::NewEmpty() const
 {
   return new TObj_TObject();
 }
 
 //=================================================================================================
 
-void TObj_TObject::Restore(const Handle(TDF_Attribute)& theWith)
+void TObj_TObject::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
-  Handle(TObj_TObject) R = Handle(TObj_TObject)::DownCast(theWith);
-  myElem                 = R->Get();
+  occ::handle<TObj_TObject> R = occ::down_cast<TObj_TObject>(theWith);
+  myElem                      = R->Get();
 }
 
 //=================================================================================================
 
-void TObj_TObject::Paste(const Handle(TDF_Attribute)& theInto,
-                         const Handle(TDF_RelocationTable)& /* RT */) const
+void TObj_TObject::Paste(const occ::handle<TDF_Attribute>& theInto,
+                         const occ::handle<TDF_RelocationTable>& /* RT */) const
 {
-  Handle(TObj_TObject) R = Handle(TObj_TObject)::DownCast(theInto);
+  occ::handle<TObj_TObject> R = occ::down_cast<TObj_TObject>(theInto);
   R->Set(myElem);
 }
 
@@ -116,7 +116,7 @@ void TObj_TObject::BeforeForget()
       {
         aSubLabel = aLI.Value();
         if (!aSubLabel.IsNull())
-          aSubLabel.ForgetAllAttributes(Standard_True);
+          aSubLabel.ForgetAllAttributes(true);
       }
     }
     // remove back references before document die
@@ -132,18 +132,18 @@ void TObj_TObject::BeforeForget()
 //           i.e. (myElem->IsAlive() == true) after that
 //=======================================================================
 
-Standard_Boolean TObj_TObject::AfterUndo(const Handle(TDF_AttributeDelta)& anAttDelta,
-                                         const Standard_Boolean /*forceIt*/)
+bool TObj_TObject::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                             const bool /*forceIt*/)
 {
   if (!myElem.IsNull())
   {
-    TDF_Label             aLabel = anAttDelta->Label();
-    Handle(TDF_Attribute) anAttr;
-    Handle(TObj_TObject)  aTObject;
-    Handle(TDF_Attribute) me;
+    TDF_Label                  aLabel = anAttDelta->Label();
+    occ::handle<TDF_Attribute> anAttr;
+    occ::handle<TObj_TObject>  aTObject;
+    occ::handle<TDF_Attribute> me;
     me = this;
     if (!aLabel.IsNull() && aLabel.FindAttribute(GetID(), anAttr))
-      aTObject = Handle(TObj_TObject)::DownCast(anAttr);
+      aTObject = occ::down_cast<TObj_TObject>(anAttr);
 
     if (!aTObject.IsNull() && aTObject->Get() == myElem)
       myElem->myLabel = aLabel;
@@ -153,5 +153,5 @@ Standard_Boolean TObj_TObject::AfterUndo(const Handle(TDF_AttributeDelta)& anAtt
       myElem->myLabel = aNullLabel;
     }
   }
-  return Standard_True;
+  return true;
 }

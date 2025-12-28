@@ -21,11 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+
+#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <Standard_Integer.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
 class TopOpeBRepDS_Interference;
 
 //! Iterate on interferences of a list, matching
@@ -45,12 +46,13 @@ public:
   Standard_EXPORT TopOpeBRepDS_InterferenceIterator();
 
   //! Creates an iterator on the Interference of list <L>.
-  Standard_EXPORT TopOpeBRepDS_InterferenceIterator(const TopOpeBRepDS_ListOfInterference& L);
+  Standard_EXPORT TopOpeBRepDS_InterferenceIterator(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
 
   //! re-initialize interference iteration process on
   //! the list of interference <L>.
   //! Conditions are not modified.
-  Standard_EXPORT void Init(const TopOpeBRepDS_ListOfInterference& L);
+  Standard_EXPORT void Init(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
 
   //! define a condition on interference iteration process.
   //! Interference must match the Geometry Kind <ST>
@@ -58,7 +60,7 @@ public:
 
   //! define a condition on interference iteration process.
   //! Interference must match the Geometry <G>
-  Standard_EXPORT void Geometry(const Standard_Integer G);
+  Standard_EXPORT void Geometry(const int G);
 
   //! define a condition on interference iteration process.
   //! Interference must match the Support Kind <ST>
@@ -66,7 +68,7 @@ public:
 
   //! define a condition on interference iteration process.
   //! Interference must match the Support <S>
-  Standard_EXPORT void Support(const Standard_Integer S);
+  Standard_EXPORT void Support(const int S);
 
   //! reach for an interference matching the conditions
   //! (if defined).
@@ -75,33 +77,33 @@ public:
   //! Returns True if the Interference <I> matches the
   //! conditions (if defined).
   //! If no conditions defined, returns True.
-  Standard_EXPORT virtual Standard_Boolean MatchInterference(
-    const Handle(TopOpeBRepDS_Interference)& I) const;
+  Standard_EXPORT virtual bool MatchInterference(
+    const occ::handle<TopOpeBRepDS_Interference>& I) const;
 
   //! Returns True if there is a current Interference in
   //! the iteration.
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   //! Move to the next Interference.
   Standard_EXPORT void Next();
 
   //! Returns the current Interference, matching the
   //! conditions (if defined).
-  Standard_EXPORT const Handle(TopOpeBRepDS_Interference)& Value() const;
+  Standard_EXPORT const occ::handle<TopOpeBRepDS_Interference>& Value() const;
 
-  Standard_EXPORT TopOpeBRepDS_ListIteratorOfListOfInterference& ChangeIterator();
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator&
+                  ChangeIterator();
 
-protected:
 private:
-  TopOpeBRepDS_ListIteratorOfListOfInterference myIterator;
-  Standard_Boolean                              myGKDef;
-  TopOpeBRepDS_Kind                             myGK;
-  Standard_Boolean                              myGDef;
-  Standard_Integer                              myG;
-  Standard_Boolean                              mySKDef;
-  TopOpeBRepDS_Kind                             mySK;
-  Standard_Boolean                              mySDef;
-  Standard_Integer                              myS;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator myIterator;
+  bool                                                               myGKDef;
+  TopOpeBRepDS_Kind                                                  myGK;
+  bool                                                               myGDef;
+  int                                                                myG;
+  bool                                                               mySKDef;
+  TopOpeBRepDS_Kind                                                  mySK;
+  bool                                                               mySDef;
+  int                                                                myS;
 };
 
 #endif // _TopOpeBRepDS_InterferenceIterator_HeaderFile

@@ -25,9 +25,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Vec;
 
-class IGESGeom_OffsetCurve;
-DEFINE_STANDARD_HANDLE(IGESGeom_OffsetCurve, IGESData_IGESEntity)
-
 //! defines IGESOffsetCurve, Type <130> Form <0>
 //! in package IGESGeom
 //! An OffsetCurve entity contains the data necessary to
@@ -70,59 +67,59 @@ public:
   //! curve to be offset
   //! - anOffsetParam      : Start parameter value of offset curve
   //! - anotherOffsetParam : End parameter value of offset curve
-  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)& aBaseCurve,
-                            const Standard_Integer             anOffsetType,
-                            const Handle(IGESData_IGESEntity)& aFunction,
-                            const Standard_Integer             aFunctionCoord,
-                            const Standard_Integer             aTaperedOffsetType,
-                            const Standard_Real                offDistance1,
-                            const Standard_Real                arcLength1,
-                            const Standard_Real                offDistance2,
-                            const Standard_Real                arcLength2,
-                            const gp_XYZ&                      aNormalVec,
-                            const Standard_Real                anOffsetParam,
-                            const Standard_Real                anotherOffsetParam);
+  Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>& aBaseCurve,
+                            const int                               anOffsetType,
+                            const occ::handle<IGESData_IGESEntity>& aFunction,
+                            const int                               aFunctionCoord,
+                            const int                               aTaperedOffsetType,
+                            const double                            offDistance1,
+                            const double                            arcLength1,
+                            const double                            offDistance2,
+                            const double                            arcLength2,
+                            const gp_XYZ&                           aNormalVec,
+                            const double                            anOffsetParam,
+                            const double                            anotherOffsetParam);
 
   //! returns the curve to be offset
-  Standard_EXPORT Handle(IGESData_IGESEntity) BaseCurve() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> BaseCurve() const;
 
   //! returns the offset distance flag
   //! 1 = Single value offset (uniform distance)
   //! 2 = Offset distance varying linearly
   //! 3 = Offset distance specified as a function
-  Standard_EXPORT Standard_Integer OffsetType() const;
+  Standard_EXPORT int OffsetType() const;
 
   //! returns the function defining the offset if at all the offset
   //! is described as a function or Null Handle.
-  Standard_EXPORT Handle(IGESData_IGESEntity) Function() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Function() const;
 
   //! returns True if function defining the offset is present.
-  Standard_EXPORT Standard_Boolean HasFunction() const;
+  Standard_EXPORT bool HasFunction() const;
 
   //! returns particular coordinate of the curve which describes offset
   //! as a function of its parameters. (only used if OffsetType() = 3)
-  Standard_EXPORT Standard_Integer FunctionParameter() const;
+  Standard_EXPORT int FunctionParameter() const;
 
   //! returns tapered offset type flag (only used if OffsetType() = 2 or 3)
   //! 1 = Function of arc length
   //! 2 = Function of parameter
-  Standard_EXPORT Standard_Integer TaperedOffsetType() const;
+  Standard_EXPORT int TaperedOffsetType() const;
 
   //! returns first offset distance (only used if OffsetType() = 1 or 2)
-  Standard_EXPORT Standard_Real FirstOffsetDistance() const;
+  Standard_EXPORT double FirstOffsetDistance() const;
 
   //! returns arc length or parameter value (depending on value of
   //! offset distance flag) of first offset distance
   //! (only used if OffsetType() = 2)
-  Standard_EXPORT Standard_Real ArcLength1() const;
+  Standard_EXPORT double ArcLength1() const;
 
   //! returns the second offset distance
-  Standard_EXPORT Standard_Real SecondOffsetDistance() const;
+  Standard_EXPORT double SecondOffsetDistance() const;
 
   //! returns arc length or parameter value (depending on value of
   //! offset distance flag) of second offset distance
   //! (only used if OffsetType() = 2)
-  Standard_EXPORT Standard_Real ArcLength2() const;
+  Standard_EXPORT double ArcLength2() const;
 
   //! returns unit vector normal to plane containing curve to be offset
   Standard_EXPORT gp_Vec NormalVector() const;
@@ -131,30 +128,29 @@ public:
   //! after applying Transf. Matrix
   Standard_EXPORT gp_Vec TransformedNormalVector() const;
 
-  Standard_EXPORT void Parameters(Standard_Real& StartParam, Standard_Real& EndParam) const;
+  Standard_EXPORT void Parameters(double& StartParam, double& EndParam) const;
 
   //! returns Start Parameter value of the offset curve
-  Standard_EXPORT Standard_Real StartParameter() const;
+  Standard_EXPORT double StartParameter() const;
 
   //! returns End   Parameter value of the offset curve
-  Standard_EXPORT Standard_Real EndParameter() const;
+  Standard_EXPORT double EndParameter() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_OffsetCurve, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_IGESEntity) theBaseCurve;
-  Standard_Integer            theOffsetType;
-  Handle(IGESData_IGESEntity) theFunction;
-  Standard_Integer            theFunctionCoord;
-  Standard_Integer            theTaperedOffsetType;
-  Standard_Real               theOffsetDistance1;
-  Standard_Real               theArcLength1;
-  Standard_Real               theOffsetDistance2;
-  Standard_Real               theArcLength2;
-  gp_XYZ                      theNormalVector;
-  Standard_Real               theOffsetParam1;
-  Standard_Real               theOffsetParam2;
+  occ::handle<IGESData_IGESEntity> theBaseCurve;
+  int                              theOffsetType;
+  occ::handle<IGESData_IGESEntity> theFunction;
+  int                              theFunctionCoord;
+  int                              theTaperedOffsetType;
+  double                           theOffsetDistance1;
+  double                           theArcLength1;
+  double                           theOffsetDistance2;
+  double                           theArcLength2;
+  gp_XYZ                           theNormalVector;
+  double                           theOffsetParam1;
+  double                           theOffsetParam2;
 };
 
 #endif // _IGESGeom_OffsetCurve_HeaderFile

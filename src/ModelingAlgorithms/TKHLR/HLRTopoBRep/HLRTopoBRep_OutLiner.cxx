@@ -33,7 +33,9 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(HLRTopoBRep_OutLiner, Standard_Transient)
 
@@ -58,9 +60,10 @@ HLRTopoBRep_OutLiner::HLRTopoBRep_OutLiner(const TopoDS_Shape& OriS, const TopoD
 
 //=================================================================================================
 
-void HLRTopoBRep_OutLiner::Fill(const HLRAlgo_Projector&       P,
-                                BRepTopAdaptor_MapOfShapeTool& MST,
-                                const Standard_Integer         nbIso)
+void HLRTopoBRep_OutLiner::Fill(
+  const HLRAlgo_Projector&                                                         P,
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST,
+  const int                                                                        nbIso)
 {
   if (!myOriginalShape.IsNull())
   {
@@ -93,23 +96,25 @@ void HLRTopoBRep_OutLiner::Fill(const HLRAlgo_Projector&       P,
 // Purpose  : Build a Face using myDS and add the new face to a shell
 //=======================================================================
 
-void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
-                                       TopoDS_Shape&                  S,
-                                       BRepTopAdaptor_MapOfShapeTool& MST)
+void HLRTopoBRep_OutLiner::ProcessFace(
+  const TopoDS_Face&                                                               F,
+  TopoDS_Shape&                                                                    S,
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
 {
   BRep_Builder    B;
   TopExp_Explorer exE, exW;
-  // Standard_Boolean splitted = Standard_False;
+  // bool splitted = false;
 
-  TopTools_IndexedDataMapOfShapeListOfShape aVEMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aVEMap;
   TopExp::MapShapesAndAncestors(F, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);
 
   TopoDS_Shape NF; // = F;
-                   // NF.Free(Standard_True);
+                   // NF.Free(true);
 
   // for (exE.Init(F,TopAbs_EDGE); exE.More(); exE.Next()) {
   // if (myDS.EdgeHasSplE(TopoDS::Edge(exE.Current()))) {
-  // splitted = Standard_True;
+  // splitted = true;
   // break;
   //}
   //}
@@ -129,7 +134,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
       if (myDS.EdgeHasSplE(E))
       {
 
-        TopTools_ListIteratorOfListOfShape itS;
+        NCollection_List<TopoDS_Shape>::Iterator itS;
         for (itS.Initialize(myDS.EdgeSplE(E)); itS.More(); itS.Next())
         {
           TopoDS_Edge newE = TopoDS::Edge(itS.Value());
@@ -147,13 +152,13 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
   }
   //}
   myDS.AddIntL(F);
-  TopTools_ListOfShape& OutL = myDS.AddOutL(F);
+  NCollection_List<TopoDS_Shape>& OutL = myDS.AddOutL(F);
 
   if (myDS.FaceHasIntL(F))
   { // get the InternalOutLines on face F
     TopoDS_Wire W;
 
-    TopTools_ListIteratorOfListOfShape itE;
+    NCollection_List<TopoDS_Shape>::Iterator itE;
     for (itE.Initialize(myDS.FaceIntL(F)); itE.More(); itE.Next())
     {
       TopoDS_Edge E = TopoDS::Edge(itE.Value());
@@ -161,16 +166,16 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
       // Check, if outline edge coincides real edge
 
       BRepAdaptor_Curve C(E);
-      Standard_Real     par = 0.34 * C.FirstParameter() + 0.66 * C.LastParameter();
+      double            par = 0.34 * C.FirstParameter() + 0.66 * C.LastParameter();
       gp_Pnt            P   = C.Value(par);
       TopoDS_Vertex     V1, V2, aV1, aV2;
       TopExp::Vertices(E, V1, V2);
 
-      Standard_Boolean SameEdge = Standard_False;
+      bool SameEdge = false;
       if (!V1.IsNull() && aVEMap.Contains(V1))
       {
-        const TopTools_ListOfShape&        aEList = aVEMap.FindFromKey(V1);
-        TopTools_ListIteratorOfListOfShape it(aEList);
+        const NCollection_List<TopoDS_Shape>&    aEList = aVEMap.FindFromKey(V1);
+        NCollection_List<TopoDS_Shape>::Iterator it(aEList);
         for (; it.More(); it.Next())
         {
           const TopoDS_Edge& aE = TopoDS::Edge(it.Value());
@@ -181,7 +186,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
             BRepAdaptor_Curve aC(aE);
             if ((C.GetType() == GeomAbs_Line) && (aC.GetType() == GeomAbs_Line))
             {
-              SameEdge = Standard_True;
+              SameEdge = true;
               break;
             }
             else
@@ -190,11 +195,11 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
               Extrema_ExtPC anExt(P, aC);
               if (anExt.IsDone())
               {
-                Standard_Integer aNe = anExt.NbExt();
+                int aNe = anExt.NbExt();
                 if (aNe > 0)
                 {
-                  Standard_Real    dist = RealLast();
-                  Standard_Integer ec;
+                  double dist = RealLast();
+                  int    ec;
                   for (ec = 1; ec <= aNe; ++ec)
                   {
                     //		    dist = std::min(dist, anExt.Value(ec));
@@ -204,7 +209,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
                   //		  if(dist <= 1.e-7) {
                   if (dist <= 1.e-14)
                   {
-                    SameEdge = Standard_True;
+                    SameEdge = true;
                     break;
                   }
                 }
@@ -223,7 +228,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
       if (myDS.EdgeHasSplE(E))
       {
 
-        TopTools_ListIteratorOfListOfShape itS;
+        NCollection_List<TopoDS_Shape>::Iterator itS;
         for (itS.Initialize(myDS.EdgeSplE(E)); itS.More(); itS.Next())
         {
           TopoDS_Shape newE = itS.Value();
@@ -250,7 +255,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
   { // get the IsoLines on face F
     TopoDS_Wire W;
 
-    TopTools_ListIteratorOfListOfShape itE;
+    NCollection_List<TopoDS_Shape>::Iterator itE;
     for (itE.Initialize(myDS.FaceIsoL(F)); itE.More(); itE.Next())
     {
       TopoDS_Edge E = TopoDS::Edge(itE.Value());
@@ -258,7 +263,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
       if (myDS.EdgeHasSplE(E))
       { // normally IsoLines are never split.
 
-        TopTools_ListIteratorOfListOfShape itS;
+        NCollection_List<TopoDS_Shape>::Iterator itS;
         for (itS.Initialize(myDS.EdgeSplE(E)); itS.More(); itS.Next())
         {
           TopoDS_Shape newE = itS.Value();
@@ -291,12 +296,13 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face&             F,
 // purpose  : Build the OutLinedShape
 //=======================================================================
 
-void HLRTopoBRep_OutLiner::BuildShape(BRepTopAdaptor_MapOfShapeTool& MST)
+void HLRTopoBRep_OutLiner::BuildShape(
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
 {
   TopExp_Explorer exshell, exface, exedge;
   BRep_Builder    B;
   B.MakeCompound(TopoDS::Compound(myOutLinedShape));
-  TopTools_MapOfShape ShapeMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> ShapeMap;
 
   for (exshell.Init(myOriginalShape, TopAbs_SHELL); exshell.More(); exshell.Next())
   { // faces in a shell (open or close)

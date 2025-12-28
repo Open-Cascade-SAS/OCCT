@@ -21,14 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <gp_XY.hxx>
-#include <TColgp_HArray1OfXY.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class gp_Pnt2d;
 class gp_Pnt;
-
-class IGESDimen_LeaderArrow;
-DEFINE_STANDARD_HANDLE(IGESDimen_LeaderArrow, IGESData_IGESEntity)
 
 //! defines LeaderArrow, Type <214> Form <1-12>
 //! in package IGESDimen
@@ -48,27 +46,27 @@ public:
   //! - depth       : Z Depth
   //! - position    : ArrowHead coordinates
   //! - segments    : Segment tail coordinate pairs
-  Standard_EXPORT void Init(const Standard_Real               height,
-                            const Standard_Real               width,
-                            const Standard_Real               depth,
-                            const gp_XY&                      position,
-                            const Handle(TColgp_HArray1OfXY)& segments);
+  Standard_EXPORT void Init(const double                                   height,
+                            const double                                   width,
+                            const double                                   depth,
+                            const gp_XY&                                   position,
+                            const occ::handle<NCollection_HArray1<gp_XY>>& segments);
 
   //! Changes FormNumber (indicates the Shape of the Arrow)
   //! Error if not in range [0-12]
-  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+  Standard_EXPORT void SetFormNumber(const int form);
 
   //! returns number of segments
-  Standard_EXPORT Standard_Integer NbSegments() const;
+  Standard_EXPORT int NbSegments() const;
 
   //! returns ArrowHead height
-  Standard_EXPORT Standard_Real ArrowHeadHeight() const;
+  Standard_EXPORT double ArrowHeadHeight() const;
 
   //! returns ArrowHead width
-  Standard_EXPORT Standard_Real ArrowHeadWidth() const;
+  Standard_EXPORT double ArrowHeadWidth() const;
 
   //! returns Z depth
-  Standard_EXPORT Standard_Real ZDepth() const;
+  Standard_EXPORT double ZDepth() const;
 
   //! returns ArrowHead coordinates
   Standard_EXPORT gp_Pnt2d ArrowHead() const;
@@ -78,21 +76,20 @@ public:
 
   //! returns segment tail coordinates.
   //! raises exception if Index <= 0 or Index > NbSegments
-  Standard_EXPORT gp_Pnt2d SegmentTail(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt2d SegmentTail(const int Index) const;
 
   //! returns segment tail coordinates after Transformation.
   //! raises exception if Index <= 0 or Index > NbSegments
-  Standard_EXPORT gp_Pnt TransformedSegmentTail(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt TransformedSegmentTail(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_LeaderArrow, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Real              theArrowHeadHeight;
-  Standard_Real              theArrowHeadWidth;
-  Standard_Real              theZDepth;
-  gp_XY                      theArrowHead;
-  Handle(TColgp_HArray1OfXY) theSegmentTails;
+  double                                  theArrowHeadHeight;
+  double                                  theArrowHeadWidth;
+  double                                  theZDepth;
+  gp_XY                                   theArrowHead;
+  occ::handle<NCollection_HArray1<gp_XY>> theSegmentTails;
 };
 
 #endif // _IGESDimen_LeaderArrow_HeaderFile

@@ -19,9 +19,10 @@
 #include <Standard_Macro.hxx>
 #include <BRepMesh_PluginEntryType.hxx>
 #include <BRepMesh_FactoryError.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Plugin_MapOfFunctions.hxx>
+#include <NCollection_Map.hxx>
+#include <OSD_Function.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
 
 class TopoDS_Shape;
@@ -38,12 +39,12 @@ public:
   Standard_EXPORT static BRepMesh_DiscretFactory& Get();
 
   //! Returns the list of registered meshing algorithms.
-  const TColStd_MapOfAsciiString& Names() const { return myNames; }
+  const NCollection_Map<TCollection_AsciiString>& Names() const { return myNames; }
 
   //! Setup meshing algorithm by name.
   //! Returns TRUE if requested tool is available.
   //! On fail Factory will continue to use previous algo.
-  Standard_Boolean SetDefaultName(const TCollection_AsciiString& theName)
+  bool SetDefaultName(const TCollection_AsciiString& theName)
   {
     return SetDefault(theName, myFunctionName);
   }
@@ -54,7 +55,7 @@ public:
   //! Advanced function. Changes function name to retrieve from plugin.
   //! Returns TRUE if requested tool is available.
   //! On fail Factory will continue to use previous algo.
-  Standard_Boolean SetFunctionName(const TCollection_AsciiString& theFuncName)
+  bool SetFunctionName(const TCollection_AsciiString& theFuncName)
   {
     return SetDefault(myDefaultName, theFuncName);
   }
@@ -69,17 +70,16 @@ public:
   //! Returns TRUE if requested tool is available.
   //! On fail Factory will continue to use previous algo.
   //! Call ::ErrorStatus() method to retrieve fault reason.
-  Standard_EXPORT Standard_Boolean
-    SetDefault(const TCollection_AsciiString& theName,
-               const TCollection_AsciiString& theFuncName = "DISCRETALGO");
+  Standard_EXPORT bool SetDefault(const TCollection_AsciiString& theName,
+                                  const TCollection_AsciiString& theFuncName = "DISCRETALGO");
 
   //! Returns triangulation algorithm instance.
   //! @param theShape shape to be meshed.
   //! @param theLinDeflection linear deflection to be used for meshing.
   //! @param theAngDeflection angular deflection to be used for meshing.
-  Standard_EXPORT Handle(BRepMesh_DiscretRoot) Discret(const TopoDS_Shape& theShape,
-                                                       const Standard_Real theLinDeflection,
-                                                       const Standard_Real theAngDeflection);
+  Standard_EXPORT occ::handle<BRepMesh_DiscretRoot> Discret(const TopoDS_Shape& theShape,
+                                                            const double        theLinDeflection,
+                                                            const double        theAngDeflection);
 
 protected:
   //! Constructor
@@ -91,12 +91,12 @@ protected:
   //! Clears factory data.
   Standard_EXPORT void clear();
 
-  BRepMesh_PluginEntryType myPluginEntry;
-  BRepMesh_FactoryError    myErrorStatus;
-  TColStd_MapOfAsciiString myNames;
-  TCollection_AsciiString  myDefaultName;
-  TCollection_AsciiString  myFunctionName;
-  Plugin_MapOfFunctions    myFactoryMethods;
+  BRepMesh_PluginEntryType                                   myPluginEntry;
+  BRepMesh_FactoryError                                      myErrorStatus;
+  NCollection_Map<TCollection_AsciiString>                   myNames;
+  TCollection_AsciiString                                    myDefaultName;
+  TCollection_AsciiString                                    myFunctionName;
+  NCollection_DataMap<TCollection_AsciiString, OSD_Function> myFactoryMethods;
 };
 
 #endif

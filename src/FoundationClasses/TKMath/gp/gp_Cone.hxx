@@ -69,7 +69,7 @@ public:
   //! theRaises ConstructionError
   //! * if theRadius is lower than 0.0
   //! * std::abs(theAng) < Resolution from gp or std::abs(theAng) >= (PI/2) - Resolution.
-  constexpr gp_Cone(const gp_Ax3& theA3, const Standard_Real theAng, const Standard_Real theRadius);
+  constexpr gp_Cone(const gp_Ax3& theA3, const double theAng, const double theRadius);
 
   //! Changes the symmetry axis of the cone. Raises ConstructionError
   //! the direction of theA1 is parallel to the "XDirection"
@@ -86,7 +86,7 @@ public:
   //! Changes the radius of the cone in the reference plane of
   //! the cone.
   //! Raised if theR < 0.0
-  void SetRadius(const Standard_Real theR)
+  void SetRadius(const double theR)
   {
     Standard_ConstructionError_Raise_if(theR < 0.0,
                                         "gp_Cone::SetRadius() - radius should be positive number");
@@ -98,7 +98,7 @@ public:
   //! std::abs(theAng) is in range ]0,PI/2[.
   //! Raises ConstructionError if std::abs(theAng) < Resolution from gp or std::abs(theAng) >= PI/2
   //! - Resolution
-  void SetSemiAngle(const Standard_Real theAng);
+  void SetSemiAngle(const double theAng);
 
   //! Computes the cone's top. The Apex of the cone is on the
   //! negative side of the symmetry axis of the cone.
@@ -122,7 +122,7 @@ public:
   }
 
   //! Returns true if the local coordinate system of this cone is right-handed.
-  Standard_Boolean Direct() const { return pos.Direct(); }
+  bool Direct() const { return pos.Direct(); }
 
   //! returns the symmetry axis of the cone.
   constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }
@@ -131,16 +131,16 @@ public:
   //! in the absolute cartesian coordinates system :
   //! theA1.X**2 + theA2.Y**2 + theA3.Z**2 + 2.(theB1.X.Y + theB2.X.Z + theB3.Y.Z) +
   //! 2.(theC1.X + theC2.Y + theC3.Z) + theD = 0.0
-  Standard_EXPORT void Coefficients(Standard_Real& theA1,
-                                    Standard_Real& theA2,
-                                    Standard_Real& theA3,
-                                    Standard_Real& theB1,
-                                    Standard_Real& theB2,
-                                    Standard_Real& theB3,
-                                    Standard_Real& theC1,
-                                    Standard_Real& theC2,
-                                    Standard_Real& theC3,
-                                    Standard_Real& theD) const;
+  Standard_EXPORT void Coefficients(double& theA1,
+                                    double& theA2,
+                                    double& theA3,
+                                    double& theB1,
+                                    double& theB2,
+                                    double& theB3,
+                                    double& theC1,
+                                    double& theC2,
+                                    double& theC3,
+                                    double& theD) const;
 
   //! returns the "Location" point of the cone.
   constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
@@ -149,11 +149,11 @@ public:
   constexpr const gp_Ax3& Position() const noexcept { return pos; }
 
   //! Returns the radius of the cone in the reference plane.
-  constexpr Standard_Real RefRadius() const noexcept { return radius; }
+  constexpr double RefRadius() const noexcept { return radius; }
 
   //! Returns the half-angle at the apex of this cone.
   //! Attention! Semi-angle can be negative.
-  constexpr Standard_Real SemiAngle() const noexcept { return semiAngle; }
+  constexpr double SemiAngle() const noexcept { return semiAngle; }
 
   //! Returns the XAxis of the reference plane.
   constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
@@ -166,49 +166,49 @@ public:
   //! Performs the symmetrical transformation of a cone
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Cone Mirrored(const gp_Pnt& theP) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Cone Mirrored(const gp_Pnt& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1) noexcept;
 
   //! Performs the symmetrical transformation of a cone with
   //! respect to an axis placement which is the axis of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Cone Mirrored(const gp_Ax1& theA1) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Cone Mirrored(const gp_Ax1& theA1) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2) noexcept;
 
   //! Performs the symmetrical transformation of a cone with respect
   //! to a plane. The axis placement theA2 locates the plane of the
   //! of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Cone Mirrored(const gp_Ax2& theA2) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Cone Mirrored(const gp_Ax2& theA2) const noexcept;
 
-  void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
+  void Rotate(const gp_Ax1& theA1, const double theAng) { pos.Rotate(theA1, theAng); }
 
   //! Rotates a cone. theA1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Cone Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  [[nodiscard]] gp_Cone Rotated(const gp_Ax1& theA1, const double theAng) const
   {
     gp_Cone aCone = *this;
     aCone.pos.Rotate(theA1, theAng);
     return aCone;
   }
 
-  void Scale(const gp_Pnt& theP, const Standard_Real theS);
+  void Scale(const gp_Pnt& theP, const double theS);
 
   //! Scales a cone. theS is the scaling value.
   //! The absolute value of theS is used to scale the cone
-  Standard_NODISCARD gp_Cone Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
+  [[nodiscard]] gp_Cone Scaled(const gp_Pnt& theP, const double theS) const;
 
   void Transform(const gp_Trsf& theT);
 
   //! Transforms a cone with the transformation theT from class Trsf.
-  Standard_NODISCARD gp_Cone Transformed(const gp_Trsf& theT) const;
+  [[nodiscard]] gp_Cone Transformed(const gp_Trsf& theT) const;
 
   constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a cone in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD constexpr gp_Cone Translated(const gp_Vec& theV) const noexcept
+  [[nodiscard]] constexpr gp_Cone Translated(const gp_Vec& theV) const noexcept
   {
     gp_Cone aCone = *this;
     aCone.pos.Translate(theV);
@@ -221,8 +221,8 @@ public:
   }
 
   //! Translates a cone from the point P1 to the point P2.
-  Standard_NODISCARD constexpr gp_Cone Translated(const gp_Pnt& theP1,
-                                                  const gp_Pnt& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Cone Translated(const gp_Pnt& theP1,
+                                             const gp_Pnt& theP2) const noexcept
   {
     gp_Cone aCone = *this;
     aCone.pos.Translate(theP1, theP2);
@@ -230,21 +230,19 @@ public:
   }
 
 private:
-  gp_Ax3        pos;
-  Standard_Real radius;
-  Standard_Real semiAngle;
+  gp_Ax3 pos;
+  double radius;
+  double semiAngle;
 };
 
 //=================================================================================================
 
-inline constexpr gp_Cone::gp_Cone(const gp_Ax3&       theA3,
-                                  const Standard_Real theAng,
-                                  const Standard_Real theRadius)
+inline constexpr gp_Cone::gp_Cone(const gp_Ax3& theA3, const double theAng, const double theRadius)
     : pos(theA3),
       radius(theRadius),
       semiAngle(theAng)
 {
-  [[maybe_unused]] const Standard_Real anAbsAng = theAng < 0. ? -theAng : theAng;
+  [[maybe_unused]] const double anAbsAng = theAng < 0. ? -theAng : theAng;
   Standard_ConstructionError_Raise_if(theRadius < 0. || anAbsAng <= gp::Resolution()
                                         || M_PI * 0.5 - anAbsAng <= gp::Resolution(),
                                       "gp_Cone() - invalid construction parameters");
@@ -252,7 +250,7 @@ inline constexpr gp_Cone::gp_Cone(const gp_Ax3&       theA3,
 
 //=================================================================================================
 
-inline void gp_Cone::SetSemiAngle(const Standard_Real theAng)
+inline void gp_Cone::SetSemiAngle(const double theAng)
 {
   Standard_ConstructionError_Raise_if(std::abs(theAng) <= gp::Resolution()
                                         || M_PI * 0.5 - std::abs(theAng) <= gp::Resolution(),
@@ -262,7 +260,7 @@ inline void gp_Cone::SetSemiAngle(const Standard_Real theAng)
 
 //=================================================================================================
 
-inline void gp_Cone::Scale(const gp_Pnt& theP, const Standard_Real theS)
+inline void gp_Cone::Scale(const gp_Pnt& theP, const double theS)
 {
   pos.Scale(theP, theS);
   radius *= theS;
@@ -274,7 +272,7 @@ inline void gp_Cone::Scale(const gp_Pnt& theP, const Standard_Real theS)
 
 //=================================================================================================
 
-inline gp_Cone gp_Cone::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+inline gp_Cone gp_Cone::Scaled(const gp_Pnt& theP, const double theS) const
 {
   gp_Cone aC = *this;
   aC.pos.Scale(theP, theS);

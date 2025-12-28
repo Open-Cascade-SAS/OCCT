@@ -65,7 +65,7 @@ public:
   //! may be less than Nbyte if the number of bytes left in the file
   //! is less than Nbyte bytes. In this case only number of read
   //! bytes will be placed in the buffer.
-  Standard_EXPORT void Read(TCollection_AsciiString& Buffer, const Standard_Integer Nbyte);
+  Standard_EXPORT void Read(TCollection_AsciiString& Buffer, const int Nbyte);
 
   //! Reads bytes from the data pointed to by the object file
   //! into the buffer <Buffer>.
@@ -76,9 +76,7 @@ public:
   //! Upon successful completion, Read returns the number of
   //! bytes actually read into <NByteRead> and placed into the
   //! Buffer <Buffer>.
-  Standard_EXPORT void ReadLine(TCollection_AsciiString& Buffer,
-                                const Standard_Integer   NByte,
-                                Standard_Integer&        NbyteRead);
+  Standard_EXPORT void ReadLine(TCollection_AsciiString& Buffer, const int NByte, int& NbyteRead);
 
   //! Reads bytes from the data pointed to by the object file
   //! into the buffer <Buffer>.
@@ -88,9 +86,9 @@ public:
   //! encountered.
   //! Upon successful completion, Read returns the number of
   //! bytes actually read and placed into the Buffer <Buffer>.
-  inline Standard_Integer ReadLine(TCollection_AsciiString& Buffer, const Standard_Integer NByte)
+  inline int ReadLine(TCollection_AsciiString& Buffer, const int NByte)
   {
-    Standard_Integer NbyteRead;
+    int NbyteRead;
     ReadLine(Buffer, NByte, NbyteRead);
     return NbyteRead;
   }
@@ -102,28 +100,26 @@ public:
   //! may be less than Nbyte if the number of bytes left in the file
   //! is less than Nbyte bytes. For this reason the output
   //! parameter Readbyte will contain the number of read bytes.
-  Standard_EXPORT void Read(const Standard_Address Buffer,
-                            const Standard_Integer Nbyte,
-                            Standard_Integer&      Readbyte);
+  Standard_EXPORT void Read(void* const Buffer, const int Nbyte, int& Readbyte);
 
   //! Attempts to write theNbBytes bytes from the AsciiString to the file.
-  void Write(const TCollection_AsciiString& theBuffer, const Standard_Integer theNbBytes)
+  void Write(const TCollection_AsciiString& theBuffer, const int theNbBytes)
   {
-    Write((Standard_Address)theBuffer.ToCString(), theNbBytes);
+    Write((void*)theBuffer.ToCString(), theNbBytes);
   }
 
   //! Attempts to write theNbBytes bytes from the buffer pointed
   //! to by theBuffer to the file associated to the object File.
-  Standard_EXPORT void Write(const Standard_Address theBuffer, const Standard_Integer theNbBytes);
+  Standard_EXPORT void Write(void* const theBuffer, const int theNbBytes);
 
   //! Sets the seek pointer associated with the open file
-  Standard_EXPORT void Seek(const Standard_Integer Offset, const OSD_FromWhere Whence);
+  Standard_EXPORT void Seek(const int Offset, const OSD_FromWhere Whence);
 
   //! Closes the file (and deletes a descriptor)
   Standard_EXPORT void Close();
 
   //! Returns TRUE if the seek pointer is at end of file.
-  Standard_EXPORT Standard_Boolean IsAtEnd();
+  Standard_EXPORT bool IsAtEnd();
 
   //! Returns the kind of file. A file can be a
   //! file, a directory or a link.
@@ -143,7 +139,7 @@ public:
   OSD_LockType GetLock() const { return myLock; }
 
   //! Returns TRUE if this file is locked.
-  Standard_Boolean IsLocked() const
+  bool IsLocked() const
   {
 #ifdef _WIN32
     return ImperativeFlag;
@@ -153,20 +149,20 @@ public:
   }
 
   //! Returns actual number of bytes of <me>.
-  Standard_EXPORT Standard_Size Size();
+  Standard_EXPORT size_t Size();
 
   //! Returns TRUE if <me> is open.
-  Standard_EXPORT Standard_Boolean IsOpen() const;
+  Standard_EXPORT bool IsOpen() const;
 
   //! returns TRUE if the file exists and if the user
   //! has the authorization to read it.
-  Standard_EXPORT Standard_Boolean IsReadable();
+  Standard_EXPORT bool IsReadable();
 
   //! returns TRUE if the file can be read and overwritten.
-  Standard_EXPORT Standard_Boolean IsWriteable();
+  Standard_EXPORT bool IsWriteable();
 
   //! returns TRUE if the file can be executed.
-  Standard_EXPORT Standard_Boolean IsExecutable();
+  Standard_EXPORT bool IsExecutable();
 
   //! Enables to emulate unix "tail -f" command.
   //! If a line is available in the file <me> returns it.
@@ -174,29 +170,29 @@ public:
   //! waiting aDelay seconds between each read.
   //! If meanwhile the file increases returns the next line, otherwise
   //! returns FALSE.
-  Standard_EXPORT Standard_Boolean ReadLastLine(TCollection_AsciiString& aLine,
-                                                const Standard_Integer   aDelay,
-                                                const Standard_Integer   aNbTries);
+  Standard_EXPORT bool ReadLastLine(TCollection_AsciiString& aLine,
+                                    const int                aDelay,
+                                    const int                aNbTries);
 
   //! find an editor on the system and edit the given file
-  Standard_EXPORT Standard_Boolean Edit();
+  Standard_EXPORT bool Edit();
 
   //! Set file pointer position to the beginning of the file
   Standard_EXPORT void Rewind();
 
 protected:
 #ifdef _WIN32
-  Standard_Address myFileHandle;
+  void* myFileHandle;
 #else
-  Standard_Integer myFileChannel;
-  Standard_Address myFILE;
+  int   myFileChannel;
+  void* myFILE;
 #endif
-  Standard_Integer myIO;
+  int myIO;
 
 private:
-  OSD_LockType     myLock;
-  OSD_OpenMode     myMode;
-  Standard_Boolean ImperativeFlag;
+  OSD_LockType myLock;
+  OSD_OpenMode myMode;
+  bool         ImperativeFlag;
 };
 
 #endif // _OSD_File_HeaderFile

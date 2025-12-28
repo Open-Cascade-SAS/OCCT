@@ -21,15 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_TopologicalRepresentationItem.hxx>
-#include <StepShape_HArray1OfOrientedEdge.hxx>
+#include <StepShape_OrientedEdge.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 class StepShape_Loop;
 class StepShape_Path;
 class TCollection_HAsciiString;
 class StepShape_OrientedEdge;
-
-class StepShape_LoopAndPath;
-DEFINE_STANDARD_HANDLE(StepShape_LoopAndPath, StepShape_TopologicalRepresentationItem)
 
 class StepShape_LoopAndPath : public StepShape_TopologicalRepresentationItem
 {
@@ -38,35 +37,37 @@ public:
   //! Returns a LoopAndPath
   Standard_EXPORT StepShape_LoopAndPath();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepShape_Loop)&           aLoop,
-                            const Handle(StepShape_Path)&           aPath);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepShape_Loop>&           aLoop,
+                            const occ::handle<StepShape_Path>&           aPath);
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        aName,
-                            const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                                 aName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList);
 
-  Standard_EXPORT void SetLoop(const Handle(StepShape_Loop)& aLoop);
+  Standard_EXPORT void SetLoop(const occ::handle<StepShape_Loop>& aLoop);
 
-  Standard_EXPORT Handle(StepShape_Loop) Loop() const;
+  Standard_EXPORT occ::handle<StepShape_Loop> Loop() const;
 
-  Standard_EXPORT void SetPath(const Handle(StepShape_Path)& aPath);
+  Standard_EXPORT void SetPath(const occ::handle<StepShape_Path>& aPath);
 
-  Standard_EXPORT Handle(StepShape_Path) Path() const;
+  Standard_EXPORT occ::handle<StepShape_Path> Path() const;
 
-  Standard_EXPORT void SetEdgeList(const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
+  Standard_EXPORT void SetEdgeList(
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList);
 
-  Standard_EXPORT Handle(StepShape_HArray1OfOrientedEdge) EdgeList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> EdgeList()
+    const;
 
-  Standard_EXPORT Handle(StepShape_OrientedEdge) EdgeListValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepShape_OrientedEdge> EdgeListValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbEdgeList() const;
+  Standard_EXPORT int NbEdgeList() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_LoopAndPath, StepShape_TopologicalRepresentationItem)
 
-protected:
 private:
-  Handle(StepShape_Loop) loop;
-  Handle(StepShape_Path) path;
+  occ::handle<StepShape_Loop> loop;
+  occ::handle<StepShape_Path> path;
 };
 
 #endif // _StepShape_LoopAndPath_HeaderFile

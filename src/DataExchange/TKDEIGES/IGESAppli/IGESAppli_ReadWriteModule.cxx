@@ -54,7 +54,7 @@
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_ReadWriteModule, IGESData_ReadWriteModule)
@@ -64,8 +64,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_ReadWriteModule, IGESData_ReadWriteModule)
 //  the method TypeNumber from this Protocol
 IGESAppli_ReadWriteModule::IGESAppli_ReadWriteModule() {}
 
-Standard_Integer IGESAppli_ReadWriteModule::CaseIGES(const Standard_Integer typenum,
-                                                     const Standard_Integer formnum) const
+int IGESAppli_ReadWriteModule::CaseIGES(const int typenum, const int formnum) const
 {
   switch (typenum)
   {
@@ -127,10 +126,10 @@ Standard_Integer IGESAppli_ReadWriteModule::CaseIGES(const Standard_Integer type
   return 0;
 }
 
-void IGESAppli_ReadWriteModule::ReadOwnParams(const Standard_Integer                 CN,
-                                              const Handle(IGESData_IGESEntity)&     ent,
-                                              const Handle(IGESData_IGESReaderData)& IR,
-                                              IGESData_ParamReader&                  PR) const
+void IGESAppli_ReadWriteModule::ReadOwnParams(const int                                   CN,
+                                              const occ::handle<IGESData_IGESEntity>&     ent,
+                                              const occ::handle<IGESData_IGESReaderData>& IR,
+                                              IGESData_ParamReader&                       PR) const
 {
   switch (CN)
   {
@@ -291,9 +290,9 @@ void IGESAppli_ReadWriteModule::ReadOwnParams(const Standard_Integer            
   }
 }
 
-void IGESAppli_ReadWriteModule::WriteOwnParams(const Standard_Integer             CN,
-                                               const Handle(IGESData_IGESEntity)& ent,
-                                               IGESData_IGESWriter&               IW) const
+void IGESAppli_ReadWriteModule::WriteOwnParams(const int                               CN,
+                                               const occ::handle<IGESData_IGESEntity>& ent,
+                                               IGESData_IGESWriter&                    IW) const
 {
   switch (CN)
   {

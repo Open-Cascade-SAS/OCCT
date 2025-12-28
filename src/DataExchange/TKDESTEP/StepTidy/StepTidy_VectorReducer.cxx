@@ -19,7 +19,7 @@
 
 //==================================================================================================
 
-StepTidy_VectorReducer::StepTidy_VectorReducer(const Handle(XSControl_WorkSession)& theWS)
+StepTidy_VectorReducer::StepTidy_VectorReducer(const occ::handle<XSControl_WorkSession>& theWS)
     : StepTidy_EntityReducer<StepGeom_Vector, StepTidy_VectorHasher>(theWS)
 {
   registerReplacer(STANDARD_TYPE(StepGeom_Line), replaceLine);
@@ -27,11 +27,11 @@ StepTidy_VectorReducer::StepTidy_VectorReducer(const Handle(XSControl_WorkSessio
 
 //==================================================================================================
 
-bool StepTidy_VectorReducer::replaceLine(const Handle(StepGeom_Vector)& theOldEntity,
-                                         const Handle(StepGeom_Vector)& theNewEntity,
-                                         Handle(Standard_Transient)     theSharing)
+bool StepTidy_VectorReducer::replaceLine(const occ::handle<StepGeom_Vector>& theOldEntity,
+                                         const occ::handle<StepGeom_Vector>& theNewEntity,
+                                         occ::handle<Standard_Transient>     theSharing)
 {
-  Handle(StepGeom_Line) aLine = Handle(StepGeom_Line)::DownCast(theSharing);
+  occ::handle<StepGeom_Line> aLine = occ::down_cast<StepGeom_Line>(theSharing);
   if (aLine->Dir() == theOldEntity)
   {
     aLine->SetDir(theNewEntity);

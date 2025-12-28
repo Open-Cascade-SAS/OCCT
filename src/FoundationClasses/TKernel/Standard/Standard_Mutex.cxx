@@ -62,7 +62,7 @@ void Standard_Mutex::Lock()
 // Standard_Mutex::TryLock
 //=============================================
 
-Standard_Boolean Standard_Mutex::TryLock()
+bool Standard_Mutex::TryLock()
 {
 #if (defined(_WIN32) || defined(__WIN32__))
   return (TryEnterCriticalSection(&myMutex) != 0);

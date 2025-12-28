@@ -26,13 +26,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_TransformationMatrix, IGESData_TransfEntity)
 
 IGESGeom_TransformationMatrix::IGESGeom_TransformationMatrix() {}
 
-void IGESGeom_TransformationMatrix::Init(const Handle(TColStd_HArray2OfReal)& aMatrix)
+void IGESGeom_TransformationMatrix::Init(const occ::handle<NCollection_HArray2<double>>& aMatrix)
 {
   if (aMatrix.IsNull())
   {
-    theData = new TColStd_HArray2OfReal(1, 3, 1, 4);
+    theData = new NCollection_HArray2<double>(1, 3, 1, 4);
     theData->Init(0.0);
-    Standard_Integer i = 1;
+    int i = 1;
     for (; i <= 3; i++)
       theData->SetValue(i, i, 1.0);
   }
@@ -47,7 +47,7 @@ void IGESGeom_TransformationMatrix::Init(const Handle(TColStd_HArray2OfReal)& aM
   InitTypeAndForm(124, FormNumber());
 }
 
-void IGESGeom_TransformationMatrix::SetFormNumber(const Standard_Integer fm)
+void IGESGeom_TransformationMatrix::SetFormNumber(const int fm)
 {
   if (theData.IsNull())
     std::cout << "Inavalid Transformation Data" << std::endl;
@@ -56,8 +56,7 @@ void IGESGeom_TransformationMatrix::SetFormNumber(const Standard_Integer fm)
   InitTypeAndForm(124, fm);
 }
 
-Standard_Real IGESGeom_TransformationMatrix::Data(const Standard_Integer I,
-                                                  const Standard_Integer J) const
+double IGESGeom_TransformationMatrix::Data(const int I, const int J) const
 {
   return theData->Value(I, J);
 }
@@ -67,9 +66,9 @@ gp_GTrsf IGESGeom_TransformationMatrix::Value() const
   gp_GTrsf Matrix;
   if (!theData.IsNull())
   {
-    for (Standard_Integer I = 1; I <= 3; I++)
+    for (int I = 1; I <= 3; I++)
     {
-      for (Standard_Integer J = 1; J <= 4; J++)
+      for (int J = 1; J <= 4; J++)
       {
         Matrix.SetValue(I, J, theData->Value(I, J));
       }

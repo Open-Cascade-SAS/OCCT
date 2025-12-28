@@ -32,10 +32,10 @@ RWStepBasic_RWProductDefinitionFormationRelationship::
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionFormationRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&                          data,
-  const Standard_Integer                                          num,
-  Handle(Interface_Check)&                                        ach,
-  const Handle(StepBasic_ProductDefinitionFormationRelationship)& ent) const
+  const occ::handle<StepData_StepReaderData>&                          data,
+  const int                                                            num,
+  occ::handle<Interface_Check>&                                        ach,
+  const occ::handle<StepBasic_ProductDefinitionFormationRelationship>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "product_definition_formation_relationship"))
@@ -43,16 +43,16 @@ void RWStepBasic_RWProductDefinitionFormationRelationship::ReadStep(
 
   // Own fields of ProductDefinitionFormationRelationship
 
-  Handle(TCollection_HAsciiString) aId;
+  occ::handle<TCollection_HAsciiString> aId;
   data->ReadString(num, 1, "id", ach, aId);
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 2, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 3, "description", ach, aDescription);
 
-  Handle(StepBasic_ProductDefinitionFormation) aRelatingProductDefinitionFormation;
+  occ::handle<StepBasic_ProductDefinitionFormation> aRelatingProductDefinitionFormation;
   data->ReadEntity(num,
                    4,
                    "relating_product_definition_formation",
@@ -60,7 +60,7 @@ void RWStepBasic_RWProductDefinitionFormationRelationship::ReadStep(
                    STANDARD_TYPE(StepBasic_ProductDefinitionFormation),
                    aRelatingProductDefinitionFormation);
 
-  Handle(StepBasic_ProductDefinitionFormation) aRelatedProductDefinitionFormation;
+  occ::handle<StepBasic_ProductDefinitionFormation> aRelatedProductDefinitionFormation;
   data->ReadEntity(num,
                    5,
                    "related_product_definition_formation",
@@ -79,8 +79,8 @@ void RWStepBasic_RWProductDefinitionFormationRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionFormationRelationship::WriteStep(
-  StepData_StepWriter&                                            SW,
-  const Handle(StepBasic_ProductDefinitionFormationRelationship)& ent) const
+  StepData_StepWriter&                                                 SW,
+  const occ::handle<StepBasic_ProductDefinitionFormationRelationship>& ent) const
 {
 
   // Own fields of ProductDefinitionFormationRelationship
@@ -99,8 +99,8 @@ void RWStepBasic_RWProductDefinitionFormationRelationship::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionFormationRelationship::Share(
-  const Handle(StepBasic_ProductDefinitionFormationRelationship)& ent,
-  Interface_EntityIterator&                                       iter) const
+  const occ::handle<StepBasic_ProductDefinitionFormationRelationship>& ent,
+  Interface_EntityIterator&                                            iter) const
 {
 
   // Own fields of ProductDefinitionFormationRelationship

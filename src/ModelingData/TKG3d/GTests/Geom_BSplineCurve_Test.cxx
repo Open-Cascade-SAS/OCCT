@@ -12,10 +12,9 @@
 // commercial license or contractual agreement.
 
 #include <Geom_BSplineCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
 
@@ -25,30 +24,30 @@ protected:
   void SetUp() override
   {
     // Create a simple BSpline curve for testing
-    TColgp_Array1OfPnt aPoles(1, 4);
+    NCollection_Array1<gp_Pnt> aPoles(1, 4);
     aPoles(1) = gp_Pnt(0, 0, 0);
     aPoles(2) = gp_Pnt(1, 1, 0);
     aPoles(3) = gp_Pnt(2, 1, 0);
     aPoles(4) = gp_Pnt(3, 0, 0);
 
-    TColStd_Array1OfReal aKnots(1, 2);
+    NCollection_Array1<double> aKnots(1, 2);
     aKnots(1) = 0.0;
     aKnots(2) = 1.0;
 
-    TColStd_Array1OfInteger aMults(1, 2);
+    NCollection_Array1<int> aMults(1, 2);
     aMults(1) = 4;
     aMults(2) = 4;
 
     myOriginalCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   }
 
-  Handle(Geom_BSplineCurve) myOriginalCurve;
+  occ::handle<Geom_BSplineCurve> myOriginalCurve;
 };
 
 TEST_F(Geom_BSplineCurve_Test, CopyConstructorBasicProperties)
 {
   // Test copy constructor
-  Handle(Geom_BSplineCurve) aCopiedCurve = new Geom_BSplineCurve(*myOriginalCurve);
+  occ::handle<Geom_BSplineCurve> aCopiedCurve = new Geom_BSplineCurve(*myOriginalCurve);
 
   // Verify basic properties are identical
   EXPECT_EQ(myOriginalCurve->Degree(), aCopiedCurve->Degree());
@@ -60,10 +59,10 @@ TEST_F(Geom_BSplineCurve_Test, CopyConstructorBasicProperties)
 
 TEST_F(Geom_BSplineCurve_Test, CopyConstructorPoles)
 {
-  Handle(Geom_BSplineCurve) aCopiedCurve = new Geom_BSplineCurve(*myOriginalCurve);
+  occ::handle<Geom_BSplineCurve> aCopiedCurve = new Geom_BSplineCurve(*myOriginalCurve);
 
   // Verify all poles are identical
-  for (Standard_Integer i = 1; i <= myOriginalCurve->NbPoles(); ++i)
+  for (int i = 1; i <= myOriginalCurve->NbPoles(); ++i)
   {
     gp_Pnt anOrigPole = myOriginalCurve->Pole(i);
     gp_Pnt aCopyPole  = aCopiedCurve->Pole(i);
@@ -73,10 +72,10 @@ TEST_F(Geom_BSplineCurve_Test, CopyConstructorPoles)
 
 TEST_F(Geom_BSplineCurve_Test, CopyConstructorKnots)
 {
-  Handle(Geom_BSplineCurve) aCopiedCurve = new Geom_BSplineCurve(*myOriginalCurve);
+  occ::handle<Geom_BSplineCurve> aCopiedCurve = new Geom_BSplineCurve(*myOriginalCurve);
 
   // Verify all knots are identical
-  for (Standard_Integer i = 1; i <= myOriginalCurve->NbKnots(); ++i)
+  for (int i = 1; i <= myOriginalCurve->NbKnots(); ++i)
   {
     EXPECT_DOUBLE_EQ(myOriginalCurve->Knot(i), aCopiedCurve->Knot(i));
     EXPECT_EQ(myOriginalCurve->Multiplicity(i), aCopiedCurve->Multiplicity(i));
@@ -86,8 +85,8 @@ TEST_F(Geom_BSplineCurve_Test, CopyConstructorKnots)
 TEST_F(Geom_BSplineCurve_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  Handle(Geom_Geometry)     aCopiedGeom  = myOriginalCurve->Copy();
-  Handle(Geom_BSplineCurve) aCopiedCurve = Handle(Geom_BSplineCurve)::DownCast(aCopiedGeom);
+  occ::handle<Geom_Geometry>     aCopiedGeom  = myOriginalCurve->Copy();
+  occ::handle<Geom_BSplineCurve> aCopiedCurve = occ::down_cast<Geom_BSplineCurve>(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedCurve.IsNull());
 
@@ -96,7 +95,7 @@ TEST_F(Geom_BSplineCurve_Test, CopyMethodUsesOptimizedConstructor)
   EXPECT_EQ(myOriginalCurve->NbPoles(), aCopiedCurve->NbPoles());
 
   // Test evaluation at several points
-  for (Standard_Real u = 0.0; u <= 1.0; u += 0.25)
+  for (double u = 0.0; u <= 1.0; u += 0.25)
   {
     gp_Pnt anOrigPnt = myOriginalCurve->Value(u);
     gp_Pnt aCopyPnt  = aCopiedCurve->Value(u);
@@ -107,32 +106,32 @@ TEST_F(Geom_BSplineCurve_Test, CopyMethodUsesOptimizedConstructor)
 TEST_F(Geom_BSplineCurve_Test, RationalCurveCopyConstructor)
 {
   // Create a rational BSpline curve
-  TColgp_Array1OfPnt aPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 1, 0);
   aPoles(3) = gp_Pnt(2, 0, 0);
 
-  TColStd_Array1OfReal aWeights(1, 3);
+  NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
   aWeights(2) = 2.0;
   aWeights(3) = 1.0;
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 3;
   aMults(2) = 3;
 
-  Handle(Geom_BSplineCurve) aRationalCurve =
+  occ::handle<Geom_BSplineCurve> aRationalCurve =
     new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 2);
-  Handle(Geom_BSplineCurve) aCopiedRational = new Geom_BSplineCurve(*aRationalCurve);
+  occ::handle<Geom_BSplineCurve> aCopiedRational = new Geom_BSplineCurve(*aRationalCurve);
 
   EXPECT_TRUE(aCopiedRational->IsRational());
 
   // Verify weights are copied correctly
-  for (Standard_Integer i = 1; i <= aRationalCurve->NbPoles(); ++i)
+  for (int i = 1; i <= aRationalCurve->NbPoles(); ++i)
   {
     EXPECT_DOUBLE_EQ(aRationalCurve->Weight(i), aCopiedRational->Weight(i));
   }

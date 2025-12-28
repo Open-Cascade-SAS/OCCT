@@ -27,9 +27,10 @@ StepShape_AngularSize::StepShape_AngularSize() {}
 
 //=================================================================================================
 
-void StepShape_AngularSize::Init(const Handle(StepRepr_ShapeAspect)&     aDimensionalSize_AppliesTo,
-                                 const Handle(TCollection_HAsciiString)& aDimensionalSize_Name,
-                                 const StepShape_AngleRelator            aAngleSelection)
+void StepShape_AngularSize::Init(
+  const occ::handle<StepRepr_ShapeAspect>&     aDimensionalSize_AppliesTo,
+  const occ::handle<TCollection_HAsciiString>& aDimensionalSize_Name,
+  const StepShape_AngleRelator                 aAngleSelection)
 {
   StepShape_DimensionalSize::Init(aDimensionalSize_AppliesTo, aDimensionalSize_Name);
 

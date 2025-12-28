@@ -39,12 +39,12 @@ public:
 
   //! creates an AllShared which memrizes Entities shared by a given
   //! one, at any level, including itself
-  Standard_EXPORT IFGraph_AllShared(const Interface_Graph&            agraph,
-                                    const Handle(Standard_Transient)& ent);
+  Standard_EXPORT IFGraph_AllShared(const Interface_Graph&                 agraph,
+                                    const occ::handle<Standard_Transient>& ent);
 
   //! adds an entity and its shared ones to the list (allows to
   //! cumulate all Entities shared by some ones)
-  Standard_EXPORT void GetFromEntity(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent);
 
   //! Adds Entities from an EntityIterator and all their shared
   //! ones at any level
@@ -54,9 +54,8 @@ public:
   Standard_EXPORT void ResetData();
 
   //! does the specific evaluation (shared entities atall levels)
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 
-protected:
 private:
   Interface_Graph thegraph;
 };

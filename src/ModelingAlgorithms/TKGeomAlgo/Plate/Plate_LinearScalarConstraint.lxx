@@ -14,15 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TColgp_HArray2OfXYZ.hxx>
-#include <Plate_HArray1OfPinpointConstraint.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
-inline const Plate_Array1OfPinpointConstraint& Plate_LinearScalarConstraint::GetPPC() const
+inline const NCollection_Array1<Plate_PinpointConstraint>& Plate_LinearScalarConstraint::GetPPC()
+  const
 {
   return myPPC->Array1();
 }
 
-inline const TColgp_Array2OfXYZ& Plate_LinearScalarConstraint::Coeff() const
+inline const NCollection_Array2<gp_XYZ>& Plate_LinearScalarConstraint::Coeff() const
 {
   return myCoef->Array2();
 }

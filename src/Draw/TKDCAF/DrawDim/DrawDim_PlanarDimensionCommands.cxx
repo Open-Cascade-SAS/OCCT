@@ -32,16 +32,16 @@
 #include <BRep_Builder.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Circ.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <TopExp_Explorer.hxx>
 #include <gp_Pln.hxx>
 #include <DrawTrSurf.hxx>
 
 //=================================================================================================
 
-static Standard_Integer DrawDim_DISTANCE(Draw_Interpretor& di,
-                                         Standard_Integer  nb,
-                                         const char**      arg)
+static int DrawDim_DISTANCE(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 1)
   {
@@ -51,7 +51,7 @@ static Standard_Integer DrawDim_DISTANCE(Draw_Interpretor& di,
   }
   else
   {
-    Handle(DrawDim_PlanarDistance) DIST;
+    occ::handle<DrawDim_PlanarDistance> DIST;
     if (nb == 5)
     {
       TopoDS_Shape aLocalShape = DBRep::Get(arg[2], TopAbs_FACE);
@@ -87,7 +87,7 @@ static Standard_Integer DrawDim_DISTANCE(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer DrawDim_ANGLE(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int DrawDim_ANGLE(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 1)
   {
@@ -95,7 +95,7 @@ static Standard_Integer DrawDim_ANGLE(Draw_Interpretor& di, Standard_Integer nb,
   }
   else
   {
-    Handle(DrawDim_PlanarAngle) DIST;
+    occ::handle<DrawDim_PlanarAngle> DIST;
     if (nb == 5)
     {
       TopoDS_Shape aLocalShape = DBRep::Get(arg[2], TopAbs_FACE);
@@ -124,7 +124,7 @@ static Standard_Integer DrawDim_ANGLE(Draw_Interpretor& di, Standard_Integer nb,
 
 //=================================================================================================
 
-static Standard_Integer DrawDim_RADIUS(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int DrawDim_RADIUS(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 1)
   {
@@ -132,7 +132,7 @@ static Standard_Integer DrawDim_RADIUS(Draw_Interpretor& di, Standard_Integer nb
   }
   else
   {
-    Handle(DrawDim_PlanarRadius) DIST;
+    occ::handle<DrawDim_PlanarRadius> DIST;
     if (nb == 4)
     {
       TopoDS_Shape aLocalShape = DBRep::Get(arg[2], TopAbs_FACE);
@@ -158,18 +158,18 @@ static Standard_Integer DrawDim_RADIUS(Draw_Interpretor& di, Standard_Integer nb
 
 //=================================================================================================
 
-static Standard_Integer DrawDim_CENTER(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int DrawDim_CENTER(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3)
   {
     TopoDS_Shape aLocalShape = DBRep::Get(arg[2], TopAbs_EDGE);
     TopoDS_Edge  edge        = TopoDS::Edge(aLocalShape);
     //    TopoDS_Edge edge = TopoDS::Edge(DBRep::Get(arg[2],TopAbs_EDGE));
-    Standard_Real      f, l;
-    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, f, l);
+    double                  f, l;
+    occ::handle<Geom_Curve> curve = BRep_Tool::Curve(edge, f, l);
     if (curve->IsKind(STANDARD_TYPE(Geom_Circle)))
     {
-      gp_Circ circle = Handle(Geom_Circle)::DownCast(curve)->Circ();
+      gp_Circ circle = occ::down_cast<Geom_Circle>(curve)->Circ();
       gp_Pnt  center = circle.Location();
       //: abv: avoid dependence on TKTopAlgo
       TopoDS_Vertex vc;
@@ -186,7 +186,7 @@ static Standard_Integer DrawDim_CENTER(Draw_Interpretor& di, Standard_Integer nb
 
 //=================================================================================================
 
-static Standard_Integer DrawDim_VARIABLES(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DrawDim_VARIABLES(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
     return 1;
@@ -196,9 +196,9 @@ static Standard_Integer DrawDim_VARIABLES(Draw_Interpretor& di, Standard_Integer
   if (F.IsNull())
     return 0;
 
-  Standard_Integer    i = 0;
-  TopoDS_Vertex       vf, vl;
-  TopTools_MapOfShape M;
+  int                                                    i = 0;
+  TopoDS_Vertex                                          vf, vl;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
   M.Add(F);
   TopExp_Explorer ex(F, TopAbs_EDGE);
   while (ex.More())
@@ -238,7 +238,7 @@ static Standard_Integer DrawDim_VARIABLES(Draw_Interpretor& di, Standard_Integer
 
 //=================================================================================================
 
-static Standard_Integer DrawDim_SPLACEMENT(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DrawDim_SPLACEMENT(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 4)
   {
@@ -270,15 +270,15 @@ static Standard_Integer DrawDim_SPLACEMENT(Draw_Interpretor& di, Standard_Intege
 
 //=================================================================================================
 
-static Standard_Integer DrawDim_GPLACEMENT(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DrawDim_GPLACEMENT(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 4)
   {
-    Handle(Geom_Geometry) geom        = DrawTrSurf::Get(a[1]);
-    TopoDS_Shape          aLocalShape = DBRep::Get(a[2], TopAbs_FACE);
-    TopoDS_Face           from        = TopoDS::Face(aLocalShape);
-    aLocalShape                       = DBRep::Get(a[3], TopAbs_FACE);
-    TopoDS_Face to                    = TopoDS::Face(aLocalShape);
+    occ::handle<Geom_Geometry> geom        = DrawTrSurf::Get(a[1]);
+    TopoDS_Shape               aLocalShape = DBRep::Get(a[2], TopAbs_FACE);
+    TopoDS_Face                from        = TopoDS::Face(aLocalShape);
+    aLocalShape                            = DBRep::Get(a[3], TopAbs_FACE);
+    TopoDS_Face to                         = TopoDS::Face(aLocalShape);
     //    TopoDS_Face from = TopoDS::Face(DBRep::Get(a[2],TopAbs_FACE));
     //    TopoDS_Face to = TopoDS::Face(DBRep::Get(a[3],TopAbs_FACE));
     if (!geom.IsNull() && !from.IsNull() && !to.IsNull())
@@ -290,7 +290,7 @@ static Standard_Integer DrawDim_GPLACEMENT(Draw_Interpretor& di, Standard_Intege
       gp_Ax3  axto(pto.Position());
       gp_Trsf trsf;
       trsf.SetDisplacement(axfrom, axto);
-      Handle(Geom_Geometry) newgeom = geom->Transformed(trsf);
+      occ::handle<Geom_Geometry> newgeom = geom->Transformed(trsf);
       DrawTrSurf::Set(a[1], newgeom);
       return 0;
     }

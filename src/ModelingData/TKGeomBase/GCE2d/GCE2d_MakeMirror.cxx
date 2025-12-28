@@ -61,7 +61,7 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point, const gp_Dir2d& Direc)
   TheMirror->SetMirror(gp_Ax2d(Point, Direc));
 }
 
-const Handle(Geom2d_Transformation)& GCE2d_MakeMirror::Value() const
+const occ::handle<Geom2d_Transformation>& GCE2d_MakeMirror::Value() const
 {
   return TheMirror;
 }

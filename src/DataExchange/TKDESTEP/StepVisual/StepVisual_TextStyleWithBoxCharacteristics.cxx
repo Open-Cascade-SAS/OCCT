@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyleWithBoxCharacteristics, StepVisua
 StepVisual_TextStyleWithBoxCharacteristics::StepVisual_TextStyleWithBoxCharacteristics() {}
 
 void StepVisual_TextStyleWithBoxCharacteristics::Init(
-  const Handle(TCollection_HAsciiString)&                    aName,
-  const Handle(StepVisual_TextStyleForDefinedFont)&          aCharacterAppearance,
-  const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics)
+  const occ::handle<TCollection_HAsciiString>&                                aName,
+  const occ::handle<StepVisual_TextStyleForDefinedFont>&                      aCharacterAppearance,
+  const occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>& aCharacteristics)
 {
   // --- classe own fields ---
   characteristics = aCharacteristics;
@@ -31,24 +31,24 @@ void StepVisual_TextStyleWithBoxCharacteristics::Init(
 }
 
 void StepVisual_TextStyleWithBoxCharacteristics::SetCharacteristics(
-  const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics)
+  const occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>& aCharacteristics)
 {
   characteristics = aCharacteristics;
 }
 
-Handle(StepVisual_HArray1OfBoxCharacteristicSelect) StepVisual_TextStyleWithBoxCharacteristics::
-  Characteristics() const
+occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>
+  StepVisual_TextStyleWithBoxCharacteristics::Characteristics() const
 {
   return characteristics;
 }
 
 StepVisual_BoxCharacteristicSelect StepVisual_TextStyleWithBoxCharacteristics::CharacteristicsValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return characteristics->Value(num);
 }
 
-Standard_Integer StepVisual_TextStyleWithBoxCharacteristics::NbCharacteristics() const
+int StepVisual_TextStyleWithBoxCharacteristics::NbCharacteristics() const
 {
   return characteristics->Length();
 }

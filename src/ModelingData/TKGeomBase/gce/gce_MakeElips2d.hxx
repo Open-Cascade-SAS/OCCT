@@ -48,10 +48,10 @@ public:
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
   //! the status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.0
-  Standard_EXPORT gce_MakeElips2d(const gp_Ax2d&         MajorAxis,
-                                  const Standard_Real    MajorRadius,
-                                  const Standard_Real    MinorRadius,
-                                  const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT gce_MakeElips2d(const gp_Ax2d& MajorAxis,
+                                  const double   MajorRadius,
+                                  const double   MinorRadius,
+                                  const bool     Sense = true);
 
   //! Axis defines the Xaxis and Yaxis of the ellipse which defines
   //! the origin and the sense of parametrization.
@@ -61,9 +61,9 @@ public:
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
   //! the status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.0
-  Standard_EXPORT gce_MakeElips2d(const gp_Ax22d&     A,
-                                  const Standard_Real MajorRadius,
-                                  const Standard_Real MinorRadius);
+  Standard_EXPORT gce_MakeElips2d(const gp_Ax22d& A,
+                                  const double    MajorRadius,
+                                  const double    MinorRadius);
 
   //! Makes an Elips2d with its center and two points.
   //! The sense of parametrization is given by S1, S2,
@@ -94,7 +94,6 @@ public:
   Standard_EXPORT const gp_Elips2d& Operator() const;
   Standard_EXPORT                   operator gp_Elips2d() const;
 
-protected:
 private:
   gp_Elips2d TheElips2d;
 };

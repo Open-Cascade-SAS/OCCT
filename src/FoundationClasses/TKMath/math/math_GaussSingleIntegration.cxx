@@ -21,9 +21,7 @@ Les points et poids de Gauss sont stockes dans GaussPoints.cxx.
 Les points sont compris entre les valeurs -1 et +1, ce qui necessite un
 changement de variable pour les faire varier dans l'intervalle [Lower, Upper].
 
-
 On veut calculer Integrale( f(u)* du) entre a et b.
-
 
 Etapes du calcul:
 
@@ -50,31 +48,31 @@ Etapes du calcul:
 #include <math_Vector.hxx>
 
 math_GaussSingleIntegration::math_GaussSingleIntegration()
-    : Done(Standard_False)
+    : Done(false)
 {
 }
 
-math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function&         F,
-                                                         const Standard_Real    Lower,
-                                                         const Standard_Real    Upper,
-                                                         const Standard_Integer Order)
+math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function& F,
+                                                         const double   Lower,
+                                                         const double   Upper,
+                                                         const int      Order)
 {
-  Standard_Integer theOrder = std::min(math::GaussPointsMax(), Order);
+  int theOrder = std::min(math::GaussPointsMax(), Order);
   Perform(F, Lower, Upper, theOrder);
 }
 
-math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function&         F,
-                                                         const Standard_Real    Lower,
-                                                         const Standard_Real    Upper,
-                                                         const Standard_Integer Order,
-                                                         const Standard_Real    Tol)
+math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function& F,
+                                                         const double   Lower,
+                                                         const double   Upper,
+                                                         const int      Order,
+                                                         const double   Tol)
 {
-  Standard_Integer theOrder = std::min(math::GaussPointsMax(), Order);
+  int theOrder = std::min(math::GaussPointsMax(), Order);
 
-  const Standard_Integer IterMax    = 13; // Max number of iteration
-  Standard_Integer       NIter      = 1;  // current number of iteration
-  Standard_Integer       NbInterval = 1;  // current number of subintervals
-  Standard_Real          dU, OldLen, Len;
+  const int IterMax    = 13; // Max number of iteration
+  int       NIter      = 1;  // current number of iteration
+  int       NbInterval = 1;  // current number of subintervals
+  double    dU, OldLen, Len;
 
   Perform(F, Lower, Upper, theOrder);
   Len = Val;
@@ -84,7 +82,7 @@ math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function&         
     Len    = 0.;
     NbInterval *= 2;
     dU = (Upper - Lower) / NbInterval;
-    for (Standard_Integer i = 1; i <= NbInterval; i++)
+    for (int i = 1; i <= NbInterval; i++)
     {
       Perform(F, Lower + (i - 1) * dU, Lower + i * dU, theOrder);
       if (!Done)
@@ -97,18 +95,18 @@ math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function&         
   Val = Len;
 }
 
-void math_GaussSingleIntegration::Perform(math_Function&         F,
-                                          const Standard_Real    Lower,
-                                          const Standard_Real    Upper,
-                                          const Standard_Integer Order)
+void math_GaussSingleIntegration::Perform(math_Function& F,
+                                          const double   Lower,
+                                          const double   Upper,
+                                          const int      Order)
 {
-  Standard_Real    xr, xm, dx;
-  Standard_Integer j;
-  Standard_Real    F1, F2;
-  Standard_Boolean Ok1;
-  math_Vector      GaussP(1, Order);
-  math_Vector      GaussW(1, Order);
-  Done = Standard_False;
+  double      xr, xm, dx;
+  int         j;
+  double      F1, F2;
+  bool        Ok1;
+  math_Vector GaussP(1, Order);
+  math_Vector GaussW(1, Order);
+  Done = false;
 
   // Recuperation des points de Gauss dans le fichier GaussPoints.
   math::GaussPoints(Order, GaussP);
@@ -121,7 +119,7 @@ void math_GaussSingleIntegration::Perform(math_Function&         F,
   xr  = 0.5 * (Upper - Lower);
   Val = 0.;
 
-  Standard_Integer ind = Order / 2, ind1 = (Order + 1) / 2;
+  int ind = Order / 2, ind1 = (Order + 1) / 2;
   if (ind1 > ind)
   { // odder case
     Ok1 = F.Value(xm, Val);
@@ -140,12 +138,12 @@ void math_GaussSingleIntegration::Perform(math_Function&         F,
     if (!Ok1)
       return;
     // Multiplication par les poids de Gauss.
-    Standard_Real FT = F1 + F2;
+    double FT = F1 + F2;
     Val += GaussW(j) * FT;
   }
   // Mise a l'echelle de l'intervalle [Lower, Upper]
   Val *= xr;
-  Done = Standard_True;
+  Done = true;
 }
 
 void math_GaussSingleIntegration::Dump(Standard_OStream& o) const

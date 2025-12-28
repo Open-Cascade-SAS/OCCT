@@ -101,7 +101,7 @@ public:
   {
   }
 
-  explicit NCollection_Array1(const Standard_Integer theLower, const Standard_Integer theUpper)
+  explicit NCollection_Array1(const int theLower, const int theUpper)
       : myLowerBound(theLower),
         mySize(theUpper - theLower + 1)
   {
@@ -114,9 +114,9 @@ public:
     construct(0, mySize);
   }
 
-  explicit NCollection_Array1(const allocator_type&  theAlloc,
-                              const Standard_Integer theLower,
-                              const Standard_Integer theUpper)
+  explicit NCollection_Array1(const allocator_type& theAlloc,
+                              const int             theLower,
+                              const int             theUpper)
       : myLowerBound(theLower),
         mySize(theUpper - theLower + 1),
         myPointer(nullptr),
@@ -132,10 +132,10 @@ public:
     construct(0, mySize);
   }
 
-  explicit NCollection_Array1(const_reference        theBegin,
-                              const Standard_Integer theLower,
-                              const Standard_Integer theUpper,
-                              const bool             theUseBuffer = true)
+  explicit NCollection_Array1(const_reference theBegin,
+                              const int       theLower,
+                              const int       theUpper,
+                              const bool      theUseBuffer = true)
       : myLowerBound(theLower),
         mySize(theUpper - theLower + 1),
         myPointer(theUseBuffer ? const_cast<pointer>(&theBegin) : nullptr),
@@ -197,19 +197,19 @@ public:
   }
 
   //! Size query
-  Standard_Integer Size() const noexcept { return Length(); }
+  int Size() const noexcept { return Length(); }
 
   //! Length query (the same)
-  Standard_Integer Length() const noexcept { return static_cast<Standard_Integer>(mySize); }
+  int Length() const noexcept { return static_cast<int>(mySize); }
 
   //! Return TRUE if array has zero length.
-  Standard_Boolean IsEmpty() const noexcept { return mySize == 0; }
+  bool IsEmpty() const noexcept { return mySize == 0; }
 
   //! Lower bound
-  Standard_Integer Lower() const noexcept { return myLowerBound; }
+  int Lower() const noexcept { return myLowerBound; }
 
   //! Upper bound
-  Standard_Integer Upper() const noexcept { return myLowerBound + static_cast<int>(mySize) - 1; }
+  int Upper() const noexcept { return myLowerBound + static_cast<int>(mySize) - 1; }
 
   //! Copies data of theOther array to this.
   //! This array should be pre-allocated and have the same length as theOther;
@@ -282,7 +282,7 @@ public:
   reference ChangeLast() noexcept { return myPointer[mySize - 1]; }
 
   //! Constant value access
-  const_reference Value(const Standard_Integer theIndex) const
+  const_reference Value(const int theIndex) const
   {
     const size_t aPos = theIndex - myLowerBound;
     Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::Value");
@@ -290,13 +290,13 @@ public:
   }
 
   //! operator() - alias to Value
-  const_reference operator()(const Standard_Integer theIndex) const { return Value(theIndex); }
+  const_reference operator()(const int theIndex) const { return Value(theIndex); }
 
   //! operator[] - alias to Value
-  const_reference operator[](const Standard_Integer theIndex) const { return Value(theIndex); }
+  const_reference operator[](const int theIndex) const { return Value(theIndex); }
 
   //! Variable value access
-  reference ChangeValue(const Standard_Integer theIndex)
+  reference ChangeValue(const int theIndex)
   {
     const size_t aPos = theIndex - myLowerBound;
     Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::ChangeValue");
@@ -304,13 +304,13 @@ public:
   }
 
   //! operator() - alias to ChangeValue
-  reference operator()(const Standard_Integer theIndex) { return ChangeValue(theIndex); }
+  reference operator()(const int theIndex) { return ChangeValue(theIndex); }
 
   //! operator[] - alias to ChangeValue
-  reference operator[](const Standard_Integer theIndex) { return ChangeValue(theIndex); }
+  reference operator[](const int theIndex) { return ChangeValue(theIndex); }
 
   //! Set value
-  void SetValue(const Standard_Integer theIndex, const value_type& theItem)
+  void SetValue(const int theIndex, const value_type& theItem)
   {
     const size_t aPos = theIndex - myLowerBound;
     Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::SetValue");
@@ -318,7 +318,7 @@ public:
   }
 
   //! Set value
-  void SetValue(const Standard_Integer theIndex, value_type&& theItem)
+  void SetValue(const int theIndex, value_type&& theItem)
   {
     const size_t aPos = theIndex - myLowerBound;
     Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::SetValue");
@@ -326,10 +326,10 @@ public:
   }
 
   //! Changes the lowest bound. Do not move data
-  void UpdateLowerBound(const Standard_Integer theLower) noexcept { myLowerBound = theLower; }
+  void UpdateLowerBound(const int theLower) noexcept { myLowerBound = theLower; }
 
   //! Changes the upper bound. Do not move data
-  void UpdateUpperBound(const Standard_Integer theUpper) noexcept
+  void UpdateUpperBound(const int theUpper) noexcept
   {
     myLowerBound = myLowerBound - Upper() + theUpper;
   }
@@ -340,9 +340,7 @@ public:
   //! @param theLower new lower bound of array
   //! @param theUpper new upper bound of array
   //! @param theToCopyData flag to copy existing data into new array
-  void Resize(const Standard_Integer theLower,
-              const Standard_Integer theUpper,
-              const Standard_Boolean theToCopyData)
+  void Resize(const int theLower, const int theUpper, const bool theToCopyData)
   {
     Standard_RangeError_Raise_if(theUpper < theLower, "NCollection_Array1::Resize");
     const size_t aNewSize     = static_cast<size_t>(theUpper - theLower + 1);
@@ -453,11 +451,11 @@ protected:
   }
 
   // ---------- PROTECTED FIELDS -----------
-  Standard_Integer myLowerBound;
-  size_t           mySize;
-  pointer          myPointer = nullptr;
-  bool             myIsOwner = false;
-  allocator_type   myAllocator;
+  int            myLowerBound;
+  size_t         mySize;
+  pointer        myPointer = nullptr;
+  bool           myIsOwner = false;
+  allocator_type myAllocator;
 };
 
 #endif

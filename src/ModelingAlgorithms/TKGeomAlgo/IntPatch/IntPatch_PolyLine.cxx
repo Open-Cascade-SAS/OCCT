@@ -28,21 +28,21 @@
 
 IntPatch_PolyLine::IntPatch_PolyLine()
     : IntPatch_Polygo(INITDEFLE),
-      onfirst(Standard_False)
+      onfirst(false)
 {
 }
 
 //=================================================================================================
 
-IntPatch_PolyLine::IntPatch_PolyLine(const Standard_Real InitDefle)
+IntPatch_PolyLine::IntPatch_PolyLine(const double InitDefle)
     : IntPatch_Polygo(InitDefle),
-      onfirst(Standard_False)
+      onfirst(false)
 {
 }
 
 //=================================================================================================
 
-void IntPatch_PolyLine::SetWLine(const Standard_Boolean OnFirst, const Handle(IntPatch_WLine)& Line)
+void IntPatch_PolyLine::SetWLine(const bool OnFirst, const occ::handle<IntPatch_WLine>& Line)
 {
   typ     = IntPatch_Walking;
   wpoly   = Line;
@@ -52,7 +52,7 @@ void IntPatch_PolyLine::SetWLine(const Standard_Boolean OnFirst, const Handle(In
 
 //=================================================================================================
 
-void IntPatch_PolyLine::SetRLine(const Standard_Boolean OnFirst, const Handle(IntPatch_RLine)& Line)
+void IntPatch_PolyLine::SetRLine(const bool OnFirst, const occ::handle<IntPatch_RLine>& Line)
 {
   typ     = IntPatch_Restriction;
   rpoly   = Line;
@@ -64,10 +64,10 @@ void IntPatch_PolyLine::SetRLine(const Standard_Boolean OnFirst, const Handle(In
 
 void IntPatch_PolyLine::Prepare()
 {
-  Standard_Integer i;
+  int i;
   myBox.SetVoid();
-  Standard_Integer    n     = NbPoints();
-  const Standard_Real eps_2 = myError * myError;
+  int          n     = NbPoints();
+  const double eps_2 = myError * myError;
 
   gp_Pnt2d P1, P2;
   if (n >= 3)
@@ -80,9 +80,9 @@ void IntPatch_PolyLine::Prepare()
     const gp_Pnt2d& P3 = Point(i);
     if (i >= 3)
     {
-      gp_XY         V13   = P3.XY() - P1.XY();
-      gp_XY         V12   = P2.XY() - P1.XY();
-      Standard_Real d13_2 = V13.SquareModulus(), d_2;
+      gp_XY  V13   = P3.XY() - P1.XY();
+      gp_XY  V12   = P2.XY() - P1.XY();
+      double d13_2 = V13.SquareModulus(), d_2;
       if (d13_2 > eps_2)
         d_2 = V13.CrossSquareMagnitude(V12) / d13_2;
       else
@@ -90,38 +90,38 @@ void IntPatch_PolyLine::Prepare()
       if (d_2 > myError * myError)
       {
         // try to compute deflection more precisely using parabola interpolation
-        gp_XY         V23 = P3.XY() - P2.XY();
-        Standard_Real d12 = V12.Modulus(), d23 = V23.Modulus();
+        gp_XY  V23 = P3.XY() - P2.XY();
+        double d12 = V12.Modulus(), d23 = V23.Modulus();
         // compute parameter of P2 (assume parameters of P1,P3 are 0,1)
-        Standard_Real tm = d12 / (d12 + d23);
+        double tm = d12 / (d12 + d23);
         if (tm > 0.1 && tm < 0.9)
         {
           tm -= (tm - 0.5) * 0.6;
-          Standard_Real tm1mtm = tm * (1 - tm);
+          double tm1mtm = tm * (1 - tm);
           // coefficients of parabola
-          Standard_Real Ax = (tm * V13.X() - V12.X()) / tm1mtm;
-          Standard_Real Bx = (V12.X() - tm * tm * V13.X()) / tm1mtm;
-          Standard_Real Cx = P1.X();
-          Standard_Real Ay = (tm * V13.Y() - V12.Y()) / tm1mtm;
-          Standard_Real By = (V12.Y() - tm * tm * V13.Y()) / tm1mtm;
-          Standard_Real Cy = P1.Y();
+          double Ax = (tm * V13.X() - V12.X()) / tm1mtm;
+          double Bx = (V12.X() - tm * tm * V13.X()) / tm1mtm;
+          double Cx = P1.X();
+          double Ay = (tm * V13.Y() - V12.Y()) / tm1mtm;
+          double By = (V12.Y() - tm * tm * V13.Y()) / tm1mtm;
+          double Cy = P1.Y();
           // equations of lines P1-P2 and P2-P3
-          Standard_Real A1 = V12.Y() / d12;
-          Standard_Real B1 = -V12.X() / d12;
-          Standard_Real C1 = (P2.X() * P1.Y() - P1.X() * P2.Y()) / d12;
-          Standard_Real A2 = V23.Y() / d23;
-          Standard_Real B2 = -V23.X() / d23;
-          Standard_Real C2 = (P3.X() * P2.Y() - P2.X() * P3.Y()) / d23;
+          double A1 = V12.Y() / d12;
+          double B1 = -V12.X() / d12;
+          double C1 = (P2.X() * P1.Y() - P1.X() * P2.Y()) / d12;
+          double A2 = V23.Y() / d23;
+          double B2 = -V23.X() / d23;
+          double C2 = (P3.X() * P2.Y() - P2.X() * P3.Y()) / d23;
           // points on parabola with max deflection
-          Standard_Real t1  = -0.5 * (A1 * Bx + B1 * By) / (A1 * Ax + B1 * Ay);
-          Standard_Real t2  = -0.5 * (A2 * Bx + B2 * By) / (A2 * Ax + B2 * Ay);
-          Standard_Real xt1 = Ax * t1 * t1 + Bx * t1 + Cx;
-          Standard_Real yt1 = Ay * t1 * t1 + By * t1 + Cy;
-          Standard_Real xt2 = Ax * t2 * t2 + Bx * t2 + Cx;
-          Standard_Real yt2 = Ay * t2 * t2 + By * t2 + Cy;
+          double t1  = -0.5 * (A1 * Bx + B1 * By) / (A1 * Ax + B1 * Ay);
+          double t2  = -0.5 * (A2 * Bx + B2 * By) / (A2 * Ax + B2 * Ay);
+          double xt1 = Ax * t1 * t1 + Bx * t1 + Cx;
+          double yt1 = Ay * t1 * t1 + By * t1 + Cy;
+          double xt2 = Ax * t2 * t2 + Bx * t2 + Cx;
+          double yt2 = Ay * t2 * t2 + By * t2 + Cy;
           // max deflection on segments P1-P2 and P2-P3
-          Standard_Real d1 = std::abs(A1 * xt1 + B1 * yt1 + C1);
-          Standard_Real d2 = std::abs(A2 * xt2 + B2 * yt2 + C2);
+          double d1 = std::abs(A1 * xt1 + B1 * yt1 + C1);
+          double d2 = std::abs(A2 * xt2 + B2 * yt2 + C2);
           if (d2 > d1)
             d1 = d2;
           // select min deflection from linear and parabolic ones
@@ -148,16 +148,16 @@ void IntPatch_PolyLine::ResetError()
 
 //=================================================================================================
 
-Standard_Integer IntPatch_PolyLine::NbPoints() const
+int IntPatch_PolyLine::NbPoints() const
 {
   return (typ == IntPatch_Walking ? wpoly->NbPnts() : rpoly->NbPnts());
 }
 
 //=================================================================================================
 
-gp_Pnt2d IntPatch_PolyLine::Point(const Standard_Integer Index) const
+gp_Pnt2d IntPatch_PolyLine::Point(const int Index) const
 {
-  Standard_Real X, Y, X1, Y1, DX, DY;
+  double X, Y, X1, Y1, DX, DY;
   DX = DY = 0;
   if (onfirst)
   {

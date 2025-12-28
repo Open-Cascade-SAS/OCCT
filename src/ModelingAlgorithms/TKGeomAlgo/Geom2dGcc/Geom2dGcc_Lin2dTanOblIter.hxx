@@ -42,40 +42,35 @@ public:
   //! Tolang is the angular tolerance.
   Standard_EXPORT Geom2dGcc_Lin2dTanOblIter(const Geom2dGcc_QCurve& Qualified1,
                                             const gp_Lin2d&         TheLin,
-                                            const Standard_Real     Param1,
-                                            const Standard_Real     TolAng,
-                                            const Standard_Real     Angle = 0);
+                                            const double            Param1,
+                                            const double            TolAng,
+                                            const double            Angle = 0);
 
   //! This method returns true when there is a solution
   //! and false in the other cases.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   Standard_EXPORT gp_Lin2d ThisSolution() const;
 
   Standard_EXPORT void WhichQualifier(GccEnt_Position& Qualif1) const;
 
-  Standard_EXPORT void Tangency1(Standard_Real& ParSol,
-                                 Standard_Real& ParArg,
-                                 gp_Pnt2d&      PntSol) const;
+  Standard_EXPORT void Tangency1(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
 
-  Standard_EXPORT void Intersection2(Standard_Real& ParSol,
-                                     Standard_Real& ParArg,
-                                     gp_Pnt2d&      PntSol) const;
+  Standard_EXPORT void Intersection2(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
 
-  Standard_EXPORT Standard_Boolean IsParallel2() const;
+  Standard_EXPORT bool IsParallel2() const;
 
-protected:
 private:
-  Standard_Boolean WellDone;
-  Standard_Boolean Paral2;
-  gp_Lin2d         linsol;
-  GccEnt_Position  qualifier1;
-  gp_Pnt2d         pnttg1sol;
-  gp_Pnt2d         pntint2sol;
-  Standard_Real    par1sol;
-  Standard_Real    par2sol;
-  Standard_Real    pararg1;
-  Standard_Real    pararg2;
+  bool            WellDone;
+  bool            Paral2;
+  gp_Lin2d        linsol;
+  GccEnt_Position qualifier1;
+  gp_Pnt2d        pnttg1sol;
+  gp_Pnt2d        pntint2sol;
+  double          par1sol;
+  double          par2sol;
+  double          pararg1;
+  double          pararg2;
 };
 
 #endif // _Geom2dGcc_Lin2dTanOblIter_HeaderFile

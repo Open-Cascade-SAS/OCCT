@@ -26,14 +26,14 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect()
         new Graphic3d_AspectLine3d(Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
       myAngle(M_PI / 180.0 * 10.0),
       myLength(1.0),
-      myIsZoomable(Standard_True)
+      myIsZoomable(true)
 {
   //
 }
 
 //=================================================================================================
 
-Prs3d_ArrowAspect::Prs3d_ArrowAspect(const Standard_Real theAngle, const Standard_Real theLength)
+Prs3d_ArrowAspect::Prs3d_ArrowAspect(const double theAngle, const double theLength)
     : myArrowAspect(
         new Graphic3d_AspectLine3d(Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
       myAngle(theAngle),
@@ -44,7 +44,7 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect(const Standard_Real theAngle, const Standar
 
 //=================================================================================================
 
-Prs3d_ArrowAspect::Prs3d_ArrowAspect(const Handle(Graphic3d_AspectLine3d)& theAspect)
+Prs3d_ArrowAspect::Prs3d_ArrowAspect(const occ::handle<Graphic3d_AspectLine3d>& theAspect)
     : myArrowAspect(theAspect),
       myAngle(M_PI / 180.0 * 10.0),
       myLength(1.0)
@@ -54,7 +54,7 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect(const Handle(Graphic3d_AspectLine3d)& theAs
 
 //=================================================================================================
 
-void Prs3d_ArrowAspect::SetAngle(const Standard_Real theAngle)
+void Prs3d_ArrowAspect::SetAngle(const double theAngle)
 {
   Prs3d_InvalidAngle_Raise_if(theAngle <= 0.0 || theAngle >= M_PI / 2.0,
                               "Prs3d_ArrowAspect::SetAngle() - angle out of range");
@@ -63,7 +63,7 @@ void Prs3d_ArrowAspect::SetAngle(const Standard_Real theAngle)
 
 //=================================================================================================
 
-void Prs3d_ArrowAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Prs3d_ArrowAspect::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

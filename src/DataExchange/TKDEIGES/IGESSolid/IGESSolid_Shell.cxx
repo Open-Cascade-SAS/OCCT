@@ -24,8 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Shell, IGESData_IGESEntity)
 
 IGESSolid_Shell::IGESSolid_Shell() {}
 
-void IGESSolid_Shell::Init(const Handle(IGESSolid_HArray1OfFace)&  Faces,
-                           const Handle(TColStd_HArray1OfInteger)& Orient)
+void IGESSolid_Shell::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>& Faces,
+  const occ::handle<NCollection_HArray1<int>>&                         Orient)
 {
   if (Faces->Lower() != 1 || Orient->Lower() != 1 || Faces->Length() != Orient->Length())
     throw Standard_DimensionError("IGESSolid_Shell : Init");
@@ -35,27 +36,27 @@ void IGESSolid_Shell::Init(const Handle(IGESSolid_HArray1OfFace)&  Faces,
   InitTypeAndForm(514, 1);
 }
 
-Standard_Boolean IGESSolid_Shell::IsClosed() const
+bool IGESSolid_Shell::IsClosed() const
 {
   return (FormNumber() == 1);
 }
 
-void IGESSolid_Shell::SetClosed(const Standard_Boolean closed)
+void IGESSolid_Shell::SetClosed(const bool closed)
 {
   InitTypeAndForm(514, (closed ? 1 : 2));
 }
 
-Standard_Integer IGESSolid_Shell::NbFaces() const
+int IGESSolid_Shell::NbFaces() const
 {
   return theFaces->Length();
 }
 
-Handle(IGESSolid_Face) IGESSolid_Shell::Face(const Standard_Integer Index) const
+occ::handle<IGESSolid_Face> IGESSolid_Shell::Face(const int Index) const
 {
   return theFaces->Value(Index);
 }
 
-Standard_Boolean IGESSolid_Shell::Orientation(const Standard_Integer Index) const
+bool IGESSolid_Shell::Orientation(const int Index) const
 {
   return (theOrientation->Value(Index) != 0);
 }

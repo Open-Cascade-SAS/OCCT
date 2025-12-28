@@ -19,9 +19,9 @@
 
 //=================================================================================================
 
-TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                  theFont,
-                                             const Handle(Font_TextFormatter)& theFormatter,
-                                             const gp_Ax3&                     thePenLoc)
+TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                       theFont,
+                                             const occ::handle<Font_TextFormatter>& theFormatter,
+                                             const gp_Ax3&                          thePenLoc)
 {
   gp_Trsf         aTrsf;
   gp_XYZ          aPen;
@@ -30,14 +30,14 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                  t
 
   myBuilder.MakeCompound(aResult);
 
-  Standard_Real aScaleUnits = theFont.Scale();
+  double aScaleUnits = theFont.Scale();
   for (Font_TextFormatter::Iterator aFormatterIt(
          *theFormatter,
          Font_TextFormatter::IterationFilter_ExcludeInvisible);
        aFormatterIt.More();
        aFormatterIt.Next())
   {
-    const NCollection_Vec2<Standard_ShortReal>& aCorner =
+    const NCollection_Vec2<float>& aCorner =
       theFormatter->BottomLeft(aFormatterIt.SymbolPosition());
 
     aPen.SetCoord(aCorner.x() * aScaleUnits, aCorner.y() * aScaleUnits, 0.0);
@@ -64,7 +64,7 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                   
                                              const Graphic3d_HorizontalTextAlignment theHAlign,
                                              const Graphic3d_VerticalTextAlignment   theVAlign)
 {
-  Handle(Font_TextFormatter) aFormatter = new Font_TextFormatter();
+  occ::handle<Font_TextFormatter> aFormatter = new Font_TextFormatter();
 
   aFormatter->Reset();
   aFormatter->SetupAlignment(theHAlign, theVAlign);

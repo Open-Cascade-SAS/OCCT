@@ -28,34 +28,29 @@ public:
   //! @param[in] theNbStacks  number of stacks within V parameter
   //! @param[in] theTrsf      optional transformation to apply
   //! @return generated triangulation
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create(
-    const Standard_Real    theRadius,
-    const Standard_Integer theNbSlices,
-    const Standard_Integer theNbStacks,
-    const gp_Trsf&         theTrsf);
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfTriangles> Create(const double   theRadius,
+                                                                        const int      theNbSlices,
+                                                                        const int      theNbStacks,
+                                                                        const gp_Trsf& theTrsf);
 
 public:
   //! Initializes the algorithm creating a sector (quadrant).
   //! @param[in] theRadius    sector radius
   //! @param[in] theNbSlices  number of slices within U parameter
   //! @param[in] theNbStacks  number of stacks within V parameter
-  Standard_EXPORT Prs3d_ToolSector(const Standard_Real    theRadius,
-                                   const Standard_Integer theNbSlices,
-                                   const Standard_Integer theNbStacks);
+  Standard_EXPORT Prs3d_ToolSector(const double theRadius,
+                                   const int    theNbSlices,
+                                   const int    theNbStacks);
 
 protected:
   //! Computes vertex at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Pnt Vertex(const Standard_Real theU,
-                                        const Standard_Real theV) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt Vertex(const double theU, const double theV) const override;
 
   //! Computes normal at given parameter location of the surface.
-  virtual gp_Dir Normal(const Standard_Real, const Standard_Real) const Standard_OVERRIDE
-  {
-    return gp_Dir(gp_Dir::D::NZ);
-  }
+  virtual gp_Dir Normal(const double, const double) const override { return gp_Dir(gp_Dir::D::NZ); }
 
 protected:
-  Standard_Real myRadius; //!< sector radius
+  double myRadius; //!< sector radius
 };
 
 #endif

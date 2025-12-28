@@ -22,7 +22,7 @@ namespace
 class IncrementerDecrementer
 {
 public:
-  IncrementerDecrementer(std::atomic<int>* theVal, Standard_Boolean thePositive)
+  IncrementerDecrementer(std::atomic<int>* theVal, bool thePositive)
       : myVal(theVal),
         myPositive(thePositive)
   {
@@ -38,7 +38,7 @@ public:
 
 private:
   std::atomic<int>* myVal;
-  Standard_Boolean  myPositive;
+  bool              myPositive;
 };
 } // namespace
 
@@ -57,10 +57,10 @@ TEST(Standard_AtomicTest, OCC22980_AtomicOperations)
   const int N = 1 << 24; // big enough to ensure concurrency
 
   // Increment
-  OSD_Parallel::For(0, N, IncrementerDecrementer(&aSum, Standard_True));
+  OSD_Parallel::For(0, N, IncrementerDecrementer(&aSum, true));
   EXPECT_EQ(N, aSum);
 
   // Decrement
-  OSD_Parallel::For(0, N, IncrementerDecrementer(&aSum, Standard_False));
+  OSD_Parallel::For(0, N, IncrementerDecrementer(&aSum, false));
   EXPECT_EQ(0, aSum);
 }

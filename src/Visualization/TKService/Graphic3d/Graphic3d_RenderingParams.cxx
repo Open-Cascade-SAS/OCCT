@@ -19,8 +19,7 @@
 
 //=================================================================================================
 
-void Graphic3d_RenderingParams::DumpJson(Standard_OStream& theOStream,
-                                         Standard_Integer  theDepth) const
+void Graphic3d_RenderingParams::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Method)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, ShadingModel)

@@ -19,9 +19,11 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomInt_LineConstructor.hxx>
 #include <IntPatch_Intersection.hxx>
-#include <IntSurf_ListOfPntOn2S.hxx>
-#include <IntTools_SequenceOfCurves.hxx>
-#include <IntTools_SequenceOfPntOn2Faces.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <NCollection_List.hxx>
+#include <IntTools_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <IntTools_PntOn2Faces.hxx>
 #include <TopoDS_Face.hxx>
 
 class IntTools_Context;
@@ -38,26 +40,26 @@ public:
   Standard_EXPORT IntTools_FaceFace();
 
   //! Modifier
-  Standard_EXPORT void SetParameters(const Standard_Boolean ApproxCurves,
-                                     const Standard_Boolean ComputeCurveOnS1,
-                                     const Standard_Boolean ComputeCurveOnS2,
-                                     const Standard_Real    ApproximationTolerance);
+  Standard_EXPORT void SetParameters(const bool   ApproxCurves,
+                                     const bool   ComputeCurveOnS1,
+                                     const bool   ComputeCurveOnS2,
+                                     const double ApproximationTolerance);
 
   //! Intersects underliing surfaces of F1 and F2
   //! Use sum of tolerance of F1 and F2 as intersection
   //! criteria
-  Standard_EXPORT void Perform(const TopoDS_Face&     F1,
-                               const TopoDS_Face&     F2,
-                               const Standard_Boolean theToRunParallel = Standard_False);
+  Standard_EXPORT void Perform(const TopoDS_Face& F1,
+                               const TopoDS_Face& F2,
+                               const bool         theToRunParallel = false);
 
   //! Returns True if the intersection was successful
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns sequence of 3d curves as result of intersection
-  Standard_EXPORT const IntTools_SequenceOfCurves& Lines() const;
+  Standard_EXPORT const NCollection_Sequence<IntTools_Curve>& Lines() const;
 
   //! Returns sequence of 3d curves as result of intersection
-  Standard_EXPORT const IntTools_SequenceOfPntOn2Faces& Points() const;
+  Standard_EXPORT const NCollection_Sequence<IntTools_PntOn2Faces>& Points() const;
 
   //! Returns first of processed faces
   Standard_EXPORT const TopoDS_Face& Face1() const;
@@ -66,62 +68,62 @@ public:
   Standard_EXPORT const TopoDS_Face& Face2() const;
 
   //! Returns True if faces are tangent
-  Standard_EXPORT Standard_Boolean TangentFaces() const;
+  Standard_EXPORT bool TangentFaces() const;
 
   //! Provides post-processing the result lines.
   //! @param[in] bToSplit  split the closed 3D-curves on parts when TRUE,
   //!                      remain untouched otherwise
-  Standard_EXPORT void PrepareLines3D(const Standard_Boolean bToSplit = Standard_True);
+  Standard_EXPORT void PrepareLines3D(const bool bToSplit = true);
 
-  Standard_EXPORT void SetList(IntSurf_ListOfPntOn2S& ListOfPnts);
+  Standard_EXPORT void SetList(NCollection_List<IntSurf_PntOn2S>& ListOfPnts);
 
   //! Sets the intersection context
-  Standard_EXPORT void SetContext(const Handle(IntTools_Context)& aContext);
+  Standard_EXPORT void SetContext(const occ::handle<IntTools_Context>& aContext);
 
   //! Sets the Fuzzy value
-  Standard_EXPORT void SetFuzzyValue(const Standard_Real theFuzz);
+  Standard_EXPORT void SetFuzzyValue(const double theFuzz);
 
   //! Returns Fuzzy value
-  Standard_EXPORT Standard_Real FuzzyValue() const;
+  Standard_EXPORT double FuzzyValue() const;
 
   //! Gets the intersection context
-  Standard_EXPORT const Handle(IntTools_Context)& Context() const;
+  Standard_EXPORT const occ::handle<IntTools_Context>& Context() const;
 
 protected:
   //! Creates curves from the IntPatch_Line.
-  Standard_EXPORT void MakeCurve(const Standard_Integer             Index,
-                                 const Handle(Adaptor3d_TopolTool)& D1,
-                                 const Handle(Adaptor3d_TopolTool)& D2,
-                                 const Standard_Real                theToler);
+  Standard_EXPORT void MakeCurve(const int                               Index,
+                                 const occ::handle<Adaptor3d_TopolTool>& D1,
+                                 const occ::handle<Adaptor3d_TopolTool>& D2,
+                                 const double                            theToler);
 
   //! Computes the valid tolerance for the intersection curves
   //! as a maximal deviation between 3D curve and 2D curves on faces.
   //! If there are no 2D curves the maximal deviation between 3D curves
   //! and surfaces is computed.
-  Standard_EXPORT void ComputeTolReached3d(const Standard_Boolean theToRunParallel);
+  Standard_EXPORT void ComputeTolReached3d(const bool theToRunParallel);
 
 protected:
-  Standard_Boolean               myIsDone;
-  IntPatch_Intersection          myIntersector;
-  GeomInt_LineConstructor        myLConstruct;
-  Handle(GeomAdaptor_Surface)    myHS1;
-  Handle(GeomAdaptor_Surface)    myHS2;
-  Standard_Integer               myNbrestr;
-  Standard_Boolean               myApprox;
-  Standard_Boolean               myApprox1;
-  Standard_Boolean               myApprox2;
-  Standard_Real                  myTolApprox;
-  Standard_Real                  myTolF1;
-  Standard_Real                  myTolF2;
-  Standard_Real                  myTol;
-  Standard_Real                  myFuzzyValue;
-  IntTools_SequenceOfCurves      mySeqOfCurve;
-  Standard_Boolean               myTangentFaces;
-  TopoDS_Face                    myFace1;
-  TopoDS_Face                    myFace2;
-  IntTools_SequenceOfPntOn2Faces myPnts;
-  IntSurf_ListOfPntOn2S          myListOfPnts;
-  Handle(IntTools_Context)       myContext;
+  bool                                       myIsDone;
+  IntPatch_Intersection                      myIntersector;
+  GeomInt_LineConstructor                    myLConstruct;
+  occ::handle<GeomAdaptor_Surface>           myHS1;
+  occ::handle<GeomAdaptor_Surface>           myHS2;
+  int                                        myNbrestr;
+  bool                                       myApprox;
+  bool                                       myApprox1;
+  bool                                       myApprox2;
+  double                                     myTolApprox;
+  double                                     myTolF1;
+  double                                     myTolF2;
+  double                                     myTol;
+  double                                     myFuzzyValue;
+  NCollection_Sequence<IntTools_Curve>       mySeqOfCurve;
+  bool                                       myTangentFaces;
+  TopoDS_Face                                myFace1;
+  TopoDS_Face                                myFace2;
+  NCollection_Sequence<IntTools_PntOn2Faces> myPnts;
+  NCollection_List<IntSurf_PntOn2S>          myListOfPnts;
+  occ::handle<IntTools_Context>              myContext;
 };
 
 #endif // _IntTools_FaceFace_HeaderFile

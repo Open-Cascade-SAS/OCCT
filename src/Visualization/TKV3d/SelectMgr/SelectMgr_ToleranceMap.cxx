@@ -31,9 +31,9 @@ SelectMgr_ToleranceMap::~SelectMgr_ToleranceMap()
 
 //=================================================================================================
 
-void SelectMgr_ToleranceMap::Add(const Standard_Integer& theTolerance)
+void SelectMgr_ToleranceMap::Add(const int& theTolerance)
 {
-  if (Standard_Integer* aFreq = myTolerances.ChangeSeek(theTolerance))
+  if (int* aFreq = myTolerances.ChangeSeek(theTolerance))
   {
     ++(*aFreq);
     if (*aFreq == 1 && theTolerance != myLargestKey)
@@ -56,9 +56,9 @@ void SelectMgr_ToleranceMap::Add(const Standard_Integer& theTolerance)
 
 //=================================================================================================
 
-void SelectMgr_ToleranceMap::Decrement(const Standard_Integer& theTolerance)
+void SelectMgr_ToleranceMap::Decrement(const int& theTolerance)
 {
-  Standard_Integer* aFreq = myTolerances.ChangeSeek(theTolerance);
+  int* aFreq = myTolerances.ChangeSeek(theTolerance);
   if (aFreq == NULL)
   {
     return;
@@ -71,9 +71,7 @@ void SelectMgr_ToleranceMap::Decrement(const Standard_Integer& theTolerance)
   if (theTolerance == myLargestKey && *aFreq == 0)
   {
     myLargestKey = -1;
-    for (NCollection_DataMap<Standard_Integer, Standard_Integer>::Iterator anIter(myTolerances);
-         anIter.More();
-         anIter.Next())
+    for (NCollection_DataMap<int, int>::Iterator anIter(myTolerances); anIter.More(); anIter.Next())
     {
       if (anIter.Value() != 0)
       {

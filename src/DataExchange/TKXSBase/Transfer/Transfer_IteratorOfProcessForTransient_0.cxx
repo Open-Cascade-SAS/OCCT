@@ -19,23 +19,23 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Transient.hxx>
 #include <Transfer_ProcessForTransient.hxx>
-#include <Transfer_TransferMapOfProcessForTransient.hxx>
-#include <Transfer_ActorOfProcessForTransient.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <Transfer_Binder.hxx>
+#include <Transfer_ActorOfProcessForTransient.hxx>
 
 //=================================================================================================
 
 Transfer_IteratorOfProcessForTransient::Transfer_IteratorOfProcessForTransient(
-  const Standard_Boolean withstarts)
+  const bool withstarts)
     : Transfer_TransferIterator()
 {
   if (withstarts)
-    thestarts = new TColStd_HSequenceOfTransient();
+    thestarts = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 }
 
 //=================================================================================================
 
-void Transfer_IteratorOfProcessForTransient::Add(const Handle(Transfer_Binder)& binder)
+void Transfer_IteratorOfProcessForTransient::Add(const occ::handle<Transfer_Binder>& binder)
 {
   if (!thestarts.IsNull())
     throw Standard_NoSuchObject(
@@ -45,8 +45,8 @@ void Transfer_IteratorOfProcessForTransient::Add(const Handle(Transfer_Binder)& 
 
 //=================================================================================================
 
-void Transfer_IteratorOfProcessForTransient::Add(const Handle(Transfer_Binder)&    binder,
-                                                 const Handle(Standard_Transient)& start)
+void Transfer_IteratorOfProcessForTransient::Add(const occ::handle<Transfer_Binder>&    binder,
+                                                 const occ::handle<Standard_Transient>& start)
 {
   AddItem(binder);
   if (!thestarts.IsNull())
@@ -56,16 +56,17 @@ void Transfer_IteratorOfProcessForTransient::Add(const Handle(Transfer_Binder)& 
 //=================================================================================================
 
 void Transfer_IteratorOfProcessForTransient::Filter(
-  const Handle(TColStd_HSequenceOfTransient)& list,
-  const Standard_Boolean                      keep)
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  const bool                                                                 keep)
 {
   if (list.IsNull() || thestarts.IsNull())
     return;
-  Standard_Integer i, j, nb = thestarts->Length();
+  int i, j, nb = thestarts->Length();
   if (nb == 0)
     return;
-  Handle(Transfer_Binder)                   factice;
-  Transfer_TransferMapOfProcessForTransient amap(nb);
+  occ::handle<Transfer_Binder>                                                              factice;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Transfer_Binder>> amap(
+    nb);
   for (i = 1; i <= nb; i++)
   {
     j = amap.Add(thestarts->Value(i), factice);
@@ -84,14 +85,14 @@ void Transfer_IteratorOfProcessForTransient::Filter(
 
 //=================================================================================================
 
-Standard_Boolean Transfer_IteratorOfProcessForTransient::HasStarting() const
+bool Transfer_IteratorOfProcessForTransient::HasStarting() const
 {
   return (!thestarts.IsNull());
 }
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& Transfer_IteratorOfProcessForTransient::Starting() const
+const occ::handle<Standard_Transient>& Transfer_IteratorOfProcessForTransient::Starting() const
 {
   if (thestarts.IsNull())
     throw Standard_NoSuchObject("TransferIterator : No Starting defined at all");

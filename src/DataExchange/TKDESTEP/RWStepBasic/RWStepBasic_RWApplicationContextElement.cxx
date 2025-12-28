@@ -21,10 +21,10 @@
 RWStepBasic_RWApplicationContextElement::RWStepBasic_RWApplicationContextElement() {}
 
 void RWStepBasic_RWApplicationContextElement::ReadStep(
-  const Handle(StepData_StepReaderData)&             data,
-  const Standard_Integer                             num,
-  Handle(Interface_Check)&                           ach,
-  const Handle(StepBasic_ApplicationContextElement)& ent) const
+  const occ::handle<StepData_StepReaderData>&             data,
+  const int                                               num,
+  occ::handle<Interface_Check>&                           ach,
+  const occ::handle<StepBasic_ApplicationContextElement>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,13 +34,13 @@ void RWStepBasic_RWApplicationContextElement::ReadStep(
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : frameOfReference ---
 
-  Handle(StepBasic_ApplicationContext) aFrameOfReference;
+  occ::handle<StepBasic_ApplicationContext> aFrameOfReference;
   data->ReadEntity(num,
                    2,
                    "frame_of_reference",
@@ -54,8 +54,8 @@ void RWStepBasic_RWApplicationContextElement::ReadStep(
 }
 
 void RWStepBasic_RWApplicationContextElement::WriteStep(
-  StepData_StepWriter&                               SW,
-  const Handle(StepBasic_ApplicationContextElement)& ent) const
+  StepData_StepWriter&                                    SW,
+  const occ::handle<StepBasic_ApplicationContextElement>& ent) const
 {
 
   // --- own field : name ---
@@ -68,8 +68,8 @@ void RWStepBasic_RWApplicationContextElement::WriteStep(
 }
 
 void RWStepBasic_RWApplicationContextElement::Share(
-  const Handle(StepBasic_ApplicationContextElement)& ent,
-  Interface_EntityIterator&                          iter) const
+  const occ::handle<StepBasic_ApplicationContextElement>& ent,
+  Interface_EntityIterator&                               iter) const
 {
 
   iter.GetOneItem(ent->FrameOfReference());

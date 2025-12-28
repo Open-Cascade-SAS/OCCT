@@ -38,10 +38,10 @@ public:
   Standard_EXPORT ShapeUpgrade_ShapeDivideContinuity(const TopoDS_Shape& S);
 
   //! Sets tolerance.
-  Standard_EXPORT void SetTolerance(const Standard_Real Tol);
+  Standard_EXPORT void SetTolerance(const double Tol);
 
   //! Sets tolerance.
-  Standard_EXPORT void SetTolerance2d(const Standard_Real Tol);
+  Standard_EXPORT void SetTolerance2d(const double Tol);
 
   //! Defines a criterion of continuity for the boundary (all the
   //! Wires)
@@ -69,15 +69,14 @@ public:
 
 protected:
   //! Returns the tool for dividing faces.
-  Standard_EXPORT virtual Handle(ShapeUpgrade_FaceDivide) GetSplitFaceTool() const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const override;
 
 private:
   GeomAbs_Shape myCurve3dCriterion;
   GeomAbs_Shape myCurve2dCriterion;
   GeomAbs_Shape mySurfaceCriterion;
-  Standard_Real myTolerance3d;
-  Standard_Real myTolerance2d;
+  double        myTolerance3d;
+  double        myTolerance2d;
 };
 
 #endif // _ShapeUpgrade_ShapeDivideContinuity_HeaderFile

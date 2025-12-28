@@ -26,9 +26,6 @@ class Standard_GUID;
 class TDF_Label;
 class TDF_RelocationTable;
 
-class TDF_TagSource;
-DEFINE_STANDARD_HANDLE(TDF_TagSource, TDF_Attribute)
-
 //! This attribute manage a tag provider to create
 //! child labels of a given one.
 class TDF_TagSource : public TDF_Attribute
@@ -41,7 +38,7 @@ public:
 
   //! Find, or create, a TagSource attribute. the TagSource
   //! attribute is returned.
-  Standard_EXPORT static Handle(TDF_TagSource) Set(const TDF_Label& label);
+  Standard_EXPORT static occ::handle<TDF_TagSource> Set(const TDF_Label& label);
 
   //! Find (or create) a tagSource attribute located at <L>
   //! and make a new child label.
@@ -51,34 +48,33 @@ public:
 
   Standard_EXPORT TDF_TagSource();
 
-  Standard_EXPORT Standard_Integer NewTag();
+  Standard_EXPORT int NewTag();
 
   Standard_EXPORT TDF_Label NewChild();
 
-  Standard_EXPORT Standard_Integer Get() const;
+  Standard_EXPORT int Get() const;
 
   //! TDF_Attribute methods
   //! =====================
-  Standard_EXPORT void Set(const Standard_Integer T);
+  Standard_EXPORT void Set(const int T);
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& with) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_TagSource, TDF_Attribute)
 
-protected:
 private:
-  Standard_Integer myTag;
+  int myTag;
 };
 
 #endif // _TDF_TagSource_HeaderFile

@@ -37,7 +37,8 @@ DEVRML_ConfigurationNode::DEVRML_ConfigurationNode()
 
 //=================================================================================================
 
-DEVRML_ConfigurationNode::DEVRML_ConfigurationNode(const Handle(DEVRML_ConfigurationNode)& theNode)
+DEVRML_ConfigurationNode::DEVRML_ConfigurationNode(
+  const occ::handle<DEVRML_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
@@ -45,7 +46,7 @@ DEVRML_ConfigurationNode::DEVRML_ConfigurationNode(const Handle(DEVRML_Configura
 
 //=================================================================================================
 
-bool DEVRML_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+bool DEVRML_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& theResource)
 {
   TCollection_AsciiString aScope =
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
@@ -141,14 +142,14 @@ TCollection_AsciiString DEVRML_ConfigurationNode::Save() const
 
 //=================================================================================================
 
-Handle(DE_ConfigurationNode) DEVRML_ConfigurationNode::Copy() const
+occ::handle<DE_ConfigurationNode> DEVRML_ConfigurationNode::Copy() const
 {
   return new DEVRML_ConfigurationNode(*this);
 }
 
 //=================================================================================================
 
-Handle(DE_Provider) DEVRML_ConfigurationNode::BuildProvider()
+occ::handle<DE_Provider> DEVRML_ConfigurationNode::BuildProvider()
 {
   return new DEVRML_Provider(this);
 }
@@ -190,9 +191,9 @@ TCollection_AsciiString DEVRML_ConfigurationNode::GetVendor() const
 
 //=================================================================================================
 
-TColStd_ListOfAsciiString DEVRML_ConfigurationNode::GetExtensions() const
+NCollection_List<TCollection_AsciiString> DEVRML_ConfigurationNode::GetExtensions() const
 {
-  TColStd_ListOfAsciiString anExt;
+  NCollection_List<TCollection_AsciiString> anExt;
   anExt.Append("vrml");
   anExt.Append("wrl");
   return anExt;

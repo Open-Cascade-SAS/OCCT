@@ -15,7 +15,7 @@
 #define _Graphic3d_ArrayFlags_HeaderFile
 
 //! Bitmask for primitive array creation.
-typedef Standard_Integer Graphic3d_ArrayFlags;
+typedef int Graphic3d_ArrayFlags;
 
 //! Graphic3d_ArrayFlags bitmask values.
 enum

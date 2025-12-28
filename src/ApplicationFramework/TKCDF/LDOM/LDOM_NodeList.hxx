@@ -44,13 +44,13 @@ public:
   Standard_EXPORT LDOM_NodeList& operator=(const LDOM_NullPtr*);
   // Nullify
 
-  Standard_EXPORT Standard_Boolean operator==(const LDOM_NullPtr*) const;
+  Standard_EXPORT bool operator==(const LDOM_NullPtr*) const;
 
-  Standard_EXPORT Standard_Boolean operator!=(const LDOM_NullPtr*) const;
+  Standard_EXPORT bool operator!=(const LDOM_NullPtr*) const;
 
-  Standard_EXPORT LDOM_Node item(const Standard_Integer) const;
+  Standard_EXPORT LDOM_Node item(const int) const;
 
-  Standard_EXPORT Standard_Integer getLength() const;
+  Standard_EXPORT int getLength() const;
 
 private:
   friend class LDOM_Document;
@@ -58,12 +58,12 @@ private:
   friend class LDOM_BasicElement;
   // ---------- PRIVATE FIELDS ----------
 
-  Standard_EXPORT LDOM_NodeList(const Handle(LDOM_MemManager)& aDoc);
+  Standard_EXPORT LDOM_NodeList(const occ::handle<LDOM_MemManager>& aDoc);
 
   Standard_EXPORT void Append(const LDOM_BasicNode& aNode) const;
 
-  Handle(LDOM_MemManager) myDoc;
-  LDOM_BasicNodeSequence* mySeq;
+  occ::handle<LDOM_MemManager> myDoc;
+  LDOM_BasicNodeSequence*      mySeq;
 };
 
 #endif

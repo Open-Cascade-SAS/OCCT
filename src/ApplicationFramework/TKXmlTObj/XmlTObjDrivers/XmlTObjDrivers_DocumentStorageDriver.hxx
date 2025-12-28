@@ -33,8 +33,8 @@ public:
     const TCollection_ExtendedString& theCopyright);
   // Constructor
 
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+    const occ::handle<Message_Messenger>& theMsgDriver) override;
 
 public:
   // Declaration of CASCADE RTTI
@@ -42,8 +42,6 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(XmlTObjDrivers_DocumentStorageDriver, XmlLDrivers_DocumentStorageDriver)
-
 #endif
 
 #ifdef _MSC_VER

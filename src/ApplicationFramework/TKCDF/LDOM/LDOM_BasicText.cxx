@@ -30,9 +30,9 @@ LDOM_BasicText::LDOM_BasicText(const LDOM_CharacterData& aText)
 // purpose  : construction in the Document's data pool
 //=======================================================================
 
-LDOM_BasicText& LDOM_BasicText::Create(const LDOM_Node::NodeType      aType,
-                                       const LDOMBasicString&         aData,
-                                       const Handle(LDOM_MemManager)& aDoc)
+LDOM_BasicText& LDOM_BasicText::Create(const LDOM_Node::NodeType           aType,
+                                       const LDOMBasicString&              aData,
+                                       const occ::handle<LDOM_MemManager>& aDoc)
 {
   void*           aMem     = aDoc->Allocate(sizeof(LDOM_BasicText));
   LDOM_BasicText* aNewText = new (aMem) LDOM_BasicText(aType, aData);

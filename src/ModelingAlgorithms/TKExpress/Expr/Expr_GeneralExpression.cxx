@@ -23,20 +23,20 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_GeneralExpression, Standard_Transient)
 
-Standard_Boolean Expr_GeneralExpression::IsShareable() const
+bool Expr_GeneralExpression::IsShareable() const
 {
-  return Standard_False;
+  return false;
 }
 
-Handle(Expr_GeneralExpression) Expr_GeneralExpression::NDerivative(
-  const Handle(Expr_NamedUnknown)& X,
-  const Standard_Integer           N) const
+occ::handle<Expr_GeneralExpression> Expr_GeneralExpression::NDerivative(
+  const occ::handle<Expr_NamedUnknown>& X,
+  const int                             N) const
 {
   if (N <= 0)
   {
     throw Standard_OutOfRange();
   }
-  Handle(Expr_GeneralExpression) first = Derivative(X);
+  occ::handle<Expr_GeneralExpression> first = Derivative(X);
   if (N > 1)
   {
     return first->NDerivative(X, N - 1);
@@ -44,13 +44,13 @@ Handle(Expr_GeneralExpression) Expr_GeneralExpression::NDerivative(
   return first;
 }
 
-Standard_Real Expr_GeneralExpression::EvaluateNumeric() const
+double Expr_GeneralExpression::EvaluateNumeric() const
 {
   if (ContainsUnknowns())
   {
     throw Expr_NotEvaluable();
   }
-  Expr_Array1OfNamedUnknown tabvr(1, 1);
-  TColStd_Array1OfReal      tabvl(1, 1);
+  NCollection_Array1<occ::handle<Expr_NamedUnknown>> tabvr(1, 1);
+  NCollection_Array1<double>                         tabvl(1, 1);
   return Evaluate(tabvr, tabvl);
 }

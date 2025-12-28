@@ -39,41 +39,41 @@ class AIS_Axis : public AIS_InteractiveObject
   DEFINE_STANDARD_RTTIEXT(AIS_Axis, AIS_InteractiveObject)
 public:
   //! Initializes the line aComponent
-  Standard_EXPORT AIS_Axis(const Handle(Geom_Line)& aComponent);
+  Standard_EXPORT AIS_Axis(const occ::handle<Geom_Line>& aComponent);
 
   //! initializes the axis2 position
   //! aComponent. The coordinate system used is right-handed.
-  Standard_EXPORT AIS_Axis(const Handle(Geom_Axis2Placement)& aComponent,
-                           const AIS_TypeOfAxis               anAxisType);
+  Standard_EXPORT AIS_Axis(const occ::handle<Geom_Axis2Placement>& aComponent,
+                           const AIS_TypeOfAxis                    anAxisType);
 
   //! Initializes the axis1 position anAxis.
-  Standard_EXPORT AIS_Axis(const Handle(Geom_Axis1Placement)& anAxis);
+  Standard_EXPORT AIS_Axis(const occ::handle<Geom_Axis1Placement>& anAxis);
 
   //! Initializes the ray as axis with start point and direction
   //! @param[in] theAxis Start point and direction of the ray
   //! @param[in] theLength Optional length of the ray (ray is infinite by default).
-  Standard_EXPORT AIS_Axis(const gp_Ax1& theAxis, const Standard_Real theLength = -1);
+  Standard_EXPORT AIS_Axis(const gp_Ax1& theAxis, const double theLength = -1);
 
   //! Returns the axis entity aComponent and identifies it
   //! as a component of a shape.
-  const Handle(Geom_Line)& Component() const { return myComponent; }
+  const occ::handle<Geom_Line>& Component() const { return myComponent; }
 
   //! Sets the coordinates of the lin aComponent.
-  Standard_EXPORT void SetComponent(const Handle(Geom_Line)& aComponent);
+  Standard_EXPORT void SetComponent(const occ::handle<Geom_Line>& aComponent);
 
   //! Returns the position of axis2 and positions it by
   //! identifying it as the x, y, or z axis and giving its
   //! direction in 3D space. The coordinate system used is right-handed.
-  const Handle(Geom_Axis2Placement)& Axis2Placement() const { return myAx2; }
+  const occ::handle<Geom_Axis2Placement>& Axis2Placement() const { return myAx2; }
 
   //! Allows you to provide settings for aComponent:the
   //! position and direction of an axis in 3D space. The
   //! coordinate system used is right-handed.
-  Standard_EXPORT void SetAxis2Placement(const Handle(Geom_Axis2Placement)& aComponent,
-                                         const AIS_TypeOfAxis               anAxisType);
+  Standard_EXPORT void SetAxis2Placement(const occ::handle<Geom_Axis2Placement>& aComponent,
+                                         const AIS_TypeOfAxis                    anAxisType);
 
   //! Constructs a new line to serve as the axis anAxis in 3D space.
-  Standard_EXPORT void SetAxis1Placement(const Handle(Geom_Axis1Placement)& anAxis);
+  Standard_EXPORT void SetAxis1Placement(const occ::handle<Geom_Axis1Placement>& anAxis);
 
   //! Returns the type of axis.
   AIS_TypeOfAxis TypeOfAxis() const { return myTypeOfAxis; }
@@ -85,53 +85,47 @@ public:
   //! Returns a signature of 2 for axis datums. When you
   //! activate mode 2 by a signature, you pick AIS objects
   //! of type AIS_Axis.
-  Standard_Boolean IsXYZAxis() const { return myIsXYZAxis; }
+  bool IsXYZAxis() const { return myIsXYZAxis; }
 
   //! Returns true if the interactive object accepts the display mode aMode.
-  Standard_EXPORT Standard_Boolean
-    AcceptDisplayMode(const Standard_Integer aMode) const Standard_OVERRIDE;
+  Standard_EXPORT bool AcceptDisplayMode(const int aMode) const override;
 
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 2; }
+  virtual int Signature() const override { return 2; }
 
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
-  {
-    return AIS_KindOfInteractive_Datum;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
-  Standard_EXPORT void SetColor(const Quantity_Color& aColor) Standard_OVERRIDE;
+  Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
 
-  Standard_EXPORT void SetWidth(const Standard_Real aValue) Standard_OVERRIDE;
+  Standard_EXPORT void SetWidth(const double aValue) override;
 
   //! Set required visualization parameters.
-  Standard_EXPORT void SetDisplayAspect(const Handle(Prs3d_LineAspect)& theNewDatumAspect);
+  Standard_EXPORT void SetDisplayAspect(const occ::handle<Prs3d_LineAspect>& theNewDatumAspect);
 
-  Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT void UnsetColor() override;
 
-  Standard_EXPORT void UnsetWidth() Standard_OVERRIDE;
+  Standard_EXPORT void UnsetWidth() override;
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
   Standard_EXPORT void ComputeFields();
 
 private:
-  Handle(Geom_Line)           myComponent;
-  Handle(Geom_Axis2Placement) myAx2;
-  gp_Pnt                      myPfirst;
-  gp_Pnt                      myPlast;
-  AIS_TypeOfAxis              myTypeOfAxis;
-  Standard_Boolean            myIsXYZAxis;
-  gp_Dir                      myDir;
-  Standard_Real               myVal;
-  Standard_CString            myText;
-  Handle(Prs3d_LineAspect)    myLineAspect;
+  occ::handle<Geom_Line>           myComponent;
+  occ::handle<Geom_Axis2Placement> myAx2;
+  gp_Pnt                           myPfirst;
+  gp_Pnt                           myPlast;
+  AIS_TypeOfAxis                   myTypeOfAxis;
+  bool                             myIsXYZAxis;
+  gp_Dir                           myDir;
+  double                           myVal;
+  const char*                      myText;
+  occ::handle<Prs3d_LineAspect>    myLineAspect;
 };
-
-DEFINE_STANDARD_HANDLE(AIS_Axis, AIS_InteractiveObject)
 
 #endif // _AIS_Axis_HeaderFile

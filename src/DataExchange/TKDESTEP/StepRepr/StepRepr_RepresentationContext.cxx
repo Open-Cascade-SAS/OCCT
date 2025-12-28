@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationContext, Standard_Transient)
 StepRepr_RepresentationContext::StepRepr_RepresentationContext() {}
 
 void StepRepr_RepresentationContext::Init(
-  const Handle(TCollection_HAsciiString)& aContextIdentifier,
-  const Handle(TCollection_HAsciiString)& aContextType)
+  const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>& aContextType)
 {
   // --- classe own fields ---
   contextIdentifier = aContextIdentifier;
@@ -28,23 +28,23 @@ void StepRepr_RepresentationContext::Init(
 }
 
 void StepRepr_RepresentationContext::SetContextIdentifier(
-  const Handle(TCollection_HAsciiString)& aContextIdentifier)
+  const occ::handle<TCollection_HAsciiString>& aContextIdentifier)
 {
   contextIdentifier = aContextIdentifier;
 }
 
-Handle(TCollection_HAsciiString) StepRepr_RepresentationContext::ContextIdentifier() const
+occ::handle<TCollection_HAsciiString> StepRepr_RepresentationContext::ContextIdentifier() const
 {
   return contextIdentifier;
 }
 
 void StepRepr_RepresentationContext::SetContextType(
-  const Handle(TCollection_HAsciiString)& aContextType)
+  const occ::handle<TCollection_HAsciiString>& aContextType)
 {
   contextType = aContextType;
 }
 
-Handle(TCollection_HAsciiString) StepRepr_RepresentationContext::ContextType() const
+occ::handle<TCollection_HAsciiString> StepRepr_RepresentationContext::ContextType() const
 {
   return contextType;
 }

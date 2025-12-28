@@ -21,7 +21,7 @@
 #include <IGESSelect_ChangeLevelNumber.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -29,44 +29,44 @@
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_ChangeLevelNumber, IGESSelect_ModelModifier)
 
 IGESSelect_ChangeLevelNumber::IGESSelect_ChangeLevelNumber()
-    : IGESSelect_ModelModifier(Standard_False)
+    : IGESSelect_ModelModifier(false)
 {
 }
 
-Standard_Boolean IGESSelect_ChangeLevelNumber::HasOldNumber() const
+bool IGESSelect_ChangeLevelNumber::HasOldNumber() const
 {
   return (!theold.IsNull());
 }
 
-Handle(IFSelect_IntParam) IGESSelect_ChangeLevelNumber::OldNumber() const
+occ::handle<IFSelect_IntParam> IGESSelect_ChangeLevelNumber::OldNumber() const
 {
   return theold;
 }
 
-void IGESSelect_ChangeLevelNumber::SetOldNumber(const Handle(IFSelect_IntParam)& param)
+void IGESSelect_ChangeLevelNumber::SetOldNumber(const occ::handle<IFSelect_IntParam>& param)
 {
   theold = param;
 }
 
-Handle(IFSelect_IntParam) IGESSelect_ChangeLevelNumber::NewNumber() const
+occ::handle<IFSelect_IntParam> IGESSelect_ChangeLevelNumber::NewNumber() const
 {
   return thenew;
 }
 
-void IGESSelect_ChangeLevelNumber::SetNewNumber(const Handle(IFSelect_IntParam)& param)
+void IGESSelect_ChangeLevelNumber::SetNewNumber(const occ::handle<IFSelect_IntParam>& param)
 {
   thenew = param;
 }
 
 void IGESSelect_ChangeLevelNumber::Performing(IFSelect_ContextModif& ctx,
-                                              const Handle(IGESData_IGESModel)&,
+                                              const occ::handle<IGESData_IGESModel>&,
                                               Interface_CopyTool&) const
 {
-  Standard_Integer oldl  = 0;
-  Standard_Boolean yaold = HasOldNumber();
+  int  oldl  = 0;
+  bool yaold = HasOldNumber();
   if (yaold)
     oldl = theold->Value();
-  Standard_Integer newl = 0;
+  int newl = 0;
   if (!thenew.IsNull())
     newl = thenew->Value();
   if (oldl < 0)
@@ -76,7 +76,7 @@ void IGESSelect_ChangeLevelNumber::Performing(IFSelect_ContextModif& ctx,
   if (oldl < 0 || newl < 0)
     return;
 
-  Handle(IGESData_LevelListEntity) nulist;
+  occ::handle<IGESData_LevelListEntity> nulist;
   for (ctx.Start(); ctx.More(); ctx.Next())
   {
     DeclareAndCast(IGESData_IGESEntity, ent, ctx.ValueResult());
@@ -93,12 +93,12 @@ void IGESSelect_ChangeLevelNumber::Performing(IFSelect_ContextModif& ctx,
 
 TCollection_AsciiString IGESSelect_ChangeLevelNumber::Label() const
 {
-  char             labl[100];
-  Standard_Integer oldl  = 0;
-  Standard_Boolean yaold = HasOldNumber();
+  char labl[100];
+  int  oldl  = 0;
+  bool yaold = HasOldNumber();
   if (yaold)
     oldl = theold->Value();
-  Standard_Integer newl = 0;
+  int newl = 0;
   if (!thenew.IsNull())
     newl = thenew->Value();
 

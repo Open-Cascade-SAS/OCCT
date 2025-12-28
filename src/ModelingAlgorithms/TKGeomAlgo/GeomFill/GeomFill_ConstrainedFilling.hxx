@@ -24,10 +24,11 @@
 #include <Standard_Integer.hxx>
 #include <GeomFill_CornerState.hxx>
 #include <gp_Vec.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 class GeomFill_CoonsAlgPatch;
 class GeomFill_TgtField;
 class Geom_BSplineSurface;
@@ -60,13 +61,12 @@ public:
   //! -   its degree will not be greater than MaxDeg
   //! -   the maximum number of segments MaxSeg which
   //! BSpline surfaces can have.
-  Standard_EXPORT GeomFill_ConstrainedFilling(const Standard_Integer MaxDeg,
-                                              const Standard_Integer MaxSeg);
+  Standard_EXPORT GeomFill_ConstrainedFilling(const int MaxDeg, const int MaxSeg);
 
-  Standard_EXPORT void Init(const Handle(GeomFill_Boundary)& B1,
-                            const Handle(GeomFill_Boundary)& B2,
-                            const Handle(GeomFill_Boundary)& B3,
-                            const Standard_Boolean           NoCheck = Standard_False);
+  Standard_EXPORT void Init(const occ::handle<GeomFill_Boundary>& B1,
+                            const occ::handle<GeomFill_Boundary>& B2,
+                            const occ::handle<GeomFill_Boundary>& B3,
+                            const bool                            NoCheck = false);
 
   //! Constructs a BSpline surface filled from the series of
   //! boundaries B1, B2, B3 and, if need be, B4, which serve:
@@ -79,11 +79,11 @@ public:
   //! -   its degree will not be greater than the maximum
   //! degree defined at the time of construction of this framework, and
   //! -   the maximum number of segments MaxSeg which BSpline surfaces can have
-  Standard_EXPORT void Init(const Handle(GeomFill_Boundary)& B1,
-                            const Handle(GeomFill_Boundary)& B2,
-                            const Handle(GeomFill_Boundary)& B3,
-                            const Handle(GeomFill_Boundary)& B4,
-                            const Standard_Boolean           NoCheck = Standard_False);
+  Standard_EXPORT void Init(const occ::handle<GeomFill_Boundary>& B1,
+                            const occ::handle<GeomFill_Boundary>& B2,
+                            const occ::handle<GeomFill_Boundary>& B3,
+                            const occ::handle<GeomFill_Boundary>& B4,
+                            const bool                            NoCheck = false);
 
   //! Allows to modify domain on which the blending function
   //! associated to the constrained boundary B will propag
@@ -94,45 +94,42 @@ public:
   //! Default value for l is 1 (used in Init).
   //! Warning: Must be called after Init with a constrained boundary
   //! used in the call to Init.
-  Standard_EXPORT void SetDomain(const Standard_Real l, const Handle(GeomFill_BoundWithSurf)& B);
+  Standard_EXPORT void SetDomain(const double l, const occ::handle<GeomFill_BoundWithSurf>& B);
 
   //! Computes the new poles of the surface using the new
   //! blending functions set by several calls to SetDomain.
   Standard_EXPORT void ReBuild();
 
   //! Returns the bound of index i after sort.
-  Standard_EXPORT Handle(GeomFill_Boundary) Boundary(const Standard_Integer I) const;
+  Standard_EXPORT occ::handle<GeomFill_Boundary> Boundary(const int I) const;
 
   //! Returns the BSpline surface after computation of the fill by this framework.
-  Standard_EXPORT Handle(Geom_BSplineSurface) Surface() const;
+  Standard_EXPORT occ::handle<Geom_BSplineSurface> Surface() const;
 
   //! Internal use for Advmath approximation call.
-  Standard_EXPORT Standard_Integer Eval(const Standard_Real    W,
-                                        const Standard_Integer Ord,
-                                        Standard_Real&         Result) const;
+  Standard_EXPORT int Eval(const double W, const int Ord, double& Result) const;
 
   //! Computes the fields of tangents on 30 points along the
   //! bound I, these are not the constraint tangents but
   //! gives an idea of the coonsAlgPatch regularity.
-  Standard_EXPORT void CheckCoonsAlgPatch(const Standard_Integer I);
+  Standard_EXPORT void CheckCoonsAlgPatch(const int I);
 
   //! Computes the fields of tangents and normals on 30
   //! points along the bound I, draw them, and computes the
   //! max dot product that must be near than 0.
-  Standard_EXPORT void CheckTgteField(const Standard_Integer I);
+  Standard_EXPORT void CheckTgteField(const int I);
 
   //! Computes values and normals along the bound I and
   //! compare them to the approx result curves (bound and
   //! tgte field) , draw the normals and tangents.
-  Standard_EXPORT void CheckApprox(const Standard_Integer I);
+  Standard_EXPORT void CheckApprox(const int I);
 
   //! Computes values and normals along the bound I on both
   //! constraint surface and result surface, draw the
   //! normals, and computes the max distance between values
   //! and the max angle between normals.
-  Standard_EXPORT void CheckResult(const Standard_Integer I);
+  Standard_EXPORT void CheckResult(const int I);
 
-protected:
 private:
   //! Performs the approximation an compute the poles of the
   //! surface.
@@ -159,40 +156,40 @@ private:
 
   //! Checks if the field of tangency doesn t twist along the
   //! boundary.
-  Standard_EXPORT Standard_Boolean CheckTgte(const Standard_Integer I);
+  Standard_EXPORT bool CheckTgte(const int I);
 
   //! Evaluates the min magnitude of the field of tangency
   //! along bound I to allow a simple evaluation of the
   //! tolerance needed for the approximation of the field of
   //! tangency.
-  Standard_EXPORT void MinTgte(const Standard_Integer I);
+  Standard_EXPORT void MinTgte(const int I);
 
-  Standard_Integer                 degmax;
-  Standard_Integer                 segmax;
-  Handle(GeomFill_CoonsAlgPatch)   ptch;
-  Handle(GeomFill_TgtField)        tgalg[4];
-  Standard_Real                    mig[4];
-  GeomFill_CornerState             stcor[4];
-  gp_Vec                           v[4];
-  Standard_Boolean                 appdone;
-  Standard_Integer                 degree[2];
-  Handle(TColgp_HArray1OfPnt)      curvpol[4];
-  Handle(TColgp_HArray1OfPnt)      tgtepol[4];
-  Handle(TColStd_HArray1OfInteger) mults[2];
-  Handle(TColStd_HArray1OfReal)    knots[2];
-  Handle(TColStd_HArray1OfReal)    ab[4];
-  Handle(TColStd_HArray1OfReal)    pq[4];
-  Standard_Real                    dom[4];
-  Handle(TColgp_HArray1OfPnt)      ncpol[4];
-  Handle(TColgp_HArray1OfPnt)      ntpol[4];
-  Handle(TColStd_HArray1OfInteger) nm[2];
-  Handle(TColStd_HArray1OfReal)    nk[2];
-  Standard_Integer                 ibound[2];
-  Standard_Integer                 ctr[2];
-  Standard_Integer                 nbd3;
-  Handle(TColgp_HArray2OfPnt)      S0;
-  Handle(TColgp_HArray2OfPnt)      S1;
-  Handle(Geom_BSplineSurface)      surf;
+  int                                      degmax;
+  int                                      segmax;
+  occ::handle<GeomFill_CoonsAlgPatch>      ptch;
+  occ::handle<GeomFill_TgtField>           tgalg[4];
+  double                                   mig[4];
+  GeomFill_CornerState                     stcor[4];
+  gp_Vec                                   v[4];
+  bool                                     appdone;
+  int                                      degree[2];
+  occ::handle<NCollection_HArray1<gp_Pnt>> curvpol[4];
+  occ::handle<NCollection_HArray1<gp_Pnt>> tgtepol[4];
+  occ::handle<NCollection_HArray1<int>>    mults[2];
+  occ::handle<NCollection_HArray1<double>> knots[2];
+  occ::handle<NCollection_HArray1<double>> ab[4];
+  occ::handle<NCollection_HArray1<double>> pq[4];
+  double                                   dom[4];
+  occ::handle<NCollection_HArray1<gp_Pnt>> ncpol[4];
+  occ::handle<NCollection_HArray1<gp_Pnt>> ntpol[4];
+  occ::handle<NCollection_HArray1<int>>    nm[2];
+  occ::handle<NCollection_HArray1<double>> nk[2];
+  int                                      ibound[2];
+  int                                      ctr[2];
+  int                                      nbd3;
+  occ::handle<NCollection_HArray2<gp_Pnt>> S0;
+  occ::handle<NCollection_HArray2<gp_Pnt>> S1;
+  occ::handle<Geom_BSplineSurface>         surf;
 };
 
 #endif // _GeomFill_ConstrainedFilling_HeaderFile

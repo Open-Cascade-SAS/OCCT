@@ -25,9 +25,6 @@ class IFSelect_Selection;
 class IFSelect_Dispatch;
 class TCollection_AsciiString;
 
-class IFSelect_GeneralModifier;
-DEFINE_STANDARD_HANDLE(IFSelect_GeneralModifier, Standard_Transient)
-
 //! This class gives a frame for Actions which modify the effect
 //! of a Dispatch, i.e. :
 //! By Selections and Dispatches, an original Model can be
@@ -65,32 +62,32 @@ class IFSelect_GeneralModifier : public Standard_Transient
 public:
   //! Returns True if this modifier may change the graph of
   //! dependences (acknowledged at creation time)
-  Standard_EXPORT Standard_Boolean MayChangeGraph() const;
+  Standard_EXPORT bool MayChangeGraph() const;
 
   //! Attaches to a Dispatch. If <disp> is Null, Resets it
   //! (to apply the Modifier on every Dispatch)
-  Standard_EXPORT void SetDispatch(const Handle(IFSelect_Dispatch)& disp);
+  Standard_EXPORT void SetDispatch(const occ::handle<IFSelect_Dispatch>& disp);
 
   //! Returns the Dispatch to be matched, Null if not set
-  Standard_EXPORT Handle(IFSelect_Dispatch) Dispatch() const;
+  Standard_EXPORT occ::handle<IFSelect_Dispatch> Dispatch() const;
 
   //! Returns True if a Model obtained from the Dispatch <disp>
   //! is to be treated (apart from the Selection criterium)
   //! If Dispatch(me) is Null, returns True. Else, checks <disp>
-  Standard_EXPORT Standard_Boolean Applies(const Handle(IFSelect_Dispatch)& disp) const;
+  Standard_EXPORT bool Applies(const occ::handle<IFSelect_Dispatch>& disp) const;
 
   //! Sets a Selection : a Model is treated if it contains one or
   //! more Entities designated by the Selection
-  Standard_EXPORT void SetSelection(const Handle(IFSelect_Selection)& sel);
+  Standard_EXPORT void SetSelection(const occ::handle<IFSelect_Selection>& sel);
 
   //! Resets the Selection : this criterium is not longer active
   Standard_EXPORT void ResetSelection();
 
   //! Returns True if a Selection is set as an additional criterium
-  Standard_EXPORT Standard_Boolean HasSelection() const;
+  Standard_EXPORT bool HasSelection() const;
 
   //! Returns the Selection, or a Null Handle if not set
-  Standard_EXPORT Handle(IFSelect_Selection) Selection() const;
+  Standard_EXPORT occ::handle<IFSelect_Selection> Selection() const;
 
   //! Returns a short text which defines the operation performed
   Standard_EXPORT virtual TCollection_AsciiString Label() const = 0;
@@ -106,12 +103,12 @@ protected:
   //! also NO entity added or replaced or removed)
   //! - True if there is a possibility of changing the graph of
   //! dependencies when this modifier is applied
-  Standard_EXPORT IFSelect_GeneralModifier(const Standard_Boolean maychangegraph);
+  Standard_EXPORT IFSelect_GeneralModifier(const bool maychangegraph);
 
 private:
-  Handle(IFSelect_Selection) thesel;
-  Handle(IFSelect_Dispatch)  thedisp;
-  Standard_Boolean           thechgr;
+  occ::handle<IFSelect_Selection> thesel;
+  occ::handle<IFSelect_Dispatch>  thedisp;
+  bool                            thechgr;
 };
 
 #endif // _IFSelect_GeneralModifier_HeaderFile

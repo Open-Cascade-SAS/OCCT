@@ -18,13 +18,13 @@
 
 #include <Standard.hxx>
 
-#include <MeshVS_HArray1OfSequenceOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_List.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_BndBox3d.hxx>
-
-typedef NCollection_List<Handle(TColgp_HArray1OfPnt)>           MeshVS_PolyhedronVerts;
-typedef NCollection_List<Handle(TColgp_HArray1OfPnt)>::Iterator MeshVS_PolyhedronVertsIter;
 
 //! This class is used to detect selection of a polyhedron. The main
 //! principle of detection algorithm is to search for overlap with
@@ -34,33 +34,30 @@ class MeshVS_SensitivePolyhedron : public Select3D_SensitiveEntity
 {
 public:
   Standard_EXPORT MeshVS_SensitivePolyhedron(
-    const Handle(SelectMgr_EntityOwner)&             theOwner,
-    const TColgp_Array1OfPnt&                        theNodes,
-    const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo);
+    const occ::handle<SelectMgr_EntityOwner>&                          theOwner,
+    const NCollection_Array1<gp_Pnt>&                                  theNodes,
+    const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theTopo);
 
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
-  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                   SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                       SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the amount of nodes of polyhedron
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbSubElements() const override;
 
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_SensitivePolyhedron, Select3D_SensitiveEntity)
 
 private:
-  MeshVS_PolyhedronVerts                    myTopology;
-  gp_XYZ                                    myCenter;
-  Select3D_BndBox3d                         myBndBox;
-  Handle(TColgp_HArray1OfPnt)               myNodes;
-  Handle(MeshVS_HArray1OfSequenceOfInteger) myTopo;
+  NCollection_List<occ::handle<NCollection_HArray1<gp_Pnt>>>  myTopology;
+  gp_XYZ                                                      myCenter;
+  Select3D_BndBox3d                                           myBndBox;
+  occ::handle<NCollection_HArray1<gp_Pnt>>                    myNodes;
+  occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> myTopo;
 };
-
-DEFINE_STANDARD_HANDLE(MeshVS_SensitivePolyhedron, Select3D_SensitiveEntity)
 
 #endif // _MeshVS_SensitivePolyhedron_HeaderFile

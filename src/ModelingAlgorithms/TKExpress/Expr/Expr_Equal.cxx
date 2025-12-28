@@ -23,38 +23,38 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_Equal, Expr_SingleRelation)
 
-Expr_Equal::Expr_Equal(const Handle(Expr_GeneralExpression)& exp1,
-                       const Handle(Expr_GeneralExpression)& exp2)
+Expr_Equal::Expr_Equal(const occ::handle<Expr_GeneralExpression>& exp1,
+                       const occ::handle<Expr_GeneralExpression>& exp2)
 {
   SetFirstMember(exp1);
   SetSecondMember(exp2);
 }
 
-Standard_Boolean Expr_Equal::IsSatisfied() const
+bool Expr_Equal::IsSatisfied() const
 {
-  Handle(Expr_GeneralExpression) fm = FirstMember();
-  Handle(Expr_GeneralExpression) sm = SecondMember();
-  fm                                = fm->Simplified();
-  sm                                = sm->Simplified();
+  occ::handle<Expr_GeneralExpression> fm = FirstMember();
+  occ::handle<Expr_GeneralExpression> sm = SecondMember();
+  fm                                     = fm->Simplified();
+  sm                                     = sm->Simplified();
   return (fm->IsIdentical(sm));
 }
 
-Handle(Expr_GeneralRelation) Expr_Equal::Simplified() const
+occ::handle<Expr_GeneralRelation> Expr_Equal::Simplified() const
 {
-  Handle(Expr_GeneralExpression) fm = FirstMember();
-  Handle(Expr_GeneralExpression) sm = SecondMember();
+  occ::handle<Expr_GeneralExpression> fm = FirstMember();
+  occ::handle<Expr_GeneralExpression> sm = SecondMember();
   return new Expr_Equal(fm->Simplified(), sm->Simplified());
 }
 
 void Expr_Equal::Simplify()
 {
-  Handle(Expr_GeneralExpression) fm = FirstMember();
-  Handle(Expr_GeneralExpression) sm = SecondMember();
+  occ::handle<Expr_GeneralExpression> fm = FirstMember();
+  occ::handle<Expr_GeneralExpression> sm = SecondMember();
   SetFirstMember(fm->Simplified());
   SetSecondMember(sm->Simplified());
 }
 
-Handle(Expr_GeneralRelation) Expr_Equal::Copy() const
+occ::handle<Expr_GeneralRelation> Expr_Equal::Copy() const
 {
   return new Expr_Equal(Expr::CopyShare(FirstMember()), Expr::CopyShare(SecondMember()));
 }

@@ -32,10 +32,10 @@ RWStepFEA_RWAlignedSurface3dElementCoordinateSystem::
 //=================================================================================================
 
 void RWStepFEA_RWAlignedSurface3dElementCoordinateSystem::ReadStep(
-  const Handle(StepData_StepReaderData)&                         data,
-  const Standard_Integer                                         num,
-  Handle(Interface_Check)&                                       ach,
-  const Handle(StepFEA_AlignedSurface3dElementCoordinateSystem)& ent) const
+  const occ::handle<StepData_StepReaderData>&                         data,
+  const int                                                           num,
+  occ::handle<Interface_Check>&                                       ach,
+  const occ::handle<StepFEA_AlignedSurface3dElementCoordinateSystem>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "aligned_surface3d_element_coordinate_system"))
@@ -43,12 +43,12 @@ void RWStepFEA_RWAlignedSurface3dElementCoordinateSystem::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of AlignedSurface3dElementCoordinateSystem
 
-  Handle(StepFEA_FeaAxis2Placement3d) aCoordinateSystem;
+  occ::handle<StepFEA_FeaAxis2Placement3d> aCoordinateSystem;
   data->ReadEntity(num,
                    2,
                    "coordinate_system",
@@ -63,8 +63,8 @@ void RWStepFEA_RWAlignedSurface3dElementCoordinateSystem::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWAlignedSurface3dElementCoordinateSystem::WriteStep(
-  StepData_StepWriter&                                           SW,
-  const Handle(StepFEA_AlignedSurface3dElementCoordinateSystem)& ent) const
+  StepData_StepWriter&                                                SW,
+  const occ::handle<StepFEA_AlignedSurface3dElementCoordinateSystem>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -79,8 +79,8 @@ void RWStepFEA_RWAlignedSurface3dElementCoordinateSystem::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWAlignedSurface3dElementCoordinateSystem::Share(
-  const Handle(StepFEA_AlignedSurface3dElementCoordinateSystem)& ent,
-  Interface_EntityIterator&                                      iter) const
+  const occ::handle<StepFEA_AlignedSurface3dElementCoordinateSystem>& ent,
+  Interface_EntityIterator&                                           iter) const
 {
 
   // Inherited fields of RepresentationItem

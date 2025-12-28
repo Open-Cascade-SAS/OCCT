@@ -17,17 +17,18 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_CompoundRepresentationItem.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 RWStepRepr_RWCompoundRepresentationItem::RWStepRepr_RWCompoundRepresentationItem() {}
 
 void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
-  const Handle(StepData_StepReaderData)&             data,
-  const Standard_Integer                             num,
-  Handle(Interface_Check)&                           ach,
-  const Handle(StepRepr_CompoundRepresentationItem)& ent) const
+  const occ::handle<StepData_StepReaderData>&             data,
+  const int                                               num,
+  occ::handle<Interface_Check>&                           ach,
+  const occ::handle<StepRepr_CompoundRepresentationItem>& ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "compound_representation_item"))
@@ -35,20 +36,20 @@ void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : item_element
 
-  Handle(StepRepr_HArray1OfRepresentationItem) aItems;
-  Handle(StepRepr_RepresentationItem)          anent2;
-  Standard_Integer                             nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aItems;
+  occ::handle<StepRepr_RepresentationItem>                                   anent2;
+  int                                                                        nsub2;
   if (data->ReadSubList(num, 2, "item_element", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aItems               = new StepRepr_HArray1OfRepresentationItem(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aItems  = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
       if (data->ReadEntity(nsub2,
                            i2,
@@ -64,8 +65,8 @@ void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
 }
 
 void RWStepRepr_RWCompoundRepresentationItem::WriteStep(
-  StepData_StepWriter&                               SW,
-  const Handle(StepRepr_CompoundRepresentationItem)& ent) const
+  StepData_StepWriter&                                    SW,
+  const occ::handle<StepRepr_CompoundRepresentationItem>& ent) const
 {
   // --- inherited field : name ---
 
@@ -74,7 +75,7 @@ void RWStepRepr_RWCompoundRepresentationItem::WriteStep(
   // --- own field : items ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbItemElement(); i2++)
+  for (int i2 = 1; i2 <= ent->NbItemElement(); i2++)
   {
     SW.Send(ent->ItemElementValue(i2));
   }
@@ -82,10 +83,10 @@ void RWStepRepr_RWCompoundRepresentationItem::WriteStep(
 }
 
 void RWStepRepr_RWCompoundRepresentationItem::Share(
-  const Handle(StepRepr_CompoundRepresentationItem)& ent,
-  Interface_EntityIterator&                          iter) const
+  const occ::handle<StepRepr_CompoundRepresentationItem>& ent,
+  Interface_EntityIterator&                               iter) const
 {
-  Standard_Integer i, nb = ent->NbItemElement();
+  int i, nb = ent->NbItemElement();
   for (i = 1; i <= nb; i++)
     iter.AddItem(ent->ItemElementValue(i));
 }

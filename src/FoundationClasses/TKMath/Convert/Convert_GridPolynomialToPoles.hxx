@@ -21,11 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 //! Convert a grid of Polynomial Surfaces
 //! that are have continuity CM to an
@@ -45,12 +46,12 @@ public:
   //! The <Coefficients> have to be formatted than an "C array"
   //! [MaxUDegree+1] [MaxVDegree+1] [3]
   Standard_EXPORT Convert_GridPolynomialToPoles(
-    const Standard_Integer                  MaxUDegree,
-    const Standard_Integer                  MaxVDegree,
-    const Handle(TColStd_HArray1OfInteger)& NumCoeff,
-    const Handle(TColStd_HArray1OfReal)&    Coefficients,
-    const Handle(TColStd_HArray1OfReal)&    PolynomialUIntervals,
-    const Handle(TColStd_HArray1OfReal)&    PolynomialVIntervals);
+    const int                                       MaxUDegree,
+    const int                                       MaxVDegree,
+    const occ::handle<NCollection_HArray1<int>>&    NumCoeff,
+    const occ::handle<NCollection_HArray1<double>>& Coefficients,
+    const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
+    const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals);
 
   //! To one grid of polynomial Surface.
   //! Warning!
@@ -67,78 +68,77 @@ public:
   //! [1, NbVSurfaces*NbUSurfaces, 1,2] array.
   //! if <Coefficients> is not a
   Standard_EXPORT Convert_GridPolynomialToPoles(
-    const Standard_Integer                  NbUSurfaces,
-    const Standard_Integer                  NBVSurfaces,
-    const Standard_Integer                  UContinuity,
-    const Standard_Integer                  VContinuity,
-    const Standard_Integer                  MaxUDegree,
-    const Standard_Integer                  MaxVDegree,
-    const Handle(TColStd_HArray2OfInteger)& NumCoeffPerSurface,
-    const Handle(TColStd_HArray1OfReal)&    Coefficients,
-    const Handle(TColStd_HArray1OfReal)&    PolynomialUIntervals,
-    const Handle(TColStd_HArray1OfReal)&    PolynomialVIntervals,
-    const Handle(TColStd_HArray1OfReal)&    TrueUIntervals,
-    const Handle(TColStd_HArray1OfReal)&    TrueVIntervals);
+    const int                                       NbUSurfaces,
+    const int                                       NBVSurfaces,
+    const int                                       UContinuity,
+    const int                                       VContinuity,
+    const int                                       MaxUDegree,
+    const int                                       MaxVDegree,
+    const occ::handle<NCollection_HArray2<int>>&    NumCoeffPerSurface,
+    const occ::handle<NCollection_HArray1<double>>& Coefficients,
+    const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
+    const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals,
+    const occ::handle<NCollection_HArray1<double>>& TrueUIntervals,
+    const occ::handle<NCollection_HArray1<double>>& TrueVIntervals);
 
-  Standard_EXPORT void Perform(const Standard_Integer                  UContinuity,
-                               const Standard_Integer                  VContinuity,
-                               const Standard_Integer                  MaxUDegree,
-                               const Standard_Integer                  MaxVDegree,
-                               const Handle(TColStd_HArray2OfInteger)& NumCoeffPerSurface,
-                               const Handle(TColStd_HArray1OfReal)&    Coefficients,
-                               const Handle(TColStd_HArray1OfReal)&    PolynomialUIntervals,
-                               const Handle(TColStd_HArray1OfReal)&    PolynomialVIntervals,
-                               const Handle(TColStd_HArray1OfReal)&    TrueUIntervals,
-                               const Handle(TColStd_HArray1OfReal)&    TrueVIntervals);
+  Standard_EXPORT void Perform(const int                                       UContinuity,
+                               const int                                       VContinuity,
+                               const int                                       MaxUDegree,
+                               const int                                       MaxVDegree,
+                               const occ::handle<NCollection_HArray2<int>>&    NumCoeffPerSurface,
+                               const occ::handle<NCollection_HArray1<double>>& Coefficients,
+                               const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
+                               const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals,
+                               const occ::handle<NCollection_HArray1<double>>& TrueUIntervals,
+                               const occ::handle<NCollection_HArray1<double>>& TrueVIntervals);
 
-  Standard_EXPORT Standard_Integer NbUPoles() const;
+  Standard_EXPORT int NbUPoles() const;
 
-  Standard_EXPORT Standard_Integer NbVPoles() const;
+  Standard_EXPORT int NbVPoles() const;
 
   //! returns the poles of the BSpline Surface
-  Standard_EXPORT const Handle(TColgp_HArray2OfPnt)& Poles() const;
+  Standard_EXPORT const occ::handle<NCollection_HArray2<gp_Pnt>>& Poles() const;
 
-  Standard_EXPORT Standard_Integer UDegree() const;
+  Standard_EXPORT int UDegree() const;
 
-  Standard_EXPORT Standard_Integer VDegree() const;
+  Standard_EXPORT int VDegree() const;
 
-  Standard_EXPORT Standard_Integer NbUKnots() const;
+  Standard_EXPORT int NbUKnots() const;
 
-  Standard_EXPORT Standard_Integer NbVKnots() const;
+  Standard_EXPORT int NbVKnots() const;
 
   //! Knots in the U direction
-  Standard_EXPORT const Handle(TColStd_HArray1OfReal)& UKnots() const;
+  Standard_EXPORT const occ::handle<NCollection_HArray1<double>>& UKnots() const;
 
   //! Knots in the V direction
-  Standard_EXPORT const Handle(TColStd_HArray1OfReal)& VKnots() const;
+  Standard_EXPORT const occ::handle<NCollection_HArray1<double>>& VKnots() const;
 
   //! Multiplicities of the knots in the U direction
-  Standard_EXPORT const Handle(TColStd_HArray1OfInteger)& UMultiplicities() const;
+  Standard_EXPORT const occ::handle<NCollection_HArray1<int>>& UMultiplicities() const;
 
   //! Multiplicities of the knots in the V direction
-  Standard_EXPORT const Handle(TColStd_HArray1OfInteger)& VMultiplicities() const;
+  Standard_EXPORT const occ::handle<NCollection_HArray1<int>>& VMultiplicities() const;
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-protected:
 private:
-  Standard_EXPORT void BuildArray(const Standard_Integer               Degree,
-                                  const Handle(TColStd_HArray1OfReal)& Knots,
-                                  const Standard_Integer               Continuty,
-                                  Handle(TColStd_HArray1OfReal)&       FlatKnots,
-                                  Handle(TColStd_HArray1OfInteger)&    Mults,
-                                  Handle(TColStd_HArray1OfReal)&       Parameters) const;
+  Standard_EXPORT void BuildArray(const int                                       Degree,
+                                  const occ::handle<NCollection_HArray1<double>>& Knots,
+                                  const int                                       Continuty,
+                                  occ::handle<NCollection_HArray1<double>>&       FlatKnots,
+                                  occ::handle<NCollection_HArray1<int>>&          Mults,
+                                  occ::handle<NCollection_HArray1<double>>&       Parameters) const;
 
-  Handle(TColStd_HArray1OfReal)    myUFlatKnots;
-  Handle(TColStd_HArray1OfReal)    myVFlatKnots;
-  Handle(TColStd_HArray1OfReal)    myUKnots;
-  Handle(TColStd_HArray1OfReal)    myVKnots;
-  Handle(TColStd_HArray1OfInteger) myUMults;
-  Handle(TColStd_HArray1OfInteger) myVMults;
-  Handle(TColgp_HArray2OfPnt)      myPoles;
-  Standard_Integer                 myUDegree;
-  Standard_Integer                 myVDegree;
-  Standard_Boolean                 myDone;
+  occ::handle<NCollection_HArray1<double>> myUFlatKnots;
+  occ::handle<NCollection_HArray1<double>> myVFlatKnots;
+  occ::handle<NCollection_HArray1<double>> myUKnots;
+  occ::handle<NCollection_HArray1<double>> myVKnots;
+  occ::handle<NCollection_HArray1<int>>    myUMults;
+  occ::handle<NCollection_HArray1<int>>    myVMults;
+  occ::handle<NCollection_HArray2<gp_Pnt>> myPoles;
+  int                                      myUDegree;
+  int                                      myVDegree;
+  bool                                     myDone;
 };
 
 #endif // _Convert_GridPolynomialToPoles_HeaderFile

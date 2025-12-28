@@ -67,9 +67,9 @@ public:
                                 const TopOpeBRepDS_Curve&         C,
                                 const TopOpeBRepDS_DataStructure& DS) const;
 
-  Standard_EXPORT void MakeEdge(TopoDS_Shape&             E,
-                                const Handle(Geom_Curve)& C,
-                                const Standard_Real       Tol) const;
+  Standard_EXPORT void MakeEdge(TopoDS_Shape&                  E,
+                                const occ::handle<Geom_Curve>& C,
+                                const double                   Tol) const;
 
   Standard_EXPORT void MakeEdge(TopoDS_Shape& E) const;
 
@@ -87,42 +87,42 @@ public:
   Standard_EXPORT void GetOrientedEdgeVertices(TopoDS_Edge&   E,
                                                TopoDS_Vertex& Vmin,
                                                TopoDS_Vertex& Vmax,
-                                               Standard_Real& Parmin,
-                                               Standard_Real& Parmax) const;
+                                               double&        Parmin,
+                                               double&        Parmax) const;
 
-  Standard_EXPORT void UpdateEdgeCurveTol(const TopoDS_Face&        F1,
-                                          const TopoDS_Face&        F2,
-                                          TopoDS_Edge&              E,
-                                          const Handle(Geom_Curve)& C3Dnew,
-                                          const Standard_Real       tol3d,
-                                          const Standard_Real       tol2d1,
-                                          const Standard_Real       tol2d2,
-                                          Standard_Real&            newtol,
-                                          Standard_Real&            newparmin,
-                                          Standard_Real&            newparmax) const;
+  Standard_EXPORT void UpdateEdgeCurveTol(const TopoDS_Face&             F1,
+                                          const TopoDS_Face&             F2,
+                                          TopoDS_Edge&                   E,
+                                          const occ::handle<Geom_Curve>& C3Dnew,
+                                          const double                   tol3d,
+                                          const double                   tol2d1,
+                                          const double                   tol2d2,
+                                          double&                        newtol,
+                                          double&                        newparmin,
+                                          double&                        newparmax) const;
 
-  Standard_EXPORT void ApproxCurves(const TopOpeBRepDS_Curve&                  C,
-                                    TopoDS_Edge&                               E,
-                                    Standard_Integer&                          inewC,
-                                    const Handle(TopOpeBRepDS_HDataStructure)& HDS) const;
+  Standard_EXPORT void ApproxCurves(const TopOpeBRepDS_Curve&                       C,
+                                    TopoDS_Edge&                                    E,
+                                    int&                                            inewC,
+                                    const occ::handle<TopOpeBRepDS_HDataStructure>& HDS) const;
 
   Standard_EXPORT void ComputePCurves(const TopOpeBRepDS_Curve& C,
                                       TopoDS_Edge&              E,
                                       TopOpeBRepDS_Curve&       newC,
-                                      const Standard_Boolean    CompPC1,
-                                      const Standard_Boolean    CompPC2,
-                                      const Standard_Boolean    CompC3D) const;
+                                      const bool                CompPC1,
+                                      const bool                CompPC2,
+                                      const bool                CompC3D) const;
 
   Standard_EXPORT void PutPCurves(const TopOpeBRepDS_Curve& newC,
                                   TopoDS_Edge&              E,
-                                  const Standard_Boolean    CompPC1,
-                                  const Standard_Boolean    CompPC2) const;
+                                  const bool                CompPC1,
+                                  const bool                CompPC2) const;
 
-  Standard_EXPORT void RecomputeCurves(const TopOpeBRepDS_Curve&                  C,
-                                       const TopoDS_Edge&                         oldE,
-                                       TopoDS_Edge&                               E,
-                                       Standard_Integer&                          inewC,
-                                       const Handle(TopOpeBRepDS_HDataStructure)& HDS) const;
+  Standard_EXPORT void RecomputeCurves(const TopOpeBRepDS_Curve&                       C,
+                                       const TopoDS_Edge&                              oldE,
+                                       TopoDS_Edge&                                    E,
+                                       int&                                            inewC,
+                                       const occ::handle<TopOpeBRepDS_HDataStructure>& HDS) const;
 
   //! Make a face <Fou> with the surface of the face <Fin>
   Standard_EXPORT void CopyFace(const TopoDS_Shape& Fin, TopoDS_Shape& Fou) const;
@@ -145,12 +145,10 @@ public:
   //! edge <E>.
   Standard_EXPORT void Parameter(const TopoDS_Shape& E,
                                  const TopoDS_Shape& V,
-                                 const Standard_Real P) const;
+                                 const double        P) const;
 
   //! Sets the range of edge <E>.
-  Standard_EXPORT void Range(const TopoDS_Shape& E,
-                             const Standard_Real first,
-                             const Standard_Real last) const;
+  Standard_EXPORT void Range(const TopoDS_Shape& E, const double first, const double last) const;
 
   //! Sets the range of edge <Eou> from <Ein>
   //! only when <Ein> has a closed geometry.
@@ -163,55 +161,55 @@ public:
                                  TopoDS_Shape&             V) const;
 
   //! Sets the curve <C> for the edge <E>
-  Standard_EXPORT void Curve3D(TopoDS_Shape&             E,
-                               const Handle(Geom_Curve)& C,
-                               const Standard_Real       Tol) const;
+  Standard_EXPORT void Curve3D(TopoDS_Shape&                  E,
+                               const occ::handle<Geom_Curve>& C,
+                               const double                   Tol) const;
 
   //! Sets the pcurve <C> for the edge <E> on the face
   //! <F>. If OverWrite is True the old pcurve if there
   //! is one is overwritten, else the two pcurves are
   //! set.
-  Standard_EXPORT void PCurve(TopoDS_Shape&               F,
-                              TopoDS_Shape&               E,
-                              const Handle(Geom2d_Curve)& C) const;
+  Standard_EXPORT void PCurve(TopoDS_Shape&                    F,
+                              TopoDS_Shape&                    E,
+                              const occ::handle<Geom2d_Curve>& C) const;
 
-  Standard_EXPORT void PCurve(TopoDS_Shape&               F,
-                              TopoDS_Shape&               E,
-                              const TopOpeBRepDS_Curve&   CDS,
-                              const Handle(Geom2d_Curve)& C) const;
+  Standard_EXPORT void PCurve(TopoDS_Shape&                    F,
+                              TopoDS_Shape&                    E,
+                              const TopOpeBRepDS_Curve&        CDS,
+                              const occ::handle<Geom2d_Curve>& C) const;
 
   Standard_EXPORT void Orientation(TopoDS_Shape& S, const TopAbs_Orientation O) const;
 
   Standard_EXPORT TopAbs_Orientation Orientation(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT void Closed(TopoDS_Shape& S, const Standard_Boolean B) const;
+  Standard_EXPORT void Closed(TopoDS_Shape& S, const bool B) const;
 
-  Standard_EXPORT Standard_Boolean Approximation() const;
+  Standard_EXPORT bool Approximation() const;
 
-  Standard_EXPORT void UpdateSurface(const TopoDS_Shape& F, const Handle(Geom_Surface)& SU) const;
+  Standard_EXPORT void UpdateSurface(const TopoDS_Shape&              F,
+                                     const occ::handle<Geom_Surface>& SU) const;
 
   Standard_EXPORT void UpdateSurface(const TopoDS_Shape& E,
                                      const TopoDS_Shape& oldF,
                                      const TopoDS_Shape& newF) const;
 
-  Standard_EXPORT Standard_Boolean OverWrite() const;
+  Standard_EXPORT bool OverWrite() const;
 
-  Standard_EXPORT void OverWrite(const Standard_Boolean O);
+  Standard_EXPORT void OverWrite(const bool O);
 
-  Standard_EXPORT Standard_Boolean Translate() const;
+  Standard_EXPORT bool Translate() const;
 
-  Standard_EXPORT void Translate(const Standard_Boolean T);
+  Standard_EXPORT void Translate(const bool T);
 
-protected:
 private:
-  Standard_EXPORT void TranslateOnPeriodic(TopoDS_Shape&         F,
-                                           TopoDS_Shape&         E,
-                                           Handle(Geom2d_Curve)& C) const;
+  Standard_EXPORT void TranslateOnPeriodic(TopoDS_Shape&              F,
+                                           TopoDS_Shape&              E,
+                                           occ::handle<Geom2d_Curve>& C) const;
 
   BRep_Builder             myBuilder;
   TopOpeBRepTool_CurveTool myCurveTool;
-  Standard_Boolean         myOverWrite;
-  Standard_Boolean         myTranslate;
+  bool                     myOverWrite;
+  bool                     myTranslate;
 };
 
 #endif // _TopOpeBRepDS_BuildTool_HeaderFile

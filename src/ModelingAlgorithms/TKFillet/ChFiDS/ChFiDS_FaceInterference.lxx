@@ -16,10 +16,10 @@
 
 //=================================================================================================
 
-inline void ChFiDS_FaceInterference::SetInterference(const Standard_Integer      LineIndex,
-                                                     const TopAbs_Orientation    Trans,
-                                                     const Handle(Geom2d_Curve)& PCurv1,
-                                                     const Handle(Geom2d_Curve)& PCurv2)
+inline void ChFiDS_FaceInterference::SetInterference(const int                        LineIndex,
+                                                     const TopAbs_Orientation         Trans,
+                                                     const occ::handle<Geom2d_Curve>& PCurv1,
+                                                     const occ::handle<Geom2d_Curve>& PCurv2)
 {
   lineindex      = LineIndex;
   LineTransition = Trans;
@@ -29,28 +29,28 @@ inline void ChFiDS_FaceInterference::SetInterference(const Standard_Integer     
 
 //=================================================================================================
 
-inline void ChFiDS_FaceInterference::SetLineIndex(const Standard_Integer I)
+inline void ChFiDS_FaceInterference::SetLineIndex(const int I)
 {
   lineindex = I;
 }
 
 //=================================================================================================
 
-inline void ChFiDS_FaceInterference::SetFirstParameter(const Standard_Real U1)
+inline void ChFiDS_FaceInterference::SetFirstParameter(const double U1)
 {
   firstParam = U1;
 }
 
 //=================================================================================================
 
-inline void ChFiDS_FaceInterference::SetLastParameter(const Standard_Real U1)
+inline void ChFiDS_FaceInterference::SetLastParameter(const double U1)
 {
   lastParam = U1;
 }
 
 //=================================================================================================
 
-inline Standard_Integer ChFiDS_FaceInterference::LineIndex() const
+inline int ChFiDS_FaceInterference::LineIndex() const
 {
   return lineindex;
 }
@@ -64,42 +64,42 @@ inline TopAbs_Orientation ChFiDS_FaceInterference::Transition() const
 
 //=================================================================================================
 
-inline const Handle(Geom2d_Curve)& ChFiDS_FaceInterference::PCurveOnFace() const
+inline const occ::handle<Geom2d_Curve>& ChFiDS_FaceInterference::PCurveOnFace() const
 {
   return pCurveOnFace;
 }
 
 //=================================================================================================
 
-inline const Handle(Geom2d_Curve)& ChFiDS_FaceInterference::PCurveOnSurf() const
+inline const occ::handle<Geom2d_Curve>& ChFiDS_FaceInterference::PCurveOnSurf() const
 {
   return pCurveOnSurf;
 }
 
 //=================================================================================================
 
-inline Handle(Geom2d_Curve)& ChFiDS_FaceInterference::ChangePCurveOnFace()
+inline occ::handle<Geom2d_Curve>& ChFiDS_FaceInterference::ChangePCurveOnFace()
 {
   return pCurveOnFace;
 }
 
 //=================================================================================================
 
-inline Handle(Geom2d_Curve)& ChFiDS_FaceInterference::ChangePCurveOnSurf()
+inline occ::handle<Geom2d_Curve>& ChFiDS_FaceInterference::ChangePCurveOnSurf()
 {
   return pCurveOnSurf;
 }
 
 //=================================================================================================
 
-inline Standard_Real ChFiDS_FaceInterference::FirstParameter() const
+inline double ChFiDS_FaceInterference::FirstParameter() const
 {
   return firstParam;
 }
 
 //=================================================================================================
 
-inline Standard_Real ChFiDS_FaceInterference::LastParameter() const
+inline double ChFiDS_FaceInterference::LastParameter() const
 {
   return lastParam;
 }

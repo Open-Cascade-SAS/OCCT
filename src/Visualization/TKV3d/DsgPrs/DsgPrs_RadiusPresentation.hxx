@@ -43,15 +43,15 @@ public:
   //! arrowhead will point towards the center of aCircle.
   //! If the Boolean reverseArrow is true, the arrowhead
   //! will point away from the attachment point.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     AttachmentPoint,
-                                  const gp_Circ&                    aCircle,
-                                  const Standard_Real               firstparam,
-                                  const Standard_Real               lastparam,
-                                  const Standard_Boolean            drawFromCenter = Standard_True,
-                                  const Standard_Boolean            reverseArrow = Standard_False);
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          AttachmentPoint,
+                                  const gp_Circ&                         aCircle,
+                                  const double                           firstparam,
+                                  const double                           lastparam,
+                                  const bool                             drawFromCenter = true,
+                                  const bool                             reverseArrow   = false);
 
   //! Adds the point AttachmentPoint, the circle aCircle,
   //! the text aText, and the parameters firstparam and
@@ -65,16 +65,16 @@ public:
   //! arrowhead will point towards the center of aCircle.
   //! If the Boolean reverseArrow is true, the arrowhead
   //! will point away from the attachment point.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     AttachmentPoint,
-                                  const gp_Circ&                    aCircle,
-                                  const Standard_Real               firstparam,
-                                  const Standard_Real               lastparam,
-                                  const DsgPrs_ArrowSide            ArrowSide,
-                                  const Standard_Boolean            drawFromCenter = Standard_True,
-                                  const Standard_Boolean            reverseArrow = Standard_False);
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          AttachmentPoint,
+                                  const gp_Circ&                         aCircle,
+                                  const double                           firstparam,
+                                  const double                           lastparam,
+                                  const DsgPrs_ArrowSide                 ArrowSide,
+                                  const bool                             drawFromCenter = true,
+                                  const bool                             reverseArrow   = false);
 
   //! Adds the circle aCircle, the text aText, the points
   //! AttachmentPoint, Center and EndOfArrow to the
@@ -88,18 +88,15 @@ public:
   //! arrowhead will point towards the center of aCircle.
   //! If the Boolean reverseArrow is true, the arrowhead
   //! will point away from the attachment point.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     AttachmentPoint,
-                                  const gp_Pnt&                     Center,
-                                  const gp_Pnt&                     EndOfArrow,
-                                  const DsgPrs_ArrowSide            ArrowSide,
-                                  const Standard_Boolean            drawFromCenter = Standard_True,
-                                  const Standard_Boolean            reverseArrow = Standard_False);
-
-protected:
-private:
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          AttachmentPoint,
+                                  const gp_Pnt&                          Center,
+                                  const gp_Pnt&                          EndOfArrow,
+                                  const DsgPrs_ArrowSide                 ArrowSide,
+                                  const bool                             drawFromCenter = true,
+                                  const bool                             reverseArrow   = false);
 };
 
 #endif // _DsgPrs_RadiusPresentation_HeaderFile

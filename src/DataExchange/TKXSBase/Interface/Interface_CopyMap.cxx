@@ -20,7 +20,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(Interface_CopyMap, Interface_CopyControl)
 
 //  CopyMap : nothing more than a passive Map
-Interface_CopyMap::Interface_CopyMap(const Handle(Interface_InterfaceModel)& amodel)
+Interface_CopyMap::Interface_CopyMap(const occ::handle<Interface_InterfaceModel>& amodel)
     : theres(0, amodel->NbEntities())
 {
   themod = amodel;
@@ -28,21 +28,21 @@ Interface_CopyMap::Interface_CopyMap(const Handle(Interface_InterfaceModel)& amo
 
 void Interface_CopyMap::Clear()
 {
-  Standard_Integer           nb = theres.Upper();
-  Handle(Standard_Transient) bid; // Null
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int                             nb = theres.Upper();
+  occ::handle<Standard_Transient> bid; // Null
+  for (int i = 1; i <= nb; i++)
     theres.SetValue(i, bid);
 }
 
-Handle(Interface_InterfaceModel) Interface_CopyMap::Model() const
+occ::handle<Interface_InterfaceModel> Interface_CopyMap::Model() const
 {
   return themod;
 }
 
-void Interface_CopyMap::Bind(const Handle(Standard_Transient)& ent,
-                             const Handle(Standard_Transient)& res)
+void Interface_CopyMap::Bind(const occ::handle<Standard_Transient>& ent,
+                             const occ::handle<Standard_Transient>& res)
 {
-  Standard_Integer num = themod->Number(ent);
+  int num = themod->Number(ent);
   if (num == 0 || num > theres.Upper())
     throw Interface_InterfaceError(
       "CopyMap : Bind, Starting Entity not issued from Starting Model");
@@ -51,12 +51,12 @@ void Interface_CopyMap::Bind(const Handle(Standard_Transient)& ent,
   theres.SetValue(num, res);
 }
 
-Standard_Boolean Interface_CopyMap::Search(const Handle(Standard_Transient)& ent,
-                                           Handle(Standard_Transient)&       res) const
+bool Interface_CopyMap::Search(const occ::handle<Standard_Transient>& ent,
+                               occ::handle<Standard_Transient>&       res) const
 {
-  Standard_Integer num = themod->Number(ent);
+  int num = themod->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   res = theres.Value(num);
   return (!res.IsNull());
 }

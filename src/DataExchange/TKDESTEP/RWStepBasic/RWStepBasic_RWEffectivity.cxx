@@ -20,10 +20,10 @@
 
 RWStepBasic_RWEffectivity::RWStepBasic_RWEffectivity() {}
 
-void RWStepBasic_RWEffectivity::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepBasic_Effectivity)&   ent) const
+void RWStepBasic_RWEffectivity::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                                   num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepBasic_Effectivity>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,8 +33,8 @@ void RWStepBasic_RWEffectivity::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : id ---
 
-  Handle(TCollection_HAsciiString) aId;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aId;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "id", ach, aId);
 
   //--- Initialisation of the read entity ---
@@ -42,8 +42,8 @@ void RWStepBasic_RWEffectivity::ReadStep(const Handle(StepData_StepReaderData)& 
   ent->Init(aId);
 }
 
-void RWStepBasic_RWEffectivity::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepBasic_Effectivity)& ent) const
+void RWStepBasic_RWEffectivity::WriteStep(StepData_StepWriter&                      SW,
+                                          const occ::handle<StepBasic_Effectivity>& ent) const
 {
 
   // --- own field : id ---
@@ -51,7 +51,7 @@ void RWStepBasic_RWEffectivity::WriteStep(StepData_StepWriter&                 S
   SW.Send(ent->Id());
 }
 
-void RWStepBasic_RWEffectivity::Share(const Handle(StepBasic_Effectivity)&,
+void RWStepBasic_RWEffectivity::Share(const occ::handle<StepBasic_Effectivity>&,
                                       Interface_EntityIterator&) const
 {
 }

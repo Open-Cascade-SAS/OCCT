@@ -21,7 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 
 class LocOpe_BuildShape
 {
@@ -32,15 +32,14 @@ public:
 
   //! Builds shape(s) from the list <L>. Uses only the
   //! faces of <L>.
-  LocOpe_BuildShape(const TopTools_ListOfShape& L);
+  LocOpe_BuildShape(const NCollection_List<TopoDS_Shape>& L);
 
   //! Builds shape(s) from the list <L>. Uses only the
   //! faces of <L>.
-  Standard_EXPORT void Perform(const TopTools_ListOfShape& L);
+  Standard_EXPORT void Perform(const NCollection_List<TopoDS_Shape>& L);
 
   const TopoDS_Shape& Shape() const;
 
-protected:
 private:
   TopoDS_Shape myRes;
 };

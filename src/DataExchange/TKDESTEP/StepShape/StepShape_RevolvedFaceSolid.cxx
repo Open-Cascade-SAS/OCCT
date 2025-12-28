@@ -20,17 +20,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_RevolvedFaceSolid, StepShape_SweptFaceSolid
 
 StepShape_RevolvedFaceSolid::StepShape_RevolvedFaceSolid() {}
 
-void StepShape_RevolvedFaceSolid::Init(const Handle(TCollection_HAsciiString)& aName,
-                                       const Handle(StepShape_FaceSurface)&    aSweptArea)
+void StepShape_RevolvedFaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                       const occ::handle<StepShape_FaceSurface>&    aSweptArea)
 {
 
   StepShape_SweptFaceSolid::Init(aName, aSweptArea);
 }
 
-void StepShape_RevolvedFaceSolid::Init(const Handle(TCollection_HAsciiString)& aName,
-                                       const Handle(StepShape_FaceSurface)&    aSweptArea,
-                                       const Handle(StepGeom_Axis1Placement)&  aAxis,
-                                       const Standard_Real                     aAngle)
+void StepShape_RevolvedFaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                       const occ::handle<StepShape_FaceSurface>&    aSweptArea,
+                                       const occ::handle<StepGeom_Axis1Placement>&  aAxis,
+                                       const double                                 aAngle)
 {
   // --- classe own fields ---
   axis  = aAxis;
@@ -39,22 +39,22 @@ void StepShape_RevolvedFaceSolid::Init(const Handle(TCollection_HAsciiString)& a
   StepShape_SweptFaceSolid::Init(aName, aSweptArea);
 }
 
-void StepShape_RevolvedFaceSolid::SetAxis(const Handle(StepGeom_Axis1Placement)& aAxis)
+void StepShape_RevolvedFaceSolid::SetAxis(const occ::handle<StepGeom_Axis1Placement>& aAxis)
 {
   axis = aAxis;
 }
 
-Handle(StepGeom_Axis1Placement) StepShape_RevolvedFaceSolid::Axis() const
+occ::handle<StepGeom_Axis1Placement> StepShape_RevolvedFaceSolid::Axis() const
 {
   return axis;
 }
 
-void StepShape_RevolvedFaceSolid::SetAngle(const Standard_Real aAngle)
+void StepShape_RevolvedFaceSolid::SetAngle(const double aAngle)
 {
   angle = aAngle;
 }
 
-Standard_Real StepShape_RevolvedFaceSolid::Angle() const
+double StepShape_RevolvedFaceSolid::Angle() const
 {
   return angle;
 }

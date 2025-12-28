@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ElementarySurface, StepGeom_Surface)
 
 StepGeom_ElementarySurface::StepGeom_ElementarySurface() {}
 
-void StepGeom_ElementarySurface::Init(const Handle(TCollection_HAsciiString)&  aName,
-                                      const Handle(StepGeom_Axis2Placement3d)& aPosition)
+void StepGeom_ElementarySurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                                      const occ::handle<StepGeom_Axis2Placement3d>& aPosition)
 {
   // --- classe own fields ---
   position = aPosition;
@@ -28,12 +28,13 @@ void StepGeom_ElementarySurface::Init(const Handle(TCollection_HAsciiString)&  a
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_ElementarySurface::SetPosition(const Handle(StepGeom_Axis2Placement3d)& aPosition)
+void StepGeom_ElementarySurface::SetPosition(
+  const occ::handle<StepGeom_Axis2Placement3d>& aPosition)
 {
   position = aPosition;
 }
 
-Handle(StepGeom_Axis2Placement3d) StepGeom_ElementarySurface::Position() const
+occ::handle<StepGeom_Axis2Placement3d> StepGeom_ElementarySurface::Position() const
 {
   return position;
 }

@@ -38,14 +38,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IntPatch_GLine, IntPatch_Line)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Lin&           L,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
       par1(0.0),
       par2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -60,14 +60,14 @@ IntPatch_GLine::IntPatch_GLine(const gp_Lin&           L,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Lin&           L,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
       par1(0.0),
       par2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -81,12 +81,12 @@ IntPatch_GLine::IntPatch_GLine(const gp_Lin&           L,
 //           when the transitions are Undecided.
 //=======================================================================
 
-IntPatch_GLine::IntPatch_GLine(const gp_Lin& L, const Standard_Boolean Tang)
+IntPatch_GLine::IntPatch_GLine(const gp_Lin& L, const bool Tang)
     : IntPatch_Line(Tang),
       par1(0.0),
       par2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -101,15 +101,15 @@ IntPatch_GLine::IntPatch_GLine(const gp_Lin& L, const Standard_Boolean Tang)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Circ&          C,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
       pos(C.Position()),
       par1(C.Radius()),
       par2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -123,15 +123,15 @@ IntPatch_GLine::IntPatch_GLine(const gp_Circ&          C,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Circ&          C,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
       pos(C.Position()),
       par1(C.Radius()),
       par2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -144,13 +144,13 @@ IntPatch_GLine::IntPatch_GLine(const gp_Circ&          C,
 //           when the transitions are Undecided.
 //=======================================================================
 
-IntPatch_GLine::IntPatch_GLine(const gp_Circ& C, const Standard_Boolean Tang)
+IntPatch_GLine::IntPatch_GLine(const gp_Circ& C, const bool Tang)
     : IntPatch_Line(Tang),
       pos(C.Position()),
       par1(C.Radius()),
       par2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -164,15 +164,15 @@ IntPatch_GLine::IntPatch_GLine(const gp_Circ& C, const Standard_Boolean Tang)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Elips&         E,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
       pos(E.Position()),
       par1(E.MajorRadius()),
       par2(E.MinorRadius()),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -186,15 +186,15 @@ IntPatch_GLine::IntPatch_GLine(const gp_Elips&         E,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Elips&         E,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
       pos(E.Position()),
       par1(E.MajorRadius()),
       par2(E.MinorRadius()),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -207,13 +207,13 @@ IntPatch_GLine::IntPatch_GLine(const gp_Elips&         E,
 //           when the transitions are Undecided.
 //=======================================================================
 
-IntPatch_GLine::IntPatch_GLine(const gp_Elips& E, const Standard_Boolean Tang)
+IntPatch_GLine::IntPatch_GLine(const gp_Elips& E, const bool Tang)
     : IntPatch_Line(Tang),
       pos(E.Position()),
       par1(E.MajorRadius()),
       par2(E.MinorRadius()),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -227,15 +227,15 @@ IntPatch_GLine::IntPatch_GLine(const gp_Elips& E, const Standard_Boolean Tang)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Parab&         P,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
       pos(P.Position()),
       par1(P.Focal()),
       par2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -249,15 +249,15 @@ IntPatch_GLine::IntPatch_GLine(const gp_Parab&         P,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Parab&         P,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
       pos(P.Position()),
       par1(P.Focal()),
       par2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -270,13 +270,13 @@ IntPatch_GLine::IntPatch_GLine(const gp_Parab&         P,
 //           when the transitions are Undecided.
 //=======================================================================
 
-IntPatch_GLine::IntPatch_GLine(const gp_Parab& P, const Standard_Boolean Tang)
+IntPatch_GLine::IntPatch_GLine(const gp_Parab& P, const bool Tang)
     : IntPatch_Line(Tang),
       pos(P.Position()),
       par1(P.Focal()),
       par2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -290,15 +290,15 @@ IntPatch_GLine::IntPatch_GLine(const gp_Parab& P, const Standard_Boolean Tang)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Hypr&          H,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
       pos(H.Position()),
       par1(H.MajorRadius()),
       par2(H.MinorRadius()),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -312,15 +312,15 @@ IntPatch_GLine::IntPatch_GLine(const gp_Hypr&          H,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Hypr&          H,
-                               const Standard_Boolean  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
       pos(H.Position()),
       par1(H.MajorRadius()),
       par2(H.MinorRadius()),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -333,13 +333,13 @@ IntPatch_GLine::IntPatch_GLine(const gp_Hypr&          H,
 //           when the transitions are Undecided.
 //=======================================================================
 
-IntPatch_GLine::IntPatch_GLine(const gp_Hypr& H, const Standard_Boolean Tang)
+IntPatch_GLine::IntPatch_GLine(const gp_Hypr& H, const bool Tang)
     : IntPatch_Line(Tang),
       pos(H.Position()),
       par1(H.MajorRadius()),
       par2(H.MinorRadius()),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
@@ -352,7 +352,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Hypr& H, const Standard_Boolean Tang)
 //           of points.
 //=======================================================================
 
-void IntPatch_GLine::Replace(const Standard_Integer /*Index*/, const IntPatch_Point& Pnt)
+void IntPatch_GLine::Replace(const int /*Index*/, const IntPatch_Point& Pnt)
 {
   svtx.Append(Pnt);
   //--   svtx(Index) = Pnt;
@@ -370,9 +370,9 @@ void IntPatch_GLine::AddVertex(const IntPatch_Point& Pnt)
   //-- GLine
   if (NbVertex())
   {
-    const Standard_Real pf  = (fipt ? svtx.Value(indf).ParameterOnLine() : 0.0);
-    const Standard_Real pl  = (lapt ? svtx.Value(indl).ParameterOnLine() : 0.0);
-    Standard_Real       par = Pnt.ParameterOnLine();
+    const double pf  = (fipt ? svtx.Value(indf).ParameterOnLine() : 0.0);
+    const double pl  = (lapt ? svtx.Value(indl).ParameterOnLine() : 0.0);
+    double       par = Pnt.ParameterOnLine();
     if (ArcType() == IntPatch_Circle || ArcType() == IntPatch_Ellipse)
     {
       if (fipt && lapt)
@@ -383,7 +383,7 @@ void IntPatch_GLine::AddVertex(const IntPatch_Point& Pnt)
           par -= M_PI + M_PI;
         if (par < pf)
         {
-          constexpr Standard_Real PrecisionPConfusion(Precision::PConfusion() * 1000.0);
+          constexpr double PrecisionPConfusion(Precision::PConfusion() * 1000.0);
           if ((pf - par) > PrecisionPConfusion)
           {
             return;
@@ -415,13 +415,13 @@ void IntPatch_GLine::AddVertex(const IntPatch_Point& Pnt)
 //           else a new point in the line is inserted.
 //=======================================================================
 
-void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
+void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
 {
-  Standard_Boolean    SortIsOK, APointDeleted;
-  Standard_Boolean    SortAgain = Standard_True;
-  Standard_Integer    i, j;
-  const Standard_Real ParamMinOnLine = (fipt ? Vertex(indf).ParameterOnLine() : -100000.0);
-  const Standard_Real ParamMaxOnLine = (lapt ? Vertex(indl).ParameterOnLine() : 100000.0);
+  bool         SortIsOK, APointDeleted;
+  bool         SortAgain = true;
+  int          i, j;
+  const double ParamMinOnLine = (fipt ? Vertex(indf).ParameterOnLine() : -100000.0);
+  const double ParamMaxOnLine = (lapt ? Vertex(indl).ParameterOnLine() : 100000.0);
 
   //----------------------------------------------------------
   //--     F i l t r e   s u r   r e s t r i c t i o n s   --
@@ -432,13 +432,13 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
   //-- 2 vertices on the same restriction and only
   //-- on that one must not have the same parametres
 
-  Standard_Integer nbvtx = NbVertex();
+  int nbvtx = NbVertex();
 
-  constexpr Standard_Real PrecisionPConfusion(Precision::PConfusion() * 1000.0);
+  constexpr double PrecisionPConfusion(Precision::PConfusion() * 1000.0);
 
   do
   {
-    APointDeleted = Standard_False;
+    APointDeleted = false;
     for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
@@ -465,7 +465,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                   if (indf > j)
                     indf--;
                 }
-                APointDeleted = Standard_True;
+                APointDeleted = true;
               }
             }
           }
@@ -476,7 +476,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
 
   do
   {
-    APointDeleted = Standard_False;
+    APointDeleted = false;
     for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
@@ -523,7 +523,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                         indf--;
                     }
                   }
-                  APointDeleted = Standard_True;
+                  APointDeleted = true;
                 }
               }
             }
@@ -535,7 +535,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
 
   do
   {
-    APointDeleted = Standard_False;
+    APointDeleted = false;
     for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
@@ -582,7 +582,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                         indf--;
                     }
                   }
-                  APointDeleted = Standard_True;
+                  APointDeleted = true;
                 }
               }
             }
@@ -596,9 +596,9 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
   //-- Tri des vertex et suppression des Vtx superflus
   //--
   //// modified by jgv, 2.11.01 for BUC61033 ////
-  Standard_Real    u1min = RealLast(), u1max = RealFirst();
-  Standard_Real    u2min = RealLast(), u2max = RealFirst();
-  Standard_Boolean ToBreak = Standard_False;
+  double u1min = RealLast(), u1max = RealFirst();
+  double u2min = RealLast(), u2max = RealFirst();
+  bool   ToBreak = false;
   ///////////////////////////////////////////////
   do
   {
@@ -607,12 +607,12 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
     {
       do
       {
-        SortIsOK = Standard_True;
+        SortIsOK = true;
         for (i = 2; i <= nbvtx; i++)
         {
           if (svtx.Value(i - 1).ParameterOnLine() > svtx.Value(i).ParameterOnLine())
           {
-            SortIsOK = Standard_False;
+            SortIsOK = false;
             svtx.Exchange(i - 1, i);
             if (fipt)
             {
@@ -638,8 +638,8 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
       break;
     ///////////////////////////////////////////////
 
-    SortAgain = Standard_False;
-    SortIsOK  = Standard_True;
+    SortAgain = false;
+    SortIsOK  = true;
     for (i = 2; i <= nbvtx && SortIsOK; i++)
     {
       IntPatch_Point& VTX = svtx.ChangeValue(i);
@@ -647,9 +647,9 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
       {
         if (i != j)
         {
-          IntPatch_Point&  VTXM1  = svtx.ChangeValue(j);
-          Standard_Boolean kill   = Standard_False;
-          Standard_Boolean killm1 = Standard_False;
+          IntPatch_Point& VTXM1  = svtx.ChangeValue(j);
+          bool            kill   = false;
+          bool            killm1 = false;
           if (std::abs(VTXM1.ParameterOnLine() - VTX.ParameterOnLine()) < PrecisionPConfusion)
           {
             if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1()) //-- OnS1    OnS1
@@ -658,9 +658,9 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
               {
                 if (VTXM1.IsOnDomS2()) //-- OnS1 == OnS1  OnS2
                 {
-                  if (VTX.IsOnDomS2() == Standard_False) //-- OnS1 == OnS1  OnS2 PasOnS2
+                  if (VTX.IsOnDomS2() == false) //-- OnS1 == OnS1  OnS2 PasOnS2
                   {
-                    kill = Standard_True;
+                    kill = true;
                   }
                   else
                   {
@@ -668,11 +668,11 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                     {
                       if (VTXM1.IsVertexOnS2())
                       {
-                        kill = Standard_True;
+                        kill = true;
                       }
                       else
                       {
-                        killm1 = Standard_True;
+                        killm1 = true;
                       }
                     }
                   }
@@ -681,22 +681,22 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                 {
                   if (VTX.IsOnDomS2()) //-- OnS1 == OnS1  PasOnS2  OnS2
                   {
-                    killm1 = Standard_True;
+                    killm1 = true;
                   }
                 }
               }
             }
             else //-- Pas OnS1  et  OnS1
             {
-              if (VTXM1.IsOnDomS2() == Standard_False && VTX.IsOnDomS2() == Standard_False)
+              if (VTXM1.IsOnDomS2() == false && VTX.IsOnDomS2() == false)
               {
-                if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1() == Standard_False)
+                if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1() == false)
                 {
-                  kill = Standard_True;
+                  kill = true;
                 }
-                else if (VTX.IsOnDomS1() && VTXM1.IsOnDomS1() == Standard_False)
+                else if (VTX.IsOnDomS1() && VTXM1.IsOnDomS1() == false)
                 {
-                  killm1 = Standard_True;
+                  killm1 = true;
                 }
               }
             }
@@ -709,9 +709,9 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                 {
                   if (VTXM1.IsOnDomS1()) //-- OnS2 == OnS2  OnS1
                   {
-                    if (VTX.IsOnDomS1() == Standard_False) //-- OnS2 == OnS2  OnS1 PasOnS1
+                    if (VTX.IsOnDomS1() == false) //-- OnS2 == OnS2  OnS1 PasOnS1
                     {
-                      kill = Standard_True;
+                      kill = true;
                     }
                     else
                     {
@@ -720,11 +720,11 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                         if (VTXM1.IsVertexOnS1())
                         {
                           // clang-format off
-                          kill=Standard_True;              //-- OnS2 == OnS2  OnS1 == OnS1  Vtx PasVtx
+                          kill=true;              //-- OnS2 == OnS2  OnS1 == OnS1  Vtx PasVtx
                         }
                         else
                         {
-                          killm1=Standard_True;            //-- OnS2 == OnS2  OnS1 == OnS1  PasVtx Vtx
+                          killm1=true;            //-- OnS2 == OnS2  OnS1 == OnS1  PasVtx Vtx
                           // clang-format on
                         }
                       }
@@ -734,22 +734,22 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                   {                      //-- OnS2 == OnS2  PasOnS1
                     if (VTX.IsOnDomS1()) //-- OnS2 == OnS2  PasOnS1  OnS1
                     {
-                      killm1 = Standard_True;
+                      killm1 = true;
                     }
                   }
                 }
               }
               else //-- Pas OnS2  et  OnS2
               {
-                if (VTXM1.IsOnDomS1() == Standard_False && VTX.IsOnDomS1() == Standard_False)
+                if (VTXM1.IsOnDomS1() == false && VTX.IsOnDomS1() == false)
                 {
-                  if (VTXM1.IsOnDomS2() && VTX.IsOnDomS2() == Standard_False)
+                  if (VTXM1.IsOnDomS2() && VTX.IsOnDomS2() == false)
                   {
-                    kill = Standard_True;
+                    kill = true;
                   }
-                  else if (VTX.IsOnDomS2() && VTXM1.IsOnDomS2() == Standard_False)
+                  else if (VTX.IsOnDomS2() && VTXM1.IsOnDomS2() == false)
                   {
-                    killm1 = Standard_True;
+                    killm1 = true;
                   }
                 }
               }
@@ -758,7 +758,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
             //-- On a j < i
             if (kill)
             {
-              SortIsOK = Standard_False;
+              SortIsOK = false;
               if (lapt)
               {
                 if (indl > i)
@@ -780,7 +780,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
             }
             else if (killm1)
             {
-              SortIsOK = Standard_False;
+              SortIsOK = false;
               if (lapt)
               {
                 if (indl > j)
@@ -810,11 +810,11 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
               //-- Change parametres of one point if points UV are
               //-- different. This is the case of seam edge
 
-              Standard_Real ponline = VTX.ParameterOnLine();
+              double ponline = VTX.ParameterOnLine();
               // eap, =>>
-              Standard_Real       newParam = ponline;
-              const Standard_Real PiPi     = M_PI + M_PI;
-              Standard_Boolean    is2PI    = (std::abs(ponline - PiPi) <= PrecisionPConfusion);
+              double       newParam = ponline;
+              const double PiPi     = M_PI + M_PI;
+              bool         is2PI    = (std::abs(ponline - PiPi) <= PrecisionPConfusion);
 
               if (nbvtx > 2 && // do this check if seam edge only gives vertices
                   !is2PI)      // but always change 2PI -> 0
@@ -831,10 +831,10 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
               // 		   ||(std::abs(ponline-M_PI-M_PI) <=PrecisionPConfusion))
               // eap, <<=
 
-              Standard_Real u1a, v1a, u2a, v2a, u1b, v1b, u2b, v2b;
+              double u1a, v1a, u2a, v2a, u1b, v1b, u2b, v2b;
               VTXM1.Parameters(u1a, v1a, u2a, v2a);
               VTX.Parameters(u1b, v1b, u2b, v2b);
-              Standard_Integer flag = 0;
+              int flag = 0;
 
               if ((std::abs(u1a - u1b) <= PrecisionPConfusion))
                 flag |= 1;
@@ -847,8 +847,8 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
               if ((std::abs(v2a - v2b) <= PrecisionPConfusion))
                 flag |= 8;
 
-              Standard_Boolean TestOn1 = Standard_False;
-              Standard_Boolean TestOn2 = Standard_False;
+              bool TestOn1 = false;
+              bool TestOn2 = false;
 
               switch (flag)
               {
@@ -861,13 +861,13 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                   break;
                 case 11: //-- meme point U1 V1   meme    V2   Test si U2a=U2b Mod 2PI
                 {
-                  TestOn2 = Standard_True;
+                  TestOn2 = true;
                   break;
                 }
 
                 case 14: //-- meme point    V1   meme U2 V2   Test si U1a=U1b Mod 2PI
                 {
-                  TestOn1 = Standard_True;
+                  TestOn1 = true;
                   break;
                 }
                 default:
@@ -879,8 +879,8 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
               if (TestOn1)
               {
                 //// modified by jgv, 2.11.01 for BUC61033 ////
-                Standard_Real U1A = (u1a < u1b) ? u1a : u1b;
-                Standard_Real U1B = (u1a < u1b) ? u1b : u1a;
+                double U1A = (u1a < u1b) ? u1a : u1b;
+                double U1B = (u1a < u1b) ? u1b : u1a;
 
                 if (u1min == RealLast())
                 {
@@ -890,19 +890,19 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                 else
                 {
                   if (std::abs(U1A - u1min) > PrecisionPConfusion)
-                    ToBreak = Standard_True;
+                    ToBreak = true;
                   if (std::abs(U1B - u1max) > PrecisionPConfusion)
-                    ToBreak = Standard_True;
+                    ToBreak = true;
                 }
                 ///////////////////////////////////////////////
                 // eap, =>>
                 // 		      if (std::abs(ponline) <= PrecisionPConfusion) {
-                // 		      const Standard_Real PiPi = M_PI+M_PI;
+                // 		      const double PiPi = M_PI+M_PI;
                 if (newParam >= ParamMinOnLine && newParam <= ParamMaxOnLine
                     /*PiPi >= ParamMinOnLine && PiPi<=ParamMaxOnLine*/)
                 {
-                  SortAgain = Standard_True;
-                  SortIsOK  = Standard_False;
+                  SortAgain = true;
+                  SortIsOK  = false;
                   if (newParam > ponline)
                   {
                     if (u1a < u1b)
@@ -929,8 +929,8 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                 // 		    }
                 // 		    else {
                 // 		      if(0.0 >= ParamMinOnLine && 0.0<=ParamMaxOnLine) {
-                // 			SortAgain = Standard_True;
-                // 			SortIsOK = Standard_False;
+                // 			SortAgain = true;
+                // 			SortIsOK = false;
                 // 			if(u1a > u1b) { VTX.SetParameter(0.0); }
                 // 			else          { VTXM1.SetParameter(0.0); }
                 // 		      }
@@ -941,8 +941,8 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
               if (TestOn2)
               {
                 //// modified by jgv, 2.11.01 for BUC61033 ////
-                Standard_Real U2A = (u2a < u2b) ? u2a : u2b;
-                Standard_Real U2B = (u2a < u2b) ? u2b : u2a;
+                double U2A = (u2a < u2b) ? u2a : u2b;
+                double U2B = (u2a < u2b) ? u2b : u2a;
                 if (u2min == RealLast())
                 {
                   u2min = U2A;
@@ -951,20 +951,20 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                 else
                 {
                   if (std::abs(U2A - u2min) > PrecisionPConfusion)
-                    ToBreak = Standard_True;
+                    ToBreak = true;
 
                   if (std::abs(U2B - u2max) > PrecisionPConfusion)
-                    ToBreak = Standard_True;
+                    ToBreak = true;
                 }
                 ///////////////////////////////////////////////
                 // eap, =>>
                 // 		    if (std::abs(ponline) <= PrecisionPConfusion) {
-                // 		      const Standard_Real PiPi = M_PI+M_PI;
+                // 		      const double PiPi = M_PI+M_PI;
                 if (newParam >= ParamMinOnLine && newParam <= ParamMaxOnLine
                     /*PiPi >= ParamMinOnLine && PiPi<=ParamMaxOnLine*/)
                 {
-                  SortAgain = Standard_True;
-                  SortIsOK  = Standard_False;
+                  SortAgain = true;
+                  SortIsOK  = false;
                   if (newParam > ponline)
                   {
                     if (u2a < u2b)
@@ -991,8 +991,8 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                 // 		    }
                 // 		    else {
                 // 		      if(0.0 >= ParamMinOnLine && 0.0<=ParamMaxOnLine) {
-                // 			SortAgain = Standard_True;
-                // 			SortIsOK = Standard_False;
+                // 			SortAgain = true;
+                // 			SortIsOK = false;
                 // 			if(u2a > u2b) { VTX.SetParameter(0.0); }
                 // 			else          { VTXM1.SetParameter(0.0); }
                 // 		      }
@@ -1015,12 +1015,12 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
   {
     do
     {
-      SortIsOK = Standard_True;
+      SortIsOK = true;
       for (i = 2; i <= nbvtx; i++)
       {
         if (svtx.Value(i - 1).ParameterOnLine() > svtx.Value(i).ParameterOnLine())
         {
-          SortIsOK = Standard_False;
+          SortIsOK = false;
           svtx.Exchange(i - 1, i);
         }
       }

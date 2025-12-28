@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_VertexTool, Standard_Transient)
 
 //=================================================================================================
 
-NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(const Standard_Integer theTarget)
+NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(const int theTarget)
 {
   const BRepMesh_Vertex& aVertex = myVertices->Value(theTarget - 1);
   if (aVertex.Movability() == BRepMesh_Deleted)
@@ -29,8 +29,8 @@ NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(const Standard_I
     return CellFilter_Purge;
   }
 
-  gp_XY            aVec = (myPoint - aVertex.Coord());
-  Standard_Boolean inTol;
+  gp_XY aVec = (myPoint - aVertex.Coord());
+  bool  inTol;
   if (std::abs(myTolerance[1]) < Precision::Confusion())
   {
     inTol = aVec.SquareModulus() < myTolerance[0];
@@ -42,7 +42,7 @@ NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(const Standard_I
 
   if (inTol)
   {
-    const Standard_Real aSqDist = aVec.SquareModulus();
+    const double aSqDist = aVec.SquareModulus();
     if (aSqDist < myMinSqDist)
     {
       myMinSqDist = aSqDist;
@@ -55,22 +55,21 @@ NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(const Standard_I
 
 //=================================================================================================
 
-BRepMesh_VertexTool::BRepMesh_VertexTool(const Handle(NCollection_IncAllocator)& theAllocator)
+BRepMesh_VertexTool::BRepMesh_VertexTool(const occ::handle<NCollection_IncAllocator>& theAllocator)
     : myAllocator(theAllocator),
       myCellFilter(0., myAllocator),
       mySelector(myAllocator)
 {
-  constexpr Standard_Real aTol = Precision::Confusion();
+  constexpr double aTol = Precision::Confusion();
   SetCellSize(aTol + 0.05 * aTol);
   SetTolerance(aTol, aTol);
 }
 
 //=================================================================================================
 
-Standard_Integer BRepMesh_VertexTool::Add(const BRepMesh_Vertex& theVertex,
-                                          const Standard_Boolean isForceAdd)
+int BRepMesh_VertexTool::Add(const BRepMesh_Vertex& theVertex, const bool isForceAdd)
 {
-  Standard_Integer aIndex = isForceAdd ? 0 : FindIndex(theVertex);
+  int aIndex = isForceAdd ? 0 : FindIndex(theVertex);
   if (aIndex == 0)
   {
     aIndex = mySelector.Add(theVertex);
@@ -84,7 +83,7 @@ Standard_Integer BRepMesh_VertexTool::Add(const BRepMesh_Vertex& theVertex,
 
 //=================================================================================================
 
-void BRepMesh_VertexTool::DeleteVertex(const Standard_Integer theIndex)
+void BRepMesh_VertexTool::DeleteVertex(const int theIndex)
 {
   BRepMesh_Vertex& aV = mySelector.GetVertex(theIndex);
 
@@ -97,8 +96,7 @@ void BRepMesh_VertexTool::DeleteVertex(const Standard_Integer theIndex)
 
 //=================================================================================================
 
-void BRepMesh_VertexTool::Substitute(const Standard_Integer theIndex,
-                                     const BRepMesh_Vertex& theVertex)
+void BRepMesh_VertexTool::Substitute(const int theIndex, const BRepMesh_Vertex& theVertex)
 {
   BRepMesh_Vertex& aV = mySelector.GetVertex(theIndex);
 

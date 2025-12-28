@@ -38,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MediaTexture, Graphic3d_Texture2D)
 
 //=================================================================================================
 
-Graphic3d_MediaTexture::Graphic3d_MediaTexture(std::mutex& theMutex, Standard_Integer thePlane)
+Graphic3d_MediaTexture::Graphic3d_MediaTexture(std::mutex& theMutex, int thePlane)
     : Graphic3d_Texture2D("", Graphic3d_TypeOfTexture_2D),
       myMutex(theMutex),
       myPlane(thePlane)
@@ -51,14 +51,15 @@ Graphic3d_MediaTexture::Graphic3d_MediaTexture(std::mutex& theMutex, Standard_In
 
 //=================================================================================================
 
-Handle(Image_PixMap) Graphic3d_MediaTexture::GetImage(const Handle(Image_SupportedFormats)&)
+occ::handle<Image_PixMap> Graphic3d_MediaTexture::GetImage(
+  const occ::handle<Image_SupportedFormats>&)
 {
   std::lock_guard<std::mutex> aLock(myMutex);
 
   if (myFrame.IsNull() || myFrame->IsLocked() || myFrame->IsEmpty() || myFrame->SizeX() < 1
       || myFrame->SizeY() < 1)
   {
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
 
   if (myPixMapWrapper.IsNull())
@@ -78,13 +79,13 @@ Handle(Image_PixMap) Graphic3d_MediaTexture::GetImage(const Handle(Image_Support
                                          aFrame->height,
                                          aFrame->linesize[0]))
     {
-      return Handle(Image_PixMap)();
+      return occ::handle<Image_PixMap>();
     }
     return myPixMapWrapper;
   }
   else if (myFrame->Format() == AV_PIX_FMT_YUV420P || myFrame->Format() == AV_PIX_FMT_YUVJ420P)
   {
-    const Graphic3d_Vec2i aSize = myPlane == 0 ? myFrame->Size() : myFrame->Size() / 2;
+    const NCollection_Vec2<int> aSize = myPlane == 0 ? myFrame->Size() : myFrame->Size() / 2;
     if (myPlane > 3
         || !myPixMapWrapper->InitWrapper(Image_Format_Gray,
                                          aFrame->data[myPlane],
@@ -92,11 +93,11 @@ Handle(Image_PixMap) Graphic3d_MediaTexture::GetImage(const Handle(Image_Support
                                          aSize.y(),
                                          aFrame->linesize[myPlane]))
     {
-      return Handle(Image_PixMap)();
+      return occ::handle<Image_PixMap>();
     }
     return myPixMapWrapper;
   }
 #endif
 
-  return Handle(Image_PixMap)();
+  return occ::handle<Image_PixMap>();
 }

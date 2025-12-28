@@ -18,8 +18,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ShellBasedSurfaceModel, StepGeom_GeometricR
 
 StepShape_ShellBasedSurfaceModel::StepShape_ShellBasedSurfaceModel() {}
 
-void StepShape_ShellBasedSurfaceModel::Init(const Handle(TCollection_HAsciiString)& aName,
-                                            const Handle(StepShape_HArray1OfShell)& aSbsmBoundary)
+void StepShape_ShellBasedSurfaceModel::Init(
+  const occ::handle<TCollection_HAsciiString>&             aName,
+  const occ::handle<NCollection_HArray1<StepShape_Shell>>& aSbsmBoundary)
 {
   // --- classe own fields ---
   sbsmBoundary = aSbsmBoundary;
@@ -28,23 +29,23 @@ void StepShape_ShellBasedSurfaceModel::Init(const Handle(TCollection_HAsciiStrin
 }
 
 void StepShape_ShellBasedSurfaceModel::SetSbsmBoundary(
-  const Handle(StepShape_HArray1OfShell)& aSbsmBoundary)
+  const occ::handle<NCollection_HArray1<StepShape_Shell>>& aSbsmBoundary)
 {
   sbsmBoundary = aSbsmBoundary;
 }
 
-Handle(StepShape_HArray1OfShell) StepShape_ShellBasedSurfaceModel::SbsmBoundary() const
+occ::handle<NCollection_HArray1<StepShape_Shell>> StepShape_ShellBasedSurfaceModel::SbsmBoundary()
+  const
 {
   return sbsmBoundary;
 }
 
-StepShape_Shell StepShape_ShellBasedSurfaceModel::SbsmBoundaryValue(
-  const Standard_Integer num) const
+StepShape_Shell StepShape_ShellBasedSurfaceModel::SbsmBoundaryValue(const int num) const
 {
   return sbsmBoundary->Value(num);
 }
 
-Standard_Integer StepShape_ShellBasedSurfaceModel::NbSbsmBoundary() const
+int StepShape_ShellBasedSurfaceModel::NbSbsmBoundary() const
 {
   return sbsmBoundary->Length();
 }

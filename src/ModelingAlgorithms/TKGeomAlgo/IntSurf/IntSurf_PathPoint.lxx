@@ -13,9 +13,11 @@
 // commercial license or contractual agreement.
 
 #include <StdFail_UndefinedDerivative.hxx>
-#include <TColgp_HSequenceOfXY.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
-inline void IntSurf_PathPoint::AddUV(const Standard_Real U, const Standard_Real V)
+inline void IntSurf_PathPoint::AddUV(const double U, const double V)
 {
   sequv->Append(gp_XY(U, V));
 }
@@ -23,18 +25,18 @@ inline void IntSurf_PathPoint::AddUV(const Standard_Real U, const Standard_Real 
 inline void IntSurf_PathPoint::SetDirections(const gp_Vec& V, const gp_Dir2d& D)
 {
 
-  istgt = Standard_False;
+  istgt = false;
   vectg = V;
   dirtg = D;
 }
 
-inline void IntSurf_PathPoint::SetTangency(const Standard_Boolean Tang)
+inline void IntSurf_PathPoint::SetTangency(const bool Tang)
 {
 
   istgt = Tang;
 }
 
-inline void IntSurf_PathPoint::SetPassing(const Standard_Boolean Pass)
+inline void IntSurf_PathPoint::SetPassing(const bool Pass)
 {
 
   ispass = Pass;
@@ -45,20 +47,20 @@ inline const gp_Pnt& IntSurf_PathPoint::Value() const
   return pt;
 }
 
-inline void IntSurf_PathPoint::Value2d(Standard_Real& U, Standard_Real& V) const
+inline void IntSurf_PathPoint::Value2d(double& U, double& V) const
 {
   gp_XY uv(sequv->Sequence().First());
   U = uv.X();
   V = uv.Y();
 }
 
-inline Standard_Boolean IntSurf_PathPoint::IsPassingPnt() const
+inline bool IntSurf_PathPoint::IsPassingPnt() const
 {
 
   return ispass;
 }
 
-inline Standard_Boolean IntSurf_PathPoint::IsTangent() const
+inline bool IntSurf_PathPoint::IsTangent() const
 {
 
   return istgt;
@@ -84,15 +86,13 @@ inline const gp_Dir2d& IntSurf_PathPoint::Direction2d() const
   return dirtg;
 }
 
-inline Standard_Integer IntSurf_PathPoint::Multiplicity() const
+inline int IntSurf_PathPoint::Multiplicity() const
 {
 
   return (sequv->Length() - 1);
 }
 
-inline void IntSurf_PathPoint::Parameters(const Standard_Integer Index,
-                                          Standard_Real&         U,
-                                          Standard_Real&         V) const
+inline void IntSurf_PathPoint::Parameters(const int Index, double& U, double& V) const
 {
   gp_XY uv(sequv->Value(Index + 1));
   U = uv.X();

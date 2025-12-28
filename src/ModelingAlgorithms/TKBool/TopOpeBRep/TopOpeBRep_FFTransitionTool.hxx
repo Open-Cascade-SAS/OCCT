@@ -34,7 +34,7 @@ public:
 
   Standard_EXPORT static TopOpeBRepDS_Transition ProcessLineTransition(
     const TopOpeBRep_VPointInter& P,
-    const Standard_Integer        Index,
+    const int                     Index,
     const TopAbs_Orientation      EdgeOrientation);
 
   Standard_EXPORT static TopOpeBRepDS_Transition ProcessLineTransition(
@@ -43,12 +43,12 @@ public:
 
   Standard_EXPORT static TopOpeBRepDS_Transition ProcessEdgeTransition(
     const TopOpeBRep_VPointInter& P,
-    const Standard_Integer        Index,
+    const int                     Index,
     const TopAbs_Orientation      LineOrientation);
 
   Standard_EXPORT static TopOpeBRepDS_Transition ProcessFaceTransition(
     const TopOpeBRep_LineInter& L,
-    const Standard_Integer      Index,
+    const int                   Index,
     const TopAbs_Orientation    FaceOrientation);
 
   //! compute transition on "IntPatch_Restriction line" edge <R>
@@ -60,13 +60,10 @@ public:
   //! This method should be provided by IntPatch_Line (NYI)
   Standard_EXPORT static TopOpeBRepDS_Transition ProcessEdgeONTransition(
     const TopOpeBRep_VPointInter& VP,
-    const Standard_Integer        Index,
+    const int                     Index,
     const TopoDS_Shape&           R,
     const TopoDS_Shape&           E,
     const TopoDS_Shape&           F);
-
-protected:
-private:
 };
 
 #endif // _TopOpeBRep_FFTransitionTool_HeaderFile

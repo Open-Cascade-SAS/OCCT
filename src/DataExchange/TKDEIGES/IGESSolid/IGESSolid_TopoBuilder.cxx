@@ -14,19 +14,18 @@
 #include <gp_XYZ.hxx>
 #include <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
 #include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESSolid_EdgeList.hxx>
-#include <IGESSolid_HArray1OfVertexList.hxx>
+#include <IGESSolid_VertexList.hxx>
 #include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_Shell.hxx>
 #include <IGESSolid_TopoBuilder.hxx>
-#include <IGESSolid_VertexList.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
 
 IGESSolid_TopoBuilder::IGESSolid_TopoBuilder()
 {
@@ -36,27 +35,27 @@ IGESSolid_TopoBuilder::IGESSolid_TopoBuilder()
 void IGESSolid_TopoBuilder::Clear()
 {
   thesolid = new IGESSolid_ManifoldSolid;
-  thevoids = new TColStd_HSequenceOfTransient();
-  thevflag = new TColStd_HSequenceOfInteger();
+  thevoids = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  thevflag = new NCollection_HSequence<int>();
   theshell = new IGESSolid_Shell;
-  thefaces = new TColStd_HSequenceOfTransient();
-  thefflag = new TColStd_HSequenceOfInteger();
+  thefaces = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  thefflag = new NCollection_HSequence<int>();
   theface.Nullify();
-  theinner = new TColStd_HSequenceOfTransient();
+  theinner = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   theloop.Nullify();
-  theetype = new TColStd_HSequenceOfInteger();
-  thee3d   = new TColStd_HSequenceOfInteger();
-  theeflag = new TColStd_HSequenceOfInteger();
-  theeuv   = new TColStd_HSequenceOfTransient();
-  theisol  = new TColStd_HSequenceOfInteger();
-  thecuruv = new TColStd_HSequenceOfTransient();
-  theiso   = new TColStd_HSequenceOfTransient();
+  theetype = new NCollection_HSequence<int>();
+  thee3d   = new NCollection_HSequence<int>();
+  theeflag = new NCollection_HSequence<int>();
+  theeuv   = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  theisol  = new NCollection_HSequence<int>();
+  thecuruv = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  theiso   = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   theedgel = new IGESSolid_EdgeList;
-  thecur3d = new TColStd_HSequenceOfTransient();
-  thevstar = new TColStd_HSequenceOfInteger();
-  thevend  = new TColStd_HSequenceOfInteger();
+  thecur3d = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  thevstar = new NCollection_HSequence<int>();
+  thevend  = new NCollection_HSequence<int>();
   thevertl = new IGESSolid_VertexList;
-  thepoint = new TColgp_HSequenceOfXYZ();
+  thepoint = new NCollection_HSequence<gp_XYZ>();
 }
 
 void IGESSolid_TopoBuilder::AddVertex(const gp_XYZ& val)
@@ -64,24 +63,24 @@ void IGESSolid_TopoBuilder::AddVertex(const gp_XYZ& val)
   thepoint->Append(val);
 }
 
-Standard_Integer IGESSolid_TopoBuilder::NbVertices() const
+int IGESSolid_TopoBuilder::NbVertices() const
 {
   return thepoint->Length();
 }
 
-const gp_XYZ& IGESSolid_TopoBuilder::Vertex(const Standard_Integer num) const
+const gp_XYZ& IGESSolid_TopoBuilder::Vertex(const int num) const
 {
   return thepoint->Value(num);
 }
 
-Handle(IGESSolid_VertexList) IGESSolid_TopoBuilder::VertexList() const
+occ::handle<IGESSolid_VertexList> IGESSolid_TopoBuilder::VertexList() const
 {
   return thevertl;
 }
 
-void IGESSolid_TopoBuilder::AddEdge(const Handle(IGESData_IGESEntity)& curve,
-                                    const Standard_Integer             vstart,
-                                    const Standard_Integer             vend)
+void IGESSolid_TopoBuilder::AddEdge(const occ::handle<IGESData_IGESEntity>& curve,
+                                    const int                               vstart,
+                                    const int                               vend)
 {
   if (curve.IsNull() || vstart <= 0 || vend <= 0 || vstart > thepoint->Length()
       || vend > thepoint->Length())
@@ -91,15 +90,15 @@ void IGESSolid_TopoBuilder::AddEdge(const Handle(IGESData_IGESEntity)& curve,
   thevend->Append(vend);
 }
 
-Standard_Integer IGESSolid_TopoBuilder::NbEdges() const
+int IGESSolid_TopoBuilder::NbEdges() const
 {
   return thecur3d->Length();
 }
 
-void IGESSolid_TopoBuilder::Edge(const Standard_Integer       num,
-                                 Handle(IGESData_IGESEntity)& curve,
-                                 Standard_Integer&            vstart,
-                                 Standard_Integer&            vend) const
+void IGESSolid_TopoBuilder::Edge(const int                         num,
+                                 occ::handle<IGESData_IGESEntity>& curve,
+                                 int&                              vstart,
+                                 int&                              vend) const
 {
   if (num <= 0 || num > thecur3d->Length())
     return;
@@ -108,23 +107,23 @@ void IGESSolid_TopoBuilder::Edge(const Standard_Integer       num,
   vend   = thevend->Value(num);
 }
 
-Handle(IGESSolid_EdgeList) IGESSolid_TopoBuilder::EdgeList() const
+occ::handle<IGESSolid_EdgeList> IGESSolid_TopoBuilder::EdgeList() const
 {
   return theedgel;
 }
 
 void IGESSolid_TopoBuilder::EndLists()
 {
-  Standard_Integer                      i, nb;
-  Handle(TColgp_HArray1OfXYZ)           vert;
-  Handle(IGESData_HArray1OfIGESEntity)  curves;
-  Handle(IGESSolid_HArray1OfVertexList) estart, eend;
-  Handle(TColStd_HArray1OfInteger)      nstart, nend;
+  int                                                                 i, nb;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                            vert;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>  curves;
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>> estart, eend;
+  occ::handle<NCollection_HArray1<int>>                               nstart, nend;
 
   nb = thepoint->Length();
   if (nb > 0)
   {
-    vert = new TColgp_HArray1OfXYZ(1, nb);
+    vert = new NCollection_HArray1<gp_XYZ>(1, nb);
     for (i = 1; i <= nb; i++)
       vert->SetValue(i, thepoint->Value(i));
   }
@@ -133,13 +132,13 @@ void IGESSolid_TopoBuilder::EndLists()
   nb = thecur3d->Length();
   if (nb > 0)
   {
-    curves = new IGESData_HArray1OfIGESEntity(1, nb);
-    nstart = new TColStd_HArray1OfInteger(1, nb);
+    curves = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+    nstart = new NCollection_HArray1<int>(1, nb);
     nstart->Init(0);
-    nend = new TColStd_HArray1OfInteger(1, nb);
+    nend = new NCollection_HArray1<int>(1, nb);
     nend->Init(0);
-    estart = new IGESSolid_HArray1OfVertexList(1, nb);
-    eend   = new IGESSolid_HArray1OfVertexList(1, nb);
+    estart = new NCollection_HArray1<occ::handle<IGESSolid_VertexList>>(1, nb);
+    eend   = new NCollection_HArray1<occ::handle<IGESSolid_VertexList>>(1, nb);
     for (i = 1; i <= nb; i++)
     {
       curves->SetValue(i, GetCasted(IGESData_IGESEntity, thecur3d->Value(i)));
@@ -162,9 +161,7 @@ void IGESSolid_TopoBuilder::MakeLoop()
   theisol->Clear();
 }
 
-void IGESSolid_TopoBuilder::MakeEdge(const Standard_Integer edgetype,
-                                     const Standard_Integer edge3d,
-                                     const Standard_Integer orientation)
+void IGESSolid_TopoBuilder::MakeEdge(const int edgetype, const int edge3d, const int orientation)
 {
   if (edge3d <= 0 || edge3d > thecur3d->Length())
     throw Standard_DomainError("IGESSolid_TopoBuilder : MakeEdge");
@@ -175,8 +172,7 @@ void IGESSolid_TopoBuilder::MakeEdge(const Standard_Integer edgetype,
   theisol->Clear();
 }
 
-void IGESSolid_TopoBuilder::AddCurveUV(const Handle(IGESData_IGESEntity)& curve,
-                                       const Standard_Integer             iso)
+void IGESSolid_TopoBuilder::AddCurveUV(const occ::handle<IGESData_IGESEntity>& curve, const int iso)
 {
   if (curve.IsNull() || thee3d->IsEmpty())
     throw Standard_DomainError("IGESSolid_TopoBuilder : AddCurveUV");
@@ -187,13 +183,13 @@ void IGESSolid_TopoBuilder::AddCurveUV(const Handle(IGESData_IGESEntity)& curve,
 void IGESSolid_TopoBuilder::EndEdge()
 {
   //  transform thecuruv,theiso to array and put it in theeuv
-  Handle(IGESData_HArray1OfIGESEntity) curuv;
-  Handle(TColStd_HArray1OfInteger)     iso;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> curuv;
+  occ::handle<NCollection_HArray1<int>>                              iso;
   if (!thecuruv->IsEmpty())
   {
-    Standard_Integer i, nb = thecuruv->Length();
-    curuv = new IGESData_HArray1OfIGESEntity(1, nb);
-    iso   = new TColStd_HArray1OfInteger(1, nb);
+    int i, nb = thecuruv->Length();
+    curuv = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+    iso   = new NCollection_HArray1<int>(1, nb);
     iso->Init(0);
     for (i = 1; i <= nb; i++)
     {
@@ -206,19 +202,19 @@ void IGESSolid_TopoBuilder::EndEdge()
 
 void IGESSolid_TopoBuilder::EndLoop()
 {
-  Handle(TColStd_HArray1OfInteger)               etypes, e3d, eflags, enbuv, eiso;
-  Handle(IGESData_HArray1OfIGESEntity)           edges, curves;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger)    isol;
-  Handle(IGESBasic_HArray1OfHArray1OfIGESEntity) curvl;
-  Standard_Integer                               i, nb; // szv#4:S4163:12Mar99 nbuv not needed
+  occ::handle<NCollection_HArray1<int>> etypes, e3d, eflags, enbuv, eiso;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> edges, curves;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>                   isol;
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>                curvl;
+  int i, nb; // szv#4:S4163:12Mar99 nbuv not needed
   nb = thee3d->Length();
   if (nb > 0)
   {
-    etypes = new TColStd_HArray1OfInteger(1, nb);
-    e3d    = new TColStd_HArray1OfInteger(1, nb);
-    eflags = new TColStd_HArray1OfInteger(1, nb);
-    enbuv  = new TColStd_HArray1OfInteger(1, nb);
-    edges  = new IGESData_HArray1OfIGESEntity(1, nb);
+    etypes = new NCollection_HArray1<int>(1, nb);
+    e3d    = new NCollection_HArray1<int>(1, nb);
+    eflags = new NCollection_HArray1<int>(1, nb);
+    enbuv  = new NCollection_HArray1<int>(1, nb);
+    edges  = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
     curvl  = new IGESBasic_HArray1OfHArray1OfIGESEntity(1, nb);
     isol   = new IGESBasic_HArray1OfHArray1OfInteger(1, nb);
 
@@ -229,25 +225,25 @@ void IGESSolid_TopoBuilder::EndLoop()
       eflags->SetValue(i, theeflag->Value(i));
       enbuv->SetValue(i, 0);
       edges->SetValue(i, theedgel);
-      curves = GetCasted(IGESData_HArray1OfIGESEntity, thecuruv->Value(i));
+      curves = GetCasted(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>, thecuruv->Value(i));
       if (!curves.IsNull())
       {
         // nbuv = curves->Length(); //szv#4:S4163:12Mar99 not needed
         enbuv->SetValue(i, nb);
         curvl->SetValue(i, curves);
-        isol->SetValue(i, GetCasted(TColStd_HArray1OfInteger, theiso->Value(i)));
+        isol->SetValue(i, GetCasted(NCollection_HArray1<int>, theiso->Value(i)));
       }
     }
   }
   theloop->Init(etypes, edges, e3d, eflags, enbuv, isol, curvl);
 }
 
-void IGESSolid_TopoBuilder::MakeFace(const Handle(IGESData_IGESEntity)& surface)
+void IGESSolid_TopoBuilder::MakeFace(const occ::handle<IGESData_IGESEntity>& surface)
 {
   if (surface.IsNull())
     throw Standard_DomainError("IGESSolid_TopoBuilder : MakeFace");
   thesurf  = surface;
-  theouter = Standard_False;
+  theouter = false;
   theinner->Clear();
   theface = new IGESSolid_Face;
 }
@@ -255,7 +251,7 @@ void IGESSolid_TopoBuilder::MakeFace(const Handle(IGESData_IGESEntity)& surface)
 void IGESSolid_TopoBuilder::SetOuter()
 {
   EndLoop();
-  theouter = Standard_True;
+  theouter = true;
   theinner->Append(theloop);
   theloop.Nullify();
 }
@@ -267,13 +263,13 @@ void IGESSolid_TopoBuilder::AddInner()
   theloop.Nullify();
 }
 
-void IGESSolid_TopoBuilder::EndFace(const Standard_Integer orientation)
+void IGESSolid_TopoBuilder::EndFace(const int orientation)
 {
-  Handle(IGESSolid_HArray1OfLoop) loops;
-  Standard_Integer                i, nb = theinner->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> loops;
+  int                                                           i, nb = theinner->Length();
   if (nb > 0)
   {
-    loops = new IGESSolid_HArray1OfLoop(1, nb);
+    loops = new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nb);
     for (i = 1; i <= nb; i++)
       loops->SetValue(i, GetCasted(IGESSolid_Loop, theinner->Value(i)));
   }
@@ -291,13 +287,13 @@ void IGESSolid_TopoBuilder::MakeShell()
 
 void IGESSolid_TopoBuilder::EndShell()
 {
-  Handle(IGESSolid_HArray1OfFace)  faces;
-  Handle(TColStd_HArray1OfInteger) flags;
-  Standard_Integer                 i, nb = thefaces->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>> faces;
+  occ::handle<NCollection_HArray1<int>>                         flags;
+  int                                                           i, nb = thefaces->Length();
   if (nb > 0)
   {
-    faces = new IGESSolid_HArray1OfFace(1, nb);
-    flags = new TColStd_HArray1OfInteger(1, nb);
+    faces = new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nb);
+    flags = new NCollection_HArray1<int>(1, nb);
     flags->Init(0);
     for (i = 1; i <= nb; i++)
     {
@@ -314,7 +310,7 @@ void IGESSolid_TopoBuilder::EndSimpleShell()
   EndLists();
 }
 
-void IGESSolid_TopoBuilder::SetMainShell(const Standard_Integer orientation)
+void IGESSolid_TopoBuilder::SetMainShell(const int orientation)
 {
   EndShell();
   themains = theshell;
@@ -322,7 +318,7 @@ void IGESSolid_TopoBuilder::SetMainShell(const Standard_Integer orientation)
   theshell.Nullify();
 }
 
-void IGESSolid_TopoBuilder::AddVoidShell(const Standard_Integer orientation)
+void IGESSolid_TopoBuilder::AddVoidShell(const int orientation)
 {
   EndShell();
   thevoids->Append(theshell);
@@ -333,13 +329,13 @@ void IGESSolid_TopoBuilder::AddVoidShell(const Standard_Integer orientation)
 void IGESSolid_TopoBuilder::EndSolid()
 {
   EndLists();
-  Handle(IGESSolid_HArray1OfShell) shells;
-  Handle(TColStd_HArray1OfInteger) flags;
-  Standard_Integer                 i, nb = thevoids->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>> shells;
+  occ::handle<NCollection_HArray1<int>>                          flags;
+  int                                                            i, nb = thevoids->Length();
   if (nb > 0)
   {
-    shells = new IGESSolid_HArray1OfShell(1, nb);
-    flags  = new TColStd_HArray1OfInteger(1, nb);
+    shells = new NCollection_HArray1<occ::handle<IGESSolid_Shell>>(1, nb);
+    flags  = new NCollection_HArray1<int>(1, nb);
     flags->Init(0);
     for (i = 1; i <= nb; i++)
     {
@@ -350,12 +346,12 @@ void IGESSolid_TopoBuilder::EndSolid()
   thesolid->Init(themains, themflag, shells, flags);
 }
 
-Handle(IGESSolid_Shell) IGESSolid_TopoBuilder::Shell() const
+occ::handle<IGESSolid_Shell> IGESSolid_TopoBuilder::Shell() const
 {
   return theshell;
 }
 
-Handle(IGESSolid_ManifoldSolid) IGESSolid_TopoBuilder::Solid() const
+occ::handle<IGESSolid_ManifoldSolid> IGESSolid_TopoBuilder::Solid() const
 {
   return thesolid;
 }

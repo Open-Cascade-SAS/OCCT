@@ -25,37 +25,37 @@
 
 GC_MakeSegment::GC_MakeSegment(const gp_Pnt& P1, const gp_Pnt& P2)
 {
-  Standard_Real     dist = P1.Distance(P2);
-  Handle(Geom_Line) L    = GC_MakeLine(P1, P2);
-  TheSegment             = new Geom_TrimmedCurve(L, 0., dist, Standard_True);
-  TheError               = gce_Done;
+  double                 dist = P1.Distance(P2);
+  occ::handle<Geom_Line> L    = GC_MakeLine(P1, P2);
+  TheSegment                  = new Geom_TrimmedCurve(L, 0., dist, true);
+  TheError                    = gce_Done;
 }
 
-GC_MakeSegment::GC_MakeSegment(const gp_Lin& Line, const gp_Pnt& Point, const Standard_Real U)
+GC_MakeSegment::GC_MakeSegment(const gp_Lin& Line, const gp_Pnt& Point, const double U)
 {
-  Standard_Real     Ufirst = ElCLib::Parameter(Line, Point);
-  Handle(Geom_Line) L      = new Geom_Line(Line);
-  TheSegment               = new Geom_TrimmedCurve(L, Ufirst, U, Standard_True);
-  TheError                 = gce_Done;
+  double                 Ufirst = ElCLib::Parameter(Line, Point);
+  occ::handle<Geom_Line> L      = new Geom_Line(Line);
+  TheSegment                    = new Geom_TrimmedCurve(L, Ufirst, U, true);
+  TheError                      = gce_Done;
 }
 
 GC_MakeSegment::GC_MakeSegment(const gp_Lin& Line, const gp_Pnt& P1, const gp_Pnt& P2)
 {
-  Standard_Real     Ufirst = ElCLib::Parameter(Line, P1);
-  Standard_Real     Ulast  = ElCLib::Parameter(Line, P2);
-  Handle(Geom_Line) L      = new Geom_Line(Line);
-  TheSegment               = new Geom_TrimmedCurve(L, Ufirst, Ulast, Standard_True);
+  double                 Ufirst = ElCLib::Parameter(Line, P1);
+  double                 Ulast  = ElCLib::Parameter(Line, P2);
+  occ::handle<Geom_Line> L      = new Geom_Line(Line);
+  TheSegment                    = new Geom_TrimmedCurve(L, Ufirst, Ulast, true);
+  TheError                      = gce_Done;
+}
+
+GC_MakeSegment::GC_MakeSegment(const gp_Lin& Line, const double U1, const double U2)
+{
+  occ::handle<Geom_Line> L = new Geom_Line(Line);
+  TheSegment               = new Geom_TrimmedCurve(L, U1, U2, true);
   TheError                 = gce_Done;
 }
 
-GC_MakeSegment::GC_MakeSegment(const gp_Lin& Line, const Standard_Real U1, const Standard_Real U2)
-{
-  Handle(Geom_Line) L = new Geom_Line(Line);
-  TheSegment          = new Geom_TrimmedCurve(L, U1, U2, Standard_True);
-  TheError            = gce_Done;
-}
-
-const Handle(Geom_TrimmedCurve)& GC_MakeSegment::Value() const
+const occ::handle<Geom_TrimmedCurve>& GC_MakeSegment::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeSegment::Value() - no result");
   return TheSegment;

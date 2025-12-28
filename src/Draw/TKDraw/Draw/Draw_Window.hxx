@@ -27,7 +27,7 @@
 
 #include <memory>
 
-const Standard_Integer MAXCOLOR = 15;
+const int MAXCOLOR = 15;
 
 //! Segment definition.
 struct Draw_XSegment
@@ -38,10 +38,7 @@ struct Draw_XSegment
 
   const NCollection_Vec2<short>& operator[](int theIndex) const { return Points[theIndex]; }
 
-  void Init(Standard_Integer theXStart,
-            Standard_Integer theYStart,
-            Standard_Integer theXEnd,
-            Standard_Integer theYEnd)
+  void Init(int theXStart, int theYStart, int theXEnd, int theYEnd)
   {
     Points[0].SetValues((short)theXStart, (short)theYStart);
     Points[1].SetValues((short)theXEnd, (short)theYEnd);
@@ -68,18 +65,18 @@ extern console_semaphore_value volatile console_semaphore;
 extern wchar_t console_command[DRAW_COMMAND_SIZE + 1];
 
 // PROCEDURE DE DRAW WINDOW
-Standard_EXPORT Standard_Boolean Init_Appli(HINSTANCE, HINSTANCE, int, HWND&);
-Standard_EXPORT void             Run_Appli(HWND);
-Standard_EXPORT void             Destroy_Appli(HINSTANCE);
+Standard_EXPORT bool Init_Appli(HINSTANCE, HINSTANCE, int, HWND&);
+Standard_EXPORT void Run_Appli(HWND);
+Standard_EXPORT void Destroy_Appli(HINSTANCE);
 
 #else
 
 //! Run the application.
 //! interp will be called to interpret a command and return True if the command is complete.
-void Run_Appli(Standard_Boolean (*inteprete)(const char*));
+void Run_Appli(bool (*inteprete)(const char*));
 
 //! Initialize application.
-Standard_Boolean Init_Appli();
+bool Init_Appli();
 
 //! Destroy application.
 void Destroy_Appli();
@@ -123,8 +120,7 @@ public:
   Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
 
   //! @sa SetColor()
-  Standard_EXPORT static Standard_Boolean DefineColor(const Standard_Integer theIndex,
-                                                      const char*            theColorName);
+  Standard_EXPORT static bool DefineColor(const int theIndex, const char* theColorName);
 
   //! XFlush() wrapper (X11), has no effect on other platforms.
   Standard_EXPORT static void Flush();
@@ -134,19 +130,19 @@ public:
   Standard_EXPORT virtual ~Draw_Window();
 
   //! Get window position.
-  Standard_EXPORT void GetPosition(Standard_Integer& thePosX, Standard_Integer& thePosY);
+  Standard_EXPORT void GetPosition(int& thePosX, int& thePosY);
 
   //! Set window position.
-  Standard_EXPORT void SetPosition(Standard_Integer theNewXpos, Standard_Integer theNewYpos);
+  Standard_EXPORT void SetPosition(int theNewXpos, int theNewYpos);
 
   //! Return window height.
-  Standard_EXPORT Standard_Integer HeightWin() const;
+  Standard_EXPORT int HeightWin() const;
 
   //! Return window width.
-  Standard_EXPORT Standard_Integer WidthWin() const;
+  Standard_EXPORT int WidthWin() const;
 
   //! Set window dimensions.
-  Standard_EXPORT void SetDimension(Standard_Integer theNewDx, Standard_Integer theNewDy);
+  Standard_EXPORT void SetDimension(int theNewDx, int theNewDy);
 
   //! Return window title.
   Standard_EXPORT TCollection_AsciiString GetTitle() const;
@@ -169,33 +165,30 @@ public:
   //! Clear window content.
   Standard_EXPORT void Clear();
 
-  //! Returns Standard_True if off-screen image buffer is being used
-  Standard_Boolean GetUseBuffer() const { return myUseBuffer; }
+  //! Returns true if off-screen image buffer is being used
+  bool GetUseBuffer() const { return myUseBuffer; }
 
   // Turns on/off usage of off-screen image buffer (can be used for redrawing optimization)
-  Standard_EXPORT void SetUseBuffer(Standard_Boolean theToUse);
+  Standard_EXPORT void SetUseBuffer(bool theToUse);
 
   //! Set active color index for further paintings.
   //! @sa DefineColor()
-  Standard_EXPORT void SetColor(Standard_Integer theColor);
+  Standard_EXPORT void SetColor(int theColor);
 
   //! Set active paint mode (3 for COPY; 6 for XOR).
-  Standard_EXPORT void SetMode(Standard_Integer theMode);
+  Standard_EXPORT void SetMode(int theMode);
 
   //! Draw the string.
-  Standard_EXPORT void DrawString(Standard_Integer theX,
-                                  Standard_Integer theY,
-                                  const char*      theText);
+  Standard_EXPORT void DrawString(int theX, int theY, const char* theText);
 
   //! Draw array of segments.
-  Standard_EXPORT void DrawSegments(const Draw_XSegment* theSegments,
-                                    Standard_Integer     theNumberOfElements);
+  Standard_EXPORT void DrawSegments(const Draw_XSegment* theSegments, int theNumberOfElements);
 
   //! Redraw window content.
   Standard_EXPORT void Redraw();
 
   //! Save snapshot.
-  Standard_EXPORT Standard_Boolean Save(const char* theFileName) const;
+  Standard_EXPORT bool Save(const char* theFileName) const;
 
   //! Perform window exposing.
   virtual void WExpose() = 0;
@@ -222,7 +215,7 @@ protected:
 
 public:
 #if defined(_WIN32)
-  Standard_Boolean IsEqualWindows(HANDLE theWindow) { return myWindow == theWindow; }
+  bool IsEqualWindows(HANDLE theWindow) { return myWindow == theWindow; }
 
   Standard_EXPORT static void SelectWait(HANDLE& theWindow, int& theX, int& theY, int& theButton);
   Standard_EXPORT static void SelectNoWait(HANDLE& theWindow, int& theX, int& theY, int& theButton);
@@ -230,30 +223,30 @@ public:
   Standard_EXPORT static LRESULT APIENTRY DrawProc(HWND, UINT, WPARAM, LPARAM);
   static HWND                             hWndClientMDI;
 #elif defined(HAVE_XLIB)
-  Standard_Boolean IsEqualWindows(Window theWindow) { return myWindow == theWindow; }
+  bool IsEqualWindows(Window theWindow) { return myWindow == theWindow; }
 
   //! Event structure.
   struct Draw_XEvent
   {
-    Standard_Integer type;
-    Window           window;
-    Standard_Integer button;
-    Standard_Integer x;
-    Standard_Integer y;
+    int    type;
+    Window window;
+    int    button;
+    int    x;
+    int    y;
   };
 
   //! Retrieve event.
   static void GetNextEvent(Draw_XEvent& theEvent);
 
-  void Wait(Standard_Boolean theToWait = Standard_True);
+  void Wait(bool theToWait = true);
 #elif defined(__APPLE__)
-  Standard_Boolean IsEqualWindows(const long theWindowNumber);
+  bool IsEqualWindows(const long theWindowNumber);
 
-  static void GetNextEvent(Standard_Boolean  theWait,
-                           long&             theWindowNumber,
-                           Standard_Integer& theX,
-                           Standard_Integer& theY,
-                           Standard_Integer& theButton);
+  static void GetNextEvent(bool  theWait,
+                           long& theWindowNumber,
+                           int&  theX,
+                           int&  theY,
+                           int&  theButton);
 #endif
 
 private:
@@ -268,11 +261,11 @@ private:
 
 private:
 #if defined(_WIN32)
-  HWND             myWindow; //!< native window
-  HBITMAP          myMemHbm;
-  HBITMAP          myOldHbm;
-  Standard_Integer myCurrPen;
-  Standard_Integer myCurrMode;
+  HWND    myWindow; //!< native window
+  HBITMAP myMemHbm;
+  HBITMAP myOldHbm;
+  int     myCurrPen;
+  int     myCurrMode;
 #elif defined(HAVE_XLIB)
   Window                       myWindow; //!< native window
   Window                       myMother; //!< parent native window
@@ -285,8 +278,8 @@ private:
 #else
   Aspect_Drawable myWindow;
 #endif
-  Standard_Integer myCurrentColor;
-  Standard_Boolean myUseBuffer;
+  int  myCurrentColor;
+  bool myUseBuffer;
 };
 
 #endif // Draw_Window_HeaderFile

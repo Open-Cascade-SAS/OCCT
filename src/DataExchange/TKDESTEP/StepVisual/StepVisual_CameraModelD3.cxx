@@ -20,9 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3, StepVisual_CameraModel)
 
 StepVisual_CameraModelD3::StepVisual_CameraModelD3() {}
 
-void StepVisual_CameraModelD3::Init(const Handle(TCollection_HAsciiString)&  aName,
-                                    const Handle(StepGeom_Axis2Placement3d)& aViewReferenceSystem,
-                                    const Handle(StepVisual_ViewVolume)&     aPerspectiveOfVolume)
+void StepVisual_CameraModelD3::Init(
+  const occ::handle<TCollection_HAsciiString>&  aName,
+  const occ::handle<StepGeom_Axis2Placement3d>& aViewReferenceSystem,
+  const occ::handle<StepVisual_ViewVolume>&     aPerspectiveOfVolume)
 {
   // --- classe own fields ---
   viewReferenceSystem = aViewReferenceSystem;
@@ -32,23 +33,23 @@ void StepVisual_CameraModelD3::Init(const Handle(TCollection_HAsciiString)&  aNa
 }
 
 void StepVisual_CameraModelD3::SetViewReferenceSystem(
-  const Handle(StepGeom_Axis2Placement3d)& aViewReferenceSystem)
+  const occ::handle<StepGeom_Axis2Placement3d>& aViewReferenceSystem)
 {
   viewReferenceSystem = aViewReferenceSystem;
 }
 
-Handle(StepGeom_Axis2Placement3d) StepVisual_CameraModelD3::ViewReferenceSystem() const
+occ::handle<StepGeom_Axis2Placement3d> StepVisual_CameraModelD3::ViewReferenceSystem() const
 {
   return viewReferenceSystem;
 }
 
 void StepVisual_CameraModelD3::SetPerspectiveOfVolume(
-  const Handle(StepVisual_ViewVolume)& aPerspectiveOfVolume)
+  const occ::handle<StepVisual_ViewVolume>& aPerspectiveOfVolume)
 {
   perspectiveOfVolume = aPerspectiveOfVolume;
 }
 
-Handle(StepVisual_ViewVolume) StepVisual_CameraModelD3::PerspectiveOfVolume() const
+occ::handle<StepVisual_ViewVolume> StepVisual_CameraModelD3::PerspectiveOfVolume() const
 {
   return perspectiveOfVolume;
 }

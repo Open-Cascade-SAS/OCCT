@@ -18,7 +18,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
 #include <XSControl_ConnectedShapes.hxx>
@@ -31,33 +32,35 @@ XSControl_ConnectedShapes::XSControl_ConnectedShapes()
 {
 }
 
-XSControl_ConnectedShapes::XSControl_ConnectedShapes(const Handle(XSControl_TransferReader)& TR)
+XSControl_ConnectedShapes::XSControl_ConnectedShapes(
+  const occ::handle<XSControl_TransferReader>& TR)
     : IFSelect_SelectExplore(1),
       theTR(TR)
 {
 }
 
-void XSControl_ConnectedShapes::SetReader(const Handle(XSControl_TransferReader)& TR)
+void XSControl_ConnectedShapes::SetReader(const occ::handle<XSControl_TransferReader>& TR)
 {
   theTR = TR;
 }
 
-Standard_Boolean XSControl_ConnectedShapes::Explore(const Standard_Integer /*level*/,
-                                                    const Handle(Standard_Transient)& ent,
-                                                    const Interface_Graph& /*G*/,
-                                                    Interface_EntityIterator& explored) const
+bool XSControl_ConnectedShapes::Explore(const int /*level*/,
+                                        const occ::handle<Standard_Transient>& ent,
+                                        const Interface_Graph& /*G*/,
+                                        Interface_EntityIterator& explored) const
 {
-  Handle(Transfer_TransientProcess) TP;
+  occ::handle<Transfer_TransientProcess> TP;
   if (!theTR.IsNull())
     TP = theTR->TransientProcess();
   if (TP.IsNull())
-    return Standard_False;
+    return false;
   TopoDS_Shape Shape = TransferBRep::ShapeResult(TP, ent);
   if (Shape.IsNull())
-    return Standard_False;
-  Handle(TColStd_HSequenceOfTransient) li = AdjacentEntities(Shape, TP, TopAbs_FACE);
+    return false;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> li =
+    AdjacentEntities(Shape, TP, TopAbs_FACE);
   explored.AddList(li);
-  return Standard_True;
+  return true;
 }
 
 TCollection_AsciiString XSControl_ConnectedShapes::ExploreLabel() const
@@ -66,15 +69,16 @@ TCollection_AsciiString XSControl_ConnectedShapes::ExploreLabel() const
   return lab;
 }
 
-Handle(TColStd_HSequenceOfTransient) XSControl_ConnectedShapes::AdjacentEntities(
-  const TopoDS_Shape&                      ashape,
-  const Handle(Transfer_TransientProcess)& TP,
-  const TopAbs_ShapeEnum                   type)
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_ConnectedShapes::
+  AdjacentEntities(const TopoDS_Shape&                           ashape,
+                   const occ::handle<Transfer_TransientProcess>& TP,
+                   const TopAbs_ShapeEnum                        type)
 {
-  Handle(TColStd_HSequenceOfTransient) li = new TColStd_HSequenceOfTransient();
-  Standard_Integer                     i, nb = TP->NbMapped();
-  //  TopTools_MapOfShape adj (nb);
-  TopTools_MapOfShape vtx(20);
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> li =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  int i, nb = TP->NbMapped();
+  //  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> adj (nb);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> vtx(20);
 
   for (TopExp_Explorer vert(ashape, TopAbs_VERTEX); vert.More(); vert.Next())
   {
@@ -83,8 +87,8 @@ Handle(TColStd_HSequenceOfTransient) XSControl_ConnectedShapes::AdjacentEntities
 
   for (i = 1; i <= nb; i++)
   {
-    Handle(Transfer_Binder) bnd = TP->MapItem(i);
-    TopoDS_Shape            sh  = TransferBRep::ShapeResult(bnd);
+    occ::handle<Transfer_Binder> bnd = TP->MapItem(i);
+    TopoDS_Shape                 sh  = TransferBRep::ShapeResult(bnd);
     if (sh.IsNull())
       continue;
     if (sh.ShapeType() != type)

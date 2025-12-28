@@ -61,11 +61,11 @@ public:
   //! @param theC coefficient of x^2 term
   //! @param theD coefficient of x term
   //! @param theE constant term
-  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real theA,
-                                             const Standard_Real theB,
-                                             const Standard_Real theC,
-                                             const Standard_Real theD,
-                                             const Standard_Real theE);
+  Standard_EXPORT math_DirectPolynomialRoots(const double theA,
+                                             const double theB,
+                                             const double theC,
+                                             const double theD,
+                                             const double theE);
 
   //! Computes all the real roots of the cubic polynomial
   //! Ax^3 + Bx^2 + Cx + D = 0 using Cardano's method with Vieta substitution.
@@ -82,10 +82,10 @@ public:
   //! @param theB coefficient of x^2 term
   //! @param theC coefficient of x term
   //! @param theD constant term
-  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real theA,
-                                             const Standard_Real theB,
-                                             const Standard_Real theC,
-                                             const Standard_Real theD);
+  Standard_EXPORT math_DirectPolynomialRoots(const double theA,
+                                             const double theB,
+                                             const double theC,
+                                             const double theD);
 
   //! Computes all the real roots of the quadratic polynomial
   //! Ax^2 + Bx + C = 0 using numerically stable formulas.
@@ -98,9 +98,9 @@ public:
   //! @param theA coefficient of x^2 term
   //! @param theB coefficient of x term
   //! @param theC constant term
-  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real theA,
-                                             const Standard_Real theB,
-                                             const Standard_Real theC);
+  Standard_EXPORT math_DirectPolynomialRoots(const double theA,
+                                             const double theB,
+                                             const double theC);
 
   //! Computes the real root of the linear equation Ax + B = 0.
   //!
@@ -111,20 +111,20 @@ public:
   //!
   //! @param theA coefficient of x term
   //! @param theB constant term
-  Standard_EXPORT math_DirectPolynomialRoots(const Standard_Real theA, const Standard_Real theB);
+  Standard_EXPORT math_DirectPolynomialRoots(const double theA, const double theB);
 
   //! Returns true if the computations are successful, otherwise returns false.
   //! Computations may fail due to numerical issues or overflow conditions.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns true if there is an infinity of roots, otherwise returns false.
   //! This occurs only for the degenerate linear case 0*x + 0 = 0.
-  Standard_Boolean InfiniteRoots() const;
+  bool InfiniteRoots() const;
 
   //! Returns the number of distinct real roots found.
   //! An exception is raised if there are an infinity of roots.
   //! For multiple roots, this counts each root according to its multiplicity.
-  Standard_Integer NbSolutions() const;
+  int NbSolutions() const;
 
   //! Returns the value of the Nth root in default ordering.
   //! The default ordering may vary depending on the algorithm used.
@@ -134,7 +134,7 @@ public:
   //!
   //! @param theIndex root index (1-based)
   //! @return root value
-  Standard_Real Value(const Standard_Integer theIndex) const;
+  double Value(const int theIndex) const;
 
   //! Prints diagnostic information about the current state of the solver.
   //! Outputs computation status, number of roots, and individual root values.
@@ -159,11 +159,11 @@ protected:
   //! @param theC coefficient of x^2 term
   //! @param theD coefficient of x term
   //! @param theE constant term
-  Standard_EXPORT void Solve(const Standard_Real theA,
-                             const Standard_Real theB,
-                             const Standard_Real theC,
-                             const Standard_Real theD,
-                             const Standard_Real theE);
+  Standard_EXPORT void Solve(const double theA,
+                             const double theB,
+                             const double theC,
+                             const double theD,
+                             const double theE);
 
   //! Solves cubic equation Ax^3 + Bx^2 + Cx + D = 0 using Cardano's method
   //! with Vieta substitution and trigonometric solution for stability.
@@ -180,10 +180,10 @@ protected:
   //! @param theB coefficient of x^2 term
   //! @param theC coefficient of x term
   //! @param theD constant term
-  Standard_EXPORT void Solve(const Standard_Real theA,
-                             const Standard_Real theB,
-                             const Standard_Real theC,
-                             const Standard_Real theD);
+  Standard_EXPORT void Solve(const double theA,
+                             const double theB,
+                             const double theC,
+                             const double theD);
 
   //! Solves quadratic equation Ax^2 + Bx + C = 0 using numerically stable
   //! formulas to avoid catastrophic cancellation.
@@ -197,9 +197,7 @@ protected:
   //! @param theA coefficient of x^2 term
   //! @param theB coefficient of x term
   //! @param theC constant term
-  Standard_EXPORT void Solve(const Standard_Real theA,
-                             const Standard_Real theB,
-                             const Standard_Real theC);
+  Standard_EXPORT void Solve(const double theA, const double theB, const double theC);
 
   //! Solves linear equation Ax + B = 0 with proper handling of degenerate cases.
   //!
@@ -210,32 +208,32 @@ protected:
   //!
   //! @param theA coefficient of x term
   //! @param theB constant term
-  Standard_EXPORT void Solve(const Standard_Real theA, const Standard_Real theB);
+  Standard_EXPORT void Solve(const double theA, const double theB);
 
 private:
-  Standard_Boolean myDone;           //!< Computation status flag
-  Standard_Boolean myInfiniteStatus; //!< Infinite solutions flag (0*x + 0 = 0)
-  Standard_Integer myNbSol;          //!< Number of real roots found (0 to 4)
-  Standard_Real    myRoots[4];       //!< Array storing computed real roots
+  bool   myDone;           //!< Computation status flag
+  bool   myInfiniteStatus; //!< Infinite solutions flag (0*x + 0 = 0)
+  int    myNbSol;          //!< Number of real roots found (0 to 4)
+  double myRoots[4];       //!< Array storing computed real roots
 };
 
-inline Standard_Boolean math_DirectPolynomialRoots::IsDone() const
+inline bool math_DirectPolynomialRoots::IsDone() const
 {
   return myDone;
 }
 
-inline Standard_Boolean math_DirectPolynomialRoots::InfiniteRoots() const
+inline bool math_DirectPolynomialRoots::InfiniteRoots() const
 {
   return myInfiniteStatus;
 }
 
-inline Standard_Integer math_DirectPolynomialRoots::NbSolutions() const
+inline int math_DirectPolynomialRoots::NbSolutions() const
 {
   StdFail_InfiniteSolutions_Raise_if(myInfiniteStatus, " ");
   return myNbSol;
 }
 
-inline Standard_Real math_DirectPolynomialRoots::Value(const Standard_Integer theIndex) const
+inline double math_DirectPolynomialRoots::Value(const int theIndex) const
 {
   StdFail_InfiniteSolutions_Raise_if(myInfiniteStatus, " ");
   Standard_RangeError_Raise_if((theIndex < 1) || (theIndex > myNbSol), " ");

@@ -34,7 +34,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 //=================================================================================================
 
@@ -44,25 +45,25 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
   myFace  = F;
   myList.Clear();
 
-  TopTools_MapOfShape   M;
-  TopExp_Explorer       exp, expf;
-  Handle(Geom_Curve)    C;
-  Handle(Geom_Surface)  S;
-  TopLoc_Location       Loc;
-  Standard_Real         f, l;
-  Handle(Standard_Type) Tc, Ts;
-  Standard_Boolean      ToAdd;
-  gp_Pln                pl;
-  gp_Cylinder           cy;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
+  TopExp_Explorer                                        exp, expf;
+  occ::handle<Geom_Curve>                                C;
+  occ::handle<Geom_Surface>                              S;
+  TopLoc_Location                                        Loc;
+  double                                                 f, l;
+  occ::handle<Standard_Type>                             Tc, Ts;
+  bool                                                   ToAdd;
+  gp_Pln                                                 pl;
+  gp_Cylinder                                            cy;
 
-  constexpr Standard_Real Tol    = Precision::Confusion();
-  constexpr Standard_Real TolAng = Precision::Angular();
+  constexpr double Tol    = Precision::Confusion();
+  constexpr double TolAng = Precision::Angular();
 
   S  = BRep_Tool::Surface(F);
   Ts = S->DynamicType();
   if (Ts == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    S  = Handle(Geom_RectangularTrimmedSurface)::DownCast(S)->BasisSurface();
+    S  = occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface();
     Ts = S->DynamicType();
   }
 
@@ -71,12 +72,12 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
     return; // pour le moment
   }
 
-  Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(myFace);
-  BRepTopAdaptor_TopolTool    TPT(HS);
+  occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface(myFace);
+  BRepTopAdaptor_TopolTool         TPT(HS);
 
   for (exp.Init(myShape, TopAbs_EDGE); exp.More(); exp.Next())
   {
-    ToAdd                  = Standard_False;
+    ToAdd                  = false;
     const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
     if (M.Contains(edg))
     {
@@ -98,11 +99,11 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
     }
 
     C  = BRep_Tool::Curve(edg, Loc, f, l);
-    C  = Handle(Geom_Curve)::DownCast(C->Transformed(Loc.Transformation()));
+    C  = occ::down_cast<Geom_Curve>(C->Transformed(Loc.Transformation()));
     Tc = C->DynamicType();
     if (Tc == STANDARD_TYPE(Geom_TrimmedCurve))
     {
-      C  = Handle(Geom_TrimmedCurve)::DownCast(C)->BasisCurve();
+      C  = occ::down_cast<Geom_TrimmedCurve>(C)->BasisCurve();
       Tc = C->DynamicType();
     }
     if (Tc != STANDARD_TYPE(Geom_Line) && Tc != STANDARD_TYPE(Geom_Circle))
@@ -111,21 +112,21 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
     }
     if (Ts == STANDARD_TYPE(Geom_Plane))
     {
-      pl = Handle(Geom_Plane)::DownCast(S)->Pln();
+      pl = occ::down_cast<Geom_Plane>(S)->Pln();
     }
     else
     {
-      cy = Handle(Geom_CylindricalSurface)::DownCast(S)->Cylinder();
+      cy = occ::down_cast<Geom_CylindricalSurface>(S)->Cylinder();
     }
 
     if (Tc == STANDARD_TYPE(Geom_Line))
     {
-      gp_Lin li = Handle(Geom_Line)::DownCast(C)->Lin();
+      gp_Lin li = occ::down_cast<Geom_Line>(C)->Lin();
       if (Ts == STANDARD_TYPE(Geom_Plane))
       {
         if (pl.Contains(li, Tol, TolAng))
         {
-          ToAdd = Standard_True;
+          ToAdd = true;
         }
       }
       else
@@ -133,18 +134,18 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
         if (cy.Axis().IsParallel(li.Position(), TolAng)
             && std::abs(li.Distance(cy.Location()) - cy.Radius()) < Tol)
         {
-          ToAdd = Standard_True;
+          ToAdd = true;
         }
       }
     }
     else
     { // Tt == STANDARD_TYPE(Geom_Circle)
-      gp_Circ ci = Handle(Geom_Circle)::DownCast(C)->Circ();
+      gp_Circ ci = occ::down_cast<Geom_Circle>(C)->Circ();
       if (Ts == STANDARD_TYPE(Geom_Plane))
       {
         if (pl.Position().IsCoplanar(ci.Position(), Tol, TolAng))
         {
-          ToAdd = Standard_True;
+          ToAdd = true;
         }
       }
       else
@@ -152,7 +153,7 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
         if (std::abs(cy.Radius() - ci.Radius()) < Tol
             && cy.Axis().IsCoaxial(ci.Axis(), TolAng, Tol))
         {
-          ToAdd = Standard_True;
+          ToAdd = true;
         }
       }
     }
@@ -160,13 +161,13 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
     if (ToAdd)
     {
       // On classifie 3 points.
-      gp_Pnt        p[3];
-      Standard_Real U, V;
+      gp_Pnt p[3];
+      double U, V;
       p[0] = C->Value(f);
       p[1] = C->Value(l);
       p[2] = C->Value((f + l) / 2.);
-      //      for (Standard_Integer i=0; i<3; i++) {
-      Standard_Integer i;
+      //      for (int i=0; i<3; i++) {
+      int i;
       for (i = 0; i < 3; i++)
       {
         if (Ts == STANDARD_TYPE(Geom_Plane))

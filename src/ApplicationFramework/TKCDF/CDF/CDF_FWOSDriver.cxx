@@ -42,16 +42,17 @@ static void PutSlash(TCollection_ExtendedString& anXSTRING)
 
 //=================================================================================================
 
-CDF_FWOSDriver::CDF_FWOSDriver(CDM_MetaDataLookUpTable& theLookUpTable)
+CDF_FWOSDriver::CDF_FWOSDriver(
+  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable)
     : myLookUpTable(&theLookUpTable)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean CDF_FWOSDriver::Find(const TCollection_ExtendedString& aFolder,
-                                      const TCollection_ExtendedString& aName,
-                                      const TCollection_ExtendedString& /*aVersion*/)
+bool CDF_FWOSDriver::Find(const TCollection_ExtendedString& aFolder,
+                          const TCollection_ExtendedString& aName,
+                          const TCollection_ExtendedString& /*aVersion*/)
 {
 
   OSD_Path      thePath = UTL::Path(aFolder);
@@ -65,14 +66,14 @@ Standard_Boolean CDF_FWOSDriver::Find(const TCollection_ExtendedString& aFolder,
     OSD_File theFile(p2);
     return theFile.Exists();
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean CDF_FWOSDriver::HasReadPermission(const TCollection_ExtendedString& aFolder,
-                                                   const TCollection_ExtendedString& aName,
-                                                   const TCollection_ExtendedString& /*aVersion*/)
+bool CDF_FWOSDriver::HasReadPermission(const TCollection_ExtendedString& aFolder,
+                                       const TCollection_ExtendedString& aName,
+                                       const TCollection_ExtendedString& /*aVersion*/)
 {
   OSD_SingleProtection theProtection =
     OSD_File(UTL::Path(Concatenate(aFolder, aName))).Protection().User();
@@ -88,17 +89,17 @@ Standard_Boolean CDF_FWOSDriver::HasReadPermission(const TCollection_ExtendedStr
     case OSD_RWD:
     case OSD_RXD:
     case OSD_RWXD:
-      return Standard_True;
+      return true;
     default:
-      return Standard_False;
+      return false;
   }
 }
 
 //=================================================================================================
 
-Handle(CDM_MetaData) CDF_FWOSDriver::MetaData(const TCollection_ExtendedString& aFolder,
-                                              const TCollection_ExtendedString& aName,
-                                              const TCollection_ExtendedString& /*aVersion*/)
+occ::handle<CDM_MetaData> CDF_FWOSDriver::MetaData(const TCollection_ExtendedString& aFolder,
+                                                   const TCollection_ExtendedString& aName,
+                                                   const TCollection_ExtendedString& /*aVersion*/)
 {
   TCollection_ExtendedString p = Concatenate(aFolder, aName);
   return CDM_MetaData::LookUp(*myLookUpTable, aFolder, aName, p, p, UTL::IsReadOnly(p));
@@ -106,8 +107,9 @@ Handle(CDM_MetaData) CDF_FWOSDriver::MetaData(const TCollection_ExtendedString& 
 
 //=================================================================================================
 
-Handle(CDM_MetaData) CDF_FWOSDriver::CreateMetaData(const Handle(CDM_Document)&       aDocument,
-                                                    const TCollection_ExtendedString& aFileName)
+occ::handle<CDM_MetaData> CDF_FWOSDriver::CreateMetaData(
+  const occ::handle<CDM_Document>&  aDocument,
+  const TCollection_ExtendedString& aFileName)
 {
   return CDM_MetaData::LookUp(*myLookUpTable,
                               aDocument->RequestedFolder(),
@@ -119,7 +121,7 @@ Handle(CDM_MetaData) CDF_FWOSDriver::CreateMetaData(const Handle(CDM_Document)& 
 
 //=================================================================================================
 
-TCollection_ExtendedString CDF_FWOSDriver::BuildFileName(const Handle(CDM_Document)& aDocument)
+TCollection_ExtendedString CDF_FWOSDriver::BuildFileName(const occ::handle<CDM_Document>& aDocument)
 {
 
   TCollection_ExtendedString retstr = TCollection_ExtendedString(aDocument->RequestedFolder());
@@ -130,7 +132,7 @@ TCollection_ExtendedString CDF_FWOSDriver::BuildFileName(const Handle(CDM_Docume
 
 //=================================================================================================
 
-Standard_Boolean CDF_FWOSDriver::FindFolder(const TCollection_ExtendedString& aFolder)
+bool CDF_FWOSDriver::FindFolder(const TCollection_ExtendedString& aFolder)
 {
 
   OSD_Path      thePath = UTL::Path(aFolder);
@@ -183,7 +185,7 @@ TCollection_ExtendedString CDF_FWOSDriver::DefaultFolder()
 
 //=================================================================================================
 
-TCollection_ExtendedString CDF_FWOSDriver::SetName(const Handle(CDM_Document)&       aDocument,
+TCollection_ExtendedString CDF_FWOSDriver::SetName(const occ::handle<CDM_Document>&  aDocument,
                                                    const TCollection_ExtendedString& aName)
 {
 
@@ -194,8 +196,8 @@ TCollection_ExtendedString CDF_FWOSDriver::SetName(const Handle(CDM_Document)&  
   // make the extension lower case
   for (int i = 1; i <= xn.Length(); i++)
   {
-    Standard_ExtCharacter echar = xn.Value(i);
-    echar                       = towlower(echar);
+    char16_t echar = xn.Value(i);
+    echar          = towlower(echar);
     xn.SetValue(i, echar);
   }
 #endif
@@ -209,19 +211,19 @@ TCollection_ExtendedString CDF_FWOSDriver::SetName(const Handle(CDM_Document)&  
     // make the extension lower case
     for (int i = 1; i <= xe.Length(); i++)
     {
-      Standard_ExtCharacter echar = xe.Value(i);
-      echar                       = towlower(echar);
+      char16_t echar = xe.Value(i);
+      echar          = towlower(echar);
       xe.SetValue(i, echar);
     }
 #endif
     xe.Insert(1, '.');
     e.Insert(1, '.');
-    Standard_Integer ln                      = xn.Length();
-    Standard_Integer le                      = xe.Length();
-    Standard_Boolean ExtensionIsAlreadyThere = Standard_False;
+    int  ln                      = xn.Length();
+    int  le                      = xe.Length();
+    bool ExtensionIsAlreadyThere = false;
     if (ln >= le)
     {
-      Standard_Integer ind    = xn.SearchFromEnd(xe);
+      int ind                 = xn.SearchFromEnd(xe);
       ExtensionIsAlreadyThere = ind + le - 1 == ln;
     }
     if (!ExtensionIsAlreadyThere)

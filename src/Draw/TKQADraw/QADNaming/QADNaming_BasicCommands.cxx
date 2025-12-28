@@ -26,7 +26,8 @@
 #include <TNaming_OldShapeIterator.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_Tool.hxx>
-#include <TNaming_MapOfNamedShape.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <NCollection_Map.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <TopoDS_Shape.hxx>
@@ -39,19 +40,19 @@
 
 // POP : first Wrong Declaration : now it is correct
 //       second not used
-// extern void QADNaming_BuildMap(TDF_LabelMap& Updated, const TDF_Label& Lab);
+// extern void QADNaming_BuildMap(NCollection_Map<TDF_Label>& Updated, const TDF_Label& Lab);
 
 //=================================================================================================
 
-static Standard_Integer Ascendants(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int Ascendants(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
     return 1;
 
   char name[100];
 
-  Handle(TDF_Data) ND;
-  //  Handle(TNaming_UsedShapes) US;
+  occ::handle<TDF_Data> ND;
+  //  occ::handle<TNaming_UsedShapes> US;
 
   if (!DDF::GetDF(a[1], ND))
     return 1;
@@ -61,7 +62,7 @@ static Standard_Integer Ascendants(Draw_Interpretor& di, Standard_Integer n, con
   if (S.IsNull())
     return 1;
 
-  Standard_Integer T;
+  int T;
 
   if (n > 3)
     T = Draw::Atoi(a[3]);
@@ -70,7 +71,7 @@ static Standard_Integer Ascendants(Draw_Interpretor& di, Standard_Integer n, con
 
   // TNaming_OldShapeIterator it (S, T, US);
   TNaming_OldShapeIterator it(S, T, ND->Root());
-  Standard_Integer         i = 0;
+  int                      i = 0;
   TCollection_AsciiString  entry;
   for (; it.More(); it.Next())
   {
@@ -86,15 +87,15 @@ static Standard_Integer Ascendants(Draw_Interpretor& di, Standard_Integer n, con
 
 //=================================================================================================
 
-static Standard_Integer Descendants(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int Descendants(Draw_Interpretor& di, int n, const char** a)
 
 {
   if (n < 3)
     return 1;
 
-  char             name[100];
-  Handle(TDF_Data) ND;
-  //  Handle(TNaming_UsedShapes) US;
+  char                  name[100];
+  occ::handle<TDF_Data> ND;
+  //  occ::handle<TNaming_UsedShapes> US;
   if (!DDF::GetDF(a[1], ND))
     return 1;
   //  ND->Root().FindAttribute(TNaming_UsedShapes::GetID(),US);
@@ -103,7 +104,7 @@ static Standard_Integer Descendants(Draw_Interpretor& di, Standard_Integer n, co
   if (S.IsNull())
     return 1;
 
-  Standard_Integer T;
+  int T;
 
   if (n > 3)
     T = Draw::Atoi(a[3]);
@@ -111,7 +112,7 @@ static Standard_Integer Descendants(Draw_Interpretor& di, Standard_Integer n, co
     T = ND->Transaction();
 
   TNaming_NewShapeIterator it(S, T, ND->Root());
-  Standard_Integer         i = 0;
+  int                      i = 0;
   TCollection_AsciiString  entry;
   for (; it.More(); it.Next())
   {
@@ -128,12 +129,12 @@ static Standard_Integer Descendants(Draw_Interpretor& di, Standard_Integer n, co
 
 //=================================================================================================
 
-static Standard_Integer Getentry(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int Getentry(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  Handle(TDF_Data) ND;
-  //  Handle(TNaming_UsedShapes) US;
+  occ::handle<TDF_Data> ND;
+  //  occ::handle<TNaming_UsedShapes> US;
 
   if (!DDF::GetDF(a[1], ND))
     return 1;
@@ -146,7 +147,7 @@ static Standard_Integer Getentry(Draw_Interpretor& di, Standard_Integer n, const
     di << 0;
     return 0;
   }
-  Standard_Integer        aStatus = 0;
+  int                     aStatus = 0;
   TCollection_AsciiString Name    = QADNaming::GetEntry(S, ND, aStatus);
   if (aStatus == 0)
   {
@@ -168,12 +169,12 @@ static Standard_Integer Getentry(Draw_Interpretor& di, Standard_Integer n, const
 // purpose  : retrieve label of Primitive or a Generated shape
 //=======================================================================
 
-static Standard_Integer NamedShape(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int NamedShape(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  Handle(TDF_Data) ND;
-  //  Handle(TNaming_UsedShapes) US;
+  occ::handle<TDF_Data> ND;
+  //  occ::handle<TNaming_UsedShapes> US;
 
   if (!DDF::GetDF(a[1], ND))
     return 1;
@@ -185,7 +186,7 @@ static Standard_Integer NamedShape(Draw_Interpretor& di, Standard_Integer n, con
     return 0;
   }
 
-  Handle(TNaming_NamedShape) NS = TNaming_Tool::NamedShape(SS, ND->Root());
+  occ::handle<TNaming_NamedShape> NS = TNaming_Tool::NamedShape(SS, ND->Root());
 
   if (NS.IsNull())
   {
@@ -200,17 +201,17 @@ static Standard_Integer NamedShape(Draw_Interpretor& di, Standard_Integer n, con
 
 //=================================================================================================
 
-static Standard_Integer Currentshape(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int Currentshape(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 4)
     return 1;
 
-  Handle(TDF_Data) ND;
+  occ::handle<TDF_Data> ND;
   if (!DDF::GetDF(a[1], ND))
     return 1;
 
-  Standard_CString LabelName = a[2];
-  TopoDS_Shape     S         = QADNaming::CurrentShape(LabelName, ND);
+  const char*  LabelName = a[2];
+  TopoDS_Shape S         = QADNaming::CurrentShape(LabelName, ND);
   if (!S.IsNull())
   {
     if (n == 4)
@@ -224,12 +225,12 @@ static Standard_Integer Currentshape(Draw_Interpretor&, Standard_Integer n, cons
 
 //=================================================================================================
 
-static Standard_Integer Initialshape(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int Initialshape(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
     return 1;
 
-  Handle(TDF_Data) ND;
+  occ::handle<TDF_Data> ND;
 
   if (!DDF::GetDF(a[1], ND))
     return 1;
@@ -238,13 +239,13 @@ static Standard_Integer Initialshape(Draw_Interpretor& di, Standard_Integer n, c
   if (NS.IsNull())
     return 1;
 
-  TDF_LabelList Labels;
-  TopoDS_Shape  S = TNaming_Tool::InitialShape(NS, ND->Root(), Labels);
+  NCollection_List<TDF_Label> Labels;
+  TopoDS_Shape                S = TNaming_Tool::InitialShape(NS, ND->Root(), Labels);
   if (!S.IsNull())
   {
     DBRep::Set(a[3], S);
   }
-  TDF_ListIteratorOfLabelList itL(Labels);
+  NCollection_List<TDF_Label>::Iterator itL(Labels);
 
   TCollection_AsciiString entry;
   if (itL.More())
@@ -264,28 +265,28 @@ static Standard_Integer Initialshape(Draw_Interpretor& di, Standard_Integer n, c
 
 //=================================================================================================
 
-static Standard_Integer Exploreshape(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int Exploreshape(Draw_Interpretor& di, int n, const char** a)
 {
   char name[100];
 
   if (n < 4)
     return 1;
-  Handle(TDF_Data) ND;
-  //  Handle(TNaming_UsedShapes) US;
+  occ::handle<TDF_Data> ND;
+  //  occ::handle<TNaming_UsedShapes> US;
 
   if (!DDF::GetDF(a[1], ND))
     return 1;
   //  ND->Root().FindAttribute(TNaming_UsedShapes::GetID(),US);
 
-  Standard_Integer Trans = ND->Transaction();
+  int Trans = ND->Transaction();
   if (n == 5)
   {
-    Trans = (Standard_Integer)Draw::Atof(a[4]);
+    Trans = (int)Draw::Atof(a[4]);
   }
 
   TDF_Label Lab;
   DDF::FindLabel(ND, a[2], Lab);
-  Handle(TNaming_NamedShape) NS;
+  occ::handle<TNaming_NamedShape> NS;
   if (!Lab.FindAttribute(TNaming_NamedShape::GetID(), NS))
   {
     di << "No shape\n";
@@ -297,7 +298,7 @@ static Standard_Integer Exploreshape(Draw_Interpretor& di, Standard_Integer n, c
   TNaming::Print(NS->Evolution(), aSStream);
   di << aSStream;
 
-  Standard_Integer NbShapes = 1;
+  int NbShapes = 1;
 
   for (TNaming_Iterator itL(Lab, Trans); itL.More(); itL.Next())
   {
@@ -327,17 +328,17 @@ static Standard_Integer Exploreshape(Draw_Interpretor& di, Standard_Integer n, c
 // purpose  : Generatedshape df shape Generationentry [drawname]
 //=======================================================================
 
-static Standard_Integer Generatedshape(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int Generatedshape(Draw_Interpretor& di, int nb, const char** arg)
 {
-  TopoDS_Shape               S;
-  Handle(TNaming_NamedShape) A;
+  TopoDS_Shape                    S;
+  occ::handle<TNaming_NamedShape> A;
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
-    TopoDS_Shape               Gen = DBRep::Get(arg[2]);
-    Handle(TNaming_NamedShape) Generation;
+    TopoDS_Shape                    Gen = DBRep::Get(arg[2]);
+    occ::handle<TNaming_NamedShape> Generation;
     if (!DDF::Find(DF, arg[3], TNaming_NamedShape::GetID(), Generation))
       return 1;
     S = TNaming_Tool::GeneratedShape(Gen, Generation);
@@ -356,13 +357,13 @@ static Standard_Integer Generatedshape(Draw_Interpretor& di, Standard_Integer nb
 
 //=================================================================================================
 
-static Standard_Integer Getshape(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int Getshape(Draw_Interpretor& di, int nb, const char** arg)
 {
-  TopoDS_Shape               s;
-  Handle(TNaming_NamedShape) A;
+  TopoDS_Shape                    s;
+  occ::handle<TNaming_NamedShape> A;
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     if (!DDF::Find(DF, arg[2], TNaming_NamedShape::GetID(), A))
@@ -383,15 +384,15 @@ static Standard_Integer Getshape(Draw_Interpretor& di, Standard_Integer nb, cons
 
 //=================================================================================================
 
-static Standard_Integer Collect(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int Collect(Draw_Interpretor& di, int nb, const char** arg)
 {
-  TNaming_MapOfNamedShape    MNS;
-  Handle(TNaming_NamedShape) A;
-  Standard_Boolean           OnlyModif = 1;
+  NCollection_Map<occ::handle<TNaming_NamedShape>> MNS;
+  occ::handle<TNaming_NamedShape>                  A;
+  bool                                             OnlyModif = 1;
 
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     if (!DDF::Find(DF, arg[2], TNaming_NamedShape::GetID(), A))
@@ -401,7 +402,7 @@ static Standard_Integer Collect(Draw_Interpretor& di, Standard_Integer nb, const
       OnlyModif = Draw::Atoi(arg[3]) != 0;
     }
     TNaming_Tool::Collect(A, MNS, OnlyModif);
-    for (TNaming_MapIteratorOfMapOfNamedShape it(MNS); it.More(); it.Next())
+    for (NCollection_Map<occ::handle<TNaming_NamedShape>>::Iterator it(MNS); it.More(); it.Next())
     {
       TCollection_AsciiString Name;
       TDF_Tool::Entry(it.Key()->Label(), Name);
@@ -416,12 +417,12 @@ static Standard_Integer Collect(Draw_Interpretor& di, Standard_Integer nb, const
 // purpose  : retrieve label of Primitive or a Generated shape
 //=======================================================================
 
-static Standard_Integer Getcreationentry(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int Getcreationentry(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  Handle(TDF_Data) ND;
-  //  Handle(TNaming_UsedShapes) US;
+  occ::handle<TDF_Data> ND;
+  //  occ::handle<TNaming_UsedShapes> US;
 
   if (!DDF::GetDF(a[1], ND))
     return 1;
@@ -436,15 +437,15 @@ static Standard_Integer Getcreationentry(Draw_Interpretor& di, Standard_Integer 
     return 0;
   }
 
-  TDF_LabelList Labels;
-  TopoDS_Shape  S = TNaming_Tool::InitialShape(SS, ND->Root(), Labels);
+  NCollection_List<TDF_Label> Labels;
+  TopoDS_Shape                S = TNaming_Tool::InitialShape(SS, ND->Root(), Labels);
 
   if (S.IsNull())
   {
     di << "E_NoName";
     return 0;
   }
-  Standard_Integer        aStatus = 0;
+  int                     aStatus = 0;
   TCollection_AsciiString Name    = QADNaming::GetEntry(S, ND, aStatus);
   if (aStatus == 0)
   {
@@ -465,10 +466,10 @@ static Standard_Integer Getcreationentry(Draw_Interpretor& di, Standard_Integer 
 
 void QADNaming::BasicCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "Naming data commands";
 

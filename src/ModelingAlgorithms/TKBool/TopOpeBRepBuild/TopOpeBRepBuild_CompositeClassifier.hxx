@@ -34,9 +34,9 @@ class TopOpeBRepBuild_CompositeClassifier : public TopOpeBRepBuild_LoopClassifie
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT virtual TopAbs_State Compare(const Handle(TopOpeBRepBuild_Loop)& L1,
-                                               const Handle(TopOpeBRepBuild_Loop)& L2)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual TopAbs_State Compare(
+    const occ::handle<TopOpeBRepBuild_Loop>& L1,
+    const occ::handle<TopOpeBRepBuild_Loop>& L2) override;
 
   //! classify shape <B1> with shape <B2>
   Standard_EXPORT virtual TopAbs_State CompareShapes(const TopoDS_Shape& B1,
@@ -56,7 +56,7 @@ public:
   //! Add element <E> in the set of elements used in classification.
   //! Returns FALSE if the element <E> has been already added to the set of elements,
   //! otherwise returns TRUE.
-  Standard_EXPORT virtual Standard_Boolean CompareElement(const TopoDS_Shape& E) = 0;
+  Standard_EXPORT virtual bool CompareElement(const TopoDS_Shape& E) = 0;
 
   //! Returns state of classification of 2D point, defined by
   //! ResetElement, with the current set of elements, defined by Compare.
@@ -65,9 +65,7 @@ public:
 protected:
   Standard_EXPORT TopOpeBRepBuild_CompositeClassifier(const TopOpeBRepBuild_BlockBuilder& BB);
 
-  Standard_Address myBlockBuilder;
-
-private:
+  void* myBlockBuilder;
 };
 
 #endif // _TopOpeBRepBuild_CompositeClassifier_HeaderFile

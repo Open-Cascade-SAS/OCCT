@@ -24,8 +24,8 @@ inline gp_Pnt IntSurf_InteriorPointTool::Value3d(const IntSurf_InteriorPoint& PS
 }
 
 inline void IntSurf_InteriorPointTool::Value2d(const IntSurf_InteriorPoint& PStart,
-                                               Standard_Real&               U,
-                                               Standard_Real&               V)
+                                               double&                      U,
+                                               double&                      V)
 {
   PStart.Parameters(U, V);
 }

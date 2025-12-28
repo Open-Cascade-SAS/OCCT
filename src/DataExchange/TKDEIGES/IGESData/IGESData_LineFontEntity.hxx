@@ -21,9 +21,6 @@
 
 #include <IGESData_IGESEntity.hxx>
 
-class IGESData_LineFontEntity;
-DEFINE_STANDARD_HANDLE(IGESData_LineFontEntity, IGESData_IGESEntity)
-
 //! defines required type for LineFont in directory part
 //! an effective LineFont entity must inherits it
 class IGESData_LineFontEntity : public IGESData_IGESEntity
@@ -31,9 +28,6 @@ class IGESData_LineFontEntity : public IGESData_IGESEntity
 
 public:
   DEFINE_STANDARD_RTTIEXT(IGESData_LineFontEntity, IGESData_IGESEntity)
-
-protected:
-private:
 };
 
 #endif // _IGESData_LineFontEntity_HeaderFile

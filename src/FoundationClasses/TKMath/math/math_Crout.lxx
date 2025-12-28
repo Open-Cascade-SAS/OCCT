@@ -14,7 +14,7 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_Crout::IsDone() const
+inline bool math_Crout::IsDone() const
 {
   return Done;
 }
@@ -25,7 +25,7 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_Crout& C)
   return o;
 }
 
-inline Standard_Real math_Crout::Determinant() const
+inline double math_Crout::Determinant() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return Det;

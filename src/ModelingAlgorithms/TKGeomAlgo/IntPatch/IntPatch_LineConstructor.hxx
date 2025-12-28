@@ -18,7 +18,8 @@
 #define _IntPatch_LineConstructor_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <IntPatch_SequenceOfLine.hxx>
+#include <IntPatch_Line.hxx>
+#include <NCollection_Sequence.hxx>
 
 class Adaptor3d_TopolTool;
 
@@ -30,23 +31,22 @@ class IntPatch_LineConstructor
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT IntPatch_LineConstructor(const Standard_Integer mode);
+  Standard_EXPORT IntPatch_LineConstructor(const int mode);
 
-  Standard_EXPORT void Perform(const IntPatch_SequenceOfLine&     SL,
-                               const Handle(IntPatch_Line)&       L,
-                               const Handle(Adaptor3d_Surface)&   S1,
-                               const Handle(Adaptor3d_TopolTool)& D1,
-                               const Handle(Adaptor3d_Surface)&   S2,
-                               const Handle(Adaptor3d_TopolTool)& D2,
-                               const Standard_Real                Tol);
+  Standard_EXPORT void Perform(const NCollection_Sequence<occ::handle<IntPatch_Line>>& SL,
+                               const occ::handle<IntPatch_Line>&                       L,
+                               const occ::handle<Adaptor3d_Surface>&                   S1,
+                               const occ::handle<Adaptor3d_TopolTool>&                 D1,
+                               const occ::handle<Adaptor3d_Surface>&                   S2,
+                               const occ::handle<Adaptor3d_TopolTool>&                 D2,
+                               const double                                            Tol);
 
-  Standard_EXPORT Standard_Integer NbLines() const;
+  Standard_EXPORT int NbLines() const;
 
-  Standard_EXPORT Handle(IntPatch_Line) Line(const Standard_Integer index) const;
+  Standard_EXPORT occ::handle<IntPatch_Line> Line(const int index) const;
 
-protected:
 private:
-  IntPatch_SequenceOfLine slin;
+  NCollection_Sequence<occ::handle<IntPatch_Line>> slin;
 };
 
 #endif // _IntPatch_LineConstructor_HeaderFile

@@ -19,13 +19,11 @@
 
 #include <Standard.hxx>
 
-#include <StepAP203_HArray1OfClassifiedItem.hxx>
+#include <StepAP203_ClassifiedItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_SecurityClassificationAssignment.hxx>
 class StepBasic_SecurityClassification;
-
-class StepAP203_CcDesignSecurityClassification;
-DEFINE_STANDARD_HANDLE(StepAP203_CcDesignSecurityClassification,
-                       StepBasic_SecurityClassificationAssignment)
 
 //! Representation of STEP entity CcDesignSecurityClassification
 class StepAP203_CcDesignSecurityClassification : public StepBasic_SecurityClassificationAssignment
@@ -36,22 +34,23 @@ public:
   Standard_EXPORT StepAP203_CcDesignSecurityClassification();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepBasic_SecurityClassification)&
-                              aSecurityClassificationAssignment_AssignedSecurityClassification,
-                            const Handle(StepAP203_HArray1OfClassifiedItem)& aItems);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_SecurityClassification>&
+      aSecurityClassificationAssignment_AssignedSecurityClassification,
+    const occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP203_HArray1OfClassifiedItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfClassifiedItem)& Items);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignSecurityClassification,
                           StepBasic_SecurityClassificationAssignment)
 
-protected:
 private:
-  Handle(StepAP203_HArray1OfClassifiedItem) theItems;
+  occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>> theItems;
 };
 
 #endif // _StepAP203_CcDesignSecurityClassification_HeaderFile

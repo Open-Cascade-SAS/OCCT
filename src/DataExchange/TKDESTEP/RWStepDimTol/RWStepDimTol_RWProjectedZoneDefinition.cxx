@@ -29,10 +29,10 @@ RWStepDimTol_RWProjectedZoneDefinition::RWStepDimTol_RWProjectedZoneDefinition()
 //=================================================================================================
 
 void RWStepDimTol_RWProjectedZoneDefinition::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepDimTol_ProjectedZoneDefinition)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                                              num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepDimTol_ProjectedZoneDefinition>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "projected_zone_definition"))
@@ -40,7 +40,7 @@ void RWStepDimTol_RWProjectedZoneDefinition::ReadStep(
 
   // Inherited fields from ToleranceZoneDefinition
 
-  Handle(StepDimTol_ToleranceZone) aToleranceZone;
+  occ::handle<StepDimTol_ToleranceZone> aToleranceZone;
   data->ReadEntity(num,
                    1,
                    "tolerance_zone_definition.zone",
@@ -48,14 +48,14 @@ void RWStepDimTol_RWProjectedZoneDefinition::ReadStep(
                    STANDARD_TYPE(StepDimTol_ToleranceZone),
                    aToleranceZone);
 
-  Handle(StepRepr_HArray1OfShapeAspect) anItems;
-  Handle(StepRepr_ShapeAspect)          anEnt;
-  Standard_Integer                      nbSub;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>> anItems;
+  occ::handle<StepRepr_ShapeAspect>                                   anEnt;
+  int                                                                 nbSub;
   if (data->ReadSubList(num, 2, "tolerance_zone_definition.boundaries", ach, nbSub))
   {
-    Standard_Integer nbElements = data->NbParams(nbSub);
-    anItems                     = new StepRepr_HArray1OfShapeAspect(1, nbElements);
-    for (Standard_Integer i = 1; i <= nbElements; i++)
+    int nbElements = data->NbParams(nbSub);
+    anItems        = new NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>(1, nbElements);
+    for (int i = 1; i <= nbElements; i++)
     {
       if (data
             ->ReadEntity(nbSub, i, "shape_aspect", ach, STANDARD_TYPE(StepRepr_ShapeAspect), anEnt))
@@ -63,7 +63,7 @@ void RWStepDimTol_RWProjectedZoneDefinition::ReadStep(
     }
   }
 
-  Handle(StepRepr_ShapeAspect) aProjectionEnd;
+  occ::handle<StepRepr_ShapeAspect> aProjectionEnd;
   data->ReadEntity(num,
                    3,
                    "projection_end",
@@ -71,7 +71,7 @@ void RWStepDimTol_RWProjectedZoneDefinition::ReadStep(
                    STANDARD_TYPE(StepRepr_ShapeAspect),
                    aProjectionEnd);
 
-  Handle(StepBasic_LengthMeasureWithUnit) aProjectionLength;
+  occ::handle<StepBasic_LengthMeasureWithUnit> aProjectionLength;
   data->ReadEntity(num,
                    4,
                    "projection_length",
@@ -86,15 +86,15 @@ void RWStepDimTol_RWProjectedZoneDefinition::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWProjectedZoneDefinition::WriteStep(
-  StepData_StepWriter&                              SW,
-  const Handle(StepDimTol_ProjectedZoneDefinition)& ent) const
+  StepData_StepWriter&                                   SW,
+  const occ::handle<StepDimTol_ProjectedZoneDefinition>& ent) const
 {
   // Inherited fields of ToleranceZoneDefinition
 
   SW.Send(ent->Zone());
 
   SW.OpenSub();
-  for (Standard_Integer i = 1; i <= ent->NbBoundaries(); i++)
+  for (int i = 1; i <= ent->NbBoundaries(); i++)
   {
     SW.Send(ent->BoundariesValue(i));
   }
@@ -110,15 +110,15 @@ void RWStepDimTol_RWProjectedZoneDefinition::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWProjectedZoneDefinition::Share(
-  const Handle(StepDimTol_ProjectedZoneDefinition)& ent,
-  Interface_EntityIterator&                         iter) const
+  const occ::handle<StepDimTol_ProjectedZoneDefinition>& ent,
+  Interface_EntityIterator&                              iter) const
 {
 
   // Inherited fields from ToleranceZoneDefinition
 
   iter.AddItem(ent->Zone());
 
-  Standard_Integer i, nb = ent->NbBoundaries();
+  int i, nb = ent->NbBoundaries();
   for (i = 1; i <= nb; i++)
     iter.AddItem(ent->BoundariesValue(i));
 

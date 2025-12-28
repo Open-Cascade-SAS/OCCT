@@ -29,10 +29,10 @@ RWStepDimTol_RWSurfaceProfileTolerance::RWStepDimTol_RWSurfaceProfileTolerance()
 //=================================================================================================
 
 void RWStepDimTol_RWSurfaceProfileTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepDimTol_SurfaceProfileTolerance)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                                              num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepDimTol_SurfaceProfileTolerance>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "surface_profile_tolerance"))
@@ -40,13 +40,13 @@ void RWStepDimTol_RWSurfaceProfileTolerance::ReadStep(
 
   // Inherited fields of GeometricTolerance
 
-  Handle(TCollection_HAsciiString) aGeometricTolerance_Name;
+  occ::handle<TCollection_HAsciiString> aGeometricTolerance_Name;
   data->ReadString(num, 1, "geometric_tolerance.name", ach, aGeometricTolerance_Name);
 
-  Handle(TCollection_HAsciiString) aGeometricTolerance_Description;
+  occ::handle<TCollection_HAsciiString> aGeometricTolerance_Description;
   data->ReadString(num, 2, "geometric_tolerance.description", ach, aGeometricTolerance_Description);
 
-  Handle(Standard_Transient) aGeometricTolerance_Magnitude;
+  occ::handle<Standard_Transient> aGeometricTolerance_Magnitude;
   data->ReadEntity(num,
                    3,
                    "geometric_tolerance.magnitude",
@@ -71,8 +71,8 @@ void RWStepDimTol_RWSurfaceProfileTolerance::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWSurfaceProfileTolerance::WriteStep(
-  StepData_StepWriter&                              SW,
-  const Handle(StepDimTol_SurfaceProfileTolerance)& ent) const
+  StepData_StepWriter&                                   SW,
+  const occ::handle<StepDimTol_SurfaceProfileTolerance>& ent) const
 {
 
   // Inherited fields of GeometricTolerance
@@ -89,8 +89,8 @@ void RWStepDimTol_RWSurfaceProfileTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWSurfaceProfileTolerance::Share(
-  const Handle(StepDimTol_SurfaceProfileTolerance)& ent,
-  Interface_EntityIterator&                         iter) const
+  const occ::handle<StepDimTol_SurfaceProfileTolerance>& ent,
+  Interface_EntityIterator&                              iter) const
 {
 
   // Inherited fields of GeometricTolerance

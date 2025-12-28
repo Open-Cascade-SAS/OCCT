@@ -22,16 +22,16 @@
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 
 //=================================================================================================
 
-static Standard_Boolean CheckParameters(const TColStd_Array1OfReal& Parameters)
+static bool CheckParameters(const NCollection_Array1<double>& Parameters)
 {
-  Standard_Integer ii;
-  Standard_Real    distance;
-  Standard_Boolean result = Standard_True;
+  int    ii;
+  double distance;
+  bool   result = true;
   for (ii = Parameters.Lower(); result && ii < Parameters.Upper(); ii++)
   {
     distance = Parameters.Value(ii + 1) - Parameters.Value(ii);
@@ -42,18 +42,18 @@ static Standard_Boolean CheckParameters(const TColStd_Array1OfReal& Parameters)
 
 //=================================================================================================
 
-static void BuildParameters(const Standard_Boolean         PeriodicFlag,
-                            const TColStd_Array1OfReal&    PointsArray,
-                            Handle(TColStd_HArray1OfReal)& ParametersPtr)
+static void BuildParameters(const bool                                PeriodicFlag,
+                            const NCollection_Array1<double>&         PointsArray,
+                            occ::handle<NCollection_HArray1<double>>& ParametersPtr)
 {
-  Standard_Integer ii, index = 2;
-  Standard_Real    distance;
-  Standard_Integer num_parameters = PointsArray.Length();
+  int    ii, index = 2;
+  double distance;
+  int    num_parameters = PointsArray.Length();
   if (PeriodicFlag)
   {
     num_parameters += 1;
   }
-  ParametersPtr = new TColStd_HArray1OfReal(1, num_parameters);
+  ParametersPtr = new NCollection_HArray1<double>(1, num_parameters);
   ParametersPtr->SetValue(1, 0.);
   for (ii = PointsArray.Lower(); ii < PointsArray.Upper(); ii++)
   {
@@ -71,16 +71,16 @@ static void BuildParameters(const Standard_Boolean         PeriodicFlag,
 
 //=================================================================================================
 
-static void BuildPeriodicTangent(const TColStd_Array1OfReal& PointsArray,
-                                 TColStd_Array1OfReal&       TangentsArray,
-                                 TColStd_Array1OfBoolean&    TangentFlags,
-                                 const TColStd_Array1OfReal& ParametersArray)
+static void BuildPeriodicTangent(const NCollection_Array1<double>& PointsArray,
+                                 NCollection_Array1<double>&       TangentsArray,
+                                 NCollection_Array1<bool>&         TangentFlags,
+                                 const NCollection_Array1<double>& ParametersArray)
 {
-  Standard_Real point_array[3], parameter_array[3], eval_result[2];
+  double point_array[3], parameter_array[3], eval_result[2];
 
   if (PointsArray.Length() < 2)
   {
-    TangentFlags.SetValue(1, Standard_True);
+    TangentFlags.SetValue(1, true);
     TangentsArray.SetValue(1, 0.);
   }
   else if (!TangentFlags.Value(1))
@@ -88,16 +88,16 @@ static void BuildPeriodicTangent(const TColStd_Array1OfReal& PointsArray,
     // Pour les periodiques on evalue la tangente du point de fermeture
     // par une interpolation de degre 2 entre le dernier point, le point
     // de fermeture et le deuxieme point.
-    Standard_Integer degree = 2;
-    Standard_Real    period = (ParametersArray.Value(ParametersArray.Upper())
-                            - ParametersArray.Value(ParametersArray.Lower()));
-    point_array[0]          = PointsArray.Value(PointsArray.Upper());
-    point_array[1]          = PointsArray.Value(PointsArray.Lower());
-    point_array[2]          = PointsArray.Value(PointsArray.Lower() + 1);
-    parameter_array[0]      = ParametersArray.Value(ParametersArray.Upper() - 1) - period;
-    parameter_array[1]      = ParametersArray.Value(ParametersArray.Lower());
-    parameter_array[2]      = ParametersArray.Value(ParametersArray.Lower() + 1);
-    TangentFlags.SetValue(1, Standard_True);
+    int    degree      = 2;
+    double period      = (ParametersArray.Value(ParametersArray.Upper())
+                     - ParametersArray.Value(ParametersArray.Lower()));
+    point_array[0]     = PointsArray.Value(PointsArray.Upper());
+    point_array[1]     = PointsArray.Value(PointsArray.Lower());
+    point_array[2]     = PointsArray.Value(PointsArray.Lower() + 1);
+    parameter_array[0] = ParametersArray.Value(ParametersArray.Upper() - 1) - period;
+    parameter_array[1] = ParametersArray.Value(ParametersArray.Lower());
+    parameter_array[2] = ParametersArray.Value(ParametersArray.Lower() + 1);
+    TangentFlags.SetValue(1, true);
     PLib::EvalLagrange(parameter_array[1],
                        1,
                        degree,
@@ -111,13 +111,13 @@ static void BuildPeriodicTangent(const TColStd_Array1OfReal& PointsArray,
 
 //=================================================================================================
 
-static void BuildTangents(const TColStd_Array1OfReal& PointsArray,
-                          TColStd_Array1OfReal&       TangentsArray,
-                          TColStd_Array1OfBoolean&    TangentFlags,
-                          const TColStd_Array1OfReal& ParametersArray)
+static void BuildTangents(const NCollection_Array1<double>& PointsArray,
+                          NCollection_Array1<double>&       TangentsArray,
+                          NCollection_Array1<bool>&         TangentFlags,
+                          const NCollection_Array1<double>& ParametersArray)
 {
-  Standard_Integer degree = 3; //,ii;
-  Standard_Real *  point_array, *parameter_array, eval_result[2];
+  int     degree = 3; //,ii;
+  double *point_array, *parameter_array, eval_result[2];
 
   if (PointsArray.Length() < 3)
   {
@@ -129,9 +129,9 @@ static void BuildTangents(const TColStd_Array1OfReal& PointsArray,
   }
   if (!TangentFlags.Value(1))
   {
-    point_array     = (Standard_Real*)&PointsArray.Value(PointsArray.Lower());
-    parameter_array = (Standard_Real*)&ParametersArray.Value(1);
-    TangentFlags.SetValue(1, Standard_True);
+    point_array     = (double*)&PointsArray.Value(PointsArray.Lower());
+    parameter_array = (double*)&ParametersArray.Value(1);
+    TangentFlags.SetValue(1, true);
     PLib::EvalLagrange(ParametersArray.Value(1),
                        1,
                        degree,
@@ -143,10 +143,10 @@ static void BuildTangents(const TColStd_Array1OfReal& PointsArray,
   }
   if (!TangentFlags.Value(TangentFlags.Upper()))
   {
-    point_array = (Standard_Real*)&PointsArray.Value(PointsArray.Upper() - degree);
-    TangentFlags.SetValue(TangentFlags.Upper(), Standard_True);
-    Standard_Integer iup = ParametersArray.Upper() - degree;
-    parameter_array      = (Standard_Real*)&ParametersArray.Value(iup);
+    point_array = (double*)&PointsArray.Value(PointsArray.Upper() - degree);
+    TangentFlags.SetValue(TangentFlags.Upper(), true);
+    int iup         = ParametersArray.Upper() - degree;
+    parameter_array = (double*)&ParametersArray.Value(iup);
     PLib::EvalLagrange(ParametersArray.Value(ParametersArray.Upper()),
                        1,
                        degree,
@@ -160,38 +160,38 @@ static void BuildTangents(const TColStd_Array1OfReal& PointsArray,
 
 //=================================================================================================
 
-Law_Interpolate::Law_Interpolate(const Handle(TColStd_HArray1OfReal)& PointsPtr,
-                                 const Standard_Boolean               PeriodicFlag,
-                                 const Standard_Real                  Tolerance)
+Law_Interpolate::Law_Interpolate(const occ::handle<NCollection_HArray1<double>>& PointsPtr,
+                                 const bool                                      PeriodicFlag,
+                                 const double                                    Tolerance)
     : myTolerance(Tolerance),
       myPoints(PointsPtr),
-      myIsDone(Standard_False),
+      myIsDone(false),
       myPeriodic(PeriodicFlag),
-      myTangentRequest(Standard_False)
+      myTangentRequest(false)
 
 {
-  // Standard_Integer ii;
-  myTangents     = new TColStd_HArray1OfReal(myPoints->Lower(), myPoints->Upper());
-  myTangentFlags = new TColStd_HArray1OfBoolean(myPoints->Lower(), myPoints->Upper());
+  // int ii;
+  myTangents     = new NCollection_HArray1<double>(myPoints->Lower(), myPoints->Upper());
+  myTangentFlags = new NCollection_HArray1<bool>(myPoints->Lower(), myPoints->Upper());
 
   BuildParameters(PeriodicFlag, PointsPtr->Array1(), myParameters);
-  myTangentFlags->Init(Standard_False);
+  myTangentFlags->Init(false);
 }
 
 //=================================================================================================
 
-Law_Interpolate::Law_Interpolate(const Handle(TColStd_HArray1OfReal)& PointsPtr,
-                                 const Handle(TColStd_HArray1OfReal)& ParametersPtr,
-                                 const Standard_Boolean               PeriodicFlag,
-                                 const Standard_Real                  Tolerance)
+Law_Interpolate::Law_Interpolate(const occ::handle<NCollection_HArray1<double>>& PointsPtr,
+                                 const occ::handle<NCollection_HArray1<double>>& ParametersPtr,
+                                 const bool                                      PeriodicFlag,
+                                 const double                                    Tolerance)
     : myTolerance(Tolerance),
       myPoints(PointsPtr),
-      myIsDone(Standard_False),
+      myIsDone(false),
       myParameters(ParametersPtr),
       myPeriodic(PeriodicFlag),
-      myTangentRequest(Standard_False)
+      myTangentRequest(false)
 {
-  // Standard_Integer ii;
+  // int ii;
   if (PeriodicFlag)
   {
     if ((PointsPtr->Length()) + 1 != ParametersPtr->Length())
@@ -199,30 +199,30 @@ Law_Interpolate::Law_Interpolate(const Handle(TColStd_HArray1OfReal)& PointsPtr,
       throw Standard_ConstructionError();
     }
   }
-  myTangents              = new TColStd_HArray1OfReal(myPoints->Lower(), myPoints->Upper());
-  myTangentFlags          = new TColStd_HArray1OfBoolean(myPoints->Lower(), myPoints->Upper());
-  Standard_Boolean result = CheckParameters(ParametersPtr->Array1());
+  myTangents     = new NCollection_HArray1<double>(myPoints->Lower(), myPoints->Upper());
+  myTangentFlags = new NCollection_HArray1<bool>(myPoints->Lower(), myPoints->Upper());
+  bool result    = CheckParameters(ParametersPtr->Array1());
   if (!result)
   {
     throw Standard_ConstructionError();
   }
-  myTangentFlags->Init(Standard_False);
+  myTangentFlags->Init(false);
 }
 
 //=================================================================================================
 
-void Law_Interpolate::Load(const TColStd_Array1OfReal&             Tangents,
-                           const Handle(TColStd_HArray1OfBoolean)& TangentFlagsPtr)
+void Law_Interpolate::Load(const NCollection_Array1<double>&             Tangents,
+                           const occ::handle<NCollection_HArray1<bool>>& TangentFlagsPtr)
 {
-  // Standard_Boolean result;
-  Standard_Integer ii;
-  myTangentRequest = Standard_True;
+  // bool result;
+  int ii;
+  myTangentRequest = true;
   myTangentFlags   = TangentFlagsPtr;
   if (Tangents.Length() != myPoints->Length() || TangentFlagsPtr->Length() != myPoints->Length())
   {
     throw Standard_ConstructionError();
   }
-  myTangents = new TColStd_HArray1OfReal(Tangents.Lower(), Tangents.Upper());
+  myTangents = new NCollection_HArray1<double>(Tangents.Lower(), Tangents.Upper());
   for (ii = Tangents.Lower(); ii <= Tangents.Upper(); ii++)
   {
     myTangents->SetValue(ii, Tangents.Value(ii));
@@ -231,13 +231,13 @@ void Law_Interpolate::Load(const TColStd_Array1OfReal&             Tangents,
 
 //=================================================================================================
 
-void Law_Interpolate::Load(const Standard_Real InitialTangent, const Standard_Real FinalTangent)
+void Law_Interpolate::Load(const double InitialTangent, const double FinalTangent)
 {
-  // Standard_Boolean result;
-  myTangentRequest = Standard_True;
-  myTangentFlags->SetValue(1, Standard_True);
+  // bool result;
+  myTangentRequest = true;
+  myTangentFlags->SetValue(1, true);
   myTangents->SetValue(1, InitialTangent);
-  myTangentFlags->SetValue(myPoints->Length(), Standard_True);
+  myTangentFlags->SetValue(myPoints->Length(), true);
   myTangents->SetValue(myPoints->Length(), FinalTangent);
 }
 
@@ -259,13 +259,13 @@ void Law_Interpolate::Perform()
 
 void Law_Interpolate::PerformPeriodic()
 {
-  Standard_Integer degree, ii,
+  int degree, ii,
     // jj,
     index, index1,
     // index2,
     mult_index, half_order, inversion_problem, num_points, num_distinct_knots, num_poles;
 
-  Standard_Real period;
+  double period;
 
   // gp_Pnt a_point;
 
@@ -286,11 +286,11 @@ void Law_Interpolate::PerformPeriodic()
       }
     }
   }
-  TColStd_Array1OfReal    parameters(1, num_poles);
-  TColStd_Array1OfReal    flatknots(1, num_poles + degree + 1);
-  TColStd_Array1OfInteger mults(1, num_distinct_knots);
-  TColStd_Array1OfInteger contact_order_array(1, num_poles);
-  TColStd_Array1OfReal    poles(1, num_poles);
+  NCollection_Array1<double> parameters(1, num_poles);
+  NCollection_Array1<double> flatknots(1, num_poles + degree + 1);
+  NCollection_Array1<int>    mults(1, num_distinct_knots);
+  NCollection_Array1<int>    contact_order_array(1, num_poles);
+  NCollection_Array1<double> poles(1, num_poles);
 
   for (ii = 1; ii <= half_order; ii++)
   {
@@ -388,9 +388,9 @@ void Law_Interpolate::PerformPeriodic()
                         inversion_problem);
   if (!inversion_problem)
   {
-    TColStd_Array1OfReal newpoles(poles.Value(1), 1, num_poles - 2);
+    NCollection_Array1<double> newpoles(poles.Value(1), 1, num_poles - 2);
     myCurve  = new Law_BSpline(newpoles, myParameters->Array1(), mults, degree, myPeriodic);
-    myIsDone = Standard_True;
+    myIsDone = true;
   }
 }
 
@@ -398,7 +398,7 @@ void Law_Interpolate::PerformPeriodic()
 
 void Law_Interpolate::PerformNonPeriodic()
 {
-  Standard_Integer degree, ii,
+  int degree, ii,
     // jj,
     index, index1, index2, index3, mult_index, inversion_problem, num_points, num_distinct_knots,
     num_poles;
@@ -428,12 +428,12 @@ void Law_Interpolate::PerformNonPeriodic()
       }
     }
   }
-  TColStd_Array1OfReal    parameters(1, num_poles);
-  TColStd_Array1OfReal    flatknots(1, num_poles + degree + 1);
-  TColStd_Array1OfInteger mults(1, num_distinct_knots);
-  TColStd_Array1OfReal    knots(1, num_distinct_knots);
-  TColStd_Array1OfInteger contact_order_array(1, num_poles);
-  TColStd_Array1OfReal    poles(1, num_poles);
+  NCollection_Array1<double> parameters(1, num_poles);
+  NCollection_Array1<double> flatknots(1, num_poles + degree + 1);
+  NCollection_Array1<int>    mults(1, num_distinct_knots);
+  NCollection_Array1<double> knots(1, num_distinct_knots);
+  NCollection_Array1<int>    contact_order_array(1, num_poles);
+  NCollection_Array1<double> poles(1, num_poles);
 
   for (ii = 1; ii <= degree + 1; ii++)
   {
@@ -459,7 +459,7 @@ void Law_Interpolate::PerformNonPeriodic()
         poles.SetValue(ii, myPoints->Value(ii));
       }
       myCurve  = new Law_BSpline(poles, myParameters->Array1(), mults, degree);
-      myIsDone = Standard_True;
+      myIsDone = true;
       break;
     case 2:
       knots.SetValue(1, myParameters->Value(1));
@@ -478,7 +478,7 @@ void Law_Interpolate::PerformNonPeriodic()
       if (!inversion_problem)
       {
         myCurve  = new Law_BSpline(poles, knots, mults, degree);
-        myIsDone = Standard_True;
+        myIsDone = true;
       }
       break;
     case 3:
@@ -573,18 +573,18 @@ void Law_Interpolate::PerformNonPeriodic()
       if (!inversion_problem)
       {
         myCurve  = new Law_BSpline(poles, myParameters->Array1(), mults, degree);
-        myIsDone = Standard_True;
+        myIsDone = true;
       }
       break;
   }
 }
 
 //=======================================================================
-// function : Handle(Geom_BSplineCurve)&
+// function : occ::handle<Geom_BSplineCurve>&
 // purpose  :
 //=======================================================================
 
-const Handle(Law_BSpline)& Law_Interpolate::Curve() const
+const occ::handle<Law_BSpline>& Law_Interpolate::Curve() const
 {
   if (!myIsDone)
     throw StdFail_NotDone(" ");
@@ -593,7 +593,7 @@ const Handle(Law_BSpline)& Law_Interpolate::Curve() const
 
 //=================================================================================================
 
-Standard_Boolean Law_Interpolate::IsDone() const
+bool Law_Interpolate::IsDone() const
 {
   return myIsDone;
 }

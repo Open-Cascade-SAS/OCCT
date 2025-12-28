@@ -45,9 +45,8 @@ public:
    */
 
   //! Creates an iterator an initialize it by theLabel and recursive flag.
-  //! If isRecursive is Standard_True make recursive iterations
-  Standard_EXPORT TObj_LabelIterator(const TDF_Label&       theLabel,
-                                     const Standard_Boolean isRecursive = Standard_False);
+  //! If isRecursive is true make recursive iterations
+  Standard_EXPORT TObj_LabelIterator(const TDF_Label& theLabel, const bool isRecursive = false);
 
 public:
   /**
@@ -55,13 +54,13 @@ public:
    */
 
   //! Returns True if there is a current Item in the iteration.
-  virtual Standard_Boolean More() const Standard_OVERRIDE { return !myNode.IsNull(); }
+  virtual bool More() const override { return !myNode.IsNull(); }
 
   //! Move to the next Item
-  virtual Standard_EXPORT void Next() Standard_OVERRIDE;
+  virtual Standard_EXPORT void Next() override;
 
   //! Returns the current item
-  virtual Handle(TObj_Object) Value() const Standard_OVERRIDE { return myObject; }
+  virtual occ::handle<TObj_Object> Value() const override { return myObject; }
 
   //! Returns the label of the current item
   inline const TDF_Label& LabelValue() const { return myNode; }
@@ -80,7 +79,7 @@ protected:
    */
 
   //! Initialize Iterator by the theLabel
-  void Init(const TDF_Label& theLabel, const Standard_Boolean isRecursive = Standard_False)
+  void Init(const TDF_Label& theLabel, const bool isRecursive = false)
   {
     myIterator.Initialize(theLabel, isRecursive);
   }
@@ -89,9 +88,9 @@ protected:
   /**
    * Fields
    */
-  TDF_Label           myNode;     //!< Current node
-  TDF_ChildIterator   myIterator; //!< OCAF Child iterator
-  Handle(TObj_Object) myObject;   //!< Current Object
+  TDF_Label                myNode;     //!< Current node
+  TDF_ChildIterator        myIterator; //!< OCAF Child iterator
+  occ::handle<TObj_Object> myObject;   //!< Current Object
 
 public:
   //! CASCADE RTTI
@@ -99,8 +98,6 @@ public:
 };
 
 //! Define handle class for TObj_LabelIterator
-DEFINE_STANDARD_HANDLE(TObj_LabelIterator, TObj_ObjectIterator)
-
 #endif
 
 #ifdef _MSC_VER

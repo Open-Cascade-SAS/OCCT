@@ -14,7 +14,8 @@
 #ifndef _DE_ConfigurationNode_HeaderFile
 #define _DE_ConfigurationNode_HeaderFile
 
-#include <TColStd_ListOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_List.hxx>
 
 class DE_ConfigurationContext;
 class DE_Provider;
@@ -56,7 +57,8 @@ public:
 
   //! Copies values of all fields
   //! @param[in] theConfigurationNode object to copy
-  Standard_EXPORT DE_ConfigurationNode(const Handle(DE_ConfigurationNode)& theConfigurationNode);
+  Standard_EXPORT DE_ConfigurationNode(
+    const occ::handle<DE_ConfigurationNode>& theConfigurationNode);
 
   //! Updates values according the resource file
   //! @param[in] theResourcePath file path to resource
@@ -66,7 +68,7 @@ public:
   //! Updates values according the resource
   //! @param[in] theResource input resource to use
   //! @return True if Load was successful
-  Standard_EXPORT virtual bool Load(const Handle(DE_ConfigurationContext)& theResource) = 0;
+  Standard_EXPORT virtual bool Load(const occ::handle<DE_ConfigurationContext>& theResource) = 0;
 
   //! Writes configuration to the resource file
   //! @param[in] theResourcePath file path to resource
@@ -79,30 +81,29 @@ public:
 
   //! Creates new provider for the own format
   //! @return new created provider
-  Standard_EXPORT virtual Handle(DE_Provider) BuildProvider() = 0;
+  Standard_EXPORT virtual occ::handle<DE_Provider> BuildProvider() = 0;
 
   //! Copies values of all fields
   //! @return new object with the same field values
-  Standard_EXPORT virtual Handle(DE_ConfigurationNode) Copy() const = 0;
+  Standard_EXPORT virtual occ::handle<DE_ConfigurationNode> Copy() const = 0;
 
   //! Update loading status. Checking for the ability to read and write.
-  //! @param[in] theToImport flag to updates for import. Standard_True-import, Standard_False-export
+  //! @param[in] theToImport flag to updates for import. true-import, false-export
   //! @param[in] theToKeep flag to save update result
-  //! @return Standard_True, if node can be used
-  Standard_EXPORT virtual bool UpdateLoad(const Standard_Boolean theToImport,
-                                          const Standard_Boolean theToKeep);
+  //! @return true, if node can be used
+  Standard_EXPORT virtual bool UpdateLoad(const bool theToImport, const bool theToKeep);
 
 public:
   //! Checks for import support.
-  //! @return Standard_True if import is supported
+  //! @return true if import is supported
   Standard_EXPORT virtual bool IsImportSupported() const;
 
   //! Checks for export support.
-  //! @return Standard_True if export is supported
+  //! @return true if export is supported
   Standard_EXPORT virtual bool IsExportSupported() const;
 
   //! Checks for stream support.
-  //! @return Standard_True if streams are supported
+  //! @return true if streams are supported
   Standard_EXPORT virtual bool IsStreamSupported() const;
 
   //! Gets CAD format name of associated provider
@@ -115,26 +116,26 @@ public:
 
   //! Gets list of supported file extensions
   //! @return list of extensions
-  Standard_EXPORT virtual TColStd_ListOfAsciiString GetExtensions() const = 0;
+  Standard_EXPORT virtual NCollection_List<TCollection_AsciiString> GetExtensions() const = 0;
 
   //! Checks the file extension to verify a format
   //! @param[in] theExtension input file extension
-  //! @return Standard_True if file is supported by a current provider
+  //! @return true if file is supported by a current provider
   Standard_EXPORT virtual bool CheckExtension(const TCollection_AsciiString& theExtension) const;
 
   //! Checks the file content to verify a format
   //! @param[in] theBuffer read stream buffer to check content
-  //! @return Standard_True if file is supported by a current provider
-  Standard_EXPORT virtual bool CheckContent(const Handle(NCollection_Buffer)& theBuffer) const;
+  //! @return true if file is supported by a current provider
+  Standard_EXPORT virtual bool CheckContent(const occ::handle<NCollection_Buffer>& theBuffer) const;
 
 public:
   //! Gets the provider loading status
-  //! @return Standard_True if the load is correct
-  Standard_Boolean IsEnabled() const { return myIsEnabled; }
+  //! @return true if the load is correct
+  bool IsEnabled() const { return myIsEnabled; }
 
   //! Sets the provider loading status
   //! @param[in] theIsLoaded input load status
-  void SetEnabled(const Standard_Boolean theIsLoaded) { myIsEnabled = theIsLoaded; }
+  void SetEnabled(const bool theIsLoaded) { myIsEnabled = theIsLoaded; }
 
   //! Custom function to activate commercial DE component.
   //! The input is special sequence of values that described in
@@ -143,15 +144,16 @@ public:
   //!
   //! The main goal - real-time loading plug-in activation.
   //! OpenSource components don't need to have activation process.
-  Standard_EXPORT virtual void CustomActivation(const TColStd_ListOfAsciiString&) {};
+  Standard_EXPORT virtual void CustomActivation(const NCollection_List<TCollection_AsciiString>&) {
+  };
 
 public:
   //!< Internal parameters for transfer process
   struct DE_SectionGlobal
   {
     // clang-format off
-    Standard_Real LengthUnit = 1.0; //!< Target Unit (scaling based on MM) for the transfer process, default 1.0 (MM)
-    Standard_Real SystemUnit = 1.0; //!< System Unit (scaling based on MM) to be used when initial
+    double LengthUnit = 1.0; //!< Target Unit (scaling based on MM) for the transfer process, default 1.0 (MM)
+    double SystemUnit = 1.0; //!< System Unit (scaling based on MM) to be used when initial
                                     //!< unit is unknown, default 1.0 (MM)
   } GlobalParameters;
 
@@ -159,14 +161,14 @@ public:
 
   //! Registers configuration node with the specified wrapper
   //! @param[in] theWrapper wrapper to register with
-  Standard_EXPORT virtual void Register(const Handle(DE_Wrapper)& theWrapper) const;
+  Standard_EXPORT virtual void Register(const occ::handle<DE_Wrapper>& theWrapper) const;
 
   //! Unregisters configuration node from the specified wrapper
   //! @param[in] theWrapper wrapper to unregister from
-  Standard_EXPORT virtual void UnRegister(const Handle(DE_Wrapper)& theWrapper) const;
+  Standard_EXPORT virtual void UnRegister(const occ::handle<DE_Wrapper>& theWrapper) const;
 
 private:
-  Standard_Boolean myIsEnabled; //!< Flag to use a current provider for Read or Write process via DE_Wrapper
+  bool myIsEnabled; //!< Flag to use a current provider for Read or Write process via DE_Wrapper
   // clang-format on
 };
 

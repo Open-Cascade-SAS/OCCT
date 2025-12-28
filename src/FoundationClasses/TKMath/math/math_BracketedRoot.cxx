@@ -19,16 +19,16 @@
 // reference algorithm:
 //                   Brent method
 //                   numerical recipes in C (p. 269)
-math_BracketedRoot::math_BracketedRoot(math_Function&         F,
-                                       const Standard_Real    Bound1,
-                                       const Standard_Real    Bound2,
-                                       const Standard_Real    Tolerance,
-                                       const Standard_Integer NbIterations,
-                                       const Standard_Real    ZEPS)
+math_BracketedRoot::math_BracketedRoot(math_Function& F,
+                                       const double   Bound1,
+                                       const double   Bound2,
+                                       const double   Tolerance,
+                                       const int      NbIterations,
+                                       const double   ZEPS)
 {
 
-  Standard_Real Fa, Fc, a, c = 0, d = 0, e = 0;
-  Standard_Real min1, min2, p, q, r, s, tol1, xm;
+  double Fa, Fc, a, c = 0, d = 0, e = 0;
+  double min1, min2, p, q, r, s, tol1, xm;
 
   a       = Bound1;
   TheRoot = Bound2;
@@ -36,7 +36,7 @@ math_BracketedRoot::math_BracketedRoot(math_Function&         F,
   F.Value(TheRoot, TheError);
   if (Fa * TheError > 0.)
   {
-    Done = Standard_False;
+    Done = false;
   }
   else
   {
@@ -63,7 +63,7 @@ math_BracketedRoot::math_BracketedRoot(math_Function&         F,
       xm   = 0.5 * (c - TheRoot);
       if (std::abs(xm) <= tol1 || TheError == 0.)
       {
-        Done = Standard_True;
+        Done = true;
         return;
       }
       if (std::abs(e) >= tol1 && std::abs(Fa) > std::abs(TheError))
@@ -116,7 +116,7 @@ math_BracketedRoot::math_BracketedRoot(math_Function&         F,
       }
       F.Value(TheRoot, TheError);
     }
-    Done = Standard_False;
+    Done = false;
   }
 }
 

@@ -64,7 +64,7 @@ GC_MakeLine::GC_MakeLine(const gp_Lin& Lin, const gp_Pnt& Point)
   }
 }
 
-const Handle(Geom_Line)& GC_MakeLine::Value() const
+const occ::handle<Geom_Line>& GC_MakeLine::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeLine::Value() - no result");
   return TheLine;

@@ -41,19 +41,16 @@ public:
   //! 2 -> ShapeAspect
   //! 3 -> ShapeAspectRelationship
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a ProductDefinitionShape (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ProductDefinitionShape) ProductDefinitionShape() const;
+  Standard_EXPORT occ::handle<StepRepr_ProductDefinitionShape> ProductDefinitionShape() const;
 
   //! returns Value as a ShapeAspect (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 
   //! returns Value as a ShapeAspectRelationship (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship() const;
 };
 
 #endif // _StepRepr_ShapeDefinition_HeaderFile

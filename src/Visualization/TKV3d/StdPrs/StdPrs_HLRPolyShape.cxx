@@ -21,7 +21,8 @@
 #include <Graphic3d_Group.hxx>
 #include <HLRAlgo_EdgeIterator.hxx>
 #include <HLRAlgo_EdgeStatus.hxx>
-#include <HLRBRep_ListOfBPoint.hxx>
+#include <HLRBRep_BiPoint.hxx>
+#include <NCollection_List.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
@@ -29,21 +30,21 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 
-#define PntX1 ((Standard_Real*)Coordinates)[0]
-#define PntY1 ((Standard_Real*)Coordinates)[1]
-#define PntZ1 ((Standard_Real*)Coordinates)[2]
-#define PntX2 ((Standard_Real*)Coordinates)[3]
-#define PntY2 ((Standard_Real*)Coordinates)[4]
-#define PntZ2 ((Standard_Real*)Coordinates)[5]
+#define PntX1 ((double*)Coordinates)[0]
+#define PntY1 ((double*)Coordinates)[1]
+#define PntZ1 ((double*)Coordinates)[2]
+#define PntX2 ((double*)Coordinates)[3]
+#define PntY2 ((double*)Coordinates)[4]
+#define PntZ2 ((double*)Coordinates)[5]
 
 IMPLEMENT_STANDARD_RTTIEXT(StdPrs_HLRPolyShape, StdPrs_HLRShapeI)
 
 //=================================================================================================
 
-void StdPrs_HLRPolyShape::ComputeHLR(const Handle(Prs3d_Presentation)& aPresentation,
-                                     const TopoDS_Shape&               aShape,
-                                     const Handle(Prs3d_Drawer)&       aDrawer,
-                                     const Handle(Graphic3d_Camera)&   theProjector) const
+void StdPrs_HLRPolyShape::ComputeHLR(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                     const TopoDS_Shape&                    aShape,
+                                     const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                     const occ::handle<Graphic3d_Camera>&   theProjector) const
 {
   gp_Dir  aBackDir = -theProjector->Direction();
   gp_Dir  aXpers   = theProjector->Up().Crossed(aBackDir);
@@ -52,7 +53,7 @@ void StdPrs_HLRPolyShape::ComputeHLR(const Handle(Prs3d_Presentation)& aPresenta
   aTrsf.SetTransformation(anAx3);
   const HLRAlgo_Projector aProj(aTrsf, !theProjector->IsOrthographic(), theProjector->Scale());
 
-  Handle(Graphic3d_Group) aGroup = aPresentation->CurrentGroup();
+  occ::handle<Graphic3d_Group> aGroup = aPresentation->CurrentGroup();
 
   TopExp_Explorer ex;
 
@@ -72,18 +73,18 @@ void StdPrs_HLRPolyShape::ComputeHLR(const Handle(Prs3d_Presentation)& aPresenta
     StdPrs_ToolTriangulatedShape::Tessellate(aShape, aDrawer);
   }
 
-  Handle(HLRBRep_PolyAlgo) hider = new HLRBRep_PolyAlgo(aShape);
+  occ::handle<HLRBRep_PolyAlgo> hider = new HLRBRep_PolyAlgo(aShape);
   hider->Projector(aProj);
   hider->Update();
-  Standard_Real        sta, end, dx, dy, dz;
-  Standard_ShortReal   tolsta, tolend;
+  double               sta, end, dx, dy, dz;
+  float                tolsta, tolend;
   HLRAlgo_EdgeStatus   status;
   HLRAlgo_EdgeIterator It;
-  Standard_Boolean     reg1, regn, outl, intl;
-  Standard_Address     Coordinates;
+  bool                 reg1, regn, outl, intl;
+  void*                Coordinates;
   TopoDS_Shape         S;
 
-  HLRBRep_ListOfBPoint BiPntVis, BiPntHid;
+  NCollection_List<HLRBRep_BiPoint> BiPntVis, BiPntHid;
 
   for (hider->InitHide(); hider->MoreHide(); hider->NextHide())
   {
@@ -129,8 +130,8 @@ void StdPrs_HLRPolyShape::ComputeHLR(const Handle(Prs3d_Presentation)& aPresenta
   // storage in the group
   if (aDrawer->DrawHiddenLine())
   {
-    Standard_Integer aNbHiddenSegments = 0;
-    for (HLRBRep_ListIteratorOfListOfBPoint aBPntHidIter(BiPntHid); aBPntHidIter.More();
+    int aNbHiddenSegments = 0;
+    for (NCollection_List<HLRBRep_BiPoint>::Iterator aBPntHidIter(BiPntHid); aBPntHidIter.More();
          aBPntHidIter.Next())
     {
       const HLRBRep_BiPoint& aBPnt = aBPntHidIter.Value();
@@ -141,9 +142,9 @@ void StdPrs_HLRPolyShape::ComputeHLR(const Handle(Prs3d_Presentation)& aPresenta
     }
     if (aNbHiddenSegments > 0)
     {
-      Handle(Graphic3d_ArrayOfSegments) aHiddenArray =
+      occ::handle<Graphic3d_ArrayOfSegments> aHiddenArray =
         new Graphic3d_ArrayOfSegments(aNbHiddenSegments * 2);
-      for (HLRBRep_ListIteratorOfListOfBPoint aBPntHidIter(BiPntHid); aBPntHidIter.More();
+      for (NCollection_List<HLRBRep_BiPoint>::Iterator aBPntHidIter(BiPntHid); aBPntHidIter.More();
            aBPntHidIter.Next())
       {
         const HLRBRep_BiPoint& aBPnt = aBPntHidIter.Value();
@@ -159,8 +160,8 @@ void StdPrs_HLRPolyShape::ComputeHLR(const Handle(Prs3d_Presentation)& aPresenta
     }
   }
   {
-    Standard_Integer aNbSeenSegments = 0;
-    for (HLRBRep_ListIteratorOfListOfBPoint aBPntVisIter(BiPntVis); aBPntVisIter.More();
+    int aNbSeenSegments = 0;
+    for (NCollection_List<HLRBRep_BiPoint>::Iterator aBPntVisIter(BiPntVis); aBPntVisIter.More();
          aBPntVisIter.Next())
     {
       const HLRBRep_BiPoint& aBPnt = aBPntVisIter.Value();
@@ -171,9 +172,9 @@ void StdPrs_HLRPolyShape::ComputeHLR(const Handle(Prs3d_Presentation)& aPresenta
     }
     if (aNbSeenSegments > 0)
     {
-      Handle(Graphic3d_ArrayOfSegments) aSeenArray =
+      occ::handle<Graphic3d_ArrayOfSegments> aSeenArray =
         new Graphic3d_ArrayOfSegments(aNbSeenSegments * 2);
-      for (HLRBRep_ListIteratorOfListOfBPoint aBPntVisIter(BiPntVis); aBPntVisIter.More();
+      for (NCollection_List<HLRBRep_BiPoint>::Iterator aBPntVisIter(BiPntVis); aBPntVisIter.More();
            aBPntVisIter.Next())
       {
         const HLRBRep_BiPoint& aBPnt = aBPntVisIter.Value();

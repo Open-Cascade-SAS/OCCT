@@ -17,7 +17,10 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Root.hxx>
-#include <Prs3d_NListOfSequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_List.hxx>
 
 // Computes the wireframe presentation of faces with
 // restrictions by displaying a given number of U and/or
@@ -30,59 +33,60 @@ class StdPrs_WFRestrictedFace : public Prs3d_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)&  thePresentation,
-                                  const Handle(BRepAdaptor_Surface)& theFace,
-                                  const Standard_Boolean             theDrawUIso,
-                                  const Standard_Boolean             theDrawVIso,
-                                  const Standard_Integer             theNbUIso,
-                                  const Standard_Integer             theNbVIso,
-                                  const Handle(Prs3d_Drawer)&        theDrawer,
-                                  Prs3d_NListOfSequenceOfPnt&        theCurves);
+  Standard_EXPORT static void Add(
+    const occ::handle<Prs3d_Presentation>&                        thePresentation,
+    const occ::handle<BRepAdaptor_Surface>&                       theFace,
+    const bool                                                    theDrawUIso,
+    const bool                                                    theDrawVIso,
+    const int                                                     theNbUIso,
+    const int                                                     theNbVIso,
+    const occ::handle<Prs3d_Drawer>&                              theDrawer,
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theCurves);
 
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)&  thePresentation,
-                                  const Handle(BRepAdaptor_Surface)& theFace,
-                                  const Handle(Prs3d_Drawer)&        theDrawer);
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>&  thePresentation,
+                                  const occ::handle<BRepAdaptor_Surface>& theFace,
+                                  const occ::handle<Prs3d_Drawer>&        theDrawer);
 
-  Standard_EXPORT static Standard_Boolean Match(const Standard_Real                theX,
-                                                const Standard_Real                theY,
-                                                const Standard_Real                theZ,
-                                                const Standard_Real                theDistance,
-                                                const Handle(BRepAdaptor_Surface)& theFace,
-                                                const Standard_Boolean             theDrawUIso,
-                                                const Standard_Boolean             theDrawVIso,
-                                                const Standard_Real                theDeflection,
-                                                const Standard_Integer             theNbUIso,
-                                                const Standard_Integer             theNbVIso,
-                                                const Handle(Prs3d_Drawer)&        theDrawer);
+  Standard_EXPORT static bool Match(const double                            theX,
+                                    const double                            theY,
+                                    const double                            theZ,
+                                    const double                            theDistance,
+                                    const occ::handle<BRepAdaptor_Surface>& theFace,
+                                    const bool                              theDrawUIso,
+                                    const bool                              theDrawVIso,
+                                    const double                            theDeflection,
+                                    const int                               theNbUIso,
+                                    const int                               theNbVIso,
+                                    const occ::handle<Prs3d_Drawer>&        theDrawer);
 
-  Standard_EXPORT static Standard_Boolean Match(const Standard_Real                theX,
-                                                const Standard_Real                theY,
-                                                const Standard_Real                theZ,
-                                                const Standard_Real                theDistance,
-                                                const Handle(BRepAdaptor_Surface)& theFace,
-                                                const Handle(Prs3d_Drawer)&        theDrawer);
+  Standard_EXPORT static bool Match(const double                            theX,
+                                    const double                            theY,
+                                    const double                            theZ,
+                                    const double                            theDistance,
+                                    const occ::handle<BRepAdaptor_Surface>& theFace,
+                                    const occ::handle<Prs3d_Drawer>&        theDrawer);
 
-  Standard_EXPORT static Standard_Boolean MatchUIso(const Standard_Real                theX,
-                                                    const Standard_Real                theY,
-                                                    const Standard_Real                theZ,
-                                                    const Standard_Real                theDistance,
-                                                    const Handle(BRepAdaptor_Surface)& theFace,
-                                                    const Handle(Prs3d_Drawer)&        theDrawer);
+  Standard_EXPORT static bool MatchUIso(const double                            theX,
+                                        const double                            theY,
+                                        const double                            theZ,
+                                        const double                            theDistance,
+                                        const occ::handle<BRepAdaptor_Surface>& theFace,
+                                        const occ::handle<Prs3d_Drawer>&        theDrawer);
 
-  Standard_EXPORT static Standard_Boolean MatchVIso(const Standard_Real                theX,
-                                                    const Standard_Real                theY,
-                                                    const Standard_Real                theZ,
-                                                    const Standard_Real                theDistance,
-                                                    const Handle(BRepAdaptor_Surface)& theFace,
-                                                    const Handle(Prs3d_Drawer)&        theDrawer);
+  Standard_EXPORT static bool MatchVIso(const double                            theX,
+                                        const double                            theY,
+                                        const double                            theZ,
+                                        const double                            theDistance,
+                                        const occ::handle<BRepAdaptor_Surface>& theFace,
+                                        const occ::handle<Prs3d_Drawer>&        theDrawer);
 
-  Standard_EXPORT static void AddUIso(const Handle(Prs3d_Presentation)&  thePresentation,
-                                      const Handle(BRepAdaptor_Surface)& theFace,
-                                      const Handle(Prs3d_Drawer)&        theDrawer);
+  Standard_EXPORT static void AddUIso(const occ::handle<Prs3d_Presentation>&  thePresentation,
+                                      const occ::handle<BRepAdaptor_Surface>& theFace,
+                                      const occ::handle<Prs3d_Drawer>&        theDrawer);
 
-  Standard_EXPORT static void AddVIso(const Handle(Prs3d_Presentation)&  thePresentation,
-                                      const Handle(BRepAdaptor_Surface)& theFace,
-                                      const Handle(Prs3d_Drawer)&        theDrawer);
+  Standard_EXPORT static void AddVIso(const occ::handle<Prs3d_Presentation>&  thePresentation,
+                                      const occ::handle<BRepAdaptor_Surface>& theFace,
+                                      const occ::handle<Prs3d_Drawer>&        theDrawer);
 };
 
 #endif

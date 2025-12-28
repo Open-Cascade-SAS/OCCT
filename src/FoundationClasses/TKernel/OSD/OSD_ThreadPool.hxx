@@ -56,7 +56,7 @@ class OSD_ThreadPool : public Standard_Transient
 public:
   //! Return (or create) a default thread pool.
   //! Number of threads argument will be considered only when called first time.
-  Standard_EXPORT static const Handle(OSD_ThreadPool)& DefaultPool(int theNbThreads = -1);
+  Standard_EXPORT static const occ::handle<OSD_ThreadPool>& DefaultPool(int theNbThreads = -1);
 
 public:
   //! Main constructor.
@@ -180,19 +180,19 @@ protected:
     void performThread();
 
     //! Method is executed in the context of thread.
-    static Standard_Address runThread(Standard_Address theTask);
+    static void* runThread(void* theTask);
 
   private:
-    OSD_ThreadPool*          myPool;
-    JobInterface*            myJob;
-    Handle(Standard_Failure) myFailure;
-    Standard_Condition       myWakeEvent;
-    Standard_Condition       myIdleEvent;
-    int                      myThreadIndex;
-    std::atomic<int>         myUsageCounter;
-    bool                     myIsStarted;
-    bool                     myToCatchFpe;
-    bool                     myIsSelfThread;
+    OSD_ThreadPool*               myPool;
+    JobInterface*                 myJob;
+    occ::handle<Standard_Failure> myFailure;
+    Standard_Condition            myWakeEvent;
+    Standard_Condition            myIdleEvent;
+    int                           myThreadIndex;
+    std::atomic<int>              myUsageCounter;
+    bool                          myIsStarted;
+    bool                          myToCatchFpe;
+    bool                          myIsSelfThread;
   };
 
 public:
@@ -315,9 +315,9 @@ protected:
     }
 
     //! Method is executed in the context of thread.
-    virtual void Perform(int theThreadIndex) Standard_OVERRIDE
+    virtual void Perform(int theThreadIndex) override
     {
-      for (Standard_Integer anIter = myRange.It(); anIter < myRange.End(); anIter = myRange.It())
+      for (int anIter = myRange.It(); anIter < myRange.End(); anIter = myRange.It())
       {
         myPerformer(theThreadIndex, anIter);
       }
@@ -336,9 +336,9 @@ protected:
   void release();
 
   //! Perform the job and catch exceptions.
-  static void performJob(Handle(Standard_Failure)&     theFailure,
-                         OSD_ThreadPool::JobInterface* theJob,
-                         int                           theThreadIndex);
+  static void performJob(occ::handle<Standard_Failure>& theFailure,
+                         OSD_ThreadPool::JobInterface*  theJob,
+                         int                            theThreadIndex);
 
 private:
   //! This method should not be called (prohibited).

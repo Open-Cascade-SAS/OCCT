@@ -16,7 +16,8 @@
 #include <BRepTools_History.hxx>
 
 #include <TopExp.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 // Implement the OCCT RTTI for the type.
 IMPLEMENT_STANDARD_RTTIEXT(BRepTools_History, Standard_Transient)
@@ -28,9 +29,10 @@ namespace
 // function : add
 // purpose  : Adds the elements of the list to the map.
 //==============================================================================
-void add(TopTools_MapOfShape& theMap, const TopTools_ListOfShape& theList)
+void add(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap,
+         const NCollection_List<TopoDS_Shape>&                   theList)
 {
-  for (TopTools_ListOfShape::Iterator aSIt(theList); aSIt.More(); aSIt.Next())
+  for (NCollection_List<TopoDS_Shape>::Iterator aSIt(theList); aSIt.More(); aSIt.Next())
   {
     theMap.Add(aSIt.Value());
   }
@@ -41,7 +43,7 @@ void add(TopTools_MapOfShape& theMap, const TopTools_ListOfShape& theList)
 // purpose  : Adds the elements of the collection to the list.
 //==============================================================================
 template <typename TCollection>
-void add(TopTools_ListOfShape& theList, const TCollection& theCollection)
+void add(NCollection_List<TopoDS_Shape>& theList, const TCollection& theCollection)
 {
   for (typename TCollection::Iterator aSIt(theCollection); aSIt.More(); aSIt.Next())
   {
@@ -61,10 +63,10 @@ void BRepTools_History::AddGenerated(const TopoDS_Shape& theInitial,
     return;
   }
 
-  TopTools_ListOfShape* aGenerations = myShapeToGenerated.ChangeSeek(theInitial);
+  NCollection_List<TopoDS_Shape>* aGenerations = myShapeToGenerated.ChangeSeek(theInitial);
   if (aGenerations == NULL)
   {
-    aGenerations = myShapeToGenerated.Bound(theInitial, TopTools_ListOfShape());
+    aGenerations = myShapeToGenerated.Bound(theInitial, NCollection_List<TopoDS_Shape>());
   }
 
   Standard_ASSERT_VOID(!aGenerations->Contains(theGenerated),
@@ -82,10 +84,10 @@ void BRepTools_History::AddModified(const TopoDS_Shape& theInitial, const TopoDS
     return;
   }
 
-  TopTools_ListOfShape* aModifications = myShapeToModified.ChangeSeek(theInitial);
+  NCollection_List<TopoDS_Shape>* aModifications = myShapeToModified.ChangeSeek(theInitial);
   if (aModifications == NULL)
   {
-    aModifications = myShapeToModified.Bound(theInitial, TopTools_ListOfShape());
+    aModifications = myShapeToModified.Bound(theInitial, NCollection_List<TopoDS_Shape>());
   }
 
   Standard_ASSERT_VOID(!aModifications->Contains(theModified),
@@ -119,7 +121,8 @@ void BRepTools_History::ReplaceGenerated(const TopoDS_Shape& theInitial,
     return;
   }
 
-  TopTools_ListOfShape* aGenerations = myShapeToGenerated.Bound(theInitial, TopTools_ListOfShape());
+  NCollection_List<TopoDS_Shape>* aGenerations =
+    myShapeToGenerated.Bound(theInitial, NCollection_List<TopoDS_Shape>());
   aGenerations->Append(theGenerated);
 }
 
@@ -133,14 +136,15 @@ void BRepTools_History::ReplaceModified(const TopoDS_Shape& theInitial,
     return;
   }
 
-  TopTools_ListOfShape* aModifications =
-    myShapeToModified.Bound(theInitial, TopTools_ListOfShape());
+  NCollection_List<TopoDS_Shape>* aModifications =
+    myShapeToModified.Bound(theInitial, NCollection_List<TopoDS_Shape>());
   aModifications->Append(theModified);
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepTools_History::Generated(const TopoDS_Shape& theInitial) const
+const NCollection_List<TopoDS_Shape>& BRepTools_History::Generated(
+  const TopoDS_Shape& theInitial) const
 {
   // Apply the limitations.
   Standard_ASSERT_RETURN(theInitial.IsNull() || IsSupportedType(theInitial),
@@ -148,28 +152,29 @@ const TopTools_ListOfShape& BRepTools_History::Generated(const TopoDS_Shape& the
                          emptyList());
 
   //
-  const TopTools_ListOfShape* aGenerations = myShapeToGenerated.Seek(theInitial);
+  const NCollection_List<TopoDS_Shape>* aGenerations = myShapeToGenerated.Seek(theInitial);
   return (aGenerations != NULL) ? *aGenerations : emptyList();
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepTools_History::Modified(const TopoDS_Shape& theInitial) const
+const NCollection_List<TopoDS_Shape>& BRepTools_History::Modified(
+  const TopoDS_Shape& theInitial) const
 {
   // Apply the limitations.
   Standard_ASSERT_RETURN(IsSupportedType(theInitial), myMsgUnsupportedType, emptyList());
 
   //
-  const TopTools_ListOfShape* aModifications = myShapeToModified.Seek(theInitial);
+  const NCollection_List<TopoDS_Shape>* aModifications = myShapeToModified.Seek(theInitial);
   return (aModifications != NULL) ? *aModifications : emptyList();
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_History::IsRemoved(const TopoDS_Shape& theInitial) const
+bool BRepTools_History::IsRemoved(const TopoDS_Shape& theInitial) const
 {
   // Apply the limitations.
-  Standard_ASSERT_RETURN(IsSupportedType(theInitial), myMsgUnsupportedType, Standard_False);
+  Standard_ASSERT_RETURN(IsSupportedType(theInitial), myMsgUnsupportedType, false);
 
   //
   return myRemoved.Contains(theInitial);
@@ -177,7 +182,7 @@ Standard_Boolean BRepTools_History::IsRemoved(const TopoDS_Shape& theInitial) co
 
 //=================================================================================================
 
-void BRepTools_History::Merge(const Handle(BRepTools_History)& theHistory23)
+void BRepTools_History::Merge(const occ::handle<BRepTools_History>& theHistory23)
 {
   if (!theHistory23.IsNull())
     Merge(*theHistory23.get());
@@ -193,20 +198,25 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
 
   // Propagate R23 directly and M23 and G23 fully to M12 and G12.
   // Remember the propagated shapes.
-  TopTools_DataMapOfShapeListOfShape* aS1ToGAndM[] = {&myShapeToGenerated, &myShapeToModified};
-  TopTools_MapOfShape                 aRPropagated;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*
+    aS1ToGAndM[] = {&myShapeToGenerated, &myShapeToModified};
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aRPropagated;
   {
     // Propagate R23, M23 and G23 to M12 and G12 directly.
     // Remember the propagated shapes.
-    TopTools_MapOfShape aMAndGPropagated;
-    for (Standard_Integer aI = 0; aI < 2; ++aI)
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMAndGPropagated;
+    for (int aI = 0; aI < 2; ++aI)
     {
-      for (TopTools_DataMapOfShapeListOfShape::Iterator aMIt1(*aS1ToGAndM[aI]); aMIt1.More();
+      for (NCollection_DataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>::Iterator aMIt1(*aS1ToGAndM[aI]);
+           aMIt1.More();
            aMIt1.Next())
       {
-        TopTools_ListOfShape& aL12 = aMIt1.ChangeValue();
-        TopTools_MapOfShape   aAdditions[2]; // The G and M additions.
-        for (TopTools_ListOfShape::Iterator aSIt2(aL12); aSIt2.More();)
+        NCollection_List<TopoDS_Shape>& aL12 = aMIt1.ChangeValue();
+        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>
+          aAdditions[2]; // The G and M additions.
+        for (NCollection_List<TopoDS_Shape>::Iterator aSIt2(aL12); aSIt2.More();)
         {
           const TopoDS_Shape& aS2 = aSIt2.Value();
           if (theHistory23.IsRemoved(aS2))
@@ -239,11 +249,11 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
         add(aL12, aAdditions[aI]);
         if (aI != 0 && !aAdditions[0].IsEmpty())
         {
-          const TopoDS_Shape&   aS1    = aMIt1.Key();
-          TopTools_ListOfShape* aGAndM = aS1ToGAndM[0]->ChangeSeek(aS1);
+          const TopoDS_Shape&             aS1    = aMIt1.Key();
+          NCollection_List<TopoDS_Shape>* aGAndM = aS1ToGAndM[0]->ChangeSeek(aS1);
           if (aGAndM == NULL)
           {
-            aGAndM = aS1ToGAndM[0]->Bound(aS1, TopTools_ListOfShape());
+            aGAndM = aS1ToGAndM[0]->Bound(aS1, NCollection_List<TopoDS_Shape>());
           }
 
           add(*aGAndM, aAdditions[0]);
@@ -252,11 +262,17 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
     }
 
     // Propagate M23 and G23 to M12 and G12 sequentially.
-    const TopTools_DataMapOfShapeListOfShape* aS2ToGAndM[] = {&theHistory23.myShapeToGenerated,
-                                                              &theHistory23.myShapeToModified};
-    for (Standard_Integer aI = 0; aI < 2; ++aI)
+    const NCollection_DataMap<TopoDS_Shape,
+                              NCollection_List<TopoDS_Shape>,
+                              TopTools_ShapeMapHasher>* aS2ToGAndM[] = {
+      &theHistory23.myShapeToGenerated,
+      &theHistory23.myShapeToModified};
+    for (int aI = 0; aI < 2; ++aI)
     {
-      for (TopTools_DataMapOfShapeListOfShape::Iterator aMIt2(*aS2ToGAndM[aI]); aMIt2.More();
+      for (NCollection_DataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>::Iterator aMIt2(*aS2ToGAndM[aI]);
+           aMIt2.More();
            aMIt2.Next())
       {
         const TopoDS_Shape& aS2 = aMIt2.Key();
@@ -264,10 +280,10 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
         {
           if (!aS1ToGAndM[aI]->IsBound(aS2))
           {
-            aS1ToGAndM[aI]->Bind(aS2, TopTools_ListOfShape());
+            aS1ToGAndM[aI]->Bind(aS2, NCollection_List<TopoDS_Shape>());
           }
 
-          TopTools_ListOfShape aM2 = aMIt2.Value();
+          NCollection_List<TopoDS_Shape> aM2 = aMIt2.Value();
           ((*aS1ToGAndM[aI])(aS2)).Append(aM2);
           myRemoved.Remove(aS2);
         }
@@ -276,12 +292,15 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
   }
 
   // Unbound the empty M12 and G12.
-  for (Standard_Integer aI = 0; aI < 2; ++aI)
+  for (int aI = 0; aI < 2; ++aI)
   {
-    for (TopTools_DataMapOfShapeListOfShape::Iterator aMIt1(*aS1ToGAndM[aI]); aMIt1.More();)
+    for (NCollection_DataMap<TopoDS_Shape,
+                             NCollection_List<TopoDS_Shape>,
+                             TopTools_ShapeMapHasher>::Iterator aMIt1(*aS1ToGAndM[aI]);
+         aMIt1.More();)
     {
-      const TopoDS_Shape&         aS1  = aMIt1.Key();
-      const TopTools_ListOfShape& aL12 = aMIt1.Value();
+      const TopoDS_Shape&                   aS1  = aMIt1.Key();
+      const NCollection_List<TopoDS_Shape>& aL12 = aMIt1.Value();
       aMIt1.Next();
       if (aL12.IsEmpty())
       {
@@ -292,7 +311,10 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
   }
 
   // Propagate R23 to R12 sequentially.
-  for (TopTools_MapOfShape::Iterator aRIt23(theHistory23.myRemoved); aRIt23.More(); aRIt23.Next())
+  for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aRIt23(
+         theHistory23.myRemoved);
+       aRIt23.More();
+       aRIt23.Next())
   {
     const TopoDS_Shape& aS2 = aRIt23.Value();
     if (!aRPropagated.Contains(aS2) && !myShapeToModified.IsBound(aS2)
@@ -305,27 +327,27 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_History::prepareGenerated(const TopoDS_Shape& theInitial,
-                                                     const TopoDS_Shape& theGenerated)
+bool BRepTools_History::prepareGenerated(const TopoDS_Shape& theInitial,
+                                         const TopoDS_Shape& theGenerated)
 {
   Standard_ASSERT_RETURN(theInitial.IsNull() || IsSupportedType(theInitial),
                          myMsgUnsupportedType,
-                         Standard_False);
+                         false);
 
   if (myShapeToModified.IsBound(theInitial) && myShapeToModified(theInitial).Remove(theGenerated))
   {
     Standard_ASSERT_INVOKE_(, myMsgGeneratedAndModified);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_History::prepareModified(const TopoDS_Shape& theInitial,
-                                                    const TopoDS_Shape& theModified)
+bool BRepTools_History::prepareModified(const TopoDS_Shape& theInitial,
+                                        const TopoDS_Shape& theModified)
 {
-  Standard_ASSERT_RETURN(IsSupportedType(theInitial), myMsgUnsupportedType, Standard_False);
+  Standard_ASSERT_RETURN(IsSupportedType(theInitial), myMsgUnsupportedType, false);
 
   if (myRemoved.Remove(theInitial))
   {
@@ -337,16 +359,16 @@ Standard_Boolean BRepTools_History::prepareModified(const TopoDS_Shape& theIniti
     Standard_ASSERT_INVOKE_(, myMsgGeneratedAndModified);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape BRepTools_History::myEmptyList;
+const NCollection_List<TopoDS_Shape> BRepTools_History::myEmptyList;
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepTools_History::emptyList()
+const NCollection_List<TopoDS_Shape>& BRepTools_History::emptyList()
 {
   return myEmptyList;
 }

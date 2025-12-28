@@ -27,10 +27,11 @@ RWStepRepr_RWCentreOfSymmetry::RWStepRepr_RWCentreOfSymmetry() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWCentreOfSymmetry::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepRepr_CentreOfSymmetry)& ent) const
+void RWStepRepr_RWCentreOfSymmetry::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepRepr_CentreOfSymmetry>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "centre_of_symmetry"))
@@ -38,16 +39,16 @@ void RWStepRepr_RWCentreOfSymmetry::ReadStep(const Handle(StepData_StepReaderDat
 
   // Inherited fields of ShapeAspect
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Name;
   data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Description;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Description;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
   }
 
-  Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
+  occ::handle<StepRepr_ProductDefinitionShape> aShapeAspect_OfShape;
   data->ReadEntity(num,
                    3,
                    "shape_aspect.of_shape",
@@ -71,8 +72,9 @@ void RWStepRepr_RWCentreOfSymmetry::ReadStep(const Handle(StepData_StepReaderDat
 
 //=================================================================================================
 
-void RWStepRepr_RWCentreOfSymmetry::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepRepr_CentreOfSymmetry)& ent) const
+void RWStepRepr_RWCentreOfSymmetry::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepRepr_CentreOfSymmetry>& ent) const
 {
 
   // Inherited fields of ShapeAspect
@@ -88,8 +90,8 @@ void RWStepRepr_RWCentreOfSymmetry::WriteStep(StepData_StepWriter&              
 
 //=================================================================================================
 
-void RWStepRepr_RWCentreOfSymmetry::Share(const Handle(StepRepr_CentreOfSymmetry)& ent,
-                                          Interface_EntityIterator&                iter) const
+void RWStepRepr_RWCentreOfSymmetry::Share(const occ::handle<StepRepr_CentreOfSymmetry>& ent,
+                                          Interface_EntityIterator&                     iter) const
 {
 
   // Inherited fields of ShapeAspect

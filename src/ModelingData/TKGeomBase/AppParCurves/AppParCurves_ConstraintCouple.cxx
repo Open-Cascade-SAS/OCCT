@@ -20,14 +20,14 @@ AppParCurves_ConstraintCouple::AppParCurves_ConstraintCouple()
 {
 }
 
-AppParCurves_ConstraintCouple::AppParCurves_ConstraintCouple(const Standard_Integer        TheIndex,
+AppParCurves_ConstraintCouple::AppParCurves_ConstraintCouple(const int                     TheIndex,
                                                              const AppParCurves_Constraint Cons)
 {
   myIndex      = TheIndex;
   myConstraint = Cons;
 }
 
-Standard_Integer AppParCurves_ConstraintCouple::Index() const
+int AppParCurves_ConstraintCouple::Index() const
 {
   return myIndex;
 }
@@ -37,7 +37,7 @@ AppParCurves_Constraint AppParCurves_ConstraintCouple::Constraint() const
   return myConstraint;
 }
 
-void AppParCurves_ConstraintCouple::SetIndex(const Standard_Integer TheIndex)
+void AppParCurves_ConstraintCouple::SetIndex(const int TheIndex)
 {
   myIndex = TheIndex;
 }

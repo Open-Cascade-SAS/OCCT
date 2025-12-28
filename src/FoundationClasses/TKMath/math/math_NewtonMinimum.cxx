@@ -31,10 +31,10 @@
 //=================================================================================================
 
 math_NewtonMinimum::math_NewtonMinimum(const math_MultipleVarFunctionWithHessian& theFunction,
-                                       const Standard_Real                        theTolerance,
-                                       const Standard_Integer                     theNbIterations,
-                                       const Standard_Real                        theConvexity,
-                                       const Standard_Boolean theWithSingularity)
+                                       const double                               theTolerance,
+                                       const int                                  theNbIterations,
+                                       const double                               theConvexity,
+                                       const bool theWithSingularity)
     : TheStatus(math_NotBracketed),
       TheLocation(1, theFunction.NbVariables()),
       TheGradient(1, theFunction.NbVariables()),
@@ -47,11 +47,11 @@ math_NewtonMinimum::math_NewtonMinimum(const math_MultipleVarFunctionWithHessian
       CTol(theConvexity),
       nbiter(0),
       NoConvexTreatement(theWithSingularity),
-      Convex(Standard_True),
-      myIsBoundsDefined(Standard_False),
+      Convex(true),
+      myIsBoundsDefined(false),
       myLeft(1, theFunction.NbVariables(), 0.0),
       myRight(1, theFunction.NbVariables(), 0.0),
-      Done(Standard_False),
+      Done(false),
       Itermax(theNbIterations)
 {
 }
@@ -69,7 +69,7 @@ void math_NewtonMinimum::SetBoundary(const math_Vector& theLeftBorder,
 {
   myLeft            = theLeftBorder;
   myRight           = theRightBorder;
-  myIsBoundsDefined = Standard_True;
+  myIsBoundsDefined = true;
 }
 
 //=================================================================================================
@@ -83,11 +83,11 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
   math_Vector* precedent = &Point1;
   math_Vector* suivant   = &Point2;
 
-  Standard_Boolean Ok     = Standard_True;
-  Standard_Integer NbConv = 0, ii, Nreduction;
-  Standard_Real    VPrecedent, VItere;
+  bool   Ok     = true;
+  int    NbConv = 0, ii, Nreduction;
+  double VPrecedent, VItere;
 
-  Done      = Standard_True;
+  Done      = true;
   TheStatus = math_OK;
   nbiter    = 0;
 
@@ -100,7 +100,7 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     Ok = F.Values(*precedent, VPrecedent, TheGradient, TheHessian);
     if (!Ok)
     {
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_FunctionError;
       return;
     }
@@ -115,7 +115,7 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     math_Jacobi CalculVP(TheHessian);
     if (!CalculVP.IsDone())
     {
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_FunctionError;
       return;
     }
@@ -123,17 +123,17 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     MinEigenValue = CalculVP.Values()(CalculVP.Values().Min());
     if (MinEigenValue < CTol)
     {
-      Convex = Standard_False;
+      Convex = false;
       if (NoConvexTreatement &&           // Treatment is allowed.
           std::abs(MinEigenValue) > CTol) // Treatment will have effect.
       {
-        Standard_Real Delta = CTol + 0.1 * std::abs(MinEigenValue) - MinEigenValue;
+        double Delta = CTol + 0.1 * std::abs(MinEigenValue) - MinEigenValue;
         for (ii = 1; ii <= TheGradient.Length(); ii++)
           TheHessian(ii, ii) += Delta;
       }
       else
       {
-        Done      = Standard_False;
+        Done      = false;
         TheStatus = math_FunctionError;
         return;
       }
@@ -144,7 +144,7 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     math_Gauss LU(TheHessian, CTol / 100);
     if (!LU.IsDone())
     {
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_DirectionSearchError;
       return;
     }
@@ -154,24 +154,24 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     {
       // Project point on bounds or nullify TheStep coords if point lies on boundary.
 
-      *suivant            = *precedent - TheStep;
-      Standard_Real aMult = RealLast();
-      for (Standard_Integer anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
+      *suivant     = *precedent - TheStep;
+      double aMult = RealLast();
+      for (int anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
       {
-        const Standard_Real anAbsStep = std::abs(TheStep(anIdx));
+        const double anAbsStep = std::abs(TheStep(anIdx));
         if (anAbsStep < gp::Resolution())
           continue;
 
         if (suivant->Value(anIdx) < myLeft(anIdx))
         {
-          Standard_Real aValue = std::abs(precedent->Value(anIdx) - myLeft(anIdx)) / anAbsStep;
-          aMult                = std::min(aValue, aMult);
+          double aValue = std::abs(precedent->Value(anIdx) - myLeft(anIdx)) / anAbsStep;
+          aMult         = std::min(aValue, aMult);
         }
 
         if (suivant->Value(anIdx) > myRight(anIdx))
         {
-          Standard_Real aValue = std::abs(precedent->Value(anIdx) - myRight(anIdx)) / anAbsStep;
-          aMult                = std::min(aValue, aMult);
+          double aValue = std::abs(precedent->Value(anIdx) - myRight(anIdx)) / anAbsStep;
+          aMult         = std::min(aValue, aMult);
         }
       }
 
@@ -186,7 +186,7 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
         {
           // Old point on border and new point out of border:
           // Nullify corresponding TheStep indexes.
-          for (Standard_Integer anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
+          for (int anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
           {
             if ((std::abs(precedent->Value(anIdx) - myRight(anIdx)) < Precision::PConfusion()
                  && TheStep(anIdx) < 0.0)
@@ -200,7 +200,7 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
       }
     }
 
-    Standard_Boolean hasProblem = Standard_False;
+    bool hasProblem = false;
     do
     {
       *suivant = *precedent - TheStep;
@@ -249,7 +249,7 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     }
     else
     {
-      Ok        = Standard_False;
+      Ok        = false;
       TheStatus = math_DirectionSearchError;
     }
   }
@@ -262,7 +262,7 @@ void math_NewtonMinimum::Dump(Standard_OStream& o) const
 {
   o << "math_Newton Optimisation: ";
   o << " Done   =" << Done << std::endl;
-  o << " Status = " << (Standard_Integer)TheStatus << std::endl;
+  o << " Status = " << (int)TheStatus << std::endl;
   o << " Location Vector = " << Location() << std::endl;
   o << " Minimum value = " << Minimum() << std::endl;
   o << " Previous value = " << PreviousMinimum << std::endl;

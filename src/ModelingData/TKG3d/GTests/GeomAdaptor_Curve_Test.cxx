@@ -43,8 +43,8 @@ protected:
     myCircle = new Geom_Circle(aCirc);
   }
 
-  Handle(Geom_Line)   myLine;
-  Handle(Geom_Circle) myCircle;
+  occ::handle<Geom_Line>   myLine;
+  occ::handle<Geom_Circle> myCircle;
 };
 
 //==================================================================================================
@@ -174,8 +174,8 @@ TEST_F(GeomAdaptor_Curve_Test, Constructor_InvalidParameters_ThrowsException)
 TEST_F(GeomAdaptor_Curve_Test, Load_NullCurve_ThrowsException)
 {
   // Test loading with null curve
-  Handle(Geom_Curve) aNullCurve;
-  GeomAdaptor_Curve  anAdaptor;
+  occ::handle<Geom_Curve> aNullCurve;
+  GeomAdaptor_Curve       anAdaptor;
 
   EXPECT_THROW(anAdaptor.Load(aNullCurve, 0.0, 10.0), Standard_NullObject);
 }
@@ -203,7 +203,7 @@ TEST_F(GeomAdaptor_Curve_Test, DegeneratedCurve_CircleAtZeroLength_Success)
 TEST_F(GeomAdaptor_Curve_Test, DegeneratedCurve_TrimmedCurve_Success)
 {
   // Create a trimmed curve and test degenerated case
-  Handle(Geom_TrimmedCurve) aTrimmedCurve = new Geom_TrimmedCurve(myLine, 0.0, 20.0);
+  occ::handle<Geom_TrimmedCurve> aTrimmedCurve = new Geom_TrimmedCurve(myLine, 0.0, 20.0);
 
   const double      aParam = 10.0;
   GeomAdaptor_Curve anAdaptor;

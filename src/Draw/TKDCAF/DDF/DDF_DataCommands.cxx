@@ -39,24 +39,26 @@
 #include <TDF_Tool.hxx>
 #include <TDF_CopyLabel.hxx>
 #include <TDF_AttributeIterator.hxx>
-#include <TDF_AttributeMap.hxx>
+#include <Standard_Handle.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
 
 //=======================================================================
 // function : MakeDF
 // purpose  : Creates a new data framework.
 //=======================================================================
 
-static Standard_Integer MakeDF(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int MakeDF(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
-  Handle(DDF_Data)        NewDDF;
+  occ::handle<Draw_Drawable3D> D = Draw::Get(a[1]);
+  occ::handle<DDF_Data>        NewDDF;
 
   if (!D.IsNull())
   {
-    NewDDF = Handle(DDF_Data)::DownCast(D);
+    NewDDF = occ::down_cast<DDF_Data>(D);
     if (!NewDDF.IsNull())
     {
       di << "DDF_BasicCommands::MakeDF - Sorry, this Data Framework already exists\n";
@@ -64,8 +66,8 @@ static Standard_Integer MakeDF(Draw_Interpretor& di, Standard_Integer n, const c
     }
   }
 
-  Handle(TDF_Data) NewDF = new TDF_Data();
-  NewDDF                 = new DDF_Data(NewDF);
+  occ::handle<TDF_Data> NewDF = new TDF_Data();
+  NewDDF                      = new DDF_Data(NewDF);
   Draw::Set(a[1], NewDDF);
   // DeltaDS.Nullify();
   return 0;
@@ -76,24 +78,24 @@ static Standard_Integer MakeDF(Draw_Interpretor& di, Standard_Integer n, const c
 // purpose  : Creates a new data framework.
 //=======================================================================
 
-static Standard_Integer ClearDF(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int ClearDF(Draw_Interpretor& di, int n, const char** a)
 
 {
   if (n < 2)
     return 1;
 
-  Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
-  Handle(DDF_Data)        DDF;
+  occ::handle<Draw_Drawable3D> D = Draw::Get(a[1]);
+  occ::handle<DDF_Data>        DDF;
 
   if (!D.IsNull())
   {
-    DDF = Handle(DDF_Data)::DownCast(D);
+    DDF = occ::down_cast<DDF_Data>(D);
     if (!DDF.IsNull())
     {
-      Handle(TDF_Data) DF = DDF->DataFramework();
+      occ::handle<TDF_Data> DF = DDF->DataFramework();
       if (!DF.IsNull())
       {
-        Handle(TDF_Data) NewEmpty = new TDF_Data;
+        occ::handle<TDF_Data> NewEmpty = new TDF_Data;
         DDF->DataFramework(NewEmpty);
         // DeltaDS.Nullify();
       }
@@ -108,15 +110,15 @@ static Standard_Integer ClearDF(Draw_Interpretor& di, Standard_Integer n, const 
 
 //=================================================================================================
 
-static Standard_Integer CopyDF(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
+static int CopyDF(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 4 || n > 5)
     return 1;
 
-  Handle(TDF_Data) DF1;
-  Handle(TDF_Data) DF2;
-  Standard_CString Entry1;
-  Standard_CString Entry2;
+  occ::handle<TDF_Data> DF1;
+  occ::handle<TDF_Data> DF2;
+  const char*           Entry1;
+  const char*           Entry2;
 
   if (!DDF::GetDF(a[1], DF1))
     return 1;
@@ -141,15 +143,15 @@ static Standard_Integer CopyDF(Draw_Interpretor& /*di*/, Standard_Integer n, con
     return 1;
 
   TDF_Label Label2;
-  if (!DDF::FindLabel(DF2, Entry2, Label2, Standard_False))
+  if (!DDF::FindLabel(DF2, Entry2, Label2, false))
   {
     DDF::AddLabel(DF2, Entry2, Label2);
   }
 
-  Handle(TDF_DataSet) DataSet = new TDF_DataSet;
+  occ::handle<TDF_DataSet> DataSet = new TDF_DataSet;
   DataSet->AddLabel(Label1);
   TDF_ClosureTool::Closure(DataSet);
-  Handle(TDF_RelocationTable) Reloc = new TDF_RelocationTable();
+  occ::handle<TDF_RelocationTable> Reloc = new TDF_RelocationTable();
   Reloc->SetRelocation(Label1, Label2);
   TDF_CopyTool::Copy(DataSet, Reloc);
 
@@ -158,28 +160,28 @@ static Standard_Integer CopyDF(Draw_Interpretor& /*di*/, Standard_Integer n, con
 
 //=================================================================================================
 
-static Standard_Integer MiniDumpDF(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int MiniDumpDF(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Handle(Draw_Drawable3D) D;
-  Handle(DDF_Data)        DDF;
+  occ::handle<Draw_Drawable3D> D;
+  occ::handle<DDF_Data>        DDF;
 
   D = Draw::Get(a[1]);
 
   if (D.IsNull())
   {
     di << "DDF_BasicCommands : Sorry this Data Framework doesn't exist\n";
-    return Standard_False;
+    return false;
   }
 
-  DDF = Handle(DDF_Data)::DownCast(D);
+  DDF = occ::down_cast<DDF_Data>(D);
 
   if (DDF.IsNull())
   {
     di << "DDF_BasicCommands : Sorry this Data Framework doesn't exist\n";
-    return Standard_False;
+    return false;
   }
 
   di << "*********** Dump of " << a[1] << " ***********\n";
@@ -198,33 +200,33 @@ static Standard_Integer MiniDumpDF(Draw_Interpretor& di, Standard_Integer n, con
 // purpose  : eXtended deep dump of a DataFramework
 //=======================================================================
 
-static Standard_Integer XDumpDF(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int XDumpDF(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
 
-  Handle(Draw_Drawable3D) D;
-  Handle(DDF_Data)        DDF;
+  occ::handle<Draw_Drawable3D> D;
+  occ::handle<DDF_Data>        DDF;
 
   D = Draw::Get(a[1]);
 
   if (D.IsNull())
   {
     di << "DDF_BasicCommands : Sorry this Data Framework doesn't exist\n";
-    return Standard_False;
+    return false;
   }
 
-  DDF = Handle(DDF_Data)::DownCast(D);
+  DDF = occ::down_cast<DDF_Data>(D);
 
   if (DDF.IsNull())
   {
     di << "DDF_BasicCommands : Sorry this Data Framework doesn't exist\n";
-    return Standard_False;
+    return false;
   }
 
   di << "*********** Dump of " << a[1] << " ***********\n";
 
-  TDF_IDFilter filter(Standard_False);
+  TDF_IDFilter filter(false);
   // TDF_Tool::ExtendedDeepDump(cout,DDF->DataFramework(),filter);
   Standard_SStream aSStream;
   TDF_Tool::ExtendedDeepDump(aSStream, DDF->DataFramework(), filter);
@@ -239,12 +241,12 @@ static Standard_Integer XDumpDF(Draw_Interpretor& di, Standard_Integer n, const 
 // purpose  : CopyLabel (DF,fromlabel,tolabel)
 //=======================================================================
 
-static Standard_Integer CopyLabel_SCopy(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int CopyLabel_SCopy(Draw_Interpretor& di, int n, const char** a)
 {
   TDF_Label SOURCE, TARGET;
   if (n == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
       return 1;
     if (!DDF::FindLabel(DF, a[2], SOURCE))
@@ -273,12 +275,12 @@ static Standard_Integer CopyLabel_SCopy(Draw_Interpretor& di, Standard_Integer n
 //         : in order to find shareable attributes
 //=======================================================================
 
-static Standard_Integer DDF_CheckAttrs(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DDF_CheckAttrs(Draw_Interpretor& di, int n, const char** a)
 {
   TDF_Label SOURCE, TARGET;
   if (n == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
       return 1;
     if (!DDF::FindLabel(DF, a[2], SOURCE))
@@ -286,18 +288,19 @@ static Standard_Integer DDF_CheckAttrs(Draw_Interpretor& di, Standard_Integer n,
     if (!DDF::FindLabel(DF, a[3], TARGET))
       return 1;
 
-    Handle(TDF_DataSet) ds1  = new TDF_DataSet();
-    Handle(TDF_DataSet) ds2  = new TDF_DataSet();
-    Standard_Boolean    Shar = Standard_False;
+    occ::handle<TDF_DataSet> ds1  = new TDF_DataSet();
+    occ::handle<TDF_DataSet> ds2  = new TDF_DataSet();
+    bool                     Shar = false;
     for (TDF_AttributeIterator itr(SOURCE); itr.More(); itr.Next())
     {
       itr.Value()->References(ds1);
       //      std::cout<<"\tSource Attribute dynamic type =
       //      "<<itr.Value()->DynamicType()<<std::endl;
-      const TDF_AttributeMap& attMap = ds1->Attributes(); // attMap
-      for (TDF_MapIteratorOfAttributeMap attMItr(attMap); attMItr.More(); attMItr.Next())
+      const NCollection_Map<occ::handle<TDF_Attribute>>& attMap = ds1->Attributes(); // attMap
+      for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(attMap); attMItr.More();
+           attMItr.Next())
       {
-        const Handle(TDF_Attribute)& sAtt = attMItr.Key();
+        const occ::handle<TDF_Attribute>& sAtt = attMItr.Key();
         //	std::cout<<"\t\tSource references attribute dynamic type =
         //"<<sAtt->DynamicType()<<std::endl;
         for (TDF_AttributeIterator itr2(TARGET); itr2.More(); itr2.Next())
@@ -305,10 +308,12 @@ static Standard_Integer DDF_CheckAttrs(Draw_Interpretor& di, Standard_Integer n,
           itr2.Value()->References(ds2);
           //	  std::cout<<"\t\t\tTARGET attribute dynamic type =
           //"<<itr2.Value()->DynamicType()<<std::endl;
-          const TDF_AttributeMap& attMap2 = ds2->Attributes(); // attMap
-          for (TDF_MapIteratorOfAttributeMap attMItr2(attMap2); attMItr2.More(); attMItr2.Next())
+          const NCollection_Map<occ::handle<TDF_Attribute>>& attMap2 = ds2->Attributes(); // attMap
+          for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr2(attMap2);
+               attMItr2.More();
+               attMItr2.Next())
           {
-            const Handle(TDF_Attribute)& tAtt = attMItr2.Key();
+            const occ::handle<TDF_Attribute>& tAtt = attMItr2.Key();
             //	    std::cout<<"\t\t\t\tTarget reference attribute dynamic type =
             //"<<tAtt->DynamicType()<<std::endl;
             if (tAtt->IsInstance(sAtt->DynamicType()))
@@ -323,7 +328,7 @@ static Standard_Integer DDF_CheckAttrs(Draw_Interpretor& di, Standard_Integer n,
                   // = "<<entr2<<std::endl;
                   di << "\tSHAREABLE attribute(s) found between Lab1 = " << entr1.ToCString()
                      << " and Lab2 = " << entr2.ToCString() << "\n";
-                  Shar = Standard_True;
+                  Shar = true;
                 }
                 TDF_Tool::Entry(sAtt->Label(), entr1);
                 // std::cout<<"\tAttribute dynamic type = "<<sAtt->DynamicType()<<",\tlocated on
@@ -350,29 +355,30 @@ static Standard_Integer DDF_CheckAttrs(Draw_Interpretor& di, Standard_Integer n,
 // purpose  : CheckLabel (DOC,label1,label2)
 //         : prints all structure of first level attributes with its references
 //=======================================================================
-static Standard_Integer DDF_CheckLabel(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DDF_CheckLabel(Draw_Interpretor& di, int n, const char** a)
 {
   //  TDF_Label SOURCE,TARGET;
   TDF_Label SOURCE;
   if (n == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
       return 1;
     if (!DDF::FindLabel(DF, a[2], SOURCE))
       return 1;
 
-    Handle(TDF_DataSet) ds1 = new TDF_DataSet();
+    occ::handle<TDF_DataSet> ds1 = new TDF_DataSet();
     for (TDF_AttributeIterator itr(SOURCE); itr.More(); itr.Next())
     {
       itr.Value()->References(ds1);
       // std::cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<std::endl;
       di << "\tSource Attribute dynamic type = " << itr.Value()->DynamicType()->Name() << "\n";
-      const TDF_AttributeMap& attMap = ds1->Attributes(); // attMap
-      for (TDF_MapIteratorOfAttributeMap attMItr(attMap); attMItr.More(); attMItr.Next())
+      const NCollection_Map<occ::handle<TDF_Attribute>>& attMap = ds1->Attributes(); // attMap
+      for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(attMap); attMItr.More();
+           attMItr.Next())
       {
-        const Handle(TDF_Attribute)& sAtt = attMItr.Key();
-        TCollection_AsciiString      entry;
+        const occ::handle<TDF_Attribute>& sAtt = attMItr.Key();
+        TCollection_AsciiString           entry;
         TDF_Tool::Entry(sAtt->Label(), entry);
         // std::cout<<"\t\tReferences attribute dynamic type = "<<sAtt->DynamicType()<<",\tLabel =
         // "<<entry<<std::endl;
@@ -392,11 +398,9 @@ static Standard_Integer DDF_CheckLabel(Draw_Interpretor& di, Standard_Integer n,
 // function : DDF_SetAccessByEntry
 // purpose  : SetAccessByEntry DOC 1|0
 //=======================================================================
-static Standard_Integer DDF_SetAccessByEntry(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
-                                             const char**      a)
+static int DDF_SetAccessByEntry(Draw_Interpretor& di, int nb, const char** a)
 {
-  Standard_Integer aRet = 0;
+  int aRet = 0;
   if (nb != 3)
   {
     di << "SetAccessByEntry DOC 1|0\n";
@@ -404,10 +408,10 @@ static Standard_Integer DDF_SetAccessByEntry(Draw_Interpretor& di,
   }
   else
   {
-    Handle(TDF_Data) aDF;
+    occ::handle<TDF_Data> aDF;
     if (DDF::GetDF(a[1], aDF))
     {
-      Standard_Boolean aSet = (Draw::Atoi(a[2]) == 1);
+      bool aSet = (Draw::Atoi(a[2]) == 1);
       aDF->SetAccessByEntries(aSet);
     }
     else
@@ -424,10 +428,10 @@ static Standard_Integer DDF_SetAccessByEntry(Draw_Interpretor& di,
 
 void DDF::DataCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "DF Data Framework commands";
 

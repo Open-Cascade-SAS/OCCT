@@ -26,11 +26,11 @@ D3DHost_GraphicDriverFactory::D3DHost_GraphicDriverFactory()
 
 //=================================================================================================
 
-Handle(Graphic3d_GraphicDriver) D3DHost_GraphicDriverFactory::CreateDriver(
-  const Handle(Aspect_DisplayConnection)&)
+occ::handle<Graphic3d_GraphicDriver> D3DHost_GraphicDriverFactory::CreateDriver(
+  const occ::handle<Aspect_DisplayConnection>&)
 {
-  Handle(D3DHost_GraphicDriver) aDriver = new D3DHost_GraphicDriver();
-  aDriver->ChangeOptions()              = *myDefaultCaps;
+  occ::handle<D3DHost_GraphicDriver> aDriver = new D3DHost_GraphicDriver();
+  aDriver->ChangeOptions()                   = *myDefaultCaps;
   aDriver->InitContext();
   return aDriver;
 }

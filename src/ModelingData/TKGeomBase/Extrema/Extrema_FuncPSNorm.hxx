@@ -21,8 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <gp_Pnt.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <Extrema_SequenceOfPOnSurf.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Vector.hxx>
@@ -66,43 +66,40 @@ public:
   //! sets the field mysurf of the function.
   Standard_EXPORT void SetPoint(const gp_Pnt& P);
 
-  Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT int NbVariables() const override;
 
-  Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
+  Standard_EXPORT int NbEquations() const override;
 
   //! Calculate Fi(U,V).
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& UV, math_Vector& F) Standard_OVERRIDE;
+  Standard_EXPORT bool Value(const math_Vector& UV, math_Vector& F) override;
 
   //! Calculate Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& UV,
-                                               math_Matrix&       DF) Standard_OVERRIDE;
+  Standard_EXPORT bool Derivatives(const math_Vector& UV, math_Matrix& DF) override;
 
   //! Calculate Fi(U,V) and Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& UV,
-                                          math_Vector&       F,
-                                          math_Matrix&       DF) Standard_OVERRIDE;
+  Standard_EXPORT bool Values(const math_Vector& UV, math_Vector& F, math_Matrix& DF) override;
 
   //! Save the found extremum.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
+  Standard_EXPORT virtual int GetStateNumber() override;
 
   //! Return the number of found extrema.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Return the value of the Nth distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
+  Standard_EXPORT double SquareDistance(const int N) const;
 
   //! Returns the Nth extremum.
-  Standard_EXPORT const Extrema_POnSurf& Point(const Standard_Integer N) const;
+  Standard_EXPORT const Extrema_POnSurf& Point(const int N) const;
 
 private:
-  gp_Pnt                    myP;
-  const Adaptor3d_Surface*  myS;
-  Standard_Real             myU;
-  Standard_Real             myV;
-  gp_Pnt                    myPs;
-  TColStd_SequenceOfReal    mySqDist;
-  Extrema_SequenceOfPOnSurf myPoint;
-  Standard_Boolean          myPinit;
-  Standard_Boolean          mySinit;
+  gp_Pnt                                myP;
+  const Adaptor3d_Surface*              myS;
+  double                                myU;
+  double                                myV;
+  gp_Pnt                                myPs;
+  NCollection_Sequence<double>          mySqDist;
+  NCollection_Sequence<Extrema_POnSurf> myPoint;
+  bool                                  myPinit;
+  bool                                  mySinit;
 };
 #endif // _Extrema_FunctPSNorm_HeaderFile

@@ -27,32 +27,33 @@
 #include <Expr_Sum.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_Product, Expr_PolyExpression)
 
-Expr_Product::Expr_Product(const Expr_SequenceOfGeneralExpression& exps)
+Expr_Product::Expr_Product(const NCollection_Sequence<occ::handle<Expr_GeneralExpression>>& exps)
 {
-  Standard_Integer i;
-  Standard_Integer max = exps.Length();
+  int i;
+  int max = exps.Length();
   for (i = 1; i <= max; i++)
   {
     AddOperand(exps(i));
   }
 }
 
-Expr_Product::Expr_Product(const Handle(Expr_GeneralExpression)& exp1,
-                           const Handle(Expr_GeneralExpression)& exp2)
+Expr_Product::Expr_Product(const occ::handle<Expr_GeneralExpression>& exp1,
+                           const occ::handle<Expr_GeneralExpression>& exp2)
 {
   AddOperand(exp1);
   AddOperand(exp2);
 }
 
-Handle(Expr_GeneralExpression) Expr_Product::Copy() const
+occ::handle<Expr_GeneralExpression> Expr_Product::Copy() const
 {
-  Standard_Integer                 i;
-  Standard_Integer                 max = NbOperands();
-  Expr_SequenceOfGeneralExpression simps;
+  int                                                       i;
+  int                                                       max = NbOperands();
+  NCollection_Sequence<occ::handle<Expr_GeneralExpression>> simps;
   for (i = 1; i <= max; i++)
   {
     simps.Append(Expr::CopyShare(Operand(i)));
@@ -60,33 +61,33 @@ Handle(Expr_GeneralExpression) Expr_Product::Copy() const
   return new Expr_Product(simps);
 }
 
-Standard_Boolean Expr_Product::IsIdentical(const Handle(Expr_GeneralExpression)& Other) const
+bool Expr_Product::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const
 {
   if (!Other->IsKind(STANDARD_TYPE(Expr_Product)))
   {
-    return Standard_False;
+    return false;
   }
-  Handle(Expr_Product) me     = this;
-  Handle(Expr_Product) POther = Handle(Expr_Product)::DownCast(Other);
-  Standard_Integer     max    = NbOperands();
+  occ::handle<Expr_Product> me     = this;
+  occ::handle<Expr_Product> POther = occ::down_cast<Expr_Product>(Other);
+  int                       max    = NbOperands();
   if (POther->NbOperands() != max)
   {
-    return Standard_False;
+    return false;
   }
-  Handle(Expr_GeneralExpression) myop;
-  Handle(Expr_GeneralExpression) hisop;
-  Standard_Integer               i = 1;
-  TColStd_Array1OfInteger        tab(1, max);
-  for (Standard_Integer k = 1; k <= max; k++)
+  occ::handle<Expr_GeneralExpression> myop;
+  occ::handle<Expr_GeneralExpression> hisop;
+  int                                 i = 1;
+  NCollection_Array1<int>             tab(1, max);
+  for (int k = 1; k <= max; k++)
   {
     tab(k) = 0;
   }
-  Standard_Boolean ident = Standard_True;
+  bool ident = true;
   while ((i <= max) && (ident))
   {
-    Standard_Integer j     = 1;
-    Standard_Boolean found = Standard_False;
-    myop                   = Operand(i);
+    int  j     = 1;
+    bool found = false;
+    myop       = Operand(i);
     while ((j <= max) && (!found))
     {
       hisop = POther->Operand(j);
@@ -104,13 +105,13 @@ Standard_Boolean Expr_Product::IsIdentical(const Handle(Expr_GeneralExpression)&
   return ident;
 }
 
-Standard_Boolean Expr_Product::IsLinear() const
+bool Expr_Product::IsLinear() const
 {
-  Standard_Integer               i;
-  Standard_Integer               max = NbOperands();
-  Standard_Boolean               lin = Standard_True;
-  Standard_Boolean               res = Standard_True;
-  Handle(Expr_GeneralExpression) asimp;
+  int                                 i;
+  int                                 max = NbOperands();
+  bool                                lin = true;
+  bool                                res = true;
+  occ::handle<Expr_GeneralExpression> asimp;
   for (i = 1; (i <= max) && res; i++)
   {
     asimp = Operand(i);
@@ -118,65 +119,66 @@ Standard_Boolean Expr_Product::IsLinear() const
     {
       if (lin)
       {
-        lin = Standard_False;
+        lin = false;
         if (!asimp->IsLinear())
         {
-          res = Standard_False;
+          res = false;
         }
       }
       else
       {
-        res = Standard_False;
+        res = false;
       }
     }
   }
   return res;
 }
 
-Handle(Expr_GeneralExpression) Expr_Product::Derivative(const Handle(Expr_NamedUnknown)& X) const
+occ::handle<Expr_GeneralExpression> Expr_Product::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
     return new Expr_NumericValue(0.0);
   }
-  Handle(Expr_GeneralExpression) firstop = Expr::CopyShare(Operand(1)); // U
-  Handle(Expr_GeneralExpression) tailop;                                // V
-  Standard_Integer               nbop = NbOperands();
+  occ::handle<Expr_GeneralExpression> firstop = Expr::CopyShare(Operand(1)); // U
+  occ::handle<Expr_GeneralExpression> tailop;                                // V
+  int                                 nbop = NbOperands();
   if (nbop == 2)
   {
     tailop = Expr::CopyShare(Operand(2));
   }
   else
   {
-    Handle(Expr_Product) prodop = Expr::CopyShare(Operand(2)) * Expr::CopyShare(Operand(3));
-    for (Standard_Integer i = 4; i <= nbop; i++)
+    occ::handle<Expr_Product> prodop = Expr::CopyShare(Operand(2)) * Expr::CopyShare(Operand(3));
+    for (int i = 4; i <= nbop; i++)
     {
       prodop->AddOperand(Expr::CopyShare(Operand(i)));
     }
     tailop = prodop;
   }
-  Handle(Expr_GeneralExpression) firstder = firstop->Derivative(X); // U'
-  Handle(Expr_GeneralExpression) tailder  = tailop->Derivative(X);  // V'
+  occ::handle<Expr_GeneralExpression> firstder = firstop->Derivative(X); // U'
+  occ::handle<Expr_GeneralExpression> tailder  = tailop->Derivative(X);  // V'
 
-  Handle(Expr_Product) firstmember = firstop * tailder; // U*V'
+  occ::handle<Expr_Product> firstmember = firstop * tailder; // U*V'
 
-  Handle(Expr_Product) secondmember = firstder * tailop; // U'*V
+  occ::handle<Expr_Product> secondmember = firstder * tailop; // U'*V
 
-  Handle(Expr_Sum) resu = firstmember->ShallowSimplified() + secondmember->ShallowSimplified();
+  occ::handle<Expr_Sum> resu = firstmember->ShallowSimplified() + secondmember->ShallowSimplified();
   // U*V' + U'*V
 
   return resu->ShallowSimplified();
 }
 
-Handle(Expr_GeneralExpression) Expr_Product::ShallowSimplified() const
+occ::handle<Expr_GeneralExpression> Expr_Product::ShallowSimplified() const
 {
-  Standard_Integer                 i;
-  Standard_Integer                 max = NbOperands();
-  Handle(Expr_GeneralExpression)   op;
-  Expr_SequenceOfGeneralExpression newops;
-  Standard_Real                    vals    = 0.;
-  Standard_Integer                 nbvals  = 0;
-  Standard_Boolean                 subprod = Standard_False;
+  int                                                       i;
+  int                                                       max = NbOperands();
+  occ::handle<Expr_GeneralExpression>                       op;
+  NCollection_Sequence<occ::handle<Expr_GeneralExpression>> newops;
+  double                                                    vals    = 0.;
+  int                                                       nbvals  = 0;
+  bool                                                      subprod = false;
   for (i = 1; (i <= max) && !subprod; i++)
   {
     op      = Operand(i);
@@ -184,17 +186,17 @@ Handle(Expr_GeneralExpression) Expr_Product::ShallowSimplified() const
   }
   if (subprod)
   {
-    Handle(Expr_GeneralExpression) other;
-    Handle(Expr_Product)           prodop;
-    Standard_Integer               nbsprodop;
+    occ::handle<Expr_GeneralExpression> other;
+    occ::handle<Expr_Product>           prodop;
+    int                                 nbsprodop;
     for (i = 1; i <= max; i++)
     {
       op = Operand(i);
       if (op->IsKind(STANDARD_TYPE(Expr_Product)))
       {
-        prodop    = Handle(Expr_Product)::DownCast(op);
+        prodop    = occ::down_cast<Expr_Product>(op);
         nbsprodop = prodop->NbOperands();
-        for (Standard_Integer j = 1; j <= nbsprodop; j++)
+        for (int j = 1; j <= nbsprodop; j++)
         {
           other = prodop->Operand(j);
           newops.Append(other);
@@ -209,17 +211,17 @@ Handle(Expr_GeneralExpression) Expr_Product::ShallowSimplified() const
     return prodop->ShallowSimplified();
   }
 
-  Standard_Boolean noone = Standard_True;
+  bool noone = true;
   for (i = 1; i <= max; i++)
   {
     op = Operand(i);
     if (op->IsKind(STANDARD_TYPE(Expr_NumericValue)))
     {
       // numeric operands are cumulated separately
-      Handle(Expr_NumericValue) NVop = Handle(Expr_NumericValue)::DownCast(op);
+      occ::handle<Expr_NumericValue> NVop = occ::down_cast<Expr_NumericValue>(op);
       if (nbvals == 0)
       {
-        noone  = Standard_False;
+        noone  = false;
         vals   = NVop->GetValue();
         nbvals = 1;
       }
@@ -254,7 +256,7 @@ Handle(Expr_GeneralExpression) Expr_Product::ShallowSimplified() const
       }
       if (vals == -1.0)
       {
-        Handle(Expr_GeneralExpression) thefact;
+        occ::handle<Expr_GeneralExpression> thefact;
         if (newops.Length() == 1)
         {
           thefact = newops(1);
@@ -267,10 +269,10 @@ Handle(Expr_GeneralExpression) Expr_Product::ShallowSimplified() const
       }
       if (nbvals == 1)
       {
-        Handle(Expr_Product) me = this;
+        occ::handle<Expr_Product> me = this;
         return me;
       }
-      Handle(Expr_NumericValue) thevals = new Expr_NumericValue(vals);
+      occ::handle<Expr_NumericValue> thevals = new Expr_NumericValue(vals);
       newops.Append(thevals); // non-zero value added
       return new Expr_Product(newops);
     }
@@ -279,16 +281,16 @@ Handle(Expr_GeneralExpression) Expr_Product::ShallowSimplified() const
       return new Expr_NumericValue(vals); // zero absorb
     }
   }
-  Handle(Expr_Product) me = this;
+  occ::handle<Expr_Product> me = this;
   return me;
 }
 
-Standard_Real Expr_Product::Evaluate(const Expr_Array1OfNamedUnknown& vars,
-                                     const TColStd_Array1OfReal&      vals) const
+double Expr_Product::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                              const NCollection_Array1<double>&                         vals) const
 {
-  Standard_Integer max = NbOperands();
-  Standard_Real    res = 1.0;
-  for (Standard_Integer i = 1; i <= max; i++)
+  int    max = NbOperands();
+  double res = 1.0;
+  for (int i = 1; i <= max; i++)
   {
     res = res * Operand(i)->Evaluate(vars, vals);
   }
@@ -297,9 +299,9 @@ Standard_Real Expr_Product::Evaluate(const Expr_Array1OfNamedUnknown& vars,
 
 TCollection_AsciiString Expr_Product::String() const
 {
-  Handle(Expr_GeneralExpression) op;
-  Standard_Integer               nbop = NbOperands();
-  op                                  = Operand(1);
+  occ::handle<Expr_GeneralExpression> op;
+  int                                 nbop = NbOperands();
+  op                                       = Operand(1);
   TCollection_AsciiString str;
   if (op->NbSubExpressions() > 1)
   {
@@ -311,7 +313,7 @@ TCollection_AsciiString Expr_Product::String() const
   {
     str = op->String();
   }
-  for (Standard_Integer i = 2; i <= nbop; i++)
+  for (int i = 2; i <= nbop; i++)
   {
     str += "*";
     op = Operand(i);

@@ -21,20 +21,20 @@ IMPLEMENT_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation, Standard_Transient)
 
 //=================================================================================================
 
-Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const Standard_Integer theNbNodes,
-                                                         const Standard_Boolean theHasParams)
+Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const int  theNbNodes,
+                                                         const bool theHasParams)
     : myDeflection(0.0),
       myNodes(1, theNbNodes)
 {
   if (theHasParams)
   {
-    myParameters = new TColStd_HArray1OfReal(1, theNbNodes);
+    myParameters = new NCollection_HArray1<double>(1, theNbNodes);
   }
 }
 
 //=================================================================================================
 
-Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const TColStd_Array1OfInteger& Nodes)
+Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const NCollection_Array1<int>& Nodes)
     : myDeflection(0.0),
       myNodes(1, Nodes.Length())
 {
@@ -43,21 +43,22 @@ Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const TColStd_Array1OfI
 
 //=================================================================================================
 
-Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const TColStd_Array1OfInteger& Nodes,
-                                                         const TColStd_Array1OfReal&    Parameters)
+Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(
+  const NCollection_Array1<int>&    Nodes,
+  const NCollection_Array1<double>& Parameters)
     : myDeflection(0.0),
       myNodes(1, Nodes.Length())
 {
   myNodes                      = Nodes;
-  myParameters                 = new TColStd_HArray1OfReal(1, Parameters.Length());
+  myParameters                 = new NCollection_HArray1<double>(1, Parameters.Length());
   myParameters->ChangeArray1() = Parameters;
 }
 
 //=================================================================================================
 
-Handle(Poly_PolygonOnTriangulation) Poly_PolygonOnTriangulation::Copy() const
+occ::handle<Poly_PolygonOnTriangulation> Poly_PolygonOnTriangulation::Copy() const
 {
-  Handle(Poly_PolygonOnTriangulation) aCopy;
+  occ::handle<Poly_PolygonOnTriangulation> aCopy;
   if (myParameters.IsNull())
     aCopy = new Poly_PolygonOnTriangulation(myNodes);
   else
@@ -68,7 +69,8 @@ Handle(Poly_PolygonOnTriangulation) Poly_PolygonOnTriangulation::Copy() const
 
 //=================================================================================================
 
-void Poly_PolygonOnTriangulation::SetParameters(const Handle(TColStd_HArray1OfReal)& theParameters)
+void Poly_PolygonOnTriangulation::SetParameters(
+  const occ::handle<NCollection_HArray1<double>>& theParameters)
 {
   if (!theParameters.IsNull()
       && (theParameters->Lower() != myNodes.Lower() || theParameters->Upper() != myNodes.Upper()))
@@ -80,7 +82,7 @@ void Poly_PolygonOnTriangulation::SetParameters(const Handle(TColStd_HArray1OfRe
 
 //=================================================================================================
 
-void Poly_PolygonOnTriangulation::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void Poly_PolygonOnTriangulation::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -18,17 +18,17 @@
 #include <IntAna2d_Outils.hxx>
 #include <math_DirectPolynomialRoots.hxx>
 
-MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
-                                                 const Standard_Real A3,
-                                                 const Standard_Real A2,
-                                                 const Standard_Real A1,
-                                                 const Standard_Real A0)
+MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
+                                                 const double A3,
+                                                 const double A2,
+                                                 const double A1,
+                                                 const double A0)
 {
   //-- std::cout<<" IntAna2d : A4..A0 "<<A4<<" "<<A3<<" "<<A2<<" "<<A1<<" "<<A0<<" "<<std::endl;
   nbsol = 0;
-  same  = Standard_False;
+  same  = false;
   //  Modified by Sergey KHROMOV - Thu Oct 24 13:10:14 2002 Begin
-  Standard_Real anAA[5];
+  double anAA[5];
 
   anAA[0] = std::abs(A0);
   anAA[1] = std::abs(A1);
@@ -39,50 +39,50 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
   if ((anAA[0] + anAA[1] + anAA[2] + anAA[3] + anAA[4]) < Epsilon(10000.0))
   {
     //  Modified by Sergey KHROMOV - Thu Oct 24 13:10:15 2002 End
-    same = Standard_True;
+    same = true;
     return;
   }
-  Standard_Integer i, j, nbp;
+  int i, j, nbp;
   for (size_t anIdx = 0; anIdx < sizeof(val) / sizeof(val[0]); anIdx++)
   {
     val[anIdx] = RealLast();
     sol[anIdx] = RealLast();
   }
 
-  Standard_Real              tol = Epsilon(100.0);
+  double                     tol = Epsilon(100.0);
   math_DirectPolynomialRoots MATH_A43210(A4, A3, A2, A1, A0);
-  Standard_Boolean           PbPossible       = Standard_False;
-  Standard_Integer           NbsolPolyComplet = 0;
+  bool                       PbPossible       = false;
+  int                        NbsolPolyComplet = 0;
   if (MATH_A43210.IsDone())
   {
     nbp              = MATH_A43210.NbSolutions();
     NbsolPolyComplet = nbp;
     for (i = 1; i <= nbp; i++)
     {
-      Standard_Real x = MATH_A43210.Value(i);
+      double x = MATH_A43210.Value(i);
       //-- std::cout<<" IntAna2d : x Pol Complet :"<<x<<std::endl;
       val[nbsol] = A0 + x * (A1 + x * (A2 + x * (A3 + x * A4)));
       sol[nbsol] = x;
       if (val[nbsol] > tol || val[nbsol] < -tol)
       {
-        PbPossible = Standard_True;
+        PbPossible = true;
       }
       nbsol++;
     }
     if (nbp & 1)
-      PbPossible = Standard_True;
+      PbPossible = true;
   }
   else
   {
-    PbPossible = Standard_True;
+    PbPossible = true;
   }
   //-- On recherche le plus petit coeff entre A4 et A0
   if (PbPossible)
   {
     //  Modified by Sergey KHROMOV - Thu Oct 24 12:45:35 2002 Begin
-    Standard_Real anAMin = RealLast();
-    Standard_Real anAMax = -1;
-    Standard_Real anEps  = RealEpsilon();
+    double anAMin = RealLast();
+    double anAMax = -1;
+    double anEps  = RealEpsilon();
 
     for (i = 0; i < 5; i++)
     {
@@ -99,14 +99,14 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
       //-- On Ajoute les valeurs au tableau
       for (i = 1; i <= nbp; i++)
       {
-        Standard_Real    x   = MATH_A4321.Value(i);
-        Standard_Boolean Add = Standard_True;
+        double x   = MATH_A4321.Value(i);
+        bool   Add = true;
         for (j = 0; j < nbsol; j++)
         {
-          Standard_Real t = sol[j] - x;
+          double t = sol[j] - x;
           if (std::abs(t) < anEps)
           {
-            Add = Standard_False;
+            Add = false;
           }
         }
         if (Add)
@@ -124,14 +124,14 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
       //-- On Ajoute les valeurs au tableau
       for (i = 1; i <= nbp; i++)
       {
-        Standard_Real    x   = MATH_A3210.Value(i);
-        Standard_Boolean Add = Standard_True;
+        double x   = MATH_A3210.Value(i);
+        bool   Add = true;
         for (j = 0; j < nbsol; j++)
         {
-          Standard_Real t = sol[j] - x;
+          double t = sol[j] - x;
           if (std::abs(t) < anEps)
           {
-            Add = Standard_False;
+            Add = false;
           }
         }
         if (Add)
@@ -149,14 +149,14 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
       //-- On Ajoute les valeurs au tableau
       for (i = 1; i <= nbp; i++)
       {
-        Standard_Real    x   = MATH_A210.Value(i);
-        Standard_Boolean Add = Standard_True;
+        double x   = MATH_A210.Value(i);
+        bool   Add = true;
         for (j = 0; j < nbsol; j++)
         {
-          Standard_Real t = sol[j] - x;
+          double t = sol[j] - x;
           if (std::abs(t) < anEps)
           {
-            Add = Standard_False;
+            Add = false;
           }
         }
         if (Add)
@@ -172,22 +172,22 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
     //-- for(i=0;i<nbsol;i++) {
     //--  std::cout<<" IntAna2d Sol,Val"<<sol[i]<<"  "<<val[i]<<std::endl;
     //-- }
-    Standard_Boolean TriOK = Standard_False;
+    bool TriOK = false;
     do
     {
-      TriOK = Standard_True;
+      TriOK = true;
       for (i = 1; i < nbsol; i++)
       {
         if (std::abs(val[i]) < std::abs(val[i - 1]))
         {
-          Standard_Real t;
+          double t;
           t          = val[i];
           val[i]     = val[i - 1];
           val[i - 1] = t;
           t          = sol[i];
           sol[i]     = sol[i - 1];
           sol[i - 1] = t;
-          TriOK      = Standard_False;
+          TriOK      = false;
         }
       }
     } while (!TriOK);
@@ -210,9 +210,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
   }
 }
 
-MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A2,
-                                                 const Standard_Real A1,
-                                                 const Standard_Real A0)
+MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A2, const double A1, const double A0)
 {
   //-- std::cout<<" IntAna2d : A2..A0 "<<A2<<" "<<A1<<" "<<A0<<" "<<std::endl;
   for (size_t anIdx = 0; anIdx < sizeof(val) / sizeof(val[0]); anIdx++)
@@ -223,18 +221,18 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A2,
   nbsol = 0;
   if ((std::abs(A2) + std::abs(A1) + std::abs(A0)) < Epsilon(10000.0))
   {
-    same = Standard_True;
+    same = true;
     return;
   }
   math_DirectPolynomialRoots MATH_A210(A2, A1, A0);
-  same = Standard_False;
+  same = false;
   if (MATH_A210.IsDone())
   {
-    for (Standard_Integer i = 1; i <= MATH_A210.NbSolutions(); i++)
+    for (int i = 1; i <= MATH_A210.NbSolutions(); i++)
     {
-      Standard_Real x = MATH_A210.Value(i);
-      val[nbsol]      = A0 + x * (A1 + x * A2);
-      sol[nbsol]      = x;
+      double x   = MATH_A210.Value(i);
+      val[nbsol] = A0 + x * (A1 + x * A2);
+      sol[nbsol] = x;
       //-- std::cout<<" IntAna2d : x Pol Complet :"<<x<<"  Val:"<<val[nbsol]<<std::endl;
       nbsol++;
     }
@@ -245,31 +243,28 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A2,
   }
 }
 
-Standard_Boolean Points_Confondus(const Standard_Real x1,
-                                  const Standard_Real y1,
-                                  const Standard_Real x2,
-                                  const Standard_Real y2)
+bool Points_Confondus(const double x1, const double y1, const double x2, const double y2)
 {
   if (std::abs(x1 - x2) < Epsilon(x1))
   {
     if (std::abs(y1 - y2) < Epsilon(y1))
     {
-      return (Standard_True);
+      return (true);
     }
   }
-  return (Standard_False);
+  return (false);
 }
 
 //-----------------------------------------------------------------------------
 //--- Les points confondus sont supprimes
 //--- Le nombre de points est mis a jour
 
-void Traitement_Points_Confondus(Standard_Integer& nb_pts, IntAna2d_IntPoint* pts)
+void Traitement_Points_Confondus(int& nb_pts, IntAna2d_IntPoint* pts)
 {
-  Standard_Integer i, j;
+  int i, j;
   for (i = nb_pts; i > 1; i--)
   {
-    Standard_Boolean Non_Egalite = Standard_True;
+    bool Non_Egalite = true;
     for (j = i - 1; (j > 0) && Non_Egalite; j--)
     {
       //                                        <--- Deja Teste --->
@@ -281,11 +276,11 @@ void Traitement_Points_Confondus(Standard_Integer& nb_pts, IntAna2d_IntPoint* pt
                            pts[j - 1].Value().X(),
                            pts[j - 1].Value().Y()))
       {
-        Standard_Integer k;
-        Non_Egalite = Standard_False;
+        int k;
+        Non_Egalite = false;
         for (k = i; k < nb_pts; k++)
         {
-          Standard_Real Xk, Yk, Uk;
+          double Xk, Yk, Uk;
           Xk = pts[k].Value().X();
           Yk = pts[k].Value().Y();
           Uk = pts[k].ParamOnFirst();
@@ -298,10 +293,10 @@ void Traitement_Points_Confondus(Standard_Integer& nb_pts, IntAna2d_IntPoint* pt
 }
 
 //-----------------------------------------------------------------------------
-void Coord_Ancien_Repere(Standard_Real& x1, Standard_Real& y1, const gp_Ax2d& Dir1)
+void Coord_Ancien_Repere(double& x1, double& y1, const gp_Ax2d& Dir1)
 {
-  Standard_Real t11, t12, t21, t22, t13, t23;
-  Standard_Real x0, y0;
+  double t11, t12, t21, t22, t13, t23;
+  double x0, y0;
 
   // x1 et y1 Sont les Coordonnees dans le repere lie a Dir1
   // On Renvoie ces Coordonnees dans le repere "absolu"
@@ -326,12 +321,12 @@ void Coord_Ancien_Repere(Standard_Real& x1, Standard_Real& y1, const gp_Ax2d& Di
 //--- Calcul des Coefficients A,..F dans le repere lie a  Dir1
 //--- A Partir des Coefficients dans le repere "Absolu"
 
-void Coeff_Nouveau_Repere(Standard_Real& A,Standard_Real& B,Standard_Real& C
-			  ,Standard_Real& D,Standard_Real& E,Standard_Real& F
+void Coeff_Nouveau_Repere(double& A,double& B,double& C
+			  ,double& D,double& E,double& F
 			  ,const gp_Ax2d Dir1)  {
-  Standard_Real t11,t12,t13;                  // x = t11 X + t12 Y + t13
-  Standard_Real t21,t22,t23;                  // y = t21 X + t22 Y + t23
-  Standard_Real A1,B1,C1,D1,E1,F1;            
+  double t11,t12,t13;                  // x = t11 X + t12 Y + t13
+  double t21,t22,t23;                  // y = t21 X + t22 Y + t23
+  double A1,B1,C1,D1,E1,F1;            
 
   // On a P0(x,y)=A x x + B y y + ... + F =0    (x et y ds le repere "Absolu")
   // et on cherche P1(X(x,y),Y(x,y))=P0(x,y)

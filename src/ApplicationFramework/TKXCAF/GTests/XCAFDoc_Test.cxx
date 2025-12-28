@@ -64,7 +64,7 @@ public:
   AutoNamingGuard& operator=(const AutoNamingGuard&) = delete;
 
 private:
-  Standard_Boolean mySavedValue;
+  bool mySavedValue;
 };
 
 TEST(XCAFDoc_Test, OCC23595_AutoNaming)
@@ -77,27 +77,27 @@ TEST(XCAFDoc_Test, OCC23595_AutoNaming)
   AutoNamingGuard aGuard;
 
   // Create a new XmlXCAF document
-  Handle(TDocStd_Application) anApp = new TDocStd_Application();
-  Handle(TDocStd_Document)    aDoc;
+  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+  occ::handle<TDocStd_Document>    aDoc;
   anApp->NewDocument("XmlXCAF", aDoc);
   ASSERT_FALSE(aDoc.IsNull());
 
-  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  occ::handle<XCAFDoc_ShapeTool> aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
 
   // Check default value of AutoNaming
-  Standard_Boolean aValue = XCAFDoc_ShapeTool::AutoNaming();
+  bool aValue = XCAFDoc_ShapeTool::AutoNaming();
   EXPECT_TRUE(aValue) << "AutoNaming should be true by default";
 
   // Test with AutoNaming enabled (true)
-  XCAFDoc_ShapeTool::SetAutoNaming(Standard_True);
-  TopoDS_Shape          aShape1 = BRepPrimAPI_MakeBox(100., 200., 300.).Shape();
-  TDF_Label             aLabel1 = aShTool->AddShape(aShape1);
-  Handle(TDataStd_Name) anAttr;
+  XCAFDoc_ShapeTool::SetAutoNaming(true);
+  TopoDS_Shape               aShape1 = BRepPrimAPI_MakeBox(100., 200., 300.).Shape();
+  TDF_Label                  aLabel1 = aShTool->AddShape(aShape1);
+  occ::handle<TDataStd_Name> anAttr;
   EXPECT_TRUE(aLabel1.FindAttribute(TDataStd_Name::GetID(), anAttr))
     << "Shape should have a name attribute when AutoNaming is true";
 
   // Test with AutoNaming disabled (false)
-  XCAFDoc_ShapeTool::SetAutoNaming(Standard_False);
+  XCAFDoc_ShapeTool::SetAutoNaming(false);
   TopoDS_Shape aShape2 = BRepPrimAPI_MakeBox(300., 200., 100.).Shape();
   TDF_Label    aLabel2 = aShTool->AddShape(aShape2);
   EXPECT_FALSE(aLabel2.FindAttribute(TDataStd_Name::GetID(), anAttr))

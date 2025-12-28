@@ -23,15 +23,13 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <TopLoc_Location.hxx>
 #include <ShapeAnalysis_TransferParameters.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class Geom_Curve;
 class Geom2d_Curve;
 class TopoDS_Edge;
 class TopoDS_Face;
 class TopoDS_Vertex;
-
-class ShapeAnalysis_TransferParametersProj;
-DEFINE_STANDARD_HANDLE(ShapeAnalysis_TransferParametersProj, ShapeAnalysis_TransferParameters)
 
 //! This tool is used for transferring parameters
 //! from 3d curve of the edge to pcurve and vice versa.
@@ -47,34 +45,33 @@ public:
 
   Standard_EXPORT ShapeAnalysis_TransferParametersProj(const TopoDS_Edge& E, const TopoDS_Face& F);
 
-  Standard_EXPORT virtual void Init(const TopoDS_Edge& E, const TopoDS_Face& F) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Init(const TopoDS_Edge& E, const TopoDS_Face& F) override;
 
   //! Transfers parameters given by sequence Params from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
-  Standard_EXPORT virtual Handle(TColStd_HSequenceOfReal) Perform(
-    const Handle(TColStd_HSequenceOfReal)& Papams,
-    const Standard_Boolean                 To2d) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<NCollection_HSequence<double>> Perform(
+    const occ::handle<NCollection_HSequence<double>>& Papams,
+    const bool                                        To2d) override;
 
   //! Transfers parameter given by Param from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
-  Standard_EXPORT virtual Standard_Real Perform(const Standard_Real    Param,
-                                                const Standard_Boolean To2d) Standard_OVERRIDE;
+  Standard_EXPORT virtual double Perform(const double Param, const bool To2d) override;
 
   //! Returns modifiable flag forcing projection
   //! If it is False (default), projection is done only
   //! if edge is not SameParameter or if tolerance of edge
   //! is greater than MaxTolerance()
-  Standard_EXPORT Standard_Boolean& ForceProjection();
+  Standard_EXPORT bool& ForceProjection();
 
   //! Recomputes range of curves from NewEdge.
   //! If Is2d equals True parameters are recomputed by curve2d else by curve3d.
-  Standard_EXPORT virtual void TransferRange(TopoDS_Edge&           newEdge,
-                                             const Standard_Real    prevPar,
-                                             const Standard_Real    currPar,
-                                             const Standard_Boolean Is2d) Standard_OVERRIDE;
+  Standard_EXPORT virtual void TransferRange(TopoDS_Edge& newEdge,
+                                             const double prevPar,
+                                             const double currPar,
+                                             const bool   Is2d) override;
 
   //! Returns False;
-  Standard_EXPORT virtual Standard_Boolean IsSameRange() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsSameRange() const override;
 
   //! Make a copy of non-manifold vertex theVert
   //! (i.e. create new TVertex and replace PointRepresentations for this vertex
@@ -92,20 +89,19 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_TransferParametersProj, ShapeAnalysis_TransferParameters)
 
-protected:
 private:
-  Standard_EXPORT Standard_Real PreformSegment(const Standard_Real    Param,
-                                               const Standard_Boolean To2d,
-                                               const Standard_Real    First,
-                                               const Standard_Real    Last);
+  Standard_EXPORT double PreformSegment(const double Param,
+                                        const bool   To2d,
+                                        const double First,
+                                        const double Last);
 
-  Handle(Geom_Curve)       myCurve;
-  Handle(Geom2d_Curve)     myCurve2d;
-  Adaptor3d_CurveOnSurface myAC3d;
-  Standard_Real            myPrecision;
-  TopLoc_Location          myLocation;
-  Standard_Boolean         myForceProj;
-  Standard_Boolean         myInitOK;
+  occ::handle<Geom_Curve>   myCurve;
+  occ::handle<Geom2d_Curve> myCurve2d;
+  Adaptor3d_CurveOnSurface  myAC3d;
+  double                    myPrecision;
+  TopLoc_Location           myLocation;
+  bool                      myForceProj;
+  bool                      myInitOK;
 };
 
 #endif // _ShapeAnalysis_TransferParametersProj_HeaderFile

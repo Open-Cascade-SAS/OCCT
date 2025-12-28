@@ -47,14 +47,15 @@ void AIS_Animation::Clear()
 
 //=================================================================================================
 
-void AIS_Animation::Add(const Handle(AIS_Animation)& theAnimation)
+void AIS_Animation::Add(const occ::handle<AIS_Animation>& theAnimation)
 {
   if (theAnimation.IsNull())
   {
     throw Standard_ProgramError("AIS_Animation::Add() - attempt to add a NULL animation!");
   }
 
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(myAnimations);
+       anIter.More();
        anIter.Next())
   {
     if (anIter.Value() == theAnimation)
@@ -70,9 +71,11 @@ void AIS_Animation::Add(const Handle(AIS_Animation)& theAnimation)
 
 //=================================================================================================
 
-Handle(AIS_Animation) AIS_Animation::Find(const TCollection_AsciiString& theAnimationName) const
+occ::handle<AIS_Animation> AIS_Animation::Find(
+  const TCollection_AsciiString& theAnimationName) const
 {
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(myAnimations);
+       anIter.More();
        anIter.Next())
   {
     if (anIter.Value()->Name() == theAnimationName)
@@ -80,50 +83,52 @@ Handle(AIS_Animation) AIS_Animation::Find(const TCollection_AsciiString& theAnim
       return anIter.Value();
     }
   }
-  return Handle(AIS_Animation)();
+  return occ::handle<AIS_Animation>();
 }
 
 //=================================================================================================
 
-Standard_Boolean AIS_Animation::Remove(const Handle(AIS_Animation)& theAnimation)
+bool AIS_Animation::Remove(const occ::handle<AIS_Animation>& theAnimation)
 {
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(myAnimations);
+       anIter.More();
        anIter.Next())
   {
     if (anIter.Value() == theAnimation)
     {
       myAnimations.Remove(anIter);
       UpdateTotalDuration();
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean AIS_Animation::Replace(const Handle(AIS_Animation)& theAnimationOld,
-                                        const Handle(AIS_Animation)& theAnimationNew)
+bool AIS_Animation::Replace(const occ::handle<AIS_Animation>& theAnimationOld,
+                            const occ::handle<AIS_Animation>& theAnimationNew)
 {
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(myAnimations);
+       anIter.More();
        anIter.Next())
   {
     if (anIter.Value() == theAnimationOld)
     {
       anIter.ChangeValue() = theAnimationNew;
       UpdateTotalDuration();
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void AIS_Animation::CopyFrom(const Handle(AIS_Animation)& theOther)
+void AIS_Animation::CopyFrom(const occ::handle<AIS_Animation>& theOther)
 {
   myAnimations.Clear();
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(theOther->myAnimations);
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(theOther->myAnimations);
        anIter.More();
        anIter.Next())
   {
@@ -139,7 +144,8 @@ void AIS_Animation::CopyFrom(const Handle(AIS_Animation)& theOther)
 void AIS_Animation::UpdateTotalDuration()
 {
   myChildrenDuration = 0.0;
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(myAnimations);
+       anIter.More();
        anIter.Next())
   {
     myChildrenDuration =
@@ -149,10 +155,10 @@ void AIS_Animation::UpdateTotalDuration()
 
 //=================================================================================================
 
-void AIS_Animation::StartTimer(const Standard_Real    theStartPts,
-                               const Standard_Real    thePlaySpeed,
-                               const Standard_Boolean theToUpdate,
-                               const Standard_Boolean theToStopTimer)
+void AIS_Animation::StartTimer(const double theStartPts,
+                               const double thePlaySpeed,
+                               const bool   theToUpdate,
+                               const bool   theToStopTimer)
 {
   if (myTimer.IsNull())
   {
@@ -171,33 +177,34 @@ void AIS_Animation::StartTimer(const Standard_Real    theStartPts,
 
 //=================================================================================================
 
-Standard_Real AIS_Animation::UpdateTimer()
+double AIS_Animation::UpdateTimer()
 {
   if (myTimer.IsNull())
   {
     throw Standard_ProgramError("AIS_Animation::UpdateTimer() - timer was not created!");
   }
 
-  const Standard_Real anElapsedTime = myTimer->ElapsedTime();
+  const double anElapsedTime = myTimer->ElapsedTime();
   Update(anElapsedTime);
   return anElapsedTime;
 }
 
 //=================================================================================================
 
-void AIS_Animation::Start(const Standard_Boolean theToUpdate)
+void AIS_Animation::Start(const bool theToUpdate)
 {
   UpdateTotalDuration();
   myState = AnimationState_Started;
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(myAnimations);
+       anIter.More();
        anIter.Next())
   {
-    anIter.ChangeValue()->Start(Standard_False);
+    anIter.ChangeValue()->Start(false);
   }
 
   if (theToUpdate)
   {
-    const Standard_Real anElapsedTime = !myTimer.IsNull() ? myTimer->ElapsedTime() : 0.0;
+    const double anElapsedTime = !myTimer.IsNull() ? myTimer->ElapsedTime() : 0.0;
     Update(anElapsedTime);
   }
 
@@ -217,7 +224,8 @@ void AIS_Animation::Pause()
     myTimer->Pause();
   }
 
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(myAnimations);
+       anIter.More();
        anIter.Next())
   {
     anIter.ChangeValue()->Stop();
@@ -231,12 +239,13 @@ void AIS_Animation::Stop()
   myState = AnimationState_Stopped;
   if (!myTimer.IsNull())
   {
-    const Standard_Real anElapsedTime = ElapsedTime();
+    const double anElapsedTime = ElapsedTime();
     myTimer->Stop();
     myTimer->Seek(std::min(Duration(), anElapsedTime));
   }
 
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(myAnimations);
+       anIter.More();
        anIter.Next())
   {
     anIter.ChangeValue()->Stop();
@@ -245,7 +254,7 @@ void AIS_Animation::Stop()
 
 //=================================================================================================
 
-Standard_Boolean AIS_Animation::Update(const Standard_Real thePts)
+bool AIS_Animation::Update(const double thePts)
 {
   AIS_AnimationProgress aPosition;
   aPosition.Pts             = thePts;
@@ -266,12 +275,13 @@ void AIS_Animation::updateWithChildren(const AIS_AnimationProgress& thePosition)
     return;
   }
 
-  for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter(myAnimations); anIter.More();
+  for (NCollection_Sequence<occ::handle<AIS_Animation>>::Iterator anIter(myAnimations);
+       anIter.More();
        anIter.Next())
   {
-    const Handle(AIS_Animation)& anAnim    = anIter.Value();
-    AIS_AnimationProgress        aPosition = thePosition;
-    aPosition.LocalPts                     = aPosition.LocalPts - anAnim->StartPts();
+    const occ::handle<AIS_Animation>& anAnim    = anIter.Value();
+    AIS_AnimationProgress             aPosition = thePosition;
+    aPosition.LocalPts                          = aPosition.LocalPts - anAnim->StartPts();
     aPosition.LocalNormalized =
       anAnim->HasOwnDuration() ? (aPosition.LocalPts / anAnim->OwnDuration()) : 0.0;
     aPosition.LocalNormalized = std::max(0.0, aPosition.LocalNormalized);

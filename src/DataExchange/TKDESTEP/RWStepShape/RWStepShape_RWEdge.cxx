@@ -20,10 +20,10 @@
 
 RWStepShape_RWEdge::RWStepShape_RWEdge() {}
 
-void RWStepShape_RWEdge::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                  const Standard_Integer                 num,
-                                  Handle(Interface_Check)&               ach,
-                                  const Handle(StepShape_Edge)&          ent) const
+void RWStepShape_RWEdge::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                  const int                                   num,
+                                  occ::handle<Interface_Check>&               ach,
+                                  const occ::handle<StepShape_Edge>&          ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,20 +33,20 @@ void RWStepShape_RWEdge::ReadStep(const Handle(StepData_StepReaderData)& data,
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : edgeStart ---
 
-  Handle(StepShape_Vertex) aEdgeStart;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepShape_Vertex> aEdgeStart;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "edge_start", ach, STANDARD_TYPE(StepShape_Vertex), aEdgeStart);
 
   // --- own field : edgeEnd ---
 
-  Handle(StepShape_Vertex) aEdgeEnd;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepShape_Vertex> aEdgeEnd;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "edge_end", ach, STANDARD_TYPE(StepShape_Vertex), aEdgeEnd);
 
   //--- Initialisation of the read entity ---
@@ -54,7 +54,8 @@ void RWStepShape_RWEdge::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aEdgeStart, aEdgeEnd);
 }
 
-void RWStepShape_RWEdge::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Edge)& ent) const
+void RWStepShape_RWEdge::WriteStep(StepData_StepWriter&               SW,
+                                   const occ::handle<StepShape_Edge>& ent) const
 {
 
   // --- inherited field name ---
@@ -70,8 +71,8 @@ void RWStepShape_RWEdge::WriteStep(StepData_StepWriter& SW, const Handle(StepSha
   SW.Send(ent->EdgeEnd());
 }
 
-void RWStepShape_RWEdge::Share(const Handle(StepShape_Edge)& ent,
-                               Interface_EntityIterator&     iter) const
+void RWStepShape_RWEdge::Share(const occ::handle<StepShape_Edge>& ent,
+                               Interface_EntityIterator&          iter) const
 {
 
   iter.GetOneItem(ent->EdgeStart());

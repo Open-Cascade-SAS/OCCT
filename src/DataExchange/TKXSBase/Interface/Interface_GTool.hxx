@@ -21,17 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Interface_GeneralLib.hxx>
-#include <Interface_DataMapOfTransientInteger.hxx>
-#include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 class Interface_Protocol;
 class Interface_SignType;
 class Interface_InterfaceModel;
 class Interface_GeneralModule;
-
-class Interface_GTool;
-DEFINE_STANDARD_HANDLE(Interface_GTool, Standard_Transient)
 
 //! GTool - General Tool for a Model
 //! Provides the functions performed by Protocol/GeneralModule for
@@ -48,32 +45,32 @@ public:
 
   //! Creates a GTool from a Protocol
   //! Optional starting count of entities
-  Standard_EXPORT Interface_GTool(const Handle(Interface_Protocol)& proto,
-                                  const Standard_Integer            nbent = 0);
+  Standard_EXPORT Interface_GTool(const occ::handle<Interface_Protocol>& proto,
+                                  const int                              nbent = 0);
 
   //! Sets a new SignType
-  Standard_EXPORT void SetSignType(const Handle(Interface_SignType)& sign);
+  Standard_EXPORT void SetSignType(const occ::handle<Interface_SignType>& sign);
 
   //! Returns the SignType. Can be null
-  Standard_EXPORT Handle(Interface_SignType) SignType() const;
+  Standard_EXPORT occ::handle<Interface_SignType> SignType() const;
 
   //! Returns the Signature for a Transient Object in a Model
   //! It calls SignType to do that
   //! If SignType is not defined, return ClassName of <ent>
-  Standard_EXPORT Standard_CString SignValue(const Handle(Standard_Transient)&       ent,
-                                             const Handle(Interface_InterfaceModel)& model) const;
+  Standard_EXPORT const char* SignValue(const occ::handle<Standard_Transient>&       ent,
+                                        const occ::handle<Interface_InterfaceModel>& model) const;
 
   //! Returns the Name of the SignType, or "Class Name"
-  Standard_EXPORT Standard_CString SignName() const;
+  Standard_EXPORT const char* SignName() const;
 
   //! Sets a new Protocol
   //! if <enforce> is False and the new Protocol equates the old one
   //! then nothing is done
-  Standard_EXPORT void SetProtocol(const Handle(Interface_Protocol)& proto,
-                                   const Standard_Boolean            enforce = Standard_False);
+  Standard_EXPORT void SetProtocol(const occ::handle<Interface_Protocol>& proto,
+                                   const bool                             enforce = false);
 
   //! Returns the Protocol. Warning: it can be Null
-  Standard_EXPORT Handle(Interface_Protocol) Protocol() const;
+  Standard_EXPORT occ::handle<Interface_Protocol> Protocol() const;
 
   //! Returns the GeneralLib itself
   Standard_EXPORT Interface_GeneralLib& Lib();
@@ -82,8 +79,7 @@ public:
   //! <enforce> False : minimum count
   //! <enforce> True  : clears former reservations
   //! Does not clear the maps
-  Standard_EXPORT void Reservate(const Standard_Integer nb,
-                                 const Standard_Boolean enforce = Standard_False);
+  Standard_EXPORT void Reservate(const int nb, const bool enforce = false);
 
   //! Clears the maps which record, for each already recorded entity
   //! its Module and Case Number
@@ -93,20 +89,20 @@ public:
   //! It is optimised : once done for each entity, the result is
   //! mapped and the GeneralLib is not longer queried
   //! <enforce> True overpasses this optimisation
-  Standard_EXPORT Standard_Boolean Select(const Handle(Standard_Transient)& ent,
-                                          Handle(Interface_GeneralModule)&  gmod,
-                                          Standard_Integer&                 CN,
-                                          const Standard_Boolean enforce = Standard_False);
+  Standard_EXPORT bool Select(const occ::handle<Standard_Transient>& ent,
+                              occ::handle<Interface_GeneralModule>&  gmod,
+                              int&                                   CN,
+                              const bool                             enforce = false);
 
   DEFINE_STANDARD_RTTIEXT(Interface_GTool, Standard_Transient)
 
-protected:
 private:
-  Handle(Interface_Protocol)                 theproto;
-  Handle(Interface_SignType)                 thesign;
-  Interface_GeneralLib                       thelib;
-  Interface_DataMapOfTransientInteger        thentnum;
-  TColStd_IndexedDataMapOfTransientTransient thentmod;
+  occ::handle<Interface_Protocol>                           theproto;
+  occ::handle<Interface_SignType>                           thesign;
+  Interface_GeneralLib                                      thelib;
+  NCollection_DataMap<occ::handle<Standard_Transient>, int> thentnum;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>
+    thentmod;
 };
 
 #endif // _Interface_GTool_HeaderFile

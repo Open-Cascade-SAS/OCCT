@@ -30,12 +30,12 @@ TopOpeBRepTool_SolidClassifier::TopOpeBRepTool_SolidClassifier()
 
 TopOpeBRepTool_SolidClassifier::~TopOpeBRepTool_SolidClassifier()
 {
-  Standard_Integer i, aNb;
+  int i, aNb;
 
   aNb = myShapeClassifierMap.Extent();
   for (i = 1; i <= aNb; ++i)
   {
-    Standard_Address             anAddr = myShapeClassifierMap(i);
+    void*                        anAddr = myShapeClassifierMap(i);
     BRepClass3d_SolidClassifier* pClsf  = (BRepClass3d_SolidClassifier*)anAddr;
     delete pClsf;
   }
@@ -46,12 +46,12 @@ TopOpeBRepTool_SolidClassifier::~TopOpeBRepTool_SolidClassifier()
 
 void TopOpeBRepTool_SolidClassifier::LoadSolid(const TopoDS_Solid& SOL)
 {
-  Standard_Boolean found = myShapeClassifierMap.Contains(SOL);
+  bool found = myShapeClassifierMap.Contains(SOL);
 
   if (!found)
   {
     myPClassifier = new BRepClass3d_SolidClassifier(SOL);
-    myShapeClassifierMap.Add(SOL, (Standard_Address)myPClassifier);
+    myShapeClassifierMap.Add(SOL, (void*)myPClassifier);
   }
   else
   {
@@ -63,14 +63,14 @@ void TopOpeBRepTool_SolidClassifier::LoadSolid(const TopoDS_Solid& SOL)
 
 void TopOpeBRepTool_SolidClassifier::LoadShell(const TopoDS_Shell& SHE)
 {
-  Standard_Boolean found = myShapeClassifierMap.Contains(SHE);
+  bool found = myShapeClassifierMap.Contains(SHE);
   if (!found)
   {
     myBuilder.MakeSolid(mySolid);
     myBuilder.Add(mySolid, SHE);
 
     myPClassifier = new BRepClass3d_SolidClassifier(mySolid);
-    myShapeClassifierMap.Add(SHE, (Standard_Address)myPClassifier);
+    myShapeClassifierMap.Add(SHE, (void*)myPClassifier);
   }
   else
   {
@@ -98,7 +98,7 @@ void TopOpeBRepTool_SolidClassifier::Clear()
 
 TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Solid& SOL,
                                                       const gp_Pnt&       P,
-                                                      const Standard_Real Tol)
+                                                      const double        Tol)
 {
   myPClassifier = NULL;
   myState       = TopAbs_UNKNOWN;
@@ -145,7 +145,7 @@ TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Solid& SOL,
 
 TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Shell& SHE,
                                                       const gp_Pnt&       P,
-                                                      const Standard_Real Tol)
+                                                      const double        Tol)
 {
   myPClassifier = NULL;
   myState       = TopAbs_UNKNOWN;
@@ -170,7 +170,7 @@ TopAbs_State TopOpeBRepTool_SolidClassifier::State() const
 
 void TopOpeBRepTool_SolidClassifier::LoadSolid(const TopoDS_Solid& SOL)
 {
-  Standard_Boolean found = myClassifierMap.Contains(SOL);
+  bool found = myClassifierMap.Contains(SOL);
   if ( !found ) {
     myPClassifier = new BRepClass3d_SolidClassifier(SOL);
     myClassifierMap.Add(SOL,*myPClassifier);
@@ -179,7 +179,7 @@ void TopOpeBRepTool_SolidClassifier::LoadSolid(const TopoDS_Solid& SOL)
     myPClassifier = &myClassifierMap.ChangeFromKey(SOL);
   }
 #ifdef OCCT_DEBUG
-  Standard_Integer i =
+  int i =
 #endif
                        myClassifierMap.FindIndex(SOL); // DEB
 }
@@ -188,11 +188,11 @@ void TopOpeBRepTool_SolidClassifier::LoadSolid(const TopoDS_Solid& SOL)
 
 void TopOpeBRepTool_SolidClassifier::LoadShell(const TopoDS_Shell& SHE)
 {
-  Standard_Boolean found = myClassifierMap.Contains(SHE);
+  bool found = myClassifierMap.Contains(SHE);
   if ( !found ) {
     myBuilder.MakeSolid(mySolid);
     myBuilder.Add(mySolid,SHE);
-    TopoDS_Shell* pshe = (TopoDS_Shell*)&SHE; (*pshe).Free(Standard_True);
+    TopoDS_Shell* pshe = (TopoDS_Shell*)&SHE; (*pshe).Free(true);
     myPClassifier = new BRepClass3d_SolidClassifier(mySolid);
     myClassifierMap.Add(SHE,*myPClassifier);
   }
@@ -200,7 +200,7 @@ void TopOpeBRepTool_SolidClassifier::LoadShell(const TopoDS_Shell& SHE)
     myPClassifier = &myClassifierMap.ChangeFromKey(SHE);
   }
 #ifdef OCCT_DEBUG
-  Standard_Integer i =
+  int i =
 #endif
                        myClassifierMap.FindIndex(SHE); // DEB
 }

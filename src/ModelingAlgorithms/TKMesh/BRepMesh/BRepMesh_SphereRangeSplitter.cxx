@@ -22,31 +22,31 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_SphereRangeSplitter::GenerateSurfaceNode
   const IMeshTools_Parameters& theParameters) const
 {
   // Calculate parameters for iteration in V direction
-  Standard_Real aStep =
+  double aStep =
     0.7
     * GCPnts_TangentialDeflection::ArcAngularStep(GetDFace()->GetSurface()->Sphere().Radius(),
                                                   GetDFace()->GetDeflection(),
                                                   theParameters.Angle,
                                                   theParameters.MinSize);
 
-  const std::pair<Standard_Real, Standard_Real>* aRange[2] = {&GetRangeV(), &GetRangeU()};
+  const std::pair<double, double>* aRange[2] = {&GetRangeV(), &GetRangeU()};
 
-  std::pair<Standard_Real, Standard_Real> aStepAndOffset[2];
+  std::pair<double, double> aStepAndOffset[2];
   computeStep(*aRange[0], aStep, aStepAndOffset[0]);
   computeStep(*aRange[1], aStep, aStepAndOffset[1]);
 
-  const Handle(NCollection_IncAllocator) aTmpAlloc =
+  const occ::handle<NCollection_IncAllocator> aTmpAlloc =
     new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
   Handle(IMeshData::ListOfPnt2d) aNodes = new IMeshData::ListOfPnt2d(aTmpAlloc);
 
-  const Standard_Real aHalfDu = aStepAndOffset[1].first * 0.5;
-  Standard_Boolean    Shift   = Standard_False;
-  Standard_Real       aPasV   = aRange[0]->first + aStepAndOffset[0].first;
+  const double aHalfDu = aStepAndOffset[1].first * 0.5;
+  bool         Shift   = false;
+  double       aPasV   = aRange[0]->first + aStepAndOffset[0].first;
   for (; aPasV < aStepAndOffset[0].second; aPasV += aStepAndOffset[0].first)
   {
-    Shift                     = !Shift;
-    const Standard_Real d     = (Shift) ? aHalfDu : 0.;
-    Standard_Real       aPasU = aRange[1]->first + d;
+    Shift              = !Shift;
+    const double d     = (Shift) ? aHalfDu : 0.;
+    double       aPasU = aRange[1]->first + d;
     for (; aPasU < aStepAndOffset[1].second; aPasU += aStepAndOffset[1].first)
     {
       aNodes->Append(gp_Pnt2d(aPasU, aPasV));

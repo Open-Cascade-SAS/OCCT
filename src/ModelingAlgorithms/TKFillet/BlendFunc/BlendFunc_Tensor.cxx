@@ -18,9 +18,7 @@
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
-BlendFunc_Tensor::BlendFunc_Tensor(const Standard_Integer NbRow,
-                                   const Standard_Integer NbCol,
-                                   const Standard_Integer NbMat)
+BlendFunc_Tensor::BlendFunc_Tensor(const int NbRow, const int NbCol, const int NbMat)
     : Tab(1, NbRow * NbMat * NbCol),
       nbrow(NbRow),
       nbcol(NbCol),
@@ -29,17 +27,17 @@ BlendFunc_Tensor::BlendFunc_Tensor(const Standard_Integer NbRow,
 {
 }
 
-void BlendFunc_Tensor::Init(const Standard_Real InitialValue)
+void BlendFunc_Tensor::Init(const double InitialValue)
 {
-  // Standard_Integer I, T = nbrow * nbcol *  nbmat;
+  // int I, T = nbrow * nbcol *  nbmat;
   // for (I=1; I<=T; I++) {Tab(I) = InitialValue;}
   Tab.Init(InitialValue);
 }
 
 void BlendFunc_Tensor::Multiply(const math_Vector& Right, math_Matrix& M) const
 {
-  Standard_Integer i, j, k;
-  Standard_Real    Somme;
+  int    i, j, k;
+  double Somme;
   for (i = 1; i <= nbrow; i++)
   {
     for (j = 1; j <= nbcol; j++)

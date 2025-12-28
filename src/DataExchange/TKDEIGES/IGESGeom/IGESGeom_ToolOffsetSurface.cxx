@@ -30,7 +30,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
@@ -38,9 +38,9 @@
 // MGE 31/07/98
 IGESGeom_ToolOffsetSurface::IGESGeom_ToolOffsetSurface() {}
 
-void IGESGeom_ToolOffsetSurface::ReadOwnParams(const Handle(IGESGeom_OffsetSurface)&  ent,
-                                               const Handle(IGESData_IGESReaderData)& IR,
-                                               IGESData_ParamReader&                  PR) const
+void IGESGeom_ToolOffsetSurface::ReadOwnParams(const occ::handle<IGESGeom_OffsetSurface>&  ent,
+                                               const occ::handle<IGESData_IGESReaderData>& IR,
+                                               IGESData_ParamReader&                       PR) const
 {
   // MGE 31/07/98
   // Building of messages
@@ -48,11 +48,11 @@ void IGESGeom_ToolOffsetSurface::ReadOwnParams(const Handle(IGESGeom_OffsetSurfa
   Message_Msg Msg162("XSTEP_162");
   //========================================
 
-  gp_XYZ                      anIndicator;
-  Standard_Real               aDistance;
-  Handle(IGESData_IGESEntity) aSurface;
-  IGESData_Status             aStatus;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  gp_XYZ                           anIndicator;
+  double                           aDistance;
+  occ::handle<IGESData_IGESEntity> aSurface;
+  IGESData_Status                  aStatus;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // Reading the offset indicator
   PR.ReadXYZ(PR.CurrentList(1, 3), Msg162, anIndicator); // szv#4:S4163:12Mar99 `st=` not needed
@@ -98,8 +98,8 @@ void IGESGeom_ToolOffsetSurface::ReadOwnParams(const Handle(IGESGeom_OffsetSurfa
   ent->Init(anIndicator, aDistance, aSurface);
 }
 
-void IGESGeom_ToolOffsetSurface::WriteOwnParams(const Handle(IGESGeom_OffsetSurface)& ent,
-                                                IGESData_IGESWriter&                  IW) const
+void IGESGeom_ToolOffsetSurface::WriteOwnParams(const occ::handle<IGESGeom_OffsetSurface>& ent,
+                                                IGESData_IGESWriter&                       IW) const
 {
   IW.Send(ent->OffsetIndicator().X());
   IW.Send(ent->OffsetIndicator().Y());
@@ -108,26 +108,26 @@ void IGESGeom_ToolOffsetSurface::WriteOwnParams(const Handle(IGESGeom_OffsetSurf
   IW.Send(ent->Surface());
 }
 
-void IGESGeom_ToolOffsetSurface::OwnShared(const Handle(IGESGeom_OffsetSurface)& ent,
-                                           Interface_EntityIterator&             iter) const
+void IGESGeom_ToolOffsetSurface::OwnShared(const occ::handle<IGESGeom_OffsetSurface>& ent,
+                                           Interface_EntityIterator&                  iter) const
 {
   iter.GetOneItem(ent->Surface());
 }
 
-void IGESGeom_ToolOffsetSurface::OwnCopy(const Handle(IGESGeom_OffsetSurface)& another,
-                                         const Handle(IGESGeom_OffsetSurface)& ent,
-                                         Interface_CopyTool&                   TC) const
+void IGESGeom_ToolOffsetSurface::OwnCopy(const occ::handle<IGESGeom_OffsetSurface>& another,
+                                         const occ::handle<IGESGeom_OffsetSurface>& ent,
+                                         Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, aSurface, TC.Transferred(another->Surface()));
 
-  gp_XYZ        anIndicator = (another->OffsetIndicator()).XYZ();
-  Standard_Real aDistance   = another->Distance();
+  gp_XYZ anIndicator = (another->OffsetIndicator()).XYZ();
+  double aDistance   = another->Distance();
 
   ent->Init(anIndicator, aDistance, aSurface);
 }
 
 IGESData_DirChecker IGESGeom_ToolOffsetSurface::DirChecker(
-  const Handle(IGESGeom_OffsetSurface)& /* ent */) const
+  const occ::handle<IGESGeom_OffsetSurface>& /* ent */) const
 {
   IGESData_DirChecker DC(140, 0);
   DC.Structure(IGESData_DefVoid);
@@ -138,18 +138,18 @@ IGESData_DirChecker IGESGeom_ToolOffsetSurface::DirChecker(
   return DC;
 }
 
-void IGESGeom_ToolOffsetSurface::OwnCheck(const Handle(IGESGeom_OffsetSurface)& /* ent */,
+void IGESGeom_ToolOffsetSurface::OwnCheck(const occ::handle<IGESGeom_OffsetSurface>& /* ent */,
                                           const Interface_ShareTool&,
-                                          Handle(Interface_Check)& /* ach */) const
+                                          occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESGeom_ToolOffsetSurface::OwnDump(const Handle(IGESGeom_OffsetSurface)& ent,
-                                         const IGESData_IGESDumper&            dumper,
-                                         Standard_OStream&                     S,
-                                         const Standard_Integer                level) const
+void IGESGeom_ToolOffsetSurface::OwnDump(const occ::handle<IGESGeom_OffsetSurface>& ent,
+                                         const IGESData_IGESDumper&                 dumper,
+                                         Standard_OStream&                          S,
+                                         const int                                  level) const
 {
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "IGESGeom_OffsetSurface\n"
     << "Offset Indicator     : ";

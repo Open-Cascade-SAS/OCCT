@@ -111,22 +111,24 @@ static const char* faceCullToString(Graphic3d_TypeOfBackfacingModel theMode)
 }
 
 //! Find existing visualization material in the document.
-static TDF_Label findVisMaterial(const Handle(TDocStd_Document)& theDoc,
-                                 const TCollection_AsciiString&  theKey)
+static TDF_Label findVisMaterial(const occ::handle<TDocStd_Document>& theDoc,
+                                 const TCollection_AsciiString&       theKey)
 {
-  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool(theDoc->Main());
-  TDF_Label                       aMatLab;
+  occ::handle<XCAFDoc_VisMaterialTool> aMatTool =
+    XCAFDoc_DocumentTool::VisMaterialTool(theDoc->Main());
+  TDF_Label aMatLab;
   TDF_Tool::Label(theDoc->GetData(), theKey, aMatLab);
   if (!aMatLab.IsNull())
   {
     return aMatTool->IsMaterial(aMatLab) ? aMatLab : TDF_Label();
   }
 
-  TDF_LabelSequence aLabels;
+  NCollection_Sequence<TDF_Label> aLabels;
   aMatTool->GetMaterials(aLabels);
-  for (TDF_LabelSequence::Iterator aLabIter(aLabels); aLabIter.More(); aLabIter.Next())
+  for (NCollection_Sequence<TDF_Label>::Iterator aLabIter(aLabels); aLabIter.More();
+       aLabIter.Next())
   {
-    Handle(TDataStd_Name) aNodeName;
+    occ::handle<TDataStd_Name> aNodeName;
     if (aLabIter.Value().FindAttribute(TDataStd_Name::GetID(), aNodeName)
         && aNodeName->Get().IsEqual(theKey))
     {
@@ -149,12 +151,12 @@ static bool isImageFileExist(const TCollection_AsciiString& thePath)
 }
 
 //! Parse RGB values coming after specified argument.
-static bool parseRgbColor(Standard_Integer& theArgIter,
-                          Quantity_Color&   theColor,
-                          Standard_Integer  theNbArgs,
-                          const char**      theArgVec)
+static bool parseRgbColor(int&            theArgIter,
+                          Quantity_Color& theColor,
+                          int             theNbArgs,
+                          const char**    theArgVec)
 {
-  Standard_Integer aNbParsed =
+  int aNbParsed =
     Draw::ParseColor(theNbArgs - theArgIter - 1, theArgVec + theArgIter + 1, theColor);
   if (aNbParsed == 0)
   {
@@ -166,9 +168,9 @@ static bool parseRgbColor(Standard_Integer& theArgIter,
 }
 
 //! Parse normalized real value within 0..1 range.
-static bool parseNormalizedReal(const char* theString, Standard_ShortReal& theValue)
+static bool parseNormalizedReal(const char* theString, float& theValue)
 {
-  theValue = (Standard_ShortReal)Draw::Atof(theString);
+  theValue = (float)Draw::Atof(theString);
   if (theValue < 0.0f || theValue > 1.0f)
   {
     std::cerr << "Syntax error at '" << theString << "'\n";
@@ -180,7 +182,7 @@ static bool parseNormalizedReal(const char* theString, Standard_ShortReal& theVa
 //=======================================================================
 // Section: Work with colors
 //=======================================================================
-static Standard_Integer setColor(Draw_Interpretor&, Standard_Integer argc, const char** argv)
+static int setColor(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 4)
   {
@@ -188,7 +190,7 @@ static Standard_Integer setColor(Draw_Interpretor&, Standard_Integer argc, const
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -212,7 +214,7 @@ static Standard_Integer setColor(Draw_Interpretor&, Standard_Integer argc, const
   Quantity_ColorRGBA aColor;
   bool               isColorDefined = false;
   XCAFDoc_ColorType  aColType       = XCAFDoc_ColorGen;
-  for (Standard_Integer anArgIter = 3; anArgIter < argc; ++anArgIter)
+  for (int anArgIter = 3; anArgIter < argc; ++anArgIter)
   {
     if (parseXDocColorType(argv[anArgIter], aColType))
     {
@@ -220,8 +222,8 @@ static Standard_Integer setColor(Draw_Interpretor&, Standard_Integer argc, const
     }
     else if (!isColorDefined)
     {
-      isColorDefined             = true;
-      Standard_Integer aNbParsed = Draw::ParseColor(argc - anArgIter, argv + anArgIter, aColor);
+      isColorDefined = true;
+      int aNbParsed  = Draw::ParseColor(argc - anArgIter, argv + anArgIter, aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << argv[anArgIter] << "'";
@@ -241,7 +243,7 @@ static Standard_Integer setColor(Draw_Interpretor&, Standard_Integer argc, const
     return 1;
   }
 
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
   if (!aLabel.IsNull())
   {
     aColorTool->SetColor(aLabel, aColor, aColType);
@@ -254,7 +256,7 @@ static Standard_Integer setColor(Draw_Interpretor&, Standard_Integer argc, const
   return 0;
 }
 
-static Standard_Integer getColor(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int getColor(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -262,7 +264,7 @@ static Standard_Integer getColor(Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -272,8 +274,8 @@ static Standard_Integer getColor(Draw_Interpretor& di, Standard_Integer argc, co
 
   TDF_Label aLabel;
   TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
-  Quantity_ColorRGBA        aColor;
+  occ::handle<XCAFDoc_ColorTool> myColors = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  Quantity_ColorRGBA             aColor;
   if (!myColors->GetColor(aLabel, aColor))
   {
     return 0;
@@ -290,9 +292,7 @@ static Standard_Integer getColor(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer getShapeColor(Draw_Interpretor& di,
-                                      Standard_Integer  argc,
-                                      const char**      argv)
+static int getShapeColor(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3 && argc != 4)
   {
@@ -300,7 +300,7 @@ static Standard_Integer getShapeColor(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -316,8 +316,8 @@ static Standard_Integer getShapeColor(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
-  XCAFDoc_ColorType         aColType = XCAFDoc_ColorGen;
+  occ::handle<XCAFDoc_ColorTool> myColors = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  XCAFDoc_ColorType              aColType = XCAFDoc_ColorGen;
   if (argc > 3 && !parseXDocColorType(argv[3], aColType))
   {
     Message::SendFail() << "Syntax error: unknown color type '" << argv[3] << "'";
@@ -342,7 +342,7 @@ static Standard_Integer getShapeColor(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer getAllColors(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int getAllColors(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -350,7 +350,7 @@ static Standard_Integer getAllColors(Draw_Interpretor& di, Standard_Integer argc
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -358,12 +358,13 @@ static Standard_Integer getAllColors(Draw_Interpretor& di, Standard_Integer argc
     return 1;
   }
 
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
-  TDF_LabelSequence         aLabels;
+  occ::handle<XCAFDoc_ColorTool>  aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  NCollection_Sequence<TDF_Label> aLabels;
   aColorTool->GetColors(aLabels);
   if (aLabels.Length() >= 1)
   {
-    for (TDF_LabelSequence::Iterator aLabIter(aLabels); aLabIter.More(); aLabIter.Next())
+    for (NCollection_Sequence<TDF_Label>::Iterator aLabIter(aLabels); aLabIter.More();
+         aLabIter.Next())
     {
       Quantity_ColorRGBA aColor;
       if (!aColorTool->GetColor(aLabIter.Value(), aColor))
@@ -384,7 +385,7 @@ static Standard_Integer getAllColors(Draw_Interpretor& di, Standard_Integer argc
   return 0;
 }
 
-static Standard_Integer addColor(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int addColor(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -392,7 +393,7 @@ static Standard_Integer addColor(Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -401,22 +402,22 @@ static Standard_Integer addColor(Draw_Interpretor& di, Standard_Integer argc, co
   }
 
   Quantity_ColorRGBA aColRGBA;
-  Standard_Integer   aNbParsed = Draw::ParseColor(argc - 2, argv + 2, aColRGBA);
+  int                aNbParsed = Draw::ParseColor(argc - 2, argv + 2, aColRGBA);
   if (aNbParsed != argc - 2)
   {
     Message::SendFail() << "Syntax error at '" << argv[2] << "'";
     return 1;
   }
 
-  TCollection_AsciiString   anEntry;
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
-  TDF_Label                 aLabel     = aColorTool->AddColor(aColRGBA);
+  TCollection_AsciiString        anEntry;
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  TDF_Label                      aLabel     = aColorTool->AddColor(aColRGBA);
   TDF_Tool::Entry(aLabel, anEntry);
   di << anEntry;
   return 0;
 }
 
-static Standard_Integer removeColor(Draw_Interpretor&, Standard_Integer argc, const char** argv)
+static int removeColor(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -424,8 +425,8 @@ static Standard_Integer removeColor(Draw_Interpretor&, Standard_Integer argc, co
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
-  TDF_Label                aLabel;
+  occ::handle<TDocStd_Document> aDoc;
+  TDF_Label                     aLabel;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -439,12 +440,12 @@ static Standard_Integer removeColor(Draw_Interpretor&, Standard_Integer argc, co
     return 1;
   }
 
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
   aColorTool->RemoveColor(aLabel);
   return 0;
 }
 
-static Standard_Integer findColor(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int findColor(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -452,7 +453,7 @@ static Standard_Integer findColor(Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -461,21 +462,21 @@ static Standard_Integer findColor(Draw_Interpretor& di, Standard_Integer argc, c
   }
 
   Quantity_ColorRGBA aColRGBA;
-  Standard_Integer   aNbParsed = Draw::ParseColor(argc - 2, argv + 2, aColRGBA);
+  int                aNbParsed = Draw::ParseColor(argc - 2, argv + 2, aColRGBA);
   if (aNbParsed != argc - 2)
   {
     Message::SendFail() << "Syntax error at '" << argv[2] << "'";
     return 1;
   }
 
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
-  TCollection_AsciiString   anEntry;
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  TCollection_AsciiString        anEntry;
   TDF_Tool::Entry(aColorTool->FindColor(aColRGBA), anEntry);
   di << anEntry;
   return 0;
 }
 
-static Standard_Integer unsetColor(Draw_Interpretor&, Standard_Integer argc, const char** argv)
+static int unsetColor(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc != 4)
   {
@@ -483,7 +484,7 @@ static Standard_Integer unsetColor(Draw_Interpretor&, Standard_Integer argc, con
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -500,7 +501,7 @@ static Standard_Integer unsetColor(Draw_Interpretor&, Standard_Integer argc, con
 
   TDF_Label aLabel;
   TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  occ::handle<XCAFDoc_ColorTool> myColors = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
   if (!aLabel.IsNull())
   {
     myColors->UnSetColor(aLabel, aColType);
@@ -517,7 +518,7 @@ static Standard_Integer unsetColor(Draw_Interpretor&, Standard_Integer argc, con
   return 0;
 }
 
-static Standard_Integer setVisibility(Draw_Interpretor&, Standard_Integer argc, const char** argv)
+static int setVisibility(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc != 3 && argc != 4)
   {
@@ -525,8 +526,8 @@ static Standard_Integer setVisibility(Draw_Interpretor&, Standard_Integer argc, 
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
-  TDF_Label                aLabel;
+  occ::handle<TDocStd_Document> aDoc;
+  TDF_Label                     aLabel;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -535,14 +536,14 @@ static Standard_Integer setVisibility(Draw_Interpretor&, Standard_Integer argc, 
   }
 
   TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
   if (aLabel.IsNull())
   {
     // get label by shape
     TopoDS_Shape aShape = DBRep::Get(argv[2]);
     if (!aShape.IsNull())
     {
-      aLabel = aColorTool->ShapeTool()->FindShape(aShape, Standard_True);
+      aLabel = aColorTool->ShapeTool()->FindShape(aShape, true);
     }
   }
   if (aLabel.IsNull())
@@ -551,17 +552,17 @@ static Standard_Integer setVisibility(Draw_Interpretor&, Standard_Integer argc, 
     return 1;
   }
 
-  Standard_Boolean isVisible = Standard_False;
+  bool isVisible = false;
   if (argc == 4)
   {
     TCollection_AsciiString aVisArg(argv[3]);
     if (aVisArg == "1")
     {
-      isVisible = Standard_True;
+      isVisible = true;
     }
     else if (aVisArg == "0")
     {
-      isVisible = Standard_False;
+      isVisible = false;
     }
     else
     {
@@ -573,9 +574,7 @@ static Standard_Integer setVisibility(Draw_Interpretor&, Standard_Integer argc, 
   return 0;
 }
 
-static Standard_Integer getVisibility(Draw_Interpretor& di,
-                                      Standard_Integer  argc,
-                                      const char**      argv)
+static int getVisibility(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -583,7 +582,7 @@ static Standard_Integer getVisibility(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -591,8 +590,8 @@ static Standard_Integer getVisibility(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
-  TDF_Label                 aLabel;
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  TDF_Label                      aLabel;
   TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
   if (aLabel.IsNull())
   {
@@ -600,7 +599,7 @@ static Standard_Integer getVisibility(Draw_Interpretor& di,
     TopoDS_Shape aShape = DBRep::Get(argv[2]);
     if (!aShape.IsNull())
     {
-      aLabel = aColorTool->ShapeTool()->FindShape(aShape, Standard_True);
+      aLabel = aColorTool->ShapeTool()->FindShape(aShape, true);
     }
   }
   if (aLabel.IsNull())
@@ -613,9 +612,7 @@ static Standard_Integer getVisibility(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer getStyledVisibility(Draw_Interpretor& di,
-                                            Standard_Integer  argc,
-                                            const char**      argv)
+static int getStyledVisibility(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -623,7 +620,7 @@ static Standard_Integer getStyledVisibility(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   TopoDS_Shape aShape = DBRep::Get(argv[2]);
   if (aDoc.IsNull())
@@ -637,14 +634,12 @@ static Standard_Integer getStyledVisibility(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
   di << (aColorTool->IsInstanceVisible(aShape) ? 1 : 0);
   return 0;
 }
 
-static Standard_Integer getStyledcolor(Draw_Interpretor& di,
-                                       Standard_Integer  argc,
-                                       const char**      argv)
+static int getStyledcolor(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3 && argc != 4)
   {
@@ -652,8 +647,8 @@ static Standard_Integer getStyledcolor(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
-  XCAFDoc_ColorType        aColType = XCAFDoc_ColorGen;
+  occ::handle<TDocStd_Document> aDoc;
+  XCAFDoc_ColorType             aColType = XCAFDoc_ColorGen;
   DDocStd::GetDocument(argv[1], aDoc);
   TopoDS_Shape aShape = DBRep::Get(argv[2]);
   if (aDoc.IsNull())
@@ -672,8 +667,8 @@ static Standard_Integer getStyledcolor(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
-  Quantity_ColorRGBA        aColor;
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  Quantity_ColorRGBA             aColor;
   if (aColorTool->GetInstanceColor(aShape, aColType, aColor))
   {
     if ((1.0 - aColor.Alpha()) < Precision::Confusion())
@@ -688,7 +683,7 @@ static Standard_Integer getStyledcolor(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer setStyledcolor(Draw_Interpretor&, Standard_Integer argc, const char** argv)
+static int setStyledcolor(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -696,7 +691,7 @@ static Standard_Integer setStyledcolor(Draw_Interpretor&, Standard_Integer argc,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -713,7 +708,7 @@ static Standard_Integer setStyledcolor(Draw_Interpretor&, Standard_Integer argc,
 
   XCAFDoc_ColorType  aColorType = XCAFDoc_ColorGen;
   Quantity_ColorRGBA aColRGBA;
-  for (Standard_Integer anArgIter = 3; anArgIter < argc; ++anArgIter)
+  for (int anArgIter = 3; anArgIter < argc; ++anArgIter)
   {
     if (parseXDocColorType(argv[anArgIter], aColorType))
     {
@@ -721,7 +716,7 @@ static Standard_Integer setStyledcolor(Draw_Interpretor&, Standard_Integer argc,
     }
     else
     {
-      Standard_Integer aNbParsed = Draw::ParseColor(argc - anArgIter, argv + anArgIter, aColRGBA);
+      int aNbParsed = Draw::ParseColor(argc - anArgIter, argv + anArgIter, aColRGBA);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << argv[anArgIter] << "'";
@@ -731,7 +726,7 @@ static Standard_Integer setStyledcolor(Draw_Interpretor&, Standard_Integer argc,
     }
   }
 
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
   if (!aColorTool->SetInstanceColor(aShape, aColorType, aColRGBA))
   {
     Message::SendFail() << "Error: cannot set color for the indicated component";
@@ -742,9 +737,7 @@ static Standard_Integer setStyledcolor(Draw_Interpretor&, Standard_Integer argc,
 
 //=================================================================================================
 
-static Standard_Integer XGetAllVisMaterials(Draw_Interpretor& theDI,
-                                            Standard_Integer  theNbArgs,
-                                            const char**      theArgVec)
+static int XGetAllVisMaterials(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 2 && theNbArgs != 3)
   {
@@ -752,7 +745,7 @@ static Standard_Integer XGetAllVisMaterials(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(theArgVec[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -775,11 +768,13 @@ static Standard_Integer XGetAllVisMaterials(Draw_Interpretor& theDI,
     }
   }
 
-  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
-  TDF_LabelSequence               aLabels;
+  occ::handle<XCAFDoc_VisMaterialTool> aMatTool =
+    XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
+  NCollection_Sequence<TDF_Label> aLabels;
   aMatTool->GetMaterials(aLabels);
-  Standard_Integer aMatIndex = 1;
-  for (TDF_LabelSequence::Iterator aLabIter(aLabels); aLabIter.More(); aLabIter.Next(), ++aMatIndex)
+  int aMatIndex = 1;
+  for (NCollection_Sequence<TDF_Label>::Iterator aLabIter(aLabels); aLabIter.More();
+       aLabIter.Next(), ++aMatIndex)
   {
     const TDF_Label& aMatLab = aLabIter.Value();
     if (!toPrintNames)
@@ -790,7 +785,7 @@ static Standard_Integer XGetAllVisMaterials(Draw_Interpretor& theDI,
       continue;
     }
 
-    Handle(TDataStd_Name) aNodeName;
+    occ::handle<TDataStd_Name> aNodeName;
     if (aMatLab.FindAttribute(TDataStd_Name::GetID(), aNodeName))
     {
       theDI << aNodeName->Get() << " ";
@@ -806,9 +801,7 @@ static Standard_Integer XGetAllVisMaterials(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer XGetVisMaterial(Draw_Interpretor& theDI,
-                                        Standard_Integer  theNbArgs,
-                                        const char**      theArgVec)
+static int XGetVisMaterial(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 3)
   {
@@ -816,7 +809,7 @@ static Standard_Integer XGetVisMaterial(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(theArgVec[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -824,9 +817,10 @@ static Standard_Integer XGetVisMaterial(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
-  Handle(XCAFDoc_VisMaterial)     aMat;
-  TDF_Label                       aMatLab = findVisMaterial(aDoc, theArgVec[2]);
+  occ::handle<XCAFDoc_VisMaterialTool> aMatTool =
+    XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
+  occ::handle<XCAFDoc_VisMaterial> aMat;
+  TDF_Label                        aMatLab = findVisMaterial(aDoc, theArgVec[2]);
   if (!aMatLab.IsNull())
   {
     aMat = aMatTool->GetMaterial(aMatLab);
@@ -866,7 +860,7 @@ static Standard_Integer XGetVisMaterial(Draw_Interpretor& theDI,
   TDF_Tool::Entry(aMat->Label(), anEntryId);
   theDI << "Label:                  " << anEntryId << "\n";
 
-  Handle(TDataStd_Name) aNodeName;
+  occ::handle<TDataStd_Name> aNodeName;
   if (aMat->Label().FindAttribute(TDataStd_Name::GetID(), aNodeName))
   {
     theDI << "Name:                   " << aNodeName->Get() << "\n";
@@ -882,21 +876,22 @@ static Standard_Integer XGetVisMaterial(Draw_Interpretor& theDI,
   if (aMat->HasCommonMaterial())
   {
     const XCAFDoc_VisMaterialCommon& aMatCom = aMat->CommonMaterial();
-    theDI << "Common.Ambient:         " << (Graphic3d_Vec3)aMatCom.AmbientColor << "\n";
-    theDI << "Common.Diffuse:         " << (Graphic3d_Vec3)aMatCom.DiffuseColor << "\n";
+    theDI << "Common.Ambient:         " << (NCollection_Vec3<float>)aMatCom.AmbientColor << "\n";
+    theDI << "Common.Diffuse:         " << (NCollection_Vec3<float>)aMatCom.DiffuseColor << "\n";
     if (!aMatCom.DiffuseTexture.IsNull())
     {
       theDI << "Common.DiffuseTexture:  " << aMatCom.DiffuseTexture->TextureId() << "\n";
     }
-    theDI << "Common.Specular:        " << (Graphic3d_Vec3)aMatCom.SpecularColor << "\n";
-    theDI << "Common.Emissive:        " << (Graphic3d_Vec3)aMatCom.EmissiveColor << "\n";
+    theDI << "Common.Specular:        " << (NCollection_Vec3<float>)aMatCom.SpecularColor << "\n";
+    theDI << "Common.Emissive:        " << (NCollection_Vec3<float>)aMatCom.EmissiveColor << "\n";
     theDI << "Common.Shininess:       " << aMatCom.Shininess << "\n";
     theDI << "Common.Transparency:    " << aMatCom.Transparency << "\n";
   }
   if (aMat->HasPbrMaterial())
   {
     const XCAFDoc_VisMaterialPBR& aMatPbr = aMat->PbrMaterial();
-    theDI << "PBR.BaseColor:          " << (Graphic3d_Vec3)aMatPbr.BaseColor.GetRGB() << "\n";
+    theDI << "PBR.BaseColor:          " << (NCollection_Vec3<float>)aMatPbr.BaseColor.GetRGB()
+          << "\n";
     theDI << "PBR.Transparency:       " << (1.0 - aMatPbr.BaseColor.Alpha()) << "\n";
     theDI << "PBR.RefractionIndex:    " << aMatPbr.RefractionIndex << "\n";
     if (!aMatPbr.BaseColorTexture.IsNull())
@@ -929,9 +924,7 @@ static Standard_Integer XGetVisMaterial(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer XAddVisMaterial(Draw_Interpretor&,
-                                        Standard_Integer theNbArgs,
-                                        const char**     theArgVec)
+static int XAddVisMaterial(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -939,7 +932,7 @@ static Standard_Integer XAddVisMaterial(Draw_Interpretor&,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(theArgVec[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -947,18 +940,19 @@ static Standard_Integer XAddVisMaterial(Draw_Interpretor&,
     return 1;
   }
 
-  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
-  TDF_Label                       aMatLab  = findVisMaterial(aDoc, theArgVec[2]);
+  occ::handle<XCAFDoc_VisMaterialTool> aMatTool =
+    XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
+  TDF_Label aMatLab = findVisMaterial(aDoc, theArgVec[2]);
   if (aMatLab.IsNull())
   {
     aMatLab = aMatTool->AddMaterial(theArgVec[2]);
   }
 
-  Handle(XCAFDoc_VisMaterial) aMat       = aMatTool->GetMaterial(aMatLab);
-  XCAFDoc_VisMaterialCommon   aMatCom    = aMat->CommonMaterial();
-  XCAFDoc_VisMaterialPBR      aMatPbr    = aMat->PbrMaterial();
-  Standard_ShortReal          aRealValue = 0.0f;
-  for (Standard_Integer anArgIter = 3; anArgIter < theNbArgs; ++anArgIter)
+  occ::handle<XCAFDoc_VisMaterial> aMat       = aMatTool->GetMaterial(aMatLab);
+  XCAFDoc_VisMaterialCommon        aMatCom    = aMat->CommonMaterial();
+  XCAFDoc_VisMaterialPBR           aMatPbr    = aMat->PbrMaterial();
+  float                            aRealValue = 0.0f;
+  for (int anArgIter = 3; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.LowerCase();
@@ -974,7 +968,7 @@ static Standard_Integer XAddVisMaterial(Draw_Interpretor&,
     }
     else if (anArgIter + 1 < theNbArgs && (anArg == "-refractionindex" || anArg == "-ior"))
     {
-      aMatPbr.RefractionIndex = (Standard_ShortReal)Draw::Atof(theArgVec[anArgIter + 1]);
+      aMatPbr.RefractionIndex = (float)Draw::Atof(theArgVec[anArgIter + 1]);
       if (aMatPbr.RefractionIndex < 1.0f || aMatPbr.RefractionIndex > 3.0f)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -1021,7 +1015,7 @@ static Standard_Integer XAddVisMaterial(Draw_Interpretor&,
     else if (anArg == "-diffuse" || anArg == "-basecolor" || anArg == "-albedo")
     {
       Quantity_ColorRGBA aColorRGBA;
-      Standard_Integer   aNbParsed =
+      int                aNbParsed =
         Draw::ParseColor(theNbArgs - anArgIter - 1, theArgVec + anArgIter + 1, aColorRGBA);
       if (aNbParsed == 0)
       {
@@ -1187,9 +1181,7 @@ static Standard_Integer XAddVisMaterial(Draw_Interpretor&,
 
 //=================================================================================================
 
-static Standard_Integer XRemoveVisMaterial(Draw_Interpretor&,
-                                           Standard_Integer theNbArgs,
-                                           const char**     theArgVec)
+static int XRemoveVisMaterial(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 3)
   {
@@ -1197,7 +1189,7 @@ static Standard_Integer XRemoveVisMaterial(Draw_Interpretor&,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(theArgVec[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -1212,16 +1204,15 @@ static Standard_Integer XRemoveVisMaterial(Draw_Interpretor&,
     return 1;
   }
 
-  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
+  occ::handle<XCAFDoc_VisMaterialTool> aMatTool =
+    XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
   aMatTool->RemoveMaterial(aMatLab);
   return 0;
 }
 
 //=================================================================================================
 
-static Standard_Integer XSetVisMaterial(Draw_Interpretor&,
-                                        Standard_Integer theNbArgs,
-                                        const char**     theArgVec)
+static int XSetVisMaterial(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 3 && theNbArgs != 4)
   {
@@ -1229,8 +1220,8 @@ static Standard_Integer XSetVisMaterial(Draw_Interpretor&,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
-  TDF_Label                aShapeLab;
+  occ::handle<TDocStd_Document> aDoc;
+  TDF_Label                     aShapeLab;
   DDocStd::GetDocument(theArgVec[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -1239,14 +1230,14 @@ static Standard_Integer XSetVisMaterial(Draw_Interpretor&,
   }
 
   TDF_Tool::Label(aDoc->GetData(), theArgVec[2], aShapeLab);
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
   if (aShapeLab.IsNull())
   {
     // get label by shape
     TopoDS_Shape aShape = DBRep::Get(theArgVec[2]);
     if (!aShape.IsNull())
     {
-      aShapeLab = aColorTool->ShapeTool()->FindShape(aShape, Standard_True);
+      aShapeLab = aColorTool->ShapeTool()->FindShape(aShape, true);
     }
   }
   if (aShapeLab.IsNull())
@@ -1266,7 +1257,8 @@ static Standard_Integer XSetVisMaterial(Draw_Interpretor&,
     }
   }
 
-  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
+  occ::handle<XCAFDoc_VisMaterialTool> aMatTool =
+    XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
   aMatTool->SetShapeMaterial(aShapeLab, aMatLab);
   return 0;
 }
@@ -1275,18 +1267,18 @@ static Standard_Integer XSetVisMaterial(Draw_Interpretor&,
 
 void XDEDRAW_Colors::InitCommands(Draw_Interpretor& di)
 {
-  static Standard_Boolean initactor = Standard_False;
+  static bool initactor = false;
   if (initactor)
   {
     return;
   }
-  initactor = Standard_True;
+  initactor = true;
 
   //=====================================
   // Work with colors
   //=====================================
 
-  Standard_CString g = "XDE color's commands";
+  const char* g = "XDE color's commands";
 
   di.Add("XSetColor",
          "Doc {Label|Shape} R G B [alpha] [{generic|surface|curve}=gen]"

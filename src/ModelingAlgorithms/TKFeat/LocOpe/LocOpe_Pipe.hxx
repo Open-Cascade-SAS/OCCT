@@ -22,11 +22,13 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepFill_Pipe.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
 class TopoDS_Wire;
 class Geom_Curve;
 
@@ -49,21 +51,21 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  Standard_EXPORT const TopTools_ListOfShape& Shapes(const TopoDS_Shape& S);
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Shapes(const TopoDS_Shape& S);
 
-  Standard_EXPORT const TColGeom_SequenceOfCurve& Curves(const TColgp_SequenceOfPnt& Spt);
+  Standard_EXPORT const NCollection_Sequence<occ::handle<Geom_Curve>>& Curves(
+    const NCollection_Sequence<gp_Pnt>& Spt);
 
-  Standard_EXPORT Handle(Geom_Curve) BarycCurve();
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
 
-protected:
 private:
-  BRepFill_Pipe                      myPipe;
-  TopTools_DataMapOfShapeListOfShape myMap;
-  TopoDS_Shape                       myRes;
-  TopTools_ListOfShape               myGShap;
-  TColGeom_SequenceOfCurve           myCrvs;
-  TopoDS_Shape                       myFirstShape;
-  TopoDS_Shape                       myLastShape;
+  BRepFill_Pipe                                                                              myPipe;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
+  TopoDS_Shape                                                                               myRes;
+  NCollection_List<TopoDS_Shape>                myGShap;
+  NCollection_Sequence<occ::handle<Geom_Curve>> myCrvs;
+  TopoDS_Shape                                  myFirstShape;
+  TopoDS_Shape                                  myLastShape;
 };
 
 #include <LocOpe_Pipe.lxx>

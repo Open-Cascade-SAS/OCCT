@@ -28,10 +28,10 @@ RWStepElement_RWUniformSurfaceSection::RWStepElement_RWUniformSurfaceSection() {
 //=================================================================================================
 
 void RWStepElement_RWUniformSurfaceSection::ReadStep(
-  const Handle(StepData_StepReaderData)&           data,
-  const Standard_Integer                           num,
-  Handle(Interface_Check)&                         ach,
-  const Handle(StepElement_UniformSurfaceSection)& ent) const
+  const occ::handle<StepData_StepReaderData>&           data,
+  const int                                             num,
+  occ::handle<Interface_Check>&                         ach,
+  const occ::handle<StepElement_UniformSurfaceSection>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "uniform_surface_section"))
@@ -58,7 +58,7 @@ void RWStepElement_RWUniformSurfaceSection::ReadStep(
 
   // Own fields of UniformSurfaceSection
 
-  Standard_Real aThickness;
+  double aThickness;
   data->ReadReal(num, 4, "thickness", ach, aThickness);
 
   StepElement_MeasureOrUnspecifiedValue aBendingThickness;
@@ -79,8 +79,8 @@ void RWStepElement_RWUniformSurfaceSection::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWUniformSurfaceSection::WriteStep(
-  StepData_StepWriter&                             SW,
-  const Handle(StepElement_UniformSurfaceSection)& ent) const
+  StepData_StepWriter&                                  SW,
+  const occ::handle<StepElement_UniformSurfaceSection>& ent) const
 {
 
   // Inherited fields of SurfaceSection
@@ -102,8 +102,9 @@ void RWStepElement_RWUniformSurfaceSection::WriteStep(
 
 //=================================================================================================
 
-void RWStepElement_RWUniformSurfaceSection::Share(const Handle(StepElement_UniformSurfaceSection)&,
-                                                  Interface_EntityIterator&) const
+void RWStepElement_RWUniformSurfaceSection::Share(
+  const occ::handle<StepElement_UniformSurfaceSection>&,
+  Interface_EntityIterator&) const
 {
 
   // Inherited fields of SurfaceSection

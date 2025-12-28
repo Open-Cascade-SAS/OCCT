@@ -79,7 +79,7 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
       aResult = ReadShape(theStream);
       theStream.GoTo(aCurrent); // returns to the current position
     }
-    aResult.Location(*ReadLocation(theStream), Standard_False);
+    aResult.Location(*ReadLocation(theStream), false);
     aResult.Orientation(TopAbs_Orientation(theStream.ReadByte()));
     return aResult;
   }
@@ -87,7 +87,7 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
   TopAbs_ShapeEnum       aShapeType        = theStream.ShapeType();
   TopAbs_Orientation     aShapeOrientation = theStream.ShapeOrientation();
   const TopLoc_Location* aShapeLocation    = ReadLocation(theStream);
-  Standard_Real          aTol;
+  double                 aTol;
   static BRep_Builder    aBuilder;
   try
   {
@@ -100,34 +100,34 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
         theStream >> aTol;
         gp_Pnt aPnt = theStream.ReadPnt();
         aBuilder.MakeVertex(aV, aPnt, aTol);
-        Handle(BRep_TVertex)            aTV  = Handle(BRep_TVertex)::DownCast(aV.TShape());
-        BRep_ListOfPointRepresentation& aLpr = aTV->ChangePoints();
-        static TopLoc_Location          anEmptyLoc;
+        occ::handle<BRep_TVertex> aTV = occ::down_cast<BRep_TVertex>(aV.TShape());
+        NCollection_List<occ::handle<BRep_PointRepresentation>>& aLpr = aTV->ChangePoints();
+        static TopLoc_Location                                   anEmptyLoc;
         while (theStream)
         {
-          Standard_Byte aPrsType = theStream.ReadByte();
+          uint8_t aPrsType = theStream.ReadByte();
           if (aPrsType == 0) // end of the cycle
             break;
-          Standard_Real                    aParam = theStream.ReadReal();
-          Handle(BRep_PointRepresentation) aPR;
+          double                                aParam = theStream.ReadReal();
+          occ::handle<BRep_PointRepresentation> aPR;
           switch (aPrsType)
           {
             case 1: {
-              Handle(Geom_Curve) aCurve = ReadCurve(theStream);
+              occ::handle<Geom_Curve> aCurve = ReadCurve(theStream);
               if (!aCurve.IsNull())
                 aPR = new BRep_PointOnCurve(aParam, aCurve, anEmptyLoc);
               break;
             }
             case 2: {
-              Handle(Geom2d_Curve) aCurve2d = ReadCurve2d(theStream);
-              Handle(Geom_Surface) aSurface = ReadSurface(theStream);
+              occ::handle<Geom2d_Curve> aCurve2d = ReadCurve2d(theStream);
+              occ::handle<Geom_Surface> aSurface = ReadSurface(theStream);
               if (!aCurve2d.IsNull() && aSurface.IsNull())
                 aPR = new BRep_PointOnCurveOnSurface(aParam, aCurve2d, aSurface, anEmptyLoc);
               break;
             }
             case 3: {
-              Standard_Real        aParam2  = theStream.ReadReal();
-              Handle(Geom_Surface) aSurface = ReadSurface(theStream);
+              double                    aParam2  = theStream.ReadReal();
+              occ::handle<Geom_Surface> aSurface = ReadSurface(theStream);
               if (!aSurface.IsNull())
                 aPR = new BRep_PointOnSurface(aParam, aParam2, aSurface, anEmptyLoc);
               break;
@@ -153,45 +153,45 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
         aBuilder.MakeEdge(aE);
         // Read the curve geometry
         theStream >> aTol;
-        Standard_Boolean aSameParameter, aSameRange, aDegenerated;
+        bool aSameParameter, aSameRange, aDegenerated;
         theStream.ReadBools(aSameParameter, aSameRange, aDegenerated);
         aBuilder.SameParameter(aE, aSameParameter);
         aBuilder.SameRange(aE, aSameRange);
         aBuilder.Degenerated(aE, aDegenerated);
-        Standard_Real aFirst, aLast;
+        double aFirst, aLast;
         while (theStream)
         {
-          Standard_Byte aPrsType = theStream.ReadByte(); //{0|1|2|3|4|5|6|7}
+          uint8_t aPrsType = theStream.ReadByte(); //{0|1|2|3|4|5|6|7}
           if (aPrsType == 0)
             break;
           switch (aPrsType)
           {
             case 1: // -1- Curve 3D
             {
-              Handle(Geom_Curve)     aCurve = ReadCurve(theStream);
-              const TopLoc_Location* aLoc   = ReadLocation(theStream);
+              occ::handle<Geom_Curve> aCurve = ReadCurve(theStream);
+              const TopLoc_Location*  aLoc   = ReadLocation(theStream);
               theStream >> aFirst;
               theStream >> aLast;
               if (!aCurve.IsNull())
               {
                 aBuilder.UpdateEdge(aE, aCurve, *aLoc, aTol);
-                aBuilder.Range(aE, aFirst, aLast, Standard_True);
+                aBuilder.Range(aE, aFirst, aLast, true);
               }
               break;
             }
             case 2: // -2- Curve on surf
             case 3: // -3- Curve on closed surf
             {
-              Standard_Boolean     aClosed = (aPrsType == 3);
-              Handle(Geom2d_Curve) aCurve2d_2, aCurve2d_1 = ReadCurve2d(theStream);
-              GeomAbs_Shape        aReg = GeomAbs_C0;
+              bool                      aClosed = (aPrsType == 3);
+              occ::handle<Geom2d_Curve> aCurve2d_2, aCurve2d_1 = ReadCurve2d(theStream);
+              GeomAbs_Shape             aReg = GeomAbs_C0;
               if (aClosed)
               {
                 aCurve2d_2 = ReadCurve2d(theStream);
                 aReg       = (GeomAbs_Shape)theStream.ReadByte();
               }
-              Handle(Geom_Surface)   aSurface = ReadSurface(theStream);
-              const TopLoc_Location* aLoc     = ReadLocation(theStream);
+              occ::handle<Geom_Surface> aSurface = ReadSurface(theStream);
+              const TopLoc_Location*    aLoc     = ReadLocation(theStream);
               // range
               theStream >> aFirst;
               theStream >> aLast;
@@ -210,31 +210,31 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
             }
             case 4: // -4- Regularity
             {
-              GeomAbs_Shape          aReg      = (GeomAbs_Shape)theStream.ReadByte();
-              Handle(Geom_Surface)   aSurface1 = ReadSurface(theStream);
-              const TopLoc_Location* aLoc1     = ReadLocation(theStream);
-              Handle(Geom_Surface)   aSurface2 = ReadSurface(theStream);
-              const TopLoc_Location* aLoc2     = ReadLocation(theStream);
+              GeomAbs_Shape             aReg      = (GeomAbs_Shape)theStream.ReadByte();
+              occ::handle<Geom_Surface> aSurface1 = ReadSurface(theStream);
+              const TopLoc_Location*    aLoc1     = ReadLocation(theStream);
+              occ::handle<Geom_Surface> aSurface2 = ReadSurface(theStream);
+              const TopLoc_Location*    aLoc2     = ReadLocation(theStream);
               if (!aSurface1.IsNull() && !aSurface2.IsNull())
                 aBuilder.Continuity(aE, aSurface1, aSurface2, *aLoc1, *aLoc2, aReg);
               break;
             }
             case 5: // -5- Polygon3D
             {
-              Handle(Poly_Polygon3D) aPolygon = ReadPolygon3d(theStream);
-              const TopLoc_Location* aLoc     = ReadLocation(theStream);
+              occ::handle<Poly_Polygon3D> aPolygon = ReadPolygon3d(theStream);
+              const TopLoc_Location*      aLoc     = ReadLocation(theStream);
               aBuilder.UpdateEdge(aE, aPolygon, *aLoc);
               break;
             }
             case 6: // -6- Polygon on triangulation
             case 7: // -7- Polygon on closed triangulation
             {
-              Standard_Boolean                    aClosed = (aPrsType == 7);
-              Handle(Poly_PolygonOnTriangulation) aPoly2, aPoly1 = ReadPolygon(theStream);
+              bool                                     aClosed = (aPrsType == 7);
+              occ::handle<Poly_PolygonOnTriangulation> aPoly2, aPoly1 = ReadPolygon(theStream);
               if (aClosed)
                 aPoly2 = ReadPolygon(theStream);
-              Handle(Poly_Triangulation) aTriangulation = ReadTriangulation(theStream);
-              const TopLoc_Location*     aLoc           = ReadLocation(theStream);
+              occ::handle<Poly_Triangulation> aTriangulation = ReadTriangulation(theStream);
+              const TopLoc_Location*          aLoc           = ReadLocation(theStream);
               if (aClosed)
                 aBuilder.UpdateEdge(aE, aPoly1, aPoly2, aTriangulation, *aLoc);
               else
@@ -257,10 +257,10 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
       case TopAbs_FACE: {
         TopoDS_Face& aF = TopoDS::Face(aResult);
         aBuilder.MakeFace(aF);
-        Standard_Boolean aNatRes = theStream.ReadBool();
+        bool aNatRes = theStream.ReadBool();
         theStream >> aTol;
-        Handle(Geom_Surface)   aSurface = ReadSurface(theStream);
-        const TopLoc_Location* aLoc     = ReadLocation(theStream);
+        occ::handle<Geom_Surface> aSurface = ReadSurface(theStream);
+        const TopLoc_Location*    aLoc     = ReadLocation(theStream);
         aBuilder.UpdateFace(aF, aSurface, *aLoc, aTol);
         aBuilder.NaturalRestriction(aF, aNatRes);
         if (theStream.ReadByte() == 2) // triangulation
@@ -295,7 +295,7 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
     throw Standard_Failure(aMsg.str().c_str());
   }
   // read flags and subs
-  Standard_Boolean aFree, aMod, aChecked, anOrient, aClosed, anInf, aConv;
+  bool aFree, aMod, aChecked, anOrient, aClosed, anInf, aConv;
   theStream.ReadBools(aFree, aMod, aChecked, anOrient, aClosed, anInf, aConv);
   // sub-shapes
   for (TopoDS_Shape aSub = ReadShape(theStream); !aSub.IsNull(); aSub = ReadShape(theStream))
@@ -309,7 +309,7 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
   aResult.Convex(aConv);
   myShapePos.Bind(aPosition, aResult);
   aResult.Orientation(aShapeOrientation);
-  aResult.Location(*aShapeLocation, Standard_False);
+  aResult.Location(*aShapeLocation, false);
   return aResult;
 }
 
@@ -355,15 +355,15 @@ const TopLoc_Location* BinTools_ShapeReader::ReadLocation(BinTools_IStream& theS
 
 //=================================================================================================
 
-Handle(Geom_Curve) BinTools_ShapeReader::ReadCurve(BinTools_IStream& theStream)
+occ::handle<Geom_Curve> BinTools_ShapeReader::ReadCurve(BinTools_IStream& theStream)
 {
-  Handle(Geom_Curve) aResult;
-  uint64_t           aPosition = theStream.Position();
+  occ::handle<Geom_Curve> aResult;
+  uint64_t                aPosition = theStream.Position();
   theStream.ReadType();
   if (theStream.IsReference())
   { // get by reference
-    uint64_t                  aRef   = theStream.ReadReference();
-    const Handle(Geom_Curve)* aFound = myCurvePos.Seek(aRef);
+    uint64_t                       aRef   = theStream.ReadReference();
+    const occ::handle<Geom_Curve>* aFound = myCurvePos.Seek(aRef);
     if (aFound) // the location is already retrieved
       return *aFound;
     uint64_t aCurrent = theStream.Position();
@@ -382,15 +382,15 @@ Handle(Geom_Curve) BinTools_ShapeReader::ReadCurve(BinTools_IStream& theStream)
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) BinTools_ShapeReader::ReadCurve2d(BinTools_IStream& theStream)
+occ::handle<Geom2d_Curve> BinTools_ShapeReader::ReadCurve2d(BinTools_IStream& theStream)
 {
-  Handle(Geom2d_Curve) aResult;
-  uint64_t             aPosition = theStream.Position();
+  occ::handle<Geom2d_Curve> aResult;
+  uint64_t                  aPosition = theStream.Position();
   theStream.ReadType();
   if (theStream.IsReference())
   { // get by reference
-    uint64_t                    aRef   = theStream.ReadReference();
-    const Handle(Geom2d_Curve)* aFound = myCurve2dPos.Seek(aRef);
+    uint64_t                         aRef   = theStream.ReadReference();
+    const occ::handle<Geom2d_Curve>* aFound = myCurve2dPos.Seek(aRef);
     if (aFound) // the location is already retrieved
       return *aFound;
     uint64_t aCurrent = theStream.Position();
@@ -409,15 +409,15 @@ Handle(Geom2d_Curve) BinTools_ShapeReader::ReadCurve2d(BinTools_IStream& theStre
 
 //=================================================================================================
 
-Handle(Geom_Surface) BinTools_ShapeReader::ReadSurface(BinTools_IStream& theStream)
+occ::handle<Geom_Surface> BinTools_ShapeReader::ReadSurface(BinTools_IStream& theStream)
 {
-  Handle(Geom_Surface) aResult;
-  uint64_t             aPosition = theStream.Position();
+  occ::handle<Geom_Surface> aResult;
+  uint64_t                  aPosition = theStream.Position();
   theStream.ReadType();
   if (theStream.IsReference())
   { // get by reference
-    uint64_t                    aRef   = theStream.ReadReference();
-    const Handle(Geom_Surface)* aFound = mySurfacePos.Seek(aRef);
+    uint64_t                         aRef   = theStream.ReadReference();
+    const occ::handle<Geom_Surface>* aFound = mySurfacePos.Seek(aRef);
     if (aFound) // the location is already retrieved
       return *aFound;
     uint64_t aCurrent = theStream.Position();
@@ -436,15 +436,15 @@ Handle(Geom_Surface) BinTools_ShapeReader::ReadSurface(BinTools_IStream& theStre
 
 //=================================================================================================
 
-Handle(Poly_Polygon3D) BinTools_ShapeReader::ReadPolygon3d(BinTools_IStream& theStream)
+occ::handle<Poly_Polygon3D> BinTools_ShapeReader::ReadPolygon3d(BinTools_IStream& theStream)
 {
-  Handle(Poly_Polygon3D) aResult;
-  uint64_t               aPosition = theStream.Position();
+  occ::handle<Poly_Polygon3D> aResult;
+  uint64_t                    aPosition = theStream.Position();
   theStream.ReadType();
   if (theStream.IsReference())
   { // get by reference
-    uint64_t                      aRef   = theStream.ReadReference();
-    const Handle(Poly_Polygon3D)* aFound = myPolygon3dPos.Seek(aRef);
+    uint64_t                           aRef   = theStream.ReadReference();
+    const occ::handle<Poly_Polygon3D>* aFound = myPolygon3dPos.Seek(aRef);
     if (aFound) // the location is already retrieved
       return *aFound;
     uint64_t aCurrent = theStream.Position();
@@ -454,17 +454,17 @@ Handle(Poly_Polygon3D) BinTools_ShapeReader::ReadPolygon3d(BinTools_IStream& the
   }
   else if (theStream.LastType() == BinTools_ObjectType_Polygon3d)
   { // read from the stream
-    Standard_Integer aNbNodes       = theStream.ReadInteger();
-    Standard_Boolean aHasParameters = theStream.ReadBool();
-    aResult                         = new Poly_Polygon3D(aNbNodes, aHasParameters);
+    int  aNbNodes       = theStream.ReadInteger();
+    bool aHasParameters = theStream.ReadBool();
+    aResult             = new Poly_Polygon3D(aNbNodes, aHasParameters);
     aResult->Deflection(theStream.ReadReal());
-    TColgp_Array1OfPnt& aNodes = aResult->ChangeNodes();
-    for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+    NCollection_Array1<gp_Pnt>& aNodes = aResult->ChangeNodes();
+    for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
       theStream >> aNodes.ChangeValue(aNodeIter);
     if (aHasParameters)
     {
-      TColStd_Array1OfReal& aParam = aResult->ChangeParameters();
-      for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+      NCollection_Array1<double>& aParam = aResult->ChangeParameters();
+      for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
         theStream >> aParam.ChangeValue(aNodeIter);
     }
     myPolygon3dPos.Bind(aPosition, aResult);
@@ -474,15 +474,16 @@ Handle(Poly_Polygon3D) BinTools_ShapeReader::ReadPolygon3d(BinTools_IStream& the
 
 //=================================================================================================
 
-Handle(Poly_PolygonOnTriangulation) BinTools_ShapeReader::ReadPolygon(BinTools_IStream& theStream)
+occ::handle<Poly_PolygonOnTriangulation> BinTools_ShapeReader::ReadPolygon(
+  BinTools_IStream& theStream)
 {
-  Handle(Poly_PolygonOnTriangulation) aResult;
-  uint64_t                            aPosition = theStream.Position();
+  occ::handle<Poly_PolygonOnTriangulation> aResult;
+  uint64_t                                 aPosition = theStream.Position();
   theStream.ReadType();
   if (theStream.IsReference())
   { // get by reference
-    uint64_t                                   aRef   = theStream.ReadReference();
-    const Handle(Poly_PolygonOnTriangulation)* aFound = myPolygonPos.Seek(aRef);
+    uint64_t                                        aRef   = theStream.ReadReference();
+    const occ::handle<Poly_PolygonOnTriangulation>* aFound = myPolygonPos.Seek(aRef);
     if (aFound) // the location is already retrieved
       return *aFound;
     uint64_t aCurrent = theStream.Position();
@@ -492,15 +493,16 @@ Handle(Poly_PolygonOnTriangulation) BinTools_ShapeReader::ReadPolygon(BinTools_I
   }
   else if (theStream.LastType() == BinTools_ObjectType_PolygonOnTriangulation)
   { // read from the stream
-    Standard_Integer aNbNodes = theStream.ReadInteger();
-    aResult                   = new Poly_PolygonOnTriangulation(aNbNodes, Standard_False);
-    for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+    int aNbNodes = theStream.ReadInteger();
+    aResult      = new Poly_PolygonOnTriangulation(aNbNodes, false);
+    for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
       aResult->SetNode(aNodeIter, theStream.ReadInteger());
     aResult->Deflection(theStream.ReadReal());
     if (theStream.ReadBool())
     {
-      Handle(TColStd_HArray1OfReal) aParams = new TColStd_HArray1OfReal(1, aNbNodes);
-      for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+      occ::handle<NCollection_HArray1<double>> aParams =
+        new NCollection_HArray1<double>(1, aNbNodes);
+      for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
         theStream >> aParams->ChangeValue(aNodeIter);
       aResult->SetParameters(aParams);
     }
@@ -511,15 +513,15 @@ Handle(Poly_PolygonOnTriangulation) BinTools_ShapeReader::ReadPolygon(BinTools_I
 
 //=================================================================================================
 
-Handle(Poly_Triangulation) BinTools_ShapeReader::ReadTriangulation(BinTools_IStream& theStream)
+occ::handle<Poly_Triangulation> BinTools_ShapeReader::ReadTriangulation(BinTools_IStream& theStream)
 {
-  Handle(Poly_Triangulation) aResult;
-  uint64_t                   aPosition = theStream.Position();
-  const BinTools_ObjectType& aType     = theStream.ReadType();
+  occ::handle<Poly_Triangulation> aResult;
+  uint64_t                        aPosition = theStream.Position();
+  const BinTools_ObjectType&      aType     = theStream.ReadType();
   if (theStream.IsReference())
   { // get by reference
-    uint64_t                          aRef   = theStream.ReadReference();
-    const Handle(Poly_Triangulation)* aFound = myTriangulationPos.Seek(aRef);
+    uint64_t                               aRef   = theStream.ReadReference();
+    const occ::handle<Poly_Triangulation>* aFound = myTriangulationPos.Seek(aRef);
     if (aFound) // the location is already retrieved
       return *aFound;
     uint64_t aCurrent = theStream.Position();
@@ -529,18 +531,18 @@ Handle(Poly_Triangulation) BinTools_ShapeReader::ReadTriangulation(BinTools_IStr
   }
   else if (aType == BinTools_ObjectType_Triangulation)
   { // read from the stream
-    Standard_Integer aNbNodes     = theStream.ReadInteger();
-    Standard_Integer aNbTriangles = theStream.ReadInteger();
-    Standard_Boolean aHasUV       = theStream.ReadBool();
-    Standard_Boolean aHasNormals  = theStream.ReadBool();
-    aResult = new Poly_Triangulation(aNbNodes, aNbTriangles, aHasUV, aHasNormals);
+    int  aNbNodes     = theStream.ReadInteger();
+    int  aNbTriangles = theStream.ReadInteger();
+    bool aHasUV       = theStream.ReadBool();
+    bool aHasNormals  = theStream.ReadBool();
+    aResult           = new Poly_Triangulation(aNbNodes, aNbTriangles, aHasUV, aHasNormals);
     aResult->Deflection(theStream.ReadReal());
-    for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+    for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
       aResult->SetNode(aNodeIter, theStream.ReadPnt());
     if (aHasUV)
     {
       gp_Pnt2d anUV;
-      for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+      for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
       {
         theStream >> anUV.ChangeCoord().ChangeCoord(1);
         theStream >> anUV.ChangeCoord().ChangeCoord(2);
@@ -549,7 +551,7 @@ Handle(Poly_Triangulation) BinTools_ShapeReader::ReadTriangulation(BinTools_IStr
     }
     // read the triangles
     Poly_Triangle aTriangle;
-    for (Standard_Integer aTriIter = 1; aTriIter <= aNbTriangles; ++aTriIter)
+    for (int aTriIter = 1; aTriIter <= aNbTriangles; ++aTriIter)
     {
       theStream >> aTriangle.ChangeValue(1);
       theStream >> aTriangle.ChangeValue(2);
@@ -558,8 +560,8 @@ Handle(Poly_Triangulation) BinTools_ShapeReader::ReadTriangulation(BinTools_IStr
     }
     if (aHasNormals)
     {
-      gp_Vec3f aNormal;
-      for (Standard_Integer aNormalIter = 1; aNormalIter <= aNbNodes; ++aNormalIter)
+      NCollection_Vec3<float> aNormal;
+      for (int aNormalIter = 1; aNormalIter <= aNbNodes; ++aNormalIter)
       {
         theStream >> aNormal.x();
         theStream >> aNormal.y();

@@ -22,7 +22,7 @@
 
 Hatch_Parameter::Hatch_Parameter()
     : myPar1(0.0),
-      myStart(Standard_False),
+      myStart(false),
       myIndex(0),
       myPar2(0.0)
 {
@@ -30,10 +30,10 @@ Hatch_Parameter::Hatch_Parameter()
 
 //=================================================================================================
 
-Hatch_Parameter::Hatch_Parameter(const Standard_Real    Par1,
-                                 const Standard_Boolean Start,
-                                 const Standard_Integer Index,
-                                 const Standard_Real    Par2)
+Hatch_Parameter::Hatch_Parameter(const double Par1,
+                                 const bool   Start,
+                                 const int    Index,
+                                 const double Par2)
     : myPar1(Par1),
       myStart(Start),
       myIndex(Index),

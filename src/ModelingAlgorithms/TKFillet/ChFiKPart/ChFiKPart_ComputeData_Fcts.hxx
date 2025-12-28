@@ -22,24 +22,24 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 
-Standard_Real ChFiKPart_InPeriod(const Standard_Real U,
-                                 const Standard_Real UFirst,
-                                 const Standard_Real ULast,
-                                 const Standard_Real Eps);
+double ChFiKPart_InPeriod(const double U,
+                          const double UFirst,
+                          const double ULast,
+                          const double Eps);
 
-Handle(Geom2d_BSplineCurve) ChFiKPart_PCurve(const gp_Pnt2d&     UV1,
-                                             const gp_Pnt2d&     UV2,
-                                             const Standard_Real Pardeb,
-                                             const Standard_Real Parfin);
+occ::handle<Geom2d_BSplineCurve> ChFiKPart_PCurve(const gp_Pnt2d& UV1,
+                                                  const gp_Pnt2d& UV2,
+                                                  const double    Pardeb,
+                                                  const double    Parfin);
 
 void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
                       const GeomAdaptor_Surface& Sg,
-                      Handle(Geom2d_Curve)&      Pcurv);
+                      occ::handle<Geom2d_Curve>& Pcurv);
 
-Standard_EXPORT Standard_Integer ChFiKPart_IndexCurveInDS(const Handle(Geom_Curve)&   C,
-                                                          TopOpeBRepDS_DataStructure& DStr);
+Standard_EXPORT int ChFiKPart_IndexCurveInDS(const occ::handle<Geom_Curve>& C,
+                                             TopOpeBRepDS_DataStructure&    DStr);
 
-Standard_EXPORT Standard_Integer ChFiKPart_IndexSurfaceInDS(const Handle(Geom_Surface)& S,
-                                                            TopOpeBRepDS_DataStructure& DStr);
+Standard_EXPORT int ChFiKPart_IndexSurfaceInDS(const occ::handle<Geom_Surface>& S,
+                                               TopOpeBRepDS_DataStructure&      DStr);
 
 #endif

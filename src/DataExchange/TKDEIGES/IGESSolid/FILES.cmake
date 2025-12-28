@@ -4,10 +4,7 @@ set(OCCT_IGESSolid_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESSolid_FILES
   IGESSolid.cxx
   IGESSolid.hxx
-  IGESSolid_Array1OfFace.hxx
-  IGESSolid_Array1OfLoop.hxx
-  IGESSolid_Array1OfShell.hxx
-  IGESSolid_Array1OfVertexList.hxx
+
   IGESSolid_Block.cxx
   IGESSolid_Block.hxx
   IGESSolid_BooleanTree.cxx
@@ -28,10 +25,7 @@ set(OCCT_IGESSolid_FILES
   IGESSolid_Face.hxx
   IGESSolid_GeneralModule.cxx
   IGESSolid_GeneralModule.hxx
-  IGESSolid_HArray1OfFace.hxx
-  IGESSolid_HArray1OfLoop.hxx
-  IGESSolid_HArray1OfShell.hxx
-  IGESSolid_HArray1OfVertexList.hxx
+
   IGESSolid_Loop.cxx
   IGESSolid_Loop.hxx
   IGESSolid_ManifoldSolid.cxx

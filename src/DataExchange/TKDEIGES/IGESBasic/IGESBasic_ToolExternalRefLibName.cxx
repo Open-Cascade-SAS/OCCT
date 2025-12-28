@@ -33,13 +33,13 @@
 IGESBasic_ToolExternalRefLibName::IGESBasic_ToolExternalRefLibName() {}
 
 void IGESBasic_ToolExternalRefLibName::ReadOwnParams(
-  const Handle(IGESBasic_ExternalRefLibName)& ent,
-  const Handle(IGESData_IGESReaderData)& /* IR */,
+  const occ::handle<IGESBasic_ExternalRefLibName>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
   IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Handle(TCollection_HAsciiString) tempLibName;
-  Handle(TCollection_HAsciiString) tempExtRefEntitySymbName;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  occ::handle<TCollection_HAsciiString> tempLibName;
+  occ::handle<TCollection_HAsciiString> tempExtRefEntitySymbName;
   // clang-format off
   PR.ReadText(PR.Current(), "Name of Library", tempLibName); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
@@ -52,32 +52,33 @@ void IGESBasic_ToolExternalRefLibName::ReadOwnParams(
 }
 
 void IGESBasic_ToolExternalRefLibName::WriteOwnParams(
-  const Handle(IGESBasic_ExternalRefLibName)& ent,
-  IGESData_IGESWriter&                        IW) const
+  const occ::handle<IGESBasic_ExternalRefLibName>& ent,
+  IGESData_IGESWriter&                             IW) const
 {
   IW.Send(ent->LibraryName());
   IW.Send(ent->ReferenceName());
 }
 
 void IGESBasic_ToolExternalRefLibName::OwnShared(
-  const Handle(IGESBasic_ExternalRefLibName)& /* ent */,
+  const occ::handle<IGESBasic_ExternalRefLibName>& /* ent */,
   Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESBasic_ToolExternalRefLibName::OwnCopy(const Handle(IGESBasic_ExternalRefLibName)& another,
-                                               const Handle(IGESBasic_ExternalRefLibName)& ent,
-                                               Interface_CopyTool& /* TC */) const
+void IGESBasic_ToolExternalRefLibName::OwnCopy(
+  const occ::handle<IGESBasic_ExternalRefLibName>& another,
+  const occ::handle<IGESBasic_ExternalRefLibName>& ent,
+  Interface_CopyTool& /* TC */) const
 {
-  Handle(TCollection_HAsciiString) tempLibName =
+  occ::handle<TCollection_HAsciiString> tempLibName =
     new TCollection_HAsciiString(another->LibraryName());
-  Handle(TCollection_HAsciiString) tempRefName =
+  occ::handle<TCollection_HAsciiString> tempRefName =
     new TCollection_HAsciiString(another->ReferenceName());
   ent->Init(tempLibName, tempRefName);
 }
 
 IGESData_DirChecker IGESBasic_ToolExternalRefLibName::DirChecker(
-  const Handle(IGESBasic_ExternalRefLibName)& /* ent */) const
+  const occ::handle<IGESBasic_ExternalRefLibName>& /* ent */) const
 {
   IGESData_DirChecker DC(416, 4);
   DC.Structure(IGESData_DefVoid);
@@ -91,16 +92,16 @@ IGESData_DirChecker IGESBasic_ToolExternalRefLibName::DirChecker(
 }
 
 void IGESBasic_ToolExternalRefLibName::OwnCheck(
-  const Handle(IGESBasic_ExternalRefLibName)& /* ent */,
+  const occ::handle<IGESBasic_ExternalRefLibName>& /* ent */,
   const Interface_ShareTool&,
-  Handle(Interface_Check)& /* ach */) const
+  occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESBasic_ToolExternalRefLibName::OwnDump(const Handle(IGESBasic_ExternalRefLibName)& ent,
+void IGESBasic_ToolExternalRefLibName::OwnDump(const occ::handle<IGESBasic_ExternalRefLibName>& ent,
                                                const IGESData_IGESDumper& /* dumper */,
                                                Standard_OStream& S,
-                                               const Standard_Integer /* level */) const
+                                               const int /* level */) const
 {
   S << "IGESBasic_ExternalRefLibName\n"
     << "Name of Library : ";

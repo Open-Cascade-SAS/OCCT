@@ -44,21 +44,21 @@
 
 STEPConstruct_Part::STEPConstruct_Part()
 {
-  myDone = Standard_False;
+  myDone = false;
 }
 
 //=================================================================================================
 
-void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR,
-                                 const Handle(TCollection_HAsciiString)&      aName,
-                                 const Handle(StepBasic_ApplicationContext)&  AC,
-                                 Handle(StepData_StepModel)&                  theStepModel)
+void STEPConstruct_Part::MakeSDR(const occ::handle<StepShape_ShapeRepresentation>& SR,
+                                 const occ::handle<TCollection_HAsciiString>&      aName,
+                                 const occ::handle<StepBasic_ApplicationContext>&  AC,
+                                 occ::handle<StepData_StepModel>&                  theStepModel)
 {
   // get current schema
-  const Standard_Integer schema = theStepModel->InternalParameters.WriteSchema;
+  const int schema = theStepModel->InternalParameters.WriteSchema;
 
   // create PC
-  Handle(StepBasic_ProductContext) PC;
+  occ::handle<StepBasic_ProductContext> PC;
   switch (schema)
   {
     default:
@@ -74,19 +74,21 @@ void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR
       PC = new StepBasic_MechanicalContext;
       break;
   }
-  Handle(TCollection_HAsciiString) PCname           = new TCollection_HAsciiString("");
-  Handle(TCollection_HAsciiString) PCdisciplineType = new TCollection_HAsciiString("mechanical");
+  occ::handle<TCollection_HAsciiString> PCname = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> PCdisciplineType =
+    new TCollection_HAsciiString("mechanical");
   PC->Init(PCname, AC, PCdisciplineType);
 
   // create product
-  Handle(StepBasic_Product)                 P   = new StepBasic_Product;
-  Handle(StepBasic_HArray1OfProductContext) PCs = new StepBasic_HArray1OfProductContext(1, 1);
+  occ::handle<StepBasic_Product>                                          P = new StepBasic_Product;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> PCs =
+    new NCollection_HArray1<occ::handle<StepBasic_ProductContext>>(1, 1);
   PCs->SetValue(1, PC);
-  Handle(TCollection_HAsciiString) Pdescription = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> Pdescription = new TCollection_HAsciiString("");
   P->Init(aName, aName, Pdescription, PCs);
 
   // create PDF
-  Handle(StepBasic_ProductDefinitionFormation) PDF;
+  occ::handle<StepBasic_ProductDefinitionFormation> PDF;
   switch (schema)
   {
     default:
@@ -97,17 +99,17 @@ void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR
       break;
     case 3:
       PDF = new StepBasic_ProductDefinitionFormationWithSpecifiedSource;
-      Handle(StepBasic_ProductDefinitionFormationWithSpecifiedSource)::DownCast(PDF)->SetMakeOrBuy(
+      occ::down_cast<StepBasic_ProductDefinitionFormationWithSpecifiedSource>(PDF)->SetMakeOrBuy(
         StepBasic_sNotKnown);
       break;
   }
-  Handle(TCollection_HAsciiString) PDFName        = new TCollection_HAsciiString("");
-  Handle(TCollection_HAsciiString) PDFdescription = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> PDFName        = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> PDFdescription = new TCollection_HAsciiString("");
   PDF->Init(PDFName, PDFdescription, P);
 
   // create PDC, depending on current schema
-  Handle(StepBasic_ProductDefinitionContext) PDC;
-  Handle(TCollection_HAsciiString)           PDCname;
+  occ::handle<StepBasic_ProductDefinitionContext> PDC;
+  occ::handle<TCollection_HAsciiString>           PDCname;
   switch (schema)
   {
     default:
@@ -122,22 +124,22 @@ void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR
       PDCname = new TCollection_HAsciiString("");
       break;
   }
-  Handle(TCollection_HAsciiString) PDClifeCycleStage = new TCollection_HAsciiString("design");
+  occ::handle<TCollection_HAsciiString> PDClifeCycleStage = new TCollection_HAsciiString("design");
   PDC->Init(PDCname, AC, PDClifeCycleStage);
 
   // create PD
-  Handle(StepBasic_ProductDefinition) PD            = new StepBasic_ProductDefinition;
-  Handle(TCollection_HAsciiString)    PDId          = new TCollection_HAsciiString("design");
-  Handle(TCollection_HAsciiString)    PDdescription = new TCollection_HAsciiString("");
+  occ::handle<StepBasic_ProductDefinition> PD            = new StepBasic_ProductDefinition;
+  occ::handle<TCollection_HAsciiString>    PDId          = new TCollection_HAsciiString("design");
+  occ::handle<TCollection_HAsciiString>    PDdescription = new TCollection_HAsciiString("");
   PD->Init(PDId, PDdescription, PDF, PDC);
 
   // create PDS
-  Handle(StepRepr_ProductDefinitionShape) PDS            = new StepRepr_ProductDefinitionShape;
-  Handle(TCollection_HAsciiString)        PDSname        = new TCollection_HAsciiString("");
-  Handle(TCollection_HAsciiString)        PDSdescription = new TCollection_HAsciiString("");
-  StepRepr_CharacterizedDefinition        CD;
+  occ::handle<StepRepr_ProductDefinitionShape> PDS            = new StepRepr_ProductDefinitionShape;
+  occ::handle<TCollection_HAsciiString>        PDSname        = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString>        PDSdescription = new TCollection_HAsciiString("");
+  StepRepr_CharacterizedDefinition             CD;
   CD.SetValue(PD);
-  PDS->Init(PDSname, Standard_True, PDSdescription, CD);
+  PDS->Init(PDSname, true, PDSdescription, CD);
 
   // finally, create SDR
   mySDR = new StepShape_ShapeDefinitionRepresentation;
@@ -146,7 +148,7 @@ void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR
   mySDR->Init(RD, SR);
 
   // and an associated PRPC
-  Handle(TCollection_HAsciiString) PRPCName;
+  occ::handle<TCollection_HAsciiString> PRPCName;
   switch (theStepModel->InternalParameters.WriteSchema)
   {
     default:
@@ -165,16 +167,17 @@ void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR
       PRPCName = new TCollection_HAsciiString("detail"); // !!!!! or "assembly"
       break;
   }
-  Handle(StepBasic_HArray1OfProduct) PRPCproducts = new StepBasic_HArray1OfProduct(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> PRPCproducts =
+    new NCollection_HArray1<occ::handle<StepBasic_Product>>(1, 1);
   PRPCproducts->SetValue(1, P);
-  myPRPC->Init(PRPCName, Standard_False, 0, PRPCproducts);
+  myPRPC->Init(PRPCName, false, 0, PRPCproducts);
 
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
-void STEPConstruct_Part::ReadSDR(const Handle(StepShape_ShapeDefinitionRepresentation)& aShape)
+void STEPConstruct_Part::ReadSDR(const occ::handle<StepShape_ShapeDefinitionRepresentation>& aShape)
 {
   mySDR  = aShape;
   myDone = (!mySDR.IsNull());
@@ -182,30 +185,30 @@ void STEPConstruct_Part::ReadSDR(const Handle(StepShape_ShapeDefinitionRepresent
 
 //=================================================================================================
 
-Standard_Boolean STEPConstruct_Part::IsDone() const
+bool STEPConstruct_Part::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
 
-Handle(StepShape_ShapeDefinitionRepresentation) STEPConstruct_Part::SDRValue() const
+occ::handle<StepShape_ShapeDefinitionRepresentation> STEPConstruct_Part::SDRValue() const
 {
   return mySDR;
 }
 
 //=================================================================================================
 
-Handle(StepShape_ShapeRepresentation) STEPConstruct_Part::SRValue() const
+occ::handle<StepShape_ShapeRepresentation> STEPConstruct_Part::SRValue() const
 {
   if (!myDone)
     return 0;
-  return Handle(StepShape_ShapeRepresentation)::DownCast(mySDR->UsedRepresentation());
+  return occ::down_cast<StepShape_ShapeRepresentation>(mySDR->UsedRepresentation());
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PCname() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PCname() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -219,7 +222,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::PCname() const
 
 //=================================================================================================
 
-Handle(StepBasic_ProductContext) STEPConstruct_Part::PC() const
+occ::handle<StepBasic_ProductContext> STEPConstruct_Part::PC() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -232,7 +235,7 @@ Handle(StepBasic_ProductContext) STEPConstruct_Part::PC() const
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PCdisciplineType() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PCdisciplineType() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -246,7 +249,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::PCdisciplineType() const
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPCname(const Handle(TCollection_HAsciiString)& name)
+void STEPConstruct_Part::SetPCname(const occ::handle<TCollection_HAsciiString>& name)
 {
   mySDR->Definition()
     .PropertyDefinition()
@@ -260,7 +263,7 @@ void STEPConstruct_Part::SetPCname(const Handle(TCollection_HAsciiString)& name)
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPCdisciplineType(const Handle(TCollection_HAsciiString)& label)
+void STEPConstruct_Part::SetPCdisciplineType(const occ::handle<TCollection_HAsciiString>& label)
 {
   mySDR->Definition()
     .PropertyDefinition()
@@ -274,7 +277,7 @@ void STEPConstruct_Part::SetPCdisciplineType(const Handle(TCollection_HAsciiStri
 
 //=================================================================================================
 
-Handle(StepBasic_ApplicationContext) STEPConstruct_Part::AC() const
+occ::handle<StepBasic_ApplicationContext> STEPConstruct_Part::AC() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -288,7 +291,7 @@ Handle(StepBasic_ApplicationContext) STEPConstruct_Part::AC() const
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::ACapplication() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::ACapplication() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -303,7 +306,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::ACapplication() const
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetACapplication(const Handle(TCollection_HAsciiString)& text)
+void STEPConstruct_Part::SetACapplication(const occ::handle<TCollection_HAsciiString>& text)
 {
   mySDR->Definition()
     .PropertyDefinition()
@@ -318,7 +321,7 @@ void STEPConstruct_Part::SetACapplication(const Handle(TCollection_HAsciiString)
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionContext) STEPConstruct_Part::PDC() const
+occ::handle<StepBasic_ProductDefinitionContext> STEPConstruct_Part::PDC() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -329,7 +332,7 @@ Handle(StepBasic_ProductDefinitionContext) STEPConstruct_Part::PDC() const
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PDCname() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PDCname() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -341,7 +344,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::PDCname() const
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PDCstage() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PDCstage() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -353,7 +356,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::PDCstage() const
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPDCname(const Handle(TCollection_HAsciiString)& label)
+void STEPConstruct_Part::SetPDCname(const occ::handle<TCollection_HAsciiString>& label)
 {
   mySDR->Definition()
     .PropertyDefinition()
@@ -365,7 +368,7 @@ void STEPConstruct_Part::SetPDCname(const Handle(TCollection_HAsciiString)& labe
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPDCstage(const Handle(TCollection_HAsciiString)& label)
+void STEPConstruct_Part::SetPDCstage(const occ::handle<TCollection_HAsciiString>& label)
 {
   mySDR->Definition()
     .PropertyDefinition()
@@ -377,7 +380,7 @@ void STEPConstruct_Part::SetPDCstage(const Handle(TCollection_HAsciiString)& lab
 
 //=================================================================================================
 
-Handle(StepBasic_Product) STEPConstruct_Part::Product() const
+occ::handle<StepBasic_Product> STEPConstruct_Part::Product() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -389,7 +392,7 @@ Handle(StepBasic_Product) STEPConstruct_Part::Product() const
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::Pid() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::Pid() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -402,7 +405,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::Pid() const
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::Pname() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::Pname() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -415,7 +418,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::Pname() const
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::Pdescription() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::Pdescription() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -428,7 +431,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::Pdescription() const
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPid(const Handle(TCollection_HAsciiString)& id)
+void STEPConstruct_Part::SetPid(const occ::handle<TCollection_HAsciiString>& id)
 {
   mySDR->Definition()
     .PropertyDefinition()
@@ -441,7 +444,7 @@ void STEPConstruct_Part::SetPid(const Handle(TCollection_HAsciiString)& id)
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPname(const Handle(TCollection_HAsciiString)& label)
+void STEPConstruct_Part::SetPname(const occ::handle<TCollection_HAsciiString>& label)
 {
   mySDR->Definition()
     .PropertyDefinition()
@@ -454,7 +457,7 @@ void STEPConstruct_Part::SetPname(const Handle(TCollection_HAsciiString)& label)
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPdescription(const Handle(TCollection_HAsciiString)& text)
+void STEPConstruct_Part::SetPdescription(const occ::handle<TCollection_HAsciiString>& text)
 {
   mySDR->Definition()
     .PropertyDefinition()
@@ -467,14 +470,14 @@ void STEPConstruct_Part::SetPdescription(const Handle(TCollection_HAsciiString)&
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) STEPConstruct_Part::PDF() const
+occ::handle<StepBasic_ProductDefinitionFormation> STEPConstruct_Part::PDF() const
 {
   return mySDR->Definition().PropertyDefinition()->Definition().ProductDefinition()->Formation();
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PDFid() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PDFid() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -486,7 +489,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::PDFid() const
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PDFdescription() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PDFdescription() const
 {
   return mySDR->Definition()
     .PropertyDefinition()
@@ -498,7 +501,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::PDFdescription() const
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPDFid(const Handle(TCollection_HAsciiString)& id)
+void STEPConstruct_Part::SetPDFid(const occ::handle<TCollection_HAsciiString>& id)
 {
   mySDR->Definition().PropertyDefinition()->Definition().ProductDefinition()->Formation()->SetId(
     id);
@@ -506,7 +509,7 @@ void STEPConstruct_Part::SetPDFid(const Handle(TCollection_HAsciiString)& id)
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPDFdescription(const Handle(TCollection_HAsciiString)& text)
+void STEPConstruct_Part::SetPDFdescription(const occ::handle<TCollection_HAsciiString>& text)
 {
   mySDR->Definition()
     .PropertyDefinition()
@@ -518,50 +521,49 @@ void STEPConstruct_Part::SetPDFdescription(const Handle(TCollection_HAsciiString
 
 //=================================================================================================
 
-Handle(StepRepr_ProductDefinitionShape) STEPConstruct_Part::PDS() const
+occ::handle<StepRepr_ProductDefinitionShape> STEPConstruct_Part::PDS() const
 {
-  return Handle(StepRepr_ProductDefinitionShape)::DownCast(
-    mySDR->Definition().PropertyDefinition());
+  return occ::down_cast<StepRepr_ProductDefinitionShape>(mySDR->Definition().PropertyDefinition());
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PDSname() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PDSname() const
 {
   return mySDR->Definition().PropertyDefinition()->Name();
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PDSdescription() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PDSdescription() const
 {
   return mySDR->Definition().PropertyDefinition()->Description();
 }
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPDSname(const Handle(TCollection_HAsciiString)& label)
+void STEPConstruct_Part::SetPDSname(const occ::handle<TCollection_HAsciiString>& label)
 {
   mySDR->Definition().PropertyDefinition()->SetName(label);
 }
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPDSdescription(const Handle(TCollection_HAsciiString)& text)
+void STEPConstruct_Part::SetPDSdescription(const occ::handle<TCollection_HAsciiString>& text)
 {
   mySDR->Definition().PropertyDefinition()->SetDescription(text);
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) STEPConstruct_Part::PD() const
+occ::handle<StepBasic_ProductDefinition> STEPConstruct_Part::PD() const
 {
   return mySDR->Definition().PropertyDefinition()->Definition().ProductDefinition();
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PDdescription() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PDdescription() const
 {
   return mySDR->Definition().PropertyDefinition()->Definition().ProductDefinition()->Description();
 }
@@ -569,42 +571,42 @@ Handle(TCollection_HAsciiString) STEPConstruct_Part::PDdescription() const
 //=================================================================================================
 
 // a modifier
-void STEPConstruct_Part::SetPDdescription(const Handle(TCollection_HAsciiString)& text)
+void STEPConstruct_Part::SetPDdescription(const occ::handle<TCollection_HAsciiString>& text)
 {
   mySDR->Definition().PropertyDefinition()->Definition().ProductDefinition()->SetDescription(text);
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductRelatedProductCategory) STEPConstruct_Part::PRPC() const
+occ::handle<StepBasic_ProductRelatedProductCategory> STEPConstruct_Part::PRPC() const
 {
   return myPRPC;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PRPCname() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PRPCname() const
 {
   return myPRPC->Name();
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPConstruct_Part::PRPCdescription() const
+occ::handle<TCollection_HAsciiString> STEPConstruct_Part::PRPCdescription() const
 {
   return myPRPC->Description();
 }
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPRPCname(const Handle(TCollection_HAsciiString)& text)
+void STEPConstruct_Part::SetPRPCname(const occ::handle<TCollection_HAsciiString>& text)
 {
   myPRPC->SetName(text);
 }
 
 //=================================================================================================
 
-void STEPConstruct_Part::SetPRPCdescription(const Handle(TCollection_HAsciiString)& text)
+void STEPConstruct_Part::SetPRPCdescription(const occ::handle<TCollection_HAsciiString>& text)
 {
   myPRPC->SetDescription(text);
 }

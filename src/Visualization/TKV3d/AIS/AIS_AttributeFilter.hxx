@@ -25,9 +25,6 @@
 #include <SelectMgr_Filter.hxx>
 class SelectMgr_EntityOwner;
 
-class AIS_AttributeFilter;
-DEFINE_STANDARD_HANDLE(AIS_AttributeFilter, SelectMgr_Filter)
-
 //! Selects Interactive Objects, which have the desired width or color.
 //! The filter questions each Interactive Object in local
 //! context to determine whether it has an non-null
@@ -52,55 +49,54 @@ public:
 
   //! Constructs an attribute filter object defined by the line
   //! width attribute aWidth.
-  Standard_EXPORT AIS_AttributeFilter(const Standard_Real aWidth);
+  Standard_EXPORT AIS_AttributeFilter(const double aWidth);
 
   //! Indicates that the Interactive Object has the color
   //! setting specified by the argument aCol at construction time.
-  Standard_Boolean HasColor() const { return hasC; }
+  bool HasColor() const { return hasC; }
 
   //! Indicates that the Interactive Object has the width
   //! setting specified by the argument aWidth at
   //! construction time.
-  Standard_Boolean HasWidth() const { return hasW; }
+  bool HasWidth() const { return hasW; }
 
   //! Sets the color.
   void SetColor(const Quantity_NameOfColor theCol)
   {
     myCol = theCol;
-    hasC  = Standard_True;
+    hasC  = true;
   }
 
   //! Sets the line width.
-  void SetWidth(const Standard_Real theWidth)
+  void SetWidth(const double theWidth)
   {
     myWid = theWidth;
-    hasW  = Standard_True;
+    hasW  = true;
   }
 
   //! Removes the setting for color from the filter.
-  void UnsetColor() { hasC = Standard_False; }
+  void UnsetColor() { hasC = false; }
 
   //! Removes the setting for width from the filter.
-  void UnsetWidth() { hasW = Standard_False; }
+  void UnsetWidth() { hasW = false; }
 
   //! Indicates that the selected Interactive Object passes
   //! the filter. The owner, anObj, can be either direct or
   //! user. A direct owner is the corresponding
   //! construction element, whereas a user is the
   //! compound shape of which the entity forms a part.
-  //! If the Interactive Object returns Standard_True
+  //! If the Interactive Object returns true
   //! when detected by the Local Context selector through
   //! the mouse, the object is kept; if not, it is rejected.
-  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anObj) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_AttributeFilter, SelectMgr_Filter)
 
 private:
   Quantity_NameOfColor myCol;
-  Standard_Real        myWid;
-  Standard_Boolean     hasC;
-  Standard_Boolean     hasW;
+  double               myWid;
+  bool                 hasC;
+  bool                 hasW;
 };
 
 #endif // _AIS_AttributeFilter_HeaderFile

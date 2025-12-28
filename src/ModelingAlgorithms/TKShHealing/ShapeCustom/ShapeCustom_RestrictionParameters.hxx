@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-class ShapeCustom_RestrictionParameters;
-DEFINE_STANDARD_HANDLE(ShapeCustom_RestrictionParameters, Standard_Transient)
-
 //! This class is axuluary tool which contains parameters for
 //! BSplineRestriction class.
 class ShapeCustom_RestrictionParameters : public Standard_Transient
@@ -35,86 +32,85 @@ public:
   Standard_EXPORT ShapeCustom_RestrictionParameters();
 
   //! Returns (modifiable) maximal degree of approximation.
-  Standard_Integer& GMaxDegree();
+  int& GMaxDegree();
 
   //! Returns (modifiable) maximal number of spans of
   //! approximation.
-  Standard_Integer& GMaxSeg();
+  int& GMaxSeg();
 
   //! Sets flag for define if Plane converted to BSpline surface.
-  Standard_Boolean& ConvertPlane();
+  bool& ConvertPlane();
 
   //! Sets flag for define if Bezier surface converted to BSpline
   //! surface.
-  Standard_Boolean& ConvertBezierSurf();
+  bool& ConvertBezierSurf();
 
   //! Sets flag for define if surface of Revolution converted to
   //! BSpline surface.
-  Standard_Boolean& ConvertRevolutionSurf();
+  bool& ConvertRevolutionSurf();
 
   //! Sets flag for define if surface of LinearExtrusion converted
   //! to BSpline surface.
-  Standard_Boolean& ConvertExtrusionSurf();
+  bool& ConvertExtrusionSurf();
 
   //! Sets flag for define if Offset surface converted to BSpline
   //! surface.
-  Standard_Boolean& ConvertOffsetSurf();
+  bool& ConvertOffsetSurf();
 
   //! Sets flag for define if cylindrical surface converted to BSpline
   //! surface.
-  Standard_Boolean& ConvertCylindricalSurf();
+  bool& ConvertCylindricalSurf();
 
   //! Sets flag for define if conical surface converted to BSpline
   //! surface.
-  Standard_Boolean& ConvertConicalSurf();
+  bool& ConvertConicalSurf();
 
   //! Sets flag for define if toroidal surface converted to BSpline
   //! surface.
-  Standard_Boolean& ConvertToroidalSurf();
+  bool& ConvertToroidalSurf();
 
   //! Sets flag for define if spherical surface converted to BSpline
   //! surface.
-  Standard_Boolean& ConvertSphericalSurf();
+  bool& ConvertSphericalSurf();
 
   //! Sets Segment mode for surface. If Segment is True surface is
   //! approximated in the bondaries of face lying on this surface.
-  Standard_Boolean& SegmentSurfaceMode();
+  bool& SegmentSurfaceMode();
 
   //! Sets flag for define if 3d curve converted to BSpline curve.
-  Standard_Boolean& ConvertCurve3d();
+  bool& ConvertCurve3d();
 
   //! Sets flag for define if Offset curve3d converted to BSpline
   //! surface.
-  Standard_Boolean& ConvertOffsetCurv3d();
+  bool& ConvertOffsetCurv3d();
 
   //! Returns (modifiable) flag for define if 2d curve converted
   //! to BSpline curve.
-  Standard_Boolean& ConvertCurve2d();
+  bool& ConvertCurve2d();
 
   //! Returns (modifiable) flag for define if Offset curve2d
   //! converted to BSpline surface.
-  Standard_Boolean& ConvertOffsetCurv2d();
+  bool& ConvertOffsetCurv2d();
 
   DEFINE_STANDARD_RTTIEXT(ShapeCustom_RestrictionParameters, Standard_Transient)
 
-protected:
 private:
-  Standard_Integer myGMaxDegree;
-  Standard_Integer myGMaxSeg;
-  Standard_Boolean myConvPlane;
-  Standard_Boolean myConvConicalSurf;
-  Standard_Boolean myConvSphericalSurf;
-  Standard_Boolean myConvCylindricalSurf;
-  Standard_Boolean myConvToroidalSurf;
-  Standard_Boolean myConvBezierSurf;
-  Standard_Boolean myConvRevolSurf;
-  Standard_Boolean myConvExtrSurf;
-  Standard_Boolean myConvOffsetSurf;
-  Standard_Boolean mySegmentSurfaceMode;
-  Standard_Boolean myConvCurve3d;
-  Standard_Boolean myConvOffsetCurv3d;
-  Standard_Boolean myConvCurve2d;
-  Standard_Boolean myConvOffsetCurv2d;
+  int  myGMaxDegree;
+  int  myGMaxSeg;
+  bool myConvPlane;
+  bool myConvConicalSurf;
+  bool myConvSphericalSurf;
+  bool myConvCylindricalSurf;
+  bool myConvToroidalSurf;
+  bool myConvBezierSurf;
+  bool myConvRevolSurf;
+  bool myConvExtrSurf;
+  bool myConvOffsetSurf;
+  bool mySegmentSurfaceMode;
+  bool myConvCurve3d;
+  bool myConvOffsetCurv3d;
+  bool myConvCurve2d;
+  bool myConvOffsetCurv2d;
 };
 
 #include <ShapeCustom_RestrictionParameters.lxx>

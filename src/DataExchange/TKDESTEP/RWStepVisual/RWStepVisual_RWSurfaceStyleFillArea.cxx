@@ -21,10 +21,10 @@
 RWStepVisual_RWSurfaceStyleFillArea::RWStepVisual_RWSurfaceStyleFillArea() {}
 
 void RWStepVisual_RWSurfaceStyleFillArea::ReadStep(
-  const Handle(StepData_StepReaderData)&         data,
-  const Standard_Integer                         num,
-  Handle(Interface_Check)&                       ach,
-  const Handle(StepVisual_SurfaceStyleFillArea)& ent) const
+  const occ::handle<StepData_StepReaderData>&         data,
+  const int                                           num,
+  occ::handle<Interface_Check>&                       ach,
+  const occ::handle<StepVisual_SurfaceStyleFillArea>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,8 +34,8 @@ void RWStepVisual_RWSurfaceStyleFillArea::ReadStep(
 
   // --- own field : fillArea ---
 
-  Handle(StepVisual_FillAreaStyle) aFillArea;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepVisual_FillAreaStyle> aFillArea;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "fill_area", ach, STANDARD_TYPE(StepVisual_FillAreaStyle), aFillArea);
 
   //--- Initialisation of the read entity ---
@@ -44,8 +44,8 @@ void RWStepVisual_RWSurfaceStyleFillArea::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleFillArea::WriteStep(
-  StepData_StepWriter&                           SW,
-  const Handle(StepVisual_SurfaceStyleFillArea)& ent) const
+  StepData_StepWriter&                                SW,
+  const occ::handle<StepVisual_SurfaceStyleFillArea>& ent) const
 {
 
   // --- own field : fillArea ---
@@ -53,8 +53,9 @@ void RWStepVisual_RWSurfaceStyleFillArea::WriteStep(
   SW.Send(ent->FillArea());
 }
 
-void RWStepVisual_RWSurfaceStyleFillArea::Share(const Handle(StepVisual_SurfaceStyleFillArea)& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepVisual_RWSurfaceStyleFillArea::Share(
+  const occ::handle<StepVisual_SurfaceStyleFillArea>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   iter.GetOneItem(ent->FillArea());

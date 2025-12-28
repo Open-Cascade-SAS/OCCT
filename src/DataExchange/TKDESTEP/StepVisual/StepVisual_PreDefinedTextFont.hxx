@@ -22,9 +22,6 @@
 
 #include <StepVisual_PreDefinedItem.hxx>
 
-class StepVisual_PreDefinedTextFont;
-DEFINE_STANDARD_HANDLE(StepVisual_PreDefinedTextFont, StepVisual_PreDefinedItem)
-
 class StepVisual_PreDefinedTextFont : public StepVisual_PreDefinedItem
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepVisual_PreDefinedTextFont();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_PreDefinedTextFont, StepVisual_PreDefinedItem)
-
-protected:
-private:
 };
 
 #endif // _StepVisual_PreDefinedTextFont_HeaderFile

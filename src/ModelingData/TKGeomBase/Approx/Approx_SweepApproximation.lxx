@@ -15,18 +15,20 @@
 // commercial license or contractual agreement.
 
 #include <StdFail_NotDone.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Pnt.hxx>
 
-inline Standard_Boolean Approx_SweepApproximation::IsDone() const
+inline bool Approx_SweepApproximation::IsDone() const
 {
   return done;
 }
 
-inline Standard_Integer Approx_SweepApproximation::UDegree() const
+inline int Approx_SweepApproximation::UDegree() const
 {
   if (!done)
   {
@@ -35,7 +37,7 @@ inline Standard_Integer Approx_SweepApproximation::UDegree() const
   return udeg;
 }
 
-inline Standard_Integer Approx_SweepApproximation::VDegree() const
+inline int Approx_SweepApproximation::VDegree() const
 {
   if (!done)
   {
@@ -44,7 +46,7 @@ inline Standard_Integer Approx_SweepApproximation::VDegree() const
   return vdeg;
 }
 
-inline const TColgp_Array2OfPnt& Approx_SweepApproximation::SurfPoles() const
+inline const NCollection_Array2<gp_Pnt>& Approx_SweepApproximation::SurfPoles() const
 {
   if (!done)
   {
@@ -53,7 +55,7 @@ inline const TColgp_Array2OfPnt& Approx_SweepApproximation::SurfPoles() const
   return tabPoles->Array2();
 }
 
-inline const TColStd_Array2OfReal& Approx_SweepApproximation::SurfWeights() const
+inline const NCollection_Array2<double>& Approx_SweepApproximation::SurfWeights() const
 {
   if (!done)
   {
@@ -62,7 +64,7 @@ inline const TColStd_Array2OfReal& Approx_SweepApproximation::SurfWeights() cons
   return tabWeights->Array2();
 }
 
-inline const TColStd_Array1OfReal& Approx_SweepApproximation::SurfUKnots() const
+inline const NCollection_Array1<double>& Approx_SweepApproximation::SurfUKnots() const
 {
   if (!done)
   {
@@ -71,7 +73,7 @@ inline const TColStd_Array1OfReal& Approx_SweepApproximation::SurfUKnots() const
   return tabUKnots->Array1();
 }
 
-inline const TColStd_Array1OfReal& Approx_SweepApproximation::SurfVKnots() const
+inline const NCollection_Array1<double>& Approx_SweepApproximation::SurfVKnots() const
 {
   if (!done)
   {
@@ -80,7 +82,7 @@ inline const TColStd_Array1OfReal& Approx_SweepApproximation::SurfVKnots() const
   return tabVKnots->Array1();
 }
 
-inline const TColStd_Array1OfInteger& Approx_SweepApproximation::SurfUMults() const
+inline const NCollection_Array1<int>& Approx_SweepApproximation::SurfUMults() const
 {
   if (!done)
   {
@@ -89,7 +91,7 @@ inline const TColStd_Array1OfInteger& Approx_SweepApproximation::SurfUMults() co
   return tabUMults->Array1();
 }
 
-inline const TColStd_Array1OfInteger& Approx_SweepApproximation::SurfVMults() const
+inline const NCollection_Array1<int>& Approx_SweepApproximation::SurfVMults() const
 {
   if (!done)
   {
@@ -98,7 +100,7 @@ inline const TColStd_Array1OfInteger& Approx_SweepApproximation::SurfVMults() co
   return tabVMults->Array1();
 }
 
-inline Standard_Integer Approx_SweepApproximation::NbCurves2d() const
+inline int Approx_SweepApproximation::NbCurves2d() const
 {
   if (!done)
   {
@@ -107,7 +109,7 @@ inline Standard_Integer Approx_SweepApproximation::NbCurves2d() const
   return Num2DSS;
 }
 
-inline Standard_Integer Approx_SweepApproximation::Curves2dDegree() const
+inline int Approx_SweepApproximation::Curves2dDegree() const
 {
   if (!done)
   {
@@ -120,8 +122,8 @@ inline Standard_Integer Approx_SweepApproximation::Curves2dDegree() const
   return deg2d;
 }
 
-inline const TColgp_Array1OfPnt2d& Approx_SweepApproximation::Curve2dPoles(
-  const Standard_Integer Index) const
+inline const NCollection_Array1<gp_Pnt2d>& Approx_SweepApproximation::Curve2dPoles(
+  const int Index) const
 {
   if (!done)
   {
@@ -134,7 +136,7 @@ inline const TColgp_Array1OfPnt2d& Approx_SweepApproximation::Curve2dPoles(
   return seqPoles2d(Index)->Array1();
 }
 
-inline const TColStd_Array1OfReal& Approx_SweepApproximation::Curves2dKnots() const
+inline const NCollection_Array1<double>& Approx_SweepApproximation::Curves2dKnots() const
 {
   if (!done)
   {
@@ -147,7 +149,7 @@ inline const TColStd_Array1OfReal& Approx_SweepApproximation::Curves2dKnots() co
   return tab2dKnots->Array1();
 }
 
-inline const TColStd_Array1OfInteger& Approx_SweepApproximation::Curves2dMults() const
+inline const NCollection_Array1<int>& Approx_SweepApproximation::Curves2dMults() const
 {
   if (!done)
   {
@@ -161,7 +163,7 @@ inline const TColStd_Array1OfInteger& Approx_SweepApproximation::Curves2dMults()
 }
 
 /*
-inline  void Approx_SweepApproximation::TolReached(Standard_Real& Tol3d,Standard_Real& Tol2d) const
+inline  void Approx_SweepApproximation::TolReached(double& Tol3d,double& Tol2d) const
 {
 
 }*/

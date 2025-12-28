@@ -36,9 +36,9 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
   return aScope;
 }
 
-static Handle(DE_Wrapper)& THE_GLOBAL_CONFIGURATION()
+static occ::handle<DE_Wrapper>& THE_GLOBAL_CONFIGURATION()
 {
-  static Handle(DE_Wrapper) aConf = new DE_Wrapper();
+  static occ::handle<DE_Wrapper> aConf = new DE_Wrapper();
   return aConf;
 }
 } // namespace
@@ -46,13 +46,13 @@ static Handle(DE_Wrapper)& THE_GLOBAL_CONFIGURATION()
 //=================================================================================================
 
 DE_Wrapper::DE_Wrapper()
-    : myKeepUpdates(Standard_False)
+    : myKeepUpdates(false)
 {
 }
 
 //=================================================================================================
 
-DE_Wrapper::DE_Wrapper(const Handle(DE_Wrapper)& theWrapper)
+DE_Wrapper::DE_Wrapper(const occ::handle<DE_Wrapper>& theWrapper)
     : DE_Wrapper()
 {
   if (theWrapper.IsNull())
@@ -60,10 +60,17 @@ DE_Wrapper::DE_Wrapper(const Handle(DE_Wrapper)& theWrapper)
     return;
   }
   GlobalParameters = theWrapper->GlobalParameters;
-  for (DE_ConfigurationFormatMap::Iterator aFormatIter(theWrapper->Nodes()); aFormatIter.More();
+  for (NCollection_DataMap<TCollection_AsciiString,
+                           NCollection_IndexedDataMap<TCollection_AsciiString,
+                                                      occ::handle<DE_ConfigurationNode>>>::Iterator
+         aFormatIter(theWrapper->Nodes());
+       aFormatIter.More();
        aFormatIter.Next())
   {
-    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                    occ::handle<DE_ConfigurationNode>>::Iterator
+           aVendorIter(aFormatIter.Value());
+         aVendorIter.More();
          aVendorIter.Next())
     {
       Bind(aVendorIter.Value());
@@ -74,14 +81,14 @@ DE_Wrapper::DE_Wrapper(const Handle(DE_Wrapper)& theWrapper)
 
 //=================================================================================================
 
-const Handle(DE_Wrapper)& DE_Wrapper::GlobalWrapper()
+const occ::handle<DE_Wrapper>& DE_Wrapper::GlobalWrapper()
 {
   return THE_GLOBAL_CONFIGURATION();
 }
 
 //=================================================================================================
 
-void DE_Wrapper::SetGlobalWrapper(const Handle(DE_Wrapper)& theWrapper)
+void DE_Wrapper::SetGlobalWrapper(const occ::handle<DE_Wrapper>& theWrapper)
 {
   if (!theWrapper.IsNull())
   {
@@ -99,167 +106,166 @@ std::mutex& DE_Wrapper::GlobalLoadMutex()
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString&  thePath,
-                                  const Handle(TDocStd_Document)& theDocument,
-                                  Handle(XSControl_WorkSession)&  theWS,
-                                  const Message_ProgressRange&    theProgress)
+bool DE_Wrapper::Read(const TCollection_AsciiString&       thePath,
+                      const occ::handle<TDocStd_Document>& theDocument,
+                      occ::handle<XSControl_WorkSession>&  theWS,
+                      const Message_ProgressRange&         theProgress)
 {
   if (theDocument.IsNull())
   {
-    return Standard_False;
+    return false;
   }
   if (theWS.IsNull())
   {
     return Read(thePath, theDocument, theProgress);
   }
-  Handle(DE_Provider) aProvider;
-  if (!FindProvider(thePath, Standard_True, aProvider))
+  occ::handle<DE_Provider> aProvider;
+  if (!FindProvider(thePath, true, aProvider))
   {
-    return Standard_False;
+    return false;
   }
   return aProvider->Read(thePath, theDocument, theWS, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(const TCollection_AsciiString&  thePath,
-                                   const Handle(TDocStd_Document)& theDocument,
-                                   Handle(XSControl_WorkSession)&  theWS,
-                                   const Message_ProgressRange&    theProgress)
+bool DE_Wrapper::Write(const TCollection_AsciiString&       thePath,
+                       const occ::handle<TDocStd_Document>& theDocument,
+                       occ::handle<XSControl_WorkSession>&  theWS,
+                       const Message_ProgressRange&         theProgress)
 {
   if (theDocument.IsNull())
   {
-    return Standard_False;
+    return false;
   }
   if (theWS.IsNull())
   {
     return Write(thePath, theDocument, theProgress);
   }
-  Handle(DE_Provider) aProvider;
-  if (!FindProvider(thePath, Standard_False, aProvider))
+  occ::handle<DE_Provider> aProvider;
+  if (!FindProvider(thePath, false, aProvider))
   {
-    return Standard_False;
+    return false;
   }
   return aProvider->Write(thePath, theDocument, theWS, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString&  thePath,
-                                  const Handle(TDocStd_Document)& theDocument,
-                                  const Message_ProgressRange&    theProgress)
+bool DE_Wrapper::Read(const TCollection_AsciiString&       thePath,
+                      const occ::handle<TDocStd_Document>& theDocument,
+                      const Message_ProgressRange&         theProgress)
 {
   if (theDocument.IsNull())
   {
-    return Standard_False;
+    return false;
   }
-  Handle(DE_Provider) aProvider;
-  if (!FindProvider(thePath, Standard_True, aProvider))
+  occ::handle<DE_Provider> aProvider;
+  if (!FindProvider(thePath, true, aProvider))
   {
-    return Standard_False;
+    return false;
   }
   return aProvider->Read(thePath, theDocument, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(const TCollection_AsciiString&  thePath,
-                                   const Handle(TDocStd_Document)& theDocument,
-                                   const Message_ProgressRange&    theProgress)
+bool DE_Wrapper::Write(const TCollection_AsciiString&       thePath,
+                       const occ::handle<TDocStd_Document>& theDocument,
+                       const Message_ProgressRange&         theProgress)
 {
   if (theDocument.IsNull())
   {
-    return Standard_False;
+    return false;
   }
-  Handle(DE_Provider) aProvider;
-  if (!FindProvider(thePath, Standard_False, aProvider))
+  occ::handle<DE_Provider> aProvider;
+  if (!FindProvider(thePath, false, aProvider))
   {
-    return Standard_False;
+    return false;
   }
   return aProvider->Write(thePath, theDocument, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString& thePath,
-                                  TopoDS_Shape&                  theShape,
-                                  Handle(XSControl_WorkSession)& theWS,
-                                  const Message_ProgressRange&   theProgress)
+bool DE_Wrapper::Read(const TCollection_AsciiString&      thePath,
+                      TopoDS_Shape&                       theShape,
+                      occ::handle<XSControl_WorkSession>& theWS,
+                      const Message_ProgressRange&        theProgress)
 {
   if (theWS.IsNull())
   {
     return Read(thePath, theShape, theProgress);
   }
-  Handle(DE_Provider) aProvider;
-  if (!FindProvider(thePath, Standard_True, aProvider))
+  occ::handle<DE_Provider> aProvider;
+  if (!FindProvider(thePath, true, aProvider))
   {
-    return Standard_False;
+    return false;
   }
   return aProvider->Read(thePath, theShape, theWS, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(const TCollection_AsciiString& thePath,
-                                   const TopoDS_Shape&            theShape,
-                                   Handle(XSControl_WorkSession)& theWS,
-                                   const Message_ProgressRange&   theProgress)
+bool DE_Wrapper::Write(const TCollection_AsciiString&      thePath,
+                       const TopoDS_Shape&                 theShape,
+                       occ::handle<XSControl_WorkSession>& theWS,
+                       const Message_ProgressRange&        theProgress)
 {
   if (theWS.IsNull())
   {
     return Write(thePath, theShape, theProgress);
   }
-  Handle(DE_Provider) aProvider;
-  if (!FindProvider(thePath, Standard_False, aProvider))
+  occ::handle<DE_Provider> aProvider;
+  if (!FindProvider(thePath, false, aProvider))
   {
-    return Standard_False;
+    return false;
   }
   return aProvider->Write(thePath, theShape, theWS, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString& thePath,
-                                  TopoDS_Shape&                  theShape,
-                                  const Message_ProgressRange&   theProgress)
+bool DE_Wrapper::Read(const TCollection_AsciiString& thePath,
+                      TopoDS_Shape&                  theShape,
+                      const Message_ProgressRange&   theProgress)
 {
 
-  Handle(DE_Provider) aProvider;
-  if (!FindProvider(thePath, Standard_True, aProvider))
+  occ::handle<DE_Provider> aProvider;
+  if (!FindProvider(thePath, true, aProvider))
   {
-    return Standard_False;
+    return false;
   }
   return aProvider->Read(thePath, theShape, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(const TCollection_AsciiString& thePath,
-                                   const TopoDS_Shape&            theShape,
-                                   const Message_ProgressRange&   theProgress)
+bool DE_Wrapper::Write(const TCollection_AsciiString& thePath,
+                       const TopoDS_Shape&            theShape,
+                       const Message_ProgressRange&   theProgress)
 {
-  Handle(DE_Provider) aProvider;
-  if (!FindProvider(thePath, Standard_False, aProvider))
+  occ::handle<DE_Provider> aProvider;
+  if (!FindProvider(thePath, false, aProvider))
   {
-    return Standard_False;
+    return false;
   }
   return aProvider->Write(thePath, theShape, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Load(const TCollection_AsciiString& theResource,
-                                  const Standard_Boolean         theIsRecursive)
+bool DE_Wrapper::Load(const TCollection_AsciiString& theResource, const bool theIsRecursive)
 {
-  Handle(DE_ConfigurationContext) aResource = new DE_ConfigurationContext();
+  occ::handle<DE_ConfigurationContext> aResource = new DE_ConfigurationContext();
   aResource->Load(theResource);
   return Load(aResource, theIsRecursive);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Load(const Handle(DE_ConfigurationContext)& theResource,
-                                  const Standard_Boolean                 theIsRecursive)
+bool DE_Wrapper::Load(const occ::handle<DE_ConfigurationContext>& theResource,
+                      const bool                                  theIsRecursive)
 {
   GlobalParameters.LengthUnit = theResource->RealVal("general.length.unit",
                                                      GlobalParameters.LengthUnit,
@@ -269,10 +275,17 @@ Standard_Boolean DE_Wrapper::Load(const Handle(DE_ConfigurationContext)& theReso
                                                      THE_CONFIGURATION_SCOPE());
   if (theIsRecursive)
   {
-    for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+    for (NCollection_DataMap<
+           TCollection_AsciiString,
+           NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>>::
+           Iterator aFormatIter(myConfiguration);
+         aFormatIter.More();
          aFormatIter.Next())
     {
-      for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+      for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                      occ::handle<DE_ConfigurationNode>>::Iterator
+             aVendorIter(aFormatIter.Value());
+           aVendorIter.More();
            aVendorIter.Next())
       {
         aVendorIter.Value()->Load(theResource);
@@ -280,15 +293,15 @@ Standard_Boolean DE_Wrapper::Load(const Handle(DE_ConfigurationContext)& theReso
     }
     sort(theResource);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Save(const TCollection_AsciiString&   theResourcePath,
-                                  const Standard_Boolean           theIsRecursive,
-                                  const TColStd_ListOfAsciiString& theFormats,
-                                  const TColStd_ListOfAsciiString& theVendors)
+bool DE_Wrapper::Save(const TCollection_AsciiString&                   theResourcePath,
+                      const bool                                       theIsRecursive,
+                      const NCollection_List<TCollection_AsciiString>& theFormats,
+                      const NCollection_List<TCollection_AsciiString>& theVendors)
 {
   OSD_Path       aPath = theResourcePath;
   OSD_File       aFile(aPath);
@@ -301,24 +314,25 @@ Standard_Boolean DE_Wrapper::Save(const TCollection_AsciiString&   theResourcePa
     }
     catch (Standard_Failure const&)
     {
-      return Standard_False;
+      return false;
     }
   }
   if (aFile.Failed())
   {
-    return Standard_False;
+    return false;
   }
   TCollection_AsciiString aResConfiguration = Save(theIsRecursive, theFormats, theVendors);
   aFile.Write(aResConfiguration, aResConfiguration.Length());
   aFile.Close();
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-TCollection_AsciiString DE_Wrapper::Save(const Standard_Boolean           theIsRecursive,
-                                         const TColStd_ListOfAsciiString& theFormats,
-                                         const TColStd_ListOfAsciiString& theVendors)
+TCollection_AsciiString DE_Wrapper::Save(
+  const bool                                       theIsRecursive,
+  const NCollection_List<TCollection_AsciiString>& theFormats,
+  const NCollection_List<TCollection_AsciiString>& theVendors)
 {
   TCollection_AsciiString aResult;
   aResult += "!Description of the config file for DE toolkit\n";
@@ -331,12 +345,19 @@ TCollection_AsciiString DE_Wrapper::Save(const Standard_Boolean           theIsR
   aResult += "!*****************************************************************************\n";
   aResult += "!DE_Wrapper\n";
   aResult += "!Priority vendor list. For every CAD format set indexed list of vendors\n";
-  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+  for (NCollection_DataMap<TCollection_AsciiString,
+                           NCollection_IndexedDataMap<TCollection_AsciiString,
+                                                      occ::handle<DE_ConfigurationNode>>>::Iterator
+         aFormatIter(myConfiguration);
+       aFormatIter.More();
        aFormatIter.Next())
   {
     const TCollection_AsciiString& aFormat = aFormatIter.Key();
     aResult += THE_CONFIGURATION_SCOPE() + '.' + "priority" + '.' + aFormat + " :\t ";
-    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                    occ::handle<DE_ConfigurationNode>>::Iterator
+           aVendorIter(aFormatIter.Value());
+         aVendorIter.More();
          aVendorIter.Next())
     {
       const TCollection_AsciiString& aVendorName = aVendorIter.Value()->GetVendor();
@@ -353,14 +374,21 @@ TCollection_AsciiString DE_Wrapper::Save(const Standard_Boolean           theIsR
     THE_CONFIGURATION_SCOPE() + ".general.system.unit :\t " + GlobalParameters.SystemUnit + "\n";
   if (theIsRecursive)
   {
-    for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+    for (NCollection_DataMap<
+           TCollection_AsciiString,
+           NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>>::
+           Iterator aFormatIter(myConfiguration);
+         aFormatIter.More();
          aFormatIter.Next())
     {
       if (!theFormats.IsEmpty() && !theFormats.Contains(aFormatIter.Key()))
       {
         continue;
       }
-      for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+      for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                      occ::handle<DE_ConfigurationNode>>::Iterator
+             aVendorIter(aFormatIter.Value());
+           aVendorIter.More();
            aVendorIter.Next())
       {
         if (!theVendors.IsEmpty() && !theVendors.Contains(aVendorIter.Key()))
@@ -379,26 +407,7 @@ TCollection_AsciiString DE_Wrapper::Save(const Standard_Boolean           theIsR
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Bind(const Handle(DE_ConfigurationNode)& theNode)
-{
-  if (theNode.IsNull())
-  {
-    return Standard_False;
-  }
-  const TCollection_AsciiString aFileFormat = theNode->GetFormat();
-  const TCollection_AsciiString aVendorName = theNode->GetVendor();
-  DE_ConfigurationVendorMap*    aVendorMap  = myConfiguration.ChangeSeek(aFileFormat);
-  if (aVendorMap == NULL)
-  {
-    DE_ConfigurationVendorMap aTmpVendorMap;
-    aVendorMap = myConfiguration.Bound(aFileFormat, aTmpVendorMap);
-  }
-  return aVendorMap->Add(aVendorName, theNode) > 0;
-}
-
-//=================================================================================================
-
-Standard_Boolean DE_Wrapper::UnBind(const Handle(DE_ConfigurationNode)& theNode)
+bool DE_Wrapper::Bind(const occ::handle<DE_ConfigurationNode>& theNode)
 {
   if (theNode.IsNull())
   {
@@ -406,7 +415,29 @@ Standard_Boolean DE_Wrapper::UnBind(const Handle(DE_ConfigurationNode)& theNode)
   }
   const TCollection_AsciiString aFileFormat = theNode->GetFormat();
   const TCollection_AsciiString aVendorName = theNode->GetVendor();
-  DE_ConfigurationVendorMap*    aVendorMap  = myConfiguration.ChangeSeek(aFileFormat);
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>*
+    aVendorMap = myConfiguration.ChangeSeek(aFileFormat);
+  if (aVendorMap == NULL)
+  {
+    NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>
+      aTmpVendorMap;
+    aVendorMap = myConfiguration.Bound(aFileFormat, aTmpVendorMap);
+  }
+  return aVendorMap->Add(aVendorName, theNode) > 0;
+}
+
+//=================================================================================================
+
+bool DE_Wrapper::UnBind(const occ::handle<DE_ConfigurationNode>& theNode)
+{
+  if (theNode.IsNull())
+  {
+    return false;
+  }
+  const TCollection_AsciiString aFileFormat = theNode->GetFormat();
+  const TCollection_AsciiString aVendorName = theNode->GetVendor();
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>*
+    aVendorMap = myConfiguration.ChangeSeek(aFileFormat);
   if (aVendorMap == NULL)
   {
     return false;
@@ -418,49 +449,55 @@ Standard_Boolean DE_Wrapper::UnBind(const Handle(DE_ConfigurationNode)& theNode)
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Find(const TCollection_AsciiString& theFormat,
-                                  const TCollection_AsciiString& theVendor,
-                                  Handle(DE_ConfigurationNode)&  theNode) const
+bool DE_Wrapper::Find(const TCollection_AsciiString&     theFormat,
+                      const TCollection_AsciiString&     theVendor,
+                      occ::handle<DE_ConfigurationNode>& theNode) const
 {
-  const DE_ConfigurationVendorMap* aVendorMap = myConfiguration.Seek(theFormat);
+  const NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>*
+    aVendorMap = myConfiguration.Seek(theFormat);
   return aVendorMap != nullptr && aVendorMap->FindFromKey(theVendor, theNode);
 }
 
 //=================================================================================================
 
-void DE_Wrapper::ChangePriority(const TCollection_AsciiString&   theFormat,
-                                const TColStd_ListOfAsciiString& theVendorPriority,
-                                const Standard_Boolean           theToDisable)
+void DE_Wrapper::ChangePriority(const TCollection_AsciiString&                   theFormat,
+                                const NCollection_List<TCollection_AsciiString>& theVendorPriority,
+                                const bool                                       theToDisable)
 {
-  DE_ConfigurationVendorMap aVendorMap;
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>> aVendorMap;
   if (!myConfiguration.Find(theFormat, aVendorMap))
   {
     return;
   }
-  DE_ConfigurationVendorMap aNewVendorMap;
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>
+    aNewVendorMap;
   // Sets according to the input priority
-  for (TColStd_ListOfAsciiString::Iterator aPriorIter(theVendorPriority); aPriorIter.More();
+  for (NCollection_List<TCollection_AsciiString>::Iterator aPriorIter(theVendorPriority);
+       aPriorIter.More();
        aPriorIter.Next())
   {
-    const TCollection_AsciiString& aVendorName = aPriorIter.Value();
-    Handle(DE_ConfigurationNode)   aNode;
+    const TCollection_AsciiString&    aVendorName = aPriorIter.Value();
+    occ::handle<DE_ConfigurationNode> aNode;
     if (aVendorMap.FindFromKey(aVendorName, aNode))
     {
-      aNode->SetEnabled(Standard_True);
+      aNode->SetEnabled(true);
       aNewVendorMap.Add(aVendorName, aNode);
     }
   }
   // Sets not used elements
-  for (DE_ConfigurationVendorMap::Iterator aVendorIter(aVendorMap); aVendorIter.More();
+  for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                  occ::handle<DE_ConfigurationNode>>::Iterator
+         aVendorIter(aVendorMap);
+       aVendorIter.More();
        aVendorIter.Next())
   {
     const TCollection_AsciiString& aVendorName = aVendorIter.Key();
     if (!theVendorPriority.Contains(aVendorName))
     {
-      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
+      const occ::handle<DE_ConfigurationNode>& aNode = aVendorIter.Value();
       if (theToDisable)
       {
-        aNode->SetEnabled(Standard_False);
+        aNode->SetEnabled(false);
       }
       aNewVendorMap.Add(aVendorName, aNode);
     }
@@ -470,10 +507,14 @@ void DE_Wrapper::ChangePriority(const TCollection_AsciiString&   theFormat,
 
 //=================================================================================================
 
-void DE_Wrapper::ChangePriority(const TColStd_ListOfAsciiString& theVendorPriority,
-                                const Standard_Boolean           theToDisable)
+void DE_Wrapper::ChangePriority(const NCollection_List<TCollection_AsciiString>& theVendorPriority,
+                                const bool                                       theToDisable)
 {
-  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+  for (NCollection_DataMap<TCollection_AsciiString,
+                           NCollection_IndexedDataMap<TCollection_AsciiString,
+                                                      occ::handle<DE_ConfigurationNode>>>::Iterator
+         aFormatIter(myConfiguration);
+       aFormatIter.More();
        aFormatIter.Next())
   {
     ChangePriority(aFormatIter.Key(), theVendorPriority, theToDisable);
@@ -482,27 +523,30 @@ void DE_Wrapper::ChangePriority(const TColStd_ListOfAsciiString& theVendorPriori
 
 //=================================================================================================
 
-const DE_ConfigurationFormatMap& DE_Wrapper::Nodes() const
+const NCollection_DataMap<
+  TCollection_AsciiString,
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<DE_ConfigurationNode>>>&
+  DE_Wrapper::Nodes() const
 {
   return myConfiguration;
 }
 
 //=================================================================================================
 
-Handle(DE_Wrapper) DE_Wrapper::Copy() const
+occ::handle<DE_Wrapper> DE_Wrapper::Copy() const
 {
   return new DE_Wrapper(*this);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath,
-                                          const Standard_Boolean         theToImport,
-                                          Handle(DE_Provider)&           theProvider) const
+bool DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath,
+                              const bool                     theToImport,
+                              occ::handle<DE_Provider>&      theProvider) const
 {
   if (theToImport)
   {
-    return FindReadProvider(thePath, Standard_True, theProvider);
+    return FindReadProvider(thePath, true, theProvider);
   }
   else
   {
@@ -512,110 +556,138 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::FindReadProvider(const TCollection_AsciiString& thePath,
-                                              const Standard_Boolean         theCheckContent,
-                                              Handle(DE_Provider)&           theProvider) const
+bool DE_Wrapper::FindReadProvider(const TCollection_AsciiString& thePath,
+                                  const bool                     theCheckContent,
+                                  occ::handle<DE_Provider>&      theProvider) const
 {
-  Handle(NCollection_Buffer) aBuffer;
+  occ::handle<NCollection_Buffer> aBuffer;
   if (theCheckContent && !DE_ValidationUtils::CreateContentBuffer(thePath, aBuffer))
   {
-    return Standard_False;
+    return false;
   }
   OSD_Path                      aPath(thePath);
   const TCollection_AsciiString anExtr = aPath.Extension();
-  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+  for (NCollection_DataMap<TCollection_AsciiString,
+                           NCollection_IndexedDataMap<TCollection_AsciiString,
+                                                      occ::handle<DE_ConfigurationNode>>>::Iterator
+         aFormatIter(myConfiguration);
+       aFormatIter.More();
        aFormatIter.Next())
   {
-    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                    occ::handle<DE_ConfigurationNode>>::Iterator
+           aVendorIter(aFormatIter.Value());
+         aVendorIter.More();
          aVendorIter.Next())
     {
-      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
+      const occ::handle<DE_ConfigurationNode>& aNode = aVendorIter.Value();
       if (aNode->IsEnabled() && aNode->IsImportSupported()
           && (aNode->CheckExtension(anExtr) || (theCheckContent && aNode->CheckContent(aBuffer)))
-          && aNode->UpdateLoad(Standard_True, myKeepUpdates))
+          && aNode->UpdateLoad(true, myKeepUpdates))
       {
         theProvider             = aNode->BuildProvider();
         aNode->GlobalParameters = GlobalParameters;
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::FindReadProvider(const TCollection_AsciiString& thePath,
-                                              std::istream&                  theStream,
-                                              Handle(DE_Provider)&           theProvider) const
+bool DE_Wrapper::FindReadProvider(const TCollection_AsciiString& thePath,
+                                  std::istream&                  theStream,
+                                  occ::handle<DE_Provider>&      theProvider) const
 {
-  Handle(NCollection_Buffer) aBuffer;
+  occ::handle<NCollection_Buffer> aBuffer;
   if (!DE_ValidationUtils::CreateContentBuffer(theStream, aBuffer))
   {
-    return Standard_False;
+    return false;
   }
 
   OSD_Path                      aPath(thePath);
   const TCollection_AsciiString anExtr = aPath.Extension();
-  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+  for (NCollection_DataMap<TCollection_AsciiString,
+                           NCollection_IndexedDataMap<TCollection_AsciiString,
+                                                      occ::handle<DE_ConfigurationNode>>>::Iterator
+         aFormatIter(myConfiguration);
+       aFormatIter.More();
        aFormatIter.Next())
   {
-    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                    occ::handle<DE_ConfigurationNode>>::Iterator
+           aVendorIter(aFormatIter.Value());
+         aVendorIter.More();
          aVendorIter.Next())
     {
-      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
+      const occ::handle<DE_ConfigurationNode>& aNode = aVendorIter.Value();
       if (aNode->IsEnabled() && aNode->IsImportSupported()
           && (aNode->CheckExtension(anExtr) || aNode->CheckContent(aBuffer))
-          && aNode->UpdateLoad(Standard_True, myKeepUpdates))
+          && aNode->UpdateLoad(true, myKeepUpdates))
       {
         theProvider             = aNode->BuildProvider();
         aNode->GlobalParameters = GlobalParameters;
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::FindWriteProvider(const TCollection_AsciiString& thePath,
-                                               Handle(DE_Provider)&           theProvider) const
+bool DE_Wrapper::FindWriteProvider(const TCollection_AsciiString& thePath,
+                                   occ::handle<DE_Provider>&      theProvider) const
 {
   OSD_Path                      aPath(thePath);
   const TCollection_AsciiString anExtr = aPath.Extension();
-  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+  for (NCollection_DataMap<TCollection_AsciiString,
+                           NCollection_IndexedDataMap<TCollection_AsciiString,
+                                                      occ::handle<DE_ConfigurationNode>>>::Iterator
+         aFormatIter(myConfiguration);
+       aFormatIter.More();
        aFormatIter.Next())
   {
-    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                    occ::handle<DE_ConfigurationNode>>::Iterator
+           aVendorIter(aFormatIter.Value());
+         aVendorIter.More();
          aVendorIter.Next())
     {
-      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
+      const occ::handle<DE_ConfigurationNode>& aNode = aVendorIter.Value();
       if (aNode->IsEnabled() && aNode->IsExportSupported() && aNode->CheckExtension(anExtr)
-          && aNode->UpdateLoad(Standard_False, myKeepUpdates))
+          && aNode->UpdateLoad(false, myKeepUpdates))
       {
         theProvider             = aNode->BuildProvider();
         aNode->GlobalParameters = GlobalParameters;
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_EXPORT void DE_Wrapper::UpdateLoad(const Standard_Boolean theToForceUpdate) const
+Standard_EXPORT void DE_Wrapper::UpdateLoad(const bool theToForceUpdate) const
 {
-  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+  for (NCollection_DataMap<TCollection_AsciiString,
+                           NCollection_IndexedDataMap<TCollection_AsciiString,
+                                                      occ::handle<DE_ConfigurationNode>>>::Iterator
+         aFormatIter(myConfiguration);
+       aFormatIter.More();
        aFormatIter.Next())
   {
-    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                    occ::handle<DE_ConfigurationNode>>::Iterator
+           aVendorIter(aFormatIter.Value());
+         aVendorIter.More();
          aVendorIter.Next())
     {
-      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
-      aNode->UpdateLoad(Standard_True, Standard_True);
-      aNode->UpdateLoad(Standard_False, Standard_True);
+      const occ::handle<DE_ConfigurationNode>& aNode = aVendorIter.Value();
+      aNode->UpdateLoad(true, true);
+      aNode->UpdateLoad(false, true);
       if (!theToForceUpdate)
         continue;
       aNode->SetEnabled(aNode->IsExportSupported() || aNode->IsImportSupported());
@@ -625,48 +697,52 @@ Standard_EXPORT void DE_Wrapper::UpdateLoad(const Standard_Boolean theToForceUpd
 
 //=================================================================================================
 
-void DE_Wrapper::sort(const Handle(DE_ConfigurationContext)& theResource)
+void DE_Wrapper::sort(const occ::handle<DE_ConfigurationContext>& theResource)
 {
   const TCollection_AsciiString aScope(THE_CONFIGURATION_SCOPE() + '.' + "priority");
-  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+  for (NCollection_DataMap<TCollection_AsciiString,
+                           NCollection_IndexedDataMap<TCollection_AsciiString,
+                                                      occ::handle<DE_ConfigurationNode>>>::Iterator
+         aFormatIter(myConfiguration);
+       aFormatIter.More();
        aFormatIter.Next())
   {
-    TColStd_ListOfAsciiString aVendorPriority;
+    NCollection_List<TCollection_AsciiString> aVendorPriority;
     if (!theResource->GetStringSeq(aFormatIter.Key(), aVendorPriority, aScope))
     {
       continue;
     }
-    ChangePriority(aFormatIter.Key(), aVendorPriority, Standard_True);
+    ChangePriority(aFormatIter.Key(), aVendorPriority, true);
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
-                                  const Handle(TDocStd_Document)& theDocument,
-                                  Handle(XSControl_WorkSession)&  theWS,
-                                  const Message_ProgressRange&    theProgress)
+bool DE_Wrapper::Read(DE_Provider::ReadStreamList&         theStreams,
+                      const occ::handle<TDocStd_Document>& theDocument,
+                      occ::handle<XSControl_WorkSession>&  theWS,
+                      const Message_ProgressRange&         theProgress)
 {
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
-  Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = theStreams.First().Stream;
+  occ::handle<DE_Provider> aProvider;
+  Standard_IStream&        aFirstStream = theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   if (!aProvider->GetNode()->IsStreamSupported())
   {
     Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
                         << aProvider->GetVendor() << " doesn't support stream operations";
-    return Standard_False;
+    return false;
   }
 
   return aProvider->Read(theStreams, theDocument, theWS, theProgress);
@@ -674,30 +750,30 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
-                                   const Handle(TDocStd_Document)& theDocument,
-                                   Handle(XSControl_WorkSession)&  theWS,
-                                   const Message_ProgressRange&    theProgress)
+bool DE_Wrapper::Write(DE_Provider::WriteStreamList&        theStreams,
+                       const occ::handle<TDocStd_Document>& theDocument,
+                       occ::handle<XSControl_WorkSession>&  theWS,
+                       const Message_ProgressRange&         theProgress)
 {
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
-  Handle(DE_Provider) aProvider;
+  occ::handle<DE_Provider> aProvider;
   if (!FindWriteProvider(aFirstKey, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   if (!aProvider->GetNode()->IsStreamSupported())
   {
     Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
                         << aProvider->GetVendor() << " doesn't support stream operations";
-    return Standard_False;
+    return false;
   }
 
   return aProvider->Write(theStreams, theDocument, theWS, theProgress);
@@ -705,30 +781,30 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
-                                  const Handle(TDocStd_Document)& theDocument,
-                                  const Message_ProgressRange&    theProgress)
+bool DE_Wrapper::Read(DE_Provider::ReadStreamList&         theStreams,
+                      const occ::handle<TDocStd_Document>& theDocument,
+                      const Message_ProgressRange&         theProgress)
 {
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
-  Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = theStreams.First().Stream;
+  occ::handle<DE_Provider> aProvider;
+  Standard_IStream&        aFirstStream = theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   if (!aProvider->GetNode()->IsStreamSupported())
   {
     Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
                         << aProvider->GetVendor() << " doesn't support stream operations";
-    return Standard_False;
+    return false;
   }
 
   return aProvider->Read(theStreams, theDocument, theProgress);
@@ -736,29 +812,29 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
-                                   const Handle(TDocStd_Document)& theDocument,
-                                   const Message_ProgressRange&    theProgress)
+bool DE_Wrapper::Write(DE_Provider::WriteStreamList&        theStreams,
+                       const occ::handle<TDocStd_Document>& theDocument,
+                       const Message_ProgressRange&         theProgress)
 {
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
-  Handle(DE_Provider) aProvider;
+  occ::handle<DE_Provider> aProvider;
   if (!FindWriteProvider(aFirstKey, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   if (!aProvider->GetNode()->IsStreamSupported())
   {
     Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
                         << aProvider->GetVendor() << " doesn't support stream operations";
-    return Standard_False;
+    return false;
   }
 
   return aProvider->Write(theStreams, theDocument, theProgress);
@@ -766,31 +842,31 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&   theStreams,
-                                  TopoDS_Shape&                  theShape,
-                                  Handle(XSControl_WorkSession)& theWS,
-                                  const Message_ProgressRange&   theProgress)
+bool DE_Wrapper::Read(DE_Provider::ReadStreamList&        theStreams,
+                      TopoDS_Shape&                       theShape,
+                      occ::handle<XSControl_WorkSession>& theWS,
+                      const Message_ProgressRange&        theProgress)
 {
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
-  Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = theStreams.First().Stream;
+  occ::handle<DE_Provider> aProvider;
+  Standard_IStream&        aFirstStream = theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   if (!aProvider->GetNode()->IsStreamSupported())
   {
     Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
                         << aProvider->GetVendor() << " doesn't support stream operations";
-    return Standard_False;
+    return false;
   }
 
   return aProvider->Read(theStreams, theShape, theWS, theProgress);
@@ -798,30 +874,30 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&   theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&  theStreams,
-                                   const TopoDS_Shape&            theShape,
-                                   Handle(XSControl_WorkSession)& theWS,
-                                   const Message_ProgressRange&   theProgress)
+bool DE_Wrapper::Write(DE_Provider::WriteStreamList&       theStreams,
+                       const TopoDS_Shape&                 theShape,
+                       occ::handle<XSControl_WorkSession>& theWS,
+                       const Message_ProgressRange&        theProgress)
 {
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
-  Handle(DE_Provider) aProvider;
+  occ::handle<DE_Provider> aProvider;
   if (!FindWriteProvider(aFirstKey, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   if (!aProvider->GetNode()->IsStreamSupported())
   {
     Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
                         << aProvider->GetVendor() << " doesn't support stream operations";
-    return Standard_False;
+    return false;
   }
 
   return aProvider->Write(theStreams, theShape, theWS, theProgress);
@@ -829,30 +905,30 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&  theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList& theStreams,
-                                  TopoDS_Shape&                theShape,
-                                  const Message_ProgressRange& theProgress)
+bool DE_Wrapper::Read(DE_Provider::ReadStreamList& theStreams,
+                      TopoDS_Shape&                theShape,
+                      const Message_ProgressRange& theProgress)
 {
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
-  Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = theStreams.First().Stream;
+  occ::handle<DE_Provider> aProvider;
+  Standard_IStream&        aFirstStream = theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   if (!aProvider->GetNode()->IsStreamSupported())
   {
     Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
                         << aProvider->GetVendor() << " doesn't support stream operations";
-    return Standard_False;
+    return false;
   }
 
   return aProvider->Read(theStreams, theShape, theProgress);
@@ -860,29 +936,29 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList& theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList& theStreams,
-                                   const TopoDS_Shape&           theShape,
-                                   const Message_ProgressRange&  theProgress)
+bool DE_Wrapper::Write(DE_Provider::WriteStreamList& theStreams,
+                       const TopoDS_Shape&           theShape,
+                       const Message_ProgressRange&  theProgress)
 {
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
   {
-    return Standard_False;
+    return false;
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
-  Handle(DE_Provider) aProvider;
+  occ::handle<DE_Provider> aProvider;
   if (!FindWriteProvider(aFirstKey, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
-    return Standard_False;
+    return false;
   }
 
   if (!aProvider->GetNode()->IsStreamSupported())
   {
     Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
                         << aProvider->GetVendor() << " doesn't support stream operations";
-    return Standard_False;
+    return false;
   }
 
   return aProvider->Write(theStreams, theShape, theProgress);

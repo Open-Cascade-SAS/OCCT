@@ -20,8 +20,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionDumper, Standard_Transient)
 
-static Handle(IFSelect_SessionDumper) thefirst;
-static int                            cefait = 0;
+static occ::handle<IFSelect_SessionDumper> thefirst;
+static int                                 cefait = 0;
 
 // On commence la serie avec celui-la
 
@@ -29,20 +29,20 @@ IFSelect_SessionDumper::IFSelect_SessionDumper()
 {
   if (!cefait)
   {
-    cefait                           = 1;
-    Handle(IFSelect_BasicDumper) bid = new IFSelect_BasicDumper;
+    cefait                                = 1;
+    occ::handle<IFSelect_BasicDumper> bid = new IFSelect_BasicDumper;
   }
   else
     thenext = thefirst;
   thefirst = this; // as Handle
 }
 
-Handle(IFSelect_SessionDumper) IFSelect_SessionDumper::First()
+occ::handle<IFSelect_SessionDumper> IFSelect_SessionDumper::First()
 {
   return thefirst;
 }
 
-Handle(IFSelect_SessionDumper) IFSelect_SessionDumper::Next() const
+occ::handle<IFSelect_SessionDumper> IFSelect_SessionDumper::Next() const
 {
   return thenext;
 }

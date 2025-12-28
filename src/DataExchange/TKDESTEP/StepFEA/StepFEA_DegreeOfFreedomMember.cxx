@@ -20,9 +20,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepFEA_DegreeOfFreedomMember, StepData_SelectNamed)
 
-static Standard_CString anEnumeratedCurveElementFreedom = "ENUMERATED_DEGREE_OF_FREEDOM";
-static Standard_CString anApplicationDefinedDegreeOfFreedom =
-  "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
+static const char* anEnumeratedCurveElementFreedom     = "ENUMERATED_DEGREE_OF_FREEDOM";
+static const char* anApplicationDefinedDegreeOfFreedom = "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
 
 //=================================================================================================
 
@@ -33,14 +32,14 @@ StepFEA_DegreeOfFreedomMember::StepFEA_DegreeOfFreedomMember()
 
 //=================================================================================================
 
-Standard_Boolean StepFEA_DegreeOfFreedomMember::HasName() const
+bool StepFEA_DegreeOfFreedomMember::HasName() const
 {
   return mycase > 0;
 }
 
 //=================================================================================================
 
-Standard_CString StepFEA_DegreeOfFreedomMember::Name() const
+const char* StepFEA_DegreeOfFreedomMember::Name() const
 {
   switch (mycase)
   {
@@ -56,9 +55,9 @@ Standard_CString StepFEA_DegreeOfFreedomMember::Name() const
 
 //=================================================================================================
 
-static Standard_Integer CompareNames(const Standard_CString name, Standard_Integer& /*numen*/)
+static int CompareNames(const char* name, int& /*numen*/)
 {
-  Standard_Integer thecase = 0;
+  int thecase = 0;
   if (!name || name[0] == '\0')
     thecase = 0;
   else if (!strcmp(name, anEnumeratedCurveElementFreedom))
@@ -108,10 +107,10 @@ static Standard_Integer CompareNames(const Standard_CString name, Standard_Integ
 
 //=================================================================================================
 
-Standard_Boolean StepFEA_DegreeOfFreedomMember::SetName(const Standard_CString name)
+bool StepFEA_DegreeOfFreedomMember::SetName(const char* name)
 {
-  Standard_Integer numit = 0;
-  mycase                 = CompareNames(name, numit);
+  int numit = 0;
+  mycase    = CompareNames(name, numit);
   if (numit)
     SetInteger(numit);
   return (mycase > 0);
@@ -119,9 +118,9 @@ Standard_Boolean StepFEA_DegreeOfFreedomMember::SetName(const Standard_CString n
 
 //=================================================================================================
 
-Standard_Boolean StepFEA_DegreeOfFreedomMember::Matches(const Standard_CString name) const
+bool StepFEA_DegreeOfFreedomMember::Matches(const char* name) const
 {
-  Standard_Integer numit   = 0;
-  Standard_Integer thecase = CompareNames(name, numit);
+  int numit   = 0;
+  int thecase = CompareNames(name, numit);
   return (mycase == thecase);
 }

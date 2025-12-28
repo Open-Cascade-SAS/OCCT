@@ -18,29 +18,39 @@
 
 #include <Standard.hxx>
 
-#include <TDataStd_DataMapOfStringHArray1OfReal.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 
-//! Extension of TDataStd_DataMapOfStringHArray1OfReal class
-//! to be manipulated by handle.
+//! Extension of NCollection_DataMap<TCollection_ExtendedString,
+//! occ::handle<NCollection_HArray1<double>>> class to be manipulated by handle.
 class TDataStd_HDataMapOfStringHArray1OfReal : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfReal, Standard_Transient)
 public:
-  Standard_EXPORT TDataStd_HDataMapOfStringHArray1OfReal(const Standard_Integer NbBuckets = 1);
+  Standard_EXPORT TDataStd_HDataMapOfStringHArray1OfReal(const int NbBuckets = 1);
 
   Standard_EXPORT TDataStd_HDataMapOfStringHArray1OfReal(
-    const TDataStd_DataMapOfStringHArray1OfReal& theOther);
+    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>&
+      theOther);
 
-  const TDataStd_DataMapOfStringHArray1OfReal& Map() const { return myMap; }
+  const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>&
+    Map() const
+  {
+    return myMap;
+  }
 
-  TDataStd_DataMapOfStringHArray1OfReal& ChangeMap() { return myMap; }
+  NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>&
+    ChangeMap()
+  {
+    return myMap;
+  }
 
 private:
-  TDataStd_DataMapOfStringHArray1OfReal myMap;
+  NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> myMap;
 };
-
-DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringHArray1OfReal, Standard_Transient)
 
 #endif // _TDataStd_HDataMapOfStringHArray1OfReal_HeaderFile

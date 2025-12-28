@@ -39,24 +39,24 @@ public:
   Standard_EXPORT virtual ~V3d_CircularGrid();
 
   Standard_EXPORT void SetColors(const Quantity_Color& aColor,
-                                 const Quantity_Color& aTenthColor) Standard_OVERRIDE;
+                                 const Quantity_Color& aTenthColor) override;
 
-  Standard_EXPORT void Display() Standard_OVERRIDE;
+  Standard_EXPORT void Display() override;
 
-  Standard_EXPORT void Erase() const Standard_OVERRIDE;
+  Standard_EXPORT void Erase() const override;
 
-  Standard_EXPORT Standard_Boolean IsDisplayed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsDisplayed() const override;
 
-  Standard_EXPORT void GraphicValues(Standard_Real& Radius, Standard_Real& OffSet) const;
+  Standard_EXPORT void GraphicValues(double& Radius, double& OffSet) const;
 
-  Standard_EXPORT void SetGraphicValues(const Standard_Real Radius, const Standard_Real OffSet);
+  Standard_EXPORT void SetGraphicValues(const double Radius, const double OffSet);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 protected:
-  Standard_EXPORT void UpdateDisplay() Standard_OVERRIDE;
+  Standard_EXPORT void UpdateDisplay() override;
 
 private:
   Standard_EXPORT void DefineLines();
@@ -68,22 +68,20 @@ private:
   class CircularGridStructure;
 
 private:
-  Handle(Graphic3d_Structure) myStructure;
-  Handle(Graphic3d_Group)     myGroup;
-  gp_Ax3                      myCurViewPlane;
-  V3d_ViewerPointer           myViewer;
-  Standard_Boolean            myCurAreDefined;
-  Standard_Boolean            myToComputePrs;
-  Aspect_GridDrawMode         myCurDrawMode;
-  Standard_Real               myCurXo;
-  Standard_Real               myCurYo;
-  Standard_Real               myCurAngle;
-  Standard_Real               myCurStep;
-  Standard_Integer            myCurDivi;
-  Standard_Real               myRadius;
-  Standard_Real               myOffSet;
+  occ::handle<Graphic3d_Structure> myStructure;
+  occ::handle<Graphic3d_Group>     myGroup;
+  gp_Ax3                           myCurViewPlane;
+  V3d_ViewerPointer                myViewer;
+  bool                             myCurAreDefined;
+  bool                             myToComputePrs;
+  Aspect_GridDrawMode              myCurDrawMode;
+  double                           myCurXo;
+  double                           myCurYo;
+  double                           myCurAngle;
+  double                           myCurStep;
+  int                              myCurDivi;
+  double                           myRadius;
+  double                           myOffSet;
 };
-
-DEFINE_STANDARD_HANDLE(V3d_CircularGrid, Aspect_CircularGrid)
 
 #endif // _V3d_CircularGrid_HeaderFile

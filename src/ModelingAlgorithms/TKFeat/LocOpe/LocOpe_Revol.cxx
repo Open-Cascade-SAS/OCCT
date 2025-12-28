@@ -29,29 +29,32 @@
 #include <LocOpe_Revol.hxx>
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
-static Standard_Boolean FindCircle(const gp_Ax1&, const gp_Pnt&, gp_Circ&);
+static bool FindCircle(const gp_Ax1&, const gp_Pnt&, gp_Circ&);
 
 //=================================================================================================
 
 LocOpe_Revol::LocOpe_Revol()
     : myAngle(0.0),
       myAngTra(0.0),
-      myIsTrans(Standard_False),
-      myDone(Standard_False)
+      myIsTrans(false),
+      myDone(false)
 {
 }
 
 //=================================================================================================
 
-void LocOpe_Revol::Perform(const TopoDS_Shape& Base, const gp_Ax1& Axis, const Standard_Real Angle)
+void LocOpe_Revol::Perform(const TopoDS_Shape& Base, const gp_Ax1& Axis, const double Angle)
 {
   myMap.Clear();
   myFirstShape.Nullify();
@@ -62,7 +65,7 @@ void LocOpe_Revol::Perform(const TopoDS_Shape& Base, const gp_Ax1& Axis, const S
   myAngle   = Angle;
   myAxis    = Axis;
   myAngTra  = 0.;
-  myIsTrans = Standard_False;
+  myIsTrans = false;
   IntPerf();
 }
 
@@ -70,8 +73,8 @@ void LocOpe_Revol::Perform(const TopoDS_Shape& Base, const gp_Ax1& Axis, const S
 
 void LocOpe_Revol::Perform(const TopoDS_Shape& Base,
                            const gp_Ax1&       Axis,
-                           const Standard_Real Angle,
-                           const Standard_Real angledec)
+                           const double        Angle,
+                           const double        angledec)
 {
   myMap.Clear();
   myFirstShape.Nullify();
@@ -82,7 +85,7 @@ void LocOpe_Revol::Perform(const TopoDS_Shape& Base,
   myAngle   = Angle;
   myAxis    = Axis;
   myAngTra  = angledec;
-  myIsTrans = Standard_True;
+  myIsTrans = true;
   IntPerf();
 }
 
@@ -96,7 +99,7 @@ void LocOpe_Revol::IntPerf()
   {
     gp_Trsf T;
     T.SetRotation(myAxis, myAngTra);
-    Handle(BRepTools_TrsfModification) modbase = new BRepTools_TrsfModification(T);
+    occ::handle<BRepTools_TrsfModification> modbase = new BRepTools_TrsfModification(T);
     Modif.Init(theBase);
     Modif.Perform(modbase);
     theBase = Modif.ModifiedShape(theBase);
@@ -115,7 +118,7 @@ void LocOpe_Revol::IntPerf()
       const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
       if (!myMap.IsBound(edg))
       {
-        TopTools_ListOfShape thelist;
+        NCollection_List<TopoDS_Shape> thelist;
         myMap.Bind(edg, thelist);
         TopoDS_Shape desc = theRevol.Shape(edg);
         if (!desc.IsNull())
@@ -130,21 +133,24 @@ void LocOpe_Revol::IntPerf()
   else
   {
     // Cas base != FACE
-    TopTools_IndexedDataMapOfShapeListOfShape theEFMap;
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      theEFMap;
     TopExp::MapShapesAndAncestors(theBase, TopAbs_EDGE, TopAbs_FACE, theEFMap);
-    TopTools_ListOfShape lfaces;
-    Standard_Boolean     toremove = Standard_False;
-    for (Standard_Integer i = 1; i <= theEFMap.Extent(); i++)
+    NCollection_List<TopoDS_Shape> lfaces;
+    bool                           toremove = false;
+    for (int i = 1; i <= theEFMap.Extent(); i++)
     {
-      const TopoDS_Shape&  edg = theEFMap.FindKey(i);
-      TopTools_ListOfShape thelist1;
+      const TopoDS_Shape&            edg = theEFMap.FindKey(i);
+      NCollection_List<TopoDS_Shape> thelist1;
       myMap.Bind(edg, thelist1);
       TopoDS_Shape desc = theRevol.Shape(edg);
       if (!desc.IsNull())
       {
         if (theEFMap(i).Extent() >= 2)
         {
-          toremove = Standard_True;
+          toremove = true;
         }
         else
         {
@@ -175,7 +181,7 @@ void LocOpe_Revol::IntPerf()
         const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
         if (!myMap.IsBound(edg))
         {
-          TopTools_ListOfShape thelist2;
+          NCollection_List<TopoDS_Shape> thelist2;
           myMap.Bind(edg, thelist2);
           TopoDS_Shape desc = theRevol.Shape(edg);
           if (!desc.IsNull())
@@ -203,7 +209,7 @@ void LocOpe_Revol::IntPerf()
       }
     }
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
@@ -233,27 +239,27 @@ const TopoDS_Shape& LocOpe_Revol::LastShape() const
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_Revol::Shapes(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& LocOpe_Revol::Shapes(const TopoDS_Shape& S) const
 {
   return myMap(S);
 }
 
 //=================================================================================================
 
-void LocOpe_Revol::Curves(TColGeom_SequenceOfCurve& Scurves) const
+void LocOpe_Revol::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurves) const
 {
   Scurves.Clear();
-  TColgp_SequenceOfPnt spt;
+  NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(myFirstShape, spt);
-  for (Standard_Integer jj = 1; jj <= spt.Length(); jj++)
+  for (int jj = 1; jj <= spt.Length(); jj++)
   {
     const gp_Pnt& pvt = spt(jj);
     gp_Circ       CAX;
     if (FindCircle(myAxis, pvt, CAX))
     {
-      gp_Ax2              A2 = CAX.Position();
-      Standard_Real       r  = CAX.Radius();
-      Handle(Geom_Circle) Ci = new Geom_Circle(A2, r);
+      gp_Ax2                   A2 = CAX.Position();
+      double                   r  = CAX.Radius();
+      occ::handle<Geom_Circle> Ci = new Geom_Circle(A2, r);
       Scurves.Append(Ci);
     }
   }
@@ -261,46 +267,46 @@ void LocOpe_Revol::Curves(TColGeom_SequenceOfCurve& Scurves) const
 
 //=================================================================================================
 
-Handle(Geom_Curve) LocOpe_Revol::BarycCurve() const
+occ::handle<Geom_Curve> LocOpe_Revol::BarycCurve() const
 {
-  gp_Pnt               bar(0., 0., 0.);
-  TColgp_SequenceOfPnt spt;
+  gp_Pnt                       bar(0., 0., 0.);
+  NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(myFirstShape, spt);
-  for (Standard_Integer jj = 1; jj <= spt.Length(); jj++)
+  for (int jj = 1; jj <= spt.Length(); jj++)
   {
     const gp_Pnt& pvt = spt(jj);
     bar.ChangeCoord() += pvt.XYZ();
   }
   bar.ChangeCoord().Divide(spt.Length());
-  gp_Circ             CAX;
-  Handle(Geom_Circle) theCi;
+  gp_Circ                  CAX;
+  occ::handle<Geom_Circle> theCi;
   if (FindCircle(myAxis, bar, CAX))
   {
-    gp_Ax2        A2 = CAX.Position();
-    Standard_Real r  = CAX.Radius();
-    theCi            = new Geom_Circle(A2, r);
+    gp_Ax2 A2 = CAX.Position();
+    double r  = CAX.Radius();
+    theCi     = new Geom_Circle(A2, r);
   }
   return theCi;
 }
 
 //=================================================================================================
 
-static Standard_Boolean FindCircle(const gp_Ax1& Ax, const gp_Pnt& Pt, gp_Circ& Ci)
+static bool FindCircle(const gp_Ax1& Ax, const gp_Pnt& Pt, gp_Circ& Ci)
 {
 
   const gp_Dir& Dax = Ax.Direction();
   gp_Vec        OP(Ax.Location(), Pt);
 
-  Standard_Real prm = OP.Dot(Dax);
+  double prm = OP.Dot(Dax);
 
-  gp_Pnt        prj(Ax.Location().XYZ().Added(prm * Dax.XYZ()));
-  gp_Vec        axx(prj, Pt);
-  Standard_Real Radius = axx.Magnitude();
+  gp_Pnt prj(Ax.Location().XYZ().Added(prm * Dax.XYZ()));
+  gp_Vec axx(prj, Pt);
+  double Radius = axx.Magnitude();
   if (Radius < Precision::Confusion())
   {
-    return Standard_False;
+    return false;
   }
   Ci.SetRadius(Radius);
   Ci.SetPosition(gp_Ax2(prj, Dax, axx));
-  return Standard_True;
+  return true;
 }

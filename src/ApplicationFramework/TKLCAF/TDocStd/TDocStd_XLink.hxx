@@ -28,9 +28,6 @@ class Standard_GUID;
 class TDF_AttributeDelta;
 class TDF_RelocationTable;
 
-class TDocStd_XLink;
-DEFINE_STANDARD_HANDLE(TDocStd_XLink, TDF_Attribute)
-
 //! An attribute to store the path and the entry of
 //! external links.
 //! These refer from one data structure to a data
@@ -40,16 +37,16 @@ class TDocStd_XLink : public TDF_Attribute
 
 public:
   //! Sets an empty external reference, at the label aLabel.
-  Standard_EXPORT static Handle(TDocStd_XLink) Set(const TDF_Label& atLabel);
+  Standard_EXPORT static occ::handle<TDocStd_XLink> Set(const TDF_Label& atLabel);
 
   //! Initializes fields.
   Standard_EXPORT TDocStd_XLink();
 
   //! Updates the data referenced in this external link attribute.
-  Standard_EXPORT Handle(TDF_Reference) Update();
+  Standard_EXPORT occ::handle<TDF_Reference> Update();
 
   //! Returns the ID of the attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Returns the GUID for external links.
   Standard_EXPORT static const Standard_GUID& GetID();
@@ -75,46 +72,43 @@ public:
 
   //! Updates the XLinkRoot attribute by adding <me>
   //! to its list.
-  Standard_EXPORT void AfterAddition() Standard_OVERRIDE;
+  Standard_EXPORT void AfterAddition() override;
 
   //! Updates the XLinkRoot attribute by removing <me>
   //! from its list.
-  Standard_EXPORT void BeforeRemoval() Standard_OVERRIDE;
+  Standard_EXPORT void BeforeRemoval() override;
 
   //! Something to do before applying <anAttDelta>.
-  Standard_EXPORT virtual Standard_Boolean BeforeUndo(
-    const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                          const bool forceIt = false) override;
 
   //! Something to do after applying <anAttDelta>.
-  Standard_EXPORT virtual Standard_Boolean AfterUndo(
-    const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                         const bool forceIt = false) override;
 
   //! Returns a null handle. Raise always for it is
   //! nonsense to use this method.
-  Standard_EXPORT Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> BackupCopy() const override;
 
   //! Does nothing.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& anAttribute) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& anAttribute) override;
 
   //! Returns a null handle.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Does nothing.
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       intoAttribute,
-                             const Handle(TDF_RelocationTable)& aRelocationTable) const
-    Standard_OVERRIDE;
+  Standard_EXPORT void Paste(
+    const occ::handle<TDF_Attribute>&       intoAttribute,
+    const occ::handle<TDF_RelocationTable>& aRelocationTable) const override;
 
   //! Dumps the attribute on <aStream>.
-  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   friend class TDocStd_XLinkRoot;
   friend class TDocStd_XLinkIterator;
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_XLink, TDF_Attribute)
 
-protected:
 private:
   //! Sets the field <myNext> with <anXLinkPtr>.
   void Next(const TDocStd_XLinkPtr& anXLinkPtr);

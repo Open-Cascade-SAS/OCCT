@@ -22,9 +22,6 @@
 
 #include <StepRepr_Representation.hxx>
 
-class StepRepr_DefinitionalRepresentation;
-DEFINE_STANDARD_HANDLE(StepRepr_DefinitionalRepresentation, StepRepr_Representation)
-
 class StepRepr_DefinitionalRepresentation : public StepRepr_Representation
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepRepr_DefinitionalRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_DefinitionalRepresentation, StepRepr_Representation)
-
-protected:
-private:
 };
 
 #endif // _StepRepr_DefinitionalRepresentation_HeaderFile

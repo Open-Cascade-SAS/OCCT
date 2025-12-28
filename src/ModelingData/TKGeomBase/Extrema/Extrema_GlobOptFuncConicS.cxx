@@ -20,10 +20,10 @@
 
 //=================================================================================================
 
-void Extrema_GlobOptFuncConicS::value(Standard_Real su, Standard_Real sv, Standard_Real& F)
+void Extrema_GlobOptFuncConicS::value(double su, double sv, double& F)
 {
-  Standard_Real ct;
-  gp_Pnt        aPS = myS->Value(su, sv);
+  double ct;
+  gp_Pnt aPS = myS->Value(su, sv);
   switch (myCType)
   {
     case GeomAbs_Line:
@@ -65,28 +65,26 @@ void Extrema_GlobOptFuncConicS::value(Standard_Real su, Standard_Real sv, Standa
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncConicS::checkInputData(const math_Vector& X,
-                                                           Standard_Real&     su,
-                                                           Standard_Real&     sv)
+bool Extrema_GlobOptFuncConicS::checkInputData(const math_Vector& X, double& su, double& sv)
 {
-  Standard_Integer aStartIndex = X.Lower();
-  su                           = X(aStartIndex);
-  sv                           = X(aStartIndex + 1);
+  int aStartIndex = X.Lower();
+  su              = X(aStartIndex);
+  sv              = X(aStartIndex + 1);
 
   if (su < myUf || su > myUl || sv < myVf || sv > myVl)
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Surface* S,
-                                                     const Standard_Real      theUf,
-                                                     const Standard_Real      theUl,
-                                                     const Standard_Real      theVf,
-                                                     const Standard_Real      theVl)
+                                                     const double             theUf,
+                                                     const double             theUl,
+                                                     const double             theVf,
+                                                     const double             theVl)
     : myS(S),
       myUf(theUf),
       myUl(theUl),
@@ -116,23 +114,23 @@ Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Curve*   C,
       myVf(S->FirstVParameter()),
       myVl(S->LastVParameter())
 {
-  Standard_Real aCTf = C->FirstParameter();
-  Standard_Real aCTl = C->LastParameter();
+  double aCTf = C->FirstParameter();
+  double aCTl = C->LastParameter();
   LoadConic(C, aCTf, aCTl);
 }
 
 //=================================================================================================
 
 void Extrema_GlobOptFuncConicS::LoadConic(const Adaptor3d_Curve* C,
-                                          const Standard_Real    theTf,
-                                          const Standard_Real    theTl)
+                                          const double           theTf,
+                                          const double           theTl)
 {
   myC  = C;
   myTf = theTf;
   myTl = theTl;
   if (myC->IsPeriodic())
   {
-    constexpr Standard_Real aTMax = 2. * M_PI + Precision::PConfusion();
+    constexpr double aTMax = 2. * M_PI + Precision::PConfusion();
     if (myTf > aTMax || myTf < -Precision::PConfusion() || std::abs(myTl - myTf) > aTMax)
     {
       ElCLib::AdjustPeriodic(0.,
@@ -169,33 +167,33 @@ void Extrema_GlobOptFuncConicS::LoadConic(const Adaptor3d_Curve* C,
 
 //=================================================================================================
 
-Standard_Integer Extrema_GlobOptFuncConicS::NbVariables() const
+int Extrema_GlobOptFuncConicS::NbVariables() const
 {
   return 2;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncConicS::Value(const math_Vector& X, Standard_Real& F)
+bool Extrema_GlobOptFuncConicS::Value(const math_Vector& X, double& F)
 {
-  Standard_Real su, sv;
+  double su, sv;
   if (!checkInputData(X, su, sv))
-    return Standard_False;
+    return false;
 
   value(su, sv, F);
   if (Precision::IsInfinite(F))
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Real Extrema_GlobOptFuncConicS::ConicParameter(const math_Vector& theUV) const
+double Extrema_GlobOptFuncConicS::ConicParameter(const math_Vector& theUV) const
 {
-  Standard_Real ct;
-  gp_Pnt        aPS = myS->Value(theUV(1), theUV(2));
+  double ct;
+  gp_Pnt aPS = myS->Value(theUV(1), theUV(2));
   switch (myCType)
   {
     case GeomAbs_Line:
@@ -225,13 +223,13 @@ Standard_Real Extrema_GlobOptFuncConicS::ConicParameter(const math_Vector& theUV
       ct += 2. * M_PI;
     }
   }
-  Standard_Real F = RealLast();
+  double F = RealLast();
   if (ct >= myTf && ct <= myTl)
   {
     gp_Pnt aPC = myC->Value(ct);
     F          = std::min(F, aPS.SquareDistance(aPC));
   }
-  Standard_Real Fext = aPS.SquareDistance(myCPf);
+  double Fext = aPS.SquareDistance(myCPf);
   if (Fext < F)
   {
     F  = Fext;

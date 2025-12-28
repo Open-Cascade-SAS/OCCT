@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_HSequenceOfXYZ.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <gp_Trsf.hxx>
 #include <Standard_Integer.hxx>
 class gp_XY;
@@ -61,10 +63,10 @@ public:
   Standard_EXPORT void AddVec(const gp_XYZ& val);
 
   //! Returns the count of already recorded points
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   //! Returns a point given its rank (if added as XY, Z will be 0)
-  Standard_EXPORT gp_XYZ Point(const Standard_Integer num) const;
+  Standard_EXPORT gp_XYZ Point(const int num) const;
 
   //! Makes a CopiousData with the list of recorded Points/Vectors
   //! according to <datatype>, which must be 1,2 or 3
@@ -72,9 +74,9 @@ public:
   //! Polyline, but <datatype> must not be 3
   //! <datatype> = 1 : Common Z is computed as average of all Z
   //! <datatype> = 1 or 2 : Vectors are ignored
-  Standard_EXPORT Handle(IGESGeom_CopiousData) MakeCopiousData(
-    const Standard_Integer datatype,
-    const Standard_Boolean polyline = Standard_False) const;
+  Standard_EXPORT occ::handle<IGESGeom_CopiousData> MakeCopiousData(
+    const int  datatype,
+    const bool polyline = false) const;
 
   //! Returns the Position in which the method EvalXYZ will
   //! evaluate a XYZ. It can be regarded as defining a local system.
@@ -96,39 +98,35 @@ public:
   Standard_EXPORT void SetPosition(const gp_Ax1& pos);
 
   //! Returns True if the Position is Identity
-  Standard_EXPORT Standard_Boolean IsIdentity() const;
+  Standard_EXPORT bool IsIdentity() const;
 
   //! Returns True if the Position is a Translation only
   //! Remark : Identity and ZOnly will answer True
-  Standard_EXPORT Standard_Boolean IsTranslation() const;
+  Standard_EXPORT bool IsTranslation() const;
 
   //! Returns True if the Position corresponds to a Z-Displacement,
   //! i.e. is a Translation only, and only on Z
   //! Remark : Identity will answer True
-  Standard_EXPORT Standard_Boolean IsZOnly() const;
+  Standard_EXPORT bool IsZOnly() const;
 
   //! Evaluates a XYZ value in the Position already defined.
   //! Returns the transformed coordinates.
   //! For a 2D definition, X,Y will then be used to define a XY and
   //! Z will be regarded as a Z Displacement (can be ignored)
-  Standard_EXPORT void EvalXYZ(const gp_XYZ&  val,
-                               Standard_Real& X,
-                               Standard_Real& Y,
-                               Standard_Real& Z) const;
+  Standard_EXPORT void EvalXYZ(const gp_XYZ& val, double& X, double& Y, double& Z) const;
 
   //! Returns the IGES Transformation which corresponds to the
   //! Position. Even if it is an Identity : IsIdentity should be
   //! tested first.
   //! <unit> is the unit value in which the model is created :
   //! it is used to convert translation part
-  Standard_EXPORT Handle(IGESGeom_TransformationMatrix) MakeTransformation(
-    const Standard_Real unit = 1) const;
+  Standard_EXPORT occ::handle<IGESGeom_TransformationMatrix> MakeTransformation(
+    const double unit = 1) const;
 
-protected:
 private:
-  Handle(TColgp_HSequenceOfXYZ) theXYZ;
-  Handle(TColgp_HSequenceOfXYZ) theVec;
-  gp_Trsf                       thepos;
+  occ::handle<NCollection_HSequence<gp_XYZ>> theXYZ;
+  occ::handle<NCollection_HSequence<gp_XYZ>> theVec;
+  gp_Trsf                                    thepos;
 };
 
 #endif // _IGESConvGeom_GeomBuilder_HeaderFile

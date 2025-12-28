@@ -38,39 +38,37 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Computes the length of the Curve <C>.
-  Standard_EXPORT static Standard_Real Length(const Adaptor3d_Curve& C);
+  Standard_EXPORT static double Length(const Adaptor3d_Curve& C);
 
   //! Computes the length of the Curve <C>.
-  Standard_EXPORT static Standard_Real Length(const Adaptor2d_Curve2d& C);
+  Standard_EXPORT static double Length(const Adaptor2d_Curve2d& C);
 
   //! Computes the length of the Curve <C> with the given tolerance.
-  Standard_EXPORT static Standard_Real Length(const Adaptor3d_Curve& C, const Standard_Real Tol);
+  Standard_EXPORT static double Length(const Adaptor3d_Curve& C, const double Tol);
 
   //! Computes the length of the Curve <C> with the given tolerance.
-  Standard_EXPORT static Standard_Real Length(const Adaptor2d_Curve2d& C, const Standard_Real Tol);
+  Standard_EXPORT static double Length(const Adaptor2d_Curve2d& C, const double Tol);
 
   //! Computes the length of the Curve <C> between <U1> and <U2>.
-  Standard_EXPORT static Standard_Real Length(const Adaptor3d_Curve& C,
-                                              const Standard_Real    U1,
-                                              const Standard_Real    U2);
+  Standard_EXPORT static double Length(const Adaptor3d_Curve& C, const double U1, const double U2);
 
   //! Computes the length of the Curve <C> between <U1> and <U2>.
-  Standard_EXPORT static Standard_Real Length(const Adaptor2d_Curve2d& C,
-                                              const Standard_Real      U1,
-                                              const Standard_Real      U2);
+  Standard_EXPORT static double Length(const Adaptor2d_Curve2d& C,
+                                       const double             U1,
+                                       const double             U2);
 
   //! Computes the length of the Curve <C> between <U1> and <U2> with the given tolerance.
-  Standard_EXPORT static Standard_Real Length(const Adaptor3d_Curve& C,
-                                              const Standard_Real    U1,
-                                              const Standard_Real    U2,
-                                              const Standard_Real    Tol);
+  Standard_EXPORT static double Length(const Adaptor3d_Curve& C,
+                                       const double           U1,
+                                       const double           U2,
+                                       const double           Tol);
 
   //! Computes the length of the Curve <C> between <U1> and <U2> with the given tolerance.
   //! creation of a indefinite AbscissaPoint.
-  Standard_EXPORT static Standard_Real Length(const Adaptor2d_Curve2d& C,
-                                              const Standard_Real      U1,
-                                              const Standard_Real      U2,
-                                              const Standard_Real      Tol);
+  Standard_EXPORT static double Length(const Adaptor2d_Curve2d& C,
+                                       const double             U1,
+                                       const double             U2,
+                                       const double             Tol);
 
   Standard_EXPORT CPnts_AbscissaPoint();
 
@@ -79,18 +77,18 @@ public:
   //! <Resolution> is the error allowed in the computation.
   //! The computed point can be outside of the curve 's bounds.
   Standard_EXPORT CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
-                                      const Standard_Real    Abscissa,
-                                      const Standard_Real    U0,
-                                      const Standard_Real    Resolution);
+                                      const double           Abscissa,
+                                      const double           U0,
+                                      const double           Resolution);
 
   //! the algorithm computes a point on a curve <Curve> at the
   //! distance <Abscissa> from the point of parameter <U0>.
   //! <Resolution> is the error allowed in the computation.
   //! The computed point can be outside of the curve 's bounds.
   Standard_EXPORT CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
-                                      const Standard_Real      Abscissa,
-                                      const Standard_Real      U0,
-                                      const Standard_Real      Resolution);
+                                      const double             Abscissa,
+                                      const double             U0,
+                                      const double             Resolution);
 
   //! the algorithm computes a point on a curve <Curve> at the
   //! distance <Abscissa> from the point of parameter <U0>.
@@ -100,10 +98,10 @@ public:
   //! <Resolution> is the error allowed in the computation.
   //! The computed point can be outside of the curve 's bounds.
   Standard_EXPORT CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
-                                      const Standard_Real    Abscissa,
-                                      const Standard_Real    U0,
-                                      const Standard_Real    Ui,
-                                      const Standard_Real    Resolution);
+                                      const double           Abscissa,
+                                      const double           U0,
+                                      const double           Ui,
+                                      const double           Resolution);
 
   //! the algorithm computes a point on a curve <Curve> at the
   //! distance <Abscissa> from the point of parameter <U0>.
@@ -113,10 +111,10 @@ public:
   //! <Resolution> is the error allowed in the computation.
   //! The computed point can be outside of the curve 's bounds.
   Standard_EXPORT CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
-                                      const Standard_Real      Abscissa,
-                                      const Standard_Real      U0,
-                                      const Standard_Real      Ui,
-                                      const Standard_Real      Resolution);
+                                      const double             Abscissa,
+                                      const double             U0,
+                                      const double             Ui,
+                                      const double             Resolution);
 
   //! Initializes the resolution function with <C>.
   Standard_EXPORT void Init(const Adaptor3d_Curve& C);
@@ -125,54 +123,48 @@ public:
   Standard_EXPORT void Init(const Adaptor2d_Curve2d& C);
 
   //! Initializes the resolution function with <C>.
-  Standard_EXPORT void Init(const Adaptor3d_Curve& C, const Standard_Real Tol);
+  Standard_EXPORT void Init(const Adaptor3d_Curve& C, const double Tol);
 
   //! Initializes the resolution function with <C>.
-  Standard_EXPORT void Init(const Adaptor2d_Curve2d& C, const Standard_Real Tol);
+  Standard_EXPORT void Init(const Adaptor2d_Curve2d& C, const double Tol);
+
+  //! Initializes the resolution function with <C>
+  //! between U1 and U2.
+  Standard_EXPORT void Init(const Adaptor3d_Curve& C, const double U1, const double U2);
+
+  //! Initializes the resolution function with <C>
+  //! between U1 and U2.
+  Standard_EXPORT void Init(const Adaptor2d_Curve2d& C, const double U1, const double U2);
 
   //! Initializes the resolution function with <C>
   //! between U1 and U2.
   Standard_EXPORT void Init(const Adaptor3d_Curve& C,
-                            const Standard_Real    U1,
-                            const Standard_Real    U2);
+                            const double           U1,
+                            const double           U2,
+                            const double           Tol);
 
   //! Initializes the resolution function with <C>
   //! between U1 and U2.
   Standard_EXPORT void Init(const Adaptor2d_Curve2d& C,
-                            const Standard_Real      U1,
-                            const Standard_Real      U2);
-
-  //! Initializes the resolution function with <C>
-  //! between U1 and U2.
-  Standard_EXPORT void Init(const Adaptor3d_Curve& C,
-                            const Standard_Real    U1,
-                            const Standard_Real    U2,
-                            const Standard_Real    Tol);
-
-  //! Initializes the resolution function with <C>
-  //! between U1 and U2.
-  Standard_EXPORT void Init(const Adaptor2d_Curve2d& C,
-                            const Standard_Real      U1,
-                            const Standard_Real      U2,
-                            const Standard_Real      Tol);
+                            const double             U1,
+                            const double             U2,
+                            const double             Tol);
 
   //! Computes the point at the distance <Abscissa> of
   //! the curve.
   //! U0 is the parameter of the point from which the distance
   //! is measured.
-  Standard_EXPORT void Perform(const Standard_Real Abscissa,
-                               const Standard_Real U0,
-                               const Standard_Real Resolution);
+  Standard_EXPORT void Perform(const double Abscissa, const double U0, const double Resolution);
 
   //! Computes the point at the distance <Abscissa> of
   //! the curve.
   //! U0 is the parameter of the point from which the distance
   //! is measured and Ui is the starting value for the iterative
   //! process (should be close to the final solution).
-  Standard_EXPORT void Perform(const Standard_Real Abscissa,
-                               const Standard_Real U0,
-                               const Standard_Real Ui,
-                               const Standard_Real Resolution);
+  Standard_EXPORT void Perform(const double Abscissa,
+                               const double U0,
+                               const double Ui,
+                               const double Resolution);
 
   //! Computes the point at the distance <Abscissa> of
   //! the curve; performs more appropriate tolerance management;
@@ -182,27 +174,26 @@ public:
   //! U0 is the parameter of the point from which the distance
   //! is measured and Ui is the starting value for the iterative
   //! process (should be close to the final solution).
-  Standard_EXPORT void AdvPerform(const Standard_Real Abscissa,
-                                  const Standard_Real U0,
-                                  const Standard_Real Ui,
-                                  const Standard_Real Resolution);
+  Standard_EXPORT void AdvPerform(const double Abscissa,
+                                  const double U0,
+                                  const double Ui,
+                                  const double Resolution);
 
   //! True if the computation was successful, False otherwise.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the parameter of the solution.
-  Standard_Real Parameter() const;
+  double Parameter() const;
 
   //! Enforce the solution, used by GCPnts.
-  void SetParameter(const Standard_Real P);
+  void SetParameter(const double P);
 
-protected:
 private:
-  Standard_Boolean     myDone;
-  Standard_Real        myL;
-  Standard_Real        myParam;
-  Standard_Real        myUMin;
-  Standard_Real        myUMax;
+  bool                 myDone;
+  double               myL;
+  double               myParam;
+  double               myUMin;
+  double               myUMax;
   CPnts_MyRootFunction myF;
 };
 

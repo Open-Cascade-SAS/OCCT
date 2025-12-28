@@ -33,11 +33,9 @@
 #include <gp_Vec.hxx>
 #include <ShapeAnalysis_Geom.hxx>
 #include <ShapeAnalysis_Surface.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <Standard_Integer.hxx>
 
 //=================================================================================================
 
@@ -48,7 +46,7 @@ ShapeCustom_Surface::ShapeCustom_Surface()
 
 //=================================================================================================
 
-ShapeCustom_Surface::ShapeCustom_Surface(const Handle(Geom_Surface)& S)
+ShapeCustom_Surface::ShapeCustom_Surface(const occ::handle<Geom_Surface>& S)
     : myGap(0)
 {
   Init(S);
@@ -56,28 +54,28 @@ ShapeCustom_Surface::ShapeCustom_Surface(const Handle(Geom_Surface)& S)
 
 //=================================================================================================
 
-void ShapeCustom_Surface::Init(const Handle(Geom_Surface)& S)
+void ShapeCustom_Surface::Init(const occ::handle<Geom_Surface>& S)
 {
   mySurf = S;
 }
 
 //=================================================================================================
 
-Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Real    tol,
-                                                              const Standard_Boolean substitute)
+occ::handle<Geom_Surface> ShapeCustom_Surface::ConvertToAnalytical(const double tol,
+                                                                   const bool   substitute)
 {
-  Handle(Geom_Surface) newSurf;
+  occ::handle<Geom_Surface> newSurf;
 
-  Standard_Integer   nUP, nVP, nCP, i, j, UDeg, VDeg;
-  Standard_Real      U1, U2, V1, V2, C1, C2, DU, DV, U = 0, V = 0;
-  Handle(Geom_Curve) iso;
-  Standard_Boolean   uClosed = Standard_True;
+  int                     nUP, nVP, nCP, i, j, UDeg, VDeg;
+  double                  U1, U2, V1, V2, C1, C2, DU, DV, U = 0, V = 0;
+  occ::handle<Geom_Curve> iso;
+  bool                    uClosed = true;
 
   // seuls cas traites : BSpline et Bezier
-  Handle(Geom_BSplineSurface) theBSplneS = Handle(Geom_BSplineSurface)::DownCast(mySurf);
+  occ::handle<Geom_BSplineSurface> theBSplneS = occ::down_cast<Geom_BSplineSurface>(mySurf);
   if (theBSplneS.IsNull())
   {
-    Handle(Geom_BezierSurface) theBezierS = Handle(Geom_BezierSurface)::DownCast(mySurf);
+    occ::handle<Geom_BezierSurface> theBezierS = occ::down_cast<Geom_BezierSurface>(mySurf);
     if (!theBezierS.IsNull())
     { // Bezier :
       nUP  = theBezierS->NbUPoles();
@@ -98,46 +96,46 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
 
   mySurf->Bounds(U1, U2, V1, V2);
   //  mySurf->Bounds(U1, U2, V1, V2);
-  TColgp_Array1OfPnt   p1(1, 3), p2(1, 3), p3(1, 3);
-  TColStd_Array1OfReal R(1, 3);
-  gp_Pnt               origPnt, resPnt;
-  gp_Vec               origD1U, resD1U, resD1V;
+  NCollection_Array1<gp_Pnt> p1(1, 3), p2(1, 3), p3(1, 3);
+  NCollection_Array1<double> R(1, 3);
+  gp_Pnt                     origPnt, resPnt;
+  gp_Vec                     origD1U, resD1U, resD1V;
 
-  Standard_Boolean aCySpCo = Standard_False;
-  Standard_Boolean aToroid = Standard_False;
-  Standard_Boolean aPlanar = Standard_False;
+  bool aCySpCo = false;
+  bool aToroid = false;
+  bool aPlanar = false;
 
   if (nUP == 2 && nVP == 2)
   {
     if (UDeg == 1 && VDeg == 1)
-      aPlanar = Standard_True;
+      aPlanar = true;
   }
   else if (mySurf->IsUClosed())
   { // VRAI IsUClosed
     if (mySurf->IsVClosed())
-      aToroid = Standard_True;
+      aToroid = true;
     else
-      aCySpCo = Standard_True;
+      aCySpCo = true;
   }
   else
   {
     if (mySurf->IsVClosed())
     { // VRAI IsVClosed
-      aCySpCo = Standard_True;
-      uClosed = Standard_False;
+      aCySpCo = true;
+      uClosed = false;
     }
   }
 
   if (aPlanar)
   {
     //    NearestPlane ...
-    TColgp_Array1OfPnt Pnts(1, 4);
+    NCollection_Array1<gp_Pnt> Pnts(1, 4);
     Pnts.SetValue(1, mySurf->Value(U1, V1));
     Pnts.SetValue(2, mySurf->Value(U2, V1));
     Pnts.SetValue(3, mySurf->Value(U1, V2));
     Pnts.SetValue(4, mySurf->Value(U2, V2));
-    gp_Pln           aPln; // Standard_Real Dmax;
-    Standard_Integer It = ShapeAnalysis_Geom::NearestPlane(Pnts, aPln, myGap /*Dmax*/);
+    gp_Pln aPln; // double Dmax;
+    int    It = ShapeAnalysis_Geom::NearestPlane(Pnts, aPln, myGap /*Dmax*/);
 
     //  ICI, on fabrique le plan, et zou
     if (It == 0 || myGap /*Dmax*/ > tol)
@@ -232,7 +230,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
       {
         // deja fait	  gp_Ax3 aAx3(p3(1), aDir, xVec);
         // gp_Ax3 aAx3(p3(3), aDir);
-        Handle(Geom_SphericalSurface) anObject = new Geom_SphericalSurface(aAx3, R(3));
+        occ::handle<Geom_SphericalSurface> anObject = new Geom_SphericalSurface(aAx3, R(3));
         if (!uClosed)
           anObject->UReverse();
         newSurf = anObject;
@@ -246,18 +244,18 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
 
       if (std::abs(R(2) - R(1)) < tol)
       {
-        Handle(Geom_CylindricalSurface) anObject = new Geom_CylindricalSurface(aAx3, R(1));
+        occ::handle<Geom_CylindricalSurface> anObject = new Geom_CylindricalSurface(aAx3, R(1));
         if (!uClosed)
           anObject->UReverse();
         newSurf = anObject;
       }
       else
       {
-        gp_Vec        aVec2(p1(1), p1(2));
-        Standard_Real angle = aVec.Angle(aVec2);
+        gp_Vec aVec2(p1(1), p1(2));
+        double angle = aVec.Angle(aVec2);
         if (R(1) < R(2))
         {
-          Handle(Geom_ConicalSurface) anObject = new Geom_ConicalSurface(aAx3, angle, R(1));
+          occ::handle<Geom_ConicalSurface> anObject = new Geom_ConicalSurface(aAx3, angle, R(1));
           // if (!uClosed) anObject->UReverse();
           anObject->UReverse();
           newSurf = anObject;
@@ -265,10 +263,11 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
         else
         {
           aDir.Reverse();
-          gp_Vec                      anotherXVec(p3(2), p1(2));
-          gp_Dir                      anotherXDir(anotherXVec);
-          gp_Ax3                      anotherAx3(p3(2), aDir, anotherXDir);
-          Handle(Geom_ConicalSurface) anObject = new Geom_ConicalSurface(anotherAx3, angle, R(2));
+          gp_Vec                           anotherXVec(p3(2), p1(2));
+          gp_Dir                           anotherXDir(anotherXVec);
+          gp_Ax3                           anotherAx3(p3(2), aDir, anotherXDir);
+          occ::handle<Geom_ConicalSurface> anObject =
+            new Geom_ConicalSurface(anotherAx3, angle, R(2));
           // if (!uClosed) anObject->UReverse();
           anObject->UReverse();
           newSurf = anObject;
@@ -279,7 +278,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
   else if (aToroid)
   {
     // test by iso U and isoV
-    Standard_Boolean isFound = Standard_False;
+    bool isFound = false;
     for (j = 1; (j <= 2) && !isFound; j++)
     {
       if (j == 2)
@@ -311,12 +310,12 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
       }
       if ((std::abs(R(1) - R(2)) < tol) && (std::abs(R(1) - R(3)) < tol))
       {
-        gp_Pnt        p10(0.5 * (p3(1).X() + p3(2).X()),
+        gp_Pnt p10(0.5 * (p3(1).X() + p3(2).X()),
                    0.5 * (p3(1).Y() + p3(2).Y()),
                    0.5 * (p3(1).Z() + p3(2).Z()));
-        gp_Vec        aVec(p10, p3(1));
-        gp_Vec        aVec2(p10, p3(3));
-        Standard_Real RR1 = R(1), RR2 = R(2), RR3;
+        gp_Vec aVec(p10, p3(1));
+        gp_Vec aVec2(p10, p3(3));
+        double RR1 = R(1), RR2 = R(2), RR3;
         aVec ^= aVec2;
 
         if (aVec.Magnitude() <= gp::Resolution())
@@ -334,7 +333,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
           RR1 = RR2;
           RR2 = RR3;
         }
-        Handle(Geom_ToroidalSurface) anObject = new Geom_ToroidalSurface(aAx3, RR1, RR2);
+        occ::handle<Geom_ToroidalSurface> anObject = new Geom_ToroidalSurface(aAx3, RR1, RR2);
         if (j == 2)
           anObject->UReverse();
         anObject->D1(0., 0., resPnt, resD1U, resD1V);
@@ -343,7 +342,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
           std::cout << " Tore a inverser !" << std::endl;
 #endif
         newSurf = anObject;
-        isFound = Standard_True;
+        isFound = true;
       }
     }
   }
@@ -354,15 +353,15 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
   //                 verification
   //---------------------------------------------------------------------
 
-  Handle(GeomAdaptor_Surface) NHS       = new GeomAdaptor_Surface(newSurf);
-  GeomAdaptor_Surface&        SurfAdapt = *NHS;
+  occ::handle<GeomAdaptor_Surface> NHS       = new GeomAdaptor_Surface(newSurf);
+  GeomAdaptor_Surface&             SurfAdapt = *NHS;
 
-  const Standard_Integer NP = 21;
-  Standard_Real          S = 0., T = 0.; // U,V deja fait
-  gp_Pnt                 P3d, P3d2;
-  Standard_Boolean       onSurface = Standard_True;
+  const int NP = 21;
+  double    S = 0., T = 0.; // U,V deja fait
+  gp_Pnt    P3d, P3d2;
+  bool      onSurface = true;
 
-  Standard_Real dis;
+  double dis;
   myGap = 0.;
 
   DU = (U2 - U1) / (NP - 1);
@@ -415,7 +414,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
 
       if (dis > tol)
       {
-        onSurface = Standard_False;
+        onSurface = false;
         newSurf.Nullify();
         // The presumption is rejected
         break;
@@ -431,40 +430,40 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical(const Standard_Rea
 
 //%pdn 30 Nov 98: converting bspline surfaces with degree+1 at ends to periodic
 // UKI60591, entity 48720
-Handle(Geom_Surface) ShapeCustom_Surface::ConvertToPeriodic(const Standard_Boolean substitute,
-                                                            const Standard_Real    preci)
+occ::handle<Geom_Surface> ShapeCustom_Surface::ConvertToPeriodic(const bool   substitute,
+                                                                 const double preci)
 {
-  Handle(Geom_Surface)        newSurf;
-  Handle(Geom_BSplineSurface) BSpl = Handle(Geom_BSplineSurface)::DownCast(mySurf);
+  occ::handle<Geom_Surface>        newSurf;
+  occ::handle<Geom_BSplineSurface> BSpl = occ::down_cast<Geom_BSplineSurface>(mySurf);
   if (BSpl.IsNull())
     return newSurf;
 
   ShapeAnalysis_Surface sas(mySurf);
-  Standard_Boolean      uclosed = sas.IsUClosed(preci);
-  Standard_Boolean      vclosed = sas.IsVClosed(preci);
+  bool                  uclosed = sas.IsUClosed(preci);
+  bool                  vclosed = sas.IsVClosed(preci);
 
   if (!uclosed && !vclosed)
     return newSurf;
 
-  Standard_Boolean converted = Standard_False; //: p6
+  bool converted = false; //: p6
 
   if (uclosed && !BSpl->IsUPeriodic() && BSpl->NbUPoles() > 3)
   {
-    Standard_Boolean set = Standard_True;
+    bool set = true;
     // if degree+1 at ends, first change it to 1 by rearranging knots
     if (BSpl->UMultiplicity(1) == BSpl->UDegree() + 1
         && BSpl->UMultiplicity(BSpl->NbUKnots()) == BSpl->UDegree() + 1)
     {
-      Standard_Integer        nbUPoles = BSpl->NbUPoles();
-      Standard_Integer        nbVPoles = BSpl->NbVPoles();
-      TColgp_Array2OfPnt      oldPoles(1, nbUPoles, 1, nbVPoles);
-      TColStd_Array2OfReal    oldWeights(1, nbUPoles, 1, nbVPoles);
-      Standard_Integer        nbUKnots = BSpl->NbUKnots();
-      Standard_Integer        nbVKnots = BSpl->NbVKnots();
-      TColStd_Array1OfReal    oldUKnots(1, nbUKnots);
-      TColStd_Array1OfReal    oldVKnots(1, nbVKnots);
-      TColStd_Array1OfInteger oldUMults(1, nbUKnots);
-      TColStd_Array1OfInteger oldVMults(1, nbVKnots);
+      int                        nbUPoles = BSpl->NbUPoles();
+      int                        nbVPoles = BSpl->NbVPoles();
+      NCollection_Array2<gp_Pnt> oldPoles(1, nbUPoles, 1, nbVPoles);
+      NCollection_Array2<double> oldWeights(1, nbUPoles, 1, nbVPoles);
+      int                        nbUKnots = BSpl->NbUKnots();
+      int                        nbVKnots = BSpl->NbVKnots();
+      NCollection_Array1<double> oldUKnots(1, nbUKnots);
+      NCollection_Array1<double> oldVKnots(1, nbVKnots);
+      NCollection_Array1<int>    oldUMults(1, nbUKnots);
+      NCollection_Array1<int>    oldVMults(1, nbVKnots);
 
       BSpl->Poles(oldPoles);
       BSpl->Weights(oldWeights);
@@ -473,59 +472,59 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToPeriodic(const Standard_Boole
       BSpl->UMultiplicities(oldUMults);
       BSpl->VMultiplicities(oldVMults);
 
-      TColStd_Array1OfReal    newUKnots(1, nbUKnots + 2);
-      TColStd_Array1OfInteger newUMults(1, nbUKnots + 2);
-      Standard_Real           a =
+      NCollection_Array1<double> newUKnots(1, nbUKnots + 2);
+      NCollection_Array1<int>    newUMults(1, nbUKnots + 2);
+      double                     a =
         0.5 * (BSpl->UKnot(2) - BSpl->UKnot(1) + BSpl->UKnot(nbUKnots) - BSpl->UKnot(nbUKnots - 1));
 
       newUKnots(1)            = oldUKnots(1) - a;
       newUKnots(nbUKnots + 2) = oldUKnots(nbUKnots) + a;
       newUMults(1) = newUMults(nbUKnots + 2) = 1;
-      for (Standard_Integer i = 2; i <= nbUKnots + 1; i++)
+      for (int i = 2; i <= nbUKnots + 1; i++)
       {
         newUKnots(i) = oldUKnots(i - 1);
         newUMults(i) = oldUMults(i - 1);
       }
       newUMults(2) = newUMults(nbUKnots + 1) = BSpl->UDegree();
-      Handle(Geom_BSplineSurface) res        = new Geom_BSplineSurface(oldPoles,
-                                                                oldWeights,
-                                                                newUKnots,
-                                                                oldVKnots,
-                                                                newUMults,
-                                                                oldVMults,
-                                                                BSpl->UDegree(),
-                                                                BSpl->VDegree(),
-                                                                BSpl->IsUPeriodic(),
-                                                                BSpl->IsVPeriodic());
+      occ::handle<Geom_BSplineSurface> res   = new Geom_BSplineSurface(oldPoles,
+                                                                     oldWeights,
+                                                                     newUKnots,
+                                                                     oldVKnots,
+                                                                     newUMults,
+                                                                     oldVMults,
+                                                                     BSpl->UDegree(),
+                                                                     BSpl->VDegree(),
+                                                                     BSpl->IsUPeriodic(),
+                                                                     BSpl->IsVPeriodic());
       BSpl                                   = res;
     }
     else if (BSpl->UMultiplicity(1) > BSpl->UDegree()
              || BSpl->UMultiplicity(BSpl->NbUKnots()) > BSpl->UDegree() + 1)
-      set = Standard_False;
+      set = false;
     if (set)
     {
       BSpl->SetUPeriodic(); // make periodic
-      converted = Standard_True;
+      converted = true;
     }
   }
 
   if (vclosed && !BSpl->IsVPeriodic() && BSpl->NbVPoles() > 3)
   {
-    Standard_Boolean set = Standard_True;
+    bool set = true;
     // if degree+1 at ends, first change it to 1 by rearranging knots
     if (BSpl->VMultiplicity(1) == BSpl->VDegree() + 1
         && BSpl->VMultiplicity(BSpl->NbVKnots()) == BSpl->VDegree() + 1)
     {
-      Standard_Integer        nbUPoles = BSpl->NbUPoles();
-      Standard_Integer        nbVPoles = BSpl->NbVPoles();
-      TColgp_Array2OfPnt      oldPoles(1, nbUPoles, 1, nbVPoles);
-      TColStd_Array2OfReal    oldWeights(1, nbUPoles, 1, nbVPoles);
-      Standard_Integer        nbUKnots = BSpl->NbUKnots();
-      Standard_Integer        nbVKnots = BSpl->NbVKnots();
-      TColStd_Array1OfReal    oldUKnots(1, nbUKnots);
-      TColStd_Array1OfReal    oldVKnots(1, nbVKnots);
-      TColStd_Array1OfInteger oldUMults(1, nbUKnots);
-      TColStd_Array1OfInteger oldVMults(1, nbVKnots);
+      int                        nbUPoles = BSpl->NbUPoles();
+      int                        nbVPoles = BSpl->NbVPoles();
+      NCollection_Array2<gp_Pnt> oldPoles(1, nbUPoles, 1, nbVPoles);
+      NCollection_Array2<double> oldWeights(1, nbUPoles, 1, nbVPoles);
+      int                        nbUKnots = BSpl->NbUKnots();
+      int                        nbVKnots = BSpl->NbVKnots();
+      NCollection_Array1<double> oldUKnots(1, nbUKnots);
+      NCollection_Array1<double> oldVKnots(1, nbVKnots);
+      NCollection_Array1<int>    oldUMults(1, nbUKnots);
+      NCollection_Array1<int>    oldVMults(1, nbVKnots);
 
       BSpl->Poles(oldPoles);
       BSpl->Weights(oldWeights);
@@ -534,39 +533,39 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToPeriodic(const Standard_Boole
       BSpl->UMultiplicities(oldUMults);
       BSpl->VMultiplicities(oldVMults);
 
-      TColStd_Array1OfReal    newVKnots(1, nbVKnots + 2);
-      TColStd_Array1OfInteger newVMults(1, nbVKnots + 2);
-      Standard_Real           a =
+      NCollection_Array1<double> newVKnots(1, nbVKnots + 2);
+      NCollection_Array1<int>    newVMults(1, nbVKnots + 2);
+      double                     a =
         0.5 * (BSpl->VKnot(2) - BSpl->VKnot(1) + BSpl->VKnot(nbVKnots) - BSpl->VKnot(nbVKnots - 1));
 
       newVKnots(1)            = oldVKnots(1) - a;
       newVKnots(nbVKnots + 2) = oldVKnots(nbVKnots) + a;
       newVMults(1) = newVMults(nbVKnots + 2) = 1;
-      for (Standard_Integer i = 2; i <= nbVKnots + 1; i++)
+      for (int i = 2; i <= nbVKnots + 1; i++)
       {
         newVKnots(i) = oldVKnots(i - 1);
         newVMults(i) = oldVMults(i - 1);
       }
       newVMults(2) = newVMults(nbVKnots + 1) = BSpl->VDegree();
-      Handle(Geom_BSplineSurface) res        = new Geom_BSplineSurface(oldPoles,
-                                                                oldWeights,
-                                                                oldUKnots,
-                                                                newVKnots,
-                                                                oldUMults,
-                                                                newVMults,
-                                                                BSpl->UDegree(),
-                                                                BSpl->VDegree(),
-                                                                BSpl->IsUPeriodic(),
-                                                                BSpl->IsVPeriodic());
+      occ::handle<Geom_BSplineSurface> res   = new Geom_BSplineSurface(oldPoles,
+                                                                     oldWeights,
+                                                                     oldUKnots,
+                                                                     newVKnots,
+                                                                     oldUMults,
+                                                                     newVMults,
+                                                                     BSpl->UDegree(),
+                                                                     BSpl->VDegree(),
+                                                                     BSpl->IsUPeriodic(),
+                                                                     BSpl->IsVPeriodic());
       BSpl                                   = res;
     }
     else if (BSpl->VMultiplicity(1) > BSpl->VDegree()
              || BSpl->VMultiplicity(BSpl->NbVKnots()) > BSpl->VDegree() + 1)
-      set = Standard_False;
+      set = false;
     if (set)
     {
       BSpl->SetVPeriodic(); // make periodic
-      converted = Standard_True;
+      converted = true;
     }
   }
 

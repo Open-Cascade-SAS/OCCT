@@ -46,11 +46,11 @@ public:
   //!
   //! Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
   //! Raised if V1 = V2.
-  Standard_EXPORT Convert_SphereToBSplineSurface(const gp_Sphere&    Sph,
-                                                 const Standard_Real U1,
-                                                 const Standard_Real U2,
-                                                 const Standard_Real V1,
-                                                 const Standard_Real V2);
+  Standard_EXPORT Convert_SphereToBSplineSurface(const gp_Sphere& Sph,
+                                                 const double     U1,
+                                                 const double     U2,
+                                                 const double     V1,
+                                                 const double     V2);
 
   //! The equivalent B-spline surface as the same orientation
   //! as the sphere in the U and V parametric directions.
@@ -58,17 +58,14 @@ public:
   //! Raised if UTrim = True and Param1 = Param2 or
   //! Param1 = Param2 + 2.0 * Pi
   //! Raised if UTrim = False and Param1 = Param2
-  Standard_EXPORT Convert_SphereToBSplineSurface(const gp_Sphere&       Sph,
-                                                 const Standard_Real    Param1,
-                                                 const Standard_Real    Param2,
-                                                 const Standard_Boolean UTrim = Standard_True);
+  Standard_EXPORT Convert_SphereToBSplineSurface(const gp_Sphere& Sph,
+                                                 const double     Param1,
+                                                 const double     Param2,
+                                                 const bool       UTrim = true);
 
   //! The equivalent B-spline surface as the same orientation
   //! as the sphere in the U and V parametric directions.
   Standard_EXPORT Convert_SphereToBSplineSurface(const gp_Sphere& Sph);
-
-protected:
-private:
 };
 
 #endif // _Convert_SphereToBSplineSurface_HeaderFile

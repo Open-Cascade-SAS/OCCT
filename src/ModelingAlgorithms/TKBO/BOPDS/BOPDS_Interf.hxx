@@ -17,8 +17,9 @@
 
 #include <IntTools_CommonPrt.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <BOPDS_VectorOfCurve.hxx>
-#include <BOPDS_VectorOfPoint.hxx>
+#include <NCollection_Vector.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_Point.hxx>
 
 /**
  * The class BOPDS_Interf stores the information about
@@ -39,7 +40,7 @@ public:
    * @param theIndex2
    *   index of the second shape
    */
-  void SetIndices(const Standard_Integer theIndex1, const Standard_Integer theIndex2)
+  void SetIndices(const int theIndex1, const int theIndex2)
   {
     myIndex1 = theIndex1;
     myIndex2 = theIndex2;
@@ -53,7 +54,7 @@ public:
    * @param theIndex2
    *   index of the second shape
    */
-  void Indices(Standard_Integer& theIndex1, Standard_Integer& theIndex2) const
+  void Indices(int& theIndex1, int& theIndex2) const
   {
     theIndex1 = myIndex1;
     theIndex2 = myIndex2;
@@ -65,7 +66,7 @@ public:
    * @param theIndex
    *   index of the first shape
    */
-  void SetIndex1(const Standard_Integer theIndex) { myIndex1 = theIndex; }
+  void SetIndex1(const int theIndex) { myIndex1 = theIndex; }
 
   //
   /**
@@ -73,7 +74,7 @@ public:
    * @param theIndex
    *   index of the second shape
    */
-  void SetIndex2(const Standard_Integer theIndex) { myIndex2 = theIndex; }
+  void SetIndex2(const int theIndex) { myIndex2 = theIndex; }
 
   //
   /**
@@ -81,7 +82,7 @@ public:
    * @return
    *   index of the first shape
    */
-  Standard_Integer Index1() const { return myIndex1; }
+  int Index1() const { return myIndex1; }
 
   //
   /**
@@ -89,7 +90,7 @@ public:
    * @return
    *   index of the second shape
    */
-  Standard_Integer Index2() const { return myIndex2; }
+  int Index2() const { return myIndex2; }
 
   //
   /**
@@ -99,7 +100,7 @@ public:
    * @return
    *   index of opposite shape
    */
-  Standard_Integer OppositeIndex(const Standard_Integer theI) const
+  int OppositeIndex(const int theI) const
   {
     if (theI == myIndex1)
     {
@@ -123,10 +124,7 @@ public:
    * @return
    *   true if the interference contains given index
    */
-  Standard_Boolean Contains(const Standard_Integer theIndex) const
-  {
-    return (myIndex1 == theIndex || myIndex2 == theIndex);
-  }
+  bool Contains(const int theIndex) const { return (myIndex1 == theIndex || myIndex2 == theIndex); }
 
   //
   /**
@@ -134,7 +132,7 @@ public:
    * @param theIndex
    *   the index
    */
-  void SetIndexNew(const Standard_Integer theIndex) { myIndexNew = theIndex; }
+  void SetIndexNew(const int theIndex) { myIndexNew = theIndex; }
 
   //
   //
@@ -143,7 +141,7 @@ public:
    * @return theIndex
    *   the index of new shape
    */
-  Standard_Integer IndexNew() const { return myIndexNew; }
+  int IndexNew() const { return myIndexNew; }
 
   //
   /**
@@ -154,7 +152,7 @@ public:
    * @return true if the interference has index of new shape
    * that is equal to the given index
    */
-  Standard_Boolean HasIndexNew(Standard_Integer& theIndex) const
+  bool HasIndexNew(int& theIndex) const
   {
     theIndex = myIndexNew;
     return (myIndexNew >= 0);
@@ -166,7 +164,7 @@ public:
    *   the index
    * @return true if the interference has index of new shape
    */
-  Standard_Boolean HasIndexNew() const { return (myIndexNew + 1) != 0; }
+  bool HasIndexNew() const { return (myIndexNew + 1) != 0; }
 
   //
 protected:
@@ -179,7 +177,7 @@ protected:
   }
 
   //
-  BOPDS_Interf(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_Interf(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : myIndex1(-1),
         myIndex2(-1),
         myIndexNew(-1),
@@ -191,10 +189,10 @@ protected:
   virtual ~BOPDS_Interf() {}
 
 protected:
-  Standard_Integer                  myIndex1;
-  Standard_Integer                  myIndex2;
-  Standard_Integer                  myIndexNew;
-  Handle(NCollection_BaseAllocator) myAllocator;
+  int                                    myIndex1;
+  int                                    myIndex2;
+  int                                    myIndexNew;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
 };
 
 /**
@@ -221,7 +219,7 @@ public:
    * @param theAllocator
    *   allocator to manage the memory
    */
-  BOPDS_InterfVV(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_InterfVV(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : BOPDS_Interf(theAllocator)
   {
   }
@@ -260,7 +258,7 @@ public:
    * @param theAllocator
    *   allocator to manage the memory
    */
-  BOPDS_InterfVE(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_InterfVE(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : BOPDS_Interf(theAllocator),
         myParameter(0.)
   {
@@ -281,7 +279,7 @@ public:
    * @param theT
    *   value of parameter
    */
-  void SetParameter(const Standard_Real theT) { myParameter = theT; }
+  void SetParameter(const double theT) { myParameter = theT; }
 
   //
   /**
@@ -292,10 +290,10 @@ public:
    * @return
    *   value of parameter
    */
-  Standard_Real Parameter() const { return myParameter; }
+  double Parameter() const { return myParameter; }
 
 protected:
-  Standard_Real myParameter;
+  double myParameter;
 };
 
 /**
@@ -324,7 +322,7 @@ public:
    * @param theAllocator
    *   allocator to manage the memory
    */
-  BOPDS_InterfVF(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_InterfVF(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : BOPDS_Interf(theAllocator),
         myU(0.),
         myV(0.)
@@ -348,7 +346,7 @@ public:
    * @param theV
    *   value of U parameter
    */
-  void SetUV(const Standard_Real theU, const Standard_Real theV)
+  void SetUV(const double theU, const double theV)
   {
     myU = theU;
     myV = theV;
@@ -365,15 +363,15 @@ public:
    * @param theV
    *   value of U parameter
    */
-  void UV(Standard_Real& theU, Standard_Real& theV) const
+  void UV(double& theU, double& theV) const
   {
     theU = myU;
     theV = myV;
   }
 
 protected:
-  Standard_Real myU;
-  Standard_Real myV;
+  double myU;
+  double myV;
 };
 
 /**
@@ -400,7 +398,7 @@ public:
    * @param theAllocator
    *   allocator to manage the memory
    */
-  BOPDS_InterfEE(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_InterfEE(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : BOPDS_Interf(theAllocator)
   {
   }
@@ -462,7 +460,7 @@ public:
    * @param theAllocator
    *   allocator to manage the memory
    */
-  BOPDS_InterfEF(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_InterfEF(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : BOPDS_Interf(theAllocator)
   {
   }
@@ -512,7 +510,7 @@ public:
    */
   BOPDS_InterfFF()
       : BOPDS_Interf(),
-        myTangentFaces(Standard_False),
+        myTangentFaces(false),
         myCurves(0, myAllocator),
         myPoints(0, myAllocator)
   {
@@ -533,7 +531,7 @@ public:
    *   number of intersection points
    */
 
-  void Init(const Standard_Integer theNbCurves, const Standard_Integer theNbPoints)
+  void Init(const int theNbCurves, const int theNbPoints)
   {
     if (theNbCurves > 0)
     {
@@ -551,7 +549,7 @@ public:
    * @param theFlag
    *   the flag
    */
-  void SetTangentFaces(const Standard_Boolean theFlag) { myTangentFaces = theFlag; }
+  void SetTangentFaces(const bool theFlag) { myTangentFaces = theFlag; }
 
   /**
    * Selector
@@ -559,7 +557,7 @@ public:
    * @return
    *   the flag
    */
-  Standard_Boolean TangentFaces() const { return myTangentFaces; }
+  bool TangentFaces() const { return myTangentFaces; }
 
   //
   /**
@@ -568,7 +566,7 @@ public:
    * @return
    *   intersection curves
    */
-  const BOPDS_VectorOfCurve& Curves() const { return myCurves; }
+  const NCollection_Vector<BOPDS_Curve>& Curves() const { return myCurves; }
 
   //
   /**
@@ -577,7 +575,7 @@ public:
    * @return
    *   intersection curves
    */
-  BOPDS_VectorOfCurve& ChangeCurves() { return myCurves; }
+  NCollection_Vector<BOPDS_Curve>& ChangeCurves() { return myCurves; }
 
   //
   /**
@@ -586,7 +584,7 @@ public:
    * @return
    *   intersection points
    */
-  const BOPDS_VectorOfPoint& Points() const { return myPoints; }
+  const NCollection_Vector<BOPDS_Point>& Points() const { return myPoints; }
 
   //
   /**
@@ -595,13 +593,13 @@ public:
    * @return
    *   intersection points
    */
-  BOPDS_VectorOfPoint& ChangePoints() { return myPoints; }
+  NCollection_Vector<BOPDS_Point>& ChangePoints() { return myPoints; }
 
   //
 protected:
-  Standard_Boolean    myTangentFaces;
-  BOPDS_VectorOfCurve myCurves;
-  BOPDS_VectorOfPoint myPoints;
+  bool                            myTangentFaces;
+  NCollection_Vector<BOPDS_Curve> myCurves;
+  NCollection_Vector<BOPDS_Point> myPoints;
 };
 
 /**
@@ -625,7 +623,7 @@ public:
    * @param theAllocator
    *   allocator to manage the memory
    */
-  BOPDS_InterfVZ(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_InterfVZ(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : BOPDS_Interf(theAllocator) {};
   //
   /**
@@ -656,7 +654,7 @@ public:
    * @param theAllocator
    *   allocator to manage the memory
    */
-  BOPDS_InterfEZ(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_InterfEZ(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : BOPDS_Interf(theAllocator) {};
   //
   /**
@@ -687,7 +685,7 @@ public:
    * @param theAllocator
    *   allocator to manage the memory
    */
-  BOPDS_InterfFZ(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_InterfFZ(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : BOPDS_Interf(theAllocator) {};
   //
   /**
@@ -718,7 +716,7 @@ public:
    * @param theAllocator
    *   allocator to manage the memory
    */
-  BOPDS_InterfZZ(const Handle(NCollection_BaseAllocator)& theAllocator)
+  BOPDS_InterfZZ(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : BOPDS_Interf(theAllocator) {};
   //
   /**

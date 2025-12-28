@@ -23,12 +23,13 @@
 
 #include <TNaming_NameType.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TNaming_ListOfNamedShape.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TDF_Label.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <TDF_LabelMap.hxx>
+#include <NCollection_Map.hxx>
 class TNaming_NamedShape;
 class TDF_RelocationTable;
 
@@ -46,11 +47,11 @@ public:
 
   Standard_EXPORT void Shape(const TopoDS_Shape& theShape);
 
-  Standard_EXPORT void Append(const Handle(TNaming_NamedShape)& arg);
+  Standard_EXPORT void Append(const occ::handle<TNaming_NamedShape>& arg);
 
-  Standard_EXPORT void StopNamedShape(const Handle(TNaming_NamedShape)& arg);
+  Standard_EXPORT void StopNamedShape(const occ::handle<TNaming_NamedShape>& arg);
 
-  Standard_EXPORT void Index(const Standard_Integer I);
+  Standard_EXPORT void Index(const int I);
 
   Standard_EXPORT void ContextLabel(const TDF_Label& theLab);
 
@@ -62,32 +63,32 @@ public:
 
   Standard_EXPORT TopoDS_Shape Shape() const;
 
-  Standard_EXPORT const TNaming_ListOfNamedShape& Arguments() const;
+  Standard_EXPORT const NCollection_List<occ::handle<TNaming_NamedShape>>& Arguments() const;
 
-  Standard_EXPORT Handle(TNaming_NamedShape) StopNamedShape() const;
+  Standard_EXPORT occ::handle<TNaming_NamedShape> StopNamedShape() const;
 
-  Standard_EXPORT Standard_Integer Index() const;
+  Standard_EXPORT int Index() const;
 
   Standard_EXPORT const TDF_Label& ContextLabel() const;
 
   TopAbs_Orientation Orientation() const { return myOrientation; }
 
-  Standard_EXPORT Standard_Boolean Solve(const TDF_Label& aLab, const TDF_LabelMap& Valid) const;
+  Standard_EXPORT bool Solve(const TDF_Label& aLab, const NCollection_Map<TDF_Label>& Valid) const;
 
-  Standard_EXPORT void Paste(TNaming_Name& into, const Handle(TDF_RelocationTable)& RT) const;
+  Standard_EXPORT void Paste(TNaming_Name& into, const occ::handle<TDF_RelocationTable>& RT) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  TNaming_NameType           myType;
-  TopAbs_ShapeEnum           myShapeType;
-  TNaming_ListOfNamedShape   myArgs;
-  Handle(TNaming_NamedShape) myStop;
-  Standard_Integer           myIndex;
-  TopoDS_Shape               myShape;
-  TDF_Label                  myContextLabel;
-  TopAbs_Orientation         myOrientation;
+  TNaming_NameType                                  myType;
+  TopAbs_ShapeEnum                                  myShapeType;
+  NCollection_List<occ::handle<TNaming_NamedShape>> myArgs;
+  occ::handle<TNaming_NamedShape>                   myStop;
+  int                                               myIndex;
+  TopoDS_Shape                                      myShape;
+  TDF_Label                                         myContextLabel;
+  TopAbs_Orientation                                myOrientation;
 };
 
 #endif // _TNaming_Name_HeaderFile

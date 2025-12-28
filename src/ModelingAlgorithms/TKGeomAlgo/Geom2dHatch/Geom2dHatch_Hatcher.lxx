@@ -49,7 +49,7 @@ inline Geom2dHatch_Intersector& Geom2dHatch_Hatcher::ChangeIntersector()
 // Purpose  : Returns the 2d confusion tolerance.
 //=======================================================================
 
-inline Standard_Real Geom2dHatch_Hatcher::Confusion2d() const
+inline double Geom2dHatch_Hatcher::Confusion2d() const
 {
   return myConfusion2d;
 }
@@ -59,7 +59,7 @@ inline Standard_Real Geom2dHatch_Hatcher::Confusion2d() const
 // Purpose  : Returns the 3d confusion tolerance.
 //=======================================================================
 
-inline Standard_Real Geom2dHatch_Hatcher::Confusion3d() const
+inline double Geom2dHatch_Hatcher::Confusion3d() const
 {
   return myConfusion3d;
 }
@@ -69,7 +69,7 @@ inline Standard_Real Geom2dHatch_Hatcher::Confusion3d() const
 // Purpose  : Returns the flag about the points consideration.
 //=======================================================================
 
-inline Standard_Boolean Geom2dHatch_Hatcher::KeepPoints() const
+inline bool Geom2dHatch_Hatcher::KeepPoints() const
 {
   return myKeepPoints;
 }
@@ -79,7 +79,7 @@ inline Standard_Boolean Geom2dHatch_Hatcher::KeepPoints() const
 // Purpose  : Returns the flag about the segments consideration.
 //=======================================================================
 
-inline Standard_Boolean Geom2dHatch_Hatcher::KeepSegments() const
+inline bool Geom2dHatch_Hatcher::KeepSegments() const
 {
   return myKeepSegments;
 }
@@ -102,7 +102,7 @@ inline void Geom2dHatch_Hatcher::Clear()
 // Purpose  : Returns the IndE-th element.
 //=======================================================================
 
-inline Geom2dHatch_Element& Geom2dHatch_Hatcher::Element(const Standard_Integer IndE)
+inline Geom2dHatch_Element& Geom2dHatch_Hatcher::Element(const int IndE)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myElements.IsBound(IndE), "");
@@ -116,8 +116,7 @@ inline Geom2dHatch_Element& Geom2dHatch_Hatcher::Element(const Standard_Integer 
 // Purpose  : Returns the curve associated to the IndE-th element.
 //=======================================================================
 
-inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::ElementCurve(
-  const Standard_Integer IndE) const
+inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::ElementCurve(const int IndE) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myElements.IsBound(IndE), "");
@@ -131,7 +130,7 @@ inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::ElementCurve(
 // Purpose  : Returns the IndH-th hatching.
 //=======================================================================
 
-inline Geom2dHatch_Hatching& Geom2dHatch_Hatcher::Hatching(const Standard_Integer IndH)
+inline Geom2dHatch_Hatching& Geom2dHatch_Hatcher::Hatching(const int IndH)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
@@ -145,8 +144,7 @@ inline Geom2dHatch_Hatching& Geom2dHatch_Hatcher::Hatching(const Standard_Intege
 // Purpose  : Returns the curve associated to the IndH-th hatching.
 //=======================================================================
 
-inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::HatchingCurve(
-  const Standard_Integer IndH) const
+inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::HatchingCurve(const int IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
@@ -161,7 +159,7 @@ inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::HatchingCurve(
 //            hatching.
 //=======================================================================
 
-inline Standard_Integer Geom2dHatch_Hatcher::NbPoints(const Standard_Integer IndH) const
+inline int Geom2dHatch_Hatcher::NbPoints(const int IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
@@ -176,8 +174,8 @@ inline Standard_Integer Geom2dHatch_Hatcher::NbPoints(const Standard_Integer Ind
 //            hatching.
 //=======================================================================
 
-inline const HatchGen_PointOnHatching& Geom2dHatch_Hatcher::Point(const Standard_Integer IndH,
-                                                                  const Standard_Integer IndP) const
+inline const HatchGen_PointOnHatching& Geom2dHatch_Hatcher::Point(const int IndH,
+                                                                  const int IndP) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
@@ -196,7 +194,7 @@ inline const HatchGen_PointOnHatching& Geom2dHatch_Hatcher::Point(const Standard
 //            for the IndH-th hatching.
 //=======================================================================
 
-inline Standard_Boolean Geom2dHatch_Hatcher::TrimDone(const Standard_Integer IndH) const
+inline bool Geom2dHatch_Hatcher::TrimDone(const int IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
@@ -211,7 +209,7 @@ inline Standard_Boolean Geom2dHatch_Hatcher::TrimDone(const Standard_Integer Ind
 //            for the IndH-th hatching.
 //=======================================================================
 
-inline Standard_Boolean Geom2dHatch_Hatcher::TrimFailed(const Standard_Integer IndH) const
+inline bool Geom2dHatch_Hatcher::TrimFailed(const int IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
@@ -226,7 +224,7 @@ inline Standard_Boolean Geom2dHatch_Hatcher::TrimFailed(const Standard_Integer I
 //            for the IndH-th hatching.
 //=======================================================================
 
-inline Standard_Boolean Geom2dHatch_Hatcher::IsDone(const Standard_Integer IndH) const
+inline bool Geom2dHatch_Hatcher::IsDone(const int IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
@@ -240,7 +238,7 @@ inline Standard_Boolean Geom2dHatch_Hatcher::IsDone(const Standard_Integer IndH)
 // Purpose  : Returns the status about the IndH-th hatching.
 //=======================================================================
 
-inline HatchGen_ErrorStatus Geom2dHatch_Hatcher::Status(const Standard_Integer IndH) const
+inline HatchGen_ErrorStatus Geom2dHatch_Hatcher::Status(const int IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
@@ -254,7 +252,7 @@ inline HatchGen_ErrorStatus Geom2dHatch_Hatcher::Status(const Standard_Integer I
 // Purpose  : Returns the number of domains of the IndH-th hatching.
 //=======================================================================
 
-inline Standard_Integer Geom2dHatch_Hatcher::NbDomains(const Standard_Integer IndH) const
+inline int Geom2dHatch_Hatcher::NbDomains(const int IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");

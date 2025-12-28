@@ -32,41 +32,41 @@
 
 Extrema_ExtPElC::Extrema_ExtPElC()
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myNbExt = 0;
 
-  for (Standard_Integer i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
   {
     mySqDist[i] = RealLast();
-    myIsMin[i]  = Standard_False;
+    myIsMin[i]  = false;
   }
 }
 
 //=================================================================================================
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
-                                 const gp_Lin&       L,
-                                 const Standard_Real Tol,
-                                 const Standard_Real Uinf,
-                                 const Standard_Real Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt& P,
+                                 const gp_Lin& L,
+                                 const double  Tol,
+                                 const double  Uinf,
+                                 const double  Usup)
 {
   Perform(P, L, Tol, Uinf, Usup);
 }
 
 //=================================================================================================
 
-void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
-                              const gp_Lin&       L,
-                              const Standard_Real Tol,
-                              const Standard_Real Uinf,
-                              const Standard_Real Usup)
+void Extrema_ExtPElC::Perform(const gp_Pnt& P,
+                              const gp_Lin& L,
+                              const double  Tol,
+                              const double  Uinf,
+                              const double  Usup)
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myNbExt = 0;
-  gp_Vec        V1(L.Direction());
-  gp_Pnt        OR = L.Location();
-  gp_Vec        V(OR, P);
-  Standard_Real Mydist = V1.Dot(V);
+  gp_Vec V1(L.Direction());
+  gp_Pnt OR = L.Location();
+  gp_Vec V(OR, P);
+  double Mydist = V1.Dot(V);
   if ((Mydist >= Uinf - Tol) && (Mydist <= Usup + Tol))
   {
 
@@ -74,26 +74,26 @@ void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
     Extrema_POnCurv MyPOnCurve(Mydist, MyP);
     mySqDist[0] = P.SquareDistance(MyP);
     myPoint[0]  = MyPOnCurve;
-    myIsMin[0]  = Standard_True;
+    myIsMin[0]  = true;
     myNbExt     = 1;
-    myDone      = Standard_True;
+    myDone      = true;
   }
 }
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
-                                 const gp_Circ&      C,
-                                 const Standard_Real Tol,
-                                 const Standard_Real Uinf,
-                                 const Standard_Real Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&  P,
+                                 const gp_Circ& C,
+                                 const double   Tol,
+                                 const double   Uinf,
+                                 const double   Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
-                              const gp_Circ&      C,
-                              const Standard_Real Tol,
-                              const Standard_Real Uinf,
-                              const Standard_Real Usup)
+void Extrema_ExtPElC::Perform(const gp_Pnt&  P,
+                              const gp_Circ& C,
+                              const double   Tol,
+                              const double   Uinf,
+                              const double   Usup)
 /*-----------------------------------------------------------------------------
 Function:
   Find values of parameter u such as:
@@ -108,7 +108,7 @@ Method:
            O, the center of the circle;
      2 cases:
      - if Pp is mixed with 0, there is an infinite number of solutions;
-       IsDone() renvoie Standard_False.
+       IsDone() renvoie false.
      - otherwise, 2 points are solutions for the complete circle:
        . Us1 = angle(OPp,OX) corresponds to the minimum,
        . let Us2 = ( Us1 + M_PI if Us1 < M_PI,
@@ -117,7 +117,7 @@ Method:
   3- Calculate the extrema in [Uinf,Usup].
 -----------------------------------------------------------------------------*/
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myNbExt = 0;
 
   // 1- Projection of the point P in the plane of circle -> Pp ...
@@ -134,10 +134,10 @@ Method:
   {
     return;
   }
-  Standard_Real Usol[2];
+  double Usol[2];
   Usol[0] = C.XAxis().Direction().AngleWithRef(OPp, Axe); // -M_PI<U1<M_PI
 
-  constexpr Standard_Real aAngTol = Precision::Angular();
+  constexpr double aAngTol = Precision::Angular();
   if (Usol[0] + M_PI < aAngTol)
     Usol[0] = -M_PI;
   else if (Usol[0] - M_PI > -aAngTol)
@@ -145,9 +145,9 @@ Method:
 
   Usol[1] = Usol[0] + M_PI;
 
-  Standard_Real myuinf = Uinf;
-  // Standard_Real TolU = Tol*C.Radius();
-  Standard_Real TolU, aR;
+  double myuinf = Uinf;
+  // double TolU = Tol*C.Radius();
+  double TolU, aR;
   aR   = C.Radius();
   TolU = Precision::Infinite();
   if (aR > gp::Resolution())
@@ -164,9 +164,9 @@ Method:
 
   // 3- Calculate extrema in [Umin,Umax] ...
 
-  gp_Pnt        Cu;
-  Standard_Real Us;
-  for (Standard_Integer NoSol = 0; NoSol <= 1; NoSol++)
+  gp_Pnt Cu;
+  double Us;
+  for (int NoSol = 0; NoSol <= 1; NoSol++)
   {
     Us = Usol[NoSol];
     if (((Uinf - Us) < TolU) && ((Us - Usup) < TolU))
@@ -178,25 +178,25 @@ Method:
       myNbExt++;
     }
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=============================================================================
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
-                                 const gp_Elips&     C,
-                                 const Standard_Real Tol,
-                                 const Standard_Real Uinf,
-                                 const Standard_Real Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&   P,
+                                 const gp_Elips& C,
+                                 const double    Tol,
+                                 const double    Uinf,
+                                 const double    Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
-                              const gp_Elips&     C,
-                              const Standard_Real Tol,
-                              const Standard_Real Uinf,
-                              const Standard_Real Usup)
+void Extrema_ExtPElC::Perform(const gp_Pnt&   P,
+                              const gp_Elips& C,
+                              const double    Tol,
+                              const double    Uinf,
+                              const double    Usup)
 /*-----------------------------------------------------------------------------
 Function:
   Find values of parameter u so that:
@@ -216,7 +216,7 @@ Method:
      Use algorithm math_TrigonometricFunctionRoots to solve this equation.
 -----------------------------------------------------------------------------*/
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myNbExt = 0;
 
   // 1- Projection of point P in the plane of the ellipse -> Pp ...
@@ -228,11 +228,11 @@ Method:
 
   // 2- Calculation of solutions ...
 
-  Standard_Integer NoSol, NbSol;
-  Standard_Real    A = C.MajorRadius();
-  Standard_Real    B = C.MinorRadius();
-  gp_Vec           OPp(O, Pp);
-  Standard_Real    OPpMagn = OPp.Magnitude();
+  int    NoSol, NbSol;
+  double A = C.MajorRadius();
+  double B = C.MinorRadius();
+  gp_Vec OPp(O, Pp);
+  double OPpMagn = OPp.Magnitude();
   if (OPpMagn < Tol)
   {
     if (std::abs(A - B) < Tol)
@@ -240,10 +240,10 @@ Method:
       return;
     }
   }
-  Standard_Real X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
-  Standard_Real Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
+  double X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
+  double Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
 
-  Standard_Real ko2 = (B * B - A * A) / 2., ko3 = -B * Y, ko4 = A * X;
+  double ko2 = (B * B - A * A) / 2., ko3 = -B * Y, ko4 = A * X;
   if (std::abs(ko3) < 1.e-16 * std::max(std::abs(ko2), std::abs(ko3)))
     ko3 = 0.0;
 
@@ -254,8 +254,8 @@ Method:
   {
     return;
   }
-  gp_Pnt        Cu;
-  Standard_Real Us;
+  gp_Pnt Cu;
+  double Us;
   NbSol = Sol.NbSolutions();
   for (NoSol = 1; NoSol <= NbSol; NoSol++)
   {
@@ -267,25 +267,25 @@ Method:
     myIsMin[myNbExt]  = mySqDist[myNbExt] < Cu.SquareDistance(P);
     myNbExt++;
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=============================================================================
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
-                                 const gp_Hypr&      C,
-                                 const Standard_Real Tol,
-                                 const Standard_Real Uinf,
-                                 const Standard_Real Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&  P,
+                                 const gp_Hypr& C,
+                                 const double   Tol,
+                                 const double   Uinf,
+                                 const double   Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
-                              const gp_Hypr&      C,
-                              const Standard_Real Tol,
-                              const Standard_Real Uinf,
-                              const Standard_Real Usup)
+void Extrema_ExtPElC::Perform(const gp_Pnt&  P,
+                              const gp_Hypr& C,
+                              const double   Tol,
+                              const double   Uinf,
+                              const double   Usup)
 /*-----------------------------------------------------------------------------
 Function:
   Find values of parameter u so that:
@@ -315,7 +315,7 @@ Method:
   Use algorithm math_DirectPolynomialRoots to solve this equation by v.
 -----------------------------------------------------------------------------*/
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myNbExt = 0;
 
   // 1- Projection of point P in the plane of hyperbola -> Pp ...
@@ -327,26 +327,26 @@ Method:
 
   // 2- Calculation of solutions ...
 
-  Standard_Real Tol2 = Tol * Tol;
-  Standard_Real R    = C.MajorRadius();
-  Standard_Real r    = C.MinorRadius();
-  gp_Vec        OPp(O, Pp);
-  Standard_Real X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
-  Standard_Real Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
+  double Tol2 = Tol * Tol;
+  double R    = C.MajorRadius();
+  double r    = C.MinorRadius();
+  gp_Vec OPp(O, Pp);
+  double X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
+  double Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
 
-  Standard_Real              C1 = (R * R + r * r) / 4.;
+  double                     C1 = (R * R + r * r) / 4.;
   math_DirectPolynomialRoots Sol(C1, -(X * R + Y * r) / 2., 0., (X * R - Y * r) / 2., -C1);
   if (!Sol.IsDone())
   {
     return;
   }
-  gp_Pnt           Cu;
-  Standard_Real    Us, Vs;
-  Standard_Integer NbSol = Sol.NbSolutions();
-  Standard_Boolean DejaEnr;
-  Standard_Integer NoExt;
-  gp_Pnt           TbExt[4];
-  for (Standard_Integer NoSol = 1; NoSol <= NbSol; NoSol++)
+  gp_Pnt Cu;
+  double Us, Vs;
+  int    NbSol = Sol.NbSolutions();
+  bool   DejaEnr;
+  int    NoExt;
+  gp_Pnt TbExt[4];
+  for (int NoSol = 1; NoSol <= NbSol; NoSol++)
   {
     Vs = Sol.Value(NoSol);
     if (Vs > 0.)
@@ -355,12 +355,12 @@ Method:
       if ((Us >= Uinf) && (Us <= Usup))
       {
         Cu      = ElCLib::Value(Us, C);
-        DejaEnr = Standard_False;
+        DejaEnr = false;
         for (NoExt = 0; NoExt < myNbExt; NoExt++)
         {
           if (TbExt[NoExt].SquareDistance(Cu) < Tol2)
           {
-            DejaEnr = Standard_True;
+            DejaEnr = true;
             break;
           }
         }
@@ -374,27 +374,27 @@ Method:
         }
       } // if ((Us >= Uinf) && (Us <= Usup))
     } // if (Vs > 0.)
-  } // for (Standard_Integer NoSol = 1; ...
-  myDone = Standard_True;
+  } // for (int NoSol = 1; ...
+  myDone = true;
 }
 
 //=============================================================================
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
-                                 const gp_Parab&     C,
-                                 const Standard_Real Tol,
-                                 const Standard_Real Uinf,
-                                 const Standard_Real Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&   P,
+                                 const gp_Parab& C,
+                                 const double    Tol,
+                                 const double    Uinf,
+                                 const double    Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
 void Extrema_ExtPElC::Perform(const gp_Pnt&   P,
                               const gp_Parab& C,
-                              //			      const Standard_Real Tol,
-                              const Standard_Real,
-                              const Standard_Real Uinf,
-                              const Standard_Real Usup)
+                              //			      const double Tol,
+                              const double,
+                              const double Uinf,
+                              const double Usup)
 /*-----------------------------------------------------------------------------
 Function:
   Find values of parameter u so that:
@@ -414,7 +414,7 @@ Method:
     Use algorithm math_DirectPolynomialRoots to solve this equation by U.
 -----------------------------------------------------------------------------*/
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myNbExt = 0;
 
   // 1- Projection of point P in the plane of the parabola -> Pp ...
@@ -426,33 +426,33 @@ Method:
 
   // 2- Calculation of solutions ...
 
-  Standard_Real              F = C.Focal();
+  double                     F = C.Focal();
   gp_Vec                     OPp(O, Pp);
-  Standard_Real              X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
-  Standard_Real              Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
+  double                     X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
+  double                     Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
   math_DirectPolynomialRoots Sol(1. / (4. * F), 0., 2. * F - X, -2. * F * Y);
   if (!Sol.IsDone())
   {
     return;
   }
-  gp_Pnt           Cu;
-  Standard_Real    Us;
-  Standard_Integer NbSol = Sol.NbSolutions();
-  Standard_Boolean DejaEnr;
-  Standard_Integer NoExt;
-  gp_Pnt           TbExt[3];
-  for (Standard_Integer NoSol = 1; NoSol <= NbSol; NoSol++)
+  gp_Pnt Cu;
+  double Us;
+  int    NbSol = Sol.NbSolutions();
+  bool   DejaEnr;
+  int    NoExt;
+  gp_Pnt TbExt[3];
+  for (int NoSol = 1; NoSol <= NbSol; NoSol++)
   {
     Us = Sol.Value(NoSol);
     if ((Us >= Uinf) && (Us <= Usup))
     {
       Cu      = ElCLib::Value(Us, C);
-      DejaEnr = Standard_False;
+      DejaEnr = false;
       for (NoExt = 0; NoExt < myNbExt; NoExt++)
       {
         if (TbExt[NoExt].SquareDistance(Cu) < Precision::SquareConfusion())
         {
-          DejaEnr = Standard_True;
+          DejaEnr = true;
           break;
         }
       }
@@ -465,20 +465,20 @@ Method:
         myNbExt++;
       }
     } // if ((Us >= Uinf) && (Us <= Usup))
-  } // for (Standard_Integer NoSol = 1; ...
-  myDone = Standard_True;
+  } // for (int NoSol = 1; ...
+  myDone = true;
 }
 
 //=============================================================================
 
-Standard_Boolean Extrema_ExtPElC::IsDone() const
+bool Extrema_ExtPElC::IsDone() const
 {
   return myDone;
 }
 
 //=============================================================================
 
-Standard_Integer Extrema_ExtPElC::NbExt() const
+int Extrema_ExtPElC::NbExt() const
 {
   if (!IsDone())
   {
@@ -489,7 +489,7 @@ Standard_Integer Extrema_ExtPElC::NbExt() const
 
 //=============================================================================
 
-Standard_Real Extrema_ExtPElC::SquareDistance(const Standard_Integer N) const
+double Extrema_ExtPElC::SquareDistance(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
   {
@@ -500,7 +500,7 @@ Standard_Real Extrema_ExtPElC::SquareDistance(const Standard_Integer N) const
 
 //=============================================================================
 
-Standard_Boolean Extrema_ExtPElC::IsMin(const Standard_Integer N) const
+bool Extrema_ExtPElC::IsMin(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
   {
@@ -511,7 +511,7 @@ Standard_Boolean Extrema_ExtPElC::IsMin(const Standard_Integer N) const
 
 //=============================================================================
 
-const Extrema_POnCurv& Extrema_ExtPElC::Point(const Standard_Integer N) const
+const Extrema_POnCurv& Extrema_ExtPElC::Point(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
   {

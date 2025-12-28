@@ -31,10 +31,10 @@ RWStepRepr_RWMeasureRepresentationItem::RWStepRepr_RWMeasureRepresentationItem()
 //=================================================================================================
 
 void RWStepRepr_RWMeasureRepresentationItem::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepRepr_MeasureRepresentationItem)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                                              num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepRepr_MeasureRepresentationItem>& ent) const
 {
   // --- Number of Parameter Control ---
 
@@ -42,11 +42,11 @@ void RWStepRepr_RWMeasureRepresentationItem::ReadStep(
     return;
 
   // --- inherited from representation_item : name ---
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited from measure_with_unit : value_component ---
-  Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 2, "value_component", ach, mvc);
 
   // --- inherited from measure_with_unit : unit_component ---
@@ -61,8 +61,8 @@ void RWStepRepr_RWMeasureRepresentationItem::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWMeasureRepresentationItem::WriteStep(
-  StepData_StepWriter&                              SW,
-  const Handle(StepRepr_MeasureRepresentationItem)& ent) const
+  StepData_StepWriter&                                   SW,
+  const occ::handle<StepRepr_MeasureRepresentationItem>& ent) const
 {
   // --- inherited from representation_item : name ---
   SW.Send(ent->Name());
@@ -77,8 +77,8 @@ void RWStepRepr_RWMeasureRepresentationItem::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWMeasureRepresentationItem::Share(
-  const Handle(StepRepr_MeasureRepresentationItem)& ent,
-  Interface_EntityIterator&                         iter) const
+  const occ::handle<StepRepr_MeasureRepresentationItem>& ent,
+  Interface_EntityIterator&                              iter) const
 {
 
   iter.GetOneItem(ent->Measure()->UnitComponent().Value());

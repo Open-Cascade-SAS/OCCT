@@ -18,36 +18,36 @@
 
 #include <Standard.hxx>
 
-#include <MeshVS_DataMapOfHArray1OfSequenceOfInteger.hxx>
-#include <MeshVS_DataSource.hxx>
-#include <MeshVS_HArray1OfSequenceOfInteger.hxx>
 #include <Standard_Integer.hxx>
-
-class MeshVS_DataSource3D;
-DEFINE_STANDARD_HANDLE(MeshVS_DataSource3D, MeshVS_DataSource)
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <MeshVS_DataSource.hxx>
 
 class MeshVS_DataSource3D : public MeshVS_DataSource
 {
 
 public:
-  Standard_EXPORT Handle(MeshVS_HArray1OfSequenceOfInteger) GetPrismTopology(
-    const Standard_Integer BasePoints) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> GetPrismTopology(
+    const int BasePoints) const;
 
-  Standard_EXPORT Handle(MeshVS_HArray1OfSequenceOfInteger) GetPyramidTopology(
-    const Standard_Integer BasePoints) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> GetPyramidTopology(
+    const int BasePoints) const;
 
-  Standard_EXPORT static Handle(MeshVS_HArray1OfSequenceOfInteger) CreatePrismTopology(
-    const Standard_Integer BasePoints);
+  Standard_EXPORT static occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>
+    CreatePrismTopology(const int BasePoints);
 
-  Standard_EXPORT static Handle(MeshVS_HArray1OfSequenceOfInteger) CreatePyramidTopology(
-    const Standard_Integer BasePoints);
+  Standard_EXPORT static occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>
+    CreatePyramidTopology(const int BasePoints);
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_DataSource3D, MeshVS_DataSource)
 
-protected:
 private:
-  MeshVS_DataMapOfHArray1OfSequenceOfInteger myPrismTopos;
-  MeshVS_DataMapOfHArray1OfSequenceOfInteger myPyramidTopos;
+  NCollection_DataMap<int, occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>>
+    myPrismTopos;
+  NCollection_DataMap<int, occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>>
+    myPyramidTopos;
 };
 
 #endif // _MeshVS_DataSource3D_HeaderFile

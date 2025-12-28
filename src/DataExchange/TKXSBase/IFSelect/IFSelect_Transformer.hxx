@@ -27,9 +27,6 @@ class Interface_CheckIterator;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-class IFSelect_Transformer;
-DEFINE_STANDARD_HANDLE(IFSelect_Transformer, Standard_Transient)
-
 //! A Transformer defines the way an InterfaceModel is transformed
 //! (without sending it to a file).
 //! In order to work, each type of Transformer defines it method
@@ -69,10 +66,10 @@ public:
   //! Returns True if Done, False if an Error occurred:
   //! in this case, if a new data set has been produced, the transformation is ignored,
   //! else data may be corrupted.
-  Standard_EXPORT virtual Standard_Boolean Perform(const Interface_Graph&            G,
-                                                   const Handle(Interface_Protocol)& protocol,
-                                                   Interface_CheckIterator&          checks,
-                                                   Handle(Interface_InterfaceModel)& newmod) = 0;
+  Standard_EXPORT virtual bool Perform(const Interface_Graph&                 G,
+                                       const occ::handle<Interface_Protocol>& protocol,
+                                       Interface_CheckIterator&               checks,
+                                       occ::handle<Interface_InterfaceModel>& newmod) = 0;
 
   //! This methods allows to declare that the Protocol applied to
   //! the new Model has changed. It applies to the last call to
@@ -81,16 +78,15 @@ public:
   //! Returns True if the Protocol has changed, False else.
   //! The provided default keeps the starting Protocol. This method
   //! should be redefined as required by the effect of Perform.
-  Standard_EXPORT virtual Standard_Boolean ChangeProtocol(
-    Handle(Interface_Protocol)& newproto) const;
+  Standard_EXPORT virtual bool ChangeProtocol(occ::handle<Interface_Protocol>& newproto) const;
 
   //! This method allows to know what happened to a starting
   //! entity after the last Perform. If <entfrom> (from starting
   //! model) has one and only one known item which corresponds in
   //! the new produced model, this method must return True and
   //! fill the argument <entto>. Else, it returns False.
-  Standard_EXPORT virtual Standard_Boolean Updated(const Handle(Standard_Transient)& entfrom,
-                                                   Handle(Standard_Transient)& entto) const = 0;
+  Standard_EXPORT virtual bool Updated(const occ::handle<Standard_Transient>& entfrom,
+                                       occ::handle<Standard_Transient>&       entto) const = 0;
 
   //! Returns a text which defines the way a Transformer works
   //! (to identify the transformation it performs)

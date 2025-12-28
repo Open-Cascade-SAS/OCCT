@@ -27,30 +27,24 @@ class Blend_SurfRstFunction;
 class Blend_AppFunction;
 class Blend_Point;
 
-class BRepBlend_AppFuncRst;
-DEFINE_STANDARD_HANDLE(BRepBlend_AppFuncRst, BRepBlend_AppFuncRoot)
-
 //! Function to approximate by AppSurface for Curve/Surface contact.
 class BRepBlend_AppFuncRst : public BRepBlend_AppFuncRoot
 {
 
 public:
-  Standard_EXPORT BRepBlend_AppFuncRst(Handle(BRepBlend_Line)& Line,
-                                       Blend_SurfRstFunction&  Func,
-                                       const Standard_Real     Tol3d,
-                                       const Standard_Real     Tol2d);
+  Standard_EXPORT BRepBlend_AppFuncRst(occ::handle<BRepBlend_Line>& Line,
+                                       Blend_SurfRstFunction&       Func,
+                                       const double                 Tol3d,
+                                       const double                 Tol2d);
 
   Standard_EXPORT void Point(const Blend_AppFunction& Func,
-                             const Standard_Real      Param,
+                             const double             Param,
                              const math_Vector&       Sol,
-                             Blend_Point&             Pnt) const Standard_OVERRIDE;
+                             Blend_Point&             Pnt) const override;
 
-  Standard_EXPORT void Vec(math_Vector& Sol, const Blend_Point& Pnt) const Standard_OVERRIDE;
+  Standard_EXPORT void Vec(math_Vector& Sol, const Blend_Point& Pnt) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRepBlend_AppFuncRst, BRepBlend_AppFuncRoot)
-
-protected:
-private:
 };
 
 #endif // _BRepBlend_AppFuncRst_HeaderFile

@@ -25,11 +25,13 @@
 IMPLEMENT_STANDARD_RTTIEXT(AIS_MediaPlayer, AIS_InteractiveObject)
 
 //! Create an array of triangles defining a rectangle.
-static Handle(Graphic3d_ArrayOfTriangles) createRectangleArray(const Graphic3d_Vec2i& theLower,
-                                                               const Graphic3d_Vec2i& theUpper,
-                                                               Graphic3d_ArrayFlags   theFlags)
+static occ::handle<Graphic3d_ArrayOfTriangles> createRectangleArray(
+  const NCollection_Vec2<int>& theLower,
+  const NCollection_Vec2<int>& theUpper,
+  Graphic3d_ArrayFlags         theFlags)
 {
-  Handle(Graphic3d_ArrayOfTriangles) aRectTris = new Graphic3d_ArrayOfTriangles(4, 6, theFlags);
+  occ::handle<Graphic3d_ArrayOfTriangles> aRectTris =
+    new Graphic3d_ArrayOfTriangles(4, 6, theFlags);
   aRectTris->AddVertex(gp_Pnt(theLower.x(), theLower.y(), 0.0), gp_Pnt2d(0.0, 1.0));
   aRectTris->AddVertex(gp_Pnt(theLower.x(), theUpper.y(), 0.0), gp_Pnt2d(0.0, 0.0));
   aRectTris->AddVertex(gp_Pnt(theUpper.x(), theUpper.y(), 0.0), gp_Pnt2d(1.0, 0.0));
@@ -73,7 +75,7 @@ AIS_MediaPlayer::~AIS_MediaPlayer()
 
 //=================================================================================================
 
-void AIS_MediaPlayer::OpenInput(const TCollection_AsciiString& thePath, Standard_Boolean theToWait)
+void AIS_MediaPlayer::OpenInput(const TCollection_AsciiString& thePath, bool theToWait)
 {
   if (myFramePair->PlayerContext().IsNull() && thePath.IsEmpty())
   {
@@ -86,8 +88,8 @@ void AIS_MediaPlayer::OpenInput(const TCollection_AsciiString& thePath, Standard
 
 //=================================================================================================
 
-bool AIS_MediaPlayer::PresentFrame(const Graphic3d_Vec2i& theLeftCorner,
-                                   const Graphic3d_Vec2i& theMaxSize)
+bool AIS_MediaPlayer::PresentFrame(const NCollection_Vec2<int>& theLeftCorner,
+                                   const NCollection_Vec2<int>& theMaxSize)
 {
   if (myToClosePlayer)
   {
@@ -102,8 +104,8 @@ bool AIS_MediaPlayer::PresentFrame(const Graphic3d_Vec2i& theLeftCorner,
       myFramePair->PlayerContext()->Pause();
     }
 
-    Handle(AIS_InteractiveContext) aCtx  = GetContext();
-    Handle(AIS_InteractiveObject)  aThis = this;
+    occ::handle<AIS_InteractiveContext> aCtx  = GetContext();
+    occ::handle<AIS_InteractiveObject>  aThis = this;
     aCtx->Remove(aThis, false);
     aCtx->CurrentViewer()->Invalidate();
     return true;
@@ -126,12 +128,12 @@ bool AIS_MediaPlayer::PresentFrame(const Graphic3d_Vec2i& theLeftCorner,
 
 //=================================================================================================
 
-bool AIS_MediaPlayer::updateSize(const Graphic3d_Vec2i& theLeftCorner,
-                                 const Graphic3d_Vec2i& theMaxSize)
+bool AIS_MediaPlayer::updateSize(const NCollection_Vec2<int>& theLeftCorner,
+                                 const NCollection_Vec2<int>& theMaxSize)
 {
-  const Graphic3d_Vec2i aFrameSize = myFramePair->FrameSize();
-  Graphic3d_Vec2i       aNewPos    = theLeftCorner;
-  Graphic3d_Vec2i       aNewSize   = myFrameSize;
+  const NCollection_Vec2<int> aFrameSize = myFramePair->FrameSize();
+  NCollection_Vec2<int>       aNewPos    = theLeftCorner;
+  NCollection_Vec2<int>       aNewSize   = myFrameSize;
   if (aFrameSize.x() > 0 && aFrameSize.y() > 0)
   {
     const double anAspect   = double(theMaxSize.x()) / double(theMaxSize.y());
@@ -188,16 +190,16 @@ void AIS_MediaPlayer::PlayPause()
     return;
   }
 
-  Standard_Real aProgress = 0.0, aDuration = 0.0;
-  bool          isPaused = false;
+  double aProgress = 0.0, aDuration = 0.0;
+  bool   isPaused = false;
   myFramePair->PlayerContext()->PlayPause(isPaused, aProgress, aDuration);
 }
 
 //=================================================================================================
 
-void AIS_MediaPlayer::Compute(const Handle(PrsMgr_PresentationManager)&,
-                              const Handle(Prs3d_Presentation)& thePrs,
-                              const Standard_Integer            theMode)
+void AIS_MediaPlayer::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                              const occ::handle<Prs3d_Presentation>& thePrs,
+                              const int                              theMode)
 {
   thePrs->SetInfiniteState(IsInfinite());
   if (theMode != 0)
@@ -207,11 +209,11 @@ void AIS_MediaPlayer::Compute(const Handle(PrsMgr_PresentationManager)&,
 
   // main frame
   {
-    Handle(Graphic3d_ArrayOfTriangles) aTris =
+    occ::handle<Graphic3d_ArrayOfTriangles> aTris =
       createRectangleArray(myFrameBottomLeft,
                            myFrameBottomLeft + myFrameSize,
                            Graphic3d_ArrayFlags_VertexTexel);
-    Handle(Graphic3d_Group) aMainGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aMainGroup = thePrs->NewGroup();
     aMainGroup->SetGroupPrimitivesAspect(myFrameAspect);
     aMainGroup->AddPrimitiveArray(aTris);
   }
@@ -219,20 +221,22 @@ void AIS_MediaPlayer::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void AIS_MediaPlayer::ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                       const Standard_Integer             theMode)
+void AIS_MediaPlayer::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                       const int                               theMode)
 {
   if (theMode != 0)
   {
     return;
   }
 
-  Handle(Graphic3d_ArrayOfTriangles) aTris = createRectangleArray(myFrameBottomLeft,
-                                                                  myFrameBottomLeft + myFrameSize,
-                                                                  Graphic3d_ArrayFlags_None);
+  occ::handle<Graphic3d_ArrayOfTriangles> aTris =
+    createRectangleArray(myFrameBottomLeft,
+                         myFrameBottomLeft + myFrameSize,
+                         Graphic3d_ArrayFlags_None);
 
-  Handle(SelectMgr_EntityOwner)            anOwner = new SelectMgr_EntityOwner(this, 5);
-  Handle(Select3D_SensitivePrimitiveArray) aSens   = new Select3D_SensitivePrimitiveArray(anOwner);
+  occ::handle<SelectMgr_EntityOwner>            anOwner = new SelectMgr_EntityOwner(this, 5);
+  occ::handle<Select3D_SensitivePrimitiveArray> aSens =
+    new Select3D_SensitivePrimitiveArray(anOwner);
   aSens->InitTriangulation(aTris->Attributes(), aTris->Indices(), TopLoc_Location());
   theSel->Add(aSens);
 }

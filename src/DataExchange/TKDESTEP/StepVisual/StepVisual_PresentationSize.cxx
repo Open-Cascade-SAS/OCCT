@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationSize, Standard_Transient)
 StepVisual_PresentationSize::StepVisual_PresentationSize() {}
 
 void StepVisual_PresentationSize::Init(const StepVisual_PresentationSizeAssignmentSelect& aUnit,
-                                       const Handle(StepVisual_PlanarBox)&                aSize)
+                                       const occ::handle<StepVisual_PlanarBox>&           aSize)
 {
   // --- classe own fields ---
   unit = aUnit;
@@ -37,12 +37,12 @@ StepVisual_PresentationSizeAssignmentSelect StepVisual_PresentationSize::Unit() 
   return unit;
 }
 
-void StepVisual_PresentationSize::SetSize(const Handle(StepVisual_PlanarBox)& aSize)
+void StepVisual_PresentationSize::SetSize(const occ::handle<StepVisual_PlanarBox>& aSize)
 {
   size = aSize;
 }
 
-Handle(StepVisual_PlanarBox) StepVisual_PresentationSize::Size() const
+occ::handle<StepVisual_PlanarBox> StepVisual_PresentationSize::Size() const
 {
   return size;
 }

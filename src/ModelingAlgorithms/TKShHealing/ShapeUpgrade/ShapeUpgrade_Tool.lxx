@@ -16,21 +16,21 @@
 
 //=================================================================================================
 
-inline void ShapeUpgrade_Tool::SetContext(const Handle(ShapeBuild_ReShape)& context)
+inline void ShapeUpgrade_Tool::SetContext(const occ::handle<ShapeBuild_ReShape>& context)
 {
   myContext = context;
 }
 
 //=================================================================================================
 
-inline Handle(ShapeBuild_ReShape) ShapeUpgrade_Tool::Context() const
+inline occ::handle<ShapeBuild_ReShape> ShapeUpgrade_Tool::Context() const
 {
   return myContext;
 }
 
 //=================================================================================================
 
-inline void ShapeUpgrade_Tool::SetPrecision(const Standard_Real preci)
+inline void ShapeUpgrade_Tool::SetPrecision(const double preci)
 {
   myPrecision = preci;
   if (myMaxTol < myPrecision)
@@ -41,42 +41,42 @@ inline void ShapeUpgrade_Tool::SetPrecision(const Standard_Real preci)
 
 //=================================================================================================
 
-inline Standard_Real ShapeUpgrade_Tool::Precision() const
+inline double ShapeUpgrade_Tool::Precision() const
 {
   return myPrecision;
 }
 
 //=================================================================================================
 
-inline void ShapeUpgrade_Tool::SetMinTolerance(const Standard_Real mintol)
+inline void ShapeUpgrade_Tool::SetMinTolerance(const double mintol)
 {
   myMinTol = mintol;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeUpgrade_Tool::MinTolerance() const
+inline double ShapeUpgrade_Tool::MinTolerance() const
 {
   return myMinTol;
 }
 
 //=================================================================================================
 
-inline void ShapeUpgrade_Tool::SetMaxTolerance(const Standard_Real maxtol)
+inline void ShapeUpgrade_Tool::SetMaxTolerance(const double maxtol)
 {
   myMaxTol = maxtol;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeUpgrade_Tool::MaxTolerance() const
+inline double ShapeUpgrade_Tool::MaxTolerance() const
 {
   return myMaxTol;
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeUpgrade_Tool::LimitTolerance(const Standard_Real toler) const
+inline double ShapeUpgrade_Tool::LimitTolerance(const double toler) const
 {
   // only maximal restriction implemented.
   return std::min(myMaxTol, toler);

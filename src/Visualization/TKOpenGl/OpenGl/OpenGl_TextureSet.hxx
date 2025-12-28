@@ -28,12 +28,12 @@ public:
   //! Texture slot - combination of Texture and binding Unit.
   struct TextureSlot
   {
-    Handle(OpenGl_Texture) Texture;
-    Graphic3d_TextureUnit  Unit;
+    occ::handle<OpenGl_Texture> Texture;
+    Graphic3d_TextureUnit       Unit;
 
-    operator const Handle(OpenGl_Texture)&() const { return Texture; }
+    operator const occ::handle<OpenGl_Texture>&() const { return Texture; }
 
-    operator Handle(OpenGl_Texture)&() { return Texture; }
+    operator occ::handle<OpenGl_Texture>&() { return Texture; }
 
     TextureSlot()
         : Unit(Graphic3d_TextureUnit_0)
@@ -49,7 +49,7 @@ public:
     Iterator() {}
 
     //! Constructor.
-    Iterator(const Handle(OpenGl_TextureSet)& theSet)
+    Iterator(const occ::handle<OpenGl_TextureSet>& theSet)
     {
       if (!theSet.IsNull())
       {
@@ -58,12 +58,12 @@ public:
     }
 
     //! Access texture.
-    const Handle(OpenGl_Texture)& Value() const
+    const occ::handle<OpenGl_Texture>& Value() const
     {
       return NCollection_Array1<TextureSlot>::Iterator::Value().Texture;
     }
 
-    Handle(OpenGl_Texture)& ChangeValue()
+    occ::handle<OpenGl_Texture>& ChangeValue()
     {
       return NCollection_Array1<TextureSlot>::Iterator::ChangeValue().Texture;
     }
@@ -88,47 +88,47 @@ public:
   }
 
   //! Constructor.
-  OpenGl_TextureSet(Standard_Integer theNbTextures)
+  OpenGl_TextureSet(int theNbTextures)
       : myTextures(0, theNbTextures - 1),
         myTextureSetBits(Graphic3d_TextureSetBits_NONE)
   {
   }
 
   //! Constructor for a single texture.
-  Standard_EXPORT OpenGl_TextureSet(const Handle(OpenGl_Texture)& theTexture);
+  Standard_EXPORT OpenGl_TextureSet(const occ::handle<OpenGl_Texture>& theTexture);
 
   //! Return texture units declared within the program, @sa Graphic3d_TextureSetBits.
-  Standard_Integer TextureSetBits() const { return myTextureSetBits; }
+  int TextureSetBits() const { return myTextureSetBits; }
 
   //! Return texture units declared within the program, @sa Graphic3d_TextureSetBits.
-  Standard_Integer& ChangeTextureSetBits() { return myTextureSetBits; }
+  int& ChangeTextureSetBits() { return myTextureSetBits; }
 
   //! Return TRUE if texture array is empty.
-  Standard_Boolean IsEmpty() const { return myTextures.IsEmpty(); }
+  bool IsEmpty() const { return myTextures.IsEmpty(); }
 
   //! Return number of textures.
-  Standard_Integer Size() const { return myTextures.Size(); }
+  int Size() const { return myTextures.Size(); }
 
   //! Return the lower index in texture set.
-  Standard_Integer Lower() const { return myTextures.Lower(); }
+  int Lower() const { return myTextures.Lower(); }
 
   //! Return the upper index in texture set.
-  Standard_Integer Upper() const { return myTextures.Upper(); }
+  int Upper() const { return myTextures.Upper(); }
 
   //! Return the first texture.
-  const Handle(OpenGl_Texture)& First() const { return myTextures.First().Texture; }
+  const occ::handle<OpenGl_Texture>& First() const { return myTextures.First().Texture; }
 
   //! Return the first texture.
-  Handle(OpenGl_Texture)& ChangeFirst() { return myTextures.ChangeFirst().Texture; }
+  occ::handle<OpenGl_Texture>& ChangeFirst() { return myTextures.ChangeFirst().Texture; }
 
   //! Return the first texture unit.
   Graphic3d_TextureUnit FirstUnit() const { return myTextures.First().Unit; }
 
   //! Return the last texture.
-  const Handle(OpenGl_Texture)& Last() const { return myTextures.Last().Texture; }
+  const occ::handle<OpenGl_Texture>& Last() const { return myTextures.Last().Texture; }
 
   //! Return the last texture.
-  Handle(OpenGl_Texture)& ChangeLast() { return myTextures.ChangeLast().Texture; }
+  occ::handle<OpenGl_Texture>& ChangeLast() { return myTextures.ChangeLast().Texture; }
 
   //! Return the last texture unit.
   Graphic3d_TextureUnit LastUnit() const { return myTextures.Last().Unit; }
@@ -137,13 +137,13 @@ public:
   Graphic3d_TextureUnit& ChangeLastUnit() { return myTextures.ChangeLast().Unit; }
 
   //! Return the texture at specified position within [0, Size()) range.
-  const Handle(OpenGl_Texture)& Value(Standard_Integer theIndex) const
+  const occ::handle<OpenGl_Texture>& Value(int theIndex) const
   {
     return myTextures.Value(theIndex).Texture;
   }
 
   //! Return the texture at specified position within [0, Size()) range.
-  Handle(OpenGl_Texture)& ChangeValue(Standard_Integer theIndex)
+  occ::handle<OpenGl_Texture>& ChangeValue(int theIndex)
   {
     return myTextures.ChangeValue(theIndex).Texture;
   }
@@ -167,7 +167,7 @@ public:
 
 protected:
   NCollection_Array1<TextureSlot> myTextures;
-  Standard_Integer                myTextureSetBits;
+  int                             myTextureSetBits;
 };
 
 #endif //_OpenGl_TextureSet_Header

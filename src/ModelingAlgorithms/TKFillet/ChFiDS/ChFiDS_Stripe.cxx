@@ -34,8 +34,8 @@ ChFiDS_Stripe::ChFiDS_Stripe()
       indexlastPOnS1(0),
       indexfirstPOnS2(0),
       indexlastPOnS2(0),
-      begfilled(/*Standard_False*/ 0), // eap, Apr 29 2002, occ293
-      endfilled(/*Standard_False*/ 0),
+      begfilled(/*false*/ 0), // eap, Apr 29 2002, occ293
+      endfilled(/*false*/ 0),
       myOr1(TopAbs_FORWARD),
       myOr2(TopAbs_FORWARD),
       orcurv1(TopAbs_FORWARD),
@@ -54,9 +54,7 @@ void ChFiDS_Stripe::Reset()
 
 //=================================================================================================
 
-void ChFiDS_Stripe::Parameters(const Standard_Boolean First,
-                               Standard_Real&         Pdeb,
-                               Standard_Real&         Pfin) const
+void ChFiDS_Stripe::Parameters(const bool First, double& Pdeb, double& Pfin) const
 {
   if (First)
   {
@@ -72,9 +70,7 @@ void ChFiDS_Stripe::Parameters(const Standard_Boolean First,
 
 //=================================================================================================
 
-void ChFiDS_Stripe::SetParameters(const Standard_Boolean First,
-                                  const Standard_Real    Pdeb,
-                                  const Standard_Real    Pfin)
+void ChFiDS_Stripe::SetParameters(const bool First, const double Pdeb, const double Pfin)
 {
   if (First)
   {
@@ -90,7 +86,7 @@ void ChFiDS_Stripe::SetParameters(const Standard_Boolean First,
 
 //=================================================================================================
 
-Standard_Integer ChFiDS_Stripe::Curve(const Standard_Boolean First) const
+int ChFiDS_Stripe::Curve(const bool First) const
 {
   if (First)
     return indexOfcurve1;
@@ -100,7 +96,7 @@ Standard_Integer ChFiDS_Stripe::Curve(const Standard_Boolean First) const
 
 //=================================================================================================
 
-void ChFiDS_Stripe::SetCurve(const Standard_Integer Index, const Standard_Boolean First)
+void ChFiDS_Stripe::SetCurve(const int Index, const bool First)
 {
   if (First)
     indexOfcurve1 = Index;
@@ -109,11 +105,11 @@ void ChFiDS_Stripe::SetCurve(const Standard_Integer Index, const Standard_Boolea
 }
 
 //=======================================================================
-// function : Handle(Geom2d_Curve)&
+// function : occ::handle<Geom2d_Curve>&
 // purpose  :
 //=======================================================================
 
-const Handle(Geom2d_Curve)& ChFiDS_Stripe::PCurve(const Standard_Boolean First) const
+const occ::handle<Geom2d_Curve>& ChFiDS_Stripe::PCurve(const bool First) const
 {
   if (First)
     return pcrv1;
@@ -123,7 +119,7 @@ const Handle(Geom2d_Curve)& ChFiDS_Stripe::PCurve(const Standard_Boolean First) 
 
 //=================================================================================================
 
-Handle(Geom2d_Curve)& ChFiDS_Stripe::ChangePCurve(const Standard_Boolean First)
+occ::handle<Geom2d_Curve>& ChFiDS_Stripe::ChangePCurve(const bool First)
 {
   if (First)
     return pcrv1;
@@ -133,7 +129,7 @@ Handle(Geom2d_Curve)& ChFiDS_Stripe::ChangePCurve(const Standard_Boolean First)
 
 //=================================================================================================
 
-TopAbs_Orientation ChFiDS_Stripe::Orientation(const Standard_Integer OnS) const
+TopAbs_Orientation ChFiDS_Stripe::Orientation(const int OnS) const
 {
   if (OnS == 1)
     return myOr1;
@@ -143,7 +139,7 @@ TopAbs_Orientation ChFiDS_Stripe::Orientation(const Standard_Integer OnS) const
 
 //=================================================================================================
 
-void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const Standard_Integer OnS)
+void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const int OnS)
 {
   if (OnS == 1)
     myOr1 = Or;
@@ -153,7 +149,7 @@ void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const Standard_I
 
 //=================================================================================================
 
-TopAbs_Orientation ChFiDS_Stripe::Orientation(const Standard_Boolean First) const
+TopAbs_Orientation ChFiDS_Stripe::Orientation(const bool First) const
 {
   if (First)
     return orcurv1;
@@ -163,7 +159,7 @@ TopAbs_Orientation ChFiDS_Stripe::Orientation(const Standard_Boolean First) cons
 
 //=================================================================================================
 
-void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const Standard_Boolean First)
+void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const bool First)
 {
   if (First)
     orcurv1 = Or;
@@ -173,8 +169,7 @@ void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const Standard_B
 
 //=================================================================================================
 
-Standard_Integer ChFiDS_Stripe::IndexPoint(const Standard_Boolean First,
-                                           const Standard_Integer OnS) const
+int ChFiDS_Stripe::IndexPoint(const bool First, const int OnS) const
 {
   if (First)
   {
@@ -194,9 +189,7 @@ Standard_Integer ChFiDS_Stripe::IndexPoint(const Standard_Boolean First,
 
 //=================================================================================================
 
-void ChFiDS_Stripe::SetIndexPoint(const Standard_Integer Index,
-                                  const Standard_Boolean First,
-                                  const Standard_Integer OnS)
+void ChFiDS_Stripe::SetIndexPoint(const int Index, const bool First, const int OnS)
 {
   if (First)
   {
@@ -214,34 +207,34 @@ void ChFiDS_Stripe::SetIndexPoint(const Standard_Integer Index,
   }
 }
 
-Standard_Integer ChFiDS_Stripe::SolidIndex() const
+int ChFiDS_Stripe::SolidIndex() const
 {
   return indexOfSolid;
 }
 
-void ChFiDS_Stripe::SetSolidIndex(const Standard_Integer Index)
+void ChFiDS_Stripe::SetSolidIndex(const int Index)
 {
   indexOfSolid = Index;
 }
 
 //=================================================================================================
 
-void ChFiDS_Stripe::InDS(const Standard_Boolean First,
-                         const Standard_Integer Nb) // eap, Apr 29 2002, occ293
+void ChFiDS_Stripe::InDS(const bool First,
+                         const int  Nb) // eap, Apr 29 2002, occ293
 {
   if (First)
   {
-    begfilled = /*Standard_True*/ Nb;
+    begfilled = /*true*/ Nb;
   }
   else
   {
-    endfilled = /*Standard_True*/ Nb;
+    endfilled = /*true*/ Nb;
   }
 }
 
 //=================================================================================================
 
-Standard_Integer ChFiDS_Stripe::IsInDS(const Standard_Boolean First) const
+int ChFiDS_Stripe::IsInDS(const bool First) const
 {
   if (First)
     return begfilled;

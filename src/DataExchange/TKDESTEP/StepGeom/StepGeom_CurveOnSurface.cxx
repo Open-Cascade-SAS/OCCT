@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepGeom_CompositeCurveOnSurface.hxx>
 #include <StepGeom_CurveOnSurface.hxx>
@@ -20,7 +20,7 @@
 
 StepGeom_CurveOnSurface::StepGeom_CurveOnSurface() {}
 
-Standard_Integer StepGeom_CurveOnSurface::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepGeom_CurveOnSurface::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -33,17 +33,18 @@ Standard_Integer StepGeom_CurveOnSurface::CaseNum(const Handle(Standard_Transien
   return 0;
 }
 
-Handle(StepGeom_Pcurve) StepGeom_CurveOnSurface::Pcurve() const
+occ::handle<StepGeom_Pcurve> StepGeom_CurveOnSurface::Pcurve() const
 {
   return GetCasted(StepGeom_Pcurve, Value());
 }
 
-Handle(StepGeom_SurfaceCurve) StepGeom_CurveOnSurface::SurfaceCurve() const
+occ::handle<StepGeom_SurfaceCurve> StepGeom_CurveOnSurface::SurfaceCurve() const
 {
   return GetCasted(StepGeom_SurfaceCurve, Value());
 }
 
-Handle(StepGeom_CompositeCurveOnSurface) StepGeom_CurveOnSurface::CompositeCurveOnSurface() const
+occ::handle<StepGeom_CompositeCurveOnSurface> StepGeom_CurveOnSurface::CompositeCurveOnSurface()
+  const
 {
   return GetCasted(StepGeom_CompositeCurveOnSurface, Value());
 }

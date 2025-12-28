@@ -22,9 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <HLRBRep_TypeDef.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Intf_Polygon2d.hxx>
 class Standard_OutOfRange;
@@ -40,9 +40,9 @@ public:
 
   //! Compute a polygon on the domain of the curve.
   Standard_EXPORT HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter(const HLRBRep_CurvePtr& Curve,
-                                                                   const Standard_Integer  NbPnt,
+                                                                   const int               NbPnt,
                                                                    const IntRes2d_Domain&  Domain,
-                                                                   const Standard_Real     Tol);
+                                                                   const double            Tol);
 
   //! The current polygon is modified if most
   //! of the points of the polygon are
@@ -51,58 +51,56 @@ public:
   //! a polygon inside or near the OtherBox.
   Standard_EXPORT void ComputeWithBox(const HLRBRep_CurvePtr& Curve, const Bnd_Box2d& OtherBox);
 
-  virtual Standard_Real DeflectionOverEstimation() const Standard_OVERRIDE;
+  virtual double DeflectionOverEstimation() const override;
 
-  void SetDeflectionOverEstimation(const Standard_Real x);
+  void SetDeflectionOverEstimation(const double x);
 
-  void Closed(const Standard_Boolean clos);
+  void Closed(const bool clos);
 
   //! Returns True if the polyline is closed.
-  virtual Standard_Boolean Closed() const Standard_OVERRIDE { return ClosedPolygon; }
+  virtual bool Closed() const override { return ClosedPolygon; }
 
   //! Give the number of Segments in the polyline.
-  virtual Standard_Integer NbSegments() const Standard_OVERRIDE;
+  virtual int NbSegments() const override;
 
   //! Returns the points of the segment <Index> in the Polygon.
-  Standard_EXPORT virtual void Segment(const Standard_Integer theIndex,
-                                       gp_Pnt2d&              theBegin,
-                                       gp_Pnt2d&              theEnd) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Segment(const int theIndex,
+                                       gp_Pnt2d& theBegin,
+                                       gp_Pnt2d& theEnd) const override;
 
   //! Returns the parameter (On the curve)
   //! of the first point of the Polygon
-  Standard_Real InfParameter() const;
+  double InfParameter() const;
 
   //! Returns the parameter (On the curve)
   //! of the last point of the Polygon
-  Standard_Real SupParameter() const;
+  double SupParameter() const;
 
-  Standard_EXPORT Standard_Boolean AutoIntersectionIsPossible() const;
+  Standard_EXPORT bool AutoIntersectionIsPossible() const;
 
   //! Give an approximation of the parameter on the curve
   //! according to the discretization of the Curve.
-  Standard_EXPORT Standard_Real ApproxParamOnCurve(const Standard_Integer Index,
-                                                   const Standard_Real    ParamOnLine) const;
+  Standard_EXPORT double ApproxParamOnCurve(const int Index, const double ParamOnLine) const;
 
-  Standard_Integer CalculRegion(const Standard_Real x,
-                                const Standard_Real y,
-                                const Standard_Real x1,
-                                const Standard_Real x2,
-                                const Standard_Real y1,
-                                const Standard_Real y2) const;
+  int CalculRegion(const double x,
+                   const double y,
+                   const double x1,
+                   const double x2,
+                   const double y1,
+                   const double y2) const;
 
   Standard_EXPORT void Dump() const;
 
-protected:
 private:
-  Standard_Real           TheDeflection;
-  Standard_Integer        NbPntIn;
-  Standard_Integer        TheMaxNbPoints;
-  TColgp_Array1OfPnt2d    ThePnts;
-  TColStd_Array1OfReal    TheParams;
-  TColStd_Array1OfInteger TheIndex;
-  Standard_Boolean        ClosedPolygon;
-  Standard_Real           Binf;
-  Standard_Real           Bsup;
+  double                       TheDeflection;
+  int                          NbPntIn;
+  int                          TheMaxNbPoints;
+  NCollection_Array1<gp_Pnt2d> ThePnts;
+  NCollection_Array1<double>   TheParams;
+  NCollection_Array1<int>      TheIndex;
+  bool                         ClosedPolygon;
+  double                       Binf;
+  double                       Bsup;
 };
 
 #define TheCurve HLRBRep_CurvePtr

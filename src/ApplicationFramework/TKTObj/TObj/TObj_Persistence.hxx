@@ -18,7 +18,11 @@
 #ifndef TObj_Persistence_HeaderFile
 #define TObj_Persistence_HeaderFile
 
-#include <TObj_Container.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
+#include <TDF_Label.hxx>
+#include <TObj_SequenceOfObject.hxx>
 
 class TDF_Label;
 
@@ -41,8 +45,8 @@ public:
 
   //! Creates and returns a new object of the registered type
   //! If the type is not registered, returns Null handle
-  static Standard_EXPORT Handle(TObj_Object) CreateNewObject(const Standard_CString theType,
-                                                             const TDF_Label&       theLabel);
+  static Standard_EXPORT occ::handle<TObj_Object> CreateNewObject(const char*      theType,
+                                                                  const TDF_Label& theLabel);
 
   //! Dumps names of all the types registered for persistence to the
   //! specified stream
@@ -54,22 +58,22 @@ protected:
    */
 
   //! The constructor registers the object
-  Standard_EXPORT TObj_Persistence(const Standard_CString theType);
+  Standard_EXPORT TObj_Persistence(const char* theType);
 
   //! The destructor unregisters the object
   virtual Standard_EXPORT ~TObj_Persistence();
 
   //! The method must be redefined in the derived class and return
   //! new object of the proper type
-  virtual Standard_EXPORT Handle(TObj_Object) New(const TDF_Label& theLabel) const = 0;
+  virtual Standard_EXPORT occ::handle<TObj_Object> New(const TDF_Label& theLabel) const = 0;
 
   //! Dictionary storing all the registered types. It is implemented as static
   //! variable inside member function in order to ensure initialization
   //!  at first call
-  static Standard_EXPORT TObj_DataMapOfStringPointer& getMapOfTypes();
+  static Standard_EXPORT NCollection_DataMap<TCollection_AsciiString, void*>& getMapOfTypes();
 
 private:
-  Standard_CString myType; //!< Name of managed type (recorded for unregistering)
+  const char* myType; //!< Name of managed type (recorded for unregistering)
 };
 
 //! Declare subclass and methods of the class inherited from TObj_Object
@@ -99,7 +103,7 @@ private:
         : TObj_Persistence(#name)                                                                  \
     {                                                                                              \
     } /* register the tool */                                                                      \
-    virtual Handle(TObj_Object) New(const TDF_Label& aLabel) const;                                \
+    virtual occ::handle<TObj_Object> New(const TDF_Label& aLabel) const;                           \
     /* Creates an object of a proper type */                                                       \
   };                                                                                               \
   friend class Persistence_;                                                                       \
@@ -108,8 +112,8 @@ private:
 //! Implement mechanism for registration the type for persistence
 //! This should not be used for abstract classes (while DECLARE should)
 #define IMPLEMENT_TOBJOCAF_PERSISTENCE(name)                                                       \
-  name::Persistence_  name::myPersistence_;                                                        \
-  Handle(TObj_Object) name::Persistence_::New(const TDF_Label& aLabel) const                       \
+  name::Persistence_       name::myPersistence_;                                                   \
+  occ::handle<TObj_Object> name::Persistence_::New(const TDF_Label& aLabel) const                  \
   {                                                                                                \
     return new name((const TObj_Persistence*)0, aLabel);                                           \
   }

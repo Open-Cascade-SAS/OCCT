@@ -36,12 +36,12 @@ public:
 
   //! Resets this splitter.
   virtual void Reset(const IMeshData::IFaceHandle& theDFace,
-                     const IMeshTools_Parameters&  theParameters) Standard_OVERRIDE
+                     const IMeshTools_Parameters&  theParameters) override
   {
     BRepMesh_DefaultRangeSplitter::Reset(theDFace, theParameters);
     myUParams.Clear();
     myVParams.Clear();
-    myAllocator->Reset(Standard_False);
+    myAllocator->Reset(false);
   }
 
 public:
@@ -58,9 +58,9 @@ public:
   IMeshData::IMapOfReal& GetParametersV() { return myVParams; }
 
 private:
-  Handle(NCollection_IncAllocator) myAllocator;
-  IMeshData::IMapOfReal            myUParams;
-  IMeshData::IMapOfReal            myVParams;
+  occ::handle<NCollection_IncAllocator> myAllocator;
+  IMeshData::IMapOfReal                 myUParams;
+  IMeshData::IMapOfReal                 myVParams;
 };
 
 #endif

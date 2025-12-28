@@ -23,7 +23,8 @@
 #include <Law_Function.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Law_BSpFunc, Law_Function)
 
@@ -39,9 +40,7 @@ Law_BSpFunc::Law_BSpFunc()
 
 //=================================================================================================
 
-Law_BSpFunc::Law_BSpFunc(const Handle(Law_BSpline)& C,
-                         const Standard_Real        First,
-                         const Standard_Real        Last)
+Law_BSpFunc::Law_BSpFunc(const occ::handle<Law_BSpline>& C, const double First, const double Last)
     : curv(C),
       first(First),
       last(Last)
@@ -60,12 +59,12 @@ GeomAbs_Shape Law_BSpFunc::Continuity() const
 // purpose  : Inspirer de GeomAdaptor_Curve
 //=======================================================================
 
-Standard_Integer Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
+int Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
 {
-  Standard_Integer myNbIntervals = 1;
+  int myNbIntervals = 1;
   if (S > Continuity())
   {
-    Standard_Integer Cont;
+    int Cont;
     switch (S)
     {
       case GeomAbs_G1:
@@ -88,16 +87,16 @@ Standard_Integer Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
         else
           Cont = curv->Degree();
         Law_BSplineKnotSplitting Convector(curv, Cont);
-        Standard_Integer         NbInt = Convector.NbSplits() - 1;
-        TColStd_Array1OfInteger  Inter(1, NbInt + 1);
+        int                      NbInt = Convector.NbSplits() - 1;
+        NCollection_Array1<int>  Inter(1, NbInt + 1);
         Convector.Splitting(Inter);
 
-        Standard_Integer        Nb     = curv->NbKnots();
-        Standard_Integer        Index1 = 0;
-        Standard_Integer        Index2 = 0;
-        Standard_Real           newFirst, newLast;
-        TColStd_Array1OfReal    TK(1, Nb);
-        TColStd_Array1OfInteger TM(1, Nb);
+        int                        Nb     = curv->NbKnots();
+        int                        Index1 = 0;
+        int                        Index2 = 0;
+        double                     newFirst, newLast;
+        NCollection_Array1<double> TK(1, Nb);
+        NCollection_Array1<int>    TM(1, Nb);
         curv->Knots(TK);
         curv->Multiplicities(TM);
         BSplCLib::LocateParameter(curv->Degree(),
@@ -124,7 +123,7 @@ Standard_Integer Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
           Index2++;
 
         myNbIntervals = 1;
-        for (Standard_Integer i = 1; i <= NbInt; i++)
+        for (int i = 1; i <= NbInt; i++)
           if (Inter(i) > Index1 && Inter(i) < Index2)
             myNbIntervals++;
       }
@@ -140,12 +139,12 @@ Standard_Integer Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
 // purpose  : Inspirer de GeomAdaptor_Curve
 //=======================================================================
 
-void Law_BSpFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void Law_BSpFunc::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
-  Standard_Integer myNbIntervals = 1;
+  int myNbIntervals = 1;
   if (S > Continuity())
   {
-    Standard_Integer Cont;
+    int Cont;
     switch (S)
     {
       case GeomAbs_G1:
@@ -168,16 +167,16 @@ void Law_BSpFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) cons
         else
           Cont = curv->Degree();
         Law_BSplineKnotSplitting Convector(curv, Cont);
-        Standard_Integer         NbInt = Convector.NbSplits() - 1;
-        TColStd_Array1OfInteger  Inter(1, NbInt + 1);
+        int                      NbInt = Convector.NbSplits() - 1;
+        NCollection_Array1<int>  Inter(1, NbInt + 1);
         Convector.Splitting(Inter);
 
-        Standard_Integer        Nb     = curv->NbKnots();
-        Standard_Integer        Index1 = 0;
-        Standard_Integer        Index2 = 0;
-        Standard_Real           newFirst, newLast;
-        TColStd_Array1OfReal    TK(1, Nb);
-        TColStd_Array1OfInteger TM(1, Nb);
+        int                        Nb     = curv->NbKnots();
+        int                        Index1 = 0;
+        int                        Index2 = 0;
+        double                     newFirst, newLast;
+        NCollection_Array1<double> TK(1, Nb);
+        NCollection_Array1<int>    TM(1, Nb);
         curv->Knots(TK);
         curv->Multiplicities(TM);
         BSplCLib::LocateParameter(curv->Degree(),
@@ -205,7 +204,7 @@ void Law_BSpFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) cons
 
         Inter(1)      = Index1;
         myNbIntervals = 1;
-        for (Standard_Integer i = 1; i <= NbInt; i++)
+        for (int i = 1; i <= NbInt; i++)
         {
           if (Inter(i) > Index1 && Inter(i) < Index2)
           {
@@ -215,7 +214,7 @@ void Law_BSpFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) cons
         }
         Inter(myNbIntervals + 1) = Index2;
 
-        for (Standard_Integer I = 1; I <= myNbIntervals + 1; I++)
+        for (int I = 1; I <= myNbIntervals + 1; I++)
         {
           T(I) = TK(Inter(I));
         }
@@ -229,11 +228,11 @@ void Law_BSpFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) cons
 
 //=================================================================================================
 
-Standard_Real Law_BSpFunc::Value(const Standard_Real X)
+double Law_BSpFunc::Value(const double X)
 {
   if ((X == first) || (X == last))
   {
-    Standard_Integer Ideb = 0, Ifin = 0;
+    int Ideb = 0, Ifin = 0;
     if (X == first)
     {
       curv->LocateU(first, PosTol, Ideb, Ifin);
@@ -260,11 +259,11 @@ Standard_Real Law_BSpFunc::Value(const Standard_Real X)
 
 //=================================================================================================
 
-void Law_BSpFunc::D1(const Standard_Real X, Standard_Real& F, Standard_Real& D)
+void Law_BSpFunc::D1(const double X, double& F, double& D)
 {
   if ((X == first) || (X == last))
   {
-    Standard_Integer Ideb = 0, Ifin = 0;
+    int Ideb = 0, Ifin = 0;
     if (X == first)
     {
       curv->LocateU(first, PosTol, Ideb, Ifin);
@@ -291,11 +290,11 @@ void Law_BSpFunc::D1(const Standard_Real X, Standard_Real& F, Standard_Real& D)
 
 //=================================================================================================
 
-void Law_BSpFunc::D2(const Standard_Real X, Standard_Real& F, Standard_Real& D, Standard_Real& D2)
+void Law_BSpFunc::D2(const double X, double& F, double& D, double& D2)
 {
   if ((X == first) || (X == last))
   {
-    Standard_Integer Ideb = 0, Ifin = 0;
+    int Ideb = 0, Ifin = 0;
     if (X == first)
     {
       curv->LocateU(first, PosTol, Ideb, Ifin);
@@ -322,18 +321,18 @@ void Law_BSpFunc::D2(const Standard_Real X, Standard_Real& F, Standard_Real& D, 
 
 //=================================================================================================
 
-Handle(Law_Function) Law_BSpFunc::Trim(const Standard_Real PFirst,
-                                       const Standard_Real PLast,
-                                       //				       const Standard_Real Tol) const
-                                       const Standard_Real) const
+occ::handle<Law_Function> Law_BSpFunc::Trim(const double PFirst,
+                                            const double PLast,
+                                            //				       const double Tol) const
+                                            const double) const
 {
-  Handle(Law_BSpFunc) l = new (Law_BSpFunc)(curv, PFirst, PLast);
+  occ::handle<Law_BSpFunc> l = new (Law_BSpFunc)(curv, PFirst, PLast);
   return l;
 }
 
 //=================================================================================================
 
-void Law_BSpFunc::Bounds(Standard_Real& PFirst, Standard_Real& PLast)
+void Law_BSpFunc::Bounds(double& PFirst, double& PLast)
 {
   PFirst = first;
   PLast  = last;
@@ -341,14 +340,14 @@ void Law_BSpFunc::Bounds(Standard_Real& PFirst, Standard_Real& PLast)
 
 //=================================================================================================
 
-Handle(Law_BSpline) Law_BSpFunc::Curve() const
+occ::handle<Law_BSpline> Law_BSpFunc::Curve() const
 {
   return curv;
 }
 
 //=================================================================================================
 
-void Law_BSpFunc::SetCurve(const Handle(Law_BSpline)& C)
+void Law_BSpFunc::SetCurve(const occ::handle<Law_BSpline>& C)
 {
   curv  = C;
   first = C->FirstParameter();

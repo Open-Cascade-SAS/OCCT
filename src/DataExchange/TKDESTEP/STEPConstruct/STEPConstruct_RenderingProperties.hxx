@@ -42,7 +42,7 @@ public:
   //! Extracts color, transparency, and other properties from the STEP entity.
   //! @param[in] theRenderingProperties rendering properties entity
   Standard_EXPORT STEPConstruct_RenderingProperties(
-    const Handle(StepVisual_SurfaceStyleRenderingWithProperties)& theRenderingProperties);
+    const occ::handle<StepVisual_SurfaceStyleRenderingWithProperties>& theRenderingProperties);
 
   //! Constructor from RGBA color.
   //! Creates rendering properties with the given color and transparency.
@@ -53,8 +53,8 @@ public:
   //! Creates rendering properties with the given color and transparency.
   //! @param[in] theColor color
   //! @param[in] theTransparency transparency value
-  Standard_EXPORT STEPConstruct_RenderingProperties(const Handle(StepVisual_Colour)& theColor,
-                                                    const Standard_Real theTransparency);
+  Standard_EXPORT STEPConstruct_RenderingProperties(const occ::handle<StepVisual_Colour>& theColor,
+                                                    const double theTransparency);
 
   //! Constructor from XCAFDoc_VisMaterialCommon.
   //! Creates rendering properties using material properties from the OCCT material.
@@ -64,19 +64,20 @@ public:
   //! Constructor from XCAFDoc_VisMaterial.
   //! Creates rendering properties using material properties from the OCCT material.
   //! @param[in] theMaterial visualization material properties
-  Standard_EXPORT STEPConstruct_RenderingProperties(const Handle(XCAFDoc_VisMaterial)& theMaterial);
+  Standard_EXPORT STEPConstruct_RenderingProperties(
+    const occ::handle<XCAFDoc_VisMaterial>& theMaterial);
 
   //! Constructor from surface color, transparency, and rendering method.
   //! @param[in] theSurfaceColor surface color
   //! @param[in] theTransparency transparency value
   Standard_EXPORT STEPConstruct_RenderingProperties(const Quantity_Color& theSurfaceColor,
-                                                    const Standard_Real   theTransparency = 0.0);
+                                                    const double          theTransparency = 0.0);
 
   //! Initializes from STEP rendering properties entity.
   //! Extracts color, transparency, and other properties from the STEP entity.
   //! @param[in] theRenderingProperties rendering properties entity
   Standard_EXPORT void Init(
-    const Handle(StepVisual_SurfaceStyleRenderingWithProperties)& theRenderingProperties);
+    const occ::handle<StepVisual_SurfaceStyleRenderingWithProperties>& theRenderingProperties);
 
   //! Initializes from RGBA color.
   //! @param[in] theRGBAColor color with transparency
@@ -85,8 +86,8 @@ public:
   //! Initializes from STEP color and transparency value.
   //! @param[in] theColor STEP color entity
   //! @param[in] theTransparency transparency value
-  Standard_EXPORT void Init(const Handle(StepVisual_Colour)& theColor,
-                            const Standard_Real              theTransparency);
+  Standard_EXPORT void Init(const occ::handle<StepVisual_Colour>& theColor,
+                            const double                          theTransparency);
 
   //! Initializes from XCAFDoc_VisMaterialCommon.
   //! @param[in] theMaterial common visualization material properties
@@ -94,23 +95,23 @@ public:
 
   //! Initializes from XCAFDoc_VisMaterial.
   //! @param[in] theMaterial visualization material properties
-  Standard_EXPORT void Init(const Handle(XCAFDoc_VisMaterial)& theMaterial);
+  Standard_EXPORT void Init(const occ::handle<XCAFDoc_VisMaterial>& theMaterial);
 
   //! Initializes from surface color, transparency and rendering method.
   //! @param[in] theSurfaceColor surface color
   //! @param[in] theTransparency transparency value
   Standard_EXPORT void Init(const Quantity_Color& theSurfaceColor,
-                            const Standard_Real   theTransparency = 0.0);
+                            const double          theTransparency = 0.0);
 
   //! Sets ambient reflectance value
   //! @param[in] theAmbientReflectance ambient reflectance value
-  Standard_EXPORT void SetAmbientReflectance(const Standard_Real theAmbientReflectance);
+  Standard_EXPORT void SetAmbientReflectance(const double theAmbientReflectance);
 
   //! Sets ambient and diffuse reflectance values
   //! @param[in] theAmbientReflectance ambient reflectance value
   //! @param[in] theDiffuseReflectance diffuse reflectance value
-  Standard_EXPORT void SetAmbientAndDiffuseReflectance(const Standard_Real theAmbientReflectance,
-                                                       const Standard_Real theDiffuseReflectance);
+  Standard_EXPORT void SetAmbientAndDiffuseReflectance(const double theAmbientReflectance,
+                                                       const double theDiffuseReflectance);
 
   //! Sets ambient, diffuse and specular reflectance values
   //! @param[in] theAmbientReflectance ambient reflectance value
@@ -119,22 +120,22 @@ public:
   //! @param[in] theSpecularExponent specular exponent value
   //! @param[in] theSpecularColour specular color
   Standard_EXPORT void SetAmbientDiffuseAndSpecularReflectance(
-    const Standard_Real   theAmbientReflectance,
-    const Standard_Real   theDiffuseReflectance,
-    const Standard_Real   theSpecularReflectance,
-    const Standard_Real   theSpecularExponent,
+    const double          theAmbientReflectance,
+    const double          theDiffuseReflectance,
+    const double          theSpecularReflectance,
+    const double          theSpecularExponent,
     const Quantity_Color& theSpecularColour);
 
   //! Creates and returns rendering properties entity
   //! @return created rendering properties entity
-  Standard_EXPORT Handle(StepVisual_SurfaceStyleRenderingWithProperties) CreateRenderingProperties()
-    const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleRenderingWithProperties>
+                  CreateRenderingProperties() const;
 
   // Creates and returns rendering properties entity with the specified color
   //! @param[in] theRenderColour color to be used for rendering
   //! @return created rendering properties entity
-  Standard_EXPORT Handle(StepVisual_SurfaceStyleRenderingWithProperties) CreateRenderingProperties(
-    const Handle(StepVisual_Colour)& theRenderColour) const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleRenderingWithProperties>
+    CreateRenderingProperties(const occ::handle<StepVisual_Colour>& theRenderColour) const;
 
   //! Creates and returns XCAF material entity
   //! @return created XCAF material entity
@@ -153,7 +154,7 @@ public:
 
   //! Returns transparency value
   //! @return transparency value
-  Standard_Real Transparency() const { return myTransparency; }
+  double Transparency() const { return myTransparency; }
 
   //! Returns rendering method
   //! @return rendering method
@@ -168,43 +169,43 @@ public:
 
   //! Returns whether the rendering properties are defined
   //! @return true if defined, false otherwise
-  Standard_Boolean IsDefined() const { return myIsDefined; }
+  bool IsDefined() const { return myIsDefined; }
 
   //! Returns whether material is convertible to STEP
   //! @return true if fully defined for conversion, false otherwise
-  Standard_EXPORT Standard_Boolean IsMaterialConvertible() const;
+  Standard_EXPORT bool IsMaterialConvertible() const;
 
   //! Returns ambient reflectance value
   //! @return ambient reflectance value
-  Standard_EXPORT Standard_Real AmbientReflectance() const;
+  Standard_EXPORT double AmbientReflectance() const;
 
   //! Returns whether ambient reflectance is defined
   //! @return true if defined, false otherwise
-  Standard_EXPORT Standard_Boolean IsAmbientReflectanceDefined() const;
+  Standard_EXPORT bool IsAmbientReflectanceDefined() const;
 
   //! Returns diffuse reflectance value
   //! @return diffuse reflectance value
-  Standard_EXPORT Standard_Real DiffuseReflectance() const;
+  Standard_EXPORT double DiffuseReflectance() const;
 
   //! Returns whether diffuse reflectance is defined
   //! @return true if defined, false otherwise
-  Standard_EXPORT Standard_Boolean IsDiffuseReflectanceDefined() const;
+  Standard_EXPORT bool IsDiffuseReflectanceDefined() const;
 
   //! Returns specular reflectance value
   //! @return specular reflectance value
-  Standard_EXPORT Standard_Real SpecularReflectance() const;
+  Standard_EXPORT double SpecularReflectance() const;
 
   //! Returns whether specular reflectance is defined
   //! @return true if defined, false otherwise
-  Standard_EXPORT Standard_Boolean IsSpecularReflectanceDefined() const;
+  Standard_EXPORT bool IsSpecularReflectanceDefined() const;
 
   //! Returns specular exponent value
   //! @return specular exponent value
-  Standard_EXPORT Standard_Real SpecularExponent() const;
+  Standard_EXPORT double SpecularExponent() const;
 
   //! Returns whether specular exponent is defined
   //! @return true if defined, false otherwise
-  Standard_EXPORT Standard_Boolean IsSpecularExponentDefined() const;
+  Standard_EXPORT bool IsSpecularExponentDefined() const;
 
   //! Returns specular color
   //! @return specular color
@@ -212,24 +213,24 @@ public:
 
   //! Returns whether specular color is defined
   //! @return true if defined, false otherwise
-  Standard_EXPORT Standard_Boolean IsSpecularColourDefined() const;
+  Standard_EXPORT bool IsSpecularColourDefined() const;
 
 private:
   Quantity_Color mySurfaceColor; //!< Surface colour used for rendering
-  Standard_Real  myTransparency; //!< Transparency value (0.0 - opaque, 1.0 - fully transparent)
+  double         myTransparency; //!< Transparency value (0.0 - opaque, 1.0 - fully transparent)
   StepVisual_ShadingSurfaceMethod myRenderingMethod; //!< Rendering method used for shading
-  Standard_Boolean myIsDefined; //!< Flag indicating if rendering properties are defined
+  bool myIsDefined; //!< Flag indicating if rendering properties are defined
 
   //! Ambient reflectance value, applyed on the surface color
-  std::pair<Standard_Real, Standard_Boolean> myAmbientReflectance;
+  std::pair<double, bool> myAmbientReflectance;
   //! Diffuse reflectance value, applyed on the surface color
-  std::pair<Standard_Real, Standard_Boolean> myDiffuseReflectance;
+  std::pair<double, bool> myDiffuseReflectance;
   //! Specular reflectance value, applyed on the surface color
-  std::pair<Standard_Real, Standard_Boolean> mySpecularReflectance;
+  std::pair<double, bool> mySpecularReflectance;
   //! Specular exponent value, applyed on the surface color
-  std::pair<Standard_Real, Standard_Boolean> mySpecularExponent;
+  std::pair<double, bool> mySpecularExponent;
   //! Specular color, applyed on the surface color
-  std::pair<Quantity_Color, Standard_Boolean> mySpecularColour;
+  std::pair<Quantity_Color, bool> mySpecularColour;
 };
 
 #endif // STEPConstruct_RenderingProperties_HeaderFile

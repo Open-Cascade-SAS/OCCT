@@ -23,7 +23,7 @@ static const IntImp_ConstIsoparametric staticChoixRef[4] = {
   IntImp_VIsoparametricOnCaro2,
 };
 
-IntImp_ConstIsoparametric ChoixRef(Standard_Integer theIndex)
+IntImp_ConstIsoparametric ChoixRef(int theIndex)
 {
   Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex > 3,
                                "ChoixRef() in " __FILE__) return staticChoixRef[theIndex];
@@ -31,10 +31,10 @@ IntImp_ConstIsoparametric ChoixRef(Standard_Integer theIndex)
 
 //=================================================================================================
 
-Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
-                                        const Standard_Real       EpsUV[],
-                                        Standard_Real             Tgduv[],
-                                        IntImp_ConstIsoparametric TabIso[])
+bool IntImp_ComputeTangence(const gp_Vec              DPuv[],
+                            const double              EpsUV[],
+                            double                    Tgduv[],
+                            IntImp_ConstIsoparametric TabIso[])
 //                 arguments d entree:
 // DPuv [0] =derivee en u sur caro 1
 // DPuv [1] =derivee en v sur caro 1
@@ -65,8 +65,8 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
 // l intersection
 
 {
-  Standard_Real    NormDuv[4], aM2, aTol2;
-  Standard_Integer i;
+  double NormDuv[4], aM2, aTol2;
+  int    i;
   //
   aTol2 = 1.e-32;
   //
@@ -75,7 +75,7 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
     NormDuv[i] = DPuv[i].SquareMagnitude();
     if (NormDuv[i] <= aTol2)
     {
-      return Standard_True;
+      return true;
     }
   }
   //
@@ -87,7 +87,7 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
   aM2 = N1.SquareMagnitude();
   if (aM2 < aTol2)
   {
-    return Standard_True;
+    return true;
   }
   // modified by NIZNHY-PKV Tue Nov 01 08:37:34 2011t
   N1.Normalize();
@@ -98,7 +98,7 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
   aM2 = N2.SquareMagnitude();
   if (aM2 < aTol2)
   {
-    return Standard_True;
+    return true;
   }
   // modified by NIZNHY-PKV Tue Nov 01 08:37:34 2011t
   N2.Normalize();
@@ -114,17 +114,17 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
   Tgduv[2] = DPuv[3].Dot(N1);
   Tgduv[3] = -DPuv[2].Dot(N1);
 
-  Standard_Boolean tangent =
+  bool tangent =
     (std::abs(Tgduv[0]) <= EpsUV[0] * NormDuv[1] && std::abs(Tgduv[1]) <= EpsUV[1] * NormDuv[0]
      && std::abs(Tgduv[2]) <= EpsUV[2] * NormDuv[3] && std::abs(Tgduv[3]) <= EpsUV[3] * NormDuv[2]);
   if (!tangent)
   {
-    Standard_Real t = N1.Dot(N2);
+    double t = N1.Dot(N2);
     if (t < 0.0)
       t = -t;
     if (t > 0.999999999)
     {
-      tangent = Standard_True;
+      tangent = true;
     }
   }
 
@@ -136,8 +136,8 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
     NormDuv[3] = std::abs(Tgduv[2]) / NormDuv[3]; // iso v sur caro2
 
     //-- Tri sur NormDuv  ( en para. avec ChoixRef )
-    Standard_Boolean          triOk = Standard_False;
-    Standard_Real             t;
+    bool                      triOk = false;
+    double                    t;
     IntImp_ConstIsoparametric ti;
     for (i = 0; i <= 3; i++)
     {
@@ -145,12 +145,12 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
     }
     do
     {
-      triOk = Standard_True;
+      triOk = true;
       for (i = 1; i <= 3; i++)
       {
         if (NormDuv[i - 1] > NormDuv[i])
         {
-          triOk          = Standard_False;
+          triOk          = false;
           t              = NormDuv[i];
           NormDuv[i]     = NormDuv[i - 1];
           NormDuv[i - 1] = t;
@@ -164,7 +164,7 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
 
 #if 0     
      // trier par ordre croissant le tableau NormDuv
-     Standard_Integer II;
+     int II;
      for (j =0;j<=3;j++) Irang[j]=j;
      for (j =0;j<=3;j++) {
        Tampon = NormDuv[j];

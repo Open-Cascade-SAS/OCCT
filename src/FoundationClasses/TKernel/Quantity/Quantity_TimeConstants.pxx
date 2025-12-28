@@ -36,9 +36,7 @@ constexpr int USECS_PER_SEC  = 1000000; // microseconds per second
 //! @param theUSec total microseconds
 //! @param theMis output: milliseconds part
 //! @param theMics output: remaining microseconds part
-inline void extractMillisAndMicros(const Standard_Integer theUSec,
-                                   Standard_Integer&      theMis,
-                                   Standard_Integer&      theMics) noexcept
+inline void extractMillisAndMicros(const int theUSec, int& theMis, int& theMics) noexcept
 {
   theMis  = theUSec / USECS_PER_MSEC;
   theMics = theUSec - (theMis * USECS_PER_MSEC);
@@ -49,10 +47,7 @@ inline void extractMillisAndMicros(const Standard_Integer theUSec,
 //! @param theHH output: hours
 //! @param theMN output: minutes
 //! @param theSS output: seconds
-inline void extractTimeComponents(Standard_Integer& theCarry,
-                                  Standard_Integer& theHH,
-                                  Standard_Integer& theMN,
-                                  Standard_Integer& theSS) noexcept
+inline void extractTimeComponents(int& theCarry, int& theHH, int& theMN, int& theSS) noexcept
 {
   theHH = theCarry / SECONDS_PER_HOUR;
   theCarry -= SECONDS_PER_HOUR * theHH;
@@ -66,11 +61,11 @@ inline void extractTimeComponents(Standard_Integer& theCarry,
 //! Uses division for O(1) complexity
 //! @param theSec input/output: seconds, incremented if overflow occurs
 //! @param theUSec input/output: microseconds, normalized to 0..999999
-inline void normalizeAdditionOverflow(Standard_Integer& theSec, Standard_Integer& theUSec) noexcept
+inline void normalizeAdditionOverflow(int& theSec, int& theUSec) noexcept
 {
   if (theUSec >= USECS_PER_SEC)
   {
-    const Standard_Integer overflow = theUSec / USECS_PER_SEC;
+    const int overflow = theUSec / USECS_PER_SEC;
     theSec += overflow;
     theUSec -= overflow * USECS_PER_SEC;
   }
@@ -81,11 +76,11 @@ inline void normalizeAdditionOverflow(Standard_Integer& theSec, Standard_Integer
 //! Uses ceiling division for O(1) complexity
 //! @param theSec input/output: seconds, decremented if borrow occurs
 //! @param theUSec input/output: microseconds, normalized to 0..999999
-inline void normalizeSubtractionBorrow(Standard_Integer& theSec, Standard_Integer& theUSec) noexcept
+inline void normalizeSubtractionBorrow(int& theSec, int& theUSec) noexcept
 {
   if (theUSec < 0)
   {
-    const Standard_Integer borrow = (-theUSec + USECS_PER_SEC - 1) / USECS_PER_SEC;
+    const int borrow = (-theUSec + USECS_PER_SEC - 1) / USECS_PER_SEC;
     theSec -= borrow;
     theUSec += borrow * USECS_PER_SEC;
   }

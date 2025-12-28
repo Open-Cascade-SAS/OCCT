@@ -21,9 +21,6 @@
 
 #include <StepBasic_MeasureWithUnit.hxx>
 
-class StepBasic_PlaneAngleMeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_PlaneAngleMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 class StepBasic_PlaneAngleMeasureWithUnit : public StepBasic_MeasureWithUnit
 {
 
@@ -32,9 +29,6 @@ public:
   Standard_EXPORT StepBasic_PlaneAngleMeasureWithUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_PlaneAngleMeasureWithUnit, StepBasic_MeasureWithUnit)
-
-protected:
-private:
 };
 
 #endif // _StepBasic_PlaneAngleMeasureWithUnit_HeaderFile

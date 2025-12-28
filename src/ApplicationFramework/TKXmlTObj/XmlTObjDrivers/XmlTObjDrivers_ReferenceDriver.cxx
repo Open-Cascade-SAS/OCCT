@@ -37,7 +37,7 @@ IMPLEMENT_DOMSTRING(ReferredModelEntry, "modelentry")
 //=================================================================================================
 
 XmlTObjDrivers_ReferenceDriver::XmlTObjDrivers_ReferenceDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : XmlMDF_ADriver(theMessageDriver, NULL)
 {
 }
@@ -47,7 +47,7 @@ XmlTObjDrivers_ReferenceDriver::XmlTObjDrivers_ReferenceDriver(
 // purpose  : Creates a new attribute
 //=======================================================================
 
-Handle(TDF_Attribute) XmlTObjDrivers_ReferenceDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlTObjDrivers_ReferenceDriver::NewEmpty() const
 {
   return new TObj_TReference;
 }
@@ -59,10 +59,9 @@ Handle(TDF_Attribute) XmlTObjDrivers_ReferenceDriver::NewEmpty() const
 //           <aRelocTable> to keep the sharings.
 //=======================================================================
 
-Standard_Boolean XmlTObjDrivers_ReferenceDriver::Paste(
-  const XmlObjMgt_Persistent&  Source,
-  const Handle(TDF_Attribute)& Target,
-  XmlObjMgt_RRelocationTable& /*RelocTable*/) const
+bool XmlTObjDrivers_ReferenceDriver::Paste(const XmlObjMgt_Persistent&       Source,
+                                           const occ::handle<TDF_Attribute>& Target,
+                                           XmlObjMgt_RRelocationTable& /*RelocTable*/) const
 {
   const XmlObjMgt_Element& anElement = Source;
 
@@ -77,13 +76,13 @@ Standard_Boolean XmlTObjDrivers_ReferenceDriver::Paste(
   TDF_Tool::Label(Target->Label().Data(), MasterEntry, aMasterLabel);
   // referred label
   if (InHolderEntry.IsEmpty())
-    TDF_Tool::Label(Target->Label().Data(), RefEntry, aLabel, Standard_True);
+    TDF_Tool::Label(Target->Label().Data(), RefEntry, aLabel, true);
   else
   {
-    Handle(TObj_Model) aModel = TObj_Assistant::FindModel(InHolderEntry.ToCString());
-    TDF_Tool::Label(aModel->GetLabel().Data(), RefEntry, aLabel, Standard_True);
+    occ::handle<TObj_Model> aModel = TObj_Assistant::FindModel(InHolderEntry.ToCString());
+    TDF_Tool::Label(aModel->GetLabel().Data(), RefEntry, aLabel, true);
   }
-  Handle(TObj_TReference) aTarget = Handle(TObj_TReference)::DownCast(Target);
+  occ::handle<TObj_TReference> aTarget = occ::down_cast<TObj_TReference>(Target);
   aTarget->Set(aLabel, aMasterLabel);
 
   return !aLabel.IsNull() && !aMasterLabel.IsNull();
@@ -98,13 +97,13 @@ Standard_Boolean XmlTObjDrivers_ReferenceDriver::Paste(
 //           as entry in model-container
 //=======================================================================
 
-void XmlTObjDrivers_ReferenceDriver::Paste(const Handle(TDF_Attribute)& Source,
-                                           XmlObjMgt_Persistent&        Target,
+void XmlTObjDrivers_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& Source,
+                                           XmlObjMgt_Persistent&             Target,
                                            XmlObjMgt_SRelocationTable& /*RelocTable*/) const
 {
-  Handle(TObj_TReference) aSource = Handle(TObj_TReference)::DownCast(Source);
+  occ::handle<TObj_TReference> aSource = occ::down_cast<TObj_TReference>(Source);
 
-  Handle(TObj_Object) aLObject = aSource->Get();
+  occ::handle<TObj_Object> aLObject = aSource->Get();
   if (aLObject.IsNull())
     return;
 
@@ -124,7 +123,7 @@ void XmlTObjDrivers_ReferenceDriver::Paste(const Handle(TDF_Attribute)& Source,
   if (aLabel.Root() == aMasterLabel.Root())
     return;
 
-  Handle(TObj_Model)      aModel = aLObject->GetModel();
+  occ::handle<TObj_Model> aModel = aLObject->GetModel();
   TCollection_AsciiString aModelName(aModel->GetModelName()->String());
   Target.Element().setAttribute(::ReferredModelEntry(), aModelName.ToCString());
 }

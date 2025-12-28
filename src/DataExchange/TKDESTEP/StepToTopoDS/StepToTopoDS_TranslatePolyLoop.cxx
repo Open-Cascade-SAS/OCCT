@@ -46,52 +46,53 @@
 StepToTopoDS_TranslatePolyLoop::StepToTopoDS_TranslatePolyLoop()
     : myError(StepToTopoDS_TranslatePolyLoopOther)
 {
-  done = Standard_False;
+  done = false;
 }
 
 //=================================================================================================
 
 StepToTopoDS_TranslatePolyLoop::StepToTopoDS_TranslatePolyLoop(
-  const Handle(StepShape_PolyLoop)& PL,
-  StepToTopoDS_Tool&                T,
-  const Handle(Geom_Surface)&       S,
-  const TopoDS_Face&                F,
-  const StepData_Factors&           theLocalFactors)
+  const occ::handle<StepShape_PolyLoop>& PL,
+  StepToTopoDS_Tool&                     T,
+  const occ::handle<Geom_Surface>&       S,
+  const TopoDS_Face&                     F,
+  const StepData_Factors&                theLocalFactors)
 {
   Init(PL, T, S, F, theLocalFactors);
 }
 
 //=================================================================================================
 
-void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL,
-                                          StepToTopoDS_Tool&                aTool,
-                                          const Handle(Geom_Surface)&       GeomSurf,
-                                          const TopoDS_Face&                TopoFace,
-                                          const StepData_Factors&           theLocalFactors)
+void StepToTopoDS_TranslatePolyLoop::Init(const occ::handle<StepShape_PolyLoop>& PL,
+                                          StepToTopoDS_Tool&                     aTool,
+                                          const occ::handle<Geom_Surface>&       GeomSurf,
+                                          const TopoDS_Face&                     TopoFace,
+                                          const StepData_Factors&                theLocalFactors)
 {
   if (!aTool.IsBound(PL))
   {
-    BRep_Builder                      B;
-    Handle(Transfer_TransientProcess) TP = aTool.TransientProcess();
+    BRep_Builder                           B;
+    occ::handle<Transfer_TransientProcess> TP = aTool.TransientProcess();
 
-    //: S4136    Standard_Real preci = BRepAPI::Precision();
-    Standard_Integer                i;
-    Handle(StepGeom_CartesianPoint) P1, P2;
-    Handle(Geom_CartesianPoint)     GP1, GP2;
-    TopoDS_Vertex                   V1, V2;
-    TopoDS_Edge                     E;
-    TopoDS_Wire                     W;
-    Handle(Geom_Line)               L;
-    Handle(Geom2d_Line)             L2d;
-    gp_Vec                          V;
-    gp_Vec2d                        V2d;
-    Standard_Real                   Magn;
-    Handle(Geom_Plane)              SP = Handle(Geom_Plane)::DownCast(GeomSurf);
+    //: S4136    double preci = BRepAPI::Precision();
+    int                                  i;
+    occ::handle<StepGeom_CartesianPoint> P1, P2;
+    occ::handle<Geom_CartesianPoint>     GP1, GP2;
+    TopoDS_Vertex                        V1, V2;
+    TopoDS_Edge                          E;
+    TopoDS_Wire                          W;
+    occ::handle<Geom_Line>               L;
+    occ::handle<Geom2d_Line>             L2d;
+    gp_Vec                               V;
+    gp_Vec2d                             V2d;
+    double                               Magn;
+    occ::handle<Geom_Plane>              SP = occ::down_cast<Geom_Plane>(GeomSurf);
     if (SP.IsNull())
       TP->AddFail(PL, "Surface not planar in a FacetedBRep !");
-    Handle(ShapeAnalysis_Surface)            STSU = new ShapeAnalysis_Surface(GeomSurf);
-    Standard_Integer                         Nb   = PL->NbPolygon();
-    Handle(StepGeom_HArray1OfCartesianPoint) Poly = new StepGeom_HArray1OfCartesianPoint(1, Nb + 1);
+    occ::handle<ShapeAnalysis_Surface> STSU = new ShapeAnalysis_Surface(GeomSurf);
+    int                                Nb   = PL->NbPolygon();
+    occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> Poly =
+      new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, Nb + 1);
 
     for (i = 1; i <= Nb; i++)
       Poly->SetValue(i, PL->PolygonValue(i));
@@ -117,8 +118,8 @@ void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL,
         continue; // peut arriver (KK)  CKY 9-DEC-1997
       StepToTopoDS_PointPair PP(P1, P2);
       GP2 = StepToGeom::MakeCartesianPoint(P2, theLocalFactors);
-      TopoDS_Shape     aBoundEdge;
-      Standard_Boolean isbound = aTool.IsEdgeBound(PP);
+      TopoDS_Shape aBoundEdge;
+      bool         isbound = aTool.IsEdgeBound(PP);
       if (!isbound)
       {
         if (aTool.IsVertexBound(P2))
@@ -181,13 +182,13 @@ void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL,
     aTool.Bind(PL, W);
     myResult = W;
     myError  = StepToTopoDS_TranslatePolyLoopDone;
-    done     = Standard_True;
+    done     = true;
   }
   else
   {
     myResult = TopoDS::Wire(aTool.Find(PL));
     myError  = StepToTopoDS_TranslatePolyLoopDone;
-    done     = Standard_True;
+    done     = true;
   }
 }
 

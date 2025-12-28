@@ -45,40 +45,37 @@ public:
 
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams(const Handle(IGESSolid_Shell)&         ent,
-                                     const Handle(IGESData_IGESReaderData)& IR,
-                                     IGESData_ParamReader&                  PR) const;
+  Standard_EXPORT void ReadOwnParams(const occ::handle<IGESSolid_Shell>&         ent,
+                                     const occ::handle<IGESData_IGESReaderData>& IR,
+                                     IGESData_ParamReader&                       PR) const;
 
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams(const Handle(IGESSolid_Shell)& ent,
-                                      IGESData_IGESWriter&           IW) const;
+  Standard_EXPORT void WriteOwnParams(const occ::handle<IGESSolid_Shell>& ent,
+                                      IGESData_IGESWriter&                IW) const;
 
   //! Lists the Entities shared by a Shell <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared(const Handle(IGESSolid_Shell)& ent,
-                                 Interface_EntityIterator&      iter) const;
+  Standard_EXPORT void OwnShared(const occ::handle<IGESSolid_Shell>& ent,
+                                 Interface_EntityIterator&           iter) const;
 
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESSolid_Shell)& ent) const;
+  Standard_EXPORT IGESData_DirChecker DirChecker(const occ::handle<IGESSolid_Shell>& ent) const;
 
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck(const Handle(IGESSolid_Shell)& ent,
-                                const Interface_ShareTool&     shares,
-                                Handle(Interface_Check)&       ach) const;
+  Standard_EXPORT void OwnCheck(const occ::handle<IGESSolid_Shell>& ent,
+                                const Interface_ShareTool&          shares,
+                                occ::handle<Interface_Check>&       ach) const;
 
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy(const Handle(IGESSolid_Shell)& entfrom,
-                               const Handle(IGESSolid_Shell)& entto,
-                               Interface_CopyTool&            TC) const;
+  Standard_EXPORT void OwnCopy(const occ::handle<IGESSolid_Shell>& entfrom,
+                               const occ::handle<IGESSolid_Shell>& entto,
+                               Interface_CopyTool&                 TC) const;
 
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump(const Handle(IGESSolid_Shell)& ent,
-                               const IGESData_IGESDumper&     dumper,
-                               Standard_OStream&              S,
-                               const Standard_Integer         own) const;
-
-protected:
-private:
+  Standard_EXPORT void OwnDump(const occ::handle<IGESSolid_Shell>& ent,
+                               const IGESData_IGESDumper&          dumper,
+                               Standard_OStream&                   S,
+                               const int                           own) const;
 };
 
 #endif // _IGESSolid_ToolShell_HeaderFile

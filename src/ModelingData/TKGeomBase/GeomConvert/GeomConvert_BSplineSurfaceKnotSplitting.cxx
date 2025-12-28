@@ -20,14 +20,14 @@
 #include <GeomConvert_BSplineSurfaceKnotSplitting.hxx>
 #include <Standard_RangeError.hxx>
 
-typedef TColStd_Array1OfInteger  Array1OfInteger;
-typedef TColStd_HArray1OfInteger HArray1OfInteger;
+typedef NCollection_Array1<int>  Array1OfInteger;
+typedef NCollection_HArray1<int> HArray1OfInteger;
 
 GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting(
 
-  const Handle(Geom_BSplineSurface)& BasisSurface,
-  const Standard_Integer             UContinuityRange,
-  const Standard_Integer             VContinuityRange
+  const occ::handle<Geom_BSplineSurface>& BasisSurface,
+  const int                               UContinuityRange,
+  const int                               VContinuityRange
 
 )
 {
@@ -37,13 +37,13 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
     throw Standard_RangeError();
   }
 
-  Standard_Integer FirstUIndex = BasisSurface->FirstUKnotIndex();
-  Standard_Integer LastUIndex  = BasisSurface->LastUKnotIndex();
-  Standard_Integer FirstVIndex = BasisSurface->FirstVKnotIndex();
-  Standard_Integer LastVIndex  = BasisSurface->LastVKnotIndex();
-  Standard_Integer UDegree     = BasisSurface->UDegree();
-  Standard_Integer VDegree     = BasisSurface->VDegree();
-  Standard_Integer i;
+  int FirstUIndex = BasisSurface->FirstUKnotIndex();
+  int LastUIndex  = BasisSurface->LastUKnotIndex();
+  int FirstVIndex = BasisSurface->FirstVKnotIndex();
+  int LastVIndex  = BasisSurface->LastVKnotIndex();
+  int UDegree     = BasisSurface->UDegree();
+  int VDegree     = BasisSurface->VDegree();
+  int i;
 
   if (UContinuityRange == 0)
   {
@@ -53,10 +53,10 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
   }
   else
   {
-    Standard_Integer NbUKnots = BasisSurface->NbUKnots();
-    Array1OfInteger  UMults(1, NbUKnots);
+    int             NbUKnots = BasisSurface->NbUKnots();
+    Array1OfInteger UMults(1, NbUKnots);
     BasisSurface->UMultiplicities(UMults);
-    Standard_Integer Mmax = BSplCLib::MaxKnotMult(UMults, FirstUIndex, LastUIndex);
+    int Mmax = BSplCLib::MaxKnotMult(UMults, FirstUIndex, LastUIndex);
     if (UDegree - Mmax >= UContinuityRange)
     {
       usplitIndexes = new HArray1OfInteger(1, 2);
@@ -65,10 +65,10 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
     }
     else
     {
-      Array1OfInteger  USplit(1, LastUIndex - FirstUIndex + 1);
-      Standard_Integer NbUSplit = 1;
-      Standard_Integer UIndex   = FirstUIndex;
-      USplit(NbUSplit)          = UIndex;
+      Array1OfInteger USplit(1, LastUIndex - FirstUIndex + 1);
+      int             NbUSplit = 1;
+      int             UIndex   = FirstUIndex;
+      USplit(NbUSplit)         = UIndex;
       UIndex++;
       NbUSplit++;
       while (UIndex < LastUIndex)
@@ -97,10 +97,10 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
   }
   else
   {
-    Standard_Integer NbVKnots = BasisSurface->NbVKnots();
-    Array1OfInteger  VMults(1, NbVKnots);
+    int             NbVKnots = BasisSurface->NbVKnots();
+    Array1OfInteger VMults(1, NbVKnots);
     BasisSurface->VMultiplicities(VMults);
-    Standard_Integer Mmax = BSplCLib::MaxKnotMult(VMults, FirstVIndex, LastVIndex);
+    int Mmax = BSplCLib::MaxKnotMult(VMults, FirstVIndex, LastVIndex);
     if (VDegree - Mmax >= VContinuityRange)
     {
       usplitIndexes = new HArray1OfInteger(1, 2);
@@ -109,10 +109,10 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
     }
     else
     {
-      Array1OfInteger  VSplit(1, LastVIndex - FirstVIndex + 1);
-      Standard_Integer NbVSplit = 1;
-      Standard_Integer VIndex   = FirstVIndex;
-      VSplit(NbVSplit)          = VIndex;
+      Array1OfInteger VSplit(1, LastVIndex - FirstVIndex + 1);
+      int             NbVSplit = 1;
+      int             VIndex   = FirstVIndex;
+      VSplit(NbVSplit)         = VIndex;
       VIndex++;
       NbVSplit++;
       while (VIndex < LastVIndex)
@@ -134,19 +134,19 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
   }
 }
 
-Standard_Integer GeomConvert_BSplineSurfaceKnotSplitting::NbUSplits() const
+int GeomConvert_BSplineSurfaceKnotSplitting::NbUSplits() const
 {
   return usplitIndexes->Length();
 }
 
-Standard_Integer GeomConvert_BSplineSurfaceKnotSplitting::NbVSplits() const
+int GeomConvert_BSplineSurfaceKnotSplitting::NbVSplits() const
 {
   return vsplitIndexes->Length();
 }
 
-Standard_Integer GeomConvert_BSplineSurfaceKnotSplitting::USplitValue(
+int GeomConvert_BSplineSurfaceKnotSplitting::USplitValue(
 
-  const Standard_Integer UIndex
+  const int UIndex
 
 ) const
 {
@@ -155,9 +155,9 @@ Standard_Integer GeomConvert_BSplineSurfaceKnotSplitting::USplitValue(
   return usplitIndexes->Value(UIndex);
 }
 
-Standard_Integer GeomConvert_BSplineSurfaceKnotSplitting::VSplitValue(
+int GeomConvert_BSplineSurfaceKnotSplitting::VSplitValue(
 
-  const Standard_Integer VIndex
+  const int VIndex
 
 ) const
 {
@@ -173,7 +173,7 @@ void GeomConvert_BSplineSurfaceKnotSplitting::Splitting(
 
 ) const
 {
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= usplitIndexes->Length(); i++)
   {
     USplit(i) = usplitIndexes->Value(i);

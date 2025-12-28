@@ -31,7 +31,7 @@ inline BOPDS_FaceInfo::BOPDS_FaceInfo()
 
 //=================================================================================================
 
-inline BOPDS_FaceInfo::BOPDS_FaceInfo(const Handle(NCollection_BaseAllocator)& theAllocator)
+inline BOPDS_FaceInfo::BOPDS_FaceInfo(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myAllocator(theAllocator),
       myIndex(-1),
       myPaveBlocksIn(100, myAllocator),
@@ -64,42 +64,43 @@ inline void BOPDS_FaceInfo::Clear()
 
 //=================================================================================================
 
-inline void BOPDS_FaceInfo::SetIndex(const Standard_Integer theI)
+inline void BOPDS_FaceInfo::SetIndex(const int theI)
 {
   myIndex = theI;
 }
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_FaceInfo::Index() const
+inline int BOPDS_FaceInfo::Index() const
 {
   return myIndex;
 }
 
 //=================================================================================================
 
-inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksIn() const
+inline const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::PaveBlocksIn()
+  const
 {
   return myPaveBlocksIn;
 }
 
 //=================================================================================================
 
-inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksIn()
+inline NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::ChangePaveBlocksIn()
 {
   return myPaveBlocksIn;
 }
 
 //=================================================================================================
 
-inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesIn() const
+inline const NCollection_Map<int>& BOPDS_FaceInfo::VerticesIn() const
 {
   return myVerticesIn;
 }
 
 //=================================================================================================
 
-inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesIn()
+inline NCollection_Map<int>& BOPDS_FaceInfo::ChangeVerticesIn()
 {
   return myVerticesIn;
 }
@@ -107,28 +108,29 @@ inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesIn()
 // On
 //=================================================================================================
 
-inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksOn() const
+inline const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::PaveBlocksOn()
+  const
 {
   return myPaveBlocksOn;
 }
 
 //=================================================================================================
 
-inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksOn()
+inline NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::ChangePaveBlocksOn()
 {
   return myPaveBlocksOn;
 }
 
 //=================================================================================================
 
-inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesOn() const
+inline const NCollection_Map<int>& BOPDS_FaceInfo::VerticesOn() const
 {
   return myVerticesOn;
 }
 
 //=================================================================================================
 
-inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesOn()
+inline NCollection_Map<int>& BOPDS_FaceInfo::ChangeVerticesOn()
 {
   return myVerticesOn;
 }
@@ -136,28 +138,29 @@ inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesOn()
 // Sc
 //=================================================================================================
 
-inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksSc() const
+inline const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::PaveBlocksSc()
+  const
 {
   return myPaveBlocksSc;
 }
 
 //=================================================================================================
 
-inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksSc()
+inline NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::ChangePaveBlocksSc()
 {
   return myPaveBlocksSc;
 }
 
 //=================================================================================================
 
-inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesSc() const
+inline const NCollection_Map<int>& BOPDS_FaceInfo::VerticesSc() const
 {
   return myVerticesSc;
 }
 
 //=================================================================================================
 
-inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesSc()
+inline NCollection_Map<int>& BOPDS_FaceInfo::ChangeVerticesSc()
 {
   return myVerticesSc;
 }

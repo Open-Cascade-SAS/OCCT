@@ -17,37 +17,37 @@
 #include <Standard_OutOfRange.hxx>
 
 //======================================================================
-inline Standard_Real IntCurve_Polygon2dGen::DeflectionOverEstimation() const
+inline double IntCurve_Polygon2dGen::DeflectionOverEstimation() const
 {
   return (TheDeflection);
 } //======================================================================
 
-inline void IntCurve_Polygon2dGen::SetDeflectionOverEstimation(const Standard_Real x)
+inline void IntCurve_Polygon2dGen::SetDeflectionOverEstimation(const double x)
 {
   TheDeflection = x;
   myBox.Enlarge(TheDeflection);
 }
 
 //======================================================================
-inline void IntCurve_Polygon2dGen::Closed(const Standard_Boolean flag)
+inline void IntCurve_Polygon2dGen::Closed(const bool flag)
 {
   ClosedPolygon = flag;
 }
 
 //======================================================================
-inline Standard_Integer IntCurve_Polygon2dGen::NbSegments(void) const
+inline int IntCurve_Polygon2dGen::NbSegments(void) const
 {
   return ((ClosedPolygon) ? NbPntIn : NbPntIn - 1);
 }
 
 //======================================================================
-inline Standard_Real IntCurve_Polygon2dGen::InfParameter() const
+inline double IntCurve_Polygon2dGen::InfParameter() const
 {
   return (TheParams.Value(TheIndex(1)));
 }
 
 //======================================================================
-inline Standard_Real IntCurve_Polygon2dGen::SupParameter() const
+inline double IntCurve_Polygon2dGen::SupParameter() const
 {
   return (TheParams.Value(TheIndex(NbPntIn)));
 }
@@ -55,14 +55,14 @@ inline Standard_Real IntCurve_Polygon2dGen::SupParameter() const
 //======================================================================
 
 //======================================================================
-inline Standard_Integer IntCurve_Polygon2dGen::CalculRegion(const Standard_Real x,
-                                                            const Standard_Real y,
-                                                            const Standard_Real x1,
-                                                            const Standard_Real x2,
-                                                            const Standard_Real y1,
-                                                            const Standard_Real y2) const
+inline int IntCurve_Polygon2dGen::CalculRegion(const double x,
+                                               const double y,
+                                               const double x1,
+                                               const double x2,
+                                               const double y1,
+                                               const double y2) const
 {
-  Standard_Integer r;
+  int r;
   if (x < x1)
   {
     r = 1;

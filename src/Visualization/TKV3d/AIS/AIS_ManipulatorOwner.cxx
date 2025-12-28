@@ -19,10 +19,11 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_ManipulatorOwner, SelectMgr_EntityOwner)
 
 //=================================================================================================
 
-AIS_ManipulatorOwner::AIS_ManipulatorOwner(const Handle(SelectMgr_SelectableObject)& theSelObject,
-                                           const Standard_Integer                    theIndex,
-                                           const AIS_ManipulatorMode                 theMode,
-                                           const Standard_Integer                    thePriority)
+AIS_ManipulatorOwner::AIS_ManipulatorOwner(
+  const occ::handle<SelectMgr_SelectableObject>& theSelObject,
+  const int                                      theIndex,
+  const AIS_ManipulatorMode                      theMode,
+  const int                                      thePriority)
     : SelectMgr_EntityOwner(theSelObject, thePriority),
       myIndex(theIndex),
       myMode(theMode)
@@ -32,9 +33,9 @@ AIS_ManipulatorOwner::AIS_ManipulatorOwner(const Handle(SelectMgr_SelectableObje
 
 //=================================================================================================
 
-void AIS_ManipulatorOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
-                                            const Handle(Prs3d_Drawer)&               theStyle,
-                                            const Standard_Integer                    theMode)
+void AIS_ManipulatorOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                            const occ::handle<Prs3d_Drawer>&               theStyle,
+                                            const int                                      theMode)
 {
   if (theMode == 0)
   {
@@ -47,12 +48,12 @@ void AIS_ManipulatorOwner::HilightWithColor(const Handle(PrsMgr_PresentationMana
 
 //=================================================================================================
 
-Standard_Boolean AIS_ManipulatorOwner::IsHilighted(const Handle(PrsMgr_PresentationManager)& thePM,
-                                                   const Standard_Integer /*theMode*/) const
+bool AIS_ManipulatorOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                       const int /*theMode*/) const
 {
   if (!HasSelectable())
   {
-    return Standard_False;
+    return false;
   }
 
   return thePM->IsHighlighted(Selectable(), myMode);
@@ -60,8 +61,8 @@ Standard_Boolean AIS_ManipulatorOwner::IsHilighted(const Handle(PrsMgr_Presentat
 
 //=================================================================================================
 
-void AIS_ManipulatorOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
-                                     const Standard_Integer /*theMode*/)
+void AIS_ManipulatorOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                     const int /*theMode*/)
 {
   if (!HasSelectable())
   {

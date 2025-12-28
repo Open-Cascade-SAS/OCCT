@@ -24,23 +24,24 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SplineSurface, IGESData_IGESEntity)
 
 IGESGeom_SplineSurface::IGESGeom_SplineSurface() {}
 
-void IGESGeom_SplineSurface::Init(const Standard_Integer                          aBoundaryType,
-                                  const Standard_Integer                          aPatchType,
-                                  const Handle(TColStd_HArray1OfReal)&            allUBreakPoints,
-                                  const Handle(TColStd_HArray1OfReal)&            allVBreakPoints,
-                                  const Handle(IGESBasic_HArray2OfHArray1OfReal)& allXCoeffs,
-                                  const Handle(IGESBasic_HArray2OfHArray1OfReal)& allYCoeffs,
-                                  const Handle(IGESBasic_HArray2OfHArray1OfReal)& allZCoeffs)
+void IGESGeom_SplineSurface::Init(
+  const int                                                                         aBoundaryType,
+  const int                                                                         aPatchType,
+  const occ::handle<NCollection_HArray1<double>>&                                   allUBreakPoints,
+  const occ::handle<NCollection_HArray1<double>>&                                   allVBreakPoints,
+  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allXCoeffs,
+  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allYCoeffs,
+  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allZCoeffs)
 {
-  Standard_Integer i, j;
+  int i, j;
   if (allUBreakPoints->Lower() != 1 || allVBreakPoints->Lower() != 1)
     throw Standard_DimensionMismatch(
       "IGESGeom_SplineSurface: Lower Indices of BreakPoints in Init");
 
-  Standard_Integer nbUSegs = allUBreakPoints->Length() - 1;
-  Standard_Integer nbVSegs = allVBreakPoints->Length() - 1;
+  int nbUSegs = allUBreakPoints->Length() - 1;
+  int nbVSegs = allVBreakPoints->Length() - 1;
 
-  Standard_Integer len = allXCoeffs->RowLength();
+  int len = allXCoeffs->RowLength();
   if ((len != allYCoeffs->RowLength()) || (len != allZCoeffs->RowLength()))
     throw Standard_DimensionMismatch("IGESGeom_SplineSurface: Row Length of HArray2s in Init");
   if (allXCoeffs->LowerCol() != 1 || allXCoeffs->LowerRow() != 1 || allYCoeffs->LowerCol() != 1
@@ -52,9 +53,9 @@ void IGESGeom_SplineSurface::Init(const Standard_Integer                        
   if ((len != allYCoeffs->ColLength()) || (len != allZCoeffs->ColLength()))
     throw Standard_DimensionMismatch("IGESGeom_SplineSurface: Column Length of HArray2s in Init");
 
-  Handle(TColStd_HArray1OfReal) temp1;
-  Handle(TColStd_HArray1OfReal) temp2;
-  Handle(TColStd_HArray1OfReal) temp3;
+  occ::handle<NCollection_HArray1<double>> temp1;
+  occ::handle<NCollection_HArray1<double>> temp2;
+  occ::handle<NCollection_HArray1<double>> temp3;
   for (i = 1; i <= nbUSegs; i++)
     for (j = 1; j <= nbVSegs; j++)
     {
@@ -77,60 +78,58 @@ void IGESGeom_SplineSurface::Init(const Standard_Integer                        
   InitTypeAndForm(114, 0);
 }
 
-Standard_Integer IGESGeom_SplineSurface::NbUSegments() const
+int IGESGeom_SplineSurface::NbUSegments() const
 {
   return (theUBreakPoints->Length() - 1);
 }
 
-Standard_Integer IGESGeom_SplineSurface::NbVSegments() const
+int IGESGeom_SplineSurface::NbVSegments() const
 {
   return (theVBreakPoints->Length() - 1);
 }
 
-Standard_Integer IGESGeom_SplineSurface::BoundaryType() const
+int IGESGeom_SplineSurface::BoundaryType() const
 {
   return theBoundaryType;
 }
 
-Standard_Integer IGESGeom_SplineSurface::PatchType() const
+int IGESGeom_SplineSurface::PatchType() const
 {
   return thePatchType;
 }
 
-Standard_Real IGESGeom_SplineSurface::UBreakPoint(const Standard_Integer Index) const
+double IGESGeom_SplineSurface::UBreakPoint(const int Index) const
 {
   return theUBreakPoints->Value(Index);
 }
 
-Standard_Real IGESGeom_SplineSurface::VBreakPoint(const Standard_Integer Index) const
+double IGESGeom_SplineSurface::VBreakPoint(const int Index) const
 {
   return theVBreakPoints->Value(Index);
 }
 
-Handle(TColStd_HArray1OfReal) IGESGeom_SplineSurface::XPolynomial(
-  const Standard_Integer Index1,
-  const Standard_Integer Index2) const
+occ::handle<NCollection_HArray1<double>> IGESGeom_SplineSurface::XPolynomial(const int Index1,
+                                                                             const int Index2) const
 {
   return (theXCoeffs->Value(Index1, Index2));
 }
 
-Handle(TColStd_HArray1OfReal) IGESGeom_SplineSurface::YPolynomial(
-  const Standard_Integer Index1,
-  const Standard_Integer Index2) const
+occ::handle<NCollection_HArray1<double>> IGESGeom_SplineSurface::YPolynomial(const int Index1,
+                                                                             const int Index2) const
 {
   return (theYCoeffs->Value(Index1, Index2));
 }
 
-Handle(TColStd_HArray1OfReal) IGESGeom_SplineSurface::ZPolynomial(
-  const Standard_Integer Index1,
-  const Standard_Integer Index2) const
+occ::handle<NCollection_HArray1<double>> IGESGeom_SplineSurface::ZPolynomial(const int Index1,
+                                                                             const int Index2) const
 {
   return (theZCoeffs->Value(Index1, Index2));
 }
 
-void IGESGeom_SplineSurface::Polynomials(Handle(IGESBasic_HArray2OfHArray1OfReal)& allXCoeffs,
-                                         Handle(IGESBasic_HArray2OfHArray1OfReal)& allYCoeffs,
-                                         Handle(IGESBasic_HArray2OfHArray1OfReal)& allZCoeffs) const
+void IGESGeom_SplineSurface::Polynomials(
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allXCoeffs,
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allYCoeffs,
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allZCoeffs) const
 {
   allXCoeffs = theXCoeffs;
   allYCoeffs = theYCoeffs;

@@ -18,11 +18,11 @@ inline void IntSurf_PntOn2S::SetValue(const gp_Pnt& Pt)
   pt = Pt;
 }
 
-inline void IntSurf_PntOn2S::SetValue(const gp_Pnt&       Pt,
-                                      const Standard_Real U1,
-                                      const Standard_Real V1,
-                                      const Standard_Real U2,
-                                      const Standard_Real V2)
+inline void IntSurf_PntOn2S::SetValue(const gp_Pnt& Pt,
+                                      const double  U1,
+                                      const double  V1,
+                                      const double  U2,
+                                      const double  V2)
 {
 
   pt = Pt;
@@ -32,10 +32,10 @@ inline void IntSurf_PntOn2S::SetValue(const gp_Pnt&       Pt,
   v2 = V2;
 }
 
-inline void IntSurf_PntOn2S::SetValue(const Standard_Real U1,
-                                      const Standard_Real V1,
-                                      const Standard_Real U2,
-                                      const Standard_Real V2)
+inline void IntSurf_PntOn2S::SetValue(const double U1,
+                                      const double V1,
+                                      const double U2,
+                                      const double V2)
 {
   u1 = U1;
   v1 = V1;
@@ -49,22 +49,19 @@ inline const gp_Pnt& IntSurf_PntOn2S::Value() const
   return pt;
 }
 
-inline void IntSurf_PntOn2S::ParametersOnS1(Standard_Real& U1, Standard_Real& V1) const
+inline void IntSurf_PntOn2S::ParametersOnS1(double& U1, double& V1) const
 {
   U1 = u1;
   V1 = v1;
 }
 
-inline void IntSurf_PntOn2S::ParametersOnS2(Standard_Real& U2, Standard_Real& V2) const
+inline void IntSurf_PntOn2S::ParametersOnS2(double& U2, double& V2) const
 {
   U2 = u2;
   V2 = v2;
 }
 
-inline void IntSurf_PntOn2S::Parameters(Standard_Real& U1,
-                                        Standard_Real& V1,
-                                        Standard_Real& U2,
-                                        Standard_Real& V2) const
+inline void IntSurf_PntOn2S::Parameters(double& U1, double& V1, double& U2, double& V2) const
 {
   U1 = u1;
   V1 = v1;

@@ -14,7 +14,7 @@
 
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_PaveBlock.hxx>
-#include <BOPDS_VectorOfPave.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
@@ -32,12 +32,12 @@ BOPDS_PaveBlock::BOPDS_PaveBlock()
   myOriginalEdge = -1;
   myTS1          = -99.;
   myTS2          = myTS1;
-  myIsSplittable = Standard_False;
+  myIsSplittable = false;
 }
 
 //=================================================================================================
 
-BOPDS_PaveBlock::BOPDS_PaveBlock(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPDS_PaveBlock::BOPDS_PaveBlock(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myAllocator(theAllocator),
       myExtPaves(theAllocator),
       myMFence(100, theAllocator)
@@ -46,33 +46,33 @@ BOPDS_PaveBlock::BOPDS_PaveBlock(const Handle(NCollection_BaseAllocator)& theAll
   myOriginalEdge = -1;
   myTS1          = -99.;
   myTS2          = myTS1;
-  myIsSplittable = Standard_False;
+  myIsSplittable = false;
 }
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::SetEdge(const Standard_Integer theEdge)
+void BOPDS_PaveBlock::SetEdge(const int theEdge)
 {
   myEdge = theEdge;
 }
 
 //=================================================================================================
 
-Standard_Integer BOPDS_PaveBlock::Edge() const
+int BOPDS_PaveBlock::Edge() const
 {
   return myEdge;
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPDS_PaveBlock::HasEdge() const
+bool BOPDS_PaveBlock::HasEdge() const
 {
   return (myEdge >= 0);
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPDS_PaveBlock::HasEdge(Standard_Integer& theEdge) const
+bool BOPDS_PaveBlock::HasEdge(int& theEdge) const
 {
   theEdge = myEdge;
   return (myEdge >= 0);
@@ -80,21 +80,21 @@ Standard_Boolean BOPDS_PaveBlock::HasEdge(Standard_Integer& theEdge) const
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::SetOriginalEdge(const Standard_Integer theEdge)
+void BOPDS_PaveBlock::SetOriginalEdge(const int theEdge)
 {
   myOriginalEdge = theEdge;
 }
 
 //=================================================================================================
 
-Standard_Integer BOPDS_PaveBlock::OriginalEdge() const
+int BOPDS_PaveBlock::OriginalEdge() const
 {
   return myOriginalEdge;
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPDS_PaveBlock::IsSplitEdge() const
+bool BOPDS_PaveBlock::IsSplitEdge() const
 {
   return (myEdge != myOriginalEdge);
 }
@@ -129,7 +129,7 @@ const BOPDS_Pave& BOPDS_PaveBlock::Pave2() const
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::Range(Standard_Real& theT1, Standard_Real& theT2) const
+void BOPDS_PaveBlock::Range(double& theT1, double& theT2) const
 {
   theT1 = myPave1.Parameter();
   theT2 = myPave2.Parameter();
@@ -137,7 +137,7 @@ void BOPDS_PaveBlock::Range(Standard_Real& theT1, Standard_Real& theT2) const
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::Indices(Standard_Integer& theIndex1, Standard_Integer& theIndex2) const
+void BOPDS_PaveBlock::Indices(int& theIndex1, int& theIndex2) const
 {
   theIndex1 = myPave1.Index();
   theIndex2 = myPave2.Index();
@@ -145,10 +145,10 @@ void BOPDS_PaveBlock::Indices(Standard_Integer& theIndex1, Standard_Integer& the
 
 //=================================================================================================
 
-Standard_Boolean BOPDS_PaveBlock::HasSameBounds(const Handle(BOPDS_PaveBlock)& theOther) const
+bool BOPDS_PaveBlock::HasSameBounds(const occ::handle<BOPDS_PaveBlock>& theOther) const
 {
-  Standard_Boolean bFlag1, bFlag2;
-  Standard_Integer n11, n12, n21, n22;
+  bool bFlag1, bFlag2;
+  int  n11, n12, n21, n22;
   //
   Indices(n11, n12);
   theOther->Indices(n21, n22);
@@ -181,11 +181,11 @@ void BOPDS_PaveBlock::AppendExtPave1(const BOPDS_Pave& thePave)
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::RemoveExtPave(const Standard_Integer theVertNum)
+void BOPDS_PaveBlock::RemoveExtPave(const int theVertNum)
 {
   if (myMFence.Contains(theVertNum))
   {
-    BOPDS_ListOfPave::Iterator itPaves(myExtPaves);
+    NCollection_List<BOPDS_Pave>::Iterator itPaves(myExtPaves);
     while (itPaves.More())
     {
       if (itPaves.Value().Index() == theVertNum)
@@ -199,35 +199,33 @@ void BOPDS_PaveBlock::RemoveExtPave(const Standard_Integer theVertNum)
 
 //=================================================================================================
 
-const BOPDS_ListOfPave& BOPDS_PaveBlock::ExtPaves() const
+const NCollection_List<BOPDS_Pave>& BOPDS_PaveBlock::ExtPaves() const
 {
   return myExtPaves;
 }
 
 //=================================================================================================
 
-BOPDS_ListOfPave& BOPDS_PaveBlock::ChangeExtPaves()
+NCollection_List<BOPDS_Pave>& BOPDS_PaveBlock::ChangeExtPaves()
 {
   return myExtPaves;
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPDS_PaveBlock::IsToUpdate() const
+bool BOPDS_PaveBlock::IsToUpdate() const
 {
   return !myExtPaves.IsEmpty();
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPDS_PaveBlock::ContainsParameter(const Standard_Real theT,
-                                                    const Standard_Real theTol,
-                                                    Standard_Integer&   theInd) const
+bool BOPDS_PaveBlock::ContainsParameter(const double theT, const double theTol, int& theInd) const
 {
-  Standard_Boolean               bRet;
-  BOPDS_ListIteratorOfListOfPave aIt;
+  bool                                   bRet;
+  NCollection_List<BOPDS_Pave>::Iterator aIt;
   //
-  bRet = Standard_False;
+  bRet = false;
   aIt.Initialize(myExtPaves);
   for (; aIt.More(); aIt.Next())
   {
@@ -244,12 +242,13 @@ Standard_Boolean BOPDS_PaveBlock::ContainsParameter(const Standard_Real theT,
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::Update(BOPDS_ListOfPaveBlock& theLPB, const Standard_Boolean theFlag)
+void BOPDS_PaveBlock::Update(NCollection_List<occ::handle<BOPDS_PaveBlock>>& theLPB,
+                             const bool                                      theFlag)
 {
-  Standard_Integer               i, aNb;
-  BOPDS_Pave                     aPave1, aPave2;
-  Handle(BOPDS_PaveBlock)        aPB;
-  BOPDS_ListIteratorOfListOfPave aIt;
+  int                                    i, aNb;
+  BOPDS_Pave                             aPave1, aPave2;
+  occ::handle<BOPDS_PaveBlock>           aPB;
+  NCollection_List<BOPDS_Pave>::Iterator aIt;
   //
   aNb = myExtPaves.Extent();
   if (theFlag)
@@ -264,7 +263,7 @@ void BOPDS_PaveBlock::Update(BOPDS_ListOfPaveBlock& theLPB, const Standard_Boole
     return;
   }
   //
-  BOPDS_VectorOfPave pPaves(1, aNb);
+  NCollection_Array1<BOPDS_Pave> pPaves(1, aNb);
   //
   i = 1;
   if (theFlag)
@@ -311,17 +310,17 @@ void BOPDS_PaveBlock::Update(BOPDS_ListOfPaveBlock& theLPB, const Standard_Boole
 // ShrunkData
 //=================================================================================================
 
-Standard_Boolean BOPDS_PaveBlock::HasShrunkData() const
+bool BOPDS_PaveBlock::HasShrunkData() const
 {
   return (!myShrunkBox.IsVoid());
 }
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::SetShrunkData(const Standard_Real    theT1,
-                                    const Standard_Real    theT2,
-                                    const Bnd_Box&         theBox,
-                                    const Standard_Boolean theIsSplittable)
+void BOPDS_PaveBlock::SetShrunkData(const double   theT1,
+                                    const double   theT2,
+                                    const Bnd_Box& theBox,
+                                    const bool     theIsSplittable)
 {
   myTS1          = theT1;
   myTS2          = theT2;
@@ -331,10 +330,10 @@ void BOPDS_PaveBlock::SetShrunkData(const Standard_Real    theT1,
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::ShrunkData(Standard_Real&    theT1,
-                                 Standard_Real&    theT2,
-                                 Bnd_Box&          theBox,
-                                 Standard_Boolean& theIsSplittable) const
+void BOPDS_PaveBlock::ShrunkData(double&  theT1,
+                                 double&  theT2,
+                                 Bnd_Box& theBox,
+                                 bool&    theIsSplittable) const
 {
   theT1           = myTS1;
   theT2           = myTS2;

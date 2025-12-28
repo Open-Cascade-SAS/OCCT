@@ -39,9 +39,6 @@ class ShapeAnalysis_Surface;
   #undef Status
 #endif
 
-class ShapeConstruct_ProjectCurveOnSurface;
-DEFINE_STANDARD_HANDLE(ShapeConstruct_ProjectCurveOnSurface, Standard_Transient)
-
 //! This tool provides a method for computing pcurve by projecting
 //! 3d curve onto a surface.
 //! Projection is done by 23 or more points (this number is changed
@@ -58,7 +55,7 @@ public:
   // Type aliases for internal containers (1-based indexing for geometry arrays)
   using ArrayOfPnt   = NCollection_Array1<gp_Pnt>;
   using ArrayOfPnt2d = NCollection_Array1<gp_Pnt2d>;
-  using ArrayOfReal  = NCollection_Array1<Standard_Real>;
+  using ArrayOfReal  = NCollection_Array1<double>;
   // Cache uses 0-based indexing (simple 2-element array)
   using CachePoint = std::pair<gp_Pnt, gp_Pnt2d>;
   using CacheArray = NCollection_Array1<CachePoint>;
@@ -71,27 +68,27 @@ public:
   //! i.e. surface and precision
   //! @param[in] theSurf the surface to project on
   //! @param[in] thePreci the precision for projection
-  Standard_EXPORT virtual void Init(const Handle(Geom_Surface)& theSurf,
-                                    const Standard_Real         thePreci);
+  Standard_EXPORT virtual void Init(const occ::handle<Geom_Surface>& theSurf,
+                                    const double                     thePreci);
 
   //! Initializes the object with all necessary parameters,
   //! i.e. surface and precision
   //! @param[in] theSurf the surface to project on (ShapeAnalysis_Surface)
   //! @param[in] thePreci the precision for projection
-  Standard_EXPORT virtual void Init(const Handle(ShapeAnalysis_Surface)& theSurf,
-                                    const Standard_Real                  thePreci);
+  Standard_EXPORT virtual void Init(const occ::handle<ShapeAnalysis_Surface>& theSurf,
+                                    const double                              thePreci);
 
   //! Loads a surface (in the form of Geom_Surface) to project on
   //! @param[in] theSurf the surface to project on
-  Standard_EXPORT void SetSurface(const Handle(Geom_Surface)& theSurf);
+  Standard_EXPORT void SetSurface(const occ::handle<Geom_Surface>& theSurf);
 
   //! Loads a surface (in the form of ShapeAnalysis_Surface) to project on
   //! @param[in] theSurf the surface to project on
-  Standard_EXPORT void SetSurface(const Handle(ShapeAnalysis_Surface)& theSurf);
+  Standard_EXPORT void SetSurface(const occ::handle<ShapeAnalysis_Surface>& theSurf);
 
   //! Sets value for current precision
   //! @param[in] thePreci the precision value
-  Standard_EXPORT void SetPrecision(const Standard_Real thePreci);
+  Standard_EXPORT void SetPrecision(const double thePreci);
 
   //! Returns (modifiable) the flag specifying to which side of
   //! parametrical space adjust part of pcurve which lies on seam.
@@ -105,12 +102,12 @@ public:
   //! else to the right side (on sphere U=2*PI)
   //! Default value is True
   //! @return modifiable reference to the adjustment flag
-  Standard_EXPORT Standard_Integer& AdjustOverDegenMode();
+  Standard_EXPORT int& AdjustOverDegenMode();
 
   //! Returns the status of last Perform
   //! @param[in] theStatus the status to query
   //! @return true if the specified status is set
-  Standard_EXPORT Standard_Boolean Status(const ShapeExtend_Status theStatus) const;
+  Standard_EXPORT bool Status(const ShapeExtend_Status theStatus) const;
 
   //! Computes the projection of 3d curve onto a surface using the
   //! specialized algorithm. Returns False if projector fails,
@@ -126,13 +123,12 @@ public:
   //! @param[in] theTolFirst the tolerance at the first point (default: Precision::Confusion())
   //! @param[in] theTolLast the tolerance at the last point (default: Precision::Confusion())
   //! @return true if projection succeeded
-  Standard_EXPORT virtual Standard_Boolean Perform(
-    const Handle(Geom_Curve)& theC3D,
-    const Standard_Real       theFirst,
-    const Standard_Real       theLast,
-    Handle(Geom2d_Curve)&     theC2D,
-    const Standard_Real       theTolFirst = Precision::Confusion(),
-    const Standard_Real       theTolLast  = Precision::Confusion());
+  Standard_EXPORT virtual bool Perform(const occ::handle<Geom_Curve>& theC3D,
+                                       const double                   theFirst,
+                                       const double                   theLast,
+                                       occ::handle<Geom2d_Curve>&     theC2D,
+                                       const double theTolFirst = Precision::Confusion(),
+                                       const double theTolLast  = Precision::Confusion());
 
   DEFINE_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface, Standard_Transient)
 
@@ -147,12 +143,12 @@ protected:
   //! @param[out] theIsRecompute flag indicating if recomputation is needed
   //! @param[out] theIsFromCache flag indicating if result is from cache
   //! @return the resulting 2D curve or null if line fitting failed
-  Standard_EXPORT Handle(Geom2d_Curve) getLine(const ArrayOfPnt&   thePoints,
-                                               const ArrayOfReal&  theParams,
-                                               ArrayOfPnt2d&       thePoints2d,
-                                               const Standard_Real theTol,
-                                               Standard_Boolean&   theIsRecompute,
-                                               Standard_Boolean&   theIsFromCache) const;
+  Standard_EXPORT occ::handle<Geom2d_Curve> getLine(const ArrayOfPnt&  thePoints,
+                                                    const ArrayOfReal& theParams,
+                                                    ArrayOfPnt2d&      thePoints2d,
+                                                    const double       theTol,
+                                                    bool&              theIsRecompute,
+                                                    bool&              theIsFromCache) const;
 
   //! Computes the projection of 3d curve onto a surface using the
   //! standard algorithm from ProjLib. Returns False if standard
@@ -164,15 +160,16 @@ protected:
   //! @param[in] theLast the last parameter of the curve
   //! @param[out] theC2D the resulting 2D curve
   //! @return true if projection succeeded
-  Standard_EXPORT Standard_Boolean PerformByProjLib(const Handle(Geom_Curve)& theC3D,
-                                                    const Standard_Real       theFirst,
-                                                    const Standard_Real       theLast,
-                                                    Handle(Geom2d_Curve)&     theC2D);
+  Standard_EXPORT bool PerformByProjLib(const occ::handle<Geom_Curve>& theC3D,
+                                        const double                   theFirst,
+                                        const double                   theLast,
+                                        occ::handle<Geom2d_Curve>&     theC2D);
 
   //! Performs analytical projection for special cases (plane surfaces)
   //! @param[in] theC3D the 3D curve to project
   //! @return the resulting 2D curve or null if analytical projection not applicable
-  Standard_EXPORT Handle(Geom2d_Curve) projectAnalytic(const Handle(Geom_Curve)& theC3D) const;
+  Standard_EXPORT occ::handle<Geom2d_Curve> projectAnalytic(
+    const occ::handle<Geom_Curve>& theC3D) const;
 
   //! Main approximation routine for pcurve computation
   //! @param[in] theNbPnt number of points
@@ -184,14 +181,14 @@ protected:
   //! @param[out] thePoints2d array of 2D points
   //! @param[out] theC2D resulting 2D curve
   //! @return true if approximation succeeded
-  Standard_EXPORT Standard_Boolean approxPCurve(const Standard_Integer    theNbPnt,
-                                                const Handle(Geom_Curve)& theC3D,
-                                                const Standard_Real       theTolFirst,
-                                                const Standard_Real       theTolLast,
-                                                ArrayOfPnt&               thePoints,
-                                                ArrayOfReal&              theParams,
-                                                ArrayOfPnt2d&             thePoints2d,
-                                                Handle(Geom2d_Curve)&     theC2D);
+  Standard_EXPORT bool approxPCurve(const int                      theNbPnt,
+                                    const occ::handle<Geom_Curve>& theC3D,
+                                    const double                   theTolFirst,
+                                    const double                   theTolLast,
+                                    ArrayOfPnt&                    thePoints,
+                                    ArrayOfReal&                   theParams,
+                                    ArrayOfPnt2d&                  thePoints2d,
+                                    occ::handle<Geom2d_Curve>&     theC2D);
 
   //! Corrects extremity point near singularity
   //! @param[in] theC3D the 3D curve
@@ -200,12 +197,12 @@ protected:
   //! @param[in] theIsFirstPoint true if correcting first point, false for last
   //! @param[in] thePointOnIsoLine point on isoline
   //! @param[in] theIsUIso true if U-isoline, false if V-isoline
-  Standard_EXPORT void correctExtremity(const Handle(Geom_Curve)& theC3D,
-                                        const ArrayOfReal&        theParams,
-                                        ArrayOfPnt2d&             thePoints2d,
-                                        const Standard_Boolean    theIsFirstPoint,
-                                        const gp_Pnt2d&           thePointOnIsoLine,
-                                        const Standard_Boolean    theIsUIso);
+  Standard_EXPORT void correctExtremity(const occ::handle<Geom_Curve>& theC3D,
+                                        const ArrayOfReal&             theParams,
+                                        ArrayOfPnt2d&                  thePoints2d,
+                                        const bool                     theIsFirstPoint,
+                                        const gp_Pnt2d&                thePointOnIsoLine,
+                                        const bool                     theIsUIso);
 
   //! Inserts additional point or adjusts coordinate to handle period jumps
   //! @param[in,out] theToAdjust flag indicating if adjustment should be done
@@ -219,49 +216,49 @@ protected:
   //! @param[in,out] thePoints array of 3D points
   //! @param[in,out] theParams array of parameters
   //! @param[in,out] thePoints2d array of 2D points
-  Standard_EXPORT void insertAdditionalPointOrAdjust(Standard_Boolean&         theToAdjust,
-                                                     const Standard_Integer    theIndCoord,
-                                                     const Standard_Real       thePeriod,
-                                                     const Standard_Real       theTolOnPeriod,
-                                                     Standard_Real&            theCurCoord,
-                                                     const Standard_Real       thePrevCoord,
-                                                     const Handle(Geom_Curve)& theC3D,
-                                                     Standard_Integer&         theIndex,
-                                                     ArrayOfPnt&               thePoints,
-                                                     ArrayOfReal&              theParams,
-                                                     ArrayOfPnt2d&             thePoints2d);
+  Standard_EXPORT void insertAdditionalPointOrAdjust(bool&                          theToAdjust,
+                                                     const int                      theIndCoord,
+                                                     const double                   thePeriod,
+                                                     const double                   theTolOnPeriod,
+                                                     double&                        theCurCoord,
+                                                     const double                   thePrevCoord,
+                                                     const occ::handle<Geom_Curve>& theC3D,
+                                                     int&                           theIndex,
+                                                     ArrayOfPnt&                    thePoints,
+                                                     ArrayOfReal&                   theParams,
+                                                     ArrayOfPnt2d&                  thePoints2d);
 
   //! Interpolates 2D curve from points
   //! @param[in] theNbPnt number of points
   //! @param[in] thePoints2d array of 2D points
   //! @param[in] theParams array of parameters
   //! @return the interpolated 2D curve or null on failure
-  Standard_EXPORT Handle(Geom2d_Curve) interpolatePCurve(const Standard_Integer theNbPnt,
-                                                         const ArrayOfPnt2d&    thePoints2d,
-                                                         const ArrayOfReal&     theParams) const;
+  Standard_EXPORT occ::handle<Geom2d_Curve> interpolatePCurve(const int           theNbPnt,
+                                                              const ArrayOfPnt2d& thePoints2d,
+                                                              const ArrayOfReal&  theParams) const;
 
   //! Approximates 2D curve from points
   //! @param[in] thePoints2d array of 2D points
   //! @param[in] theParams array of parameters
   //! @return the approximated 2D curve or null on failure
-  Standard_EXPORT Handle(Geom2d_Curve) approximatePCurve(const ArrayOfPnt2d& thePoints2d,
-                                                         const ArrayOfReal&  theParams) const;
+  Standard_EXPORT occ::handle<Geom2d_Curve> approximatePCurve(const ArrayOfPnt2d& thePoints2d,
+                                                              const ArrayOfReal&  theParams) const;
 
   //! Checks and removes coincident 3D points
   //! @param[in,out] thePoints array of 3D points
   //! @param[in,out] theParams array of parameters
   //! @param[in,out] thePreci precision (may be adjusted)
-  Standard_EXPORT void checkPoints(ArrayOfPnt&    thePoints,
-                                   ArrayOfReal&   theParams,
-                                   Standard_Real& thePreci) const;
+  Standard_EXPORT void checkPoints(ArrayOfPnt&  thePoints,
+                                   ArrayOfReal& theParams,
+                                   double&      thePreci) const;
 
   //! Checks and removes coincident 2D points
   //! @param[in,out] thePoints2d array of 2D points
   //! @param[in,out] theParams array of parameters
   //! @param[in,out] thePreci precision (may be adjusted)
-  Standard_EXPORT void checkPoints2d(ArrayOfPnt2d&  thePoints2d,
-                                     ArrayOfReal&   theParams,
-                                     Standard_Real& thePreci) const;
+  Standard_EXPORT void checkPoints2d(ArrayOfPnt2d& thePoints2d,
+                                     ArrayOfReal&  theParams,
+                                     double&       thePreci) const;
 
   //! Detects if curve is isoparametric (U=const or V=const)
   //! @param[in] theNbPnt number of points
@@ -278,26 +275,26 @@ protected:
   //! @param[out] theT2 last iso parameter
   //! @param[out] theParamsOut output parameters on isoline
   //! @return true if curve is isoparametric
-  Standard_EXPORT Standard_Boolean isAnIsoparametric(const Standard_Integer theNbPnt,
-                                                     const ArrayOfPnt&      thePoints,
-                                                     const ArrayOfReal&     theParams,
-                                                     Standard_Boolean&      theIsTypeU,
-                                                     Standard_Boolean&      theP1OnIso,
-                                                     gp_Pnt2d&              theValueP1,
-                                                     Standard_Boolean&      theP2OnIso,
-                                                     gp_Pnt2d&              theValueP2,
-                                                     Standard_Boolean&      theIsoPar2d3d,
-                                                     Handle(Geom_Curve)&    theCIso,
-                                                     Standard_Real&         theT1,
-                                                     Standard_Real&         theT2,
-                                                     ArrayOfReal&           theParamsOut) const;
+  Standard_EXPORT bool isAnIsoparametric(const int                theNbPnt,
+                                         const ArrayOfPnt&        thePoints,
+                                         const ArrayOfReal&       theParams,
+                                         bool&                    theIsTypeU,
+                                         bool&                    theP1OnIso,
+                                         gp_Pnt2d&                theValueP1,
+                                         bool&                    theP2OnIso,
+                                         gp_Pnt2d&                theValueP2,
+                                         bool&                    theIsoPar2d3d,
+                                         occ::handle<Geom_Curve>& theCIso,
+                                         double&                  theT1,
+                                         double&                  theT2,
+                                         ArrayOfReal&             theParamsOut) const;
 
 private:
-  Handle(ShapeAnalysis_Surface) mySurf;            //!< Surface to project on
-  Standard_Real                 myPreci;           //!< Current precision
-  Standard_Integer              myStatus;          //!< Operation status
-  Standard_Integer              myAdjustOverDegen; //!< Seam adjustment flag
-  CacheArray                    myCache; //!< Cached 3D/2D point pairs for projection optimization
+  occ::handle<ShapeAnalysis_Surface> mySurf;            //!< Surface to project on
+  double                             myPreci;           //!< Current precision
+  int                                myStatus;          //!< Operation status
+  int                                myAdjustOverDegen; //!< Seam adjustment flag
+  CacheArray myCache; //!< Cached 3D/2D point pairs for projection optimization
 };
 
 #endif // _ShapeConstruct_ProjectCurveOnSurface_HeaderFile

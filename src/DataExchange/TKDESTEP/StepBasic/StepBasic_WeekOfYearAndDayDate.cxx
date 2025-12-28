@@ -18,10 +18,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_WeekOfYearAndDayDate, StepBasic_Date)
 
 StepBasic_WeekOfYearAndDayDate::StepBasic_WeekOfYearAndDayDate() {}
 
-void StepBasic_WeekOfYearAndDayDate::Init(const Standard_Integer aYearComponent,
-                                          const Standard_Integer aWeekComponent,
-                                          const Standard_Boolean hasAdayComponent,
-                                          const Standard_Integer aDayComponent)
+void StepBasic_WeekOfYearAndDayDate::Init(const int  aYearComponent,
+                                          const int  aWeekComponent,
+                                          const bool hasAdayComponent,
+                                          const int  aDayComponent)
 {
   // --- classe own fields ---
   weekComponent   = aWeekComponent;
@@ -31,33 +31,33 @@ void StepBasic_WeekOfYearAndDayDate::Init(const Standard_Integer aYearComponent,
   StepBasic_Date::Init(aYearComponent);
 }
 
-void StepBasic_WeekOfYearAndDayDate::SetWeekComponent(const Standard_Integer aWeekComponent)
+void StepBasic_WeekOfYearAndDayDate::SetWeekComponent(const int aWeekComponent)
 {
   weekComponent = aWeekComponent;
 }
 
-Standard_Integer StepBasic_WeekOfYearAndDayDate::WeekComponent() const
+int StepBasic_WeekOfYearAndDayDate::WeekComponent() const
 {
   return weekComponent;
 }
 
-void StepBasic_WeekOfYearAndDayDate::SetDayComponent(const Standard_Integer aDayComponent)
+void StepBasic_WeekOfYearAndDayDate::SetDayComponent(const int aDayComponent)
 {
   dayComponent    = aDayComponent;
-  hasDayComponent = Standard_True;
+  hasDayComponent = true;
 }
 
 void StepBasic_WeekOfYearAndDayDate::UnSetDayComponent()
 {
-  hasDayComponent = Standard_False;
+  hasDayComponent = false;
 }
 
-Standard_Integer StepBasic_WeekOfYearAndDayDate::DayComponent() const
+int StepBasic_WeekOfYearAndDayDate::DayComponent() const
 {
   return dayComponent;
 }
 
-Standard_Boolean StepBasic_WeekOfYearAndDayDate::HasDayComponent() const
+bool StepBasic_WeekOfYearAndDayDate::HasDayComponent() const
 {
   return hasDayComponent;
 }

@@ -45,8 +45,8 @@ IGESGeom_ToolConicArc::IGESGeom_ToolConicArc() {}
 
 //=================================================================================================
 
-void IGESGeom_ToolConicArc::ReadOwnParams(const Handle(IGESGeom_ConicArc)& ent,
-                                          const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESGeom_ToolConicArc::ReadOwnParams(const occ::handle<IGESGeom_ConicArc>& ent,
+                                          const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                           IGESData_ParamReader& PR) const
 {
   // MGE 28/07/98
@@ -56,9 +56,9 @@ void IGESGeom_ToolConicArc::ReadOwnParams(const Handle(IGESGeom_ConicArc)& ent,
   Message_Msg Msg84("XSTEP_84");
   //======================================
 
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Real A, B = 0., C = 0., D = 0., E = 0., F = 0., ZT;
-  gp_XY         tempStart, tempEnd;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  double A, B = 0., C = 0., D = 0., E = 0., F = 0., ZT;
+  gp_XY  tempStart, tempEnd;
 
   /* PR.ReadReal(PR.Current(), Msg81, A); //szv#4:S4163:12Mar99 `st=` not needed
    PR.ReadReal(PR.Current(), Msg81, B); //szv#4:S4163:12Mar99 `st=` not needed
@@ -100,10 +100,10 @@ void IGESGeom_ToolConicArc::ReadOwnParams(const Handle(IGESGeom_ConicArc)& ent,
 
 //=================================================================================================
 
-void IGESGeom_ToolConicArc::WriteOwnParams(const Handle(IGESGeom_ConicArc)& ent,
-                                           IGESData_IGESWriter&             IW) const
+void IGESGeom_ToolConicArc::WriteOwnParams(const occ::handle<IGESGeom_ConicArc>& ent,
+                                           IGESData_IGESWriter&                  IW) const
 {
-  Standard_Real A, B, C, D, E, F;
+  double A, B, C, D, E, F;
   ent->Equation(A, B, C, D, E, F);
   IW.Send(A);
   IW.Send(B);
@@ -120,18 +120,18 @@ void IGESGeom_ToolConicArc::WriteOwnParams(const Handle(IGESGeom_ConicArc)& ent,
 
 //=================================================================================================
 
-void IGESGeom_ToolConicArc::OwnShared(const Handle(IGESGeom_ConicArc)& /* ent */,
+void IGESGeom_ToolConicArc::OwnShared(const occ::handle<IGESGeom_ConicArc>& /* ent */,
                                       Interface_EntityIterator& /* iter */) const
 {
 }
 
 //=================================================================================================
 
-void IGESGeom_ToolConicArc::OwnCopy(const Handle(IGESGeom_ConicArc)& another,
-                                    const Handle(IGESGeom_ConicArc)& ent,
+void IGESGeom_ToolConicArc::OwnCopy(const occ::handle<IGESGeom_ConicArc>& another,
+                                    const occ::handle<IGESGeom_ConicArc>& ent,
                                     Interface_CopyTool& /* TC */) const
 {
-  Standard_Real A, B, C, D, E, F;
+  double A, B, C, D, E, F;
   another->Equation(A, B, C, D, E, F);
   ent->Init(A,
             B,
@@ -146,7 +146,7 @@ void IGESGeom_ToolConicArc::OwnCopy(const Handle(IGESGeom_ConicArc)& another,
 
 //=================================================================================================
 
-Standard_Boolean IGESGeom_ToolConicArc::OwnCorrect(const Handle(IGESGeom_ConicArc)& ent) const
+bool IGESGeom_ToolConicArc::OwnCorrect(const occ::handle<IGESGeom_ConicArc>& ent) const
 {
   return ent->OwnCorrect(); //  form selon coefs. 1 Ellipse, 2 Hyper, 3 Para
 }
@@ -154,7 +154,7 @@ Standard_Boolean IGESGeom_ToolConicArc::OwnCorrect(const Handle(IGESGeom_ConicAr
 //=================================================================================================
 
 IGESData_DirChecker IGESGeom_ToolConicArc::DirChecker(
-  const Handle(IGESGeom_ConicArc)& /* ent */) const
+  const occ::handle<IGESGeom_ConicArc>& /* ent */) const
 {
   IGESData_DirChecker DC(104, 0, 3);
   DC.Structure(IGESData_DefVoid);
@@ -168,9 +168,9 @@ IGESData_DirChecker IGESGeom_ToolConicArc::DirChecker(
 
 //=================================================================================================
 
-void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
+void IGESGeom_ToolConicArc::OwnCheck(const occ::handle<IGESGeom_ConicArc>& ent,
                                      const Interface_ShareTool&,
-                                     Handle(Interface_Check)& ach) const
+                                     occ::handle<Interface_Check>& ach) const
 {
   // MGE 28/07/98
   // Building of messages
@@ -179,8 +179,8 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
   //=====================================
 
   // char mess[80]; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer cfn = ent->ComputedFormNumber();
-  Standard_Integer fn  = ent->FormNumber();
+  int cfn = ent->ComputedFormNumber();
+  int fn  = ent->FormNumber();
   if (cfn == 0)
   {
   }
@@ -193,12 +193,12 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
 
   // szv#4:S4163:12Mar99 not needed
   // if (ach.HasFailed()) return;    // les tests suivant deviennent sans objet
-  // Standard_Real eps = 1.E-04;     // Tolerance des Tests ??
-  // Standard_Real A,B,C,D,E,F;
+  // double eps = 1.E-04;     // Tolerance des Tests ??
+  // double A,B,C,D,E,F;
   // ent->Equation(A,B,C,D,E,F);
-  // Standard_Real x = ent->StartPoint().X();
-  // Standard_Real y = ent->StartPoint().Y();
-  // Standard_Real eq = (A*x*x + B*x*y + C*y*y + D*x + E*y + F);
+  // double x = ent->StartPoint().X();
+  // double y = ent->StartPoint().Y();
+  // double eq = (A*x*x + B*x*y + C*y*y + D*x + E*y + F);
   //  These messages are transferred in the translation procedure
   /*  if (eq < -eps || eq > eps) {
       Sprintf(mess,"Start point does not satisfy conic equation, gap over %f",
@@ -220,13 +220,13 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
   /*   Les tests qui suivant ont-ils un sens ??
     if (ent->FormNumber() == 2)    // Hyperbola
       {
-        Standard_Real xc = -D / (2 * A);
-        Standard_Real yc = -E / (2 * C);
+        double xc = -D / (2 * A);
+        double yc = -E / (2 * C);
         gp_Dir2d d0(gp_Dir2d::D::X);
         gp_Dir2d d1(ent->StartPoint().X() - xc, ent->StartPoint().Y() - yc);
         gp_Dir2d d2(ent->EndPoint().X()   - xc, ent->EndPoint().Y()   - yc);
-        Standard_Real t1 = d0.Angle(d1);
-        Standard_Real t2 = d0.Angle(d2);
+        double t1 = d0.Angle(d1);
+        double t2 = d0.Angle(d2);
         t1 += (t1  >  0 ? 0 : 2*M_PI);
         t2 += (t2  >  0 ? 0 : 2*M_PI);
         t2 += (t1 <= t2 ? 0 : 2*M_PI);
@@ -235,13 +235,13 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
       }
     else if (ent->FormNumber() == 3)
       {
-        Standard_Real xc = -D / (2 * A);
-        Standard_Real yc = -E / (2 * C);
+        double xc = -D / (2 * A);
+        double yc = -E / (2 * C);
         gp_Dir2d d0(gp_Dir2d::D::X);
         gp_Dir2d d1(ent->StartPoint().X() - xc, ent->StartPoint().Y() - yc);
         gp_Dir2d d2(ent->EndPoint().X()   - xc, ent->EndPoint().Y()   - yc);
-        Standard_Real t1 = d0.Angle(d1);
-        Standard_Real t2 = d0.Angle(d2);
+        double t1 = d0.Angle(d1);
+        double t2 = d0.Angle(d2);
         if ( !(-M_PI/2 < t1 && t1 < M_PI/2) || !(-M_PI/2 < t2 && t2 < M_PI/2) )
       ach.AddFail("Parameter Error for Parabola");
       }
@@ -250,15 +250,15 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
 
 //=================================================================================================
 
-void IGESGeom_ToolConicArc::OwnDump(const Handle(IGESGeom_ConicArc)& ent,
+void IGESGeom_ToolConicArc::OwnDump(const occ::handle<IGESGeom_ConicArc>& ent,
                                     const IGESData_IGESDumper& /* dumper */,
-                                    Standard_OStream&      S,
-                                    const Standard_Integer level) const
+                                    Standard_OStream& S,
+                                    const int         level) const
 {
-  Standard_Real A, B, C, D, E, F;
+  double A, B, C, D, E, F;
   ent->Equation(A, B, C, D, E, F);
   S << "IGESGeom_ConicArc\n";
-  Standard_Integer cf = ent->FormNumber();
+  int cf = ent->FormNumber();
   if (cf == 0)
     cf = ent->ComputedFormNumber();
   if (cf == 1)
@@ -287,9 +287,9 @@ void IGESGeom_ToolConicArc::OwnDump(const Handle(IGESGeom_ConicArc)& ent,
     S << " -- Computed Definition : ask level > 4" << std::endl;
   else
   {
-    gp_Pnt        Cen;
-    gp_Dir        Ax;
-    Standard_Real Rmin, Rmax;
+    gp_Pnt Cen;
+    gp_Dir Ax;
+    double Rmin, Rmax;
     ent->Definition(Cen, Ax, Rmin, Rmax);
     S << " -- Computed Definition (and Transformed if level > 5)\n";
 

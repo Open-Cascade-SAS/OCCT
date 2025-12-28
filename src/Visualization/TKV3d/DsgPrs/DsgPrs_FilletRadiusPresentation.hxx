@@ -39,25 +39,22 @@ public:
   //! presentation aPresentation. The display ttributes
   //! defined by the attribute manager aDrawer. the value
   //! specifies the length of the radius.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const Standard_Real               thevalue,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     aPosition,
-                                  const gp_Dir&                     aNormalDir,
-                                  const gp_Pnt&                     aBasePnt,
-                                  const gp_Pnt&                     aFirstPoint,
-                                  const gp_Pnt&                     aSecondPoint,
-                                  const gp_Pnt&                     aCenter,
-                                  const DsgPrs_ArrowSide            ArrowPrs,
-                                  const Standard_Boolean            drawRevers,
-                                  gp_Pnt&                           DrawPosition,
-                                  gp_Pnt&                           EndOfArrow,
-                                  Handle(Geom_TrimmedCurve)&        TrimCurve,
-                                  Standard_Boolean&                 HasCircle);
-
-protected:
-private:
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const double                           thevalue,
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          aPosition,
+                                  const gp_Dir&                          aNormalDir,
+                                  const gp_Pnt&                          aBasePnt,
+                                  const gp_Pnt&                          aFirstPoint,
+                                  const gp_Pnt&                          aSecondPoint,
+                                  const gp_Pnt&                          aCenter,
+                                  const DsgPrs_ArrowSide                 ArrowPrs,
+                                  const bool                             drawRevers,
+                                  gp_Pnt&                                DrawPosition,
+                                  gp_Pnt&                                EndOfArrow,
+                                  occ::handle<Geom_TrimmedCurve>&        TrimCurve,
+                                  bool&                                  HasCircle);
 };
 
 #endif // _DsgPrs_FilletRadiusPresentation_HeaderFile

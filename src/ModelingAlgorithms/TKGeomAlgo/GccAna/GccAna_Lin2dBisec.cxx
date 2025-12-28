@@ -46,7 +46,7 @@ GccAna_Lin2dBisec::GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2)
       pararg2(1, 2)
 {
 
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
 
   IntAna2d_AnaIntersection Intp(Lin1, Lin2);
@@ -58,7 +58,7 @@ GccAna_Lin2dBisec::GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2)
       if (Intp.IdenticalElements())
       {
         NbrSol         = 1;
-        WellDone       = Standard_True;
+        WellDone       = true;
         linsol(NbrSol) = gp_Lin2d(Lin1);
       }
       else
@@ -66,13 +66,13 @@ GccAna_Lin2dBisec::GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2)
         // Attention : do not use dist = Lin1.Distance(Lin2);
         // as straight lines can be concurrent for gp_Lin2d
         // so dist = 0.0 (test of the angle too strict ?)
-        Standard_Real dist  = Lin1.Distance(Lin2.Location()) / 2.0;
-        Standard_Real cross = gp_Vec2d(-Lin2.Direction().Y(), Lin2.Direction().X())
-                                .Dot(gp_Vec2d(Lin2.Location(), Lin1.Location()));
+        double dist  = Lin1.Distance(Lin2.Location()) / 2.0;
+        double cross = gp_Vec2d(-Lin2.Direction().Y(), Lin2.Direction().X())
+                         .Dot(gp_Vec2d(Lin2.Location(), Lin1.Location()));
         if (cross < 0)
           dist = -dist;
         NbrSol++;
-        WellDone = Standard_True;
+        WellDone = true;
         linsol(NbrSol) =
           gp_Lin2d(gp_Pnt2d(Lin2.Location().XY() +
                             //       ========================================================
@@ -87,7 +87,7 @@ GccAna_Lin2dBisec::GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2)
     {
       if (!Intp.IsEmpty())
       {
-        for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+        for (int i = 1; i <= Intp.NbPoints(); i++)
         {
           NbrSol++;
           linsol(NbrSol) = gp_Lin2d(Intp.Point(i).Value(),
@@ -103,13 +103,13 @@ GccAna_Lin2dBisec::GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2)
           {
             linsol(NbrSol).Reverse();
           }
-          WellDone = Standard_True;
+          WellDone = true;
         }
       }
     }
   }
 
-  for (Standard_Integer i = 1; i <= NbrSol; i++)
+  for (int i = 1; i <= NbrSol; i++)
   {
     pntint1sol(i) = linsol(i).Location();
     pntint2sol(i) = pntint1sol(i);
@@ -122,19 +122,19 @@ GccAna_Lin2dBisec::GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2)
 
 //=========================================================================
 
-Standard_Boolean GccAna_Lin2dBisec::IsDone() const
+bool GccAna_Lin2dBisec::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer GccAna_Lin2dBisec::NbSolutions() const
+int GccAna_Lin2dBisec::NbSolutions() const
 {
   if (!WellDone)
     throw StdFail_NotDone();
   return NbrSol;
 }
 
-gp_Lin2d GccAna_Lin2dBisec::ThisSolution(const Standard_Integer Index) const
+gp_Lin2d GccAna_Lin2dBisec::ThisSolution(const int Index) const
 {
   if (!WellDone)
     throw StdFail_NotDone();
@@ -143,10 +143,10 @@ gp_Lin2d GccAna_Lin2dBisec::ThisSolution(const Standard_Integer Index) const
   return linsol(Index);
 }
 
-void GccAna_Lin2dBisec::Intersection1(const Standard_Integer Index,
-                                      Standard_Real&         ParSol,
-                                      Standard_Real&         ParArg,
-                                      gp_Pnt2d&              PntSol) const
+void GccAna_Lin2dBisec::Intersection1(const int Index,
+                                      double&   ParSol,
+                                      double&   ParArg,
+                                      gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -164,10 +164,10 @@ void GccAna_Lin2dBisec::Intersection1(const Standard_Integer Index,
   }
 }
 
-void GccAna_Lin2dBisec::Intersection2(const Standard_Integer Index,
-                                      Standard_Real&         ParSol,
-                                      Standard_Real&         ParArg,
-                                      gp_Pnt2d&              PntSol) const
+void GccAna_Lin2dBisec::Intersection2(const int Index,
+                                      double&   ParSol,
+                                      double&   ParArg,
+                                      gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

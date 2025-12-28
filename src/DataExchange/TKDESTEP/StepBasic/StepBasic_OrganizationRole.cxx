@@ -18,18 +18,18 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrganizationRole, Standard_Transient)
 
 StepBasic_OrganizationRole::StepBasic_OrganizationRole() {}
 
-void StepBasic_OrganizationRole::Init(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_OrganizationRole::Init(const occ::handle<TCollection_HAsciiString>& aName)
 {
   // --- classe own fields ---
   name = aName;
 }
 
-void StepBasic_OrganizationRole::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_OrganizationRole::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_OrganizationRole::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_OrganizationRole::Name() const
 {
   return name;
 }

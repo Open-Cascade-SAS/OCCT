@@ -19,7 +19,7 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 
 class Adaptor3d_HSurfaceTool;
 class IntCurveSurface_TheHCurveTool;
@@ -32,28 +32,26 @@ public:
 
   //! Provides the signed distance function : Q(w)
   //! and its first derivative dQ(w)/dw
-  Standard_EXPORT IntCurveSurface_TheQuadCurvExactHInter(const Handle(Adaptor3d_Surface)& S,
-                                                         const Handle(Adaptor3d_Curve)&   C);
+  Standard_EXPORT IntCurveSurface_TheQuadCurvExactHInter(const occ::handle<Adaptor3d_Surface>& S,
+                                                         const occ::handle<Adaptor3d_Curve>&   C);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Integer NbRoots() const;
+  Standard_EXPORT int NbRoots() const;
 
-  Standard_EXPORT Standard_Real Root(const Standard_Integer Index) const;
+  Standard_EXPORT double Root(const int Index) const;
 
-  Standard_EXPORT Standard_Integer NbIntervals() const;
+  Standard_EXPORT int NbIntervals() const;
 
   //! U1 and U2 are the parameters of
   //! a segment on the curve.
-  Standard_EXPORT void Intervals(const Standard_Integer Index,
-                                 Standard_Real&         U1,
-                                 Standard_Real&         U2) const;
+  Standard_EXPORT void Intervals(const int Index, double& U1, double& U2) const;
 
 private:
-  Standard_Integer       nbpnts;
-  TColStd_SequenceOfReal pnts;
-  Standard_Integer       nbintv;
-  TColStd_SequenceOfReal intv;
+  int                          nbpnts;
+  NCollection_Sequence<double> pnts;
+  int                          nbintv;
+  NCollection_Sequence<double> intv;
 };
 
 #endif // _IntCurveSurface_TheQuadCurvExactHInter_HeaderFile

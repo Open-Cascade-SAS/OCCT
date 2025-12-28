@@ -47,7 +47,8 @@
 #include <SWDRAW.hxx>
 #include <SWDRAW_ShapeAnalysis.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -57,7 +58,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -72,7 +74,7 @@
 
 #include <stdio.h>
 
-static Standard_Integer tolerance(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int tolerance(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -83,8 +85,8 @@ static Standard_Integer tolerance(Draw_Interpretor& di, Standard_Integer argc, c
        << "  more : all shapes(D)  v vertices  e edges  f faces  c combined(faces)\n";
     return (argc < 2 ? 0 : 1 /* Error */);
   }
-  Standard_CString arg1  = argv[1];
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << "Shape unknown : " << arg1 << "\n";
@@ -114,7 +116,7 @@ static Standard_Integer tolerance(Draw_Interpretor& di, Standard_Integer argc, c
   else
   {
     //  Analyse plus fouillee
-    Standard_Integer nextarg = 2;
+    int              nextarg = 2;
     char             opt     = argv[2][0];
     TopAbs_ShapeEnum type    = TopAbs_SHAPE;
     if (opt == 'a')
@@ -142,14 +144,15 @@ static Standard_Integer tolerance(Draw_Interpretor& di, Standard_Integer argc, c
     if (nextarg < 3)
       opt = 'a';
 
-    Standard_Real tol1 = 0., tol2 = 0.;
+    double tol1 = 0., tol2 = 0.;
     if (nextarg < argc)
       tol1 = Draw::Atof(argv[nextarg]);
     if (nextarg < argc - 1)
       tol2 = Draw::Atof(argv[nextarg + 1]);
-    //    Standard_Real tol = Draw::Atof (argv[2]);
-    Handle(TopTools_HSequenceOfShape) list = sat.InTolerance(Shape, tol1, tol2, type);
-    Standard_Integer                  i, nb = list->Length();
+    //    double tol = Draw::Atof (argv[2]);
+    occ::handle<NCollection_HSequence<TopoDS_Shape>> list =
+      sat.InTolerance(Shape, tol1, tol2, type);
+    int i, nb = list->Length();
     switch (type)
     {
       case TopAbs_VERTEX:
@@ -188,15 +191,15 @@ static Standard_Integer tolerance(Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
-static Standard_Integer projface(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int projface(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 4)
   {
     di << "Give FACE name and X Y [Z]\n";
     return 1;
   }
-  Standard_CString arg1  = argv[1];
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << "Shape unknown : " << arg1 << "\n";
@@ -207,11 +210,11 @@ static Standard_Integer projface(Draw_Interpretor& di, Standard_Integer argc, co
     di << "Not a face\n";
     return 1 /* Error */;
   }
-  TopoDS_Face             F       = TopoDS::Face(Shape);
-  Handle(Geom_Surface)    thesurf = BRep_Tool::Surface(F); // pas locface
-  BRepTopAdaptor_FClass2d aClassifier(F, Precision::Confusion());
+  TopoDS_Face               F       = TopoDS::Face(Shape);
+  occ::handle<Geom_Surface> thesurf = BRep_Tool::Surface(F); // pas locface
+  BRepTopAdaptor_FClass2d   aClassifier(F, Precision::Confusion());
   //  On y va
-  Standard_Real X, Y, Z, U, V;
+  double X, Y, Z, U, V;
   X = U = Draw::Atof(argv[2]);
   Y = V = Draw::Atof(argv[3]);
   if (argc > 4)
@@ -219,7 +222,7 @@ static Standard_Integer projface(Draw_Interpretor& di, Standard_Integer argc, co
     Z = Draw::Atof(argv[4]);
     gp_Pnt P3D(X, Y, Z);
     di << " Point 3D X = " << X << "  Y = " << Y << "  Z = " << Z << "\n";
-    Standard_Real uf, ul, vf, vl;
+    double uf, ul, vf, vl;
     thesurf->Bounds(uf, ul, vf, vl);
 
     if (Precision::IsInfinite(uf))
@@ -230,13 +233,13 @@ static Standard_Integer projface(Draw_Interpretor& di, Standard_Integer argc, co
       vf = -1000;
     if (Precision::IsInfinite(vl))
       vl = 1000;
-    Standard_Real du = std::abs(ul - uf) / 10;
-    Standard_Real dv = std::abs(vl - vf) / 10;
+    double du = std::abs(ul - uf) / 10;
+    double dv = std::abs(vl - vf) / 10;
 
     GeomAPI_ProjectPointOnSurf proj(P3D, thesurf, uf - du, ul + du, vf - dv, vl + dv);
-    Standard_Integer           sol, nPSurf = proj.NbPoints();
-    Standard_Integer           anIndSol = 0, anIndMin = 0;
-    Standard_Real              aMinDist = RealLast();
+    int                        sol, nPSurf = proj.NbPoints();
+    int                        anIndSol = 0, anIndMin = 0;
+    double                     aMinDist = RealLast();
     for (sol = 1; sol <= nPSurf; sol++)
     {
 
@@ -246,7 +249,7 @@ static Standard_Integer projface(Draw_Interpretor& di, Standard_Integer argc, co
         continue;
 
       anIndSol++;
-      Standard_Real aDist = proj.Distance(sol);
+      double aDist = proj.Distance(sol);
       di << "n0 " << anIndSol << " Distance " << aDist;
       di << "  U = " << U << "  V = " << V << "\n";
 
@@ -286,7 +289,7 @@ static Standard_Integer projface(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer projcurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int projcurve(Draw_Interpretor& di, int argc, const char** argv)
 {
   //  admet une EDGE ou une CURVE
   if (argc < 5)
@@ -294,12 +297,12 @@ static Standard_Integer projcurve(Draw_Interpretor& di, Standard_Integer argc, c
     di << "Give : EDGE X Y Z  or  CURVE3D X Y Z  or  CURVE3D first last X Y Z\n";
     return 1 /* Error */;
   }
-  const char*      arg1  = argv[1];
-  Standard_Integer i0    = 0;
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  int          i0    = 0;
+  TopoDS_Shape Shape = DBRep::Get(arg1);
 
-  Handle(Geom_Curve) C;
-  Standard_Real      cf, cl;
+  occ::handle<Geom_Curve> C;
+  double                  cf, cl;
   if (!Shape.IsNull())
   {
     if (Shape.ShapeType() == TopAbs_EDGE)
@@ -334,16 +337,16 @@ static Standard_Integer projcurve(Draw_Interpretor& di, Standard_Integer argc, c
     di << "Curve 3D " << arg1 << " Params from " << cf << " to " << cl << "\n";
   }
 
-  Standard_Real X, Y, Z;
+  double X, Y, Z;
   X = Draw::Atof(argv[2 + i0]);
   Y = Draw::Atof(argv[3 + i0]);
   Z = Draw::Atof(argv[4 + i0]);
   di << "Precision (BRepBuilderAPI) : " << BRepBuilderAPI::Precision() << "  Projection : " << X
      << "  " << Y << "  " << Z << "\n";
 
-  gp_Pnt        P3D(X, Y, Z);
-  gp_Pnt        res;
-  Standard_Real param, dist;
+  gp_Pnt P3D(X, Y, Z);
+  gp_Pnt res;
+  double param, dist;
 
   dist = ShapeAnalysis_Curve().Project(C, P3D, BRepBuilderAPI::Precision(), res, param, cf, cl);
   res.Coord(X, Y, Z);
@@ -352,7 +355,7 @@ static Standard_Integer projcurve(Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
-static Standard_Integer projpcurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int projpcurve(Draw_Interpretor& di, int argc, const char** argv)
 {
   //  admet une EDGE ou une CURVE
   if (argc < 7)
@@ -374,37 +377,37 @@ static Standard_Integer projpcurve(Draw_Interpretor& di, Standard_Integer argc, 
     return 1 /* Error */;
   }
 
-  Standard_Real aTol = Draw::Atof(argv[3]);
+  double aTol = Draw::Atof(argv[3]);
 
-  Standard_Real X = Draw::Atof(argv[4]);
-  Standard_Real Y = Draw::Atof(argv[5]);
-  Standard_Real Z = Draw::Atof(argv[6]);
+  double X = Draw::Atof(argv[4]);
+  double Y = Draw::Atof(argv[5]);
+  double Z = Draw::Atof(argv[6]);
 
   gp_Pnt aP3D(X, Y, Z);
 
-  Standard_Boolean IsStartPoint = Standard_False;
-  Standard_Real    startpar     = 0.;
+  bool   IsStartPoint = false;
+  double startpar     = 0.;
   if (argc > 7)
   {
     startpar     = Draw::Atof(argv[7]);
-    IsStartPoint = Standard_True;
+    IsStartPoint = true;
   }
 
   Adaptor3d_CurveOnSurface aCOnS =
     Adaptor3d_CurveOnSurface(new BRepAdaptor_Curve2d(BRepAdaptor_Curve2d(aEdge, aFace)),
-                             new BRepAdaptor_Surface(BRepAdaptor_Surface(aFace, Standard_False)));
+                             new BRepAdaptor_Surface(BRepAdaptor_Surface(aFace, false)));
 
   gp_Pnt              aPnt;
-  Standard_Real       aParam;
+  double              aParam;
   ShapeAnalysis_Curve aTool;
-  Standard_Real       aDist = RealLast();
+  double              aDist = RealLast();
   if (IsStartPoint)
   {
     aDist = aTool.NextProject(startpar, aCOnS, aP3D, aTol, aPnt, aParam);
   }
   else
   {
-    aDist = aTool.Project(aCOnS, aP3D, aTol, aPnt, aParam, Standard_False);
+    aDist = aTool.Project(aCOnS, aP3D, aTol, aPnt, aParam, false);
   }
 
   di << "Point:" << "\n" << aPnt.X() << " " << aPnt.Y() << " " << aPnt.Z() << "\n";
@@ -413,15 +416,15 @@ static Standard_Integer projpcurve(Draw_Interpretor& di, Standard_Integer argc, 
   return 0;
 }
 
-static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int anaface(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
     di << "donner un nom de face\n";
     return 1 /* Error */;
   }
-  Standard_CString arg1  = argv[1];
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << arg1 << " inconnu\n";
@@ -430,9 +433,9 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
   //  if (Shape.ShapeType() != TopAbs_FACE) { di<<"Pas une FACE\n"; return 1 /* Error */; }
 
   //  On regarde les wires, sont-ils bien fermes
-  Standard_Integer     nbw = 0, nbe = 0;
-  Handle(Geom_Surface) surface;
-  TopoDS_Face          Face;
+  int                       nbw = 0, nbe = 0;
+  occ::handle<Geom_Surface> surface;
+  TopoDS_Face               Face;
   if (Shape.ShapeType() == TopAbs_FACE)
   {
     Face    = TopoDS::Face(Shape);
@@ -451,7 +454,7 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
   {
     di << "Analyse Wires, Ignore Faces\n";
   }
-  Standard_Boolean iasurf = !surface.IsNull();
+  bool iasurf = !surface.IsNull();
   //: sw  if (!Face.IsNull()) STW.SetFace (Face);
   //: sw  else STW.SetPrecision (BRepBuilderAPI::Precision());
 
@@ -465,15 +468,15 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
       di << " (FWD)\n";
     else
       di << " (REV)\n";
-    gp_Pnt           fin, debut;
-    gp_Pnt2d         finuv, debuv;
-    gp_XY            baseuv;
-    TopoDS_Vertex    fv, lv;
-    Standard_Real    maxp3d = 0., maxuv = 0., maxvtx = 0.;
-    Standard_Real    df3d = 0., dl3d = 0., dvtx = 0., duv = 0.;
-    Standard_Boolean iaw2d = iasurf;
-    Standard_Real    u1 = 0., u2 = 0., v1 = 0., v2 = 0., umin = 0., umax = 0., vmin = 0., vmax = 0.,
-                  totcross = 0.;
+    gp_Pnt        fin, debut;
+    gp_Pnt2d      finuv, debuv;
+    gp_XY         baseuv;
+    TopoDS_Vertex fv, lv;
+    double        maxp3d = 0., maxuv = 0., maxvtx = 0.;
+    double        df3d = 0., dl3d = 0., dvtx = 0., duv = 0.;
+    bool          iaw2d = iasurf;
+    double        u1 = 0., u2 = 0., v1 = 0., v2 = 0., umin = 0., umax = 0., vmin = 0., vmax = 0.,
+           totcross = 0.;
 
     //: sw    STW.ClearWire();  STW.Load (Wire);
     //    if (STW.Reorder()) di<<"Wire reordered to explore\n";
@@ -493,12 +496,12 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
       else
         di << " (REV";
       di << " , Tol= " << BRep_Tool::Tolerance(Edge) << " )\n";
-      Standard_Real        f3d, l3d, f2d, l2d;
-      Handle(Geom_Curve)   curve3d = BRep_Tool::Curve(Edge, f3d, l3d);
-      Handle(Geom2d_Curve) curve2d;
+      double                    f3d, l3d, f2d, l2d;
+      occ::handle<Geom_Curve>   curve3d = BRep_Tool::Curve(Edge, f3d, l3d);
+      occ::handle<Geom2d_Curve> curve2d;
       if (iasurf)
         curve2d = BRep_Tool::CurveOnSurface(Edge, Face, f2d, l2d);
-      Standard_Boolean ia2d = !curve2d.IsNull();
+      bool ia2d = !curve2d.IsNull();
       iaw2d |= ia2d;
       if (!ia2d)
         di << "--  No PCurve\n";
@@ -617,8 +620,8 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
       di << "TotCross=" << totcross;
       di << "  UMin-Max:" << umin << " , " << umax << "  VMin-Max:" << vmin << " , " << vmax
          << "\n";
-      Standard_Real difu = umax - umin, difv = vmax - vmin;
-      GProp_GProps  G;
+      double       difu = umax - umin, difv = vmax - vmin;
+      GProp_GProps G;
       BRepGProp::SurfaceProperties(Face, G);
       if (G.Mass() > 0)
         di << "GProps:Mass Out\n";
@@ -653,18 +656,16 @@ static Standard_Integer anaface(Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di,
-                                         Standard_Integer  argc,
-                                         const char**      argv)
+static int XSHAPE_statshape(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
     di << "ShapeName; + options : prefix for particular cases : what to get\n";
     return 1 /* Error */;
   }
-  Standard_CString arg1 = argv[1];
-  Standard_CString arg2 = NULL;
-  Standard_CString arg3 = NULL;
+  const char* arg1 = argv[1];
+  const char* arg2 = NULL;
+  const char* arg3 = NULL;
   if (argc > 2)
     arg2 = argv[2];
   if (argc > 3)
@@ -675,8 +676,8 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di,
     di << "Shape unknown : " << arg1 << "\n";
     return 1 /* Error */;
   }
-  char             nompart[100];
-  Standard_Integer nb;
+  char nompart[100];
+  int  nb;
 
   ShapeAnalysis_ShapeContents analyzer;
   if (argc > 3)
@@ -776,11 +777,11 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di,
   if (arg3 == NULL)
     return 0;
 
-  Handle(TopTools_HSequenceOfShape) sec;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> sec;
   if (analyzer.ModifyBigSplineMode())
   {
     sec = analyzer.BigSplineSec();
-    for (Standard_Integer i = 1; i <= sec->Length(); i++)
+    for (int i = 1; i <= sec->Length(); i++)
     {
       Sprintf(nompart, "%s_bigspl_%d", arg2, i);
       DBRep::Set(nompart, sec->Value(i));
@@ -789,7 +790,7 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di,
   if (analyzer.ModifyIndirectMode())
   {
     sec = analyzer.IndirectSec();
-    for (Standard_Integer i = 1; i <= sec->Length(); i++)
+    for (int i = 1; i <= sec->Length(); i++)
     {
       Sprintf(nompart, "%s_indsur_%d", arg2, i);
       DBRep::Set(nompart, sec->Value(i));
@@ -798,7 +799,7 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di,
   if (analyzer.ModifyOffsetSurfaceMode())
   {
     sec = analyzer.OffsetSurfaceSec();
-    for (Standard_Integer i = 1; i <= sec->Length(); i++)
+    for (int i = 1; i <= sec->Length(); i++)
     {
       Sprintf(nompart, "%s_ofsur_%d", arg2, i);
       DBRep::Set(nompart, sec->Value(i));
@@ -807,7 +808,7 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di,
   if (analyzer.ModifyTrimmed3dMode())
   {
     sec = analyzer.Trimmed3dSec();
-    for (Standard_Integer i = 1; i <= sec->Length(); i++)
+    for (int i = 1; i <= sec->Length(); i++)
     {
       Sprintf(nompart, "%s_trc3d_%d", arg2, i);
       DBRep::Set(nompart, sec->Value(i));
@@ -816,7 +817,7 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di,
   if (analyzer.ModifyOffsetCurveMode())
   {
     sec = analyzer.OffsetCurveSec();
-    for (Standard_Integer i = 1; i <= sec->Length(); i++)
+    for (int i = 1; i <= sec->Length(); i++)
     {
       Sprintf(nompart, "%s_ofcur_%d", arg2, i);
       DBRep::Set(nompart, sec->Value(i));
@@ -825,7 +826,7 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di,
   if (analyzer.ModifyTrimmed2dMode())
   {
     sec = analyzer.Trimmed2dSec();
-    for (Standard_Integer i = 1; i <= sec->Length(); i++)
+    for (int i = 1; i <= sec->Length(); i++)
     {
       Sprintf(nompart, "%s_trc2d_%d", arg2, i);
       DBRep::Set(nompart, sec->Value(i));
@@ -834,9 +835,7 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer XSHAPE_comptoledge(Draw_Interpretor& di,
-                                           Standard_Integer  argc,
-                                           const char**      argv)
+static int XSHAPE_comptoledge(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -857,8 +856,8 @@ static Standard_Integer XSHAPE_comptoledge(Draw_Interpretor& di,
     di << "Shape name \"" << argv[1] << "\" is invalid\n";
     return 1;
   }
-  Standard_Integer nbpnts = 371;
-  Standard_CString prefix = 0;
+  int         nbpnts = 371;
+  const char* prefix = 0;
   if (argc > 2)
   {
     if (IsDigit(argv[2][0]))
@@ -873,18 +872,18 @@ static Standard_Integer XSHAPE_comptoledge(Draw_Interpretor& di,
       prefix = argv[2];
   }
 
-  Standard_Integer   num = 0;
-  Standard_Real      max = 0, min = 0, ave = 0.;
-  Standard_Real      relmax = 0, relmin = 0, relave = 0.;
+  int                num = 0;
+  double             max = 0, min = 0, ave = 0.;
+  double             relmax = 0, relmin = 0, relave = 0.;
   ShapeAnalysis_Edge sae;
   TopoDS_Edge        edmax, edmaxrel;
   for (TopExp_Explorer exp(shape, TopAbs_EDGE); exp.More(); exp.Next())
   {
-    Standard_Real tol;
-    TopoDS_Edge   edge = TopoDS::Edge(exp.Current());
+    double      tol;
+    TopoDS_Edge edge = TopoDS::Edge(exp.Current());
     sae.CheckSameParameter(edge, tol, nbpnts);
-    Standard_Real t   = BRep_Tool::Tolerance(edge);
-    Standard_Real rel = tol / (t > Precision::Confusion() ? t : Precision::Confusion());
+    double t   = BRep_Tool::Tolerance(edge);
+    double rel = tol / (t > Precision::Confusion() ? t : Precision::Confusion());
     ave += tol;
     relave += rel;
     if (!num)
@@ -939,7 +938,7 @@ static Standard_Integer XSHAPE_comptoledge(Draw_Interpretor& di,
       DBRep::Set(name, edmaxrel);
       di << "; edge with max relation saved to " << name << "\n";
     }
-    Standard_Integer num1 = 0;
+    int num1 = 0;
     for (TopExp_Explorer fac(shape, TopAbs_FACE); fac.More(); fac.Next())
     {
       TopoDS_Face face = TopoDS::Face(fac.Current());
@@ -974,15 +973,15 @@ static Standard_Integer XSHAPE_comptoledge(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer freebounds(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int freebounds(Draw_Interpretor& di, int n, const char** a)
 {
   if ((n < 3) || (n > 5))
     return 1;
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
     return 1;
-  Standard_Real    toler       = Draw::Atof(a[2]);
-  Standard_Boolean splitclosed = Standard_False, splitopen = Standard_False;
+  double toler       = Draw::Atof(a[2]);
+  bool   splitclosed = false, splitopen = false;
   if (n > 3)
     splitclosed = Draw::Atoi(a[3]) != 0;
   if (n > 4)
@@ -1011,24 +1010,24 @@ static Standard_Integer freebounds(Draw_Interpretor& di, Standard_Integer n, con
 // function : PrintProps
 // purpose  : auxiliary for FreeBoundsProps
 //=======================================================================
-static void PrintProps(Standard_Integer                           i,
-                       const Handle(ShapeAnalysis_FreeBoundData)& fbd,
-                       Draw_Interpretor&                          di)
+static void PrintProps(int                                             i,
+                       const occ::handle<ShapeAnalysis_FreeBoundData>& fbd,
+                       Draw_Interpretor&                               di)
 {
   char str[100];
 
-  Standard_Real    area      = fbd->Area();
-  Standard_Real    perimeter = fbd->Perimeter();
-  Standard_Real    ratio     = fbd->Ratio();
-  Standard_Real    width     = fbd->Width();
-  Standard_Integer notch     = fbd->NbNotches();
+  double area      = fbd->Area();
+  double perimeter = fbd->Perimeter();
+  double ratio     = fbd->Ratio();
+  double width     = fbd->Width();
+  int    notch     = fbd->NbNotches();
   Sprintf(str, " %d\t%12.5f\t%12.5f\t%12.5f\t%12.5f\t%d", i, area, perimeter, ratio, width, notch);
   di << str << "\n";
 }
 
 //=================================================================================================
 
-static Standard_Integer FreeBoundsProps(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int FreeBoundsProps(Draw_Interpretor& di, int n, const char** a)
 {
   if ((n < 2) || (n > 5))
   {
@@ -1043,8 +1042,8 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di, Standard_Integer n
     return 1;
   }
 
-  Standard_Real    toler       = 0.;
-  Standard_Boolean splitclosed = Standard_False, splitopen = Standard_False;
+  double toler       = 0.;
+  bool   splitclosed = false, splitopen = false;
   if (n > 2)
     toler = Draw::Atof(a[2]);
   if (n > 3)
@@ -1060,16 +1059,16 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di, Standard_Integer n
   TopoDS_Compound closed, open;
   BRep_Builder    B;
 
-  Standard_Integer nb = analyzer.NbClosedFreeBounds();
+  int nb = analyzer.NbClosedFreeBounds();
   di << "\n";
   di << " \tArea mm2\tLength mm\tRatio L/W\tWidth mm\tNb notch\n";
   B.MakeCompound(closed);
   if (nb)
   {
     di << "Closed bounds properties\n";
-    for (Standard_Integer i = 1; i <= nb; i++)
+    for (int i = 1; i <= nb; i++)
     {
-      Handle(ShapeAnalysis_FreeBoundData) fbd = analyzer.ClosedFreeBound(i);
+      occ::handle<ShapeAnalysis_FreeBoundData> fbd = analyzer.ClosedFreeBound(i);
       PrintProps(i, fbd, di);
       B.Add(closed, fbd->FreeBound());
     }
@@ -1080,9 +1079,9 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di, Standard_Integer n
   if (nb)
   {
     di << "Open bounds properties\n";
-    for (Standard_Integer i = 1; i <= nb; i++)
+    for (int i = 1; i <= nb; i++)
     {
-      Handle(ShapeAnalysis_FreeBoundData) fbd = analyzer.OpenFreeBound(i);
+      occ::handle<ShapeAnalysis_FreeBoundData> fbd = analyzer.OpenFreeBound(i);
       PrintProps(i, fbd, di);
       B.Add(open, fbd->FreeBound());
     }
@@ -1100,15 +1099,15 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di, Standard_Integer n
 
 //=================================================================================================
 
-static Standard_Integer closefreebounds(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int closefreebounds(Draw_Interpretor& di, int n, const char** a)
 {
   if ((n < 4) || (n > 6))
     return 1;
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
     return 1;
-  Standard_Real    sewtoler = Draw::Atof(a[2]), closetoler = Draw::Atof(a[3]);
-  Standard_Boolean splitclosed = Standard_False, splitopen = Standard_False;
+  double sewtoler = Draw::Atof(a[2]), closetoler = Draw::Atof(a[3]);
+  bool   splitclosed = false, splitopen = false;
   if (n > 4)
     splitclosed = Draw::Atoi(a[3]) != 0;
   if (n > 5)
@@ -1133,7 +1132,7 @@ static Standard_Integer closefreebounds(Draw_Interpretor& di, Standard_Integer n
   return 0;
 }
 
-static Standard_Integer getareacontour(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int getareacontour(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
@@ -1148,15 +1147,13 @@ static Standard_Integer getareacontour(Draw_Interpretor& di, Standard_Integer n,
     di << "invalid type of argument\n";
     return 1;
   }
-  // Handle(ShapeExtend_WireData) asewd = new ShapeExtend_WireData(TopoDS::Wire(shape));
-  Standard_Real anArea = ShapeAnalysis::ContourArea(TopoDS::Wire(shape));
+  // occ::handle<ShapeExtend_WireData> asewd = new ShapeExtend_WireData(TopoDS::Wire(shape));
+  double anArea = ShapeAnalysis::ContourArea(TopoDS::Wire(shape));
   di << "Area = " << anArea << "\n";
   return 0;
 }
 
-static Standard_Integer checkselfintersection(Draw_Interpretor& di,
-                                              Standard_Integer  argc,
-                                              const char**      argv)
+static int checkselfintersection(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -1200,16 +1197,16 @@ static Standard_Integer checkselfintersection(Draw_Interpretor& di,
   }
 
   ShapeAnalysis_Wire analyser(TopoDS::Wire(wire), TopoDS::Face(face), Precision::Confusion());
-  Standard_Boolean   result = analyser.CheckSelfIntersection();
+  bool               result = analyser.CheckSelfIntersection();
 
-  if (result == Standard_True)
+  if (result == true)
     di << "A self-intersecting wire.\n";
   else
     di << "Not self-intersecting wire.\n";
   return 0;
 }
 
-static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int checkedge(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -1241,7 +1238,7 @@ static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, c
 
   // Analysis of the edge.
   ShapeAnalysis_Edge analyser;
-  Standard_Boolean   isOk(Standard_True);
+  bool               isOk(true);
 
   // Curve 3D.
   if (analyser.HasCurve3d(TopoDS::Edge(edge)))
@@ -1249,14 +1246,14 @@ static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, c
     // Check vertices.
     if (analyser.CheckVerticesWithCurve3d(TopoDS::Edge(edge)))
     {
-      isOk = Standard_False;
+      isOk = false;
       di << "Vertices of the edge don't coincide with start/end points of 3d-curve (using "
             "tolerance of the vertices).\n";
     }
   }
   else
   {
-    isOk = Standard_False;
+    isOk = false;
     di << "Edge doesn't have a 3d-curve\n";
   }
 
@@ -1268,14 +1265,14 @@ static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, c
       // Check vertices.
       if (analyser.CheckVerticesWithPCurve(TopoDS::Edge(edge), TopoDS::Face(face)))
       {
-        isOk = Standard_False;
+        isOk = false;
         di << "Vertices of the edge don't coincide with start/end points of 2d-curve (using "
               "tolerance of the vertices).\n";
       }
     }
     else
     {
-      isOk = Standard_False;
+      isOk = false;
       di << "Edge doesn't have a 2d-curve on this face\n";
     }
   }
@@ -1289,7 +1286,7 @@ static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, c
 //=======================================================================
 // getanasurf
 //=======================================================================
-static Standard_Integer getanasurf(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int getanasurf(Draw_Interpretor& di, int n, const char** a)
 
 {
   if (n < 3)
@@ -1314,7 +1311,7 @@ static Standard_Integer getanasurf(Draw_Interpretor& di, Standard_Integer n, con
   }
 
   GeomAbs_SurfaceType aTargets[] = {GeomAbs_Plane, GeomAbs_Cylinder, GeomAbs_Cone, GeomAbs_Sphere};
-  Standard_Integer    isurf      = 0;
+  int                 isurf      = 0;
   if (n > 3)
   {
     if (strcmp(a[3], "pln") == 0)
@@ -1327,7 +1324,7 @@ static Standard_Integer getanasurf(Draw_Interpretor& di, Standard_Integer n, con
       isurf = 3;
   }
 
-  Standard_Real tol = 1.e-7;
+  double tol = 1.e-7;
   if (n > 4)
     tol = Draw::Atof(a[4]);
 
@@ -1335,7 +1332,7 @@ static Standard_Integer getanasurf(Draw_Interpretor& di, Standard_Integer n, con
   GeomAdaptor_Surface aSampleSurf;
   if (n > 5 && (sh.ShapeType() == TopAbs_EDGE || sh.ShapeType() == TopAbs_WIRE))
   {
-    Handle(Geom_Surface) aGSurf = DrawTrSurf::GetSurface(a[5]);
+    occ::handle<Geom_Surface> aGSurf = DrawTrSurf::GetSurface(a[5]);
     if (aGSurf.IsNull())
     {
       di << "Sample surface is null" << "\n";
@@ -1351,7 +1348,7 @@ static Standard_Integer getanasurf(Draw_Interpretor& di, Standard_Integer n, con
   }
 
   ShapeAnalysis_CanonicalRecognition aCanonRec(sh);
-  Handle(Geom_Surface)               aRes;
+  occ::handle<Geom_Surface>          aRes;
   switch (aTargets[isurf])
   {
     case GeomAbs_Plane: {
@@ -1404,7 +1401,7 @@ static Standard_Integer getanasurf(Draw_Interpretor& di, Standard_Integer n, con
 
 //=================================================================================================
 
-Standard_Integer getanacurve(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int getanacurve(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
   {
@@ -1424,7 +1421,7 @@ Standard_Integer getanacurve(Draw_Interpretor& di, Standard_Integer n, const cha
   }
 
   GeomAbs_CurveType aTargets[] = {GeomAbs_Line, GeomAbs_Circle, GeomAbs_Ellipse};
-  Standard_Integer  icurv      = 0;
+  int               icurv      = 0;
   if (n > 3)
   {
     if (strcmp(a[3], "lin") == 0)
@@ -1435,12 +1432,12 @@ Standard_Integer getanacurve(Draw_Interpretor& di, Standard_Integer n, const cha
       icurv = 2;
   }
 
-  Standard_Real tol = Precision::Confusion();
+  double tol = Precision::Confusion();
   if (n > 4)
     tol = Draw::Atof(a[4]);
 
   ShapeAnalysis_CanonicalRecognition aCanonRec(sh);
-  Handle(Geom_Curve)                 aRes;
+  occ::handle<Geom_Curve>            aRes;
   switch (aTargets[icurv])
   {
     case GeomAbs_Line: {
@@ -1481,14 +1478,14 @@ Standard_Integer getanacurve(Draw_Interpretor& di, Standard_Integer n, const cha
 
 void SWDRAW_ShapeAnalysis::InitCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Integer initactor = 0;
+  static int initactor = 0;
   if (initactor)
   {
     return;
   }
   initactor = 1;
 
-  Standard_CString g = SWDRAW::GroupName();
+  const char* g = SWDRAW::GroupName();
 
   theCommands.Add("tolerance", "shape [tolmin tolmax:real]", __FILE__, tolerance, g);
   theCommands.Add("projface",

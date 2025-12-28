@@ -34,20 +34,19 @@ public:
   //! @param theRecursive search children recursively, not only on sub-labels of theLabel
   //! @param theAllSubChildren do not stop at the first level of children, but search for
   //! sub-children too
-  Standard_EXPORT TObj_OcafObjectIterator(
-    const TDF_Label&             theLabel,
-    const Handle(Standard_Type)& theType           = NULL,
-    const Standard_Boolean       theRecursive      = Standard_False,
-    const Standard_Boolean       theAllSubChildren = Standard_False);
+  Standard_EXPORT TObj_OcafObjectIterator(const TDF_Label&                  theLabel,
+                                          const occ::handle<Standard_Type>& theType      = NULL,
+                                          const bool                        theRecursive = false,
+                                          const bool theAllSubChildren                   = false);
 
 protected:
   //! Shift iterator to the next object
-  virtual Standard_EXPORT void MakeStep() Standard_OVERRIDE;
+  virtual Standard_EXPORT void MakeStep() override;
 
 protected:
-  Handle(Standard_Type) myType; //!< type of objects to iterate on
+  occ::handle<Standard_Type> myType; //!< type of objects to iterate on
   // clang-format off
-  Standard_Boolean myAllSubChildren; //!< to iterate all sub-children, do not stop on the first level
+  bool myAllSubChildren; //!< to iterate all sub-children, do not stop on the first level
   // clang-format on
 
 public:
@@ -56,8 +55,6 @@ public:
 };
 
 //! Define handle class for TObj_OcafObjectIterator
-DEFINE_STANDARD_HANDLE(TObj_OcafObjectIterator, TObj_LabelIterator)
-
 #endif
 
 #ifdef _MSC_VER

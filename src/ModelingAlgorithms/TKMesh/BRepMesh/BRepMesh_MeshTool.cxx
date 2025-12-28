@@ -29,9 +29,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_MeshTool, Standard_Transient)
 namespace
 {
 //! Returns index of triangle node opposite to the given link.
-Standard_Integer findApexIndex(const Standard_Integer (&aNodes)[3], const BRepMesh_Edge& theLink)
+int findApexIndex(const int (&aNodes)[3], const BRepMesh_Edge& theLink)
 {
-  Standard_Integer i = 0;
+  int i = 0;
   for (; i < 3; ++i)
   {
     if (aNodes[i] != theLink.FirstNode() && aNodes[i] != theLink.LastNode())
@@ -46,7 +46,8 @@ Standard_Integer findApexIndex(const Standard_Integer (&aNodes)[3], const BRepMe
 
 //=================================================================================================
 
-BRepMesh_MeshTool::BRepMesh_MeshTool(const Handle(BRepMesh_DataStructureOfDelaun)& theStructure)
+BRepMesh_MeshTool::BRepMesh_MeshTool(
+  const occ::handle<BRepMesh_DataStructureOfDelaun>& theStructure)
     : myStructure(theStructure)
 {
 }
@@ -57,15 +58,15 @@ BRepMesh_MeshTool::~BRepMesh_MeshTool() {}
 
 //=================================================================================================
 
-void BRepMesh_MeshTool::Legalize(const Standard_Integer theLinkIndex)
+void BRepMesh_MeshTool::Legalize(const int theLinkIndex)
 {
-  std::stack<Standard_Integer> aStack;
+  std::stack<int> aStack;
   aStack.push(theLinkIndex);
 
   IMeshData::MapOfInteger aUsedLinks;
   while (!aStack.empty())
   {
-    const Standard_Integer aLinkIndex = aStack.top();
+    const int aLinkIndex = aStack.top();
     aStack.pop();
 
     aUsedLinks.Add(aLinkIndex);
@@ -78,12 +79,12 @@ void BRepMesh_MeshTool::Legalize(const Standard_Integer theLinkIndex)
         const BRepMesh_Triangle& aTriangle1 = myStructure->GetElement(aPair.FirstIndex());
         const BRepMesh_Triangle& aTriangle2 = myStructure->GetElement(aPair.LastIndex());
 
-        Standard_Integer aNodes[2][3];
+        int aNodes[2][3];
         myStructure->ElementNodes(aTriangle1, aNodes[0]);
         myStructure->ElementNodes(aTriangle2, aNodes[1]);
 
-        const Standard_Integer aApexIndex[2] = {findApexIndex(aNodes[0], aLink),
-                                                findApexIndex(aNodes[1], aLink)};
+        const int aApexIndex[2] = {findApexIndex(aNodes[0], aLink),
+                                   findApexIndex(aNodes[1], aLink)};
 
         if (checkCircle(aNodes[0], aNodes[1][aApexIndex[1]])
             || checkCircle(aNodes[1], aNodes[0][aApexIndex[0]]))
@@ -111,7 +112,7 @@ void BRepMesh_MeshTool::Legalize(const Standard_Integer theLinkIndex)
 
 //=================================================================================================
 
-void BRepMesh_MeshTool::EraseItemsConnectedTo(const Standard_Integer theNodeIndex)
+void BRepMesh_MeshTool::EraseItemsConnectedTo(const int theNodeIndex)
 {
   BRepMesh_SelectorOfDataStructureOfDelaun aSelector(myStructure);
   aSelector.NeighboursOfNode(theNodeIndex);
@@ -126,32 +127,32 @@ void BRepMesh_MeshTool::EraseItemsConnectedTo(const Standard_Integer theNodeInde
 
 void BRepMesh_MeshTool::CleanFrontierLinks()
 {
-  Handle(NCollection_IncAllocator) aAlloc = new NCollection_IncAllocator;
-  IMeshData::MapOfInteger          aTrianglesToErase;
-  IMeshData::MapOfIntegerInteger   aLoopEdges(1, aAlloc);
+  occ::handle<NCollection_IncAllocator> aAlloc = new NCollection_IncAllocator;
+  IMeshData::MapOfInteger               aTrianglesToErase;
+  IMeshData::MapOfIntegerInteger        aLoopEdges(1, aAlloc);
 
   Handle(IMeshData::MapOfInteger)   aFrontier = GetEdgesByType(BRepMesh_Frontier);
   IMeshData::IteratorOfMapOfInteger aFrontierIt(*aFrontier);
   for (; aFrontierIt.More(); aFrontierIt.Next())
   {
-    Standard_Integer     aFrontierId = aFrontierIt.Key();
+    int                  aFrontierId = aFrontierIt.Key();
     const BRepMesh_Edge& aLink       = myStructure->GetLink(aFrontierId);
 
-    Standard_Boolean            isTriangleFound = Standard_False;
+    bool                        isTriangleFound = false;
     const BRepMesh_PairOfIndex& aPair           = myStructure->ElementsConnectedTo(aFrontierId);
-    for (Standard_Integer aElemIt = 1; aElemIt <= aPair.Extent() && !isTriangleFound; ++aElemIt)
+    for (int aElemIt = 1; aElemIt <= aPair.Extent() && !isTriangleFound; ++aElemIt)
     {
-      const Standard_Integer   aPriorElemId = aPair.Index(aElemIt);
+      const int                aPriorElemId = aPair.Index(aElemIt);
       const BRepMesh_Triangle& aElement     = myStructure->GetElement(aPriorElemId);
-      const Standard_Integer(&e)[3]         = aElement.myEdges;
-      const Standard_Boolean(&o)[3]         = aElement.myOrientations;
+      const int (&e)[3]                     = aElement.myEdges;
+      const bool (&o)[3]                    = aElement.myOrientations;
 
-      for (Standard_Integer n = 0; n < 3 && !isTriangleFound; ++n)
+      for (int n = 0; n < 3 && !isTriangleFound; ++n)
       {
         if (aFrontierId == e[n] && !o[n])
         {
           // Destruction of external triangles on boundary edges
-          isTriangleFound = Standard_True;
+          isTriangleFound = true;
           aTrianglesToErase.Add(aPriorElemId);
 
           collectTrianglesOnFreeLinksAroundNodesOf(aLink, e[(n + 1) % 3], aTrianglesToErase);
@@ -179,16 +180,16 @@ void BRepMesh_MeshTool::EraseTriangles(const IMeshData::MapOfInteger&  theTriang
 
 //=================================================================================================
 
-void BRepMesh_MeshTool::EraseTriangle(const Standard_Integer          theTriangleIndex,
+void BRepMesh_MeshTool::EraseTriangle(const int                       theTriangleIndex,
                                       IMeshData::MapOfIntegerInteger& theLoopEdges)
 {
   const BRepMesh_Triangle& aElement = myStructure->GetElement(theTriangleIndex);
-  const Standard_Integer(&e)[3]     = aElement.myEdges;
-  const Standard_Boolean(&o)[3]     = aElement.myOrientations;
+  const int (&e)[3]                 = aElement.myEdges;
+  const bool (&o)[3]                = aElement.myOrientations;
 
   myStructure->RemoveElement(theTriangleIndex);
 
-  for (Standard_Integer i = 0; i < 3; ++i)
+  for (int i = 0; i < 3; ++i)
   {
     if (!theLoopEdges.Bind(e[i], o[i]))
     {
@@ -202,7 +203,7 @@ void BRepMesh_MeshTool::EraseTriangle(const Standard_Integer          theTriangl
 
 void BRepMesh_MeshTool::EraseFreeLinks()
 {
-  for (Standard_Integer i = 1; i <= myStructure->NbLinks(); i++)
+  for (int i = 1; i <= myStructure->NbLinks(); i++)
   {
     if (myStructure->ElementsConnectedTo(i).IsEmpty())
     {
@@ -222,17 +223,17 @@ void BRepMesh_MeshTool::EraseFreeLinks()
 
 void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
   const BRepMesh_Edge&     theConstraint,
-  const Standard_Integer   theStartLink,
+  const int                theStartLink,
   IMeshData::MapOfInteger& theTriangles)
 {
-  IMeshData::MapOfInteger      aUsedLinks;
-  std::stack<Standard_Integer> aStack;
+  IMeshData::MapOfInteger aUsedLinks;
+  std::stack<int>         aStack;
   aStack.push(theStartLink);
   aUsedLinks.Add(theStartLink);
 
   while (!aStack.empty())
   {
-    const Standard_Integer aLinkIndex = aStack.top();
+    const int aLinkIndex = aStack.top();
     aStack.pop();
 
     const BRepMesh_Edge& aLink = myStructure->GetLink(aLinkIndex);
@@ -243,15 +244,15 @@ void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
             || aLink.LastNode() == theConstraint.LastNode()))
     {
       const BRepMesh_PairOfIndex& aPair = myStructure->ElementsConnectedTo(aLinkIndex);
-      for (Standard_Integer aElemIt = 1; aElemIt <= aPair.Extent(); ++aElemIt)
+      for (int aElemIt = 1; aElemIt <= aPair.Extent(); ++aElemIt)
       {
-        const Standard_Integer aIndex = aPair.Index(aElemIt);
+        const int aIndex = aPair.Index(aElemIt);
         theTriangles.Add(aIndex);
 
-        const BRepMesh_Triangle& aElement  = myStructure->GetElement(aIndex);
-        const Standard_Integer(&aEdges)[3] = aElement.myEdges;
+        const BRepMesh_Triangle& aElement = myStructure->GetElement(aIndex);
+        const int (&aEdges)[3]            = aElement.myEdges;
 
-        for (Standard_Integer i = 0; i < 3; ++i)
+        for (int i = 0; i < 3; ++i)
         {
           if (aEdges[i] != aLinkIndex && !aUsedLinks.Contains(aEdges[i]))
           {
@@ -300,7 +301,7 @@ Handle(IMeshData::MapOfInteger) BRepMesh_MeshTool::GetEdgesByType(
 
 //=================================================================================================
 
-void BRepMesh_MeshTool::DumpTriangles(const Standard_CString   theFileName,
+void BRepMesh_MeshTool::DumpTriangles(const char*              theFileName,
                                       IMeshData::MapOfInteger* theTriangles)
 {
   BRep_Builder    aBuilder;
@@ -313,7 +314,7 @@ void BRepMesh_MeshTool::DumpTriangles(const Standard_CString   theFileName,
     if (theTriangles != NULL && !theTriangles->Contains(aIt.Key()))
       continue;
 
-    Standard_Integer         aNodes[3];
+    int                      aNodes[3];
     const BRepMesh_Triangle& aTri = myStructure->GetElement(aIt.Key());
     myStructure->ElementNodes(aTri, aNodes);
 
@@ -324,7 +325,7 @@ void BRepMesh_MeshTool::DumpTriangles(const Standard_CString   theFileName,
     BRepBuilderAPI_MakePolygon aPoly(gp_Pnt(aV1.X(), aV1.Y(), 0.),
                                      gp_Pnt(aV2.X(), aV2.Y(), 0.),
                                      gp_Pnt(aV3.X(), aV3.Y(), 0.),
-                                     Standard_True);
+                                     true);
 
     BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp::XOY()), aPoly.Wire());
     aBuilder.Add(aResult, aFaceBuilder.Shape());

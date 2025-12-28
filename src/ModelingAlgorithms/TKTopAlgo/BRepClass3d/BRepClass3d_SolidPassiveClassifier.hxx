@@ -43,17 +43,17 @@ public:
   //! the original length of the segment on <L> used to
   //! compute intersections. <Tol> is the tolerance
   //! attached to the intersections.
-  Standard_EXPORT void Reset(const gp_Lin& L, const Standard_Real P, const Standard_Real Tol);
+  Standard_EXPORT void Reset(const gp_Lin& L, const double P, const double Tol);
 
   //! Updates the classification process with the face
   //! <F> from the boundary.
   Standard_EXPORT void Compare(const TopoDS_Face& F, const TopAbs_Orientation Or);
 
   //! Returns the current value of the parameter.
-  Standard_Real Parameter() const { return myParam; }
+  double Parameter() const { return myParam; }
 
   //! Returns True if an intersection is computed.
-  Standard_Boolean HasIntersection() const { return hasIntersect; }
+  bool HasIntersection() const { return hasIntersect; }
 
   //! Returns the intersecting algorithm.
   BRepClass3d_Intersector3d& Intersector() { return myIntersector; }
@@ -62,13 +62,13 @@ public:
   TopAbs_State State() const { return myState; }
 
 private:
-  Standard_Boolean          isSet;
+  bool                      isSet;
   TopoDS_Face               myFace;
   gp_Lin                    myLin;
-  Standard_Real             myParam;
-  Standard_Real             myTolerance;
+  double                    myParam;
+  double                    myTolerance;
   TopAbs_State              myState;
-  Standard_Boolean          hasIntersect;
+  bool                      hasIntersect;
   BRepClass3d_Intersector3d myIntersector;
 };
 

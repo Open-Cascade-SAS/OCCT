@@ -17,7 +17,7 @@
 #include <gp_Trsf.hxx>
 #include <HelixGeom_BuilderHelix.hxx>
 #include <HelixGeom_BuilderHelixCoil.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
+#include <NCollection_Sequence.hxx>
 
 //=================================================================================================
 
@@ -52,8 +52,8 @@ void HelixGeom_BuilderHelix::Perform()
   myWarningStatus = 0;
 
   // Initialize variables for helix segmentation
-  Standard_Integer           iErr, aN, i, aNbC;
-  Standard_Real              aTwoPI, dT, aT1x, aT2x, aTR;
+  int                        iErr, aN, i, aNbC;
+  double                     aTwoPI, dT, aT1x, aT2x, aTR;
   HelixGeom_BuilderHelixCoil aBHC;
 
   // Initialize result containers
@@ -65,7 +65,7 @@ void HelixGeom_BuilderHelix::Perform()
 
   // Determine number of full turns for segmentation
   dT = myT2 - myT1;
-  aN = (Standard_Integer)(dT / aTwoPI);
+  aN = (int)(dT / aTwoPI);
   if (!aN)
   {
     aBHC.SetCurveParameters(myT1, myT2, myPitch, myRStart, myTaperAngle, myIsClockWise);
@@ -76,16 +76,16 @@ void HelixGeom_BuilderHelix::Perform()
       myErrorStatus = 2;
       return;
     }
-    const TColGeom_SequenceOfCurve& aSC = aBHC.Curves();
-    const Handle(Geom_Curve)&       aC  = aSC(1);
+    const NCollection_Sequence<occ::handle<Geom_Curve>>& aSC = aBHC.Curves();
+    const occ::handle<Geom_Curve>&                       aC  = aSC(1);
     myCurves.Append(aC);
     myTolReached = aBHC.ToleranceReached();
   }
   else
   {
     // Case: helix spans multiple full turns - process in segments
-    Standard_Boolean bIsCylindrical;
-    Standard_Real    aTolAngle;
+    bool   bIsCylindrical;
+    double aTolAngle;
 
     aTolAngle      = 1.e-4;
     bIsCylindrical = fabs(myTaperAngle) < aTolAngle;
@@ -96,13 +96,13 @@ void HelixGeom_BuilderHelix::Perform()
       if (i > 1 && bIsCylindrical)
       {
         // Optimization: for cylindrical helixes, reuse first coil with translation
-        Handle(Geom_Curve) aCi;
-        gp_Pnt             aP1, aPi;
+        occ::handle<Geom_Curve> aCi;
+        gp_Pnt                  aP1, aPi;
 
-        const Handle(Geom_Curve)& aC1 = myCurves(1);
+        const occ::handle<Geom_Curve>& aC1 = myCurves(1);
         aC1->D0(aC1->FirstParameter(), aP1);
         aPi.SetCoord(aP1.X(), aP1.Y(), aP1.Z() + (i - 1) * myPitch);
-        aCi = Handle(Geom_Curve)::DownCast(aC1->Translated(aP1, aPi));
+        aCi = occ::down_cast<Geom_Curve>(aC1->Translated(aP1, aPi));
 
         myCurves.Append(aCi);
         aT1x = aT2x;
@@ -121,8 +121,8 @@ void HelixGeom_BuilderHelix::Perform()
         return;
       }
       // Extract approximated curves from builder
-      const TColGeom_SequenceOfCurve& aSC = aBHC.Curves();
-      const Handle(Geom_Curve)&       aC  = aSC(1);
+      const NCollection_Sequence<occ::handle<Geom_Curve>>& aSC = aBHC.Curves();
+      const occ::handle<Geom_Curve>&                       aC  = aSC(1);
       myCurves.Append(aC);
       aTR = aBHC.ToleranceReached();
       if (aTR > myTolReached)
@@ -134,8 +134,8 @@ void HelixGeom_BuilderHelix::Perform()
       aT2x = aT1x + aTwoPI;
     } // for (i=1; i<=aN; ++i) {
     // Handle remaining partial turn if any
-    aT2x              = myT2;
-    Standard_Real eps = 1.e-7 * aTwoPI;
+    aT2x       = myT2;
+    double eps = 1.e-7 * aTwoPI;
     if (fabs(aT2x - aT1x) > eps)
     {
       aBHC.SetCurveParameters(aT1x, aT2x, myPitch, myRStart, myTaperAngle, myIsClockWise);
@@ -147,8 +147,8 @@ void HelixGeom_BuilderHelix::Perform()
         return;
       }
       // Extract curves from the final partial segment
-      const TColGeom_SequenceOfCurve& aSC = aBHC.Curves();
-      const Handle(Geom_Curve)&       aC  = aSC(1);
+      const NCollection_Sequence<occ::handle<Geom_Curve>>& aSC = aBHC.Curves();
+      const occ::handle<Geom_Curve>&                       aC  = aSC(1);
       myCurves.Append(aC);
       aTR = aBHC.ToleranceReached();
       if (aTR > myTolReached)
@@ -167,7 +167,7 @@ void HelixGeom_BuilderHelix::Perform()
   aNbC = myCurves.Length();
   for (i = 1; i <= aNbC; ++i)
   {
-    Handle(Geom_Curve)& aC = myCurves(i);
+    occ::handle<Geom_Curve>& aC = myCurves(i);
     aC->Transform(aTrsf);
   }
 }

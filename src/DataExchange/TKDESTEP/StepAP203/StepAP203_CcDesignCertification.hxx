@@ -19,12 +19,11 @@
 
 #include <Standard.hxx>
 
-#include <StepAP203_HArray1OfCertifiedItem.hxx>
+#include <StepAP203_CertifiedItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_CertificationAssignment.hxx>
 class StepBasic_Certification;
-
-class StepAP203_CcDesignCertification;
-DEFINE_STANDARD_HANDLE(StepAP203_CcDesignCertification, StepBasic_CertificationAssignment)
 
 //! Representation of STEP entity CcDesignCertification
 class StepAP203_CcDesignCertification : public StepBasic_CertificationAssignment
@@ -36,20 +35,20 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(StepBasic_Certification)&          aCertificationAssignment_AssignedCertification,
-    const Handle(StepAP203_HArray1OfCertifiedItem)& aItems);
+    const occ::handle<StepBasic_Certification>& aCertificationAssignment_AssignedCertification,
+    const occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP203_HArray1OfCertifiedItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfCertifiedItem)& Items);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignCertification, StepBasic_CertificationAssignment)
 
-protected:
 private:
-  Handle(StepAP203_HArray1OfCertifiedItem) theItems;
+  occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>> theItems;
 };
 
 #endif // _StepAP203_CcDesignCertification_HeaderFile

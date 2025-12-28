@@ -30,8 +30,8 @@
 
 extern Draw_Viewer dout;
 
-// extern Standard_IMPORT Standard_Boolean Draw_Interprete(char* command); //for C21
-Standard_IMPORT Standard_Boolean Draw_Interprete(const char* command); // for C30
+// extern Standard_IMPORT bool Draw_Interprete(char* command); //for C21
+Standard_IMPORT bool Draw_Interprete(const char* command); // for C30
 // true if complete command
 
 // necessary for WNT in C21 only
@@ -51,13 +51,13 @@ static FDraw_InitAppli theDraw_InitAppli; // pointer to the Draw_InitAppli
 //     Draw_IsConsoleSubsystem which is set by Draw_Main only
 //=======================================================================
 
-extern Standard_Boolean Draw_IsConsoleSubsystem;
+extern bool Draw_IsConsoleSubsystem;
 
 //=================================================================================================
 
-Standard_Integer Draw_Main(int /*argc*/, char* argv[], const FDraw_InitAppli fDraw_InitAppli)
+int Draw_Main(int /*argc*/, char* argv[], const FDraw_InitAppli fDraw_InitAppli)
 {
-  Draw_IsConsoleSubsystem = Standard_True;
+  Draw_IsConsoleSubsystem = true;
   theDraw_InitAppli       = fDraw_InitAppli;
 
   // Set console code page to UTF-8 so that input from cin and output to cout
@@ -79,11 +79,11 @@ Standard_Integer Draw_Main(int /*argc*/, char* argv[], const FDraw_InitAppli fDr
 
 //=================================================================================================
 
-Standard_Integer Draw_WinMain(HINSTANCE hInstance,
-                              HINSTANCE hPrevinstance,
-                              LPSTR /*lpCmdLine*/,
-                              int                   nCmdShow,
-                              const FDraw_InitAppli fDraw_InitAppli)
+int Draw_WinMain(HINSTANCE hInstance,
+                 HINSTANCE hPrevinstance,
+                 LPSTR /*lpCmdLine*/,
+                 int                   nCmdShow,
+                 const FDraw_InitAppli fDraw_InitAppli)
 {
   theDraw_InitAppli  = fDraw_InitAppli;
   int       aNbArgs  = 0;
@@ -97,9 +97,7 @@ Standard_Integer Draw_WinMain(HINSTANCE hInstance,
 
 //=================================================================================================
 
-Standard_Integer Draw_Main(Standard_Integer      argc,
-                           char*                 argv[],
-                           const FDraw_InitAppli fDraw_InitAppli)
+int Draw_Main(int argc, char* argv[], const FDraw_InitAppli fDraw_InitAppli)
 {
   // MKV 01.02.05
   #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4)))

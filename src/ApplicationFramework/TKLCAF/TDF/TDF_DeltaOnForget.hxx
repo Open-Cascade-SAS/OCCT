@@ -21,9 +21,6 @@
 #include <TDF_AttributeDelta.hxx>
 class TDF_Attribute;
 
-class TDF_DeltaOnForget;
-DEFINE_STANDARD_HANDLE(TDF_DeltaOnForget, TDF_AttributeDelta)
-
 //! This class provides default services for an
 //! AttributeDelta on an Forget action.
 //!
@@ -34,15 +31,12 @@ class TDF_DeltaOnForget : public TDF_AttributeDelta
 
 public:
   //! Creates a TDF_DeltaOnForget.
-  Standard_EXPORT TDF_DeltaOnForget(const Handle(TDF_Attribute)& anAtt);
+  Standard_EXPORT TDF_DeltaOnForget(const occ::handle<TDF_Attribute>& anAtt);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT void Apply() Standard_OVERRIDE;
+  Standard_EXPORT void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnForget, TDF_AttributeDelta)
-
-protected:
-private:
 };
 
 #endif // _TDF_DeltaOnForget_HeaderFile

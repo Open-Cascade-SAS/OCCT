@@ -23,11 +23,11 @@
 //! 0 <= aDimidx <= myDimensionCount - 1
 struct PSO_Particle
 {
-  Standard_Real* Position; // Data for pointers allocated within PSOParticlesPool instance.
-  Standard_Real* Velocity; // Not need to delete it manually.
-  Standard_Real* BestPosition;
-  Standard_Real  Distance;
-  Standard_Real  BestDistance;
+  double* Position; // Data for pointers allocated within PSOParticlesPool instance.
+  double* Velocity; // Not need to delete it manually.
+  double* BestPosition;
+  double  Distance;
+  double  BestDistance;
 
   PSO_Particle()
   {
@@ -47,10 +47,9 @@ struct PSO_Particle
 class math_PSOParticlesPool
 {
 public:
-  Standard_EXPORT math_PSOParticlesPool(const Standard_Integer theParticlesCount,
-                                        const Standard_Integer theDimensionCount);
+  Standard_EXPORT math_PSOParticlesPool(const int theParticlesCount, const int theDimensionCount);
 
-  Standard_EXPORT PSO_Particle* GetParticle(const Standard_Integer theIdx);
+  Standard_EXPORT PSO_Particle* GetParticle(const int theIdx);
 
   Standard_EXPORT PSO_Particle* GetBestParticle();
 
@@ -59,10 +58,10 @@ public:
   Standard_EXPORT ~math_PSOParticlesPool();
 
 private:
-  NCollection_Array1<PSO_Particle>  myParticlesPool;
-  NCollection_Array1<Standard_Real> myMemory; // Stores particles vector data.
-  Standard_Integer                  myParticlesCount;
-  Standard_Integer                  myDimensionCount;
+  NCollection_Array1<PSO_Particle> myParticlesPool;
+  NCollection_Array1<double>       myMemory; // Stores particles vector data.
+  int                              myParticlesCount;
+  int                              myDimensionCount;
 };
 
 #endif

@@ -23,7 +23,7 @@ inline TopoDS_Shape ShapeUpgrade_RemoveLocations::GetResult() const
 inline void ShapeUpgrade_RemoveLocations::SetRemoveLevel(const TopAbs_ShapeEnum theLevel)
 {
 
-  if ((Standard_Integer)theLevel > TopAbs_FACE)
+  if ((int)theLevel > TopAbs_FACE)
     myLevelRemoving = TopAbs_FACE;
   else
     myLevelRemoving = theLevel;

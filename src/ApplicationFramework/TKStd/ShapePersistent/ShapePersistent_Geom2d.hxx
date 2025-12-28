@@ -46,15 +46,17 @@ public:
 
 public:
   //! Create a persistent object for a curve
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom2d_Curve)&       theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom2d_Curve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
 };
 
 //=======================================================================
 // Geometry
 //=======================================================================
 template <>
-inline Standard_CString ShapePersistent_Geom::geometryBase<Geom2d_Geometry>::PName() const
+inline const char* ShapePersistent_Geom::geometryBase<Geom2d_Geometry>::PName() const
 {
   return "PGeom2d_Geometry";
 }
@@ -63,7 +65,7 @@ inline Standard_CString ShapePersistent_Geom::geometryBase<Geom2d_Geometry>::PNa
 // Point
 //=======================================================================
 template <>
-inline Standard_CString ShapePersistent_Geom::subBase_empty<
+inline const char* ShapePersistent_Geom::subBase_empty<
   ShapePersistent_Geom2d::geometryBase<Geom2d_Geometry>>::PName() const
 {
   return "PGeom2d_Point";
@@ -73,7 +75,7 @@ inline Standard_CString ShapePersistent_Geom::subBase_empty<
 // CartesianPoint
 //=======================================================================
 template <>
-inline Standard_CString ShapePersistent_Geom::
+inline const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom2d::Point, Geom2d_CartesianPoint, gp_Pnt2d>::PName() const
 {
   return "PGeom2d_CartesianPoint";
@@ -84,7 +86,7 @@ inline void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Point,
                                            Geom2d_CartesianPoint,
                                            gp_Pnt2d>::Write(StdObjMgt_WriteData& theWriteData) const
 {
-  Handle(Geom2d_CartesianPoint) aMyGeom = Handle(Geom2d_CartesianPoint)::DownCast(myTransient);
+  occ::handle<Geom2d_CartesianPoint> aMyGeom = occ::down_cast<Geom2d_CartesianPoint>(myTransient);
   theWriteData << aMyGeom->Pnt2d();
 }
 
@@ -92,7 +94,7 @@ inline void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Point,
 // Direction
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom2d::Direction, Geom2d_Direction, gp_Dir2d>::PName() const;
 
 template <>
@@ -103,9 +105,9 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Direction, Geom2d_Di
 // VectorWithMagnitude
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
-                                                Geom2d_VectorWithMagnitude,
-                                                gp_Vec2d>::PName() const;
+const char* ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
+                                           Geom2d_VectorWithMagnitude,
+                                           gp_Vec2d>::PName() const;
 
 template <>
 void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
@@ -116,7 +118,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
 // AxisPlacement
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom2d::AxisPlacement, Geom2d_AxisPlacement, gp_Ax2d>::PName() const;
 
 template <>
@@ -128,7 +130,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::AxisPlacement,
 // Transformation
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom2d::Transformation, Geom2d_Transformation, gp_Trsf2d>::PName() const;
 
 template <>
@@ -145,7 +147,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Transformation,
 // Curve
 //=======================================================================
 template <>
-inline Standard_CString ShapePersistent_Geom::geometryBase<Geom2d_Curve>::PName() const
+inline const char* ShapePersistent_Geom::geometryBase<Geom2d_Curve>::PName() const
 {
   return "PGeom2d_Curve";
 }

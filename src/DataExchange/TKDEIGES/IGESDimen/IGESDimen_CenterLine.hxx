@@ -21,12 +21,11 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColgp_HArray1OfXY.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
-
-class IGESDimen_CenterLine;
-DEFINE_STANDARD_HANDLE(IGESDimen_CenterLine, IGESData_IGESEntity)
 
 //! defines CenterLine, Type <106> Form <20-21>
 //! in package IGESDimen
@@ -43,40 +42,39 @@ public:
   //! - aDataType      : Interpretation Flag, always = 1
   //! - aZDisplacement : Common z displacement
   //! - dataPnts       : Data points (x and y)
-  Standard_EXPORT void Init(const Standard_Integer            aDataType,
-                            const Standard_Real               aZdisp,
-                            const Handle(TColgp_HArray1OfXY)& dataPnts);
+  Standard_EXPORT void Init(const int                                      aDataType,
+                            const double                                   aZdisp,
+                            const occ::handle<NCollection_HArray1<gp_XY>>& dataPnts);
 
   //! Sets FormNumber to 20 if <mode> is True, 21 else
-  Standard_EXPORT void SetCrossHair(const Standard_Boolean mode);
+  Standard_EXPORT void SetCrossHair(const bool mode);
 
   //! returns Interpretation Flag : IP = 1.
-  Standard_EXPORT Standard_Integer Datatype() const;
+  Standard_EXPORT int Datatype() const;
 
   //! returns Number of Data Points.
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   //! returns Common Z displacement.
-  Standard_EXPORT Standard_Real ZDisplacement() const;
+  Standard_EXPORT double ZDisplacement() const;
 
   //! returns the data point as Pnt from gp.
   //! raises exception if Index <= 0 or Index > NbPoints()
-  Standard_EXPORT gp_Pnt Point(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt Point(const int Index) const;
 
   //! returns the data point as Pnt from gp after Transformation.
   //! raises exception if Index <= 0 or Index > NbPoints()
-  Standard_EXPORT gp_Pnt TransformedPoint(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt TransformedPoint(const int Index) const;
 
   //! returns True if Form is 20.
-  Standard_EXPORT Standard_Boolean IsCrossHair() const;
+  Standard_EXPORT bool IsCrossHair() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_CenterLine, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer           theDatatype;
-  Standard_Real              theZDisplacement;
-  Handle(TColgp_HArray1OfXY) theDataPoints;
+  int                                     theDatatype;
+  double                                  theZDisplacement;
+  occ::handle<NCollection_HArray1<gp_XY>> theDataPoints;
 };
 
 #endif // _IGESDimen_CenterLine_HeaderFile

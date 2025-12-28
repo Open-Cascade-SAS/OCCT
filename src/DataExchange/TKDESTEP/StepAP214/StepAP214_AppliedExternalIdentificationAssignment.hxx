@@ -18,15 +18,13 @@
 
 #include <Standard.hxx>
 
-#include <StepAP214_HArray1OfExternalIdentificationItem.hxx>
+#include <StepAP214_ExternalIdentificationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_ExternalIdentificationAssignment.hxx>
 class TCollection_HAsciiString;
 class StepBasic_IdentificationRole;
 class StepBasic_ExternalSource;
-
-class StepAP214_AppliedExternalIdentificationAssignment;
-DEFINE_STANDARD_HANDLE(StepAP214_AppliedExternalIdentificationAssignment,
-                       StepBasic_ExternalIdentificationAssignment)
 
 //! Representation of STEP entity AppliedExternalIdentificationAssignment
 class StepAP214_AppliedExternalIdentificationAssignment
@@ -39,23 +37,24 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&     aIdentificationAssignment_AssignedId,
-    const Handle(StepBasic_IdentificationRole)& aIdentificationAssignment_Role,
-    const Handle(StepBasic_ExternalSource)&     aExternalIdentificationAssignment_Source,
-    const Handle(StepAP214_HArray1OfExternalIdentificationItem)& aItems);
+    const occ::handle<TCollection_HAsciiString>&     aIdentificationAssignment_AssignedId,
+    const occ::handle<StepBasic_IdentificationRole>& aIdentificationAssignment_Role,
+    const occ::handle<StepBasic_ExternalSource>&     aExternalIdentificationAssignment_Source,
+    const occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP214_HArray1OfExternalIdentificationItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>> Items()
+    const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP214_HArray1OfExternalIdentificationItem)& Items);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedExternalIdentificationAssignment,
                           StepBasic_ExternalIdentificationAssignment)
 
-protected:
 private:
-  Handle(StepAP214_HArray1OfExternalIdentificationItem) theItems;
+  occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>> theItems;
 };
 
 #endif // _StepAP214_AppliedExternalIdentificationAssignment_HeaderFile

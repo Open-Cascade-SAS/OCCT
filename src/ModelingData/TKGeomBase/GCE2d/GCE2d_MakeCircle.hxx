@@ -52,22 +52,20 @@ public:
   //! of parametrization.
   //! It is not forbidden to create a circle with Radius = 0.0
   //! The status is "NegativeRadius" if Radius < 0.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Ax2d&         A,
-                                   const Standard_Real    Radius,
-                                   const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Ax2d& A, const double Radius, const bool Sense = true);
 
   //! A is the local coordinate system of the circle which defines
   //! the origin of parametrization.
   //! It is not forbidden to create a circle with Radius = 0.0
   //! The status is "NegativeRadius" if Radius < 0.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Ax22d& A, const Standard_Real Radius);
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Ax22d& A, const double Radius);
 
   //! Make a Circle from Geom2d <TheCirc> parallel to another
   //! Circ <Circ> with a distance <Dist>.
   //! If Dist is greater than zero the result is enclosing
   //! the circle <Circ>, else the result is enclosed by the
   //! circle <Circ>.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Circ2d& Circ, const Standard_Real Dist);
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Circ2d& Circ, const double Dist);
 
   //! Make a Circle from Geom2d <TheCirc> parallel to another
   //! Circ <Circ> and passing through a Pnt <Point>.
@@ -78,9 +76,7 @@ public:
   Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_Pnt2d& P3);
 
   //! Make a Circ from geom2d <TheCirc> by its center an radius.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d&        P,
-                                   const Standard_Real    Radius,
-                                   const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d& P, const double Radius, const bool Sense = true);
 
   //! Makes a Circle from geom2d <TheCirc> with its center
   //! <Center> and a point giving the radius.
@@ -94,18 +90,18 @@ public:
   //! -   gce_NegativeRadius if Radius is less than 0.0, or
   //! -   gce_IntersectionError if points P1, P2 and P3
   //! are collinear and the three are not coincident.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d&        Center,
-                                   const gp_Pnt2d&        Point,
-                                   const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d& Center,
+                                   const gp_Pnt2d& Point,
+                                   const bool      Sense = true);
 
   //! Returns the constructed circle.
   //! Exceptions StdFail_NotDone if no circle is constructed.
-  Standard_EXPORT const Handle(Geom2d_Circle)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_Circle>& Value() const;
 
-  operator const Handle(Geom2d_Circle)&() const { return Value(); }
+  operator const occ::handle<Geom2d_Circle>&() const { return Value(); }
 
 private:
-  Handle(Geom2d_Circle) TheCircle;
+  occ::handle<Geom2d_Circle> TheCircle;
 };
 
 #endif // _GCE2d_MakeCircle_HeaderFile

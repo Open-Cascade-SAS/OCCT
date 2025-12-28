@@ -24,21 +24,21 @@
 RWStepRepr_RWValueRepresentationItem::RWStepRepr_RWValueRepresentationItem() {}
 
 void RWStepRepr_RWValueRepresentationItem::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepRepr_ValueRepresentationItem)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                                            num,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepRepr_ValueRepresentationItem>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "value_representation_item"))
     return;
 
   // --- inherited field : name ---
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : value_component ---
-  Handle(StepBasic_MeasureValueMember) aMember = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> aMember = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 2, "value_component", ach, aMember);
 
   //--- Initialisation of the read entity ---
@@ -46,8 +46,8 @@ void RWStepRepr_RWValueRepresentationItem::ReadStep(
 }
 
 void RWStepRepr_RWValueRepresentationItem::WriteStep(
-  StepData_StepWriter&                            SW,
-  const Handle(StepRepr_ValueRepresentationItem)& ent) const
+  StepData_StepWriter&                                 SW,
+  const occ::handle<StepRepr_ValueRepresentationItem>& ent) const
 {
   SW.Send(ent->Name());
   SW.Send(ent->ValueComponentMember());

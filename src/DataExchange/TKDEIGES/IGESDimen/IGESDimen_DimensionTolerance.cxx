@@ -23,15 +23,15 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionTolerance, IGESData_IGESEntity)
 
 IGESDimen_DimensionTolerance::IGESDimen_DimensionTolerance() {}
 
-void IGESDimen_DimensionTolerance::Init(const Standard_Integer nbPropVal,
-                                        const Standard_Integer aSecTolFlag,
-                                        const Standard_Integer aTolType,
-                                        const Standard_Integer aTolPlaceFlag,
-                                        const Standard_Real    anUpperTol,
-                                        const Standard_Real    aLowerTol,
-                                        const Standard_Boolean aSignFlag,
-                                        const Standard_Integer aFracFlag,
-                                        const Standard_Integer aPrecision)
+void IGESDimen_DimensionTolerance::Init(const int    nbPropVal,
+                                        const int    aSecTolFlag,
+                                        const int    aTolType,
+                                        const int    aTolPlaceFlag,
+                                        const double anUpperTol,
+                                        const double aLowerTol,
+                                        const bool   aSignFlag,
+                                        const int    aFracFlag,
+                                        const int    aPrecision)
 {
   theNbPropertyValues       = nbPropVal;
   theSecondaryToleranceFlag = aSecTolFlag;
@@ -45,47 +45,47 @@ void IGESDimen_DimensionTolerance::Init(const Standard_Integer nbPropVal,
   InitTypeAndForm(406, 29);
 }
 
-Standard_Integer IGESDimen_DimensionTolerance::NbPropertyValues() const
+int IGESDimen_DimensionTolerance::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Standard_Integer IGESDimen_DimensionTolerance::SecondaryToleranceFlag() const
+int IGESDimen_DimensionTolerance::SecondaryToleranceFlag() const
 {
   return theSecondaryToleranceFlag;
 }
 
-Standard_Integer IGESDimen_DimensionTolerance::ToleranceType() const
+int IGESDimen_DimensionTolerance::ToleranceType() const
 {
   return theToleranceType;
 }
 
-Standard_Integer IGESDimen_DimensionTolerance::TolerancePlacementFlag() const
+int IGESDimen_DimensionTolerance::TolerancePlacementFlag() const
 {
   return theTolerancePlacementFlag;
 }
 
-Standard_Real IGESDimen_DimensionTolerance::UpperTolerance() const
+double IGESDimen_DimensionTolerance::UpperTolerance() const
 {
   return theUpperTolerance;
 }
 
-Standard_Real IGESDimen_DimensionTolerance::LowerTolerance() const
+double IGESDimen_DimensionTolerance::LowerTolerance() const
 {
   return theLowerTolerance;
 }
 
-Standard_Boolean IGESDimen_DimensionTolerance::SignSuppressionFlag() const
+bool IGESDimen_DimensionTolerance::SignSuppressionFlag() const
 {
   return theSignSuppressionFlag;
 }
 
-Standard_Integer IGESDimen_DimensionTolerance::FractionFlag() const
+int IGESDimen_DimensionTolerance::FractionFlag() const
 {
   return theFractionFlag;
 }
 
-Standard_Integer IGESDimen_DimensionTolerance::Precision() const
+int IGESDimen_DimensionTolerance::Precision() const
 {
   return thePrecision;
 }

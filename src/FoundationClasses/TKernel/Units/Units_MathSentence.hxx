@@ -32,10 +32,7 @@ public:
   //! Creates and returns a MathSentence object. The string
   //! <astring> describes an algebraic formula in natural
   //! language.
-  Standard_EXPORT Units_MathSentence(const Standard_CString astring);
-
-protected:
-private:
+  Standard_EXPORT Units_MathSentence(const char* astring);
 };
 
 #endif // _Units_MathSentence_HeaderFile

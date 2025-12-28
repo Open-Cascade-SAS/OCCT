@@ -161,7 +161,7 @@ public:
   //! Exceptions
   //! Standard_DomainError if Density is less than or
   //! equal to gp::Resolution().
-  Standard_EXPORT void Add(const GProp_GProps& Item, const Standard_Real Density = 1.0);
+  Standard_EXPORT void Add(const GProp_GProps& Item, const double Density = 1.0);
 
   //! Returns the mass of the current system.
   //! If no density is attached to the components of the
@@ -187,7 +187,7 @@ public:
   //! object is obtained by multiplying its length, its area
   //! or its volume by the given density. You must be
   //! consistent with respect to the units used.
-  Standard_EXPORT Standard_Real Mass() const;
+  Standard_EXPORT double Mass() const;
 
   //! Returns the center of mass of the current system. If
   //! the gravitational field is uniform, it is the center of gravity.
@@ -217,11 +217,11 @@ public:
   //! Returns Ix, Iy, Iz, the static moments of inertia of the
   //! current system; i.e. the moments of inertia about the
   //! three axes of the Cartesian coordinate system.
-  Standard_EXPORT void StaticMoments(Standard_Real& Ix, Standard_Real& Iy, Standard_Real& Iz) const;
+  Standard_EXPORT void StaticMoments(double& Ix, double& Iy, double& Iz) const;
 
   //! computes the moment of inertia of the material system about the
   //! axis A.
-  Standard_EXPORT Standard_Real MomentOfInertia(const gp_Ax1& A) const;
+  Standard_EXPORT double MomentOfInertia(const gp_Ax1& A) const;
 
   //! Computes the principal properties of inertia of the current system.
   //! There is always a set of axes for which the products
@@ -239,15 +239,13 @@ public:
   Standard_EXPORT GProp_PrincipalProps PrincipalProperties() const;
 
   //! Returns the radius of gyration of the current system about the axis A.
-  Standard_EXPORT Standard_Real RadiusOfGyration(const gp_Ax1& A) const;
+  Standard_EXPORT double RadiusOfGyration(const gp_Ax1& A) const;
 
 protected:
-  gp_Pnt        g;
-  gp_Pnt        loc;
-  Standard_Real dim;
-  gp_Mat        inertia;
-
-private:
+  gp_Pnt g;
+  gp_Pnt loc;
+  double dim;
+  gp_Mat inertia;
 };
 
 #endif // _GProp_GProps_HeaderFile

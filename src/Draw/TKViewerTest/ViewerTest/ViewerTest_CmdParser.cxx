@@ -138,11 +138,10 @@ void ViewerTest_CmdParser::PrintHelp() const
 
 //=================================================================================================
 
-void ViewerTest_CmdParser::Parse(const Standard_Integer   theArgsNb,
-                                 const char* const* const theArgVec)
+void ViewerTest_CmdParser::Parse(const int theArgsNb, const char* const* const theArgVec)
 {
   std::size_t aCurrentUsedOptionIndex = 0;
-  for (Standard_Integer anIter = 1; anIter < theArgsNb; ++anIter)
+  for (int anIter = 1; anIter < theArgsNb; ++anIter)
   {
     const char* const anArgument = theArgVec[anIter];
     if (anArgument[0] == '-' && !std::isdigit(anArgument[1]))
@@ -257,8 +256,7 @@ bool ViewerTest_CmdParser::HasOption(const ViewerTest_CommandOptionKey theOption
 
 //=================================================================================================
 
-Standard_Integer ViewerTest_CmdParser::GetNumberOfOptionArguments(
-  const std::string& theOptionName) const
+int ViewerTest_CmdParser::GetNumberOfOptionArguments(const std::string& theOptionName) const
 {
   ViewerTest_CommandOptionKey anOptionKey = THE_UNNAMED_COMMAND_OPTION_KEY;
   if (!findOptionKey(theOptionName, anOptionKey))
@@ -270,7 +268,7 @@ Standard_Integer ViewerTest_CmdParser::GetNumberOfOptionArguments(
 
 //=================================================================================================
 
-Standard_Integer ViewerTest_CmdParser::GetNumberOfOptionArguments(
+int ViewerTest_CmdParser::GetNumberOfOptionArguments(
   const ViewerTest_CommandOptionKey theOptionKey) const
 {
   std::size_t aUsedOptionIndex = 0;
@@ -278,14 +276,14 @@ Standard_Integer ViewerTest_CmdParser::GetNumberOfOptionArguments(
   {
     return false;
   }
-  return static_cast<Standard_Integer>(myOptionArgumentStorage[aUsedOptionIndex].size());
+  return static_cast<int>(myOptionArgumentStorage[aUsedOptionIndex].size());
 }
 
 //=================================================================================================
 
-bool ViewerTest_CmdParser::Arg(const std::string&     theOptionName,
-                               const Standard_Integer theArgumentIndex,
-                               std::string&           theOptionArgument) const
+bool ViewerTest_CmdParser::Arg(const std::string& theOptionName,
+                               const int          theArgumentIndex,
+                               std::string&       theOptionArgument) const
 {
   Standard_ASSERT_RETURN(theArgumentIndex >= 0,
                          "'theArgumentIndex' must be greater than or equal to zero.",
@@ -301,7 +299,7 @@ bool ViewerTest_CmdParser::Arg(const std::string&     theOptionName,
 //=================================================================================================
 
 bool ViewerTest_CmdParser::Arg(const ViewerTest_CommandOptionKey theOptionKey,
-                               const Standard_Integer            theArgumentIndex,
+                               const int                         theArgumentIndex,
                                std::string&                      theOptionArgument) const
 {
   Standard_ASSERT_RETURN(theArgumentIndex >= 0,
@@ -323,8 +321,8 @@ bool ViewerTest_CmdParser::Arg(const ViewerTest_CommandOptionKey theOptionKey,
 
 //=================================================================================================
 
-std::string ViewerTest_CmdParser::Arg(const std::string&     theOptionName,
-                                      const Standard_Integer theArgumentIndex) const
+std::string ViewerTest_CmdParser::Arg(const std::string& theOptionName,
+                                      const int          theArgumentIndex) const
 {
   Standard_ASSERT_RETURN(theArgumentIndex >= 0,
                          "'theArgumentIndex' must be greater than or equal to zero.",
@@ -340,7 +338,7 @@ std::string ViewerTest_CmdParser::Arg(const std::string&     theOptionName,
 //=================================================================================================
 
 std::string ViewerTest_CmdParser::Arg(const ViewerTest_CommandOptionKey theOptionKey,
-                                      const Standard_Integer            theArgumentIndex) const
+                                      const int                         theArgumentIndex) const
 {
   std::string anOptionArgument;
   if (!Arg(theOptionKey, theArgumentIndex, anOptionArgument))
@@ -352,29 +350,28 @@ std::string ViewerTest_CmdParser::Arg(const ViewerTest_CommandOptionKey theOptio
 
 //=================================================================================================
 
-Graphic3d_Vec3 ViewerTest_CmdParser::ArgVec3f(const std::string& theOptionName,
-                                              Standard_Integer   theArgumentIndex) const
+NCollection_Vec3<float> ViewerTest_CmdParser::ArgVec3f(const std::string& theOptionName,
+                                                       int                theArgumentIndex) const
 {
-  return Graphic3d_Vec3(
-    static_cast<Standard_ShortReal>(Draw::Atof(Arg(theOptionName, theArgumentIndex).c_str())),
-    static_cast<Standard_ShortReal>(Draw::Atof(Arg(theOptionName, theArgumentIndex + 1).c_str())),
-    static_cast<Standard_ShortReal>(Draw::Atof(Arg(theOptionName, theArgumentIndex + 2).c_str())));
+  return NCollection_Vec3<float>(
+    static_cast<float>(Draw::Atof(Arg(theOptionName, theArgumentIndex).c_str())),
+    static_cast<float>(Draw::Atof(Arg(theOptionName, theArgumentIndex + 1).c_str())),
+    static_cast<float>(Draw::Atof(Arg(theOptionName, theArgumentIndex + 2).c_str())));
 }
 
 //=================================================================================================
 
-Graphic3d_Vec3d ViewerTest_CmdParser::ArgVec3d(const std::string& theOptionName,
-                                               Standard_Integer   theArgumentIndex) const
+NCollection_Vec3<double> ViewerTest_CmdParser::ArgVec3d(const std::string& theOptionName,
+                                                        int                theArgumentIndex) const
 {
-  return Graphic3d_Vec3d(Draw::Atof(Arg(theOptionName, theArgumentIndex).c_str()),
-                         Draw::Atof(Arg(theOptionName, theArgumentIndex + 1).c_str()),
-                         Draw::Atof(Arg(theOptionName, theArgumentIndex + 2).c_str()));
+  return NCollection_Vec3<double>(Draw::Atof(Arg(theOptionName, theArgumentIndex).c_str()),
+                                  Draw::Atof(Arg(theOptionName, theArgumentIndex + 1).c_str()),
+                                  Draw::Atof(Arg(theOptionName, theArgumentIndex + 2).c_str()));
 }
 
 //=================================================================================================
 
-gp_Vec ViewerTest_CmdParser::ArgVec(const std::string& theOptionName,
-                                    Standard_Integer   theArgumentIndex) const
+gp_Vec ViewerTest_CmdParser::ArgVec(const std::string& theOptionName, int theArgumentIndex) const
 {
   return gp_Vec(Draw::Atof(Arg(theOptionName, theArgumentIndex).c_str()),
                 Draw::Atof(Arg(theOptionName, theArgumentIndex + 1).c_str()),
@@ -383,8 +380,7 @@ gp_Vec ViewerTest_CmdParser::ArgVec(const std::string& theOptionName,
 
 //=================================================================================================
 
-gp_Pnt ViewerTest_CmdParser::ArgPnt(const std::string& theOptionName,
-                                    Standard_Integer   theArgumentIndex) const
+gp_Pnt ViewerTest_CmdParser::ArgPnt(const std::string& theOptionName, int theArgumentIndex) const
 {
   return gp_Pnt(Draw::Atof(Arg(theOptionName, theArgumentIndex).c_str()),
                 Draw::Atof(Arg(theOptionName, theArgumentIndex + 1).c_str()),
@@ -393,32 +389,29 @@ gp_Pnt ViewerTest_CmdParser::ArgPnt(const std::string& theOptionName,
 
 //=================================================================================================
 
-Standard_Real ViewerTest_CmdParser::ArgDouble(const std::string& theOptionName,
-                                              Standard_Integer   theArgumentIndex) const
+double ViewerTest_CmdParser::ArgDouble(const std::string& theOptionName, int theArgumentIndex) const
 {
   return Draw::Atof(Arg(theOptionName, theArgumentIndex).c_str());
 }
 
 //=================================================================================================
 
-Standard_ShortReal ViewerTest_CmdParser::ArgFloat(const std::string& theOptionName,
-                                                  Standard_Integer   theArgumentIndex) const
+float ViewerTest_CmdParser::ArgFloat(const std::string& theOptionName, int theArgumentIndex) const
 {
-  return static_cast<Standard_ShortReal>(Draw::Atof(Arg(theOptionName, theArgumentIndex).c_str()));
+  return static_cast<float>(Draw::Atof(Arg(theOptionName, theArgumentIndex).c_str()));
 }
 
 //=================================================================================================
 
-Standard_Integer ViewerTest_CmdParser::ArgInt(const std::string&     theOptionName,
-                                              const Standard_Integer theArgumentIndex) const
+int ViewerTest_CmdParser::ArgInt(const std::string& theOptionName, const int theArgumentIndex) const
 {
-  return static_cast<Standard_Integer>(Draw::Atoi(Arg(theOptionName, theArgumentIndex).c_str()));
+  return static_cast<int>(Draw::Atoi(Arg(theOptionName, theArgumentIndex).c_str()));
 }
 
 //=================================================================================================
 
-bool ViewerTest_CmdParser::ArgBool(const std::string&     theOptionName,
-                                   const Standard_Integer theArgumentIndex) const
+bool ViewerTest_CmdParser::ArgBool(const std::string& theOptionName,
+                                   const int          theArgumentIndex) const
 {
   return Draw::Atoi(Arg(theOptionName, theArgumentIndex).c_str()) != 0;
 }
@@ -427,7 +420,7 @@ bool ViewerTest_CmdParser::ArgBool(const std::string&     theOptionName,
 
 template <typename TheColor>
 bool ViewerTest_CmdParser::ArgColor(const std::string& theOptionName,
-                                    Standard_Integer&  theArgumentIndex,
+                                    int&               theArgumentIndex,
                                     TheColor&          theColor) const
 {
   ViewerTest_CommandOptionKey anOptionKey;
@@ -440,18 +433,18 @@ bool ViewerTest_CmdParser::ArgColor(const std::string& theOptionName,
 
 //! ViewerTest_CmdParser::ArgColor() explicit template instantiation definitions
 template bool ViewerTest_CmdParser::ArgColor(const std::string& theOptionName,
-                                             Standard_Integer&  theArgumentIndex,
+                                             int&               theArgumentIndex,
                                              Quantity_Color&    theColor) const;
 
 template bool ViewerTest_CmdParser::ArgColor(const std::string&  theOptionName,
-                                             Standard_Integer&   theArgumentIndex,
+                                             int&                theArgumentIndex,
                                              Quantity_ColorRGBA& theColor) const;
 
 //=================================================================================================
 
 template <typename TheColor>
 bool ViewerTest_CmdParser::ArgColor(const ViewerTest_CommandOptionKey theOptionKey,
-                                    Standard_Integer&                 theArgumentIndex,
+                                    int&                              theArgumentIndex,
                                     TheColor&                         theColor) const
 {
   std::size_t aUsedOptionIndex = 0;
@@ -460,16 +453,15 @@ bool ViewerTest_CmdParser::ArgColor(const ViewerTest_CommandOptionKey theOptionK
     return false;
   }
   const RawStringArguments aRawStringArguments = getRawStringArguments(aUsedOptionIndex);
-  const Standard_Integer   aNumberOfArguments =
-    static_cast<Standard_Integer>(aRawStringArguments.size());
+  const int                aNumberOfArguments  = static_cast<int>(aRawStringArguments.size());
   Standard_ASSERT_RETURN(
     theArgumentIndex < aNumberOfArguments,
     "'theArgumentIndex' must be less than the number of command-line arguments "
     "passed with the option which access key is 'theOptionKey'.",
     false);
-  const Standard_Integer aNumberOfAvailableArguments = aNumberOfArguments - theArgumentIndex;
-  TheColor               aColor;
-  const Standard_Integer aNumberOfParsedArguments =
+  const int aNumberOfAvailableArguments = aNumberOfArguments - theArgumentIndex;
+  TheColor  aColor;
+  const int aNumberOfParsedArguments =
     Draw::ParseColor(aNumberOfAvailableArguments, &aRawStringArguments[theArgumentIndex], aColor);
   if (aNumberOfParsedArguments == 0)
   {
@@ -482,11 +474,11 @@ bool ViewerTest_CmdParser::ArgColor(const ViewerTest_CommandOptionKey theOptionK
 
 //! ViewerTest_CmdParser::ArgColor() explicit template instantiation definitions
 template bool ViewerTest_CmdParser::ArgColor(ViewerTest_CommandOptionKey theOptionKey,
-                                             Standard_Integer&           theArgumentIndex,
+                                             int&                        theArgumentIndex,
                                              Quantity_Color&             theColor) const;
 
 template bool ViewerTest_CmdParser::ArgColor(ViewerTest_CommandOptionKey theOptionKey,
-                                             Standard_Integer&           theArgumentIndex,
+                                             int&                        theArgumentIndex,
                                              Quantity_ColorRGBA&         theColor) const;
 
 //=================================================================================================

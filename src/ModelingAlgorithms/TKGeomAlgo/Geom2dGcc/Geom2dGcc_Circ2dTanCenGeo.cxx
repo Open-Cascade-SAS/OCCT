@@ -26,21 +26,21 @@
 #include <Standard_Failure.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 //=========================================================================
 //   Creation d un cercle tangent a une courbe centre en un point.        +
 //=========================================================================
 Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qualified1,
                                                      const gp_Pnt2d&         Pcenter,
-                                                     const Standard_Real     Tolerance)
+                                                     const double            Tolerance)
     :
 
       //========================================================================
       //   Initialisation des champs.                                          +
       //========================================================================
-      WellDone(Standard_False),
+      WellDone(false),
       NbrSol(0),
       cirsol(1, 2),
       qualifier1(1, 2),
@@ -48,17 +48,17 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
       par1sol(1, 2),
       pararg1(1, 2)
 {
-  Standard_Real           Tol = std::abs(Tolerance);
-  TColgp_Array1OfPnt2d    pTan(1, 2);
-  TColStd_Array1OfInteger Index(1, 2);
-  TColStd_Array1OfReal    theDist2(1, 2);
-  TColStd_Array1OfReal    theParam(1, 2);
+  double                       Tol = std::abs(Tolerance);
+  NCollection_Array1<gp_Pnt2d> pTan(1, 2);
+  NCollection_Array1<int>      Index(1, 2);
+  NCollection_Array1<double>   theDist2(1, 2);
+  NCollection_Array1<double>   theParam(1, 2);
   theDist2(1)               = RealLast();
   theDist2(2)               = 0.;
-  Standard_Integer    i     = 1;
-  Standard_Integer    nbsol = 0;
+  int                 i     = 1;
+  int                 nbsol = 0;
   gp_Dir2d            dirx(gp_Dir2d::D::X);
-  Standard_Real       thePar;
+  double              thePar;
   Geom2dAdaptor_Curve curve = Qualified1.Qualified();
   Extrema_ExtPC2d     distmin(Pcenter,
                           curve,
@@ -69,7 +69,7 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
   {
     throw Standard_Failure();
   }
-  Standard_Integer nbext = distmin.NbExt();
+  int nbext = distmin.NbExt();
   if (nbext == 0)
   {
     throw Standard_Failure();
@@ -104,10 +104,10 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
     gp_Pnt2d point1;
     gp_Vec2d Tan1;
     Geom2dGcc_CurveTool::D1(curve, theParam(i), point1, Tan1);
-    Standard_Real normetan1 = Tan1.Magnitude();
-    gp_Vec2d      Vec1(point1, Pcenter);
-    Standard_Real normevec1 = Vec1.Magnitude();
-    Standard_Real dot1;
+    double   normetan1 = Tan1.Magnitude();
+    gp_Vec2d Vec1(point1, Pcenter);
+    double   normevec1 = Vec1.Magnitude();
+    double   dot1;
     if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution())
     {
       dot1 = Vec1.Dot(Tan1) / (normevec1 * normetan1);
@@ -119,7 +119,7 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
     Tol = 1.e-12;
     if (dot1 <= Tol)
     {
-      Standard_Real Angle1 = Vec1.Angle(Tan1);
+      double Angle1 = Vec1.Angle(Tan1);
       if (Qualified1.IsUnqualified() || (Qualified1.IsEnclosing() && Angle1 <= 0.)
           || (Qualified1.IsOutside() && Angle1 >= 0.) || (Qualified1.IsEnclosed() && Angle1 <= 0.))
       {
@@ -129,7 +129,7 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
         pararg1(NbrSol)    = theParam(i);
         par1sol(NbrSol)    = 0.;
         pnttg1sol(NbrSol)  = pTan(i);
-        WellDone           = Standard_True;
+        WellDone           = true;
       }
     }
   }
@@ -137,17 +137,17 @@ Geom2dGcc_Circ2dTanCenGeo::Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qua
 
 //=========================================================================
 
-Standard_Boolean Geom2dGcc_Circ2dTanCenGeo::IsDone() const
+bool Geom2dGcc_Circ2dTanCenGeo::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer Geom2dGcc_Circ2dTanCenGeo::NbSolutions() const
+int Geom2dGcc_Circ2dTanCenGeo::NbSolutions() const
 {
   return NbrSol;
 }
 
-gp_Circ2d Geom2dGcc_Circ2dTanCenGeo::ThisSolution(const Standard_Integer Index) const
+gp_Circ2d Geom2dGcc_Circ2dTanCenGeo::ThisSolution(const int Index) const
 {
   if (Index > NbrSol || Index <= 0)
     throw Standard_OutOfRange();
@@ -155,8 +155,7 @@ gp_Circ2d Geom2dGcc_Circ2dTanCenGeo::ThisSolution(const Standard_Integer Index) 
   return cirsol(Index);
 }
 
-void Geom2dGcc_Circ2dTanCenGeo::WhichQualifier(const Standard_Integer Index,
-                                               GccEnt_Position&       Qualif1) const
+void Geom2dGcc_Circ2dTanCenGeo::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -172,10 +171,10 @@ void Geom2dGcc_Circ2dTanCenGeo::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void Geom2dGcc_Circ2dTanCenGeo::Tangency1(const Standard_Integer Index,
-                                          Standard_Real&         ParSol,
-                                          Standard_Real&         ParArg,
-                                          gp_Pnt2d&              PntSol) const
+void Geom2dGcc_Circ2dTanCenGeo::Tangency1(const int Index,
+                                          double&   ParSol,
+                                          double&   ParArg,
+                                          gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

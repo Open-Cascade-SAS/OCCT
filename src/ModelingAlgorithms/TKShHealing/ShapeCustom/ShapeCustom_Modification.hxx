@@ -23,9 +23,6 @@ class ShapeExtend_BasicMsgRegistrator;
 class TopoDS_Shape;
 class Message_Msg;
 
-class ShapeCustom_Modification;
-DEFINE_STANDARD_HANDLE(ShapeCustom_Modification, BRepTools_Modification)
-
 //! A base class of Modification's from ShapeCustom.
 //! Implements message sending mechanism.
 class ShapeCustom_Modification : public BRepTools_Modification
@@ -34,10 +31,10 @@ class ShapeCustom_Modification : public BRepTools_Modification
 public:
   //! Sets message registrator
   Standard_EXPORT virtual void SetMsgRegistrator(
-    const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg);
+    const occ::handle<ShapeExtend_BasicMsgRegistrator>& msgreg);
 
   //! Returns message registrator
-  Standard_EXPORT Handle(ShapeExtend_BasicMsgRegistrator) MsgRegistrator() const;
+  Standard_EXPORT occ::handle<ShapeExtend_BasicMsgRegistrator> MsgRegistrator() const;
 
   //! Sends a message to be attached to the shape.
   //! Calls corresponding message of message registrator.
@@ -47,9 +44,8 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(ShapeCustom_Modification, BRepTools_Modification)
 
-protected:
 private:
-  Handle(ShapeExtend_BasicMsgRegistrator) myMsgReg;
+  occ::handle<ShapeExtend_BasicMsgRegistrator> myMsgReg;
 };
 
 #endif // _ShapeCustom_Modification_HeaderFile

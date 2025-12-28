@@ -18,10 +18,11 @@
 
 RWStepBasic_RWProductCategory::RWStepBasic_RWProductCategory() {}
 
-void RWStepBasic_RWProductCategory::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepBasic_ProductCategory)& ent) const
+void RWStepBasic_RWProductCategory::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepBasic_ProductCategory>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -31,22 +32,22 @@ void RWStepBasic_RWProductCategory::ReadStep(const Handle(StepData_StepReaderDat
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasAdescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                                  hasAdescription = true;
   if (data->IsParamDefined(num, 2))
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat2 =` not needed
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   else
   {
-    hasAdescription = Standard_False;
+    hasAdescription = false;
     aDescription.Nullify();
   }
 
@@ -55,8 +56,9 @@ void RWStepBasic_RWProductCategory::ReadStep(const Handle(StepData_StepReaderDat
   ent->Init(aName, hasAdescription, aDescription);
 }
 
-void RWStepBasic_RWProductCategory::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepBasic_ProductCategory)& ent) const
+void RWStepBasic_RWProductCategory::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepBasic_ProductCategory>& ent) const
 {
 
   // --- own field : name ---
@@ -65,7 +67,7 @@ void RWStepBasic_RWProductCategory::WriteStep(StepData_StepWriter&              
 
   // --- own field : description ---
 
-  Standard_Boolean hasAdescription = ent->HasDescription();
+  bool hasAdescription = ent->HasDescription();
   if (hasAdescription)
   {
     SW.Send(ent->Description());

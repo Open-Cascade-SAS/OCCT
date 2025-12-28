@@ -25,8 +25,8 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <Quantity_Color.hxx>
 
-static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
-                                              const AIS_TypeOfAttribute   Att)
+static occ::handle<Prs3d_LineAspect> GetLineAspect(const occ::handle<Prs3d_Drawer>& Dr,
+                                                   const AIS_TypeOfAttribute        Att)
 {
   switch (Att)
   {
@@ -41,9 +41,9 @@ static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
     case AIS_TOA_Vector:
       return Dr->VectorAspect();
     case AIS_TOA_UIso:
-      return Handle(Prs3d_LineAspect)(Dr->UIsoAspect());
+      return occ::handle<Prs3d_LineAspect>(Dr->UIsoAspect());
     case AIS_TOA_VIso:
-      return Handle(Prs3d_LineAspect)(Dr->VIsoAspect());
+      return occ::handle<Prs3d_LineAspect>(Dr->VIsoAspect());
     case AIS_TOA_Free:
       return Dr->FreeBoundaryAspect();
     case AIS_TOA_UnFree:
@@ -63,65 +63,65 @@ static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
     case AIS_TOA_ThirdAxis:
       return Dr->DatumAspect()->LineAspect(Prs3d_DatumParts_ZAxis);
   }
-  Handle(Prs3d_LineAspect) bid;
+  occ::handle<Prs3d_LineAspect> bid;
   return bid;
 }
 
-Quantity_NameOfColor AIS_GraphicTool::GetLineColor(const Handle(Prs3d_Drawer)& Dr,
-                                                   const AIS_TypeOfAttribute   Att)
+Quantity_NameOfColor AIS_GraphicTool::GetLineColor(const occ::handle<Prs3d_Drawer>& Dr,
+                                                   const AIS_TypeOfAttribute        Att)
 {
   Quantity_Color color;
   GetLineColor(Dr, Att, color);
   return color.Name();
 }
 
-void AIS_GraphicTool::GetLineColor(const Handle(Prs3d_Drawer)& Dr,
-                                   const AIS_TypeOfAttribute   Att,
-                                   Quantity_Color&             aColor)
+void AIS_GraphicTool::GetLineColor(const occ::handle<Prs3d_Drawer>& Dr,
+                                   const AIS_TypeOfAttribute        Att,
+                                   Quantity_Color&                  aColor)
 {
   aColor = GetLineAspect(Dr, Att)->Aspect()->Color();
 }
 
-Standard_Real AIS_GraphicTool::GetLineWidth(const Handle(Prs3d_Drawer)& Dr,
-                                            const AIS_TypeOfAttribute   Att)
+double AIS_GraphicTool::GetLineWidth(const occ::handle<Prs3d_Drawer>& Dr,
+                                     const AIS_TypeOfAttribute        Att)
 {
-  Handle(Prs3d_LineAspect) LA = GetLineAspect(Dr, Att);
+  occ::handle<Prs3d_LineAspect> LA = GetLineAspect(Dr, Att);
   return LA->Aspect()->Width();
 }
 
-Aspect_TypeOfLine AIS_GraphicTool::GetLineType(const Handle(Prs3d_Drawer)& Dr,
-                                               const AIS_TypeOfAttribute   Att)
+Aspect_TypeOfLine AIS_GraphicTool::GetLineType(const occ::handle<Prs3d_Drawer>& Dr,
+                                               const AIS_TypeOfAttribute        Att)
 {
-  Handle(Prs3d_LineAspect) LA = GetLineAspect(Dr, Att);
+  occ::handle<Prs3d_LineAspect> LA = GetLineAspect(Dr, Att);
   return LA->Aspect()->Type();
 }
 
-void AIS_GraphicTool::GetLineAtt(const Handle(Prs3d_Drawer)& Dr,
-                                 const AIS_TypeOfAttribute   Att,
-                                 Quantity_NameOfColor&       Col,
-                                 Standard_Real&              W,
-                                 Aspect_TypeOfLine&          TYP)
+void AIS_GraphicTool::GetLineAtt(const occ::handle<Prs3d_Drawer>& Dr,
+                                 const AIS_TypeOfAttribute        Att,
+                                 Quantity_NameOfColor&            Col,
+                                 double&                          W,
+                                 Aspect_TypeOfLine&               TYP)
 {
-  Handle(Prs3d_LineAspect) LA = GetLineAspect(Dr, Att);
-  Col                         = LA->Aspect()->Color().Name();
-  W                           = LA->Aspect()->Width();
-  TYP                         = LA->Aspect()->Type();
+  occ::handle<Prs3d_LineAspect> LA = GetLineAspect(Dr, Att);
+  Col                              = LA->Aspect()->Color().Name();
+  W                                = LA->Aspect()->Width();
+  TYP                              = LA->Aspect()->Type();
 }
 
-Quantity_NameOfColor AIS_GraphicTool::GetInteriorColor(const Handle(Prs3d_Drawer)& Dr)
+Quantity_NameOfColor AIS_GraphicTool::GetInteriorColor(const occ::handle<Prs3d_Drawer>& Dr)
 {
   Quantity_Color color;
   GetInteriorColor(Dr, color);
   return color.Name();
 }
 
-void AIS_GraphicTool::GetInteriorColor(const Handle(Prs3d_Drawer)& Dr, Quantity_Color& aColor)
+void AIS_GraphicTool::GetInteriorColor(const occ::handle<Prs3d_Drawer>& Dr, Quantity_Color& aColor)
 {
-  Handle(Graphic3d_AspectFillArea3d) AFA = Dr->ShadingAspect()->Aspect();
-  aColor                                 = AFA->InteriorColor();
+  occ::handle<Graphic3d_AspectFillArea3d> AFA = Dr->ShadingAspect()->Aspect();
+  aColor                                      = AFA->InteriorColor();
 }
 
-Graphic3d_MaterialAspect AIS_GraphicTool::GetMaterial(const Handle(Prs3d_Drawer)& Dr)
+Graphic3d_MaterialAspect AIS_GraphicTool::GetMaterial(const occ::handle<Prs3d_Drawer>& Dr)
 {
   return Dr->ShadingAspect()->Aspect()->BackMaterial();
 }

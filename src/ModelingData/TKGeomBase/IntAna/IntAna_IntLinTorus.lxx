@@ -15,12 +15,12 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Boolean IntAna_IntLinTorus::IsDone() const
+inline bool IntAna_IntLinTorus::IsDone() const
 {
   return done;
 }
 
-inline Standard_Integer IntAna_IntLinTorus::NbPoints() const
+inline int IntAna_IntLinTorus::NbPoints() const
 {
   if (!done)
   {
@@ -29,7 +29,7 @@ inline Standard_Integer IntAna_IntLinTorus::NbPoints() const
   return nbpt;
 }
 
-inline const gp_Pnt& IntAna_IntLinTorus::Value(const Standard_Integer Index) const
+inline const gp_Pnt& IntAna_IntLinTorus::Value(const int Index) const
 {
 
   if (!done)
@@ -43,7 +43,7 @@ inline const gp_Pnt& IntAna_IntLinTorus::Value(const Standard_Integer Index) con
   return thePoint[Index - 1];
 }
 
-inline Standard_Real IntAna_IntLinTorus::ParamOnLine(const Standard_Integer Index) const
+inline double IntAna_IntLinTorus::ParamOnLine(const int Index) const
 {
 
   if (!done)
@@ -57,9 +57,7 @@ inline Standard_Real IntAna_IntLinTorus::ParamOnLine(const Standard_Integer Inde
   return theParam[Index - 1];
 }
 
-inline void IntAna_IntLinTorus::ParamOnTorus(const Standard_Integer Index,
-                                             Standard_Real&         FI,
-                                             Standard_Real&         THETA) const
+inline void IntAna_IntLinTorus::ParamOnTorus(const int Index, double& FI, double& THETA) const
 {
 
   if (!done)

@@ -37,12 +37,9 @@ public:
   //! The surface aSurface is a surface object from
   //! Adaptor3d, and provides data from a Geom surface.
   //! This makes it possible to use the surface in a geometric algorithm.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Adaptor3d_Surface&          aSurface,
-                                  const Handle(Prs3d_Drawer)&       aDrawer);
-
-protected:
-private:
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const Adaptor3d_Surface&               aSurface,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer);
 };
 
 #endif // _StdPrs_WFPoleSurface_HeaderFile

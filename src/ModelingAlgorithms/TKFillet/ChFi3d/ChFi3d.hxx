@@ -36,18 +36,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Defines the type of concavity in the edge of connection of two faces
-  Standard_EXPORT static ChFiDS_TypeOfConcavity DefineConnectType(
-    const TopoDS_Edge&     E,
-    const TopoDS_Face&     F1,
-    const TopoDS_Face&     F2,
-    const Standard_Real    SinTol,
-    const Standard_Boolean CorrectPoint);
+  Standard_EXPORT static ChFiDS_TypeOfConcavity DefineConnectType(const TopoDS_Edge& E,
+                                                                  const TopoDS_Face& F1,
+                                                                  const TopoDS_Face& F2,
+                                                                  const double       SinTol,
+                                                                  const bool         CorrectPoint);
 
   //! Returns true if theEdge between theFace1 and theFace2 is tangent
-  Standard_EXPORT static Standard_Boolean IsTangentFaces(const TopoDS_Edge&  theEdge,
-                                                         const TopoDS_Face&  theFace1,
-                                                         const TopoDS_Face&  theFace2,
-                                                         const GeomAbs_Shape Order = GeomAbs_G1);
+  Standard_EXPORT static bool IsTangentFaces(const TopoDS_Edge&  theEdge,
+                                             const TopoDS_Face&  theFace1,
+                                             const TopoDS_Face&  theFace2,
+                                             const GeomAbs_Shape Order = GeomAbs_G1);
 
   //! Returns Reversed in Or1 and(or) Or2 if
   //! the concave edge defined by the interior of faces F1 and F2,
@@ -58,21 +57,21 @@ public:
   //! if not, it returns the number of choice of the fillet
   //! or chamfer corresponding to the orientations calculated
   //! and to the tangent to the guide line read in E.
-  Standard_EXPORT static Standard_Integer ConcaveSide(const BRepAdaptor_Surface& S1,
-                                                      const BRepAdaptor_Surface& S2,
-                                                      const TopoDS_Edge&         E,
-                                                      TopAbs_Orientation&        Or1,
-                                                      TopAbs_Orientation&        Or2);
+  Standard_EXPORT static int ConcaveSide(const BRepAdaptor_Surface& S1,
+                                         const BRepAdaptor_Surface& S2,
+                                         const TopoDS_Edge&         E,
+                                         TopAbs_Orientation&        Or1,
+                                         TopAbs_Orientation&        Or2);
 
   //! Same as ConcaveSide, but the orientations are
   //! logically deduced from the result of the call of
   //! ConcaveSide on the first pair of faces of the fillet or
   //! chamnfer.
-  Standard_EXPORT static Standard_Integer NextSide(TopAbs_Orientation&      Or1,
-                                                   TopAbs_Orientation&      Or2,
-                                                   const TopAbs_Orientation OrSave1,
-                                                   const TopAbs_Orientation OrSave2,
-                                                   const Standard_Integer   ChoixSauv);
+  Standard_EXPORT static int NextSide(TopAbs_Orientation&      Or1,
+                                      TopAbs_Orientation&      Or2,
+                                      const TopAbs_Orientation OrSave1,
+                                      const TopAbs_Orientation OrSave2,
+                                      const int                ChoixSauv);
 
   //! Same as the other NextSide, but the calculation is done
   //! on an edge only.
@@ -83,11 +82,11 @@ public:
   //! Enables to determine while processing an angle, if
   //! two fillets or chamfers constituting a face have
   //! identic or opposed concave edges.
-  Standard_EXPORT static Standard_Boolean SameSide(const TopAbs_Orientation Or,
-                                                   const TopAbs_Orientation OrSave1,
-                                                   const TopAbs_Orientation OrSave2,
-                                                   const TopAbs_Orientation OrFace1,
-                                                   const TopAbs_Orientation OrFace2);
+  Standard_EXPORT static bool SameSide(const TopAbs_Orientation Or,
+                                       const TopAbs_Orientation OrSave1,
+                                       const TopAbs_Orientation OrSave2,
+                                       const TopAbs_Orientation OrFace1,
+                                       const TopAbs_Orientation OrFace2);
 };
 
 #endif // _ChFi3d_HeaderFile

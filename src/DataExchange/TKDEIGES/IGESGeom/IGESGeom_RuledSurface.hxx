@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESGeom_RuledSurface;
-DEFINE_STANDARD_HANDLE(IGESGeom_RuledSurface, IGESData_IGESEntity)
-
 //! defines IGESRuledSurface, Type <118> Form <0-1>
 //! in package IGESGeom
 //! A ruled surface is formed by moving a line connecting points
@@ -50,40 +47,39 @@ public:
   //! - aDevFlag     : Developable Surface Flag
   //! 1 = Developable
   //! 0 = Possibly not
-  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)& aCurve,
-                            const Handle(IGESData_IGESEntity)& anotherCurve,
-                            const Standard_Integer             aDirFlag,
-                            const Standard_Integer             aDevFlag);
+  Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>& aCurve,
+                            const occ::handle<IGESData_IGESEntity>& anotherCurve,
+                            const int                               aDirFlag,
+                            const int                               aDevFlag);
 
   //! Sets <me> to be Ruled by Parameter (Form 1) if <mode> is
   //! True, or Ruled by Length (Form 0) else
-  Standard_EXPORT void SetRuledByParameter(const Standard_Boolean mode);
+  Standard_EXPORT void SetRuledByParameter(const bool mode);
 
   //! Returns True if Form is 1
-  Standard_EXPORT Standard_Boolean IsRuledByParameter() const;
+  Standard_EXPORT bool IsRuledByParameter() const;
 
   //! returns the first curve
-  Standard_EXPORT Handle(IGESData_IGESEntity) FirstCurve() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> FirstCurve() const;
 
   //! returns the second curve
-  Standard_EXPORT Handle(IGESData_IGESEntity) SecondCurve() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> SecondCurve() const;
 
   //! return the sense of direction
   //! 0 = Join first to first, last to last
   //! 1 = Join first to last, last to first
-  Standard_EXPORT Standard_Integer DirectionFlag() const;
+  Standard_EXPORT int DirectionFlag() const;
 
   //! returns True if developable else False
-  Standard_EXPORT Standard_Boolean IsDevelopable() const;
+  Standard_EXPORT bool IsDevelopable() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_RuledSurface, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_IGESEntity) theCurve1;
-  Handle(IGESData_IGESEntity) theCurve2;
-  Standard_Integer            theDirFlag;
-  Standard_Integer            theDevFlag;
+  occ::handle<IGESData_IGESEntity> theCurve1;
+  occ::handle<IGESData_IGESEntity> theCurve2;
+  int                              theDirFlag;
+  int                              theDevFlag;
 };
 
 #endif // _IGESGeom_RuledSurface_HeaderFile

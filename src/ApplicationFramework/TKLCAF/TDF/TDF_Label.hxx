@@ -63,13 +63,13 @@ public:
   void Nullify();
 
   //! Returns the Data owning <me>.
-  Handle(TDF_Data) Data() const;
+  occ::handle<TDF_Data> Data() const;
 
   //! Returns the tag of the label.
   //! This is the integer assigned randomly to a label
   //! in a data framework. This integer is used to
   //! identify this label in an entry.
-  Standard_Integer Tag() const;
+  int Tag() const;
 
   //! Returns the label father. This label may be null
   //! if the label is root.
@@ -77,57 +77,56 @@ public:
 
   //! Returns True if the <aLabel> is null, i.e. it has
   //! not been included in the data framework.
-  Standard_Boolean IsNull() const;
+  bool IsNull() const;
 
   //! Sets or unsets <me> and all its descendants as
   //! imported label, according to <aStatus>.
-  Standard_EXPORT void Imported(const Standard_Boolean aStatus) const;
+  Standard_EXPORT void Imported(const bool aStatus) const;
 
   //! Returns True if the <aLabel> is imported.
-  Standard_Boolean IsImported() const;
+  bool IsImported() const;
 
   //! Returns True if the <aLabel> is equal to me (same
   //! LabelNode*).
-  Standard_Boolean IsEqual(const TDF_Label& aLabel) const;
+  bool IsEqual(const TDF_Label& aLabel) const;
 
-  Standard_Boolean operator==(const TDF_Label& aLabel) const { return IsEqual(aLabel); }
+  bool operator==(const TDF_Label& aLabel) const { return IsEqual(aLabel); }
 
-  Standard_Boolean IsDifferent(const TDF_Label& aLabel) const;
+  bool IsDifferent(const TDF_Label& aLabel) const;
 
-  Standard_Boolean operator!=(const TDF_Label& aLabel) const { return IsDifferent(aLabel); }
+  bool operator!=(const TDF_Label& aLabel) const { return IsDifferent(aLabel); }
 
-  Standard_Boolean IsRoot() const;
+  bool IsRoot() const;
 
   //! Returns true if <me> owns an attribute with <anID> as ID.
-  Standard_EXPORT Standard_Boolean IsAttribute(const Standard_GUID& anID) const;
+  Standard_EXPORT bool IsAttribute(const Standard_GUID& anID) const;
 
   //! Adds an Attribute to the current label. Raises if
   //! there is already one.
-  Standard_EXPORT void AddAttribute(const Handle(TDF_Attribute)& anAttribute,
-                                    const Standard_Boolean       append = Standard_True) const;
+  Standard_EXPORT void AddAttribute(const occ::handle<TDF_Attribute>& anAttribute,
+                                    const bool                        append = true) const;
 
   //! Forgets an Attribute from the current label,
   //! setting its forgotten status true and its valid
   //! status false. Raises if the attribute is not in
   //! the structure.
-  Standard_EXPORT void ForgetAttribute(const Handle(TDF_Attribute)& anAttribute) const;
+  Standard_EXPORT void ForgetAttribute(const occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Forgets the Attribute of GUID <aguid> from the
   //! current label. If the attribute doesn't exist
   //! returns False. Otherwise returns True.
-  Standard_EXPORT Standard_Boolean ForgetAttribute(const Standard_GUID& aguid) const;
+  Standard_EXPORT bool ForgetAttribute(const Standard_GUID& aguid) const;
 
   //! Forgets all the attributes. Does it on also on the
   //! sub-labels if <clearChildren> is set to true. Of
   //! course, this method is compatible with Transaction
   //! & Delta mechanisms.
-  Standard_EXPORT void ForgetAllAttributes(
-    const Standard_Boolean clearChildren = Standard_True) const;
+  Standard_EXPORT void ForgetAllAttributes(const bool clearChildren = true) const;
 
   //! Undo Forget action, setting its forgotten status
   //! false and its valid status true. Raises if the
   //! attribute is not in the structure.
-  Standard_EXPORT void ResumeAttribute(const Handle(TDF_Attribute)& anAttribute) const;
+  Standard_EXPORT void ResumeAttribute(const occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Finds an attribute of the current label, according
   //! to <anID>.
@@ -136,15 +135,15 @@ public:
   //! The method returns True if found, False otherwise.
   //!
   //! A removed attribute cannot be found.
-  Standard_EXPORT Standard_Boolean FindAttribute(const Standard_GUID&   anID,
-                                                 Handle(TDF_Attribute)& anAttribute) const;
+  Standard_EXPORT bool FindAttribute(const Standard_GUID&        anID,
+                                     occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Safe variant of FindAttribute() for arbitrary type of argument
   template <class T>
-  Standard_Boolean FindAttribute(const Standard_GUID& theID, Handle(T)& theAttr) const
+  bool FindAttribute(const Standard_GUID& theID, occ::handle<T>& theAttr) const
   {
-    Handle(TDF_Attribute) anAttr;
-    return FindAttribute(theID, anAttr) && !(theAttr = Handle(T)::DownCast(anAttr)).IsNull();
+    occ::handle<TDF_Attribute> anAttr;
+    return FindAttribute(theID, anAttr) && !(theAttr = occ::down_cast<T>(anAttr)).IsNull();
   }
 
   //! Finds an attribute of the current label, according
@@ -157,26 +156,26 @@ public:
   //!
   //! A removed attribute cannot be found nor a backuped
   //! attribute of a removed one.
-  Standard_EXPORT Standard_Boolean FindAttribute(const Standard_GUID&   anID,
-                                                 const Standard_Integer aTransaction,
-                                                 Handle(TDF_Attribute)& anAttribute) const;
+  Standard_EXPORT bool FindAttribute(const Standard_GUID&        anID,
+                                     const int                   aTransaction,
+                                     occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Returns true if <me> or a DESCENDANT of <me> owns
   //! attributes not yet available in transaction 0. It
   //! means at least one of their attributes is new,
   //! modified or deleted.
-  Standard_Boolean MayBeModified() const;
+  bool MayBeModified() const;
 
   //! Returns true if <me> owns attributes not yet
   //! available in transaction 0. It means at least one
   //! attribute is new, modified or deleted.
-  Standard_Boolean AttributesModified() const;
+  bool AttributesModified() const;
 
   //! Returns true if this label has at least one attribute.
-  Standard_EXPORT Standard_Boolean HasAttribute() const;
+  Standard_EXPORT bool HasAttribute() const;
 
   //! Returns the number of attributes.
-  Standard_EXPORT Standard_Integer NbAttributes() const;
+  Standard_EXPORT int NbAttributes() const;
 
   //! Returns the depth of the label in the data framework.
   //! This corresponds to the number of fathers which
@@ -185,12 +184,12 @@ public:
   //! Exceptions:
   //! Standard_NullObject if this label is null. This is
   //! because a null object can have no depth.
-  Standard_EXPORT Standard_Integer Depth() const;
+  Standard_EXPORT int Depth() const;
 
   //! Returns True if <me> is a descendant of
   //! <aLabel>. Attention: every label is its own
   //! descendant.
-  Standard_EXPORT Standard_Boolean IsDescendant(const TDF_Label& aLabel) const;
+  Standard_EXPORT bool IsDescendant(const TDF_Label& aLabel) const;
 
   //! Returns the root label Root of the data structure.
   //! This has a depth of 0.
@@ -200,10 +199,10 @@ public:
   Standard_EXPORT const TDF_Label Root() const;
 
   //! Returns true if this label has at least one child.
-  Standard_Boolean HasChild() const;
+  bool HasChild() const;
 
   //! Returns the number of children.
-  Standard_EXPORT Standard_Integer NbChildren() const;
+  Standard_EXPORT int NbChildren() const;
 
   //! Finds a child label having <aTag> as tag. Creates
   //! The tag aTag identifies the label which will be the parent.
@@ -214,29 +213,28 @@ public:
   //! //creating labels 7 and 2 on label 10
   //! TDF_Label lab2 = lab1.FindChild(7);
   //! TDF_Label lab3 = lab1.FindChild(2);
-  Standard_EXPORT TDF_Label FindChild(const Standard_Integer aTag,
-                                      const Standard_Boolean create = Standard_True) const;
+  Standard_EXPORT TDF_Label FindChild(const int aTag, const bool create = true) const;
 
   //! Create a new child label of me using automatic
   //! delivery tags provided by TagSource.
   TDF_Label NewChild() const;
 
   //! Returns the current transaction index.
-  Standard_EXPORT Standard_Integer Transaction() const;
+  Standard_EXPORT int Transaction() const;
 
   //! Returns true if node address of <me> is lower than
   //! <otherLabel> one. Used to quickly sort labels (not
   //! on entry criterion).
   //!
   //! -C++: inline
-  Standard_EXPORT Standard_Boolean HasLowerNode(const TDF_Label& otherLabel) const;
+  Standard_EXPORT bool HasLowerNode(const TDF_Label& otherLabel) const;
 
   //! Returns true if node address of <me> is greater
   //! than <otherLabel> one. Used to quickly sort labels
   //! (not on entry criterion).
   //!
   //! -C++: inline
-  Standard_EXPORT Standard_Boolean HasGreaterNode(const TDF_Label& otherLabel) const;
+  Standard_EXPORT bool HasGreaterNode(const TDF_Label& otherLabel) const;
 
   //! Dumps the minimum information about <me> on
   //! <aStream>.
@@ -246,9 +244,9 @@ public:
 
   //! Dumps the label on <aStream> and its attributes
   //! rank in <aMap> if their IDs are kept by <IDFilter>.
-  Standard_EXPORT void ExtendedDump(Standard_OStream&        anOS,
-                                    const TDF_IDFilter&      aFilter,
-                                    TDF_AttributeIndexedMap& aMap) const;
+  Standard_EXPORT void ExtendedDump(Standard_OStream&                                   anOS,
+                                    const TDF_IDFilter&                                 aFilter,
+                                    NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap) const;
 
   //! Dumps the label entry.
   Standard_EXPORT void EntryDump(Standard_OStream& anOS) const;
@@ -261,34 +259,32 @@ public:
   template <class T>
   friend struct std::hash;
 
-protected:
 private:
   //! Reserved to the friends.
   TDF_Label(const TDF_LabelNodePtr& aNode);
 
   //! Adds an Attribute to <toNode>. Raises if there is
   //! already one.
-  Standard_EXPORT void AddToNode(const TDF_LabelNodePtr&      toNode,
-                                 const Handle(TDF_Attribute)& anAttribute,
-                                 const Standard_Boolean       append) const;
+  Standard_EXPORT void AddToNode(const TDF_LabelNodePtr&           toNode,
+                                 const occ::handle<TDF_Attribute>& anAttribute,
+                                 const bool                        append) const;
 
   //! Forgets an Attribute from <fromNode>. Raises if
   //! the attribute is not in the structure.
-  Standard_EXPORT void ForgetFromNode(const TDF_LabelNodePtr&      fromNode,
-                                      const Handle(TDF_Attribute)& anAttribute) const;
+  Standard_EXPORT void ForgetFromNode(const TDF_LabelNodePtr&           fromNode,
+                                      const occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Resumes a forgotten Attribute to <toNode>. Raises
   //! if the attribute is not in the structure.
-  Standard_EXPORT void ResumeToNode(const TDF_LabelNodePtr&      fromNode,
-                                    const Handle(TDF_Attribute)& anAttribute) const;
+  Standard_EXPORT void ResumeToNode(const TDF_LabelNodePtr&           fromNode,
+                                    const occ::handle<TDF_Attribute>& anAttribute) const;
 
-  Standard_EXPORT TDF_LabelNodePtr FindOrAddChild(const Standard_Integer aTag,
-                                                  const Standard_Boolean create) const;
+  Standard_EXPORT TDF_LabelNodePtr FindOrAddChild(const int aTag, const bool create) const;
 
-  Standard_EXPORT void InternalDump(Standard_OStream&        anOS,
-                                    const TDF_IDFilter&      aFilter,
-                                    TDF_AttributeIndexedMap& aMap,
-                                    const Standard_Boolean   extended) const;
+  Standard_EXPORT void InternalDump(Standard_OStream&                                   anOS,
+                                    const TDF_IDFilter&                                 aFilter,
+                                    NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap,
+                                    const bool extended) const;
 
   TDF_LabelNodePtr myLabelNode;
 };

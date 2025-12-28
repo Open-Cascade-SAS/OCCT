@@ -21,11 +21,13 @@
 #include <Standard_Handle.hxx>
 
 #include <STEPConstruct_Tool.hxx>
-#include <StepElement_HSequenceOfElementMaterial.hxx>
-#include <StepFEA_HSequenceOfElementGeometricRelationship.hxx>
-#include <StepFEA_HSequenceOfElementRepresentation.hxx>
+#include <StepElement_ElementMaterial.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <StepFEA_ElementGeometricRelationship.hxx>
+#include <StepFEA_ElementRepresentation.hxx>
 #include <Standard_Type.hxx>
-#include <StepElement_HSequenceOfCurveElementSectionDefinition.hxx>
+#include <StepElement_CurveElementSectionDefinition.hxx>
 class XSControl_WorkSession;
 class StepBasic_ProductDefinitionFormation;
 class StepFEA_FeaModel;
@@ -48,101 +50,100 @@ public:
   Standard_EXPORT StepAP209_Construct();
 
   //! Creates a tool and initializes it
-  Standard_EXPORT StepAP209_Construct(const Handle(XSControl_WorkSession)& WS);
+  Standard_EXPORT StepAP209_Construct(const occ::handle<XSControl_WorkSession>& WS);
 
   //! Initializes tool; returns True if succeeded
-  Standard_EXPORT Standard_Boolean Init(const Handle(XSControl_WorkSession)& WS);
+  Standard_EXPORT bool Init(const occ::handle<XSControl_WorkSession>& WS);
 
-  Standard_EXPORT Standard_Boolean
-    IsDesing(const Handle(StepBasic_ProductDefinitionFormation)& PD) const;
+  Standard_EXPORT bool IsDesing(const occ::handle<StepBasic_ProductDefinitionFormation>& PD) const;
 
-  Standard_EXPORT Standard_Boolean
-    IsAnalys(const Handle(StepBasic_ProductDefinitionFormation)& PD) const;
+  Standard_EXPORT bool IsAnalys(const occ::handle<StepBasic_ProductDefinitionFormation>& PD) const;
 
-  Standard_EXPORT Handle(StepFEA_FeaModel) FeaModel(const Handle(StepBasic_Product)& Prod) const;
+  Standard_EXPORT occ::handle<StepFEA_FeaModel> FeaModel(
+    const occ::handle<StepBasic_Product>& Prod) const;
 
-  Standard_EXPORT Handle(StepFEA_FeaModel) FeaModel(
-    const Handle(StepBasic_ProductDefinitionFormation)& PDF) const;
+  Standard_EXPORT occ::handle<StepFEA_FeaModel> FeaModel(
+    const occ::handle<StepBasic_ProductDefinitionFormation>& PDF) const;
 
-  Standard_EXPORT Handle(StepFEA_FeaAxis2Placement3d) GetFeaAxis2Placement3d(
-    const Handle(StepFEA_FeaModel)& theFeaModel) const;
+  Standard_EXPORT occ::handle<StepFEA_FeaAxis2Placement3d> GetFeaAxis2Placement3d(
+    const occ::handle<StepFEA_FeaModel>& theFeaModel) const;
 
-  Standard_EXPORT Handle(StepShape_ShapeRepresentation) IdealShape(
-    const Handle(StepBasic_Product)& Prod) const;
+  Standard_EXPORT occ::handle<StepShape_ShapeRepresentation> IdealShape(
+    const occ::handle<StepBasic_Product>& Prod) const;
 
-  Standard_EXPORT Handle(StepShape_ShapeRepresentation) IdealShape(
-    const Handle(StepBasic_ProductDefinitionFormation)& PDF) const;
+  Standard_EXPORT occ::handle<StepShape_ShapeRepresentation> IdealShape(
+    const occ::handle<StepBasic_ProductDefinitionFormation>& PDF) const;
 
-  Standard_EXPORT Handle(StepShape_ShapeRepresentation) NominShape(
-    const Handle(StepBasic_Product)& Prod) const;
+  Standard_EXPORT occ::handle<StepShape_ShapeRepresentation> NominShape(
+    const occ::handle<StepBasic_Product>& Prod) const;
 
-  Standard_EXPORT Handle(StepShape_ShapeRepresentation) NominShape(
-    const Handle(StepBasic_ProductDefinitionFormation)& PDF) const;
+  Standard_EXPORT occ::handle<StepShape_ShapeRepresentation> NominShape(
+    const occ::handle<StepBasic_ProductDefinitionFormation>& PDF) const;
 
-  Standard_EXPORT Handle(StepElement_HSequenceOfElementMaterial) GetElementMaterial() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<StepElement_ElementMaterial>>>
+                  GetElementMaterial() const;
 
-  Standard_EXPORT Handle(StepFEA_HSequenceOfElementGeometricRelationship) GetElemGeomRelat() const;
+  Standard_EXPORT occ::handle<
+    NCollection_HSequence<occ::handle<StepFEA_ElementGeometricRelationship>>>
+    GetElemGeomRelat() const;
 
-  Standard_EXPORT Handle(StepFEA_HSequenceOfElementRepresentation) GetElements1D(
-    const Handle(StepFEA_FeaModel)& theFeaModel) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>>
+                  GetElements1D(const occ::handle<StepFEA_FeaModel>& theFeaModel) const;
 
-  Standard_EXPORT Handle(StepFEA_HSequenceOfElementRepresentation) GetElements2D(
-    const Handle(StepFEA_FeaModel)& theFEAModel) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>>
+                  GetElements2D(const occ::handle<StepFEA_FeaModel>& theFEAModel) const;
 
-  Standard_EXPORT Handle(StepFEA_HSequenceOfElementRepresentation) GetElements3D(
-    const Handle(StepFEA_FeaModel)& theFEAModel) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>>
+                  GetElements3D(const occ::handle<StepFEA_FeaModel>& theFEAModel) const;
 
   //! Getting list of curve_element_section_definitions
   //! for given element_representation
-  Standard_EXPORT Handle(StepElement_HSequenceOfCurveElementSectionDefinition) GetCurElemSection(
-    const Handle(StepFEA_Curve3dElementRepresentation)& ElemRepr) const;
+  Standard_EXPORT occ::handle<
+    NCollection_HSequence<occ::handle<StepElement_CurveElementSectionDefinition>>>
+    GetCurElemSection(const occ::handle<StepFEA_Curve3dElementRepresentation>& ElemRepr) const;
 
-  Standard_EXPORT Handle(StepShape_ShapeRepresentation) GetShReprForElem(
-    const Handle(StepFEA_ElementRepresentation)& ElemRepr) const;
+  Standard_EXPORT occ::handle<StepShape_ShapeRepresentation> GetShReprForElem(
+    const occ::handle<StepFEA_ElementRepresentation>& ElemRepr) const;
 
   //! Create empty structure for idealized_analysis_shape
-  Standard_EXPORT Standard_Boolean
-    CreateAnalysStructure(const Handle(StepBasic_Product)& Prod) const;
+  Standard_EXPORT bool CreateAnalysStructure(const occ::handle<StepBasic_Product>& Prod) const;
 
   //! Create fea structure
-  Standard_EXPORT Standard_Boolean CreateFeaStructure(const Handle(StepBasic_Product)& Prod) const;
+  Standard_EXPORT bool CreateFeaStructure(const occ::handle<StepBasic_Product>& Prod) const;
 
   //! Put into model entities Applied... for AP209 instead of
   //! entities CcDesing... from AP203.
-  Standard_EXPORT Standard_Boolean ReplaceCcDesingToApplied() const;
+  Standard_EXPORT bool ReplaceCcDesingToApplied() const;
 
   //! Create approval.. , date.. , time.. , person.. and
   //! organization.. entities for analysis structure
-  Standard_EXPORT Standard_Boolean
-    CreateAddingEntities(const Handle(StepBasic_ProductDefinition)& AnaPD) const;
+  Standard_EXPORT bool CreateAddingEntities(
+    const occ::handle<StepBasic_ProductDefinition>& AnaPD) const;
 
   //! Create AP203 structure from existing AP209 structure
-  Standard_EXPORT Handle(StepData_StepModel) CreateAP203Structure() const;
+  Standard_EXPORT occ::handle<StepData_StepModel> CreateAP203Structure() const;
 
   //! Create approval.. , date.. , time.. , person.. and
   //! organization.. entities for 203 structure
-  Standard_EXPORT Standard_Boolean
-    CreateAdding203Entities(const Handle(StepBasic_ProductDefinition)& PD,
-                            Handle(StepData_StepModel)&                aModel) const;
+  Standard_EXPORT bool CreateAdding203Entities(const occ::handle<StepBasic_ProductDefinition>& PD,
+                                               occ::handle<StepData_StepModel>& aModel) const;
 
-  Standard_EXPORT Handle(StepFEA_FeaModel) FeaModel(
-    const Handle(StepRepr_ProductDefinitionShape)& PDS) const;
+  Standard_EXPORT occ::handle<StepFEA_FeaModel> FeaModel(
+    const occ::handle<StepRepr_ProductDefinitionShape>& PDS) const;
 
-  Standard_EXPORT Handle(StepFEA_FeaModel) FeaModel(
-    const Handle(StepBasic_ProductDefinition)& PD) const;
+  Standard_EXPORT occ::handle<StepFEA_FeaModel> FeaModel(
+    const occ::handle<StepBasic_ProductDefinition>& PD) const;
 
-  Standard_EXPORT Handle(StepShape_ShapeRepresentation) IdealShape(
-    const Handle(StepBasic_ProductDefinition)& PD) const;
+  Standard_EXPORT occ::handle<StepShape_ShapeRepresentation> IdealShape(
+    const occ::handle<StepBasic_ProductDefinition>& PD) const;
 
-  Standard_EXPORT Handle(StepShape_ShapeRepresentation) IdealShape(
-    const Handle(StepRepr_ProductDefinitionShape)& PDS) const;
+  Standard_EXPORT occ::handle<StepShape_ShapeRepresentation> IdealShape(
+    const occ::handle<StepRepr_ProductDefinitionShape>& PDS) const;
 
 protected:
-  Standard_EXPORT Handle(StepFEA_HSequenceOfElementRepresentation) GetFeaElements(
-    const Handle(StepFEA_FeaModel)& theFeaModel,
-    const Handle(Standard_Type)&    theType) const;
-
-private:
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>>
+                  GetFeaElements(const occ::handle<StepFEA_FeaModel>& theFeaModel,
+                                 const occ::handle<Standard_Type>&    theType) const;
 };
 
 #endif // _StepAP209_Construct_HeaderFile

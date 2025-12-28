@@ -22,9 +22,6 @@
 
 #include <StepRepr_RepresentationItem.hxx>
 
-class StepShape_TopologicalRepresentationItem;
-DEFINE_STANDARD_HANDLE(StepShape_TopologicalRepresentationItem, StepRepr_RepresentationItem)
-
 class StepShape_TopologicalRepresentationItem : public StepRepr_RepresentationItem
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepShape_TopologicalRepresentationItem();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_TopologicalRepresentationItem, StepRepr_RepresentationItem)
-
-protected:
-private:
 };
 
 #endif // _StepShape_TopologicalRepresentationItem_HeaderFile

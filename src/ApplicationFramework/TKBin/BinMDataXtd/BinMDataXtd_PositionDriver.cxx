@@ -27,14 +27,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PositionDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataXtd_PositionDriver::BinMDataXtd_PositionDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataXtd_Position)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataXtd_PositionDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataXtd_PositionDriver::NewEmpty() const
 {
   return new TDataXtd_Position();
 }
@@ -44,13 +44,13 @@ Handle(TDF_Attribute) BinMDataXtd_PositionDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataXtd_PositionDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                   const Handle(TDF_Attribute)& theTarget,
-                                                   BinObjMgt_RRelocationTable&) const
+bool BinMDataXtd_PositionDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       BinObjMgt_RRelocationTable&) const
 {
-  Handle(TDataXtd_Position) anAtt = Handle(TDataXtd_Position)::DownCast(theTarget);
-  Standard_Real             aValue;
-  Standard_Boolean          ok = theSource >> aValue;
+  occ::handle<TDataXtd_Position> anAtt = occ::down_cast<TDataXtd_Position>(theTarget);
+  double                         aValue;
+  bool                           ok = theSource >> aValue;
   if (!ok)
     return ok;
   gp_Pnt aPosition(0., 0., 0.);
@@ -76,11 +76,12 @@ Standard_Boolean BinMDataXtd_PositionDriver::Paste(const BinObjMgt_Persistent&  
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataXtd_PositionDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                       BinObjMgt_Persistent&        theTarget,
-                                       BinObjMgt_SRelocationTable&) const
+void BinMDataXtd_PositionDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDataXtd_Position) anAtt = Handle(TDataXtd_Position)::DownCast(theSource);
+  occ::handle<TDataXtd_Position> anAtt = occ::down_cast<TDataXtd_Position>(theSource);
 
   theTarget << anAtt->GetPosition().X();
   theTarget << anAtt->GetPosition().Y();

@@ -25,9 +25,6 @@
 #include <Standard_OStream.hxx>
 class TopOpeBRepDS_Transition;
 
-class TopOpeBRepDS_SolidSurfaceInterference;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_SolidSurfaceInterference, TopOpeBRepDS_Interference)
-
 //! Interference
 class TopOpeBRepDS_SolidSurfaceInterference : public TopOpeBRepDS_Interference
 {
@@ -35,14 +32,11 @@ class TopOpeBRepDS_SolidSurfaceInterference : public TopOpeBRepDS_Interference
 public:
   Standard_EXPORT TopOpeBRepDS_SolidSurfaceInterference(const TopOpeBRepDS_Transition& Transition,
                                                         const TopOpeBRepDS_Kind        SupportType,
-                                                        const Standard_Integer         Support,
+                                                        const int                      Support,
                                                         const TopOpeBRepDS_Kind        GeometryType,
-                                                        const Standard_Integer         Geometry);
+                                                        const int                      Geometry);
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_SolidSurfaceInterference, TopOpeBRepDS_Interference)
-
-protected:
-private:
 };
 
 #endif // _TopOpeBRepDS_SolidSurfaceInterference_HeaderFile

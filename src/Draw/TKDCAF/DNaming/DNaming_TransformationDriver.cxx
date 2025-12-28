@@ -38,9 +38,10 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <Standard_Integer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_TransformationDriver, TFunction_Driver)
 
@@ -75,33 +76,33 @@ DNaming_TransformationDriver::DNaming_TransformationDriver() {}
 // function : Validate
 // purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_TransformationDriver::Validate(Handle(TFunction_Logbook)&) const {}
+void DNaming_TransformationDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute
 // purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_TransformationDriver::MustExecute(const Handle(TFunction_Logbook)&) const
+bool DNaming_TransformationDriver::MustExecute(const occ::handle<TFunction_Logbook>&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Execute
 // purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
-Standard_Integer DNaming_TransformationDriver::Execute(Handle(TFunction_Logbook)& theLog) const
+int DNaming_TransformationDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 {
-  Handle(TFunction_Function) aFunction;
+  occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
     return -1;
 
-  Handle(TFunction_Function) aPrevFun = DNaming::GetPrevFunction(aFunction);
+  occ::handle<TFunction_Function> aPrevFun = DNaming::GetPrevFunction(aFunction);
   if (aPrevFun.IsNull())
     return -1;
-  const TDF_Label&           aLab = RESPOSITION(aPrevFun);
-  Handle(TNaming_NamedShape) aContextNS;
+  const TDF_Label&                aLab = RESPOSITION(aPrevFun);
+  occ::handle<TNaming_NamedShape> aContextNS;
   aLab.FindAttribute(TNaming_NamedShape::GetID(), aContextNS);
   if (aContextNS.IsNull() || aContextNS->IsEmpty())
   {
@@ -119,47 +120,47 @@ Standard_Integer DNaming_TransformationDriver::Execute(Handle(TFunction_Logbook)
   {
     if (aGUID == PTXYZ_GUID)
     {
-      Standard_Real aDX = DNaming::GetReal(aFunction, PTRANSF_DX)->Get();
-      Standard_Real aDY = DNaming::GetReal(aFunction, PTRANSF_DY)->Get();
-      Standard_Real aDZ = DNaming::GetReal(aFunction, PTRANSF_DZ)->Get();
-      gp_Vec        aVector(aDX, aDY, aDZ);
+      double aDX = DNaming::GetReal(aFunction, PTRANSF_DX)->Get();
+      double aDY = DNaming::GetReal(aFunction, PTRANSF_DY)->Get();
+      double aDZ = DNaming::GetReal(aFunction, PTRANSF_DZ)->Get();
+      gp_Vec aVector(aDX, aDY, aDZ);
       aTransformation.SetTranslation(aVector);
     }
     else if (aGUID == PTALINE_GUID)
     {
-      Handle(TDataStd_UAttribute) aLineObj = DNaming::GetObjectArg(aFunction, PTRANSF_LINE);
-      Handle(TNaming_NamedShape)  aLineNS  = DNaming::GetObjectValue(aLineObj);
-      gp_Ax1                      anAxis;
+      occ::handle<TDataStd_UAttribute> aLineObj = DNaming::GetObjectArg(aFunction, PTRANSF_LINE);
+      occ::handle<TNaming_NamedShape>  aLineNS  = DNaming::GetObjectValue(aLineObj);
+      gp_Ax1                           anAxis;
       if (!DNaming::ComputeAxis(aLineNS, anAxis))
         throw Standard_Failure();
       gp_Vec aVector(anAxis.Direction());
       aVector.Normalize();
-      Standard_Real anOffset = DNaming::GetReal(aFunction, PTRANSF_OFF)->Get();
+      double anOffset = DNaming::GetReal(aFunction, PTRANSF_OFF)->Get();
       aVector *= anOffset;
       aTransformation.SetTranslation(aVector);
     }
     else if (aGUID == PRRLINE_GUID)
     {
-      Handle(TDataStd_UAttribute) aLineObj = DNaming::GetObjectArg(aFunction, PTRANSF_LINE);
-      Handle(TNaming_NamedShape)  aLineNS  = DNaming::GetObjectValue(aLineObj);
-      gp_Ax1                      anAxis;
+      occ::handle<TDataStd_UAttribute> aLineObj = DNaming::GetObjectArg(aFunction, PTRANSF_LINE);
+      occ::handle<TNaming_NamedShape>  aLineNS  = DNaming::GetObjectValue(aLineObj);
+      gp_Ax1                           anAxis;
       if (!DNaming::ComputeAxis(aLineNS, anAxis))
         throw Standard_Failure();
 
-      Standard_Real anAngle = DNaming::GetReal(aFunction, PTRANSF_ANG)->Get();
+      double anAngle = DNaming::GetReal(aFunction, PTRANSF_ANG)->Get();
       aTransformation.SetRotation(anAxis, anAngle);
     }
     else if (aGUID == PMIRR_GUID)
     {
-      Handle(TDataStd_UAttribute) aPlaneObj = DNaming::GetObjectArg(aFunction, PTRANSF_PLANE);
-      Handle(TNaming_NamedShape)  aNS       = DNaming::GetObjectValue(aPlaneObj);
+      occ::handle<TDataStd_UAttribute> aPlaneObj = DNaming::GetObjectArg(aFunction, PTRANSF_PLANE);
+      occ::handle<TNaming_NamedShape>  aNS       = DNaming::GetObjectValue(aPlaneObj);
 
       if (aNS.IsNull() || aNS->IsEmpty() || aNS->Get().IsNull()
           || aNS->Get().ShapeType() != TopAbs_FACE)
         throw Standard_Failure();
-      TopoDS_Face             aFace = TopoDS::Face(aNS->Get());
-      Handle(Geom_Surface)    aSurf = BRep_Tool::Surface(aFace);
-      GeomLib_IsPlanarSurface isPlanarSurface(aSurf);
+      TopoDS_Face               aFace = TopoDS::Face(aNS->Get());
+      occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(aFace);
+      GeomLib_IsPlanarSurface   isPlanarSurface(aSurf);
       if (!isPlanarSurface.IsPlanar())
         throw Standard_Failure();
       gp_Pln aPlane     = isPlanarSurface.Plan();
@@ -182,17 +183,17 @@ Standard_Integer DNaming_TransformationDriver::Execute(Handle(TFunction_Logbook)
   // Naming
   LoadNamingDS(RESPOSITION(aFunction), aContextNS, aTransformation);
 
-  theLog->SetValid(RESPOSITION(aFunction), Standard_True);
+  theLog->SetValid(RESPOSITION(aFunction), true);
   aFunction->SetFailure(DONE);
   return 0;
 }
 
 //=================================================================================
-static void BuildMap(const TopTools_MapOfShape&    SMap,
-                     BRepBuilderAPI_Transform&     Transformer,
-                     TopTools_DataMapOfShapeShape& M)
+static void BuildMap(const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& SMap,
+                     BRepBuilderAPI_Transform&                                     Transformer,
+                     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& M)
 {
-  TopTools_MapIteratorOfMapOfShape anIt(SMap);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator anIt(SMap);
   for (; anIt.More(); anIt.Next())
   {
     if (!anIt.Key().IsNull())
@@ -204,12 +205,12 @@ static void BuildMap(const TopTools_MapOfShape&    SMap,
 }
 
 //=================================================================================
-static void CollectShapes(const TopoDS_Shape&             SSh,
-                          TopoDS_Compound&                C,
-                          TopTools_MapOfShape&            SMap,
-                          const TDF_Label&                theLab,
-                          TopTools_DataMapOfShapeInteger& TagMap,
-                          const Standard_Boolean          isPrimitive)
+static void CollectShapes(const TopoDS_Shape&                                              SSh,
+                          TopoDS_Compound&                                                 C,
+                          NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&          SMap,
+                          const TDF_Label&                                                 theLab,
+                          NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>& TagMap,
+                          const bool isPrimitive)
 {
   const TopAbs_ShapeEnum aType = SSh.ShapeType();
   BRep_Builder           aB;
@@ -227,7 +228,8 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
       TopExp_Explorer anEx(SSh, TopAbs_FACE);
       for (; anEx.More(); anEx.Next())
       {
-        const Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(anEx.Current(), theLab);
+        const occ::handle<TNaming_NamedShape> aNS =
+          TNaming_Tool::NamedShape(anEx.Current(), theLab);
         if (aNS.IsNull())
           continue;
         if (SMap.Add(anEx.Current()))
@@ -240,7 +242,8 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
       anEx.Init(SSh, TopAbs_EDGE);
       for (; anEx.More(); anEx.Next())
       {
-        const Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(anEx.Current(), theLab);
+        const occ::handle<TNaming_NamedShape> aNS =
+          TNaming_Tool::NamedShape(anEx.Current(), theLab);
         if (aNS.IsNull())
           continue;
         if (SMap.Add(anEx.Current()))
@@ -253,7 +256,8 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
       anEx.Init(SSh, TopAbs_VERTEX);
       for (; anEx.More(); anEx.Next())
       {
-        const Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(anEx.Current(), theLab);
+        const occ::handle<TNaming_NamedShape> aNS =
+          TNaming_Tool::NamedShape(anEx.Current(), theLab);
         if (aNS.IsNull())
           continue;
         if (SMap.Add(anEx.Current()))
@@ -266,14 +270,15 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
     }
     break;
     case TopAbs_FACE: {
-      const Handle(TNaming_NamedShape) aNamedShape = TNaming_Tool::NamedShape(SSh, theLab);
+      const occ::handle<TNaming_NamedShape> aNamedShape = TNaming_Tool::NamedShape(SSh, theLab);
       if (!aNamedShape.IsNull())
         if (SMap.Add(SSh))
           aB.Add(C, SSh);
       TopExp_Explorer anEx(SSh, TopAbs_EDGE);
       for (; anEx.More(); anEx.Next())
       {
-        const Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(anEx.Current(), theLab);
+        const occ::handle<TNaming_NamedShape> aNS =
+          TNaming_Tool::NamedShape(anEx.Current(), theLab);
         if (aNS.IsNull())
           continue;
         if (SMap.Add(anEx.Current()))
@@ -286,7 +291,8 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
       anEx.Init(SSh, TopAbs_VERTEX);
       for (; anEx.More(); anEx.Next())
       {
-        const Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(anEx.Current(), theLab);
+        const occ::handle<TNaming_NamedShape> aNS =
+          TNaming_Tool::NamedShape(anEx.Current(), theLab);
         if (aNS.IsNull())
           continue;
         if (SMap.Add(anEx.Current()))
@@ -302,7 +308,8 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
       TopExp_Explorer anEx(SSh, TopAbs_EDGE);
       for (; anEx.More(); anEx.Next())
       {
-        const Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(anEx.Current(), theLab);
+        const occ::handle<TNaming_NamedShape> aNS =
+          TNaming_Tool::NamedShape(anEx.Current(), theLab);
         if (aNS.IsNull())
           continue;
         if (SMap.Add(anEx.Current()))
@@ -315,7 +322,8 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
       anEx.Init(SSh, TopAbs_VERTEX);
       for (; anEx.More(); anEx.Next())
       {
-        const Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(anEx.Current(), theLab);
+        const occ::handle<TNaming_NamedShape> aNS =
+          TNaming_Tool::NamedShape(anEx.Current(), theLab);
         if (aNS.IsNull())
           continue;
         if (SMap.Add(anEx.Current()))
@@ -329,7 +337,7 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
     break;
 
     case TopAbs_EDGE: {
-      const Handle(TNaming_NamedShape) aNamedShape = TNaming_Tool::NamedShape(SSh, theLab);
+      const occ::handle<TNaming_NamedShape> aNamedShape = TNaming_Tool::NamedShape(SSh, theLab);
       if (!aNamedShape.IsNull())
         if (SMap.Add(SSh))
           aB.Add(C, SSh);
@@ -337,7 +345,8 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
       anEx.Init(SSh, TopAbs_VERTEX);
       for (; anEx.More(); anEx.Next())
       {
-        const Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(anEx.Current(), theLab);
+        const occ::handle<TNaming_NamedShape> aNS =
+          TNaming_Tool::NamedShape(anEx.Current(), theLab);
         if (aNS.IsNull())
           continue;
         if (SMap.Add(anEx.Current()))
@@ -350,7 +359,7 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
     }
     break;
     case TopAbs_VERTEX: {
-      const Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(SSh, theLab);
+      const occ::handle<TNaming_NamedShape> aNS = TNaming_Tool::NamedShape(SSh, theLab);
       if (!aNS.IsNull())
         if (SMap.Add(SSh))
         {
@@ -367,9 +376,9 @@ static void CollectShapes(const TopoDS_Shape&             SSh,
 
 //=================================================================================================
 
-void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label&                  theResultLabel,
-                                                const Handle(TNaming_NamedShape)& theSourceNS,
-                                                const gp_Trsf&                    theTrsf) const
+void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label& theResultLabel,
+                                                const occ::handle<TNaming_NamedShape>& theSourceNS,
+                                                const gp_Trsf& theTrsf) const
 {
   if (theSourceNS.IsNull() || theSourceNS->IsEmpty())
     return;
@@ -383,9 +392,9 @@ void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label&                
 #endif
     return;
   }
-  Standard_Boolean isPrimitive(Standard_False);
+  bool isPrimitive(false);
   if (theSourceNS->Evolution() == TNaming_PRIMITIVE)
-    isPrimitive = Standard_True;
+    isPrimitive = true;
   const TDF_Label& aSrcLabel = theSourceNS->Label();
 #ifdef OCCT_DEBUG_TRSF
   std::cout << "TransformationDriver: ";
@@ -395,16 +404,16 @@ void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label&                
   TopoDS_Compound aCompShape;
   BRep_Builder    aB;
   aB.MakeCompound(aCompShape);
-  TopTools_MapOfShape            aSMap;
-  TopTools_DataMapOfShapeInteger aTagMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>          aSMap;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aTagMap;
   // Collect  shapes
   if (aSMap.Add(aSrcShape))
     aB.Add(aCompShape, aSrcShape);
   CollectShapes(aSrcShape, aCompShape, aSMap, aSrcLabel, aTagMap, isPrimitive);
 
   // Transform
-  BRepBuilderAPI_Transform     aTransformer(aCompShape, theTrsf, Standard_False);
-  TopTools_DataMapOfShapeShape aTMap;
+  BRepBuilderAPI_Transform aTransformer(aCompShape, theTrsf, false);
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aTMap;
   BuildMap(aSMap, aTransformer, aTMap);
 
   // Load
@@ -418,8 +427,8 @@ void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label&                
     aTMap.UnBind(aSrcShape);
   }
 
-  TopTools_DataMapOfShapeShape SubShapes;
-  TopExp_Explorer              Exp(aNewSh, TopAbs_FACE);
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> SubShapes;
+  TopExp_Explorer                                                          Exp(aNewSh, TopAbs_FACE);
   for (; Exp.More(); Exp.Next())
   {
     SubShapes.Bind(Exp.Current(), Exp.Current());
@@ -433,15 +442,15 @@ void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label&                
     SubShapes.Bind(Exp.Current(), Exp.Current());
   }
 
-  Standard_Integer                                aNextTag(0);
-  TopTools_DataMapIteratorOfDataMapOfShapeInteger it(aTagMap);
+  int                                                                       aNextTag(0);
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator it(aTagMap);
   for (; it.More(); it.Next())
   {
     if (it.Value() > aNextTag)
       aNextTag = it.Value();
   }
-  NCollection_Handle<TNaming_Builder>           aFBuilder, anEBuilder, aVBuilder;
-  TopTools_DataMapIteratorOfDataMapOfShapeShape anIt(aTMap);
+  NCollection_Handle<TNaming_Builder> aFBuilder, anEBuilder, aVBuilder;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator anIt(aTMap);
   for (; anIt.More(); anIt.Next())
   {
     const TopoDS_Shape& aKey     = anIt.Key();
@@ -454,14 +463,14 @@ void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label&                
     {
       if (aTagMap.IsBound(aKey))
       {
-        const TDF_Label& aLabel = theResultLabel.FindChild(aTagMap.Find(aKey), Standard_True);
+        const TDF_Label& aLabel = theResultLabel.FindChild(aTagMap.Find(aKey), true);
         TNaming_Builder  aBuilder(aLabel);
         aBuilder.Modify(aKey, newShape);
       }
       else
       {
         aNextTag++;
-        const TDF_Label& aLabel = theResultLabel.FindChild(aNextTag, Standard_True);
+        const TDF_Label& aLabel = theResultLabel.FindChild(aNextTag, true);
         TNaming_Builder  aBuilder(aLabel);
         aBuilder.Modify(aKey, newShape);
       }
@@ -472,7 +481,7 @@ void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label&                
       {
         if (aFBuilder.IsNull())
         {
-          const TDF_Label& aFLabel = theResultLabel.FindChild(FACES_TAG, Standard_True);
+          const TDF_Label& aFLabel = theResultLabel.FindChild(FACES_TAG, true);
           aFBuilder                = new TNaming_Builder(aFLabel);
         }
         aFBuilder->Modify(anIt.Key(), newShape);
@@ -481,7 +490,7 @@ void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label&                
       {
         if (anEBuilder.IsNull())
         {
-          const TDF_Label& aELabel = theResultLabel.FindChild(EDGES_TAG, Standard_True);
+          const TDF_Label& aELabel = theResultLabel.FindChild(EDGES_TAG, true);
           anEBuilder               = new TNaming_Builder(aELabel);
         }
         anEBuilder->Modify(anIt.Key(), newShape);
@@ -490,7 +499,7 @@ void DNaming_TransformationDriver::LoadNamingDS(const TDF_Label&                
       {
         if (aVBuilder.IsNull())
         {
-          const TDF_Label& aVLabel = theResultLabel.FindChild(VERTEX_TAG, Standard_True);
+          const TDF_Label& aVLabel = theResultLabel.FindChild(VERTEX_TAG, true);
           aVBuilder                = new TNaming_Builder(aVLabel);
         }
         aVBuilder->Modify(anIt.Key(), newShape);

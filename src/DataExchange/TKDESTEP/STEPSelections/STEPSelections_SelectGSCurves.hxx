@@ -27,9 +27,6 @@ class Interface_Graph;
 class Interface_EntityIterator;
 class TCollection_AsciiString;
 
-class STEPSelections_SelectGSCurves;
-DEFINE_STANDARD_HANDLE(STEPSelections_SelectGSCurves, IFSelect_SelectExplore)
-
 //! This selection returns "curves in the geometric_set (except composite curves)"
 class STEPSelections_SelectGSCurves : public IFSelect_SelectExplore
 {
@@ -37,19 +34,15 @@ class STEPSelections_SelectGSCurves : public IFSelect_SelectExplore
 public:
   Standard_EXPORT STEPSelections_SelectGSCurves();
 
-  Standard_EXPORT Standard_Boolean
-    Explore(const Standard_Integer            level,
-            const Handle(Standard_Transient)& ent,
-            const Interface_Graph&            G,
-            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
+  Standard_EXPORT bool Explore(const int                              level,
+                               const occ::handle<Standard_Transient>& ent,
+                               const Interface_Graph&                 G,
+                               Interface_EntityIterator&              explored) const override;
 
   //! Returns a text defining the criterium : "Curves"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectGSCurves, IFSelect_SelectExplore)
-
-protected:
-private:
 };
 
 #endif // _STEPSelections_SelectGSCurves_HeaderFile

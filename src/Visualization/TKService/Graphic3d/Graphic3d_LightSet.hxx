@@ -53,23 +53,23 @@ public:
     }
 
     //! Constructor with initialization.
-    Iterator(const Handle(Graphic3d_LightSet)& theSet,
-             IterationFilter                   theFilter = IterationFilter_None)
+    Iterator(const occ::handle<Graphic3d_LightSet>& theSet,
+             IterationFilter                        theFilter = IterationFilter_None)
         : myFilter(theFilter)
     {
       if (!theSet.IsNull())
       {
-        myIter = NCollection_IndexedDataMap<Handle(Graphic3d_CLight), Standard_Size>::Iterator(
+        myIter = NCollection_IndexedDataMap<occ::handle<Graphic3d_CLight>, size_t>::Iterator(
           theSet->myLights);
         skipFiltered();
       }
     }
 
     //! Returns TRUE if iterator points to a valid item.
-    Standard_Boolean More() const { return myIter.More(); }
+    bool More() const { return myIter.More(); }
 
     //! Returns current item.
-    const Handle(Graphic3d_CLight)& Value() const { return myIter.Key(); }
+    const occ::handle<Graphic3d_CLight>& Value() const { return myIter.Key(); }
 
     //! Moves to the next item.
     void Next()
@@ -109,8 +109,8 @@ public:
     }
 
   protected:
-    NCollection_IndexedDataMap<Handle(Graphic3d_CLight), Standard_Size>::Iterator myIter;
-    Standard_Integer                                                              myFilter;
+    NCollection_IndexedDataMap<occ::handle<Graphic3d_CLight>, size_t>::Iterator myIter;
+    int                                                                         myFilter;
   };
 
 public:
@@ -118,70 +118,67 @@ public:
   Standard_EXPORT Graphic3d_LightSet();
 
   //! Return lower light index.
-  Standard_Integer Lower() const { return 1; }
+  int Lower() const { return 1; }
 
   //! Return upper light index.
-  Standard_Integer Upper() const { return myLights.Extent(); }
+  int Upper() const { return myLights.Extent(); }
 
   //! Return TRUE if lights list is empty.
-  Standard_Boolean IsEmpty() const { return myLights.IsEmpty(); }
+  bool IsEmpty() const { return myLights.IsEmpty(); }
 
   //! Return number of light sources.
-  Standard_Integer Extent() const { return myLights.Extent(); }
+  int Extent() const { return myLights.Extent(); }
 
   //! Return the light source for specified index within range [Lower(), Upper()].
-  const Handle(Graphic3d_CLight)& Value(Standard_Integer theIndex) const
+  const occ::handle<Graphic3d_CLight>& Value(int theIndex) const
   {
     return myLights.FindKey(theIndex);
   }
 
   //! Return TRUE if light source is defined in this set.
-  Standard_Boolean Contains(const Handle(Graphic3d_CLight)& theLight) const
+  bool Contains(const occ::handle<Graphic3d_CLight>& theLight) const
   {
     return myLights.Contains(theLight);
   }
 
   //! Append new light source.
-  Standard_EXPORT Standard_Boolean Add(const Handle(Graphic3d_CLight)& theLight);
+  Standard_EXPORT bool Add(const occ::handle<Graphic3d_CLight>& theLight);
 
   //! Remove light source.
-  Standard_EXPORT Standard_Boolean Remove(const Handle(Graphic3d_CLight)& theLight);
+  Standard_EXPORT bool Remove(const occ::handle<Graphic3d_CLight>& theLight);
 
   //! Returns total amount of lights of specified type.
-  Standard_Integer NbLightsOfType(Graphic3d_TypeOfLightSource theType) const
-  {
-    return myLightTypes[theType];
-  }
+  int NbLightsOfType(Graphic3d_TypeOfLightSource theType) const { return myLightTypes[theType]; }
 
   //! @name cached state of lights set updated by UpdateRevision()
 public:
   //! Update light sources revision.
-  Standard_EXPORT Standard_Size UpdateRevision();
+  Standard_EXPORT size_t UpdateRevision();
 
   //! Return light sources revision.
   //! @sa UpdateRevision()
-  Standard_Size Revision() const { return myRevision; }
+  size_t Revision() const { return myRevision; }
 
   //! Returns total amount of enabled lights EXCLUDING ambient.
   //! @sa UpdateRevision()
-  Standard_Integer NbEnabled() const { return myNbEnabled; }
+  int NbEnabled() const { return myNbEnabled; }
 
   //! Returns total amount of enabled lights of specified type.
   //! @sa UpdateRevision()
-  Standard_Integer NbEnabledLightsOfType(Graphic3d_TypeOfLightSource theType) const
+  int NbEnabledLightsOfType(Graphic3d_TypeOfLightSource theType) const
   {
     return myLightTypesEnabled[theType];
   }
 
   //! Returns total amount of enabled lights castings shadows.
   //! @sa UpdateRevision()
-  Standard_Integer NbCastShadows() const { return myNbCastShadows; }
+  int NbCastShadows() const { return myNbCastShadows; }
 
   //! Returns cumulative ambient color, which is computed as sum of all enabled ambient light
   //! sources. Values are NOT clamped (can be greater than 1.0f) and alpha component is fixed
   //! to 1.0f.
   //! @sa UpdateRevision()
-  const Graphic3d_Vec4& AmbientColor() const { return myAmbient; }
+  const NCollection_Vec4<float>& AmbientColor() const { return myAmbient; }
 
   //! Returns a string defining a list of enabled light sources as concatenation of letters 'd'
   //! (Directional), 'p' (Point), 's' (Spot) depending on the type of light source in the list.
@@ -196,21 +193,19 @@ public:
   const TCollection_AsciiString& KeyEnabledShort() const { return myKeyEnabledShort; }
 
 protected:
-  NCollection_IndexedDataMap<Handle(Graphic3d_CLight), Standard_Size>
+  NCollection_IndexedDataMap<occ::handle<Graphic3d_CLight>, size_t>
     // clang-format off
                           myLights;                 //!< list of light sources with their cached state (revision)
-  Graphic3d_Vec4          myAmbient;                //!< cached value of cumulative ambient color
+  NCollection_Vec4<float>          myAmbient;                //!< cached value of cumulative ambient color
   TCollection_AsciiString myKeyEnabledLong;         //!< key identifying the list of enabled light sources by their type
   TCollection_AsciiString myKeyEnabledShort;        //!< key identifying the list of enabled light sources by the number of sources of each type
-  Standard_Integer        myLightTypes       [Graphic3d_TypeOfLightSource_NB]; //!< counters per each light source type defined in the list
-  Standard_Integer        myLightTypesEnabled[Graphic3d_TypeOfLightSource_NB]; //!< counters per each light source type enabled in the list
-  Standard_Integer        myNbEnabled;              //!< number of enabled light sources, excluding ambient
-  Standard_Integer        myNbCastShadows;          //!< number of enabled light sources casting shadows
+  int        myLightTypes       [Graphic3d_TypeOfLightSource_NB]; //!< counters per each light source type defined in the list
+  int        myLightTypesEnabled[Graphic3d_TypeOfLightSource_NB]; //!< counters per each light source type enabled in the list
+  int        myNbEnabled;              //!< number of enabled light sources, excluding ambient
+  int        myNbCastShadows;          //!< number of enabled light sources casting shadows
   // clang-format on
-  Standard_Size myRevision;      //!< current revision of light source set
-  Standard_Size myCacheRevision; //!< revision of cached state
+  size_t myRevision;      //!< current revision of light source set
+  size_t myCacheRevision; //!< revision of cached state
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_LightSet, Standard_Transient)
 
 #endif // _Graphic3d_LightSet_HeaderFile

@@ -35,26 +35,26 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the number of predefined textures.
-  static Standard_Integer NumberOfMaterials() { return Graphic3d_NameOfMaterial_DEFAULT; }
+  static int NumberOfMaterials() { return Graphic3d_NameOfMaterial_DEFAULT; }
 
   //! Returns the name of the predefined material of specified rank within range [1,
   //! NumberOfMaterials()].
-  Standard_EXPORT static Standard_CString MaterialName(const Standard_Integer theRank);
+  Standard_EXPORT static const char* MaterialName(const int theRank);
 
   //! Returns the type of the predefined material of specified rank within range [1,
   //! NumberOfMaterials()].
-  Standard_EXPORT static Graphic3d_TypeOfMaterial MaterialType(const Standard_Integer theRank);
+  Standard_EXPORT static Graphic3d_TypeOfMaterial MaterialType(const int theRank);
 
   //! Finds the material for specified name.
   //! @param[in] theName   name to find
   //! @param[out] theMat   found material
   //! @return FALSE if name was unrecognized
-  Standard_EXPORT static Standard_Boolean MaterialFromName(const Standard_CString    theName,
-                                                           Graphic3d_NameOfMaterial& theMat);
+  Standard_EXPORT static bool MaterialFromName(const char*               theName,
+                                               Graphic3d_NameOfMaterial& theMat);
 
   //! Returns the material for specified name or Graphic3d_NameOfMaterial_DEFAULT if name is
   //! unknown.
-  static Graphic3d_NameOfMaterial MaterialFromName(const Standard_CString theName)
+  static Graphic3d_NameOfMaterial MaterialFromName(const char* theName)
   {
     Graphic3d_NameOfMaterial aMat = Graphic3d_NameOfMaterial_DEFAULT;
     MaterialFromName(theName, aMat);
@@ -82,7 +82,7 @@ public:
   const TCollection_AsciiString& StringName() const { return myStringName; }
 
   //! Returns the given name of this material. This might be:
-  Standard_CString MaterialName() const { return myStringName.ToCString(); }
+  const char* MaterialName() const { return myStringName.ToCString(); }
 
   //! The current material become a "UserDefined" material.
   //! Set the name of the "UserDefined" material.
@@ -110,10 +110,10 @@ public:
   Standard_EXPORT void SetColor(const Quantity_Color& theColor);
 
   //! Returns the transparency coefficient of the surface (1.0 - Alpha); 0.0 means opaque.
-  Standard_ShortReal Transparency() const { return myTransparencyCoef; }
+  float Transparency() const { return myTransparencyCoef; }
 
   //! Returns the alpha coefficient of the surface (1.0 - Transparency); 1.0 means opaque.
-  Standard_ShortReal Alpha() const { return 1.0f - myTransparencyCoef; }
+  float Alpha() const { return 1.0f - myTransparencyCoef; }
 
   //! Modifies the transparency coefficient of the surface, where 0 is opaque and 1 is fully
   //! transparent. Transparency is applicable to materials that have at least one of reflection
@@ -122,11 +122,11 @@ public:
   //!
   //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater
   //! than 1.0.
-  Standard_EXPORT void SetTransparency(const Standard_ShortReal theValue);
+  Standard_EXPORT void SetTransparency(const float theValue);
 
   //! Modifies the alpha coefficient of the surface, where 1.0 is opaque and 0.0 is fully
   //! transparent.
-  void SetAlpha(Standard_ShortReal theValue) { SetTransparency(1.0f - theValue); }
+  void SetAlpha(float theValue) { SetTransparency(1.0f - theValue); }
 
   //! Returns the ambient color of the surface.
   const Quantity_Color& AmbientColor() const { return myColors[Graphic3d_TOR_AMBIENT]; }
@@ -153,23 +153,23 @@ public:
   Standard_EXPORT void SetEmissiveColor(const Quantity_Color& theColor);
 
   //! Returns the luminosity of the surface.
-  Standard_ShortReal Shininess() const { return myShininess; }
+  float Shininess() const { return myShininess; }
 
   //! Modifies the luminosity of the surface.
   //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater
   //! than 1.0.
-  Standard_EXPORT void SetShininess(const Standard_ShortReal theValue);
+  Standard_EXPORT void SetShininess(const float theValue);
 
   //! Increases or decreases the luminosity.
   //! @param theDelta a signed percentage
-  Standard_EXPORT void IncreaseShine(const Standard_ShortReal theDelta);
+  Standard_EXPORT void IncreaseShine(const float theDelta);
 
   //! Returns the refraction index of the material
-  Standard_ShortReal RefractionIndex() const { return myRefractionIndex; }
+  float RefractionIndex() const { return myRefractionIndex; }
 
   //! Modifies the refraction index of the material.
   //! Warning: Raises MaterialDefinitionError if given value is a lesser than 1.0.
-  Standard_EXPORT void SetRefractionIndex(const Standard_ShortReal theValue);
+  Standard_EXPORT void SetRefractionIndex(const float theValue);
 
   //! Returns BSDF (bidirectional scattering distribution function).
   const Graphic3d_BSDF& BSDF() const { return myBSDF; }
@@ -187,7 +187,7 @@ public:
   }
 
   //! Returns TRUE if the reflection mode is active, FALSE otherwise.
-  Standard_Boolean ReflectionMode(const Graphic3d_TypeOfReflection theType) const
+  bool ReflectionMode(const Graphic3d_TypeOfReflection theType) const
   {
     return !myColors[theType].IsEqual(Quantity_NOC_BLACK);
   }
@@ -196,7 +196,7 @@ public:
   Graphic3d_TypeOfMaterial MaterialType() const { return myMaterialType; }
 
   //! Returns TRUE if type of this material is equal to specified type.
-  Standard_Boolean MaterialType(const Graphic3d_TypeOfMaterial theType) const
+  bool MaterialType(const Graphic3d_TypeOfMaterial theType) const
   {
     return myMaterialType == theType;
   }
@@ -205,19 +205,13 @@ public:
   Standard_EXPORT void SetMaterialType(const Graphic3d_TypeOfMaterial theType);
 
   //! Returns TRUE if this material differs from specified one.
-  Standard_Boolean IsDifferent(const Graphic3d_MaterialAspect& theOther) const
-  {
-    return !IsEqual(theOther);
-  }
+  bool IsDifferent(const Graphic3d_MaterialAspect& theOther) const { return !IsEqual(theOther); }
 
   //! Returns TRUE if this material differs from specified one.
-  Standard_Boolean operator!=(const Graphic3d_MaterialAspect& theOther) const
-  {
-    return IsDifferent(theOther);
-  }
+  bool operator!=(const Graphic3d_MaterialAspect& theOther) const { return IsDifferent(theOther); }
 
   //! Returns TRUE if this material is identical to specified one.
-  Standard_Boolean IsEqual(const Graphic3d_MaterialAspect& theOther) const
+  bool IsEqual(const Graphic3d_MaterialAspect& theOther) const
   {
     return myTransparencyCoef == theOther.myTransparencyCoef
            && myRefractionIndex == theOther.myRefractionIndex && myBSDF == theOther.myBSDF
@@ -229,13 +223,10 @@ public:
   }
 
   //! Returns TRUE if this material is identical to specified one.
-  Standard_Boolean operator==(const Graphic3d_MaterialAspect& theOther) const
-  {
-    return IsEqual(theOther);
-  }
+  bool operator==(const Graphic3d_MaterialAspect& theOther) const { return IsEqual(theOther); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 public:
   //! Deactivates the reflective properties of the surface with specified reflection type.
@@ -286,9 +277,9 @@ private:
   Graphic3d_PBRMaterial   myPBRMaterial;
   TCollection_AsciiString myStringName;
   Quantity_Color          myColors[Graphic3d_TypeOfReflection_NB];
-  Standard_ShortReal      myTransparencyCoef;
-  Standard_ShortReal      myRefractionIndex;
-  Standard_ShortReal      myShininess;
+  float                   myTransparencyCoef;
+  float                   myRefractionIndex;
+  float                   myShininess;
 
   Graphic3d_TypeOfMaterial myMaterialType;
   Graphic3d_NameOfMaterial myMaterialName;

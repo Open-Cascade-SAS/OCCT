@@ -34,20 +34,22 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 #include <TopOpeBRepTool_2d.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_GEOMETRY.hxx>
+#include <TopOpeBRepTool_PROJECT.hxx>
+#include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 
 // #include <BRepAdaptor_Curve2d.hxx>
-Standard_EXPORT Standard_Boolean FUN_projPonL(const gp_Pnt&                 P,
-                                              const TopOpeBRep_LineInter&   L,
-                                              const TopOpeBRep_FacesFiller& FF,
-                                              Standard_Real&                paramL)
+Standard_EXPORT bool FUN_projPonL(const gp_Pnt&                 P,
+                                  const TopOpeBRep_LineInter&   L,
+                                  const TopOpeBRep_FacesFiller& FF,
+                                  double&                       paramL)
 {
-  Standard_Boolean   paramLdef = Standard_False;
-  Standard_Integer   Esi       = (L.ArcIsEdge(1)) ? 1 : 2;
+  bool               paramLdef = false;
+  int                Esi       = (L.ArcIsEdge(1)) ? 1 : 2;
   const TopoDS_Edge& E         = TopoDS::Edge(L.Arc());
-  Standard_Boolean   hasC3D    = FC2D_HasC3D(E);
-  Standard_Real      dist;
+  bool               hasC3D    = FC2D_HasC3D(E);
+  double             dist;
   if (hasC3D)
   {
     BRepAdaptor_Curve BAC(E);
@@ -69,11 +71,11 @@ Standard_EXPORT Standard_Boolean FUN_projPonL(const gp_Pnt&                 P,
 void debffsamdom(void) {}
 #endif
 
-static void FUN_MakeERL(TopOpeBRep_FacesIntersector& FI, TopTools_ListOfShape& ERL)
+static void FUN_MakeERL(TopOpeBRep_FacesIntersector& FI, NCollection_List<TopoDS_Shape>& ERL)
 {
   ERL.Clear();
-  const TopTools_IndexedMapOfShape& mer = FI.Restrictions();
-  for (Standard_Integer ie = 1, ne = mer.Extent(); ie <= ne; ie++)
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& mer = FI.Restrictions();
+  for (int ie = 1, ne = mer.Extent(); ie <= ne; ie++)
   {
     const TopoDS_Edge& E = TopoDS::Edge(mer.FindKey(ie));
     ERL.Append(E);
@@ -107,10 +109,10 @@ void TopOpeBRep_FacesFiller::SetPShapeClassifier(const TopOpeBRepTool_PShapeClas
 
 //=================================================================================================
 
-void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape&                        S1,
-                                    const TopoDS_Shape&                        S2,
-                                    TopOpeBRep_FacesIntersector&               FACINT,
-                                    const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape&                             S1,
+                                    const TopoDS_Shape&                             S2,
+                                    TopOpeBRep_FacesIntersector&                    FACINT,
+                                    const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
   myF1               = TopoDS::Face(S1);
   myF1ori            = S1.Orientation();
@@ -123,7 +125,7 @@ void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape&                        S
     myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
 
 #ifdef OCCT_DEBUG
-  Standard_Integer exF1, exF2;
+  int exF1, exF2;
   GetTraceIndex(exF1, exF2);
   myFacesIntersector->InitLine();
   for (; myFacesIntersector->MoreLine(); myFacesIntersector->NextLine())
@@ -131,7 +133,7 @@ void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape&                        S
   myHFFD->Init(this);
 #endif
 
-  Standard_Boolean samdom = myFacesIntersector->SameDomain();
+  bool samdom = myFacesIntersector->SameDomain();
   if (samdom)
   {
     myDS->FillShapesSameDomain(S1, S2);
@@ -181,15 +183,15 @@ TopOpeBRep_PointClassifier& TopOpeBRep_FacesFiller::ChangePointClassifier()
 
 void TopOpeBRep_FacesFiller::LoadLine(TopOpeBRep_LineInter& L)
 {
-  myLine                = &L;
-  Standard_Boolean bchk = CheckLine(L);
-  Standard_Boolean binl = L.INL();
-  myLineINL             = binl;
+  myLine    = &L;
+  bool bchk = CheckLine(L);
+  bool binl = L.INL();
+  myLineINL = binl;
   {
     TopOpeBRep_TypeLineCurve t = L.TypeLineCurve();
     if (!bchk && binl && t == TopOpeBRep_LINE)
     {
-      bchk = Standard_True;
+      bchk = true;
     }
   }
   L.SetOK(bchk);
@@ -206,14 +208,14 @@ void TopOpeBRep_FacesFiller::LoadLine(TopOpeBRep_LineInter& L)
 //           returns False if L is WALKING line with a number of VPoints < 2
 //           else returns True
 //=======================================================================
-Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) const
+bool TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) const
 {
-  Standard_Real tol1, tol2;
+  double tol1, tol2;
   myFacesIntersector->GetTolerances(tol1, tol2);
 
-  Standard_Boolean         check = Standard_True;
+  bool                     check = true;
   TopOpeBRep_TypeLineCurve t     = L.TypeLineCurve();
-  Standard_Integer         nbvp  = L.NbVPoint();
+  int                      nbvp  = L.NbVPoint();
 
   if (t == TopOpeBRep_WALKING)
   {
@@ -222,12 +224,12 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
 #ifdef OCCT_DEBUG
       std::cout << "\n=== Nb de IntPatch_Point sur WL incorrect : " << nbvp << " ===\n";
 #endif
-      check = Standard_False;
+      check = false;
     }
   }
   else if (t == TopOpeBRep_LINE)
   {
-    Standard_Integer               np = 0;
+    int                            np = 0;
     TopOpeBRep_VPointInterIterator VPI;
 
     for (VPI.Init(L); VPI.More(); VPI.Next())
@@ -238,7 +240,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
     }
     if (np != 2)
     {
-      return Standard_True;
+      return true;
     }
 
     TopOpeBRep_VPointInter A, B;
@@ -255,16 +257,16 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
         B = VP;
     }
 
-    Standard_Boolean isAV1 = A.IsVertexOnS1();
-    Standard_Boolean isAV2 = A.IsVertexOnS2();
-    TopoDS_Shape     V1;
+    bool         isAV1 = A.IsVertexOnS1();
+    bool         isAV2 = A.IsVertexOnS2();
+    TopoDS_Shape V1;
     if (isAV1)
       V1 = A.VertexOnS1();
     if (isAV2)
       V1 = A.VertexOnS2();
-    Standard_Boolean isBV1 = B.IsVertexOnS1();
-    Standard_Boolean isBV2 = B.IsVertexOnS2();
-    TopoDS_Shape     V2;
+    bool         isBV1 = B.IsVertexOnS1();
+    bool         isBV2 = B.IsVertexOnS2();
+    TopoDS_Shape V2;
     if (isBV1)
       V2 = B.VertexOnS1();
     if (isBV2)
@@ -272,61 +274,61 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
 
     if (!V1.IsNull() && (V1.IsSame(V2)))
     {
-      return Standard_False;
+      return false;
     }
   } // LINE
   else
   {
-    Standard_Boolean notrnotw = (t != TopOpeBRep_RESTRICTION && t != TopOpeBRep_WALKING);
+    bool notrnotw = (t != TopOpeBRep_RESTRICTION && t != TopOpeBRep_WALKING);
     if (notrnotw)
     {
       if (t == TopOpeBRep_CIRCLE)
       {
         // cto 012 D2, faces 6 et 1, line 3 incorrecte.
 
-        Standard_Integer iINON1, iINONn, nINON;
+        int iINON1, iINONn, nINON;
         myLine->VPBounds(iINON1, iINONn, nINON);
         if (nINON >= 2)
         {
 
           const TopOpeBRep_VPointInter& A    = myLine->VPoint(iINON1);
           const TopOpeBRep_VPointInter& B    = myLine->VPoint(iINONn);
-          Standard_Real                 parA = A.ParameterOnLine();
-          Standard_Real                 parB = B.ParameterOnLine();
-          Standard_Boolean              conf = (fabs(parA - parB) < tol1);
+          double                        parA = A.ParameterOnLine();
+          double                        parB = B.ParameterOnLine();
+          bool                          conf = (fabs(parA - parB) < tol1);
           if (conf)
           {
-            check = Standard_False;
+            check = false;
           }
         }
       } // CIRCLE
       else if (t == TopOpeBRep_HYPERBOLA)
       {
-        Standard_Integer iINON1, iINONn, nINON;
+        int iINON1, iINONn, nINON;
         myLine->VPBounds(iINON1, iINONn, nINON);
         if (nINON < 2)
         {
-          check = Standard_False;
+          check = false;
         }
       }
       else if (t == TopOpeBRep_ELLIPSE)
       {
-        Standard_Integer iINON1, iINONn, nINON;
+        int iINON1, iINONn, nINON;
         myLine->VPBounds(iINON1, iINONn, nINON);
         if (nINON < 2)
         {
-          check = Standard_False;
+          check = false;
         }
         else
         {
           const TopOpeBRep_VPointInter& A    = myLine->VPoint(iINON1);
           const TopOpeBRep_VPointInter& B    = myLine->VPoint(iINONn);
-          Standard_Real                 parA = A.ParameterOnLine();
-          Standard_Real                 parB = B.ParameterOnLine();
-          Standard_Boolean              conf = (fabs(parA - parB) < tol1);
+          double                        parA = A.ParameterOnLine();
+          double                        parB = B.ParameterOnLine();
+          bool                          conf = (fabs(parA - parB) < tol1);
           if (conf)
           {
-            check = Standard_False;
+            check = false;
           }
         }
       }
@@ -355,7 +357,7 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector&)
   {
     TopOpeBRep_LineInter&          L  = myFacesIntersector->CurrentLine();
     const TopOpeBRep_TypeLineCurve tl = L.TypeLineCurve();
-    Standard_Boolean               ok = (tl == TopOpeBRep_RESTRICTION);
+    bool                           ok = (tl == TopOpeBRep_RESTRICTION);
     if (ok)
       VP_Position(L);
   }
@@ -365,7 +367,7 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector&)
   {
     TopOpeBRep_LineInter&          L  = myFacesIntersector->CurrentLine();
     const TopOpeBRep_TypeLineCurve tl = L.TypeLineCurve();
-    Standard_Boolean               ok = (tl != TopOpeBRep_RESTRICTION);
+    bool                           ok = (tl != TopOpeBRep_RESTRICTION);
     if (ok)
       VP_Position(L);
   }
@@ -375,8 +377,8 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector&)
 
 void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_LineInter& L)
 {
-  myLine                  = &L;
-  Standard_Boolean isrest = (L.TypeLineCurve() == TopOpeBRep_RESTRICTION);
+  myLine      = &L;
+  bool isrest = (L.TypeLineCurve() == TopOpeBRep_RESTRICTION);
 
   if (!isrest)
     VP_PositionOnL(L);
@@ -391,18 +393,18 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_LineInter& L)
 void TopOpeBRep_FacesFiller::VP_PositionOnL(TopOpeBRep_LineInter& L)
 {
   TopOpeBRep_VPointInterIterator   VPI(L);
-  Standard_Integer                 Lindex = L.Index();
+  int                              Lindex = L.Index();
   TopOpeBRep_VPointInterClassifier VPC;
 
   for (; VPI.More(); VPI.Next())
   {
     TopOpeBRep_VPointInter& VP   = VPI.ChangeCurrentVP();
-    Standard_Integer        VPsi = VP.ShapeIndex();
+    int                     VPsi = VP.ShapeIndex();
     const gp_Pnt&           P3D  = VP.Value();
 
-    Standard_Boolean             VPequalVPONRESTRICTION = Standard_False;
+    bool                         VPequalVPONRESTRICTION = false;
     TopOpeBRep_FacesIntersector& FI  = *((TopOpeBRep_FacesIntersector*)((void*)myFacesIntersector));
-    Standard_Integer             iOL = 1, n = FI.NbLines();
+    int                          iOL = 1, n = FI.NbLines();
     for (iOL = 1; iOL <= n; iOL++)
     {
       if (iOL == Lindex)
@@ -427,12 +429,12 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
   TopOpeBRep_VPointInterClassifier VPC;
 
   TopOpeBRep_VPointInterIterator VPI(L);
-  Standard_Integer               Esi   = (L.ArcIsEdge(1)) ? 1 : 2;
-  Standard_Integer               OOEsi = (L.ArcIsEdge(1)) ? 2 : 1;
+  int                            Esi   = (L.ArcIsEdge(1)) ? 1 : 2;
+  int                            OOEsi = (L.ArcIsEdge(1)) ? 2 : 1;
 
-  Standard_Boolean   isline = Standard_False;
+  bool               isline = false;
   const TopoDS_Edge& earc   = TopoDS::Edge(L.Arc());
-  Standard_Boolean   hasc3d = FC2D_HasC3D(earc);
+  bool               hasc3d = FC2D_HasC3D(earc);
   if (hasc3d)
     isline = FUN_tool_line(earc);
   else
@@ -450,14 +452,14 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
   {
     TopOpeBRep_VPointInter& VP = VPI.ChangeCurrentVP();
 
-    Standard_Boolean isvertex = VP.IsVertex(Esi);
+    bool isvertex = VP.IsVertex(Esi);
     if (isvertex)
     {
       if (!isline)
         VP_Position(VP, VPC);
       continue;
     }
-    Standard_Boolean OOisvertex = VP.IsVertex(OOEsi);
+    bool OOisvertex = VP.IsVertex(OOEsi);
     if (OOisvertex)
     {
       if (!isline)
@@ -465,14 +467,14 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
       continue;
     }
 
-    const gp_Pnt&    P        = VP.Value();
-    Standard_Boolean arcisE   = L.ArcIsEdge(Esi);
-    Standard_Boolean arcisOOE = L.ArcIsEdge(OOEsi);
+    const gp_Pnt& P        = VP.Value();
+    bool          arcisE   = L.ArcIsEdge(Esi);
+    bool          arcisOOE = L.ArcIsEdge(OOEsi);
 
     if (arcisE)
     {
-      Standard_Real    paramC;
-      Standard_Boolean paramCdef = FUN_projPonL(P, L, (*this), paramC);
+      double paramC;
+      bool   paramCdef = FUN_projPonL(P, L, (*this), paramC);
       if (paramCdef)
       {
         const TopoDS_Edge& E = TopoDS::Edge(L.Arc());
@@ -482,14 +484,14 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
       else
       {
         //	throw Standard_ProgramError("VP_Position projection failed on E");
-        VP.ChangeKeep(Standard_False); // xpu051198
+        VP.ChangeKeep(false); // xpu051198
       }
     }
 
     if (arcisOOE)
     {
-      Standard_Real    paramC;
-      Standard_Boolean paramCdef = FUN_projPonL(P, L, (*this), paramC);
+      double paramC;
+      bool   paramCdef = FUN_projPonL(P, L, (*this), paramC);
       if (paramCdef)
       {
         const TopoDS_Edge& OOE = TopoDS::Edge(L.Arc());
@@ -499,7 +501,7 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
       else
       {
         //	throw Standard_ProgramError("VP_Position projection failed on OOE");
-        VP.ChangeKeep(Standard_False); // xpu051198
+        VP.ChangeKeep(false); // xpu051198
       }
     }
   }
@@ -510,40 +512,40 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
 void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_VPointInter&           VP,
                                          TopOpeBRep_VPointInterClassifier& VPC)
 {
-  Standard_Integer si = VP.ShapeIndex();
-  Standard_Boolean c1 = Standard_False, c2 = Standard_False;
+  int  si = VP.ShapeIndex();
+  bool c1 = false, c2 = false;
 
   if (si == 0)
   {
-    c1 = Standard_True;
-    c2 = Standard_True;
+    c1 = true;
+    c2 = true;
   }
   else if (si == 1)
   {
-    c1 = Standard_False;
-    c2 = Standard_True;
+    c1 = false;
+    c2 = true;
   }
   else if (si == 2)
   {
-    c1 = Standard_True;
-    c2 = Standard_False;
+    c1 = true;
+    c2 = false;
   }
   else if (si == 3)
   {
-    c1 = Standard_True;
-    c2 = Standard_True;
+    c1 = true;
+    c2 = true;
   }
 
-  Standard_Boolean AssumeINON = Standard_False;
+  bool AssumeINON = false;
   if (myLine)
     AssumeINON = (myLine->TypeLineCurve() != TopOpeBRep_RESTRICTION);
 
   // modified by NIZHNY-MKK  Fri Oct 27 14:50:28 2000.BEGIN
-  //   Standard_Real tol = Precision::Confusion();
-  Standard_Real tol1, tol2;
+  //   double tol = Precision::Confusion();
+  double tol1, tol2;
   tol1 = tol2 = Precision::Confusion();
   myFacesIntersector->GetTolerances(tol1, tol2);
-  Standard_Real tol = (tol1 > tol2) ? tol1 : tol2;
+  double tol = (tol1 > tol2) ? tol1 : tol2;
   // modified by NIZHNY-MKK  Fri Oct 27 14:50:36 2000.END
 
   if (c1)
@@ -554,32 +556,32 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_VPointInter&           VP,
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_FacesFiller::PequalVPonR(const gp_Pnt&           P3D,
-                                                     const Standard_Integer  VPsi,
-                                                     TopOpeBRep_VPointInter& VP,
-                                                     TopOpeBRep_LineInter&   Lrest) const
+bool TopOpeBRep_FacesFiller::PequalVPonR(const gp_Pnt&           P3D,
+                                         const int               VPsi,
+                                         TopOpeBRep_VPointInter& VP,
+                                         TopOpeBRep_LineInter&   Lrest) const
 {
   const TopOpeBRep_TypeLineCurve tOL  = Lrest.TypeLineCurve();
-  Standard_Boolean               OLok = (tOL == TopOpeBRep_RESTRICTION);
+  bool                           OLok = (tOL == TopOpeBRep_RESTRICTION);
   if (!OLok)
-    return Standard_False;
+    return false;
 
-  Standard_Boolean   VPequalVPONRESTRICTION = Standard_False;
+  bool               VPequalVPONRESTRICTION = false;
   const TopoDS_Edge& EOL                    = TopoDS::Edge(Lrest.Arc());
-  Standard_Integer   EOLsi                  = (Lrest.ArcIsEdge(1)) ? 1 : 2;
+  int                EOLsi                  = (Lrest.ArcIsEdge(1)) ? 1 : 2;
 
   TopOpeBRep_VPointInterIterator VPIOL(Lrest);
   for (; VPIOL.More(); VPIOL.Next())
   {
     TopOpeBRep_VPointInter& VPOL   = VPIOL.ChangeCurrentVP();
-    Standard_Integer        VPOLsi = VPOL.ShapeIndex();
+    int                     VPOLsi = VPOL.ShapeIndex();
 
-    Standard_Boolean VPOLisvertex = Standard_False;
-    VPOLisvertex                  = VPOL.IsVertex(1);
+    bool VPOLisvertex = false;
+    VPOLisvertex      = VPOL.IsVertex(1);
     if (VPOLisvertex)
       continue;
 
-    Standard_Boolean diffsi = (VPOLsi != VPsi);
+    bool diffsi = (VPOLsi != VPsi);
     if (diffsi)
       continue;
 
@@ -588,12 +590,12 @@ Standard_Boolean TopOpeBRep_FacesFiller::PequalVPonR(const gp_Pnt&           P3D
       continue;
 
     const gp_Pnt& P3DOL    = VPOL.Value();
-    Standard_Real tolE     = BRep_Tool::Tolerance(EOL);
+    double        tolE     = BRep_Tool::Tolerance(EOL);
     VPequalVPONRESTRICTION = P3DOL.IsEqual(P3D, tolE);
 
     if (VPequalVPONRESTRICTION)
     {
-      Standard_Real paramCOL = VPOL.EdgeONParameter(EOLsi);
+      double paramCOL = VPOL.EdgeONParameter(EOLsi);
       VP.State(TopAbs_ON, EOLsi);
       VP.EdgeON(EOL, paramCOL, EOLsi);
       break;
@@ -611,7 +613,7 @@ TopOpeBRep_FacesIntersector& TopOpeBRep_FacesFiller::ChangeFacesIntersector()
 
 //=================================================================================================
 
-Handle(TopOpeBRepDS_HDataStructure) TopOpeBRep_FacesFiller::HDataStructure()
+occ::handle<TopOpeBRepDS_HDataStructure> TopOpeBRep_FacesFiller::HDataStructure()
 {
   return myHDS;
 }
@@ -625,7 +627,7 @@ TopOpeBRepDS_DataStructure& TopOpeBRep_FacesFiller::ChangeDataStructure()
 
 //=================================================================================================
 
-const TopoDS_Face& TopOpeBRep_FacesFiller::Face(const Standard_Integer I) const
+const TopoDS_Face& TopOpeBRep_FacesFiller::Face(const int I) const
 {
   if (I == 1)
     return myF1;
@@ -638,7 +640,7 @@ const TopoDS_Face& TopOpeBRep_FacesFiller::Face(const Standard_Integer I) const
 
 const TopOpeBRepDS_Transition& TopOpeBRep_FacesFiller::FaceFaceTransition(
   const TopOpeBRep_LineInter& L,
-  const Standard_Integer      I) const
+  const int                   I) const
 {
   const TopOpeBRepDS_Transition& T = L.FaceFaceTransition(I);
   return T;
@@ -646,8 +648,7 @@ const TopOpeBRepDS_Transition& TopOpeBRep_FacesFiller::FaceFaceTransition(
 
 //=================================================================================================
 
-const TopOpeBRepDS_Transition& TopOpeBRep_FacesFiller::FaceFaceTransition(
-  const Standard_Integer I) const
+const TopOpeBRepDS_Transition& TopOpeBRep_FacesFiller::FaceFaceTransition(const int I) const
 {
   const TopOpeBRepDS_Transition& T = myLine->FaceFaceTransition(I);
   return T;
@@ -670,7 +671,7 @@ TopOpeBRep_PLineInter TopOpeBRep_FacesFiller::PLineInterDummy() const
 
 //=================================================================================================
 
-void TopOpeBRep_FacesFiller::SetTraceIndex(const Standard_Integer exF1, const Standard_Integer exF2)
+void TopOpeBRep_FacesFiller::SetTraceIndex(const int exF1, const int exF2)
 {
   myexF1 = exF1;
   myexF2 = exF2;
@@ -678,7 +679,7 @@ void TopOpeBRep_FacesFiller::SetTraceIndex(const Standard_Integer exF1, const St
 
 //=================================================================================================
 
-void TopOpeBRep_FacesFiller::GetTraceIndex(Standard_Integer& exF1, Standard_Integer& exF2) const
+void TopOpeBRep_FacesFiller::GetTraceIndex(int& exF1, int& exF2) const
 {
   exF1 = myexF1;
   exF2 = myexF2;

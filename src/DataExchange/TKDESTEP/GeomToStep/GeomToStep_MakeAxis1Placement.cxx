@@ -55,8 +55,8 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
 //=============================================================================
 
 GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
-  const Handle(Geom_Axis1Placement)& Axis1,
-  const StepData_Factors&            theLocalFactors)
+  const occ::handle<Geom_Axis1Placement>& Axis1,
+  const StepData_Factors&                 theLocalFactors)
 {
   gp_Ax1 A;
   A = Axis1->Ax1();
@@ -69,8 +69,8 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
 //=============================================================================
 
 GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
-  const Handle(Geom2d_AxisPlacement)& Axis1,
-  const StepData_Factors&             theLocalFactors)
+  const occ::handle<Geom2d_AxisPlacement>& Axis1,
+  const StepData_Factors&                  theLocalFactors)
 {
   gp_Ax2d A;
   A = Axis1->Ax2d();
@@ -81,7 +81,7 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Axis1Placement)& GeomToStep_MakeAxis1Placement::Value() const
+const occ::handle<StepGeom_Axis1Placement>& GeomToStep_MakeAxis1Placement::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeAxis1Placement::Value() - no result");
   return theAxis1Placement;

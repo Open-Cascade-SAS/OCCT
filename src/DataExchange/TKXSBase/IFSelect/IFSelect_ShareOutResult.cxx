@@ -21,47 +21,49 @@
 #include <Interface_InterfaceModel.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IFSelect_ShareOutResult::IFSelect_ShareOutResult(const Handle(IFSelect_ShareOut)&        sho,
-                                                 const Handle(Interface_InterfaceModel)& amodel)
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(
+  const occ::handle<IFSelect_ShareOut>&        sho,
+  const occ::handle<Interface_InterfaceModel>& amodel)
     : thegraph(amodel),
-      thedispres(amodel, Standard_False)
+      thedispres(amodel, false)
 {
   theshareout = sho;
-  theeval     = Standard_False;
-  //  thedisplist = new TColStd_SequenceOfInteger();
+  theeval     = false;
+  //  thedisplist = new NCollection_Sequence<int>();
 }
 
-IFSelect_ShareOutResult::IFSelect_ShareOutResult(const Handle(IFSelect_ShareOut)& sho,
-                                                 const Interface_Graph&           G)
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_ShareOut>& sho,
+                                                 const Interface_Graph&                G)
     : thegraph(G),
-      thedispres(G, Standard_False)
+      thedispres(G, false)
 {
   theshareout = sho;
-  theeval     = Standard_False;
-  //  thedisplist = new TColStd_SequenceOfInteger();
+  theeval     = false;
+  //  thedisplist = new NCollection_Sequence<int>();
 }
 
-IFSelect_ShareOutResult::IFSelect_ShareOutResult(const Handle(IFSelect_Dispatch)&        disp,
-                                                 const Handle(Interface_InterfaceModel)& amodel)
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(
+  const occ::handle<IFSelect_Dispatch>&        disp,
+  const occ::handle<Interface_InterfaceModel>& amodel)
     : thegraph(amodel),
-      thedispres(amodel, Standard_False)
+      thedispres(amodel, false)
 {
   thedispatch = disp;
-  theeval     = Standard_False;
-  //  thedisplist = new TColStd_SequenceOfInteger();
+  theeval     = false;
+  //  thedisplist = new NCollection_Sequence<int>();
 }
 
-IFSelect_ShareOutResult::IFSelect_ShareOutResult(const Handle(IFSelect_Dispatch)& disp,
-                                                 const Interface_Graph&           G)
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_Dispatch>& disp,
+                                                 const Interface_Graph&                G)
     : thegraph(G),
-      thedispres(G, Standard_False)
+      thedispres(G, false)
 {
   thedispatch = disp;
-  theeval     = Standard_False;
-  //  thedisplist = new TColStd_SequenceOfInteger();
+  theeval     = false;
+  //  thedisplist = new NCollection_Sequence<int>();
 }
 
-Handle(IFSelect_ShareOut) IFSelect_ShareOutResult::ShareOut() const
+occ::handle<IFSelect_ShareOut> IFSelect_ShareOutResult::ShareOut() const
 {
   return theshareout;
 }
@@ -73,7 +75,7 @@ const Interface_Graph& IFSelect_ShareOutResult::Graph() const
 
 void IFSelect_ShareOutResult::Reset()
 {
-  theeval = Standard_False;
+  theeval = false;
 }
 
 void IFSelect_ShareOutResult::Evaluate()
@@ -81,14 +83,14 @@ void IFSelect_ShareOutResult::Evaluate()
   if (theeval)
     return; // already done. if not OK, do Reset before
   Prepare();
-  theeval = Standard_True;
+  theeval = true;
 }
 
-Handle(IFSelect_PacketList) IFSelect_ShareOutResult::Packets(const Standard_Boolean complete)
+occ::handle<IFSelect_PacketList> IFSelect_ShareOutResult::Packets(const bool complete)
 {
   Evaluate();
-  Handle(IFSelect_PacketList) list = new IFSelect_PacketList(thegraph.Model());
-  Interface_EntityIterator    iter;
+  occ::handle<IFSelect_PacketList> list = new IFSelect_PacketList(thegraph.Model());
+  Interface_EntityIterator         iter;
   for (; More(); Next())
   {
     list->AddPacket();
@@ -100,7 +102,7 @@ Handle(IFSelect_PacketList) IFSelect_ShareOutResult::Packets(const Standard_Bool
   return list;
 }
 
-Standard_Integer IFSelect_ShareOutResult::NbPackets()
+int IFSelect_ShareOutResult::NbPackets()
 {
   Evaluate();
   return thedispres.NbParts();
@@ -111,22 +113,22 @@ void IFSelect_ShareOutResult::Prepare()
   thedisplist.Clear();
   //  On alimente thedispres, thedisplist
   thedispres.Reset();
-  IFGraph_AllShared         A(thegraph);
-  Handle(IFSelect_Dispatch) disp = thedispatch;
-  Standard_Integer          nb = 1, first = 1;
+  IFGraph_AllShared              A(thegraph);
+  occ::handle<IFSelect_Dispatch> disp = thedispatch;
+  int                            nb = 1, first = 1;
   if (!theshareout.IsNull())
   {
     nb    = theshareout->NbDispatches();
     first = theshareout->LastRun() + 1;
   }
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = first; i <= nb; i++)
   {
     if (!theshareout.IsNull())
       disp = theshareout->Dispatch(i);
     if (disp->FinalSelection().IsNull())
       continue; // Dispatch neutralise
-    IFGraph_SubPartsIterator packs(thegraph, Standard_False);
+    IFGraph_SubPartsIterator packs(thegraph, false);
     disp->Packets(thegraph, packs);
     for (packs.Start(); packs.More(); packs.Next())
     {
@@ -151,7 +153,7 @@ void IFSelect_ShareOutResult::Prepare()
   }
 }
 
-Standard_Boolean IFSelect_ShareOutResult::More()
+bool IFSelect_ShareOutResult::More()
 {
   return thedispres.More();
 } // thepacknum < thedisplist.Length());
@@ -160,7 +162,7 @@ void IFSelect_ShareOutResult::Next()
 {
   thedispres.Next();
   thepacknum++;
-  Standard_Integer dispnum;
+  int dispnum;
   if (thepacknum <= thedisplist.Length())
     dispnum = thedisplist.Value(thepacknum);
   else
@@ -178,7 +180,7 @@ void IFSelect_ShareOutResult::Next()
     thedispnum  = dispnum;
     thepackdisp = 1;
     thenbindisp = 0;
-    for (Standard_Integer i = thepacknum; i <= thedisplist.Length(); i++)
+    for (int i = thepacknum; i <= thedisplist.Length(); i++)
     {
       if (thedisplist.Value(i) != thedispnum)
         break;
@@ -200,7 +202,7 @@ void IFSelect_ShareOutResult::NextDispatch()
       //  Calcul donnees propres au Dispatch
       thepackdisp = 1;
       thenbindisp = 0;
-      for (Standard_Integer i = thepacknum; i <= thedisplist.Length(); i++)
+      for (int i = thepacknum; i <= thedisplist.Length(); i++)
       {
         if (thedisplist.Value(i) != thedispnum)
           break;
@@ -215,18 +217,17 @@ void IFSelect_ShareOutResult::NextDispatch()
   thedispnum = thepackdisp = thenbindisp = 0;
 }
 
-Handle(IFSelect_Dispatch) IFSelect_ShareOutResult::Dispatch() const
+occ::handle<IFSelect_Dispatch> IFSelect_ShareOutResult::Dispatch() const
 {
   return thedispatch;
 }
 
-Standard_Integer IFSelect_ShareOutResult::DispatchRank() const
+int IFSelect_ShareOutResult::DispatchRank() const
 {
   return thedispnum;
 }
 
-void IFSelect_ShareOutResult::PacketsInDispatch(Standard_Integer& numpack,
-                                                Standard_Integer& nbpacks) const
+void IFSelect_ShareOutResult::PacketsInDispatch(int& numpack, int& nbpacks) const
 {
   numpack = thepackdisp;
   nbpacks = thenbindisp;
@@ -244,15 +245,15 @@ Interface_EntityIterator IFSelect_ShareOutResult::PacketContent()
   Interface_Graph          G(thegraph);
   //  G.GetFromIter(thedispres.Entities(),0);
   for (iter.Start(); iter.More(); iter.Next())
-    G.GetFromEntity(iter.Value(), Standard_True);
+    G.GetFromEntity(iter.Value(), true);
   Interface_GraphContent GC(G);
   return GC.Result();
 }
 
 TCollection_AsciiString IFSelect_ShareOutResult::FileName() const
 {
-  Standard_Integer nd = DispatchRank();
-  Standard_Integer np, nbp;
+  int nd = DispatchRank();
+  int np, nbp;
   PacketsInDispatch(np, nbp);
   return theshareout->FileName(nd, np, nbp);
 }

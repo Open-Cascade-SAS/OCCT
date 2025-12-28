@@ -22,41 +22,42 @@
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomFill_HArray1OfLocationLaw.hxx>
-#include <GeomFill_LocationGuide.hxx>
 #include <GeomFill_LocationLaw.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <GeomFill_LocationGuide.hxx>
 #include <Standard_Type.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_HArray1OfShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_ACRLaw, BRepFill_LocationLaw)
 
-BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire&                    Path,
-                                 const Handle(GeomFill_LocationGuide)& theLaw)
+BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire&                         Path,
+                                 const occ::handle<GeomFill_LocationGuide>& theLaw)
 {
   Init(Path);
 
   // calculate the nb of edge of the path
   BRepTools_WireExplorer wexp;
-  Standard_Integer       NbEdge = 0;
+  int                    NbEdge = 0;
   for (wexp.Init(myPath); wexp.More(); wexp.Next())
     NbEdge++;
 
   // tab to memorize ACR for each edge
-  OrigParam = new (TColStd_HArray1OfReal)(0, NbEdge);
-  TColStd_Array1OfReal Orig(0, NbEdge);
+  OrigParam = new (NCollection_HArray1<double>)(0, NbEdge);
+  NCollection_Array1<double> Orig(0, NbEdge);
   BRepFill::ComputeACR(Path, Orig);
 
-  Standard_Integer   ipath;
+  int                ipath;
   TopAbs_Orientation Or;
   // Class BRep_Tool without fields and without Constructor :
   //  BRep_Tool B;
-  TopoDS_Edge               E;
-  Handle(Geom_Curve)        C;
-  Handle(GeomAdaptor_Curve) AC;
-  Standard_Real             First, Last;
+  TopoDS_Edge                    E;
+  occ::handle<Geom_Curve>        C;
+  occ::handle<GeomAdaptor_Curve> AC;
+  double                         First, Last;
 
   // return ACR of edges of the trajectory
   OrigParam->SetValue(0, 0);
@@ -76,7 +77,7 @@ BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire&                    Path,
       Or = E.Orientation();
       if (Or == TopAbs_REVERSED)
       {
-        Handle(Geom_TrimmedCurve) CBis = new (Geom_TrimmedCurve)(C, First, Last);
+        occ::handle<Geom_TrimmedCurve> CBis = new (Geom_TrimmedCurve)(C, First, Last);
         CBis->Reverse(); // To avoid damaging the topology
         C     = CBis;
         First = C->FirstParameter();
@@ -85,9 +86,9 @@ BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire&                    Path,
       AC = new (GeomAdaptor_Curve)(C, First, Last);
 
       // Set the parameters for the case multi-edges
-      Standard_Real                  t1 = OrigParam->Value(ipath - 1);
-      Standard_Real                  t2 = OrigParam->Value(ipath);
-      Handle(GeomFill_LocationGuide) Loc;
+      double                              t1 = OrigParam->Value(ipath - 1);
+      double                              t2 = OrigParam->Value(ipath);
+      occ::handle<GeomFill_LocationGuide> Loc;
       Loc = theLaw;
       Loc->SetOrigine(t1, t2);
 

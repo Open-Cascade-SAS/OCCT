@@ -33,8 +33,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
-DEFINE_STANDARD_HANDLE(PrsDim_AngleDimension, PrsDim_Dimension)
-
 //! Angle dimension. Can be constructed:
 //! - on two intersected edges.
 //! - on three points or vertices.
@@ -167,16 +165,14 @@ public:
                                            const gp_Pnt&      thePoint);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
 
-  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits) override;
 
   //! Principle of horizontal text alignment settings:
   //! - divide circle into two halves according to attachment points
@@ -184,9 +180,9 @@ public:
   //! - if aTextPos is not between attach points but in this half -> Left or Right + positive flyout
   //! - if aTextPos is between reflections of attach points -> Center + negative flyout
   //! - if aTextPos is not between reflections of attach points -> Left or Right + negative flyout
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
 
   //! Sets angle type.
   //! @param[in] theType  the type value.
@@ -229,12 +225,12 @@ protected:
   //! @param[in] theCenter  the center point (center point of the angle).
   //! @param[in] theRadius  the radius of the dimension arc.
   //! @param[in] theMode  the display mode.
-  Standard_EXPORT void DrawArc(const Handle(Prs3d_Presentation)& thePresentation,
-                               const gp_Pnt&                     theFirstAttach,
-                               const gp_Pnt&                     theSecondAttach,
-                               const gp_Pnt&                     theCenter,
-                               const Standard_Real               theRadius,
-                               const Standard_Integer            theMode);
+  Standard_EXPORT void DrawArc(const occ::handle<Prs3d_Presentation>& thePresentation,
+                               const gp_Pnt&                          theFirstAttach,
+                               const gp_Pnt&                          theSecondAttach,
+                               const gp_Pnt&                          theCenter,
+                               const double                           theRadius,
+                               const int                              theMode);
 
   //! Draws main dimension line (arc) with text.
   //! @param[in] thePresentation  the dimension presentation.
@@ -246,14 +242,14 @@ protected:
   //! @param[in] theMode  the display mode.
   //! @param[in] theLabelPosition  the text label vertical and horizontal positioning option
   //! respectively to the main dimension line.
-  Standard_EXPORT void DrawArcWithText(const Handle(Prs3d_Presentation)& thePresentation,
-                                       const gp_Pnt&                     theFirstAttach,
-                                       const gp_Pnt&                     theSecondAttach,
-                                       const gp_Pnt&                     theCenter,
-                                       const TCollection_ExtendedString& theText,
-                                       const Standard_Real               theTextWidth,
-                                       const Standard_Integer            theMode,
-                                       const Standard_Integer            theLabelPosition);
+  Standard_EXPORT void DrawArcWithText(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                       const gp_Pnt&                          theFirstAttach,
+                                       const gp_Pnt&                          theSecondAttach,
+                                       const gp_Pnt&                          theCenter,
+                                       const TCollection_ExtendedString&      theText,
+                                       const double                           theTextWidth,
+                                       const int                              theMode,
+                                       const int                              theLabelPosition);
 
   //! Fits text alignment relatively to the dimension line;
   //! it computes the value of label position and arrow orientation
@@ -266,8 +262,8 @@ protected:
   //! orientation automatically.
   Standard_EXPORT void FitTextAlignment(
     const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
-    Standard_Integer&                            theLabelPosition,
-    Standard_Boolean&                            theIsArrowsExternal) const;
+    int&                                         theLabelPosition,
+    bool&                                        theIsArrowsExternal) const;
 
   //! Adjusts aspect parameters according the text position:
   //! extension size, vertical text alignment and flyout.
@@ -276,39 +272,38 @@ protected:
   //! @param[out] theAlignment  the horizontal label alignment.
   //! @param[out] theFlyout  the adjusted value of flyout.
   Standard_EXPORT void AdjustParameters(const gp_Pnt&                          theTextPos,
-                                        Standard_Real&                         theExtensionSize,
+                                        double&                                theExtensionSize,
                                         Prs3d_DimensionTextHorizontalPosition& theAlignment,
-                                        Standard_Real&                         theFlyout) const;
+                                        double&                                theFlyout) const;
 
 protected:
   Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if the plane includes three angle points to build dimension.
-  Standard_EXPORT virtual Standard_Boolean CheckPlane(const gp_Pln& thePlane) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool CheckPlane(const gp_Pln& thePlane) const override;
 
-  Standard_EXPORT virtual Standard_Real ComputeValue() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double ComputeValue() const override;
 
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePM,
-                                       const Handle(Prs3d_Presentation)&         thePresentation,
-                                       const Standard_Integer theMode = 0) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                       const occ::handle<Prs3d_Presentation>& thePresentation,
+                                       const int                              theMode = 0) override;
 
   Standard_EXPORT virtual void ComputeFlyoutSelection(
-    const Handle(SelectMgr_Selection)&   theSelection,
-    const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
+    const occ::handle<SelectMgr_Selection>&   theSelection,
+    const occ::handle<SelectMgr_EntityOwner>& theOwner) override;
 
 protected:
   //! Init angular dimension to measure angle between two linear edges.
   //! @return TRUE if the angular dimension can be constructured
   //!         for the passed edges.
-  Standard_EXPORT Standard_Boolean InitTwoEdgesAngle(gp_Pln& theComputedPlane);
+  Standard_EXPORT bool InitTwoEdgesAngle(gp_Pln& theComputedPlane);
 
   //! Init angular dimension to measure angle between two planar faces.
   //! there is no user-defined poisitoning. So attach points are set
   //! according to faces geometry (in origin of the first face basis surface).
   //! @return TRUE if the angular dimension can be constructed
   //!         for the passed faces.
-  Standard_EXPORT Standard_Boolean InitTwoFacesAngle();
+  Standard_EXPORT bool InitTwoFacesAngle();
 
   //! Init angular dimension to measure angle between two planar faces.
   //! @param[in] thePointOnFirstFace  the point which the dimension plane should pass through.
@@ -318,26 +313,25 @@ protected:
   //! It defines some kind of dimension positioning over the faces.
   //! @return TRUE if the angular dimension can be constructed
   //!         for the passed faces.
-  Standard_EXPORT Standard_Boolean InitTwoFacesAngle(const gp_Pnt& thePointOnFirstFace);
+  Standard_EXPORT bool InitTwoFacesAngle(const gp_Pnt& thePointOnFirstFace);
 
   //! Init angular dimension to measure cone face.
   //! @return TRUE if the angular dimension can be constructed
   //!              for the passed cone.
-  Standard_EXPORT Standard_Boolean InitConeAngle();
+  Standard_EXPORT bool InitConeAngle();
 
   //! Check that the points forming angle are valid.
   //! @return TRUE if the points met the following requirements:
   //!         The (P1, Center), (P2, Center) can be built.
   //!         The angle between the vectors > Precision::Angular().
-  Standard_EXPORT Standard_Boolean IsValidPoints(const gp_Pnt& theFirstPoint,
-                                                 const gp_Pnt& theCenterPoint,
-                                                 const gp_Pnt& theSecondPoint) const;
+  Standard_EXPORT bool IsValidPoints(const gp_Pnt& theFirstPoint,
+                                     const gp_Pnt& theCenterPoint,
+                                     const gp_Pnt& theSecondPoint) const;
 
   //! Returns true if the arrow should be visible
   //! @param theArrowType an arrow type
   //! @return TRUE if the arrow should be visible
-  Standard_EXPORT Standard_Boolean
-    isArrowVisible(const PrsDim_TypeOfAngleArrowVisibility theArrowType) const;
+  Standard_EXPORT bool isArrowVisible(const PrsDim_TypeOfAngleArrowVisibility theArrowType) const;
 
 private:
   PrsDim_TypeOfAngle                myType;             //!< type of angle

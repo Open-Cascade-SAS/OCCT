@@ -20,7 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TopTools_HSequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Transfer_Binder.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -34,9 +36,6 @@ class TopoDS_Solid;
 class TopoDS_CompSolid;
 class TopoDS_Compound;
 
-class TransferBRep_ShapeListBinder;
-DEFINE_STANDARD_HANDLE(TransferBRep_ShapeListBinder, Transfer_Binder)
-
 //! This binder binds several (a list of) shapes with a starting
 //! entity, when this entity itself corresponds to a simple list
 //! of shapes. Each part is not seen as a sub-result of an
@@ -47,49 +46,49 @@ class TransferBRep_ShapeListBinder : public Transfer_Binder
 public:
   Standard_EXPORT TransferBRep_ShapeListBinder();
 
-  Standard_EXPORT TransferBRep_ShapeListBinder(const Handle(TopTools_HSequenceOfShape)& list);
+  Standard_EXPORT TransferBRep_ShapeListBinder(
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list);
 
-  Standard_EXPORT virtual Standard_Boolean IsMultiple() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsMultiple() const override;
 
-  Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Standard_Type> ResultType() const override;
 
-  Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
+  Standard_EXPORT const char* ResultTypeName() const override;
 
   //! Adds an item to the result list
   Standard_EXPORT void AddResult(const TopoDS_Shape& res);
 
-  Standard_EXPORT Handle(TopTools_HSequenceOfShape) Result() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TopoDS_Shape>> Result() const;
 
   //! Changes an already defined sub-result
-  Standard_EXPORT void SetResult(const Standard_Integer num, const TopoDS_Shape& res);
+  Standard_EXPORT void SetResult(const int num, const TopoDS_Shape& res);
 
-  Standard_EXPORT Standard_Integer NbShapes() const;
+  Standard_EXPORT int NbShapes() const;
 
-  Standard_EXPORT const TopoDS_Shape& Shape(const Standard_Integer num) const;
+  Standard_EXPORT const TopoDS_Shape& Shape(const int num) const;
 
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType(const Standard_Integer num) const;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType(const int num) const;
 
-  Standard_EXPORT TopoDS_Vertex Vertex(const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_Vertex Vertex(const int num) const;
 
-  Standard_EXPORT TopoDS_Edge Edge(const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_Edge Edge(const int num) const;
 
-  Standard_EXPORT TopoDS_Wire Wire(const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_Wire Wire(const int num) const;
 
-  Standard_EXPORT TopoDS_Face Face(const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_Face Face(const int num) const;
 
-  Standard_EXPORT TopoDS_Shell Shell(const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_Shell Shell(const int num) const;
 
-  Standard_EXPORT TopoDS_Solid Solid(const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_Solid Solid(const int num) const;
 
-  Standard_EXPORT TopoDS_CompSolid CompSolid(const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_CompSolid CompSolid(const int num) const;
 
-  Standard_EXPORT TopoDS_Compound Compound(const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_Compound Compound(const int num) const;
 
   DEFINE_STANDARD_RTTIEXT(TransferBRep_ShapeListBinder, Transfer_Binder)
 
-protected:
 private:
-  Handle(TopTools_HSequenceOfShape) theres;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> theres;
 };
 
 #endif // _TransferBRep_ShapeListBinder_HeaderFile

@@ -29,34 +29,34 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_NewGeneralNote, IGESData_IGESEntity)
 IGESDimen_NewGeneralNote::IGESDimen_NewGeneralNote() {}
 
 void IGESDimen_NewGeneralNote::Init(
-  const Standard_Real                            width,
-  const Standard_Real                            height,
-  const Standard_Integer                         justifyCode,
-  const gp_XYZ&                                  areaLoc,
-  const Standard_Real                            areaRotationAngle,
-  const gp_XYZ&                                  baseLinePos,
-  const Standard_Real                            normalInterlineSpace,
-  const Handle(TColStd_HArray1OfInteger)&        charDisplays,
-  const Handle(TColStd_HArray1OfReal)&           charWidths,
-  const Handle(TColStd_HArray1OfReal)&           charHeights,
-  const Handle(TColStd_HArray1OfReal)&           interCharSpc,
-  const Handle(TColStd_HArray1OfReal)&           interLineSpc,
-  const Handle(TColStd_HArray1OfInteger)&        fontStyles,
-  const Handle(TColStd_HArray1OfReal)&           charAngles,
-  const Handle(Interface_HArray1OfHAsciiString)& controlCodeStrings,
-  const Handle(TColStd_HArray1OfInteger)&        nbChars,
-  const Handle(TColStd_HArray1OfReal)&           boxWidths,
-  const Handle(TColStd_HArray1OfReal)&           boxHeights,
-  const Handle(TColStd_HArray1OfInteger)&        charSetCodes,
-  const Handle(IGESData_HArray1OfIGESEntity)&    charSetEntities,
-  const Handle(TColStd_HArray1OfReal)&           slAngles,
-  const Handle(TColStd_HArray1OfReal)&           rotAngles,
-  const Handle(TColStd_HArray1OfInteger)&        mirrorFlags,
-  const Handle(TColStd_HArray1OfInteger)&        rotateFlags,
-  const Handle(TColgp_HArray1OfXYZ)&             startPoints,
-  const Handle(Interface_HArray1OfHAsciiString)& texts)
+  const double                                    width,
+  const double                                    height,
+  const int                                       justifyCode,
+  const gp_XYZ&                                   areaLoc,
+  const double                                    areaRotationAngle,
+  const gp_XYZ&                                   baseLinePos,
+  const double                                    normalInterlineSpace,
+  const occ::handle<NCollection_HArray1<int>>&    charDisplays,
+  const occ::handle<NCollection_HArray1<double>>& charWidths,
+  const occ::handle<NCollection_HArray1<double>>& charHeights,
+  const occ::handle<NCollection_HArray1<double>>& interCharSpc,
+  const occ::handle<NCollection_HArray1<double>>& interLineSpc,
+  const occ::handle<NCollection_HArray1<int>>&    fontStyles,
+  const occ::handle<NCollection_HArray1<double>>& charAngles,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& controlCodeStrings,
+  const occ::handle<NCollection_HArray1<int>>&                                   nbChars,
+  const occ::handle<NCollection_HArray1<double>>&                                boxWidths,
+  const occ::handle<NCollection_HArray1<double>>&                                boxHeights,
+  const occ::handle<NCollection_HArray1<int>>&                                   charSetCodes,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      charSetEntities,
+  const occ::handle<NCollection_HArray1<double>>&                                slAngles,
+  const occ::handle<NCollection_HArray1<double>>&                                rotAngles,
+  const occ::handle<NCollection_HArray1<int>>&                                   mirrorFlags,
+  const occ::handle<NCollection_HArray1<int>>&                                   rotateFlags,
+  const occ::handle<NCollection_HArray1<gp_XYZ>>&                                startPoints,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& texts)
 {
-  Standard_Integer num = nbChars->Length();
+  int num = nbChars->Length();
 
   if (nbChars->Lower() != 1 || (charDisplays->Lower() != 1 || charDisplays->Length() != num)
       || (charWidths->Lower() != 1 || charWidths->Length() != num)
@@ -107,17 +107,17 @@ void IGESDimen_NewGeneralNote::Init(
   InitTypeAndForm(213, 0);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::TextWidth() const
+double IGESDimen_NewGeneralNote::TextWidth() const
 {
   return theWidth;
 }
 
-Standard_Real IGESDimen_NewGeneralNote::TextHeight() const
+double IGESDimen_NewGeneralNote::TextHeight() const
 {
   return theHeight;
 }
 
-Standard_Integer IGESDimen_NewGeneralNote::JustifyCode() const
+int IGESDimen_NewGeneralNote::JustifyCode() const
 {
   return theJustifyCode;
 }
@@ -136,12 +136,12 @@ gp_Pnt IGESDimen_NewGeneralNote::TransformedAreaLocation() const
   return gp_Pnt(tempXYZ);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::ZDepthAreaLocation() const
+double IGESDimen_NewGeneralNote::ZDepthAreaLocation() const
 {
   return (theAreaLoc.Z());
 }
 
-Standard_Real IGESDimen_NewGeneralNote::AreaRotationAngle() const
+double IGESDimen_NewGeneralNote::AreaRotationAngle() const
 {
   return theAreaRotationAngle;
 }
@@ -160,129 +160,128 @@ gp_Pnt IGESDimen_NewGeneralNote::TransformedBaseLinePosition() const
   return gp_Pnt(tempXYZ);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::ZDepthBaseLinePosition() const
+double IGESDimen_NewGeneralNote::ZDepthBaseLinePosition() const
 {
   return (theBaseLinePos.Z());
 }
 
-Standard_Real IGESDimen_NewGeneralNote::NormalInterlineSpace() const
+double IGESDimen_NewGeneralNote::NormalInterlineSpace() const
 {
   return theNormalInterlineSpace;
 }
 
-Standard_Integer IGESDimen_NewGeneralNote::NbStrings() const
+int IGESDimen_NewGeneralNote::NbStrings() const
 {
   return theCharDisplays->Length();
 }
 
-Standard_Integer IGESDimen_NewGeneralNote::CharacterDisplay(const Standard_Integer Index) const
+int IGESDimen_NewGeneralNote::CharacterDisplay(const int Index) const
 {
   return theCharDisplays->Value(Index);
 }
 
-Standard_Boolean IGESDimen_NewGeneralNote::IsVariable(const Standard_Integer Index) const
+bool IGESDimen_NewGeneralNote::IsVariable(const int Index) const
 {
   return (theCharDisplays->Value(Index) == 1);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::CharacterWidth(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::CharacterWidth(const int Index) const
 {
   return theCharWidths->Value(Index);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::CharacterHeight(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::CharacterHeight(const int Index) const
 {
   return theCharHeights->Value(Index);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::InterCharacterSpace(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::InterCharacterSpace(const int Index) const
 {
   return theInterCharSpaces->Value(Index);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::InterlineSpace(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::InterlineSpace(const int Index) const
 {
   return theInterlineSpaces->Value(Index);
 }
 
-Standard_Integer IGESDimen_NewGeneralNote::FontStyle(const Standard_Integer Index) const
+int IGESDimen_NewGeneralNote::FontStyle(const int Index) const
 {
   return theFontStyles->Value(Index);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::CharacterAngle(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::CharacterAngle(const int Index) const
 {
   return theCharAngles->Value(Index);
 }
 
-Handle(TCollection_HAsciiString) IGESDimen_NewGeneralNote::ControlCodeString(
-  const Standard_Integer Index) const
+occ::handle<TCollection_HAsciiString> IGESDimen_NewGeneralNote::ControlCodeString(
+  const int Index) const
 {
   return theControlCodeStrings->Value(Index);
 }
 
-Standard_Integer IGESDimen_NewGeneralNote::NbCharacters(const Standard_Integer Index) const
+int IGESDimen_NewGeneralNote::NbCharacters(const int Index) const
 {
   return theNbChars->Value(Index);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::BoxWidth(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::BoxWidth(const int Index) const
 {
   return theBoxWidths->Value(Index);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::BoxHeight(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::BoxHeight(const int Index) const
 {
   return theBoxHeights->Value(Index);
 }
 
-Standard_Boolean IGESDimen_NewGeneralNote::IsCharSetEntity(const Standard_Integer Index) const
+bool IGESDimen_NewGeneralNote::IsCharSetEntity(const int Index) const
 {
   return (!(theCharSetEntities->Value(Index)).IsNull());
 }
 
-Standard_Integer IGESDimen_NewGeneralNote::CharSetCode(const Standard_Integer Index) const
+int IGESDimen_NewGeneralNote::CharSetCode(const int Index) const
 {
   return theCharSetCodes->Value(Index);
 }
 
-Handle(IGESData_IGESEntity) IGESDimen_NewGeneralNote::CharSetEntity(
-  const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESDimen_NewGeneralNote::CharSetEntity(const int Index) const
 {
   return theCharSetEntities->Value(Index);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::SlantAngle(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::SlantAngle(const int Index) const
 {
   return theSlantAngles->Value(Index);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::RotationAngle(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::RotationAngle(const int Index) const
 {
   return theRotationAngles->Value(Index);
 }
 
-Standard_Integer IGESDimen_NewGeneralNote::MirrorFlag(const Standard_Integer Index) const
+int IGESDimen_NewGeneralNote::MirrorFlag(const int Index) const
 {
   return theMirrorFlags->Value(Index);
 }
 
-Standard_Boolean IGESDimen_NewGeneralNote::IsMirrored(const Standard_Integer Index) const
+bool IGESDimen_NewGeneralNote::IsMirrored(const int Index) const
 {
   return (theMirrorFlags->Value(Index) != 0);
 }
 
-Standard_Integer IGESDimen_NewGeneralNote::RotateFlag(const Standard_Integer Index) const
+int IGESDimen_NewGeneralNote::RotateFlag(const int Index) const
 {
   return theRotateFlags->Value(Index);
 }
 
-gp_Pnt IGESDimen_NewGeneralNote::StartPoint(const Standard_Integer Index) const
+gp_Pnt IGESDimen_NewGeneralNote::StartPoint(const int Index) const
 {
   return gp_Pnt(theStartPoints->Value(Index));
 }
 
-gp_Pnt IGESDimen_NewGeneralNote::TransformedStartPoint(const Standard_Integer Index) const
+gp_Pnt IGESDimen_NewGeneralNote::TransformedStartPoint(const int Index) const
 {
   gp_XYZ tempXYZ = theStartPoints->Value(Index);
   if (HasTransf())
@@ -290,12 +289,12 @@ gp_Pnt IGESDimen_NewGeneralNote::TransformedStartPoint(const Standard_Integer In
   return gp_Pnt(tempXYZ);
 }
 
-Standard_Real IGESDimen_NewGeneralNote::ZDepthStartPoint(const Standard_Integer Index) const
+double IGESDimen_NewGeneralNote::ZDepthStartPoint(const int Index) const
 {
   return (theStartPoints->Value(Index).Z());
 }
 
-Handle(TCollection_HAsciiString) IGESDimen_NewGeneralNote::Text(const Standard_Integer Index) const
+occ::handle<TCollection_HAsciiString> IGESDimen_NewGeneralNote::Text(const int Index) const
 {
   return theTexts->Value(Index);
 }

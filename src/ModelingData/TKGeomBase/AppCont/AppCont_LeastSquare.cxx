@@ -28,22 +28,22 @@
 //=================================================================================================
 
 void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       theSSP,
-                                               const Standard_Real           theU,
-                                               const Standard_Real           theU0,
-                                               const Standard_Real           theU1,
+                                               const double                  theU,
+                                               const double                  theU0,
+                                               const double                  theU1,
                                                NCollection_Array1<gp_Pnt2d>& theFix2d,
                                                NCollection_Array1<gp_Pnt>&   theFix)
 {
-  Standard_Integer             aMaxIter = 15;
+  int                          aMaxIter = 15;
   NCollection_Array1<gp_Pnt>   aTabP(1, std::max(myNbP, 1)), aPrevP(1, std::max(myNbP, 1));
   NCollection_Array1<gp_Pnt2d> aTabP2d(1, std::max(myNbP2d, 1)), aPrevP2d(1, std::max(myNbP2d, 1));
-  Standard_Real                aMult       = ((theU - theU0) > (theU1 - theU)) ? 1.0 : -1.0;
-  Standard_Real                aStartParam = theU, aCurrParam, aPrevDist = 1.0, aCurrDist = 1.0;
+  double                       aMult       = ((theU - theU0) > (theU1 - theU)) ? 1.0 : -1.0;
+  double                       aStartParam = theU, aCurrParam, aPrevDist = 1.0, aCurrDist = 1.0;
 
-  Standard_Real du  = -(theU1 - theU0) / 2.0 * aMult;
-  Standard_Real eps = Epsilon(1.);
-  Standard_Real dd = du, dec = .1;
-  for (Standard_Integer anIter = 1; anIter < aMaxIter; anIter++)
+  double du  = -(theU1 - theU0) / 2.0 * aMult;
+  double eps = Epsilon(1.);
+  double dd = du, dec = .1;
+  for (int anIter = 1; anIter < aMaxIter; anIter++)
   {
     dd *= dec;
     aCurrParam = aStartParam + dd;
@@ -54,13 +54,13 @@ void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       the
     {
       aCurrDist = 0.0;
 
-      Standard_Integer i2 = 1;
-      for (Standard_Integer j = 1; j <= myNbP; j++)
+      int i2 = 1;
+      for (int j = 1; j <= myNbP; j++)
       {
         aCurrDist += aTabP(j).Distance(aPrevP(j));
         i2 += 3;
       }
-      for (Standard_Integer j = 1; j <= myNbP2d; j++)
+      for (int j = 1; j <= myNbP2d; j++)
       {
         aCurrDist += aTabP2d(j).Distance(aPrevP2d(j));
         i2 += 2;
@@ -84,12 +84,12 @@ void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       the
 //=================================================================================================
 
 AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
-                                         const Standard_Real           U0,
-                                         const Standard_Real           U1,
+                                         const double                  U0,
+                                         const double                  U1,
                                          const AppParCurves_Constraint FirstCons,
                                          const AppParCurves_Constraint LastCons,
-                                         const Standard_Integer        Deg,
-                                         const Standard_Integer        myNbPoints)
+                                         const int                     Deg,
+                                         const int                     myNbPoints)
     : mySCU(Deg + 1),
       myPoints(1, myNbPoints, 1, 3 * SSP.GetNbOf3dPoints() + 2 * SSP.GetNbOf2dPoints()),
       myPoles(1, Deg + 1, 1, 3 * SSP.GetNbOf3dPoints() + 2 * SSP.GetNbOf2dPoints(), 0.0),
@@ -97,33 +97,33 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       myVB(1, Deg + 1, 1, myNbPoints),
       myPerInfo(1, 3 * SSP.GetNbOf3dPoints() + 2 * SSP.GetNbOf2dPoints())
 {
-  myDone  = Standard_False;
+  myDone  = false;
   myDegre = Deg;
-  Standard_Integer i, j, k, c, i2;
-  Standard_Integer classe = Deg + 1, cl1 = Deg;
-  Standard_Real    U, dU, Coeff, Coeff2;
-  Standard_Real    IBij, IBPij;
+  int    i, j, k, c, i2;
+  int    classe = Deg + 1, cl1 = Deg;
+  double U, dU, Coeff, Coeff2;
+  double IBij, IBPij;
 
-  Standard_Integer        FirstP = 1, LastP = myNbPoints;
-  Standard_Integer        nbcol = 3 * SSP.GetNbOf3dPoints() + 2 * SSP.GetNbOf2dPoints();
+  int                     FirstP = 1, LastP = myNbPoints;
+  int                     nbcol = 3 * SSP.GetNbOf3dPoints() + 2 * SSP.GetNbOf2dPoints();
   math_Matrix             B(1, classe, 1, nbcol, 0.0);
-  Standard_Integer        bdeb = 1, bfin = classe;
+  int                     bdeb = 1, bfin = classe;
   AppParCurves_Constraint myFirstC = FirstCons, myLastC = LastCons;
   SSP.GetNumberOfPoints(myNbP, myNbP2d);
 
-  Standard_Integer i2plus1, i2plus2;
+  int i2plus1, i2plus2;
   myNbdiscret = myNbPoints;
   NCollection_Array1<gp_Pnt>   aTabP(1, std::max(myNbP, 1));
   NCollection_Array1<gp_Pnt2d> aTabP2d(1, std::max(myNbP2d, 1));
   NCollection_Array1<gp_Vec>   aTabV(1, std::max(myNbP, 1));
   NCollection_Array1<gp_Vec2d> aTabV2d(1, std::max(myNbP2d, 1));
 
-  for (Standard_Integer aDimIdx = 1; aDimIdx <= myNbP * 3 + myNbP2d * 2; aDimIdx++)
+  for (int aDimIdx = 1; aDimIdx <= myNbP * 3 + myNbP2d * 2; aDimIdx++)
   {
     SSP.PeriodInformation(aDimIdx, myPerInfo(aDimIdx).isPeriodic, myPerInfo(aDimIdx).myPeriod);
   }
 
-  Standard_Boolean Ok;
+  bool Ok;
   if (myFirstC == AppParCurves_TangencyPoint)
   {
     Ok = SSP.D1(U0, aTabV2d, aTabV);
@@ -181,8 +181,8 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
   }
 
   // Fix possible "period jump".
-  Standard_Integer aMaxDim = 3 * myNbP + 2 * myNbP2d;
-  for (Standard_Integer aDimIdx = 1; aDimIdx <= aMaxDim; aDimIdx++)
+  int aMaxDim = 3 * myNbP + 2 * myNbP2d;
+  for (int aDimIdx = 1; aDimIdx <= aMaxDim; aDimIdx++)
   {
     if (myPerInfo(aDimIdx).isPeriodic
         && std::abs(myPoints(1, aDimIdx) - myPoints(2, aDimIdx))
@@ -190,22 +190,22 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
         && std::abs(myPoints(2, aDimIdx) - myPoints(3, aDimIdx))
              < myPerInfo(aDimIdx).myPeriod / 2.01)
     {
-      Standard_Real aPeriodMult = (myPoints(1, aDimIdx) < myPoints(2, aDimIdx)) ? 1.0 : -1.0;
-      Standard_Real aNewParam   = myPoints(1, aDimIdx) + aPeriodMult * myPerInfo(aDimIdx).myPeriod;
-      myPoints(1, aDimIdx)      = aNewParam;
+      double aPeriodMult   = (myPoints(1, aDimIdx) < myPoints(2, aDimIdx)) ? 1.0 : -1.0;
+      double aNewParam     = myPoints(1, aDimIdx) + aPeriodMult * myPerInfo(aDimIdx).myPeriod;
+      myPoints(1, aDimIdx) = aNewParam;
     }
   }
-  for (Standard_Integer aPntIdx = 1; aPntIdx < myNbPoints; aPntIdx++)
+  for (int aPntIdx = 1; aPntIdx < myNbPoints; aPntIdx++)
   {
-    for (Standard_Integer aDimIdx = 1; aDimIdx <= aMaxDim; aDimIdx++)
+    for (int aDimIdx = 1; aDimIdx <= aMaxDim; aDimIdx++)
     {
       if (myPerInfo(aDimIdx).isPeriodic
           && std::abs(myPoints(aPntIdx, aDimIdx) - myPoints(aPntIdx + 1, aDimIdx))
                > myPerInfo(aDimIdx).myPeriod / 2.01)
       {
-        Standard_Real aPeriodMult =
+        double aPeriodMult =
           (myPoints(aPntIdx, aDimIdx) > myPoints(aPntIdx + 1, aDimIdx)) ? 1.0 : -1.0;
-        Standard_Real aNewParam =
+        double aNewParam =
           myPoints(aPntIdx + 1, aDimIdx) + aPeriodMult * myPerInfo(aDimIdx).myPeriod;
         myPoints(aPntIdx + 1, aDimIdx) = aNewParam;
       }
@@ -215,7 +215,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
   VBernstein(classe, myNbPoints, myVB);
 
   // Traitement du second membre:
-  NCollection_Array1<Standard_Real> tmppoints(1, nbcol);
+  NCollection_Array1<double> tmppoints(1, nbcol);
 
   for (c = 1; c <= classe; c++)
   {
@@ -284,13 +284,13 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
         i2 += 2;
       }
 
-      for (Standard_Integer aDimIdx = 1; aDimIdx <= aMaxDim; aDimIdx++)
+      for (int aDimIdx = 1; aDimIdx <= aMaxDim; aDimIdx++)
       {
         if (myPerInfo(aDimIdx).isPeriodic
             && std::abs(myPoles(1, aDimIdx) - myPoints(1, aDimIdx))
                  > myPerInfo(aDimIdx).myPeriod / 2.01)
         {
-          Standard_Real aMult = myPoles(1, aDimIdx) < myPoints(1, aDimIdx) ? 1.0 : -1.0;
+          double aMult = myPoles(1, aDimIdx) < myPoints(1, aDimIdx) ? 1.0 : -1.0;
           myPoles(1, aDimIdx) += aMult * myPerInfo(aDimIdx).myPeriod;
         }
       }
@@ -319,14 +319,13 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
         i2 += 2;
       }
 
-      for (Standard_Integer aDimIdx = 1; aDimIdx <= 2; aDimIdx++)
+      for (int aDimIdx = 1; aDimIdx <= 2; aDimIdx++)
       {
         if (myPerInfo(aDimIdx).isPeriodic
             && std::abs(myPoles(classe, aDimIdx) - myPoints(myNbPoints, aDimIdx))
                  > myPerInfo(aDimIdx).myPeriod / 2.01)
         {
-          Standard_Real aMult =
-            myPoles(classe, aDimIdx) < myPoints(myNbPoints, aDimIdx) ? 1.0 : -1.0;
+          double aMult = myPoles(classe, aDimIdx) < myPoints(myNbPoints, aDimIdx) ? 1.0 : -1.0;
           myPoles(classe, aDimIdx) += aMult * myPerInfo(aDimIdx).myPeriod;
         }
       }
@@ -475,7 +474,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
         IBP  = IBP1.Inverse();
       }
 
-      myDone = Standard_True;
+      myDone = true;
       for (i = bdeb; i <= bfin; i++)
       {
         for (j = bdeb; j <= bfin; j++)
@@ -496,10 +495,10 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 const AppParCurves_MultiCurve& AppCont_LeastSquare::Value()
 {
 
-  Standard_Integer i, j, j2;
-  gp_Pnt           Pt;
-  gp_Pnt2d         Pt2d;
-  Standard_Integer ideb = 1, ifin = myDegre + 1;
+  int      i, j, j2;
+  gp_Pnt   Pt;
+  gp_Pnt2d Pt2d;
+  int      ideb = 1, ifin = myDegre + 1;
 
   // On met le resultat dans les curves correspondantes
   for (i = ideb; i <= ifin; i++)
@@ -525,20 +524,18 @@ const AppParCurves_MultiCurve& AppCont_LeastSquare::Value()
 
 //=================================================================================================
 
-void AppCont_LeastSquare::Error(Standard_Real& F,
-                                Standard_Real& MaxE3d,
-                                Standard_Real& MaxE2d) const
+void AppCont_LeastSquare::Error(double& F, double& MaxE3d, double& MaxE2d) const
 {
-  Standard_Integer i, j, k, c, i2, classe = myDegre + 1;
-  Standard_Real    Coeff, err3d = 0.0, err2d = 0.0;
-  Standard_Integer ncol = myPoints.UpperCol() - myPoints.LowerCol() + 1;
+  int    i, j, k, c, i2, classe = myDegre + 1;
+  double Coeff, err3d = 0.0, err2d = 0.0;
+  int    ncol = myPoints.UpperCol() - myPoints.LowerCol() + 1;
 
   math_Matrix MyPoints(1, myNbdiscret, 1, ncol);
   MyPoints = myPoints;
 
   MaxE3d = MaxE2d = F = 0.0;
 
-  NCollection_Array1<Standard_Real> tmppoles(1, ncol);
+  NCollection_Array1<double> tmppoles(1, ncol);
 
   for (c = 1; c <= classe; c++)
   {
@@ -556,7 +553,7 @@ void AppCont_LeastSquare::Error(Standard_Real& F,
     }
   }
 
-  Standard_Real e1, e2, e3;
+  double e1, e2, e3;
   for (i = 1; i <= myNbdiscret; i++)
   {
     i2 = 1;
@@ -587,7 +584,7 @@ void AppCont_LeastSquare::Error(Standard_Real& F,
 
 //=================================================================================================
 
-Standard_Boolean AppCont_LeastSquare::IsDone() const
+bool AppCont_LeastSquare::IsDone() const
 {
   return myDone;
 }

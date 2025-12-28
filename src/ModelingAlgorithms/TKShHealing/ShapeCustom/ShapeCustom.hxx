@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -53,18 +55,18 @@ public:
 
   //! Applies modifier to shape and checks sharing in the case assemblies.
   Standard_EXPORT static TopoDS_Shape ApplyModifier(
-    const TopoDS_Shape&                   S,
-    const Handle(BRepTools_Modification)& M,
-    TopTools_DataMapOfShapeShape&         context,
-    BRepTools_Modifier&                   MD,
-    const Message_ProgressRange&          theProgress = Message_ProgressRange(),
-    const Handle(ShapeBuild_ReShape)&     aReShape    = NULL);
+    const TopoDS_Shape&                                                       S,
+    const occ::handle<BRepTools_Modification>&                                M,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& context,
+    BRepTools_Modifier&                                                       MD,
+    const Message_ProgressRange&           theProgress = Message_ProgressRange(),
+    const occ::handle<ShapeBuild_ReShape>& aReShape    = NULL);
 
   //! Returns a new shape without indirect surfaces.
   Standard_EXPORT static TopoDS_Shape DirectFaces(const TopoDS_Shape& S);
 
   //! Returns a new shape which is scaled original
-  Standard_EXPORT static TopoDS_Shape ScaleShape(const TopoDS_Shape& S, const Standard_Real scale);
+  Standard_EXPORT static TopoDS_Shape ScaleShape(const TopoDS_Shape& S, const double scale);
 
   //! Returns a new shape with all surfaces, curves and pcurves
   //! which type is BSpline/Bezier or based on them converted
@@ -79,20 +81,20 @@ public:
   //! then number of spans can exceed specified <GMaxSegment>
   //! <Rational> specifies if to convert Rational BSpline/Bezier into
   //! polynomial B-Spline.
-  //! If flags ConvOffSurf,ConvOffCurve3d,ConvOffCurve2d are Standard_True there are means
+  //! If flags ConvOffSurf,ConvOffCurve3d,ConvOffCurve2d are true there are means
   //! that Offset surfaces , Offset curves 3d and Offset curves 2d are converted to BSPline
   //! correspondingly.
   Standard_EXPORT static TopoDS_Shape BSplineRestriction(
-    const TopoDS_Shape&                              S,
-    const Standard_Real                              Tol3d,
-    const Standard_Real                              Tol2d,
-    const Standard_Integer                           MaxDegree,
-    const Standard_Integer                           MaxNbSegment,
-    const GeomAbs_Shape                              Continuity3d,
-    const GeomAbs_Shape                              Continuity2d,
-    const Standard_Boolean                           Degree,
-    const Standard_Boolean                           Rational,
-    const Handle(ShapeCustom_RestrictionParameters)& aParameters);
+    const TopoDS_Shape&                                   S,
+    const double                                          Tol3d,
+    const double                                          Tol2d,
+    const int                                             MaxDegree,
+    const int                                             MaxNbSegment,
+    const GeomAbs_Shape                                   Continuity3d,
+    const GeomAbs_Shape                                   Continuity2d,
+    const bool                                            Degree,
+    const bool                                            Rational,
+    const occ::handle<ShapeCustom_RestrictionParameters>& aParameters);
 
   //! Returns a new shape with all elementary periodic surfaces converted
   //! to Geom_SurfaceOfRevolution
@@ -105,12 +107,11 @@ public:
   //! Returns a new shape with all surfaces of linear extrusion, revolution,
   //! offset, and planar surfaces converted according to flags to
   //! Geom_BSplineSurface (with same parameterisation).
-  Standard_EXPORT static TopoDS_Shape ConvertToBSpline(
-    const TopoDS_Shape&    S,
-    const Standard_Boolean extrMode,
-    const Standard_Boolean revolMode,
-    const Standard_Boolean offsetMode,
-    const Standard_Boolean planeMode = Standard_False);
+  Standard_EXPORT static TopoDS_Shape ConvertToBSpline(const TopoDS_Shape& S,
+                                                       const bool          extrMode,
+                                                       const bool          revolMode,
+                                                       const bool          offsetMode,
+                                                       const bool          planeMode = false);
 };
 
 #endif // _ShapeCustom_HeaderFile

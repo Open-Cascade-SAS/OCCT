@@ -30,10 +30,10 @@ RWStepKinematics_RWKinematicJoint::RWStepKinematics_RWKinematicJoint() {}
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicJoint::ReadStep(
-  const Handle(StepData_StepReaderData)&       theData,
-  const Standard_Integer                       theNum,
-  Handle(Interface_Check)&                     theArch,
-  const Handle(StepKinematics_KinematicJoint)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&       theData,
+  const int                                         theNum,
+  occ::handle<Interface_Check>&                     theArch,
+  const occ::handle<StepKinematics_KinematicJoint>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "kinematic_joint"))
@@ -41,12 +41,12 @@ void RWStepKinematics_RWKinematicJoint::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of Edge
 
-  Handle(StepShape_Vertex) aEdge_EdgeStart;
+  occ::handle<StepShape_Vertex> aEdge_EdgeStart;
   theData->ReadEntity(theNum,
                       2,
                       "edge.edge_start",
@@ -54,7 +54,7 @@ void RWStepKinematics_RWKinematicJoint::ReadStep(
                       STANDARD_TYPE(StepShape_Vertex),
                       aEdge_EdgeStart);
 
-  Handle(StepShape_Vertex) aEdge_EdgeEnd;
+  occ::handle<StepShape_Vertex> aEdge_EdgeEnd;
   theData->ReadEntity(theNum,
                       3,
                       "edge.edge_end",
@@ -69,8 +69,8 @@ void RWStepKinematics_RWKinematicJoint::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicJoint::WriteStep(
-  StepData_StepWriter&                         theSW,
-  const Handle(StepKinematics_KinematicJoint)& theEnt) const
+  StepData_StepWriter&                              theSW,
+  const occ::handle<StepKinematics_KinematicJoint>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -86,8 +86,9 @@ void RWStepKinematics_RWKinematicJoint::WriteStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWKinematicJoint::Share(const Handle(StepKinematics_KinematicJoint)& theEnt,
-                                              Interface_EntityIterator& iter) const
+void RWStepKinematics_RWKinematicJoint::Share(
+  const occ::handle<StepKinematics_KinematicJoint>& theEnt,
+  Interface_EntityIterator&                         iter) const
 {
 
   // Inherited fields of RepresentationItem

@@ -21,9 +21,11 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <BRepFill_ThruSectionErrorStatus.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class TopoDS_Edge;
 
 //! Constructs a sequence of Wires (with good orientation
@@ -36,63 +38,66 @@ public:
 
   Standard_EXPORT BRepFill_CompatibleWires();
 
-  Standard_EXPORT BRepFill_CompatibleWires(const TopTools_SequenceOfShape& Sections);
+  Standard_EXPORT BRepFill_CompatibleWires(const NCollection_Sequence<TopoDS_Shape>& Sections);
 
-  Standard_EXPORT void Init(const TopTools_SequenceOfShape& Sections);
+  Standard_EXPORT void Init(const NCollection_Sequence<TopoDS_Shape>& Sections);
 
-  Standard_EXPORT void SetPercent(const Standard_Real percent = 0.01);
+  Standard_EXPORT void SetPercent(const double percent = 0.01);
 
   //! Performs CompatibleWires According to the orientation
   //! and the origin of each other
-  Standard_EXPORT void Perform(const Standard_Boolean WithRotation = Standard_True);
+  Standard_EXPORT void Perform(const bool WithRotation = true);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   BRepFill_ThruSectionErrorStatus GetStatus() const { return myStatus; }
 
   //! returns the generated sequence.
-  Standard_EXPORT const TopTools_SequenceOfShape& Shape() const;
+  Standard_EXPORT const NCollection_Sequence<TopoDS_Shape>& Shape() const;
 
   //! Returns the shapes created from a subshape
   //! <SubSection> of a section.
-  Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Edge& SubSection) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(
+    const TopoDS_Edge& SubSection) const;
 
-  Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Generated() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape,
+                                            NCollection_List<TopoDS_Shape>,
+                                            TopTools_ShapeMapHasher>&
+                        Generated() const;
 
-  Standard_EXPORT Standard_Boolean IsDegeneratedFirstSection() const;
+  Standard_EXPORT bool IsDegeneratedFirstSection() const;
 
-  Standard_EXPORT Standard_Boolean IsDegeneratedLastSection() const;
+  Standard_EXPORT bool IsDegeneratedLastSection() const;
 
-protected:
 private:
   //! Insert cutting points on closed wires to have same
   //! number of edges. The sequence of shapes must
   //! be a sequence of wires.
-  Standard_EXPORT void SameNumberByPolarMethod(const Standard_Boolean WithRotation = Standard_True);
+  Standard_EXPORT void SameNumberByPolarMethod(const bool WithRotation = true);
 
   //! Insert cutting points on open wires to have same
   //! number of edges. The sequence of shapes must
   //! be a sequence of wires.
-  Standard_EXPORT void SameNumberByACR(const Standard_Boolean report);
+  Standard_EXPORT void SameNumberByACR(const bool report);
 
   //! Computes origins and orientation on closed wires to
   //! avoid twisted results. The sequence of shapes must
   //! be a sequence of wires. <polar> must be true
   //! if SameNumberByPolarMethod was used before.
-  Standard_EXPORT void ComputeOrigin(const Standard_Boolean polar);
+  Standard_EXPORT void ComputeOrigin(const bool polar);
 
   //! Computes origins and orientation on open wires to
   //! avoid twisted results. The sequence of shapes must
   //! be a sequence of wires.
   Standard_EXPORT void SearchOrigin();
 
-  TopTools_SequenceOfShape           myInit;
-  TopTools_SequenceOfShape           myWork;
-  Standard_Real                      myPercent;
-  Standard_Boolean                   myDegen1;
-  Standard_Boolean                   myDegen2;
+  NCollection_Sequence<TopoDS_Shape> myInit;
+  NCollection_Sequence<TopoDS_Shape> myWork;
+  double                             myPercent;
+  bool                               myDegen1;
+  bool                               myDegen2;
   BRepFill_ThruSectionErrorStatus    myStatus;
-  TopTools_DataMapOfShapeListOfShape myMap;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _BRepFill_CompatibleWires_HeaderFile

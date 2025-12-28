@@ -28,9 +28,9 @@ TopOpeBRepDS_Interference::TopOpeBRepDS_Interference() {}
 
 TopOpeBRepDS_Interference::TopOpeBRepDS_Interference(const TopOpeBRepDS_Transition& T,
                                                      const TopOpeBRepDS_Kind        ST,
-                                                     const Standard_Integer         S,
+                                                     const int                      S,
                                                      const TopOpeBRepDS_Kind        GT,
-                                                     const Standard_Integer         G)
+                                                     const int                      G)
     : myTransition(T),
       mySupport(S),
       myGeometry(G),
@@ -41,7 +41,8 @@ TopOpeBRepDS_Interference::TopOpeBRepDS_Interference(const TopOpeBRepDS_Transiti
 
 //=================================================================================================
 
-TopOpeBRepDS_Interference::TopOpeBRepDS_Interference(const Handle(TopOpeBRepDS_Interference)& I)
+TopOpeBRepDS_Interference::TopOpeBRepDS_Interference(
+  const occ::handle<TopOpeBRepDS_Interference>& I)
     : myTransition(I->Transition()),
       mySupport(I->Support()),
       myGeometry(I->Geometry()),
@@ -74,9 +75,9 @@ void TopOpeBRepDS_Interference::Transition(const TopOpeBRepDS_Transition& T)
 //=================================================================================================
 
 void TopOpeBRepDS_Interference::GKGSKS(TopOpeBRepDS_Kind& GK,
-                                       Standard_Integer&  G,
+                                       int&               G,
                                        TopOpeBRepDS_Kind& SK,
-                                       Standard_Integer&  S) const
+                                       int&               S) const
 {
   GK = myGeometryType;
   G  = myGeometry;
@@ -93,7 +94,7 @@ TopOpeBRepDS_Kind TopOpeBRepDS_Interference::SupportType() const
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_Interference::Support() const
+int TopOpeBRepDS_Interference::Support() const
 {
   return mySupport;
 }
@@ -107,14 +108,14 @@ TopOpeBRepDS_Kind TopOpeBRepDS_Interference::GeometryType() const
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_Interference::Geometry() const
+int TopOpeBRepDS_Interference::Geometry() const
 {
   return myGeometry;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Interference::SetGeometry(const Standard_Integer GI)
+void TopOpeBRepDS_Interference::SetGeometry(const int GI)
 {
   myGeometry = GI;
 }
@@ -128,7 +129,7 @@ void TopOpeBRepDS_Interference::SupportType(const TopOpeBRepDS_Kind ST)
 
 //=================================================================================================
 
-void TopOpeBRepDS_Interference::Support(const Standard_Integer S)
+void TopOpeBRepDS_Interference::Support(const int S)
 {
   mySupport = S;
 }
@@ -142,23 +143,23 @@ void TopOpeBRepDS_Interference::GeometryType(const TopOpeBRepDS_Kind GT)
 
 //=================================================================================================
 
-void TopOpeBRepDS_Interference::Geometry(const Standard_Integer G)
+void TopOpeBRepDS_Interference::Geometry(const int G)
 {
   myGeometry = G;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_Interference::HasSameSupport(
-  const Handle(TopOpeBRepDS_Interference)& I) const
+bool TopOpeBRepDS_Interference::HasSameSupport(
+  const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
   return (mySupportType == I->mySupportType && mySupport == I->mySupport);
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_Interference::HasSameGeometry(
-  const Handle(TopOpeBRepDS_Interference)& I) const
+bool TopOpeBRepDS_Interference::HasSameGeometry(
+  const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
   return (myGeometryType == I->myGeometryType && myGeometry == I->myGeometry);
 }

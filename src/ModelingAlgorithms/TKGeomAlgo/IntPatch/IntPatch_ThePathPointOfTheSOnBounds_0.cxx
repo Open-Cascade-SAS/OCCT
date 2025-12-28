@@ -23,20 +23,20 @@
 
 IntPatch_ThePathPointOfTheSOnBounds::IntPatch_ThePathPointOfTheSOnBounds()
     : tol(0.0),
-      isnew(Standard_True),
+      isnew(true),
       param(0.0)
 {
 }
 
 IntPatch_ThePathPointOfTheSOnBounds::IntPatch_ThePathPointOfTheSOnBounds(
-  const gp_Pnt&                    P,
-  const Standard_Real              Tol,
-  const Handle(Adaptor3d_HVertex)& V,
-  const Handle(Adaptor2d_Curve2d)& A,
-  const Standard_Real              Parameter)
+  const gp_Pnt&                         P,
+  const double                          Tol,
+  const occ::handle<Adaptor3d_HVertex>& V,
+  const occ::handle<Adaptor2d_Curve2d>& A,
+  const double                          Parameter)
     : point(P),
       tol(Tol),
-      isnew(Standard_False),
+      isnew(false),
       vtx(V),
       arc(A),
       param(Parameter)
@@ -44,13 +44,13 @@ IntPatch_ThePathPointOfTheSOnBounds::IntPatch_ThePathPointOfTheSOnBounds(
 }
 
 IntPatch_ThePathPointOfTheSOnBounds::IntPatch_ThePathPointOfTheSOnBounds(
-  const gp_Pnt&                    P,
-  const Standard_Real              Tol,
-  const Handle(Adaptor2d_Curve2d)& A,
-  const Standard_Real              Parameter)
+  const gp_Pnt&                         P,
+  const double                          Tol,
+  const occ::handle<Adaptor2d_Curve2d>& A,
+  const double                          Parameter)
     : point(P),
       tol(Tol),
-      isnew(Standard_True),
+      isnew(true),
       arc(A),
       param(Parameter)
 {

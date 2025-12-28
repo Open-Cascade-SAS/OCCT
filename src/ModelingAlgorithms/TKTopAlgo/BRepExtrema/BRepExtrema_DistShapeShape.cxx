@@ -19,7 +19,8 @@
 #include <BRepExtrema_DistShapeShape.hxx>
 
 #include <Standard_OStream.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 #include <TopExp.hxx>
@@ -45,10 +46,10 @@
 namespace
 {
 
-static void Decomposition(const TopoDS_Shape&         S,
-                          TopTools_IndexedMapOfShape& MapV,
-                          TopTools_IndexedMapOfShape& MapE,
-                          TopTools_IndexedMapOfShape& MapF)
+static void Decomposition(const TopoDS_Shape&                                            S,
+                          NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MapV,
+                          NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MapE,
+                          NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MapF)
 {
   MapV.Clear();
   MapE.Clear();
@@ -58,9 +59,10 @@ static void Decomposition(const TopoDS_Shape&         S,
   TopExp::MapShapes(S, TopAbs_FACE, MapF);
 }
 
-static void BoxCalculation(const TopTools_IndexedMapOfShape& Map, Bnd_Array1OfBox& SBox)
+static void BoxCalculation(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Map,
+                           NCollection_Array1<Bnd_Box>& SBox)
 {
-  for (Standard_Integer i = 1; i <= Map.Extent(); i++)
+  for (int i = 1; i <= Map.Extent(); i++)
   {
     Bnd_Box box;
     BRepBndLib::Add(Map(i), box);
@@ -68,7 +70,7 @@ static void BoxCalculation(const TopTools_IndexedMapOfShape& Map, Bnd_Array1OfBo
   }
 }
 
-inline Standard_Real DistanceInitiale(const TopoDS_Vertex& V1, const TopoDS_Vertex& V2)
+inline double DistanceInitiale(const TopoDS_Vertex& V1, const TopoDS_Vertex& V2)
 {
   return (BRep_Tool::Pnt(V1).Distance(BRep_Tool::Pnt(V2)));
 }
@@ -76,9 +78,9 @@ inline Standard_Real DistanceInitiale(const TopoDS_Vertex& V1, const TopoDS_Vert
 //! Pair of objects to check extrema.
 struct BRepExtrema_CheckPair
 {
-  Standard_Integer Index1;   //!< Index of the 1st sub-shape
-  Standard_Integer Index2;   //!< Index of the 2nd sub-shape
-  Standard_Real    Distance; //!< Distance between sub-shapes
+  int    Index1;   //!< Index of the 1st sub-shape
+  int    Index2;   //!< Index of the 2nd sub-shape
+  double Distance; //!< Distance between sub-shapes
 
   //! Uninitialized constructor for collection.
   BRepExtrema_CheckPair()
@@ -89,9 +91,7 @@ struct BRepExtrema_CheckPair
   }
 
   //! Creates new pair of sub-shapes.
-  BRepExtrema_CheckPair(Standard_Integer theIndex1,
-                        Standard_Integer theIndex2,
-                        Standard_Real    theDistance)
+  BRepExtrema_CheckPair(int theIndex1, int theIndex2, double theDistance)
       : Index1(theIndex1),
         Index2(theIndex2),
         Distance(theDistance)
@@ -100,8 +100,8 @@ struct BRepExtrema_CheckPair
 };
 
 // Used by std::sort function
-static Standard_Boolean BRepExtrema_CheckPair_Comparator(const BRepExtrema_CheckPair& theLeft,
-                                                         const BRepExtrema_CheckPair& theRight)
+static bool BRepExtrema_CheckPair_Comparator(const BRepExtrema_CheckPair& theLeft,
+                                             const BRepExtrema_CheckPair& theRight)
 {
   return (theLeft.Distance < theRight.Distance);
 }
@@ -117,21 +117,21 @@ struct IndexBand
   {
   }
 
-  IndexBand(Standard_Integer theFirtsIndex, Standard_Integer theLastIndex)
+  IndexBand(int theFirtsIndex, int theLastIndex)
       : First(theFirtsIndex),
         Last(theLastIndex)
   {
   }
 
-  Standard_Integer First;
-  Standard_Integer Last;
+  int First;
+  int Last;
 };
 
 //=================================================================================================
 
 struct ThreadSolution
 {
-  ThreadSolution(Standard_Integer theTaskNum)
+  ThreadSolution(int theTaskNum)
       : Shape1(0, theTaskNum - 1),
         Shape2(0, theTaskNum - 1),
         Dist(0, theTaskNum - 1)
@@ -139,9 +139,9 @@ struct ThreadSolution
     Dist.Init(DBL_MAX);
   }
 
-  NCollection_Array1<BRepExtrema_SeqOfSolution> Shape1;
-  NCollection_Array1<BRepExtrema_SeqOfSolution> Shape2;
-  NCollection_Array1<Standard_Real>             Dist;
+  NCollection_Array1<NCollection_Sequence<BRepExtrema_SolutionElem>> Shape1;
+  NCollection_Array1<NCollection_Sequence<BRepExtrema_SolutionElem>> Shape2;
+  NCollection_Array1<double>                                         Dist;
 };
 
 //=================================================================================================
@@ -158,22 +158,22 @@ struct VertexFunctor
         Eps(Precision::Confusion()),
         StartDist(0.0)
   {
-    for (Standard_Integer i = 0; i < theBandArray->Size(); ++i)
+    for (int i = 0; i < theBandArray->Size(); ++i)
     {
       Ranges.SetValue(i, Scope.Next());
     }
   }
 
-  void operator()(const Standard_Integer theIndex) const
+  void operator()(const int theIndex) const
   {
-    const Standard_Integer aCount2 = Map2->Extent();
-    const Standard_Integer aFirst  = BandArray->Value(theIndex).First;
-    const Standard_Integer aLast   = BandArray->Value(theIndex).Last;
-    Solution.Dist[theIndex]        = StartDist;
+    const int aCount2       = Map2->Extent();
+    const int aFirst        = BandArray->Value(theIndex).First;
+    const int aLast         = BandArray->Value(theIndex).Last;
+    Solution.Dist[theIndex] = StartDist;
 
     Message_ProgressScope aScope(Ranges[theIndex], NULL, (double)aLast - aFirst);
 
-    for (Standard_Integer anIdx1 = aFirst; anIdx1 <= aLast; ++anIdx1)
+    for (int anIdx1 = aFirst; anIdx1 <= aLast; ++anIdx1)
     {
       if (!aScope.More())
       {
@@ -183,11 +183,11 @@ struct VertexFunctor
 
       const TopoDS_Vertex& aVertex1 = TopoDS::Vertex(Map1->FindKey(anIdx1));
       const gp_Pnt         aPoint1  = BRep_Tool::Pnt(aVertex1);
-      for (Standard_Integer anIdx2 = 1; anIdx2 <= aCount2; ++anIdx2)
+      for (int anIdx2 = 1; anIdx2 <= aCount2; ++anIdx2)
       {
         const TopoDS_Vertex& aVertex2 = TopoDS::Vertex(Map2->FindKey(anIdx2));
         const gp_Pnt         aPoint2  = BRep_Tool::Pnt(aVertex2);
-        const Standard_Real  aDist    = aPoint1.Distance(aPoint2);
+        const double         aDist    = aPoint1.Distance(aPoint2);
         {
           if (aDist < Solution.Dist[theIndex] - Eps)
           {
@@ -218,40 +218,40 @@ struct VertexFunctor
     }
   }
 
-  NCollection_Array1<IndexBand>*            BandArray;
-  mutable ThreadSolution                    Solution;
-  const TopTools_IndexedMapOfShape*         Map1;
-  const TopTools_IndexedMapOfShape*         Map2;
-  Message_ProgressScope                     Scope;
-  NCollection_Array1<Message_ProgressRange> Ranges;
-  Standard_Real                             Eps;
-  Standard_Real                             StartDist;
+  NCollection_Array1<IndexBand>*                                       BandArray;
+  mutable ThreadSolution                                               Solution;
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* Map1;
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* Map2;
+  Message_ProgressScope                                                Scope;
+  NCollection_Array1<Message_ProgressRange>                            Ranges;
+  double                                                               Eps;
+  double                                                               StartDist;
 };
 
 //=================================================================================================
 
-Standard_Boolean BRepExtrema_DistShapeShape::DistanceVertVert(
-  const TopTools_IndexedMapOfShape& theMap1,
-  const TopTools_IndexedMapOfShape& theMap2,
-  const Message_ProgressRange&      theRange)
+bool BRepExtrema_DistShapeShape::DistanceVertVert(
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap1,
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap2,
+  const Message_ProgressRange&                                         theRange)
 {
-  const Standard_Integer        aCount1      = theMap1.Extent();
-  const Standard_Integer        aMinTaskSize = aCount1 < 10 ? aCount1 : 10;
-  const Handle(OSD_ThreadPool)& aThreadPool  = OSD_ThreadPool::DefaultPool();
-  const Standard_Integer        aNbThreads   = aThreadPool->NbThreads();
-  Standard_Integer              aNbTasks     = aNbThreads;
-  Standard_Integer              aTaskSize = (Standard_Integer)std::ceil((double)aCount1 / aNbTasks);
+  const int                          aCount1      = theMap1.Extent();
+  const int                          aMinTaskSize = aCount1 < 10 ? aCount1 : 10;
+  const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
+  const int                          aNbThreads   = aThreadPool->NbThreads();
+  int                                aNbTasks     = aNbThreads;
+  int                                aTaskSize    = (int)std::ceil((double)aCount1 / aNbTasks);
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
-    aNbTasks  = (Standard_Integer)std::ceil((double)aCount1 / aTaskSize);
+    aNbTasks  = (int)std::ceil((double)aCount1 / aTaskSize);
   }
 
-  Standard_Integer              aFirstIndex(1);
+  int                           aFirstIndex(1);
   NCollection_Array1<IndexBand> aBandArray(0, aNbTasks - 1);
   Message_ProgressScope         aDistScope(theRange, NULL, 1);
 
-  for (Standard_Integer anI = 0; anI < aBandArray.Size(); ++anI)
+  for (int anI = 0; anI < aBandArray.Size(); ++anI)
   {
     if (aCount1 < aFirstIndex + aTaskSize - 1)
     {
@@ -270,11 +270,11 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceVertVert(
   OSD_Parallel::For(0, aNbTasks, aFunctor, !myIsMultiThread);
   if (!aDistScope.More())
   {
-    return Standard_False;
+    return false;
   }
-  for (Standard_Integer anI = 0; anI < aFunctor.Solution.Dist.Size(); ++anI)
+  for (int anI = 0; anI < aFunctor.Solution.Dist.Size(); ++anI)
   {
-    Standard_Real aDist = aFunctor.Solution.Dist[anI];
+    double aDist = aFunctor.Solution.Dist[anI];
     if (aDist < myDistRef - myEps)
     {
       mySolutionsShape1.Clear();
@@ -290,7 +290,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceVertVert(
       myDistRef = aDist;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -310,17 +310,17 @@ struct DistanceFunctor
         Eps(Precision::Confusion()),
         StartDist(0.0)
   {
-    for (Standard_Integer i = 0; i < theArrayOfArrays->Size(); ++i)
+    for (int i = 0; i < theArrayOfArrays->Size(); ++i)
     {
       Ranges.SetValue(i, Scope.Next());
     }
   }
 
-  void operator()(const Standard_Integer theIndex) const
+  void operator()(const int theIndex) const
   {
     Message_ProgressScope aScope(Ranges[theIndex], NULL, ArrayOfArrays->Value(theIndex).Size());
     Solution.Dist[theIndex] = StartDist;
-    for (Standard_Integer i = 0; i < ArrayOfArrays->Value(theIndex).Size(); i++)
+    for (int i = 0; i < ArrayOfArrays->Value(theIndex).Size(); i++)
     {
       if (!aScope.More())
       {
@@ -342,7 +342,7 @@ struct DistanceFunctor
                                        aBox2,
                                        Solution.Dist[theIndex],
                                        Eps);
-      const Standard_Real    aDist = aDistTool.DistValue();
+      const double           aDist = aDistTool.DistValue();
       if (aDistTool.IsDone())
       {
         if (aDist < Solution.Dist[theIndex] - Eps)
@@ -350,8 +350,8 @@ struct DistanceFunctor
           Solution.Shape1[theIndex].Clear();
           Solution.Shape2[theIndex].Clear();
 
-          BRepExtrema_SeqOfSolution aSeq1 = aDistTool.Seq1Value();
-          BRepExtrema_SeqOfSolution aSeq2 = aDistTool.Seq2Value();
+          NCollection_Sequence<BRepExtrema_SolutionElem> aSeq1 = aDistTool.Seq1Value();
+          NCollection_Sequence<BRepExtrema_SolutionElem> aSeq2 = aDistTool.Seq2Value();
 
           Solution.Shape1[theIndex].Append(aSeq1);
           Solution.Shape2[theIndex].Append(aSeq2);
@@ -360,8 +360,8 @@ struct DistanceFunctor
         }
         else if (std::abs(aDist - Solution.Dist[theIndex]) < Eps)
         {
-          BRepExtrema_SeqOfSolution aSeq1 = aDistTool.Seq1Value();
-          BRepExtrema_SeqOfSolution aSeq2 = aDistTool.Seq2Value();
+          NCollection_Sequence<BRepExtrema_SolutionElem> aSeq1 = aDistTool.Seq1Value();
+          NCollection_Sequence<BRepExtrema_SolutionElem> aSeq2 = aDistTool.Seq2Value();
 
           Solution.Shape1[theIndex].Append(aSeq1);
           Solution.Shape2[theIndex].Append(aSeq2);
@@ -374,16 +374,16 @@ struct DistanceFunctor
     }
   }
 
-  NCollection_Array1<NCollection_Array1<BRepExtrema_CheckPair>>* ArrayOfArrays;
-  mutable ThreadSolution                                         Solution;
-  const TopTools_IndexedMapOfShape*                              Map1;
-  const TopTools_IndexedMapOfShape*                              Map2;
-  const Bnd_Array1OfBox*                                         LBox1;
-  const Bnd_Array1OfBox*                                         LBox2;
-  Message_ProgressScope                                          Scope;
-  NCollection_Array1<Message_ProgressRange>                      Ranges;
-  Standard_Real                                                  Eps;
-  Standard_Real                                                  StartDist;
+  NCollection_Array1<NCollection_Array1<BRepExtrema_CheckPair>>*       ArrayOfArrays;
+  mutable ThreadSolution                                               Solution;
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* Map1;
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* Map2;
+  const NCollection_Array1<Bnd_Box>*                                   LBox1;
+  const NCollection_Array1<Bnd_Box>*                                   LBox2;
+  Message_ProgressScope                                                Scope;
+  NCollection_Array1<Message_ProgressRange>                            Ranges;
+  double                                                               Eps;
+  double                                                               StartDist;
 };
 
 //=================================================================================================
@@ -401,20 +401,20 @@ struct DistancePairFunctor
         DistRef(0),
         Eps(Precision::Confusion())
   {
-    for (Standard_Integer i = 0; i < theBandArray->Size(); ++i)
+    for (int i = 0; i < theBandArray->Size(); ++i)
     {
       Ranges.SetValue(i, Scope.Next());
     }
   }
 
-  void operator()(const Standard_Integer theIndex) const
+  void operator()(const int theIndex) const
   {
-    const Standard_Integer aFirst = BandArray->Value(theIndex).First;
-    const Standard_Integer aLast  = BandArray->Value(theIndex).Last;
+    const int aFirst = BandArray->Value(theIndex).First;
+    const int aLast  = BandArray->Value(theIndex).Last;
 
     Message_ProgressScope aScope(Ranges[theIndex], NULL, (double)aLast - aFirst);
 
-    for (Standard_Integer anIdx1 = aFirst; anIdx1 <= aLast; ++anIdx1)
+    for (int anIdx1 = aFirst; anIdx1 <= aLast; ++anIdx1)
     {
       if (!aScope.More())
       {
@@ -422,7 +422,7 @@ struct DistancePairFunctor
       }
       aScope.Next();
 
-      for (Standard_Integer anIdx2 = 1; anIdx2 <= LBox2->Size(); ++anIdx2)
+      for (int anIdx2 = 1; anIdx2 <= LBox2->Size(); ++anIdx2)
       {
         const Bnd_Box& aBox1 = LBox1->Value(anIdx1);
         const Bnd_Box& aBox2 = LBox2->Value(anIdx2);
@@ -431,7 +431,7 @@ struct DistancePairFunctor
           continue;
         }
 
-        const Standard_Real aDist = aBox1.Distance(aBox2);
+        const double aDist = aBox1.Distance(aBox2);
         if (aDist - DistRef < Eps)
         {
           PairList[theIndex].Append(BRepExtrema_CheckPair(anIdx1, anIdx2, aDist));
@@ -440,10 +440,10 @@ struct DistancePairFunctor
     }
   }
 
-  Standard_Integer ListSize()
+  int ListSize()
   {
-    Standard_Integer aSize(0);
-    for (Standard_Integer anI = PairList.Lower(); anI <= PairList.Upper(); ++anI)
+    int aSize(0);
+    for (int anI = PairList.Lower(); anI <= PairList.Upper(); ++anI)
     {
       aSize += PairList[anI].Size();
     }
@@ -452,48 +452,48 @@ struct DistancePairFunctor
 
   NCollection_Array1<IndexBand>*                                        BandArray;
   mutable NCollection_Array1<NCollection_Vector<BRepExtrema_CheckPair>> PairList;
-  const Bnd_Array1OfBox*                                                LBox1;
-  const Bnd_Array1OfBox*                                                LBox2;
+  const NCollection_Array1<Bnd_Box>*                                    LBox1;
+  const NCollection_Array1<Bnd_Box>*                                    LBox2;
   Message_ProgressScope                                                 Scope;
   NCollection_Array1<Message_ProgressRange>                             Ranges;
-  Standard_Real                                                         DistRef;
-  Standard_Real                                                         Eps;
+  double                                                                DistRef;
+  double                                                                Eps;
 };
 
 //=================================================================================================
 
-Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap(
-  const TopTools_IndexedMapOfShape& theMap1,
-  const TopTools_IndexedMapOfShape& theMap2,
-  const Bnd_Array1OfBox&            theLBox1,
-  const Bnd_Array1OfBox&            theLBox2,
-  const Message_ProgressRange&      theRange)
+bool BRepExtrema_DistShapeShape::DistanceMapMap(
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap1,
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap2,
+  const NCollection_Array1<Bnd_Box>&                                   theLBox1,
+  const NCollection_Array1<Bnd_Box>&                                   theLBox2,
+  const Message_ProgressRange&                                         theRange)
 {
-  const Standard_Integer aCount1 = theMap1.Extent();
-  const Standard_Integer aCount2 = theMap2.Extent();
+  const int aCount1 = theMap1.Extent();
+  const int aCount2 = theMap2.Extent();
 
   if (aCount1 == 0 || aCount2 == 0)
   {
-    return Standard_True;
+    return true;
   }
 
   Message_ProgressScope aTwinScope(theRange, NULL, 1.0);
 
-  const Handle(OSD_ThreadPool)& aThreadPool      = OSD_ThreadPool::DefaultPool();
-  const Standard_Integer        aNbThreads       = aThreadPool->NbThreads();
-  const Standard_Integer        aMinPairTaskSize = aCount1 < 10 ? aCount1 : 10;
-  Standard_Integer              aNbPairTasks     = aNbThreads;
-  Standard_Integer aPairTaskSize = (Standard_Integer)std::ceil((double)aCount1 / aNbPairTasks);
+  const occ::handle<OSD_ThreadPool>& aThreadPool      = OSD_ThreadPool::DefaultPool();
+  const int                          aNbThreads       = aThreadPool->NbThreads();
+  const int                          aMinPairTaskSize = aCount1 < 10 ? aCount1 : 10;
+  int                                aNbPairTasks     = aNbThreads;
+  int                                aPairTaskSize = (int)std::ceil((double)aCount1 / aNbPairTasks);
   if (aPairTaskSize < aMinPairTaskSize)
   {
     aPairTaskSize = aMinPairTaskSize;
-    aNbPairTasks  = (Standard_Integer)std::ceil((double)aCount1 / aPairTaskSize);
+    aNbPairTasks  = (int)std::ceil((double)aCount1 / aPairTaskSize);
   }
 
-  Standard_Integer              aFirstIndex(1);
+  int                           aFirstIndex(1);
   NCollection_Array1<IndexBand> aBandArray(0, aNbPairTasks - 1);
 
-  for (Standard_Integer anI = 0; anI < aBandArray.Size(); ++anI)
+  for (int anI = 0; anI < aBandArray.Size(); ++anI)
   {
     if (aCount1 < aFirstIndex + aPairTaskSize - 1)
     {
@@ -513,18 +513,18 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap(
   OSD_Parallel::For(0, aNbPairTasks, aPairFunctor, !myIsMultiThread);
   if (!aTwinScope.More())
   {
-    return Standard_False;
+    return false;
   }
-  Standard_Integer aListSize = aPairFunctor.ListSize();
+  int aListSize = aPairFunctor.ListSize();
   if (aListSize == 0)
   {
-    return Standard_True;
+    return true;
   }
   NCollection_Array1<BRepExtrema_CheckPair> aPairList(0, aListSize - 1);
-  Standard_Integer                          aListIndex(0);
-  for (Standard_Integer anI = 0; anI < aPairFunctor.PairList.Size(); ++anI)
+  int                                       aListIndex(0);
+  for (int anI = 0; anI < aPairFunctor.PairList.Size(); ++anI)
   {
-    for (Standard_Integer aJ = 0; aJ < aPairFunctor.PairList[anI].Size(); ++aJ)
+    for (int aJ = 0; aJ < aPairFunctor.PairList[anI].Size(); ++aJ)
     {
       aPairList[aListIndex] = aPairFunctor.PairList[anI][aJ];
       ++aListIndex;
@@ -533,9 +533,9 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap(
 
   std::stable_sort(aPairList.begin(), aPairList.end(), BRepExtrema_CheckPair_Comparator);
 
-  const Standard_Integer aMapSize  = aPairList.Size();
-  Standard_Integer       aNbTasks  = aMapSize < aNbThreads ? aMapSize : aNbThreads;
-  Standard_Integer       aTaskSize = (Standard_Integer)std::ceil((double)aMapSize / aNbTasks);
+  const int aMapSize  = aPairList.Size();
+  int       aNbTasks  = aMapSize < aNbThreads ? aMapSize : aNbThreads;
+  int       aTaskSize = (int)std::ceil((double)aMapSize / aNbTasks);
 
   NCollection_Array1<NCollection_Array1<BRepExtrema_CheckPair>> anArrayOfArray(0, aNbTasks - 1);
   // Since aPairList is sorted in ascending order of distances between Bnd_Boxes,
@@ -545,19 +545,19 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap(
   // some tasks should receive one BRepExtrema_CheckPair less than the rest.
   // aLastRowLimit defines the task number from which to start tasks containing
   // fewer BRepExtrema_CheckPair
-  Standard_Integer aLastRowLimit = ((aMapSize % aNbTasks) == 0) ? aNbTasks : (aMapSize % aNbTasks);
-  for (Standard_Integer anI = 0; anI < aTaskSize; ++anI)
+  int aLastRowLimit = ((aMapSize % aNbTasks) == 0) ? aNbTasks : (aMapSize % aNbTasks);
+  for (int anI = 0; anI < aTaskSize; ++anI)
   {
-    for (Standard_Integer aJ = 0; aJ < aNbTasks; ++aJ)
+    for (int aJ = 0; aJ < aNbTasks; ++aJ)
     {
       if (anI == 0)
       {
-        Standard_Integer aVectorSize = aTaskSize;
+        int aVectorSize = aTaskSize;
         if (aJ >= aLastRowLimit)
         {
           aVectorSize--;
         }
-        anArrayOfArray[aJ].Resize(0, aVectorSize - 1, Standard_False);
+        anArrayOfArray[aJ].Resize(0, aVectorSize - 1, false);
       }
       if (anI < anArrayOfArray[aJ].Size())
       {
@@ -580,12 +580,12 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap(
   OSD_Parallel::For(0, aNbTasks, aFunctor, !myIsMultiThread);
   if (!aTwinScope.More())
   {
-    return Standard_False;
+    return false;
   }
 
-  for (Standard_Integer anI = 0; anI < aFunctor.Solution.Dist.Size(); ++anI)
+  for (int anI = 0; anI < aFunctor.Solution.Dist.Size(); ++anI)
   {
-    Standard_Real aDist = aFunctor.Solution.Dist[anI];
+    double aDist = aFunctor.Solution.Dist[anI];
     if (aDist < myDistRef - myEps)
     {
       mySolutionsShape1.Clear();
@@ -604,21 +604,21 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap(
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape()
     : myDistRef(0.0),
-      myIsDone(Standard_False),
-      myInnerSol(Standard_False),
+      myIsDone(false),
+      myInnerSol(false),
       myEps(Precision::Confusion()),
-      myIsInitS1(Standard_False),
-      myIsInitS2(Standard_False),
+      myIsInitS1(false),
+      myIsInitS2(false),
       myFlag(Extrema_ExtFlag_MINMAX),
       myAlgo(Extrema_ExtAlgo_Grad),
-      myIsMultiThread(Standard_False)
+      myIsMultiThread(false)
 {
 }
 
@@ -630,14 +630,14 @@ BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape(const TopoDS_Shape&      
                                                        const Extrema_ExtAlgo        A,
                                                        const Message_ProgressRange& theRange)
     : myDistRef(0.0),
-      myIsDone(Standard_False),
-      myInnerSol(Standard_False),
+      myIsDone(false),
+      myInnerSol(false),
       myEps(Precision::Confusion()),
-      myIsInitS1(Standard_False),
-      myIsInitS2(Standard_False),
+      myIsInitS1(false),
+      myIsInitS2(false),
       myFlag(F),
       myAlgo(A),
-      myIsMultiThread(Standard_False)
+      myIsMultiThread(false)
 {
   LoadS1(Shape1);
   LoadS2(Shape2);
@@ -648,19 +648,19 @@ BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape(const TopoDS_Shape&      
 
 BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape(const TopoDS_Shape&          Shape1,
                                                        const TopoDS_Shape&          Shape2,
-                                                       const Standard_Real          theDeflection,
+                                                       const double                 theDeflection,
                                                        const Extrema_ExtFlag        F,
                                                        const Extrema_ExtAlgo        A,
                                                        const Message_ProgressRange& theRange)
     : myDistRef(0.0),
-      myIsDone(Standard_False),
-      myInnerSol(Standard_False),
+      myIsDone(false),
+      myInnerSol(false),
       myEps(theDeflection),
-      myIsInitS1(Standard_False),
-      myIsInitS2(Standard_False),
+      myIsInitS1(false),
+      myIsInitS2(false),
       myFlag(F),
       myAlgo(A),
-      myIsMultiThread(Standard_False)
+      myIsMultiThread(false)
 {
   LoadS1(Shape1);
   LoadS2(Shape2);
@@ -672,7 +672,7 @@ BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape(const TopoDS_Shape&      
 void BRepExtrema_DistShapeShape::LoadS1(const TopoDS_Shape& Shape1)
 {
   myShape1   = Shape1;
-  myIsInitS1 = Standard_False;
+  myIsInitS1 = false;
   Decomposition(Shape1, myMapV1, myMapE1, myMapF1);
 }
 
@@ -681,7 +681,7 @@ void BRepExtrema_DistShapeShape::LoadS1(const TopoDS_Shape& Shape1)
 void BRepExtrema_DistShapeShape::LoadS2(const TopoDS_Shape& Shape2)
 {
   myShape2   = Shape2;
-  myIsInitS2 = Standard_False;
+  myIsInitS2 = false;
   Decomposition(Shape2, myMapV2, myMapE2, myMapF2);
 }
 
@@ -701,19 +701,19 @@ struct TreatmentFunctor
         IsDone(NULL),
         Mutex()
   {
-    for (Standard_Integer i = 0; i < theArrayOfArrays->Size(); ++i)
+    for (int i = 0; i < theArrayOfArrays->Size(); ++i)
     {
       Ranges.SetValue(i, Scope.Next());
     }
   }
 
-  void operator()(const Standard_Integer theIndex) const
+  void operator()(const int theIndex) const
   {
-    const Standard_Real   aTolerance = 0.001;
+    const double          aTolerance = 0.001;
     Message_ProgressScope aScope(Ranges[theIndex], NULL, ArrayOfArrays->Value(theIndex).Size());
     BRepClass3d_SolidClassifier aClassifier(Shape);
 
-    for (Standard_Integer i = 0; i < ArrayOfArrays->Value(theIndex).Size(); i++)
+    for (int i = 0; i < ArrayOfArrays->Value(theIndex).Size(); i++)
     {
       if (!aScope.More())
       {
@@ -744,12 +744,12 @@ struct TreatmentFunctor
   }
 
   NCollection_Array1<NCollection_Array1<TopoDS_Shape>>* ArrayOfArrays;
-  BRepExtrema_SeqOfSolution*                            SolutionsShape1;
-  BRepExtrema_SeqOfSolution*                            SolutionsShape2;
+  NCollection_Sequence<BRepExtrema_SolutionElem>*       SolutionsShape1;
+  NCollection_Sequence<BRepExtrema_SolutionElem>*       SolutionsShape2;
   TopoDS_Shape                                          Shape;
   Message_ProgressScope                                 Scope;
   NCollection_Array1<Message_ProgressRange>             Ranges;
-  Standard_Real*                                        DistRef;
+  double*                                               DistRef;
   std::atomic<bool>*                                    InnerSol;
   std::atomic<bool>*                                    IsDone;
   std::unique_ptr<std::mutex>                           Mutex;
@@ -757,37 +757,37 @@ struct TreatmentFunctor
 
 //=================================================================================================
 
-Standard_Boolean BRepExtrema_DistShapeShape::SolidTreatment(
-  const TopoDS_Shape&               theShape,
-  const TopTools_IndexedMapOfShape& theVertexMap,
-  const Message_ProgressRange&      theRange)
+bool BRepExtrema_DistShapeShape::SolidTreatment(
+  const TopoDS_Shape&                                                  theShape,
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theVertexMap,
+  const Message_ProgressRange&                                         theRange)
 {
-  const Standard_Integer        aMapSize     = theVertexMap.Extent();
-  const Standard_Integer        aMinTaskSize = 3;
-  const Handle(OSD_ThreadPool)& aThreadPool  = OSD_ThreadPool::DefaultPool();
-  const Standard_Integer        aNbThreads   = aThreadPool->NbThreads();
-  Standard_Integer              aNbTasks     = aNbThreads * 10;
-  Standard_Integer aTaskSize = (Standard_Integer)std::ceil((double)aMapSize / aNbTasks);
+  const int                          aMapSize     = theVertexMap.Extent();
+  const int                          aMinTaskSize = 3;
+  const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
+  const int                          aNbThreads   = aThreadPool->NbThreads();
+  int                                aNbTasks     = aNbThreads * 10;
+  int                                aTaskSize    = (int)std::ceil((double)aMapSize / aNbTasks);
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
-    aNbTasks  = (Standard_Integer)std::ceil((double)aMapSize / aTaskSize);
+    aNbTasks  = (int)std::ceil((double)aMapSize / aTaskSize);
   }
 
   NCollection_Array1<NCollection_Array1<TopoDS_Shape>> anArrayOfArray(0, aNbTasks - 1);
-  for (Standard_Integer anI = 1; anI <= aMapSize; ++anI)
+  for (int anI = 1; anI <= aMapSize; ++anI)
   {
-    Standard_Integer aVectIndex  = (anI - 1) / aTaskSize;
-    Standard_Integer aShapeIndex = (anI - 1) % aTaskSize;
+    int aVectIndex  = (anI - 1) / aTaskSize;
+    int aShapeIndex = (anI - 1) % aTaskSize;
     if (aShapeIndex == 0)
     {
-      Standard_Integer aVectorSize = aTaskSize;
-      Standard_Integer aTailSize   = aMapSize - aVectIndex * aTaskSize;
+      int aVectorSize = aTaskSize;
+      int aTailSize   = aMapSize - aVectIndex * aTaskSize;
       if (aTailSize < aTaskSize)
       {
         aVectorSize = aTailSize;
       }
-      anArrayOfArray[aVectIndex].Resize(0, aVectorSize - 1, Standard_False);
+      anArrayOfArray[aVectIndex].Resize(0, aVectorSize - 1, false);
     }
     anArrayOfArray[aVectIndex][aShapeIndex] = theVertexMap(anI);
   }
@@ -817,38 +817,38 @@ Standard_Boolean BRepExtrema_DistShapeShape::SolidTreatment(
 
   if (!aScope.More())
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepExtrema_DistShapeShape::Perform(const Message_ProgressRange& theRange)
+bool BRepExtrema_DistShapeShape::Perform(const Message_ProgressRange& theRange)
 {
-  myIsDone   = Standard_False;
-  myInnerSol = Standard_False;
+  myIsDone   = false;
+  myInnerSol = false;
   mySolutionsShape1.Clear();
   mySolutionsShape2.Clear();
 
   if (myShape1.IsNull() || myShape2.IsNull())
-    return Standard_False;
+    return false;
 
   // Treatment of solids
-  Standard_Boolean anIsSolid1 =
+  bool anIsSolid1 =
     (myShape1.ShapeType() == TopAbs_SOLID) || (myShape1.ShapeType() == TopAbs_COMPSOLID);
-  Standard_Boolean anIsSolid2 =
+  bool anIsSolid2 =
     (myShape2.ShapeType() == TopAbs_SOLID) || (myShape2.ShapeType() == TopAbs_COMPSOLID);
-  Standard_Integer aRootStepsNum = 9; // By num of DistanceMapMap calls
-  aRootStepsNum                  = anIsSolid1 ? aRootStepsNum + 1 : aRootStepsNum;
-  aRootStepsNum                  = anIsSolid2 ? aRootStepsNum + 1 : aRootStepsNum;
+  int aRootStepsNum = 9; // By num of DistanceMapMap calls
+  aRootStepsNum     = anIsSolid1 ? aRootStepsNum + 1 : aRootStepsNum;
+  aRootStepsNum     = anIsSolid2 ? aRootStepsNum + 1 : aRootStepsNum;
   Message_ProgressScope aRootScope(theRange, "calculating distance", aRootStepsNum);
 
   if (anIsSolid1)
   {
     if (!SolidTreatment(myShape1, myMapV2, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -856,7 +856,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform(const Message_ProgressRange
   {
     if (!SolidTreatment(myShape2, myMapV1, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -866,44 +866,44 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform(const Message_ProgressRange
     {
       if (!myMapV1.IsEmpty())
       {
-        myBV1.Resize(1, myMapV1.Extent(), Standard_False);
+        myBV1.Resize(1, myMapV1.Extent(), false);
       }
       if (!myMapE1.IsEmpty())
       {
-        myBE1.Resize(1, myMapE1.Extent(), Standard_False);
+        myBE1.Resize(1, myMapE1.Extent(), false);
       }
       if (!myMapF1.IsEmpty())
       {
-        myBF1.Resize(1, myMapF1.Extent(), Standard_False);
+        myBF1.Resize(1, myMapF1.Extent(), false);
       }
 
       BoxCalculation(myMapV1, myBV1);
       BoxCalculation(myMapE1, myBE1);
       BoxCalculation(myMapF1, myBF1);
 
-      myIsInitS1 = Standard_True;
+      myIsInitS1 = true;
     }
 
     if (!myIsInitS2) // rebuild cached data for 2nd shape
     {
       if (!myMapV2.IsEmpty())
       {
-        myBV2.Resize(1, myMapV2.Extent(), Standard_False);
+        myBV2.Resize(1, myMapV2.Extent(), false);
       }
       if (!myMapE2.IsEmpty())
       {
-        myBE2.Resize(1, myMapE2.Extent(), Standard_False);
+        myBE2.Resize(1, myMapE2.Extent(), false);
       }
       if (!myMapF2.IsEmpty())
       {
-        myBF2.Resize(1, myMapF2.Extent(), Standard_False);
+        myBF2.Resize(1, myMapF2.Extent(), false);
       }
 
       BoxCalculation(myMapV2, myBV2);
       BoxCalculation(myMapE2, myBE2);
       BoxCalculation(myMapF2, myBF2);
 
-      myIsInitS2 = Standard_True;
+      myIsInitS2 = true;
     }
 
     if (myMapV1.Extent() && myMapV2.Extent())
@@ -917,47 +917,47 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform(const Message_ProgressRange
 
     if (!DistanceVertVert(myMapV1, myMapV2, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
     if (!DistanceMapMap(myMapV1, myMapE2, myBV1, myBE2, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
     if (!DistanceMapMap(myMapE1, myMapV2, myBE1, myBV2, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
     if (!DistanceMapMap(myMapV1, myMapF2, myBV1, myBF2, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
     if (!DistanceMapMap(myMapF1, myMapV2, myBF1, myBV2, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
     if (!DistanceMapMap(myMapE1, myMapE2, myBE1, myBE2, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
     if (!DistanceMapMap(myMapE1, myMapF2, myBE1, myBF2, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
     if (!DistanceMapMap(myMapF1, myMapE2, myBF1, myBE2, aRootScope.Next()))
     {
-      return Standard_False;
+      return false;
     }
 
     if (std::abs(myDistRef) > myEps)
     {
       if (!DistanceMapMap(myMapF1, myMapF2, myBF1, myBF2, aRootScope.Next()))
       {
-        return Standard_False;
+        return false;
       }
     }
 
     //  Modified by Sergey KHROMOV - Tue Mar  6 11:55:03 2001 Begin
-    Standard_Integer i = 1;
+    int i = 1;
     for (; i <= mySolutionsShape1.Length(); i++)
       if (mySolutionsShape1.Value(i).Dist() > myDistRef + myEps)
       {
@@ -973,7 +973,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform(const Message_ProgressRange
 
 //=================================================================================================
 
-Standard_Real BRepExtrema_DistShapeShape::Value() const
+double BRepExtrema_DistShapeShape::Value() const
 {
   if (!myIsDone)
     throw StdFail_NotDone("BRepExtrema_DistShapeShape::Value: There's no solution ");
@@ -983,7 +983,7 @@ Standard_Real BRepExtrema_DistShapeShape::Value() const
 
 //=================================================================================================
 
-TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape1(const Standard_Integer N) const
+TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape1(const int N) const
 {
   if (!myIsDone)
     throw StdFail_NotDone("BRepExtrema_DistShapeShape::SupportOnShape1: There's no solution ");
@@ -1003,7 +1003,7 @@ TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape1(const Standard_Integer 
 
 //=================================================================================================
 
-TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape2(const Standard_Integer N) const
+TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape2(const int N) const
 {
   if (!myIsDone)
     throw StdFail_NotDone("BRepExtrema_DistShapeShape::SupportOnShape2: There's no solution ");
@@ -1023,7 +1023,7 @@ TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape2(const Standard_Integer 
 
 //=================================================================================================
 
-void BRepExtrema_DistShapeShape::ParOnEdgeS1(const Standard_Integer N, Standard_Real& t) const
+void BRepExtrema_DistShapeShape::ParOnEdgeS1(const int N, double& t) const
 {
   if (!myIsDone)
     throw StdFail_NotDone("BRepExtrema_DistShapeShape::ParOnEdgeS1: There's no solution");
@@ -1038,7 +1038,7 @@ void BRepExtrema_DistShapeShape::ParOnEdgeS1(const Standard_Integer N, Standard_
 
 //=================================================================================================
 
-void BRepExtrema_DistShapeShape::ParOnEdgeS2(const Standard_Integer N, Standard_Real& t) const
+void BRepExtrema_DistShapeShape::ParOnEdgeS2(const int N, double& t) const
 {
   if (!myIsDone)
     throw StdFail_NotDone("BRepExtrema_DistShapeShape::ParOnEdgeS2: There's no solution");
@@ -1053,9 +1053,7 @@ void BRepExtrema_DistShapeShape::ParOnEdgeS2(const Standard_Integer N, Standard_
 
 //=================================================================================================
 
-void BRepExtrema_DistShapeShape::ParOnFaceS1(const Standard_Integer N,
-                                             Standard_Real&         u,
-                                             Standard_Real&         v) const
+void BRepExtrema_DistShapeShape::ParOnFaceS1(const int N, double& u, double& v) const
 {
   if (!myIsDone)
     throw StdFail_NotDone("BRepExtrema_DistShapeShape::ParOnFaceS1: There's no solution");
@@ -1070,9 +1068,7 @@ void BRepExtrema_DistShapeShape::ParOnFaceS1(const Standard_Integer N,
 
 //=================================================================================================
 
-void BRepExtrema_DistShapeShape::ParOnFaceS2(const Standard_Integer N,
-                                             Standard_Real&         u,
-                                             Standard_Real&         v) const
+void BRepExtrema_DistShapeShape::ParOnFaceS2(const int N, double& u, double& v) const
 {
   if (!myIsDone)
     throw StdFail_NotDone("BRepExtrema_DistShapeShape::ParOnFaceS2: There's no solution");
@@ -1089,8 +1085,8 @@ void BRepExtrema_DistShapeShape::ParOnFaceS2(const Standard_Integer N,
 
 void BRepExtrema_DistShapeShape::Dump(Standard_OStream& o) const
 {
-  Standard_Integer i;
-  Standard_Real    r1, r2;
+  int    i;
+  double r1, r2;
 
   o << "the distance  value is :  " << Value() << std::endl;
   o << "the number of solutions is :" << NbSolution() << std::endl;
@@ -1098,10 +1094,10 @@ void BRepExtrema_DistShapeShape::Dump(Standard_OStream& o) const
   for (i = 1; i <= NbSolution(); i++)
   {
     o << "solution number " << i << ": " << std::endl;
-    o << "the type of the solution on the first shape is " << Standard_Integer(SupportTypeShape1(i))
+    o << "the type of the solution on the first shape is " << int(SupportTypeShape1(i))
       << std::endl;
-    o << "the type of the solution on the second shape is "
-      << Standard_Integer(SupportTypeShape2(i)) << std::endl;
+    o << "the type of the solution on the second shape is " << int(SupportTypeShape2(i))
+      << std::endl;
     o << "the coordinates of  the point on the first shape are: " << std::endl;
     o << "X=" << PointOnShape1(i).X() << " Y=" << PointOnShape1(i).Y()
       << " Z=" << PointOnShape1(i).Z() << std::endl;

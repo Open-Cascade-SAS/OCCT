@@ -30,8 +30,8 @@ struct RWObj_Material
   Quantity_Color          AmbientColor;
   Quantity_Color          DiffuseColor;
   Quantity_Color          SpecularColor;
-  Standard_ShortReal      Shininess;
-  Standard_ShortReal      Transparency;
+  float                   Shininess;
+  float                   Transparency;
 
   RWObj_Material()
       : AmbientColor(0.1, 0.1, 0.1, Quantity_TOC_sRGB),

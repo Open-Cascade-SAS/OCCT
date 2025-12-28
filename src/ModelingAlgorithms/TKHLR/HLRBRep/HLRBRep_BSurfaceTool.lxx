@@ -30,124 +30,124 @@
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_BSurfaceTool::FirstUParameter(const BRepAdaptor_Surface& Surf)
+inline double HLRBRep_BSurfaceTool::FirstUParameter(const BRepAdaptor_Surface& Surf)
 {
   return Surf.FirstUParameter();
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_BSurfaceTool::FirstVParameter(const BRepAdaptor_Surface& Surf)
+inline double HLRBRep_BSurfaceTool::FirstVParameter(const BRepAdaptor_Surface& Surf)
 {
   return Surf.FirstVParameter();
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_BSurfaceTool::LastUParameter(const BRepAdaptor_Surface& Surf)
+inline double HLRBRep_BSurfaceTool::LastUParameter(const BRepAdaptor_Surface& Surf)
 {
   return Surf.LastUParameter();
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_BSurfaceTool::LastVParameter(const BRepAdaptor_Surface& Surf)
+inline double HLRBRep_BSurfaceTool::LastVParameter(const BRepAdaptor_Surface& Surf)
 {
   return Surf.LastVParameter();
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_BSurfaceTool::NbUIntervals(const BRepAdaptor_Surface& Surf,
-                                                           const GeomAbs_Shape        S)
+inline int HLRBRep_BSurfaceTool::NbUIntervals(const BRepAdaptor_Surface& Surf,
+                                              const GeomAbs_Shape        S)
 {
   return Surf.NbUIntervals(S);
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_BSurfaceTool::NbVIntervals(const BRepAdaptor_Surface& Surf,
-                                                           const GeomAbs_Shape        S)
+inline int HLRBRep_BSurfaceTool::NbVIntervals(const BRepAdaptor_Surface& Surf,
+                                              const GeomAbs_Shape        S)
 {
   return Surf.NbVIntervals(S);
 }
 
 //=================================================================================================
 
-inline void HLRBRep_BSurfaceTool::UIntervals(const BRepAdaptor_Surface& Surf,
-                                             TColStd_Array1OfReal&      Tab,
-                                             const GeomAbs_Shape        S)
+inline void HLRBRep_BSurfaceTool::UIntervals(const BRepAdaptor_Surface&  Surf,
+                                             NCollection_Array1<double>& Tab,
+                                             const GeomAbs_Shape         S)
 {
   Surf.UIntervals(Tab, S);
 }
 
 //=================================================================================================
 
-inline void HLRBRep_BSurfaceTool::VIntervals(const BRepAdaptor_Surface& Surf,
-                                             TColStd_Array1OfReal&      Tab,
-                                             const GeomAbs_Shape        S)
+inline void HLRBRep_BSurfaceTool::VIntervals(const BRepAdaptor_Surface&  Surf,
+                                             NCollection_Array1<double>& Tab,
+                                             const GeomAbs_Shape         S)
 {
   Surf.VIntervals(Tab, S);
 }
 
 //=================================================================================================
 
-inline Handle(Adaptor3d_Surface) HLRBRep_BSurfaceTool::UTrim(const BRepAdaptor_Surface& Surf,
-                                                             const Standard_Real        F,
-                                                             const Standard_Real        L,
-                                                             const Standard_Real        Tol)
+inline occ::handle<Adaptor3d_Surface> HLRBRep_BSurfaceTool::UTrim(const BRepAdaptor_Surface& Surf,
+                                                                  const double               F,
+                                                                  const double               L,
+                                                                  const double               Tol)
 {
   return Surf.UTrim(F, L, Tol);
 }
 
 //=================================================================================================
 
-inline Handle(Adaptor3d_Surface) HLRBRep_BSurfaceTool::VTrim(const BRepAdaptor_Surface& Surf,
-                                                             const Standard_Real        F,
-                                                             const Standard_Real        L,
-                                                             const Standard_Real        Tol)
+inline occ::handle<Adaptor3d_Surface> HLRBRep_BSurfaceTool::VTrim(const BRepAdaptor_Surface& Surf,
+                                                                  const double               F,
+                                                                  const double               L,
+                                                                  const double               Tol)
 {
   return Surf.VTrim(F, L, Tol);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_BSurfaceTool::IsUClosed(const BRepAdaptor_Surface& S)
+inline bool HLRBRep_BSurfaceTool::IsUClosed(const BRepAdaptor_Surface& S)
 {
   return S.IsUClosed();
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_BSurfaceTool::IsVClosed(const BRepAdaptor_Surface& S)
+inline bool HLRBRep_BSurfaceTool::IsVClosed(const BRepAdaptor_Surface& S)
 {
   return S.IsVClosed();
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_BSurfaceTool::IsUPeriodic(const BRepAdaptor_Surface& S)
+inline bool HLRBRep_BSurfaceTool::IsUPeriodic(const BRepAdaptor_Surface& S)
 {
   return S.IsUPeriodic();
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_BSurfaceTool::UPeriod(const BRepAdaptor_Surface& S)
+inline double HLRBRep_BSurfaceTool::UPeriod(const BRepAdaptor_Surface& S)
 {
   return S.UPeriod();
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_BSurfaceTool::IsVPeriodic(const BRepAdaptor_Surface& S)
+inline bool HLRBRep_BSurfaceTool::IsVPeriodic(const BRepAdaptor_Surface& S)
 {
   return S.IsVPeriodic();
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_BSurfaceTool::VPeriod(const BRepAdaptor_Surface& S)
+inline double HLRBRep_BSurfaceTool::VPeriod(const BRepAdaptor_Surface& S)
 {
   return S.VPeriod();
 }
@@ -155,8 +155,8 @@ inline Standard_Real HLRBRep_BSurfaceTool::VPeriod(const BRepAdaptor_Surface& S)
 //=================================================================================================
 
 inline gp_Pnt HLRBRep_BSurfaceTool::Value(const BRepAdaptor_Surface& S,
-                                          const Standard_Real        U,
-                                          const Standard_Real        V)
+                                          const double               U,
+                                          const double               V)
 {
   return S.Value(U, V);
 }
@@ -164,8 +164,8 @@ inline gp_Pnt HLRBRep_BSurfaceTool::Value(const BRepAdaptor_Surface& S,
 //=================================================================================================
 
 inline void HLRBRep_BSurfaceTool::D0(const BRepAdaptor_Surface& S,
-                                     const Standard_Real        U,
-                                     const Standard_Real        V,
+                                     const double               U,
+                                     const double               V,
                                      gp_Pnt&                    P)
 {
   S.D0(U, V, P);
@@ -174,8 +174,8 @@ inline void HLRBRep_BSurfaceTool::D0(const BRepAdaptor_Surface& S,
 //=================================================================================================
 
 inline void HLRBRep_BSurfaceTool::D1(const BRepAdaptor_Surface& S,
-                                     const Standard_Real        U,
-                                     const Standard_Real        V,
+                                     const double               U,
+                                     const double               V,
                                      gp_Pnt&                    P,
                                      gp_Vec&                    D1U,
                                      gp_Vec&                    D1V)
@@ -186,8 +186,8 @@ inline void HLRBRep_BSurfaceTool::D1(const BRepAdaptor_Surface& S,
 //=================================================================================================
 
 inline void HLRBRep_BSurfaceTool::D2(const BRepAdaptor_Surface& S,
-                                     const Standard_Real        U,
-                                     const Standard_Real        V,
+                                     const double               U,
+                                     const double               V,
                                      gp_Pnt&                    P,
                                      gp_Vec&                    D1U,
                                      gp_Vec&                    D1V,
@@ -201,8 +201,8 @@ inline void HLRBRep_BSurfaceTool::D2(const BRepAdaptor_Surface& S,
 //=================================================================================================
 
 inline void HLRBRep_BSurfaceTool::D3(const BRepAdaptor_Surface& S,
-                                     const Standard_Real        U,
-                                     const Standard_Real        V,
+                                     const double               U,
+                                     const double               V,
                                      gp_Pnt&                    P,
                                      gp_Vec&                    D1U,
                                      gp_Vec&                    D1V,
@@ -220,26 +220,24 @@ inline void HLRBRep_BSurfaceTool::D3(const BRepAdaptor_Surface& S,
 //=================================================================================================
 
 inline gp_Vec HLRBRep_BSurfaceTool::DN(const BRepAdaptor_Surface& S,
-                                       const Standard_Real        U,
-                                       const Standard_Real        V,
-                                       const Standard_Integer     Nu,
-                                       const Standard_Integer     Nv)
+                                       const double               U,
+                                       const double               V,
+                                       const int                  Nu,
+                                       const int                  Nv)
 {
   return S.DN(U, V, Nu, Nv);
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_BSurfaceTool::UResolution(const BRepAdaptor_Surface& S,
-                                                       const Standard_Real        R3d)
+inline double HLRBRep_BSurfaceTool::UResolution(const BRepAdaptor_Surface& S, const double R3d)
 {
   return S.UResolution(R3d);
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_BSurfaceTool::VResolution(const BRepAdaptor_Surface& S,
-                                                       const Standard_Real        R3d)
+inline double HLRBRep_BSurfaceTool::VResolution(const BRepAdaptor_Surface& S, const double R3d)
 {
   return S.VResolution(R3d);
 }
@@ -288,14 +286,14 @@ inline gp_Torus HLRBRep_BSurfaceTool::Torus(const BRepAdaptor_Surface& S)
 
 //=================================================================================================
 
-inline Handle(Geom_BezierSurface) HLRBRep_BSurfaceTool::Bezier(const BRepAdaptor_Surface& S)
+inline occ::handle<Geom_BezierSurface> HLRBRep_BSurfaceTool::Bezier(const BRepAdaptor_Surface& S)
 {
   return (S.Bezier());
 }
 
 //=================================================================================================
 
-inline Handle(Geom_BSplineSurface) HLRBRep_BSurfaceTool::BSpline(const BRepAdaptor_Surface& S)
+inline occ::handle<Geom_BSplineSurface> HLRBRep_BSurfaceTool::BSpline(const BRepAdaptor_Surface& S)
 {
   return (S.BSpline());
 }
@@ -316,7 +314,7 @@ inline gp_Dir HLRBRep_BSurfaceTool::Direction(const BRepAdaptor_Surface& S)
 
 //=================================================================================================
 
-inline Handle(Adaptor3d_Curve) HLRBRep_BSurfaceTool::BasisCurve(const BRepAdaptor_Surface& S)
+inline occ::handle<Adaptor3d_Curve> HLRBRep_BSurfaceTool::BasisCurve(const BRepAdaptor_Surface& S)
 {
   return (S.BasisCurve());
 }
@@ -337,56 +335,56 @@ inline GeomAbs_Shape HLRBRep_BSurfaceTool::VContinuity(const BRepAdaptor_Surface
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_BSurfaceTool::UDegree(const BRepAdaptor_Surface& S)
+inline int HLRBRep_BSurfaceTool::UDegree(const BRepAdaptor_Surface& S)
 {
   return (S.UDegree());
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_BSurfaceTool::NbUPoles(const BRepAdaptor_Surface& S)
+inline int HLRBRep_BSurfaceTool::NbUPoles(const BRepAdaptor_Surface& S)
 {
   return (S.NbUPoles());
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_BSurfaceTool::NbUKnots(const BRepAdaptor_Surface& S)
+inline int HLRBRep_BSurfaceTool::NbUKnots(const BRepAdaptor_Surface& S)
 {
   return (S.NbUKnots());
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_BSurfaceTool::IsURational(const BRepAdaptor_Surface& S)
+inline bool HLRBRep_BSurfaceTool::IsURational(const BRepAdaptor_Surface& S)
 {
   return (S.IsURational());
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_BSurfaceTool::VDegree(const BRepAdaptor_Surface& S)
+inline int HLRBRep_BSurfaceTool::VDegree(const BRepAdaptor_Surface& S)
 {
   return (S.VDegree());
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_BSurfaceTool::NbVPoles(const BRepAdaptor_Surface& S)
+inline int HLRBRep_BSurfaceTool::NbVPoles(const BRepAdaptor_Surface& S)
 {
   return (S.NbVPoles());
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_BSurfaceTool::NbVKnots(const BRepAdaptor_Surface& S)
+inline int HLRBRep_BSurfaceTool::NbVKnots(const BRepAdaptor_Surface& S)
 {
   return (S.NbVKnots());
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_BSurfaceTool::IsVRational(const BRepAdaptor_Surface& S)
+inline bool HLRBRep_BSurfaceTool::IsVRational(const BRepAdaptor_Surface& S)
 {
   return (S.IsVRational());
 }

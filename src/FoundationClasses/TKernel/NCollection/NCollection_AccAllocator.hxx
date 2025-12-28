@@ -43,13 +43,13 @@ class NCollection_AccAllocator : public NCollection_BaseAllocator
   // --------- PUBLIC CONSTANTS ---------
 public:
   //! Alignment of all allocated objects: 4 bytes
-  static constexpr Standard_Size Align = 4;
+  static constexpr size_t Align = 4;
 
   //! Default block size
-  static constexpr Standard_Size DefaultBlockSize = 24600;
+  static constexpr size_t DefaultBlockSize = 24600;
 
   //! Number of last blocks to check for free space
-  static constexpr Standard_Integer MaxLookupBlocks = 16;
+  static constexpr int MaxLookupBlocks = 16;
 
   // ---------- PUBLIC METHODS ----------
 public:
@@ -60,21 +60,21 @@ public:
   Standard_EXPORT ~NCollection_AccAllocator();
 
   //! Allocate memory with given size
-  Standard_EXPORT virtual void* Allocate(const size_t theSize) Standard_OVERRIDE;
+  Standard_EXPORT virtual void* Allocate(const size_t theSize) override;
 
   //! Allocate memory with given size
-  void* AllocateOptimal(const size_t theSize) Standard_OVERRIDE { return Allocate(theSize); }
+  void* AllocateOptimal(const size_t theSize) override { return Allocate(theSize); }
 
   //! Free a previously allocated memory;
   //! memory is returned to the OS when all allocations in some block are freed
-  Standard_EXPORT virtual void Free(void* theAddress) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Free(void* theAddress) override;
 
   // --------- PROTECTED TYPES ---------
 protected:
   //! Size value aligned to a 4 byte boundary
   class AlignedSize
   {
-    Standard_Size myValue;
+    size_t myValue;
 
   public:
     constexpr AlignedSize() noexcept
@@ -82,18 +82,18 @@ protected:
     {
     }
 
-    constexpr AlignedSize(const Standard_Size theValue) noexcept
+    constexpr AlignedSize(const size_t theValue) noexcept
         : myValue((theValue + Align - 1) & ~(Align - 1))
     {
     }
 
-    constexpr operator Standard_Size() const noexcept { return myValue; }
+    constexpr operator size_t() const noexcept { return myValue; }
   };
 
   //! A pointer aligned to a 4 byte boundary
   class AlignedPtr
   {
-    Standard_Byte* myValue;
+    uint8_t* myValue;
 
   public:
     constexpr AlignedPtr() noexcept
@@ -101,14 +101,14 @@ protected:
     {
     }
 
-    AlignedPtr(const Standard_Address theValue) noexcept
-        : myValue((Standard_Byte*)((Standard_Size)theValue & ~(Align - 1)))
+    AlignedPtr(void* const theValue) noexcept
+        : myValue((uint8_t*)((size_t)theValue & ~(Align - 1)))
     {
     }
 
-    operator Standard_Address() const noexcept { return myValue; }
+    operator void*() const noexcept { return myValue; }
 
-    operator Standard_Byte*() const noexcept { return myValue; }
+    operator uint8_t*() const noexcept { return myValue; }
 
     AlignedPtr operator-(const AlignedSize theValue) const noexcept { return myValue - theValue; }
 
@@ -122,7 +122,7 @@ protected:
   //! A key for the map of blocks
   struct Key
   {
-    Standard_Size Value;
+    size_t Value;
   };
 
   //! Key hasher
@@ -143,14 +143,12 @@ protected:
   //! Descriptor of a block
   struct Block
   {
-    Standard_Address address;
-    AlignedPtr       allocStart;
-    Block*           prevBlock;
-    Standard_Integer allocCount;
+    void*      address;
+    AlignedPtr allocStart;
+    Block*     prevBlock;
+    int        allocCount;
 
-    Block(const Standard_Address theAddress,
-          const Standard_Size    theSize,
-          Block*                 thePrevBlock = 0L) noexcept
+    Block(void* const theAddress, const size_t theSize, Block* thePrevBlock = 0L) noexcept
         : address(theAddress),
           prevBlock(thePrevBlock),
           allocCount(0)
@@ -158,15 +156,9 @@ protected:
       SetFreeSize(theSize);
     }
 
-    void SetFreeSize(const Standard_Size theSize) noexcept
-    {
-      allocStart = (Standard_Byte*)address + theSize;
-    }
+    void SetFreeSize(const size_t theSize) noexcept { allocStart = (uint8_t*)address + theSize; }
 
-    Standard_Size FreeSize() const noexcept
-    {
-      return (Standard_Byte*)allocStart - (Standard_Byte*)address;
-    }
+    size_t FreeSize() const noexcept { return (uint8_t*)allocStart - (uint8_t*)address; }
 
     AlignedPtr Allocate(const AlignedSize theSize) noexcept
     {
@@ -176,23 +168,23 @@ protected:
 
     void Free() { allocCount--; }
 
-    Standard_Boolean IsEmpty() const noexcept { return allocCount == 0; }
+    bool IsEmpty() const noexcept { return allocCount == 0; }
   };
 
   // --------- PROTECTED METHODS ---------
 protected:
   //! Calculate a key for the data map basing on the given address
-  inline Key getKey(const Standard_Address theAddress) const noexcept
+  inline Key getKey(void* const theAddress) const noexcept
   {
-    Key aKey = {(Standard_Size)theAddress / myBlockSize};
+    Key aKey = {(size_t)theAddress / myBlockSize};
     return aKey;
   }
 
   //! Find a block that the given allocation unit belongs to
-  Standard_EXPORT Block* findBlock(const Standard_Address theAddress, Key& theKey) noexcept;
+  Standard_EXPORT Block* findBlock(void* const theAddress, Key& theKey) noexcept;
 
   //! Allocate a new block and return a pointer to it
-  Standard_EXPORT Block* allocateNewBlock(const Standard_Size theSize);
+  Standard_EXPORT Block* allocateNewBlock(const size_t theSize);
 
   // --------- PROHIBITED METHODS ---------
 private:
@@ -211,6 +203,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(NCollection_AccAllocator, NCollection_BaseAllocator)
-
 #endif

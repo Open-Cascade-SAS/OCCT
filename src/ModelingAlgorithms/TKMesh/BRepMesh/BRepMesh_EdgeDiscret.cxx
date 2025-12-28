@@ -37,22 +37,22 @@ BRepMesh_EdgeDiscret::~BRepMesh_EdgeDiscret() {}
 
 //=================================================================================================
 
-Handle(IMeshTools_CurveTessellator) BRepMesh_EdgeDiscret::CreateEdgeTessellator(
+occ::handle<IMeshTools_CurveTessellator> BRepMesh_EdgeDiscret::CreateEdgeTessellator(
   const IMeshData::IEdgeHandle& theDEdge,
   const IMeshTools_Parameters&  theParameters,
-  const Standard_Integer        theMinPointsNb)
+  const int                     theMinPointsNb)
 {
   return new BRepMesh_CurveTessellator(theDEdge, theParameters, theMinPointsNb);
 }
 
 //=================================================================================================
 
-Handle(IMeshTools_CurveTessellator) BRepMesh_EdgeDiscret::CreateEdgeTessellator(
+occ::handle<IMeshTools_CurveTessellator> BRepMesh_EdgeDiscret::CreateEdgeTessellator(
   const IMeshData::IEdgeHandle& theDEdge,
   const TopAbs_Orientation      theOrientation,
   const IMeshData::IFaceHandle& theDFace,
   const IMeshTools_Parameters&  theParameters,
-  const Standard_Integer        theMinPointsNb)
+  const int                     theMinPointsNb)
 {
   return theDEdge->GetSameParam()
            ? new BRepMesh_CurveTessellator(theDEdge, theParameters, theMinPointsNb)
@@ -65,7 +65,7 @@ Handle(IMeshTools_CurveTessellator) BRepMesh_EdgeDiscret::CreateEdgeTessellator(
 
 //=================================================================================================
 
-Handle(IMeshTools_CurveTessellator) BRepMesh_EdgeDiscret::CreateEdgeTessellationExtractor(
+occ::handle<IMeshTools_CurveTessellator> BRepMesh_EdgeDiscret::CreateEdgeTessellationExtractor(
   const IMeshData::IEdgeHandle& theDEdge,
   const IMeshData::IFaceHandle& theDFace)
 {
@@ -74,9 +74,9 @@ Handle(IMeshTools_CurveTessellator) BRepMesh_EdgeDiscret::CreateEdgeTessellation
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_EdgeDiscret::performInternal(const Handle(IMeshData_Model)& theModel,
-                                                       const IMeshTools_Parameters&   theParameters,
-                                                       const Message_ProgressRange&   theRange)
+bool BRepMesh_EdgeDiscret::performInternal(const occ::handle<IMeshData_Model>& theModel,
+                                           const IMeshTools_Parameters&        theParameters,
+                                           const Message_ProgressRange&        theRange)
 {
   (void)theRange;
   myModel      = theModel;
@@ -84,18 +84,18 @@ Standard_Boolean BRepMesh_EdgeDiscret::performInternal(const Handle(IMeshData_Mo
 
   if (myModel.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   OSD_Parallel::For(0, myModel->EdgesNb(), *this, !myParameters.InParallel);
 
   myModel.Nullify(); // Do not hold link to model.
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BRepMesh_EdgeDiscret::process(const Standard_Integer theEdgeIndex) const
+void BRepMesh_EdgeDiscret::process(const int theEdgeIndex) const
 {
   const IMeshData::IEdgeHandle& aDEdge = myModel->GetEdge(theEdgeIndex);
   try
@@ -104,16 +104,16 @@ void BRepMesh_EdgeDiscret::process(const Standard_Integer theEdgeIndex) const
 
     BRepMesh_Deflection::ComputeDeflection(aDEdge, myModel->GetMaxSize(), myParameters);
 
-    Handle(IMeshTools_CurveTessellator) aEdgeTessellator;
+    occ::handle<IMeshTools_CurveTessellator> aEdgeTessellator;
     if (!aDEdge->IsFree())
     {
       // Iterate over pcurves and check deflection on corresponding face.
-      Standard_Real    aMinDeflection  = RealLast();
-      Standard_Integer aMinPCurveIndex = -1;
-      for (Standard_Integer aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
+      double aMinDeflection  = RealLast();
+      int    aMinPCurveIndex = -1;
+      for (int aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
       {
         const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve(aPCurveIt);
-        const Standard_Real aTmpDeflection = checkExistingPolygonAndUpdateStatus(aDEdge, aPCurve);
+        const double aTmpDeflection = checkExistingPolygonAndUpdateStatus(aDEdge, aPCurve);
         if (aTmpDeflection < aMinDeflection)
         {
           // Identify pcurve with the smallest deflection in order to
@@ -143,8 +143,8 @@ void BRepMesh_EdgeDiscret::process(const Standard_Integer theEdgeIndex) const
     }
     else
     {
-      TopLoc_Location               aLoc;
-      const Handle(Poly_Polygon3D)& aPoly3D = BRep_Tool::Polygon3D(aDEdge->GetEdge(), aLoc);
+      TopLoc_Location                    aLoc;
+      const occ::handle<Poly_Polygon3D>& aPoly3D = BRep_Tool::Polygon3D(aDEdge->GetEdge(), aLoc);
       if (!aPoly3D.IsNull())
       {
         if (aPoly3D->HasParameters()
@@ -165,10 +165,10 @@ void BRepMesh_EdgeDiscret::process(const Standard_Integer theEdgeIndex) const
       aEdgeTessellator = CreateEdgeTessellator(aDEdge, myParameters);
     }
 
-    Tessellate3d(aDEdge, aEdgeTessellator, Standard_True);
+    Tessellate3d(aDEdge, aEdgeTessellator, true);
     if (!aDEdge->IsFree())
     {
-      Tessellate2d(aDEdge, Standard_True);
+      Tessellate2d(aDEdge, true);
     }
   }
   catch (Standard_Failure const&)
@@ -179,32 +179,31 @@ void BRepMesh_EdgeDiscret::process(const Standard_Integer theEdgeIndex) const
 
 //=================================================================================================
 
-Standard_Real BRepMesh_EdgeDiscret::checkExistingPolygonAndUpdateStatus(
+double BRepMesh_EdgeDiscret::checkExistingPolygonAndUpdateStatus(
   const IMeshData::IEdgeHandle&   theDEdge,
   const IMeshData::IPCurveHandle& thePCurve) const
 {
   const TopoDS_Edge& aEdge = theDEdge->GetEdge();
   const TopoDS_Face& aFace = thePCurve->GetFace()->GetFace();
 
-  TopLoc_Location                   aLoc;
-  const Handle(Poly_Triangulation)& aFaceTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
+  TopLoc_Location                        aLoc;
+  const occ::handle<Poly_Triangulation>& aFaceTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
 
-  Standard_Real aDeflection = RealLast();
+  double aDeflection = RealLast();
   if (aFaceTriangulation.IsNull())
   {
     return aDeflection;
   }
 
-  const Handle(Poly_PolygonOnTriangulation)& aPolygon =
+  const occ::handle<Poly_PolygonOnTriangulation>& aPolygon =
     BRep_Tool::PolygonOnTriangulation(aEdge, aFaceTriangulation, aLoc);
 
   if (!aPolygon.IsNull())
   {
-    Standard_Boolean isConsistent =
-      aPolygon->HasParameters()
-      && BRepMesh_Deflection::IsConsistent(aPolygon->Deflection(),
-                                           theDEdge->GetDeflection(),
-                                           myParameters.AllowQualityDecrease);
+    bool isConsistent = aPolygon->HasParameters()
+                        && BRepMesh_Deflection::IsConsistent(aPolygon->Deflection(),
+                                                             theDEdge->GetDeflection(),
+                                                             myParameters.AllowQualityDecrease);
 
     if (!isConsistent)
     {
@@ -223,9 +222,10 @@ Standard_Real BRepMesh_EdgeDiscret::checkExistingPolygonAndUpdateStatus(
 
 //=================================================================================================
 
-void BRepMesh_EdgeDiscret::Tessellate3d(const IMeshData::IEdgeHandle&              theDEdge,
-                                        const Handle(IMeshTools_CurveTessellator)& theTessellator,
-                                        const Standard_Boolean                     theUpdateEnds)
+void BRepMesh_EdgeDiscret::Tessellate3d(
+  const IMeshData::IEdgeHandle&                   theDEdge,
+  const occ::handle<IMeshTools_CurveTessellator>& theTessellator,
+  const bool                                      theUpdateEnds)
 {
   // Create 3d polygon.
   const IMeshData::ICurveHandle& aCurve = theDEdge->GetCurve();
@@ -239,18 +239,18 @@ void BRepMesh_EdgeDiscret::Tessellate3d(const IMeshData::IEdgeHandle&           
 
   if (theUpdateEnds)
   {
-    gp_Pnt        aPoint;
-    Standard_Real aParam;
+    gp_Pnt aPoint;
+    double aParam;
     theTessellator->Value(1, aPoint, aParam);
     aCurve->AddPoint(BRep_Tool::Pnt(aFirstVertex), aParam);
   }
 
   if (!theDEdge->GetDegenerated())
   {
-    for (Standard_Integer i = 2; i < theTessellator->PointsNb(); ++i)
+    for (int i = 2; i < theTessellator->PointsNb(); ++i)
     {
-      gp_Pnt        aPoint;
-      Standard_Real aParam;
+      gp_Pnt aPoint;
+      double aParam;
       if (!theTessellator->Value(i, aPoint, aParam))
         continue;
 
@@ -267,8 +267,8 @@ void BRepMesh_EdgeDiscret::Tessellate3d(const IMeshData::IEdgeHandle&           
 
   if (theUpdateEnds)
   {
-    gp_Pnt        aPoint;
-    Standard_Real aParam;
+    gp_Pnt aPoint;
+    double aParam;
     theTessellator->Value(theTessellator->PointsNb(), aPoint, aParam);
     aCurve->AddPoint(BRep_Tool::Pnt(aLastVertex), aParam);
   }
@@ -277,10 +277,10 @@ void BRepMesh_EdgeDiscret::Tessellate3d(const IMeshData::IEdgeHandle&           
 //=================================================================================================
 
 void BRepMesh_EdgeDiscret::Tessellate2d(const IMeshData::IEdgeHandle& theDEdge,
-                                        const Standard_Boolean        theUpdateEnds)
+                                        const bool                    theUpdateEnds)
 {
   const IMeshData::ICurveHandle& aCurve = theDEdge->GetCurve();
-  for (Standard_Integer aPCurveIt = 0; aPCurveIt < theDEdge->PCurvesNb(); ++aPCurveIt)
+  for (int aPCurveIt = 0; aPCurveIt < theDEdge->PCurvesNb(); ++aPCurveIt)
   {
     const IMeshData::IPCurveHandle&     aPCurve = theDEdge->GetPCurve(aPCurveIt);
     const IMeshData::IFaceHandle        aDFace  = aPCurve->GetFace();
@@ -291,9 +291,9 @@ void BRepMesh_EdgeDiscret::Tessellate2d(const IMeshData::IEdgeHandle& theDEdge,
       aDFace,
       aCurveArray);
 
-    const Handle(Adaptor2d_Curve2d)& aGeomPCurve = aProvider.GetPCurve();
+    const occ::handle<Adaptor2d_Curve2d>& aGeomPCurve = aProvider.GetPCurve();
 
-    Standard_Integer aParamIdx, aParamNb;
+    int aParamIdx, aParamNb;
     if (theUpdateEnds)
     {
       aParamIdx = 0;
@@ -307,7 +307,7 @@ void BRepMesh_EdgeDiscret::Tessellate2d(const IMeshData::IEdgeHandle& theDEdge,
 
     for (; aParamIdx < aParamNb; ++aParamIdx)
     {
-      const Standard_Real aParam = aProvider.Parameter(aParamIdx, aCurve->GetPoint(aParamIdx));
+      const double aParam = aProvider.Parameter(aParamIdx, aCurve->GetPoint(aParamIdx));
 
       gp_Pnt2d aPoint2d;
       aGeomPCurve->D0(aParam, aPoint2d);

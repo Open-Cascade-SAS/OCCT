@@ -102,8 +102,8 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Torus& T)
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
-                                                 const Standard_Real         TolDegen)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const occ::handle<Geom_Surface>& S,
+                                                 const double                     TolDegen)
     : myMakeFace(S, TolDegen)
 {
   if (myMakeFace.IsDone())
@@ -115,11 +115,11 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Pln&       P,
-                                                 const Standard_Real UMin,
-                                                 const Standard_Real UMax,
-                                                 const Standard_Real VMin,
-                                                 const Standard_Real VMax)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Pln& P,
+                                                 const double  UMin,
+                                                 const double  UMax,
+                                                 const double  VMin,
+                                                 const double  VMax)
     : myMakeFace(P, UMin, UMax, VMin, VMax)
 {
   if (myMakeFace.IsDone())
@@ -131,11 +131,11 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Pln&       P,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cylinder&  C,
-                                                 const Standard_Real UMin,
-                                                 const Standard_Real UMax,
-                                                 const Standard_Real VMin,
-                                                 const Standard_Real VMax)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cylinder& C,
+                                                 const double       UMin,
+                                                 const double       UMax,
+                                                 const double       VMin,
+                                                 const double       VMax)
     : myMakeFace(C, UMin, UMax, VMin, VMax)
 {
   if (myMakeFace.IsDone())
@@ -147,11 +147,11 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cylinder&  C,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cone&      C,
-                                                 const Standard_Real UMin,
-                                                 const Standard_Real UMax,
-                                                 const Standard_Real VMin,
-                                                 const Standard_Real VMax)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cone& C,
+                                                 const double   UMin,
+                                                 const double   UMax,
+                                                 const double   VMin,
+                                                 const double   VMax)
     : myMakeFace(C, UMin, UMax, VMin, VMax)
 {
   if (myMakeFace.IsDone())
@@ -163,11 +163,11 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cone&      C,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Sphere&    S,
-                                                 const Standard_Real UMin,
-                                                 const Standard_Real UMax,
-                                                 const Standard_Real VMin,
-                                                 const Standard_Real VMax)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Sphere& S,
+                                                 const double     UMin,
+                                                 const double     UMax,
+                                                 const double     VMin,
+                                                 const double     VMax)
     : myMakeFace(S, UMin, UMax, VMin, VMax)
 {
   if (myMakeFace.IsDone())
@@ -179,11 +179,11 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Sphere&    S,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Torus&     T,
-                                                 const Standard_Real UMin,
-                                                 const Standard_Real UMax,
-                                                 const Standard_Real VMin,
-                                                 const Standard_Real VMax)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Torus& T,
+                                                 const double    UMin,
+                                                 const double    UMax,
+                                                 const double    VMin,
+                                                 const double    VMax)
     : myMakeFace(T, UMin, UMax, VMin, VMax)
 {
   if (myMakeFace.IsDone())
@@ -195,12 +195,12 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Torus&     T,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
-                                                 const Standard_Real         UMin,
-                                                 const Standard_Real         UMax,
-                                                 const Standard_Real         VMin,
-                                                 const Standard_Real         VMax,
-                                                 const Standard_Real         TolDegen)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const occ::handle<Geom_Surface>& S,
+                                                 const double                     UMin,
+                                                 const double                     UMax,
+                                                 const double                     VMin,
+                                                 const double                     VMax,
+                                                 const double                     TolDegen)
     : myMakeFace(S, UMin, UMax, VMin, VMax, TolDegen)
 {
   if (myMakeFace.IsDone())
@@ -212,8 +212,7 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const TopoDS_Wire&     W,
-                                                 const Standard_Boolean OnlyPlane)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const TopoDS_Wire& W, const bool OnlyPlane)
     : myMakeFace(W, OnlyPlane)
 {
   if (myMakeFace.IsDone())
@@ -225,9 +224,9 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const TopoDS_Wire&     W,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Pln&          P,
-                                                 const TopoDS_Wire&     W,
-                                                 const Standard_Boolean Inside)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Pln&      P,
+                                                 const TopoDS_Wire& W,
+                                                 const bool         Inside)
     : myMakeFace(P, W, Inside)
 {
   if (myMakeFace.IsDone())
@@ -239,9 +238,9 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Pln&          P,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cylinder&     C,
-                                                 const TopoDS_Wire&     W,
-                                                 const Standard_Boolean Inside)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cylinder& C,
+                                                 const TopoDS_Wire& W,
+                                                 const bool         Inside)
     : myMakeFace(C, W, Inside)
 {
   if (myMakeFace.IsDone())
@@ -253,9 +252,9 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cylinder&     C,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cone&         C,
-                                                 const TopoDS_Wire&     W,
-                                                 const Standard_Boolean Inside)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cone&     C,
+                                                 const TopoDS_Wire& W,
+                                                 const bool         Inside)
     : myMakeFace(C, W, Inside)
 {
   if (myMakeFace.IsDone())
@@ -267,9 +266,9 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Cone&         C,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Sphere&       S,
-                                                 const TopoDS_Wire&     W,
-                                                 const Standard_Boolean Inside)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Sphere&   S,
+                                                 const TopoDS_Wire& W,
+                                                 const bool         Inside)
     : myMakeFace(S, W, Inside)
 {
   if (myMakeFace.IsDone())
@@ -281,9 +280,9 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Sphere&       S,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Torus&        T,
-                                                 const TopoDS_Wire&     W,
-                                                 const Standard_Boolean Inside)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Torus&    T,
+                                                 const TopoDS_Wire& W,
+                                                 const bool         Inside)
     : myMakeFace(T, W, Inside)
 {
   if (myMakeFace.IsDone())
@@ -295,9 +294,9 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Torus&        T,
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
-                                                 const TopoDS_Wire&          W,
-                                                 const Standard_Boolean      Inside)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const occ::handle<Geom_Surface>& S,
+                                                 const TopoDS_Wire&               W,
+                                                 const bool                       Inside)
     : myMakeFace(S, W, Inside)
 {
   if (myMakeFace.IsDone())
@@ -333,9 +332,9 @@ void BRepBuilderAPI_MakeFace::Init(const TopoDS_Face& F)
 
 //=================================================================================================
 
-void BRepBuilderAPI_MakeFace::Init(const Handle(Geom_Surface)& S,
-                                   const Standard_Boolean      Bound,
-                                   const Standard_Real         TolDegen)
+void BRepBuilderAPI_MakeFace::Init(const occ::handle<Geom_Surface>& S,
+                                   const bool                       Bound,
+                                   const double                     TolDegen)
 {
   myMakeFace.Init(S, Bound, TolDegen);
   if (myMakeFace.IsDone())
@@ -347,12 +346,12 @@ void BRepBuilderAPI_MakeFace::Init(const Handle(Geom_Surface)& S,
 
 //=================================================================================================
 
-void BRepBuilderAPI_MakeFace::Init(const Handle(Geom_Surface)& SS,
-                                   const Standard_Real         Um,
-                                   const Standard_Real         UM,
-                                   const Standard_Real         Vm,
-                                   const Standard_Real         VM,
-                                   const Standard_Real         TolDegen)
+void BRepBuilderAPI_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
+                                   const double                     Um,
+                                   const double                     UM,
+                                   const double                     Vm,
+                                   const double                     VM,
+                                   const double                     TolDegen)
 {
   myMakeFace.Init(SS, Um, UM, Vm, VM, TolDegen);
   if (myMakeFace.IsDone())
@@ -390,7 +389,7 @@ BRepBuilderAPI_MakeFace::operator TopoDS_Face() const
 
 //=================================================================================================
 
-Standard_Boolean BRepBuilderAPI_MakeFace::IsDone() const
+bool BRepBuilderAPI_MakeFace::IsDone() const
 {
   return myMakeFace.IsDone();
 }

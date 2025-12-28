@@ -21,10 +21,6 @@
 
 #include <StepRepr_DefinitionalRepresentation.hxx>
 
-class StepShape_DefinitionalRepresentationAndShapeRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_DefinitionalRepresentationAndShapeRepresentation,
-                       StepRepr_DefinitionalRepresentation)
-
 //! Implements complex type
 //! (DEFINITIONAL_REPRESENTATION,REPRESENTATION,SHAPE_REPRESENTATION)
 class StepShape_DefinitionalRepresentationAndShapeRepresentation
@@ -36,9 +32,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_DefinitionalRepresentationAndShapeRepresentation,
                           StepRepr_DefinitionalRepresentation)
-
-protected:
-private:
 };
 
 #endif // _StepShape_DefinitionalRepresentationAndShapeRepresentation_HeaderFile

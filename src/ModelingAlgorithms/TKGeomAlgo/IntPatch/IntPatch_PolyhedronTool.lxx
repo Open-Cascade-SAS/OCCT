@@ -19,44 +19,43 @@ inline const Bnd_Box& IntPatch_PolyhedronTool::Bounding(const IntPatch_Polyhedro
   return thePolyh.Bounding();
 }
 
-inline const Handle(Bnd_HArray1OfBox)& IntPatch_PolyhedronTool::ComponentsBounding(
+inline const occ::handle<NCollection_HArray1<Bnd_Box>>& IntPatch_PolyhedronTool::ComponentsBounding(
   const IntPatch_Polyhedron& thePolyh)
 {
   return thePolyh.ComponentsBounding();
 }
 
-inline Standard_Real IntPatch_PolyhedronTool::DeflectionOverEstimation(
-  const IntPatch_Polyhedron& thePolyh)
+inline double IntPatch_PolyhedronTool::DeflectionOverEstimation(const IntPatch_Polyhedron& thePolyh)
 {
   return thePolyh.DeflectionOverEstimation();
 }
 
-inline Standard_Integer IntPatch_PolyhedronTool::NbTriangles(const IntPatch_Polyhedron& thePolyh)
+inline int IntPatch_PolyhedronTool::NbTriangles(const IntPatch_Polyhedron& thePolyh)
 {
   return thePolyh.NbTriangles();
 }
 
 inline void IntPatch_PolyhedronTool::Triangle(const IntPatch_Polyhedron& thePolyh,
-                                              const Standard_Integer     Index,
-                                              Standard_Integer&          P1,
-                                              Standard_Integer&          P2,
-                                              Standard_Integer&          P3)
+                                              const int                  Index,
+                                              int&                       P1,
+                                              int&                       P2,
+                                              int&                       P3)
 {
   thePolyh.Triangle(Index, P1, P2, P3);
 }
 
 inline const gp_Pnt& IntPatch_PolyhedronTool::Point(const IntPatch_Polyhedron& thePolyh,
-                                                    const Standard_Integer     Index)
+                                                    const int                  Index)
 {
   return thePolyh.Point(Index);
 }
 
-inline Standard_Integer IntPatch_PolyhedronTool::TriConnex(const IntPatch_Polyhedron& thePolyh,
-                                                           const Standard_Integer     Triang,
-                                                           const Standard_Integer     Pivot,
-                                                           const Standard_Integer     Pedge,
-                                                           Standard_Integer&          TriCon,
-                                                           Standard_Integer&          OtherP)
+inline int IntPatch_PolyhedronTool::TriConnex(const IntPatch_Polyhedron& thePolyh,
+                                              const int                  Triang,
+                                              const int                  Pivot,
+                                              const int                  Pedge,
+                                              int&                       TriCon,
+                                              int&                       OtherP)
 {
   return thePolyh.TriConnex(Triang, Pivot, Pedge, TriCon, OtherP);
 }

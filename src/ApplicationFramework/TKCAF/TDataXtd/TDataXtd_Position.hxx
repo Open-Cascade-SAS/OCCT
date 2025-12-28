@@ -25,9 +25,6 @@ class TDF_Label;
 class Standard_GUID;
 class TDF_RelocationTable;
 
-class TDataXtd_Position;
-DEFINE_STANDARD_HANDLE(TDataXtd_Position, TDF_Attribute)
-
 //! Position of a Label
 class TDataXtd_Position : public TDF_Attribute
 {
@@ -38,27 +35,27 @@ public:
 
   //! Find an existing, or create an empty, Position.
   //! the Position attribute is returned.
-  Standard_EXPORT static Handle(TDataXtd_Position) Set(const TDF_Label& aLabel);
+  Standard_EXPORT static occ::handle<TDataXtd_Position> Set(const TDF_Label& aLabel);
 
   //! Search label <aLabel) for the TDataXtd_Position attribute and get its position
   //! if found returns True
-  Standard_EXPORT static Standard_Boolean Get(const TDF_Label& aLabel, gp_Pnt& aPos);
+  Standard_EXPORT static bool Get(const TDF_Label& aLabel, gp_Pnt& aPos);
 
   Standard_EXPORT TDataXtd_Position();
 
   //! Returns the ID of the attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Returns the ID of the attribute.
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Restores the contents from <anAttribute> into this
   //! one. It is used when aborting a transaction.
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& anAttribute) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Restore(const occ::handle<TDF_Attribute>& anAttribute) override;
 
   //! Returns an new empty attribute from the good end
   //! type. It is used by the copy algorithm.
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! This method is different from the "Copy" one,
   //! because it is used when copying an attribute from
@@ -67,9 +64,9 @@ public:
   //! corresponding to the insertor. The pasted
   //! attribute may be a brand new one or a new version
   //! of the previous one.
-  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       intoAttribute,
-                                     const Handle(TDF_RelocationTable)& aRelocTationable) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void Paste(
+    const occ::handle<TDF_Attribute>&       intoAttribute,
+    const occ::handle<TDF_RelocationTable>& aRelocTationable) const override;
 
   Standard_EXPORT const gp_Pnt& GetPosition() const;
 
@@ -77,7 +74,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(TDataXtd_Position, TDF_Attribute)
 
-protected:
 private:
   gp_Pnt myPosition;
 };

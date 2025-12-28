@@ -24,9 +24,6 @@
 class TopoDS_Face;
 class Draw_Display;
 
-class DrawDim_PlanarRadius;
-DEFINE_STANDARD_HANDLE(DrawDim_PlanarRadius, DrawDim_PlanarDimension)
-
 class DrawDim_PlanarRadius : public DrawDim_PlanarDimension
 {
 
@@ -35,11 +32,10 @@ public:
 
   Standard_EXPORT DrawDim_PlanarRadius(const TopoDS_Shape& circle);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarRadius, DrawDim_PlanarDimension)
 
-protected:
 private:
   TopoDS_Shape myCircle;
 };

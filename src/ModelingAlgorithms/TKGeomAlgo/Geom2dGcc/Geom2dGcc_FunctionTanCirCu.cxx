@@ -54,12 +54,12 @@ Geom2dGcc_FunctionTanCirCu::Geom2dGcc_FunctionTanCirCu(const gp_Circ2d&         
   TheCirc = Circ;
 
   //  Modified by Sergey KHROMOV - Thu Apr  5 09:51:21 2001 Begin
-  Standard_Integer aNbSamp = Geom2dGcc_CurveTool::NbSamples(Curve);
-  Standard_Real    aFirst  = Geom2dGcc_CurveTool::FirstParameter(Curve);
-  Standard_Real    aLast   = Geom2dGcc_CurveTool::LastParameter(Curve);
-  Standard_Real    aStep   = (aLast - aFirst) / aNbSamp;
-  Standard_Real    anX     = aFirst + aStep / 2.;
-  gp_XY            aLoc(0., 0.);
+  int    aNbSamp = Geom2dGcc_CurveTool::NbSamples(Curve);
+  double aFirst  = Geom2dGcc_CurveTool::FirstParameter(Curve);
+  double aLast   = Geom2dGcc_CurveTool::LastParameter(Curve);
+  double aStep   = (aLast - aFirst) / aNbSamp;
+  double anX     = aFirst + aStep / 2.;
+  gp_XY  aLoc(0., 0.);
 
   while (anX <= aLast)
   {
@@ -70,51 +70,49 @@ Geom2dGcc_FunctionTanCirCu::Geom2dGcc_FunctionTanCirCu(const gp_Circ2d&         
   //  Modified by Sergey KHROMOV - Thu Apr  5 09:51:25 2001 End
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCirCu::Value(const Standard_Real X, Standard_Real& Fval)
+bool Geom2dGcc_FunctionTanCirCu::Value(const double X, double& Fval)
 {
   gp_Pnt2d Point;
   gp_Vec2d Vect1;
   Geom2dGcc_CurveTool::D1(Curve, X, Point, Vect1);
-  Standard_Real NormeD1 = Vect1.Magnitude();
-  gp_Vec2d      TheDirection(TheCirc.Location(), Point);
-  Standard_Real squaredir = TheDirection.Dot(TheDirection);
-  Standard_Real R         = TheCirc.Radius();
+  double   NormeD1 = Vect1.Magnitude();
+  gp_Vec2d TheDirection(TheCirc.Location(), Point);
+  double   squaredir = TheDirection.Dot(TheDirection);
+  double   R         = TheCirc.Radius();
   Fval =
     squaredir - R * R - (TheDirection.Dot(Vect1)) * (TheDirection.Dot(Vect1)) / (NormeD1 * NormeD1);
   //  Modified by Sergey KHROMOV - Thu Apr  5 17:38:05 2001 Begin
   Fval /= myWeight;
   //  Modified by Sergey KHROMOV - Thu Apr  5 17:38:06 2001 End
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCirCu::Derivative(const Standard_Real X, Standard_Real& Deriv)
+bool Geom2dGcc_FunctionTanCirCu::Derivative(const double X, double& Deriv)
 {
   gp_Pnt2d Point;
   gp_Vec2d Vect1, Vect2;
   Geom2dGcc_CurveTool::D2(Curve, X, Point, Vect1, Vect2);
-  Standard_Real NormeD1 = Vect1.SquareMagnitude();
-  gp_Vec2d      TheDirection(TheCirc.Location(), Point);
-  Standard_Real cp1dott = TheDirection.Dot(Vect1);
+  double   NormeD1 = Vect1.SquareMagnitude();
+  gp_Vec2d TheDirection(TheCirc.Location(), Point);
+  double   cp1dott = TheDirection.Dot(Vect1);
   Deriv =
     -2. * (cp1dott / NormeD1) * ((TheDirection.Dot(Vect2)) - cp1dott * Vect1.Dot(Vect2) / NormeD1);
   //  Modified by Sergey KHROMOV - Thu Apr  5 17:38:15 2001 Begin
   Deriv /= myWeight;
   //  Modified by Sergey KHROMOV - Thu Apr  5 17:38:15 2001 End
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCirCu::Values(const Standard_Real X,
-                                                    Standard_Real&      Fval,
-                                                    Standard_Real&      Deriv)
+bool Geom2dGcc_FunctionTanCirCu::Values(const double X, double& Fval, double& Deriv)
 {
   gp_Pnt2d Point;
   gp_Vec2d Vect1, Vect2;
   Geom2dGcc_CurveTool::D2(Curve, X, Point, Vect1, Vect2);
-  Standard_Real NormeD1 = Vect1.SquareMagnitude();
-  gp_Vec2d      TheDirection(TheCirc.Location(), Point);
-  Standard_Real squaredir = TheDirection.SquareMagnitude();
-  Standard_Real cp1dott   = TheDirection.Dot(Vect1);
-  Standard_Real R         = TheCirc.Radius();
+  double   NormeD1 = Vect1.SquareMagnitude();
+  gp_Vec2d TheDirection(TheCirc.Location(), Point);
+  double   squaredir = TheDirection.SquareMagnitude();
+  double   cp1dott   = TheDirection.Dot(Vect1);
+  double   R         = TheCirc.Radius();
 
   Fval = squaredir - R * R - cp1dott * cp1dott / NormeD1;
   //  Modified by Sergey KHROMOV - Thu Apr  5 17:38:28 2001 Begin
@@ -126,5 +124,5 @@ Standard_Boolean Geom2dGcc_FunctionTanCirCu::Values(const Standard_Real X,
   //  Modified by Sergey KHROMOV - Thu Apr  5 17:37:36 2001 Begin
   Deriv /= myWeight;
   //  Modified by Sergey KHROMOV - Thu Apr  5 17:37:37 2001 End
-  return Standard_True;
+  return true;
 }

@@ -20,7 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <IFSelect_SequenceOfGeneralModifier.hxx>
+#include <IFSelect_GeneralModifier.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IFSelect_Transformer.hxx>
 #include <Standard_Integer.hxx>
 class IFSelect_Selection;
@@ -33,9 +34,6 @@ class Interface_InterfaceModel;
 class Interface_CopyTool;
 class Standard_Transient;
 class TCollection_AsciiString;
-
-class IFSelect_TransformStandard;
-DEFINE_STANDARD_HANDLE(IFSelect_TransformStandard, IFSelect_Transformer)
 
 //! This class runs transformations made by Modifiers, as
 //! the ModelCopier does when it produces files (the same set
@@ -71,10 +69,10 @@ public:
 
   //! Sets the Copy option to a new value :
   //! True for StandardCopy. False for OnTheSpot
-  Standard_EXPORT void SetCopyOption(const Standard_Boolean option);
+  Standard_EXPORT void SetCopyOption(const bool option);
 
   //! Returns the Copy option
-  Standard_EXPORT Standard_Boolean CopyOption() const;
+  Standard_EXPORT bool CopyOption() const;
 
   //! Sets a Selection (or unsets if Null)
   //! This Selection then defines the list of entities on which the
@@ -82,61 +80,60 @@ public:
   //! If it is set, it has priority on Selections of Modifiers
   //! Else, for each Modifier its Selection is evaluated
   //! By default, all the Model is taken
-  Standard_EXPORT void SetSelection(const Handle(IFSelect_Selection)& sel);
+  Standard_EXPORT void SetSelection(const occ::handle<IFSelect_Selection>& sel);
 
   //! Returns the Selection, Null by default
-  Standard_EXPORT Handle(IFSelect_Selection) Selection() const;
+  Standard_EXPORT occ::handle<IFSelect_Selection> Selection() const;
 
   //! Returns the count of recorded Modifiers
-  Standard_EXPORT Standard_Integer NbModifiers() const;
+  Standard_EXPORT int NbModifiers() const;
 
   //! Returns a Modifier given its rank in the list
-  Standard_EXPORT Handle(IFSelect_Modifier) Modifier(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<IFSelect_Modifier> Modifier(const int num) const;
 
   //! Returns the rank of a Modifier in the list, 0 if unknown
-  Standard_EXPORT Standard_Integer ModifierRank(const Handle(IFSelect_Modifier)& modif) const;
+  Standard_EXPORT int ModifierRank(const occ::handle<IFSelect_Modifier>& modif) const;
 
   //! Adds a Modifier to the list :
   //! - <atnum> = 0 (default) : at the end of the list
   //! - <atnum> > 0 : at rank <atnum>
   //! Returns True if done, False if <atnum> is out of range
-  Standard_EXPORT Standard_Boolean AddModifier(const Handle(IFSelect_Modifier)& modif,
-                                               const Standard_Integer           atnum = 0);
+  Standard_EXPORT bool AddModifier(const occ::handle<IFSelect_Modifier>& modif,
+                                   const int                             atnum = 0);
 
   //! Removes a Modifier from the list
   //! Returns True if done, False if <modif> not in the list
-  Standard_EXPORT Standard_Boolean RemoveModifier(const Handle(IFSelect_Modifier)& modif);
+  Standard_EXPORT bool RemoveModifier(const occ::handle<IFSelect_Modifier>& modif);
 
   //! Removes a Modifier from the list, given its rank
   //! Returns True if done, False if <num> is out of range
-  Standard_EXPORT Standard_Boolean RemoveModifier(const Standard_Integer num);
+  Standard_EXPORT bool RemoveModifier(const int num);
 
   //! Performs the Standard Transformation, by calling Copy then
   //! ApplyModifiers (which can return an error status)
-  Standard_EXPORT Standard_Boolean Perform(const Interface_Graph&            G,
-                                           const Handle(Interface_Protocol)& protocol,
-                                           Interface_CheckIterator&          checks,
-                                           Handle(Interface_InterfaceModel)& newmod)
-    Standard_OVERRIDE;
+  Standard_EXPORT bool Perform(const Interface_Graph&                 G,
+                               const occ::handle<Interface_Protocol>& protocol,
+                               Interface_CheckIterator&               checks,
+                               occ::handle<Interface_InterfaceModel>& newmod) override;
 
   //! This the first operation. It calls StandardCopy or OnTheSpot
   //! according the option
-  Standard_EXPORT void Copy(const Interface_Graph&            G,
-                            Interface_CopyTool&               TC,
-                            Handle(Interface_InterfaceModel)& newmod) const;
+  Standard_EXPORT void Copy(const Interface_Graph&                 G,
+                            Interface_CopyTool&                    TC,
+                            occ::handle<Interface_InterfaceModel>& newmod) const;
 
   //! This is the standard action of Copy : its takes into account
   //! only the remaining entities (noted by Graph Status positive)
   //! and their proper dependences of course. Produces a new model.
-  Standard_EXPORT void StandardCopy(const Interface_Graph&            G,
-                                    Interface_CopyTool&               TC,
-                                    Handle(Interface_InterfaceModel)& newmod) const;
+  Standard_EXPORT void StandardCopy(const Interface_Graph&                 G,
+                                    Interface_CopyTool&                    TC,
+                                    occ::handle<Interface_InterfaceModel>& newmod) const;
 
   //! This is the OnTheSpot action : each entity is bound with ...
   //! itself. The produced model is the same as the starting one.
-  Standard_EXPORT void OnTheSpot(const Interface_Graph&            G,
-                                 Interface_CopyTool&               TC,
-                                 Handle(Interface_InterfaceModel)& newmod) const;
+  Standard_EXPORT void OnTheSpot(const Interface_Graph&                 G,
+                                 Interface_CopyTool&                    TC,
+                                 occ::handle<Interface_InterfaceModel>& newmod) const;
 
   //! Applies the modifiers sequentially.
   //! For each one, prepares required data (if a Selection is associated as a filter).
@@ -144,31 +141,30 @@ public:
   //! changed and updates <newmod> if required
   //! If a Modifier causes an error (check "HasFailed"),
   //! ApplyModifier stops : the following Modifiers are ignored
-  Standard_EXPORT Standard_Boolean ApplyModifiers(const Interface_Graph&            G,
-                                                  const Handle(Interface_Protocol)& protocol,
-                                                  Interface_CopyTool&               TC,
-                                                  Interface_CheckIterator&          checks,
-                                                  Handle(Interface_InterfaceModel)& newmod) const;
+  Standard_EXPORT bool ApplyModifiers(const Interface_Graph&                 G,
+                                      const occ::handle<Interface_Protocol>& protocol,
+                                      Interface_CopyTool&                    TC,
+                                      Interface_CheckIterator&               checks,
+                                      occ::handle<Interface_InterfaceModel>& newmod) const;
 
   //! This methods allows to know what happened to a starting
   //! entity after the last Perform. It reads result from the map
   //! which was filled by Perform.
-  Standard_EXPORT Standard_Boolean
-    Updated(const Handle(Standard_Transient)& entfrom,
-            Handle(Standard_Transient)&       entto) const Standard_OVERRIDE;
+  Standard_EXPORT bool Updated(const occ::handle<Standard_Transient>& entfrom,
+                               occ::handle<Standard_Transient>&       entto) const override;
 
   //! Returns a text which defines the way a Transformer works :
   //! "On the spot edition" or "Standard Copy" followed by
   //! "<nn> Modifiers"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_TransformStandard, IFSelect_Transformer)
 
 private:
-  Standard_Boolean                   thecopy;
-  Handle(IFSelect_Selection)         thesel;
-  IFSelect_SequenceOfGeneralModifier themodifs;
-  Handle(Interface_CopyControl)      themap;
+  bool                                                        thecopy;
+  occ::handle<IFSelect_Selection>                             thesel;
+  NCollection_Sequence<occ::handle<IFSelect_GeneralModifier>> themodifs;
+  occ::handle<Interface_CopyControl>                          themap;
 };
 
 #endif // _IFSelect_TransformStandard_HeaderFile

@@ -52,26 +52,23 @@ static bool parseCoordinateSystem(const char* theArg, RWMesh_CoordinateSystem& t
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Integer ReadObj(Draw_Interpretor& theDI,
-                                Standard_Integer  theNbArgs,
-                                const char**      theArgVec)
+static int ReadObj(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   TCollection_AsciiString aDestName, aFilePath;
-  Standard_Boolean        toUseExistingDoc = Standard_False;
-  Standard_Real           aFileUnitFactor  = -1.0;
+  bool                    toUseExistingDoc = false;
+  double                  aFileUnitFactor  = -1.0;
   RWMesh_CoordinateSystem aResultCoordSys  = RWMesh_CoordinateSystem_Zup,
                           aFileCoordSys    = RWMesh_CoordinateSystem_Yup;
-  Standard_Boolean toListExternalFiles = Standard_False, isSingleFace = Standard_False,
-                   isSinglePrecision = Standard_False;
-  Standard_Boolean isNoDoc           = (TCollection_AsciiString(theArgVec[0]) == "readobj");
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  bool toListExternalFiles = false, isSingleFace = false, isSinglePrecision = false;
+  bool isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readobj");
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
     anArgCase.LowerCase();
@@ -111,7 +108,7 @@ static Standard_Integer ReadObj(Draw_Interpretor& theDI,
     }
     else if (anArgCase == "-singleprecision" || anArgCase == "-singleprec")
     {
-      isSinglePrecision = Standard_True;
+      isSinglePrecision = true;
       if (anArgIter + 1 < theNbArgs
           && Draw::ParseOnOff(theArgVec[anArgIter + 1], isSinglePrecision))
       {
@@ -120,11 +117,11 @@ static Standard_Integer ReadObj(Draw_Interpretor& theDI,
     }
     else if (isNoDoc && (anArgCase == "-singleface" || anArgCase == "-singletriangulation"))
     {
-      isSingleFace = Standard_True;
+      isSingleFace = true;
     }
     else if (!isNoDoc && (anArgCase == "-nocreate" || anArgCase == "-nocreatedoc"))
     {
-      toUseExistingDoc = Standard_True;
+      toUseExistingDoc = true;
       if (anArgIter + 1 < theNbArgs && Draw::ParseOnOff(theArgVec[anArgIter + 1], toUseExistingDoc))
       {
         ++anArgIter;
@@ -134,7 +131,7 @@ static Standard_Integer ReadObj(Draw_Interpretor& theDI,
              || anArgCase == "-listexternal" || anArgCase == "-external"
              || anArgCase == "-externalfiles")
     {
-      toListExternalFiles = Standard_True;
+      toListExternalFiles = true;
     }
     else if (aDestName.IsEmpty())
     {
@@ -156,13 +153,13 @@ static Standard_Integer ReadObj(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
-  Handle(TDocStd_Document)       aDoc;
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI, 1);
+  occ::handle<TDocStd_Document>       aDoc;
   if (!isNoDoc && !toListExternalFiles)
   {
-    Handle(TDocStd_Application) anApp    = DDocStd::GetApplication();
-    Standard_CString            aNameVar = aDestName.ToCString();
-    DDocStd::GetDocument(aNameVar, aDoc, Standard_False);
+    occ::handle<TDocStd_Application> anApp    = DDocStd::GetApplication();
+    const char*                      aNameVar = aDestName.ToCString();
+    DDocStd::GetDocument(aNameVar, aDoc, false);
     if (aDoc.IsNull())
     {
       if (toUseExistingDoc)
@@ -178,7 +175,7 @@ static Standard_Integer ReadObj(Draw_Interpretor& theDI,
       return 1;
     }
   }
-  const Standard_Real aScaleFactorM = XSDRAW::GetLengthUnit() / 1000;
+  const double aScaleFactorM = XSDRAW::GetLengthUnit() / 1000;
 
   RWObj_CafReader aReader;
   aReader.SetSinglePrecision(isSinglePrecision);
@@ -191,13 +188,13 @@ static Standard_Integer ReadObj(Draw_Interpretor& theDI,
   {
     RWObj_TriangulationReader aSimpleReader;
     aSimpleReader.SetSinglePrecision(isSinglePrecision);
-    aSimpleReader.SetCreateShapes(Standard_False);
+    aSimpleReader.SetCreateShapes(false);
     aSimpleReader.SetTransformation(aReader.CoordinateSystemConverter());
     aSimpleReader.Read(aFilePath.ToCString(), aProgress->Start());
 
-    Handle(Poly_Triangulation) aTriangulation = aSimpleReader.GetTriangulation();
-    TopoDS_Face                aFace;
-    BRep_Builder               aBuiler;
+    occ::handle<Poly_Triangulation> aTriangulation = aSimpleReader.GetTriangulation();
+    TopoDS_Face                     aFace;
+    BRep_Builder                    aBuiler;
     aBuiler.MakeFace(aFace);
     aBuiler.UpdateFace(aFace, aTriangulation);
     DBRep::Set(aDestName.ToCString(), aFace);
@@ -224,7 +221,7 @@ static Standard_Integer ReadObj(Draw_Interpretor& theDI,
     }
     else
     {
-      Handle(DDocStd_DrawDocument) aDrawDoc = new DDocStd_DrawDocument(aDoc);
+      occ::handle<DDocStd_DrawDocument> aDrawDoc = new DDocStd_DrawDocument(aDoc);
       TDataStd_Name::Set(aDoc->GetData()->Root(), aDestName);
       Draw::Set(aDestName.ToCString(), aDrawDoc);
     }
@@ -234,18 +231,16 @@ static Standard_Integer ReadObj(Draw_Interpretor& theDI,
 
 ///=================================================================================================
 
-static Standard_Integer WriteObj(Draw_Interpretor& theDI,
-                                 Standard_Integer  theNbArgs,
-                                 const char**      theArgVec)
+static int WriteObj(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
-  TCollection_AsciiString              anObjFilePath;
-  Handle(TDocStd_Document)             aDoc;
-  Handle(TDocStd_Application)          anApp = DDocStd::GetApplication();
-  TColStd_IndexedDataMapOfStringString aFileInfo;
-  Standard_Real                        aFileUnitFactor = -1.0;
-  RWMesh_CoordinateSystem              aSystemCoordSys = RWMesh_CoordinateSystem_Zup,
-                          aFileCoordSys                = RWMesh_CoordinateSystem_Yup;
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  TCollection_AsciiString          anObjFilePath;
+  occ::handle<TDocStd_Document>    aDoc;
+  occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> aFileInfo;
+  double                  aFileUnitFactor = -1.0;
+  RWMesh_CoordinateSystem aSystemCoordSys = RWMesh_CoordinateSystem_Zup,
+                          aFileCoordSys   = RWMesh_CoordinateSystem_Yup;
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
     anArgCase.LowerCase();
@@ -293,7 +288,7 @@ static Standard_Integer WriteObj(Draw_Interpretor& theDI,
     }
     else if (aDoc.IsNull())
     {
-      Standard_CString aNameVar = theArgVec[anArgIter];
+      const char* aNameVar = theArgVec[anArgIter];
       DDocStd::GetDocument(aNameVar, aDoc, false);
       if (aDoc.IsNull())
       {
@@ -305,7 +300,7 @@ static Standard_Integer WriteObj(Draw_Interpretor& theDI,
         }
 
         anApp->NewDocument(TCollection_ExtendedString("BinXCAF"), aDoc);
-        Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+        occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
         aShapeTool->AddShape(aShape);
       }
     }
@@ -325,10 +320,10 @@ static Standard_Integer WriteObj(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI, 1);
 
-  const Standard_Real aSystemUnitFactor = XSDRAW::GetLengthUnit() * 0.001;
-  RWObj_CafWriter     aWriter(anObjFilePath);
+  const double    aSystemUnitFactor = XSDRAW::GetLengthUnit() * 0.001;
+  RWObj_CafWriter aWriter(anObjFilePath);
   aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit(aSystemUnitFactor);
   aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem(aSystemCoordSys);
   aWriter.ChangeCoordinateSystemConverter().SetOutputLengthUnit(aFileUnitFactor);
@@ -351,12 +346,12 @@ void DEOBJSingleton()
 
 void XSDRAWOBJ::Factory(Draw_Interpretor& theDI)
 {
-  static Standard_Boolean aIsActivated = Standard_False;
+  static bool aIsActivated = false;
   if (aIsActivated)
   {
     return;
   }
-  aIsActivated = Standard_True;
+  aIsActivated = true;
 
   //! Ensure DEOBJ plugin is registered
   DEOBJSingleton();

@@ -24,20 +24,21 @@
 //  from HSequence to HArray1 : creates the HArray1 if HSequence not empty
 //  from HArray1 to HSequence : the HSequence must have been already created
 
-//  SeqToArray(seq,arr,TColStd_HArray1OfReal)  will :
-//    consider <seq> input HSequence (here, must be TColStd_HSequenceOfReal)
+//  SeqToArray(seq,arr,NCollection_HArray1<double>)  will :
+//    consider <seq> input HSequence (here, must be NCollection_HSequence<double>)
 //    consider <arr> output HArray1, declared but to be created
 //    do nothing if <seq> is null or empty; else
 //    create <arr> as TColStd_HArrayOfReal(1,seq->Length())
 //    then fill each value of <arr> with the homologous from <seq>
 
-//  SeqToArrayFrom(seq,arr,TColStd_HArray1OfReal,lowind)  will :
+//  SeqToArrayFrom(seq,arr,NCollection_HArray1<double>,lowind)  will :
 //    consider <lowind> as an Integer (variable or constant) which defines
 //    the desired lower index if different from one
 //    do the same thing as SeqToArray if <lowind> equates 1
 //    else fixes lower index of <arr> as <lowind>
 
-//  SeqToArrayCast(seq,arr,Interface_HArray1OfHAsciiString,TCollection_HAsciiString)  will :
+//  SeqToArrayCast(seq,arr,NCollection_HArray1<occ::handle<TCollection_HAsciiString>>,TCollection_HAsciiString)
+//  will :
 //    do as SeqToArray, but array values are Handles to be casted
 //      (if <seq> does not work with the same type, e.g. Standard_Transient)
 //    fill array value by the result of DownCast of the type <typent>
@@ -50,7 +51,7 @@
 #define SeqToArrayFrom(seq, arr, typarr, lowind)                                                   \
   if (!seq.IsNull())                                                                               \
   {                                                                                                \
-    Standard_Integer numseq, lenseq = seq->Length();                                               \
+    int numseq, lenseq = seq->Length();                                                            \
     if (lenseq > 0)                                                                                \
     {                                                                                              \
       arr = new typarr(lowind, lenseq + 1 - lowind);                                               \
@@ -62,7 +63,7 @@
 #define SeqToArray(seq, arr, typarr)                                                               \
   if (!seq.IsNull())                                                                               \
   {                                                                                                \
-    Standard_Integer numseq, lenseq = seq->Length();                                               \
+    int numseq, lenseq = seq->Length();                                                            \
     if (lenseq > 0)                                                                                \
     {                                                                                              \
       arr = new typarr(1, lenseq);                                                                 \
@@ -74,7 +75,7 @@
 #define SeqToArrayCast(seq, arr, typarr, typent)                                                   \
   if (!seq.IsNull())                                                                               \
   {                                                                                                \
-    Standard_Integer numseq, lenseq = seq->Length();                                               \
+    int numseq, lenseq = seq->Length();                                                            \
     if (lenseq > 0)                                                                                \
     {                                                                                              \
       arr = new typarr(1, lenseq);                                                                 \
@@ -86,7 +87,7 @@
 #define ArrayToSeq                                                                                 \
   (arr, seq)                                                                                       \
   {                                                                                                \
-    Standard_Integer nument, numlow = arr->Lower(), numup = arr->Upper();                          \
+    int nument, numlow = arr->Lower(), numup = arr->Upper();                                       \
     for (nument = numlow; nument <= numup; nument++)                                               \
       seq->Append(arr->Value(nument));                                                             \
   }

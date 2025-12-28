@@ -19,14 +19,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepFEA_HArray1OfNodeRepresentation.hxx>
+#include <StepFEA_NodeRepresentation.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_Representation.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
-
-class StepFEA_ElementRepresentation;
-DEFINE_STANDARD_HANDLE(StepFEA_ElementRepresentation, StepRepr_Representation)
 
 //! Representation of STEP entity ElementRepresentation
 class StepFEA_ElementRepresentation : public StepRepr_Representation
@@ -38,22 +37,24 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&             aRepresentation_Name,
-    const Handle(StepRepr_HArray1OfRepresentationItem)& aRepresentation_Items,
-    const Handle(StepRepr_RepresentationContext)&       aRepresentation_ContextOfItems,
-    const Handle(StepFEA_HArray1OfNodeRepresentation)&  aNodeList);
+    const occ::handle<TCollection_HAsciiString>& aRepresentation_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
+                                                       aRepresentation_Items,
+    const occ::handle<StepRepr_RepresentationContext>& aRepresentation_ContextOfItems,
+    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>& aNodeList);
 
   //! Returns field NodeList
-  Standard_EXPORT Handle(StepFEA_HArray1OfNodeRepresentation) NodeList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>
+                  NodeList() const;
 
   //! Set field NodeList
-  Standard_EXPORT void SetNodeList(const Handle(StepFEA_HArray1OfNodeRepresentation)& NodeList);
+  Standard_EXPORT void SetNodeList(
+    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>& NodeList);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_ElementRepresentation, StepRepr_Representation)
 
-protected:
 private:
-  Handle(StepFEA_HArray1OfNodeRepresentation) theNodeList;
+  occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>> theNodeList;
 };
 
 #endif // _StepFEA_ElementRepresentation_HeaderFile

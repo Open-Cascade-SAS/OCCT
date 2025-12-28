@@ -36,49 +36,48 @@ public:
   Standard_EXPORT HLRAlgo_Intersection();
 
   Standard_EXPORT HLRAlgo_Intersection(const TopAbs_Orientation Ori,
-                                       const Standard_Integer   Lev,
-                                       const Standard_Integer   SegInd,
-                                       const Standard_Integer   Ind,
-                                       const Standard_Real      P,
-                                       const Standard_ShortReal Tol,
+                                       const int                Lev,
+                                       const int                SegInd,
+                                       const int                Ind,
+                                       const double             P,
+                                       const float              Tol,
                                        const TopAbs_State       S);
 
   void Orientation(const TopAbs_Orientation Ori);
 
   TopAbs_Orientation Orientation() const;
 
-  void Level(const Standard_Integer Lev);
+  void Level(const int Lev);
 
-  Standard_Integer Level() const;
+  int Level() const;
 
-  void SegIndex(const Standard_Integer SegInd);
+  void SegIndex(const int SegInd);
 
-  Standard_Integer SegIndex() const;
+  int SegIndex() const;
 
-  void Index(const Standard_Integer Ind);
+  void Index(const int Ind);
 
-  Standard_Integer Index() const;
+  int Index() const;
 
-  void Parameter(const Standard_Real P);
+  void Parameter(const double P);
 
-  Standard_Real Parameter() const;
+  double Parameter() const;
 
-  void Tolerance(const Standard_ShortReal T);
+  void Tolerance(const float T);
 
-  Standard_ShortReal Tolerance() const;
+  float Tolerance() const;
 
   void State(const TopAbs_State S);
 
   TopAbs_State State() const;
 
-protected:
 private:
   TopAbs_Orientation myOrien;
-  Standard_Integer   mySegIndex;
-  Standard_Integer   myIndex;
-  Standard_Integer   myLevel;
-  Standard_Real      myParam;
-  Standard_ShortReal myToler;
+  int                mySegIndex;
+  int                myIndex;
+  int                myLevel;
+  double             myParam;
+  float              myToler;
   TopAbs_State       myState;
 };
 

@@ -26,9 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-class IGESSelect_AutoCorrect;
-DEFINE_STANDARD_HANDLE(IGESSelect_AutoCorrect, IGESSelect_ModelModifier)
-
 //! Does the absolutely effective corrections on IGES Entity.
 //! That is to say : regarding the norm in details, some values
 //! have mandatory values, or set of values with constraints.
@@ -60,18 +57,15 @@ public:
   //! Specific action : corrects entities when it is absolutely
   //! obvious, i.e. non equivoque (by DirChecker and specific
   //! service OwnCorrect) : works with a protocol.
-  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
-                                  const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+                                  const occ::handle<IGESData_IGESModel>& target,
+                                  Interface_CopyTool&                    TC) const override;
 
   //! Returns a text which is
   //! "Auto-correction of IGES Entities"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_AutoCorrect, IGESSelect_ModelModifier)
-
-protected:
-private:
 };
 
 #endif // _IGESSelect_AutoCorrect_HeaderFile

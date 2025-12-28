@@ -24,10 +24,10 @@ Plate_PinpointConstraint::Plate_PinpointConstraint()
   idv   = 0;
 }
 
-Plate_PinpointConstraint::Plate_PinpointConstraint(const gp_XY&           point2d,
-                                                   const gp_XYZ&          ImposedValue,
-                                                   const Standard_Integer iu,
-                                                   const Standard_Integer iv)
+Plate_PinpointConstraint::Plate_PinpointConstraint(const gp_XY&  point2d,
+                                                   const gp_XYZ& ImposedValue,
+                                                   const int     iu,
+                                                   const int     iv)
 {
   pnt2d = point2d;
   value = ImposedValue;

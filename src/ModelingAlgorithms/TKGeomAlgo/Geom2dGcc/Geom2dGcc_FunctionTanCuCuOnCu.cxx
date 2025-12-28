@@ -131,7 +131,7 @@ void Geom2dGcc_FunctionTanCuCuOnCu::InitDerivative(const math_Vector& X,
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                              const Geom2dAdaptor_Curve& C2,
                                                              const Geom2dAdaptor_Curve& C3,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Curv1    = C1;
   Curv2    = C2;
@@ -143,7 +143,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&           C1,
                                                              const Geom2dAdaptor_Curve& C2,
                                                              const Geom2dAdaptor_Curve& C3,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Circ1    = C1;
   Curv2    = C2;
@@ -155,7 +155,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&   
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&            L1,
                                                              const Geom2dAdaptor_Curve& C2,
                                                              const Geom2dAdaptor_Curve& C3,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Lin1     = L1;
   Curv2    = C2;
@@ -167,7 +167,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&    
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                              const gp_Pnt2d&            P2,
                                                              const Geom2dAdaptor_Curve& C3,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Curv1    = C1;
   Pnt2     = P2;
@@ -179,7 +179,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                              const Geom2dAdaptor_Curve& C2,
                                                              const gp_Lin2d&            OnLi,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Curv1    = C1;
   Curv2    = C2;
@@ -191,7 +191,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&           C1,
                                                              const Geom2dAdaptor_Curve& C2,
                                                              const gp_Lin2d&            OnLi,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Circ1    = C1;
   Curv2    = C2;
@@ -203,7 +203,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&   
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&            L1,
                                                              const Geom2dAdaptor_Curve& C2,
                                                              const gp_Lin2d&            OnLi,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Lin1     = L1;
   Curv2    = C2;
@@ -215,7 +215,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&    
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                              const gp_Pnt2d&            P2,
                                                              const gp_Lin2d&            OnLi,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Curv1    = C1;
   Pnt2     = P2;
@@ -227,7 +227,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                              const Geom2dAdaptor_Curve& C2,
                                                              const gp_Circ2d&           OnCi,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Curv1    = C1;
   Curv2    = C2;
@@ -239,7 +239,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&           C1,
                                                              const Geom2dAdaptor_Curve& C2,
                                                              const gp_Circ2d&           OnCi,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Circ1    = C1;
   Curv2    = C2;
@@ -251,7 +251,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&   
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&            L1,
                                                              const Geom2dAdaptor_Curve& C2,
                                                              const gp_Circ2d&           OnCi,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Lin1     = L1;
   Curv2    = C2;
@@ -263,7 +263,7 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&    
 Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                              const gp_Pnt2d&            P2,
                                                              const gp_Circ2d&           OnCi,
-                                                             const Standard_Real        Rad)
+                                                             const double               Rad)
 {
   Curv1    = C1;
   Pnt2     = P2;
@@ -272,17 +272,17 @@ Geom2dGcc_FunctionTanCuCuOnCu::Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor
   TheType  = Geom2dGcc_CuPtOnCi;
 }
 
-Standard_Integer Geom2dGcc_FunctionTanCuCuOnCu::NbVariables() const
+int Geom2dGcc_FunctionTanCuCuOnCu::NbVariables() const
 {
   return 4;
 }
 
-Standard_Integer Geom2dGcc_FunctionTanCuCuOnCu::NbEquations() const
+int Geom2dGcc_FunctionTanCuCuOnCu::NbEquations() const
 {
   return 4;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::Value(const math_Vector& X, math_Vector& Fval)
+bool Geom2dGcc_FunctionTanCuCuOnCu::Value(const math_Vector& X, math_Vector& Fval)
 {
   gp_Pnt2d Point1, Point2, Point3;
   gp_Vec2d Tan1, Tan2, Tan3, D21, D22, D23;
@@ -297,19 +297,18 @@ Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::Value(const math_Vector& X, math
   p2p3 = P2P3 / FirstRad;
   p3p1 = P3P1 / FirstRad;
   // norme des Tani.
-  Standard_Real nnor1 = Tan1.Magnitude();
-  Standard_Real nnor2 = Tan2.Magnitude();
+  double nnor1 = Tan1.Magnitude();
+  double nnor2 = Tan2.Magnitude();
   // Fonctions Fui.
   // ==============
   Fval(1) = (P3P1.Dot(P3P1) - X(4) * X(4)) / (FirstRad * FirstRad);
   Fval(2) = (P2P3.Dot(P2P3) - X(4) * X(4)) / (FirstRad * FirstRad);
   Fval(3) = P3P1.Dot(Tan1) / (nnor1 * FirstRad);
   Fval(4) = P2P3.Dot(Tan2) / (nnor2 * FirstRad);
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::Derivatives(const math_Vector& X,
-                                                            math_Matrix&       Deriv)
+bool Geom2dGcc_FunctionTanCuCuOnCu::Derivatives(const math_Vector& X, math_Matrix& Deriv)
 {
   gp_Pnt2d Point1, Point2, Point3;
   gp_Vec2d Tan1, Tan2, Tan3;
@@ -325,8 +324,8 @@ Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::Derivatives(const math_Vector& X
   p2p3 = P2P3 / FirstRad;
   p3p1 = P3P1 / FirstRad;
   // normales au courbes normees Nori et non nromees nori et norme des nori.
-  Standard_Real nnor1 = Tan1.Magnitude();
-  Standard_Real nnor2 = Tan2.Magnitude();
+  double nnor1 = Tan1.Magnitude();
+  double nnor2 = Tan2.Magnitude();
   // Derivees dFui/uj  1 <= ui <= 3 , 1 <= uj <= 3
   // =============================================
   Deriv(1, 1) = 2. * Tan1.Dot(P3P1) / (FirstRad * FirstRad);
@@ -350,12 +349,12 @@ Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::Derivatives(const math_Vector& X
                 - P2P3.Dot(Tan2) * Tan2.Dot(D22) / (FirstRad * nnor2 * nnor2 * nnor2);
   Deriv(4, 3) = Tan3.Dot(Tan2) / (FirstRad * nnor1);
   Deriv(4, 4) = 0.;
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::Values(const math_Vector& X,
-                                                       math_Vector&       Fval,
-                                                       math_Matrix&       Deriv)
+bool Geom2dGcc_FunctionTanCuCuOnCu::Values(const math_Vector& X,
+                                           math_Vector&       Fval,
+                                           math_Matrix&       Deriv)
 {
   gp_Pnt2d Point1, Point2, Point3;
   gp_Vec2d Tan1, Tan2, Tan3;
@@ -371,8 +370,8 @@ Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::Values(const math_Vector& X,
   p2p3 = P2P3 / FirstRad;
   p3p1 = P3P1 / FirstRad;
   // normales au courbes normees Nori et non nromees nori et norme des nori.
-  Standard_Real nnor1 = Tan1.Magnitude();
-  Standard_Real nnor2 = Tan2.Magnitude();
+  double nnor1 = Tan1.Magnitude();
+  double nnor2 = Tan2.Magnitude();
   // Fonctions Fui.
   // ==============
   Fval(1) = (P3P1.Dot(P3P1) - X(4) * X(4)) / (FirstRad * FirstRad);
@@ -402,5 +401,5 @@ Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::Values(const math_Vector& X,
                 - P2P3.Dot(Tan2) * Tan2.Dot(D22) / (FirstRad * nnor2 * nnor2 * nnor2);
   Deriv(4, 3) = Tan3.Dot(Tan2) / (FirstRad * nnor1);
   Deriv(4, 4) = 0.;
-  return Standard_True;
+  return true;
 }

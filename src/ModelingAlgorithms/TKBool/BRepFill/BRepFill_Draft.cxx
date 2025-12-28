@@ -51,7 +51,7 @@
 #include <gp_Trsf.hxx>
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -61,14 +61,14 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 
 #ifdef DRAW
   #include <Geom_Circle.hxx>
   #include <gp.hxx>
   #include <DBRep.hxx>
   #include <DrawTrSurf.hxx>
-static Standard_Boolean Affich = 0;
+static bool Affich = 0;
 #endif
 
 //=================================================================================================
@@ -79,8 +79,8 @@ static void ComputeTrsf(const TopoDS_Wire& W, const gp_Dir& D, Bnd_Box& Box, gp_
   BRepTools_WireExplorer Exp(W);
   // Class BRep_Tool without fields and without Constructor :
   //  BRep_Tool BT;
-  gp_XYZ           Bary(0., 0., 0.);
-  Standard_Integer nb;
+  gp_XYZ Bary(0., 0., 0.);
+  int    nb;
 
   for (nb = 0; Exp.More(); Exp.Next())
   {
@@ -113,11 +113,11 @@ static void ComputeTrsf(const TopoDS_Wire& W, const gp_Dir& D, Bnd_Box& Box, gp_
 
 //=================================================================================================
 
-static Standard_Real Longueur(const Bnd_Box& WBox, const Bnd_Box& SBox, gp_Dir& D, gp_Pnt& P)
+static double Longueur(const Bnd_Box& WBox, const Bnd_Box& SBox, gp_Dir& D, gp_Pnt& P)
 {
   // face of the box most remoted from the face input in
   // the direction of skin
-  Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax, WZmin, WZmax, L;
+  double Xmin, Ymin, Zmin, Xmax, Ymax, Zmax, WZmin, WZmax, L;
 
   //"coord" of the box
   WBox.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
@@ -145,12 +145,12 @@ static Standard_Real Longueur(const Bnd_Box& WBox, const Bnd_Box& SBox, gp_Dir& 
 // function : GoodOrientation
 // purpose  : Check if the law is oriented to have an exterior skin
 //======================================================================
-static Standard_Boolean GoodOrientation(const Bnd_Box&                      B,
-                                        const Handle(BRepFill_LocationLaw)& Law,
-                                        const gp_Dir&                       D)
+static bool GoodOrientation(const Bnd_Box&                           B,
+                            const occ::handle<BRepFill_LocationLaw>& Law,
+                            const gp_Dir&                            D)
 {
-  Standard_Real f, l, r, t;
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double f, l, r, t;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
 
   B.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
   gp_Pnt P1(aXmin, aYmin, aZmin), P2(aXmax, aYmax, aZmax);
@@ -159,19 +159,19 @@ static Standard_Boolean GoodOrientation(const Bnd_Box&                      B,
   Law->CurvilinearBounds(Law->NbLaw(), f, l);
   r = V.Magnitude() / l;
 
-  Standard_Integer ii, Ind;
+  int ii, Ind;
   // #ifndef OCCT_DEBUG
-  Standard_Integer Nb = (Standard_Integer)(4 + (10 * r));
+  int Nb = (int)(4 + (10 * r));
   // #else
-  //   Standard_Integer Nb = 4+(10*r);
+  //   int Nb = 4+(10*r);
   // #endif
   r = l / Nb;
 
   Nb++; // Number of points
 
-  TColgp_Array1OfPnt      Pnts(1, Nb);
-  Handle(Adaptor3d_Curve) AC;
-  gp_XYZ                  Bary(0., 0., 0.);
+  NCollection_Array1<gp_Pnt>   Pnts(1, Nb);
+  occ::handle<Adaptor3d_Curve> AC;
+  gp_XYZ                       Bary(0., 0., 0.);
 
   for (ii = 1; ii <= Nb; ii++)
   {
@@ -182,10 +182,10 @@ static Standard_Boolean GoodOrientation(const Bnd_Box&                      B,
   }
 
   Bary /= Nb;
-  gp_Pnt        Centre(Bary);
-  gp_Vec        Normal(D.XYZ());
-  Standard_Real Angle = 0;
-  gp_Vec        Ref(Centre, Pnts(1));
+  gp_Pnt Centre(Bary);
+  gp_Vec Normal(D.XYZ());
+  double Angle = 0;
+  gp_Vec Ref(Centre, Pnts(1));
 
   for (ii = 2; ii <= Nb; ii++)
   {
@@ -199,7 +199,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box&                      B,
 
 //=================================================================================================
 
-BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const Standard_Real Angle)
+BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const double Angle)
 {
   myLoc.Nullify();
   mySec.Nullify();
@@ -218,10 +218,13 @@ BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const S
       break;
     }
     case TopAbs_SHELL: {
-      TopTools_ListOfShape                      List;
-      TopTools_IndexedDataMapOfShapeListOfShape edgemap;
+      NCollection_List<TopoDS_Shape> List;
+      NCollection_IndexedDataMap<TopoDS_Shape,
+                                 NCollection_List<TopoDS_Shape>,
+                                 TopTools_ShapeMapHasher>
+        edgemap;
       TopExp::MapShapesAndAncestors(S, TopAbs_EDGE, TopAbs_FACE, edgemap);
-      Standard_Integer iedge, nbf;
+      int iedge, nbf;
       for (iedge = 1; iedge <= edgemap.Extent(); iedge++)
       {
         const TopoDS_Edge& theEdge = TopoDS::Edge(edgemap.FindKey(iedge));
@@ -270,7 +273,7 @@ BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const S
     TopoDS_Vertex Vf, Vl;
     TopExp::Vertices(myWire, Vf, Vl);
     if (Vf.IsSame(Vl))
-      myWire.Closed(Standard_True);
+      myWire.Closed(true);
   }
 #ifdef DRAW
   if (Affich)
@@ -282,7 +285,7 @@ BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const S
   myAngle = std::abs(Angle);
   myDir   = Dir;
   myTop   = S;
-  myDone  = Standard_False;
+  myDone  = false;
   myTol   = 1.e-4;
   myCont  = GeomAbs_C1;
   SetOptions();
@@ -292,8 +295,8 @@ BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const S
 //=================================================================================================
 
 void BRepFill_Draft::SetOptions(const BRepFill_TransitionStyle Style,
-                                const Standard_Real            Min,
-                                const Standard_Real            Max)
+                                const double                   Min,
+                                const double                   Max)
 {
   myStyle = Style;
   angmin  = Min;
@@ -302,7 +305,7 @@ void BRepFill_Draft::SetOptions(const BRepFill_TransitionStyle Style,
 
 //=================================================================================================
 
-void BRepFill_Draft::SetDraft(const Standard_Boolean Internal)
+void BRepFill_Draft::SetDraft(const bool Internal)
 {
   IsInternal = Internal;
 }
@@ -311,9 +314,9 @@ void BRepFill_Draft::SetDraft(const Standard_Boolean Internal)
 // function :Perform
 // purpose  : calculate a surface of skinning
 //======================================================================
-void BRepFill_Draft::Perform(const Standard_Real LengthMax)
+void BRepFill_Draft::Perform(const double LengthMax)
 {
-  Handle(Geom_Surface) S;
+  occ::handle<Geom_Surface> S;
   S.Nullify();
   Bnd_Box WBox; //, SBox;
   gp_Trsf Trsf;
@@ -328,19 +331,18 @@ void BRepFill_Draft::Perform(const Standard_Real LengthMax)
 // function :Perform
 // purpose  : calculate a surface of skinning
 //======================================================================
-void BRepFill_Draft::Perform(const Handle(Geom_Surface)& Surface,
-                             const Standard_Boolean      KeepInsideSurface)
+void BRepFill_Draft::Perform(const occ::handle<Geom_Surface>& Surface, const bool KeepInsideSurface)
 {
-  Bnd_Box       WBox, SBox;
-  gp_Trsf       Trsf;
-  gp_Pnt        Pt;
-  Standard_Real L;
+  Bnd_Box WBox, SBox;
+  gp_Trsf Trsf;
+  gp_Pnt  Pt;
+  double  L;
 
   ComputeTrsf(myWire, myDir, WBox, Trsf);
 
   // box with bounds of the stop surface
-  Handle(Geom_Surface) Surf;
-  Surf = Handle(Geom_Surface)::DownCast(Surface->Transformed(Trsf));
+  occ::handle<Geom_Surface> Surf;
+  Surf = occ::down_cast<Geom_Surface>(Surface->Transformed(Trsf));
   GeomAdaptor_Surface S1(Surf);
   //  BndLib_AddSurface AS;
   //  AS.Add(S1, 0.1, SBox);
@@ -360,21 +362,21 @@ void BRepFill_Draft::Perform(const Handle(Geom_Surface)& Surface,
 // function :Perform
 // purpose  : calculate the surface of skinning, stopped by a shape
 //================================================================
-void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape, const Standard_Boolean KeepOutSide)
+void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape, const bool KeepOutSide)
 {
-  Bnd_Box       WBox, SBox;
-  gp_Trsf       Trsf;
-  gp_Pnt        Pt;
-  Standard_Real L;
+  Bnd_Box WBox, SBox;
+  gp_Trsf Trsf;
+  gp_Pnt  Pt;
+  double  L;
 
   ComputeTrsf(myWire, myDir, WBox, Trsf);
 
   // bounding box of the stop shape
-  Bnd_Box       BSurf; //, TheBox;
-  Standard_Real Umin, Umax, Vmin, Vmax;
+  Bnd_Box BSurf; //, TheBox;
+  double  Umin, Umax, Vmin, Vmax;
   //  BRepTools B;
   //  BRep_Tool BT;
-  Handle(Geom_Surface) Surf;
+  occ::handle<Geom_Surface> Surf;
 
   //  BndLib_AddSurface AS;
 
@@ -385,7 +387,7 @@ void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape, const Standard_Boole
   { // parse faces of the stop shape
     //    B.UVBounds(TopoDS::Face(Ex.Current()), Umin,Umax,Vmin,Vmax);
     BRepTools::UVBounds(TopoDS::Face(Ex.Current()), Umin, Umax, Vmin, Vmax);
-    Surf = Handle(Geom_Surface)::DownCast(
+    Surf = occ::down_cast<Geom_Surface>(
       //     BT.Surface(TopoDS::Face(Ex.Current()))->Transformed(Trsf) );
       BRep_Tool::Surface(TopoDS::Face(Ex.Current()))->Transformed(Trsf));
     GeomAdaptor_Surface S1(Surf);
@@ -404,8 +406,8 @@ void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape, const Standard_Boole
   gp_Trsf Inv;
   Inv = Trsf.Inverted(); // inverted transformation
   Pt.Transform(Inv);     // coordinate in the absolute reference
-  Handle(Geom_Plane) Plan = new (Geom_Plane)(Pt, myDir);
-  Surf                    = new (Geom_RectangularTrimmedSurface)(Plan, -L, L, -L, L);
+  occ::handle<Geom_Plane> Plan = new (Geom_Plane)(Pt, myDir);
+  Surf                         = new (Geom_RectangularTrimmedSurface)(Plan, -L, L, -L, L);
 
 #ifdef DRAW
   if (Affich)
@@ -418,22 +420,20 @@ void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape, const Standard_Boole
 
   // Sweeping and restriction
   Init(Plan, L * 1.01, WBox);
-  BuildShell(Surf, Standard_False);
+  BuildShell(Surf, false);
   Fuse(StopShape, KeepOutSide);
   Sewing();
 }
 
 //=================================================================================================
 
-void BRepFill_Draft::Init(const Handle(Geom_Surface)&,
-                          const Standard_Real Length,
-                          const Bnd_Box&      Box)
+void BRepFill_Draft::Init(const occ::handle<Geom_Surface>&, const double Length, const Bnd_Box& Box)
 {
-  Standard_Boolean B;
+  bool B;
 
   // law of positioning
-  Handle(GeomFill_LocationDraft) Loc = new (GeomFill_LocationDraft)(myDir, myAngle);
-  myLoc                              = new (BRepFill_DraftLaw)(myWire, Loc);
+  occ::handle<GeomFill_LocationDraft> Loc = new (GeomFill_LocationDraft)(myDir, myAngle);
+  myLoc                                   = new (BRepFill_DraftLaw)(myWire, Loc);
 
   B = GoodOrientation(Box, myLoc, myDir);
 
@@ -452,7 +452,7 @@ void BRepFill_Draft::Init(const Handle(Geom_Surface)&,
   gp_Vec D(0., 1., 0.);
 
   // Control of the orientation
-  Standard_Real f, l;
+  double f, l;
   myLoc->Law(1)->GetDomain(f, l);
   gp_Mat M;
 
@@ -460,12 +460,12 @@ void BRepFill_Draft::Init(const Handle(Geom_Surface)&,
   myLoc->Law(1)->D0((f + l) / 2, M, Bid);
   gp_Dir BN(M.Column(2));
 
-  Standard_Real ang = myDir.Angle(BN);
+  double ang = myDir.Angle(BN);
   if (ang > M_PI / 2)
     D.Reverse();
-  Handle(Geom_Line) L = new (Geom_Line)(P, D);
+  occ::handle<Geom_Line> L = new (Geom_Line)(P, D);
 
-  Handle(Geom_Curve) TC = new (Geom_TrimmedCurve)(L, 0, Length);
+  occ::handle<Geom_Curve> TC = new (Geom_TrimmedCurve)(L, 0, Length);
 
 #ifdef DRAW
   if (Affich > 2)
@@ -480,23 +480,28 @@ void BRepFill_Draft::Init(const Handle(Geom_Surface)&,
   BRepLib_MakeWire MW(EG);
   TopoDS_Wire      G = MW.Wire();
 
-  mySec = new (BRepFill_ShapeLaw)(G, Standard_True);
+  mySec = new (BRepFill_ShapeLaw)(G, true);
 }
 
 //=======================================================================
 // function : BuildShell
 // purpose  : Construction of the skinning surface
 //======================================================================
-void BRepFill_Draft::BuildShell(const Handle(Geom_Surface)& Surf,
-                                const Standard_Boolean      KeepOutSide)
+void BRepFill_Draft::BuildShell(const occ::handle<Geom_Surface>& Surf, const bool KeepOutSide)
 {
   // construction of the surface
-  BRepFill_Sweep Sweep(mySec, myLoc, Standard_True);
+  BRepFill_Sweep Sweep(mySec, myLoc, true);
   Sweep.SetTolerance(myTol);
   Sweep.SetAngularControl(angmin, angmax);
-  TopTools_MapOfShape                   Dummy;
-  BRepFill_DataMapOfShapeHArray2OfShape Dummy2;
-  BRepFill_DataMapOfShapeHArray2OfShape Dummy3;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Dummy;
+  NCollection_DataMap<TopoDS_Shape,
+                      occ::handle<NCollection_HArray2<TopoDS_Shape>>,
+                      TopTools_ShapeMapHasher>
+    Dummy2;
+  NCollection_DataMap<TopoDS_Shape,
+                      occ::handle<NCollection_HArray2<TopoDS_Shape>>,
+                      TopTools_ShapeMapHasher>
+    Dummy3;
   Sweep.Build(Dummy, Dummy2, Dummy3, myStyle, myCont);
   if (Sweep.IsDone())
   {
@@ -504,14 +509,14 @@ void BRepFill_Draft::BuildShell(const Handle(Geom_Surface)& Surf,
     myShell    = TopoDS::Shell(myShape);
     myFaces    = Sweep.SubShape();
     mySections = Sweep.Sections();
-    myDone     = Standard_True;
+    myDone     = true;
     // Control of the orientation
-    Standard_Boolean out = Standard_True;
-    TopExp_Explorer  ex(myShell, TopAbs_FACE);
-    TopoDS_Face      F;
+    bool            out = true;
+    TopExp_Explorer ex(myShell, TopAbs_FACE);
+    TopoDS_Face     F;
     F = TopoDS::Face(ex.Current());
     BRepAdaptor_Surface SF(F);
-    Standard_Real       u, v;
+    double              u, v;
     gp_Pnt              P;
     gp_Vec              V1, V2, V;
     u = SF.FirstUParameter();
@@ -532,7 +537,7 @@ void BRepFill_Draft::BuildShell(const Handle(Geom_Surface)& Surf,
   }
   else
   {
-    myDone = Standard_False;
+    myDone = false;
     return;
   }
 
@@ -542,7 +547,7 @@ void BRepFill_Draft::BuildShell(const Handle(Geom_Surface)& Surf,
     // Waiting the use of traces & restriction in BRepFill_Sweep
     // Make Fuse.
     BRepLib_MakeFace MkF;
-    MkF.Init(Surf, Standard_True, Precision::Confusion());
+    MkF.Init(Surf, true, Precision::Confusion());
     Fuse(MkF.Face(), KeepOutSide);
   }
 }
@@ -552,18 +557,17 @@ void BRepFill_Draft::BuildShell(const Handle(Geom_Surface)& Surf,
 // purpose  : Boolean operation between the skin and the
 //           stop shape
 //======================================================================
-Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
-                                      const Standard_Boolean KeepOutSide)
+bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
 {
-  BRep_Builder     B;
-  Standard_Boolean issolid = Standard_False;
-  TopoDS_Solid     Sol1, Sol2;
-  TopAbs_State     State1 = TopAbs_OUT, State2 = TopAbs_OUT;
+  BRep_Builder B;
+  bool         issolid = false;
+  TopoDS_Solid Sol1, Sol2;
+  TopAbs_State State1 = TopAbs_OUT, State2 = TopAbs_OUT;
 
   if (myShape.ShapeType() == TopAbs_SOLID)
   {
     Sol1    = TopoDS::Solid(myShape);
-    issolid = Standard_True;
+    issolid = true;
   }
   else
   {
@@ -598,19 +602,19 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
     }
 
     default: {
-      return Standard_False; // Impossible to do
+      return false; // Impossible to do
     }
   }
 
   // Perform intersection of solids
-  BOPAlgo_PaveFiller   aPF;
-  TopTools_ListOfShape anArgs;
+  BOPAlgo_PaveFiller             aPF;
+  NCollection_List<TopoDS_Shape> anArgs;
   anArgs.Append(Sol1);
   anArgs.Append(Sol2);
   aPF.SetArguments(anArgs);
   aPF.Perform();
   if (aPF.HasErrors())
-    return Standard_False;
+    return false;
 
   BRepAlgoAPI_Section aSec(Sol1, Sol2, aPF);
   const TopoDS_Shape& aSection = aSec.Shape();
@@ -618,7 +622,7 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
   TopExp_Explorer exp(aSection, TopAbs_EDGE);
   if (!exp.More())
     // No section edges produced
-    return Standard_False;
+    return false;
 
   if (StopShape.ShapeType() != TopAbs_SOLID)
   {
@@ -626,7 +630,7 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
 
     // We need to find the section edge, closest to myWire
     TopoDS_Edge                aSEMin;
-    Standard_Real              Dmin = Precision::Infinite();
+    double                     Dmin = Precision::Infinite();
     BRepExtrema_DistShapeShape DistTool;
     DistTool.LoadS1(myWire);
 
@@ -637,7 +641,7 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
       DistTool.Perform();
       if (DistTool.IsDone())
       {
-        Standard_Real D = DistTool.Value();
+        double D = DistTool.Value();
         if (D < Dmin)
         {
           Dmin   = D;
@@ -651,11 +655,11 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
     if (!aSEMin.IsNull())
     {
       // Get geometry of StopShape
-      Handle(Geom_Surface) S;
-      Handle(Geom2d_Curve) C2d;
-      gp_Pnt2d             P2d;
-      Standard_Real        f, l;
-      TopLoc_Location      L;
+      occ::handle<Geom_Surface> S;
+      occ::handle<Geom2d_Curve> C2d;
+      gp_Pnt2d                  P2d;
+      double                    f, l;
+      TopLoc_Location           L;
       BRep_Tool::CurveOnSurface(aSEMin, C2d, S, L, f, l, 2);
 
       // Find a normal.
@@ -697,16 +701,16 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
   aBuilder.AddArgument(Sol2);
   aBuilder.PerformWithFiller(aPF);
   if (aBuilder.HasErrors())
-    return Standard_False;
+    return false;
 
-  TopoDS_Shape              result;
-  Handle(BRepTools_History) aHistory = new BRepTools_History;
+  TopoDS_Shape                   result;
+  occ::handle<BRepTools_History> aHistory = new BRepTools_History;
 
-  Standard_Boolean isSingleOpNeeded = Standard_True;
+  bool isSingleOpNeeded = true;
   // To get rid of the unnecessary parts of first solid make the cutting first
   if (State1 == TopAbs_OUT)
   {
-    TopTools_ListOfShape aLO, aLT;
+    NCollection_List<TopoDS_Shape> aLO, aLT;
     aLO.Append(Sol1);
     aLT.Append(Sol2);
     aBuilder.BuildBOP(aLO, aLT, BOPAlgo_CUT, Message_ProgressRange());
@@ -720,7 +724,7 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
         anExpS.Next();
         if (anExpS.More())
         {
-          Standard_Real              aDMin = Precision::Infinite();
+          double                     aDMin = Precision::Infinite();
           BRepExtrema_DistShapeShape DistTool;
           DistTool.LoadS1(myWire);
 
@@ -731,7 +735,7 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
             DistTool.Perform();
             if (DistTool.IsDone())
             {
-              Standard_Real D = DistTool.Value();
+              double D = DistTool.Value();
               if (D < aDMin)
               {
                 aDMin   = D;
@@ -774,13 +778,13 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
   {
     aHistory->Clear();
 
-    TopTools_ListOfShape aLO, aLT;
+    NCollection_List<TopoDS_Shape> aLO, aLT;
     aLO.Append(Sol1);
     aLT.Append(Sol2);
 
     aBuilder.BuildBOP(aLO, State1, aLT, State2, Message_ProgressRange());
     if (aBuilder.HasErrors())
-      return Standard_False;
+      return false;
 
     aHistory->Merge(aBuilder.History());
     result = aBuilder.Shape();
@@ -797,44 +801,43 @@ Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape&    StopShape,
   }
 
   // Update the History
-  Standard_Integer ii;
+  int ii;
   for (ii = 1; ii <= myLoc->NbLaw(); ii++)
   {
-    const TopTools_ListOfShape& L = aHistory->Modified(myFaces->Value(1, ii));
+    const NCollection_List<TopoDS_Shape>& L = aHistory->Modified(myFaces->Value(1, ii));
     if (L.Extent() > 0)
       myFaces->SetValue(1, ii, L.First());
   }
   for (ii = 1; ii <= myLoc->NbLaw() + 1; ii++)
   {
-    const TopTools_ListOfShape& L = aHistory->Modified(mySections->Value(1, ii));
+    const NCollection_List<TopoDS_Shape>& L = aHistory->Modified(mySections->Value(1, ii));
     if (L.Extent() > 0)
       mySections->SetValue(1, ii, L.First());
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Sewing
 // purpose  : Assemble the skin with the above face
 //======================================================================
-Standard_Boolean BRepFill_Draft::Sewing()
+bool BRepFill_Draft::Sewing()
 {
-  Standard_Boolean ToAss;
-  Standard_Boolean Ok = Standard_False;
-  ToAss               = (myTop.ShapeType() != TopAbs_WIRE);
+  bool ToAss;
+  bool Ok = false;
+  ToAss   = (myTop.ShapeType() != TopAbs_WIRE);
 
   if ((!ToAss) || (!myDone))
-    return Standard_False;
+    return false;
 
   // Assembly make a shell from the faces of the shape + the input shape
-  Handle(BRepBuilderAPI_Sewing) Ass =
-    new BRepBuilderAPI_Sewing(5 * myTol, Standard_True, Standard_True, Standard_False);
+  occ::handle<BRepBuilderAPI_Sewing> Ass = new BRepBuilderAPI_Sewing(5 * myTol, true, true, false);
   Ass->Add(myShape);
   Ass->Add(myTop);
-  ToAss = Standard_True;
+  ToAss = true;
 
-  Standard_Integer NbCE;
+  int NbCE;
 
   Ass->Perform();
   // Check if the assembly is real.
@@ -847,7 +850,7 @@ Standard_Boolean BRepFill_Draft::Sewing()
     if ((res.ShapeType() == TopAbs_SHELL) || (res.ShapeType() == TopAbs_SOLID))
     {
       myShape = res;
-      Ok      = Standard_True;
+      Ok      = true;
     }
     else if (res.ShapeType() == TopAbs_COMPOUND)
     {
@@ -857,7 +860,7 @@ Standard_Boolean BRepFill_Draft::Sewing()
       if (!It.More())
       { // Only one part => this is correct
         myShape = res;
-        Ok      = Standard_True;
+        Ok      = true;
       }
     }
   }
@@ -865,7 +868,7 @@ Standard_Boolean BRepFill_Draft::Sewing()
   if (Ok)
   {
     // Update the History
-    Standard_Integer ii;
+    int ii;
     for (ii = 1; ii <= myLoc->NbLaw(); ii++)
     {
       if (Ass->IsModified(myFaces->Value(1, ii)))
@@ -906,11 +909,11 @@ Standard_Boolean BRepFill_Draft::Sewing()
 // function : Generated
 // purpose  : return a sub-part generated by sweeping
 //======================================================================
-const TopTools_ListOfShape& BRepFill_Draft::Generated(const TopoDS_Shape& S)
+const NCollection_List<TopoDS_Shape>& BRepFill_Draft::Generated(const TopoDS_Shape& S)
 {
   myGenerated.Clear();
-  TopoDS_Edge      E;
-  Standard_Integer ii;
+  TopoDS_Edge E;
+  int         ii;
   E = TopoDS::Edge(S);
   if (E.IsNull())
   {
@@ -954,7 +957,7 @@ TopoDS_Shell BRepFill_Draft::Shell() const
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_Draft::IsDone() const
+bool BRepFill_Draft::IsDone() const
 {
   return myDone;
 }

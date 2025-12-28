@@ -25,8 +25,6 @@
 #include <StepGeom_PointOnCurve.hxx>
 #include <StepKinematics_SpatialRotation.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_PointOnPlanarCurvePairValue, StepKinematics_PairValue)
-
 //! Representation of STEP entity PointOnPlanarCurvePairValue
 class StepKinematics_PointOnPlanarCurvePairValue : public StepKinematics_PairValue
 {
@@ -35,16 +33,17 @@ public:
   Standard_EXPORT StepKinematics_PointOnPlanarCurvePairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                            const Handle(StepGeom_PointOnCurve)&        theActualPointOnCurve,
-                            const StepKinematics_SpatialRotation&       theInputOrientation);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+    const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve,
+    const StepKinematics_SpatialRotation&            theInputOrientation);
 
   //! Returns field ActualPointOnCurve
-  Standard_EXPORT Handle(StepGeom_PointOnCurve) ActualPointOnCurve() const;
+  Standard_EXPORT occ::handle<StepGeom_PointOnCurve> ActualPointOnCurve() const;
   //! Sets field ActualPointOnCurve
   Standard_EXPORT void SetActualPointOnCurve(
-    const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve);
+    const occ::handle<StepGeom_PointOnCurve>& theActualPointOnCurve);
 
   //! Returns field InputOrientation
   Standard_EXPORT StepKinematics_SpatialRotation InputOrientation() const;
@@ -55,7 +54,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnPlanarCurvePairValue, StepKinematics_PairValue)
 
 private:
-  Handle(StepGeom_PointOnCurve)  myActualPointOnCurve;
-  StepKinematics_SpatialRotation myInputOrientation;
+  occ::handle<StepGeom_PointOnCurve> myActualPointOnCurve;
+  StepKinematics_SpatialRotation     myInputOrientation;
 };
 #endif // _StepKinematics_PointOnPlanarCurvePairValue_HeaderFile_

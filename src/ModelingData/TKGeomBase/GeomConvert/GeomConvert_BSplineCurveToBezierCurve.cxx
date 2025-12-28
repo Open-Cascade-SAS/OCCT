@@ -19,17 +19,17 @@
 #include <GeomConvert_BSplineCurveToBezierCurve.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
 GeomConvert_BSplineCurveToBezierCurve::GeomConvert_BSplineCurveToBezierCurve(
-  const Handle(Geom_BSplineCurve)& BasisCurve)
+  const occ::handle<Geom_BSplineCurve>& BasisCurve)
 {
-  myCurve          = Handle(Geom_BSplineCurve)::DownCast(BasisCurve->Copy());
-  Standard_Real Uf = myCurve->FirstParameter();
-  Standard_Real Ul = myCurve->LastParameter();
+  myCurve   = occ::down_cast<Geom_BSplineCurve>(BasisCurve->Copy());
+  double Uf = myCurve->FirstParameter();
+  double Ul = myCurve->LastParameter();
   myCurve->Segment(Uf, Ul);
   myCurve->IncreaseMultiplicity(myCurve->FirstUKnotIndex(),
                                 myCurve->LastUKnotIndex(),
@@ -43,19 +43,19 @@ GeomConvert_BSplineCurveToBezierCurve::GeomConvert_BSplineCurveToBezierCurve(
 //=======================================================================Real I
 
 GeomConvert_BSplineCurveToBezierCurve::GeomConvert_BSplineCurveToBezierCurve(
-  const Handle(Geom_BSplineCurve)& BasisCurve,
-  const Standard_Real              U1,
-  const Standard_Real              U2,
-  const Standard_Real              ParametricTolerance)
+  const occ::handle<Geom_BSplineCurve>& BasisCurve,
+  const double                          U1,
+  const double                          U2,
+  const double                          ParametricTolerance)
 {
   if (U2 - U1 < ParametricTolerance)
     throw Standard_DomainError("GeomConvert_BSplineCurveToBezierSurface");
 
-  Standard_Real Uf = U1, Ul = U2;
-  Standard_Real PTol = ParametricTolerance / 2;
+  double Uf = U1, Ul = U2;
+  double PTol = ParametricTolerance / 2;
 
-  Standard_Integer I1, I2;
-  myCurve = Handle(Geom_BSplineCurve)::DownCast(BasisCurve->Copy());
+  int I1, I2;
+  myCurve = occ::down_cast<Geom_BSplineCurve>(BasisCurve->Copy());
 
   myCurve->LocateU(U1, PTol, I1, I2);
   if (I1 == I2)
@@ -79,21 +79,21 @@ GeomConvert_BSplineCurveToBezierCurve::GeomConvert_BSplineCurveToBezierCurve(
 
 //=================================================================================================
 
-Handle(Geom_BezierCurve) GeomConvert_BSplineCurveToBezierCurve::Arc(const Standard_Integer Index)
+occ::handle<Geom_BezierCurve> GeomConvert_BSplineCurveToBezierCurve::Arc(const int Index)
 {
   if (Index < 1 || Index > myCurve->NbKnots() - 1)
   {
     throw Standard_OutOfRange("GeomConvert_BSplineCurveToBezierCurve");
   }
-  Standard_Integer Deg = myCurve->Degree();
+  int Deg = myCurve->Degree();
 
-  TColgp_Array1OfPnt Poles(1, Deg + 1);
+  NCollection_Array1<gp_Pnt> Poles(1, Deg + 1);
 
-  Handle(Geom_BezierCurve) C;
+  occ::handle<Geom_BezierCurve> C;
   if (myCurve->IsRational())
   {
-    TColStd_Array1OfReal Weights(1, Deg + 1);
-    for (Standard_Integer i = 1; i <= Deg + 1; i++)
+    NCollection_Array1<double> Weights(1, Deg + 1);
+    for (int i = 1; i <= Deg + 1; i++)
     {
       Poles(i)   = myCurve->Pole(i + Deg * (Index - 1));
       Weights(i) = myCurve->Weight(i + Deg * (Index - 1));
@@ -102,7 +102,7 @@ Handle(Geom_BezierCurve) GeomConvert_BSplineCurveToBezierCurve::Arc(const Standa
   }
   else
   {
-    for (Standard_Integer i = 1; i <= Deg + 1; i++)
+    for (int i = 1; i <= Deg + 1; i++)
     {
       Poles(i) = myCurve->Pole(i + Deg * (Index - 1));
     }
@@ -113,10 +113,11 @@ Handle(Geom_BezierCurve) GeomConvert_BSplineCurveToBezierCurve::Arc(const Standa
 
 //=================================================================================================
 
-void GeomConvert_BSplineCurveToBezierCurve::Arcs(TColGeom_Array1OfBezierCurve& Curves)
+void GeomConvert_BSplineCurveToBezierCurve::Arcs(
+  NCollection_Array1<occ::handle<Geom_BezierCurve>>& Curves)
 {
-  Standard_Integer n = NbArcs();
-  for (Standard_Integer i = 1; i <= n; i++)
+  int n = NbArcs();
+  for (int i = 1; i <= n; i++)
   {
     Curves(i) = Arc(i);
   }
@@ -124,16 +125,16 @@ void GeomConvert_BSplineCurveToBezierCurve::Arcs(TColGeom_Array1OfBezierCurve& C
 
 //=================================================================================================
 
-void GeomConvert_BSplineCurveToBezierCurve::Knots(TColStd_Array1OfReal& TKnots) const
+void GeomConvert_BSplineCurveToBezierCurve::Knots(NCollection_Array1<double>& TKnots) const
 {
-  Standard_Integer ii, kk;
+  int ii, kk;
   for (ii = 1, kk = TKnots.Lower(); ii <= myCurve->NbKnots(); ii++, kk++)
     TKnots(kk) = myCurve->Knot(ii);
 }
 
 //=================================================================================================
 
-Standard_Integer GeomConvert_BSplineCurveToBezierCurve::NbArcs() const
+int GeomConvert_BSplineCurveToBezierCurve::NbArcs() const
 {
   return (myCurve->NbKnots() - 1);
 }

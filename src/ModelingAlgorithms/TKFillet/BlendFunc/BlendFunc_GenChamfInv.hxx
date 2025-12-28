@@ -27,43 +27,35 @@ class BlendFunc_GenChamfInv : public Blend_FuncInv
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BlendFunc_GenChamfInv(const Handle(Adaptor3d_Surface)& S1,
-                                        const Handle(Adaptor3d_Surface)& S2,
-                                        const Handle(Adaptor3d_Curve)&   C);
+  Standard_EXPORT BlendFunc_GenChamfInv(const occ::handle<Adaptor3d_Surface>& S1,
+                                        const occ::handle<Adaptor3d_Surface>& S2,
+                                        const occ::handle<Adaptor3d_Curve>&   C);
 
-  Standard_EXPORT virtual void Set(const Standard_Boolean           OnFirst,
-                                   const Handle(Adaptor2d_Curve2d)& COnSurf) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Set(const bool                            OnFirst,
+                                   const occ::handle<Adaptor2d_Curve2d>& COnSurf) override;
 
-  Standard_EXPORT void GetTolerance(math_Vector&        Tolerance,
-                                    const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const double Tol) const override;
 
-  Standard_EXPORT void GetBounds(math_Vector& InfBound,
-                                 math_Vector& SupBound) const Standard_OVERRIDE;
+  Standard_EXPORT void GetBounds(math_Vector& InfBound, math_Vector& SupBound) const override;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
+  Standard_EXPORT int NbEquations() const override;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X,
-                                          math_Vector&       F,
-                                          math_Matrix&       D) Standard_OVERRIDE;
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
 
-  Standard_EXPORT virtual void Set(const Standard_Real    Dist1,
-                                   const Standard_Real    Dist2,
-                                   const Standard_Integer Choix) = 0;
+  Standard_EXPORT virtual void Set(const double Dist1, const double Dist2, const int Choix) = 0;
 
 protected:
-  Handle(Adaptor3d_Surface) surf1;
-  Handle(Adaptor3d_Surface) surf2;
-  Handle(Adaptor3d_Curve)   curv;
-  Handle(Adaptor2d_Curve2d) csurf;
-  Standard_Integer          choix;
-  Standard_Boolean          first;
-
-private:
+  occ::handle<Adaptor3d_Surface> surf1;
+  occ::handle<Adaptor3d_Surface> surf2;
+  occ::handle<Adaptor3d_Curve>   curv;
+  occ::handle<Adaptor2d_Curve2d> csurf;
+  int                            choix;
+  bool                           first;
 };
 
 #endif // _BlendFunc_GenChamfInv_HeaderFile

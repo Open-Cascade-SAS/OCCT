@@ -29,9 +29,6 @@ class Transfer_Binder;
 class Standard_Transient;
 class Transfer_TransientProcess;
 
-class Transfer_ActorDispatch;
-DEFINE_STANDARD_HANDLE(Transfer_ActorDispatch, Transfer_ActorOfTransientProcess)
-
 //! This class allows to work with a TransferDispatch, i.e. to
 //! transfer entities from a data set to another one defined by
 //! the same interface norm, with the following features :
@@ -49,19 +46,19 @@ public:
   //! Service Library, given as an Argument
   //! This causes TransferDispatch and its TransientProcess to be
   //! created, with default actor <me>
-  Standard_EXPORT Transfer_ActorDispatch(const Handle(Interface_InterfaceModel)& amodel,
-                                         const Interface_GeneralLib&             lib);
+  Standard_EXPORT Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
+                                         const Interface_GeneralLib&                  lib);
 
   //! Same as above, but Library is defined through a Protocol
-  Standard_EXPORT Transfer_ActorDispatch(const Handle(Interface_InterfaceModel)& amodel,
-                                         const Handle(Interface_Protocol)&       protocol);
+  Standard_EXPORT Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
+                                         const occ::handle<Interface_Protocol>&       protocol);
 
   //! Same as above, but works with the Active Protocol
-  Standard_EXPORT Transfer_ActorDispatch(const Handle(Interface_InterfaceModel)& amodel);
+  Standard_EXPORT Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel);
 
   //! Utility which adds an actor to the default <me> (it calls
   //! SetActor from the TransientProcess)
-  Standard_EXPORT void AddActor(const Handle(Transfer_ActorOfTransientProcess)& actor);
+  Standard_EXPORT void AddActor(const occ::handle<Transfer_ActorOfTransientProcess>& actor);
 
   //! Returns the TransferDispatch, which does the work, records
   //! the intermediate data, etc...
@@ -71,14 +68,13 @@ public:
   //! Specific action : it calls the method Transfer from CopyTool
   //! i.e. the general service Copy, then returns the Binder
   //! produced by the TransientProcess
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
-    const Handle(Standard_Transient)&        start,
-    const Handle(Transfer_TransientProcess)& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
+    const occ::handle<Standard_Transient>&        start,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    const Message_ProgressRange&                  theProgress = Message_ProgressRange()) override;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_ActorDispatch, Transfer_ActorOfTransientProcess)
 
-protected:
 private:
   Transfer_TransferDispatch thetool;
 };

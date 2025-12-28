@@ -28,9 +28,9 @@ GC_MakeHyperbola::GC_MakeHyperbola(const gp_Hypr& H)
   TheHyperbola = new Geom_Hyperbola(H);
 }
 
-GC_MakeHyperbola::GC_MakeHyperbola(const gp_Ax2&       A2,
-                                   const Standard_Real MajorRadius,
-                                   const Standard_Real MinorRadius)
+GC_MakeHyperbola::GC_MakeHyperbola(const gp_Ax2& A2,
+                                   const double  MajorRadius,
+                                   const double  MinorRadius)
 {
   if (MajorRadius < 0. || MinorRadius < 0.0)
   {
@@ -53,7 +53,7 @@ GC_MakeHyperbola::GC_MakeHyperbola(const gp_Pnt& S1, const gp_Pnt& S2, const gp_
   }
 }
 
-const Handle(Geom_Hyperbola)& GC_MakeHyperbola::Value() const
+const occ::handle<Geom_Hyperbola>& GC_MakeHyperbola::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeHyperbola::Value() - no result");
   return TheHyperbola;

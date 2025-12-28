@@ -42,18 +42,17 @@ public:
     const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeEllipse(
-    const Handle(Geom_Ellipse)& C,
-    const StepData_Factors&     theLocalFactors = StepData_Factors());
+    const occ::handle<Geom_Ellipse>& C,
+    const StepData_Factors&          theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeEllipse(
-    const Handle(Geom2d_Ellipse)& C,
-    const StepData_Factors&       theLocalFactors = StepData_Factors());
+    const occ::handle<Geom2d_Ellipse>& C,
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_Ellipse)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_Ellipse>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_Ellipse) theEllipse;
+  occ::handle<StepGeom_Ellipse> theEllipse;
 };
 
 #endif // _GeomToStep_MakeEllipse_HeaderFile

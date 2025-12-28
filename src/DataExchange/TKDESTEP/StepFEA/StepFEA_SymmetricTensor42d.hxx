@@ -22,7 +22,8 @@
 
 #include <StepData_SelectType.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class Standard_Transient;
 
 //! Representation of STEP SELECT type SymmetricTensor42d
@@ -37,13 +38,10 @@ public:
   //! Recognizes a kind of SymmetricTensor42d select type
   //! 1 -> HArray1OfReal from TColStd
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as AnisotropicSymmetricTensor42d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) AnisotropicSymmetricTensor42d() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> AnisotropicSymmetricTensor42d() const;
 };
 
 #endif // _StepFEA_SymmetricTensor42d_HeaderFile

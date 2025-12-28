@@ -24,10 +24,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_FacetedBrepAndBrepWithVoids, StepShape_Mani
 StepShape_FacetedBrepAndBrepWithVoids::StepShape_FacetedBrepAndBrepWithVoids() {}
 
 void StepShape_FacetedBrepAndBrepWithVoids::Init(
-  const Handle(TCollection_HAsciiString)& aName,
-  const Handle(StepShape_ClosedShell)&    aOuter,
-  const Handle(StepShape_FacetedBrep)&    aFacetedBrep,
-  const Handle(StepShape_BrepWithVoids)&  aBrepWithVoids)
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const occ::handle<StepShape_ClosedShell>&    aOuter,
+  const occ::handle<StepShape_FacetedBrep>&    aFacetedBrep,
+  const occ::handle<StepShape_BrepWithVoids>&  aBrepWithVoids)
 {
   // --- class own fields ---
   facetedBrep   = aFacetedBrep;
@@ -37,9 +37,9 @@ void StepShape_FacetedBrepAndBrepWithVoids::Init(
 }
 
 void StepShape_FacetedBrepAndBrepWithVoids::Init(
-  const Handle(TCollection_HAsciiString)&               aName,
-  const Handle(StepShape_ClosedShell)&                  aOuter,
-  const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids)
+  const occ::handle<TCollection_HAsciiString>&                                        aName,
+  const occ::handle<StepShape_ClosedShell>&                                           aOuter,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids)
 {
   // --- class inherited fields ---
 
@@ -57,23 +57,23 @@ void StepShape_FacetedBrepAndBrepWithVoids::Init(
 }
 
 void StepShape_FacetedBrepAndBrepWithVoids::SetFacetedBrep(
-  const Handle(StepShape_FacetedBrep)& aFacetedBrep)
+  const occ::handle<StepShape_FacetedBrep>& aFacetedBrep)
 {
   facetedBrep = aFacetedBrep;
 }
 
-Handle(StepShape_FacetedBrep) StepShape_FacetedBrepAndBrepWithVoids::FacetedBrep() const
+occ::handle<StepShape_FacetedBrep> StepShape_FacetedBrepAndBrepWithVoids::FacetedBrep() const
 {
   return facetedBrep;
 }
 
 void StepShape_FacetedBrepAndBrepWithVoids::SetBrepWithVoids(
-  const Handle(StepShape_BrepWithVoids)& aBrepWithVoids)
+  const occ::handle<StepShape_BrepWithVoids>& aBrepWithVoids)
 {
   brepWithVoids = aBrepWithVoids;
 }
 
-Handle(StepShape_BrepWithVoids) StepShape_FacetedBrepAndBrepWithVoids::BrepWithVoids() const
+occ::handle<StepShape_BrepWithVoids> StepShape_FacetedBrepAndBrepWithVoids::BrepWithVoids() const
 {
   return brepWithVoids;
 }
@@ -81,23 +81,24 @@ Handle(StepShape_BrepWithVoids) StepShape_FacetedBrepAndBrepWithVoids::BrepWithV
 //--- Specific Methods for AND class field access ---
 
 void StepShape_FacetedBrepAndBrepWithVoids::SetVoids(
-  const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids)
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids)
 {
   brepWithVoids->SetVoids(aVoids);
 }
 
-Handle(StepShape_HArray1OfOrientedClosedShell) StepShape_FacetedBrepAndBrepWithVoids::Voids() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>
+  StepShape_FacetedBrepAndBrepWithVoids::Voids() const
 {
   return brepWithVoids->Voids();
 }
 
-Handle(StepShape_OrientedClosedShell) StepShape_FacetedBrepAndBrepWithVoids::VoidsValue(
-  const Standard_Integer num) const
+occ::handle<StepShape_OrientedClosedShell> StepShape_FacetedBrepAndBrepWithVoids::VoidsValue(
+  const int num) const
 {
   return brepWithVoids->VoidsValue(num);
 }
 
-Standard_Integer StepShape_FacetedBrepAndBrepWithVoids::NbVoids() const
+int StepShape_FacetedBrepAndBrepWithVoids::NbVoids() const
 {
   return brepWithVoids->NbVoids();
 }

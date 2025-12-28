@@ -31,10 +31,10 @@ RWStepKinematics_RWLowOrderKinematicPairValue::RWStepKinematics_RWLowOrderKinema
 //=================================================================================================
 
 void RWStepKinematics_RWLowOrderKinematicPairValue::ReadStep(
-  const Handle(StepData_StepReaderData)&                   theData,
-  const Standard_Integer                                   theNum,
-  Handle(Interface_Check)&                                 theArch,
-  const Handle(StepKinematics_LowOrderKinematicPairValue)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                   theData,
+  const int                                                     theNum,
+  occ::handle<Interface_Check>&                                 theArch,
+  const occ::handle<StepKinematics_LowOrderKinematicPairValue>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 8, theArch, "low_order_kinematic_pair_value"))
@@ -42,12 +42,12 @@ void RWStepKinematics_RWLowOrderKinematicPairValue::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of PairValue
 
-  Handle(StepKinematics_KinematicPair) aPairValue_AppliesToPair;
+  occ::handle<StepKinematics_KinematicPair> aPairValue_AppliesToPair;
   theData->ReadEntity(theNum,
                       2,
                       "pair_value.applies_to_pair",
@@ -57,22 +57,22 @@ void RWStepKinematics_RWLowOrderKinematicPairValue::ReadStep(
 
   // Own fields of LowOrderKinematicPairValue
 
-  Standard_Real aActualTranslationX;
+  double aActualTranslationX;
   theData->ReadReal(theNum, 3, "actual_translation_x", theArch, aActualTranslationX);
 
-  Standard_Real aActualTranslationY;
+  double aActualTranslationY;
   theData->ReadReal(theNum, 4, "actual_translation_y", theArch, aActualTranslationY);
 
-  Standard_Real aActualTranslationZ;
+  double aActualTranslationZ;
   theData->ReadReal(theNum, 5, "actual_translation_z", theArch, aActualTranslationZ);
 
-  Standard_Real aActualRotationX;
+  double aActualRotationX;
   theData->ReadReal(theNum, 6, "actual_rotation_x", theArch, aActualRotationX);
 
-  Standard_Real aActualRotationY;
+  double aActualRotationY;
   theData->ReadReal(theNum, 7, "actual_rotation_y", theArch, aActualRotationY);
 
-  Standard_Real aActualRotationZ;
+  double aActualRotationZ;
   theData->ReadReal(theNum, 8, "actual_rotation_z", theArch, aActualRotationZ);
 
   // Initialize entity
@@ -89,8 +89,8 @@ void RWStepKinematics_RWLowOrderKinematicPairValue::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWLowOrderKinematicPairValue::WriteStep(
-  StepData_StepWriter&                                     theSW,
-  const Handle(StepKinematics_LowOrderKinematicPairValue)& theEnt) const
+  StepData_StepWriter&                                          theSW,
+  const occ::handle<StepKinematics_LowOrderKinematicPairValue>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -119,8 +119,8 @@ void RWStepKinematics_RWLowOrderKinematicPairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWLowOrderKinematicPairValue::Share(
-  const Handle(StepKinematics_LowOrderKinematicPairValue)& theEnt,
-  Interface_EntityIterator&                                iter) const
+  const occ::handle<StepKinematics_LowOrderKinematicPairValue>& theEnt,
+  Interface_EntityIterator&                                     iter) const
 {
 
   // Inherited fields of RepresentationItem

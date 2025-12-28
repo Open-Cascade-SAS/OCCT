@@ -20,39 +20,39 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-void GeomLProp_CurveTool::Value(const Handle(Geom_Curve)& C, const Standard_Real U, gp_Pnt& P)
+void GeomLProp_CurveTool::Value(const occ::handle<Geom_Curve>& C, const double U, gp_Pnt& P)
 {
   P = C->Value(U);
 }
 
-void GeomLProp_CurveTool::D1(const Handle(Geom_Curve)& C,
-                             const Standard_Real       U,
-                             gp_Pnt&                   P,
-                             gp_Vec&                   V1)
+void GeomLProp_CurveTool::D1(const occ::handle<Geom_Curve>& C,
+                             const double                   U,
+                             gp_Pnt&                        P,
+                             gp_Vec&                        V1)
 {
   C->D1(U, P, V1);
 }
 
-void GeomLProp_CurveTool::D2(const Handle(Geom_Curve)& C,
-                             const Standard_Real       U,
-                             gp_Pnt&                   P,
-                             gp_Vec&                   V1,
-                             gp_Vec&                   V2)
+void GeomLProp_CurveTool::D2(const occ::handle<Geom_Curve>& C,
+                             const double                   U,
+                             gp_Pnt&                        P,
+                             gp_Vec&                        V1,
+                             gp_Vec&                        V2)
 {
   C->D2(U, P, V1, V2);
 }
 
-void GeomLProp_CurveTool::D3(const Handle(Geom_Curve)& C,
-                             const Standard_Real       U,
-                             gp_Pnt&                   P,
-                             gp_Vec&                   V1,
-                             gp_Vec&                   V2,
-                             gp_Vec&                   V3)
+void GeomLProp_CurveTool::D3(const occ::handle<Geom_Curve>& C,
+                             const double                   U,
+                             gp_Pnt&                        P,
+                             gp_Vec&                        V1,
+                             gp_Vec&                        V2,
+                             gp_Vec&                        V3)
 {
   C->D3(U, P, V1, V2, V3);
 }
 
-Standard_Integer GeomLProp_CurveTool::Continuity(const Handle(Geom_Curve)& C)
+int GeomLProp_CurveTool::Continuity(const occ::handle<Geom_Curve>& C)
 {
   GeomAbs_Shape s = C->Continuity();
   switch (s)
@@ -75,12 +75,12 @@ Standard_Integer GeomLProp_CurveTool::Continuity(const Handle(Geom_Curve)& C)
   return 0;
 }
 
-Standard_Real GeomLProp_CurveTool::FirstParameter(const Handle(Geom_Curve)& C)
+double GeomLProp_CurveTool::FirstParameter(const occ::handle<Geom_Curve>& C)
 {
   return C->FirstParameter();
 }
 
-Standard_Real GeomLProp_CurveTool::LastParameter(const Handle(Geom_Curve)& C)
+double GeomLProp_CurveTool::LastParameter(const occ::handle<Geom_Curve>& C)
 {
   return C->LastParameter();
 }

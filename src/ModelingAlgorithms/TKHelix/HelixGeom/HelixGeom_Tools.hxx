@@ -47,15 +47,15 @@ public:
   //! @param theBSpl [out] Resulting B-spline curve
   //! @param theMaxError [out] Maximum approximation error achieved
   //! @return 0 on success, error code otherwise
-  Standard_EXPORT static Standard_Integer ApprHelix(const Standard_Real        aT1,
-                                                    const Standard_Real        aT2,
-                                                    const Standard_Real        aPitch,
-                                                    const Standard_Real        aRStart,
-                                                    const Standard_Real        aTaperAngle,
-                                                    const Standard_Boolean     aIsCW,
-                                                    const Standard_Real        aTol,
-                                                    Handle(Geom_BSplineCurve)& theBSpl,
-                                                    Standard_Real&             theMaxError);
+  Standard_EXPORT static int ApprHelix(const double                    aT1,
+                                       const double                    aT2,
+                                       const double                    aPitch,
+                                       const double                    aRStart,
+                                       const double                    aTaperAngle,
+                                       const bool                      aIsCW,
+                                       const double                    aTol,
+                                       occ::handle<Geom_BSplineCurve>& theBSpl,
+                                       double&                         theMaxError);
 
   //! Approximates a generic 3D curve using B-spline representation.
   //! @param theHC [in] Handle to the curve adaptor to approximate
@@ -66,13 +66,13 @@ public:
   //! @param theBSpl [out] Resulting B-spline curve
   //! @param theMaxError [out] Maximum approximation error achieved
   //! @return 0 on success, error code otherwise
-  Standard_EXPORT static Standard_Integer ApprCurve3D(const Handle(Adaptor3d_Curve)& theHC,
-                                                      const Standard_Real            theTol,
-                                                      const GeomAbs_Shape            theCont,
-                                                      const Standard_Integer         theMaxSeg,
-                                                      const Standard_Integer         theMaxDeg,
-                                                      Handle(Geom_BSplineCurve)&     theBSpl,
-                                                      Standard_Real&                 theMaxError);
+  Standard_EXPORT static int ApprCurve3D(const occ::handle<Adaptor3d_Curve>& theHC,
+                                         const double                        theTol,
+                                         const GeomAbs_Shape                 theCont,
+                                         const int                           theMaxSeg,
+                                         const int                           theMaxDeg,
+                                         occ::handle<Geom_BSplineCurve>&     theBSpl,
+                                         double&                             theMaxError);
 };
 
 #endif // _HelixGeom_Tools_HeaderFile

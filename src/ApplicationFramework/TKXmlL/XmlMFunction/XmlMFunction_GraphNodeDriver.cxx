@@ -28,14 +28,14 @@ IMPLEMENT_DOMSTRING(ExecutionStatus, "exec")
 //=================================================================================================
 
 XmlMFunction_GraphNodeDriver::XmlMFunction_GraphNodeDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMFunction_GraphNodeDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMFunction_GraphNodeDriver::NewEmpty() const
 {
   return (new TFunction_GraphNode());
 }
@@ -44,13 +44,13 @@ Handle(TDF_Attribute) XmlMFunction_GraphNodeDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                     const Handle(TDF_Attribute)& theTarget,
-                                                     XmlObjMgt_RRelocationTable&) const
+bool XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                         const occ::handle<TDF_Attribute>& theTarget,
+                                         XmlObjMgt_RRelocationTable&) const
 {
-  Handle(TFunction_GraphNode) G = Handle(TFunction_GraphNode)::DownCast(theTarget);
+  occ::handle<TFunction_GraphNode> G = occ::down_cast<TFunction_GraphNode>(theTarget);
 
-  Standard_Integer         aFirstIndPrev, aLastIndPrev, aFirstIndNext, aLastIndNext, aValue, ind;
+  int                      aFirstIndPrev, aLastIndPrev, aFirstIndNext, aLastIndNext, aValue, ind;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Previous
@@ -68,25 +68,26 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for previous functions of GraphNode attribute");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   if (aFirstIndPrev == aLastIndPrev)
   {
-    Standard_Integer anInteger;
+    int anInteger;
     if (!XmlObjMgt::GetStringValue(anElement).GetInteger(anInteger))
     {
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for previous functions of GraphNode attribute");
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     G->AddPrevious(anInteger);
   }
   else
   {
-    Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
+    const char* aValueStr =
+      static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
 
     for (ind = aFirstIndPrev; ind <= aLastIndPrev; ind++)
     {
@@ -97,7 +98,7 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
                                      " for previous functions of GraphNode attribute as \"")
           + aValueStr + "\"";
         myMessageDriver->Send(aMessageString, Message_Fail);
-        return Standard_False;
+        return false;
       }
       G->AddPrevious(aValue);
     }
@@ -118,11 +119,12 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for next functions of GraphNode attribute");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   aLastIndNext += aLastIndPrev;
 
-  Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
+  const char* aValueStr =
+    static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
 
   for (ind = 1; ind <= aLastIndNext; ind++)
   {
@@ -133,7 +135,7 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
                                    " for next functions of GraphNode attribute as \"")
         + aValueStr + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     if (ind < aFirstIndNext)
       continue;
@@ -141,40 +143,40 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
   }
 
   // Execution status
-  Standard_Integer exec = 0;
+  int exec = 0;
   if (!anElement.getAttribute(::ExecutionStatus()).GetInteger(exec))
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve the execution status"
                                  " for GraphNode attribute");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   G->SetStatus((TFunction_ExecutionStatus)exec);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMFunction_GraphNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                         XmlObjMgt_Persistent&        theTarget,
+void XmlMFunction_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                         XmlObjMgt_Persistent&             theTarget,
                                          XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TFunction_GraphNode) G = Handle(TFunction_GraphNode)::DownCast(theSource);
+  occ::handle<TFunction_GraphNode> G = occ::down_cast<TFunction_GraphNode>(theSource);
 
   // Previous
   // ========
 
   theTarget.Element().setAttribute(::LastPreviousIndex(), G->GetPrevious().Extent());
 
-  TCollection_AsciiString           aValueStr;
-  TColStd_MapIteratorOfMapOfInteger itrm(G->GetPrevious());
+  TCollection_AsciiString        aValueStr;
+  NCollection_Map<int>::Iterator itrm(G->GetPrevious());
   for (; itrm.More(); itrm.Next())
   {
-    const Standard_Integer ID = itrm.Key();
+    const int ID = itrm.Key();
     aValueStr += TCollection_AsciiString(ID);
     aValueStr += ' ';
   }
@@ -191,13 +193,13 @@ void XmlMFunction_GraphNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
   itrm.Initialize(G->GetNext());
   for (; itrm.More(); itrm.Next())
   {
-    const Standard_Integer ID = itrm.Key();
+    const int ID = itrm.Key();
     aValueStr += TCollection_AsciiString(ID);
     aValueStr += ' ';
   }
 
-  XmlObjMgt::SetStringValue(theTarget, aValueStr.ToCString(), Standard_True);
+  XmlObjMgt::SetStringValue(theTarget, aValueStr.ToCString(), true);
 
   // Execution status
-  theTarget.Element().setAttribute(::ExecutionStatus(), (Standard_Integer)G->GetStatus());
+  theTarget.Element().setAttribute(::ExecutionStatus(), (int)G->GetStatus());
 }

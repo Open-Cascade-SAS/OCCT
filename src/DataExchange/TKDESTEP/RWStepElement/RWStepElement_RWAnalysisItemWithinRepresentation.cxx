@@ -32,10 +32,10 @@ RWStepElement_RWAnalysisItemWithinRepresentation::RWStepElement_RWAnalysisItemWi
 //=================================================================================================
 
 void RWStepElement_RWAnalysisItemWithinRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)&                      data,
-  const Standard_Integer                                      num,
-  Handle(Interface_Check)&                                    ach,
-  const Handle(StepElement_AnalysisItemWithinRepresentation)& ent) const
+  const occ::handle<StepData_StepReaderData>&                      data,
+  const int                                                        num,
+  occ::handle<Interface_Check>&                                    ach,
+  const occ::handle<StepElement_AnalysisItemWithinRepresentation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "analysis_item_within_representation"))
@@ -43,16 +43,16 @@ void RWStepElement_RWAnalysisItemWithinRepresentation::ReadStep(
 
   // Own fields of AnalysisItemWithinRepresentation
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
 
-  Handle(StepRepr_RepresentationItem) aItem;
+  occ::handle<StepRepr_RepresentationItem> aItem;
   data->ReadEntity(num, 3, "item", ach, STANDARD_TYPE(StepRepr_RepresentationItem), aItem);
 
-  Handle(StepRepr_Representation) aRep;
+  occ::handle<StepRepr_Representation> aRep;
   data->ReadEntity(num, 4, "rep", ach, STANDARD_TYPE(StepRepr_Representation), aRep);
 
   // Initialize entity
@@ -62,8 +62,8 @@ void RWStepElement_RWAnalysisItemWithinRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWAnalysisItemWithinRepresentation::WriteStep(
-  StepData_StepWriter&                                        SW,
-  const Handle(StepElement_AnalysisItemWithinRepresentation)& ent) const
+  StepData_StepWriter&                                             SW,
+  const occ::handle<StepElement_AnalysisItemWithinRepresentation>& ent) const
 {
 
   // Own fields of AnalysisItemWithinRepresentation
@@ -80,8 +80,8 @@ void RWStepElement_RWAnalysisItemWithinRepresentation::WriteStep(
 //=================================================================================================
 
 void RWStepElement_RWAnalysisItemWithinRepresentation::Share(
-  const Handle(StepElement_AnalysisItemWithinRepresentation)& ent,
-  Interface_EntityIterator&                                   iter) const
+  const occ::handle<StepElement_AnalysisItemWithinRepresentation>& ent,
+  Interface_EntityIterator&                                        iter) const
 {
 
   // Own fields of AnalysisItemWithinRepresentation

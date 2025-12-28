@@ -26,8 +26,8 @@
 
 IGESData_GlobalNodeOfSpecificLib::IGESData_GlobalNodeOfSpecificLib() {}
 
-void IGESData_GlobalNodeOfSpecificLib::Add(const Handle(IGESData_SpecificModule)& amodule,
-                                           const Handle(IGESData_Protocol)&       aprotocol)
+void IGESData_GlobalNodeOfSpecificLib::Add(const occ::handle<IGESData_SpecificModule>& amodule,
+                                           const occ::handle<IGESData_Protocol>&       aprotocol)
 {
   if (themod == amodule)
     return;
@@ -50,17 +50,17 @@ void IGESData_GlobalNodeOfSpecificLib::Add(const Handle(IGESData_SpecificModule)
     thenext->Add(amodule, aprotocol);
 }
 
-const Handle(IGESData_SpecificModule)& IGESData_GlobalNodeOfSpecificLib::Module() const
+const occ::handle<IGESData_SpecificModule>& IGESData_GlobalNodeOfSpecificLib::Module() const
 {
   return themod;
 }
 
-const Handle(IGESData_Protocol)& IGESData_GlobalNodeOfSpecificLib::Protocol() const
+const occ::handle<IGESData_Protocol>& IGESData_GlobalNodeOfSpecificLib::Protocol() const
 {
   return theprot;
 }
 
-const Handle(IGESData_GlobalNodeOfSpecificLib)& IGESData_GlobalNodeOfSpecificLib::Next() const
+const occ::handle<IGESData_GlobalNodeOfSpecificLib>& IGESData_GlobalNodeOfSpecificLib::Next() const
 {
   return thenext;
 }

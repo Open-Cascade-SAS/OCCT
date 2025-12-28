@@ -4,8 +4,7 @@ set(OCCT_StepData_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_StepData_FILES
   StepData.cxx
   StepData.hxx
-  StepData_Array1OfField.hxx
-  StepData_ConfParameters.hxx
+
   StepData_DefaultGeneral.cxx
   StepData_DefaultGeneral.hxx
   StepData_Described.cxx
@@ -40,7 +39,7 @@ set(OCCT_StepData_FILES
   StepData_GeneralModule.hxx
   StepData_GlobalNodeOfWriterLib.hxx
   StepData_GlobalNodeOfWriterLib_0.cxx
-  StepData_HArray1OfField.hxx
+
   StepData_Logical.hxx
   StepData_NodeOfWriterLib.hxx
   StepData_NodeOfWriterLib_0.cxx

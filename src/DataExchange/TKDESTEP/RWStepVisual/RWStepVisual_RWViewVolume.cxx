@@ -24,10 +24,10 @@
 
 RWStepVisual_RWViewVolume::RWStepVisual_RWViewVolume() {}
 
-void RWStepVisual_RWViewVolume::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepVisual_ViewVolume)&   ent) const
+void RWStepVisual_RWViewVolume::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                                   num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepVisual_ViewVolume>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -40,7 +40,7 @@ void RWStepVisual_RWViewVolume::ReadStep(const Handle(StepData_StepReaderData)& 
   StepVisual_CentralOrParallel aProjectionType = StepVisual_copCentral;
   if (data->ParamType(num, 1) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 1);
+    const char* text = data->ParamCValue(num, 1);
     if (!RWStepVisual_RWCentralOrParallel::ConvertToEnum(text, aProjectionType))
     {
       ach->AddFail("Enumeration central_or_parallel has not an allowed value");
@@ -51,8 +51,8 @@ void RWStepVisual_RWViewVolume::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : projectionPoint ---
 
-  Handle(StepGeom_CartesianPoint) aProjectionPoint;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_CartesianPoint> aProjectionPoint;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "projection_point",
@@ -62,44 +62,44 @@ void RWStepVisual_RWViewVolume::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : viewPlaneDistance ---
 
-  Standard_Real aViewPlaneDistance;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aViewPlaneDistance;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "view_plane_distance", ach, aViewPlaneDistance);
 
   // --- own field : frontPlaneDistance ---
 
-  Standard_Real aFrontPlaneDistance;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  double aFrontPlaneDistance;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadReal(num, 4, "front_plane_distance", ach, aFrontPlaneDistance);
 
   // --- own field : frontPlaneClipping ---
 
-  Standard_Boolean aFrontPlaneClipping;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  bool aFrontPlaneClipping;
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadBoolean(num, 5, "front_plane_clipping", ach, aFrontPlaneClipping);
 
   // --- own field : backPlaneDistance ---
 
-  Standard_Real aBackPlaneDistance;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  double aBackPlaneDistance;
+  // szv#4:S4163:12Mar99 `bool stat6 =` not needed
   data->ReadReal(num, 6, "back_plane_distance", ach, aBackPlaneDistance);
 
   // --- own field : backPlaneClipping ---
 
-  Standard_Boolean aBackPlaneClipping;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
+  bool aBackPlaneClipping;
+  // szv#4:S4163:12Mar99 `bool stat7 =` not needed
   data->ReadBoolean(num, 7, "back_plane_clipping", ach, aBackPlaneClipping);
 
   // --- own field : viewVolumeSidesClipping ---
 
-  Standard_Boolean aViewVolumeSidesClipping;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat8 =` not needed
+  bool aViewVolumeSidesClipping;
+  // szv#4:S4163:12Mar99 `bool stat8 =` not needed
   data->ReadBoolean(num, 8, "view_volume_sides_clipping", ach, aViewVolumeSidesClipping);
 
   // --- own field : viewWindow ---
 
-  Handle(StepVisual_PlanarBox) aViewWindow;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat9 =` not needed
+  occ::handle<StepVisual_PlanarBox> aViewWindow;
+  // szv#4:S4163:12Mar99 `bool stat9 =` not needed
   data->ReadEntity(num, 9, "view_window", ach, STANDARD_TYPE(StepVisual_PlanarBox), aViewWindow);
 
   //--- Initialisation of the read entity ---
@@ -115,8 +115,8 @@ void RWStepVisual_RWViewVolume::ReadStep(const Handle(StepData_StepReaderData)& 
             aViewWindow);
 }
 
-void RWStepVisual_RWViewVolume::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepVisual_ViewVolume)& ent) const
+void RWStepVisual_RWViewVolume::WriteStep(StepData_StepWriter&                      SW,
+                                          const occ::handle<StepVisual_ViewVolume>& ent) const
 {
 
   // --- own field : projectionType ---
@@ -156,8 +156,8 @@ void RWStepVisual_RWViewVolume::WriteStep(StepData_StepWriter&                 S
   SW.Send(ent->ViewWindow());
 }
 
-void RWStepVisual_RWViewVolume::Share(const Handle(StepVisual_ViewVolume)& ent,
-                                      Interface_EntityIterator&            iter) const
+void RWStepVisual_RWViewVolume::Share(const occ::handle<StepVisual_ViewVolume>& ent,
+                                      Interface_EntityIterator&                 iter) const
 {
 
   iter.GetOneItem(ent->ProjectionPoint());

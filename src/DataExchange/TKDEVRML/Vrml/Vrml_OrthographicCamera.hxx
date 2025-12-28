@@ -38,8 +38,8 @@ public:
 
   Standard_EXPORT Vrml_OrthographicCamera(const gp_Vec&          aPosition,
                                           const Vrml_SFRotation& aOrientation,
-                                          const Standard_Real    aFocalDistance,
-                                          const Standard_Real    aHeight);
+                                          const double           aFocalDistance,
+                                          const double           aHeight);
 
   Standard_EXPORT void SetPosition(const gp_Vec& aPosition);
 
@@ -49,22 +49,21 @@ public:
 
   Standard_EXPORT Vrml_SFRotation Orientation() const;
 
-  Standard_EXPORT void SetFocalDistance(const Standard_Real aFocalDistance);
+  Standard_EXPORT void SetFocalDistance(const double aFocalDistance);
 
-  Standard_EXPORT Standard_Real FocalDistance() const;
+  Standard_EXPORT double FocalDistance() const;
 
-  Standard_EXPORT void SetHeight(const Standard_Real aHeight);
+  Standard_EXPORT void SetHeight(const double aHeight);
 
-  Standard_EXPORT Standard_Real Height() const;
+  Standard_EXPORT double Height() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
   gp_Vec          myPosition;
   Vrml_SFRotation myOrientation;
-  Standard_Real   myFocalDistance;
-  Standard_Real   myHeight;
+  double          myFocalDistance;
+  double          myHeight;
 };
 
 #endif // _Vrml_OrthographicCamera_HeaderFile

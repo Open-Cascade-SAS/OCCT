@@ -32,13 +32,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Adjusts the parameter <thePar> to the range [theParMin, theParMax]
-  Standard_EXPORT static Standard_Boolean AdjustPeriodic(const Standard_Real thePar,
-                                                         const Standard_Real theParMin,
-                                                         const Standard_Real theParMax,
-                                                         const Standard_Real thePeriod,
-                                                         Standard_Real&      theNewPar,
-                                                         Standard_Real&      theOffset,
-                                                         const Standard_Real theEps = 0.0);
+  Standard_EXPORT static bool AdjustPeriodic(const double thePar,
+                                             const double theParMin,
+                                             const double theParMax,
+                                             const double thePeriod,
+                                             double&      theNewPar,
+                                             double&      theOffset,
+                                             const double theEps = 0.0);
 };
 
 #endif // _GeomInt_HeaderFile

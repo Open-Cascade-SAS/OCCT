@@ -16,7 +16,7 @@
 #include <Blend_Point.hxx>
 #include <gp_Pnt.hxx>
 
-Standard_Integer Blend_Function::NbVariables() const
+int Blend_Function::NbVariables() const
 {
   return 4;
 }
@@ -31,26 +31,26 @@ const gp_Pnt& Blend_Function::Pnt2() const
   return PointOnS2();
 }
 
-Standard_Boolean Blend_Function::TwistOnS1() const
+bool Blend_Function::TwistOnS1() const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean Blend_Function::TwistOnS2() const
+bool Blend_Function::TwistOnS2() const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean Blend_Function::Section(const Blend_Point& /*P*/,
-                                         TColgp_Array1OfPnt& /*Poles*/,
-                                         TColgp_Array1OfVec& /*DPoles*/,
-                                         TColgp_Array1OfVec& /*D2Poles*/,
-                                         TColgp_Array1OfPnt2d& /*Poles2d*/,
-                                         TColgp_Array1OfVec2d& /*DPoles2d*/,
-                                         TColgp_Array1OfVec2d& /*D2Poles2d*/,
-                                         TColStd_Array1OfReal& /*Weigths*/,
-                                         TColStd_Array1OfReal& /*DWeigths*/,
-                                         TColStd_Array1OfReal& /*D2Weigths*/)
+bool Blend_Function::Section(const Blend_Point& /*P*/,
+                             NCollection_Array1<gp_Pnt>& /*Poles*/,
+                             NCollection_Array1<gp_Vec>& /*DPoles*/,
+                             NCollection_Array1<gp_Vec>& /*D2Poles*/,
+                             NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
+                             NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
+                             NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
+                             NCollection_Array1<double>& /*Weigths*/,
+                             NCollection_Array1<double>& /*DWeigths*/,
+                             NCollection_Array1<double>& /*D2Weigths*/)
 {
-  return Standard_False;
+  return false;
 }

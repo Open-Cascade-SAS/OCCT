@@ -21,9 +21,6 @@
 
 #include <StepFEA_Node.hxx>
 
-class StepFEA_NodeWithVector;
-DEFINE_STANDARD_HANDLE(StepFEA_NodeWithVector, StepFEA_Node)
-
 //! Representation of STEP entity NodeWithVector
 class StepFEA_NodeWithVector : public StepFEA_Node
 {
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepFEA_NodeWithVector();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_NodeWithVector, StepFEA_Node)
-
-protected:
-private:
 };
 
 #endif // _StepFEA_NodeWithVector_HeaderFile

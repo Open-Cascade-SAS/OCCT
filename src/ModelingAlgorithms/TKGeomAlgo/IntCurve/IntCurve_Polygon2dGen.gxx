@@ -18,7 +18,8 @@
 
 #include <Standard_ConstructionError.hxx>
 #include <Bnd_Box2d.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_Dir2d.hxx>
@@ -35,18 +36,18 @@
 //======================================================================
 //  Modified by Sergey KHROMOV - Mon Mar 24 12:02:43 2003 Begin
 IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
-                                             const Standard_Integer tNbPts,
+                                             const int              tNbPts,
                                              const IntRes2d_Domain& D,
-                                             const Standard_Real    Tol)
+                                             const double           Tol)
     : //  Modified by Sergey KHROMOV - Mon Mar 24 12:02:45 2003 End
       ThePnts(1, (tNbPts < 3) ? 6 : (tNbPts + tNbPts)),
       TheParams(1, (tNbPts < 3) ? 6 : (tNbPts + tNbPts)),
       TheIndex(1, (tNbPts < 3) ? 6 : (tNbPts + tNbPts))
 {
 
-  Standard_Integer NbPts = (tNbPts < 3) ? 3 : tNbPts;
-  TheMaxNbPoints         = NbPts + NbPts;
-  NbPntIn                = NbPts;
+  int NbPts      = (tNbPts < 3) ? 3 : tNbPts;
+  TheMaxNbPoints = NbPts + NbPts;
+  NbPntIn        = NbPts;
   //-----------------------------------------------------
   //--- Initialization of the breaking with d_Parametre constant
   //---
@@ -56,11 +57,11 @@ IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
   //-- IntRes2d Raise if HasFirst returns False
   //-- and accesses First Parameter
   //--
-  Standard_Real u  = Binf;
-  Standard_Real u1 = Bsup;
-  Standard_Real du = (u1 - u) / (Standard_Real)(NbPts - 1);
-  //  Standard_Integer ip1,i=1;
-  Standard_Integer i = 1;
+  double u  = Binf;
+  double u1 = Bsup;
+  double du = (u1 - u) / (double)(NbPts - 1);
+  //  int ip1,i=1;
+  int i = 1;
 
   do
   {
@@ -93,7 +94,7 @@ IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
     u += du;
     i++;
 
-    Standard_Real dx, dy, t = 0;
+    double dx, dy, t = 0;
     dx = P1.X() - P2.X();
     if (dx < 0)
       dx = -dx;
@@ -112,7 +113,7 @@ IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
   } while (i < NbPts);
 
   myBox.Enlarge(TheDeflection * MAJORATION_DEFLECTION);
-  ClosedPolygon = Standard_False;
+  ClosedPolygon = false;
 }
 
 //=================================================================================================
@@ -126,17 +127,17 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& B
   }
   else
   {
-    Standard_Real bx0, bx1, by0, by1;
+    double bx0, bx1, by0, by1;
     BoxOtherPolygon.Get(bx0, by0, bx1, by1);
 
     bx0 -= TheDeflection;
     by0 -= TheDeflection;
     bx1 += TheDeflection;
     by1 += TheDeflection;
-    Standard_Integer MaxIndexUsed = 1;
-    Standard_Integer i, nbp;
-    Standard_Integer Rprec, Ri;
-    Standard_Real    x, y;
+    int    MaxIndexUsed = 1;
+    int    i, nbp;
+    int    Rprec, Ri;
+    double x, y;
 
     nbp = 0;
     x   = ThePnts.Value(TheIndex.Value(1)).X();
@@ -184,30 +185,30 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& B
       {
         myBox.Add(ThePnts.Value(TheIndex.Value(1)));
       }
-      Standard_Real    RatioDeflection;
-      Standard_Integer nbpassagedeflection = 0;
-      //      Standard_Integer PointHasBeenAdded = 0;
+      double RatioDeflection;
+      int    nbpassagedeflection = 0;
+      //      int PointHasBeenAdded = 0;
       do
       {
         nbpassagedeflection++;
         //  Modified by Sergey KHROMOV - Mon Mar 24 12:05:28 2003 Begin
-        // 	Standard_Real NewDeflection = 0.0000001;
-        Standard_Real NewDeflection = TheDeflection;
+        // 	double NewDeflection = 0.0000001;
+        double NewDeflection = TheDeflection;
         //  Modified by Sergey KHROMOV - Mon Mar 24 12:05:29 2003 End
         for (i = 2; i <= nbp; i++)
         {
-          Standard_Integer Ii   = TheIndex.Value(i);
-          Standard_Integer Iim1 = TheIndex.Value(i - 1);
-          const gp_Pnt2d&  Pi   = ThePnts.Value(Ii);
-          const gp_Pnt2d&  Pim1 = ThePnts.Value(Iim1);
+          int             Ii   = TheIndex.Value(i);
+          int             Iim1 = TheIndex.Value(i - 1);
+          const gp_Pnt2d& Pi   = ThePnts.Value(Ii);
+          const gp_Pnt2d& Pim1 = ThePnts.Value(Iim1);
           myBox.Add(Pi);
-          Standard_Integer Regi   = CalculRegion(Pi.X(), Pi.Y(), bx0, bx1, by0, by1);
-          Standard_Integer Regim1 = CalculRegion(Pim1.X(), Pim1.Y(), bx0, bx1, by0, by1);
+          int Regi   = CalculRegion(Pi.X(), Pi.Y(), bx0, bx1, by0, by1);
+          int Regim1 = CalculRegion(Pim1.X(), Pim1.Y(), bx0, bx1, by0, by1);
           if ((Regi & Regim1) == 0)
           {
-            Standard_Real u  = 0.5 * (TheParams.Value(Ii) + TheParams.Value(Iim1));
-            gp_Pnt2d      Pm = TheCurveTool::Value(C, u);
-            Standard_Real dx, dy, t = 0;
+            double   u  = 0.5 * (TheParams.Value(Ii) + TheParams.Value(Iim1));
+            gp_Pnt2d Pm = TheCurveTool::Value(C, u);
+            double   dx, dy, t = 0;
             dx = Pim1.X() - Pi.X();
             if (dx < 0)
               dx = -dx;
@@ -222,7 +223,7 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& B
               {
                 const gp_Pnt2d& P1 = Pim1;
                 nbp++;
-                for (Standard_Integer j = nbp; j >= i + 1; j--)
+                for (int j = nbp; j >= i + 1; j--)
                 {
                   TheIndex.SetValue(j, TheIndex.Value(j - 1));
                 }
@@ -231,9 +232,9 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& B
                 ThePnts.SetValue(MaxIndexUsed, Pm);
                 TheParams.SetValue(MaxIndexUsed, u);
 
-                Standard_Real u1m = 0.5 * (u + TheParams.Value(TheIndex.Value(i - 1)));
-                gp_Pnt2d      P1m = TheCurveTool::Value(C, u1m);
-                gp_Lin2d      L1m(P1, gp_Dir2d(gp_Vec2d(P1, Pm)));
+                double   u1m = 0.5 * (u + TheParams.Value(TheIndex.Value(i - 1)));
+                gp_Pnt2d P1m = TheCurveTool::Value(C, u1m);
+                gp_Lin2d L1m(P1, gp_Dir2d(gp_Vec2d(P1, Pm)));
                 t = L1m.Distance(P1m);
                 i--;
               }
@@ -260,32 +261,32 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& B
     TheDeflection *= MAJORATION_DEFLECTION;
     myBox.Enlarge(TheDeflection);
   }
-  ClosedPolygon = Standard_False;
+  ClosedPolygon = false;
   Dump();
 }
 
-Standard_Boolean IntCurve_Polygon2dGen::AutoIntersectionIsPossible() const
+bool IntCurve_Polygon2dGen::AutoIntersectionIsPossible() const
 {
 
   gp_Vec2d VRef(ThePnts.Value(TheIndex.Value(1)), ThePnts.Value(TheIndex.Value(2)));
-  for (Standard_Integer i = 3; i <= NbPntIn; i++)
+  for (int i = 3; i <= NbPntIn; i++)
   {
     gp_Vec2d V(ThePnts.Value(TheIndex.Value(i - 1)), ThePnts.Value(TheIndex.Value(i)));
     if (V.Dot(VRef) < 0.0)
     {
-      return (Standard_True);
+      return (true);
     }
   }
-  return (Standard_False);
+  return (false);
 }
 
 //=================================================================================================
 
-Standard_Real IntCurve_Polygon2dGen::ApproxParamOnCurve(const Standard_Integer Aindex,
-                                                        const Standard_Real    TheParamOnLine) const
+double IntCurve_Polygon2dGen::ApproxParamOnCurve(const int    Aindex,
+                                                 const double TheParamOnLine) const
 {
-  Standard_Integer Indexp1, Index = Aindex;
-  Standard_Real    ParamOnLine = TheParamOnLine;
+  int    Indexp1, Index = Aindex;
+  double ParamOnLine = TheParamOnLine;
   if (Index > NbPntIn)
   {
     std::cout << "OutOfRange Polygon2d::ApproxParamOnCurve " << std::endl;
@@ -303,23 +304,23 @@ Standard_Real IntCurve_Polygon2dGen::ApproxParamOnCurve(const Standard_Integer A
   Indexp1 = TheIndex.Value(Index + 1);
   Index   = TheIndex.Value(Index);
 
-  Standard_Real du = TheParams.Value(Indexp1) - TheParams.Value(Index);
-  Standard_Real u  = TheParams.Value(Index) + ParamOnLine * du;
+  double du = TheParams.Value(Indexp1) - TheParams.Value(Index);
+  double u  = TheParams.Value(Index) + ParamOnLine * du;
   return (u);
 }
 
 //======================================================================
 #if TEST
 
-extern Standard_Boolean DebugPolygon2d;
-extern void             DrawSegmentBlanc(const gp_Pnt2d& _P1, const gp_Pnt2d& _P2);
-extern void             DrawSegment(const gp_Pnt2d& _P1, const gp_Pnt2d& _P2);
+extern bool DebugPolygon2d;
+extern void DrawSegmentBlanc(const gp_Pnt2d& _P1, const gp_Pnt2d& _P2);
+extern void DrawSegment(const gp_Pnt2d& _P1, const gp_Pnt2d& _P2);
 
 void IntCurve_Polygon2dGen::Dump(void) const
 {
   if (!DebugPolygon2d)
     return;
-  Standard_Real bx0, bx1, by0, by1;
+  double bx0, bx1, by0, by1;
   if (myBox.IsVoid())
     return;
   myBox.Get(bx0, by0, bx1, by1);
@@ -327,7 +328,7 @@ void IntCurve_Polygon2dGen::Dump(void) const
   DrawSegment(gp_Pnt2d(bx1, by0), gp_Pnt2d(bx1, by1));
   DrawSegment(gp_Pnt2d(bx1, by1), gp_Pnt2d(bx0, by1));
   DrawSegment(gp_Pnt2d(bx0, by1), gp_Pnt2d(bx0, by0));
-  Standard_Integer i;
+  int i;
   if (NbPntIn <= 1)
     return;
   for (i = 2; i <= NbPntIn; i++)
@@ -341,7 +342,7 @@ void IntCurve_Polygon2dGen::Dump(void) const
   static int debug = 0;
   if (debug)
   {
-    Standard_Real bx0, bx1, by0, by1;
+    double bx0, bx1, by0, by1;
 
     std::cout << "\n ----- Dump of IntCurve_Polygon2dGen -----" << std::endl;
     if (myBox.IsVoid())
@@ -355,7 +356,7 @@ void IntCurve_Polygon2dGen::Dump(void) const
     std::cout << "  bx1:" << bx1 << std::endl;
     std::cout << "  by1:" << by1 << std::endl;
 
-    Standard_Integer i;
+    int i;
     for (i = 1; i <= NbPntIn; i++)
     {
       const gp_Pnt2d& P = ThePnts(TheIndex(i));
@@ -366,12 +367,10 @@ void IntCurve_Polygon2dGen::Dump(void) const
 }
 #endif
 //======================================================================
-void IntCurve_Polygon2dGen::Segment(const Standard_Integer theIndex,
-                                    gp_Pnt2d&              theBegin,
-                                    gp_Pnt2d&              theEnd) const
+void IntCurve_Polygon2dGen::Segment(const int theIndex, gp_Pnt2d& theBegin, gp_Pnt2d& theEnd) const
 {
-  Standard_Integer ind = theIndex;
-  theBegin             = ThePnts(TheIndex(theIndex));
+  int ind  = theIndex;
+  theBegin = ThePnts(TheIndex(theIndex));
   if (theIndex >= NbPntIn)
   {
     if (!ClosedPolygon)

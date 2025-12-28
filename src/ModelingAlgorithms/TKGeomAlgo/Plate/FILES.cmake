@@ -2,7 +2,7 @@
 set(OCCT_Plate_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Plate_FILES
-  Plate_Array1OfPinpointConstraint.hxx
+
   Plate_D1.cxx
   Plate_D1.hxx
   Plate_D1.lxx
@@ -19,7 +19,7 @@ set(OCCT_Plate_FILES
   Plate_GtoCConstraint.cxx
   Plate_GtoCConstraint.hxx
   Plate_GtoCConstraint.lxx
-  Plate_HArray1OfPinpointConstraint.hxx
+
   Plate_LinearScalarConstraint.cxx
   Plate_LinearScalarConstraint.hxx
   Plate_LinearScalarConstraint.lxx
@@ -41,7 +41,5 @@ set(OCCT_Plate_FILES
   Plate_SampledCurveConstraint.cxx
   Plate_SampledCurveConstraint.hxx
   Plate_SampledCurveConstraint.lxx
-  Plate_SequenceOfLinearScalarConstraint.hxx
-  Plate_SequenceOfLinearXYZConstraint.hxx
-  Plate_SequenceOfPinpointConstraint.hxx
+
 )

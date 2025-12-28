@@ -31,7 +31,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
@@ -39,9 +39,9 @@
 // MGE 28/07/98
 IGESGeom_ToolPoint::IGESGeom_ToolPoint() {}
 
-void IGESGeom_ToolPoint::ReadOwnParams(const Handle(IGESGeom_Point)&          ent,
-                                       const Handle(IGESData_IGESReaderData)& IR,
-                                       IGESData_ParamReader&                  PR) const
+void IGESGeom_ToolPoint::ReadOwnParams(const occ::handle<IGESGeom_Point>&          ent,
+                                       const occ::handle<IGESData_IGESReaderData>& IR,
+                                       IGESData_ParamReader&                       PR) const
 {
   // MGE 28/07/98
   // Building of messages
@@ -49,10 +49,10 @@ void IGESGeom_ToolPoint::ReadOwnParams(const Handle(IGESGeom_Point)&          en
   Message_Msg Msg73("XSTEP_73");
   //==================================
 
-  gp_XYZ                         aPoint;
-  Handle(IGESBasic_SubfigureDef) aSymbol;
-  IGESData_Status                aStatus;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  gp_XYZ                              aPoint;
+  occ::handle<IGESBasic_SubfigureDef> aSymbol;
+  IGESData_Status                     aStatus;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadXYZ(PR.CurrentList(1, 3), Msg73, aPoint); // szv#4:S4163:12Mar99 `st=` not needed
   // st = PR.ReadXYZ(PR.CurrentList(1, 3), "Point", aPoint);
@@ -64,7 +64,7 @@ void IGESGeom_ToolPoint::ReadOwnParams(const Handle(IGESGeom_Point)&          en
                        aStatus,
                        STANDARD_TYPE(IGESBasic_SubfigureDef),
                        aSymbol,
-                       Standard_True))
+                       true))
     {
       Message_Msg Msg74("XSTEP_74");
       switch (aStatus)
@@ -94,14 +94,14 @@ void IGESGeom_ToolPoint::ReadOwnParams(const Handle(IGESGeom_Point)&          en
     // szv#4:S4163:12Mar99 `st=` not needed
   }
   // st = PR.ReadEntity(IR, PR.Current(), "Display Symbol",
-  //		       STANDARD_TYPE(IGESBasic_SubfigureDef), aSymbol, Standard_True);
+  //		       STANDARD_TYPE(IGESBasic_SubfigureDef), aSymbol, true);
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(aPoint, aSymbol);
 }
 
-void IGESGeom_ToolPoint::WriteOwnParams(const Handle(IGESGeom_Point)& ent,
-                                        IGESData_IGESWriter&          IW) const
+void IGESGeom_ToolPoint::WriteOwnParams(const occ::handle<IGESGeom_Point>& ent,
+                                        IGESData_IGESWriter&               IW) const
 {
   IW.Send(ent->Value().X());
   IW.Send(ent->Value().Y());
@@ -109,15 +109,15 @@ void IGESGeom_ToolPoint::WriteOwnParams(const Handle(IGESGeom_Point)& ent,
   IW.Send(ent->DisplaySymbol());
 }
 
-void IGESGeom_ToolPoint::OwnShared(const Handle(IGESGeom_Point)& ent,
-                                   Interface_EntityIterator&     iter) const
+void IGESGeom_ToolPoint::OwnShared(const occ::handle<IGESGeom_Point>& ent,
+                                   Interface_EntityIterator&          iter) const
 {
   iter.GetOneItem(ent->DisplaySymbol());
 }
 
-void IGESGeom_ToolPoint::OwnCopy(const Handle(IGESGeom_Point)& another,
-                                 const Handle(IGESGeom_Point)& ent,
-                                 Interface_CopyTool&           TC) const
+void IGESGeom_ToolPoint::OwnCopy(const occ::handle<IGESGeom_Point>& another,
+                                 const occ::handle<IGESGeom_Point>& ent,
+                                 Interface_CopyTool&                TC) const
 {
   gp_XYZ aPoint = (another->Value()).XYZ();
 
@@ -125,7 +125,7 @@ void IGESGeom_ToolPoint::OwnCopy(const Handle(IGESGeom_Point)& another,
   ent->Init(aPoint, aSymbol);
 }
 
-IGESData_DirChecker IGESGeom_ToolPoint::DirChecker(const Handle(IGESGeom_Point)& ent) const
+IGESData_DirChecker IGESGeom_ToolPoint::DirChecker(const occ::handle<IGESGeom_Point>& ent) const
 {
   IGESData_DirChecker DC(116, 0);
   DC.Structure(IGESData_DefVoid);
@@ -138,16 +138,16 @@ IGESData_DirChecker IGESGeom_ToolPoint::DirChecker(const Handle(IGESGeom_Point)&
   return DC;
 }
 
-void IGESGeom_ToolPoint::OwnCheck(const Handle(IGESGeom_Point)& /* ent */,
+void IGESGeom_ToolPoint::OwnCheck(const occ::handle<IGESGeom_Point>& /* ent */,
                                   const Interface_ShareTool&,
-                                  Handle(Interface_Check)& /* ach */) const
+                                  occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESGeom_ToolPoint::OwnDump(const Handle(IGESGeom_Point)& ent,
-                                 const IGESData_IGESDumper&    dumper,
-                                 Standard_OStream&             S,
-                                 const Standard_Integer        level) const
+void IGESGeom_ToolPoint::OwnDump(const occ::handle<IGESGeom_Point>& ent,
+                                 const IGESData_IGESDumper&         dumper,
+                                 Standard_OStream&                  S,
+                                 const int                          level) const
 {
   S << "IGESGeom_Point\n"
     << " Value         : ";

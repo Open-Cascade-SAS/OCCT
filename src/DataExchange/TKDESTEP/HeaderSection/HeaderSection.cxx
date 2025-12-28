@@ -17,7 +17,7 @@
 
 StaticHandle(HeaderSection_Protocol, proto);
 
-Handle(HeaderSection_Protocol) HeaderSection::Protocol()
+occ::handle<HeaderSection_Protocol> HeaderSection::Protocol()
 
 {
   InitHandleVoid(HeaderSection_Protocol, proto);

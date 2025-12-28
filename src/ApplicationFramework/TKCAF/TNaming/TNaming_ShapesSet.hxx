@@ -20,7 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
@@ -39,13 +41,13 @@ public:
   void Clear();
 
   //! Adds the Shape <S>
-  Standard_Boolean Add(const TopoDS_Shape& S);
+  bool Add(const TopoDS_Shape& S);
 
   //! Returns True if <S> is in <me>
-  Standard_Boolean Contains(const TopoDS_Shape& S) const;
+  bool Contains(const TopoDS_Shape& S) const;
 
   //! Removes <S> in <me>.
-  Standard_Boolean Remove(const TopoDS_Shape& S);
+  bool Remove(const TopoDS_Shape& S);
 
   //! Adds the shapes contained in <Shapes>.
   Standard_EXPORT void Add(const TNaming_ShapesSet& Shapes);
@@ -57,17 +59,16 @@ public:
   //! Removes in <me> the shapes contained in <Shapes>
   Standard_EXPORT void Remove(const TNaming_ShapesSet& Shapes);
 
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
-  Standard_Integer NbShapes() const;
+  int NbShapes() const;
 
-  TopTools_MapOfShape& ChangeMap();
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& ChangeMap();
 
-  const TopTools_MapOfShape& Map() const;
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Map() const;
 
-protected:
 private:
-  TopTools_MapOfShape myMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
 };
 
 #include <TNaming_ShapesSet.lxx>

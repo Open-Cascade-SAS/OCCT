@@ -26,7 +26,7 @@ inline BOPDS_Curve::BOPDS_Curve()
 
 //=================================================================================================
 
-inline BOPDS_Curve::BOPDS_Curve(const Handle(NCollection_BaseAllocator)& theAllocator)
+inline BOPDS_Curve::BOPDS_Curve(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myAllocator(theAllocator),
       myPaveBlocks(myAllocator),
       myTechnoVertices(myAllocator),
@@ -54,9 +54,9 @@ inline const IntTools_Curve& BOPDS_Curve::Curve() const
 
 //=================================================================================================
 
-inline void BOPDS_Curve::SetPaveBlocks(const BOPDS_ListOfPaveBlock& theLPB)
+inline void BOPDS_Curve::SetPaveBlocks(const NCollection_List<occ::handle<BOPDS_PaveBlock>>& theLPB)
 {
-  BOPDS_ListIteratorOfListOfPaveBlock aIt;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aIt;
   //
   myPaveBlocks.Clear();
   aIt.Initialize(theLPB);
@@ -68,14 +68,14 @@ inline void BOPDS_Curve::SetPaveBlocks(const BOPDS_ListOfPaveBlock& theLPB)
 
 //=================================================================================================
 
-inline const BOPDS_ListOfPaveBlock& BOPDS_Curve::PaveBlocks() const
+inline const NCollection_List<occ::handle<BOPDS_PaveBlock>>& BOPDS_Curve::PaveBlocks() const
 {
   return myPaveBlocks;
 }
 
 //=================================================================================================
 
-inline BOPDS_ListOfPaveBlock& BOPDS_Curve::ChangePaveBlocks()
+inline NCollection_List<occ::handle<BOPDS_PaveBlock>>& BOPDS_Curve::ChangePaveBlocks()
 {
   return myPaveBlocks;
 }
@@ -86,29 +86,29 @@ inline void BOPDS_Curve::InitPaveBlock1()
 {
   if (!myPaveBlocks.Extent())
   {
-    Handle(BOPDS_PaveBlock) aPB = new BOPDS_PaveBlock;
+    occ::handle<BOPDS_PaveBlock> aPB = new BOPDS_PaveBlock;
     myPaveBlocks.Append(aPB);
   }
 }
 
 //=================================================================================================
 
-inline Handle(BOPDS_PaveBlock)& BOPDS_Curve::ChangePaveBlock1()
+inline occ::handle<BOPDS_PaveBlock>& BOPDS_Curve::ChangePaveBlock1()
 {
-  Handle(BOPDS_PaveBlock)* pPB = (Handle(BOPDS_PaveBlock)*)&myPaveBlocks.First();
+  occ::handle<BOPDS_PaveBlock>* pPB = (occ::handle<BOPDS_PaveBlock>*)&myPaveBlocks.First();
   return *pPB;
 }
 
 //=================================================================================================
 
-inline const TColStd_ListOfInteger& BOPDS_Curve::TechnoVertices() const
+inline const NCollection_List<int>& BOPDS_Curve::TechnoVertices() const
 {
   return myTechnoVertices;
 }
 
 //=================================================================================================
 
-inline TColStd_ListOfInteger& BOPDS_Curve::ChangeTechnoVertices()
+inline NCollection_List<int>& BOPDS_Curve::ChangeTechnoVertices()
 {
   return myTechnoVertices;
 }
@@ -136,17 +136,17 @@ inline Bnd_Box& BOPDS_Curve::ChangeBox()
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_Curve::HasEdge() const
+inline bool BOPDS_Curve::HasEdge() const
 {
-  Standard_Boolean                    bFlag;
-  BOPDS_ListIteratorOfListOfPaveBlock aItPB;
+  bool                                                     bFlag;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
   //
-  bFlag = Standard_False;
+  bFlag = false;
   aItPB.Initialize(myPaveBlocks);
   for (; aItPB.More(); aItPB.Next())
   {
-    const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
-    bFlag                              = aPB->HasEdge();
+    const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
+    bFlag                                   = aPB->HasEdge();
     if (bFlag)
     {
       break;

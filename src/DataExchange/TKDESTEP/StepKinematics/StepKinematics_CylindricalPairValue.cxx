@@ -25,10 +25,10 @@ StepKinematics_CylindricalPairValue::StepKinematics_CylindricalPairValue() {}
 //=================================================================================================
 
 void StepKinematics_CylindricalPairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Standard_Real                         theActualTranslation,
-  const Standard_Real                         theActualRotation)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const double                                     theActualTranslation,
+  const double                                     theActualRotation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -39,29 +39,28 @@ void StepKinematics_CylindricalPairValue::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_CylindricalPairValue::ActualTranslation() const
+double StepKinematics_CylindricalPairValue::ActualTranslation() const
 {
   return myActualTranslation;
 }
 
 //=================================================================================================
 
-void StepKinematics_CylindricalPairValue::SetActualTranslation(
-  const Standard_Real theActualTranslation)
+void StepKinematics_CylindricalPairValue::SetActualTranslation(const double theActualTranslation)
 {
   myActualTranslation = theActualTranslation;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_CylindricalPairValue::ActualRotation() const
+double StepKinematics_CylindricalPairValue::ActualRotation() const
 {
   return myActualRotation;
 }
 
 //=================================================================================================
 
-void StepKinematics_CylindricalPairValue::SetActualRotation(const Standard_Real theActualRotation)
+void StepKinematics_CylindricalPairValue::SetActualRotation(const double theActualRotation)
 {
   myActualRotation = theActualRotation;
 }

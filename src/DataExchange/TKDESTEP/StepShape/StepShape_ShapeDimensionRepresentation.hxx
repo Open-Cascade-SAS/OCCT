@@ -18,11 +18,10 @@
 
 #include <Standard.hxx>
 
-#include <StepShape_HArray1OfShapeDimensionRepresentationItem.hxx>
+#include <StepShape_ShapeDimensionRepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
-
-class StepShape_ShapeDimensionRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_ShapeDimensionRepresentation, StepShape_ShapeRepresentation)
 
 //! Representation of STEP entity ShapeDimensionRepresentation
 class StepShape_ShapeDimensionRepresentation : public StepShape_ShapeRepresentation
@@ -33,23 +32,25 @@ public:
   Standard_EXPORT StepShape_ShapeDimensionRepresentation();
 
   //! Initialize all fields AP214
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&             theName,
-                            const Handle(StepRepr_HArray1OfRepresentationItem)& theItems,
-                            const Handle(StepRepr_RepresentationContext)&       theContextOfItems);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                                      theName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& theItems,
+    const occ::handle<StepRepr_RepresentationContext>& theContextOfItems);
 
   //! Initialize all fields AP242
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                            theName,
-    const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems,
-    const Handle(StepRepr_RepresentationContext)&                      theContextOfItems);
+    const occ::handle<TCollection_HAsciiString>&                                        theName,
+    const occ::handle<NCollection_HArray1<StepShape_ShapeDimensionRepresentationItem>>& theItems,
+    const occ::handle<StepRepr_RepresentationContext>& theContextOfItems);
 
   Standard_EXPORT void SetItemsAP242(
-    const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems);
+    const occ::handle<NCollection_HArray1<StepShape_ShapeDimensionRepresentationItem>>& theItems);
 
-  Standard_EXPORT Handle(StepShape_HArray1OfShapeDimensionRepresentationItem) ItemsAP242() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepShape_ShapeDimensionRepresentationItem>>
+                  ItemsAP242() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ShapeDimensionRepresentation, StepShape_ShapeRepresentation)
 private:
-  Handle(StepShape_HArray1OfShapeDimensionRepresentationItem) itemsAP242;
+  occ::handle<NCollection_HArray1<StepShape_ShapeDimensionRepresentationItem>> itemsAP242;
 };
 #endif // _StepShape_ShapeDimensionRepresentation_HeaderFile

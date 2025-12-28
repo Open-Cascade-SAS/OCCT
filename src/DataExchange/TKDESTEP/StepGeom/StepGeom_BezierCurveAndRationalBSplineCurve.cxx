@@ -22,14 +22,14 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BezierCurveAndRationalBSplineCurve, StepGeom
 StepGeom_BezierCurveAndRationalBSplineCurve::StepGeom_BezierCurveAndRationalBSplineCurve() {}
 
 void StepGeom_BezierCurveAndRationalBSplineCurve::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aDegree,
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
-  const StepGeom_BSplineCurveForm                 aCurveForm,
-  const StepData_Logical                          aClosedCurve,
-  const StepData_Logical                          aSelfIntersect,
-  const Handle(StepGeom_BezierCurve)&             aBezierCurve,
-  const Handle(StepGeom_RationalBSplineCurve)&    aRationalBSplineCurve)
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aDegree,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+  const StepGeom_BSplineCurveForm                                               aCurveForm,
+  const StepData_Logical                                                        aClosedCurve,
+  const StepData_Logical                                                        aSelfIntersect,
+  const occ::handle<StepGeom_BezierCurve>&                                      aBezierCurve,
+  const occ::handle<StepGeom_RationalBSplineCurve>& aRationalBSplineCurve)
 {
   // --- classe own fields ---
   bezierCurve          = aBezierCurve;
@@ -44,13 +44,13 @@ void StepGeom_BezierCurveAndRationalBSplineCurve::Init(
 }
 
 void StepGeom_BezierCurveAndRationalBSplineCurve::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aDegree,
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
-  const StepGeom_BSplineCurveForm                 aCurveForm,
-  const StepData_Logical                          aClosedCurve,
-  const StepData_Logical                          aSelfIntersect,
-  const Handle(TColStd_HArray1OfReal)&            aWeightsData)
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aDegree,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+  const StepGeom_BSplineCurveForm                                               aCurveForm,
+  const StepData_Logical                                                        aClosedCurve,
+  const StepData_Logical                                                        aSelfIntersect,
+  const occ::handle<NCollection_HArray1<double>>&                               aWeightsData)
 {
   // --- classe inherited fields ---
 
@@ -79,23 +79,23 @@ void StepGeom_BezierCurveAndRationalBSplineCurve::Init(
 }
 
 void StepGeom_BezierCurveAndRationalBSplineCurve::SetBezierCurve(
-  const Handle(StepGeom_BezierCurve)& aBezierCurve)
+  const occ::handle<StepGeom_BezierCurve>& aBezierCurve)
 {
   bezierCurve = aBezierCurve;
 }
 
-Handle(StepGeom_BezierCurve) StepGeom_BezierCurveAndRationalBSplineCurve::BezierCurve() const
+occ::handle<StepGeom_BezierCurve> StepGeom_BezierCurveAndRationalBSplineCurve::BezierCurve() const
 {
   return bezierCurve;
 }
 
 void StepGeom_BezierCurveAndRationalBSplineCurve::SetRationalBSplineCurve(
-  const Handle(StepGeom_RationalBSplineCurve)& aRationalBSplineCurve)
+  const occ::handle<StepGeom_RationalBSplineCurve>& aRationalBSplineCurve)
 {
   rationalBSplineCurve = aRationalBSplineCurve;
 }
 
-Handle(StepGeom_RationalBSplineCurve) StepGeom_BezierCurveAndRationalBSplineCurve::
+occ::handle<StepGeom_RationalBSplineCurve> StepGeom_BezierCurveAndRationalBSplineCurve::
   RationalBSplineCurve() const
 {
   return rationalBSplineCurve;
@@ -106,23 +106,23 @@ Handle(StepGeom_RationalBSplineCurve) StepGeom_BezierCurveAndRationalBSplineCurv
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_BezierCurveAndRationalBSplineCurve::SetWeightsData(
-  const Handle(TColStd_HArray1OfReal)& aWeightsData)
+  const occ::handle<NCollection_HArray1<double>>& aWeightsData)
 {
   rationalBSplineCurve->SetWeightsData(aWeightsData);
 }
 
-Handle(TColStd_HArray1OfReal) StepGeom_BezierCurveAndRationalBSplineCurve::WeightsData() const
+occ::handle<NCollection_HArray1<double>> StepGeom_BezierCurveAndRationalBSplineCurve::WeightsData()
+  const
 {
   return rationalBSplineCurve->WeightsData();
 }
 
-Standard_Real StepGeom_BezierCurveAndRationalBSplineCurve::WeightsDataValue(
-  const Standard_Integer num) const
+double StepGeom_BezierCurveAndRationalBSplineCurve::WeightsDataValue(const int num) const
 {
   return rationalBSplineCurve->WeightsDataValue(num);
 }
 
-Standard_Integer StepGeom_BezierCurveAndRationalBSplineCurve::NbWeightsData() const
+int StepGeom_BezierCurveAndRationalBSplineCurve::NbWeightsData() const
 {
   return rationalBSplineCurve->NbWeightsData();
 }

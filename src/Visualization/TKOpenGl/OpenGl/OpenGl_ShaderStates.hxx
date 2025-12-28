@@ -31,13 +31,13 @@ public:
   Standard_EXPORT OpenGl_StateInterface();
 
   //! Returns current state index.
-  Standard_Size Index() const { return myIndex; }
+  size_t Index() const { return myIndex; }
 
   //! Increment current state.
   void Update() { ++myIndex; }
 
 protected:
-  Standard_Size myIndex; //!< current state index
+  size_t myIndex; //!< current state index
 };
 
 //! Defines state of OCCT projection transformation.
@@ -48,18 +48,18 @@ public:
   Standard_EXPORT OpenGl_ProjectionState();
 
   //! Sets new projection matrix.
-  Standard_EXPORT void Set(const OpenGl_Mat4& theProjectionMatrix);
+  Standard_EXPORT void Set(const NCollection_Mat4<float>& theProjectionMatrix);
 
   //! Returns current projection matrix.
-  const OpenGl_Mat4& ProjectionMatrix() const { return myProjectionMatrix; }
+  const NCollection_Mat4<float>& ProjectionMatrix() const { return myProjectionMatrix; }
 
   //! Returns inverse of current projection matrix.
-  Standard_EXPORT const OpenGl_Mat4& ProjectionMatrixInverse() const;
+  Standard_EXPORT const NCollection_Mat4<float>& ProjectionMatrixInverse() const;
 
 private:
-  OpenGl_Mat4         myProjectionMatrix;        //!< OCCT projection matrix
-  mutable OpenGl_Mat4 myProjectionMatrixInverse; //!< Inverse of OCCT projection matrix
-  mutable bool        myInverseNeedUpdate;       //!< Is inversed matrix outdated?
+  NCollection_Mat4<float>         myProjectionMatrix;        //!< OCCT projection matrix
+  mutable NCollection_Mat4<float> myProjectionMatrixInverse; //!< Inverse of OCCT projection matrix
+  mutable bool                    myInverseNeedUpdate;       //!< Is inversed matrix outdated?
 };
 
 //! Defines state of OCCT model-world transformation.
@@ -70,18 +70,18 @@ public:
   Standard_EXPORT OpenGl_ModelWorldState();
 
   //! Sets new model-world matrix.
-  Standard_EXPORT void Set(const OpenGl_Mat4& theModelWorldMatrix);
+  Standard_EXPORT void Set(const NCollection_Mat4<float>& theModelWorldMatrix);
 
   //! Returns current model-world matrix.
-  const OpenGl_Mat4& ModelWorldMatrix() const { return myModelWorldMatrix; }
+  const NCollection_Mat4<float>& ModelWorldMatrix() const { return myModelWorldMatrix; }
 
   //! Returns inverse of current model-world matrix.
-  Standard_EXPORT const OpenGl_Mat4& ModelWorldMatrixInverse() const;
+  Standard_EXPORT const NCollection_Mat4<float>& ModelWorldMatrixInverse() const;
 
 private:
-  OpenGl_Mat4         myModelWorldMatrix;        //!< OCCT model-world matrix
-  mutable OpenGl_Mat4 myModelWorldMatrixInverse; //!< Inverse of OCCT model-world matrix
-  mutable bool        myInverseNeedUpdate;       //!< Is inversed matrix outdated?
+  NCollection_Mat4<float>         myModelWorldMatrix;        //!< OCCT model-world matrix
+  mutable NCollection_Mat4<float> myModelWorldMatrixInverse; //!< Inverse of OCCT model-world matrix
+  mutable bool                    myInverseNeedUpdate;       //!< Is inversed matrix outdated?
 };
 
 //! Defines state of OCCT world-view transformation.
@@ -92,18 +92,18 @@ public:
   Standard_EXPORT OpenGl_WorldViewState();
 
   //! Sets new world-view matrix.
-  Standard_EXPORT void Set(const OpenGl_Mat4& theWorldViewMatrix);
+  Standard_EXPORT void Set(const NCollection_Mat4<float>& theWorldViewMatrix);
 
   //! Returns current world-view matrix.
-  const OpenGl_Mat4& WorldViewMatrix() const { return myWorldViewMatrix; }
+  const NCollection_Mat4<float>& WorldViewMatrix() const { return myWorldViewMatrix; }
 
   //! Returns inverse of current world-view matrix.
-  Standard_EXPORT const OpenGl_Mat4& WorldViewMatrixInverse() const;
+  Standard_EXPORT const NCollection_Mat4<float>& WorldViewMatrixInverse() const;
 
 private:
-  OpenGl_Mat4         myWorldViewMatrix;        //!< OCCT world-view matrix
-  mutable OpenGl_Mat4 myWorldViewMatrixInverse; //!< Inverse of OCCT world-view matrix
-  mutable bool        myInverseNeedUpdate;      //!< Is inversed matrix outdated?
+  NCollection_Mat4<float>         myWorldViewMatrix;        //!< OCCT world-view matrix
+  mutable NCollection_Mat4<float> myWorldViewMatrixInverse; //!< Inverse of OCCT world-view matrix
+  mutable bool                    myInverseNeedUpdate;      //!< Is inversed matrix outdated?
 };
 
 //! Defines state of OCCT light sources.
@@ -113,34 +113,34 @@ public:
   //! Creates uninitialized state of light sources.
   OpenGl_LightSourceState()
       : mySpecIBLMapLevels(0),
-        myToCastShadows(Standard_True)
+        myToCastShadows(true)
   {
   }
 
   //! Sets new light sources.
-  void Set(const Handle(Graphic3d_LightSet)& theLightSources) { myLightSources = theLightSources; }
+  void Set(const occ::handle<Graphic3d_LightSet>& theLightSources)
+  {
+    myLightSources = theLightSources;
+  }
 
   //! Returns current list of light sources.
-  const Handle(Graphic3d_LightSet)& LightSources() const { return myLightSources; }
+  const occ::handle<Graphic3d_LightSet>& LightSources() const { return myLightSources; }
 
   //! Returns number of mipmap levels used in specular IBL map.
   //! 0 by default or in case of using non-PBR shading model.
-  Standard_Integer SpecIBLMapLevels() const { return mySpecIBLMapLevels; }
+  int SpecIBLMapLevels() const { return mySpecIBLMapLevels; }
 
   //! Sets number of mipmap levels used in specular IBL map.
-  void SetSpecIBLMapLevels(Standard_Integer theSpecIBLMapLevels)
-  {
-    mySpecIBLMapLevels = theSpecIBLMapLevels;
-  }
+  void SetSpecIBLMapLevels(int theSpecIBLMapLevels) { mySpecIBLMapLevels = theSpecIBLMapLevels; }
 
   //! Returns TRUE if shadowmap is set.
   bool HasShadowMaps() const { return myToCastShadows && !myShadowMaps.IsNull(); }
 
   //! Returns shadowmap.
-  const Handle(OpenGl_ShadowMapArray)& ShadowMaps() const { return myShadowMaps; }
+  const occ::handle<OpenGl_ShadowMapArray>& ShadowMaps() const { return myShadowMaps; }
 
   //! Sets shadowmap.
-  void SetShadowMaps(const Handle(OpenGl_ShadowMapArray)& theMap) { myShadowMaps = theMap; }
+  void SetShadowMaps(const occ::handle<OpenGl_ShadowMapArray>& theMap) { myShadowMaps = theMap; }
 
   //! Returns TRUE if shadowmap should be enabled when available; TRUE by default.
   bool ToCastShadows() const { return myToCastShadows; }
@@ -149,12 +149,12 @@ public:
   void SetCastShadows(bool theToCast) { myToCastShadows = theToCast; }
 
 private:
-  Handle(Graphic3d_LightSet) myLightSources;     //!< List of OCCT light sources
-                                                 // clang-format off
-  Standard_Integer           mySpecIBLMapLevels; //!< Number of mipmap levels used in specular IBL map (0 by default or in case of using non-PBR shading model)
-                                                 // clang-format on
-  Handle(OpenGl_ShadowMapArray) myShadowMaps;    //!< active shadowmap
-  Standard_Boolean              myToCastShadows; //!< enable/disable shadowmap
+  occ::handle<Graphic3d_LightSet> myLightSources;     //!< List of OCCT light sources
+                                                      // clang-format off
+  int           mySpecIBLMapLevels; //!< Number of mipmap levels used in specular IBL map (0 by default or in case of using non-PBR shading model)
+                                                      // clang-format on
+  occ::handle<OpenGl_ShadowMapArray> myShadowMaps;    //!< active shadowmap
+  bool                               myToCastShadows; //!< enable/disable shadowmap
 };
 
 //! Defines generic state of OCCT clipping state.
@@ -165,7 +165,7 @@ public:
   Standard_EXPORT OpenGl_ClippingState();
 
   //! Returns current state index.
-  Standard_Size Index() const { return myIndex; }
+  size_t Index() const { return myIndex; }
 
   //! Updates current state.
   Standard_EXPORT void Update();
@@ -174,9 +174,9 @@ public:
   Standard_EXPORT void Revert();
 
 protected:
-  Standard_Size                   myIndex;      //!< Current state index
-  Standard_Size                   myNextIndex;  //!< Next    state index
-  NCollection_List<Standard_Size> myStateStack; //!< Stack of previous states
+  size_t                   myIndex;      //!< Current state index
+  size_t                   myNextIndex;  //!< Next    state index
+  NCollection_List<size_t> myStateStack; //!< Stack of previous states
 };
 
 //! Defines generic state of order-independent transparency rendering properties.

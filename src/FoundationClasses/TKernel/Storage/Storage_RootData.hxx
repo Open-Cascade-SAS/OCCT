@@ -20,18 +20,17 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Storage_MapOfPers.hxx>
-#include <Storage_Error.hxx>
+#include <Storage_Root.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Storage_Error.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <Storage_HSeqOfRoot.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class Storage_BaseDriver;
 class Storage_Root;
 class Standard_Persistent;
-
-class Storage_RootData;
-DEFINE_STANDARD_HANDLE(Storage_RootData, Standard_Transient)
 
 class Storage_RootData : public Standard_Transient
 {
@@ -39,22 +38,22 @@ class Storage_RootData : public Standard_Transient
 public:
   Standard_EXPORT Storage_RootData();
 
-  Standard_EXPORT Standard_Boolean Read(const Handle(Storage_BaseDriver)& theDriver);
+  Standard_EXPORT bool Read(const occ::handle<Storage_BaseDriver>& theDriver);
 
   //! returns the number of roots.
-  Standard_EXPORT Standard_Integer NumberOfRoots() const;
+  Standard_EXPORT int NumberOfRoots() const;
 
   //! add a root to <me>. If a root with same name is present, it
   //! will be replaced by <aRoot>.
-  Standard_EXPORT void AddRoot(const Handle(Storage_Root)& aRoot);
+  Standard_EXPORT void AddRoot(const occ::handle<Storage_Root>& aRoot);
 
-  Standard_EXPORT Handle(Storage_HSeqOfRoot) Roots() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>> Roots() const;
 
   //! find a root with name <aName>.
-  Standard_EXPORT Handle(Storage_Root) Find(const TCollection_AsciiString& aName) const;
+  Standard_EXPORT occ::handle<Storage_Root> Find(const TCollection_AsciiString& aName) const;
 
-  //! returns Standard_True if <me> contains a root named <aName>
-  Standard_EXPORT Standard_Boolean IsRoot(const TCollection_AsciiString& aName) const;
+  //! returns true if <me> contains a root named <aName>
+  Standard_EXPORT bool IsRoot(const TCollection_AsciiString& aName) const;
 
   //! remove the root named <aName>.
   Standard_EXPORT void RemoveRoot(const TCollection_AsciiString& aName);
@@ -65,22 +64,21 @@ public:
 
   Standard_EXPORT void ClearErrorStatus();
 
-  Standard_EXPORT void UpdateRoot(const TCollection_AsciiString&     aName,
-                                  const Handle(Standard_Persistent)& aPers);
+  Standard_EXPORT void UpdateRoot(const TCollection_AsciiString&          aName,
+                                  const occ::handle<Standard_Persistent>& aPers);
 
   friend class Storage_Schema;
 
   DEFINE_STANDARD_RTTIEXT(Storage_RootData, Standard_Transient)
 
-protected:
 private:
   Standard_EXPORT void SetErrorStatus(const Storage_Error anError);
 
   Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  Storage_MapOfPers       myObjects;
-  Storage_Error           myErrorStatus;
-  TCollection_AsciiString myErrorStatusExt;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_Root>> myObjects;
+  Storage_Error                                                           myErrorStatus;
+  TCollection_AsciiString                                                 myErrorStatusExt;
 };
 
 #endif // _Storage_RootData_HeaderFile

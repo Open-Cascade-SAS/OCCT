@@ -20,18 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <IGESDraw_HArray1OfViewKindEntity.hxx>
-#include <TColgp_HArray1OfXY.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_XY.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESData_ViewKindEntity;
 class gp_Pnt2d;
 class gp_XY;
 class gp_XYZ;
-
-class IGESDraw_Drawing;
-DEFINE_STANDARD_HANDLE(IGESDraw_Drawing, IGESData_IGESEntity)
 
 //! defines IGESDrawing, Type <404> Form <0>
 //! in package IGESDraw
@@ -52,54 +50,52 @@ public:
   //! - allAnnotations : Pointers to DEs of Annotation entities
   //! raises exception if Lengths of allViews and allViewOrigins are
   //! not same.
-  Standard_EXPORT void Init(const Handle(IGESDraw_HArray1OfViewKindEntity)& allViews,
-                            const Handle(TColgp_HArray1OfXY)&               allViewOrigins,
-                            const Handle(IGESData_HArray1OfIGESEntity)&     allAnnotations);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+    const occ::handle<NCollection_HArray1<gp_XY>>&                                allViewOrigins,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allAnnotations);
 
   //! returns the number of view pointers in <me>
-  Standard_EXPORT Standard_Integer NbViews() const;
+  Standard_EXPORT int NbViews() const;
 
   //! returns the ViewKindEntity indicated by ViewIndex
   //! raises an exception if ViewIndex <= 0 or ViewIndex > NbViews().
-  Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem(const Standard_Integer ViewIndex) const;
+  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int ViewIndex) const;
 
   //! returns the Drawing space coordinates of the origin of the
   //! Transformed view indicated by TViewIndex
   //! raises an exception if TViewIndex <= 0 or TViewIndex > NbViews().
-  Standard_EXPORT gp_Pnt2d ViewOrigin(const Standard_Integer TViewIndex) const;
+  Standard_EXPORT gp_Pnt2d ViewOrigin(const int TViewIndex) const;
 
   //! returns the number of Annotation entities in <me>
-  Standard_EXPORT Standard_Integer NbAnnotations() const;
+  Standard_EXPORT int NbAnnotations() const;
 
   //! returns the Annotation entity in this Drawing, indicated by the
   //! AnnotationIndex
   //! raises an exception if AnnotationIndex <= 0 or
   //! AnnotationIndex > NbAnnotations().
-  Standard_EXPORT Handle(IGESData_IGESEntity) Annotation(
-    const Standard_Integer AnnotationIndex) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Annotation(const int AnnotationIndex) const;
 
-  Standard_EXPORT gp_XY ViewToDrawing(const Standard_Integer NumView,
-                                      const gp_XYZ&          ViewCoords) const;
+  Standard_EXPORT gp_XY ViewToDrawing(const int NumView, const gp_XYZ& ViewCoords) const;
 
   //! Returns the Drawing Unit Value if it is specified (by a
   //! specific property entity)
   //! If not specified, returns False, and val as zero :
   //! unit to consider is then the model unit in GlobalSection
-  Standard_EXPORT Standard_Boolean DrawingUnit(Standard_Real& value) const;
+  Standard_EXPORT bool DrawingUnit(double& value) const;
 
   //! Returns the Drawing Size if it is specified (by a
   //! specific property entity)
   //! If not specified, returns False, and X,Y as zero :
   //! unit to consider is then the model unit in GlobalSection
-  Standard_EXPORT Standard_Boolean DrawingSize(Standard_Real& X, Standard_Real& Y) const;
+  Standard_EXPORT bool DrawingSize(double& X, double& Y) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_Drawing, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESDraw_HArray1OfViewKindEntity) theViews;
-  Handle(TColgp_HArray1OfXY)               theViewOrigins;
-  Handle(IGESData_HArray1OfIGESEntity)     theAnnotations;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> theViews;
+  occ::handle<NCollection_HArray1<gp_XY>>                                theViewOrigins;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     theAnnotations;
 };
 
 #endif // _IGESDraw_Drawing_HeaderFile

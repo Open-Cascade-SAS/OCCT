@@ -20,10 +20,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallCurves, ShapeUpgrade_Tool)
 
-// #include <TColGeom_HArray1OfCurve.hxx>
-// #include <TColStd_HSequenceOfReal.hxx>
-#//include <TColGeom2d_HArray1OfCurve.hxx>
-// #include <TColStd_HSequenceOfReal.hxx>
+// #include <NCollection_HArray1<occ::handle<Geom_Curve>>.hxx>
+// #include <NCollection_HSequence<double>.hxx>
+#//include <NCollection_HArray1<occ::handle<Geom2d_Curve>>.hxx>
+// #include <NCollection_HSequence<double>.hxx>
 #include <ShapeExtend.hxx>
 #include <ShapeUpgrade_SplitCurve3d.hxx>
 #include <ShapeUpgrade_SplitCurve2d.hxx>
@@ -45,19 +45,19 @@ void ShapeUpgrade_FixSmallCurves::Init(const TopoDS_Edge& theEdge, const TopoDS_
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_FixSmallCurves::Approx(Handle(Geom_Curve)& /*Curve3d*/,
-                                                     Handle(Geom2d_Curve)& /*Curve2d*/,
-                                                     Handle(Geom2d_Curve)& /*Curve2dR*/,
-                                                     Standard_Real& /*First*/,
-                                                     Standard_Real& /*Last*/)
+bool ShapeUpgrade_FixSmallCurves::Approx(occ::handle<Geom_Curve>& /*Curve3d*/,
+                                         occ::handle<Geom2d_Curve>& /*Curve2d*/,
+                                         occ::handle<Geom2d_Curve>& /*Curve2dR*/,
+                                         double& /*First*/,
+                                         double& /*Last*/)
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void ShapeUpgrade_FixSmallCurves::SetSplitCurve3dTool(
-  const Handle(ShapeUpgrade_SplitCurve3d)& splitCurve3dTool)
+  const occ::handle<ShapeUpgrade_SplitCurve3d>& splitCurve3dTool)
 {
   mySplitCurve3dTool = splitCurve3dTool;
 }
@@ -65,28 +65,28 @@ void ShapeUpgrade_FixSmallCurves::SetSplitCurve3dTool(
 //=================================================================================================
 
 void ShapeUpgrade_FixSmallCurves::SetSplitCurve2dTool(
-  const Handle(ShapeUpgrade_SplitCurve2d)& splitCurve2dTool)
+  const occ::handle<ShapeUpgrade_SplitCurve2d>& splitCurve2dTool)
 {
   mySplitCurve2dTool = splitCurve2dTool;
 }
 
 //=================================================================================================
 
-Handle(ShapeUpgrade_SplitCurve3d) ShapeUpgrade_FixSmallCurves::GetSplitCurve3dTool() const
+occ::handle<ShapeUpgrade_SplitCurve3d> ShapeUpgrade_FixSmallCurves::GetSplitCurve3dTool() const
 {
   return mySplitCurve3dTool;
 }
 
 //=================================================================================================
 
-Handle(ShapeUpgrade_SplitCurve2d) ShapeUpgrade_FixSmallCurves::GetSplitCurve2dTool() const
+occ::handle<ShapeUpgrade_SplitCurve2d> ShapeUpgrade_FixSmallCurves::GetSplitCurve2dTool() const
 {
   return mySplitCurve2dTool;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_FixSmallCurves::Status(const ShapeExtend_Status status) const
+bool ShapeUpgrade_FixSmallCurves::Status(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatus, status);
 }

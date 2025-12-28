@@ -41,19 +41,19 @@ IMPLEMENT_STANDARD_RTTIEXT(StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDr
 // purpose  : Retrieve the content of a file into a new document
 //=======================================================================
 void StdLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
-                                               const Handle(CDM_Document)&       theNewDocument,
-                                               const Handle(CDM_Application)&,
-                                               const Handle(PCDM_ReaderFilter)&,
+                                               const occ::handle<CDM_Document>&  theNewDocument,
+                                               const occ::handle<CDM_Application>&,
+                                               const occ::handle<PCDM_ReaderFilter>&,
                                                const Message_ProgressRange& /*theRange*/)
 {
   // Read header data and persistent document
-  Storage_HeaderData           aHeaderData;
-  Handle(StdObjMgt_Persistent) aPDocument = read(theFileName, aHeaderData);
+  Storage_HeaderData                aHeaderData;
+  occ::handle<StdObjMgt_Persistent> aPDocument = read(theFileName, aHeaderData);
   if (aPDocument.IsNull())
     return;
 
   // Import transient document from the persistent one
-  aPDocument->ImportDocument(Handle(TDocStd_Document)::DownCast(theNewDocument));
+  aPDocument->ImportDocument(occ::down_cast<TDocStd_Document>(theNewDocument));
 
   // Copy comments from the header data
   theNewDocument->SetComments(aHeaderData.Comments());
@@ -63,14 +63,14 @@ void StdLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString&
 // function : read
 // purpose  : Read persistent document from a file
 //=======================================================================
-Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read(
+occ::handle<StdObjMgt_Persistent> StdLDrivers_DocumentRetrievalDriver::read(
   const TCollection_ExtendedString& theFileName,
   Storage_HeaderData&               theHeaderData)
 {
-  Standard_Integer i;
+  int i;
 
   // Create a driver appropriate for the given file
-  Handle(Storage_BaseDriver) aFileDriver;
+  occ::handle<Storage_BaseDriver> aFileDriver;
   if (PCDM::FileDriverType(TCollection_AsciiString(theFileName), aFileDriver) == PCDM_TOFD_Unknown)
   {
     myReaderStatus = PCDM_RS_UnknownFileDriver;
@@ -123,9 +123,9 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read(
     StdObjMgt_MapOfInstantiators aMapOfInst;
     bindTypes(aMapOfInst);
 
-    TColStd_SequenceOfAsciiString anUnknownTypes;
-    Standard_Integer              aCurTypeNum;
-    TCollection_AsciiString       aCurTypeName;
+    NCollection_Sequence<TCollection_AsciiString> anUnknownTypes;
+    int                                           aCurTypeNum;
+    TCollection_AsciiString                       aCurTypeName;
 
     for (i = 1; i <= aTypeData.NumberOfTypes(); i++)
     {
@@ -175,11 +175,11 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read(
 
   raiseOnStorageError(aFileDriver->BeginReadRefSection());
 
-  Standard_Integer len = aFileDriver->RefSectionSize();
+  int len = aFileDriver->RefSectionSize();
   for (i = 1; i <= len; i++)
   {
-    Standard_Integer aRef = 0, aType = 0;
-    Storage_Error    anError;
+    int           aRef = 0, aType = 0;
+    Storage_Error anError;
     try
     {
       OCC_CATCH_SIGNALS
@@ -234,12 +234,13 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read(
 
 //=================================================================================================
 
-void StdLDrivers_DocumentRetrievalDriver::Read(Standard_IStream& /*theIStream*/,
-                                               const Handle(Storage_Data)& /*theStorageData*/,
-                                               const Handle(CDM_Document)& /*theDoc*/,
-                                               const Handle(CDM_Application)& /*theApplication*/,
-                                               const Handle(PCDM_ReaderFilter)& /*theFilter*/,
-                                               const Message_ProgressRange& /*theRange*/)
+void StdLDrivers_DocumentRetrievalDriver::Read(
+  Standard_IStream& /*theIStream*/,
+  const occ::handle<Storage_Data>& /*theStorageData*/,
+  const occ::handle<CDM_Document>& /*theDoc*/,
+  const occ::handle<CDM_Application>& /*theApplication*/,
+  const occ::handle<PCDM_ReaderFilter>& /*theFilter*/,
+  const Message_ProgressRange& /*theRange*/)
 {
   throw Standard_NotImplemented(
     "Reading from stream is not supported by StdLDrivers_DocumentRetrievalDriver");

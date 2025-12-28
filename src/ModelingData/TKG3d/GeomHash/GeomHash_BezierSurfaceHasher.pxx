@@ -25,7 +25,7 @@
 struct GeomHash_BezierSurfaceHasher
 {
   // Hashes the Bezier surface metadata only.
-  std::size_t operator()(const Handle(Geom_BezierSurface)& theSurface) const noexcept
+  std::size_t operator()(const occ::handle<Geom_BezierSurface>& theSurface) const noexcept
   {
     const std::size_t aHashes[5] = {
       opencascade::hash(theSurface->UDegree()),
@@ -38,8 +38,8 @@ struct GeomHash_BezierSurfaceHasher
   }
 
   // Compares two Bezier surfaces by full geometric data.
-  bool operator()(const Handle(Geom_BezierSurface)& theSurface1,
-                  const Handle(Geom_BezierSurface)& theSurface2) const noexcept
+  bool operator()(const occ::handle<Geom_BezierSurface>& theSurface1,
+                  const occ::handle<Geom_BezierSurface>& theSurface2) const noexcept
   {
     constexpr double aTolerance = 1e-12;
 

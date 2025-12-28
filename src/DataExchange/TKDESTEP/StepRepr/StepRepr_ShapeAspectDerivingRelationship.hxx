@@ -21,9 +21,6 @@
 
 #include <StepRepr_ShapeAspectRelationship.hxx>
 
-class StepRepr_ShapeAspectDerivingRelationship;
-DEFINE_STANDARD_HANDLE(StepRepr_ShapeAspectDerivingRelationship, StepRepr_ShapeAspectRelationship)
-
 //! Added for Dimensional Tolerances
 class StepRepr_ShapeAspectDerivingRelationship : public StepRepr_ShapeAspectRelationship
 {
@@ -33,9 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeAspectDerivingRelationship,
                           StepRepr_ShapeAspectRelationship)
-
-protected:
-private:
 };
 
 #endif // _StepRepr_ShapeAspectDerivingRelationship_HeaderFile

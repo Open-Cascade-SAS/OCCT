@@ -20,7 +20,11 @@
 #include <gp_Ax3.hxx>
 #include <gp_XYZ.hxx>
 #include <gp_Trsf.hxx>
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
+#include <NCollection_Vec3.hxx>
+#include <NCollection_Vec4.hxx>
+#include <NCollection_Mat4.hxx>
 
 //! Coordinate system converter defining the following tools:
 //! - Initialization for commonly used coordinate systems Z-up and Y-up.
@@ -69,15 +73,15 @@ public:
   Standard_EXPORT RWMesh_CoordinateSystemConverter();
 
   //! Return TRUE if there is no transformation (target and current coordinates systems are same).
-  Standard_Boolean IsEmpty() const { return myIsEmpty; }
+  bool IsEmpty() const { return myIsEmpty; }
 
   //! Return source length units, defined as scale factor to m (meters).
   //! -1.0 by default, which means that NO conversion will be applied (regardless output length
   //! unit).
-  Standard_Real InputLengthUnit() const { return myInputLengthUnit; }
+  double InputLengthUnit() const { return myInputLengthUnit; }
 
   //! Set source length units as scale factor to m (meters).
-  void SetInputLengthUnit(Standard_Real theInputScale)
+  void SetInputLengthUnit(double theInputScale)
   {
     Init(myInputAx3, theInputScale, myOutputAx3, myOutputLengthUnit);
   }
@@ -85,16 +89,16 @@ public:
   //! Return destination length units, defined as scale factor to m (meters).
   //! -1.0 by default, which means that NO conversion will be applied (regardless input length
   //! unit).
-  Standard_Real OutputLengthUnit() const { return myOutputLengthUnit; }
+  double OutputLengthUnit() const { return myOutputLengthUnit; }
 
   //! Set destination length units as scale factor to m (meters).
-  void SetOutputLengthUnit(Standard_Real theOutputScale)
+  void SetOutputLengthUnit(double theOutputScale)
   {
     Init(myInputAx3, myInputLengthUnit, myOutputAx3, theOutputScale);
   }
 
   //! Return TRUE if source coordinate system has been set; FALSE by default.
-  Standard_Boolean HasInputCoordinateSystem() const { return myHasInputAx3; }
+  bool HasInputCoordinateSystem() const { return myHasInputAx3; }
 
   //! Source coordinate system; UNDEFINED by default.
   const gp_Ax3& InputCoordinateSystem() const { return myInputAx3; }
@@ -102,7 +106,7 @@ public:
   //! Set source coordinate system.
   void SetInputCoordinateSystem(const gp_Ax3& theSysFrom)
   {
-    myHasInputAx3 = Standard_True;
+    myHasInputAx3 = true;
     Init(theSysFrom, myInputLengthUnit, myOutputAx3, myOutputLengthUnit);
   }
 
@@ -114,7 +118,7 @@ public:
   }
 
   //! Return TRUE if destination coordinate system has been set; FALSE by default.
-  Standard_Boolean HasOutputCoordinateSystem() const { return myHasOutputAx3; }
+  bool HasOutputCoordinateSystem() const { return myHasOutputAx3; }
 
   //! Destination coordinate system; UNDEFINED by default.
   const gp_Ax3& OutputCoordinateSystem() const { return myOutputAx3; }
@@ -122,7 +126,7 @@ public:
   //! Set destination coordinate system.
   void SetOutputCoordinateSystem(const gp_Ax3& theSysTo)
   {
-    myHasOutputAx3 = Standard_True;
+    myHasOutputAx3 = true;
     Init(myInputAx3, myInputLengthUnit, theSysTo, myOutputLengthUnit);
   }
 
@@ -135,9 +139,9 @@ public:
 
   //! Initialize transformation.
   Standard_EXPORT void Init(const gp_Ax3& theInputSystem,
-                            Standard_Real theInputLengthUnit,
+                            double        theInputLengthUnit,
                             const gp_Ax3& theOutputSystem,
-                            Standard_Real theOutputLengthUnit);
+                            double        theOutputLengthUnit);
 
 public:
   //! Transform transformation.
@@ -169,31 +173,31 @@ public:
   }
 
   //! Transform normal (e.g. exclude translation/scale part of transformation).
-  void TransformNormal(Graphic3d_Vec3& theNorm) const
+  void TransformNormal(NCollection_Vec3<float>& theNorm) const
   {
     if (myTrsf.Form() != gp_Identity)
     {
-      const Graphic3d_Vec4 aNorm = myNormTrsf * Graphic3d_Vec4(theNorm, 0.0f);
-      theNorm                    = aNorm.xyz();
+      const NCollection_Vec4<float> aNorm = myNormTrsf * NCollection_Vec4<float>(theNorm, 0.0f);
+      theNorm                             = aNorm.xyz();
     }
   }
 
 private:
-  gp_Ax3 myInputAx3;          //!< source      coordinate system
-  gp_Ax3 myOutputAx3;         //!< destination coordinate system
-                              // clang-format off
-  Standard_Real    myInputLengthUnit;  //!< source      length units, defined as scale factor to m (meters); -1.0 by default which means UNDEFINED
-  Standard_Real    myOutputLengthUnit; //!< destination length units, defined as scale factor to m (meters); -1.0 by default which means UNDEFINED
-  Standard_Boolean myHasInputAx3;      //!< flag indicating if source coordinate system is defined or not
-  Standard_Boolean myHasOutputAx3;     //!< flag indicating if destination coordinate system is defined or not
+  gp_Ax3 myInputAx3;  //!< source      coordinate system
+  gp_Ax3 myOutputAx3; //!< destination coordinate system
+                      // clang-format off
+  double    myInputLengthUnit;  //!< source      length units, defined as scale factor to m (meters); -1.0 by default which means UNDEFINED
+  double    myOutputLengthUnit; //!< destination length units, defined as scale factor to m (meters); -1.0 by default which means UNDEFINED
+  bool myHasInputAx3;      //!< flag indicating if source coordinate system is defined or not
+  bool myHasOutputAx3;     //!< flag indicating if destination coordinate system is defined or not
 
   gp_Trsf          myTrsf;             //!< transformation from input Ax3 to output Ax3
   gp_Trsf          myTrsfInv;          //!< inversed transformation from input Ax3 to output Ax3
-  Graphic3d_Mat4   myNormTrsf;         //!< transformation 4x4 matrix from input Ax3 to output Ax3
-  Standard_Real    myUnitFactor;       //!< unit scale factor
-  Standard_Boolean myHasScale;         //!< flag indicating that length unit transformation should be performed
-                              // clang-format on
-  Standard_Boolean myIsEmpty; //!< flag indicating that transformation is empty
+  NCollection_Mat4<float>   myNormTrsf;         //!< transformation 4x4 matrix from input Ax3 to output Ax3
+  double    myUnitFactor;       //!< unit scale factor
+  bool myHasScale;         //!< flag indicating that length unit transformation should be performed
+                      // clang-format on
+  bool myIsEmpty;     //!< flag indicating that transformation is empty
 };
 
 #endif // _RWMesh_CoordinateSystemConverter_HeaderFile

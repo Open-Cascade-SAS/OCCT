@@ -19,7 +19,7 @@
 //=================================================================================================
 
 inline LocOpe_Generator::LocOpe_Generator()
-    : myDone(Standard_False)
+    : myDone(false)
 {
 }
 
@@ -27,7 +27,7 @@ inline LocOpe_Generator::LocOpe_Generator()
 
 inline LocOpe_Generator::LocOpe_Generator(const TopoDS_Shape& S)
     : myShape(S),
-      myDone(Standard_False)
+      myDone(false)
 {
 }
 
@@ -36,12 +36,12 @@ inline LocOpe_Generator::LocOpe_Generator(const TopoDS_Shape& S)
 inline void LocOpe_Generator::Init(const TopoDS_Shape& S)
 {
   myShape = S;
-  myDone  = Standard_False;
+  myDone  = false;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean LocOpe_Generator::IsDone() const
+inline bool LocOpe_Generator::IsDone() const
 {
   return myDone;
 }

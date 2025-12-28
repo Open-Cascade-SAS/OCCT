@@ -19,33 +19,35 @@
 #include <Units_Token.hxx>
 #include <Units_Quantity.hxx>
 
-Standard_EXPORT Standard_Boolean operator==(const Handle(Units_Quantity)&, const Standard_CString);
-Standard_EXPORT Standard_Boolean operator==(const Handle(Units_Token)&, const Standard_CString);
-Standard_EXPORT Standard_Boolean operator==(const Handle(Units_Unit)&, const Standard_CString);
+Standard_EXPORT bool operator==(const occ::handle<Units_Quantity>&, const char*);
+Standard_EXPORT bool operator==(const occ::handle<Units_Token>&, const char*);
+Standard_EXPORT bool operator==(const occ::handle<Units_Unit>&, const char*);
 
-Standard_EXPORT Handle(Units_Dimensions) operator*(const Handle(Units_Dimensions)&,
-                                                   const Handle(Units_Dimensions)&);
-Standard_EXPORT Handle(Units_Dimensions) operator/(const Handle(Units_Dimensions)&,
-                                                   const Handle(Units_Dimensions)&);
+Standard_EXPORT occ::handle<Units_Dimensions> operator*(const occ::handle<Units_Dimensions>&,
+                                                        const occ::handle<Units_Dimensions>&);
+Standard_EXPORT occ::handle<Units_Dimensions> operator/(const occ::handle<Units_Dimensions>&,
+                                                        const occ::handle<Units_Dimensions>&);
 
-Standard_EXPORT Handle(Units_Dimensions) pow(const Handle(Units_Dimensions)&, const Standard_Real);
-Standard_EXPORT Handle(Units_Token) pow(const Handle(Units_Token)&, const Handle(Units_Token)&);
-Standard_EXPORT Handle(Units_Token) pow(const Handle(Units_Token)&, const Standard_Real);
+Standard_EXPORT occ::handle<Units_Dimensions> pow(const occ::handle<Units_Dimensions>&,
+                                                  const double);
+Standard_EXPORT occ::handle<Units_Token> pow(const occ::handle<Units_Token>&,
+                                             const occ::handle<Units_Token>&);
+Standard_EXPORT occ::handle<Units_Token> pow(const occ::handle<Units_Token>&, const double);
 
-Standard_EXPORT Handle(Units_Token) operator+(const Handle(Units_Token)&, const Standard_Integer);
-Standard_EXPORT Handle(Units_Token) operator+(const Handle(Units_Token)&,
-                                              const Handle(Units_Token)&);
-Standard_EXPORT Handle(Units_Token) operator-(const Handle(Units_Token)&,
-                                              const Handle(Units_Token)&);
-Standard_EXPORT Handle(Units_Token) operator*(const Handle(Units_Token)&,
-                                              const Handle(Units_Token)&);
-Standard_EXPORT Handle(Units_Token) operator/(const Handle(Units_Token)&,
-                                              const Handle(Units_Token)&);
+Standard_EXPORT occ::handle<Units_Token> operator+(const occ::handle<Units_Token>&, const int);
+Standard_EXPORT occ::handle<Units_Token> operator+(const occ::handle<Units_Token>&,
+                                                   const occ::handle<Units_Token>&);
+Standard_EXPORT occ::handle<Units_Token> operator-(const occ::handle<Units_Token>&,
+                                                   const occ::handle<Units_Token>&);
+Standard_EXPORT occ::handle<Units_Token> operator*(const occ::handle<Units_Token>&,
+                                                   const occ::handle<Units_Token>&);
+Standard_EXPORT occ::handle<Units_Token> operator/(const occ::handle<Units_Token>&,
+                                                   const occ::handle<Units_Token>&);
 
-Standard_EXPORT Standard_Boolean operator!=(const Handle(Units_Token)&, const Standard_CString);
-Standard_EXPORT Standard_Boolean operator<=(const Handle(Units_Token)&, const Standard_CString);
-Standard_EXPORT Standard_Boolean operator>(const Handle(Units_Token)&, const Standard_CString);
-Standard_EXPORT Standard_Boolean operator>(const Handle(Units_Token)&, const Handle(Units_Token)&);
-Standard_EXPORT Standard_Boolean operator>=(const Handle(Units_Token)&, const Handle(Units_Token)&);
+Standard_EXPORT bool operator!=(const occ::handle<Units_Token>&, const char*);
+Standard_EXPORT bool operator<=(const occ::handle<Units_Token>&, const char*);
+Standard_EXPORT bool operator>(const occ::handle<Units_Token>&, const char*);
+Standard_EXPORT bool operator>(const occ::handle<Units_Token>&, const occ::handle<Units_Token>&);
+Standard_EXPORT bool operator>=(const occ::handle<Units_Token>&, const occ::handle<Units_Token>&);
 
 #endif

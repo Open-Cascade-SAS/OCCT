@@ -58,10 +58,10 @@ public:
   //! where Inertia/G is the matrix of inertia of the
   //! system relative to its center of mass as returned by
   //! the function MatrixOfInertia on any GProp_GProps object.
-  Standard_EXPORT static void HOperator(const gp_Pnt&       G,
-                                        const gp_Pnt&       Q,
-                                        const Standard_Real Mass,
-                                        gp_Mat&             Operator);
+  Standard_EXPORT static void HOperator(const gp_Pnt& G,
+                                        const gp_Pnt& Q,
+                                        const double  Mass,
+                                        gp_Mat&       Operator);
 };
 
 #endif // _GProp_HeaderFile

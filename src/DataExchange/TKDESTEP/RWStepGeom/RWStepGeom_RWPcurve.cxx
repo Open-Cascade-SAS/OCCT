@@ -21,10 +21,10 @@
 
 RWStepGeom_RWPcurve::RWStepGeom_RWPcurve() {}
 
-void RWStepGeom_RWPcurve::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                   const Standard_Integer                 num,
-                                   Handle(Interface_Check)&               ach,
-                                   const Handle(StepGeom_Pcurve)&         ent) const
+void RWStepGeom_RWPcurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                   const int                                   num,
+                                   occ::handle<Interface_Check>&               ach,
+                                   const occ::handle<StepGeom_Pcurve>&         ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,20 +34,20 @@ void RWStepGeom_RWPcurve::ReadStep(const Handle(StepData_StepReaderData)& data,
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : basisSurface ---
 
-  Handle(StepGeom_Surface) aBasisSurface;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Surface> aBasisSurface;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "basis_surface", ach, STANDARD_TYPE(StepGeom_Surface), aBasisSurface);
 
   // --- own field : referenceToCurve ---
 
-  Handle(StepRepr_DefinitionalRepresentation) aReferenceToCurve;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepRepr_DefinitionalRepresentation> aReferenceToCurve;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num,
                    3,
                    "reference_to_curve",
@@ -60,8 +60,8 @@ void RWStepGeom_RWPcurve::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aBasisSurface, aReferenceToCurve);
 }
 
-void RWStepGeom_RWPcurve::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepGeom_Pcurve)& ent) const
+void RWStepGeom_RWPcurve::WriteStep(StepData_StepWriter&                SW,
+                                    const occ::handle<StepGeom_Pcurve>& ent) const
 {
 
   // --- inherited field name ---
@@ -77,8 +77,8 @@ void RWStepGeom_RWPcurve::WriteStep(StepData_StepWriter&           SW,
   SW.Send(ent->ReferenceToCurve());
 }
 
-void RWStepGeom_RWPcurve::Share(const Handle(StepGeom_Pcurve)& ent,
-                                Interface_EntityIterator&      iter) const
+void RWStepGeom_RWPcurve::Share(const occ::handle<StepGeom_Pcurve>& ent,
+                                Interface_EntityIterator&           iter) const
 {
 
   iter.GetOneItem(ent->BasisSurface());

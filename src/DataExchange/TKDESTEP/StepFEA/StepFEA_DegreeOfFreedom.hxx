@@ -38,18 +38,16 @@ public:
 
   //! Recognizes a kind of CurveElementFreedom select type
   //! return 0
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Recognizes a items of select member CurveElementFreedomMember
   //! 1 -> EnumeratedCurveElementFreedom
   //! 2 -> ApplicationDefinedDegreeOfFreedom
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
   //! Returns a new select member the type CurveElementFreedomMember
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Returns Value as EnumeratedDegreeOfFreedom (or Null if another type)
   Standard_EXPORT void SetEnumeratedDegreeOfFreedom(const StepFEA_EnumeratedDegreeOfFreedom aVal);
@@ -59,13 +57,10 @@ public:
 
   //! Set Value for ApplicationDefinedDegreeOfFreedom
   Standard_EXPORT void SetApplicationDefinedDegreeOfFreedom(
-    const Handle(TCollection_HAsciiString)& aVal);
+    const occ::handle<TCollection_HAsciiString>& aVal);
 
   //! Returns Value as ApplicationDefinedDegreeOfFreedom (or Null if another type)
-  Standard_EXPORT Handle(TCollection_HAsciiString) ApplicationDefinedDegreeOfFreedom() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ApplicationDefinedDegreeOfFreedom() const;
 };
 
 #endif // _StepFEA_DegreeOfFreedom_HeaderFile

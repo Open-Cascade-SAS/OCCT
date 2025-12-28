@@ -28,9 +28,11 @@
 #include <Geom_Surface.hxx>
 #include <gp_Circ.hxx>
 #include <IntTools_Context.hxx>
-#include <TColStd_Array1OfListOfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt2d.hxx>
 
 /////////////////////// NotUseSurfacesForApprox /////////////////////////
 
@@ -45,13 +47,13 @@
 // function : IsDegeneratedZone
 // purpose  : static subfunction in IsDegeneratedZone
 //=======================================================================
-static Standard_Boolean IsDegeneratedZone(const gp_Pnt2d&             aP2d,
-                                          const Handle(Geom_Surface)& aS,
-                                          const Standard_Integer      iDir)
+static bool IsDegeneratedZone(const gp_Pnt2d&                  aP2d,
+                              const occ::handle<Geom_Surface>& aS,
+                              const int                        iDir)
 {
-  Standard_Boolean bFlag = Standard_True;
-  Standard_Real    US1, US2, VS1, VS2, dY, dX, d1, d2, dD;
-  Standard_Real    aXm, aYm, aXb, aYb, aXe, aYe;
+  bool   bFlag = true;
+  double US1, US2, VS1, VS2, dY, dX, d1, d2, dD;
+  double aXm, aYm, aXb, aYb, aXe, aYe;
   aS->Bounds(US1, US2, VS1, VS2);
 
   gp_Pnt aPm, aPb, aPe;
@@ -123,21 +125,21 @@ static Standard_Boolean IsDegeneratedZone(const gp_Pnt2d&             aP2d,
 // function : IsPointInDegeneratedZone
 // purpose  : static subfunction in NotUseSurfacesForApprox
 //=======================================================================
-static Standard_Boolean IsPointInDegeneratedZone(const IntSurf_PntOn2S& aP2S,
-                                                 const TopoDS_Face&     aF1,
-                                                 const TopoDS_Face&     aF2)
+static bool IsPointInDegeneratedZone(const IntSurf_PntOn2S& aP2S,
+                                     const TopoDS_Face&     aF1,
+                                     const TopoDS_Face&     aF2)
 
 {
-  Standard_Boolean bFlag = Standard_True;
-  Standard_Real    US11, US12, VS11, VS12, US21, US22, VS21, VS22;
-  Standard_Real    U1, V1, U2, V2, aDelta, aD;
-  gp_Pnt2d         aP2d;
+  bool     bFlag = true;
+  double   US11, US12, VS11, VS12, US21, US22, VS21, VS22;
+  double   U1, V1, U2, V2, aDelta, aD;
+  gp_Pnt2d aP2d;
 
-  Handle(Geom_Surface) aS1 = BRep_Tool::Surface(aF1);
+  occ::handle<Geom_Surface> aS1 = BRep_Tool::Surface(aF1);
   aS1->Bounds(US11, US12, VS11, VS12);
   GeomAdaptor_Surface aGAS1(aS1);
 
-  Handle(Geom_Surface) aS2 = BRep_Tool::Surface(aF2);
+  occ::handle<Geom_Surface> aS2 = BRep_Tool::Surface(aF2);
   aS1->Bounds(US21, US22, VS21, VS22);
   GeomAdaptor_Surface aGAS2(aS2);
   //
@@ -222,15 +224,15 @@ static Standard_Boolean IsPointInDegeneratedZone(const IntSurf_PntOn2S& aP2S,
 
 //=================================================================================================
 
-Standard_Boolean IntTools_WLineTool::NotUseSurfacesForApprox(const TopoDS_Face&            aF1,
-                                                             const TopoDS_Face&            aF2,
-                                                             const Handle(IntPatch_WLine)& WL,
-                                                             const Standard_Integer        ifprm,
-                                                             const Standard_Integer        ilprm)
+bool IntTools_WLineTool::NotUseSurfacesForApprox(const TopoDS_Face&                 aF1,
+                                                 const TopoDS_Face&                 aF2,
+                                                 const occ::handle<IntPatch_WLine>& WL,
+                                                 const int                          ifprm,
+                                                 const int                          ilprm)
 {
-  Standard_Boolean bPInDZ;
+  bool bPInDZ;
 
-  Handle(IntSurf_LineOn2S) aLineOn2S = WL->Curve();
+  occ::handle<IntSurf_LineOn2S> aLineOn2S = WL->Curve();
 
   const IntSurf_PntOn2S& aP2Sfprm = aLineOn2S->Value(ifprm);
   bPInDZ                          = IsPointInDegeneratedZone(aP2Sfprm, aF1, aF2);
@@ -253,17 +255,17 @@ Standard_Boolean IntTools_WLineTool::NotUseSurfacesForApprox(const TopoDS_Face& 
 // function : IsPointOnBoundary
 // purpose  : static subfunction in DecompositionOfWLine
 //=======================================================================
-static Standard_Boolean IsPointOnBoundary(const Standard_Real theParameter,
-                                          const Standard_Real theFirstBoundary,
-                                          const Standard_Real theSecondBoundary,
-                                          const Standard_Real theResolution,
-                                          Standard_Boolean&   IsOnFirstBoundary)
+static bool IsPointOnBoundary(const double theParameter,
+                              const double theFirstBoundary,
+                              const double theSecondBoundary,
+                              const double theResolution,
+                              bool&        IsOnFirstBoundary)
 {
-  Standard_Boolean bRet;
-  Standard_Integer i;
-  Standard_Real    adist;
+  bool   bRet;
+  int    i;
+  double adist;
   //
-  bRet = Standard_False;
+  bRet = false;
   for (i = 0; i < 2; ++i)
   {
     IsOnFirstBoundary = (i == 0);
@@ -287,23 +289,23 @@ static Standard_Boolean IsPointOnBoundary(const Standard_Real theParameter,
 // function : AdjustByNeighbour
 // purpose  : static subfunction in DecompositionOfWLine
 //=======================================================================
-static gp_Pnt2d AdjustByNeighbour(const gp_Pnt2d&             theaNeighbourPoint,
-                                  const gp_Pnt2d&             theOriginalPoint,
-                                  Handle(GeomAdaptor_Surface) theGASurface)
+static gp_Pnt2d AdjustByNeighbour(const gp_Pnt2d&                  theaNeighbourPoint,
+                                  const gp_Pnt2d&                  theOriginalPoint,
+                                  occ::handle<GeomAdaptor_Surface> theGASurface)
 {
   gp_Pnt2d ap1 = theaNeighbourPoint;
   gp_Pnt2d ap2 = theOriginalPoint;
 
   if (theGASurface->IsUPeriodic())
   {
-    Standard_Real aPeriod    = theGASurface->UPeriod();
-    gp_Pnt2d      aPTest     = ap2;
-    Standard_Real aSqDistMin = 1.e+100;
+    double   aPeriod    = theGASurface->UPeriod();
+    gp_Pnt2d aPTest     = ap2;
+    double   aSqDistMin = 1.e+100;
 
-    for (Standard_Integer pIt = -1; pIt <= 1; pIt++)
+    for (int pIt = -1; pIt <= 1; pIt++)
     {
       aPTest.SetX(theOriginalPoint.X() + aPeriod * pIt);
-      Standard_Real dd = ap1.SquareDistance(aPTest);
+      double dd = ap1.SquareDistance(aPTest);
 
       if (dd < aSqDistMin)
       {
@@ -314,14 +316,14 @@ static gp_Pnt2d AdjustByNeighbour(const gp_Pnt2d&             theaNeighbourPoint
   }
   if (theGASurface->IsVPeriodic())
   {
-    Standard_Real aPeriod    = theGASurface->VPeriod();
-    gp_Pnt2d      aPTest     = ap2;
-    Standard_Real aSqDistMin = 1.e+100;
+    double   aPeriod    = theGASurface->VPeriod();
+    gp_Pnt2d aPTest     = ap2;
+    double   aSqDistMin = 1.e+100;
 
-    for (Standard_Integer pIt = -1; pIt <= 1; pIt++)
+    for (int pIt = -1; pIt <= 1; pIt++)
     {
       aPTest.SetY(theOriginalPoint.Y() + aPeriod * pIt);
-      Standard_Real dd = ap1.SquareDistance(aPTest);
+      double dd = ap1.SquareDistance(aPTest);
 
       if (dd < aSqDistMin)
       {
@@ -339,8 +341,8 @@ static gp_Pnt2d AdjustByNeighbour(const gp_Pnt2d&             theaNeighbourPoint
 //=======================================================================
 static void RefineVector(gp_Vec2d& aV2D)
 {
-  Standard_Integer k, m;
-  Standard_Real    aC[2], aEps, aR1, aR2, aNum;
+  int    k, m;
+  double aC[2], aEps, aR1, aR2, aNum;
   //
   aEps = RealEpsilon();
   aR1  = 1. - aEps;
@@ -373,16 +375,16 @@ static void RefineVector(gp_Vec2d& aV2D)
 // function : FindPoint
 // purpose  : static subfunction in DecompositionOfWLine
 //=======================================================================
-static Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
-                                  const gp_Pnt2d&     theLastPoint,
-                                  const Standard_Real theUmin,
-                                  const Standard_Real theUmax,
-                                  const Standard_Real theVmin,
-                                  const Standard_Real theVmax,
-                                  gp_Pnt2d&           theNewPoint)
+static bool FindPoint(const gp_Pnt2d& theFirstPoint,
+                      const gp_Pnt2d& theLastPoint,
+                      const double    theUmin,
+                      const double    theUmax,
+                      const double    theVmin,
+                      const double    theVmax,
+                      gp_Pnt2d&       theNewPoint)
 {
-  gp_Vec2d         aVec(theFirstPoint, theLastPoint);
-  Standard_Integer i = 0, j = 0;
+  gp_Vec2d aVec(theFirstPoint, theLastPoint);
+  int      i = 0, j = 0;
 
   for (i = 0; i < 4; i++)
   {
@@ -417,12 +419,12 @@ static Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
     gp_Vec2d anormvec = aVec;
     anormvec.Normalize();
     RefineVector(anormvec);
-    Standard_Real adot1 = anormvec.Dot(anOtherVecNormal);
+    double adot1 = anormvec.Dot(anOtherVecNormal);
 
     if (fabs(adot1) < Precision::Angular())
       continue;
-    Standard_Real    adist  = 0.;
-    Standard_Boolean bIsOut = Standard_False;
+    double adist  = 0.;
+    bool   bIsOut = false;
 
     if ((i % 2) == 0)
     {
@@ -434,7 +436,7 @@ static Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
       adist  = (i < 2) ? fabs(theLastPoint.Y() - theVmin) : fabs(theLastPoint.Y() - theVmax);
       bIsOut = (i < 2) ? (theLastPoint.Y() < theVmin) : (theLastPoint.Y() > theVmax);
     }
-    Standard_Real anoffset = adist * anOtherVec.Dot(anormvec) / adot1;
+    double anoffset = adist * anOtherVec.Dot(anormvec) / adot1;
 
     for (j = 0; j < 2; j++)
     {
@@ -444,7 +446,7 @@ static Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
       if (bIsOut)
         acurvec.Reverse();
 
-      Standard_Real aDotX, anAngleX;
+      double aDotX, anAngleX;
       //
       aDotX    = aVec.Dot(acurvec);
       anAngleX = aVec.Angle(acurvec);
@@ -456,7 +458,7 @@ static Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
           if ((acurpoint.Y() >= theVmin) && (acurpoint.Y() <= theVmax))
           {
             theNewPoint = acurpoint;
-            return Standard_True;
+            return true;
           }
         }
         else
@@ -464,33 +466,33 @@ static Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
           if ((acurpoint.X() >= theUmin) && (acurpoint.X() <= theUmax))
           {
             theNewPoint = acurpoint;
-            return Standard_True;
+            return true;
           }
         }
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
-  const Handle(IntPatch_WLine)&      theWLine,
-  const Handle(GeomAdaptor_Surface)& theSurface1,
-  const Handle(GeomAdaptor_Surface)& theSurface2,
-  const TopoDS_Face&                 theFace1,
-  const TopoDS_Face&                 theFace2,
-  const GeomInt_LineConstructor&     theLConstructor,
-  const Standard_Boolean             theAvoidLConstructor,
-  const Standard_Real                theTol,
-  IntPatch_SequenceOfLine&           theNewLines,
-  const Handle(IntTools_Context)&    aContext)
+bool IntTools_WLineTool::DecompositionOfWLine(
+  const occ::handle<IntPatch_WLine>&                theWLine,
+  const occ::handle<GeomAdaptor_Surface>&           theSurface1,
+  const occ::handle<GeomAdaptor_Surface>&           theSurface2,
+  const TopoDS_Face&                                theFace1,
+  const TopoDS_Face&                                theFace2,
+  const GeomInt_LineConstructor&                    theLConstructor,
+  const bool                                        theAvoidLConstructor,
+  const double                                      theTol,
+  NCollection_Sequence<occ::handle<IntPatch_Line>>& theNewLines,
+  const occ::handle<IntTools_Context>&              aContext)
 {
-  Standard_Boolean bRet, bAvoidLineConstructor;
-  Standard_Integer aNbPnts, aNbParts;
+  bool bRet, bAvoidLineConstructor;
+  int  aNbPnts, aNbParts;
   //
-  bRet                  = Standard_False;
+  bRet                  = false;
   aNbPnts               = theWLine->NbPnts();
   bAvoidLineConstructor = theAvoidLConstructor;
   //
@@ -507,37 +509,37 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
     }
   }
   //
-  Standard_Boolean bIsPrevPointOnBoundary, bIsPointOnBoundary, bIsCurrentPointOnBoundary;
-  Standard_Integer nblines, pit, i, j;
-  Standard_Real    aTol;
-  TColStd_Array1OfListOfInteger anArrayOfLines(1, aNbPnts);
-  TColStd_Array1OfInteger       anArrayOfLineType(1, aNbPnts);
-  TColStd_ListOfInteger         aListOfPointIndex;
+  bool   bIsPrevPointOnBoundary, bIsPointOnBoundary, bIsCurrentPointOnBoundary;
+  int    nblines, pit, i, j;
+  double aTol;
+  NCollection_Array1<NCollection_List<int>> anArrayOfLines(1, aNbPnts);
+  NCollection_Array1<int>                   anArrayOfLineType(1, aNbPnts);
+  NCollection_List<int>                     aListOfPointIndex;
 
   //
   nblines                = 0;
   aTol                   = Precision::Confusion();
   aTol                   = 0.5 * aTol;
-  bIsPrevPointOnBoundary = Standard_False;
-  bIsPointOnBoundary     = Standard_False;
+  bIsPrevPointOnBoundary = false;
+  bIsPointOnBoundary     = false;
   //
   // 1. ...
   //
   // Points
   for (pit = 1; pit <= aNbPnts; ++pit)
   {
-    Standard_Boolean bIsOnFirstBoundary, isperiodic;
-    Standard_Real    aResolution, aPeriod, alowerboundary, aupperboundary, U, V;
-    Standard_Real    aParameter, anoffset, anAdjustPar;
-    Standard_Real    umin, umax, vmin, vmax;
+    bool   bIsOnFirstBoundary, isperiodic;
+    double aResolution, aPeriod, alowerboundary, aupperboundary, U, V;
+    double aParameter, anoffset, anAdjustPar;
+    double umin, umax, vmin, vmax;
     //
-    bIsCurrentPointOnBoundary     = Standard_False;
+    bIsCurrentPointOnBoundary     = false;
     const IntSurf_PntOn2S& aPoint = theWLine->Point(pit);
     //
     // Surface
     for (i = 0; i < 2; ++i)
     {
-      Handle(GeomAdaptor_Surface) aGASurface = (!i) ? theSurface1 : theSurface2;
+      occ::handle<GeomAdaptor_Surface> aGASurface = (!i) ? theSurface1 : theSurface2;
       aGASurface->Surface()->Bounds(umin, umax, vmin, vmax);
       if (!i)
       {
@@ -580,7 +582,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
                                 anAdjustPar,
                                 anoffset);
         //
-        bIsOnFirstBoundary = Standard_True; // ?
+        bIsOnFirstBoundary = true; // ?
         bIsPointOnBoundary = IsPointOnBoundary(anAdjustPar,
                                                alowerboundary,
                                                aupperboundary,
@@ -589,7 +591,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
         //
         if (bIsPointOnBoundary)
         {
-          bIsCurrentPointOnBoundary = Standard_True;
+          bIsCurrentPointOnBoundary = true;
           break;
         }
       } // for(j = 0; j < 2; j++) {
@@ -624,13 +626,13 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
   //
   if (nblines <= 1)
   {
-    return bRet; // Standard_False;
+    return bRet; // false;
   }
   //
   //
   // 2. Correct wlines.begin
-  TColStd_Array1OfListOfInteger anArrayOfLineEnds(1, nblines);
-  Handle(IntSurf_LineOn2S)      aSeqOfPntOn2S = new IntSurf_LineOn2S();
+  NCollection_Array1<NCollection_List<int>> anArrayOfLineEnds(1, nblines);
+  occ::handle<IntSurf_LineOn2S>             aSeqOfPntOn2S = new IntSurf_LineOn2S();
   //
   for (i = 1; i <= nblines; i++)
   {
@@ -638,20 +640,20 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
     {
       continue;
     }
-    const TColStd_ListOfInteger& aListOfIndex = anArrayOfLines.Value(i);
-    TColStd_ListOfInteger        aListOfFLIndex;
+    const NCollection_List<int>& aListOfIndex = anArrayOfLines.Value(i);
+    NCollection_List<int>        aListOfFLIndex;
 
     for (j = 0; j < 2; j++)
     {
-      Standard_Integer aneighbourindex = (j == 0) ? (i - 1) : (i + 1);
+      int aneighbourindex = (j == 0) ? (i - 1) : (i + 1);
 
       if ((aneighbourindex < 1) || (aneighbourindex > nblines))
         continue;
 
       if (anArrayOfLineType.Value(aneighbourindex) == 0)
         continue;
-      const TColStd_ListOfInteger& aNeighbour = anArrayOfLines.Value(aneighbourindex);
-      Standard_Integer             anIndex    = (j == 0) ? aNeighbour.Last() : aNeighbour.First();
+      const NCollection_List<int>& aNeighbour = anArrayOfLines.Value(aneighbourindex);
+      int                          anIndex    = (j == 0) ? aNeighbour.Last() : aNeighbour.First();
       const IntSurf_PntOn2S&       aPoint     = theWLine->Point(anIndex);
 
       IntSurf_PntOn2S aNewP = aPoint;
@@ -662,40 +664,39 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
         continue;
       }
       //
-      Standard_Integer iFirst = aListOfIndex.First();
-      Standard_Integer iLast  = aListOfIndex.Last();
+      int iFirst = aListOfIndex.First();
+      int iLast  = aListOfIndex.Last();
       //
-      for (Standard_Integer surfit = 0; surfit < 2; surfit++)
+      for (int surfit = 0; surfit < 2; surfit++)
       {
 
-        Handle(GeomAdaptor_Surface) aGASurface = (surfit == 0) ? theSurface1 : theSurface2;
-        Standard_Real               umin = 0., umax = 0., vmin = 0., vmax = 0.;
+        occ::handle<GeomAdaptor_Surface> aGASurface = (surfit == 0) ? theSurface1 : theSurface2;
+        double                           umin = 0., umax = 0., vmin = 0., vmax = 0.;
         aGASurface->Surface()->Bounds(umin, umax, vmin, vmax);
-        Standard_Real U = 0., V = 0.;
+        double U = 0., V = 0.;
 
         if (surfit == 0)
           aNewP.ParametersOnS1(U, V);
         else
           aNewP.ParametersOnS2(U, V);
-        Standard_Integer nbboundaries = 0;
+        int nbboundaries = 0;
 
-        Standard_Boolean bIsNearBoundary = Standard_False;
-        // Standard_Integer aZoneIndex = 0;
-        Standard_Integer bIsUBoundary     = Standard_False; // use if nbboundaries == 1
-        Standard_Integer bIsFirstBoundary = Standard_False; // use if nbboundaries == 1
+        bool bIsNearBoundary = false;
+        // int aZoneIndex = 0;
+        int bIsUBoundary     = false; // use if nbboundaries == 1
+        int bIsFirstBoundary = false; // use if nbboundaries == 1
 
-        for (Standard_Integer parit = 0; parit < 2; parit++)
+        for (int parit = 0; parit < 2; parit++)
         {
-          Standard_Boolean isperiodic =
-            (parit == 0) ? aGASurface->IsUPeriodic() : aGASurface->IsVPeriodic();
+          bool isperiodic = (parit == 0) ? aGASurface->IsUPeriodic() : aGASurface->IsVPeriodic();
 
-          Standard_Real aResolution =
+          double aResolution =
             (parit == 0) ? aGASurface->UResolution(aTol) : aGASurface->VResolution(aTol);
-          Standard_Real alowerboundary = (parit == 0) ? umin : vmin;
-          Standard_Real aupperboundary = (parit == 0) ? umax : vmax;
+          double alowerboundary = (parit == 0) ? umin : vmin;
+          double aupperboundary = (parit == 0) ? umax : vmax;
 
-          Standard_Real    aParameter         = (parit == 0) ? U : V;
-          Standard_Boolean bIsOnFirstBoundary = Standard_True;
+          double aParameter         = (parit == 0) ? U : V;
+          bool   bIsOnFirstBoundary = true;
 
           if (!isperiodic)
           {
@@ -713,8 +714,8 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
           }
           else
           {
-            Standard_Real aPeriod = (parit == 0) ? aGASurface->UPeriod() : aGASurface->VPeriod();
-            Standard_Real anoffset, anAdjustPar;
+            double aPeriod = (parit == 0) ? aGASurface->UPeriod() : aGASurface->VPeriod();
+            double anoffset, anAdjustPar;
             GeomInt::AdjustPeriodic(aParameter,
                                     alowerboundary,
                                     aupperboundary,
@@ -736,9 +737,9 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
             else
             {
               // check neighbourhood of boundary
-              Standard_Real anEpsilon = aResolution * 100.;
-              Standard_Real aPart     = (aupperboundary - alowerboundary) * 0.1;
-              anEpsilon               = (anEpsilon > aPart) ? aPart : anEpsilon;
+              double anEpsilon = aResolution * 100.;
+              double aPart     = (aupperboundary - alowerboundary) * 0.1;
+              anEpsilon        = (anEpsilon > aPart) ? aPart : anEpsilon;
 
               bIsNearBoundary = IsPointOnBoundary(anAdjustPar,
                                                   alowerboundary,
@@ -749,26 +750,25 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
           }
         }
 
-        Standard_Boolean bComputeLineEnd = Standard_False;
+        bool bComputeLineEnd = false;
 
         if (nbboundaries == 2)
         {
           // xf
-          bComputeLineEnd = Standard_True;
+          bComputeLineEnd = true;
           // xt
         }
         else if (nbboundaries == 1)
         {
-          Standard_Boolean isperiodic =
-            (bIsUBoundary) ? aGASurface->IsUPeriodic() : aGASurface->IsVPeriodic();
+          bool isperiodic = (bIsUBoundary) ? aGASurface->IsUPeriodic() : aGASurface->IsVPeriodic();
 
           if (isperiodic)
           {
-            Standard_Real alowerboundary = (bIsUBoundary) ? umin : vmin;
-            Standard_Real aupperboundary = (bIsUBoundary) ? umax : vmax;
-            Standard_Real aPeriod = (bIsUBoundary) ? aGASurface->UPeriod() : aGASurface->VPeriod();
-            Standard_Real aParameter = (bIsUBoundary) ? U : V;
-            Standard_Real anoffset, anAdjustPar;
+            double alowerboundary = (bIsUBoundary) ? umin : vmin;
+            double aupperboundary = (bIsUBoundary) ? umax : vmax;
+            double aPeriod        = (bIsUBoundary) ? aGASurface->UPeriod() : aGASurface->VPeriod();
+            double aParameter     = (bIsUBoundary) ? U : V;
+            double anoffset, anAdjustPar;
             GeomInt::AdjustPeriodic(aParameter,
                                     alowerboundary,
                                     aupperboundary,
@@ -776,62 +776,61 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
                                     anAdjustPar,
                                     anoffset);
 
-            Standard_Real adist = (bIsFirstBoundary) ? fabs(anAdjustPar - alowerboundary)
-                                                     : fabs(anAdjustPar - aupperboundary);
-            Standard_Real anotherPar =
+            double adist = (bIsFirstBoundary) ? fabs(anAdjustPar - alowerboundary)
+                                              : fabs(anAdjustPar - aupperboundary);
+            double anotherPar =
               (bIsFirstBoundary) ? (aupperboundary - adist) : (alowerboundary + adist);
             anotherPar += anoffset;
-            Standard_Integer aneighbourpointindex =
-              (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
+            int aneighbourpointindex = (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
             const IntSurf_PntOn2S& aNeighbourPoint = theWLine->Point(aneighbourpointindex);
-            Standard_Real          nU1, nV1;
+            double                 nU1, nV1;
 
             if (surfit == 0)
               aNeighbourPoint.ParametersOnS1(nU1, nV1);
             else
               aNeighbourPoint.ParametersOnS2(nU1, nV1);
 
-            Standard_Real adist1 = (bIsUBoundary) ? fabs(nU1 - U) : fabs(nV1 - V);
-            Standard_Real adist2 = (bIsUBoundary) ? fabs(nU1 - anotherPar) : fabs(nV1 - anotherPar);
-            bComputeLineEnd      = Standard_True;
-            Standard_Boolean bCheckAngle1 = Standard_False;
-            Standard_Boolean bCheckAngle2 = Standard_False;
-            gp_Vec2d         aNewVec;
-            Standard_Real    anewU = (bIsUBoundary) ? anotherPar : U;
-            Standard_Real    anewV = (bIsUBoundary) ? V : anotherPar;
+            double adist1   = (bIsUBoundary) ? fabs(nU1 - U) : fabs(nV1 - V);
+            double adist2   = (bIsUBoundary) ? fabs(nU1 - anotherPar) : fabs(nV1 - anotherPar);
+            bComputeLineEnd = true;
+            bool     bCheckAngle1 = false;
+            bool     bCheckAngle2 = false;
+            gp_Vec2d aNewVec;
+            double   anewU = (bIsUBoundary) ? anotherPar : U;
+            double   anewV = (bIsUBoundary) ? V : anotherPar;
 
             if (((adist1 - adist2) > Precision::PConfusion()) && (adist2 < (aPeriod / 4.)))
             {
-              bCheckAngle1 = Standard_True;
+              bCheckAngle1 = true;
               aNewVec      = gp_Vec2d(gp_Pnt2d(nU1, nV1), gp_Pnt2d(anewU, anewV));
 
               if (aNewVec.SquareMagnitude() < gp::Resolution())
               {
                 aNewP.SetValue((surfit == 0), anewU, anewV);
-                bCheckAngle1 = Standard_False;
+                bCheckAngle1 = false;
               }
             }
             else if (adist1 < (aPeriod / 4.))
             {
-              bCheckAngle2 = Standard_True;
+              bCheckAngle2 = true;
               aNewVec      = gp_Vec2d(gp_Pnt2d(nU1, nV1), gp_Pnt2d(U, V));
 
               if (aNewVec.SquareMagnitude() < gp::Resolution())
               {
-                bCheckAngle2 = Standard_False;
+                bCheckAngle2 = false;
               }
             }
 
             if (bCheckAngle1 || bCheckAngle2)
             {
               // assume there are at least two points in line (see "if" above)
-              Standard_Integer anindexother = aneighbourpointindex;
+              int anindexother = aneighbourpointindex;
 
               while ((anindexother <= iLast) && (anindexother >= iFirst))
               {
                 anindexother = (j == 0) ? (anindexother + 1) : (anindexother - 1);
                 const IntSurf_PntOn2S& aPrevNeighbourPoint = theWLine->Point(anindexother);
-                Standard_Real          nU2, nV2;
+                double                 nU2, nV2;
 
                 if (surfit == 0)
                   aPrevNeighbourPoint.ParametersOnS1(nU2, nV2);
@@ -845,14 +844,14 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
                 }
                 else
                 {
-                  Standard_Real anAngle = aNewVec.Angle(aVecOld);
+                  double anAngle = aNewVec.Angle(aVecOld);
 
                   if ((fabs(anAngle) < (M_PI * 0.25)) && (aNewVec.Dot(aVecOld) > 0.))
                   {
 
                     if (bCheckAngle1)
                     {
-                      Standard_Real   U1, U2, V1, V2;
+                      double          U1, U2, V1, V2;
                       IntSurf_PntOn2S atmppoint = aNewP;
                       atmppoint.SetValue((surfit == 0), anewU, anewV);
                       atmppoint.Parameters(U1, V1, U2, V2);
@@ -862,14 +861,14 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
 
                       if (P0.IsEqual(P1, aTol) && P0.IsEqual(P2, aTol) && P1.IsEqual(P2, aTol))
                       {
-                        bComputeLineEnd = Standard_False;
+                        bComputeLineEnd = false;
                         aNewP.SetValue((surfit == 0), anewU, anewV);
                       }
                     }
 
                     if (bCheckAngle2)
                     {
-                      bComputeLineEnd = Standard_False;
+                      bComputeLineEnd = false;
                     }
                   }
                   break;
@@ -880,28 +879,28 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
         }
         else if (bIsNearBoundary)
         {
-          bComputeLineEnd = Standard_True;
+          bComputeLineEnd = true;
         }
 
         if (bComputeLineEnd)
         {
 
-          gp_Pnt2d         anewpoint;
-          Standard_Boolean found = Standard_False;
+          gp_Pnt2d anewpoint;
+          bool     found = false;
 
           if (bIsNearBoundary)
           {
             // re-compute point near natural boundary or near tangent zone
-            Standard_Real u1, v1, u2, v2;
+            double u1, v1, u2, v2;
             aNewP.Parameters(u1, v1, u2, v2);
             if (surfit == 0)
               anewpoint = gp_Pnt2d(u1, v1);
             else
               anewpoint = gp_Pnt2d(u2, v2);
 
-            Standard_Integer       aneighbourpointindex1 = (j == 0) ? iFirst : iLast;
+            int                    aneighbourpointindex1 = (j == 0) ? iFirst : iLast;
             const IntSurf_PntOn2S& aNeighbourPoint       = theWLine->Point(aneighbourpointindex1);
-            Standard_Real          nU1, nV1;
+            double                 nU1, nV1;
 
             if (surfit == 0)
               aNeighbourPoint.ParametersOnS1(nU1, nV1);
@@ -929,24 +928,24 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
           else
           {
 
-            Standard_Integer       aneighbourpointindex1 = (j == 0) ? iFirst : iLast;
+            int                    aneighbourpointindex1 = (j == 0) ? iFirst : iLast;
             const IntSurf_PntOn2S& aNeighbourPoint       = theWLine->Point(aneighbourpointindex1);
-            Standard_Real          nU1, nV1;
+            double                 nU1, nV1;
 
             if (surfit == 0)
               aNeighbourPoint.ParametersOnS1(nU1, nV1);
             else
               aNeighbourPoint.ParametersOnS2(nU1, nV1);
-            gp_Pnt2d         ap1(nU1, nV1);
-            gp_Pnt2d         ap2(nU1, nV1);
-            Standard_Integer aneighbourpointindex2 = aneighbourpointindex1;
+            gp_Pnt2d ap1(nU1, nV1);
+            gp_Pnt2d ap2(nU1, nV1);
+            int      aneighbourpointindex2 = aneighbourpointindex1;
 
             while ((aneighbourpointindex2 <= iLast) && (aneighbourpointindex2 >= iFirst))
             {
               aneighbourpointindex2 =
                 (j == 0) ? (aneighbourpointindex2 + 1) : (aneighbourpointindex2 - 1);
               const IntSurf_PntOn2S& aPrevNeighbourPoint = theWLine->Point(aneighbourpointindex2);
-              Standard_Real          nU2, nV2;
+              double                 nU2, nV2;
 
               if (surfit == 0)
                 aPrevNeighbourPoint.ParametersOnS1(nU2, nV2);
@@ -966,12 +965,13 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
           if (found)
           {
             // check point
-            Standard_Real               aCriteria = theTol;
+            double                      aCriteria = theTol;
             GeomAPI_ProjectPointOnSurf& aProjector =
               (surfit == 0) ? aContext->ProjPS(theFace2) : aContext->ProjPS(theFace1);
-            Handle(GeomAdaptor_Surface) aSurface = (surfit == 0) ? theSurface1 : theSurface2;
+            occ::handle<GeomAdaptor_Surface> aSurface = (surfit == 0) ? theSurface1 : theSurface2;
 
-            Handle(GeomAdaptor_Surface) aSurfaceOther = (surfit == 0) ? theSurface2 : theSurface1;
+            occ::handle<GeomAdaptor_Surface> aSurfaceOther =
+              (surfit == 0) ? theSurface2 : theSurface1;
 
             gp_Pnt aP3d = aSurface->Value(anewpoint.X(), anewpoint.Y());
             aProjector.Perform(aP3d);
@@ -980,14 +980,14 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
             {
               if (aProjector.LowerDistance() < aCriteria)
               {
-                Standard_Real foundU = U, foundV = V;
+                double foundU = U, foundV = V;
                 aProjector.LowerDistanceParameters(foundU, foundV);
 
                 // Correction of projected coordinates. Begin
                 // Note, it may be shifted on a period
-                Standard_Integer       aneindex1       = (j == 0) ? iFirst : iLast;
+                int                    aneindex1       = (j == 0) ? iFirst : iLast;
                 const IntSurf_PntOn2S& aNeighbourPoint = theWLine->Point(aneindex1);
-                Standard_Real          nUn, nVn;
+                double                 nUn, nVn;
 
                 if (surfit == 0)
                   aNeighbourPoint.ParametersOnS2(nUn, nVn);
@@ -1018,7 +1018,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
                   {
                     if (aProjector2.LowerDistance() < aCriteria)
                     {
-                      Standard_Real foundU2 = anewpoint.X(), foundV2 = anewpoint.Y();
+                      double foundU2 = anewpoint.X(), foundV2 = anewpoint.Y();
                       aProjector2.LowerDistanceParameters(foundU2, foundV2);
                       anewpoint.SetX(foundU2);
                       anewpoint.SetY(foundV2);
@@ -1044,7 +1044,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
   // Correct wlines.end
 
   // Split wlines.begin
-  Standard_Integer nbiter;
+  int nbiter;
   //
   nbiter = 1;
   if (!bAvoidLineConstructor)
@@ -1054,8 +1054,8 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
   //
   for (j = 1; j <= nbiter; ++j)
   {
-    Standard_Real    fprm, lprm;
-    Standard_Integer ifprm, ilprm;
+    double fprm, lprm;
+    int    ifprm, ilprm;
     //
     if (bAvoidLineConstructor)
     {
@@ -1065,11 +1065,11 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
     else
     {
       theLConstructor.Part(j, fprm, lprm);
-      ifprm = (Standard_Integer)fprm;
-      ilprm = (Standard_Integer)lprm;
+      ifprm = (int)fprm;
+      ilprm = (int)lprm;
     }
 
-    Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
+    occ::handle<IntSurf_LineOn2S> aLineOn2S = new IntSurf_LineOn2S();
     //
     for (i = 1; i <= nblines; i++)
     {
@@ -1077,10 +1077,10 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
       {
         continue;
       }
-      const TColStd_ListOfInteger& aListOfIndex   = anArrayOfLines.Value(i);
-      const TColStd_ListOfInteger& aListOfFLIndex = anArrayOfLineEnds.Value(i);
-      Standard_Boolean             bhasfirstpoint = (aListOfFLIndex.Extent() == 2);
-      Standard_Boolean             bhaslastpoint  = (aListOfFLIndex.Extent() == 2);
+      const NCollection_List<int>& aListOfIndex   = anArrayOfLines.Value(i);
+      const NCollection_List<int>& aListOfFLIndex = anArrayOfLineEnds.Value(i);
+      bool                         bhasfirstpoint = (aListOfFLIndex.Extent() == 2);
+      bool                         bhaslastpoint  = (aListOfFLIndex.Extent() == 2);
 
       if (!bhasfirstpoint && !aListOfFLIndex.IsEmpty())
       {
@@ -1092,10 +1092,10 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
         bhaslastpoint = (i != nblines);
       }
 
-      Standard_Integer iFirst         = aListOfIndex.First();
-      Standard_Integer iLast          = aListOfIndex.Last();
-      Standard_Boolean bIsFirstInside = ((ifprm >= iFirst) && (ifprm <= iLast));
-      Standard_Boolean bIsLastInside  = ((ilprm >= iFirst) && (ilprm <= iLast));
+      int  iFirst         = aListOfIndex.First();
+      int  iLast          = aListOfIndex.Last();
+      bool bIsFirstInside = ((ifprm >= iFirst) && (ifprm <= iLast));
+      bool bIsLastInside  = ((ilprm >= iFirst) && (ilprm <= iLast));
 
       if (!bIsFirstInside && !bIsLastInside)
       {
@@ -1108,7 +1108,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
             const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(pit);
             aLineOn2S->Add(aP);
           }
-          TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
+          NCollection_List<int>::Iterator anIt(aListOfIndex);
 
           for (; anIt.More(); anIt.Next())
           {
@@ -1125,16 +1125,16 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
           }
 
           // check end of split line (end is almost always)
-          Standard_Integer aneighbour   = i + 1;
-          Standard_Boolean bIsEndOfLine = Standard_True;
+          int  aneighbour   = i + 1;
+          bool bIsEndOfLine = true;
 
           if (aneighbour <= nblines)
           {
-            const TColStd_ListOfInteger& aListOfNeighbourIndex = anArrayOfLines.Value(aneighbour);
+            const NCollection_List<int>& aListOfNeighbourIndex = anArrayOfLines.Value(aneighbour);
 
             if ((anArrayOfLineType.Value(aneighbour) != 0) && (aListOfNeighbourIndex.IsEmpty()))
             {
-              bIsEndOfLine = Standard_False;
+              bIsEndOfLine = false;
             }
           }
 
@@ -1142,7 +1142,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
           {
             if (aLineOn2S->NbPoints() > 1)
             {
-              Handle(IntPatch_WLine) aNewWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
+              occ::handle<IntPatch_WLine> aNewWLine = new IntPatch_WLine(aLineOn2S, false);
               aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
               theNewLines.Append(aNewWLine);
             }
@@ -1156,7 +1156,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
       if (bIsFirstInside && bIsLastInside)
       {
         // append inside points between ifprm and ilprm
-        TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
+        NCollection_List<int>::Iterator anIt(aListOfIndex);
 
         for (; anIt.More(); anIt.Next())
         {
@@ -1173,7 +1173,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
         if (bIsFirstInside)
         {
           // append points from ifprm to last point + boundary point
-          TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
+          NCollection_List<int>::Iterator anIt(aListOfIndex);
 
           for (; anIt.More(); anIt.Next())
           {
@@ -1191,16 +1191,16 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
             aLineOn2S->Add(aP);
           }
           // check end of split line (end is almost always)
-          Standard_Integer aneighbour   = i + 1;
-          Standard_Boolean bIsEndOfLine = Standard_True;
+          int  aneighbour   = i + 1;
+          bool bIsEndOfLine = true;
 
           if (aneighbour <= nblines)
           {
-            const TColStd_ListOfInteger& aListOfNeighbourIndex = anArrayOfLines.Value(aneighbour);
+            const NCollection_List<int>& aListOfNeighbourIndex = anArrayOfLines.Value(aneighbour);
 
             if ((anArrayOfLineType.Value(aneighbour) != 0) && (aListOfNeighbourIndex.IsEmpty()))
             {
-              bIsEndOfLine = Standard_False;
+              bIsEndOfLine = false;
             }
           }
 
@@ -1208,7 +1208,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
           {
             if (aLineOn2S->NbPoints() > 1)
             {
-              Handle(IntPatch_WLine) aNewWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
+              occ::handle<IntPatch_WLine> aNewWLine = new IntPatch_WLine(aLineOn2S, false);
               aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
               theNewLines.Append(aNewWLine);
             }
@@ -1226,7 +1226,7 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
             const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(pit);
             aLineOn2S->Add(aP);
           }
-          TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
+          NCollection_List<int>::Iterator anIt(aListOfIndex);
 
           for (; anIt.More(); anIt.Next())
           {
@@ -1243,14 +1243,14 @@ Standard_Boolean IntTools_WLineTool::DecompositionOfWLine(
 
     if (aLineOn2S->NbPoints() > 1)
     {
-      Handle(IntPatch_WLine) aNewWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
+      occ::handle<IntPatch_WLine> aNewWLine = new IntPatch_WLine(aLineOn2S, false);
       aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
       theNewLines.Append(aNewWLine);
     }
   }
   // Split wlines.end
 
-  return Standard_True;
+  return true;
 }
 
 ///////////////////// end of DecompositionOfWLine ///////////////////////

@@ -31,25 +31,23 @@ namespace
 class QuadraticWithDerivative : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX - 4.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = 2.0 * theX;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX - 4.0;
     theD = 2.0 * theX;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -57,25 +55,23 @@ public:
 class CubicWithDerivative : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX * theX - 6.0 * theX * theX + 11.0 * theX - 6.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = 3.0 * theX * theX - 12.0 * theX + 11.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX * theX - 6.0 * theX * theX + 11.0 * theX - 6.0;
     theD = 3.0 * theX * theX - 12.0 * theX + 11.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -83,25 +79,23 @@ public:
 class SineWithDerivative : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = sin(theX);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = cos(theX);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = sin(theX);
     theD = cos(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -109,26 +103,24 @@ public:
 class LinearWithDerivative : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = 2.0 * theX - 4.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     (void)theX;
     theD = 2.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = 2.0 * theX - 4.0;
     theD = 2.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -136,26 +128,24 @@ public:
 class ConstantZeroFunction : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real, Standard_Real& theF) override
+  bool Value(const double, double& theF) override
   {
     theF = 0.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real, Standard_Real& theD) override
+  bool Derivative(const double, double& theD) override
   {
     theD = 0.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     (void)theX;
     theF = 0.0;
     theD = 0.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -163,25 +153,23 @@ public:
 class NoRootsFunction : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX + 1.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = 2.0 * theX;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX + 1.0;
     theD = 2.0 * theX;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -189,27 +177,25 @@ public:
 class QuarticWithDerivative : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     // f(x) = (x-1)(x-2)(x-3)(x-4)
     theF = (theX - 1.0) * (theX - 2.0) * (theX - 3.0) * (theX - 4.0);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     // f'(x) = 4x^3 - 30x^2 + 70x - 50
     theD = 4.0 * theX * theX * theX - 30.0 * theX * theX + 70.0 * theX - 50.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     Value(theX, theF);
     Derivative(theX, theD);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -227,15 +213,15 @@ TEST(MathFunctionRootsTest, QuadraticTwoRoots)
   EXPECT_EQ(aRootFinder.NbSolutions(), 2) << "Should find exactly 2 roots";
 
   // Check that roots are approximately +/-2
-  Standard_Real aRoot1 = aRootFinder.Value(1);
-  Standard_Real aRoot2 = aRootFinder.Value(2);
+  double aRoot1 = aRootFinder.Value(1);
+  double aRoot2 = aRootFinder.Value(2);
 
   // Sort roots for consistent testing
   if (aRoot1 > aRoot2)
   {
-    Standard_Real aTemp = aRoot1;
-    aRoot1              = aRoot2;
-    aRoot2              = aTemp;
+    double aTemp = aRoot1;
+    aRoot1       = aRoot2;
+    aRoot2       = aTemp;
   }
 
   EXPECT_NEAR(aRoot1, -2.0, 1.0e-8) << "First root should be -2";
@@ -254,8 +240,8 @@ TEST(MathFunctionRootsTest, CubicThreeRoots)
   EXPECT_EQ(aRootFinder.NbSolutions(), 3) << "Should find exactly 3 roots";
 
   // Check roots are approximately 1, 2, 3
-  std::vector<Standard_Real> aRoots;
-  for (Standard_Integer i = 1; i <= aRootFinder.NbSolutions(); ++i)
+  std::vector<double> aRoots;
+  for (int i = 1; i <= aRootFinder.NbSolutions(); ++i)
   {
     aRoots.push_back(aRootFinder.Value(i));
   }
@@ -276,15 +262,15 @@ TEST(MathFunctionRootsTest, SineMultipleRoots)
   EXPECT_TRUE(aRootFinder.IsDone()) << "Should successfully find roots";
   EXPECT_FALSE(aRootFinder.IsAllNull()) << "Sine function should not be all null";
 
-  Standard_Integer aNbRoots = aRootFinder.NbSolutions();
+  int aNbRoots = aRootFinder.NbSolutions();
   EXPECT_GE(aNbRoots, 2) << "Should find at least 2 roots (0, PI, 2PI)";
   EXPECT_LE(aNbRoots, 3) << "Should find at most 3 roots in [0, 2PI]";
 
   // Check that all found roots are actually roots
-  for (Standard_Integer i = 1; i <= aNbRoots; ++i)
+  for (int i = 1; i <= aNbRoots; ++i)
   {
-    Standard_Real aRoot = aRootFinder.Value(i);
-    Standard_Real aFuncValue;
+    double aRoot = aRootFinder.Value(i);
+    double aFuncValue;
     aFunc.Value(aRoot, aFuncValue);
     EXPECT_NEAR(aFuncValue, 0.0, 1.0e-8) << "Root " << i << " should have function value near 0";
   }
@@ -301,7 +287,7 @@ TEST(MathFunctionRootsTest, LinearSingleRoot)
   EXPECT_FALSE(aRootFinder.IsAllNull()) << "Linear function should not be all null";
   EXPECT_EQ(aRootFinder.NbSolutions(), 1) << "Should find exactly 1 root";
 
-  Standard_Real aRoot = aRootFinder.Value(1);
+  double aRoot = aRootFinder.Value(1);
   EXPECT_NEAR(aRoot, 2.0, 1.0e-10) << "Root should be x = 2";
 }
 
@@ -340,8 +326,8 @@ TEST(MathFunctionRootsTest, QuarticFourRoots)
   EXPECT_EQ(aRootFinder.NbSolutions(), 4) << "Should find exactly 4 roots";
 
   // Check roots are approximately 1, 2, 3, 4
-  std::vector<Standard_Real> aRoots;
-  for (Standard_Integer i = 1; i <= aRootFinder.NbSolutions(); ++i)
+  std::vector<double> aRoots;
+  for (int i = 1; i <= aRootFinder.NbSolutions(); ++i)
   {
     aRoots.push_back(aRootFinder.Value(i));
   }
@@ -402,12 +388,12 @@ TEST(MathFunctionRootsTest, StateNumberAccess)
   // Test valid state number access
   if (aRootFinder.NbSolutions() >= 1)
   {
-    Standard_Integer aState1 = aRootFinder.StateNumber(1);
+    int aState1 = aRootFinder.StateNumber(1);
     EXPECT_GE(aState1, 0) << "State number should be non-negative";
   }
   if (aRootFinder.NbSolutions() >= 2)
   {
-    Standard_Integer aState2 = aRootFinder.StateNumber(2);
+    int aState2 = aRootFinder.StateNumber(2);
     EXPECT_GE(aState2, 0) << "State number should be non-negative";
   }
 
@@ -426,7 +412,7 @@ TEST(MathFunctionRootsTest, ShiftedTarget)
   EXPECT_TRUE(aRootFinder.IsDone()) << "Should successfully find shifted roots";
   EXPECT_EQ(aRootFinder.NbSolutions(), 1) << "Should find 1 root for x^2 = 0";
 
-  Standard_Real aRoot = aRootFinder.Value(1);
+  double aRoot = aRootFinder.Value(1);
   EXPECT_NEAR(aRoot, 0.0, 1.0e-8) << "Root should be x = 0";
 }
 
@@ -463,7 +449,7 @@ TEST(MathFunctionRootsTest, NarrowRange)
   EXPECT_TRUE(aRootFinder.IsDone()) << "Should work in narrow range";
   EXPECT_EQ(aRootFinder.NbSolutions(), 1) << "Should find the root in narrow range";
 
-  Standard_Real aRoot = aRootFinder.Value(1);
+  double aRoot = aRootFinder.Value(1);
   EXPECT_NEAR(aRoot, 2.0, 1.0e-8) << "Should find accurate root";
 }
 

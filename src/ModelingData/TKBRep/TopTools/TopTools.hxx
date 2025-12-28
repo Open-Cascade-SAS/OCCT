@@ -75,10 +75,10 @@ public:
   Standard_EXPORT static void Dump(const TopoDS_Shape& Sh, Standard_OStream& S);
 
   //! This is to bypass an extraction bug. It will force
-  //! the inclusion of Standard_Integer.hxx itself
+  //! the inclusion of int.hxx itself
   //! including Standard_OStream.hxx at the correct
   //! position.
-  Standard_EXPORT static void Dummy(const Standard_Integer I);
+  Standard_EXPORT static void Dummy(const int I);
 };
 
 #endif // _TopTools_HeaderFile

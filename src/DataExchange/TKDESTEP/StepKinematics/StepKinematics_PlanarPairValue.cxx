@@ -25,11 +25,11 @@ StepKinematics_PlanarPairValue::StepKinematics_PlanarPairValue() {}
 //=================================================================================================
 
 void StepKinematics_PlanarPairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Standard_Real                         theActualRotation,
-  const Standard_Real                         theActualTranslationX,
-  const Standard_Real                         theActualTranslationY)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const double                                     theActualRotation,
+  const double                                     theActualTranslationX,
+  const double                                     theActualTranslationY)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -42,44 +42,42 @@ void StepKinematics_PlanarPairValue::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_PlanarPairValue::ActualRotation() const
+double StepKinematics_PlanarPairValue::ActualRotation() const
 {
   return myActualRotation;
 }
 
 //=================================================================================================
 
-void StepKinematics_PlanarPairValue::SetActualRotation(const Standard_Real theActualRotation)
+void StepKinematics_PlanarPairValue::SetActualRotation(const double theActualRotation)
 {
   myActualRotation = theActualRotation;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_PlanarPairValue::ActualTranslationX() const
+double StepKinematics_PlanarPairValue::ActualTranslationX() const
 {
   return myActualTranslationX;
 }
 
 //=================================================================================================
 
-void StepKinematics_PlanarPairValue::SetActualTranslationX(
-  const Standard_Real theActualTranslationX)
+void StepKinematics_PlanarPairValue::SetActualTranslationX(const double theActualTranslationX)
 {
   myActualTranslationX = theActualTranslationX;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_PlanarPairValue::ActualTranslationY() const
+double StepKinematics_PlanarPairValue::ActualTranslationY() const
 {
   return myActualTranslationY;
 }
 
 //=================================================================================================
 
-void StepKinematics_PlanarPairValue::SetActualTranslationY(
-  const Standard_Real theActualTranslationY)
+void StepKinematics_PlanarPairValue::SetActualTranslationY(const double theActualTranslationY)
 {
   myActualTranslationY = theActualTranslationY;
 }

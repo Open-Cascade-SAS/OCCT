@@ -46,14 +46,14 @@
 
 namespace
 {
-static constexpr Standard_Real PIPI = M_PI + M_PI;
+static constexpr double PIPI = M_PI + M_PI;
 // Threshold for angle normalization to avoid discontinuity near zero
-static constexpr Standard_Real NEGATIVE_RESOLUTION = -Precision::Computational();
+static constexpr double NEGATIVE_RESOLUTION = -Precision::Computational();
 
 // Normalize angle to [0, 2*PI] range, with special handling
 // for values very close to zero to avoid discontinuity.
 // Preserves values at exactly 2*PI for proper seam handling.
-static inline void normalizeAngle(Standard_Real& theAngle)
+static inline void normalizeAngle(double& theAngle)
 {
   while (theAngle < NEGATIVE_RESOLUTION)
   {
@@ -92,9 +92,7 @@ static inline void normalizeAngle(Standard_Real& theAngle)
 //          needs to be replaced with following:
 //            (theU, theUFirst, thePeriod). theULast parameter is excess.
 //=======================================================================
-Standard_Real ElCLib::InPeriod(const Standard_Real theU,
-                               const Standard_Real theUFirst,
-                               const Standard_Real theULast)
+double ElCLib::InPeriod(const double theU, const double theUFirst, const double theULast)
 {
   if (Precision::IsInfinite(theU) || Precision::IsInfinite(theUFirst)
       || Precision::IsInfinite(theULast))
@@ -102,7 +100,7 @@ Standard_Real ElCLib::InPeriod(const Standard_Real theU,
     return theU;
   }
 
-  const Standard_Real aPeriod = theULast - theUFirst;
+  const double aPeriod = theULast - theUFirst;
 
   if (aPeriod < Epsilon(theULast))
   {
@@ -114,11 +112,11 @@ Standard_Real ElCLib::InPeriod(const Standard_Real theU,
 
 //=================================================================================================
 
-void ElCLib::AdjustPeriodic(const Standard_Real UFirst,
-                            const Standard_Real ULast,
-                            const Standard_Real Preci,
-                            Standard_Real&      U1,
-                            Standard_Real&      U2)
+void ElCLib::AdjustPeriodic(const double UFirst,
+                            const double ULast,
+                            const double Preci,
+                            double&      U1,
+                            double&      U2)
 {
   if (Precision::IsInfinite(UFirst) || Precision::IsInfinite(ULast))
   {
@@ -127,7 +125,7 @@ void ElCLib::AdjustPeriodic(const Standard_Real UFirst,
     return;
   }
 
-  const Standard_Real aPeriod = ULast - UFirst;
+  const double aPeriod = ULast - UFirst;
 
   if (aPeriod < Epsilon(ULast))
   {
@@ -152,7 +150,7 @@ void ElCLib::AdjustPeriodic(const Standard_Real UFirst,
 
 //=================================================================================================
 
-gp_Pnt ElCLib::LineValue(const Standard_Real U, const gp_Ax1& Pos)
+gp_Pnt ElCLib::LineValue(const double U, const gp_Ax1& Pos)
 {
   const gp_XYZ& ZDir = Pos.Direction().XYZ();
   const gp_XYZ& PLoc = Pos.Location().XYZ();
@@ -161,13 +159,13 @@ gp_Pnt ElCLib::LineValue(const Standard_Real U, const gp_Ax1& Pos)
 
 //=================================================================================================
 
-gp_Pnt ElCLib::CircleValue(const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Radius)
+gp_Pnt ElCLib::CircleValue(const double U, const gp_Ax2& Pos, const double Radius)
 {
-  const gp_XYZ&       XDir = Pos.XDirection().XYZ();
-  const gp_XYZ&       YDir = Pos.YDirection().XYZ();
-  const gp_XYZ&       PLoc = Pos.Location().XYZ();
-  const Standard_Real A1   = Radius * cos(U);
-  const Standard_Real A2   = Radius * sin(U);
+  const gp_XYZ& XDir = Pos.XDirection().XYZ();
+  const gp_XYZ& YDir = Pos.YDirection().XYZ();
+  const gp_XYZ& PLoc = Pos.Location().XYZ();
+  const double  A1   = Radius * cos(U);
+  const double  A2   = Radius * sin(U);
   return gp_Pnt(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
                 A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y(),
                 A1 * XDir.Z() + A2 * YDir.Z() + PLoc.Z());
@@ -175,16 +173,16 @@ gp_Pnt ElCLib::CircleValue(const Standard_Real U, const gp_Ax2& Pos, const Stand
 
 //=================================================================================================
 
-gp_Pnt ElCLib::EllipseValue(const Standard_Real U,
-                            const gp_Ax2&       Pos,
-                            const Standard_Real MajorRadius,
-                            const Standard_Real MinorRadius)
+gp_Pnt ElCLib::EllipseValue(const double  U,
+                            const gp_Ax2& Pos,
+                            const double  MajorRadius,
+                            const double  MinorRadius)
 {
-  const gp_XYZ&       XDir = Pos.XDirection().XYZ();
-  const gp_XYZ&       YDir = Pos.YDirection().XYZ();
-  const gp_XYZ&       PLoc = Pos.Location().XYZ();
-  const Standard_Real A1   = MajorRadius * cos(U);
-  const Standard_Real A2   = MinorRadius * sin(U);
+  const gp_XYZ& XDir = Pos.XDirection().XYZ();
+  const gp_XYZ& YDir = Pos.YDirection().XYZ();
+  const gp_XYZ& PLoc = Pos.Location().XYZ();
+  const double  A1   = MajorRadius * cos(U);
+  const double  A2   = MinorRadius * sin(U);
   return gp_Pnt(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
                 A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y(),
                 A1 * XDir.Z() + A2 * YDir.Z() + PLoc.Z());
@@ -192,16 +190,16 @@ gp_Pnt ElCLib::EllipseValue(const Standard_Real U,
 
 //=================================================================================================
 
-gp_Pnt ElCLib::HyperbolaValue(const Standard_Real U,
-                              const gp_Ax2&       Pos,
-                              const Standard_Real MajorRadius,
-                              const Standard_Real MinorRadius)
+gp_Pnt ElCLib::HyperbolaValue(const double  U,
+                              const gp_Ax2& Pos,
+                              const double  MajorRadius,
+                              const double  MinorRadius)
 {
-  const gp_XYZ&       XDir = Pos.XDirection().XYZ();
-  const gp_XYZ&       YDir = Pos.YDirection().XYZ();
-  const gp_XYZ&       PLoc = Pos.Location().XYZ();
-  const Standard_Real A1   = MajorRadius * std::cosh(U);
-  const Standard_Real A2   = MinorRadius * std::sinh(U);
+  const gp_XYZ& XDir = Pos.XDirection().XYZ();
+  const gp_XYZ& YDir = Pos.YDirection().XYZ();
+  const gp_XYZ& PLoc = Pos.Location().XYZ();
+  const double  A1   = MajorRadius * std::cosh(U);
+  const double  A2   = MinorRadius * std::sinh(U);
   return gp_Pnt(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
                 A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y(),
                 A1 * XDir.Z() + A2 * YDir.Z() + PLoc.Z());
@@ -209,7 +207,7 @@ gp_Pnt ElCLib::HyperbolaValue(const Standard_Real U,
 
 //=================================================================================================
 
-gp_Pnt ElCLib::ParabolaValue(const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Focal)
+gp_Pnt ElCLib::ParabolaValue(const double U, const gp_Ax2& Pos, const double Focal)
 {
   if (Focal == 0.0)
   {
@@ -217,10 +215,10 @@ gp_Pnt ElCLib::ParabolaValue(const Standard_Real U, const gp_Ax2& Pos, const Sta
     const gp_XYZ& PLoc = Pos.Location().XYZ();
     return gp_Pnt(U * XDir.X() + PLoc.X(), U * XDir.Y() + PLoc.Y(), U * XDir.Z() + PLoc.Z());
   }
-  const gp_XYZ&       XDir = Pos.XDirection().XYZ();
-  const gp_XYZ&       YDir = Pos.YDirection().XYZ();
-  const gp_XYZ&       PLoc = Pos.Location().XYZ();
-  const Standard_Real A1   = U * U / (4.0 * Focal);
+  const gp_XYZ& XDir = Pos.XDirection().XYZ();
+  const gp_XYZ& YDir = Pos.YDirection().XYZ();
+  const gp_XYZ& PLoc = Pos.Location().XYZ();
+  const double  A1   = U * U / (4.0 * Focal);
   return gp_Pnt(A1 * XDir.X() + U * YDir.X() + PLoc.X(),
                 A1 * XDir.Y() + U * YDir.Y() + PLoc.Y(),
                 A1 * XDir.Z() + U * YDir.Z() + PLoc.Z());
@@ -228,7 +226,7 @@ gp_Pnt ElCLib::ParabolaValue(const Standard_Real U, const gp_Ax2& Pos, const Sta
 
 //=================================================================================================
 
-void ElCLib::LineD1(const Standard_Real U, const gp_Ax1& Pos, gp_Pnt& P, gp_Vec& V1)
+void ElCLib::LineD1(const double U, const gp_Ax1& Pos, gp_Pnt& P, gp_Vec& V1)
 {
   gp_XYZ Coord = Pos.Direction().XYZ();
   V1.SetXYZ(Coord);
@@ -238,17 +236,13 @@ void ElCLib::LineD1(const Standard_Real U, const gp_Ax1& Pos, gp_Pnt& P, gp_Vec&
 
 //=================================================================================================
 
-void ElCLib::CircleD1(const Standard_Real U,
-                      const gp_Ax2&       Pos,
-                      const Standard_Real Radius,
-                      gp_Pnt&             P,
-                      gp_Vec&             V1)
+void ElCLib::CircleD1(const double U, const gp_Ax2& Pos, const double Radius, gp_Pnt& P, gp_Vec& V1)
 {
-  const Standard_Real Xc = Radius * std::cos(U);
-  const Standard_Real Yc = Radius * std::sin(U);
-  const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
-  const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
-  gp_XYZ              Coord0;
+  const double  Xc = Radius * std::cos(U);
+  const double  Yc = Radius * std::sin(U);
+  const gp_XYZ& Coord1(Pos.XDirection().XYZ());
+  const gp_XYZ& Coord2(Pos.YDirection().XYZ());
+  gp_XYZ        Coord0;
   // Point courant :
   Coord0.SetLinearForm(Xc, Coord1, Yc, Coord2, Pos.Location().XYZ());
   P.SetXYZ(Coord0);
@@ -259,18 +253,18 @@ void ElCLib::CircleD1(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::EllipseD1(const Standard_Real U,
-                       const gp_Ax2&       Pos,
-                       const Standard_Real MajorRadius,
-                       const Standard_Real MinorRadius,
-                       gp_Pnt&             P,
-                       gp_Vec&             V1)
+void ElCLib::EllipseD1(const double  U,
+                       const gp_Ax2& Pos,
+                       const double  MajorRadius,
+                       const double  MinorRadius,
+                       gp_Pnt&       P,
+                       gp_Vec&       V1)
 {
-  const Standard_Real Xc = std::cos(U);
-  const Standard_Real Yc = std::sin(U);
-  const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
-  const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
-  gp_XYZ              Coord0;
+  const double  Xc = std::cos(U);
+  const double  Yc = std::sin(U);
+  const gp_XYZ& Coord1(Pos.XDirection().XYZ());
+  const gp_XYZ& Coord2(Pos.YDirection().XYZ());
+  gp_XYZ        Coord0;
   // Point courant :
   Coord0.SetLinearForm(Xc * MajorRadius, Coord1, Yc * MinorRadius, Coord2, Pos.Location().XYZ());
   P.SetXYZ(Coord0);
@@ -281,18 +275,18 @@ void ElCLib::EllipseD1(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::HyperbolaD1(const Standard_Real U,
-                         const gp_Ax2&       Pos,
-                         const Standard_Real MajorRadius,
-                         const Standard_Real MinorRadius,
-                         gp_Pnt&             P,
-                         gp_Vec&             V1)
+void ElCLib::HyperbolaD1(const double  U,
+                         const gp_Ax2& Pos,
+                         const double  MajorRadius,
+                         const double  MinorRadius,
+                         gp_Pnt&       P,
+                         gp_Vec&       V1)
 {
-  const Standard_Real Xc = std::cosh(U);
-  const Standard_Real Yc = std::sinh(U);
-  const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
-  const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
-  gp_XYZ              Coord0;
+  const double  Xc = std::cosh(U);
+  const double  Yc = std::sinh(U);
+  const gp_XYZ& Coord1(Pos.XDirection().XYZ());
+  const gp_XYZ& Coord2(Pos.YDirection().XYZ());
+  gp_XYZ        Coord0;
   // Point courant :
   Coord0.SetLinearForm(Xc * MajorRadius, Coord1, Yc * MinorRadius, Coord2, Pos.Location().XYZ());
   P.SetXYZ(Coord0);
@@ -303,11 +297,11 @@ void ElCLib::HyperbolaD1(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::ParabolaD1(const Standard_Real U,
-                        const gp_Ax2&       Pos,
-                        const Standard_Real Focal,
-                        gp_Pnt&             P,
-                        gp_Vec&             V1)
+void ElCLib::ParabolaD1(const double  U,
+                        const gp_Ax2& Pos,
+                        const double  Focal,
+                        gp_Pnt&       P,
+                        gp_Vec&       V1)
 {
   gp_XYZ Coord1(Pos.XDirection().XYZ());
   if (Focal == 0.0)
@@ -330,18 +324,18 @@ void ElCLib::ParabolaD1(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::CircleD2(const Standard_Real U,
-                      const gp_Ax2&       Pos,
-                      const Standard_Real Radius,
-                      gp_Pnt&             P,
-                      gp_Vec&             V1,
-                      gp_Vec&             V2)
+void ElCLib::CircleD2(const double  U,
+                      const gp_Ax2& Pos,
+                      const double  Radius,
+                      gp_Pnt&       P,
+                      gp_Vec&       V1,
+                      gp_Vec&       V2)
 {
-  const Standard_Real Xc = Radius * cos(U);
-  const Standard_Real Yc = Radius * sin(U);
-  const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
-  const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
-  gp_XYZ              Coord0;
+  const double  Xc = Radius * cos(U);
+  const double  Yc = Radius * sin(U);
+  const gp_XYZ& Coord1(Pos.XDirection().XYZ());
+  const gp_XYZ& Coord2(Pos.YDirection().XYZ());
+  gp_XYZ        Coord0;
   // Point courant :
   Coord0.SetLinearForm(Xc, Coord1, Yc, Coord2, Pos.Location().XYZ());
   P.SetXYZ(Coord0);
@@ -355,19 +349,19 @@ void ElCLib::CircleD2(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::EllipseD2(const Standard_Real U,
-                       const gp_Ax2&       Pos,
-                       const Standard_Real MajorRadius,
-                       const Standard_Real MinorRadius,
-                       gp_Pnt&             P,
-                       gp_Vec&             V1,
-                       gp_Vec&             V2)
+void ElCLib::EllipseD2(const double  U,
+                       const gp_Ax2& Pos,
+                       const double  MajorRadius,
+                       const double  MinorRadius,
+                       gp_Pnt&       P,
+                       gp_Vec&       V1,
+                       gp_Vec&       V2)
 {
-  const Standard_Real Xc = cos(U);
-  const Standard_Real Yc = sin(U);
-  const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
-  const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
-  gp_XYZ              Coord0;
+  const double  Xc = cos(U);
+  const double  Yc = sin(U);
+  const gp_XYZ& Coord1(Pos.XDirection().XYZ());
+  const gp_XYZ& Coord2(Pos.YDirection().XYZ());
+  gp_XYZ        Coord0;
   // Point courant :
   Coord0.SetLinearForm(Xc * MajorRadius, Coord1, Yc * MinorRadius, Coord2, Pos.Location().XYZ());
   P.SetXYZ(Coord0);
@@ -381,19 +375,19 @@ void ElCLib::EllipseD2(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::HyperbolaD2(const Standard_Real U,
-                         const gp_Ax2&       Pos,
-                         const Standard_Real MajorRadius,
-                         const Standard_Real MinorRadius,
-                         gp_Pnt&             P,
-                         gp_Vec&             V1,
-                         gp_Vec&             V2)
+void ElCLib::HyperbolaD2(const double  U,
+                         const gp_Ax2& Pos,
+                         const double  MajorRadius,
+                         const double  MinorRadius,
+                         gp_Pnt&       P,
+                         gp_Vec&       V1,
+                         gp_Vec&       V2)
 {
-  const Standard_Real Xc = std::cosh(U);
-  const Standard_Real Yc = std::sinh(U);
-  const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
-  const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
-  gp_XYZ              Coord0;
+  const double  Xc = std::cosh(U);
+  const double  Yc = std::sinh(U);
+  const gp_XYZ& Coord1(Pos.XDirection().XYZ());
+  const gp_XYZ& Coord2(Pos.YDirection().XYZ());
+  gp_XYZ        Coord0;
 
   // Point courant et D2:
   Coord0.SetLinearForm(Xc * MajorRadius, Coord1, Yc * MinorRadius, Coord2);
@@ -407,12 +401,12 @@ void ElCLib::HyperbolaD2(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::ParabolaD2(const Standard_Real U,
-                        const gp_Ax2&       Pos,
-                        const Standard_Real Focal,
-                        gp_Pnt&             P,
-                        gp_Vec&             V1,
-                        gp_Vec&             V2)
+void ElCLib::ParabolaD2(const double  U,
+                        const gp_Ax2& Pos,
+                        const double  Focal,
+                        gp_Pnt&       P,
+                        gp_Vec&       V1,
+                        gp_Vec&       V2)
 {
   gp_XYZ Coord1(Pos.XDirection().XYZ());
   if (Focal == 0.0)
@@ -438,19 +432,19 @@ void ElCLib::ParabolaD2(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::CircleD3(const Standard_Real U,
-                      const gp_Ax2&       Pos,
-                      const Standard_Real Radius,
-                      gp_Pnt&             P,
-                      gp_Vec&             V1,
-                      gp_Vec&             V2,
-                      gp_Vec&             V3)
+void ElCLib::CircleD3(const double  U,
+                      const gp_Ax2& Pos,
+                      const double  Radius,
+                      gp_Pnt&       P,
+                      gp_Vec&       V1,
+                      gp_Vec&       V2,
+                      gp_Vec&       V3)
 {
-  const Standard_Real Xc = Radius * cos(U);
-  const Standard_Real Yc = Radius * sin(U);
-  const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
-  const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
-  gp_XYZ              Coord0;
+  const double  Xc = Radius * cos(U);
+  const double  Yc = Radius * sin(U);
+  const gp_XYZ& Coord1(Pos.XDirection().XYZ());
+  const gp_XYZ& Coord2(Pos.YDirection().XYZ());
+  gp_XYZ        Coord0;
   // Point Courant :
   Coord0.SetLinearForm(Xc, Coord1, Yc, Coord2, Pos.Location().XYZ());
   P.SetXYZ(Coord0);
@@ -467,20 +461,20 @@ void ElCLib::CircleD3(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::EllipseD3(const Standard_Real U,
-                       const gp_Ax2&       Pos,
-                       const Standard_Real MajorRadius,
-                       const Standard_Real MinorRadius,
-                       gp_Pnt&             P,
-                       gp_Vec&             V1,
-                       gp_Vec&             V2,
-                       gp_Vec&             V3)
+void ElCLib::EllipseD3(const double  U,
+                       const gp_Ax2& Pos,
+                       const double  MajorRadius,
+                       const double  MinorRadius,
+                       gp_Pnt&       P,
+                       gp_Vec&       V1,
+                       gp_Vec&       V2,
+                       gp_Vec&       V3)
 {
-  const Standard_Real Xc = cos(U);
-  const Standard_Real Yc = sin(U);
-  const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
-  const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
-  gp_XYZ              Coord0;
+  const double  Xc = cos(U);
+  const double  Yc = sin(U);
+  const gp_XYZ& Coord1(Pos.XDirection().XYZ());
+  const gp_XYZ& Coord2(Pos.YDirection().XYZ());
+  gp_XYZ        Coord0;
   // Point Courant :
   Coord0.SetLinearForm(Xc * MajorRadius, Coord1, Yc * MinorRadius, Coord2, Pos.Location().XYZ());
   P.SetXYZ(Coord0);
@@ -497,20 +491,20 @@ void ElCLib::EllipseD3(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::HyperbolaD3(const Standard_Real U,
-                         const gp_Ax2&       Pos,
-                         const Standard_Real MajorRadius,
-                         const Standard_Real MinorRadius,
-                         gp_Pnt&             P,
-                         gp_Vec&             V1,
-                         gp_Vec&             V2,
-                         gp_Vec&             V3)
+void ElCLib::HyperbolaD3(const double  U,
+                         const gp_Ax2& Pos,
+                         const double  MajorRadius,
+                         const double  MinorRadius,
+                         gp_Pnt&       P,
+                         gp_Vec&       V1,
+                         gp_Vec&       V2,
+                         gp_Vec&       V3)
 {
-  const Standard_Real Xc = std::cosh(U);
-  const Standard_Real Yc = std::sinh(U);
-  const gp_XYZ&       Coord1(Pos.XDirection().XYZ());
-  const gp_XYZ&       Coord2(Pos.YDirection().XYZ());
-  gp_XYZ              Coord0;
+  const double  Xc = std::cosh(U);
+  const double  Yc = std::sinh(U);
+  const gp_XYZ& Coord1(Pos.XDirection().XYZ());
+  const gp_XYZ& Coord2(Pos.YDirection().XYZ());
+  gp_XYZ        Coord0;
   // Point courant et D2 :
   Coord0.SetLinearForm(Xc * MajorRadius, Coord1, Yc * MinorRadius, Coord2);
   V2.SetXYZ(Coord0);
@@ -524,7 +518,7 @@ void ElCLib::HyperbolaD3(const Standard_Real U,
 
 //=================================================================================================
 
-gp_Pnt2d ElCLib::LineValue(const Standard_Real U, const gp_Ax2d& Pos)
+gp_Pnt2d ElCLib::LineValue(const double U, const gp_Ax2d& Pos)
 {
   const gp_XY& ZDir = Pos.Direction().XY();
   const gp_XY& PLoc = Pos.Location().XY();
@@ -533,54 +527,52 @@ gp_Pnt2d ElCLib::LineValue(const Standard_Real U, const gp_Ax2d& Pos)
 
 //=================================================================================================
 
-gp_Pnt2d ElCLib::CircleValue(const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Radius)
+gp_Pnt2d ElCLib::CircleValue(const double U, const gp_Ax22d& Pos, const double Radius)
 {
-  const gp_XY&        XDir = Pos.XDirection().XY();
-  const gp_XY&        YDir = Pos.YDirection().XY();
-  const gp_XY&        PLoc = Pos.Location().XY();
-  const Standard_Real A1   = Radius * cos(U);
-  const Standard_Real A2   = Radius * sin(U);
+  const gp_XY& XDir = Pos.XDirection().XY();
+  const gp_XY& YDir = Pos.YDirection().XY();
+  const gp_XY& PLoc = Pos.Location().XY();
+  const double A1   = Radius * cos(U);
+  const double A2   = Radius * sin(U);
   return gp_Pnt2d(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
                   A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y());
 }
 
 //=================================================================================================
 
-gp_Pnt2d ElCLib::EllipseValue(const Standard_Real U,
-                              const gp_Ax22d&     Pos,
-                              const Standard_Real MajorRadius,
-                              const Standard_Real MinorRadius)
+gp_Pnt2d ElCLib::EllipseValue(const double    U,
+                              const gp_Ax22d& Pos,
+                              const double    MajorRadius,
+                              const double    MinorRadius)
 {
-  const gp_XY&        XDir = Pos.XDirection().XY();
-  const gp_XY&        YDir = Pos.YDirection().XY();
-  const gp_XY&        PLoc = Pos.Location().XY();
-  const Standard_Real A1   = MajorRadius * cos(U);
-  const Standard_Real A2   = MinorRadius * sin(U);
+  const gp_XY& XDir = Pos.XDirection().XY();
+  const gp_XY& YDir = Pos.YDirection().XY();
+  const gp_XY& PLoc = Pos.Location().XY();
+  const double A1   = MajorRadius * cos(U);
+  const double A2   = MinorRadius * sin(U);
   return gp_Pnt2d(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
                   A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y());
 }
 
 //=================================================================================================
 
-gp_Pnt2d ElCLib::HyperbolaValue(const Standard_Real U,
-                                const gp_Ax22d&     Pos,
-                                const Standard_Real MajorRadius,
-                                const Standard_Real MinorRadius)
+gp_Pnt2d ElCLib::HyperbolaValue(const double    U,
+                                const gp_Ax22d& Pos,
+                                const double    MajorRadius,
+                                const double    MinorRadius)
 {
-  const gp_XY&        XDir = Pos.XDirection().XY();
-  const gp_XY&        YDir = Pos.YDirection().XY();
-  const gp_XY&        PLoc = Pos.Location().XY();
-  const Standard_Real A1   = MajorRadius * std::cosh(U);
-  const Standard_Real A2   = MinorRadius * std::sinh(U);
+  const gp_XY& XDir = Pos.XDirection().XY();
+  const gp_XY& YDir = Pos.YDirection().XY();
+  const gp_XY& PLoc = Pos.Location().XY();
+  const double A1   = MajorRadius * std::cosh(U);
+  const double A2   = MinorRadius * std::sinh(U);
   return gp_Pnt2d(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
                   A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y());
 }
 
 //=================================================================================================
 
-gp_Pnt2d ElCLib::ParabolaValue(const Standard_Real U,
-                               const gp_Ax22d&     Pos,
-                               const Standard_Real Focal)
+gp_Pnt2d ElCLib::ParabolaValue(const double U, const gp_Ax22d& Pos, const double Focal)
 {
   if (Focal == 0.0)
   {
@@ -588,16 +580,16 @@ gp_Pnt2d ElCLib::ParabolaValue(const Standard_Real U,
     const gp_XY& PLoc = Pos.Location().XY();
     return gp_Pnt2d(U * XDir.X() + PLoc.X(), U * XDir.Y() + PLoc.Y());
   }
-  const gp_XY&        XDir = Pos.XDirection().XY();
-  const gp_XY&        YDir = Pos.YDirection().XY();
-  const gp_XY&        PLoc = Pos.Location().XY();
-  const Standard_Real A1   = U * U / (4.0 * Focal);
+  const gp_XY& XDir = Pos.XDirection().XY();
+  const gp_XY& YDir = Pos.YDirection().XY();
+  const gp_XY& PLoc = Pos.Location().XY();
+  const double A1   = U * U / (4.0 * Focal);
   return gp_Pnt2d(A1 * XDir.X() + U * YDir.X() + PLoc.X(), A1 * XDir.Y() + U * YDir.Y() + PLoc.Y());
 }
 
 //=================================================================================================
 
-void ElCLib::LineD1(const Standard_Real U, const gp_Ax2d& Pos, gp_Pnt2d& P, gp_Vec2d& V1)
+void ElCLib::LineD1(const double U, const gp_Ax2d& Pos, gp_Pnt2d& P, gp_Vec2d& V1)
 {
   gp_XY Coord = Pos.Direction().XY();
   V1.SetXY(Coord);
@@ -607,17 +599,17 @@ void ElCLib::LineD1(const Standard_Real U, const gp_Ax2d& Pos, gp_Pnt2d& P, gp_V
 
 //=================================================================================================
 
-void ElCLib::CircleD1(const Standard_Real U,
-                      const gp_Ax22d&     Pos,
-                      const Standard_Real Radius,
-                      gp_Pnt2d&           P,
-                      gp_Vec2d&           V1)
+void ElCLib::CircleD1(const double    U,
+                      const gp_Ax22d& Pos,
+                      const double    Radius,
+                      gp_Pnt2d&       P,
+                      gp_Vec2d&       V1)
 {
-  const Standard_Real Xc = Radius * cos(U);
-  const Standard_Real Yc = Radius * sin(U);
-  const gp_XY&        Xdir(Pos.XDirection().XY());
-  const gp_XY&        Ydir(Pos.YDirection().XY());
-  gp_XY               Vxy;
+  const double Xc = Radius * cos(U);
+  const double Yc = Radius * sin(U);
+  const gp_XY& Xdir(Pos.XDirection().XY());
+  const gp_XY& Ydir(Pos.YDirection().XY());
+  gp_XY        Vxy;
   // Point courant :
   Vxy.SetLinearForm(Xc, Xdir, Yc, Ydir, Pos.Location().XY());
   P.SetXY(Vxy);
@@ -628,18 +620,18 @@ void ElCLib::CircleD1(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::EllipseD1(const Standard_Real U,
-                       const gp_Ax22d&     Pos,
-                       const Standard_Real MajorRadius,
-                       const Standard_Real MinorRadius,
-                       gp_Pnt2d&           P,
-                       gp_Vec2d&           V1)
+void ElCLib::EllipseD1(const double    U,
+                       const gp_Ax22d& Pos,
+                       const double    MajorRadius,
+                       const double    MinorRadius,
+                       gp_Pnt2d&       P,
+                       gp_Vec2d&       V1)
 {
-  const Standard_Real Xc = cos(U);
-  const Standard_Real Yc = sin(U);
-  const gp_XY&        Xdir((Pos.XDirection()).XY());
-  const gp_XY&        Ydir((Pos.YDirection()).XY());
-  gp_XY               Vxy;
+  const double Xc = cos(U);
+  const double Yc = sin(U);
+  const gp_XY& Xdir((Pos.XDirection()).XY());
+  const gp_XY& Ydir((Pos.YDirection()).XY());
+  gp_XY        Vxy;
   // Point courant :
   Vxy.SetLinearForm(Xc * MajorRadius, Xdir, Yc * MinorRadius, Ydir, Pos.Location().XY());
   P.SetXY(Vxy);
@@ -651,18 +643,18 @@ void ElCLib::EllipseD1(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::HyperbolaD1(const Standard_Real U,
-                         const gp_Ax22d&     Pos,
-                         const Standard_Real MajorRadius,
-                         const Standard_Real MinorRadius,
-                         gp_Pnt2d&           P,
-                         gp_Vec2d&           V1)
+void ElCLib::HyperbolaD1(const double    U,
+                         const gp_Ax22d& Pos,
+                         const double    MajorRadius,
+                         const double    MinorRadius,
+                         gp_Pnt2d&       P,
+                         gp_Vec2d&       V1)
 {
-  const Standard_Real Xc = std::cosh(U);
-  const Standard_Real Yc = std::sinh(U);
-  const gp_XY&        Xdir((Pos.XDirection()).XY());
-  const gp_XY&        Ydir((Pos.YDirection()).XY());
-  gp_XY               Vxy;
+  const double Xc = std::cosh(U);
+  const double Yc = std::sinh(U);
+  const gp_XY& Xdir((Pos.XDirection()).XY());
+  const gp_XY& Ydir((Pos.YDirection()).XY());
+  gp_XY        Vxy;
   // Point courant :
   Vxy.SetLinearForm(Xc * MajorRadius, Xdir, Yc * MinorRadius, Ydir, Pos.Location().XY());
   P.SetXY(Vxy);
@@ -674,11 +666,11 @@ void ElCLib::HyperbolaD1(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::ParabolaD1(const Standard_Real U,
-                        const gp_Ax22d&     Pos,
-                        const Standard_Real Focal,
-                        gp_Pnt2d&           P,
-                        gp_Vec2d&           V1)
+void ElCLib::ParabolaD1(const double    U,
+                        const gp_Ax22d& Pos,
+                        const double    Focal,
+                        gp_Pnt2d&       P,
+                        gp_Vec2d&       V1)
 {
   gp_XY        Vxy;
   const gp_XY& Xdir(Pos.XDirection().XY());
@@ -699,18 +691,18 @@ void ElCLib::ParabolaD1(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::CircleD2(const Standard_Real U,
-                      const gp_Ax22d&     Pos,
-                      const Standard_Real Radius,
-                      gp_Pnt2d&           P,
-                      gp_Vec2d&           V1,
-                      gp_Vec2d&           V2)
+void ElCLib::CircleD2(const double    U,
+                      const gp_Ax22d& Pos,
+                      const double    Radius,
+                      gp_Pnt2d&       P,
+                      gp_Vec2d&       V1,
+                      gp_Vec2d&       V2)
 {
-  const gp_XY&        Xdir(Pos.XDirection().XY());
-  const gp_XY&        Ydir(Pos.YDirection().XY());
-  const Standard_Real Xc = Radius * cos(U);
-  const Standard_Real Yc = Radius * sin(U);
-  gp_XY               Vxy;
+  const gp_XY& Xdir(Pos.XDirection().XY());
+  const gp_XY& Ydir(Pos.YDirection().XY());
+  const double Xc = Radius * cos(U);
+  const double Yc = Radius * sin(U);
+  gp_XY        Vxy;
   // V2 :
   Vxy.SetLinearForm(Xc, Xdir, Yc, Ydir);
   V2.SetXY(Vxy);
@@ -725,19 +717,19 @@ void ElCLib::CircleD2(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::EllipseD2(const Standard_Real U,
-                       const gp_Ax22d&     Pos,
-                       const Standard_Real MajorRadius,
-                       const Standard_Real MinorRadius,
-                       gp_Pnt2d&           P,
-                       gp_Vec2d&           V1,
-                       gp_Vec2d&           V2)
+void ElCLib::EllipseD2(const double    U,
+                       const gp_Ax22d& Pos,
+                       const double    MajorRadius,
+                       const double    MinorRadius,
+                       gp_Pnt2d&       P,
+                       gp_Vec2d&       V1,
+                       gp_Vec2d&       V2)
 {
-  const gp_XY&        Xdir(Pos.XDirection().XY());
-  const gp_XY&        Ydir(Pos.YDirection().XY());
-  const Standard_Real Xc = cos(U);
-  const Standard_Real Yc = sin(U);
-  gp_XY               Vxy;
+  const gp_XY& Xdir(Pos.XDirection().XY());
+  const gp_XY& Ydir(Pos.YDirection().XY());
+  const double Xc = cos(U);
+  const double Yc = sin(U);
+  gp_XY        Vxy;
 
   // V2 :
   Vxy.SetLinearForm(Xc * MajorRadius, Xdir, Yc * MinorRadius, Ydir);
@@ -755,19 +747,19 @@ void ElCLib::EllipseD2(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::HyperbolaD2(const Standard_Real U,
-                         const gp_Ax22d&     Pos,
-                         const Standard_Real MajorRadius,
-                         const Standard_Real MinorRadius,
-                         gp_Pnt2d&           P,
-                         gp_Vec2d&           V1,
-                         gp_Vec2d&           V2)
+void ElCLib::HyperbolaD2(const double    U,
+                         const gp_Ax22d& Pos,
+                         const double    MajorRadius,
+                         const double    MinorRadius,
+                         gp_Pnt2d&       P,
+                         gp_Vec2d&       V1,
+                         gp_Vec2d&       V2)
 {
-  const gp_XY&        Xdir(Pos.XDirection().XY());
-  const gp_XY&        Ydir(Pos.YDirection().XY());
-  const Standard_Real Xc = std::cosh(U);
-  const Standard_Real Yc = std::sinh(U);
-  gp_XY               Vxy;
+  const gp_XY& Xdir(Pos.XDirection().XY());
+  const gp_XY& Ydir(Pos.YDirection().XY());
+  const double Xc = std::cosh(U);
+  const double Yc = std::sinh(U);
+  gp_XY        Vxy;
 
   // V2 :
   Vxy.SetLinearForm(Xc * MajorRadius, Xdir, Yc * MinorRadius, Ydir);
@@ -784,12 +776,12 @@ void ElCLib::HyperbolaD2(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::ParabolaD2(const Standard_Real U,
-                        const gp_Ax22d&     Pos,
-                        const Standard_Real Focal,
-                        gp_Pnt2d&           P,
-                        gp_Vec2d&           V1,
-                        gp_Vec2d&           V2)
+void ElCLib::ParabolaD2(const double    U,
+                        const gp_Ax22d& Pos,
+                        const double    Focal,
+                        gp_Pnt2d&       P,
+                        gp_Vec2d&       V1,
+                        gp_Vec2d&       V2)
 {
   gp_XY        Vxy;
   const gp_XY& Xdir(Pos.XDirection().XY());
@@ -814,19 +806,19 @@ void ElCLib::ParabolaD2(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::CircleD3(const Standard_Real U,
-                      const gp_Ax22d&     Pos,
-                      const Standard_Real Radius,
-                      gp_Pnt2d&           P,
-                      gp_Vec2d&           V1,
-                      gp_Vec2d&           V2,
-                      gp_Vec2d&           V3)
+void ElCLib::CircleD3(const double    U,
+                      const gp_Ax22d& Pos,
+                      const double    Radius,
+                      gp_Pnt2d&       P,
+                      gp_Vec2d&       V1,
+                      gp_Vec2d&       V2,
+                      gp_Vec2d&       V3)
 {
-  gp_XY               Vxy;
-  const gp_XY&        Xdir(Pos.XDirection().XY());
-  const gp_XY&        Ydir(Pos.YDirection().XY());
-  const Standard_Real Xc = Radius * cos(U);
-  const Standard_Real Yc = Radius * sin(U);
+  gp_XY        Vxy;
+  const gp_XY& Xdir(Pos.XDirection().XY());
+  const gp_XY& Ydir(Pos.YDirection().XY());
+  const double Xc = Radius * cos(U);
+  const double Yc = Radius * sin(U);
 
   // V2 :
   Vxy.SetLinearForm(Xc, Xdir, Yc, Ydir);
@@ -848,20 +840,20 @@ void ElCLib::CircleD3(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::EllipseD3(const Standard_Real U,
-                       const gp_Ax22d&     Pos,
-                       const Standard_Real MajorRadius,
-                       const Standard_Real MinorRadius,
-                       gp_Pnt2d&           P,
-                       gp_Vec2d&           V1,
-                       gp_Vec2d&           V2,
-                       gp_Vec2d&           V3)
+void ElCLib::EllipseD3(const double    U,
+                       const gp_Ax22d& Pos,
+                       const double    MajorRadius,
+                       const double    MinorRadius,
+                       gp_Pnt2d&       P,
+                       gp_Vec2d&       V1,
+                       gp_Vec2d&       V2,
+                       gp_Vec2d&       V3)
 {
-  const gp_XY&        Xdir(Pos.XDirection().XY());
-  const gp_XY&        Ydir(Pos.YDirection().XY());
-  const Standard_Real Xc = cos(U);
-  const Standard_Real Yc = sin(U);
-  gp_XY               Vxy;
+  const gp_XY& Xdir(Pos.XDirection().XY());
+  const gp_XY& Ydir(Pos.YDirection().XY());
+  const double Xc = cos(U);
+  const double Yc = sin(U);
+  gp_XY        Vxy;
 
   // V2 :
   Vxy.SetLinearForm(Xc * MajorRadius, Xdir, Yc * MinorRadius, Ydir);
@@ -883,20 +875,20 @@ void ElCLib::EllipseD3(const Standard_Real U,
 
 //=================================================================================================
 
-void ElCLib::HyperbolaD3(const Standard_Real U,
-                         const gp_Ax22d&     Pos,
-                         const Standard_Real MajorRadius,
-                         const Standard_Real MinorRadius,
-                         gp_Pnt2d&           P,
-                         gp_Vec2d&           V1,
-                         gp_Vec2d&           V2,
-                         gp_Vec2d&           V3)
+void ElCLib::HyperbolaD3(const double    U,
+                         const gp_Ax22d& Pos,
+                         const double    MajorRadius,
+                         const double    MinorRadius,
+                         gp_Pnt2d&       P,
+                         gp_Vec2d&       V1,
+                         gp_Vec2d&       V2,
+                         gp_Vec2d&       V3)
 {
-  const gp_XY&        Xdir(Pos.XDirection().XY());
-  const gp_XY&        Ydir(Pos.YDirection().XY());
-  const Standard_Real Xc = std::cosh(U);
-  const Standard_Real Yc = std::sinh(U);
-  gp_XY               Vxy;
+  const gp_XY& Xdir(Pos.XDirection().XY());
+  const gp_XY& Ydir(Pos.YDirection().XY());
+  const double Xc = std::cosh(U);
+  const double Yc = std::sinh(U);
+  gp_XY        Vxy;
 
   // V2 :
   Vxy.SetLinearForm(Xc * MajorRadius, Xdir, Yc * MinorRadius, Ydir);
@@ -916,7 +908,7 @@ void ElCLib::HyperbolaD3(const Standard_Real U,
 
 //=================================================================================================
 
-gp_Vec ElCLib::LineDN(const Standard_Real, const gp_Ax1& Pos, const Standard_Integer N)
+gp_Vec ElCLib::LineDN(const double, const gp_Ax1& Pos, const int N)
 {
   if (N == 1)
   {
@@ -927,12 +919,9 @@ gp_Vec ElCLib::LineDN(const Standard_Real, const gp_Ax1& Pos, const Standard_Int
 
 //=================================================================================================
 
-gp_Vec ElCLib::CircleDN(const Standard_Real    U,
-                        const gp_Ax2&          Pos,
-                        const Standard_Real    Radius,
-                        const Standard_Integer N)
+gp_Vec ElCLib::CircleDN(const double U, const gp_Ax2& Pos, const double Radius, const int N)
 {
-  Standard_Real Xc = 0, Yc = 0;
+  double Xc = 0, Yc = 0;
   if (N == 1)
   {
     Xc = Radius * -sin(U);
@@ -965,13 +954,13 @@ gp_Vec ElCLib::CircleDN(const Standard_Real    U,
 
 //=================================================================================================
 
-gp_Vec ElCLib::EllipseDN(const Standard_Real    U,
-                         const gp_Ax2&          Pos,
-                         const Standard_Real    MajorRadius,
-                         const Standard_Real    MinorRadius,
-                         const Standard_Integer N)
+gp_Vec ElCLib::EllipseDN(const double  U,
+                         const gp_Ax2& Pos,
+                         const double  MajorRadius,
+                         const double  MinorRadius,
+                         const int     N)
 {
-  Standard_Real Xc = 0, Yc = 0;
+  double Xc = 0, Yc = 0;
   if (N == 1)
   {
     Xc = MajorRadius * -sin(U);
@@ -1004,13 +993,13 @@ gp_Vec ElCLib::EllipseDN(const Standard_Real    U,
 
 //=================================================================================================
 
-gp_Vec ElCLib::HyperbolaDN(const Standard_Real    U,
-                           const gp_Ax2&          Pos,
-                           const Standard_Real    MajorRadius,
-                           const Standard_Real    MinorRadius,
-                           const Standard_Integer N)
+gp_Vec ElCLib::HyperbolaDN(const double  U,
+                           const gp_Ax2& Pos,
+                           const double  MajorRadius,
+                           const double  MinorRadius,
+                           const int     N)
 {
-  Standard_Real Xc = 0, Yc = 0;
+  double Xc = 0, Yc = 0;
   if (IsOdd(N))
   {
     Xc = MajorRadius * std::sinh(U);
@@ -1028,10 +1017,7 @@ gp_Vec ElCLib::HyperbolaDN(const Standard_Real    U,
 
 //=================================================================================================
 
-gp_Vec ElCLib::ParabolaDN(const Standard_Real    U,
-                          const gp_Ax2&          Pos,
-                          const Standard_Real    Focal,
-                          const Standard_Integer N)
+gp_Vec ElCLib::ParabolaDN(const double U, const gp_Ax2& Pos, const double Focal, const int N)
 {
   if (N > 2 || N <= 0)
   {
@@ -1060,7 +1046,7 @@ gp_Vec ElCLib::ParabolaDN(const Standard_Real    U,
 
 //=================================================================================================
 
-gp_Vec2d ElCLib::LineDN(const Standard_Real, const gp_Ax2d& Pos, const Standard_Integer N)
+gp_Vec2d ElCLib::LineDN(const double, const gp_Ax2d& Pos, const int N)
 {
   if (N == 1)
   {
@@ -1071,12 +1057,9 @@ gp_Vec2d ElCLib::LineDN(const Standard_Real, const gp_Ax2d& Pos, const Standard_
 
 //=================================================================================================
 
-gp_Vec2d ElCLib::CircleDN(const Standard_Real    U,
-                          const gp_Ax22d&        Pos,
-                          const Standard_Real    Radius,
-                          const Standard_Integer N)
+gp_Vec2d ElCLib::CircleDN(const double U, const gp_Ax22d& Pos, const double Radius, const int N)
 {
-  Standard_Real Xc = 0, Yc = 0;
+  double Xc = 0, Yc = 0;
   if (N == 1)
   {
     Xc = Radius * -sin(U);
@@ -1110,13 +1093,13 @@ gp_Vec2d ElCLib::CircleDN(const Standard_Real    U,
 
 //=================================================================================================
 
-gp_Vec2d ElCLib::EllipseDN(const Standard_Real    U,
-                           const gp_Ax22d&        Pos,
-                           const Standard_Real    MajorRadius,
-                           const Standard_Real    MinorRadius,
-                           const Standard_Integer N)
+gp_Vec2d ElCLib::EllipseDN(const double    U,
+                           const gp_Ax22d& Pos,
+                           const double    MajorRadius,
+                           const double    MinorRadius,
+                           const int       N)
 {
-  Standard_Real Xc = 0, Yc = 0;
+  double Xc = 0, Yc = 0;
   if (N == 1)
   {
     Xc = MajorRadius * -sin(U);
@@ -1150,13 +1133,13 @@ gp_Vec2d ElCLib::EllipseDN(const Standard_Real    U,
 
 //=================================================================================================
 
-gp_Vec2d ElCLib::HyperbolaDN(const Standard_Real    U,
-                             const gp_Ax22d&        Pos,
-                             const Standard_Real    MajorRadius,
-                             const Standard_Real    MinorRadius,
-                             const Standard_Integer N)
+gp_Vec2d ElCLib::HyperbolaDN(const double    U,
+                             const gp_Ax22d& Pos,
+                             const double    MajorRadius,
+                             const double    MinorRadius,
+                             const int       N)
 {
-  Standard_Real Xc = 0, Yc = 0;
+  double Xc = 0, Yc = 0;
   if (IsOdd(N))
   {
     Xc = MajorRadius * std::sinh(U);
@@ -1175,10 +1158,7 @@ gp_Vec2d ElCLib::HyperbolaDN(const Standard_Real    U,
 
 //=================================================================================================
 
-gp_Vec2d ElCLib::ParabolaDN(const Standard_Real    U,
-                            const gp_Ax22d&        Pos,
-                            const Standard_Real    Focal,
-                            const Standard_Integer N)
+gp_Vec2d ElCLib::ParabolaDN(const double U, const gp_Ax22d& Pos, const double Focal, const int N)
 {
   if (N > 2 || N <= 0)
   {
@@ -1209,14 +1189,14 @@ gp_Vec2d ElCLib::ParabolaDN(const Standard_Real    U,
 
 //=================================================================================================
 
-Standard_Real ElCLib::LineParameter(const gp_Ax1& L, const gp_Pnt& P)
+double ElCLib::LineParameter(const gp_Ax1& L, const gp_Pnt& P)
 {
   return (P.XYZ() - L.Location().XYZ()).Dot(L.Direction().XYZ());
 }
 
 //=================================================================================================
 
-Standard_Real ElCLib::CircleParameter(const gp_Ax2& Pos, const gp_Pnt& P)
+double ElCLib::CircleParameter(const gp_Ax2& Pos, const gp_Pnt& P)
 {
   const gp_Vec aVec(Pos.Location(), P);
   if (aVec.SquareMagnitude() < gp::Resolution())
@@ -1231,7 +1211,7 @@ Standard_Real ElCLib::CircleParameter(const gp_Ax2& Pos, const gp_Pnt& P)
     return 0.0;
 
   // Angle between X direction and projected vector
-  Standard_Real Teta = (Pos.XDirection()).AngleWithRef(aVProj, dir);
+  double Teta = (Pos.XDirection()).AngleWithRef(aVProj, dir);
 
   normalizeAngle(Teta);
   return Teta;
@@ -1239,16 +1219,16 @@ Standard_Real ElCLib::CircleParameter(const gp_Ax2& Pos, const gp_Pnt& P)
 
 //=================================================================================================
 
-Standard_Real ElCLib::EllipseParameter(const gp_Ax2&       Pos,
-                                       const Standard_Real MajorRadius,
-                                       const Standard_Real MinorRadius,
-                                       const gp_Pnt&       P)
+double ElCLib::EllipseParameter(const gp_Ax2& Pos,
+                                const double  MajorRadius,
+                                const double  MinorRadius,
+                                const gp_Pnt& P)
 {
-  const gp_XYZ&       OP    = P.XYZ() - Pos.Location().XYZ();
-  const gp_XYZ&       xaxis = Pos.XDirection().XYZ();
-  gp_XYZ              yaxis = Pos.YDirection().XYZ();
-  const Standard_Real NY    = OP.Dot(yaxis);
-  const Standard_Real NX    = OP.Dot(xaxis);
+  const gp_XYZ& OP    = P.XYZ() - Pos.Location().XYZ();
+  const gp_XYZ& xaxis = Pos.XDirection().XYZ();
+  gp_XYZ        yaxis = Pos.YDirection().XYZ();
+  const double  NY    = OP.Dot(yaxis);
+  const double  NX    = OP.Dot(xaxis);
 
   if ((std::abs(NX) <= gp::Resolution()) && (std::abs(NY) <= gp::Resolution()))
     //-- The point P is on the Axis of the Ellipse.
@@ -1257,19 +1237,19 @@ Standard_Real ElCLib::EllipseParameter(const gp_Ax2&       Pos,
   yaxis.Multiply(NY * (MajorRadius / MinorRadius));
   gp_XYZ Om = xaxis.Multiplied(NX);
   Om.Add(yaxis);
-  Standard_Real Teta = gp_Vec(xaxis).AngleWithRef(gp_Vec(Om), gp_Vec(Pos.Direction()));
+  double Teta = gp_Vec(xaxis).AngleWithRef(gp_Vec(Om), gp_Vec(Pos.Direction()));
   normalizeAngle(Teta);
   return Teta;
 }
 
 //=================================================================================================
 
-Standard_Real ElCLib::HyperbolaParameter(const gp_Ax2& Pos,
-                                         const Standard_Real,
-                                         const Standard_Real MinorRadius,
-                                         const gp_Pnt&       P)
+double ElCLib::HyperbolaParameter(const gp_Ax2& Pos,
+                                  const double,
+                                  const double  MinorRadius,
+                                  const gp_Pnt& P)
 {
-  const Standard_Real sht = gp_Vec(Pos.Location(), P).Dot(gp_Vec(Pos.YDirection())) / MinorRadius;
+  const double sht = gp_Vec(Pos.Location(), P).Dot(gp_Vec(Pos.YDirection())) / MinorRadius;
 
 #if defined(__QNX__)
   return std::asinh(sht);
@@ -1280,14 +1260,14 @@ Standard_Real ElCLib::HyperbolaParameter(const gp_Ax2& Pos,
 
 //=================================================================================================
 
-Standard_Real ElCLib::ParabolaParameter(const gp_Ax2& Pos, const gp_Pnt& P)
+double ElCLib::ParabolaParameter(const gp_Ax2& Pos, const gp_Pnt& P)
 {
   return gp_Vec(Pos.Location(), P).Dot(gp_Vec(Pos.YDirection()));
 }
 
 //=================================================================================================
 
-Standard_Real ElCLib::LineParameter(const gp_Ax2d& L, const gp_Pnt2d& P)
+double ElCLib::LineParameter(const gp_Ax2d& L, const gp_Pnt2d& P)
 {
   gp_XY Coord = P.XY();
   Coord.Subtract(L.Location().XY());
@@ -1296,20 +1276,20 @@ Standard_Real ElCLib::LineParameter(const gp_Ax2d& L, const gp_Pnt2d& P)
 
 //=================================================================================================
 
-Standard_Real ElCLib::CircleParameter(const gp_Ax22d& Pos, const gp_Pnt2d& P)
+double ElCLib::CircleParameter(const gp_Ax22d& Pos, const gp_Pnt2d& P)
 {
-  Standard_Real Teta = (Pos.XDirection()).Angle(gp_Vec2d(Pos.Location(), P));
-  Teta               = ((Pos.XDirection() ^ Pos.YDirection()) >= 0.0) ? Teta : -Teta;
+  double Teta = (Pos.XDirection()).Angle(gp_Vec2d(Pos.Location(), P));
+  Teta        = ((Pos.XDirection() ^ Pos.YDirection()) >= 0.0) ? Teta : -Teta;
   normalizeAngle(Teta);
   return Teta;
 }
 
 //=================================================================================================
 
-Standard_Real ElCLib::EllipseParameter(const gp_Ax22d&     Pos,
-                                       const Standard_Real MajorRadius,
-                                       const Standard_Real MinorRadius,
-                                       const gp_Pnt2d&     P)
+double ElCLib::EllipseParameter(const gp_Ax22d& Pos,
+                                const double    MajorRadius,
+                                const double    MinorRadius,
+                                const gp_Pnt2d& P)
 {
   gp_XY OP = P.XY();
   OP.Subtract(Pos.Location().XY());
@@ -1318,21 +1298,21 @@ Standard_Real ElCLib::EllipseParameter(const gp_Ax22d&     Pos,
   gp_XY        Om    = xaxis.Multiplied(OP.Dot(xaxis));
   yaxis.Multiply((OP.Dot(yaxis)) * (MajorRadius / MinorRadius));
   Om.Add(yaxis);
-  Standard_Real Teta = gp_Vec2d(xaxis).Angle(gp_Vec2d(Om));
-  Teta               = ((Pos.XDirection() ^ Pos.YDirection()) >= 0.0) ? Teta : -Teta;
+  double Teta = gp_Vec2d(xaxis).Angle(gp_Vec2d(Om));
+  Teta        = ((Pos.XDirection() ^ Pos.YDirection()) >= 0.0) ? Teta : -Teta;
   normalizeAngle(Teta);
   return Teta;
 }
 
 //=================================================================================================
 
-Standard_Real ElCLib::HyperbolaParameter(const gp_Ax22d& Pos,
-                                         const Standard_Real,
-                                         const Standard_Real MinorRadius,
-                                         const gp_Pnt2d&     P)
+double ElCLib::HyperbolaParameter(const gp_Ax22d& Pos,
+                                  const double,
+                                  const double    MinorRadius,
+                                  const gp_Pnt2d& P)
 {
-  const gp_Vec2d&     V(Pos.YDirection().XY());
-  const Standard_Real sht = gp_Vec2d(Pos.Location(), P).Dot(V) / MinorRadius;
+  const gp_Vec2d& V(Pos.YDirection().XY());
+  const double    sht = gp_Vec2d(Pos.Location(), P).Dot(V) / MinorRadius;
 #if defined(__QNX__)
   return std::asinh(sht);
 #else
@@ -1342,7 +1322,7 @@ Standard_Real ElCLib::HyperbolaParameter(const gp_Ax22d& Pos,
 
 //=================================================================================================
 
-Standard_Real ElCLib::ParabolaParameter(const gp_Ax22d& Pos, const gp_Pnt2d& P)
+double ElCLib::ParabolaParameter(const gp_Ax22d& Pos, const gp_Pnt2d& P)
 {
   const gp_Vec2d Directrix(Pos.YDirection().XY());
   return gp_Vec2d(Pos.Location(), P).Dot(Directrix);

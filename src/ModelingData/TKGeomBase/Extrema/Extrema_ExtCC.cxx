@@ -27,7 +27,7 @@
 #include <Extrema_ExtElC.hxx>
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_POnCurv.hxx>
-#include <Extrema_SequenceOfPOnCurv.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAbs_CurveType.hxx>
@@ -38,14 +38,15 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
-Extrema_ExtCC::Extrema_ExtCC(const Standard_Real TolC1, const Standard_Real TolC2)
-    : myIsFindSingleSolution(Standard_False),
-      myDone(Standard_False),
-      myIsParallel(Standard_False)
+Extrema_ExtCC::Extrema_ExtCC(const double TolC1, const double TolC2)
+    : myIsFindSingleSolution(false),
+      myDone(false),
+      myIsParallel(false)
 {
   myC[0]   = 0;
   myC[1]   = 0;
@@ -60,15 +61,15 @@ Extrema_ExtCC::Extrema_ExtCC(const Standard_Real TolC1, const Standard_Real TolC
 
 Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
                              const Adaptor3d_Curve& C2,
-                             const Standard_Real    U1,
-                             const Standard_Real    U2,
-                             const Standard_Real    V1,
-                             const Standard_Real    V2,
-                             const Standard_Real    TolC1,
-                             const Standard_Real    TolC2)
-    : myIsFindSingleSolution(Standard_False),
+                             const double           U1,
+                             const double           U2,
+                             const double           V1,
+                             const double           V2,
+                             const double           TolC1,
+                             const double           TolC2)
+    : myIsFindSingleSolution(false),
       myECC(C1, C2, U1, U2, V1, V2),
-      myDone(Standard_False)
+      myDone(false)
 {
   SetCurve(1, C1, U1, U2);
   SetCurve(2, C2, V1, V2);
@@ -82,11 +83,11 @@ Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
 
 Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
                              const Adaptor3d_Curve& C2,
-                             const Standard_Real    TolC1,
-                             const Standard_Real    TolC2)
-    : myIsFindSingleSolution(Standard_False),
+                             const double           TolC1,
+                             const double           TolC2)
+    : myIsFindSingleSolution(false),
       myECC(C1, C2),
-      myDone(Standard_False)
+      myDone(false)
 {
   SetCurve(1, C1, C1.FirstParameter(), C1.LastParameter());
   SetCurve(2, C2, C2.FirstParameter(), C2.LastParameter());
@@ -100,11 +101,11 @@ Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
 
 void Extrema_ExtCC::Initialize(const Adaptor3d_Curve& C1,
                                const Adaptor3d_Curve& C2,
-                               const Standard_Real    TolC1,
-                               const Standard_Real    TolC2)
+                               const double           TolC1,
+                               const double           TolC2)
 {
   // myECC will be re-initialized by Perform()
-  myDone = Standard_False;
+  myDone = false;
   SetCurve(1, C1, C1.FirstParameter(), C1.LastParameter());
   SetCurve(2, C2, C2.FirstParameter(), C2.LastParameter());
   SetTolerance(1, TolC1);
@@ -116,15 +117,15 @@ void Extrema_ExtCC::Initialize(const Adaptor3d_Curve& C1,
 
 void Extrema_ExtCC::Initialize(const Adaptor3d_Curve& C1,
                                const Adaptor3d_Curve& C2,
-                               const Standard_Real    U1,
-                               const Standard_Real    U2,
-                               const Standard_Real    V1,
-                               const Standard_Real    V2,
-                               const Standard_Real    TolC1,
-                               const Standard_Real    TolC2)
+                               const double           U1,
+                               const double           U2,
+                               const double           V1,
+                               const double           V2,
+                               const double           TolC1,
+                               const double           TolC2)
 {
   // myECC will be re-initialized by Perform()
-  myDone = Standard_False;
+  myDone = false;
   SetCurve(1, C1, U1, U2);
   SetCurve(2, C2, V1, V2);
   SetTolerance(1, TolC1);
@@ -134,19 +135,19 @@ void Extrema_ExtCC::Initialize(const Adaptor3d_Curve& C1,
 
 //=================================================================================================
 
-void Extrema_ExtCC::SetCurve(const Standard_Integer theRank, const Adaptor3d_Curve& C)
+void Extrema_ExtCC::SetCurve(const int theRank, const Adaptor3d_Curve& C)
 {
-  Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2, "Extrema_ExtCC::SetCurve()")
-    Standard_Integer anInd = theRank - 1;
-  myC[anInd]               = &C;
+  Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2, "Extrema_ExtCC::SetCurve()") int anInd =
+    theRank - 1;
+  myC[anInd] = &C;
 }
 
 //=================================================================================================
 
-void Extrema_ExtCC::SetCurve(const Standard_Integer theRank,
+void Extrema_ExtCC::SetCurve(const int              theRank,
                              const Adaptor3d_Curve& C,
-                             const Standard_Real    Uinf,
-                             const Standard_Real    Usup)
+                             const double           Uinf,
+                             const double           Usup)
 {
   SetCurve(theRank, C);
   SetRange(theRank, Uinf, Usup);
@@ -154,23 +155,21 @@ void Extrema_ExtCC::SetCurve(const Standard_Integer theRank,
 
 //=================================================================================================
 
-void Extrema_ExtCC::SetRange(const Standard_Integer theRank,
-                             const Standard_Real    Uinf,
-                             const Standard_Real    Usup)
+void Extrema_ExtCC::SetRange(const int theRank, const double Uinf, const double Usup)
 {
-  Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2, "Extrema_ExtCC::SetRange()")
-    Standard_Integer anInd = theRank - 1;
-  myInf[anInd]             = Uinf;
-  mySup[anInd]             = Usup;
+  Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2, "Extrema_ExtCC::SetRange()") int anInd =
+    theRank - 1;
+  myInf[anInd] = Uinf;
+  mySup[anInd] = Usup;
 }
 
 //=================================================================================================
 
-void Extrema_ExtCC::SetTolerance(const Standard_Integer theRank, const Standard_Real theTol)
+void Extrema_ExtCC::SetTolerance(const int theRank, const double theTol)
 {
-  Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2, "Extrema_ExtCC::SetTolerance()")
-    Standard_Integer anInd = theRank - 1;
-  myTol[anInd]             = theTol;
+  Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2,
+                               "Extrema_ExtCC::SetTolerance()") int anInd = theRank - 1;
+  myTol[anInd]                                                            = theTol;
 }
 
 //=================================================================================================
@@ -181,14 +180,14 @@ void Extrema_ExtCC::Perform()
     myECC.SetParams(*myC[0], *myC[1], myInf[0], mySup[0], myInf[1], mySup[1]);
   myECC.SetTolerance(std::min(myTol[0], myTol[1]));
   myECC.SetSingleSolutionFlag(GetSingleSolutionFlag());
-  myDone = Standard_False;
+  myDone = false;
   mypoints.Clear();
   mySqDist.Clear();
-  myIsParallel = Standard_False;
+  myIsParallel = false;
 
   GeomAbs_CurveType type1 = myC[0]->GetType();
   GeomAbs_CurveType type2 = myC[1]->GetType();
-  Standard_Real     U11, U12, U21, U22, Tol = std::min(myTol[0], myTol[1]);
+  double            U11, U12, U21, U22, Tol = std::min(myTol[0], myTol[1]);
 
   U11 = myInf[0];
   U12 = mySup[0];
@@ -229,9 +228,9 @@ void Extrema_ExtCC::Perform()
       || (type2 == GeomAbs_Line && type1 <= GeomAbs_Parabola))
   {
     // analytical case - one curve is always a line
-    Standard_Integer  anInd1 = 0, anInd2 = 1;
+    int               anInd1 = 0, anInd2 = 1;
     GeomAbs_CurveType aType2    = type2;
-    Standard_Boolean  isInverse = (type1 > type2);
+    bool              isInverse = (type1 > type2);
     if (isInverse)
     {
       // algorithm uses inverse order of arguments
@@ -273,12 +272,12 @@ void Extrema_ExtCC::Perform()
   else if (type1 == GeomAbs_Circle && type2 == GeomAbs_Circle)
   {
     // analytical case - two circles
-    Standard_Boolean bIsDone;
-    Extrema_ExtElC   CCXtrem(myC[0]->Circle(), myC[1]->Circle());
+    bool           bIsDone;
+    Extrema_ExtElC CCXtrem(myC[0]->Circle(), myC[1]->Circle());
     bIsDone = CCXtrem.IsDone();
     if (bIsDone)
     {
-      PrepareResults(CCXtrem, Standard_False, U11, U12, U21, U22);
+      PrepareResults(CCXtrem, false, U11, U12, U21, U22);
     }
     else
     {
@@ -295,14 +294,14 @@ void Extrema_ExtCC::Perform()
 
 //=================================================================================================
 
-Standard_Boolean Extrema_ExtCC::IsDone() const
+bool Extrema_ExtCC::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_ExtCC::IsParallel() const
+bool Extrema_ExtCC::IsParallel() const
 {
   if (!IsDone())
   {
@@ -314,7 +313,7 @@ Standard_Boolean Extrema_ExtCC::IsParallel() const
 
 //=================================================================================================
 
-Standard_Real Extrema_ExtCC::SquareDistance(const Standard_Integer N) const
+double Extrema_ExtCC::SquareDistance(const int N) const
 {
   if ((N < 1) || (N > NbExt()))
     throw Standard_OutOfRange();
@@ -323,7 +322,7 @@ Standard_Real Extrema_ExtCC::SquareDistance(const Standard_Integer N) const
 
 //=================================================================================================
 
-Standard_Integer Extrema_ExtCC::NbExt() const
+int Extrema_ExtCC::NbExt() const
 {
   if (!myDone)
     throw StdFail_NotDone();
@@ -332,7 +331,7 @@ Standard_Integer Extrema_ExtCC::NbExt() const
 
 //=================================================================================================
 
-void Extrema_ExtCC::Points(const Standard_Integer N, Extrema_POnCurv& P1, Extrema_POnCurv& P2) const
+void Extrema_ExtCC::Points(const int N, Extrema_POnCurv& P1, Extrema_POnCurv& P2) const
 {
   if (N < 1 || N > NbExt())
   {
@@ -345,14 +344,14 @@ void Extrema_ExtCC::Points(const Standard_Integer N, Extrema_POnCurv& P1, Extrem
 
 //=================================================================================================
 
-void Extrema_ExtCC::TrimmedSquareDistances(Standard_Real& dist11,
-                                           Standard_Real& dist12,
-                                           Standard_Real& dist21,
-                                           Standard_Real& dist22,
-                                           gp_Pnt&        P11,
-                                           gp_Pnt&        P12,
-                                           gp_Pnt&        P21,
-                                           gp_Pnt&        P22) const
+void Extrema_ExtCC::TrimmedSquareDistances(double& dist11,
+                                           double& dist12,
+                                           double& dist21,
+                                           double& dist22,
+                                           gp_Pnt& P11,
+                                           gp_Pnt& P12,
+                                           gp_Pnt& P21,
+                                           gp_Pnt& P22) const
 {
 
   dist11 = mydist11;
@@ -367,11 +366,11 @@ void Extrema_ExtCC::TrimmedSquareDistances(Standard_Real& dist11,
 
 //=================================================================================================
 
-void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
-                                          const Standard_Real theUt12,
-                                          const Standard_Real theUt21,
-                                          const Standard_Real theUt22,
-                                          const Standard_Real theSqDist)
+void Extrema_ExtCC::PrepareParallelResult(const double theUt11,
+                                          const double theUt12,
+                                          const double theUt21,
+                                          const double theUt22,
+                                          const double theSqDist)
 {
   if (!myIsParallel)
     return;
@@ -382,8 +381,8 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
       || ((aType2 != GeomAbs_Line) && (aType2 != GeomAbs_Circle)))
   {
     mySqDist.Append(theSqDist);
-    myDone       = Standard_True;
-    myIsParallel = Standard_True;
+    myDone       = true;
+    myIsParallel = true;
     return;
   }
 
@@ -392,9 +391,9 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
   if (aType1 != aType2)
   {
     // The projection of the circle's location to the trimmed line must exist.
-    const Standard_Boolean isReversed = (aType1 != GeomAbs_Circle);
-    const gp_Pnt           aPonC      = !isReversed ? Extrema_CurveTool::Value(*myC[0], theUt11)
-                                                    : Extrema_CurveTool::Value(*myC[1], theUt21);
+    const bool   isReversed = (aType1 != GeomAbs_Circle);
+    const gp_Pnt aPonC      = !isReversed ? Extrema_CurveTool::Value(*myC[0], theUt11)
+                                          : Extrema_CurveTool::Value(*myC[1], theUt21);
 
     const gp_Lin          aL = myC[!isReversed ? 1 : 0]->Line();
     const Extrema_ExtPElC ExtPLin(aPonC,
@@ -409,7 +408,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
     }
     else
     {
-      myIsParallel = Standard_False;
+      myIsParallel = false;
     }
 
     return;
@@ -419,9 +418,9 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
   {
     // Line - Line
 
-    const Standard_Real isFirstInfinite =
+    const double isFirstInfinite =
       (Precision::IsInfinite(theUt11) && Precision::IsInfinite(theUt12));
-    const Standard_Real isLastInfinite =
+    const double isLastInfinite =
       (Precision::IsInfinite(theUt21) && Precision::IsInfinite(theUt22));
 
     if (isFirstInfinite || isLastInfinite)
@@ -436,11 +435,11 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
       // to the 2nd one must intersect the (native) trimmed range of
       // the 2nd line.
 
-      myIsParallel = Standard_False;
+      myIsParallel = false;
 
-      const gp_Lin           aLin1 = myC[0]->Line();
-      const gp_Lin           aLin2 = myC[1]->Line();
-      const Standard_Boolean isOpposite(aLin1.Direction().Dot(aLin2.Direction()) < 0.0);
+      const gp_Lin aLin1 = myC[0]->Line();
+      const gp_Lin aLin2 = myC[1]->Line();
+      const bool   isOpposite(aLin1.Direction().Dot(aLin2.Direction()) < 0.0);
 
       Bnd_Range aRange2(theUt21, theUt22);
       Bnd_Range aProjRng12;
@@ -454,8 +453,8 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
       }
       else
       {
-        const gp_Pnt        aPonC1 = ElCLib::Value(theUt11, aLin1);
-        const Standard_Real aPar   = ElCLib::Parameter(aLin2, aPonC1);
+        const gp_Pnt aPonC1 = ElCLib::Value(theUt11, aLin1);
+        const double aPar   = ElCLib::Parameter(aLin2, aPonC1);
         aProjRng12.Add(aPar);
       }
 
@@ -468,8 +467,8 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
       }
       else
       {
-        const gp_Pnt        aPonC1 = ElCLib::Value(theUt12, aLin1);
-        const Standard_Real aPar   = ElCLib::Parameter(aLin2, aPonC1);
+        const gp_Pnt aPonC1 = ElCLib::Value(theUt12, aLin1);
+        const double aPar   = ElCLib::Parameter(aLin2, aPonC1);
         aProjRng12.Add(aPar);
       }
 
@@ -478,7 +477,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
       {
         ClearSolutions();
         mySqDist.Append(theSqDist);
-        myIsParallel = Standard_True;
+        myIsParallel = true;
       }
       else if (!aRange2.IsVoid())
       {
@@ -490,7 +489,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
         //               ***************  aLin2
 
         ClearSolutions();
-        Standard_Real aPar1 = 0.0, aPar2 = 0.0;
+        double aPar1 = 0.0, aPar2 = 0.0;
         aRange2.GetBounds(aPar1, aPar2);
         aPar2                    = 0.5 * (aPar1 + aPar2);
         gp_Pnt                aP = ElCLib::Value(aPar2, aLin2);
@@ -512,10 +511,10 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
         //                   ***********  aLin2
         //
         // Take minimal trimmed distance
-        Standard_Real   aDmin, aDists[4] = {mydist11, mydist12, mydist21, mydist22};
+        double          aDmin, aDists[4] = {mydist11, mydist12, mydist21, mydist22};
         Extrema_POnCurv aP1, aP2;
         aDmin = aDists[0];
-        Standard_Integer i, imin = 0;
+        int i, imin = 0;
         for (i = 1; i < 4; ++i)
         {
           if (aDmin > aDists[i])
@@ -554,7 +553,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
   else
   {
     // Circle - Circle
-    myIsParallel = Standard_False;
+    myIsParallel = false;
 
     // Two arcs with ranges [U1, U2] and [V1, V2] correspondingly are
     // considered to be parallel in the following case:
@@ -563,32 +562,30 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
     //   the range [V1-PI, V2-PI]. All ranges must be adjusted to correspond
     //   periodic range before checking of intersection.
 
-    const gp_Circ       aWorkCirc = myC[1]->Circle();
-    const Standard_Real aPeriod   = M_PI + M_PI;
-    gp_Vec              aVTg1;
-    gp_Pnt              aP11;
-    const gp_Pnt        aP12 = Extrema_CurveTool::Value(*myC[0], theUt12);
+    const gp_Circ aWorkCirc = myC[1]->Circle();
+    const double  aPeriod   = M_PI + M_PI;
+    gp_Vec        aVTg1;
+    gp_Pnt        aP11;
+    const gp_Pnt  aP12 = Extrema_CurveTool::Value(*myC[0], theUt12);
     Extrema_CurveTool::D1(*myC[0], theUt11, aP11, aVTg1);
 
     const Bnd_Range aRange(theUt21, theUt22);
     Bnd_Range       aProjRng1;
 
     // Precision of the calculation depends on circles radii
-    const Standard_Real aPrecision =
+    const double aPrecision =
       std::max(Epsilon(myC[0]->Circle().Radius()), Epsilon(myC[1]->Circle().Radius()));
 
     // Project arc of the 1st circle between points theUt11 and theUt12 to the
     // 2nd circle. It is necessary to chose correct arc from two possible ones.
 
-    Standard_Real aPar1 =
-      ElCLib::InPeriod(ElCLib::Parameter(aWorkCirc, aP11), theUt21, theUt21 + aPeriod);
+    double aPar1 = ElCLib::InPeriod(ElCLib::Parameter(aWorkCirc, aP11), theUt21, theUt21 + aPeriod);
     const gp_Vec aVTg2 = Extrema_CurveTool::DN(*myC[1], aPar1, 1);
 
     // Check if circles have same/opposite directions
-    const Standard_Boolean isOpposite(aVTg1.Dot(aVTg2) < 0.0);
+    const bool isOpposite(aVTg1.Dot(aVTg2) < 0.0);
 
-    Standard_Real aPar2 =
-      ElCLib::InPeriod(ElCLib::Parameter(aWorkCirc, aP12), theUt21, theUt21 + aPeriod);
+    double aPar2 = ElCLib::InPeriod(ElCLib::Parameter(aWorkCirc, aP12), theUt21, theUt21 + aPeriod);
 
     if (isOpposite)
     {
@@ -610,11 +607,11 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
     // Now the projection result is the range [aPar1, aPar2]
     // if aPar1 < aPar2 or the range [aPar2, aPar1], otherwise.
 
-    Standard_Real aMinSquareDist = RealLast();
+    double aMinSquareDist = RealLast();
 
     aProjRng1.Add(aPar1 - aPeriod);
     aProjRng1.Add(aPar2 - aPeriod);
-    for (Standard_Integer i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
       // Repeat computation three times, shifting the range to PI on each step,
       // to be able to find if the concentric arcs ranges are intersected in just one parameter
@@ -638,7 +635,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
 
       if (aRng.Delta() > Precision::Confusion())
       {
-        Standard_Real aPar = 0.0;
+        double aPar = 0.0;
         aRng.GetIntermediatePoint(0.5, aPar);
         const gp_Pnt    aPCirc2 = ElCLib::Value(aPar, aWorkCirc);
         Extrema_ExtPElC ExtPCir(aPCirc2,
@@ -650,8 +647,8 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
         {
           continue;
         }
-        Standard_Real aMinSqD = ExtPCir.SquareDistance(1);
-        for (Standard_Integer anExtID = 2; anExtID <= ExtPCir.NbExt(); anExtID++)
+        double aMinSqD = ExtPCir.SquareDistance(1);
+        for (int anExtID = 2; anExtID <= ExtPCir.NbExt(); anExtID++)
         {
           aMinSqD = std::min(aMinSqD, ExtPCir.SquareDistance(anExtID));
         }
@@ -660,10 +657,10 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
         {
           ClearSolutions();
           mySqDist.Append(aMinSqD);
-          myIsParallel = Standard_True;
+          myIsParallel = true;
 
-          const Standard_Real aDeltaSqDist = aMinSqD - theSqDist;
-          const Standard_Real aSqD         = std::max(aMinSqD, theSqDist);
+          const double aDeltaSqDist = aMinSqD - theSqDist;
+          const double aSqD         = std::max(aMinSqD, theSqDist);
 
           //  0 <= Dist1-Dist2 <= Eps
           //  0 <= Dist1^2 - Dist2^2 < Eps*(Dist1+Dist2)
@@ -692,7 +689,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
         //               o
         //               ***************  aCirc2
 
-        Standard_Real aPar = 0.0;
+        double aPar = 0.0;
         aRng.GetIntermediatePoint(0.5, aPar);
         const gp_Pnt          aPCirc2 = ElCLib::Value(aPar, aWorkCirc);
         const Extrema_POnCurv aP2(aPar, aPCirc2);
@@ -703,7 +700,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
                                 theUt11,
                                 theUt12);
 
-        Standard_Boolean isFound = !myIsParallel;
+        bool isFound = !myIsParallel;
 
         if (!isFound)
         {
@@ -712,11 +709,11 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
           // a pair of points, which are in less distance then myIsParallel flag
           // was unset and the algorithm will return these nearest points.
 
-          for (Standard_Integer anExtID = 1; anExtID <= ExtPCir.NbExt(); anExtID++)
+          for (int anExtID = 1; anExtID <= ExtPCir.NbExt(); anExtID++)
           {
             if (ExtPCir.SquareDistance(anExtID) < aMinSquareDist)
             {
-              isFound = Standard_True;
+              isFound = true;
               break;
             }
           }
@@ -725,8 +722,8 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
         if (isFound)
         {
           ClearSolutions();
-          myIsParallel = Standard_False;
-          for (Standard_Integer anExtID = 1; anExtID <= ExtPCir.NbExt(); anExtID++)
+          myIsParallel = false;
+          for (int anExtID = 1; anExtID <= ExtPCir.NbExt(); anExtID++)
           {
             mypoints.Append(ExtPCir.Point(anExtID));
             mypoints.Append(aP2);
@@ -745,11 +742,11 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
         //                   ***********  Cir2
         //
         // Take minimal trimmed distance
-        myIsParallel = Standard_False;
-        Standard_Real   aDmin, aDists[4] = {mydist11, mydist12, mydist21, mydist22};
+        myIsParallel = false;
+        double          aDmin, aDists[4] = {mydist11, mydist12, mydist21, mydist22};
         Extrema_POnCurv aP1, aP2;
         aDmin = aDists[0];
-        Standard_Integer k, imin = 0;
+        int k, imin = 0;
         for (k = 1; k < 4; ++k)
         {
           if (aDmin > aDists[k])
@@ -794,16 +791,16 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
 
 //=================================================================================================
 
-void Extrema_ExtCC::PrepareResults(const Extrema_ExtElC&  AlgExt,
-                                   const Standard_Boolean theIsInverse,
-                                   const Standard_Real    Ut11,
-                                   const Standard_Real    Ut12,
-                                   const Standard_Real    Ut21,
-                                   const Standard_Real    Ut22)
+void Extrema_ExtCC::PrepareResults(const Extrema_ExtElC& AlgExt,
+                                   const bool            theIsInverse,
+                                   const double          Ut11,
+                                   const double          Ut12,
+                                   const double          Ut21,
+                                   const double          Ut22)
 {
-  Standard_Integer i, NbExt;
-  Standard_Real    Val, U, U2;
-  Extrema_POnCurv  P1, P2;
+  int             i, NbExt;
+  double          Val, U, U2;
+  Extrema_POnCurv P1, P2;
 
   myDone = AlgExt.IsDone();
   if (myDone)
@@ -867,15 +864,15 @@ void Extrema_ExtCC::PrepareResults(const Extrema_ExtElC&  AlgExt,
 
 //=================================================================================================
 
-void Extrema_ExtCC::PrepareResults(const Extrema_ECC&  AlgExt,
-                                   const Standard_Real Ut11,
-                                   const Standard_Real Ut12,
-                                   const Standard_Real Ut21,
-                                   const Standard_Real Ut22)
+void Extrema_ExtCC::PrepareResults(const Extrema_ECC& AlgExt,
+                                   const double       Ut11,
+                                   const double       Ut12,
+                                   const double       Ut21,
+                                   const double       Ut22)
 {
-  Standard_Integer i, NbExt;
-  Standard_Real    Val, U, U2;
-  Extrema_POnCurv  P1, P2;
+  int             i, NbExt;
+  double          Val, U, U2;
+  Extrema_POnCurv P1, P2;
 
   myDone = AlgExt.IsDone();
   if (myDone)
@@ -921,14 +918,14 @@ void Extrema_ExtCC::PrepareResults(const Extrema_ECC&  AlgExt,
 
 //=================================================================================================
 
-void Extrema_ExtCC::SetSingleSolutionFlag(const Standard_Boolean theFlag)
+void Extrema_ExtCC::SetSingleSolutionFlag(const bool theFlag)
 {
   myIsFindSingleSolution = theFlag;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_ExtCC::GetSingleSolutionFlag() const
+bool Extrema_ExtCC::GetSingleSolutionFlag() const
 {
   return myIsFindSingleSolution;
 }

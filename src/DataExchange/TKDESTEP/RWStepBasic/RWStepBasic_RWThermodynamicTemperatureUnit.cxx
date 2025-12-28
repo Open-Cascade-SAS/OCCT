@@ -29,10 +29,10 @@ RWStepBasic_RWThermodynamicTemperatureUnit::RWStepBasic_RWThermodynamicTemperatu
 //=================================================================================================
 
 void RWStepBasic_RWThermodynamicTemperatureUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&                data,
-  const Standard_Integer                                num,
-  Handle(Interface_Check)&                              ach,
-  const Handle(StepBasic_ThermodynamicTemperatureUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&                data,
+  const int                                                  num,
+  occ::handle<Interface_Check>&                              ach,
+  const occ::handle<StepBasic_ThermodynamicTemperatureUnit>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "thermodynamic_temperature_unit"))
@@ -40,7 +40,7 @@ void RWStepBasic_RWThermodynamicTemperatureUnit::ReadStep(
 
   // Inherited fields of NamedUnit
 
-  Handle(StepBasic_DimensionalExponents) aNamedUnit_Dimensions;
+  occ::handle<StepBasic_DimensionalExponents> aNamedUnit_Dimensions;
   data->ReadEntity(num,
                    1,
                    "named_unit.dimensions",
@@ -55,8 +55,8 @@ void RWStepBasic_RWThermodynamicTemperatureUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWThermodynamicTemperatureUnit::WriteStep(
-  StepData_StepWriter&                                  SW,
-  const Handle(StepBasic_ThermodynamicTemperatureUnit)& ent) const
+  StepData_StepWriter&                                       SW,
+  const occ::handle<StepBasic_ThermodynamicTemperatureUnit>& ent) const
 {
 
   // Inherited fields of NamedUnit
@@ -67,8 +67,8 @@ void RWStepBasic_RWThermodynamicTemperatureUnit::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWThermodynamicTemperatureUnit::Share(
-  const Handle(StepBasic_ThermodynamicTemperatureUnit)& ent,
-  Interface_EntityIterator&                             iter) const
+  const occ::handle<StepBasic_ThermodynamicTemperatureUnit>& ent,
+  Interface_EntityIterator&                                  iter) const
 {
 
   // Inherited fields of NamedUnit

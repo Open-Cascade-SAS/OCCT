@@ -18,53 +18,54 @@
 #include <TObj_Assistant.hxx>
 
 #include <TObj_Model.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_Type.hxx>
 
 //=================================================================================================
 
-TColStd_SequenceOfTransient& TObj_Assistant::getModels()
+NCollection_Sequence<occ::handle<Standard_Transient>>& TObj_Assistant::getModels()
 {
-  static TColStd_SequenceOfTransient sModels;
+  static NCollection_Sequence<occ::handle<Standard_Transient>> sModels;
   return sModels;
 }
 
 //=================================================================================================
 
-TColStd_IndexedMapOfTransient& TObj_Assistant::getTypes()
+NCollection_IndexedMap<occ::handle<Standard_Transient>>& TObj_Assistant::getTypes()
 {
-  static TColStd_IndexedMapOfTransient sTypes;
+  static NCollection_IndexedMap<occ::handle<Standard_Transient>> sTypes;
   return sTypes;
 }
 
 //=================================================================================================
 
-Handle(TObj_Model)& TObj_Assistant::getCurrentModel()
+occ::handle<TObj_Model>& TObj_Assistant::getCurrentModel()
 {
-  static Handle(TObj_Model) sCurrentModel;
+  static occ::handle<TObj_Model> sCurrentModel;
   return sCurrentModel;
 }
 
 //=================================================================================================
 
-Standard_Integer& TObj_Assistant::getVersion()
+int& TObj_Assistant::getVersion()
 {
-  static Standard_Integer sVersion = 0;
+  static int sVersion = 0;
   return sVersion;
 }
 
 //=================================================================================================
 
-Handle(TObj_Model) TObj_Assistant::FindModel(const Standard_CString theName)
+occ::handle<TObj_Model> TObj_Assistant::FindModel(const char* theName)
 {
-  TCollection_ExtendedString aName(theName, Standard_True);
-  Standard_Integer           i = getModels().Length();
-  Handle(TObj_Model)         aModel;
+  TCollection_ExtendedString aName(theName, true);
+  int                        i = getModels().Length();
+  occ::handle<TObj_Model>    aModel;
   for (; i > 0; i--)
   {
-    aModel = Handle(TObj_Model)::DownCast(getModels().Value(i));
+    aModel = occ::down_cast<TObj_Model>(getModels().Value(i));
     if (aName == aModel->GetModelName()->String())
       break;
   }
@@ -76,7 +77,7 @@ Handle(TObj_Model) TObj_Assistant::FindModel(const Standard_CString theName)
 
 //=================================================================================================
 
-void TObj_Assistant::BindModel(const Handle(TObj_Model)& theModel)
+void TObj_Assistant::BindModel(const occ::handle<TObj_Model>& theModel)
 {
   getModels().Append(theModel);
 }
@@ -90,17 +91,17 @@ void TObj_Assistant::ClearModelMap()
 
 //=================================================================================================
 
-Handle(Standard_Type) TObj_Assistant::FindType(const Standard_Integer theTypeIndex)
+occ::handle<Standard_Type> TObj_Assistant::FindType(const int theTypeIndex)
 {
   if (theTypeIndex > 0 && theTypeIndex <= getTypes().Extent())
-    return Handle(Standard_Type)::DownCast(getTypes().FindKey(theTypeIndex));
+    return occ::down_cast<Standard_Type>(getTypes().FindKey(theTypeIndex));
 
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer TObj_Assistant::FindTypeIndex(const Handle(Standard_Type)& theType)
+int TObj_Assistant::FindTypeIndex(const occ::handle<Standard_Type>& theType)
 {
   if (!getTypes().Contains(theType))
     return 0;
@@ -121,15 +122,13 @@ public:
 };
 
 // Define handle class for TObj_Assistant_UnknownType
-DEFINE_STANDARD_HANDLE(TObj_Assistant_UnknownType, Standard_Transient)
-
 //=================================================================================================
 
-Standard_Integer TObj_Assistant::BindType(const Handle(Standard_Type)& theType)
+int TObj_Assistant::BindType(const occ::handle<Standard_Type>& theType)
 {
   if (theType.IsNull())
   {
-    Handle(Standard_Transient) anUnknownType;
+    occ::handle<Standard_Transient> anUnknownType;
     anUnknownType = new TObj_Assistant_UnknownType;
     return getTypes().Add(anUnknownType);
   }
@@ -146,7 +145,7 @@ void TObj_Assistant::ClearTypeMap()
 
 //=================================================================================================
 
-void TObj_Assistant::SetCurrentModel(const Handle(TObj_Model)& theModel)
+void TObj_Assistant::SetCurrentModel(const occ::handle<TObj_Model>& theModel)
 {
   getCurrentModel() = theModel;
   getVersion()      = -1;
@@ -154,7 +153,7 @@ void TObj_Assistant::SetCurrentModel(const Handle(TObj_Model)& theModel)
 
 //=================================================================================================
 
-Handle(TObj_Model) TObj_Assistant::GetCurrentModel()
+occ::handle<TObj_Model> TObj_Assistant::GetCurrentModel()
 {
   return getCurrentModel();
 }
@@ -168,12 +167,12 @@ void TObj_Assistant::UnSetCurrentModel()
 
 //=================================================================================================
 
-Standard_Integer TObj_Assistant::GetAppVersion()
+int TObj_Assistant::GetAppVersion()
 {
-  Standard_Integer& aVersion = getVersion();
+  int& aVersion = getVersion();
   if (aVersion < 0)
   {
-    Handle(TObj_Model)& aModel = getCurrentModel();
+    occ::handle<TObj_Model>& aModel = getCurrentModel();
     if (!aModel.IsNull())
       aVersion = aModel->GetFormatVersion();
   }

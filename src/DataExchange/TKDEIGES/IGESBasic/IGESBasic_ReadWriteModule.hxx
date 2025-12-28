@@ -27,9 +27,6 @@ class IGESData_IGESReaderData;
 class IGESData_ParamReader;
 class IGESData_IGESWriter;
 
-class IGESBasic_ReadWriteModule;
-DEFINE_STANDARD_HANDLE(IGESBasic_ReadWriteModule, IGESData_ReadWriteModule)
-
 //! Defines basic File Access Module for IGESBasic (specific parts)
 //! Specific actions concern : Read and Write Own Parameters of
 //! an IGESEntity.
@@ -41,24 +38,20 @@ public:
   Standard_EXPORT IGESBasic_ReadWriteModule();
 
   //! Defines Case Numbers for Entities of IGESBasic
-  Standard_EXPORT Standard_Integer CaseIGES(const Standard_Integer typenum,
-                                            const Standard_Integer formnum) const Standard_OVERRIDE;
+  Standard_EXPORT int CaseIGES(const int typenum, const int formnum) const override;
 
   //! Reads own parameters from file for an Entity of IGESBasic
-  Standard_EXPORT void ReadOwnParams(const Standard_Integer                 CN,
-                                     const Handle(IGESData_IGESEntity)&     ent,
-                                     const Handle(IGESData_IGESReaderData)& IR,
-                                     IGESData_ParamReader& PR) const Standard_OVERRIDE;
+  Standard_EXPORT void ReadOwnParams(const int                                   CN,
+                                     const occ::handle<IGESData_IGESEntity>&     ent,
+                                     const occ::handle<IGESData_IGESReaderData>& IR,
+                                     IGESData_ParamReader&                       PR) const override;
 
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams(const Standard_Integer             CN,
-                                      const Handle(IGESData_IGESEntity)& ent,
-                                      IGESData_IGESWriter& IW) const Standard_OVERRIDE;
+  Standard_EXPORT void WriteOwnParams(const int                               CN,
+                                      const occ::handle<IGESData_IGESEntity>& ent,
+                                      IGESData_IGESWriter&                    IW) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_ReadWriteModule, IGESData_ReadWriteModule)
-
-protected:
-private:
 };
 
 #endif // _IGESBasic_ReadWriteModule_HeaderFile

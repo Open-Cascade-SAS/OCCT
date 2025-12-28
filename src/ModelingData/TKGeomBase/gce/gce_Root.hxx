@@ -37,7 +37,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns true if the construction is successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the status of the construction:
   //! -   gce_Done, if the construction is successful, or
@@ -47,8 +47,6 @@ public:
 
 protected:
   gce_ErrorType TheError;
-
-private:
 };
 
 #include <gce_Root.lxx>

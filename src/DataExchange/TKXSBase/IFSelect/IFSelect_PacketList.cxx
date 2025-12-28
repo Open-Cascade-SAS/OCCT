@@ -20,11 +20,13 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_PacketList, Standard_Transient)
 
-IFSelect_PacketList::IFSelect_PacketList(const Handle(Interface_InterfaceModel)& model)
+IFSelect_PacketList::IFSelect_PacketList(const occ::handle<Interface_InterfaceModel>& model)
     : thedupls(0, model->NbEntities()),
       thepacks(100),
       theflags(0, model->NbEntities()),
@@ -32,32 +34,32 @@ IFSelect_PacketList::IFSelect_PacketList(const Handle(Interface_InterfaceModel)&
 {
   themodel = model;
   thelast  = 0;
-  thebegin = Standard_False; // begin-begin
+  thebegin = false; // begin-begin
   thedupls.Init(0);
   theflags.Init(0);
 }
 
-void IFSelect_PacketList::SetName(const Standard_CString name)
+void IFSelect_PacketList::SetName(const char* name)
 {
   thename.Clear();
   thename.AssignCat(name);
 }
 
-Standard_CString IFSelect_PacketList::Name() const
+const char* IFSelect_PacketList::Name() const
 {
   return thename.ToCString();
 }
 
-Handle(Interface_InterfaceModel) IFSelect_PacketList::Model() const
+occ::handle<Interface_InterfaceModel> IFSelect_PacketList::Model() const
 {
   return themodel;
 }
 
 void IFSelect_PacketList::AddPacket()
 {
-  Standard_Integer nbl = thepacks.NbEntities();
-  Standard_Integer nbe = theflags.Upper();
-  for (Standard_Integer i = 1; i <= nbe; i++)
+  int nbl = thepacks.NbEntities();
+  int nbe = theflags.Upper();
+  for (int i = 1; i <= nbe; i++)
     theflags.SetValue(i, 0);
 
   if (thelast >= nbl)
@@ -66,12 +68,12 @@ void IFSelect_PacketList::AddPacket()
   if (!thebegin)
     thelast++;
   thepacks.SetNumber(thelast);
-  thebegin = Standard_False;
+  thebegin = false;
 }
 
-void IFSelect_PacketList::Add(const Handle(Standard_Transient)& ent)
+void IFSelect_PacketList::Add(const occ::handle<Standard_Transient>& ent)
 {
-  Standard_Integer num = themodel->Number(ent);
+  int num = themodel->Number(ent);
   if (num == 0)
     throw Interface_InterfaceError("PacketList:Add, Entity not in Model");
   if (thelast == 0)
@@ -81,84 +83,84 @@ void IFSelect_PacketList::Add(const Handle(Standard_Transient)& ent)
   theflags(num) = 1;
   thedupls(num)++;
   thepacks.Add(num);
-  thebegin = Standard_False;
+  thebegin = false;
 }
 
-void IFSelect_PacketList::AddList(const Handle(TColStd_HSequenceOfTransient)& list)
+void IFSelect_PacketList::AddList(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
   if (list.IsNull())
     return;
-  Standard_Integer i, nb = list->Length();
+  int i, nb = list->Length();
   thepacks.Reservate(nb + 1);
   for (i = 1; i <= nb; i++)
     Add(list->Value(i));
 }
 
-Standard_Integer IFSelect_PacketList::NbPackets() const
+int IFSelect_PacketList::NbPackets() const
 {
   return (thebegin ? thelast - 1 : thelast);
 }
 
-Standard_Integer IFSelect_PacketList::NbEntities(const Standard_Integer numpack) const
+int IFSelect_PacketList::NbEntities(const int numpack) const
 {
   if (numpack <= 0 || numpack > NbPackets())
     return 0;
-  Interface_IntList lisi(thepacks, Standard_False);
+  Interface_IntList lisi(thepacks, false);
   lisi.SetNumber(numpack);
   return lisi.Length();
 }
 
-Interface_EntityIterator IFSelect_PacketList::Entities(const Standard_Integer numpack) const
+Interface_EntityIterator IFSelect_PacketList::Entities(const int numpack) const
 {
   Interface_EntityIterator list;
   if (numpack <= 0 || numpack > NbPackets())
     return list;
-  Interface_IntList lisi(thepacks, Standard_False);
+  Interface_IntList lisi(thepacks, false);
   lisi.SetNumber(numpack);
-  Standard_Integer i, nb = lisi.Length();
+  int i, nb = lisi.Length();
   for (i = 1; i <= nb; i++)
     list.AddItem(themodel->Value(lisi.Value(i)));
   return list;
 }
 
-Standard_Integer IFSelect_PacketList::HighestDuplicationCount() const
+int IFSelect_PacketList::HighestDuplicationCount() const
 {
-  Standard_Integer i, nb = themodel->NbEntities();
-  Standard_Integer high = 0;
+  int i, nb = themodel->NbEntities();
+  int high = 0;
   for (i = 1; i <= nb; i++)
   {
-    Standard_Integer j = thedupls.Value(i);
+    int j = thedupls.Value(i);
     if (j > high)
       high = j;
   }
   return high;
 }
 
-Standard_Integer IFSelect_PacketList::NbDuplicated(const Standard_Integer newcount,
-                                                   const Standard_Boolean andmore) const
+int IFSelect_PacketList::NbDuplicated(const int newcount, const bool andmore) const
 {
-  Standard_Integer i, nb = themodel->NbEntities();
-  Standard_Integer nbdu = 0;
+  int i, nb = themodel->NbEntities();
+  int nbdu = 0;
 
   for (i = 1; i <= nb; i++)
   {
-    Standard_Integer j = thedupls.Value(i);
+    int j = thedupls.Value(i);
     if (j == newcount || (j > newcount && andmore))
       nbdu++;
   }
   return nbdu;
 }
 
-Interface_EntityIterator IFSelect_PacketList::Duplicated(const Standard_Integer newcount,
-                                                         const Standard_Boolean andmore) const
+Interface_EntityIterator IFSelect_PacketList::Duplicated(const int  newcount,
+                                                         const bool andmore) const
 {
-  Standard_Integer         nb = themodel->NbEntities();
+  int                      nb = themodel->NbEntities();
   Interface_EntityIterator list;
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= nb; i++)
   {
-    Standard_Integer j = thedupls.Value(i);
+    int j = thedupls.Value(i);
     if (j == newcount || (j > newcount && andmore))
       list.AddItem(themodel->Value(i));
   }

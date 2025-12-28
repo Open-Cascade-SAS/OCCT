@@ -31,38 +31,35 @@
 
 //=================================================================================================
 
-inline Standard_Real Intrv_Interval::Start() const
+inline double Intrv_Interval::Start() const
 {
   return myStart;
 }
 
 //=================================================================================================
 
-inline Standard_Real Intrv_Interval::End() const
+inline double Intrv_Interval::End() const
 {
   return myEnd;
 }
 
 //=================================================================================================
 
-inline Standard_ShortReal Intrv_Interval::TolStart() const
+inline float Intrv_Interval::TolStart() const
 {
   return myTolStart;
 }
 
 //=================================================================================================
 
-inline Standard_ShortReal Intrv_Interval::TolEnd() const
+inline float Intrv_Interval::TolEnd() const
 {
   return myTolEnd;
 }
 
 //=================================================================================================
 
-inline void Intrv_Interval::Bounds(Standard_Real&      Start,
-                                   Standard_ShortReal& TolStart,
-                                   Standard_Real&      End,
-                                   Standard_ShortReal& TolEnd) const
+inline void Intrv_Interval::Bounds(double& Start, float& TolStart, double& End, float& TolEnd) const
 {
   Start    = myStart;
   TolStart = myTolStart;
@@ -72,7 +69,7 @@ inline void Intrv_Interval::Bounds(Standard_Real&      Start,
 
 //=================================================================================================
 
-inline void Intrv_Interval::SetStart(const Standard_Real Start, const Standard_ShortReal TolStart)
+inline void Intrv_Interval::SetStart(const double Start, const float TolStart)
 {
   myStart    = Start;
   myTolStart = TolStart;
@@ -88,15 +85,14 @@ inline void Intrv_Interval::SetStart(const Standard_Real Start, const Standard_S
 //
 //=======================================================================
 
-inline void Intrv_Interval::FuseAtStart(const Standard_Real      Start,
-                                        const Standard_ShortReal TolStart)
+inline void Intrv_Interval::FuseAtStart(const double Start, const float TolStart)
 {
   if (myStart != RealFirst())
   {
-    Standard_Real a = std::min(myStart - myTolStart, Start - TolStart);
-    Standard_Real b = std::min(myStart + myTolStart, Start + TolStart);
-    myStart         = (a + b) / 2;
-    myTolStart      = (Standard_ShortReal)(b - a) / 2;
+    double a   = std::min(myStart - myTolStart, Start - TolStart);
+    double b   = std::min(myStart + myTolStart, Start + TolStart);
+    myStart    = (a + b) / 2;
+    myTolStart = (float)(b - a) / 2;
   }
 }
 
@@ -110,20 +106,20 @@ inline void Intrv_Interval::FuseAtStart(const Standard_Real      Start,
 //
 //=======================================================================
 
-inline void Intrv_Interval::CutAtStart(const Standard_Real Start, const Standard_ShortReal TolStart)
+inline void Intrv_Interval::CutAtStart(const double Start, const float TolStart)
 {
   if (myStart != RealFirst())
   {
-    Standard_Real a = std::max(myStart - myTolStart, Start - TolStart);
-    Standard_Real b = std::max(myStart + myTolStart, Start + TolStart);
-    myStart         = (a + b) / 2;
-    myTolStart      = (Standard_ShortReal)(b - a) / 2;
+    double a   = std::max(myStart - myTolStart, Start - TolStart);
+    double b   = std::max(myStart + myTolStart, Start + TolStart);
+    myStart    = (a + b) / 2;
+    myTolStart = (float)(b - a) / 2;
   }
 }
 
 //=================================================================================================
 
-inline void Intrv_Interval::SetEnd(const Standard_Real End, const Standard_ShortReal TolEnd)
+inline void Intrv_Interval::SetEnd(const double End, const float TolEnd)
 {
   myEnd    = End;
   myTolEnd = TolEnd;
@@ -139,14 +135,14 @@ inline void Intrv_Interval::SetEnd(const Standard_Real End, const Standard_Short
 //
 //=======================================================================
 
-inline void Intrv_Interval::FuseAtEnd(const Standard_Real End, const Standard_ShortReal TolEnd)
+inline void Intrv_Interval::FuseAtEnd(const double End, const float TolEnd)
 {
   if (myEnd != RealLast())
   {
-    Standard_Real a = std::max(myEnd - myTolEnd, End - TolEnd);
-    Standard_Real b = std::max(myEnd + myTolEnd, End + TolEnd);
-    myEnd           = (a + b) / 2;
-    myTolEnd        = (Standard_ShortReal)(b - a) / 2;
+    double a = std::max(myEnd - myTolEnd, End - TolEnd);
+    double b = std::max(myEnd + myTolEnd, End + TolEnd);
+    myEnd    = (a + b) / 2;
+    myTolEnd = (float)(b - a) / 2;
   }
 }
 
@@ -160,30 +156,27 @@ inline void Intrv_Interval::FuseAtEnd(const Standard_Real End, const Standard_Sh
 //
 //=======================================================================
 
-inline void Intrv_Interval::CutAtEnd(const Standard_Real End, const Standard_ShortReal TolEnd)
+inline void Intrv_Interval::CutAtEnd(const double End, const float TolEnd)
 {
   if (myEnd != RealLast())
   {
-    Standard_Real a = std::min(myEnd - myTolEnd, End - TolEnd);
-    Standard_Real b = std::min(myEnd + myTolEnd, End + TolEnd);
-    myEnd           = (a + b) / 2;
-    myTolEnd        = (Standard_ShortReal)(b - a) / 2;
+    double a = std::min(myEnd - myTolEnd, End - TolEnd);
+    double b = std::min(myEnd + myTolEnd, End + TolEnd);
+    myEnd    = (a + b) / 2;
+    myTolEnd = (float)(b - a) / 2;
   }
 }
 
 //=================================================================================================
 
-inline Standard_Boolean AreFused(const Standard_Real      c1,
-                                 const Standard_ShortReal t1,
-                                 const Standard_Real      c2,
-                                 const Standard_ShortReal t2)
+inline bool AreFused(const double c1, const float t1, const double c2, const float t2)
 {
   return t1 + t2 >= std::abs(c1 - c2);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean Intrv_Interval::IsProbablyEmpty() const
+inline bool Intrv_Interval::IsProbablyEmpty() const
 {
   return AreFused(myStart, myTolStart, myEnd, myTolEnd);
 }
@@ -193,7 +186,7 @@ inline Standard_Boolean Intrv_Interval::IsProbablyEmpty() const
 //     ***-----*                                   IsBefore
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsBefore(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsBefore(const Intrv_Interval& Other) const
 {
   return myTolEnd + Other.myTolStart < Other.myStart - myEnd;
 }
@@ -203,7 +196,7 @@ inline Standard_Boolean Intrv_Interval::IsBefore(const Intrv_Interval& Other) co
 //                                       ***---*   IsAfter
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsAfter(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsAfter(const Intrv_Interval& Other) const
 {
   return myTolStart + Other.myTolEnd < myStart - Other.myEnd;
 }
@@ -213,7 +206,7 @@ inline Standard_Boolean Intrv_Interval::IsAfter(const Intrv_Interval& Other) con
 //                         ***-*                   IsInside
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsInside(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsInside(const Intrv_Interval& Other) const
 {
   return myTolStart + Other.myTolStart < myStart - Other.myStart
          && myTolEnd + Other.myTolEnd < Other.myEnd - myEnd;
@@ -224,7 +217,7 @@ inline Standard_Boolean Intrv_Interval::IsInside(const Intrv_Interval& Other) co
 //     ***-------------------------------------*   IsEnclosing
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsEnclosing(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsEnclosing(const Intrv_Interval& Other) const
 {
   return myTolStart + Other.myTolStart < Other.myStart - myStart
          && myTolEnd + Other.myTolEnd < myEnd - Other.myEnd;
@@ -235,7 +228,7 @@ inline Standard_Boolean Intrv_Interval::IsEnclosing(const Intrv_Interval& Other)
 //                  ***------------------------*   IsJustEnclosingAtStart
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsJustEnclosingAtStart(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsJustEnclosingAtStart(const Intrv_Interval& Other) const
 {
   return AreFused(myStart, myTolStart, Other.myStart, Other.myTolStart)
          && myTolEnd + Other.myTolEnd < myEnd - Other.myEnd;
@@ -246,7 +239,7 @@ inline Standard_Boolean Intrv_Interval::IsJustEnclosingAtStart(const Intrv_Inter
 //     ***--------------------------*              IsJustEnclosingAtEnd
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsJustEnclosingAtEnd(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsJustEnclosingAtEnd(const Intrv_Interval& Other) const
 {
   return myTolStart + Other.myTolStart < Other.myStart - myStart
          && AreFused(Other.myEnd, Other.myTolEnd, myEnd, myTolEnd);
@@ -257,7 +250,7 @@ inline Standard_Boolean Intrv_Interval::IsJustEnclosingAtEnd(const Intrv_Interva
 //     ***------------*                            IsJustBefore
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsJustBefore(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsJustBefore(const Intrv_Interval& Other) const
 {
   return AreFused(myEnd, myTolEnd, Other.myStart, Other.myTolStart);
 }
@@ -267,7 +260,7 @@ inline Standard_Boolean Intrv_Interval::IsJustBefore(const Intrv_Interval& Other
 //                                  ***--------*   IsJustAfter
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsJustAfter(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsJustAfter(const Intrv_Interval& Other) const
 {
   return AreFused(Other.myEnd, Other.myTolEnd, myStart, myTolStart);
 }
@@ -277,7 +270,7 @@ inline Standard_Boolean Intrv_Interval::IsJustAfter(const Intrv_Interval& Other)
 //     ***-----------------*                       IsOverlappingAtStart
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsOverlappingAtStart(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsOverlappingAtStart(const Intrv_Interval& Other) const
 {
   return myTolStart + Other.myTolStart < Other.myStart - myStart
          && myTolEnd + Other.myTolStart < myEnd - Other.myStart
@@ -289,7 +282,7 @@ inline Standard_Boolean Intrv_Interval::IsOverlappingAtStart(const Intrv_Interva
 //                         ***-----------------*   IsOverlappingAtEnd
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsOverlappingAtEnd(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsOverlappingAtEnd(const Intrv_Interval& Other) const
 {
   return myTolStart + Other.myTolStart < myStart - Other.myStart
          && myTolStart + Other.myTolEnd < Other.myEnd - myStart
@@ -301,7 +294,7 @@ inline Standard_Boolean Intrv_Interval::IsOverlappingAtEnd(const Intrv_Interval&
 //                  ***----*                       IsJustOverlappingAtStart
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsJustOverlappingAtStart(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsJustOverlappingAtStart(const Intrv_Interval& Other) const
 {
   return AreFused(myStart, myTolStart, Other.myStart, Other.myTolStart)
          && myTolEnd + Other.myTolEnd < Other.myEnd - myEnd;
@@ -312,7 +305,7 @@ inline Standard_Boolean Intrv_Interval::IsJustOverlappingAtStart(const Intrv_Int
 //                         ***------*              IsJustOverlappingAtEnd
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsJustOverlappingAtEnd(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsJustOverlappingAtEnd(const Intrv_Interval& Other) const
 {
   return myTolStart + Other.myTolStart < myStart - Other.myStart
          && AreFused(Other.myEnd, Other.myTolEnd, myEnd, myTolEnd);
@@ -323,9 +316,9 @@ inline Standard_Boolean Intrv_Interval::IsJustOverlappingAtEnd(const Intrv_Inter
 //                  ***-------------*              IsSimilar
 //=======================================================================
 
-inline Standard_Boolean Intrv_Interval::IsSimilar(const Intrv_Interval& Other) const
+inline bool Intrv_Interval::IsSimilar(const Intrv_Interval& Other) const
 {
-  Standard_Boolean b1, b2;
+  bool b1, b2;
   b1 = AreFused(myStart, myTolStart, Other.myStart, Other.myTolStart);
   b2 = AreFused(myEnd, myTolEnd, Other.myEnd, Other.myTolEnd);
   return b1 && b2;

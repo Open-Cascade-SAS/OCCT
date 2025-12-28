@@ -17,11 +17,9 @@
 #ifndef _SelectMgr_CompositionFilter_HeaderFile
 #define _SelectMgr_CompositionFilter_HeaderFile
 
-#include <SelectMgr_ListOfFilter.hxx>
 #include <SelectMgr_Filter.hxx>
+#include <NCollection_List.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-
-DEFINE_STANDARD_HANDLE(SelectMgr_CompositionFilter, SelectMgr_Filter)
 
 //! A framework to define a compound filter composed of
 //! two or more simple filters.
@@ -31,30 +29,29 @@ class SelectMgr_CompositionFilter : public SelectMgr_Filter
 public:
   //! Adds the filter afilter to a filter object created by a
   //! filter class inheriting this framework.
-  Standard_EXPORT void Add(const Handle(SelectMgr_Filter)& afilter);
+  Standard_EXPORT void Add(const occ::handle<SelectMgr_Filter>& afilter);
 
   //! Removes the filter aFilter from this framework.
-  Standard_EXPORT void Remove(const Handle(SelectMgr_Filter)& aFilter);
+  Standard_EXPORT void Remove(const occ::handle<SelectMgr_Filter>& aFilter);
 
   //! Returns true if this framework is empty.
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_EXPORT bool IsEmpty() const;
 
   //! Returns true if the filter aFilter is in this framework.
-  Standard_EXPORT Standard_Boolean IsIn(const Handle(SelectMgr_Filter)& aFilter) const;
+  Standard_EXPORT bool IsIn(const occ::handle<SelectMgr_Filter>& aFilter) const;
 
   //! Returns the list of stored filters from this framework.
-  const SelectMgr_ListOfFilter& StoredFilters() const { return myFilters; }
+  const NCollection_List<occ::handle<SelectMgr_Filter>>& StoredFilters() const { return myFilters; }
 
   //! Clears the filters used in this framework.
   Standard_EXPORT void Clear();
 
-  Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_CompositionFilter, SelectMgr_Filter)
 
 protected:
-  SelectMgr_ListOfFilter myFilters;
+  NCollection_List<occ::handle<SelectMgr_Filter>> myFilters;
 };
 
 #endif // _SelectMgr_CompositionFilter_HeaderFile

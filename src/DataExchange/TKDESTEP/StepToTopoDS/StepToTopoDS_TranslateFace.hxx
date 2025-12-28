@@ -42,40 +42,40 @@ public:
   Standard_EXPORT StepToTopoDS_TranslateFace();
 
   Standard_EXPORT StepToTopoDS_TranslateFace(
-    const Handle(StepShape_FaceSurface)& FS,
-    StepToTopoDS_Tool&                   T,
-    StepToTopoDS_NMTool&                 NMTool,
-    const StepData_Factors&              theLocalFactors = StepData_Factors());
-
-  Standard_EXPORT StepToTopoDS_TranslateFace(
-    const Handle(StepVisual_TessellatedFace)& theTF,
-    StepToTopoDS_Tool&                        theTool,
-    StepToTopoDS_NMTool&                      theNMTool,
-    const Standard_Boolean                    theReadTessellatedWhenNoBRepOnly,
-    Standard_Boolean&                         theHasGeom,
+    const occ::handle<StepShape_FaceSurface>& FS,
+    StepToTopoDS_Tool&                        T,
+    StepToTopoDS_NMTool&                      NMTool,
     const StepData_Factors&                   theLocalFactors = StepData_Factors());
 
   Standard_EXPORT StepToTopoDS_TranslateFace(
-    const Handle(StepVisual_TessellatedSurfaceSet)& theTSS,
-    StepToTopoDS_Tool&                              theTool,
-    StepToTopoDS_NMTool&                            theNMTool,
-    const StepData_Factors&                         theLocalFactors = StepData_Factors());
+    const occ::handle<StepVisual_TessellatedFace>& theTF,
+    StepToTopoDS_Tool&                             theTool,
+    StepToTopoDS_NMTool&                           theNMTool,
+    const bool                                     theReadTessellatedWhenNoBRepOnly,
+    bool&                                          theHasGeom,
+    const StepData_Factors&                        theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT void Init(const Handle(StepShape_FaceSurface)& theFaceSurface,
-                            StepToTopoDS_Tool&                   theTopoDSTool,
-                            StepToTopoDS_NMTool&                 theTopoDSToolNM,
+  Standard_EXPORT StepToTopoDS_TranslateFace(
+    const occ::handle<StepVisual_TessellatedSurfaceSet>& theTSS,
+    StepToTopoDS_Tool&                                   theTool,
+    StepToTopoDS_NMTool&                                 theNMTool,
+    const StepData_Factors&                              theLocalFactors = StepData_Factors());
+
+  Standard_EXPORT void Init(const occ::handle<StepShape_FaceSurface>& theFaceSurface,
+                            StepToTopoDS_Tool&                        theTopoDSTool,
+                            StepToTopoDS_NMTool&                      theTopoDSToolNM,
                             const StepData_Factors& theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT void Init(const Handle(StepVisual_TessellatedFace)& theTF,
-                            StepToTopoDS_Tool&                        theTool,
-                            StepToTopoDS_NMTool&                      theNMTool,
-                            const Standard_Boolean  theReadTessellatedWhenNoBRepOnly,
-                            Standard_Boolean&       theHasGeom,
+  Standard_EXPORT void Init(const occ::handle<StepVisual_TessellatedFace>& theTF,
+                            StepToTopoDS_Tool&                             theTool,
+                            StepToTopoDS_NMTool&                           theNMTool,
+                            const bool              theReadTessellatedWhenNoBRepOnly,
+                            bool&                   theHasGeom,
                             const StepData_Factors& theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT void Init(const Handle(StepVisual_TessellatedSurfaceSet)& theTSS,
-                            StepToTopoDS_Tool&                              theTool,
-                            StepToTopoDS_NMTool&                            theNMTool,
+  Standard_EXPORT void Init(const occ::handle<StepVisual_TessellatedSurfaceSet>& theTSS,
+                            StepToTopoDS_Tool&                                   theTool,
+                            StepToTopoDS_NMTool&                                 theNMTool,
                             const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const TopoDS_Shape& Value() const;
@@ -83,9 +83,9 @@ public:
   Standard_EXPORT StepToTopoDS_TranslateFaceError Error() const;
 
 private:
-  Handle(Poly_Triangulation) createMesh(
-    const Handle(StepVisual_TessellatedItem)& theTI,
-    const StepData_Factors&                   theLocalFactors = StepData_Factors()) const;
+  occ::handle<Poly_Triangulation> createMesh(
+    const occ::handle<StepVisual_TessellatedItem>& theTI,
+    const StepData_Factors&                        theLocalFactors = StepData_Factors()) const;
 
   StepToTopoDS_TranslateFaceError myError;
   TopoDS_Shape                    myResult;

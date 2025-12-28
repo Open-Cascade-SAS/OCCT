@@ -41,19 +41,19 @@ public:
 
   //! Constructs a chamfer edge.
   //! Returns true if the edge is constructed.
-  Standard_EXPORT Standard_Boolean Perform();
+  Standard_EXPORT bool Perform();
 
   // Returns the result (chamfer edge, modified edge1, modified edge2).
-  Standard_EXPORT TopoDS_Edge Result(TopoDS_Edge&        theEdge1,
-                                     TopoDS_Edge&        theEdge2,
-                                     const Standard_Real theLength1,
-                                     const Standard_Real theLength2);
+  Standard_EXPORT TopoDS_Edge Result(TopoDS_Edge& theEdge1,
+                                     TopoDS_Edge& theEdge2,
+                                     const double theLength1,
+                                     const double theLength2);
 
 private:
-  TopoDS_Edge        myEdge1, myEdge2;
-  Handle(Geom_Curve) myCurve1, myCurve2;
-  Standard_Real      myStart1, myEnd1, myStart2, myEnd2;
-  Standard_Boolean   myCommonStart1, myCommonStart2;
+  TopoDS_Edge             myEdge1, myEdge2;
+  occ::handle<Geom_Curve> myCurve1, myCurve2;
+  double                  myStart1, myEnd1, myStart2, myEnd2;
+  bool                    myCommonStart1, myCommonStart2;
 };
 
 #endif // _CHAMFERAPI_H_

@@ -39,16 +39,13 @@ public:
   //! 1 -> Pcurve
   //! 2 -> Surface
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Pcurve (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Pcurve) Pcurve() const;
+  Standard_EXPORT occ::handle<StepGeom_Pcurve> Pcurve() const;
 
   //! returns Value as a Surface (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Surface) Surface() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepGeom_Surface> Surface() const;
 };
 
 #endif // _StepGeom_PcurveOrSurface_HeaderFile

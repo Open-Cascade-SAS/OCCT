@@ -22,9 +22,6 @@
 
 #include <StepGeom_Curve.hxx>
 
-class StepGeom_BoundedCurve;
-DEFINE_STANDARD_HANDLE(StepGeom_BoundedCurve, StepGeom_Curve)
-
 class StepGeom_BoundedCurve : public StepGeom_Curve
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepGeom_BoundedCurve();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_BoundedCurve, StepGeom_Curve)
-
-protected:
-private:
 };
 
 #endif // _StepGeom_BoundedCurve_HeaderFile

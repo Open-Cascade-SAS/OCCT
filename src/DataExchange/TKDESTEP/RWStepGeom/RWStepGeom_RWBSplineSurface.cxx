@@ -19,17 +19,18 @@
 #include <StepGeom_BSplineSurface.hxx>
 #include <StepGeom_BSplineSurfaceForm.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray2OfCartesianPoint.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include "RWStepGeom_RWBSplineSurfaceForm.pxx"
 
 RWStepGeom_RWBSplineSurface::RWStepGeom_RWBSplineSurface() {}
 
-void RWStepGeom_RWBSplineSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepGeom_BSplineSurface)& ent) const
+void RWStepGeom_RWBSplineSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                                   num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepGeom_BSplineSurface>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -39,40 +40,41 @@ void RWStepGeom_RWBSplineSurface::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : uDegree ---
 
-  Standard_Integer aUDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  int aUDegree;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadInteger(num, 2, "u_degree", ach, aUDegree);
 
   // --- own field : vDegree ---
 
-  Standard_Integer aVDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  int aVDegree;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadInteger(num, 3, "v_degree", ach, aVDegree);
 
   // --- own field : controlPointsList ---
 
-  Handle(StepGeom_HArray2OfCartesianPoint) aControlPointsList;
-  Handle(StepGeom_CartesianPoint)          anent4;
-  Standard_Integer                         nsub4;
+  occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
+  occ::handle<StepGeom_CartesianPoint>                                   anent4;
+  int                                                                    nsub4;
   if (data->ReadSubList(num, 4, "control_points_list", ach, nsub4))
   {
-    Standard_Integer nbi4 = data->NbParams(nsub4);
-    Standard_Integer nbj4 = data->NbParams(data->ParamNumber(nsub4, 1));
-    aControlPointsList    = new StepGeom_HArray2OfCartesianPoint(1, nbi4, 1, nbj4);
-    for (Standard_Integer i4 = 1; i4 <= nbi4; i4++)
+    int nbi4 = data->NbParams(nsub4);
+    int nbj4 = data->NbParams(data->ParamNumber(nsub4, 1));
+    aControlPointsList =
+      new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi4, 1, nbj4);
+    for (int i4 = 1; i4 <= nbi4; i4++)
     {
-      Standard_Integer nsi4;
+      int nsi4;
       if (data->ReadSubList(nsub4, i4, "sub-part(control_points_list)", ach, nsi4))
       {
-        for (Standard_Integer j4 = 1; j4 <= nbj4; j4++)
+        for (int j4 = 1; j4 <= nbj4; j4++)
         {
-          // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+          // szv#4:S4163:12Mar99 `bool stat4 =` not needed
           if (data->ReadEntity(nsi4,
                                j4,
                                "cartesian_point",
@@ -90,7 +92,7 @@ void RWStepGeom_RWBSplineSurface::ReadStep(const Handle(StepData_StepReaderData)
   StepGeom_BSplineSurfaceForm aSurfaceForm = StepGeom_bssfPlaneSurf;
   if (data->ParamType(num, 5) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 5);
+    const char* text = data->ParamCValue(num, 5);
     if (!RWStepGeom_RWBSplineSurfaceForm::ConvertToEnum(text, aSurfaceForm))
     {
       ach->AddFail("Enumeration b_spline_surface_form has not an allowed value");
@@ -102,19 +104,19 @@ void RWStepGeom_RWBSplineSurface::ReadStep(const Handle(StepData_StepReaderData)
   // --- own field : uClosed ---
 
   StepData_Logical aUClosed;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat6 =` not needed
   data->ReadLogical(num, 6, "u_closed", ach, aUClosed);
 
   // --- own field : vClosed ---
 
   StepData_Logical aVClosed;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat7 =` not needed
   data->ReadLogical(num, 7, "v_closed", ach, aVClosed);
 
   // --- own field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat8 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat8 =` not needed
   data->ReadLogical(num, 8, "self_intersect", ach, aSelfIntersect);
 
   //--- Initialisation of the read entity ---
@@ -129,8 +131,8 @@ void RWStepGeom_RWBSplineSurface::ReadStep(const Handle(StepData_StepReaderData)
             aSelfIntersect);
 }
 
-void RWStepGeom_RWBSplineSurface::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepGeom_BSplineSurface)& ent) const
+void RWStepGeom_RWBSplineSurface::WriteStep(StepData_StepWriter&                        SW,
+                                            const occ::handle<StepGeom_BSplineSurface>& ent) const
 {
 
   // --- inherited field name ---
@@ -148,14 +150,14 @@ void RWStepGeom_RWBSplineSurface::WriteStep(StepData_StepWriter&                
   // --- own field : controlPointsList ---
 
   SW.OpenSub();
-  for (Standard_Integer i4 = 1; i4 <= ent->NbControlPointsListI(); i4++)
+  for (int i4 = 1; i4 <= ent->NbControlPointsListI(); i4++)
   {
-    SW.NewLine(Standard_False);
+    SW.NewLine(false);
     SW.OpenSub();
-    for (Standard_Integer j4 = 1; j4 <= ent->NbControlPointsListJ(); j4++)
+    for (int j4 = 1; j4 <= ent->NbControlPointsListJ(); j4++)
     {
       SW.Send(ent->ControlPointsListValue(i4, j4));
-      SW.JoinLast(Standard_False);
+      SW.JoinLast(false);
     }
     SW.CloseSub();
   }
@@ -178,15 +180,15 @@ void RWStepGeom_RWBSplineSurface::WriteStep(StepData_StepWriter&                
   SW.SendLogical(ent->SelfIntersect());
 }
 
-void RWStepGeom_RWBSplineSurface::Share(const Handle(StepGeom_BSplineSurface)& ent,
-                                        Interface_EntityIterator&              iter) const
+void RWStepGeom_RWBSplineSurface::Share(const occ::handle<StepGeom_BSplineSurface>& ent,
+                                        Interface_EntityIterator&                   iter) const
 {
 
-  Standard_Integer nbiElem1 = ent->NbControlPointsListI();
-  Standard_Integer nbjElem1 = ent->NbControlPointsListJ();
-  for (Standard_Integer is1 = 1; is1 <= nbiElem1; is1++)
+  int nbiElem1 = ent->NbControlPointsListI();
+  int nbjElem1 = ent->NbControlPointsListJ();
+  for (int is1 = 1; is1 <= nbiElem1; is1++)
   {
-    for (Standard_Integer js1 = 1; js1 <= nbjElem1; js1++)
+    for (int js1 = 1; js1 <= nbjElem1; js1++)
     {
       iter.GetOneItem(ent->ControlPointsListValue(is1, js1));
     }

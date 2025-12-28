@@ -32,21 +32,21 @@ IMPLEMENT_STANDARD_RTTIEXT(RWObj_CafWriter, Standard_Transient)
 namespace
 {
 //! Trivial cast.
-inline Graphic3d_Vec3 objXyzToVec(const gp_XYZ& thePnt)
+inline NCollection_Vec3<float> objXyzToVec(const gp_XYZ& thePnt)
 {
-  return Graphic3d_Vec3((float)thePnt.X(), (float)thePnt.Y(), (float)thePnt.Z());
+  return NCollection_Vec3<float>((float)thePnt.X(), (float)thePnt.Y(), (float)thePnt.Z());
 }
 
 //! Trivial cast.
-inline Graphic3d_Vec2 objXyToVec(const gp_XY& thePnt)
+inline NCollection_Vec2<float> objXyToVec(const gp_XY& thePnt)
 {
-  return Graphic3d_Vec2((float)thePnt.X(), (float)thePnt.Y());
+  return NCollection_Vec2<float>((float)thePnt.X(), (float)thePnt.Y());
 }
 
 //! Read name attribute.
 static TCollection_AsciiString readNameAttribute(const TDF_Label& theRefLabel)
 {
-  Handle(TDataStd_Name) aNodeName;
+  occ::handle<TDataStd_Name> aNodeName;
   if (!theRefLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName))
   {
     return TCollection_AsciiString();
@@ -74,36 +74,38 @@ RWObj_CafWriter::~RWObj_CafWriter()
 
 //=================================================================================================
 
-Standard_Boolean RWObj_CafWriter::toSkipFaceMesh(const RWMesh_FaceIterator& theFaceIter)
+bool RWObj_CafWriter::toSkipFaceMesh(const RWMesh_FaceIterator& theFaceIter)
 {
   return theFaceIter.IsEmptyMesh();
 }
 
 //=================================================================================================
 
-bool RWObj_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
-                              const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                              const Message_ProgressRange&                theProgress)
+bool RWObj_CafWriter::Perform(
+  const occ::handle<TDocStd_Document>&                                                theDocument,
+  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+  const Message_ProgressRange&                                                        theProgress)
 {
-  TDF_LabelSequence         aRoots;
-  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  NCollection_Sequence<TDF_Label> aRoots;
+  occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aShapeTool->GetFreeShapes(aRoots);
   return Perform(theDocument, aRoots, NULL, theFileInfo, theProgress);
 }
 
 //=================================================================================================
 
-bool RWObj_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
-                              const TDF_LabelSequence&                    theRootLabels,
-                              const TColStd_MapOfAsciiString*             theLabelFilter,
-                              const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                              const Message_ProgressRange&                theProgress)
+bool RWObj_CafWriter::Perform(
+  const occ::handle<TDocStd_Document>&            theDocument,
+  const NCollection_Sequence<TDF_Label>&          theRootLabels,
+  const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
+  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+  const Message_ProgressRange&                                                        theProgress)
 {
   TCollection_AsciiString aFolder, aFileName, aFullFileNameBase, aShortFileNameBase, aFileExt;
   OSD_Path::FolderAndFileFromPath(myFile, aFolder, aFileName);
   OSD_Path::FileNameAndExtension(aFileName, aShortFileNameBase, aFileExt);
 
-  Standard_Real aLengthUnit = 1.;
+  double aLengthUnit = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aLengthUnit))
   {
     myCSTrsf.SetInputLengthUnit(aLengthUnit);
@@ -115,9 +117,9 @@ bool RWObj_CafWriter::Perform(const Handle(TDocStd_Document)&             theDoc
     return false;
   }
 
-  Standard_Integer aNbNodesAll = 0, aNbElemsAll = 0;
-  Standard_Real    aNbPEntities    = 0; // steps for progress range
-  bool             toCreateMatFile = false;
+  int    aNbNodesAll = 0, aNbElemsAll = 0;
+  double aNbPEntities    = 0; // steps for progress range
+  bool   toCreateMatFile = false;
   for (XCAFPrs_DocumentExplorer aDocExplorer(theDocument,
                                              theRootLabels,
                                              XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes);
@@ -180,7 +182,7 @@ bool RWObj_CafWriter::Perform(const Handle(TDocStd_Document)&             theDoc
   }
 
   // simple global progress sentry - ignores size of node and index data
-  const Standard_Real       aPatchStep = 2048.0; // about 100 KiB
+  const double              aPatchStep = 2048.0; // about 100 KiB
   Message_LazyProgressScope aPSentry(theProgress, "OBJ export", aNbPEntities, aPatchStep);
 
   bool isDone = true;
@@ -233,10 +235,10 @@ bool RWObj_CafWriter::Perform(const Handle(TDocStd_Document)&             theDoc
 //=================================================================================================
 
 void RWObj_CafWriter::addFaceInfo(const RWMesh_FaceIterator& theFace,
-                                  Standard_Integer&          theNbNodes,
-                                  Standard_Integer&          theNbElems,
-                                  Standard_Real&             theNbProgressSteps,
-                                  Standard_Boolean&          theToCreateMatFile)
+                                  int&                       theNbNodes,
+                                  int&                       theNbElems,
+                                  double&                    theNbProgressSteps,
+                                  bool&                      theToCreateMatFile)
 {
   theNbNodes += theFace.NbNodes();
   theNbElems += theFace.NbTriangles();
@@ -340,9 +342,8 @@ bool RWObj_CafWriter::writePositions(RWObj_ObjWriterContext&    theWriter,
                                      Message_LazyProgressScope& thePSentry,
                                      const RWMesh_FaceIterator& theFace)
 {
-  const Standard_Integer aNodeUpper = theFace.NodeUpper();
-  for (Standard_Integer aNodeIter = theFace.NodeLower();
-       aNodeIter <= aNodeUpper && thePSentry.More();
+  const int aNodeUpper = theFace.NodeUpper();
+  for (int aNodeIter = theFace.NodeLower(); aNodeIter <= aNodeUpper && thePSentry.More();
        ++aNodeIter, thePSentry.Next())
   {
     gp_XYZ aNode = theFace.NodeTransformed(aNodeIter).XYZ();
@@ -361,13 +362,12 @@ bool RWObj_CafWriter::writeNormals(RWObj_ObjWriterContext&    theWriter,
                                    Message_LazyProgressScope& thePSentry,
                                    const RWMesh_FaceIterator& theFace)
 {
-  const Standard_Integer aNodeUpper = theFace.NodeUpper();
-  for (Standard_Integer aNodeIter = theFace.NodeLower();
-       aNodeIter <= aNodeUpper && thePSentry.More();
+  const int aNodeUpper = theFace.NodeUpper();
+  for (int aNodeIter = theFace.NodeLower(); aNodeIter <= aNodeUpper && thePSentry.More();
        ++aNodeIter, thePSentry.Next())
   {
-    const gp_Dir   aNormal   = theFace.NormalTransformed(aNodeIter);
-    Graphic3d_Vec3 aNormVec3 = objXyzToVec(aNormal.XYZ());
+    const gp_Dir            aNormal   = theFace.NormalTransformed(aNodeIter);
+    NCollection_Vec3<float> aNormVec3 = objXyzToVec(aNormal.XYZ());
     myCSTrsf.TransformNormal(aNormVec3);
     if (!theWriter.WriteNormal(aNormVec3))
     {
@@ -383,9 +383,8 @@ bool RWObj_CafWriter::writeTextCoords(RWObj_ObjWriterContext&    theWriter,
                                       Message_LazyProgressScope& thePSentry,
                                       const RWMesh_FaceIterator& theFace)
 {
-  const Standard_Integer aNodeUpper = theFace.NodeUpper();
-  for (Standard_Integer aNodeIter = theFace.NodeLower();
-       aNodeIter <= aNodeUpper && thePSentry.More();
+  const int aNodeUpper = theFace.NodeUpper();
+  for (int aNodeIter = theFace.NodeLower(); aNodeIter <= aNodeUpper && thePSentry.More();
        ++aNodeIter, thePSentry.Next())
   {
     gp_Pnt2d aTexCoord = theFace.NodeTexCoord(aNodeIter);
@@ -403,14 +402,14 @@ bool RWObj_CafWriter::writeIndices(RWObj_ObjWriterContext&    theWriter,
                                    Message_LazyProgressScope& thePSentry,
                                    const RWMesh_FaceIterator& theFace)
 {
-  const Standard_Integer anElemLower = theFace.ElemLower();
-  const Standard_Integer anElemUpper = theFace.ElemUpper();
-  for (Standard_Integer anElemIter = anElemLower; anElemIter <= anElemUpper && thePSentry.More();
+  const int anElemLower = theFace.ElemLower();
+  const int anElemUpper = theFace.ElemUpper();
+  for (int anElemIter = anElemLower; anElemIter <= anElemUpper && thePSentry.More();
        ++anElemIter, thePSentry.Next())
   {
     const Poly_Triangle aTri = theFace.TriangleOriented(anElemIter);
-    if (!theWriter.WriteTriangle(Graphic3d_Vec3i(aTri(1), aTri(2), aTri(3))
-                                 - Graphic3d_Vec3i(anElemLower)))
+    if (!theWriter.WriteTriangle(NCollection_Vec3<int>(aTri(1), aTri(2), aTri(3))
+                                 - NCollection_Vec3<int>(anElemLower)))
     {
       return false;
     }

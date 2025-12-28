@@ -26,36 +26,36 @@ public:
   Standard_EXPORT StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Standard_Real              theAmbientReflectance,
-                            const Standard_Real              theDiffuseReflectance,
-                            const Standard_Real              theSpecularReflectance,
-                            const Standard_Real              theSpecularExponent,
-                            const Handle(StepVisual_Colour)& theSpecularColour);
+  Standard_EXPORT void Init(const double                          theAmbientReflectance,
+                            const double                          theDiffuseReflectance,
+                            const double                          theSpecularReflectance,
+                            const double                          theSpecularExponent,
+                            const occ::handle<StepVisual_Colour>& theSpecularColour);
 
   //! Returns field SpecularReflectance
-  Standard_EXPORT Standard_Real SpecularReflectance() const;
+  Standard_EXPORT double SpecularReflectance() const;
 
   //! Sets field SpecularReflectance
-  Standard_EXPORT void SetSpecularReflectance(const Standard_Real theSpecularReflectance);
+  Standard_EXPORT void SetSpecularReflectance(const double theSpecularReflectance);
 
   //! Returns field SpecularExponent
-  Standard_EXPORT Standard_Real SpecularExponent() const;
+  Standard_EXPORT double SpecularExponent() const;
 
   //! Sets field SpecularExponent
-  Standard_EXPORT void SetSpecularExponent(const Standard_Real theSpecularExponent);
+  Standard_EXPORT void SetSpecularExponent(const double theSpecularExponent);
 
   //! Returns field SpecularColour
-  Standard_EXPORT Handle(StepVisual_Colour) SpecularColour() const;
+  Standard_EXPORT occ::handle<StepVisual_Colour> SpecularColour() const;
 
   //! Sets field SpecularColour
-  Standard_EXPORT void SetSpecularColour(const Handle(StepVisual_Colour)& theSpecularColour);
+  Standard_EXPORT void SetSpecularColour(const occ::handle<StepVisual_Colour>& theSpecularColour);
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular,
                           StepVisual_SurfaceStyleReflectanceAmbientDiffuse)
 
 private:
-  Standard_Real             mySpecularReflectance;
-  Standard_Real             mySpecularExponent;
-  Handle(StepVisual_Colour) mySpecularColour;
+  double                         mySpecularReflectance;
+  double                         mySpecularExponent;
+  occ::handle<StepVisual_Colour> mySpecularColour;
 };
 #endif // _StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular_HeaderFile_

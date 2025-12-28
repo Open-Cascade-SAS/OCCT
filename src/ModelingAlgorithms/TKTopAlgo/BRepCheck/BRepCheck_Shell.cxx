@@ -19,7 +19,9 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepCheck.hxx>
-#include <BRepCheck_ListOfStatus.hxx>
+#include <BRepCheck_Status.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Shared.hxx>
 #include <Standard_Type.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -28,24 +30,27 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <Standard_Integer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Shell, BRepCheck_Result)
 
 //=================================================================================================
 
-static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapEF,
-                      const TopoDS_Shape&                              theFace,
-                      TopTools_IndexedMapOfShape&                      theMapF)
+static void Propagate(const NCollection_IndexedDataMap<TopoDS_Shape,
+                                                       NCollection_List<TopoDS_Shape>,
+                                                       TopTools_ShapeMapHasher>&     mapEF,
+                      const TopoDS_Shape&                                            theFace,
+                      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapF)
 {
   // Base for the traverse procedure.
   theMapF.Add(theFace);
 
   // Perform well-known width-first traverse.
-  for (Standard_Integer anIdx = 1; anIdx <= theMapF.Extent(); ++anIdx)
+  for (int anIdx = 1; anIdx <= theMapF.Extent(); ++anIdx)
   {
     const TopoDS_Shape& aFace = theMapF(anIdx);
     for (TopExp_Explorer ex(aFace, TopAbs_EDGE); ex.More(); ex.Next())
@@ -53,12 +58,12 @@ static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapEF,
       const TopoDS_Edge& edg = TopoDS::Edge(ex.Current());
 
       // Test if the edge is in the map (only oriented edges are present).
-      const TopTools_ListOfShape* aList = mapEF.Seek(edg);
+      const NCollection_List<TopoDS_Shape>* aList = mapEF.Seek(edg);
 
       if (aList == NULL)
         continue;
 
-      for (TopTools_ListIteratorOfListOfShape itl(*aList); itl.More(); itl.Next())
+      for (NCollection_List<TopoDS_Shape>::Iterator itl(*aList); itl.More(); itl.Next())
       {
         // This code assumes that shape is added to an end of the map.
         // The idea is simple: existing objects will not be added, new objects
@@ -71,7 +76,7 @@ static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapEF,
 
 //=================================================================================================
 
-Standard_EXPORT Standard_Integer BRepCheck_Trace(const Standard_Integer phase)
+Standard_EXPORT int BRepCheck_Trace(const int phase)
 {
   static int BRC_Trace = 0;
   if (phase < 0)
@@ -93,7 +98,7 @@ void PrintShape(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-inline Standard_Boolean IsOriented(const TopoDS_Shape& S)
+inline bool IsOriented(const TopoDS_Shape& S)
 {
   return (S.Orientation() == TopAbs_FORWARD || S.Orientation() == TopAbs_REVERSED);
 }
@@ -102,9 +107,9 @@ inline Standard_Boolean IsOriented(const TopoDS_Shape& S)
 
 BRepCheck_Shell::BRepCheck_Shell(const TopoDS_Shell& S)
     : myNbori(0),
-      myCdone(Standard_False),
+      myCdone(false),
       myCstat(BRepCheck_NoError),
-      myOdone(Standard_False),
+      myOdone(false),
       myOstat(BRepCheck_NoError)
 {
   Init(S);
@@ -114,17 +119,18 @@ BRepCheck_Shell::BRepCheck_Shell(const TopoDS_Shell& S)
 
 void BRepCheck_Shell::Minimum()
 {
-  myCdone = Standard_False;
-  myOdone = Standard_False;
+  myCdone = false;
+  myOdone = false;
 
   if (!myMin)
   {
-    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
-    BRepCheck_ListOfStatus&         lst      = **myMap.Bound(myShape, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
+      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    NCollection_List<BRepCheck_Status>& lst = **myMap.Bound(myShape, aNewList);
 
     // it is checked if the shell is "connected"
-    TopExp_Explorer  exp(myShape, TopAbs_FACE);
-    Standard_Integer nbface = 0;
+    TopExp_Explorer exp(myShape, TopAbs_FACE);
+    int             nbface = 0;
     myMapEF.Clear();
     for (; exp.More(); exp.Next())
     {
@@ -133,10 +139,10 @@ void BRepCheck_Shell::Minimum()
       for (expe.Init(exp.Current(), TopAbs_EDGE); expe.More(); expe.Next())
       {
         const TopoDS_Shape& edg   = expe.Current();
-        Standard_Integer    index = myMapEF.FindIndex(edg);
+        int                 index = myMapEF.FindIndex(edg);
         if (index == 0)
         {
-          TopTools_ListOfShape thelist1;
+          NCollection_List<TopoDS_Shape> thelist1;
           index = myMapEF.Add(edg, thelist1);
         }
 
@@ -150,7 +156,7 @@ void BRepCheck_Shell::Minimum()
     }
     else if (nbface >= 2)
     {
-      TopTools_IndexedMapOfShape mapF;
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mapF;
       exp.ReInit();
 
       Propagate(myMapEF, exp.Current(), mapF);
@@ -167,7 +173,7 @@ void BRepCheck_Shell::Minimum()
     }
 
     myMapEF.Clear();
-    myMin = Standard_True;
+    myMin = true;
   }
 }
 
@@ -175,7 +181,7 @@ void BRepCheck_Shell::Minimum()
 
 void BRepCheck_Shell::InContext(const TopoDS_Shape& S)
 {
-  Handle(BRepCheck_HListOfStatus) aHList;
+  occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock =
       myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
@@ -183,10 +189,11 @@ void BRepCheck_Shell::InContext(const TopoDS_Shape& S)
     {
       return;
     }
-    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
-    aHList                                   = *myMap.Bound(S, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
+      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    aHList = *myMap.Bound(S, aNewList);
   }
-  BRepCheck_ListOfStatus& lst = *aHList;
+  NCollection_List<BRepCheck_Status>& lst = *aHList;
 
   //  for (TopExp_Explorer exp(S,TopAbs_SHELL); exp.More(); exp.Next()) {
   TopExp_Explorer exp(S, TopAbs_SHELL);
@@ -238,22 +245,22 @@ void BRepCheck_Shell::Blind()
   if (!myBlind)
   {
     // nothing more than in the minimum
-    myBlind = Standard_True;
+    myBlind = true;
   }
 }
 
 //=================================================================================================
 
-BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
+BRepCheck_Status BRepCheck_Shell::Closed(const bool Update)
 {
-  Handle(BRepCheck_HListOfStatus) aHList;
+  occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock =
       myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
 
-  BRepCheck_ListOfStatus& aStatusList = *aHList;
+  NCollection_List<BRepCheck_Status>& aStatusList = *aHList;
   if (myCdone)
   {
     if (Update)
@@ -264,9 +271,9 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
     return myCstat;
   }
 
-  myCdone = Standard_True; // it will be done...
+  myCdone = true; // it will be done...
 
-  BRepCheck_ListIteratorOfListOfStatus itl(aStatusList);
+  NCollection_List<BRepCheck_Status>::Iterator itl(aStatusList);
   if (itl.Value() != BRepCheck_NoError)
   {
     myCstat = itl.Value();
@@ -275,10 +282,10 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
 
   myCstat = BRepCheck_NoError;
   //
-  Standard_Integer           index, aNbF;
-  TopExp_Explorer            exp, ede;
-  TopTools_IndexedMapOfShape mapS;
-  TopTools_MapOfShape        aMEToAvoid;
+  int                                                           index, aNbF;
+  TopExp_Explorer                                               exp, ede;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mapS;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>        aMEToAvoid;
   myMapEF.Clear();
 
   // Checks if the oriented faces of the shell give a "closed" shell,
@@ -336,7 +343,7 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
 
           if (!index)
           {
-            TopTools_ListOfShape thelist;
+            NCollection_List<TopoDS_Shape> thelist;
             index = myMapEF.Add(aE, thelist);
           }
 
@@ -380,7 +387,7 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
   }
   //
   //
-  Standard_Integer i, Nbedges, nboc, nbSet;
+  int i, Nbedges, nboc, nbSet;
   //
   Nbedges = myMapEF.Extent();
   for (i = 1; i <= Nbedges; ++i)
@@ -388,7 +395,7 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
     nboc = myMapEF(i).Extent();
     if (nboc == 0 || nboc >= 3)
     {
-      TopTools_ListOfShape theSet;
+      NCollection_List<TopoDS_Shape> theSet;
       nbSet = NbConnectedSet(theSet);
       // If there is more than one closed cavity the shell is considered invalid
       // this corresponds to the criteria of a solid (not those of a shell)
@@ -427,15 +434,15 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
 
 //=================================================================================================
 
-BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
+BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 {
-  Handle(BRepCheck_HListOfStatus) aHList;
+  occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock =
       myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
-  BRepCheck_ListOfStatus& aStatusList = *aHList;
+  NCollection_List<BRepCheck_Status>& aStatusList = *aHList;
 
   if (myOdone)
   {
@@ -445,7 +452,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
     }
     return myOstat;
   }
-  myOdone = Standard_True;
+  myOdone = true;
 
   myOstat = Closed();
   if (myOstat != BRepCheck_NotClosed && myOstat != BRepCheck_NoError)
@@ -462,12 +469,12 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
   // First the orientation of each face in relation to the shell is found.
   // It is used to check BRepCheck_RedundantFace
 
-  TopTools_DataMapOfShapeInteger MapOfShapeOrientation;
-  TopExp_Explorer                exp, ede;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> MapOfShapeOrientation;
+  TopExp_Explorer                                                 exp, ede;
 
   for (exp.Init(myShape, TopAbs_FACE); exp.More(); exp.Next())
   {
-    if (!MapOfShapeOrientation.Bind(exp.Current(), (Standard_Integer)(exp.Current().Orientation())))
+    if (!MapOfShapeOrientation.Bind(exp.Current(), (int)(exp.Current().Orientation())))
     {
       myOstat = BRepCheck_RedundantFace;
       if (Update)
@@ -484,7 +491,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
 #ifdef OCCT_DEBUG
   if (BRepCheck_Trace(0) > 1)
   {
-    TopTools_DataMapIteratorOfDataMapOfShapeInteger itt(MapOfShapeOrientation);
+    NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator itt(
+      MapOfShapeOrientation);
     std::cout << "La map shape Orientation :" << std::endl;
     for (; itt.More(); itt.Next())
     {
@@ -498,18 +506,18 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
   // BRepCheck_BadOrientationOfSubshape and
   //         BRepCheck_SubshapeNotInShape are checked;
 
-  Standard_Integer   Nbedges = myMapEF.Extent();
+  int                Nbedges = myMapEF.Extent();
   TopoDS_Face        Fref;
   TopAbs_Orientation orf;
 
-  for (Standard_Integer i = 1; i <= Nbedges; i++)
+  for (int i = 1; i <= Nbedges; i++)
   {
 
     const TopoDS_Edge& edg = TopoDS::Edge(myMapEF.FindKey(i));
     if (BRep_Tool::Degenerated(edg))
       continue;
-    TopTools_ListOfShape&              lface = myMapEF(i);
-    TopTools_ListIteratorOfListOfShape lite(lface);
+    NCollection_List<TopoDS_Shape>&          lface = myMapEF(i);
+    NCollection_List<TopoDS_Shape>::Iterator lite(lface);
 
     if (lface.Extent() <= 2)
     {
@@ -531,8 +539,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
       if (lite.More()) // Edge of connectivity
       {
         // JR/Hp :
-        Standard_Integer iorf = MapOfShapeOrientation.Find(Fref);
-        orf                   = (TopAbs_Orientation)iorf;
+        int iorf = MapOfShapeOrientation.Find(Fref);
+        orf      = (TopAbs_Orientation)iorf;
         // orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fref);
         Fref.Orientation(orf);
 
@@ -560,8 +568,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
           }
 
           // JR/Hp :
-          Standard_Integer anOriFCur = MapOfShapeOrientation.Find(Fcur);
-          orf                        = (TopAbs_Orientation)anOriFCur;
+          int anOriFCur = MapOfShapeOrientation.Find(Fcur);
+          orf           = (TopAbs_Orientation)anOriFCur;
           //	orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
           Fcur.Orientation(orf);
 
@@ -578,14 +586,14 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
             // as the same edge is present in the wire
 
             // modified by NIZHNY-MKK  Tue Sep 30 11:11:42 2003
-            Standard_Boolean bfound = Standard_False;
+            bool bfound = false;
             ede.Next();
             for (; ede.More(); ede.Next())
             {
               if (ede.Current().IsSame(edg))
               {
                 // modified by NIZHNY-MKK  Tue Sep 30 11:12:03 2003
-                bfound = Standard_True;
+                bfound = true;
                 break;
               }
             }
@@ -607,8 +615,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
     }
     else // more than two faces
     {
-      Standard_Integer    numF = 0, numR = 0;
-      TopTools_MapOfShape Fmap;
+      int                                                    numF = 0, numR = 0;
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Fmap;
 
       for (lite.Initialize(lface); lite.More(); lite.Next())
       {
@@ -624,8 +632,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
           return myOstat;
         }
 
-        Standard_Integer iorf = MapOfShapeOrientation.Find(Fcur);
-        orf                   = (TopAbs_Orientation)iorf;
+        int iorf = MapOfShapeOrientation.Find(Fcur);
+        orf      = (TopAbs_Orientation)iorf;
         // orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
         Fcur.Orientation(orf);
 
@@ -683,8 +691,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
     {
       if (Nbedges > 0)
       {
-        TopTools_MapOfShape  alre;
-        TopTools_ListOfShape voisin;
+        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> alre;
+        NCollection_List<TopoDS_Shape>                         voisin;
         voisin.Append(Fref);
         alre.Clear();
         while (!voisin.IsEmpty())
@@ -702,8 +710,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
             return myOstat;
           }
           // JR/Hp :
-          Standard_Integer iorf = MapOfShapeOrientation.Find(Fref);
-          orf                   = (TopAbs_Orientation)iorf;
+          int iorf = MapOfShapeOrientation.Find(Fref);
+          orf      = (TopAbs_Orientation)iorf;
           //        orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fref);
           Fref.Orientation(orf);
 
@@ -720,10 +728,10 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
 
           for (ede.Init(Fref, TopAbs_EDGE); ede.More(); ede.Next())
           {
-            const TopoDS_Edge&                 edg    = TopoDS::Edge(ede.Current());
-            TopAbs_Orientation                 orient = edg.Orientation();
-            TopTools_ListOfShape&              lface  = myMapEF.ChangeFromKey(edg);
-            TopTools_ListIteratorOfListOfShape lite(lface);
+            const TopoDS_Edge&                       edg    = TopoDS::Edge(ede.Current());
+            TopAbs_Orientation                       orient = edg.Orientation();
+            NCollection_List<TopoDS_Shape>&          lface  = myMapEF.ChangeFromKey(edg);
+            NCollection_List<TopoDS_Shape>::Iterator lite(lface);
 
             TopoDS_Face Fcur = TopoDS::Face(lite.Value());
             if (Fcur.IsSame(Fref))
@@ -752,8 +760,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
             }
 
             // JR/Hp :
-            Standard_Integer anOriFCur = MapOfShapeOrientation.Find(Fcur);
-            orf                        = (TopAbs_Orientation)anOriFCur;
+            int anOriFCur = MapOfShapeOrientation.Find(Fcur);
+            orf           = (TopAbs_Orientation)anOriFCur;
             //          orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
             Fcur.Orientation(orf);
 
@@ -836,47 +844,48 @@ void BRepCheck_Shell::SetUnorientable()
 
 //=================================================================================================
 
-Standard_Boolean BRepCheck_Shell::IsUnorientable() const
+bool BRepCheck_Shell::IsUnorientable() const
 {
   if (myOdone)
   {
     return (myOstat != BRepCheck_NoError);
   }
 
-  Handle(BRepCheck_HListOfStatus) aHList;
+  occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock =
       myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
     aHList = myMap(myShape);
   }
-  BRepCheck_ListOfStatus& aStatusList = *aHList;
+  NCollection_List<BRepCheck_Status>& aStatusList = *aHList;
 
-  for (BRepCheck_ListIteratorOfListOfStatus itl(aStatusList); itl.More(); itl.Next())
+  for (NCollection_List<BRepCheck_Status>::Iterator itl(aStatusList); itl.More(); itl.Next())
   {
     if (itl.Value() == BRepCheck_UnorientableShape)
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Integer BRepCheck_Shell::NbConnectedSet(TopTools_ListOfShape& theSets)
+int BRepCheck_Shell::NbConnectedSet(NCollection_List<TopoDS_Shape>& theSets)
 {
   // The connections are found
-  TopTools_IndexedDataMapOfShapeListOfShape parents;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    parents;
   TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, parents);
   // All faces are taken
-  TopTools_MapOfShape theFaces;
-  TopExp_Explorer     exsh(myShape, TopAbs_FACE);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theFaces;
+  TopExp_Explorer                                        exsh(myShape, TopAbs_FACE);
   for (; exsh.More(); exsh.Next())
     theFaces.Add(exsh.Current());
   // The edges that are not oriented or have more than 2 connections are missing
-  Standard_Integer    iCur;
-  TopTools_MapOfShape theMultiEd;
-  TopTools_MapOfShape theUnOriEd;
+  int                                                    iCur;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMultiEd;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theUnOriEd;
   for (iCur = 1; iCur <= parents.Extent(); iCur++)
   {
     const TopoDS_Edge& Ed = TopoDS::Edge(parents.FindKey(iCur));
@@ -886,13 +895,13 @@ Standard_Integer BRepCheck_Shell::NbConnectedSet(TopTools_ListOfShape& theSets)
       theUnOriEd.Add(Ed);
   }
   // Starting from multiconnected edges propagation by simple connections
-  TopTools_ListIteratorOfListOfShape lconx1, lconx2;
-  TopTools_MapIteratorOfMapOfShape   itmsh(theMultiEd);
-  TopoDS_Shell                       CurShell;
-  TopoDS_Shape                       adFac;
-  TopTools_ListOfShape               lesCur;
-  BRep_Builder                       BRB;
-  Standard_Boolean                   newCur = Standard_True;
+  NCollection_List<TopoDS_Shape>::Iterator                         lconx1, lconx2;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itmsh(theMultiEd);
+  TopoDS_Shell                                                     CurShell;
+  TopoDS_Shape                                                     adFac;
+  NCollection_List<TopoDS_Shape>                                   lesCur;
+  BRep_Builder                                                     BRB;
+  bool                                                             newCur = true;
   BRB.MakeShell(CurShell);
   for (; itmsh.More(); itmsh.Next())
   {
@@ -906,7 +915,7 @@ Standard_Integer BRepCheck_Shell::NbConnectedSet(TopTools_ListOfShape& theSets)
           adFac = lconx1.Value();
           BRB.Add(CurShell, adFac);
           theFaces.Remove(adFac);
-          newCur = Standard_False;
+          newCur = false;
           if (theFaces.IsEmpty())
             break;
           lesCur.Append(adFac);
@@ -926,7 +935,7 @@ Standard_Integer BRepCheck_Shell::NbConnectedSet(TopTools_ListOfShape& theSets)
                     adFac = lconx2.Value();
                     BRB.Add(CurShell, adFac);
                     theFaces.Remove(adFac);
-                    newCur = Standard_False;
+                    newCur = false;
                     if (theFaces.IsEmpty())
                       break;
                     lesCur.Append(adFac);
@@ -942,7 +951,7 @@ Standard_Integer BRepCheck_Shell::NbConnectedSet(TopTools_ListOfShape& theSets)
             CurShell.Closed(BRep_Tool::IsClosed(CurShell));
             theSets.Append(CurShell);
             CurShell.Nullify();
-            newCur = Standard_True;
+            newCur = true;
             BRB.MakeShell(CurShell);
           }
         }

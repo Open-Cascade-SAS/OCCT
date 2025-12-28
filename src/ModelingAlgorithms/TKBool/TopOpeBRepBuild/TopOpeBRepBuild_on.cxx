@@ -20,15 +20,15 @@
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepDS_CurveIterator.hxx>
 
-// Standard_IMPORT extern Standard_Boolean GLOBAL_faces2d;
-extern Standard_Boolean GLOBAL_faces2d;
+// Standard_IMPORT extern bool GLOBAL_faces2d;
+extern bool GLOBAL_faces2d;
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::GFillONPartsWES(const TopoDS_Shape&          FOR,
-                                              const TopOpeBRepBuild_GTopo& G,
-                                              const TopTools_ListOfShape&  LSclass,
-                                              TopOpeBRepBuild_WireEdgeSet& WES)
+void TopOpeBRepBuild_Builder::GFillONPartsWES(const TopoDS_Shape&                   FOR,
+                                              const TopOpeBRepBuild_GTopo&          G,
+                                              const NCollection_List<TopoDS_Shape>& LSclass,
+                                              TopOpeBRepBuild_WireEdgeSet&          WES)
 {
   TopOpeBRepBuild_BuilderON BON;
   if (GLOBAL_faces2d)

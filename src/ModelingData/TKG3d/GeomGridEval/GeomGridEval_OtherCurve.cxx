@@ -16,7 +16,7 @@
 //==================================================================================================
 
 NCollection_Array1<gp_Pnt> GeomGridEval_OtherCurve::EvaluateGrid(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (theParams.IsEmpty())
   {
@@ -37,7 +37,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_OtherCurve::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OtherCurve::EvaluateGridD1(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (theParams.IsEmpty())
   {
@@ -61,7 +61,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OtherCurve::EvaluateGridD
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OtherCurve::EvaluateGridD2(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (theParams.IsEmpty())
   {
@@ -85,7 +85,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OtherCurve::EvaluateGridD
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OtherCurve::EvaluateGridD3(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (theParams.IsEmpty())
   {
@@ -109,8 +109,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OtherCurve::EvaluateGridD
 //==================================================================================================
 
 NCollection_Array1<gp_Vec> GeomGridEval_OtherCurve::EvaluateGridDN(
-  const TColStd_Array1OfReal& theParams,
-  int                         theN) const
+  const NCollection_Array1<double>& theParams,
+  int                               theN) const
 {
   if (theParams.IsEmpty() || theN < 1)
   {

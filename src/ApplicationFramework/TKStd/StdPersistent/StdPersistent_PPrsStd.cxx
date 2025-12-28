@@ -18,16 +18,16 @@
 // purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_PPrsStd::AISPresentation::Import(
-  const Handle(TDataXtd_Presentation)& theAttribute) const
+  const occ::handle<TDataXtd_Presentation>& theAttribute) const
 {
   theAttribute->SetDisplayed(myIsDisplayed);
 
-  Handle(TCollection_HExtendedString) aDriverGUID = myDriverGUID->ExtString();
+  occ::handle<TCollection_HExtendedString> aDriverGUID = myDriverGUID->ExtString();
   if (aDriverGUID)
     theAttribute->SetDriverGUID(Standard_GUID(aDriverGUID->String().ToExtString()));
 
   if (myColor != -1)
-    theAttribute->SetColor(static_cast<Quantity_NameOfColor>((Standard_Integer)myColor));
+    theAttribute->SetColor(static_cast<Quantity_NameOfColor>((int)myColor));
   else
     theAttribute->UnsetColor();
 
@@ -52,7 +52,7 @@ void StdPersistent_PPrsStd::AISPresentation::Import(
 // purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_PPrsStd::AISPresentation_1::Import(
-  const Handle(TDataXtd_Presentation)& theAttribute) const
+  const occ::handle<TDataXtd_Presentation>& theAttribute) const
 {
   AISPresentation::Import(theAttribute);
   theAttribute->SetMode(myMode);

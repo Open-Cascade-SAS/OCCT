@@ -77,8 +77,8 @@
 //!
 //! Here is the example of usage of the algorithm:
 //! ~~~~
-//! TopTools_ListOfShape anArguments = ...;  // Shapes to make connected
-//! Standard_Boolean bRunParallel = ...;     // Parallel processing mode
+//! NCollection_List<TopoDS_Shape> anArguments = ...;  // Shapes to make connected
+//! bool bRunParallel = ...;     // Parallel processing mode
 //!
 //! BOPAlgo_MakeConnected aMC;               // Tool for making the shapes connected
 //! aMC.SetArguments(anArguments);           // Set the shapes
@@ -107,8 +107,8 @@
 //! for (; anExp.More(); anExp.Next())
 //! {
 //!   const TopoDS_Shape& anElement = anExp.Current();
-//!   const TopTools_ListOfShape& aNegativeM = aMC.MaterialsOnNegativeSide(anElement);
-//!   const TopTools_ListOfShape& aPositiveM = aMC.MaterialsOnPositiveSide(anElement);
+//!   const NCollection_List<TopoDS_Shape>& aNegativeM = aMC.MaterialsOnNegativeSide(anElement);
+//!   const NCollection_List<TopoDS_Shape>& aPositiveM = aMC.MaterialsOnPositiveSide(anElement);
 //! }
 //!
 //! // Making the connected shape periodic
@@ -143,14 +143,14 @@ public: //! @name Constructor
 public: //! @name Setters for the shapes to make connected
   //! Sets the shape for making them connected.
   //! @param[in] theArgs  The arguments for the operation.
-  void SetArguments(const TopTools_ListOfShape& theArgs) { myArguments = theArgs; }
+  void SetArguments(const NCollection_List<TopoDS_Shape>& theArgs) { myArguments = theArgs; }
 
   //! Adds the shape to the arguments.
   //! @param[in] theS  One of the argument shapes.
   void AddArgument(const TopoDS_Shape& theS) { myArguments.Append(theS); }
 
   //! Returns the list of arguments of the operation.
-  const TopTools_ListOfShape& Arguments() const { return myArguments; }
+  const NCollection_List<TopoDS_Shape>& Arguments() const { return myArguments; }
 
 public: //! @name Performing the operations
   //! Performs the operation, i.e. makes the input shapes connected.
@@ -168,8 +168,7 @@ public: //! @name Shape periodicity & repetition
   //! @param[in] theDirectionID  The direction's ID (0 for X, 1 for Y, 2 for Z);
   //! @param[in] theTimes  Requested number of repetitions (sign of the value defines
   //!                      the side of the repetition direction (positive or negative)).
-  Standard_EXPORT void RepeatShape(const Standard_Integer theDirectionID,
-                                   const Standard_Integer theTimes);
+  Standard_EXPORT void RepeatShape(const int theDirectionID, const int theTimes);
 
   //! Clears the repetitions performed on the periodic shape,
   //! keeping the shape periodic.
@@ -182,37 +181,37 @@ public: //! @name Material transitions
   //! Returns the original shapes which images contain the
   //! the given shape with FORWARD orientation.
   //! @param[in] theS  The shape for which the materials are necessary.
-  const TopTools_ListOfShape& MaterialsOnPositiveSide(const TopoDS_Shape& theS)
+  const NCollection_List<TopoDS_Shape>& MaterialsOnPositiveSide(const TopoDS_Shape& theS)
   {
-    const TopTools_ListOfShape* pLM = myMaterials.Seek(theS.Oriented(TopAbs_FORWARD));
+    const NCollection_List<TopoDS_Shape>* pLM = myMaterials.Seek(theS.Oriented(TopAbs_FORWARD));
     return (pLM ? *pLM : EmptyList());
   }
 
   //! Returns the original shapes which images contain the
   //! the given shape with REVERSED orientation.
   //! @param[in] theS  The shape for which the materials are necessary.
-  const TopTools_ListOfShape& MaterialsOnNegativeSide(const TopoDS_Shape& theS)
+  const NCollection_List<TopoDS_Shape>& MaterialsOnNegativeSide(const TopoDS_Shape& theS)
   {
-    const TopTools_ListOfShape* pLM = myMaterials.Seek(theS.Oriented(TopAbs_REVERSED));
+    const NCollection_List<TopoDS_Shape>* pLM = myMaterials.Seek(theS.Oriented(TopAbs_REVERSED));
     return (pLM ? *pLM : EmptyList());
   }
 
 public: //! @name History methods
   //! Returns the history of operations
-  const Handle(BRepTools_History)& History() const { return myHistory; }
+  const occ::handle<BRepTools_History>& History() const { return myHistory; }
 
   //! Returns the list of shapes modified from the given shape.
   //! @param[in] theS  The shape for which the modified shapes are necessary.
-  const TopTools_ListOfShape& GetModified(const TopoDS_Shape& theS)
+  const NCollection_List<TopoDS_Shape>& GetModified(const TopoDS_Shape& theS)
   {
     return (myHistory.IsNull() ? EmptyList() : myHistory->Modified(theS));
   }
 
   //! Returns the list of original shapes from which the current shape has been created.
   //! @param[in] theS  The shape for which the origins are necessary.
-  const TopTools_ListOfShape& GetOrigins(const TopoDS_Shape& theS)
+  const NCollection_List<TopoDS_Shape>& GetOrigins(const TopoDS_Shape& theS)
   {
-    const TopTools_ListOfShape* pLOr = myOrigins.Seek(theS);
+    const NCollection_List<TopoDS_Shape>* pLOr = myOrigins.Seek(theS);
     return (pLOr ? *pLOr : EmptyList());
   }
 
@@ -263,31 +262,34 @@ protected: //! @name Protected methods performing the operation
 
 private:
   //! Returns an empty list.
-  const TopTools_ListOfShape& EmptyList()
+  const NCollection_List<TopoDS_Shape>& EmptyList()
   {
-    static const TopTools_ListOfShape anEmptyList;
+    static const NCollection_List<TopoDS_Shape> anEmptyList;
     return anEmptyList;
   }
 
 protected: //! @name Fields
   // Inputs
-  TopTools_ListOfShape       myArguments;    //!< Input shapes for making them connected
-  TopTools_IndexedMapOfShape myAllInputsMap; //!< Map of all BRep sub-elements of the input shapes
+  NCollection_List<TopoDS_Shape> myArguments; //!< Input shapes for making them connected
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>
+    myAllInputsMap; //!< Map of all BRep sub-elements of the input shapes
 
   // Tools
   BOPAlgo_MakePeriodic myPeriodicityMaker; //!< Tool for making the shape periodic
 
   // Results
   NCollection_DataMap<TopoDS_Shape,
-                      TopTools_ListOfShape>
-    myMaterials;                                //!< Map of the materials associations
-                                                //! for the border elements
-  TopTools_DataMapOfShapeListOfShape myOrigins; //!< Map of origins
-                                                //! (allows tracking the shape's ancestors)
+                      NCollection_List<TopoDS_Shape>>
+    myMaterials; //!< Map of the materials associations
+                 //! for the border elements
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myOrigins; //!< Map of origins
+               //! (allows tracking the shape's ancestors)
 
-  Handle(BRepTools_History) myGlueHistory; //!< Gluing History
-  Handle(BRepTools_History) myHistory;     //!< Final History of shapes modifications
-                                           //! (including making the shape periodic and repetitions)
+  occ::handle<BRepTools_History> myGlueHistory; //!< Gluing History
+  occ::handle<BRepTools_History>
+    myHistory; //!< Final History of shapes modifications
+               //! (including making the shape periodic and repetitions)
 
   TopoDS_Shape myGlued; //!< The resulting connected (glued) shape
   TopoDS_Shape myShape; //!< The resulting shape

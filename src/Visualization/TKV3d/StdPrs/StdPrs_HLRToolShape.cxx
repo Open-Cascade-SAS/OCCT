@@ -20,8 +20,8 @@
 StdPrs_HLRToolShape::StdPrs_HLRToolShape(const TopoDS_Shape&      TheShape,
                                          const HLRAlgo_Projector& TheProjector)
 {
-  Handle(HLRBRep_Algo) Hider = new HLRBRep_Algo();
-  Standard_Integer     nbIso = 0; // 5;
+  occ::handle<HLRBRep_Algo> Hider = new HLRBRep_Algo();
+  int                       nbIso = 0; // 5;
   Hider->Add(TheShape, nbIso);
   Hider->Projector(TheProjector);
   Hider->Update();
@@ -30,18 +30,18 @@ StdPrs_HLRToolShape::StdPrs_HLRToolShape(const TopoDS_Shape&      TheShape,
   MyCurrentEdgeNumber = 0;
 }
 
-Standard_Integer StdPrs_HLRToolShape::NbEdges() const
+int StdPrs_HLRToolShape::NbEdges() const
 {
   return MyData->NbEdges();
 }
 
-void StdPrs_HLRToolShape::InitVisible(const Standard_Integer EdgeNumber)
+void StdPrs_HLRToolShape::InitVisible(const int EdgeNumber)
 {
   myEdgeIterator.InitVisible(MyData->EDataArray().ChangeValue(EdgeNumber).Status());
   MyCurrentEdgeNumber = EdgeNumber;
 }
 
-Standard_Boolean StdPrs_HLRToolShape::MoreVisible() const
+bool StdPrs_HLRToolShape::MoreVisible() const
 {
   return myEdgeIterator.MoreVisible();
 }
@@ -51,21 +51,21 @@ void StdPrs_HLRToolShape::NextVisible()
   myEdgeIterator.NextVisible();
 }
 
-void StdPrs_HLRToolShape::Visible(BRepAdaptor_Curve& TheEdge, Standard_Real& U1, Standard_Real& U2)
+void StdPrs_HLRToolShape::Visible(BRepAdaptor_Curve& TheEdge, double& U1, double& U2)
 {
 
   TheEdge = MyData->EDataArray().ChangeValue(MyCurrentEdgeNumber).ChangeGeometry().Curve();
-  Standard_ShortReal t1, t2;
+  float t1, t2;
   myEdgeIterator.Visible(U1, t1, U2, t2);
 }
 
-void StdPrs_HLRToolShape::InitHidden(const Standard_Integer EdgeNumber)
+void StdPrs_HLRToolShape::InitHidden(const int EdgeNumber)
 {
   myEdgeIterator.InitHidden(MyData->EDataArray().ChangeValue(EdgeNumber).Status());
   MyCurrentEdgeNumber = EdgeNumber;
 }
 
-Standard_Boolean StdPrs_HLRToolShape::MoreHidden() const
+bool StdPrs_HLRToolShape::MoreHidden() const
 {
   return myEdgeIterator.MoreHidden();
 }
@@ -75,10 +75,10 @@ void StdPrs_HLRToolShape::NextHidden()
   myEdgeIterator.NextHidden();
 }
 
-void StdPrs_HLRToolShape::Hidden(BRepAdaptor_Curve& TheEdge, Standard_Real& U1, Standard_Real& U2)
+void StdPrs_HLRToolShape::Hidden(BRepAdaptor_Curve& TheEdge, double& U1, double& U2)
 {
 
   TheEdge = MyData->EDataArray().ChangeValue(MyCurrentEdgeNumber).ChangeGeometry().Curve();
-  Standard_ShortReal t1, t2;
+  float t1, t2;
   myEdgeIterator.Hidden(U1, t1, U2, t2);
 }

@@ -39,7 +39,7 @@ public:
   //! Creates a semi-infinite domain for the curve associated
   //! to a hatching. The `First' flag means that the given
   //! point is the first one.
-  Standard_EXPORT HatchGen_Domain(const HatchGen_PointOnHatching& P, const Standard_Boolean First);
+  Standard_EXPORT HatchGen_Domain(const HatchGen_PointOnHatching& P, const bool First);
 
   //! Sets the first and the second points of the domain.
   void SetPoints(const HatchGen_PointOnHatching& P1, const HatchGen_PointOnHatching& P2);
@@ -63,7 +63,7 @@ public:
   void SetSecondPoint();
 
   //! Returns True if the domain has a first point.
-  Standard_Boolean HasFirstPoint() const;
+  bool HasFirstPoint() const;
 
   //! Returns the first point of the domain.
   //! The exception DomainError is raised if
@@ -71,7 +71,7 @@ public:
   const HatchGen_PointOnHatching& FirstPoint() const;
 
   //! Returns True if the domain has a second point.
-  Standard_Boolean HasSecondPoint() const;
+  bool HasSecondPoint() const;
 
   //! Returns the second point of the domain.
   //! The exception DomainError is raised if
@@ -79,13 +79,12 @@ public:
   const HatchGen_PointOnHatching& SecondPoint() const;
 
   //! Dump of the domain.
-  Standard_EXPORT void Dump(const Standard_Integer Index = 0) const;
+  Standard_EXPORT void Dump(const int Index = 0) const;
 
-protected:
 private:
-  Standard_Boolean         myHasFirstPoint;
+  bool                     myHasFirstPoint;
   HatchGen_PointOnHatching myFirstPoint;
-  Standard_Boolean         myHasSecondPoint;
+  bool                     myHasSecondPoint;
   HatchGen_PointOnHatching mySecondPoint;
 };
 

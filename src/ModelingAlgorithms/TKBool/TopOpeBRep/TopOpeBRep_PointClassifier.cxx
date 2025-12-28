@@ -39,7 +39,7 @@ void TopOpeBRep_PointClassifier::Init()
 
 void TopOpeBRep_PointClassifier::Load(const TopoDS_Face& F)
 {
-  Standard_Boolean found = myTopolToolMap.IsBound(F);
+  bool found = myTopolToolMap.IsBound(F);
   if (!found)
   {
     myHSurface->Initialize(F);
@@ -54,9 +54,9 @@ void TopOpeBRep_PointClassifier::Load(const TopoDS_Face& F)
 
 //=================================================================================================
 
-TopAbs_State TopOpeBRep_PointClassifier::Classify(const TopoDS_Face&  F,
-                                                  const gp_Pnt2d&     P2d,
-                                                  const Standard_Real Tol)
+TopAbs_State TopOpeBRep_PointClassifier::Classify(const TopoDS_Face& F,
+                                                  const gp_Pnt2d&    P2d,
+                                                  const double       Tol)
 {
   myState = TopAbs_UNKNOWN;
   Load(F);

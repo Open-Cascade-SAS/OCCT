@@ -35,8 +35,8 @@ XmlDrivers_DocumentStorageDriver::XmlDrivers_DocumentStorageDriver(
 
 //=================================================================================================
 
-Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentStorageDriver::AttributeDrivers(
-  const Handle(Message_Messenger)& theMessageDriver)
+occ::handle<XmlMDF_ADriverTable> XmlDrivers_DocumentStorageDriver::AttributeDrivers(
+  const occ::handle<Message_Messenger>& theMessageDriver)
 {
   return XmlDrivers::AttributeDrivers(theMessageDriver);
 }
@@ -45,19 +45,19 @@ Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentStorageDriver::AttributeDrivers(
 // function : WriteShapeSection
 // purpose  : Implements WriteShapeSection
 //=======================================================================
-Standard_Boolean XmlDrivers_DocumentStorageDriver::WriteShapeSection(
+bool XmlDrivers_DocumentStorageDriver::WriteShapeSection(
   XmlObjMgt_Element&           theElement,
   const TDocStd_FormatVersion  theStorageFormatVersion,
   const Message_ProgressRange& theRange)
 {
-  Standard_Boolean       isShape(Standard_False);
-  Handle(XmlMDF_ADriver) aDriver;
+  bool                        isShape(false);
+  occ::handle<XmlMDF_ADriver> aDriver;
   if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
-    Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver =
-      Handle(XmlMNaming_NamedShapeDriver)::DownCast(aDriver);
+    occ::handle<XmlMNaming_NamedShapeDriver> aNamedShapeDriver =
+      occ::down_cast<XmlMNaming_NamedShapeDriver>(aDriver);
     aNamedShapeDriver->WriteShapeSection(theElement, theStorageFormatVersion, theRange);
-    isShape = Standard_True;
+    isShape = true;
   }
   return isShape;
 }

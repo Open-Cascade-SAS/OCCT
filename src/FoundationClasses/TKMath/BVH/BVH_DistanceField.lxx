@@ -20,14 +20,13 @@
 //=================================================================================================
 
 template <class T, int N>
-BVH_DistanceField<T, N>::BVH_DistanceField(const Standard_Integer theMaximumSize,
-                                           const Standard_Boolean theComputeSign)
+BVH_DistanceField<T, N>::BVH_DistanceField(const int theMaximumSize, const bool theComputeSign)
     : myDimensionX(0),
       myDimensionY(0),
       myDimensionZ(0),
       myMaximumSize(theMaximumSize),
       myComputeSign(theComputeSign),
-      myIsParallel(Standard_False)
+      myIsParallel(false)
 {
   Standard_STATIC_ASSERT(N == 3 || N == 4);
 
@@ -173,19 +172,19 @@ public:
 public:
   SquareDistanceToPoint()
       : BVH_Distance<T, N, BVH_VecNt, BVHSetType>(),
-        myIsOutside(Standard_True)
+        myIsOutside(true)
   {
   }
 
 public:
   //! IsOutside
-  Standard_Boolean IsOutside() const { return myIsOutside; }
+  bool IsOutside() const { return myIsOutside; }
 
 public:
   //! Defines the rules for node rejection
-  virtual Standard_Boolean RejectNode(const BVH_VecNt& theCMin,
-                                      const BVH_VecNt& theCMax,
-                                      T&               theMetric) const Standard_OVERRIDE
+  virtual bool RejectNode(const BVH_VecNt& theCMin,
+                          const BVH_VecNt& theCMax,
+                          T&               theMetric) const override
   {
     theMetric = DistanceToBox<T, N>(this->myObject, theCMin, theCMax);
     return theMetric > this->myDistance;
@@ -193,10 +192,10 @@ public:
 
 public:
   //! Redefine the Stop to never stop the selection
-  virtual Standard_Boolean Stop() const Standard_OVERRIDE { return Standard_False; }
+  virtual bool Stop() const override { return false; }
 
 protected:
-  Standard_Boolean myIsOutside;
+  bool myIsOutside;
 };
 
 //=======================================================================
@@ -218,7 +217,7 @@ public:
 
 public:
   // Accepting the element
-  virtual Standard_Boolean Accept(const Standard_Integer theIndex, const T&) Standard_OVERRIDE
+  virtual bool Accept(const int theIndex, const T&) override
   {
     const BVH_Vec4i aTriangle = this->myBVHSet->Elements[theIndex];
 
@@ -245,10 +244,10 @@ public:
 
       this->myIsOutside = BVH_DOT3(aTrgNormal, aDirection) > 0;
 
-      return Standard_True;
+      return true;
     }
 
-    return Standard_False;
+    return false;
   }
 };
 
@@ -259,7 +258,7 @@ public:
 template <class T, int N>
 T SquareDistanceToObject(BVH_Object<T, N>*                      theObject,
                          const typename VectorType<T, N>::Type& thePnt,
-                         Standard_Boolean&                      theIsOutside)
+                         bool&                                  theIsOutside)
 {
   Standard_STATIC_ASSERT(N == 3 || N == 4);
 
@@ -274,7 +273,7 @@ T SquareDistanceToObject(BVH_Object<T, N>*                      theObject,
   const opencascade::handle<BVH_Tree<T, N>>& aBVH = aTriangulation->BVH();
   if (aBVH.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   PointTriangulationSquareDistance<T, N> aDistTool;
@@ -304,9 +303,9 @@ public:
 
 public:
   // Accepting the element
-  virtual Standard_Boolean Accept(const Standard_Integer theIndex, const T&) Standard_OVERRIDE
+  virtual bool Accept(const int theIndex, const T&) override
   {
-    Standard_Boolean isOutside = Standard_True;
+    bool    isOutside = true;
     const T aDistance = SquareDistanceToObject(this->myBVHSet->Objects()(theIndex).operator->(),
                                                this->myObject,
                                                isOutside);
@@ -316,9 +315,9 @@ public:
       this->myDistance  = aDistance;
       this->myIsOutside = isOutside;
 
-      return Standard_True;
+      return true;
     }
-    return Standard_False;
+    return false;
   }
 };
 
@@ -329,7 +328,7 @@ public:
 template <class T, int N>
 T SquareDistanceToGeomerty(BVH_Geometry<T, N>&                    theGeometry,
                            const typename VectorType<T, N>::Type& thePnt,
-                           Standard_Boolean&                      theIsOutside)
+                           bool&                                  theIsOutside)
 {
   Standard_STATIC_ASSERT(N == 3 || N == 4);
 
@@ -337,7 +336,7 @@ T SquareDistanceToGeomerty(BVH_Geometry<T, N>&                    theGeometry,
 
   if (aBVH == NULL)
   {
-    return Standard_False;
+    return false;
   }
 
   PointGeometrySquareDistance<T, N> aDistTool;
@@ -371,7 +370,7 @@ public:
     //
   }
 
-  void operator()(const Standard_Integer theIndex) const
+  void operator()(const int theIndex) const
   {
     myOutField->BuildSlices(*myGeometry, theIndex, theIndex + 1);
   }
@@ -382,15 +381,15 @@ public:
 // purpose  : Performs building of distance field for the given Z slices
 // =======================================================================
 template <class T, int N>
-void BVH_DistanceField<T, N>::BuildSlices(BVH_Geometry<T, N>&    theGeometry,
-                                          const Standard_Integer theStartSlice,
-                                          const Standard_Integer theFinalSlice)
+void BVH_DistanceField<T, N>::BuildSlices(BVH_Geometry<T, N>& theGeometry,
+                                          const int           theStartSlice,
+                                          const int           theFinalSlice)
 {
-  for (Standard_Integer aZ = theStartSlice; aZ < theFinalSlice; ++aZ)
+  for (int aZ = theStartSlice; aZ < theFinalSlice; ++aZ)
   {
-    for (Standard_Integer aY = 0; aY < myDimensionY; ++aY)
+    for (int aY = 0; aY < myDimensionY; ++aY)
     {
-      for (Standard_Integer aX = 0; aX < myDimensionX; ++aX)
+      for (int aX = 0; aX < myDimensionX; ++aX)
       {
         BVH_VecNt aCenter;
 
@@ -398,7 +397,7 @@ void BVH_DistanceField<T, N>::BuildSlices(BVH_Geometry<T, N>&    theGeometry,
         aCenter.y() = myCornerMin.y() + myVoxelSize.y() * (aY + static_cast<T>(0.5));
         aCenter.z() = myCornerMin.z() + myVoxelSize.z() * (aZ + static_cast<T>(0.5));
 
-        Standard_Boolean isOutside = Standard_True;
+        bool isOutside = true;
 
         const T aDistance =
           sqrt(BVH::SquareDistanceToGeomerty<T, N>(theGeometry, aCenter, isOutside));
@@ -414,11 +413,11 @@ void BVH_DistanceField<T, N>::BuildSlices(BVH_Geometry<T, N>&    theGeometry,
 // purpose  : Builds 3D distance field from BVH geometry
 // =======================================================================
 template <class T, int N>
-Standard_Boolean BVH_DistanceField<T, N>::Build(BVH_Geometry<T, N>& theGeometry)
+bool BVH_DistanceField<T, N>::Build(BVH_Geometry<T, N>& theGeometry)
 {
   if (theGeometry.Size() == 0)
   {
-    return Standard_False;
+    return false;
   }
 
   const BVH_VecNt aGlobalBoxSize = theGeometry.Box().Size();
@@ -426,9 +425,9 @@ Standard_Boolean BVH_DistanceField<T, N>::Build(BVH_Geometry<T, N>& theGeometry)
   const T aMaxBoxSide =
     std::max(std::max(aGlobalBoxSize.x(), aGlobalBoxSize.y()), aGlobalBoxSize.z());
 
-  myDimensionX = static_cast<Standard_Integer>(myMaximumSize * aGlobalBoxSize.x() / aMaxBoxSide);
-  myDimensionY = static_cast<Standard_Integer>(myMaximumSize * aGlobalBoxSize.y() / aMaxBoxSide);
-  myDimensionZ = static_cast<Standard_Integer>(myMaximumSize * aGlobalBoxSize.z() / aMaxBoxSide);
+  myDimensionX = static_cast<int>(myMaximumSize * aGlobalBoxSize.x() / aMaxBoxSide);
+  myDimensionY = static_cast<int>(myMaximumSize * aGlobalBoxSize.y() / aMaxBoxSide);
+  myDimensionZ = static_cast<int>(myMaximumSize * aGlobalBoxSize.z() / aMaxBoxSide);
 
   myDimensionX = std::min(myMaximumSize, std::max(myDimensionX, 16));
   myDimensionY = std::min(myMaximumSize, std::max(myDimensionY, 16));
@@ -437,7 +436,7 @@ Standard_Boolean BVH_DistanceField<T, N>::Build(BVH_Geometry<T, N>& theGeometry)
   const BVH_VecNt aGlobalBoxMin = theGeometry.Box().CornerMin();
   const BVH_VecNt aGlobalBoxMax = theGeometry.Box().CornerMax();
 
-  const Standard_Integer aVoxelOffset = 2;
+  const int aVoxelOffset = 2;
 
   myCornerMin.x() =
     aGlobalBoxMin.x() - aVoxelOffset * aGlobalBoxSize.x() / (myDimensionX - 2 * aVoxelOffset);
@@ -462,5 +461,5 @@ Standard_Boolean BVH_DistanceField<T, N>::Build(BVH_Geometry<T, N>& theGeometry)
                     BVH_ParallelDistanceFieldBuilder<T, N>(this, &theGeometry),
                     !IsParallel());
 
-  return Standard_True;
+  return true;
 }

@@ -21,9 +21,12 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 class Bnd_Box;
 class Poly_Triangulation;
@@ -40,12 +43,11 @@ public:
   //! (optional) arguments. By default, only isolated and internal vertices are considered,
   //! however if theAllVertices argument is equal to True, all shape's vertices are taken into
   //! account.
-  Standard_EXPORT StdPrs_ShapeTool(const TopoDS_Shape&    theShape,
-                                   const Standard_Boolean theAllVertices = Standard_False);
+  Standard_EXPORT StdPrs_ShapeTool(const TopoDS_Shape& theShape, const bool theAllVertices = false);
 
   void InitFace() { myFaceExplorer.Init(myShape, TopAbs_FACE); }
 
-  Standard_Boolean MoreFace() const { return myFaceExplorer.More(); }
+  bool MoreFace() const { return myFaceExplorer.More(); }
 
   void NextFace() { myFaceExplorer.Next(); }
 
@@ -53,7 +55,7 @@ public:
 
   Standard_EXPORT Bnd_Box FaceBound() const;
 
-  Standard_Boolean IsPlanarFace() const
+  bool IsPlanarFace() const
   {
     const TopoDS_Face& aFace = TopoDS::Face(myFaceExplorer.Current());
     return IsPlanarFace(aFace);
@@ -61,7 +63,7 @@ public:
 
   void InitCurve() { myEdge = 1; }
 
-  Standard_Boolean MoreCurve() const { return myEdge <= myEdgeMap.Extent(); }
+  bool MoreCurve() const { return myEdge <= myEdgeMap.Extent(); }
 
   void NextCurve() { ++myEdge; }
 
@@ -69,40 +71,41 @@ public:
 
   Standard_EXPORT Bnd_Box CurveBound() const;
 
-  Standard_EXPORT Standard_Integer Neighbours() const;
+  Standard_EXPORT int Neighbours() const;
 
-  Standard_EXPORT Handle(TopTools_HSequenceOfShape) FacesOfEdge() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TopoDS_Shape>> FacesOfEdge() const;
 
   void InitVertex() { myVertex = 1; }
 
-  Standard_Boolean MoreVertex() const { return myVertex <= myVertexMap.Extent(); }
+  bool MoreVertex() const { return myVertex <= myVertexMap.Extent(); }
 
   void NextVertex() { ++myVertex; }
 
   const TopoDS_Vertex& GetVertex() const { return TopoDS::Vertex(myVertexMap.FindKey(myVertex)); }
 
-  Standard_EXPORT Standard_Boolean HasSurface() const;
+  Standard_EXPORT bool HasSurface() const;
 
-  Standard_EXPORT Handle(Poly_Triangulation) CurrentTriangulation(TopLoc_Location& l) const;
+  Standard_EXPORT occ::handle<Poly_Triangulation> CurrentTriangulation(TopLoc_Location& l) const;
 
-  Standard_EXPORT Standard_Boolean HasCurve() const;
+  Standard_EXPORT bool HasCurve() const;
 
-  Standard_EXPORT void PolygonOnTriangulation(Handle(Poly_PolygonOnTriangulation)& Indices,
-                                              Handle(Poly_Triangulation)&          T,
-                                              TopLoc_Location&                     l) const;
+  Standard_EXPORT void PolygonOnTriangulation(occ::handle<Poly_PolygonOnTriangulation>& Indices,
+                                              occ::handle<Poly_Triangulation>&          T,
+                                              TopLoc_Location&                          l) const;
 
-  Standard_EXPORT Handle(Poly_Polygon3D) Polygon3D(TopLoc_Location& l) const;
+  Standard_EXPORT occ::handle<Poly_Polygon3D> Polygon3D(TopLoc_Location& l) const;
 
 public:
-  Standard_EXPORT static Standard_Boolean IsPlanarFace(const TopoDS_Face& theFace);
+  Standard_EXPORT static bool IsPlanarFace(const TopoDS_Face& theFace);
 
 private:
-  TopoDS_Shape                              myShape;
-  TopExp_Explorer                           myFaceExplorer;
-  TopTools_IndexedDataMapOfShapeListOfShape myEdgeMap;
-  TopTools_IndexedMapOfShape                myVertexMap;
-  Standard_Integer                          myEdge;
-  Standard_Integer                          myVertex;
+  TopoDS_Shape    myShape;
+  TopExp_Explorer myFaceExplorer;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                                myEdgeMap;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myVertexMap;
+  int                                                           myEdge;
+  int                                                           myVertex;
 };
 
 #endif // _StdPrs_ShapeTool_HeaderFile

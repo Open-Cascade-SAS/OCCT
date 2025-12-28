@@ -17,13 +17,13 @@
 #include <math_Function.hxx>
 #include <math_KronrodSingleIntegration.hxx>
 #include <math_Vector.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 
 //==========================================================================
 // function : An empty constructor.
 //==========================================================================
 math_KronrodSingleIntegration::math_KronrodSingleIntegration()
-    : myIsDone(Standard_False),
+    : myIsDone(false),
       myValue(0.),
       myErrorReached(0.),
       myAbsolutError(0.),
@@ -37,11 +37,11 @@ math_KronrodSingleIntegration::math_KronrodSingleIntegration()
 //
 //==========================================================================
 
-math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function&         theFunction,
-                                                             const Standard_Real    theLower,
-                                                             const Standard_Real    theUpper,
-                                                             const Standard_Integer theNbPnts)
-    : myIsDone(Standard_False),
+math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function& theFunction,
+                                                             const double   theLower,
+                                                             const double   theUpper,
+                                                             const int      theNbPnts)
+    : myIsDone(false),
       myValue(0.),
       myErrorReached(0.),
       myAbsolutError(0.),
@@ -56,13 +56,13 @@ math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function&     
 //
 //==========================================================================
 
-math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function&         theFunction,
-                                                             const Standard_Real    theLower,
-                                                             const Standard_Real    theUpper,
-                                                             const Standard_Integer theNbPnts,
-                                                             const Standard_Real    theTolerance,
-                                                             const Standard_Integer theMaxNbIter)
-    : myIsDone(Standard_False),
+math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function& theFunction,
+                                                             const double   theLower,
+                                                             const double   theUpper,
+                                                             const int      theNbPnts,
+                                                             const double   theTolerance,
+                                                             const int      theMaxNbIter)
+    : myIsDone(false),
       myValue(0.),
       myErrorReached(0.),
       myAbsolutError(0.),
@@ -77,24 +77,24 @@ math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function&     
 //           Computation of the integral.
 //==========================================================================
 
-void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
-                                            const Standard_Real    theLower,
-                                            const Standard_Real    theUpper,
-                                            const Standard_Integer theNbPnts)
+void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
+                                            const double   theLower,
+                                            const double   theUpper,
+                                            const int      theNbPnts)
 {
-  // const Standard_Real aMinVol = Epsilon(1.);
-  const Standard_Real aPtol = 1.e-9;
-  myNbIterReached           = 0;
+  // const double aMinVol = Epsilon(1.);
+  const double aPtol = 1.e-9;
+  myNbIterReached    = 0;
 
   if (theNbPnts < 3)
   {
-    myIsDone = Standard_False;
+    myIsDone = false;
     return;
   }
 
   if (theUpper - theLower < aPtol)
   {
-    myIsDone = Standard_False;
+    myIsDone = false;
     return;
   }
 
@@ -102,16 +102,16 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
   myNbPntsReached = (theNbPnts % 2 == 0) ? theNbPnts + 1 : theNbPnts;
   myErrorReached  = RealLast();
 
-  Standard_Integer aNGauss = myNbPntsReached / 2;
-  math_Vector      aKronrodP(1, myNbPntsReached);
-  math_Vector      aKronrodW(1, myNbPntsReached);
-  math_Vector      aGaussP(1, aNGauss);
-  math_Vector      aGaussW(1, aNGauss);
+  int         aNGauss = myNbPntsReached / 2;
+  math_Vector aKronrodP(1, myNbPntsReached);
+  math_Vector aKronrodW(1, myNbPntsReached);
+  math_Vector aGaussP(1, aNGauss);
+  math_Vector aGaussW(1, aNGauss);
 
   if (!math::KronrodPointsAndWeights(myNbPntsReached, aKronrodP, aKronrodW)
       || !math::OrderedGaussPointsAndWeights(aNGauss, aGaussP, aGaussW))
   {
-    myIsDone = Standard_False;
+    myIsDone = false;
     return;
   }
 
@@ -128,7 +128,7 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
   if (!myIsDone)
     return;
 
-  // Standard_Real anAbsVal = std::abs(myValue);
+  // double anAbsVal = std::abs(myValue);
 
   myAbsolutError = myErrorReached;
 
@@ -140,35 +140,35 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
 
 //=================================================================================================
 
-void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
-                                            const Standard_Real    theLower,
-                                            const Standard_Real    theUpper,
-                                            const Standard_Integer theNbPnts,
-                                            const Standard_Real    theTolerance,
-                                            const Standard_Integer theMaxNbIter)
+void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
+                                            const double   theLower,
+                                            const double   theUpper,
+                                            const int      theNbPnts,
+                                            const double   theTolerance,
+                                            const int      theMaxNbIter)
 {
-  Standard_Real aMinVol = Epsilon(1.);
-  myNbIterReached       = 0;
+  double aMinVol  = Epsilon(1.);
+  myNbIterReached = 0;
 
   // Check prerequisites.
   if (theNbPnts < 3 || theTolerance <= 0.)
   {
-    myIsDone = Standard_False;
+    myIsDone = false;
     return;
   }
   // Get an odd value of number of initial points.
   myNbPntsReached = (theNbPnts % 2 == 0) ? theNbPnts + 1 : theNbPnts;
 
-  Standard_Integer aNGauss = myNbPntsReached / 2;
-  math_Vector      aKronrodP(1, myNbPntsReached);
-  math_Vector      aKronrodW(1, myNbPntsReached);
-  math_Vector      aGaussP(1, aNGauss);
-  math_Vector      aGaussW(1, aNGauss);
+  int         aNGauss = myNbPntsReached / 2;
+  math_Vector aKronrodP(1, myNbPntsReached);
+  math_Vector aKronrodW(1, myNbPntsReached);
+  math_Vector aGaussP(1, aNGauss);
+  math_Vector aGaussW(1, aNGauss);
 
   if (!math::KronrodPointsAndWeights(myNbPntsReached, aKronrodP, aKronrodW)
       || !math::OrderedGaussPointsAndWeights(aNGauss, aGaussP, aGaussW))
   {
-    myIsDone = Standard_False;
+    myIsDone = false;
     return;
   }
 
@@ -186,7 +186,7 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
   if (!myIsDone)
     return;
 
-  Standard_Real anAbsVal = std::abs(myValue);
+  double anAbsVal = std::abs(myValue);
 
   myAbsolutError = myErrorReached;
   if (anAbsVal > aMinVol)
@@ -199,9 +199,9 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
   if (myNbIterReached >= theMaxNbIter)
     return;
 
-  TColStd_SequenceOfReal anIntervals;
-  TColStd_SequenceOfReal anErrors;
-  TColStd_SequenceOfReal aValues;
+  NCollection_Sequence<double> anIntervals;
+  NCollection_Sequence<double> anErrors;
+  NCollection_Sequence<double> aValues;
 
   anIntervals.Append(theLower);
   anIntervals.Append(theUpper);
@@ -209,10 +209,10 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
   anErrors.Append(myAbsolutError);
   aValues.Append(myValue);
 
-  Standard_Integer i, nint, nbints;
+  int i, nint, nbints;
 
-  Standard_Real    maxerr;
-  Standard_Integer count = 0;
+  double maxerr;
+  int    count = 0;
 
   while (myErrorReached > theTolerance && myNbIterReached < theMaxNbIter)
   {
@@ -229,11 +229,11 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
       }
     }
 
-    Standard_Real a = anIntervals(nint);
-    Standard_Real b = anIntervals(nint + 1);
-    Standard_Real c = 0.5 * (a + b);
+    double a = anIntervals(nint);
+    double b = anIntervals(nint + 1);
+    double c = 0.5 * (a + b);
 
-    Standard_Real v1, v2, e1, e2;
+    double v1, v2, e1, e2;
 
     myIsDone = GKRule(theFunction, a, c, aGaussP, aGaussW, aKronrodP, aKronrodW, v1, e1);
 
@@ -247,12 +247,12 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
 
     myNbIterReached++;
 
-    Standard_Real deltav = v1 + v2 - aValues(nint);
+    double deltav = v1 + v2 - aValues(nint);
     myValue += deltav;
     if (std::abs(deltav) <= Epsilon(std::abs(myValue)))
       ++count;
 
-    Standard_Real deltae = e1 + e2 - anErrors(nint);
+    double deltae = e1 + e2 - anErrors(nint);
     myAbsolutError += deltae;
     if (myAbsolutError <= Epsilon(std::abs(myValue)))
       ++count;
@@ -277,33 +277,33 @@ void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
 
 //=================================================================================================
 
-Standard_Boolean math_KronrodSingleIntegration::GKRule(math_Function&      theFunction,
-                                                       const Standard_Real theLower,
-                                                       const Standard_Real theUpper,
-                                                       const math_Vector& /*theGaussP*/,
-                                                       const math_Vector& theGaussW,
-                                                       const math_Vector& theKronrodP,
-                                                       const math_Vector& theKronrodW,
-                                                       Standard_Real&     theValue,
-                                                       Standard_Real&     theError)
+bool math_KronrodSingleIntegration::GKRule(math_Function& theFunction,
+                                           const double   theLower,
+                                           const double   theUpper,
+                                           const math_Vector& /*theGaussP*/,
+                                           const math_Vector& theGaussW,
+                                           const math_Vector& theKronrodP,
+                                           const math_Vector& theKronrodW,
+                                           double&            theValue,
+                                           double&            theError)
 {
 
-  Standard_Boolean IsDone;
+  bool IsDone;
 
-  Standard_Integer aNKronrod = theKronrodP.Length();
+  int aNKronrod = theKronrodP.Length();
 
-  Standard_Real    aGaussVal;
-  Standard_Integer aNPnt2 = (aNKronrod + 1) / 2;
-  Standard_Integer i;
-  Standard_Real    aDx;
-  Standard_Real    aVal1;
-  Standard_Real    aVal2;
+  double aGaussVal;
+  int    aNPnt2 = (aNKronrod + 1) / 2;
+  int    i;
+  double aDx;
+  double aVal1;
+  double aVal2;
 
   math_Vector f1(1, aNPnt2 - 1);
   math_Vector f2(1, aNPnt2 - 1);
 
-  Standard_Real aXm = 0.5 * (theUpper + theLower);
-  Standard_Real aXr = 0.5 * (theUpper - theLower);
+  double aXm = 0.5 * (theUpper + theLower);
+  double aXr = 0.5 * (theUpper - theLower);
 
   // Compute Gauss quadrature
   aGaussVal = 0.;
@@ -315,7 +315,7 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(math_Function&      theFu
 
     if (!theFunction.Value(aXm + aDx, aVal1) || !theFunction.Value(aXm - aDx, aVal2))
     {
-      IsDone = Standard_False;
+      IsDone = false;
       return IsDone;
     }
 
@@ -328,11 +328,11 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(math_Function&      theFu
   // Compute value in the middle point.
   if (!theFunction.Value(aXm, aVal1))
   {
-    IsDone = Standard_False;
+    IsDone = false;
     return IsDone;
   }
 
-  Standard_Real fc = aVal1;
+  double fc = aVal1;
   theValue += aVal1 * theKronrodW.Value(aNPnt2);
 
   if (i == aNPnt2)
@@ -345,7 +345,7 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(math_Function&      theFu
 
     if (!theFunction.Value(aXm + aDx, aVal1) || !theFunction.Value(aXm - aDx, aVal2))
     {
-      IsDone = Standard_False;
+      IsDone = false;
       return IsDone;
     }
 
@@ -354,9 +354,9 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(math_Function&      theFu
     theValue += (aVal1 + aVal2) * theKronrodW.Value(i);
   }
 
-  Standard_Real mean = 0.5 * theValue;
+  double mean = 0.5 * theValue;
 
-  Standard_Real asc = std::abs(fc - mean) * theKronrodW.Value(aNPnt2);
+  double asc = std::abs(fc - mean) * theKronrodW.Value(aNPnt2);
   for (i = 1; i < aNPnt2; ++i)
   {
     asc += theKronrodW.Value(i) * (std::abs(f1(i) - mean) + std::abs(f2(i) - mean));
@@ -370,7 +370,7 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(math_Function&      theFu
 
   theError = std::abs(theValue - aGaussVal);
 
-  Standard_Real scale = 1.;
+  double scale = 1.;
   if (asc != 0. && theError != 0.)
     scale = std::pow((200. * theError / asc), 1.5);
   if (scale < 1.)
@@ -378,5 +378,5 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(math_Function&      theFu
 
   // theFunction.GetStateNumber();
 
-  return Standard_True;
+  return true;
 }

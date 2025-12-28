@@ -31,56 +31,56 @@ BRepClass3d_Intersector3d::BRepClass3d_Intersector3d()
     : U(0.0),
       V(0.0),
       W(0.0),
-      done(Standard_False),
-      hasapoint(Standard_False),
+      done(false),
+      hasapoint(false),
       state(TopAbs_UNKNOWN)
 {
 }
 
 //============================================================================
 void BRepClass3d_Intersector3d::Perform(const gp_Lin& L,
-                                        const Standard_Real /*Prm*/,
-                                        const Standard_Real Tol,
-                                        const TopoDS_Face&  Face)
+                                        const double /*Prm*/,
+                                        const double       Tol,
+                                        const TopoDS_Face& Face)
 {
 
   IntCurveSurface_HInter   HICS;
   BRepAdaptor_Surface      surface;
   BRepClass_FaceClassifier classifier2d;
 
-  Handle(Geom_Line) geomline = new Geom_Line(L);
-  GeomAdaptor_Curve LL(geomline);
+  occ::handle<Geom_Line> geomline = new Geom_Line(L);
+  GeomAdaptor_Curve      LL(geomline);
 
-  surface.Initialize(Face, Standard_True);
+  surface.Initialize(Face, true);
 
-  const Standard_Boolean IsUPer  = surface.IsUPeriodic();
-  const Standard_Boolean IsVPer  = surface.IsVPeriodic();
-  const Standard_Real    uperiod = IsUPer ? surface.UPeriod() : 0.0;
-  const Standard_Real    vperiod = IsVPer ? surface.VPeriod() : 0.0;
+  const bool   IsUPer  = surface.IsUPeriodic();
+  const bool   IsVPer  = surface.IsVPeriodic();
+  const double uperiod = IsUPer ? surface.UPeriod() : 0.0;
+  const double vperiod = IsVPer ? surface.VPeriod() : 0.0;
 
-  Standard_Real U1 = surface.FirstUParameter();
-  Standard_Real U2 = surface.LastUParameter();
-  Standard_Real V1 = surface.FirstVParameter();
-  Standard_Real V2 = surface.LastVParameter();
+  double U1 = surface.FirstUParameter();
+  double U2 = surface.LastUParameter();
+  double V1 = surface.FirstVParameter();
+  double V2 = surface.LastVParameter();
 
   //--
-  Handle(GeomAdaptor_Curve)   HLL      = new GeomAdaptor_Curve(LL);
-  Handle(BRepAdaptor_Surface) Hsurface = new BRepAdaptor_Surface(surface);
+  occ::handle<GeomAdaptor_Curve>   HLL      = new GeomAdaptor_Curve(LL);
+  occ::handle<BRepAdaptor_Surface> Hsurface = new BRepAdaptor_Surface(surface);
   //--
   HICS.Perform(HLL, Hsurface);
 
   W = RealLast();
   if (HICS.IsDone())
   {
-    for (Standard_Integer index = HICS.NbPoints(); index >= 1; index--)
+    for (int index = HICS.NbPoints(); index >= 1; index--)
     {
       gp_Pnt2d Puv(HICS.Point(index).U(), HICS.Point(index).V());
 
-      Standard_Integer N1 = 0;
-      Standard_Integer N2 = 0;
+      int N1 = 0;
+      int N2 = 0;
 
-      Standard_Real X = Puv.X();
-      Standard_Real Y = Puv.Y();
+      double X = Puv.X();
+      double Y = Puv.Y();
 
       if (IsUPer)
       {
@@ -113,13 +113,13 @@ void BRepClass3d_Intersector3d::Perform(const gp_Lin& L,
       if (currentstate == TopAbs_IN || currentstate == TopAbs_ON)
       {
         const IntCurveSurface_IntersectionPoint& HICSPoint = HICS.Point(index);
-        Standard_Real                            HICSW     = HICSPoint.W();
+        double                                   HICSW     = HICSPoint.W();
         //  Modified by skv - Fri Mar  4 12:07:34 2005 OCC7966 Begin
         if ((W > HICSW) && (HICSW > -Tol))
         {
           // 	if(W > HICSW) {
           //  Modified by skv - Fri Mar  4 12:07:34 2005 OCC7966 End
-          hasapoint  = Standard_True;
+          hasapoint  = true;
           U          = HICSPoint.U();
           V          = HICSPoint.V();
           W          = HICSW;
@@ -136,7 +136,7 @@ void BRepClass3d_Intersector3d::Perform(const gp_Lin& L,
           }
         }
       } //-- classifier state is IN or ON
-      done = Standard_True;
+      done = true;
     } //-- Loop on Intersection points.
   } //-- HICS.IsDone()
 }

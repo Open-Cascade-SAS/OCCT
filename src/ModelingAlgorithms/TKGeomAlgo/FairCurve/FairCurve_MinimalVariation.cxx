@@ -29,16 +29,16 @@
 #include <math_Matrix.hxx>
 #include <PLib.hxx>
 #include <Standard_NullValue.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 
 //======================================================================================
-FairCurve_MinimalVariation::FairCurve_MinimalVariation(const gp_Pnt2d&     P1,
-                                                       const gp_Pnt2d&     P2,
-                                                       const Standard_Real Heigth,
-                                                       const Standard_Real Slope,
-                                                       const Standard_Real PhysicalRatio)
+FairCurve_MinimalVariation::FairCurve_MinimalVariation(const gp_Pnt2d& P1,
+                                                       const gp_Pnt2d& P2,
+                                                       const double    Heigth,
+                                                       const double    Slope,
+                                                       const double    PhysicalRatio)
     //======================================================================================
     : FairCurve_Batten(P1, P2, Heigth, Slope),
       OldCurvature1(0),
@@ -51,19 +51,19 @@ FairCurve_MinimalVariation::FairCurve_MinimalVariation(const gp_Pnt2d&     P1,
 }
 
 //======================================================================================
-Standard_Boolean FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACode,
-                                                     const Standard_Integer  NbIterations,
-                                                     const Standard_Real     Tolerance)
+bool FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACode,
+                                         const int               NbIterations,
+                                         const double            Tolerance)
 //======================================================================================
 {
-  Standard_Boolean Ok = Standard_True, End = Standard_False;
+  bool Ok = true, End = false;
   // clang-format off
-  Standard_Real AngleMax = 0.7;      // parameter regulating the function of increment ( 40 degrees )
+  double AngleMax = 0.7;      // parameter regulating the function of increment ( 40 degrees )
   // clang-format on
-  Standard_Real AngleMin = 2 * M_PI / 100; // parameter regulating the function of increment
-                                           // full passage should not contain more than 100 steps.
-  Standard_Real DAngle1, DAngle2, DRho1, DRho2, Ratio, Fraction, Toler;
-  Standard_Real OldDist, NewDist;
+  double AngleMin = 2 * M_PI / 100; // parameter regulating the function of increment
+                                    // full passage should not contain more than 100 steps.
+  double DAngle1, DAngle2, DRho1, DRho2, Ratio, Fraction, Toler;
+  double OldDist, NewDist;
 
   //  Loop of Homotopy : calculation of the step and optimisation
 
@@ -113,7 +113,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACo
     gp_Vec2d DeltaP1(OldP1, NewP1), DeltaP2(OldP2, NewP2);
     if (Ratio == 1)
     {
-      End   = Standard_True;
+      End   = true;
       Toler = Tolerance;
     }
     else
@@ -130,7 +130,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACo
     Ok = Compute(DeltaP1, DeltaP2, DAngle1, DAngle2, DRho1, DRho2, ACode, NbIterations, Toler);
 
     if (ACode != FairCurve_OK)
-      End = Standard_True;
+      End = true;
     if (NewFreeSliding)
       NewSlidingFactor = OldSlidingFactor;
     if (NewConstraintOrder1 == 0)
@@ -147,50 +147,51 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACo
 }
 
 //======================================================================================
-Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
-                                                     const gp_Vec2d&         DeltaP2,
-                                                     const Standard_Real     DeltaAngle1,
-                                                     const Standard_Real     DeltaAngle2,
-                                                     const Standard_Real     DeltaCurvature1,
-                                                     const Standard_Real     DeltaCurvature2,
-                                                     FairCurve_AnalysisCode& ACode,
-                                                     const Standard_Integer  NbIterations,
-                                                     const Standard_Real     Tolerance)
+bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
+                                         const gp_Vec2d&         DeltaP2,
+                                         const double            DeltaAngle1,
+                                         const double            DeltaAngle2,
+                                         const double            DeltaCurvature1,
+                                         const double            DeltaCurvature2,
+                                         FairCurve_AnalysisCode& ACode,
+                                         const int               NbIterations,
+                                         const double            Tolerance)
 //======================================================================================
 {
-  Standard_Boolean Ok, OkCompute = Standard_True;
+  bool Ok, OkCompute = true;
   ACode = FairCurve_OK;
 
   // Deformation of the curve by adding a polynom of interpolation
-  Standard_Integer L = 2 + NewConstraintOrder1 + NewConstraintOrder2, kk, ii;
+  int L = 2 + NewConstraintOrder1 + NewConstraintOrder2, kk, ii;
 //                    NbP1 = Poles->Length()-1, kk, ii;
 #ifdef OCCT_DEBUG
-  Standard_Integer NbP1 =
+  int NbP1 =
 #endif
     Poles->Length();
 #ifdef OCCT_DEBUG
   NbP1 = NbP1 - 1;
 #endif
-  TColStd_Array1OfReal knots(1, 2);
+  NCollection_Array1<double> knots(1, 2);
   knots(1) = 0;
   knots(2) = 1;
-  TColStd_Array1OfInteger       mults(1, 2);
-  TColgp_Array1OfPnt2d          HermitePoles(1, L);
-  TColgp_Array1OfPnt2d          Interpolation(1, L);
-  Handle(TColgp_HArray1OfPnt2d) NPoles = new TColgp_HArray1OfPnt2d(1, Poles->Length());
+  NCollection_Array1<int>                    mults(1, 2);
+  NCollection_Array1<gp_Pnt2d>               HermitePoles(1, L);
+  NCollection_Array1<gp_Pnt2d>               Interpolation(1, L);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> NPoles =
+    new NCollection_HArray1<gp_Pnt2d>(1, Poles->Length());
 
   // Polynomes of Hermite
   math_Matrix HermiteCoef(1, L, 1, L);
   Ok = PLib::HermiteCoefficients(0, 1, NewConstraintOrder1, NewConstraintOrder2, HermiteCoef);
   if (!Ok)
-    return Standard_False;
+    return false;
 
   // Definition of constraints of interpolation
-  TColgp_Array1OfXY ADelta(1, L);
+  NCollection_Array1<gp_XY> ADelta(1, L);
   gp_Vec2d VOld(OldP1, OldP2), VNew(-(OldP1.XY() + DeltaP1.XY()) + (OldP2.XY() + DeltaP2.XY()));
-  Standard_Real DAngleRef = VNew.Angle(VOld);
-  Standard_Real DAngle1   = DeltaAngle1 - DAngleRef,
-                // clang-format off
+  double   DAngleRef = VNew.Angle(VOld);
+  double   DAngle1   = DeltaAngle1 - DAngleRef,
+         // clang-format off
                  DAngle2 = DAngleRef   - DeltaAngle2; // Correction of Delta by the Delta induced by the points.
   // clang-format on
 
@@ -211,8 +212,8 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
                           - 2 * Poles->Value(Poles->Lower() + 1).XY());
       OldSeconde *= Degree * (Degree - 1)
                     / pow(Knots->Value(Knots->Lower() + 1) - Knots->Value(Knots->Lower()), 2);
-      Standard_Real CPrim = OldDerive.Magnitude();
-      ADelta(kk)          = (OldSeconde.Rotated(DAngle1) - OldSeconde
+      double CPrim = OldDerive.Magnitude();
+      ADelta(kk)   = (OldSeconde.Rotated(DAngle1) - OldSeconde
                     + DeltaCurvature1 * CPrim * OldDerive.Rotated(M_PI / 2 + DAngle1))
                      .XY();
       kk += 1;
@@ -233,8 +234,8 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
                           - 2 * Poles->Value(Poles->Upper() - 1).XY());
       OldSeconde *= Degree * (Degree - 1)
                     / pow(Knots->Value(Knots->Upper()) - Knots->Value(Knots->Upper() - 1), 2);
-      Standard_Real CPrim = OldDerive.Magnitude();
-      ADelta(kk)          = (OldSeconde.Rotated(DAngle2) - OldSeconde
+      double CPrim = OldDerive.Magnitude();
+      ADelta(kk)   = (OldSeconde.Rotated(DAngle2) - OldSeconde
                     + DeltaCurvature2 * CPrim * OldDerive.Rotated(M_PI / 2 + DAngle2))
                      .XY();
       kk += 1;
@@ -257,7 +258,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
 
   mults.Init(L);
 
-  Handle(Geom2d_BSplineCurve) DeltaCurve =
+  occ::handle<Geom2d_BSplineCurve> DeltaCurve =
     new Geom2d_BSplineCurve(HermitePoles, knots, mults, L - 1);
 
   DeltaCurve->IncreaseDegree(Degree);
@@ -275,7 +276,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
 
   // Intermediaires
 
-  Standard_Real Angle1, Angle2, SlidingLength,
+  double Angle1, Angle2, SlidingLength,
     Alph1 = OldAngle1 + DeltaAngle1, Alph2 = OldAngle2 + DeltaAngle2,
     Rho1 = OldCurvature1 + DeltaCurvature1, Rho2 = OldCurvature2 + DeltaCurvature2,
     Dist       = NPoles->Value(NPoles->Upper()).Distance(NPoles->Value(NPoles->Lower())),
@@ -324,7 +325,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
   math_Vector           VInit(1, EMVC.NbVariables());
 
   // The value below gives an idea about the smallest value of the criterion of flexion.
-  Standard_Real VConvex = 0.01 * pow(NewHeight / SlidingLength, 3);
+  double VConvex = 0.01 * pow(NewHeight / SlidingLength, 3);
   if (VConvex < 1.e-12)
   {
     VConvex = 1.e-12;
@@ -413,7 +414,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
   }
   else
   {
-    Standard_Real V;
+    double V;
     ACode = EMVC.Status();
     if (!LBatten.Value(0, V) || !LBatten.Value(1, V))
     {
@@ -421,7 +422,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
     }
     else
     {
-      OkCompute = Standard_False;
+      OkCompute = false;
     }
     return OkCompute;
   }
@@ -439,37 +440,38 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
     ACode = FairCurve_InfiniteSliding;
 
   // Eventual insertion of Nodes
-  Standard_Boolean NewKnots = Standard_False;
-  Standard_Integer NbKnots  = Knots->Length();
-  Standard_Real    ValAngles =
+  bool   NewKnots = false;
+  int    NbKnots  = Knots->Length();
+  double ValAngles =
     (std::abs(OldAngle1) + std::abs(OldAngle2) + 2 * std::abs(OldAngle2 - OldAngle1));
   while (ValAngles > (2 * (NbKnots - 2) + 1) * (1 + 2 * NbKnots))
   {
-    NewKnots = Standard_True;
+    NewKnots = true;
     NbKnots += NbKnots - 1;
   }
 
   if (NewKnots)
   {
-    Handle(Geom2d_BSplineCurve) NewBS =
+    occ::handle<Geom2d_BSplineCurve> NewBS =
       new Geom2d_BSplineCurve(NPoles->Array1(), Knots->Array1(), Mults->Array1(), Degree);
 
-    Handle(TColStd_HArray1OfInteger) NMults = new TColStd_HArray1OfInteger(1, NbKnots);
+    occ::handle<NCollection_HArray1<int>> NMults = new NCollection_HArray1<int>(1, NbKnots);
     NMults->Init(Degree - 3);
 
-    Handle(TColStd_HArray1OfReal) NKnots = new TColStd_HArray1OfReal(1, NbKnots);
+    occ::handle<NCollection_HArray1<double>> NKnots = new NCollection_HArray1<double>(1, NbKnots);
     for (ii = 1; ii <= NbKnots; ii++)
     {
       NKnots->ChangeValue(ii) = (double)(ii - 1) / (NbKnots - 1);
     }
 
     NewBS->InsertKnots(NKnots->Array1(), NMults->Array1(), 1.e-10);
-    Handle(TColgp_HArray1OfPnt2d) NewNPoles = new TColgp_HArray1OfPnt2d(1, NewBS->NbPoles());
+    occ::handle<NCollection_HArray1<gp_Pnt2d>> NewNPoles =
+      new NCollection_HArray1<gp_Pnt2d>(1, NewBS->NbPoles());
     NewBS->Poles(NewNPoles->ChangeArray1());
     NewBS->Multiplicities(NMults->ChangeArray1());
     NewBS->Knots(NKnots->ChangeArray1());
-    Handle(TColStd_HArray1OfReal) FKnots =
-      new TColStd_HArray1OfReal(1, NewBS->NbPoles() + Degree + 1);
+    occ::handle<NCollection_HArray1<double>> FKnots =
+      new NCollection_HArray1<double>(1, NewBS->NbPoles() + Degree + 1);
     NewBS->KnotSequence(FKnots->ChangeArray1());
 
     Poles     = NewNPoles;

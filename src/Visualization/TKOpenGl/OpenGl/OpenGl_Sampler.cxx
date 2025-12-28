@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Sampler, OpenGl_Resource)
 
 //=================================================================================================
 
-OpenGl_Sampler::OpenGl_Sampler(const Handle(Graphic3d_TextureParams)& theParams)
+OpenGl_Sampler::OpenGl_Sampler(const occ::handle<Graphic3d_TextureParams>& theParams)
     : myParams(theParams),
       mySamplerRevision(0),
       mySamplerID(NO_SAMPLER),
@@ -69,31 +69,31 @@ void OpenGl_Sampler::Release(OpenGl_Context* theCtx)
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_Sampler::Create(const Handle(OpenGl_Context)& theCtx)
+bool OpenGl_Sampler::Create(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (isValidSampler())
   {
-    return Standard_True;
+    return true;
   }
   else if (theCtx->arbSamplerObject == NULL)
   {
-    return Standard_False;
+    return false;
   }
 
   theCtx->arbSamplerObject->glGenSamplers(1, &mySamplerID);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_Sampler::Init(const Handle(OpenGl_Context)& theCtx,
-                                      const OpenGl_Texture&         theTexture)
+bool OpenGl_Sampler::Init(const occ::handle<OpenGl_Context>& theCtx,
+                          const OpenGl_Texture&              theTexture)
 {
   if (isValidSampler())
   {
     if (!ToUpdateParameters())
     {
-      return Standard_True;
+      return true;
     }
     else if (!myIsImmutable)
     {
@@ -102,25 +102,26 @@ Standard_Boolean OpenGl_Sampler::Init(const Handle(OpenGl_Context)& theCtx,
                          this,
                          theTexture.GetTarget(),
                          theTexture.MaxMipmapLevel());
-      return Standard_True;
+      return true;
     }
     Release(theCtx.get());
   }
 
   if (!Create(theCtx))
   {
-    return Standard_False;
+    return false;
   }
 
   applySamplerParams(theCtx, myParams, this, theTexture.GetTarget(), theTexture.MaxMipmapLevel());
-  return Standard_True;
+  return true;
 }
 
 // =======================================================================
 // function : Bind
 // purpose  : Binds sampler object to the given texture unit
 // =======================================================================
-void OpenGl_Sampler::Bind(const Handle(OpenGl_Context)& theCtx, const Graphic3d_TextureUnit theUnit)
+void OpenGl_Sampler::Bind(const occ::handle<OpenGl_Context>& theCtx,
+                          const Graphic3d_TextureUnit        theUnit)
 {
   if (isValidSampler())
   {
@@ -132,8 +133,8 @@ void OpenGl_Sampler::Bind(const Handle(OpenGl_Context)& theCtx, const Graphic3d_
 // function : Unbind
 // purpose  : Unbinds sampler object from the given texture unit
 // =======================================================================
-void OpenGl_Sampler::Unbind(const Handle(OpenGl_Context)& theCtx,
-                            const Graphic3d_TextureUnit   theUnit)
+void OpenGl_Sampler::Unbind(const occ::handle<OpenGl_Context>& theCtx,
+                            const Graphic3d_TextureUnit        theUnit)
 {
   if (isValidSampler())
   {
@@ -143,11 +144,11 @@ void OpenGl_Sampler::Unbind(const Handle(OpenGl_Context)& theCtx,
 
 //=================================================================================================
 
-void OpenGl_Sampler::setParameter(const Handle(OpenGl_Context)& theCtx,
-                                  OpenGl_Sampler*               theSampler,
-                                  unsigned int                  theTarget,
-                                  unsigned int                  theParam,
-                                  Standard_Integer              theValue)
+void OpenGl_Sampler::setParameter(const occ::handle<OpenGl_Context>& theCtx,
+                                  OpenGl_Sampler*                    theSampler,
+                                  unsigned int                       theTarget,
+                                  unsigned int                       theParam,
+                                  int                                theValue)
 {
   if (theSampler != NULL && theSampler->isValidSampler())
   {
@@ -161,7 +162,7 @@ void OpenGl_Sampler::setParameter(const Handle(OpenGl_Context)& theCtx,
 
 //=================================================================================================
 
-void OpenGl_Sampler::SetParameters(const Handle(Graphic3d_TextureParams)& theParams)
+void OpenGl_Sampler::SetParameters(const occ::handle<Graphic3d_TextureParams>& theParams)
 {
   if (myParams != theParams)
   {
@@ -172,11 +173,11 @@ void OpenGl_Sampler::SetParameters(const Handle(Graphic3d_TextureParams)& thePar
 
 //=================================================================================================
 
-void OpenGl_Sampler::applySamplerParams(const Handle(OpenGl_Context)&          theCtx,
-                                        const Handle(Graphic3d_TextureParams)& theParams,
-                                        OpenGl_Sampler*                        theSampler,
-                                        const unsigned int                     theTarget,
-                                        const Standard_Integer                 theMaxMipLevels)
+void OpenGl_Sampler::applySamplerParams(const occ::handle<OpenGl_Context>&          theCtx,
+                                        const occ::handle<Graphic3d_TextureParams>& theParams,
+                                        OpenGl_Sampler*                             theSampler,
+                                        const unsigned int                          theTarget,
+                                        const int                                   theMaxMipLevels)
 {
   if (theSampler != NULL && theSampler->Parameters() == theParams)
   {
@@ -251,7 +252,7 @@ void OpenGl_Sampler::applySamplerParams(const Handle(OpenGl_Context)&          t
 
   if (theCtx->HasTextureBaseLevel() && (theSampler == NULL || !theSampler->isValidSampler()))
   {
-    const Standard_Integer aMaxLevel = std::min(theMaxMipLevels, theParams->MaxLevel());
+    const int aMaxLevel = std::min(theMaxMipLevels, theParams->MaxLevel());
     setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_BASE_LEVEL, theParams->BaseLevel());
     setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_MAX_LEVEL, aMaxLevel);
   }
@@ -259,9 +260,9 @@ void OpenGl_Sampler::applySamplerParams(const Handle(OpenGl_Context)&          t
 
 //=================================================================================================
 
-void OpenGl_Sampler::applyGlobalTextureParams(const Handle(OpenGl_Context)&          theCtx,
-                                              const OpenGl_Texture&                  theTexture,
-                                              const Handle(Graphic3d_TextureParams)& theParams)
+void OpenGl_Sampler::applyGlobalTextureParams(const occ::handle<OpenGl_Context>& theCtx,
+                                              const OpenGl_Texture&              theTexture,
+                                              const occ::handle<Graphic3d_TextureParams>& theParams)
 {
   if (theCtx->core11ffp == NULL || theParams->TextureUnit() >= theCtx->MaxTextureUnitsFFP())
   {
@@ -360,9 +361,9 @@ void OpenGl_Sampler::applyGlobalTextureParams(const Handle(OpenGl_Context)&     
 
 //=================================================================================================
 
-void OpenGl_Sampler::resetGlobalTextureParams(const Handle(OpenGl_Context)&          theCtx,
-                                              const OpenGl_Texture&                  theTexture,
-                                              const Handle(Graphic3d_TextureParams)& theParams)
+void OpenGl_Sampler::resetGlobalTextureParams(const occ::handle<OpenGl_Context>& theCtx,
+                                              const OpenGl_Texture&              theTexture,
+                                              const occ::handle<Graphic3d_TextureParams>& theParams)
 {
   if (theCtx->core11ffp == NULL)
   {

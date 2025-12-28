@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_TIntSparseArray, TDF_Attribute)
 TObj_TIntSparseArray::TObj_TIntSparseArray()
     : myVector(100),
       myOldMap(100),
-      myDoBackup(Standard_True)
+      myDoBackup(true)
 {
 }
 
@@ -49,9 +49,9 @@ const Standard_GUID& TObj_TIntSparseArray::ID() const
 
 //=================================================================================================
 
-Handle(TObj_TIntSparseArray) TObj_TIntSparseArray::Set(const TDF_Label& theLabel)
+occ::handle<TObj_TIntSparseArray> TObj_TIntSparseArray::Set(const TDF_Label& theLabel)
 {
-  Handle(TObj_TIntSparseArray) aTData;
+  occ::handle<TObj_TIntSparseArray> aTData;
   if (!theLabel.FindAttribute(GetID(), aTData))
   {
     aTData = new TObj_TIntSparseArray;
@@ -62,7 +62,7 @@ Handle(TObj_TIntSparseArray) TObj_TIntSparseArray::Set(const TDF_Label& theLabel
 
 //=================================================================================================
 
-void TObj_TIntSparseArray::SetValue(const Standard_Size theId, const Standard_Integer theValue)
+void TObj_TIntSparseArray::SetValue(const size_t theId, const int theValue)
 {
   // check that modification is allowed
   if (!Label().Data()->IsModificationAllowed())
@@ -71,11 +71,11 @@ void TObj_TIntSparseArray::SetValue(const Standard_Size theId, const Standard_In
   if (theId < 1 || theValue < 1)
     throw Standard_OutOfRange("TObj_TIntSparseArray::SetValue");
 
-  Standard_Integer anOld = AbsentValue;
-  Standard_Boolean isOld = myVector.HasValue(theId);
+  int  anOld = AbsentValue;
+  bool isOld = myVector.HasValue(theId);
   if (isOld)
   {
-    Standard_Integer& aData = myVector(theId);
+    int& aData = myVector(theId);
     if (aData == theValue)
       // no actual modification
       return;
@@ -92,9 +92,9 @@ void TObj_TIntSparseArray::SetValue(const Standard_Size theId, const Standard_In
   TDF_Label aLabel = Label();
   if (!aLabel.IsNull())
   {
-    Handle(TDF_Data) aData               = aLabel.Data();
-    Standard_Integer aCurrentTransaction = aData->Transaction();
-    Standard_Integer aMyTransaction      = Transaction();
+    occ::handle<TDF_Data> aData               = aLabel.Data();
+    int                   aCurrentTransaction = aData->Transaction();
+    int                   aMyTransaction      = Transaction();
 
     if (myDoBackup && aMyTransaction < aCurrentTransaction)
       backupValue(theId, anOld, theValue);
@@ -103,7 +103,7 @@ void TObj_TIntSparseArray::SetValue(const Standard_Size theId, const Standard_In
 
 //=================================================================================================
 
-void TObj_TIntSparseArray::UnsetValue(const Standard_Size theId)
+void TObj_TIntSparseArray::UnsetValue(const size_t theId)
 {
   // check that modification is allowed
   if (!Label().Data()->IsModificationAllowed())
@@ -112,8 +112,8 @@ void TObj_TIntSparseArray::UnsetValue(const Standard_Size theId)
   if (theId < 1)
     throw Standard_OutOfRange("TObj_TIntSparseArray::UnsetValue");
 
-  Standard_Integer anOld = AbsentValue;
-  Standard_Boolean isOld = myVector.HasValue(theId);
+  int  anOld = AbsentValue;
+  bool isOld = myVector.HasValue(theId);
   if (isOld)
   {
     anOld = myVector(theId);
@@ -127,9 +127,9 @@ void TObj_TIntSparseArray::UnsetValue(const Standard_Size theId)
   TDF_Label aLabel = Label();
   if (!aLabel.IsNull())
   {
-    Handle(TDF_Data) aData               = aLabel.Data();
-    Standard_Integer aCurrentTransaction = aData->Transaction();
-    Standard_Integer aMyTransaction      = Transaction();
+    occ::handle<TDF_Data> aData               = aLabel.Data();
+    int                   aCurrentTransaction = aData->Transaction();
+    int                   aMyTransaction      = Transaction();
 
     if (myDoBackup && aMyTransaction < aCurrentTransaction)
       backupValue(theId, anOld, AbsentValue);
@@ -144,17 +144,17 @@ void TObj_TIntSparseArray::Clear()
   TDF_Label aLabel = Label();
   if (!aLabel.IsNull())
   {
-    Handle(TDF_Data) aData               = aLabel.Data();
-    Standard_Integer aCurrentTransaction = aData->Transaction();
-    Standard_Integer aMyTransaction      = Transaction();
+    occ::handle<TDF_Data> aData               = aLabel.Data();
+    int                   aCurrentTransaction = aData->Transaction();
+    int                   aMyTransaction      = Transaction();
 
     if (myDoBackup && aMyTransaction < aCurrentTransaction)
     {
-      TObj_TIntSparseArray_VecOfData::Iterator anIt(myVector);
+      NCollection_SparseArray<int>::Iterator anIt(myVector);
       for (; anIt.More(); anIt.Next())
       {
-        Standard_Size    anId = anIt.Key();
-        Standard_Integer aVal = anIt.Value();
+        size_t anId = anIt.Key();
+        int    aVal = anIt.Value();
         backupValue(anId, aVal, AbsentValue);
       }
     }
@@ -164,9 +164,9 @@ void TObj_TIntSparseArray::Clear()
 
 //=================================================================================================
 
-void TObj_TIntSparseArray::backupValue(const Standard_Size    theId,
-                                       const Standard_Integer theCurrValue,
-                                       const Standard_Integer theNewValue)
+void TObj_TIntSparseArray::backupValue(const size_t theId,
+                                       const int    theCurrValue,
+                                       const int    theNewValue)
 {
   // save the current value if it has not been saved in previous time
   if (!myOldMap.IsBound(theId))
@@ -174,7 +174,7 @@ void TObj_TIntSparseArray::backupValue(const Standard_Size    theId,
   else
   {
     // if value in Undo is the same as the new one, the item in Undo map may be cleared
-    Standard_Integer aUData = myOldMap.Value(theId);
+    int aUData = myOldMap.Value(theId);
     if (aUData == theNewValue)
       myOldMap.UnBind(theId);
   }
@@ -182,7 +182,7 @@ void TObj_TIntSparseArray::backupValue(const Standard_Size    theId,
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TObj_TIntSparseArray::NewEmpty() const
+occ::handle<TDF_Attribute> TObj_TIntSparseArray::NewEmpty() const
 {
   return new TObj_TIntSparseArray;
 }
@@ -192,13 +192,13 @@ Handle(TDF_Attribute) TObj_TIntSparseArray::NewEmpty() const
 // purpose  : Moves <this> delta into a new other attribute.
 //=======================================================================
 
-Handle(TDF_Attribute) TObj_TIntSparseArray::BackupCopy() const
+occ::handle<TDF_Attribute> TObj_TIntSparseArray::BackupCopy() const
 {
-  Handle(TObj_TIntSparseArray) aCopy = Handle(TObj_TIntSparseArray)::DownCast(NewEmpty());
+  occ::handle<TObj_TIntSparseArray> aCopy = occ::down_cast<TObj_TIntSparseArray>(NewEmpty());
 
   // save delta data in a copy
   if (!myOldMap.IsEmpty())
-    aCopy->myOldMap.Exchange((TObj_TIntSparseArray_MapOfData&)myOldMap);
+    aCopy->myOldMap.Exchange((NCollection_SparseArray<int>&)myOldMap);
 
   return aCopy;
 }
@@ -208,20 +208,20 @@ Handle(TDF_Attribute) TObj_TIntSparseArray::BackupCopy() const
 // purpose  : Restores contents of this with theDelta
 //=======================================================================
 
-void TObj_TIntSparseArray::Restore(const Handle(TDF_Attribute)& theDelta)
+void TObj_TIntSparseArray::Restore(const occ::handle<TDF_Attribute>& theDelta)
 {
-  Handle(TObj_TIntSparseArray) aDelta = Handle(TObj_TIntSparseArray)::DownCast(theDelta);
+  occ::handle<TObj_TIntSparseArray> aDelta = occ::down_cast<TObj_TIntSparseArray>(theDelta);
   if (aDelta.IsNull())
     return;
 
   // restore the values from aDelta->myOldMap
   if (!aDelta->myOldMap.IsEmpty())
   {
-    TObj_TIntSparseArray_MapOfData::Iterator anIt(aDelta->myOldMap);
+    NCollection_SparseArray<int>::Iterator anIt(aDelta->myOldMap);
     for (; anIt.More(); anIt.Next())
     {
-      Standard_Size    anId  = anIt.Key();
-      Standard_Integer anOld = anIt.Value();
+      size_t anId  = anIt.Key();
+      int    anOld = anIt.Value();
       if (anOld == AbsentValue)
         UnsetValue(anId);
       else
@@ -232,10 +232,10 @@ void TObj_TIntSparseArray::Restore(const Handle(TDF_Attribute)& theDelta)
 
 //=================================================================================================
 
-void TObj_TIntSparseArray::Paste(const Handle(TDF_Attribute)& theInto,
-                                 const Handle(TDF_RelocationTable)&) const
+void TObj_TIntSparseArray::Paste(const occ::handle<TDF_Attribute>& theInto,
+                                 const occ::handle<TDF_RelocationTable>&) const
 {
-  Handle(TObj_TIntSparseArray) aInto = Handle(TObj_TIntSparseArray)::DownCast(theInto);
+  occ::handle<TObj_TIntSparseArray> aInto = occ::down_cast<TObj_TIntSparseArray>(theInto);
   if (aInto.IsNull())
     return;
 
@@ -261,7 +261,7 @@ void TObj_TIntSparseArray::BeforeCommitTransaction()
 // purpose  : Applies aDelta to <me>
 //=======================================================================
 
-void TObj_TIntSparseArray::DeltaOnModification(const Handle(TDF_DeltaOnModification)& theDelta)
+void TObj_TIntSparseArray::DeltaOnModification(const occ::handle<TDF_DeltaOnModification>& theDelta)
 {
   // we do not call Backup here, because a backup data is formed inside Restore.
   // Backup is called rather from BeforeCommitTransaction
@@ -273,10 +273,9 @@ void TObj_TIntSparseArray::DeltaOnModification(const Handle(TDF_DeltaOnModificat
 // purpose  : After application of a TDF_Delta.
 //=======================================================================
 
-Standard_Boolean TObj_TIntSparseArray::AfterUndo(const Handle(TDF_AttributeDelta)&,
-                                                 const Standard_Boolean)
+bool TObj_TIntSparseArray::AfterUndo(const occ::handle<TDF_AttributeDelta>&, const bool)
 {
   // we must be sure that a delta in <me> is cleared
   ClearDelta();
-  return Standard_True;
+  return true;
 }

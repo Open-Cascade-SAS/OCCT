@@ -43,29 +43,27 @@ public:
   Standard_EXPORT IntRes2d_Transition();
 
   //! Creates an IN or OUT transition.
-  IntRes2d_Transition(const Standard_Boolean   Tangent,
+  IntRes2d_Transition(const bool               Tangent,
                       const IntRes2d_Position  Pos,
                       const IntRes2d_TypeTrans Type);
 
   //! Creates a TOUCH transition.
-  IntRes2d_Transition(const Standard_Boolean   Tangent,
+  IntRes2d_Transition(const bool               Tangent,
                       const IntRes2d_Position  Pos,
                       const IntRes2d_Situation Situ,
-                      const Standard_Boolean   Oppos);
+                      const bool               Oppos);
 
   //! Creates an UNDECIDED transition.
   IntRes2d_Transition(const IntRes2d_Position Pos);
 
   //! Sets the values of an IN or OUT transition.
-  void SetValue(const Standard_Boolean   Tangent,
-                const IntRes2d_Position  Pos,
-                const IntRes2d_TypeTrans Type);
+  void SetValue(const bool Tangent, const IntRes2d_Position Pos, const IntRes2d_TypeTrans Type);
 
   //! Sets the values of a TOUCH transition.
-  void SetValue(const Standard_Boolean   Tangent,
+  void SetValue(const bool               Tangent,
                 const IntRes2d_Position  Pos,
                 const IntRes2d_Situation Situ,
-                const Standard_Boolean   Oppos);
+                const bool               Oppos);
 
   //! Sets the values of an UNDECIDED transition.
   void SetValue(const IntRes2d_Position Pos);
@@ -88,7 +86,7 @@ public:
   //! intersection point.
   //! Theexception DomainError is raised if the type of
   //! transition is UNDECIDED.
-  Standard_Boolean IsTangent() const;
+  bool IsTangent() const;
 
   //! returns a significant value if TransitionType returns
   //! TOUCH. In this case, the function returns :
@@ -106,15 +104,14 @@ public:
   //! different parts of the space. If TransitionType
   //! returns IN or OUT or UNDECIDED, the exception
   //! DomainError is raised.
-  Standard_Boolean IsOpposite() const;
+  bool IsOpposite() const;
 
-protected:
 private:
-  Standard_Boolean   tangent;
+  bool               tangent;
   IntRes2d_Position  posit;
   IntRes2d_TypeTrans typetra;
   IntRes2d_Situation situat;
-  Standard_Boolean   oppos;
+  bool               oppos;
 };
 
 #include <IntRes2d_Transition.lxx>

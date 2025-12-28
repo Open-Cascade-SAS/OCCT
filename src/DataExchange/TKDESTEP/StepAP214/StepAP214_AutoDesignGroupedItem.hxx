@@ -57,48 +57,45 @@ public:
   //! 10 -> ShapeRepresentation
   //! 11 -> TemplateInstance
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a AdvancedBrepShapeRepresentation (Null if another type)
-  Standard_EXPORT Handle(StepShape_AdvancedBrepShapeRepresentation)
-    AdvancedBrepShapeRepresentation() const;
+  Standard_EXPORT occ::handle<StepShape_AdvancedBrepShapeRepresentation>
+                  AdvancedBrepShapeRepresentation() const;
 
   //! returns Value as a CsgShapeRepresentation (Null if another type)
-  Standard_EXPORT Handle(StepShape_CsgShapeRepresentation) CsgShapeRepresentation() const;
+  Standard_EXPORT occ::handle<StepShape_CsgShapeRepresentation> CsgShapeRepresentation() const;
 
   //! returns Value as a FacetedBrepShapeRepresentation (Null if another type)
-  Standard_EXPORT Handle(StepShape_FacetedBrepShapeRepresentation) FacetedBrepShapeRepresentation()
-    const;
+  Standard_EXPORT occ::handle<StepShape_FacetedBrepShapeRepresentation>
+                  FacetedBrepShapeRepresentation() const;
 
   //! returns Value as a GeometricallyBoundedSurfaceShapeRepresentation (Null if another type)
-  Standard_EXPORT Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)
-    GeometricallyBoundedSurfaceShapeRepresentation() const;
+  Standard_EXPORT occ::handle<StepShape_GeometricallyBoundedSurfaceShapeRepresentation>
+                  GeometricallyBoundedSurfaceShapeRepresentation() const;
 
   //! returns Value as a GeometricallyBoundedWireframeShapeRepresentation (Null if another type)
-  Standard_EXPORT Handle(StepShape_GeometricallyBoundedWireframeShapeRepresentation)
-    GeometricallyBoundedWireframeShapeRepresentation() const;
+  Standard_EXPORT occ::handle<StepShape_GeometricallyBoundedWireframeShapeRepresentation>
+                  GeometricallyBoundedWireframeShapeRepresentation() const;
 
   //! returns Value as a ManifoldSurfaceShapeRepresentation (Null if another type)
-  Standard_EXPORT Handle(StepShape_ManifoldSurfaceShapeRepresentation)
-    ManifoldSurfaceShapeRepresentation() const;
+  Standard_EXPORT occ::handle<StepShape_ManifoldSurfaceShapeRepresentation>
+                  ManifoldSurfaceShapeRepresentation() const;
 
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
   //! returns Value as a RepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_RepresentationItem) RepresentationItem() const;
+  Standard_EXPORT occ::handle<StepRepr_RepresentationItem> RepresentationItem() const;
 
   //! returns Value as a ShapeAspect (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 
   //! returns Value as a ShapeRepresentation (Null if another type)
-  Standard_EXPORT Handle(StepShape_ShapeRepresentation) ShapeRepresentation() const;
+  Standard_EXPORT occ::handle<StepShape_ShapeRepresentation> ShapeRepresentation() const;
 
   //! returns Value as a TemplateInstance (Null if another type)
-  Standard_EXPORT Handle(StepVisual_TemplateInstance) TemplateInstance() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepVisual_TemplateInstance> TemplateInstance() const;
 };
 
 #endif // _StepAP214_AutoDesignGroupedItem_HeaderFile

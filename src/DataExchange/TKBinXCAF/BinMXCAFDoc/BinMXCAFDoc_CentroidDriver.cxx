@@ -25,28 +25,27 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_CentroidDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMXCAFDoc_CentroidDriver::BinMXCAFDoc_CentroidDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Centroid)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMXCAFDoc_CentroidDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMXCAFDoc_CentroidDriver::NewEmpty() const
 {
   return new XCAFDoc_Centroid();
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_CentroidDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool BinMXCAFDoc_CentroidDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_Centroid) anAtt = Handle(XCAFDoc_Centroid)::DownCast(theTarget);
-  Standard_Real            x, y, z;
-  Standard_Boolean         isOk = theSource >> x >> y >> z;
+  occ::handle<XCAFDoc_Centroid> anAtt = occ::down_cast<XCAFDoc_Centroid>(theTarget);
+  double                        x, y, z;
+  bool                          isOk = theSource >> x >> y >> z;
   if (isOk)
   {
     gp_Pnt aPnt(x, y, z);
@@ -57,11 +56,12 @@ Standard_Boolean BinMXCAFDoc_CentroidDriver::Paste(
 
 //=================================================================================================
 
-void BinMXCAFDoc_CentroidDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                       BinObjMgt_Persistent&        theTarget,
-                                       BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+void BinMXCAFDoc_CentroidDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_Centroid) anAtt = Handle(XCAFDoc_Centroid)::DownCast(theSource);
-  gp_Pnt                   aPnt  = anAtt->Get();
+  occ::handle<XCAFDoc_Centroid> anAtt = occ::down_cast<XCAFDoc_Centroid>(theSource);
+  gp_Pnt                        aPnt  = anAtt->Get();
   theTarget << aPnt.X() << aPnt.Y() << aPnt.Z();
 }

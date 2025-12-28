@@ -15,7 +15,8 @@
 #ifndef _RWObj_MtlReader_HeaderFile
 #define _RWObj_MtlReader_HeaderFile
 
-#include <Graphic3d_Vec3.hxx>
+#include <NCollection_Vec3.hxx>
+#include <Standard_TypeDef.hxx>
 #include <RWObj_Material.hxx>
 #include <NCollection_DataMap.hxx>
 
@@ -34,10 +35,10 @@ public:
 
 private:
   //! Validate scalar value
-  bool validateScalar(const Standard_Real theValue);
+  bool validateScalar(const double theValue);
 
   //! Validate RGB color
-  bool validateColor(const Graphic3d_Vec3& theVec);
+  bool validateColor(const NCollection_Vec3<float>& theVec);
 
   //! Process texture path.
   void processTexturePath(TCollection_AsciiString&       theTexturePath,

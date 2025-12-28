@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndRatioUnit, StepBasic_SiUnit)
 
 StepBasic_SiUnitAndRatioUnit::StepBasic_SiUnitAndRatioUnit() {}
 
-void StepBasic_SiUnitAndRatioUnit::Init(const Standard_Boolean     hasAprefix,
+void StepBasic_SiUnitAndRatioUnit::Init(const bool                 hasAprefix,
                                         const StepBasic_SiPrefix   aPrefix,
                                         const StepBasic_SiUnitName aName)
 {
@@ -30,17 +30,17 @@ void StepBasic_SiUnitAndRatioUnit::Init(const Standard_Boolean     hasAprefix,
 
   // --- ANDOR component fields ---
   ratioUnit = new StepBasic_RatioUnit();
-  Handle(StepBasic_DimensionalExponents) aDimensions;
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
   aDimensions.Nullify();
   ratioUnit->Init(aDimensions);
 }
 
-void StepBasic_SiUnitAndRatioUnit::SetRatioUnit(const Handle(StepBasic_RatioUnit)& aRatioUnit)
+void StepBasic_SiUnitAndRatioUnit::SetRatioUnit(const occ::handle<StepBasic_RatioUnit>& aRatioUnit)
 {
   ratioUnit = aRatioUnit;
 }
 
-Handle(StepBasic_RatioUnit) StepBasic_SiUnitAndRatioUnit::RatioUnit() const
+occ::handle<StepBasic_RatioUnit> StepBasic_SiUnitAndRatioUnit::RatioUnit() const
 {
   return ratioUnit;
 }

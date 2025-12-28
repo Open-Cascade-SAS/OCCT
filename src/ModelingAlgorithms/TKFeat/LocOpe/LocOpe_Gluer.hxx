@@ -23,10 +23,10 @@
 #include <TopoDS_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <LocOpe_Operation.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Face;
 class TopoDS_Edge;
 
@@ -49,35 +49,35 @@ public:
 
   Standard_EXPORT void Perform();
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   const TopoDS_Shape& ResultingShape() const;
 
-  Standard_EXPORT const TopTools_ListOfShape& DescendantFaces(const TopoDS_Face& F) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& DescendantFaces(const TopoDS_Face& F) const;
 
   const TopoDS_Shape& BasisShape() const;
 
   const TopoDS_Shape& GluedShape() const;
 
-  const TopTools_ListOfShape& Edges() const;
+  const NCollection_List<TopoDS_Shape>& Edges() const;
 
-  const TopTools_ListOfShape& TgtEdges() const;
+  const NCollection_List<TopoDS_Shape>& TgtEdges() const;
 
-protected:
 private:
   Standard_EXPORT void AddEdges();
 
-  Standard_Boolean                    myDone;
-  TopoDS_Shape                        mySb;
-  TopoDS_Shape                        mySn;
-  TopoDS_Shape                        myRes;
-  TopAbs_Orientation                  myOri;
-  LocOpe_Operation                    myOpe;
-  TopTools_IndexedDataMapOfShapeShape myMapEF;
-  TopTools_DataMapOfShapeShape        myMapEE;
-  TopTools_DataMapOfShapeListOfShape  myDescF;
-  TopTools_ListOfShape                myEdges;
-  TopTools_ListOfShape                myTgtEdges;
+  bool                                                                            myDone;
+  TopoDS_Shape                                                                    mySb;
+  TopoDS_Shape                                                                    mySn;
+  TopoDS_Shape                                                                    myRes;
+  TopAbs_Orientation                                                              myOri;
+  LocOpe_Operation                                                                myOpe;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapEF;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>        myMapEE;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                 myDescF;
+  NCollection_List<TopoDS_Shape> myEdges;
+  NCollection_List<TopoDS_Shape> myTgtEdges;
 };
 
 #include <LocOpe_Gluer.lxx>

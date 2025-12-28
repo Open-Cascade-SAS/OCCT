@@ -23,7 +23,7 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
 
 //! The class BOPDS_ShapeInfo is to store
@@ -40,7 +40,7 @@ public:
 
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
-  BOPDS_ShapeInfo(const Handle(NCollection_BaseAllocator)& theAllocator);
+  BOPDS_ShapeInfo(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Modifier
   //! Sets the shape <theS>
@@ -72,52 +72,52 @@ public:
 
   //! Selector
   //! Returns the list of indices of sub-shapes
-  const TColStd_ListOfInteger& SubShapes() const;
+  const NCollection_List<int>& SubShapes() const;
 
   //! Selector/ Modifier
   //! Returns the list of indices of sub-shapes
-  TColStd_ListOfInteger& ChangeSubShapes();
+  NCollection_List<int>& ChangeSubShapes();
 
   //! Query
   //! Returns true if the shape has sub-shape with
   //! index theI
-  Standard_Boolean HasSubShape(const Standard_Integer theI) const;
+  bool HasSubShape(const int theI) const;
 
-  Standard_Boolean HasReference() const;
+  bool HasReference() const;
 
   //! Modifier
   //! Sets the index of a reference information
-  void SetReference(const Standard_Integer theI);
+  void SetReference(const int theI);
 
   //! Selector
   //! Returns the index of a reference information
-  Standard_Integer Reference() const;
+  int Reference() const;
 
   //! Query
   //! Returns true if the shape has boundary representation
-  Standard_Boolean HasBRep() const;
+  bool HasBRep() const;
 
   //! Returns true if the shape can be participant of
   //! an interference
   //!
   //! Flag
-  Standard_Boolean IsInterfering() const;
+  bool IsInterfering() const;
 
   //! Query
   //! Returns true if there is flag.
-  Standard_Boolean HasFlag() const;
+  bool HasFlag() const;
 
   //! Query
   //! Returns true if there is flag.
   //! Returns the flag theFlag
-  Standard_Boolean HasFlag(Standard_Integer& theFlag) const;
+  bool HasFlag(int& theFlag) const;
 
   //! Modifier
   //! Sets the flag
-  void SetFlag(const Standard_Integer theI);
+  void SetFlag(const int theI);
 
   //! Returns the flag
-  Standard_Integer Flag() const;
+  int Flag() const;
 
   Standard_EXPORT void Dump() const;
 
@@ -125,11 +125,9 @@ protected:
   TopoDS_Shape          myShape;
   TopAbs_ShapeEnum      myType;
   Bnd_Box               myBox;
-  TColStd_ListOfInteger mySubShapes;
-  Standard_Integer      myReference;
-  Standard_Integer      myFlag;
-
-private:
+  NCollection_List<int> mySubShapes;
+  int                   myReference;
+  int                   myFlag;
 };
 
 #include <BOPDS_ShapeInfo.lxx>

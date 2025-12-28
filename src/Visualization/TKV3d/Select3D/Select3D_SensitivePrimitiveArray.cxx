@@ -25,19 +25,19 @@ namespace
 {
 
 //! Auxiliary converter.
-static inline gp_Pnt vecToPnt(const Graphic3d_Vec3& theVec)
+static inline gp_Pnt vecToPnt(const NCollection_Vec3<float>& theVec)
 {
   return gp_Pnt(theVec.x(), theVec.y(), theVec.z());
 }
 
 //! Auxiliary converter.
-static inline gp_Pnt vecToPnt(const Graphic3d_Vec2& theVec)
+static inline gp_Pnt vecToPnt(const NCollection_Vec2<float>& theVec)
 {
   return gp_Pnt(theVec.x(), theVec.y(), 0.0);
 }
 
 //! Auxiliary function to find shared node between two triangles.
-static inline bool hasSharedNode(const Standard_Integer* theTri1, const Standard_Integer* theTri2)
+static inline bool hasSharedNode(const int* theTri1, const int* theTri2)
 {
   return theTri1[0] == theTri2[0] || theTri1[1] == theTri2[0] || theTri1[2] == theTri2[0]
          || theTri1[0] == theTri2[1] || theTri1[1] == theTri2[1] || theTri1[2] == theTri2[1]
@@ -45,9 +45,9 @@ static inline bool hasSharedNode(const Standard_Integer* theTri1, const Standard
 }
 
 //! Fill in the triangle nodes indices.
-static inline void getTriIndices(const Handle(Graphic3d_IndexBuffer)& theIndices,
-                                 const Standard_Integer               theIndexOffset,
-                                 Standard_Integer*                    theNodes)
+static inline void getTriIndices(const occ::handle<Graphic3d_IndexBuffer>& theIndices,
+                                 const int                                 theIndexOffset,
+                                 int*                                      theNodes)
 {
   if (!theIndices.IsNull())
   {
@@ -69,23 +69,23 @@ static inline void getTriIndices(const Handle(Graphic3d_IndexBuffer)& theIndices
 struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_InitFunctor
 {
   Select3D_SensitivePrimitiveArray_InitFunctor(Select3D_SensitivePrimitiveArray& thePrimArray,
-                                               Standard_Integer                  theDivStep,
-                                               Standard_Boolean                  theToEvalMinMax)
+                                               int                               theDivStep,
+                                               bool                              theToEvalMinMax)
       : myPrimArray(thePrimArray),
         myDivStep(theDivStep),
         myToEvalMinMax(theToEvalMinMax),
-        myToComputeBvh(Standard_True),
+        myToComputeBvh(true),
         myNbFailures(0)
   {
   }
 
-  void operator()(const Standard_Integer& theIndex) const
+  void operator()(const int& theIndex) const
   {
-    Handle(Select3D_SensitivePrimitiveArray)& anEntity =
+    occ::handle<Select3D_SensitivePrimitiveArray>& anEntity =
       myPrimArray.myGroups->ChangeValue(theIndex);
-    const Standard_Integer aLower  = myPrimArray.myIndexLower + theIndex * myDivStep;
-    const Standard_Integer anUpper = std::min(aLower + myDivStep - 1, myPrimArray.myIndexUpper);
-    anEntity                       = new Select3D_SensitivePrimitiveArray(myPrimArray.myOwnerId);
+    const int aLower  = myPrimArray.myIndexLower + theIndex * myDivStep;
+    const int anUpper = std::min(aLower + myDivStep - 1, myPrimArray.myIndexUpper);
+    anEntity          = new Select3D_SensitivePrimitiveArray(myPrimArray.myOwnerId);
     anEntity->SetPatchSizeMax(myPrimArray.myPatchSizeMax);
     anEntity->SetPatchDistance(myPrimArray.myPatchDistance);
     anEntity->SetDetectElements(myPrimArray.myToDetectElem);
@@ -135,46 +135,46 @@ struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_InitFu
     }
   }
 
-  Standard_Boolean IsDone() const { return myNbFailures == 0; }
+  bool IsDone() const { return myNbFailures == 0; }
 
 private:
   Select3D_SensitivePrimitiveArray_InitFunctor operator=(
     Select3D_SensitivePrimitiveArray_InitFunctor&);
 
 private:
-  Select3D_SensitivePrimitiveArray&     myPrimArray;
-  Standard_Integer                      myDivStep;
-  Standard_Boolean                      myToEvalMinMax;
-  Standard_Boolean                      myToComputeBvh;
-  mutable std::atomic<Standard_Integer> myNbFailures;
+  Select3D_SensitivePrimitiveArray& myPrimArray;
+  int                               myDivStep;
+  bool                              myToEvalMinMax;
+  bool                              myToComputeBvh;
+  mutable std::atomic<int>          myNbFailures;
 };
 
 //! Functor for computing BVH in parallel threads.
 struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_BVHFunctor
 {
   Select3D_SensitivePrimitiveArray_BVHFunctor(
-    NCollection_Array1<Handle(Select3D_SensitivePrimitiveArray)>& theGroups)
+    NCollection_Array1<occ::handle<Select3D_SensitivePrimitiveArray>>& theGroups)
       : myGroups(theGroups)
   {
   }
 
-  void operator()(const Standard_Integer& theIndex) const { myGroups.ChangeValue(theIndex)->BVH(); }
+  void operator()(const int& theIndex) const { myGroups.ChangeValue(theIndex)->BVH(); }
 
 private:
   Select3D_SensitivePrimitiveArray_BVHFunctor operator=(
     Select3D_SensitivePrimitiveArray_BVHFunctor&);
 
 private:
-  NCollection_Array1<Handle(Select3D_SensitivePrimitiveArray)>& myGroups;
+  NCollection_Array1<occ::handle<Select3D_SensitivePrimitiveArray>>& myGroups;
 };
 
 //=================================================================================================
 
 Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray(
-  const Handle(SelectMgr_EntityOwner)& theOwnerId)
+  const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
     : Select3D_SensitiveSet(theOwnerId),
       myPosData(NULL),
-      myPosStride(Standard_Size(-1)),
+      myPosStride(size_t(-1)),
       myPrimType(Graphic3d_TOPA_UNDEFINED),
       myIndexLower(0),
       myIndexUpper(0),
@@ -239,13 +239,13 @@ void Select3D_SensitivePrimitiveArray::SetDetectNodeMap(bool theToDetect)
 //=================================================================================================
 
 bool Select3D_SensitivePrimitiveArray::InitTriangulation(
-  const Handle(Graphic3d_Buffer)&      theVerts,
-  const Handle(Graphic3d_IndexBuffer)& theIndices,
-  const TopLoc_Location&               theInitLoc,
-  const Standard_Integer               theIndexLower,
-  const Standard_Integer               theIndexUpper,
-  const bool                           theToEvalMinMax,
-  const Standard_Integer               theNbGroups)
+  const occ::handle<Graphic3d_Buffer>&      theVerts,
+  const occ::handle<Graphic3d_IndexBuffer>& theIndices,
+  const TopLoc_Location&                    theInitLoc,
+  const int                                 theIndexLower,
+  const int                                 theIndexUpper,
+  const bool                                theToEvalMinMax,
+  const int                                 theNbGroups)
 {
   MarkDirty();
   myGroups.Nullify();
@@ -256,7 +256,7 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
   myIndexLower = 0;
   myIndexUpper = 0;
   myPosData    = NULL;
-  myPosStride  = Standard_Size(-1);
+  myPosStride  = size_t(-1);
   myBvhIndices.release();
   myIs3d         = false;
   myInitLocation = theInitLoc;
@@ -266,8 +266,8 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
     return false;
   }
 
-  Standard_Integer aPosAttribIndex = 0;
-  myPosData = theVerts->AttributeData(Graphic3d_TOA_POS, aPosAttribIndex, myPosStride);
+  int aPosAttribIndex = 0;
+  myPosData           = theVerts->AttributeData(Graphic3d_TOA_POS, aPosAttribIndex, myPosStride);
   if (myPosData == NULL)
   {
     return false;
@@ -296,9 +296,9 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
     }
   }
 
-  Standard_Integer aTriFrom  = theIndexLower / 3;
-  Standard_Integer aNbTris   = (theIndexUpper - theIndexLower + 1) / 3;
-  const bool       hasGroups = (theNbGroups > 1) && (aNbTris / theNbGroups > 10);
+  int        aTriFrom  = theIndexLower / 3;
+  int        aNbTris   = (theIndexUpper - theIndexLower + 1) / 3;
+  const bool hasGroups = (theNbGroups > 1) && (aNbTris / theNbGroups > 10);
   if (aNbTris < 1)
   {
     return false;
@@ -316,21 +316,21 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
   if (hasGroups)
   {
     myGroups = new Select3D_PrimArraySubGroupArray(0, theNbGroups - 1);
-    const Standard_Integer                       aDivStep = (aNbTris / theNbGroups) * 3;
+    const int                                    aDivStep = (aNbTris / theNbGroups) * 3;
     Select3D_SensitivePrimitiveArray_InitFunctor anInitFunctor(*this, aDivStep, theToEvalMinMax);
     OSD_Parallel::For(myGroups->Lower(), myGroups->Upper() + 1, anInitFunctor);
     if (!anInitFunctor.IsDone())
     {
       return false;
     }
-    for (Standard_Integer aGroupIter = 0; aGroupIter < theNbGroups; ++aGroupIter)
+    for (int aGroupIter = 0; aGroupIter < theNbGroups; ++aGroupIter)
     {
-      Handle(Select3D_SensitivePrimitiveArray)& anEntity = myGroups->ChangeValue(aGroupIter);
+      occ::handle<Select3D_SensitivePrimitiveArray>& anEntity = myGroups->ChangeValue(aGroupIter);
       myBndBox.Combine(anEntity->BoundingBox());
       myBvhIndices.SetIndex(aGroupIter, aGroupIter);
       myCDG3D.ChangeCoord() += anEntity->CenterOfGeometry().XYZ();
     }
-    myCDG3D.ChangeCoord().Divide(static_cast<Standard_Real>(myGroups->Size()));
+    myCDG3D.ChangeCoord().Divide(static_cast<double>(myGroups->Size()));
     if (theToEvalMinMax)
     {
       computeBoundingBox();
@@ -338,34 +338,34 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
     return true;
   }
 
-  Graphic3d_Vec3    aCenter(0.0f, 0.0f, 0.0f);
-  Standard_Integer  aTriNodes1[3] = {-1, -1, -1};
-  Standard_Integer  aTriNodes2[3] = {-1, -1, -1};
-  Standard_Integer* aTriNodesPrev = aTriNodes1;
-  Standard_Integer* aTriNodes     = aTriNodes2;
-  Standard_Integer  aPatchFrom    = 0;
-  Standard_Integer  aPatchSize    = 0;
+  NCollection_Vec3<float> aCenter(0.0f, 0.0f, 0.0f);
+  int                     aTriNodes1[3] = {-1, -1, -1};
+  int                     aTriNodes2[3] = {-1, -1, -1};
+  int*                    aTriNodesPrev = aTriNodes1;
+  int*                    aTriNodes     = aTriNodes2;
+  int                     aPatchFrom    = 0;
+  int                     aPatchSize    = 0;
   if (myBvhIndices.HasPatches())
   {
     myBvhIndices.NbElements = 0;
   }
-  for (Standard_Integer aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
+  for (int aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
   {
-    const Standard_Integer anIndexOffset = (aTriFrom + aTriIter) * 3;
+    const int anIndexOffset = (aTriFrom + aTriIter) * 3;
     getTriIndices(myIndices, anIndexOffset, aTriNodes);
     if (myIs3d)
     {
-      const Graphic3d_Vec3& aNode1 = getPosVec3(aTriNodes[0]);
-      const Graphic3d_Vec3& aNode2 = getPosVec3(aTriNodes[1]);
-      const Graphic3d_Vec3& aNode3 = getPosVec3(aTriNodes[2]);
+      const NCollection_Vec3<float>& aNode1 = getPosVec3(aTriNodes[0]);
+      const NCollection_Vec3<float>& aNode2 = getPosVec3(aTriNodes[1]);
+      const NCollection_Vec3<float>& aNode3 = getPosVec3(aTriNodes[2]);
       aCenter += (aNode1 + aNode2 + aNode3) / 3.0;
     }
     else
     {
-      const Graphic3d_Vec2& aNode1 = getPosVec2(aTriNodes[0]);
-      const Graphic3d_Vec2& aNode2 = getPosVec2(aTriNodes[1]);
-      const Graphic3d_Vec2& aNode3 = getPosVec2(aTriNodes[2]);
-      aCenter += Graphic3d_Vec3((aNode1 + aNode2 + aNode3) / 3.0);
+      const NCollection_Vec2<float>& aNode1 = getPosVec2(aTriNodes[0]);
+      const NCollection_Vec2<float>& aNode2 = getPosVec2(aTriNodes[1]);
+      const NCollection_Vec2<float>& aNode3 = getPosVec2(aTriNodes[2]);
+      aCenter += NCollection_Vec3<float>((aNode1 + aNode2 + aNode3) / 3.0);
     }
     if (myBvhIndices.HasPatches())
     {
@@ -403,13 +403,14 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
 
 //=================================================================================================
 
-bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)&      theVerts,
-                                                  const Handle(Graphic3d_IndexBuffer)& theIndices,
-                                                  const TopLoc_Location&               theInitLoc,
-                                                  const Standard_Integer theIndexLower,
-                                                  const Standard_Integer theIndexUpper,
-                                                  const bool             theToEvalMinMax,
-                                                  const Standard_Integer theNbGroups)
+bool Select3D_SensitivePrimitiveArray::InitPoints(
+  const occ::handle<Graphic3d_Buffer>&      theVerts,
+  const occ::handle<Graphic3d_IndexBuffer>& theIndices,
+  const TopLoc_Location&                    theInitLoc,
+  const int                                 theIndexLower,
+  const int                                 theIndexUpper,
+  const bool                                theToEvalMinMax,
+  const int                                 theNbGroups)
 {
   MarkDirty();
   myGroups.Nullify();
@@ -420,7 +421,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)
   myIndexLower = 0;
   myIndexUpper = 0;
   myPosData    = NULL;
-  myPosStride  = Standard_Size(-1);
+  myPosStride  = size_t(-1);
   myBvhIndices.release();
   myIs3d         = false;
   myInitLocation = theInitLoc;
@@ -429,8 +430,8 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)
     return false;
   }
 
-  Standard_Integer aPosAttribIndex = 0;
-  myPosData = theVerts->AttributeData(Graphic3d_TOA_POS, aPosAttribIndex, myPosStride);
+  int aPosAttribIndex = 0;
+  myPosData           = theVerts->AttributeData(Graphic3d_TOA_POS, aPosAttribIndex, myPosStride);
   if (myPosData == NULL)
   {
     return false;
@@ -459,8 +460,8 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)
     }
   }
 
-  const Standard_Integer aNbPoints = theIndexUpper - theIndexLower + 1;
-  const bool             hasGroups = (theNbGroups > 1) && (aNbPoints / theNbGroups > 10);
+  const int  aNbPoints = theIndexUpper - theIndexLower + 1;
+  const bool hasGroups = (theNbGroups > 1) && (aNbPoints / theNbGroups > 10);
   if (aNbPoints < 1)
   {
     return false;
@@ -478,21 +479,21 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)
   if (hasGroups)
   {
     myGroups = new Select3D_PrimArraySubGroupArray(0, theNbGroups - 1);
-    const Standard_Integer                       aDivStep = aNbPoints / theNbGroups;
+    const int                                    aDivStep = aNbPoints / theNbGroups;
     Select3D_SensitivePrimitiveArray_InitFunctor anInitFunctor(*this, aDivStep, theToEvalMinMax);
     OSD_Parallel::For(myGroups->Lower(), myGroups->Upper() + 1, anInitFunctor);
     if (!anInitFunctor.IsDone())
     {
       return false;
     }
-    for (Standard_Integer aGroupIter = 0; aGroupIter < theNbGroups; ++aGroupIter)
+    for (int aGroupIter = 0; aGroupIter < theNbGroups; ++aGroupIter)
     {
-      Handle(Select3D_SensitivePrimitiveArray)& anEntity = myGroups->ChangeValue(aGroupIter);
+      occ::handle<Select3D_SensitivePrimitiveArray>& anEntity = myGroups->ChangeValue(aGroupIter);
       myBndBox.Combine(anEntity->BoundingBox());
       myBvhIndices.SetIndex(aGroupIter, aGroupIter);
       myCDG3D.ChangeCoord() += anEntity->CenterOfGeometry().XYZ();
     }
-    myCDG3D.ChangeCoord().Divide(static_cast<Standard_Real>(myGroups->Size()));
+    myCDG3D.ChangeCoord().Divide(static_cast<double>(myGroups->Size()));
     if (theToEvalMinMax)
     {
       computeBoundingBox();
@@ -500,24 +501,23 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)
     return true;
   }
 
-  Graphic3d_Vec3   aCenter(0.0f, 0.0f, 0.0f);
-  Standard_Integer aPatchFrom = 0;
-  Standard_Integer aPatchSize = 0;
+  NCollection_Vec3<float> aCenter(0.0f, 0.0f, 0.0f);
+  int                     aPatchFrom = 0;
+  int                     aPatchSize = 0;
   if (myBvhIndices.HasPatches())
   {
     myBvhIndices.NbElements = 0;
   }
   const float aPatchSize2 =
     myPatchDistance < ShortRealLast() ? myPatchDistance * myPatchDistance : myPatchDistance;
-  const Graphic3d_Vec3* aPnt3dPrev = NULL;
-  const Graphic3d_Vec3* aPnt3d     = NULL;
-  const Graphic3d_Vec2* aPnt2dPrev = NULL;
-  const Graphic3d_Vec2* aPnt2d     = NULL;
-  for (Standard_Integer aPointIter = 0; aPointIter < aNbPoints; ++aPointIter)
+  const NCollection_Vec3<float>* aPnt3dPrev = NULL;
+  const NCollection_Vec3<float>* aPnt3d     = NULL;
+  const NCollection_Vec2<float>* aPnt2dPrev = NULL;
+  const NCollection_Vec2<float>* aPnt2d     = NULL;
+  for (int aPointIter = 0; aPointIter < aNbPoints; ++aPointIter)
   {
-    const Standard_Integer anIndexOffset = (theIndexLower + aPointIter);
-    const Standard_Integer aPointIndex =
-      !myIndices.IsNull() ? myIndices->Index(anIndexOffset) : anIndexOffset;
+    const int anIndexOffset = (theIndexLower + aPointIter);
+    const int aPointIndex   = !myIndices.IsNull() ? myIndices->Index(anIndexOffset) : anIndexOffset;
     if (myIs3d)
     {
       aPnt3d = &getPosVec3(aPointIndex);
@@ -526,7 +526,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)
     else
     {
       aPnt2d = &getPosVec2(aPointIndex);
-      aCenter += Graphic3d_Vec3(*aPnt2d);
+      aCenter += NCollection_Vec3<float>(*aPnt2d);
     }
 
     if (myBvhIndices.HasPatches())
@@ -579,9 +579,9 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitivePrimitiveArray::GetConnected()
+occ::handle<Select3D_SensitiveEntity> Select3D_SensitivePrimitiveArray::GetConnected()
 {
-  Handle(Select3D_SensitivePrimitiveArray) aNewEntity =
+  occ::handle<Select3D_SensitivePrimitiveArray> aNewEntity =
     new Select3D_SensitivePrimitiveArray(myOwnerId);
   switch (myPrimType)
   {
@@ -613,7 +613,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitivePrimitiveArray::GetConnected(
 
 //=================================================================================================
 
-void Select3D_SensitivePrimitiveArray::Set(const Handle(SelectMgr_EntityOwner)& theOwnerId)
+void Select3D_SensitivePrimitiveArray::Set(const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
 {
   base_type::Set(theOwnerId);
   if (!myGroups.IsNull())
@@ -641,7 +641,7 @@ void Select3D_SensitivePrimitiveArray::BVH()
     return;
   }
 
-  Standard_Integer aNbToUpdate = 0;
+  int aNbToUpdate = 0;
   for (Select3D_PrimArraySubGroupArray::Iterator aGroupIter(*myGroups); aGroupIter.More();
        aGroupIter.Next())
   {
@@ -660,17 +660,17 @@ void Select3D_SensitivePrimitiveArray::BVH()
 
 //=================================================================================================
 
-Standard_Integer Select3D_SensitivePrimitiveArray::Size() const
+int Select3D_SensitivePrimitiveArray::Size() const
 {
   return myBvhIndices.NbElements;
 }
 
 //=================================================================================================
 
-Select3D_BndBox3d Select3D_SensitivePrimitiveArray::Box(const Standard_Integer theIdx) const
+Select3D_BndBox3d Select3D_SensitivePrimitiveArray::Box(const int theIdx) const
 {
-  const Standard_Integer anElemIdx  = myBvhIndices.Index(theIdx);
-  const Standard_Integer aPatchSize = myBvhIndices.PatchSize(theIdx);
+  const int anElemIdx  = myBvhIndices.Index(theIdx);
+  const int aPatchSize = myBvhIndices.PatchSize(theIdx);
   if (!myGroups.IsNull())
   {
     return myGroups->Value(anElemIdx)->BoundingBox();
@@ -680,54 +680,54 @@ Select3D_BndBox3d Select3D_SensitivePrimitiveArray::Box(const Standard_Integer t
   switch (myPrimType)
   {
     case Graphic3d_TOPA_POINTS: {
-      for (Standard_Integer anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
+      for (int anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
       {
-        const Standard_Integer anIndexOffset = (anElemIdx + anElemIter);
-        const Standard_Integer aPointIndex =
+        const int anIndexOffset = (anElemIdx + anElemIter);
+        const int aPointIndex =
           !myIndices.IsNull() ? myIndices->Index(anIndexOffset) : anIndexOffset;
         if (myIs3d)
         {
-          const Graphic3d_Vec3& aPoint = getPosVec3(aPointIndex);
-          aBox.Add(SelectMgr_Vec3(aPoint.x(), aPoint.y(), aPoint.z()));
+          const NCollection_Vec3<float>& aPoint = getPosVec3(aPointIndex);
+          aBox.Add(NCollection_Vec3<double>(aPoint.x(), aPoint.y(), aPoint.z()));
         }
         else
         {
-          const Graphic3d_Vec2& aPoint = getPosVec2(aPointIndex);
-          aBox.Add(SelectMgr_Vec3(aPoint.x(), aPoint.y(), 0.0));
+          const NCollection_Vec2<float>& aPoint = getPosVec2(aPointIndex);
+          aBox.Add(NCollection_Vec3<double>(aPoint.x(), aPoint.y(), 0.0));
         }
       }
       break;
     }
     case Graphic3d_TOPA_TRIANGLES: {
-      Standard_Integer aTriNodes[3];
+      int aTriNodes[3];
       if (myIs3d)
       {
-        for (Standard_Integer anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
+        for (int anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
         {
-          const Standard_Integer anIndexOffset = (anElemIdx + anElemIter) * 3;
+          const int anIndexOffset = (anElemIdx + anElemIter) * 3;
           getTriIndices(myIndices, anIndexOffset, aTriNodes);
-          const Graphic3d_Vec3& aNode1  = getPosVec3(aTriNodes[0]);
-          const Graphic3d_Vec3& aNode2  = getPosVec3(aTriNodes[1]);
-          const Graphic3d_Vec3& aNode3  = getPosVec3(aTriNodes[2]);
-          Graphic3d_Vec3        aMinPnt = (aNode1.cwiseMin(aNode2)).cwiseMin(aNode3);
-          Graphic3d_Vec3        aMaxPnt = (aNode1.cwiseMax(aNode2)).cwiseMax(aNode3);
-          aBox.Add(SelectMgr_Vec3(aMinPnt.x(), aMinPnt.y(), aMinPnt.z()));
-          aBox.Add(SelectMgr_Vec3(aMaxPnt.x(), aMaxPnt.y(), aMaxPnt.z()));
+          const NCollection_Vec3<float>& aNode1  = getPosVec3(aTriNodes[0]);
+          const NCollection_Vec3<float>& aNode2  = getPosVec3(aTriNodes[1]);
+          const NCollection_Vec3<float>& aNode3  = getPosVec3(aTriNodes[2]);
+          NCollection_Vec3<float>        aMinPnt = (aNode1.cwiseMin(aNode2)).cwiseMin(aNode3);
+          NCollection_Vec3<float>        aMaxPnt = (aNode1.cwiseMax(aNode2)).cwiseMax(aNode3);
+          aBox.Add(NCollection_Vec3<double>(aMinPnt.x(), aMinPnt.y(), aMinPnt.z()));
+          aBox.Add(NCollection_Vec3<double>(aMaxPnt.x(), aMaxPnt.y(), aMaxPnt.z()));
         }
       }
       else
       {
-        for (Standard_Integer anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
+        for (int anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
         {
-          const Standard_Integer anIndexOffset = (anElemIdx + anElemIter) * 3;
+          const int anIndexOffset = (anElemIdx + anElemIter) * 3;
           getTriIndices(myIndices, anIndexOffset, aTriNodes);
-          const Graphic3d_Vec2& aNode1  = getPosVec2(aTriNodes[0]);
-          const Graphic3d_Vec2& aNode2  = getPosVec2(aTriNodes[1]);
-          const Graphic3d_Vec2& aNode3  = getPosVec2(aTriNodes[2]);
-          Graphic3d_Vec2        aMinPnt = (aNode1.cwiseMin(aNode2)).cwiseMin(aNode3);
-          Graphic3d_Vec2        aMaxPnt = (aNode1.cwiseMax(aNode2)).cwiseMax(aNode3);
-          aBox.Add(SelectMgr_Vec3(aMinPnt.x(), aMinPnt.y(), 0.0));
-          aBox.Add(SelectMgr_Vec3(aMaxPnt.x(), aMaxPnt.y(), 0.0));
+          const NCollection_Vec2<float>& aNode1  = getPosVec2(aTriNodes[0]);
+          const NCollection_Vec2<float>& aNode2  = getPosVec2(aTriNodes[1]);
+          const NCollection_Vec2<float>& aNode3  = getPosVec2(aTriNodes[2]);
+          NCollection_Vec2<float>        aMinPnt = (aNode1.cwiseMin(aNode2)).cwiseMin(aNode3);
+          NCollection_Vec2<float>        aMaxPnt = (aNode1.cwiseMax(aNode2)).cwiseMax(aNode3);
+          aBox.Add(NCollection_Vec3<double>(aMinPnt.x(), aMinPnt.y(), 0.0));
+          aBox.Add(NCollection_Vec3<double>(aMaxPnt.x(), aMaxPnt.y(), 0.0));
         }
       }
       break;
@@ -741,32 +741,30 @@ Select3D_BndBox3d Select3D_SensitivePrimitiveArray::Box(const Standard_Integer t
 
 //=================================================================================================
 
-Standard_Real Select3D_SensitivePrimitiveArray::Center(const Standard_Integer theIdx,
-                                                       const Standard_Integer theAxis) const
+double Select3D_SensitivePrimitiveArray::Center(const int theIdx, const int theAxis) const
 {
   if (!myGroups.IsNull())
   {
-    const Standard_Integer anElemIdx = myBvhIndices.Index(theIdx);
-    const gp_Pnt           aCenter   = myGroups->Value(anElemIdx)->CenterOfGeometry();
+    const int    anElemIdx = myBvhIndices.Index(theIdx);
+    const gp_Pnt aCenter   = myGroups->Value(anElemIdx)->CenterOfGeometry();
     return theAxis == 0 ? aCenter.X() : (theAxis == 1 ? aCenter.Y() : aCenter.Z());
   }
 
   const Select3D_BndBox3d& aBox    = Box(theIdx);
-  SelectMgr_Vec3           aCenter = (aBox.CornerMin() + aBox.CornerMax()) * 0.5;
+  NCollection_Vec3<double> aCenter = (aBox.CornerMin() + aBox.CornerMax()) * 0.5;
   return theAxis == 0 ? aCenter.x() : (theAxis == 1 ? aCenter.y() : aCenter.z());
 }
 
 //=================================================================================================
 
-void Select3D_SensitivePrimitiveArray::Swap(const Standard_Integer theIdx1,
-                                            const Standard_Integer theIdx2)
+void Select3D_SensitivePrimitiveArray::Swap(const int theIdx1, const int theIdx2)
 {
-  Standard_Integer anElemIdx1 = myBvhIndices.Index(theIdx1);
-  Standard_Integer anElemIdx2 = myBvhIndices.Index(theIdx2);
+  int anElemIdx1 = myBvhIndices.Index(theIdx1);
+  int anElemIdx2 = myBvhIndices.Index(theIdx2);
   if (myBvhIndices.HasPatches())
   {
-    Standard_Integer aPatchSize1 = myBvhIndices.PatchSize(theIdx1);
-    Standard_Integer aPatchSize2 = myBvhIndices.PatchSize(theIdx2);
+    int aPatchSize1 = myBvhIndices.PatchSize(theIdx1);
+    int aPatchSize2 = myBvhIndices.PatchSize(theIdx2);
     myBvhIndices.SetIndex(theIdx1, anElemIdx2, aPatchSize2);
     myBvhIndices.SetIndex(theIdx2, anElemIdx1, aPatchSize1);
   }
@@ -808,21 +806,21 @@ void Select3D_SensitivePrimitiveArray::computeBoundingBox()
     return;
   }
 
-  const Standard_Integer aNbVerts = myVerts->NbElements;
+  const int aNbVerts = myVerts->NbElements;
   if (myIs3d)
   {
-    for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
+    for (int aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
     {
-      const Graphic3d_Vec3& aVert = getPosVec3(aVertIter);
-      myBndBox.Add(SelectMgr_Vec3(aVert.x(), aVert.y(), aVert.z()));
+      const NCollection_Vec3<float>& aVert = getPosVec3(aVertIter);
+      myBndBox.Add(NCollection_Vec3<double>(aVert.x(), aVert.y(), aVert.z()));
     }
   }
   else
   {
-    for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
+    for (int aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
     {
-      const Graphic3d_Vec2& aVert = getPosVec2(aVertIter);
-      myBndBox.Add(SelectMgr_Vec3(aVert.x(), aVert.y(), 0.0));
+      const NCollection_Vec2<float>& aVert = getPosVec2(aVertIter);
+      myBndBox.Add(NCollection_Vec3<double>(aVert.x(), aVert.y(), 0.0));
     }
   }
 }
@@ -837,17 +835,17 @@ Select3D_BndBox3d Select3D_SensitivePrimitiveArray::applyTransformation()
   }
 
   Select3D_BndBox3d aBndBox;
-  for (Standard_Integer aX = 0; aX <= 1; ++aX)
+  for (int aX = 0; aX <= 1; ++aX)
   {
-    for (Standard_Integer aY = 0; aY <= 1; ++aY)
+    for (int aY = 0; aY <= 1; ++aY)
     {
-      for (Standard_Integer aZ = 0; aZ <= 1; ++aZ)
+      for (int aZ = 0; aZ <= 1; ++aZ)
       {
         gp_Pnt aVertex = gp_Pnt(aX == 0 ? myBndBox.CornerMin().x() : myBndBox.CornerMax().x(),
                                 aY == 0 ? myBndBox.CornerMin().y() : myBndBox.CornerMax().y(),
                                 aZ == 0 ? myBndBox.CornerMin().z() : myBndBox.CornerMax().z());
         aVertex.Transform(myInitLocation.Transformation());
-        aBndBox.Add(Select3D_Vec3(aVertex.X(), aVertex.Y(), aVertex.Z()));
+        aBndBox.Add(NCollection_Vec3<double>(aVertex.X(), aVertex.Y(), aVertex.Z()));
       }
     }
   }
@@ -856,9 +854,8 @@ Select3D_BndBox3d Select3D_SensitivePrimitiveArray::applyTransformation()
 
 //=================================================================================================
 
-Standard_Boolean Select3D_SensitivePrimitiveArray::Matches(
-  SelectBasics_SelectingVolumeManager& theMgr,
-  SelectBasics_PickResult&             thePickResult)
+bool Select3D_SensitivePrimitiveArray::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                               SelectBasics_PickResult&             thePickResult)
 {
   if (!myDetectedElemMap.IsNull())
   {
@@ -881,30 +878,30 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::Matches(
   {
     if (!matches(theMgr, thePickResult, toDetectRange))
     {
-      return Standard_False;
+      return false;
     }
 
     if (!myGroups.IsNull() && myDetectedIdx != -1)
     {
-      const Standard_Integer                          anIndex = myBvhIndices.Index(myDetectedIdx);
-      const Handle(Select3D_SensitivePrimitiveArray)& aLastGroup = myGroups->Value(anIndex);
-      myMinDepthElem                                             = aLastGroup->myMinDepthElem;
-      myMinDepthNode                                             = aLastGroup->myMinDepthNode;
-      myMinDepthEdge                                             = aLastGroup->myMinDepthEdge;
-      myDetectedElem                                             = aLastGroup->myDetectedElem;
-      myDetectedNode                                             = aLastGroup->myDetectedNode;
-      myDetectedEdgeNode1                                        = aLastGroup->myDetectedEdgeNode1;
-      myDetectedEdgeNode2                                        = aLastGroup->myDetectedEdgeNode2;
+      const int anIndex = myBvhIndices.Index(myDetectedIdx);
+      const occ::handle<Select3D_SensitivePrimitiveArray>& aLastGroup = myGroups->Value(anIndex);
+      myMinDepthElem                                                  = aLastGroup->myMinDepthElem;
+      myMinDepthNode                                                  = aLastGroup->myMinDepthNode;
+      myMinDepthEdge                                                  = aLastGroup->myMinDepthEdge;
+      myDetectedElem                                                  = aLastGroup->myDetectedElem;
+      myDetectedNode                                                  = aLastGroup->myDetectedNode;
+      myDetectedEdgeNode1 = aLastGroup->myDetectedEdgeNode1;
+      myDetectedEdgeNode2 = aLastGroup->myDetectedEdgeNode2;
     }
-    return Standard_True;
+    return true;
   }
 
   SelectBasics_PickResult aPickResult;
   bool                    hasResults = false;
-  for (Standard_Integer aGroupIter = 0; aGroupIter < myBvhIndices.NbElements; ++aGroupIter)
+  for (int aGroupIter = 0; aGroupIter < myBvhIndices.NbElements; ++aGroupIter)
   {
-    const Standard_Integer                    anElemIdx = myBvhIndices.Index(aGroupIter);
-    Handle(Select3D_SensitivePrimitiveArray)& aChild    = myGroups->ChangeValue(anElemIdx);
+    const int                                      anElemIdx = myBvhIndices.Index(aGroupIter);
+    occ::handle<Select3D_SensitivePrimitiveArray>& aChild    = myGroups->ChangeValue(anElemIdx);
     if (aChild->Matches(theMgr, aPickResult))
     {
       hasResults = true;
@@ -925,36 +922,35 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::Matches(
   }
   if (!hasResults)
   {
-    return Standard_False;
+    return false;
   }
   thePickResult.SetDistToGeomCenter(theMgr.DistToGeometryCenter(CenterOfGeometry()));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
-  SelectBasics_PickResult&             thePickResult,
-  SelectBasics_SelectingVolumeManager& theMgr,
-  Standard_Integer                     theElemIdx,
-  Standard_Boolean                     theIsFullInside)
+bool Select3D_SensitivePrimitiveArray::overlapsElement(SelectBasics_PickResult& thePickResult,
+                                                       SelectBasics_SelectingVolumeManager& theMgr,
+                                                       int  theElemIdx,
+                                                       bool theIsFullInside)
 {
-  const Standard_Integer anElemIdx = myBvhIndices.Index(theElemIdx);
+  const int anElemIdx = myBvhIndices.Index(theElemIdx);
   if (!myGroups.IsNull())
   {
     return myGroups->Value(anElemIdx)->Matches(theMgr, thePickResult);
   }
 
-  const Standard_Integer  aPatchSize = myBvhIndices.PatchSize(theElemIdx);
-  Standard_Boolean        aResult    = Standard_False;
+  const int               aPatchSize = myBvhIndices.PatchSize(theElemIdx);
+  bool                    aResult    = false;
   SelectBasics_PickResult aPickResult;
   switch (myPrimType)
   {
     case Graphic3d_TOPA_POINTS: {
-      for (Standard_Integer anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
+      for (int anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
       {
-        const Standard_Integer anIndexOffset = (anElemIdx + anElemIter);
-        const Standard_Integer aPointIndex =
+        const int anIndexOffset = (anElemIdx + anElemIter);
+        const int aPointIndex =
           !myIndices.IsNull() ? myIndices->Index(anIndexOffset) : anIndexOffset;
         gp_Pnt aPoint;
         if (myIs3d)
@@ -986,7 +982,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
                 myDetectedNodeMap->ChangeMap().Add(aPointIndex);
               }
             }
-            aResult = Standard_True;
+            aResult = true;
           }
         }
         thePickResult = SelectBasics_PickResult::Min(thePickResult, aPickResult);
@@ -994,11 +990,11 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
       break;
     }
     case Graphic3d_TOPA_TRIANGLES: {
-      Graphic3d_Vec3i aTriNodes;
-      for (Standard_Integer anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
+      NCollection_Vec3<int> aTriNodes;
+      for (int anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
       {
-        const Standard_Integer aTriIndex     = anElemIdx + anElemIter;
-        const Standard_Integer anIndexOffset = aTriIndex * 3;
+        const int aTriIndex     = anElemIdx + anElemIter;
+        const int anIndexOffset = aTriIndex * 3;
         getTriIndices(myIndices, anIndexOffset, aTriNodes);
         gp_Pnt aPnts[3];
         if (myIs3d)
@@ -1028,7 +1024,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
               myDetectedElem = aTriIndex;
               myMinDepthElem = aPickResult.Depth();
             }
-            aResult = Standard_True;
+            aResult = true;
             if (!myDetectedElemMap.IsNull()
                 && theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
             {
@@ -1052,7 +1048,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
               {
                 myDetectedNodeMap->ChangeMap().Add(aTriNodes[aNodeIter]);
               }
-              aResult = Standard_True;
+              aResult = true;
             }
           }
         }
@@ -1071,7 +1067,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
                 myDetectedEdgeNode2 = aTriNodes[aNode2];
                 myMinDepthEdge      = aPickResult.Depth();
               }
-              aResult = Standard_True;
+              aResult = true;
             }
           }
         }
@@ -1080,7 +1076,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
       break;
     }
     default: {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -1089,34 +1085,32 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
 
 //=================================================================================================
 
-Standard_Real Select3D_SensitivePrimitiveArray::distanceToCOG(
-  SelectBasics_SelectingVolumeManager& theMgr)
+double Select3D_SensitivePrimitiveArray::distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
 {
   return theMgr.DistToGeometryCenter(myCDG3D);
 }
 
 //=================================================================================================
 
-Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside(
-  SelectBasics_SelectingVolumeManager& theMgr,
-  Standard_Integer                     theElemIdx,
-  Standard_Boolean                     theIsFullInside)
+bool Select3D_SensitivePrimitiveArray::elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
+                                                       int  theElemIdx,
+                                                       bool theIsFullInside)
 {
-  const Standard_Integer anElemIdx = myBvhIndices.Index(theElemIdx);
+  const int anElemIdx = myBvhIndices.Index(theElemIdx);
   if (!myGroups.IsNull())
   {
     SelectBasics_PickResult aDummy;
     return myGroups->Value(anElemIdx)->Matches(theMgr, aDummy);
   }
 
-  const Standard_Integer aPatchSize = myBvhIndices.PatchSize(theElemIdx);
+  const int aPatchSize = myBvhIndices.PatchSize(theElemIdx);
   switch (myPrimType)
   {
     case Graphic3d_TOPA_POINTS: {
-      for (Standard_Integer anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
+      for (int anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
       {
-        const Standard_Integer anIndexOffset = (anElemIdx + anElemIter);
-        const Standard_Integer aPointIndex =
+        const int anIndexOffset = (anElemIdx + anElemIter);
+        const int aPointIndex =
           !myIndices.IsNull() ? myIndices->Index(anIndexOffset) : anIndexOffset;
         gp_Pnt aPoint;
         if (myIs3d)
@@ -1129,7 +1123,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside(
         }
         if (!theIsFullInside && !theMgr.OverlapsPoint(aPoint))
         {
-          return Standard_False;
+          return false;
         }
 
         if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
@@ -1144,14 +1138,14 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside(
           }
         }
       }
-      return Standard_True;
+      return true;
     }
     case Graphic3d_TOPA_TRIANGLES: {
-      Graphic3d_Vec3i aTriNodes;
-      for (Standard_Integer anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
+      NCollection_Vec3<int> aTriNodes;
+      for (int anElemIter = 0; anElemIter < aPatchSize; ++anElemIter)
       {
-        const Standard_Integer aTriIndex     = anElemIdx + anElemIter;
-        const Standard_Integer anIndexOffset = aTriIndex * 3;
+        const int aTriIndex     = anElemIdx + anElemIter;
+        const int anIndexOffset = aTriIndex * 3;
         getTriIndices(myIndices, anIndexOffset, aTriNodes);
         gp_Pnt aPnts[3];
         if (myIs3d)
@@ -1171,7 +1165,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside(
             && (!theMgr.OverlapsPoint(aPnts[0]) || !theMgr.OverlapsPoint(aPnts[1])
                 || !theMgr.OverlapsPoint(aPnts[2])))
         {
-          return Standard_False;
+          return false;
         }
 
         if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
@@ -1188,18 +1182,17 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside(
           }
         }
       }
-      return Standard_True;
+      return true;
     }
     default: {
-      return Standard_False;
+      return false;
     }
   }
 }
 
 //=================================================================================================
 
-void Select3D_SensitivePrimitiveArray::DumpJson(Standard_OStream& theOStream,
-                                                Standard_Integer  theDepth) const
+void Select3D_SensitivePrimitiveArray::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveSet)

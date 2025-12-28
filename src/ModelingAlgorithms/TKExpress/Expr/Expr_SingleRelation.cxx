@@ -21,58 +21,58 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_SingleRelation, Expr_GeneralRelation)
 
-void Expr_SingleRelation::SetFirstMember(const Handle(Expr_GeneralExpression)& exp)
+void Expr_SingleRelation::SetFirstMember(const occ::handle<Expr_GeneralExpression>& exp)
 {
   myFirstMember = exp;
 }
 
-void Expr_SingleRelation::SetSecondMember(const Handle(Expr_GeneralExpression)& exp)
+void Expr_SingleRelation::SetSecondMember(const occ::handle<Expr_GeneralExpression>& exp)
 {
   mySecondMember = exp;
 }
 
-Handle(Expr_GeneralExpression) Expr_SingleRelation::FirstMember() const
+occ::handle<Expr_GeneralExpression> Expr_SingleRelation::FirstMember() const
 {
   return myFirstMember;
 }
 
-Handle(Expr_GeneralExpression) Expr_SingleRelation::SecondMember() const
+occ::handle<Expr_GeneralExpression> Expr_SingleRelation::SecondMember() const
 {
   return mySecondMember;
 }
 
-Standard_Boolean Expr_SingleRelation::IsLinear() const
+bool Expr_SingleRelation::IsLinear() const
 {
   if (!myFirstMember->IsLinear())
   {
-    return Standard_False;
+    return false;
   }
   if (!mySecondMember->IsLinear())
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Expr_SingleRelation::Contains(const Handle(Expr_GeneralExpression)& exp) const
+bool Expr_SingleRelation::Contains(const occ::handle<Expr_GeneralExpression>& exp) const
 {
   if (myFirstMember == exp)
   {
-    return Standard_True;
+    return true;
   }
   if (mySecondMember == exp)
   {
-    return Standard_True;
+    return true;
   }
   if (myFirstMember->Contains(exp))
   {
-    return Standard_True;
+    return true;
   }
   return mySecondMember->Contains(exp);
 }
 
-void Expr_SingleRelation::Replace(const Handle(Expr_NamedUnknown)&      var,
-                                  const Handle(Expr_GeneralExpression)& with)
+void Expr_SingleRelation::Replace(const occ::handle<Expr_NamedUnknown>&      var,
+                                  const occ::handle<Expr_GeneralExpression>& with)
 {
   if (myFirstMember == var)
   {
@@ -98,17 +98,17 @@ void Expr_SingleRelation::Replace(const Handle(Expr_NamedUnknown)&      var,
   }
 }
 
-Standard_Integer Expr_SingleRelation::NbOfSubRelations() const
+int Expr_SingleRelation::NbOfSubRelations() const
 {
   return 0;
 }
 
-Handle(Expr_GeneralRelation) Expr_SingleRelation::SubRelation(const Standard_Integer) const
+occ::handle<Expr_GeneralRelation> Expr_SingleRelation::SubRelation(const int) const
 {
   throw Standard_OutOfRange();
 }
 
-Standard_Integer Expr_SingleRelation::NbOfSingleRelations() const
+int Expr_SingleRelation::NbOfSingleRelations() const
 {
   return 1;
 }

@@ -12,17 +12,19 @@
 // commercial license or contractual agreement.
 
 #include <HeaderSection_FileSchema.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <RWHeaderSection_RWFileSchema.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
 RWHeaderSection_RWFileSchema::RWHeaderSection_RWFileSchema() {}
 
-void RWHeaderSection_RWFileSchema::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(HeaderSection_FileSchema)& ent) const
+void RWHeaderSection_RWFileSchema::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                                    num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<HeaderSection_FileSchema>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -32,18 +34,17 @@ void RWHeaderSection_RWFileSchema::ReadStep(const Handle(StepData_StepReaderData
 
   // --- own field : schemaIdentifiers ---
 
-  Handle(Interface_HArray1OfHAsciiString) aSchemaIdentifiers;
-  Handle(TCollection_HAsciiString)        aSchemaIdentifiersItem;
-  Standard_Integer                        nsub1;
-  nsub1 = data->SubListNumber(num, 1, Standard_False);
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aSchemaIdentifiers;
+  occ::handle<TCollection_HAsciiString>                                   aSchemaIdentifiersItem;
+  int                                                                     nsub1;
+  nsub1 = data->SubListNumber(num, 1, false);
   if (nsub1 != 0)
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
-    aSchemaIdentifiers   = new Interface_HArray1OfHAsciiString(1, nb1);
-    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    int nb1            = data->NbParams(nsub1);
+    aSchemaIdentifiers = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb1);
+    for (int i1 = 1; i1 <= nb1; i1++)
     {
-      Standard_Boolean stat1 =
-        data->ReadString(nsub1, i1, "schema_identifiers", ach, aSchemaIdentifiersItem);
+      bool stat1 = data->ReadString(nsub1, i1, "schema_identifiers", ach, aSchemaIdentifiersItem);
       if (stat1)
         aSchemaIdentifiers->SetValue(i1, aSchemaIdentifiersItem);
     }
@@ -59,14 +60,14 @@ void RWHeaderSection_RWFileSchema::ReadStep(const Handle(StepData_StepReaderData
     ent->Init(aSchemaIdentifiers);
 }
 
-void RWHeaderSection_RWFileSchema::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(HeaderSection_FileSchema)& ent) const
+void RWHeaderSection_RWFileSchema::WriteStep(StepData_StepWriter&                         SW,
+                                             const occ::handle<HeaderSection_FileSchema>& ent) const
 {
 
   // --- own field : schemaIdentifiers ---
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->NbSchemaIdentifiers(); i1++)
+  for (int i1 = 1; i1 <= ent->NbSchemaIdentifiers(); i1++)
   {
     SW.Send(ent->SchemaIdentifiersValue(i1));
   }

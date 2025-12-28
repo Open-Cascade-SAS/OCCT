@@ -41,19 +41,16 @@ public:
   //! 2 -> PresentationArea
   //! 3 -> AreaInSet
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a PresentationView (Null if another type)
-  Standard_EXPORT Handle(StepVisual_PresentationView) PresentationView() const;
+  Standard_EXPORT occ::handle<StepVisual_PresentationView> PresentationView() const;
 
   //! returns Value as a PresentationArea (Null if another type)
-  Standard_EXPORT Handle(StepVisual_PresentationArea) PresentationArea() const;
+  Standard_EXPORT occ::handle<StepVisual_PresentationArea> PresentationArea() const;
 
   //! returns Value as a AreaInSet (Null if another type)
-  Standard_EXPORT Handle(StepVisual_AreaInSet) AreaInSet() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepVisual_AreaInSet> AreaInSet() const;
 };
 
 #endif // _StepVisual_PresentationSizeAssignmentSelect_HeaderFile

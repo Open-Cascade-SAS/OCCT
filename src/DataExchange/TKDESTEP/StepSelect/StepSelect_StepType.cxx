@@ -13,14 +13,15 @@
 
 #include <Interface_InterfaceError.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_Protocol.hxx>
 #include <StepData_ReadWriteModule.hxx>
 #include <StepData_UndefinedEntity.hxx>
 #include <StepSelect_StepType.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepSelect_StepType, IFSelect_Signature)
 
@@ -29,7 +30,7 @@ StepSelect_StepType::StepSelect_StepType()
 {
 }
 
-void StepSelect_StepType::SetProtocol(const Handle(Interface_Protocol)& proto)
+void StepSelect_StepType::SetProtocol(const occ::handle<Interface_Protocol>& proto)
 {
   DeclareAndCast(StepData_Protocol, newproto, proto);
   if (newproto.IsNull())
@@ -43,13 +44,13 @@ void StepSelect_StepType::SetProtocol(const Handle(Interface_Protocol)& proto)
   thename.AssignCat(")");
 }
 
-Standard_CString StepSelect_StepType::Value(const Handle(Standard_Transient)&       ent,
-                                            const Handle(Interface_InterfaceModel)& model) const
+const char* StepSelect_StepType::Value(const occ::handle<Standard_Transient>&       ent,
+                                       const occ::handle<Interface_InterfaceModel>& model) const
 {
   std::lock_guard<std::mutex> aLock(myMutex);
 
-  Handle(StepData_ReadWriteModule) aModule;
-  Standard_Integer                 aCN;
+  occ::handle<StepData_ReadWriteModule> aModule;
+  int                                   aCN;
   if (!thelib.Select(ent, aModule, aCN))
   {
     // Build error message for unrecognized entity
@@ -64,10 +65,10 @@ Standard_CString StepSelect_StepType::Value(const Handle(Standard_Transient)&   
     return aModule->StepType(aCN).data();
 
   // Handle complex type from module
-  TColStd_SequenceOfAsciiString aList;
+  NCollection_Sequence<TCollection_AsciiString> aList;
   if (aModule->ComplexType(aCN, aList))
   {
-    Standard_Integer aNb = aList.Length();
+    int aNb = aList.Length();
     if (aNb == 0)
     {
       theLastValue = "(..COMPLEX TYPE..)";
@@ -75,7 +76,7 @@ Standard_CString StepSelect_StepType::Value(const Handle(Standard_Transient)&   
     else
     {
       theLastValue = "(";
-      for (Standard_Integer i = 1; i <= aNb; i++)
+      for (int i = 1; i <= aNb; i++)
       {
         if (i > 1)
           theLastValue += ",";
@@ -98,15 +99,15 @@ Standard_CString StepSelect_StepType::Value(const Handle(Standard_Transient)&   
     return anUnd->StepType(); // Direct return from entity's internal storage
 
   // Build complex type from undefined entity
-  theLastValue             = "(";
-  Standard_Boolean isFirst = Standard_True;
+  theLastValue = "(";
+  bool isFirst = true;
   while (!anUnd.IsNull())
   {
     if (!isFirst)
       theLastValue += ",";
     theLastValue += anUnd->StepType();
     anUnd   = anUnd->Next();
-    isFirst = Standard_False;
+    isFirst = false;
   }
   theLastValue += ")";
 

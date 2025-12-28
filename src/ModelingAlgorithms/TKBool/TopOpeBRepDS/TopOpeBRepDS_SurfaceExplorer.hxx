@@ -32,37 +32,35 @@ public:
   Standard_EXPORT TopOpeBRepDS_SurfaceExplorer();
 
   Standard_EXPORT TopOpeBRepDS_SurfaceExplorer(const TopOpeBRepDS_DataStructure& DS,
-                                               const Standard_Boolean FindOnlyKeep = Standard_True);
+                                               const bool FindOnlyKeep = true);
 
-  Standard_EXPORT void Init(const TopOpeBRepDS_DataStructure& DS,
-                            const Standard_Boolean            FindOnlyKeep = Standard_True);
+  Standard_EXPORT void Init(const TopOpeBRepDS_DataStructure& DS, const bool FindOnlyKeep = true);
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
   Standard_EXPORT const TopOpeBRepDS_Surface& Surface() const;
 
-  Standard_EXPORT Standard_Boolean IsSurface(const Standard_Integer I) const;
+  Standard_EXPORT bool IsSurface(const int I) const;
 
-  Standard_EXPORT Standard_Boolean IsSurfaceKeep(const Standard_Integer I) const;
+  Standard_EXPORT bool IsSurfaceKeep(const int I) const;
 
-  Standard_EXPORT const TopOpeBRepDS_Surface& Surface(const Standard_Integer I) const;
+  Standard_EXPORT const TopOpeBRepDS_Surface& Surface(const int I) const;
 
-  Standard_EXPORT Standard_Integer NbSurface();
+  Standard_EXPORT int NbSurface();
 
-  Standard_EXPORT Standard_Integer Index() const;
+  Standard_EXPORT int Index() const;
 
-protected:
 private:
   Standard_EXPORT void Find();
 
-  Standard_Integer     myIndex;
-  Standard_Integer     myMax;
-  Standard_Address     myDS;
-  Standard_Boolean     myFound;
+  int                  myIndex;
+  int                  myMax;
+  void*                myDS;
+  bool                 myFound;
   TopOpeBRepDS_Surface myEmpty;
-  Standard_Boolean     myFindKeep;
+  bool                 myFindKeep;
 };
 
 #endif // _TopOpeBRepDS_SurfaceExplorer_HeaderFile

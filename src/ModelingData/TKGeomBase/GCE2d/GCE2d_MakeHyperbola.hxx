@@ -68,19 +68,19 @@ public:
   //! the minor radius is on the "YAxis" of the hyperbola.
   //! The status is "NegativeRadius" if MajorRadius < 0.0 or if
   //! MinorRadius < 0.0
-  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax2d&         MajorAxis,
-                                      const Standard_Real    MajorRadius,
-                                      const Standard_Real    MinorRadius,
-                                      const Standard_Boolean Sense);
+  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax2d& MajorAxis,
+                                      const double   MajorRadius,
+                                      const double   MinorRadius,
+                                      const bool     Sense);
 
   //! Axis is the local coordinate system of the hyperbola.
   //! The major radius of the hyperbola is on this "XAxis" and
   //! the minor radius is on the "YAxis" of the hyperbola.
   //! The status is "NegativeRadius" if MajorRadius < 0.0 or if
   //! MinorRadius < 0.0
-  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax22d&     Axis,
-                                      const Standard_Real MajorRadius,
-                                      const Standard_Real MinorRadius);
+  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax22d& Axis,
+                                      const double    MajorRadius,
+                                      const double    MinorRadius);
 
   //! Creates a hyperbol centered on the origin of the coordinate system
   //! Axis, with major and minor radii MajorRadius and
@@ -105,12 +105,12 @@ public:
 
   //! Returns the constructed hyperbola.
   //! Exceptions: StdFail_NotDone if no hyperbola is constructed.
-  Standard_EXPORT const Handle(Geom2d_Hyperbola)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_Hyperbola>& Value() const;
 
-  operator const Handle(Geom2d_Hyperbola)&() const { return Value(); }
+  operator const occ::handle<Geom2d_Hyperbola>&() const { return Value(); }
 
 private:
-  Handle(Geom2d_Hyperbola) TheHyperbola;
+  occ::handle<Geom2d_Hyperbola> TheHyperbola;
 };
 
 #endif // _GCE2d_MakeHyperbola_HeaderFile

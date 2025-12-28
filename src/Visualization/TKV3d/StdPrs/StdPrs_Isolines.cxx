@@ -28,11 +28,13 @@
 #include <NCollection_Shared.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_IsoAspect.hxx>
-#include <Poly_Array1OfTriangle.hxx>
+#include <Poly_Triangle.hxx>
+#include <NCollection_Array1.hxx>
 #include <Poly_Triangulation.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_ToolRFace.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -41,37 +43,37 @@
 
 namespace
 {
-const gp_Lin2d isoU(const Standard_Real theU)
+const gp_Lin2d isoU(const double theU)
 {
   return gp_Lin2d(gp_Pnt2d(theU, 0.0), gp::DY2d());
 }
 
-const gp_Lin2d isoV(const Standard_Real theV)
+const gp_Lin2d isoV(const double theV)
 {
   return gp_Lin2d(gp_Pnt2d(0.0, theV), gp::DX2d());
 }
 
 typedef NCollection_Shared<NCollection_Vector<StdPrs_Isolines::SegOnIso>> VecOfSegments;
-typedef NCollection_Sequence<Handle(VecOfSegments)>                       SeqOfVecOfSegments;
+typedef NCollection_Sequence<occ::handle<VecOfSegments>>                  SeqOfVecOfSegments;
 
 //! Pack isoline segments into polylines.
-static void sortSegments(const SeqOfVecOfSegments&   theSegments,
-                         Prs3d_NListOfSequenceOfPnt& thePolylines)
+static void sortSegments(const SeqOfVecOfSegments&                                     theSegments,
+                         NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& thePolylines)
 {
   for (SeqOfVecOfSegments::Iterator aLineIter(theSegments); aLineIter.More(); aLineIter.Next())
   {
-    Handle(VecOfSegments)& anIsoSegs = aLineIter.ChangeValue();
+    occ::handle<VecOfSegments>& anIsoSegs = aLineIter.ChangeValue();
     std::stable_sort(anIsoSegs->begin(), anIsoSegs->end());
 
-    Handle(TColgp_HSequenceOfPnt) aPolyline = new TColgp_HSequenceOfPnt();
+    occ::handle<NCollection_HSequence<gp_Pnt>> aPolyline = new NCollection_HSequence<gp_Pnt>();
     thePolylines.Append(aPolyline);
-    Standard_Real aLast = 0.0;
+    double aLast = 0.0;
     for (VecOfSegments::Iterator aSegIter(*anIsoSegs); aSegIter.More(); aSegIter.Next())
     {
       if (!aPolyline->IsEmpty()
           && std::abs(aSegIter.Value()[0].Param - aLast) > Precision::PConfusion())
       {
-        aPolyline = new TColgp_HSequenceOfPnt();
+        aPolyline = new NCollection_HSequence<gp_Pnt>();
         thePolylines.Append(aPolyline);
       }
 
@@ -88,23 +90,23 @@ static void sortSegments(const SeqOfVecOfSegments&   theSegments,
 //! @param theFirst [in/out] the first parameter value.
 //! @param theLast  [in/out] the last parameter value.
 static void findLimits(const Adaptor3d_Curve& theCurve,
-                       const Standard_Real    theLimit,
-                       Standard_Real&         theFirst,
-                       Standard_Real&         theLast)
+                       const double           theLimit,
+                       double&                theFirst,
+                       double&                theLast)
 {
   theFirst = std::max(theCurve.FirstParameter(), theFirst);
   theLast  = std::min(theCurve.LastParameter(), theLast);
 
-  Standard_Boolean isFirstInf = Precision::IsNegativeInfinite(theFirst);
-  Standard_Boolean isLastInf  = Precision::IsPositiveInfinite(theLast);
+  bool isFirstInf = Precision::IsNegativeInfinite(theFirst);
+  bool isLastInf  = Precision::IsPositiveInfinite(theLast);
 
   if (!isFirstInf && !isLastInf)
   {
     return;
   }
 
-  gp_Pnt        aP1, aP2;
-  Standard_Real aDelta = 1.0;
+  gp_Pnt aP1, aP2;
+  double aDelta = 1.0;
   if (isFirstInf && isLastInf)
   {
     do
@@ -142,11 +144,11 @@ static void findLimits(const Adaptor3d_Curve& theCurve,
 
 //=================================================================================================
 
-void StdPrs_Isolines::AddOnTriangulation(const Handle(Prs3d_Presentation)& thePresentation,
-                                         const TopoDS_Face&                theFace,
-                                         const Handle(Prs3d_Drawer)&       theDrawer)
+void StdPrs_Isolines::AddOnTriangulation(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                         const TopoDS_Face&                     theFace,
+                                         const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
-  Prs3d_NListOfSequenceOfPnt aUPolylines, aVPolylines;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aUPolylines, aVPolylines;
   AddOnTriangulation(theFace, theDrawer, aUPolylines, aVPolylines);
   Prs3d::AddPrimitivesGroup(thePresentation, theDrawer->UIsoAspect(), aUPolylines);
   Prs3d::AddPrimitivesGroup(thePresentation, theDrawer->VIsoAspect(), aVPolylines);
@@ -154,22 +156,23 @@ void StdPrs_Isolines::AddOnTriangulation(const Handle(Prs3d_Presentation)& thePr
 
 //=================================================================================================
 
-void StdPrs_Isolines::AddOnTriangulation(const TopoDS_Face&          theFace,
-                                         const Handle(Prs3d_Drawer)& theDrawer,
-                                         Prs3d_NListOfSequenceOfPnt& theUPolylines,
-                                         Prs3d_NListOfSequenceOfPnt& theVPolylines)
+void StdPrs_Isolines::AddOnTriangulation(
+  const TopoDS_Face&                                            theFace,
+  const occ::handle<Prs3d_Drawer>&                              theDrawer,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theUPolylines,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theVPolylines)
 {
-  const Standard_Integer aNbIsoU = theDrawer->UIsoAspect()->Number();
-  const Standard_Integer aNbIsoV = theDrawer->VIsoAspect()->Number();
+  const int aNbIsoU = theDrawer->UIsoAspect()->Number();
+  const int aNbIsoV = theDrawer->VIsoAspect()->Number();
   if (aNbIsoU < 1 && aNbIsoV < 1)
   {
     return;
   }
 
   // Evaluate parameters for uv isolines.
-  TColStd_SequenceOfReal aUIsoParams;
-  TColStd_SequenceOfReal aVIsoParams;
-  Standard_Real          aUmin = 0., aUmax = 0., aVmin = 0., aVmax = 0.;
+  NCollection_Sequence<double> aUIsoParams;
+  NCollection_Sequence<double> aVIsoParams;
+  double                       aUmin = 0., aUmax = 0., aVmin = 0., aVmax = 0.;
   UVIsoParameters(theFace,
                   aNbIsoU,
                   aNbIsoV,
@@ -182,16 +185,16 @@ void StdPrs_Isolines::AddOnTriangulation(const TopoDS_Face&          theFace,
                   aVmax);
 
   // Access surface definition.
-  TopLoc_Location      aLocSurface;
-  Handle(Geom_Surface) aSurface = BRep_Tool::Surface(theFace, aLocSurface);
+  TopLoc_Location           aLocSurface;
+  occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(theFace, aLocSurface);
   if (aSurface.IsNull())
   {
     return;
   }
 
   // Access triangulation.
-  TopLoc_Location                   aLocTriangulation;
-  const Handle(Poly_Triangulation)& aTriangulation =
+  TopLoc_Location                        aLocTriangulation;
+  const occ::handle<Poly_Triangulation>& aTriangulation =
     BRep_Tool::Triangulation(theFace, aLocTriangulation);
   if (aTriangulation.IsNull())
   {
@@ -201,14 +204,14 @@ void StdPrs_Isolines::AddOnTriangulation(const TopoDS_Face&          theFace,
   // Setup equal location for surface and triangulation.
   if (!aLocTriangulation.IsEqual(aLocSurface))
   {
-    aSurface = Handle(Geom_Surface)::DownCast(
+    aSurface = occ::down_cast<Geom_Surface>(
       aSurface->Transformed((aLocSurface / aLocTriangulation).Transformation()));
   }
 
-  const Handle(Standard_Type)& TheType = aSurface->DynamicType();
+  const occ::handle<Standard_Type>& TheType = aSurface->DynamicType();
   if (TheType == STANDARD_TYPE(Geom_OffsetSurface))
   {
-    Standard_Real u1, u2, v1, v2;
+    double u1, u2, v1, v2;
     aSurface->Bounds(u1, u2, v1, v2);
     // Isolines of Offset surfaces are calculated by approximation and
     // cannot be calculated for infinite limits.
@@ -234,15 +237,15 @@ void StdPrs_Isolines::AddOnTriangulation(const TopoDS_Face&          theFace,
 
 //=================================================================================================
 
-void StdPrs_Isolines::AddOnTriangulation(const Handle(Prs3d_Presentation)& thePresentation,
-                                         const Handle(Poly_Triangulation)& theTriangulation,
-                                         const Handle(Geom_Surface)&       theSurface,
-                                         const TopLoc_Location&            theLocation,
-                                         const Handle(Prs3d_Drawer)&       theDrawer,
-                                         const TColStd_SequenceOfReal&     theUIsoParams,
-                                         const TColStd_SequenceOfReal&     theVIsoParams)
+void StdPrs_Isolines::AddOnTriangulation(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                         const occ::handle<Poly_Triangulation>& theTriangulation,
+                                         const occ::handle<Geom_Surface>&       theSurface,
+                                         const TopLoc_Location&                 theLocation,
+                                         const occ::handle<Prs3d_Drawer>&       theDrawer,
+                                         const NCollection_Sequence<double>&    theUIsoParams,
+                                         const NCollection_Sequence<double>&    theVIsoParams)
 {
-  Prs3d_NListOfSequenceOfPnt aUPolylines, aVPolylines;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aUPolylines, aVPolylines;
   addOnTriangulation(theTriangulation,
                      theSurface,
                      theLocation,
@@ -256,40 +259,41 @@ void StdPrs_Isolines::AddOnTriangulation(const Handle(Prs3d_Presentation)& thePr
 
 //=================================================================================================
 
-void StdPrs_Isolines::addOnTriangulation(const Handle(Poly_Triangulation)& theTriangulation,
-                                         const Handle(Geom_Surface)&       theSurface,
-                                         const TopLoc_Location&            theLocation,
-                                         const TColStd_SequenceOfReal&     theUIsoParams,
-                                         const TColStd_SequenceOfReal&     theVIsoParams,
-                                         Prs3d_NListOfSequenceOfPnt&       theUPolylines,
-                                         Prs3d_NListOfSequenceOfPnt&       theVPolylines)
+void StdPrs_Isolines::addOnTriangulation(
+  const occ::handle<Poly_Triangulation>&                        theTriangulation,
+  const occ::handle<Geom_Surface>&                              theSurface,
+  const TopLoc_Location&                                        theLocation,
+  const NCollection_Sequence<double>&                           theUIsoParams,
+  const NCollection_Sequence<double>&                           theVIsoParams,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theUPolylines,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theVPolylines)
 {
-  for (Standard_Integer anUVIter = 0; anUVIter < 2; ++anUVIter)
+  for (int anUVIter = 0; anUVIter < 2; ++anUVIter)
   {
-    const Standard_Boolean        isUIso      = anUVIter == 0;
-    const TColStd_SequenceOfReal& anIsoParams = isUIso ? theUIsoParams : theVIsoParams;
-    const Standard_Integer        aNbIsolines = anIsoParams.Length();
+    const bool                          isUIso      = anUVIter == 0;
+    const NCollection_Sequence<double>& anIsoParams = isUIso ? theUIsoParams : theVIsoParams;
+    const int                           aNbIsolines = anIsoParams.Length();
     if (aNbIsolines == 0)
     {
       continue;
     }
 
     SeqOfVecOfSegments      aPolylines;
-    TColStd_Array1OfInteger anIsoIndexes(1, aNbIsolines);
+    NCollection_Array1<int> anIsoIndexes(1, aNbIsolines);
     anIsoIndexes.Init(-1);
-    for (Standard_Integer anIsoIdx = 1; anIsoIdx <= aNbIsolines; ++anIsoIdx)
+    for (int anIsoIdx = 1; anIsoIdx <= aNbIsolines; ++anIsoIdx)
     {
       const gp_Lin2d anIsolineUV =
         isUIso ? isoU(anIsoParams.Value(anIsoIdx)) : isoV(anIsoParams.Value(anIsoIdx));
-      Handle(VecOfSegments) anIsoPnts;
+      occ::handle<VecOfSegments> anIsoPnts;
       if (anIsoIndexes.Value(anIsoIdx) != -1)
       {
         anIsoPnts = aPolylines.ChangeValue(anIsoIndexes.Value(anIsoIdx));
       }
 
-      for (Standard_Integer aTriIter = 1; aTriIter <= theTriangulation->NbTriangles(); ++aTriIter)
+      for (int aTriIter = 1; aTriIter <= theTriangulation->NbTriangles(); ++aTriIter)
       {
-        Standard_Integer aNodeIdxs[3];
+        int aNodeIdxs[3];
         theTriangulation->Triangle(aTriIter).Get(aNodeIdxs[0], aNodeIdxs[1], aNodeIdxs[2]);
         const gp_Pnt   aNodesXYZ[3] = {theTriangulation->Node(aNodeIdxs[0]),
                                        theTriangulation->Node(aNodeIdxs[1]),
@@ -332,12 +336,12 @@ void StdPrs_Isolines::addOnTriangulation(const Handle(Poly_Triangulation)& theTr
 
 //=================================================================================================
 
-void StdPrs_Isolines::AddOnSurface(const Handle(Prs3d_Presentation)& thePresentation,
-                                   const TopoDS_Face&                theFace,
-                                   const Handle(Prs3d_Drawer)&       theDrawer,
-                                   const Standard_Real               theDeflection)
+void StdPrs_Isolines::AddOnSurface(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                   const TopoDS_Face&                     theFace,
+                                   const occ::handle<Prs3d_Drawer>&       theDrawer,
+                                   const double                           theDeflection)
 {
-  Prs3d_NListOfSequenceOfPnt aUPolylines, aVPolylines;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aUPolylines, aVPolylines;
   AddOnSurface(theFace, theDrawer, theDeflection, aUPolylines, aVPolylines);
   Prs3d::AddPrimitivesGroup(thePresentation, theDrawer->UIsoAspect(), aUPolylines);
   Prs3d::AddPrimitivesGroup(thePresentation, theDrawer->VIsoAspect(), aVPolylines);
@@ -345,22 +349,23 @@ void StdPrs_Isolines::AddOnSurface(const Handle(Prs3d_Presentation)& thePresenta
 
 //=================================================================================================
 
-void StdPrs_Isolines::AddOnSurface(const TopoDS_Face&          theFace,
-                                   const Handle(Prs3d_Drawer)& theDrawer,
-                                   const Standard_Real         theDeflection,
-                                   Prs3d_NListOfSequenceOfPnt& theUPolylines,
-                                   Prs3d_NListOfSequenceOfPnt& theVPolylines)
+void StdPrs_Isolines::AddOnSurface(
+  const TopoDS_Face&                                            theFace,
+  const occ::handle<Prs3d_Drawer>&                              theDrawer,
+  const double                                                  theDeflection,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theUPolylines,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theVPolylines)
 {
-  const Standard_Integer aNbIsoU = theDrawer->UIsoAspect()->Number();
-  const Standard_Integer aNbIsoV = theDrawer->VIsoAspect()->Number();
+  const int aNbIsoU = theDrawer->UIsoAspect()->Number();
+  const int aNbIsoV = theDrawer->VIsoAspect()->Number();
   if (aNbIsoU < 1 && aNbIsoV < 1)
   {
     return;
   }
 
   // Evaluate parameters for uv isolines.
-  TColStd_SequenceOfReal aUIsoParams, aVIsoParams;
-  Standard_Real          aUmin = 0., aUmax = 0., aVmin = 0., aVmax = 0.;
+  NCollection_Sequence<double> aUIsoParams, aVIsoParams;
+  double                       aUmin = 0., aUmax = 0., aVmin = 0., aVmax = 0.;
   UVIsoParameters(theFace,
                   aNbIsoU,
                   aNbIsoV,
@@ -384,14 +389,14 @@ void StdPrs_Isolines::AddOnSurface(const TopoDS_Face&          theFace,
 
 //=================================================================================================
 
-void StdPrs_Isolines::AddOnSurface(const Handle(Prs3d_Presentation)&  thePresentation,
-                                   const Handle(BRepAdaptor_Surface)& theSurface,
-                                   const Handle(Prs3d_Drawer)&        theDrawer,
-                                   const Standard_Real                theDeflection,
-                                   const TColStd_SequenceOfReal&      theUIsoParams,
-                                   const TColStd_SequenceOfReal&      theVIsoParams)
+void StdPrs_Isolines::AddOnSurface(const occ::handle<Prs3d_Presentation>&  thePresentation,
+                                   const occ::handle<BRepAdaptor_Surface>& theSurface,
+                                   const occ::handle<Prs3d_Drawer>&        theDrawer,
+                                   const double                            theDeflection,
+                                   const NCollection_Sequence<double>&     theUIsoParams,
+                                   const NCollection_Sequence<double>&     theVIsoParams)
 {
-  Prs3d_NListOfSequenceOfPnt aUPolylines, aVPolylines;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aUPolylines, aVPolylines;
   addOnSurface(theSurface,
                theDrawer,
                theDeflection,
@@ -405,30 +410,31 @@ void StdPrs_Isolines::AddOnSurface(const Handle(Prs3d_Presentation)&  thePresent
 
 //=================================================================================================
 
-void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface,
-                                   const Handle(Prs3d_Drawer)&        theDrawer,
-                                   const Standard_Real                theDeflection,
-                                   const TColStd_SequenceOfReal&      theUIsoParams,
-                                   const TColStd_SequenceOfReal&      theVIsoParams,
-                                   Prs3d_NListOfSequenceOfPnt&        theUPolylines,
-                                   Prs3d_NListOfSequenceOfPnt&        theVPolylines)
+void StdPrs_Isolines::addOnSurface(
+  const occ::handle<BRepAdaptor_Surface>&                       theSurface,
+  const occ::handle<Prs3d_Drawer>&                              theDrawer,
+  const double                                                  theDeflection,
+  const NCollection_Sequence<double>&                           theUIsoParams,
+  const NCollection_Sequence<double>&                           theVIsoParams,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theUPolylines,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theVPolylines)
 {
   // Choose a deflection for sampling edge uv curves.
-  Standard_Real aUVLimit = theDrawer->MaximalParameterValue();
-  Standard_Real aUmin    = std::max(theSurface->FirstUParameter(), -aUVLimit);
-  Standard_Real aUmax    = std::min(theSurface->LastUParameter(), aUVLimit);
-  Standard_Real aVmin    = std::max(theSurface->FirstVParameter(), -aUVLimit);
-  Standard_Real aVmax    = std::min(theSurface->LastVParameter(), aUVLimit);
-  Standard_Real aSamplerDeflection =
+  double aUVLimit = theDrawer->MaximalParameterValue();
+  double aUmin    = std::max(theSurface->FirstUParameter(), -aUVLimit);
+  double aUmax    = std::min(theSurface->LastUParameter(), aUVLimit);
+  double aVmin    = std::max(theSurface->FirstVParameter(), -aUVLimit);
+  double aVmax    = std::min(theSurface->LastVParameter(), aUVLimit);
+  double aSamplerDeflection =
     std::max(aUmax - aUmin, aVmax - aVmin) * theDrawer->DeviationCoefficient();
-  Standard_Real aHatchingTolerance = RealLast();
+  double aHatchingTolerance = RealLast();
 
   try
   {
     OCC_CATCH_SIGNALS
     // Determine edge points for trimming uv hatch region.
-    TColgp_SequenceOfPnt2d aTrimPoints;
-    StdPrs_ToolRFace       anEdgeTool(theSurface);
+    NCollection_Sequence<gp_Pnt2d> aTrimPoints;
+    StdPrs_ToolRFace               anEdgeTool(theSurface);
     for (anEdgeTool.Init(); anEdgeTool.More(); anEdgeTool.Next())
     {
       TopAbs_Orientation       anOrientation = anEdgeTool.Orientation();
@@ -444,13 +450,13 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
           continue;
         }
 
-        Standard_Integer aNumberOfPoints = aSampler.NbPoints();
+        int aNumberOfPoints = aSampler.NbPoints();
         if (aNumberOfPoints < 2)
         {
           continue;
         }
 
-        for (Standard_Integer anI = 1; anI < aNumberOfPoints; ++anI)
+        for (int anI = 1; anI < aNumberOfPoints; ++anI)
         {
           gp_Pnt2d aP1(aSampler.Value(anI).X(), aSampler.Value(anI).Y());
           gp_Pnt2d aP2(aSampler.Value(anI + 1).X(), aSampler.Value(anI + 1).Y());
@@ -463,14 +469,14 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
       }
       else
       {
-        Standard_Real aU1 = anEdgeCurve->FirstParameter();
-        Standard_Real aU2 = anEdgeCurve->LastParameter();
+        double aU1 = anEdgeCurve->FirstParameter();
+        double aU2 = anEdgeCurve->LastParameter();
 
         // MSV 17.08.06 OCC13144: U2 occurred less than U1, to overcome it
         // ensure that distance U2-U1 is not greater than aLimit*2,
         // if greater then choose an origin and use aLimit to define
         // U1 and U2 anew.
-        Standard_Real anOrigin = 0.0;
+        double anOrigin = 0.0;
 
         if (!Precision::IsNegativeInfinite(aU1) || !Precision::IsPositiveInfinite(aU2))
         {
@@ -503,7 +509,7 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
 
     // re-calculate UV-range basing on p-curves tessellation
     Bnd_Range aTrimU, aTrimV;
-    for (Standard_Integer anI = 1; anI <= aTrimPoints.Length(); ++anI)
+    for (int anI = 1; anI <= aTrimPoints.Length(); ++anI)
     {
       const gp_Pnt2d& aTrimPnt = aTrimPoints.Value(anI);
       aTrimU.Add(aTrimPnt.X());
@@ -527,17 +533,17 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
     // Load isolines into hatcher.
     Hatch_Hatcher aHatcher(aHatchingTolerance, anEdgeTool.IsOriented());
 
-    for (Standard_Integer anIso = 1; anIso <= theUIsoParams.Length(); ++anIso)
+    for (int anIso = 1; anIso <= theUIsoParams.Length(); ++anIso)
     {
-      const Standard_Real anIsoParamU = theUIsoParams.Value(anIso);
+      const double anIsoParamU = theUIsoParams.Value(anIso);
       if (aTrimU.IsVoid() || !aTrimU.IsOut(anIsoParamU))
       {
         aHatcher.AddXLine(anIsoParamU);
       }
     }
-    for (Standard_Integer anIso = 1; anIso <= theVIsoParams.Length(); ++anIso)
+    for (int anIso = 1; anIso <= theVIsoParams.Length(); ++anIso)
     {
-      const Standard_Real anIsoParamV = theVIsoParams.Value(anIso);
+      const double anIsoParamV = theVIsoParams.Value(anIso);
       if (aTrimV.IsVoid() || !aTrimV.IsOut(anIsoParamV))
       {
         aHatcher.AddYLine(anIsoParamV);
@@ -545,17 +551,17 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
     }
 
     // Trim hatching region.
-    for (Standard_Integer anI = 1; anI <= aTrimPoints.Length(); anI += 2)
+    for (int anI = 1; anI <= aTrimPoints.Length(); anI += 2)
     {
       aHatcher.Trim(aTrimPoints(anI), aTrimPoints(anI + 1));
     }
 
     // Use surface definition for evaluation of Bezier, B-spline surface.
     // Use isoline adapter for other types of surfaces.
-    GeomAbs_SurfaceType  aSurfType = theSurface->GetType();
-    Handle(Geom_Surface) aBSurface;
-    GeomAdaptor_Curve    aBSurfaceCurve;
-    Adaptor3d_IsoCurve   aCanonicalCurve;
+    GeomAbs_SurfaceType       aSurfType = theSurface->GetType();
+    occ::handle<Geom_Surface> aBSurface;
+    GeomAdaptor_Curve         aBSurfaceCurve;
+    Adaptor3d_IsoCurve        aCanonicalCurve;
     if (aSurfType == GeomAbs_BezierSurface)
     {
       aBSurface = theSurface->Bezier();
@@ -570,16 +576,16 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
     }
 
     // For each isoline: compute its segments.
-    for (Standard_Integer anI = 1; anI <= aHatcher.NbLines(); anI++)
+    for (int anI = 1; anI <= aHatcher.NbLines(); anI++)
     {
-      Standard_Real    anIsoParam = aHatcher.Coordinate(anI);
-      Standard_Boolean isIsoU     = aHatcher.IsXLine(anI);
+      double anIsoParam = aHatcher.Coordinate(anI);
+      bool   isIsoU     = aHatcher.IsXLine(anI);
 
       // For each isoline's segment: evaluate its points.
-      for (Standard_Integer aJ = 1; aJ <= aHatcher.NbIntervals(anI); aJ++)
+      for (int aJ = 1; aJ <= aHatcher.NbIntervals(anI); aJ++)
       {
-        Standard_Real aSegmentP1 = aHatcher.Start(anI, aJ);
-        Standard_Real aSegmentP2 = aHatcher.End(anI, aJ);
+        double aSegmentP1 = aHatcher.Start(anI, aJ);
+        double aSegmentP2 = aHatcher.End(anI, aJ);
 
         if (!aBSurface.IsNull())
         {
@@ -609,15 +615,15 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
         Adaptor3d_Curve* aCurve = aBSurface.IsNull() ? (Adaptor3d_Curve*)&aCanonicalCurve
                                                      : (Adaptor3d_Curve*)&aBSurfaceCurve;
 
-        Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-        StdPrs_DeflectionCurve::Add(Handle(Prs3d_Presentation)(),
+        occ::handle<NCollection_HSequence<gp_Pnt>> aPoints = new NCollection_HSequence<gp_Pnt>();
+        StdPrs_DeflectionCurve::Add(occ::handle<Prs3d_Presentation>(),
                                     *aCurve,
                                     aSegmentP1,
                                     aSegmentP2,
                                     theDeflection,
                                     aPoints->ChangeSequence(),
                                     theDrawer->DeviationAngle(),
-                                    Standard_False);
+                                    false);
         if (aPoints->IsEmpty())
         {
           continue;
@@ -642,20 +648,20 @@ void StdPrs_Isolines::addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface
 
 //=================================================================================================
 
-void StdPrs_Isolines::UVIsoParameters(const TopoDS_Face&      theFace,
-                                      const Standard_Integer  theNbIsoU,
-                                      const Standard_Integer  theNbIsoV,
-                                      const Standard_Real     theUVLimit,
-                                      TColStd_SequenceOfReal& theUIsoParams,
-                                      TColStd_SequenceOfReal& theVIsoParams,
-                                      Standard_Real&          theUmin,
-                                      Standard_Real&          theUmax,
-                                      Standard_Real&          theVmin,
-                                      Standard_Real&          theVmax)
+void StdPrs_Isolines::UVIsoParameters(const TopoDS_Face&            theFace,
+                                      const int                     theNbIsoU,
+                                      const int                     theNbIsoV,
+                                      const double                  theUVLimit,
+                                      NCollection_Sequence<double>& theUIsoParams,
+                                      NCollection_Sequence<double>& theVIsoParams,
+                                      double&                       theUmin,
+                                      double&                       theUmax,
+                                      double&                       theVmin,
+                                      double&                       theVmax)
 {
 
-  TopLoc_Location             aLocation;
-  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(theFace, aLocation);
+  TopLoc_Location                  aLocation;
+  const occ::handle<Geom_Surface>& aSurface = BRep_Tool::Surface(theFace, aLocation);
   if (aSurface.IsNull())
   {
     return;
@@ -663,10 +669,10 @@ void StdPrs_Isolines::UVIsoParameters(const TopoDS_Face&      theFace,
 
   BRepTools::UVBounds(theFace, theUmin, theUmax, theVmin, theVmax);
 
-  Standard_Real aUmin = theUmin;
-  Standard_Real aUmax = theUmax;
-  Standard_Real aVmin = theVmin;
-  Standard_Real aVmax = theVmax;
+  double aUmin = theUmin;
+  double aUmax = theUmax;
+  double aVmin = theVmin;
+  double aVmax = theVmax;
 
   if (Precision::IsInfinite(aUmin))
     aUmin = -theUVLimit;
@@ -677,8 +683,8 @@ void StdPrs_Isolines::UVIsoParameters(const TopoDS_Face&      theFace,
   if (Precision::IsInfinite(aVmax))
     aVmax = theUVLimit;
 
-  const Standard_Boolean isUClosed = aSurface->IsUClosed();
-  const Standard_Boolean isVClosed = aSurface->IsVClosed();
+  const bool isUClosed = aSurface->IsUClosed();
+  const bool isVClosed = aSurface->IsVClosed();
 
   if (!isUClosed)
   {
@@ -692,15 +698,15 @@ void StdPrs_Isolines::UVIsoParameters(const TopoDS_Face&      theFace,
     aVmax = aVmax - (aVmax - aVmin) / 1000.0;
   }
 
-  Standard_Real aUstep = (aUmax - aUmin) / (1 + theNbIsoU);
-  Standard_Real aVstep = (aVmax - aVmin) / (1 + theNbIsoV);
+  double aUstep = (aUmax - aUmin) / (1 + theNbIsoU);
+  double aVstep = (aVmax - aVmin) / (1 + theNbIsoV);
 
-  for (Standard_Integer anIso = 1; anIso <= theNbIsoU; ++anIso)
+  for (int anIso = 1; anIso <= theNbIsoU; ++anIso)
   {
     theUIsoParams.Append(aUmin + aUstep * anIso);
   }
 
-  for (Standard_Integer anIso = 1; anIso <= theNbIsoV; ++anIso)
+  for (int anIso = 1; anIso <= theNbIsoV; ++anIso)
   {
     theVIsoParams.Append(aVmin + aVstep * anIso);
   }
@@ -708,16 +714,16 @@ void StdPrs_Isolines::UVIsoParameters(const TopoDS_Face&      theFace,
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_Surface)& theSurface,
-                                                             const bool                  theIsU,
-                                                             const gp_Lin2d&             theIsoline,
-                                                             const gp_Pnt*   theNodesXYZ,
-                                                             const gp_Pnt2d* theNodesUV,
-                                                             SegOnIso&       theSegment)
+bool StdPrs_Isolines::findSegmentOnTriangulation(const occ::handle<Geom_Surface>& theSurface,
+                                                 const bool                       theIsU,
+                                                 const gp_Lin2d&                  theIsoline,
+                                                 const gp_Pnt*                    theNodesXYZ,
+                                                 const gp_Pnt2d*                  theNodesUV,
+                                                 SegOnIso&                        theSegment)
 {
-  Standard_Integer aNPoints = 0;
+  int aNPoints = 0;
 
-  for (Standard_Integer aLinkIter = 0; aLinkIter < 3 && aNPoints < 2; ++aLinkIter)
+  for (int aLinkIter = 0; aLinkIter < 3 && aNPoints < 2; ++aLinkIter)
   {
     // ...
     // Check that uv isoline crosses the triangulation link in parametric space
@@ -732,13 +738,13 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_S
     // location against the isoline (left or right). Null value for a node means that the
     // isoline crosses the node. Both positive or negative means that the isoline does not
     // cross the segment.
-    Standard_Boolean isLeftUV1 =
+    bool isLeftUV1 =
       (theIsoline.Direction().XY() ^ gp_Vec2d(theIsoline.Location(), aNodeUV1).XY()) > 0.0;
-    Standard_Boolean isLeftUV2 =
+    bool isLeftUV2 =
       (theIsoline.Direction().XY() ^ gp_Vec2d(theIsoline.Location(), aNodeUV2).XY()) > 0.0;
-    Standard_Real aDistanceUV1 =
+    double aDistanceUV1 =
       isLeftUV1 ? theIsoline.Distance(aNodeUV1) : -theIsoline.Distance(aNodeUV1);
-    Standard_Real aDistanceUV2 =
+    double aDistanceUV2 =
       isLeftUV2 ? theIsoline.Distance(aNodeUV2) : -theIsoline.Distance(aNodeUV2);
 
     // Isoline crosses first point of an edge.
@@ -780,13 +786,12 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_S
     // Derive cross-point from parametric coordinates
     // ...
 
-    Standard_Real anAlpha =
-      std::abs(aDistanceUV1) / (std::abs(aDistanceUV1) + std::abs(aDistanceUV2));
+    double anAlpha = std::abs(aDistanceUV1) / (std::abs(aDistanceUV1) + std::abs(aDistanceUV2));
 
-    gp_Pnt        aCross(0.0, 0.0, 0.0);
-    Standard_Real aCrossU     = aNodeUV1.X() + anAlpha * (aNodeUV2.X() - aNodeUV1.X());
-    Standard_Real aCrossV     = aNodeUV1.Y() + anAlpha * (aNodeUV2.Y() - aNodeUV1.Y());
-    Standard_Real aCrossParam = theIsU ? aCrossV : aCrossU;
+    gp_Pnt aCross(0.0, 0.0, 0.0);
+    double aCrossU     = aNodeUV1.X() + anAlpha * (aNodeUV2.X() - aNodeUV1.X());
+    double aCrossV     = aNodeUV1.Y() + anAlpha * (aNodeUV2.Y() - aNodeUV1.Y());
+    double aCrossParam = theIsU ? aCrossV : aCrossU;
     if (theSurface.IsNull())
     {
       // Do linear interpolation of point coordinates using triangulation nodes.
@@ -798,10 +803,10 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_S
     {
       // Do linear interpolation of point coordinates by triangulation nodes.
       // Get 3d point on surface.
-      Handle(Geom_Curve) anIso1, anIso2;
-      Standard_Real      aPntOnNode1Iso = 0.0;
-      Standard_Real      aPntOnNode2Iso = 0.0;
-      Standard_Real      aPntOnNode3Iso = 0.0;
+      occ::handle<Geom_Curve> anIso1, anIso2;
+      double                  aPntOnNode1Iso = 0.0;
+      double                  aPntOnNode2Iso = 0.0;
+      double                  aPntOnNode3Iso = 0.0;
 
       if (theIsoline.Direction().X() == 0.0)
       {
@@ -822,9 +827,9 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation(const Handle(Geom_S
 
       GeomAdaptor_Curve aCurveAdaptor1(anIso1);
       GeomAdaptor_Curve aCurveAdaptor2(anIso2);
-      Standard_Real     aLength1 =
+      double            aLength1 =
         GCPnts_AbscissaPoint::Length(aCurveAdaptor1, aPntOnNode1Iso, aPntOnNode3Iso, 1e-2);
-      Standard_Real aLength2 =
+      double aLength2 =
         GCPnts_AbscissaPoint::Length(aCurveAdaptor2, aPntOnNode2Iso, aPntOnNode3Iso, 1e-2);
       if (std::abs(aLength1) < Precision::Confusion()
           || std::abs(aLength2) < Precision::Confusion())

@@ -27,20 +27,18 @@ IntCurve_MyImpParToolOfIntImpConicParConic::IntCurve_MyImpParToolOfIntImpConicPa
   const IntCurve_PConic&     PC)
     : TheImpTool(ITool)
 {
-  TheParCurve = (Standard_Address)(&PC);
+  TheParCurve = (void*)(&PC);
 }
 
-Standard_Boolean IntCurve_MyImpParToolOfIntImpConicParConic::Value(const Standard_Real Param,
-                                                                   Standard_Real& ApproxDistance)
+bool IntCurve_MyImpParToolOfIntImpConicParConic::Value(const double Param, double& ApproxDistance)
 {
   ApproxDistance =
     TheImpTool.Distance(IntCurve_PConicTool::Value((*((IntCurve_PConic*)(TheParCurve))), Param));
-  return (Standard_True);
+  return (true);
 }
 
-Standard_Boolean IntCurve_MyImpParToolOfIntImpConicParConic::Derivative(
-  const Standard_Real Param,
-  Standard_Real&      D_ApproxDistance_DV)
+bool IntCurve_MyImpParToolOfIntImpConicParConic::Derivative(const double Param,
+                                                            double&      D_ApproxDistance_DV)
 {
   gp_Pnt2d Pt;
   gp_Vec2d TanParCurve;
@@ -48,14 +46,14 @@ Standard_Boolean IntCurve_MyImpParToolOfIntImpConicParConic::Derivative(
     IntCurve_PConicTool::Value((*((IntCurve_PConic*)(TheParCurve))), Param));
   IntCurve_PConicTool::D1((*((IntCurve_PConic*)(TheParCurve))), Param, Pt, TanParCurve);
   D_ApproxDistance_DV = Grad.Dot(TanParCurve);
-  return (Standard_True);
+  return (true);
 }
 
-Standard_Boolean IntCurve_MyImpParToolOfIntImpConicParConic::Values(const Standard_Real Param,
-                                                                    Standard_Real& ApproxDistance,
-                                                                    Standard_Real& Deriv)
+bool IntCurve_MyImpParToolOfIntImpConicParConic::Values(const double Param,
+                                                        double&      ApproxDistance,
+                                                        double&      Deriv)
 {
   this->Value(Param, ApproxDistance);
   this->Derivative(Param, Deriv);
-  return (Standard_True);
+  return (true);
 }

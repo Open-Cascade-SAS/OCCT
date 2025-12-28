@@ -22,31 +22,25 @@ class Graphic3d_MutableIndexBuffer : public Graphic3d_IndexBuffer
   DEFINE_STANDARD_RTTIEXT(Graphic3d_MutableIndexBuffer, Graphic3d_IndexBuffer)
 public:
   //! Empty constructor.
-  Graphic3d_MutableIndexBuffer(const Handle(NCollection_BaseAllocator)& theAlloc)
+  Graphic3d_MutableIndexBuffer(const occ::handle<NCollection_BaseAllocator>& theAlloc)
       : Graphic3d_IndexBuffer(theAlloc)
   {
   }
 
   //! Return TRUE if data can be invalidated.
-  virtual Standard_Boolean IsMutable() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool IsMutable() const override { return true; }
 
   //! Return invalidated range.
-  virtual Graphic3d_BufferRange InvalidatedRange() const Standard_OVERRIDE
-  {
-    return myInvalidatedRange;
-  }
+  virtual Graphic3d_BufferRange InvalidatedRange() const override { return myInvalidatedRange; }
 
   //! Reset invalidated range.
-  virtual void Validate() Standard_OVERRIDE { myInvalidatedRange.Clear(); }
+  virtual void Validate() override { myInvalidatedRange.Clear(); }
 
   //! Invalidate the entire buffer data.
-  virtual void Invalidate() Standard_OVERRIDE
-  {
-    invalidate(Graphic3d_BufferRange(0, (Standard_Integer)mySize));
-  }
+  virtual void Invalidate() override { invalidate(Graphic3d_BufferRange(0, (int)mySize)); }
 
   //! Invalidate the given indexes (starting from 0)
-  void Invalidate(Standard_Integer theIndexLower, Standard_Integer theIndexUpper)
+  void Invalidate(int theIndexLower, int theIndexUpper)
   {
     Standard_OutOfRange_Raise_if(theIndexLower > theIndexUpper,
                                  "Graphic3d_MutableIndexBuffer::Invalidate()");

@@ -19,15 +19,14 @@
 
 #include <Standard.hxx>
 
-#include <StepAP214_HArray1OfDateItem.hxx>
+#include <StepAP214_DateItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_DateAssignment.hxx>
 #include <Standard_Integer.hxx>
 class StepBasic_Date;
 class StepBasic_DateRole;
 class StepAP214_DateItem;
-
-class StepAP214_AppliedDateAssignment;
-DEFINE_STANDARD_HANDLE(StepAP214_AppliedDateAssignment, StepBasic_DateAssignment)
 
 class StepAP214_AppliedDateAssignment : public StepBasic_DateAssignment
 {
@@ -36,23 +35,22 @@ public:
   //! Returns a AppliedDateAssignment
   Standard_EXPORT StepAP214_AppliedDateAssignment();
 
-  Standard_EXPORT void Init(const Handle(StepBasic_Date)&              aAssignedDate,
-                            const Handle(StepBasic_DateRole)&          aRole,
-                            const Handle(StepAP214_HArray1OfDateItem)& aItems);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Date>&     aAssignedDate,
+                            const occ::handle<StepBasic_DateRole>& aRole,
+                            const occ::handle<NCollection_HArray1<StepAP214_DateItem>>& aItems);
 
-  Standard_EXPORT void SetItems(const Handle(StepAP214_HArray1OfDateItem)& aItems);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_DateItem>>& aItems);
 
-  Standard_EXPORT Handle(StepAP214_HArray1OfDateItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_DateItem>> Items() const;
 
-  Standard_EXPORT StepAP214_DateItem ItemsValue(const Standard_Integer num) const;
+  Standard_EXPORT StepAP214_DateItem ItemsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedDateAssignment, StepBasic_DateAssignment)
 
-protected:
 private:
-  Handle(StepAP214_HArray1OfDateItem) items;
+  occ::handle<NCollection_HArray1<StepAP214_DateItem>> items;
 };
 
 #endif // _StepAP214_AppliedDateAssignment_HeaderFile

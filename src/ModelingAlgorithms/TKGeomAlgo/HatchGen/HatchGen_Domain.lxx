@@ -24,9 +24,9 @@
 inline void HatchGen_Domain::SetPoints(const HatchGen_PointOnHatching& P1,
                                        const HatchGen_PointOnHatching& P2)
 {
-  myHasFirstPoint  = Standard_True;
+  myHasFirstPoint  = true;
   myFirstPoint     = P1;
-  myHasSecondPoint = Standard_True;
+  myHasSecondPoint = true;
   mySecondPoint    = P2;
 }
 
@@ -38,8 +38,8 @@ inline void HatchGen_Domain::SetPoints(const HatchGen_PointOnHatching& P1,
 
 inline void HatchGen_Domain::SetPoints()
 {
-  myHasFirstPoint  = Standard_False;
-  myHasSecondPoint = Standard_False;
+  myHasFirstPoint  = false;
+  myHasSecondPoint = false;
 }
 
 //=======================================================================
@@ -49,7 +49,7 @@ inline void HatchGen_Domain::SetPoints()
 
 inline void HatchGen_Domain::SetFirstPoint(const HatchGen_PointOnHatching& P)
 {
-  myHasFirstPoint = Standard_True;
+  myHasFirstPoint = true;
   myFirstPoint    = P;
 }
 
@@ -60,7 +60,7 @@ inline void HatchGen_Domain::SetFirstPoint(const HatchGen_PointOnHatching& P)
 
 inline void HatchGen_Domain::SetFirstPoint()
 {
-  myHasFirstPoint = Standard_False;
+  myHasFirstPoint = false;
 }
 
 //=======================================================================
@@ -70,7 +70,7 @@ inline void HatchGen_Domain::SetFirstPoint()
 
 inline void HatchGen_Domain::SetSecondPoint(const HatchGen_PointOnHatching& P)
 {
-  myHasSecondPoint = Standard_True;
+  myHasSecondPoint = true;
   mySecondPoint    = P;
 }
 
@@ -81,7 +81,7 @@ inline void HatchGen_Domain::SetSecondPoint(const HatchGen_PointOnHatching& P)
 
 inline void HatchGen_Domain::SetSecondPoint()
 {
-  myHasSecondPoint = Standard_False;
+  myHasSecondPoint = false;
 }
 
 //=======================================================================
@@ -89,7 +89,7 @@ inline void HatchGen_Domain::SetSecondPoint()
 // Purpose  : Returns True if the domain has a first point.
 //=======================================================================
 
-inline Standard_Boolean HatchGen_Domain::HasFirstPoint() const
+inline bool HatchGen_Domain::HasFirstPoint() const
 {
   return myHasFirstPoint;
 }
@@ -110,7 +110,7 @@ inline const HatchGen_PointOnHatching& HatchGen_Domain::FirstPoint() const
 // Purpose  : Returns True if the domain has a second point.
 //=======================================================================
 
-inline Standard_Boolean HatchGen_Domain::HasSecondPoint() const
+inline bool HatchGen_Domain::HasSecondPoint() const
 {
   return myHasSecondPoint;
 }

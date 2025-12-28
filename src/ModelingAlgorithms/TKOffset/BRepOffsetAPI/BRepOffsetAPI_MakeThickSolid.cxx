@@ -23,35 +23,29 @@
 BRepOffsetAPI_MakeThickSolid::BRepOffsetAPI_MakeThickSolid()
 {
   // Build only solids.
-  mySimpleOffsetShape.SetBuildSolidFlag(Standard_True);
+  mySimpleOffsetShape.SetBuildSolidFlag(true);
 }
 
 //=================================================================================================
 
-void BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin(const TopoDS_Shape&          S,
-                                                        const TopTools_ListOfShape&  ClosingFaces,
-                                                        const Standard_Real          Offset,
-                                                        const Standard_Real          Tol,
-                                                        const BRepOffset_Mode        Mode,
-                                                        const Standard_Boolean       Intersection,
-                                                        const Standard_Boolean       SelfInter,
-                                                        const GeomAbs_JoinType       Join,
-                                                        const Standard_Boolean       RemoveIntEdges,
-                                                        const Message_ProgressRange& theRange)
+void BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin(
+  const TopoDS_Shape&                   S,
+  const NCollection_List<TopoDS_Shape>& ClosingFaces,
+  const double                          Offset,
+  const double                          Tol,
+  const BRepOffset_Mode                 Mode,
+  const bool                            Intersection,
+  const bool                            SelfInter,
+  const GeomAbs_JoinType                Join,
+  const bool                            RemoveIntEdges,
+  const Message_ProgressRange&          theRange)
 {
   NotDone();
   myLastUsedAlgo = OffsetAlgo_JOIN;
 
-  myOffsetShape.Initialize(S,
-                           Offset,
-                           Tol,
-                           Mode,
-                           Intersection,
-                           SelfInter,
-                           Join,
-                           Standard_False,
-                           RemoveIntEdges);
-  TopTools_ListIteratorOfListOfShape it(ClosingFaces);
+  myOffsetShape
+    .Initialize(S, Offset, Tol, Mode, Intersection, SelfInter, Join, false, RemoveIntEdges);
+  NCollection_List<TopoDS_Shape>::Iterator it(ClosingFaces);
   for (; it.More(); it.Next())
     myOffsetShape.AddFace(TopoDS::Face(it.Value()));
 
@@ -66,7 +60,7 @@ void BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin(const TopoDS_Shape&     
 //=================================================================================================
 
 void BRepOffsetAPI_MakeThickSolid::MakeThickSolidBySimple(const TopoDS_Shape& theS,
-                                                          const Standard_Real theOffsetValue)
+                                                          const double        theOffsetValue)
 {
   NotDone();
   myLastUsedAlgo = OffsetAlgo_SIMPLE;
@@ -87,7 +81,7 @@ void BRepOffsetAPI_MakeThickSolid::Build(const Message_ProgressRange& /*theRange
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepOffsetAPI_MakeThickSolid::Modified(const TopoDS_Shape& F)
+const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeThickSolid::Modified(const TopoDS_Shape& F)
 {
   myGenerated.Clear();
 
@@ -99,7 +93,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_MakeThickSolid::Modified(const TopoDS_
 
       // Reverse generated shapes in case of small solids.
       // Useful only for faces without influence on others.
-      TopTools_ListIteratorOfListOfShape it(myGenerated);
+      NCollection_List<TopoDS_Shape>::Iterator it(myGenerated);
       for (; it.More(); it.Next())
         it.ChangeValue().Reverse();
     }

@@ -31,14 +31,13 @@ class Plate_LineConstraint
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Plate_LineConstraint(const gp_XY&           point2d,
-                                       const gp_Lin&          lin,
-                                       const Standard_Integer iu = 0,
-                                       const Standard_Integer iv = 0);
+  Standard_EXPORT Plate_LineConstraint(const gp_XY&  point2d,
+                                       const gp_Lin& lin,
+                                       const int     iu = 0,
+                                       const int     iv = 0);
 
   const Plate_LinearScalarConstraint& LSC() const;
 
-protected:
 private:
   Plate_LinearScalarConstraint myLSC;
 };

@@ -21,15 +21,11 @@
 
 #include <TopoDS_Face.hxx>
 #include <Draw_Color.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Transient.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <Standard_Real.hxx>
-
-class DBRep_Face;
-DEFINE_STANDARD_HANDLE(DBRep_Face, Standard_Transient)
 
 //! Display of a face. Face + Array of iso + color.
 class DBRep_Face : public Standard_Transient
@@ -37,25 +33,21 @@ class DBRep_Face : public Standard_Transient
 
 public:
   //! N is the number of iso intervals.
-  Standard_EXPORT DBRep_Face(const TopoDS_Face& F, const Standard_Integer N, const Draw_Color& C);
+  Standard_EXPORT DBRep_Face(const TopoDS_Face& F, const int N, const Draw_Color& C);
 
   const TopoDS_Face& Face() const;
 
   void Face(const TopoDS_Face& F);
 
-  Standard_Integer NbIsos() const;
+  int NbIsos() const;
 
-  void Iso(const Standard_Integer I,
-           const GeomAbs_IsoType  T,
-           const Standard_Real    Par,
-           const Standard_Real    T1,
-           const Standard_Real    T2);
+  void Iso(const int             I,
+           const GeomAbs_IsoType T,
+           const double          Par,
+           const double          T1,
+           const double          T2);
 
-  void GetIso(const Standard_Integer I,
-              GeomAbs_IsoType&       T,
-              Standard_Real&         Par,
-              Standard_Real&         T1,
-              Standard_Real&         T2) const;
+  void GetIso(const int I, GeomAbs_IsoType& T, double& Par, double& T1, double& T2) const;
 
   const Draw_Color& Color() const;
 
@@ -63,12 +55,11 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(DBRep_Face, Standard_Transient)
 
-protected:
 private:
-  TopoDS_Face             myFace;
-  Draw_Color              myColor;
-  TColStd_Array1OfInteger myTypes;
-  TColStd_Array1OfReal    myParams;
+  TopoDS_Face                myFace;
+  Draw_Color                 myColor;
+  NCollection_Array1<int>    myTypes;
+  NCollection_Array1<double> myParams;
 };
 
 #include <DBRep_Face.lxx>

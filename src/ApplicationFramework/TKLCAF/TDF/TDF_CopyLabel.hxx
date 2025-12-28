@@ -23,7 +23,8 @@
 
 #include <TDF_Label.hxx>
 #include <TDF_IDFilter.hxx>
-#include <TDF_AttributeMap.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
 class TDF_RelocationTable;
 class TDF_DataSet;
 
@@ -46,33 +47,34 @@ public:
   Standard_EXPORT void UseFilter(const TDF_IDFilter& aFilter);
 
   //! Check external references and if exist fills the aExternals Map
-  Standard_EXPORT static Standard_Boolean ExternalReferences(const TDF_Label&    Lab,
-                                                             TDF_AttributeMap&   aExternals,
-                                                             const TDF_IDFilter& aFilter);
+  Standard_EXPORT static bool ExternalReferences(
+    const TDF_Label&                             Lab,
+    NCollection_Map<occ::handle<TDF_Attribute>>& aExternals,
+    const TDF_IDFilter&                          aFilter);
 
   //! Check external references and if exist fills the aExternals Map
-  Standard_EXPORT static void ExternalReferences(const TDF_Label&     aRefLab,
-                                                 const TDF_Label&     Lab,
-                                                 TDF_AttributeMap&    aExternals,
-                                                 const TDF_IDFilter&  aFilter,
-                                                 Handle(TDF_DataSet)& aDataSet);
+  Standard_EXPORT static void ExternalReferences(
+    const TDF_Label&                             aRefLab,
+    const TDF_Label&                             Lab,
+    NCollection_Map<occ::handle<TDF_Attribute>>& aExternals,
+    const TDF_IDFilter&                          aFilter,
+    occ::handle<TDF_DataSet>&                    aDataSet);
 
   //! performs algorithm of selfcontained copy
   Standard_EXPORT void Perform();
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns relocation table
-  Standard_EXPORT const Handle(TDF_RelocationTable)& RelocationTable() const;
+  Standard_EXPORT const occ::handle<TDF_RelocationTable>& RelocationTable() const;
 
-protected:
 private:
-  Handle(TDF_RelocationTable) myRT;
-  TDF_Label                   mySL;
-  TDF_Label                   myTL;
-  TDF_IDFilter                myFilter;
-  TDF_AttributeMap            myMapOfExt;
-  Standard_Boolean            myIsDone;
+  occ::handle<TDF_RelocationTable>            myRT;
+  TDF_Label                                   mySL;
+  TDF_Label                                   myTL;
+  TDF_IDFilter                                myFilter;
+  NCollection_Map<occ::handle<TDF_Attribute>> myMapOfExt;
+  bool                                        myIsDone;
 };
 
 #include <TDF_CopyLabel.lxx>

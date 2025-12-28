@@ -30,9 +30,6 @@ class Interface_Check;
   #undef Status
 #endif
 
-class Transfer_Binder;
-DEFINE_STANDARD_HANDLE(Transfer_Binder, Standard_Transient)
-
 //! A Binder is an auxiliary object to Map the Result of the
 //! Transfer of a given Object : it records the Result of the
 //! Unitary Transfer (Resulting Object), status of progress and
@@ -62,33 +59,33 @@ public:
   //! Merges basic data (Check, ExecStatus) from another Binder but
   //! keeps its result. Used when a binder is replaced by another
   //! one, this allows to keep messages
-  Standard_EXPORT void Merge(const Handle(Transfer_Binder)& other);
+  Standard_EXPORT void Merge(const occ::handle<Transfer_Binder>& other);
 
   //! Returns True if a Binder has several results, either by itself
   //! or because it has next results
   //! Can be defined by sub-classes.
-  Standard_EXPORT virtual Standard_Boolean IsMultiple() const;
+  Standard_EXPORT virtual bool IsMultiple() const;
 
   //! Returns the Type which characterizes the Result (if known)
-  Standard_EXPORT virtual Handle(Standard_Type) ResultType() const = 0;
+  Standard_EXPORT virtual occ::handle<Standard_Type> ResultType() const = 0;
 
   //! Returns the Name of the Type which characterizes the Result
   //! Can be returned even if ResultType itself is unknown
-  Standard_EXPORT virtual Standard_CString ResultTypeName() const = 0;
+  Standard_EXPORT virtual const char* ResultTypeName() const = 0;
 
   //! Adds a next result (at the end of the list)
   //! Remark : this information is not processed by Merge
-  Standard_EXPORT void AddResult(const Handle(Transfer_Binder)& next);
+  Standard_EXPORT void AddResult(const occ::handle<Transfer_Binder>& next);
 
   //! Returns the next result, Null if none
-  Standard_EXPORT Handle(Transfer_Binder) NextResult() const;
+  Standard_EXPORT occ::handle<Transfer_Binder> NextResult() const;
 
   //! Returns True if a Result is available (StatusResult = Defined)
   //! A Unique Result will be gotten by Result (which must be
   //! defined in each sub-class according to result type)
   //! For a Multiple Result, see class MultipleBinder
   //! For other case, specific access has to be forecast
-  Standard_EXPORT Standard_Boolean HasResult() const;
+  Standard_EXPORT bool HasResult() const;
 
   //! Declares that result is now used by another one, it means that
   //! it cannot be modified (by Rebind)
@@ -114,19 +111,19 @@ public:
   //! It has same effect for TransferProcess as raising an exception
   //! during the operation of Transfer, except the Transfer tries to
   //! continue (as if ErrorHandle had been set)
-  Standard_EXPORT void AddFail(const Standard_CString mess, const Standard_CString orig = "");
+  Standard_EXPORT void AddFail(const char* mess, const char* orig = "");
 
   //! Used to attach a Warning Message to an individual Transfer
   //! It has no effect on the Status
-  Standard_EXPORT void AddWarning(const Standard_CString mess, const Standard_CString orig = "");
+  Standard_EXPORT void AddWarning(const char* mess, const char* orig = "");
 
   //! Returns Check which stores Fail messages
   //! Note that no Entity is associated in this Check
-  Standard_EXPORT const Handle(Interface_Check) Check() const;
+  Standard_EXPORT const occ::handle<Interface_Check> Check() const;
 
   //! Returns Check which stores Fail messages, in order to modify
   //! it (adding messages, or replacing it)
-  Standard_EXPORT Handle(Interface_Check) CCheck();
+  Standard_EXPORT occ::handle<Interface_Check> CCheck();
 
   //! Destructor
   Standard_EXPORT ~Transfer_Binder();
@@ -147,13 +144,13 @@ protected:
 
 private:
   //! Called by AddResult, to keep unicity of each item in the list
-  Standard_EXPORT void CutResult(const Handle(Transfer_Binder)& next);
+  Standard_EXPORT void CutResult(const occ::handle<Transfer_Binder>& next);
 
-  Transfer_StatusResult   thestatus;
-  Transfer_StatusExec     theexecst;
-  Handle(Interface_Check) thecheck;
-  Handle(Transfer_Binder) thenextr;
-  Handle(Transfer_Binder) theendr;
+  Transfer_StatusResult        thestatus;
+  Transfer_StatusExec          theexecst;
+  occ::handle<Interface_Check> thecheck;
+  occ::handle<Transfer_Binder> thenextr;
+  occ::handle<Transfer_Binder> theendr;
 };
 
 #endif // _Transfer_Binder_HeaderFile

@@ -44,9 +44,9 @@ public:
   //! Warnings :
   //! It is not forbidden to create an ellipse with
   //! MajorRadius = MinorRadius.
-  Standard_EXPORT gce_MakeElips(const gp_Ax2&       A2,
-                                const Standard_Real MajorRadius,
-                                const Standard_Real MinorRadius);
+  Standard_EXPORT gce_MakeElips(const gp_Ax2& A2,
+                                const double  MajorRadius,
+                                const double  MinorRadius);
 
   //! Make an ellipse with its center and two points.
   //! Warning
@@ -71,7 +71,6 @@ public:
   Standard_EXPORT const gp_Elips& Operator() const;
   Standard_EXPORT                 operator gp_Elips() const;
 
-protected:
 private:
   gp_Elips TheElips;
 };

@@ -17,8 +17,8 @@
 
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Precision.hxx>
 
@@ -92,19 +92,19 @@ TEST_F(PLibJacobiPolynomialTest, GaussIntegrationPoints)
   PLib_JacobiPolynomial aJac(10, GeomAbs_C0);
 
   // Test various numbers of Gauss points (only valid values supported by OCCT)
-  std::vector<Standard_Integer> aGaussNumbers = {8, 10, 15, 20, 25, 30, 40, 50, 61};
+  std::vector<int> aGaussNumbers = {8, 10, 15, 20, 25, 30, 40, 50, 61};
 
-  for (Standard_Integer aNbGauss : aGaussNumbers)
+  for (int aNbGauss : aGaussNumbers)
   {
     if (aNbGauss > aJac.WorkDegree())
     {
-      TColStd_Array1OfReal aPoints(0, aNbGauss / 2);
+      NCollection_Array1<double> aPoints(0, aNbGauss / 2);
 
       EXPECT_NO_THROW({ aJac.Points(aNbGauss, aPoints); })
         << "Points calculation failed for " << aNbGauss << " Gauss points";
 
       // Verify points are in valid range and ordered
-      for (Standard_Integer i = aPoints.Lower(); i <= aPoints.Upper(); i++)
+      for (int i = aPoints.Lower(); i <= aPoints.Upper(); i++)
       {
         if (i == 0 && aNbGauss % 2 == 0)
         {
@@ -137,8 +137,8 @@ TEST_F(PLibJacobiPolynomialTest, GaussIntegrationWeights)
 {
   PLib_JacobiPolynomial aJac(8, GeomAbs_C1);
 
-  Standard_Integer     aNbGauss = 15; // Must be > degree for valid computation
-  TColStd_Array2OfReal aWeights(0, aNbGauss / 2, 0, aJac.WorkDegree());
+  int                        aNbGauss = 15; // Must be > degree for valid computation
+  NCollection_Array2<double> aWeights(0, aNbGauss / 2, 0, aJac.WorkDegree());
 
   aJac.Weights(aNbGauss, aWeights);
 
@@ -148,9 +148,9 @@ TEST_F(PLibJacobiPolynomialTest, GaussIntegrationWeights)
   EXPECT_EQ(aWeights.LowerCol(), 0) << "Lower col should be 0";
   EXPECT_EQ(aWeights.UpperCol(), aJac.WorkDegree()) << "Upper col should match work degree";
 
-  for (Standard_Integer i = aWeights.LowerRow(); i <= aWeights.UpperRow(); i++)
+  for (int i = aWeights.LowerRow(); i <= aWeights.UpperRow(); i++)
   {
-    for (Standard_Integer j = aWeights.LowerCol(); j <= aWeights.UpperCol(); j++)
+    for (int j = aWeights.LowerCol(); j <= aWeights.UpperCol(); j++)
     {
       EXPECT_FALSE(Precision::IsInfinite(aWeights(i, j)))
         << "Weight should be finite at (" << i << "," << j << ")";
@@ -163,15 +163,15 @@ TEST_F(PLibJacobiPolynomialTest, MaxValue)
 {
   PLib_JacobiPolynomial aJac(10, GeomAbs_C0);
 
-  Standard_Integer aTabSize = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1);
+  int aTabSize = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1);
   if (aTabSize > 0)
   {
-    TColStd_Array1OfReal aTabMax(0, aTabSize);
+    NCollection_Array1<double> aTabMax(0, aTabSize);
 
     aJac.MaxValue(aTabMax);
 
     // Verify all max values are positive (they represent maximum absolute values)
-    for (Standard_Integer i = aTabMax.Lower(); i <= aTabMax.Upper(); i++)
+    for (int i = aTabMax.Lower(); i <= aTabMax.Upper(); i++)
     {
       EXPECT_GT(aTabMax(i), 0.0) << "Max value should be positive at index " << i;
       EXPECT_FALSE(Precision::IsInfinite(aTabMax(i)))
@@ -186,19 +186,19 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionD0)
   PLib_JacobiPolynomial aJac(6, GeomAbs_C0);
 
   // Calculate actual number of basis functions
-  Standard_Integer aDegree = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1);
+  int aDegree = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1);
 
-  TColStd_Array1OfReal aBasisValue(0, aDegree);
+  NCollection_Array1<double> aBasisValue(0, aDegree);
 
   // Test at various parameter values
-  std::vector<Standard_Real> aTestParams = {-1.0, -0.5, 0.0, 0.5, 1.0};
+  std::vector<double> aTestParams = {-1.0, -0.5, 0.0, 0.5, 1.0};
 
-  for (Standard_Real aU : aTestParams)
+  for (double aU : aTestParams)
   {
     aJac.D0(aU, aBasisValue);
 
     // Basic sanity checks
-    for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
+    for (int i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
     {
       EXPECT_FALSE(Precision::IsInfinite(aBasisValue(i)))
         << "Basis value should be finite at index " << i << ", U=" << aU;
@@ -212,14 +212,14 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionDerivatives)
   PLib_JacobiPolynomial aJac(8, GeomAbs_C1);
 
   // Calculate actual number of basis functions (same as MaxValue test pattern)
-  Standard_Integer aDegree = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1);
+  int aDegree = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1);
 
-  TColStd_Array1OfReal aBasisValue(0, aDegree);
-  TColStd_Array1OfReal aBasisD1(0, aDegree);
-  TColStd_Array1OfReal aBasisD2(0, aDegree);
-  TColStd_Array1OfReal aBasisD3(0, aDegree);
+  NCollection_Array1<double> aBasisValue(0, aDegree);
+  NCollection_Array1<double> aBasisD1(0, aDegree);
+  NCollection_Array1<double> aBasisD2(0, aDegree);
+  NCollection_Array1<double> aBasisD3(0, aDegree);
 
-  Standard_Real aU = 0.5; // Test at middle point
+  double aU = 0.5; // Test at middle point
 
   // Test D1, D2, D3 evaluations
   aJac.D1(aU, aBasisValue, aBasisD1);
@@ -227,7 +227,7 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionDerivatives)
   aJac.D3(aU, aBasisValue, aBasisD1, aBasisD2, aBasisD3);
 
   // Verify all values are finite
-  for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
+  for (int i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
   {
     EXPECT_FALSE(Precision::IsInfinite(aBasisValue(i))) << "Basis value should be finite at " << i;
     EXPECT_FALSE(Precision::IsInfinite(aBasisD1(i)))
@@ -242,32 +242,31 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionDerivatives)
 // Test coefficient conversion
 TEST_F(PLibJacobiPolynomialTest, CoefficientConversion)
 {
-  const Standard_Integer aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
-  PLib_JacobiPolynomial  aJac(aWorkDegree, GeomAbs_C0);
+  const int             aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
+  PLib_JacobiPolynomial aJac(aWorkDegree, GeomAbs_C0);
 
-  const Standard_Integer aDimension = 1;
-  const Standard_Integer aDegree =
-    aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1); // Use computational degree
+  const int aDimension = 1;
+  const int aDegree    = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1); // Use computational degree
 
   // Create test Jacobi coefficients with proper size
   // ToCoefficients expects arrays sized based on the degree and dimension
   // Analysis shows we need arrays that can handle the indexing patterns in the method
-  Standard_Integer aJacSize   = (aDegree + 1) * aDimension;
-  Standard_Integer aCoeffSize = (aDegree + 1) * aDimension;
+  int aJacSize   = (aDegree + 1) * aDimension;
+  int aCoeffSize = (aDegree + 1) * aDimension;
 
   // Use 0-based arrays to match the ToCoefficients indexing expectations
-  TColStd_Array1OfReal aJacCoeff(0, aJacSize - 1);
-  for (Standard_Integer i = aJacCoeff.Lower(); i <= aJacCoeff.Upper(); i++)
+  NCollection_Array1<double> aJacCoeff(0, aJacSize - 1);
+  for (int i = aJacCoeff.Lower(); i <= aJacCoeff.Upper(); i++)
   {
     aJacCoeff(i) = std::sin(i * 0.1); // Some test values
   }
 
-  TColStd_Array1OfReal aCoefficients(0, aCoeffSize - 1);
+  NCollection_Array1<double> aCoefficients(0, aCoeffSize - 1);
 
   aJac.ToCoefficients(aDimension, aDegree, aJacCoeff, aCoefficients);
 
   // Verify output is finite
-  for (Standard_Integer i = aCoefficients.Lower(); i <= aCoefficients.Upper(); i++)
+  for (int i = aCoefficients.Lower(); i <= aCoefficients.Upper(); i++)
   {
     EXPECT_FALSE(Precision::IsInfinite(aCoefficients(i)))
       << "Converted coefficient should be finite at index " << i;
@@ -279,20 +278,20 @@ TEST_F(PLibJacobiPolynomialTest, DegreeReduction)
 {
   PLib_JacobiPolynomial aJac(10, GeomAbs_C0);
 
-  const Standard_Integer aDimension = 1;
-  const Standard_Integer aMaxDegree = 8;
-  const Standard_Real    aTol       = 1e-6;
+  const int    aDimension = 1;
+  const int    aMaxDegree = 8;
+  const double aTol       = 1e-6;
 
   // Create test coefficients - must be sized for full WorkDegree
-  const Standard_Integer aWorkDegree = aJac.WorkDegree();
-  TColStd_Array1OfReal   aCoeff(1, (aWorkDegree + 1) * aDimension);
-  for (Standard_Integer i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
+  const int                  aWorkDegree = aJac.WorkDegree();
+  NCollection_Array1<double> aCoeff(1, (aWorkDegree + 1) * aDimension);
+  for (int i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
   {
     aCoeff(i) = 1.0 / (i + 1); // Decreasing coefficients to allow reduction
   }
 
-  Standard_Integer aNewDegree = -1;
-  Standard_Real    aMaxError  = -1.0;
+  int    aNewDegree = -1;
+  double aMaxError  = -1.0;
 
   aJac.ReduceDegree(aDimension, aMaxDegree, aTol, aCoeff.ChangeValue(1), aNewDegree, aMaxError);
 
@@ -308,25 +307,25 @@ TEST_F(PLibJacobiPolynomialTest, ErrorEstimation)
 {
   PLib_JacobiPolynomial aJac(8, GeomAbs_C1);
 
-  const Standard_Integer aDimension = 1;
+  const int aDimension = 1;
 
   // Create test coefficients
-  TColStd_Array1OfReal aCoeff(1, 10 * aDimension);
-  for (Standard_Integer i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
+  NCollection_Array1<double> aCoeff(1, 10 * aDimension);
+  for (int i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
   {
     aCoeff(i) = 1.0 / (i + 1);
   }
 
-  Standard_Integer aNewDegree = 6; // Reduced from original
+  int aNewDegree = 6; // Reduced from original
 
   // Test MaxError
-  Standard_Real aMaxErr = aJac.MaxError(aDimension, aCoeff.ChangeValue(1), aNewDegree);
+  double aMaxErr = aJac.MaxError(aDimension, aCoeff.ChangeValue(1), aNewDegree);
 
   EXPECT_GE(aMaxErr, 0.0) << "Max error should be non-negative";
   EXPECT_FALSE(Precision::IsInfinite(aMaxErr)) << "Max error should be finite";
 
   // Test AverageError
-  Standard_Real aAvgErr = aJac.AverageError(aDimension, aCoeff.ChangeValue(1), aNewDegree);
+  double aAvgErr = aJac.AverageError(aDimension, aCoeff.ChangeValue(1), aNewDegree);
 
   EXPECT_GE(aAvgErr, 0.0) << "Average error should be non-negative";
   EXPECT_FALSE(Precision::IsInfinite(aAvgErr)) << "Average error should be finite";
@@ -343,23 +342,23 @@ TEST_F(PLibJacobiPolynomialTest, StressTests)
   PLib_JacobiPolynomial aJacMax(30, GeomAbs_C2);
 
   // Calculate actual number of basis functions
-  Standard_Integer aDegree = aJacMax.WorkDegree() - 2 * (aJacMax.NivConstr() + 1);
+  int aDegree = aJacMax.WorkDegree() - 2 * (aJacMax.NivConstr() + 1);
 
   // Test that basic operations work with high degrees
-  TColStd_Array1OfReal aBasisValue(0, aDegree);
+  NCollection_Array1<double> aBasisValue(0, aDegree);
 
   aJacMax.D0(0.0, aBasisValue);
   aJacMax.D0(0.5, aBasisValue);
   aJacMax.D0(1.0, aBasisValue);
 
   // Test with extreme parameter values
-  std::vector<Standard_Real> aExtremeParams = {-0.99999, -1e-10, 1e-10, 0.99999};
+  std::vector<double> aExtremeParams = {-0.99999, -1e-10, 1e-10, 0.99999};
 
-  for (Standard_Real aU : aExtremeParams)
+  for (double aU : aExtremeParams)
   {
     aJacMax.D0(aU, aBasisValue);
     // Verify basis values are finite
-    for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
+    for (int i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
     {
       EXPECT_FALSE(Precision::IsInfinite(aBasisValue(i))) << "Basis value should be finite";
     }

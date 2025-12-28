@@ -17,14 +17,14 @@
 #include <MAT_Arc.hxx>
 #include <MAT_BasicElt.hxx>
 #include <MAT_Node.hxx>
-#include <MAT_SequenceOfArc.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MAT_BasicElt, Standard_Transient)
 
 //=================================================================================================
 
-MAT_BasicElt::MAT_BasicElt(const Standard_Integer anInteger)
+MAT_BasicElt::MAT_BasicElt(const int anInteger)
     : startLeftArc(0),
       endLeftArc(0),
       index(anInteger),
@@ -34,56 +34,56 @@ MAT_BasicElt::MAT_BasicElt(const Standard_Integer anInteger)
 
 //=================================================================================================
 
-Handle(MAT_Arc) MAT_BasicElt::StartArc() const
+occ::handle<MAT_Arc> MAT_BasicElt::StartArc() const
 {
   return (MAT_Arc*)startLeftArc;
 }
 
 //=================================================================================================
 
-Handle(MAT_Arc) MAT_BasicElt::EndArc() const
+occ::handle<MAT_Arc> MAT_BasicElt::EndArc() const
 {
   return (MAT_Arc*)endLeftArc;
 }
 
 //=================================================================================================
 
-Standard_Integer MAT_BasicElt::Index() const
+int MAT_BasicElt::Index() const
 {
   return index;
 }
 
 //=================================================================================================
 
-Standard_Integer MAT_BasicElt::GeomIndex() const
+int MAT_BasicElt::GeomIndex() const
 {
   return geomIndex;
 }
 
 //=================================================================================================
 
-void MAT_BasicElt::SetStartArc(const Handle(MAT_Arc)& anArc)
+void MAT_BasicElt::SetStartArc(const occ::handle<MAT_Arc>& anArc)
 {
   startLeftArc = anArc.get();
 }
 
 //=================================================================================================
 
-void MAT_BasicElt::SetEndArc(const Handle(MAT_Arc)& anArc)
+void MAT_BasicElt::SetEndArc(const occ::handle<MAT_Arc>& anArc)
 {
   endLeftArc = anArc.get();
 }
 
 //=================================================================================================
 
-void MAT_BasicElt::SetIndex(const Standard_Integer anInteger)
+void MAT_BasicElt::SetIndex(const int anInteger)
 {
   index = anInteger;
 }
 
 //=================================================================================================
 
-void MAT_BasicElt::SetGeomIndex(const Standard_Integer anInteger)
+void MAT_BasicElt::SetGeomIndex(const int anInteger)
 {
   geomIndex = anInteger;
 }

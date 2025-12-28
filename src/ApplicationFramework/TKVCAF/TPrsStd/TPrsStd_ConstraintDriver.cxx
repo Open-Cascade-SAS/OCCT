@@ -30,13 +30,13 @@ TPrsStd_ConstraintDriver::TPrsStd_ConstraintDriver() {}
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_ConstraintDriver::Update(const TDF_Label&               aLabel,
-                                                  Handle(AIS_InteractiveObject)& anAISObject)
+bool TPrsStd_ConstraintDriver::Update(const TDF_Label&                    aLabel,
+                                      occ::handle<AIS_InteractiveObject>& anAISObject)
 {
-  Handle(TDataXtd_Constraint) apConstraint;
+  occ::handle<TDataXtd_Constraint> apConstraint;
   if (!aLabel.FindAttribute(TDataXtd_Constraint::GetID(), apConstraint))
   {
-    return Standard_False;
+    return false;
   }
 
   if (!anAISObject.IsNull() && anAISObject->HasInteractiveContext())
@@ -50,11 +50,11 @@ Standard_Boolean TPrsStd_ConstraintDriver::Update(const TDF_Label&              
       {
         anAISObject->SetColor(Quantity_NOC_RED);
       }
-      return Standard_True;
+      return true;
     }
   }
 
-  Handle(AIS_InteractiveObject) anAIS = anAISObject;
+  occ::handle<AIS_InteractiveObject> anAIS = anAISObject;
 
   // recuperation
   TDataXtd_ConstraintEnum thetype = apConstraint->GetType();
@@ -147,7 +147,7 @@ Standard_Boolean TPrsStd_ConstraintDriver::Update(const TDF_Label&              
     }
   }
   if (anAIS.IsNull())
-    return Standard_False;
+    return false;
 
   anAIS->ResetTransformation();
   anAIS->SetToUpdate();
@@ -155,10 +155,10 @@ Standard_Boolean TPrsStd_ConstraintDriver::Update(const TDF_Label&              
 
   anAISObject = anAIS;
 
-  Handle(TDataXtd_Position) Position;
+  occ::handle<TDataXtd_Position> Position;
   if (aLabel.FindAttribute(TDataXtd_Position::GetID(), Position))
   {
-    Handle(PrsDim_Relation)::DownCast(anAISObject)->SetPosition(Position->GetPosition());
+    occ::down_cast<PrsDim_Relation>(anAISObject)->SetPosition(Position->GetPosition());
   }
 
   if (anAISObject->HasInteractiveContext())
@@ -191,5 +191,5 @@ Standard_Boolean TPrsStd_ConstraintDriver::Update(const TDF_Label&              
     else if (!apConstraint->IsPlanar())
       anAISObject->SetColor(Quantity_NOC_YELLOW);
   }
-  return Standard_True;
+  return true;
 }

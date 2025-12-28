@@ -98,7 +98,7 @@ public:
   //! the orthogonal projection of P on the axis theA1 or the
   //! plane A2, the vectors HP and HP' satisfy:
   //! HP' = theRatio * HP.
-  void SetAffinity(const gp_Ax1& theA1, const Standard_Real theRatio);
+  void SetAffinity(const gp_Ax1& theA1, const double theRatio);
 
   //! Changes this transformation into an affinity of ratio theRatio
   //! with respect to the plane defined by the origin, the "X Direction" and
@@ -108,14 +108,12 @@ public:
   //! the orthogonal projection of P on the axis A1 or the
   //! plane theA2, the vectors HP and HP' satisfy:
   //! HP' = theRatio * HP.
-  void SetAffinity(const gp_Ax2& theA2, const Standard_Real theRatio);
+  void SetAffinity(const gp_Ax2& theA2, const double theRatio);
 
   //! Replaces the coefficient (theRow, theCol) of the matrix representing
   //! this transformation by theValue. Raises OutOfRange
   //! if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
-  void SetValue(const Standard_Integer theRow,
-                const Standard_Integer theCol,
-                const Standard_Real    theValue);
+  void SetValue(const int theRow, const int theCol, const double theValue);
 
   //! Replaces the vectorial part of this transformation by theMatrix.
   constexpr void SetVectorialPart(const gp_Mat& theMatrix) noexcept
@@ -140,7 +138,7 @@ public:
 
   //! Returns true if the determinant of the vectorial part of
   //! this transformation is negative.
-  constexpr Standard_Boolean IsNegative() const noexcept { return matrix.Determinant() < 0.0; }
+  constexpr bool IsNegative() const noexcept { return matrix.Determinant() < 0.0; }
 
   //! Returns true if this transformation is singular (and
   //! therefore, cannot be inverted).
@@ -150,7 +148,7 @@ public:
   //! than or equal to gp::Resolution().
   //! Warning
   //! If this transformation is singular, it cannot be inverted.
-  constexpr Standard_Boolean IsSingular() const noexcept { return matrix.IsSingular(); }
+  constexpr bool IsSingular() const noexcept { return matrix.IsSingular(); }
 
   //! Returns the nature of the transformation. It can be an
   //! identity transformation, a rotation, a translation, a mirror
@@ -178,19 +176,16 @@ public:
 
   //! Returns the coefficients of the global matrix of transformation.
   //! Raises OutOfRange if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
-  constexpr Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
+  constexpr double Value(const int theRow, const int theCol) const;
 
-  Standard_Real operator()(const Standard_Integer theRow, const Standard_Integer theCol) const
-  {
-    return Value(theRow, theCol);
-  }
+  double operator()(const int theRow, const int theCol) const { return Value(theRow, theCol); }
 
   Standard_EXPORT void Invert();
 
   //! Computes the reverse transformation.
   //! Raises an exception if the matrix of the transformation
   //! is not inversible.
-  Standard_NODISCARD gp_GTrsf Inverted() const
+  [[nodiscard]] gp_GTrsf Inverted() const
   {
     gp_GTrsf aT = *this;
     aT.Invert();
@@ -212,14 +207,14 @@ public:
   //! T1.Transforms(P2);                  //using T1 then T2
   //! T2.Transforms(P2);                  // P1 = P2 !!!
   //! @endcode
-  Standard_NODISCARD gp_GTrsf Multiplied(const gp_GTrsf& theT) const
+  [[nodiscard]] gp_GTrsf Multiplied(const gp_GTrsf& theT) const
   {
     gp_GTrsf aTres = *this;
     aTres.Multiply(theT);
     return aTres;
   }
 
-  Standard_NODISCARD gp_GTrsf operator*(const gp_GTrsf& theT) const { return Multiplied(theT); }
+  [[nodiscard]] gp_GTrsf operator*(const gp_GTrsf& theT) const { return Multiplied(theT); }
 
   //! Computes the transformation composed with <me> and theT.
   //! <me> = <me> * theT
@@ -232,7 +227,7 @@ public:
   //! this = theT * this
   Standard_EXPORT void PreMultiply(const gp_GTrsf& theT);
 
-  Standard_EXPORT void Power(const Standard_Integer theN);
+  Standard_EXPORT void Power(const int theN);
 
   //! Computes:
   //! -   the product of this transformation multiplied by itself
@@ -247,7 +242,7 @@ public:
   //!
   //! Raises an exception if N < 0 and if the matrix of the
   //! transformation not inversible.
-  Standard_NODISCARD gp_GTrsf Powered(const Standard_Integer theN) const
+  [[nodiscard]] gp_GTrsf Powered(const int theN) const
   {
     gp_GTrsf aT = *this;
     aT.Power(theN);
@@ -257,9 +252,7 @@ public:
   constexpr void Transforms(gp_XYZ& theCoord) const noexcept;
 
   //! Transforms a triplet XYZ with a GTrsf.
-  constexpr void Transforms(Standard_Real& theX,
-                            Standard_Real& theY,
-                            Standard_Real& theZ) const noexcept;
+  constexpr void Transforms(double& theX, double& theY, double& theZ) const noexcept;
 
   gp_Trsf Trsf() const;
 
@@ -310,18 +303,18 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  gp_Mat        matrix;
-  gp_XYZ        loc;
-  gp_TrsfForm   shape;
-  Standard_Real scale;
+  gp_Mat      matrix;
+  gp_XYZ      loc;
+  gp_TrsfForm shape;
+  double      scale;
 };
 
 //=================================================================================================
 
-inline void gp_GTrsf::SetAffinity(const gp_Ax1& theA1, const Standard_Real theRatio)
+inline void gp_GTrsf::SetAffinity(const gp_Ax1& theA1, const double theRatio)
 {
   shape = gp_Other;
   scale = 0.0;
@@ -338,7 +331,7 @@ inline void gp_GTrsf::SetAffinity(const gp_Ax1& theA1, const Standard_Real theRa
 
 //=================================================================================================
 
-inline void gp_GTrsf::SetAffinity(const gp_Ax2& theA2, const Standard_Real theRatio)
+inline void gp_GTrsf::SetAffinity(const gp_Ax2& theA2, const double theRatio)
 {
   shape = gp_Other;
   scale = 0.0;
@@ -352,9 +345,7 @@ inline void gp_GTrsf::SetAffinity(const gp_Ax2& theA2, const Standard_Real theRa
 
 //=================================================================================================
 
-inline void gp_GTrsf::SetValue(const Standard_Integer theRow,
-                               const Standard_Integer theCol,
-                               const Standard_Real    theValue)
+inline void gp_GTrsf::SetValue(const int theRow, const int theCol, const double theValue)
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
   if (theCol == 4)
@@ -381,8 +372,7 @@ inline void gp_GTrsf::SetValue(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline constexpr Standard_Real gp_GTrsf::Value(const Standard_Integer theRow,
-                                               const Standard_Integer theCol) const
+inline constexpr double gp_GTrsf::Value(const int theRow, const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
   if (theCol == 4)
@@ -410,9 +400,7 @@ inline constexpr void gp_GTrsf::Transforms(gp_XYZ& theCoord) const noexcept
 
 //=================================================================================================
 
-inline constexpr void gp_GTrsf::Transforms(Standard_Real& theX,
-                                           Standard_Real& theY,
-                                           Standard_Real& theZ) const noexcept
+inline constexpr void gp_GTrsf::Transforms(double& theX, double& theY, double& theZ) const noexcept
 {
   gp_XYZ aTriplet(theX, theY, theZ);
   aTriplet.Multiply(matrix);

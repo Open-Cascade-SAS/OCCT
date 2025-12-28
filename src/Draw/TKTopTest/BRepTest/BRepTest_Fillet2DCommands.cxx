@@ -19,7 +19,8 @@
 //              status = ChFi2d_NotAuthorized if edges are not
 //              lines or circles  (BUC60288) + partial_result
 
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
@@ -32,7 +33,8 @@
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 #include <ChFi2d_FilletAPI.hxx>
 #include <ChFi2d_ChamferAPI.hxx>
@@ -46,7 +48,7 @@
 // purpose  : 2d fillets and chamfers
 //=======================================================================
 
-static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int chfi2d(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
   {
@@ -69,9 +71,9 @@ static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const c
     return 1;
   }
 
-  TopoDS_Shape     res;
-  Standard_Boolean partial_result = Standard_False;
-  Standard_Integer i              = 3;
+  TopoDS_Shape res;
+  bool         partial_result = false;
+  int          i              = 3;
   while (i + 1 < n)
   {
 
@@ -117,7 +119,7 @@ static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const c
       return 1;
     }
 
-    Standard_Real p1 = Draw::Atof(a[i + 1]);
+    double p1 = Draw::Atof(a[i + 1]);
     if (*a[i] == 'F')
     {
       MF.AddFillet(V, p1);
@@ -134,7 +136,7 @@ static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const c
         }
         return 1;
       }
-      Standard_Real p2 = Draw::Atof(a[i + 2]);
+      double p2 = Draw::Atof(a[i + 2]);
       if (a[i][2] == 'D')
       {
         MF.AddChamfer(E1, E2, p1, p2);
@@ -179,7 +181,7 @@ static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const c
     }
     else
     {
-      partial_result = Standard_True;
+      partial_result = true;
       MF.Build();
       res = MF.Shape();
     }
@@ -207,16 +209,16 @@ static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const c
 //         : (the edge are located not in a plane).
 //=======================================================================
 
-static Handle(Geom_Plane) findPlane(const TopoDS_Shape& S)
+static occ::handle<Geom_Plane> findPlane(const TopoDS_Shape& S)
 {
-  Handle(Geom_Plane)       plane;
+  occ::handle<Geom_Plane>  plane;
   BRepBuilderAPI_FindPlane planeFinder(S);
   if (planeFinder.Found())
     plane = planeFinder.Plane();
   return plane;
 }
 
-static Handle(Geom_Plane) findPlane(const TopoDS_Shape& E1, const TopoDS_Shape& E2)
+static occ::handle<Geom_Plane> findPlane(const TopoDS_Shape& E1, const TopoDS_Shape& E2)
 {
   BRep_Builder    B;
   TopoDS_Compound C;
@@ -263,8 +265,8 @@ static gp_Pnt findCommonPoint(const TopoDS_Shape& W)
 {
   // The common point for two edges inside a wire
   // is a sharing vertex of two edges.
-  TopTools_MapOfShape vertices;
-  TopExp_Explorer     aExp(W, TopAbs_VERTEX);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
+  TopExp_Explorer                                        aExp(W, TopAbs_VERTEX);
   for (; aExp.More(); aExp.Next())
   {
     if (!vertices.Add(aExp.Current()))
@@ -281,7 +283,7 @@ static gp_Pnt findCommonPoint(const TopoDS_Shape& W)
 // usage    : fillet2d result wire (or edge1 edge2) radius
 //=======================================================================
 
-static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int fillet2d(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 4 && n != 5)
   {
@@ -293,20 +295,20 @@ static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const
   if (n == 5)
   {
     // Get the edges.
-    E1 = DBRep::Get(a[2], TopAbs_EDGE, Standard_True);
-    E2 = DBRep::Get(a[3], TopAbs_EDGE, Standard_True);
+    E1 = DBRep::Get(a[2], TopAbs_EDGE, true);
+    E2 = DBRep::Get(a[3], TopAbs_EDGE, true);
   }
   else
   {
     // Get the wire.
-    W = DBRep::Get(a[2], TopAbs_WIRE, Standard_True);
+    W = DBRep::Get(a[2], TopAbs_WIRE, true);
   }
 
   // Get the radius value.
-  const Standard_Real radius = Atof(n == 5 ? a[4] : a[3]);
+  const double radius = Atof(n == 5 ? a[4] : a[3]);
 
   // Find plane of the edges.
-  Handle(Geom_Plane) hPlane = n == 5 ? findPlane(E1, E2) : findPlane(W);
+  occ::handle<Geom_Plane> hPlane = n == 5 ? findPlane(E1, E2) : findPlane(W);
   if (hPlane.IsNull())
   {
     di << "Error: the edges are located not in a plane.";
@@ -327,7 +329,7 @@ static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const
     const TopoDS_Wire& w = TopoDS::Wire(W);
     algo.Init(w, plane);
   }
-  Standard_Boolean status = algo.Perform(radius);
+  bool status = algo.Perform(radius);
   if (!status)
   {
     di << "Error: the algorithm failed.";
@@ -338,7 +340,7 @@ static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const
   gp_Pnt common = n == 5 ? findCommonPoint(E1, E2) : findCommonPoint(W);
 
   // Get the number of solutions (usually it is equal to 1).
-  Standard_Integer nbSolutions = algo.NbResults(common);
+  int nbSolutions = algo.NbResults(common);
   if (!nbSolutions)
   {
     di << "Error: no solutions.";
@@ -380,7 +382,7 @@ static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const
 // usage    : chamfer2d result wire (or edge1 edge2) length1 length2
 //=======================================================================
 
-static Standard_Integer chamfer2d(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int chamfer2d(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 5 && n != 6)
   {
@@ -393,17 +395,17 @@ static Standard_Integer chamfer2d(Draw_Interpretor& di, Standard_Integer n, cons
   if (n == 6)
   {
     // Get the edges.
-    E1 = DBRep::Get(a[2], TopAbs_EDGE, Standard_True);
-    E2 = DBRep::Get(a[3], TopAbs_EDGE, Standard_True);
+    E1 = DBRep::Get(a[2], TopAbs_EDGE, true);
+    E2 = DBRep::Get(a[3], TopAbs_EDGE, true);
   }
   else
   {
-    W = DBRep::Get(a[2], TopAbs_WIRE, Standard_True);
+    W = DBRep::Get(a[2], TopAbs_WIRE, true);
   }
 
   // Get the lengths.
-  const Standard_Real length1 = (n == 6) ? Atof(a[4]) : Atof(a[3]);
-  const Standard_Real length2 = (n == 6) ? Atof(a[5]) : Atof(a[4]);
+  const double length1 = (n == 6) ? Atof(a[4]) : Atof(a[3]);
+  const double length2 = (n == 6) ? Atof(a[5]) : Atof(a[4]);
 
   // Algo.
   ChFi2d_ChamferAPI algo;
@@ -456,10 +458,10 @@ static Standard_Integer chamfer2d(Draw_Interpretor& di, Standard_Integer n, cons
 
 void BRepTest::Fillet2DCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DBRep::BasicCommands(theCommands);
 

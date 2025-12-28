@@ -18,18 +18,18 @@
 
   #include <TopOpeBRepTool_STATE.hxx>
 
-TopOpeBRepTool_STATE::TopOpeBRepTool_STATE(const char* name, const Standard_Boolean b)
-    : myin(Standard_False),
-      myout(Standard_False),
-      myon(Standard_False),
-      myunknown(Standard_False),
-      myonetrue(Standard_False)
+TopOpeBRepTool_STATE::TopOpeBRepTool_STATE(const char* name, const bool b)
+    : myin(false),
+      myout(false),
+      myon(false),
+      myunknown(false),
+      myonetrue(false)
 {
   strcpy(myname, name);
   Set(b);
 }
 
-void TopOpeBRepTool_STATE::Set(const Standard_Boolean b)
+void TopOpeBRepTool_STATE::Set(const bool b)
 {
   Set(TopAbs_IN, b);
   Set(TopAbs_OUT, b);
@@ -37,7 +37,7 @@ void TopOpeBRepTool_STATE::Set(const Standard_Boolean b)
   Set(TopAbs_UNKNOWN, b);
 }
 
-void TopOpeBRepTool_STATE::Set(const TopAbs_State S, const Standard_Boolean b)
+void TopOpeBRepTool_STATE::Set(const TopAbs_State S, const bool b)
 {
   switch (S)
   {
@@ -57,14 +57,14 @@ void TopOpeBRepTool_STATE::Set(const TopAbs_State S, const Standard_Boolean b)
   myonetrue = myin || myout || myon || myunknown;
 }
 
-void TopOpeBRepTool_STATE::Set(const Standard_Boolean b, Standard_Integer n, char** a)
+void TopOpeBRepTool_STATE::Set(const bool b, int n, char** a)
 {
   if (!n)
     Set(b);
   else
   {
-    Set(Standard_False);
-    for (Standard_Integer i = 0; i < n; i++)
+    Set(false);
+    for (int i = 0; i < n; i++)
     {
       const char* p = a[i];
       if (!strcmp(p, "IN"))
@@ -80,9 +80,9 @@ void TopOpeBRepTool_STATE::Set(const Standard_Boolean b, Standard_Integer n, cha
   }
 }
 
-Standard_Boolean TopOpeBRepTool_STATE::Get(const TopAbs_State S)
+bool TopOpeBRepTool_STATE::Get(const TopAbs_State S)
 {
-  Standard_Boolean b = Standard_False;
+  bool b = false;
   switch (S)
   {
     case TopAbs_IN:

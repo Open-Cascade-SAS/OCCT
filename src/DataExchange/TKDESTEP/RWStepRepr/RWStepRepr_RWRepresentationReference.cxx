@@ -30,10 +30,10 @@ RWStepRepr_RWRepresentationReference::RWStepRepr_RWRepresentationReference() {}
 //=================================================================================================
 
 void RWStepRepr_RWRepresentationReference::ReadStep(
-  const Handle(StepData_StepReaderData)&          theData,
-  const Standard_Integer                          theNum,
-  Handle(Interface_Check)&                        theAch,
-  const Handle(StepRepr_RepresentationReference)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&          theData,
+  const int                                            theNum,
+  occ::handle<Interface_Check>&                        theAch,
+  const occ::handle<StepRepr_RepresentationReference>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 2, theAch, "representation_reference"))
@@ -41,10 +41,10 @@ void RWStepRepr_RWRepresentationReference::ReadStep(
 
   // Own fields of RepresentationReference
 
-  Handle(TCollection_HAsciiString) aId;
+  occ::handle<TCollection_HAsciiString> aId;
   theData->ReadString(theNum, 1, "id", theAch, aId);
 
-  Handle(StepRepr_RepresentationContextReference) aContextOfItems;
+  occ::handle<StepRepr_RepresentationContextReference> aContextOfItems;
   theData->ReadEntity(theNum,
                       2,
                       "context_of_items",
@@ -59,8 +59,8 @@ void RWStepRepr_RWRepresentationReference::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWRepresentationReference::WriteStep(
-  StepData_StepWriter&                            SW,
-  const Handle(StepRepr_RepresentationReference)& theEnt) const
+  StepData_StepWriter&                                 SW,
+  const occ::handle<StepRepr_RepresentationReference>& theEnt) const
 {
 
   // Own fields of RepresentationReference
@@ -73,8 +73,8 @@ void RWStepRepr_RWRepresentationReference::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWRepresentationReference::Share(
-  const Handle(StepRepr_RepresentationReference)& theEnt,
-  Interface_EntityIterator&                       iter) const
+  const occ::handle<StepRepr_RepresentationReference>& theEnt,
+  Interface_EntityIterator&                            iter) const
 {
 
   // Own fields of RepresentationReference

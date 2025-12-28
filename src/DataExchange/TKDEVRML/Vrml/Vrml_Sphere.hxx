@@ -32,17 +32,16 @@ class Vrml_Sphere
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Vrml_Sphere(const Standard_Real aRadius = 1);
+  Standard_EXPORT Vrml_Sphere(const double aRadius = 1);
 
-  Standard_EXPORT void SetRadius(const Standard_Real aRadius);
+  Standard_EXPORT void SetRadius(const double aRadius);
 
-  Standard_EXPORT Standard_Real Radius() const;
+  Standard_EXPORT double Radius() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
-  Standard_Real myRadius;
+  double myRadius;
 };
 
 #endif // _Vrml_Sphere_HeaderFile

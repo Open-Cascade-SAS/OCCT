@@ -35,10 +35,10 @@ public:
 
   //! Initializes me by aFace, a 3d point
   //! and it's UV parameters on face
-  Standard_EXPORT void Init(const TopoDS_Face&  aF,
-                            const gp_Pnt&       aP,
-                            const Standard_Real U,
-                            const Standard_Real V);
+  Standard_EXPORT void Init(const TopoDS_Face& aF,
+                            const gp_Pnt&      aP,
+                            const double       U,
+                            const double       V);
 
   //! Modifier
   Standard_EXPORT void SetFace(const TopoDS_Face& aF);
@@ -47,13 +47,13 @@ public:
   Standard_EXPORT void SetPnt(const gp_Pnt& aP);
 
   //! Modifier
-  Standard_EXPORT void SetParameters(const Standard_Real U, const Standard_Real V);
+  Standard_EXPORT void SetParameters(const double U, const double V);
 
   //! Modifier
-  Standard_EXPORT void SetValid(const Standard_Boolean bF);
+  Standard_EXPORT void SetValid(const bool bF);
 
   //! Selector
-  Standard_EXPORT Standard_Boolean Valid() const;
+  Standard_EXPORT bool Valid() const;
 
   //! Selector
   Standard_EXPORT const TopoDS_Face& Face() const;
@@ -62,18 +62,17 @@ public:
   Standard_EXPORT const gp_Pnt& Pnt() const;
 
   //! Selector
-  Standard_EXPORT void Parameters(Standard_Real& U, Standard_Real& V) const;
+  Standard_EXPORT void Parameters(double& U, double& V) const;
 
   //! Selector
-  Standard_EXPORT Standard_Boolean IsValid() const;
+  Standard_EXPORT bool IsValid() const;
 
-protected:
 private:
-  Standard_Boolean myIsValid;
-  gp_Pnt           myPnt;
-  Standard_Real    myU;
-  Standard_Real    myV;
-  TopoDS_Face      myFace;
+  bool        myIsValid;
+  gp_Pnt      myPnt;
+  double      myU;
+  double      myV;
+  TopoDS_Face myFace;
 };
 
 #endif // _IntTools_PntOnFace_HeaderFile

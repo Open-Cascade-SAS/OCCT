@@ -24,9 +24,6 @@
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
 
-class IGESGraph_DrawingUnits;
-DEFINE_STANDARD_HANDLE(IGESGraph_DrawingUnits, IGESData_IGESEntity)
-
 //! defines IGESDrawingUnits, Type <406> Form <17>
 //! in package IGESGraph
 //!
@@ -43,30 +40,29 @@ public:
   //! - nbProps : Number of property values (NP = 2)
   //! - aFlag   : DrawingUnits Flag
   //! - aUnit   : DrawingUnits Name
-  Standard_EXPORT void Init(const Standard_Integer                  nbProps,
-                            const Standard_Integer                  aFlag,
-                            const Handle(TCollection_HAsciiString)& aUnit);
+  Standard_EXPORT void Init(const int                                    nbProps,
+                            const int                                    aFlag,
+                            const occ::handle<TCollection_HAsciiString>& aUnit);
 
   //! returns the number of property values in <me>
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the drawing space units of <me>
-  Standard_EXPORT Standard_Integer Flag() const;
+  Standard_EXPORT int Flag() const;
 
   //! returns the name of the drawing space units of <me>
-  Standard_EXPORT Handle(TCollection_HAsciiString) Unit() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Unit() const;
 
   //! Computes the value of the unit, in meters, according Flag
   //! (same values as for GlobalSection from IGESData)
-  Standard_EXPORT Standard_Real UnitValue() const;
+  Standard_EXPORT double UnitValue() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_DrawingUnits, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbPropertyValues;
-  Standard_Integer                 theFlag;
-  Handle(TCollection_HAsciiString) theUnit;
+  int                                   theNbPropertyValues;
+  int                                   theFlag;
+  occ::handle<TCollection_HAsciiString> theUnit;
 };
 
 #endif // _IGESGraph_DrawingUnits_HeaderFile

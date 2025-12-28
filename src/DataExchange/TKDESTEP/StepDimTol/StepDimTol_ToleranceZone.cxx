@@ -15,7 +15,9 @@
 
 #include <StepDimTol_ToleranceZone.hxx>
 
-#include <StepDimTol_HArray1OfToleranceZoneTarget.hxx>
+#include <StepDimTol_ToleranceZoneTarget.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZone, StepRepr_ShapeAspect)
 
@@ -26,12 +28,12 @@ StepDimTol_ToleranceZone::StepDimTol_ToleranceZone() {}
 //=================================================================================================
 
 void StepDimTol_ToleranceZone::Init(
-  const Handle(TCollection_HAsciiString)&                theName,
-  const Handle(TCollection_HAsciiString)&                theDescription,
-  const Handle(StepRepr_ProductDefinitionShape)&         theOfShape,
-  const StepData_Logical                                 theProductDefinitional,
-  const Handle(StepDimTol_HArray1OfToleranceZoneTarget)& theDefiningTolerance,
-  const Handle(StepDimTol_ToleranceZoneForm)&            theForm)
+  const occ::handle<TCollection_HAsciiString>&                            theName,
+  const occ::handle<TCollection_HAsciiString>&                            theDescription,
+  const occ::handle<StepRepr_ProductDefinitionShape>&                     theOfShape,
+  const StepData_Logical                                                  theProductDefinitional,
+  const occ::handle<NCollection_HArray1<StepDimTol_ToleranceZoneTarget>>& theDefiningTolerance,
+  const occ::handle<StepDimTol_ToleranceZoneForm>&                        theForm)
 {
   StepRepr_ShapeAspect::Init(theName, theDescription, theOfShape, theProductDefinitional);
   myDefiningTolerance = theDefiningTolerance;

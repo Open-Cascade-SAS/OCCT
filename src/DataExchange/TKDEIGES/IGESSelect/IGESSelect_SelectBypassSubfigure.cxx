@@ -21,38 +21,38 @@
 #include <IGESSelect_SelectBypassSubfigure.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectBypassSubfigure, IFSelect_SelectExplore)
 
-IGESSelect_SelectBypassSubfigure::IGESSelect_SelectBypassSubfigure(const Standard_Integer level)
+IGESSelect_SelectBypassSubfigure::IGESSelect_SelectBypassSubfigure(const int level)
     : IFSelect_SelectExplore(level)
 {
 }
 
-Standard_Boolean IGESSelect_SelectBypassSubfigure::Explore(const Standard_Integer /*level*/,
-                                                           const Handle(Standard_Transient)& ent,
-                                                           const Interface_Graph& /*G*/,
-                                                           Interface_EntityIterator& explored) const
+bool IGESSelect_SelectBypassSubfigure::Explore(const int /*level*/,
+                                               const occ::handle<Standard_Transient>& ent,
+                                               const Interface_Graph& /*G*/,
+                                               Interface_EntityIterator& explored) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
-    return Standard_False;
-  Standard_Integer igt = igesent->TypeNumber();
+    return false;
+  int igt = igesent->TypeNumber();
 
   //  SingularSubfigure
   if (igt == 308)
   {
     DeclareAndCast(IGESBasic_SubfigureDef, subf, ent);
     if (subf.IsNull())
-      return Standard_True;
-    Standard_Integer i, nb = subf->NbEntities();
+      return true;
+    int i, nb = subf->NbEntities();
     for (i = 1; i <= nb; i++)
       explored.AddItem(subf->AssociatedEntity(i));
-    return Standard_True;
+    return true;
   }
   if (igt == 408)
   {
@@ -65,11 +65,11 @@ Standard_Boolean IGESSelect_SelectBypassSubfigure::Explore(const Standard_Intege
   {
     DeclareAndCast(IGESDraw_NetworkSubfigureDef, subf, ent);
     if (subf.IsNull())
-      return Standard_True;
-    Standard_Integer i, nb = subf->NbEntities();
+      return true;
+    int i, nb = subf->NbEntities();
     for (i = 1; i <= nb; i++)
       explored.AddItem(subf->Entity(i));
-    return Standard_True;
+    return true;
   }
   if (igt == 420)
   {
@@ -90,7 +90,7 @@ Standard_Boolean IGESSelect_SelectBypassSubfigure::Explore(const Standard_Intege
   }
 
   //  If it's not all that, it's a base object and we take it as is
-  return Standard_True;
+  return true;
 }
 
 TCollection_AsciiString IGESSelect_SelectBypassSubfigure::ExploreLabel() const

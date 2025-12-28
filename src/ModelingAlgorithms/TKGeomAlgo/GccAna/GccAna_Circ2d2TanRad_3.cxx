@@ -28,7 +28,7 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Standard_NegativeValue.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 // circular tangent to a line and a point and a given radius
 //=============================================================
@@ -45,8 +45,8 @@
 //========================================================================
 GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1,
                                            const gp_Pnt2d&            Point2,
-                                           const Standard_Real        Radius,
-                                           const Standard_Real        Tolerance)
+                                           const double               Radius,
+                                           const double               Tolerance)
     : qualifier1(1, 2),
       qualifier2(1, 2),
       TheSame1(1, 2),
@@ -60,28 +60,28 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
       pararg2(1, 2)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol = std::abs(Tolerance);
-  NbrSol            = 0;
-  WellDone          = Standard_False;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol = std::abs(Tolerance);
+  NbrSol       = 0;
+  WellDone     = false;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Integer     nbsol  = 0;
-  Standard_Integer     nbcote = 0;
-  TColStd_Array1OfReal cote(1, 2);
-  gp_Lin2d             L1     = Qualified1.Qualified();
-  Standard_Real        displ1 = L1.Distance(Point2);
-  Standard_Real        xdir   = (L1.Direction()).X();
-  Standard_Real        ydir   = (L1.Direction()).Y();
-  Standard_Real        lxloc  = (L1.Location()).X();
-  Standard_Real        lyloc  = (L1.Location()).Y();
-  gp_Pnt2d             origin1(lxloc, lyloc);
-  gp_Dir2d             normL1(-ydir, xdir);
-  Standard_Real        cxloc = Point2.X();
-  Standard_Real        cyloc = Point2.Y();
+  int                        nbsol  = 0;
+  int                        nbcote = 0;
+  NCollection_Array1<double> cote(1, 2);
+  gp_Lin2d                   L1     = Qualified1.Qualified();
+  double                     displ1 = L1.Distance(Point2);
+  double                     xdir   = (L1.Direction()).X();
+  double                     ydir   = (L1.Direction()).Y();
+  double                     lxloc  = (L1.Location()).X();
+  double                     lyloc  = (L1.Location()).Y();
+  gp_Pnt2d                   origin1(lxloc, lyloc);
+  gp_Dir2d                   normL1(-ydir, xdir);
+  double                     cxloc = Point2.X();
+  double                     cyloc = Point2.Y();
 
   if (Radius < 0.0)
   {
@@ -92,14 +92,14 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
   {
     if (displ1 - Radius * 2.0 > Tol)
     {
-      WellDone = Standard_True;
+      WellDone = true;
     }
     else if (Qualified1.IsEnclosed())
     {
       //  =================================
       if ((-ydir * (cxloc - lxloc) + xdir * (cyloc - lyloc) < 0.0))
       {
-        WellDone = Standard_True;
+        WellDone = true;
       }
       else
       {
@@ -123,7 +123,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
       //  ================================
       if ((-ydir * (cxloc - lxloc) + xdir * (cyloc - lyloc) > 0.0))
       {
-        WellDone = Standard_True;
+        WellDone = true;
       }
       else
       {
@@ -174,7 +174,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
       {
         // particular case when Point2 is on the line
         // construct two solutions directly
-        for (Standard_Integer jcote = 1; jcote <= nbcote; jcote++)
+        for (int jcote = 1; jcote <= nbcote; jcote++)
         {
           NbrSol++;
           gp_Pnt2d Center(cxloc - cote(jcote) * ydir * Radius, cyloc + cote(jcote) * xdir * Radius);
@@ -198,12 +198,12 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
           pnttg1sol(NbrSol) = Point2;
           pnttg2sol(NbrSol) = Point2;
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
       else
       {
         gp_Circ2d cirint(gp_Ax2d(Point2, dirx), Radius);
-        for (Standard_Integer jcote = 1; jcote <= nbcote; jcote++)
+        for (int jcote = 1; jcote <= nbcote; jcote++)
         {
           gp_Lin2d linint(
             gp_Pnt2d(lxloc - cote(jcote) * ydir * Radius, lyloc + cote(jcote) * xdir * Radius),
@@ -213,7 +213,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
           {
             if (!Intp.IsEmpty())
             {
-              for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < 2; i++)
+              for (int i = 1; i <= Intp.NbPoints() && NbrSol < 2; i++)
               {
                 NbrSol++;
                 gp_Pnt2d Center(Intp.Point(i).Value());
@@ -240,7 +240,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
                 pnttg2sol(NbrSol) = Point2;
               }
             }
-            WellDone = Standard_True;
+            WellDone = true;
           }
         }
       }
@@ -249,7 +249,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
     else if (nbsol == 2)
     {
       gp_Pnt2d Center(Point2.XY() + cote(1) * Radius * gp_XY(-ydir, xdir));
-      WellDone  = Standard_True;
+      WellDone  = true;
       NbrSol    = 1;
       cirsol(1) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
       //    ==================================================
@@ -261,7 +261,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
     }
   }
 
-  for (Standard_Integer i = 1; i <= NbrSol; i++)
+  for (int i = 1; i <= NbrSol; i++)
   {
     par1sol(i) = ElCLib::Parameter(cirsol(i), pnttg1sol(i));
     pararg1(i) = ElCLib::Parameter(L1, pnttg1sol(i));

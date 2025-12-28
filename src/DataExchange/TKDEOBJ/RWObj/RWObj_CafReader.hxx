@@ -26,27 +26,23 @@ public:
   Standard_EXPORT RWObj_CafReader();
 
   //! Return single precision flag for reading vertex data (coordinates); FALSE by default.
-  Standard_Boolean IsSinglePrecision() const { return myIsSinglePrecision; }
+  bool IsSinglePrecision() const { return myIsSinglePrecision; }
 
   //! Setup single/double precision flag for reading vertex data (coordinates).
-  void SetSinglePrecision(Standard_Boolean theIsSinglePrecision)
-  {
-    myIsSinglePrecision = theIsSinglePrecision;
-  }
+  void SetSinglePrecision(bool theIsSinglePrecision) { myIsSinglePrecision = theIsSinglePrecision; }
 
 protected:
   //! Read the mesh from specified file.
-  Standard_EXPORT virtual Standard_Boolean performMesh(std::istream&                  theStream,
-                                                       const TCollection_AsciiString& theFile,
-                                                       const Message_ProgressRange&   theProgress,
-                                                       const Standard_Boolean         theToProbe)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool performMesh(std::istream&                  theStream,
+                                           const TCollection_AsciiString& theFile,
+                                           const Message_ProgressRange&   theProgress,
+                                           const bool                     theToProbe) override;
 
 protected:
   //! Create reader context.
   //! Can be overridden by sub-class to read triangulation into application-specific data structures
   //! instead of Poly_Triangulation.
-  Standard_EXPORT virtual Handle(RWObj_TriangulationReader) createReaderContext();
+  Standard_EXPORT virtual occ::handle<RWObj_TriangulationReader> createReaderContext();
 
   //! @param theShape       shape to register
   //! @param theName        shape name
@@ -55,13 +51,12 @@ protected:
   Standard_EXPORT virtual void BindNamedShape(const TopoDS_Shape&            theShape,
                                               const TCollection_AsciiString& theName,
                                               const RWObj_Material*          theMaterial,
-                                              const Standard_Boolean         theIsRootShape)
-    Standard_OVERRIDE;
+                                              const bool theIsRootShape) override;
 
 protected:
-  NCollection_DataMap<TCollection_AsciiString, Handle(XCAFDoc_VisMaterial)> myObjMaterialMap;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<XCAFDoc_VisMaterial>> myObjMaterialMap;
   // clang-format off
-  Standard_Boolean myIsSinglePrecision; //!< flag for reading vertex data with single or double floating point precision
+  bool myIsSinglePrecision; //!< flag for reading vertex data with single or double floating point precision
   // clang-format on
 };
 

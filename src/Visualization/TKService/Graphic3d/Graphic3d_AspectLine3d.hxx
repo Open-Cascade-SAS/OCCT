@@ -39,7 +39,7 @@ public:
   //! line width. The supported line widths vary by 1-pixel units.
   Standard_EXPORT Graphic3d_AspectLine3d(const Quantity_Color& theColor,
                                          Aspect_TypeOfLine     theType,
-                                         Standard_Real         theWidth);
+                                         double                theWidth);
 
   //! Return line type.
   Aspect_TypeOfLine Type() const { return myLineType; }
@@ -48,17 +48,15 @@ public:
   void SetType(const Aspect_TypeOfLine theType) { SetLineType(theType); }
 
   //! Return line width.
-  Standard_ShortReal Width() const { return myLineWidth; }
+  float Width() const { return myLineWidth; }
 
   //! Modifies the line thickness.
   //! Warning: Raises Standard_OutOfRange if the width is a negative value.
-  void SetWidth(const Standard_Real theWidth) { SetWidth((float)theWidth); }
+  void SetWidth(const double theWidth) { SetWidth((float)theWidth); }
 
   //! Modifies the line thickness.
   //! Warning: Raises Standard_OutOfRange if the width is a negative value.
-  void SetWidth(Standard_ShortReal theWidth) { SetLineWidth(theWidth); }
+  void SetWidth(float theWidth) { SetLineWidth(theWidth); }
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_AspectLine3d, Graphic3d_Aspects)
 
 #endif // _Graphic3d_AspectLine3d_HeaderFile

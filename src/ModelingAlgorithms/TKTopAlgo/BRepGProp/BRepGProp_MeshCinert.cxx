@@ -29,20 +29,20 @@ void BRepGProp_MeshCinert::SetLocation(const gp_Pnt& CLocation)
 
 //=================================================================================================
 
-void BRepGProp_MeshCinert::Perform(const TColgp_Array1OfPnt& theNodes)
+void BRepGProp_MeshCinert::Perform(const NCollection_Array1<gp_Pnt>& theNodes)
 {
 
-  Standard_Real Ix, Iy, Iz, Ixx, Iyy, Izz, Ixy, Ixz, Iyz;
+  double Ix, Iy, Iz, Ixx, Iyy, Izz, Ixy, Ixz, Iyz;
   dim = Ix = Iy = Iz = Ixx = Iyy = Izz = Ixy = Ixz = Iyz = 0.0;
 
-  Standard_Integer Order = 2;
+  int Order = 2;
 
-  Standard_Real ds;
-  Standard_Real ur, um, u;
-  Standard_Real x, y, z;
-  Standard_Real xloc, yloc, zloc;
-  Standard_Real Upper;
-  gp_XYZ        P, D;
+  double ds;
+  double ur, um, u;
+  double x, y, z;
+  double xloc, yloc, zloc;
+  double Upper;
+  gp_XYZ P, D;
 
   math_Vector GaussP(1, Order);
   math_Vector GaussW(1, Order);
@@ -50,20 +50,20 @@ void BRepGProp_MeshCinert::Perform(const TColgp_Array1OfPnt& theNodes)
   math::GaussPoints(Order, GaussP);
   math::GaussWeights(Order, GaussW);
 
-  Standard_Integer nIndex = 0;
+  int nIndex = 0;
 
   for (nIndex = 1; nIndex < theNodes.Length(); nIndex++)
   {
     const gp_XYZ& aP1 = theNodes(nIndex).XYZ();
     const gp_XYZ& aP2 = theNodes(nIndex + 1).XYZ();
-    Standard_Real dimLocal, IxLocal, IyLocal, IzLocal, IxxLocal, IyyLocal, IzzLocal, IxyLocal,
-      IxzLocal, IyzLocal;
+    double dimLocal, IxLocal, IyLocal, IzLocal, IxxLocal, IyyLocal, IzzLocal, IxyLocal, IxzLocal,
+      IyzLocal;
     dimLocal = IxLocal = IyLocal = IzLocal = IxxLocal = IyyLocal = IzzLocal = IxyLocal = IxzLocal =
       IyzLocal                                                                         = 0.0;
 
     loc.Coord(xloc, yloc, zloc);
 
-    Standard_Integer i;
+    int i;
 
     Upper = (aP2 - aP1).Modulus();
     if (Upper < gp::Resolution())
@@ -131,16 +131,16 @@ void BRepGProp_MeshCinert::Perform(const TColgp_Array1OfPnt& theNodes)
 
 //=================================================================================================
 
-void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&           theE,
-                                          Handle(TColgp_HArray1OfPnt)& thePolyg)
+void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&                        theE,
+                                          occ::handle<NCollection_HArray1<gp_Pnt>>& thePolyg)
 {
-  TopLoc_Location               aLoc;
-  const Handle(Poly_Polygon3D)& aPolyg = BRep_Tool::Polygon3D(theE, aLoc);
+  TopLoc_Location                    aLoc;
+  const occ::handle<Poly_Polygon3D>& aPolyg = BRep_Tool::Polygon3D(theE, aLoc);
   if (!aPolyg.IsNull())
   {
-    const TColgp_Array1OfPnt& aNodes = aPolyg->Nodes();
-    thePolyg                         = new TColgp_HArray1OfPnt(1, aNodes.Length());
-    Standard_Integer i;
+    const NCollection_Array1<gp_Pnt>& aNodes = aPolyg->Nodes();
+    thePolyg                                 = new NCollection_HArray1<gp_Pnt>(1, aNodes.Length());
+    int i;
     if (aLoc.IsIdentity())
     {
       for (i = 1; i <= aNodes.Length(); ++i)
@@ -160,15 +160,15 @@ void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&           theE,
   }
 
   // Try to get PolygonOnTriangulation
-  Handle(Poly_Triangulation)          aTri;
-  Handle(Poly_PolygonOnTriangulation) aPOnTri;
+  occ::handle<Poly_Triangulation>          aTri;
+  occ::handle<Poly_PolygonOnTriangulation> aPOnTri;
   BRep_Tool::PolygonOnTriangulation(theE, aPOnTri, aTri, aLoc);
   if (!aPOnTri.IsNull())
   {
-    Standard_Integer aNbNodes                = aPOnTri->NbNodes();
-    thePolyg                                 = new TColgp_HArray1OfPnt(1, aNbNodes);
-    const TColStd_Array1OfInteger& aNodeInds = aPOnTri->Nodes();
-    Standard_Integer               i;
+    int aNbNodes                             = aPOnTri->NbNodes();
+    thePolyg                                 = new NCollection_HArray1<gp_Pnt>(1, aNbNodes);
+    const NCollection_Array1<int>& aNodeInds = aPOnTri->Nodes();
+    int                            i;
     if (aLoc.IsIdentity())
     {
       for (i = 1; i <= aNbNodes; ++i)
@@ -188,15 +188,15 @@ void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&           theE,
   }
   //
   // Try to get Polygon2D on Surface
-  Handle(Poly_Polygon2D) aPolyg2D;
-  Handle(Geom_Surface)   aS;
+  occ::handle<Poly_Polygon2D> aPolyg2D;
+  occ::handle<Geom_Surface>   aS;
   BRep_Tool::PolygonOnSurface(theE, aPolyg2D, aS, aLoc);
   if (!aPolyg2D.IsNull())
   {
-    Standard_Integer aNbNodes            = aPolyg2D->NbNodes();
-    thePolyg                             = new TColgp_HArray1OfPnt(1, aNbNodes);
-    const TColgp_Array1OfPnt2d& aNodes2D = aPolyg2D->Nodes();
-    Standard_Integer            i;
+    int aNbNodes                                 = aPolyg2D->NbNodes();
+    thePolyg                                     = new NCollection_HArray1<gp_Pnt>(1, aNbNodes);
+    const NCollection_Array1<gp_Pnt2d>& aNodes2D = aPolyg2D->Nodes();
+    int                                 i;
     if (aLoc.IsIdentity())
     {
       for (i = 1; i <= aNbNodes; ++i)

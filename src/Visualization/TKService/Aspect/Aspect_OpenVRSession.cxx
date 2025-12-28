@@ -151,7 +151,7 @@ static gp_Trsf mat34vr2OccTrsf(const vr::HmdMatrix34_t& theMat4)
 
 //! Convert OpenVR tracked pose.
 static Aspect_TrackedDevicePose poseVr2Occ(const vr::TrackedDevicePose_t& theVrPose,
-                                           const Standard_Real            theUnitFactor)
+                                           const double                   theUnitFactor)
 {
   Aspect_TrackedDevicePose aPose;
   aPose.Velocity.SetCoord(theVrPose.vVelocity.v[0],
@@ -290,7 +290,7 @@ public:
     }
 
     InitWrapper(Image_Format_RGBA,
-                (Standard_Byte*)aVrTexture->rubTextureMapData,
+                (uint8_t*)aVrTexture->rubTextureMapData,
                 aVrTexture->unWidth,
                 aVrTexture->unHeight);
     myVrTexture = aVrTexture;
@@ -324,13 +324,13 @@ public:
 
 protected:
   //! Read image.
-  virtual Handle(Image_PixMap) ReadImage(const Handle(Image_SupportedFormats)&) const
-    Standard_OVERRIDE
+  virtual occ::handle<Image_PixMap> ReadImage(
+    const occ::handle<Image_SupportedFormats>&) const override
   {
-    Handle(VRImagePixmap) aPixmap = new VRImagePixmap();
+    occ::handle<VRImagePixmap> aPixmap = new VRImagePixmap();
     if (!aPixmap->Load(myVrTextureId, myVrModelName))
     {
-      return Handle(VRImagePixmap)();
+      return occ::handle<VRImagePixmap>();
     }
     return aPixmap;
   }
@@ -371,112 +371,113 @@ Aspect_OpenVRSession::Aspect_OpenVRSession()
 {
 #ifdef HAVE_OPENVR
   myActionsManifest = defaultActionsManifest();
-  myTrackedPoses.Resize(0, (Standard_Integer)vr::k_unMaxTrackedDeviceCount - 1, false);
+  myTrackedPoses.Resize(0, (int)vr::k_unMaxTrackedDeviceCount - 1, false);
   {
-    Handle(Aspect_XRActionSet) aHeadActionSet = new Aspect_XRActionSet("/actions/generic_head");
+    occ::handle<Aspect_XRActionSet> aHeadActionSet =
+      new Aspect_XRActionSet("/actions/generic_head");
     myActionSets.Add(aHeadActionSet->Id(), aHeadActionSet);
 
-    Handle(Aspect_XRAction) aHeadsetOn =
+    occ::handle<Aspect_XRAction> aHeadsetOn =
       new Aspect_XRAction(aHeadActionSet->Id() + "/in/headset_on_head",
                           Aspect_XRActionType_InputDigital);
     aHeadActionSet->AddAction(aHeadsetOn);
-    NCollection_Array1<Handle(Aspect_XRAction)>& aGenericSet =
+    NCollection_Array1<occ::handle<Aspect_XRAction>>& aGenericSet =
       myRoleActions[Aspect_XRTrackedDeviceRole_Head];
     aGenericSet[Aspect_XRGenericAction_IsHeadsetOn] = aHeadsetOn;
   }
   for (int aHand = 0; aHand < 2; ++aHand)
   {
-    NCollection_Array1<Handle(Aspect_XRAction)>& aGenericSet =
+    NCollection_Array1<occ::handle<Aspect_XRAction>>& aGenericSet =
       myRoleActions[aHand == 0 ? Aspect_XRTrackedDeviceRole_LeftHand
                                : Aspect_XRTrackedDeviceRole_RightHand];
-    Handle(Aspect_XRActionSet) anActionSet =
+    occ::handle<Aspect_XRActionSet> anActionSet =
       new Aspect_XRActionSet(aHand == 0 ? "/actions/generic_left" : "/actions/generic_right");
     myActionSets.Add(anActionSet->Id(), anActionSet);
 
-    Handle(Aspect_XRAction) anAppMenuClick =
+    occ::handle<Aspect_XRAction> anAppMenuClick =
       new Aspect_XRAction(anActionSet->Id() + "/in/appmenu_click",
                           Aspect_XRActionType_InputDigital);
     anActionSet->AddAction(anAppMenuClick);
     aGenericSet[Aspect_XRGenericAction_InputAppMenu] = anAppMenuClick;
 
-    Handle(Aspect_XRAction) aSysMenuClick =
+    occ::handle<Aspect_XRAction> aSysMenuClick =
       new Aspect_XRAction(anActionSet->Id() + "/in/sysmenu_click",
                           Aspect_XRActionType_InputDigital);
     anActionSet->AddAction(aSysMenuClick);
     aGenericSet[Aspect_XRGenericAction_InputSysMenu] = aSysMenuClick;
 
-    Handle(Aspect_XRAction) aTriggerPull =
+    occ::handle<Aspect_XRAction> aTriggerPull =
       new Aspect_XRAction(anActionSet->Id() + "/in/trigger_pull", Aspect_XRActionType_InputAnalog);
     anActionSet->AddAction(aTriggerPull);
     aGenericSet[Aspect_XRGenericAction_InputTriggerPull] = aTriggerPull;
 
-    Handle(Aspect_XRAction) aTriggerClick =
+    occ::handle<Aspect_XRAction> aTriggerClick =
       new Aspect_XRAction(anActionSet->Id() + "/in/trigger_click",
                           Aspect_XRActionType_InputDigital);
     anActionSet->AddAction(aTriggerClick);
     aGenericSet[Aspect_XRGenericAction_InputTriggerClick] = aTriggerClick;
 
-    Handle(Aspect_XRAction) aGripClick =
+    occ::handle<Aspect_XRAction> aGripClick =
       new Aspect_XRAction(anActionSet->Id() + "/in/grip_click", Aspect_XRActionType_InputDigital);
     anActionSet->AddAction(aGripClick);
     aGenericSet[Aspect_XRGenericAction_InputGripClick] = aGripClick;
 
-    Handle(Aspect_XRAction) aPadPos =
+    occ::handle<Aspect_XRAction> aPadPos =
       new Aspect_XRAction(anActionSet->Id() + "/in/trackpad_position",
                           Aspect_XRActionType_InputAnalog);
     anActionSet->AddAction(aPadPos);
     aGenericSet[Aspect_XRGenericAction_InputTrackPadPosition] = aPadPos;
 
-    Handle(Aspect_XRAction) aPadTouch =
+    occ::handle<Aspect_XRAction> aPadTouch =
       new Aspect_XRAction(anActionSet->Id() + "/in/trackpad_touch",
                           Aspect_XRActionType_InputDigital);
     anActionSet->AddAction(aPadTouch);
     aGenericSet[Aspect_XRGenericAction_InputTrackPadTouch] = aPadTouch;
 
-    Handle(Aspect_XRAction) aPadClick =
+    occ::handle<Aspect_XRAction> aPadClick =
       new Aspect_XRAction(anActionSet->Id() + "/in/trackpad_click",
                           Aspect_XRActionType_InputDigital);
     anActionSet->AddAction(aPadClick);
     aGenericSet[Aspect_XRGenericAction_InputTrackPadClick] = aPadClick;
 
-    Handle(Aspect_XRAction) aPoseBase =
+    occ::handle<Aspect_XRAction> aPoseBase =
       new Aspect_XRAction(anActionSet->Id() + "/in/pose_base", Aspect_XRActionType_InputPose);
     anActionSet->AddAction(aPoseBase);
     aGenericSet[Aspect_XRGenericAction_InputPoseBase] = aPoseBase;
 
-    Handle(Aspect_XRAction) aPoseFront =
+    occ::handle<Aspect_XRAction> aPoseFront =
       new Aspect_XRAction(anActionSet->Id() + "/in/pose_front", Aspect_XRActionType_InputPose);
     anActionSet->AddAction(aPoseFront);
     aGenericSet[Aspect_XRGenericAction_InputPoseFront] = aPoseFront;
 
-    Handle(Aspect_XRAction) aPoseGrip =
+    occ::handle<Aspect_XRAction> aPoseGrip =
       new Aspect_XRAction(anActionSet->Id() + "/in/pose_handgrip", Aspect_XRActionType_InputPose);
     anActionSet->AddAction(aPoseGrip);
     aGenericSet[Aspect_XRGenericAction_InputPoseHandGrip] = aPoseGrip;
 
-    Handle(Aspect_XRAction) aPoseTip =
+    occ::handle<Aspect_XRAction> aPoseTip =
       new Aspect_XRAction(anActionSet->Id() + "/in/pose_tip", Aspect_XRActionType_InputPose);
     anActionSet->AddAction(aPoseTip);
     aGenericSet[Aspect_XRGenericAction_InputPoseFingerTip] = aPoseTip;
 
-    Handle(Aspect_XRAction) aHaptic =
+    occ::handle<Aspect_XRAction> aHaptic =
       new Aspect_XRAction(anActionSet->Id() + "/out/haptic", Aspect_XRActionType_OutputHaptic);
     anActionSet->AddAction(aHaptic);
     aGenericSet[Aspect_XRGenericAction_OutputHaptic] = aHaptic;
 
-    Handle(Aspect_XRAction) aThumbsctickPos =
+    occ::handle<Aspect_XRAction> aThumbsctickPos =
       new Aspect_XRAction(anActionSet->Id() + "/in/thumbstick_position",
                           Aspect_XRActionType_InputAnalog);
     anActionSet->AddAction(aThumbsctickPos);
     aGenericSet[Aspect_XRGenericAction_InputThumbstickPosition] = aThumbsctickPos;
 
-    Handle(Aspect_XRAction) aThumbsctickTouch =
+    occ::handle<Aspect_XRAction> aThumbsctickTouch =
       new Aspect_XRAction(anActionSet->Id() + "/in/thumbstick_touch",
                           Aspect_XRActionType_InputDigital);
     anActionSet->AddAction(aThumbsctickTouch);
     aGenericSet[Aspect_XRGenericAction_InputThumbstickTouch] = aThumbsctickTouch;
 
-    Handle(Aspect_XRAction) aThumbsctickClick =
+    occ::handle<Aspect_XRAction> aThumbsctickClick =
       new Aspect_XRAction(anActionSet->Id() + "/in/thumbstick_click",
                           Aspect_XRActionType_InputDigital);
     anActionSet->AddAction(aThumbsctickClick);
@@ -608,14 +609,19 @@ bool Aspect_OpenVRSession::initInput()
   }
 
   bool hasErrors = false;
-  for (Aspect_XRActionSetMap::Iterator aSetIter(myActionSets); aSetIter.More(); aSetIter.Next())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                  occ::handle<Aspect_XRActionSet>>::Iterator aSetIter(myActionSets);
+       aSetIter.More();
+       aSetIter.Next())
   {
-    const Handle(Aspect_XRActionSet)& anActionSet = aSetIter.Value();
-    for (Aspect_XRActionMap::Iterator anActionIter(anActionSet->Actions()); anActionIter.More();
+    const occ::handle<Aspect_XRActionSet>& anActionSet = aSetIter.Value();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>::Iterator
+           anActionIter(anActionSet->Actions());
+         anActionIter.More();
          anActionIter.Next())
     {
-      const Handle(Aspect_XRAction)& anAction       = anActionIter.Value();
-      vr::VRActionHandle_t           anActionHandle = 0;
+      const occ::handle<Aspect_XRAction>& anAction       = anActionIter.Value();
+      vr::VRActionHandle_t                anActionHandle = 0;
       aVrError = vr::VRInput()->GetActionHandle(anAction->Id().ToCString(), &anActionHandle);
       if (aVrError == vr::VRInputError_None)
       {
@@ -686,8 +692,7 @@ TCollection_AsciiString Aspect_OpenVRSession::GetString(InfoString theInfo) cons
 
 //=================================================================================================
 
-Standard_Integer Aspect_OpenVRSession::NamedTrackedDevice(
-  Aspect_XRTrackedDeviceRole theDevice) const
+int Aspect_OpenVRSession::NamedTrackedDevice(Aspect_XRTrackedDeviceRole theDevice) const
 {
 #ifdef HAVE_OPENVR
   if (myContext->System != NULL)
@@ -713,7 +718,7 @@ Standard_Integer Aspect_OpenVRSession::NamedTrackedDevice(
     {
       return -1;
     }
-    return (Standard_Integer)aDevIndex;
+    return (int)aDevIndex;
   }
 #else
   (void)theDevice;
@@ -723,26 +728,26 @@ Standard_Integer Aspect_OpenVRSession::NamedTrackedDevice(
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfTriangles) Aspect_OpenVRSession::loadRenderModel(
-  Standard_Integer       theDevice,
-  Standard_Boolean       theToApplyUnitFactor,
-  Handle(Image_Texture)& theTexture)
+occ::handle<Graphic3d_ArrayOfTriangles> Aspect_OpenVRSession::loadRenderModel(
+  int                         theDevice,
+  bool                        theToApplyUnitFactor,
+  occ::handle<Image_Texture>& theTexture)
 {
   if (theDevice < 0)
   {
-    return Handle(Graphic3d_ArrayOfTriangles)();
+    return occ::handle<Graphic3d_ArrayOfTriangles>();
   }
 #ifdef HAVE_OPENVR
   if (myContext->System == NULL)
   {
-    return Handle(Graphic3d_ArrayOfTriangles)();
+    return occ::handle<Graphic3d_ArrayOfTriangles>();
   }
 
   const TCollection_AsciiString aRenderModelName =
     myContext->getVrTrackedDeviceString(theDevice, vr::Prop_RenderModelName_String);
   if (aRenderModelName.IsEmpty())
   {
-    return Handle(Graphic3d_ArrayOfTriangles)();
+    return occ::handle<Graphic3d_ArrayOfTriangles>();
   }
 
   vr::RenderModel_t*      aVrModel = NULL;
@@ -756,7 +761,7 @@ Handle(Graphic3d_ArrayOfTriangles) Aspect_OpenVRSession::loadRenderModel(
   {
     Message::SendFail(TCollection_AsciiString("OpenVR, Unable to load render model: ")
                       + aRenderModelName + " - " + int(aVrError));
-    return Handle(Graphic3d_ArrayOfTriangles)();
+    return occ::handle<Graphic3d_ArrayOfTriangles>();
   }
 
   if (aVrModel->diffuseTextureId >= 0)
@@ -764,8 +769,8 @@ Handle(Graphic3d_ArrayOfTriangles) Aspect_OpenVRSession::loadRenderModel(
     theTexture = new VRTextureSource(aVrModel->diffuseTextureId, aRenderModelName);
   }
 
-  const float                        aScale = theToApplyUnitFactor ? float(myUnitFactor) : 1.0f;
-  Handle(Graphic3d_ArrayOfTriangles) aTris  = new Graphic3d_ArrayOfTriangles(
+  const float aScale                            = theToApplyUnitFactor ? float(myUnitFactor) : 1.0f;
+  occ::handle<Graphic3d_ArrayOfTriangles> aTris = new Graphic3d_ArrayOfTriangles(
     (int)aVrModel->unVertexCount,
     (int)aVrModel->unTriangleCount * 3,
     Graphic3d_ArrayFlags_VertexNormal | Graphic3d_ArrayFlags_VertexTexel);
@@ -793,7 +798,7 @@ Handle(Graphic3d_ArrayOfTriangles) Aspect_OpenVRSession::loadRenderModel(
 #else
   (void)theToApplyUnitFactor;
   (void)theTexture;
-  return Handle(Graphic3d_ArrayOfTriangles)();
+  return occ::handle<Graphic3d_ArrayOfTriangles>();
 #endif
 }
 
@@ -936,8 +941,7 @@ bool Aspect_OpenVRSession::WaitPoses()
                        + getVRCompositorError(aVRError));
   }
 
-  for (Standard_Integer aPoseIter = myTrackedPoses.Lower(); aPoseIter <= myTrackedPoses.Upper();
-       ++aPoseIter)
+  for (int aPoseIter = myTrackedPoses.Lower(); aPoseIter <= myTrackedPoses.Upper(); ++aPoseIter)
   {
     const vr::TrackedDevicePose_t& aVrPose = myContext->TrackedPoses[aPoseIter];
     myTrackedPoses[aPoseIter]              = poseVr2Occ(aVrPose, myUnitFactor);
@@ -957,7 +961,7 @@ bool Aspect_OpenVRSession::WaitPoses()
 //=================================================================================================
 
 Aspect_XRDigitalActionData Aspect_OpenVRSession::GetDigitalActionData(
-  const Handle(Aspect_XRAction)& theAction) const
+  const occ::handle<Aspect_XRAction>& theAction) const
 {
   if (theAction.IsNull() || theAction->Type() != Aspect_XRActionType_InputDigital)
   {
@@ -995,7 +999,7 @@ Aspect_XRDigitalActionData Aspect_OpenVRSession::GetDigitalActionData(
 //=================================================================================================
 
 Aspect_XRAnalogActionData Aspect_OpenVRSession::GetAnalogActionData(
-  const Handle(Aspect_XRAction)& theAction) const
+  const occ::handle<Aspect_XRAction>& theAction) const
 {
   if (theAction.IsNull() || theAction->Type() != Aspect_XRActionType_InputAnalog)
   {
@@ -1032,7 +1036,7 @@ Aspect_XRAnalogActionData Aspect_OpenVRSession::GetAnalogActionData(
 //=================================================================================================
 
 Aspect_XRPoseActionData Aspect_OpenVRSession::GetPoseActionDataForNextFrame(
-  const Handle(Aspect_XRAction)& theAction) const
+  const occ::handle<Aspect_XRAction>& theAction) const
 {
   if (theAction.IsNull() || theAction->Type() != Aspect_XRActionType_InputPose)
   {
@@ -1078,8 +1082,9 @@ Aspect_XRPoseActionData Aspect_OpenVRSession::GetPoseActionDataForNextFrame(
 
 //=================================================================================================
 
-void Aspect_OpenVRSession::triggerHapticVibrationAction(const Handle(Aspect_XRAction)&   theAction,
-                                                        const Aspect_XRHapticActionData& theParams)
+void Aspect_OpenVRSession::triggerHapticVibrationAction(
+  const occ::handle<Aspect_XRAction>& theAction,
+  const Aspect_XRHapticActionData&    theParams)
 {
   if (theAction.IsNull() || theAction->Type() != Aspect_XRActionType_OutputHaptic)
   {
@@ -1149,7 +1154,7 @@ void Aspect_OpenVRSession::ProcessEvents()
   {
     NCollection_LocalArray<vr::VRActiveActionSet_t, 8> anActionSets(myActionSets.Extent());
     memset(anActionSets, 0, sizeof(vr::VRActiveActionSet_t) * myActionSets.Extent());
-    for (Standard_Integer aSetIter = 0; aSetIter < myActionSets.Extent(); ++aSetIter)
+    for (int aSetIter = 0; aSetIter < myActionSets.Extent(); ++aSetIter)
     {
       anActionSets[aSetIter].ulActionSet = myActionSets.FindFromIndex(aSetIter + 1)->RawHandle();
     }
@@ -1160,13 +1165,18 @@ void Aspect_OpenVRSession::ProcessEvents()
 
   WaitPoses();
 
-  for (Aspect_XRActionSetMap::Iterator aSetIter(myActionSets); aSetIter.More(); aSetIter.Next())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                  occ::handle<Aspect_XRActionSet>>::Iterator aSetIter(myActionSets);
+       aSetIter.More();
+       aSetIter.Next())
   {
-    const Handle(Aspect_XRActionSet)& anActionSet = aSetIter.Value();
-    for (Aspect_XRActionMap::Iterator anActionIter(anActionSet->Actions()); anActionIter.More();
+    const occ::handle<Aspect_XRActionSet>& anActionSet = aSetIter.Value();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>::Iterator
+           anActionIter(anActionSet->Actions());
+         anActionIter.More();
          anActionIter.Next())
     {
-      const Handle(Aspect_XRAction)& anAction = anActionIter.Value();
+      const occ::handle<Aspect_XRAction>& anAction = anActionIter.Value();
       if (anAction->RawHandle() == 0 || anAction->Id().IsEmpty())
       {
         continue;
@@ -1203,21 +1213,21 @@ void Aspect_OpenVRSession::ProcessEvents()
 
 //=================================================================================================
 
-void Aspect_OpenVRSession::onTrackedDeviceActivated(Standard_Integer theDeviceIndex)
+void Aspect_OpenVRSession::onTrackedDeviceActivated(int theDeviceIndex)
 {
   Message::SendTrace(TCollection_AsciiString("OpenVR, Device ") + theDeviceIndex + " attached");
 }
 
 //=================================================================================================
 
-void Aspect_OpenVRSession::onTrackedDeviceDeactivated(Standard_Integer theDeviceIndex)
+void Aspect_OpenVRSession::onTrackedDeviceDeactivated(int theDeviceIndex)
 {
   Message::SendTrace(TCollection_AsciiString("OpenVR, Device ") + theDeviceIndex + " detached");
 }
 
 //=================================================================================================
 
-void Aspect_OpenVRSession::onTrackedDeviceUpdated(Standard_Integer theDeviceIndex)
+void Aspect_OpenVRSession::onTrackedDeviceUpdated(int theDeviceIndex)
 {
   Message::SendTrace(TCollection_AsciiString("OpenVR, Device ") + theDeviceIndex + " updated");
 }

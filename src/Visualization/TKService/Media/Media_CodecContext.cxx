@@ -254,14 +254,14 @@ int Media_CodecContext::SizeY() const
 
 //=================================================================================================
 
-bool Media_CodecContext::CanProcessPacket(const Handle(Media_Packet)& thePacket) const
+bool Media_CodecContext::CanProcessPacket(const occ::handle<Media_Packet>& thePacket) const
 {
   return !thePacket.IsNull() && myStreamIndex == thePacket->StreamIndex();
 }
 
 //=================================================================================================
 
-bool Media_CodecContext::SendPacket(const Handle(Media_Packet)& thePacket)
+bool Media_CodecContext::SendPacket(const occ::handle<Media_Packet>& thePacket)
 {
   if (!CanProcessPacket(thePacket))
   {
@@ -292,7 +292,7 @@ bool Media_CodecContext::SendPacket(const Handle(Media_Packet)& thePacket)
 
 //=================================================================================================
 
-bool Media_CodecContext::ReceiveFrame(const Handle(Media_Frame)& theFrame)
+bool Media_CodecContext::ReceiveFrame(const occ::handle<Media_Frame>& theFrame)
 {
   if (theFrame.IsNull())
   {

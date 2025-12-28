@@ -42,12 +42,9 @@ public:
   //! The hyperbola H is limited between the parametric values U1, U2
   //! and the equivalent B-spline curve has the same orientation as the
   //! hyperbola.
-  Standard_EXPORT Convert_HyperbolaToBSplineCurve(const gp_Hypr2d&    H,
-                                                  const Standard_Real U1,
-                                                  const Standard_Real U2);
-
-protected:
-private:
+  Standard_EXPORT Convert_HyperbolaToBSplineCurve(const gp_Hypr2d& H,
+                                                  const double     U1,
+                                                  const double     U2);
 };
 
 #endif // _Convert_HyperbolaToBSplineCurve_HeaderFile

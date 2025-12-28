@@ -45,9 +45,6 @@ public:
 
   //! Loads all Draw commands of TKDCAF. Used for plugin.
   Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
-
-protected:
-private:
 };
 
 #endif // _DPrsStd_HeaderFile

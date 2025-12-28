@@ -34,9 +34,6 @@ public:
 
   //! Loads commands defined in ShapeAnalysis
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
-
-protected:
-private:
 };
 
 #endif // _SWDRAW_ShapeAnalysis_HeaderFile

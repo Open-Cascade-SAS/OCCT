@@ -68,7 +68,7 @@ public:
   /**
    * Set the UV coordinates of the Node.
    */
-  inline void SetUV(const Standard_Real theU, const Standard_Real theV)
+  inline void SetUV(const double theU, const double theV)
   {
     myUV[0] = theU;
     myUV[1] = theV;
@@ -77,12 +77,12 @@ public:
   /**
    * Get U coordinate of the Node.
    */
-  inline Standard_Real GetU() const { return myUV[0]; }
+  inline double GetU() const { return myUV[0]; }
 
   /**
    * Get V coordinate of the Node.
    */
-  inline Standard_Real GetV() const { return myUV[1]; }
+  inline double GetV() const { return myUV[1]; }
 
   /**
    * Define the normal vector in the Node.
@@ -92,7 +92,7 @@ public:
   /**
    * Query if the Node contains a normal vector.
    */
-  inline Standard_Boolean HasNormal() const
+  inline bool HasNormal() const
   {
     return ((myNormal[0] * myNormal[0] + myNormal[1] * myNormal[1] + myNormal[2] * myNormal[2])
             > Precision::Confusion());
@@ -106,35 +106,35 @@ public:
   /**
    * Set the value of node Index.
    */
-  inline void SetIndex(const Standard_Integer theIndex) { myIndex = theIndex; }
+  inline void SetIndex(const int theIndex) { myIndex = theIndex; }
 
   /**
    * Get the value of node Index.
    */
-  inline Standard_Integer GetIndex() const { return myIndex; }
+  inline int GetIndex() const { return myIndex; }
 
   /**
    * Check if this is a free node, i.e., a node without a single
    * incident triangle.
    */
-  inline Standard_Boolean IsFreeNode() const noexcept { return myTriangles == 0L; }
+  inline bool IsFreeNode() const noexcept { return myTriangles == 0L; }
 
   /**
    * Reset the Node to void.
    */
-  Standard_EXPORT void Clear(const Handle(NCollection_BaseAllocator)&);
+  Standard_EXPORT void Clear(const occ::handle<NCollection_BaseAllocator>&);
 
   /**
    * Connect a triangle to this Node.
    */
-  Standard_EXPORT void AddTriangle(const Poly_CoherentTriangle&             theTri,
-                                   const Handle(NCollection_BaseAllocator)& theA);
+  Standard_EXPORT void AddTriangle(const Poly_CoherentTriangle&                  theTri,
+                                   const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**
    * Disconnect a triangle from this Node.
    */
-  Standard_EXPORT Standard_Boolean RemoveTriangle(const Poly_CoherentTriangle&             theTri,
-                                                  const Handle(NCollection_BaseAllocator)& theA);
+  Standard_EXPORT bool RemoveTriangle(const Poly_CoherentTriangle&                  theTri,
+                                      const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**
    * Create an iterator of incident triangles.
@@ -148,16 +148,13 @@ public:
   //    */
   //   Standard_EXPORT virtual ~Poly_CoherentNode ();
 
-protected:
-  // ---------- PROTECTED METHODS ----------
-
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  Standard_Real        myUV[2];
+  double               myUV[2];
   Poly_CoherentTriPtr* myTriangles;
-  Standard_Integer     myIndex;
-  Standard_ShortReal   myNormal[3];
+  int                  myIndex;
+  float                myNormal[3];
 };
 
 #endif

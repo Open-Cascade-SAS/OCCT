@@ -27,54 +27,52 @@
 //==================================================================================================
 
 IntCurveSurface_TheQuadCurvExactHInter::IntCurveSurface_TheQuadCurvExactHInter(
-  const Handle(Adaptor3d_Surface)& S,
-  const Handle(Adaptor3d_Curve)&   C)
+  const occ::handle<Adaptor3d_Surface>& S,
+  const occ::handle<Adaptor3d_Curve>&   C)
     : nbpnts(-1),
       nbintv(-1)
 {
   IntCurveSurface_QuadricCurveExactInterUtils::PerformIntersection<
-    Handle(Adaptor3d_Surface),
+    occ::handle<Adaptor3d_Surface>,
     Adaptor3d_HSurfaceTool,
-    Handle(Adaptor3d_Curve),
+    occ::handle<Adaptor3d_Curve>,
     IntCurveSurface_TheHCurveTool,
     IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter>(S, C, pnts, intv, nbpnts, nbintv);
 }
 
 //==================================================================================================
 
-Standard_Boolean IntCurveSurface_TheQuadCurvExactHInter::IsDone() const
+bool IntCurveSurface_TheQuadCurvExactHInter::IsDone() const
 {
   return (nbpnts != -1);
 }
 
 //==================================================================================================
 
-Standard_Integer IntCurveSurface_TheQuadCurvExactHInter::NbRoots() const
+int IntCurveSurface_TheQuadCurvExactHInter::NbRoots() const
 {
   return nbpnts;
 }
 
 //==================================================================================================
 
-Standard_Integer IntCurveSurface_TheQuadCurvExactHInter::NbIntervals() const
+int IntCurveSurface_TheQuadCurvExactHInter::NbIntervals() const
 {
   return nbintv;
 }
 
 //==================================================================================================
 
-Standard_Real IntCurveSurface_TheQuadCurvExactHInter::Root(const Standard_Integer Index) const
+double IntCurveSurface_TheQuadCurvExactHInter::Root(const int Index) const
 {
   return pnts(Index);
 }
 
 //==================================================================================================
 
-void IntCurveSurface_TheQuadCurvExactHInter::Intervals(const Standard_Integer Index,
-                                                       Standard_Real&         a,
-                                                       Standard_Real&         b) const
+void IntCurveSurface_TheQuadCurvExactHInter::Intervals(const int Index, double& a, double& b) const
 {
-  Standard_Integer Index2 = Index + Index - 1;
-  a                       = intv(Index2);
-  b                       = intv(Index2 + 1);
+  int Index2 = Index + Index - 1;
+  a          = intv(Index2);
+  b          = intv(Index2 + 1);
 }

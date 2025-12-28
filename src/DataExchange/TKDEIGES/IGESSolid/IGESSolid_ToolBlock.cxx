@@ -36,13 +36,13 @@
 
 IGESSolid_ToolBlock::IGESSolid_ToolBlock() {}
 
-void IGESSolid_ToolBlock::ReadOwnParams(const Handle(IGESSolid_Block)& ent,
-                                        const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESSolid_ToolBlock::ReadOwnParams(const occ::handle<IGESSolid_Block>& ent,
+                                        const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                         IGESData_ParamReader& PR) const
 {
-  gp_XYZ        tempSize, tempCorner, tempXAxis, tempZAxis;
-  Standard_Real tempreal;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  gp_XYZ tempSize, tempCorner, tempXAxis, tempZAxis;
+  double tempreal;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // clang-format off
   PR.ReadXYZ(PR.CurrentList(1, 3), "Size of Block", tempSize); //szv#4:S4163:12Mar99 `st=` not needed
@@ -140,15 +140,15 @@ void IGESSolid_ToolBlock::ReadOwnParams(const Handle(IGESSolid_Block)& ent,
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempSize, tempCorner, tempXAxis, tempZAxis);
-  Standard_Real eps = 1.E-05;
+  double eps = 1.E-05;
   if (!tempXAxis.IsEqual(ent->XAxis().XYZ(), eps))
     PR.AddWarning("XAxis poorly unitary, normalized");
   if (!tempZAxis.IsEqual(ent->ZAxis().XYZ(), eps))
     PR.AddWarning("ZAxis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolBlock::WriteOwnParams(const Handle(IGESSolid_Block)& ent,
-                                         IGESData_IGESWriter&           IW) const
+void IGESSolid_ToolBlock::WriteOwnParams(const occ::handle<IGESSolid_Block>& ent,
+                                         IGESData_IGESWriter&                IW) const
 {
   IW.Send(ent->Size().X());
   IW.Send(ent->Size().Y());
@@ -164,13 +164,13 @@ void IGESSolid_ToolBlock::WriteOwnParams(const Handle(IGESSolid_Block)& ent,
   IW.Send(ent->ZAxis().Z());
 }
 
-void IGESSolid_ToolBlock::OwnShared(const Handle(IGESSolid_Block)& /* ent */,
+void IGESSolid_ToolBlock::OwnShared(const occ::handle<IGESSolid_Block>& /* ent */,
                                     Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESSolid_ToolBlock::OwnCopy(const Handle(IGESSolid_Block)& another,
-                                  const Handle(IGESSolid_Block)& ent,
+void IGESSolid_ToolBlock::OwnCopy(const occ::handle<IGESSolid_Block>& another,
+                                  const occ::handle<IGESSolid_Block>& ent,
                                   Interface_CopyTool& /* TC */) const
 {
   ent->Init(another->Size(),
@@ -179,7 +179,8 @@ void IGESSolid_ToolBlock::OwnCopy(const Handle(IGESSolid_Block)& another,
             another->ZAxis().XYZ());
 }
 
-IGESData_DirChecker IGESSolid_ToolBlock::DirChecker(const Handle(IGESSolid_Block)& /* ent */) const
+IGESData_DirChecker IGESSolid_ToolBlock::DirChecker(
+  const occ::handle<IGESSolid_Block>& /* ent */) const
 {
   IGESData_DirChecker DC(150, 0);
   DC.Structure(IGESData_DefVoid);
@@ -190,22 +191,22 @@ IGESData_DirChecker IGESSolid_ToolBlock::DirChecker(const Handle(IGESSolid_Block
   return DC;
 }
 
-void IGESSolid_ToolBlock::OwnCheck(const Handle(IGESSolid_Block)& ent,
+void IGESSolid_ToolBlock::OwnCheck(const occ::handle<IGESSolid_Block>& ent,
                                    const Interface_ShareTool&,
-                                   Handle(Interface_Check)& ach) const
+                                   occ::handle<Interface_Check>& ach) const
 {
-  Standard_Real eps    = 1.E-04;
-  Standard_Real prosca = ent->XAxis() * ent->ZAxis();
+  double eps    = 1.E-04;
+  double prosca = ent->XAxis() * ent->ZAxis();
   if (prosca < -eps || prosca > eps)
     ach->AddFail("Local Z axis : Not orthogonal to X axis");
   if (ent->Size().X() <= 0. || ent->Size().Y() <= 0. || ent->Size().Z() <= 0.)
     ach->AddFail("Size : Not positive lengths");
 }
 
-void IGESSolid_ToolBlock::OwnDump(const Handle(IGESSolid_Block)& ent,
+void IGESSolid_ToolBlock::OwnDump(const occ::handle<IGESSolid_Block>& ent,
                                   const IGESData_IGESDumper& /* dumper */,
-                                  Standard_OStream&      S,
-                                  const Standard_Integer level) const
+                                  Standard_OStream& S,
+                                  const int         level) const
 {
   S << "IGESSolid_Block\n"
     << "Size   : ";

@@ -24,8 +24,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_GearPairWithRange, StepKinematics_GearPair)
-
 //! Representation of STEP entity GearPairWithRange
 class StepKinematics_GearPairWithRange : public StepKinematics_GearPair
 {
@@ -35,45 +33,43 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Standard_Real                          theGearPair_RadiusFirstLink,
-    const Standard_Real                          theGearPair_RadiusSecondLink,
-    const Standard_Real                          theGearPair_Bevel,
-    const Standard_Real                          theGearPair_HelicalAngle,
-    const Standard_Real                          theGearPair_GearRatio,
-    const Standard_Boolean                       hasLowerLimitActualRotation1,
-    const Standard_Real                          theLowerLimitActualRotation1,
-    const Standard_Boolean                       hasUpperLimitActualRotation1,
-    const Standard_Real                          theUpperLimitActualRotation1);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                                        hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const double                                      theGearPair_RadiusFirstLink,
+    const double                                      theGearPair_RadiusSecondLink,
+    const double                                      theGearPair_Bevel,
+    const double                                      theGearPair_HelicalAngle,
+    const double                                      theGearPair_GearRatio,
+    const bool                                        hasLowerLimitActualRotation1,
+    const double                                      theLowerLimitActualRotation1,
+    const bool                                        hasUpperLimitActualRotation1,
+    const double                                      theUpperLimitActualRotation1);
 
   //! Returns field LowerLimitActualRotation1
-  Standard_EXPORT Standard_Real LowerLimitActualRotation1() const;
+  Standard_EXPORT double LowerLimitActualRotation1() const;
   //! Sets field LowerLimitActualRotation1
-  Standard_EXPORT void SetLowerLimitActualRotation1(
-    const Standard_Real theLowerLimitActualRotation1);
+  Standard_EXPORT void SetLowerLimitActualRotation1(const double theLowerLimitActualRotation1);
   //! Returns True if optional field LowerLimitActualRotation1 is defined
-  Standard_EXPORT Standard_Boolean HasLowerLimitActualRotation1() const;
+  Standard_EXPORT bool HasLowerLimitActualRotation1() const;
 
   //! Returns field UpperLimitActualRotation1
-  Standard_EXPORT Standard_Real UpperLimitActualRotation1() const;
+  Standard_EXPORT double UpperLimitActualRotation1() const;
   //! Sets field UpperLimitActualRotation1
-  Standard_EXPORT void SetUpperLimitActualRotation1(
-    const Standard_Real theUpperLimitActualRotation1);
+  Standard_EXPORT void SetUpperLimitActualRotation1(const double theUpperLimitActualRotation1);
   //! Returns True if optional field UpperLimitActualRotation1 is defined
-  Standard_EXPORT Standard_Boolean HasUpperLimitActualRotation1() const;
+  Standard_EXPORT bool HasUpperLimitActualRotation1() const;
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_GearPairWithRange, StepKinematics_GearPair)
 
 private:
-  Standard_Real    myLowerLimitActualRotation1;  //!< optional
-  Standard_Real    myUpperLimitActualRotation1;  //!< optional
-  Standard_Boolean defLowerLimitActualRotation1; //!< flag "is LowerLimitActualRotation1 defined"
-  Standard_Boolean defUpperLimitActualRotation1; //!< flag "is UpperLimitActualRotation1 defined"
+  double myLowerLimitActualRotation1;  //!< optional
+  double myUpperLimitActualRotation1;  //!< optional
+  bool   defLowerLimitActualRotation1; //!< flag "is LowerLimitActualRotation1 defined"
+  bool   defUpperLimitActualRotation1; //!< flag "is UpperLimitActualRotation1 defined"
 };
 #endif // _StepKinematics_GearPairWithRange_HeaderFile_

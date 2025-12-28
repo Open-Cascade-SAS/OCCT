@@ -25,7 +25,7 @@
 #include <TopOpeBRepBuild_ShellFaceClassifier.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
+extern bool TopOpeBRepBuild_GettraceCHK();
 #endif
 
 //=================================================================================================
@@ -57,7 +57,7 @@ TopAbs_State TopOpeBRepBuild_ShellFaceClassifier::CompareShapes(const TopoDS_Sha
   ResetShape(B1);
   myShell = TopoDS::Shell(B2);
   mySolidClassifier.LoadShell(myShell);
-  //  myShell.Free(Standard_True);
+  //  myShell.Free(true);
   TopAbs_State state = State();
   return state;
 }
@@ -75,7 +75,7 @@ TopAbs_State TopOpeBRepBuild_ShellFaceClassifier::CompareElementToShape(const To
   ResetElement(F);
   myShell = TopoDS::Shell(SHE);
   mySolidClassifier.LoadShell(myShell);
-  //  myShell.Free(Standard_True);
+  //  myShell.Free(true);
   TopAbs_State state = State();
   return state;
 }
@@ -100,7 +100,7 @@ void TopOpeBRepBuild_ShellFaceClassifier::ResetElement(const TopoDS_Shape& F)
   const TopAbs_ShapeEnum t = F.ShapeType();
 
   // initialize myPoint3d with first vertex of face <E>
-  myFirstCompare = Standard_True;
+  myFirstCompare = true;
 
   TopExp_Explorer ex(F, TopAbs_VERTEX);
   if (ex.More())
@@ -125,16 +125,16 @@ void TopOpeBRepBuild_ShellFaceClassifier::ResetElement(const TopoDS_Shape& F)
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoDS_Shape& F)
+bool TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoDS_Shape& F)
 {
 #ifdef OCCT_DEBUG
 //  const TopAbs_ShapeEnum t = F.ShapeType();
 #endif
-  Standard_Boolean bRet = Standard_True;
+  bool bRet = true;
   //
   if (myFirstCompare)
   {
-    Standard_Boolean found = myFaceShellMap.IsBound(F);
+    bool found = myFaceShellMap.IsBound(F);
     if (!found)
     {
       // la face F est la premiere d'un bloc de faces
@@ -155,7 +155,7 @@ Standard_Boolean TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoD
       myShell           = TopoDS::Shell(sbid);
       bRet              = !bRet;
     }
-    myFirstCompare = Standard_False;
+    myFirstCompare = false;
   }
   else
   {
@@ -171,15 +171,15 @@ Standard_Boolean TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoD
   #include <BRepTools.hxx>
   #include <BRep_Builder.hxx>
   #include <TCollection_AsciiString.hxx>
-static Standard_Integer STATIC_ishell = 0;
+static int STATIC_ishell = 0;
 #endif
 
 //=================================================================================================
 
 TopAbs_State TopOpeBRepBuild_ShellFaceClassifier::State()
 {
-  TopAbs_State  state;
-  Standard_Real tol3d = Precision::Confusion();
+  TopAbs_State state;
+  double       tol3d = Precision::Confusion();
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceCHK())

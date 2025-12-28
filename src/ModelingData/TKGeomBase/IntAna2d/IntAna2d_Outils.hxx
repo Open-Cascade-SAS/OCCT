@@ -24,38 +24,33 @@
 class MyDirectPolynomialRoots
 {
 public:
-  MyDirectPolynomialRoots(const Standard_Real A4,
-                          const Standard_Real A3,
-                          const Standard_Real A2,
-                          const Standard_Real A1,
-                          const Standard_Real A0);
+  MyDirectPolynomialRoots(const double A4,
+                          const double A3,
+                          const double A2,
+                          const double A1,
+                          const double A0);
 
-  MyDirectPolynomialRoots(const Standard_Real A2, const Standard_Real A1, const Standard_Real A0);
+  MyDirectPolynomialRoots(const double A2, const double A1, const double A0);
 
-  Standard_Integer NbSolutions() const { return (nbsol); }
+  int NbSolutions() const { return (nbsol); }
 
-  Standard_Real Value(const Standard_Integer i) const { return (sol[i - 1]); }
+  double Value(const int i) const { return (sol[i - 1]); }
 
-  Standard_Real IsDone() const { return (nbsol > -1); }
+  double IsDone() const { return (nbsol > -1); }
 
-  Standard_Boolean InfiniteRoots() const { return (same); }
+  bool InfiniteRoots() const { return (same); }
 
 private:
-  Standard_Real    sol[16];
-  Standard_Real    val[16];
-  Standard_Integer nbsol;
-  Standard_Boolean same;
+  double sol[16];
+  double val[16];
+  int    nbsol;
+  bool   same;
 };
 
-Standard_Boolean Points_Confondus(const Standard_Real xa,
-                                  const Standard_Real ya,
-                                  const Standard_Real xb,
-                                  const Standard_Real yb);
+bool Points_Confondus(const double xa, const double ya, const double xb, const double yb);
 
-void Traitement_Points_Confondus(Standard_Integer& nb_pts, IntAna2d_IntPoint* pts);
+void Traitement_Points_Confondus(int& nb_pts, IntAna2d_IntPoint* pts);
 
-void Coord_Ancien_Repere(Standard_Real& Ancien_X,
-                         Standard_Real& Ancien_Y,
-                         const gp_Ax2d& Axe_Nouveau_Repere);
+void Coord_Ancien_Repere(double& Ancien_X, double& Ancien_Y, const gp_Ax2d& Axe_Nouveau_Repere);
 
 #endif

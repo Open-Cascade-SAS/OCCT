@@ -27,33 +27,26 @@ class Interface_Graph;
 class Standard_Transient;
 class TCollection_AsciiString;
 
-class STEPSelections_SelectInstances;
-DEFINE_STANDARD_HANDLE(STEPSelections_SelectInstances, IFSelect_SelectExplore)
-
 class STEPSelections_SelectInstances : public IFSelect_SelectExplore
 {
 
 public:
   Standard_EXPORT STEPSelections_SelectInstances();
 
-  Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
 
-  Standard_EXPORT Standard_Boolean
-    Explore(const Standard_Integer            level,
-            const Handle(Standard_Transient)& ent,
-            const Interface_Graph&            G,
-            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
+  Standard_EXPORT bool Explore(const int                              level,
+                               const occ::handle<Standard_Transient>& ent,
+                               const Interface_Graph&                 G,
+                               Interface_EntityIterator&              explored) const override;
 
   //! Returns a text defining the criterium : "Instances"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectInstances, IFSelect_SelectExplore)
 
 protected:
-  Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const Standard_OVERRIDE;
-
-private:
+  Standard_EXPORT virtual bool HasUniqueResult() const override;
 };
 
 #endif // _STEPSelections_SelectInstances_HeaderFile

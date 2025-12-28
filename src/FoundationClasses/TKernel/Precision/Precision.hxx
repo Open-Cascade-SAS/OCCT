@@ -26,25 +26,25 @@
 //! Generalities
 //! It is not advisable to use floating number equality. Instead, the difference
 //! between numbers must be compared with a given precision, i.e. :
-//! Standard_Real x1, x2 ;
+//! double x1, x2 ;
 //! x1 = ...
 //! x2 = ...
 //! If ( x1 == x2 ) ...
 //! should not be used and must be written as indicated below:
-//! Standard_Real x1, x2 ;
-//! Standard_Real Precision = ...
+//! double x1, x2 ;
+//! double Precision = ...
 //! x1 = ...
 //! x2 = ...
 //! If ( Abs ( x1 - x2 ) < Precision ) ...
 //! Likewise, when ordering floating numbers, you must take the following into account :
-//! Standard_Real x1, x2 ;
-//! Standard_Real Precision = ...
+//! double x1, x2 ;
+//! double Precision = ...
 //! x1 = ...       ! a large number
 //! x2 = ...       ! another large number
 //! If ( x1 < x2 - Precision ) ...
 //! is incorrect when x1 and x2 are large numbers ; it is better to write :
-//! Standard_Real x1, x2 ;
-//! Standard_Real Precision = ...
+//! double x1, x2 ;
+//! double Precision = ...
 //! x1 = ...       ! a large number
 //! x2 = ...       ! another large number
 //! If ( x2 - x1 > Precision ) ...
@@ -103,7 +103,7 @@ public:
 
   //! Returns the recommended precision value
   //! when checking the equality of two angles (given in radians).
-  //! Standard_Real Angle1 = ... , Angle2 = ... ;
+  //! double Angle1 = ... , Angle2 = ... ;
   //! If ( std::abs( Angle2 - Angle1 ) < Precision::Angular() ) ...
   //! The tolerance of angular equality may be used to check the parallelism of two vectors :
   //! gp_Vec V1, V2 ;
@@ -120,7 +120,7 @@ public:
   //! you can use :
   //! If ( std::abs( D1.D2 ) < Precision::Angular() ) ...
   //! (although the function IsNormal does exist).
-  static constexpr Standard_Real Angular() { return 1.e-12; }
+  static constexpr double Angular() { return 1.e-12; }
 
   //! Returns the recommended precision value when
   //! checking coincidence of two points in real space.
@@ -162,11 +162,11 @@ public:
   //! distance (1 / 10 millimeter). This distance
   //! becomes easily measurable, but only within a restricted
   //! space which contains some small objects of the complete scene.
-  static constexpr Standard_Real Confusion() { return 1.e-7; }
+  static constexpr double Confusion() { return 1.e-7; }
 
   //! Returns square of Confusion.
   //! Created for speed and convenience.
-  static constexpr Standard_Real SquareConfusion() { return Confusion() * Confusion(); }
+  static constexpr double SquareConfusion() { return Confusion() * Confusion(); }
 
   //! Returns a precision value at machine epsilon level, used for
   //! low-level numerical computations and floating-point comparisons.
@@ -184,16 +184,16 @@ public:
   //! The computational tolerance is equal to DBL_EPSILON (approximately 2.22e-16),
   //! which is the smallest positive value such that 1.0 + eps != 1.0 in double
   //! precision floating-point arithmetic. This is the fundamental machine epsilon
-  //! for Standard_Real (double) type.
+  //! for double (double) type.
   //!
   //! Note: This value should NOT be used for geometric comparisons.
   //! Use Precision::Confusion() for comparing geometric distances,
   //! Precision::Angular() for angles, etc.
-  static constexpr Standard_Real Computational() { return RealEpsilon(); }
+  static constexpr double Computational() { return RealEpsilon(); }
 
   //! Returns square of Computational.
   //! Created for speed and convenience when comparing squared values.
-  static constexpr Standard_Real SquareComputational() { return Computational() * Computational(); }
+  static constexpr double SquareComputational() { return Computational() * Computational(); }
 
   //! Returns the precision value in real space, frequently
   //! used by intersection algorithms to decide that a solution is reached.
@@ -217,7 +217,7 @@ public:
   //! The tolerance of intersection is equal to :
   //! Precision::Confusion() / 100.
   //! (that is, 1.e-9).
-  static constexpr Standard_Real Intersection() { return Confusion() * 0.01; }
+  static constexpr double Intersection() { return Confusion() * 0.01; }
 
   //! Returns the precision value in real space, frequently used
   //! by approximation algorithms.
@@ -232,17 +232,14 @@ public:
   //! (that is, 1.e-6).
   //! You may use a smaller tolerance in an approximation
   //! algorithm, but this option might be costly.
-  static constexpr Standard_Real Approximation() { return Confusion() * 10.0; }
+  static constexpr double Approximation() { return Confusion() * 10.0; }
 
   //! Convert a real space precision to a parametric
   //! space precision. <T> is the mean value of the
   //! length of the tangent of the curve or the surface.
   //!
   //! Value is P / T
-  static constexpr Standard_Real Parametric(const Standard_Real P, const Standard_Real T)
-  {
-    return P / T;
-  }
+  static constexpr double Parametric(const double P, const double T) { return P / T; }
 
   //! Returns a precision value in parametric space, which may be used :
   //! -   to test the coincidence of two points in the real space,
@@ -288,14 +285,11 @@ public:
   //! 2.Pi without impacting on the resulting point.
   //! Therefore, take great care when adjusting a parametric
   //! tolerance to your own algorithm.
-  static constexpr Standard_Real PConfusion(const Standard_Real T)
-  {
-    return Parametric(Confusion(), T);
-  }
+  static constexpr double PConfusion(const double T) { return Parametric(Confusion(), T); }
 
   //! Returns square of PConfusion.
   //! Created for speed and convenience.
-  static constexpr Standard_Real SquarePConfusion() { return PConfusion() * PConfusion(); }
+  static constexpr double SquarePConfusion() { return PConfusion() * PConfusion(); }
 
   //! Returns a precision value in parametric space, which
   //! may be used by intersection algorithms, to decide that
@@ -310,10 +304,7 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Intersection() / 100., or Precision::Intersection() / T.
-  static constexpr Standard_Real PIntersection(const Standard_Real T)
-  {
-    return Parametric(Intersection(), T);
-  }
+  static constexpr double PIntersection(const double T) { return Parametric(Intersection(), T); }
 
   //! Returns a precision value in parametric space, which may
   //! be used by approximation algorithms. The purpose of this
@@ -328,59 +319,56 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Approximation() / 100., or Precision::Approximation() / T.
-  static constexpr Standard_Real PApproximation(const Standard_Real T)
-  {
-    return Parametric(Approximation(), T);
-  }
+  static constexpr double PApproximation(const double T) { return Parametric(Approximation(), T); }
 
   //! Convert a real space precision to a parametric
   //! space precision on a default curve.
   //!
   //! Value is Parametric(P,1.e+2)
-  static constexpr Standard_Real Parametric(const Standard_Real P) { return P * 0.01; }
+  static constexpr double Parametric(const double P) { return P * 0.01; }
 
   //! Used to test distances in parametric space on a
   //! default curve.
   //!
   //! This is Precision::Parametric(Precision::Confusion())
-  static constexpr Standard_Real PConfusion() { return Confusion() * 0.01; }
+  static constexpr double PConfusion() { return Confusion() * 0.01; }
 
   //! Used for Intersections in parametric space on a
   //! default curve.
   //!
   //! This is Precision::Parametric(Precision::Intersection())
-  static constexpr Standard_Real PIntersection() { return Intersection() * 0.01; }
+  static constexpr double PIntersection() { return Intersection() * 0.01; }
 
   //! Used for Approximations in parametric space on a
   //! default curve.
   //!
   //! This is Precision::Parametric(Precision::Approximation())
-  static constexpr Standard_Real PApproximation() { return Approximation() * 0.01; }
+  static constexpr double PApproximation() { return Approximation() * 0.01; }
 
   //! Returns True if R may be considered as an infinite
   //! number. Currently std::abs(R) > 1e100
-  static inline Standard_Boolean IsInfinite(const Standard_Real R)
+  static inline bool IsInfinite(const double R)
   {
     return std::abs(R) >= (0.5 * Precision::Infinite());
   }
 
   //! Returns True if R may be considered as a positive
   //! infinite number. Currently R > 1e100
-  static constexpr Standard_Boolean IsPositiveInfinite(const Standard_Real R)
+  static constexpr bool IsPositiveInfinite(const double R)
   {
     return R >= (0.5 * Precision::Infinite());
   }
 
   //! Returns True if R may be considered as a negative
   //! infinite number. Currently R < -1e100
-  static constexpr Standard_Boolean IsNegativeInfinite(const Standard_Real R)
+  static constexpr bool IsNegativeInfinite(const double R)
   {
     return R <= -(0.5 * Precision::Infinite());
   }
 
   //! Returns a big number that can be considered as
   //! infinite. Use -Infinite() for a negative big number.
-  static constexpr Standard_Real Infinite() { return 2.e+100; }
+  static constexpr double Infinite() { return 2.e+100; }
 };
 
 #endif // _Precision_HeaderFile

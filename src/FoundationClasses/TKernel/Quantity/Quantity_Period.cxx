@@ -33,12 +33,12 @@
 // 0 <= mis
 // 0 <= mics
 // -----------------------------------------------------------
-Standard_Boolean Quantity_Period::IsValid(const Standard_Integer dd,
-                                          const Standard_Integer hh,
-                                          const Standard_Integer mn,
-                                          const Standard_Integer ss,
-                                          const Standard_Integer mis,
-                                          const Standard_Integer mics)
+bool Quantity_Period::IsValid(const int dd,
+                              const int hh,
+                              const int mn,
+                              const int ss,
+                              const int mis,
+                              const int mics)
 {
   return (dd >= 0 && hh >= 0 && mn >= 0 && ss >= 0 && mis >= 0 && mics >= 0);
 }
@@ -49,7 +49,7 @@ Standard_Boolean Quantity_Period::IsValid(const Standard_Integer dd,
 // 0 <= ss
 // 0 <= mics
 // -------------------------------------------------------------
-Standard_Boolean Quantity_Period::IsValid(const Standard_Integer ss, const Standard_Integer mics)
+bool Quantity_Period::IsValid(const int ss, const int mics)
 {
   return (ss >= 0 && mics >= 0);
 }
@@ -59,12 +59,12 @@ Standard_Boolean Quantity_Period::IsValid(const Standard_Integer ss, const Stand
 // ~~~~~~   and microseconds.
 //
 // -------------------------------------------------------------
-Quantity_Period::Quantity_Period(const Standard_Integer dd,
-                                 const Standard_Integer hh,
-                                 const Standard_Integer mn,
-                                 const Standard_Integer ss,
-                                 const Standard_Integer mils,
-                                 const Standard_Integer mics)
+Quantity_Period::Quantity_Period(const int dd,
+                                 const int hh,
+                                 const int mn,
+                                 const int ss,
+                                 const int mils,
+                                 const int mics)
     : mySec(0),
       myUSec(0)
 {
@@ -77,7 +77,7 @@ Quantity_Period::Quantity_Period(const Standard_Integer dd,
 // ~~~~~~   and microseconds.
 //
 // -------------------------------------------------------------
-Quantity_Period::Quantity_Period(const Standard_Integer ss, const Standard_Integer mics)
+Quantity_Period::Quantity_Period(const int ss, const int mics)
     : mySec(0),
       myUSec(0)
 {
@@ -89,15 +89,10 @@ Quantity_Period::Quantity_Period(const Standard_Integer ss, const Standard_Integ
 // Values : Returns a period with the number of days,hours,
 // ~~~~~~   minutes,seconds,milliseconds and microseconds.
 // -------------------------------------------------------------
-void Quantity_Period::Values(Standard_Integer& dd,
-                             Standard_Integer& hh,
-                             Standard_Integer& mn,
-                             Standard_Integer& ss,
-                             Standard_Integer& mis,
-                             Standard_Integer& mics) const
+void Quantity_Period::Values(int& dd, int& hh, int& mn, int& ss, int& mis, int& mics) const
 {
-  Standard_Integer carry = mySec;
-  dd                     = carry / SECONDS_PER_DAY;
+  int carry = mySec;
+  dd        = carry / SECONDS_PER_DAY;
   carry -= dd * SECONDS_PER_DAY;
   extractTimeComponents(carry, hh, mn, ss);
   extractMillisAndMicros(myUSec, mis, mics);
@@ -107,7 +102,7 @@ void Quantity_Period::Values(Standard_Integer& dd,
 // Values : Returns a period with the number of seconds and
 // ~~~~~~   microseconds.
 // -------------------------------------------------------------
-void Quantity_Period::Values(Standard_Integer& ss, Standard_Integer& mics) const
+void Quantity_Period::Values(int& ss, int& mics) const
 {
 
   ss   = mySec;
@@ -118,12 +113,12 @@ void Quantity_Period::Values(Standard_Integer& ss, Standard_Integer& mics) const
 // SetValues : Sets a period with a number of days,hours,minutes,
 // ~~~~~~~~~   seconds and microseconds.
 // -------------------------------------------------------------
-void Quantity_Period::SetValues(const Standard_Integer dd,
-                                const Standard_Integer hh,
-                                const Standard_Integer mn,
-                                const Standard_Integer ss,
-                                const Standard_Integer mils,
-                                const Standard_Integer mics)
+void Quantity_Period::SetValues(const int dd,
+                                const int hh,
+                                const int mn,
+                                const int ss,
+                                const int mils,
+                                const int mics)
 {
   SetValues((dd * SECONDS_PER_DAY) + (hh * SECONDS_PER_HOUR) + (SECONDS_PER_MINUTE * mn) + ss,
             mils * USECS_PER_MSEC + mics);
@@ -133,7 +128,7 @@ void Quantity_Period::SetValues(const Standard_Integer dd,
 // SetValues : Sets a period with a number of seconds and
 // ~~~~~~~~~   microseconds.
 // -------------------------------------------------------------
-void Quantity_Period::SetValues(const Standard_Integer ss, const Standard_Integer mics)
+void Quantity_Period::SetValues(const int ss, const int mics)
 {
 
   if (!Quantity_Period::IsValid(ss, mics))

@@ -29,10 +29,10 @@ class StdPrs_HLRShapeI : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(StdPrs_HLRShapeI, Standard_Transient)
 public:
   //! Compute presentation for specified shape.
-  virtual void ComputeHLR(const Handle(Prs3d_Presentation)& thePrs,
-                          const TopoDS_Shape&               theShape,
-                          const Handle(Prs3d_Drawer)&       theDrawer,
-                          const Handle(Graphic3d_Camera)&   theProjector) const = 0;
+  virtual void ComputeHLR(const occ::handle<Prs3d_Presentation>& thePrs,
+                          const TopoDS_Shape&                    theShape,
+                          const occ::handle<Prs3d_Drawer>&       theDrawer,
+                          const occ::handle<Graphic3d_Camera>&   theProjector) const = 0;
 };
 
 #endif // _StdPrs_HLRShapeI_HeaderFile

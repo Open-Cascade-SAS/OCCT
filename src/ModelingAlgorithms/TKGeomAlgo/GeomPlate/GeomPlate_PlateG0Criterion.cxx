@@ -26,16 +26,17 @@
 #include <gp_Pnt.hxx>
 #include <gp_XY.hxx>
 #include <PLib.hxx>
-#include <TColgp_SequenceOfXY.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
-GeomPlate_PlateG0Criterion::GeomPlate_PlateG0Criterion(const TColgp_SequenceOfXY&     Data,
-                                                       const TColgp_SequenceOfXYZ&    G0Data,
-                                                       const Standard_Real            Maximum,
-                                                       const AdvApp2Var_CriterionType Type,
+GeomPlate_PlateG0Criterion::GeomPlate_PlateG0Criterion(const NCollection_Sequence<gp_XY>&  Data,
+                                                       const NCollection_Sequence<gp_XYZ>& G0Data,
+                                                       const double                        Maximum,
+                                                       const AdvApp2Var_CriterionType      Type,
                                                        const AdvApp2Var_CriterionRepartition Repart)
 {
   myData        = Data;
@@ -49,10 +50,10 @@ GeomPlate_PlateG0Criterion::GeomPlate_PlateG0Criterion(const TColgp_SequenceOfXY
 
 void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Context& C) const
 {
-  Standard_Real    UInt[2], VInt[2];
-  Standard_Integer MaxNbCoeff[2], NbCoeff[2];
-  Standard_Real*   adrCoeff = NULL;
-  adrCoeff = (Standard_Real*)&P.Coefficients(1, C)->ChangeArray1()(P.Coefficients(1, C)->Lower());
+  double  UInt[2], VInt[2];
+  int     MaxNbCoeff[2], NbCoeff[2];
+  double* adrCoeff = NULL;
+  adrCoeff         = (double*)&P.Coefficients(1, C)->ChangeArray1()(P.Coefficients(1, C)->Lower());
 
   MaxNbCoeff[0] = C.ULimit();
   MaxNbCoeff[1] = C.VLimit();
@@ -63,16 +64,16 @@ void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Con
   VInt[0]       = P.V0();
   VInt[1]       = P.V1();
 
-  Standard_Real up, vp, dist = 0.;
+  double up, vp, dist = 0.;
 
-  Standard_Integer     dimension = 3 * NbCoeff[1];
-  TColStd_Array1OfReal Patch(1, NbCoeff[0] * dimension);
-  TColStd_Array1OfReal Curve(1, dimension);
-  TColStd_Array1OfReal Point(1, 3);
-  Standard_Real*       Coeffs = (Standard_Real*)&Patch.ChangeValue(1);
-  Standard_Real*       Digit  = (Standard_Real*)&Point.ChangeValue(1);
+  int                        dimension = 3 * NbCoeff[1];
+  NCollection_Array1<double> Patch(1, NbCoeff[0] * dimension);
+  NCollection_Array1<double> Curve(1, dimension);
+  NCollection_Array1<double> Point(1, 3);
+  double*                    Coeffs = (double*)&Patch.ChangeValue(1);
+  double*                    Digit  = (double*)&Point.ChangeValue(1);
 
-  Standard_Integer k1, k2, pos, ll = 1;
+  int k1, k2, pos, ll = 1;
   for (k1 = 1; k1 <= NbCoeff[0]; k1++)
   {
     // JAG 99.04.29    pos = 3*(MaxNbCoeff[0])*(k1-1);
@@ -86,7 +87,7 @@ void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Con
     }
   }
 
-  Standard_Integer i, NbCtr = myData.Length();
+  int i, NbCtr = myData.Length();
   for (i = 1; i <= NbCtr; i++)
   {
     gp_XY P2d = myData.Value(i);
@@ -102,9 +103,9 @@ void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Con
       P3d.SetCoord(1, Digit[0]);
       P3d.SetCoord(2, Digit[1]);
       P3d.SetCoord(3, Digit[2]);
-      Standard_Real x = (P3d.Coord(1) - myXYZ.Value(i).Coord(1)),
-                    y = (P3d.Coord(2) - myXYZ.Value(i).Coord(2)),
-                    z = (P3d.Coord(3) - myXYZ.Value(i).Coord(3)), DistTmp = x * x + y * y + z * z;
+      double x = (P3d.Coord(1) - myXYZ.Value(i).Coord(1)),
+             y = (P3d.Coord(2) - myXYZ.Value(i).Coord(2)),
+             z = (P3d.Coord(3) - myXYZ.Value(i).Coord(3)), DistTmp = x * x + y * y + z * z;
       if (DistTmp > dist)
       {
         dist = DistTmp;
@@ -116,7 +117,7 @@ void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Con
 
 //=================================================================================================
 
-Standard_Boolean GeomPlate_PlateG0Criterion::IsSatisfied(const AdvApp2Var_Patch& P) const
+bool GeomPlate_PlateG0Criterion::IsSatisfied(const AdvApp2Var_Patch& P) const
 {
   return (P.CritValue() < myMaxValue);
 }

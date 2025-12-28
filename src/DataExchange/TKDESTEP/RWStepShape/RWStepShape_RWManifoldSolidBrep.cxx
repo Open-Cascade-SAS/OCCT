@@ -20,10 +20,11 @@
 
 RWStepShape_RWManifoldSolidBrep::RWStepShape_RWManifoldSolidBrep() {}
 
-void RWStepShape_RWManifoldSolidBrep::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepShape_ManifoldSolidBrep)& ent) const
+void RWStepShape_RWManifoldSolidBrep::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepShape_ManifoldSolidBrep>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,14 +34,14 @@ void RWStepShape_RWManifoldSolidBrep::ReadStep(const Handle(StepData_StepReaderD
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : outer ---
 
-  Handle(StepShape_ConnectedFaceSet) aOuter;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepShape_ConnectedFaceSet> aOuter;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "outer", ach, STANDARD_TYPE(StepShape_ConnectedFaceSet), aOuter);
 
   //--- Initialisation of the read entity ---
@@ -49,8 +50,8 @@ void RWStepShape_RWManifoldSolidBrep::ReadStep(const Handle(StepData_StepReaderD
 }
 
 void RWStepShape_RWManifoldSolidBrep::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepShape_ManifoldSolidBrep)& ent) const
+  StepData_StepWriter&                            SW,
+  const occ::handle<StepShape_ManifoldSolidBrep>& ent) const
 {
 
   // --- inherited field name ---
@@ -62,8 +63,8 @@ void RWStepShape_RWManifoldSolidBrep::WriteStep(
   SW.Send(ent->Outer());
 }
 
-void RWStepShape_RWManifoldSolidBrep::Share(const Handle(StepShape_ManifoldSolidBrep)& ent,
-                                            Interface_EntityIterator&                  iter) const
+void RWStepShape_RWManifoldSolidBrep::Share(const occ::handle<StepShape_ManifoldSolidBrep>& ent,
+                                            Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->Outer());

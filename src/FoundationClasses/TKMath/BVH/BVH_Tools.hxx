@@ -129,9 +129,9 @@ public: //! @name Point-Box projection
 private: //! @name Internal helpers for point-triangle projection
   //! Helper to set projection state for vertex
   static void SetVertexState(BVH_PrjStateInTriangle* thePrjState,
-                             Standard_Integer*       theFirstNode,
-                             Standard_Integer*       theLastNode,
-                             Standard_Integer        theVertexIndex)
+                             int*                    theFirstNode,
+                             int*                    theLastNode,
+                             int                     theVertexIndex)
   {
     if (thePrjState != nullptr)
     {
@@ -143,10 +143,10 @@ private: //! @name Internal helpers for point-triangle projection
 
   //! Helper to set projection state for edge
   static void SetEdgeState(BVH_PrjStateInTriangle* thePrjState,
-                           Standard_Integer*       theFirstNode,
-                           Standard_Integer*       theLastNode,
-                           Standard_Integer        theStartVertex,
-                           Standard_Integer        theEndVertex)
+                           int*                    theFirstNode,
+                           int*                    theLastNode,
+                           int                     theStartVertex,
+                           int                     theEndVertex)
   {
     if (thePrjState != nullptr)
     {
@@ -174,8 +174,8 @@ public: //! @name Point-Triangle Square distance
                                            const BVH_VecNt&        theNode1,
                                            const BVH_VecNt&        theNode2,
                                            BVH_PrjStateInTriangle* thePrjState          = nullptr,
-                                           Standard_Integer*       theNumberOfFirstNode = nullptr,
-                                           Standard_Integer*       theNumberOfLastNode  = nullptr)
+                                           int*                    theNumberOfFirstNode = nullptr,
+                                           int*                    theNumberOfLastNode  = nullptr)
   {
     // Compute edge vectors
     const BVH_VecNt aAB = theNode1 - theNode0;
@@ -281,14 +281,14 @@ public: //! @name Point-Triangle Square distance
 public: //! @name Ray-Box Intersection
   //! Computes hit time of ray-box intersection.
   //! Uses precomputed reciprocal direction from BVH_Ray for optimal performance.
-  static Standard_Boolean RayBoxIntersection(const BVH_Ray<T, N>& theRay,
-                                             const BVH_Box<T, N>& theBox,
-                                             T&                   theTimeEnter,
-                                             T&                   theTimeLeave)
+  static bool RayBoxIntersection(const BVH_Ray<T, N>& theRay,
+                                 const BVH_Box<T, N>& theBox,
+                                 T&                   theTimeEnter,
+                                 T&                   theTimeLeave)
   {
     if (!theBox.IsValid())
     {
-      return Standard_False;
+      return false;
     }
     return RayBoxIntersection(theRay,
                               theBox.CornerMin(),
@@ -301,11 +301,11 @@ public: //! @name Ray-Box Intersection
   //! Uses precomputed reciprocal direction from BVH_Ray for optimal performance.
   //! Handles parallel rays (infinite inverse direction) explicitly to avoid NaN from 0*inf
   //! when ray origin is exactly on a slab boundary.
-  static Standard_Boolean RayBoxIntersection(const BVH_Ray<T, N>& theRay,
-                                             const BVH_VecNt&     theBoxCMin,
-                                             const BVH_VecNt&     theBoxCMax,
-                                             T&                   theTimeEnter,
-                                             T&                   theTimeLeave)
+  static bool RayBoxIntersection(const BVH_Ray<T, N>& theRay,
+                                 const BVH_VecNt&     theBoxCMin,
+                                 const BVH_VecNt&     theBoxCMax,
+                                 T&                   theTimeEnter,
+                                 T&                   theTimeLeave)
   {
     T aTimeEnter = (std::numeric_limits<T>::lowest)();
     T aTimeLeave = (std::numeric_limits<T>::max)();
@@ -317,7 +317,7 @@ public: //! @name Ray-Box Intersection
       {
         if (theRay.Origin[i] < theBoxCMin[i] || theRay.Origin[i] > theBoxCMax[i])
         {
-          return Standard_False;
+          return false;
         }
         continue;
       }
@@ -327,31 +327,31 @@ public: //! @name Ray-Box Intersection
       aTimeLeave = (std::min)(aTimeLeave, (std::max)(aT1, aT2));
       if (aTimeEnter > aTimeLeave)
       {
-        return Standard_False;
+        return false;
       }
     }
 
     // Check if intersection is behind the ray origin
     if (aTimeLeave < T(0))
     {
-      return Standard_False;
+      return false;
     }
 
     theTimeEnter = aTimeEnter;
     theTimeLeave = aTimeLeave;
-    return Standard_True;
+    return true;
   }
 
   //! Computes hit time of ray-box intersection
-  static Standard_Boolean RayBoxIntersection(const BVH_VecNt&     theRayOrigin,
-                                             const BVH_VecNt&     theRayDirection,
-                                             const BVH_Box<T, N>& theBox,
-                                             T&                   theTimeEnter,
-                                             T&                   theTimeLeave)
+  static bool RayBoxIntersection(const BVH_VecNt&     theRayOrigin,
+                                 const BVH_VecNt&     theRayDirection,
+                                 const BVH_Box<T, N>& theBox,
+                                 T&                   theTimeEnter,
+                                 T&                   theTimeLeave)
   {
     if (!theBox.IsValid())
     {
-      return Standard_False;
+      return false;
     }
     return RayBoxIntersection(theRayOrigin,
                               theRayDirection,
@@ -370,12 +370,12 @@ public: //! @name Ray-Box Intersection
   //! @param theTimeEnter time of ray entering the box
   //! @param theTimeLeave time of ray leaving the box
   //! @return true if ray intersects the box
-  static Standard_Boolean RayBoxIntersection(const BVH_VecNt& theRayOrigin,
-                                             const BVH_VecNt& theRayDirection,
-                                             const BVH_VecNt& theBoxCMin,
-                                             const BVH_VecNt& theBoxCMax,
-                                             T&               theTimeEnter,
-                                             T&               theTimeLeave)
+  static bool RayBoxIntersection(const BVH_VecNt& theRayOrigin,
+                                 const BVH_VecNt& theRayDirection,
+                                 const BVH_VecNt& theBoxCMin,
+                                 const BVH_VecNt& theBoxCMax,
+                                 T&               theTimeEnter,
+                                 T&               theTimeLeave)
   {
     T aTimeEnter = (std::numeric_limits<T>::lowest)();
     T aTimeLeave = (std::numeric_limits<T>::max)();
@@ -387,7 +387,7 @@ public: //! @name Ray-Box Intersection
         // Ray is parallel to this axis slab - check if origin is within bounds
         if (theRayOrigin[i] < theBoxCMin[i] || theRayOrigin[i] > theBoxCMax[i])
         {
-          return Standard_False; // Ray misses the slab entirely
+          return false; // Ray misses the slab entirely
         }
         // Ray is within the slab, doesn't constrain the intersection interval
         continue;
@@ -408,19 +408,19 @@ public: //! @name Ray-Box Intersection
       // Early exit if no intersection
       if (aTimeEnter > aTimeLeave)
       {
-        return Standard_False;
+        return false;
       }
     }
 
     // Check if intersection is behind the ray origin
     if (aTimeLeave < T(0))
     {
-      return Standard_False;
+      return false;
     }
 
     theTimeEnter = aTimeEnter;
     theTimeLeave = aTimeLeave;
-    return Standard_True;
+    return true;
   }
 };
 

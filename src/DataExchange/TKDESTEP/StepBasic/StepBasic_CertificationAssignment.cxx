@@ -29,7 +29,7 @@ StepBasic_CertificationAssignment::StepBasic_CertificationAssignment() {}
 //=================================================================================================
 
 void StepBasic_CertificationAssignment::Init(
-  const Handle(StepBasic_Certification)& aAssignedCertification)
+  const occ::handle<StepBasic_Certification>& aAssignedCertification)
 {
 
   theAssignedCertification = aAssignedCertification;
@@ -37,7 +37,8 @@ void StepBasic_CertificationAssignment::Init(
 
 //=================================================================================================
 
-Handle(StepBasic_Certification) StepBasic_CertificationAssignment::AssignedCertification() const
+occ::handle<StepBasic_Certification> StepBasic_CertificationAssignment::AssignedCertification()
+  const
 {
   return theAssignedCertification;
 }
@@ -45,7 +46,7 @@ Handle(StepBasic_Certification) StepBasic_CertificationAssignment::AssignedCerti
 //=================================================================================================
 
 void StepBasic_CertificationAssignment::SetAssignedCertification(
-  const Handle(StepBasic_Certification)& aAssignedCertification)
+  const occ::handle<StepBasic_Certification>& aAssignedCertification)
 {
   theAssignedCertification = aAssignedCertification;
 }

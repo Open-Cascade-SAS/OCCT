@@ -30,10 +30,10 @@ RWStepElement_RWSurfaceSectionFieldVarying::RWStepElement_RWSurfaceSectionFieldV
 //=================================================================================================
 
 void RWStepElement_RWSurfaceSectionFieldVarying::ReadStep(
-  const Handle(StepData_StepReaderData)&                data,
-  const Standard_Integer                                num,
-  Handle(Interface_Check)&                              ach,
-  const Handle(StepElement_SurfaceSectionFieldVarying)& ent) const
+  const occ::handle<StepData_StepReaderData>&                data,
+  const int                                                  num,
+  occ::handle<Interface_Check>&                              ach,
+  const occ::handle<StepElement_SurfaceSectionFieldVarying>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "surface_section_field_varying"))
@@ -41,16 +41,16 @@ void RWStepElement_RWSurfaceSectionFieldVarying::ReadStep(
 
   // Own fields of SurfaceSectionFieldVarying
 
-  Handle(StepElement_HArray1OfSurfaceSection) aDefinitions;
-  Standard_Integer                            sub1 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>> aDefinitions;
+  int                                                                       sub1 = 0;
   if (data->ReadSubList(num, 1, "definitions", ach, sub1))
   {
-    Standard_Integer nb0  = data->NbParams(sub1);
-    aDefinitions          = new StepElement_HArray1OfSurfaceSection(1, nb0);
-    Standard_Integer num2 = sub1;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0      = data->NbParams(sub1);
+    aDefinitions = new NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>(1, nb0);
+    int num2     = sub1;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepElement_SurfaceSection) anIt0;
+      occ::handle<StepElement_SurfaceSection> anIt0;
       data->ReadEntity(num2,
                        i0,
                        "surface_section",
@@ -61,7 +61,7 @@ void RWStepElement_RWSurfaceSectionFieldVarying::ReadStep(
     }
   }
 
-  Standard_Boolean aAdditionalNodeValues;
+  bool aAdditionalNodeValues;
   data->ReadBoolean(num, 2, "additional_node_values", ach, aAdditionalNodeValues);
 
   // Initialize entity
@@ -71,16 +71,16 @@ void RWStepElement_RWSurfaceSectionFieldVarying::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWSurfaceSectionFieldVarying::WriteStep(
-  StepData_StepWriter&                                  SW,
-  const Handle(StepElement_SurfaceSectionFieldVarying)& ent) const
+  StepData_StepWriter&                                       SW,
+  const occ::handle<StepElement_SurfaceSectionFieldVarying>& ent) const
 {
 
   // Own fields of SurfaceSectionFieldVarying
 
   SW.OpenSub();
-  for (Standard_Integer i0 = 1; i0 <= ent->Definitions()->Length(); i0++)
+  for (int i0 = 1; i0 <= ent->Definitions()->Length(); i0++)
   {
-    Handle(StepElement_SurfaceSection) Var0 = ent->Definitions()->Value(i0);
+    occ::handle<StepElement_SurfaceSection> Var0 = ent->Definitions()->Value(i0);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -91,15 +91,15 @@ void RWStepElement_RWSurfaceSectionFieldVarying::WriteStep(
 //=================================================================================================
 
 void RWStepElement_RWSurfaceSectionFieldVarying::Share(
-  const Handle(StepElement_SurfaceSectionFieldVarying)& ent,
-  Interface_EntityIterator&                             iter) const
+  const occ::handle<StepElement_SurfaceSectionFieldVarying>& ent,
+  Interface_EntityIterator&                                  iter) const
 {
 
   // Own fields of SurfaceSectionFieldVarying
 
-  for (Standard_Integer i1 = 1; i1 <= ent->Definitions()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->Definitions()->Length(); i1++)
   {
-    Handle(StepElement_SurfaceSection) Var0 = ent->Definitions()->Value(i1);
+    occ::handle<StepElement_SurfaceSection> Var0 = ent->Definitions()->Value(i1);
     iter.AddItem(Var0);
   }
 }

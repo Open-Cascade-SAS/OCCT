@@ -51,14 +51,14 @@ static const char* EvolutionString(TNaming_Evolution theEvolution)
   return "UNKNOWN_Evolution";
 }
 
-static Standard_Integer GetNewShapes(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int GetNewShapes(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3 || nb == 4)
   {
     TDF_Label aLabel;
     if (!QADNaming::Entry(arg, aLabel))
       return 1;
-    Handle(TNaming_NamedShape) aNS;
+    occ::handle<TNaming_NamedShape> aNS;
     if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
     {
       di << "Label has no NamedShape\n";
@@ -66,7 +66,7 @@ static Standard_Integer GetNewShapes(Draw_Interpretor& di, Standard_Integer nb, 
     }
     di << EvolutionString(aNS->Evolution());
     TNaming_Iterator anIter(aNS);
-    Standard_Integer a;
+    int              a;
     char             aName[200];
     for (a = 1; anIter.More(); anIter.Next(), a++)
     {
@@ -88,14 +88,14 @@ static Standard_Integer GetNewShapes(Draw_Interpretor& di, Standard_Integer nb, 
   return 0;
 }
 
-static Standard_Integer GetOldShapes(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int GetOldShapes(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3 || nb == 4)
   {
     TDF_Label aLabel;
     if (!QADNaming::Entry(arg, aLabel))
       return 1;
-    Handle(TNaming_NamedShape) aNS;
+    occ::handle<TNaming_NamedShape> aNS;
     if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
     {
       di << "Label has no NamedShape\n";
@@ -103,7 +103,7 @@ static Standard_Integer GetOldShapes(Draw_Interpretor& di, Standard_Integer nb, 
     }
     di << EvolutionString(aNS->Evolution());
     TNaming_Iterator anIter(aNS);
-    Standard_Integer a;
+    int              a;
     char             aName[200];
     for (a = 1; anIter.More(); anIter.Next(), a++)
     {
@@ -128,7 +128,7 @@ static Standard_Integer GetOldShapes(Draw_Interpretor& di, Standard_Integer nb, 
 static int GetAllNew(const TopoDS_Shape&            theShape,
                      const TDF_Label&               theAccess,
                      const TCollection_AsciiString& theName,
-                     Standard_Integer               theIndex)
+                     int                            theIndex)
 {
   TNaming_NewShapeIterator anIter(theShape, theAccess);
   TCollection_AsciiString  aName;
@@ -148,9 +148,9 @@ static int GetAllNew(const TopoDS_Shape&            theShape,
   return theIndex;
 }
 
-static Standard_Integer GetAllNewShapes(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int GetAllNewShapes(Draw_Interpretor& di, int nb, const char** arg)
 {
-  Standard_Integer aResult = 0;
+  int aResult = 0;
   if (nb == 3 || nb == 4)
   {
     TCollection_AsciiString aName((nb == 4) ? arg[3] : "");
@@ -160,13 +160,13 @@ static Standard_Integer GetAllNewShapes(Draw_Interpretor& di, Standard_Integer n
       TDF_Label aLabel;
       if (!QADNaming::Entry(arg, aLabel))
         return 1;
-      Handle(TNaming_NamedShape) aNS;
+      occ::handle<TNaming_NamedShape> aNS;
       if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
       {
         di << "Label has no NamedShape\n";
         return 1;
       }
-      Standard_Integer a;
+      int              a;
       TNaming_Iterator anIter(aNS);
       for (a = 1; anIter.More(); anIter.Next(), a++)
       {
@@ -184,7 +184,7 @@ static Standard_Integer GetAllNewShapes(Draw_Interpretor& di, Standard_Integer n
     }
     else
     { // shape
-      Handle(TDF_Data) DF;
+      occ::handle<TDF_Data> DF;
       if (!DDF::GetDF(arg[1], DF))
       {
         di << "Wrong df\n";
@@ -206,10 +206,10 @@ static Standard_Integer GetAllNewShapes(Draw_Interpretor& di, Standard_Integer n
 static int GetAllOld(const TopoDS_Shape&            theShape,
                      const TDF_Label&               theAccess,
                      const TCollection_AsciiString& theName,
-                     Standard_Integer               theIndex)
+                     int                            theIndex)
 {
-  TCollection_AsciiString    aName;
-  Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(theShape, theAccess);
+  TCollection_AsciiString         aName;
+  occ::handle<TNaming_NamedShape> aNS = TNaming_Tool::NamedShape(theShape, theAccess);
   if (aNS.IsNull())
     return theIndex;
   TNaming_Iterator anIter(aNS);
@@ -230,9 +230,9 @@ static int GetAllOld(const TopoDS_Shape&            theShape,
   return theIndex;
 }
 
-static Standard_Integer GetAllOldShapes(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int GetAllOldShapes(Draw_Interpretor& di, int nb, const char** arg)
 {
-  Standard_Integer aResult = 0;
+  int aResult = 0;
   if (nb == 3 || nb == 4)
   {
     TCollection_AsciiString aName((nb == 4) ? arg[3] : "");
@@ -242,13 +242,13 @@ static Standard_Integer GetAllOldShapes(Draw_Interpretor& di, Standard_Integer n
       TDF_Label aLabel;
       if (!QADNaming::Entry(arg, aLabel))
         return 1;
-      Handle(TNaming_NamedShape) aNS;
+      occ::handle<TNaming_NamedShape> aNS;
       if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
       {
         di << "Label has no NamedShape\n";
         return 1;
       }
-      Standard_Integer a;
+      int              a;
       TNaming_Iterator anIter(aNS);
       for (a = 1; anIter.More(); anIter.Next(), a++)
       {
@@ -266,7 +266,7 @@ static Standard_Integer GetAllOldShapes(Draw_Interpretor& di, Standard_Integer n
     }
     else
     { // shape
-      Handle(TDF_Data) DF;
+      occ::handle<TDF_Data> DF;
       if (!DDF::GetDF(arg[1], DF))
       {
         di << "Wrong df\n";
@@ -285,13 +285,13 @@ static Standard_Integer GetAllOldShapes(Draw_Interpretor& di, Standard_Integer n
   return 0;
 }
 
-static Standard_Integer GetSameShapes(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int GetSameShapes(Draw_Interpretor& di, int nb, const char** arg)
 {
   TCollection_AsciiString aRes;
   if (nb == 3)
   {
-    Standard_Integer aResult = 0;
-    Handle(TDF_Data) DF;
+    int                   aResult = 0;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
     {
       di << "Wrong df\n";
@@ -324,10 +324,10 @@ static Standard_Integer GetSameShapes(Draw_Interpretor& di, Standard_Integer nb,
 
 void QADNaming::IteratorsCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "Naming builder commands";
 

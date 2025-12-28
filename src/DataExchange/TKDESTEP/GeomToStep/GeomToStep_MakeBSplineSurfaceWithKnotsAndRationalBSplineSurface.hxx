@@ -37,15 +37,14 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface(
-    const Handle(Geom_BSplineSurface)& Bsplin,
-    const StepData_Factors&            theLocalFactors = StepData_Factors());
+    const occ::handle<Geom_BSplineSurface>& Bsplin,
+    const StepData_Factors&                 theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& Value()
-    const;
+  Standard_EXPORT const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>&
+                        Value() const;
 
-protected:
 private:
-  Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)
+  occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>
     theBSplineSurfaceWithKnotsAndRationalBSplineSurface;
 };
 

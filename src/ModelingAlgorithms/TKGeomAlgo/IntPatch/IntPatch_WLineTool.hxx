@@ -14,7 +14,8 @@
 #ifndef _IntPatch_WLineTool_HeaderFile
 #define _IntPatch_WLineTool_HeaderFile
 
-#include <IntPatch_SequenceOfLine.hxx>
+#include <IntPatch_Line.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IntPatch_WLine.hxx>
 #include <NCollection_List.hxx>
 
@@ -40,12 +41,12 @@ public:
   //!
   //! Returns new WLine or null WLine if the number
   //! of the points is less than 2.
-  Standard_EXPORT static Handle(IntPatch_WLine) ComputePurgedWLine(
-    const Handle(IntPatch_WLine)&      theWLine,
-    const Handle(Adaptor3d_Surface)&   theS1,
-    const Handle(Adaptor3d_Surface)&   theS2,
-    const Handle(Adaptor3d_TopolTool)& theDom1,
-    const Handle(Adaptor3d_TopolTool)& theDom2);
+  Standard_EXPORT static occ::handle<IntPatch_WLine> ComputePurgedWLine(
+    const occ::handle<IntPatch_WLine>&      theWLine,
+    const occ::handle<Adaptor3d_Surface>&   theS1,
+    const occ::handle<Adaptor3d_Surface>&   theS2,
+    const occ::handle<Adaptor3d_TopolTool>& theDom1,
+    const occ::handle<Adaptor3d_TopolTool>& theDom2);
 
   //! Joins all WLines from theSlin to one if it is possible and records
   //! the result into theSlin again. Lines will be kept to be split if:
@@ -54,11 +55,11 @@ public:
   //!
   //! In addition, if points in theSPnt lies at least in one of the line in theSlin,
   //! this point will be deleted.
-  Standard_EXPORT static void JoinWLines(IntPatch_SequenceOfLine&  theSlin,
-                                         IntPatch_SequenceOfPoint& theSPnt,
-                                         Handle(Adaptor3d_Surface) theS1,
-                                         Handle(Adaptor3d_Surface) theS2,
-                                         const Standard_Real       theTol3D);
+  Standard_EXPORT static void JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+                                         NCollection_Sequence<IntPatch_Point>&             theSPnt,
+                                         occ::handle<Adaptor3d_Surface>                    theS1,
+                                         occ::handle<Adaptor3d_Surface>                    theS2,
+                                         const double theTol3D);
 
   //! Extends every line from theSlin (if it is possible) to be started/finished
   //! in strictly determined point (in the place of joint of two lines).
@@ -72,17 +73,17 @@ public:
   //!               <U-period of 2nd surface>, <V-period of 2nd surface>}.
   //! theListOfCriticalPoints must contain 3D-points where joining is disabled.
   Standard_EXPORT static void ExtendTwoWLines(
-    IntPatch_SequenceOfLine&         theSlin,
-    const Handle(Adaptor3d_Surface)& theS1,
-    const Handle(Adaptor3d_Surface)& theS2,
-    const Standard_Real              theToler3D,
-    const Standard_Real* const       theArrPeriods,
-    const Bnd_Box2d&                 theBoxS1,
-    const Bnd_Box2d&                 theBoxS2,
-    const NCollection_List<gp_Pnt>&  theListOfCriticalPoints);
+    NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+    const occ::handle<Adaptor3d_Surface>&             theS1,
+    const occ::handle<Adaptor3d_Surface>&             theS2,
+    const double                                      theToler3D,
+    const double* const                               theArrPeriods,
+    const Bnd_Box2d&                                  theBoxS1,
+    const Bnd_Box2d&                                  theBoxS2,
+    const NCollection_List<gp_Pnt>&                   theListOfCriticalPoints);
 
   //! Max angle to concatenate two WLines to avoid result with C0-continuity
-  static const Standard_Real myMaxConcatAngle;
+  static const double myMaxConcatAngle;
 };
 
 #endif

@@ -34,28 +34,28 @@ class QuadraticFunction2D : public math_MultipleVarFunctionWithGradient
 public:
   QuadraticFunction2D() {}
 
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     if (theX.Length() != 2)
-      return Standard_False;
-    Standard_Real dx = theX(1) - 1.0;
-    Standard_Real dy = theX(2) - 2.0;
-    theF             = dx * dx + dy * dy;
-    return Standard_True;
+      return false;
+    double dx = theX(1) - 1.0;
+    double dy = theX(2) - 2.0;
+    theF      = dx * dx + dy * dy;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     if (theX.Length() != 2 || theG.Length() != 2)
-      return Standard_False;
+      return false;
     theG(1) = 2.0 * (theX(1) - 1.0);
     theG(2) = 2.0 * (theX(2) - 2.0);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }
@@ -67,32 +67,32 @@ class RosenbrockFunction : public math_MultipleVarFunctionWithGradient
 public:
   RosenbrockFunction() {}
 
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     if (theX.Length() != 2)
-      return Standard_False;
-    Standard_Real x  = theX(1);
-    Standard_Real y  = theX(2);
-    Standard_Real t1 = y - x * x;
-    Standard_Real t2 = 1.0 - x;
-    theF             = 100.0 * t1 * t1 + t2 * t2;
-    return Standard_True;
+      return false;
+    double x  = theX(1);
+    double y  = theX(2);
+    double t1 = y - x * x;
+    double t2 = 1.0 - x;
+    theF      = 100.0 * t1 * t1 + t2 * t2;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     if (theX.Length() != 2 || theG.Length() != 2)
-      return Standard_False;
-    Standard_Real x = theX(1);
-    Standard_Real y = theX(2);
-    theG(1)         = -400.0 * x * (y - x * x) - 2.0 * (1.0 - x);
-    theG(2)         = 200.0 * (y - x * x);
-    return Standard_True;
+      return false;
+    double x = theX(1);
+    double y = theX(2);
+    theG(1)  = -400.0 * x * (y - x * x) - 2.0 * (1.0 - x);
+    theG(2)  = 200.0 * (y - x * x);
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }
@@ -104,27 +104,27 @@ class Paraboloid3D : public math_MultipleVarFunctionWithGradient
 public:
   Paraboloid3D() {}
 
-  Standard_Integer NbVariables() const override { return 3; }
+  int NbVariables() const override { return 3; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     if (theX.Length() != 3)
-      return Standard_False;
+      return false;
     theF = theX(1) * theX(1) + 2.0 * theX(2) * theX(2) + 3.0 * theX(3) * theX(3);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     if (theX.Length() != 3 || theG.Length() != 3)
-      return Standard_False;
+      return false;
     theG(1) = 2.0 * theX(1);
     theG(2) = 4.0 * theX(2);
     theG(3) = 6.0 * theX(3);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }
@@ -134,8 +134,8 @@ public:
 TEST(MathBFGSTest, QuadraticFunction2DOptimization)
 {
   QuadraticFunction2D aFunc;
-  Standard_Real       aTolerance     = 1.0e-8;
-  Standard_Integer    aMaxIterations = 100;
+  double              aTolerance     = 1.0e-8;
+  int                 aMaxIterations = 100;
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
@@ -165,8 +165,8 @@ TEST(MathBFGSTest, QuadraticFunction2DOptimization)
 TEST(MathBFGSTest, RosenbrockFunctionOptimization)
 {
   RosenbrockFunction aFunc;
-  Standard_Real      aTolerance     = 1.0e-6;
-  Standard_Integer   aMaxIterations = 1000; // Rosenbrock can be challenging
+  double             aTolerance     = 1.0e-6;
+  int                aMaxIterations = 1000; // Rosenbrock can be challenging
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
@@ -188,9 +188,9 @@ TEST(MathBFGSTest, RosenbrockFunctionOptimization)
 
 TEST(MathBFGSTest, Paraboloid3DOptimization)
 {
-  Paraboloid3D     aFunc;
-  Standard_Real    aTolerance     = 1.0e-8;
-  Standard_Integer aMaxIterations = 100;
+  Paraboloid3D aFunc;
+  double       aTolerance     = 1.0e-8;
+  int          aMaxIterations = 100;
 
   math_BFGS anOptimizer(3, aTolerance, aMaxIterations);
 
@@ -215,8 +215,8 @@ TEST(MathBFGSTest, Paraboloid3DOptimization)
 TEST(MathBFGSTest, BoundaryConstraints)
 {
   QuadraticFunction2D aFunc;
-  Standard_Real       aTolerance     = 1.0e-8;
-  Standard_Integer    aMaxIterations = 100;
+  double              aTolerance     = 1.0e-8;
+  int                 aMaxIterations = 100;
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
@@ -307,8 +307,8 @@ TEST(MathBFGSTest, DifferentTolerances)
 
   // Test with very tight tolerance
   {
-    Standard_Real aTightTolerance = 1.0e-12;
-    math_BFGS     anOptimizer(2, aTightTolerance);
+    double    aTightTolerance = 1.0e-12;
+    math_BFGS anOptimizer(2, aTightTolerance);
 
     math_Vector aStartPoint(1, 2);
     aStartPoint(1) = 2.0;
@@ -325,8 +325,8 @@ TEST(MathBFGSTest, DifferentTolerances)
 
   // Test with loose tolerance
   {
-    Standard_Real aLooseTolerance = 1.0e-3;
-    math_BFGS     anOptimizer(2, aLooseTolerance);
+    double    aLooseTolerance = 1.0e-3;
+    math_BFGS anOptimizer(2, aLooseTolerance);
 
     math_Vector aStartPoint(1, 2);
     aStartPoint(1) = 10.0;
@@ -345,8 +345,8 @@ TEST(MathBFGSTest, DifferentTolerances)
 TEST(MathBFGSTest, MaxIterationsLimit)
 {
   RosenbrockFunction aFunc;                        // Challenging function
-  Standard_Real      aTolerance         = 1.0e-12; // Very tight tolerance
-  Standard_Integer   aVeryFewIterations = 5;       // Very few iterations
+  double             aTolerance         = 1.0e-12; // Very tight tolerance
+  int                aVeryFewIterations = 5;       // Very few iterations
 
   math_BFGS anOptimizer(2, aTolerance, aVeryFewIterations);
 
@@ -458,10 +458,10 @@ TEST(MathBFGSTest, MultipleOptimizations)
   math_BFGS           anOptimizer(2);
 
   // Perform multiple optimizations with the same optimizer instance
-  std::vector<std::pair<Standard_Real, Standard_Real>> aStartPoints = {{5.0, 7.0},
-                                                                       {-3.0, -4.0},
-                                                                       {0.5, 1.5},
-                                                                       {10.0, -5.0}};
+  std::vector<std::pair<double, double>> aStartPoints = {{5.0, 7.0},
+                                                         {-3.0, -4.0},
+                                                         {0.5, 1.5},
+                                                         {10.0, -5.0}};
 
   for (const auto& aStart : aStartPoints)
   {
@@ -483,27 +483,27 @@ class SquareFunction1D : public math_MultipleVarFunctionWithGradient
 public:
   SquareFunction1D() {}
 
-  Standard_Integer NbVariables() const override { return 1; }
+  int NbVariables() const override { return 1; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     if (theX.Length() != 1)
-      return Standard_False;
-    const Standard_Real x = theX(1);
-    theF                  = x * x;
-    return Standard_True;
+      return false;
+    const double x = theX(1);
+    theF           = x * x;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     if (theX.Length() != 1 || theG.Length() != 1)
-      return Standard_False;
-    const Standard_Real x = theX(1);
-    theG(1)               = 2.0 * x;
-    return Standard_True;
+      return false;
+    const double x = theX(1);
+    theG(1)        = 2.0 * x;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }

@@ -67,7 +67,7 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderVsSphereIntersection)
   EXPECT_GT(anIntersector.NbCurve(), 0);
 
   // Test that we can access all curves without exceptions
-  for (Standard_Integer i = 1; i <= anIntersector.NbCurve(); i++)
+  for (int i = 1; i <= anIntersector.NbCurve(); i++)
   {
     // This should not throw any exceptions - just verify we can access the curve
     EXPECT_NO_THROW(anIntersector.Curve(i));
@@ -84,15 +84,15 @@ TEST_F(IntAna_IntQuadQuad_Test, NextCurveMethodCorrectness)
   EXPECT_TRUE(anIntersector.IsDone());
 
   // Test HasNextCurve and NextCurve for valid indices
-  for (Standard_Integer i = 1; i <= anIntersector.NbCurve(); i++)
+  for (int i = 1; i <= anIntersector.NbCurve(); i++)
   {
     // These methods should not crash and should return consistent results
-    Standard_Boolean aHasNext = anIntersector.HasNextCurve(i);
+    bool aHasNext = anIntersector.HasNextCurve(i);
 
     if (aHasNext) // Only test NextCurve when HasNextCurve is true
     {
-      Standard_Boolean anOpposite;
-      Standard_Integer aNextIdx = anIntersector.NextCurve(i, anOpposite);
+      bool anOpposite;
+      int  aNextIdx = anIntersector.NextCurve(i, anOpposite);
 
       // Next curve index should be valid
       EXPECT_GT(aNextIdx, 0);
@@ -116,11 +116,11 @@ TEST_F(IntAna_IntQuadQuad_Test, NextCurveBoundaryConditions)
   EXPECT_THROW(anIntersector.HasNextCurve(anIntersector.NbCurve() + 1), Standard_OutOfRange);
 
   // Test NextCurve on curves that don't have next curves
-  for (Standard_Integer i = 1; i <= anIntersector.NbCurve(); i++)
+  for (int i = 1; i <= anIntersector.NbCurve(); i++)
   {
     if (!anIntersector.HasNextCurve(i)) // Only test exception when HasNextCurve is false
     {
-      Standard_Boolean anOpposite;
+      bool anOpposite;
       EXPECT_THROW(anIntersector.NextCurve(i, anOpposite), Standard_DomainError);
     }
   }
@@ -150,12 +150,12 @@ TEST_F(IntAna_IntQuadQuad_Test, ConnectedCurvesScenario)
   EXPECT_FALSE(anIntersector.IdenticalElements());
 
   // Verify that NextCurve method works correctly for each curve
-  for (Standard_Integer i = 1; i <= anIntersector.NbCurve(); i++)
+  for (int i = 1; i <= anIntersector.NbCurve(); i++)
   {
     if (anIntersector.HasNextCurve(i)) // Only test NextCurve when HasNextCurve is true
     {
-      Standard_Boolean anOpposite;
-      Standard_Integer aNextIdx = anIntersector.NextCurve(i, anOpposite);
+      bool anOpposite;
+      int  aNextIdx = anIntersector.NextCurve(i, anOpposite);
 
       // Validate the result
       EXPECT_GT(aNextIdx, 0);
@@ -165,8 +165,8 @@ TEST_F(IntAna_IntQuadQuad_Test, ConnectedCurvesScenario)
       // (though possibly with different opposite flag)
       if (anIntersector.HasNextCurve(aNextIdx))
       {
-        Standard_Boolean aReverseOpposite;
-        Standard_Integer aReverseNext = anIntersector.NextCurve(aNextIdx, aReverseOpposite);
+        bool aReverseOpposite;
+        int  aReverseNext = anIntersector.NextCurve(aNextIdx, aReverseOpposite);
         // This creates a circular reference which is geometrically possible
         EXPECT_GT(aReverseNext, 0);
         EXPECT_LE(aReverseNext, anIntersector.NbCurve());
@@ -188,16 +188,16 @@ TEST_F(IntAna_IntQuadQuad_Test, IndexingConsistencyTest)
   EXPECT_TRUE(anIntersector.IsDone());
 
   // Test all valid curve indices
-  for (Standard_Integer i = 1; i <= anIntersector.NbCurve(); i++)
+  for (int i = 1; i <= anIntersector.NbCurve(); i++)
   {
     // These calls should be consistent and not crash
-    Standard_Boolean aHasNext = anIntersector.HasNextCurve(i);
+    bool aHasNext = anIntersector.HasNextCurve(i);
 
     if (aHasNext) // Only test NextCurve when HasNextCurve is true
     {
-      Standard_Boolean anOpposite;
+      bool anOpposite;
       // This should not crash or return invalid values
-      Standard_Integer aNextIdx = anIntersector.NextCurve(i, anOpposite);
+      int aNextIdx = anIntersector.NextCurve(i, anOpposite);
 
       EXPECT_GT(aNextIdx, 0);
       EXPECT_LE(aNextIdx, anIntersector.NbCurve());

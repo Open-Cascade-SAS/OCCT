@@ -40,9 +40,9 @@ const Standard_GUID& TDataXtd_Point::GetID()
 
 //=================================================================================================
 
-Handle(TDataXtd_Point) TDataXtd_Point::Set(const TDF_Label& L)
+occ::handle<TDataXtd_Point> TDataXtd_Point::Set(const TDF_Label& L)
 {
-  Handle(TDataXtd_Point) A;
+  occ::handle<TDataXtd_Point> A;
   if (!L.FindAttribute(TDataXtd_Point::GetID(), A))
   {
     A = new TDataXtd_Point();
@@ -53,11 +53,11 @@ Handle(TDataXtd_Point) TDataXtd_Point::Set(const TDF_Label& L)
 
 //=================================================================================================
 
-Handle(TDataXtd_Point) TDataXtd_Point::Set(const TDF_Label& L, const gp_Pnt& P)
+occ::handle<TDataXtd_Point> TDataXtd_Point::Set(const TDF_Label& L, const gp_Pnt& P)
 {
-  Handle(TDataXtd_Point) A = Set(L);
+  occ::handle<TDataXtd_Point> A = Set(L);
 
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   if (L.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
     if (!aNS->Get().IsNull())

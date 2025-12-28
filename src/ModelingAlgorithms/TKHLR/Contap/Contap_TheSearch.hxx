@@ -22,8 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Contap_SequenceOfSegmentOfTheSearch.hxx>
-#include <Contap_SequenceOfPathPointOfTheSearch.hxx>
+#include <Contap_TheSegmentOfTheSearch.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Contap_ThePathPointOfTheSearch.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class StdFail_NotDone;
@@ -50,71 +51,70 @@ public:
   //! F = 0.
   //! TolBoundary defines if a curve is on Q.
   //! TolTangency defines if a point is on Q.
-  Standard_EXPORT void Perform(Contap_ArcFunction&                F,
-                               const Handle(Adaptor3d_TopolTool)& Domain,
-                               const Standard_Real                TolBoundary,
-                               const Standard_Real                TolTangency,
-                               const Standard_Boolean RecheckOnRegularity = Standard_False);
+  Standard_EXPORT void Perform(Contap_ArcFunction&                     F,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain,
+                               const double                            TolBoundary,
+                               const double                            TolTangency,
+                               const bool                              RecheckOnRegularity = false);
 
   //! Returns True if the calculus was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns true if all arc of the Arcs are solution (inside
   //! the surface).
   //! An exception is raised if IsDone returns False.
-  Standard_Boolean AllArcSolution() const;
+  bool AllArcSolution() const;
 
   //! Returns the number of resulting points.
   //! An exception is raised if IsDone returns False (NotDone).
-  Standard_Integer NbPoints() const;
+  int NbPoints() const;
 
   //! Returns the resulting point of range Index.
   //! The exception NotDone is raised if IsDone() returns
   //! False.
   //! The exception OutOfRange is raised if
   //! Index <= 0 or Index > NbPoints.
-  const Contap_ThePathPointOfTheSearch& Point(const Standard_Integer Index) const;
+  const Contap_ThePathPointOfTheSearch& Point(const int Index) const;
 
   //! Returns the number of the resulting segments.
   //! An exception is raised if IsDone returns False (NotDone).
-  Standard_Integer NbSegments() const;
+  int NbSegments() const;
 
   //! Returns the resulting segment of range Index.
   //! The exception NotDone is raised if IsDone() returns
   //! False.
   //! The exception OutOfRange is raised if
   //! Index <= 0 or Index > NbPoints.
-  const Contap_TheSegmentOfTheSearch& Segment(const Standard_Integer Index) const;
+  const Contap_TheSegmentOfTheSearch& Segment(const int Index) const;
 
-protected:
 private:
-  Standard_Boolean                      done;
-  Standard_Boolean                      all;
-  Contap_SequenceOfSegmentOfTheSearch   sseg;
-  Contap_SequenceOfPathPointOfTheSearch spnt;
+  bool                                                 done;
+  bool                                                 all;
+  NCollection_Sequence<Contap_TheSegmentOfTheSearch>   sseg;
+  NCollection_Sequence<Contap_ThePathPointOfTheSearch> spnt;
 };
 
-#define TheVertex Handle(Adaptor3d_HVertex)
+#define TheVertex occ::handle<Adaptor3d_HVertex>
 #define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_Curve2d)
+#define TheArc occ::handle<Adaptor2d_Curve2d>
 #define TheArc_hxx <Adaptor2d_Curve2d.hxx>
 #define TheArcTool Contap_HCurve2dTool
 #define TheArcTool_hxx <Contap_HCurve2dTool.hxx>
 #define TheSOBTool Contap_HContTool
 #define TheSOBTool_hxx <Contap_HContTool.hxx>
-#define Handle_TheTopolTool Handle(Adaptor3d_TopolTool)
+#define Handle_TheTopolTool occ::handle<Adaptor3d_TopolTool>
 #define TheTopolTool Adaptor3d_TopolTool
 #define TheTopolTool_hxx <Adaptor3d_TopolTool.hxx>
 #define TheFunction Contap_ArcFunction
 #define TheFunction_hxx <Contap_ArcFunction.hxx>
 #define IntStart_ThePathPoint Contap_ThePathPointOfTheSearch
 #define IntStart_ThePathPoint_hxx <Contap_ThePathPointOfTheSearch.hxx>
-#define IntStart_SequenceOfPathPoint Contap_SequenceOfPathPointOfTheSearch
-#define IntStart_SequenceOfPathPoint_hxx <Contap_SequenceOfPathPointOfTheSearch.hxx>
+#define IntStart_SequenceOfPathPoint NCollection_Sequence<Contap_ThePathPointOfTheSearch>
+#define IntStart_SequenceOfPathPoint_hxx <NCollection_Sequence<Contap_ThePathPointOfTheSearch>.hxx>
 #define IntStart_TheSegment Contap_TheSegmentOfTheSearch
 #define IntStart_TheSegment_hxx <Contap_TheSegmentOfTheSearch.hxx>
-#define IntStart_SequenceOfSegment Contap_SequenceOfSegmentOfTheSearch
-#define IntStart_SequenceOfSegment_hxx <Contap_SequenceOfSegmentOfTheSearch.hxx>
+#define IntStart_SequenceOfSegment NCollection_Sequence<Contap_TheSegmentOfTheSearch>
+#define IntStart_SequenceOfSegment_hxx <NCollection_Sequence<Contap_TheSegmentOfTheSearch>.hxx>
 #define IntStart_SearchOnBoundaries Contap_TheSearch
 #define IntStart_SearchOnBoundaries_hxx <Contap_TheSearch.hxx>
 

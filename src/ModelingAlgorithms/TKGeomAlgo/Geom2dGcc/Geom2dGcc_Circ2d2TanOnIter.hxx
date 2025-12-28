@@ -53,10 +53,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCirc& Qualified1,
                                              const Geom2dGcc_QCurve&     Qualified2,
                                              const gp_Lin2d&             OnLine,
-                                             const Standard_Real         Param1,
-                                             const Standard_Real         Param2,
-                                             const Standard_Real         Param3,
-                                             const Standard_Real         Tolerance);
+                                             const double                Param1,
+                                             const double                Param2,
+                                             const double                Param3,
+                                             const double                Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d line and a curve and
@@ -66,10 +66,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin& Qualified1,
                                              const Geom2dGcc_QCurve&    Qualified2,
                                              const gp_Lin2d&            OnLine,
-                                             const Standard_Real        Param1,
-                                             const Standard_Real        Param2,
-                                             const Standard_Real        Param3,
-                                             const Standard_Real        Tolerance);
+                                             const double               Param1,
+                                             const double               Param2,
+                                             const double               Param3,
+                                             const double               Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to two curves and
@@ -80,10 +80,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Qualified1,
                                              const Geom2dGcc_QCurve& Qualified2,
                                              const gp_Lin2d&         OnLine,
-                                             const Standard_Real     Param1,
-                                             const Standard_Real     Param2,
-                                             const Standard_Real     Param3,
-                                             const Standard_Real     Tolerance);
+                                             const double            Param1,
+                                             const double            Param2,
+                                             const double            Param3,
+                                             const double            Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d point and a curve and
@@ -93,9 +93,9 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Qualified1,
                                              const gp_Pnt2d&         Point2,
                                              const gp_Lin2d&         OnLine,
-                                             const Standard_Real     Param1,
-                                             const Standard_Real     Param2,
-                                             const Standard_Real     Tolerance);
+                                             const double            Param1,
+                                             const double            Param2,
+                                             const double            Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d circle and a curve and
@@ -105,10 +105,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCirc& Qualified1,
                                              const Geom2dGcc_QCurve&     Qualified2,
                                              const gp_Circ2d&            OnCirc,
-                                             const Standard_Real         Param1,
-                                             const Standard_Real         Param2,
-                                             const Standard_Real         Param3,
-                                             const Standard_Real         Tolerance);
+                                             const double                Param1,
+                                             const double                Param2,
+                                             const double                Param3,
+                                             const double                Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d line and a curve and
@@ -118,10 +118,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin& Qualified1,
                                              const Geom2dGcc_QCurve&    Qualified2,
                                              const gp_Circ2d&           OnCirc,
-                                             const Standard_Real        Param1,
-                                             const Standard_Real        Param2,
-                                             const Standard_Real        Param3,
-                                             const Standard_Real        Tolerance);
+                                             const double               Param1,
+                                             const double               Param2,
+                                             const double               Param3,
+                                             const double               Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to two curves and
@@ -132,10 +132,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Qualified1,
                                              const Geom2dGcc_QCurve& Qualified2,
                                              const gp_Circ2d&        OnCirc,
-                                             const Standard_Real     Param1,
-                                             const Standard_Real     Param2,
-                                             const Standard_Real     Param3,
-                                             const Standard_Real     Tolerance);
+                                             const double            Param1,
+                                             const double            Param2,
+                                             const double            Param3,
+                                             const double            Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d point and a curve and
@@ -145,9 +145,9 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve& Qualified1,
                                              const gp_Pnt2d&         Point2,
                                              const gp_Circ2d&        OnCirc,
-                                             const Standard_Real     Param1,
-                                             const Standard_Real     Param2,
-                                             const Standard_Real     Tolerance);
+                                             const double            Param1,
+                                             const double            Param2,
+                                             const double            Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d circle and a curve and
@@ -158,10 +158,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedCirc& Qualified1,
                                              const Geom2dGcc_QCurve&     Qualified2,
                                              const Geom2dAdaptor_Curve&  OnCurv,
-                                             const Standard_Real         Param1,
-                                             const Standard_Real         Param2,
-                                             const Standard_Real         ParamOn,
-                                             const Standard_Real         Tolerance);
+                                             const double                Param1,
+                                             const double                Param2,
+                                             const double                ParamOn,
+                                             const double                Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d line and a curve and
@@ -172,10 +172,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const GccEnt_QualifiedLin& Qualified1,
                                              const Geom2dGcc_QCurve&    Qualified2,
                                              const Geom2dAdaptor_Curve& OnCurve,
-                                             const Standard_Real        Param1,
-                                             const Standard_Real        Param2,
-                                             const Standard_Real        ParamOn,
-                                             const Standard_Real        Tolerance);
+                                             const double               Param1,
+                                             const double               Param2,
+                                             const double               ParamOn,
+                                             const double               Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d Point and a curve and
@@ -186,9 +186,9 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&    Qualified1,
                                              const gp_Pnt2d&            Point2,
                                              const Geom2dAdaptor_Curve& OnCurve,
-                                             const Standard_Real        Param1,
-                                             const Standard_Real        ParamOn,
-                                             const Standard_Real        Tolerance);
+                                             const double               Param1,
+                                             const double               ParamOn,
+                                             const double               Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to two curves and
@@ -200,14 +200,14 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d2TanOnIter(const Geom2dGcc_QCurve&    Qualified1,
                                              const Geom2dGcc_QCurve&    Qualified2,
                                              const Geom2dAdaptor_Curve& OnCurve,
-                                             const Standard_Real        Param1,
-                                             const Standard_Real        Param2,
-                                             const Standard_Real        ParamOn,
-                                             const Standard_Real        Tolerance);
+                                             const double               Param1,
+                                             const double               Param2,
+                                             const double               ParamOn,
+                                             const double               Tolerance);
 
   //! This method returns True if the construction
   //! algorithm succeeded.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the solution.
   //! It raises NotDone if the construction algorithm
@@ -224,9 +224,7 @@ public:
   //! on the argument curv.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT void Tangency1(Standard_Real& ParSol,
-                                 Standard_Real& ParArg,
-                                 gp_Pnt2d&      PntSol) const;
+  Standard_EXPORT void Tangency1(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! Returns information about the tangency point between
   //! the result and the second argument.
@@ -236,40 +234,37 @@ public:
   //! on the argument curv.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT void Tangency2(Standard_Real& ParSol,
-                                 Standard_Real& ParArg,
-                                 gp_Pnt2d&      PntSol) const;
+  Standard_EXPORT void Tangency2(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! Returns information about the center (on the curv) of the
   //! result and the third argument.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT void CenterOn3(Standard_Real& ParArg, gp_Pnt2d& PntSol) const;
+  Standard_EXPORT void CenterOn3(double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT Standard_Boolean IsTheSame1() const;
+  Standard_EXPORT bool IsTheSame1() const;
 
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT Standard_Boolean IsTheSame2() const;
+  Standard_EXPORT bool IsTheSame2() const;
 
-protected:
 private:
-  Standard_Boolean WellDone;
-  gp_Circ2d        cirsol;
-  GccEnt_Position  qualifier1;
-  GccEnt_Position  qualifier2;
-  Standard_Boolean TheSame1;
-  Standard_Boolean TheSame2;
-  gp_Pnt2d         pnttg1sol;
-  gp_Pnt2d         pnttg2sol;
-  gp_Pnt2d         pntcen;
-  Standard_Real    par1sol;
-  Standard_Real    par2sol;
-  Standard_Real    pararg1;
-  Standard_Real    pararg2;
-  Standard_Real    parcen3;
+  bool            WellDone;
+  gp_Circ2d       cirsol;
+  GccEnt_Position qualifier1;
+  GccEnt_Position qualifier2;
+  bool            TheSame1;
+  bool            TheSame2;
+  gp_Pnt2d        pnttg1sol;
+  gp_Pnt2d        pnttg2sol;
+  gp_Pnt2d        pntcen;
+  double          par1sol;
+  double          par2sol;
+  double          pararg1;
+  double          pararg2;
+  double          parcen3;
 };
 
 #endif // _Geom2dGcc_Circ2d2TanOnIter_HeaderFile

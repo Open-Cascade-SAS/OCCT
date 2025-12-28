@@ -16,26 +16,25 @@
 #include <IGESData_IGESModel.hxx>
 #include <IGESSelect_SetLabel.hxx>
 #include <Interface_CopyTool.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SetLabel, IGESSelect_ModelModifier)
 
-IGESSelect_SetLabel::IGESSelect_SetLabel(const Standard_Integer mode,
-                                         const Standard_Boolean enforce)
-    : IGESSelect_ModelModifier(Standard_False),
+IGESSelect_SetLabel::IGESSelect_SetLabel(const int mode, const bool enforce)
+    : IGESSelect_ModelModifier(false),
       themode(mode),
       theforce(enforce)
 {
 }
 
-void IGESSelect_SetLabel::Performing(IFSelect_ContextModif&            ctx,
-                                     const Handle(IGESData_IGESModel)& target,
+void IGESSelect_SetLabel::Performing(IFSelect_ContextModif&                 ctx,
+                                     const occ::handle<IGESData_IGESModel>& target,
                                      Interface_CopyTool& /*TC*/) const
 {
-  Handle(TCollection_HAsciiString) lab;
+  occ::handle<TCollection_HAsciiString> lab;
   for (ctx.Start(); ctx.More(); ctx.Next())
   {
     DeclareAndCast(IGESData_IGESEntity, iges, ctx.ValueResult());

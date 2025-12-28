@@ -19,24 +19,24 @@
 #include <BOPAlgo_GlueEnum.hxx>
 
 #include <string.h>
-static Standard_Integer boptions(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer brunparallel(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bnondestructive(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bfuzzyvalue(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bGlue(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bdrawwarnshapes(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcheckinverted(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer buseobb(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bsimplify(Draw_Interpretor&, Standard_Integer, const char**);
+static int boptions(Draw_Interpretor&, int, const char**);
+static int brunparallel(Draw_Interpretor&, int, const char**);
+static int bnondestructive(Draw_Interpretor&, int, const char**);
+static int bfuzzyvalue(Draw_Interpretor&, int, const char**);
+static int bGlue(Draw_Interpretor&, int, const char**);
+static int bdrawwarnshapes(Draw_Interpretor&, int, const char**);
+static int bcheckinverted(Draw_Interpretor&, int, const char**);
+static int buseobb(Draw_Interpretor&, int, const char**);
+static int bsimplify(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::OptionCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
   // Commands
@@ -112,7 +112,7 @@ void BOPTest::OptionCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer boptions(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int boptions(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 2)
   {
@@ -192,7 +192,7 @@ Standard_Integer boptions(Draw_Interpretor& di, Standard_Integer n, const char**
 
 //=================================================================================================
 
-Standard_Integer bfuzzyvalue(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bfuzzyvalue(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -200,14 +200,14 @@ Standard_Integer bfuzzyvalue(Draw_Interpretor& di, Standard_Integer n, const cha
     return 1;
   }
 
-  Standard_Real aFuzzyValue = Draw::Atof(a[1]);
+  double aFuzzyValue = Draw::Atof(a[1]);
   BOPTest_Objects::SetFuzzyValue(aFuzzyValue);
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer brunparallel(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int brunparallel(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -215,14 +215,14 @@ Standard_Integer brunparallel(Draw_Interpretor& di, Standard_Integer n, const ch
     return 1;
   }
 
-  Standard_Integer iRunParallel = Draw::Atoi(a[1]);
+  int iRunParallel = Draw::Atoi(a[1]);
   BOPTest_Objects::SetRunParallel(iRunParallel != 0);
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer bnondestructive(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bnondestructive(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -230,14 +230,14 @@ Standard_Integer bnondestructive(Draw_Interpretor& di, Standard_Integer n, const
     return 1;
   }
 
-  Standard_Integer iNonDestructive = Draw::Atoi(a[1]);
+  int iNonDestructive = Draw::Atoi(a[1]);
   BOPTest_Objects::SetNonDestructive(iNonDestructive != 0);
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer bGlue(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bGlue(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -245,7 +245,7 @@ Standard_Integer bGlue(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 1;
   }
 
-  Standard_Integer iGlue = Draw::Atoi(a[1]);
+  int iGlue = Draw::Atoi(a[1]);
   if (iGlue < 0 || iGlue > 2)
   {
     di << "Wrong value.\n";
@@ -260,7 +260,7 @@ Standard_Integer bGlue(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer bdrawwarnshapes(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bdrawwarnshapes(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -268,14 +268,14 @@ Standard_Integer bdrawwarnshapes(Draw_Interpretor& di, Standard_Integer n, const
     return 1;
   }
 
-  Standard_Integer iDraw = Draw::Atoi(a[1]);
+  int iDraw = Draw::Atoi(a[1]);
   BOPTest_Objects::SetDrawWarnShapes(iDraw != 0);
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer bcheckinverted(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bcheckinverted(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -283,14 +283,14 @@ Standard_Integer bcheckinverted(Draw_Interpretor& di, Standard_Integer n, const 
     return 1;
   }
 
-  Standard_Integer iCheck = Draw::Atoi(a[1]);
+  int iCheck = Draw::Atoi(a[1]);
   BOPTest_Objects::SetCheckInverted(iCheck != 0);
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer buseobb(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int buseobb(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -298,14 +298,14 @@ Standard_Integer buseobb(Draw_Interpretor& di, Standard_Integer n, const char** 
     return 1;
   }
 
-  Standard_Integer iUse = Draw::Atoi(a[1]);
+  int iUse = Draw::Atoi(a[1]);
   BOPTest_Objects::SetUseOBB(iUse != 0);
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer bsimplify(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bsimplify(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 1 || n % 2 == 0)
   {
@@ -313,21 +313,21 @@ Standard_Integer bsimplify(Draw_Interpretor& di, Standard_Integer n, const char*
     return 1;
   }
 
-  for (Standard_Integer i = 1; i < n - 1; ++i)
+  for (int i = 1; i < n - 1; ++i)
   {
     if (!strcmp(a[i], "-e"))
     {
-      Standard_Integer iUnifyEdges = Draw::Atoi(a[++i]);
+      int iUnifyEdges = Draw::Atoi(a[++i]);
       BOPTest_Objects::SetUnifyEdges(iUnifyEdges != 0);
     }
     else if (!strcmp(a[i], "-f"))
     {
-      Standard_Integer iUnifyFaces = Draw::Atoi(a[++i]);
+      int iUnifyFaces = Draw::Atoi(a[++i]);
       BOPTest_Objects::SetUnifyFaces(iUnifyFaces != 0);
     }
     else if (!strcmp(a[i], "-a"))
     {
-      Standard_Real anAngTol = Draw::Atof(a[++i]) * (M_PI / 180.0);
+      double anAngTol = Draw::Atof(a[++i]) * (M_PI / 180.0);
       BOPTest_Objects::SetAngular(anAngTol);
     }
     else

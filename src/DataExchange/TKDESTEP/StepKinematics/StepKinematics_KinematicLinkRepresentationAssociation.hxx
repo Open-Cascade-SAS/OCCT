@@ -23,9 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_RepresentationOrRepresentationReference.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_KinematicLinkRepresentationAssociation,
-                       StepRepr_RepresentationRelationship)
-
 //! Representation of STEP entity KinematicLinkRepresentationAssociation
 class StepKinematics_KinematicLinkRepresentationAssociation
     : public StepRepr_RepresentationRelationship

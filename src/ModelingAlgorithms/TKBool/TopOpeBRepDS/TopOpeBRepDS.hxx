@@ -47,14 +47,14 @@ public:
 
   //! S1(<K>,<I>)S2
   Standard_EXPORT static TCollection_AsciiString SPrint(const TopOpeBRepDS_Kind        K,
-                                                        const Standard_Integer         I,
+                                                        const int                      I,
                                                         const TCollection_AsciiString& B = "",
                                                         const TCollection_AsciiString& A = "");
 
   Standard_EXPORT static Standard_OStream& Print(const TopOpeBRepDS_Kind K, Standard_OStream& S);
 
   Standard_EXPORT static Standard_OStream& Print(const TopOpeBRepDS_Kind        K,
-                                                 const Standard_Integer         I,
+                                                 const int                      I,
                                                  Standard_OStream&              S,
                                                  const TCollection_AsciiString& B = "",
                                                  const TCollection_AsciiString& A = "");
@@ -62,11 +62,10 @@ public:
   Standard_EXPORT static TCollection_AsciiString SPrint(const TopAbs_ShapeEnum T);
 
   //! (<T>,<I>)
-  Standard_EXPORT static TCollection_AsciiString SPrint(const TopAbs_ShapeEnum T,
-                                                        const Standard_Integer I);
+  Standard_EXPORT static TCollection_AsciiString SPrint(const TopAbs_ShapeEnum T, const int I);
 
   Standard_EXPORT static Standard_OStream& Print(const TopAbs_ShapeEnum T,
-                                                 const Standard_Integer I,
+                                                 const int              I,
                                                  Standard_OStream&      S);
 
   Standard_EXPORT static TCollection_AsciiString SPrint(const TopAbs_Orientation O);
@@ -75,9 +74,9 @@ public:
 
   Standard_EXPORT static Standard_OStream& Print(const TopOpeBRepDS_Config C, Standard_OStream& S);
 
-  Standard_EXPORT static Standard_Boolean IsGeometry(const TopOpeBRepDS_Kind K);
+  Standard_EXPORT static bool IsGeometry(const TopOpeBRepDS_Kind K);
 
-  Standard_EXPORT static Standard_Boolean IsTopology(const TopOpeBRepDS_Kind K);
+  Standard_EXPORT static bool IsTopology(const TopOpeBRepDS_Kind K);
 
   Standard_EXPORT static TopAbs_ShapeEnum KindToShape(const TopOpeBRepDS_Kind K);
 

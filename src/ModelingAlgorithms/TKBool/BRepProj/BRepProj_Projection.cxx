@@ -39,7 +39,7 @@
 // purpose  : Compute the minimum distance between input shapes
 //           (using Bounding Boxes of each Shape)
 //=======================================================================
-static Standard_Real DistanceOut(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
+static double DistanceOut(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
   Bnd_Box BBox1, BBox2;
   BRepBndLib::Add(S1, BBox1);
@@ -54,13 +54,13 @@ static Standard_Real DistanceOut(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 //           add each other with the minimum distance of shapes.
 //=======================================================================
 
-static Standard_Real DistanceIn(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
+static double DistanceIn(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
   Bnd_Box LBBox, SBBox;
   BRepBndLib::Add(S1, SBBox);
   BRepBndLib::Add(S2, LBBox);
 
-  Standard_Real LXmin, LYmin, LZmin, LXmax, LYmax, LZmax, SXmin, SYmin, SZmin, SXmax, SYmax, SZmax;
+  double LXmin, LYmin, LZmin, LXmax, LYmax, LZmax, SXmin, SYmin, SZmin, SXmax, SYmax, SZmax;
   SBBox.Get(SXmin, SYmin, SZmin, SXmax, SYmax, SZmax);
   LBBox.Get(LXmin, LYmin, LZmin, LXmax, LYmax, LZmax);
 
@@ -80,7 +80,7 @@ static Standard_Real DistanceIn(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 
 void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoDS_Shape& theTool)
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
   mySection.Nullify();
   myShape.Nullify();
   myItr = 0;
@@ -108,12 +108,12 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
     throw Standard_ConstructionError(__FILE__ ": target shape has no faces");
 
   // build section computing p-curves on both shapes to get higher precision
-  BRepAlgoAPI_Section aSectionTool(aShape, theTool, Standard_False);
-  aSectionTool.Approximation(Standard_True);
-  aSectionTool.ComputePCurveOn1(Standard_True);
-  aSectionTool.ComputePCurveOn2(Standard_True);
+  BRepAlgoAPI_Section aSectionTool(aShape, theTool, false);
+  aSectionTool.Approximation(true);
+  aSectionTool.ComputePCurveOn1(true);
+  aSectionTool.ComputePCurveOn2(true);
   // Use Oriented Bounding Boxes inside Booleans to speed up calculation of the section
-  aSectionTool.SetUseOBB(Standard_True);
+  aSectionTool.SetUseOBB(true);
   aSectionTool.Build();
 
   // check for successful work of the section tool
@@ -121,8 +121,9 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
     return;
 
   // get edges of the result
-  Handle(TopTools_HSequenceOfShape) anEdges = new TopTools_HSequenceOfShape;
-  TopExp_Explorer                   exp(aSectionTool.Shape(), TopAbs_EDGE);
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> anEdges =
+    new NCollection_HSequence<TopoDS_Shape>;
+  TopExp_Explorer exp(aSectionTool.Shape(), TopAbs_EDGE);
   for (; exp.More(); exp.Next())
     anEdges->Append(exp.Current());
 
@@ -131,10 +132,7 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
     return;
 
   // connect edges to wires using ShapeAnalysis functionality
-  ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anEdges,
-                                                Precision::Confusion(),
-                                                Standard_True,
-                                                mySection);
+  ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anEdges, Precision::Confusion(), true, mySection);
   myIsDone = (!mySection.IsNull() && mySection->Length() > 0);
 
   // collect all resulting wires to compound
@@ -142,7 +140,7 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
   {
     BRep_Builder B;
     B.MakeCompound(myShape);
-    for (Standard_Integer i = 1; i <= mySection->Length(); i++)
+    for (int i = 1; i <= mySection->Length(); i++)
       B.Add(myShape, mySection->Value(i));
 
     // initialize iteration (for compatibility with previous versions)
@@ -158,7 +156,7 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
 BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
                                          const TopoDS_Shape& Shape,
                                          const gp_Dir&       D)
-    : myIsDone(Standard_False),
+    : myIsDone(false),
       myItr(0)
 {
   // Check the input
@@ -167,20 +165,20 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
     throw Standard_ConstructionError(__FILE__ ": projected shape is neither wire nor edge");
 
   // compute the "length" of the cylindrical surface to build
-  Standard_Real mdis = DistanceIn(Wire, Shape);
-  gp_Vec        Vsup(D.XYZ() * 2 * mdis);
-  gp_Vec        Vinf(D.XYZ() * -mdis);
+  double mdis = DistanceIn(Wire, Shape);
+  gp_Vec Vsup(D.XYZ() * 2 * mdis);
+  gp_Vec Vinf(D.XYZ() * -mdis);
 
   // move the base of the cylindrical surface by translating it by -mdis
   gp_Trsf T;
   T.SetTranslation(Vinf);
   // Note: it is necessary to create copy of wire to avoid adding new pcurves into it
-  Handle(BRepTools_TrsfModification) Trsf = new BRepTools_TrsfModification(T);
-  BRepTools_Modifier                 Modif(Wire, Trsf);
-  const TopoDS_Shape&                WireBase = Modif.ModifiedShape(Wire);
+  occ::handle<BRepTools_TrsfModification> Trsf = new BRepTools_TrsfModification(T);
+  BRepTools_Modifier                      Modif(Wire, Trsf);
+  const TopoDS_Shape&                     WireBase = Modif.ModifiedShape(Wire);
 
   // Creation of a cylindrical surface
-  BRepSweep_Prism CylSurf(WireBase, Vsup, Standard_False);
+  BRepSweep_Prism CylSurf(WireBase, Vsup, false);
 
   // Perform section
   BuildSection(Shape, CylSurf.Shape());
@@ -191,7 +189,7 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
 BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
                                          const TopoDS_Shape& Shape,
                                          const gp_Pnt&       P)
-    : myIsDone(Standard_False),
+    : myIsDone(false),
       myItr(0)
 {
   // Check the input
@@ -211,7 +209,7 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
     aWire = TopoDS::Wire(Wire);
 
   // compute the "length" of the conical surface to build
-  Standard_Real mdis = DistanceIn(Wire, Shape);
+  double mdis = DistanceIn(Wire, Shape);
 
   // Initialize iterator to get first sub-shape of Wire
   TopExp_Explorer ExpWire;
@@ -221,7 +219,7 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
   gp_Pnt PC = BRep_Tool::Pnt(TopoDS::Vertex(ExpWire.Current()));
 
   // compute the ratio of the scale transformation
-  Standard_Real Scale = PC.Distance(P);
+  double Scale = PC.Distance(P);
   if (std::abs(Scale) < Precision::Confusion())
     throw Standard_ConstructionError("Projection");
   Scale = 1. + mdis / Scale;
@@ -229,9 +227,9 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
   // move the base of the conical surface by scaling it with ratio Scale
   gp_Trsf T;
   T.SetScale(P, Scale);
-  Handle(BRepTools_TrsfModification) Tsca = new BRepTools_TrsfModification(T);
-  BRepTools_Modifier                 ModifScale(aWire, Tsca);
-  TopoDS_Shape                       ShapeGen1 = ModifScale.ModifiedShape(aWire);
+  occ::handle<BRepTools_TrsfModification> Tsca = new BRepTools_TrsfModification(T);
+  BRepTools_Modifier                      ModifScale(aWire, Tsca);
+  TopoDS_Shape                            ShapeGen1 = ModifScale.ModifiedShape(aWire);
 
   TopoDS_Vertex aVertex = BRepLib_MakeVertex(P);
   TopoDS_Edge   DegEdge;
@@ -239,12 +237,12 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
   BB.MakeEdge(DegEdge);
   BB.Add(DegEdge, aVertex.Oriented(TopAbs_FORWARD));
   BB.Add(DegEdge, aVertex.Oriented(TopAbs_REVERSED));
-  BB.Degenerated(DegEdge, Standard_True);
+  BB.Degenerated(DegEdge, true);
 
   TopoDS_Wire DegWire;
   BB.MakeWire(DegWire);
   BB.Add(DegWire, DegEdge);
-  DegWire.Closed(Standard_True);
+  DegWire.Closed(true);
 
   // Build the Ruled surface based shape
   BRepFill_Generator RuledSurf;

@@ -21,11 +21,16 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IntTools_MapOfSurfaceSample.hxx>
-#include <IntTools_DataMapOfSurfaceSampleBox.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <IntTools_ListOfSurfaceRangeSample.hxx>
+#include <IntTools_SurfaceRangeSample.hxx>
+#include <NCollection_Map.hxx>
+#include <Bnd_Box.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_List.hxx>
 class IntTools_SurfaceRangeSample;
 class Bnd_Box;
 class gp_Pnt;
@@ -37,10 +42,10 @@ public:
 
   Standard_EXPORT IntTools_SurfaceRangeLocalizeData();
 
-  Standard_EXPORT IntTools_SurfaceRangeLocalizeData(const Standard_Integer theNbSampleU,
-                                                    const Standard_Integer theNbSampleV,
-                                                    const Standard_Real    theMinRangeU,
-                                                    const Standard_Real    theMinRangeV);
+  Standard_EXPORT IntTools_SurfaceRangeLocalizeData(const int    theNbSampleU,
+                                                    const int    theNbSampleV,
+                                                    const double theMinRangeU,
+                                                    const double theMinRangeV);
 
   Standard_EXPORT IntTools_SurfaceRangeLocalizeData(const IntTools_SurfaceRangeLocalizeData& Other);
 
@@ -52,109 +57,103 @@ public:
     return Assign(Other);
   }
 
-  Standard_Integer GetNbSampleU() const;
+  int GetNbSampleU() const;
 
-  Standard_Integer GetNbSampleV() const;
+  int GetNbSampleV() const;
 
-  Standard_Real GetMinRangeU() const;
+  double GetMinRangeU() const;
 
-  Standard_Real GetMinRangeV() const;
+  double GetMinRangeV() const;
 
   Standard_EXPORT void AddOutRange(const IntTools_SurfaceRangeSample& theRange);
 
   Standard_EXPORT void AddBox(const IntTools_SurfaceRangeSample& theRange, const Bnd_Box& theBox);
 
-  Standard_EXPORT Standard_Boolean FindBox(const IntTools_SurfaceRangeSample& theRange,
-                                           Bnd_Box&                           theBox) const;
+  Standard_EXPORT bool FindBox(const IntTools_SurfaceRangeSample& theRange, Bnd_Box& theBox) const;
 
-  Standard_EXPORT Standard_Boolean IsRangeOut(const IntTools_SurfaceRangeSample& theRange) const;
+  Standard_EXPORT bool IsRangeOut(const IntTools_SurfaceRangeSample& theRange) const;
 
-  Standard_EXPORT void ListRangeOut(IntTools_ListOfSurfaceRangeSample& theList) const;
+  Standard_EXPORT void ListRangeOut(NCollection_List<IntTools_SurfaceRangeSample>& theList) const;
 
   Standard_EXPORT void RemoveRangeOutAll();
 
   //! Set the grid deflection.
-  void SetGridDeflection(const Standard_Real theDeflection);
+  void SetGridDeflection(const double theDeflection);
 
   //! Query the grid deflection.
-  Standard_Real GetGridDeflection() const;
+  double GetGridDeflection() const;
 
   //! Set the range U of the grid of points.
-  Standard_EXPORT void SetRangeUGrid(const Standard_Integer theNbUGrid);
+  Standard_EXPORT void SetRangeUGrid(const int theNbUGrid);
 
   //! Query the range U of the grid of points.
-  Standard_Integer GetRangeUGrid() const;
+  int GetRangeUGrid() const;
 
   //! Set the U parameter of the grid points at that index.
-  void SetUParam(const Standard_Integer theIndex, const Standard_Real theUParam);
+  void SetUParam(const int theIndex, const double theUParam);
 
   //! Query the U parameter of the grid points at that index.
-  Standard_Real GetUParam(const Standard_Integer theIndex) const;
+  double GetUParam(const int theIndex) const;
 
   //! Set the range V of the grid of points.
-  Standard_EXPORT void SetRangeVGrid(const Standard_Integer theNbVGrid);
+  Standard_EXPORT void SetRangeVGrid(const int theNbVGrid);
 
   //! Query the range V of the grid of points.
-  Standard_Integer GetRangeVGrid() const;
+  int GetRangeVGrid() const;
 
   //! Set the V parameter of the grid points at that index.
-  void SetVParam(const Standard_Integer theIndex, const Standard_Real theVParam);
+  void SetVParam(const int theIndex, const double theVParam);
 
   //! Query the V parameter of the grid points at that index.
-  Standard_Real GetVParam(const Standard_Integer theIndex) const;
+  double GetVParam(const int theIndex) const;
 
   //! Set the grid point.
-  void SetGridPoint(const Standard_Integer theUIndex,
-                    const Standard_Integer theVIndex,
-                    const gp_Pnt&          thePoint);
+  void SetGridPoint(const int theUIndex, const int theVIndex, const gp_Pnt& thePoint);
 
   //! Set the grid point.
-  const gp_Pnt& GetGridPoint(const Standard_Integer theUIndex,
-                             const Standard_Integer theVIndex) const;
+  const gp_Pnt& GetGridPoint(const int theUIndex, const int theVIndex) const;
 
   //! Sets the frame area. Used to work with grid points.
-  Standard_EXPORT void SetFrame(const Standard_Real theUMin,
-                                const Standard_Real theUMax,
-                                const Standard_Real theVMin,
-                                const Standard_Real theVMax);
+  Standard_EXPORT void SetFrame(const double theUMin,
+                                const double theUMax,
+                                const double theVMin,
+                                const double theVMax);
 
   //! Returns the number of grid points on U direction in frame.
-  Standard_Integer GetNBUPointsInFrame() const;
+  int GetNBUPointsInFrame() const;
 
   //! Returns the number of grid points on V direction in frame.
-  Standard_Integer GetNBVPointsInFrame() const;
+  int GetNBVPointsInFrame() const;
 
   //! Returns the grid point in frame.
-  Standard_EXPORT const gp_Pnt& GetPointInFrame(const Standard_Integer theUIndex,
-                                                const Standard_Integer theVIndex) const;
+  Standard_EXPORT const gp_Pnt& GetPointInFrame(const int theUIndex, const int theVIndex) const;
 
   //! Query the U parameter of the grid points
   //! at that index in frame.
-  Standard_EXPORT Standard_Real GetUParamInFrame(const Standard_Integer theIndex) const;
+  Standard_EXPORT double GetUParamInFrame(const int theIndex) const;
 
   //! Query the V parameter of the grid points
   //! at that index in frame.
-  Standard_EXPORT Standard_Real GetVParamInFrame(const Standard_Integer theIndex) const;
+  Standard_EXPORT double GetVParamInFrame(const int theIndex) const;
 
   //! Clears the grid of points.
   Standard_EXPORT void ClearGrid();
 
-protected:
 private:
-  Standard_Integer                   myNbSampleU;
-  Standard_Integer                   myNbSampleV;
-  Standard_Real                      myMinRangeU;
-  Standard_Real                      myMinRangeV;
-  IntTools_MapOfSurfaceSample        myMapRangeOut;
-  IntTools_DataMapOfSurfaceSampleBox myMapBox;
-  Handle(TColStd_HArray1OfReal)      myUParams;
-  Handle(TColStd_HArray1OfReal)      myVParams;
-  Handle(TColgp_HArray2OfPnt)        myGridPoints;
-  Standard_Integer                   myUIndMin;
-  Standard_Integer                   myUIndMax;
-  Standard_Integer                   myVIndMin;
-  Standard_Integer                   myVIndMax;
-  Standard_Real                      myDeflection;
+  int                                                       myNbSampleU;
+  int                                                       myNbSampleV;
+  double                                                    myMinRangeU;
+  double                                                    myMinRangeV;
+  NCollection_Map<IntTools_SurfaceRangeSample>              myMapRangeOut;
+  NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box> myMapBox;
+  occ::handle<NCollection_HArray1<double>>                  myUParams;
+  occ::handle<NCollection_HArray1<double>>                  myVParams;
+  occ::handle<NCollection_HArray2<gp_Pnt>>                  myGridPoints;
+  int                                                       myUIndMin;
+  int                                                       myUIndMax;
+  int                                                       myVIndMin;
+  int                                                       myVIndMax;
+  double                                                    myDeflection;
 };
 
 #include <IntTools_SurfaceRangeLocalizeData.lxx>

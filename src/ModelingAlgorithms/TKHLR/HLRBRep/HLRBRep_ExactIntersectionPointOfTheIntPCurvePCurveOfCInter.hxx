@@ -39,42 +39,41 @@ public:
   Standard_EXPORT HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter(
     const HLRBRep_CurvePtr& C1,
     const HLRBRep_CurvePtr& C2,
-    const Standard_Real     Tol);
+    const double            Tol);
 
   Standard_EXPORT void Perform(const HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter& Poly1,
                                const HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter& Poly2,
-                               Standard_Integer&                                       NumSegOn1,
-                               Standard_Integer&                                       NumSegOn2,
-                               Standard_Real&                                          ParamOnSeg1,
-                               Standard_Real&                                          ParamOnSeg2);
+                               int&                                                    NumSegOn1,
+                               int&                                                    NumSegOn2,
+                               double&                                                 ParamOnSeg1,
+                               double&                                                 ParamOnSeg2);
 
-  Standard_EXPORT void Perform(const Standard_Real Uo,
-                               const Standard_Real Vo,
-                               const Standard_Real UInf,
-                               const Standard_Real VInf,
-                               const Standard_Real USup,
-                               const Standard_Real VSup);
+  Standard_EXPORT void Perform(const double Uo,
+                               const double Vo,
+                               const double UInf,
+                               const double VInf,
+                               const double USup,
+                               const double VSup);
 
-  Standard_EXPORT Standard_Integer NbRoots() const;
+  Standard_EXPORT int NbRoots() const;
 
-  Standard_EXPORT void Roots(Standard_Real& U, Standard_Real& V);
+  Standard_EXPORT void Roots(double& U, double& V);
 
-  Standard_EXPORT Standard_Boolean AnErrorOccurred() const;
+  Standard_EXPORT bool AnErrorOccurred() const;
 
-protected:
 private:
   Standard_EXPORT void MathPerform();
 
-  Standard_Boolean                                          done;
-  Standard_Integer                                          nbroots;
-  Standard_Real                                             myTol;
+  bool                                                      done;
+  int                                                       nbroots;
+  double                                                    myTol;
   HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter FctDist;
   math_Vector                                               ToleranceVector;
   math_Vector                                               BInfVector;
   math_Vector                                               BSupVector;
   math_Vector                                               StartingPoint;
   math_Vector                                               Root;
-  Standard_Boolean                                          anErrorOccurred;
+  bool                                                      anErrorOccurred;
 };
 
 #endif // _HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter_HeaderFile

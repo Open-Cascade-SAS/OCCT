@@ -21,12 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColgp_Array1OfCirc2d.hxx>
-#include <GccEnt_Array1OfPosition.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Circ2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <gp_Pnt2d.hxx>
 class GccEnt_QualifiedCirc;
 class gp_Lin2d;
 class GccEnt_QualifiedLin;
@@ -70,8 +68,8 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualified1,
                                         const gp_Lin2d&             OnLine,
-                                        const Standard_Real         Radius,
-                                        const Standard_Real         Tolerance);
+                                        const double                Radius,
+                                        const double                Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles tangent to a 2d Line and centered on a 2d Line
@@ -80,17 +78,17 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualified1,
                                         const gp_Lin2d&            OnLine,
-                                        const Standard_Real        Radius,
-                                        const Standard_Real        Tolerance);
+                                        const double               Radius,
+                                        const double               Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles passing through a 2d Point and centered on a
   //! 2d Line with a given radius.
   //! Tolerance is used to find solution in every limit cases.
-  Standard_EXPORT GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
-                                        const gp_Lin2d&     OnLine,
-                                        const Standard_Real Radius,
-                                        const Standard_Real Tolerance);
+  Standard_EXPORT GccAna_Circ2dTanOnRad(const gp_Pnt2d& Point1,
+                                        const gp_Lin2d& OnLine,
+                                        const double    Radius,
+                                        const double    Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles tangent to a circle and centered on a 2d Circle
@@ -99,8 +97,8 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualified1,
                                         const gp_Circ2d&            OnCirc,
-                                        const Standard_Real         Radius,
-                                        const Standard_Real         Tolerance);
+                                        const double                Radius,
+                                        const double                Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles tangent to a 2d Line and centered on a 2d Line
@@ -109,29 +107,29 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualified1,
                                         const gp_Circ2d&           OnCirc,
-                                        const Standard_Real        Radius,
-                                        const Standard_Real        Tolerance);
+                                        const double               Radius,
+                                        const double               Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles passing through a 2d Point and centered on a
   //! 2d Line with a given radius.
   //! Tolerance is used to find solution in every limit cases.
   //! raises NegativeValue in case of NegativeRadius.
-  Standard_EXPORT GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
-                                        const gp_Circ2d&    OnCirc,
-                                        const Standard_Real Radius,
-                                        const Standard_Real Tolerance);
+  Standard_EXPORT GccAna_Circ2dTanOnRad(const gp_Pnt2d&  Point1,
+                                        const gp_Circ2d& OnCirc,
+                                        const double     Radius,
+                                        const double     Tolerance);
 
   //! Returns true if the construction algorithm does not fail
   //! (even if it finds no solution).
   //! Note: IsDone protects against a failure arising from a
   //! more internal intersection algorithm, which has
   //! reached its numeric limits.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! This method returns the number of circles, representing solutions.
   //! Raises NotDone if the construction algorithm didn't succeed.
-  Standard_EXPORT Standard_Integer NbSolutions() const;
+  Standard_EXPORT int NbSolutions() const;
 
   //! Returns the solution number Index and raises OutOfRange
   //! exception if Index is greater than the number of solutions.
@@ -141,7 +139,7 @@ public:
   //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions
-  Standard_EXPORT gp_Circ2d ThisSolution(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Circ2d ThisSolution(const int Index) const;
 
   //! Returns the qualifier Qualif1 of the tangency argument
   //! for the solution of index Index computed by this algorithm.
@@ -157,7 +155,7 @@ public:
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
-  Standard_EXPORT void WhichQualifier(const Standard_Integer Index, GccEnt_Position& Qualif1) const;
+  Standard_EXPORT void WhichQualifier(const int Index, GccEnt_Position& Qualif1) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
@@ -170,10 +168,10 @@ public:
   //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT void Tangency1(const Standard_Integer Index,
-                                 Standard_Real&         ParSol,
-                                 Standard_Real&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+  Standard_EXPORT void Tangency1(const int Index,
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const;
 
   //! Returns information about the center (on the curv)
   //! of the result.
@@ -183,29 +181,26 @@ public:
   //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT void CenterOn3(const Standard_Integer Index,
-                                 Standard_Real&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+  Standard_EXPORT void CenterOn3(const int Index, double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! Returns True if the solution number Index is equal to
   //! the first argument and False in the other cases.
   //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT Standard_Boolean IsTheSame1(const Standard_Integer Index) const;
+  Standard_EXPORT bool IsTheSame1(const int Index) const;
 
-protected:
 private:
-  Standard_Boolean        WellDone;
-  Standard_Integer        NbrSol;
-  TColgp_Array1OfCirc2d   cirsol;
-  GccEnt_Array1OfPosition qualifier1;
-  TColStd_Array1OfInteger TheSame1;
-  TColgp_Array1OfPnt2d    pnttg1sol;
-  TColgp_Array1OfPnt2d    pntcen3;
-  TColStd_Array1OfReal    par1sol;
-  TColStd_Array1OfReal    pararg1;
-  TColStd_Array1OfReal    parcen3;
+  bool                                WellDone;
+  int                                 NbrSol;
+  NCollection_Array1<gp_Circ2d>       cirsol;
+  NCollection_Array1<GccEnt_Position> qualifier1;
+  NCollection_Array1<int>             TheSame1;
+  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>        pntcen3;
+  NCollection_Array1<double>          par1sol;
+  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<double>          parcen3;
 };
 
 #endif // _GccAna_Circ2dTanOnRad_HeaderFile

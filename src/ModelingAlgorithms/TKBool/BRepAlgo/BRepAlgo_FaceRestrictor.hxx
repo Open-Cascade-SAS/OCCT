@@ -21,7 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopoDS_Face.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class TopoDS_Wire;
 
 //! Builds all the faces limited with a set of non
@@ -41,9 +44,9 @@ public:
   //! faces built.
   //! <Proj> is used to update pcurves on edges if necessary.
   //! See Add().
-  Standard_EXPORT void Init(const TopoDS_Face&     F,
-                            const Standard_Boolean Proj               = Standard_False,
-                            const Standard_Boolean ControlOrientation = Standard_False);
+  Standard_EXPORT void Init(const TopoDS_Face& F,
+                            const bool         Proj               = false,
+                            const bool         ControlOrientation = false);
 
   //! Add the wire <W> to the set of wires.
   //!
@@ -64,27 +67,28 @@ public:
   //! Evaluate all the faces limited by the set of Wires.
   Standard_EXPORT void Perform();
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
   Standard_EXPORT TopoDS_Face Current() const;
 
-protected:
 private:
   //! Evaluate all the faces limited by the set of Wires.
   Standard_EXPORT void PerformWithCorrection();
 
-  Standard_Boolean                   myDone;
-  Standard_Boolean                   modeProj;
-  TopoDS_Face                        myFace;
-  TopTools_ListOfShape               wires;
-  TopTools_ListOfShape               faces;
-  Standard_Boolean                   myCorrection;
-  TopTools_DataMapOfShapeListOfShape keyIsIn;
-  TopTools_DataMapOfShapeListOfShape keyContains;
+  bool                           myDone;
+  bool                           modeProj;
+  TopoDS_Face                    myFace;
+  NCollection_List<TopoDS_Shape> wires;
+  NCollection_List<TopoDS_Shape> faces;
+  bool                           myCorrection;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    keyIsIn;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    keyContains;
 };
 
 #endif // _BRepAlgo_FaceRestrictor_HeaderFile

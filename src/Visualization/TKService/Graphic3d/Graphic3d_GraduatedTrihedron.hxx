@@ -40,13 +40,13 @@ public:
     AxisAspect(const TCollection_ExtendedString theName            = "",
                const Quantity_Color             theNameColor       = Quantity_NOC_BLACK,
                const Quantity_Color             theColor           = Quantity_NOC_BLACK,
-               const Standard_Integer           theValuesOffset    = 10,
-               const Standard_Integer           theNameOffset      = 30,
-               const Standard_Integer           theTickmarksNumber = 5,
-               const Standard_Integer           theTickmarksLength = 10,
-               const Standard_Boolean           theToDrawName      = Standard_True,
-               const Standard_Boolean           theToDrawValues    = Standard_True,
-               const Standard_Boolean           theToDrawTickmarks = Standard_True)
+               const int                        theValuesOffset    = 10,
+               const int                        theNameOffset      = 30,
+               const int                        theTickmarksNumber = 5,
+               const int                        theTickmarksLength = 10,
+               const bool                       theToDrawName      = true,
+               const bool                       theToDrawValues    = true,
+               const bool                       theToDrawTickmarks = true)
         : myName(theName),
           myToDrawName(theToDrawName),
           myToDrawTickmarks(theToDrawTickmarks),
@@ -65,17 +65,17 @@ public:
 
     const TCollection_ExtendedString& Name() const { return myName; }
 
-    Standard_Boolean ToDrawName() const { return myToDrawName; }
+    bool ToDrawName() const { return myToDrawName; }
 
-    void SetDrawName(const Standard_Boolean theToDraw) { myToDrawName = theToDraw; }
+    void SetDrawName(const bool theToDraw) { myToDrawName = theToDraw; }
 
-    Standard_Boolean ToDrawTickmarks() const { return myToDrawTickmarks; }
+    bool ToDrawTickmarks() const { return myToDrawTickmarks; }
 
-    void SetDrawTickmarks(const Standard_Boolean theToDraw) { myToDrawTickmarks = theToDraw; }
+    void SetDrawTickmarks(const bool theToDraw) { myToDrawTickmarks = theToDraw; }
 
-    Standard_Boolean ToDrawValues() const { return myToDrawValues; }
+    bool ToDrawValues() const { return myToDrawValues; }
 
-    void SetDrawValues(const Standard_Boolean theToDraw) { myToDrawValues = theToDraw; }
+    void SetDrawValues(const bool theToDraw) { myToDrawValues = theToDraw; }
 
     const Quantity_Color& NameColor() const { return myNameColor; }
 
@@ -87,37 +87,37 @@ public:
     //! Sets color of axis and values
     void SetColor(const Quantity_Color& theColor) { myColor = theColor; }
 
-    Standard_Integer TickmarksNumber() const { return myTickmarksNumber; }
+    int TickmarksNumber() const { return myTickmarksNumber; }
 
-    void SetTickmarksNumber(const Standard_Integer theValue) { myTickmarksNumber = theValue; }
+    void SetTickmarksNumber(const int theValue) { myTickmarksNumber = theValue; }
 
-    Standard_Integer TickmarksLength() const { return myTickmarksLength; }
+    int TickmarksLength() const { return myTickmarksLength; }
 
-    void SetTickmarksLength(const Standard_Integer theValue) { myTickmarksLength = theValue; }
+    void SetTickmarksLength(const int theValue) { myTickmarksLength = theValue; }
 
-    Standard_Integer ValuesOffset() const { return myValuesOffset; }
+    int ValuesOffset() const { return myValuesOffset; }
 
-    void SetValuesOffset(const Standard_Integer theValue) { myValuesOffset = theValue; }
+    void SetValuesOffset(const int theValue) { myValuesOffset = theValue; }
 
-    Standard_Integer NameOffset() const { return myNameOffset; }
+    int NameOffset() const { return myNameOffset; }
 
-    void SetNameOffset(const Standard_Integer theValue) { myNameOffset = theValue; }
+    void SetNameOffset(const int theValue) { myNameOffset = theValue; }
 
   protected:
     TCollection_ExtendedString myName;
 
-    Standard_Boolean myToDrawName;
-    Standard_Boolean myToDrawTickmarks;
-    Standard_Boolean myToDrawValues;
+    bool myToDrawName;
+    bool myToDrawTickmarks;
+    bool myToDrawValues;
 
     Quantity_Color myNameColor;
 
-    Standard_Integer myTickmarksNumber; //!< Number of splits along axes
-    Standard_Integer myTickmarksLength; //!< Length of tickmarks
-    Quantity_Color   myColor;           //!< Color of axis and values
+    int            myTickmarksNumber; //!< Number of splits along axes
+    int            myTickmarksLength; //!< Length of tickmarks
+    Quantity_Color myColor;           //!< Color of axis and values
 
-    Standard_Integer myValuesOffset; //!< Offset for drawing values
-    Standard_Integer myNameOffset;   //!< Offset for drawing name of axis
+    int myValuesOffset; //!< Offset for drawing values
+    int myNameOffset;   //!< Offset for drawing name of axis
   };
 
 public:
@@ -128,14 +128,14 @@ public:
   //! Constructs the default graduated trihedron with grid, X, Y, Z axes, and tickmarks
   Graphic3d_GraduatedTrihedron(const TCollection_AsciiString& theNamesFont    = "Arial",
                                const Font_FontAspect&         theNamesStyle   = Font_FA_Bold,
-                               const Standard_Integer         theNamesSize    = 12,
+                               const int                      theNamesSize    = 12,
                                const TCollection_AsciiString& theValuesFont   = "Arial",
                                const Font_FontAspect&         theValuesStyle  = Font_FA_Regular,
-                               const Standard_Integer         theValuesSize   = 12,
-                               const Standard_ShortReal       theArrowsLength = 30.0f,
+                               const int                      theValuesSize   = 12,
+                               const float                    theArrowsLength = 30.0f,
                                const Quantity_Color           theGridColor    = Quantity_NOC_WHITE,
-                               const Standard_Boolean         theToDrawGrid   = Standard_True,
-                               const Standard_Boolean         theToDrawAxes   = Standard_True)
+                               const bool                     theToDrawGrid   = true,
+                               const bool                     theToDrawAxes   = true)
       : myCubicAxesCallback(NULL),
         myNamesFont(theNamesFont),
         myNamesStyle(theNamesStyle),
@@ -161,7 +161,7 @@ public:
 
   AxisAspect& ChangeZAxisAspect() { return myAxes(2); }
 
-  AxisAspect& ChangeAxisAspect(const Standard_Integer theIndex)
+  AxisAspect& ChangeAxisAspect(const int theIndex)
   {
     Standard_OutOfRange_Raise_if(
       theIndex < 0 || theIndex > 2,
@@ -175,7 +175,7 @@ public:
 
   const AxisAspect& ZAxisAspect() const { return myAxes(2); }
 
-  const AxisAspect& AxisAspectAt(const Standard_Integer theIndex) const
+  const AxisAspect& AxisAspectAt(const int theIndex) const
   {
     Standard_OutOfRange_Raise_if(
       theIndex < 0 || theIndex > 2,
@@ -183,21 +183,21 @@ public:
     return myAxes(theIndex);
   }
 
-  Standard_ShortReal ArrowsLength() const { return myArrowsLength; }
+  float ArrowsLength() const { return myArrowsLength; }
 
-  void SetArrowsLength(const Standard_ShortReal theValue) { myArrowsLength = theValue; }
+  void SetArrowsLength(const float theValue) { myArrowsLength = theValue; }
 
   const Quantity_Color& GridColor() const { return myGridColor; }
 
   void SetGridColor(const Quantity_Color& theColor) { myGridColor = theColor; }
 
-  Standard_Boolean ToDrawGrid() const { return myToDrawGrid; }
+  bool ToDrawGrid() const { return myToDrawGrid; }
 
-  void SetDrawGrid(const Standard_Boolean theToDraw) { myToDrawGrid = theToDraw; }
+  void SetDrawGrid(const bool theToDraw) { myToDrawGrid = theToDraw; }
 
-  Standard_Boolean ToDrawAxes() const { return myToDrawAxes; }
+  bool ToDrawAxes() const { return myToDrawAxes; }
 
-  void SetDrawAxes(const Standard_Boolean theToDraw) { myToDrawAxes = theToDraw; }
+  void SetDrawAxes(const bool theToDraw) { myToDrawAxes = theToDraw; }
 
   const TCollection_AsciiString& NamesFont() const { return myNamesFont; }
 
@@ -207,9 +207,9 @@ public:
 
   void SetNamesFontAspect(Font_FontAspect theAspect) { myNamesStyle = theAspect; }
 
-  Standard_Integer NamesSize() const { return myNamesSize; }
+  int NamesSize() const { return myNamesSize; }
 
-  void SetNamesSize(const Standard_Integer theValue) { myNamesSize = theValue; }
+  void SetNamesSize(const int theValue) { myNamesSize = theValue; }
 
   const TCollection_AsciiString& ValuesFont() const { return myValuesFont; }
 
@@ -219,18 +219,18 @@ public:
 
   void SetValuesFontAspect(Font_FontAspect theAspect) { myValuesStyle = theAspect; }
 
-  Standard_Integer ValuesSize() const { return myValuesSize; }
+  int ValuesSize() const { return myValuesSize; }
 
-  void SetValuesSize(const Standard_Integer theValue) { myValuesSize = theValue; }
+  void SetValuesSize(const int theValue) { myValuesSize = theValue; }
 
-  Standard_Boolean CubicAxesCallback(Graphic3d_CView* theView) const
+  bool CubicAxesCallback(Graphic3d_CView* theView) const
   {
     if (myCubicAxesCallback != NULL)
     {
       myCubicAxesCallback(theView);
-      return Standard_True;
+      return true;
     }
-    return Standard_False;
+    return false;
   }
 
   void SetCubicAxesCallback(const MinMaxValuesCallback theCallback)
@@ -245,19 +245,19 @@ protected:
   TCollection_AsciiString myNamesFont;  //!< Font name of names of axes: Courier, Arial, ...
   Font_FontAspect         myNamesStyle; //!< Style of names of axes: OSD_FA_Regular, OSD_FA_Bold,..
   // clang-format on
-  Standard_Integer myNamesSize; //!< Size of names of axes: 8, 10,..
+  int myNamesSize; //!< Size of names of axes: 8, 10,..
 
 protected:
   TCollection_AsciiString myValuesFont;  //!< Font name of values: Courier, Arial, ...
   Font_FontAspect         myValuesStyle; //!< Style of values: OSD_FA_Regular, OSD_FA_Bold, ...
-  Standard_Integer        myValuesSize;  //!< Size of values: 8, 10, 12, 14, ...
+  int                     myValuesSize;  //!< Size of values: 8, 10, 12, 14, ...
 
 protected:
-  Standard_ShortReal myArrowsLength;
-  Quantity_Color     myGridColor;
+  float          myArrowsLength;
+  Quantity_Color myGridColor;
 
-  Standard_Boolean myToDrawGrid;
-  Standard_Boolean myToDrawAxes;
+  bool myToDrawGrid;
+  bool myToDrawAxes;
 
   NCollection_Array1<AxisAspect> myAxes; //!< X, Y and Z axes parameters
 };

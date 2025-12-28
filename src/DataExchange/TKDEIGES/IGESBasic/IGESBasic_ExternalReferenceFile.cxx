@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalReferenceFile, IGESData_IGESEntity)
 IGESBasic_ExternalReferenceFile::IGESBasic_ExternalReferenceFile() {}
 
 void IGESBasic_ExternalReferenceFile::Init(
-  const Handle(Interface_HArray1OfHAsciiString)& aNameArray)
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aNameArray)
 {
   if (aNameArray->Lower() != 1)
     throw Standard_DimensionMismatch("IGESBasic_ExternalReferenceFile : Init");
@@ -34,13 +34,12 @@ void IGESBasic_ExternalReferenceFile::Init(
   InitTypeAndForm(406, 12);
 }
 
-Standard_Integer IGESBasic_ExternalReferenceFile::NbListEntries() const
+int IGESBasic_ExternalReferenceFile::NbListEntries() const
 {
   return theNames->Length();
 }
 
-Handle(TCollection_HAsciiString) IGESBasic_ExternalReferenceFile::Name(
-  const Standard_Integer Index) const
+occ::handle<TCollection_HAsciiString> IGESBasic_ExternalReferenceFile::Name(const int Index) const
 {
   return theNames->Value(Index);
 }

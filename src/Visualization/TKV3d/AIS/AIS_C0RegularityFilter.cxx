@@ -23,8 +23,9 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_C0RegularityFilter, SelectMgr_Filter)
 
@@ -32,14 +33,15 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_C0RegularityFilter, SelectMgr_Filter)
 
 AIS_C0RegularityFilter::AIS_C0RegularityFilter(const TopoDS_Shape& aShape)
 {
-  TopTools_IndexedDataMapOfShapeListOfShape SubShapes;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    SubShapes;
   TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_FACE, SubShapes);
-  Standard_Boolean Ok;
-  for (Standard_Integer i = 1; i <= SubShapes.Extent(); i++)
+  bool Ok;
+  for (int i = 1; i <= SubShapes.Extent(); i++)
   {
-    Ok = Standard_False;
-    TopTools_ListIteratorOfListOfShape it(SubShapes(i));
-    TopoDS_Face                        Face1, Face2;
+    Ok = false;
+    NCollection_List<TopoDS_Shape>::Iterator it(SubShapes(i));
+    TopoDS_Face                              Face1, Face2;
     if (it.More())
     {
       Face1 = TopoDS::Face(it.Value());
@@ -66,23 +68,23 @@ AIS_C0RegularityFilter::AIS_C0RegularityFilter(const TopoDS_Shape& aShape)
 
 //=================================================================================================
 
-Standard_Boolean AIS_C0RegularityFilter::ActsOn(const TopAbs_ShapeEnum aType) const
+bool AIS_C0RegularityFilter::ActsOn(const TopAbs_ShapeEnum aType) const
 {
   return (aType == TopAbs_EDGE);
 }
 
 //=================================================================================================
 
-Standard_Boolean AIS_C0RegularityFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
+bool AIS_C0RegularityFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const
 {
-  Handle(StdSelect_BRepOwner) aBO(Handle(StdSelect_BRepOwner)::DownCast(EO));
+  occ::handle<StdSelect_BRepOwner> aBO(occ::down_cast<StdSelect_BRepOwner>(EO));
   if (aBO.IsNull())
-    return Standard_False;
+    return false;
 
   const TopoDS_Shape& aShape = aBO->Shape();
 
   if (aShape.ShapeType() != TopAbs_EDGE)
-    return Standard_False;
+    return false;
 
   return (myMapOfEdges.Contains(aShape));
 }

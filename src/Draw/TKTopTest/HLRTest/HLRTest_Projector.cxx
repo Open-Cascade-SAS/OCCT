@@ -39,7 +39,7 @@ void HLRTest_Projector::DrawOn(Draw_Display&) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) HLRTest_Projector::Copy() const
+occ::handle<Draw_Drawable3D> HLRTest_Projector::Copy() const
 {
   return new HLRTest_Projector(myProjector);
 }
@@ -52,10 +52,10 @@ void HLRTest_Projector::Dump(Standard_OStream& S) const
   if (myProjector.Perspective())
     S << "perspective, focal = " << myProjector.Focus() << "\n";
 
-  for (Standard_Integer i = 1; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
 
-    for (Standard_Integer j = 1; j <= 4; j++)
+    for (int j = 1; j <= 4; j++)
     {
       S << std::setw(15) << myProjector.Transformation().Value(i, j);
     }
@@ -97,12 +97,12 @@ void HLRTest_Projector::Save(Standard_OStream& theStream) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) HLRTest_Projector::Restore(Standard_IStream& theStream)
+occ::handle<Draw_Drawable3D> HLRTest_Projector::Restore(Standard_IStream& theStream)
 {
-  Standard_Boolean aPerspective = false;
-  Standard_Real    aFocus       = 1.0;
-  Standard_Real    aDirVect1[3], aDirVect2[3], aDirVect3[3];
-  Standard_Real    aTranslationVector[3];
+  bool   aPerspective = false;
+  double aFocus       = 1.0;
+  double aDirVect1[3], aDirVect2[3], aDirVect3[3];
+  double aTranslationVector[3];
   theStream >> aPerspective;
   if (aPerspective)
   {
@@ -126,8 +126,8 @@ Handle(Draw_Drawable3D) HLRTest_Projector::Restore(Standard_IStream& theStream)
   aTransformation.SetTranslationPart(
     gp_Vec(aTranslationVector[0], aTranslationVector[1], aTranslationVector[2]));
 
-  HLRAlgo_Projector         anAlgoProtector(aTransformation, aPerspective, aFocus);
-  Handle(HLRTest_Projector) aTestProjector = new HLRTest_Projector(anAlgoProtector);
+  HLRAlgo_Projector              anAlgoProtector(aTransformation, aPerspective, aFocus);
+  occ::handle<HLRTest_Projector> aTestProjector = new HLRTest_Projector(anAlgoProtector);
   return aTestProjector;
 }
 

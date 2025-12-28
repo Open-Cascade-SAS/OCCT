@@ -22,36 +22,36 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ActuatedKinematicPair, StepKinematics_
 
 StepKinematics_ActuatedKinematicPair::StepKinematics_ActuatedKinematicPair()
 {
-  defTX = Standard_False;
-  defTY = Standard_False;
-  defTZ = Standard_False;
-  defRX = Standard_False;
-  defRY = Standard_False;
-  defRZ = Standard_False;
+  defTX = false;
+  defTY = false;
+  defTZ = false;
+  defRX = false;
+  defRY = false;
+  defRZ = false;
 }
 
 //=================================================================================================
 
 void StepKinematics_ActuatedKinematicPair::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Boolean                       hasTX,
-  const StepKinematics_ActuatedDirection       theTX,
-  const Standard_Boolean                       hasTY,
-  const StepKinematics_ActuatedDirection       theTY,
-  const Standard_Boolean                       hasTZ,
-  const StepKinematics_ActuatedDirection       theTZ,
-  const Standard_Boolean                       hasRX,
-  const StepKinematics_ActuatedDirection       theRX,
-  const Standard_Boolean                       hasRY,
-  const StepKinematics_ActuatedDirection       theRY,
-  const Standard_Boolean                       hasRZ,
-  const StepKinematics_ActuatedDirection       theRZ)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                                        hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const bool                                        hasTX,
+  const StepKinematics_ActuatedDirection            theTX,
+  const bool                                        hasTY,
+  const StepKinematics_ActuatedDirection            theTY,
+  const bool                                        hasTZ,
+  const StepKinematics_ActuatedDirection            theTZ,
+  const bool                                        hasRX,
+  const StepKinematics_ActuatedDirection            theRX,
+  const bool                                        hasRY,
+  const StepKinematics_ActuatedDirection            theRY,
+  const bool                                        hasRZ,
+  const StepKinematics_ActuatedDirection            theRZ)
 {
   StepKinematics_KinematicPair::Init(theRepresentationItem_Name,
                                      theItemDefinedTransformation_Name,
@@ -126,7 +126,7 @@ void StepKinematics_ActuatedKinematicPair::SetTX(const StepKinematics_ActuatedDi
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasTX() const
+bool StepKinematics_ActuatedKinematicPair::HasTX() const
 {
   return defTX;
 }
@@ -147,7 +147,7 @@ void StepKinematics_ActuatedKinematicPair::SetTY(const StepKinematics_ActuatedDi
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasTY() const
+bool StepKinematics_ActuatedKinematicPair::HasTY() const
 {
   return defTY;
 }
@@ -168,7 +168,7 @@ void StepKinematics_ActuatedKinematicPair::SetTZ(const StepKinematics_ActuatedDi
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasTZ() const
+bool StepKinematics_ActuatedKinematicPair::HasTZ() const
 {
   return defTZ;
 }
@@ -189,7 +189,7 @@ void StepKinematics_ActuatedKinematicPair::SetRX(const StepKinematics_ActuatedDi
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasRX() const
+bool StepKinematics_ActuatedKinematicPair::HasRX() const
 {
   return defRX;
 }
@@ -210,7 +210,7 @@ void StepKinematics_ActuatedKinematicPair::SetRY(const StepKinematics_ActuatedDi
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasRY() const
+bool StepKinematics_ActuatedKinematicPair::HasRY() const
 {
   return defRY;
 }
@@ -231,7 +231,7 @@ void StepKinematics_ActuatedKinematicPair::SetRZ(const StepKinematics_ActuatedDi
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasRZ() const
+bool StepKinematics_ActuatedKinematicPair::HasRZ() const
 {
   return defRZ;
 }

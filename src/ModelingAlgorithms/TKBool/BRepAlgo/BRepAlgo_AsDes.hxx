@@ -19,13 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
-#include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
-
-class BRepAlgo_AsDes;
-DEFINE_STANDARD_HANDLE(BRepAlgo_AsDes, Standard_Transient)
 
 //! SD to store descendants and ascendants of Shapes.
 class BRepAlgo_AsDes : public Standard_Transient
@@ -41,20 +40,20 @@ public:
   Standard_EXPORT void Add(const TopoDS_Shape& S, const TopoDS_Shape& SS);
 
   //! Stores <SS> as futurs SubShapes of <S>.
-  Standard_EXPORT void Add(const TopoDS_Shape& S, const TopTools_ListOfShape& SS);
+  Standard_EXPORT void Add(const TopoDS_Shape& S, const NCollection_List<TopoDS_Shape>& SS);
 
-  Standard_EXPORT Standard_Boolean HasAscendant(const TopoDS_Shape& S) const;
+  Standard_EXPORT bool HasAscendant(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT Standard_Boolean HasDescendant(const TopoDS_Shape& S) const;
+  Standard_EXPORT bool HasDescendant(const TopoDS_Shape& S) const;
 
   //! Returns the Shape containing <S>.
-  Standard_EXPORT const TopTools_ListOfShape& Ascendant(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Ascendant(const TopoDS_Shape& S) const;
 
   //! Returns futur subhapes of <S>.
-  Standard_EXPORT const TopTools_ListOfShape& Descendant(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Descendant(const TopoDS_Shape& S) const;
 
   //! Returns futur subhapes of <S>.
-  Standard_EXPORT TopTools_ListOfShape& ChangeDescendant(const TopoDS_Shape& S);
+  Standard_EXPORT NCollection_List<TopoDS_Shape>& ChangeDescendant(const TopoDS_Shape& S);
 
   //! Replace theOldS by theNewS.
   //! theOldS disappear from this.
@@ -65,23 +64,23 @@ public:
 
   //! Returns True if (S1> and <S2> has common
   //! Descendants. Stores in <LC> the Commons Descendants.
-  Standard_EXPORT Standard_Boolean HasCommonDescendant(const TopoDS_Shape&   S1,
-                                                       const TopoDS_Shape&   S2,
-                                                       TopTools_ListOfShape& LC) const;
+  Standard_EXPORT bool HasCommonDescendant(const TopoDS_Shape&             S1,
+                                           const TopoDS_Shape&             S2,
+                                           NCollection_List<TopoDS_Shape>& LC) const;
 
   DEFINE_STANDARD_RTTIEXT(BRepAlgo_AsDes, Standard_Transient)
 
 private:
   //! Replace theOldS by theNewS.
   //! theOldS disappear from this.
-  Standard_EXPORT void BackReplace(const TopoDS_Shape&         theOldS,
-                                   const TopoDS_Shape&         theNewS,
-                                   const TopTools_ListOfShape& theL,
-                                   const Standard_Boolean      theInUp);
+  Standard_EXPORT void BackReplace(const TopoDS_Shape&                   theOldS,
+                                   const TopoDS_Shape&                   theNewS,
+                                   const NCollection_List<TopoDS_Shape>& theL,
+                                   const bool                            theInUp);
 
 private:
-  TopTools_DataMapOfShapeListOfShape up;
-  TopTools_DataMapOfShapeListOfShape down;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> up;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> down;
 };
 
 #endif // _BRepAlgo_AsDes_HeaderFile

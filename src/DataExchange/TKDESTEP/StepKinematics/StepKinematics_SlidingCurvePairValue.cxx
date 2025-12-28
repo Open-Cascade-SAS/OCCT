@@ -25,10 +25,10 @@ StepKinematics_SlidingCurvePairValue::StepKinematics_SlidingCurvePairValue() {}
 //=================================================================================================
 
 void StepKinematics_SlidingCurvePairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Handle(StepGeom_PointOnCurve)&        theActualPointOnCurve1,
-  const Handle(StepGeom_PointOnCurve)&        theActualPointOnCurve2)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve1,
+  const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve2)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -39,7 +39,7 @@ void StepKinematics_SlidingCurvePairValue::Init(
 
 //=================================================================================================
 
-Handle(StepGeom_PointOnCurve) StepKinematics_SlidingCurvePairValue::ActualPointOnCurve1() const
+occ::handle<StepGeom_PointOnCurve> StepKinematics_SlidingCurvePairValue::ActualPointOnCurve1() const
 {
   return myActualPointOnCurve1;
 }
@@ -47,14 +47,14 @@ Handle(StepGeom_PointOnCurve) StepKinematics_SlidingCurvePairValue::ActualPointO
 //=================================================================================================
 
 void StepKinematics_SlidingCurvePairValue::SetActualPointOnCurve1(
-  const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve1)
+  const occ::handle<StepGeom_PointOnCurve>& theActualPointOnCurve1)
 {
   myActualPointOnCurve1 = theActualPointOnCurve1;
 }
 
 //=================================================================================================
 
-Handle(StepGeom_PointOnCurve) StepKinematics_SlidingCurvePairValue::ActualPointOnCurve2() const
+occ::handle<StepGeom_PointOnCurve> StepKinematics_SlidingCurvePairValue::ActualPointOnCurve2() const
 {
   return myActualPointOnCurve2;
 }
@@ -62,7 +62,7 @@ Handle(StepGeom_PointOnCurve) StepKinematics_SlidingCurvePairValue::ActualPointO
 //=================================================================================================
 
 void StepKinematics_SlidingCurvePairValue::SetActualPointOnCurve2(
-  const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve2)
+  const occ::handle<StepGeom_PointOnCurve>& theActualPointOnCurve2)
 {
   myActualPointOnCurve2 = theActualPointOnCurve2;
 }

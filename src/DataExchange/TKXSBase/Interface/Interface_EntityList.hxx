@@ -55,48 +55,48 @@ public:
 
   //! Appends an Entity, that is to the END of the list
   //! (keeps order, but works slowerly than Add, see below)
-  Standard_EXPORT void Append(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void Append(const occ::handle<Standard_Transient>& ent);
 
   //! Adds an Entity to the list, that is, with NO REGARD about the
   //! order (faster than Append if count becomes greater than 10)
-  Standard_EXPORT void Add(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void Add(const occ::handle<Standard_Transient>& ent);
 
   //! Removes an Entity from the list, if it is there
-  Standard_EXPORT void Remove(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void Remove(const occ::handle<Standard_Transient>& ent);
 
   //! Removes an Entity from the list, given its rank
-  Standard_EXPORT void Remove(const Standard_Integer num);
+  Standard_EXPORT void Remove(const int num);
 
   //! Returns True if the list is empty
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_EXPORT bool IsEmpty() const;
 
   //! Returns count of recorded Entities
-  Standard_EXPORT Standard_Integer NbEntities() const;
+  Standard_EXPORT int NbEntities() const;
 
   //! Returns an Item given its number. Beware about the way the
   //! list was filled (see above, Add and Append)
-  Standard_EXPORT const Handle(Standard_Transient)& Value(const Standard_Integer num) const;
+  Standard_EXPORT const occ::handle<Standard_Transient>& Value(const int num) const;
 
   //! Returns an Item given its number. Beware about the way the
   //! list was filled (see above, Add and Append)
-  Standard_EXPORT void SetValue(const Standard_Integer num, const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void SetValue(const int num, const occ::handle<Standard_Transient>& ent);
 
   //! fills an Iterator with the content of the list
   //! (normal way to consult a list which has been filled with Add)
   Standard_EXPORT void FillIterator(Interface_EntityIterator& iter) const;
 
   //! Returns count of Entities of a given Type (0 : none)
-  Standard_EXPORT Standard_Integer NbTypedEntities(const Handle(Standard_Type)& atype) const;
+  Standard_EXPORT int NbTypedEntities(const occ::handle<Standard_Type>& atype) const;
 
   //! Returns the Entity which is of a given type.
   //! If num = 0 (D), there must be ONE AND ONLY ONE
   //! If num > 0, returns the num-th entity of this type
-  Standard_EXPORT Handle(Standard_Transient) TypedEntity(const Handle(Standard_Type)& atype,
-                                                         const Standard_Integer num = 0) const;
+  Standard_EXPORT occ::handle<Standard_Transient> TypedEntity(
+    const occ::handle<Standard_Type>& atype,
+    const int                         num = 0) const;
 
-protected:
 private:
-  Handle(Standard_Transient) theval;
+  occ::handle<Standard_Transient> theval;
 };
 
 #endif // _Interface_EntityList_HeaderFile

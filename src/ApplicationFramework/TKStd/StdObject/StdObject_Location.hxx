@@ -31,11 +31,13 @@ public:
   TopLoc_Location Import() const;
 
   //! Creates a persistent wrapper object for a location
-  Standard_EXPORT static StdObject_Location Translate(const TopLoc_Location&            theLoc,
-                                                      StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static StdObject_Location Translate(
+    const TopLoc_Location& theLoc,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
 
 private:
-  Handle(StdObjMgt_Persistent) myData;
+  occ::handle<StdObjMgt_Persistent> myData;
 
   friend StdObjMgt_ReadData&  operator>>(StdObjMgt_ReadData&, StdObject_Location&);
   friend StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData&, const StdObject_Location&);

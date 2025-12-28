@@ -28,31 +28,31 @@ IntImp_ZerCSParFunc::IntImp_ZerCSParFunc(const ThePSurface& S, const TheCurve& C
   f       = 0.0;
 }
 
-Standard_Integer IntImp_ZerCSParFunc::NbVariables() const
+int IntImp_ZerCSParFunc::NbVariables() const
 {
   return 3;
 }
 
-Standard_Integer IntImp_ZerCSParFunc::NbEquations() const
+int IntImp_ZerCSParFunc::NbEquations() const
 {
   return 3;
 }
 
-Standard_Boolean IntImp_ZerCSParFunc::Value(const math_Vector& X, math_Vector& F)
+bool IntImp_ZerCSParFunc::Value(const math_Vector& X, math_Vector& F)
 {
 
-  gp_Pnt        Psurf = ThePSurfaceTool::Value(surface, X(1), X(2));
-  gp_Pnt        Pcurv = TheCurveTool::Value(curve, X(3));
-  Standard_Real f1, f2, f3;
+  gp_Pnt Psurf = ThePSurfaceTool::Value(surface, X(1), X(2));
+  gp_Pnt Pcurv = TheCurveTool::Value(curve, X(3));
+  double f1, f2, f3;
   F(1) = f1 = Psurf.X() - Pcurv.X();
   F(2) = f2 = Psurf.Y() - Pcurv.Y();
   F(3) = f3 = Psurf.Z() - Pcurv.Z();
   f         = f1 * f1 + f2 * f2 + f3 * f3;
   p         = gp_Pnt((Psurf.XYZ() + Pcurv.XYZ()) * 0.5);
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IntImp_ZerCSParFunc::Derivatives(const math_Vector& X, math_Matrix& D)
+bool IntImp_ZerCSParFunc::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Pnt Psurf, Pcurv;
   gp_Vec D1u, D1v, D1w;
@@ -67,10 +67,10 @@ Standard_Boolean IntImp_ZerCSParFunc::Derivatives(const math_Vector& X, math_Mat
   D(3, 1) = D1u.Z();
   D(3, 2) = D1v.Z();
   D(3, 3) = -D1w.Z();
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IntImp_ZerCSParFunc::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool IntImp_ZerCSParFunc::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   gp_Pnt Psurf, Pcurv;
   gp_Vec D1u, D1v, D1w;
@@ -86,13 +86,13 @@ Standard_Boolean IntImp_ZerCSParFunc::Values(const math_Vector& X, math_Vector& 
   D(3, 2) = D1v.Z();
   D(3, 3) = -D1w.Z();
 
-  Standard_Real f1, f2, f3;
+  double f1, f2, f3;
   F(1) = f1 = Psurf.X() - Pcurv.X();
   F(2) = f2 = Psurf.Y() - Pcurv.Y();
   F(3) = f3 = Psurf.Z() - Pcurv.Z();
   f         = f1 * f1 + f2 * f2 + f3 * f3;
   p         = gp_Pnt((Psurf.XYZ() + Pcurv.XYZ()) * 0.5);
-  return Standard_True;
+  return true;
 }
 
 const gp_Pnt& IntImp_ZerCSParFunc::Point() const
@@ -100,7 +100,7 @@ const gp_Pnt& IntImp_ZerCSParFunc::Point() const
   return p;
 }
 
-Standard_Real IntImp_ZerCSParFunc::Root() const
+double IntImp_ZerCSParFunc::Root() const
 {
   return f;
 }

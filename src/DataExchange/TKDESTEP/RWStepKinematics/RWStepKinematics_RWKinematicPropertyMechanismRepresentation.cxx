@@ -34,10 +34,10 @@ RWStepKinematics_RWKinematicPropertyMechanismRepresentation::
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)&                                 theData,
-  const Standard_Integer                                                 theNum,
-  Handle(Interface_Check)&                                               theArch,
-  const Handle(StepKinematics_KinematicPropertyMechanismRepresentation)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                                 theData,
+  const int                                                                   theNum,
+  occ::handle<Interface_Check>&                                               theArch,
+  const occ::handle<StepKinematics_KinematicPropertyMechanismRepresentation>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "kinematic_property_mechanism_representation"))
@@ -52,7 +52,7 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::ReadStep(
                       theArch,
                       aPropertyDefinitionRepresentation_Definition);
 
-  Handle(StepRepr_Representation) aPropertyDefinitionRepresentation_UsedRepresentation;
+  occ::handle<StepRepr_Representation> aPropertyDefinitionRepresentation_UsedRepresentation;
   theData->ReadEntity(theNum,
                       2,
                       "property_definition_representation.used_representation",
@@ -62,7 +62,7 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::ReadStep(
 
   // Own fields of KinematicPropertyMechanismRepresentation
 
-  Handle(StepKinematics_KinematicLinkRepresentation) aBase;
+  occ::handle<StepKinematics_KinematicLinkRepresentation> aBase;
   theData->ReadEntity(theNum,
                       3,
                       "base",
@@ -79,8 +79,8 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::WriteStep(
-  StepData_StepWriter&                                                   theSW,
-  const Handle(StepKinematics_KinematicPropertyMechanismRepresentation)& theEnt) const
+  StepData_StepWriter&                                                        theSW,
+  const occ::handle<StepKinematics_KinematicPropertyMechanismRepresentation>& theEnt) const
 {
 
   // Own fields of PropertyDefinitionRepresentation
@@ -97,8 +97,8 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::Share(
-  const Handle(StepKinematics_KinematicPropertyMechanismRepresentation)& theEnt,
-  Interface_EntityIterator&                                              iter) const
+  const occ::handle<StepKinematics_KinematicPropertyMechanismRepresentation>& theEnt,
+  Interface_EntityIterator&                                                   iter) const
 {
 
   // Inherited fields of PropertyDefinitionRepresentation

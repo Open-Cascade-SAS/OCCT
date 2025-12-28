@@ -17,10 +17,12 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <BRepBlend_SequenceOfPointOnRst.hxx>
+#include <BRepBlend_PointOnRst.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Blend_Point.hxx>
 #include <Blend_Status.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <math_Vector.hxx>
 
 class BRepBlend_Line;
@@ -45,73 +47,71 @@ class BRepBlend_CSWalking
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BRepBlend_CSWalking(const Handle(Adaptor3d_Curve)&     Curv,
-                                      const Handle(Adaptor3d_Surface)&   Surf,
-                                      const Handle(Adaptor3d_TopolTool)& Domain);
+  Standard_EXPORT BRepBlend_CSWalking(const occ::handle<Adaptor3d_Curve>&     Curv,
+                                      const occ::handle<Adaptor3d_Surface>&   Surf,
+                                      const occ::handle<Adaptor3d_TopolTool>& Domain);
 
-  Standard_EXPORT void Perform(Blend_CSFunction&      F,
-                               const Standard_Real    Pdep,
-                               const Standard_Real    Pmax,
-                               const Standard_Real    MaxStep,
-                               const Standard_Real    Tol3d,
-                               const Standard_Real    TolGuide,
-                               const math_Vector&     Soldep,
-                               const Standard_Real    Fleche,
-                               const Standard_Boolean Appro = Standard_False);
+  Standard_EXPORT void Perform(Blend_CSFunction&  F,
+                               const double       Pdep,
+                               const double       Pmax,
+                               const double       MaxStep,
+                               const double       Tol3d,
+                               const double       TolGuide,
+                               const math_Vector& Soldep,
+                               const double       Fleche,
+                               const bool         Appro = false);
 
-  Standard_EXPORT Standard_Boolean Complete(Blend_CSFunction& F, const Standard_Real Pmin);
+  Standard_EXPORT bool Complete(Blend_CSFunction& F, const double Pmin);
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
-  const Handle(BRepBlend_Line)& Line() const;
+  const occ::handle<BRepBlend_Line>& Line() const;
 
 private:
-  Standard_EXPORT void InternalPerform(Blend_CSFunction&   F,
-                                       math_Vector&        Sol,
-                                       const Standard_Real Bound);
+  Standard_EXPORT void InternalPerform(Blend_CSFunction& F, math_Vector& Sol, const double Bound);
 
-  Standard_EXPORT void Transition(const Handle(Adaptor2d_Curve2d)& A,
-                                  const Standard_Real              Param,
-                                  IntSurf_Transition&              TLine,
-                                  IntSurf_Transition&              TArc);
+  Standard_EXPORT void Transition(const occ::handle<Adaptor2d_Curve2d>& A,
+                                  const double                          Param,
+                                  IntSurf_Transition&                   TLine,
+                                  IntSurf_Transition&                   TArc);
 
-  Standard_EXPORT void MakeExtremity(BRepBlend_Extremity&             Extrem,
-                                     const Standard_Integer           Index,
-                                     const Standard_Real              Param,
-                                     const Standard_Boolean           IsVtx,
-                                     const Handle(Adaptor3d_HVertex)& Vtx);
+  Standard_EXPORT void MakeExtremity(BRepBlend_Extremity&                  Extrem,
+                                     const int                             Index,
+                                     const double                          Param,
+                                     const bool                            IsVtx,
+                                     const occ::handle<Adaptor3d_HVertex>& Vtx);
 
   Standard_EXPORT Blend_Status CheckDeflectionOnSurf(const gp_Pnt&   Psurf,
                                                      const gp_Pnt2d& Ponsurf,
                                                      const gp_Vec&   Tgsurf,
                                                      const gp_Vec2d& Tgonsurf);
 
-  Standard_EXPORT Blend_Status CheckDeflectionOnCurv(const gp_Pnt&       Pcurv,
-                                                     const Standard_Real Poncurv,
-                                                     const gp_Vec&       Tgcurv);
+  Standard_EXPORT Blend_Status CheckDeflectionOnCurv(const gp_Pnt& Pcurv,
+                                                     const double  Poncurv,
+                                                     const gp_Vec& Tgcurv);
 
-  Standard_EXPORT Blend_Status TestArret(Blend_CSFunction&      F,
-                                         const math_Vector&     Sol,
-                                         const Standard_Boolean TestDeflection,
-                                         const Blend_Status     State);
+  Standard_EXPORT Blend_Status TestArret(Blend_CSFunction&  F,
+                                         const math_Vector& Sol,
+                                         const bool         TestDeflection,
+                                         const Blend_Status State);
 
-  Standard_Boolean              done;
-  Handle(BRepBlend_Line)        line;
-  Handle(Adaptor3d_Surface)     surf;
-  Handle(Adaptor3d_Curve)       curv;
-  Handle(Adaptor3d_TopolTool)   domain;
-  Standard_Real                 tolpoint3d;
-  Standard_Real                 tolgui;
-  Standard_Real                 pasmax;
-  Standard_Real                 fleche;
-  Standard_Real                 param;
-  Standard_Real                 firstparam;
-  Handle(TColStd_HArray1OfReal) firstsol;
-  Blend_Point                   previousP;
-  Standard_Boolean              rebrou;
-  Standard_Boolean              iscomplete;
-  Standard_Boolean              comptra;
-  Standard_Real                 sens;
+  bool                                     done;
+  occ::handle<BRepBlend_Line>              line;
+  occ::handle<Adaptor3d_Surface>           surf;
+  occ::handle<Adaptor3d_Curve>             curv;
+  occ::handle<Adaptor3d_TopolTool>         domain;
+  double                                   tolpoint3d;
+  double                                   tolgui;
+  double                                   pasmax;
+  double                                   fleche;
+  double                                   param;
+  double                                   firstparam;
+  occ::handle<NCollection_HArray1<double>> firstsol;
+  Blend_Point                              previousP;
+  bool                                     rebrou;
+  bool                                     iscomplete;
+  bool                                     comptra;
+  double                                   sens;
 };
 
 #endif // _BRepBlend_CSWalking_HeaderFile

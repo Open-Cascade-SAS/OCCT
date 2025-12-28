@@ -25,26 +25,26 @@
 #include <gp_VectorWithNullMagnitude.hxx>
 #include <gp_XY.hxx>
 
-Standard_Boolean gp_Vec2d::IsEqual(const gp_Vec2d&     theOther,
-                                   const Standard_Real theLinearTolerance,
-                                   const Standard_Real theAngularTolerance) const
+bool gp_Vec2d::IsEqual(const gp_Vec2d& theOther,
+                       const double    theLinearTolerance,
+                       const double    theAngularTolerance) const
 {
-  const Standard_Real aNorm       = Magnitude();
-  const Standard_Real anOtherNorm = theOther.Magnitude();
-  const Standard_Real aVal        = std::abs(aNorm - anOtherNorm);
+  const double aNorm       = Magnitude();
+  const double anOtherNorm = theOther.Magnitude();
+  const double aVal        = std::abs(aNorm - anOtherNorm);
   // Check for equal lengths
-  const Standard_Boolean isEqualLength = (aVal <= theLinearTolerance);
+  const bool isEqualLength = (aVal <= theLinearTolerance);
   // Check for small vectors
   if (aNorm > theLinearTolerance && anOtherNorm > theLinearTolerance)
   {
-    const Standard_Real anAng = std::abs(Angle(theOther));
+    const double anAng = std::abs(Angle(theOther));
     // Check for zero angle
     return isEqualLength && (anAng <= theAngularTolerance);
   }
   return isEqualLength;
 }
 
-Standard_Real gp_Vec2d::Angle(const gp_Vec2d& theOther) const
+double gp_Vec2d::Angle(const gp_Vec2d& theOther) const
 {
   //    Comments:
   //    Above 45 degrees arccos gives the best precision for the
@@ -52,17 +52,17 @@ Standard_Real gp_Vec2d::Angle(const gp_Vec2d& theOther) const
   //    The errors made are far from negligible when we are
   //    close to zero or 90 degrees.
   //    In 2D the angular values are between -PI and PI
-  const Standard_Real aNorm       = Magnitude();
-  const Standard_Real anOtherNorm = theOther.Magnitude();
+  const double aNorm       = Magnitude();
+  const double anOtherNorm = theOther.Magnitude();
   if (aNorm <= gp::Resolution() || anOtherNorm <= gp::Resolution())
     throw gp_VectorWithNullMagnitude();
 
-  const Standard_Real aD       = aNorm * anOtherNorm;
-  const Standard_Real aCosinus = coord.Dot(theOther.coord) / aD;
-  const Standard_Real aSinus   = coord.Crossed(theOther.coord) / aD;
+  const double aD       = aNorm * anOtherNorm;
+  const double aCosinus = coord.Dot(theOther.coord) / aD;
+  const double aSinus   = coord.Crossed(theOther.coord) / aD;
 
   // Use M_SQRT1_2 (1/sqrt(2) approximately 0.7071067811865476) for better readability and precision
-  constexpr Standard_Real aCOS_45_DEG = M_SQRT1_2;
+  constexpr double aCOS_45_DEG = M_SQRT1_2;
 
   if (aCosinus > -aCOS_45_DEG && aCosinus < aCOS_45_DEG)
   {
@@ -81,16 +81,16 @@ Standard_Real gp_Vec2d::Angle(const gp_Vec2d& theOther) const
 
 void gp_Vec2d::Mirror(const gp_Ax2d& theA1)
 {
-  const gp_XY&        aDirectionXY = theA1.Direction().XY();
-  const Standard_Real aOrigX       = coord.X();
-  const Standard_Real aOrigY       = coord.Y();
-  const Standard_Real aDirX        = aDirectionXY.X();
-  const Standard_Real aDirY        = aDirectionXY.Y();
+  const gp_XY& aDirectionXY = theA1.Direction().XY();
+  const double aOrigX       = coord.X();
+  const double aOrigY       = coord.Y();
+  const double aDirX        = aDirectionXY.X();
+  const double aDirY        = aDirectionXY.Y();
 
   // Precompute common terms for reflection matrix
-  const Standard_Real aCrossTerm = 2.0 * aDirX * aDirY;
-  const Standard_Real aXXTerm    = 2.0 * aDirX * aDirX - 1.0;
-  const Standard_Real aYYTerm    = 2.0 * aDirY * aDirY - 1.0;
+  const double aCrossTerm = 2.0 * aDirX * aDirY;
+  const double aXXTerm    = 2.0 * aDirX * aDirX - 1.0;
+  const double aYYTerm    = 2.0 * aDirY * aDirY - 1.0;
 
   coord.SetX(aXXTerm * aOrigX + aCrossTerm * aOrigY);
   coord.SetY(aCrossTerm * aOrigX + aYYTerm * aOrigY);
@@ -126,21 +126,21 @@ void gp_Vec2d::Transform(const gp_Trsf2d& theT) noexcept
 
 void gp_Vec2d::Mirror(const gp_Vec2d& theV)
 {
-  const Standard_Real aMagnitude = theV.coord.Modulus();
+  const double aMagnitude = theV.coord.Modulus();
   if (aMagnitude > gp::Resolution())
   {
-    const gp_XY&        aMirrorVecXY = theV.coord;
-    const Standard_Real aOrigX       = coord.X();
-    const Standard_Real aOrigY       = coord.Y();
+    const gp_XY& aMirrorVecXY = theV.coord;
+    const double aOrigX       = coord.X();
+    const double aOrigY       = coord.Y();
 
     // Normalize the mirror vector components
-    const Standard_Real aNormDirX = aMirrorVecXY.X() / aMagnitude;
-    const Standard_Real aNormDirY = aMirrorVecXY.Y() / aMagnitude;
+    const double aNormDirX = aMirrorVecXY.X() / aMagnitude;
+    const double aNormDirY = aMirrorVecXY.Y() / aMagnitude;
 
     // Precompute common terms for reflection matrix
-    const Standard_Real aCrossTerm = 2.0 * aNormDirX * aNormDirY;
-    const Standard_Real aXXTerm    = 2.0 * aNormDirX * aNormDirX - 1.0;
-    const Standard_Real aYYTerm    = 2.0 * aNormDirY * aNormDirY - 1.0;
+    const double aCrossTerm = 2.0 * aNormDirX * aNormDirY;
+    const double aXXTerm    = 2.0 * aNormDirX * aNormDirX - 1.0;
+    const double aYYTerm    = 2.0 * aNormDirY * aNormDirY - 1.0;
 
     coord.SetX(aXXTerm * aOrigX + aCrossTerm * aOrigY);
     coord.SetY(aCrossTerm * aOrigX + aYYTerm * aOrigY);

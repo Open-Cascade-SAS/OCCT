@@ -30,26 +30,26 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-static Standard_Real GetDeflection(const Adaptor3d_Curve&      aCurve,
-                                   const Standard_Real         U1,
-                                   const Standard_Real         U2,
-                                   const Handle(Prs3d_Drawer)& aDrawer)
+static double GetDeflection(const Adaptor3d_Curve&           aCurve,
+                            const double                     U1,
+                            const double                     U2,
+                            const occ::handle<Prs3d_Drawer>& aDrawer)
 {
-  Standard_Real TheDeflection;
+  double TheDeflection;
 
   if (aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE)
   {
     // On calcule la fleche en fonction des min max globaux de la piece:
     Bnd_Box Total;
     BndLib_Add3dCurve::Add(aCurve, U1, U2, 0., Total);
-    Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+    double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
     Total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-    Standard_Real m = RealLast();
+    double m = RealLast();
     if (!(Total.IsOpenXmin() || Total.IsOpenXmax()))
       m = std::abs(aXmax - aXmin);
     if (!(Total.IsOpenYmin() || Total.IsOpenYmax()))
@@ -70,27 +70,27 @@ static Standard_Real GetDeflection(const Adaptor3d_Curve&      aCurve,
 
 //=================================================================================================
 
-static Standard_Boolean FindLimits(const Adaptor3d_Curve& aCurve,
-                                   const Standard_Real    aLimit,
-                                   Standard_Real&         First,
-                                   Standard_Real&         Last)
+static bool FindLimits(const Adaptor3d_Curve& aCurve,
+                       const double           aLimit,
+                       double&                First,
+                       double&                Last)
 {
-  First                     = aCurve.FirstParameter();
-  Last                      = aCurve.LastParameter();
-  Standard_Boolean firstInf = Precision::IsNegativeInfinite(First);
-  Standard_Boolean lastInf  = Precision::IsPositiveInfinite(Last);
+  First         = aCurve.FirstParameter();
+  Last          = aCurve.LastParameter();
+  bool firstInf = Precision::IsNegativeInfinite(First);
+  bool lastInf  = Precision::IsPositiveInfinite(Last);
 
   if (firstInf || lastInf)
   {
-    gp_Pnt           P1, P2;
-    Standard_Real    delta = 1;
-    Standard_Integer count = 0;
+    gp_Pnt P1, P2;
+    double delta = 1;
+    int    count = 0;
     if (firstInf && lastInf)
     {
       do
       {
         if (count++ == 100000)
-          return Standard_False;
+          return false;
         delta *= 2;
         First = -delta;
         Last  = delta;
@@ -104,7 +104,7 @@ static Standard_Boolean FindLimits(const Adaptor3d_Curve& aCurve,
       do
       {
         if (count++ == 100000)
-          return Standard_False;
+          return false;
         delta *= 2;
         First = Last - delta;
         aCurve.D0(First, P1);
@@ -116,25 +116,25 @@ static Standard_Boolean FindLimits(const Adaptor3d_Curve& aCurve,
       do
       {
         if (count++ == 100000)
-          return Standard_False;
+          return false;
         delta *= 2;
         Last = First + delta;
         aCurve.D0(Last, P2);
       } while (P1.Distance(P2) < aLimit);
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static void drawCurve(Adaptor3d_Curve&               aCurve,
-                      const Handle(Graphic3d_Group)& aGroup,
-                      const Standard_Real            TheDeflection,
-                      const Standard_Real            anAngle,
-                      const Standard_Real            U1,
-                      const Standard_Real            U2,
-                      TColgp_SequenceOfPnt&          Points)
+static void drawCurve(Adaptor3d_Curve&                    aCurve,
+                      const occ::handle<Graphic3d_Group>& aGroup,
+                      const double                        TheDeflection,
+                      const double                        anAngle,
+                      const double                        U1,
+                      const double                        U2,
+                      NCollection_Sequence<gp_Pnt>&       Points)
 {
   switch (aCurve.GetType())
   {
@@ -145,7 +145,7 @@ static void drawCurve(Adaptor3d_Curve&               aCurve,
       Points.Append(p2);
       if (!aGroup.IsNull())
       {
-        Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+        occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
         aPrims->AddVertex(p1);
         aPrims->AddVertex(p2);
         aGroup->AddPrimitiveArray(aPrims);
@@ -153,13 +153,13 @@ static void drawCurve(Adaptor3d_Curve&               aCurve,
       break;
     }
     default: {
-      const Standard_Integer nbinter = aCurve.NbIntervals(GeomAbs_C1);
-      TColStd_Array1OfReal   T(1, nbinter + 1);
+      const int                  nbinter = aCurve.NbIntervals(GeomAbs_C1);
+      NCollection_Array1<double> T(1, nbinter + 1);
       aCurve.Intervals(T, GeomAbs_C1);
 
-      Standard_Real        theU1, theU2;
-      Standard_Integer     NumberOfPoints, i, j;
-      TColgp_SequenceOfPnt SeqP;
+      double                       theU1, theU2;
+      int                          NumberOfPoints, i, j;
+      NCollection_Sequence<gp_Pnt> SeqP;
 
       for (j = 1; j <= nbinter; j++)
       {
@@ -181,7 +181,7 @@ static void drawCurve(Adaptor3d_Curve&               aCurve,
         }
       }
 
-      Handle(Graphic3d_ArrayOfPolylines) aPrims;
+      occ::handle<Graphic3d_ArrayOfPolylines> aPrims;
       if (!aGroup.IsNull())
         aPrims = new Graphic3d_ArrayOfPolylines(SeqP.Length());
 
@@ -204,48 +204,48 @@ static void drawCurve(Adaptor3d_Curve&               aCurve,
 
 //=================================================================================================
 
-static Standard_Boolean MatchCurve(const Standard_Real    X,
-                                   const Standard_Real    Y,
-                                   const Standard_Real    Z,
-                                   const Standard_Real    aDistance,
-                                   const Adaptor3d_Curve& aCurve,
-                                   const Standard_Real    TheDeflection,
-                                   const Standard_Real    anAngle,
-                                   const Standard_Real    U1,
-                                   const Standard_Real    U2)
+static bool MatchCurve(const double           X,
+                       const double           Y,
+                       const double           Z,
+                       const double           aDistance,
+                       const Adaptor3d_Curve& aCurve,
+                       const double           TheDeflection,
+                       const double           anAngle,
+                       const double           U1,
+                       const double           U2)
 {
-  Standard_Real retdist;
+  double retdist;
   switch (aCurve.GetType())
   {
     case GeomAbs_Line: {
       gp_Pnt p1 = aCurve.Value(U1);
       if (std::abs(X - p1.X()) + std::abs(Y - p1.Y()) + std::abs(Z - p1.Z()) <= aDistance)
-        return Standard_True;
+        return true;
       gp_Pnt p2 = aCurve.Value(U2);
       if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
-        return Standard_True;
+        return true;
       return Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist);
     }
     case GeomAbs_Circle: {
-      const Standard_Real Radius = aCurve.Circle().Radius();
+      const double Radius = aCurve.Circle().Radius();
       if (!Precision::IsInfinite(Radius))
       {
-        const Standard_Real    DU = std::sqrt(8.0 * TheDeflection / Radius);
-        const Standard_Real    Er = std::abs(U2 - U1) / DU;
-        const Standard_Integer N  = std::max(2, (Standard_Integer)std::trunc(Er));
+        const double DU = std::sqrt(8.0 * TheDeflection / Radius);
+        const double Er = std::abs(U2 - U1) / DU;
+        const int    N  = std::max(2, (int)std::trunc(Er));
         if (N > 0)
         {
           gp_Pnt p1, p2;
-          for (Standard_Integer Index = 1; Index <= N + 1; Index++)
+          for (int Index = 1; Index <= N + 1; Index++)
           {
             p2 = aCurve.Value(U1 + (Index - 1) * DU);
             if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
-              return Standard_True;
+              return true;
 
             if (Index > 1)
             {
               if (Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist))
-                return Standard_True;
+                return true;
             }
             p1 = p2;
           }
@@ -255,46 +255,46 @@ static Standard_Boolean MatchCurve(const Standard_Real    X,
     }
     default: {
       GCPnts_TangentialDeflection Algo(aCurve, U1, U2, anAngle, TheDeflection);
-      const Standard_Integer      NumberOfPoints = Algo.NbPoints();
+      const int                   NumberOfPoints = Algo.NbPoints();
       if (NumberOfPoints > 0)
       {
         gp_Pnt p1, p2;
-        for (Standard_Integer i = 1; i <= NumberOfPoints; i++)
+        for (int i = 1; i <= NumberOfPoints; i++)
         {
           p2 = Algo.Value(i);
           if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
-            return Standard_True;
+            return true;
           if (i > 1)
           {
             if (Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist))
-              return Standard_True;
+              return true;
           }
           p1 = p2;
         }
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void StdPrs_DeflectionCurve::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
-                                 const Handle(Prs3d_Drawer)&       aDrawer,
-                                 const Standard_Boolean            theToDrawCurve)
+void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                 Adaptor3d_Curve&                       aCurve,
+                                 const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                 const bool                             theToDrawCurve)
 {
-  Handle(Graphic3d_Group) aGroup;
+  occ::handle<Graphic3d_Group> aGroup;
   if (theToDrawCurve)
   {
     aGroup = aPresentation->CurrentGroup();
     aGroup->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
   }
 
-  Standard_Real V1, V2;
+  double V1, V2;
   if (FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2))
   {
-    TColgp_SequenceOfPnt Points;
+    NCollection_Sequence<gp_Pnt> Points;
     drawCurve(aCurve,
               aGroup,
               GetDeflection(aCurve, V1, V2, aDrawer),
@@ -319,29 +319,29 @@ void StdPrs_DeflectionCurve::Add(const Handle(Prs3d_Presentation)& aPresentation
 
 //=================================================================================================
 
-void StdPrs_DeflectionCurve::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
-                                 const Standard_Real               U1,
-                                 const Standard_Real               U2,
-                                 const Handle(Prs3d_Drawer)&       aDrawer,
-                                 const Standard_Boolean            theToDrawCurve)
+void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                 Adaptor3d_Curve&                       aCurve,
+                                 const double                           U1,
+                                 const double                           U2,
+                                 const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                 const bool                             theToDrawCurve)
 {
-  Handle(Graphic3d_Group) aGroup;
+  occ::handle<Graphic3d_Group> aGroup;
   if (theToDrawCurve)
   {
     aGroup = aPresentation->CurrentGroup();
     aGroup->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
   }
 
-  Standard_Real V1 = U1;
-  Standard_Real V2 = U2;
+  double V1 = U1;
+  double V2 = U2;
 
   if (Precision::IsNegativeInfinite(V1))
     V1 = -aDrawer->MaximalParameterValue();
   if (Precision::IsPositiveInfinite(V2))
     V2 = aDrawer->MaximalParameterValue();
 
-  TColgp_SequenceOfPnt Points;
+  NCollection_Sequence<gp_Pnt> Points;
   drawCurve(aCurve,
             aGroup,
             GetDeflection(aCurve, V1, V2, aDrawer),
@@ -365,16 +365,16 @@ void StdPrs_DeflectionCurve::Add(const Handle(Prs3d_Presentation)& aPresentation
 
 //=================================================================================================
 
-void StdPrs_DeflectionCurve::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
-                                 const Standard_Real               U1,
-                                 const Standard_Real               U2,
-                                 const Standard_Real               aDeflection,
-                                 TColgp_SequenceOfPnt&             Points,
-                                 const Standard_Real               anAngle,
-                                 const Standard_Boolean            theToDrawCurve)
+void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                 Adaptor3d_Curve&                       aCurve,
+                                 const double                           U1,
+                                 const double                           U2,
+                                 const double                           aDeflection,
+                                 NCollection_Sequence<gp_Pnt>&          Points,
+                                 const double                           anAngle,
+                                 const bool                             theToDrawCurve)
 {
-  Handle(Graphic3d_Group) aGroup;
+  occ::handle<Graphic3d_Group> aGroup;
   if (theToDrawCurve)
   {
     aGroup = aPresentation->CurrentGroup();
@@ -385,45 +385,45 @@ void StdPrs_DeflectionCurve::Add(const Handle(Prs3d_Presentation)& aPresentation
 
 //=================================================================================================
 
-void StdPrs_DeflectionCurve::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
-                                 const Standard_Real               aDeflection,
-                                 const Standard_Real               aLimit,
-                                 const Standard_Real               anAngle,
-                                 const Standard_Boolean            theToDrawCurve)
+void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                 Adaptor3d_Curve&                       aCurve,
+                                 const double                           aDeflection,
+                                 const double                           aLimit,
+                                 const double                           anAngle,
+                                 const bool                             theToDrawCurve)
 {
-  Standard_Real V1, V2;
+  double V1, V2;
   if (!FindLimits(aCurve, aLimit, V1, V2))
   {
     return;
   }
 
-  Handle(Graphic3d_Group) aGroup;
+  occ::handle<Graphic3d_Group> aGroup;
   if (theToDrawCurve)
   {
     aGroup = aPresentation->CurrentGroup();
   }
 
-  TColgp_SequenceOfPnt Points;
+  NCollection_Sequence<gp_Pnt> Points;
   drawCurve(aCurve, aGroup, aDeflection, anAngle, V1, V2, Points);
 }
 
 //=================================================================================================
 
-void StdPrs_DeflectionCurve::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                 Adaptor3d_Curve&                  aCurve,
-                                 const Standard_Real               aDeflection,
-                                 const Handle(Prs3d_Drawer)&       aDrawer,
-                                 TColgp_SequenceOfPnt&             Points,
-                                 const Standard_Boolean            theToDrawCurve)
+void StdPrs_DeflectionCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                 Adaptor3d_Curve&                       aCurve,
+                                 const double                           aDeflection,
+                                 const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                 NCollection_Sequence<gp_Pnt>&          Points,
+                                 const bool                             theToDrawCurve)
 {
-  Standard_Real V1, V2;
+  double V1, V2;
   if (!FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2))
   {
     return;
   }
 
-  Handle(Graphic3d_Group) aGroup;
+  occ::handle<Graphic3d_Group> aGroup;
   if (theToDrawCurve)
   {
     aGroup = aPresentation->CurrentGroup();
@@ -433,14 +433,14 @@ void StdPrs_DeflectionCurve::Add(const Handle(Prs3d_Presentation)& aPresentation
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_DeflectionCurve::Match(const Standard_Real         X,
-                                               const Standard_Real         Y,
-                                               const Standard_Real         Z,
-                                               const Standard_Real         aDistance,
-                                               const Adaptor3d_Curve&      aCurve,
-                                               const Handle(Prs3d_Drawer)& aDrawer)
+bool StdPrs_DeflectionCurve::Match(const double                     X,
+                                   const double                     Y,
+                                   const double                     Z,
+                                   const double                     aDistance,
+                                   const Adaptor3d_Curve&           aCurve,
+                                   const occ::handle<Prs3d_Drawer>& aDrawer)
 {
-  Standard_Real V1, V2;
+  double V1, V2;
   if (FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2))
   {
     return MatchCurve(X,
@@ -453,22 +453,22 @@ Standard_Boolean StdPrs_DeflectionCurve::Match(const Standard_Real         X,
                       V1,
                       V2);
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_DeflectionCurve::Match(const Standard_Real         X,
-                                               const Standard_Real         Y,
-                                               const Standard_Real         Z,
-                                               const Standard_Real         aDistance,
-                                               const Adaptor3d_Curve&      aCurve,
-                                               const Standard_Real         U1,
-                                               const Standard_Real         U2,
-                                               const Handle(Prs3d_Drawer)& aDrawer)
+bool StdPrs_DeflectionCurve::Match(const double                     X,
+                                   const double                     Y,
+                                   const double                     Z,
+                                   const double                     aDistance,
+                                   const Adaptor3d_Curve&           aCurve,
+                                   const double                     U1,
+                                   const double                     U2,
+                                   const occ::handle<Prs3d_Drawer>& aDrawer)
 {
-  Standard_Real V1 = U1;
-  Standard_Real V2 = U2;
+  double V1 = U1;
+  double V2 = U2;
 
   if (Precision::IsNegativeInfinite(V1))
     V1 = -aDrawer->MaximalParameterValue();
@@ -488,34 +488,34 @@ Standard_Boolean StdPrs_DeflectionCurve::Match(const Standard_Real         X,
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_DeflectionCurve::Match(const Standard_Real    X,
-                                               const Standard_Real    Y,
-                                               const Standard_Real    Z,
-                                               const Standard_Real    aDistance,
-                                               const Adaptor3d_Curve& aCurve,
-                                               const Standard_Real    U1,
-                                               const Standard_Real    U2,
-                                               const Standard_Real    aDeflection,
-                                               const Standard_Real    anAngle)
+bool StdPrs_DeflectionCurve::Match(const double           X,
+                                   const double           Y,
+                                   const double           Z,
+                                   const double           aDistance,
+                                   const Adaptor3d_Curve& aCurve,
+                                   const double           U1,
+                                   const double           U2,
+                                   const double           aDeflection,
+                                   const double           anAngle)
 {
   return MatchCurve(X, Y, Z, aDistance, aCurve, aDeflection, anAngle, U1, U2);
 }
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_DeflectionCurve::Match(const Standard_Real    X,
-                                               const Standard_Real    Y,
-                                               const Standard_Real    Z,
-                                               const Standard_Real    aDistance,
-                                               const Adaptor3d_Curve& aCurve,
-                                               const Standard_Real    aDeflection,
-                                               const Standard_Real    aLimit,
-                                               const Standard_Real    anAngle)
+bool StdPrs_DeflectionCurve::Match(const double           X,
+                                   const double           Y,
+                                   const double           Z,
+                                   const double           aDistance,
+                                   const Adaptor3d_Curve& aCurve,
+                                   const double           aDeflection,
+                                   const double           aLimit,
+                                   const double           anAngle)
 {
-  Standard_Real V1, V2;
+  double V1, V2;
   if (FindLimits(aCurve, aLimit, V1, V2))
   {
     return MatchCurve(X, Y, Z, aDistance, aCurve, aDeflection, anAngle, V1, V2);
   }
-  return Standard_False;
+  return false;
 }

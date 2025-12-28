@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CompositeTextWithExtent, StepVisual_Compos
 StepVisual_CompositeTextWithExtent::StepVisual_CompositeTextWithExtent() {}
 
 void StepVisual_CompositeTextWithExtent::Init(
-  const Handle(TCollection_HAsciiString)&            aName,
-  const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText,
-  const Handle(StepVisual_PlanarExtent)&             aExtent)
+  const occ::handle<TCollection_HAsciiString>&                        aName,
+  const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText,
+  const occ::handle<StepVisual_PlanarExtent>&                         aExtent)
 {
   // --- classe own fields ---
   extent = aExtent;
@@ -30,12 +30,13 @@ void StepVisual_CompositeTextWithExtent::Init(
   StepVisual_CompositeText::Init(aName, aCollectedText);
 }
 
-void StepVisual_CompositeTextWithExtent::SetExtent(const Handle(StepVisual_PlanarExtent)& aExtent)
+void StepVisual_CompositeTextWithExtent::SetExtent(
+  const occ::handle<StepVisual_PlanarExtent>& aExtent)
 {
   extent = aExtent;
 }
 
-Handle(StepVisual_PlanarExtent) StepVisual_CompositeTextWithExtent::Extent() const
+occ::handle<StepVisual_PlanarExtent> StepVisual_CompositeTextWithExtent::Extent() const
 {
   return extent;
 }

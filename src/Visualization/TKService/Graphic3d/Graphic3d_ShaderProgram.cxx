@@ -29,18 +29,18 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderProgram, Standard_Transient)
 
 namespace
 {
-static std::atomic<Standard_Integer> THE_PROGRAM_OBJECT_COUNTER(0);
+static std::atomic<int> THE_PROGRAM_OBJECT_COUNTER(0);
 }
 
 //=================================================================================================
 
 const TCollection_AsciiString& Graphic3d_ShaderProgram::ShadersFolder()
 {
-  static Standard_Boolean        THE_IS_DEFINED = Standard_False;
+  static bool                    THE_IS_DEFINED = false;
   static TCollection_AsciiString THE_SHADERS_FOLDER;
   if (!THE_IS_DEFINED)
   {
-    THE_IS_DEFINED = Standard_True;
+    THE_IS_DEFINED = true;
     OSD_Environment aDirEnv("CSF_ShadersDirectory");
     THE_SHADERS_FOLDER = aDirEnv.Value();
     if (THE_SHADERS_FOLDER.IsEmpty())
@@ -104,66 +104,70 @@ Graphic3d_ShaderProgram::~Graphic3d_ShaderProgram()
 // function : IsDone
 // purpose  : Checks if the program object is valid or not
 // =======================================================================
-Standard_Boolean Graphic3d_ShaderProgram::IsDone() const
+bool Graphic3d_ShaderProgram::IsDone() const
 {
   if (myShaderObjects.IsEmpty())
   {
-    return Standard_False;
+    return false;
   }
 
-  for (Graphic3d_ShaderObjectList::Iterator anIt(myShaderObjects); anIt.More(); anIt.Next())
+  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects);
+       anIt.More();
+       anIt.Next())
   {
     if (!anIt.Value()->IsDone())
-      return Standard_False;
+      return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 // =======================================================================
 // function : AttachShader
 // purpose  : Attaches shader object to the program object
 // =======================================================================
-Standard_Boolean Graphic3d_ShaderProgram::AttachShader(
-  const Handle(Graphic3d_ShaderObject)& theShader)
+bool Graphic3d_ShaderProgram::AttachShader(const occ::handle<Graphic3d_ShaderObject>& theShader)
 {
   if (theShader.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  for (Graphic3d_ShaderObjectList::Iterator anIt(myShaderObjects); anIt.More(); anIt.Next())
+  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects);
+       anIt.More();
+       anIt.Next())
   {
     if (anIt.Value() == theShader)
-      return Standard_False;
+      return false;
   }
 
   myShaderObjects.Append(theShader);
-  return Standard_True;
+  return true;
 }
 
 // =======================================================================
 // function : DetachShader
 // purpose  : Detaches shader object from the program object
 // =======================================================================
-Standard_Boolean Graphic3d_ShaderProgram::DetachShader(
-  const Handle(Graphic3d_ShaderObject)& theShader)
+bool Graphic3d_ShaderProgram::DetachShader(const occ::handle<Graphic3d_ShaderObject>& theShader)
 {
   if (theShader.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  for (Graphic3d_ShaderObjectList::Iterator anIt(myShaderObjects); anIt.More(); anIt.Next())
+  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects);
+       anIt.More();
+       anIt.Next())
   {
     if (anIt.Value() == theShader)
     {
       myShaderObjects.Remove(anIt);
-      return Standard_True;
+      return true;
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 // =======================================================================
@@ -178,7 +182,7 @@ void Graphic3d_ShaderProgram::ClearVariables()
 //=================================================================================================
 
 void Graphic3d_ShaderProgram::SetVertexAttributes(
-  const Graphic3d_ShaderAttributeList& theAttributes)
+  const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& theAttributes)
 {
   myAttributes = theAttributes;
 }

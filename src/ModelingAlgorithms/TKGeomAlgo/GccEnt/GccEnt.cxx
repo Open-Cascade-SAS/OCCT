@@ -26,37 +26,36 @@
 
 namespace
 {
-static Standard_CString GccEnt_Table_PrintPosition[5] = {"UNQUALIFIED",
-                                                         "ENCLOSING",
-                                                         "ENCLOSED",
-                                                         "OUTSIDE",
-                                                         "NOQUALIFIER"};
+static const char* GccEnt_Table_PrintPosition[5] = {"UNQUALIFIED",
+                                                    "ENCLOSING",
+                                                    "ENCLOSED",
+                                                    "OUTSIDE",
+                                                    "NOQUALIFIER"};
 }
 
 //=================================================================================================
 
-Standard_CString GccEnt::PositionToString(GccEnt_Position thePosition)
+const char* GccEnt::PositionToString(GccEnt_Position thePosition)
 {
   return GccEnt_Table_PrintPosition[thePosition];
 }
 
 //=================================================================================================
 
-Standard_Boolean GccEnt::PositionFromString(Standard_CString thePositionString,
-                                            GccEnt_Position& thePosition)
+bool GccEnt::PositionFromString(const char* thePositionString, GccEnt_Position& thePosition)
 {
   TCollection_AsciiString aName(thePositionString);
   aName.UpperCase();
-  for (Standard_Integer aTypeIter = 0; aTypeIter <= GccEnt_noqualifier; ++aTypeIter)
+  for (int aTypeIter = 0; aTypeIter <= GccEnt_noqualifier; ++aTypeIter)
   {
-    Standard_CString aTypeName = GccEnt_Table_PrintPosition[aTypeIter];
+    const char* aTypeName = GccEnt_Table_PrintPosition[aTypeIter];
     if (aName == aTypeName)
     {
       thePosition = GccEnt_Position(aTypeIter);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 GccEnt_QualifiedLin GccEnt::Unqualified(const gp_Lin2d& Line)

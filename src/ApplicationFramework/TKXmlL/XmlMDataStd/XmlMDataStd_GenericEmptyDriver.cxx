@@ -23,37 +23,37 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_GenericEmptyDriver, XmlMDF_ADriver)
 //=================================================================================================
 
 XmlMDataStd_GenericEmptyDriver::XmlMDataStd_GenericEmptyDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_GenericEmptyDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_GenericEmptyDriver::NewEmpty() const
 {
-  return Handle(TDF_Attribute)(); // this attribute can not be created
+  return occ::handle<TDF_Attribute>(); // this attribute can not be created
 }
 
 //=================================================================================================
 
-Handle(Standard_Type) XmlMDataStd_GenericEmptyDriver::SourceType() const
+occ::handle<Standard_Type> XmlMDataStd_GenericEmptyDriver::SourceType() const
 {
   return Standard_Type::Instance<TDataStd_GenericEmpty>();
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMDataStd_GenericEmptyDriver::Paste(const XmlObjMgt_Persistent&,
-                                                       const Handle(TDF_Attribute)&,
-                                                       XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_GenericEmptyDriver::Paste(const XmlObjMgt_Persistent&,
+                                           const occ::handle<TDF_Attribute>&,
+                                           XmlObjMgt_RRelocationTable&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void XmlMDataStd_GenericEmptyDriver::Paste(const Handle(TDF_Attribute)&,
+void XmlMDataStd_GenericEmptyDriver::Paste(const occ::handle<TDF_Attribute>&,
                                            XmlObjMgt_Persistent&,
                                            XmlObjMgt_SRelocationTable&) const
 {

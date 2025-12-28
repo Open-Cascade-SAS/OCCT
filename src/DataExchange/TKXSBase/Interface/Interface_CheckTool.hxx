@@ -43,31 +43,31 @@ public:
   //! Creates a CheckTool, by calling the General Service Library
   //! and Modules, selected through a Protocol, to work on a Model
   //! Moreover, Protocol recognizes Unknown Entities
-  Standard_EXPORT Interface_CheckTool(const Handle(Interface_InterfaceModel)& model,
-                                      const Handle(Interface_Protocol)&       protocol);
+  Standard_EXPORT Interface_CheckTool(const occ::handle<Interface_InterfaceModel>& model,
+                                      const occ::handle<Interface_Protocol>&       protocol);
 
   //! Creates a CheckTool, by calling the General Service Library
   //! and Modules, selected through a Protocol, to work on a Model
   //! Protocol and so on are taken from the Model (its GTool)
-  Standard_EXPORT Interface_CheckTool(const Handle(Interface_InterfaceModel)& model);
+  Standard_EXPORT Interface_CheckTool(const occ::handle<Interface_InterfaceModel>& model);
 
   //! Creates a CheckTool from a Graph. The Graph contains a Model
   //! which designates a Protocol: they are used to create ShareTool
   Standard_EXPORT Interface_CheckTool(const Interface_Graph& graph);
 
-  Standard_EXPORT Interface_CheckTool(const Handle(Interface_HGraph)& hgraph);
+  Standard_EXPORT Interface_CheckTool(const occ::handle<Interface_HGraph>& hgraph);
 
   //! Fills as required a Check with the Error and Warning messages
   //! produced by Checking a given Entity.
   //! For an Erroneous or Corrected Entity : Check build at Analyse
   //! time; else, Check computed for Entity (Verify integrity), can
   //! use a Graph as required to control context
-  Standard_EXPORT void FillCheck(const Handle(Standard_Transient)& ent,
-                                 const Interface_ShareTool&        sh,
-                                 Handle(Interface_Check)&          ach);
+  Standard_EXPORT void FillCheck(const occ::handle<Standard_Transient>& ent,
+                                 const Interface_ShareTool&             sh,
+                                 occ::handle<Interface_Check>&          ach);
 
   //! Utility method which Prints the content of a Check
-  Standard_EXPORT void Print(const Handle(Interface_Check)& ach, Standard_OStream& S) const;
+  Standard_EXPORT void Print(const occ::handle<Interface_Check>& ach, Standard_OStream& S) const;
 
   //! Simply Lists all the Checks and the Content (messages) and the
   //! Entity, if there is, of each Check
@@ -76,13 +76,13 @@ public:
 
   //! Returns the Check associated to an Entity identified by
   //! its Number in a Model.
-  Standard_EXPORT Handle(Interface_Check) Check(const Standard_Integer num);
+  Standard_EXPORT occ::handle<Interface_Check> Check(const int num);
 
   //! Checks if any Error has been detected (CheckList not empty)
   //! Returns normally if none, raises exception if some exists.
   //! It reuses the last computations from other checking methods,
   //! unless the argument <reset> is given True
-  Standard_EXPORT void CheckSuccess(const Standard_Boolean reset = Standard_False);
+  Standard_EXPORT void CheckSuccess(const bool reset = false);
 
   //! Returns list of all "remarkable" information, which include :
   //! - GlobalCheck, if not empty
@@ -115,11 +115,10 @@ public:
   //! as Unknown
   Standard_EXPORT Interface_EntityIterator UnknownEntities();
 
-protected:
 private:
-  Handle(Interface_GTool) thegtool;
-  Interface_ShareTool     theshare;
-  Standard_Integer        thestat;
+  occ::handle<Interface_GTool> thegtool;
+  Interface_ShareTool          theshare;
+  int                          thestat;
 };
 
 #endif // _Interface_CheckTool_HeaderFile

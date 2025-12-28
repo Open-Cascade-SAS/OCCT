@@ -25,16 +25,16 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GroupRelationship, Standard_Transient)
 
 StepBasic_GroupRelationship::StepBasic_GroupRelationship()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
-void StepBasic_GroupRelationship::Init(const Handle(TCollection_HAsciiString)& aName,
-                                       const Standard_Boolean                  hasDescription,
-                                       const Handle(TCollection_HAsciiString)& aDescription,
-                                       const Handle(StepBasic_Group)&          aRelatingGroup,
-                                       const Handle(StepBasic_Group)&          aRelatedGroup)
+void StepBasic_GroupRelationship::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                       const bool                                   hasDescription,
+                                       const occ::handle<TCollection_HAsciiString>& aDescription,
+                                       const occ::handle<StepBasic_Group>&          aRelatingGroup,
+                                       const occ::handle<StepBasic_Group>&          aRelatedGroup)
 {
 
   theName = aName;
@@ -54,21 +54,21 @@ void StepBasic_GroupRelationship::Init(const Handle(TCollection_HAsciiString)& a
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GroupRelationship::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_GroupRelationship::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_GroupRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_GroupRelationship::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GroupRelationship::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_GroupRelationship::Description() const
 {
   return theDescription;
 }
@@ -76,42 +76,43 @@ Handle(TCollection_HAsciiString) StepBasic_GroupRelationship::Description() cons
 //=================================================================================================
 
 void StepBasic_GroupRelationship::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_GroupRelationship::HasDescription() const
+bool StepBasic_GroupRelationship::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Group) StepBasic_GroupRelationship::RelatingGroup() const
+occ::handle<StepBasic_Group> StepBasic_GroupRelationship::RelatingGroup() const
 {
   return theRelatingGroup;
 }
 
 //=================================================================================================
 
-void StepBasic_GroupRelationship::SetRelatingGroup(const Handle(StepBasic_Group)& aRelatingGroup)
+void StepBasic_GroupRelationship::SetRelatingGroup(
+  const occ::handle<StepBasic_Group>& aRelatingGroup)
 {
   theRelatingGroup = aRelatingGroup;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Group) StepBasic_GroupRelationship::RelatedGroup() const
+occ::handle<StepBasic_Group> StepBasic_GroupRelationship::RelatedGroup() const
 {
   return theRelatedGroup;
 }
 
 //=================================================================================================
 
-void StepBasic_GroupRelationship::SetRelatedGroup(const Handle(StepBasic_Group)& aRelatedGroup)
+void StepBasic_GroupRelationship::SetRelatedGroup(const occ::handle<StepBasic_Group>& aRelatedGroup)
 {
   theRelatedGroup = aRelatedGroup;
 }

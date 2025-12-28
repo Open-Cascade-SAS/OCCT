@@ -22,51 +22,49 @@
 
 class Geom_BezierCurve;
 
-DEFINE_STANDARD_HANDLE(DrawTrSurf_BezierCurve, DrawTrSurf_Curve)
-
 class DrawTrSurf_BezierCurve : public DrawTrSurf_Curve
 {
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BezierCurve, DrawTrSurf_Curve)
   Draw_Drawable3D_FACTORY
 public:
   //! creates a drawable Bezier curve from a Bezier curve of package Geom.
-  Standard_EXPORT DrawTrSurf_BezierCurve(const Handle(Geom_BezierCurve)& C);
+  Standard_EXPORT DrawTrSurf_BezierCurve(const occ::handle<Geom_BezierCurve>& C);
 
-  Standard_EXPORT DrawTrSurf_BezierCurve(const Handle(Geom_BezierCurve)& C,
-                                         const Draw_Color&               CurvColor,
-                                         const Draw_Color&               PolesColor,
-                                         const Standard_Boolean          ShowPoles,
-                                         const Standard_Integer          Discret,
-                                         const Standard_Real             Deflection,
-                                         const Standard_Integer          DrawMode);
+  Standard_EXPORT DrawTrSurf_BezierCurve(const occ::handle<Geom_BezierCurve>& C,
+                                         const Draw_Color&                    CurvColor,
+                                         const Draw_Color&                    PolesColor,
+                                         const bool                           ShowPoles,
+                                         const int                            Discret,
+                                         const double                         Deflection,
+                                         const int                            DrawMode);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
-  void ShowPoles() { drawPoles = Standard_True; }
+  void ShowPoles() { drawPoles = true; }
 
-  void ClearPoles() { drawPoles = Standard_False; }
+  void ClearPoles() { drawPoles = false; }
 
   //! Returns in <Index> the index of the first pole of the
   //! curve projected by the Display <D> at a distance lower
   //! than <Prec> from <X,Y>. If no pole is found index is
   //! set to 0, else index is always greater than the input
   //! value of index.
-  Standard_EXPORT void FindPole(const Standard_Real X,
-                                const Standard_Real Y,
+  Standard_EXPORT void FindPole(const double        X,
+                                const double        Y,
                                 const Draw_Display& D,
-                                const Standard_Real Prec,
-                                Standard_Integer&   Index) const;
+                                const double        Prec,
+                                int&                Index) const;
 
   void SetPolesColor(const Draw_Color& theColor) { polesLook = theColor; }
 
   Draw_Color PolesColor() const { return polesLook; }
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
 
 private:
-  Standard_Boolean drawPoles;
-  Draw_Color       polesLook;
+  bool       drawPoles;
+  Draw_Color polesLook;
 };
 
 #endif // _DrawTrSurf_BezierCurve_HeaderFile

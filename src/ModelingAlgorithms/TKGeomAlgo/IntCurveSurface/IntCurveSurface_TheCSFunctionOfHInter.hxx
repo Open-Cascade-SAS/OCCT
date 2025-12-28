@@ -32,33 +32,32 @@ class IntCurveSurface_TheCSFunctionOfHInter : public math_FunctionSetWithDerivat
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT IntCurveSurface_TheCSFunctionOfHInter(const Handle(Adaptor3d_Surface)& S,
-                                                        const Handle(Adaptor3d_Curve)&   C);
+  Standard_EXPORT IntCurveSurface_TheCSFunctionOfHInter(const occ::handle<Adaptor3d_Surface>& S,
+                                                        const occ::handle<Adaptor3d_Curve>&   C);
 
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
   Standard_EXPORT const gp_Pnt& Point() const;
 
-  Standard_EXPORT Standard_Real Root() const;
+  Standard_EXPORT double Root() const;
 
-  Standard_EXPORT const Handle(Adaptor3d_Surface)& AuxillarSurface() const;
+  Standard_EXPORT const occ::handle<Adaptor3d_Surface>& AuxillarSurface() const;
 
-  Standard_EXPORT const Handle(Adaptor3d_Curve)& AuxillarCurve() const;
+  Standard_EXPORT const occ::handle<Adaptor3d_Curve>& AuxillarCurve() const;
 
-protected:
 private:
-  Handle(Adaptor3d_Surface) surface;
-  Handle(Adaptor3d_Curve)   curve;
-  gp_Pnt                    p;
-  Standard_Real             f;
+  occ::handle<Adaptor3d_Surface> surface;
+  occ::handle<Adaptor3d_Curve>   curve;
+  gp_Pnt                         p;
+  double                         f;
 };
 
 #endif // _IntCurveSurface_TheCSFunctionOfHInter_HeaderFile

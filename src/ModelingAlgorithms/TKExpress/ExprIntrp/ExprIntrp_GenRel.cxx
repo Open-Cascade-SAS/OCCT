@@ -26,24 +26,24 @@ IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_GenRel, ExprIntrp_Generator)
 
 ExprIntrp_GenRel::ExprIntrp_GenRel()
 {
-  done = Standard_False;
+  done = false;
 }
 
-Handle(ExprIntrp_GenRel) ExprIntrp_GenRel::Create()
+occ::handle<ExprIntrp_GenRel> ExprIntrp_GenRel::Create()
 {
   return new ExprIntrp_GenRel();
 }
 
 void ExprIntrp_GenRel::Process(const TCollection_AsciiString& str)
 {
-  Handle(ExprIntrp_GenRel) me = this;
-  done                        = Standard_False;
+  occ::handle<ExprIntrp_GenRel> me = this;
+  done                             = false;
   if (ExprIntrp::Parse(me, str))
   {
     if (!ExprIntrp_Recept.IsRelStackEmpty())
     {
       myRelation = ExprIntrp_Recept.PopRelation();
-      done       = Standard_True;
+      done       = true;
     }
     else
     {
@@ -56,12 +56,12 @@ void ExprIntrp_GenRel::Process(const TCollection_AsciiString& str)
   }
 }
 
-Standard_Boolean ExprIntrp_GenRel::IsDone() const
+bool ExprIntrp_GenRel::IsDone() const
 {
   return done;
 }
 
-Handle(Expr_GeneralRelation) ExprIntrp_GenRel::Relation() const
+occ::handle<Expr_GeneralRelation> ExprIntrp_GenRel::Relation() const
 {
   if (!done)
   {

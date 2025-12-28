@@ -21,9 +21,9 @@
 
 //=================================================================================================
 
-Graphic3d_Vec4 Graphic3d_Fresnel::Serialize() const
+NCollection_Vec4<float> Graphic3d_Fresnel::Serialize() const
 {
-  Graphic3d_Vec4 aData = Graphic3d_Vec4(myFresnelData, 0.f);
+  NCollection_Vec4<float> aData = NCollection_Vec4<float>(myFresnelData, 0.f);
 
   if (myFresnelType != Graphic3d_FM_SCHLICK)
   {
@@ -42,19 +42,21 @@ inline float fresnelNormal(float theN, float theK)
 
 //=================================================================================================
 
-Graphic3d_Fresnel Graphic3d_Fresnel::CreateConductor(const Graphic3d_Vec3& theRefractionIndex,
-                                                     const Graphic3d_Vec3& theAbsorptionIndex)
+Graphic3d_Fresnel Graphic3d_Fresnel::CreateConductor(
+  const NCollection_Vec3<float>& theRefractionIndex,
+  const NCollection_Vec3<float>& theAbsorptionIndex)
 {
-  const Graphic3d_Vec3 aFresnel(fresnelNormal(theRefractionIndex.x(), theAbsorptionIndex.x()),
-                                fresnelNormal(theRefractionIndex.y(), theAbsorptionIndex.y()),
-                                fresnelNormal(theRefractionIndex.z(), theAbsorptionIndex.z()));
+  const NCollection_Vec3<float> aFresnel(
+    fresnelNormal(theRefractionIndex.x(), theAbsorptionIndex.x()),
+    fresnelNormal(theRefractionIndex.y(), theAbsorptionIndex.y()),
+    fresnelNormal(theRefractionIndex.z(), theAbsorptionIndex.z()));
 
   return Graphic3d_Fresnel(Graphic3d_FM_SCHLICK, aFresnel);
 }
 
 //=================================================================================================
 
-void Graphic3d_Fresnel::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const {
+void Graphic3d_Fresnel::DumpJson(Standard_OStream& theOStream, int theDepth) const {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Graphic3d_Fresnel)
 
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFresnelType)
@@ -63,7 +65,7 @@ void Graphic3d_Fresnel::DumpJson(Standard_OStream& theOStream, Standard_Integer 
 //=================================================================================================
 
 Graphic3d_BSDF::Graphic3d_BSDF()
-    : Ks(Graphic3d_Vec3(0.f), 1.f)
+    : Ks(NCollection_Vec3<float>(0.f), 1.f)
 {
   FresnelCoat = Graphic3d_Fresnel::CreateConstant(0.f);
   FresnelBase = Graphic3d_Fresnel::CreateConstant(1.f);
@@ -104,7 +106,7 @@ void Graphic3d_BSDF::Normalize()
 
 //=================================================================================================
 
-Graphic3d_BSDF Graphic3d_BSDF::CreateDiffuse(const Graphic3d_Vec3& theWeight)
+Graphic3d_BSDF Graphic3d_BSDF::CreateDiffuse(const NCollection_Vec3<float>& theWeight)
 {
   Graphic3d_BSDF aBSDF;
 
@@ -115,9 +117,9 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateDiffuse(const Graphic3d_Vec3& theWeight)
 
 //=================================================================================================
 
-Graphic3d_BSDF Graphic3d_BSDF::CreateMetallic(const Graphic3d_Vec3&    theWeight,
-                                              const Graphic3d_Fresnel& theFresnel,
-                                              const float              theRoughness)
+Graphic3d_BSDF Graphic3d_BSDF::CreateMetallic(const NCollection_Vec3<float>& theWeight,
+                                              const Graphic3d_Fresnel&       theFresnel,
+                                              const float                    theRoughness)
 {
   Graphic3d_BSDF aBSDF;
 
@@ -125,16 +127,16 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateMetallic(const Graphic3d_Vec3&    theWeight
 
   // Selecting between specular and glossy
   // BRDF depending on the given roughness
-  aBSDF.Ks = Graphic3d_Vec4(theWeight, theRoughness);
+  aBSDF.Ks = NCollection_Vec4<float>(theWeight, theRoughness);
 
   return aBSDF;
 }
 
 //=================================================================================================
 
-Graphic3d_BSDF Graphic3d_BSDF::CreateTransparent(const Graphic3d_Vec3& theWeight,
-                                                 const Graphic3d_Vec3& theAbsorptionColor,
-                                                 const float           theAbsorptionCoeff)
+Graphic3d_BSDF Graphic3d_BSDF::CreateTransparent(const NCollection_Vec3<float>& theWeight,
+                                                 const NCollection_Vec3<float>& theAbsorptionColor,
+                                                 const float                    theAbsorptionCoeff)
 {
   Graphic3d_BSDF aBSDF;
 
@@ -149,17 +151,17 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateTransparent(const Graphic3d_Vec3& theWeight
   aBSDF.Kc.g() = aBSDF.Kt.g();
   aBSDF.Kc.b() = aBSDF.Kt.b();
 
-  aBSDF.Absorption = Graphic3d_Vec4(theAbsorptionColor, theAbsorptionCoeff);
+  aBSDF.Absorption = NCollection_Vec4<float>(theAbsorptionColor, theAbsorptionCoeff);
 
   return aBSDF;
 }
 
 //=================================================================================================
 
-Graphic3d_BSDF Graphic3d_BSDF::CreateGlass(const Graphic3d_Vec3& theWeight,
-                                           const Graphic3d_Vec3& theAbsorptionColor,
-                                           const float           theAbsorptionCoeff,
-                                           const float           theRefractionIndex)
+Graphic3d_BSDF Graphic3d_BSDF::CreateGlass(const NCollection_Vec3<float>& theWeight,
+                                           const NCollection_Vec3<float>& theAbsorptionColor,
+                                           const float                    theAbsorptionCoeff,
+                                           const float                    theRefractionIndex)
 {
   Graphic3d_BSDF aBSDF;
 
@@ -172,7 +174,7 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateGlass(const Graphic3d_Vec3& theWeight,
   aBSDF.Kc.g() = aBSDF.Kt.g();
   aBSDF.Kc.b() = aBSDF.Kt.b();
 
-  aBSDF.Absorption = Graphic3d_Vec4(theAbsorptionColor, theAbsorptionCoeff);
+  aBSDF.Absorption = NCollection_Vec4<float>(theAbsorptionColor, theAbsorptionCoeff);
 
   return aBSDF;
 }
@@ -181,15 +183,16 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateGlass(const Graphic3d_Vec3& theWeight,
 
 Graphic3d_BSDF Graphic3d_BSDF::CreateMetallicRoughness(const Graphic3d_PBRMaterial& thePbr)
 {
-  const Graphic3d_Vec3     aDiff      = (Graphic3d_Vec3)thePbr.Color().GetRGB() * thePbr.Alpha();
-  const Standard_ShortReal aRougness2 = thePbr.NormalizedRoughness() * thePbr.NormalizedRoughness();
+  const NCollection_Vec3<float> aDiff =
+    (NCollection_Vec3<float>)thePbr.Color().GetRGB() * thePbr.Alpha();
+  const float aRougness2 = thePbr.NormalizedRoughness() * thePbr.NormalizedRoughness();
 
   Graphic3d_BSDF aBsdf;
   aBsdf.Le = thePbr.Emission();
   if (thePbr.IOR() > 1.0f && thePbr.Alpha() < 1.0f && thePbr.Metallic() <= ShortRealEpsilon())
   {
     aBsdf.FresnelCoat = Graphic3d_Fresnel::CreateDielectric(thePbr.IOR());
-    aBsdf.Kt          = Graphic3d_Vec3(1.0f);
+    aBsdf.Kt          = NCollection_Vec3<float>(1.0f);
     aBsdf.Kc.r()      = aBsdf.Kt.r();
     aBsdf.Kc.g()      = aBsdf.Kt.g();
     aBsdf.Kc.b()      = aBsdf.Kt.b();
@@ -198,8 +201,8 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateMetallicRoughness(const Graphic3d_PBRMateri
   else
   {
     aBsdf.FresnelBase = Graphic3d_Fresnel::CreateSchlick(aDiff * thePbr.Metallic());
-    aBsdf.Ks.SetValues(Graphic3d_Vec3(thePbr.Alpha()), aRougness2);
-    aBsdf.Kt = Graphic3d_Vec3(1.0f - thePbr.Alpha());
+    aBsdf.Ks.SetValues(NCollection_Vec3<float>(thePbr.Alpha()), aRougness2);
+    aBsdf.Kt = NCollection_Vec3<float>(1.0f - thePbr.Alpha());
     aBsdf.Kd = aDiff * (1.0f - thePbr.Metallic());
   }
 
@@ -208,7 +211,7 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateMetallicRoughness(const Graphic3d_PBRMateri
 
 //=================================================================================================
 
-void Graphic3d_BSDF::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_BSDF::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Graphic3d_BSDF)
 

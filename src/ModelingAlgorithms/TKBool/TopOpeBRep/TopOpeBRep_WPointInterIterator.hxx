@@ -37,7 +37,7 @@ public:
 
   Standard_EXPORT void Init();
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
@@ -45,11 +45,10 @@ public:
 
   Standard_EXPORT TopOpeBRep_PLineInter PLineInterDummy() const;
 
-protected:
 private:
   TopOpeBRep_PLineInter myLineInter;
-  Standard_Integer      myWPointIndex;
-  Standard_Integer      myWPointNb;
+  int                   myWPointIndex;
+  int                   myWPointNb;
 };
 
 #endif // _TopOpeBRep_WPointInterIterator_HeaderFile

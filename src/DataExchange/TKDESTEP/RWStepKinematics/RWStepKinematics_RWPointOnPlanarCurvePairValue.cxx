@@ -32,10 +32,10 @@ RWStepKinematics_RWPointOnPlanarCurvePairValue::RWStepKinematics_RWPointOnPlanar
 //=================================================================================================
 
 void RWStepKinematics_RWPointOnPlanarCurvePairValue::ReadStep(
-  const Handle(StepData_StepReaderData)&                    theData,
-  const Standard_Integer                                    theNum,
-  Handle(Interface_Check)&                                  theArch,
-  const Handle(StepKinematics_PointOnPlanarCurvePairValue)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                    theData,
+  const int                                                      theNum,
+  occ::handle<Interface_Check>&                                  theArch,
+  const occ::handle<StepKinematics_PointOnPlanarCurvePairValue>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "point_on_planar_curve_pair_value"))
@@ -43,12 +43,12 @@ void RWStepKinematics_RWPointOnPlanarCurvePairValue::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of PairValue
 
-  Handle(StepKinematics_KinematicPair) aPairValue_AppliesToPair;
+  occ::handle<StepKinematics_KinematicPair> aPairValue_AppliesToPair;
   theData->ReadEntity(theNum,
                       2,
                       "pair_value.applies_to_pair",
@@ -58,7 +58,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairValue::ReadStep(
 
   // Own fields of PointOnPlanarCurvePairValue
 
-  Handle(StepGeom_PointOnCurve) aActualPointOnCurve;
+  occ::handle<StepGeom_PointOnCurve> aActualPointOnCurve;
   theData->ReadEntity(theNum,
                       3,
                       "actual_point_on_curve",
@@ -67,18 +67,18 @@ void RWStepKinematics_RWPointOnPlanarCurvePairValue::ReadStep(
                       aActualPointOnCurve);
 
   StepKinematics_SpatialRotation aInputOrientation;
-  if (theData->SubListNumber(theNum, 4, Standard_True))
+  if (theData->SubListNumber(theNum, 4, true))
   {
-    Handle(TColStd_HArray1OfReal) aItems;
-    Standard_Integer              nsub = 0;
+    occ::handle<NCollection_HArray1<double>> aItems;
+    int                                      nsub = 0;
     if (theData->ReadSubList(theNum, 4, "items", theArch, nsub))
     {
-      Standard_Integer nb   = theData->NbParams(nsub);
-      aItems                = new TColStd_HArray1OfReal(1, nb);
-      Standard_Integer num2 = nsub;
-      for (Standard_Integer i0 = 1; i0 <= nb; i0++)
+      int nb   = theData->NbParams(nsub);
+      aItems   = new NCollection_HArray1<double>(1, nb);
+      int num2 = nsub;
+      for (int i0 = 1; i0 <= nb; i0++)
       {
-        Standard_Real anIt0;
+        double anIt0;
         theData->ReadReal(num2, i0, "real", theArch, anIt0);
         aItems->SetValue(i0, anIt0);
       }
@@ -98,8 +98,8 @@ void RWStepKinematics_RWPointOnPlanarCurvePairValue::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPointOnPlanarCurvePairValue::WriteStep(
-  StepData_StepWriter&                                      theSW,
-  const Handle(StepKinematics_PointOnPlanarCurvePairValue)& theEnt) const
+  StepData_StepWriter&                                           theSW,
+  const occ::handle<StepKinematics_PointOnPlanarCurvePairValue>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -118,7 +118,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairValue::WriteStep(
   {
     // Inherited field : YPR
     theSW.OpenSub();
-    for (Standard_Integer i = 1; i <= theEnt->InputOrientation().YprRotation()->Length(); i++)
+    for (int i = 1; i <= theEnt->InputOrientation().YprRotation()->Length(); i++)
     {
       theSW.Send(theEnt->InputOrientation().YprRotation()->Value(i));
     }
@@ -131,8 +131,8 @@ void RWStepKinematics_RWPointOnPlanarCurvePairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPointOnPlanarCurvePairValue::Share(
-  const Handle(StepKinematics_PointOnPlanarCurvePairValue)& theEnt,
-  Interface_EntityIterator&                                 iter) const
+  const occ::handle<StepKinematics_PointOnPlanarCurvePairValue>& theEnt,
+  Interface_EntityIterator&                                      iter) const
 {
 
   // Inherited fields of RepresentationItem

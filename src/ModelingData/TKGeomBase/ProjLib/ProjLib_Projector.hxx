@@ -45,20 +45,20 @@ public:
   Standard_EXPORT ProjLib_Projector();
   Standard_EXPORT virtual ~ProjLib_Projector();
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  //! Set isDone = Standard_True;
+  //! Set isDone = true;
   Standard_EXPORT void Done();
 
   Standard_EXPORT GeomAbs_CurveType GetType() const;
 
-  Standard_EXPORT void SetBSpline(const Handle(Geom2d_BSplineCurve)& C);
+  Standard_EXPORT void SetBSpline(const occ::handle<Geom2d_BSplineCurve>& C);
 
-  Standard_EXPORT void SetBezier(const Handle(Geom2d_BezierCurve)& C);
+  Standard_EXPORT void SetBezier(const occ::handle<Geom2d_BezierCurve>& C);
 
   Standard_EXPORT void SetType(const GeomAbs_CurveType Type);
 
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT bool IsPeriodic() const;
 
   Standard_EXPORT void SetPeriodic();
 
@@ -72,9 +72,9 @@ public:
 
   Standard_EXPORT const gp_Parab2d& Parabola() const;
 
-  Standard_EXPORT Handle(Geom2d_BezierCurve) Bezier() const;
+  Standard_EXPORT occ::handle<Geom2d_BezierCurve> Bezier() const;
 
-  Standard_EXPORT Handle(Geom2d_BSplineCurve) BSpline() const;
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSpline() const;
 
   Standard_EXPORT virtual void Project(const gp_Lin& L);
 
@@ -89,32 +89,30 @@ public:
   //! Translates the 2d curve
   //! to set the part of the curve [CFirst, CLast]
   //! in the range [ UFirst, UFirst + Period [
-  Standard_EXPORT void UFrame(const Standard_Real CFirst,
-                              const Standard_Real CLast,
-                              const Standard_Real UFirst,
-                              const Standard_Real Period);
+  Standard_EXPORT void UFrame(const double CFirst,
+                              const double CLast,
+                              const double UFirst,
+                              const double Period);
 
   //! Translates the 2d curve
   //! to set the part of the curve [CFirst, CLast]
   //! in the range [ VFirst, VFirst + Period [
-  Standard_EXPORT void VFrame(const Standard_Real CFirst,
-                              const Standard_Real CLast,
-                              const Standard_Real VFirst,
-                              const Standard_Real Period);
+  Standard_EXPORT void VFrame(const double CFirst,
+                              const double CLast,
+                              const double VFirst,
+                              const double Period);
 
 protected:
-  GeomAbs_CurveType           myType;
-  gp_Lin2d                    myLin;
-  gp_Circ2d                   myCirc;
-  gp_Elips2d                  myElips;
-  gp_Hypr2d                   myHypr;
-  gp_Parab2d                  myParab;
-  Handle(Geom2d_BSplineCurve) myBSpline;
-  Handle(Geom2d_BezierCurve)  myBezier;
-  Standard_Boolean            myIsPeriodic;
-  Standard_Boolean            isDone;
-
-private:
+  GeomAbs_CurveType                myType;
+  gp_Lin2d                         myLin;
+  gp_Circ2d                        myCirc;
+  gp_Elips2d                       myElips;
+  gp_Hypr2d                        myHypr;
+  gp_Parab2d                       myParab;
+  occ::handle<Geom2d_BSplineCurve> myBSpline;
+  occ::handle<Geom2d_BezierCurve>  myBezier;
+  bool                             myIsPeriodic;
+  bool                             isDone;
 };
 
 #endif // _ProjLib_Projector_HeaderFile

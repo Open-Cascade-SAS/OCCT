@@ -29,9 +29,9 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
-Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve& Qualified1,
-                                               const Handle(Geom2d_Point)&     PCenter,
-                                               const Standard_Real             Tolerance)
+Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve&  Qualified1,
+                                               const occ::handle<Geom2d_Point>& PCenter,
+                                               const double                     Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       TheSame1(1, 2),
@@ -39,9 +39,9 @@ Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve& Q
       par1sol(1, 2),
       pararg1(1, 2)
 {
-  Geom2dAdaptor_Curve         C1    = Qualified1.Qualified();
-  const Handle(Geom2d_Curve)& CC1   = C1.Curve();
-  GeomAbs_CurveType           Type1 = C1.GetType();
+  Geom2dAdaptor_Curve              C1    = Qualified1.Qualified();
+  const occ::handle<Geom2d_Curve>& CC1   = C1.Curve();
+  GeomAbs_CurveType                Type1 = C1.GetType();
 
   //=============================================================================
   //                            Appel a GccAna.                                 +
@@ -53,13 +53,13 @@ Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve& Q
   {
     if (Type1 == GeomAbs_Circle)
     {
-      Handle(Geom2d_Circle) CCC1 = Handle(Geom2d_Circle)::DownCast(CC1);
-      gp_Circ2d             c1(CCC1->Circ2d());
-      GccEnt_QualifiedCirc  Qc1(c1, Qualified1.Qualifier());
-      GccAna_Circ2dTanCen   Circ(Qc1, pcenter, Tolerance);
+      occ::handle<Geom2d_Circle> CCC1 = occ::down_cast<Geom2d_Circle>(CC1);
+      gp_Circ2d                  c1(CCC1->Circ2d());
+      GccEnt_QualifiedCirc       Qc1(c1, Qualified1.Qualifier());
+      GccAna_Circ2dTanCen        Circ(Qc1, pcenter, Tolerance);
       WellDone = Circ.IsDone();
       NbrSol   = Circ.NbSolutions();
-      for (Standard_Integer j = 1; j <= NbrSol; j++)
+      for (int j = 1; j <= NbrSol; j++)
       {
         cirsol(j) = Circ.ThisSolution(j);
         Circ.WhichQualifier(j, qualifier1(j));
@@ -76,12 +76,12 @@ Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve& Q
     }
     else
     {
-      Handle(Geom2d_Line) LL1 = Handle(Geom2d_Line)::DownCast(CC1);
-      gp_Lin2d            l1(LL1->Lin2d());
-      GccAna_Circ2dTanCen Circ(l1, pcenter);
+      occ::handle<Geom2d_Line> LL1 = occ::down_cast<Geom2d_Line>(CC1);
+      gp_Lin2d                 l1(LL1->Lin2d());
+      GccAna_Circ2dTanCen      Circ(l1, pcenter);
       WellDone = Circ.IsDone();
       NbrSol   = Circ.NbSolutions();
-      for (Standard_Integer j = 1; j <= NbrSol; j++)
+      for (int j = 1; j <= NbrSol; j++)
       {
         cirsol(j) = Circ.ThisSolution(j);
         Circ.WhichQualifier(j, qualifier1(j));
@@ -108,7 +108,7 @@ Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve& Q
     Geom2dGcc_Circ2dTanCenGeo Circ(Qc1, pcenter, Tolerance);
     WellDone = Circ.IsDone();
     NbrSol   = Circ.NbSolutions();
-    for (Standard_Integer j = 1; j <= NbrSol; j++)
+    for (int j = 1; j <= NbrSol; j++)
     {
       cirsol(j)   = Circ.ThisSolution(j);
       TheSame1(j) = 0;
@@ -118,17 +118,17 @@ Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve& Q
   }
 }
 
-Standard_Boolean Geom2dGcc_Circ2dTanCen::IsDone() const
+bool Geom2dGcc_Circ2dTanCen::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer Geom2dGcc_Circ2dTanCen::NbSolutions() const
+int Geom2dGcc_Circ2dTanCen::NbSolutions() const
 {
   return NbrSol;
 }
 
-gp_Circ2d Geom2dGcc_Circ2dTanCen::ThisSolution(const Standard_Integer Index) const
+gp_Circ2d Geom2dGcc_Circ2dTanCen::ThisSolution(const int Index) const
 {
   if (!WellDone)
   {
@@ -141,8 +141,7 @@ gp_Circ2d Geom2dGcc_Circ2dTanCen::ThisSolution(const Standard_Integer Index) con
   return cirsol(Index);
 }
 
-void Geom2dGcc_Circ2dTanCen::WhichQualifier(const Standard_Integer Index,
-                                            GccEnt_Position&       Qualif1) const
+void Geom2dGcc_Circ2dTanCen::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -158,10 +157,10 @@ void Geom2dGcc_Circ2dTanCen::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void Geom2dGcc_Circ2dTanCen::Tangency1(const Standard_Integer Index,
-                                       Standard_Real&         ParSol,
-                                       Standard_Real&         ParArg,
-                                       gp_Pnt2d&              PntSol) const
+void Geom2dGcc_Circ2dTanCen::Tangency1(const int Index,
+                                       double&   ParSol,
+                                       double&   ParArg,
+                                       gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -186,7 +185,7 @@ void Geom2dGcc_Circ2dTanCen::Tangency1(const Standard_Integer Index,
   }
 }
 
-Standard_Boolean Geom2dGcc_Circ2dTanCen::IsTheSame1(const Standard_Integer Index) const
+bool Geom2dGcc_Circ2dTanCen::IsTheSame1(const int Index) const
 {
   if (!WellDone)
   {
@@ -198,7 +197,7 @@ Standard_Boolean Geom2dGcc_Circ2dTanCen::IsTheSame1(const Standard_Integer Index
   }
   if (TheSame1(Index) == 0)
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }

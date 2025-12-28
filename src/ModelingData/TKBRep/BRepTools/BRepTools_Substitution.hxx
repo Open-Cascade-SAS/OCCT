@@ -20,8 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class TopoDS_Shape;
 
 //! A tool to substitute subshapes by other shapes.
@@ -52,8 +54,8 @@ public:
   //! if an item of <NewShapes> is oriented FORWARD.
   //! it will be oriented as <OldShape> in its ancestors.
   //! else it will be reversed.
-  Standard_EXPORT void Substitute(const TopoDS_Shape&         OldShape,
-                                  const TopTools_ListOfShape& NewShapes);
+  Standard_EXPORT void Substitute(const TopoDS_Shape&                   OldShape,
+                                  const NCollection_List<TopoDS_Shape>& NewShapes);
 
   //! Build NewShape from <S> if its subshapes has modified.
   //!
@@ -62,14 +64,13 @@ public:
   Standard_EXPORT void Build(const TopoDS_Shape& S);
 
   //! Returns True if <S> has been replaced.
-  Standard_EXPORT Standard_Boolean IsCopied(const TopoDS_Shape& S) const;
+  Standard_EXPORT bool IsCopied(const TopoDS_Shape& S) const;
 
   //! Returns the set of shapes substituted to <S>.
-  Standard_EXPORT const TopTools_ListOfShape& Copy(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Copy(const TopoDS_Shape& S) const;
 
-protected:
 private:
-  TopTools_DataMapOfShapeListOfShape myMap;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _BRepTools_Substitution_HeaderFile

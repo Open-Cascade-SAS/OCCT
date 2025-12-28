@@ -18,17 +18,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_TrimmingMember, StepData_SelectReal)
 
 StepGeom_TrimmingMember::StepGeom_TrimmingMember() {}
 
-Standard_Boolean StepGeom_TrimmingMember::HasName() const
+bool StepGeom_TrimmingMember::HasName() const
 {
-  return Standard_True;
+  return true;
 }
 
-Standard_CString StepGeom_TrimmingMember::Name() const
+const char* StepGeom_TrimmingMember::Name() const
 {
   return "PARAMETER_VALUE";
 }
 
-Standard_Boolean StepGeom_TrimmingMember::SetName(const Standard_CString /*name*/)
+bool StepGeom_TrimmingMember::SetName(const char* /*name*/)
 {
-  return Standard_True;
+  return true;
 }

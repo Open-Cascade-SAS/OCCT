@@ -30,11 +30,11 @@ StepBasic_ProductDefinitionFormationRelationship::StepBasic_ProductDefinitionFor
 //=================================================================================================
 
 void StepBasic_ProductDefinitionFormationRelationship::Init(
-  const Handle(TCollection_HAsciiString)&             aId,
-  const Handle(TCollection_HAsciiString)&             aName,
-  const Handle(TCollection_HAsciiString)&             aDescription,
-  const Handle(StepBasic_ProductDefinitionFormation)& aRelatingProductDefinitionFormation,
-  const Handle(StepBasic_ProductDefinitionFormation)& aRelatedProductDefinitionFormation)
+  const occ::handle<TCollection_HAsciiString>&             aId,
+  const occ::handle<TCollection_HAsciiString>&             aName,
+  const occ::handle<TCollection_HAsciiString>&             aDescription,
+  const occ::handle<StepBasic_ProductDefinitionFormation>& aRelatingProductDefinitionFormation,
+  const occ::handle<StepBasic_ProductDefinitionFormation>& aRelatedProductDefinitionFormation)
 {
 
   theId = aId;
@@ -50,7 +50,7 @@ void StepBasic_ProductDefinitionFormationRelationship::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionFormationRelationship::Id() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinitionFormationRelationship::Id() const
 {
   return theId;
 }
@@ -58,14 +58,14 @@ Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionFormationRelationshi
 //=================================================================================================
 
 void StepBasic_ProductDefinitionFormationRelationship::SetId(
-  const Handle(TCollection_HAsciiString)& aId)
+  const occ::handle<TCollection_HAsciiString>& aId)
 {
   theId = aId;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionFormationRelationship::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinitionFormationRelationship::Name() const
 {
   return theName;
 }
@@ -73,15 +73,15 @@ Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionFormationRelationshi
 //=================================================================================================
 
 void StepBasic_ProductDefinitionFormationRelationship::SetName(
-  const Handle(TCollection_HAsciiString)& aName)
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionFormationRelationship::Description()
-  const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinitionFormationRelationship::
+  Description() const
 {
   return theDescription;
 }
@@ -89,14 +89,14 @@ Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionFormationRelationshi
 //=================================================================================================
 
 void StepBasic_ProductDefinitionFormationRelationship::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepBasic_ProductDefinitionFormationRelationship::
+occ::handle<StepBasic_ProductDefinitionFormation> StepBasic_ProductDefinitionFormationRelationship::
   RelatingProductDefinitionFormation() const
 {
   return theRelatingProductDefinitionFormation;
@@ -105,14 +105,14 @@ Handle(StepBasic_ProductDefinitionFormation) StepBasic_ProductDefinitionFormatio
 //=================================================================================================
 
 void StepBasic_ProductDefinitionFormationRelationship::SetRelatingProductDefinitionFormation(
-  const Handle(StepBasic_ProductDefinitionFormation)& aRelatingProductDefinitionFormation)
+  const occ::handle<StepBasic_ProductDefinitionFormation>& aRelatingProductDefinitionFormation)
 {
   theRelatingProductDefinitionFormation = aRelatingProductDefinitionFormation;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepBasic_ProductDefinitionFormationRelationship::
+occ::handle<StepBasic_ProductDefinitionFormation> StepBasic_ProductDefinitionFormationRelationship::
   RelatedProductDefinitionFormation() const
 {
   return theRelatedProductDefinitionFormation;
@@ -121,7 +121,7 @@ Handle(StepBasic_ProductDefinitionFormation) StepBasic_ProductDefinitionFormatio
 //=================================================================================================
 
 void StepBasic_ProductDefinitionFormationRelationship::SetRelatedProductDefinitionFormation(
-  const Handle(StepBasic_ProductDefinitionFormation)& aRelatedProductDefinitionFormation)
+  const occ::handle<StepBasic_ProductDefinitionFormation>& aRelatedProductDefinitionFormation)
 {
   theRelatedProductDefinitionFormation = aRelatedProductDefinitionFormation;
 }

@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndSolidAngleUnit,
 StepBasic_ConversionBasedUnitAndSolidAngleUnit::StepBasic_ConversionBasedUnitAndSolidAngleUnit() {}
 
 void StepBasic_ConversionBasedUnitAndSolidAngleUnit::Init(
-  const Handle(StepBasic_DimensionalExponents)& aDimensions,
-  const Handle(TCollection_HAsciiString)&       aName,
-  const Handle(Standard_Transient)&             aConversionFactor)
+  const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
+  const occ::handle<TCollection_HAsciiString>&       aName,
+  const occ::handle<Standard_Transient>&             aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
@@ -37,13 +37,13 @@ void StepBasic_ConversionBasedUnitAndSolidAngleUnit::Init(
 }
 
 void StepBasic_ConversionBasedUnitAndSolidAngleUnit::SetSolidAngleUnit(
-  const Handle(StepBasic_SolidAngleUnit)& aSolidAngleUnit)
+  const occ::handle<StepBasic_SolidAngleUnit>& aSolidAngleUnit)
 {
   solidAngleUnit = aSolidAngleUnit;
 }
 
-Handle(StepBasic_SolidAngleUnit) StepBasic_ConversionBasedUnitAndSolidAngleUnit::SolidAngleUnit()
-  const
+occ::handle<StepBasic_SolidAngleUnit> StepBasic_ConversionBasedUnitAndSolidAngleUnit::
+  SolidAngleUnit() const
 {
   return solidAngleUnit;
 }

@@ -26,10 +26,10 @@ RWStepBasic_RWSolidAngleMeasureWithUnit::RWStepBasic_RWSolidAngleMeasureWithUnit
 //=================================================================================================
 
 void RWStepBasic_RWSolidAngleMeasureWithUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&             data,
-  const Standard_Integer                             num,
-  Handle(Interface_Check)&                           ach,
-  const Handle(StepBasic_SolidAngleMeasureWithUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&             data,
+  const int                                               num,
+  occ::handle<Interface_Check>&                           ach,
+  const occ::handle<StepBasic_SolidAngleMeasureWithUnit>& ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "solid_angle_measure_with_unit"))
@@ -37,7 +37,7 @@ void RWStepBasic_RWSolidAngleMeasureWithUnit::ReadStep(
 
   // --- inherited field : valueComponent ---
   // --- Update 12-02-96 by FMA ,  31-MARS-1997 by CKY
-  Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 1, "value_component", ach, mvc);
 
   // --- inherited field : unitComponent ---
@@ -51,8 +51,8 @@ void RWStepBasic_RWSolidAngleMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWSolidAngleMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                               SW,
-  const Handle(StepBasic_SolidAngleMeasureWithUnit)& ent) const
+  StepData_StepWriter&                                    SW,
+  const occ::handle<StepBasic_SolidAngleMeasureWithUnit>& ent) const
 {
   // --- inherited field valueComponent ---
   SW.Send(ent->ValueComponentMember());
@@ -64,8 +64,8 @@ void RWStepBasic_RWSolidAngleMeasureWithUnit::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWSolidAngleMeasureWithUnit::Share(
-  const Handle(StepBasic_SolidAngleMeasureWithUnit)& ent,
-  Interface_EntityIterator&                          iter) const
+  const occ::handle<StepBasic_SolidAngleMeasureWithUnit>& ent,
+  Interface_EntityIterator&                               iter) const
 {
   iter.GetOneItem(ent->UnitComponent().Value());
 }

@@ -30,9 +30,6 @@ class Interface_InterfaceModel;
   #undef SetForm
 #endif
 
-class IGESSelect_IGESTypeForm;
-DEFINE_STANDARD_HANDLE(IGESSelect_IGESTypeForm, IFSelect_Signature)
-
 //! IGESTypeForm is a Signature specific to the IGES Norm :
 //! it gives the signature under two possible forms :
 //! - as "mmm nnn", with "mmm" as IGES Type Number, and "nnn"
@@ -44,22 +41,21 @@ class IGESSelect_IGESTypeForm : public IFSelect_Signature
 public:
   //! Creates a Signature for IGES Type & Form Numbers
   //! If <withform> is False, for IGES Type Number only
-  Standard_EXPORT IGESSelect_IGESTypeForm(const Standard_Boolean withform = Standard_True);
+  Standard_EXPORT IGESSelect_IGESTypeForm(const bool withform = true);
 
   //! Changes the mode for giving the Form Number
-  Standard_EXPORT void SetForm(const Standard_Boolean withform);
+  Standard_EXPORT void SetForm(const bool withform);
 
   //! Returns the signature for IGES, "mmm nnn" or "mmm" according
   //! creation choice (Type & Form or Type only)
-  Standard_EXPORT Standard_CString
-    Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_IGESTypeForm, IFSelect_Signature)
 
-protected:
 private:
-  Standard_Boolean theform;
+  bool theform;
 };
 
 #endif // _IGESSelect_IGESTypeForm_HeaderFile

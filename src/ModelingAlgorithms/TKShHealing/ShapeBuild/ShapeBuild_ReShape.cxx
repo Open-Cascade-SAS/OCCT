@@ -37,19 +37,19 @@ ShapeBuild_ReShape::ShapeBuild_ReShape() {}
 
 TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
                                        const TopAbs_ShapeEnum until,
-                                       const Standard_Integer buildmode)
+                                       const int              buildmode)
 {
   if (shape.IsNull())
     return shape;
   TopoDS_Shape newsh;
-  if (Status(shape, newsh, Standard_False) != 0)
+  if (Status(shape, newsh, false) != 0)
     return newsh;
 
   TopAbs_ShapeEnum st = shape.ShapeType();
   if (st == until)
     return newsh; // critere d arret
 
-  Standard_Integer modif = 0;
+  int modif = 0;
   if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID)
   {
     BRep_Builder    B;
@@ -58,7 +58,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
     for (TopoDS_Iterator it(shape); it.More(); it.Next())
     {
       const TopoDS_Shape& sh   = it.Value();
-      Standard_Integer    stat = Status(sh, newsh, Standard_False);
+      int                 stat = Status(sh, newsh, false);
       if (stat != 0)
         modif = 1;
       if (stat >= 0)
@@ -86,7 +86,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
       }
       else if (newsh.ShapeType() != TopAbs_SHELL)
       {
-        Standard_Integer nbsub = 0;
+        int nbsub = 0;
         for (TopExp_Explorer exh(newsh, TopAbs_SHELL); exh.More(); exh.Next())
         {
           const TopoDS_Shape& onesh = exh.Current();
@@ -129,7 +129,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
       }
       else if (newsh.ShapeType() != TopAbs_FACE)
       {
-        Standard_Integer nbsub = 0;
+        int nbsub = 0;
         for (TopExp_Explorer exf(newsh, TopAbs_FACE); exf.More(); exf.Next())
         {
           const TopoDS_Shape& onesh = exf.Current();
@@ -179,7 +179,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_S
   }
 
   // if shape replaced, apply modifications to the result recursively
-  Standard_Boolean aConsLoc = ModeConsiderLocation();
+  bool aConsLoc = ModeConsiderLocation();
   if ((aConsLoc && !newsh.IsPartner(shape)) || (!aConsLoc && !newsh.IsSame(shape)))
   {
     TopoDS_Shape res = Apply(newsh, until);
@@ -199,11 +199,11 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_S
   TopoDS_Shape       result = shape.EmptyCopied();
   TopAbs_Orientation orient = shape.Orientation(); // JR/Hp: or -> orient
   result.Orientation(TopAbs_FORWARD);              // protect against INTERNAL or EXTERNAL shapes
-  Standard_Boolean modif     = Standard_False;
-  Standard_Integer locStatus = myStatus;
+  bool modif     = false;
+  int  locStatus = myStatus;
 
   // apply recorded modifications to subshapes
-  for (TopoDS_Iterator it(shape, Standard_False); it.More(); it.Next())
+  for (TopoDS_Iterator it(shape, false); it.More(); it.Next())
   {
     const TopoDS_Shape& sh = it.Value();
     newsh                  = Apply(sh, until);
@@ -224,7 +224,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_S
       B.Add(result, newsh);
       continue;
     }
-    Standard_Integer nitems = 0;
+    int nitems = 0;
     for (TopoDS_Iterator subit(newsh); subit.More(); subit.Next(), nitems++)
     {
       const TopoDS_Shape& subsh = subit.Value();
@@ -257,16 +257,14 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_S
 
 //=================================================================================================
 
-Standard_Integer ShapeBuild_ReShape::Status(const TopoDS_Shape&    ashape,
-                                            TopoDS_Shape&          newsh,
-                                            const Standard_Boolean last)
+int ShapeBuild_ReShape::Status(const TopoDS_Shape& ashape, TopoDS_Shape& newsh, const bool last)
 {
   return BRepTools_ReShape::Status(ashape, newsh, last);
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeBuild_ReShape::Status(const ShapeExtend_Status status) const
+bool ShapeBuild_ReShape::Status(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatus, status);
 }

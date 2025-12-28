@@ -22,20 +22,20 @@
 
 #include <BSplSLib.hxx>
 #include <BSplCLib.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-void BSplSLib::PolesCoefficients(const TColgp_Array2OfPnt&   Poles,
-                                 const TColStd_Array2OfReal* Weights,
-                                 TColgp_Array2OfPnt&         CachePoles,
-                                 TColStd_Array2OfReal*       CacheWeights)
+void BSplSLib::PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles,
+                                 const NCollection_Array2<double>* Weights,
+                                 NCollection_Array2<gp_Pnt>&       CachePoles,
+                                 NCollection_Array2<double>*       CacheWeights)
 {
-  Standard_Integer     i;
-  Standard_Integer     uclas = Poles.ColLength();
-  Standard_Integer     vclas = Poles.RowLength();
-  TColStd_Array1OfReal biduflatknots(1, uclas << 1);
-  TColStd_Array1OfReal bidvflatknots(1, vclas << 1);
+  int                        i;
+  int                        uclas = Poles.ColLength();
+  int                        vclas = Poles.RowLength();
+  NCollection_Array1<double> biduflatknots(1, uclas << 1);
+  NCollection_Array1<double> bidvflatknots(1, vclas << 1);
 
   for (i = 1; i <= uclas; i++)
   {
@@ -70,9 +70,9 @@ void BSplSLib::PolesCoefficients(const TColgp_Array2OfPnt&   Poles,
   else
   {
     // BuilCache exige que les resultats soient formates en [MaxCoeff,MinCoeff]
-    TColgp_Array2OfPnt   CPoles(1, vclas, 1, uclas);
-    TColStd_Array2OfReal CWeights(1, vclas, 1, uclas);
-    Standard_Integer     ii, jj;
+    NCollection_Array2<gp_Pnt> CPoles(1, vclas, 1, uclas);
+    NCollection_Array2<double> CWeights(1, vclas, 1, uclas);
+    int                        ii, jj;
     BSplSLib::BuildCache(0.,
                          0.,
                          1.,

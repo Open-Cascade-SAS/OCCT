@@ -25,12 +25,12 @@
 RWStepBasic_RWConversionBasedUnitAndAreaUnit::RWStepBasic_RWConversionBasedUnitAndAreaUnit() {}
 
 void RWStepBasic_RWConversionBasedUnitAndAreaUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&                  data,
-  const Standard_Integer                                  num0,
-  Handle(Interface_Check)&                                ach,
-  const Handle(StepBasic_ConversionBasedUnitAndAreaUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&                  data,
+  const int                                                    num0,
+  occ::handle<Interface_Check>&                                ach,
+  const occ::handle<StepBasic_ConversionBasedUnitAndAreaUnit>& ent) const
 {
-  Standard_Integer num = num0;
+  int num = num0;
   // data->NamedForComplex("AREA_UNIT",num0,num,ach);
   if (!data->CheckNbParams(num, 0, ach, "area_unit"))
     return;
@@ -39,11 +39,11 @@ void RWStepBasic_RWConversionBasedUnitAndAreaUnit::ReadStep(
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num, 2, ach, "conversion_based_unit"))
     return;
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- field : conversionFactor ---
-  Handle(Standard_Transient) aConversionFactor;
+  occ::handle<Standard_Transient> aConversionFactor;
   data->ReadEntity(num,
                    2,
                    "conversion_factor",
@@ -54,7 +54,7 @@ void RWStepBasic_RWConversionBasedUnitAndAreaUnit::ReadStep(
 
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
     return;
-  Handle(StepBasic_DimensionalExponents) aDimensions;
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
   data->ReadEntity(num,
                    1,
                    "dimensions",
@@ -66,8 +66,8 @@ void RWStepBasic_RWConversionBasedUnitAndAreaUnit::ReadStep(
 }
 
 void RWStepBasic_RWConversionBasedUnitAndAreaUnit::WriteStep(
-  StepData_StepWriter&                                    SW,
-  const Handle(StepBasic_ConversionBasedUnitAndAreaUnit)& ent) const
+  StepData_StepWriter&                                         SW,
+  const occ::handle<StepBasic_ConversionBasedUnitAndAreaUnit>& ent) const
 {
   SW.StartEntity("AREA_UNIT");
   SW.StartEntity("CONVERSION_BASED_UNIT");
@@ -78,8 +78,8 @@ void RWStepBasic_RWConversionBasedUnitAndAreaUnit::WriteStep(
 }
 
 void RWStepBasic_RWConversionBasedUnitAndAreaUnit::Share(
-  const Handle(StepBasic_ConversionBasedUnitAndAreaUnit)& ent,
-  Interface_EntityIterator&                               iter) const
+  const occ::handle<StepBasic_ConversionBasedUnitAndAreaUnit>& ent,
+  Interface_EntityIterator&                                    iter) const
 {
   iter.GetOneItem(ent->Dimensions());
   iter.GetOneItem(ent->ConversionFactor());

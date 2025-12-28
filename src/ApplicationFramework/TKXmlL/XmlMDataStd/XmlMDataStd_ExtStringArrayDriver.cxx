@@ -34,31 +34,31 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "extstrarrattguid")
 
 // Searches for a symbol within an array of strings.
 // Returns TRUE if the symbol is found.
-static Standard_Boolean Contains(const Handle(TDataStd_ExtStringArray)& arr,
-                                 const TCollection_ExtendedString&      c)
+static bool Contains(const occ::handle<TDataStd_ExtStringArray>& arr,
+                     const TCollection_ExtendedString&           c)
 {
-  for (Standard_Integer i = arr->Lower(); i <= arr->Upper(); i++)
+  for (int i = arr->Lower(); i <= arr->Upper(); i++)
   {
     const TCollection_ExtendedString& value = arr->Value(i);
     if (value.Search(c) != -1)
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 XmlMDataStd_ExtStringArrayDriver::XmlMDataStd_ExtStringArrayDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_ExtStringArrayDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_ExtStringArrayDriver::NewEmpty() const
 {
   return (new TDataStd_ExtStringArray());
 }
@@ -67,12 +67,11 @@ Handle(TDF_Attribute) XmlMDataStd_ExtStringArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
-  const XmlObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  XmlObjMgt_RRelocationTable&  theRelocTable) const
+bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                             const occ::handle<TDF_Attribute>& theTarget,
+                                             XmlObjMgt_RRelocationTable&       theRelocTable) const
 {
-  Standard_Integer           aFirstInd, aLastInd, ind;
+  int                        aFirstInd, aLastInd, ind;
   TCollection_ExtendedString aValue;
   const XmlObjMgt_Element&   anElement = theSource;
 
@@ -87,7 +86,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
                                  " for ExtStringArray attribute as \"")
       + aFirstIndex + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   // Read LastIndex; the attribute should be present
@@ -98,7 +97,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
                                  " for ExtStringArray attribute as \"")
       + aFirstIndex + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   // Read separator.
@@ -107,8 +106,8 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
   if (aSeparator.Type() != XmlObjMgt_DOMString::LDOM_NULL)
     separator = aSeparator.GetString();
 
-  Handle(TDataStd_ExtStringArray) aExtStringArray =
-    Handle(TDataStd_ExtStringArray)::DownCast(theTarget);
+  occ::handle<TDataStd_ExtStringArray> aExtStringArray =
+    occ::down_cast<TDataStd_ExtStringArray>(theTarget);
   aExtStringArray->Init(aFirstInd, aLastInd);
 
   // attribute id
@@ -117,7 +116,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
     aGUID = TDataStd_ExtStringArray::GetID(); // default case
   else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+    aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
 
   aExtStringArray->SetID(aGUID);
 
@@ -147,12 +146,12 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
 #endif
 
     // Split strings by the separator.
-    Standard_Integer      isym(1); // index of symbol in xstr
-    Standard_ExtCharacter xsep = separator.Value(1);
+    int      isym(1); // index of symbol in xstr
+    char16_t xsep = separator.Value(1);
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
       // Calculate length of the string-value.
-      Standard_Integer iend = isym;
+      int iend = isym;
       while (iend < xstr.Length())
       {
         if (xstr.Value(iend) == xsep)
@@ -170,9 +169,9 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
       TCollection_ExtendedString xvalue(iend - isym, '\0');
 
       // Set string-value.
-      for (Standard_Integer i = isym; i < iend; ++i)
+      for (int i = isym; i < iend; ++i)
       {
-        const Standard_ExtCharacter x = xstr.Value(i);
+        const char16_t x = xstr.Value(i);
         xvalue.SetValue(i - isym + 1, x);
       }
 #ifdef _DEBUG
@@ -188,12 +187,12 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
   }
 
   // Read delta-flag.
-  Standard_Boolean aDelta(Standard_False);
+  bool aDelta(false);
 
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_3)
   {
-    Standard_Integer aDeltaValue;
+    int aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue))
     {
       TCollection_ExtendedString aMessageString =
@@ -201,7 +200,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
                                    " for IntegerArray attribute as \"")
         + aDeltaValue + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     else
       aDelta = aDeltaValue != 0;
@@ -209,21 +208,21 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste(
 
   aExtStringArray->SetDelta(aDelta);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataStd_ExtStringArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                             XmlObjMgt_Persistent&        theTarget,
-                                             XmlObjMgt_SRelocationTable&  theRelocTable) const
+void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                             XmlObjMgt_Persistent&             theTarget,
+                                             XmlObjMgt_SRelocationTable&       theRelocTable) const
 {
-  Handle(TDataStd_ExtStringArray) aExtStringArray =
-    Handle(TDataStd_ExtStringArray)::DownCast(theSource);
+  occ::handle<TDataStd_ExtStringArray> aExtStringArray =
+    occ::down_cast<TDataStd_ExtStringArray>(theSource);
 
-  Standard_Integer aL = aExtStringArray->Lower(), anU = aExtStringArray->Upper(), i;
+  int aL = aExtStringArray->Lower(), anU = aExtStringArray->Upper(), i;
 
   XmlObjMgt_Element& anElement = theTarget;
 
@@ -233,17 +232,17 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
   anElement.setAttribute(::IsDeltaOn(), aExtStringArray->GetDelta() ? 1 : 0);
 
   // Find a separator.
-  Standard_Boolean found(Standard_True);
+  bool found(true);
   // This improvement was defined in the version 8.
   // So, if the user wants to save the document under the 7th or earlier versions,
   // don't apply this improvement.
-  Standard_Character c = '-';
+  char c = '-';
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_8)
   {
     // Preferable symbols for the separator: - _ . : ^ ~
     // Don't use a space as a separator: XML low-level parser sometimes "eats" it.
-    static Standard_Character aPreferable[] = "-_.:^~";
+    static char aPreferable[] = "-_.:^~";
     for (i = 0; found && aPreferable[i]; i++)
     {
       c     = aPreferable[i];
@@ -256,7 +255,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
       c = '!';
       while (found && c < '~')
       {
-        found = Standard_False;
+        found = false;
 #ifdef _DEBUG
         TCollection_AsciiString cseparator(c); // deb
 #endif
@@ -296,7 +295,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
     anElement.setAttribute(::Separator(), csep.ToCString());
 
     // Calculate length of the common string.
-    Standard_Integer len(0);
+    int len(0);
     for (i = aL; i <= anU; i++)
     {
       const TCollection_ExtendedString& aValueStr = aExtStringArray->Value(i);
@@ -307,12 +306,12 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
       len++; // for end of line \0 symbol
 
     // Merge all strings of the array into one extended string separated by the "separator".
-    Standard_Integer           isym(1);
+    int                        isym(1);
     TCollection_ExtendedString xstr(len, c);
     for (i = aL; i <= anU; i++)
     {
       const TCollection_ExtendedString& aValueStr = aExtStringArray->Value(i);
-      for (Standard_Integer k = 1; k <= aValueStr.Length(); k++)
+      for (int k = 1; k <= aValueStr.Length(); k++)
       {
         xstr.SetValue(isym++, aValueStr.Value(k));
       }
@@ -331,7 +330,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
   if (aExtStringArray->ID() != TDataStd_ExtStringArray::GetID())
   {
     // convert GUID
-    Standard_Character  aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aExtStringArray->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

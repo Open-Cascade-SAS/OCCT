@@ -29,19 +29,19 @@ public:
   //! Constructs iterator starting from assembly roots.
   //! \param[in]       theDoc   - document to iterate.
   //! \param [in, opt] theLevel - max level of hierarchy to reach (INT_MAX is for no limit).
-  Standard_EXPORT XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document)& theDoc,
-                                           const Standard_Integer          theLevel = INT_MAX);
+  Standard_EXPORT XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Document>& theDoc,
+                                           const int                            theLevel = INT_MAX);
 
   //! Constructs iterator starting from the specified position in the assembly tree.
   //! \param[in]       theDoc   - document to iterate.
   //! \param[in]       theRoot  - assembly item to start iterating from.
   //! \param [in, opt] theLevel - max level of hierarchy to reach (INT_MAX is for no limit).
-  Standard_EXPORT XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document)& theDoc,
-                                           const XCAFDoc_AssemblyItemId&   theRoot,
-                                           const Standard_Integer          theLevel = INT_MAX);
+  Standard_EXPORT XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Document>& theDoc,
+                                           const XCAFDoc_AssemblyItemId&        theRoot,
+                                           const int                            theLevel = INT_MAX);
 
   //! \return true if there is still something to iterate, false -- otherwise.
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   //! Moves depth-first iterator to the next position.
   Standard_EXPORT void Next();
@@ -56,15 +56,15 @@ private:
     XCAFDoc_AssemblyItemId myItem;
   };
 
-  void createItem(const TDF_Label&                 theLabel,
-                  const TColStd_ListOfAsciiString& theParentPath,
-                  AuxAssemblyItem&                 theAuxItem) const;
+  void createItem(const TDF_Label&                                 theLabel,
+                  const NCollection_List<TCollection_AsciiString>& theParentPath,
+                  AuxAssemblyItem&                                 theAuxItem) const;
 
 private:
-  Handle(XCAFDoc_ShapeTool)             myShapeTool; //!< Document shape tool.
+  occ::handle<XCAFDoc_ShapeTool>        myShapeTool; //!< Document shape tool.
   NCollection_Sequence<AuxAssemblyItem> myFringe;    //!< Items pending for iteration.
-  Standard_Integer                      myMaxLevel;  //!< Limit on max depth of iteration.
-  Standard_Integer                      mySeedLevel; //!< Level of hierarchy where we start.
+  int                                   myMaxLevel;  //!< Limit on max depth of iteration.
+  int                                   mySeedLevel; //!< Level of hierarchy where we start.
 };
 
 #endif // _XCAFDoc_AssemblyIterator_HeaderFile

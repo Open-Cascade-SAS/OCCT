@@ -41,27 +41,27 @@ public:
   //! a zero near the close points.
   Standard_EXPORT Extrema_GenLocateExtSS(const Adaptor3d_Surface& S1,
                                          const Adaptor3d_Surface& S2,
-                                         const Standard_Real      U1,
-                                         const Standard_Real      V1,
-                                         const Standard_Real      U2,
-                                         const Standard_Real      V2,
-                                         const Standard_Real      Tol1,
-                                         const Standard_Real      Tol2);
+                                         const double             U1,
+                                         const double             V1,
+                                         const double             U2,
+                                         const double             V2,
+                                         const double             Tol1,
+                                         const double             Tol2);
 
   Standard_EXPORT void Perform(const Adaptor3d_Surface& S1,
                                const Adaptor3d_Surface& S2,
-                               const Standard_Real      U1,
-                               const Standard_Real      V1,
-                               const Standard_Real      U2,
-                               const Standard_Real      V2,
-                               const Standard_Real      Tol1,
-                               const Standard_Real      Tol2);
+                               const double             U1,
+                               const double             V1,
+                               const double             U2,
+                               const double             V2,
+                               const double             Tol1,
+                               const double             Tol2);
 
   //! Returns True if the distance is found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the value of the extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance() const;
+  Standard_EXPORT double SquareDistance() const;
 
   //! Returns the point of the extremum distance on S1.
   Standard_EXPORT const Extrema_POnSurf& PointOnS1() const;
@@ -69,12 +69,11 @@ public:
   //! Returns the point of the extremum distance on S2.
   Standard_EXPORT const Extrema_POnSurf& PointOnS2() const;
 
-protected:
 private:
-  Standard_Boolean myDone;
-  Standard_Real    mySqDist;
-  Extrema_POnSurf  myPoint1;
-  Extrema_POnSurf  myPoint2;
+  bool            myDone;
+  double          mySqDist;
+  Extrema_POnSurf myPoint1;
+  Extrema_POnSurf myPoint2;
 };
 
 #endif // _Extrema_GenLocateExtSS_HeaderFile

@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_DrawingUnits, IGESData_IGESEntity)
 
 IGESGraph_DrawingUnits::IGESGraph_DrawingUnits() {}
 
-void IGESGraph_DrawingUnits::Init(const Standard_Integer                  nbProps,
-                                  const Standard_Integer                  aFlag,
-                                  const Handle(TCollection_HAsciiString)& anUnit)
+void IGESGraph_DrawingUnits::Init(const int                                    nbProps,
+                                  const int                                    aFlag,
+                                  const occ::handle<TCollection_HAsciiString>& anUnit)
 {
   theNbPropertyValues = nbProps;
   theFlag             = aFlag;
@@ -34,22 +34,22 @@ void IGESGraph_DrawingUnits::Init(const Standard_Integer                  nbProp
   InitTypeAndForm(406, 17);
 }
 
-Standard_Integer IGESGraph_DrawingUnits::NbPropertyValues() const
+int IGESGraph_DrawingUnits::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Standard_Integer IGESGraph_DrawingUnits::Flag() const
+int IGESGraph_DrawingUnits::Flag() const
 {
   return theFlag;
 }
 
-Handle(TCollection_HAsciiString) IGESGraph_DrawingUnits::Unit() const
+occ::handle<TCollection_HAsciiString> IGESGraph_DrawingUnits::Unit() const
 {
   return theUnit;
 }
 
-Standard_Real IGESGraph_DrawingUnits::UnitValue() const
+double IGESGraph_DrawingUnits::UnitValue() const
 {
   switch (theFlag)
   {

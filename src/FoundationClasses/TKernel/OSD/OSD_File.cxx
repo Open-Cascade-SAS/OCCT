@@ -38,7 +38,7 @@
   #define OPEN_OLD 1
   #define OPEN_APPEND 2
 
-void _osd_wnt_set_error(OSD_Error&, Standard_Integer, ...);
+void _osd_wnt_set_error(OSD_Error&, int, ...);
 
   #ifndef OCCT_UWP
 PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection&,
@@ -247,7 +247,7 @@ struct OSD_File_WntKey
 
   #endif /* ! OCCT_UWP */
 
-Standard_Integer __fastcall _get_file_type(Standard_CString theFileName, HANDLE theFileHandle)
+int __fastcall _get_file_type(const char* theFileName, HANDLE theFileHandle)
 {
   const int aFileType =
     theFileHandle == INVALID_HANDLE_VALUE ? FILE_TYPE_DISK : GetFileType(theFileHandle);
@@ -256,7 +256,7 @@ Standard_Integer __fastcall _get_file_type(Standard_CString theFileName, HANDLE 
     case FILE_TYPE_UNKNOWN:
       return FLAG_SOCKET;
     case FILE_TYPE_DISK: {
-      const TCollection_ExtendedString aFileNameW(theFileName, Standard_True);
+      const TCollection_ExtendedString aFileNameW(theFileName, true);
       WIN32_FILE_ATTRIBUTE_DATA        aFileInfo;
       if (GetFileAttributesExW(aFileNameW.ToWideString(), GetFileExInfoStandard, &aFileInfo))
       {
@@ -273,7 +273,7 @@ Standard_Integer __fastcall _get_file_type(Standard_CString theFileName, HANDLE 
 }
 
 //! Returns number of bytes in the string (including end \n, but excluding \r);
-static Standard_Integer OSD_File_getLine(char* theBuffer, DWORD theBuffSize, LONG& theSeekPos)
+static int OSD_File_getLine(char* theBuffer, DWORD theBuffSize, LONG& theSeekPos)
 {
   theBuffer[theBuffSize] = 0;
   for (char* aCharIter = theBuffer; *aCharIter != 0;)
@@ -283,14 +283,14 @@ static Standard_Integer OSD_File_getLine(char* theBuffer, DWORD theBuffSize, LON
       ++aCharIter; // jump newline char
       *aCharIter = '\0';
       theSeekPos = LONG(aCharIter - theBuffer - theBuffSize);
-      return Standard_Integer(aCharIter - theBuffer);
+      return int(aCharIter - theBuffer);
     }
     else if (aCharIter[0] == '\r' && aCharIter[1] == '\n')
     {
       *(aCharIter++) = '\n'; // Substitute carriage return by newline
       *aCharIter     = 0;
       theSeekPos     = LONG(aCharIter + 1 - theBuffer - theBuffSize);
-      return Standard_Integer(aCharIter - theBuffer);
+      return int(aCharIter - theBuffer);
     }
     else if (aCharIter[0] == '\r' && aCharIter[1] == '\0')
     {
@@ -411,7 +411,7 @@ OSD_File::OSD_File()
       myIO(0),
       myLock(OSD_NoLock),
       myMode(OSD_ReadWrite),
-      ImperativeFlag(Standard_False)
+      ImperativeFlag(false)
 {
   //
 }
@@ -429,7 +429,7 @@ OSD_File::OSD_File(const OSD_Path& theName)
       myIO(0),
       myLock(OSD_NoLock),
       myMode(OSD_ReadWrite),
-      ImperativeFlag(Standard_False)
+      ImperativeFlag(false)
 {
   //
 }
@@ -490,8 +490,8 @@ void OSD_File::Build(const OSD_OpenMode theMode, const OSD_Protection& theProtec
     throw Standard_ProgramError("OSD_File::Build(): no name was given");
   }
 
-  const char*      anFDOpenMode;
-  Standard_Integer anOpenMode = O_CREAT | O_TRUNC;
+  const char* anFDOpenMode;
+  int         anOpenMode = O_CREAT | O_TRUNC;
   switch (theMode)
   {
     case OSD_ReadOnly:
@@ -572,8 +572,8 @@ void OSD_File::Append(const OSD_OpenMode theMode, const OSD_Protection& theProte
     throw Standard_ProgramError("OSD_File::Append(): no name was given");
   }
 
-  const char*      anFDOpenMode;
-  Standard_Integer anOpenMode = O_APPEND;
+  const char* anFDOpenMode;
+  int         anOpenMode = O_APPEND;
   switch (theMode)
   {
     case OSD_ReadOnly:
@@ -647,8 +647,8 @@ void OSD_File::Open(const OSD_OpenMode theMode, const OSD_Protection& theProtect
     throw Standard_ProgramError("OSD_File::Open(): no name was given");
   }
 
-  const char*      anFDOpenMode;
-  Standard_Integer anOpenMode = 0;
+  const char* anFDOpenMode;
+  int         anOpenMode = 0;
   switch (theMode)
   {
     case OSD_ReadOnly:
@@ -779,7 +779,7 @@ void OSD_File::BuildTemporary()
 
 //=================================================================================================
 
-void OSD_File::Read(TCollection_AsciiString& theBuffer, const Standard_Integer theNbBytes)
+void OSD_File::Read(TCollection_AsciiString& theBuffer, const int theNbBytes)
 {
   if (OSD_File::KindOfFile() == OSD_DIRECTORY)
   {
@@ -803,11 +803,11 @@ void OSD_File::Read(TCollection_AsciiString& theBuffer, const Standard_Integer t
   }
 
   NCollection_Array1<char> aBuffer(0, theNbBytes);
-  Standard_Integer         aNbBytesRead = 0;
+  int                      aNbBytesRead = 0;
 #ifdef _WIN32
   Read(&aBuffer.ChangeFirst(), theNbBytes, aNbBytesRead);
 #else
-  aNbBytesRead = (Standard_Integer)read(myFileChannel, &aBuffer.ChangeFirst(), theNbBytes);
+  aNbBytesRead = (int)read(myFileChannel, &aBuffer.ChangeFirst(), theNbBytes);
   if (aNbBytesRead == -1)
   {
     aNbBytesRead = 0;
@@ -832,8 +832,8 @@ void OSD_File::Read(TCollection_AsciiString& theBuffer, const Standard_Integer t
 //=================================================================================================
 
 void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
-                        const Standard_Integer   theNbBytes,
-                        Standard_Integer&        theNbBytesRead)
+                        const int                theNbBytes,
+                        int&                     theNbBytesRead)
 {
   if (OSD_File::KindOfFile() == OSD_DIRECTORY)
   {
@@ -1007,7 +1007,7 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
   else
   {
     aBuffer.ChangeLast() = '\0';
-    theNbBytesRead       = (Standard_Integer)strlen(aBufferGets);
+    theNbBytesRead       = (int)strlen(aBufferGets);
     theBuffer.SetValue(1, aBufferGets);
     theBuffer.Trunc(theNbBytesRead);
   }
@@ -1021,7 +1021,7 @@ OSD_KindFile OSD_File::KindOfFile() const
   TCollection_AsciiString aFullName;
   myPath.SystemName(aFullName);
 #ifdef _WIN32
-  Standard_Integer aFlags = myIO;
+  int aFlags = myIO;
   if (myFileHandle == INVALID_HANDLE_VALUE)
   {
     if (aFullName.IsEmpty())
@@ -1068,9 +1068,7 @@ OSD_KindFile OSD_File::KindOfFile() const
 
 //=================================================================================================
 
-void OSD_File::Read(const Standard_Address theBuffer,
-                    const Standard_Integer theNbBytes,
-                    Standard_Integer&      theNbReadBytes)
+void OSD_File::Read(void* const theBuffer, const int theNbBytes, int& theNbReadBytes)
 {
   if (OSD_File::KindOfFile() == OSD_DIRECTORY)
   {
@@ -1117,10 +1115,10 @@ void OSD_File::Read(const Standard_Address theBuffer,
     myIO &= ~FLAG_EOF;
   }
 
-  theNbReadBytes = (Standard_Integer)aNbReadBytes;
+  theNbReadBytes = (int)aNbReadBytes;
 #else
   theNbReadBytes   = 0;
-  int aNbReadBytes = (Standard_Integer)read(myFileChannel, (char*)theBuffer, theNbBytes);
+  int aNbReadBytes = (int)read(myFileChannel, (char*)theBuffer, theNbBytes);
   if (aNbReadBytes == -1)
   {
     myError.SetValue(errno, Iam, "Read");
@@ -1138,7 +1136,7 @@ void OSD_File::Read(const Standard_Address theBuffer,
 
 //=================================================================================================
 
-void OSD_File::Write(const Standard_Address theBuffer, const Standard_Integer theNbBytes)
+void OSD_File::Write(void* const theBuffer, const int theNbBytes)
 {
   if (!IsOpen())
   {
@@ -1169,7 +1167,7 @@ void OSD_File::Write(const Standard_Address theBuffer, const Standard_Integer th
     _osd_wnt_set_error(myError, OSD_WFile);
   }
 #else
-  const int aNbWritten = (Standard_Integer)write(myFileChannel, (const char*)theBuffer, theNbBytes);
+  const int aNbWritten = (int)write(myFileChannel, (const char*)theBuffer, theNbBytes);
   if (aNbWritten == -1)
   {
     myError.SetValue(errno, Iam, "Write");
@@ -1183,7 +1181,7 @@ void OSD_File::Write(const Standard_Address theBuffer, const Standard_Integer th
 
 //=================================================================================================
 
-void OSD_File::Seek(const Standard_Integer theOffset, const OSD_FromWhere theWhence)
+void OSD_File::Seek(const int theOffset, const OSD_FromWhere theWhence)
 {
   if (!IsOpen())
   {
@@ -1280,7 +1278,7 @@ void OSD_File::Close()
 
 //=================================================================================================
 
-Standard_Boolean OSD_File::IsAtEnd()
+bool OSD_File::IsAtEnd()
 {
   if (!IsOpen())
   {
@@ -1349,7 +1347,7 @@ void OSD_File::SetLock(const OSD_LockType theLock)
       _osd_wnt_set_error(myError, OSD_WFile);
       __leave;
     }
-    ImperativeFlag = Standard_True;
+    ImperativeFlag = true;
   }
   __finally
   {
@@ -1422,7 +1420,7 @@ void OSD_File::SetLock(const OSD_LockType theLock)
     TCollection_AsciiString aFilePath;
     myPath.SystemName(aFilePath);
     chmod(aFilePath.ToCString(), aStatBuf.st_mode | S_ISGID);
-    ImperativeFlag = Standard_True;
+    ImperativeFlag = true;
   }
 #else /* BSD */
   int aLock = 0;
@@ -1479,7 +1477,7 @@ void OSD_File::UnLock()
     {
       _osd_wnt_set_error(myError, OSD_WFile);
     }
-    ImperativeFlag = Standard_False;
+    ImperativeFlag = false;
   }
 #elif defined(POSIX)
   struct stat aStatBuf;
@@ -1506,7 +1504,7 @@ void OSD_File::UnLock()
     TCollection_AsciiString aBuffer;
     myPath.SystemName(aBuffer);
     chmod(aBuffer.ToCString(), aStatBuf.st_mode & ~S_ISGID);
-    ImperativeFlag = Standard_False;
+    ImperativeFlag = false;
   }
 
   struct flock aLockKey;
@@ -1535,7 +1533,7 @@ void OSD_File::UnLock()
 
 //=================================================================================================
 
-Standard_Size OSD_File::Size()
+size_t OSD_File::Size()
 {
 #ifdef _WIN32
   if (!IsOpen())
@@ -1549,7 +1547,7 @@ Standard_Size OSD_File::Size()
   {
     _osd_wnt_set_error(myError, OSD_WFile);
   }
-  return (Standard_Size)aSize.QuadPart;
+  return (size_t)aSize.QuadPart;
   #else
   DWORD aSize = GetFileSize(myFileHandle, NULL);
   if (aSize == INVALID_FILE_SIZE)
@@ -1574,13 +1572,13 @@ Standard_Size OSD_File::Size()
     myError.SetValue(errno, Iam, "Size");
     return 0;
   }
-  return (Standard_Size)aStatBuf.st_size;
+  return (size_t)aStatBuf.st_size;
 #endif
 }
 
 //=================================================================================================
 
-Standard_Boolean OSD_File::IsOpen() const
+bool OSD_File::IsOpen() const
 {
 #ifdef _WIN32
   return myFileHandle != INVALID_HANDLE_VALUE;
@@ -1591,7 +1589,7 @@ Standard_Boolean OSD_File::IsOpen() const
 
 //=================================================================================================
 
-Standard_Boolean OSD_File::IsReadable()
+bool OSD_File::IsReadable()
 {
   TCollection_AsciiString aFileName;
   myPath.SystemName(aFileName);
@@ -1599,11 +1597,11 @@ Standard_Boolean OSD_File::IsReadable()
   HANDLE aChannel = OSD_File_openFile(aFileName, OSD_ReadOnly, OPEN_OLD);
   if (aChannel == INVALID_HANDLE_VALUE)
   {
-    return Standard_False;
+    return false;
   }
 
   CloseHandle(aChannel);
-  return Standard_True;
+  return true;
 #else
   return access(aFileName.ToCString(), F_OK | R_OK) == 0;
 #endif
@@ -1611,7 +1609,7 @@ Standard_Boolean OSD_File::IsReadable()
 
 //=================================================================================================
 
-Standard_Boolean OSD_File::IsWriteable()
+bool OSD_File::IsWriteable()
 {
   TCollection_AsciiString aFileName;
   myPath.SystemName(aFileName);
@@ -1619,11 +1617,11 @@ Standard_Boolean OSD_File::IsWriteable()
   HANDLE aChannel = OSD_File_openFile(aFileName, OSD_ReadWrite, OPEN_OLD);
   if (aChannel == INVALID_HANDLE_VALUE)
   {
-    return Standard_False;
+    return false;
   }
 
   CloseHandle(aChannel);
-  return Standard_True;
+  return true;
 #else
   return access(aFileName.ToCString(), F_OK | R_OK | W_OK) == 0;
 #endif
@@ -1631,7 +1629,7 @@ Standard_Boolean OSD_File::IsWriteable()
 
 //=================================================================================================
 
-Standard_Boolean OSD_File::IsExecutable()
+bool OSD_File::IsExecutable()
 {
 #ifdef _WIN32
   return IsReadable();
@@ -1657,35 +1655,35 @@ void OSD_File::Rewind()
 
 //=================================================================================================
 
-Standard_Boolean OSD_File::ReadLastLine(TCollection_AsciiString& theLine,
-                                        const Standard_Integer   theDelay,
-                                        const Standard_Integer   theNbTries)
+bool OSD_File::ReadLastLine(TCollection_AsciiString& theLine,
+                            const int                theDelay,
+                            const int                theNbTries)
 {
   if (theNbTries <= 0)
   {
-    return Standard_False;
+    return false;
   }
 
-  const Standard_Integer TheMaxLength = 1000;
-  for (Standard_Integer Count = theNbTries; Count > 0; --Count)
+  const int TheMaxLength = 1000;
+  for (int Count = theNbTries; Count > 0; --Count)
   {
-    Standard_Integer aLen = 0;
+    int aLen = 0;
     ReadLine(theLine, TheMaxLength, aLen);
     if (!theLine.IsEmpty())
     {
-      return Standard_True;
+      return true;
     }
     OSD::SecSleep(theDelay);
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean OSD_File::Edit()
+bool OSD_File::Edit()
 {
   std::cout << "Function OSD_File::Edit() not yet implemented.\n";
-  return Standard_False;
+  return false;
 }
 
 // None of the existing security APIs are supported in a UWP applications

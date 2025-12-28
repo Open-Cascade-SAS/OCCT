@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TDF_LabelMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
 class TDF_Label;
 class TopoDS_Shape;
 class TNaming_NamedShape;
@@ -38,41 +39,38 @@ public:
 
   //! if <WithValid> the scope is defined by the map. If not
   //! on the whole framework.
-  Standard_EXPORT TNaming_Scope(const Standard_Boolean WithValid);
+  Standard_EXPORT TNaming_Scope(const bool WithValid);
 
   //! create a scope with a map. WithValid = TRUE.
-  Standard_EXPORT TNaming_Scope(TDF_LabelMap& valid);
+  Standard_EXPORT TNaming_Scope(NCollection_Map<TDF_Label>& valid);
 
-  Standard_EXPORT Standard_Boolean WithValid() const;
+  Standard_EXPORT bool WithValid() const;
 
-  Standard_EXPORT void WithValid(const Standard_Boolean mode);
+  Standard_EXPORT void WithValid(const bool mode);
 
   Standard_EXPORT void ClearValid();
 
   Standard_EXPORT void Valid(const TDF_Label& L);
 
-  Standard_EXPORT void ValidChildren(const TDF_Label&       L,
-                                     const Standard_Boolean withroot = Standard_True);
+  Standard_EXPORT void ValidChildren(const TDF_Label& L, const bool withroot = true);
 
   Standard_EXPORT void Unvalid(const TDF_Label& L);
 
-  Standard_EXPORT void UnvalidChildren(const TDF_Label&       L,
-                                       const Standard_Boolean withroot = Standard_True);
+  Standard_EXPORT void UnvalidChildren(const TDF_Label& L, const bool withroot = true);
 
-  Standard_EXPORT Standard_Boolean IsValid(const TDF_Label& L) const;
+  Standard_EXPORT bool IsValid(const TDF_Label& L) const;
 
-  Standard_EXPORT const TDF_LabelMap& GetValid() const;
+  Standard_EXPORT const NCollection_Map<TDF_Label>& GetValid() const;
 
-  Standard_EXPORT TDF_LabelMap& ChangeValid();
+  Standard_EXPORT NCollection_Map<TDF_Label>& ChangeValid();
 
   //! Returns the current value of <NS> according to the
   //! Valid Scope.
-  Standard_EXPORT TopoDS_Shape CurrentShape(const Handle(TNaming_NamedShape)& NS) const;
+  Standard_EXPORT TopoDS_Shape CurrentShape(const occ::handle<TNaming_NamedShape>& NS) const;
 
-protected:
 private:
-  Standard_Boolean myWithValid;
-  TDF_LabelMap     myValid;
+  bool                       myWithValid;
+  NCollection_Map<TDF_Label> myValid;
 };
 
 #endif // _TNaming_Scope_HeaderFile

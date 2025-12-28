@@ -24,8 +24,8 @@ BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell() {}
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const Handle(Geom_Surface)& S,
-                                                   const Standard_Boolean      Segment)
+BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surface>& S,
+                                                   const bool                       Segment)
     : myMakeShell(S, Segment)
 {
   if (myMakeShell.IsDone())
@@ -37,12 +37,12 @@ BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const Handle(Geom_Surface)& S
 
 //=================================================================================================
 
-BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const Handle(Geom_Surface)& S,
-                                                   const Standard_Real         UMin,
-                                                   const Standard_Real         UMax,
-                                                   const Standard_Real         VMin,
-                                                   const Standard_Real         VMax,
-                                                   const Standard_Boolean      Segment)
+BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surface>& S,
+                                                   const double                     UMin,
+                                                   const double                     UMax,
+                                                   const double                     VMin,
+                                                   const double                     VMax,
+                                                   const bool                       Segment)
     : myMakeShell(S, UMin, UMax, VMin, VMax, Segment)
 {
   if (myMakeShell.IsDone())
@@ -54,12 +54,12 @@ BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const Handle(Geom_Surface)& S
 
 //=================================================================================================
 
-void BRepBuilderAPI_MakeShell::Init(const Handle(Geom_Surface)& S,
-                                    const Standard_Real         UMin,
-                                    const Standard_Real         UMax,
-                                    const Standard_Real         VMin,
-                                    const Standard_Real         VMax,
-                                    const Standard_Boolean      Segment)
+void BRepBuilderAPI_MakeShell::Init(const occ::handle<Geom_Surface>& S,
+                                    const double                     UMin,
+                                    const double                     UMax,
+                                    const double                     VMin,
+                                    const double                     VMax,
+                                    const bool                       Segment)
 {
   myMakeShell.Init(S, UMin, UMax, VMin, VMax, Segment);
   if (myMakeShell.IsDone())
@@ -71,7 +71,7 @@ void BRepBuilderAPI_MakeShell::Init(const Handle(Geom_Surface)& S,
 
 //=================================================================================================
 
-Standard_Boolean BRepBuilderAPI_MakeShell::IsDone() const
+bool BRepBuilderAPI_MakeShell::IsDone() const
 {
   return myMakeShell.IsDone();
 }

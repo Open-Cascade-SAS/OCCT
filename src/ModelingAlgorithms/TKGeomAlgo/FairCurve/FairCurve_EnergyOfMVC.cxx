@@ -19,22 +19,25 @@
 #include <math_GaussSetIntegration.hxx>
 #include <math_IntegerVector.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=====================================================================================
-FairCurve_EnergyOfMVC::FairCurve_EnergyOfMVC(const Standard_Integer               BSplOrder,
-                                             const Handle(TColStd_HArray1OfReal)& FlatKnots,
-                                             const Handle(TColgp_HArray1OfPnt2d)& Poles,
-                                             const Standard_Integer               ContrOrder1,
-                                             const Standard_Integer               ContrOrder2,
-                                             const FairCurve_BattenLaw&           Law,
-                                             const Standard_Real                  PhysicalRatio,
-                                             const Standard_Real                  LengthSliding,
-                                             const Standard_Boolean               FreeSliding,
-                                             const Standard_Real                  Angle1,
-                                             const Standard_Real                  Angle2,
-                                             const Standard_Real                  Curvature1,
-                                             const Standard_Real                  Curvature2)
+FairCurve_EnergyOfMVC::FairCurve_EnergyOfMVC(
+  const int                                         BSplOrder,
+  const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
+  const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+  const int                                         ContrOrder1,
+  const int                                         ContrOrder2,
+  const FairCurve_BattenLaw&                        Law,
+  const double                                      PhysicalRatio,
+  const double                                      LengthSliding,
+  const bool                                        FreeSliding,
+  const double                                      Angle1,
+  const double                                      Angle2,
+  const double                                      Curvature1,
+  const double                                      Curvature2)
     //=====================================================================================
     : FairCurve_Energy(Poles,
                        ContrOrder1,
@@ -49,7 +52,7 @@ FairCurve_EnergyOfMVC::FairCurve_EnergyOfMVC(const Standard_Integer             
       OriginalSliding(LengthSliding),
       MyBattenLaw(Law),
       MyPhysicalRatio(PhysicalRatio),
-      MyTension(BSplOrder, FlatKnots, Poles, 1, LengthSliding, Law, FreeSliding, Standard_True),
+      MyTension(BSplOrder, FlatKnots, Poles, 1, LengthSliding, Law, FreeSliding, true),
       MySagging(BSplOrder, FlatKnots, Poles, 1, Law, FreeSliding),
       MyJerk(BSplOrder, FlatKnots, Poles, 1, Law, FreeSliding),
       MyStatus(FairCurve_OK)
@@ -70,10 +73,10 @@ void FairCurve_EnergyOfMVC::ComputePoles(const math_Vector& X)
 }
 
 //=====================================================================================
-Standard_Boolean FairCurve_EnergyOfMVC::Variable(math_Vector& X) const
+bool FairCurve_EnergyOfMVC::Variable(math_Vector& X) const
 //=====================================================================================
 {
-  Standard_Boolean Ok;
+  bool Ok;
   Ok = FairCurve_Energy::Variable(X);
   if (MyWithAuxValue)
   {
@@ -83,20 +86,19 @@ Standard_Boolean FairCurve_EnergyOfMVC::Variable(math_Vector& X) const
 }
 
 //=====================================================================================
-Standard_Boolean FairCurve_EnergyOfMVC::Compute(const Standard_Integer DerivativeOrder,
-                                                math_Vector&           Result)
+bool FairCurve_EnergyOfMVC::Compute(const int DerivativeOrder, math_Vector& Result)
 //=====================================================================================
 {
   math_Vector        Debut(1, 1, 0.), Fin(1, 1, 1.);
   math_IntegerVector MyOrder(1, 1, 24);
-  Standard_Boolean   Ok = Standard_False;
+  bool               Ok = false;
 
   // Blindage contre les longueur de glissement trop exotique
   MyStatus = FairCurve_OK;
   if (MyLengthSliding > 10 * OriginalSliding)
   {
     MyStatus = FairCurve_InfiniteSliding;
-    return Standard_False;
+    return false;
   }
   if (MyLengthSliding < OriginalSliding / 100)
   {
@@ -115,8 +117,8 @@ Standard_Boolean FairCurve_EnergyOfMVC::Compute(const Standard_Integer Derivativ
   // on decoupe afin d'avoir au moins 2 points d'integration par poles
   // 24 points de Gauss => 12 poles maximum.
 
-  Standard_Integer NbInterv = (MyPoles->Length() - 1) / 12 + 1, ii;
-  Standard_Real    Delta    = 1. / NbInterv;
+  int    NbInterv = (MyPoles->Length() - 1) / 12 + 1, ii;
+  double Delta    = 1. / NbInterv;
   Result.Init(0);
 
   if (MyPhysicalRatio <= 1.e-12)

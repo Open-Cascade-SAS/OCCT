@@ -41,25 +41,25 @@ public:
   Standard_EXPORT Contap_Point();
 
   //! Creates a point.
-  Standard_EXPORT Contap_Point(const gp_Pnt& Pt, const Standard_Real U, const Standard_Real V);
+  Standard_EXPORT Contap_Point(const gp_Pnt& Pt, const double U, const double V);
 
   //! Sets the values for a point.
-  void SetValue(const gp_Pnt& Pt, const Standard_Real U, const Standard_Real V);
+  void SetValue(const gp_Pnt& Pt, const double U, const double V);
 
   //! Set the value of the parameter on the intersection line.
-  void SetParameter(const Standard_Real Para);
+  void SetParameter(const double Para);
 
   //! Sets the values of a point which is a vertex on
   //! the initial facet of restriction of one
   //! of the surface.
-  void SetVertex(const Handle(Adaptor3d_HVertex)& V);
+  void SetVertex(const occ::handle<Adaptor3d_HVertex>& V);
 
   //! Sets the value of the arc and of the parameter on
   //! this arc of the point.
-  void SetArc(const Handle(Adaptor2d_Curve2d)& A,
-              const Standard_Real              Param,
-              const IntSurf_Transition&        TLine,
-              const IntSurf_Transition&        TArc);
+  void SetArc(const occ::handle<Adaptor2d_Curve2d>& A,
+              const double                          Param,
+              const IntSurf_Transition&             TLine,
+              const IntSurf_Transition&             TArc);
 
   void SetMultiple();
 
@@ -72,22 +72,22 @@ public:
   //! on the intersection line.
   //! If the points does not belong to an intersection line,
   //! the value returned does not have any sens.
-  Standard_Real ParameterOnLine() const;
+  double ParameterOnLine() const;
 
   //! Returns the parameters on the surface of the point.
-  void Parameters(Standard_Real& U1, Standard_Real& V1) const;
+  void Parameters(double& U1, double& V1) const;
 
   //! Returns True when the point is an intersection between
   //! the contour and a restriction.
-  Standard_Boolean IsOnArc() const;
+  bool IsOnArc() const;
 
   //! Returns the arc of restriction containing the
   //! vertex.
-  const Handle(Adaptor2d_Curve2d)& Arc() const;
+  const occ::handle<Adaptor2d_Curve2d>& Arc() const;
 
   //! Returns the parameter of the point on the
   //! arc returned by the method Arc().
-  Standard_Real ParameterOnArc() const;
+  double ParameterOnArc() const;
 
   //! Returns the transition of the point on the contour.
   const IntSurf_Transition& TransitionOnLine() const;
@@ -97,38 +97,37 @@ public:
 
   //! Returns TRUE if the point is a vertex on the initial
   //! restriction facet of the surface.
-  Standard_Boolean IsVertex() const;
+  bool IsVertex() const;
 
   //! Returns the information about the point when it is
   //! on the domain of the patch, i-e when the function
   //! IsVertex returns True.
   //! Otherwise, an exception is raised.
-  const Handle(Adaptor3d_HVertex)& Vertex() const;
+  const occ::handle<Adaptor3d_HVertex>& Vertex() const;
 
   //! Returns True if the point belongs to several
   //! lines.
-  Standard_Boolean IsMultiple() const;
+  bool IsMultiple() const;
 
   //! Returns True if the point is an internal one, i.e
   //! if the tangent to the line on the point and the
   //! eye direction are parallel.
-  Standard_Boolean IsInternal() const;
+  bool IsInternal() const;
 
-protected:
 private:
-  gp_Pnt                    pt;
-  Standard_Real             uparam;
-  Standard_Real             vparam;
-  Standard_Real             paraline;
-  Standard_Boolean          onarc;
-  Handle(Adaptor2d_Curve2d) arc;
-  IntSurf_Transition        traline;
-  IntSurf_Transition        traarc;
-  Standard_Real             prmarc;
-  Standard_Boolean          isvtx;
-  Handle(Adaptor3d_HVertex) vtx;
-  Standard_Boolean          ismult;
-  Standard_Boolean          myInternal;
+  gp_Pnt                         pt;
+  double                         uparam;
+  double                         vparam;
+  double                         paraline;
+  bool                           onarc;
+  occ::handle<Adaptor2d_Curve2d> arc;
+  IntSurf_Transition             traline;
+  IntSurf_Transition             traarc;
+  double                         prmarc;
+  bool                           isvtx;
+  occ::handle<Adaptor3d_HVertex> vtx;
+  bool                           ismult;
+  bool                           myInternal;
 };
 
 #include <Contap_Point.lxx>

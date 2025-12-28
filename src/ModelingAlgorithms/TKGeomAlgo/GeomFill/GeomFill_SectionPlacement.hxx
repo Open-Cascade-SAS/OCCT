@@ -38,65 +38,63 @@ class GeomFill_SectionPlacement
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomFill_SectionPlacement(const Handle(GeomFill_LocationLaw)& L,
-                                            const Handle(Geom_Geometry)&        Section);
+  Standard_EXPORT GeomFill_SectionPlacement(const occ::handle<GeomFill_LocationLaw>& L,
+                                            const occ::handle<Geom_Geometry>&        Section);
 
   //! To change the section Law
-  Standard_EXPORT void SetLocation(const Handle(GeomFill_LocationLaw)& L);
+  Standard_EXPORT void SetLocation(const occ::handle<GeomFill_LocationLaw>& L);
 
-  Standard_EXPORT void Perform(const Standard_Real Tol);
+  Standard_EXPORT void Perform(const double Tol);
 
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)& Path, const Standard_Real Tol);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>& Path, const double Tol);
 
-  Standard_EXPORT void Perform(const Standard_Real ParamOnPath, const Standard_Real Tol);
+  Standard_EXPORT void Perform(const double ParamOnPath, const double Tol);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Real ParameterOnPath() const;
+  Standard_EXPORT double ParameterOnPath() const;
 
-  Standard_EXPORT Standard_Real ParameterOnSection() const;
+  Standard_EXPORT double ParameterOnSection() const;
 
-  Standard_EXPORT Standard_Real Distance() const;
+  Standard_EXPORT double Distance() const;
 
-  Standard_EXPORT Standard_Real Angle() const;
+  Standard_EXPORT double Angle() const;
 
-  Standard_EXPORT gp_Trsf
-    Transformation(const Standard_Boolean WithTranslation,
-                   const Standard_Boolean WithCorrection = Standard_False) const;
+  Standard_EXPORT gp_Trsf Transformation(const bool WithTranslation,
+                                         const bool WithCorrection = false) const;
 
   //! Compute the Section, in the coordinate system given by
   //! the Location Law.
   //! If <WithTranslation> contact between
   //! <Section> and <Path> is forced.
-  Standard_EXPORT Handle(Geom_Curve) Section(const Standard_Boolean WithTranslation) const;
+  Standard_EXPORT occ::handle<Geom_Curve> Section(const bool WithTranslation) const;
 
   //! Compute the Section, in the coordinate system given by
   //! the Location Law.
   //! To have the Normal to section equal to the Location
   //! Law Normal. If <WithTranslation> contact between
   //! <Section> and <Path> is forced.
-  Standard_EXPORT Handle(Geom_Curve) ModifiedSection(const Standard_Boolean WithTranslation) const;
+  Standard_EXPORT occ::handle<Geom_Curve> ModifiedSection(const bool WithTranslation) const;
 
-protected:
 private:
   Standard_EXPORT void SectionAxis(const gp_Mat& M, gp_Vec& T, gp_Vec& N, gp_Vec& BN) const;
 
-  Standard_EXPORT Standard_Boolean Choix(const Standard_Real Dist, const Standard_Real Angle) const;
+  Standard_EXPORT bool Choix(const double Dist, const double Angle) const;
 
-  Standard_Boolean             done;
-  Standard_Boolean             isplan;
-  gp_Ax1                       TheAxe;
-  Standard_Real                Gabarit;
-  Handle(GeomFill_LocationLaw) myLaw;
-  GeomAdaptor_Curve            myAdpSection;
-  Handle(Geom_Curve)           mySection;
-  Standard_Real                SecParam;
-  Standard_Real                PathParam;
-  Standard_Real                Dist;
-  Standard_Real                AngleMax;
-  Extrema_ExtPC                myExt;
-  Standard_Boolean             myIsPoint;
-  gp_Pnt                       myPoint;
+  bool                              done;
+  bool                              isplan;
+  gp_Ax1                            TheAxe;
+  double                            Gabarit;
+  occ::handle<GeomFill_LocationLaw> myLaw;
+  GeomAdaptor_Curve                 myAdpSection;
+  occ::handle<Geom_Curve>           mySection;
+  double                            SecParam;
+  double                            PathParam;
+  double                            Dist;
+  double                            AngleMax;
+  Extrema_ExtPC                     myExt;
+  bool                              myIsPoint;
+  gp_Pnt                            myPoint;
 };
 
 #endif // _GeomFill_SectionPlacement_HeaderFile

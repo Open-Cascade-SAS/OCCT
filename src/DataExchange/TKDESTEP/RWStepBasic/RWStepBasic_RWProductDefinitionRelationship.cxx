@@ -28,10 +28,10 @@ RWStepBasic_RWProductDefinitionRelationship::RWStepBasic_RWProductDefinitionRela
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepBasic_ProductDefinitionRelationship)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                                   num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepBasic_ProductDefinitionRelationship>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "product_definition_relationship"))
@@ -39,21 +39,21 @@ void RWStepBasic_RWProductDefinitionRelationship::ReadStep(
 
   // Own fields of ProductDefinitionRelationship
 
-  Handle(TCollection_HAsciiString) aId;
+  occ::handle<TCollection_HAsciiString> aId;
   data->ReadString(num, 1, "id", ach, aId);
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 2, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasDescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "description", ach, aDescription);
   }
   else
   {
-    hasDescription = Standard_False;
+    hasDescription = false;
   }
 
   StepBasic_ProductDefinitionOrReference aRelatingProductDefinition;
@@ -74,8 +74,8 @@ void RWStepBasic_RWProductDefinitionRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionRelationship::WriteStep(
-  StepData_StepWriter&                                   SW,
-  const Handle(StepBasic_ProductDefinitionRelationship)& ent) const
+  StepData_StepWriter&                                        SW,
+  const occ::handle<StepBasic_ProductDefinitionRelationship>& ent) const
 {
 
   // Own fields of ProductDefinitionRelationship
@@ -99,8 +99,8 @@ void RWStepBasic_RWProductDefinitionRelationship::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionRelationship::Share(
-  const Handle(StepBasic_ProductDefinitionRelationship)& ent,
-  Interface_EntityIterator&                              iter) const
+  const occ::handle<StepBasic_ProductDefinitionRelationship>& ent,
+  Interface_EntityIterator&                                   iter) const
 {
 
   // Own fields of ProductDefinitionRelationship

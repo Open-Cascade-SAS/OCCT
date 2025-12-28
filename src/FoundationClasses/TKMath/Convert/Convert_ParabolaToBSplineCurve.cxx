@@ -19,32 +19,32 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Trsf2d.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 
-static Standard_Integer TheDegree  = 2;
-static Standard_Integer MaxNbKnots = 2;
-static Standard_Integer MaxNbPoles = 3;
+static int TheDegree  = 2;
+static int MaxNbKnots = 2;
+static int MaxNbPoles = 3;
 
 //=================================================================================================
 
-Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d&   Prb,
-                                                               const Standard_Real U1,
-                                                               const Standard_Real U2)
+Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d& Prb,
+                                                               const double      U1,
+                                                               const double      U2)
     : Convert_ConicToBSplineCurve(MaxNbPoles, MaxNbKnots, TheDegree)
 {
   Standard_DomainError_Raise_if(std::abs(U2 - U1) < Epsilon(0.), "Convert_ParabolaToBSplineCurve");
 
-  Standard_Real UF = std::min(U1, U2);
-  Standard_Real UL = std::max(U1, U2);
+  double UF = std::min(U1, U2);
+  double UL = std::max(U1, U2);
 
-  Standard_Real p = Prb.Parameter();
+  double p = Prb.Parameter();
 
   nbPoles                  = 3;
   nbKnots                  = 2;
-  isperiodic               = Standard_False;
+  isperiodic               = false;
   knots->ChangeArray1()(1) = UF;
   mults->ChangeArray1()(1) = 3;
   knots->ChangeArray1()(2) = UL;
@@ -54,9 +54,9 @@ Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d&
   weights->ChangeArray1()(2) = 1.;
   weights->ChangeArray1()(3) = 1.;
 
-  gp_Dir2d      Ox = Prb.Axis().XDirection();
-  gp_Dir2d      Oy = Prb.Axis().YDirection();
-  Standard_Real S  = (Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ? 1 : -1;
+  gp_Dir2d Ox = Prb.Axis().XDirection();
+  gp_Dir2d Oy = Prb.Axis().YDirection();
+  double   S  = (Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ? 1 : -1;
 
   // poles expressed in the reference mark
   poles->ChangeArray1()(1) = gp_Pnt2d((UF * UF) / (2. * p), S * UF);

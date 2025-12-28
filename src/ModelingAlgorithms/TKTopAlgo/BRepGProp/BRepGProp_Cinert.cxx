@@ -17,7 +17,7 @@
 #include <BRepGProp_EdgeTool.hxx>
 #include <gp_Pnt.hxx>
 #include <math.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 BRepGProp_Cinert::BRepGProp_Cinert() {}
 
@@ -29,20 +29,19 @@ void BRepGProp_Cinert::SetLocation(const gp_Pnt& CLocation)
 void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
 {
 
-  Standard_Real Ix, Iy, Iz, Ixx, Iyy, Izz, Ixy, Ixz, Iyz;
+  double Ix, Iy, Iz, Ixx, Iyy, Izz, Ixy, Ixz, Iyz;
   dim = Ix = Iy = Iz = Ixx = Iyy = Izz = Ixy = Ixz = Iyz = 0.0;
 
-  Standard_Real    Lower = BRepGProp_EdgeTool::FirstParameter(C);
-  Standard_Real    Upper = BRepGProp_EdgeTool::LastParameter(C);
-  Standard_Integer Order =
-    std::min(BRepGProp_EdgeTool::IntegrationOrder(C), math::GaussPointsMax());
+  double Lower = BRepGProp_EdgeTool::FirstParameter(C);
+  double Upper = BRepGProp_EdgeTool::LastParameter(C);
+  int    Order = std::min(BRepGProp_EdgeTool::IntegrationOrder(C), math::GaussPointsMax());
 
-  gp_Pnt        P;  // value on the curve
-  gp_Vec        V1; // first derivative on the curve
-  Standard_Real ds; // curvilign abscissae
-  Standard_Real ur, um, u;
-  Standard_Real x, y, z;
-  Standard_Real xloc, yloc, zloc;
+  gp_Pnt P;  // value on the curve
+  gp_Vec V1; // first derivative on the curve
+  double ds; // curvilign abscissae
+  double ur, um, u;
+  double x, y, z;
+  double xloc, yloc, zloc;
 
   math_Vector GaussP(1, Order);
   math_Vector GaussW(1, Order);
@@ -52,9 +51,9 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
   math::GaussWeights(Order, GaussW);
 
   // modified by NIZHNY-MKK  Thu Jun  9 12:13:21 2005.BEGIN
-  Standard_Integer     nbIntervals   = BRepGProp_EdgeTool::NbIntervals(C, GeomAbs_CN);
-  Standard_Boolean     bHasIntervals = (nbIntervals > 1);
-  TColStd_Array1OfReal TI(1, nbIntervals + 1);
+  int                        nbIntervals   = BRepGProp_EdgeTool::NbIntervals(C, GeomAbs_CN);
+  bool                       bHasIntervals = (nbIntervals > 1);
+  NCollection_Array1<double> TI(1, nbIntervals + 1);
 
   if (bHasIntervals)
   {
@@ -64,9 +63,9 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
   {
     nbIntervals = 1;
   }
-  Standard_Integer nIndex = 0;
-  Standard_Real    UU1    = std::min(Lower, Upper);
-  Standard_Real    UU2    = std::max(Lower, Upper);
+  int    nIndex = 0;
+  double UU1    = std::min(Lower, Upper);
+  double UU2    = std::max(Lower, Upper);
 
   for (nIndex = 1; nIndex <= nbIntervals; nIndex++)
   {
@@ -81,15 +80,15 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
       Upper = UU2;
     }
 
-    Standard_Real dimLocal, IxLocal, IyLocal, IzLocal, IxxLocal, IyyLocal, IzzLocal, IxyLocal,
-      IxzLocal, IyzLocal;
+    double dimLocal, IxLocal, IyLocal, IzLocal, IxxLocal, IyyLocal, IzzLocal, IxyLocal, IxzLocal,
+      IyzLocal;
     dimLocal = IxLocal = IyLocal = IzLocal = IxxLocal = IyyLocal = IzzLocal = IxyLocal = IxzLocal =
       IyzLocal                                                                         = 0.0;
     // modified by NIZHNY-MKK  Thu Jun  9 12:13:32 2005.END
 
     loc.Coord(xloc, yloc, zloc);
 
-    Standard_Integer i;
+    int i;
 
     // Calcul des integrales aux points de gauss :
     um = 0.5 * (Upper + Lower);

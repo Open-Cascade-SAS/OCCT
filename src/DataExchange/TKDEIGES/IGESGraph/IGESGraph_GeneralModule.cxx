@@ -45,7 +45,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -57,9 +57,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_GeneralModule, IGESData_GeneralModule)
 //  the method TypeNumber from this Protocol
 IGESGraph_GeneralModule::IGESGraph_GeneralModule() {}
 
-void IGESGraph_GeneralModule::OwnSharedCase(const Standard_Integer             CN,
-                                            const Handle(IGESData_IGESEntity)& ent,
-                                            Interface_EntityIterator&          iter) const
+void IGESGraph_GeneralModule::OwnSharedCase(const int                               CN,
+                                            const occ::handle<IGESData_IGESEntity>& ent,
+                                            Interface_EntityIterator&               iter) const
 {
   switch (CN)
   {
@@ -181,8 +181,8 @@ void IGESGraph_GeneralModule::OwnSharedCase(const Standard_Integer             C
 }
 
 IGESData_DirChecker IGESGraph_GeneralModule::DirChecker(
-  const Standard_Integer             CN,
-  const Handle(IGESData_IGESEntity)& ent) const
+  const int                               CN,
+  const occ::handle<IGESData_IGESEntity>& ent) const
 {
   switch (CN)
   {
@@ -290,10 +290,10 @@ IGESData_DirChecker IGESGraph_GeneralModule::DirChecker(
   return IGESData_DirChecker(); // by default, no specific criterium
 }
 
-void IGESGraph_GeneralModule::OwnCheckCase(const Standard_Integer             CN,
-                                           const Handle(IGESData_IGESEntity)& ent,
-                                           const Interface_ShareTool&         shares,
-                                           Handle(Interface_Check)&           ach) const
+void IGESGraph_GeneralModule::OwnCheckCase(const int                               CN,
+                                           const occ::handle<IGESData_IGESEntity>& ent,
+                                           const Interface_ShareTool&              shares,
+                                           occ::handle<Interface_Check>&           ach) const
 {
   switch (CN)
   {
@@ -414,8 +414,7 @@ void IGESGraph_GeneralModule::OwnCheckCase(const Standard_Integer             CN
   }
 }
 
-Standard_Boolean IGESGraph_GeneralModule::NewVoid(const Standard_Integer      CN,
-                                                  Handle(Standard_Transient)& ent) const
+bool IGESGraph_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const
 {
   switch (CN)
   {
@@ -462,15 +461,15 @@ Standard_Boolean IGESGraph_GeneralModule::NewVoid(const Standard_Integer      CN
       ent = new IGESGraph_UniformRectGrid;
       break;
     default:
-      return Standard_False; // by default, Failure on Recognize
+      return false; // by default, Failure on Recognize
   }
-  return Standard_True;
+  return true;
 }
 
-void IGESGraph_GeneralModule::OwnCopyCase(const Standard_Integer             CN,
-                                          const Handle(IGESData_IGESEntity)& entfrom,
-                                          const Handle(IGESData_IGESEntity)& entto,
-                                          Interface_CopyTool&                TC) const
+void IGESGraph_GeneralModule::OwnCopyCase(const int                               CN,
+                                          const occ::handle<IGESData_IGESEntity>& entfrom,
+                                          const occ::handle<IGESData_IGESEntity>& entto,
+                                          Interface_CopyTool&                     TC) const
 {
   switch (CN)
   {
@@ -577,9 +576,9 @@ void IGESGraph_GeneralModule::OwnCopyCase(const Standard_Integer             CN,
   }
 }
 
-Standard_Integer IGESGraph_GeneralModule::CategoryNumber(const Standard_Integer /*CN*/,
-                                                         const Handle(Standard_Transient)&,
-                                                         const Interface_ShareTool&) const
+int IGESGraph_GeneralModule::CategoryNumber(const int /*CN*/,
+                                            const occ::handle<Standard_Transient>&,
+                                            const Interface_ShareTool&) const
 {
   return Interface_Category::Number("Drawing");
 }

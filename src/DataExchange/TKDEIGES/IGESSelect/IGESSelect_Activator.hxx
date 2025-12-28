@@ -25,9 +25,6 @@
 #include <Standard_Integer.hxx>
 class IFSelect_SessionPilot;
 
-class IGESSelect_Activator;
-DEFINE_STANDARD_HANDLE(IGESSelect_Activator, IFSelect_Activator)
-
 //! Performs Actions specific to IGESSelect, i.e. creation of
 //! IGES Selections and Dispatches, plus dumping specific to IGES
 class IGESSelect_Activator : public IFSelect_Activator
@@ -38,15 +35,12 @@ public:
 
   //! Executes a Command Line for IGESSelect
   Standard_EXPORT IFSelect_ReturnStatus
-    Do(const Standard_Integer number, const Handle(IFSelect_SessionPilot)& pilot) Standard_OVERRIDE;
+    Do(const int number, const occ::handle<IFSelect_SessionPilot>& pilot) override;
 
   //! Sends a short help message for IGESSelect commands
-  Standard_EXPORT Standard_CString Help(const Standard_Integer number) const Standard_OVERRIDE;
+  Standard_EXPORT const char* Help(const int number) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_Activator, IFSelect_Activator)
-
-protected:
-private:
 };
 
 #endif // _IGESSelect_Activator_HeaderFile

@@ -29,14 +29,17 @@
 
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPDS_MapOfCommonBlock.hxx>
+#include <NCollection_Map.hxx>
+#include <BOPDS_CommonBlock.hxx>
 
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPAlgo_BuilderSolid.hxx>
 
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 
 #include <IntTools_Context.hxx>
 
@@ -47,57 +50,54 @@ template <class InterfType>
 static void DumpInterfs(const NCollection_Vector<InterfType>& theVInterf, Draw_Interpretor& di);
 
 template <class InterfType>
-static void             SearchNewIndex(const char*                           theCType,
-                                       const Standard_Integer                theInd,
-                                       const NCollection_Vector<InterfType>& theVInterf,
-                                       Draw_Interpretor&                     di);
-static Standard_Integer bopfinfo(Draw_Interpretor&      di,
-                                 Standard_Integer       n,
-                                 const char**           a,
-                                 const Standard_Integer iPriz);
+static void SearchNewIndex(const char*                           theCType,
+                           const int                             theInd,
+                           const NCollection_Vector<InterfType>& theVInterf,
+                           Draw_Interpretor&                     di);
+static int  bopfinfo(Draw_Interpretor& di, int n, const char** a, const int iPriz);
 
 // commands
 // 1. filler commands
 // 1.1 DS commands
-static Standard_Integer bopds(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopiterator(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopinterf(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopnews(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopwho(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopindex(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopsd(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopsc(Draw_Interpretor&, Standard_Integer, const char**);
+static int bopds(Draw_Interpretor&, int, const char**);
+static int bopiterator(Draw_Interpretor&, int, const char**);
+static int bopinterf(Draw_Interpretor&, int, const char**);
+static int bopnews(Draw_Interpretor&, int, const char**);
+static int bopwho(Draw_Interpretor&, int, const char**);
+static int bopindex(Draw_Interpretor&, int, const char**);
+static int bopsd(Draw_Interpretor&, int, const char**);
+static int bopsc(Draw_Interpretor&, int, const char**);
 
 // 1.2 pave blocks commands
-static Standard_Integer boppb(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopcb(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopsp(Draw_Interpretor&, Standard_Integer, const char**);
+static int boppb(Draw_Interpretor&, int, const char**);
+static int bopcb(Draw_Interpretor&, int, const char**);
+static int bopsp(Draw_Interpretor&, int, const char**);
 
 // 1.3 face info commands
-static Standard_Integer bopfon(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopfin(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopfsc(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopfav(Draw_Interpretor&, Standard_Integer, const char**);
+static int bopfon(Draw_Interpretor&, int, const char**);
+static int bopfin(Draw_Interpretor&, int, const char**);
+static int bopfsc(Draw_Interpretor&, int, const char**);
+static int bopfav(Draw_Interpretor&, int, const char**);
 
 // 2. builder commands
 // 2.1 images commands
-static Standard_Integer bopimage(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer boporigin(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopfsd(Draw_Interpretor&, Standard_Integer, const char**);
+static int bopimage(Draw_Interpretor&, int, const char**);
+static int boporigin(Draw_Interpretor&, int, const char**);
+static int bopfsd(Draw_Interpretor&, int, const char**);
 
 // 2.2 building faces
-static Standard_Integer bopbface(Draw_Interpretor&, Standard_Integer, const char**);
+static int bopbface(Draw_Interpretor&, int, const char**);
 // 2.3 building solids
-static Standard_Integer bopbsolid(Draw_Interpretor&, Standard_Integer, const char**);
+static int bopbsolid(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::DebugCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
   // Commands
@@ -189,7 +189,7 @@ void BOPTest::DebugCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer bopds(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopds(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 2)
   {
@@ -205,8 +205,8 @@ Standard_Integer bopds(Draw_Interpretor& di, Standard_Integer n, const char** a)
   }
   //
   char             buf[32];
-  Standard_CString aText;
-  Standard_Integer i, aNbS;
+  const char*      aText;
+  int              i, aNbS;
   TopAbs_ShapeEnum aType, aTypeShape;
   Draw_Color       aTextColor(Draw_cyan);
   //
@@ -241,8 +241,8 @@ Standard_Integer bopds(Draw_Interpretor& di, Standard_Integer n, const char** a)
     }
     //
     Sprintf(buf, "z%d", i);
-    aText                                 = buf;
-    Handle(BOPTest_DrawableShape) aDShape = new BOPTest_DrawableShape(aS, aText, aTextColor);
+    aText                                      = buf;
+    occ::handle<BOPTest_DrawableShape> aDShape = new BOPTest_DrawableShape(aS, aText, aTextColor);
     Draw::Set(aText, aDShape);
   }
   //
@@ -251,7 +251,7 @@ Standard_Integer bopds(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer bopiterator(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopiterator(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 1 && n != 3)
   {
@@ -266,11 +266,11 @@ Standard_Integer bopiterator(Draw_Interpretor& di, Standard_Integer n, const cha
     return 1;
   }
   //
-  Standard_Integer n1, n2;
-  char             buf[64], aST1[10], aST2[10];
-  BOPDS_Iterator   aIt;
+  int            n1, n2;
+  char           buf[64], aST1[10], aST2[10];
+  BOPDS_Iterator aIt;
   //
-  Handle(IntTools_Context) aCtx = new IntTools_Context();
+  occ::handle<IntTools_Context> aCtx = new IntTools_Context();
 
   BOPDS_DS& aDS = *pDS;
   aIt.SetDS(&aDS);
@@ -279,7 +279,7 @@ Standard_Integer bopiterator(Draw_Interpretor& di, Standard_Integer n, const cha
   if (n == 1)
   {
     // type has not been defined. show all pairs
-    Standard_Integer i, j;
+    int              i, j;
     TopAbs_ShapeEnum aT[4] = {TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE, TopAbs_SOLID};
     for (i = 0; i < 4; ++i)
     {
@@ -325,7 +325,7 @@ Standard_Integer bopiterator(Draw_Interpretor& di, Standard_Integer n, const cha
 
 //=================================================================================================
 
-Standard_Integer bopinterf(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopinterf(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 3)
   {
@@ -405,7 +405,7 @@ Standard_Integer bopinterf(Draw_Interpretor& di, Standard_Integer n, const char*
 
 //=================================================================================================
 
-Standard_Integer bopwho(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopwho(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -420,14 +420,14 @@ Standard_Integer bopwho(Draw_Interpretor& di, Standard_Integer n, const char** a
     return 0;
   }
   //
-  Standard_Integer ind = Draw::Atoi(a[1]);
+  int ind = Draw::Atoi(a[1]);
   if (ind <= 0)
   {
     di << " Index must be grater than 0\n";
     return 1;
   }
   //
-  Standard_Integer i1, i2;
+  int i1, i2;
   //
   i1 = 0;
   i2 = pDS->NbShapes();
@@ -439,7 +439,7 @@ Standard_Integer bopwho(Draw_Interpretor& di, Standard_Integer n, const char** a
   //
   if (!pDS->IsNewShape(ind))
   {
-    Standard_Integer iRank = pDS->Rank(ind);
+    int iRank = pDS->Rank(ind);
     di << " Rank: " << iRank << "\n";
     return 0;
   }
@@ -453,11 +453,11 @@ Standard_Integer bopwho(Draw_Interpretor& di, Standard_Integer n, const char** a
     return 0;
   }
   // search among interfs
-  BOPDS_VectorOfInterfVV& aVVs = pDS->InterfVV();
-  BOPDS_VectorOfInterfVE& aVEs = pDS->InterfVE();
-  BOPDS_VectorOfInterfEE& aEEs = pDS->InterfEE();
-  BOPDS_VectorOfInterfVF& aVFs = pDS->InterfVF();
-  BOPDS_VectorOfInterfEF& aEFs = pDS->InterfEF();
+  NCollection_Vector<BOPDS_InterfVV>& aVVs = pDS->InterfVV();
+  NCollection_Vector<BOPDS_InterfVE>& aVEs = pDS->InterfVE();
+  NCollection_Vector<BOPDS_InterfEE>& aEEs = pDS->InterfEE();
+  NCollection_Vector<BOPDS_InterfVF>& aVFs = pDS->InterfVF();
+  NCollection_Vector<BOPDS_InterfEF>& aEFs = pDS->InterfEF();
   //
   SearchNewIndex<BOPDS_InterfVV>("V/V: ", ind, aVVs, di);
   SearchNewIndex<BOPDS_InterfVE>("V/E: ", ind, aVEs, di);
@@ -466,36 +466,36 @@ Standard_Integer bopwho(Draw_Interpretor& di, Standard_Integer n, const char** a
   SearchNewIndex<BOPDS_InterfEF>("E/F: ", ind, aEFs, di);
   //
   //--------------------------------------FF
-  char                                buf[64];
-  Standard_Boolean                    bFound;
-  Standard_Integer                    i, n1, n2, k, aNb, aNbC, aNbP, nV1, nV2;
-  BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
+  char                                                     buf[64];
+  bool                                                     bFound;
+  int                                                      i, n1, n2, k, aNb, aNbC, aNbP, nV1, nV2;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   //
-  bFound                       = Standard_False;
-  BOPDS_VectorOfInterfFF& aFFs = pDS->InterfFF();
-  aNb                          = aFFs.Length();
+  bFound                                   = false;
+  NCollection_Vector<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
+  aNb                                      = aFFs.Length();
   for (i = 0; i < aNb; ++i)
   {
     const BOPDS_InterfFF& anInt = aFFs(i);
     anInt.Indices(n1, n2);
     //
-    const BOPDS_VectorOfCurve& aVNC = anInt.Curves();
-    aNbC                            = aVNC.Length();
+    const NCollection_Vector<BOPDS_Curve>& aVNC = anInt.Curves();
+    aNbC                                        = aVNC.Length();
     for (k = 0; k < aNbC; ++k)
     {
-      const BOPDS_Curve&           aNC  = aVNC(k);
-      const BOPDS_ListOfPaveBlock& aLPB = aNC.PaveBlocks();
+      const BOPDS_Curve&                                    aNC  = aVNC(k);
+      const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aNC.PaveBlocks();
       aItLPB.Initialize(aLPB);
       for (; aItLPB.More(); aItLPB.Next())
       {
-        const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
+        const occ::handle<BOPDS_PaveBlock>& aPB = aItLPB.Value();
         aPB->Indices(nV1, nV2);
         if (ind == nV1 || ind == nV2)
         {
           if (!bFound)
           {
             di << " FF curves: ";
-            bFound = Standard_True;
+            bFound = true;
           }
           Sprintf(buf, "(%d, %d) ", n1, n2);
           di << buf;
@@ -508,9 +508,9 @@ Standard_Integer bopwho(Draw_Interpretor& di, Standard_Integer n, const char** a
       di << "\n";
     }
     //
-    bFound                          = Standard_False;
-    const BOPDS_VectorOfPoint& aVNP = anInt.Points();
-    aNbP                            = aVNP.Length();
+    bFound                                      = false;
+    const NCollection_Vector<BOPDS_Point>& aVNP = anInt.Points();
+    aNbP                                        = aVNP.Length();
     for (k = 0; k < aNbP; ++k)
     {
       const BOPDS_Point& aNP = aVNP(k);
@@ -520,7 +520,7 @@ Standard_Integer bopwho(Draw_Interpretor& di, Standard_Integer n, const char** a
         if (!bFound)
         {
           di << " FF points: ";
-          bFound = Standard_True;
+          bFound = true;
         }
         Sprintf(buf, "(%d, %d) ", n1, n2);
         di << buf;
@@ -537,7 +537,7 @@ Standard_Integer bopwho(Draw_Interpretor& di, Standard_Integer n, const char** a
 
 //=================================================================================================
 
-Standard_Integer bopnews(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopnews(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -561,14 +561,14 @@ Standard_Integer bopnews(Draw_Interpretor& di, Standard_Integer n, const char** 
     return 1;
   }
   //
-  char                          buf[32];
-  Standard_CString              aText;
-  Standard_Boolean              bFound;
-  Standard_Integer              i, i1, i2;
-  Draw_Color                    aTextColor(Draw_cyan);
-  Handle(BOPTest_DrawableShape) aDShape;
+  char                               buf[32];
+  const char*                        aText;
+  bool                               bFound;
+  int                                i, i1, i2;
+  Draw_Color                         aTextColor(Draw_cyan);
+  occ::handle<BOPTest_DrawableShape> aDShape;
   //
-  bFound = Standard_False;
+  bFound = false;
   i1     = pDS->NbSourceShapes();
   i2     = pDS->NbShapes();
   for (i = i1; i < i2; ++i)
@@ -586,7 +586,7 @@ Standard_Integer bopnews(Draw_Interpretor& di, Standard_Integer n, const char** 
       Sprintf(buf, "z%d ", i);
       di << buf;
       //
-      bFound = Standard_True;
+      bFound = true;
     }
   }
   //
@@ -604,7 +604,7 @@ Standard_Integer bopnews(Draw_Interpretor& di, Standard_Integer n, const char** 
 
 //=================================================================================================
 
-Standard_Integer bopindex(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopindex(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -626,8 +626,8 @@ Standard_Integer bopindex(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
   //
-  Standard_Integer ind    = pDS->Index(aS);
-  Standard_Boolean bFound = (ind > 0);
+  int  ind    = pDS->Index(aS);
+  bool bFound = (ind > 0);
   if (bFound)
   {
     di << " Index: " << ind << "\n";
@@ -642,7 +642,7 @@ Standard_Integer bopindex(Draw_Interpretor& di, Standard_Integer n, const char**
 
 //=================================================================================================
 
-Standard_Integer bopsd(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopsd(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -657,9 +657,9 @@ Standard_Integer bopsd(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 0;
   }
   //
-  char             buf[32];
-  Standard_Boolean bHasSD;
-  Standard_Integer ind, i1, i2, iSD;
+  char buf[32];
+  bool bHasSD;
+  int  ind, i1, i2, iSD;
   //
   ind = Draw::Atoi(a[1]);
   //
@@ -688,7 +688,7 @@ Standard_Integer bopsd(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer bopsc(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopsc(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 3)
   {
@@ -703,14 +703,14 @@ Standard_Integer bopsc(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 0;
   }
   //
-  char                                buf[32];
-  Standard_CString                    aText;
-  Draw_Color                          aTextColor(Draw_cyan);
-  Standard_Integer                    nSF1, nSF2, nF1, nF2;
-  Standard_Integer                    aNb, j, iCnt, k, iPriz, aNbC, aNbP, nSp;
-  Standard_Integer                    iX;
-  Handle(BOPTest_DrawableShape)       aDShape;
-  BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
+  char                                                     buf[32];
+  const char*                                              aText;
+  Draw_Color                                               aTextColor(Draw_cyan);
+  int                                                      nSF1, nSF2, nF1, nF2;
+  int                                                      aNb, j, iCnt, k, iPriz, aNbC, aNbP, nSp;
+  int                                                      iX;
+  occ::handle<BOPTest_DrawableShape>                       aDShape;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   //
   nSF1 = nSF2 = -1;
   if (n > 1)
@@ -718,7 +718,7 @@ Standard_Integer bopsc(Draw_Interpretor& di, Standard_Integer n, const char** a)
   if (n > 2)
     nSF2 = Draw::Atoi(a[2]);
 
-  BOPDS_VectorOfInterfFF& aFFs = pDS->InterfFF();
+  NCollection_Vector<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
   //
   iCnt  = 0;
   iPriz = 0;
@@ -742,17 +742,17 @@ Standard_Integer bopsc(Draw_Interpretor& di, Standard_Integer n, const char** a)
     //
     aFF.Indices(nF1, nF2);
     //
-    iX                              = 0;
-    const BOPDS_VectorOfCurve& aVNC = aFF.Curves();
-    aNbC                            = aVNC.Length();
+    iX                                          = 0;
+    const NCollection_Vector<BOPDS_Curve>& aVNC = aFF.Curves();
+    aNbC                                        = aVNC.Length();
     for (k = 0; k < aNbC; ++k)
     {
-      const BOPDS_Curve&           aNC  = aVNC(k);
-      const BOPDS_ListOfPaveBlock& aLPB = aNC.PaveBlocks();
+      const BOPDS_Curve&                                    aNC  = aVNC(k);
+      const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aNC.PaveBlocks();
       aItLPB.Initialize(aLPB);
       for (; aItLPB.More(); aItLPB.Next())
       {
-        const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
+        const occ::handle<BOPDS_PaveBlock>& aPB = aItLPB.Value();
         if (!aPB->HasEdge(nSp))
         {
           continue;
@@ -780,9 +780,9 @@ Standard_Integer bopsc(Draw_Interpretor& di, Standard_Integer n, const char** a)
       di << "\n";
     }
     //
-    iX                              = 0;
-    const BOPDS_VectorOfPoint& aVNP = aFF.Points();
-    aNbP                            = aVNP.Length();
+    iX                                          = 0;
+    const NCollection_Vector<BOPDS_Point>& aVNP = aFF.Points();
+    aNbP                                        = aVNP.Length();
     for (k = 0; k < aNbP; ++k)
     {
       const BOPDS_Point& aNP = aVNP(k);
@@ -832,7 +832,7 @@ Standard_Integer bopsc(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer boppb(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int boppb(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 2)
   {
@@ -847,10 +847,10 @@ Standard_Integer boppb(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 1;
   }
   //
-  Standard_Boolean                    bHasPaveBlocks;
-  Standard_Integer                    ind, i1, i2;
-  TopAbs_ShapeEnum                    aType;
-  BOPDS_ListIteratorOfListOfPaveBlock aItPB;
+  bool                                                     bHasPaveBlocks;
+  int                                                      ind, i1, i2;
+  TopAbs_ShapeEnum                                         aType;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
   //
   i1 = 0;
   i2 = pDS->NbSourceShapes();
@@ -876,11 +876,11 @@ Standard_Integer boppb(Draw_Interpretor& di, Standard_Integer n, const char** a)
       continue;
     }
     //
-    const BOPDS_ListOfPaveBlock& aLPB = pDS->PaveBlocks(ind);
+    const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = pDS->PaveBlocks(ind);
     aItPB.Initialize(aLPB);
     for (; aItPB.More(); aItPB.Next())
     {
-      const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
+      const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
       aPB->Dump();
       printf("\n");
     }
@@ -891,7 +891,7 @@ Standard_Integer boppb(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer bopcb(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopcb(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 2)
   {
@@ -906,11 +906,11 @@ Standard_Integer bopcb(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 1;
   }
   //
-  Standard_Boolean                    bHasPaveBlocks;
-  Standard_Integer                    ind, i1, i2;
-  TopAbs_ShapeEnum                    aType;
-  BOPDS_ListIteratorOfListOfPaveBlock aItPB;
-  BOPDS_MapOfCommonBlock              aMCB;
+  bool                                                     bHasPaveBlocks;
+  int                                                      ind, i1, i2;
+  TopAbs_ShapeEnum                                         aType;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
+  NCollection_Map<occ::handle<BOPDS_CommonBlock>>          aMCB;
   //
   i1 = 0;
   i2 = pDS->NbSourceShapes();
@@ -936,14 +936,14 @@ Standard_Integer bopcb(Draw_Interpretor& di, Standard_Integer n, const char** a)
       continue;
     }
     //
-    const BOPDS_ListOfPaveBlock& aLPB = pDS->PaveBlocks(ind);
+    const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = pDS->PaveBlocks(ind);
     aItPB.Initialize(aLPB);
     for (; aItPB.More(); aItPB.Next())
     {
-      const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
+      const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
       if (pDS->IsCommonBlock(aPB))
       {
-        const Handle(BOPDS_CommonBlock)& aCB = pDS->CommonBlock(aPB);
+        const occ::handle<BOPDS_CommonBlock>& aCB = pDS->CommonBlock(aPB);
         if (aMCB.Add(aCB))
         {
           aCB->Dump();
@@ -958,7 +958,7 @@ Standard_Integer bopcb(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer bopsp(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopsp(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 2)
   {
@@ -973,14 +973,14 @@ Standard_Integer bopsp(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 1;
   }
   //
-  char                                buf[32];
-  Standard_Boolean                    bHasPaveBlocks;
-  Standard_Integer                    ind, i1, i2, nSp;
-  TopAbs_ShapeEnum                    aType;
-  BOPDS_ListIteratorOfListOfPaveBlock aItPB;
-  Standard_CString                    aText;
-  Draw_Color                          aTextColor(Draw_cyan);
-  Handle(BOPTest_DrawableShape)       aDShape;
+  char                                                     buf[32];
+  bool                                                     bHasPaveBlocks;
+  int                                                      ind, i1, i2, nSp;
+  TopAbs_ShapeEnum                                         aType;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
+  const char*                                              aText;
+  Draw_Color                                               aTextColor(Draw_cyan);
+  occ::handle<BOPTest_DrawableShape>                       aDShape;
   //
   i1 = 0;
   i2 = pDS->NbSourceShapes();
@@ -1008,13 +1008,13 @@ Standard_Integer bopsp(Draw_Interpretor& di, Standard_Integer n, const char** a)
     //
     di << "Edge " << ind << ": ";
     //
-    const BOPDS_ListOfPaveBlock& aLPB = pDS->PaveBlocks(ind);
+    const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = pDS->PaveBlocks(ind);
     aItPB.Initialize(aLPB);
     for (; aItPB.More(); aItPB.Next())
     {
-      const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
-      nSp                                = aPB->Edge();
-      const TopoDS_Shape& aSp            = pDS->Shape(nSp);
+      const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
+      nSp                                     = aPB->Edge();
+      const TopoDS_Shape& aSp                 = pDS->Shape(nSp);
       //
       Sprintf(buf, "z%d_%d", ind, nSp);
       aText   = buf;
@@ -1030,31 +1030,28 @@ Standard_Integer bopsp(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer bopfon(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopfon(Draw_Interpretor& di, int n, const char** a)
 {
   return bopfinfo(di, n, a, 0);
 }
 
 //=================================================================================================
 
-Standard_Integer bopfin(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopfin(Draw_Interpretor& di, int n, const char** a)
 {
   return bopfinfo(di, n, a, 1);
 }
 
 //=================================================================================================
 
-Standard_Integer bopfsc(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopfsc(Draw_Interpretor& di, int n, const char** a)
 {
   return bopfinfo(di, n, a, 2);
 }
 
 //=================================================================================================
 
-Standard_Integer bopfinfo(Draw_Interpretor&      di,
-                          Standard_Integer       n,
-                          const char**           a,
-                          const Standard_Integer iPriz)
+int bopfinfo(Draw_Interpretor& di, int n, const char** a, const int iPriz)
 {
   if (n != 2)
   {
@@ -1070,9 +1067,9 @@ Standard_Integer bopfinfo(Draw_Interpretor&      di,
     return 1;
   }
   //
-  char                    aText[32];
-  Standard_Integer        nF, i1, i2, nV, i, aNb;
-  Handle(BOPDS_PaveBlock) aPB;
+  char                         aText[32];
+  int                          nF, i1, i2, nV, i, aNb;
+  occ::handle<BOPDS_PaveBlock> aPB;
   //
   nF = Draw::Atoi(a[1]);
   i1 = 0;
@@ -1097,8 +1094,8 @@ Standard_Integer bopfinfo(Draw_Interpretor&      di,
   //
   BOPDS_FaceInfo& aFI = pDS->ChangeFaceInfo(nF);
   //
-  BOPDS_IndexedMapOfPaveBlock aMPB;
-  TColStd_MapOfInteger        aMI;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPB;
+  NCollection_Map<int>                                 aMI;
   if (iPriz == 0)
   {
     strcpy(aText, "On");
@@ -1137,7 +1134,7 @@ Standard_Integer bopfinfo(Draw_Interpretor&      di,
   if (aMI.Extent())
   {
     printf(" vertices %s:\n", aText);
-    TColStd_MapIteratorOfMapOfInteger aItMI(aMI);
+    NCollection_Map<int>::Iterator aItMI(aMI);
     for (; aItMI.More(); aItMI.Next())
     {
       nV = aItMI.Value();
@@ -1157,7 +1154,7 @@ Standard_Integer bopfinfo(Draw_Interpretor&      di,
 // function : bopfav
 // purpose  : alone vertices on face
 //=======================================================================
-Standard_Integer bopfav(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopfav(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -1172,7 +1169,7 @@ Standard_Integer bopfav(Draw_Interpretor& di, Standard_Integer n, const char** a
     return 0;
   }
   //
-  Standard_Integer i1, i2, nF, nV;
+  int i1, i2, nF, nV;
   //
   nF = Draw::Atoi(a[1]);
   i1 = 0;
@@ -1195,7 +1192,7 @@ Standard_Integer bopfav(Draw_Interpretor& di, Standard_Integer n, const char** a
     return 0;
   }
   //
-  TColStd_ListOfInteger aLI;
+  NCollection_List<int> aLI;
   pDS->AloneVertices(nF, aLI);
   if (!aLI.Extent())
   {
@@ -1204,7 +1201,7 @@ Standard_Integer bopfav(Draw_Interpretor& di, Standard_Integer n, const char** a
   }
   //
   di << " alone vertices: \n";
-  TColStd_ListIteratorOfListOfInteger aItLI(aLI);
+  NCollection_List<int>::Iterator aItLI(aLI);
   for (; aItLI.More(); aItLI.Next())
   {
     nV = aItLI.Value();
@@ -1217,7 +1214,7 @@ Standard_Integer bopfav(Draw_Interpretor& di, Standard_Integer n, const char** a
 
 //=================================================================================================
 
-Standard_Integer bopimage(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopimage(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -1239,23 +1236,24 @@ Standard_Integer bopimage(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
   //
-  BOPAlgo_Builder&                          aBuilder = BOPTest_Objects::Builder();
-  const TopTools_DataMapOfShapeListOfShape& anImages = aBuilder.Images();
+  BOPAlgo_Builder& aBuilder = BOPTest_Objects::Builder();
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    anImages = aBuilder.Images();
   if (!anImages.IsBound(aS))
   {
     di << " no images found\n";
     return 0;
   }
   //
-  char             buf[32];
-  Standard_Integer i;
-  BRep_Builder     aBB;
-  TopoDS_Compound  aC;
+  char            buf[32];
+  int             i;
+  BRep_Builder    aBB;
+  TopoDS_Compound aC;
   //
   aBB.MakeCompound(aC);
   //
-  const TopTools_ListOfShape&        aLSIm = anImages.Find(aS);
-  TopTools_ListIteratorOfListOfShape aIt(aLSIm);
+  const NCollection_List<TopoDS_Shape>&    aLSIm = anImages.Find(aS);
+  NCollection_List<TopoDS_Shape>::Iterator aIt(aLSIm);
   for (i = 0; aIt.More(); aIt.Next(), ++i)
   {
     const TopoDS_Shape& aSIm = aIt.Value();
@@ -1272,7 +1270,7 @@ Standard_Integer bopimage(Draw_Interpretor& di, Standard_Integer n, const char**
 
 //=================================================================================================
 
-Standard_Integer boporigin(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int boporigin(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -1294,8 +1292,9 @@ Standard_Integer boporigin(Draw_Interpretor& di, Standard_Integer n, const char*
     return 0;
   }
   //
-  BOPAlgo_Builder&                          aBuilder = BOPTest_Objects::Builder();
-  const TopTools_DataMapOfShapeListOfShape& aDMI     = aBuilder.Origins();
+  BOPAlgo_Builder& aBuilder = BOPTest_Objects::Builder();
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    aDMI = aBuilder.Origins();
   if (!aDMI.IsBound(aS))
   {
     di << " no origins found\n";
@@ -1305,7 +1304,7 @@ Standard_Integer boporigin(Draw_Interpretor& di, Standard_Integer n, const char*
   char buf[32];
   Sprintf(buf, "%s_or", a[1]);
   //
-  const TopTools_ListOfShape& aLSx = aDMI.Find(aS);
+  const NCollection_List<TopoDS_Shape>& aLSx = aDMI.Find(aS);
   if (aLSx.Extent() == 1)
   {
     DBRep::Set(buf, aLSx.First());
@@ -1316,7 +1315,7 @@ Standard_Integer boporigin(Draw_Interpretor& di, Standard_Integer n, const char*
   TopoDS_Compound aCOr;
   BRep_Builder().MakeCompound(aCOr);
   //
-  TopTools_ListIteratorOfListOfShape aItLSx(aLSx);
+  NCollection_List<TopoDS_Shape>::Iterator aItLSx(aLSx);
   for (; aItLSx.More(); aItLSx.Next())
   {
     BRep_Builder().Add(aCOr, aItLSx.Value());
@@ -1332,7 +1331,7 @@ Standard_Integer boporigin(Draw_Interpretor& di, Standard_Integer n, const char*
 
 //=================================================================================================
 
-Standard_Integer bopfsd(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopfsd(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -1354,22 +1353,23 @@ Standard_Integer bopfsd(Draw_Interpretor& di, Standard_Integer n, const char** a
     return 1;
   }
   //
-  BOPAlgo_Builder&                    aBuilder = BOPTest_Objects::Builder();
-  const TopTools_DataMapOfShapeShape& aDMSD    = aBuilder.ShapesSD();
+  BOPAlgo_Builder& aBuilder = BOPTest_Objects::Builder();
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aDMSD =
+    aBuilder.ShapesSD();
   if (!aDMSD.IsBound(aS))
   {
     di << " shape has no sd shape\n";
     return 0;
   }
   //
-  char             buf[32];
-  Standard_Integer i;
-  BRep_Builder     aBB;
-  TopoDS_Compound  aC;
+  char            buf[32];
+  int             i;
+  BRep_Builder    aBB;
+  TopoDS_Compound aC;
   //
   aBB.MakeCompound(aC);
   //
-  TopTools_DataMapIteratorOfDataMapOfShapeShape aItSD;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aItSD;
   aItSD.Initialize(aDMSD);
   for (i = 0; aItSD.More(); aItSD.Next())
   {
@@ -1405,7 +1405,7 @@ Standard_Integer bopfsd(Draw_Interpretor& di, Standard_Integer n, const char** a
 
 //=================================================================================================
 
-Standard_Integer bopbface(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopbface(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 3)
   {
@@ -1420,9 +1420,9 @@ Standard_Integer bopbface(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
   //
-  TopoDS_Face          aF;
-  TopTools_ListOfShape aLE;
-  Standard_Integer     i;
+  TopoDS_Face                    aF;
+  NCollection_List<TopoDS_Shape> aLE;
+  int                            i;
   //
   TopoDS_Iterator aItS(aS);
   for (i = 0; aItS.More(); aItS.Next(), ++i)
@@ -1458,9 +1458,9 @@ Standard_Integer bopbface(Draw_Interpretor& di, Standard_Integer n, const char**
     return 0;
   }
   //
-  char                               buf[128];
-  const TopTools_ListOfShape&        aLFR = aBF.Areas();
-  TopTools_ListIteratorOfListOfShape aIt(aLFR);
+  char                                     buf[128];
+  const NCollection_List<TopoDS_Shape>&    aLFR = aBF.Areas();
+  NCollection_List<TopoDS_Shape>::Iterator aIt(aLFR);
   for (i = 1; aIt.More(); aIt.Next(), ++i)
   {
     const TopoDS_Shape& aFR = aIt.Value();
@@ -1484,7 +1484,7 @@ Standard_Integer bopbface(Draw_Interpretor& di, Standard_Integer n, const char**
 
 //=================================================================================================
 
-Standard_Integer bopbsolid(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopbsolid(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 3)
   {
@@ -1499,8 +1499,8 @@ Standard_Integer bopbsolid(Draw_Interpretor& di, Standard_Integer n, const char*
     return 1;
   }
   //
-  TopTools_ListOfShape aLF;
-  TopExp_Explorer      aExp(aS, TopAbs_FACE);
+  NCollection_List<TopoDS_Shape> aLF;
+  TopExp_Explorer                aExp(aS, TopAbs_FACE);
   for (; aExp.More(); aExp.Next())
   {
     const TopoDS_Shape& aF = aExp.Current();
@@ -1522,15 +1522,15 @@ Standard_Integer bopbsolid(Draw_Interpretor& di, Standard_Integer n, const char*
     return 0;
   }
   //
-  Standard_Integer i;
-  TopoDS_Compound  aSolids;
-  BRep_Builder     aBB;
+  int             i;
+  TopoDS_Compound aSolids;
+  BRep_Builder    aBB;
   //
   aBB.MakeCompound(aSolids);
   //
-  char                               buf[128];
-  const TopTools_ListOfShape&        aLSR = aBS.Areas();
-  TopTools_ListIteratorOfListOfShape aIt(aLSR);
+  char                                     buf[128];
+  const NCollection_List<TopoDS_Shape>&    aLSR = aBS.Areas();
+  NCollection_List<TopoDS_Shape>::Iterator aIt(aLSR);
   for (i = 1; aIt.More(); aIt.Next(), ++i)
   {
     const TopoDS_Shape& aSR = aIt.Value();
@@ -1635,8 +1635,8 @@ void GetNameByType(const TopAbs_ShapeEnum& theType, char* theName)
 template <class InterfType>
 void DumpInterfs(const NCollection_Vector<InterfType>& theVInterf, Draw_Interpretor& di)
 {
-  Standard_Integer i, aNb, n1, n2, nNew;
-  char             buf[64];
+  int  i, aNb, n1, n2, nNew;
+  char buf[64];
   //
   aNb = theVInterf.Length();
   if (aNb == 0)
@@ -1667,15 +1667,15 @@ void DumpInterfs(const NCollection_Vector<InterfType>& theVInterf, Draw_Interpre
 
 template <class InterfType>
 void SearchNewIndex(const char*                           theCType,
-                    const Standard_Integer                theInd,
+                    const int                             theInd,
                     const NCollection_Vector<InterfType>& theVInterf,
                     Draw_Interpretor&                     di)
 {
-  char             buf[64];
-  Standard_Boolean bFound;
-  Standard_Integer i, aNb, n1, n2, nNew;
+  char buf[64];
+  bool bFound;
+  int  i, aNb, n1, n2, nNew;
   //
-  bFound = Standard_False;
+  bFound = false;
   aNb    = theVInterf.Length();
   for (i = 0; i < aNb; ++i)
   {
@@ -1686,7 +1686,7 @@ void SearchNewIndex(const char*                           theCType,
       if (!bFound)
       {
         di << theCType;
-        bFound = Standard_True;
+        bFound = true;
       }
       //
       anInt.Indices(n1, n2);

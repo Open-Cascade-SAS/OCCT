@@ -18,17 +18,18 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_RationalBSplineCurve.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include "RWStepGeom_RWBSplineCurveForm.pxx"
 
 RWStepGeom_RWRationalBSplineCurve::RWStepGeom_RWRationalBSplineCurve() {}
 
 void RWStepGeom_RWRationalBSplineCurve::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepGeom_RationalBSplineCurve)& ent) const
+  const occ::handle<StepData_StepReaderData>&       data,
+  const int                                         num,
+  occ::handle<Interface_Check>&                     ach,
+  const occ::handle<StepGeom_RationalBSplineCurve>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -38,28 +39,28 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : degree ---
 
-  Standard_Integer aDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  int aDegree;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadInteger(num, 2, "degree", ach, aDegree);
 
   // --- inherited field : controlPointsList ---
 
-  Handle(StepGeom_HArray1OfCartesianPoint) aControlPointsList;
-  Handle(StepGeom_CartesianPoint)          anent3;
-  Standard_Integer                         nsub3;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
+  occ::handle<StepGeom_CartesianPoint>                                   anent3;
+  int                                                                    nsub3;
   if (data->ReadSubList(num, 3, "control_points_list", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aControlPointsList   = new StepGeom_HArray1OfCartesianPoint(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3            = data->NbParams(nsub3);
+    aControlPointsList = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3,
                            i3,
                            "cartesian_point",
@@ -75,7 +76,7 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
   StepGeom_BSplineCurveForm aCurveForm = StepGeom_bscfPolylineForm;
   if (data->ParamType(num, 4) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 4);
+    const char* text = data->ParamCValue(num, 4);
     if (!RWStepGeom_RWBSplineCurveForm::ConvertToEnum(text, aCurveForm))
     {
       ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
@@ -87,27 +88,27 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
   // --- inherited field : closedCurve ---
 
   StepData_Logical aClosedCurve;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadLogical(num, 5, "closed_curve", ach, aClosedCurve);
 
   // --- inherited field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat6 =` not needed
   data->ReadLogical(num, 6, "self_intersect", ach, aSelfIntersect);
 
   // --- own field : weightsData ---
 
-  Handle(TColStd_HArray1OfReal) aWeightsData;
-  Standard_Real                 aWeightsDataItem;
-  Standard_Integer              nsub7;
+  occ::handle<NCollection_HArray1<double>> aWeightsData;
+  double                                   aWeightsDataItem;
+  int                                      nsub7;
   if (data->ReadSubList(num, 7, "weights_data", ach, nsub7))
   {
-    Standard_Integer nb7 = data->NbParams(nsub7);
-    aWeightsData         = new TColStd_HArray1OfReal(1, nb7);
-    for (Standard_Integer i7 = 1; i7 <= nb7; i7++)
+    int nb7      = data->NbParams(nsub7);
+    aWeightsData = new NCollection_HArray1<double>(1, nb7);
+    for (int i7 = 1; i7 <= nb7; i7++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat7 =` not needed
       if (data->ReadReal(nsub7, i7, "weights_data", ach, aWeightsDataItem))
         aWeightsData->SetValue(i7, aWeightsDataItem);
     }
@@ -125,8 +126,8 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
 }
 
 void RWStepGeom_RWRationalBSplineCurve::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepGeom_RationalBSplineCurve)& ent) const
+  StepData_StepWriter&                              SW,
+  const occ::handle<StepGeom_RationalBSplineCurve>& ent) const
 {
 
   // --- inherited field name ---
@@ -140,7 +141,7 @@ void RWStepGeom_RWRationalBSplineCurve::WriteStep(
   // --- inherited field controlPointsList ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbControlPointsList(); i3++)
+  for (int i3 = 1; i3 <= ent->NbControlPointsList(); i3++)
   {
     SW.Send(ent->ControlPointsListValue(i3));
   }
@@ -161,37 +162,37 @@ void RWStepGeom_RWRationalBSplineCurve::WriteStep(
   // --- own field : weightsData ---
 
   SW.OpenSub();
-  for (Standard_Integer i7 = 1; i7 <= ent->NbWeightsData(); i7++)
+  for (int i7 = 1; i7 <= ent->NbWeightsData(); i7++)
   {
     SW.Send(ent->WeightsDataValue(i7));
   }
   SW.CloseSub();
 }
 
-void RWStepGeom_RWRationalBSplineCurve::Share(const Handle(StepGeom_RationalBSplineCurve)& ent,
+void RWStepGeom_RWRationalBSplineCurve::Share(const occ::handle<StepGeom_RationalBSplineCurve>& ent,
                                               Interface_EntityIterator& iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbControlPointsList();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbControlPointsList();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->ControlPointsListValue(is1));
   }
 }
 
-void RWStepGeom_RWRationalBSplineCurve::Check(const Handle(StepGeom_RationalBSplineCurve)& ent,
+void RWStepGeom_RWRationalBSplineCurve::Check(const occ::handle<StepGeom_RationalBSplineCurve>& ent,
                                               const Interface_ShareTool&,
-                                              Handle(Interface_Check)& ach) const
+                                              occ::handle<Interface_Check>& ach) const
 {
-  Standard_Integer nbWght = ent->NbWeightsData();
-  Standard_Integer nbCPL  = ent->NbControlPointsList();
+  int nbWght = ent->NbWeightsData();
+  int nbCPL  = ent->NbControlPointsList();
   //  std::cout << "RationalBSplineCurve: nbWght=" << nbWght << " nbCPL: " <<
   //    nbCPL << std::endl;
   if (nbWght != nbCPL)
   {
     ach->AddFail("ERROR: No.of ControlPoints not equal No.of Weights");
   }
-  for (Standard_Integer i = 1; i <= nbWght; i++)
+  for (int i = 1; i <= nbWght; i++)
   {
     if (ent->WeightsDataValue(i) < RealEpsilon())
     {

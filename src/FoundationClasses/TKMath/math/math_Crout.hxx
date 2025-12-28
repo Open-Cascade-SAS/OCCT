@@ -44,10 +44,10 @@ public:
   //! If one element of A is less than MinPivot, A is
   //! considered as singular.
   //! Exception NotSquare is raised if A is not a square matrix.
-  Standard_EXPORT math_Crout(const math_Matrix& A, const Standard_Real MinPivot = 1.0e-20);
+  Standard_EXPORT math_Crout(const math_Matrix& A, const double MinPivot = 1.0e-20);
 
   //! Returns True if all has been correctly done.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Given an input vector <B>, this routine returns the
   //! solution of the set of linear equations A . X = B.
@@ -71,17 +71,16 @@ public:
   //! decomposed matrix A. Zero is returned if the matrix A is considered as singular.
   //! Exceptions
   //! StdFail_NotDone if the algorithm fails (and IsDone returns false).
-  Standard_Real Determinant() const;
+  double Determinant() const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
-  math_Matrix      InvA;
-  Standard_Boolean Done;
-  Standard_Real    Det;
+  math_Matrix InvA;
+  bool        Done;
+  double      Det;
 };
 
 #include <math_Crout.lxx>

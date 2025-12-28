@@ -23,47 +23,47 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_GreaterThan, Expr_SingleRelation)
 
-Expr_GreaterThan::Expr_GreaterThan(const Handle(Expr_GeneralExpression)& exp1,
-                                   const Handle(Expr_GeneralExpression)& exp2)
+Expr_GreaterThan::Expr_GreaterThan(const occ::handle<Expr_GeneralExpression>& exp1,
+                                   const occ::handle<Expr_GeneralExpression>& exp2)
 {
   SetFirstMember(exp1);
   SetSecondMember(exp2);
 }
 
-Standard_Boolean Expr_GreaterThan::IsSatisfied() const
+bool Expr_GreaterThan::IsSatisfied() const
 {
-  Handle(Expr_GeneralExpression) fm = FirstMember();
-  Handle(Expr_GeneralExpression) sm = SecondMember();
-  fm                                = fm->Simplified();
-  sm                                = sm->Simplified();
+  occ::handle<Expr_GeneralExpression> fm = FirstMember();
+  occ::handle<Expr_GeneralExpression> sm = SecondMember();
+  fm                                     = fm->Simplified();
+  sm                                     = sm->Simplified();
   if (fm->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     if (sm->IsKind(STANDARD_TYPE(Expr_NumericValue)))
     {
-      Handle(Expr_NumericValue) nfm = Handle(Expr_NumericValue)::DownCast(fm);
-      Handle(Expr_NumericValue) nsm = Handle(Expr_NumericValue)::DownCast(sm);
+      occ::handle<Expr_NumericValue> nfm = occ::down_cast<Expr_NumericValue>(fm);
+      occ::handle<Expr_NumericValue> nsm = occ::down_cast<Expr_NumericValue>(sm);
       return (nfm->GetValue() > nsm->GetValue());
     }
   }
-  return Standard_False;
+  return false;
 }
 
-Handle(Expr_GeneralRelation) Expr_GreaterThan::Simplified() const
+occ::handle<Expr_GeneralRelation> Expr_GreaterThan::Simplified() const
 {
-  Handle(Expr_GeneralExpression) fm = FirstMember();
-  Handle(Expr_GeneralExpression) sm = SecondMember();
+  occ::handle<Expr_GeneralExpression> fm = FirstMember();
+  occ::handle<Expr_GeneralExpression> sm = SecondMember();
   return new Expr_GreaterThan(fm->Simplified(), sm->Simplified());
 }
 
 void Expr_GreaterThan::Simplify()
 {
-  Handle(Expr_GeneralExpression) fm = FirstMember();
-  Handle(Expr_GeneralExpression) sm = SecondMember();
+  occ::handle<Expr_GeneralExpression> fm = FirstMember();
+  occ::handle<Expr_GeneralExpression> sm = SecondMember();
   SetFirstMember(fm->Simplified());
   SetSecondMember(sm->Simplified());
 }
 
-Handle(Expr_GeneralRelation) Expr_GreaterThan::Copy() const
+occ::handle<Expr_GeneralRelation> Expr_GreaterThan::Copy() const
 {
   return new Expr_GreaterThan(Expr::CopyShare(FirstMember()), Expr::CopyShare(SecondMember()));
 }

@@ -24,9 +24,6 @@
 class StepGeom_Axis2Placement3d;
 class TCollection_HAsciiString;
 
-class StepShape_Block;
-DEFINE_STANDARD_HANDLE(StepShape_Block, StepGeom_GeometricRepresentationItem)
-
 class StepShape_Block : public StepGeom_GeometricRepresentationItem
 {
 
@@ -34,36 +31,35 @@ public:
   //! Returns a Block
   Standard_EXPORT StepShape_Block();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  aName,
-                            const Handle(StepGeom_Axis2Placement3d)& aPosition,
-                            const Standard_Real                      aX,
-                            const Standard_Real                      aY,
-                            const Standard_Real                      aZ);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                            const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
+                            const double                                  aX,
+                            const double                                  aY,
+                            const double                                  aZ);
 
-  Standard_EXPORT void SetPosition(const Handle(StepGeom_Axis2Placement3d)& aPosition);
+  Standard_EXPORT void SetPosition(const occ::handle<StepGeom_Axis2Placement3d>& aPosition);
 
-  Standard_EXPORT Handle(StepGeom_Axis2Placement3d) Position() const;
+  Standard_EXPORT occ::handle<StepGeom_Axis2Placement3d> Position() const;
 
-  Standard_EXPORT void SetX(const Standard_Real aX);
+  Standard_EXPORT void SetX(const double aX);
 
-  Standard_EXPORT Standard_Real X() const;
+  Standard_EXPORT double X() const;
 
-  Standard_EXPORT void SetY(const Standard_Real aY);
+  Standard_EXPORT void SetY(const double aY);
 
-  Standard_EXPORT Standard_Real Y() const;
+  Standard_EXPORT double Y() const;
 
-  Standard_EXPORT void SetZ(const Standard_Real aZ);
+  Standard_EXPORT void SetZ(const double aZ);
 
-  Standard_EXPORT Standard_Real Z() const;
+  Standard_EXPORT double Z() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_Block, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(StepGeom_Axis2Placement3d) position;
-  Standard_Real                     x;
-  Standard_Real                     y;
-  Standard_Real                     z;
+  occ::handle<StepGeom_Axis2Placement3d> position;
+  double                                 x;
+  double                                 y;
+  double                                 z;
 };
 
 #endif // _StepShape_Block_HeaderFile

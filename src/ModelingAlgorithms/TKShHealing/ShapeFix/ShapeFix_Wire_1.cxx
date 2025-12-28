@@ -73,12 +73,12 @@
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Wire::FixGaps3d()
+bool ShapeFix_Wire::FixGaps3d()
 {
   myStatusGaps3d = ShapeExtend::EncodeStatus(ShapeExtend_OK);
-  // if ( !IsReady() ) return Standard_False;
+  // if ( !IsReady() ) return false;
 
-  Standard_Integer i, start = (myClosedMode ? 1 : 2);
+  int i, start = (myClosedMode ? 1 : 2);
   if (myFixGapsByRanges)
   {
     for (i = start; i <= NbEdges(); i++)
@@ -89,7 +89,7 @@ Standard_Boolean ShapeFix_Wire::FixGaps3d()
   }
   for (i = start; i <= NbEdges(); i++)
   {
-    FixGap3d(i, Standard_True);
+    FixGap3d(i, true);
     myStatusGaps3d |= myLastFixStatus;
   }
 
@@ -98,12 +98,12 @@ Standard_Boolean ShapeFix_Wire::FixGaps3d()
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Wire::FixGaps2d()
+bool ShapeFix_Wire::FixGaps2d()
 {
   myStatusGaps2d = ShapeExtend::EncodeStatus(ShapeExtend_OK);
-  //  if ( !IsReady() ) return Standard_False;
+  //  if ( !IsReady() ) return false;
 
-  Standard_Integer i, start = (myClosedMode ? 1 : 2);
+  int i, start = (myClosedMode ? 1 : 2);
   if (myFixGapsByRanges)
   {
     for (i = start; i <= NbEdges(); i++)
@@ -114,7 +114,7 @@ Standard_Boolean ShapeFix_Wire::FixGaps2d()
   }
   for (i = start; i <= NbEdges(); i++)
   {
-    FixGap2d(i, Standard_True);
+    FixGap2d(i, true);
     myStatusGaps2d |= myLastFixStatus;
   }
 
@@ -123,20 +123,20 @@ Standard_Boolean ShapeFix_Wire::FixGaps2d()
 
 //=================================================================================================
 
-static Standard_Real AdjustOnPeriodic3d(const Handle(Geom_Curve)& c,
-                                        const Standard_Boolean    takefirst,
-                                        const Standard_Real       first,
-                                        const Standard_Real       last,
-                                        const Standard_Real       param)
+static double AdjustOnPeriodic3d(const occ::handle<Geom_Curve>& c,
+                                 const bool                     takefirst,
+                                 const double                   first,
+                                 const double                   last,
+                                 const double                   param)
 {
   // 15.11.2002 PTV OCC966
   if (ShapeAnalysis_Curve::IsPeriodic(c))
   {
-    Standard_Real T     = c->Period();
-    Standard_Real shift = -std::trunc(first / T) * T;
+    double T     = c->Period();
+    double shift = -std::trunc(first / T) * T;
     if (first < 0.)
       shift += T;
-    Standard_Real sfirst = first + shift, slast = last + shift;
+    double sfirst = first + shift, slast = last + shift;
     if (takefirst && (param > slast) && (param > sfirst))
       return param - T - shift;
     if (!takefirst && (param < slast) && (param < sfirst))
@@ -145,10 +145,10 @@ static Standard_Real AdjustOnPeriodic3d(const Handle(Geom_Curve)& c,
   return param;
 }
 
-Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Standard_Boolean convert)
+bool ShapeFix_Wire::FixGap3d(const int num, const bool convert)
 {
   myLastFixStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
-  //  if ( !IsReady() ) return Standard_False;
+  //  if ( !IsReady() ) return false;
 
   //=============
   // First phase: analysis whether the problem (gap) exists
@@ -157,45 +157,45 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
   if (Context().IsNull())
     SetContext(new ShapeBuild_ReShape);
 
-  Standard_Real preci = Precision();
+  double preci = Precision();
 
-  Handle(ShapeExtend_WireData) sbwd = WireData();
-  Standard_Integer             n2   = (num > 0 ? num : sbwd->NbEdges());
-  Standard_Integer             n1   = (n2 > 1 ? n2 - 1 : sbwd->NbEdges());
+  occ::handle<ShapeExtend_WireData> sbwd = WireData();
+  int                               n2   = (num > 0 ? num : sbwd->NbEdges());
+  int                               n1   = (n2 > 1 ? n2 - 1 : sbwd->NbEdges());
   // smh#8
   TopoDS_Shape tmp1 = Context()->Apply(sbwd->Edge(n1)), tmp2 = Context()->Apply(sbwd->Edge(n2));
   TopoDS_Edge  E1 = TopoDS::Edge(tmp1), E2 = TopoDS::Edge(tmp2);
   //  TopoDS_Face face = myAnalyzer->Face(); // comment by enk
 
   // Retrieve curves on edges
-  Standard_Real      cfirst1, clast1, cfirst2, clast2;
-  Handle(Geom_Curve) C1, C2;
-  ShapeAnalysis_Edge SAE;
+  double                  cfirst1, clast1, cfirst2, clast2;
+  occ::handle<Geom_Curve> C1, C2;
+  ShapeAnalysis_Edge      SAE;
   if (!SAE.Curve3d(E1, C1, cfirst1, clast1) || !SAE.Curve3d(E2, C2, cfirst2, clast2))
   {
     myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
-    return Standard_False;
+    return false;
   }
 
   // Check gap in 3d space
-  gp_Pnt        cpnt1 = C1->Value(clast1), cpnt2 = C2->Value(cfirst2);
-  Standard_Real gap = cpnt1.Distance(cpnt2);
+  gp_Pnt cpnt1 = C1->Value(clast1), cpnt2 = C2->Value(cfirst2);
+  double gap = cpnt1.Distance(cpnt2);
   if (!convert && gap <= preci)
-    return Standard_False;
+    return false;
 
   //=============
   // Second phase: collecting data necessary for further analysis
   //=============
 
-  Standard_Boolean reversed1 = (E1.Orientation() == TopAbs_REVERSED),
-                   reversed2 = (E2.Orientation() == TopAbs_REVERSED);
+  bool reversed1 = (E1.Orientation() == TopAbs_REVERSED),
+       reversed2 = (E2.Orientation() == TopAbs_REVERSED);
 
   TopoDS_Vertex V1 = SAE.LastVertex(E1), V2 = SAE.FirstVertex(E2);
   gp_Pnt        vpnt = (V1.IsSame(V2))
                          ? BRep_Tool::Pnt(V1)
                          : gp_Pnt((BRep_Tool::Pnt(V1).XYZ() + BRep_Tool::Pnt(V2).XYZ()) * 0.5);
 
-  Standard_Real first1, last1, first2, last2;
+  double first1, last1, first2, last2;
   if (reversed1)
   {
     first1 = clast1;
@@ -217,48 +217,48 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
     last2  = clast2;
   }
 
-  Handle(Geom_Curve) c1 = C1, c2 = C2;
+  occ::handle<Geom_Curve> c1 = C1, c2 = C2;
 
   // Extract basic curves from trimmed and offset
-  Standard_Boolean basic    = Standard_False;
-  Standard_Boolean trimmed1 = Standard_False, offset1 = Standard_False;
-  gp_XYZ           offval1(0., 0., 0.);
+  bool   basic    = false;
+  bool   trimmed1 = false, offset1 = false;
+  gp_XYZ offval1(0., 0., 0.);
   while (!basic)
   {
     if (c1->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
     {
-      c1       = Handle(Geom_TrimmedCurve)::DownCast(c1)->BasisCurve();
-      trimmed1 = Standard_True;
+      c1       = occ::down_cast<Geom_TrimmedCurve>(c1)->BasisCurve();
+      trimmed1 = true;
     }
     else if (c1->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
     {
-      Handle(Geom_OffsetCurve) oc = Handle(Geom_OffsetCurve)::DownCast(c1);
-      c1                          = oc->BasisCurve();
+      occ::handle<Geom_OffsetCurve> oc = occ::down_cast<Geom_OffsetCurve>(c1);
+      c1                               = oc->BasisCurve();
       offval1 += oc->Offset() * oc->Direction().XYZ();
-      offset1 = Standard_True;
+      offset1 = true;
     }
     else
-      basic = Standard_True;
+      basic = true;
   }
-  basic                     = Standard_False;
-  Standard_Boolean trimmed2 = Standard_False, offset2 = Standard_False;
-  gp_XYZ           offval2(0., 0., 0.);
+  basic           = false;
+  bool   trimmed2 = false, offset2 = false;
+  gp_XYZ offval2(0., 0., 0.);
   while (!basic)
   {
     if (c2->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
     {
-      c2       = Handle(Geom_TrimmedCurve)::DownCast(c2)->BasisCurve();
-      trimmed2 = Standard_True;
+      c2       = occ::down_cast<Geom_TrimmedCurve>(c2)->BasisCurve();
+      trimmed2 = true;
     }
     else if (c2->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
     {
-      Handle(Geom_OffsetCurve) oc = Handle(Geom_OffsetCurve)::DownCast(c2);
-      c2                          = oc->BasisCurve();
+      occ::handle<Geom_OffsetCurve> oc = occ::down_cast<Geom_OffsetCurve>(c2);
+      c2                               = oc->BasisCurve();
       offval2 += oc->Offset() * oc->Direction().XYZ();
-      offset2 = Standard_True;
+      offset2 = true;
     }
     else
-      basic = Standard_True;
+      basic = true;
   }
   // Restore offset curves
   if (offset1)
@@ -266,23 +266,23 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
   if (offset2)
     c2 = new Geom_OffsetCurve(c2, offval2.Modulus(), gp_Dir(offval2));
 
-  Standard_Boolean done1 = Standard_False, done2 = Standard_False;
+  bool done1 = false, done2 = false;
 
   if (convert)
   {
     // Check that gap satisfies the precision - in this case no conversion produced
     if (cpnt1.Distance(vpnt) < preci && cpnt2.Distance(vpnt) < preci)
-      return Standard_False;
+      return false;
 
-    Handle(Geom_BSplineCurve) bsp1, bsp2;
-    Handle(Geom_Curve)        c;
-    Standard_Real             first, last;
+    occ::handle<Geom_BSplineCurve> bsp1, bsp2;
+    occ::handle<Geom_Curve>        c;
+    double                         first, last;
 
     // iterate on curves
-    Standard_Integer nbcurv = (n1 == n2 ? 1 : 2);
-    for (Standard_Integer j = 1; j <= nbcurv; j++)
+    int nbcurv = (n1 == n2 ? 1 : 2);
+    for (int j = 1; j <= nbcurv; j++)
     {
-      // Standard_Boolean trim = Standard_False;  // skl
+      // bool trim = false;  // skl
       if (j == 1)
       {
         if (cpnt1.Distance(vpnt) < preci)
@@ -308,24 +308,24 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
         last  = last2; /*trim = trimmed2;*/ // skl
       }
 
-      Handle(Geom_BSplineCurve) bsp;
+      occ::handle<Geom_BSplineCurve> bsp;
 
       // Convert curve to bspline
       if (c->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
       {
-        bsp = Handle(Geom_BSplineCurve)::DownCast(c->Copy());
+        bsp = occ::down_cast<Geom_BSplineCurve>(c->Copy());
         // take segment if trim and range differ
-        Standard_Real    fbsp = bsp->FirstParameter(), lbsp = bsp->LastParameter();
-        Standard_Boolean segment = Standard_False;
+        double fbsp = bsp->FirstParameter(), lbsp = bsp->LastParameter();
+        bool   segment = false;
         if (first > fbsp)
         {
           fbsp    = first;
-          segment = Standard_True;
+          segment = true;
         }
         if (last < lbsp)
         {
           lbsp    = last;
-          segment = Standard_True;
+          segment = true;
         }
         if (segment)
           bsp = GeomConvert::SplitBSplineCurve(bsp, fbsp, lbsp, ::Precision::Confusion());
@@ -343,7 +343,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       else
       {
         // Restore trim for pcurve
-        Handle(Geom_Curve) tc;
+        occ::handle<Geom_Curve> tc;
         try
         {
           OCC_CATCH_SIGNALS
@@ -399,7 +399,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       first1 = bsp1->FirstParameter();
       last1  = bsp1->LastParameter();
       c1     = bsp1;
-      done1  = Standard_True;
+      done1  = true;
     }
     if (!bsp2.IsNull())
     {
@@ -412,7 +412,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       first2 = bsp2->FirstParameter();
       last2  = bsp2->LastParameter();
       c2     = bsp2;
-      done2  = Standard_True;
+      done2  = true;
     }
   }
   else
@@ -422,17 +422,17 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
     {
       if (c1->IsKind(STANDARD_TYPE(Geom_Circle)) || c1->IsKind(STANDARD_TYPE(Geom_Ellipse)))
       {
-        Standard_Real diff = M_PI - std::abs(clast1 - cfirst2) * 0.5;
+        double diff = M_PI - std::abs(clast1 - cfirst2) * 0.5;
         first1 -= diff;
         last1 += diff;
-        done1 = Standard_True;
+        done1 = true;
       }
     }
     else
     {
 
       // Determine domains for extremal points locating
-      Standard_Real domfirst1 = first1, domlast1 = last1;
+      double domfirst1 = first1, domlast1 = last1;
       if (c1->IsKind(STANDARD_TYPE(Geom_BSplineCurve))
           || c1->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
       {
@@ -442,7 +442,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       else if (c1->IsKind(STANDARD_TYPE(Geom_Line)) || c1->IsKind(STANDARD_TYPE(Geom_Parabola))
                || c1->IsKind(STANDARD_TYPE(Geom_Hyperbola)))
       {
-        Standard_Real diff = domlast1 - domfirst1;
+        double diff = domlast1 - domfirst1;
         if (reversed1)
           domfirst1 -= 10. * diff;
         else
@@ -453,7 +453,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
         domfirst1 = 0.;
         domlast1  = 2 * M_PI;
       }
-      Standard_Real domfirst2 = first2, domlast2 = last2;
+      double domfirst2 = first2, domlast2 = last2;
       if (c2->IsKind(STANDARD_TYPE(Geom_BSplineCurve))
           || c2->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
       {
@@ -463,7 +463,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       else if (c2->IsKind(STANDARD_TYPE(Geom_Line)) || c2->IsKind(STANDARD_TYPE(Geom_Parabola))
                || c2->IsKind(STANDARD_TYPE(Geom_Hyperbola)))
       {
-        Standard_Real diff = domlast2 - domfirst2;
+        double diff = domlast2 - domfirst2;
         if (reversed2)
           domlast2 += 10. * diff;
         else
@@ -475,17 +475,17 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
         domlast2  = 2 * M_PI;
       }
 
-      Standard_Real ipar1 = clast1, ipar2 = cfirst2;
+      double ipar1 = clast1, ipar2 = cfirst2;
 
       // Try to find projections of vertex point
       GeomAPI_ProjectPointOnCurve Proj;
-      Standard_Real               u1 = ipar1, u2 = ipar2;
+      double                      u1 = ipar1, u2 = ipar2;
       Proj.Init(vpnt, c1, domfirst1, domlast1);
       if (Proj.NbPoints())
       {
-        Standard_Integer index = 1;
-        Standard_Real    dist, mindist = -1.;
-        for (Standard_Integer i = 1; i <= Proj.NbPoints(); i++)
+        int    index = 1;
+        double dist, mindist = -1.;
+        for (int i = 1; i <= Proj.NbPoints(); i++)
         {
           dist = vpnt.Distance(Proj.Point(i));
           if (mindist > dist || mindist < 0.)
@@ -499,9 +499,9 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       Proj.Init(vpnt, c2, domfirst2, domlast2);
       if (Proj.NbPoints())
       {
-        Standard_Integer index = 1;
-        Standard_Real    dist, mindist = -1.;
-        for (Standard_Integer i = 1; i <= Proj.NbPoints(); i++)
+        int    index = 1;
+        double dist, mindist = -1.;
+        for (int i = 1; i <= Proj.NbPoints(); i++)
         {
           dist = vpnt.Distance(Proj.Point(i));
           if (mindist > dist || mindist < 0.)
@@ -524,7 +524,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       {
         ipar1 = u1;
         ipar2 = u2;
-        done1 = done2 = Standard_True;
+        done1 = done2 = true;
       }
 
       // Try to find closest points if nothing yet found
@@ -560,10 +560,10 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
           {
             OCC_CATCH_SIGNALS
             // First find all intersections
-            gp_Pnt           pp1, pp2;
-            Standard_Integer index1 = 0, index2 = 0;
-            Standard_Real    uu1, uu2, pardist, pardist1 = -1., pardist2 = -1.;
-            for (Standard_Integer i = 1; i <= Extr.NbExtrema(); i++)
+            gp_Pnt pp1, pp2;
+            int    index1 = 0, index2 = 0;
+            double uu1, uu2, pardist, pardist1 = -1., pardist2 = -1.;
+            for (int i = 1; i <= Extr.NbExtrema(); i++)
             {
               Extr.Parameters(i, uu1, uu2);
               // Adjust parameters on periodic curves
@@ -616,7 +616,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
             {
               ipar1 = uu1;
               ipar2 = uu2;
-              done1 = done2 = Standard_True;
+              done1 = done2 = true;
             }
           }
           catch (Standard_Failure const&)
@@ -631,7 +631,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
         if (done1)
         {
           if (ipar1 == clast1)
-            done1 = Standard_False;
+            done1 = false;
           else
           {
             // Set up new bounds for curve
@@ -642,8 +642,8 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
             // Set new trim for old curve
             if (trimmed1)
             {
-              // Standard_Real ff1 = c1->FirstParameter();
-              // Standard_Real ll1 = c1->LastParameter();
+              // double ff1 = c1->FirstParameter();
+              // double ll1 = c1->LastParameter();
               c1 = new Geom_TrimmedCurve(c1, first1, last1);
             }
           }
@@ -651,7 +651,7 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
         if (done2)
         {
           if (ipar2 == cfirst2)
-            done2 = Standard_False;
+            done2 = false;
           else
           {
             // Set up new bounds for curve
@@ -662,8 +662,8 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
             // Set new trim for old curve
             if (trimmed2)
             {
-              // Standard_Real ff2 = c2->FirstParameter();
-              // Standard_Real ll2 = c2->LastParameter();
+              // double ff2 = c2->FirstParameter();
+              // double ll2 = c2->LastParameter();
               c2 = new Geom_TrimmedCurve(c2, first2, last2);
             }
           }
@@ -720,11 +720,11 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       B.UpdateEdge(TopoDS::Edge(tmpE1), c1, 0.);
       SBE.SetRange3d(TopoDS::Edge(tmpE1), first1, last1);
       SFST.SetTolerance(newE1, ::Precision::Confusion(), TopAbs_EDGE);
-      B.SameRange(newE1, Standard_False);
-      //      B.SameParameter(newE1,Standard_False);
+      B.SameRange(newE1, false);
+      //      B.SameParameter(newE1,false);
 
       // To keep NM vertices belonging initial edges
-      TopoDS_Iterator aItv(E1, Standard_False);
+      TopoDS_Iterator aItv(E1, false);
       for (; aItv.More(); aItv.Next())
       {
         if (aItv.Value().Orientation() == TopAbs_INTERNAL
@@ -751,11 +751,11 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
       B.UpdateEdge(TopoDS::Edge(tmpE2), c2, 0.);
       SBE.SetRange3d(TopoDS::Edge(tmpE2), first2, last2);
       SFST.SetTolerance(newE2, ::Precision::Confusion(), TopAbs_EDGE);
-      B.SameRange(newE2, Standard_False);
-      //      B.SameParameter(newE2,Standard_False);
+      B.SameRange(newE2, false);
+      //      B.SameParameter(newE2,false);
 
       // To keep NM vertices belonging initial edges
-      TopoDS_Iterator aItv(E2, Standard_False);
+      TopoDS_Iterator aItv(E2, false);
       for (; aItv.More(); aItv.Next())
       {
         if (aItv.Value().Orientation() == TopAbs_INTERNAL
@@ -782,20 +782,20 @@ Standard_Boolean ShapeFix_Wire::FixGap3d(const Standard_Integer num, const Stand
 
 //=================================================================================================
 
-static Standard_Real AdjustOnPeriodic2d(const Handle(Geom2d_Curve)& pc,
-                                        const Standard_Boolean      takefirst,
-                                        const Standard_Real         first,
-                                        const Standard_Real         last,
-                                        const Standard_Real         param)
+static double AdjustOnPeriodic2d(const occ::handle<Geom2d_Curve>& pc,
+                                 const bool                       takefirst,
+                                 const double                     first,
+                                 const double                     last,
+                                 const double                     param)
 {
   // 15.11.2002 PTV OCC966
   if (ShapeAnalysis_Curve::IsPeriodic(pc))
   {
-    Standard_Real T     = pc->Period();
-    Standard_Real shift = -std::trunc(first / T) * T;
+    double T     = pc->Period();
+    double shift = -std::trunc(first / T) * T;
     if (first < 0.)
       shift += T;
-    Standard_Real sfirst = first + shift, slast = last + shift;
+    double sfirst = first + shift, slast = last + shift;
     if (takefirst && (param > slast) && (param > sfirst))
       return param - T - shift;
     if (!takefirst && (param < slast) && (param < sfirst))
@@ -804,11 +804,11 @@ static Standard_Real AdjustOnPeriodic2d(const Handle(Geom2d_Curve)& pc,
   return param;
 }
 
-Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Standard_Boolean convert)
+bool ShapeFix_Wire::FixGap2d(const int num, const bool convert)
 {
   myLastFixStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (!IsReady())
-    return Standard_False;
+    return false;
 
   //=============
   // First phase: analysis whether the problem (gap) exists
@@ -817,44 +817,44 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
   if (Context().IsNull())
     SetContext(new ShapeBuild_ReShape);
 
-  constexpr Standard_Real preci = ::Precision::PConfusion();
-  // Standard_Real preci = Precision();
+  constexpr double preci = ::Precision::PConfusion();
+  // double preci = Precision();
   // GeomAdaptor_Surface& SA = Analyzer().Surface()->Adaptor()->ChangeSurface();
   // preci = std::max(SA.UResolution(preci), SA.VResolution(preci));
 
-  Handle(ShapeExtend_WireData) sbwd = WireData();
-  Standard_Integer             n2   = (num > 0 ? num : sbwd->NbEdges());
-  Standard_Integer             n1   = (n2 > 1 ? n2 - 1 : sbwd->NbEdges());
+  occ::handle<ShapeExtend_WireData> sbwd = WireData();
+  int                               n2   = (num > 0 ? num : sbwd->NbEdges());
+  int                               n1   = (n2 > 1 ? n2 - 1 : sbwd->NbEdges());
   // smh#8
   TopoDS_Shape tmp1 = Context()->Apply(sbwd->Edge(n1)), tmp2 = Context()->Apply(sbwd->Edge(n2));
   TopoDS_Edge  E1 = TopoDS::Edge(tmp1), E2 = TopoDS::Edge(tmp2);
   TopoDS_Face  face = myAnalyzer->Face();
 
   // Retrieve pcurves on edges
-  Standard_Real        cfirst1, clast1, cfirst2, clast2;
-  Handle(Geom2d_Curve) PC1, PC2;
-  ShapeAnalysis_Edge   SAE;
+  double                    cfirst1, clast1, cfirst2, clast2;
+  occ::handle<Geom2d_Curve> PC1, PC2;
+  ShapeAnalysis_Edge        SAE;
   if (!SAE.PCurve(E1, face, PC1, cfirst1, clast1) || !SAE.PCurve(E2, face, PC2, cfirst2, clast2)
       || sbwd->IsSeam(n1) || sbwd->IsSeam(n2))
   {
     myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
-    return Standard_False;
+    return false;
   }
 
   // Check gap in 2d space
-  gp_Pnt2d      cpnt1 = PC1->Value(clast1), cpnt2 = PC2->Value(cfirst2);
-  Standard_Real gap = cpnt1.Distance(cpnt2);
+  gp_Pnt2d cpnt1 = PC1->Value(clast1), cpnt2 = PC2->Value(cfirst2);
+  double   gap = cpnt1.Distance(cpnt2);
   if (gap <= preci)
-    return Standard_False;
+    return false;
 
   //=============
   // Second phase: collecting data necessary for further analysis
   //=============
 
-  Standard_Boolean reversed1 = (E1.Orientation() == TopAbs_REVERSED),
-                   reversed2 = (E2.Orientation() == TopAbs_REVERSED);
+  bool reversed1 = (E1.Orientation() == TopAbs_REVERSED),
+       reversed2 = (E2.Orientation() == TopAbs_REVERSED);
 
-  Standard_Real first1, last1, first2, last2;
+  double first1, last1, first2, last2;
   if (reversed1)
   {
     first1 = clast1;
@@ -876,48 +876,48 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
     last2  = clast2;
   }
 
-  Handle(Geom2d_Curve) pc1 = PC1, pc2 = PC2;
+  occ::handle<Geom2d_Curve> pc1 = PC1, pc2 = PC2;
 
   // Extract basic curves from trimmed and offset
-  Standard_Boolean basic    = Standard_False;
-  Standard_Boolean trimmed1 = Standard_False, offset1 = Standard_False;
-  Standard_Real    offval1 = 0.;
+  bool   basic    = false;
+  bool   trimmed1 = false, offset1 = false;
+  double offval1 = 0.;
   while (!basic)
   {
     if (pc1->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
     {
-      pc1      = Handle(Geom2d_TrimmedCurve)::DownCast(pc1)->BasisCurve();
-      trimmed1 = Standard_True;
+      pc1      = occ::down_cast<Geom2d_TrimmedCurve>(pc1)->BasisCurve();
+      trimmed1 = true;
     }
     else if (pc1->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
     {
-      Handle(Geom2d_OffsetCurve) oc = Handle(Geom2d_OffsetCurve)::DownCast(pc1);
-      pc1                           = oc->BasisCurve();
+      occ::handle<Geom2d_OffsetCurve> oc = occ::down_cast<Geom2d_OffsetCurve>(pc1);
+      pc1                                = oc->BasisCurve();
       offval1 += oc->Offset();
-      offset1 = Standard_True;
+      offset1 = true;
     }
     else
-      basic = Standard_True;
+      basic = true;
   }
-  basic                     = Standard_False;
-  Standard_Boolean trimmed2 = Standard_False, offset2 = Standard_False;
-  Standard_Real    offval2 = 0.;
+  basic           = false;
+  bool   trimmed2 = false, offset2 = false;
+  double offval2 = 0.;
   while (!basic)
   {
     if (pc2->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
     {
-      pc2      = Handle(Geom2d_TrimmedCurve)::DownCast(pc2)->BasisCurve();
-      trimmed2 = Standard_True;
+      pc2      = occ::down_cast<Geom2d_TrimmedCurve>(pc2)->BasisCurve();
+      trimmed2 = true;
     }
     else if (pc2->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
     {
-      Handle(Geom2d_OffsetCurve) oc = Handle(Geom2d_OffsetCurve)::DownCast(pc2);
-      pc2                           = oc->BasisCurve();
+      occ::handle<Geom2d_OffsetCurve> oc = occ::down_cast<Geom2d_OffsetCurve>(pc2);
+      pc2                                = oc->BasisCurve();
       offval2 += oc->Offset();
-      offset2 = Standard_True;
+      offset2 = true;
     }
     else
-      basic = Standard_True;
+      basic = true;
   }
   // Restore offset curves
   if (offset1)
@@ -925,22 +925,22 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
   if (offset2)
     pc2 = new Geom2d_OffsetCurve(pc2, offval2);
 
-  Standard_Boolean done1 = Standard_False, done2 = Standard_False;
+  bool done1 = false, done2 = false;
 
   // Determine same edge case
   if (convert)
   {
 
-    Handle(Geom2d_BSplineCurve) bsp1, bsp2;
-    Handle(Geom2d_Curve)        pc;
-    Standard_Real               first, last;
+    occ::handle<Geom2d_BSplineCurve> bsp1, bsp2;
+    occ::handle<Geom2d_Curve>        pc;
+    double                           first, last;
 
     // iterate on pcurves
-    Standard_Integer nbcurv = (n1 == n2 ? 1 : 2);
-    for (Standard_Integer j = 1; j <= nbcurv; j++)
+    int nbcurv = (n1 == n2 ? 1 : 2);
+    for (int j = 1; j <= nbcurv; j++)
     {
-      // Standard_Integer trim = Standard_False; // skl
-      Handle(Geom2d_BSplineCurve) bsp;
+      // int trim = false; // skl
+      occ::handle<Geom2d_BSplineCurve> bsp;
 
       if (j == 1)
       {
@@ -958,19 +958,19 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
       // Convert pcurve to bspline
       if (pc->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
       {
-        bsp = Handle(Geom2d_BSplineCurve)::DownCast(pc->Copy());
+        bsp = occ::down_cast<Geom2d_BSplineCurve>(pc->Copy());
         // take segment if trim and range differ
-        Standard_Real    fbsp = bsp->FirstParameter(), lbsp = bsp->LastParameter();
-        Standard_Boolean segment = Standard_False;
+        double fbsp = bsp->FirstParameter(), lbsp = bsp->LastParameter();
+        bool   segment = false;
         if (first > fbsp)
         {
           fbsp    = first;
-          segment = Standard_True;
+          segment = true;
         }
         if (last < lbsp)
         {
           lbsp    = last;
-          segment = Standard_True;
+          segment = true;
         }
         if (segment)
           bsp = Geom2dConvert::SplitBSplineCurve(bsp, fbsp, lbsp, ::Precision::PConfusion());
@@ -978,8 +978,8 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
       else if (pc->IsKind(STANDARD_TYPE(Geom2d_Conic)))
       {
         GeomAdaptor_Surface& AS   = *myAnalyzer->Surface()->Adaptor3d();
-        Standard_Real        tolu = AS.UResolution(myAnalyzer->Precision()),
-                      tolv        = AS.VResolution(myAnalyzer->Precision());
+        double               tolu = AS.UResolution(myAnalyzer->Precision()),
+               tolv               = AS.VResolution(myAnalyzer->Precision());
         Approx_Curve2d Conv(new Geom2dAdaptor_Curve(pc, first, last),
                             first,
                             last,
@@ -997,7 +997,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         try
         {
           OCC_CATCH_SIGNALS
-          Handle(Geom2d_Curve) c;
+          occ::handle<Geom2d_Curve> c;
           // 15.11.2002 PTV OCC966
           if (!ShapeAnalysis_Curve::IsPeriodic(pc))
             c = new Geom2d_TrimmedCurve(pc,
@@ -1051,7 +1051,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
       first1 = bsp1->FirstParameter();
       last1  = bsp1->LastParameter();
       pc1    = bsp1;
-      done1  = Standard_True;
+      done1  = true;
     }
     if (!bsp2.IsNull())
     {
@@ -1064,7 +1064,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
       first2 = bsp2->FirstParameter();
       last2  = bsp2->LastParameter();
       pc2    = bsp2;
-      done2  = Standard_True;
+      done2  = true;
     }
   }
   else
@@ -1074,17 +1074,17 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
     {
       if (pc1->IsKind(STANDARD_TYPE(Geom2d_Circle)) || pc1->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
       {
-        Standard_Real diff = M_PI - std::abs(clast1 - cfirst2) * 0.5;
+        double diff = M_PI - std::abs(clast1 - cfirst2) * 0.5;
         first1 -= diff;
         last1 += diff;
-        done1 = Standard_True;
+        done1 = true;
       }
     }
     else
     {
 
       // Determine domains for extremal points locating
-      Standard_Real domfirst1 = first1, domlast1 = last1;
+      double domfirst1 = first1, domlast1 = last1;
       if (pc1->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))
           || pc1->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
       {
@@ -1095,7 +1095,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                || pc1->IsKind(STANDARD_TYPE(Geom2d_Parabola))
                || pc1->IsKind(STANDARD_TYPE(Geom2d_Hyperbola)))
       {
-        Standard_Real diff = domlast1 - domfirst1;
+        double diff = domlast1 - domfirst1;
         if (reversed1)
           domfirst1 -= 10. * diff;
         else
@@ -1107,7 +1107,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         domfirst1 = 0.;
         domlast1  = 2 * M_PI;
       }
-      Standard_Real domfirst2 = first2, domlast2 = last2;
+      double domfirst2 = first2, domlast2 = last2;
       if (pc2->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))
           || pc2->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
       {
@@ -1118,7 +1118,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                || pc2->IsKind(STANDARD_TYPE(Geom2d_Parabola))
                || pc2->IsKind(STANDARD_TYPE(Geom2d_Hyperbola)))
       {
-        Standard_Real diff = domlast2 - domfirst2;
+        double diff = domlast2 - domfirst2;
         if (reversed2)
           domlast2 += 10. * diff;
         else
@@ -1131,10 +1131,10 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         domlast2  = 2 * M_PI;
       }
 
-      Standard_Real ipar1 = clast1, ipar2 = cfirst2;
+      double ipar1 = clast1, ipar2 = cfirst2;
 
-      Geom2dInt_GInter        Inter;
-      constexpr Standard_Real tolint = ::Precision::PConfusion();
+      Geom2dInt_GInter Inter;
+      constexpr double tolint = ::Precision::PConfusion();
 
       Geom2dAdaptor_Curve AC1(pc1), AC2(pc2);
 
@@ -1156,18 +1156,17 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
       {
         if (Inter.NbPoints() || Inter.NbSegments())
         {
-          Standard_Integer i, index1 = 0, index2 = 0;
-          Standard_Real    pardist, pardist1 = -1., pardist2 = -1.;
+          int    i, index1 = 0, index2 = 0;
+          double pardist, pardist1 = -1., pardist2 = -1.;
           // iterate on intersection points
           IntRes2d_IntersectionPoint IP;
           for (i = 1; i <= Inter.NbPoints(); i++)
           {
             IP = Inter.Point(i);
             // Adjust parameters on periodic curves
-            Standard_Real u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
-            Standard_Real u2 =
-              AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
-            pardist = std::abs(cfirst1 - u1);
+            double u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
+            double u2 = AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
+            pardist   = std::abs(cfirst1 - u1);
             if (pardist1 > pardist || pardist1 < 0.)
             {
               index1   = i;
@@ -1180,13 +1179,13 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
               pardist2 = pardist;
             }
           }
-          Standard_Integer flag1 = 0, flag2 = 0;
+          int flag1 = 0, flag2 = 0;
           // iterate on intersection segments
           IntRes2d_IntersectionSegment IS;
           for (i = 1; i <= Inter.NbSegments(); i++)
           {
             IS = Inter.Segment(i);
-            for (Standard_Integer j = 1; j <= 2; j++)
+            for (int j = 1; j <= 2; j++)
             {
               if ((j == 1 && IS.HasFirstPoint()) || (j == 2 && IS.HasLastPoint()))
               {
@@ -1195,11 +1194,9 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                 else
                   IP = IS.LastPoint();
                 // Adjust parameters on periodic curves
-                Standard_Real u1 =
-                  AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
-                Standard_Real u2 =
-                  AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
-                pardist = std::abs(cfirst1 - u1);
+                double u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
+                double u2 = AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
+                pardist   = std::abs(cfirst1 - u1);
                 if (pardist1 > pardist || pardist1 < 0.)
                 {
                   flag1    = j;
@@ -1258,8 +1255,8 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
               IP = IS.LastPoint();
           }
           // Adjust parameters on periodic curves
-          Standard_Real u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
-          Standard_Real u2 = AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
+          double u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, IP.ParamOnFirst());
+          double u2 = AdjustOnPeriodic2d(pc2, !reversed2, first2, last2, IP.ParamOnSecond());
           // Check points to satisfy distance criterium
           gp_Pnt2d p1 = pc1->Value(u1), p2 = pc2->Value(u2);
           if (p1.Distance(p2) <= gap && std::abs(cfirst1 - u1) > ::Precision::PConfusion()
@@ -1269,7 +1266,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
           {
             ipar1 = u1;
             ipar2 = u2;
-            done1 = done2 = Standard_True;
+            done1 = done2 = true;
           }
         }
       }
@@ -1280,7 +1277,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         Geom2dAPI_ExtremaCurveCurve Extr(pc1, pc2, domfirst1, domlast1, domfirst2, domlast2);
         if (Extr.NbExtrema())
         {
-          Standard_Real u1, u2;
+          double u1, u2;
           Extr.LowerDistanceParameters(u1, u2);
           // Adjust parameters on periodic curves
           u1 = AdjustOnPeriodic2d(pc1, reversed1, first1, last1, u1);
@@ -1294,7 +1291,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
           {
             ipar1 = u1;
             ipar2 = u2;
-            done1 = done2 = Standard_True;
+            done1 = done2 = true;
           }
         }
       }
@@ -1304,13 +1301,13 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
       {
         Geom2dAPI_ProjectPointOnCurve Proj;
         gp_Pnt2d                      ipnt1 = cpnt1, ipnt2 = cpnt2;
-        Standard_Real                 u1 = ipar1, u2 = ipar2;
+        double                        u1 = ipar1, u2 = ipar2;
         Proj.Init(cpnt2, pc1, domfirst1, domlast1);
         if (Proj.NbPoints())
         {
-          Standard_Integer index = 1;
-          Standard_Real    dist, mindist = -1.;
-          for (Standard_Integer i = 1; i <= Proj.NbPoints(); i++)
+          int    index = 1;
+          double dist, mindist = -1.;
+          for (int i = 1; i <= Proj.NbPoints(); i++)
           {
             dist = cpnt2.Distance(Proj.Point(i));
             if (mindist > dist || mindist < 0.)
@@ -1325,9 +1322,9 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         Proj.Init(cpnt1, pc2, domfirst2, domlast2);
         if (Proj.NbPoints())
         {
-          Standard_Integer index = 1;
-          Standard_Real    dist, mindist = -1.;
-          for (Standard_Integer i = 1; i <= Proj.NbPoints(); i++)
+          int    index = 1;
+          double dist, mindist = -1.;
+          for (int i = 1; i <= Proj.NbPoints(); i++)
           {
             dist = cpnt1.Distance(Proj.Point(i));
             if (mindist > dist || mindist < 0.)
@@ -1356,9 +1353,9 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
           Proj.Init(mpnt, pc1, domfirst1, domlast1);
           if (Proj.NbPoints())
           {
-            Standard_Integer index = 1;
-            Standard_Real    dist, mindist = -1.;
-            for (Standard_Integer i = 1; i <= Proj.NbPoints(); i++)
+            int    index = 1;
+            double dist, mindist = -1.;
+            for (int i = 1; i <= Proj.NbPoints(); i++)
             {
               dist = mpnt.Distance(Proj.Point(i));
               if (mindist > dist || mindist < 0.)
@@ -1373,9 +1370,9 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
           Proj.Init(mpnt, pc2, domfirst2, domlast2);
           if (Proj.NbPoints())
           {
-            Standard_Integer index = 1;
-            Standard_Real    dist, mindist = -1.;
-            for (Standard_Integer i = 1; i <= Proj.NbPoints(); i++)
+            int    index = 1;
+            double dist, mindist = -1.;
+            for (int i = 1; i <= Proj.NbPoints(); i++)
             {
               dist = mpnt.Distance(Proj.Point(i));
               if (mindist > dist || mindist < 0.)
@@ -1407,7 +1404,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         {
           ipar1 = u1;
           ipar2 = u2;
-          done1 = done2 = Standard_True;
+          done1 = done2 = true;
         }
       }
 
@@ -1418,12 +1415,12 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         {
 
           // Check whether new points lie inside the surface bounds
-          Standard_Real umin, umax, vmin, vmax;
+          double umin, umax, vmin, vmax;
           myAnalyzer->Surface()->Surface()->Bounds(umin, umax, vmin, vmax);
           if (::Precision::IsInfinite(umin) || ::Precision::IsInfinite(umax)
               || ::Precision::IsInfinite(vmin) || ::Precision::IsInfinite(vmax))
           {
-            Standard_Real fumin, fumax, fvmin, fvmax;
+            double fumin, fumax, fvmin, fvmax;
             BRepTools::UVBounds(face, fumin, fumax, fvmin, fvmax);
             if (::Precision::IsInfinite(umin))
               umin = fumin - preci;
@@ -1435,11 +1432,11 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
               vmax = fvmax + preci;
           }
 
-          gp_Pnt2d         ipnt, P1, P2;
-          Standard_Real    u, v;
-          Standard_Boolean out;
+          gp_Pnt2d ipnt, P1, P2;
+          double   u, v;
+          bool     out;
           // iterate on curves
-          for (Standard_Integer j = 1; j <= 2; j++)
+          for (int j = 1; j <= 2; j++)
           {
 
             if (j == 1)
@@ -1456,13 +1453,13 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
             }
 
             // iterate on bounding lines
-            for (Standard_Integer k = 1; k <= 2; k++)
+            for (int k = 1; k <= 2; k++)
             {
 
               u = ipnt.X();
               v = ipnt.Y();
 
-              out = Standard_True;
+              out = true;
               if (k == 1)
               {
                 if (u < umin)
@@ -1476,7 +1473,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                   P2 = gp_Pnt2d(umax, vmax);
                 }
                 else
-                  out = Standard_False;
+                  out = false;
               }
               else
               {
@@ -1491,18 +1488,18 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                   P2 = gp_Pnt2d(umax, vmax);
                 }
                 else
-                  out = Standard_False;
+                  out = false;
               }
 
               if (out)
               {
                 // Intersect pcurve with bounding line
-                Handle(Geom2d_Line) lin = new Geom2d_Line(P1, gp_Dir2d(gp_Vec2d(P1, P2)));
-                Geom2dAdaptor_Curve ACL(lin);
-                IntRes2d_Domain     dlin(P1, 0., tolint, P2, P1.Distance(P2), tolint);
+                occ::handle<Geom2d_Line> lin = new Geom2d_Line(P1, gp_Dir2d(gp_Vec2d(P1, P2)));
+                Geom2dAdaptor_Curve      ACL(lin);
+                IntRes2d_Domain          dlin(P1, 0., tolint, P2, P1.Distance(P2), tolint);
 
-                Handle(Geom2d_Curve) pc;
-                Standard_Real        fpar, lpar;
+                occ::handle<Geom2d_Curve> pc;
+                double                    fpar, lpar;
                 if (j == 1)
                 {
                   if (cfirst1 < ipar1)
@@ -1536,8 +1533,8 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                 {
                   if (Inter.NbPoints() || Inter.NbSegments())
                   {
-                    Standard_Integer i, index = 1;
-                    Standard_Real    uu, dist, mindist = -1.;
+                    int    i, index = 1;
+                    double uu, dist, mindist = -1.;
                     // iterate on intersection points
                     for (i = 1; i <= Inter.NbPoints(); i++)
                     {
@@ -1555,13 +1552,13 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
                       }
                     }
                     // iterate on intersection segments
-                    Standard_Integer             flag = 0;
+                    int                          flag = 0;
                     IntRes2d_IntersectionPoint   IP;
                     IntRes2d_IntersectionSegment IS;
                     for (i = 1; i <= Inter.NbSegments(); i++)
                     {
                       IS = Inter.Segment(i);
-                      for (Standard_Integer jj = 1; jj <= 2; jj++)
+                      for (int jj = 1; jj <= 2; jj++)
                       {
                         if ((jj == 1 && IS.HasFirstPoint()) || (jj == 2 && IS.HasLastPoint()))
                         {
@@ -1652,7 +1649,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         if (done1)
         {
           if (ipar1 == clast1)
-            done1 = Standard_False;
+            done1 = false;
           else
           {
             // Set up new bounds for pcurve
@@ -1668,7 +1665,7 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
         if (done2)
         {
           if (ipar2 == cfirst2)
-            done2 = Standard_False;
+            done2 = false;
           else
           {
             // Set up new bounds for pcurve
@@ -1734,11 +1731,11 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
       B.UpdateEdge(TopoDS::Edge(tmpE1), pc1, face, 0.);
       B.Range(TopoDS::Edge(tmpE1), face, first1, last1);
       SFST.SetTolerance(newE1, ::Precision::Confusion(), TopAbs_EDGE);
-      B.SameRange(newE1, Standard_False);
-      //      B.SameParameter(newE1,Standard_False);
+      B.SameRange(newE1, false);
+      //      B.SameParameter(newE1,false);
 
       // To keep NM vertices belonging initial edges
-      TopoDS_Iterator aItv(E1, Standard_False);
+      TopoDS_Iterator aItv(E1, false);
       for (; aItv.More(); aItv.Next())
       {
         if (aItv.Value().Orientation() == TopAbs_INTERNAL
@@ -1765,10 +1762,10 @@ Standard_Boolean ShapeFix_Wire::FixGap2d(const Standard_Integer num, const Stand
       B.UpdateEdge(TopoDS::Edge(tmpE2), pc2, face, 0.);
       B.Range(TopoDS::Edge(tmpE2), face, first2, last2);
       SFST.SetTolerance(newE2, ::Precision::Confusion(), TopAbs_EDGE);
-      B.SameRange(newE2, Standard_False);
-      //      B.SameParameter(newE2,Standard_False);
+      B.SameRange(newE2, false);
+      //      B.SameParameter(newE2,false);
       // To keep NM vertices belonging initial edges
-      TopoDS_Iterator aItv(E2, Standard_False);
+      TopoDS_Iterator aItv(E2, false);
       for (; aItv.More(); aItv.Next())
       {
         if (aItv.Value().Orientation() == TopAbs_INTERNAL

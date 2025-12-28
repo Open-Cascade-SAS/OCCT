@@ -12,12 +12,10 @@ set(OCCT_StdStorage_FILES
   StdStorage_Root.hxx
   StdStorage_RootData.cxx
   StdStorage_RootData.hxx
-  StdStorage_HSequenceOfRoots.hxx
-  StdStorage_SequenceOfRoots.hxx
-  StdStorage_MapOfRoots.hxx
+
   StdStorage_TypeData.cxx
   StdStorage_TypeData.hxx
-  StdStorage_MapOfTypes.hxx
+
   StdStorage_BacketOfPersistent.cxx
   StdStorage_BacketOfPersistent.hxx
 )

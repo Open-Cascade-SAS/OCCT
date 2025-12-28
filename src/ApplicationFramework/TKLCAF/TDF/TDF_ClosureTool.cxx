@@ -26,18 +26,18 @@
 #include <TDF_DataSet.hxx>
 #include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_List.hxx>
 
 //=======================================================================
 // function : Closure
 // purpose  : Builds the transitive closure without attribute filter.
 //=======================================================================
 
-void TDF_ClosureTool::Closure(const Handle(TDF_DataSet)& aDataSet)
+void TDF_ClosureTool::Closure(const occ::handle<TDF_DataSet>& aDataSet)
 {
-  TDF_IDFilter    Filter(Standard_False); // "Keep all"
-  TDF_ClosureMode Mode;                   // All modes are set to true.
+  TDF_IDFilter    Filter(false); // "Keep all"
+  TDF_ClosureMode Mode;          // All modes are set to true.
   TDF_ClosureTool::Closure(aDataSet, Filter, Mode);
 }
 
@@ -46,22 +46,22 @@ void TDF_ClosureTool::Closure(const Handle(TDF_DataSet)& aDataSet)
 // purpose  : Builds the transitive closure with an attribute filter.
 //=======================================================================
 
-void TDF_ClosureTool::Closure(const Handle(TDF_DataSet)& aDataSet,
-                              const TDF_IDFilter&        aFilter,
-                              const TDF_ClosureMode&     aMode)
+void TDF_ClosureTool::Closure(const occ::handle<TDF_DataSet>& aDataSet,
+                              const TDF_IDFilter&             aFilter,
+                              const TDF_ClosureMode&          aMode)
 {
-  TDF_LabelMap&     labMap  = aDataSet->Labels();
-  TDF_AttributeMap& attMap  = aDataSet->Attributes();
-  TDF_LabelList&    rootLst = aDataSet->Roots();
+  NCollection_Map<TDF_Label>&                  labMap  = aDataSet->Labels();
+  NCollection_Map<occ::handle<TDF_Attribute>>& attMap  = aDataSet->Attributes();
+  NCollection_List<TDF_Label>&                 rootLst = aDataSet->Roots();
 
   // Memorizes the roots for future uses.
   rootLst.Clear();
-  TDF_MapIteratorOfLabelMap labMItr(labMap);
+  NCollection_Map<TDF_Label>::Iterator labMItr(labMap);
   for (; labMItr.More(); labMItr.Next())
     rootLst.Append(labMItr.Key());
 
   // Iterates on roots.
-  TDF_ListIteratorOfLabelList labLItr(rootLst);
+  NCollection_List<TDF_Label>::Iterator labLItr(rootLst);
   for (; labLItr.More(); labLItr.Next())
   {
     const TDF_Label& lab = labLItr.Value();
@@ -77,14 +77,14 @@ void TDF_ClosureTool::Closure(const Handle(TDF_DataSet)& aDataSet,
 // purpose  : Internal closure method.
 //=======================================================================
 
-void TDF_ClosureTool::Closure(const TDF_Label&       aLabel,
-                              TDF_LabelMap&          aLabMap,
-                              TDF_AttributeMap&      anAttMap,
-                              const TDF_IDFilter&    aFilter,
-                              const TDF_ClosureMode& aMode)
+void TDF_ClosureTool::Closure(const TDF_Label&                             aLabel,
+                              NCollection_Map<TDF_Label>&                  aLabMap,
+                              NCollection_Map<occ::handle<TDF_Attribute>>& anAttMap,
+                              const TDF_IDFilter&                          aFilter,
+                              const TDF_ClosureMode&                       aMode)
 {
   TDF_Label upLab;
-  for (TDF_ChildIterator childItr(aLabel, Standard_True); childItr.More(); childItr.Next())
+  for (TDF_ChildIterator childItr(aLabel, true); childItr.More(); childItr.Next())
   {
     const TDF_Label& locLab = childItr.Value();
     // On ne peut faire cette optimisation car il faudrait d'abord
@@ -105,21 +105,21 @@ void TDF_ClosureTool::Closure(const TDF_Label&       aLabel,
 // purpose  : Internal method: adds the attributes to <aDataSet>.
 //=======================================================================
 
-void TDF_ClosureTool::LabelAttributes(const TDF_Label&       aLabel,
-                                      TDF_LabelMap&          aLabMap,
-                                      TDF_AttributeMap&      anAttMap,
-                                      const TDF_IDFilter&    aFilter,
-                                      const TDF_ClosureMode& aMode)
+void TDF_ClosureTool::LabelAttributes(const TDF_Label&                             aLabel,
+                                      NCollection_Map<TDF_Label>&                  aLabMap,
+                                      NCollection_Map<occ::handle<TDF_Attribute>>& anAttMap,
+                                      const TDF_IDFilter&                          aFilter,
+                                      const TDF_ClosureMode&                       aMode)
 {
-  Handle(TDF_DataSet)           tmpDataSet;
-  Standard_Boolean              BindLabel;
-  TDF_MapIteratorOfAttributeMap attMItr;
-  TDF_MapIteratorOfLabelMap     labMItr;
+  occ::handle<TDF_DataSet>                              tmpDataSet;
+  bool                                                  BindLabel;
+  NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr;
+  NCollection_Map<TDF_Label>::Iterator                  labMItr;
 
   // Attributes directly attached to the label.
   for (TDF_AttributeIterator attItr(aLabel); attItr.More(); attItr.Next())
   {
-    const Handle(TDF_Attribute) locAtt1 = attItr.Value();
+    const occ::handle<TDF_Attribute> locAtt1 = attItr.Value();
     if (aFilter.IsKept(locAtt1))
     {
       if (anAttMap.Add(locAtt1))
@@ -138,11 +138,11 @@ void TDF_ClosureTool::LabelAttributes(const TDF_Label&       aLabel,
           locAtt1->References(tmpDataSet);
 
           // 1 - The referenced attributes
-          const TDF_AttributeMap& tmpAttMap = tmpDataSet->Attributes();
+          const NCollection_Map<occ::handle<TDF_Attribute>>& tmpAttMap = tmpDataSet->Attributes();
           for (attMItr.Initialize(tmpAttMap); attMItr.More(); attMItr.Next())
           {
-            const Handle(TDF_Attribute)& locAtt2 = attMItr.Key();
-            BindLabel                            = Standard_False;
+            const occ::handle<TDF_Attribute>& locAtt2 = attMItr.Key();
+            BindLabel                                 = false;
             if (!locAtt2.IsNull())
             {
               const TDF_Label& locLab2 = locAtt2->Label();
@@ -163,7 +163,7 @@ void TDF_ClosureTool::LabelAttributes(const TDF_Label&       aLabel,
           }
 
           // 2 - Adds the referenced labels.
-          const TDF_LabelMap& tmpLabMap = tmpDataSet->Labels();
+          const NCollection_Map<TDF_Label>& tmpLabMap = tmpDataSet->Labels();
           for (labMItr.Initialize(tmpLabMap); labMItr.More(); labMItr.Next())
           {
             const TDF_Label& locLab1 = labMItr.Key();

@@ -48,18 +48,19 @@ public:
   //! Loc : location to which place the item
   //! Makes a MappedItem
   //! Resulting Value is returned by ItemValue
-  Standard_EXPORT void Init(const Handle(StepShape_ShapeDefinitionRepresentation)& aSR,
-                            const Handle(StepShape_ShapeDefinitionRepresentation)& SDR0,
-                            const Handle(StepGeom_Axis2Placement3d)&               Ax0,
-                            const Handle(StepGeom_Axis2Placement3d)&               Loc);
+  Standard_EXPORT void Init(const occ::handle<StepShape_ShapeDefinitionRepresentation>& aSR,
+                            const occ::handle<StepShape_ShapeDefinitionRepresentation>& SDR0,
+                            const occ::handle<StepGeom_Axis2Placement3d>&               Ax0,
+                            const occ::handle<StepGeom_Axis2Placement3d>&               Loc);
 
   //! Initialises with starting values
   //! theTrsfOp : local transformation to apply, may have scaling factor
   //! Makes a MappedItem
   //! Resulting Value is returned by ItemValue
-  Standard_EXPORT void Init(const Handle(StepShape_ShapeDefinitionRepresentation)&    theSR,
-                            const Handle(StepShape_ShapeDefinitionRepresentation)&    theSDR0,
-                            const Handle(StepGeom_CartesianTransformationOperator3d)& theTrsfOp);
+  Standard_EXPORT void Init(
+    const occ::handle<StepShape_ShapeDefinitionRepresentation>&    theSR,
+    const occ::handle<StepShape_ShapeDefinitionRepresentation>&    theSDR0,
+    const occ::handle<StepGeom_CartesianTransformationOperator3d>& theTrsfOp);
 
   //! Make a (ShapeRepresentationRelationship,...WithTransformation)
   //! Resulting Value is returned by ItemValue
@@ -67,31 +68,30 @@ public:
 
   //! Returns the Value
   //! If no Make... has been called, returns the starting SR
-  Standard_EXPORT Handle(Standard_Transient) ItemValue() const;
+  Standard_EXPORT occ::handle<Standard_Transient> ItemValue() const;
 
   //! Returns the location of the item, computed from starting aLoc
-  Standard_EXPORT Handle(StepGeom_Axis2Placement3d) ItemLocation() const;
+  Standard_EXPORT occ::handle<StepGeom_Axis2Placement3d> ItemLocation() const;
 
   //! Returns NAUO object describing the assembly link
-  Standard_EXPORT Handle(StepRepr_NextAssemblyUsageOccurrence) GetNAUO() const;
+  Standard_EXPORT occ::handle<StepRepr_NextAssemblyUsageOccurrence> GetNAUO() const;
 
   //! Checks whether SRR's definition of assembly and component contradicts
   //! with NAUO definition or not, according to model schema (AP214 or AP203)
-  Standard_EXPORT static Standard_Boolean CheckSRRReversesNAUO(
-    const Interface_Graph&                                       theGraph,
-    const Handle(StepShape_ContextDependentShapeRepresentation)& CDSR);
+  Standard_EXPORT static bool CheckSRRReversesNAUO(
+    const Interface_Graph&                                            theGraph,
+    const occ::handle<StepShape_ContextDependentShapeRepresentation>& CDSR);
 
-protected:
 private:
-  Handle(StepShape_ShapeDefinitionRepresentation)    thesdr;
-  Handle(StepShape_ShapeDefinitionRepresentation)    thesdr0;
-  Handle(StepShape_ShapeRepresentation)              thesr;
-  Handle(StepShape_ShapeRepresentation)              thesr0;
-  Handle(Standard_Transient)                         theval;
-  Handle(StepGeom_Axis2Placement3d)                  theloc;
-  Handle(StepGeom_Axis2Placement3d)                  theax0;
-  Handle(StepGeom_CartesianTransformationOperator3d) myTrsfOp;
-  bool                                               myIsCartesianTrsf;
+  occ::handle<StepShape_ShapeDefinitionRepresentation>    thesdr;
+  occ::handle<StepShape_ShapeDefinitionRepresentation>    thesdr0;
+  occ::handle<StepShape_ShapeRepresentation>              thesr;
+  occ::handle<StepShape_ShapeRepresentation>              thesr0;
+  occ::handle<Standard_Transient>                         theval;
+  occ::handle<StepGeom_Axis2Placement3d>                  theloc;
+  occ::handle<StepGeom_Axis2Placement3d>                  theax0;
+  occ::handle<StepGeom_CartesianTransformationOperator3d> myTrsfOp;
+  bool                                                    myIsCartesianTrsf;
 };
 
 #endif // _STEPConstruct_Assembly_HeaderFile

@@ -52,8 +52,8 @@ Extrema_FuncExtCS::Extrema_FuncExtCS()
       myU(0.0),
       myV(0.0)
 {
-  myCinit = Standard_False;
-  mySinit = Standard_False;
+  myCinit = false;
+  mySinit = false;
 }
 
 //=================================================================================================
@@ -69,8 +69,8 @@ void Extrema_FuncExtCS::Initialize(const Adaptor3d_Curve& C, const Adaptor3d_Sur
 {
   myC     = &C;
   myS     = &S;
-  myCinit = Standard_True;
-  mySinit = Standard_True;
+  myCinit = true;
+  mySinit = true;
   myPoint1.Clear();
   myPoint2.Clear();
   mySqDist.Clear();
@@ -78,21 +78,21 @@ void Extrema_FuncExtCS::Initialize(const Adaptor3d_Curve& C, const Adaptor3d_Sur
 
 //=================================================================================================
 
-Standard_Integer Extrema_FuncExtCS::NbVariables() const
+int Extrema_FuncExtCS::NbVariables() const
 {
   return (3);
 }
 
 //=================================================================================================
 
-Standard_Integer Extrema_FuncExtCS::NbEquations() const
+int Extrema_FuncExtCS::NbEquations() const
 {
   return (3);
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_FuncExtCS::Value(const math_Vector& UV, math_Vector& F)
+bool Extrema_FuncExtCS::Value(const math_Vector& UV, math_Vector& F)
 {
   if (!myCinit || !mySinit)
     throw Standard_TypeMismatch();
@@ -114,12 +114,12 @@ Standard_Boolean Extrema_FuncExtCS::Value(const math_Vector& UV, math_Vector& F)
   F(2) = P1P2.Dot(Dus);
   F(3) = P1P2.Dot(Dvs);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_FuncExtCS::Derivatives(const math_Vector& UV, math_Matrix& DF)
+bool Extrema_FuncExtCS::Derivatives(const math_Vector& UV, math_Matrix& DF)
 {
   math_Vector F(1, 3);
   return Values(UV, F, DF);
@@ -127,7 +127,7 @@ Standard_Boolean Extrema_FuncExtCS::Derivatives(const math_Vector& UV, math_Matr
 
 //=================================================================================================
 
-Standard_Boolean Extrema_FuncExtCS::Values(const math_Vector& UV, math_Vector& F, math_Matrix& Df)
+bool Extrema_FuncExtCS::Values(const math_Vector& UV, math_Vector& F, math_Matrix& Df)
 {
   if (!myCinit || !mySinit)
     throw Standard_TypeMismatch();
@@ -159,12 +159,12 @@ Standard_Boolean Extrema_FuncExtCS::Values(const math_Vector& UV, math_Vector& F
   Df(3, 2) = Df(2, 3);  // -Dus.Dot(Dvs)+P1P2.Dot(Duvs);
   Df(3, 3) = -Dvs.SquareMagnitude() + P1P2.Dot(Dvvs);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer Extrema_FuncExtCS::GetStateNumber()
+int Extrema_FuncExtCS::GetStateNumber()
 {
   if (!myCinit || !mySinit)
     throw Standard_TypeMismatch();
@@ -175,11 +175,11 @@ Standard_Integer Extrema_FuncExtCS::GetStateNumber()
   std::cout <<"F(1)= "<<Sol(1)<<" F(2)= "<<Sol(2)<<" F(3)= "<<Sol(3)<<std::endl;
 #endif
   // comparison of solution with previous solutions
-  constexpr Standard_Real tol2d = Precision::SquarePConfusion();
-  Standard_Integer        i = 1, nbSol = mySqDist.Length();
+  constexpr double tol2d = Precision::SquarePConfusion();
+  int              i = 1, nbSol = mySqDist.Length();
   for (; i <= nbSol; i++)
   {
-    Standard_Real aT = myPoint1(i).Parameter();
+    double aT = myPoint1(i).Parameter();
     aT -= myt;
     aT *= aT;
     if (aT <= tol2d)
@@ -195,14 +195,14 @@ Standard_Integer Extrema_FuncExtCS::GetStateNumber()
 
 //=================================================================================================
 
-Standard_Integer Extrema_FuncExtCS::NbExt() const
+int Extrema_FuncExtCS::NbExt() const
 {
   return mySqDist.Length();
 }
 
 //=================================================================================================
 
-Standard_Real Extrema_FuncExtCS::SquareDistance(const Standard_Integer N) const
+double Extrema_FuncExtCS::SquareDistance(const int N) const
 {
   if (!myCinit || !mySinit)
     throw Standard_TypeMismatch();
@@ -211,7 +211,7 @@ Standard_Real Extrema_FuncExtCS::SquareDistance(const Standard_Integer N) const
 
 //=================================================================================================
 
-const Extrema_POnCurv& Extrema_FuncExtCS::PointOnCurve(const Standard_Integer N) const
+const Extrema_POnCurv& Extrema_FuncExtCS::PointOnCurve(const int N) const
 {
   if (!myCinit || !mySinit)
     throw Standard_TypeMismatch();
@@ -220,7 +220,7 @@ const Extrema_POnCurv& Extrema_FuncExtCS::PointOnCurve(const Standard_Integer N)
 
 //=================================================================================================
 
-const Extrema_POnSurf& Extrema_FuncExtCS::PointOnSurface(const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_FuncExtCS::PointOnSurface(const int N) const
 {
   if (!myCinit || !mySinit)
     throw Standard_TypeMismatch();

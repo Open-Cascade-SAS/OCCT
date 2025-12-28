@@ -22,7 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class BRepFill_OffsetWire;
 class TopoDS_Edge;
 class TopoDS_Shape;
@@ -40,19 +42,18 @@ public:
 
   Standard_EXPORT void Perform(BRepFill_OffsetWire& Paral);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Boolean HasAncestor(const TopoDS_Edge& S1) const;
+  Standard_EXPORT bool HasAncestor(const TopoDS_Edge& S1) const;
 
   //! may return a Null Shape if S1 is not a subShape
   //! of <Paral>;
   //! if Perform is not done.
   Standard_EXPORT const TopoDS_Shape& Ancestor(const TopoDS_Edge& S1) const;
 
-protected:
 private:
-  Standard_Boolean             myIsPerform;
-  TopTools_DataMapOfShapeShape myMap;
+  bool                                                                     myIsPerform;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _BRepFill_OffsetAncestors_HeaderFile

@@ -29,42 +29,42 @@ RWStepVisual_RWTessellatedCurveSet::RWStepVisual_RWTessellatedCurveSet() {}
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedCurveSet::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepVisual_TessellatedCurveSet)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepVisual_TessellatedCurveSet>& ent) const
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 3, ach, "tessellated_curve_set"))
     return;
 
   // Inherited field : name
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(StepVisual_CoordinatesList) aCoordList;
+  occ::handle<StepVisual_CoordinatesList> aCoordList;
   data
     ->ReadEntity(num, 2, "coord_list", ach, STANDARD_TYPE(StepVisual_CoordinatesList), aCoordList);
   //--- Initialisation of the read entity ---
-  Standard_Integer                                          nsub2;
-  NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> aCurves =
-    new StepVisual_VectorOfHSequenceOfInteger;
+  int                                                                             nsub2;
+  NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> aCurves =
+    new NCollection_Vector<occ::handle<NCollection_HSequence<int>>>;
   if (data->ReadSubList(num, 3, "curves", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
+    int nb2 = data->NbParams(nsub2);
     if (!nb2)
       return;
 
-    for (Standard_Integer i = 1; i <= nb2; i++)
+    for (int i = 1; i <= nb2; i++)
     {
-      Handle(TColStd_HSequenceOfInteger) aCurve = new TColStd_HSequenceOfInteger;
-      Standard_Integer                   nsub3;
+      occ::handle<NCollection_HSequence<int>> aCurve = new NCollection_HSequence<int>;
+      int                                     nsub3;
       if (data->ReadSubList(nsub2, i, "number_coordinates", ach, nsub3))
       {
-        Standard_Integer nb3 = data->NbParams(nsub3);
-        for (Standard_Integer j = 1; j <= nb3; j++)
+        int nb3 = data->NbParams(nsub3);
+        for (int j = 1; j <= nb3; j++)
         {
-          Standard_Integer aVal = 0;
+          int aVal = 0;
           if (data->ReadInteger(nsub3, j, "coordinates", ach, aVal))
             aCurve->Append(aVal);
         }
@@ -78,8 +78,8 @@ void RWStepVisual_RWTessellatedCurveSet::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedCurveSet::WriteStep(
-  StepData_StepWriter&                          SW,
-  const Handle(StepVisual_TessellatedCurveSet)& ent) const
+  StepData_StepWriter&                               SW,
+  const occ::handle<StepVisual_TessellatedCurveSet>& ent) const
 {
   // Inherited field : name
   SW.Send(ent->Name());
@@ -89,11 +89,11 @@ void RWStepVisual_RWTessellatedCurveSet::WriteStep(
 
   // Own field : line_strips
   SW.OpenSub();
-  for (Standard_Integer curveIt = 0; curveIt < ent->Curves()->Length(); curveIt++)
+  for (int curveIt = 0; curveIt < ent->Curves()->Length(); curveIt++)
   {
-    Handle(TColStd_HSequenceOfInteger) aCurve = ent->Curves()->Value(curveIt);
+    occ::handle<NCollection_HSequence<int>> aCurve = ent->Curves()->Value(curveIt);
     SW.OpenSub();
-    for (Standard_Integer i = 1; i <= aCurve->Length(); i++)
+    for (int i = 1; i <= aCurve->Length(); i++)
       SW.Send(aCurve->Value(i));
     SW.CloseSub();
   }
@@ -102,8 +102,9 @@ void RWStepVisual_RWTessellatedCurveSet::WriteStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedCurveSet::Share(const Handle(StepVisual_TessellatedCurveSet)& ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepVisual_RWTessellatedCurveSet::Share(
+  const occ::handle<StepVisual_TessellatedCurveSet>& ent,
+  Interface_EntityIterator&                          iter) const
 {
   // Own filed : coordinates
   iter.AddItem(ent->CoordList());

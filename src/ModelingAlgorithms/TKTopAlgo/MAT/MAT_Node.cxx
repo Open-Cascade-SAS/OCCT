@@ -22,9 +22,9 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT_Node, Standard_Transient)
 
 //=================================================================================================
 
-MAT_Node::MAT_Node(const Standard_Integer GeomIndex,
-                   const Handle(MAT_Arc)& LinkedArc,
-                   const Standard_Real    Distance)
+MAT_Node::MAT_Node(const int                   GeomIndex,
+                   const occ::handle<MAT_Arc>& LinkedArc,
+                   const double                Distance)
     : nodeIndex(0),
       geomIndex(GeomIndex),
       distance(Distance)
@@ -34,31 +34,31 @@ MAT_Node::MAT_Node(const Standard_Integer GeomIndex,
 
 //=================================================================================================
 
-Standard_Integer MAT_Node::GeomIndex() const
+int MAT_Node::GeomIndex() const
 {
   return geomIndex;
 }
 
 //=================================================================================================
 
-Standard_Integer MAT_Node::Index() const
+int MAT_Node::Index() const
 {
   return nodeIndex;
 }
 
 //=================================================================================================
 
-void MAT_Node::LinkedArcs(MAT_SequenceOfArc& S) const
+void MAT_Node::LinkedArcs(NCollection_Sequence<occ::handle<MAT_Arc>>& S) const
 {
   S.Clear();
-  Handle(MAT_Node) Me = this;
-  Handle(MAT_Arc)  LA((MAT_Arc*)aLinkedArc);
+  occ::handle<MAT_Node> Me = this;
+  occ::handle<MAT_Arc>  LA((MAT_Arc*)aLinkedArc);
 
   S.Append(LA);
 
   if (LA->HasNeighbour(Me, MAT_Left))
   {
-    Handle(MAT_Arc) CA = LA->Neighbour(Me, MAT_Left);
+    occ::handle<MAT_Arc> CA = LA->Neighbour(Me, MAT_Left);
     while (CA != LA)
     {
       S.Append(CA);
@@ -69,12 +69,12 @@ void MAT_Node::LinkedArcs(MAT_SequenceOfArc& S) const
 
 //=================================================================================================
 
-void MAT_Node::NearElts(MAT_SequenceOfBasicElt& S) const
+void MAT_Node::NearElts(NCollection_Sequence<occ::handle<MAT_BasicElt>>& S) const
 {
   S.Clear();
 
-  Handle(MAT_Node) Me = this;
-  Handle(MAT_Arc)  LA((MAT_Arc*)aLinkedArc);
+  occ::handle<MAT_Node> Me = this;
+  occ::handle<MAT_Arc>  LA((MAT_Arc*)aLinkedArc);
 
   S.Append(LA->FirstElement());
   S.Append(LA->SecondElement());
@@ -82,8 +82,8 @@ void MAT_Node::NearElts(MAT_SequenceOfBasicElt& S) const
   if (LA->HasNeighbour(Me, MAT_Left))
   {
 
-    Handle(MAT_Arc)  CA   = LA->Neighbour(Me, MAT_Left);
-    Standard_Boolean Pair = Standard_False;
+    occ::handle<MAT_Arc> CA   = LA->Neighbour(Me, MAT_Left);
+    bool                 Pair = false;
 
     //---------------------------------------------------------
     // Recuperation des deux elements separes pour un arc sur
@@ -99,7 +99,7 @@ void MAT_Node::NearElts(MAT_SequenceOfBasicElt& S) const
       }
       else
       {
-        Pair = Standard_True;
+        Pair = true;
       }
       CA = CA->Neighbour(Me, MAT_Left);
     }
@@ -108,43 +108,43 @@ void MAT_Node::NearElts(MAT_SequenceOfBasicElt& S) const
 
 //=================================================================================================
 
-Standard_Real MAT_Node::Distance() const
+double MAT_Node::Distance() const
 {
   return distance;
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT_Node::PendingNode() const
+bool MAT_Node::PendingNode() const
 {
-  Handle(MAT_Node) Me = this;
+  occ::handle<MAT_Node> Me = this;
   return (!((MAT_Arc*)aLinkedArc)->HasNeighbour(Me, MAT_Left));
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT_Node::OnBasicElt() const
+bool MAT_Node::OnBasicElt() const
 {
   return (Distance() == 0.0);
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT_Node::Infinite() const
+bool MAT_Node::Infinite() const
 {
   return (Distance() == Precision::Infinite());
 }
 
 //=================================================================================================
 
-void MAT_Node::SetLinkedArc(const Handle(MAT_Arc)& LinkedArc)
+void MAT_Node::SetLinkedArc(const occ::handle<MAT_Arc>& LinkedArc)
 {
   aLinkedArc = LinkedArc.get();
 }
 
 //=================================================================================================
 
-void MAT_Node::SetIndex(const Standard_Integer anIndex)
+void MAT_Node::SetIndex(const int anIndex)
 {
   nodeIndex = anIndex;
 }

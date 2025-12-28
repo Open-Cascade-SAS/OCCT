@@ -19,10 +19,10 @@
 //=================================================================================================
 
 inline BRepFeat_MakeCylindricalHole::BRepFeat_MakeCylindricalHole()
-    : myAxDef(Standard_False),
+    : myAxDef(false),
       myStatus(BRepFeat_NoError),
-      myIsBlind(Standard_False),
-      myValidate(Standard_False)
+      myIsBlind(false),
+      myValidate(false)
 {
 }
 
@@ -31,7 +31,7 @@ inline BRepFeat_MakeCylindricalHole::BRepFeat_MakeCylindricalHole()
 inline void BRepFeat_MakeCylindricalHole::Init(const gp_Ax1& Axis)
 {
   myAxis  = Axis;
-  myAxDef = Standard_True;
+  myAxDef = true;
 }
 
 //=================================================================================================
@@ -40,7 +40,7 @@ inline void BRepFeat_MakeCylindricalHole::Init(const TopoDS_Shape& S, const gp_A
 {
   BRepFeat_Builder::Init(S);
   myAxis  = Axis;
-  myAxDef = Standard_True;
+  myAxDef = true;
 }
 
 //=================================================================================================

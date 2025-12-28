@@ -26,12 +26,12 @@ class PCDM
 {
 public:
   Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType(
-    const TCollection_AsciiString& aFileName,
-    Handle(Storage_BaseDriver)&    aBaseDriver);
+    const TCollection_AsciiString&   aFileName,
+    occ::handle<Storage_BaseDriver>& aBaseDriver);
 
   Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType(
-    Standard_IStream&           theIStream,
-    Handle(Storage_BaseDriver)& theBaseDriver);
+    Standard_IStream&                theIStream,
+    occ::handle<Storage_BaseDriver>& theBaseDriver);
 
   DEFINE_STANDARD_ALLOC
 };

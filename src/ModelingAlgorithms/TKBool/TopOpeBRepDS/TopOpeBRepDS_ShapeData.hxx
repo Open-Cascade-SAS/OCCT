@@ -20,8 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 #include <TopAbs_Orientation.hxx>
@@ -33,27 +34,27 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_ShapeData();
 
-  Standard_EXPORT const TopOpeBRepDS_ListOfInterference& Interferences() const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Interferences()
+    const;
 
-  Standard_EXPORT TopOpeBRepDS_ListOfInterference& ChangeInterferences();
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeInterferences();
 
-  Standard_EXPORT Standard_Boolean Keep() const;
+  Standard_EXPORT bool Keep() const;
 
-  Standard_EXPORT void ChangeKeep(const Standard_Boolean B);
+  Standard_EXPORT void ChangeKeep(const bool B);
 
   friend class TopOpeBRepDS_DataStructure;
 
-protected:
 private:
-  TopOpeBRepDS_ListOfInterference myInterferences;
-  TopTools_ListOfShape            mySameDomain;
-  Standard_Integer                mySameDomainRef;
-  TopOpeBRepDS_Config             mySameDomainOri;
-  Standard_Integer                mySameDomainInd;
-  TopAbs_Orientation              myOrientation;
-  Standard_Boolean                myOrientationDef;
-  Standard_Integer                myAncestorRank;
-  Standard_Boolean                myKeep;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> myInterferences;
+  NCollection_List<TopoDS_Shape>                           mySameDomain;
+  int                                                      mySameDomainRef;
+  TopOpeBRepDS_Config                                      mySameDomainOri;
+  int                                                      mySameDomainInd;
+  TopAbs_Orientation                                       myOrientation;
+  bool                                                     myOrientationDef;
+  int                                                      myAncestorRank;
+  bool                                                     myKeep;
 };
 
 #endif // _TopOpeBRepDS_ShapeData_HeaderFile

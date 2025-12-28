@@ -14,14 +14,14 @@
 // commercial license or contractual agreement.
 
 #include <Draw_Interpretor.hxx>
-#include <Draw_MapOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Draw.hxx>
 #include <Message.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_SharedLibrary.hxx>
 #include <Resource_Manager.hxx>
-#include <TCollection_AsciiString.hxx>
 
 //! Searches for the existence of the plugin file according to its name thePluginName:
 //! - if thePluginName is empty then it defaults to DrawPlugin
@@ -32,8 +32,8 @@
 //! - if the file exists but corresponding variable (CSF_...) has not been
 //!   explicitly set, it is forced to (for further reuse by Resource_Manager)
 //! @return TRUE if the file exists, otherwise - False
-static Standard_Boolean findPluginFile(TCollection_AsciiString& thePluginName,
-                                       TCollection_AsciiString& thePluginDir)
+static bool findPluginFile(TCollection_AsciiString& thePluginName,
+                           TCollection_AsciiString& thePluginDir)
 {
   // check if the file name has been specified and use default value if not
   if (thePluginName.IsEmpty())
@@ -45,7 +45,7 @@ static Standard_Boolean findPluginFile(TCollection_AsciiString& thePluginName,
 #endif
   }
 
-  Standard_Boolean aToSetCSFVariable = Standard_False;
+  bool aToSetCSFVariable = false;
 
   // the order of search : by CSF_<PluginFileName>Defaults and then by CASROOT
   const TCollection_AsciiString aCSFVariable =
@@ -56,7 +56,7 @@ static Standard_Boolean findPluginFile(TCollection_AsciiString& thePluginName,
     thePluginDir = OSD_Environment("DRAWHOME").Value();
     if (!thePluginDir.IsEmpty())
     {
-      aToSetCSFVariable = Standard_True; // CSF variable to be set later
+      aToSetCSFVariable = true; // CSF variable to be set later
     }
     else
     {
@@ -65,13 +65,13 @@ static Standard_Boolean findPluginFile(TCollection_AsciiString& thePluginName,
       if (!thePluginDir.IsEmpty())
       {
         thePluginDir += "/DrawResources";
-        aToSetCSFVariable = Standard_True; // CSF variable to be set later
+        aToSetCSFVariable = true; // CSF variable to be set later
       }
       else
       {
         Message::SendFail() << "Failed to load plugin: Neither " << aCSFVariable
                             << ", nor CSF_OCCTResourcePath variables have been set";
-        return Standard_False;
+        return false;
       }
     }
   }
@@ -82,7 +82,7 @@ static Standard_Boolean findPluginFile(TCollection_AsciiString& thePluginName,
   if (!aPluginFile.Exists())
   {
     Message::SendFail() << "Failed to load plugin: File " << aPluginFileName << " not found";
-    return Standard_False;
+    return false;
   }
 
   if (aToSetCSFVariable)
@@ -97,27 +97,28 @@ static Standard_Boolean findPluginFile(TCollection_AsciiString& thePluginName,
     {
       Message::SendFail() << "Failed to load plugin: Failed to initialize " << aCSFVariable
                           << " with " << thePluginDir;
-      return Standard_False;
+      return false;
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //! Resolve keys within input map (groups, aliases and toolkits) to the list of destination toolkits
 //! (plugins to load).
 //! @param theMap [in] [out] map to resolve (will be rewritten)
 //! @param theResMgr [in] resource manager to resolve keys
-static void resolveKeys(Draw_MapOfAsciiString& theMap, const Handle(Resource_Manager)& theResMgr)
+static void resolveKeys(NCollection_IndexedMap<TCollection_AsciiString>& theMap,
+                        const occ::handle<Resource_Manager>&             theResMgr)
 {
   if (theResMgr.IsNull())
   {
     return;
   }
 
-  Draw_MapOfAsciiString  aMap, aMap2;
-  const Standard_Integer aMapExtent = theMap.Extent();
-  for (Standard_Integer j = 1; j <= aMapExtent; ++j)
+  NCollection_IndexedMap<TCollection_AsciiString> aMap, aMap2;
+  const int                                       aMapExtent = theMap.Extent();
+  for (int j = 1; j <= aMapExtent; ++j)
   {
     TCollection_AsciiString        aValue;
     const TCollection_AsciiString& aResource = theMap.FindKey(j);
@@ -126,7 +127,7 @@ static void resolveKeys(Draw_MapOfAsciiString& theMap, const Handle(Resource_Man
 #ifdef OCCT_DEBUG
       std::cout << "Parse Value ==> " << aValue << std::endl;
 #endif
-      for (Standard_Integer aKeyIter = 1;; ++aKeyIter)
+      for (int aKeyIter = 1;; ++aKeyIter)
       {
         const TCollection_AsciiString aCurKey = aValue.Token(" \t,", aKeyIter);
 #ifdef OCCT_DEBUG
@@ -158,8 +159,8 @@ static void resolveKeys(Draw_MapOfAsciiString& theMap, const Handle(Resource_Man
     }
 
     //
-    const Standard_Integer aMap2Extent = aMap2.Extent();
-    for (Standard_Integer k = 1; k <= aMap2Extent; ++k)
+    const int aMap2Extent = aMap2.Extent();
+    for (int k = 1; k <= aMap2Extent; ++k)
     {
       aMap.Add(aMap2.FindKey(k));
     }
@@ -170,13 +171,11 @@ static void resolveKeys(Draw_MapOfAsciiString& theMap, const Handle(Resource_Man
 
 //=================================================================================================
 
-static Standard_Integer Pload(Draw_Interpretor& theDI,
-                              Standard_Integer  theNbArgs,
-                              const char**      theArgVec)
+static int Pload(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
-  Draw_MapOfAsciiString   aMap;
-  TCollection_AsciiString aPluginFileName;
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  NCollection_IndexedMap<TCollection_AsciiString> aMap;
+  TCollection_AsciiString                         aPluginFileName;
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     const TCollection_AsciiString aTK(theArgVec[anArgIter]);
     if (anArgIter == 1 && aTK.Value(1) == '-')
@@ -199,12 +198,12 @@ static Standard_Integer Pload(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Resource_Manager) aResMgr =
-    new Resource_Manager(aPluginFileName.ToCString(), aPluginDir, aPluginDir2, Standard_False);
+  occ::handle<Resource_Manager> aResMgr =
+    new Resource_Manager(aPluginFileName.ToCString(), aPluginDir, aPluginDir2, false);
   resolveKeys(aMap, aResMgr);
 
-  const Standard_Integer aMapExtent = aMap.Extent();
-  for (Standard_Integer aResIter = 1; aResIter <= aMapExtent; ++aResIter)
+  const int aMapExtent = aMap.Extent();
+  for (int aResIter = 1; aResIter <= aMapExtent; ++aResIter)
   {
     const TCollection_AsciiString& aResource = aMap.FindKey(aResIter);
 #ifdef OCCT_DEBUG
@@ -221,7 +220,7 @@ static Standard_Integer Pload(Draw_Interpretor& theDI,
     std::cout << "Value ==> " << aValue << std::endl;
 #endif
 
-    Draw::Load(theDI, aResource, aPluginFileName, aPluginDir, aPluginDir2, Standard_False);
+    Draw::Load(theDI, aResource, aPluginFileName, aPluginDir, aPluginDir2, false);
 
     // Load TclScript
     const TCollection_AsciiString aTclScriptDir = OSD_Environment("CSF_DrawPluginTclDir").Value();
@@ -249,7 +248,7 @@ static Standard_Integer Pload(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer dtryload(Draw_Interpretor& di, Standard_Integer n, const char** argv)
+static int dtryload(Draw_Interpretor& di, int n, const char** argv)
 {
   if (n != 2)
   {
@@ -274,10 +273,10 @@ static Standard_Integer dtryload(Draw_Interpretor& di, Standard_Integer n, const
 
 void Draw::PloadCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean Done = Standard_False;
+  static bool Done = false;
   if (Done)
     return;
-  Done = Standard_True;
+  Done = true;
 
   const char* g = "Draw Plugin";
 

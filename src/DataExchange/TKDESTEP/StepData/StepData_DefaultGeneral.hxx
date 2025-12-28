@@ -28,9 +28,6 @@ class Interface_ShareTool;
 class Interface_Check;
 class Interface_CopyTool;
 
-class StepData_DefaultGeneral;
-DEFINE_STANDARD_HANDLE(StepData_DefaultGeneral, StepData_GeneralModule)
-
 //! DefaultGeneral defines a GeneralModule which processes
 //! Unknown Entity from StepData only
 class StepData_DefaultGeneral : public StepData_GeneralModule
@@ -42,32 +39,28 @@ public:
 
   //! Specific filling of the list of Entities shared by an Entity
   //! <ent>, which is an UnknownEntity from StepData.
-  Standard_EXPORT void FillSharedCase(const Standard_Integer            casenum,
-                                      const Handle(Standard_Transient)& ent,
-                                      Interface_EntityIterator& iter) const Standard_OVERRIDE;
+  Standard_EXPORT void FillSharedCase(const int                              casenum,
+                                      const occ::handle<Standard_Transient>& ent,
+                                      Interface_EntityIterator&              iter) const override;
 
   //! Specific Checking of an Entity <ent>
-  Standard_EXPORT void CheckCase(const Standard_Integer            casenum,
-                                 const Handle(Standard_Transient)& ent,
-                                 const Interface_ShareTool&        shares,
-                                 Handle(Interface_Check)&          ach) const Standard_OVERRIDE;
+  Standard_EXPORT void CheckCase(const int                              casenum,
+                                 const occ::handle<Standard_Transient>& ent,
+                                 const Interface_ShareTool&             shares,
+                                 occ::handle<Interface_Check>&          ach) const override;
 
   //! Specific creation of a new void entity
-  Standard_EXPORT Standard_Boolean
-    NewVoid(const Standard_Integer CN, Handle(Standard_Transient)& entto) const Standard_OVERRIDE;
+  Standard_EXPORT bool NewVoid(const int CN, occ::handle<Standard_Transient>& entto) const override;
 
   //! Specific Copy ("Deep") from <entfrom> to <entto> (same type)
   //! by using a CopyTool which provides its working Map.
   //! Use method Transferred from TransferControl to work
-  Standard_EXPORT void CopyCase(const Standard_Integer            casenum,
-                                const Handle(Standard_Transient)& entfrom,
-                                const Handle(Standard_Transient)& entto,
-                                Interface_CopyTool&               TC) const Standard_OVERRIDE;
+  Standard_EXPORT void CopyCase(const int                              casenum,
+                                const occ::handle<Standard_Transient>& entfrom,
+                                const occ::handle<Standard_Transient>& entto,
+                                Interface_CopyTool&                    TC) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepData_DefaultGeneral, StepData_GeneralModule)
-
-protected:
-private:
 };
 
 #endif // _StepData_DefaultGeneral_HeaderFile

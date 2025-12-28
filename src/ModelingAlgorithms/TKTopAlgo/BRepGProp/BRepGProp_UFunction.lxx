@@ -29,7 +29,7 @@ inline void BRepGProp_UFunction::SetValueType(const GProp_ValueType theType)
 //           integral computation.
 //=======================================================================
 
-inline void BRepGProp_UFunction::SetVParam(const Standard_Real theVParam)
+inline void BRepGProp_UFunction::SetVParam(const double theVParam)
 {
   myVParam = theVParam;
 }

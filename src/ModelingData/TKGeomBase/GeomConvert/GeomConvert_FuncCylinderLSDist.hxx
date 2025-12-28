@@ -19,7 +19,9 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <math_MultipleVarFunctionWithGradient.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <math_Vector.hxx>
 #include <gp_Dir.hxx>
 
@@ -62,29 +64,31 @@ public:
   //! Constructor.
   Standard_EXPORT GeomConvert_FuncCylinderLSDist() {};
 
-  Standard_EXPORT GeomConvert_FuncCylinderLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints,
-                                                 const gp_Dir&                      theDir);
+  Standard_EXPORT GeomConvert_FuncCylinderLSDist(
+    const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
+    const gp_Dir&                                   theDir);
 
-  void SetPoints(const Handle(TColgp_HArray1OfXYZ)& thePoints) { myPoints = thePoints; }
+  void SetPoints(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints)
+  {
+    myPoints = thePoints;
+  }
 
   void SetDir(const gp_Dir& theDir) { myDir = theDir; }
 
   //! Number of variables.
-  Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT int NbVariables() const override;
 
   //! Value.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F) Standard_OVERRIDE;
+  Standard_EXPORT bool Value(const math_Vector& X, double& F) override;
 
   //! Gradient.
-  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) Standard_OVERRIDE;
+  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override;
 
   //! Value and gradient.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X,
-                                          Standard_Real&     F,
-                                          math_Vector&       G) Standard_OVERRIDE;
+  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override;
 
 private:
-  Handle(TColgp_HArray1OfXYZ) myPoints;
-  gp_Dir                      myDir;
+  occ::handle<NCollection_HArray1<gp_XYZ>> myPoints;
+  gp_Dir                                   myDir;
 };
 #endif // _GeomConvert_FuncCylinderLSDist_HeaderFile

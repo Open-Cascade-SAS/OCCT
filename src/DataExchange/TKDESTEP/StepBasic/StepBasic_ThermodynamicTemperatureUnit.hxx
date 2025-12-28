@@ -21,9 +21,6 @@
 
 #include <StepBasic_NamedUnit.hxx>
 
-class StepBasic_ThermodynamicTemperatureUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_ThermodynamicTemperatureUnit, StepBasic_NamedUnit)
-
 //! Representation of STEP entity ThermodynamicTemperatureUnit
 class StepBasic_ThermodynamicTemperatureUnit : public StepBasic_NamedUnit
 {
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepBasic_ThermodynamicTemperatureUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ThermodynamicTemperatureUnit, StepBasic_NamedUnit)
-
-protected:
-private:
 };
 
 #endif // _StepBasic_ThermodynamicTemperatureUnit_HeaderFile

@@ -36,7 +36,7 @@
 
 //=================================================================================================
 
-static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC527(Draw_Interpretor& di, int argc, const char** argv)
 {
   try
   {
@@ -57,8 +57,8 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
     }
 
     // 3. Explode entry shape on faces and build sections from Zmin to Zmax with step aStep
-    const Standard_Real Zmin = -40.228173882121, Zmax = 96.408126285268, aStep = 1.0;
-    char                str[100];
+    const double Zmin = -40.228173882121, Zmax = 96.408126285268, aStep = 1.0;
+    char         str[100];
     str[0] = 0;
     Sprintf(str, "Test range: [%f, %f] with step %f\n", Zmin, Zmax, aStep);
     di << str;
@@ -76,7 +76,7 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
       // if plane of the one does not intersect BndBox of the face
       Bnd_Box aFaceBox;
       BRepBndLib::Add(aFace, aFaceBox);
-      Standard_Real X1, X2, Y1, Y2, Z1, Z2;
+      double X1, X2, Y1, Y2, Z1, Z2;
       aFaceBox.Get(X1, Y1, Z1, X2, Y2, Z2);
 
       // Build sections from Zmin to Zmax with step aStep
@@ -91,11 +91,11 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
         gp_Pln pl(0, 0, 1, -zcur);
 
         //
-        di << "BRepAlgoAPI_Section aSection(aFace,pl,Standard_False)\n";
-        BRepAlgoAPI_Section aSection(aFace, pl, Standard_False);
-        aSection.Approximation(Standard_True);
+        di << "BRepAlgoAPI_Section aSection(aFace,pl,false)\n";
+        BRepAlgoAPI_Section aSection(aFace, pl, false);
+        aSection.Approximation(true);
         aSection.Build();
-        Standard_Boolean IsDone = aSection.IsDone();
+        bool IsDone = aSection.IsDone();
 
         if (IsDone)
         {
@@ -107,7 +107,7 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
             for (aExp2.Init(aResult, TopAbs_VERTEX); aExp2.More(); aExp2.Next())
             {
               TopoDS_Vertex aV    = TopoDS::Vertex(aExp2.Current());
-              Standard_Real toler = BRep_Tool::Tolerance(aV);
+              double        toler = BRep_Tool::Tolerance(aV);
               double        dist  = pl.Distance(BRep_Tool::Pnt(aV));
               if (dist > lmaxdist)
                 lmaxdist = dist;

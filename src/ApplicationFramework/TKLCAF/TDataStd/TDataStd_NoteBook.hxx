@@ -30,9 +30,6 @@ class Standard_GUID;
 class TDataStd_Real;
 class TDataStd_Integer;
 
-class TDataStd_NoteBook;
-DEFINE_STANDARD_HANDLE(TDataStd_NoteBook, TDataStd_GenericEmpty)
-
 //! NoteBook Object attribute
 class TDataStd_NoteBook : public TDataStd_GenericEmpty
 {
@@ -43,12 +40,11 @@ public:
   //! try to retrieve a NoteBook attribute at <current> label
   //! or in fathers label of <current>. Returns True if
   //! found and set <N>.
-  Standard_EXPORT static Standard_Boolean Find(const TDF_Label&           current,
-                                               Handle(TDataStd_NoteBook)& N);
+  Standard_EXPORT static bool Find(const TDF_Label& current, occ::handle<TDataStd_NoteBook>& N);
 
   //! Create an enpty NoteBook attribute, located at
   //! <label>. Raises if <label> has attribute
-  Standard_EXPORT static Handle(TDataStd_NoteBook) New(const TDF_Label& label);
+  Standard_EXPORT static occ::handle<TDataStd_NoteBook> New(const TDF_Label& label);
 
   //! NoteBook methods
   //! ===============
@@ -59,24 +55,20 @@ public:
   //! Tool to Create an Integer attribute from <value>,
   //! Insert it in a new son label of <me>. The Real
   //! attribute is returned.
-  Standard_EXPORT Handle(TDataStd_Real) Append(const Standard_Real    value,
-                                               const Standard_Boolean isExported = Standard_False);
+  Standard_EXPORT occ::handle<TDataStd_Real> Append(const double value,
+                                                    const bool   isExported = false);
 
   //! Tool to Create an Real attribute from <value>, Insert
   //! it in a new son label of <me>. The Integer attribute
   //! is returned.
-  Standard_EXPORT Handle(TDataStd_Integer) Append(
-    const Standard_Integer value,
-    const Standard_Boolean isExported = Standard_False);
+  Standard_EXPORT occ::handle<TDataStd_Integer> Append(const int  value,
+                                                       const bool isExported = false);
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_NoteBook, TDataStd_GenericEmpty)
-
-protected:
-private:
 };
 
 #endif // _TDataStd_NoteBook_HeaderFile

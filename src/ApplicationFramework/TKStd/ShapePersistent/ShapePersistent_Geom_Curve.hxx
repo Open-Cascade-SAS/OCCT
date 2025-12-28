@@ -47,7 +47,7 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 
   public:
     pBezier()
-        : myRational(Standard_False)
+        : myRational(false)
     {
     }
 
@@ -67,12 +67,12 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
       theChildren.Append(myWeights);
     }
 
-    inline Standard_CString PName() const { return "PGeom_BezierCurve"; }
+    inline const char* PName() const { return "PGeom_BezierCurve"; }
 
-    virtual Handle(Geom_Curve) Import() const;
+    virtual occ::handle<Geom_Curve> Import() const;
 
   private:
-    Standard_Boolean                     myRational;
+    bool                                 myRational;
     Handle(ShapePersistent_HArray1::Pnt) myPoles;
     Handle(StdLPersistent_HArray1::Real) myWeights;
   };
@@ -83,8 +83,8 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 
   public:
     pBSpline()
-        : myRational(Standard_False),
-          myPeriodic(Standard_False),
+        : myRational(false),
+          myPeriodic(false),
           mySpineDegree(0)
     {
     }
@@ -109,14 +109,14 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
       theChildren.Append(myMultiplicities);
     }
 
-    inline Standard_CString PName() const { return "PGeom_BSplineCurve"; }
+    inline const char* PName() const { return "PGeom_BSplineCurve"; }
 
-    virtual Handle(Geom_Curve) Import() const;
+    virtual occ::handle<Geom_Curve> Import() const;
 
   private:
-    Standard_Boolean                        myRational;
-    Standard_Boolean                        myPeriodic;
-    Standard_Integer                        mySpineDegree;
+    bool                                    myRational;
+    bool                                    myPeriodic;
+    int                                     mySpineDegree;
     Handle(ShapePersistent_HArray1::Pnt)    myPoles;
     Handle(StdLPersistent_HArray1::Real)    myWeights;
     Handle(StdLPersistent_HArray1::Real)    myKnots;
@@ -149,14 +149,14 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
       theChildren.Append(myBasisCurve);
     }
 
-    inline Standard_CString PName() const { return "PGeom_TrimmedCurve"; }
+    inline const char* PName() const { return "PGeom_TrimmedCurve"; }
 
-    virtual Handle(Geom_Curve) Import() const;
+    virtual occ::handle<Geom_Curve> Import() const;
 
   private:
-    Handle(Curve) myBasisCurve;
-    Standard_Real myFirstU;
-    Standard_Real myLastU;
+    occ::handle<Curve> myBasisCurve;
+    double             myFirstU;
+    double             myLastU;
   };
 
   class pOffset : public pBase
@@ -184,14 +184,14 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
       theChildren.Append(myBasisCurve);
     }
 
-    inline Standard_CString PName() const { return "PGeom_OffsetCurve"; }
+    inline const char* PName() const { return "PGeom_OffsetCurve"; }
 
-    virtual Handle(Geom_Curve) Import() const;
+    virtual occ::handle<Geom_Curve> Import() const;
 
   private:
-    Handle(Curve) myBasisCurve;
-    gp_Dir        myOffsetDirection;
-    Standard_Real myOffsetValue;
+    occ::handle<Curve> myBasisCurve;
+    gp_Dir             myOffsetDirection;
+    double             myOffsetValue;
   };
 
 public:
@@ -212,40 +212,58 @@ public:
 
 public:
   //! Create a persistent object for a line
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom_Line)&          theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Line>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a circle
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom_Circle)&        theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Circle>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a ellipse
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom_Ellipse)&       theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Ellipse>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a hyperbola
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom_Hyperbola)&     theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Hyperbola>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a parabola
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom_Parabola)&      theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Parabola>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a Bezier curve
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom_BezierCurve)&   theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_BezierCurve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a BSpline curve
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom_BSplineCurve)&  theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_BSplineCurve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a trimmed curve
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom_TrimmedCurve)&  theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_TrimmedCurve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for an offset curve
-  Standard_EXPORT static Handle(Curve) Translate(const Handle(Geom_OffsetCurve)&   theCurve,
-                                                 StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_OffsetCurve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
 };
 
 //=======================================================================
 // Line
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_Ax1>::
-  PName() const;
+const char* ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_Ax1>::PName()
+  const;
 
 template <>
 void ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_Ax1>::Write(
@@ -255,14 +273,13 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_A
 // Conic
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Curve, gp_Ax2>::PName()
-  const;
+const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Curve, gp_Ax2>::PName() const;
 
 //=======================================================================
 // Circle
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom_Curve::Conic, Geom_Circle, gp_Circ>::PName() const;
 
 template <>
@@ -273,7 +290,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom_Curve::Conic, Geom_Circ
 // Ellipse
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom_Curve::Conic, Geom_Ellipse, gp_Elips>::PName() const;
 
 template <>
@@ -284,7 +301,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom_Curve::Conic, Geom_Elli
 // Hyperbola
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom_Curve::Conic, Geom_Hyperbola, gp_Hypr>::PName() const;
 
 template <>
@@ -295,7 +312,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom_Curve::Conic, Geom_Hype
 // Parabola
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_Geom::
+const char* ShapePersistent_Geom::
   instance<ShapePersistent_Geom_Curve::Conic, Geom_Parabola, gp_Parab>::PName() const;
 
 template <>

@@ -33,10 +33,10 @@ RWStepKinematics_RWActuatedKinematicPair::RWStepKinematics_RWActuatedKinematicPa
 //=================================================================================================
 
 void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
-  const Handle(StepData_StepReaderData)&              theData,
-  const Standard_Integer                              theNum,
-  Handle(Interface_Check)&                            theArch,
-  const Handle(StepKinematics_ActuatedKinematicPair)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&              theData,
+  const int                                                theNum,
+  occ::handle<Interface_Check>&                            theArch,
+  const occ::handle<StepKinematics_ActuatedKinematicPair>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "actuated_kinematic_pair"))
@@ -44,20 +44,20 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -68,11 +68,11 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -80,7 +80,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -90,7 +90,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -101,12 +101,12 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   // Own fields of ActuatedKinematicPair
 
   StepKinematics_ActuatedDirection aTX   = StepKinematics_adNotActuated;
-  Standard_Boolean                 hasTX = Standard_True;
+  bool                             hasTX = true;
   if (theData->IsParamDefined(theNum, 7))
   {
     if (theData->ParamType(theNum, 7) == Interface_ParamEnum)
     {
-      Standard_CString text = theData->ParamCValue(theNum, 7);
+      const char* text = theData->ParamCValue(theNum, 7);
       if (strcmp(text, ".BIDIRECTIONAL."))
         aTX = StepKinematics_adBidirectional;
       else if (strcmp(text, ".POSITIVE_ONLY."))
@@ -123,16 +123,16 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
   else
   {
-    hasTX = Standard_False;
+    hasTX = false;
   }
 
   StepKinematics_ActuatedDirection aTY   = StepKinematics_adNotActuated;
-  Standard_Boolean                 hasTY = Standard_True;
+  bool                             hasTY = true;
   if (theData->IsParamDefined(theNum, 8))
   {
     if (theData->ParamType(theNum, 8) == Interface_ParamEnum)
     {
-      Standard_CString text = theData->ParamCValue(theNum, 8);
+      const char* text = theData->ParamCValue(theNum, 8);
       if (strcmp(text, ".BIDIRECTIONAL."))
         aTY = StepKinematics_adBidirectional;
       else if (strcmp(text, ".POSITIVE_ONLY."))
@@ -149,16 +149,16 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
   else
   {
-    hasTY = Standard_False;
+    hasTY = false;
   }
 
   StepKinematics_ActuatedDirection aTZ   = StepKinematics_adNotActuated;
-  Standard_Boolean                 hasTZ = Standard_True;
+  bool                             hasTZ = true;
   if (theData->IsParamDefined(theNum, 9))
   {
     if (theData->ParamType(theNum, 9) == Interface_ParamEnum)
     {
-      Standard_CString text = theData->ParamCValue(theNum, 9);
+      const char* text = theData->ParamCValue(theNum, 9);
       if (strcmp(text, ".BIDIRECTIONAL."))
         aTZ = StepKinematics_adBidirectional;
       else if (strcmp(text, ".POSITIVE_ONLY."))
@@ -175,16 +175,16 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
   else
   {
-    hasTZ = Standard_False;
+    hasTZ = false;
   }
 
   StepKinematics_ActuatedDirection aRX   = StepKinematics_adNotActuated;
-  Standard_Boolean                 hasRX = Standard_True;
+  bool                             hasRX = true;
   if (theData->IsParamDefined(theNum, 10))
   {
     if (theData->ParamType(theNum, 10) == Interface_ParamEnum)
     {
-      Standard_CString text = theData->ParamCValue(theNum, 10);
+      const char* text = theData->ParamCValue(theNum, 10);
       if (strcmp(text, ".BIDIRECTIONAL."))
         aRX = StepKinematics_adBidirectional;
       else if (strcmp(text, ".POSITIVE_ONLY."))
@@ -201,16 +201,16 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
   else
   {
-    hasRX = Standard_False;
+    hasRX = false;
   }
 
   StepKinematics_ActuatedDirection aRY   = StepKinematics_adNotActuated;
-  Standard_Boolean                 hasRY = Standard_True;
+  bool                             hasRY = true;
   if (theData->IsParamDefined(theNum, 11))
   {
     if (theData->ParamType(theNum, 11) == Interface_ParamEnum)
     {
-      Standard_CString text = theData->ParamCValue(theNum, 11);
+      const char* text = theData->ParamCValue(theNum, 11);
       if (strcmp(text, ".BIDIRECTIONAL."))
         aRY = StepKinematics_adBidirectional;
       else if (strcmp(text, ".POSITIVE_ONLY."))
@@ -227,16 +227,16 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
   else
   {
-    hasRY = Standard_False;
+    hasRY = false;
   }
 
   StepKinematics_ActuatedDirection aRZ   = StepKinematics_adNotActuated;
-  Standard_Boolean                 hasRZ = Standard_True;
+  bool                             hasRZ = true;
   if (theData->IsParamDefined(theNum, 12))
   {
     if (theData->ParamType(theNum, 12) == Interface_ParamEnum)
     {
-      Standard_CString text = theData->ParamCValue(theNum, 12);
+      const char* text = theData->ParamCValue(theNum, 12);
       if (strcmp(text, ".BIDIRECTIONAL."))
         aRZ = StepKinematics_adBidirectional;
       else if (strcmp(text, ".POSITIVE_ONLY."))
@@ -253,7 +253,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
   else
   {
-    hasRZ = Standard_False;
+    hasRZ = false;
   }
 
   // Initialize entity
@@ -281,8 +281,8 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
-  StepData_StepWriter&                                theSW,
-  const Handle(StepKinematics_ActuatedKinematicPair)& theEnt) const
+  StepData_StepWriter&                                     theSW,
+  const occ::handle<StepKinematics_ActuatedKinematicPair>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -440,8 +440,8 @@ void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWActuatedKinematicPair::Share(
-  const Handle(StepKinematics_ActuatedKinematicPair)& theEnt,
-  Interface_EntityIterator&                           iter) const
+  const occ::handle<StepKinematics_ActuatedKinematicPair>& theEnt,
+  Interface_EntityIterator&                                iter) const
 {
 
   // Inherited fields of RepresentationItem

@@ -23,8 +23,6 @@
 
 class Geom_Plane;
 
-DEFINE_STANDARD_HANDLE(PrsDim_EqualDistanceRelation, PrsDim_Relation)
-
 //! A framework to display equivalent distances between
 //! shapes and a given plane.
 //! The distance is the length of a projection from the
@@ -39,11 +37,11 @@ public:
   //! aShape3, aShape4 and the plane aPlane.
   //! The distance is the length of a projection from the
   //! shape to the plane.
-  Standard_EXPORT PrsDim_EqualDistanceRelation(const TopoDS_Shape&       aShape1,
-                                               const TopoDS_Shape&       aShape2,
-                                               const TopoDS_Shape&       aShape3,
-                                               const TopoDS_Shape&       aShape4,
-                                               const Handle(Geom_Plane)& aPlane);
+  Standard_EXPORT PrsDim_EqualDistanceRelation(const TopoDS_Shape&            aShape1,
+                                               const TopoDS_Shape&            aShape2,
+                                               const TopoDS_Shape&            aShape3,
+                                               const TopoDS_Shape&            aShape4,
+                                               const occ::handle<Geom_Plane>& aPlane);
 
   //! Sets the shape aShape to be used as the shape
   //! aShape3 in the framework created at construction time.
@@ -65,68 +63,69 @@ public:
   //! Computes the location of an intreval between
   //! between two edges. FirstAttach , SecondAttach
   //! are the returned extreme points of the interval.
-  Standard_EXPORT static void ComputeTwoEdgesLength(const Handle(Prs3d_Presentation)& aPresentation,
-                                                    const Handle(Prs3d_Drawer)&       aDrawer,
-                                                    const Standard_Real               ArrowSize,
-                                                    const TopoDS_Edge&                FirstEdge,
-                                                    const TopoDS_Edge&                SecondEdge,
-                                                    const Handle(Geom_Plane)&         Plane,
-                                                    const Standard_Boolean            AutomaticPos,
-                                                    const Standard_Boolean            IsSetBndBox,
-                                                    const Bnd_Box&                    BndBox,
-                                                    gp_Pnt&                           Position,
-                                                    gp_Pnt&                           FirstAttach,
-                                                    gp_Pnt&                           SecondAttach,
-                                                    gp_Pnt&                           FirstExtreme,
-                                                    gp_Pnt&                           SecondExtreme,
-                                                    DsgPrs_ArrowSide&                 SymbolPrs);
+  Standard_EXPORT static void ComputeTwoEdgesLength(
+    const occ::handle<Prs3d_Presentation>& aPresentation,
+    const occ::handle<Prs3d_Drawer>&       aDrawer,
+    const double                           ArrowSize,
+    const TopoDS_Edge&                     FirstEdge,
+    const TopoDS_Edge&                     SecondEdge,
+    const occ::handle<Geom_Plane>&         Plane,
+    const bool                             AutomaticPos,
+    const bool                             IsSetBndBox,
+    const Bnd_Box&                         BndBox,
+    gp_Pnt&                                Position,
+    gp_Pnt&                                FirstAttach,
+    gp_Pnt&                                SecondAttach,
+    gp_Pnt&                                FirstExtreme,
+    gp_Pnt&                                SecondExtreme,
+    DsgPrs_ArrowSide&                      SymbolPrs);
 
   //! Computes the interval position between two vertexs. FirstAttach,
   //! SecondAttach are the returned extreme points of the interval.
   Standard_EXPORT static void ComputeTwoVerticesLength(
-    const Handle(Prs3d_Presentation)& aPresentation,
-    const Handle(Prs3d_Drawer)&       aDrawer,
-    const Standard_Real               ArrowSize,
-    const TopoDS_Vertex&              FirstVertex,
-    const TopoDS_Vertex&              SecondVertex,
-    const Handle(Geom_Plane)&         Plane,
-    const Standard_Boolean            AutomaticPos,
-    const Standard_Boolean            IsSetBndBox,
-    const Bnd_Box&                    BndBox,
-    const PrsDim_TypeOfDist           TypeDist,
-    gp_Pnt&                           Position,
-    gp_Pnt&                           FirstAttach,
-    gp_Pnt&                           SecondAttach,
-    gp_Pnt&                           FirstExtreme,
-    gp_Pnt&                           SecondExtreme,
-    DsgPrs_ArrowSide&                 SymbolPrs);
+    const occ::handle<Prs3d_Presentation>& aPresentation,
+    const occ::handle<Prs3d_Drawer>&       aDrawer,
+    const double                           ArrowSize,
+    const TopoDS_Vertex&                   FirstVertex,
+    const TopoDS_Vertex&                   SecondVertex,
+    const occ::handle<Geom_Plane>&         Plane,
+    const bool                             AutomaticPos,
+    const bool                             IsSetBndBox,
+    const Bnd_Box&                         BndBox,
+    const PrsDim_TypeOfDist                TypeDist,
+    gp_Pnt&                                Position,
+    gp_Pnt&                                FirstAttach,
+    gp_Pnt&                                SecondAttach,
+    gp_Pnt&                                FirstExtreme,
+    gp_Pnt&                                SecondExtreme,
+    DsgPrs_ArrowSide&                      SymbolPrs);
 
   //! Compute the interval location between a vertex and an edge. Edge may be
   //! a line or a circle.
   Standard_EXPORT static void ComputeOneEdgeOneVertexLength(
-    const Handle(Prs3d_Presentation)& aPresentation,
-    const Handle(Prs3d_Drawer)&       aDrawer,
-    const Standard_Real               ArrowSize,
-    const TopoDS_Shape&               FirstShape,
-    const TopoDS_Shape&               SecondShape,
-    const Handle(Geom_Plane)&         Plane,
-    const Standard_Boolean            AutomaticPos,
-    const Standard_Boolean            IsSetBndBox,
-    const Bnd_Box&                    BndBox,
-    gp_Pnt&                           Position,
-    gp_Pnt&                           FirstAttach,
-    gp_Pnt&                           SecondAttach,
-    gp_Pnt&                           FirstExtreme,
-    gp_Pnt&                           SecondExtreme,
-    DsgPrs_ArrowSide&                 SymbolPrs);
+    const occ::handle<Prs3d_Presentation>& aPresentation,
+    const occ::handle<Prs3d_Drawer>&       aDrawer,
+    const double                           ArrowSize,
+    const TopoDS_Shape&                    FirstShape,
+    const TopoDS_Shape&                    SecondShape,
+    const occ::handle<Geom_Plane>&         Plane,
+    const bool                             AutomaticPos,
+    const bool                             IsSetBndBox,
+    const Bnd_Box&                         BndBox,
+    gp_Pnt&                                Position,
+    gp_Pnt&                                FirstAttach,
+    gp_Pnt&                                SecondAttach,
+    gp_Pnt&                                FirstExtreme,
+    gp_Pnt&                                SecondExtreme,
+    DsgPrs_ArrowSide&                      SymbolPrs);
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
 private:
   TopoDS_Shape myShape3;

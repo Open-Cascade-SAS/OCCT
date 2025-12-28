@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 
 #include <IFSelect_SignCounter.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class IFSelect_SelectDeduct;
 class Interface_Graph;
-
-class IFSelect_GraphCounter;
-DEFINE_STANDARD_HANDLE(IFSelect_GraphCounter, IFSelect_SignCounter)
 
 //! A GraphCounter computes values to be sorted with the help of
 //! a Graph. I.E. not from a Signature
@@ -38,27 +37,26 @@ class IFSelect_GraphCounter : public IFSelect_SignCounter
 
 public:
   //! Creates a GraphCounter, without applied selection
-  Standard_EXPORT IFSelect_GraphCounter(const Standard_Boolean withmap  = Standard_True,
-                                        const Standard_Boolean withlist = Standard_False);
+  Standard_EXPORT IFSelect_GraphCounter(const bool withmap = true, const bool withlist = false);
 
   //! Returns the applied selection
-  Standard_EXPORT Handle(IFSelect_SelectDeduct) Applied() const;
+  Standard_EXPORT occ::handle<IFSelect_SelectDeduct> Applied() const;
 
   //! Sets a new applied selection
-  Standard_EXPORT void SetApplied(const Handle(IFSelect_SelectDeduct)& sel);
+  Standard_EXPORT void SetApplied(const occ::handle<IFSelect_SelectDeduct>& sel);
 
   //! Adds a list of entities in the context given by the graph
   //! Default takes the count of entities selected by the applied
   //! selection, when it is given each entity of the list
   //! Can be redefined
-  Standard_EXPORT virtual void AddWithGraph(const Handle(TColStd_HSequenceOfTransient)& list,
-                                            const Interface_Graph& graph) Standard_OVERRIDE;
+  Standard_EXPORT virtual void AddWithGraph(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+    const Interface_Graph&                                                     graph) override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_GraphCounter, IFSelect_SignCounter)
 
-protected:
 private:
-  Handle(IFSelect_SelectDeduct) theapplied;
+  occ::handle<IFSelect_SelectDeduct> theapplied;
 };
 
 #endif // _IFSelect_GraphCounter_HeaderFile

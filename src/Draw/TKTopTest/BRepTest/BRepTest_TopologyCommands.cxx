@@ -25,7 +25,7 @@
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-static Standard_Integer halfspace(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int halfspace(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 6)
     return 1;
@@ -74,7 +74,7 @@ static Standard_Integer halfspace(Draw_Interpretor& di, Standard_Integer n, cons
 
 //=================================================================================================
 
-static Standard_Integer buildfaces(Draw_Interpretor&, Standard_Integer narg, const char** a)
+static int buildfaces(Draw_Interpretor&, int narg, const char** a)
 {
   if (narg < 4)
     return 1;
@@ -84,7 +84,7 @@ static Standard_Integer buildfaces(Draw_Interpretor&, Standard_Integer narg, con
   BRepAlgo_FaceRestrictor FR;
   FR.Init(F);
 
-  for (Standard_Integer i = 3; i < narg; i++)
+  for (int i = 3; i < narg; i++)
   {
     TopoDS_Shape InputWire(DBRep::Get(a[i], TopAbs_WIRE));
     TopoDS_Wire  W = TopoDS::Wire(InputWire);
@@ -111,10 +111,10 @@ static Standard_Integer buildfaces(Draw_Interpretor&, Standard_Integer narg, con
 
 void BRepTest::TopologyCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DBRep::BasicCommands(theCommands);
 

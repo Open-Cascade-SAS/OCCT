@@ -19,7 +19,9 @@
 
 #include <Geom_Curve.hxx>
 #include <Select3D_SensitivePoly.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 
 //! A framework to define a sensitive 3D curve.
@@ -32,10 +34,10 @@ public:
   //! Constructs a sensitive curve object defined by the
   //! owner theOwnerId, the curve theCurve, and the
   //! maximum number of points on the curve: theNbPnts.
-  Select3D_SensitiveCurve(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                          const Handle(Geom_Curve)&            theCurve,
-                          const Standard_Integer               theNbPnts = 17)
-      : Select3D_SensitivePoly(theOwnerId, Standard_True, theNbPnts)
+  Select3D_SensitiveCurve(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                          const occ::handle<Geom_Curve>&            theCurve,
+                          const int                                 theNbPnts = 17)
+      : Select3D_SensitivePoly(theOwnerId, true, theNbPnts)
   {
     loadPoints(theCurve, theNbPnts);
     mySFactor = 3;
@@ -43,31 +45,29 @@ public:
 
   //! Constructs a sensitive curve object defined by the
   //! owner theOwnerId and the set of points ThePoints.
-  Standard_EXPORT Select3D_SensitiveCurve(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                          const Handle(TColgp_HArray1OfPnt)&   thePoints);
+  Standard_EXPORT Select3D_SensitiveCurve(
+    const occ::handle<SelectMgr_EntityOwner>&       theOwnerId,
+    const occ::handle<NCollection_HArray1<gp_Pnt>>& thePoints);
 
   //! Creation of Sensitive Curve from Points.
   //!          Warning : This Method should disappear in the next version...
-  Standard_EXPORT Select3D_SensitiveCurve(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                          const TColgp_Array1OfPnt&            thePoints);
+  Standard_EXPORT Select3D_SensitiveCurve(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                          const NCollection_Array1<gp_Pnt>&         thePoints);
 
   //! Returns the copy of this
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
 private:
-  void loadPoints(const Handle(Geom_Curve)& theCurve, const Standard_Integer theNbPnts)
+  void loadPoints(const occ::handle<Geom_Curve>& theCurve, const int theNbPnts)
   {
-    const Standard_Real aStep =
-      (theCurve->LastParameter() - theCurve->FirstParameter()) / (theNbPnts - 1);
-    Standard_Real aParam = theCurve->FirstParameter();
-    for (Standard_Integer aPntIdx = 0; aPntIdx < myPolyg.Size(); ++aPntIdx)
+    const double aStep = (theCurve->LastParameter() - theCurve->FirstParameter()) / (theNbPnts - 1);
+    double       aParam = theCurve->FirstParameter();
+    for (int aPntIdx = 0; aPntIdx < myPolyg.Size(); ++aPntIdx)
     {
       myPolyg.SetPnt(aPntIdx, theCurve->Value(aParam));
       aParam += aStep;
     }
   }
 };
-
-DEFINE_STANDARD_HANDLE(Select3D_SensitiveCurve, Select3D_SensitivePoly)
 
 #endif // _Select3D_SensitiveCurve_HeaderFile

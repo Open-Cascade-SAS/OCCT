@@ -29,11 +29,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_LeaderArrow, IGESData_IGESEntity)
 
 IGESDimen_LeaderArrow::IGESDimen_LeaderArrow() {}
 
-void IGESDimen_LeaderArrow::Init(const Standard_Real               height,
-                                 const Standard_Real               width,
-                                 const Standard_Real               depth,
-                                 const gp_XY&                      position,
-                                 const Handle(TColgp_HArray1OfXY)& segments)
+void IGESDimen_LeaderArrow::Init(const double                                   height,
+                                 const double                                   width,
+                                 const double                                   depth,
+                                 const gp_XY&                                   position,
+                                 const occ::handle<NCollection_HArray1<gp_XY>>& segments)
 {
   if (segments->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_LeaderArrow : Init");
@@ -46,29 +46,29 @@ void IGESDimen_LeaderArrow::Init(const Standard_Real               height,
   // FormNumber precises the Type of the Arrow (1-12)
 }
 
-void IGESDimen_LeaderArrow::SetFormNumber(const Standard_Integer form)
+void IGESDimen_LeaderArrow::SetFormNumber(const int form)
 {
   if (form < 1 || form > 12)
     throw Standard_OutOfRange("IGESDimen_LeaderArrow : SetFormNumber");
   InitTypeAndForm(214, form);
 }
 
-Standard_Integer IGESDimen_LeaderArrow::NbSegments() const
+int IGESDimen_LeaderArrow::NbSegments() const
 {
   return theSegmentTails->Length();
 }
 
-Standard_Real IGESDimen_LeaderArrow::ArrowHeadHeight() const
+double IGESDimen_LeaderArrow::ArrowHeadHeight() const
 {
   return theArrowHeadHeight;
 }
 
-Standard_Real IGESDimen_LeaderArrow::ArrowHeadWidth() const
+double IGESDimen_LeaderArrow::ArrowHeadWidth() const
 {
   return theArrowHeadWidth;
 }
 
-Standard_Real IGESDimen_LeaderArrow::ZDepth() const
+double IGESDimen_LeaderArrow::ZDepth() const
 {
   return theZDepth;
 }
@@ -87,13 +87,13 @@ gp_Pnt IGESDimen_LeaderArrow::TransformedArrowHead() const
   return gp_Pnt(point);
 }
 
-gp_Pnt2d IGESDimen_LeaderArrow::SegmentTail(const Standard_Integer Index) const
+gp_Pnt2d IGESDimen_LeaderArrow::SegmentTail(const int Index) const
 {
   gp_Pnt2d STPnt2d(theSegmentTails->Value(Index));
   return STPnt2d;
 }
 
-gp_Pnt IGESDimen_LeaderArrow::TransformedSegmentTail(const Standard_Integer Index) const
+gp_Pnt IGESDimen_LeaderArrow::TransformedSegmentTail(const int Index) const
 {
   gp_XY  point2d = theSegmentTails->Value(Index);
   gp_XYZ point(point2d.X(), point2d.Y(), ZDepth());

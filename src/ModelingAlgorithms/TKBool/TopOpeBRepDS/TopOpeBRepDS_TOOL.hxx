@@ -22,8 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopoDS_Edge;
 class TopoDS_Shape;
@@ -33,35 +36,35 @@ class TopOpeBRepDS_TOOL
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static Standard_Integer EShareG(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                                  const TopoDS_Edge&                         E,
-                                                  TopTools_ListOfShape&                      lEsd);
+  Standard_EXPORT static int EShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                     const TopoDS_Edge&                              E,
+                                     NCollection_List<TopoDS_Shape>&                 lEsd);
 
-  Standard_EXPORT static Standard_Boolean ShareG(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                                 const Standard_Integer                     is1,
-                                                 const Standard_Integer                     is2);
+  Standard_EXPORT static bool ShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                     const int                                       is1,
+                                     const int                                       is2);
 
-  Standard_EXPORT static Standard_Boolean GetEsd(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                                 const TopoDS_Shape&                        S,
-                                                 const Standard_Integer                     ie,
-                                                 Standard_Integer&                          iesd);
+  Standard_EXPORT static bool GetEsd(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                     const TopoDS_Shape&                             S,
+                                     const int                                       ie,
+                                     int&                                            iesd);
 
-  Standard_EXPORT static Standard_Boolean ShareSplitON(
-    const Handle(TopOpeBRepDS_HDataStructure)&            HDS,
-    const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MspON,
-    const Standard_Integer                                i1,
-    const Standard_Integer                                i2,
-    TopoDS_Shape&                                         spON);
+  Standard_EXPORT static bool ShareSplitON(
+    const occ::handle<TopOpeBRepDS_HDataStructure>&     HDS,
+    const NCollection_DataMap<TopoDS_Shape,
+                              TopOpeBRepDS_ListOfShapeOn1State,
+                              TopTools_ShapeMapHasher>& MspON,
+    const int                                           i1,
+    const int                                           i2,
+    TopoDS_Shape&                                       spON);
 
-  Standard_EXPORT static Standard_Boolean GetConfig(
-    const Handle(TopOpeBRepDS_HDataStructure)&            HDS,
-    const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEspON,
-    const Standard_Integer                                ie,
-    const Standard_Integer                                iesd,
-    Standard_Integer&                                     conf);
-
-protected:
-private:
+  Standard_EXPORT static bool GetConfig(const occ::handle<TopOpeBRepDS_HDataStructure>&     HDS,
+                                        const NCollection_DataMap<TopoDS_Shape,
+                                                                  TopOpeBRepDS_ListOfShapeOn1State,
+                                                                  TopTools_ShapeMapHasher>& MEspON,
+                                        const int                                           ie,
+                                        const int                                           iesd,
+                                        int&                                                conf);
 };
 
 #endif // _TopOpeBRepDS_TOOL_HeaderFile

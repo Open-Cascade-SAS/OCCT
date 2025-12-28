@@ -25,15 +25,15 @@ IFSelect_SelectDiff::IFSelect_SelectDiff() {}
 Interface_EntityIterator IFSelect_SelectDiff::RootResult(const Interface_Graph& G) const
 {
   IFGraph_Compare GC(G);
-  GC.GetFromIter(MainInput()->RootResult(G), Standard_True); // first
+  GC.GetFromIter(MainInput()->RootResult(G), true); // first
   if (HasSecondInput())
-    GC.GetFromIter(SecondInput()->RootResult(G), Standard_False); // second
+    GC.GetFromIter(SecondInput()->RootResult(G), false); // second
   return GC.FirstOnly();
 }
 
-Standard_Boolean IFSelect_SelectDiff::HasUniqueResult() const
+bool IFSelect_SelectDiff::HasUniqueResult() const
 {
-  return Standard_True;
+  return true;
 } // naturellement unique
 
 TCollection_AsciiString IFSelect_SelectDiff::Label() const

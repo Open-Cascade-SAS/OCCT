@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class ShapeBuild_ReShape;
 
-class ShapeUpgrade_Tool;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_Tool, Standard_Transient)
-
 //! Tool is a root class for splitting classes
 //! Provides context for recording changes, basic
 //! precision value and limit (minimal and maximal)
@@ -38,43 +35,42 @@ public:
   Standard_EXPORT ShapeUpgrade_Tool();
 
   //! Copy all fields from another Root object
-  Standard_EXPORT void Set(const Handle(ShapeUpgrade_Tool)& tool);
+  Standard_EXPORT void Set(const occ::handle<ShapeUpgrade_Tool>& tool);
 
   //! Sets context
-  void SetContext(const Handle(ShapeBuild_ReShape)& context);
+  void SetContext(const occ::handle<ShapeBuild_ReShape>& context);
 
   //! Returns context
-  Handle(ShapeBuild_ReShape) Context() const;
+  occ::handle<ShapeBuild_ReShape> Context() const;
 
   //! Sets basic precision value
-  void SetPrecision(const Standard_Real preci);
+  void SetPrecision(const double preci);
 
   //! Returns basic precision value
-  Standard_Real Precision() const;
+  double Precision() const;
 
   //! Sets minimal allowed tolerance
-  void SetMinTolerance(const Standard_Real mintol);
+  void SetMinTolerance(const double mintol);
 
   //! Returns minimal allowed tolerance
-  Standard_Real MinTolerance() const;
+  double MinTolerance() const;
 
   //! Sets maximal allowed tolerance
-  void SetMaxTolerance(const Standard_Real maxtol);
+  void SetMaxTolerance(const double maxtol);
 
   //! Returns maximal allowed tolerance
-  Standard_Real MaxTolerance() const;
+  double MaxTolerance() const;
 
   //! Returns tolerance limited by [myMinTol,myMaxTol]
-  Standard_Real LimitTolerance(const Standard_Real toler) const;
+  double LimitTolerance(const double toler) const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_Tool, Standard_Transient)
 
-protected:
 private:
-  Handle(ShapeBuild_ReShape) myContext;
-  Standard_Real              myPrecision;
-  Standard_Real              myMinTol;
-  Standard_Real              myMaxTol;
+  occ::handle<ShapeBuild_ReShape> myContext;
+  double                          myPrecision;
+  double                          myMinTol;
+  double                          myMaxTol;
 };
 
 #include <ShapeUpgrade_Tool.lxx>

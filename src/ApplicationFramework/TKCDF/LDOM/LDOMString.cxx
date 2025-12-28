@@ -34,7 +34,7 @@ LDOMString LDOMString::CreateDirectString(const char* aValue, const LDOM_MemMana
 // purpose  : Copy from another string with allocation in the document
 //=======================================================================
 
-LDOMString::LDOMString(const LDOMBasicString& anOther, const Handle(LDOM_MemManager)& aDoc)
+LDOMString::LDOMString(const LDOMBasicString& anOther, const occ::handle<LDOM_MemManager>& aDoc)
     : myPtrDoc(&aDoc->Self())
 {
   myType = anOther.Type();
@@ -45,12 +45,12 @@ LDOMString::LDOMString(const LDOMBasicString& anOther, const Handle(LDOM_MemMana
       break;
     case LDOM_AsciiFree:
       myType = LDOM_AsciiDoc;
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case LDOM_AsciiDocClear:
     case LDOM_AsciiDoc: {
-      const char*      aString = anOther.GetString();
-      Standard_Integer aLen    = (Standard_Integer)(strlen(aString) + 1);
-      myVal.ptr                = ((LDOM_MemManager*)myPtrDoc)->Allocate(aLen);
+      const char* aString = anOther.GetString();
+      int         aLen    = (int)(strlen(aString) + 1);
+      myVal.ptr           = ((LDOM_MemManager*)myPtrDoc)->Allocate(aLen);
       memcpy(myVal.ptr, aString, aLen);
     }
     break;
@@ -83,7 +83,7 @@ LDOMString::LDOMString (const LDOMString& anOther, const LDOM_Document& aDoc)
     else {
   case LDOM_AsciiFree:
       const char * aString = anOther.GetString ();
-      Standard_Integer aLen = strlen (aString) + 1;
+      int aLen = strlen (aString) + 1;
       myVal.ptr = aDoc.AllocMem (aLen);
       memcpy (myVal.ptr, aString, aLen);
       myType = LDOM_AsciiDoc;

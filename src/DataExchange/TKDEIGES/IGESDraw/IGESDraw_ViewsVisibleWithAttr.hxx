@@ -19,19 +19,16 @@
 
 #include <Standard.hxx>
 
-#include <IGESDraw_HArray1OfViewKindEntity.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESBasic_HArray1OfLineFontEntity.hxx>
-#include <IGESGraph_HArray1OfColor.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESGraph_Color.hxx>
+#include <IGESData_IGESEntity.hxx>
 class IGESData_LineFontEntity;
 class IGESGraph_Color;
 class IGESData_IGESEntity;
-
-class IGESDraw_ViewsVisibleWithAttr;
-DEFINE_STANDARD_HANDLE(IGESDraw_ViewsVisibleWithAttr, IGESData_ViewKindEntity)
 
 //! defines IGESViewsVisibleWithAttr, Type <402>, Form <4>
 //! in package IGESDraw
@@ -59,79 +56,79 @@ public:
   //! this associativity
   //! raises exception if Lengths of allViewEntities, allLineFonts,
   //! allColorValues,allColorDefinitions, allLineWeights are not same
-  Standard_EXPORT void Init(const Handle(IGESDraw_HArray1OfViewKindEntity)&  allViewEntities,
-                            const Handle(TColStd_HArray1OfInteger)&          allLineFonts,
-                            const Handle(IGESBasic_HArray1OfLineFontEntity)& allLineDefinitions,
-                            const Handle(TColStd_HArray1OfInteger)&          allColorValues,
-                            const Handle(IGESGraph_HArray1OfColor)&          allColorDefinitions,
-                            const Handle(TColStd_HArray1OfInteger)&          allLineWeights,
-                            const Handle(IGESData_HArray1OfIGESEntity)&      allDisplayEntities);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViewEntities,
+    const occ::handle<NCollection_HArray1<int>>&                                  allLineFonts,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>>&
+                                                                              allLineDefinitions,
+    const occ::handle<NCollection_HArray1<int>>&                              allColorValues,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>&     allColorDefinitions,
+    const occ::handle<NCollection_HArray1<int>>&                              allLineWeights,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayEntities);
 
   //! Changes only the list of Displayed Entities (Null allowed)
-  Standard_EXPORT void InitImplied(const Handle(IGESData_HArray1OfIGESEntity)& allDisplayEntity);
+  Standard_EXPORT void InitImplied(
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayEntity);
 
   //! Returns False (for a complex view)
-  Standard_EXPORT Standard_Boolean IsSingle() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsSingle() const override;
 
   //! returns the number of Views containing the view visible, line font,
   //! color number, and line weight information
-  Standard_EXPORT Standard_Integer NbViews() const Standard_OVERRIDE;
+  Standard_EXPORT int NbViews() const override;
 
   //! returns the number of entities which have this particular set of
   //! display characteristic, or zero if no Entities specified
-  Standard_EXPORT Standard_Integer NbDisplayedEntities() const;
+  Standard_EXPORT int NbDisplayedEntities() const;
 
   //! returns the Index'th ViewKindEntity entity
   //! raises exception if Index <= 0 or Index > NbViews()
-  Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem(const Standard_Integer Index) const
-    Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int Index) const override;
 
   //! returns the Index'th Line font value or zero
   //! raises exception if Index <= 0 or Index > NbViews()
-  Standard_EXPORT Standard_Integer LineFontValue(const Standard_Integer Index) const;
+  Standard_EXPORT int LineFontValue(const int Index) const;
 
   //! returns True if the Index'th Line Font Definition is specified
   //! else returns False
   //! raises exception if Index <= 0 or Index > NbViews()
-  Standard_EXPORT Standard_Boolean IsFontDefinition(const Standard_Integer Index) const;
+  Standard_EXPORT bool IsFontDefinition(const int Index) const;
 
   //! returns the Index'th Line Font Definition Entity or NULL(0)
   //! raises exception if Index <= 0 or Index > NbViews()
-  Standard_EXPORT Handle(IGESData_LineFontEntity) FontDefinition(
-    const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_LineFontEntity> FontDefinition(const int Index) const;
 
   //! returns the Index'th Color number value
   //! raises exception if Index <= 0 or Index > NbViews()
-  Standard_EXPORT Standard_Integer ColorValue(const Standard_Integer Index) const;
+  Standard_EXPORT int ColorValue(const int Index) const;
 
   //! returns True if Index'th Color Definition is specified
   //! else returns False
   //! raises exception if Index <= 0 or Index > NbViews()
-  Standard_EXPORT Standard_Boolean IsColorDefinition(const Standard_Integer Index) const;
+  Standard_EXPORT bool IsColorDefinition(const int Index) const;
 
   //! returns the Index'th Color Definition Entity
   //! raises exception if Index <= 0 or Index > NbViews()
-  Standard_EXPORT Handle(IGESGraph_Color) ColorDefinition(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESGraph_Color> ColorDefinition(const int Index) const;
 
   //! returns the Index'th Color Line Weight
   //! raises exception if Index <= 0 or Index > NbViews()
-  Standard_EXPORT Standard_Integer LineWeightItem(const Standard_Integer Index) const;
+  Standard_EXPORT int LineWeightItem(const int Index) const;
 
   //! returns Index'th Display entity with this particular characteristics
   //! raises exception if Index <= 0 or Index > NbEntities()
-  Standard_EXPORT Handle(IGESData_IGESEntity) DisplayedEntity(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> DisplayedEntity(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_ViewsVisibleWithAttr, IGESData_ViewKindEntity)
 
-protected:
 private:
-  Handle(IGESDraw_HArray1OfViewKindEntity)  theViewEntities;
-  Handle(TColStd_HArray1OfInteger)          theLineFonts;
-  Handle(IGESBasic_HArray1OfLineFontEntity) theLineDefinitions;
-  Handle(TColStd_HArray1OfInteger)          theColorValues;
-  Handle(IGESGraph_HArray1OfColor)          theColorDefinitions;
-  Handle(TColStd_HArray1OfInteger)          theLineWeights;
-  Handle(IGESData_HArray1OfIGESEntity)      theDisplayEntities;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> theViewEntities;
+  occ::handle<NCollection_HArray1<int>>                                  theLineFonts;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>> theLineDefinitions;
+  occ::handle<NCollection_HArray1<int>>                                  theColorValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>         theColorDefinitions;
+  occ::handle<NCollection_HArray1<int>>                                  theLineWeights;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     theDisplayEntities;
 };
 
 #endif // _IGESDraw_ViewsVisibleWithAttr_HeaderFile

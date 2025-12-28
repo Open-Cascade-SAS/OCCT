@@ -15,11 +15,11 @@
 
 #include <IntTools_CurveRangeLocalizeData.hxx>
 #include <IntTools_CurveRangeSample.hxx>
-#include <IntTools_ListIteratorOfListOfCurveRangeSample.hxx>
-#include <IntTools_MapIteratorOfMapOfCurveSample.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Map.hxx>
 
-IntTools_CurveRangeLocalizeData::IntTools_CurveRangeLocalizeData(const Standard_Integer theNbSample,
-                                                                 const Standard_Real    theMinRange)
+IntTools_CurveRangeLocalizeData::IntTools_CurveRangeLocalizeData(const int    theNbSample,
+                                                                 const double theMinRange)
 {
   myNbSampleC = theNbSample;
   myMinRangeC = theMinRange;
@@ -37,26 +37,26 @@ void IntTools_CurveRangeLocalizeData::AddBox(const IntTools_CurveRangeSample& th
   myMapBox.Bind(theRange, theBox);
 }
 
-Standard_Boolean IntTools_CurveRangeLocalizeData::FindBox(const IntTools_CurveRangeSample& theRange,
-                                                          Bnd_Box& theBox) const
+bool IntTools_CurveRangeLocalizeData::FindBox(const IntTools_CurveRangeSample& theRange,
+                                              Bnd_Box&                         theBox) const
 {
   if (myMapBox.IsBound(theRange))
   {
     theBox = myMapBox(theRange);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean IntTools_CurveRangeLocalizeData::IsRangeOut(
-  const IntTools_CurveRangeSample& theRange) const
+bool IntTools_CurveRangeLocalizeData::IsRangeOut(const IntTools_CurveRangeSample& theRange) const
 {
   return myMapRangeOut.Contains(theRange);
 }
 
-void IntTools_CurveRangeLocalizeData::ListRangeOut(IntTools_ListOfCurveRangeSample& theList) const
+void IntTools_CurveRangeLocalizeData::ListRangeOut(
+  NCollection_List<IntTools_CurveRangeSample>& theList) const
 {
-  IntTools_MapIteratorOfMapOfCurveSample anIt(myMapRangeOut);
+  NCollection_Map<IntTools_CurveRangeSample>::Iterator anIt(myMapRangeOut);
 
   for (; anIt.More(); anIt.Next())
     theList.Append(anIt.Key());

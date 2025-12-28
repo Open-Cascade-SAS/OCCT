@@ -18,8 +18,10 @@
 #define _IntPatch_PrmPrmIntersection_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <IntPatch_SequenceOfLine.hxx>
-#include <IntSurf_ListOfPntOn2S.hxx>
+#include <IntPatch_Line.hxx>
+#include <NCollection_Sequence.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <NCollection_List.hxx>
 
 class Adaptor3d_TopolTool;
 class IntPatch_Polyhedron;
@@ -42,76 +44,76 @@ public:
   //! Performs the intersection between <Caro1> and
   //! <Caro2>. Associated Polyhedrons <Polyhedron1>
   //! and <Polyhedron2> are given.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
-                               const IntPatch_Polyhedron&         Polyhedron1,
-                               const Handle(Adaptor3d_TopolTool)& Domain1,
-                               const Handle(Adaptor3d_Surface)&   Caro2,
-                               const IntPatch_Polyhedron&         Polyhedron2,
-                               const Handle(Adaptor3d_TopolTool)& Domain2,
-                               const Standard_Real                TolTangency,
-                               const Standard_Real                Epsilon,
-                               const Standard_Real                Deflection,
-                               const Standard_Real                Increment);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Caro1,
+                               const IntPatch_Polyhedron&              Polyhedron1,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain1,
+                               const occ::handle<Adaptor3d_Surface>&   Caro2,
+                               const IntPatch_Polyhedron&              Polyhedron2,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain2,
+                               const double                            TolTangency,
+                               const double                            Epsilon,
+                               const double                            Deflection,
+                               const double                            Increment);
 
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
-                               const IntPatch_Polyhedron&         Polyhedron1,
-                               const Handle(Adaptor3d_TopolTool)& Domain1,
-                               const Standard_Real                TolTangency,
-                               const Standard_Real                Epsilon,
-                               const Standard_Real                Deflection,
-                               const Standard_Real                Increment);
-
-  //! Performs the intersection between <Caro1> and
-  //! <Caro2>. The method computes the polyhedron on
-  //! each surface.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
-                               const Handle(Adaptor3d_TopolTool)& Domain1,
-                               const Handle(Adaptor3d_Surface)&   Caro2,
-                               const Handle(Adaptor3d_TopolTool)& Domain2,
-                               const Standard_Real                TolTangency,
-                               const Standard_Real                Epsilon,
-                               const Standard_Real                Deflection,
-                               const Standard_Real                Increment,
-                               const Standard_Boolean             ClearFlag = Standard_True);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Caro1,
+                               const IntPatch_Polyhedron&              Polyhedron1,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain1,
+                               const double                            TolTangency,
+                               const double                            Epsilon,
+                               const double                            Deflection,
+                               const double                            Increment);
 
   //! Performs the intersection between <Caro1> and
   //! <Caro2>. The method computes the polyhedron on
   //! each surface.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
-                               const Handle(Adaptor3d_TopolTool)& Domain1,
-                               const Handle(Adaptor3d_Surface)&   Caro2,
-                               const Handle(Adaptor3d_TopolTool)& Domain2,
-                               const Standard_Real                TolTangency,
-                               const Standard_Real                Epsilon,
-                               const Standard_Real                Deflection,
-                               const Standard_Real                Increment,
-                               IntSurf_ListOfPntOn2S&             ListOfPnts);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Caro1,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain1,
+                               const occ::handle<Adaptor3d_Surface>&   Caro2,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain2,
+                               const double                            TolTangency,
+                               const double                            Epsilon,
+                               const double                            Deflection,
+                               const double                            Increment,
+                               const bool                              ClearFlag = true);
 
   //! Performs the intersection between <Caro1> and
   //! <Caro2>. The method computes the polyhedron on
   //! each surface.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
-                               const Handle(Adaptor3d_TopolTool)& Domain1,
-                               const Handle(Adaptor3d_Surface)&   Caro2,
-                               const Handle(Adaptor3d_TopolTool)& Domain2,
-                               const Standard_Real                U1,
-                               const Standard_Real                V1,
-                               const Standard_Real                U2,
-                               const Standard_Real                V2,
-                               const Standard_Real                TolTangency,
-                               const Standard_Real                Epsilon,
-                               const Standard_Real                Deflection,
-                               const Standard_Real                Increment);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Caro1,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain1,
+                               const occ::handle<Adaptor3d_Surface>&   Caro2,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain2,
+                               const double                            TolTangency,
+                               const double                            Epsilon,
+                               const double                            Deflection,
+                               const double                            Increment,
+                               NCollection_List<IntSurf_PntOn2S>&      ListOfPnts);
 
   //! Performs the intersection between <Caro1> and
   //! <Caro2>. The method computes the polyhedron on
   //! each surface.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
-                               const Handle(Adaptor3d_TopolTool)& Domain1,
-                               const Standard_Real                TolTangency,
-                               const Standard_Real                Epsilon,
-                               const Standard_Real                Deflection,
-                               const Standard_Real                Increment);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Caro1,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain1,
+                               const occ::handle<Adaptor3d_Surface>&   Caro2,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain2,
+                               const double                            U1,
+                               const double                            V1,
+                               const double                            U2,
+                               const double                            V2,
+                               const double                            TolTangency,
+                               const double                            Epsilon,
+                               const double                            Deflection,
+                               const double                            Increment);
+
+  //! Performs the intersection between <Caro1> and
+  //! <Caro2>. The method computes the polyhedron on
+  //! each surface.
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Caro1,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain1,
+                               const double                            TolTangency,
+                               const double                            Epsilon,
+                               const double                            Deflection,
+                               const double                            Increment);
 
   //! Performs the intersection between <Caro1> and
   //! <Caro2>.
@@ -119,15 +121,15 @@ public:
   //! The polyhedron which approximates <Caro2>,
   //! <Polyhedron2> is given. The other one is
   //! computed.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
-                               const Handle(Adaptor3d_TopolTool)& Domain1,
-                               const Handle(Adaptor3d_Surface)&   Caro2,
-                               const IntPatch_Polyhedron&         Polyhedron2,
-                               const Handle(Adaptor3d_TopolTool)& Domain2,
-                               const Standard_Real                TolTangency,
-                               const Standard_Real                Epsilon,
-                               const Standard_Real                Deflection,
-                               const Standard_Real                Increment);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Caro1,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain1,
+                               const occ::handle<Adaptor3d_Surface>&   Caro2,
+                               const IntPatch_Polyhedron&              Polyhedron2,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain2,
+                               const double                            TolTangency,
+                               const double                            Epsilon,
+                               const double                            Deflection,
+                               const double                            Increment);
 
   //! Performs the intersection between <Caro1> and
   //! <Caro2>.
@@ -135,28 +137,28 @@ public:
   //! The polyhedron which approximates <Caro1>,
   //! <Polyhedron1> is given. The other one is
   //! computed.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Caro1,
-                               const IntPatch_Polyhedron&         Polyhedron1,
-                               const Handle(Adaptor3d_TopolTool)& Domain1,
-                               const Handle(Adaptor3d_Surface)&   Caro2,
-                               const Handle(Adaptor3d_TopolTool)& Domain2,
-                               const Standard_Real                TolTangency,
-                               const Standard_Real                Epsilon,
-                               const Standard_Real                Deflection,
-                               const Standard_Real                Increment);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Caro1,
+                               const IntPatch_Polyhedron&              Polyhedron1,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain1,
+                               const occ::handle<Adaptor3d_Surface>&   Caro2,
+                               const occ::handle<Adaptor3d_TopolTool>& Domain2,
+                               const double                            TolTangency,
+                               const double                            Epsilon,
+                               const double                            Deflection,
+                               const double                            Increment);
 
   //! Returns true if the calculus was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns true if the is no intersection.
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
   //! Returns the number of intersection lines.
-  Standard_Integer NbLines() const;
+  int NbLines() const;
 
   //! Returns the line of range Index.
   //! An exception is raised if Index<=0 or Index>NbLine.
-  const Handle(IntPatch_Line)& Line(const Standard_Integer Index) const;
+  const occ::handle<IntPatch_Line>& Line(const int Index) const;
 
   //! Computes about <NbPoints> Intersection Points on
   //! the Line <IndexLine> between the Points of Index
@@ -170,73 +172,67 @@ public:
   //!
   //! An exception is raised if Index<=0 or Index>NbLine.
   //! or if IsDone returns False
-  Standard_EXPORT Handle(IntPatch_Line) NewLine(const Handle(Adaptor3d_Surface)& Caro1,
-                                                const Handle(Adaptor3d_Surface)& Caro2,
-                                                const Standard_Integer           IndexLine,
-                                                const Standard_Integer           LowPoint,
-                                                const Standard_Integer           HighPoint,
-                                                const Standard_Integer           NbPoints) const;
+  Standard_EXPORT occ::handle<IntPatch_Line> NewLine(const occ::handle<Adaptor3d_Surface>& Caro1,
+                                                     const occ::handle<Adaptor3d_Surface>& Caro2,
+                                                     const int IndexLine,
+                                                     const int LowPoint,
+                                                     const int HighPoint,
+                                                     const int NbPoints) const;
 
-  Standard_Integer GrilleInteger(const Standard_Integer ix,
-                                 const Standard_Integer iy,
-                                 const Standard_Integer iz) const;
+  int GrilleInteger(const int ix, const int iy, const int iz) const;
 
-  void IntegerGrille(const Standard_Integer t,
-                     Standard_Integer&      ix,
-                     Standard_Integer&      iy,
-                     Standard_Integer&      iz) const;
+  void IntegerGrille(const int t, int& ix, int& iy, int& iz) const;
 
-  Standard_Integer DansGrille(const Standard_Integer t) const;
+  int DansGrille(const int t) const;
 
-  Standard_Integer NbPointsGrille() const;
+  int NbPointsGrille() const;
 
-  Standard_EXPORT void RemplitLin(const Standard_Integer              x1,
-                                  const Standard_Integer              y1,
-                                  const Standard_Integer              z1,
-                                  const Standard_Integer              x2,
-                                  const Standard_Integer              y2,
-                                  const Standard_Integer              z2,
+  Standard_EXPORT void RemplitLin(const int                           x1,
+                                  const int                           y1,
+                                  const int                           z1,
+                                  const int                           x2,
+                                  const int                           y2,
+                                  const int                           z2,
                                   IntPatch_PrmPrmIntersection_T3Bits& Map) const;
 
-  Standard_EXPORT void RemplitTri(const Standard_Integer              x1,
-                                  const Standard_Integer              y1,
-                                  const Standard_Integer              z1,
-                                  const Standard_Integer              x2,
-                                  const Standard_Integer              y2,
-                                  const Standard_Integer              z2,
-                                  const Standard_Integer              x3,
-                                  const Standard_Integer              y3,
-                                  const Standard_Integer              z3,
+  Standard_EXPORT void RemplitTri(const int                           x1,
+                                  const int                           y1,
+                                  const int                           z1,
+                                  const int                           x2,
+                                  const int                           y2,
+                                  const int                           z2,
+                                  const int                           x3,
+                                  const int                           y3,
+                                  const int                           z3,
                                   IntPatch_PrmPrmIntersection_T3Bits& Map) const;
 
-  Standard_EXPORT void Remplit(const Standard_Integer              a,
-                               const Standard_Integer              b,
-                               const Standard_Integer              c,
+  Standard_EXPORT void Remplit(const int                           a,
+                               const int                           b,
+                               const int                           c,
                                IntPatch_PrmPrmIntersection_T3Bits& Map) const;
 
-  Standard_Integer CodeReject(const Standard_Real x1,
-                              const Standard_Real y1,
-                              const Standard_Real z1,
-                              const Standard_Real x2,
-                              const Standard_Real y2,
-                              const Standard_Real z2,
-                              const Standard_Real x3,
-                              const Standard_Real y3,
-                              const Standard_Real z3) const;
+  int CodeReject(const double x1,
+                 const double y1,
+                 const double z1,
+                 const double x2,
+                 const double y2,
+                 const double z2,
+                 const double x3,
+                 const double y3,
+                 const double z3) const;
 
-  Standard_EXPORT void PointDepart(Handle(IntSurf_LineOn2S)&        LineOn2S,
-                                   const Handle(Adaptor3d_Surface)& S1,
-                                   const Standard_Integer           SU1,
-                                   const Standard_Integer           SV1,
-                                   const Handle(Adaptor3d_Surface)& S2,
-                                   const Standard_Integer           SU2,
-                                   const Standard_Integer           SV2) const;
+  Standard_EXPORT void PointDepart(occ::handle<IntSurf_LineOn2S>&        LineOn2S,
+                                   const occ::handle<Adaptor3d_Surface>& S1,
+                                   const int                             SU1,
+                                   const int                             SV1,
+                                   const occ::handle<Adaptor3d_Surface>& S2,
+                                   const int                             SU2,
+                                   const int                             SV2) const;
 
-protected:
 private:
-  Standard_Boolean        done;
-  Standard_Boolean        empt;
-  IntPatch_SequenceOfLine SLin;
+  bool                                             done;
+  bool                                             empt;
+  NCollection_Sequence<occ::handle<IntPatch_Line>> SLin;
 };
 
 #include <IntPatch_PrmPrmIntersection.lxx>

@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_TessellatedEdge.hxx>
 
-DEFINE_STANDARD_HANDLE(StepVisual_CubicBezierTessellatedEdge, StepVisual_TessellatedEdge)
-
 //! Representation of STEP entity CubicBezierTessellatedEdge
 class StepVisual_CubicBezierTessellatedEdge : public StepVisual_TessellatedEdge
 {

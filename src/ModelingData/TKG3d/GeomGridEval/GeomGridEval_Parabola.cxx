@@ -20,7 +20,7 @@
 //==================================================================================================
 
 NCollection_Array1<gp_Pnt> GeomGridEval_Parabola::EvaluateGrid(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
@@ -66,7 +66,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Parabola::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Parabola::EvaluateGridD1(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
@@ -117,7 +117,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Parabola::EvaluateGridD1(
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Parabola::EvaluateGridD2(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
@@ -174,7 +174,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Parabola::EvaluateGridD2(
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Parabola::EvaluateGridD3(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
@@ -228,8 +228,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Parabola::EvaluateGridD3(
 //==================================================================================================
 
 NCollection_Array1<gp_Vec> GeomGridEval_Parabola::EvaluateGridDN(
-  const TColStd_Array1OfReal& theParams,
-  int                         theN) const
+  const NCollection_Array1<double>& theParams,
+  int                               theN) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
   {

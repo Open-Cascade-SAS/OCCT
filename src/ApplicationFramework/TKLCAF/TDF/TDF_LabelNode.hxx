@@ -60,43 +60,37 @@ public:
   inline TDF_LabelNode* FirstChild() const { return myFirstChild; }
 
   // Attribute access
-  inline const Handle(TDF_Attribute)& FirstAttribute() const { return myFirstAttribute; }
+  inline const occ::handle<TDF_Attribute>& FirstAttribute() const { return myFirstAttribute; }
 
   // Tag access
-  inline Standard_Integer Tag() const { return myTag; }
+  inline int Tag() const { return myTag; }
 
   // Depth access
-  inline Standard_Integer Depth() const { return (myFlags & ~TDF_LabelNodeFlagsMsk); }
+  inline int Depth() const { return (myFlags & ~TDF_LabelNodeFlagsMsk); }
 
   // IsRoot
-  inline Standard_Boolean IsRoot() const { return myFather == NULL; }
+  inline bool IsRoot() const { return myFather == NULL; }
 
   // Data
   Standard_EXPORT TDF_Data* Data() const;
 
   // Flag AttributesModified access
-  inline void AttributesModified(const Standard_Boolean aStatus)
+  inline void AttributesModified(const bool aStatus)
   {
     myFlags = (aStatus) ? (myFlags | TDF_LabelNodeAttModMsk) : (myFlags & ~TDF_LabelNodeAttModMsk);
     if (aStatus)
       AllMayBeModified();
   }
 
-  inline Standard_Boolean AttributesModified() const
-  {
-    return ((myFlags & TDF_LabelNodeAttModMsk) != 0);
-  }
+  inline bool AttributesModified() const { return ((myFlags & TDF_LabelNodeAttModMsk) != 0); }
 
   // Flag MayBeModified access
-  inline void MayBeModified(const Standard_Boolean aStatus)
+  inline void MayBeModified(const bool aStatus)
   {
     myFlags = (aStatus) ? (myFlags | TDF_LabelNodeMayModMsk) : (myFlags & ~TDF_LabelNodeMayModMsk);
   }
 
-  inline Standard_Boolean MayBeModified() const
-  {
-    return ((myFlags & TDF_LabelNodeMayModMsk) != 0);
-  }
+  inline bool MayBeModified() const { return ((myFlags & TDF_LabelNodeMayModMsk) != 0); }
 
 private:
   // Memory management
@@ -119,12 +113,14 @@ private:
   // --------------------------------------------------------------------------
 
   // Constructor
-  TDF_LabelNode(const Standard_Integer Tag, TDF_LabelNode* Father);
+  TDF_LabelNode(const int Tag, TDF_LabelNode* Father);
 
   // Others
-  void AddAttribute(const Handle(TDF_Attribute)& afterAtt, const Handle(TDF_Attribute)& newAtt);
+  void AddAttribute(const occ::handle<TDF_Attribute>& afterAtt,
+                    const occ::handle<TDF_Attribute>& newAtt);
 
-  void RemoveAttribute(const Handle(TDF_Attribute)& afterAtt, const Handle(TDF_Attribute)& oldAtt);
+  void RemoveAttribute(const occ::handle<TDF_Attribute>& afterAtt,
+                       const occ::handle<TDF_Attribute>& oldAtt);
 
   TDF_LabelNode* RootNode();
 
@@ -133,32 +129,29 @@ private:
   Standard_EXPORT void AllMayBeModified();
 
   // Tag modification
-  inline void Tag(const Standard_Integer aTag) { myTag = aTag; }
+  inline void Tag(const int aTag) { myTag = aTag; }
 
   // Depth modification
-  inline void Depth(const Standard_Integer aDepth)
-  {
-    myFlags = ((myFlags & TDF_LabelNodeFlagsMsk) | aDepth);
-  }
+  inline void Depth(const int aDepth) { myFlags = ((myFlags & TDF_LabelNodeFlagsMsk) | aDepth); }
 
   // Flag Imported access
-  inline void Imported(const Standard_Boolean aStatus)
+  inline void Imported(const bool aStatus)
   {
     myFlags = (aStatus) ? (myFlags | TDF_LabelNodeImportMsk) : (myFlags & ~TDF_LabelNodeImportMsk);
   }
 
-  inline Standard_Boolean IsImported() const { return ((myFlags & TDF_LabelNodeImportMsk) != 0); }
+  inline bool IsImported() const { return ((myFlags & TDF_LabelNodeImportMsk) != 0); }
 
   // Private Fields
   // --------------------------------------------------------------------------
 
-  TDF_LabelNodePtr myFather;
-  TDF_LabelNodePtr myBrother;
-  TDF_LabelNodePtr myFirstChild;
-  Standard_ATOMIC(TDF_LabelNodePtr) myLastFoundChild; // jfa 10.01.2003
-  Standard_Integer      myTag;
-  Standard_Integer      myFlags; // Flags & Depth
-  Handle(TDF_Attribute) myFirstAttribute;
+  TDF_LabelNodePtr              myFather;
+  TDF_LabelNodePtr              myBrother;
+  TDF_LabelNodePtr              myFirstChild;
+  std::atomic<TDF_LabelNodePtr> myLastFoundChild; // jfa 10.01.2003
+  int                           myTag;
+  int                           myFlags; // Flags & Depth
+  occ::handle<TDF_Attribute>    myFirstAttribute;
 #ifdef KEEP_LOCAL_ROOT
   TDF_Data* myData;
 #endif

@@ -25,27 +25,31 @@
 #include <StdPrs_WFRestrictedFace.hxx>
 #include <StdPrs_ToolRFace.hxx>
 #include <StdPrs_Curve.hxx>
-#include <Prs3d_NListOfSequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
-void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresentation,
-                                  const Handle(BRepAdaptor_Surface)& theFace,
-                                  const Standard_Boolean             theDrawUIso,
-                                  const Standard_Boolean             theDrawVIso,
-                                  const Standard_Integer             theNbUIso,
-                                  const Standard_Integer             theNBVIso,
-                                  const Handle(Prs3d_Drawer)&        theDrawer,
-                                  Prs3d_NListOfSequenceOfPnt&        theCurves)
+void StdPrs_WFRestrictedFace::Add(
+  const occ::handle<Prs3d_Presentation>&                        thePresentation,
+  const occ::handle<BRepAdaptor_Surface>&                       theFace,
+  const bool                                                    theDrawUIso,
+  const bool                                                    theDrawVIso,
+  const int                                                     theNbUIso,
+  const int                                                     theNBVIso,
+  const occ::handle<Prs3d_Drawer>&                              theDrawer,
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theCurves)
 {
-  Standard_Integer aNbPoints = theDrawer->Discretisation();
+  int              aNbPoints = theDrawer->Discretisation();
   StdPrs_ToolRFace aToolRst(theFace);
 
   // Compute bounds of the restriction
-  Standard_Real    aUMin, aUMax, aVMin, aVMax;
-  Standard_Integer anI;
-  gp_Pnt2d         aPoint1, aPoint2;
-  Bnd_Box2d        aBndBox;
+  double    aUMin, aUMax, aVMin, aVMax;
+  int       anI;
+  gp_Pnt2d  aPoint1, aPoint2;
+  Bnd_Box2d aBndBox;
 
   for (aToolRst.Init(); aToolRst.More(); aToolRst.Next())
   {
@@ -63,9 +67,9 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
   }
 
   // Load the isos
-  Hatch_Hatcher    anIsoBuild(1.e-5, aToolRst.IsOriented());
-  Standard_Boolean isFaceUClosed = theFace->IsUClosed();
-  Standard_Boolean isFaceVClosed = theFace->IsVClosed();
+  Hatch_Hatcher anIsoBuild(1.e-5, aToolRst.IsOriented());
+  bool          isFaceUClosed = theFace->IsUClosed();
+  bool          isFaceVClosed = theFace->IsVClosed();
 
   if (!isFaceUClosed)
   {
@@ -83,9 +87,8 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
   {
     if (theNbUIso > 0)
     {
-      isFaceUClosed = Standard_False;
-      Standard_Real du =
-        isFaceUClosed ? (aUMax - aUMin) / theNbUIso : (aUMax - aUMin) / (1 + theNbUIso);
+      isFaceUClosed = false;
+      double du = isFaceUClosed ? (aUMax - aUMin) / theNbUIso : (aUMax - aUMin) / (1 + theNbUIso);
       for (anI = 1; anI <= theNbUIso; anI++)
       {
         anIsoBuild.AddXLine(aUMin + du * anI);
@@ -96,9 +99,8 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
   {
     if (theNBVIso > 0)
     {
-      isFaceVClosed = Standard_False;
-      Standard_Real dv =
-        isFaceVClosed ? (aVMax - aVMin) / theNBVIso : (aVMax - aVMin) / (1 + theNBVIso);
+      isFaceVClosed = false;
+      double dv = isFaceVClosed ? (aVMax - aVMin) / theNBVIso : (aVMax - aVMin) / (1 + theNBVIso);
       for (anI = 1; anI <= theNBVIso; anI++)
       {
         anIsoBuild.AddYLine(aVMin + dv * anI);
@@ -107,7 +109,7 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
   }
 
   // Trim the isos
-  Standard_Real anU1, anU2, anU, aDU;
+  double anU1, anU2, anU, aDU;
 
   for (aToolRst.Init(); aToolRst.More(); aToolRst.Next())
   {
@@ -144,12 +146,12 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
   // Draw the isos
   Adaptor3d_IsoCurve anIsoCurve;
   anIsoCurve.Load(theFace);
-  Handle(Geom_Curve)         aBCurve;
+  occ::handle<Geom_Curve>    aBCurve;
   const BRepAdaptor_Surface& aBSurface = *theFace;
   GeomAbs_SurfaceType        aFaceType = theFace->GetType();
 
-  Standard_Integer     aNbLines = anIsoBuild.NbLines();
-  Handle(Geom_Surface) aGeomBSurface;
+  int                       aNbLines = anIsoBuild.NbLines();
+  occ::handle<Geom_Surface> aGeomBSurface;
   if (aFaceType == GeomAbs_BezierSurface)
   {
     aGeomBSurface = aBSurface.Bezier();
@@ -161,16 +163,16 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
 
   for (anI = 1; anI <= aNbLines; ++anI)
   {
-    Standard_Integer NumberOfIntervals = anIsoBuild.NbIntervals(anI);
-    Standard_Real    anIsoCoord        = anIsoBuild.Coordinate(anI);
-    for (Standard_Integer aJ = 1; aJ <= NumberOfIntervals; aJ++)
+    int    NumberOfIntervals = anIsoBuild.NbIntervals(anI);
+    double anIsoCoord        = anIsoBuild.Coordinate(anI);
+    for (int aJ = 1; aJ <= NumberOfIntervals; aJ++)
     {
-      Standard_Real b1 = anIsoBuild.Start(anI, aJ), b2 = anIsoBuild.End(anI, aJ);
+      double b1 = anIsoBuild.Start(anI, aJ), b2 = anIsoBuild.End(anI, aJ);
 
       if (b1 == RealFirst() || b2 == RealLast())
         continue;
 
-      Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt;
+      occ::handle<NCollection_HSequence<gp_Pnt>> aPoints = new NCollection_HSequence<gp_Pnt>;
       if (!aGeomBSurface.IsNull())
       {
         if (anIsoBuild.IsXLine(anI))
@@ -190,7 +192,7 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
                           b2,
                           aPoints->ChangeSequence(),
                           30,
-                          Standard_False);
+                          false);
         theCurves.Append(aPoints);
       }
       else
@@ -203,11 +205,7 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
         {
           anIsoCurve.Load(GeomAbs_IsoV, anIsoCoord, b1, b2);
         }
-        StdPrs_Curve::Add(thePresentation,
-                          anIsoCurve,
-                          theDrawer,
-                          aPoints->ChangeSequence(),
-                          Standard_False);
+        StdPrs_Curve::Add(thePresentation, anIsoCurve, theDrawer, aPoints->ChangeSequence(), false);
         theCurves.Append(aPoints);
       }
     }
@@ -216,26 +214,26 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_WFRestrictedFace::Match(const Standard_Real                theX,
-                                                const Standard_Real                theY,
-                                                const Standard_Real                theZ,
-                                                const Standard_Real                theDistance,
-                                                const Handle(BRepAdaptor_Surface)& theFace,
-                                                const Standard_Boolean             theDrawUIso,
-                                                const Standard_Boolean             theDrawVIso,
-                                                const Standard_Real                theDeflection,
-                                                const Standard_Integer             theNbUIso,
-                                                const Standard_Integer             theNBVIso,
-                                                const Handle(Prs3d_Drawer)&        theDrawer)
+bool StdPrs_WFRestrictedFace::Match(const double                            theX,
+                                    const double                            theY,
+                                    const double                            theZ,
+                                    const double                            theDistance,
+                                    const occ::handle<BRepAdaptor_Surface>& theFace,
+                                    const bool                              theDrawUIso,
+                                    const bool                              theDrawVIso,
+                                    const double                            theDeflection,
+                                    const int                               theNbUIso,
+                                    const int                               theNBVIso,
+                                    const occ::handle<Prs3d_Drawer>&        theDrawer)
 {
-  Standard_Real    aLimit    = theDrawer->MaximalParameterValue();
-  Standard_Integer aNbPoints = theDrawer->Discretisation();
+  double           aLimit    = theDrawer->MaximalParameterValue();
+  int              aNbPoints = theDrawer->Discretisation();
   StdPrs_ToolRFace aToolRst(theFace);
 
   // Compute bounds of the restriction
-  Standard_Real    anUMin, anUMax, aVMin, aVMax;
-  Standard_Real    anU, aV, aStep;
-  Standard_Integer anI, anNbP = 10;
+  double anUMin, anUMax, aVMin, aVMax;
+  double anU, aV, aStep;
+  int    anI, anNbP = 10;
   anUMin = aVMin = RealLast();
   anUMax = aVMax = RealFirst();
   gp_Pnt2d aPoint1, aPoint2;
@@ -287,9 +285,9 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match(const Standard_Real             
   }
 
   // Load the isos
-  Hatch_Hatcher    anIsoBuild(1.e-5, aToolRst.IsOriented());
-  Standard_Boolean anUClosed = theFace->IsUClosed();
-  Standard_Boolean aVClosed  = theFace->IsVClosed();
+  Hatch_Hatcher anIsoBuild(1.e-5, aToolRst.IsOriented());
+  bool          anUClosed = theFace->IsUClosed();
+  bool          aVClosed  = theFace->IsVClosed();
 
   if (!anUClosed)
   {
@@ -307,9 +305,8 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match(const Standard_Real             
   {
     if (theNbUIso > 0)
     {
-      anUClosed = Standard_False;
-      Standard_Real du =
-        anUClosed ? (anUMax - anUMin) / theNbUIso : (anUMax - anUMin) / (1 + theNbUIso);
+      anUClosed = false;
+      double du = anUClosed ? (anUMax - anUMin) / theNbUIso : (anUMax - anUMin) / (1 + theNbUIso);
       for (anI = 1; anI <= theNbUIso; anI++)
       {
         anIsoBuild.AddXLine(anUMin + du * anI);
@@ -320,8 +317,8 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match(const Standard_Real             
   {
     if (theNBVIso > 0)
     {
-      aVClosed         = Standard_False;
-      Standard_Real dv = aVClosed ? (aVMax - aVMin) / theNBVIso : (aVMax - aVMin) / (1 + theNBVIso);
+      aVClosed  = false;
+      double dv = aVClosed ? (aVMax - aVMin) / theNBVIso : (aVMax - aVMin) / (1 + theNBVIso);
       for (anI = 1; anI <= theNBVIso; anI++)
       {
         anIsoBuild.AddYLine(aVMin + dv * anI);
@@ -330,7 +327,7 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match(const Standard_Real             
   }
 
   // Trim the isos
-  Standard_Real anU1, anU2, aDU;
+  double anU1, anU2, aDU;
 
   for (aToolRst.Init(); aToolRst.More(); aToolRst.Next())
   {
@@ -368,15 +365,15 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match(const Standard_Real             
 
   Adaptor3d_IsoCurve anIso;
   anIso.Load(theFace);
-  Standard_Integer aNbLines = anIsoBuild.NbLines();
+  int aNbLines = anIsoBuild.NbLines();
 
   for (anI = 1; anI <= aNbLines; anI++)
   {
-    Standard_Integer aNbIntervals = anIsoBuild.NbIntervals(anI);
-    Standard_Real    aCoord       = anIsoBuild.Coordinate(anI);
-    for (Standard_Integer j = 1; j <= aNbIntervals; j++)
+    int    aNbIntervals = anIsoBuild.NbIntervals(anI);
+    double aCoord       = anIsoBuild.Coordinate(anI);
+    for (int j = 1; j <= aNbIntervals; j++)
     {
-      Standard_Real anIsoStart = anIsoBuild.Start(anI, j), anIsoEnd = anIsoBuild.End(anI, j);
+      double anIsoStart = anIsoBuild.Start(anI, j), anIsoEnd = anIsoBuild.End(anI, j);
 
       anIsoStart = anIsoStart == RealFirst() ? -aLimit : anIsoStart;
       anIsoEnd   = anIsoEnd == RealLast() ? aLimit : anIsoEnd;
@@ -394,23 +391,23 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match(const Standard_Real             
                               theDeflection,
                               aLimit,
                               aNbPoints))
-        return Standard_True;
+        return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresentation,
-                                  const Handle(BRepAdaptor_Surface)& theFace,
-                                  const Handle(Prs3d_Drawer)&        theDrawer)
+void StdPrs_WFRestrictedFace::Add(const occ::handle<Prs3d_Presentation>&  thePresentation,
+                                  const occ::handle<BRepAdaptor_Surface>& theFace,
+                                  const occ::handle<Prs3d_Drawer>&        theDrawer)
 {
-  Prs3d_NListOfSequenceOfPnt aCurves;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aCurves;
   StdPrs_WFRestrictedFace::Add(thePresentation,
                                theFace,
-                               Standard_True,
-                               Standard_True,
+                               true,
+                               true,
                                theDrawer->UIsoAspect()->Number(),
                                theDrawer->VIsoAspect()->Number(),
                                theDrawer,
@@ -419,15 +416,15 @@ void StdPrs_WFRestrictedFace::Add(const Handle(Prs3d_Presentation)&  thePresenta
 
 //=================================================================================================
 
-void StdPrs_WFRestrictedFace::AddUIso(const Handle(Prs3d_Presentation)&  thePresentation,
-                                      const Handle(BRepAdaptor_Surface)& theFace,
-                                      const Handle(Prs3d_Drawer)&        theDrawer)
+void StdPrs_WFRestrictedFace::AddUIso(const occ::handle<Prs3d_Presentation>&  thePresentation,
+                                      const occ::handle<BRepAdaptor_Surface>& theFace,
+                                      const occ::handle<Prs3d_Drawer>&        theDrawer)
 {
-  Prs3d_NListOfSequenceOfPnt aCurves;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aCurves;
   StdPrs_WFRestrictedFace::Add(thePresentation,
                                theFace,
-                               Standard_True,
-                               Standard_False,
+                               true,
+                               false,
                                theDrawer->UIsoAspect()->Number(),
                                theDrawer->VIsoAspect()->Number(),
                                theDrawer,
@@ -436,15 +433,15 @@ void StdPrs_WFRestrictedFace::AddUIso(const Handle(Prs3d_Presentation)&  thePres
 
 //=================================================================================================
 
-void StdPrs_WFRestrictedFace::AddVIso(const Handle(Prs3d_Presentation)&  thePresentation,
-                                      const Handle(BRepAdaptor_Surface)& theFace,
-                                      const Handle(Prs3d_Drawer)&        theDrawer)
+void StdPrs_WFRestrictedFace::AddVIso(const occ::handle<Prs3d_Presentation>&  thePresentation,
+                                      const occ::handle<BRepAdaptor_Surface>& theFace,
+                                      const occ::handle<Prs3d_Drawer>&        theDrawer)
 {
-  Prs3d_NListOfSequenceOfPnt aCurves;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aCurves;
   StdPrs_WFRestrictedFace::Add(thePresentation,
                                theFace,
-                               Standard_False,
-                               Standard_True,
+                               false,
+                               true,
                                theDrawer->UIsoAspect()->Number(),
                                theDrawer->VIsoAspect()->Number(),
                                theDrawer,
@@ -453,20 +450,20 @@ void StdPrs_WFRestrictedFace::AddVIso(const Handle(Prs3d_Presentation)&  thePres
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_WFRestrictedFace::Match(const Standard_Real                theX,
-                                                const Standard_Real                theY,
-                                                const Standard_Real                theZ,
-                                                const Standard_Real                theDistance,
-                                                const Handle(BRepAdaptor_Surface)& theFace,
-                                                const Handle(Prs3d_Drawer)&        theDrawer)
+bool StdPrs_WFRestrictedFace::Match(const double                            theX,
+                                    const double                            theY,
+                                    const double                            theZ,
+                                    const double                            theDistance,
+                                    const occ::handle<BRepAdaptor_Surface>& theFace,
+                                    const occ::handle<Prs3d_Drawer>&        theDrawer)
 {
   return StdPrs_WFRestrictedFace::Match(theX,
                                         theY,
                                         theZ,
                                         theDistance,
                                         theFace,
-                                        Standard_True,
-                                        Standard_True,
+                                        true,
+                                        true,
                                         theDrawer->MaximalChordialDeviation(),
                                         theDrawer->UIsoAspect()->Number(),
                                         theDrawer->VIsoAspect()->Number(),
@@ -475,20 +472,20 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match(const Standard_Real             
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_WFRestrictedFace::MatchUIso(const Standard_Real                theX,
-                                                    const Standard_Real                theY,
-                                                    const Standard_Real                theZ,
-                                                    const Standard_Real                theDistance,
-                                                    const Handle(BRepAdaptor_Surface)& theFace,
-                                                    const Handle(Prs3d_Drawer)&        theDrawer)
+bool StdPrs_WFRestrictedFace::MatchUIso(const double                            theX,
+                                        const double                            theY,
+                                        const double                            theZ,
+                                        const double                            theDistance,
+                                        const occ::handle<BRepAdaptor_Surface>& theFace,
+                                        const occ::handle<Prs3d_Drawer>&        theDrawer)
 {
   return StdPrs_WFRestrictedFace::Match(theX,
                                         theY,
                                         theZ,
                                         theDistance,
                                         theFace,
-                                        Standard_True,
-                                        Standard_False,
+                                        true,
+                                        false,
                                         theDrawer->MaximalChordialDeviation(),
                                         theDrawer->UIsoAspect()->Number(),
                                         theDrawer->VIsoAspect()->Number(),
@@ -497,20 +494,20 @@ Standard_Boolean StdPrs_WFRestrictedFace::MatchUIso(const Standard_Real         
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_WFRestrictedFace::MatchVIso(const Standard_Real                theX,
-                                                    const Standard_Real                theY,
-                                                    const Standard_Real                theZ,
-                                                    const Standard_Real                theDistance,
-                                                    const Handle(BRepAdaptor_Surface)& theFace,
-                                                    const Handle(Prs3d_Drawer)&        theDrawer)
+bool StdPrs_WFRestrictedFace::MatchVIso(const double                            theX,
+                                        const double                            theY,
+                                        const double                            theZ,
+                                        const double                            theDistance,
+                                        const occ::handle<BRepAdaptor_Surface>& theFace,
+                                        const occ::handle<Prs3d_Drawer>&        theDrawer)
 {
   return StdPrs_WFRestrictedFace::Match(theX,
                                         theY,
                                         theZ,
                                         theDistance,
                                         theFace,
-                                        Standard_False,
-                                        Standard_True,
+                                        false,
+                                        true,
                                         theDrawer->MaximalChordialDeviation(),
                                         theDrawer->UIsoAspect()->Number(),
                                         theDrawer->VIsoAspect()->Number(),

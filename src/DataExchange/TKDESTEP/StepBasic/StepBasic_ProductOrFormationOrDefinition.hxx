@@ -41,19 +41,17 @@ public:
   //! 2 -> ProductDefinitionFormation from StepBasic
   //! 3 -> ProductDefinition from StepBasic
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as Product (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_Product) Product() const;
+  Standard_EXPORT occ::handle<StepBasic_Product> Product() const;
 
   //! Returns Value as ProductDefinitionFormation (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 
   //! Returns Value as ProductDefinition (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
-
-protected:
-private:
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 };
 
 #endif // _StepBasic_ProductOrFormationOrDefinition_HeaderFile

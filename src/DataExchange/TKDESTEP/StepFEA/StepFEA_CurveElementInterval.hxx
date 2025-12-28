@@ -23,9 +23,6 @@
 class StepFEA_CurveElementLocation;
 class StepBasic_EulerAngles;
 
-class StepFEA_CurveElementInterval;
-DEFINE_STANDARD_HANDLE(StepFEA_CurveElementInterval, Standard_Transient)
-
 //! Representation of STEP entity CurveElementInterval
 class StepFEA_CurveElementInterval : public Standard_Transient
 {
@@ -35,28 +32,27 @@ public:
   Standard_EXPORT StepFEA_CurveElementInterval();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepFEA_CurveElementLocation)& aFinishPosition,
-                            const Handle(StepBasic_EulerAngles)&        aEuAngles);
+  Standard_EXPORT void Init(const occ::handle<StepFEA_CurveElementLocation>& aFinishPosition,
+                            const occ::handle<StepBasic_EulerAngles>&        aEuAngles);
 
   //! Returns field FinishPosition
-  Standard_EXPORT Handle(StepFEA_CurveElementLocation) FinishPosition() const;
+  Standard_EXPORT occ::handle<StepFEA_CurveElementLocation> FinishPosition() const;
 
   //! Set field FinishPosition
   Standard_EXPORT void SetFinishPosition(
-    const Handle(StepFEA_CurveElementLocation)& FinishPosition);
+    const occ::handle<StepFEA_CurveElementLocation>& FinishPosition);
 
   //! Returns field EuAngles
-  Standard_EXPORT Handle(StepBasic_EulerAngles) EuAngles() const;
+  Standard_EXPORT occ::handle<StepBasic_EulerAngles> EuAngles() const;
 
   //! Set field EuAngles
-  Standard_EXPORT void SetEuAngles(const Handle(StepBasic_EulerAngles)& EuAngles);
+  Standard_EXPORT void SetEuAngles(const occ::handle<StepBasic_EulerAngles>& EuAngles);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementInterval, Standard_Transient)
 
-protected:
 private:
-  Handle(StepFEA_CurveElementLocation) theFinishPosition;
-  Handle(StepBasic_EulerAngles)        theEuAngles;
+  occ::handle<StepFEA_CurveElementLocation> theFinishPosition;
+  occ::handle<StepBasic_EulerAngles>        theEuAngles;
 };
 
 #endif // _StepFEA_CurveElementInterval_HeaderFile

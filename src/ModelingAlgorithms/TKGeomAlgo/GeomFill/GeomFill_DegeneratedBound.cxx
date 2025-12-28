@@ -23,11 +23,11 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_DegeneratedBound, GeomFill_Boundary)
 
 //=================================================================================================
 
-GeomFill_DegeneratedBound::GeomFill_DegeneratedBound(const gp_Pnt&       Point,
-                                                     const Standard_Real First,
-                                                     const Standard_Real Last,
-                                                     const Standard_Real Tol3d,
-                                                     const Standard_Real Tolang)
+GeomFill_DegeneratedBound::GeomFill_DegeneratedBound(const gp_Pnt& Point,
+                                                     const double  First,
+                                                     const double  Last,
+                                                     const double  Tol3d,
+                                                     const double  Tolang)
     : GeomFill_Boundary(Tol3d, Tolang),
       myPoint(Point),
       myFirst(First),
@@ -37,16 +37,16 @@ GeomFill_DegeneratedBound::GeomFill_DegeneratedBound(const gp_Pnt&       Point,
 
 //=================================================================================================
 
-// gp_Pnt GeomFill_DegeneratedBound::Value(const Standard_Real U) const
-gp_Pnt GeomFill_DegeneratedBound::Value(const Standard_Real) const
+// gp_Pnt GeomFill_DegeneratedBound::Value(const double U) const
+gp_Pnt GeomFill_DegeneratedBound::Value(const double) const
 {
   return myPoint;
 }
 
 //=================================================================================================
 
-// void GeomFill_DegeneratedBound::D1(const Standard_Real U,
-void GeomFill_DegeneratedBound::D1(const Standard_Real, gp_Pnt& P, gp_Vec& V) const
+// void GeomFill_DegeneratedBound::D1(const double U,
+void GeomFill_DegeneratedBound::D1(const double, gp_Pnt& P, gp_Vec& V) const
 {
   P = myPoint;
   V.SetCoord(0., 0., 0.);
@@ -54,13 +54,13 @@ void GeomFill_DegeneratedBound::D1(const Standard_Real, gp_Pnt& P, gp_Vec& V) co
 
 //=================================================================================================
 
-void GeomFill_DegeneratedBound::Reparametrize(const Standard_Real First,
-                                              const Standard_Real Last,
-                                              const Standard_Boolean,
-                                              const Standard_Boolean,
-                                              const Standard_Real,
-                                              const Standard_Real,
-                                              const Standard_Boolean)
+void GeomFill_DegeneratedBound::Reparametrize(const double First,
+                                              const double Last,
+                                              const bool,
+                                              const bool,
+                                              const double,
+                                              const double,
+                                              const bool)
 {
   myFirst = First;
   myLast  = Last;
@@ -68,7 +68,7 @@ void GeomFill_DegeneratedBound::Reparametrize(const Standard_Real First,
 
 //=================================================================================================
 
-void GeomFill_DegeneratedBound::Bounds(Standard_Real& First, Standard_Real& Last) const
+void GeomFill_DegeneratedBound::Bounds(double& First, double& Last) const
 {
   First = myFirst;
   Last  = myLast;
@@ -76,7 +76,7 @@ void GeomFill_DegeneratedBound::Bounds(Standard_Real& First, Standard_Real& Last
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_DegeneratedBound::IsDegenerated() const
+bool GeomFill_DegeneratedBound::IsDegenerated() const
 {
-  return Standard_True;
+  return true;
 }

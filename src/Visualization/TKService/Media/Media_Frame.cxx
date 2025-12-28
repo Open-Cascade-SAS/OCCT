@@ -155,7 +155,8 @@ bool Media_Frame::IsFullRangeYUV() const
 
 //=================================================================================================
 
-void Media_Frame::Swap(const Handle(Media_Frame)& theFrame1, const Handle(Media_Frame)& theFrame2)
+void Media_Frame::Swap(const occ::handle<Media_Frame>& theFrame1,
+                       const occ::handle<Media_Frame>& theFrame2)
 {
   std::swap(theFrame1->myFrame, theFrame2->myFrame);
 }
@@ -241,7 +242,7 @@ int64_t Media_Frame::BestEffortTimestamp() const
 
 //=================================================================================================
 
-bool Media_Frame::InitWrapper(const Handle(Image_PixMap)& thePixMap)
+bool Media_Frame::InitWrapper(const occ::handle<Image_PixMap>& thePixMap)
 {
   Unref();
   if (thePixMap.IsNull())

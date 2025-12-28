@@ -20,7 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopTools_LocationSet.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
@@ -47,10 +48,10 @@ public:
   Standard_EXPORT virtual ~TopTools_ShapeSet();
 
   //! Sets the TopTools_FormatVersion
-  Standard_EXPORT void SetFormatNb(const Standard_Integer theFormatNb);
+  Standard_EXPORT void SetFormatNb(const int theFormatNb);
 
   //! Returns the TopTools_FormatVersion
-  Standard_EXPORT Standard_Integer FormatNb() const;
+  Standard_EXPORT int FormatNb() const;
 
   //! Clears the content of the set. This method can be
   //! redefined.
@@ -58,13 +59,13 @@ public:
 
   //! Stores <S> and its sub-shape. Returns the index of <S>.
   //! The method AddGeometry is called on each sub-shape.
-  Standard_EXPORT Standard_Integer Add(const TopoDS_Shape& S);
+  Standard_EXPORT int Add(const TopoDS_Shape& S);
 
   //! Returns the sub-shape of index <I>.
-  Standard_EXPORT const TopoDS_Shape& Shape(const Standard_Integer I) const;
+  Standard_EXPORT const TopoDS_Shape& Shape(const int I) const;
 
   //! Returns the index of <S>.
-  Standard_EXPORT Standard_Integer Index(const TopoDS_Shape& S) const;
+  Standard_EXPORT int Index(const TopoDS_Shape& S) const;
 
   Standard_EXPORT const TopTools_LocationSet& Locations() const;
 
@@ -178,21 +179,19 @@ public:
   Standard_EXPORT virtual void Check(const TopAbs_ShapeEnum T, TopoDS_Shape& S);
 
   //! Returns number of shapes read from file.
-  Standard_EXPORT Standard_Integer NbShapes() const;
+  Standard_EXPORT int NbShapes() const;
 
 public:
-  static const Standard_CString THE_ASCII_VERSIONS[TopTools_FormatVersion_VERSION_3 + 1];
+  static const char* THE_ASCII_VERSIONS[TopTools_FormatVersion_VERSION_3 + 1];
 
 private:
   //! Reads from <IS> a shape and returns it in S.
   //! <NbShapes> is the number of tshapes in the set.
-  Standard_EXPORT void Read(TopoDS_Shape&          S,
-                            Standard_IStream&      IS,
-                            const Standard_Integer NbShapes) const;
+  Standard_EXPORT void Read(TopoDS_Shape& S, Standard_IStream& IS, const int NbShapes) const;
 
-  TopTools_IndexedMapOfShape myShapes;
-  TopTools_LocationSet       myLocations;
-  Standard_Integer           myFormatNb;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myShapes;
+  TopTools_LocationSet                                          myLocations;
+  int                                                           myFormatNb;
 };
 
 #endif // _TopTools_ShapeSet_HeaderFile

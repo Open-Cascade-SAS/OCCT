@@ -20,19 +20,17 @@
 
 //=================================================================================================
 
-BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const Standard_Real R1,
-                                           const Standard_Real R2,
-                                           const Standard_Real H)
+BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const double R1, const double R2, const double H)
     : myCone(gp::XOY(), R1, R2, H)
 {
 }
 
 //=================================================================================================
 
-BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const Standard_Real R1,
-                                           const Standard_Real R2,
-                                           const Standard_Real H,
-                                           const Standard_Real angle)
+BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const double R1,
+                                           const double R2,
+                                           const double H,
+                                           const double angle)
     : myCone(R1, R2, H)
 {
   myCone.Angle(angle);
@@ -40,21 +38,21 @@ BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const Standard_Real R1,
 
 //=================================================================================================
 
-BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const gp_Ax2&       Axes,
-                                           const Standard_Real R1,
-                                           const Standard_Real R2,
-                                           const Standard_Real H)
+BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const gp_Ax2& Axes,
+                                           const double  R1,
+                                           const double  R2,
+                                           const double  H)
     : myCone(Axes, R1, R2, H)
 {
 }
 
 //=================================================================================================
 
-BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const gp_Ax2&       Axes,
-                                           const Standard_Real R1,
-                                           const Standard_Real R2,
-                                           const Standard_Real H,
-                                           const Standard_Real angle)
+BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const gp_Ax2& Axes,
+                                           const double  R1,
+                                           const double  R2,
+                                           const double  H,
+                                           const double  angle)
     : myCone(Axes, R1, R2, H)
 {
   myCone.Angle(angle);
@@ -62,7 +60,7 @@ BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const gp_Ax2&       Axes,
 
 //=================================================================================================
 
-Standard_Address BRepPrimAPI_MakeCone::OneAxis()
+void* BRepPrimAPI_MakeCone::OneAxis()
 {
   return &myCone;
 }

@@ -24,8 +24,6 @@
 #include <StepKinematics_KinematicPair.hxx>
 #include <StepGeom_PointOnSurface.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_SlidingSurfacePairValue, StepKinematics_PairValue)
-
 //! Representation of STEP entity SlidingSurfacePairValue
 class StepKinematics_SlidingSurfacePairValue : public StepKinematics_PairValue
 {
@@ -34,34 +32,35 @@ public:
   Standard_EXPORT StepKinematics_SlidingSurfacePairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                            const Handle(StepGeom_PointOnSurface)&      theActualPointOnSurface1,
-                            const Handle(StepGeom_PointOnSurface)&      theActualPointOnSurface2,
-                            const Standard_Real                         theActualRotation);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+    const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface1,
+    const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface2,
+    const double                                     theActualRotation);
 
   //! Returns field ActualPointOnSurface1
-  Standard_EXPORT Handle(StepGeom_PointOnSurface) ActualPointOnSurface1() const;
+  Standard_EXPORT occ::handle<StepGeom_PointOnSurface> ActualPointOnSurface1() const;
   //! Sets field ActualPointOnSurface1
   Standard_EXPORT void SetActualPointOnSurface1(
-    const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface1);
+    const occ::handle<StepGeom_PointOnSurface>& theActualPointOnSurface1);
 
   //! Returns field ActualPointOnSurface2
-  Standard_EXPORT Handle(StepGeom_PointOnSurface) ActualPointOnSurface2() const;
+  Standard_EXPORT occ::handle<StepGeom_PointOnSurface> ActualPointOnSurface2() const;
   //! Sets field ActualPointOnSurface2
   Standard_EXPORT void SetActualPointOnSurface2(
-    const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface2);
+    const occ::handle<StepGeom_PointOnSurface>& theActualPointOnSurface2);
 
   //! Returns field ActualRotation
-  Standard_EXPORT Standard_Real ActualRotation() const;
+  Standard_EXPORT double ActualRotation() const;
   //! Sets field ActualRotation
-  Standard_EXPORT void SetActualRotation(const Standard_Real theActualRotation);
+  Standard_EXPORT void SetActualRotation(const double theActualRotation);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_SlidingSurfacePairValue, StepKinematics_PairValue)
 
 private:
-  Handle(StepGeom_PointOnSurface) myActualPointOnSurface1;
-  Handle(StepGeom_PointOnSurface) myActualPointOnSurface2;
-  Standard_Real                   myActualRotation;
+  occ::handle<StepGeom_PointOnSurface> myActualPointOnSurface1;
+  occ::handle<StepGeom_PointOnSurface> myActualPointOnSurface2;
+  double                               myActualRotation;
 };
 #endif // _StepKinematics_SlidingSurfacePairValue_HeaderFile_

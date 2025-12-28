@@ -36,9 +36,10 @@ const Standard_GUID& TDocStd_Owner::GetID()
 
 //=================================================================================================
 
-void TDocStd_Owner::SetDocument(const Handle(TDF_Data)& indata, const Handle(TDocStd_Document)& doc)
+void TDocStd_Owner::SetDocument(const occ::handle<TDF_Data>&         indata,
+                                const occ::handle<TDocStd_Document>& doc)
 {
-  Handle(TDocStd_Owner) A;
+  occ::handle<TDocStd_Owner> A;
   if (!indata->Root().FindAttribute(TDocStd_Owner::GetID(), A))
   {
     A = new TDocStd_Owner();
@@ -53,9 +54,9 @@ void TDocStd_Owner::SetDocument(const Handle(TDF_Data)& indata, const Handle(TDo
 
 //=================================================================================================
 
-void TDocStd_Owner::SetDocument(const Handle(TDF_Data)& indata, TDocStd_Document* doc)
+void TDocStd_Owner::SetDocument(const occ::handle<TDF_Data>& indata, TDocStd_Document* doc)
 {
-  Handle(TDocStd_Owner) A;
+  occ::handle<TDocStd_Owner> A;
   if (!indata->Root().FindAttribute(TDocStd_Owner::GetID(), A))
   {
     A = new TDocStd_Owner();
@@ -70,9 +71,9 @@ void TDocStd_Owner::SetDocument(const Handle(TDF_Data)& indata, TDocStd_Document
 
 //=================================================================================================
 
-Handle(TDocStd_Document) TDocStd_Owner::GetDocument(const Handle(TDF_Data)& ofdata)
+occ::handle<TDocStd_Document> TDocStd_Owner::GetDocument(const occ::handle<TDF_Data>& ofdata)
 {
-  Handle(TDocStd_Owner) A;
+  occ::handle<TDocStd_Owner> A;
   if (!ofdata->Root().FindAttribute(TDocStd_Owner::GetID(), A))
   {
     throw Standard_DomainError("TDocStd_Owner::GetDocument : document not found");
@@ -86,7 +87,7 @@ TDocStd_Owner::TDocStd_Owner() {}
 
 //=================================================================================================
 
-void TDocStd_Owner::SetDocument(const Handle(TDocStd_Document)& document)
+void TDocStd_Owner::SetDocument(const occ::handle<TDocStd_Document>& document)
 {
   myDocument = document.get();
 }
@@ -100,9 +101,9 @@ void TDocStd_Owner::SetDocument(TDocStd_Document* document)
 
 //=================================================================================================
 
-Handle(TDocStd_Document) TDocStd_Owner::GetDocument() const
+occ::handle<TDocStd_Document> TDocStd_Owner::GetDocument() const
 {
-  return Handle(TDocStd_Document)(myDocument);
+  return occ::handle<TDocStd_Document>(myDocument);
 }
 
 //=================================================================================================
@@ -114,19 +115,22 @@ const Standard_GUID& TDocStd_Owner::ID() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDocStd_Owner::NewEmpty() const
+occ::handle<TDF_Attribute> TDocStd_Owner::NewEmpty() const
 {
-  Handle(TDF_Attribute) dummy;
+  occ::handle<TDF_Attribute> dummy;
   return dummy;
 }
 
 //=================================================================================================
 
-void TDocStd_Owner::Restore(const Handle(TDF_Attribute)&) {}
+void TDocStd_Owner::Restore(const occ::handle<TDF_Attribute>&) {}
 
 //=================================================================================================
 
-void TDocStd_Owner::Paste(const Handle(TDF_Attribute)&, const Handle(TDF_RelocationTable)&) const {}
+void TDocStd_Owner::Paste(const occ::handle<TDF_Attribute>&,
+                          const occ::handle<TDF_RelocationTable>&) const
+{
+}
 
 //=================================================================================================
 
@@ -138,7 +142,7 @@ Standard_OStream& TDocStd_Owner::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDocStd_Owner::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDocStd_Owner::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

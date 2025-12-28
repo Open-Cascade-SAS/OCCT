@@ -18,147 +18,147 @@
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SetEpsilon(const Standard_Real eps)
+inline void IGESToBRep_CurveAndSurface::SetEpsilon(const double eps)
 {
   myEps = eps;
 }
 
 //=================================================================================================
 
-inline Standard_Real IGESToBRep_CurveAndSurface::GetEpsilon() const
+inline double IGESToBRep_CurveAndSurface::GetEpsilon() const
 {
   return myEps;
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SetEpsCoeff(const Standard_Real eps)
+inline void IGESToBRep_CurveAndSurface::SetEpsCoeff(const double eps)
 {
   myEpsCoeff = eps;
 }
 
 //=================================================================================================
 
-inline Standard_Real IGESToBRep_CurveAndSurface::GetEpsCoeff() const
+inline double IGESToBRep_CurveAndSurface::GetEpsCoeff() const
 {
   return myEpsCoeff;
 }
 
 //=================================================================================================
 
-inline Standard_Real IGESToBRep_CurveAndSurface::GetEpsGeom() const
+inline double IGESToBRep_CurveAndSurface::GetEpsGeom() const
 {
   return myEpsGeom;
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SetMinTol(const Standard_Real mintol)
+inline void IGESToBRep_CurveAndSurface::SetMinTol(const double mintol)
 {
   myMinTol = mintol;
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SetMaxTol(const Standard_Real maxtol)
+inline void IGESToBRep_CurveAndSurface::SetMaxTol(const double maxtol)
 {
   myMaxTol = maxtol;
 }
 
 //=================================================================================================
 
-inline Standard_Real IGESToBRep_CurveAndSurface::GetMinTol() const
+inline double IGESToBRep_CurveAndSurface::GetMinTol() const
 {
   return myMinTol;
 }
 
 //=================================================================================================
 
-inline Standard_Real IGESToBRep_CurveAndSurface::GetMaxTol() const
+inline double IGESToBRep_CurveAndSurface::GetMaxTol() const
 {
   return myMaxTol;
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SetModeApprox(const Standard_Boolean mode)
+inline void IGESToBRep_CurveAndSurface::SetModeApprox(const bool mode)
 {
   myModeApprox = mode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean IGESToBRep_CurveAndSurface::GetModeApprox() const
+inline bool IGESToBRep_CurveAndSurface::GetModeApprox() const
 {
   return myModeApprox;
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SetModeTransfer(const Standard_Boolean mode)
+inline void IGESToBRep_CurveAndSurface::SetModeTransfer(const bool mode)
 {
   myModeIsTopo = mode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean IGESToBRep_CurveAndSurface::GetModeTransfer() const
+inline bool IGESToBRep_CurveAndSurface::GetModeTransfer() const
 {
   return myModeIsTopo;
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SetOptimized(const Standard_Boolean optimized)
+inline void IGESToBRep_CurveAndSurface::SetOptimized(const bool optimized)
 {
   myContIsOpti = optimized;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean IGESToBRep_CurveAndSurface::GetOptimized() const
+inline bool IGESToBRep_CurveAndSurface::GetOptimized() const
 {
   return myContIsOpti;
 }
 
 //=================================================================================================
 
-inline Standard_Real IGESToBRep_CurveAndSurface::GetUnitFactor() const
+inline double IGESToBRep_CurveAndSurface::GetUnitFactor() const
 {
   return myUnitFactor;
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SetSurfaceCurve(const Standard_Integer ival)
+inline void IGESToBRep_CurveAndSurface::SetSurfaceCurve(const int ival)
 {
   mySurfaceCurve = ival;
 }
 
 //=================================================================================================
 
-inline Standard_Integer IGESToBRep_CurveAndSurface::GetSurfaceCurve() const
+inline int IGESToBRep_CurveAndSurface::GetSurfaceCurve() const
 {
   return mySurfaceCurve;
 }
 
 //=================================================================================================
 
-inline Handle(IGESData_IGESModel) IGESToBRep_CurveAndSurface::GetModel() const
+inline occ::handle<IGESData_IGESModel> IGESToBRep_CurveAndSurface::GetModel() const
 {
   return myModel;
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SetContinuity(const Standard_Integer continuity)
+inline void IGESToBRep_CurveAndSurface::SetContinuity(const int continuity)
 {
   myContinuity = continuity;
 }
 
 //=================================================================================================
 
-inline Standard_Integer IGESToBRep_CurveAndSurface::GetContinuity() const
+inline int IGESToBRep_CurveAndSurface::GetContinuity() const
 {
   return myContinuity;
 }
@@ -166,38 +166,38 @@ inline Standard_Integer IGESToBRep_CurveAndSurface::GetContinuity() const
 //=================================================================================================
 
 inline void IGESToBRep_CurveAndSurface::SetTransferProcess(
-  const Handle(Transfer_TransientProcess)& TP)
+  const occ::handle<Transfer_TransientProcess>& TP)
 {
   myTP = TP;
 }
 
 //=================================================================================================
 
-inline Handle(Transfer_TransientProcess) IGESToBRep_CurveAndSurface::GetTransferProcess() const
+inline occ::handle<Transfer_TransientProcess> IGESToBRep_CurveAndSurface::GetTransferProcess() const
 {
   return myTP;
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SendFail(const Handle(IGESData_IGESEntity)& start,
-                                                 const Message_Msg&                 amsg)
+inline void IGESToBRep_CurveAndSurface::SendFail(const occ::handle<IGESData_IGESEntity>& start,
+                                                 const Message_Msg&                      amsg)
 {
   GetTransferProcess()->SendFail(start, amsg);
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SendWarning(const Handle(IGESData_IGESEntity)& start,
-                                                    const Message_Msg&                 amsg)
+inline void IGESToBRep_CurveAndSurface::SendWarning(const occ::handle<IGESData_IGESEntity>& start,
+                                                    const Message_Msg&                      amsg)
 {
   GetTransferProcess()->SendWarning(start, amsg);
 }
 
 //=================================================================================================
 
-inline void IGESToBRep_CurveAndSurface::SendMsg(const Handle(IGESData_IGESEntity)& start,
-                                                const Message_Msg&                 amsg)
+inline void IGESToBRep_CurveAndSurface::SendMsg(const occ::handle<IGESData_IGESEntity>& start,
+                                                const Message_Msg&                      amsg)
 {
   GetTransferProcess()->SendMsg(start, amsg);
 }

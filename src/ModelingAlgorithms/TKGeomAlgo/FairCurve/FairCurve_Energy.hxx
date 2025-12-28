@@ -21,9 +21,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_HArray1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <TColgp_Array1OfXY.hxx>
+#include <gp_XY.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <Standard_Real.hxx>
 class math_Matrix;
@@ -36,57 +38,53 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! returns the number of variables of the energy.
-  virtual Standard_Integer NbVariables() const Standard_OVERRIDE;
+  virtual int NbVariables() const override;
 
   //! computes the values of the Energys E for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X,
-                                                 Standard_Real&     E) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Value(const math_Vector& X, double& E) override;
 
   //! computes the gradient <G> of the energys for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Gradient(const math_Vector& X,
-                                                    math_Vector&       G) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Gradient(const math_Vector& X, math_Vector& G) override;
 
   //! computes the Energy <E> and the gradient <G> of the
   //! energy for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
-                                                  Standard_Real&     E,
-                                                  math_Vector&       G) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Values(const math_Vector& X, double& E, math_Vector& G) override;
 
   //! computes the Energy <E>, the gradient <G> and the
   //! Hessian <H> of the energy for the variable <X>.
   //! Returns True if the computation was done
   //! successfully, False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
-                                                  Standard_Real&     E,
-                                                  math_Vector&       G,
-                                                  math_Matrix&       H) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Values(const math_Vector& X,
+                                      double&            E,
+                                      math_Vector&       G,
+                                      math_Matrix&       H) override;
 
   //! compute the variables <X> which correspond with the field <MyPoles>
-  Standard_EXPORT virtual Standard_Boolean Variable(math_Vector& X) const;
+  Standard_EXPORT virtual bool Variable(math_Vector& X) const;
 
   //! return the poles
-  const Handle(TColgp_HArray1OfPnt2d)& Poles() const;
+  const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles() const;
 
 protected:
   //! Angles correspond to the Ox axis
   //! ConstrOrder1(2) can be equal to 0, 1 or 2
-  Standard_EXPORT FairCurve_Energy(const Handle(TColgp_HArray1OfPnt2d)& Poles,
-                                   const Standard_Integer               ConstrOrder1,
-                                   const Standard_Integer               ConstrOrder2,
-                                   const Standard_Boolean WithAuxValue = Standard_False,
-                                   const Standard_Real    Angle1       = 0,
-                                   const Standard_Real    Angle2       = 0,
-                                   const Standard_Integer Degree       = 2,
-                                   const Standard_Real    Curvature1   = 0,
-                                   const Standard_Real    Curvature2   = 0);
+  Standard_EXPORT FairCurve_Energy(const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+                                   const int                                         ConstrOrder1,
+                                   const int                                         ConstrOrder2,
+                                   const bool   WithAuxValue = false,
+                                   const double Angle1       = 0,
+                                   const double Angle2       = 0,
+                                   const int    Degree       = 2,
+                                   const double Curvature1   = 0,
+                                   const double Curvature2   = 0);
 
   //! It is use internally to make the Gradient Vector <G>
   Standard_EXPORT void Gradient1(const math_Vector& TheVector, math_Vector& G);
@@ -97,37 +95,36 @@ protected:
   //! compute the poles which correspond with the variable X
   Standard_EXPORT virtual void ComputePoles(const math_Vector& X);
 
-  Standard_Integer Indice(const Standard_Integer i, const Standard_Integer j) const;
+  int Indice(const int i, const int j) const;
 
   //! compute the pole which depend of variables and G1 constraint
-  Standard_EXPORT void ComputePolesG1(const Standard_Integer Side,
-                                      const Standard_Real    Lambda,
-                                      const gp_Pnt2d&        P1,
-                                      gp_Pnt2d&              P2) const;
+  Standard_EXPORT void ComputePolesG1(const int       Side,
+                                      const double    Lambda,
+                                      const gp_Pnt2d& P1,
+                                      gp_Pnt2d&       P2) const;
 
   //! compute the pole which depend of variables and G2 constraint
-  Standard_EXPORT void ComputePolesG2(const Standard_Integer Side,
-                                      const Standard_Real    Lambda,
-                                      const Standard_Real    Rho,
-                                      const gp_Pnt2d&        P1,
-                                      gp_Pnt2d&              P2) const;
+  Standard_EXPORT void ComputePolesG2(const int       Side,
+                                      const double    Lambda,
+                                      const double    Rho,
+                                      const gp_Pnt2d& P1,
+                                      gp_Pnt2d&       P2) const;
 
   //! compute the energy (and derivatives) in intermediate format
-  Standard_EXPORT virtual Standard_Boolean Compute(const Standard_Integer DerivativeOrder,
-                                                   math_Vector&           Result) = 0;
+  Standard_EXPORT virtual bool Compute(const int DerivativeOrder, math_Vector& Result) = 0;
 
-  Handle(TColgp_HArray1OfPnt2d) MyPoles;
-  Standard_Integer              MyContrOrder1;
-  Standard_Integer              MyContrOrder2;
-  Standard_Boolean              MyWithAuxValue;
-  Standard_Integer              MyNbVar;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> MyPoles;
+  int                                        MyContrOrder1;
+  int                                        MyContrOrder2;
+  bool                                       MyWithAuxValue;
+  int                                        MyNbVar;
 
 private:
-  Standard_Integer  MyNbValues;
-  TColgp_Array1OfXY MyLinearForm;
-  TColgp_Array1OfXY MyQuadForm;
-  math_Vector       MyGradient;
-  math_Vector       MyHessian;
+  int                       MyNbValues;
+  NCollection_Array1<gp_XY> MyLinearForm;
+  NCollection_Array1<gp_XY> MyQuadForm;
+  math_Vector               MyGradient;
+  math_Vector               MyHessian;
 };
 
 #include <FairCurve_Energy.lxx>

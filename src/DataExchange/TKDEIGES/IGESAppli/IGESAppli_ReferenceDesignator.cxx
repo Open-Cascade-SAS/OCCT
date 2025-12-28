@@ -25,20 +25,20 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_ReferenceDesignator, IGESData_IGESEntity)
 
 IGESAppli_ReferenceDesignator::IGESAppli_ReferenceDesignator() {}
 
-void IGESAppli_ReferenceDesignator::Init(const Standard_Integer                  nbPropVal,
-                                         const Handle(TCollection_HAsciiString)& aText)
+void IGESAppli_ReferenceDesignator::Init(const int                                    nbPropVal,
+                                         const occ::handle<TCollection_HAsciiString>& aText)
 {
   theRefDesigText     = aText;
   theNbPropertyValues = nbPropVal;
   InitTypeAndForm(406, 7);
 }
 
-Standard_Integer IGESAppli_ReferenceDesignator::NbPropertyValues() const
+int IGESAppli_ReferenceDesignator::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Handle(TCollection_HAsciiString) IGESAppli_ReferenceDesignator::RefDesignatorText() const
+occ::handle<TCollection_HAsciiString> IGESAppli_ReferenceDesignator::RefDesignatorText() const
 {
   return theRefDesigText;
 }

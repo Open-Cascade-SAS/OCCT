@@ -68,12 +68,12 @@ public:
 
   //! Returns the constructed line.
   //! Exceptions StdFail_NotDone if no line is constructed.
-  Standard_EXPORT const Handle(Geom_Line)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_Line>& Value() const;
 
-  operator const Handle(Geom_Line)&() const { return Value(); }
+  operator const occ::handle<Geom_Line>&() const { return Value(); }
 
 private:
-  Handle(Geom_Line) TheLine;
+  occ::handle<Geom_Line> TheLine;
 };
 
 #endif // _GC_MakeLine_HeaderFile

@@ -39,18 +39,18 @@ public:
 
   Standard_EXPORT Vrml_PointLight();
 
-  Standard_EXPORT Vrml_PointLight(const Standard_Boolean aOnOff,
-                                  const Standard_Real    aIntensity,
-                                  const Quantity_Color&  aColor,
-                                  const gp_Vec&          aLocation);
+  Standard_EXPORT Vrml_PointLight(const bool            aOnOff,
+                                  const double          aIntensity,
+                                  const Quantity_Color& aColor,
+                                  const gp_Vec&         aLocation);
 
-  Standard_EXPORT void SetOnOff(const Standard_Boolean aOnOff);
+  Standard_EXPORT void SetOnOff(const bool aOnOff);
 
-  Standard_EXPORT Standard_Boolean OnOff() const;
+  Standard_EXPORT bool OnOff() const;
 
-  Standard_EXPORT void SetIntensity(const Standard_Real aIntensity);
+  Standard_EXPORT void SetIntensity(const double aIntensity);
 
-  Standard_EXPORT Standard_Real Intensity() const;
+  Standard_EXPORT double Intensity() const;
 
   Standard_EXPORT void SetColor(const Quantity_Color& aColor);
 
@@ -62,12 +62,11 @@ public:
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
-  Standard_Boolean myOnOff;
-  Standard_Real    myIntensity;
-  Quantity_Color   myColor;
-  gp_Vec           myLocation;
+  bool           myOnOff;
+  double         myIntensity;
+  Quantity_Color myColor;
+  gp_Vec         myLocation;
 };
 
 #endif // _Vrml_PointLight_HeaderFile

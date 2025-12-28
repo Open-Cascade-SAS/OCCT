@@ -44,7 +44,8 @@ TDF_Transaction::TDF_Transaction(const TCollection_AsciiString& aName)
 
 //=================================================================================================
 
-TDF_Transaction::TDF_Transaction(const Handle(TDF_Data)& aDF, const TCollection_AsciiString& aName)
+TDF_Transaction::TDF_Transaction(const occ::handle<TDF_Data>&   aDF,
+                                 const TCollection_AsciiString& aName)
     : myDF(aDF),
       myName(aName),
       myUntilTransaction(0)
@@ -56,7 +57,7 @@ TDF_Transaction::TDF_Transaction(const Handle(TDF_Data)& aDF, const TCollection_
 // purpose  : Initializes a transaction ready to be opened.
 //=======================================================================
 
-void TDF_Transaction::Initialize(const Handle(TDF_Data)& aDF)
+void TDF_Transaction::Initialize(const occ::handle<TDF_Data>& aDF)
 {
   if (IsOpen())
     myDF->AbortUntilTransaction(myUntilTransaction);
@@ -66,7 +67,7 @@ void TDF_Transaction::Initialize(const Handle(TDF_Data)& aDF)
 
 //=================================================================================================
 
-Standard_Integer TDF_Transaction::Open()
+int TDF_Transaction::Open()
 {
 #ifdef OCCT_DEBUG_TRANSACTION
   std::cout << "Transaction " << myName << " opens #" << myDF->Transaction() + 1 << std::endl;
@@ -80,12 +81,12 @@ Standard_Integer TDF_Transaction::Open()
 
 //=================================================================================================
 
-Handle(TDF_Delta) TDF_Transaction::Commit(const Standard_Boolean withDelta)
+occ::handle<TDF_Delta> TDF_Transaction::Commit(const bool withDelta)
 {
 #ifdef OCCT_DEBUG_TRANSACTION
   std::cout << "Transaction " << myName << " commits ";
 #endif
-  Handle(TDF_Delta) delta;
+  occ::handle<TDF_Delta> delta;
   if (IsOpen())
   {
 #ifdef OCCT_DEBUG_TRANSACTION
@@ -96,9 +97,9 @@ Handle(TDF_Delta) TDF_Transaction::Commit(const Standard_Boolean withDelta)
     std::cout << "DF before commit" << std::endl;
     TDF_Tool::DeepDump(std::cout, myDF);
 #endif
-    Standard_Integer until = myUntilTransaction;
-    myUntilTransaction     = 0;
-    delta                  = myDF->CommitUntilTransaction(until, withDelta);
+    int until          = myUntilTransaction;
+    myUntilTransaction = 0;
+    delta              = myDF->CommitUntilTransaction(until, withDelta);
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
     std::cout << "DF after commit" << std::endl;
     TDF_Tool::DeepDump(std::cout, myDF);
@@ -136,7 +137,7 @@ void TDF_Transaction::Abort()
 
 //=================================================================================================
 
-void TDF_Transaction::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDF_Transaction::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, TDF_Transaction)
 

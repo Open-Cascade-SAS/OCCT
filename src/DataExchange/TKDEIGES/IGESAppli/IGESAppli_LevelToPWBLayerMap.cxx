@@ -26,13 +26,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_LevelToPWBLayerMap, IGESData_IGESEntity)
 IGESAppli_LevelToPWBLayerMap::IGESAppli_LevelToPWBLayerMap() {}
 
 void IGESAppli_LevelToPWBLayerMap::Init(
-  const Standard_Integer                         nbPropVal,
-  const Handle(TColStd_HArray1OfInteger)&        allExchLevels,
-  const Handle(Interface_HArray1OfHAsciiString)& allNativeLevels,
-  const Handle(TColStd_HArray1OfInteger)&        allPhysLevels,
-  const Handle(Interface_HArray1OfHAsciiString)& allExchIdents)
+  const int                                                                      nbPropVal,
+  const occ::handle<NCollection_HArray1<int>>&                                   allExchLevels,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allNativeLevels,
+  const occ::handle<NCollection_HArray1<int>>&                                   allPhysLevels,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allExchIdents)
 {
-  Standard_Integer num = allExchLevels->Length();
+  int num = allExchLevels->Length();
   if (allExchLevels->Lower() != 1
       || (allNativeLevels->Lower() != 1 || allNativeLevels->Length() != num)
       || (allPhysLevels->Lower() != 1 || allPhysLevels->Length() != num)
@@ -46,36 +46,34 @@ void IGESAppli_LevelToPWBLayerMap::Init(
   InitTypeAndForm(406, 24);
 }
 
-Standard_Integer IGESAppli_LevelToPWBLayerMap::NbPropertyValues() const
+int IGESAppli_LevelToPWBLayerMap::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Standard_Integer IGESAppli_LevelToPWBLayerMap::NbLevelToLayerDefs() const
+int IGESAppli_LevelToPWBLayerMap::NbLevelToLayerDefs() const
 {
   return theExchangeFileLevelNumber->Length();
 }
 
-Standard_Integer IGESAppli_LevelToPWBLayerMap::ExchangeFileLevelNumber(
-  const Standard_Integer Index) const
+int IGESAppli_LevelToPWBLayerMap::ExchangeFileLevelNumber(const int Index) const
 {
   return theExchangeFileLevelNumber->Value(Index);
 }
 
-Handle(TCollection_HAsciiString) IGESAppli_LevelToPWBLayerMap::NativeLevel(
-  const Standard_Integer Index) const
+occ::handle<TCollection_HAsciiString> IGESAppli_LevelToPWBLayerMap::NativeLevel(
+  const int Index) const
 {
   return theNativeLevel->Value(Index);
 }
 
-Standard_Integer IGESAppli_LevelToPWBLayerMap::PhysicalLayerNumber(
-  const Standard_Integer Index) const
+int IGESAppli_LevelToPWBLayerMap::PhysicalLayerNumber(const int Index) const
 {
   return thePhysicalLayerNumber->Value(Index);
 }
 
-Handle(TCollection_HAsciiString) IGESAppli_LevelToPWBLayerMap::ExchangeFileLevelIdent(
-  const Standard_Integer Index) const
+occ::handle<TCollection_HAsciiString> IGESAppli_LevelToPWBLayerMap::ExchangeFileLevelIdent(
+  const int Index) const
 {
   return theExchangeFileLevelIdent->Value(Index);
 }

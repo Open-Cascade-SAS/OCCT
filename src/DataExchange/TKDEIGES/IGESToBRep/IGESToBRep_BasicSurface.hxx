@@ -58,44 +58,44 @@ public:
   Standard_EXPORT IGESToBRep_BasicSurface(const IGESToBRep_CurveAndSurface& CS);
 
   //! Creates a tool BasicSurface ready to run.
-  Standard_EXPORT IGESToBRep_BasicSurface(const Standard_Real    eps,
-                                          const Standard_Real    epsGeom,
-                                          const Standard_Real    epsCoeff,
-                                          const Standard_Boolean mode,
-                                          const Standard_Boolean modeapprox,
-                                          const Standard_Boolean optimized);
+  Standard_EXPORT IGESToBRep_BasicSurface(const double eps,
+                                          const double epsGeom,
+                                          const double epsCoeff,
+                                          const bool   mode,
+                                          const bool   modeapprox,
+                                          const bool   optimized);
 
   //! Returns Surface from Geom if the last transfer has succeeded.
-  Standard_EXPORT Handle(Geom_Surface) TransferBasicSurface(
-    const Handle(IGESData_IGESEntity)& start);
+  Standard_EXPORT occ::handle<Geom_Surface> TransferBasicSurface(
+    const occ::handle<IGESData_IGESEntity>& start);
 
   //! Returns Plane from Geom if the transfer has succeeded.
-  Standard_EXPORT Handle(Geom_Plane) TransferPlaneSurface(
-    const Handle(IGESSolid_PlaneSurface)& start);
+  Standard_EXPORT occ::handle<Geom_Plane> TransferPlaneSurface(
+    const occ::handle<IGESSolid_PlaneSurface>& start);
 
   //! Returns CylindricalSurface from Geom if the transfer has succeeded.
-  Standard_EXPORT Handle(Geom_CylindricalSurface) TransferRigthCylindricalSurface(
-    const Handle(IGESSolid_CylindricalSurface)& start);
+  Standard_EXPORT occ::handle<Geom_CylindricalSurface> TransferRigthCylindricalSurface(
+    const occ::handle<IGESSolid_CylindricalSurface>& start);
 
   //! Returns ConicalSurface from Geom if the transfer has succeeded.
-  Standard_EXPORT Handle(Geom_ConicalSurface) TransferRigthConicalSurface(
-    const Handle(IGESSolid_ConicalSurface)& start);
+  Standard_EXPORT occ::handle<Geom_ConicalSurface> TransferRigthConicalSurface(
+    const occ::handle<IGESSolid_ConicalSurface>& start);
 
   //! Returns SphericalSurface from Geom if the transfer has succeeded.
-  Standard_EXPORT Handle(Geom_SphericalSurface) TransferSphericalSurface(
-    const Handle(IGESSolid_SphericalSurface)& start);
+  Standard_EXPORT occ::handle<Geom_SphericalSurface> TransferSphericalSurface(
+    const occ::handle<IGESSolid_SphericalSurface>& start);
 
   //! Returns SphericalSurface from Geom if the transfer has succeeded.
-  Standard_EXPORT Handle(Geom_ToroidalSurface) TransferToroidalSurface(
-    const Handle(IGESSolid_ToroidalSurface)& start);
+  Standard_EXPORT occ::handle<Geom_ToroidalSurface> TransferToroidalSurface(
+    const occ::handle<IGESSolid_ToroidalSurface>& start);
 
   //! Returns BSplineSurface from Geom if the transfer has succeeded.
-  Standard_EXPORT Handle(Geom_BSplineSurface) TransferSplineSurface(
-    const Handle(IGESGeom_SplineSurface)& start);
+  Standard_EXPORT occ::handle<Geom_BSplineSurface> TransferSplineSurface(
+    const occ::handle<IGESGeom_SplineSurface>& start);
 
   //! Returns BSplineSurface from Geom if the transfer has succeeded.
-  Standard_EXPORT Handle(Geom_BSplineSurface) TransferBSplineSurface(
-    const Handle(IGESGeom_BSplineSurface)& start);
+  Standard_EXPORT occ::handle<Geom_BSplineSurface> TransferBSplineSurface(
+    const occ::handle<IGESGeom_BSplineSurface>& start);
 };
 
 #endif // _IGESToBRep_BasicSurface_HeaderFile

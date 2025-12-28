@@ -29,16 +29,16 @@
 #include <Plate_LinearScalarConstraint.hxx>
 #include <Plate_PinpointConstraint.hxx>
 
-static const Standard_Real NORMIN = 1.e-10;
-static const Standard_Real COSMIN = 1.e-2;
+static const double NORMIN = 1.e-10;
+static const double COSMIN = 1.e-2;
 
 // G1 Constraints
 
-Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2d,
-                                                   const Plate_D1&        D1S,
-                                                   const Plate_D1&        D1T,
-                                                   const Standard_Real    IncrementalLoad,
-                                                   const Standard_Integer orientation)
+Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
+                                                   const Plate_D1& D1S,
+                                                   const Plate_D1& D1T,
+                                                   const double    IncrementalLoad,
+                                                   const int       orientation)
 {
   pnt2d            = point2d;
   nb_PPConstraints = 0;
@@ -58,7 +58,7 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
     gp_XYZ N1 = normale;
     if (orientation != 0)
       N1 *= orientation;
-    Standard_Real c = N0 * N1;
+    double c = N0 * N1;
     if (orientation == 0)
     {
       if (c < 0.)
@@ -68,10 +68,10 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
       }
     }
 
-    Standard_Real s = N0.CrossMagnitude(N1);
+    double s = N0.CrossMagnitude(N1);
     if ((s < 1.e-2) && (c < 0.))
       return;
-    Standard_Real angle = atan2(c, s);
+    double angle = atan2(c, s);
     // if (angle < 0.) angle += M_PI;
 
     gp_XYZ d = N0 ^ N1;
@@ -94,13 +94,13 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
 
 // G1 + G2 Constraints
 
-Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2d,
-                                                   const Plate_D1&        D1S,
-                                                   const Plate_D1&        D1T0,
-                                                   const Plate_D2&        D2S,
-                                                   const Plate_D2&        D2T0,
-                                                   const Standard_Real    IncrementalLoad,
-                                                   const Standard_Integer orientation)
+Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
+                                                   const Plate_D1& D1S,
+                                                   const Plate_D1& D1T0,
+                                                   const Plate_D2& D2S,
+                                                   const Plate_D2& D2T0,
+                                                   const double    IncrementalLoad,
+                                                   const int       orientation)
 {
   pnt2d            = point2d;
   nb_PPConstraints = 0;
@@ -135,7 +135,7 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
     gp_XYZ N1 = normale;
     if (orientation != 0)
       N1 *= orientation;
-    Standard_Real c = N0 * N1;
+    double c = N0 * N1;
     if (orientation == 0)
     {
       if (c < 0.)
@@ -145,10 +145,10 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
       }
     }
 
-    Standard_Real s = N0.CrossMagnitude(N1);
+    double s = N0.CrossMagnitude(N1);
     if ((s < 1.e-2) && (c < 0.))
       return;
-    Standard_Real angle = atan2(c, s);
+    double angle = atan2(c, s);
 
     gp_XYZ d = N0 ^ N1;
     d.Normalize();
@@ -165,7 +165,7 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
     rota.Transforms(D2T.Dvv);
   }
 
-  Standard_Real cos_normales = normale * normaleS;
+  double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
   {
     gp_XYZ du = D1S.Du * (-1.);
@@ -177,7 +177,7 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
     return;
   }
 
-  Standard_Real invcos = 1. / cos_normales;
+  double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
   gp_XYZ dv = normaleS * -(normale * D1S.Dv) * invcos;
@@ -205,15 +205,15 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
   math_Vector sol(0, 1);
 
   gauss.Solve(vec, sol);
-  Standard_Real a = sol(0);
-  Standard_Real b = sol(1);
+  double a = sol(0);
+  double b = sol(1);
 
   vec(0) = Sv * Su;
   vec(1) = Sv * Sv;
 
   gauss.Solve(vec, sol);
-  Standard_Real c = sol(0);
-  Standard_Real d = sol(1);
+  double c = sol(0);
+  double d = sol(1);
 
   gp_XYZ Suu = D2T.Duu * (a * a) + D2T.Duv * (2 * a * b) + D2T.Dvv * (b * b);
   gp_XYZ Suv = D2T.Duu * (a * c) + D2T.Duv * (a * d + b * c) + D2T.Dvv * (b * d);
@@ -234,15 +234,15 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
 
 // G1 + G2 + G3 Constraints
 
-Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2d,
-                                                   const Plate_D1&        D1S,
-                                                   const Plate_D1&        D1T0,
-                                                   const Plate_D2&        D2S,
-                                                   const Plate_D2&        D2T0,
-                                                   const Plate_D3&        D3S,
-                                                   const Plate_D3&        D3T0,
-                                                   const Standard_Real    IncrementalLoad,
-                                                   const Standard_Integer orientation)
+Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
+                                                   const Plate_D1& D1S,
+                                                   const Plate_D1& D1T0,
+                                                   const Plate_D2& D2S,
+                                                   const Plate_D2& D2T0,
+                                                   const Plate_D3& D3S,
+                                                   const Plate_D3& D3T0,
+                                                   const double    IncrementalLoad,
+                                                   const int       orientation)
 {
   pnt2d            = point2d;
   nb_PPConstraints = 0;
@@ -278,7 +278,7 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
     gp_XYZ N1 = normale;
     if (orientation != 0)
       N1 *= orientation;
-    Standard_Real c = N0 * N1;
+    double c = N0 * N1;
     if (orientation == 0)
     {
       if (c < 0.)
@@ -287,10 +287,10 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
         N1 *= -1.;
       }
     }
-    Standard_Real s = N0.CrossMagnitude(N1);
+    double s = N0.CrossMagnitude(N1);
     if ((s < 1.e-2) && (c < 0.))
       return;
-    Standard_Real angle = atan2(c, s);
+    double angle = atan2(c, s);
 
     gp_XYZ d = N0 ^ N1;
     d.Normalize();
@@ -311,7 +311,7 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
     rota.Transforms(D3T.Dvvv);
   }
 
-  Standard_Real cos_normales = normale * normaleS;
+  double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
   {
     gp_XYZ du = D1S.Du * (-1.);
@@ -323,7 +323,7 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
     return;
   }
 
-  Standard_Real invcos = 1. / cos_normales;
+  double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
   gp_XYZ dv = normaleS * -(normale * D1S.Dv) * invcos;
@@ -351,15 +351,15 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
   math_Vector sol(0, 1);
 
   gauss.Solve(vec, sol);
-  Standard_Real a = sol(0);
-  Standard_Real b = sol(1);
+  double a = sol(0);
+  double b = sol(1);
 
   vec(0) = Sv * Su;
   vec(1) = Sv * Sv;
 
   gauss.Solve(vec, sol);
-  Standard_Real c = sol(0);
-  Standard_Real d = sol(1);
+  double c = sol(0);
+  double d = sol(1);
 
   gp_XYZ Suu = D2T.Duu * (a * a) + D2T.Duv * (2 * a * b) + D2T.Dvv * (b * b);
   gp_XYZ Suv = D2T.Duu * (a * c) + D2T.Duv * (a * d + b * c) + D2T.Dvv * (b * d);
@@ -379,20 +379,20 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
   vec(0) = (D2S.Duu + duu - Suu) * Su;
   vec(1) = (D2S.Duu + duu - Suu) * Sv;
   gauss.Solve(vec, sol);
-  Standard_Real B0uu = sol(0);
-  Standard_Real B1uu = sol(1);
+  double B0uu = sol(0);
+  double B1uu = sol(1);
 
   vec(0) = (D2S.Duv + duv - Suv) * Su;
   vec(1) = (D2S.Duv + duv - Suv) * Sv;
   gauss.Solve(vec, sol);
-  Standard_Real B0uv = sol(0);
-  Standard_Real B1uv = sol(1);
+  double B0uv = sol(0);
+  double B1uv = sol(1);
 
   vec(0) = (D2S.Dvv + dvv - Svv) * Su;
   vec(1) = (D2S.Dvv + dvv - Svv) * Sv;
   gauss.Solve(vec, sol);
-  Standard_Real B0vv = sol(0);
-  Standard_Real B1vv = sol(1);
+  double B0vv = sol(0);
+  double B1vv = sol(1);
 
   gp_XYZ Suuu = D3T.Duuu * (a * a * a) + D3T.Duuv * (3 * a * a * b) + D3T.Duvv * (3 * a * b * b)
                 + D3T.Dvvv * (b * b * b);
@@ -403,10 +403,10 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
   gp_XYZ Svvv = D3T.Duuu * (c * c * c) + D3T.Duuv * (3 * c * c * d) + D3T.Duvv * (3 * c * d * d)
                 + D3T.Dvvv * (d * d * d);
 
-  Standard_Real& A0u = a;
-  Standard_Real& A1u = b;
-  Standard_Real& A0v = c;
-  Standard_Real& A1v = d;
+  double& A0u = a;
+  double& A1u = b;
+  double& A0v = c;
+  double& A1v = d;
   Suuu += D2T.Duu * (3 * A0u * B0uu) + D2T.Duv * (3 * (A0u * B1uu + A1u * B0uu))
           + D2T.Dvv * (3 * A1u * B1uu);
   Suuv += D2T.Duu * (2 * A0u * B0uv + A0v * B0uu)

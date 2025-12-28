@@ -14,14 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline void Contap_ArcFunction::Set(const gp_Dir& Direction, const Standard_Real Angle)
+inline void Contap_ArcFunction::Set(const gp_Dir& Direction, const double Angle)
 {
   myType   = Contap_DraftStd;
   myDir    = Direction;
   myCosAng = std::cos(M_PI / 2. + Angle);
 }
 
-inline void Contap_ArcFunction::Set(const gp_Pnt& Eye, const Standard_Real Angle)
+inline void Contap_ArcFunction::Set(const gp_Pnt& Eye, const double Angle)
 {
   myType   = Contap_DraftPrs;
   myEye    = Eye;
@@ -40,18 +40,18 @@ inline void Contap_ArcFunction::Set(const gp_Pnt& Eye)
   myEye  = Eye;
 }
 
-inline void Contap_ArcFunction::Set(const Handle(Adaptor2d_Curve2d)& A)
+inline void Contap_ArcFunction::Set(const occ::handle<Adaptor2d_Curve2d>& A)
 {
   myArc = A;
   seqpt.Clear();
 }
 
-inline const gp_Pnt& Contap_ArcFunction::Valpoint(const Standard_Integer Index) const
+inline const gp_Pnt& Contap_ArcFunction::Valpoint(const int Index) const
 {
   return seqpt(Index);
 }
 
-inline const Handle(Adaptor3d_Surface)& Contap_ArcFunction::Surface() const
+inline const occ::handle<Adaptor3d_Surface>& Contap_ArcFunction::Surface() const
 {
   return (mySurf);
 }

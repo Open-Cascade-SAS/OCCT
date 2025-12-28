@@ -49,27 +49,27 @@ Interface_UndefinedContent::Interface_UndefinedContent() // Unknown
 // the latter are simpler to manage
 // Indeed, we must reserve and extend if necessary ...
 
-Standard_Integer Interface_UndefinedContent::NbParams() const
+int Interface_UndefinedContent::NbParams() const
 {
   return thenbparams;
 }
 
-Standard_Integer Interface_UndefinedContent::NbLiterals() const
+int Interface_UndefinedContent::NbLiterals() const
 {
   return thenbstr;
 }
 
-Standard_Boolean Interface_UndefinedContent::ParamData(const Standard_Integer            num,
-                                                       Interface_ParamType&              ptype,
-                                                       Handle(Standard_Transient)&       ent,
-                                                       Handle(TCollection_HAsciiString)& val) const
+bool Interface_UndefinedContent::ParamData(const int                              num,
+                                           Interface_ParamType&                   ptype,
+                                           occ::handle<Standard_Transient>&       ent,
+                                           occ::handle<TCollection_HAsciiString>& val) const
 {
   if (num < 1 || num > thenbparams)
     throw Standard_OutOfRange("Interface UndefinedContent : ParamData");
-  Standard_Integer desc  = theparams->Value(num);
-  Standard_Integer local = ((desc >> Content_LocalShift) & Content_LocalField);
-  ptype                  = Interface_ParamType(desc & Content_TypeField);
-  Standard_Integer adr   = desc >> Content_NumberShift;
+  int desc  = theparams->Value(num);
+  int local = ((desc >> Content_LocalShift) & Content_LocalField);
+  ptype     = Interface_ParamType(desc & Content_TypeField);
+  int adr   = desc >> Content_NumberShift;
   if (local == Content_LocalRef)
     ent = theentities.Value(adr);
   else
@@ -77,28 +77,27 @@ Standard_Boolean Interface_UndefinedContent::ParamData(const Standard_Integer   
   return (local == Content_LocalRef);
 }
 
-Interface_ParamType Interface_UndefinedContent::ParamType(const Standard_Integer num) const
+Interface_ParamType Interface_UndefinedContent::ParamType(const int num) const
 {
   return Interface_ParamType(theparams->Value(num) & Content_TypeField);
 }
 
-Standard_Boolean Interface_UndefinedContent::IsParamEntity(const Standard_Integer num) const
+bool Interface_UndefinedContent::IsParamEntity(const int num) const
 {
   return (((theparams->Value(num) >> Content_LocalShift) & Content_LocalField) == Content_LocalRef);
 }
 
-Handle(Standard_Transient) Interface_UndefinedContent::ParamEntity(const Standard_Integer num) const
+occ::handle<Standard_Transient> Interface_UndefinedContent::ParamEntity(const int num) const
 {
-  Standard_Integer desc = theparams->Value(num);
+  int desc = theparams->Value(num);
   if (((desc >> Content_LocalShift) & Content_LocalField) != Content_LocalRef)
     throw Interface_InterfaceError("UndefinedContent : Param is not Entity type");
   return theentities.Value(desc >> Content_NumberShift);
 }
 
-Handle(TCollection_HAsciiString) Interface_UndefinedContent::ParamValue(
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> Interface_UndefinedContent::ParamValue(const int num) const
 {
-  Standard_Integer desc = theparams->Value(num);
+  int desc = theparams->Value(num);
   if (((desc >> Content_LocalShift) & Content_LocalField) != 0)
     throw Interface_InterfaceError("UndefinedContent : Param is not literal");
   return thevalues->Value(desc >> Content_NumberShift);
@@ -106,20 +105,20 @@ Handle(TCollection_HAsciiString) Interface_UndefinedContent::ParamValue(
 
 // ....  Parameter filling ....
 
-void Interface_UndefinedContent::Reservate(const Standard_Integer nb, const Standard_Integer nblit)
+void Interface_UndefinedContent::Reservate(const int nb, const int nblit)
 {
   // Reservation: If enlargement, copy old to new ...
   if (nb > thenbparams)
   { // Total reservation
     if (theparams.IsNull())
-      theparams = new TColStd_HArray1OfInteger(1, nb);
+      theparams = new NCollection_HArray1<int>(1, nb);
     else if (nb > theparams->Length())
     {
-      Standard_Integer nbnew = 2 * thenbparams; // reserve a bit more
+      int nbnew = 2 * thenbparams; // reserve a bit more
       if (nbnew < nb)
         nbnew = nb;
-      Handle(TColStd_HArray1OfInteger) newparams = new TColStd_HArray1OfInteger(1, nbnew);
-      for (Standard_Integer i = 1; i <= thenbparams; i++)
+      occ::handle<NCollection_HArray1<int>> newparams = new NCollection_HArray1<int>(1, nbnew);
+      for (int i = 1; i <= thenbparams; i++)
         newparams->SetValue(i, theparams->Value(i));
       theparams = newparams;
     }
@@ -128,15 +127,15 @@ void Interface_UndefinedContent::Reservate(const Standard_Integer nb, const Stan
   if (nblit > thenbstr)
   { // Literal reservation
     if (thevalues.IsNull())
-      thevalues = new Interface_HArray1OfHAsciiString(1, nblit);
+      thevalues = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nblit);
     else if (nblit > thevalues->Length())
     {
-      Standard_Integer nbnew = 2 * thenbstr; // reserve a bit more
+      int nbnew = 2 * thenbstr; // reserve a bit more
       if (nbnew < nblit)
         nbnew = nblit;
-      Handle(Interface_HArray1OfHAsciiString) newvalues =
-        new Interface_HArray1OfHAsciiString(1, nbnew);
-      for (Standard_Integer i = 1; i <= thenbstr; i++)
+      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> newvalues =
+        new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbnew);
+      for (int i = 1; i <= thenbstr; i++)
         newvalues->SetValue(i, thevalues->Value(i));
       thevalues = newvalues;
     }
@@ -144,11 +143,11 @@ void Interface_UndefinedContent::Reservate(const Standard_Integer nb, const Stan
   //  Entities: Parameters - Literals. In fact, EntityList is dynamic
 }
 
-void Interface_UndefinedContent::AddLiteral(const Interface_ParamType               ptype,
-                                            const Handle(TCollection_HAsciiString)& val)
+void Interface_UndefinedContent::AddLiteral(const Interface_ParamType                    ptype,
+                                            const occ::handle<TCollection_HAsciiString>& val)
 {
   Reservate(thenbparams + 1, thenbstr + 1);
-  Standard_Integer desc = Standard_Integer(ptype);
+  int desc = int(ptype);
   thenbstr++;
   thenbparams++;
   thevalues->SetValue(thenbstr, val);
@@ -156,11 +155,11 @@ void Interface_UndefinedContent::AddLiteral(const Interface_ParamType           
   theparams->SetValue(thenbparams, desc);
 }
 
-void Interface_UndefinedContent::AddEntity(const Interface_ParamType         ptype,
-                                           const Handle(Standard_Transient)& ent)
+void Interface_UndefinedContent::AddEntity(const Interface_ParamType              ptype,
+                                           const occ::handle<Standard_Transient>& ent)
 {
   Reservate(thenbparams + 1, 0);
-  Standard_Integer desc = Standard_Integer(ptype);
+  int desc = int(ptype);
   theentities.Append(ent);
   desc += Content_LocalRef << Content_LocalShift; // "It is an Entity"
   thenbparams++;                                  // Rank:  thenbparams - thenbstr
@@ -170,26 +169,26 @@ void Interface_UndefinedContent::AddEntity(const Interface_ParamType         pty
 
 // ....  Parameter editing ....
 
-void Interface_UndefinedContent::RemoveParam(const Standard_Integer num)
+void Interface_UndefinedContent::RemoveParam(const int num)
 {
-  Standard_Integer desc  = theparams->Value(num);
-  Standard_Integer rang  = desc >> Content_NumberShift;
-  Standard_Integer local = ((desc >> Content_LocalShift) & Content_LocalField);
-  Standard_Boolean c1ent = (local == Content_LocalRef);
+  int  desc  = theparams->Value(num);
+  int  rang  = desc >> Content_NumberShift;
+  int  local = ((desc >> Content_LocalShift) & Content_LocalField);
+  bool c1ent = (local == Content_LocalRef);
   //    Remove an Entity
   if (c1ent)
     theentities.Remove(rang);
   //    Remove a Literal
   else
   { // thevalues->Remove(rang)  but it is an array
-    for (Standard_Integer i = rang + 1; i <= thenbstr; i++)
+    for (int i = rang + 1; i <= thenbstr; i++)
       thevalues->SetValue(i - 1, thevalues->Value(i));
-    Handle(TCollection_HAsciiString) nulstr;
+    occ::handle<TCollection_HAsciiString> nulstr;
     thevalues->SetValue(thenbstr, nulstr);
     thenbstr--;
   }
   //    Remove this parameter from the list (which is an array)
-  Standard_Integer np; // svv Jan11 2000 : porting on DEC
+  int np; // svv Jan11 2000 : porting on DEC
   for (np = num + 1; np <= thenbparams; np++)
     theparams->SetValue(np - 1, theparams->Value(np));
   theparams->SetValue(thenbparams, 0);
@@ -204,21 +203,21 @@ void Interface_UndefinedContent::RemoveParam(const Standard_Integer num)
   }
 }
 
-void Interface_UndefinedContent::SetLiteral(const Standard_Integer                  num,
-                                            const Interface_ParamType               ptype,
-                                            const Handle(TCollection_HAsciiString)& val)
+void Interface_UndefinedContent::SetLiteral(const int                                    num,
+                                            const Interface_ParamType                    ptype,
+                                            const occ::handle<TCollection_HAsciiString>& val)
 {
   //  Change a parameter. If already literal, simple substitution
   //  If Entity, remove the entity and renumber the "Entity" Parameters
-  Standard_Integer desc  = theparams->Value(num);
-  Standard_Integer rang  = desc >> Content_NumberShift;
-  Standard_Integer local = ((desc >> Content_LocalShift) & Content_LocalField);
-  Standard_Boolean c1ent = (local == Content_LocalRef);
+  int  desc  = theparams->Value(num);
+  int  rang  = desc >> Content_NumberShift;
+  int  local = ((desc >> Content_LocalShift) & Content_LocalField);
+  bool c1ent = (local == Content_LocalRef);
   if (c1ent)
   {
     //  Entity: remove it and renumber the "Entity" type Parameters
     theentities.Remove(rang);
-    for (Standard_Integer i = 1; i <= thenbparams; i++)
+    for (int i = 1; i <= thenbparams; i++)
     {
       desc = theparams->Value(i);
       if (((desc >> Content_LocalShift) & Content_LocalField) == Content_LocalRef
@@ -232,28 +231,28 @@ void Interface_UndefinedContent::SetLiteral(const Standard_Integer              
   }
   //  Put the new value in place and rebuild the Param descriptor
   thevalues->SetValue(rang, val);
-  desc = Standard_Integer(ptype) + (rang << Content_NumberShift);
+  desc = int(ptype) + (rang << Content_NumberShift);
   theparams->SetValue(num, desc);
 }
 
-void Interface_UndefinedContent::SetEntity(const Standard_Integer            num,
-                                           const Interface_ParamType         ptype,
-                                           const Handle(Standard_Transient)& ent)
+void Interface_UndefinedContent::SetEntity(const int                              num,
+                                           const Interface_ParamType              ptype,
+                                           const occ::handle<Standard_Transient>& ent)
 {
   //  Change a Parameter. If already Entity, simple substitution
   //  If Literal, remove its value and renumber the Literal parameters
-  Standard_Integer desc  = theparams->Value(num);
-  Standard_Integer rang  = desc >> Content_NumberShift;
-  Standard_Integer local = ((desc >> Content_LocalShift) & Content_LocalField);
-  Standard_Boolean c1ent = (local == Content_LocalRef);
+  int  desc  = theparams->Value(num);
+  int  rang  = desc >> Content_NumberShift;
+  int  local = ((desc >> Content_LocalShift) & Content_LocalField);
+  bool c1ent = (local == Content_LocalRef);
   if (!c1ent)
   {
     //  Literal: remove it and renumber the "Entity" type Parameters
     //  (Remove Literal but in an array)
-    Standard_Integer i; // svv Jan11 2000 : porting on DEC
+    int i; // svv Jan11 2000 : porting on DEC
     for (i = rang + 1; i <= thenbstr; i++)
       thevalues->SetValue(i - 1, thevalues->Value(i));
-    Handle(TCollection_HAsciiString) nulstr;
+    occ::handle<TCollection_HAsciiString> nulstr;
     thevalues->SetValue(thenbstr, nulstr);
 
     for (i = 1; i <= thenbparams; i++)
@@ -272,20 +271,19 @@ void Interface_UndefinedContent::SetEntity(const Standard_Integer            num
   else
     theentities.SetValue(rang, ent);
 
-  desc = Standard_Integer(ptype) + (Content_LocalRef << Content_LocalShift)
-         + (rang << Content_NumberShift);
+  desc = int(ptype) + (Content_LocalRef << Content_LocalShift) + (rang << Content_NumberShift);
   theparams->SetValue(num, desc);
 }
 
-void Interface_UndefinedContent::SetEntity(const Standard_Integer            num,
-                                           const Handle(Standard_Transient)& ent)
+void Interface_UndefinedContent::SetEntity(const int                              num,
+                                           const occ::handle<Standard_Transient>& ent)
 {
   //  Change the Entity defined by a Parameter, all other things being equal,
   //  PROVIDED that it is already an "Entity" type Parameter
-  Standard_Integer desc  = theparams->Value(num);
-  Standard_Integer rang  = desc >> Content_NumberShift;
-  Standard_Integer local = ((desc >> Content_LocalShift) & Content_LocalField);
-  Standard_Boolean c1ent = (local == Content_LocalRef);
+  int  desc  = theparams->Value(num);
+  int  rang  = desc >> Content_NumberShift;
+  int  local = ((desc >> Content_LocalShift) & Content_LocalField);
+  bool c1ent = (local == Content_LocalRef);
   if (!c1ent)
     throw Interface_InterfaceError("UndefinedContent : SetEntity");
   theentities.SetValue(rang, ent);
@@ -297,20 +295,21 @@ Interface_EntityList Interface_UndefinedContent::EntityList() const
 }
 
 //    all copies of UndefinedEntity are similar ... Common part
-void Interface_UndefinedContent::GetFromAnother(const Handle(Interface_UndefinedContent)& other,
-                                                Interface_CopyTool&                       TC)
+void Interface_UndefinedContent::GetFromAnother(
+  const occ::handle<Interface_UndefinedContent>& other,
+  Interface_CopyTool&                            TC)
 {
-  Standard_Integer nb = other->NbParams();
+  int nb = other->NbParams();
   theentities.Clear();
   thevalues.Nullify();
   theparams.Nullify();
   Reservate(nb, other->NbLiterals());
 
-  Handle(Standard_Transient) ent;
-  for (Standard_Integer i = 1; i <= nb; i++)
+  occ::handle<Standard_Transient> ent;
+  for (int i = 1; i <= nb; i++)
   {
-    Interface_ParamType              ptype;
-    Handle(TCollection_HAsciiString) val;
+    Interface_ParamType                   ptype;
+    occ::handle<TCollection_HAsciiString> val;
     if (other->ParamData(i, ptype, ent, val))
     {
       ent = TC.Transferred(ent);

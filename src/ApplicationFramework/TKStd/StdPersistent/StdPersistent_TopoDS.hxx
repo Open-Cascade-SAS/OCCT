@@ -47,11 +47,11 @@ protected:
       theChildren.Append(myShapes);
     }
 
-    inline Standard_CString PName() const { return "PTopoDS_TShape"; }
+    inline const char* PName() const { return "PTopoDS_TShape"; }
 
   protected:
-    Handle(StdObjMgt_Persistent) myShapes;
-    Standard_Integer             myFlags;
+    occ::handle<StdObjMgt_Persistent> myShapes;
+    int                               myFlags;
   };
 
 public:

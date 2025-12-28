@@ -19,9 +19,9 @@
 
 //=================================================================================================
 
-void Extrema_GlobOptFuncCQuadric::value(Standard_Real ct, Standard_Real& F)
+void Extrema_GlobOptFuncCQuadric::value(double ct, double& F)
 {
-  Standard_Real u, v;
+  double u, v;
   //
   gp_Pnt aCP = myC->Value(ct);
   switch (mySType)
@@ -67,7 +67,7 @@ void Extrema_GlobOptFuncCQuadric::value(Standard_Real ct, Standard_Real& F)
     gp_Pnt aPS = myS->Value(u, v);
     F          = std::min(F, aCP.SquareDistance(aPS));
   }
-  Standard_Integer i;
+  int i;
   for (i = 0; i < 4; ++i)
   {
     F = std::min(F, aCP.SquareDistance(myPTrim[i]));
@@ -76,16 +76,15 @@ void Extrema_GlobOptFuncCQuadric::value(Standard_Real ct, Standard_Real& F)
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCQuadric::checkInputData(const math_Vector& X,
-                                                             Standard_Real&     ct)
+bool Extrema_GlobOptFuncCQuadric::checkInputData(const math_Vector& X, double& ct)
 {
   ct = X(X.Lower());
 
   if (ct < myTf || ct > myTl)
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -94,10 +93,10 @@ Extrema_GlobOptFuncCQuadric::Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* 
                                                          const Adaptor3d_Surface* S)
     : myC(C)
 {
-  myTf               = myC->FirstParameter();
-  myTl               = myC->LastParameter();
-  Standard_Real anUf = S->FirstUParameter(), anUl = S->LastUParameter();
-  Standard_Real aVf = S->FirstVParameter(), aVl = S->LastVParameter();
+  myTf        = myC->FirstParameter();
+  myTl        = myC->LastParameter();
+  double anUf = S->FirstUParameter(), anUl = S->LastUParameter();
+  double aVf = S->FirstVParameter(), aVl = S->LastVParameter();
   LoadQuad(S, anUf, anUl, aVf, aVl);
 }
 
@@ -113,8 +112,8 @@ Extrema_GlobOptFuncCQuadric::Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* 
 //=================================================================================================
 
 Extrema_GlobOptFuncCQuadric::Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* C,
-                                                         const Standard_Real    theTf,
-                                                         const Standard_Real    theTl)
+                                                         const double           theTf,
+                                                         const double           theTl)
     : myC(C),
       myTf(theTf),
       myTl(theTl)
@@ -124,10 +123,10 @@ Extrema_GlobOptFuncCQuadric::Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* 
 //=================================================================================================
 
 void Extrema_GlobOptFuncCQuadric::LoadQuad(const Adaptor3d_Surface* S,
-                                           const Standard_Real      theUf,
-                                           const Standard_Real      theUl,
-                                           const Standard_Real      theVf,
-                                           const Standard_Real      theVl)
+                                           const double             theUf,
+                                           const double             theUl,
+                                           const double             theVf,
+                                           const double             theVl)
 {
   myS  = S;
   myUf = theUf;
@@ -137,7 +136,7 @@ void Extrema_GlobOptFuncCQuadric::LoadQuad(const Adaptor3d_Surface* S,
   //
   if (myS->IsUPeriodic())
   {
-    constexpr Standard_Real aTMax = 2. * M_PI + Precision::PConfusion();
+    constexpr double aTMax = 2. * M_PI + Precision::PConfusion();
     if (myUf > aTMax || myUf < -Precision::PConfusion() || std::abs(myUl - myUf) > aTMax)
     {
       ElCLib::AdjustPeriodic(0.,
@@ -149,7 +148,7 @@ void Extrema_GlobOptFuncCQuadric::LoadQuad(const Adaptor3d_Surface* S,
   }
   if (myS->IsVPeriodic())
   {
-    constexpr Standard_Real aTMax = 2. * M_PI + Precision::PConfusion();
+    constexpr double aTMax = 2. * M_PI + Precision::PConfusion();
     if (myVf > aTMax || myVf < -Precision::PConfusion() || std::abs(myVl - myVf) > aTMax)
     {
       ElCLib::AdjustPeriodic(0.,
@@ -188,25 +187,25 @@ void Extrema_GlobOptFuncCQuadric::LoadQuad(const Adaptor3d_Surface* S,
 
 //=================================================================================================
 
-Standard_Integer Extrema_GlobOptFuncCQuadric::NbVariables() const
+int Extrema_GlobOptFuncCQuadric::NbVariables() const
 {
   return 1;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCQuadric::Value(const math_Vector& X, Standard_Real& F)
+bool Extrema_GlobOptFuncCQuadric::Value(const math_Vector& X, double& F)
 {
-  Standard_Real ct;
+  double ct;
   if (!checkInputData(X, ct))
-    return Standard_False;
+    return false;
 
   value(ct, F);
   if (Precision::IsInfinite(F))
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -214,13 +213,13 @@ Standard_Boolean Extrema_GlobOptFuncCQuadric::Value(const math_Vector& X, Standa
 void Extrema_GlobOptFuncCQuadric::QuadricParameters(const math_Vector& theCT,
                                                     math_Vector&       theUV) const
 {
-  Standard_Real u, v;
+  double u, v;
   //
   // Arrays of extremity points parameters correspond to array of corner
   // points  myPTrim[]
-  Standard_Real uext[4] = {myUf, myUl, myUl, myUf};
-  Standard_Real vext[4] = {myVf, myVf, myVl, myVl};
-  gp_Pnt        aCP     = myC->Value(theCT(1));
+  double uext[4] = {myUf, myUl, myUl, myUf};
+  double vext[4] = {myVf, myVf, myVl, myVl};
+  gp_Pnt aCP     = myC->Value(theCT(1));
   switch (mySType)
   {
     case GeomAbs_Plane:
@@ -259,16 +258,16 @@ void Extrema_GlobOptFuncCQuadric::QuadricParameters(const math_Vector& theCT,
     }
   }
 
-  Standard_Real F = RealLast();
+  double F = RealLast();
   if (u >= myUf && u <= myUl && v >= myVf && v <= myVl)
   {
     gp_Pnt aPS = myS->Value(u, v);
     F          = aCP.SquareDistance(aPS);
   }
-  Standard_Integer i;
+  int i;
   for (i = 0; i < 4; ++i)
   {
-    Standard_Real Fi = aCP.SquareDistance(myPTrim[i]);
+    double Fi = aCP.SquareDistance(myPTrim[i]);
     if (Fi < F)
     {
       F = Fi;

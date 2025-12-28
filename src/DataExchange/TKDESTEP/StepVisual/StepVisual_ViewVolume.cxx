@@ -19,15 +19,15 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ViewVolume, Standard_Transient)
 
 StepVisual_ViewVolume::StepVisual_ViewVolume() {}
 
-void StepVisual_ViewVolume::Init(const StepVisual_CentralOrParallel     aProjectionType,
-                                 const Handle(StepGeom_CartesianPoint)& aProjectionPoint,
-                                 const Standard_Real                    aViewPlaneDistance,
-                                 const Standard_Real                    aFrontPlaneDistance,
-                                 const Standard_Boolean                 aFrontPlaneClipping,
-                                 const Standard_Real                    aBackPlaneDistance,
-                                 const Standard_Boolean                 aBackPlaneClipping,
-                                 const Standard_Boolean                 aViewVolumeSidesClipping,
-                                 const Handle(StepVisual_PlanarBox)&    aViewWindow)
+void StepVisual_ViewVolume::Init(const StepVisual_CentralOrParallel          aProjectionType,
+                                 const occ::handle<StepGeom_CartesianPoint>& aProjectionPoint,
+                                 const double                                aViewPlaneDistance,
+                                 const double                                aFrontPlaneDistance,
+                                 const bool                                  aFrontPlaneClipping,
+                                 const double                                aBackPlaneDistance,
+                                 const bool                                  aBackPlaneClipping,
+                                 const bool                               aViewVolumeSidesClipping,
+                                 const occ::handle<StepVisual_PlanarBox>& aViewWindow)
 {
   // --- classe own fields ---
   projectionType          = aProjectionType;
@@ -52,83 +52,82 @@ StepVisual_CentralOrParallel StepVisual_ViewVolume::ProjectionType() const
 }
 
 void StepVisual_ViewVolume::SetProjectionPoint(
-  const Handle(StepGeom_CartesianPoint)& aProjectionPoint)
+  const occ::handle<StepGeom_CartesianPoint>& aProjectionPoint)
 {
   projectionPoint = aProjectionPoint;
 }
 
-Handle(StepGeom_CartesianPoint) StepVisual_ViewVolume::ProjectionPoint() const
+occ::handle<StepGeom_CartesianPoint> StepVisual_ViewVolume::ProjectionPoint() const
 {
   return projectionPoint;
 }
 
-void StepVisual_ViewVolume::SetViewPlaneDistance(const Standard_Real aViewPlaneDistance)
+void StepVisual_ViewVolume::SetViewPlaneDistance(const double aViewPlaneDistance)
 {
   viewPlaneDistance = aViewPlaneDistance;
 }
 
-Standard_Real StepVisual_ViewVolume::ViewPlaneDistance() const
+double StepVisual_ViewVolume::ViewPlaneDistance() const
 {
   return viewPlaneDistance;
 }
 
-void StepVisual_ViewVolume::SetFrontPlaneDistance(const Standard_Real aFrontPlaneDistance)
+void StepVisual_ViewVolume::SetFrontPlaneDistance(const double aFrontPlaneDistance)
 {
   frontPlaneDistance = aFrontPlaneDistance;
 }
 
-Standard_Real StepVisual_ViewVolume::FrontPlaneDistance() const
+double StepVisual_ViewVolume::FrontPlaneDistance() const
 {
   return frontPlaneDistance;
 }
 
-void StepVisual_ViewVolume::SetFrontPlaneClipping(const Standard_Boolean aFrontPlaneClipping)
+void StepVisual_ViewVolume::SetFrontPlaneClipping(const bool aFrontPlaneClipping)
 {
   frontPlaneClipping = aFrontPlaneClipping;
 }
 
-Standard_Boolean StepVisual_ViewVolume::FrontPlaneClipping() const
+bool StepVisual_ViewVolume::FrontPlaneClipping() const
 {
   return frontPlaneClipping;
 }
 
-void StepVisual_ViewVolume::SetBackPlaneDistance(const Standard_Real aBackPlaneDistance)
+void StepVisual_ViewVolume::SetBackPlaneDistance(const double aBackPlaneDistance)
 {
   backPlaneDistance = aBackPlaneDistance;
 }
 
-Standard_Real StepVisual_ViewVolume::BackPlaneDistance() const
+double StepVisual_ViewVolume::BackPlaneDistance() const
 {
   return backPlaneDistance;
 }
 
-void StepVisual_ViewVolume::SetBackPlaneClipping(const Standard_Boolean aBackPlaneClipping)
+void StepVisual_ViewVolume::SetBackPlaneClipping(const bool aBackPlaneClipping)
 {
   backPlaneClipping = aBackPlaneClipping;
 }
 
-Standard_Boolean StepVisual_ViewVolume::BackPlaneClipping() const
+bool StepVisual_ViewVolume::BackPlaneClipping() const
 {
   return backPlaneClipping;
 }
 
-void StepVisual_ViewVolume::SetViewVolumeSidesClipping(
-  const Standard_Boolean aViewVolumeSidesClipping)
+void StepVisual_ViewVolume::SetViewVolumeSidesClipping(const bool aViewVolumeSidesClipping)
 {
   viewVolumeSidesClipping = aViewVolumeSidesClipping;
 }
 
-Standard_Boolean StepVisual_ViewVolume::ViewVolumeSidesClipping() const
+bool StepVisual_ViewVolume::ViewVolumeSidesClipping() const
 {
   return viewVolumeSidesClipping;
 }
 
-void StepVisual_ViewVolume::SetViewWindow(const Handle(StepVisual_PlanarBox)& aViewWindow)
+void StepVisual_ViewVolume::SetViewWindow(const occ::handle<StepVisual_PlanarBox>& aViewWindow)
 {
   viewWindow = aViewWindow;
 }
 
-Handle(StepVisual_PlanarBox) StepVisual_ViewVolume::ViewWindow() const
+occ::handle<StepVisual_PlanarBox> StepVisual_ViewVolume::ViewWindow() const
 {
   return viewWindow;
 }

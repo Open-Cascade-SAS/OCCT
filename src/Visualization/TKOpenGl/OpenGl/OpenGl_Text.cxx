@@ -29,7 +29,7 @@
 
 namespace
 {
-static const OpenGl_Mat4d THE_IDENTITY_MATRIX;
+static const NCollection_Mat4<double> THE_IDENTITY_MATRIX;
 
 static const TCollection_AsciiString THE_DEFAULT_FONT(Font_NOF_ASCII_MONO);
 
@@ -72,42 +72,41 @@ private:
 
 OpenGl_Text::OpenGl_Text()
     : myScaleHeight(1.0f),
-      myIs2d(Standard_False)
+      myIs2d(false)
 {
   myText = new Graphic3d_Text(10.);
 }
 
 //=================================================================================================
 
-OpenGl_Text::OpenGl_Text(const Handle(Graphic3d_Text)& theTextParams)
+OpenGl_Text::OpenGl_Text(const occ::handle<Graphic3d_Text>& theTextParams)
     : myText(theTextParams),
       myScaleHeight(1.0f),
-      myIs2d(Standard_False)
+      myIs2d(false)
 {
 }
 
 //=================================================================================================
 
-void OpenGl_Text::SetPosition(const OpenGl_Vec3& thePoint)
+void OpenGl_Text::SetPosition(const NCollection_Vec3<float>& thePoint)
 {
   myText->SetPosition(gp_Pnt(thePoint.x(), thePoint.y(), thePoint.z()));
 }
 
 //=================================================================================================
 
-void OpenGl_Text::SetFontSize(const Handle(OpenGl_Context)& theCtx,
-                              const Standard_Integer        theFontSize)
+void OpenGl_Text::SetFontSize(const occ::handle<OpenGl_Context>& theCtx, const int theFontSize)
 {
   if (myText->Height() != theFontSize)
   {
     Release(theCtx.operator->());
   }
-  myText->SetHeight((Standard_ShortReal)theFontSize);
+  myText->SetHeight((float)theFontSize);
 }
 
 //=================================================================================================
 
-void OpenGl_Text::Reset(const Handle(OpenGl_Context)& theCtx)
+void OpenGl_Text::Reset(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (!myFont.IsNull() && myFont->FTFont()->PointSize() != myText->Height())
   {
@@ -121,12 +120,12 @@ void OpenGl_Text::Reset(const Handle(OpenGl_Context)& theCtx)
 
 //=================================================================================================
 
-void OpenGl_Text::Init(const Handle(OpenGl_Context)& theCtx,
-                       const Standard_Utf8Char*      theText,
-                       const OpenGl_Vec3&            thePoint)
+void OpenGl_Text::Init(const occ::handle<OpenGl_Context>& theCtx,
+                       const char*                        theText,
+                       const NCollection_Vec3<float>&     thePoint)
 {
   Reset(theCtx);
-  Set2D(Standard_False);
+  Set2D(false);
 
   NCollection_String aText;
   aText.FromUnicode(theText);
@@ -145,10 +144,10 @@ OpenGl_Text::~OpenGl_Text()
 
 void OpenGl_Text::releaseVbos(OpenGl_Context* theCtx)
 {
-  for (Standard_Integer anIter = 0; anIter < myVertsVbo.Length(); ++anIter)
+  for (int anIter = 0; anIter < myVertsVbo.Length(); ++anIter)
   {
-    Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.ChangeValue(anIter);
-    Handle(OpenGl_VertexBuffer)& aTCrds = myTCrdsVbo.ChangeValue(anIter);
+    occ::handle<OpenGl_VertexBuffer>& aVerts = myVertsVbo.ChangeValue(anIter);
+    occ::handle<OpenGl_VertexBuffer>& aTCrds = myTCrdsVbo.ChangeValue(anIter);
 
     if (theCtx != NULL)
     {
@@ -180,23 +179,23 @@ void OpenGl_Text::Release(OpenGl_Context* theCtx)
     myFont.Nullify();
     if (theCtx != NULL)
     {
-      theCtx->ReleaseResource(aKey, Standard_True);
+      theCtx->ReleaseResource(aKey, true);
     }
   }
 }
 
 //=================================================================================================
 
-Standard_Size OpenGl_Text::EstimatedDataSize() const
+size_t OpenGl_Text::EstimatedDataSize() const
 {
-  Standard_Size aSize = 0;
-  for (Standard_Integer anIter = myVertsVbo.Lower(); anIter <= myVertsVbo.Upper(); ++anIter)
+  size_t aSize = 0;
+  for (int anIter = myVertsVbo.Lower(); anIter <= myVertsVbo.Upper(); ++anIter)
   {
-    if (const Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.Value(anIter))
+    if (const occ::handle<OpenGl_VertexBuffer>& aVerts = myVertsVbo.Value(anIter))
     {
       aSize += aVerts->EstimatedDataSize();
     }
-    if (const Handle(OpenGl_VertexBuffer)& aTCrds = myTCrdsVbo.Value(anIter))
+    if (const occ::handle<OpenGl_VertexBuffer>& aTCrds = myTCrdsVbo.Value(anIter))
     {
       aSize += aTCrds->EstimatedDataSize();
     }
@@ -216,9 +215,9 @@ void OpenGl_Text::UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats, bool th
   ++theStats[Graphic3d_FrameStatsCounter_NbElemsTextNotCulled];
   if (theIsDetailed)
   {
-    for (Standard_Integer anIter = myVertsVbo.Lower(); anIter <= myVertsVbo.Upper(); ++anIter)
+    for (int anIter = myVertsVbo.Lower(); anIter <= myVertsVbo.Upper(); ++anIter)
     {
-      if (const Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.Value(anIter))
+      if (const occ::handle<OpenGl_VertexBuffer>& aVerts = myVertsVbo.Value(anIter))
       {
         theStats[Graphic3d_FrameStatsCounter_NbTrianglesNotCulled] +=
           aVerts->GetElemsNb() / 3; // 2 non-indexed triangles per glyph
@@ -229,27 +228,23 @@ void OpenGl_Text::UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats, bool th
 
 //=================================================================================================
 
-void OpenGl_Text::StringSize(const Handle(OpenGl_Context)& theCtx,
-                             const NCollection_String&     theText,
-                             const OpenGl_Aspects&         theTextAspect,
-                             const Standard_ShortReal      theHeight,
-                             const unsigned int            theResolution,
-                             const Font_Hinting            theFontHinting,
-                             Standard_ShortReal&           theWidth,
-                             Standard_ShortReal&           theAscent,
-                             Standard_ShortReal&           theDescent)
+void OpenGl_Text::StringSize(const occ::handle<OpenGl_Context>& theCtx,
+                             const NCollection_String&          theText,
+                             const OpenGl_Aspects&              theTextAspect,
+                             const float                        theHeight,
+                             const unsigned int                 theResolution,
+                             const Font_Hinting                 theFontHinting,
+                             float&                             theWidth,
+                             float&                             theAscent,
+                             float&                             theDescent)
 {
   theWidth   = 0.0f;
   theAscent  = 0.0f;
   theDescent = 0.0f;
   const TCollection_AsciiString aFontKey =
-    FontKey(theTextAspect, (Standard_Integer)theHeight, theResolution, theFontHinting);
-  Handle(OpenGl_Font) aFont = FindFont(theCtx,
-                                       theTextAspect,
-                                       (Standard_Integer)theHeight,
-                                       theResolution,
-                                       theFontHinting,
-                                       aFontKey);
+    FontKey(theTextAspect, (int)theHeight, theResolution, theFontHinting);
+  occ::handle<OpenGl_Font> aFont =
+    FindFont(theCtx, theTextAspect, (int)theHeight, theResolution, theFontHinting, aFontKey);
   if (aFont.IsNull() || !aFont->IsValid())
   {
     return;
@@ -259,10 +254,10 @@ void OpenGl_Text::StringSize(const Handle(OpenGl_Context)& theCtx,
   theDescent = aFont->Descender();
 
   GLfloat aWidth = 0.0f;
-  for (NCollection_Utf8Iter anIter = theText.Iterator(); *anIter != 0;)
+  for (NCollection_UtfIterator<char> anIter = theText.Iterator(); *anIter != 0;)
   {
-    const Standard_Utf32Char aCharThis = *anIter;
-    const Standard_Utf32Char aCharNext = *++anIter;
+    const char32_t aCharThis = *anIter;
+    const char32_t aCharNext = *++anIter;
 
     if (aCharThis == '\x0D'   // CR  (carriage return)
         || aCharThis == '\a'  // BEL (alarm)
@@ -293,24 +288,24 @@ void OpenGl_Text::StringSize(const Handle(OpenGl_Context)& theCtx,
   }
   theWidth = std::max(theWidth, aWidth);
 
-  const Handle(OpenGl_Context)& aCtx = theCtx;
+  const occ::handle<OpenGl_Context>& aCtx = theCtx;
   aFont.Nullify();
-  aCtx->ReleaseResource(aFontKey, Standard_True);
+  aCtx->ReleaseResource(aFontKey, true);
 }
 
 //=================================================================================================
 
-void OpenGl_Text::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_Text::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
   // clang-format off
   const OpenGl_Aspects* aTextAspect = theWorkspace->ApplyAspects (false); // do not bind textures as they will be disabled anyway
   // clang-format on
-  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = theWorkspace->GetGlContext();
 
   // Bind custom shader program or generate default version
   aCtx->ShaderManager()->BindFontProgram(aTextAspect->ShaderProgramRes(aCtx));
-  const Handle(OpenGl_TextureSet) aPrevTexture =
-    aCtx->BindTextures(Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
+  const occ::handle<OpenGl_TextureSet> aPrevTexture =
+    aCtx->BindTextures(occ::handle<OpenGl_TextureSet>(), occ::handle<OpenGl_ShaderProgram>());
 
   if (myText->HasPlane() && myText->HasOwnAnchorPoint())
   {
@@ -334,7 +329,7 @@ void OpenGl_Text::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   // restore aspects
   if (!aPrevTexture.IsNull())
   {
-    aCtx->BindTextures(aPrevTexture, Handle(OpenGl_ShaderProgram)());
+    aCtx->BindTextures(aPrevTexture, occ::handle<OpenGl_ShaderProgram>());
   }
 
   // restore Z buffer settings
@@ -346,13 +341,13 @@ void OpenGl_Text::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 
 //=================================================================================================
 
-void OpenGl_Text::Render(const Handle(OpenGl_Context)& theCtx,
-                         const OpenGl_Aspects&         theTextAspect,
-                         unsigned int                  theResolution,
-                         Font_Hinting                  theFontHinting) const
+void OpenGl_Text::Render(const occ::handle<OpenGl_Context>& theCtx,
+                         const OpenGl_Aspects&              theTextAspect,
+                         unsigned int                       theResolution,
+                         Font_Hinting                       theFontHinting) const
 {
-  const Standard_Integer aPrevPolygonMode  = theCtx->SetPolygonMode(GL_FILL);
-  const bool             aPrevHatchingMode = theCtx->SetPolygonHatchEnabled(false);
+  const int  aPrevPolygonMode  = theCtx->SetPolygonMode(GL_FILL);
+  const bool aPrevHatchingMode = theCtx->SetPolygonHatchEnabled(false);
 
   render(theCtx,
          theTextAspect,
@@ -367,11 +362,11 @@ void OpenGl_Text::Render(const Handle(OpenGl_Context)& theCtx,
 
 //=================================================================================================
 
-void OpenGl_Text::setupMatrix(const Handle(OpenGl_Context)& theCtx,
-                              const OpenGl_Aspects&         theTextAspect,
-                              const OpenGl_Vec3&            theDVec) const
+void OpenGl_Text::setupMatrix(const occ::handle<OpenGl_Context>& theCtx,
+                              const OpenGl_Aspects&              theTextAspect,
+                              const NCollection_Vec3<float>&     theDVec) const
 {
-  OpenGl_Mat4d aModViewMat, aProjectMat;
+  NCollection_Mat4<double> aModViewMat, aProjectMat;
   if (myText->HasPlane() && myText->HasOwnAnchorPoint())
   {
     aProjectMat = myProjMatrix * myOrientationMatrix;
@@ -397,8 +392,8 @@ void OpenGl_Text::setupMatrix(const Handle(OpenGl_Context)& theCtx,
   }
   else
   {
-    OpenGl_Vec3d anObjXYZ;
-    OpenGl_Vec3d aWinXYZ = myWinXYZ + OpenGl_Vec3d(theDVec);
+    NCollection_Vec3<double> anObjXYZ;
+    NCollection_Vec3<double> aWinXYZ = myWinXYZ + NCollection_Vec3<double>(theDVec);
     if (!myText->HasPlane() && !theTextAspect.Aspect()->IsTextZoomable())
     {
       // Align coordinates to the nearest integer to avoid extra interpolation issues.
@@ -408,15 +403,15 @@ void OpenGl_Text::setupMatrix(const Handle(OpenGl_Context)& theCtx,
       aWinXYZ.x() = std::floor(aWinXYZ.x());
       aWinXYZ.y() = std::floor(aWinXYZ.y());
     }
-    Graphic3d_TransformUtils::UnProject<Standard_Real>(aWinXYZ.x(),
-                                                       aWinXYZ.y(),
-                                                       aWinXYZ.z(),
-                                                       THE_IDENTITY_MATRIX,
-                                                       aProjectMat,
-                                                       theCtx->Viewport(),
-                                                       anObjXYZ.x(),
-                                                       anObjXYZ.y(),
-                                                       anObjXYZ.z());
+    Graphic3d_TransformUtils::UnProject<double>(aWinXYZ.x(),
+                                                aWinXYZ.y(),
+                                                aWinXYZ.z(),
+                                                THE_IDENTITY_MATRIX,
+                                                aProjectMat,
+                                                theCtx->Viewport(),
+                                                anObjXYZ.x(),
+                                                anObjXYZ.y(),
+                                                anObjXYZ.z());
 
     if (myText->HasPlane())
     {
@@ -425,15 +420,20 @@ void OpenGl_Text::setupMatrix(const Handle(OpenGl_Context)& theCtx,
       const gp_Dir& aVectorUp     = anOrientation.Direction();
       const gp_Dir& aVectorRight  = anOrientation.YDirection();
 
-      aModViewMat.SetColumn(2, OpenGl_Vec3d(aVectorUp.X(), aVectorUp.Y(), aVectorUp.Z()));
-      aModViewMat.SetColumn(1, OpenGl_Vec3d(aVectorRight.X(), aVectorRight.Y(), aVectorRight.Z()));
-      aModViewMat.SetColumn(0, OpenGl_Vec3d(aVectorDir.X(), aVectorDir.Y(), aVectorDir.Z()));
+      aModViewMat.SetColumn(2,
+                            NCollection_Vec3<double>(aVectorUp.X(), aVectorUp.Y(), aVectorUp.Z()));
+      aModViewMat.SetColumn(
+        1,
+        NCollection_Vec3<double>(aVectorRight.X(), aVectorRight.Y(), aVectorRight.Z()));
+      aModViewMat.SetColumn(
+        0,
+        NCollection_Vec3<double>(aVectorDir.X(), aVectorDir.Y(), aVectorDir.Z()));
 
       if (!myText->HasOwnAnchorPoint())
       {
-        OpenGl_Mat4d  aPosMat;
-        const gp_Pnt& aPoint = myText->Position();
-        aPosMat.SetColumn(3, OpenGl_Vec3d(aPoint.X(), aPoint.Y(), aPoint.Z()));
+        NCollection_Mat4<double> aPosMat;
+        const gp_Pnt&            aPoint = myText->Position();
+        aPosMat.SetColumn(3, NCollection_Vec3<double>(aPoint.X(), aPoint.Y(), aPoint.Z()));
         aPosMat *= aModViewMat;
         aModViewMat.SetColumn(3, aPosMat.GetColumn(3));
       }
@@ -473,25 +473,25 @@ void OpenGl_Text::setupMatrix(const Handle(OpenGl_Context)& theCtx,
 
   if (myText->HasPlane() && !myText->HasOwnAnchorPoint())
   {
-    OpenGl_Mat4d aCurrentWorldViewMat;
+    NCollection_Mat4<double> aCurrentWorldViewMat;
     aCurrentWorldViewMat.Convert(theCtx->WorldViewState.Current());
 
     // apply local transformation
-    OpenGl_Mat4d aModelWorld;
+    NCollection_Mat4<double> aModelWorld;
     aModelWorld.Convert(theCtx->ModelWorldState.Current());
     aCurrentWorldViewMat = aCurrentWorldViewMat * aModelWorld;
 
-    theCtx->WorldViewState.SetCurrent<Standard_Real>(aCurrentWorldViewMat * aModViewMat);
+    theCtx->WorldViewState.SetCurrent<double>(aCurrentWorldViewMat * aModViewMat);
   }
   else
   {
-    theCtx->WorldViewState.SetCurrent<Standard_Real>(aModViewMat);
+    theCtx->WorldViewState.SetCurrent<double>(aModViewMat);
   }
   theCtx->ApplyWorldViewMatrix();
 
   if (!myIs2d)
   {
-    theCtx->ProjectionState.SetCurrent<Standard_Real>(aProjectMat);
+    theCtx->ProjectionState.SetCurrent<double>(aProjectMat);
     theCtx->ApplyProjectionMatrix();
   }
 
@@ -501,8 +501,8 @@ void OpenGl_Text::setupMatrix(const Handle(OpenGl_Context)& theCtx,
 
 //=================================================================================================
 
-void OpenGl_Text::drawText(const Handle(OpenGl_Context)& theCtx,
-                           const OpenGl_Aspects&         theTextAspect) const
+void OpenGl_Text::drawText(const occ::handle<OpenGl_Context>& theCtx,
+                           const OpenGl_Aspects&              theTextAspect) const
 {
   (void)theTextAspect;
   if (myVertsVbo.Length() != myTextures.Length() || myTextures.IsEmpty())
@@ -510,13 +510,13 @@ void OpenGl_Text::drawText(const Handle(OpenGl_Context)& theCtx,
     return;
   }
 
-  for (Standard_Integer anIter = 0; anIter < myTextures.Length(); ++anIter)
+  for (int anIter = 0; anIter < myTextures.Length(); ++anIter)
   {
     const GLuint aTexId = myTextures.Value(anIter);
     theCtx->core11fwd->glBindTexture(GL_TEXTURE_2D, aTexId);
 
-    const Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.Value(anIter);
-    const Handle(OpenGl_VertexBuffer)& aTCrds = myTCrdsVbo.Value(anIter);
+    const occ::handle<OpenGl_VertexBuffer>& aVerts = myVertsVbo.Value(anIter);
+    const occ::handle<OpenGl_VertexBuffer>& aTCrds = myTCrdsVbo.Value(anIter);
     aVerts->BindAttribute(theCtx, Graphic3d_TOA_POS);
     aTCrds->BindAttribute(theCtx, Graphic3d_TOA_UV);
 
@@ -531,7 +531,7 @@ void OpenGl_Text::drawText(const Handle(OpenGl_Context)& theCtx,
 //=================================================================================================
 
 TCollection_AsciiString OpenGl_Text::FontKey(const OpenGl_Aspects& theAspect,
-                                             Standard_Integer      theHeight,
+                                             int                   theHeight,
                                              unsigned int          theResolution,
                                              Font_Hinting          theFontHinting)
 {
@@ -543,25 +543,20 @@ TCollection_AsciiString OpenGl_Text::FontKey(const OpenGl_Aspects& theAspect,
                                            : THE_DEFAULT_FONT;
 
   char aSuff[64];
-  Sprintf(aSuff,
-          ":%d:%d:%d:%d",
-          Standard_Integer(anAspect),
-          Standard_Integer(theResolution),
-          theHeight,
-          Standard_Integer(theFontHinting));
+  Sprintf(aSuff, ":%d:%d:%d:%d", int(anAspect), int(theResolution), theHeight, int(theFontHinting));
   return aFont + aSuff;
 }
 
 //=================================================================================================
 
-Handle(OpenGl_Font) OpenGl_Text::FindFont(const Handle(OpenGl_Context)&  theCtx,
-                                          const OpenGl_Aspects&          theAspect,
-                                          Standard_Integer               theHeight,
-                                          unsigned int                   theResolution,
-                                          Font_Hinting                   theFontHinting,
-                                          const TCollection_AsciiString& theKey)
+occ::handle<OpenGl_Font> OpenGl_Text::FindFont(const occ::handle<OpenGl_Context>& theCtx,
+                                               const OpenGl_Aspects&              theAspect,
+                                               int                                theHeight,
+                                               unsigned int                       theResolution,
+                                               Font_Hinting                       theFontHinting,
+                                               const TCollection_AsciiString&     theKey)
 {
-  Handle(OpenGl_Font) aFont;
+  occ::handle<OpenGl_Font> aFont;
   if (theHeight < 2)
   {
     return aFont; // invalid parameters
@@ -569,7 +564,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont(const Handle(OpenGl_Context)&  theCtx,
 
   if (!theCtx->GetResource(theKey, aFont))
   {
-    Handle(Font_FontMgr)           aFontMgr  = Font_FontMgr::GetInstance();
+    occ::handle<Font_FontMgr>      aFontMgr  = Font_FontMgr::GetInstance();
     const TCollection_AsciiString& aFontName = !theAspect.Aspect()->TextFont().IsNull()
                                                  ? theAspect.Aspect()->TextFont()->String()
                                                  : THE_DEFAULT_FONT;
@@ -580,7 +575,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont(const Handle(OpenGl_Context)&  theCtx,
     aParams.PointSize   = theHeight;
     aParams.Resolution  = theResolution;
     aParams.FontHinting = theFontHinting;
-    if (Handle(Font_FTFont) aFontFt =
+    if (occ::handle<Font_FTFont> aFontFt =
           Font_FTFont::FindAndCreate(aFontName, anAspect, aParams, Font_StrictLevel_Any))
     {
       aFont = new OpenGl_Font(aFontFt, theKey);
@@ -615,17 +610,17 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont(const Handle(OpenGl_Context)&  theCtx,
 
 //=================================================================================================
 
-void OpenGl_Text::drawRect(const Handle(OpenGl_Context)& theCtx,
-                           const OpenGl_Aspects&         theTextAspect,
-                           const OpenGl_Vec4&            theColorSubs) const
+void OpenGl_Text::drawRect(const occ::handle<OpenGl_Context>& theCtx,
+                           const OpenGl_Aspects&              theTextAspect,
+                           const NCollection_Vec4<float>&     theColorSubs) const
 {
-  Handle(OpenGl_ShaderProgram) aPrevProgram = theCtx->ActiveProgram();
+  occ::handle<OpenGl_ShaderProgram> aPrevProgram = theCtx->ActiveProgram();
   if (myBndVertsVbo.IsNull())
   {
-    OpenGl_Vec2 aQuad[4] = {OpenGl_Vec2(myBndBox.Right, myBndBox.Bottom),
-                            OpenGl_Vec2(myBndBox.Right, myBndBox.Top),
-                            OpenGl_Vec2(myBndBox.Left, myBndBox.Bottom),
-                            OpenGl_Vec2(myBndBox.Left, myBndBox.Top)};
+    NCollection_Vec2<float> aQuad[4] = {NCollection_Vec2<float>(myBndBox.Right, myBndBox.Bottom),
+                                        NCollection_Vec2<float>(myBndBox.Right, myBndBox.Top),
+                                        NCollection_Vec2<float>(myBndBox.Left, myBndBox.Bottom),
+                                        NCollection_Vec2<float>(myBndBox.Left, myBndBox.Top)};
     if (theCtx->ToUseVbo())
     {
       myBndVertsVbo = new OpenGl_VertexBuffer();
@@ -638,12 +633,12 @@ void OpenGl_Text::drawRect(const Handle(OpenGl_Context)& theCtx,
   }
 
   // bind unlit program
-  theCtx->ShaderManager()->BindFaceProgram(Handle(OpenGl_TextureSet)(),
+  theCtx->ShaderManager()->BindFaceProgram(occ::handle<OpenGl_TextureSet>(),
                                            Graphic3d_TypeOfShadingModel_Unlit,
                                            Graphic3d_AlphaMode_Opaque,
-                                           Standard_False,
-                                           Standard_False,
-                                           Handle(OpenGl_ShaderProgram)());
+                                           false,
+                                           false,
+                                           occ::handle<OpenGl_ShaderProgram>());
 
   if (theCtx->core11ffp != NULL && theCtx->ActiveProgram().IsNull())
   {
@@ -651,7 +646,7 @@ void OpenGl_Text::drawRect(const Handle(OpenGl_Context)& theCtx,
   }
 
   theCtx->SetColor4fv(theColorSubs);
-  setupMatrix(theCtx, theTextAspect, OpenGl_Vec3(0.0f, 0.0f, 0.0f));
+  setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(0.0f, 0.0f, 0.0f));
   myBndVertsVbo->BindAttribute(theCtx, Graphic3d_TOA_POS);
 
   theCtx->core20fwd->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -662,12 +657,12 @@ void OpenGl_Text::drawRect(const Handle(OpenGl_Context)& theCtx,
 
 //=================================================================================================
 
-void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
-                         const OpenGl_Aspects&         theTextAspect,
-                         const OpenGl_Vec4&            theColorText,
-                         const OpenGl_Vec4&            theColorSubs,
-                         unsigned int                  theResolution,
-                         Font_Hinting                  theFontHinting) const
+void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
+                         const OpenGl_Aspects&              theTextAspect,
+                         const NCollection_Vec4<float>&     theColorText,
+                         const NCollection_Vec4<float>&     theColorSubs,
+                         unsigned int                       theResolution,
+                         Font_Hinting                       theFontHinting) const
 {
   if (myText->Text().IsEmpty() && myText->TextFormatter().IsNull())
   {
@@ -677,7 +672,7 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
   // Note that using difference resolution in different Views in same Viewer
   // will lead to performance regression (for example, text will be recreated every time).
   const TCollection_AsciiString aFontKey =
-    FontKey(theTextAspect, (Standard_Integer)myText->Height(), theResolution, theFontHinting);
+    FontKey(theTextAspect, (int)myText->Height(), theResolution, theFontHinting);
   if (!myFont.IsNull() && !myFont->ResourceKey().IsEqual(aFontKey))
   {
     // font changed
@@ -688,7 +683,7 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
   {
     myFont = FindFont(theCtx,
                       theTextAspect,
-                      (Standard_Integer)myText->Height(),
+                      (int)myText->Height(),
                       theResolution,
                       theFontHinting,
                       aFontKey);
@@ -700,7 +695,7 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
 
   if (myTextures.IsEmpty())
   {
-    Handle(Font_TextFormatter) aFormatter = myText->TextFormatter();
+    occ::handle<Font_TextFormatter> aFormatter = myText->TextFormatter();
     if (aFormatter.IsNull())
     {
       aFormatter = new Font_TextFormatter();
@@ -736,38 +731,38 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
   if (!myIs2d)
   {
     const gp_Pnt& aPoint = myText->Position();
-    Graphic3d_TransformUtils::Project<Standard_Real>(aPoint.X(),
-                                                     aPoint.Y(),
-                                                     aPoint.Z(),
-                                                     myModelMatrix,
-                                                     myProjMatrix,
-                                                     theCtx->Viewport(),
-                                                     myWinXYZ.x(),
-                                                     myWinXYZ.y(),
-                                                     myWinXYZ.z());
+    Graphic3d_TransformUtils::Project<double>(aPoint.X(),
+                                              aPoint.Y(),
+                                              aPoint.Z(),
+                                              myModelMatrix,
+                                              myProjMatrix,
+                                              theCtx->Viewport(),
+                                              myWinXYZ.x(),
+                                              myWinXYZ.y(),
+                                              myWinXYZ.z());
 
     // compute scale factor for constant text height
     if (!theTextAspect.Aspect()->IsTextZoomable())
     {
-      Graphic3d_Vec3d aPnt1, aPnt2;
-      Graphic3d_TransformUtils::UnProject<Standard_Real>(myWinXYZ.x(),
-                                                         myWinXYZ.y(),
-                                                         myWinXYZ.z(),
-                                                         THE_IDENTITY_MATRIX,
-                                                         myProjMatrix,
-                                                         theCtx->Viewport(),
-                                                         aPnt1.x(),
-                                                         aPnt1.y(),
-                                                         aPnt1.z());
-      Graphic3d_TransformUtils::UnProject<Standard_Real>(myWinXYZ.x(),
-                                                         myWinXYZ.y() + aPointSize,
-                                                         myWinXYZ.z(),
-                                                         THE_IDENTITY_MATRIX,
-                                                         myProjMatrix,
-                                                         theCtx->Viewport(),
-                                                         aPnt2.x(),
-                                                         aPnt2.y(),
-                                                         aPnt2.z());
+      NCollection_Vec3<double> aPnt1, aPnt2;
+      Graphic3d_TransformUtils::UnProject<double>(myWinXYZ.x(),
+                                                  myWinXYZ.y(),
+                                                  myWinXYZ.z(),
+                                                  THE_IDENTITY_MATRIX,
+                                                  myProjMatrix,
+                                                  theCtx->Viewport(),
+                                                  aPnt1.x(),
+                                                  aPnt1.y(),
+                                                  aPnt1.z());
+      Graphic3d_TransformUtils::UnProject<double>(myWinXYZ.x(),
+                                                  myWinXYZ.y() + aPointSize,
+                                                  myWinXYZ.z(),
+                                                  THE_IDENTITY_MATRIX,
+                                                  myProjMatrix,
+                                                  theCtx->Viewport(),
+                                                  aPnt2.x(),
+                                                  aPnt2.y(),
+                                                  aPnt2.z());
       myScaleHeight = (aPnt2.y() - aPnt1.y()) / aPointSize;
     }
   }
@@ -793,7 +788,7 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
   // activate texture unit
   if (theCtx->core11ffp != NULL && theCtx->ActiveProgram().IsNull())
   {
-    const Handle(OpenGl_Texture)& aTexture = myFont->Texture();
+    const occ::handle<OpenGl_Texture>& aTexture = myFont->Texture();
     OpenGl_Sampler::applyGlobalTextureParams(theCtx, *aTexture, aTexture->Sampler()->Parameters());
   }
 
@@ -826,20 +821,20 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
     case Aspect_TODT_DEKALE: {
       BackPolygonOffsetSentry aPolygonOffsetTmp(hasDepthTest ? theCtx.get() : NULL);
       theCtx->SetColor4fv(theColorSubs);
-      setupMatrix(theCtx, theTextAspect, OpenGl_Vec3(+1.0f, +1.0f, 0.0f));
+      setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(+1.0f, +1.0f, 0.0f));
       drawText(theCtx, theTextAspect);
-      setupMatrix(theCtx, theTextAspect, OpenGl_Vec3(-1.0f, -1.0f, 0.0f));
+      setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(-1.0f, -1.0f, 0.0f));
       drawText(theCtx, theTextAspect);
-      setupMatrix(theCtx, theTextAspect, OpenGl_Vec3(-1.0f, +1.0f, 0.0f));
+      setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(-1.0f, +1.0f, 0.0f));
       drawText(theCtx, theTextAspect);
-      setupMatrix(theCtx, theTextAspect, OpenGl_Vec3(+1.0f, -1.0f, 0.0f));
+      setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(+1.0f, -1.0f, 0.0f));
       drawText(theCtx, theTextAspect);
       break;
     }
     case Aspect_TODT_SHADOW: {
       BackPolygonOffsetSentry aPolygonOffsetTmp(hasDepthTest ? theCtx.get() : NULL);
       theCtx->SetColor4fv(theColorSubs);
-      setupMatrix(theCtx, theTextAspect, OpenGl_Vec3(+1.0f, -1.0f, 0.0f));
+      setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(+1.0f, -1.0f, 0.0f));
       drawText(theCtx, theTextAspect);
       break;
     }
@@ -851,18 +846,18 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
 
   // main draw call
   theCtx->SetColor4fv(theColorText);
-  setupMatrix(theCtx, theTextAspect, OpenGl_Vec3(0.0f, 0.0f, 0.0f));
+  setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(0.0f, 0.0f, 0.0f));
   drawText(theCtx, theTextAspect);
 
   if (!myIs2d)
   {
-    theCtx->ProjectionState.SetCurrent<Standard_Real>(myProjMatrix);
+    theCtx->ProjectionState.SetCurrent<double>(myProjMatrix);
     theCtx->ApplyProjectionMatrix();
   }
 
   if (theCtx->core11ffp != NULL && theCtx->ActiveProgram().IsNull())
   {
-    const Handle(OpenGl_Texture)& aTexture = myFont->Texture();
+    const occ::handle<OpenGl_Texture>& aTexture = myFont->Texture();
     OpenGl_Sampler::resetGlobalTextureParams(theCtx, *aTexture, aTexture->Sampler()->Parameters());
   }
 
@@ -888,7 +883,7 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
     theCtx->core11fwd->glStencilFunc(GL_ALWAYS, 1, 0xFF);
     theCtx->core11fwd->glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    drawRect(theCtx, theTextAspect, OpenGl_Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    drawRect(theCtx, theTextAspect, NCollection_Vec4<float>(1.0f, 1.0f, 1.0f, 1.0f));
 
     theCtx->core11fwd->glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
@@ -913,18 +908,18 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
 
 //=================================================================================================
 
-void OpenGl_Text::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void OpenGl_Text::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_Text)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, OpenGl_Element)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTextures.Size())
 
-  for (NCollection_Vector<Handle(OpenGl_VertexBuffer)>::Iterator aCrdsIt(myTCrdsVbo);
+  for (NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>::Iterator aCrdsIt(myTCrdsVbo);
        aCrdsIt.More();
        aCrdsIt.Next())
   {
-    const Handle(OpenGl_VertexBuffer)& aVertexBuffer = aCrdsIt.Value();
+    const occ::handle<OpenGl_VertexBuffer>& aVertexBuffer = aCrdsIt.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aVertexBuffer.get())
   }
 

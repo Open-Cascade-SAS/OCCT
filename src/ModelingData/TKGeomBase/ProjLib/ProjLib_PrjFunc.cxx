@@ -23,9 +23,9 @@
 #include <Standard_ConstructionError.hxx>
 
 ProjLib_PrjFunc::ProjLib_PrjFunc(const Adaptor3d_Curve*   C,
-                                 const Standard_Real      FixVal,
+                                 const double             FixVal,
                                  const Adaptor3d_Surface* S,
-                                 const Standard_Integer   Fix)
+                                 const int                Fix)
     : myCurve(C),
       mySurface(S),
       myt(0),
@@ -51,31 +51,31 @@ ProjLib_PrjFunc::ProjLib_PrjFunc(const Adaptor3d_Curve*   C,
   }
 }
 
-Standard_Integer ProjLib_PrjFunc::NbVariables() const
+int ProjLib_PrjFunc::NbVariables() const
 {
   return 2;
 }
 
-Standard_Integer ProjLib_PrjFunc::NbEquations() const
+int ProjLib_PrjFunc::NbEquations() const
 {
   return 2;
 }
 
-Standard_Boolean ProjLib_PrjFunc::Value(const math_Vector& X, math_Vector& F)
+bool ProjLib_PrjFunc::Value(const math_Vector& X, math_Vector& F)
 {
   math_Matrix D(1, 2, 1, 2);
   return Values(X, F, D);
 }
 
-Standard_Boolean ProjLib_PrjFunc::Derivatives(const math_Vector& X, math_Matrix& D)
+bool ProjLib_PrjFunc::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   math_Vector F(1, 2);
   return Values(X, F, D);
 }
 
-Standard_Boolean ProjLib_PrjFunc::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool ProjLib_PrjFunc::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
-  Standard_Real u = 0., v = 0., t = 0.;
+  double u = 0., v = 0., t = 0.;
   switch (myFix)
   {
     case 1:
@@ -94,8 +94,8 @@ Standard_Boolean ProjLib_PrjFunc::Values(const math_Vector& X, math_Vector& F, m
       v = myV;
   }
 
-  /*  if(X(1) > mySup.X() || X(1) < myInf.X()) return Standard_False;
-    if(X(2) > mySup.Y() || X(2) < myInf.Y()) return Standard_False;
+  /*  if(X(1) > mySup.X() || X(1) < myInf.X()) return false;
+    if(X(2) > mySup.Y() || X(2) < myInf.Y()) return false;
   */
   gp_Pnt S, C;
   gp_Vec DS1_u, DS1_v, DS2_u, DS2_uv, DS2_v, DC1_t;
@@ -139,7 +139,7 @@ Standard_Boolean ProjLib_PrjFunc::Values(const math_Vector& X, math_Vector& F, m
   myV = v;
   myt = t;
 
-  return Standard_True;
+  return true;
 }
 
 gp_Pnt2d ProjLib_PrjFunc::Solution() const

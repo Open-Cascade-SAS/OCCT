@@ -21,9 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 #include <BRepToIGES_BREntity.hxx>
 #include <Standard_Integer.hxx>
 #include <Message_ProgressRange.hxx>
@@ -61,81 +62,80 @@ public:
   Standard_EXPORT void TransferVertexList();
 
   //! Returns the index of <myvertex> in "myVertices"
-  Standard_EXPORT Standard_Integer IndexVertex(const TopoDS_Vertex& myvertex) const;
+  Standard_EXPORT int IndexVertex(const TopoDS_Vertex& myvertex) const;
 
   //! Stores <myvertex> in "myVertices"
   //! Returns the index of <myvertex>.
-  Standard_EXPORT Standard_Integer AddVertex(const TopoDS_Vertex& myvertex);
+  Standard_EXPORT int AddVertex(const TopoDS_Vertex& myvertex);
 
   //! Transfer an Edge entity from TopoDS to IGES
   Standard_EXPORT void TransferEdgeList();
 
   //! Returns the index of <myedge> in "myEdges"
-  Standard_EXPORT Standard_Integer IndexEdge(const TopoDS_Edge& myedge) const;
+  Standard_EXPORT int IndexEdge(const TopoDS_Edge& myedge) const;
 
   //! Stores <myedge> in "myEdges" and <mycurve3d> in "myCurves".
   //! Returns the index of <myedge>.
-  Standard_EXPORT Standard_Integer AddEdge(const TopoDS_Edge&                 myedge,
-                                           const Handle(IGESData_IGESEntity)& mycurve3d);
+  Standard_EXPORT int AddEdge(const TopoDS_Edge&                      myedge,
+                              const occ::handle<IGESData_IGESEntity>& mycurve3d);
 
   //! Returns the result of the transfert of any Shape
   //! If the transfer has failed, this member returns a NullEntity.
-  Standard_EXPORT virtual Handle(IGESData_IGESEntity) TransferShape(
+  Standard_EXPORT virtual occ::handle<IGESData_IGESEntity> TransferShape(
     const TopoDS_Shape&          start,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! Transfer an Edge entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferEdge(const TopoDS_Edge& myedge);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferEdge(const TopoDS_Edge& myedge);
 
   //! Transfer an Edge entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferEdge(const TopoDS_Edge&  myedge,
-                                                           const TopoDS_Face&  myface,
-                                                           const Standard_Real length);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferEdge(const TopoDS_Edge& myedge,
+                                                                const TopoDS_Face& myface,
+                                                                const double       length);
 
   //! Transfer a Wire entity from TopoDS to IGES.
   //! Returns the curve associated to mywire in the parametric space of myface.
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESSolid_Loop) TransferWire(const TopoDS_Wire&  mywire,
-                                                      const TopoDS_Face&  myface,
-                                                      const Standard_Real length);
+  Standard_EXPORT occ::handle<IGESSolid_Loop> TransferWire(const TopoDS_Wire& mywire,
+                                                           const TopoDS_Face& myface,
+                                                           const double       length);
 
   //! Transfer a Face entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESSolid_Face) TransferFace(const TopoDS_Face& start);
+  Standard_EXPORT occ::handle<IGESSolid_Face> TransferFace(const TopoDS_Face& start);
 
   //! Transfer an Shell entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESSolid_Shell) TransferShell(
+  Standard_EXPORT occ::handle<IGESSolid_Shell> TransferShell(
     const TopoDS_Shell&          start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfer a Solid entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESSolid_ManifoldSolid) TransferSolid(
+  Standard_EXPORT occ::handle<IGESSolid_ManifoldSolid> TransferSolid(
     const TopoDS_Solid&          start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfer an CompSolid entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCompSolid(
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCompSolid(
     const TopoDS_CompSolid&      start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfer a Compound entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCompound(
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCompound(
     const TopoDS_Compound&       start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-protected:
 private:
-  TopTools_IndexedMapOfShape   myVertices;
-  TopTools_IndexedMapOfShape   myEdges;
-  TColStd_SequenceOfTransient  myCurves;
-  Handle(IGESSolid_EdgeList)   myEdgeList;
-  Handle(IGESSolid_VertexList) myVertexList;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myVertices;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myEdges;
+  NCollection_Sequence<occ::handle<Standard_Transient>>         myCurves;
+  occ::handle<IGESSolid_EdgeList>                               myEdgeList;
+  occ::handle<IGESSolid_VertexList>                             myVertexList;
 };
 
 #endif // _BRepToIGESBRep_Entity_HeaderFile

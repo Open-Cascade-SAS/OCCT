@@ -29,8 +29,9 @@ StepBasic_ActionRequestSolution::StepBasic_ActionRequestSolution() {}
 
 //=================================================================================================
 
-void StepBasic_ActionRequestSolution::Init(const Handle(StepBasic_ActionMethod)&           aMethod,
-                                           const Handle(StepBasic_VersionedActionRequest)& aRequest)
+void StepBasic_ActionRequestSolution::Init(
+  const occ::handle<StepBasic_ActionMethod>&           aMethod,
+  const occ::handle<StepBasic_VersionedActionRequest>& aRequest)
 {
 
   theMethod = aMethod;
@@ -40,21 +41,21 @@ void StepBasic_ActionRequestSolution::Init(const Handle(StepBasic_ActionMethod)&
 
 //=================================================================================================
 
-Handle(StepBasic_ActionMethod) StepBasic_ActionRequestSolution::Method() const
+occ::handle<StepBasic_ActionMethod> StepBasic_ActionRequestSolution::Method() const
 {
   return theMethod;
 }
 
 //=================================================================================================
 
-void StepBasic_ActionRequestSolution::SetMethod(const Handle(StepBasic_ActionMethod)& aMethod)
+void StepBasic_ActionRequestSolution::SetMethod(const occ::handle<StepBasic_ActionMethod>& aMethod)
 {
   theMethod = aMethod;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_VersionedActionRequest) StepBasic_ActionRequestSolution::Request() const
+occ::handle<StepBasic_VersionedActionRequest> StepBasic_ActionRequestSolution::Request() const
 {
   return theRequest;
 }
@@ -62,7 +63,7 @@ Handle(StepBasic_VersionedActionRequest) StepBasic_ActionRequestSolution::Reques
 //=================================================================================================
 
 void StepBasic_ActionRequestSolution::SetRequest(
-  const Handle(StepBasic_VersionedActionRequest)& aRequest)
+  const occ::handle<StepBasic_VersionedActionRequest>& aRequest)
 {
   theRequest = aRequest;
 }

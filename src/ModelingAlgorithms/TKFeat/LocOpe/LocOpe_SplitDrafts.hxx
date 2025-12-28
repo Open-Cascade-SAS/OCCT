@@ -21,8 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 
 class TopoDS_Face;
 class TopoDS_Wire;
@@ -62,20 +63,20 @@ public:
   //! defines the neutral plane (points belonging to the
   //! neutral plane are not modified). <Angle> is the
   //! value of the draft angle. If <ModifyLeft> is set
-  //! to <Standard_False>, no draft angle is applied to
+  //! to <false>, no draft angle is applied to
   //! the left part of the wire. If <ModifyRight> is set
-  //! to <Standard_False>,no draft angle is applied to
+  //! to <false>,no draft angle is applied to
   //! the right part of the wire.
-  Standard_EXPORT void Perform(const TopoDS_Face&     F,
-                               const TopoDS_Wire&     W,
-                               const gp_Dir&          Extractg,
-                               const gp_Pln&          NPlg,
-                               const Standard_Real    Angleg,
-                               const gp_Dir&          Extractd,
-                               const gp_Pln&          NPld,
-                               const Standard_Real    Angled,
-                               const Standard_Boolean ModifyLeft  = Standard_True,
-                               const Standard_Boolean ModifyRight = Standard_True);
+  Standard_EXPORT void Perform(const TopoDS_Face& F,
+                               const TopoDS_Wire& W,
+                               const gp_Dir&      Extractg,
+                               const gp_Pln&      NPlg,
+                               const double       Angleg,
+                               const gp_Dir&      Extractd,
+                               const gp_Pln&      NPld,
+                               const double       Angled,
+                               const bool         ModifyLeft  = true,
+                               const bool         ModifyRight = true);
 
   //! Splits the face <F> of the former given shape with
   //! the wire <W>. The wire is assumed to lie on the
@@ -85,14 +86,14 @@ public:
   //! plane (points belonging to the neutral plane are
   //! not modified). <Angle> is the value of the draft
   //! angle.
-  Standard_EXPORT void Perform(const TopoDS_Face&  F,
-                               const TopoDS_Wire&  W,
-                               const gp_Dir&       Extract,
-                               const gp_Pln&       NPl,
-                               const Standard_Real Angle);
+  Standard_EXPORT void Perform(const TopoDS_Face& F,
+                               const TopoDS_Wire& W,
+                               const gp_Dir&      Extract,
+                               const gp_Pln&      NPl,
+                               const double       Angle);
 
-  //! Returns <Standard_True> if the modification has been successfully performed.
-  Standard_Boolean IsDone() const { return !myResult.IsNull(); }
+  //! Returns <true> if the modification has been successfully performed.
+  bool IsDone() const { return !myResult.IsNull(); }
 
   const TopoDS_Shape& OriginalShape() const { return myShape; }
 
@@ -100,12 +101,13 @@ public:
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
   //! Manages the descendant shapes.
-  Standard_EXPORT const TopTools_ListOfShape& ShapesFromShape(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ShapesFromShape(
+    const TopoDS_Shape& S) const;
 
 private:
-  TopoDS_Shape                       myShape;
-  TopoDS_Shape                       myResult;
-  TopTools_DataMapOfShapeListOfShape myMap;
+  TopoDS_Shape myShape;
+  TopoDS_Shape myResult;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _LocOpe_SplitDrafts_HeaderFile

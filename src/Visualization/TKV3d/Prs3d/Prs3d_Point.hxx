@@ -26,33 +26,33 @@ public:
   DEFINE_STANDARD_ALLOC
 
 private:
-  Standard_EXPORT static void DrawPoint(const AnyPoint&               thePoint,
-                                        const Handle(Graphic3d_Group) theGroup)
+  Standard_EXPORT static void DrawPoint(const AnyPoint&                    thePoint,
+                                        const occ::handle<Graphic3d_Group> theGroup)
   {
-    Standard_Real aX, aY, aZ;
+    double aX, aY, aZ;
     PointTool::Coord(thePoint, aX, aY, aZ);
-    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
+    occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
     anArrayOfPoints->AddVertex(aX, aY, aZ);
     theGroup->AddPrimitiveArray(anArrayOfPoints);
   }
 
 public:
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& thePrs,
-                                  const AnyPoint&                   thePoint,
-                                  const Handle(Prs3d_Drawer)&       theDrawer)
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& thePrs,
+                                  const AnyPoint&                        thePoint,
+                                  const occ::handle<Prs3d_Drawer>&       theDrawer)
   {
-    Handle(Graphic3d_Group) aGroup = thePrs->CurrentGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePrs->CurrentGroup();
     aGroup->SetPrimitivesAspect(theDrawer->PointAspect()->Aspect());
     DrawPoint(thePoint, aGroup);
   }
 
-  Standard_EXPORT static Standard_Boolean Match(const AnyPoint&     thePoint,
-                                                const Standard_Real theX,
-                                                const Standard_Real theY,
-                                                const Standard_Real theZ,
-                                                const Standard_Real theDistance)
+  Standard_EXPORT static bool Match(const AnyPoint& thePoint,
+                                    const double    theX,
+                                    const double    theY,
+                                    const double    theZ,
+                                    const double    theDistance)
   {
-    Standard_Real aX, aY, aZ;
+    double aX, aY, aZ;
     PointTool::Coord(thePoint, aX, aY, aZ);
     return std::sqrt((theX - aX) * (theX - aX) + (theY - aY) * (theY - aY)
                      + (theZ - aZ) * (theZ - aZ))

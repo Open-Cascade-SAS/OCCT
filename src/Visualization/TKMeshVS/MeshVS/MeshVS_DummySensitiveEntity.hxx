@@ -28,31 +28,28 @@
 class MeshVS_DummySensitiveEntity : public Select3D_SensitiveEntity
 {
 public:
-  Standard_EXPORT MeshVS_DummySensitiveEntity(const Handle(SelectMgr_EntityOwner)& theOwnerId);
+  Standard_EXPORT MeshVS_DummySensitiveEntity(const occ::handle<SelectMgr_EntityOwner>& theOwnerId);
 
-  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                   SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                       SelectBasics_PickResult&             thePickResult) override;
 
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbSubElements() const override;
 
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
-  Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
+  Standard_EXPORT virtual void BVH() override;
 
-  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
+  virtual bool ToBuildBVH() const override { return false; }
 
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
-  Standard_EXPORT virtual Standard_Boolean HasInitLocation() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool HasInitLocation() const override;
 
-  Standard_EXPORT virtual gp_GTrsf InvInitLocation() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_GTrsf InvInitLocation() const override;
 
-  virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE { return gp_Pnt(); }
+  virtual gp_Pnt CenterOfGeometry() const override { return gp_Pnt(); }
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_DummySensitiveEntity, Select3D_SensitiveEntity)
 };
-
-DEFINE_STANDARD_HANDLE(MeshVS_DummySensitiveEntity, Select3D_SensitiveEntity)
 
 #endif // _MeshVS_DummySensitiveEntity_HeaderFile

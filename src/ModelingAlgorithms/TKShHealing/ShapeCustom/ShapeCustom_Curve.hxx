@@ -30,21 +30,20 @@ public:
 
   Standard_EXPORT ShapeCustom_Curve();
 
-  Standard_EXPORT ShapeCustom_Curve(const Handle(Geom_Curve)& C);
+  Standard_EXPORT ShapeCustom_Curve(const occ::handle<Geom_Curve>& C);
 
-  Standard_EXPORT void Init(const Handle(Geom_Curve)& C);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& C);
 
   //! Tries to convert the Curve to the Periodic form
   //! Returns the resulting curve
   //! Works only if the Curve is BSpline and is closed with
   //! Precision::Confusion()
   //! Else, or in case of failure, returns a Null Handle
-  Standard_EXPORT Handle(Geom_Curve) ConvertToPeriodic(const Standard_Boolean substitute,
-                                                       const Standard_Real    preci = -1);
+  Standard_EXPORT occ::handle<Geom_Curve> ConvertToPeriodic(const bool   substitute,
+                                                            const double preci = -1);
 
-protected:
 private:
-  Handle(Geom_Curve) myCurve;
+  occ::handle<Geom_Curve> myCurve;
 };
 
 #endif // _ShapeCustom_Curve_HeaderFile

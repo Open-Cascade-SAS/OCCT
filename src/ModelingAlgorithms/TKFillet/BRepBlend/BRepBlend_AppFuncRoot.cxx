@@ -23,10 +23,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_AppFuncRoot, Approx_SweepFunction)
 
-BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
-                                             Blend_AppFunction&      Func,
-                                             const Standard_Real     Tol3d,
-                                             const Standard_Real     Tol2d)
+BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(occ::handle<BRepBlend_Line>& Line,
+                                             Blend_AppFunction&           Func,
+                                             const double                 Tol3d,
+                                             const double                 Tol2d)
     : myLine(Line),
       myFunc(&Func),
       myTolerance(1, Func.NbVariables()),
@@ -35,12 +35,12 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
       XInit(1, Func.NbVariables()),
       Sol(1, Func.NbVariables())
 {
-  Standard_Integer NbPoles, NbKnots, Degree, NbPoles2d;
-  Standard_Integer ii;
+  int NbPoles, NbKnots, Degree, NbPoles2d;
+  int ii;
 
   //  Tolerances
   Func.GetTolerance(myTolerance, Tol3d);
-  Standard_Integer dim = Func.NbVariables();
+  int dim = Func.NbVariables();
   for (ii = 1; ii <= dim; ii++)
   {
     if (myTolerance(ii) > Tol2d)
@@ -55,8 +55,8 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
   // Calculation of BaryCentre (rational case).
   if (Func.IsRational())
   {
-    Standard_Real Xmax = -1.e100, Xmin = 1.e100, Ymax = -1.e100, Ymin = 1.e100, Zmax = -1.e100,
-                  Zmin = 1.e100;
+    double Xmax = -1.e100, Xmin = 1.e100, Ymax = -1.e100, Ymin = 1.e100, Zmax = -1.e100,
+           Zmin = 1.e100;
     Blend_Point P;
     for (ii = 1; ii <= myLine->NbPoints(); ii++)
     {
@@ -80,16 +80,16 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
 //================================================================================
 // Function: D0
 // Purpose : Calculation of section for v = Param, if calculation fails
-//           Standard_False is raised.
+//           false is raised.
 //================================================================================
-Standard_Boolean BRepBlend_AppFuncRoot::D0(const Standard_Real Param,
-                                           const Standard_Real /*First*/,
-                                           const Standard_Real /*Last*/,
-                                           TColgp_Array1OfPnt&   Poles,
-                                           TColgp_Array1OfPnt2d& Poles2d,
-                                           TColStd_Array1OfReal& Weigths)
+bool BRepBlend_AppFuncRoot::D0(const double Param,
+                               const double /*First*/,
+                               const double /*Last*/,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<double>&   Weigths)
 {
-  Standard_Boolean   Ok   = Standard_True;
+  bool               Ok   = true;
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Ok                      = SearchPoint(*Func, Param, myPnt);
 
@@ -101,19 +101,19 @@ Standard_Boolean BRepBlend_AppFuncRoot::D0(const Standard_Real Param,
 //================================================================================
 // Function: D1
 // Purpose : Calculation of the partial derivative of the section corresponding to v
-//           for v = Param, if the calculation fails Standard_False is raised.
+//           for v = Param, if the calculation fails false is raised.
 //================================================================================
-Standard_Boolean BRepBlend_AppFuncRoot::D1(const Standard_Real Param,
-                                           const Standard_Real /*First*/,
-                                           const Standard_Real /*Last*/,
-                                           TColgp_Array1OfPnt&   Poles,
-                                           TColgp_Array1OfVec&   DPoles,
-                                           TColgp_Array1OfPnt2d& Poles2d,
-                                           TColgp_Array1OfVec2d& DPoles2d,
-                                           TColStd_Array1OfReal& Weigths,
-                                           TColStd_Array1OfReal& DWeigths)
+bool BRepBlend_AppFuncRoot::D1(const double Param,
+                               const double /*First*/,
+                               const double /*Last*/,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths)
 {
-  Standard_Boolean   Ok   = Standard_True;
+  bool               Ok   = true;
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
 
   Ok = SearchPoint(*Func, Param, myPnt);
@@ -130,22 +130,22 @@ Standard_Boolean BRepBlend_AppFuncRoot::D1(const Standard_Real Param,
 // Function: D2
 // Purpose : Calculation of the derivative and second partial of the
 //           section corresponding to v.
-//           For v = Param, if the calculation fails Standard_False is raised.
+//           For v = Param, if the calculation fails false is raised.
 //===========================================================================
-Standard_Boolean BRepBlend_AppFuncRoot::D2(const Standard_Real Param,
-                                           const Standard_Real /*First*/,
-                                           const Standard_Real /*Last*/,
-                                           TColgp_Array1OfPnt&   Poles,
-                                           TColgp_Array1OfVec&   DPoles,
-                                           TColgp_Array1OfVec&   D2Poles,
-                                           TColgp_Array1OfPnt2d& Poles2d,
-                                           TColgp_Array1OfVec2d& DPoles2d,
-                                           TColgp_Array1OfVec2d& D2Poles2d,
-                                           TColStd_Array1OfReal& Weigths,
-                                           TColStd_Array1OfReal& DWeigths,
-                                           TColStd_Array1OfReal& D2Weigths)
+bool BRepBlend_AppFuncRoot::D2(const double Param,
+                               const double /*First*/,
+                               const double /*Last*/,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Vec>&   D2Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths,
+                               NCollection_Array1<double>&   D2Weigths)
 {
-  Standard_Boolean   Ok   = Standard_True;
+  bool               Ok   = true;
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
 
   Ok = SearchPoint(*Func, Param, myPnt);
@@ -165,74 +165,72 @@ Standard_Boolean BRepBlend_AppFuncRoot::D2(const Standard_Real Param,
   return Ok;
 }
 
-Standard_Integer BRepBlend_AppFuncRoot::Nb2dCurves() const
+int BRepBlend_AppFuncRoot::Nb2dCurves() const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
-  Standard_Integer   i, j, k, nbpol2d;
+  int                i, j, k, nbpol2d;
   (*Func).GetShape(i, j, k, nbpol2d);
   return nbpol2d;
 }
 
-void BRepBlend_AppFuncRoot::SectionShape(Standard_Integer& NbPoles,
-                                         Standard_Integer& NbKnots,
-                                         Standard_Integer& Degree) const
+void BRepBlend_AppFuncRoot::SectionShape(int& NbPoles, int& NbKnots, int& Degree) const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
-  Standard_Integer   ii;
+  int                ii;
   (*Func).GetShape(NbPoles, NbKnots, Degree, ii);
 }
 
-void BRepBlend_AppFuncRoot::Knots(TColStd_Array1OfReal& TKnots) const
+void BRepBlend_AppFuncRoot::Knots(NCollection_Array1<double>& TKnots) const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Func->Knots(TKnots);
 }
 
-void BRepBlend_AppFuncRoot::Mults(TColStd_Array1OfInteger& TMults) const
+void BRepBlend_AppFuncRoot::Mults(NCollection_Array1<int>& TMults) const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Func->Mults(TMults);
 }
 
-Standard_Boolean BRepBlend_AppFuncRoot::IsRational() const
+bool BRepBlend_AppFuncRoot::IsRational() const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   return (*Func).IsRational();
 }
 
-Standard_Integer BRepBlend_AppFuncRoot::NbIntervals(const GeomAbs_Shape S) const
+int BRepBlend_AppFuncRoot::NbIntervals(const GeomAbs_Shape S) const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   return Func->NbIntervals(S);
 }
 
-void BRepBlend_AppFuncRoot::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void BRepBlend_AppFuncRoot::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Func->Intervals(T, S);
 }
 
-void BRepBlend_AppFuncRoot::SetInterval(const Standard_Real First, const Standard_Real Last)
+void BRepBlend_AppFuncRoot::SetInterval(const double First, const double Last)
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Func->Set(First, Last);
 }
 
-void BRepBlend_AppFuncRoot::Resolution(const Standard_Integer Index,
-                                       const Standard_Real    Tol,
-                                       Standard_Real&         TolU,
-                                       Standard_Real&         TolV) const
+void BRepBlend_AppFuncRoot::Resolution(const int    Index,
+                                       const double Tol,
+                                       double&      TolU,
+                                       double&      TolV) const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Func->Resolution(Index, Tol, TolU, TolV);
 }
 
-void BRepBlend_AppFuncRoot::GetTolerance(const Standard_Real   BoundTol,
-                                         const Standard_Real   SurfTol,
-                                         const Standard_Real   AngleTol,
-                                         TColStd_Array1OfReal& Tol3d) const
+void BRepBlend_AppFuncRoot::GetTolerance(const double                BoundTol,
+                                         const double                SurfTol,
+                                         const double                AngleTol,
+                                         NCollection_Array1<double>& Tol3d) const
 {
-  Standard_Integer   ii;
+  int                ii;
   math_Vector        V3d(1, Tol3d.Length()), V1d(1, Tol3d.Length());
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
 
@@ -241,10 +239,10 @@ void BRepBlend_AppFuncRoot::GetTolerance(const Standard_Real   BoundTol,
     Tol3d(ii) = V3d(ii);
 }
 
-void BRepBlend_AppFuncRoot::SetTolerance(const Standard_Real Tol3d, const Standard_Real Tol2d)
+void BRepBlend_AppFuncRoot::SetTolerance(const double Tol3d, const double Tol2d)
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
-  Standard_Integer   ii, dim = Func->NbVariables();
+  int                ii, dim = Func->NbVariables();
   Func->GetTolerance(myTolerance, Tol3d);
   for (ii = 1; ii <= dim; ii++)
   {
@@ -260,13 +258,13 @@ gp_Pnt BRepBlend_AppFuncRoot::BarycentreOfSurf() const
   return myBary;
 }
 
-Standard_Real BRepBlend_AppFuncRoot::MaximalSection() const
+double BRepBlend_AppFuncRoot::MaximalSection() const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   return Func->GetSectionSize();
 }
 
-void BRepBlend_AppFuncRoot::GetMinimalWeight(TColStd_Array1OfReal& Weigths) const
+void BRepBlend_AppFuncRoot::GetMinimalWeight(NCollection_Array1<double>& Weigths) const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Func->GetMinimalWeight(Weigths);
@@ -288,24 +286,24 @@ void BRepBlend_AppFuncRoot::GetMinimalWeight(TColStd_Array1OfReal& Weigths) cons
 //
 //================================================================================
 
-Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction&  Func,
-                                                    const Standard_Real Param,
-                                                    Blend_Point&        Pnt)
+bool BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
+                                        const double       Param,
+                                        Blend_Point&       Pnt)
 {
-  Standard_Boolean Trouve;
-  Standard_Integer dim = Func.NbVariables();
+  bool Trouve;
+  int  dim = Func.NbVariables();
   // (1) Find a point of init
-  Standard_Integer I1 = 1, I2 = myLine->NbPoints(), Index;
-  Standard_Real    t1, t2;
+  int    I1 = 1, I2 = myLine->NbPoints(), Index;
+  double t1, t2;
 
   //  (1.a) It is checked if it is inside
   if (Param < myLine->Point(I1).Parameter())
   {
-    return Standard_False;
+    return false;
   }
   if (Param > myLine->Point(I2).Parameter())
   {
-    return Standard_False;
+    return false;
   }
 
   //  (1.b) Find the interval
@@ -328,9 +326,9 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction&  Func,
     Vec(X2, Pnt);
     t2 = Pnt.Parameter();
 
-    Standard_Real Parammt1 = (Param - t1) / (t2 - t1);
-    Standard_Real t2mParam = (t2 - Param) / (t2 - t1);
-    for (Standard_Integer i = 1; i <= dim; i++)
+    double Parammt1 = (Param - t1) / (t2 - t1);
+    double t2mParam = (t2 - Param) / (t2 - t1);
+    for (int i = 1; i <= dim; i++)
     {
       XInit(i) = X2(i) * Parammt1 + X1(i) * t2mParam;
     }
@@ -348,7 +346,7 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction&  Func,
 #ifdef BREPBLEND_DEB
     std::cout << "AppFunc : RNLD Not done en t = " << Param << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
   rsnld.Root(Sol);
 
@@ -364,7 +362,7 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction&  Func,
 #endif
     myLine->InsertBefore(Index + 1, Pnt);
   }
-  return Standard_True;
+  return true;
 }
 
 //=============================================================================
@@ -377,26 +375,26 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction&  Func,
 //           True is raised and ParamIndex corresponds to line of Point.
 //           Complexity of this algorithm is log(n)/log(2)
 //================================================================================
-Standard_Boolean BRepBlend_AppFuncRoot::SearchLocation(const Standard_Real    Param,
-                                                       const Standard_Integer FirstIndex,
-                                                       const Standard_Integer LastIndex,
-                                                       Standard_Integer&      ParamIndex) const
+bool BRepBlend_AppFuncRoot::SearchLocation(const double Param,
+                                           const int    FirstIndex,
+                                           const int    LastIndex,
+                                           int&         ParamIndex) const
 {
-  Standard_Integer Ideb = FirstIndex, Ifin = LastIndex, Idemi;
-  Standard_Real    Valeur;
+  int    Ideb = FirstIndex, Ifin = LastIndex, Idemi;
+  double Valeur;
 
   Valeur = myLine->Point(Ideb).Parameter();
   if (Param == Valeur)
   {
     ParamIndex = Ideb;
-    return Standard_True;
+    return true;
   }
 
   Valeur = myLine->Point(Ifin).Parameter();
   if (Param == Valeur)
   {
     ParamIndex = Ifin;
-    return Standard_True;
+    return true;
   }
 
   while (Ideb + 1 != Ifin)
@@ -416,11 +414,11 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchLocation(const Standard_Real    Pa
       else
       {
         ParamIndex = Idemi;
-        return Standard_True;
+        return true;
       }
     }
   }
 
   ParamIndex = Ideb;
-  return Standard_False;
+  return false;
 }

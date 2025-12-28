@@ -22,7 +22,7 @@ class Graphic3d_BoundBuffer : public NCollection_Buffer
   DEFINE_STANDARD_RTTIEXT(Graphic3d_BoundBuffer, NCollection_Buffer)
 public:
   //! Empty constructor.
-  Graphic3d_BoundBuffer(const Handle(NCollection_BaseAllocator)& theAlloc)
+  Graphic3d_BoundBuffer(const occ::handle<NCollection_BaseAllocator>& theAlloc)
       : NCollection_Buffer(theAlloc),
         Colors(NULL),
         Bounds(NULL),
@@ -32,7 +32,7 @@ public:
   }
 
   //! Allocates new empty array
-  bool Init(const Standard_Integer theNbBounds, const Standard_Boolean theHasColors)
+  bool Init(const int theNbBounds, const bool theHasColors)
   {
     Colors      = NULL;
     Bounds      = NULL;
@@ -44,8 +44,8 @@ public:
       return false;
     }
 
-    const size_t aBoundsSize = sizeof(Standard_Integer) * theNbBounds;
-    const size_t aColorsSize = theHasColors ? sizeof(Graphic3d_Vec4) * theNbBounds : 0;
+    const size_t aBoundsSize = sizeof(int) * theNbBounds;
+    const size_t aColorsSize = theHasColors ? sizeof(NCollection_Vec4<float>) * theNbBounds : 0;
     if (!Allocate(aColorsSize + aBoundsSize))
     {
       Free();
@@ -54,14 +54,13 @@ public:
 
     NbBounds    = theNbBounds;
     NbMaxBounds = theNbBounds;
-    Colors      = theHasColors ? reinterpret_cast<Graphic3d_Vec4*>(myData) : NULL;
-    Bounds = reinterpret_cast<Standard_Integer*>(theHasColors ? (myData + aColorsSize) : myData);
+    Colors      = theHasColors ? reinterpret_cast<NCollection_Vec4<float>*>(myData) : NULL;
+    Bounds      = reinterpret_cast<int*>(theHasColors ? (myData + aColorsSize) : myData);
     return true;
   }
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson(Standard_OStream& theOStream,
-                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE
+  virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override
   {
     OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
     OCCT_DUMP_BASE_CLASS(theOStream, theDepth, NCollection_Buffer)
@@ -74,12 +73,10 @@ public:
   }
 
 public:
-  Graphic3d_Vec4*   Colors;      //!< pointer to facet color values
-  Standard_Integer* Bounds;      //!< pointer to bounds array
-  Standard_Integer  NbBounds;    //!< number of bounds
-  Standard_Integer  NbMaxBounds; //!< number of allocated bounds
+  NCollection_Vec4<float>* Colors;      //!< pointer to facet color values
+  int*                     Bounds;      //!< pointer to bounds array
+  int                      NbBounds;    //!< number of bounds
+  int                      NbMaxBounds; //!< number of allocated bounds
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_BoundBuffer, NCollection_Buffer)
 
 #endif // _Graphic3d_BoundBuffer_HeaderFile

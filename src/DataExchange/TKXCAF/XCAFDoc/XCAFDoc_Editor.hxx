@@ -18,9 +18,9 @@
 
 #include <TDataStd_Name.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelDataMap.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_Sequence.hxx>
 
 class XCAFDoc_VisMaterial;
 class XCAFDoc_ShapeTool;
@@ -36,18 +36,15 @@ public:
   //! @param[in] theShape input shape label
   //! @param[in] theRecursively recursively expand a compound subshape
   //! @return True if shape successfully expanded
-  Standard_EXPORT static Standard_Boolean Expand(
-    const TDF_Label&       theDoc,
-    const TDF_Label&       theShape,
-    const Standard_Boolean theRecursively = Standard_True);
+  Standard_EXPORT static bool Expand(const TDF_Label& theDoc,
+                                     const TDF_Label& theShape,
+                                     const bool       theRecursively = true);
 
   //! Converts all compounds shapes in the document to assembly
   //! @param[in] theDoc input document
   //! @param[in] theRecursively recursively expand a compound subshape
   //! @return True if shape successfully expanded
-  Standard_EXPORT static Standard_Boolean Expand(
-    const TDF_Label&       theDoc,
-    const Standard_Boolean theRecursively = Standard_True);
+  Standard_EXPORT static bool Expand(const TDF_Label& theDoc, const bool theRecursively = true);
 
   //! Clones all labels to a new position, keeping the structure with all the attributes
   //! @param[in] theSrcLabels original labels to copy from
@@ -55,10 +52,9 @@ public:
   //! simply set new shape
   //! @param[in] theIsNoVisMat get a VisMaterial attributes as is or convert to color
   //! @return True if shape successfully extracted
-  Standard_EXPORT static Standard_Boolean Extract(
-    const TDF_LabelSequence& theSrcLabels,
-    const TDF_Label&         theDstLabel,
-    const Standard_Boolean   theIsNoVisMat = Standard_False);
+  Standard_EXPORT static bool Extract(const NCollection_Sequence<TDF_Label>& theSrcLabels,
+                                      const TDF_Label&                       theDstLabel,
+                                      const bool                             theIsNoVisMat = false);
 
   //! Clones the label to a new position, keeping the structure with all the attributes
   //! @param[in] theSrcLabel original label to copy from
@@ -66,10 +62,9 @@ public:
   //! simply set new shape
   //! @param[in] theIsNoVisMat get a VisMaterial attributes as is or convert to color
   //! @return True if shape successfully extracted
-  Standard_EXPORT static Standard_Boolean Extract(
-    const TDF_Label&       theSrcLabel,
-    const TDF_Label&       theDstLabel,
-    const Standard_Boolean theIsNoVisMat = Standard_False);
+  Standard_EXPORT static bool Extract(const TDF_Label& theSrcLabel,
+                                      const TDF_Label& theDstLabel,
+                                      const bool       theIsNoVisMat = false);
 
   //! Copies shapes label with keeping of shape structure (recursively)
   //! @param[in] theSrcLabel original label to copy from
@@ -77,10 +72,11 @@ public:
   //! @param[in] theDstShapeTool shape tool to set
   //! @param[out] theMap relating map of the original shapes label and labels created from them
   //! @return result shape label
-  Standard_EXPORT static TDF_Label CloneShapeLabel(const TDF_Label&                 theSrcLabel,
-                                                   const Handle(XCAFDoc_ShapeTool)& theSrcShapeTool,
-                                                   const Handle(XCAFDoc_ShapeTool)& theDstShapeTool,
-                                                   TDF_LabelDataMap&                theMap);
+  Standard_EXPORT static TDF_Label CloneShapeLabel(
+    const TDF_Label&                           theSrcLabel,
+    const occ::handle<XCAFDoc_ShapeTool>&      theSrcShapeTool,
+    const occ::handle<XCAFDoc_ShapeTool>&      theDstShapeTool,
+    NCollection_DataMap<TDF_Label, TDF_Label>& theMap);
 
   //! Copies metadata contains from the source label to the destination label.
   //! Protected against creating a new label for non-existent tools
@@ -95,26 +91,27 @@ public:
   //! @param[in] theToCopyAttributes copying of other node attributes, for example, a shape's
   //! property
   Standard_EXPORT static void CloneMetaData(
-    const TDF_Label&                                                               theSrcLabel,
-    const TDF_Label&                                                               theDstLabel,
-    NCollection_DataMap<Handle(XCAFDoc_VisMaterial), Handle(XCAFDoc_VisMaterial)>* theVisMatMap,
-    const Standard_Boolean theToCopyColor       = Standard_True,
-    const Standard_Boolean theToCopyLayer       = Standard_True,
-    const Standard_Boolean theToCopyMaterial    = Standard_True,
-    const Standard_Boolean theToCopyVisMaterial = Standard_True,
-    const Standard_Boolean theToCopyAttributes  = Standard_True);
+    const TDF_Label& theSrcLabel,
+    const TDF_Label& theDstLabel,
+    NCollection_DataMap<occ::handle<XCAFDoc_VisMaterial>, occ::handle<XCAFDoc_VisMaterial>>*
+               theVisMatMap,
+    const bool theToCopyColor       = true,
+    const bool theToCopyLayer       = true,
+    const bool theToCopyMaterial    = true,
+    const bool theToCopyVisMaterial = true,
+    const bool theToCopyAttributes  = true);
 
   //! Gets shape labels that has down relation with the input label.
   //! @param[in] theLabel input label
   //! @param[out] theRelatedLabels output labels
-  Standard_EXPORT static void GetParentShapeLabels(const TDF_Label& theLabel,
-                                                   TDF_LabelMap&    theRelatedLabels);
+  Standard_EXPORT static void GetParentShapeLabels(const TDF_Label&            theLabel,
+                                                   NCollection_Map<TDF_Label>& theRelatedLabels);
 
   //! Gets shape labels that has up relation with the input label.
   //! @param[in] theLabel input label
   //! @param[out] theRelatedLabels output labels
-  Standard_EXPORT static void GetChildShapeLabels(const TDF_Label& theLabel,
-                                                  TDF_LabelMap&    theRelatedLabels);
+  Standard_EXPORT static void GetChildShapeLabels(const TDF_Label&            theLabel,
+                                                  NCollection_Map<TDF_Label>& theRelatedLabels);
 
   //! Filters original shape tree with keeping structure.
   //! The result will include the full label hierarchy lower then input labels.
@@ -129,8 +126,8 @@ public:
   //! @param[in] theShapeTool shape tool to extract from
   //! @param[in] theLabelsToKeep labels to keep
   //! @return true if the tree was filtered successfully.
-  Standard_EXPORT static bool FilterShapeTree(const Handle(XCAFDoc_ShapeTool)& theShapeTool,
-                                              const TDF_LabelMap&              theLabelsToKeep);
+  Standard_EXPORT static bool FilterShapeTree(const occ::handle<XCAFDoc_ShapeTool>& theShapeTool,
+                                              const NCollection_Map<TDF_Label>& theLabelsToKeep);
 
   //! Applies geometrical scaling to the following assembly components:
   //! - part geometry
@@ -145,10 +142,9 @@ public:
   //! @param[in] theForceIfNotRoot allows scaling of a non root assembly if true,
   //!                              otherwise - returns false
   //! @return true in case of success, otherwise - false.
-  Standard_EXPORT static Standard_Boolean RescaleGeometry(
-    const TDF_Label&       theLabel,
-    const Standard_Real    theScaleFactor,
-    const Standard_Boolean theForceIfNotRoot = Standard_False);
+  Standard_EXPORT static bool RescaleGeometry(const TDF_Label& theLabel,
+                                              const double     theScaleFactor,
+                                              const bool       theForceIfNotRoot = false);
 };
 
 #endif // _XCAFDoc_Editor_HeaderFile

@@ -52,9 +52,9 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_
   //   Traitement.                                                          +
   //=========================================================================
 
-  Standard_Real dist1 = P1.Distance(P2);
-  Standard_Real dist2 = P1.Distance(P3);
-  Standard_Real dist3 = P2.Distance(P3);
+  double dist1 = P1.Distance(P2);
+  double dist2 = P1.Distance(P3);
+  double dist3 = P2.Distance(P3);
 
   if ((dist1 < gp::Resolution()) && (dist2 < gp::Resolution()) && (dist3 < gp::Resolution()))
   {
@@ -63,9 +63,9 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_
   }
   else
   {
-    gp_Lin2d      L1;
-    gp_Lin2d      L2;
-    Standard_Real x1, y1, x2, y2, x3, y3;
+    gp_Lin2d L1;
+    gp_Lin2d L2;
+    double   x1, y1, x2, y2, x3, y3;
     P1.Coord(x1, y1);
     P2.Coord(x2, y2);
     P3.Coord(x3, y3);
@@ -100,14 +100,14 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_
         dist1 = P1.Distance(pInt);
         dist2 = P2.Distance(pInt);
         dist3 = P3.Distance(pInt);
-        Standard_Real xc, yc;
+        double xc, yc;
         pInt.Coord(xc, yc);
         gp_Dir2d d1(x1 - xc, y1 - yc);
         gp_Dir2d d2(xc - x3, yc - y3);
-        TheCirc2d            = gp_Circ2d(gp_Ax22d(pInt, d1, d2), (dist1 + dist2 + dist3) / 3.);
-        Standard_Real Alpha1 = ElCLib::Parameter(TheCirc2d, P1);
-        Standard_Real Alpha2 = ElCLib::Parameter(TheCirc2d, P2);
-        Standard_Real Alpha3 = ElCLib::Parameter(TheCirc2d, P3);
+        TheCirc2d     = gp_Circ2d(gp_Ax22d(pInt, d1, d2), (dist1 + dist2 + dist3) / 3.);
+        double Alpha1 = ElCLib::Parameter(TheCirc2d, P1);
+        double Alpha2 = ElCLib::Parameter(TheCirc2d, P2);
+        double Alpha3 = ElCLib::Parameter(TheCirc2d, P3);
         if (!((Alpha1 <= Alpha2) && (Alpha2 <= Alpha3)))
         {
           TheCirc2d.Reverse();
@@ -126,9 +126,7 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_
 //   Creation d un gp_Circ2d par son Axe <XAxis> et son rayon  <Radius>.   +
 //==========================================================================
 
-gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax2d&         XAxis,
-                               const Standard_Real    Radius,
-                               const Standard_Boolean Sense)
+gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax2d& XAxis, const double Radius, const bool Sense)
 {
   if (Radius >= 0.)
   {
@@ -145,7 +143,7 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax2d&         XAxis,
 //   Creation d un gp_Circ2d par son Repere <Axis> et son rayon  <Radius>. +
 //==========================================================================
 
-gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax22d& Axis, const Standard_Real Radius)
+gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax22d& Axis, const double Radius)
 {
   if (Radius >= 0.)
   {
@@ -163,9 +161,7 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax22d& Axis, const Standard_Real Radius)
 //   <Radius>.                                                             +
 //==========================================================================
 
-gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d&        Center,
-                               const Standard_Real    Radius,
-                               const Standard_Boolean Sense)
+gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const double Radius, const bool Sense)
 {
   if (Radius >= 0.)
   {
@@ -183,9 +179,7 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d&        Center,
 //   circonference <Point>.                                                +
 //==========================================================================
 
-gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d&        Center,
-                               const gp_Pnt2d&        Point,
-                               const Standard_Boolean Sense)
+gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const gp_Pnt2d& Point, const bool Sense)
 {
   TheCirc2d = gp_Circ2d(gp_Ax2d(Center, gp_Dir2d(gp_Dir2d::D::X)), Point.Distance(Center), Sense);
   TheError  = gce_Done;
@@ -207,7 +201,7 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
 //   <Dist1>.                                                              +
 //==========================================================================
 
-gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const Standard_Real Dist1)
+gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const double Dist1)
 {
   TheCirc2d = gp_Circ2d(Circ.Axis(), std::abs(Circ.Radius() + Dist1));
   TheError  = gce_Done;

@@ -26,9 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-class IGESSelect_UpdateCreationDate;
-DEFINE_STANDARD_HANDLE(IGESSelect_UpdateCreationDate, IGESSelect_ModelModifier)
-
 //! Allows to Change the Creation Date indication in the Header
 //! (Global Section) of IGES File. It is taken from the operating
 //! system (time of application of the Modifier).
@@ -43,18 +40,15 @@ public:
 
   //! Specific action : only <target> is used : the system Date
   //! is set to Global Section Item n0 18.
-  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
-                                  const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+                                  const occ::handle<IGESData_IGESModel>& target,
+                                  Interface_CopyTool&                    TC) const override;
 
   //! Returns a text which is
   //! "Update IGES Header Creation Date"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_UpdateCreationDate, IGESSelect_ModelModifier)
-
-protected:
-private:
 };
 
 #endif // _IGESSelect_UpdateCreationDate_HeaderFile

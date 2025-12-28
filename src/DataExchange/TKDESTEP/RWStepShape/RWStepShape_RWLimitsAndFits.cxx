@@ -18,10 +18,10 @@
 
 RWStepShape_RWLimitsAndFits::RWStepShape_RWLimitsAndFits() {}
 
-void RWStepShape_RWLimitsAndFits::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepShape_LimitsAndFits)& ent) const
+void RWStepShape_RWLimitsAndFits::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                                   num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepShape_LimitsAndFits>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -31,22 +31,22 @@ void RWStepShape_RWLimitsAndFits::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- own field : form_variance ---
 
-  Handle(TCollection_HAsciiString) fv;
+  occ::handle<TCollection_HAsciiString> fv;
   data->ReadString(num, 1, "form_variance", ach, fv);
 
   // --- own field : form_variance ---
 
-  Handle(TCollection_HAsciiString) zv;
+  occ::handle<TCollection_HAsciiString> zv;
   data->ReadString(num, 2, "zone_variance", ach, zv);
 
   // --- own field : grade ---
 
-  Handle(TCollection_HAsciiString) gr;
+  occ::handle<TCollection_HAsciiString> gr;
   data->ReadString(num, 3, "grade", ach, gr);
 
   // --- own field : source ---
 
-  Handle(TCollection_HAsciiString) sou;
+  occ::handle<TCollection_HAsciiString> sou;
   data->ReadString(num, 4, "source", ach, sou);
 
   //--- Initialisation of the read entity ---
@@ -54,8 +54,8 @@ void RWStepShape_RWLimitsAndFits::ReadStep(const Handle(StepData_StepReaderData)
   ent->Init(fv, zv, gr, sou);
 }
 
-void RWStepShape_RWLimitsAndFits::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepShape_LimitsAndFits)& ent) const
+void RWStepShape_RWLimitsAndFits::WriteStep(StepData_StepWriter&                        SW,
+                                            const occ::handle<StepShape_LimitsAndFits>& ent) const
 {
   SW.Send(ent->FormVariance());
   SW.Send(ent->ZoneVariance());

@@ -26,9 +26,9 @@
 
 //=================================================================================================
 
-BlendFunc_Chamfer::BlendFunc_Chamfer(const Handle(Adaptor3d_Surface)& S1,
-                                     const Handle(Adaptor3d_Surface)& S2,
-                                     const Handle(Adaptor3d_Curve)&   CG)
+BlendFunc_Chamfer::BlendFunc_Chamfer(const occ::handle<Adaptor3d_Surface>& S1,
+                                     const occ::handle<Adaptor3d_Surface>& S2,
+                                     const occ::handle<Adaptor3d_Curve>&   CG)
     : BlendFunc_GenChamfer(S1, S2, CG),
       corde1(S1, CG),
       corde2(S2, CG)
@@ -37,9 +37,7 @@ BlendFunc_Chamfer::BlendFunc_Chamfer(const Handle(Adaptor3d_Surface)& S1,
 
 //=================================================================================================
 
-void BlendFunc_Chamfer::Set(const Standard_Real    Dist1,
-                            const Standard_Real    Dist2,
-                            const Standard_Integer Choix)
+void BlendFunc_Chamfer::Set(const double Dist1, const double Dist2, const int Choix)
 {
   corde1.SetDist(Dist1);
   corde2.SetDist(Dist2);
@@ -48,7 +46,7 @@ void BlendFunc_Chamfer::Set(const Standard_Real    Dist1,
 
 //=================================================================================================
 
-void BlendFunc_Chamfer::Set(const Standard_Real Param)
+void BlendFunc_Chamfer::Set(const double Param)
 {
   corde1.SetParam(Param);
   corde2.SetParam(Param);
@@ -56,7 +54,7 @@ void BlendFunc_Chamfer::Set(const Standard_Real Param)
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_Chamfer::IsSolution(const math_Vector& Sol, const Standard_Real Tol)
+bool BlendFunc_Chamfer::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector Sol1(1, 2), Sol2(1, 2);
 
@@ -65,9 +63,9 @@ Standard_Boolean BlendFunc_Chamfer::IsSolution(const math_Vector& Sol, const Sta
   Sol2(1) = Sol(3);
   Sol2(2) = Sol(4);
 
-  Standard_Boolean issol = corde1.IsSolution(Sol1, Tol);
-  issol                  = issol && corde2.IsSolution(Sol2, Tol);
-  tol                    = Tol;
+  bool issol = corde1.IsSolution(Sol1, Tol);
+  issol      = issol && corde2.IsSolution(Sol2, Tol);
+  tol        = Tol;
   if (issol)
     distmin = std::min(distmin, corde1.PointOnS().Distance(corde2.PointOnS()));
 
@@ -76,7 +74,7 @@ Standard_Boolean BlendFunc_Chamfer::IsSolution(const math_Vector& Sol, const Sta
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_Chamfer::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_Chamfer::Value(const math_Vector& X, math_Vector& F)
 {
   math_Vector x(1, 2), f(1, 2);
 
@@ -92,16 +90,16 @@ Standard_Boolean BlendFunc_Chamfer::Value(const math_Vector& X, math_Vector& F)
   F(3) = f(1);
   F(4) = f(2);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_Chamfer::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_Chamfer::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  Standard_Integer i, j;
-  math_Vector      x(1, 2);
-  math_Matrix      d(1, 2, 1, 2);
+  int         i, j;
+  math_Vector x(1, 2);
+  math_Matrix d(1, 2, 1, 2);
 
   x(1) = X(1);
   x(2) = X(2);
@@ -127,7 +125,7 @@ Standard_Boolean BlendFunc_Chamfer::Derivatives(const math_Vector& X, math_Matri
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -146,7 +144,7 @@ const gp_Pnt& BlendFunc_Chamfer::PointOnS2() const
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_Chamfer::IsTangencyPoint() const
+bool BlendFunc_Chamfer::IsTangencyPoint() const
 {
   return corde1.IsTangencyPoint() && corde2.IsTangencyPoint();
 }
@@ -185,20 +183,20 @@ const gp_Vec2d& BlendFunc_Chamfer::Tangent2dOnS2() const
 //           aux surfaces S1 et S2
 //=======================================================================
 
-void BlendFunc_Chamfer::Tangent(const Standard_Real U1,
-                                const Standard_Real V1,
-                                const Standard_Real U2,
-                                const Standard_Real V2,
-                                gp_Vec&             TgF,
-                                gp_Vec&             TgL,
-                                gp_Vec&             NmF,
-                                gp_Vec&             NmL) const
+void BlendFunc_Chamfer::Tangent(const double U1,
+                                const double V1,
+                                const double U2,
+                                const double V2,
+                                gp_Vec&      TgF,
+                                gp_Vec&      TgL,
+                                gp_Vec&      NmF,
+                                gp_Vec&      NmL) const
 {
-  gp_Pnt           pt1, pt2, ptgui;
-  gp_Vec           d1u1, d1v1, d1u2, d1v2;
-  gp_Vec           nplan;
-  Standard_Boolean revF = Standard_False;
-  Standard_Boolean revL = Standard_False;
+  gp_Pnt pt1, pt2, ptgui;
+  gp_Vec d1u1, d1v1, d1u2, d1v2;
+  gp_Vec nplan;
+  bool   revF = false;
+  bool   revL = false;
 
   ptgui = corde1.PointOnGuide();
   nplan = corde1.NPlan();
@@ -213,13 +211,13 @@ void BlendFunc_Chamfer::Tangent(const Standard_Real U1,
 
   if ((choix == 2) || (choix == 5))
   {
-    revF = Standard_True;
-    revL = Standard_True;
+    revF = true;
+    revL = true;
   }
   if ((choix == 4) || (choix == 7))
-    revL = Standard_True;
+    revL = true;
   if ((choix == 3) || (choix == 8))
-    revF = Standard_True;
+    revF = true;
 
   if (revF)
     TgF.Reverse();
@@ -231,7 +229,7 @@ void BlendFunc_Chamfer::Tangent(const Standard_Real U1,
 // function : GetSectionSize
 // purpose  : Non implementee (non necessaire car non rationel)
 //=======================================================================
-Standard_Real BlendFunc_Chamfer::GetSectionSize() const
+double BlendFunc_Chamfer::GetSectionSize() const
 {
   throw Standard_NotImplemented("BlendFunc_Chamfer::GetSectionSize()");
 }

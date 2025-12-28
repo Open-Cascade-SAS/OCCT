@@ -24,50 +24,50 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_NoteCommentDriver, BinMXCAFDoc_NoteDriver
 //=================================================================================================
 
 BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteComment)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMXCAFDoc_NoteCommentDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMXCAFDoc_NoteCommentDriver::NewEmpty() const
 {
   return new XCAFDoc_NoteComment();
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_NoteCommentDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMXCAFDoc_NoteCommentDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                          const occ::handle<TDF_Attribute>& theTarget,
+                                          BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   if (!BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable))
-    return Standard_False;
+    return false;
 
-  Handle(XCAFDoc_NoteComment) aNote = Handle(XCAFDoc_NoteComment)::DownCast(theTarget);
+  occ::handle<XCAFDoc_NoteComment> aNote = occ::down_cast<XCAFDoc_NoteComment>(theTarget);
   if (aNote.IsNull())
-    return Standard_False;
+    return false;
 
   TCollection_ExtendedString aComment;
   if (!(theSource >> aComment))
-    return Standard_False;
+    return false;
 
   aNote->Set(aComment);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BinMXCAFDoc_NoteCommentDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                          BinObjMgt_Persistent&        theTarget,
-                                          BinObjMgt_SRelocationTable&  theRelocTable) const
+void BinMXCAFDoc_NoteCommentDriver::Paste(
+  const occ::handle<TDF_Attribute>&                        theSource,
+  BinObjMgt_Persistent&                                    theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
 {
   BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
-  Handle(XCAFDoc_NoteComment) aNote = Handle(XCAFDoc_NoteComment)::DownCast(theSource);
+  occ::handle<XCAFDoc_NoteComment> aNote = occ::down_cast<XCAFDoc_NoteComment>(theSource);
   if (!aNote.IsNull())
     theTarget << aNote->Comment();
 }
@@ -75,8 +75,8 @@ void BinMXCAFDoc_NoteCommentDriver::Paste(const Handle(TDF_Attribute)& theSource
 //=================================================================================================
 
 BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(
-  const Handle(Message_Messenger)& theMsgDriver,
-  Standard_CString                 theName)
+  const occ::handle<Message_Messenger>& theMsgDriver,
+  const char*                           theName)
     : BinMXCAFDoc_NoteDriver(theMsgDriver, theName)
 {
 }

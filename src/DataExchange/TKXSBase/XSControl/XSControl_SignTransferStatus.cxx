@@ -37,28 +37,28 @@ XSControl_SignTransferStatus::XSControl_SignTransferStatus()
 }
 
 XSControl_SignTransferStatus::XSControl_SignTransferStatus(
-  const Handle(XSControl_TransferReader)& TR)
+  const occ::handle<XSControl_TransferReader>& TR)
     : IFSelect_Signature("Transfer Status"),
       theTR(TR)
 {
 }
 
-void XSControl_SignTransferStatus::SetReader(const Handle(XSControl_TransferReader)& TR)
+void XSControl_SignTransferStatus::SetReader(const occ::handle<XSControl_TransferReader>& TR)
 {
   theTR = TR;
 }
 
-void XSControl_SignTransferStatus::SetMap(const Handle(Transfer_TransientProcess)& TP)
+void XSControl_SignTransferStatus::SetMap(const occ::handle<Transfer_TransientProcess>& TP)
 {
   theTP = TP;
 }
 
-Handle(Transfer_TransientProcess) XSControl_SignTransferStatus::Map() const
+occ::handle<Transfer_TransientProcess> XSControl_SignTransferStatus::Map() const
 {
   return theTP;
 }
 
-Handle(XSControl_TransferReader) XSControl_SignTransferStatus::Reader() const
+occ::handle<XSControl_TransferReader> XSControl_SignTransferStatus::Reader() const
 {
   return theTR;
 }
@@ -68,14 +68,14 @@ Handle(XSControl_TransferReader) XSControl_SignTransferStatus::Reader() const
 // 11 Resultat OK. 12 Resultat+Warning. 13 Resultat+Fail
 // 20 Abnormal (Interrupted)
 
-static Standard_Integer BinderStatus(const Handle(Transfer_Binder)& binder)
+static int BinderStatus(const occ::handle<Transfer_Binder>& binder)
 {
-  Standard_Integer stat = 0;
+  int stat = 0;
   if (binder.IsNull())
     return 0;
   Interface_CheckStatus cst = binder->Check()->Status();
   Transfer_StatusExec   est = binder->StatusExec();
-  Standard_Boolean      res = binder->HasResult();
+  bool                  res = binder->HasResult();
   if (est == Transfer_StatusRun || est == Transfer_StatusLoop)
     return 20;
   if (cst == Interface_CheckOK)
@@ -88,21 +88,21 @@ static Standard_Integer BinderStatus(const Handle(Transfer_Binder)& binder)
   return stat;
 }
 
-Standard_CString XSControl_SignTransferStatus::Value(
-  const Handle(Standard_Transient)& ent,
-  const Handle(Interface_InterfaceModel)& /*model*/) const
+const char* XSControl_SignTransferStatus::Value(
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   if (ent.IsNull())
     return "";
-  Handle(Transfer_TransientProcess) TP = theTP;
+  occ::handle<Transfer_TransientProcess> TP = theTP;
   if (TP.IsNull() && !theTR.IsNull())
     TP = theTR->TransientProcess();
   if (TP.IsNull())
     return "";
 
-  Handle(Transfer_Binder) binder = TP->Find(ent);
+  occ::handle<Transfer_Binder> binder = TP->Find(ent);
 
-  Standard_Integer stat = BinderStatus(binder);
+  int stat = BinderStatus(binder);
 
   if (stat <= 1)
     return "";
@@ -117,8 +117,8 @@ Standard_CString XSControl_SignTransferStatus::Value(
   if (stat > 10)
   {
     //  Y a un resultat : donner son type
-    Handle(Transfer_Binder) bnd    = binder;
-    Standard_Integer        hasres = Standard_False;
+    occ::handle<Transfer_Binder> bnd    = binder;
+    int                          hasres = false;
     while (!bnd.IsNull())
     {
       if (bnd->Status() != Transfer_StatusVoid)
@@ -128,7 +128,7 @@ Standard_CString XSControl_SignTransferStatus::Value(
         else
           themes().AssignCat(",");
         themes().AssignCat(bnd->ResultTypeName());
-        hasres = Standard_True;
+        hasres = true;
       }
       bnd = bnd->NextResult();
     }

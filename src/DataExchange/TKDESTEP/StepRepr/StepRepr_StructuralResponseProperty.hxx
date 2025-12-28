@@ -20,9 +20,6 @@
 
 #include <StepRepr_PropertyDefinition.hxx>
 
-class StepRepr_StructuralResponseProperty;
-DEFINE_STANDARD_HANDLE(StepRepr_StructuralResponseProperty, StepRepr_PropertyDefinition)
-
 //! Representation of STEP entity StructuralResponseProperty
 class StepRepr_StructuralResponseProperty : public StepRepr_PropertyDefinition
 {
@@ -32,9 +29,6 @@ public:
   Standard_EXPORT StepRepr_StructuralResponseProperty();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_StructuralResponseProperty, StepRepr_PropertyDefinition)
-
-protected:
-private:
 };
 
 #endif // _StepRepr_StructuralResponseProperty_HeaderFile

@@ -40,9 +40,9 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_EqualRadiusRelation, PrsDim_Relation)
 
 //=================================================================================================
 
-PrsDim_EqualRadiusRelation::PrsDim_EqualRadiusRelation(const TopoDS_Edge&        aFirstEdge,
-                                                       const TopoDS_Edge&        aSecondEdge,
-                                                       const Handle(Geom_Plane)& aPlane)
+PrsDim_EqualRadiusRelation::PrsDim_EqualRadiusRelation(const TopoDS_Edge&             aFirstEdge,
+                                                       const TopoDS_Edge&             aSecondEdge,
+                                                       const occ::handle<Geom_Plane>& aPlane)
     : PrsDim_Relation()
 {
   myFShape = aFirstEdge;
@@ -52,19 +52,19 @@ PrsDim_EqualRadiusRelation::PrsDim_EqualRadiusRelation(const TopoDS_Edge&       
 
 //=================================================================================================
 
-void PrsDim_EqualRadiusRelation::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                         const Handle(Prs3d_Presentation)& aPresentation,
-                                         const Standard_Integer)
+void PrsDim_EqualRadiusRelation::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                         const occ::handle<Prs3d_Presentation>& aPresentation,
+                                         const int)
 {
   BRepAdaptor_Curve FirstCurve(TopoDS::Edge(myFShape)), SecondCurve(TopoDS::Edge(mySShape));
 
-  Standard_Real FirstPar1 = FirstCurve.FirstParameter(), LastPar1 = FirstCurve.LastParameter(),
-                FirstPar2 = SecondCurve.FirstParameter(), LastPar2 = SecondCurve.LastParameter();
+  double FirstPar1 = FirstCurve.FirstParameter(), LastPar1 = FirstCurve.LastParameter(),
+         FirstPar2 = SecondCurve.FirstParameter(), LastPar2 = SecondCurve.LastParameter();
 
-  Handle(Geom_Curve) FirstProjCurve  = FirstCurve.Curve().Curve(),
-                     SecondProjCurve = SecondCurve.Curve().Curve();
-  gp_Pnt           FirstPoint1, LastPoint1, FirstPoint2, LastPoint2;
-  Standard_Boolean isFirstOnPlane, isSecondOnPlane;
+  occ::handle<Geom_Curve> FirstProjCurve  = FirstCurve.Curve().Curve(),
+                          SecondProjCurve = SecondCurve.Curve().Curve();
+  gp_Pnt FirstPoint1, LastPoint1, FirstPoint2, LastPoint2;
+  bool   isFirstOnPlane, isSecondOnPlane;
 
   PrsDim::ComputeGeomCurve(FirstProjCurve,
                            FirstPar1,
@@ -94,8 +94,8 @@ void PrsDim_EqualRadiusRelation::Compute(const Handle(PrsMgr_PresentationManager
                                 FirstPoint2,
                                 LastPoint2);
 
-  gp_Circ FirstCirc  = (Handle(Geom_Circle)::DownCast(FirstProjCurve))->Circ();
-  gp_Circ SecondCirc = (Handle(Geom_Circle)::DownCast(SecondProjCurve))->Circ();
+  gp_Circ FirstCirc  = (occ::down_cast<Geom_Circle>(FirstProjCurve))->Circ();
+  gp_Circ SecondCirc = (occ::down_cast<Geom_Circle>(SecondProjCurve))->Circ();
 
   myFirstCenter  = FirstCirc.Location();
   mySecondCenter = SecondCirc.Location();
@@ -108,10 +108,10 @@ void PrsDim_EqualRadiusRelation::Compute(const Handle(PrsMgr_PresentationManager
   }
   else
   {
-    Standard_Real aPar = ElCLib::Parameter(FirstCirc, myFirstPoint);
+    double aPar = ElCLib::Parameter(FirstCirc, myFirstPoint);
     if (std::trunc(0.5 * LastPar1 / M_PI) != 0 && aPar < FirstPar1)
       aPar += 2 * M_PI * std::trunc(0.5 * LastPar1 / M_PI);
-    Standard_Real aRadius = FirstCirc.Radius();
+    double aRadius = FirstCirc.Radius();
 
     if (std::abs(myFirstPoint.Distance(myFirstCenter) - aRadius) >= Precision::Confusion())
       myFirstPoint = ElCLib::Value(aPar, FirstCirc);
@@ -151,8 +151,8 @@ void PrsDim_EqualRadiusRelation::Compute(const Handle(PrsMgr_PresentationManager
       (std::min(myFirstCenter.Distance(myFirstPoint), mySecondCenter.Distance(mySecondPoint)))
       * 0.05;
 
-  Handle(Prs3d_DimensionAspect) la  = myDrawer->DimensionAspect();
-  Handle(Prs3d_ArrowAspect)     arr = la->ArrowAspect();
+  occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
 
   // ota -- end --
@@ -168,11 +168,12 @@ void PrsDim_EqualRadiusRelation::Compute(const Handle(PrsMgr_PresentationManager
 
 //=================================================================================================
 
-void PrsDim_EqualRadiusRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                                  const Standard_Integer)
+void PrsDim_EqualRadiusRelation::ComputeSelection(
+  const occ::handle<SelectMgr_Selection>& aSelection,
+  const int)
 {
-  Handle(SelectMgr_EntityOwner)     own = new SelectMgr_EntityOwner(this, 7);
-  Handle(Select3D_SensitiveSegment) seg;
+  occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
+  occ::handle<Select3D_SensitiveSegment> seg;
 
   seg = new Select3D_SensitiveSegment(own, myFirstCenter, myFirstPoint);
   aSelection->Add(seg);
@@ -189,15 +190,15 @@ void PrsDim_EqualRadiusRelation::ComputeSelection(const Handle(SelectMgr_Selecti
   // Two small lines
   gp_Pnt Middle((myFirstCenter.XYZ() + mySecondCenter.XYZ()) * 0.5);
 
-  Standard_Real SmallDist = .001;
+  double SmallDist = .001;
   // Should be changed as the domain of small lines could be changed.
-  Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
-                                                                Middle.X() - SmallDist,
-                                                                Middle.Y() - SmallDist,
-                                                                Middle.Z() - SmallDist,
-                                                                Middle.X() + SmallDist,
-                                                                Middle.Y() + SmallDist,
-                                                                Middle.Z() + SmallDist);
+  occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
+                                                                     Middle.X() - SmallDist,
+                                                                     Middle.Y() - SmallDist,
+                                                                     Middle.Z() - SmallDist,
+                                                                     Middle.X() + SmallDist,
+                                                                     Middle.Y() + SmallDist,
+                                                                     Middle.Z() + SmallDist);
   aSelection->Add(box);
 }
 
@@ -215,21 +216,21 @@ void PrsDim_EqualRadiusRelation::ComputeRadiusPosition()
   GeomAPI_ProjectPointOnSurf aProj(myPosition, myPlane);
   aPosition = aProj.NearestPoint();
 
-  Standard_Real aDist1 = myFirstPoint.Distance(aPosition);
-  Standard_Real aDist2 = mySecondPoint.Distance(aPosition);
+  double aDist1 = myFirstPoint.Distance(aPosition);
+  double aDist2 = mySecondPoint.Distance(aPosition);
 
   if (aDist1 < aDist2)
   {
-    Standard_Real Rad1 = myFirstPoint.Distance(myFirstCenter);
-    const gp_Dir  aNewDir1(aPosition.XYZ() - myFirstCenter.XYZ());
-    const gp_Vec  aTVec(aNewDir1.XYZ() * Rad1);
+    double       Rad1 = myFirstPoint.Distance(myFirstCenter);
+    const gp_Dir aNewDir1(aPosition.XYZ() - myFirstCenter.XYZ());
+    const gp_Vec aTVec(aNewDir1.XYZ() * Rad1);
     myFirstPoint = myFirstCenter.Translated(aTVec);
   }
   else
   {
-    Standard_Real Rad2 = mySecondPoint.Distance(mySecondCenter);
-    const gp_Dir  aNewDir2(aPosition.XYZ() - mySecondCenter.XYZ());
-    gp_Vec        aTVec(aNewDir2.XYZ() * Rad2);
+    double       Rad2 = mySecondPoint.Distance(mySecondCenter);
+    const gp_Dir aNewDir2(aPosition.XYZ() - mySecondCenter.XYZ());
+    gp_Vec       aTVec(aNewDir2.XYZ() * Rad2);
     mySecondPoint = mySecondCenter.Translated(aTVec);
   }
 }

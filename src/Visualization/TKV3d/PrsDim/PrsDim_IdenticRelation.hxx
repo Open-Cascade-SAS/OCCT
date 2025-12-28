@@ -21,7 +21,8 @@
 #include <gp_Pnt.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <TColStd_ListOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_List.hxx>
 
 class TopoDS_Shape;
 class Geom_Plane;
@@ -31,8 +32,6 @@ class Geom_Ellipse;
 class TopoDS_Wire;
 class TopoDS_Vertex;
 class gp_Dir;
-
-DEFINE_STANDARD_HANDLE(PrsDim_IdenticRelation, PrsDim_Relation)
 
 //! Constructs a constraint by a relation of identity
 //! between two or more datums figuring in shape
@@ -45,113 +44,115 @@ public:
   //! entities, FirstShape and SecondShape. The plane
   //! aPlane is initialized in case a visual reference is
   //! needed to show identity.
-  Standard_EXPORT PrsDim_IdenticRelation(const TopoDS_Shape&       FirstShape,
-                                         const TopoDS_Shape&       SecondShape,
-                                         const Handle(Geom_Plane)& aPlane);
+  Standard_EXPORT PrsDim_IdenticRelation(const TopoDS_Shape&            FirstShape,
+                                         const TopoDS_Shape&            SecondShape,
+                                         const occ::handle<Geom_Plane>& aPlane);
 
-  Standard_Boolean HasUsers() const { return !myUsers.IsEmpty(); }
+  bool HasUsers() const { return !myUsers.IsEmpty(); }
 
-  const TColStd_ListOfTransient& Users() const { return myUsers; }
+  const NCollection_List<occ::handle<Standard_Transient>>& Users() const { return myUsers; }
 
-  void AddUser(const Handle(Standard_Transient)& theUser) { myUsers.Append(theUser); }
+  void AddUser(const occ::handle<Standard_Transient>& theUser) { myUsers.Append(theUser); }
 
   void ClearUsers() { myUsers.Clear(); }
 
   //! Returns true if the interactive object is movable.
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool IsMovable() const override { return true; }
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
   Standard_EXPORT void ComputeOneEdgeOVertexPresentation(
-    const Handle(Prs3d_Presentation)& aPresentation);
+    const occ::handle<Prs3d_Presentation>& aPresentation);
 
-  Standard_EXPORT void ComputeTwoEdgesPresentation(const Handle(Prs3d_Presentation)& aPresentation);
+  Standard_EXPORT void ComputeTwoEdgesPresentation(
+    const occ::handle<Prs3d_Presentation>& aPresentation);
 
-  Standard_EXPORT void ComputeTwoLinesPresentation(const Handle(Prs3d_Presentation)& aPresentation,
-                                                   const Handle(Geom_Line)&          aLin,
-                                                   gp_Pnt&                           Pnt1On1,
-                                                   gp_Pnt&                           Pnt2On1,
-                                                   gp_Pnt&                           Pnt1On2,
-                                                   gp_Pnt&                           Pnt2On2,
-                                                   const Standard_Boolean            isInf1,
-                                                   const Standard_Boolean            isInf2);
+  Standard_EXPORT void ComputeTwoLinesPresentation(
+    const occ::handle<Prs3d_Presentation>& aPresentation,
+    const occ::handle<Geom_Line>&          aLin,
+    gp_Pnt&                                Pnt1On1,
+    gp_Pnt&                                Pnt2On1,
+    gp_Pnt&                                Pnt1On2,
+    gp_Pnt&                                Pnt2On2,
+    const bool                             isInf1,
+    const bool                             isInf2);
 
   Standard_EXPORT void ComputeTwoCirclesPresentation(
-    const Handle(Prs3d_Presentation)& aPresentation,
-    const Handle(Geom_Circle)&        aCircle,
-    const gp_Pnt&                     Pnt1On1,
-    const gp_Pnt&                     Pnt2On1,
-    const gp_Pnt&                     Pnt1On2,
-    const gp_Pnt&                     Pnt2On2);
+    const occ::handle<Prs3d_Presentation>& aPresentation,
+    const occ::handle<Geom_Circle>&        aCircle,
+    const gp_Pnt&                          Pnt1On1,
+    const gp_Pnt&                          Pnt2On1,
+    const gp_Pnt&                          Pnt1On2,
+    const gp_Pnt&                          Pnt2On2);
 
   //! Computes the presentation of the identic constraint
   //! between 2 arcs in the case of automatic presentation
-  Standard_EXPORT void ComputeAutoArcPresentation(const Handle(Geom_Circle)& aCircle,
-                                                  const gp_Pnt&              firstp,
-                                                  const gp_Pnt&              lastp,
-                                                  const Standard_Boolean isstatic = Standard_False);
+  Standard_EXPORT void ComputeAutoArcPresentation(const occ::handle<Geom_Circle>& aCircle,
+                                                  const gp_Pnt&                   firstp,
+                                                  const gp_Pnt&                   lastp,
+                                                  const bool                      isstatic = false);
 
   //! Computes the presentation of the identic constraint
   //! between 2 circles in the case of non automatic presentation
-  Standard_EXPORT void ComputeNotAutoCircPresentation(const Handle(Geom_Circle)& aCircle);
+  Standard_EXPORT void ComputeNotAutoCircPresentation(const occ::handle<Geom_Circle>& aCircle);
 
   //! Computes the presentation of the identic constraint
   //! between 2 arcs in the case of non automatic presentation
-  Standard_EXPORT void ComputeNotAutoArcPresentation(const Handle(Geom_Circle)& aCircle,
-                                                     const gp_Pnt&              pntfirst,
-                                                     const gp_Pnt&              pntlast);
+  Standard_EXPORT void ComputeNotAutoArcPresentation(const occ::handle<Geom_Circle>& aCircle,
+                                                     const gp_Pnt&                   pntfirst,
+                                                     const gp_Pnt&                   pntlast);
 
-  Standard_EXPORT void ComputeTwoEllipsesPresentation(const Handle(Prs3d_Presentation)& aPrs,
-                                                      const Handle(Geom_Ellipse)&       anEll,
-                                                      const gp_Pnt&                     Pnt1On1,
-                                                      const gp_Pnt&                     Pnt2On1,
-                                                      const gp_Pnt&                     Pnt1On2,
-                                                      const gp_Pnt&                     Pnt2On2);
+  Standard_EXPORT void ComputeTwoEllipsesPresentation(const occ::handle<Prs3d_Presentation>& aPrs,
+                                                      const occ::handle<Geom_Ellipse>&       anEll,
+                                                      const gp_Pnt& Pnt1On1,
+                                                      const gp_Pnt& Pnt2On1,
+                                                      const gp_Pnt& Pnt1On2,
+                                                      const gp_Pnt& Pnt2On2);
 
   //! Computes the presentation of the identic constraint
   //! between 2 arcs in the case of automatic presentation
-  Standard_EXPORT void ComputeAutoArcPresentation(const Handle(Geom_Ellipse)& theEll,
-                                                  const gp_Pnt&               firstp,
-                                                  const gp_Pnt&               lastp,
-                                                  const Standard_Boolean isstatic = Standard_False);
+  Standard_EXPORT void ComputeAutoArcPresentation(const occ::handle<Geom_Ellipse>& theEll,
+                                                  const gp_Pnt&                    firstp,
+                                                  const gp_Pnt&                    lastp,
+                                                  const bool isstatic = false);
 
   //! Computes the presentation of the identic constraint
   //! between 2 ellipses in the case of non automatic presentation
-  Standard_EXPORT void ComputeNotAutoElipsPresentation(const Handle(Geom_Ellipse)& theEll);
+  Standard_EXPORT void ComputeNotAutoElipsPresentation(const occ::handle<Geom_Ellipse>& theEll);
 
   //! Computes the presentation of the identic constraint
   //! between 2 arcs in the case of non automatic presentation
-  Standard_EXPORT void ComputeNotAutoArcPresentation(const Handle(Geom_Ellipse)& theEll,
-                                                     const gp_Pnt&               pntfirst,
-                                                     const gp_Pnt&               pntlast);
+  Standard_EXPORT void ComputeNotAutoArcPresentation(const occ::handle<Geom_Ellipse>& theEll,
+                                                     const gp_Pnt&                    pntfirst,
+                                                     const gp_Pnt&                    pntlast);
 
   Standard_EXPORT void ComputeTwoVerticesPresentation(
-    const Handle(Prs3d_Presentation)& aPresentation);
+    const occ::handle<Prs3d_Presentation>& aPresentation);
 
-  Standard_EXPORT Standard_Real ComputeSegSize() const;
+  Standard_EXPORT double ComputeSegSize() const;
 
-  Standard_EXPORT Standard_Boolean ComputeDirection(const TopoDS_Wire&   aWire,
-                                                    const TopoDS_Vertex& aVertex,
-                                                    gp_Dir&              aDir) const;
+  Standard_EXPORT bool ComputeDirection(const TopoDS_Wire&   aWire,
+                                        const TopoDS_Vertex& aVertex,
+                                        gp_Dir&              aDir) const;
 
-  Standard_EXPORT gp_Dir ComputeLineDirection(const Handle(Geom_Line)& aLin,
-                                              const gp_Pnt&            anExtremity) const;
+  Standard_EXPORT gp_Dir ComputeLineDirection(const occ::handle<Geom_Line>& aLin,
+                                              const gp_Pnt&                 anExtremity) const;
 
-  Standard_EXPORT gp_Dir ComputeCircleDirection(const Handle(Geom_Circle)& aCirc,
-                                                const TopoDS_Vertex&       ConnectedVertex) const;
+  Standard_EXPORT gp_Dir ComputeCircleDirection(const occ::handle<Geom_Circle>& aCirc,
+                                                const TopoDS_Vertex& ConnectedVertex) const;
 
 private:
-  TColStd_ListOfTransient myUsers;
-  Standard_Boolean        isCircle;
-  gp_Pnt                  myFAttach;
-  gp_Pnt                  mySAttach;
-  gp_Pnt                  myCenter;
+  NCollection_List<occ::handle<Standard_Transient>> myUsers;
+  bool                                              isCircle;
+  gp_Pnt                                            myFAttach;
+  gp_Pnt                                            mySAttach;
+  gp_Pnt                                            myCenter;
 };
 
 #endif // _PrsDim_IdenticRelation_HeaderFile

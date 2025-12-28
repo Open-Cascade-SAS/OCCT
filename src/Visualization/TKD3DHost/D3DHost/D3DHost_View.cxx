@@ -60,10 +60,10 @@ TCollection_AsciiString D3DHost_View::d3dFormatError(const long theErrCode)
 
 //=================================================================================================
 
-D3DHost_View::D3DHost_View(const Handle(Graphic3d_StructureManager)& theMgr,
-                           const Handle(D3DHost_GraphicDriver)&      theDriver,
-                           const Handle(OpenGl_Caps)&                theCaps,
-                           OpenGl_StateCounter*                      theCounter)
+D3DHost_View::D3DHost_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
+                           const occ::handle<D3DHost_GraphicDriver>&      theDriver,
+                           const occ::handle<OpenGl_Caps>&                theCaps,
+                           OpenGl_StateCounter*                           theCounter)
     : OpenGl_View(theMgr, theDriver, theCaps, theCounter),
       myD3dLib(NULL),
       myD3dDevice(NULL),
@@ -104,7 +104,7 @@ D3DHost_View::~D3DHost_View()
 
 //=================================================================================================
 
-void D3DHost_View::ReleaseGlResources(const Handle(OpenGl_Context)& theCtx)
+void D3DHost_View::ReleaseGlResources(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (!myD3dWglFbo.IsNull())
   {
@@ -123,9 +123,9 @@ IDirect3DSurface9* D3DHost_View::D3dColorSurface() const
 
 //=================================================================================================
 
-void D3DHost_View::SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
-                             const Handle(Aspect_Window)&   theWindow,
-                             const Aspect_RenderingContext  theContext)
+void D3DHost_View::SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
+                             const occ::handle<Aspect_Window>&   theWindow,
+                             const Aspect_RenderingContext       theContext)
 {
   if (!myD3dWglFbo.IsNull())
   {
@@ -149,8 +149,9 @@ void D3DHost_View::SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
 
 //=================================================================================================
 
-void D3DHost_View::DiagnosticInformation(TColStd_IndexedDataMapOfStringString& theDict,
-                                         Graphic3d_DiagnosticInfo              theFlags) const
+void D3DHost_View::DiagnosticInformation(
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+  Graphic3d_DiagnosticInfo                                                      theFlags) const
 {
   base_type::DiagnosticInformation(theDict, theFlags);
   if (myD3dDevice == NULL)
@@ -393,7 +394,7 @@ void D3DHost_View::Redraw()
     return;
   }
 
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   if (myWindow->PlatformWindow()->IsVirtual() && aCtx->arbFBO == NULL)
   {
     // do a dirty hack in extreme fallback mode with OpenGL driver not supporting FBO,
@@ -416,13 +417,13 @@ void D3DHost_View::Redraw()
   myD3dWglFbo->LockSurface(aCtx);
   if (myD3dWglFbo->IsValid())
   {
-    myToFlipOutput = Standard_True;
+    myToFlipOutput = true;
     myFBO          = myD3dWglFbo;
   }
   OpenGl_View::Redraw();
   myFBO.Nullify();
   myD3dWglFbo->UnlockSurface(aCtx);
-  myToFlipOutput = Standard_False;
+  myToFlipOutput = false;
   if (aCtx->caps->buffersNoSwap)
   {
     return;
@@ -444,7 +445,7 @@ void D3DHost_View::Redraw()
 
 void D3DHost_View::RedrawImmediate()
 {
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   if (!myTransientDrawToFront || !myBackBufferRestored
       || (aCtx->caps->buffersNoSwap && !myMainSceneFbos[0]->IsValid()))
   {
@@ -464,13 +465,13 @@ void D3DHost_View::RedrawImmediate()
   myD3dWglFbo->LockSurface(aCtx);
   if (myD3dWglFbo->IsValid())
   {
-    myToFlipOutput = Standard_True;
+    myToFlipOutput = true;
     myFBO          = myD3dWglFbo;
   }
   OpenGl_View::RedrawImmediate();
   myFBO.Nullify();
   myD3dWglFbo->UnlockSurface(aCtx);
-  myToFlipOutput = Standard_False;
+  myToFlipOutput = false;
   if (aCtx->caps->buffersNoSwap)
   {
     return;
@@ -492,8 +493,8 @@ void D3DHost_View::RedrawImmediate()
 
 void D3DHost_View::Resized()
 {
-  const Standard_Integer aWidthOld  = myWindow->Width();
-  const Standard_Integer aHeightOld = myWindow->Height();
+  const int aWidthOld  = myWindow->Width();
+  const int aHeightOld = myWindow->Height();
   OpenGl_View::Resized();
   if (aWidthOld == myWindow->Width() && aHeightOld == myWindow->Height())
   {

@@ -33,16 +33,16 @@ public:
   //! compute the solution point with the close point
   //! MarginCoef is the coefficient for extension of UV bounds.
   //! Ex., UFirst -= MarginCoef*(ULast-UFirst)
-  Standard_EXPORT IntCurveSurface_TheExactHInter(const Standard_Real                          U,
-                                                 const Standard_Real                          V,
-                                                 const Standard_Real                          W,
+  Standard_EXPORT IntCurveSurface_TheExactHInter(const double                                 U,
+                                                 const double                                 V,
+                                                 const double                                 W,
                                                  const IntCurveSurface_TheCSFunctionOfHInter& F,
-                                                 const Standard_Real TolTangency,
-                                                 const Standard_Real MarginCoef = 0.0);
+                                                 const double TolTangency,
+                                                 const double MarginCoef = 0.0);
 
   //! initialize the parameters to compute the solution
   Standard_EXPORT IntCurveSurface_TheExactHInter(const IntCurveSurface_TheCSFunctionOfHInter& F,
-                                                 const Standard_Real TolTangency);
+                                                 const double TolTangency);
 
   //! compute the solution
   //! it's possible to write to optimize:
@@ -66,44 +66,43 @@ public:
   //! w=...
   //! inter.Perform(u,v,w,rsnld)
   //! }
-  Standard_EXPORT void Perform(const Standard_Real   U,
-                               const Standard_Real   V,
-                               const Standard_Real   W,
+  Standard_EXPORT void Perform(const double          U,
+                               const double          V,
+                               const double          W,
                                math_FunctionSetRoot& Rsnld,
-                               const Standard_Real   u0,
-                               const Standard_Real   v0,
-                               const Standard_Real   u1,
-                               const Standard_Real   v1,
-                               const Standard_Real   w0,
-                               const Standard_Real   w1);
+                               const double          u0,
+                               const double          v0,
+                               const double          u1,
+                               const double          v1,
+                               const double          w0,
+                               const double          w1);
 
   //! Returns TRUE if the creation completed without failure.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_EXPORT bool IsEmpty() const;
 
   //! returns the intersection point
   //! The exception NotDone is raised if IsDone is false.
   //! The exception DomainError is raised if IsEmpty is true.
   Standard_EXPORT const gp_Pnt& Point() const;
 
-  Standard_EXPORT Standard_Real ParameterOnCurve() const;
+  Standard_EXPORT double ParameterOnCurve() const;
 
-  Standard_EXPORT void ParameterOnSurface(Standard_Real& U, Standard_Real& V) const;
+  Standard_EXPORT void ParameterOnSurface(double& U, double& V) const;
 
   //! return the math function which
   //! is used to compute the intersection
   Standard_EXPORT IntCurveSurface_TheCSFunctionOfHInter& Function();
 
-protected:
 private:
-  Standard_Boolean                      done;
-  Standard_Boolean                      empty;
+  bool                                  done;
+  bool                                  empty;
   IntCurveSurface_TheCSFunctionOfHInter myFunction;
-  Standard_Real                         w;
-  Standard_Real                         u;
-  Standard_Real                         v;
-  Standard_Real                         tol;
+  double                                w;
+  double                                u;
+  double                                v;
+  double                                tol;
 };
 
 #endif // _IntCurveSurface_TheExactHInter_HeaderFile

@@ -26,27 +26,23 @@ class IntPatch_PrmPrmIntersection_T3Bits
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT IntPatch_PrmPrmIntersection_T3Bits(const Standard_Integer size);
+  Standard_EXPORT IntPatch_PrmPrmIntersection_T3Bits(const int size);
 
   Standard_EXPORT ~IntPatch_PrmPrmIntersection_T3Bits();
 
-  void Add(const Standard_Integer t) { p[t >> 5] |= (1 << (((unsigned int)t) & 31)); }
+  void Add(const int t) { p[t >> 5] |= (1 << (((unsigned int)t) & 31)); }
 
-  Standard_Integer Val(const Standard_Integer t) const
-  {
-    return (p[t >> 5] & (1 << (((unsigned int)t) & 31)));
-  }
+  int Val(const int t) const { return (p[t >> 5] & (1 << (((unsigned int)t) & 31))); }
 
-  void Raz(const Standard_Integer t) { p[t >> 5] &= ~(1 << (((unsigned int)t) & 31)); }
+  void Raz(const int t) { p[t >> 5] &= ~(1 << (((unsigned int)t) & 31)); }
 
   Standard_EXPORT void ResetAnd();
 
-  Standard_EXPORT Standard_Integer And(IntPatch_PrmPrmIntersection_T3Bits& Oth,
-                                       Standard_Integer&                   indiceprecedent);
+  Standard_EXPORT int And(IntPatch_PrmPrmIntersection_T3Bits& Oth, int& indiceprecedent);
 
 private:
-  Standard_Integer* p;
-  Standard_Integer  Isize;
+  int* p;
+  int  Isize;
 };
 
 #endif // _IntPatch_PrmPrmIntersection_T3Bits_HeaderFile

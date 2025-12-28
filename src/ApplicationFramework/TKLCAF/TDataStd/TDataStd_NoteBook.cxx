@@ -28,12 +28,12 @@ IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_NoteBook, TDataStd_GenericEmpty)
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_NoteBook::Find(const TDF_Label& current, Handle(TDataStd_NoteBook)& N)
+bool TDataStd_NoteBook::Find(const TDF_Label& current, occ::handle<TDataStd_NoteBook>& N)
 {
-  TDF_Label                 L = current;
-  Handle(TDataStd_NoteBook) NB;
+  TDF_Label                      L = current;
+  occ::handle<TDataStd_NoteBook> NB;
   if (L.IsNull())
-    return Standard_False;
+    return false;
 
   for (;;)
   {
@@ -47,20 +47,20 @@ Standard_Boolean TDataStd_NoteBook::Find(const TDF_Label& current, Handle(TDataS
   if (!NB.IsNull())
   {
     N = NB;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(TDataStd_NoteBook) TDataStd_NoteBook::New(const TDF_Label& label)
+occ::handle<TDataStd_NoteBook> TDataStd_NoteBook::New(const TDF_Label& label)
 {
   if (label.HasAttribute())
   {
     throw Standard_DomainError("TDataStd_NoteBook::New : not an empty label");
   }
-  Handle(TDataStd_NoteBook) NB = new TDataStd_NoteBook();
+  occ::handle<TDataStd_NoteBook> NB = new TDataStd_NoteBook();
   label.AddAttribute(NB);
   TDF_TagSource::Set(label); // distributeur de sous label
   return NB;
@@ -80,20 +80,19 @@ TDataStd_NoteBook::TDataStd_NoteBook() {}
 
 //=================================================================================================
 
-Handle(TDataStd_Real) TDataStd_NoteBook::Append(const Standard_Real value, const Standard_Boolean)
+occ::handle<TDataStd_Real> TDataStd_NoteBook::Append(const double value, const bool)
 {
-  TDF_Label             newlabel = TDF_TagSource::NewChild(Label());
-  Handle(TDataStd_Real) variable = TDataStd_Real::Set(newlabel, value);
+  TDF_Label                  newlabel = TDF_TagSource::NewChild(Label());
+  occ::handle<TDataStd_Real> variable = TDataStd_Real::Set(newlabel, value);
   return variable;
 }
 
 //=================================================================================================
 
-Handle(TDataStd_Integer) TDataStd_NoteBook::Append(const Standard_Integer value,
-                                                   const Standard_Boolean)
+occ::handle<TDataStd_Integer> TDataStd_NoteBook::Append(const int value, const bool)
 {
-  TDF_Label                newlabel = TDF_TagSource::NewChild(Label());
-  Handle(TDataStd_Integer) variable = TDataStd_Integer::Set(newlabel, value);
+  TDF_Label                     newlabel = TDF_TagSource::NewChild(Label());
+  occ::handle<TDataStd_Integer> variable = TDataStd_Integer::Set(newlabel, value);
   return variable;
 }
 

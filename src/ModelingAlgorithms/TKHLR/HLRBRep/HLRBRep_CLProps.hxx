@@ -49,17 +49,15 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*&  C,
-                                  const Standard_Integer N,
-                                  const Standard_Real    Resolution);
+  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*& C, const int N, const double Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
-  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*&  C,
-                                  const Standard_Real    U,
-                                  const Standard_Integer N,
-                                  const Standard_Real    Resolution);
+  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*& C,
+                                  const double          U,
+                                  const int             N,
+                                  const double          Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U> and the curve is set
@@ -67,11 +65,11 @@ public:
   //! the curve can have a empty constructor
   //! All the computations done will be related to <C> and <U>
   //! when the functions "set" will be done.
-  Standard_EXPORT HLRBRep_CLProps(const Standard_Integer N, const Standard_Real Resolution);
+  Standard_EXPORT HLRBRep_CLProps(const int N, const double Resolution);
 
   //! Initializes the local properties of the curve
   //! for the parameter value <U>.
-  Standard_EXPORT void SetParameter(const Standard_Real U);
+  Standard_EXPORT void SetParameter(const double U);
 
   //! Initializes the local properties of the curve
   //! for the new curve.
@@ -95,13 +93,13 @@ public:
   //! Returns True if the tangent is defined.
   //! For example, the tangent is not defined if the
   //! three first derivatives are all null.
-  Standard_EXPORT Standard_Boolean IsTangentDefined();
+  Standard_EXPORT bool IsTangentDefined();
 
   //! output the tangent direction <D>
   Standard_EXPORT void Tangent(gp_Dir2d& D);
 
   //! Returns the curvature.
-  Standard_EXPORT Standard_Real Curvature();
+  Standard_EXPORT double Curvature();
 
   //! Returns the normal direction <N>.
   Standard_EXPORT void Normal(gp_Dir2d& N);
@@ -109,19 +107,18 @@ public:
   //! Returns the centre of curvature <P>.
   Standard_EXPORT void CentreOfCurvature(gp_Pnt2d& P);
 
-protected:
 private:
   const HLRBRep_Curve* myCurve;
-  Standard_Real        myU;
-  Standard_Integer     myDerOrder;
-  Standard_Real        myCN;
-  Standard_Real        myLinTol;
+  double               myU;
+  int                  myDerOrder;
+  double               myCN;
+  double               myLinTol;
   gp_Pnt2d             myPnt;
   gp_Vec2d             myDerivArr[3];
   gp_Dir2d             myTangent;
-  Standard_Real        myCurvature;
+  double               myCurvature;
   LProp_Status         myTangentStatus;
-  Standard_Integer     mySignificantFirstDerivativeOrder;
+  int                  mySignificantFirstDerivativeOrder;
 };
 
 #endif // _HLRBRep_CLProps_HeaderFile

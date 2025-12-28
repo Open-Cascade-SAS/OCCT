@@ -42,27 +42,27 @@
 //  Function : FunctionGuide
 //  Purpose : Initialisation de la section et de la surface d'arret
 //==============================================
-GeomFill_FunctionGuide::GeomFill_FunctionGuide(const Handle(GeomFill_SectionLaw)& S,
-                                               const Handle(Adaptor3d_Curve)&     C,
-                                               const Standard_Real                Param)
+GeomFill_FunctionGuide::GeomFill_FunctionGuide(const occ::handle<GeomFill_SectionLaw>& S,
+                                               const occ::handle<Adaptor3d_Curve>&     C,
+                                               const double                            Param)
     : TheGuide(C),
       TheLaw(S),
-      isconst(Standard_False),
+      isconst(false),
       First(0.0),
       Last(0.0),
       TheUonS(Param)
 {
-  Standard_Real Tol = Precision::Confusion();
+  double Tol = Precision::Confusion();
   if (TheLaw->IsConstant(Tol))
   {
-    isconst  = Standard_True;
+    isconst  = true;
     TheConst = TheLaw->ConstantSection();
     First    = TheConst->FirstParameter();
     Last     = TheConst->LastParameter();
   }
   else
   {
-    isconst = Standard_False;
+    isconst = false;
     TheConst.Nullify();
   }
   TheCurve.Nullify();
@@ -72,8 +72,8 @@ GeomFill_FunctionGuide::GeomFill_FunctionGuide(const Handle(GeomFill_SectionLaw)
 // Function : SetParam
 // Purpose : Initialisation de la surface de revolution
 //==============================================
-// void GeomFill_FunctionGuide::SetParam(const Standard_Real Param,
-void GeomFill_FunctionGuide::SetParam(const Standard_Real,
+// void GeomFill_FunctionGuide::SetParam(const double Param,
+void GeomFill_FunctionGuide::SetParam(const double,
                                       const gp_Pnt& C,
                                       const gp_XYZ& D,
                                       const gp_XYZ& DX)
@@ -92,18 +92,18 @@ void GeomFill_FunctionGuide::SetParam(const Standard_Real,
 
   if (isconst)
   {
-    TheCurve = new (Geom_TrimmedCurve)(Handle(Geom_Curve)::DownCast(TheConst->Copy()), First, Last);
+    TheCurve = new (Geom_TrimmedCurve)(occ::down_cast<Geom_Curve>(TheConst->Copy()), First, Last);
   }
   else
   {
-    Standard_Integer NbPoles, NbKnots, Deg;
+    int NbPoles, NbKnots, Deg;
     TheLaw->SectionShape(NbPoles, NbKnots, Deg);
-    TColStd_Array1OfInteger Mult(1, NbKnots);
+    NCollection_Array1<int> Mult(1, NbKnots);
     TheLaw->Mults(Mult);
-    TColStd_Array1OfReal Knots(1, NbKnots);
+    NCollection_Array1<double> Knots(1, NbKnots);
     TheLaw->Knots(Knots);
-    TColgp_Array1OfPnt   Poles(1, NbPoles);
-    TColStd_Array1OfReal Weights(1, NbPoles);
+    NCollection_Array1<gp_Pnt> Poles(1, NbPoles);
+    NCollection_Array1<double> Weights(1, NbPoles);
     TheLaw->D0(TheUonS, Poles, Weights);
     if (TheLaw->IsRational())
       TheCurve = new (Geom_BSplineCurve)(Poles, Weights, Knots, Mult, Deg, TheLaw->IsUPeriodic());
@@ -120,14 +120,14 @@ void GeomFill_FunctionGuide::SetParam(const Standard_Real,
 // Function : NbVariables (w, u, v)
 // Purpose :
 //==============================================
-Standard_Integer GeomFill_FunctionGuide::NbVariables() const
+int GeomFill_FunctionGuide::NbVariables() const
 {
   return 3;
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_FunctionGuide::NbEquations() const
+int GeomFill_FunctionGuide::NbEquations() const
 {
   return 3;
 }
@@ -136,7 +136,7 @@ Standard_Integer GeomFill_FunctionGuide::NbEquations() const
 // Function : Value
 // Purpose : calcul of the value of the function at <X>
 //==============================================
-Standard_Boolean GeomFill_FunctionGuide::Value(const math_Vector& X, math_Vector& F)
+bool GeomFill_FunctionGuide::Value(const math_Vector& X, math_Vector& F)
 {
   gp_Pnt P, P1;
 
@@ -147,14 +147,14 @@ Standard_Boolean GeomFill_FunctionGuide::Value(const math_Vector& X, math_Vector
   F(2) = P.Coord(2) - P1.Coord(2);
   F(3) = P.Coord(3) - P1.Coord(3);
 
-  return Standard_True;
+  return true;
 }
 
 //==============================================
 // Function : Derivatives
 // Purpose :calcul of the derivative of the function
 //==============================================
-Standard_Boolean GeomFill_FunctionGuide::Derivatives(const math_Vector& X, math_Matrix& D)
+bool GeomFill_FunctionGuide::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Pnt P, P1;
   gp_Vec DP, DP1U, DP1V;
@@ -162,7 +162,7 @@ Standard_Boolean GeomFill_FunctionGuide::Derivatives(const math_Vector& X, math_
   TheGuide->D1(X(1), P, DP);
   TheSurface->D1(X(2), X(3), P1, DP1U, DP1V);
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= 3; i++)
   {
     D(i, 1) = DP.Coord(i);
@@ -170,16 +170,14 @@ Standard_Boolean GeomFill_FunctionGuide::Derivatives(const math_Vector& X, math_
     D(i, 3) = -DP1V.Coord(i);
   } // for
 
-  return Standard_True;
+  return true;
 }
 
 //==============================================
 // Function : Values
 // Purpose : calcul of the value and the derivative of the function
 //==============================================
-Standard_Boolean GeomFill_FunctionGuide::Values(const math_Vector& X,
-                                                math_Vector&       F,
-                                                math_Matrix&       D)
+bool GeomFill_FunctionGuide::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   gp_Pnt P, P1;
   gp_Vec DP, DP1U, DP1V;
@@ -187,7 +185,7 @@ Standard_Boolean GeomFill_FunctionGuide::Values(const math_Vector& X,
   TheGuide->D1(X(1), P, DP);                  // derivee de la generatrice
   TheSurface->D1(X(2), X(3), P1, DP1U, DP1V); // derivee de la new surface
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= 3; i++)
   {
     F(i) = P.Coord(i) - P1.Coord(i);
@@ -197,17 +195,17 @@ Standard_Boolean GeomFill_FunctionGuide::Values(const math_Vector& X,
     D(i, 3) = -DP1V.Coord(i);
   } // for
 
-  return Standard_True;
+  return true;
 }
 
 //==============================================
 // Function : DerivT
 // Purpose : calcul of the first derivative from t
 //==============================================
-Standard_Boolean GeomFill_FunctionGuide::DerivT(const math_Vector& X,
-                                                const gp_XYZ&      DCentre,
-                                                const gp_XYZ&      DDir,
-                                                math_Vector&       F)
+bool GeomFill_FunctionGuide::DerivT(const math_Vector& X,
+                                    const gp_XYZ&      DCentre,
+                                    const gp_XYZ&      DDir,
+                                    math_Vector&       F)
 {
   gp_Pnt P;
   gp_Vec DS;
@@ -219,18 +217,18 @@ Standard_Boolean GeomFill_FunctionGuide::DerivT(const math_Vector& X,
   F(2) = P.Coord(2) - DS.Coord(2);
   F(3) = P.Coord(3) - DS.Coord(3);
 
-  return Standard_True;
+  return true;
 }
 
 //=========================================================
 // Function : DSDT
 // Purpose : calcul de la derive de la surface /t en U, V
 //=========================================================
-void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
-                                  const Standard_Real V,
-                                  const gp_XYZ&       DC,
-                                  const gp_XYZ&       DDir,
-                                  gp_Vec&             DS) const
+void GeomFill_FunctionGuide::DSDT(const double  U,
+                                  const double  V,
+                                  const gp_XYZ& DC,
+                                  const gp_XYZ& DDir,
+                                  gp_Vec&       DS) const
 {
   // C origine sur l'axe de revolution
   // Vdir vecteur unitaire definissant la direction de l'axe de revolution
@@ -256,8 +254,8 @@ void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
                           Dir.Crossed(DQ)); // Vdir^CQ
   DVcrossCQ.Multiply(std::sin(U));          //(Vdir^CQ)*Sin(U)
 
-  Standard_Real CosU = std::cos(U);
-  gp_XYZ        DVdotCQ;
+  double CosU = std::cos(U);
+  gp_XYZ DVdotCQ;
   DVdotCQ.SetLinearForm(DDir.Dot(Q) + Dir.Dot(DQ),
                         Dir,
                         Dir.Dot(Q),
@@ -275,9 +273,9 @@ void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
 // Purpose : calcul of the second derivatice from t
 //=========================================================
 
-/* Standard_Boolean GeomFill_FunctionGuide::Deriv2T(const Standard_Real Param1,
-                          const Standard_Real Param,
-                          const Standard_Real Param0,
+/* bool GeomFill_FunctionGuide::Deriv2T(const double Param1,
+                          const double Param,
+                          const double Param0,
                           const math_Vector & R1,
                           const math_Vector & R,
                           const math_Vector & R0,
@@ -289,22 +287,22 @@ void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
   DerivT(Param1, Param, R1, R, F1);
   DerivT(Param, Param0, R, R0, F2);
 
-  Standard_Real h1 = Param - Param1;
-  Standard_Real h2 = Param0 - Param;
+  double h1 = Param - Param1;
+  double h2 = Param0 - Param;
 
-  Standard_Integer i;
+  int i;
   for (i=1;i<=3;i++)
     F(i) = (F2(i) - F1(i))  / ((h2 + h1)/2);
 
-  return Standard_True;
+  return true;
 }
 
 //=========================================================
 // Function : DerivTX
 // Purpose : calcul of the second derivative from t and x
 //=========================================================
- Standard_Boolean GeomFill_FunctionGuide::DerivTX(const Standard_Real Param,
-                          const Standard_Real Param0,
+ bool GeomFill_FunctionGuide::DerivTX(const double Param,
+                          const double Param0,
                           const math_Vector & R,
                           const math_Vector & X0,
                           math_Matrix& D)
@@ -317,9 +315,9 @@ void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
   TheSurface->D1(R(2), R(3), P1, DP1U, DP1V); // surface
   TheSurface->D1(X0(2), X0(3), P2, DP2U, DP2V); //derivee de la new surface
 
-  Standard_Real h = Param0 - Param;
+  double h = Param0 - Param;
 
-  Standard_Integer i;
+  int i;
   for (i=1;i<=3;i++)
     {
       D(i,1) = (DP2.Coord(i) - DP1.Coord(i)) / h;
@@ -329,14 +327,14 @@ void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
       D(i,3) = - DP1V.Coord(i) * (X0(3)-R(3)) / h;
     }// for
 
-  return Standard_True;
+  return true;
 }
 
 //=========================================================
 // Function : Deriv2X
 // Purpose : calcul of the second derivative from x
 //=========================================================
- Standard_Boolean GeomFill_FunctionGuide::Deriv2X(const math_Vector & X,
+ bool GeomFill_FunctionGuide::Deriv2X(const math_Vector & X,
                           GeomFill_Tensor& T)
 {
   gp_Pnt P,P1;
@@ -348,7 +346,7 @@ void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
 
   T.Init(0.); // tenseur
 
-  Standard_Integer i;
+  int i;
   for (i=1;i<=3;i++)
     {
       T(i,1,1) = D2P.Coord(i);
@@ -357,5 +355,5 @@ void GeomFill_FunctionGuide::DSDT(const Standard_Real U,
       T(i,3,3) = -D2PV.Coord(i);
     }// for
 
-  return Standard_True;
+  return true;
 }*/

@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <HLRBRep_ListOfBPnt2D.hxx>
+#include <HLRBRep_BiPnt2D.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 class HLRBRep_PolyAlgo;
@@ -64,7 +65,7 @@ public:
   //! Use the extraction filters to obtain the results you want for A.
   Standard_EXPORT HLRBRep_PolyHLRToShape();
 
-  Standard_EXPORT void Update(const Handle(HLRBRep_PolyAlgo)& A);
+  Standard_EXPORT void Update(const occ::handle<HLRBRep_PolyAlgo>& A);
 
   void Show();
 
@@ -110,16 +111,15 @@ public:
   //! this case, the inner outlines of the torus seen on its side are hidden.
   TopoDS_Shape OutLineHCompound(const TopoDS_Shape& S);
 
-protected:
 private:
-  Standard_EXPORT TopoDS_Shape InternalCompound(const Standard_Integer typ,
-                                                const Standard_Boolean visible,
-                                                const TopoDS_Shape&    S);
+  Standard_EXPORT TopoDS_Shape InternalCompound(const int           typ,
+                                                const bool          visible,
+                                                const TopoDS_Shape& S);
 
-  Handle(HLRBRep_PolyAlgo) myAlgo;
-  HLRBRep_ListOfBPnt2D     myBiPntVis;
-  HLRBRep_ListOfBPnt2D     myBiPntHid;
-  Standard_Boolean         myHideMode;
+  occ::handle<HLRBRep_PolyAlgo>     myAlgo;
+  NCollection_List<HLRBRep_BiPnt2D> myBiPntVis;
+  NCollection_List<HLRBRep_BiPnt2D> myBiPntHid;
+  bool                              myHideMode;
 };
 
 #include <HLRBRep_PolyHLRToShape.lxx>

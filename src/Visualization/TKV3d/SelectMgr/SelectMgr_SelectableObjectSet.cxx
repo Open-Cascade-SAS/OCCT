@@ -14,7 +14,10 @@
 // commercial license or contractual agreement.
 
 #include <SelectMgr_SelectableObjectSet.hxx>
-#include <SelectMgr_VectorTypes.hxx>
+#include <gp_Trsf.hxx>
+#include <NCollection_Mat4.hxx>
+#include <NCollection_Vec3.hxx>
+#include <NCollection_Vec4.hxx>
 
 #include <BVH_BinnedBuilder.hxx>
 #include <BVH_LinearBuilder.hxx>
@@ -22,14 +25,14 @@
 namespace
 {
 //! Short-cut definition of indexed data map of selectable objects
-typedef NCollection_IndexedMap<Handle(SelectMgr_SelectableObject)> ObjectsMap;
+typedef NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>> ObjectsMap;
 
 //=================================================================================================
 
 //! This class provides direct access to fields of SelectMgr_SelectableObjectSet
 //! so the BVH builder could explicitly arrange objects in the map as necessary
 //! to provide synchronization of indexes with constructed BVH tree.
-class BVHBuilderAdaptorRegular : public BVH_Set<Standard_Real, 3>
+class BVHBuilderAdaptorRegular : public BVH_Set<double, 3>
 {
 public:
   //! Construct adaptor.
@@ -37,36 +40,35 @@ public:
       : myObjects(theObjects) {};
 
   //! Returns bounding box of object with index theIndex
-  virtual Select3D_BndBox3d Box(const Standard_Integer theIndex) const Standard_OVERRIDE
+  virtual Select3D_BndBox3d Box(const int theIndex) const override
   {
-    const Handle(SelectMgr_SelectableObject)& anObject = myObjects.FindKey(theIndex + 1);
-    Bnd_Box                                   aBox;
+    const occ::handle<SelectMgr_SelectableObject>& anObject = myObjects.FindKey(theIndex + 1);
+    Bnd_Box                                        aBox;
     anObject->BoundingBox(aBox);
     if (aBox.IsVoid())
       return Select3D_BndBox3d();
 
     return Select3D_BndBox3d(
-      SelectMgr_Vec3(aBox.CornerMin().X(), aBox.CornerMin().Y(), aBox.CornerMin().Z()),
-      SelectMgr_Vec3(aBox.CornerMax().X(), aBox.CornerMax().Y(), aBox.CornerMax().Z()));
+      NCollection_Vec3<double>(aBox.CornerMin().X(), aBox.CornerMin().Y(), aBox.CornerMin().Z()),
+      NCollection_Vec3<double>(aBox.CornerMax().X(), aBox.CornerMax().Y(), aBox.CornerMax().Z()));
   }
 
   //! Returns bounding box of the whole subset.
-  virtual Select3D_BndBox3d Box() const Standard_OVERRIDE
+  virtual Select3D_BndBox3d Box() const override
   {
     if (!myBox.IsValid())
     {
-      myBox = BVH_Set<Standard_Real, 3>::Box();
+      myBox = BVH_Set<double, 3>::Box();
     }
     return myBox;
   }
 
   //! Make inherited method Box() visible to avoid CLang warning
-  using BVH_Set<Standard_Real, 3>::Box;
+  using BVH_Set<double, 3>::Box;
 
   //! Returns center of object with index theIndex in the set
   //! along the given axis theAxis
-  virtual Standard_Real Center(const Standard_Integer theIndex,
-                               const Standard_Integer theAxis) const Standard_OVERRIDE
+  virtual double Center(const int theIndex, const int theAxis) const override
   {
     const Select3D_BndBox3d aBndBox = Box(theIndex);
 
@@ -74,11 +76,10 @@ public:
   }
 
   //! Returns size of objects set.
-  virtual Standard_Integer Size() const Standard_OVERRIDE { return myObjects.Size(); }
+  virtual int Size() const override { return myObjects.Size(); }
 
   //! Swaps items with indexes theIndex1 and theIndex2 in the set
-  virtual void Swap(const Standard_Integer theIndex1,
-                    const Standard_Integer theIndex2) Standard_OVERRIDE
+  virtual void Swap(const int theIndex1, const int theIndex2) override
   {
     myObjects.Swap(theIndex1 + 1, theIndex2 + 1);
   }
@@ -96,24 +97,24 @@ private:
 //! This class provides direct access to fields of SelectMgr_SelectableObjectSet
 //! so the BVH builder could explicitly arrange objects in the map as necessary
 //! to provide synchronization of indexes with constructed BVH tree.
-class BVHBuilderAdaptorPersistent : public BVH_Set<Standard_Real, 3>
+class BVHBuilderAdaptorPersistent : public BVH_Set<double, 3>
 {
 public:
   //! Construct adaptor.
   //! @param theCamera, theProjectionMat, theWorldViewMat,
   //!        theWidth, theHeight [in] view properties used for computation of
   //!        bounding boxes within the world view camera space.
-  BVHBuilderAdaptorPersistent(ObjectsMap&                     theObjects,
-                              const Handle(Graphic3d_Camera)& theCamera,
-                              const Graphic3d_Mat4d&          theProjectionMat,
-                              const Graphic3d_Mat4d&          theWorldViewMat,
-                              const Graphic3d_Vec2i&          theWinSize)
+  BVHBuilderAdaptorPersistent(ObjectsMap&                          theObjects,
+                              const occ::handle<Graphic3d_Camera>& theCamera,
+                              const NCollection_Mat4<double>&      theProjectionMat,
+                              const NCollection_Mat4<double>&      theWorldViewMat,
+                              const NCollection_Vec2<int>&         theWinSize)
       : myObjects(theObjects)
   {
     myBoundings.ReSize(myObjects.Size());
-    for (Standard_Integer anI = 1; anI <= myObjects.Size(); ++anI)
+    for (int anI = 1; anI <= myObjects.Size(); ++anI)
     {
-      const Handle(SelectMgr_SelectableObject)& anObject = myObjects(anI);
+      const occ::handle<SelectMgr_SelectableObject>& anObject = myObjects(anI);
 
       Bnd_Box aBoundingBox;
       anObject->BoundingBox(aBoundingBox);
@@ -128,20 +129,24 @@ public:
       }
 
       // processing presentations with own transform persistence
-      for (PrsMgr_Presentations::Iterator aPrsIter(anObject->Presentations()); aPrsIter.More();
+      for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(
+             anObject->Presentations());
+           aPrsIter.More();
            aPrsIter.Next())
       {
-        const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.Value();
+        const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.Value();
         if (!aPrs3d->CStructure()->HasGroupTransformPersistence())
         {
           continue;
         }
 
-        for (Graphic3d_SequenceOfGroup::Iterator aGroupIter(aPrs3d->Groups()); aGroupIter.More();
+        for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(
+               aPrs3d->Groups());
+             aGroupIter.More();
              aGroupIter.Next())
         {
-          const Handle(Graphic3d_Group)& aGroup  = aGroupIter.Value();
-          const Graphic3d_BndBox4f&      aBndBox = aGroup->BoundingBox();
+          const occ::handle<Graphic3d_Group>& aGroup  = aGroupIter.Value();
+          const Graphic3d_BndBox4f&           aBndBox = aGroup->BoundingBox();
           if (aGroup->TransformPersistence().IsNull() || !aBndBox.IsValid())
           {
             continue;
@@ -172,35 +177,35 @@ public:
       {
         const gp_Pnt aMin = aBoundingBox.CornerMin();
         const gp_Pnt aMax = aBoundingBox.CornerMax();
-        myBoundings.Add(new Select3D_HBndBox3d(Select3D_Vec3(aMin.X(), aMin.Y(), aMin.Z()),
-                                               Select3D_Vec3(aMax.X(), aMax.Y(), aMax.Z())));
+        myBoundings.Add(
+          new Select3D_HBndBox3d(NCollection_Vec3<double>(aMin.X(), aMin.Y(), aMin.Z()),
+                                 NCollection_Vec3<double>(aMax.X(), aMax.Y(), aMax.Z())));
       }
     }
   }
 
   //! Returns bounding box of object with index theIndex
-  virtual Select3D_BndBox3d Box(const Standard_Integer theIndex) const Standard_OVERRIDE
+  virtual Select3D_BndBox3d Box(const int theIndex) const override
   {
     return *myBoundings(theIndex + 1);
   }
 
   //! Returns bounding box of the whole subset.
-  virtual Select3D_BndBox3d Box() const Standard_OVERRIDE
+  virtual Select3D_BndBox3d Box() const override
   {
     if (!myBox.IsValid())
     {
-      myBox = BVH_Set<Standard_Real, 3>::Box();
+      myBox = BVH_Set<double, 3>::Box();
     }
     return myBox;
   }
 
   //! Make inherited method Box() visible to avoid CLang warning
-  using BVH_Set<Standard_Real, 3>::Box;
+  using BVH_Set<double, 3>::Box;
 
   //! Returns center of object with index theIndex in the set
   //! along the given axis theAxis
-  virtual Standard_Real Center(const Standard_Integer theIndex,
-                               const Standard_Integer theAxis) const Standard_OVERRIDE
+  virtual double Center(const int theIndex, const int theAxis) const override
   {
     const Select3D_BndBox3d& aBoundingBox = *myBoundings(theIndex + 1);
 
@@ -208,14 +213,13 @@ public:
   }
 
   //! Returns size of objects set.
-  virtual Standard_Integer Size() const Standard_OVERRIDE { return myObjects.Size(); }
+  virtual int Size() const override { return myObjects.Size(); }
 
   //! Swaps items with indexes theIndex1 and theIndex2 in the set
-  virtual void Swap(const Standard_Integer theIndex1,
-                    const Standard_Integer theIndex2) Standard_OVERRIDE
+  virtual void Swap(const int theIndex1, const int theIndex2) override
   {
-    const Standard_Integer aStructIdx1 = theIndex1 + 1;
-    const Standard_Integer aStructIdx2 = theIndex2 + 1;
+    const int aStructIdx1 = theIndex1 + 1;
+    const int aStructIdx2 = theIndex2 + 1;
 
     myObjects.Swap(aStructIdx1, aStructIdx2);
     myBoundings.Swap(aStructIdx1, aStructIdx2);
@@ -225,89 +229,82 @@ private:
   BVHBuilderAdaptorPersistent& operator=(const BVHBuilderAdaptorPersistent&) { return *this; }
 
 private:
-  ObjectsMap&                                        myObjects;
-  mutable Select3D_BndBox3d                          myBox;
-  typedef NCollection_Shared<Select3D_BndBox3d>      Select3D_HBndBox3d;
-  NCollection_IndexedMap<Handle(Select3D_HBndBox3d)> myBoundings;
+  ObjectsMap&                                             myObjects;
+  mutable Select3D_BndBox3d                               myBox;
+  typedef NCollection_Shared<Select3D_BndBox3d>           Select3D_HBndBox3d;
+  NCollection_IndexedMap<occ::handle<Select3D_HBndBox3d>> myBoundings;
 };
 
-static const Graphic3d_Mat4d SelectMgr_SelectableObjectSet_THE_IDENTITY_MAT;
+static const NCollection_Mat4<double> SelectMgr_SelectableObjectSet_THE_IDENTITY_MAT;
 } // namespace
 
 //=================================================================================================
 
 SelectMgr_SelectableObjectSet::SelectMgr_SelectableObjectSet()
 {
-  myBVH[BVHSubset_ortho2dPersistent] = new BVH_Tree<Standard_Real, 3>();
-  myBVH[BVHSubset_ortho3dPersistent] = new BVH_Tree<Standard_Real, 3>();
-  myBVH[BVHSubset_2dPersistent]      = new BVH_Tree<Standard_Real, 3>();
-  myBVH[BVHSubset_3dPersistent]      = new BVH_Tree<Standard_Real, 3>();
-  myBVH[BVHSubset_3d]                = new BVH_Tree<Standard_Real, 3>();
+  myBVH[BVHSubset_ortho2dPersistent] = new BVH_Tree<double, 3>();
+  myBVH[BVHSubset_ortho3dPersistent] = new BVH_Tree<double, 3>();
+  myBVH[BVHSubset_2dPersistent]      = new BVH_Tree<double, 3>();
+  myBVH[BVHSubset_3dPersistent]      = new BVH_Tree<double, 3>();
+  myBVH[BVHSubset_3d]                = new BVH_Tree<double, 3>();
 
   myBuilder[BVHSubset_ortho2dPersistent] =
-    new BVH_LinearBuilder<Standard_Real, 3>(BVH_Constants_LeafNodeSizeSingle,
-                                            BVH_Constants_MaxTreeDepth);
+    new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
   myBuilder[BVHSubset_ortho3dPersistent] =
-    new BVH_LinearBuilder<Standard_Real, 3>(BVH_Constants_LeafNodeSizeSingle,
-                                            BVH_Constants_MaxTreeDepth);
+    new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
   myBuilder[BVHSubset_2dPersistent] =
-    new BVH_LinearBuilder<Standard_Real, 3>(BVH_Constants_LeafNodeSizeSingle,
-                                            BVH_Constants_MaxTreeDepth);
+    new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
   myBuilder[BVHSubset_3dPersistent] =
-    new BVH_LinearBuilder<Standard_Real, 3>(BVH_Constants_LeafNodeSizeSingle,
-                                            BVH_Constants_MaxTreeDepth);
-  myBuilder[BVHSubset_3d] =
-    new BVH_BinnedBuilder<Standard_Real, 3, 4>(BVH_Constants_LeafNodeSizeSingle,
-                                               BVH_Constants_MaxTreeDepth,
-                                               Standard_True);
+    new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
+  myBuilder[BVHSubset_3d] = new BVH_BinnedBuilder<double, 3, 4>(BVH_Constants_LeafNodeSizeSingle,
+                                                                BVH_Constants_MaxTreeDepth,
+                                                                true);
 
-  myIsDirty[BVHSubset_ortho2dPersistent] = Standard_False;
-  myIsDirty[BVHSubset_ortho3dPersistent] = Standard_False;
-  myIsDirty[BVHSubset_2dPersistent]      = Standard_False;
-  myIsDirty[BVHSubset_3dPersistent]      = Standard_False;
-  myIsDirty[BVHSubset_3d]                = Standard_False;
+  myIsDirty[BVHSubset_ortho2dPersistent] = false;
+  myIsDirty[BVHSubset_ortho3dPersistent] = false;
+  myIsDirty[BVHSubset_2dPersistent]      = false;
+  myIsDirty[BVHSubset_3dPersistent]      = false;
+  myIsDirty[BVHSubset_3d]                = false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_SelectableObjectSet::Append(
-  const Handle(SelectMgr_SelectableObject)& theObject)
+bool SelectMgr_SelectableObjectSet::Append(const occ::handle<SelectMgr_SelectableObject>& theObject)
 {
   // get an appropriate BVH subset to insert the object into it
-  const Standard_Integer aSubsetIdx = appropriateSubset(theObject);
+  const int aSubsetIdx = appropriateSubset(theObject);
 
   // check that the object is excluded from other subsets
   if (currentSubset(theObject) != -1)
   {
-    return Standard_False;
+    return false;
   }
 
   // try adding it into the appropriate object subset
-  const Standard_Integer aSize = myObjects[aSubsetIdx].Size();
+  const int aSize = myObjects[aSubsetIdx].Size();
 
   if (aSize < myObjects[aSubsetIdx].Add(theObject))
   {
-    myIsDirty[aSubsetIdx] = Standard_True;
+    myIsDirty[aSubsetIdx] = true;
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_SelectableObjectSet::Remove(
-  const Handle(SelectMgr_SelectableObject)& theObject)
+bool SelectMgr_SelectableObjectSet::Remove(const occ::handle<SelectMgr_SelectableObject>& theObject)
 {
   // remove object from the first found subset
-  for (Standard_Integer aSubsetIdx = 0; aSubsetIdx < BVHSubsetNb; ++aSubsetIdx)
+  for (int aSubsetIdx = 0; aSubsetIdx < BVHSubsetNb; ++aSubsetIdx)
   {
-    const Standard_Integer anIndex = myObjects[aSubsetIdx].FindIndex(theObject);
+    const int anIndex = myObjects[aSubsetIdx].FindIndex(theObject);
 
     if (anIndex != 0)
     {
-      const Standard_Integer aSize = myObjects[aSubsetIdx].Size();
+      const int aSize = myObjects[aSubsetIdx].Size();
 
       if (anIndex != aSize)
       {
@@ -315,22 +312,22 @@ Standard_Boolean SelectMgr_SelectableObjectSet::Remove(
       }
 
       myObjects[aSubsetIdx].RemoveLast();
-      myIsDirty[aSubsetIdx] = Standard_True;
+      myIsDirty[aSubsetIdx] = true;
 
-      return Standard_True;
+      return true;
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void SelectMgr_SelectableObjectSet::ChangeSubset(
-  const Handle(SelectMgr_SelectableObject)& theObject)
+  const occ::handle<SelectMgr_SelectableObject>& theObject)
 {
   // do not do anything is object is not in the map
-  const Standard_Integer aCurrSubsetIdx = currentSubset(theObject);
+  const int aCurrSubsetIdx = currentSubset(theObject);
 
   if (aCurrSubsetIdx < 0)
   {
@@ -338,7 +335,7 @@ void SelectMgr_SelectableObjectSet::ChangeSubset(
   }
 
   // check whether the subset need to be changed at all
-  const Standard_Integer aSubsetIdx = appropriateSubset(theObject);
+  const int aSubsetIdx = appropriateSubset(theObject);
 
   if (aCurrSubsetIdx == aSubsetIdx)
   {
@@ -352,8 +349,8 @@ void SelectMgr_SelectableObjectSet::ChangeSubset(
 
 //=================================================================================================
 
-void SelectMgr_SelectableObjectSet::UpdateBVH(const Handle(Graphic3d_Camera)& theCam,
-                                              const Graphic3d_Vec2i&          theWinSize)
+void SelectMgr_SelectableObjectSet::UpdateBVH(const occ::handle<Graphic3d_Camera>& theCam,
+                                              const NCollection_Vec2<int>&         theWinSize)
 {
   // -----------------------------------------
   // check and update 3D BVH tree if necessary
@@ -367,14 +364,14 @@ void SelectMgr_SelectableObjectSet::UpdateBVH(const Handle(Graphic3d_Camera)& th
     myBuilder[BVHSubset_3d]->Build(&anAdaptor, myBVH[BVHSubset_3d].get(), anAdaptor.Box());
 
     // release dirty state
-    myIsDirty[BVHSubset_3d] = Standard_False;
+    myIsDirty[BVHSubset_3d] = false;
   }
 
   if (!theCam.IsNull())
   {
-    const Standard_Boolean              isWinSizeChanged = myLastWinSize != theWinSize;
-    const Graphic3d_Mat4d&              aProjMat         = theCam->ProjectionMatrix();
-    const Graphic3d_Mat4d&              aWorldViewMat    = theCam->OrientationMatrix();
+    const bool                          isWinSizeChanged = myLastWinSize != theWinSize;
+    const NCollection_Mat4<double>&     aProjMat         = theCam->ProjectionMatrix();
+    const NCollection_Mat4<double>&     aWorldViewMat    = theCam->OrientationMatrix();
     const Graphic3d_WorldViewProjState& aViewState       = theCam->WorldViewProjState();
 
     // -----------------------------------------------------
@@ -425,7 +422,7 @@ void SelectMgr_SelectableObjectSet::UpdateBVH(const Handle(Graphic3d_Camera)& th
             || isWinSizeChanged))
     {
       // clang-format off
-      Handle(Graphic3d_Camera) aNewOrthoCam = new Graphic3d_Camera (*theCam); // If OrthoPers, copy camera and set to orthographic projection
+      occ::handle<Graphic3d_Camera> aNewOrthoCam = new Graphic3d_Camera (*theCam); // If OrthoPers, copy camera and set to orthographic projection
       // clang-format on
       aNewOrthoCam->SetProjectionType(Graphic3d_Camera::Projection_Orthographic);
 
@@ -450,7 +447,7 @@ void SelectMgr_SelectableObjectSet::UpdateBVH(const Handle(Graphic3d_Camera)& th
             || myLastViewState.IsProjectionChanged(aViewState) || isWinSizeChanged))
     {
       // clang-format off
-      Handle(Graphic3d_Camera) aNewOrthoCam = new Graphic3d_Camera (*theCam); // If OrthoPers, copy camera and set to orthographic projection
+      occ::handle<Graphic3d_Camera> aNewOrthoCam = new Graphic3d_Camera (*theCam); // If OrthoPers, copy camera and set to orthographic projection
       // clang-format on
       aNewOrthoCam->SetProjectionType(Graphic3d_Camera::Projection_Orthographic);
 
@@ -468,10 +465,10 @@ void SelectMgr_SelectableObjectSet::UpdateBVH(const Handle(Graphic3d_Camera)& th
     }
 
     // release dirty state for every subset
-    myIsDirty[BVHSubset_3dPersistent]      = Standard_False;
-    myIsDirty[BVHSubset_2dPersistent]      = Standard_False;
-    myIsDirty[BVHSubset_ortho3dPersistent] = Standard_False;
-    myIsDirty[BVHSubset_ortho2dPersistent] = Standard_False;
+    myIsDirty[BVHSubset_3dPersistent]      = false;
+    myIsDirty[BVHSubset_2dPersistent]      = false;
+    myIsDirty[BVHSubset_ortho3dPersistent] = false;
+    myIsDirty[BVHSubset_ortho2dPersistent] = false;
 
     // keep last view state
     myLastViewState = aViewState;
@@ -485,30 +482,30 @@ void SelectMgr_SelectableObjectSet::UpdateBVH(const Handle(Graphic3d_Camera)& th
 
 void SelectMgr_SelectableObjectSet::MarkDirty()
 {
-  myIsDirty[BVHSubset_3d]                = Standard_True;
-  myIsDirty[BVHSubset_3dPersistent]      = Standard_True;
-  myIsDirty[BVHSubset_2dPersistent]      = Standard_True;
-  myIsDirty[BVHSubset_ortho3dPersistent] = Standard_True;
-  myIsDirty[BVHSubset_ortho2dPersistent] = Standard_True;
+  myIsDirty[BVHSubset_3d]                = true;
+  myIsDirty[BVHSubset_3dPersistent]      = true;
+  myIsDirty[BVHSubset_2dPersistent]      = true;
+  myIsDirty[BVHSubset_ortho3dPersistent] = true;
+  myIsDirty[BVHSubset_ortho2dPersistent] = true;
 }
 
 //=================================================================================================
 
-void SelectMgr_SelectableObjectSet::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void SelectMgr_SelectableObjectSet::DumpJson(Standard_OStream& theOStream, int) const
 {
-  for (Standard_Integer aSubsetIdx = 0; aSubsetIdx < BVHSubsetNb; ++aSubsetIdx)
+  for (int aSubsetIdx = 0; aSubsetIdx < BVHSubsetNb; ++aSubsetIdx)
   {
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aSubsetIdx)
 
-    Standard_Boolean IsDirty = myIsDirty[aSubsetIdx];
+    bool IsDirty = myIsDirty[aSubsetIdx];
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, IsDirty)
 
-    for (NCollection_IndexedMap<Handle(SelectMgr_SelectableObject)>::Iterator anObjectIt(
+    for (NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>>::Iterator anObjectIt(
            myObjects[aSubsetIdx]);
          anObjectIt.More();
          anObjectIt.Next())
     {
-      const Handle(SelectMgr_SelectableObject)& SelectableObject = anObjectIt.Value();
+      const occ::handle<SelectMgr_SelectableObject>& SelectableObject = anObjectIt.Value();
       OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, SelectableObject.get())
     }
 

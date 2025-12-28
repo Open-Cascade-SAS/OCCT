@@ -84,10 +84,10 @@ public:
   //! It is yet possible to create an Hyperbola with
   //! theMajorRadius <= theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
-  constexpr gp_Hypr2d(const gp_Ax2d&         theMajorAxis,
-                      const Standard_Real    theMajorRadius,
-                      const Standard_Real    theMinorRadius,
-                      const Standard_Boolean theIsSense = Standard_True)
+  constexpr gp_Hypr2d(const gp_Ax2d& theMajorAxis,
+                      const double   theMajorRadius,
+                      const double   theMinorRadius,
+                      const bool     theIsSense = true)
       : pos(theMajorAxis, theIsSense),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -111,9 +111,9 @@ public:
   //! It is yet possible to create an Hyperbola with
   //! theMajorRadius <= theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
-  constexpr gp_Hypr2d(const gp_Ax22d&     theA,
-                      const Standard_Real theMajorRadius,
-                      const Standard_Real theMinorRadius)
+  constexpr gp_Hypr2d(const gp_Ax22d& theA,
+                      const double    theMajorRadius,
+                      const double    theMinorRadius)
       : pos(theA),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -130,7 +130,7 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if theMajorRadius or
   //! MinorRadius is negative.
-  void SetMajorRadius(const Standard_Real theMajorRadius)
+  void SetMajorRadius(const double theMajorRadius)
   {
     Standard_ConstructionError_Raise_if(
       theMajorRadius < 0.0,
@@ -142,7 +142,7 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if MajorRadius or
   //! theMinorRadius is negative.
-  void SetMinorRadius(const Standard_Real theMinorRadius)
+  void SetMinorRadius(const double theMinorRadius)
   {
     Standard_ConstructionError_Raise_if(
       theMinorRadius < 0.0,
@@ -181,19 +181,19 @@ public:
   //! Computes the coefficients of the implicit equation of
   //! the hyperbola :
   //! theA * (X**2) + theB * (Y**2) + 2*theC*(X*Y) + 2*theD*X + 2*theE*Y + theF = 0.
-  Standard_EXPORT void Coefficients(Standard_Real& theA,
-                                    Standard_Real& theB,
-                                    Standard_Real& theC,
-                                    Standard_Real& theD,
-                                    Standard_Real& theE,
-                                    Standard_Real& theF) const;
+  Standard_EXPORT void Coefficients(double& theA,
+                                    double& theB,
+                                    double& theC,
+                                    double& theD,
+                                    double& theE,
+                                    double& theF) const;
 
   //! Computes the branch of hyperbola which is on the positive side of the
   //! "YAxis" of <me>.
   gp_Hypr2d ConjugateBranch1() const noexcept
   {
-    gp_Dir2d         aV(pos.YDirection());
-    Standard_Boolean isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+    gp_Dir2d aV(pos.YDirection());
+    bool     isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
     return gp_Hypr2d(gp_Ax2d(pos.Location(), aV), minorRadius, majorRadius, isSign);
   }
 
@@ -201,8 +201,8 @@ public:
   //! "YAxis" of <me>.
   gp_Hypr2d ConjugateBranch2() const noexcept
   {
-    gp_Dir2d         aV(pos.YDirection().Reversed());
-    Standard_Boolean isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+    gp_Dir2d aV(pos.YDirection().Reversed());
+    bool     isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
     return gp_Hypr2d(gp_Ax2d(pos.Location(), aV), minorRadius, majorRadius, isSign);
   }
 
@@ -224,7 +224,7 @@ public:
   //! If f is the distance between the location of the hyperbola
   //! and the Focus1 then the eccentricity e = f / MajorRadius. Raises DomainError if MajorRadius =
   //! 0.0.
-  Standard_Real Eccentricity() const
+  double Eccentricity() const
   {
     Standard_DomainError_Raise_if(majorRadius <= gp::Resolution(),
                                   "gp_Hypr2d::Eccentricity() - major radius is zero");
@@ -233,7 +233,7 @@ public:
 
   //! Computes the focal distance. It is the distance between the
   //! "Location" of the hyperbola and "Focus1" or "Focus2".
-  Standard_Real Focal() const noexcept
+  double Focal() const noexcept
   {
     return 2.0 * sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
   }
@@ -242,7 +242,7 @@ public:
   //! positive side of the "XAxis" of the hyperbola.
   gp_Pnt2d Focus1() const noexcept
   {
-    Standard_Real aC = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+    double aC = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
     return gp_Pnt2d(pos.Location().X() + aC * pos.XDirection().X(),
                     pos.Location().Y() + aC * pos.XDirection().Y());
   }
@@ -251,7 +251,7 @@ public:
   //! negative side of the "XAxis" of the hyperbola.
   gp_Pnt2d Focus2() const noexcept
   {
-    Standard_Real aC = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+    double aC = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
     return gp_Pnt2d(pos.Location().X() - aC * pos.XDirection().X(),
                     pos.Location().Y() - aC * pos.XDirection().Y());
   }
@@ -263,18 +263,18 @@ public:
 
   //! Returns the major radius of the hyperbola (it is the radius
   //! corresponding to the "XAxis" of the hyperbola).
-  constexpr Standard_Real MajorRadius() const noexcept { return majorRadius; }
+  constexpr double MajorRadius() const noexcept { return majorRadius; }
 
   //! Returns the minor radius of the hyperbola (it is the radius
   //! corresponding to the "YAxis" of the hyperbola).
-  constexpr Standard_Real MinorRadius() const noexcept { return minorRadius; }
+  constexpr double MinorRadius() const noexcept { return minorRadius; }
 
   //! Returns the branch of hyperbola obtained by doing the
   //! symmetrical transformation of <me> with respect to the
   //! "YAxis" of <me>.
   gp_Hypr2d OtherBranch() const noexcept
   {
-    Standard_Boolean isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+    bool isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
     return gp_Hypr2d(gp_Ax2d(pos.Location(), pos.XDirection().Reversed()),
                      majorRadius,
                      minorRadius,
@@ -284,7 +284,7 @@ public:
   //! Returns p = (e * e - 1) * MajorRadius where e is the
   //! eccentricity of the hyperbola.
   //! Raises DomainError if MajorRadius = 0.0
-  Standard_Real Parameter() const
+  double Parameter() const
   {
     Standard_DomainError_Raise_if(majorRadius <= gp::Resolution(),
                                   "gp_Hypr2d::Parameter() - major radius is zero");
@@ -321,11 +321,11 @@ public:
   //! Note:
   //! -   Reverse assigns the result to this hyperbola, while
   //! -   Reversed creates a new one.
-  Standard_NODISCARD gp_Hypr2d Reversed() const noexcept;
+  [[nodiscard]] gp_Hypr2d Reversed() const noexcept;
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
-  constexpr Standard_Boolean IsDirect() const noexcept
+  constexpr bool IsDirect() const noexcept
   {
     return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
   }
@@ -334,44 +334,44 @@ public:
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect to the point theP which is the center of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Hypr2d Mirrored(const gp_Pnt2d& theP) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Hypr2d Mirrored(const gp_Pnt2d& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect to an axis placement which is the axis of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Hypr2d Mirrored(const gp_Ax2d& theA) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Hypr2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
-  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
+  void Rotate(const gp_Pnt2d& theP, const double theAng) { pos.Rotate(theP, theAng); }
 
   //! Rotates an hyperbola. theP is the center of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Hypr2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
+  [[nodiscard]] gp_Hypr2d Rotated(const gp_Pnt2d& theP, const double theAng) const
   {
     gp_Hypr2d aH = *this;
     aH.pos.Rotate(theP, theAng);
     return aH;
   }
 
-  void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
+  void Scale(const gp_Pnt2d& theP, const double theS);
 
   //! Scales an hyperbola. <theS> is the scaling value.
   //! If <theS> is positive only the location point is
   //! modified. But if <theS> is negative the "XAxis" is
   //! reversed and the "YAxis" too.
-  Standard_NODISCARD gp_Hypr2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
+  [[nodiscard]] gp_Hypr2d Scaled(const gp_Pnt2d& theP, const double theS) const;
 
   void Transform(const gp_Trsf2d& theT);
 
   //! Transforms an hyperbola with the transformation theT from
   //! class Trsf2d.
-  Standard_NODISCARD gp_Hypr2d Transformed(const gp_Trsf2d& theT) const;
+  [[nodiscard]] gp_Hypr2d Transformed(const gp_Trsf2d& theT) const;
 
   constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
   //! Translates an hyperbola in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD constexpr gp_Hypr2d Translated(const gp_Vec2d& theV) const noexcept
+  [[nodiscard]] constexpr gp_Hypr2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Hypr2d aH = *this;
     aH.pos.Translate(theV);
@@ -384,8 +384,8 @@ public:
   }
 
   //! Translates an hyperbola from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Hypr2d Translated(const gp_Pnt2d& theP1,
-                                                    const gp_Pnt2d& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Hypr2d Translated(const gp_Pnt2d& theP1,
+                                               const gp_Pnt2d& theP2) const noexcept
   {
     gp_Hypr2d aH = *this;
     aH.pos.Translate(theP1, theP2);
@@ -393,9 +393,9 @@ public:
   }
 
 private:
-  gp_Ax22d      pos;
-  Standard_Real majorRadius;
-  Standard_Real minorRadius;
+  gp_Ax22d pos;
+  double   majorRadius;
+  double   minorRadius;
 };
 
 //=================================================================================================
@@ -430,8 +430,8 @@ inline gp_Ax2d gp_Hypr2d::Asymptote2() const
 
 inline gp_Ax2d gp_Hypr2d::Directrix1() const
 {
-  Standard_Real anE    = Eccentricity();
-  gp_XY         anOrig = pos.XDirection().XY();
+  double anE    = Eccentricity();
+  gp_XY  anOrig = pos.XDirection().XY();
   anOrig.Multiply(majorRadius / anE);
   anOrig.Add(pos.Location().XY());
   return gp_Ax2d(gp_Pnt2d(anOrig), gp_Dir2d(pos.YDirection()));
@@ -441,8 +441,8 @@ inline gp_Ax2d gp_Hypr2d::Directrix1() const
 
 inline gp_Ax2d gp_Hypr2d::Directrix2() const
 {
-  Standard_Real anE    = Eccentricity();
-  gp_XY         anOrig = pos.XDirection().XY();
+  double anE    = Eccentricity();
+  gp_XY  anOrig = pos.XDirection().XY();
   anOrig.Multiply(Parameter() / anE);
   anOrig.Add(Focus1().XY());
   return gp_Ax2d(gp_Pnt2d(anOrig), gp_Dir2d(pos.YDirection()));
@@ -461,7 +461,7 @@ inline gp_Hypr2d gp_Hypr2d::Reversed() const noexcept
 
 //=================================================================================================
 
-inline void gp_Hypr2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
+inline void gp_Hypr2d::Scale(const gp_Pnt2d& theP, const double theS)
 {
   majorRadius *= theS;
   if (majorRadius < 0)
@@ -478,7 +478,7 @@ inline void gp_Hypr2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 
 //=================================================================================================
 
-inline gp_Hypr2d gp_Hypr2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
+inline gp_Hypr2d gp_Hypr2d::Scaled(const gp_Pnt2d& theP, const double theS) const
 {
   gp_Hypr2d aH = *this;
   aH.majorRadius *= theS;

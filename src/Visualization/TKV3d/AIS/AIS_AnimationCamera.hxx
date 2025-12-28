@@ -27,39 +27,37 @@ class AIS_AnimationCamera : public AIS_Animation
 public:
   //! Main constructor.
   Standard_EXPORT AIS_AnimationCamera(const TCollection_AsciiString& theAnimationName,
-                                      const Handle(V3d_View)&        theView);
+                                      const occ::handle<V3d_View>&   theView);
 
   //! Return the target view.
-  const Handle(V3d_View)& View() const { return myView; }
+  const occ::handle<V3d_View>& View() const { return myView; }
 
   //! Set target view.
-  void SetView(const Handle(V3d_View)& theView) { myView = theView; }
+  void SetView(const occ::handle<V3d_View>& theView) { myView = theView; }
 
   //! Return camera start position.
-  const Handle(Graphic3d_Camera)& CameraStart() const { return myCamStart; }
+  const occ::handle<Graphic3d_Camera>& CameraStart() const { return myCamStart; }
 
   //! Define camera start position.
-  void SetCameraStart(const Handle(Graphic3d_Camera)& theCameraStart)
+  void SetCameraStart(const occ::handle<Graphic3d_Camera>& theCameraStart)
   {
     myCamStart = theCameraStart;
   }
 
   //! Return camera end position.
-  const Handle(Graphic3d_Camera)& CameraEnd() const { return myCamEnd; }
+  const occ::handle<Graphic3d_Camera>& CameraEnd() const { return myCamEnd; }
 
   //! Define camera end position.
-  void SetCameraEnd(const Handle(Graphic3d_Camera)& theCameraEnd) { myCamEnd = theCameraEnd; }
+  void SetCameraEnd(const occ::handle<Graphic3d_Camera>& theCameraEnd) { myCamEnd = theCameraEnd; }
 
 protected:
   //! Update the progress.
-  Standard_EXPORT virtual void update(const AIS_AnimationProgress& theProgress) Standard_OVERRIDE;
+  Standard_EXPORT virtual void update(const AIS_AnimationProgress& theProgress) override;
 
 protected:
-  Handle(V3d_View)         myView;     //!< view to setup camera
-  Handle(Graphic3d_Camera) myCamStart; //!< starting camera position
-  Handle(Graphic3d_Camera) myCamEnd;   //!< end camera position
+  occ::handle<V3d_View>         myView;     //!< view to setup camera
+  occ::handle<Graphic3d_Camera> myCamStart; //!< starting camera position
+  occ::handle<Graphic3d_Camera> myCamEnd;   //!< end camera position
 };
-
-DEFINE_STANDARD_HANDLE(AIS_AnimationCamera, AIS_Animation)
 
 #endif // _AIS_AnimationCamera_HeaderFile

@@ -24,9 +24,6 @@
 
 #include <NCollection_List.hxx>
 
-DEFINE_STANDARD_HANDLE(OpenGl_Structure, Graphic3d_CStructure)
-typedef NCollection_List<const OpenGl_Structure*> OpenGl_ListOfStructure;
-
 //! Implementation of low-level graphic structure.
 class OpenGl_Structure : public Graphic3d_CStructure
 {
@@ -41,50 +38,49 @@ public:
 
 public:
   //! Create empty structure
-  Standard_EXPORT OpenGl_Structure(const Handle(Graphic3d_StructureManager)& theManager);
+  Standard_EXPORT OpenGl_Structure(const occ::handle<Graphic3d_StructureManager>& theManager);
 
   //! Setup structure graphic state
-  Standard_EXPORT virtual void OnVisibilityChanged() Standard_OVERRIDE;
+  Standard_EXPORT virtual void OnVisibilityChanged() override;
 
   //! Clear graphic data
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Connect other structure to this one
-  Standard_EXPORT virtual void Connect(Graphic3d_CStructure& theStructure) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Connect(Graphic3d_CStructure& theStructure) override;
 
   //! Disconnect other structure to this one
-  Standard_EXPORT virtual void Disconnect(Graphic3d_CStructure& theStructure) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Disconnect(Graphic3d_CStructure& theStructure) override;
 
   //! Synchronize structure transformation
-  Standard_EXPORT virtual void SetTransformation(const Handle(TopLoc_Datum3D)& theTrsf)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTransformation(
+    const occ::handle<TopLoc_Datum3D>& theTrsf) override;
 
   //! Set transformation persistence.
   Standard_EXPORT virtual void SetTransformPersistence(
-    const Handle(Graphic3d_TransformPers)& theTrsfPers) Standard_OVERRIDE;
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPers) override;
 
   //! Set z layer ID to display the structure in specified layer
-  Standard_EXPORT virtual void SetZLayer(const Graphic3d_ZLayerId theLayerIndex) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetZLayer(const Graphic3d_ZLayerId theLayerIndex) override;
 
   //! Highlights structure according to the given style and updates corresponding class fields
   //! (highlight status and style)
   Standard_EXPORT virtual void GraphicHighlight(
-    const Handle(Graphic3d_PresentationAttributes)& theStyle) Standard_OVERRIDE;
+    const occ::handle<Graphic3d_PresentationAttributes>& theStyle) override;
 
   //! Unighlights structure and updates corresponding class fields (highlight status and style)
-  Standard_EXPORT virtual void GraphicUnhighlight() Standard_OVERRIDE;
+  Standard_EXPORT virtual void GraphicUnhighlight() override;
 
   //! Create shadow link to this structure
-  Standard_EXPORT virtual Handle(Graphic3d_CStructure) ShadowLink(
-    const Handle(Graphic3d_StructureManager)& theManager) const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Graphic3d_CStructure> ShadowLink(
+    const occ::handle<Graphic3d_StructureManager>& theManager) const override;
 
   //! Create new group within this structure
-  Standard_EXPORT virtual Handle(Graphic3d_Group) NewGroup(
-    const Handle(Graphic3d_Structure)& theStruct) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Graphic3d_Group> NewGroup(
+    const occ::handle<Graphic3d_Structure>& theStruct) override;
 
   //! Remove group from this structure
-  Standard_EXPORT virtual void RemoveGroup(const Handle(Graphic3d_Group)& theGroup)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void RemoveGroup(const occ::handle<Graphic3d_Group>& theGroup) override;
 
 public:
   //! Access graphic driver
@@ -93,13 +89,13 @@ public:
     return (OpenGl_GraphicDriver*)myGraphicDriver.operator->();
   }
 
-  Standard_EXPORT void Clear(const Handle(OpenGl_Context)& theGlCtx);
+  Standard_EXPORT void Clear(const occ::handle<OpenGl_Context>& theGlCtx);
 
   //! Renders the structure.
-  Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const;
 
   //! Releases structure resources.
-  Standard_EXPORT virtual void Release(const Handle(OpenGl_Context)& theGlCtx);
+  Standard_EXPORT virtual void Release(const occ::handle<OpenGl_Context>& theGlCtx);
 
   //! This method releases GL resources without actual elements destruction.
   //! As result structure could be correctly destroyed layer without GL context
@@ -107,50 +103,50 @@ public:
   //!
   //! Notice however that reusage of this structure after calling this method is incorrect
   //! and will lead to broken visualization due to loosed data.
-  Standard_EXPORT void ReleaseGlResources(const Handle(OpenGl_Context)& theGlCtx);
+  Standard_EXPORT void ReleaseGlResources(const occ::handle<OpenGl_Context>& theGlCtx);
 
   //! Returns instanced OpenGL structure.
   const OpenGl_Structure* InstancedStructure() const { return myInstancedStructure; }
 
   //! Returns structure modification state (for ray-tracing).
-  Standard_Size ModificationState() const { return myModificationState; }
+  size_t ModificationState() const { return myModificationState; }
 
   //! Resets structure modification state (for ray-tracing).
   void ResetModificationState() const { myModificationState = 0; }
 
   //! Is the structure ray-tracable (contains ray-tracable elements)?
-  Standard_Boolean IsRaytracable() const;
+  bool IsRaytracable() const;
 
   //! Update render transformation matrix.
-  Standard_EXPORT virtual void updateLayerTransformation() Standard_OVERRIDE;
+  Standard_EXPORT virtual void updateLayerTransformation() override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 protected:
   Standard_EXPORT virtual ~OpenGl_Structure();
 
   //! Updates ray-tracable status for structure and its parents.
-  void UpdateStateIfRaytracable(const Standard_Boolean toCheck = Standard_True) const;
+  void UpdateStateIfRaytracable(const bool toCheck = true) const;
 
   //! Renders groups of structure without applying any attributes (i.e. transform, material etc).
   //! @param theWorkspace current workspace
   //! @param theHasClosed flag will be set to TRUE if structure contains at least one group of
   //! closed primitives
-  Standard_EXPORT void renderGeometry(const Handle(OpenGl_Workspace)& theWorkspace,
-                                      bool&                           theHasClosed) const;
+  Standard_EXPORT void renderGeometry(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                      bool&                                theHasClosed) const;
 
   //! Render the bounding box.
-  Standard_EXPORT void renderBoundingBox(const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT void renderBoundingBox(const occ::handle<OpenGl_Workspace>& theWorkspace) const;
 
   //! Apply transformation into context.
   //! @param theWorkspace current workspace
   //! @param theTrsf transformation
   //! @param toEnable flag to switch ON/OFF transformation
-  Standard_EXPORT void applyTransformation(const Handle(OpenGl_Context)& theContext,
-                                           const gp_Trsf&                theTrsf,
-                                           const Standard_Boolean        toEnable) const;
+  Standard_EXPORT void applyTransformation(const occ::handle<OpenGl_Context>& theContext,
+                                           const gp_Trsf&                     theTrsf,
+                                           const bool                         toEnable) const;
 
   //! Apply transform persistence into context.
   //! It disables shadows on non-3d objects when toEnable is true and restores otherwise.
@@ -159,10 +155,11 @@ protected:
   //! @param[in]  theIsLocal specifies if transform persistence is defined locally or to entire
   //! presentation
   //! @param[out] theOldCastShadows state of the previous cast shadows state
-  Standard_EXPORT void applyPersistence(const Handle(OpenGl_Context)&          theCtx,
-                                        const Handle(Graphic3d_TransformPers)& theTrsfPersistence,
-                                        const Standard_Boolean                 theIsLocal,
-                                        Standard_Boolean& theOldCastShadows) const;
+  Standard_EXPORT void applyPersistence(
+    const occ::handle<OpenGl_Context>&          theCtx,
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPersistence,
+    const bool                                  theIsLocal,
+    bool&                                       theOldCastShadows) const;
 
   //! Restore context from transform persistence changes.
   //! @param[in] theCtx current context
@@ -170,20 +167,21 @@ protected:
   //! @param[in] theIsLocal specifies if transform persistence is defined locally or to entire
   //! presentation
   //! @param[in] theOldCastShadows state of the previous cast shadows state
-  Standard_EXPORT void revertPersistence(const Handle(OpenGl_Context)&          theCtx,
-                                         const Handle(Graphic3d_TransformPers)& theTrsfPersistence,
-                                         const Standard_Boolean                 theIsLocal,
-                                         const Standard_Boolean theOldCastShadows) const;
+  Standard_EXPORT void revertPersistence(
+    const occ::handle<OpenGl_Context>&          theCtx,
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPersistence,
+    const bool                                  theIsLocal,
+    const bool                                  theOldCastShadows) const;
 
 protected:
   OpenGl_Structure* myInstancedStructure;
   // clang-format off
-  Graphic3d_Mat4             myRenderTrsf; //!< transformation, actually used for rendering (includes Local Origin shift)
+  NCollection_Mat4<float>             myRenderTrsf; //!< transformation, actually used for rendering (includes Local Origin shift)
 
-  mutable Standard_Boolean   myIsRaytracable;
-  mutable Standard_Size      myModificationState;
+  mutable bool   myIsRaytracable;
+  mutable size_t      myModificationState;
 
-  Standard_Boolean           myIsMirrored; //!< Used to tell OpenGl to interpret polygons in clockwise order.
+  bool           myIsMirrored; //!< Used to tell OpenGl to interpret polygons in clockwise order.
   // clang-format on
 };
 

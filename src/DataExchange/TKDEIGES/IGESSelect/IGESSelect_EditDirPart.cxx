@@ -22,7 +22,7 @@
 #include <IGESData_ViewKindEntity.hxx>
 #include <IGESSelect_EditDirPart.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Interface_TypedValue.hxx>
 #include <Standard_Transient.hxx>
@@ -32,9 +32,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_EditDirPart, IFSelect_Editor)
 
-static Handle(Interface_TypedValue) NewDefType(const Standard_CString name)
+static occ::handle<Interface_TypedValue> NewDefType(const char* name)
 {
-  Handle(Interface_TypedValue) deftype = new Interface_TypedValue(name, Interface_ParamEnum);
+  occ::handle<Interface_TypedValue> deftype = new Interface_TypedValue(name, Interface_ParamEnum);
   deftype->StartEnum(0);
   deftype->AddEnumValue("Void", 0);
   deftype->AddEnumValue("Value", 1);
@@ -42,9 +42,9 @@ static Handle(Interface_TypedValue) NewDefType(const Standard_CString name)
   return deftype;
 }
 
-static Handle(Interface_TypedValue) NewDefList(const Standard_CString name)
+static occ::handle<Interface_TypedValue> NewDefList(const char* name)
 {
-  Handle(Interface_TypedValue) deftype = new Interface_TypedValue(name, Interface_ParamEnum);
+  occ::handle<Interface_TypedValue> deftype = new Interface_TypedValue(name, Interface_ParamEnum);
   deftype->StartEnum(0);
   deftype->AddEnumValue("None", 0);
   deftype->AddEnumValue("One", 1);
@@ -55,90 +55,92 @@ static Handle(Interface_TypedValue) NewDefList(const Standard_CString name)
 IGESSelect_EditDirPart::IGESSelect_EditDirPart()
     : IFSelect_Editor(23)
 {
-  // Standard_Integer i,nb; //szv#4:S4163:12Mar99 unused
+  // int i,nb; //szv#4:S4163:12Mar99 unused
   //   Definition
-  Handle(Interface_TypedValue) typenum =
+  occ::handle<Interface_TypedValue> typenum =
     new Interface_TypedValue("Type Number", Interface_ParamInteger);
   SetValue(1, typenum, "D1:Type", IFSelect_EditRead);
-  Handle(Interface_TypedValue) formnum =
+  occ::handle<Interface_TypedValue> formnum =
     new Interface_TypedValue("Form Number", Interface_ParamInteger);
   SetValue(2, formnum, "D15:Form", IFSelect_EditRead);
 
-  Handle(Interface_TypedValue) stru = new Interface_TypedValue("Structure", Interface_ParamIdent);
+  occ::handle<Interface_TypedValue> stru =
+    new Interface_TypedValue("Structure", Interface_ParamIdent);
   SetValue(3, stru, "D3:Struct", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) lftype = NewDefType("Line Font Pattern");
+  occ::handle<Interface_TypedValue> lftype = NewDefType("Line Font Pattern");
   SetValue(4, lftype, "D4:LineFont", IFSelect_EditDynamic);
-  Handle(Interface_TypedValue) lfval =
+  occ::handle<Interface_TypedValue> lfval =
     new Interface_TypedValue("Line Font Number", Interface_ParamInteger);
-  lfval->SetIntegerLimit(Standard_False, 0);
+  lfval->SetIntegerLimit(false, 0);
   SetValue(5, lfval, "N4:LineFont", IFSelect_Optional);
-  Handle(Interface_TypedValue) lfent =
+  occ::handle<Interface_TypedValue> lfent =
     new Interface_TypedValue("Line Font Entity", Interface_ParamIdent);
   SetValue(6, lfent, "E4:LineFont", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) levlist = NewDefList("Level");
+  occ::handle<Interface_TypedValue> levlist = NewDefList("Level");
   SetValue(7, levlist, "D5:Level", IFSelect_EditDynamic);
-  Handle(Interface_TypedValue) leval =
+  occ::handle<Interface_TypedValue> leval =
     new Interface_TypedValue("Level Number", Interface_ParamInteger);
-  leval->SetIntegerLimit(Standard_False, 0);
+  leval->SetIntegerLimit(false, 0);
   SetValue(8, leval, "N5:Level", IFSelect_Optional);
-  Handle(Interface_TypedValue) levent =
+  occ::handle<Interface_TypedValue> levent =
     new Interface_TypedValue("Level List Entity", Interface_ParamIdent);
   SetValue(9, levent, "L5:Level", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) viewlist = NewDefList("View");
+  occ::handle<Interface_TypedValue> viewlist = NewDefList("View");
   SetValue(10, viewlist, "D6:View", IFSelect_EditDynamic);
-  Handle(Interface_TypedValue) viewent =
+  occ::handle<Interface_TypedValue> viewent =
     new Interface_TypedValue("View Entity", Interface_ParamIdent);
   SetValue(11, viewent, "E6:View", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) transf =
+  occ::handle<Interface_TypedValue> transf =
     new Interface_TypedValue("Transformation", Interface_ParamIdent);
   SetValue(12, transf, "D7:Transf", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) labdisp =
+  occ::handle<Interface_TypedValue> labdisp =
     new Interface_TypedValue("Label Display Associativity", Interface_ParamIdent);
   SetValue(13, labdisp, "D8:LabelDisp", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) blank =
+  occ::handle<Interface_TypedValue> blank =
     new Interface_TypedValue("Blank Status", Interface_ParamInteger);
-  blank->SetIntegerLimit(Standard_False, 0);
-  blank->SetIntegerLimit(Standard_True, 1);
+  blank->SetIntegerLimit(false, 0);
+  blank->SetIntegerLimit(true, 1);
   SetValue(14, blank, "D9-1:Blank");
-  Handle(Interface_TypedValue) subord =
+  occ::handle<Interface_TypedValue> subord =
     new Interface_TypedValue("Subordinate Status", Interface_ParamInteger);
-  subord->SetIntegerLimit(Standard_False, 0);
-  subord->SetIntegerLimit(Standard_True, 3);
+  subord->SetIntegerLimit(false, 0);
+  subord->SetIntegerLimit(true, 3);
   SetValue(15, subord, "D9-2:Subordinate", IFSelect_EditProtected);
-  Handle(Interface_TypedValue) useflg =
+  occ::handle<Interface_TypedValue> useflg =
     new Interface_TypedValue("Use Flag", Interface_ParamInteger);
-  useflg->SetIntegerLimit(Standard_False, 0);
-  useflg->SetIntegerLimit(Standard_True, 6);
+  useflg->SetIntegerLimit(false, 0);
+  useflg->SetIntegerLimit(true, 6);
   SetValue(16, useflg, "D9-3:UseFlag");
-  Handle(Interface_TypedValue) hier = new Interface_TypedValue("Hierarchy", Interface_ParamInteger);
-  hier->SetIntegerLimit(Standard_False, 0);
-  hier->SetIntegerLimit(Standard_True, 2);
+  occ::handle<Interface_TypedValue> hier =
+    new Interface_TypedValue("Hierarchy", Interface_ParamInteger);
+  hier->SetIntegerLimit(false, 0);
+  hier->SetIntegerLimit(true, 2);
   SetValue(17, hier, "D9-4:Hierarchy", IFSelect_EditProtected);
 
-  Handle(Interface_TypedValue) lwnum =
+  occ::handle<Interface_TypedValue> lwnum =
     new Interface_TypedValue("Line Weight Number", Interface_ParamInteger);
-  lwnum->SetIntegerLimit(Standard_False, 0);
+  lwnum->SetIntegerLimit(false, 0);
   SetValue(18, lwnum, "D12:LineWeight");
 
-  Handle(Interface_TypedValue) coltype = NewDefType("Color");
+  occ::handle<Interface_TypedValue> coltype = NewDefType("Color");
   SetValue(19, coltype, "D13:Color", IFSelect_EditDynamic);
-  Handle(Interface_TypedValue) colval =
+  occ::handle<Interface_TypedValue> colval =
     new Interface_TypedValue("Color Number", Interface_ParamInteger);
-  colval->SetIntegerLimit(Standard_False, 0);
+  colval->SetIntegerLimit(false, 0);
   SetValue(20, colval, "N13:Color", IFSelect_Optional);
-  Handle(Interface_TypedValue) colent =
+  occ::handle<Interface_TypedValue> colent =
     new Interface_TypedValue("Color Entity", Interface_ParamIdent);
   SetValue(21, colent, "E13:Color", IFSelect_Optional);
 
-  Handle(Interface_TypedValue) entlab = new Interface_TypedValue("Entity Label");
+  occ::handle<Interface_TypedValue> entlab = new Interface_TypedValue("Entity Label");
   SetValue(22, entlab, "D18:Label");
-  Handle(Interface_TypedValue) sublab =
+  occ::handle<Interface_TypedValue> sublab =
     new Interface_TypedValue("Subscript Number", Interface_ParamInteger);
   SetValue(23, sublab, "D19:Subscript", IFSelect_Optional);
 }
@@ -148,20 +150,20 @@ TCollection_AsciiString IGESSelect_EditDirPart::Label() const
   return TCollection_AsciiString("IGES Header");
 }
 
-Standard_Boolean IGESSelect_EditDirPart::Recognize(const Handle(IFSelect_EditForm)& /*form*/) const
+bool IGESSelect_EditDirPart::Recognize(const occ::handle<IFSelect_EditForm>& /*form*/) const
 {
-  return Standard_True;
+  return true;
 } // ??
 
-Handle(TCollection_HAsciiString) IGESSelect_EditDirPart::StringValue(
-  const Handle(IFSelect_EditForm)& /*form*/,
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> IGESSelect_EditDirPart::StringValue(
+  const occ::handle<IFSelect_EditForm>& /*form*/,
+  const int num) const
 {
   //  Default Values
   return TypedValue(num)->HStringValue();
 }
 
-Handle(TCollection_HAsciiString) DefTypeName(const IGESData_DefType& deftype)
+occ::handle<TCollection_HAsciiString> DefTypeName(const IGESData_DefType& deftype)
 {
   switch (deftype)
   {
@@ -177,7 +179,7 @@ Handle(TCollection_HAsciiString) DefTypeName(const IGESData_DefType& deftype)
   return new TCollection_HAsciiString("???");
 }
 
-Handle(TCollection_HAsciiString) DefListName(const IGESData_DefList& deflist)
+occ::handle<TCollection_HAsciiString> DefListName(const IGESData_DefList& deflist)
 {
   switch (deflist)
   {
@@ -193,16 +195,16 @@ Handle(TCollection_HAsciiString) DefListName(const IGESData_DefList& deflist)
   return new TCollection_HAsciiString("???");
 }
 
-Standard_Boolean IGESSelect_EditDirPart::Load(const Handle(IFSelect_EditForm)&        form,
-                                              const Handle(Standard_Transient)&       ent,
-                                              const Handle(Interface_InterfaceModel)& model) const
+bool IGESSelect_EditDirPart::Load(const occ::handle<IFSelect_EditForm>&        form,
+                                  const occ::handle<Standard_Transient>&       ent,
+                                  const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(IGESData_IGESModel) modl = Handle(IGESData_IGESModel)::DownCast(model);
+  occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
-    return Standard_False;
-  Handle(IGESData_IGESEntity) iges = Handle(IGESData_IGESEntity)::DownCast(ent);
+    return false;
+  occ::handle<IGESData_IGESEntity> iges = occ::down_cast<IGESData_IGESEntity>(ent);
   if (iges.IsNull())
-    return Standard_False;
+    return false;
 
   form->LoadValue(1, new TCollection_HAsciiString(iges->TypeNumber()));
   form->LoadValue(2, new TCollection_HAsciiString(iges->FormNumber()));
@@ -244,16 +246,16 @@ Standard_Boolean IGESSelect_EditDirPart::Load(const Handle(IFSelect_EditForm)&  
   if (iges->HasSubScriptNumber())
     form->LoadValue(23, new TCollection_HAsciiString(iges->SubScriptNumber()));
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IGESSelect_EditDirPart::Update(const Handle(IFSelect_EditForm)&        form,
-                                                const Standard_Integer                  num,
-                                                const Handle(TCollection_HAsciiString)& val,
-                                                const Standard_Boolean /*enforce*/) const
+bool IGESSelect_EditDirPart::Update(const occ::handle<IFSelect_EditForm>&        form,
+                                    const int                                    num,
+                                    const occ::handle<TCollection_HAsciiString>& val,
+                                    const bool /*enforce*/) const
 {
-  Handle(TCollection_HAsciiString) nulstr;
-  Handle(IGESData_IGESModel)       modl = Handle(IGESData_IGESModel)::DownCast(form->Model());
+  occ::handle<TCollection_HAsciiString> nulstr;
+  occ::handle<IGESData_IGESModel>       modl = occ::down_cast<IGESData_IGESModel>(form->Model());
 
   //    LineFont
   if (num == 5)
@@ -312,29 +314,29 @@ Standard_Boolean IGESSelect_EditDirPart::Update(const Handle(IFSelect_EditForm)&
       form->Touch(19, DefTypeName(IGESData_DefReference));
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IGESSelect_EditDirPart::Apply(const Handle(IFSelect_EditForm)&        form,
-                                               const Handle(Standard_Transient)&       ent,
-                                               const Handle(Interface_InterfaceModel)& model) const
+bool IGESSelect_EditDirPart::Apply(const occ::handle<IFSelect_EditForm>&        form,
+                                   const occ::handle<Standard_Transient>&       ent,
+                                   const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Handle(IGESData_IGESModel) modl = Handle(IGESData_IGESModel)::DownCast(model);
+  occ::handle<IGESData_IGESModel> modl = occ::down_cast<IGESData_IGESModel>(model);
   if (modl.IsNull())
-    return Standard_False;
-  Handle(IGESData_IGESEntity) iges = Handle(IGESData_IGESEntity)::DownCast(ent);
+    return false;
+  occ::handle<IGESData_IGESEntity> iges = occ::down_cast<IGESData_IGESEntity>(ent);
   if (iges.IsNull())
-    return Standard_False;
-  Handle(IGESData_IGESEntity)         sub;
-  Handle(IGESData_LineFontEntity)     lfent;
-  Handle(IGESData_LevelListEntity)    levlist;
-  Handle(IGESData_ViewKindEntity)     view;
-  Handle(IGESData_TransfEntity)       transf;
-  Handle(IGESData_LabelDisplayEntity) labdisp;
-  Handle(IGESData_ColorEntity)        color;
+    return false;
+  occ::handle<IGESData_IGESEntity>         sub;
+  occ::handle<IGESData_LineFontEntity>     lfent;
+  occ::handle<IGESData_LevelListEntity>    levlist;
+  occ::handle<IGESData_ViewKindEntity>     view;
+  occ::handle<IGESData_TransfEntity>       transf;
+  occ::handle<IGESData_LabelDisplayEntity> labdisp;
+  occ::handle<IGESData_ColorEntity>        color;
 
-  Handle(TCollection_HAsciiString) str;
-  Standard_Integer                 num;
+  occ::handle<TCollection_HAsciiString> str;
+  int                                   num;
 
   if (form->IsModified(3))
   {
@@ -448,7 +450,7 @@ Standard_Boolean IGESSelect_EditDirPart::Apply(const Handle(IFSelect_EditForm)& 
 
   if (form->IsModified(14) || form->IsModified(15) || form->IsModified(16) || form->IsModified(17))
   {
-    Standard_Integer n1, n2, n3, n4;
+    int n1, n2, n3, n4;
     n1 = iges->BlankStatus();
     n2 = iges->SubordinateStatus();
     n3 = iges->UseFlag();
@@ -517,5 +519,5 @@ Standard_Boolean IGESSelect_EditDirPart::Apply(const Handle(IFSelect_EditForm)& 
     iges->SetLabel(str, num);
   }
 
-  return Standard_True;
+  return true;
 }

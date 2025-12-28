@@ -29,8 +29,7 @@ StepRepr_RepresentedDefinition::StepRepr_RepresentedDefinition() {}
 
 //=================================================================================================
 
-Standard_Integer StepRepr_RepresentedDefinition::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepRepr_RepresentedDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -49,37 +48,37 @@ Standard_Integer StepRepr_RepresentedDefinition::CaseNum(
 
 //=================================================================================================
 
-Handle(StepBasic_GeneralProperty) StepRepr_RepresentedDefinition::GeneralProperty() const
+occ::handle<StepBasic_GeneralProperty> StepRepr_RepresentedDefinition::GeneralProperty() const
 {
-  return Handle(StepBasic_GeneralProperty)::DownCast(Value());
+  return occ::down_cast<StepBasic_GeneralProperty>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_PropertyDefinition) StepRepr_RepresentedDefinition::PropertyDefinition() const
+occ::handle<StepRepr_PropertyDefinition> StepRepr_RepresentedDefinition::PropertyDefinition() const
 {
-  return Handle(StepRepr_PropertyDefinition)::DownCast(Value());
+  return occ::down_cast<StepRepr_PropertyDefinition>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_PropertyDefinitionRelationship) StepRepr_RepresentedDefinition::
+occ::handle<StepRepr_PropertyDefinitionRelationship> StepRepr_RepresentedDefinition::
   PropertyDefinitionRelationship() const
 {
-  return Handle(StepRepr_PropertyDefinitionRelationship)::DownCast(Value());
+  return occ::down_cast<StepRepr_PropertyDefinitionRelationship>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ShapeAspect) StepRepr_RepresentedDefinition::ShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepRepr_RepresentedDefinition::ShapeAspect() const
 {
-  return Handle(StepRepr_ShapeAspect)::DownCast(Value());
+  return occ::down_cast<StepRepr_ShapeAspect>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ShapeAspectRelationship) StepRepr_RepresentedDefinition::ShapeAspectRelationship()
-  const
+occ::handle<StepRepr_ShapeAspectRelationship> StepRepr_RepresentedDefinition::
+  ShapeAspectRelationship() const
 {
-  return Handle(StepRepr_ShapeAspectRelationship)::DownCast(Value());
+  return occ::down_cast<StepRepr_ShapeAspectRelationship>(Value());
 }

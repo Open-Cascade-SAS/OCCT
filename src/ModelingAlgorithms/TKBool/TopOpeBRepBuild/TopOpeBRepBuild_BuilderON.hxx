@@ -26,7 +26,8 @@
 #include <TopOpeBRepTool_Plos.hxx>
 #include <TopOpeBRepBuild_PWireEdgeSet.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
 class TopOpeBRepDS_Interference;
 
 class TopOpeBRepBuild_BuilderON
@@ -48,12 +49,12 @@ public:
                                const TopOpeBRepTool_Plos&          PLSclass,
                                const TopOpeBRepBuild_PWireEdgeSet& PWES);
 
-  Standard_EXPORT Standard_Boolean GFillONCheckI(const Handle(TopOpeBRepDS_Interference)& I) const;
+  Standard_EXPORT bool GFillONCheckI(const occ::handle<TopOpeBRepDS_Interference>& I) const;
 
-  Standard_EXPORT void GFillONPartsWES1(const Handle(TopOpeBRepDS_Interference)& I);
+  Standard_EXPORT void GFillONPartsWES1(const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT void GFillONPartsWES2(const Handle(TopOpeBRepDS_Interference)& I,
-                                        const TopoDS_Shape&                      EspON);
+  Standard_EXPORT void GFillONPartsWES2(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                        const TopoDS_Shape&                           EspON);
 
   Standard_EXPORT void Perform2d(const TopOpeBRepBuild_PBuilder&     PB,
                                  const TopoDS_Shape&                 F,
@@ -61,17 +62,16 @@ public:
                                  const TopOpeBRepTool_Plos&          PLSclass,
                                  const TopOpeBRepBuild_PWireEdgeSet& PWES);
 
-  Standard_EXPORT void GFillONParts2dWES2(const Handle(TopOpeBRepDS_Interference)& I,
-                                          const TopoDS_Shape&                      EspON);
+  Standard_EXPORT void GFillONParts2dWES2(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                          const TopoDS_Shape&                           EspON);
 
-protected:
 private:
-  TopOpeBRepBuild_PBuilder        myPB;
-  TopOpeBRepBuild_PGTopo          myPG;
-  TopOpeBRepTool_Plos             myPLSclass;
-  TopOpeBRepBuild_PWireEdgeSet    myPWES;
-  TopoDS_Shape                    myFace;
-  TopOpeBRepDS_ListOfInterference myFEI;
+  TopOpeBRepBuild_PBuilder                                 myPB;
+  TopOpeBRepBuild_PGTopo                                   myPG;
+  TopOpeBRepTool_Plos                                      myPLSclass;
+  TopOpeBRepBuild_PWireEdgeSet                             myPWES;
+  TopoDS_Shape                                             myFace;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> myFEI;
 };
 
 #endif // _TopOpeBRepBuild_BuilderON_HeaderFile

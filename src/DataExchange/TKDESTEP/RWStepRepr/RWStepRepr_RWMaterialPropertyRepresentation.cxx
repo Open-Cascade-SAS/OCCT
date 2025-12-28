@@ -30,10 +30,10 @@ RWStepRepr_RWMaterialPropertyRepresentation::RWStepRepr_RWMaterialPropertyRepres
 //=================================================================================================
 
 void RWStepRepr_RWMaterialPropertyRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepRepr_MaterialPropertyRepresentation)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                                   num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepRepr_MaterialPropertyRepresentation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "material_property_representation"))
@@ -48,7 +48,7 @@ void RWStepRepr_RWMaterialPropertyRepresentation::ReadStep(
                    ach,
                    aPropertyDefinitionRepresentation_Definition);
 
-  Handle(StepRepr_Representation) aPropertyDefinitionRepresentation_UsedRepresentation;
+  occ::handle<StepRepr_Representation> aPropertyDefinitionRepresentation_UsedRepresentation;
   data->ReadEntity(num,
                    2,
                    "property_definition_representation.used_representation",
@@ -58,7 +58,7 @@ void RWStepRepr_RWMaterialPropertyRepresentation::ReadStep(
 
   // Own fields of MaterialPropertyRepresentation
 
-  Handle(StepRepr_DataEnvironment) aDependentEnvironment;
+  occ::handle<StepRepr_DataEnvironment> aDependentEnvironment;
   data->ReadEntity(num,
                    3,
                    "dependent_environment",
@@ -75,8 +75,8 @@ void RWStepRepr_RWMaterialPropertyRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWMaterialPropertyRepresentation::WriteStep(
-  StepData_StepWriter&                                   SW,
-  const Handle(StepRepr_MaterialPropertyRepresentation)& ent) const
+  StepData_StepWriter&                                        SW,
+  const occ::handle<StepRepr_MaterialPropertyRepresentation>& ent) const
 {
 
   // Inherited fields of PropertyDefinitionRepresentation
@@ -93,8 +93,8 @@ void RWStepRepr_RWMaterialPropertyRepresentation::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWMaterialPropertyRepresentation::Share(
-  const Handle(StepRepr_MaterialPropertyRepresentation)& ent,
-  Interface_EntityIterator&                              iter) const
+  const occ::handle<StepRepr_MaterialPropertyRepresentation>& ent,
+  Interface_EntityIterator&                                   iter) const
 {
 
   // Inherited fields of PropertyDefinitionRepresentation

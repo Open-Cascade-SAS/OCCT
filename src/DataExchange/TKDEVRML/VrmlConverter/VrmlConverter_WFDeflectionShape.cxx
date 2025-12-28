@@ -32,20 +32,20 @@
 
 //=================================================================================================
 
-void VrmlConverter_WFDeflectionShape::Add(Standard_OStream&                   anOStream,
-                                          const TopoDS_Shape&                 aShape,
-                                          const Handle(VrmlConverter_Drawer)& aDrawer)
+void VrmlConverter_WFDeflectionShape::Add(Standard_OStream&                        anOStream,
+                                          const TopoDS_Shape&                      aShape,
+                                          const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
   StdPrs_ShapeTool Tool(aShape);
 
-  Standard_Real theRequestedDeflection;
+  double theRequestedDeflection;
   if (aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE) // TOD_RELATIVE, TOD_ABSOLUTE
   {
     Bnd_Box box;
     BRepBndLib::AddClose(aShape, box);
 
-    Standard_Real Xmin, Xmax, Ymin, Ymax, Zmin, Zmax, diagonal;
+    double Xmin, Xmax, Ymin, Ymax, Zmin, Zmax, diagonal;
     box.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     if (!(box.IsOpenXmin() || box.IsOpenXmax() || box.IsOpenYmin() || box.IsOpenYmax()
           || box.IsOpenZmin() || box.IsOpenZmax()))
@@ -71,7 +71,7 @@ void VrmlConverter_WFDeflectionShape::Add(Standard_OStream&                   an
   aDrawer->VIsoAspect()->Number() != 0 ) {
 
     BRepAdaptor_Surface S;
-    Standard_Boolean isoU, isoV;
+    bool isoU, isoV;
     for(Tool.InitFace();Tool.MoreFace();Tool.NextFace()){
   isoU = (aDrawer->UIsoAspect()->Number() != 0);
   isoV = (aDrawer->VIsoAspect()->Number() != 0);
@@ -82,7 +82,7 @@ void VrmlConverter_WFDeflectionShape::Add(Standard_OStream&                   an
     }
     if (isoU || isoV) {
       S.Initialize(Tool.GetFace());
-      Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(S);
+      occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface(S);
       VrmlConverter_WFDeflectionRestrictedFace::Add(anOStream, HS,
                             isoU, isoV,
                             theRequestedDeflection,
@@ -100,14 +100,14 @@ else {
 
     BRepAdaptor_Surface S;
     for(Tool.InitFace();Tool.MoreFace();Tool.NextFace()){
-  Standard_Boolean isoU = Standard_True;
+  bool isoU = true;
   if (Tool.HasSurface()) {
     if (Tool.IsPlanarFace()) isoU = aDrawer->IsoOnPlane();
     if (isoU) {
       S.Initialize(Tool.GetFace());
-      Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(S);
+      occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface(S);
       VrmlConverter_WFDeflectionRestrictedFace::Add(anOStream, HS,
-                            isoU, Standard_False,
+                            isoU, false,
                             theRequestedDeflection,
                             aDrawer->UIsoAspect()->Number(),
                             0,
@@ -121,14 +121,14 @@ else {
 
     BRepAdaptor_Surface S;
     for(Tool.InitFace();Tool.MoreFace();Tool.NextFace()){
-  Standard_Boolean isoV = Standard_True;
+  bool isoV = true;
   if (Tool.HasSurface()) {
     if (Tool.IsPlanarFace()) isoV = aDrawer->IsoOnPlane();
     if (isoV) {
       S.Initialize(Tool.GetFace());
-      Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(S);
+      occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface(S);
       VrmlConverter_WFDeflectionRestrictedFace::Add(anOStream, HS,
-                            Standard_False, isoV,
+                            false, isoV,
                             theRequestedDeflection,
                             0,
                             aDrawer->VIsoAspect()->Number(),
@@ -140,15 +140,15 @@ else {
 }*/
 
   //====
-  Standard_Integer qnt = 0;
+  int qnt = 0;
   for (Tool.InitCurve(); Tool.MoreCurve(); Tool.NextCurve())
   {
     qnt++;
   }
 
-  Handle(Poly_PolygonOnTriangulation) aPT;
-  Handle(Poly_Triangulation)          aT;
-  TopLoc_Location                     aL;
+  occ::handle<Poly_PolygonOnTriangulation> aPT;
+  occ::handle<Poly_Triangulation>          aT;
+  TopLoc_Location                          aL;
 
   //   std::cout << "Quantity of Curves  = " << qnt << std::endl;
 
@@ -158,7 +158,7 @@ else {
   {
     if (qnt != 0)
     {
-      Handle(VrmlConverter_LineAspect) latmp = new VrmlConverter_LineAspect;
+      occ::handle<VrmlConverter_LineAspect> latmp = new VrmlConverter_LineAspect;
       latmp->SetMaterial(aDrawer->LineAspect()->Material());
       latmp->SetHasMaterial(aDrawer->LineAspect()->HasMaterial());
 
@@ -193,7 +193,7 @@ else {
   {
     if (qnt != 0)
     {
-      Handle(VrmlConverter_LineAspect) latmp = new VrmlConverter_LineAspect;
+      occ::handle<VrmlConverter_LineAspect> latmp = new VrmlConverter_LineAspect;
       latmp->SetMaterial(aDrawer->LineAspect()->Material());
       latmp->SetHasMaterial(aDrawer->LineAspect()->HasMaterial());
 
@@ -228,7 +228,7 @@ else {
   {
     if (qnt != 0)
     {
-      Handle(VrmlConverter_LineAspect) latmp = new VrmlConverter_LineAspect;
+      occ::handle<VrmlConverter_LineAspect> latmp = new VrmlConverter_LineAspect;
       latmp->SetMaterial(aDrawer->LineAspect()->Material());
       latmp->SetHasMaterial(aDrawer->LineAspect()->HasMaterial());
 
@@ -270,10 +270,10 @@ else {
 
   if (qnt != 0)
   {
-    Handle(TColgp_HArray1OfVec) HAV = new TColgp_HArray1OfVec(1, qnt);
-    gp_Vec                      V;
-    gp_Pnt                      P;
-    Standard_Integer            i = 0;
+    occ::handle<NCollection_HArray1<gp_Vec>> HAV = new NCollection_HArray1<gp_Vec>(1, qnt);
+    gp_Vec                                   V;
+    gp_Pnt                                   P;
+    int                                      i = 0;
 
     for (Tool.InitVertex(); Tool.MoreVertex(); Tool.NextVertex())
     {
@@ -285,8 +285,8 @@ else {
       HAV->SetValue(i, V);
     }
 
-    Handle(VrmlConverter_PointAspect) PA = new VrmlConverter_PointAspect;
-    PA                                   = aDrawer->PointAspect();
+    occ::handle<VrmlConverter_PointAspect> PA = new VrmlConverter_PointAspect;
+    PA                                        = aDrawer->PointAspect();
 
     // Separator P {
     Vrml_Separator SEP;
@@ -296,13 +296,13 @@ else {
     if (PA->HasMaterial())
     {
 
-      Handle(Vrml_Material) MP;
+      occ::handle<Vrml_Material> MP;
       MP = PA->Material();
 
       MP->Print(anOStream);
     }
     // Coordinate3
-    Handle(Vrml_Coordinate3) C3 = new Vrml_Coordinate3(HAV);
+    occ::handle<Vrml_Coordinate3> C3 = new Vrml_Coordinate3(HAV);
     C3->Print(anOStream);
 
     // PointSet

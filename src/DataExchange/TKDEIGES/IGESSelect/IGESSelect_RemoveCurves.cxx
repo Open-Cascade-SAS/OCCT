@@ -13,34 +13,35 @@
 
 #include <IFSelect_ContextModif.hxx>
 #include <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <IGESSelect_RemoveCurves.hxx>
 #include <Interface_CopyTool.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_RemoveCurves, IGESSelect_ModelModifier)
 
-IGESSelect_RemoveCurves::IGESSelect_RemoveCurves(const Standard_Boolean UV)
-    : IGESSelect_ModelModifier(Standard_True),
+IGESSelect_RemoveCurves::IGESSelect_RemoveCurves(const bool UV)
+    : IGESSelect_ModelModifier(true),
       theUV(UV)
 {
 }
 
-static Standard_Boolean Edit(const Handle(Standard_Transient)& ent, const Standard_Boolean UV)
+static bool Edit(const occ::handle<Standard_Transient>& ent, const bool UV)
 {
-  Standard_Boolean res = Standard_False;
+  bool res = false;
   DeclareAndCast(IGESGeom_TrimmedSurface, trsu, ent);
   if (!trsu.IsNull())
   {
     res = Edit(trsu->OuterContour(), UV);
-    Standard_Integer i, nb = trsu->NbInnerContours();
+    int i, nb = trsu->NbInnerContours();
     for (i = 1; i <= nb; i++)
     {
       res = res | Edit(trsu->InnerContour(i), UV);
@@ -51,7 +52,7 @@ static Standard_Boolean Edit(const Handle(Standard_Transient)& ent, const Standa
   DeclareAndCast(IGESGeom_BoundedSurface, bnsu, ent);
   if (!bnsu.IsNull())
   {
-    Standard_Integer i, nb = bnsu->NbBoundaries();
+    int i, nb = bnsu->NbBoundaries();
     for (i = 1; i <= nb; i++)
     {
       res = res | Edit(bnsu->Boundary(i), UV);
@@ -62,14 +63,14 @@ static Standard_Boolean Edit(const Handle(Standard_Transient)& ent, const Standa
   DeclareAndCast(IGESGeom_CurveOnSurface, cons, ent);
   if (!cons.IsNull())
   {
-    Handle(IGESData_IGESEntity) cuv, c3d;
-    cuv                   = cons->CurveUV();
-    c3d                   = cons->Curve3D();
-    Standard_Integer pref = cons->PreferenceMode();
+    occ::handle<IGESData_IGESEntity> cuv, c3d;
+    cuv      = cons->CurveUV();
+    c3d      = cons->Curve3D();
+    int pref = cons->PreferenceMode();
     if (UV && !c3d.IsNull())
     {
       if (cuv.IsNull() || c3d.IsNull())
-        return Standard_False; // rien a faire
+        return false; // rien a faire
       cuv.Nullify();
       if (pref == 1)
         pref = 0;
@@ -79,7 +80,7 @@ static Standard_Boolean Edit(const Handle(Standard_Transient)& ent, const Standa
     else if (!cuv.IsNull())
     {
       if (cuv.IsNull() || c3d.IsNull())
-        return Standard_False; // rien a faire
+        return false; // rien a faire
       c3d.Nullify();
       if (pref == 2)
         pref = 0;
@@ -87,24 +88,26 @@ static Standard_Boolean Edit(const Handle(Standard_Transient)& ent, const Standa
         pref = 1;
     }
     cons->Init(cons->CreationMode(), cons->Surface(), cuv, c3d, pref);
-    return Standard_True;
+    return true;
   }
 
   DeclareAndCast(IGESGeom_Boundary, bndy, ent);
   if (!bndy.IsNull())
   {
-    Standard_Integer i, nb = bndy->NbModelSpaceCurves();
+    int i, nb = bndy->NbModelSpaceCurves();
     if (nb == 0)
-      return Standard_False;
-    Handle(IGESData_HArray1OfIGESEntity)           arc3d = new IGESData_HArray1OfIGESEntity(1, nb);
-    Handle(IGESBasic_HArray1OfHArray1OfIGESEntity) arcuv =
+      return false;
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> arc3d =
+      new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+    occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> arcuv =
       new IGESBasic_HArray1OfHArray1OfIGESEntity(1, nb);
-    Handle(TColStd_HArray1OfInteger) sens = new TColStd_HArray1OfInteger(1, nb);
+    occ::handle<NCollection_HArray1<int>> sens = new NCollection_HArray1<int>(1, nb);
     for (i = 1; i <= nb; i++)
     {
       sens->SetValue(i, bndy->Sense(i));
-      Handle(IGESData_HArray1OfIGESEntity) cuv = bndy->ParameterCurves(i);
-      Handle(IGESData_IGESEntity)          c3d = bndy->ModelSpaceCurve(i);
+      occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> cuv =
+        bndy->ParameterCurves(i);
+      occ::handle<IGESData_IGESEntity> c3d = bndy->ModelSpaceCurve(i);
       if (UV)
       {
         if (cuv.IsNull() || c3d.IsNull())
@@ -118,11 +121,11 @@ static Standard_Boolean Edit(const Handle(Standard_Transient)& ent, const Standa
           continue; // rien a faire
         c3d.Nullify();
         arc3d->SetValue(i, c3d);
-        res = Standard_True;
+        res = true;
       }
     }
     //    Y a-t-il eu de la retouche ?
-    Standard_Integer pref = bndy->PreferenceType();
+    int pref = bndy->PreferenceType();
     if (UV)
     {
       if (pref == 2)
@@ -142,11 +145,11 @@ static Standard_Boolean Edit(const Handle(Standard_Transient)& ent, const Standa
     return res;
   }
 
-  return Standard_False;
+  return false;
 }
 
 void IGESSelect_RemoveCurves::Performing(IFSelect_ContextModif& ctx,
-                                         const Handle(IGESData_IGESModel)& /*target*/,
+                                         const occ::handle<IGESData_IGESModel>& /*target*/,
                                          Interface_CopyTool& /*TC*/) const
 {
   for (ctx.Start(); ctx.More(); ctx.Next())

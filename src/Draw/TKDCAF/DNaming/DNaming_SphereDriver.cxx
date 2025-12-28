@@ -22,7 +22,8 @@
 #include <gp_Pnt.hxx>
 #include <ModelDefinitions.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_UAttribute.hxx>
@@ -38,7 +39,8 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_SphereDriver, TFunction_Driver)
 
@@ -50,29 +52,29 @@ DNaming_SphereDriver::DNaming_SphereDriver() {}
 // function : Validate
 // purpose  : Validates labels of a function in <theLog>
 //=======================================================================
-void DNaming_SphereDriver::Validate(Handle(TFunction_Logbook)&) const {}
+void DNaming_SphereDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute
 // purpose  : Analyses in <theLog> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_SphereDriver::MustExecute(const Handle(TFunction_Logbook)&) const
+bool DNaming_SphereDriver::MustExecute(const occ::handle<TFunction_Logbook>&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer DNaming_SphereDriver::Execute(Handle(TFunction_Logbook)& theLog) const
+int DNaming_SphereDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 {
-  Handle(TFunction_Function) aFunction;
+  occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
     return -1;
 
-  Standard_Real               aRadius  = DNaming::GetReal(aFunction, SPHERE_RADIUS)->Get();
-  Handle(TDataStd_UAttribute) anObject = DNaming::GetObjectArg(aFunction, SPHERE_CENTER);
-  Handle(TNaming_NamedShape)  aNSCnt   = DNaming::GetObjectValue(anObject);
+  double                           aRadius  = DNaming::GetReal(aFunction, SPHERE_RADIUS)->Get();
+  occ::handle<TDataStd_UAttribute> anObject = DNaming::GetObjectArg(aFunction, SPHERE_CENTER);
+  occ::handle<TNaming_NamedShape>  aNSCnt   = DNaming::GetObjectValue(anObject);
   if (aNSCnt.IsNull() || aNSCnt->IsEmpty())
   {
 #ifdef OCCT_DEBUG
@@ -82,7 +84,7 @@ Standard_Integer DNaming_SphereDriver::Execute(Handle(TFunction_Logbook)& theLog
     return -1;
   }
 
-  Handle(TNaming_NamedShape) aPrevSphere = DNaming::GetFunctionResult(aFunction);
+  occ::handle<TNaming_NamedShape> aPrevSphere = DNaming::GetFunctionResult(aFunction);
 
   // Save location
   TopLoc_Location aLocation;
@@ -126,9 +128,9 @@ Standard_Integer DNaming_SphereDriver::Execute(Handle(TFunction_Logbook)& theLog
   LoadNamingDS(RESPOSITION(aFunction), aMakeSphere);
   // restore location
   if (!aLocation.IsIdentity())
-    TNaming::Displace(RESPOSITION(aFunction), aLocation, Standard_True);
+    TNaming::Displace(RESPOSITION(aFunction), aLocation, true);
 
-  theLog->SetValid(RESPOSITION(aFunction), Standard_True);
+  theLog->SetValid(RESPOSITION(aFunction), true);
   aFunction->SetFailure(DONE);
   return 0;
 }
@@ -139,7 +141,7 @@ void DNaming_SphereDriver::LoadNamingDS(const TDF_Label&        theResultLabel,
                                         BRepPrimAPI_MakeSphere& MS) const
 {
 
-  Handle(TDF_TagSource) Tagger = TDF_TagSource::Set(theResultLabel);
+  occ::handle<TDF_TagSource> Tagger = TDF_TagSource::Set(theResultLabel);
   if (Tagger.IsNull())
     return;
   Tagger->Set(0);
@@ -177,10 +179,10 @@ void DNaming_SphereDriver::LoadNamingDS(const TDF_Label&        theResultLabel,
     TNaming_Builder EF(theResultLabel.NewChild());
     EF.Generated(EndFace);
   }
-  TopTools_IndexedMapOfShape LateralEdges;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> LateralEdges;
   TopExp::MapShapes(LateralFace, TopAbs_EDGE, LateralEdges);
-  Standard_Integer      i = 1;
-  TColStd_ListOfInteger goodEdges;
+  int                   i = 1;
+  NCollection_List<int> goodEdges;
   for (; i <= LateralEdges.Extent(); i++)
     if (!BRep_Tool::Degenerated(TopoDS::Edge(LateralEdges.FindKey(i))))
       goodEdges.Append(i);

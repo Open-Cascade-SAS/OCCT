@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_TypeMismatch.hxx>
 #include <StepData_PDescr.hxx>
@@ -22,19 +22,19 @@
 #include <StepData_SelectType.hxx>
 #include <StepData_UndefinedEntity.hxx>
 
-Standard_Boolean StepData_SelectType::Matches(const Handle(Standard_Transient)& ent) const
+bool StepData_SelectType::Matches(const occ::handle<Standard_Transient>& ent) const
 {
   if (CaseNum(ent) > 0)
-    return Standard_True;
+    return true;
   DeclareAndCast(StepData_SelectMember, sm, ent);
   if (sm.IsNull())
-    return Standard_False;
+    return false;
   if (CaseMem(sm) > 0)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
-void StepData_SelectType::SetValue(const Handle(Standard_Transient)& ent)
+void StepData_SelectType::SetValue(const occ::handle<Standard_Transient>& ent)
 {
   if (ent.IsNull())
     thevalue.Nullify();
@@ -51,24 +51,24 @@ void StepData_SelectType::Nullify()
   thevalue.Nullify();
 }
 
-const Handle(Standard_Transient)& StepData_SelectType::Value() const
+const occ::handle<Standard_Transient>& StepData_SelectType::Value() const
 {
   return thevalue;
 }
 
-Standard_Boolean StepData_SelectType::IsNull() const
+bool StepData_SelectType::IsNull() const
 {
   return thevalue.IsNull();
 }
 
-Handle(Standard_Type) StepData_SelectType::Type() const
+occ::handle<Standard_Type> StepData_SelectType::Type() const
 {
   if (thevalue.IsNull())
     return STANDARD_TYPE(Standard_Transient);
   return thevalue->DynamicType();
 }
 
-Standard_Integer StepData_SelectType::CaseNumber() const
+int StepData_SelectType::CaseNumber() const
 {
   if (thevalue.IsNull())
     return 0;
@@ -77,24 +77,24 @@ Standard_Integer StepData_SelectType::CaseNumber() const
 
 //  **********   Types Immediats   ***********
 
-Handle(StepData_PDescr) StepData_SelectType::Description() const
+occ::handle<StepData_PDescr> StepData_SelectType::Description() const
 {
-  Handle(StepData_PDescr) nuldescr;
+  occ::handle<StepData_PDescr> nuldescr;
   return nuldescr;
 }
 
-Handle(StepData_SelectMember) StepData_SelectType::NewMember() const
+occ::handle<StepData_SelectMember> StepData_SelectType::NewMember() const
 {
-  Handle(StepData_SelectMember) nulmem;
+  occ::handle<StepData_SelectMember> nulmem;
   return nulmem;
 }
 
-Standard_Integer StepData_SelectType::CaseMem(const Handle(StepData_SelectMember)& /*ent*/) const
+int StepData_SelectType::CaseMem(const occ::handle<StepData_SelectMember>& /*ent*/) const
 {
   return 0;
 }
 
-Standard_Integer StepData_SelectType::CaseMember() const
+int StepData_SelectType::CaseMember() const
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
   if (sm.IsNull())
@@ -102,12 +102,12 @@ Standard_Integer StepData_SelectType::CaseMember() const
   return CaseMem(sm);
 }
 
-Handle(StepData_SelectMember) StepData_SelectType::Member() const
+occ::handle<StepData_SelectMember> StepData_SelectType::Member() const
 {
   return GetCasted(StepData_SelectMember, thevalue);
 }
 
-Standard_CString StepData_SelectType::SelectName() const
+const char* StepData_SelectType::SelectName() const
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
   if (sm.IsNull())
@@ -115,7 +115,7 @@ Standard_CString StepData_SelectType::SelectName() const
   return sm->Name();
 }
 
-Standard_Integer StepData_SelectType::Int() const
+int StepData_SelectType::Int() const
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
   if (sm.IsNull())
@@ -123,7 +123,7 @@ Standard_Integer StepData_SelectType::Int() const
   return sm->Int();
 }
 
-void StepData_SelectType::SetInt(const Standard_Integer val)
+void StepData_SelectType::SetInt(const int val)
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
   if (sm.IsNull())
@@ -133,9 +133,9 @@ void StepData_SelectType::SetInt(const Standard_Integer val)
 
 //  **********   Types Immediats : Differents Cas  ***********
 
-static Handle(StepData_SelectMember) SelectVal(const Handle(Standard_Transient)& thevalue,
-                                               const Standard_CString            name,
-                                               const int                         mode)
+static occ::handle<StepData_SelectMember> SelectVal(const occ::handle<Standard_Transient>& thevalue,
+                                                    const char*                            name,
+                                                    const int                              mode)
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
   if (!sm.IsNull())
@@ -146,7 +146,7 @@ static Handle(StepData_SelectMember) SelectVal(const Handle(Standard_Transient)&
   }
   else if (name && name[0] != '\0')
   {
-    Handle(StepData_SelectNamed) sn = new StepData_SelectNamed;
+    occ::handle<StepData_SelectNamed> sn = new StepData_SelectNamed;
     sn->SetName(name);
     sm = sn;
   }
@@ -160,7 +160,7 @@ static Handle(StepData_SelectMember) SelectVal(const Handle(Standard_Transient)&
   return sm;
 }
 
-Standard_Integer StepData_SelectType::Integer() const
+int StepData_SelectType::Integer() const
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
   if (sm.IsNull())
@@ -168,26 +168,26 @@ Standard_Integer StepData_SelectType::Integer() const
   return sm->Integer();
 }
 
-void StepData_SelectType::SetInteger(const Standard_Integer val, const Standard_CString name)
+void StepData_SelectType::SetInteger(const int val, const char* name)
 {
-  Handle(StepData_SelectMember) sm = SelectVal(thevalue, name, 0);
+  occ::handle<StepData_SelectMember> sm = SelectVal(thevalue, name, 0);
   sm->SetInteger(val);
   if (CaseMem(sm) == 0)
     throw Standard_TypeMismatch("StepData : SelectType, SetInteger");
   thevalue = sm;
 }
 
-Standard_Boolean StepData_SelectType::Boolean() const
+bool StepData_SelectType::Boolean() const
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
   if (sm.IsNull())
-    return Standard_False;
+    return false;
   return sm->Boolean();
 }
 
-void StepData_SelectType::SetBoolean(const Standard_Boolean val, const Standard_CString name)
+void StepData_SelectType::SetBoolean(const bool val, const char* name)
 {
-  Handle(StepData_SelectMember) sm = SelectVal(thevalue, name, 0);
+  occ::handle<StepData_SelectMember> sm = SelectVal(thevalue, name, 0);
   sm->SetBoolean(val);
   if (CaseMem(sm) == 0)
     throw Standard_TypeMismatch("StepData : SelectType, SetBoolean");
@@ -202,16 +202,16 @@ StepData_Logical StepData_SelectType::Logical() const
   return sm->Logical();
 }
 
-void StepData_SelectType::SetLogical(const StepData_Logical val, const Standard_CString name)
+void StepData_SelectType::SetLogical(const StepData_Logical val, const char* name)
 {
-  Handle(StepData_SelectMember) sm = SelectVal(thevalue, name, 0);
+  occ::handle<StepData_SelectMember> sm = SelectVal(thevalue, name, 0);
   sm->SetLogical(val);
   if (CaseMem(sm) == 0)
     throw Standard_TypeMismatch("StepData : SelectType, SetLogical");
   thevalue = sm;
 }
 
-Standard_Real StepData_SelectType::Real() const
+double StepData_SelectType::Real() const
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
   if (sm.IsNull())
@@ -219,9 +219,9 @@ Standard_Real StepData_SelectType::Real() const
   return sm->Real();
 }
 
-void StepData_SelectType::SetReal(const Standard_Real val, const Standard_CString name)
+void StepData_SelectType::SetReal(const double val, const char* name)
 {
-  Handle(StepData_SelectMember) sm = SelectVal(thevalue, name, 1);
+  occ::handle<StepData_SelectMember> sm = SelectVal(thevalue, name, 1);
   sm->SetReal(val);
   if (CaseMem(sm) == 0)
     throw Standard_TypeMismatch("StepData : SelectType, SetReal");

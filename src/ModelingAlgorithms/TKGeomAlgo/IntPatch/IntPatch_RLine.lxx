@@ -18,21 +18,21 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntPatch_Point.hxx>
 
-inline const Handle(Adaptor2d_Curve2d)& IntPatch_RLine::ArcOnS1() const
+inline const occ::handle<Adaptor2d_Curve2d>& IntPatch_RLine::ArcOnS1() const
 {
   return theArcOnS1;
 }
 
-inline const Handle(Adaptor2d_Curve2d)& IntPatch_RLine::ArcOnS2() const
+inline const occ::handle<Adaptor2d_Curve2d>& IntPatch_RLine::ArcOnS2() const
 {
   return theArcOnS2;
 }
 
-//-- Il faut mettre cet include ici , car l include fait un define Handle(Adaptor2d_Curve2d) ...
-//-- et en fin de fichier un undef Handle(Adaptor2d_Curve2d) ...
+//-- Il faut mettre cet include ici , car l include fait un define occ::handle<Adaptor2d_Curve2d>
+//...
+//-- et en fin de fichier un undef occ::handle<Adaptor2d_Curve2d> ...
 
-inline void IntPatch_RLine::AddVertex(const IntPatch_Point&  thePnt,
-                                      const Standard_Boolean theIsPrepend)
+inline void IntPatch_RLine::AddVertex(const IntPatch_Point& thePnt, const bool theIsPrepend)
 {
   if (theIsPrepend)
     svtx.Prepend(thePnt);
@@ -40,44 +40,44 @@ inline void IntPatch_RLine::AddVertex(const IntPatch_Point&  thePnt,
     svtx.Append(thePnt);
 }
 
-inline void IntPatch_RLine::Replace(const Standard_Integer Index, const IntPatch_Point& Pnt)
+inline void IntPatch_RLine::Replace(const int Index, const IntPatch_Point& Pnt)
 {
   svtx(Index) = Pnt;
 }
 
-inline void IntPatch_RLine::SetFirstPoint(const Standard_Integer IndFirst)
+inline void IntPatch_RLine::SetFirstPoint(const int IndFirst)
 {
-  fipt = Standard_True;
+  fipt = true;
   indf = IndFirst;
 }
 
-inline void IntPatch_RLine::SetLastPoint(const Standard_Integer IndLast)
+inline void IntPatch_RLine::SetLastPoint(const int IndLast)
 {
-  lapt = Standard_True;
+  lapt = true;
   indl = IndLast;
 }
 
-inline void IntPatch_RLine::Add(const Handle(IntSurf_LineOn2S)& L)
+inline void IntPatch_RLine::Add(const occ::handle<IntSurf_LineOn2S>& L)
 {
   curv = L;
 }
 
-inline Standard_Boolean IntPatch_RLine::IsArcOnS1() const
+inline bool IntPatch_RLine::IsArcOnS1() const
 {
   return onS1;
 }
 
-inline Standard_Boolean IntPatch_RLine::IsArcOnS2() const
+inline bool IntPatch_RLine::IsArcOnS2() const
 {
   return onS2;
 }
 
-inline Standard_Boolean IntPatch_RLine::HasFirstPoint() const
+inline bool IntPatch_RLine::HasFirstPoint() const
 {
   return fipt;
 }
 
-inline Standard_Boolean IntPatch_RLine::HasLastPoint() const
+inline bool IntPatch_RLine::HasLastPoint() const
 {
   return lapt;
 }
@@ -100,34 +100,34 @@ inline const IntPatch_Point& IntPatch_RLine::LastPoint() const
   return svtx(indl);
 }
 
-inline Standard_Integer IntPatch_RLine::NbVertex() const
+inline int IntPatch_RLine::NbVertex() const
 {
   return svtx.Length();
 }
 
-inline const IntPatch_Point& IntPatch_RLine::Vertex(const Standard_Integer Index) const
+inline const IntPatch_Point& IntPatch_RLine::Vertex(const int Index) const
 {
   return svtx(Index);
 }
 
-inline IntPatch_Point& IntPatch_RLine::ChangeVertex(const Standard_Integer Index)
+inline IntPatch_Point& IntPatch_RLine::ChangeVertex(const int Index)
 {
   return svtx(Index);
 }
 
-inline void IntPatch_RLine::RemoveVertex(const Standard_Integer theIndex)
+inline void IntPatch_RLine::RemoveVertex(const int theIndex)
 {
   if ((theIndex < 1) || (theIndex > NbVertex()))
     throw Standard_OutOfRange("Cannot delete not existing vertex");
   svtx.Remove(theIndex);
 }
 
-inline Standard_Boolean IntPatch_RLine::HasPolygon() const
+inline bool IntPatch_RLine::HasPolygon() const
 {
   return (!curv.IsNull());
 }
 
-inline Standard_Integer IntPatch_RLine::NbPnts() const
+inline int IntPatch_RLine::NbPnts() const
 {
   if (curv.IsNull())
   {
@@ -136,7 +136,7 @@ inline Standard_Integer IntPatch_RLine::NbPnts() const
   return curv->NbPoints();
 }
 
-inline const IntSurf_PntOn2S& IntPatch_RLine::Point(const Standard_Integer Index) const
+inline const IntSurf_PntOn2S& IntPatch_RLine::Point(const int Index) const
 {
   if (curv.IsNull())
   {
@@ -145,7 +145,7 @@ inline const IntSurf_PntOn2S& IntPatch_RLine::Point(const Standard_Integer Index
   return curv->Value(Index);
 }
 
-inline Handle(IntSurf_LineOn2S) IntPatch_RLine::Curve() const
+inline occ::handle<IntSurf_LineOn2S> IntPatch_RLine::Curve() const
 {
   return (curv);
 }

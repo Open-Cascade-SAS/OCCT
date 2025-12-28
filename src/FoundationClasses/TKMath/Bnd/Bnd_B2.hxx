@@ -28,7 +28,7 @@
 #include <array>
 
 //! Template class for 2D bounding box.
-//! This is a base template that is instantiated for Standard_Real and Standard_ShortReal.
+//! This is a base template that is instantiated for double and float.
 template <typename RealType>
 class Bnd_B2
 {
@@ -46,7 +46,7 @@ public:
                    const std::array<RealType, 2>& theHSize) noexcept;
 
   //! Returns True if the box is void (non-initialized).
-  constexpr Standard_Boolean IsVoid() const noexcept;
+  constexpr bool IsVoid() const noexcept;
 
   //! Reset the box data.
   void Clear() noexcept;
@@ -72,56 +72,56 @@ public:
 
   //! Query the square diagonal. If the box is VOID (see method IsVoid())
   //! then a very big real value is returned.
-  constexpr Standard_Real SquareExtent() const noexcept;
+  constexpr double SquareExtent() const noexcept;
 
   //! Extend the Box by the absolute value of theDiff.
-  void Enlarge(const Standard_Real theDiff) noexcept;
+  void Enlarge(const double theDiff) noexcept;
 
   //! Limit the Box by the internals of theOtherBox.
   //! Returns True if the limitation takes place, otherwise False
   //! indicating that the boxes do not intersect.
-  Standard_Boolean Limit(const Bnd_B2<RealType>& theOtherBox);
+  bool Limit(const Bnd_B2<RealType>& theOtherBox);
 
   //! Transform the bounding box with the given transformation.
   //! The resulting box will be larger if theTrsf contains rotation.
-  Standard_NODISCARD Bnd_B2<RealType> Transformed(const gp_Trsf2d& theTrsf) const;
+  [[nodiscard]] Bnd_B2<RealType> Transformed(const gp_Trsf2d& theTrsf) const;
 
   //! Check the given point for the inclusion in the Box.
   //! Returns True if the point is outside.
-  constexpr Standard_Boolean IsOut(const gp_XY& thePnt) const noexcept;
+  constexpr bool IsOut(const gp_XY& thePnt) const noexcept;
 
   //! Check a circle for the intersection with the current box.
   //! Returns True if there is no intersection between boxes.
-  Standard_Boolean IsOut(const gp_XY&           theCenter,
-                         const Standard_Real    theRadius,
-                         const Standard_Boolean isCircleHollow = Standard_False) const;
+  bool IsOut(const gp_XY& theCenter,
+             const double theRadius,
+             const bool   isCircleHollow = false) const;
 
   //! Check the given box for the intersection with the current box.
   //! Returns True if there is no intersection between boxes.
-  constexpr Standard_Boolean IsOut(const Bnd_B2<RealType>& theOtherBox) const noexcept;
+  constexpr bool IsOut(const Bnd_B2<RealType>& theOtherBox) const noexcept;
 
   //! Check the given box oriented by the given transformation
   //! for the intersection with the current box.
   //! Returns True if there is no intersection between boxes.
-  Standard_Boolean IsOut(const Bnd_B2<RealType>& theOtherBox, const gp_Trsf2d& theTrsf) const;
+  bool IsOut(const Bnd_B2<RealType>& theOtherBox, const gp_Trsf2d& theTrsf) const;
 
   //! Check the given Line for the intersection with the current box.
   //! Returns True if there is no intersection.
-  Standard_Boolean IsOut(const gp_Ax2d& theLine) const;
+  bool IsOut(const gp_Ax2d& theLine) const;
 
   //! Check the Segment defined by the couple of input points
   //! for the intersection with the current box.
   //! Returns True if there is no intersection.
-  Standard_Boolean IsOut(const gp_XY& theP0, const gp_XY& theP1) const;
+  bool IsOut(const gp_XY& theP0, const gp_XY& theP1) const;
 
   //! Check that the box 'this' is inside the given box 'theBox'. Returns
   //! True if 'this' box is fully inside 'theBox'.
-  constexpr Standard_Boolean IsIn(const Bnd_B2<RealType>& theBox) const noexcept;
+  constexpr bool IsIn(const Bnd_B2<RealType>& theBox) const noexcept;
 
   //! Check that the box 'this' is inside the given box 'theBox'
   //! transformed by 'theTrsf'. Returns True if 'this' box is fully
   //! inside the transformed 'theBox'.
-  Standard_Boolean IsIn(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& theTrsf) const;
+  bool IsIn(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& theTrsf) const;
 
   //! Set the Center coordinates
   void SetCenter(const gp_XY& theCenter) noexcept;
@@ -144,13 +144,12 @@ public:
   constexpr const std::array<RealType, 2>& HSize() const noexcept;
 
 protected:
-  static constexpr Standard_Boolean compareDist(const RealType aHSize[2],
-                                                const RealType aDist[2]) noexcept
+  static constexpr bool compareDist(const RealType aHSize[2], const RealType aDist[2]) noexcept
   {
     return (std::abs(aDist[0]) > aHSize[0] || std::abs(aDist[1]) > aHSize[1]);
   }
 
-  static Standard_Boolean compareDistD(const gp_XY& aHSize, const gp_XY& aDist) noexcept
+  static bool compareDistD(const gp_XY& aHSize, const gp_XY& aDist) noexcept
   {
     return (std::abs(aDist.X()) > aHSize.X() || std::abs(aDist.Y()) > aHSize.Y());
   }
@@ -205,7 +204,7 @@ inline void Bnd_B2<RealType>::Clear() noexcept
 //=================================================================================================
 
 template <typename RealType>
-constexpr inline Standard_Boolean Bnd_B2<RealType>::IsVoid() const noexcept
+constexpr inline bool Bnd_B2<RealType>::IsVoid() const noexcept
 {
   return (myHSize[0] < -1e-5);
 }
@@ -249,7 +248,7 @@ inline gp_XY Bnd_B2<RealType>::CornerMax() const noexcept
 //=================================================================================================
 
 template <typename RealType>
-constexpr inline Standard_Real Bnd_B2<RealType>::SquareExtent() const noexcept
+constexpr inline double Bnd_B2<RealType>::SquareExtent() const noexcept
 {
   return 4 * (myHSize[0] * myHSize[0] + myHSize[1] * myHSize[1]);
 }
@@ -307,7 +306,7 @@ constexpr inline const std::array<RealType, 2>& Bnd_B2<RealType>::HSize() const 
 //=================================================================================================
 
 template <typename RealType>
-inline void Bnd_B2<RealType>::Enlarge(const Standard_Real aDiff) noexcept
+inline void Bnd_B2<RealType>::Enlarge(const double aDiff) noexcept
 {
   const RealType aD = RealType(std::abs(aDiff));
   myHSize[0] += aD;
@@ -317,7 +316,7 @@ inline void Bnd_B2<RealType>::Enlarge(const Standard_Real aDiff) noexcept
 //=================================================================================================
 
 template <typename RealType>
-constexpr inline Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY& thePnt) const noexcept
+constexpr inline bool Bnd_B2<RealType>::IsOut(const gp_XY& thePnt) const noexcept
 {
   return (std::abs(RealType(thePnt.X()) - myCenter[0]) > myHSize[0]
           || std::abs(RealType(thePnt.Y()) - myCenter[1]) > myHSize[1]);
@@ -326,8 +325,7 @@ constexpr inline Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY& thePnt) c
 //=================================================================================================
 
 template <typename RealType>
-constexpr inline Standard_Boolean Bnd_B2<RealType>::IsOut(
-  const Bnd_B2<RealType>& theBox) const noexcept
+constexpr inline bool Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox) const noexcept
 {
   return (std::abs(theBox.myCenter[0] - myCenter[0]) > theBox.myHSize[0] + myHSize[0]
           || std::abs(theBox.myCenter[1] - myCenter[1]) > theBox.myHSize[1] + myHSize[1]);
@@ -336,8 +334,7 @@ constexpr inline Standard_Boolean Bnd_B2<RealType>::IsOut(
 //=================================================================================================
 
 template <typename RealType>
-constexpr inline Standard_Boolean Bnd_B2<RealType>::IsIn(
-  const Bnd_B2<RealType>& theBox) const noexcept
+constexpr inline bool Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox) const noexcept
 {
   return (std::abs(theBox.myCenter[0] - myCenter[0]) < theBox.myHSize[0] - myHSize[0]
           && std::abs(theBox.myCenter[1] - myCenter[1]) < theBox.myHSize[1] - myHSize[1]);
@@ -389,11 +386,11 @@ void Bnd_B2<RealType>::Add(const gp_XY& thePnt)
 //=================================================================================================
 
 template <typename RealType>
-Standard_Boolean Bnd_B2<RealType>::Limit(const Bnd_B2<RealType>& theBox)
+bool Bnd_B2<RealType>::Limit(const Bnd_B2<RealType>& theBox)
 {
-  Standard_Boolean aResult(Standard_False);
-  const RealType   diffC[2] = {theBox.myCenter[0] - myCenter[0], theBox.myCenter[1] - myCenter[1]};
-  const RealType   sumH[2]  = {theBox.myHSize[0] + myHSize[0], theBox.myHSize[1] + myHSize[1]};
+  bool           aResult(false);
+  const RealType diffC[2] = {theBox.myCenter[0] - myCenter[0], theBox.myCenter[1] - myCenter[1]};
+  const RealType sumH[2]  = {theBox.myHSize[0] + myHSize[0], theBox.myHSize[1] + myHSize[1]};
   // check the condition IsOut
   if (!compareDist(sumH, diffC))
   {
@@ -422,7 +419,7 @@ Standard_Boolean Bnd_B2<RealType>::Limit(const Bnd_B2<RealType>& theBox)
       myCenter[1] += aShift;
       myHSize[1] += aShift;
     }
-    aResult = Standard_True;
+    aResult = true;
   }
   return aResult;
 }
@@ -432,10 +429,10 @@ Standard_Boolean Bnd_B2<RealType>::Limit(const Bnd_B2<RealType>& theBox)
 template <typename RealType>
 Bnd_B2<RealType> Bnd_B2<RealType>::Transformed(const gp_Trsf2d& theTrsf) const
 {
-  Bnd_B2<RealType>    aResult;
-  const gp_TrsfForm   aForm     = theTrsf.Form();
-  const Standard_Real aScale    = theTrsf.ScaleFactor();
-  const Standard_Real aScaleAbs = std::abs(aScale);
+  Bnd_B2<RealType>  aResult;
+  const gp_TrsfForm aForm     = theTrsf.Form();
+  const double      aScale    = theTrsf.ScaleFactor();
+  const double      aScaleAbs = std::abs(aScale);
   if (aForm == gp_Identity)
     aResult = *this;
   else if (aForm == gp_Translation || aForm == gp_PntMirror || aForm == gp_Scale)
@@ -447,12 +444,12 @@ Bnd_B2<RealType> Bnd_B2<RealType>::Transformed(const gp_Trsf2d& theTrsf) const
   }
   else
   {
-    gp_XY aCenter((Standard_Real)myCenter[0], (Standard_Real)myCenter[1]);
+    gp_XY aCenter((double)myCenter[0], (double)myCenter[1]);
     theTrsf.Transforms(aCenter);
     aResult.myCenter[0] = (RealType)aCenter.X();
     aResult.myCenter[1] = (RealType)aCenter.Y();
 
-    const Standard_Real* aMat = &theTrsf.HVectorialPart().Value(1, 1);
+    const double* aMat = &theTrsf.HVectorialPart().Value(1, 1);
     aResult.myHSize[0] =
       (RealType)(aScaleAbs * (std::abs(aMat[0]) * myHSize[0] + std::abs(aMat[1]) * myHSize[1]));
     aResult.myHSize[1] =
@@ -464,18 +461,17 @@ Bnd_B2<RealType> Bnd_B2<RealType>::Transformed(const gp_Trsf2d& theTrsf) const
 //=================================================================================================
 
 template <typename RealType>
-Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY&           theCenter,
-                                         const Standard_Real    theRadius,
-                                         const Standard_Boolean isCircleHollow) const
+bool Bnd_B2<RealType>::IsOut(const gp_XY& theCenter,
+                             const double theRadius,
+                             const bool   isCircleHollow) const
 {
-  Standard_Boolean aResult(Standard_True);
+  bool aResult(true);
   if (!isCircleHollow)
   {
     // vector from the center of the circle to the nearest box face
-    const Standard_Real aDist[2] = {
-      std::abs(theCenter.X() - Standard_Real(myCenter[0])) - Standard_Real(myHSize[0]),
-      std::abs(theCenter.Y() - Standard_Real(myCenter[1])) - Standard_Real(myHSize[1])};
-    Standard_Real aD(0.);
+    const double aDist[2] = {std::abs(theCenter.X() - double(myCenter[0])) - double(myHSize[0]),
+                             std::abs(theCenter.Y() - double(myCenter[1])) - double(myHSize[1])};
+    double       aD(0.);
     if (aDist[0] > 0.)
       aD = aDist[0] * aDist[0];
     if (aDist[1] > 0.)
@@ -484,12 +480,11 @@ Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY&           theCenter,
   }
   else
   {
-    const Standard_Real aDistC[2] = {std::abs(theCenter.X() - Standard_Real(myCenter[0])),
-                                     std::abs(theCenter.Y() - Standard_Real(myCenter[1]))};
+    const double aDistC[2] = {std::abs(theCenter.X() - double(myCenter[0])),
+                              std::abs(theCenter.Y() - double(myCenter[1]))};
     // vector from the center of the circle to the nearest box face
-    Standard_Real aDist[2] = {aDistC[0] - Standard_Real(myHSize[0]),
-                              aDistC[1] - Standard_Real(myHSize[1])};
-    Standard_Real aD(0.);
+    double aDist[2] = {aDistC[0] - double(myHSize[0]), aDistC[1] - double(myHSize[1])};
+    double aD(0.);
     if (aDist[0] > 0.)
       aD = aDist[0] * aDist[0];
     if (aDist[1] > 0.)
@@ -498,10 +493,10 @@ Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY&           theCenter,
     {
       // the box intersects the solid circle; check if it is completely
       // inside the circle (in such case return isOut==True)
-      aDist[0] = aDistC[0] + Standard_Real(myHSize[0]);
-      aDist[1] = aDistC[1] + Standard_Real(myHSize[1]);
+      aDist[0] = aDistC[0] + double(myHSize[0]);
+      aDist[1] = aDistC[1] + double(myHSize[1]);
       if (aDist[0] * aDist[0] + aDist[1] * aDist[1] > theRadius * theRadius)
-        aResult = Standard_False;
+        aResult = false;
     }
   }
   return aResult;
@@ -510,13 +505,12 @@ Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY&           theCenter,
 //=================================================================================================
 
 template <typename RealType>
-Standard_Boolean Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox,
-                                         const gp_Trsf2d&        theTrsf) const
+bool Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& theTrsf) const
 {
-  Standard_Boolean    aResult(Standard_False);
-  const gp_TrsfForm   aForm     = theTrsf.Form();
-  const Standard_Real aScale    = theTrsf.ScaleFactor();
-  const Standard_Real aScaleAbs = std::abs(aScale);
+  bool              aResult(false);
+  const gp_TrsfForm aForm     = theTrsf.Form();
+  const double      aScale    = theTrsf.ScaleFactor();
+  const double      aScaleAbs = std::abs(aScale);
   if (aForm == gp_Translation || aForm == gp_Identity || aForm == gp_PntMirror || aForm == gp_Scale)
   {
     aResult =
@@ -530,23 +524,22 @@ Standard_Boolean Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox,
   {
     // theBox is transformed and we check the resulting (enlarged) box against
     // 'this' box.
-    const Standard_Real* aMat = &theTrsf.HVectorialPart().Value(1, 1);
+    const double* aMat = &theTrsf.HVectorialPart().Value(1, 1);
 
-    gp_XY aCenter((Standard_Real)theBox.myCenter[0], (Standard_Real)theBox.myCenter[1]);
+    gp_XY aCenter((double)theBox.myCenter[0], (double)theBox.myCenter[1]);
     theTrsf.Transforms(aCenter);
-    const Standard_Real aDist[2]   = {aCenter.X() - (Standard_Real)myCenter[0],
-                                      aCenter.Y() - (Standard_Real)myCenter[1]};
-    const Standard_Real aMatAbs[4] = {std::abs(aMat[0]),
-                                      std::abs(aMat[1]),
-                                      std::abs(aMat[2]),
-                                      std::abs(aMat[3])};
+    const double aDist[2] = {aCenter.X() - (double)myCenter[0], aCenter.Y() - (double)myCenter[1]};
+    const double aMatAbs[4] = {std::abs(aMat[0]),
+                               std::abs(aMat[1]),
+                               std::abs(aMat[2]),
+                               std::abs(aMat[3])};
     if (std::abs(aDist[0])
           > (aScaleAbs * (aMatAbs[0] * theBox.myHSize[0] + aMatAbs[1] * theBox.myHSize[1])
-             + (Standard_Real)myHSize[0])
+             + (double)myHSize[0])
         || std::abs(aDist[1])
              > (aScaleAbs * (aMatAbs[2] * theBox.myHSize[0] + aMatAbs[3] * theBox.myHSize[1])
-                + (Standard_Real)myHSize[1]))
-      aResult = Standard_True;
+                + (double)myHSize[1]))
+      aResult = true;
 
     else
     {
@@ -557,7 +550,7 @@ Standard_Boolean Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox,
           || (std::abs(aMat[1] * aDist[0] + aMat[3] * aDist[1])
               > theBox.myHSize[1] * aScaleAbs
                   + (aMatAbs[1] * myHSize[0] + aMatAbs[3] * myHSize[1])))
-        aResult = Standard_True;
+        aResult = true;
     }
   }
   return aResult;
@@ -566,40 +559,39 @@ Standard_Boolean Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox,
 //=================================================================================================
 
 template <typename RealType>
-Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_Ax2d& theLine) const
+bool Bnd_B2<RealType>::IsOut(const gp_Ax2d& theLine) const
 {
   if (IsVoid())
-    return Standard_True;
+    return true;
   // Intersect the line containing the segment.
-  const Standard_Real aProd[3] = {
+  const double aProd[3] = {
     theLine.Direction().XY()
       ^ (gp_XY(myCenter[0] - theLine.Location().X(), myCenter[1] - theLine.Location().Y())),
-    theLine.Direction().X() * Standard_Real(myHSize[1]),
-    theLine.Direction().Y() * Standard_Real(myHSize[0])};
+    theLine.Direction().X() * double(myHSize[1]),
+    theLine.Direction().Y() * double(myHSize[0])};
   return (std::abs(aProd[0]) > (std::abs(aProd[1]) + std::abs(aProd[2])));
 }
 
 //=================================================================================================
 
 template <typename RealType>
-Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY& theP0, const gp_XY& theP1) const
+bool Bnd_B2<RealType>::IsOut(const gp_XY& theP0, const gp_XY& theP1) const
 {
-  Standard_Boolean aResult(Standard_True);
+  bool aResult(true);
   if (!IsVoid())
   {
     // Intersect the line containing the segment.
-    const gp_XY         aSegDelta(theP1 - theP0);
-    const Standard_Real aProd[3] = {aSegDelta ^ (gp_XY(myCenter[0], myCenter[1]) - theP0),
-                                    aSegDelta.X() * Standard_Real(myHSize[1]),
-                                    aSegDelta.Y() * Standard_Real(myHSize[0])};
+    const gp_XY  aSegDelta(theP1 - theP0);
+    const double aProd[3] = {aSegDelta ^ (gp_XY(myCenter[0], myCenter[1]) - theP0),
+                             aSegDelta.X() * double(myHSize[1]),
+                             aSegDelta.Y() * double(myHSize[0])};
     if (std::abs(aProd[0]) < (std::abs(aProd[1]) + std::abs(aProd[2])))
     {
       // Intersection with line detected; check the segment as bounding box
       const gp_XY aHSeg(0.5 * aSegDelta.X(), 0.5 * aSegDelta.Y());
       const gp_XY aHSegAbs(std::abs(aHSeg.X()), std::abs(aHSeg.Y()));
-      aResult =
-        compareDistD(gp_XY((Standard_Real)myHSize[0], (Standard_Real)myHSize[1]) + aHSegAbs,
-                     theP0 + aHSeg - gp_XY((Standard_Real)myCenter[0], (Standard_Real)myCenter[1]));
+      aResult = compareDistD(gp_XY((double)myHSize[0], (double)myHSize[1]) + aHSegAbs,
+                             theP0 + aHSeg - gp_XY((double)myCenter[0], (double)myCenter[1]));
     }
   }
   return aResult;
@@ -608,13 +600,12 @@ Standard_Boolean Bnd_B2<RealType>::IsOut(const gp_XY& theP0, const gp_XY& theP1)
 //=================================================================================================
 
 template <typename RealType>
-Standard_Boolean Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox,
-                                        const gp_Trsf2d&        theTrsf) const
+bool Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& theTrsf) const
 {
-  Standard_Boolean    aResult(Standard_False);
-  const gp_TrsfForm   aForm     = theTrsf.Form();
-  const Standard_Real aScale    = theTrsf.ScaleFactor();
-  const Standard_Real aScaleAbs = std::abs(aScale);
+  bool              aResult(false);
+  const gp_TrsfForm aForm     = theTrsf.Form();
+  const double      aScale    = theTrsf.ScaleFactor();
+  const double      aScaleAbs = std::abs(aScale);
   if (aForm == gp_Translation || aForm == gp_Identity || aForm == gp_PntMirror || aForm == gp_Scale)
   {
     aResult =
@@ -628,18 +619,17 @@ Standard_Boolean Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox,
   {
     // theBox is rotated, scaled and translated. We apply the reverse
     // translation and scaling then check against the rotated box 'this'
-    const Standard_Real* aMat = &theTrsf.HVectorialPart().Value(1, 1);
-    gp_XY aCenter((Standard_Real)theBox.myCenter[0], (Standard_Real)theBox.myCenter[1]);
+    const double* aMat = &theTrsf.HVectorialPart().Value(1, 1);
+    gp_XY         aCenter((double)theBox.myCenter[0], (double)theBox.myCenter[1]);
     theTrsf.Transforms(aCenter);
-    const Standard_Real aDist[2] = {aCenter.X() - (Standard_Real)myCenter[0],
-                                    aCenter.Y() - (Standard_Real)myCenter[1]};
+    const double aDist[2] = {aCenter.X() - (double)myCenter[0], aCenter.Y() - (double)myCenter[1]};
     if ((std::abs(aMat[0] * aDist[0] + aMat[2] * aDist[1])
          < theBox.myHSize[0] * aScaleAbs
              - (std::abs(aMat[0]) * myHSize[0] + std::abs(aMat[2]) * myHSize[1]))
         && (std::abs(aMat[1] * aDist[0] + aMat[3] * aDist[1])
             < theBox.myHSize[1] * aScaleAbs
                 - (std::abs(aMat[1]) * myHSize[0] + std::abs(aMat[3]) * myHSize[1])))
-      aResult = Standard_True;
+      aResult = true;
   }
   return aResult;
 }
@@ -647,9 +637,9 @@ Standard_Boolean Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox,
 //=================================================================================================
 
 //! 2D bounding box with double precision
-using Bnd_B2d = Bnd_B2<Standard_Real>;
+using Bnd_B2d = Bnd_B2<double>;
 
 //! 2D bounding box with single precision
-using Bnd_B2f = Bnd_B2<Standard_ShortReal>;
+using Bnd_B2f = Bnd_B2<float>;
 
 #endif // _Bnd_B2_HeaderFile

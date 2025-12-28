@@ -19,14 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
+#include <StepAP203_PersonOrganizationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_PersonAndOrganizationAssignment.hxx>
 class StepBasic_PersonAndOrganization;
 class StepBasic_PersonAndOrganizationRole;
-
-class StepAP203_CcDesignPersonAndOrganizationAssignment;
-DEFINE_STANDARD_HANDLE(StepAP203_CcDesignPersonAndOrganizationAssignment,
-                       StepBasic_PersonAndOrganizationAssignment)
 
 //! Representation of STEP entity CcDesignPersonAndOrganizationAssignment
 class StepAP203_CcDesignPersonAndOrganizationAssignment
@@ -39,23 +37,23 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(StepBasic_PersonAndOrganization)&
+    const occ::handle<StepBasic_PersonAndOrganization>&
       aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
-    const Handle(StepBasic_PersonAndOrganizationRole)&       aPersonAndOrganizationAssignment_Role,
-    const Handle(StepAP203_HArray1OfPersonOrganizationItem)& aItems);
+    const occ::handle<StepBasic_PersonAndOrganizationRole>& aPersonAndOrganizationAssignment_Role,
+    const occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP203_HArray1OfPersonOrganizationItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfPersonOrganizationItem)& Items);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignPersonAndOrganizationAssignment,
                           StepBasic_PersonAndOrganizationAssignment)
 
-protected:
 private:
-  Handle(StepAP203_HArray1OfPersonOrganizationItem) theItems;
+  occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> theItems;
 };
 
 #endif // _StepAP203_CcDesignPersonAndOrganizationAssignment_HeaderFile

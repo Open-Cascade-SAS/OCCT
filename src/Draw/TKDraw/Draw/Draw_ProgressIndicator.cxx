@@ -31,13 +31,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_ProgressIndicator, Message_ProgressIndicator)
 //=================================================================================================
 
 Draw_ProgressIndicator::Draw_ProgressIndicator(const Draw_Interpretor& di,
-                                               Standard_Real           theUpdateThreshold)
+                                               double                  theUpdateThreshold)
     : myTclMode(DefaultTclMode()),
       myConsoleMode(DefaultConsoleMode()),
       myGraphMode(DefaultGraphMode()),
       myDraw((Draw_Interpretor*)&di),
-      myShown(Standard_False),
-      myBreak(Standard_False),
+      myShown(false),
+      myBreak(false),
       myUpdateThreshold(0.01 * theUpdateThreshold),
       myLastPosition(-1.),
       myStartTime(0),
@@ -63,17 +63,16 @@ void Draw_ProgressIndicator::Reset()
     const TCollection_AsciiString aTclResStr(myDraw->Result());
     myDraw->Eval("destroy .xprogress");
     *myDraw << aTclResStr;
-    myShown = Standard_False;
+    myShown = false;
   }
-  myBreak        = Standard_False;
+  myBreak        = false;
   myLastPosition = -1.;
   myStartTime    = 0;
 }
 
 //=================================================================================================
 
-void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope,
-                                  const Standard_Boolean       force)
+void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope, const bool force)
 {
   if (!myGraphMode && !myTclMode && !myConsoleMode)
     return;
@@ -85,13 +84,13 @@ void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope,
     {
       time_t aTimeT;
       time(&aTimeT);
-      myStartTime = (Standard_Size)aTimeT;
+      myStartTime = (size_t)aTimeT;
     }
   }
 
   // unless show is forced, show updated state only if at least 1% progress has been reached since
   // the last update
-  Standard_Real aPosition = GetPosition();
+  double aPosition = GetPosition();
   if (!force && (1. - aPosition) > Precision::Confusion()
       && std::abs(aPosition - myLastPosition) < myUpdateThreshold)
     return; // return if update interval has not elapsed
@@ -114,7 +113,7 @@ void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope,
     aText << " " << aPS->Name() << ": ";
 
     // print progress info differently for finite and infinite scopes
-    Standard_Real aVal = aPS->Value();
+    double aVal = aPS->Value();
     if (aPS->IsInfinite())
     {
       if (Precision::IsInfinite(aVal))
@@ -141,7 +140,7 @@ void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope,
     {
       time_t aTimeT;
       time(&aTimeT);
-      Standard_Size aTime = (Standard_Size)aTimeT;
+      size_t aTime = (size_t)aTimeT;
       aText << "\nElapsed/estimated time: " << (long)(aTime - myStartTime) << "/"
             << (aTime - myStartTime) / GetPosition() << " sec";
     }
@@ -164,7 +163,7 @@ void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope,
               "pack .xprogress.bar .xprogress.text .xprogress.stop -side top;",
               this);
       myDraw->Eval(command);
-      myShown = Standard_True;
+      myShown = true;
     }
     std::stringstream aCommand;
     aCommand.setf(std::ios::fixed, std::ios::floatfield);
@@ -192,13 +191,13 @@ void Draw_ProgressIndicator::Show(const Message_ProgressScope& theScope,
 
 //=================================================================================================
 
-Standard_Boolean Draw_ProgressIndicator::UserBreak()
+bool Draw_ProgressIndicator::UserBreak()
 {
   if (StopIndicator() == this)
   {
     //    std::cout << "Progress Indicator - User Break: " << StopIndicator() << ", " << (void*)this
     //    << std::endl;
-    myBreak = Standard_True;
+    myBreak = true;
     myDraw->Eval("XProgress -stop 0");
   }
   else
@@ -210,7 +209,7 @@ Standard_Boolean Draw_ProgressIndicator::UserBreak()
     }
     catch (const OSD_Exception_CTRL_BREAK&)
     {
-      myBreak = Standard_True;
+      myBreak = true;
     }
   }
   return myBreak;
@@ -221,7 +220,7 @@ Standard_Boolean Draw_ProgressIndicator::UserBreak()
 // purpose  : Sets Tcl output mode (on/off)
 //=======================================================================
 
-void Draw_ProgressIndicator::SetTclMode(const Standard_Boolean theTclMode)
+void Draw_ProgressIndicator::SetTclMode(const bool theTclMode)
 {
   myTclMode = theTclMode;
 }
@@ -231,7 +230,7 @@ void Draw_ProgressIndicator::SetTclMode(const Standard_Boolean theTclMode)
 // purpose  : Returns Tcl output mode (on/off)
 //=======================================================================
 
-Standard_Boolean Draw_ProgressIndicator::GetTclMode() const
+bool Draw_ProgressIndicator::GetTclMode() const
 {
   return myTclMode;
 }
@@ -241,7 +240,7 @@ Standard_Boolean Draw_ProgressIndicator::GetTclMode() const
 // purpose  : Sets Console output mode (on/off)
 //=======================================================================
 
-void Draw_ProgressIndicator::SetConsoleMode(const Standard_Boolean theMode)
+void Draw_ProgressIndicator::SetConsoleMode(const bool theMode)
 {
   myConsoleMode = theMode;
 }
@@ -251,7 +250,7 @@ void Draw_ProgressIndicator::SetConsoleMode(const Standard_Boolean theMode)
 // purpose  : Returns Console output mode (on/off)
 //=======================================================================
 
-Standard_Boolean Draw_ProgressIndicator::GetConsoleMode() const
+bool Draw_ProgressIndicator::GetConsoleMode() const
 {
   return myConsoleMode;
 }
@@ -261,7 +260,7 @@ Standard_Boolean Draw_ProgressIndicator::GetConsoleMode() const
 // purpose  : Sets graphical output mode (on/off)
 //=======================================================================
 
-void Draw_ProgressIndicator::SetGraphMode(const Standard_Boolean theGraphMode)
+void Draw_ProgressIndicator::SetGraphMode(const bool theGraphMode)
 {
   myGraphMode = theGraphMode;
 }
@@ -271,39 +270,39 @@ void Draw_ProgressIndicator::SetGraphMode(const Standard_Boolean theGraphMode)
 // purpose  : Returns graphical output mode (on/off)
 //=======================================================================
 
-Standard_Boolean Draw_ProgressIndicator::GetGraphMode() const
+bool Draw_ProgressIndicator::GetGraphMode() const
 {
   return myGraphMode;
 }
 
 //=================================================================================================
 
-Standard_Boolean& Draw_ProgressIndicator::DefaultTclMode()
+bool& Draw_ProgressIndicator::DefaultTclMode()
 {
-  static Standard_Boolean defTclMode = Standard_False;
+  static bool defTclMode = false;
   return defTclMode;
 }
 
 //=================================================================================================
 
-Standard_Boolean& Draw_ProgressIndicator::DefaultConsoleMode()
+bool& Draw_ProgressIndicator::DefaultConsoleMode()
 {
-  static Standard_Boolean defConsoleMode = Standard_False;
+  static bool defConsoleMode = false;
   return defConsoleMode;
 }
 
 //=================================================================================================
 
-Standard_Boolean& Draw_ProgressIndicator::DefaultGraphMode()
+bool& Draw_ProgressIndicator::DefaultGraphMode()
 {
-  static Standard_Boolean defGraphMode = Standard_False;
+  static bool defGraphMode = false;
   return defGraphMode;
 }
 
 //=================================================================================================
 
-Standard_Address& Draw_ProgressIndicator::StopIndicator()
+void*& Draw_ProgressIndicator::StopIndicator()
 {
-  static Standard_Address stopIndicator = 0;
+  static void* stopIndicator = 0;
   return stopIndicator;
 }

@@ -21,7 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_HArray1OfShape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <BRepFill_SectionLaw.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
@@ -31,62 +32,53 @@ class TopoDS_Wire;
 class GeomFill_SectionLaw;
 class TopoDS_Edge;
 
-class BRepFill_ShapeLaw;
-DEFINE_STANDARD_HANDLE(BRepFill_ShapeLaw, BRepFill_SectionLaw)
-
 //! Build Section Law, with an Vertex, or an Wire
 class BRepFill_ShapeLaw : public BRepFill_SectionLaw
 {
 
 public:
   //! Construct an constant Law
-  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Vertex&   V,
-                                    const Standard_Boolean Build = Standard_True);
+  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Vertex& V, const bool Build = true);
 
   //! Construct an constant Law
-  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Wire&     W,
-                                    const Standard_Boolean Build = Standard_True);
+  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Wire& W, const bool Build = true);
 
   //! Construct an evolutive Law
-  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Wire&          W,
-                                    const Handle(Law_Function)& L,
-                                    const Standard_Boolean      Build = Standard_True);
+  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Wire&               W,
+                                    const occ::handle<Law_Function>& L,
+                                    const bool                       Build = true);
 
   //! Say if the input shape is a vertex.
-  Standard_EXPORT virtual Standard_Boolean IsVertex() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsVertex() const override;
 
   //! Say if the Law is Constant.
-  Standard_EXPORT virtual Standard_Boolean IsConstant() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsConstant() const override;
 
   //! Give the law build on a concatenated section
-  Standard_EXPORT virtual Handle(GeomFill_SectionLaw) ConcatenedLaw() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<GeomFill_SectionLaw> ConcatenedLaw() const override;
 
-  Standard_EXPORT virtual GeomAbs_Shape Continuity(const Standard_Integer Index,
-                                                   const Standard_Real    TolAngular) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual GeomAbs_Shape Continuity(const int    Index,
+                                                   const double TolAngular) const override;
 
-  Standard_EXPORT virtual Standard_Real VertexTol(const Standard_Integer Index,
-                                                  const Standard_Real    Param) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double VertexTol(const int Index, const double Param) const override;
 
-  Standard_EXPORT virtual TopoDS_Vertex Vertex(const Standard_Integer Index,
-                                               const Standard_Real Param) const Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Vertex Vertex(const int Index, const double Param) const override;
 
-  Standard_EXPORT virtual void D0(const Standard_Real Param, TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual void D0(const double Param, TopoDS_Shape& S) override;
 
-  const TopoDS_Edge& Edge(const Standard_Integer Index) const;
+  const TopoDS_Edge& Edge(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(BRepFill_ShapeLaw, BRepFill_SectionLaw)
 
 protected:
-  Standard_Boolean vertex;
+  bool vertex;
 
 private:
-  Standard_EXPORT void Init(const Standard_Boolean B);
+  Standard_EXPORT void Init(const bool B);
 
-  TopoDS_Shape                    myShape;
-  Handle(TopTools_HArray1OfShape) myEdges;
-  Handle(Law_Function)            TheLaw;
+  TopoDS_Shape                                   myShape;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> myEdges;
+  occ::handle<Law_Function>                      TheLaw;
 };
 
 #include <BRepFill_ShapeLaw.lxx>

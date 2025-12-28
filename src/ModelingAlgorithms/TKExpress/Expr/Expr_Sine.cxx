@@ -27,62 +27,63 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_Sine, Expr_UnaryExpression)
 
-Expr_Sine::Expr_Sine(const Handle(Expr_GeneralExpression)& exp)
+Expr_Sine::Expr_Sine(const occ::handle<Expr_GeneralExpression>& exp)
 {
   CreateOperand(exp);
 }
 
-Handle(Expr_GeneralExpression) Expr_Sine::ShallowSimplified() const
+occ::handle<Expr_GeneralExpression> Expr_Sine::ShallowSimplified() const
 {
-  Handle(Expr_GeneralExpression) myexp = Operand();
+  occ::handle<Expr_GeneralExpression> myexp = Operand();
   if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
-    Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
+    occ::handle<Expr_NumericValue> myNVexp = occ::down_cast<Expr_NumericValue>(myexp);
     return new Expr_NumericValue(std::sin(myNVexp->GetValue()));
   }
   if (myexp->IsKind(STANDARD_TYPE(Expr_ArcSine)))
   {
     return myexp->SubExpression(1);
   }
-  Handle(Expr_Sine) me = this;
+  occ::handle<Expr_Sine> me = this;
   return me;
 }
 
-Handle(Expr_GeneralExpression) Expr_Sine::Copy() const
+occ::handle<Expr_GeneralExpression> Expr_Sine::Copy() const
 {
   return new Expr_Sine(Expr::CopyShare(Operand()));
 }
 
-Standard_Boolean Expr_Sine::IsIdentical(const Handle(Expr_GeneralExpression)& Other) const
+bool Expr_Sine::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const
 {
   if (Other->IsKind(STANDARD_TYPE(Expr_Sine)))
   {
-    Handle(Expr_GeneralExpression) myexp = Operand();
+    occ::handle<Expr_GeneralExpression> myexp = Operand();
     return myexp->IsIdentical(Other->SubExpression(1));
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean Expr_Sine::IsLinear() const
+bool Expr_Sine::IsLinear() const
 {
   return !ContainsUnknowns();
 }
 
-Handle(Expr_GeneralExpression) Expr_Sine::Derivative(const Handle(Expr_NamedUnknown)& X) const
+occ::handle<Expr_GeneralExpression> Expr_Sine::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
     return new Expr_NumericValue(0.0);
   }
-  Handle(Expr_GeneralExpression) myexp    = Operand();
-  Handle(Expr_GeneralExpression) myder    = myexp->Derivative(X);
-  Handle(Expr_Cosine)            firstder = new Expr_Cosine(Expr::CopyShare(myexp));
-  Handle(Expr_Product)           resu     = firstder->ShallowSimplified() * myder;
+  occ::handle<Expr_GeneralExpression> myexp    = Operand();
+  occ::handle<Expr_GeneralExpression> myder    = myexp->Derivative(X);
+  occ::handle<Expr_Cosine>            firstder = new Expr_Cosine(Expr::CopyShare(myexp));
+  occ::handle<Expr_Product>           resu     = firstder->ShallowSimplified() * myder;
   return resu->ShallowSimplified();
 }
 
-Standard_Real Expr_Sine::Evaluate(const Expr_Array1OfNamedUnknown& vars,
-                                  const TColStd_Array1OfReal&      vals) const
+double Expr_Sine::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                           const NCollection_Array1<double>&                         vals) const
 {
   return std::sin(Operand()->Evaluate(vars, vals));
 }

@@ -17,8 +17,6 @@
 #include <Message_Printer.hxx>
 #include <TCollection_AsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(Message_PrinterSystemLog, Message_Printer)
-
 //! Implementation of a message printer associated with system log.
 //! Implemented for the following systems:
 //! - Windows, through ReportEventW().
@@ -38,12 +36,12 @@ public:
 protected:
   //! Puts a message to the system log.
   Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity theGravity) const Standard_OVERRIDE;
+                                    const Message_Gravity          theGravity) const override;
 
 private:
   TCollection_AsciiString myEventSourceName;
 #ifdef _WIN32
-  Standard_Address myEventSource;
+  void* myEventSource;
 #endif
 };
 

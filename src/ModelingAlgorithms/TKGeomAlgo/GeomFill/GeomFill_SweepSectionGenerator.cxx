@@ -32,48 +32,50 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_RangeError.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <stdio.h>
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
   #include <Geom_BSplineCurve.hxx>
-static Standard_Boolean Affich     = Standard_False;
-static Standard_Integer NbSECTIONS = 0;
+static bool Affich     = false;
+static int  NbSECTIONS = 0;
 #endif
 
 //=================================================================================================
 
 GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator()
     : myRadius(0.0),
-      myIsDone(Standard_False),
+      myIsDone(false),
       myNbSections(0),
       myType(-1),
-      myPolynomial(Standard_False)
+      myPolynomial(false)
 {
 }
 
 //=================================================================================================
 
-GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path,
-                                                               const Standard_Real       Radius)
+GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator(const occ::handle<Geom_Curve>& Path,
+                                                               const double Radius)
 {
   Init(Path, Radius);
 }
 
 //=================================================================================================
 
-GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path,
-                                                               const Handle(Geom_Curve)& FirstSect)
+GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator(
+  const occ::handle<Geom_Curve>& Path,
+  const occ::handle<Geom_Curve>& FirstSect)
 {
   Init(Path, FirstSect);
 }
 
 //=================================================================================================
 
-GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path,
-                                                               const Handle(Geom_Curve)& FirstSect,
-                                                               const Handle(Geom_Curve)& LastSect)
+GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator(
+  const occ::handle<Geom_Curve>& Path,
+  const occ::handle<Geom_Curve>& FirstSect,
+  const occ::handle<Geom_Curve>& LastSect)
 {
   Init(Path, FirstSect, LastSect);
 }
@@ -81,20 +83,19 @@ GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator(const Handle(Geom
 //=================================================================================================
 
 GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator(
-  const Handle(Adaptor3d_Curve)& Path,
-  const Handle(Adaptor3d_Curve)& Curve1,
-  const Handle(Adaptor3d_Curve)& Curve2,
-  const Standard_Real            Radius)
+  const occ::handle<Adaptor3d_Curve>& Path,
+  const occ::handle<Adaptor3d_Curve>& Curve1,
+  const occ::handle<Adaptor3d_Curve>& Curve2,
+  const double                        Radius)
 {
   Init(Path, Curve1, Curve2, Radius);
 }
 
 //=================================================================================================
 
-void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
-                                          const Standard_Real       Radius)
+void GeomFill_SweepSectionGenerator::Init(const occ::handle<Geom_Curve>& Path, const double Radius)
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
   myRadius = Radius;
   GeomAdaptor_Curve ThePath(Path);
 
@@ -108,7 +109,7 @@ void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
     myType = 1;
   if (Path->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    myPath = Handle(Geom_BSplineCurve)::DownCast(Path->Copy());
+    myPath = occ::down_cast<Geom_BSplineCurve>(Path->Copy());
   }
   else
   {
@@ -118,10 +119,10 @@ void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
 
 //=================================================================================================
 
-void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
-                                          const Handle(Geom_Curve)& FirstSect)
+void GeomFill_SweepSectionGenerator::Init(const occ::handle<Geom_Curve>& Path,
+                                          const occ::handle<Geom_Curve>& FirstSect)
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
   myRadius = 0;
   GeomAdaptor_Curve ThePath(Path);
 
@@ -136,7 +137,7 @@ void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
 
   if (Path->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    myPath = Handle(Geom_BSplineCurve)::DownCast(Path->Copy());
+    myPath = occ::down_cast<Geom_BSplineCurve>(Path->Copy());
   }
   else
   {
@@ -144,7 +145,7 @@ void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
   }
   if (FirstSect->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    myFirstSect = Handle(Geom_BSplineCurve)::DownCast(FirstSect->Copy());
+    myFirstSect = occ::down_cast<Geom_BSplineCurve>(FirstSect->Copy());
   }
   else
   {
@@ -157,11 +158,11 @@ void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
 
 //=================================================================================================
 
-void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
-                                          const Handle(Geom_Curve)& FirstSect,
-                                          const Handle(Geom_Curve)& LastSect)
+void GeomFill_SweepSectionGenerator::Init(const occ::handle<Geom_Curve>& Path,
+                                          const occ::handle<Geom_Curve>& FirstSect,
+                                          const occ::handle<Geom_Curve>& LastSect)
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
   myRadius = 0;
   GeomAdaptor_Curve ThePath(Path);
 
@@ -176,7 +177,7 @@ void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
 
   if (Path->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    myPath = Handle(Geom_BSplineCurve)::DownCast(Path->Copy());
+    myPath = occ::down_cast<Geom_BSplineCurve>(Path->Copy());
   }
   else
   {
@@ -186,7 +187,7 @@ void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
   // JAG
   if (FirstSect->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    myFirstSect = Handle(Geom_BSplineCurve)::DownCast(FirstSect->Copy());
+    myFirstSect = occ::down_cast<Geom_BSplineCurve>(FirstSect->Copy());
   }
   else
   {
@@ -194,7 +195,7 @@ void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
   }
   if (LastSect->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    myLastSect = Handle(Geom_BSplineCurve)::DownCast(LastSect->Copy());
+    myLastSect = occ::down_cast<Geom_BSplineCurve>(LastSect->Copy());
   }
   else
   {
@@ -213,43 +214,43 @@ void GeomFill_SweepSectionGenerator::Init(const Handle(Geom_Curve)& Path,
   Profil.AddCurve(myLastSect);
   Profil.Perform(Precision::Confusion());
 
-  myFirstSect = Handle(Geom_BSplineCurve)::DownCast(Profil.Curve(1));
-  myLastSect  = Handle(Geom_BSplineCurve)::DownCast(Profil.Curve(2));
+  myFirstSect = occ::down_cast<Geom_BSplineCurve>(Profil.Curve(1));
+  myLastSect  = occ::down_cast<Geom_BSplineCurve>(Profil.Curve(2));
 }
 
 //=================================================================================================
 
-void GeomFill_SweepSectionGenerator::Init(const Handle(Adaptor3d_Curve)& Path,
-                                          const Handle(Adaptor3d_Curve)& Curve1,
-                                          const Handle(Adaptor3d_Curve)& Curve2,
-                                          const Standard_Real            Radius)
+void GeomFill_SweepSectionGenerator::Init(const occ::handle<Adaptor3d_Curve>& Path,
+                                          const occ::handle<Adaptor3d_Curve>& Curve1,
+                                          const occ::handle<Adaptor3d_Curve>& Curve2,
+                                          const double                        Radius)
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
   myRadius = Radius;
   myType   = 0;
 
-  Handle(Geom_Curve) CC = GeomAdaptor::MakeCurve(*Path);
-  myPath                = GeomConvert::CurveToBSplineCurve(CC);
-  myAdpPath             = Path;
-  myAdpFirstSect        = Curve1;
-  myAdpLastSect         = Curve2;
+  occ::handle<Geom_Curve> CC = GeomAdaptor::MakeCurve(*Path);
+  myPath                     = GeomConvert::CurveToBSplineCurve(CC);
+  myAdpPath                  = Path;
+  myAdpFirstSect             = Curve1;
+  myAdpLastSect              = Curve2;
 }
 
 //=================================================================================================
 
-void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
+void GeomFill_SweepSectionGenerator::Perform(const bool Polynomial)
 {
   myPolynomial = Polynomial;
 
   // eval myNbSections.
-  Standard_Integer NSpans = myPath->NbKnots() - 1;
+  int NSpans = myPath->NbKnots() - 1;
 
   myNbSections = 21 * NSpans;
 
-  Standard_Real U;
+  double U;
 
-  Standard_Real U1 = myPath->FirstParameter();
-  Standard_Real U2 = myPath->LastParameter();
+  double U1 = myPath->FirstParameter();
+  double U2 = myPath->LastParameter();
 
   GCPnts_QuasiUniformDeflection Samp;
   // Calcul de la longueur approximative de la courbe
@@ -257,8 +258,8 @@ void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
   gp_Pnt            P1     = AdpPath.Value(U1);
   gp_Pnt            P2     = AdpPath.Value((U1 + U2) / 2.);
   gp_Pnt            P3     = AdpPath.Value(U2);
-  Standard_Real     Length = P1.Distance(P2) + P2.Distance(P3);
-  Standard_Real     Fleche = 1.e-5 * Length;
+  double            Length = P1.Distance(P2) + P2.Distance(P3);
+  double            Fleche = 1.e-5 * Length;
   Samp.Initialize(AdpPath, Fleche);
 
   if (Samp.IsDone() && (Samp.NbPoints() > myNbSections))
@@ -267,16 +268,16 @@ void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
   }
   // the transformations are calculate on differents points of <myPath>
   // corresponding to the path parameter uniformly reparted.
-  Standard_Real        DeltaU = (U2 - U1) / (Standard_Real)(myNbSections - 1);
-  TColStd_Array1OfReal Parameters(1, myNbSections);
+  double                     DeltaU = (U2 - U1) / (double)(myNbSections - 1);
+  NCollection_Array1<double> Parameters(1, myNbSections);
   //  Parameters(1) = U1;
-  //  for (Standard_Integer i = 2; i < myNbSections; i++) {
+  //  for (int i = 2; i < myNbSections; i++) {
   //    Parameters(i) = U1 + (i-1) * DeltaU;
   //  }
   //  Parameters(myNbSections) = U2;
 
   Parameters(1) = 0.;
-  for (Standard_Integer i = 2; i < myNbSections; i++)
+  for (int i = 2; i < myNbSections; i++)
   {
     Parameters(i) = (i - 1) * DeltaU;
   }
@@ -297,14 +298,14 @@ void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
 
     gp_Ax2 CircleAxis(PRef, D1Ref);
     /*
-        Handle(Geom_Circle) Circ = new Geom_Circle( CircleAxis, myRadius);
+        occ::handle<Geom_Circle> Circ = new Geom_Circle( CircleAxis, myRadius);
 
         myFirstSect = GeomConvert::CurveToBSplineCurve(Circ);
         // le cercle est segmente car AppBlend_AppSurf ne gere
         // pas les courbes periodiques.
         myFirstSect->Segment(0., 2.*M_PI);
     */
-    Handle(Geom_TrimmedCurve) Circ =
+    occ::handle<Geom_TrimmedCurve> Circ =
       new Geom_TrimmedCurve(new Geom_Circle(CircleAxis, myRadius), 0., 2. * M_PI);
 
     myFirstSect = GeomConvert::CurveToBSplineCurve(Circ, Convert_QuasiAngular);
@@ -313,7 +314,7 @@ void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
   if (myType <= 3 && myType >= 1)
   {
 
-    for (Standard_Integer i = 2; i <= myNbSections; i++)
+    for (int i = 2; i <= myNbSections; i++)
     {
 
       U = Parameters(i) + U1;
@@ -350,22 +351,22 @@ void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
   }
   else if (myType != 0)
   {
-    for (Standard_Integer i = 2; i <= myNbSections; i++)
+    for (int i = 2; i <= myNbSections; i++)
     {
       cumulTR.SetRotation(myCircPathAxis, Parameters(i));
       myTrsfs.Append(cumulTR);
     }
   }
 
-  myIsDone = Standard_True;
+  myIsDone = true;
 }
 
 //=================================================================================================
 
-void GeomFill_SweepSectionGenerator::GetShape(Standard_Integer& NbPoles,
-                                              Standard_Integer& NbKnots,
-                                              Standard_Integer& Degree,
-                                              Standard_Integer& NbPoles2d) const
+void GeomFill_SweepSectionGenerator::GetShape(int& NbPoles,
+                                              int& NbKnots,
+                                              int& Degree,
+                                              int& NbPoles2d) const
 {
   /*
    if ( myType == 1) {
@@ -392,12 +393,12 @@ void GeomFill_SweepSectionGenerator::GetShape(Standard_Integer& NbPoles,
 
 //=================================================================================================
 
-void GeomFill_SweepSectionGenerator::Knots(TColStd_Array1OfReal& TKnots) const
+void GeomFill_SweepSectionGenerator::Knots(NCollection_Array1<double>& TKnots) const
 {
   /*
     if (myType == 1) {
-      Standard_Real U = 2.*M_PI/3.;
-      for ( Standard_Integer i = 1; i <= 4; i++)
+      double U = 2.*M_PI/3.;
+      for ( int i = 1; i <= 4; i++)
         TKnots(i) = ( i-1) * U;
     }
     else {
@@ -416,7 +417,7 @@ void GeomFill_SweepSectionGenerator::Knots(TColStd_Array1OfReal& TKnots) const
 
 //=================================================================================================
 
-void GeomFill_SweepSectionGenerator::Mults(TColStd_Array1OfInteger& TMults) const
+void GeomFill_SweepSectionGenerator::Mults(NCollection_Array1<int>& TMults) const
 {
   /*
     if ( myType == 1) {
@@ -438,19 +439,19 @@ void GeomFill_SweepSectionGenerator::Mults(TColStd_Array1OfInteger& TMults) cons
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
-                                                         TColgp_Array1OfPnt&    Poles,
-                                                         TColgp_Array1OfVec&    DPoles,
-                                                         TColgp_Array1OfPnt2d&  Poles2d,
-                                                         TColgp_Array1OfVec2d&, // DPoles2d,
-                                                         TColStd_Array1OfReal& Weigths,
-                                                         TColStd_Array1OfReal& DWeigths) const
+bool GeomFill_SweepSectionGenerator::Section(const int                     P,
+                                             NCollection_Array1<gp_Pnt>&   Poles,
+                                             NCollection_Array1<gp_Vec>&   DPoles,
+                                             NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                             NCollection_Array1<gp_Vec2d>&, // DPoles2d,
+                                             NCollection_Array1<double>& Weigths,
+                                             NCollection_Array1<double>& DWeigths) const
 {
   Section(P, Poles, Poles2d, Weigths);
 
   // pour les tuyaux sur aretes pour l'instant on ne calcule pas les derivees
   if (myType == 0)
-    return Standard_False; // a voir pour mieux.
+    return false; // a voir pour mieux.
 
   // calcul des derivees sur la surface
   // on calcule les derivees en approximant le path au voisinage du point
@@ -458,7 +459,7 @@ Standard_Boolean GeomFill_SweepSectionGenerator::Section(const Standard_Integer 
 
   // calcul du cercle osculateur.
 
-  Standard_Real U;
+  double U;
   if (P == 1)
   {
     U = myPath->FirstParameter();
@@ -468,37 +469,37 @@ Standard_Boolean GeomFill_SweepSectionGenerator::Section(const Standard_Integer 
     U = myPath->LastParameter();
   }
   else
-    return Standard_False;
+    return false;
 
   gp_Vec D1, D2;
   gp_Pnt Pt;
 
   myPath->D2(U, Pt, D1, D2);
-  Standard_Real l = D1.Magnitude();
+  double l = D1.Magnitude();
 
   if (l < Epsilon(1.))
-    return Standard_False;
+    return false;
 
-  gp_Dir        T = D1;
-  Standard_Real m = D2.Dot(T);
-  gp_Vec        D = D2 - m * T;
-  Standard_Real c = D.Magnitude() / (l * l);
+  gp_Dir T = D1;
+  double m = D2.Dot(T);
+  gp_Vec D = D2 - m * T;
+  double c = D.Magnitude() / (l * l);
 
   if (c < Epsilon(1.))
   {
     // null curvature : equivalent to a translation of the section
-    for (Standard_Integer i = 1; i <= myFirstSect->NbPoles(); i++)
+    for (int i = 1; i <= myFirstSect->NbPoles(); i++)
     {
       DPoles(i) = D1;
     }
   }
   else
   {
-    gp_Dir        N = D;
-    gp_Pnt        Q = Pt.Translated((1. / c) * gp_Vec(N));
-    Standard_Real x, y;
-    gp_Vec        V;
-    for (Standard_Integer i = 1; i <= myFirstSect->NbPoles(); i++)
+    gp_Dir N = D;
+    gp_Pnt Q = Pt.Translated((1. / c) * gp_Vec(N));
+    double x, y;
+    gp_Vec V;
+    for (int i = 1; i <= myFirstSect->NbPoles(); i++)
     {
       V         = gp_Vec(Q, Poles(i));
       x         = V * gp_Vec(T);
@@ -512,20 +513,20 @@ Standard_Boolean GeomFill_SweepSectionGenerator::Section(const Standard_Integer 
     }
   }
 
-  for (Standard_Integer i = 1; i <= myFirstSect->NbPoles(); i++)
+  for (int i = 1; i <= myFirstSect->NbPoles(); i++)
   {
     DWeigths(i) = 0.;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
-                                             TColgp_Array1OfPnt&    Poles,
-                                             TColgp_Array1OfPnt2d&, // Poles2d,
-                                             TColStd_Array1OfReal& Weigths) const
+void GeomFill_SweepSectionGenerator::Section(const int                   P,
+                                             NCollection_Array1<gp_Pnt>& Poles,
+                                             NCollection_Array1<gp_Pnt2d>&, // Poles2d,
+                                             NCollection_Array1<double>& Weigths) const
 {
   if (myType != 0)
   {
@@ -540,7 +541,7 @@ void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
 
       if ((myType == 3) || (myType == 6))
       {
-        for (Standard_Integer i = 1; i <= myFirstSect->NbPoles(); i++)
+        for (int i = 1; i <= myFirstSect->NbPoles(); i++)
         {
           Poles(i).SetXYZ((myNbSections - P) * myFirstSect->Pole(i).XYZ()
                           + (P - 1) * myLastSect->Pole(i).XYZ());
@@ -552,7 +553,7 @@ void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
         }
       }
 
-      for (Standard_Integer i = 1; i <= Poles.Length(); i++)
+      for (int i = 1; i <= Poles.Length(); i++)
         Poles(i).Transform(cumulTR);
     }
 #ifdef DRAW
@@ -567,15 +568,15 @@ void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
   else
   {
 
-    Standard_Real Coef = (P - 1.) / (myNbSections - 1.);
-    Standard_Real U = (1 - Coef) * myAdpPath->FirstParameter() + Coef * myAdpPath->LastParameter();
+    double Coef = (P - 1.) / (myNbSections - 1.);
+    double U    = (1 - Coef) * myAdpPath->FirstParameter() + Coef * myAdpPath->LastParameter();
 
     gp_Pnt PPath = myAdpPath->Value(U);
 
-    Standard_Real Alpha = U - myAdpPath->FirstParameter();
+    double Alpha = U - myAdpPath->FirstParameter();
     Alpha /= myAdpPath->LastParameter() - myAdpPath->FirstParameter();
 
-    Standard_Real U1 =
+    double U1 =
       (1 - Alpha) * myAdpFirstSect->FirstParameter() + Alpha * myAdpFirstSect->LastParameter();
 
     if (myAdpFirstSect->GetType() == GeomAbs_Line)
@@ -589,7 +590,7 @@ void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
     }
     gp_Pnt P1 = myAdpFirstSect->Value(U1);
 
-    Standard_Real U2 =
+    double U2 =
       (1 - Alpha) * myAdpLastSect->FirstParameter() + Alpha * myAdpLastSect->LastParameter();
 
     if (myAdpLastSect->GetType() == GeomAbs_Line)
@@ -603,8 +604,8 @@ void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
     }
     gp_Pnt P2 = myAdpLastSect->Value(U2);
 
-    gp_Ax2        Axis;
-    Standard_Real Angle;
+    gp_Ax2 Axis;
+    double Angle;
     if (P1.Distance(P2) < Precision::Confusion())
     {
       Angle = 0.;
@@ -616,10 +617,10 @@ void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
     }
 #ifdef OCCT_DEBUG
 /*
-    if (Standard_False) {
+    if (false) {
       gp_Vec dummyD1 = myAdpPath->DN(U,1);
       gp_Vec dummyTg = Axis.Direction();
-      Standard_Real Cos = dummyD1.Dot(dummyTg);
+      double Cos = dummyD1.Dot(dummyTg);
       if ( Cos > 0.) std::cout << "+" ;
       else           std::cout << "-" ;
     }
@@ -627,7 +628,7 @@ void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
 #endif
     if (Angle < Precision::Angular())
     {
-      for (Standard_Integer i = 1; i <= Poles.Upper(); i++)
+      for (int i = 1; i <= Poles.Upper(); i++)
       {
         Poles(i)   = P1;
         Weigths(i) = 1;
@@ -635,9 +636,9 @@ void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
     }
     else
     {
-      Handle(Geom_Circle)       Circ = new Geom_Circle(Axis, myRadius);
-      Handle(Geom_TrimmedCurve) CT   = new Geom_TrimmedCurve(Circ, 0., Angle);
-      Handle(Geom_BSplineCurve) BS;
+      occ::handle<Geom_Circle>       Circ = new Geom_Circle(Axis, myRadius);
+      occ::handle<Geom_TrimmedCurve> CT   = new Geom_TrimmedCurve(Circ, 0., Angle);
+      occ::handle<Geom_BSplineCurve> BS;
       if (myPolynomial)
         BS = GeomConvert::CurveToBSplineCurve(CT, Convert_Polynomial);
       else
@@ -660,7 +661,7 @@ void GeomFill_SweepSectionGenerator::Section(const Standard_Integer P,
 
 //=================================================================================================
 
-const gp_Trsf& GeomFill_SweepSectionGenerator::Transformation(const Standard_Integer Index) const
+const gp_Trsf& GeomFill_SweepSectionGenerator::Transformation(const int Index) const
 {
   if (Index > myTrsfs.Length())
     throw Standard_RangeError("GeomFill_SweepSectionGenerator::Transformation");
@@ -670,7 +671,7 @@ const gp_Trsf& GeomFill_SweepSectionGenerator::Transformation(const Standard_Int
 
 //=================================================================================================
 
-Standard_Real GeomFill_SweepSectionGenerator::Parameter(const Standard_Integer P) const
+double GeomFill_SweepSectionGenerator::Parameter(const int P) const
 {
   if (P == 1)
   {
@@ -682,10 +683,9 @@ Standard_Real GeomFill_SweepSectionGenerator::Parameter(const Standard_Integer P
   }
   else
   {
-    Standard_Real U1 = myPath->FirstParameter();
-    Standard_Real U2 = myPath->LastParameter();
-    Standard_Real prm =
-      ((myNbSections - P) * U1 + (P - 1) * U2) / (Standard_Real)(myNbSections - 1);
+    double U1  = myPath->FirstParameter();
+    double U2  = myPath->LastParameter();
+    double prm = ((myNbSections - P) * U1 + (P - 1) * U2) / (double)(myNbSections - 1);
     return prm;
   }
 }

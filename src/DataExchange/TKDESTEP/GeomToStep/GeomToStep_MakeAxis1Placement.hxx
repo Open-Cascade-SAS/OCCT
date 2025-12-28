@@ -48,18 +48,17 @@ public:
     const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeAxis1Placement(
-    const Handle(Geom_Axis1Placement)& A,
-    const StepData_Factors&            theLocalFactors = StepData_Factors());
+    const occ::handle<Geom_Axis1Placement>& A,
+    const StepData_Factors&                 theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeAxis1Placement(
-    const Handle(Geom2d_AxisPlacement)& A,
-    const StepData_Factors&             theLocalFactors = StepData_Factors());
+    const occ::handle<Geom2d_AxisPlacement>& A,
+    const StepData_Factors&                  theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_Axis1Placement)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_Axis1Placement>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_Axis1Placement) theAxis1Placement;
+  occ::handle<StepGeom_Axis1Placement> theAxis1Placement;
 };
 
 #endif // _GeomToStep_MakeAxis1Placement_HeaderFile

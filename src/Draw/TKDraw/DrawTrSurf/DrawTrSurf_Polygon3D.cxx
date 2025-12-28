@@ -26,9 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Polygon3D, Draw_Drawable3D)
 
 //=================================================================================================
 
-DrawTrSurf_Polygon3D::DrawTrSurf_Polygon3D(const Handle(Poly_Polygon3D)& P)
+DrawTrSurf_Polygon3D::DrawTrSurf_Polygon3D(const occ::handle<Poly_Polygon3D>& P)
     : myPolygon3D(P),
-      myNodes(Standard_False)
+      myNodes(false)
 {
   //
 }
@@ -39,15 +39,15 @@ void DrawTrSurf_Polygon3D::DrawOn(Draw_Display& dis) const
 {
   dis.SetColor(Draw_jaune);
 
-  const TColgp_Array1OfPnt& Points = myPolygon3D->Nodes();
-  for (Standard_Integer i = Points.Lower(); i <= Points.Upper() - 1; i++)
+  const NCollection_Array1<gp_Pnt>& Points = myPolygon3D->Nodes();
+  for (int i = Points.Lower(); i <= Points.Upper() - 1; i++)
   {
     dis.Draw(Points(i), Points(i + 1));
   }
 
   if (myNodes)
   {
-    for (Standard_Integer i = Points.Lower(); i <= Points.Upper(); i++)
+    for (int i = Points.Lower(); i <= Points.Upper(); i++)
     {
       dis.DrawMarker(Points(i), Draw_X);
     }
@@ -56,7 +56,7 @@ void DrawTrSurf_Polygon3D::DrawOn(Draw_Display& dis) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DrawTrSurf_Polygon3D::Copy() const
+occ::handle<Draw_Drawable3D> DrawTrSurf_Polygon3D::Copy() const
 {
   return new DrawTrSurf_Polygon3D(myPolygon3D);
 }
@@ -91,7 +91,7 @@ void DrawTrSurf_Polygon3D::Save(Standard_OStream& theStream) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DrawTrSurf_Polygon3D::Restore(Standard_IStream& theStream)
+occ::handle<Draw_Drawable3D> DrawTrSurf_Polygon3D::Restore(Standard_IStream& theStream)
 {
   return new DrawTrSurf_Polygon3D(Poly::ReadPolygon3D(theStream));
 }

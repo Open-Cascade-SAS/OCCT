@@ -22,17 +22,20 @@
 #include <IGESDimen_GeneralNote.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_NodalDisplAndRot, IGESData_IGESEntity)
 
 IGESAppli_NodalDisplAndRot::IGESAppli_NodalDisplAndRot() {}
 
-void IGESAppli_NodalDisplAndRot::Init(const Handle(IGESDimen_HArray1OfGeneralNote)&  allNotes,
-                                      const Handle(TColStd_HArray1OfInteger)&        allIdentifiers,
-                                      const Handle(IGESAppli_HArray1OfNode)&         allNodes,
-                                      const Handle(IGESBasic_HArray1OfHArray1OfXYZ)& allRotParams,
-                                      const Handle(IGESBasic_HArray1OfHArray1OfXYZ)& allTransParams)
+void IGESAppli_NodalDisplAndRot::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>>& allNotes,
+  const occ::handle<NCollection_HArray1<int>>&                                allIdentifiers,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&        allNodes,
+  const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>&                         allRotParams,
+  const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>&                         allTransParams)
 {
   if (allNodes->Lower() != 1
       || (allIdentifiers->Lower() != 1 || allIdentifiers->Length() != allNodes->Length())
@@ -41,10 +44,10 @@ void IGESAppli_NodalDisplAndRot::Init(const Handle(IGESDimen_HArray1OfGeneralNot
     throw Standard_DimensionMismatch(
       "IGESAppli_NodalDisplAndRot : Init(Lengths of arrays inconsistent)");
 
-  for (Standard_Integer i = 1; i <= allNodes->Length(); i++)
+  for (int i = 1; i <= allNodes->Length(); i++)
   {
-    Handle(TColgp_HArray1OfXYZ) temp1 = allTransParams->Value(i);
-    Handle(TColgp_HArray1OfXYZ) temp2 = allRotParams->Value(i);
+    occ::handle<NCollection_HArray1<gp_XYZ>> temp1 = allTransParams->Value(i);
+    occ::handle<NCollection_HArray1<gp_XYZ>> temp2 = allRotParams->Value(i);
     if ((temp1->Lower() != 1 || temp1->Length() != allNotes->Length())
         || (temp2->Lower() != 1 || temp2->Length() != allNotes->Length()))
       throw Standard_DimensionMismatch(
@@ -59,39 +62,37 @@ void IGESAppli_NodalDisplAndRot::Init(const Handle(IGESDimen_HArray1OfGeneralNot
   InitTypeAndForm(138, 0);
 }
 
-Standard_Integer IGESAppli_NodalDisplAndRot::NbCases() const
+int IGESAppli_NodalDisplAndRot::NbCases() const
 {
   return theNotes->Length();
 }
 
-Standard_Integer IGESAppli_NodalDisplAndRot::NbNodes() const
+int IGESAppli_NodalDisplAndRot::NbNodes() const
 {
   return theNodes->Length();
 }
 
-Handle(IGESDimen_GeneralNote) IGESAppli_NodalDisplAndRot::Note(const Standard_Integer Index) const
+occ::handle<IGESDimen_GeneralNote> IGESAppli_NodalDisplAndRot::Note(const int Index) const
 {
   return theNotes->Value(Index);
 }
 
-Standard_Integer IGESAppli_NodalDisplAndRot::NodeIdentifier(const Standard_Integer Index) const
+int IGESAppli_NodalDisplAndRot::NodeIdentifier(const int Index) const
 {
   return theNodeIdentifiers->Value(Index);
 }
 
-Handle(IGESAppli_Node) IGESAppli_NodalDisplAndRot::Node(const Standard_Integer Index) const
+occ::handle<IGESAppli_Node> IGESAppli_NodalDisplAndRot::Node(const int Index) const
 {
   return theNodes->Value(Index);
 }
 
-gp_XYZ IGESAppli_NodalDisplAndRot::TranslationParameter(const Standard_Integer NodeNum,
-                                                        const Standard_Integer CaseNum) const
+gp_XYZ IGESAppli_NodalDisplAndRot::TranslationParameter(const int NodeNum, const int CaseNum) const
 {
   return theTransParam->Value(NodeNum)->Value(CaseNum);
 }
 
-gp_XYZ IGESAppli_NodalDisplAndRot::RotationalParameter(const Standard_Integer NodeNum,
-                                                       const Standard_Integer CaseNum) const
+gp_XYZ IGESAppli_NodalDisplAndRot::RotationalParameter(const int NodeNum, const int CaseNum) const
 {
   return theRotParam->Value(NodeNum)->Value(CaseNum);
 }

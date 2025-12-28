@@ -23,10 +23,10 @@
 RWStepRepr_RWAssemblyComponentUsageSubstitute::RWStepRepr_RWAssemblyComponentUsageSubstitute() {}
 
 void RWStepRepr_RWAssemblyComponentUsageSubstitute::ReadStep(
-  const Handle(StepData_StepReaderData)&                   data,
-  const Standard_Integer                                   num,
-  Handle(Interface_Check)&                                 ach,
-  const Handle(StepRepr_AssemblyComponentUsageSubstitute)& ent) const
+  const occ::handle<StepData_StepReaderData>&                   data,
+  const int                                                     num,
+  occ::handle<Interface_Check>&                                 ach,
+  const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -36,28 +36,28 @@ void RWStepRepr_RWAssemblyComponentUsageSubstitute::ReadStep(
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : definition ---
 
-  Handle(TCollection_HAsciiString) aDef;
+  occ::handle<TCollection_HAsciiString> aDef;
   if (data->IsParamDefined(num, 2))
   { // gka 05.03.99 S4134 upgrade from CD to DIS
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat2 =` not needed
     data->ReadString(num, 2, "definition", ach, aDef);
   }
   // --- own field : base ---
 
-  Handle(StepRepr_AssemblyComponentUsage) aBase;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepRepr_AssemblyComponentUsage> aBase;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "base", ach, STANDARD_TYPE(StepRepr_AssemblyComponentUsage), aBase);
 
   // --- own field : substitute ---
 
-  Handle(StepRepr_AssemblyComponentUsage) aSubs;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  occ::handle<StepRepr_AssemblyComponentUsage> aSubs;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data
     ->ReadEntity(num, 4, "substitute", ach, STANDARD_TYPE(StepRepr_AssemblyComponentUsage), aSubs);
 
@@ -67,8 +67,8 @@ void RWStepRepr_RWAssemblyComponentUsageSubstitute::ReadStep(
 }
 
 void RWStepRepr_RWAssemblyComponentUsageSubstitute::WriteStep(
-  StepData_StepWriter&                                     SW,
-  const Handle(StepRepr_AssemblyComponentUsageSubstitute)& ent) const
+  StepData_StepWriter&                                          SW,
+  const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent) const
 {
 
   SW.Send(ent->Name());
@@ -78,8 +78,8 @@ void RWStepRepr_RWAssemblyComponentUsageSubstitute::WriteStep(
 }
 
 void RWStepRepr_RWAssemblyComponentUsageSubstitute::Share(
-  const Handle(StepRepr_AssemblyComponentUsageSubstitute)& ent,
-  Interface_EntityIterator&                                iter) const
+  const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent,
+  Interface_EntityIterator&                                     iter) const
 {
 
   iter.GetOneItem(ent->Base());

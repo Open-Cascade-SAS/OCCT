@@ -41,39 +41,37 @@ HLRBRep_TheQuadCurvExactInterCSurf::HLRBRep_TheQuadCurvExactInterCSurf(HLRBRep_S
 
 //==================================================================================================
 
-Standard_Boolean HLRBRep_TheQuadCurvExactInterCSurf::IsDone() const
+bool HLRBRep_TheQuadCurvExactInterCSurf::IsDone() const
 {
   return (nbpnts != -1);
 }
 
 //==================================================================================================
 
-Standard_Integer HLRBRep_TheQuadCurvExactInterCSurf::NbRoots() const
+int HLRBRep_TheQuadCurvExactInterCSurf::NbRoots() const
 {
   return nbpnts;
 }
 
 //==================================================================================================
 
-Standard_Integer HLRBRep_TheQuadCurvExactInterCSurf::NbIntervals() const
+int HLRBRep_TheQuadCurvExactInterCSurf::NbIntervals() const
 {
   return nbintv;
 }
 
 //==================================================================================================
 
-Standard_Real HLRBRep_TheQuadCurvExactInterCSurf::Root(const Standard_Integer Index) const
+double HLRBRep_TheQuadCurvExactInterCSurf::Root(const int Index) const
 {
   return pnts(Index);
 }
 
 //==================================================================================================
 
-void HLRBRep_TheQuadCurvExactInterCSurf::Intervals(const Standard_Integer Index,
-                                                   Standard_Real&         a,
-                                                   Standard_Real&         b) const
+void HLRBRep_TheQuadCurvExactInterCSurf::Intervals(const int Index, double& a, double& b) const
 {
-  Standard_Integer Index2 = Index + Index - 1;
-  a                       = intv(Index2);
-  b                       = intv(Index2 + 1);
+  int Index2 = Index + Index - 1;
+  a          = intv(Index2);
+  b          = intv(Index2 + 1);
 }

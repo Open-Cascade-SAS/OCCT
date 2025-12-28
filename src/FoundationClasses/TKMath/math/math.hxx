@@ -28,16 +28,16 @@ class math
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static Standard_Integer GaussPointsMax();
+  Standard_EXPORT static int GaussPointsMax();
 
-  Standard_EXPORT static void GaussPoints(const Standard_Integer Index, math_Vector& Points);
+  Standard_EXPORT static void GaussPoints(const int Index, math_Vector& Points);
 
-  Standard_EXPORT static void GaussWeights(const Standard_Integer Index, math_Vector& Weights);
+  Standard_EXPORT static void GaussWeights(const int Index, math_Vector& Weights);
 
   //! Returns the maximal number of points for that the values
   //! are stored in the table. If the number is greater then
   //! KronrodPointsMax, the points will be computed.
-  Standard_EXPORT static Standard_Integer KronrodPointsMax();
+  Standard_EXPORT static int KronrodPointsMax();
 
   //! Returns a vector of Gauss points and a vector of their weights.
   //! The difference with the
@@ -45,11 +45,11 @@ public:
   //! - the points are returned in increasing order.
   //! - if Index is greater then GaussPointsMax, the points are
   //! computed.
-  //! Returns Standard_True if Index is positive, Points' and Weights'
+  //! Returns true if Index is positive, Points' and Weights'
   //! length is equal to Index, Points and Weights are successfully computed.
-  Standard_EXPORT static Standard_Boolean OrderedGaussPointsAndWeights(const Standard_Integer Index,
-                                                                       math_Vector& Points,
-                                                                       math_Vector& Weights);
+  Standard_EXPORT static bool OrderedGaussPointsAndWeights(const int    Index,
+                                                           math_Vector& Points,
+                                                           math_Vector& Weights);
 
   //! Returns a vector of Kronrod points and a vector of their
   //! weights for Gauss-Kronrod computation method.
@@ -60,13 +60,13 @@ public:
   //! represents a Gauss point value of N-th Gauss quadrature.
   //! The values from Index equal to 3 to 123 are stored in a
   //! table (see the file math_Kronrod.cxx). If Index is greater,
-  //! then points and weights will be computed. Returns Standard_True
+  //! then points and weights will be computed. Returns true
   //! if Index is odd, it is equal to the size of Points and Weights
   //! and the computation of Points and Weights is performed successfully.
-  //! Otherwise this method returns Standard_False.
-  Standard_EXPORT static Standard_Boolean KronrodPointsAndWeights(const Standard_Integer Index,
-                                                                  math_Vector&           Points,
-                                                                  math_Vector&           Weights);
+  //! Otherwise this method returns false.
+  Standard_EXPORT static bool KronrodPointsAndWeights(const int    Index,
+                                                      math_Vector& Points,
+                                                      math_Vector& Weights);
 };
 
 #endif // _math_HeaderFile

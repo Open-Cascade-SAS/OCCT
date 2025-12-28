@@ -22,9 +22,6 @@
 
 #include <StepBasic_ProductContext.hxx>
 
-class StepBasic_MechanicalContext;
-DEFINE_STANDARD_HANDLE(StepBasic_MechanicalContext, StepBasic_ProductContext)
-
 class StepBasic_MechanicalContext : public StepBasic_ProductContext
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepBasic_MechanicalContext();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_MechanicalContext, StepBasic_ProductContext)
-
-protected:
-private:
 };
 
 #endif // _StepBasic_MechanicalContext_HeaderFile

@@ -24,7 +24,7 @@
 #include <TDataStd_Variable.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
+#include <NCollection_List.hxx>
 #include <TDF_RelocationTable.hxx>
 
 IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Relation, TDataStd_Expression)
@@ -39,9 +39,9 @@ const Standard_GUID& TDataStd_Relation::GetID()
 
 //=================================================================================================
 
-Handle(TDataStd_Relation) TDataStd_Relation::Set(const TDF_Label& L)
+occ::handle<TDataStd_Relation> TDataStd_Relation::Set(const TDF_Label& L)
 {
-  Handle(TDataStd_Relation) A;
+  occ::handle<TDataStd_Relation> A;
   if (!L.FindAttribute(TDataStd_Relation::GetID(), A))
   {
     A = new TDataStd_Relation();
@@ -85,7 +85,7 @@ Standard_OStream& TDataStd_Relation::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_Relation::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_Relation::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -93,9 +93,11 @@ void TDataStd_Relation::DumpJson(Standard_OStream& theOStream, Standard_Integer 
 
   OCCT_DUMP_FIELD_VALUE_STRING(theOStream, GetRelation())
 
-  for (TDF_AttributeList::Iterator aVariableIt(myVariables); aVariableIt.More(); aVariableIt.Next())
+  for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator aVariableIt(myVariables);
+       aVariableIt.More();
+       aVariableIt.Next())
   {
-    const Handle(TDF_Attribute)& aVariable = aVariableIt.Value();
+    const occ::handle<TDF_Attribute>& aVariable = aVariableIt.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aVariable.get())
   }
 }

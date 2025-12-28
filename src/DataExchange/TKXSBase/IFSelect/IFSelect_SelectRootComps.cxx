@@ -34,7 +34,7 @@ Interface_EntityIterator IFSelect_SelectRootComps::RootResult(const Interface_Gr
   Interface_EntityIterator IEIinput = InputResult(G);
   Interface_EntityIterator iter;
   //  HERE, extract the Components, then consider one Entity from each
-  IFGraph_StrongComponants comps(G, Standard_False);
+  IFGraph_StrongComponants comps(G, false);
   comps.SetLoad();
   comps.GetFromIter(IEIinput);
   Interface_EntityIterator inp1; // IEIinput reduced to one Entity per Component
@@ -46,7 +46,7 @@ Interface_EntityIterator IFSelect_SelectRootComps::RootResult(const Interface_Gr
   //  For Entity: one per Component (doesn't matter)
   for (comps.Start(); comps.More(); comps.Next())
   {
-    Handle(Standard_Transient) ent = comps.FirstEntity();
+    occ::handle<Standard_Transient> ent = comps.FirstEntity();
     GC.GetFromEntity(ent);
     inp1.GetOneItem(ent);
   }
@@ -54,23 +54,23 @@ Interface_EntityIterator IFSelect_SelectRootComps::RootResult(const Interface_Gr
   //  (N.B.: we take inp1, which gives ONE entity per component, simple or cycle)
   for (inp1.Start(); inp1.More(); inp1.Next())
   {
-    const Handle(Standard_Transient)& ent = inp1.Value();
+    const occ::handle<Standard_Transient>& ent = inp1.Value();
     if ((GC.NbTimes(ent) <= 1) == IsDirect())
       iter.GetOneItem(ent);
   }
   return iter;
 }
 
-Standard_Boolean IFSelect_SelectRootComps::HasUniqueResult() const
+bool IFSelect_SelectRootComps::HasUniqueResult() const
 {
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_SelectRootComps::Sort(const Standard_Integer,
-                                                const Handle(Standard_Transient)&,
-                                                const Handle(Interface_InterfaceModel)&) const
+bool IFSelect_SelectRootComps::Sort(const int,
+                                    const occ::handle<Standard_Transient>&,
+                                    const occ::handle<Interface_InterfaceModel>&) const
 {
-  return Standard_True;
+  return true;
 }
 
 TCollection_AsciiString IFSelect_SelectRootComps::ExtractLabel() const

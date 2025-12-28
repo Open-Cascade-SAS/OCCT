@@ -31,38 +31,38 @@
   (b) = (c);                                                                                       \
   (c) = (d)
 
-Standard_Boolean math_BracketMinimum::LimitAndMayBeSwap(math_Function&      F,
-                                                        const Standard_Real theA,
-                                                        Standard_Real&      theB,
-                                                        Standard_Real&      theFB,
-                                                        Standard_Real&      theC,
-                                                        Standard_Real&      theFC) const
+bool math_BracketMinimum::LimitAndMayBeSwap(math_Function& F,
+                                            const double   theA,
+                                            double&        theB,
+                                            double&        theFB,
+                                            double&        theC,
+                                            double&        theFC) const
 {
   theC = Limited(theC);
   if (std::abs(theB - theC) < Precision::PConfusion())
-    return Standard_False;
-  Standard_Boolean OK = F.Value(theC, theFC);
+    return false;
+  bool OK = F.Value(theC, theFC);
   if (!OK)
-    return Standard_False;
+    return false;
   // check that B is between A and C
   if ((theA - theB) * (theB - theC) < 0)
   {
     // swap B and C
-    Standard_Real dum;
+    double dum;
     SHFT(dum, theB, theC, dum);
     SHFT(dum, theFB, theFC, dum);
   }
-  return Standard_True;
+  return true;
 }
 
 void math_BracketMinimum::Perform(math_Function& F)
 {
 
-  Standard_Boolean OK;
-  Standard_Real    ulim, u, r, q, fu, dum;
+  bool   OK;
+  double ulim, u, r, q, fu, dum;
 
-  Done                 = Standard_False;
-  Standard_Real Lambda = GOLD;
+  Done          = false;
+  double Lambda = GOLD;
   if (!myFA)
   {
     OK = F.Value(Ax, FAx);
@@ -117,7 +117,7 @@ void math_BracketMinimum::Perform(math_Function& F)
         Bx   = u;
         FAx  = FBx;
         FBx  = fu;
-        Done = Standard_True;
+        Done = true;
         return;
       }
       else if (fu > FBx)
@@ -125,7 +125,7 @@ void math_BracketMinimum::Perform(math_Function& F)
         // solution is found (A, B, u)
         Cx   = u;
         FCx  = fu;
-        Done = Standard_True;
+        Done = true;
         return;
       }
       // get next prob after (B, C)
@@ -179,13 +179,11 @@ void math_BracketMinimum::Perform(math_Function& F)
     SHFT(Ax, Bx, Cx, u);
     SHFT(FAx, FBx, FCx, fu);
   }
-  Done = Standard_True;
+  Done = true;
 }
 
-math_BracketMinimum::math_BracketMinimum(math_Function&      F,
-                                         const Standard_Real A,
-                                         const Standard_Real B)
-    : Done(Standard_False),
+math_BracketMinimum::math_BracketMinimum(math_Function& F, const double A, const double B)
+    : Done(false),
       Ax(A),
       Bx(B),
       Cx(0.),
@@ -194,18 +192,18 @@ math_BracketMinimum::math_BracketMinimum(math_Function&      F,
       FCx(0.),
       myLeft(-Precision::Infinite()),
       myRight(Precision::Infinite()),
-      myIsLimited(Standard_False),
-      myFA(Standard_False),
-      myFB(Standard_False)
+      myIsLimited(false),
+      myFA(false),
+      myFB(false)
 {
   Perform(F);
 }
 
-math_BracketMinimum::math_BracketMinimum(math_Function&      F,
-                                         const Standard_Real A,
-                                         const Standard_Real B,
-                                         const Standard_Real FA)
-    : Done(Standard_False),
+math_BracketMinimum::math_BracketMinimum(math_Function& F,
+                                         const double   A,
+                                         const double   B,
+                                         const double   FA)
+    : Done(false),
       Ax(A),
       Bx(B),
       Cx(0.),
@@ -214,19 +212,19 @@ math_BracketMinimum::math_BracketMinimum(math_Function&      F,
       FCx(0.),
       myLeft(-Precision::Infinite()),
       myRight(Precision::Infinite()),
-      myIsLimited(Standard_False),
-      myFA(Standard_True),
-      myFB(Standard_False)
+      myIsLimited(false),
+      myFA(true),
+      myFB(false)
 {
   Perform(F);
 }
 
-math_BracketMinimum::math_BracketMinimum(math_Function&      F,
-                                         const Standard_Real A,
-                                         const Standard_Real B,
-                                         const Standard_Real FA,
-                                         const Standard_Real FB)
-    : Done(Standard_False),
+math_BracketMinimum::math_BracketMinimum(math_Function& F,
+                                         const double   A,
+                                         const double   B,
+                                         const double   FA,
+                                         const double   FB)
+    : Done(false),
       Ax(A),
       Bx(B),
       Cx(0.),
@@ -235,14 +233,14 @@ math_BracketMinimum::math_BracketMinimum(math_Function&      F,
       FCx(0.),
       myLeft(-Precision::Infinite()),
       myRight(Precision::Infinite()),
-      myIsLimited(Standard_False),
-      myFA(Standard_True),
-      myFB(Standard_True)
+      myIsLimited(false),
+      myFA(true),
+      myFB(true)
 {
   Perform(F);
 }
 
-void math_BracketMinimum::Values(Standard_Real& A, Standard_Real& B, Standard_Real& C) const
+void math_BracketMinimum::Values(double& A, double& B, double& C) const
 {
 
   StdFail_NotDone_Raise_if(!Done, " ");
@@ -251,9 +249,7 @@ void math_BracketMinimum::Values(Standard_Real& A, Standard_Real& B, Standard_Re
   C = Cx;
 }
 
-void math_BracketMinimum::FunctionValues(Standard_Real& FA,
-                                         Standard_Real& FB,
-                                         Standard_Real& FC) const
+void math_BracketMinimum::FunctionValues(double& FA, double& FB, double& FC) const
 {
 
   StdFail_NotDone_Raise_if(!Done, " ");

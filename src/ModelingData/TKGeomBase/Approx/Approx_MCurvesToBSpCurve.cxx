@@ -17,19 +17,19 @@
 #include <BSplCLib.hxx>
 #include <Convert_CompBezierCurves2dToBSplineCurve2d.hxx>
 #include <Convert_CompBezierCurvesToBSplineCurve.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 
 #ifdef OCCT_DEBUG
 static void DEBUG(const AppParCurves_MultiCurve& MC)
 {
-  Standard_Integer     i, j;
-  Standard_Integer     nbcu    = MC.NbCurves();
-  Standard_Integer     nbpoles = MC.NbPoles();
-  TColgp_Array1OfPnt   Poles(1, nbpoles);
-  TColgp_Array1OfPnt2d Poles2d(1, nbpoles);
+  int                          i, j;
+  int                          nbcu    = MC.NbCurves();
+  int                          nbpoles = MC.NbPoles();
+  NCollection_Array1<gp_Pnt>   Poles(1, nbpoles);
+  NCollection_Array1<gp_Pnt2d> Poles2d(1, nbpoles);
 
   for (i = 1; i <= nbcu; i++)
   {
@@ -57,12 +57,12 @@ static void DEBUG(const AppParCurves_MultiCurve& MC)
 
 Approx_MCurvesToBSpCurve::Approx_MCurvesToBSpCurve()
 {
-  myDone = Standard_False;
+  myDone = false;
 }
 
 void Approx_MCurvesToBSpCurve::Reset()
 {
-  myDone = Standard_False;
+  myDone = false;
   myCurves.Clear();
 }
 
@@ -76,23 +76,23 @@ void Approx_MCurvesToBSpCurve::Perform()
   Perform(myCurves);
 }
 
-void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& TheSeq)
+void Approx_MCurvesToBSpCurve::Perform(const NCollection_Sequence<AppParCurves_MultiCurve>& TheSeq)
 {
 
-  Standard_Integer        i, j, deg = 0;
-  Standard_Integer        nbcu = TheSeq.Length();
+  int                     i, j, deg = 0;
+  int                     nbcu = TheSeq.Length();
   AppParCurves_MultiCurve CU;
-  Standard_Integer        nbpolesspl = 0, nbknots = 0;
+  int                     nbpolesspl = 0, nbknots = 0;
 #ifdef OCCT_DEBUG
-  Standard_Boolean debug = Standard_False;
+  bool debug = false;
 #endif
 
   if (nbcu == 1)
   {
     CU  = TheSeq.Value(1);
     deg = CU.Degree();
-    TColStd_Array1OfReal    Knots(1, 2);
-    TColStd_Array1OfInteger Mults(1, 2);
+    NCollection_Array1<double> Knots(1, 2);
+    NCollection_Array1<int>    Mults(1, 2);
     Knots(1) = 0.0;
     Knots(2) = 1.0;
     Mults(1) = Mults(2) = deg + 1;
@@ -102,8 +102,8 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
   {
 
     AppParCurves_MultiPoint P    = TheSeq.Value(nbcu).Value(1);
-    Standard_Integer        nb3d = P.NbPoints();
-    Standard_Integer        nb2d = P.NbPoints2d();
+    int                     nb3d = P.NbPoints();
+    int                     nb2d = P.NbPoints2d();
 
     Convert_CompBezierCurvesToBSplineCurve     conv;
     Convert_CompBezierCurves2dToBSplineCurve2d conv2d;
@@ -113,7 +113,7 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
       for (i = 1; i <= nbcu; i++)
       {
         CU = TheSeq.Value(i);
-        TColgp_Array1OfPnt ThePoles3d(1, CU.NbPoles());
+        NCollection_Array1<gp_Pnt> ThePoles3d(1, CU.NbPoles());
         CU.Curve(1, ThePoles3d);
         conv.AddCurve(ThePoles3d);
       }
@@ -125,7 +125,7 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
       for (i = 1; i <= nbcu; i++)
       {
         CU = TheSeq.Value(i);
-        TColgp_Array1OfPnt2d ThePoles2d(1, CU.NbPoles());
+        NCollection_Array1<gp_Pnt2d> ThePoles2d(1, CU.NbPoles());
         CU.Curve(1 + nb3d, ThePoles2d);
         conv2d.AddCurve(ThePoles2d);
       }
@@ -144,11 +144,11 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
       nbknots    = conv2d.NbKnots();
     }
 
-    AppParCurves_Array1OfMultiPoint tabMU(1, nbpolesspl);
-    TColgp_Array1OfPnt              PolesSpl(1, nbpolesspl);
-    TColgp_Array1OfPnt2d            PolesSpl2d(1, nbpolesspl);
-    TColStd_Array1OfInteger         TheMults(1, nbknots);
-    TColStd_Array1OfReal            TheKnots(1, nbknots);
+    NCollection_Array1<AppParCurves_MultiPoint> tabMU(1, nbpolesspl);
+    NCollection_Array1<gp_Pnt>                  PolesSpl(1, nbpolesspl);
+    NCollection_Array1<gp_Pnt2d>                PolesSpl2d(1, nbpolesspl);
+    NCollection_Array1<int>                     TheMults(1, nbknots);
+    NCollection_Array1<double>                  TheKnots(1, nbknots);
 
     if (nb3d != 0)
     {
@@ -177,9 +177,9 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
       tabMU.SetValue(j, MP);
     }
 
-    Standard_Integer kpol = 1, kpoles3d = 1, kpoles2d = 1;
-    Standard_Integer mydegre, k;
-    Standard_Integer first, last, Inc, thefirst;
+    int kpol = 1, kpoles3d = 1, kpoles2d = 1;
+    int mydegre, k;
+    int first, last, Inc, thefirst;
     if (nb3d != 0)
       thefirst = 1;
     else
@@ -206,11 +206,11 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
       for (j = 2; j <= nb3d; j++)
       {
         kpol = kpoles3d;
-        TColgp_Array1OfPnt ThePoles(1, CU.NbPoles());
+        NCollection_Array1<gp_Pnt> ThePoles(1, CU.NbPoles());
         CU.Curve(j, ThePoles);
 
         Inc = deg - mydegre;
-        TColgp_Array1OfPnt Points(1, deg + 1);
+        NCollection_Array1<gp_Pnt> Points(1, deg + 1);
         if (Inc > 0)
         {
           BSplCLib::IncreaseDegree(deg,
@@ -234,11 +234,11 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
       for (j = thefirst; j <= nb2d; j++)
       {
         kpol = kpoles2d;
-        TColgp_Array1OfPnt2d ThePoles2d(1, CU.NbPoles());
+        NCollection_Array1<gp_Pnt2d> ThePoles2d(1, CU.NbPoles());
         CU.Curve(j + nb3d, ThePoles2d);
 
         Inc = deg - mydegre;
-        TColgp_Array1OfPnt2d Points2d(1, deg + 1);
+        NCollection_Array1<gp_Pnt2d> Points2d(1, deg + 1);
         if (Inc > 0)
         {
           BSplCLib::IncreaseDegree(deg,
@@ -266,7 +266,7 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
     DEBUG(mySpline);
 #endif
 
-  myDone = Standard_True;
+  myDone = true;
 }
 
 const AppParCurves_MultiBSpCurve& Approx_MCurvesToBSpCurve::Value() const

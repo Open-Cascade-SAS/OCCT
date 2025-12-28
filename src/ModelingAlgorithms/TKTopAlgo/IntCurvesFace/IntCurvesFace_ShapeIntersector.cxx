@@ -26,15 +26,15 @@
 #include <TopoDS_Shape.hxx>
 
 IntCurvesFace_ShapeIntersector::IntCurvesFace_ShapeIntersector()
-    : myIsDone(Standard_False),
+    : myIsDone(false),
       myNbFaces(0)
 {
 }
 
-void IntCurvesFace_ShapeIntersector::Load(const TopoDS_Shape& theShape, const Standard_Real theTol)
+void IntCurvesFace_ShapeIntersector::Load(const TopoDS_Shape& theShape, const double theTol)
 {
-  TopExp_Explorer  Ex;
-  Standard_Integer i;
+  TopExp_Explorer Ex;
+  int             i;
   for (myNbFaces = 0, i = 0, Ex.Init(theShape, TopAbs_FACE); Ex.More(); ++i, Ex.Next())
   {
     ++myNbFaces;
@@ -43,29 +43,29 @@ void IntCurvesFace_ShapeIntersector::Load(const TopoDS_Shape& theShape, const St
   }
 }
 
-void IntCurvesFace_ShapeIntersector::Perform(const gp_Lin&       theL,
-                                             const Standard_Real theParMin,
-                                             const Standard_Real theParMax)
+void IntCurvesFace_ShapeIntersector::Perform(const gp_Lin& theL,
+                                             const double  theParMin,
+                                             const double  theParMax)
 {
-  myIsDone = Standard_False;
-  for (Standard_Integer i = 1; i <= myNbFaces; ++i)
+  myIsDone = false;
+  for (int i = 1; i <= myNbFaces; ++i)
   {
     myIntersector.ChangeValue(i)->Perform(theL, theParMin, theParMax);
   }
   SortResult();
 }
 
-void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin&       theL,
-                                                    const Standard_Real theParMin,
-                                                    const Standard_Real theParMax)
+void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin& theL,
+                                                    const double  theParMin,
+                                                    const double  theParMax)
 {
-  Standard_Integer i = 0;
+  int i = 0;
   if (myNbFaces > 2)
   {
     if (myPtrNums.IsEmpty())
     {
-      myPtrNums      = TColStd_HArray1OfInteger(0, myNbFaces - 1);
-      myPtrIndexNums = TColStd_HArray1OfInteger(0, myNbFaces - 1);
+      myPtrNums      = NCollection_HArray1<int>(0, myNbFaces - 1);
+      myPtrIndexNums = NCollection_HArray1<int>(0, myNbFaces - 1);
       for (; i < myNbFaces; ++i)
       {
         myPtrNums.ChangeValue(i)      = 0;
@@ -74,10 +74,10 @@ void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin&       theL,
     }
   }
 
-  Standard_Integer anIndexFace = -1;
-  Standard_Real    aParMax     = theParMax;
-  myIsDone                     = Standard_False;
-  for (Standard_Integer ii = 1; ii <= myNbFaces; ++ii)
+  int    anIndexFace = -1;
+  double aParMax     = theParMax;
+  myIsDone           = false;
+  for (int ii = 1; ii <= myNbFaces; ++ii)
   {
     if (!myPtrNums.IsEmpty())
     {
@@ -87,16 +87,16 @@ void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin&       theL,
     {
       i = ii;
     }
-    Handle(IntCurvesFace_Intersector) anIntersector = myIntersector.ChangeValue(i);
+    occ::handle<IntCurvesFace_Intersector> anIntersector = myIntersector.ChangeValue(i);
     if (theParMin < aParMax)
     {
       anIntersector->Perform(theL, theParMin, aParMax);
       if (anIntersector->IsDone())
       {
-        Standard_Integer n = anIntersector->NbPnt();
-        for (Standard_Integer j = 1; j <= n; ++j)
+        int n = anIntersector->NbPnt();
+        for (int j = 1; j <= n; ++j)
         {
-          Standard_Real w = anIntersector->WParameter(j);
+          double w = anIntersector->WParameter(j);
           if (w < aParMax)
           {
             aParMax     = w;
@@ -106,7 +106,7 @@ void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin&       theL,
       }
       else
       {
-        myIsDone = Standard_False;
+        myIsDone = false;
         return;
       }
     }
@@ -114,7 +114,7 @@ void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin&       theL,
   if (!myPtrNums.IsEmpty() && anIndexFace >= 0)
   {
     myPtrNums.ChangeValue(anIndexFace) += 1;
-    Standard_Integer im1;
+    int im1;
     for (im1 = anIndexFace - 1, i = anIndexFace;
          i >= 1 && myPtrNums.Value(i) > myPtrNums.Value(im1);
          --i, --im1)
@@ -126,14 +126,14 @@ void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin&       theL,
   SortResult();
 }
 
-void IntCurvesFace_ShapeIntersector::Perform(const Handle(Adaptor3d_Curve)& theHCurve,
-                                             const Standard_Real            theParMin,
-                                             const Standard_Real            theParMax)
+void IntCurvesFace_ShapeIntersector::Perform(const occ::handle<Adaptor3d_Curve>& theHCurve,
+                                             const double                        theParMin,
+                                             const double                        theParMax)
 {
-  myIsDone = Standard_False;
-  for (Standard_Integer i = 1; i <= myNbFaces; ++i)
+  myIsDone = false;
+  for (int i = 1; i <= myNbFaces; ++i)
   {
-    Handle(IntCurvesFace_Intersector) anIntersector = myIntersector.ChangeValue(i);
+    occ::handle<IntCurvesFace_Intersector> anIntersector = myIntersector.ChangeValue(i);
     anIntersector->Perform(theHCurve, theParMin, theParMax);
   }
   SortResult();
@@ -158,21 +158,21 @@ void IntCurvesFace_ShapeIntersector::Perform(const Handle(Adaptor3d_Curve)& theH
 //-- ================================================================================
 void IntCurvesFace_ShapeIntersector::SortResult()
 {
-  myIsDone                = Standard_True;
-  Standard_Integer aNbPnt = 0;
+  myIsDone   = true;
+  int aNbPnt = 0;
   myIndexPt.Clear();
   myIndexFace.Clear();
   myIndexIntPnt.Clear();
   myIndexPar.Clear();
 
   // Retrieval of the results
-  for (Standard_Integer f = 1; f <= myNbFaces; ++f)
+  for (int f = 1; f <= myNbFaces; ++f)
   {
-    Handle(IntCurvesFace_Intersector) anIntersector = myIntersector.ChangeValue(f);
+    occ::handle<IntCurvesFace_Intersector> anIntersector = myIntersector.ChangeValue(f);
     if (anIntersector->IsDone())
     {
-      Standard_Integer n = anIntersector->NbPnt();
-      for (Standard_Integer j = 1; j <= n; ++j)
+      int n = anIntersector->NbPnt();
+      for (int j = 1; j <= n; ++j)
       {
         myIndexPt.Append(++aNbPnt);
         myIndexFace.Append(f);
@@ -182,25 +182,25 @@ void IntCurvesFace_ShapeIntersector::SortResult()
     }
     else
     {
-      myIsDone = Standard_False;
+      myIsDone = false;
       return;
     }
   }
 
   // Sort according to parameter  w
-  Standard_Boolean isOK;
+  bool isOK;
   do
   {
-    isOK = Standard_True;
-    for (Standard_Integer ind0 = 1; ind0 < aNbPnt; ind0++)
+    isOK = true;
+    for (int ind0 = 1; ind0 < aNbPnt; ind0++)
     {
-      Standard_Integer ind   = myIndexPt(ind0);
-      Standard_Integer indp1 = myIndexPt(ind0 + 1);
+      int ind   = myIndexPt(ind0);
+      int indp1 = myIndexPt(ind0 + 1);
       if (myIndexPar(ind) > myIndexPar(indp1))
       {
         myIndexPt(ind0)     = indp1;
         myIndexPt(ind0 + 1) = ind;
-        isOK                = Standard_False;
+        isOK                = false;
       }
     }
   } while (!isOK);

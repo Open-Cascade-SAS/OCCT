@@ -36,13 +36,10 @@ public:
   //! presentation object aPresentation.
   //! The display attributes of the shaded plane are
   //! defined by the attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     OffsetPoint);
-
-protected:
-private:
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          OffsetPoint);
 };
 
 #endif // _DsgPrs_SymbPresentation_HeaderFile

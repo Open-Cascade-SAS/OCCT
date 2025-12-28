@@ -24,9 +24,6 @@
 class StepGeom_Point;
 class TCollection_HAsciiString;
 
-class StepShape_VertexPoint;
-DEFINE_STANDARD_HANDLE(StepShape_VertexPoint, StepShape_Vertex)
-
 class StepShape_VertexPoint : public StepShape_Vertex
 {
 
@@ -34,18 +31,17 @@ public:
   //! Returns a VertexPoint
   Standard_EXPORT StepShape_VertexPoint();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepGeom_Point)&           aVertexGeometry);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepGeom_Point>&           aVertexGeometry);
 
-  Standard_EXPORT void SetVertexGeometry(const Handle(StepGeom_Point)& aVertexGeometry);
+  Standard_EXPORT void SetVertexGeometry(const occ::handle<StepGeom_Point>& aVertexGeometry);
 
-  Standard_EXPORT Handle(StepGeom_Point) VertexGeometry() const;
+  Standard_EXPORT occ::handle<StepGeom_Point> VertexGeometry() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_VertexPoint, StepShape_Vertex)
 
-protected:
 private:
-  Handle(StepGeom_Point) vertexGeometry;
+  occ::handle<StepGeom_Point> vertexGeometry;
 };
 
 #endif // _StepShape_VertexPoint_HeaderFile

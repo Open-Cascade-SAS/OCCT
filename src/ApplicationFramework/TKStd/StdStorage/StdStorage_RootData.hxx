@@ -21,13 +21,12 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <StdStorage_MapOfRoots.hxx>
-#include <StdStorage_HSequenceOfRoots.hxx>
+#include <StdStorage_Root.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class Storage_BaseDriver;
 class StdStorage_Root;
-
-class StdStorage_RootData;
-DEFINE_STANDARD_HANDLE(StdStorage_RootData, Standard_Transient)
 
 //! Storage root data section contains root persistent objects
 class StdStorage_RootData : public Standard_Transient
@@ -38,32 +37,32 @@ public:
   DEFINE_STANDARD_RTTIEXT(StdStorage_RootData, Standard_Transient)
 
   //! Reads the root data section from the container defined by theDriver.
-  //! Returns Standard_True in case of success. Otherwise, one need to get
+  //! Returns true in case of success. Otherwise, one need to get
   //! an error code and description using ErrorStatus and ErrorStatusExtension
   //! functions correspondingly.
-  Standard_EXPORT Standard_Boolean Read(const Handle(Storage_BaseDriver)& theDriver);
+  Standard_EXPORT bool Read(const occ::handle<Storage_BaseDriver>& theDriver);
 
   //! Writes the root data section to the container defined by theDriver.
-  //! Returns Standard_True in case of success. Otherwise, one need to get
+  //! Returns true in case of success. Otherwise, one need to get
   //! an error code and description using ErrorStatus and ErrorStatusExtension
   //! functions correspondingly.
-  Standard_EXPORT Standard_Boolean Write(const Handle(Storage_BaseDriver)& theDriver);
+  Standard_EXPORT bool Write(const occ::handle<Storage_BaseDriver>& theDriver);
 
   //! Returns the number of roots.
-  Standard_EXPORT Standard_Integer NumberOfRoots() const;
+  Standard_EXPORT int NumberOfRoots() const;
 
   //! Add a root to <me>. If a root with same name is present, it
   //! will be replaced by <aRoot>.
-  Standard_EXPORT void AddRoot(const Handle(StdStorage_Root)& aRoot);
+  Standard_EXPORT void AddRoot(const occ::handle<StdStorage_Root>& aRoot);
 
   //! Returns a sequence of all roots
-  Standard_EXPORT Handle(StdStorage_HSequenceOfRoots) Roots() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> Roots() const;
 
   //! Finds a root with name <aName>.
-  Standard_EXPORT Handle(StdStorage_Root) Find(const TCollection_AsciiString& aName) const;
+  Standard_EXPORT occ::handle<StdStorage_Root> Find(const TCollection_AsciiString& aName) const;
 
-  //! Returns Standard_True if <me> contains a root named <aName>
-  Standard_EXPORT Standard_Boolean IsRoot(const TCollection_AsciiString& aName) const;
+  //! Returns true if <me> contains a root named <aName>
+  Standard_EXPORT bool IsRoot(const TCollection_AsciiString& aName) const;
 
   //! Removes the root named <aName>.
   Standard_EXPORT void RemoveRoot(const TCollection_AsciiString& aName);
@@ -87,8 +86,8 @@ private:
 
   Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  StdStorage_MapOfRoots   myObjects;
-  Storage_Error           myErrorStatus;
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>> myObjects;
+  Storage_Error                                                                     myErrorStatus;
   TCollection_AsciiString myErrorStatusExt;
 };
 

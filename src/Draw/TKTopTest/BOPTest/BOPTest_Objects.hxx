@@ -19,7 +19,8 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <BOPDS_PDS.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <BOPAlgo_PBuilder.hxx>
 #include <BOPAlgo_CellsBuilder.hxx>
 #include <BOPAlgo_GlueEnum.hxx>
@@ -53,9 +54,9 @@ public:
 
   Standard_EXPORT static BOPAlgo_Splitter& Splitter();
 
-  Standard_EXPORT static TopTools_ListOfShape& Shapes();
+  Standard_EXPORT static NCollection_List<TopoDS_Shape>& Shapes();
 
-  Standard_EXPORT static TopTools_ListOfShape& Tools();
+  Standard_EXPORT static NCollection_List<TopoDS_Shape>& Tools();
 
   Standard_EXPORT static void SetBuilder(const BOPAlgo_PBuilder& theBuilder);
 
@@ -63,45 +64,42 @@ public:
 
   Standard_EXPORT static void SetDefaultOptions();
 
-  Standard_EXPORT static void SetRunParallel(const Standard_Boolean theFlag);
+  Standard_EXPORT static void SetRunParallel(const bool theFlag);
 
-  Standard_EXPORT static Standard_Boolean RunParallel();
+  Standard_EXPORT static bool RunParallel();
 
-  Standard_EXPORT static void SetFuzzyValue(const Standard_Real theValue);
+  Standard_EXPORT static void SetFuzzyValue(const double theValue);
 
-  Standard_EXPORT static Standard_Real FuzzyValue();
+  Standard_EXPORT static double FuzzyValue();
 
-  Standard_EXPORT static void SetNonDestructive(const Standard_Boolean theFlag);
+  Standard_EXPORT static void SetNonDestructive(const bool theFlag);
 
-  Standard_EXPORT static Standard_Boolean NonDestructive();
+  Standard_EXPORT static bool NonDestructive();
 
   Standard_EXPORT static void SetGlue(const BOPAlgo_GlueEnum aGlue);
 
   Standard_EXPORT static BOPAlgo_GlueEnum Glue();
 
-  Standard_EXPORT static void SetDrawWarnShapes(const Standard_Boolean bDraw);
+  Standard_EXPORT static void SetDrawWarnShapes(const bool bDraw);
 
-  Standard_EXPORT static Standard_Boolean DrawWarnShapes();
+  Standard_EXPORT static bool DrawWarnShapes();
 
-  Standard_EXPORT static void SetCheckInverted(const Standard_Boolean bCheck);
+  Standard_EXPORT static void SetCheckInverted(const bool bCheck);
 
-  Standard_EXPORT static Standard_Boolean CheckInverted();
+  Standard_EXPORT static bool CheckInverted();
 
-  Standard_EXPORT static void SetUseOBB(const Standard_Boolean bUseOBB);
+  Standard_EXPORT static void SetUseOBB(const bool bUseOBB);
 
-  Standard_EXPORT static Standard_Boolean UseOBB();
+  Standard_EXPORT static bool UseOBB();
 
-  Standard_EXPORT static void             SetUnifyEdges(const Standard_Boolean bUE);
-  Standard_EXPORT static Standard_Boolean UnifyEdges();
+  Standard_EXPORT static void SetUnifyEdges(const bool bUE);
+  Standard_EXPORT static bool UnifyEdges();
 
-  Standard_EXPORT static void             SetUnifyFaces(const Standard_Boolean bUF);
-  Standard_EXPORT static Standard_Boolean UnifyFaces();
+  Standard_EXPORT static void SetUnifyFaces(const bool bUF);
+  Standard_EXPORT static bool UnifyFaces();
 
-  Standard_EXPORT static void          SetAngular(const Standard_Real bAngTol);
-  Standard_EXPORT static Standard_Real Angular();
-
-protected:
-private:
+  Standard_EXPORT static void   SetAngular(const double bAngTol);
+  Standard_EXPORT static double Angular();
 };
 
 #endif // _BOPTest_Objects_HeaderFile

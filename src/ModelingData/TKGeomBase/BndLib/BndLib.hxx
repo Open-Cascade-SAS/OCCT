@@ -71,65 +71,65 @@ public:
   //! Exceptions
   //! Standard_Failure if P1 and P2 are either two negative
   //! infinite real numbers, or two positive infinite real numbers.
-  Standard_EXPORT static void Add(const gp_Lin&       L,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Lin& L,
+                                  const double  P1,
+                                  const double  P2,
+                                  const double  Tol,
+                                  Bnd_Box&      B);
 
-  Standard_EXPORT static void Add(const gp_Lin2d&     L,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box2d&          B);
+  Standard_EXPORT static void Add(const gp_Lin2d& L,
+                                  const double    P1,
+                                  const double    P2,
+                                  const double    Tol,
+                                  Bnd_Box2d&      B);
 
-  Standard_EXPORT static void Add(const gp_Circ& C, const Standard_Real Tol, Bnd_Box& B);
+  Standard_EXPORT static void Add(const gp_Circ& C, const double Tol, Bnd_Box& B);
 
   //! P2-P1 can be in [0,2*pi]
-  Standard_EXPORT static void Add(const gp_Circ&      C,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Circ& C,
+                                  const double   P1,
+                                  const double   P2,
+                                  const double   Tol,
+                                  Bnd_Box&       B);
 
-  Standard_EXPORT static void Add(const gp_Circ2d& C, const Standard_Real Tol, Bnd_Box2d& B);
+  Standard_EXPORT static void Add(const gp_Circ2d& C, const double Tol, Bnd_Box2d& B);
 
   //! Adds the circle C, or the arc of the circle C
   //! limited by the two parameter values P1 and P2,
   //! to the bounding box B, and then enlarges B by the tolerance value Tol.
   //! P2-P1 can be in [0,2*pi]
-  Standard_EXPORT static void Add(const gp_Circ2d&    C,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box2d&          B);
+  Standard_EXPORT static void Add(const gp_Circ2d& C,
+                                  const double     P1,
+                                  const double     P2,
+                                  const double     Tol,
+                                  Bnd_Box2d&       B);
 
-  Standard_EXPORT static void Add(const gp_Elips& C, const Standard_Real Tol, Bnd_Box& B);
+  Standard_EXPORT static void Add(const gp_Elips& C, const double Tol, Bnd_Box& B);
 
   //! P2-P1 can be in [0,2*pi]
-  Standard_EXPORT static void Add(const gp_Elips&     C,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Elips& C,
+                                  const double    P1,
+                                  const double    P2,
+                                  const double    Tol,
+                                  Bnd_Box&        B);
 
-  Standard_EXPORT static void Add(const gp_Elips2d& C, const Standard_Real Tol, Bnd_Box2d& B);
+  Standard_EXPORT static void Add(const gp_Elips2d& C, const double Tol, Bnd_Box2d& B);
 
   //! Adds the ellipse E, or the arc of the ellipse E
   //! limited by the two parameter values P1 and P2,
   //! to the bounding box B, and then enlarges B by the tolerance value Tol.
   //! P2-P1 can be in [0,2*pi]
-  Standard_EXPORT static void Add(const gp_Elips2d&   C,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box2d&          B);
+  Standard_EXPORT static void Add(const gp_Elips2d& C,
+                                  const double      P1,
+                                  const double      P2,
+                                  const double      Tol,
+                                  Bnd_Box2d&        B);
 
-  Standard_EXPORT static void Add(const gp_Parab&     P,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Parab& P,
+                                  const double    P1,
+                                  const double    P2,
+                                  const double    Tol,
+                                  Bnd_Box&        B);
 
   //! Adds the arc of the parabola P limited by the two
   //! parameter values P1 and P2, to the bounding box B, and
@@ -138,17 +138,17 @@ public:
   //! Exceptions
   //! Standard_Failure if P1 and P2 are either two negative
   //! infinite real numbers, or two positive infinite real numbers.
-  Standard_EXPORT static void Add(const gp_Parab2d&   P,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box2d&          B);
+  Standard_EXPORT static void Add(const gp_Parab2d& P,
+                                  const double      P1,
+                                  const double      P2,
+                                  const double      Tol,
+                                  Bnd_Box2d&        B);
 
-  Standard_EXPORT static void Add(const gp_Hypr&      H,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Hypr& H,
+                                  const double   P1,
+                                  const double   P2,
+                                  const double   Tol,
+                                  Bnd_Box&       B);
 
   //! Adds the arc of the branch of hyperbola H limited by the
   //! two parameter values P1 and P2, to the bounding box B,
@@ -157,20 +157,20 @@ public:
   //! Exceptions
   //! Standard_Failure if P1 and P2 are either two negative
   //! infinite real numbers, or two positive infinite real numbers.
-  Standard_EXPORT static void Add(const gp_Hypr2d&    H,
-                                  const Standard_Real P1,
-                                  const Standard_Real P2,
-                                  const Standard_Real Tol,
-                                  Bnd_Box2d&          B);
+  Standard_EXPORT static void Add(const gp_Hypr2d& H,
+                                  const double     P1,
+                                  const double     P2,
+                                  const double     Tol,
+                                  Bnd_Box2d&       B);
 
   //! UMax -UMin can be in [0,2*pi]
-  Standard_EXPORT static void Add(const gp_Cylinder&  S,
-                                  const Standard_Real UMin,
-                                  const Standard_Real UMax,
-                                  const Standard_Real VMin,
-                                  const Standard_Real VMax,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Cylinder& S,
+                                  const double       UMin,
+                                  const double       UMax,
+                                  const double       VMin,
+                                  const double       VMax,
+                                  const double       Tol,
+                                  Bnd_Box&           B);
 
   //! Adds to the bounding box B, the patch of the cylinder S limited
   //! -   in the v parametric direction, by the two parameter
@@ -182,20 +182,20 @@ public:
   //! Exceptions
   //! Standard_Failure if VMin and VMax are either two
   //! negative infinite real numbers, or two positive infinite real numbers.
-  Standard_EXPORT static void Add(const gp_Cylinder&  S,
-                                  const Standard_Real VMin,
-                                  const Standard_Real VMax,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Cylinder& S,
+                                  const double       VMin,
+                                  const double       VMax,
+                                  const double       Tol,
+                                  Bnd_Box&           B);
 
   //! UMax-UMin can be in [0,2*pi]
-  Standard_EXPORT static void Add(const gp_Cone&      S,
-                                  const Standard_Real UMin,
-                                  const Standard_Real UMax,
-                                  const Standard_Real VMin,
-                                  const Standard_Real VMax,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Cone& S,
+                                  const double   UMin,
+                                  const double   UMax,
+                                  const double   VMin,
+                                  const double   VMax,
+                                  const double   Tol,
+                                  Bnd_Box&       B);
 
   //! Adds to the bounding box B, the patch of the cone S limited
   //! -   in the v parametric direction, by the two parameter
@@ -207,13 +207,13 @@ public:
   //! Exceptions
   //! Standard_Failure if VMin and VMax are either two
   //! negative infinite real numbers, or two positive infinite real numbers.
-  Standard_EXPORT static void Add(const gp_Cone&      S,
-                                  const Standard_Real VMin,
-                                  const Standard_Real VMax,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Cone& S,
+                                  const double   VMin,
+                                  const double   VMax,
+                                  const double   Tol,
+                                  Bnd_Box&       B);
 
-  Standard_EXPORT static void Add(const gp_Sphere& S, const Standard_Real Tol, Bnd_Box& B);
+  Standard_EXPORT static void Add(const gp_Sphere& S, const double Tol, Bnd_Box& B);
 
   //! Adds to the bounding box B the sphere S, or
   //! -   the patch of the sphere S, limited in the u parametric
@@ -223,15 +223,15 @@ public:
   //! B is then enlarged by the tolerance value Tol.
   //! UMax-UMin can be in [0,2*pi]
   //! VMin,VMax can be [-pi/2,pi/2]
-  Standard_EXPORT static void Add(const gp_Sphere&    S,
-                                  const Standard_Real UMin,
-                                  const Standard_Real UMax,
-                                  const Standard_Real VMin,
-                                  const Standard_Real VMax,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Sphere& S,
+                                  const double     UMin,
+                                  const double     UMax,
+                                  const double     VMin,
+                                  const double     VMax,
+                                  const double     Tol,
+                                  Bnd_Box&         B);
 
-  Standard_EXPORT static void Add(const gp_Torus& P, const Standard_Real Tol, Bnd_Box& B);
+  Standard_EXPORT static void Add(const gp_Torus& P, const double Tol, Bnd_Box& B);
 
   //! Adds to the bounding box B
   //! -   the torus S, or
@@ -242,13 +242,13 @@ public:
   //! B is then enlarged by the tolerance value Tol.
   //! UMax-UMin can be in [0,2*pi],
   //! VMin,VMax can be [-pi/2,pi/2]
-  Standard_EXPORT static void Add(const gp_Torus&     P,
-                                  const Standard_Real UMin,
-                                  const Standard_Real UMax,
-                                  const Standard_Real VMin,
-                                  const Standard_Real VMax,
-                                  const Standard_Real Tol,
-                                  Bnd_Box&            B);
+  Standard_EXPORT static void Add(const gp_Torus& P,
+                                  const double    UMin,
+                                  const double    UMax,
+                                  const double    VMin,
+                                  const double    VMax,
+                                  const double    Tol,
+                                  Bnd_Box&        B);
 };
 
 #endif // _BndLib_HeaderFile

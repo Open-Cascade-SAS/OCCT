@@ -28,9 +28,6 @@ class TDocStd_Document;
 class TObj_CheckModel;
 class TObj_Application;
 
-class TObj_Model;
-DEFINE_STANDARD_HANDLE(TObj_Model, Standard_Transient)
-
 /**
  * Base class for OCAF based models.
  * Defines common behaviour for all models based on TObject
@@ -62,8 +59,7 @@ protected:
   Standard_EXPORT ~TObj_Model();
 
   //! Check whether the document contains the OCAF data.
-  Standard_EXPORT virtual Standard_Boolean checkDocumentEmpty(
-    const TCollection_ExtendedString& theFile);
+  Standard_EXPORT virtual bool checkDocumentEmpty(const TCollection_ExtendedString& theFile);
 
 public:
   /**
@@ -71,11 +67,11 @@ public:
    */
 
   //! Set messenger to use for messages output
-  void SetMessenger(const Handle(Message_Messenger)& theMsgr) { myMessenger = theMsgr; }
+  void SetMessenger(const occ::handle<Message_Messenger>& theMsgr) { myMessenger = theMsgr; }
 
   //! Get messenger used for messages output (by default, the messenger from
   //! application is used)
-  Handle(Message_Messenger) Messenger() const { return myMessenger; }
+  occ::handle<Message_Messenger> Messenger() const { return myMessenger; }
 
 public:
   /**
@@ -84,20 +80,20 @@ public:
 
   //! Load the OCAF model from a file. If the filename is empty or file does
   //! not exists, it just initializes model by empty data.
-  Standard_EXPORT virtual Standard_Boolean Load(const TCollection_ExtendedString& theFile);
+  Standard_EXPORT virtual bool Load(const TCollection_ExtendedString& theFile);
 
   //! Load the OCAF model from a stream. If case of failure,
   //! it initializes the model by empty data.
-  Standard_EXPORT virtual Standard_Boolean Load(Standard_IStream& theIStream);
+  Standard_EXPORT virtual bool Load(Standard_IStream& theIStream);
 
   //! Save the model to a file
-  Standard_EXPORT virtual Standard_Boolean SaveAs(const TCollection_ExtendedString& theFile);
+  Standard_EXPORT virtual bool SaveAs(const TCollection_ExtendedString& theFile);
 
   //! Save the model to a stream
-  Standard_EXPORT virtual Standard_Boolean SaveAs(Standard_OStream& theOStream);
+  Standard_EXPORT virtual bool SaveAs(Standard_OStream& theOStream);
 
   //! Save the model to the same file
-  Standard_EXPORT Standard_Boolean Save();
+  Standard_EXPORT bool Save();
 
 public:
   /**
@@ -105,18 +101,18 @@ public:
    */
 
   //! Close the model
-  virtual Standard_EXPORT Standard_Boolean Close();
+  virtual Standard_EXPORT bool Close();
 
   //! Close Free OCAF document
-  Standard_EXPORT void CloseDocument(const Handle(TDocStd_Document)& theDoc);
+  Standard_EXPORT void CloseDocument(const occ::handle<TDocStd_Document>& theDoc);
 
   //! Returns model which contains a document with the label,
   //! or NULL handle if label is NULL
-  static Standard_EXPORT Handle(TObj_Model) GetDocumentModel(const TDF_Label& theLabel);
+  static Standard_EXPORT occ::handle<TObj_Model> GetDocumentModel(const TDF_Label& theLabel);
 
   //! Returns the full file name this model is to be saved to,
   //! or null if the model was not saved yet
-  virtual Standard_EXPORT Handle(TCollection_HExtendedString) GetFile() const;
+  virtual Standard_EXPORT occ::handle<TCollection_HExtendedString> GetFile() const;
 
 public:
   /**
@@ -124,19 +120,19 @@ public:
    */
 
   //! Returns an Iterator on all objects in the Model
-  virtual Standard_EXPORT Handle(TObj_ObjectIterator) GetObjects() const;
+  virtual Standard_EXPORT occ::handle<TObj_ObjectIterator> GetObjects() const;
 
   //! Returns an Iterator on objects in the main partition
-  virtual Standard_EXPORT Handle(TObj_ObjectIterator) GetChildren() const;
+  virtual Standard_EXPORT occ::handle<TObj_ObjectIterator> GetChildren() const;
 
   //! Returns an Object by given Name (or Null if not found).
-  virtual Standard_EXPORT Handle(TObj_Object) FindObject(
-    const Handle(TCollection_HExtendedString)& theName,
-    const Handle(TObj_TNameContainer)&         theDictionary) const;
+  virtual Standard_EXPORT occ::handle<TObj_Object> FindObject(
+    const occ::handle<TCollection_HExtendedString>& theName,
+    const occ::handle<TObj_TNameContainer>&         theDictionary) const;
 
   //! Returns the tool checking model consistency.
   //! Descendant may redefine it to return its own tool.
-  virtual Standard_EXPORT Handle(TObj_CheckModel) GetChecker() const;
+  virtual Standard_EXPORT occ::handle<TObj_CheckModel> GetChecker() const;
 
 public:
   /**
@@ -144,10 +140,10 @@ public:
    */
 
   //! Returns root object of model
-  virtual Standard_EXPORT Handle(TObj_Object) GetRoot() const;
+  virtual Standard_EXPORT occ::handle<TObj_Object> GetRoot() const;
 
   //! Returns root object of model
-  Standard_EXPORT Handle(TObj_Partition) GetMainPartition() const;
+  Standard_EXPORT occ::handle<TObj_Partition> GetMainPartition() const;
 
 public:
   /**
@@ -163,27 +159,27 @@ public:
    */
 
   //! Returns the name of the model
-  virtual Standard_EXPORT Handle(TCollection_HExtendedString) GetModelName() const;
+  virtual Standard_EXPORT occ::handle<TCollection_HExtendedString> GetModelName() const;
 
   //! Sets new unique name for the object
-  static Standard_EXPORT void SetNewName(const Handle(TObj_Object)& theObject);
+  static Standard_EXPORT void SetNewName(const occ::handle<TObj_Object>& theObject);
 
   //! Returns True is name is registered in the names map
   //! The input argument may be NULL handle, then model check in own global container
-  Standard_EXPORT Standard_Boolean
-    IsRegisteredName(const Handle(TCollection_HExtendedString)& theName,
-                     const Handle(TObj_TNameContainer)&         theDictionary) const;
+  Standard_EXPORT bool IsRegisteredName(
+    const occ::handle<TCollection_HExtendedString>& theName,
+    const occ::handle<TObj_TNameContainer>&         theDictionary) const;
 
   //! Register name in the map
   //! The input argument may be NULL handle, then model check in own global container
-  Standard_EXPORT void RegisterName(const Handle(TCollection_HExtendedString)& theName,
-                                    const TDF_Label&                           theLabel,
-                                    const Handle(TObj_TNameContainer)&         theDictionary) const;
+  Standard_EXPORT void RegisterName(const occ::handle<TCollection_HExtendedString>& theName,
+                                    const TDF_Label&                                theLabel,
+                                    const occ::handle<TObj_TNameContainer>& theDictionary) const;
 
   //! Unregisters name from the map
   //! The input argument may be NULL handle, then model check in own global container
-  Standard_EXPORT void UnRegisterName(const Handle(TCollection_HExtendedString)& theName,
-                                      const Handle(TObj_TNameContainer)& theDictionary) const;
+  Standard_EXPORT void UnRegisterName(const occ::handle<TCollection_HExtendedString>& theName,
+                                      const occ::handle<TObj_TNameContainer>& theDictionary) const;
 
 public:
   /**
@@ -192,7 +188,7 @@ public:
 
   //! Returns True if a Command transaction is open
   //! Starting, finishing the transaction
-  Standard_EXPORT Standard_Boolean HasOpenCommand() const;
+  Standard_EXPORT bool HasOpenCommand() const;
 
   //! Open a new command transaction.
   Standard_EXPORT void OpenCommand() const;
@@ -206,10 +202,10 @@ public:
   Standard_EXPORT void AbortCommand() const;
 
   //! Modification status
-  virtual Standard_EXPORT Standard_Boolean IsModified() const;
+  virtual Standard_EXPORT bool IsModified() const;
 
   //! Sets modification status
-  Standard_EXPORT void SetModified(const Standard_Boolean theModified);
+  Standard_EXPORT void SetModified(const bool theModified);
 
 public:
   /**
@@ -217,7 +213,7 @@ public:
    */
 
   //! Returns handle to static instance of the relevant application class
-  virtual Standard_EXPORT const Handle(TObj_Application) GetApplication();
+  virtual Standard_EXPORT const occ::handle<TObj_Application> GetApplication();
 
 public:
   /**
@@ -230,7 +226,7 @@ public:
   virtual Standard_EXPORT TCollection_ExtendedString GetFormat() const;
 
   //! Returns the version of format stored in TObj file
-  Standard_EXPORT Standard_Integer GetFormatVersion() const;
+  Standard_EXPORT int GetFormatVersion() const;
 
 protected:
   /**
@@ -238,7 +234,7 @@ protected:
    */
 
   //! Sets the format version to save
-  Standard_EXPORT void SetFormatVersion(const Standard_Integer theVersion);
+  Standard_EXPORT void SetFormatVersion(const int theVersion);
 
 public:
   /**
@@ -246,7 +242,7 @@ public:
    */
 
   //! this method is called before activating this model
-  virtual Standard_EXPORT Standard_Boolean Update();
+  virtual Standard_EXPORT bool Update();
 
 public:
   /**
@@ -262,7 +258,7 @@ public:
    */
 
   //! Returns the map of names of the objects
-  Standard_EXPORT Handle(TObj_TNameContainer) GetDictionary() const;
+  Standard_EXPORT occ::handle<TObj_TNameContainer> GetDictionary() const;
 
 protected:
   /**
@@ -270,28 +266,27 @@ protected:
    */
 
   //! Returns (or creates a new) partition on a given label
-  Standard_EXPORT Handle(TObj_Partition) getPartition(
-    const TDF_Label&       theLabel,
-    const Standard_Boolean theHidden = Standard_False) const;
+  Standard_EXPORT occ::handle<TObj_Partition> getPartition(const TDF_Label& theLabel,
+                                                           const bool theHidden = false) const;
 
   //! Returns Partition specified by its index number on a given label
   //! If not exists, creates anew with specified name
-  Standard_EXPORT Handle(TObj_Partition) getPartition(
+  Standard_EXPORT occ::handle<TObj_Partition> getPartition(
     const TDF_Label&                  theLabel,
-    const Standard_Integer            theIndex,
+    const int                         theIndex,
     const TCollection_ExtendedString& theName,
-    const Standard_Boolean            theHidden = Standard_False) const;
+    const bool                        theHidden = false) const;
 
   //! Returns Partition specified by its index number
   //! If not exists, creates anew with specified name
-  Standard_EXPORT Handle(TObj_Partition) getPartition(
-    const Standard_Integer            theIndex,
+  Standard_EXPORT occ::handle<TObj_Partition> getPartition(
+    const int                         theIndex,
     const TCollection_ExtendedString& theName,
-    const Standard_Boolean            theHidden = Standard_False) const;
+    const bool                        theHidden = false) const;
 
 public:
   //! Returns OCAF document of Model
-  Standard_EXPORT Handle(TDocStd_Document) GetDocument() const;
+  Standard_EXPORT occ::handle<TDocStd_Document> GetDocument() const;
 
 protected:
   // all that labels is sublabels of main partition
@@ -311,16 +306,16 @@ protected:
   //! and setting myModel on its main label.
   //! Default implementation does nothing.
   //! Returns True is model sucsesfully initialized
-  virtual Standard_EXPORT Standard_Boolean initNewModel(const Standard_Boolean IsNew);
+  virtual Standard_EXPORT bool initNewModel(const bool IsNew);
 
   //! Updates back references of object
   //! Recursive method.
-  virtual Standard_EXPORT void updateBackReferences(const Handle(TObj_Object)& theObject);
+  virtual Standard_EXPORT void updateBackReferences(const occ::handle<TObj_Object>& theObject);
 
   //! Returns boolean value is to check model in Init new model
   //! The check could be useful if version of model changed
   //! Default implementation returns FALSE (check turned OFF)
-  virtual Standard_Boolean isToCheck() const { return Standard_True; }
+  virtual bool isToCheck() const { return true; }
 
 public:
   /**
@@ -330,23 +325,23 @@ public:
   //! Pastes me to the new model
   //! references will not be copied if theRelocTable is not 0
   //! if theRelocTable is not NULL theRelocTable is filled by objects
-  virtual Standard_EXPORT Standard_Boolean Paste(Handle(TObj_Model)          theModel,
-                                                 Handle(TDF_RelocationTable) theRelocTable = 0);
+  virtual Standard_EXPORT bool Paste(occ::handle<TObj_Model>          theModel,
+                                     occ::handle<TDF_RelocationTable> theRelocTable = 0);
 
   //! This function have to create a new model with type like me
-  virtual Standard_EXPORT Handle(TObj_Model) NewEmpty() = 0;
+  virtual Standard_EXPORT occ::handle<TObj_Model> NewEmpty() = 0;
 
   //! Copy references from me to the other
-  Standard_EXPORT void CopyReferences(const Handle(TObj_Model)&          theTarget,
-                                      const Handle(TDF_RelocationTable)& theRelocTable);
+  Standard_EXPORT void CopyReferences(const occ::handle<TObj_Model>&          theTarget,
+                                      const occ::handle<TDF_RelocationTable>& theRelocTable);
 
 private:
   /**
    * Fields
    */
 
-  TDF_Label                 myLabel;     //!< Root label of the model in OCAF document
-  Handle(Message_Messenger) myMessenger; //!< Messenger object
+  TDF_Label                      myLabel;     //!< Root label of the model in OCAF document
+  occ::handle<Message_Messenger> myMessenger; //!< Messenger object
 
 public:
   //! CASCADE RTTI

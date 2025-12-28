@@ -26,16 +26,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductConcept, Standard_Transient)
 
 StepRepr_ProductConcept::StepRepr_ProductConcept()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
-void StepRepr_ProductConcept::Init(const Handle(TCollection_HAsciiString)&        aId,
-                                   const Handle(TCollection_HAsciiString)&        aName,
-                                   const Standard_Boolean                         hasDescription,
-                                   const Handle(TCollection_HAsciiString)&        aDescription,
-                                   const Handle(StepBasic_ProductConceptContext)& aMarketContext)
+void StepRepr_ProductConcept::Init(
+  const occ::handle<TCollection_HAsciiString>&        aId,
+  const occ::handle<TCollection_HAsciiString>&        aName,
+  const bool                                          hasDescription,
+  const occ::handle<TCollection_HAsciiString>&        aDescription,
+  const occ::handle<StepBasic_ProductConceptContext>& aMarketContext)
 {
 
   theId = aId;
@@ -55,56 +56,57 @@ void StepRepr_ProductConcept::Init(const Handle(TCollection_HAsciiString)&      
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ProductConcept::Id() const
+occ::handle<TCollection_HAsciiString> StepRepr_ProductConcept::Id() const
 {
   return theId;
 }
 
 //=================================================================================================
 
-void StepRepr_ProductConcept::SetId(const Handle(TCollection_HAsciiString)& aId)
+void StepRepr_ProductConcept::SetId(const occ::handle<TCollection_HAsciiString>& aId)
 {
   theId = aId;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ProductConcept::Name() const
+occ::handle<TCollection_HAsciiString> StepRepr_ProductConcept::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepRepr_ProductConcept::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepRepr_ProductConcept::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ProductConcept::Description() const
+occ::handle<TCollection_HAsciiString> StepRepr_ProductConcept::Description() const
 {
   return theDescription;
 }
 
 //=================================================================================================
 
-void StepRepr_ProductConcept::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepRepr_ProductConcept::SetDescription(
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepRepr_ProductConcept::HasDescription() const
+bool StepRepr_ProductConcept::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductConceptContext) StepRepr_ProductConcept::MarketContext() const
+occ::handle<StepBasic_ProductConceptContext> StepRepr_ProductConcept::MarketContext() const
 {
   return theMarketContext;
 }
@@ -112,7 +114,7 @@ Handle(StepBasic_ProductConceptContext) StepRepr_ProductConcept::MarketContext()
 //=================================================================================================
 
 void StepRepr_ProductConcept::SetMarketContext(
-  const Handle(StepBasic_ProductConceptContext)& aMarketContext)
+  const occ::handle<StepBasic_ProductConceptContext>& aMarketContext)
 {
   theMarketContext = aMarketContext;
 }

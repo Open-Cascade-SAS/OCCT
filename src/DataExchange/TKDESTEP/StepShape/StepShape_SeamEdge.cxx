@@ -27,10 +27,10 @@ StepShape_SeamEdge::StepShape_SeamEdge() {}
 
 //=================================================================================================
 
-void StepShape_SeamEdge::Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-                              const Handle(StepShape_Edge)&           aOrientedEdge_EdgeElement,
-                              const Standard_Boolean                  aOrientedEdge_Orientation,
-                              const Handle(StepGeom_Pcurve)&          aPcurveReference)
+void StepShape_SeamEdge::Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+                              const occ::handle<StepShape_Edge>&  aOrientedEdge_EdgeElement,
+                              const bool                          aOrientedEdge_Orientation,
+                              const occ::handle<StepGeom_Pcurve>& aPcurveReference)
 {
   StepShape_OrientedEdge::Init(aRepresentationItem_Name,
                                aOrientedEdge_EdgeElement,
@@ -41,14 +41,14 @@ void StepShape_SeamEdge::Init(const Handle(TCollection_HAsciiString)& aRepresent
 
 //=================================================================================================
 
-Handle(StepGeom_Pcurve) StepShape_SeamEdge::PcurveReference() const
+occ::handle<StepGeom_Pcurve> StepShape_SeamEdge::PcurveReference() const
 {
   return thePcurveReference;
 }
 
 //=================================================================================================
 
-void StepShape_SeamEdge::SetPcurveReference(const Handle(StepGeom_Pcurve)& aPcurveReference)
+void StepShape_SeamEdge::SetPcurveReference(const occ::handle<StepGeom_Pcurve>& aPcurveReference)
 {
   thePcurveReference = aPcurveReference;
 }

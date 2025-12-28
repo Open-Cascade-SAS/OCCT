@@ -22,9 +22,6 @@
 
 #include <StepGeom_GeometricRepresentationItem.hxx>
 
-class StepVisual_CameraModel;
-DEFINE_STANDARD_HANDLE(StepVisual_CameraModel, StepGeom_GeometricRepresentationItem)
-
 class StepVisual_CameraModel : public StepGeom_GeometricRepresentationItem
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepVisual_CameraModel();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModel, StepGeom_GeometricRepresentationItem)
-
-protected:
-private:
 };
 
 #endif // _StepVisual_CameraModel_HeaderFile

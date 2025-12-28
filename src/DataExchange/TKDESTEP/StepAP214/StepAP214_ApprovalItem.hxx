@@ -77,78 +77,78 @@ public:
   //! 20 -> Representation
   //! 21 -> ShapeAspectRelationship
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a AssemblyComponentUsageSubstitute (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_AssemblyComponentUsageSubstitute)
+  Standard_EXPORT virtual occ::handle<StepRepr_AssemblyComponentUsageSubstitute>
     AssemblyComponentUsageSubstitute() const;
 
   //! returns Value as a DocumentFile (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_DocumentFile) DocumentFile() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_DocumentFile> DocumentFile() const;
 
   //! returns Value as a MaterialDesignation (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_MaterialDesignation) MaterialDesignation() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_MaterialDesignation> MaterialDesignation() const;
 
   //! returns Value as a MechanicalDesignGeometricPresentationRepresentation (Null if another type)
-  Standard_EXPORT virtual Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)
+  Standard_EXPORT virtual occ::handle<
+    StepVisual_MechanicalDesignGeometricPresentationRepresentation>
     MechanicalDesignGeometricPresentationRepresentation() const;
 
   //! returns Value as a PresentationArea (Null if another type)
-  Standard_EXPORT virtual Handle(StepVisual_PresentationArea) PresentationArea() const;
+  Standard_EXPORT virtual occ::handle<StepVisual_PresentationArea> PresentationArea() const;
 
   //! returns Value as a Product (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_Product) Product() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_Product> Product() const;
 
   //! returns Value as a ProductDefinition (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_ProductDefinition) ProductDefinition() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! returns Value as a ProductDefinitionFormation (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation()
-    const;
+  Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinitionFormation>
+    ProductDefinitionFormation() const;
 
   //! returns Value as aProductDefinitionRelationship (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_ProductDefinitionRelationship)
+  Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinitionRelationship>
     ProductDefinitionRelationship() const;
 
   //! returns Value as a PropertyDefinition (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_PropertyDefinition) PropertyDefinition() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;
 
   //! returns Value as a ShapeRepresentation (Null if another type)
-  Standard_EXPORT virtual Handle(StepShape_ShapeRepresentation) ShapeRepresentation() const;
+  Standard_EXPORT virtual occ::handle<StepShape_ShapeRepresentation> ShapeRepresentation() const;
 
   //! returns Value as a SecurityClassification (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_SecurityClassification) SecurityClassification() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_SecurityClassification> SecurityClassification()
+    const;
 
   //! returns Value as a ConfigurationItem (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_ConfigurationItem) ConfigurationItem() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_ConfigurationItem> ConfigurationItem() const;
 
   //! returns Value as a Date (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_Date) Date() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_Date> Date() const;
 
   //! returns Value as a Document (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_Document) Document() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_Document> Document() const;
 
   //! returns Value as a Effectivity (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_Effectivity) Effectivity() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_Effectivity> Effectivity() const;
 
   //! returns Value as a Group (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_Group) Group() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_Group> Group() const;
 
   //! returns Value as a GroupRelationship (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_GroupRelationship) GroupRelationship() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_GroupRelationship> GroupRelationship() const;
 
   //! returns Value as a ProductDefinitionFormationRelationship (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_ProductDefinitionFormationRelationship)
+  Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinitionFormationRelationship>
     ProductDefinitionFormationRelationship() const;
 
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_Representation) Representation() const;
+  Standard_EXPORT virtual occ::handle<StepRepr_Representation> Representation() const;
 
   //! returns Value as a ShapeAspectRelationship (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
-
-protected:
-private:
+  Standard_EXPORT virtual occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship()
+    const;
 };
 
 #endif // _StepAP214_ApprovalItem_HeaderFile

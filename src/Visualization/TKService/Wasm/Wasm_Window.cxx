@@ -40,9 +40,9 @@ Wasm_Window::Wasm_Window(const TCollection_AsciiString& theCanvasId, const bool 
   if (myToScaleBacking)
   {
     myDevicePixelRatio = emscripten_get_device_pixel_ratio();
-    Graphic3d_Vec2d aCssSize;
+    NCollection_Vec2<double> aCssSize;
     emscripten_get_element_css_size(myCanvasId.ToCString(), &aCssSize.x(), &aCssSize.y());
-    Graphic3d_Vec2i aCanvasSize = Graphic3d_Vec2i(aCssSize * myDevicePixelRatio);
+    NCollection_Vec2<int> aCanvasSize = NCollection_Vec2<int>(aCssSize * myDevicePixelRatio);
     if (aCanvasSize != mySize)
     {
       mySize = aCanvasSize;
@@ -74,9 +74,9 @@ Aspect_TypeOfResize Wasm_Window::DoResize()
   if (myToScaleBacking)
   {
     myDevicePixelRatio = emscripten_get_device_pixel_ratio();
-    Graphic3d_Vec2d aCssSize;
+    NCollection_Vec2<double> aCssSize;
     emscripten_get_element_css_size(myCanvasId.ToCString(), &aCssSize.x(), &aCssSize.y());
-    Graphic3d_Vec2i aCanvasSize = Graphic3d_Vec2i(aCssSize * myDevicePixelRatio);
+    NCollection_Vec2<int> aCanvasSize = NCollection_Vec2<int>(aCssSize * myDevicePixelRatio);
     if (aCanvasSize != mySize)
     {
       mySize = aCanvasSize;
@@ -90,9 +90,9 @@ Aspect_TypeOfResize Wasm_Window::DoResize()
 
 //=================================================================================================
 
-Standard_Real Wasm_Window::Ratio() const
+double Wasm_Window::Ratio() const
 {
-  Graphic3d_Vec2i aCanvasSize = mySize;
+  NCollection_Vec2<int> aCanvasSize = mySize;
   if (!IsVirtual())
   {
 #if defined(__EMSCRIPTEN__)
@@ -101,16 +101,13 @@ Standard_Real Wasm_Window::Ratio() const
   }
 
   return (aCanvasSize.x() != 0 && aCanvasSize.y() != 0)
-           ? Standard_Real(aCanvasSize.x()) / Standard_Real(aCanvasSize.y())
+           ? double(aCanvasSize.x()) / double(aCanvasSize.y())
            : 1.0;
 }
 
 //=================================================================================================
 
-void Wasm_Window::Position(Standard_Integer& theX1,
-                           Standard_Integer& theY1,
-                           Standard_Integer& theX2,
-                           Standard_Integer& theY2) const
+void Wasm_Window::Position(int& theX1, int& theY1, int& theX2, int& theY2) const
 {
   theX1 = 0;
   theY1 = 0;
@@ -128,7 +125,7 @@ void Wasm_Window::Position(Standard_Integer& theX1,
 
 //=================================================================================================
 
-void Wasm_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) const
+void Wasm_Window::Size(int& theWidth, int& theHeight) const
 {
   if (IsVirtual())
   {
@@ -144,9 +141,9 @@ void Wasm_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) 
 
 //=================================================================================================
 
-void Wasm_Window::SetSizeLogical(const Graphic3d_Vec2d& theSize)
+void Wasm_Window::SetSizeLogical(const NCollection_Vec2<double>& theSize)
 {
-  mySize = Graphic3d_Vec2i(theSize * myDevicePixelRatio);
+  mySize = NCollection_Vec2<int>(theSize * myDevicePixelRatio);
   if (IsVirtual())
   {
     return;
@@ -160,7 +157,7 @@ void Wasm_Window::SetSizeLogical(const Graphic3d_Vec2d& theSize)
 
 //=================================================================================================
 
-void Wasm_Window::SetSizeBacking(const Graphic3d_Vec2i& theSize)
+void Wasm_Window::SetSizeBacking(const NCollection_Vec2<int>& theSize)
 {
   mySize = theSize;
   if (IsVirtual())
@@ -169,8 +166,8 @@ void Wasm_Window::SetSizeBacking(const Graphic3d_Vec2i& theSize)
   }
 
 #if defined(__EMSCRIPTEN__)
-  Graphic3d_Vec2i aCanvasSize = mySize;
-  Graphic3d_Vec2d aCssSize    = Graphic3d_Vec2d(mySize) / myDevicePixelRatio;
+  NCollection_Vec2<int>    aCanvasSize = mySize;
+  NCollection_Vec2<double> aCssSize    = NCollection_Vec2<double>(mySize) / myDevicePixelRatio;
   emscripten_set_canvas_element_size(myCanvasId.ToCString(), aCanvasSize.x(), aCanvasSize.y());
   emscripten_set_element_css_size(myCanvasId.ToCString(), aCssSize.x(), aCssSize.y());
 #endif
@@ -178,7 +175,7 @@ void Wasm_Window::SetSizeBacking(const Graphic3d_Vec2i& theSize)
 
 //=================================================================================================
 
-void Wasm_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)&)
+void Wasm_Window::InvalidateContent(const occ::handle<Aspect_DisplayConnection>&)
 {
   //
 }
@@ -241,10 +238,11 @@ bool Wasm_Window::ProcessMouseEvent(Aspect_WindowInputListener& theListener,
                                     const EmscriptenMouseEvent* theEvent)
 {
 #if defined(__EMSCRIPTEN__)
-  const Graphic3d_Vec2d aNewPos2d =
-    ConvertPointToBacking(Graphic3d_Vec2d(theEvent->targetX, theEvent->targetY));
-  const Graphic3d_Vec2i aNewPos2i = Graphic3d_Vec2i(aNewPos2d + Graphic3d_Vec2d(0.5));
-  Aspect_VKeyFlags      aFlags    = 0;
+  const NCollection_Vec2<double> aNewPos2d =
+    ConvertPointToBacking(NCollection_Vec2<double>(theEvent->targetX, theEvent->targetY));
+  const NCollection_Vec2<int> aNewPos2i =
+    NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
+  Aspect_VKeyFlags aFlags = 0;
   if (theEvent->ctrlKey == EM_TRUE)
   {
     aFlags |= Aspect_VKeyFlags_CTRL;
@@ -343,9 +341,10 @@ bool Wasm_Window::ProcessWheelEvent(Aspect_WindowInputListener& theListener,
     return false;
   }
 
-  const Graphic3d_Vec2d aNewPos2d =
-    ConvertPointToBacking(Graphic3d_Vec2d(theEvent->mouse.targetX, theEvent->mouse.targetY));
-  const Graphic3d_Vec2i aNewPos2i = Graphic3d_Vec2i(aNewPos2d + Graphic3d_Vec2d(0.5));
+  const NCollection_Vec2<double> aNewPos2d = ConvertPointToBacking(
+    NCollection_Vec2<double>(theEvent->mouse.targetX, theEvent->mouse.targetY));
+  const NCollection_Vec2<int> aNewPos2i =
+    NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
   if (aNewPos2i.x() < 0 || aNewPos2i.x() > mySize.x() || aNewPos2i.y() < 0
       || aNewPos2i.y() > mySize.y())
   {
@@ -405,11 +404,12 @@ bool Wasm_Window::ProcessTouchEvent(Aspect_WindowInputListener& theListener,
       continue;
     }
 
-    const Standard_Size aTouchId = (Standard_Size)aTouch.identifier;
+    const size_t aTouchId = (size_t)aTouch.identifier;
 
-    const Graphic3d_Vec2d aNewPos2d =
-      ConvertPointToBacking(Graphic3d_Vec2d(aTouch.targetX, aTouch.targetY));
-    const Graphic3d_Vec2i aNewPos2i = Graphic3d_Vec2i(aNewPos2d + Graphic3d_Vec2d(0.5));
+    const NCollection_Vec2<double> aNewPos2d =
+      ConvertPointToBacking(NCollection_Vec2<double>(aTouch.targetX, aTouch.targetY));
+    const NCollection_Vec2<int> aNewPos2i =
+      NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
     switch (theEventType)
     {
       case EMSCRIPTEN_EVENT_TOUCHSTART: {
@@ -559,7 +559,7 @@ Aspect_VKeyMouse Wasm_Window::MouseButtonsFromNative(unsigned short theButtons)
 
 //=================================================================================================
 
-Aspect_VKey Wasm_Window::VirtualKeyFromNative(Standard_Integer theKey)
+Aspect_VKey Wasm_Window::VirtualKeyFromNative(int theKey)
 {
 #if defined(__EMSCRIPTEN__)
   if (theKey >= DOM_VK_0 && theKey <= DOM_VK_9)

@@ -30,8 +30,9 @@ TObj_SequenceIterator::TObj_SequenceIterator()
 
 //=================================================================================================
 
-TObj_SequenceIterator::TObj_SequenceIterator(const Handle(TObj_HSequenceOfObject)& theObjects,
-                                             const Handle(Standard_Type)&          theType)
+TObj_SequenceIterator::TObj_SequenceIterator(
+  const occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>>& theObjects,
+  const occ::handle<Standard_Type>&                                   theType)
 {
   myIndex   = 1;
   myType    = theType;
@@ -40,11 +41,10 @@ TObj_SequenceIterator::TObj_SequenceIterator(const Handle(TObj_HSequenceOfObject
 
 //=================================================================================================
 
-Standard_Boolean TObj_SequenceIterator::More() const
+bool TObj_SequenceIterator::More() const
 {
-  const Standard_Boolean isMore =
-    (!myObjects.IsNull() && (myIndex <= myObjects->Length() && myIndex > 0)
-     && !myObjects->Value(myIndex).IsNull());
+  const bool isMore = (!myObjects.IsNull() && (myIndex <= myObjects->Length() && myIndex > 0)
+                       && !myObjects->Value(myIndex).IsNull());
 
   // check type
   if (isMore && !myType.IsNull() && !myObjects->Value(myIndex)->IsKind(myType))
@@ -66,7 +66,7 @@ void TObj_SequenceIterator::Next()
 
 //=================================================================================================
 
-Handle(TObj_Object) TObj_SequenceIterator::Value() const
+occ::handle<TObj_Object> TObj_SequenceIterator::Value() const
 {
   return myObjects->Value(myIndex);
 }

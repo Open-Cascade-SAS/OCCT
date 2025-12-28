@@ -46,7 +46,7 @@ public:
    * This constructor is useful to create temporary object that is not
    * inserted into any existing triangulation.
    */
-  inline Poly_CoherentLink(const Standard_Integer iNode0, const Standard_Integer iNode1)
+  inline Poly_CoherentLink(const int iNode0, const int iNode1)
       : myAttribute(0L)
   {
     myNode[0]         = iNode0;
@@ -65,7 +65,7 @@ public:
    * @param iSide
    *   Can be 0, 1 or 2. Index of the node
    */
-  Standard_EXPORT Poly_CoherentLink(const Poly_CoherentTriangle& theTri, Standard_Integer iSide);
+  Standard_EXPORT Poly_CoherentLink(const Poly_CoherentTriangle& theTri, int iSide);
 
   /**
    * Return the node index in the current triangulation.
@@ -73,7 +73,7 @@ public:
    *   0 or 1 making distinction of the two nodes that constitute the Link.
    *   Node(0) always returns a smaller number than Node(1).
    */
-  inline Standard_Integer Node(const Standard_Integer ind) const { return myNode[ind & 0x1]; }
+  inline int Node(const int ind) const { return myNode[ind & 0x1]; }
 
   /**
    * Return the opposite node (belonging to the left or right incident triangle)
@@ -82,26 +82,23 @@ public:
    *   0 or 1 making distinction of the two involved triangles: 0 on the left,
    *   1 on the right side of the Link.
    */
-  inline Standard_Integer OppositeNode(const Standard_Integer ind) const
-  {
-    return myOppositeNode[ind & 0x1];
-  }
+  inline int OppositeNode(const int ind) const { return myOppositeNode[ind & 0x1]; }
 
   /**
    * Query the attribute of the Link.
    */
-  inline Standard_Address GetAttribute() const { return myAttribute; }
+  inline void* GetAttribute() const { return myAttribute; }
 
   /**
    * Set the attribute of the Link.
    */
-  inline void SetAttribute(const Standard_Address theAtt) { myAttribute = theAtt; }
+  inline void SetAttribute(void* const theAtt) { myAttribute = theAtt; }
 
   /**
    * Query the status of the link - if it is an invalid one.
    * An invalid link has Node members equal to -1.
    */
-  inline Standard_Boolean IsEmpty() const noexcept { return myNode[0] < 0 || myNode[1] < 0; }
+  inline bool IsEmpty() const noexcept { return myNode[0] < 0 || myNode[1] < 0; }
 
   /**
    * Invalidate this Link.
@@ -114,14 +111,11 @@ public:
     myOppositeNode[1] = -1;
   }
 
-protected:
-  // ---------- PROTECTED METHODS ----------
-
 private:
   // ---------- PRIVATE FIELDS ----------
-  Standard_Integer myNode[2];
-  Standard_Integer myOppositeNode[2];
-  Standard_Address myAttribute;
+  int   myNode[2];
+  int   myOppositeNode[2];
+  void* myAttribute;
 
   friend class Poly_CoherentTriangulation;
 };

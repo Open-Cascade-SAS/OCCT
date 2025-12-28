@@ -19,10 +19,10 @@
 RWStepRepr_RWRepresentationContext::RWStepRepr_RWRepresentationContext() {}
 
 void RWStepRepr_RWRepresentationContext::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepRepr_RepresentationContext)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepRepr_RepresentationContext>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -32,14 +32,14 @@ void RWStepRepr_RWRepresentationContext::ReadStep(
 
   // --- own field : contextIdentifier ---
 
-  Handle(TCollection_HAsciiString) aContextIdentifier;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aContextIdentifier;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "context_identifier", ach, aContextIdentifier);
 
   // --- own field : contextType ---
 
-  Handle(TCollection_HAsciiString) aContextType;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aContextType;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num, 2, "context_type", ach, aContextType);
 
   //--- Initialisation of the read entity ---
@@ -48,8 +48,8 @@ void RWStepRepr_RWRepresentationContext::ReadStep(
 }
 
 void RWStepRepr_RWRepresentationContext::WriteStep(
-  StepData_StepWriter&                          SW,
-  const Handle(StepRepr_RepresentationContext)& ent) const
+  StepData_StepWriter&                               SW,
+  const occ::handle<StepRepr_RepresentationContext>& ent) const
 {
 
   // --- own field : contextIdentifier ---

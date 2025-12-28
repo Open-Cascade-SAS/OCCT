@@ -28,8 +28,9 @@ StepFEA_CurveElementInterval::StepFEA_CurveElementInterval() {}
 
 //=================================================================================================
 
-void StepFEA_CurveElementInterval::Init(const Handle(StepFEA_CurveElementLocation)& aFinishPosition,
-                                        const Handle(StepBasic_EulerAngles)&        aEuAngles)
+void StepFEA_CurveElementInterval::Init(
+  const occ::handle<StepFEA_CurveElementLocation>& aFinishPosition,
+  const occ::handle<StepBasic_EulerAngles>&        aEuAngles)
 {
 
   theFinishPosition = aFinishPosition;
@@ -39,7 +40,7 @@ void StepFEA_CurveElementInterval::Init(const Handle(StepFEA_CurveElementLocatio
 
 //=================================================================================================
 
-Handle(StepFEA_CurveElementLocation) StepFEA_CurveElementInterval::FinishPosition() const
+occ::handle<StepFEA_CurveElementLocation> StepFEA_CurveElementInterval::FinishPosition() const
 {
   return theFinishPosition;
 }
@@ -47,21 +48,21 @@ Handle(StepFEA_CurveElementLocation) StepFEA_CurveElementInterval::FinishPositio
 //=================================================================================================
 
 void StepFEA_CurveElementInterval::SetFinishPosition(
-  const Handle(StepFEA_CurveElementLocation)& aFinishPosition)
+  const occ::handle<StepFEA_CurveElementLocation>& aFinishPosition)
 {
   theFinishPosition = aFinishPosition;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_EulerAngles) StepFEA_CurveElementInterval::EuAngles() const
+occ::handle<StepBasic_EulerAngles> StepFEA_CurveElementInterval::EuAngles() const
 {
   return theEuAngles;
 }
 
 //=================================================================================================
 
-void StepFEA_CurveElementInterval::SetEuAngles(const Handle(StepBasic_EulerAngles)& aEuAngles)
+void StepFEA_CurveElementInterval::SetEuAngles(const occ::handle<StepBasic_EulerAngles>& aEuAngles)
 {
   theEuAngles = aEuAngles;
 }

@@ -30,18 +30,18 @@ public:
    * Empty constructor
    */
   inline VrmlData_Texture()
-      : myRepeatS(Standard_False),
-        myRepeatT(Standard_False)
+      : myRepeatS(false),
+        myRepeatT(false)
   {
   }
 
   /**
    * Constructor
    */
-  inline VrmlData_Texture(const VrmlData_Scene&  theScene,
-                          const char*            theName,
-                          const Standard_Boolean theRepeatS = Standard_False,
-                          const Standard_Boolean theRepeatT = Standard_False)
+  inline VrmlData_Texture(const VrmlData_Scene& theScene,
+                          const char*           theName,
+                          const bool            theRepeatS = false,
+                          const bool            theRepeatT = false)
       : VrmlData_Node(theScene, theName),
         myRepeatS(theRepeatS),
         myRepeatT(theRepeatT)
@@ -51,31 +51,28 @@ public:
   /**
    * Query the RepeatS value
    */
-  inline Standard_Boolean RepeatS() const { return myRepeatS; }
+  inline bool RepeatS() const { return myRepeatS; }
 
   /**
    * Query the RepeatT value
    */
-  inline Standard_Boolean RepeatT() const { return myRepeatT; }
+  inline bool RepeatT() const { return myRepeatT; }
 
   /**
    * Set the RepeatS flag
    */
-  inline void SetRepeatS(const Standard_Boolean theFlag) { myRepeatS = theFlag; }
+  inline void SetRepeatS(const bool theFlag) { myRepeatS = theFlag; }
 
   /**
    * Set the RepeatT flag
    */
-  inline void SetRepeatT(const Standard_Boolean theFlag) { myRepeatT = theFlag; }
-
-protected:
-  // ---------- PROTECTED METHODS ----------
+  inline void SetRepeatT(const bool theFlag) { myRepeatT = theFlag; }
 
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  Standard_Boolean myRepeatS;
-  Standard_Boolean myRepeatT;
+  bool myRepeatS;
+  bool myRepeatT;
 
 public:
   // Declaration of CASCADE RTTI
@@ -83,6 +80,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(VrmlData_Texture, VrmlData_Node)
-
 #endif

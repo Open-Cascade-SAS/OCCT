@@ -25,7 +25,9 @@
 #include <Standard_Boolean.hxx>
 #include <GeomConvert_ConvType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class Geom_Surface;
 class Geom_SurfaceOfRevolution;
 class Geom_Circle;
@@ -41,9 +43,9 @@ public:
 
   Standard_EXPORT GeomConvert_SurfToAnaSurf();
 
-  Standard_EXPORT GeomConvert_SurfToAnaSurf(const Handle(Geom_Surface)& S);
+  Standard_EXPORT GeomConvert_SurfToAnaSurf(const occ::handle<Geom_Surface>& S);
 
-  Standard_EXPORT void Init(const Handle(Geom_Surface)& S);
+  Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S);
 
   void SetConvType(const GeomConvert_ConvType theConvType = GeomConvert_Simplest)
   {
@@ -54,90 +56,88 @@ public:
 
   //! Returns maximal deviation of converted surface from the original
   //! one computed by last call to ConvertToAnalytical
-  Standard_Real Gap() const { return myGap; }
+  double Gap() const { return myGap; }
 
   //! Tries to convert the Surface to an Analytic form
   //! Returns the result
   //! In case of failure, returns a Null Handle
   //!
-  Standard_EXPORT Handle(Geom_Surface) ConvertToAnalytical(const Standard_Real InitialToler);
-  Standard_EXPORT Handle(Geom_Surface) ConvertToAnalytical(const Standard_Real InitialToler,
-                                                           const Standard_Real Umin,
-                                                           const Standard_Real Umax,
-                                                           const Standard_Real Vmin,
-                                                           const Standard_Real Vmax);
+  Standard_EXPORT occ::handle<Geom_Surface> ConvertToAnalytical(const double InitialToler);
+  Standard_EXPORT occ::handle<Geom_Surface> ConvertToAnalytical(const double InitialToler,
+                                                                const double Umin,
+                                                                const double Umax,
+                                                                const double Vmin,
+                                                                const double Vmax);
 
   //! Returns true if surfaces is same with the given tolerance
-  Standard_EXPORT static Standard_Boolean IsSame(const Handle(Geom_Surface)& S1,
-                                                 const Handle(Geom_Surface)& S2,
-                                                 const Standard_Real         tol);
+  Standard_EXPORT static bool IsSame(const occ::handle<Geom_Surface>& S1,
+                                     const occ::handle<Geom_Surface>& S2,
+                                     const double                     tol);
 
   //! Returns true, if surface is canonical
-  Standard_EXPORT static Standard_Boolean IsCanonical(const Handle(Geom_Surface)& S);
+  Standard_EXPORT static bool IsCanonical(const occ::handle<Geom_Surface>& S);
 
 private:
   //! static method for checking surface of revolution
   //! To avoid two-parts cone-like surface
-  static void CheckVTrimForRevSurf(const Handle(Geom_SurfaceOfRevolution)& aRevSurf,
-                                   Standard_Real&                          V1,
-                                   Standard_Real&                          V2);
+  static void CheckVTrimForRevSurf(const occ::handle<Geom_SurfaceOfRevolution>& aRevSurf,
+                                   double&                                      V1,
+                                   double&                                      V2);
 
   //! static method to try create cylindrical or conical surface
-  static Handle(Geom_Surface) TryCylinerCone(const Handle(Geom_Surface)& theSurf,
-                                             const Standard_Boolean      theVCase,
-                                             const Handle(Geom_Curve)&   theUmidiso,
-                                             const Handle(Geom_Curve)&   theVmidiso,
-                                             const Standard_Real         theU1,
-                                             const Standard_Real         theU2,
-                                             const Standard_Real         theV1,
-                                             const Standard_Real         theV2,
-                                             const Standard_Real         theToler);
+  static occ::handle<Geom_Surface> TryCylinerCone(const occ::handle<Geom_Surface>& theSurf,
+                                                  const bool                       theVCase,
+                                                  const occ::handle<Geom_Curve>&   theUmidiso,
+                                                  const occ::handle<Geom_Curve>&   theVmidiso,
+                                                  const double                     theU1,
+                                                  const double                     theU2,
+                                                  const double                     theV1,
+                                                  const double                     theV2,
+                                                  const double                     theToler);
 
   //! static method to try create cylinrical surface using least square method
-  static Standard_Boolean GetCylByLS(const Handle(TColgp_HArray1OfXYZ)& thePoints,
-                                     const Standard_Real                theTol,
-                                     gp_Ax3&                            thePos,
-                                     Standard_Real&                     theR,
-                                     Standard_Real&                     theGap);
+  static bool GetCylByLS(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
+                         const double                                    theTol,
+                         gp_Ax3&                                         thePos,
+                         double&                                         theR,
+                         double&                                         theGap);
 
   //! static method to try create cylinrical surface based on its Gauss field
-  static Handle(Geom_Surface) TryCylinderByGaussField(
-    const Handle(Geom_Surface)& theSurf,
-    const Standard_Real         theU1,
-    const Standard_Real         theU2,
-    const Standard_Real         theV1,
-    const Standard_Real         theV2,
-    const Standard_Real         theToler,
-    const Standard_Integer      theNbU         = 20,
-    const Standard_Integer      theNbV         = 20,
-    const Standard_Boolean      theLeastSquare = Standard_False);
+  static occ::handle<Geom_Surface> TryCylinderByGaussField(const occ::handle<Geom_Surface>& theSurf,
+                                                           const double                     theU1,
+                                                           const double                     theU2,
+                                                           const double                     theV1,
+                                                           const double                     theV2,
+                                                           const double theToler,
+                                                           const int    theNbU         = 20,
+                                                           const int    theNbV         = 20,
+                                                           const bool   theLeastSquare = false);
 
   //! static method to try create toroidal surface.
-  //! In case <isTryUMajor> = Standard_True try to use V isoline radius as minor radaius.
-  static Handle(Geom_Surface) TryTorusSphere(const Handle(Geom_Surface)& theSurf,
-                                             const Handle(Geom_Circle)&  circle,
-                                             const Handle(Geom_Circle)&  otherCircle,
-                                             const Standard_Real         Param1,
-                                             const Standard_Real         Param2,
-                                             const Standard_Real         aParam1ToCrv,
-                                             const Standard_Real         aParam2ToCrv,
-                                             const Standard_Real         toler,
-                                             const Standard_Boolean      isTryUMajor);
+  //! In case <isTryUMajor> = true try to use V isoline radius as minor radaius.
+  static occ::handle<Geom_Surface> TryTorusSphere(const occ::handle<Geom_Surface>& theSurf,
+                                                  const occ::handle<Geom_Circle>&  circle,
+                                                  const occ::handle<Geom_Circle>&  otherCircle,
+                                                  const double                     Param1,
+                                                  const double                     Param2,
+                                                  const double                     aParam1ToCrv,
+                                                  const double                     aParam2ToCrv,
+                                                  const double                     toler,
+                                                  const bool                       isTryUMajor);
 
-  static Standard_Real ComputeGap(const Handle(Geom_Surface)& theSurf,
-                                  const Standard_Real         theU1,
-                                  const Standard_Real         theU2,
-                                  const Standard_Real         theV1,
-                                  const Standard_Real         theV2,
-                                  const Handle(Geom_Surface)& theNewSurf,
-                                  const Standard_Real         theTol = RealLast());
+  static double ComputeGap(const occ::handle<Geom_Surface>& theSurf,
+                           const double                     theU1,
+                           const double                     theU2,
+                           const double                     theV1,
+                           const double                     theV2,
+                           const occ::handle<Geom_Surface>& theNewSurf,
+                           const double                     theTol = RealLast());
 
-protected:
 private:
-  Handle(Geom_Surface) mySurf;
-  Standard_Real        myGap;
-  GeomConvert_ConvType myConvType;
-  GeomAbs_SurfaceType  myTarget;
+  occ::handle<Geom_Surface> mySurf;
+  double                    myGap;
+  GeomConvert_ConvType      myConvType;
+  GeomAbs_SurfaceType       myTarget;
 };
 
 #endif // _GeomConvert_SurfToAnaSurf_HeaderFile

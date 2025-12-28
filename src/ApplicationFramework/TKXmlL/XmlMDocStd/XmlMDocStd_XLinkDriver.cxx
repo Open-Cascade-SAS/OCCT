@@ -27,14 +27,14 @@ IMPLEMENT_DOMSTRING(DocEntryString, "documentEntry")
 
 //=================================================================================================
 
-XmlMDocStd_XLinkDriver::XmlMDocStd_XLinkDriver(const Handle(Message_Messenger)& theMsgDriver)
+XmlMDocStd_XLinkDriver::XmlMDocStd_XLinkDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDocStd_XLinkDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDocStd_XLinkDriver::NewEmpty() const
 {
   return (new TDocStd_XLink());
 }
@@ -43,28 +43,28 @@ Handle(TDF_Attribute) XmlMDocStd_XLinkDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDocStd_XLinkDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                               const Handle(TDF_Attribute)& theTarget,
-                                               XmlObjMgt_RRelocationTable&) const
+bool XmlMDocStd_XLinkDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                   const occ::handle<TDF_Attribute>& theTarget,
+                                   XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString anXPath = XmlObjMgt::GetStringValue(theSource);
 
   if (anXPath == NULL)
   {
     myMessageDriver->Send("XLink: Cannot retrieve reference string from element", Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   TCollection_AsciiString anEntry;
-  if (XmlObjMgt::GetTagEntryString(anXPath, anEntry) == Standard_False)
+  if (XmlObjMgt::GetTagEntryString(anXPath, anEntry) == false)
   {
     TCollection_ExtendedString aMessage =
       TCollection_ExtendedString("Cannot retrieve XLink reference from \"") + anXPath + '\"';
     myMessageDriver->Send(aMessage, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(TDocStd_XLink) aRef = Handle(TDocStd_XLink)::DownCast(theTarget);
+  occ::handle<TDocStd_XLink> aRef = occ::down_cast<TDocStd_XLink>(theTarget);
 
   // set referenced label
   aRef->LabelEntry(anEntry);
@@ -72,7 +72,7 @@ Standard_Boolean XmlMDocStd_XLinkDriver::Paste(const XmlObjMgt_Persistent&  theS
   // document entry
   aRef->DocumentEntry(theSource.Element().getAttribute(::DocEntryString()));
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -85,11 +85,11 @@ Standard_Boolean XmlMDocStd_XLinkDriver::Paste(const XmlObjMgt_Persistent&  theS
 //           <TDocStd_XLink id="621"> /document/label/label[@tag="4"]/label[@tag="1"]
 //           </TDocStd_XLink>    <This is reference to label 0:4:1>
 //=======================================================================
-void XmlMDocStd_XLinkDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                   XmlObjMgt_Persistent&        theTarget,
+void XmlMDocStd_XLinkDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                   XmlObjMgt_Persistent&             theTarget,
                                    XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDocStd_XLink) aRef = Handle(TDocStd_XLink)::DownCast(theSource);
+  occ::handle<TDocStd_XLink> aRef = occ::down_cast<TDocStd_XLink>(theSource);
   if (!aRef.IsNull())
   {
     // reference

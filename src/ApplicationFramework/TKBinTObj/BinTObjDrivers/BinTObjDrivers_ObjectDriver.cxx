@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ObjectDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinTObjDrivers_ObjectDriver::BinTObjDrivers_ObjectDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : BinMDF_ADriver(theMessageDriver, NULL)
 {
 }
@@ -39,7 +39,7 @@ BinTObjDrivers_ObjectDriver::BinTObjDrivers_ObjectDriver(
 // purpose  : Creates a new attribute
 //=======================================================================
 
-Handle(TDF_Attribute) BinTObjDrivers_ObjectDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinTObjDrivers_ObjectDriver::NewEmpty() const
 {
   return new TObj_TObject;
 }
@@ -50,17 +50,17 @@ Handle(TDF_Attribute) BinTObjDrivers_ObjectDriver::NewEmpty() const
 //           into <theTarget>.
 //=======================================================================
 
-Standard_Boolean BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                    const Handle(TDF_Attribute)& theTarget,
-                                                    BinObjMgt_RRelocationTable&) const
+bool BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                        const occ::handle<TDF_Attribute>& theTarget,
+                                        BinObjMgt_RRelocationTable&) const
 {
-  Standard_Integer aSavedPos = theSource.Position();
+  int aSavedPos = theSource.Position();
 
   // first try to get the type as an integer ID
-  Standard_Integer anID;
+  int anID;
   if (!(theSource >> anID))
-    return Standard_False;
-  Handle(TObj_Object) anObject;
+    return false;
+  occ::handle<TObj_Object> anObject;
   if ((unsigned)anID > 0xffff)
   {
     // if we are here it means that the type was stored as an ascii string,
@@ -68,7 +68,7 @@ Standard_Boolean BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent& 
     theSource.SetPosition(aSavedPos);
     TCollection_AsciiString aName;
     if (!(theSource >> aName))
-      return Standard_False;
+      return false;
     anObject = TObj_Persistence::CreateNewObject(aName.ToCString(), theTarget->Label());
     if (anObject.IsNull())
     {
@@ -79,7 +79,7 @@ Standard_Boolean BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent& 
           + ", entry " + anEntry,
         Message_Fail);
       TObj_Assistant::BindType(0);
-      return Standard_False;
+      return false;
     }
     // register the type
     TObj_Assistant::BindType(anObject->DynamicType());
@@ -87,16 +87,16 @@ Standard_Boolean BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent& 
   else
   {
     // use anID to get the type from earlier registered ones
-    Handle(Standard_Type) aType = TObj_Assistant::FindType(anID);
+    occ::handle<Standard_Type> aType = TObj_Assistant::FindType(anID);
     if (!aType.IsNull())
       anObject = TObj_Persistence::CreateNewObject(aType->Name(), theTarget->Label());
     else
     {
-      return Standard_False;
+      return false;
     }
   }
-  Handle(TObj_TObject)::DownCast(theTarget)->Set(anObject);
-  return Standard_True;
+  occ::down_cast<TObj_TObject>(theTarget)->Set(anObject);
+  return true;
 }
 
 //=======================================================================
@@ -106,18 +106,19 @@ Standard_Boolean BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent& 
 //           anObject is stored as a Name of class derived from TObj_Object
 //=======================================================================
 
-void BinTObjDrivers_ObjectDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                        BinObjMgt_Persistent&        theTarget,
-                                        BinObjMgt_SRelocationTable&) const
+void BinTObjDrivers_ObjectDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TObj_TObject) aTObj     = Handle(TObj_TObject)::DownCast(theSource);
-  Handle(TObj_Object)  anIObject = aTObj->Get();
+  occ::handle<TObj_TObject> aTObj     = occ::down_cast<TObj_TObject>(theSource);
+  occ::handle<TObj_Object>  anIObject = aTObj->Get();
   if (anIObject.IsNull())
     return;
 
-  Handle(Standard_Type) aType = anIObject->DynamicType();
+  occ::handle<Standard_Type> aType = anIObject->DynamicType();
 
-  Standard_Integer anID = TObj_Assistant::FindTypeIndex(anIObject->DynamicType());
+  int anID = TObj_Assistant::FindTypeIndex(anIObject->DynamicType());
 
   if (anID == 0)
   {

@@ -30,8 +30,8 @@ Graphic3d_TextureParams::Graphic3d_TextureParams()
       myBaseLevel(0),
       myMaxLevel(1000),
       myRotAngle(0.0f),
-      myToModulate(Standard_False),
-      myToRepeat(Standard_False)
+      myToModulate(false),
+      myToRepeat(false)
 {
   //
 }
@@ -45,14 +45,14 @@ Graphic3d_TextureParams::~Graphic3d_TextureParams()
 
 //=================================================================================================
 
-void Graphic3d_TextureParams::SetModulate(const Standard_Boolean theToModulate)
+void Graphic3d_TextureParams::SetModulate(const bool theToModulate)
 {
   myToModulate = theToModulate;
 }
 
 //=================================================================================================
 
-void Graphic3d_TextureParams::SetRepeat(const Standard_Boolean theToRepeat)
+void Graphic3d_TextureParams::SetRepeat(const bool theToRepeat)
 {
   if (myToRepeat != theToRepeat)
   {
@@ -85,21 +85,21 @@ void Graphic3d_TextureParams::SetAnisoFilter(const Graphic3d_LevelOfTextureAniso
 
 //=================================================================================================
 
-void Graphic3d_TextureParams::SetRotation(const Standard_ShortReal theAngleDegrees)
+void Graphic3d_TextureParams::SetRotation(const float theAngleDegrees)
 {
   myRotAngle = theAngleDegrees;
 }
 
 //=================================================================================================
 
-void Graphic3d_TextureParams::SetScale(const Graphic3d_Vec2 theScale)
+void Graphic3d_TextureParams::SetScale(const NCollection_Vec2<float> theScale)
 {
   myScale = theScale;
 }
 
 //=================================================================================================
 
-void Graphic3d_TextureParams::SetTranslation(const Graphic3d_Vec2 theVec)
+void Graphic3d_TextureParams::SetTranslation(const NCollection_Vec2<float> theVec)
 {
   myTranslation = theVec;
 }
@@ -107,8 +107,8 @@ void Graphic3d_TextureParams::SetTranslation(const Graphic3d_Vec2 theVec)
 //=================================================================================================
 
 void Graphic3d_TextureParams::SetGenMode(const Graphic3d_TypeOfTextureMode theMode,
-                                         const Graphic3d_Vec4              thePlaneS,
-                                         const Graphic3d_Vec4              thePlaneT)
+                                         const NCollection_Vec4<float>     thePlaneS,
+                                         const NCollection_Vec4<float>     thePlaneT)
 {
   myGenMode   = theMode;
   myGenPlaneS = thePlaneS;

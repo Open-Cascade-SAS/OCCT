@@ -23,10 +23,10 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PointOnSurface, BRep_PointsOnSurface)
 
 //=================================================================================================
 
-BRep_PointOnSurface::BRep_PointOnSurface(const Standard_Real         P1,
-                                         const Standard_Real         P2,
-                                         const Handle(Geom_Surface)& S,
-                                         const TopLoc_Location&      L)
+BRep_PointOnSurface::BRep_PointOnSurface(const double                     P1,
+                                         const double                     P2,
+                                         const occ::handle<Geom_Surface>& S,
+                                         const TopLoc_Location&           L)
     : BRep_PointsOnSurface(P1, S, L),
       myParameter2(P2)
 {
@@ -34,29 +34,29 @@ BRep_PointOnSurface::BRep_PointOnSurface(const Standard_Real         P1,
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointOnSurface::IsPointOnSurface() const
+bool BRep_PointOnSurface::IsPointOnSurface() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointOnSurface::IsPointOnSurface(const Handle(Geom_Surface)& S,
-                                                       const TopLoc_Location&      L) const
+bool BRep_PointOnSurface::IsPointOnSurface(const occ::handle<Geom_Surface>& S,
+                                           const TopLoc_Location&           L) const
 {
   return (Surface() == S) && (Location() == L);
 }
 
 //=================================================================================================
 
-Standard_Real BRep_PointOnSurface::Parameter2() const
+double BRep_PointOnSurface::Parameter2() const
 {
   return myParameter2;
 }
 
 //=================================================================================================
 
-void BRep_PointOnSurface::Parameter2(const Standard_Real P)
+void BRep_PointOnSurface::Parameter2(const double P)
 {
   myParameter2 = P;
 }

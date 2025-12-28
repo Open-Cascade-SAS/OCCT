@@ -22,9 +22,8 @@
 #include <StepVisual_TessellatedItem.hxx>
 
 #include <StepVisual_CoordinatesList.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedSurfaceSet, StepVisual_TessellatedItem)
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 //! Representation of STEP entity TessellatedSurfaceSet
 class StepVisual_TessellatedSurfaceSet : public StepVisual_TessellatedItem
@@ -35,38 +34,39 @@ public:
   Standard_EXPORT StepVisual_TessellatedSurfaceSet();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-                            const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                            const Standard_Integer                    thePnmax,
-                            const Handle(TColStd_HArray2OfReal)&      theNormals);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+                            const occ::handle<StepVisual_CoordinatesList>&  theCoordinates,
+                            const int                                       thePnmax,
+                            const occ::handle<NCollection_HArray2<double>>& theNormals);
 
   //! Returns field Coordinates
-  Standard_EXPORT Handle(StepVisual_CoordinatesList) Coordinates() const;
+  Standard_EXPORT occ::handle<StepVisual_CoordinatesList> Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates);
+  Standard_EXPORT void SetCoordinates(
+    const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
 
   //! Returns field Pnmax
-  Standard_EXPORT Standard_Integer Pnmax() const;
+  Standard_EXPORT int Pnmax() const;
 
   //! Sets field Pnmax
-  Standard_EXPORT void SetPnmax(const Standard_Integer thePnmax);
+  Standard_EXPORT void SetPnmax(const int thePnmax);
 
   //! Returns field Normals
-  Standard_EXPORT Handle(TColStd_HArray2OfReal) Normals() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<double>> Normals() const;
 
   //! Sets field Normals
-  Standard_EXPORT void SetNormals(const Handle(TColStd_HArray2OfReal)& theNormals);
+  Standard_EXPORT void SetNormals(const occ::handle<NCollection_HArray2<double>>& theNormals);
 
   //! Returns number of Normals
-  Standard_EXPORT Standard_Integer NbNormals() const;
+  Standard_EXPORT int NbNormals() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedSurfaceSet, StepVisual_TessellatedItem)
 
 private:
-  Handle(StepVisual_CoordinatesList) myCoordinates;
-  Standard_Integer                   myPnmax;
-  Handle(TColStd_HArray2OfReal)      myNormals;
+  occ::handle<StepVisual_CoordinatesList>  myCoordinates;
+  int                                      myPnmax;
+  occ::handle<NCollection_HArray2<double>> myNormals;
 };
 
 #endif // _StepVisual_TessellatedSurfaceSet_HeaderFile_

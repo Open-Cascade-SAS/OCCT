@@ -4,7 +4,7 @@ set(OCCT_Poly_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_Poly_FILES
   Poly.cxx
   Poly.hxx
-  Poly_Array1OfTriangle.hxx
+
   Poly_ArrayOfNodes.cxx
   Poly_ArrayOfNodes.hxx
   Poly_ArrayOfUVNodes.cxx
@@ -21,8 +21,7 @@ set(OCCT_Poly_FILES
   Poly_CoherentTriPtr.hxx
   Poly_Connect.cxx
   Poly_Connect.hxx
-  Poly_HArray1OfTriangle.hxx
-  Poly_ListOfTriangulation.hxx
+
   Poly_MakeLoops.cxx
   Poly_MakeLoops.hxx
   Poly_MeshPurpose.hxx

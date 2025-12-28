@@ -20,13 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <IFSelect_SequenceOfInterfaceModel.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
-#include <IFSelect_SequenceOfAppliedModifiers.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <Standard_Transient.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <IFSelect_AppliedModifiers.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Standard_Transient.hxx>
 class IFSelect_ShareOut;
 class TCollection_AsciiString;
 class Interface_InterfaceModel;
@@ -38,9 +41,6 @@ class Interface_Protocol;
 class Interface_CopyTool;
 class Interface_Graph;
 class Interface_EntityIterator;
-
-class IFSelect_ModelCopier;
-DEFINE_STANDARD_HANDLE(IFSelect_ModelCopier, Standard_Transient)
 
 //! This class performs the Copy operations involved by the
 //! description of a ShareOut (evaluated by a ShareOutResult)
@@ -86,7 +86,7 @@ public:
   Standard_EXPORT IFSelect_ModelCopier();
 
   //! Sets the ShareOut, which is used to define Modifiers to apply
-  Standard_EXPORT void SetShareOut(const Handle(IFSelect_ShareOut)& sho);
+  Standard_EXPORT void SetShareOut(const occ::handle<IFSelect_ShareOut>& sho);
 
   //! Clears the list of produced Models
   Standard_EXPORT void ClearResult();
@@ -95,30 +95,28 @@ public:
   //! (Name as AsciiString, Content as InterfaceModel)
   //! Returns True if Done, False if <filename> is already attached
   //! to another File
-  Standard_EXPORT Standard_Boolean AddFile(const TCollection_AsciiString&          filename,
-                                           const Handle(Interface_InterfaceModel)& content);
+  Standard_EXPORT bool AddFile(const TCollection_AsciiString&               filename,
+                               const occ::handle<Interface_InterfaceModel>& content);
 
   //! Changes the Name attached to a File which was formerly defined
   //! by a call to AddFile
   //! Returns True if Done, False else : if <num> out of range or if
   //! the new <filename> is already attached to another File
   //! Remark : Giving an empty File Name is equivalent to ClearFile
-  Standard_EXPORT Standard_Boolean NameFile(const Standard_Integer         num,
-                                            const TCollection_AsciiString& filename);
+  Standard_EXPORT bool NameFile(const int num, const TCollection_AsciiString& filename);
 
   //! Clears the Name attached to a File which was formerly defined
   //! by a call to AddFile. This Clearing can be undone by a call to
   //! NameFile (with same <num>)
   //! Returns True if Done, False else : if <num> is out of range
-  Standard_EXPORT Standard_Boolean ClearFile(const Standard_Integer num);
+  Standard_EXPORT bool ClearFile(const int num);
 
   //! Sets a list of File Modifiers to be applied on a file
-  Standard_EXPORT Standard_Boolean
-    SetAppliedModifiers(const Standard_Integer                   num,
-                        const Handle(IFSelect_AppliedModifiers)& applied);
+  Standard_EXPORT bool SetAppliedModifiers(const int                                     num,
+                                           const occ::handle<IFSelect_AppliedModifiers>& applied);
 
   //! Clears the list of File Modifiers to be applied on a file
-  Standard_EXPORT Standard_Boolean ClearAppliedModifiers(const Standard_Integer num);
+  Standard_EXPORT bool ClearAppliedModifiers(const int num);
 
   //! Performs the Copy Operations, which include the Modifications
   //! defined by the list of Modifiers. Memorizes the result, as a
@@ -126,51 +124,53 @@ public:
   //! They can then be sent, by the method Send, or queried
   //! Copy calls internal method Copying.
   //! Returns the produced CheckList
-  Standard_EXPORT Interface_CheckIterator Copy(IFSelect_ShareOutResult&            eval,
-                                               const Handle(IFSelect_WorkLibrary)& WL,
-                                               const Handle(Interface_Protocol)&   protocol);
+  Standard_EXPORT Interface_CheckIterator Copy(IFSelect_ShareOutResult&                 eval,
+                                               const occ::handle<IFSelect_WorkLibrary>& WL,
+                                               const occ::handle<Interface_Protocol>&   protocol);
 
   //! Sends the formerly defined results (see method Copy) to files,
   //! then clears it
   //! Remark : A Null File Name cause file to be not produced
-  Standard_EXPORT Interface_CheckIterator SendCopied(const Handle(IFSelect_WorkLibrary)& WL,
-                                                     const Handle(Interface_Protocol)&   protocol);
+  Standard_EXPORT Interface_CheckIterator
+    SendCopied(const occ::handle<IFSelect_WorkLibrary>& WL,
+               const occ::handle<Interface_Protocol>&   protocol);
 
   //! Performs the Copy Operations (which include the Modifications)
   //! and Sends the result on files, without memorizing it.
   //! (the memorized result is ignored : neither queried not filled)
-  Standard_EXPORT Interface_CheckIterator Send(IFSelect_ShareOutResult&            eval,
-                                               const Handle(IFSelect_WorkLibrary)& WL,
-                                               const Handle(Interface_Protocol)&   protocol);
+  Standard_EXPORT Interface_CheckIterator Send(IFSelect_ShareOutResult&                 eval,
+                                               const occ::handle<IFSelect_WorkLibrary>& WL,
+                                               const occ::handle<Interface_Protocol>&   protocol);
 
   //! Sends a model (defined in <G>) into one file, without managing
   //! remaining data, already sent files, etc. Applies the Model and
   //! File Modifiers.
   //! Returns True if well done, False else
-  Standard_EXPORT Interface_CheckIterator SendAll(const Standard_CString              filename,
-                                                  const Interface_Graph&              G,
-                                                  const Handle(IFSelect_WorkLibrary)& WL,
-                                                  const Handle(Interface_Protocol)&   protocol);
+  Standard_EXPORT Interface_CheckIterator SendAll(const char*                              filename,
+                                                  const Interface_Graph&                   G,
+                                                  const occ::handle<IFSelect_WorkLibrary>& WL,
+                                                  const occ::handle<Interface_Protocol>& protocol);
 
   //! Sends a part of a model into one file. Model is gotten from
   //! <G>, the part is defined in <iter>.
   //! Remaining data are managed and can be later be worked on.
   //! Returns True if well done, False else
-  Standard_EXPORT Interface_CheckIterator SendSelected(const Standard_CString              filename,
-                                                       const Interface_Graph&              G,
-                                                       const Handle(IFSelect_WorkLibrary)& WL,
-                                                       const Handle(Interface_Protocol)&   protocol,
-                                                       const Interface_EntityIterator&     iter);
+  Standard_EXPORT Interface_CheckIterator
+    SendSelected(const char*                              filename,
+                 const Interface_Graph&                   G,
+                 const occ::handle<IFSelect_WorkLibrary>& WL,
+                 const occ::handle<Interface_Protocol>&   protocol,
+                 const Interface_EntityIterator&          iter);
 
   //! Produces a Model copied from the Remaining List as <newmod>
   //! <newmod> is a Null Handle if this list is empty
   //! <WL> performs the copy by using <TC>
   //! <TC> is assumed to have been defined with the starting model
   //! same as defined by <G>.
-  Standard_EXPORT void CopiedRemaining(const Interface_Graph&              G,
-                                       const Handle(IFSelect_WorkLibrary)& WL,
-                                       Interface_CopyTool&                 TC,
-                                       Handle(Interface_InterfaceModel)&   newmod);
+  Standard_EXPORT void CopiedRemaining(const Interface_Graph&                   G,
+                                       const occ::handle<IFSelect_WorkLibrary>& WL,
+                                       Interface_CopyTool&                      TC,
+                                       occ::handle<Interface_InterfaceModel>&   newmod);
 
   //! Updates Graph status for remaining data, for each entity :
   //! - Entities just Sent to file or Copied (by CopiedRemaining)
@@ -182,43 +182,42 @@ public:
   //! just after one of these method has been called
   //! Returns True if done, False if remaining info if not in phase
   //! which the Graph (not same counts of items)
-  Standard_EXPORT Standard_Boolean SetRemaining(Interface_Graph& CG) const;
+  Standard_EXPORT bool SetRemaining(Interface_Graph& CG) const;
 
   //! Returns the count of Files produced, i.e. the count of Models
   //! memorized (produced by the mmethod Copy) with their file names
-  Standard_EXPORT Standard_Integer NbFiles() const;
+  Standard_EXPORT int NbFiles() const;
 
   //! Returns the File Name for a file given its rank
   //! It is empty after a call to ClearFile on same <num>
-  Standard_EXPORT TCollection_AsciiString FileName(const Standard_Integer num) const;
+  Standard_EXPORT TCollection_AsciiString FileName(const int num) const;
 
   //! Returns the content of a file before sending, under the form
   //! of an InterfaceModel, given its rank
-  Standard_EXPORT Handle(Interface_InterfaceModel) FileModel(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> FileModel(const int num) const;
 
   //! Returns the list of File Modifiers to be applied on a file
   //! when it will be sent, as computed by CopiedModel :
   //! If it is a null handle, no File Modifier has to be applied.
-  Standard_EXPORT Handle(IFSelect_AppliedModifiers) AppliedModifiers(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<IFSelect_AppliedModifiers> AppliedModifiers(const int num) const;
 
   //! Begins a sequence of recording the really sent files
   //! <sho> : the default file numbering is cleared
   //! If <record> is False, clears the list and stops recording
   //! If <record> is True, clears the list and commands recording
   //! Creation time corresponds to "stop recording"
-  Standard_EXPORT void BeginSentFiles(const Handle(IFSelect_ShareOut)& sho,
-                                      const Standard_Boolean           record);
+  Standard_EXPORT void BeginSentFiles(const occ::handle<IFSelect_ShareOut>& sho, const bool record);
 
   //! Adds the name of a just sent file, if BeginSentFiles
   //! has commanded recording; else does nothing
   //! It is called by methods SendCopied Sending
-  Standard_EXPORT void AddSentFile(const Standard_CString filename);
+  Standard_EXPORT void AddSentFile(const char* filename);
 
   //! Returns the list of recorded names of sent files. Can be empty
   //! (if no file has been sent). Returns a Null Handle if
   //! BeginSentFiles has stopped recording.
-  Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) SentFiles() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+                  SentFiles() const;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_ModelCopier, Standard_Transient)
 
@@ -226,17 +225,17 @@ protected:
   //! Internal routine which does the effective Copy. It allows to
   //! work, either with a standard CopyTool, or a specialised one
   //! Copying itself is done by <WL> which uses a CopyTool
-  Standard_EXPORT Interface_CheckIterator Copying(IFSelect_ShareOutResult&            eval,
-                                                  const Handle(IFSelect_WorkLibrary)& WL,
-                                                  const Handle(Interface_Protocol)&   protocol,
-                                                  Interface_CopyTool&                 TC);
+  Standard_EXPORT Interface_CheckIterator Copying(IFSelect_ShareOutResult&                 eval,
+                                                  const occ::handle<IFSelect_WorkLibrary>& WL,
+                                                  const occ::handle<Interface_Protocol>&   protocol,
+                                                  Interface_CopyTool&                      TC);
 
   //! Internal routine which does the effective Send. It allows to
   //! work, either with a standard CopyTool, or a specialised one
-  Standard_EXPORT Interface_CheckIterator Sending(IFSelect_ShareOutResult&            eval,
-                                                  const Handle(IFSelect_WorkLibrary)& WL,
-                                                  const Handle(Interface_Protocol)&   protocol,
-                                                  Interface_CopyTool&                 TC);
+  Standard_EXPORT Interface_CheckIterator Sending(IFSelect_ShareOutResult&                 eval,
+                                                  const occ::handle<IFSelect_WorkLibrary>& WL,
+                                                  const occ::handle<Interface_Protocol>&   protocol,
+                                                  Interface_CopyTool&                      TC);
 
   //! Performs the Copy of a unitary Packet
   //! Input parameters are :
@@ -269,25 +268,25 @@ protected:
   //! Warning : File Modifiers are evaluated at the time of Copy itself
   //! If their list is changed between this Copy and the Sending
   //! itself of the file, these changes are ignored
-  Standard_EXPORT void CopiedModel(const Interface_Graph&              G,
-                                   const Handle(IFSelect_WorkLibrary)& WL,
-                                   const Handle(Interface_Protocol)&   protocol,
-                                   const Interface_EntityIterator&     topcopy,
-                                   const TCollection_AsciiString&      filename,
-                                   const Standard_Integer              dispnum,
-                                   const Standard_Integer              numod,
-                                   Interface_CopyTool&                 TC,
-                                   Handle(Interface_InterfaceModel)&   newmod,
-                                   Handle(IFSelect_AppliedModifiers)&  applied,
-                                   Interface_CheckIterator&            checks) const;
+  Standard_EXPORT void CopiedModel(const Interface_Graph&                   G,
+                                   const occ::handle<IFSelect_WorkLibrary>& WL,
+                                   const occ::handle<Interface_Protocol>&   protocol,
+                                   const Interface_EntityIterator&          topcopy,
+                                   const TCollection_AsciiString&           filename,
+                                   const int                                dispnum,
+                                   const int                                numod,
+                                   Interface_CopyTool&                      TC,
+                                   occ::handle<Interface_InterfaceModel>&   newmod,
+                                   occ::handle<IFSelect_AppliedModifiers>&  applied,
+                                   Interface_CheckIterator&                 checks) const;
 
 private:
-  IFSelect_SequenceOfInterfaceModel       thefilemodels;
-  TColStd_SequenceOfAsciiString           thefilenames;
-  IFSelect_SequenceOfAppliedModifiers     theapplieds;
-  Handle(IFSelect_ShareOut)               theshareout;
-  Handle(TColStd_HArray1OfInteger)        theremain;
-  Handle(TColStd_HSequenceOfHAsciiString) thesentfiles;
+  NCollection_Sequence<occ::handle<Interface_InterfaceModel>>               thefilemodels;
+  NCollection_Sequence<TCollection_AsciiString>                             thefilenames;
+  NCollection_Sequence<occ::handle<IFSelect_AppliedModifiers>>              theapplieds;
+  occ::handle<IFSelect_ShareOut>                                            theshareout;
+  occ::handle<NCollection_HArray1<int>>                                     theremain;
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thesentfiles;
 };
 
 #endif // _IFSelect_ModelCopier_HeaderFile

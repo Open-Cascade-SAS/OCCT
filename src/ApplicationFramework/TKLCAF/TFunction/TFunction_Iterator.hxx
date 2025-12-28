@@ -20,8 +20,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TDF_LabelList.hxx>
-#include <TDF_LabelMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Map.hxx>
 #include <Standard_Integer.hxx>
 #include <TFunction_ExecutionStatus.hxx>
 #include <Standard_OStream.hxx>
@@ -51,23 +52,23 @@ public:
   //! If the iterator ignores the execution status,
   //! the method ::Current() returns the functions
   //! following their dependencies and ignoring the execution status.
-  Standard_EXPORT void SetUsageOfExecutionStatus(const Standard_Boolean usage);
+  Standard_EXPORT void SetUsageOfExecutionStatus(const bool usage);
 
   //! Returns usage of execution status by the iterator.
-  Standard_EXPORT Standard_Boolean GetUsageOfExecutionStatus() const;
+  Standard_EXPORT bool GetUsageOfExecutionStatus() const;
 
   //! Analyses the graph of dependencies and returns
   //! maximum number of threads may be used to calculate the model.
-  Standard_EXPORT virtual Standard_Integer GetMaxNbThreads() const;
+  Standard_EXPORT virtual int GetMaxNbThreads() const;
 
   //! Returns the current list of functions.
   //! If the iterator uses the execution status,
   //! the returned list contains only the functions
   //! with "not executed" status.
-  Standard_EXPORT virtual const TDF_LabelList& Current() const;
+  Standard_EXPORT virtual const NCollection_List<TDF_Label>& Current() const;
 
   //! Returns false if the graph of functions is fully iterated.
-  Standard_EXPORT virtual Standard_Boolean More() const;
+  Standard_EXPORT virtual bool More() const;
 
   //! Switches the iterator to the next list of current functions.
   Standard_EXPORT virtual void Next();
@@ -83,12 +84,11 @@ public:
 
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& OS) const;
 
-protected:
 private:
-  TDF_LabelList           myCurrent;
-  Standard_Boolean        myUsageOfExecutionStatus;
-  TDF_LabelMap            myPassedFunctions;
-  Handle(TFunction_Scope) myScope;
+  NCollection_List<TDF_Label>  myCurrent;
+  bool                         myUsageOfExecutionStatus;
+  NCollection_Map<TDF_Label>   myPassedFunctions;
+  occ::handle<TFunction_Scope> myScope;
 };
 
 #endif // _TFunction_Iterator_HeaderFile

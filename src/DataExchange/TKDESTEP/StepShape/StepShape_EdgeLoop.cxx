@@ -19,8 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeLoop, StepShape_Loop)
 
 StepShape_EdgeLoop::StepShape_EdgeLoop() {}
 
-void StepShape_EdgeLoop::Init(const Handle(TCollection_HAsciiString)&        aName,
-                              const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList)
+void StepShape_EdgeLoop::Init(
+  const occ::handle<TCollection_HAsciiString>&                                 aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
 {
   // --- class inherited fields ---
   StepRepr_RepresentationItem::Init(aName);
@@ -28,22 +29,24 @@ void StepShape_EdgeLoop::Init(const Handle(TCollection_HAsciiString)&        aNa
   edgeList = aEdgeList;
 }
 
-void StepShape_EdgeLoop::SetEdgeList(const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList)
+void StepShape_EdgeLoop::SetEdgeList(
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
 {
   edgeList = aEdgeList;
 }
 
-Handle(StepShape_HArray1OfOrientedEdge) StepShape_EdgeLoop::EdgeList() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_EdgeLoop::EdgeList()
+  const
 {
   return edgeList;
 }
 
-Handle(StepShape_OrientedEdge) StepShape_EdgeLoop::EdgeListValue(const Standard_Integer num) const
+occ::handle<StepShape_OrientedEdge> StepShape_EdgeLoop::EdgeListValue(const int num) const
 {
   return edgeList->Value(num);
 }
 
-Standard_Integer StepShape_EdgeLoop::NbEdgeList() const
+int StepShape_EdgeLoop::NbEdgeList() const
 {
   if (edgeList.IsNull())
     return 0;

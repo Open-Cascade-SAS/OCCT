@@ -15,7 +15,9 @@
 #include <Interface_EntityIterator.hxx>
 #include "RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment.pxx"
 #include <StepAP214_AutoDesignPersonAndOrganizationAssignment.hxx>
-#include <StepAP214_HArray1OfAutoDesignGeneralOrgItem.hxx>
+#include <StepAP214_AutoDesignGeneralOrgItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -27,10 +29,10 @@ RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::
 }
 
 void RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                             data,
-  const Standard_Integer                                             num,
-  Handle(Interface_Check)&                                           ach,
-  const Handle(StepAP214_AutoDesignPersonAndOrganizationAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                             data,
+  const int                                                               num,
+  occ::handle<Interface_Check>&                                           ach,
+  const occ::handle<StepAP214_AutoDesignPersonAndOrganizationAssignment>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -40,7 +42,7 @@ void RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::ReadStep(
 
   // --- inherited field : assignedPersonAndOrganization ---
 
-  Handle(StepBasic_PersonAndOrganization) aAssignedPersonAndOrganization;
+  occ::handle<StepBasic_PersonAndOrganization> aAssignedPersonAndOrganization;
   data->ReadEntity(num,
                    1,
                    "assigned_person_and_organization",
@@ -50,21 +52,21 @@ void RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::ReadStep(
 
   // --- inherited field : role ---
 
-  Handle(StepBasic_PersonAndOrganizationRole) aRole;
+  occ::handle<StepBasic_PersonAndOrganizationRole> aRole;
   data->ReadEntity(num, 2, "role", ach, STANDARD_TYPE(StepBasic_PersonAndOrganizationRole), aRole);
 
   // --- own field : items ---
 
-  Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem) aItems;
-  StepAP214_AutoDesignGeneralOrgItem                  aItemsItem;
-  Standard_Integer                                    nsub3;
+  occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> aItems;
+  StepAP214_AutoDesignGeneralOrgItem                                   aItemsItem;
+  int                                                                  nsub3;
   if (data->ReadSubList(num, 3, "items", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aItems               = new StepAP214_HArray1OfAutoDesignGeneralOrgItem(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aItems  = new NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      Standard_Boolean stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
+      bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
       if (stat3)
         aItems->SetValue(i3, aItemsItem);
     }
@@ -76,8 +78,8 @@ void RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::WriteStep(
-  StepData_StepWriter&                                               SW,
-  const Handle(StepAP214_AutoDesignPersonAndOrganizationAssignment)& ent) const
+  StepData_StepWriter&                                                    SW,
+  const occ::handle<StepAP214_AutoDesignPersonAndOrganizationAssignment>& ent) const
 {
 
   // --- inherited field assignedPersonAndOrganization ---
@@ -91,7 +93,7 @@ void RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::WriteStep(
   // --- own field : items ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbItems(); i3++)
+  for (int i3 = 1; i3 <= ent->NbItems(); i3++)
   {
     SW.Send(ent->ItemsValue(i3).Value());
   }
@@ -99,16 +101,16 @@ void RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::WriteStep(
 }
 
 void RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::Share(
-  const Handle(StepAP214_AutoDesignPersonAndOrganizationAssignment)& ent,
-  Interface_EntityIterator&                                          iter) const
+  const occ::handle<StepAP214_AutoDesignPersonAndOrganizationAssignment>& ent,
+  Interface_EntityIterator&                                               iter) const
 {
 
   iter.GetOneItem(ent->AssignedPersonAndOrganization());
 
   iter.GetOneItem(ent->Role());
 
-  Standard_Integer nbElem3 = ent->NbItems();
-  for (Standard_Integer is3 = 1; is3 <= nbElem3; is3++)
+  int nbElem3 = ent->NbItems();
+  for (int is3 = 1; is3 <= nbElem3; is3++)
   {
     iter.GetOneItem(ent->ItemsValue(is3).Value());
   }

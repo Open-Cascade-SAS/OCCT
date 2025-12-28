@@ -27,8 +27,6 @@
 class Standard_Transient;
 class StepDimTol_Datum;
 class StepDimTol_DatumReferenceElement;
-typedef NCollection_HArray1<Handle(StepDimTol_DatumReferenceElement)>
-  StepDimTol_HArray1OfDatumReferenceElement;
 
 class StepDimTol_DatumOrCommonDatum : public StepData_SelectType
 {
@@ -42,12 +40,13 @@ public:
   //! 1 -> Datum
   //! 2 -> CommonDatumList
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Datum (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_Datum) Datum() const;
+  Standard_EXPORT occ::handle<StepDimTol_Datum> Datum() const;
 
   //! returns Value as a CommonDatumList (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_HArray1OfDatumReferenceElement) CommonDatumList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>>
+                  CommonDatumList() const;
 };
 #endif // _StepDimTol_DatumOrCommonDatum_HeaderFile

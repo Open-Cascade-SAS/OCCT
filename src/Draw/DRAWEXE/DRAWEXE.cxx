@@ -44,7 +44,7 @@
   #include <XSDRAWVRML.hxx>
 #endif
 
-Standard_IMPORT Standard_Boolean Draw_Interprete(const char* theCommand);
+Standard_IMPORT bool Draw_Interprete(const char* theCommand);
 
 #if defined(__EMSCRIPTEN__)
   #include <emscripten/bind.h>
@@ -107,7 +107,7 @@ public:
   #if defined(__EMSCRIPTEN_PTHREADS__)
 private:
   //! Thread entry for async command execution.
-  static Standard_Address evalAsyncEntry(Standard_Address theData)
+  static void* evalAsyncEntry(void* theData)
   {
     OSD::SetSignal(false);
     std::string*      aCmdPtr = (std::string*)theData;
@@ -157,7 +157,7 @@ public:
 protected:
   //! Puts a message.
   virtual void send(const TCollection_AsciiString& theString,
-                    const Message_Gravity          theGravity) const Standard_OVERRIDE
+                    const Message_Gravity          theGravity) const override
   {
     if (theGravity >= myTraceLevel)
     {
@@ -180,9 +180,7 @@ EMSCRIPTEN_BINDINGS(DRAWEXE)
   #include <unordered_map>
 
 //! Mimic pload command by loading pre-defined set of statically linked plugins.
-static Standard_Integer Pload(Draw_Interpretor& theDI,
-                              Standard_Integer  theNbArgs,
-                              const char**      theArgVec)
+static int Pload(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   // Define a map of aPlugin keys to their corresponding factory methods
   std::unordered_map<std::string, std::function<void(Draw_Interpretor&)>> aPluginMap = {
@@ -238,7 +236,7 @@ static Standard_Integer Pload(Draw_Interpretor& theDI,
     }
   };
 
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.UpperCase();
@@ -272,14 +270,14 @@ void Draw_InitAppli(Draw_Interpretor& theDI)
 {
 #if defined(__EMSCRIPTEN__)
   // open JavaScript console within the Browser to see this output
-  Message_Gravity                  aGravity = Message_Info;
-  Handle(Message_PrinterSystemLog) aJSConsolePrinter =
+  Message_Gravity                       aGravity = Message_Info;
+  occ::handle<Message_PrinterSystemLog> aJSConsolePrinter =
     new Message_PrinterSystemLog("DRAWEXE", aGravity);
   Message::DefaultMessenger()->AddPrinter(aJSConsolePrinter);
   // replace printer into std::cout by a printer into a custom callback Module.printMessage
   // accepting message gravity
   Message::DefaultMessenger()->RemovePrinters(STANDARD_TYPE(Message_PrinterOStream));
-  Handle(DRAWEXE_WasmModulePrinter) aJSModulePrinter = new DRAWEXE_WasmModulePrinter(aGravity);
+  occ::handle<DRAWEXE_WasmModulePrinter> aJSModulePrinter = new DRAWEXE_WasmModulePrinter(aGravity);
   Message::DefaultMessenger()->AddPrinter(aJSModulePrinter);
 #endif
 

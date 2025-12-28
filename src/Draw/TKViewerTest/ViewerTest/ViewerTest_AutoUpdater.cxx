@@ -17,16 +17,17 @@
 
 //=================================================================================================
 
-ViewerTest_AutoUpdater::ViewerTest_AutoUpdater(const Handle(AIS_InteractiveContext)& theContext,
-                                               const Handle(V3d_View)&               theView)
+ViewerTest_AutoUpdater::ViewerTest_AutoUpdater(
+  const occ::handle<AIS_InteractiveContext>& theContext,
+  const occ::handle<V3d_View>&               theView)
     : myContext(theContext),
       myView(theView),
       myToUpdate(RedrawMode_Auto),
-      myWasAutoUpdate(Standard_False)
+      myWasAutoUpdate(false)
 {
   if (!theView.IsNull())
   {
-    myWasAutoUpdate = theView->SetImmediateUpdate(Standard_False);
+    myWasAutoUpdate = theView->SetImmediateUpdate(false);
   }
 }
 
@@ -39,21 +40,21 @@ ViewerTest_AutoUpdater::~ViewerTest_AutoUpdater()
 
 //=================================================================================================
 
-Standard_Boolean ViewerTest_AutoUpdater::parseRedrawMode(const TCollection_AsciiString& theArg)
+bool ViewerTest_AutoUpdater::parseRedrawMode(const TCollection_AsciiString& theArg)
 {
   TCollection_AsciiString anArgCase(theArg);
   anArgCase.LowerCase();
   if (anArgCase == "-update" || anArgCase == "-redraw")
   {
     myToUpdate = RedrawMode_Forced;
-    return Standard_True;
+    return true;
   }
   else if (anArgCase == "-noupdate" || anArgCase == "-noredraw")
   {
     myToUpdate = RedrawMode_Suppressed;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -87,7 +88,7 @@ void ViewerTest_AutoUpdater::Update()
         return;
       }
     }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case ViewerTest_AutoUpdater::RedrawMode_Forced: {
       if (!myContext.IsNull())
       {

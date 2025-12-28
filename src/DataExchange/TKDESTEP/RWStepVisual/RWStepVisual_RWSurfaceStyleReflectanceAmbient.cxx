@@ -28,10 +28,10 @@ RWStepVisual_RWSurfaceStyleReflectanceAmbient::RWStepVisual_RWSurfaceStyleReflec
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbient::ReadStep(
-  const Handle(StepData_StepReaderData)&                   data,
-  const Standard_Integer                                   num,
-  Handle(Interface_Check)&                                 ach,
-  const Handle(StepVisual_SurfaceStyleReflectanceAmbient)& ent) const
+  const occ::handle<StepData_StepReaderData>&                   data,
+  const int                                                     num,
+  occ::handle<Interface_Check>&                                 ach,
+  const occ::handle<StepVisual_SurfaceStyleReflectanceAmbient>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "surface_style_reflectance_ambient"))
@@ -39,7 +39,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbient::ReadStep(
 
   // Own fields of SurfaceStyleReflectanceAmbient
 
-  Standard_Real aAmbientReflectance;
+  double aAmbientReflectance;
   data->ReadReal(num, 1, "ambient_reflectance", ach, aAmbientReflectance);
 
   // Initialize entity
@@ -49,8 +49,8 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbient::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbient::WriteStep(
-  StepData_StepWriter&                                     SW,
-  const Handle(StepVisual_SurfaceStyleReflectanceAmbient)& ent) const
+  StepData_StepWriter&                                          SW,
+  const occ::handle<StepVisual_SurfaceStyleReflectanceAmbient>& ent) const
 {
 
   // Own fields of SurfaceStyleReflectanceAmbient
@@ -61,7 +61,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbient::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbient::Share(
-  const Handle(StepVisual_SurfaceStyleReflectanceAmbient)&,
+  const occ::handle<StepVisual_SurfaceStyleReflectanceAmbient>&,
   Interface_EntityIterator&) const
 {
 

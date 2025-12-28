@@ -13,29 +13,30 @@
 
 #include <IFSelect_SignatureList.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_MSG.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignatureList, Standard_Transient)
 
-IFSelect_SignatureList::IFSelect_SignatureList(const Standard_Boolean withlist)
+IFSelect_SignatureList::IFSelect_SignatureList(const bool withlist)
 {
-  thesignonly = Standard_False;
+  thesignonly = false;
   thelistat   = withlist;
   thenbnuls   = 0;
   SetName("...");
 }
 
-void IFSelect_SignatureList::SetList(const Standard_Boolean withlist)
+void IFSelect_SignatureList::SetList(const bool withlist)
 {
   thelistat = withlist;
 }
 
-Standard_Boolean& IFSelect_SignatureList::ModeSignOnly()
+bool& IFSelect_SignatureList::ModeSignOnly()
 {
   return thesignonly;
 }
@@ -48,7 +49,7 @@ void IFSelect_SignatureList::Clear()
   thediclist.Clear();
 }
 
-void IFSelect_SignatureList::Add(const Handle(Standard_Transient)& ent, const Standard_CString sign)
+void IFSelect_SignatureList::Add(const occ::handle<Standard_Transient>& ent, const char* sign)
 {
   if (thesignonly)
   {
@@ -70,28 +71,29 @@ void IFSelect_SignatureList::Add(const Handle(Standard_Transient)& ent, const St
 
   if (thelistat)
   {
-    Handle(TColStd_HSequenceOfTransient) alist;
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> alist;
     if (thediclist.Contains(sign))
-      alist = Handle(TColStd_HSequenceOfTransient)::DownCast(thediclist.FindFromKey(sign));
+      alist = occ::down_cast<NCollection_HSequence<occ::handle<Standard_Transient>>>(
+        thediclist.FindFromKey(sign));
     else
     {
-      alist = new TColStd_HSequenceOfTransient();
+      alist = new NCollection_HSequence<occ::handle<Standard_Transient>>();
       thediclist.Add(sign, alist);
     }
     alist->Append(ent);
   }
 }
 
-Standard_CString IFSelect_SignatureList::LastValue() const
+const char* IFSelect_SignatureList::LastValue() const
 {
   return thelastval.ToCString();
 }
 
 void IFSelect_SignatureList::Init(
-  const Standard_CString                                                                 name,
-  const NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>&           theCount,
-  const NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Standard_Transient)>& list,
-  const Standard_Integer                                                                 nbnuls)
+  const char*                                                     name,
+  const NCollection_IndexedDataMap<TCollection_AsciiString, int>& theCount,
+  const NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& list,
+  const int nbnuls)
 {
   thelastval.Clear();
   thename    = new TCollection_HAsciiString(name);
@@ -99,74 +101,75 @@ void IFSelect_SignatureList::Init(
   thediclist = list;
   thenbnuls  = nbnuls;
   if (thediclist.IsEmpty())
-    thelistat = Standard_False;
+    thelistat = false;
 }
 
-Handle(TColStd_HSequenceOfHAsciiString) IFSelect_SignatureList::List(
-  const Standard_CString root) const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_SignatureList::
+  List(const char* root) const
 {
-  Handle(TColStd_HSequenceOfHAsciiString) list = new TColStd_HSequenceOfHAsciiString();
-  NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedicount);
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list =
+    new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  NCollection_IndexedDataMap<TCollection_AsciiString, int>::Iterator iter(thedicount);
   for (; iter.More(); iter.Next())
   {
     if (!iter.Key().StartsWith(root))
       continue;
 
-    Handle(TCollection_HAsciiString) sign = new TCollection_HAsciiString(iter.Key());
+    occ::handle<TCollection_HAsciiString> sign = new TCollection_HAsciiString(iter.Key());
     list->Append(sign);
   }
   return list;
 }
 
-Standard_Boolean IFSelect_SignatureList::HasEntities() const
+bool IFSelect_SignatureList::HasEntities() const
 {
   return thelistat;
 }
 
-Standard_Integer IFSelect_SignatureList::NbNulls() const
+int IFSelect_SignatureList::NbNulls() const
 {
   return thenbnuls;
 }
 
-Standard_Integer IFSelect_SignatureList::NbTimes(const Standard_CString sign) const
+int IFSelect_SignatureList::NbTimes(const char* sign) const
 {
-  Standard_Integer nb = 0;
+  int nb = 0;
   thedicount.FindFromKey(sign, nb);
   return nb;
 }
 
-Handle(TColStd_HSequenceOfTransient) IFSelect_SignatureList::Entities(
-  const Standard_CString sign) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_SignatureList::
+  Entities(const char* sign) const
 {
-  Handle(TColStd_HSequenceOfTransient) list;
-  Handle(Standard_Transient)           aTList;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list;
+  occ::handle<Standard_Transient>                                     aTList;
   if (!thelistat)
     return list;
   if (thediclist.FindFromKey(sign, aTList))
-    list = Handle(TColStd_HSequenceOfTransient)::DownCast(aTList);
+    list = occ::down_cast<NCollection_HSequence<occ::handle<Standard_Transient>>>(aTList);
   else
-    list = new TColStd_HSequenceOfTransient();
+    list = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   return list;
 }
 
-void IFSelect_SignatureList::SetName(const Standard_CString name)
+void IFSelect_SignatureList::SetName(const char* name)
 {
   thename = new TCollection_HAsciiString(name);
 }
 
-Standard_CString IFSelect_SignatureList::Name() const
+const char* IFSelect_SignatureList::Name() const
 {
   return thename->ToCString();
 }
 
 void IFSelect_SignatureList::PrintCount(Standard_OStream& S) const
 {
-  Standard_Integer nbtot = 0, nbsign = 0;
-  NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedicount);
+  int                                                                nbtot = 0, nbsign = 0;
+  NCollection_IndexedDataMap<TCollection_AsciiString, int>::Iterator iter(thedicount);
   S << " Count	" << thename->ToCString() << "\n -----	-----------" << std::endl;
   for (; iter.More(); iter.Next())
   {
-    Standard_Integer val = iter.Value();
+    int val = iter.Value();
     S << Interface_MSG::Blanks(val, 6) << val << "	" << iter.Key() << std::endl;
     nbtot += val;
     nbsign++;
@@ -176,9 +179,9 @@ void IFSelect_SignatureList::PrintCount(Standard_OStream& S) const
   S << "    Nb Total:" << nbtot << "  for " << nbsign << " items" << std::endl;
 }
 
-void IFSelect_SignatureList::PrintList(Standard_OStream&                       S,
-                                       const Handle(Interface_InterfaceModel)& model,
-                                       const IFSelect_PrintCount               mod) const
+void IFSelect_SignatureList::PrintList(Standard_OStream&                            S,
+                                       const occ::handle<Interface_InterfaceModel>& model,
+                                       const IFSelect_PrintCount                    mod) const
 {
   if (mod == IFSelect_ItemsByEntity)
     return;
@@ -198,24 +201,24 @@ void IFSelect_SignatureList::PrintList(Standard_OStream&                       S
     PrintCount(S);
     return;
   }
-  Standard_Integer nbtot = 0, nbsign = 0;
-  NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(
-    thediclist);
+  int nbtot = 0, nbsign = 0;
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator
+    iter(thediclist);
   for (; iter.More(); iter.Next())
   {
-    DeclareAndCast(TColStd_HSequenceOfTransient, list, iter.Value());
+    DeclareAndCast(NCollection_HSequence<occ::handle<Standard_Transient>>, list, iter.Value());
     S << Name() << " : " << iter.Key() << std::endl;
     if (list.IsNull())
     {
       S << "  - (empty list)" << std::endl;
       continue;
     }
-    Standard_Integer nb = list->Length();
+    int nb = list->Length();
     S << "  - Nb: " << nb << " : ";
-    Standard_Integer nc = nb;
+    int nc = nb;
     if (nb > 5 && mod == IFSelect_ShortByItem)
       nc = 5;
-    for (Standard_Integer i = 1; i <= nc; i++)
+    for (int i = 1; i <= nc; i++)
     {
       if (list->Value(i).IsNull())
       {
@@ -224,7 +227,7 @@ void IFSelect_SignatureList::PrintList(Standard_OStream&                       S
           S << ":(Global)";
         continue;
       }
-      Standard_Integer num = model->Number(list->Value(i));
+      int num = model->Number(list->Value(i));
       if (num == IFSelect_ShortByItem)
       {
         S << "  ??";
@@ -248,21 +251,20 @@ void IFSelect_SignatureList::PrintList(Standard_OStream&                       S
 
 void IFSelect_SignatureList::PrintSum(Standard_OStream& S) const
 {
-  NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedicount);
+  NCollection_IndexedDataMap<TCollection_AsciiString, int>::Iterator iter(thedicount);
   S << " Summary " << thename->ToCString() << "\n -----	-----------" << std::endl;
-  Standard_Integer nbtot = 0, nbsign = 0, maxent = 0, nbval = 0, nbve = 0, minval = 0, maxval = 0,
-                   totval = 0;
+  int nbtot = 0, nbsign = 0, maxent = 0, nbval = 0, nbve = 0, minval = 0, maxval = 0, totval = 0;
   for (; iter.More(); iter.Next())
   {
-    Standard_Integer nbent = iter.Value();
+    int nbent = iter.Value();
     nbtot += nbent;
     nbsign++;
     if (nbent > maxent)
       maxent = nbent;
     const TCollection_AsciiString& name = iter.Key();
     //    if (!name.IsIntegerValue()) continue;  not very reliable
-    Standard_Integer ic, nc = name.Length();
-    Standard_Boolean iaint = Standard_True;
+    int  ic, nc = name.Length();
+    bool iaint = true;
     for (ic = 1; ic <= nc; ic++)
     {
       char unc = name.Value(ic);
@@ -270,12 +272,12 @@ void IFSelect_SignatureList::PrintSum(Standard_OStream& S) const
         continue;
       if (unc >= '0' && unc <= '9')
         continue;
-      iaint = Standard_False;
+      iaint = false;
       break;
     }
     if (!iaint)
       continue;
-    Standard_Integer val = name.IntegerValue();
+    int val = name.IntegerValue();
     if (nbval == 0)
     {
       minval = maxval = val;
@@ -297,7 +299,7 @@ void IFSelect_SignatureList::PrintSum(Standard_OStream& S) const
     S << "    For Nb Entities  : " << nbve << std::endl;
     S << "    Cumulated Values : " << totval << std::endl;
     S << "    Maximum Value    : " << maxval << std::endl;
-    Standard_Integer avg1, avg2;
+    int avg1, avg2;
     avg1 = totval / nbve;
     avg2 = ((totval - (avg1 * nbve)) * 10) / nbve;
     S << "    Average Value    : " << avg1 << " " << avg2 << "/10" << std::endl;

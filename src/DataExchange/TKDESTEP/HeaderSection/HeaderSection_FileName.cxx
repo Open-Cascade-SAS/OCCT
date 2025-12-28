@@ -19,13 +19,14 @@ IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileName, Standard_Transient)
 
 HeaderSection_FileName::HeaderSection_FileName() {}
 
-void HeaderSection_FileName::Init(const Handle(TCollection_HAsciiString)&        aName,
-                                  const Handle(TCollection_HAsciiString)&        aTimeStamp,
-                                  const Handle(Interface_HArray1OfHAsciiString)& aAuthor,
-                                  const Handle(Interface_HArray1OfHAsciiString)& aOrganization,
-                                  const Handle(TCollection_HAsciiString)& aPreprocessorVersion,
-                                  const Handle(TCollection_HAsciiString)& aOriginatingSystem,
-                                  const Handle(TCollection_HAsciiString)& aAuthorisation)
+void HeaderSection_FileName::Init(
+  const occ::handle<TCollection_HAsciiString>&                                   aName,
+  const occ::handle<TCollection_HAsciiString>&                                   aTimeStamp,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aOrganization,
+  const occ::handle<TCollection_HAsciiString>& aPreprocessorVersion,
+  const occ::handle<TCollection_HAsciiString>& aOriginatingSystem,
+  const occ::handle<TCollection_HAsciiString>& aAuthorisation)
 {
   // --- class own fields ---
   name                = aName;
@@ -37,43 +38,44 @@ void HeaderSection_FileName::Init(const Handle(TCollection_HAsciiString)&       
   authorisation       = aAuthorisation;
 }
 
-void HeaderSection_FileName::SetName(const Handle(TCollection_HAsciiString)& aName)
+void HeaderSection_FileName::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileName::Name() const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileName::Name() const
 {
   return name;
 }
 
-void HeaderSection_FileName::SetTimeStamp(const Handle(TCollection_HAsciiString)& aTimeStamp)
+void HeaderSection_FileName::SetTimeStamp(const occ::handle<TCollection_HAsciiString>& aTimeStamp)
 {
   timeStamp = aTimeStamp;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileName::TimeStamp() const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileName::TimeStamp() const
 {
   return timeStamp;
 }
 
-void HeaderSection_FileName::SetAuthor(const Handle(Interface_HArray1OfHAsciiString)& aAuthor)
+void HeaderSection_FileName::SetAuthor(
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor)
 {
   author = aAuthor;
 }
 
-Handle(Interface_HArray1OfHAsciiString) HeaderSection_FileName::Author() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HeaderSection_FileName::
+  Author() const
 {
   return author;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileName::AuthorValue(
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileName::AuthorValue(const int num) const
 {
   return author->Value(num);
 }
 
-Standard_Integer HeaderSection_FileName::NbAuthor() const
+int HeaderSection_FileName::NbAuthor() const
 {
   if (author.IsNull())
     return 0;
@@ -81,23 +83,23 @@ Standard_Integer HeaderSection_FileName::NbAuthor() const
 }
 
 void HeaderSection_FileName::SetOrganization(
-  const Handle(Interface_HArray1OfHAsciiString)& aOrganization)
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aOrganization)
 {
   organization = aOrganization;
 }
 
-Handle(Interface_HArray1OfHAsciiString) HeaderSection_FileName::Organization() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HeaderSection_FileName::
+  Organization() const
 {
   return organization;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileName::OrganizationValue(
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileName::OrganizationValue(const int num) const
 {
   return organization->Value(num);
 }
 
-Standard_Integer HeaderSection_FileName::NbOrganization() const
+int HeaderSection_FileName::NbOrganization() const
 {
   if (organization.IsNull())
     return 0;
@@ -105,34 +107,34 @@ Standard_Integer HeaderSection_FileName::NbOrganization() const
 }
 
 void HeaderSection_FileName::SetPreprocessorVersion(
-  const Handle(TCollection_HAsciiString)& aPreprocessorVersion)
+  const occ::handle<TCollection_HAsciiString>& aPreprocessorVersion)
 {
   preprocessorVersion = aPreprocessorVersion;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileName::PreprocessorVersion() const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileName::PreprocessorVersion() const
 {
   return preprocessorVersion;
 }
 
 void HeaderSection_FileName::SetOriginatingSystem(
-  const Handle(TCollection_HAsciiString)& aOriginatingSystem)
+  const occ::handle<TCollection_HAsciiString>& aOriginatingSystem)
 {
   originatingSystem = aOriginatingSystem;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileName::OriginatingSystem() const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileName::OriginatingSystem() const
 {
   return originatingSystem;
 }
 
 void HeaderSection_FileName::SetAuthorisation(
-  const Handle(TCollection_HAsciiString)& aAuthorisation)
+  const occ::handle<TCollection_HAsciiString>& aAuthorisation)
 {
   authorisation = aAuthorisation;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileName::Authorisation() const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileName::Authorisation() const
 {
   return authorisation;
 }

@@ -40,9 +40,9 @@ const Standard_GUID& TDataXtd_Axis::GetID()
 
 //=================================================================================================
 
-Handle(TDataXtd_Axis) TDataXtd_Axis::Set(const TDF_Label& L)
+occ::handle<TDataXtd_Axis> TDataXtd_Axis::Set(const TDF_Label& L)
 {
-  Handle(TDataXtd_Axis) A;
+  occ::handle<TDataXtd_Axis> A;
   if (!L.FindAttribute(TDataXtd_Axis::GetID(), A))
   {
     A = new TDataXtd_Axis();
@@ -53,11 +53,11 @@ Handle(TDataXtd_Axis) TDataXtd_Axis::Set(const TDF_Label& L)
 
 //=================================================================================================
 
-Handle(TDataXtd_Axis) TDataXtd_Axis::Set(const TDF_Label& L, const gp_Lin& line)
+occ::handle<TDataXtd_Axis> TDataXtd_Axis::Set(const TDF_Label& L, const gp_Lin& line)
 {
-  Handle(TDataXtd_Axis) A = Set(L);
+  occ::handle<TDataXtd_Axis> A = Set(L);
 
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   if (L.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
     if (!aNS->Get().IsNull())

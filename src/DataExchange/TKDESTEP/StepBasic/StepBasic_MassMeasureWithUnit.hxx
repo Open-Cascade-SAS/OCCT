@@ -20,9 +20,6 @@
 
 #include <StepBasic_MeasureWithUnit.hxx>
 
-class StepBasic_MassMeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_MassMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 class StepBasic_MassMeasureWithUnit : public StepBasic_MeasureWithUnit
 {
 
@@ -31,9 +28,6 @@ public:
   Standard_EXPORT StepBasic_MassMeasureWithUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_MassMeasureWithUnit, StepBasic_MeasureWithUnit)
-
-protected:
-private:
 };
 
 #endif // _StepBasic_MassMeasureWithUnit_HeaderFile

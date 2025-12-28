@@ -31,16 +31,15 @@ public:
   //! Constructs a sensitive triangle object defined by the
   //! owner theOwnerId, the points P1, P2, P3, and the type of sensitivity Sensitivity.
   Standard_EXPORT Select3D_SensitiveTriangle(
-    const Handle(SelectMgr_EntityOwner)& theOwnerId,
-    const gp_Pnt&                        thePnt0,
-    const gp_Pnt&                        thePnt1,
-    const gp_Pnt&                        thePnt2,
-    const Select3D_TypeOfSensitivity     theType = Select3D_TOS_INTERIOR);
+    const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+    const gp_Pnt&                             thePnt0,
+    const gp_Pnt&                             thePnt1,
+    const gp_Pnt&                             thePnt2,
+    const Select3D_TypeOfSensitivity          theType = Select3D_TOS_INTERIOR);
 
   //! Checks whether the triangle overlaps current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                   SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                       SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the 3D points P1, P2, P3 used at the time of construction.
   void Points3D(gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_Pnt& thePnt2) const
@@ -54,23 +53,23 @@ public:
   gp_Pnt Center3D() const { return myCentroid; }
 
   //! Returns the copy of this
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Returns bounding box of the triangle. If location transformation is set, it
   //! will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
   //! Returns TRUE if BVH tree is in invalidated state
-  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
+  virtual bool ToBuildBVH() const override { return false; }
 
   //! Returns the amount of points
-  virtual Standard_Integer NbSubElements() const Standard_OVERRIDE { return 3; }
+  virtual int NbSubElements() const override { return 3; }
 
-  virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE { return myCentroid; }
+  virtual gp_Pnt CenterOfGeometry() const override { return myCentroid; }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)
 
@@ -79,7 +78,5 @@ private:
   gp_Pnt                     myCentroid; //!< Center of triangle
   gp_Pnt                     myPoints[3];
 };
-
-DEFINE_STANDARD_HANDLE(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)
 
 #endif

@@ -25,9 +25,9 @@ StepKinematics_GearPairValue::StepKinematics_GearPairValue() {}
 //=================================================================================================
 
 void StepKinematics_GearPairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Standard_Real                         theActualRotation1)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const double                                     theActualRotation1)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -36,14 +36,14 @@ void StepKinematics_GearPairValue::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_GearPairValue::ActualRotation1() const
+double StepKinematics_GearPairValue::ActualRotation1() const
 {
   return myActualRotation1;
 }
 
 //=================================================================================================
 
-void StepKinematics_GearPairValue::SetActualRotation1(const Standard_Real theActualRotation1)
+void StepKinematics_GearPairValue::SetActualRotation1(const double theActualRotation1)
 {
   myActualRotation1 = theActualRotation1;
 }

@@ -28,9 +28,9 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_PointConstraint, Standard_Transient)
 //---------------------------------------------------------
 //         Constructeurs avec un point
 //---------------------------------------------------------
-GeomPlate_PointConstraint::GeomPlate_PointConstraint(const gp_Pnt&          Pt,
-                                                     const Standard_Integer Order,
-                                                     const Standard_Real    TolDist)
+GeomPlate_PointConstraint::GeomPlate_PointConstraint(const gp_Pnt& Pt,
+                                                     const int     Order,
+                                                     const double  TolDist)
     : myOrder(Order),
       myLProp(2, TolDist),
       myPoint(Pt),
@@ -39,7 +39,7 @@ GeomPlate_PointConstraint::GeomPlate_PointConstraint(const gp_Pnt&          Pt,
       myTolDist(TolDist),
       myTolAng(0.0),
       myTolCurv(0.0),
-      hasPnt2dOnSurf(Standard_False)
+      hasPnt2dOnSurf(false)
 {
   if ((myOrder > 1) || (myOrder < -1))
     throw Standard_Failure("GeomPlate_PointConstraint : the constraint must 0 or -1 with a point");
@@ -48,13 +48,13 @@ GeomPlate_PointConstraint::GeomPlate_PointConstraint(const gp_Pnt&          Pt,
 //---------------------------------------------------------
 //         Constructeurs avec un point sur surface
 //---------------------------------------------------------
-GeomPlate_PointConstraint::GeomPlate_PointConstraint(const Standard_Real         U,
-                                                     const Standard_Real         V,
-                                                     const Handle(Geom_Surface)& Surf,
-                                                     const Standard_Integer      Order,
-                                                     const Standard_Real         TolDist,
-                                                     const Standard_Real         TolAng,
-                                                     const Standard_Real         TolCurv)
+GeomPlate_PointConstraint::GeomPlate_PointConstraint(const double                     U,
+                                                     const double                     V,
+                                                     const occ::handle<Geom_Surface>& Surf,
+                                                     const int                        Order,
+                                                     const double                     TolDist,
+                                                     const double                     TolAng,
+                                                     const double                     TolCurv)
     : myOrder(Order),
       myLProp(2, TolDist),
       mySurf(Surf),
@@ -63,7 +63,7 @@ GeomPlate_PointConstraint::GeomPlate_PointConstraint(const Standard_Real        
       myTolDist(TolDist),
       myTolAng(TolAng),
       myTolCurv(TolCurv),
-      hasPnt2dOnSurf(Standard_False)
+      hasPnt2dOnSurf(false)
 
 {
   Surf->D2(myU, myV, myPoint, myD11, myD12, myD21, myD22, myD23);
@@ -109,7 +109,7 @@ void GeomPlate_PointConstraint::D2(gp_Pnt& P,
 //---------------------------------------------------------
 // Fonction : SetG0Criterion
 //---------------------------------------------------------
-void GeomPlate_PointConstraint ::SetG0Criterion(const Standard_Real TolDist)
+void GeomPlate_PointConstraint ::SetG0Criterion(const double TolDist)
 {
   myTolDist = TolDist;
 }
@@ -117,7 +117,7 @@ void GeomPlate_PointConstraint ::SetG0Criterion(const Standard_Real TolDist)
 //---------------------------------------------------------
 // Fonction : SetG1Criterion
 //---------------------------------------------------------
-void GeomPlate_PointConstraint ::SetG1Criterion(const Standard_Real TolAng)
+void GeomPlate_PointConstraint ::SetG1Criterion(const double TolAng)
 {
   myTolAng = TolAng;
 }
@@ -125,7 +125,7 @@ void GeomPlate_PointConstraint ::SetG1Criterion(const Standard_Real TolAng)
 //---------------------------------------------------------
 // Fonction : SetG2Criterion
 //---------------------------------------------------------
-void GeomPlate_PointConstraint ::SetG2Criterion(const Standard_Real TolCurv)
+void GeomPlate_PointConstraint ::SetG2Criterion(const double TolCurv)
 {
   myTolCurv = TolCurv;
 }
@@ -133,7 +133,7 @@ void GeomPlate_PointConstraint ::SetG2Criterion(const Standard_Real TolCurv)
 //---------------------------------------------------------
 // Fonction : G0Criterion
 //---------------------------------------------------------
-Standard_Real GeomPlate_PointConstraint::G0Criterion() const
+double GeomPlate_PointConstraint::G0Criterion() const
 {
   return myTolDist;
 }
@@ -141,7 +141,7 @@ Standard_Real GeomPlate_PointConstraint::G0Criterion() const
 //---------------------------------------------------------
 // Fonction : G1Criterion
 //---------------------------------------------------------
-Standard_Real GeomPlate_PointConstraint::G1Criterion() const
+double GeomPlate_PointConstraint::G1Criterion() const
 {
   return myTolAng;
 }
@@ -149,7 +149,7 @@ Standard_Real GeomPlate_PointConstraint::G1Criterion() const
 //---------------------------------------------------------
 // Fonction : G2Criterion
 //---------------------------------------------------------
-Standard_Real GeomPlate_PointConstraint::G2Criterion() const
+double GeomPlate_PointConstraint::G2Criterion() const
 {
   return myTolCurv;
 }
@@ -157,7 +157,7 @@ Standard_Real GeomPlate_PointConstraint::G2Criterion() const
 //---------------------------------------------------------
 // Fonction : Surface
 //---------------------------------------------------------
-// Handle(Geom_Surface) GeomPlate_PointConstraint::Surface() const
+// occ::handle<Geom_Surface> GeomPlate_PointConstraint::Surface() const
 //{  throw Standard_Failure("GeomPlate_PointConstraint.cxx : The surface does not exist");
 //}
 //------------------------------------------------------------
@@ -174,7 +174,7 @@ GeomLProp_SLProps& GeomPlate_PointConstraint::LPropSurf()
 //------------------------------------------------------------
 // Fonction : Order
 //------------------------------------------------------------
-Standard_Integer GeomPlate_PointConstraint::Order() const
+int GeomPlate_PointConstraint::Order() const
 {
   return myOrder;
 }
@@ -182,7 +182,7 @@ Standard_Integer GeomPlate_PointConstraint::Order() const
 //------------------------------------------------------------
 // Fonction : SetOrder
 //------------------------------------------------------------
-void GeomPlate_PointConstraint::SetOrder(const Standard_Integer Order)
+void GeomPlate_PointConstraint::SetOrder(const int Order)
 {
   myOrder = Order;
 }
@@ -190,7 +190,7 @@ void GeomPlate_PointConstraint::SetOrder(const Standard_Integer Order)
 //------------------------------------------------------------
 // Fonction : HasPnt2dOnSurf
 //------------------------------------------------------------
-Standard_Boolean GeomPlate_PointConstraint::HasPnt2dOnSurf() const
+bool GeomPlate_PointConstraint::HasPnt2dOnSurf() const
 {
   return hasPnt2dOnSurf;
 }
@@ -201,7 +201,7 @@ Standard_Boolean GeomPlate_PointConstraint::HasPnt2dOnSurf() const
 void GeomPlate_PointConstraint::SetPnt2dOnSurf(const gp_Pnt2d& Pnt2d)
 {
   myPt2d         = Pnt2d;
-  hasPnt2dOnSurf = Standard_True;
+  hasPnt2dOnSurf = true;
 }
 
 //------------------------------------------------------------

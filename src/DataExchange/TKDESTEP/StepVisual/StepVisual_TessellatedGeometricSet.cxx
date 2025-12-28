@@ -18,15 +18,15 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedGeometricSet, StepVisual_Tessel
 StepVisual_TessellatedGeometricSet::StepVisual_TessellatedGeometricSet() {}
 
 void StepVisual_TessellatedGeometricSet::Init(
-  const Handle(TCollection_HAsciiString)&                       theName,
-  const NCollection_Handle<StepVisual_Array1OfTessellatedItem>& theItems)
+  const occ::handle<TCollection_HAsciiString>&                                           theName,
+  const NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>& theItems)
 {
   StepRepr_RepresentationItem::Init(theName);
   myItems = theItems;
 }
 
-NCollection_Handle<StepVisual_Array1OfTessellatedItem> StepVisual_TessellatedGeometricSet::Items()
-  const
+NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>
+  StepVisual_TessellatedGeometricSet::Items() const
 {
   return myItems;
 }

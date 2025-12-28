@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SphericalSurface, StepGeom_ElementarySurface
 
 StepGeom_SphericalSurface::StepGeom_SphericalSurface() {}
 
-void StepGeom_SphericalSurface::Init(const Handle(TCollection_HAsciiString)&  aName,
-                                     const Handle(StepGeom_Axis2Placement3d)& aPosition,
-                                     const Standard_Real                      aRadius)
+void StepGeom_SphericalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                                     const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
+                                     const double                                  aRadius)
 {
   // --- classe own fields ---
   radius = aRadius;
@@ -29,12 +29,12 @@ void StepGeom_SphericalSurface::Init(const Handle(TCollection_HAsciiString)&  aN
   StepGeom_ElementarySurface::Init(aName, aPosition);
 }
 
-void StepGeom_SphericalSurface::SetRadius(const Standard_Real aRadius)
+void StepGeom_SphericalSurface::SetRadius(const double aRadius)
 {
   radius = aRadius;
 }
 
-Standard_Real StepGeom_SphericalSurface::Radius() const
+double StepGeom_SphericalSurface::Radius() const
 {
   return radius;
 }

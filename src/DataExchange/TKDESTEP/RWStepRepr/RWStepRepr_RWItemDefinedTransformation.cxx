@@ -24,10 +24,10 @@
 RWStepRepr_RWItemDefinedTransformation::RWStepRepr_RWItemDefinedTransformation() {}
 
 void RWStepRepr_RWItemDefinedTransformation::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepRepr_ItemDefinedTransformation)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                                              num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepRepr_ItemDefinedTransformation>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -36,15 +36,15 @@ void RWStepRepr_RWItemDefinedTransformation::ReadStep(
     return;
 
   // --- own fields
-  Handle(TCollection_HAsciiString) name, description;
-  // szv#4:S4163:12Mar99 `Standard_Boolean st =` not needed
+  occ::handle<TCollection_HAsciiString> name, description;
+  // szv#4:S4163:12Mar99 `bool st =` not needed
   data->ReadString(num, 1, "name", ach, name);
   if (data->IsParamDefined(num, 2))
   { // gka 05.03.99 S4134 upgrade from CD to DIS
     // szv#4:S4163:12Mar99 `st =` not needed
     data->ReadString(num, 2, "description", ach, description);
   }
-  Handle(StepRepr_RepresentationItem) ti1, ti2;
+  occ::handle<StepRepr_RepresentationItem> ti1, ti2;
   // szv#4:S4163:12Mar99 `st =` not needed
   data
     ->ReadEntity(num, 3, "transform_item_1", ach, STANDARD_TYPE(StepRepr_RepresentationItem), ti1);
@@ -57,8 +57,8 @@ void RWStepRepr_RWItemDefinedTransformation::ReadStep(
 }
 
 void RWStepRepr_RWItemDefinedTransformation::WriteStep(
-  StepData_StepWriter&                              SW,
-  const Handle(StepRepr_ItemDefinedTransformation)& ent) const
+  StepData_StepWriter&                                   SW,
+  const occ::handle<StepRepr_ItemDefinedTransformation>& ent) const
 {
 
   // --- own field : dimensions ---
@@ -70,8 +70,8 @@ void RWStepRepr_RWItemDefinedTransformation::WriteStep(
 }
 
 void RWStepRepr_RWItemDefinedTransformation::Share(
-  const Handle(StepRepr_ItemDefinedTransformation)& ent,
-  Interface_EntityIterator&                         iter) const
+  const occ::handle<StepRepr_ItemDefinedTransformation>& ent,
+  Interface_EntityIterator&                              iter) const
 {
   iter.AddItem(ent->TransformItem1());
   iter.AddItem(ent->TransformItem2());

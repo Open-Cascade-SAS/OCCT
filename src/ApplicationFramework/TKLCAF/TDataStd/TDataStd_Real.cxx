@@ -39,11 +39,11 @@ const Standard_GUID& TDataStd_Real::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_Real) SetAttr(const TDF_Label&     label,
-                                     const Standard_Real  V,
-                                     const Standard_GUID& theGuid)
+static occ::handle<TDataStd_Real> SetAttr(const TDF_Label&     label,
+                                          const double         V,
+                                          const Standard_GUID& theGuid)
 {
-  Handle(TDataStd_Real) A;
+  occ::handle<TDataStd_Real> A;
   if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_Real();
@@ -56,7 +56,7 @@ static Handle(TDataStd_Real) SetAttr(const TDF_Label&     label,
 
 //=================================================================================================
 
-Handle(TDataStd_Real) TDataStd_Real::Set(const TDF_Label& L, const Standard_Real V)
+occ::handle<TDataStd_Real> TDataStd_Real::Set(const TDF_Label& L, const double V)
 {
   return SetAttr(L, V, GetID());
 }
@@ -66,9 +66,9 @@ Handle(TDataStd_Real) TDataStd_Real::Set(const TDF_Label& L, const Standard_Real
 // purpose  : User defined attribute
 //=======================================================================
 
-Handle(TDataStd_Real) TDataStd_Real::Set(const TDF_Label&     L,
-                                         const Standard_GUID& theGuid,
-                                         const Standard_Real  V)
+occ::handle<TDataStd_Real> TDataStd_Real::Set(const TDF_Label&     L,
+                                              const Standard_GUID& theGuid,
+                                              const double         V)
 {
   return SetAttr(L, V, theGuid);
 }
@@ -84,9 +84,9 @@ TDataStd_Real::TDataStd_Real()
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_Real::IsCaptured() const
+bool TDataStd_Real::IsCaptured() const
 {
-  Handle(TDF_Reference) reference;
+  occ::handle<TDF_Reference> reference;
   // for test
 
   if (Label().FindAttribute(TDF_Reference::GetID(), reference))
@@ -94,12 +94,12 @@ Standard_Boolean TDataStd_Real::IsCaptured() const
     const TDF_Label& aLabel = reference->Get();
     return aLabel.IsAttribute(myID);
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void TDataStd_Real::Set(const Standard_Real v)
+void TDataStd_Real::Set(const double v)
 {
   // OCC2932 correction
   if (myValue == v)
@@ -111,7 +111,7 @@ void TDataStd_Real::Set(const Standard_Real v)
 
 //=================================================================================================
 
-Standard_Real TDataStd_Real::Get() const
+double TDataStd_Real::Get() const
 {
   return myValue;
 }
@@ -163,16 +163,16 @@ void TDataStd_Real::SetID()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_Real::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_Real::NewEmpty() const
 {
   return new TDataStd_Real();
 }
 
 //=================================================================================================
 
-void TDataStd_Real::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_Real::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  Handle(TDataStd_Real) R                           = Handle(TDataStd_Real)::DownCast(With);
+  occ::handle<TDataStd_Real> R                      = occ::down_cast<TDataStd_Real>(With);
   myValue                                           = R->Get();
   Standard_DISABLE_DEPRECATION_WARNINGS myDimension = R->GetDimension();
   Standard_ENABLE_DEPRECATION_WARNINGS  myID        = R->ID();
@@ -180,10 +180,10 @@ void TDataStd_Real::Restore(const Handle(TDF_Attribute)& With)
 
 //=================================================================================================
 
-void TDataStd_Real::Paste(const Handle(TDF_Attribute)& Into,
-                          const Handle(TDF_RelocationTable)& /*RT*/) const
+void TDataStd_Real::Paste(const occ::handle<TDF_Attribute>& Into,
+                          const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
-  Handle(TDataStd_Real) R = Handle(TDataStd_Real)::DownCast(Into);
+  occ::handle<TDataStd_Real> R = occ::down_cast<TDataStd_Real>(Into);
   R->Set(myValue);
   Standard_DISABLE_DEPRECATION_WARNINGS R->SetDimension(myDimension);
   Standard_ENABLE_DEPRECATION_WARNINGS  R->SetID(myID);
@@ -196,7 +196,7 @@ Standard_OStream& TDataStd_Real::Dump(Standard_OStream& anOS) const
   anOS << "Real ";
   Standard_DISABLE_DEPRECATION_WARNINGS TDataStd::Print(GetDimension(), anOS);
   Standard_ENABLE_DEPRECATION_WARNINGS  anOS << myValue;
-  Standard_Character                    sguid[Standard_GUID_SIZE_ALLOC];
+  char                                  sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
   return anOS;
@@ -204,7 +204,7 @@ Standard_OStream& TDataStd_Real::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_Real::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_Real::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

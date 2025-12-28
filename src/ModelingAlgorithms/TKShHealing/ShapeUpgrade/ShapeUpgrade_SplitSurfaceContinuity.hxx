@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_SplitSurface.hxx>
 
-class ShapeUpgrade_SplitSurfaceContinuity;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitSurfaceContinuity, ShapeUpgrade_SplitSurface)
-
 //! Splits a Surface with a continuity criterion.
 //! At the present moment C1 criterion is used only.
 //! This tool works with tolerance. If C0 surface can be corrected
@@ -43,17 +40,16 @@ public:
   Standard_EXPORT void SetCriterion(const GeomAbs_Shape Criterion);
 
   //! Sets tolerance.
-  Standard_EXPORT void SetTolerance(const Standard_Real Tol);
+  Standard_EXPORT void SetTolerance(const double Tol);
 
-  Standard_EXPORT virtual void Compute(const Standard_Boolean Segment) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const bool Segment) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceContinuity, ShapeUpgrade_SplitSurface)
 
-protected:
 private:
-  GeomAbs_Shape    myCriterion;
-  Standard_Real    myTolerance;
-  Standard_Integer myCont;
+  GeomAbs_Shape myCriterion;
+  double        myTolerance;
+  int           myCont;
 };
 
 #endif // _ShapeUpgrade_SplitSurfaceContinuity_HeaderFile

@@ -23,38 +23,39 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_NoteDriver, BinMDF_ADriver)
 
 //=================================================================================================
 
-BinMXCAFDoc_NoteDriver::BinMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver,
-                                               Standard_CString                 theName)
+BinMXCAFDoc_NoteDriver::BinMXCAFDoc_NoteDriver(const occ::handle<Message_Messenger>& theMsgDriver,
+                                               const char*                           theName)
     : BinMDF_ADriver(theMsgDriver, theName)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_NoteDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                               const Handle(TDF_Attribute)& theTarget,
-                                               BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool BinMXCAFDoc_NoteDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                   const occ::handle<TDF_Attribute>& theTarget,
+                                   BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_Note) aNote = Handle(XCAFDoc_Note)::DownCast(theTarget);
+  occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theTarget);
   if (aNote.IsNull())
-    return Standard_False;
+    return false;
 
   TCollection_ExtendedString aUserName, aTimeStamp;
   if (!(theSource >> aUserName >> aTimeStamp))
-    return Standard_False;
+    return false;
 
   aNote->Set(aUserName, aTimeStamp);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BinMXCAFDoc_NoteDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                   BinObjMgt_Persistent&        theTarget,
-                                   BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+void BinMXCAFDoc_NoteDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_Note) aNote = Handle(XCAFDoc_Note)::DownCast(theSource);
+  occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theSource);
   if (!aNote.IsNull())
     theTarget << aNote->UserName() << aNote->TimeStamp();
 }

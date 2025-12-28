@@ -30,12 +30,12 @@ StepAP214_ExternallyDefinedGeneralProperty::StepAP214_ExternallyDefinedGeneralPr
 //=================================================================================================
 
 void StepAP214_ExternallyDefinedGeneralProperty::Init(
-  const Handle(TCollection_HAsciiString)& aGeneralProperty_Id,
-  const Handle(TCollection_HAsciiString)& aGeneralProperty_Name,
-  const Standard_Boolean                  hasGeneralProperty_Description,
-  const Handle(TCollection_HAsciiString)& aGeneralProperty_Description,
-  const StepBasic_SourceItem&             aExternallyDefinedItem_ItemId,
-  const Handle(StepBasic_ExternalSource)& aExternallyDefinedItem_Source)
+  const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Id,
+  const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Name,
+  const bool                                   hasGeneralProperty_Description,
+  const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Description,
+  const StepBasic_SourceItem&                  aExternallyDefinedItem_ItemId,
+  const occ::handle<StepBasic_ExternalSource>& aExternallyDefinedItem_Source)
 {
   StepBasic_GeneralProperty::Init(aGeneralProperty_Id,
                                   aGeneralProperty_Name,
@@ -46,7 +46,7 @@ void StepAP214_ExternallyDefinedGeneralProperty::Init(
 
 //=================================================================================================
 
-Handle(StepBasic_ExternallyDefinedItem) StepAP214_ExternallyDefinedGeneralProperty::
+occ::handle<StepBasic_ExternallyDefinedItem> StepAP214_ExternallyDefinedGeneralProperty::
   ExternallyDefinedItem() const
 {
   return theExternallyDefinedItem;
@@ -55,7 +55,7 @@ Handle(StepBasic_ExternallyDefinedItem) StepAP214_ExternallyDefinedGeneralProper
 //=================================================================================================
 
 void StepAP214_ExternallyDefinedGeneralProperty::SetExternallyDefinedItem(
-  const Handle(StepBasic_ExternallyDefinedItem)& aExternallyDefinedItem)
+  const occ::handle<StepBasic_ExternallyDefinedItem>& aExternallyDefinedItem)
 {
   theExternallyDefinedItem = aExternallyDefinedItem;
 }

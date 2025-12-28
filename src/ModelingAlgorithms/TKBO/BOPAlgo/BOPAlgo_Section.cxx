@@ -19,17 +19,18 @@
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_PaveBlock.hxx>
-#include <BOPDS_VectorOfListOfPaveBlock.hxx>
+#include <NCollection_Vector.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Map.hxx>
 
 //=================================================================================================
 
@@ -41,7 +42,7 @@ BOPAlgo_Section::BOPAlgo_Section()
 
 //=================================================================================================
 
-BOPAlgo_Section::BOPAlgo_Section(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_Section::BOPAlgo_Section(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Builder(theAllocator)
 {
   Clear();
@@ -55,7 +56,7 @@ BOPAlgo_Section::~BOPAlgo_Section() {}
 
 void BOPAlgo_Section::CheckData()
 {
-  Standard_Integer aNbArgs;
+  int aNbArgs;
   //
   aNbArgs = myArguments.Extent();
   if (!aNbArgs)
@@ -69,7 +70,7 @@ void BOPAlgo_Section::CheckData()
 
 //=================================================================================================
 
-void BOPAlgo_Section::fillPIConstants(const Standard_Real theWhole, BOPAlgo_PISteps& theSteps) const
+void BOPAlgo_Section::fillPIConstants(const double theWhole, BOPAlgo_PISteps& theSteps) const
 {
   // Fill in the constants:
   if (myFillHistory)
@@ -164,21 +165,19 @@ void BOPAlgo_Section::PerformInternal1(const BOPAlgo_PaveFiller&    theFiller,
 
 void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope              aPS(theRange, "Building the result of Section operation", 1);
-  Standard_Integer                   i, aNbMS, aNbLE;
-  Standard_Integer                   j, nE, nV, aNb, aNbF, aNbPBSc;
-  TopoDS_Shape                       aRC, aRC1;
-  BRep_Builder                       aBB;
-  TopExp_Explorer                    aExp;
-  TopTools_ListOfShape               aLSA, aLS;
-  TopTools_ListIteratorOfListOfShape aIt, aItIm, aItLS;
-  NCollection_IndexedDataMap<TopoDS_Shape, Standard_Integer, TopTools_ShapeMapHasher> aMSI(
-    100,
-    myAllocator);
-  TopTools_IndexedMapOfShape          aMS(100, myAllocator);
-  TopTools_MapOfShape                 aMFence(100, myAllocator);
-  TColStd_MapIteratorOfMapOfInteger   aItMI;
-  BOPDS_ListIteratorOfListOfPaveBlock aItPB;
+  Message_ProgressScope          aPS(theRange, "Building the result of Section operation", 1);
+  int                            i, aNbMS, aNbLE;
+  int                            j, nE, nV, aNb, aNbF, aNbPBSc;
+  TopoDS_Shape                   aRC, aRC1;
+  BRep_Builder                   aBB;
+  TopExp_Explorer                aExp;
+  NCollection_List<TopoDS_Shape> aLSA, aLS;
+  NCollection_List<TopoDS_Shape>::Iterator                               aIt, aItIm, aItLS;
+  NCollection_IndexedDataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aMSI(100, myAllocator);
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>          aMS(100, myAllocator);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                 aMFence(100, myAllocator);
+  NCollection_Map<int>::Iterator                                         aItMI;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator               aItPB;
   //
   GetReport()->Clear();
   //
@@ -201,7 +200,7 @@ void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
     const BOPDS_FaceInfo& aFI = myDS->FaceInfo(i);
     //
     // 1.1 Vertices that are section vertices
-    const TColStd_MapOfInteger& aMVSc = aFI.VerticesSc();
+    const NCollection_Map<int>& aMVSc = aFI.VerticesSc();
     aItMI.Initialize(aMVSc);
     for (; aItMI.More(); aItMI.Next())
     {
@@ -211,7 +210,7 @@ void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
     }
     //
     // 1.2 Vertices that are in a face
-    const TColStd_MapOfInteger& aMI = aFI.VerticesIn();
+    const NCollection_Map<int>& aMI = aFI.VerticesIn();
     aItMI.Initialize(aMI);
     for (; aItMI.More(); aItMI.Next())
     {
@@ -228,39 +227,40 @@ void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
     }
     //
     // 1.3 Section edges
-    const BOPDS_IndexedMapOfPaveBlock& aMPBSc = aFI.PaveBlocksSc();
+    const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aMPBSc = aFI.PaveBlocksSc();
     //
     aNbPBSc = aMPBSc.Extent();
     for (j = 1; j <= aNbPBSc; ++j)
     {
-      const Handle(BOPDS_PaveBlock)& aPB = aMPBSc(j);
-      nE                                 = aPB->Edge();
-      const TopoDS_Shape& aE             = myDS->Shape(nE);
+      const occ::handle<BOPDS_PaveBlock>& aPB = aMPBSc(j);
+      nE                                      = aPB->Edge();
+      const TopoDS_Shape& aE                  = myDS->Shape(nE);
       aBB.Add(aRC1, aE);
     }
   }
   //
   // 2. Common blocks between an edge and a face
-  const BOPDS_VectorOfListOfPaveBlock& aPBP = myDS->PaveBlocksPool();
+  const NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
+    myDS->PaveBlocksPool();
   //
   aNb = aPBP.Size();
   for (i = 0; i < aNb; ++i)
   {
-    const BOPDS_ListOfPaveBlock& aLPB = aPBP(i);
+    const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aPBP(i);
     aItPB.Initialize(aLPB);
     for (; aItPB.More(); aItPB.Next())
     {
-      const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
-      Handle(BOPDS_CommonBlock)      aCB = myDS->CommonBlock(aPB);
+      const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
+      occ::handle<BOPDS_CommonBlock>      aCB = myDS->CommonBlock(aPB);
       if (!aCB.IsNull())
       {
-        const TColStd_ListOfInteger& aLF = aCB->Faces();
+        const NCollection_List<int>& aLF = aCB->Faces();
         aNbF                             = aLF.Extent();
         if (aNbF)
         {
-          const Handle(BOPDS_PaveBlock)& aPBR = aCB->PaveBlock1();
-          nE                                  = aPBR->Edge();
-          const TopoDS_Shape& aE              = myDS->Shape(nE);
+          const occ::handle<BOPDS_PaveBlock>& aPBR = aCB->PaveBlock1();
+          nE                                       = aPBR->Edge();
+          const TopoDS_Shape& aE                   = myDS->Shape(nE);
           aBB.Add(aRC1, aE);
         }
       }
@@ -322,7 +322,7 @@ void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
       //
       if (myImages.IsBound(aS))
       {
-        const TopTools_ListOfShape& aLSIm = myImages.Find(aS);
+        const NCollection_List<TopoDS_Shape>& aLSIm = myImages.Find(aS);
         aItIm.Initialize(aLSIm);
         for (; aItIm.More(); aItIm.Next())
         {
@@ -344,7 +344,7 @@ void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
       const TopoDS_Shape& aS = aMS(i);
       if (aMSI.Contains(aS))
       {
-        Standard_Integer& iCnt = aMSI.ChangeFromKey(aS);
+        int& iCnt = aMSI.ChangeFromKey(aS);
         ++iCnt;
       }
       else
@@ -358,15 +358,16 @@ void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
   aMFence.Clear();
   //
   // 4. Build the result
-  TopTools_IndexedDataMapOfShapeListOfShape aMVE(100, myAllocator);
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aMVE(100, myAllocator);
   //
   TopExp::MapShapesAndAncestors(aRC1, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
   //
   aNbMS = aMSI.Extent();
   for (i = 1; i <= aNbMS; ++i)
   {
-    const TopoDS_Shape&     aV   = aMSI.FindKey(i);
-    const Standard_Integer& iCnt = aMSI.FindFromIndex(i);
+    const TopoDS_Shape& aV   = aMSI.FindKey(i);
+    const int&          iCnt = aMSI.FindFromIndex(i);
     if (iCnt > 1)
     {
       TopExp::MapShapesAndAncestors(aV, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
@@ -382,9 +383,9 @@ void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
     {
       return;
     }
-    const TopoDS_Shape&         aV  = aMVE.FindKey(i);
-    const TopTools_ListOfShape& aLE = aMVE.FindFromIndex(i);
-    aNbLE                           = aLE.Extent();
+    const TopoDS_Shape&                   aV  = aMVE.FindKey(i);
+    const NCollection_List<TopoDS_Shape>& aLE = aMVE.FindFromIndex(i);
+    aNbLE                                     = aLE.Extent();
     if (!aNbLE)
     {
       // alone vertices

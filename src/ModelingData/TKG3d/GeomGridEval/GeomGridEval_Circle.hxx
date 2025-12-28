@@ -19,7 +19,6 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 //! @brief Efficient batch evaluator for circle grid points.
 //!
@@ -37,7 +36,7 @@ public:
 
   //! Constructor with geometry.
   //! @param theCircle the circle geometry to evaluate
-  GeomGridEval_Circle(const Handle(Geom_Circle)& theCircle)
+  GeomGridEval_Circle(const occ::handle<Geom_Circle>& theCircle)
       : myGeom(theCircle)
   {
   }
@@ -49,14 +48,14 @@ public:
   GeomGridEval_Circle& operator=(GeomGridEval_Circle&&)      = delete;
 
   //! Returns the geometry handle.
-  const Handle(Geom_Circle)& Geometry() const { return myGeom; }
+  const occ::handle<Geom_Circle>& Geometry() const { return myGeom; }
 
   //! Evaluate all grid points.
   //! @param theParams array of parameter values (angles in radians)
   //! @return array of evaluated points (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first derivative.
   //! D1 = R * (-sin(u) * XDir + cos(u) * YDir)
@@ -64,7 +63,7 @@ public:
   //! @return array of CurveD1 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first and second derivatives.
   //! D2 = R * (-cos(u) * XDir - sin(u) * YDir) = -P (relative to center)
@@ -72,7 +71,7 @@ public:
   //! @return array of CurveD2 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate all grid points with first, second, and third derivatives.
   //! D3 = R * (sin(u) * XDir - cos(u) * YDir) = -D1
@@ -80,7 +79,7 @@ public:
   //! @return array of CurveD3 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theParams) const;
+    const NCollection_Array1<double>& theParams) const;
 
   //! Evaluate Nth derivative at all grid points.
   //! Circle has cyclic derivatives with period 4:
@@ -92,11 +91,12 @@ public:
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing),
   //!         or empty array if geometry is null or no parameters
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theParams,
-                                                            int                         theN) const;
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theParams,
+    int                               theN) const;
 
 private:
-  Handle(Geom_Circle) myGeom;
+  occ::handle<Geom_Circle> myGeom;
 };
 
 #endif // _GeomGridEval_Circle_HeaderFile

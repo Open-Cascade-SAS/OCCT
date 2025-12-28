@@ -26,9 +26,6 @@ class Transfer_TransientProcess;
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-class XSControl_SignTransferStatus;
-DEFINE_STANDARD_HANDLE(XSControl_SignTransferStatus, IFSelect_Signature)
-
 //! This Signatures gives the Transfer Status of an entity, as
 //! recorded in a TransferProcess. It can be :
 //! - Void : not recorded, or recorded as void with no message
@@ -52,36 +49,35 @@ public:
 
   //! Creates a SignTransferStatus, which will work on the current
   //! TransientProcess brought by the TransferReader (its MapReader)
-  Standard_EXPORT XSControl_SignTransferStatus(const Handle(XSControl_TransferReader)& TR);
+  Standard_EXPORT XSControl_SignTransferStatus(const occ::handle<XSControl_TransferReader>& TR);
 
   //! Sets a TransferReader to work
-  Standard_EXPORT void SetReader(const Handle(XSControl_TransferReader)& TR);
+  Standard_EXPORT void SetReader(const occ::handle<XSControl_TransferReader>& TR);
 
   //! Sets a precise map to sign entities
   //! This definition oversedes the creation with a TransferReader
-  Standard_EXPORT void SetMap(const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT void SetMap(const occ::handle<Transfer_TransientProcess>& TP);
 
   //! Returns the TransientProcess used as precised one
   //! Returns a Null Handle for a creation from a TransferReader
   //! without any further setting
-  Standard_EXPORT Handle(Transfer_TransientProcess) Map() const;
+  Standard_EXPORT occ::handle<Transfer_TransientProcess> Map() const;
 
   //! Returns the Reader (if created with a Reader)
   //! Returns a Null Handle if not created with a Reader
-  Standard_EXPORT Handle(XSControl_TransferReader) Reader() const;
+  Standard_EXPORT occ::handle<XSControl_TransferReader> Reader() const;
 
   //! Returns the Signature for a Transient object, as its transfer
   //! status
-  Standard_EXPORT Standard_CString
-    Value(const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(XSControl_SignTransferStatus, IFSelect_Signature)
 
-protected:
 private:
-  Handle(XSControl_TransferReader)  theTR;
-  Handle(Transfer_TransientProcess) theTP;
+  occ::handle<XSControl_TransferReader>  theTR;
+  occ::handle<Transfer_TransientProcess> theTP;
 };
 
 #endif // _XSControl_SignTransferStatus_HeaderFile

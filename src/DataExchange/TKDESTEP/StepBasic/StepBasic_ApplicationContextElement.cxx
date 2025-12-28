@@ -20,31 +20,33 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApplicationContextElement, Standard_Transie
 StepBasic_ApplicationContextElement::StepBasic_ApplicationContextElement() {}
 
 void StepBasic_ApplicationContextElement::Init(
-  const Handle(TCollection_HAsciiString)&     aName,
-  const Handle(StepBasic_ApplicationContext)& aFrameOfReference)
+  const occ::handle<TCollection_HAsciiString>&     aName,
+  const occ::handle<StepBasic_ApplicationContext>& aFrameOfReference)
 {
   // --- classe own fields ---
   name             = aName;
   frameOfReference = aFrameOfReference;
 }
 
-void StepBasic_ApplicationContextElement::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_ApplicationContextElement::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ApplicationContextElement::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_ApplicationContextElement::Name() const
 {
   return name;
 }
 
 void StepBasic_ApplicationContextElement::SetFrameOfReference(
-  const Handle(StepBasic_ApplicationContext)& aFrameOfReference)
+  const occ::handle<StepBasic_ApplicationContext>& aFrameOfReference)
 {
   frameOfReference = aFrameOfReference;
 }
 
-Handle(StepBasic_ApplicationContext) StepBasic_ApplicationContextElement::FrameOfReference() const
+occ::handle<StepBasic_ApplicationContext> StepBasic_ApplicationContextElement::FrameOfReference()
+  const
 {
   return frameOfReference;
 }

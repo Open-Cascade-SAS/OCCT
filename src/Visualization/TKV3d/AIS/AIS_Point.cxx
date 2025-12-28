@@ -34,9 +34,9 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_Point, AIS_InteractiveObject)
 
 //=================================================================================================
 
-AIS_Point::AIS_Point(const Handle(Geom_Point)& aComponent)
+AIS_Point::AIS_Point(const occ::handle<Geom_Point>& aComponent)
     : myComponent(aComponent),
-      myHasTOM(Standard_False),
+      myHasTOM(false),
       myTOM(Aspect_TOM_PLUS)
 {
   myHilightDrawer = new Prs3d_Drawer();
@@ -54,23 +54,23 @@ AIS_Point::AIS_Point(const Handle(Geom_Point)& aComponent)
 
 //=================================================================================================
 
-Handle(Geom_Point) AIS_Point::Component()
+occ::handle<Geom_Point> AIS_Point::Component()
 {
   return myComponent;
 }
 
 //=================================================================================================
 
-void AIS_Point::SetComponent(const Handle(Geom_Point)& aComponent)
+void AIS_Point::SetComponent(const occ::handle<Geom_Point>& aComponent)
 {
   myComponent = aComponent;
 }
 
 //=================================================================================================
 
-void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager)&,
-                        const Handle(Prs3d_Presentation)& thePrs,
-                        const Standard_Integer            theMode)
+void AIS_Point::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                        const occ::handle<Prs3d_Presentation>& thePrs,
+                        const int                              theMode)
 {
   thePrs->SetInfiniteState(myInfiniteState);
   if (theMode == 0)
@@ -79,9 +79,9 @@ void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager)&,
   }
   else if (theMode == -99)
   {
-    Handle(Graphic3d_Group) aGroup = thePrs->CurrentGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePrs->CurrentGroup();
     aGroup->SetPrimitivesAspect(myHilightDrawer->PointAspect()->Aspect());
-    Handle(Graphic3d_ArrayOfPoints) aPoint = new Graphic3d_ArrayOfPoints(1);
+    occ::handle<Graphic3d_ArrayOfPoints> aPoint = new Graphic3d_ArrayOfPoints(1);
     aPoint->AddVertex(myComponent->X(), myComponent->Y(), myComponent->Z());
     aGroup->AddPrimitiveArray(aPoint);
   }
@@ -89,11 +89,11 @@ void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void AIS_Point::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                 const Standard_Integer /*aMode*/)
+void AIS_Point::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                 const int /*aMode*/)
 {
-  Handle(SelectMgr_EntityOwner)   eown = new SelectMgr_EntityOwner(this, 10);
-  Handle(Select3D_SensitivePoint) sp   = new Select3D_SensitivePoint(eown, myComponent->Pnt());
+  occ::handle<SelectMgr_EntityOwner>   eown = new SelectMgr_EntityOwner(this, 10);
+  occ::handle<Select3D_SensitivePoint> sp   = new Select3D_SensitivePoint(eown, myComponent->Pnt());
   aSelection->Add(sp);
 }
 
@@ -101,7 +101,7 @@ void AIS_Point::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
 void AIS_Point::SetColor(const Quantity_Color& theCol)
 {
-  hasOwnColor = Standard_True;
+  hasOwnColor = true;
   myDrawer->SetColor(theCol);
   UpdatePointValues();
 }
@@ -110,7 +110,7 @@ void AIS_Point::SetColor(const Quantity_Color& theCol)
 
 void AIS_Point::UnsetColor()
 {
-  hasOwnColor = Standard_False;
+  hasOwnColor = false;
   UpdatePointValues();
 }
 
@@ -127,7 +127,7 @@ TopoDS_Vertex AIS_Point::Vertex() const
 void AIS_Point::SetMarker(const Aspect_TypeOfMarker aTOM)
 {
   myTOM    = aTOM;
-  myHasTOM = Standard_True;
+  myHasTOM = true;
   UpdatePointValues();
 }
 
@@ -135,20 +135,20 @@ void AIS_Point::SetMarker(const Aspect_TypeOfMarker aTOM)
 
 void AIS_Point::UnsetMarker()
 {
-  myHasTOM = Standard_False;
+  myHasTOM = false;
   UpdatePointValues();
 }
 
 //=================================================================================================
 
-Standard_Boolean AIS_Point::AcceptDisplayMode(const Standard_Integer theMode) const
+bool AIS_Point::AcceptDisplayMode(const int theMode) const
 {
   return theMode == 0 || theMode == -99;
 }
 
 //=================================================================================================
 
-void AIS_Point::replaceWithNewPointAspect(const Handle(Prs3d_PointAspect)& theAspect)
+void AIS_Point::replaceWithNewPointAspect(const occ::handle<Prs3d_PointAspect>& theAspect)
 {
   if (!myDrawer->HasLink())
   {
@@ -156,13 +156,13 @@ void AIS_Point::replaceWithNewPointAspect(const Handle(Prs3d_PointAspect)& theAs
     return;
   }
 
-  const Handle(Graphic3d_AspectMarker3d) anAspectOld = myDrawer->PointAspect()->Aspect();
-  const Handle(Graphic3d_AspectMarker3d) anAspectNew =
+  const occ::handle<Graphic3d_AspectMarker3d> anAspectOld = myDrawer->PointAspect()->Aspect();
+  const occ::handle<Graphic3d_AspectMarker3d> anAspectNew =
     !theAspect.IsNull() ? theAspect->Aspect() : myDrawer->Link()->PointAspect()->Aspect();
   if (anAspectNew != anAspectOld)
   {
     myDrawer->SetPointAspect(theAspect);
-    Graphic3d_MapOfAspectsToAspects aReplaceMap;
+    NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>> aReplaceMap;
     aReplaceMap.Bind(anAspectOld, anAspectNew);
     replaceAspects(aReplaceMap);
   }
@@ -174,13 +174,13 @@ void AIS_Point::UpdatePointValues()
 {
   if (!hasOwnColor && myOwnWidth == 0.0f && !myHasTOM)
   {
-    replaceWithNewPointAspect(Handle(Prs3d_PointAspect)());
+    replaceWithNewPointAspect(occ::handle<Prs3d_PointAspect>());
     return;
   }
 
   Quantity_Color      aCol(Quantity_NOC_YELLOW);
   Aspect_TypeOfMarker aTOM   = Aspect_TOM_PLUS;
-  Standard_Real       aScale = 1.0;
+  double              aScale = 1.0;
   if (myDrawer->HasLink())
   {
     aCol   = myDrawer->Link()->PointAspect()->Aspect()->Color();
@@ -197,7 +197,7 @@ void AIS_Point::UpdatePointValues()
 
   if (myDrawer->HasOwnPointAspect())
   {
-    Handle(Prs3d_PointAspect) PA = myDrawer->PointAspect();
+    occ::handle<Prs3d_PointAspect> PA = myDrawer->PointAspect();
     PA->SetColor(aCol);
     PA->SetTypeOfMarker(aTOM);
     PA->SetScale(aScale);

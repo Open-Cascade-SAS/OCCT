@@ -22,29 +22,29 @@
 #include <IGESSelect_Activator.hxx>
 #include <IGESSelect_WorkLibrary.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 
 void IGESSelect::Run()
 {
-  //  Handle(IFSelect_BasicActivator) Activator = new IFSelect_BasicActivator;
+  //  occ::handle<IFSelect_BasicActivator> Activator = new IFSelect_BasicActivator;
   IFSelect_Functions::Init();
-  Handle(IFSelect_SessionPilot) pilot   = new IFSelect_SessionPilot("XSTEP-IGES>");
-  Handle(IGESSelect_Activator)  igesact = new IGESSelect_Activator;
+  occ::handle<IFSelect_SessionPilot> pilot   = new IFSelect_SessionPilot("XSTEP-IGES>");
+  occ::handle<IGESSelect_Activator>  igesact = new IGESSelect_Activator;
   pilot->SetSession(new IFSelect_WorkSession());
   pilot->SetLibrary(new IGESSelect_WorkLibrary);
 
   pilot->ReadScript();
 }
 
-Standard_Integer IGESSelect::WhatIges(const Handle(IGESData_IGESEntity)& ent,
-                                      const Interface_Graph&             G,
-                                      Handle(IGESData_IGESEntity)& /* sup */,
-                                      Standard_Integer& /* index */)
+int IGESSelect::WhatIges(const occ::handle<IGESData_IGESEntity>& ent,
+                         const Interface_Graph&                  G,
+                         occ::handle<IGESData_IGESEntity>& /* sup */,
+                         int& /* index */)
 {
-  const Handle(IGESData_IGESEntity)& igesent = ent;
+  const occ::handle<IGESData_IGESEntity>& igesent = ent;
   if (igesent.IsNull())
-    return Standard_False;
-  //  Standard_Integer igt = igesent->TypeNumber();
+    return false;
+  //  int igt = igesent->TypeNumber();
   DeclareAndCast(IGESData_IGESModel, model, G.Model());
   if (igesent.IsNull() || model.IsNull())
     return 0;

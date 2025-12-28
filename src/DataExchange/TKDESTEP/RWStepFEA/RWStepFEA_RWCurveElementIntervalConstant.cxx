@@ -31,10 +31,10 @@ RWStepFEA_RWCurveElementIntervalConstant::RWStepFEA_RWCurveElementIntervalConsta
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepFEA_CurveElementIntervalConstant)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                                                num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepFEA_CurveElementIntervalConstant>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "curve_element_interval_constant"))
@@ -42,7 +42,7 @@ void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
 
   // Inherited fields of CurveElementInterval
 
-  Handle(StepFEA_CurveElementLocation) aCurveElementInterval_FinishPosition;
+  occ::handle<StepFEA_CurveElementLocation> aCurveElementInterval_FinishPosition;
   data->ReadEntity(num,
                    1,
                    "curve_element_interval.finish_position",
@@ -50,7 +50,7 @@ void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
                    STANDARD_TYPE(StepFEA_CurveElementLocation),
                    aCurveElementInterval_FinishPosition);
 
-  Handle(StepBasic_EulerAngles) aCurveElementInterval_EuAngles;
+  occ::handle<StepBasic_EulerAngles> aCurveElementInterval_EuAngles;
   data->ReadEntity(num,
                    2,
                    "curve_element_interval.eu_angles",
@@ -60,7 +60,7 @@ void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
 
   // Own fields of CurveElementIntervalConstant
 
-  Handle(StepElement_CurveElementSectionDefinition) aSection;
+  occ::handle<StepElement_CurveElementSectionDefinition> aSection;
   data->ReadEntity(num,
                    3,
                    "section",
@@ -75,8 +75,8 @@ void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementIntervalConstant::WriteStep(
-  StepData_StepWriter&                                SW,
-  const Handle(StepFEA_CurveElementIntervalConstant)& ent) const
+  StepData_StepWriter&                                     SW,
+  const occ::handle<StepFEA_CurveElementIntervalConstant>& ent) const
 {
 
   // Inherited fields of CurveElementInterval
@@ -93,8 +93,8 @@ void RWStepFEA_RWCurveElementIntervalConstant::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementIntervalConstant::Share(
-  const Handle(StepFEA_CurveElementIntervalConstant)& ent,
-  Interface_EntityIterator&                           iter) const
+  const occ::handle<StepFEA_CurveElementIntervalConstant>& ent,
+  Interface_EntityIterator&                                iter) const
 {
 
   // Inherited fields of CurveElementInterval

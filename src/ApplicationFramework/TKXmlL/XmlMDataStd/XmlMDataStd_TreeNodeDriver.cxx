@@ -30,26 +30,26 @@ IMPLEMENT_DOMSTRING(ChildrenString, "children")
 //=================================================================================================
 
 XmlMDataStd_TreeNodeDriver::XmlMDataStd_TreeNodeDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_TreeNodeDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_TreeNodeDriver::NewEmpty() const
 {
   return (new TDataStd_TreeNode());
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMDataStd_TreeNodeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const Handle(TDF_Attribute)& theTarget,
-                                                   XmlObjMgt_RRelocationTable&  theRelocTable) const
+bool XmlMDataStd_TreeNodeDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       XmlObjMgt_RRelocationTable&       theRelocTable) const
 {
-  Handle(TDataStd_TreeNode) aT        = Handle(TDataStd_TreeNode)::DownCast(theTarget);
-  const XmlObjMgt_Element&  anElement = theSource;
+  occ::handle<TDataStd_TreeNode> aT        = occ::down_cast<TDataStd_TreeNode>(theTarget);
+  const XmlObjMgt_Element&       anElement = theSource;
 
   // tree id
   Standard_GUID       aGUID;
@@ -57,28 +57,28 @@ Standard_Boolean XmlMDataStd_TreeNodeDriver::Paste(const XmlObjMgt_Persistent&  
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
     aGUID = TDataStd_TreeNode::GetDefaultTreeID();
   else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString()));
+    aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString()));
   aT->SetTreeID(aGUID);
 
   // children
-  Handle(TDataStd_TreeNode) aTChild;
+  occ::handle<TDataStd_TreeNode> aTChild;
 
   XmlObjMgt_DOMString aChildrenStr = anElement.getAttribute(::ChildrenString());
   if (aChildrenStr != NULL) // void list is allowed
   {
-    Standard_CString aChildren = Standard_CString(aChildrenStr.GetString());
-    Standard_Integer aNb       = 0;
+    const char* aChildren = static_cast<const char*>(aChildrenStr.GetString());
+    int         aNb       = 0;
     if (!XmlObjMgt::GetInteger(aChildren, aNb))
-      return Standard_False;
+      return false;
 
     while (aNb > 0)
     {
       // Find or create TreeNode attribute with the given ID
       if (theRelocTable.IsBound(aNb))
       {
-        aTChild = Handle(TDataStd_TreeNode)::DownCast(theRelocTable.Find(aNb));
+        aTChild = occ::down_cast<TDataStd_TreeNode>(theRelocTable.Find(aNb));
         if (aTChild.IsNull())
-          return Standard_False;
+          return false;
       }
       else
       {
@@ -95,16 +95,16 @@ Standard_Boolean XmlMDataStd_TreeNodeDriver::Paste(const XmlObjMgt_Persistent&  
         aNb = 0;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void XmlMDataStd_TreeNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                       XmlObjMgt_Persistent&        theTarget,
-                                       XmlObjMgt_SRelocationTable&  theRelocTable) const
+void XmlMDataStd_TreeNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                       XmlObjMgt_Persistent&             theTarget,
+                                       XmlObjMgt_SRelocationTable&       theRelocTable) const
 {
-  Handle(TDataStd_TreeNode) aS = Handle(TDataStd_TreeNode)::DownCast(theSource);
+  occ::handle<TDataStd_TreeNode> aS = occ::down_cast<TDataStd_TreeNode>(theSource);
 
   // tree id
   // A not default ID is skipped for storage version 8 and newer.
@@ -112,7 +112,7 @@ void XmlMDataStd_TreeNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
       || theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
            < TDocStd_FormatVersion_VERSION_8)
   {
-    Standard_Character  aGuidStr[40];
+    char                aGuidStr[40];
     Standard_PCharacter pGuidStr = aGuidStr;
     aS->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::TreeIdString(), aGuidStr);
@@ -122,16 +122,16 @@ void XmlMDataStd_TreeNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
   int nbChildren = aS->NbChildren();
 
   // Allocate 11 digits for each ID (an integer) of the child + a space.
-  Standard_Integer                           iChar = 0;
-  NCollection_LocalArray<Standard_Character> str;
+  int                          iChar = 0;
+  NCollection_LocalArray<char> str;
   if (nbChildren)
     str.Allocate(11 * nbChildren + 1);
 
   // form the string of numbers for the list of children
-  Handle(TDataStd_TreeNode) aF = aS->First();
+  occ::handle<TDataStd_TreeNode> aF = aS->First();
   while (!aF.IsNull())
   {
-    Standard_Integer aNb = theRelocTable.FindIndex(aF);
+    int aNb = theRelocTable.FindIndex(aF);
     if (aNb == 0)
     {
       aNb = theRelocTable.Add(aF);
@@ -146,6 +146,6 @@ void XmlMDataStd_TreeNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
 
   if (nbChildren)
   {
-    theTarget.Element().setAttribute(::ChildrenString(), (Standard_Character*)str);
+    theTarget.Element().setAttribute(::ChildrenString(), (char*)str);
   }
 }

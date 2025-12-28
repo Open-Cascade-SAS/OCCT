@@ -24,9 +24,6 @@
 #include <StepGeom_GeometricRepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-class StepShape_BooleanResult;
-DEFINE_STANDARD_HANDLE(StepShape_BooleanResult, StepGeom_GeometricRepresentationItem)
-
 class StepShape_BooleanResult : public StepGeom_GeometricRepresentationItem
 {
 
@@ -34,10 +31,10 @@ public:
   //! Returns a BooleanResult
   Standard_EXPORT StepShape_BooleanResult();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const StepShape_BooleanOperator         aOperator,
-                            const StepShape_BooleanOperand&         aFirstOperand,
-                            const StepShape_BooleanOperand&         aSecondOperand);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const StepShape_BooleanOperator              aOperator,
+                            const StepShape_BooleanOperand&              aFirstOperand,
+                            const StepShape_BooleanOperand&              aSecondOperand);
 
   Standard_EXPORT void SetOperator(const StepShape_BooleanOperator aOperator);
 
@@ -53,7 +50,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_BooleanResult, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
   StepShape_BooleanOperator anOperator;
   StepShape_BooleanOperand  firstOperand;

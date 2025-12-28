@@ -20,8 +20,8 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <StepVisual_HArray1OfTessellatedStructuredItem.hxx>
 #include <StepVisual_TessellatedStructuredItem.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
 
 //=================================================================================================
@@ -31,10 +31,10 @@ RWStepVisual_RWTessellatedSolid::RWStepVisual_RWTessellatedSolid() {}
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedSolid::ReadStep(
-  const Handle(StepData_StepReaderData)&     theData,
-  const Standard_Integer                     theNum,
-  Handle(Interface_Check)&                   theCheck,
-  const Handle(StepVisual_TessellatedSolid)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&     theData,
+  const int                                       theNum,
+  occ::handle<Interface_Check>&                   theCheck,
+  const occ::handle<StepVisual_TessellatedSolid>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theCheck, "tessellated_solid"))
@@ -44,21 +44,21 @@ void RWStepVisual_RWTessellatedSolid::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theCheck, aRepresentationItem_Name);
 
   // Own fields of TessellatedSolid
 
-  Handle(StepVisual_HArray1OfTessellatedStructuredItem) aItems;
-  Standard_Integer                                      sub2 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> aItems;
+  int                                                                                 sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "items", theCheck, sub2))
   {
-    Standard_Integer nb0  = theData->NbParams(sub2);
-    aItems                = new StepVisual_HArray1OfTessellatedStructuredItem(1, nb0);
-    Standard_Integer num2 = sub2;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0  = theData->NbParams(sub2);
+    aItems   = new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, nb0);
+    int num2 = sub2;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepVisual_TessellatedStructuredItem) anIt0;
+      occ::handle<StepVisual_TessellatedStructuredItem> anIt0;
       theData->ReadEntity(num2,
                           i0,
                           "tessellated_structured_item",
@@ -69,8 +69,8 @@ void RWStepVisual_RWTessellatedSolid::ReadStep(
     }
   }
 
-  Handle(StepShape_ManifoldSolidBrep) aGeometricLink;
-  Standard_Boolean                    hasGeometricLink = Standard_True;
+  occ::handle<StepShape_ManifoldSolidBrep> aGeometricLink;
+  bool                                     hasGeometricLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum,
@@ -82,7 +82,7 @@ void RWStepVisual_RWTessellatedSolid::ReadStep(
   }
   else
   {
-    hasGeometricLink = Standard_False;
+    hasGeometricLink = false;
     aGeometricLink.Nullify();
   }
 
@@ -93,8 +93,8 @@ void RWStepVisual_RWTessellatedSolid::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedSolid::WriteStep(
-  StepData_StepWriter&                       theSW,
-  const Handle(StepVisual_TessellatedSolid)& theEnt) const
+  StepData_StepWriter&                            theSW,
+  const occ::handle<StepVisual_TessellatedSolid>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -104,9 +104,9 @@ void RWStepVisual_RWTessellatedSolid::WriteStep(
   // Own fields of TessellatedSolid
 
   theSW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
+  for (int i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
   {
-    Handle(StepVisual_TessellatedStructuredItem) Var0 = theEnt->Items()->Value(i1);
+    occ::handle<StepVisual_TessellatedStructuredItem> Var0 = theEnt->Items()->Value(i1);
     theSW.Send(Var0);
   }
   theSW.CloseSub();
@@ -123,7 +123,7 @@ void RWStepVisual_RWTessellatedSolid::WriteStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedSolid::Share(const Handle(StepVisual_TessellatedSolid)& theEnt,
+void RWStepVisual_RWTessellatedSolid::Share(const occ::handle<StepVisual_TessellatedSolid>& theEnt,
                                             Interface_EntityIterator& theIter) const
 {
 
@@ -131,9 +131,9 @@ void RWStepVisual_RWTessellatedSolid::Share(const Handle(StepVisual_TessellatedS
 
   // Own fields of TessellatedSolid
 
-  for (Standard_Integer i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
+  for (int i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
   {
-    Handle(StepVisual_TessellatedStructuredItem) Var0 = theEnt->Items()->Value(i1);
+    occ::handle<StepVisual_TessellatedStructuredItem> Var0 = theEnt->Items()->Value(i1);
     theIter.AddItem(Var0);
   }
 

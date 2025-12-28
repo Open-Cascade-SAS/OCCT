@@ -24,10 +24,11 @@ StepVisual_AnnotationPlane::StepVisual_AnnotationPlane() {}
 //=================================================================================================
 
 void StepVisual_AnnotationPlane::Init(
-  const Handle(TCollection_HAsciiString)&                        theName,
-  const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& theStyles,
-  const Handle(Standard_Transient)&                              theItem,
-  const Handle(StepVisual_HArray1OfAnnotationPlaneElement)&      theElements)
+  const occ::handle<TCollection_HAsciiString>& theName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>&
+                                                                             theStyles,
+  const occ::handle<Standard_Transient>&                                     theItem,
+  const occ::handle<NCollection_HArray1<StepVisual_AnnotationPlaneElement>>& theElements)
 {
   StepVisual_AnnotationOccurrence::Init(theName, theStyles, theItem);
   myElements = theElements;

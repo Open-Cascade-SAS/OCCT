@@ -51,12 +51,12 @@ public:
   {
     const IMeshData::IEdgeHandle aDEdge = theDEdge;
 
-    Standard_Integer aPointsNb = aDEdge->GetCurve()->ParametersNb();
+    int aPointsNb = aDEdge->GetCurve()->ParametersNb();
 
-    aDEdge->Clear(Standard_True);
+    aDEdge->Clear(true);
     aDEdge->SetDeflection(std::max(aDEdge->GetDeflection() / 3., Precision::Confusion()));
 
-    for (Standard_Integer aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
+    for (int aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
     {
       const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve(aPCurveIt);
       const IMeshData::IFaceHandle    aDFace  = aPCurve->GetFace();
@@ -70,17 +70,17 @@ public:
       }
     }
 
-    const IMeshData::IPCurveHandle&     aPCurve = aDEdge->GetPCurve(0);
-    const IMeshData::IFaceHandle        aDFace  = aPCurve->GetFace();
-    Handle(IMeshTools_CurveTessellator) aTessellator =
+    const IMeshData::IPCurveHandle&          aPCurve = aDEdge->GetPCurve(0);
+    const IMeshData::IFaceHandle             aDFace  = aPCurve->GetFace();
+    occ::handle<IMeshTools_CurveTessellator> aTessellator =
       BRepMesh_EdgeDiscret::CreateEdgeTessellator(aDEdge,
                                                   aPCurve->GetOrientation(),
                                                   aDFace,
                                                   myParameters,
                                                   aPointsNb);
 
-    BRepMesh_EdgeDiscret::Tessellate3d(aDEdge, aTessellator, Standard_False);
-    BRepMesh_EdgeDiscret::Tessellate2d(aDEdge, Standard_False);
+    BRepMesh_EdgeDiscret::Tessellate3d(aDEdge, aTessellator, false);
+    BRepMesh_EdgeDiscret::Tessellate2d(aDEdge, false);
   }
 
 private:
@@ -93,20 +93,20 @@ private:
 };
 
 //! Returns True if some of two vertcies is same with reference one.
-Standard_Boolean isSameWithSomeOf(const TopoDS_Vertex& theRefVertex,
-                                  const TopoDS_Vertex& theVertex1,
-                                  const TopoDS_Vertex& theVertex2)
+bool isSameWithSomeOf(const TopoDS_Vertex& theRefVertex,
+                      const TopoDS_Vertex& theVertex1,
+                      const TopoDS_Vertex& theVertex2)
 {
   return (theRefVertex.IsSame(theVertex1) || theRefVertex.IsSame(theVertex2));
 }
 
 //! Returns True if some of two vertcies is within tolerance of reference one.
-Standard_Boolean isInToleranceWithSomeOf(const gp_Pnt&       theRefPoint,
-                                         const gp_Pnt&       thePoint1,
-                                         const gp_Pnt&       thePoint2,
-                                         const Standard_Real theTol)
+bool isInToleranceWithSomeOf(const gp_Pnt& theRefPoint,
+                             const gp_Pnt& thePoint1,
+                             const gp_Pnt& thePoint2,
+                             const double  theTol)
 {
-  const Standard_Real aSqTol = theTol * theTol;
+  const double aSqTol = theTol * theTol;
   return (theRefPoint.SquareDistance(thePoint1) < aSqTol
           || theRefPoint.SquareDistance(thePoint2) < aSqTol);
 }
@@ -122,16 +122,16 @@ BRepMesh_ModelHealer::~BRepMesh_ModelHealer() {}
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_ModelHealer::performInternal(const Handle(IMeshData_Model)& theModel,
-                                                       const IMeshTools_Parameters&   theParameters,
-                                                       const Message_ProgressRange&   theRange)
+bool BRepMesh_ModelHealer::performInternal(const occ::handle<IMeshData_Model>& theModel,
+                                           const IMeshTools_Parameters&        theParameters,
+                                           const Message_ProgressRange&        theRange)
 {
   (void)theRange;
   myModel      = theModel;
   myParameters = theParameters;
   if (myModel.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   // MinSize is made as a constant. It is connected with
@@ -142,7 +142,7 @@ Standard_Boolean BRepMesh_ModelHealer::performInternal(const Handle(IMeshData_Mo
   myParameters.MinSize = Precision::Confusion();
 
   myFaceIntersectingEdges = new IMeshData::DMapOfIFacePtrsMapOfIEdgePtrs;
-  for (Standard_Integer aFaceIt = 0; aFaceIt < myModel->FacesNb(); ++aFaceIt)
+  for (int aFaceIt = 0; aFaceIt < myModel->FacesNb(); ++aFaceIt)
   {
     myFaceIntersectingEdges->Bind(myModel->GetFace(aFaceIt).get(),
                                   Handle(IMeshData::MapOfIEdgePtr)());
@@ -165,18 +165,18 @@ Standard_Boolean BRepMesh_ModelHealer::performInternal(const Handle(IMeshData_Mo
 
   myFaceIntersectingEdges.Nullify();
   myModel.Nullify(); // Do not hold link to model.
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 void BRepMesh_ModelHealer::amplifyEdges()
 {
-  Handle(NCollection_IncAllocator) aTmpAlloc =
+  occ::handle<NCollection_IncAllocator> aTmpAlloc =
     new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
 
-  Standard_Integer         aAmpIt  = 0;
-  const Standard_Real      aIterNb = 5;
+  int                      aAmpIt  = 0;
+  const double             aIterNb = 5;
   IMeshData::MapOfIEdgePtr aEdgesToUpdate(1, aTmpAlloc);
   EdgeAmplifier            anEdgeAmplifier(myParameters);
 
@@ -194,7 +194,7 @@ void BRepMesh_ModelHealer::amplifyEdges()
     for (; aEdgeIt.More(); aEdgeIt.Next())
     {
       const IMeshData::IEdgeHandle aDEdge = aEdgeIt.Value();
-      for (Standard_Integer aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
+      for (int aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
       {
         aFacesToCheck.Add(aDEdge->GetPCurve(aPCurveIt)->GetFace());
       }
@@ -207,13 +207,13 @@ void BRepMesh_ModelHealer::amplifyEdges()
                           aFacesToCheck.Size());
 
     aEdgesToUpdate.Clear();
-    aTmpAlloc->Reset(Standard_False);
+    aTmpAlloc->Reset(false);
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_ModelHealer::popEdgesToUpdate(IMeshData::MapOfIEdgePtr& theEdgesToUpdate)
+bool BRepMesh_ModelHealer::popEdgesToUpdate(IMeshData::MapOfIEdgePtr& theEdgesToUpdate)
 {
   IMeshData::DMapOfIFacePtrsMapOfIEdgePtrs::Iterator aFaceIt(*myFaceIntersectingEdges);
   for (; aFaceIt.More(); aFaceIt.Next())
@@ -310,8 +310,8 @@ void BRepMesh_ModelHealer::fixFaceBoundaries(const IMeshData::IFaceHandle& theDF
       const IMeshData::IEdgeHandle aCurrEdge = aDWire->GetEdge(aEdgeIt);
       const IMeshData::IEdgeHandle aNextEdge = aDWire->GetEdge(aNextEdgeIt);
 
-      Standard_Boolean isConnected = !getCommonVertex(aCurrEdge, aNextEdge).IsNull()
-                                     && !getCommonVertex(aPrevEdge, aCurrEdge).IsNull();
+      bool isConnected = !getCommonVertex(aCurrEdge, aNextEdge).IsNull()
+                         && !getCommonVertex(aPrevEdge, aCurrEdge).IsNull();
 
       if (isConnected)
       {
@@ -409,15 +409,15 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
     return aVertex1_2;
   }
 
-  const gp_Pnt        aPnt1_1 = BRep_Tool::Pnt(aVertex1_1);
-  const gp_Pnt        aPnt1_2 = BRep_Tool::Pnt(aVertex1_2);
-  const Standard_Real aTol1_1 = BRep_Tool::Tolerance(aVertex1_1);
-  const Standard_Real aTol1_2 = BRep_Tool::Tolerance(aVertex1_2);
+  const gp_Pnt aPnt1_1 = BRep_Tool::Pnt(aVertex1_1);
+  const gp_Pnt aPnt1_2 = BRep_Tool::Pnt(aVertex1_2);
+  const double aTol1_1 = BRep_Tool::Tolerance(aVertex1_1);
+  const double aTol1_2 = BRep_Tool::Tolerance(aVertex1_2);
 
-  const gp_Pnt        aPnt2_1 = BRep_Tool::Pnt(aVertex2_1);
-  const gp_Pnt        aPnt2_2 = BRep_Tool::Pnt(aVertex2_2);
-  const Standard_Real aTol2_1 = BRep_Tool::Tolerance(aVertex2_1);
-  const Standard_Real aTol2_2 = BRep_Tool::Tolerance(aVertex2_2);
+  const gp_Pnt aPnt2_1 = BRep_Tool::Pnt(aVertex2_1);
+  const gp_Pnt aPnt2_2 = BRep_Tool::Pnt(aVertex2_2);
+  const double aTol2_1 = BRep_Tool::Tolerance(aVertex2_1);
+  const double aTol2_2 = BRep_Tool::Tolerance(aVertex2_2);
 
   if (isInToleranceWithSomeOf(aPnt1_1, aPnt2_1, aPnt2_2, aTol1_1 + std::max(aTol2_1, aTol2_2)))
   {
@@ -433,14 +433,13 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_ModelHealer::connectClosestPoints(
-  const IMeshData::IPCurveHandle& thePrevDEdge,
-  const IMeshData::IPCurveHandle& theCurrDEdge,
-  const IMeshData::IPCurveHandle& theNextDEdge) const
+bool BRepMesh_ModelHealer::connectClosestPoints(const IMeshData::IPCurveHandle& thePrevDEdge,
+                                                const IMeshData::IPCurveHandle& theCurrDEdge,
+                                                const IMeshData::IPCurveHandle& theNextDEdge) const
 {
   if (thePrevDEdge->IsInternal() || theCurrDEdge->IsInternal() || theNextDEdge->IsInternal())
   {
-    return Standard_True;
+    return true;
   }
 
   gp_Pnt2d& aPrevFirstUV = thePrevDEdge->GetPoint(0);
@@ -450,14 +449,14 @@ Standard_Boolean BRepMesh_ModelHealer::connectClosestPoints(
   {
     // Wire consists of a single edge.
     aPrevFirstUV = aPrevLastUV;
-    return Standard_True;
+    return true;
   }
 
   gp_Pnt2d& aCurrFirstUV = theCurrDEdge->GetPoint(0);
   gp_Pnt2d& aCurrLastUV  = theCurrDEdge->GetPoint(theCurrDEdge->ParametersNb() - 1);
 
-  gp_Pnt2d *          aPrevUV = NULL, *aCurrPrevUV = NULL;
-  const Standard_Real aPrevSqDist =
+  gp_Pnt2d *   aPrevUV = NULL, *aCurrPrevUV = NULL;
+  const double aPrevSqDist =
     closestPoints(aPrevFirstUV, aPrevLastUV, aCurrFirstUV, aCurrLastUV, aPrevUV, aCurrPrevUV);
 
   gp_Pnt2d *aNextUV = NULL, *aCurrNextUV = NULL;
@@ -469,13 +468,13 @@ Standard_Boolean BRepMesh_ModelHealer::connectClosestPoints(
 
     *aNextUV = *aCurrNextUV;
     *aPrevUV = *aCurrPrevUV;
-    return Standard_True;
+    return true;
   }
 
   gp_Pnt2d& aNextFirstUV = theNextDEdge->GetPoint(0);
   gp_Pnt2d& aNextLastUV  = theNextDEdge->GetPoint(theNextDEdge->ParametersNb() - 1);
 
-  const Standard_Real aNextSqDist =
+  const double aNextSqDist =
     closestPoints(aNextFirstUV, aNextLastUV, aCurrFirstUV, aCurrLastUV, aNextUV, aCurrNextUV);
 
 #ifdef DEBUG_HEALER
@@ -508,5 +507,5 @@ Standard_Boolean BRepMesh_ModelHealer::connectClosestPoints(
                      aNextLastUV);
   }
 
-  return Standard_True;
+  return true;
 }

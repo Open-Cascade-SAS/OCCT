@@ -25,7 +25,9 @@
 #include <math_Vector.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class GeomInt_TheMultiLineOfWLApprox;
@@ -48,18 +50,18 @@ public:
   //! The tolerance required on this sum is given by Tol.
   //! The desired degree of the resulting curve is Deg.
   Standard_EXPORT GeomInt_MyGradientbisOfTheComputeLineOfWLApprox(
-    const GeomInt_TheMultiLineOfWLApprox&                 SSP,
-    const Standard_Integer                                FirstPoint,
-    const Standard_Integer                                LastPoint,
-    const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
-    math_Vector&                                          Parameters,
-    const Standard_Integer                                Deg,
-    const Standard_Real                                   Tol3d,
-    const Standard_Real                                   Tol2d,
-    const Standard_Integer                                NbIterations = 200);
+    const GeomInt_TheMultiLineOfWLApprox&                                  SSP,
+    const int                                                              FirstPoint,
+    const int                                                              LastPoint,
+    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+    math_Vector&                                                           Parameters,
+    const int                                                              Deg,
+    const double                                                           Tol3d,
+    const double                                                           Tol2d,
+    const int                                                              NbIterations = 200);
 
   //! returns True if all has been correctly done.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! returns all the Bezier curves approximating the
   //! MultiLine SSP after minimization of the parameter.
@@ -69,28 +71,27 @@ public:
   //! approximation.
   //! An exception is raised if NotDone.
   //! An exception is raised if Index<1 or Index>NbParameters.
-  Standard_EXPORT Standard_Real Error(const Standard_Integer Index) const;
+  Standard_EXPORT double Error(const int Index) const;
 
   //! returns the maximum difference between the old and the
   //! new approximation.
-  Standard_EXPORT Standard_Real MaxError3d() const;
+  Standard_EXPORT double MaxError3d() const;
 
   //! returns the maximum difference between the old and the
   //! new approximation.
-  Standard_EXPORT Standard_Real MaxError2d() const;
+  Standard_EXPORT double MaxError2d() const;
 
   //! returns the average error between the old and the
   //! new approximation.
-  Standard_EXPORT Standard_Real AverageError() const;
+  Standard_EXPORT double AverageError() const;
 
-protected:
 private:
   AppParCurves_MultiCurve SCU;
   math_Vector             ParError;
-  Standard_Real           AvError;
-  Standard_Real           MError3d;
-  Standard_Real           MError2d;
-  Standard_Boolean        Done;
+  double                  AvError;
+  double                  MError3d;
+  double                  MError2d;
+  bool                    Done;
 };
 
 #endif // _GeomInt_MyGradientbisOfTheComputeLineOfWLApprox_HeaderFile

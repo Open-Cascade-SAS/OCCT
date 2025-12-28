@@ -36,14 +36,14 @@ IMPLEMENT_DOMSTRING(IsDeltaOn, "delta")
 //=================================================================================================
 
 XmlMDataStd_IntPackedMapDriver::XmlMDataStd_IntPackedMapDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_IntPackedMap)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_IntPackedMapDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_IntPackedMapDriver::NewEmpty() const
 {
   return (new TDataStd_IntPackedMap());
 }
@@ -52,15 +52,14 @@ Handle(TDF_Attribute) XmlMDataStd_IntPackedMapDriver::NewEmpty() const
 // function : Paste()
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste(
-  const XmlObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  XmlObjMgt_RRelocationTable&  theRelocTable) const
+bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                           const occ::handle<TDF_Attribute>& theTarget,
+                                           XmlObjMgt_RRelocationTable&       theRelocTable) const
 {
-  Handle(TDataStd_IntPackedMap) aPackedMap = Handle(TDataStd_IntPackedMap)::DownCast(theTarget);
+  occ::handle<TDataStd_IntPackedMap> aPackedMap = occ::down_cast<TDataStd_IntPackedMap>(theTarget);
   if (!aPackedMap.IsNull())
   {
-    Standard_Integer         aSize;
+    int                      aSize;
     const XmlObjMgt_Element& anElement = theSource;
     XmlObjMgt_DOMString      aSizeDStr = anElement.getAttribute(::IntPackedMapSize());
     if (aSizeDStr == NULL)
@@ -72,26 +71,26 @@ Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste(
                                    " for IntPackedMap attribute as \"")
         + aSize + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
-    Handle(TColStd_HPackedMapOfInteger) aHMap = new TColStd_HPackedMapOfInteger();
-    Standard_Boolean                    Ok    = Standard_True;
+    occ::handle<TColStd_HPackedMapOfInteger> aHMap = new TColStd_HPackedMapOfInteger();
+    bool                                     Ok    = true;
     if (aSize)
     {
-      Standard_CString aValueString =
-        Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
-      //      Handle(TColStd_HPackedMapOfInteger) aHMap = new TColStd_HPackedMapOfInteger ();
-      for (Standard_Integer i = 1; i <= aSize; i++)
+      const char* aValueString =
+        static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
+      //      occ::handle<TColStd_HPackedMapOfInteger> aHMap = new TColStd_HPackedMapOfInteger ();
+      for (int i = 1; i <= aSize; i++)
       {
-        Standard_Integer aValue;
+        int aValue;
         if (!XmlObjMgt::GetInteger(aValueString, aValue))
         {
-          Ok = Standard_False;
+          Ok = false;
           break;
         }
         if (!aHMap->ChangeMap().Add(aValue))
         {
-          Ok = Standard_False;
+          Ok = false;
           break;
         }
       }
@@ -102,19 +101,19 @@ Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste(
                                      " for IntPackedMap attribute as \"")
           + aValueString + "\"";
         myMessageDriver->Send(aMessageString, Message_Fail);
-        return Standard_False;
+        return false;
       }
       if (aPackedMap->ChangeMap(aHMap))
-        Ok = Standard_True;
+        Ok = true;
     }
     if (Ok)
     {
-      Standard_Boolean aDelta(Standard_False);
+      bool aDelta(false);
 
       if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
           >= TDocStd_FormatVersion_VERSION_3)
       {
-        Standard_Integer aDeltaValue;
+        int aDeltaValue;
         if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue))
         {
           TCollection_ExtendedString aMessageString =
@@ -122,35 +121,35 @@ Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste(
                                        " for IntPackedMap attribute as \"")
             + aDeltaValue + "\"";
           myMessageDriver->Send(aMessageString, Message_Fail);
-          return Standard_False;
+          return false;
         }
         else
           aDelta = aDeltaValue != 0;
       }
       aPackedMap->SetDelta(aDelta);
-      return Standard_True;
+      return true;
     }
   }
   myMessageDriver->Send("error retrieving Map for type TDataStd_IntPackedMap", Message_Fail);
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
 // function : Paste()
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataStd_IntPackedMapDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                           XmlObjMgt_Persistent&        theTarget,
+void XmlMDataStd_IntPackedMapDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                           XmlObjMgt_Persistent&             theTarget,
                                            XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_IntPackedMap) aS = Handle(TDataStd_IntPackedMap)::DownCast(theSource);
+  occ::handle<TDataStd_IntPackedMap> aS = occ::down_cast<TDataStd_IntPackedMap>(theSource);
   if (aS.IsNull())
   {
     myMessageDriver->Send("IntPackedMapDriver:: The source attribute is Null.", Message_Warning);
     return;
   }
 
-  Standard_Integer aSize = (aS->IsEmpty()) ? 0 : aS->Extent();
+  int aSize = (aS->IsEmpty()) ? 0 : aS->Extent();
   theTarget.Element().setAttribute(::IntPackedMapSize(), aSize);
   theTarget.Element().setAttribute(::IsDeltaOn(), aS->GetDelta() ? 1 : 0);
 
@@ -158,17 +157,17 @@ void XmlMDataStd_IntPackedMapDriver::Paste(const Handle(TDF_Attribute)& theSourc
   {
     // Allocation of 12 chars for each integer including the space.
     // An example: -2 147 483 648
-    Standard_Integer                           iChar = 0;
-    NCollection_LocalArray<Standard_Character> str(12 * aSize + 1);
+    int                          iChar = 0;
+    NCollection_LocalArray<char> str(12 * aSize + 1);
 
     TColStd_MapIteratorOfPackedMapOfInteger anIt(aS->GetMap());
     for (; anIt.More(); anIt.Next())
     {
-      const Standard_Integer intValue = anIt.Key();
+      const int intValue = anIt.Key();
       iChar += Sprintf(&(str[iChar]), "%d ", intValue);
     }
 
     // No occurrence of '&', '<' and other irregular XML characters
-    XmlObjMgt::SetStringValue(theTarget, (Standard_Character*)str, Standard_True);
+    XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
   }
 }

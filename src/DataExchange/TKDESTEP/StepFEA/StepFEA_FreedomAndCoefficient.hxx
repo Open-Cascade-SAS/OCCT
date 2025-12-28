@@ -22,9 +22,6 @@
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <Standard_Transient.hxx>
 
-class StepFEA_FreedomAndCoefficient;
-DEFINE_STANDARD_HANDLE(StepFEA_FreedomAndCoefficient, Standard_Transient)
-
 //! Representation of STEP entity FreedomAndCoefficient
 class StepFEA_FreedomAndCoefficient : public Standard_Transient
 {
@@ -51,7 +48,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FreedomAndCoefficient, Standard_Transient)
 
-protected:
 private:
   StepFEA_DegreeOfFreedom               theFreedom;
   StepElement_MeasureOrUnspecifiedValue theA;

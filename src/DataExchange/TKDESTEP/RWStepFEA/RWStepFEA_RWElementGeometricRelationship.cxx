@@ -29,10 +29,10 @@ RWStepFEA_RWElementGeometricRelationship::RWStepFEA_RWElementGeometricRelationsh
 //=================================================================================================
 
 void RWStepFEA_RWElementGeometricRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepFEA_ElementGeometricRelationship)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                                                num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepFEA_ElementGeometricRelationship>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "element_geometric_relationship"))
@@ -43,7 +43,7 @@ void RWStepFEA_RWElementGeometricRelationship::ReadStep(
   StepFEA_ElementOrElementGroup aElementRef;
   data->ReadEntity(num, 1, "element_ref", ach, aElementRef);
 
-  Handle(StepElement_AnalysisItemWithinRepresentation) aItem;
+  occ::handle<StepElement_AnalysisItemWithinRepresentation> aItem;
   data->ReadEntity(num,
                    2,
                    "item",
@@ -61,8 +61,8 @@ void RWStepFEA_RWElementGeometricRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWElementGeometricRelationship::WriteStep(
-  StepData_StepWriter&                                SW,
-  const Handle(StepFEA_ElementGeometricRelationship)& ent) const
+  StepData_StepWriter&                                     SW,
+  const occ::handle<StepFEA_ElementGeometricRelationship>& ent) const
 {
 
   // Own fields of ElementGeometricRelationship
@@ -77,8 +77,8 @@ void RWStepFEA_RWElementGeometricRelationship::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWElementGeometricRelationship::Share(
-  const Handle(StepFEA_ElementGeometricRelationship)& ent,
-  Interface_EntityIterator&                           iter) const
+  const occ::handle<StepFEA_ElementGeometricRelationship>& ent,
+  Interface_EntityIterator&                                iter) const
 {
 
   // Own fields of ElementGeometricRelationship

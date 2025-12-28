@@ -38,22 +38,19 @@ public:
 
   //! Reads FeaSurfaceSectionGeometricRelationship
   Standard_HIDDEN void ReadStep(
-    const Handle(StepData_StepReaderData)&                        data,
-    const Standard_Integer                                        num,
-    Handle(Interface_Check)&                                      ach,
-    const Handle(StepFEA_FeaSurfaceSectionGeometricRelationship)& ent) const;
+    const occ::handle<StepData_StepReaderData>&                        data,
+    const int                                                          num,
+    occ::handle<Interface_Check>&                                      ach,
+    const occ::handle<StepFEA_FeaSurfaceSectionGeometricRelationship>& ent) const;
 
   //! Writes FeaSurfaceSectionGeometricRelationship
   Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                          SW,
-    const Handle(StepFEA_FeaSurfaceSectionGeometricRelationship)& ent) const;
+    StepData_StepWriter&                                               SW,
+    const occ::handle<StepFEA_FeaSurfaceSectionGeometricRelationship>& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepFEA_FeaSurfaceSectionGeometricRelationship)& ent,
+  Standard_HIDDEN void Share(const occ::handle<StepFEA_FeaSurfaceSectionGeometricRelationship>& ent,
                              Interface_EntityIterator& iter) const;
-
-protected:
-private:
 };
 
 #endif // _RWStepFEA_RWFeaSurfaceSectionGeometricRelationship_HeaderFile

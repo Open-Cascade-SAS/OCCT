@@ -28,33 +28,33 @@ BRepBlend_Extremity::BRepBlend_Extremity()
       u(0.0),
       v(0.0),
       tol(0.0),
-      isvtx(Standard_False),
-      hastang(Standard_False)
+      isvtx(false),
+      hastang(false)
 {
 }
 
-BRepBlend_Extremity::BRepBlend_Extremity(const gp_Pnt&       P,
-                                         const Standard_Real U,
-                                         const Standard_Real V,
-                                         const Standard_Real Param,
-                                         const Standard_Real Tol)
+BRepBlend_Extremity::BRepBlend_Extremity(const gp_Pnt& P,
+                                         const double  U,
+                                         const double  V,
+                                         const double  Param,
+                                         const double  Tol)
     : pt(P),
       tang(gp_Vec(0, 0, 0)),
       param(Param),
       u(U),
       v(V),
       tol(Tol),
-      isvtx(Standard_False),
-      hastang(Standard_False)
+      isvtx(false),
+      hastang(false)
 {
 }
 
-BRepBlend_Extremity::BRepBlend_Extremity(const gp_Pnt&                    P,
-                                         const Standard_Real              U,
-                                         const Standard_Real              V,
-                                         const Standard_Real              Param,
-                                         const Standard_Real              Tol,
-                                         const Handle(Adaptor3d_HVertex)& Vtx)
+BRepBlend_Extremity::BRepBlend_Extremity(const gp_Pnt&                         P,
+                                         const double                          U,
+                                         const double                          V,
+                                         const double                          Param,
+                                         const double                          Tol,
+                                         const occ::handle<Adaptor3d_HVertex>& Vtx)
     : vtx(Vtx),
       pt(P),
       tang(gp_Vec(0, 0, 0)),
@@ -62,81 +62,81 @@ BRepBlend_Extremity::BRepBlend_Extremity(const gp_Pnt&                    P,
       u(U),
       v(V),
       tol(Tol),
-      isvtx(Standard_True),
-      hastang(Standard_False)
+      isvtx(true),
+      hastang(false)
 {
 }
 
-BRepBlend_Extremity::BRepBlend_Extremity(const gp_Pnt&       P,
-                                         const Standard_Real W,
-                                         const Standard_Real Param,
-                                         const Standard_Real Tol)
+BRepBlend_Extremity::BRepBlend_Extremity(const gp_Pnt& P,
+                                         const double  W,
+                                         const double  Param,
+                                         const double  Tol)
     : pt(P),
       tang(gp_Vec(0, 0, 0)),
       param(Param),
       u(W),
       v(0.0),
       tol(Tol),
-      isvtx(Standard_False),
-      hastang(Standard_False)
+      isvtx(false),
+      hastang(false)
 {
 }
 
-void BRepBlend_Extremity::SetValue(const gp_Pnt&       P,
-                                   const Standard_Real U,
-                                   const Standard_Real V,
-                                   const Standard_Real Param,
-                                   const Standard_Real Tol)
+void BRepBlend_Extremity::SetValue(const gp_Pnt& P,
+                                   const double  U,
+                                   const double  V,
+                                   const double  Param,
+                                   const double  Tol)
 {
   pt    = P;
   u     = U;
   v     = V;
   param = Param;
   tol   = Tol;
-  isvtx = Standard_False;
+  isvtx = false;
   seqpt.Clear();
 }
 
-void BRepBlend_Extremity::SetValue(const gp_Pnt&                    P,
-                                   const Standard_Real              U,
-                                   const Standard_Real              V,
-                                   const Standard_Real              Param,
-                                   const Standard_Real              Tol,
-                                   const Handle(Adaptor3d_HVertex)& Vtx)
+void BRepBlend_Extremity::SetValue(const gp_Pnt&                         P,
+                                   const double                          U,
+                                   const double                          V,
+                                   const double                          Param,
+                                   const double                          Tol,
+                                   const occ::handle<Adaptor3d_HVertex>& Vtx)
 {
   pt    = P;
   u     = U;
   v     = V;
   param = Param;
   tol   = Tol;
-  isvtx = Standard_True;
+  isvtx = true;
   vtx   = Vtx;
   seqpt.Clear();
 }
 
-void BRepBlend_Extremity::SetValue(const gp_Pnt&       P,
-                                   const Standard_Real W,
-                                   const Standard_Real Param,
-                                   const Standard_Real Tol)
+void BRepBlend_Extremity::SetValue(const gp_Pnt& P,
+                                   const double  W,
+                                   const double  Param,
+                                   const double  Tol)
 {
   pt    = P;
   u     = W;
   param = Param;
   tol   = Tol;
-  isvtx = Standard_False;
+  isvtx = false;
   seqpt.Clear();
 }
 
-void BRepBlend_Extremity::SetVertex(const Handle(Adaptor3d_HVertex)& V)
+void BRepBlend_Extremity::SetVertex(const occ::handle<Adaptor3d_HVertex>& V)
 {
-  isvtx = Standard_True;
+  isvtx = true;
   vtx   = V;
 }
 
-void BRepBlend_Extremity::AddArc(const Handle(Adaptor2d_Curve2d)& A,
-                                 const Standard_Real              Param,
-                                 const IntSurf_Transition&        TLine,
-                                 const IntSurf_Transition&        TArc)
+void BRepBlend_Extremity::AddArc(const occ::handle<Adaptor2d_Curve2d>& A,
+                                 const double                          Param,
+                                 const IntSurf_Transition&             TLine,
+                                 const IntSurf_Transition&             TArc)
 {
   seqpt.Append(BRepBlend_PointOnRst(A, Param, TLine, TArc));
 }

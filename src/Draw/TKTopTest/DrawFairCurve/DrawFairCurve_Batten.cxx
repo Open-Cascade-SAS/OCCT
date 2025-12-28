@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawFairCurve_Batten, DrawTrSurf_BSplineCurve2d)
 
-DrawFairCurve_Batten::DrawFairCurve_Batten(const Standard_Address TheBatten)
+DrawFairCurve_Batten::DrawFairCurve_Batten(void* const TheBatten)
     : DrawTrSurf_BSplineCurve2d(((FairCurve_Batten*)TheBatten)->Curve()),
       MyBatten(TheBatten)
 
@@ -39,7 +39,7 @@ void DrawFairCurve_Batten::Compute()
   curv = ((FairCurve_Batten*)MyBatten)->Curve();
 }
 
-void DrawFairCurve_Batten::SetPoint(const Standard_Integer Side, const gp_Pnt2d& Point)
+void DrawFairCurve_Batten::SetPoint(const int Side, const gp_Pnt2d& Point)
 {
   if (Side == 1)
   {
@@ -52,7 +52,7 @@ void DrawFairCurve_Batten::SetPoint(const Standard_Integer Side, const gp_Pnt2d&
   Compute();
 }
 
-void DrawFairCurve_Batten::SetAngle(const Standard_Integer Side, const Standard_Real Angle)
+void DrawFairCurve_Batten::SetAngle(const int Side, const double Angle)
 {
   if (Side == 1)
   {
@@ -73,26 +73,26 @@ void DrawFairCurve_Batten::SetAngle(const Standard_Integer Side, const Standard_
   Compute();
 }
 
-void DrawFairCurve_Batten::SetSliding(const Standard_Real Length)
+void DrawFairCurve_Batten::SetSliding(const double Length)
 {
-  ((FairCurve_Batten*)MyBatten)->SetFreeSliding(Standard_False);
+  ((FairCurve_Batten*)MyBatten)->SetFreeSliding(false);
   ((FairCurve_Batten*)MyBatten)->SetSlidingFactor(Length);
   Compute();
 }
 
-void DrawFairCurve_Batten::SetHeight(const Standard_Real Height)
+void DrawFairCurve_Batten::SetHeight(const double Height)
 {
   ((FairCurve_Batten*)MyBatten)->SetHeight(Height);
   Compute();
 }
 
-void DrawFairCurve_Batten::SetSlope(const Standard_Real Slope)
+void DrawFairCurve_Batten::SetSlope(const double Slope)
 {
   ((FairCurve_Batten*)MyBatten)->SetSlope(Slope);
   Compute();
 }
 
-Standard_Real DrawFairCurve_Batten::GetAngle(const Standard_Integer Side) const
+double DrawFairCurve_Batten::GetAngle(const int Side) const
 {
   if (Side == 1)
     return ((FairCurve_Batten*)MyBatten)->GetAngle1();
@@ -100,18 +100,18 @@ Standard_Real DrawFairCurve_Batten::GetAngle(const Standard_Integer Side) const
     return ((FairCurve_Batten*)MyBatten)->GetAngle2();
 }
 
-Standard_Real DrawFairCurve_Batten::GetSliding() const
+double DrawFairCurve_Batten::GetSliding() const
 {
   return ((FairCurve_Batten*)MyBatten)->GetSlidingFactor();
 }
 
 void DrawFairCurve_Batten::FreeSliding()
 {
-  ((FairCurve_Batten*)MyBatten)->SetFreeSliding(Standard_True);
+  ((FairCurve_Batten*)MyBatten)->SetFreeSliding(true);
   Compute();
 }
 
-void DrawFairCurve_Batten::FreeAngle(const Standard_Integer Side)
+void DrawFairCurve_Batten::FreeAngle(const int Side)
 {
   if (Side == 1)
     ((FairCurve_Batten*)MyBatten)->SetConstraintOrder1(0);

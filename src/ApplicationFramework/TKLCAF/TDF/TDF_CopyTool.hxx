@@ -20,10 +20,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TDF_LabelDataMap.hxx>
-#include <TDF_AttributeDataMap.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_AttributeMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
 class TDF_DataSet;
 class TDF_RelocationTable;
 class TDF_IDFilter;
@@ -72,16 +72,16 @@ public:
   //! Copy <aSourceDataSet> with using and updating
   //! <aRelocationTable>. This method ignores target
   //! attributes privilege over source ones.
-  Standard_EXPORT static void Copy(const Handle(TDF_DataSet)&         aSourceDataSet,
-                                   const Handle(TDF_RelocationTable)& aRelocationTable);
+  Standard_EXPORT static void Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
+                                   const occ::handle<TDF_RelocationTable>& aRelocationTable);
 
   //! Copy <aSourceDataSet> using and updating
   //! <aRelocationTable>. Use <aPrivilegeFilter> to give
   //! a list of IDs for which the target attribute
   //! prevails over the source one.
-  Standard_EXPORT static void Copy(const Handle(TDF_DataSet)&         aSourceDataSet,
-                                   const Handle(TDF_RelocationTable)& aRelocationTable,
-                                   const TDF_IDFilter&                aPrivilegeFilter);
+  Standard_EXPORT static void Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
+                                   const occ::handle<TDF_RelocationTable>& aRelocationTable,
+                                   const TDF_IDFilter&                     aPrivilegeFilter);
 
   //! Copy <aSourceDataSet> using and updating
   //! <aRelocationTable>. Use <aPrivilegeFilter> to give
@@ -94,27 +94,28 @@ public:
   //! NB: <aRefFilter> is used only if <setSelfContained>
   //! is true.
   //! Internal root label copy recursive method.
-  Standard_EXPORT static void Copy(const Handle(TDF_DataSet)&         aSourceDataSet,
-                                   const Handle(TDF_RelocationTable)& aRelocationTable,
-                                   const TDF_IDFilter&                aPrivilegeFilter,
-                                   const TDF_IDFilter&                aRefFilter,
-                                   const Standard_Boolean             setSelfContained);
+  Standard_EXPORT static void Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
+                                   const occ::handle<TDF_RelocationTable>& aRelocationTable,
+                                   const TDF_IDFilter&                     aPrivilegeFilter,
+                                   const TDF_IDFilter&                     aRefFilter,
+                                   const bool                              setSelfContained);
 
-protected:
 private:
   //! Internal root label copy recursive method.
-  Standard_EXPORT static void CopyLabels(const TDF_Label&        aSLabel,
-                                         TDF_Label&              aTargetLabel,
-                                         TDF_LabelDataMap&       aLabMap,
-                                         TDF_AttributeDataMap&   aAttMap,
-                                         const TDF_LabelMap&     aSrcLabelMap,
-                                         const TDF_AttributeMap& aSrcAttributeMap);
+  Standard_EXPORT static void CopyLabels(
+    const TDF_Label&                                                             aSLabel,
+    TDF_Label&                                                                   aTargetLabel,
+    NCollection_DataMap<TDF_Label, TDF_Label>&                                   aLabMap,
+    NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>& aAttMap,
+    const NCollection_Map<TDF_Label>&                                            aSrcLabelMap,
+    const NCollection_Map<occ::handle<TDF_Attribute>>&                           aSrcAttributeMap);
 
   //! Internal attribute copy method.
-  Standard_EXPORT static void CopyAttributes(const TDF_Label&        aSLabel,
-                                             TDF_Label&              aTargetLabel,
-                                             TDF_AttributeDataMap&   aAttMap,
-                                             const TDF_AttributeMap& aSrcAttributeMap);
+  Standard_EXPORT static void CopyAttributes(
+    const TDF_Label&                                                             aSLabel,
+    TDF_Label&                                                                   aTargetLabel,
+    NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>& aAttMap,
+    const NCollection_Map<occ::handle<TDF_Attribute>>&                           aSrcAttributeMap);
 };
 
 #endif // _TDF_CopyTool_HeaderFile

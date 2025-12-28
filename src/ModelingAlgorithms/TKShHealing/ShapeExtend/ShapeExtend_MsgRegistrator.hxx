@@ -19,16 +19,17 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <ShapeExtend_DataMapOfTransientListOfMsg.hxx>
-#include <ShapeExtend_DataMapOfShapeListOfMsg.hxx>
+#include <Standard_Transient.hxx>
+#include <Message_Msg.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <ShapeExtend_BasicMsgRegistrator.hxx>
 #include <Message_Gravity.hxx>
 class Standard_Transient;
 class Message_Msg;
 class TopoDS_Shape;
-
-class ShapeExtend_MsgRegistrator;
-DEFINE_STANDARD_HANDLE(ShapeExtend_MsgRegistrator, ShapeExtend_BasicMsgRegistrator)
 
 //! Attaches messages to the objects (generic Transient or shape).
 //! The objects of this class are transmitted to the Shape Healing
@@ -48,29 +49,32 @@ public:
   //! Sends a message to be attached to the object.
   //! If the object is in the map then the message is added to the
   //! list, otherwise the object is firstly added to the map.
-  Standard_EXPORT virtual void Send(const Handle(Standard_Transient)& object,
-                                    const Message_Msg&                message,
-                                    const Message_Gravity             gravity) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Send(const occ::handle<Standard_Transient>& object,
+                                    const Message_Msg&                     message,
+                                    const Message_Gravity                  gravity) override;
 
   //! Sends a message to be attached to the shape.
   //! If the shape is in the map then the message is added to the
   //! list, otherwise the shape is firstly added to the map.
   Standard_EXPORT virtual void Send(const TopoDS_Shape&   shape,
                                     const Message_Msg&    message,
-                                    const Message_Gravity gravity) Standard_OVERRIDE;
+                                    const Message_Gravity gravity) override;
 
   //! Returns a Map of objects and message list
-  const ShapeExtend_DataMapOfTransientListOfMsg& MapTransient() const;
+  const NCollection_DataMap<occ::handle<Standard_Transient>, NCollection_List<Message_Msg>>&
+    MapTransient() const;
 
   //! Returns a Map of shapes and message list
-  const ShapeExtend_DataMapOfShapeListOfMsg& MapShape() const;
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>&
+    MapShape() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeExtend_MsgRegistrator, ShapeExtend_BasicMsgRegistrator)
 
-protected:
 private:
-  ShapeExtend_DataMapOfTransientListOfMsg myMapTransient;
-  ShapeExtend_DataMapOfShapeListOfMsg     myMapShape;
+  NCollection_DataMap<occ::handle<Standard_Transient>, NCollection_List<Message_Msg>>
+    myMapTransient;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>
+    myMapShape;
 };
 
 #include <ShapeExtend_MsgRegistrator.lxx>

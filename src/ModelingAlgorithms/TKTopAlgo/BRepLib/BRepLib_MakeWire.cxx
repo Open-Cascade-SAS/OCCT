@@ -26,7 +26,9 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 //=================================================================================================
 
@@ -105,7 +107,7 @@ void BRepLib_MakeWire::Add(const TopoDS_Wire& W)
 
 void BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 {
-  Add(E, Standard_True);
+  Add(E, true);
 }
 
 //=======================================================================
@@ -116,21 +118,21 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 //                  TopExp::Vertices is used to reduce the ambiguity.
 // IsCheckGeometryProximity flag : If true => check for the geometry proximity of vertices
 //=======================================================================
-void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometryProximity)
+void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
 {
 
-  Standard_Boolean forward = Standard_False;
+  bool forward = false;
   // to tell if it has been decided to add forward
-  Standard_Boolean reverse = Standard_False;
+  bool reverse = false;
   // to tell if it has been decided to add reversed
-  Standard_Boolean init = Standard_False;
+  bool init = false;
   // To know if it is necessary to calculate VL, VF
   BRep_Builder    B;
   TopoDS_Iterator it;
 
   if (myEdge.IsNull())
   {
-    init = Standard_True;
+    init = true;
     // first edge, create the wire
     B.MakeWire(TopoDS::Wire(myShape));
 
@@ -151,8 +153,8 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
 
     // test the vertices of the edge
 
-    Standard_Boolean connected = Standard_False;
-    Standard_Boolean copyedge  = Standard_False;
+    bool connected = false;
+    bool copyedge  = false;
 
     if (myError != BRepLib_NonManifoldWire)
     {
@@ -168,7 +170,7 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
       // if the vertex is in the wire, ok for the connection
       if (myVertices.Contains(VE))
       {
-        connected = Standard_True;
+        connected = true;
         myVertex  = VE;
         if (myError != BRepLib_NonManifoldWire)
         {
@@ -184,16 +186,16 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
             if (VF.IsSame(VE))
             {
               if (VE.Orientation() == TopAbs_FORWARD)
-                reverse = Standard_True;
+                reverse = true;
               else
-                forward = Standard_True;
+                forward = true;
             }
             else if (VL.IsSame(VE))
             {
               if (VE.Orientation() == TopAbs_REVERSED)
-                reverse = Standard_True;
+                reverse = true;
               else
-                forward = Standard_True;
+                forward = true;
             }
             else
               myError = BRepLib_NonManifoldWire;
@@ -205,15 +207,15 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
         // search if there is a similar vertex in the edge
         gp_Pnt PE = BRep_Tool::Pnt(VE);
 
-        for (Standard_Integer i = 1; i <= myVertices.Extent(); i++)
+        for (int i = 1; i <= myVertices.Extent(); i++)
         {
           const TopoDS_Vertex& VW = TopoDS::Vertex(myVertices.FindKey(i));
           gp_Pnt               PW = BRep_Tool::Pnt(VW);
-          Standard_Real        l  = PE.Distance(PW);
+          double               l  = PE.Distance(PW);
 
           if ((l < BRep_Tool::Tolerance(VE)) || (l < BRep_Tool::Tolerance(VW)))
           {
-            copyedge = Standard_True;
+            copyedge = true;
             if (myError != BRepLib_NonManifoldWire)
             {
               // is it always so ?
@@ -228,16 +230,16 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
                 if (VF.IsSame(VW))
                 {
                   if (VE.Orientation() == TopAbs_FORWARD)
-                    reverse = Standard_True;
+                    reverse = true;
                   else
-                    forward = Standard_True;
+                    forward = true;
                 }
                 else if (VL.IsSame(VW))
                 {
                   if (VE.Orientation() == TopAbs_REVERSED)
-                    reverse = Standard_True;
+                    reverse = true;
                   else
-                    forward = Standard_True;
+                    forward = true;
                 }
                 else
                   myError = BRepLib_NonManifoldWire;
@@ -248,7 +250,7 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
         }
         if (copyedge)
         {
-          connected = Standard_True;
+          connected = true;
         }
       }
     }
@@ -279,19 +281,19 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
           const TopoDS_Vertex& VE = TopoDS::Vertex(it.Value());
           gp_Pnt               PE = BRep_Tool::Pnt(VE);
 
-          Standard_Boolean newvertex = Standard_False;
-          for (Standard_Integer i = 1; i <= myVertices.Extent(); i++)
+          bool newvertex = false;
+          for (int i = 1; i <= myVertices.Extent(); i++)
           {
             const TopoDS_Vertex& VW = TopoDS::Vertex(myVertices.FindKey(i));
             gp_Pnt               PW = BRep_Tool::Pnt(VW);
-            Standard_Real        l  = PE.Distance(PW), tolE, tolW;
+            double               l  = PE.Distance(PW), tolE, tolW;
             tolW                    = BRep_Tool::Tolerance(VW);
             tolE                    = BRep_Tool::Tolerance(VE);
 
             if ((l < tolE) || (l < tolW))
             {
 
-              Standard_Real maxtol = .5 * (tolW + tolE + l), cW, cE;
+              double maxtol = .5 * (tolW + tolE + l), cW, cE;
               if (maxtol > tolW && maxtol > tolE)
               {
                 cW = (maxtol - tolE) / l;
@@ -316,7 +318,7 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
 
               B.UpdateVertex(VW, PC, maxtol);
 
-              newvertex = Standard_True;
+              newvertex = true;
               myVertex  = VW;
               myVertex.Orientation(VE.Orientation());
               B.Add(myEdge, myVertex);
@@ -345,7 +347,7 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
 
   // add myEdge to myShape
   B.Add(myShape, myEdge);
-  myShape.Closed(Standard_False);
+  myShape.Closed(false);
 
   // Initialize VF, VL
   if (init)
@@ -398,7 +400,7 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometr
   }
   // Test myShape is closed
   if (!VF.IsNull() && !VL.IsNull() && VF.IsSame(VL))
-    myShape.Closed(Standard_True);
+    myShape.Closed(true);
 
   myError = BRepLib_WireDone;
   Done();

@@ -49,11 +49,10 @@ public:
   Standard_EXPORT static void Init();
 
   //! Encodes status (enumeration) to a bit flag
-  Standard_EXPORT static Standard_Integer EncodeStatus(const ShapeExtend_Status status);
+  Standard_EXPORT static int EncodeStatus(const ShapeExtend_Status status);
 
   //! Tells if a bit flag contains bit corresponding to enumerated status
-  Standard_EXPORT static Standard_Boolean DecodeStatus(const Standard_Integer   flag,
-                                                       const ShapeExtend_Status status);
+  Standard_EXPORT static bool DecodeStatus(const int flag, const ShapeExtend_Status status);
 };
 
 #endif // _ShapeExtend_HeaderFile

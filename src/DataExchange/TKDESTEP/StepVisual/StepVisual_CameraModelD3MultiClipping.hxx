@@ -20,12 +20,12 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_CameraModelD3.hxx>
-#include <StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect.hxx>
+#include <StepVisual_CameraModelD3MultiClippingInterectionSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class StepGeom_Axis2Placement3d;
 class StepVisual_ViewVolume;
 class TCollection_HAsciiString;
-
-DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClipping, StepVisual_CameraModelD3)
 
 class StepVisual_CameraModelD3MultiClipping : public StepVisual_CameraModelD3
 {
@@ -34,25 +34,28 @@ public:
   Standard_EXPORT StepVisual_CameraModelD3MultiClipping();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&  theName,
-    const Handle(StepGeom_Axis2Placement3d)& theViewReferenceSystem,
-    const Handle(StepVisual_ViewVolume)&     thePerspectiveOfVolume,
-    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)&
+    const occ::handle<TCollection_HAsciiString>&  theName,
+    const occ::handle<StepGeom_Axis2Placement3d>& theViewReferenceSystem,
+    const occ::handle<StepVisual_ViewVolume>&     thePerspectiveOfVolume,
+    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>&
       theShapeClipping);
 
   void SetShapeClipping(
-    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
+    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>&
+      theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
 
-  const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) ShapeClipping()
+  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>
+    ShapeClipping()
   {
     return myShapeClipping;
   }
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClipping, StepVisual_CameraModelD3)
 
 private:
-  Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) myShapeClipping;
+  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>
+    myShapeClipping;
 };
 #endif // _StepVisual_CameraModelD3MultiClipping_HeaderFile

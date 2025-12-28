@@ -37,20 +37,17 @@ public:
   Standard_HIDDEN RWStepBasic_RWConversionBasedUnitAndLengthUnit();
 
   Standard_HIDDEN void ReadStep(
-    const Handle(StepData_StepReaderData)&                    data,
-    const Standard_Integer                                    num,
-    Handle(Interface_Check)&                                  ach,
-    const Handle(StepBasic_ConversionBasedUnitAndLengthUnit)& ent) const;
+    const occ::handle<StepData_StepReaderData>&                    data,
+    const int                                                      num,
+    occ::handle<Interface_Check>&                                  ach,
+    const occ::handle<StepBasic_ConversionBasedUnitAndLengthUnit>& ent) const;
 
   Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                      SW,
-    const Handle(StepBasic_ConversionBasedUnitAndLengthUnit)& ent) const;
+    StepData_StepWriter&                                           SW,
+    const occ::handle<StepBasic_ConversionBasedUnitAndLengthUnit>& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepBasic_ConversionBasedUnitAndLengthUnit)& ent,
-                             Interface_EntityIterator&                                 iter) const;
-
-protected:
-private:
+  Standard_HIDDEN void Share(const occ::handle<StepBasic_ConversionBasedUnitAndLengthUnit>& ent,
+                             Interface_EntityIterator& iter) const;
 };
 
 #endif // _RWStepBasic_RWConversionBasedUnitAndLengthUnit_HeaderFile

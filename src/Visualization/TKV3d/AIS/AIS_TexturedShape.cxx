@@ -42,12 +42,12 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_TexturedShape, AIS_Shape)
 AIS_TexturedShape::AIS_TexturedShape(const TopoDS_Shape& theShape)
     : AIS_Shape(theShape),
       myPredefTexture(Graphic3d_NameOfTexture2D(0)),
-      myToMapTexture(Standard_True),
-      myModulate(Standard_True),
-      myIsCustomOrigin(Standard_True),
-      myToRepeat(Standard_True),
-      myToScale(Standard_True),
-      myToShowTriangles(Standard_False)
+      myToMapTexture(true),
+      myModulate(true),
+      myIsCustomOrigin(true),
+      myToRepeat(true),
+      myToScale(true),
+      myToShowTriangles(false)
 {
 }
 
@@ -59,7 +59,7 @@ void AIS_TexturedShape::SetTextureFileName(const TCollection_AsciiString& theTex
 
   if (theTextureFileName.IsIntegerValue())
   {
-    const Standard_Integer aValue = theTextureFileName.IntegerValue();
+    const int aValue = theTextureFileName.IntegerValue();
     if (aValue < Graphic3d_Texture2D::NumberOfTextures() && aValue >= 0)
     {
       myPredefTexture = Graphic3d_NameOfTexture2D(aValue);
@@ -81,7 +81,7 @@ void AIS_TexturedShape::SetTextureFileName(const TCollection_AsciiString& theTex
 
 //=================================================================================================
 
-void AIS_TexturedShape::SetTexturePixMap(const Handle(Image_PixMap)& theTexturePixMap)
+void AIS_TexturedShape::SetTexturePixMap(const occ::handle<Image_PixMap>& theTexturePixMap)
 {
   myTextureFile   = "";
   myPredefTexture = Graphic3d_NOT_2D_UNKNOWN;
@@ -90,9 +90,9 @@ void AIS_TexturedShape::SetTexturePixMap(const Handle(Image_PixMap)& theTextureP
 
 //=================================================================================================
 
-void AIS_TexturedShape::SetTextureRepeat(const Standard_Boolean theToRepeat,
-                                         const Standard_Real    theURepeat,
-                                         const Standard_Real    theVRepeat)
+void AIS_TexturedShape::SetTextureRepeat(const bool   theToRepeat,
+                                         const double theURepeat,
+                                         const double theVRepeat)
 {
   myToRepeat = theToRepeat;
   myUVRepeat.SetCoord(theURepeat, theVRepeat);
@@ -102,21 +102,21 @@ void AIS_TexturedShape::SetTextureRepeat(const Standard_Boolean theToRepeat,
 
 void AIS_TexturedShape::SetTextureMapOn()
 {
-  myToMapTexture = Standard_True;
+  myToMapTexture = true;
 }
 
 //=================================================================================================
 
 void AIS_TexturedShape::SetTextureMapOff()
 {
-  myToMapTexture = Standard_False;
+  myToMapTexture = false;
 }
 
 //=================================================================================================
 
-void AIS_TexturedShape::SetTextureOrigin(const Standard_Boolean theToSetTextureOrigin,
-                                         const Standard_Real    theUOrigin,
-                                         const Standard_Real    theVOrigin)
+void AIS_TexturedShape::SetTextureOrigin(const bool   theToSetTextureOrigin,
+                                         const double theUOrigin,
+                                         const double theVOrigin)
 {
   myIsCustomOrigin = theToSetTextureOrigin;
   myUVOrigin.SetCoord(theUOrigin, theVOrigin);
@@ -124,9 +124,9 @@ void AIS_TexturedShape::SetTextureOrigin(const Standard_Boolean theToSetTextureO
 
 //=================================================================================================
 
-void AIS_TexturedShape::SetTextureScale(const Standard_Boolean theToSetTextureScale,
-                                        const Standard_Real    theScaleU,
-                                        const Standard_Real    theScaleV)
+void AIS_TexturedShape::SetTextureScale(const bool   theToSetTextureScale,
+                                        const double theScaleU,
+                                        const double theScaleV)
 {
   myToScale = theToSetTextureScale;
   myUVScale.SetCoord(theScaleU, theScaleV);
@@ -134,7 +134,7 @@ void AIS_TexturedShape::SetTextureScale(const Standard_Boolean theToSetTextureSc
 
 //=================================================================================================
 
-void AIS_TexturedShape::ShowTriangles(const Standard_Boolean theToShowTriangles)
+void AIS_TexturedShape::ShowTriangles(const bool theToShowTriangles)
 {
   myToShowTriangles = theToShowTriangles;
 }
@@ -143,14 +143,14 @@ void AIS_TexturedShape::ShowTriangles(const Standard_Boolean theToShowTriangles)
 
 void AIS_TexturedShape::EnableTextureModulate()
 {
-  myModulate = Standard_True;
+  myModulate = true;
 }
 
 //=================================================================================================
 
 void AIS_TexturedShape::DisableTextureModulate()
 {
-  myModulate = Standard_False;
+  myModulate = false;
 }
 
 //=================================================================================================
@@ -159,7 +159,9 @@ void AIS_TexturedShape::SetColor(const Quantity_Color& theColor)
 {
   AIS_Shape::SetColor(theColor);
 
-  for (PrsMgr_Presentations::Iterator aPrsIter(Presentations()); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(Presentations());
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     if (aPrsIter.Value()->Mode() == 3)
     {
@@ -180,7 +182,9 @@ void AIS_TexturedShape::UnsetColor()
 void AIS_TexturedShape::SetMaterial(const Graphic3d_MaterialAspect& theMat)
 {
   AIS_Shape::SetMaterial(theMat);
-  for (PrsMgr_Presentations::Iterator aPrsIter(Presentations()); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(Presentations());
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     if (aPrsIter.Value()->Mode() == 3)
     {
@@ -194,7 +198,9 @@ void AIS_TexturedShape::SetMaterial(const Graphic3d_MaterialAspect& theMat)
 void AIS_TexturedShape::UnsetMaterial()
 {
   AIS_Shape::UnsetMaterial();
-  for (PrsMgr_Presentations::Iterator aPrsIter(Presentations()); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(Presentations());
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     if (aPrsIter.Value()->Mode() == 3)
     {
@@ -212,18 +218,18 @@ void AIS_TexturedShape::UpdateAttributes()
 
 //=================================================================================================
 
-void AIS_TexturedShape::updateAttributes(const Handle(Prs3d_Presentation)& thePrs)
+void AIS_TexturedShape::updateAttributes(const occ::handle<Prs3d_Presentation>& thePrs)
 {
   myAspect = new Graphic3d_AspectFillArea3d(*myDrawer->ShadingAspect()->Aspect());
   if (HasPolygonOffsets())
   {
-    Standard_Integer   aMode;
-    Standard_ShortReal aFactor, aUnits;
+    int   aMode;
+    float aFactor, aUnits;
     PolygonOffsets(aMode, aFactor, aUnits);
     myAspect->SetPolygonOffsets(aMode, aFactor, aUnits);
   }
 
-  Standard_Boolean hasTexture = Standard_False;
+  bool hasTexture = false;
   if (myToMapTexture)
   {
     TCollection_AsciiString aTextureDesc;
@@ -254,7 +260,7 @@ void AIS_TexturedShape::updateAttributes(const Handle(Prs3d_Presentation)& thePr
 
     if (myTexture->IsDone())
     {
-      hasTexture = Standard_True;
+      hasTexture = true;
     }
     else
     {
@@ -283,19 +289,20 @@ void AIS_TexturedShape::updateAttributes(const Handle(Prs3d_Presentation)& thePr
   }
 
   // Go through all groups to change fill aspect for all primitives
-  for (Graphic3d_SequenceOfGroup::Iterator aGroupIt(thePrs->Groups()); aGroupIt.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIt(thePrs->Groups());
+       aGroupIt.More();
        aGroupIt.Next())
   {
-    const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
+    const occ::handle<Graphic3d_Group>& aGroup = aGroupIt.Value();
     aGroup->SetGroupPrimitivesAspect(myAspect);
   }
 }
 
 //=================================================================================================
 
-void AIS_TexturedShape::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                const Handle(Prs3d_Presentation)& thePrs,
-                                const Standard_Integer            theMode)
+void AIS_TexturedShape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                const occ::handle<Prs3d_Presentation>& thePrs,
+                                const int                              theMode)
 {
   if (myshape.IsNull() || (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0))
   {
@@ -305,28 +312,28 @@ void AIS_TexturedShape::Compute(const Handle(PrsMgr_PresentationManager)&,
   if (myshape.ShapeType() >= TopAbs_WIRE && myshape.ShapeType() <= TopAbs_VERTEX)
   {
     // TopAbs_WIRE -> 7, TopAbs_EDGE -> 8, TopAbs_VERTEX -> 9 (Graphic3d_DisplayPriority_Highlight)
-    const Standard_Integer aPrior = (Standard_Integer)Graphic3d_DisplayPriority_Above1
-                                    + (Standard_Integer)myshape.ShapeType() - TopAbs_WIRE;
+    const int aPrior =
+      (int)Graphic3d_DisplayPriority_Above1 + (int)myshape.ShapeType() - TopAbs_WIRE;
     thePrs->SetVisual(Graphic3d_TOS_ALL);
     thePrs->SetDisplayPriority((Graphic3d_DisplayPriority)aPrior);
   }
 
   if (IsInfinite())
   {
-    thePrs->SetInfiniteState(Standard_True);
+    thePrs->SetInfiniteState(true);
   }
 
   switch (theMode)
   {
     case AIS_WireFrame: {
-      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(myshape, myDrawer, Standard_True);
+      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(myshape, myDrawer, true);
       StdPrs_WFShape::Add(thePrs, myshape, myDrawer);
       break;
     }
     case AIS_Shaded:
     case 3: // texture mapping on triangulation
     {
-      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(myshape, myDrawer, Standard_True);
+      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(myshape, myDrawer, true);
       if (myshape.ShapeType() > TopAbs_FACE)
       {
         StdPrs_WFShape::Add(thePrs, myshape, myDrawer);
@@ -350,7 +357,7 @@ void AIS_TexturedShape::Compute(const Handle(PrsMgr_PresentationManager)&,
           StdPrs_ShadedShape::Add(thePrs,
                                   myshape,
                                   myDrawer,
-                                  Standard_True,
+                                  true,
                                   myIsCustomOrigin ? myUVOrigin : gp_Pnt2d(0.0, 0.0),
                                   myUVRepeat,
                                   myToScale ? myUVScale : gp_Pnt2d(1.0, 1.0));

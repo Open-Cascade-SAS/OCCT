@@ -22,11 +22,14 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Plate_SequenceOfPinpointConstraint.hxx>
-#include <Plate_SequenceOfLinearXYZConstraint.hxx>
-#include <Plate_SequenceOfLinearScalarConstraint.hxx>
-#include <TColgp_HArray2OfXYZ.hxx>
-#include <TColgp_SequenceOfXY.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Plate_LinearXYZConstraint.hxx>
+#include <Plate_LinearScalarConstraint.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_XY.hxx>
 #include <Message_ProgressScope.hxx>
 
 class Plate_PinpointConstraint;
@@ -76,12 +79,12 @@ public:
 
   Standard_EXPORT void Load(const Plate_FreeGtoCConstraint& FGtoCConst);
 
-  Standard_EXPORT void SolveTI(const Standard_Integer       ord         = 4,
-                               const Standard_Real          anisotropie = 1.0,
+  Standard_EXPORT void SolveTI(const int                    ord         = 4,
+                               const double                 anisotropie = 1.0,
                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! returns True if all has been correctly done.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   Standard_EXPORT void destroy();
 
@@ -93,78 +96,66 @@ public:
 
   Standard_EXPORT gp_XYZ Evaluate(const gp_XY& point2d) const;
 
-  Standard_EXPORT gp_XYZ EvaluateDerivative(const gp_XY&           point2d,
-                                            const Standard_Integer iu,
-                                            const Standard_Integer iv) const;
+  Standard_EXPORT gp_XYZ EvaluateDerivative(const gp_XY& point2d, const int iu, const int iv) const;
 
-  Standard_EXPORT void CoefPol(Handle(TColgp_HArray2OfXYZ)& Coefs) const;
+  Standard_EXPORT void CoefPol(occ::handle<NCollection_HArray2<gp_XYZ>>& Coefs) const;
 
-  Standard_EXPORT void SetPolynomialPartOnly(const Standard_Boolean PPOnly = Standard_True);
+  Standard_EXPORT void SetPolynomialPartOnly(const bool PPOnly = true);
 
-  Standard_EXPORT Standard_Integer Continuity() const;
+  Standard_EXPORT int Continuity() const;
 
-  Standard_EXPORT void UVBox(Standard_Real& UMin,
-                             Standard_Real& UMax,
-                             Standard_Real& VMin,
-                             Standard_Real& VMax) const;
+  Standard_EXPORT void UVBox(double& UMin, double& UMax, double& VMin, double& VMax) const;
 
-  Standard_EXPORT void UVConstraints(TColgp_SequenceOfXY& Seq) const;
+  Standard_EXPORT void UVConstraints(NCollection_Sequence<gp_XY>& Seq) const;
 
-protected:
 private:
-  Standard_EXPORT Standard_Real SolEm(const gp_XY&           point2d,
-                                      const Standard_Integer iu,
-                                      const Standard_Integer iv) const;
+  Standard_EXPORT double SolEm(const gp_XY& point2d, const int iu, const int iv) const;
 
-  Standard_Real Polm(const gp_XY&           point2d,
-                     const Standard_Integer iu,
-                     const Standard_Integer iv,
-                     const Standard_Integer idu,
-                     const Standard_Integer idv) const;
+  double Polm(const gp_XY& point2d, const int iu, const int iv, const int idu, const int idv) const;
 
-  Standard_Integer& Deru(const Standard_Integer index) const;
+  int& Deru(const int index) const;
 
-  Standard_Integer& Derv(const Standard_Integer index) const;
+  int& Derv(const int index) const;
 
-  gp_XYZ& Solution(const Standard_Integer index) const;
+  gp_XYZ& Solution(const int index) const;
 
-  gp_XY& Points(const Standard_Integer index) const;
+  gp_XY& Points(const int index) const;
 
-  Standard_EXPORT void SolveTI1(const Standard_Integer       IterationNumber,
+  Standard_EXPORT void SolveTI1(const int                    IterationNumber,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  Standard_EXPORT void SolveTI2(const Standard_Integer       IterationNumber,
+  Standard_EXPORT void SolveTI2(const int                    IterationNumber,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  Standard_EXPORT void SolveTI3(const Standard_Integer       IterationNumber,
+  Standard_EXPORT void SolveTI3(const int                    IterationNumber,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  Standard_EXPORT void fillXYZmatrix(math_Matrix&           mat,
-                                     const Standard_Integer i0,
-                                     const Standard_Integer j0,
-                                     const Standard_Integer ncc1,
-                                     const Standard_Integer ncc2) const;
+  Standard_EXPORT void fillXYZmatrix(math_Matrix& mat,
+                                     const int    i0,
+                                     const int    j0,
+                                     const int    ncc1,
+                                     const int    ncc2) const;
 
-  Standard_Integer                       order;
-  Standard_Integer                       n_el;
-  Standard_Integer                       n_dim;
-  Standard_Address                       solution;
-  Standard_Address                       points;
-  Standard_Address                       deru;
-  Standard_Address                       derv;
-  Standard_Boolean                       OK;
-  Plate_SequenceOfPinpointConstraint     myConstraints;
-  Plate_SequenceOfLinearXYZConstraint    myLXYZConstraints;
-  Plate_SequenceOfLinearScalarConstraint myLScalarConstraints;
-  Standard_Real                          ddu[10];
-  Standard_Real                          ddv[10];
-  Standard_Integer                       maxConstraintOrder;
-  Standard_Boolean                       PolynomialPartOnly;
-  Standard_Real                          Uold;
-  Standard_Real                          Vold;
-  Standard_Real                          U2;
-  Standard_Real                          R;
-  Standard_Real                          L;
+  int                                                order;
+  int                                                n_el;
+  int                                                n_dim;
+  void*                                              solution;
+  void*                                              points;
+  void*                                              deru;
+  void*                                              derv;
+  bool                                               OK;
+  NCollection_Sequence<Plate_PinpointConstraint>     myConstraints;
+  NCollection_Sequence<Plate_LinearXYZConstraint>    myLXYZConstraints;
+  NCollection_Sequence<Plate_LinearScalarConstraint> myLScalarConstraints;
+  double                                             ddu[10];
+  double                                             ddv[10];
+  int                                                maxConstraintOrder;
+  bool                                               PolynomialPartOnly;
+  double                                             Uold;
+  double                                             Vold;
+  double                                             U2;
+  double                                             R;
+  double                                             L;
 };
 
 #include <Plate_Plate.lxx>

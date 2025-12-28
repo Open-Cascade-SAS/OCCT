@@ -31,10 +31,10 @@ public:
 
 protected:
   //! Returns number of intervals computed using available geometrical parameters.
-  Standard_EXPORT virtual Standard_Integer getUndefinedIntervalNb(
-    const Handle(Adaptor3d_Surface)& theSurface,
-    const Standard_Boolean           isU,
-    const GeomAbs_Shape              theContinuity) const Standard_OVERRIDE;
+  Standard_EXPORT virtual int getUndefinedIntervalNb(
+    const occ::handle<Adaptor3d_Surface>& theSurface,
+    const bool                            isU,
+    const GeomAbs_Shape                   theContinuity) const override;
 };
 
 #endif

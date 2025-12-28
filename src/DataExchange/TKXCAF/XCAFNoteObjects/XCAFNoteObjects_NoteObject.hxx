@@ -30,10 +30,10 @@ public:
   Standard_EXPORT XCAFNoteObjects_NoteObject();
 
   //! Copy constructor.
-  Standard_EXPORT XCAFNoteObjects_NoteObject(const Handle(XCAFNoteObjects_NoteObject)& theObj);
+  Standard_EXPORT XCAFNoteObjects_NoteObject(const occ::handle<XCAFNoteObjects_NoteObject>& theObj);
 
   //! Returns True if plane is specified
-  Standard_Boolean HasPlane() const { return myHasPlane; }
+  bool HasPlane() const { return myHasPlane; }
 
   //! Returns a right-handed coordinate system of the plane
   const gp_Ax2& GetPlane() const { return myPlane; }
@@ -42,7 +42,7 @@ public:
   Standard_EXPORT void SetPlane(const gp_Ax2& thePlane);
 
   //! Returns True if the attachment point on the annotated object is specified
-  Standard_Boolean HasPoint() const { return myHasPnt; }
+  bool HasPoint() const { return myHasPnt; }
 
   //! Returns the attachment point on the annotated object
   const gp_Pnt& GetPoint() const { return myPnt; }
@@ -51,7 +51,7 @@ public:
   Standard_EXPORT void SetPoint(const gp_Pnt& thePnt);
 
   //! Returns True if the text position is specified
-  Standard_Boolean HasPointText() const { return myHasPntTxt; }
+  bool HasPointText() const { return myHasPntTxt; }
 
   //! Returns the text position
   const gp_Pnt& GetPointText() const { return myPntTxt; }
@@ -69,15 +69,13 @@ public:
   Standard_EXPORT void Reset();
 
 private:
-  gp_Ax2           myPlane;
-  gp_Pnt           myPnt;
-  gp_Pnt           myPntTxt;
-  TopoDS_Shape     myPresentation;
-  Standard_Boolean myHasPlane;
-  Standard_Boolean myHasPnt;
-  Standard_Boolean myHasPntTxt;
+  gp_Ax2       myPlane;
+  gp_Pnt       myPnt;
+  gp_Pnt       myPntTxt;
+  TopoDS_Shape myPresentation;
+  bool         myHasPlane;
+  bool         myHasPnt;
+  bool         myHasPntTxt;
 };
-
-DEFINE_STANDARD_HANDLE(XCAFNoteObjects_NoteObject, Standard_Transient)
 
 #endif // _XCAFNoteObjects_NoteObject_HeaderFile

@@ -26,14 +26,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_UniformRectGrid, IGESData_IGESEntity)
 
 IGESGraph_UniformRectGrid::IGESGraph_UniformRectGrid() {}
 
-void IGESGraph_UniformRectGrid::Init(const Standard_Integer nbProps,
-                                     const Standard_Integer finite,
-                                     const Standard_Integer line,
-                                     const Standard_Integer weighted,
-                                     const gp_XY&           aGridPoint,
-                                     const gp_XY&           aGridSpacing,
-                                     const Standard_Integer pointsX,
-                                     const Standard_Integer pointsY)
+void IGESGraph_UniformRectGrid::Init(const int    nbProps,
+                                     const int    finite,
+                                     const int    line,
+                                     const int    weighted,
+                                     const gp_XY& aGridPoint,
+                                     const gp_XY& aGridSpacing,
+                                     const int    pointsX,
+                                     const int    pointsY)
 {
   theNbPropertyValues = nbProps;
   isItFinite          = finite;
@@ -46,22 +46,22 @@ void IGESGraph_UniformRectGrid::Init(const Standard_Integer nbProps,
   InitTypeAndForm(406, 22);
 }
 
-Standard_Integer IGESGraph_UniformRectGrid::NbPropertyValues() const
+int IGESGraph_UniformRectGrid::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Standard_Boolean IGESGraph_UniformRectGrid::IsFinite() const
+bool IGESGraph_UniformRectGrid::IsFinite() const
 {
   return (isItFinite == 1);
 }
 
-Standard_Boolean IGESGraph_UniformRectGrid::IsLine() const
+bool IGESGraph_UniformRectGrid::IsLine() const
 {
   return (isItLine == 1);
 }
 
-Standard_Boolean IGESGraph_UniformRectGrid::IsWeighted() const
+bool IGESGraph_UniformRectGrid::IsWeighted() const
 {
   return (isItWeighted == 0);
 }
@@ -76,12 +76,12 @@ gp_Vec2d IGESGraph_UniformRectGrid::GridSpacing() const
   return (gp_Vec2d(theGridSpacing));
 }
 
-Standard_Integer IGESGraph_UniformRectGrid::NbPointsX() const
+int IGESGraph_UniformRectGrid::NbPointsX() const
 {
   return theNbPointsX;
 }
 
-Standard_Integer IGESGraph_UniformRectGrid::NbPointsY() const
+int IGESGraph_UniformRectGrid::NbPointsY() const
 {
   return theNbPointsY;
 }

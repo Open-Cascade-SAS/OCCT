@@ -20,10 +20,10 @@
 
 RWStepGeom_RWPointReplica::RWStepGeom_RWPointReplica() {}
 
-void RWStepGeom_RWPointReplica::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepGeom_PointReplica)&   ent) const
+void RWStepGeom_RWPointReplica::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                                   num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepGeom_PointReplica>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,20 +33,20 @@ void RWStepGeom_RWPointReplica::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : parentPt ---
 
-  Handle(StepGeom_Point) aParentPt;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Point> aParentPt;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "parent_pt", ach, STANDARD_TYPE(StepGeom_Point), aParentPt);
 
   // --- own field : transformation ---
 
-  Handle(StepGeom_CartesianTransformationOperator) aTransformation;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepGeom_CartesianTransformationOperator> aTransformation;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num,
                    3,
                    "transformation",
@@ -59,8 +59,8 @@ void RWStepGeom_RWPointReplica::ReadStep(const Handle(StepData_StepReaderData)& 
   ent->Init(aName, aParentPt, aTransformation);
 }
 
-void RWStepGeom_RWPointReplica::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepGeom_PointReplica)& ent) const
+void RWStepGeom_RWPointReplica::WriteStep(StepData_StepWriter&                      SW,
+                                          const occ::handle<StepGeom_PointReplica>& ent) const
 {
 
   // --- inherited field name ---
@@ -76,8 +76,8 @@ void RWStepGeom_RWPointReplica::WriteStep(StepData_StepWriter&                 S
   SW.Send(ent->Transformation());
 }
 
-void RWStepGeom_RWPointReplica::Share(const Handle(StepGeom_PointReplica)& ent,
-                                      Interface_EntityIterator&            iter) const
+void RWStepGeom_RWPointReplica::Share(const occ::handle<StepGeom_PointReplica>& ent,
+                                      Interface_EntityIterator&                 iter) const
 {
 
   iter.GetOneItem(ent->ParentPt());

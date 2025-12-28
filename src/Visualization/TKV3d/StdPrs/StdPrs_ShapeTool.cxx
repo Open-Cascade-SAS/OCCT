@@ -29,12 +29,12 @@
 #include <Poly_Triangulation.hxx>
 #include <TopExp.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
-StdPrs_ShapeTool::StdPrs_ShapeTool(const TopoDS_Shape&    theShape,
-                                   const Standard_Boolean theAllVertices)
+StdPrs_ShapeTool::StdPrs_ShapeTool(const TopoDS_Shape& theShape, const bool theAllVertices)
     : myShape(theShape)
 {
   myEdgeMap.Clear();
@@ -60,7 +60,7 @@ StdPrs_ShapeTool::StdPrs_ShapeTool(const TopoDS_Shape&    theShape,
     // Extracting internal vertices
     for (anExpl.Init(theShape, TopAbs_EDGE); anExpl.More(); anExpl.Next())
     {
-      TopoDS_Iterator aIt(anExpl.Current(), Standard_False, Standard_True);
+      TopoDS_Iterator aIt(anExpl.Current(), false, true);
       for (; aIt.More(); aIt.Next())
       {
         const TopoDS_Shape& aV = aIt.Value();
@@ -85,21 +85,21 @@ Bnd_Box StdPrs_ShapeTool::FaceBound() const
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_ShapeTool::IsPlanarFace(const TopoDS_Face& theFace)
+bool StdPrs_ShapeTool::IsPlanarFace(const TopoDS_Face& theFace)
 {
-  TopLoc_Location             l;
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(theFace, l);
+  TopLoc_Location                  l;
+  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(theFace, l);
   if (S.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  Handle(Standard_Type) TheType = S->DynamicType();
+  occ::handle<Standard_Type> TheType = S->DynamicType();
 
   if (TheType == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    Handle(Geom_RectangularTrimmedSurface) RTS =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
+    occ::handle<Geom_RectangularTrimmedSurface> RTS =
+      occ::down_cast<Geom_RectangularTrimmedSurface>(S);
     TheType = RTS->BasisSurface()->DynamicType();
   }
   return (TheType == STANDARD_TYPE(Geom_Plane));
@@ -117,19 +117,19 @@ Bnd_Box StdPrs_ShapeTool::CurveBound() const
 
 //=================================================================================================
 
-Standard_Integer StdPrs_ShapeTool::Neighbours() const
+int StdPrs_ShapeTool::Neighbours() const
 {
-  const TopTools_ListOfShape& L = myEdgeMap.FindFromIndex(myEdge);
+  const NCollection_List<TopoDS_Shape>& L = myEdgeMap.FindFromIndex(myEdge);
   return L.Extent();
 }
 
 //=================================================================================================
 
-Handle(TopTools_HSequenceOfShape) StdPrs_ShapeTool::FacesOfEdge() const
+occ::handle<NCollection_HSequence<TopoDS_Shape>> StdPrs_ShapeTool::FacesOfEdge() const
 {
-  Handle(TopTools_HSequenceOfShape) H = new TopTools_HSequenceOfShape();
-  const TopTools_ListOfShape&       L = myEdgeMap.FindFromIndex(myEdge);
-  for (TopTools_ListIteratorOfListOfShape LI(L); LI.More(); LI.Next())
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> H = new NCollection_HSequence<TopoDS_Shape>();
+  const NCollection_List<TopoDS_Shape>&            L = myEdgeMap.FindFromIndex(myEdge);
+  for (NCollection_List<TopoDS_Shape>::Iterator LI(L); LI.More(); LI.Next())
   {
     H->Append(LI.Value());
   }
@@ -138,39 +138,39 @@ Handle(TopTools_HSequenceOfShape) StdPrs_ShapeTool::FacesOfEdge() const
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_ShapeTool::HasSurface() const
+bool StdPrs_ShapeTool::HasSurface() const
 {
-  TopLoc_Location             l;
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(GetFace(), l);
+  TopLoc_Location                  l;
+  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(GetFace(), l);
   return !S.IsNull();
 }
 
 //=================================================================================================
 
-Handle(Poly_Triangulation) StdPrs_ShapeTool::CurrentTriangulation(TopLoc_Location& l) const
+occ::handle<Poly_Triangulation> StdPrs_ShapeTool::CurrentTriangulation(TopLoc_Location& l) const
 {
   return BRep_Tool::Triangulation(GetFace(), l);
 }
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_ShapeTool::HasCurve() const
+bool StdPrs_ShapeTool::HasCurve() const
 {
   return BRep_Tool::IsGeometric(GetCurve());
 }
 
 //=================================================================================================
 
-void StdPrs_ShapeTool::PolygonOnTriangulation(Handle(Poly_PolygonOnTriangulation)& Indices,
-                                              Handle(Poly_Triangulation)&          T,
-                                              TopLoc_Location&                     l) const
+void StdPrs_ShapeTool::PolygonOnTriangulation(occ::handle<Poly_PolygonOnTriangulation>& Indices,
+                                              occ::handle<Poly_Triangulation>&          T,
+                                              TopLoc_Location&                          l) const
 {
   BRep_Tool::PolygonOnTriangulation(GetCurve(), Indices, T, l);
 }
 
 //=================================================================================================
 
-Handle(Poly_Polygon3D) StdPrs_ShapeTool::Polygon3D(TopLoc_Location& l) const
+occ::handle<Poly_Polygon3D> StdPrs_ShapeTool::Polygon3D(TopLoc_Location& l) const
 {
   return BRep_Tool::Polygon3D(GetCurve(), l);
 }

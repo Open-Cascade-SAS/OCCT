@@ -25,9 +25,6 @@ class Interface_EntityIterator;
 class Interface_Graph;
 class TCollection_AsciiString;
 
-class IGESSelect_SelectFromSingleView;
-DEFINE_STANDARD_HANDLE(IGESSelect_SelectFromSingleView, IFSelect_SelectDeduct)
-
 //! This selection gets in all the model, the entities which are
 //! attached to the views given as input. Only Single Views are
 //! considered. This information is kept from Directory Part
@@ -41,16 +38,12 @@ public:
 
   //! Selects the Entities which are attached to the Single View(s)
   //! present in the Input
-  Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
 
   //! Returns the label, with is "Entities attached to single View"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectFromSingleView, IFSelect_SelectDeduct)
-
-protected:
-private:
 };
 
 #endif // _IGESSelect_SelectFromSingleView_HeaderFile

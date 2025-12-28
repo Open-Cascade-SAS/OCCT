@@ -14,26 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_TokensSequence.hxx>
 #include <Units_Token.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 //=================================================================================================
 
-inline Handle(Units_TokensSequence) Units_Sentence::Sequence() const
+inline occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> Units_Sentence::Sequence() const
 {
   return thesequenceoftokens;
 }
 
 //=================================================================================================
 
-inline void Units_Sentence::Sequence(const Handle(Units_TokensSequence)& asequenceoftokens)
+inline void Units_Sentence::Sequence(
+  const occ::handle<NCollection_HSequence<occ::handle<Units_Token>>>& asequenceoftokens)
 {
   thesequenceoftokens = asequenceoftokens;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean Units_Sentence::IsDone() const
+inline bool Units_Sentence::IsDone() const
 {
   return thesequenceoftokens->Length() > 0;
 }
@@ -42,7 +44,7 @@ inline Standard_Boolean Units_Sentence::IsDone() const
 
 inline void Units_Sentence::Dump() const
 {
-  Standard_Integer index;
+  int index;
   std::cout << " UNIT SENTENCE with : " << std::endl;
   for (index = 1; index <= thesequenceoftokens->Length(); index++)
     thesequenceoftokens->Value(index)->Dump(1, 1);

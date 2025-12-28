@@ -21,13 +21,14 @@
 #include <Standard_Type.hxx>
 #include <Resource_FormatType.hxx>
 
-#include <Interface_IndexedMapOfAsciiString.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Interface_FileReaderData.hxx>
 #include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <StepData_Logical.hxx>
 class Interface_Check;
 class TCollection_AsciiString;
@@ -40,9 +41,6 @@ class StepData_FieldList;
 class StepData_SelectType;
 class TCollection_HAsciiString;
 class StepData_EnumTool;
-
-class StepData_StepReaderData;
-DEFINE_STANDARD_HANDLE(StepData_StepReaderData, Interface_FileReaderData)
 
 //! Specific FileReaderData for Step
 //! Contains literal description of entities (for each one : type
@@ -58,57 +56,55 @@ public:
   //! nbheader is nb of records for Header, nbtotal for Header+Data
   //! and nbpar gives the total count of parameters
   Standard_EXPORT StepData_StepReaderData(
-    const Standard_Integer    nbheader,
-    const Standard_Integer    nbtotal,
-    const Standard_Integer    nbpar,
+    const int                 nbheader,
+    const int                 nbtotal,
+    const int                 nbpar,
     const Resource_FormatType theSourceCodePage = Resource_FormatType_UTF8);
 
   //! Fills the fields of a record
-  Standard_EXPORT void SetRecord(const Standard_Integer num,
-                                 const Standard_CString ident,
-                                 const Standard_CString type,
-                                 const Standard_Integer nbpar);
+  Standard_EXPORT void SetRecord(const int   num,
+                                 const char* ident,
+                                 const char* type,
+                                 const int   nbpar);
 
   //! Fills the fields of a parameter of a record. This is a variant
   //! of AddParam, Adapted to STEP (optimized for specific values)
-  Standard_EXPORT void AddStepParam(const Standard_Integer    num,
-                                    const Standard_CString    aval,
+  Standard_EXPORT void AddStepParam(const int                 num,
+                                    const char*               aval,
                                     const Interface_ParamType atype,
-                                    const Standard_Integer    nument = 0);
+                                    const int                 nument = 0);
 
   //! Returns Record Type
-  Standard_EXPORT const TCollection_AsciiString& RecordType(const Standard_Integer num) const;
+  Standard_EXPORT const TCollection_AsciiString& RecordType(const int num) const;
 
   //! Returns Record Type as a CString
   //! was C++ : return const
-  Standard_EXPORT Standard_CString CType(const Standard_Integer num) const;
+  Standard_EXPORT const char* CType(const int num) const;
 
   //! Returns record identifier (Positive number)
   //! If returned ident is not positive : Sub-List or Scope mark
-  Standard_EXPORT Standard_Integer RecordIdent(const Standard_Integer num) const;
+  Standard_EXPORT int RecordIdent(const int num) const;
 
   //! Returns SubList numero designated by a parameter (nump) in a
   //! record (num), or zero if the parameter does not exist or is
   //! not a SubList address. Zero too If aslast is True and nump
   //! is not for the last parameter
-  Standard_EXPORT Standard_Integer SubListNumber(const Standard_Integer num,
-                                                 const Standard_Integer nump,
-                                                 const Standard_Boolean aslast) const;
+  Standard_EXPORT int SubListNumber(const int num, const int nump, const bool aslast) const;
 
   //! Returns True if <num> corresponds to a Complex Type Entity
   //! (as can be defined by ANDOR Express clause)
-  Standard_EXPORT Standard_Boolean IsComplex(const Standard_Integer num) const;
+  Standard_EXPORT bool IsComplex(const int num) const;
 
   //! Returns the List of Types which correspond to a Complex Type
   //! Entity. If not Complex, there is just one Type in it
   //! For a SubList or a Scope mark, <types> remains empty
-  Standard_EXPORT void ComplexType(const Standard_Integer         num,
-                                   TColStd_SequenceOfAsciiString& types) const;
+  Standard_EXPORT void ComplexType(const int                                      num,
+                                   NCollection_Sequence<TCollection_AsciiString>& types) const;
 
   //! Returns the Next "Component" for a Complex Type Entity, of
   //! which <num> is already a Component (the first one or a next one)
   //! Returns 0 for a Simple Type or for the last Component
-  Standard_EXPORT Standard_Integer NextForComplex(const Standard_Integer num) const;
+  Standard_EXPORT int NextForComplex(const int num) const;
 
   //! Determines the first component which brings a given name, for
   //! a Complex Type Entity
@@ -125,10 +121,10 @@ public:
   //! and <num> is returned as zero
   //!
   //! Returns True if alphabetic order, False else
-  Standard_EXPORT Standard_Boolean NamedForComplex(const Standard_CString   name,
-                                                   const Standard_Integer   num0,
-                                                   Standard_Integer&        num,
-                                                   Handle(Interface_Check)& ach) const;
+  Standard_EXPORT bool NamedForComplex(const char*                   name,
+                                       const int                     num0,
+                                       int&                          num,
+                                       occ::handle<Interface_Check>& ach) const;
 
   //! Determines the first component which brings a given name, or
   //! short name for a Complex Type Entity
@@ -145,20 +141,20 @@ public:
   //! and <num> is returned as zero
   //!
   //! Returns True if alphabetic order, False else
-  Standard_EXPORT Standard_Boolean NamedForComplex(const Standard_CString   theName,
-                                                   const Standard_CString   theShortName,
-                                                   const Standard_Integer   num0,
-                                                   Standard_Integer&        num,
-                                                   Handle(Interface_Check)& ach) const;
+  Standard_EXPORT bool NamedForComplex(const char*                   theName,
+                                       const char*                   theShortName,
+                                       const int                     num0,
+                                       int&                          num,
+                                       occ::handle<Interface_Check>& ach) const;
 
   //! Checks Count of Parameters of record <num> to equate <nbreq>
   //! If this Check is successful, returns True
   //! Else, fills <ach> with an Error Message then returns False
   //! <mess> is included in the Error message if given non empty
-  Standard_EXPORT Standard_Boolean CheckNbParams(const Standard_Integer   num,
-                                                 const Standard_Integer   nbreq,
-                                                 Handle(Interface_Check)& ach,
-                                                 const Standard_CString   mess = "") const;
+  Standard_EXPORT bool CheckNbParams(const int                     num,
+                                     const int                     nbreq,
+                                     occ::handle<Interface_Check>& ach,
+                                     const char*                   mess = "") const;
 
   //! reads parameter <nump> of record <num> as a sub-list (may be
   //! typed, see ReadTypedParameter in this case)
@@ -168,14 +164,14 @@ public:
   //! with <ach> not filled and <numsub> returned as 0
   //! Works with SubListNumber with <aslast> false (no specific case
   //! for last parameter)
-  Standard_EXPORT Standard_Boolean ReadSubList(const Standard_Integer   num,
-                                               const Standard_Integer   nump,
-                                               const Standard_CString   mess,
-                                               Handle(Interface_Check)& ach,
-                                               Standard_Integer&        numsub,
-                                               const Standard_Boolean   optional = Standard_False,
-                                               const Standard_Integer   lenmin   = 0,
-                                               const Standard_Integer   lenmax   = 0) const;
+  Standard_EXPORT bool ReadSubList(const int                     num,
+                                   const int                     nump,
+                                   const char*                   mess,
+                                   occ::handle<Interface_Check>& ach,
+                                   int&                          numsub,
+                                   const bool                    optional = false,
+                                   const int                     lenmin   = 0,
+                                   const int                     lenmax   = 0) const;
 
   //! reads the content of a sub-list into a transient :
   //! SelectNamed, or HArray1 of Integer,Real,String,Transient ...
@@ -185,11 +181,11 @@ public:
   //! Intended to be called by ReadField
   //! The returned status is : negative if failed, 0 if empty.
   //! Else the kind to be recorded in the field
-  Standard_EXPORT Standard_Integer ReadSub(const Standard_Integer         numsub,
-                                           const Standard_CString         mess,
-                                           Handle(Interface_Check)&       ach,
-                                           const Handle(StepData_PDescr)& descr,
-                                           Handle(Standard_Transient)&    val) const;
+  Standard_EXPORT int ReadSub(const int                           numsub,
+                              const char*                         mess,
+                              occ::handle<Interface_Check>&       ach,
+                              const occ::handle<StepData_PDescr>& descr,
+                              occ::handle<Standard_Transient>&    val) const;
 
   //! Reads parameter <nump> of record <num> into a SelectMember,
   //! self-sufficient (no Description needed)
@@ -201,22 +197,22 @@ public:
   //! (SELECT with no Entity as member)
   //! But SelectType also manages SelectMember (for SELECT with
   //! some members as Entity, some other not)
-  Standard_EXPORT Standard_Boolean ReadMember(const Standard_Integer         num,
-                                              const Standard_Integer         nump,
-                                              const Standard_CString         mess,
-                                              Handle(Interface_Check)&       ach,
-                                              Handle(StepData_SelectMember)& val) const;
+  Standard_EXPORT bool ReadMember(const int                           num,
+                                  const int                           nump,
+                                  const char*                         mess,
+                                  occ::handle<Interface_Check>&       ach,
+                                  occ::handle<StepData_SelectMember>& val) const;
 
   //! Safe variant for arbitrary type of argument
   template <class T>
-  Standard_Boolean ReadMember(const Standard_Integer   num,
-                              const Standard_Integer   nump,
-                              const Standard_CString   mess,
-                              Handle(Interface_Check)& ach,
-                              Handle(T)&               val) const
+  bool ReadMember(const int                     num,
+                  const int                     nump,
+                  const char*                   mess,
+                  occ::handle<Interface_Check>& ach,
+                  occ::handle<T>&               val) const
   {
-    Handle(StepData_SelectMember) aVal = val;
-    return ReadMember(num, nump, mess, ach, aVal) && !(val = Handle(T)::DownCast(aVal)).IsNull();
+    occ::handle<StepData_SelectMember> aVal = val;
+    return ReadMember(num, nump, mess, ach, aVal) && !(val = occ::down_cast<T>(aVal)).IsNull();
   }
 
   //! reads parameter <nump> of record <num> into a Field,
@@ -226,18 +222,18 @@ public:
   //! description (but the field is read anyway)
   //! If the description is not defined, no control is done
   //! Returns True when done
-  Standard_EXPORT Standard_Boolean ReadField(const Standard_Integer         num,
-                                             const Standard_Integer         nump,
-                                             const Standard_CString         mess,
-                                             Handle(Interface_Check)&       ach,
-                                             const Handle(StepData_PDescr)& descr,
-                                             StepData_Field&                fild) const;
+  Standard_EXPORT bool ReadField(const int                           num,
+                                 const int                           nump,
+                                 const char*                         mess,
+                                 occ::handle<Interface_Check>&       ach,
+                                 const occ::handle<StepData_PDescr>& descr,
+                                 StepData_Field&                     fild) const;
 
   //! reads a list of fields controlled by an ESDescr
-  Standard_EXPORT Standard_Boolean ReadList(const Standard_Integer          num,
-                                            Handle(Interface_Check)&        ach,
-                                            const Handle(StepData_ESDescr)& descr,
-                                            StepData_FieldList&             list) const;
+  Standard_EXPORT bool ReadList(const int                            num,
+                                occ::handle<Interface_Check>&        ach,
+                                const occ::handle<StepData_ESDescr>& descr,
+                                StepData_FieldList&                  list) const;
 
   //! Reads parameter <nump> of record <num> into a Transient Value
   //! according to the type of the parameter :
@@ -255,43 +251,43 @@ public:
   //! SelectMember then to fill it. If <val> is Null or if the
   //! result is not a SelectMember, val itself is returned a new ref
   //! For a Select with a Name, <val> must then be a SelectNamed
-  Standard_EXPORT Standard_Boolean ReadAny(const Standard_Integer         num,
-                                           const Standard_Integer         nump,
-                                           const Standard_CString         mess,
-                                           Handle(Interface_Check)&       ach,
-                                           const Handle(StepData_PDescr)& descr,
-                                           Handle(Standard_Transient)&    val) const;
+  Standard_EXPORT bool ReadAny(const int                           num,
+                               const int                           nump,
+                               const char*                         mess,
+                               occ::handle<Interface_Check>&       ach,
+                               const occ::handle<StepData_PDescr>& descr,
+                               occ::handle<Standard_Transient>&    val) const;
 
   //! reads parameter <nump> of record <num> as a sub-list of
   //! two Reals X,Y. Returns True if OK. Else, returns false and
   //! feeds Check with appropriate Fails (parameter not a sub-list,
   //! not two Reals in the sub-list) composed with "mess" which
   //! gives the name of the parameter
-  Standard_EXPORT Standard_Boolean ReadXY(const Standard_Integer   num,
-                                          const Standard_Integer   nump,
-                                          const Standard_CString   mess,
-                                          Handle(Interface_Check)& ach,
-                                          Standard_Real&           X,
-                                          Standard_Real&           Y) const;
+  Standard_EXPORT bool ReadXY(const int                     num,
+                              const int                     nump,
+                              const char*                   mess,
+                              occ::handle<Interface_Check>& ach,
+                              double&                       X,
+                              double&                       Y) const;
 
   //! reads parameter <nump> of record <num> as a sub-list of
   //! three Reals X,Y,Z. Return value and Check managed as by
   //! ReadXY (demands a sub-list of three Reals)
-  Standard_EXPORT Standard_Boolean ReadXYZ(const Standard_Integer   num,
-                                           const Standard_Integer   nump,
-                                           const Standard_CString   mess,
-                                           Handle(Interface_Check)& ach,
-                                           Standard_Real&           X,
-                                           Standard_Real&           Y,
-                                           Standard_Real&           Z) const;
+  Standard_EXPORT bool ReadXYZ(const int                     num,
+                               const int                     nump,
+                               const char*                   mess,
+                               occ::handle<Interface_Check>& ach,
+                               double&                       X,
+                               double&                       Y,
+                               double&                       Z) const;
 
   //! reads parameter <nump> of record <num> as a single Real value.
   //! Return value and Check managed as by ReadXY (demands a Real)
-  Standard_EXPORT Standard_Boolean ReadReal(const Standard_Integer   num,
-                                            const Standard_Integer   nump,
-                                            const Standard_CString   mess,
-                                            Handle(Interface_Check)& ach,
-                                            Standard_Real&           val) const;
+  Standard_EXPORT bool ReadReal(const int                     num,
+                                const int                     nump,
+                                const char*                   mess,
+                                occ::handle<Interface_Check>& ach,
+                                double&                       val) const;
 
   //! Reads parameter <nump> of record <num> as a single Entity.
   //! Return value and Check managed as by ReadReal (demands a
@@ -300,94 +296,94 @@ public:
   //! Remark that returned status is False and <ent> is Null if
   //! parameter is not an Entity, <ent> remains Not Null is parameter
   //! is an Entity but is not Kind of required type
-  Standard_EXPORT Standard_Boolean ReadEntity(const Standard_Integer       num,
-                                              const Standard_Integer       nump,
-                                              const Standard_CString       mess,
-                                              Handle(Interface_Check)&     ach,
-                                              const Handle(Standard_Type)& atype,
-                                              Handle(Standard_Transient)&  ent) const;
+  Standard_EXPORT bool ReadEntity(const int                         num,
+                                  const int                         nump,
+                                  const char*                       mess,
+                                  occ::handle<Interface_Check>&     ach,
+                                  const occ::handle<Standard_Type>& atype,
+                                  occ::handle<Standard_Transient>&  ent) const;
 
   //! Safe variant for arbitrary type of argument
   template <class T>
-  Standard_Boolean ReadEntity(const Standard_Integer       num,
-                              const Standard_Integer       nump,
-                              const Standard_CString       mess,
-                              Handle(Interface_Check)&     ach,
-                              const Handle(Standard_Type)& atype,
-                              Handle(T)&                   ent) const
+  bool ReadEntity(const int                         num,
+                  const int                         nump,
+                  const char*                       mess,
+                  occ::handle<Interface_Check>&     ach,
+                  const occ::handle<Standard_Type>& atype,
+                  occ::handle<T>&                   ent) const
   {
-    Handle(Standard_Transient) anEnt = ent;
+    occ::handle<Standard_Transient> anEnt = ent;
     return ReadEntity(num, nump, mess, ach, atype, anEnt)
-           && !(ent = Handle(T)::DownCast(anEnt)).IsNull();
+           && !(ent = occ::down_cast<T>(anEnt)).IsNull();
   }
 
   //! Same as above, but a SelectType checks Type Matching, and
   //! records the read Entity (see method Value from SelectType)
-  Standard_EXPORT Standard_Boolean ReadEntity(const Standard_Integer   num,
-                                              const Standard_Integer   nump,
-                                              const Standard_CString   mess,
-                                              Handle(Interface_Check)& ach,
-                                              StepData_SelectType&     sel) const;
+  Standard_EXPORT bool ReadEntity(const int                     num,
+                                  const int                     nump,
+                                  const char*                   mess,
+                                  occ::handle<Interface_Check>& ach,
+                                  StepData_SelectType&          sel) const;
 
   //! reads parameter <nump> of record <num> as a single Integer.
   //! Return value & Check managed as by ReadXY (demands an Integer)
-  Standard_EXPORT Standard_Boolean ReadInteger(const Standard_Integer   num,
-                                               const Standard_Integer   nump,
-                                               const Standard_CString   mess,
-                                               Handle(Interface_Check)& ach,
-                                               Standard_Integer&        val) const;
+  Standard_EXPORT bool ReadInteger(const int                     num,
+                                   const int                     nump,
+                                   const char*                   mess,
+                                   occ::handle<Interface_Check>& ach,
+                                   int&                          val) const;
 
   //! reads parameter <nump> of record <num> as a Boolean
   //! Return value and Check managed as by ReadReal (demands a
   //! Boolean enum, i.e. text ".T." for True or ".F." for False)
-  Standard_EXPORT Standard_Boolean ReadBoolean(const Standard_Integer   num,
-                                               const Standard_Integer   nump,
-                                               const Standard_CString   mess,
-                                               Handle(Interface_Check)& ach,
-                                               Standard_Boolean&        flag) const;
+  Standard_EXPORT bool ReadBoolean(const int                     num,
+                                   const int                     nump,
+                                   const char*                   mess,
+                                   occ::handle<Interface_Check>& ach,
+                                   bool&                         flag) const;
 
   //! reads parameter <nump> of record <num> as a Logical
   //! Return value and Check managed as by ReadBoolean (demands a
   //! Logical enum, i.e. text ".T.", ".F.", or ".U.")
-  Standard_EXPORT Standard_Boolean ReadLogical(const Standard_Integer   num,
-                                               const Standard_Integer   nump,
-                                               const Standard_CString   mess,
-                                               Handle(Interface_Check)& ach,
-                                               StepData_Logical&        flag) const;
+  Standard_EXPORT bool ReadLogical(const int                     num,
+                                   const int                     nump,
+                                   const char*                   mess,
+                                   occ::handle<Interface_Check>& ach,
+                                   StepData_Logical&             flag) const;
 
   //! reads parameter <nump> of record <num> as a String (text
   //! between quotes, quotes are removed by the Read operation)
   //! Return value and Check managed as by ReadXY (demands a String)
-  Standard_EXPORT Standard_Boolean ReadString(const Standard_Integer            num,
-                                              const Standard_Integer            nump,
-                                              const Standard_CString            mess,
-                                              Handle(Interface_Check)&          ach,
-                                              Handle(TCollection_HAsciiString)& val) const;
+  Standard_EXPORT bool ReadString(const int                              num,
+                                  const int                              nump,
+                                  const char*                            mess,
+                                  occ::handle<Interface_Check>&          ach,
+                                  occ::handle<TCollection_HAsciiString>& val) const;
 
-  Standard_EXPORT Standard_Boolean ReadEnumParam(const Standard_Integer   num,
-                                                 const Standard_Integer   nump,
-                                                 const Standard_CString   mess,
-                                                 Handle(Interface_Check)& ach,
-                                                 Standard_CString&        text) const;
+  Standard_EXPORT bool ReadEnumParam(const int                     num,
+                                     const int                     nump,
+                                     const char*                   mess,
+                                     occ::handle<Interface_Check>& ach,
+                                     const char*&                  text) const;
 
   //! Fills a check with a fail message if enumeration value does
   //! match parameter definition
   //! Just a help to centralize message definitions
-  Standard_EXPORT void FailEnumValue(const Standard_Integer   num,
-                                     const Standard_Integer   nump,
-                                     const Standard_CString   mess,
-                                     Handle(Interface_Check)& ach) const;
+  Standard_EXPORT void FailEnumValue(const int                     num,
+                                     const int                     nump,
+                                     const char*                   mess,
+                                     occ::handle<Interface_Check>& ach) const;
 
   //! Reads parameter <nump> of record <num> as an Enumeration (text
   //! between dots) and converts it to an integer value, by an
   //! EnumTool. Returns True if OK, false if : this parameter is not
   //! enumeration, or is not recognized by the EnumTool (with fail)
-  Standard_EXPORT Standard_Boolean ReadEnum(const Standard_Integer   num,
-                                            const Standard_Integer   nump,
-                                            const Standard_CString   mess,
-                                            Handle(Interface_Check)& ach,
-                                            const StepData_EnumTool& enumtool,
-                                            Standard_Integer&        val) const;
+  Standard_EXPORT bool ReadEnum(const int                     num,
+                                const int                     nump,
+                                const char*                   mess,
+                                occ::handle<Interface_Check>& ach,
+                                const StepData_EnumTool&      enumtool,
+                                int&                          val) const;
 
   //! Resolves a parameter which can be enclosed in a type def., as
   //! TYPE(val). The parameter must then be read normally according
@@ -399,35 +395,33 @@ public:
   //! = num,nump if no type, else numrp=1
   //! <typ> returns the recorded type, or empty string
   //! Remark : a non-typed list is considered as "non-typed"
-  Standard_EXPORT Standard_Boolean ReadTypedParam(const Standard_Integer   num,
-                                                  const Standard_Integer   nump,
-                                                  const Standard_Boolean   mustbetyped,
-                                                  const Standard_CString   mess,
-                                                  Handle(Interface_Check)& ach,
-                                                  Standard_Integer&        numr,
-                                                  Standard_Integer&        numrp,
-                                                  TCollection_AsciiString& typ) const;
+  Standard_EXPORT bool ReadTypedParam(const int                     num,
+                                      const int                     nump,
+                                      const bool                    mustbetyped,
+                                      const char*                   mess,
+                                      occ::handle<Interface_Check>& ach,
+                                      int&                          numr,
+                                      int&                          numrp,
+                                      TCollection_AsciiString&      typ) const;
 
   //! Checks if parameter <nump> of record <num> is given as Derived
   //! If this Check is successful (i.e. Param = "*"), returns True
   //! Else, fills <ach> with a Message which contains <mess> and
   //! returns False. According to <errstat>, this message is Warning
   //! if errstat is False (Default), Fail if errstat is True
-  Standard_EXPORT Standard_Boolean
-    CheckDerived(const Standard_Integer   num,
-                 const Standard_Integer   nump,
-                 const Standard_CString   mess,
-                 Handle(Interface_Check)& ach,
-                 const Standard_Boolean   errstat = Standard_False) const;
+  Standard_EXPORT bool CheckDerived(const int                     num,
+                                    const int                     nump,
+                                    const char*                   mess,
+                                    occ::handle<Interface_Check>& ach,
+                                    const bool                    errstat = false) const;
 
   //! Returns total count of Entities (including Header)
-  Standard_EXPORT virtual Standard_Integer NbEntities() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbEntities() const override;
 
   //! determines the first suitable record following a given one
   //! that is, skips SCOPE,ENDSCOPE and SUBLIST records
   //! Note : skips Header records, which are accessed separately
-  Standard_EXPORT Standard_Integer
-    FindNextRecord(const Standard_Integer num) const Standard_OVERRIDE;
+  Standard_EXPORT int FindNextRecord(const int num) const override;
 
   //! determines reference numbers in EntityNumber fields
   //! called by Prepare from StepReaderTool to prepare later using
@@ -437,11 +431,11 @@ public:
   //! If <withmap> is given False, the basic exploration algorithm
   //! is activated, otherwise a map is used as far as it is possible
   //! this option can be used only to test this algorithm
-  Standard_EXPORT void SetEntityNumbers(const Standard_Boolean withmap = Standard_True);
+  Standard_EXPORT void SetEntityNumbers(const bool withmap = true);
 
   //! determine first suitable record of Header
   //! works as FindNextRecord, but treats only Header records
-  Standard_EXPORT Standard_Integer FindNextHeaderRecord(const Standard_Integer num) const;
+  Standard_EXPORT int FindNextHeaderRecord(const int num) const;
 
   //! Works as SetEntityNumbers but for Header : more simple because
   //! there are no Reference, only Sub-Lists
@@ -449,36 +443,34 @@ public:
 
   //! Returns the Global Check. It can record Fail messages about
   //! Undefined References (detected by SetEntityNumbers)
-  Standard_EXPORT const Handle(Interface_Check) GlobalCheck() const;
+  Standard_EXPORT const occ::handle<Interface_Check> GlobalCheck() const;
 
   DEFINE_STANDARD_RTTIEXT(StepData_StepReaderData, Interface_FileReaderData)
 
-protected:
 private:
   //! Searches for a Parameter of the record <num>, which refers to
   //! the Ident <id> (form #nnn). [Used by SetEntityNumbers]
   //! If found, returns its EntityNumber, else returns Zero.
-  Standard_EXPORT Standard_Integer FindEntityNumber(const Standard_Integer num,
-                                                    const Standard_Integer id) const;
+  Standard_EXPORT int FindEntityNumber(const int num, const int id) const;
 
   //! Prepare string to use in OCCT exchange structure.
   //! If code page is Resource_FormatType_NoConversion,
   //! clean only special characters without conversion;
   //! else convert a string to UTF8 using the code page
   //! and handle the control directives.
-  Standard_EXPORT void cleanText(const Handle(TCollection_HAsciiString)& theVal) const;
+  Standard_EXPORT void cleanText(const occ::handle<TCollection_HAsciiString>& theVal) const;
 
 private:
-  TColStd_Array1OfInteger           theidents;
-  TColStd_Array1OfInteger           thetypes;
-  Interface_IndexedMapOfAsciiString thenametypes;
-  TColStd_DataMapOfIntegerInteger   themults;
-  Standard_Integer                  thenbents;
-  Standard_Integer                  thelastn;
-  Standard_Integer                  thenbhead;
-  Standard_Integer                  thenbscop;
-  Handle(Interface_Check)           thecheck;
-  Resource_FormatType               mySourceCodePage;
+  NCollection_Array1<int>                         theidents;
+  NCollection_Array1<int>                         thetypes;
+  NCollection_IndexedMap<TCollection_AsciiString> thenametypes;
+  NCollection_DataMap<int, int>                   themults;
+  int                                             thenbents;
+  int                                             thelastn;
+  int                                             thenbhead;
+  int                                             thenbscop;
+  occ::handle<Interface_Check>                    thecheck;
+  Resource_FormatType                             mySourceCodePage;
 };
 
 #endif // _StepData_StepReaderData_HeaderFile

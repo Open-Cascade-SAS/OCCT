@@ -33,13 +33,9 @@ public:
 
   Standard_EXPORT AdvApprox_DichoCutting();
 
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real a,
-                                                 const Standard_Real b,
-                                                 Standard_Real&      cuttingvalue) const
-    Standard_OVERRIDE;
-
-protected:
-private:
+  Standard_EXPORT virtual bool Value(const double a,
+                                     const double b,
+                                     double&      cuttingvalue) const override;
 };
 
 #endif // _AdvApprox_DichoCutting_HeaderFile

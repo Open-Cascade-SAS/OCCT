@@ -32,9 +32,9 @@
 //=================================================================================================
 
 ProjLib_Projector::ProjLib_Projector()
-    : myIsPeriodic(Standard_False)
+    : myIsPeriodic(false)
 {
-  isDone = Standard_False;
+  isDone = false;
   myType = GeomAbs_BSplineCurve;
 }
 
@@ -44,7 +44,7 @@ ProjLib_Projector::~ProjLib_Projector() {}
 
 //=================================================================================================
 
-Standard_Boolean ProjLib_Projector::IsDone() const
+bool ProjLib_Projector::IsDone() const
 {
   return isDone;
 }
@@ -53,7 +53,7 @@ Standard_Boolean ProjLib_Projector::IsDone() const
 
 void ProjLib_Projector::Done()
 {
-  isDone = Standard_True;
+  isDone = true;
 }
 
 //=================================================================================================
@@ -72,7 +72,7 @@ void ProjLib_Projector::SetType(const GeomAbs_CurveType Type)
 
 //=================================================================================================
 
-Standard_Boolean ProjLib_Projector::IsPeriodic() const
+bool ProjLib_Projector::IsPeriodic() const
 {
   return myIsPeriodic;
 }
@@ -81,7 +81,7 @@ Standard_Boolean ProjLib_Projector::IsPeriodic() const
 
 void ProjLib_Projector::SetPeriodic()
 {
-  myIsPeriodic = Standard_True;
+  myIsPeriodic = true;
 }
 
 //=================================================================================================
@@ -166,11 +166,11 @@ void ProjLib_Projector::Project(const gp_Hypr&)
 
 //=================================================================================================
 
-void ProjLib_Projector::UFrame(const Standard_Real CFirst,
-                               //			       const Standard_Real CLast,
-                               const Standard_Real,
-                               const Standard_Real UFirst,
-                               const Standard_Real Period)
+void ProjLib_Projector::UFrame(const double CFirst,
+                               //			       const double CLast,
+                               const double,
+                               const double UFirst,
+                               const double Period)
 {
   if (myType == GeomAbs_Line)
   {
@@ -181,20 +181,20 @@ void ProjLib_Projector::UFrame(const Standard_Real CFirst,
     gp_Pnt2d PFirst;
     PFirst = ElCLib::Value(CFirst, myLin);
     // PLast  = ElCLib::Value(CLast ,myLin);
-    // Standard_Real U = std::min( PFirst.X(), PLast.X());
-    Standard_Real U    = PFirst.X();
-    Standard_Real NewU = ElCLib::InPeriod(U, UFirst, UFirst + Period);
+    // double U = std::min( PFirst.X(), PLast.X());
+    double U    = PFirst.X();
+    double NewU = ElCLib::InPeriod(U, UFirst, UFirst + Period);
     myLin.Translate(gp_Vec2d(NewU - U, 0.));
   }
 }
 
 //=================================================================================================
 
-void ProjLib_Projector::VFrame(const Standard_Real CFirst,
-                               //			       const Standard_Real CLast,
-                               const Standard_Real,
-                               const Standard_Real VFirst,
-                               const Standard_Real Period)
+void ProjLib_Projector::VFrame(const double CFirst,
+                               //			       const double CLast,
+                               const double,
+                               const double VFirst,
+                               const double Period)
 {
   if (myType == GeomAbs_Line)
   {
@@ -205,37 +205,37 @@ void ProjLib_Projector::VFrame(const Standard_Real CFirst,
     gp_Pnt2d PFirst;
     PFirst = ElCLib::Value(CFirst, myLin);
     // PLast  = ElCLib::Value(CLast ,myLin);
-    // Standard_Real V = std::min( PFirst.Y(), PLast.Y());
-    Standard_Real V    = PFirst.Y();
-    Standard_Real NewV = ElCLib::InPeriod(V, VFirst, VFirst + Period);
+    // double V = std::min( PFirst.Y(), PLast.Y());
+    double V    = PFirst.Y();
+    double NewV = ElCLib::InPeriod(V, VFirst, VFirst + Period);
     myLin.Translate(gp_Vec2d(0., NewV - V));
   }
 }
 
 //=================================================================================================
 
-void ProjLib_Projector::SetBezier(const Handle(Geom2d_BezierCurve)& C)
+void ProjLib_Projector::SetBezier(const occ::handle<Geom2d_BezierCurve>& C)
 {
   myBezier = C;
 }
 
 //=================================================================================================
 
-Handle(Geom2d_BezierCurve) ProjLib_Projector::Bezier() const
+occ::handle<Geom2d_BezierCurve> ProjLib_Projector::Bezier() const
 {
   return myBezier;
 }
 
 //=================================================================================================
 
-void ProjLib_Projector::SetBSpline(const Handle(Geom2d_BSplineCurve)& C)
+void ProjLib_Projector::SetBSpline(const occ::handle<Geom2d_BSplineCurve>& C)
 {
   myBSpline = C;
 }
 
 //=================================================================================================
 
-Handle(Geom2d_BSplineCurve) ProjLib_Projector::BSpline() const
+occ::handle<Geom2d_BSplineCurve> ProjLib_Projector::BSpline() const
 {
   return myBSpline;
 }

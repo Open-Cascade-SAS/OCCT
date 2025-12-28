@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_PointOnCurve, StepGeom_Point)
 
 StepGeom_PointOnCurve::StepGeom_PointOnCurve() {}
 
-void StepGeom_PointOnCurve::Init(const Handle(TCollection_HAsciiString)& aName,
-                                 const Handle(StepGeom_Curve)&           aBasisCurve,
-                                 const Standard_Real                     aPointParameter)
+void StepGeom_PointOnCurve::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                 const occ::handle<StepGeom_Curve>&           aBasisCurve,
+                                 const double                                 aPointParameter)
 {
   // --- classe own fields ---
   basisCurve     = aBasisCurve;
@@ -30,22 +30,22 @@ void StepGeom_PointOnCurve::Init(const Handle(TCollection_HAsciiString)& aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_PointOnCurve::SetBasisCurve(const Handle(StepGeom_Curve)& aBasisCurve)
+void StepGeom_PointOnCurve::SetBasisCurve(const occ::handle<StepGeom_Curve>& aBasisCurve)
 {
   basisCurve = aBasisCurve;
 }
 
-Handle(StepGeom_Curve) StepGeom_PointOnCurve::BasisCurve() const
+occ::handle<StepGeom_Curve> StepGeom_PointOnCurve::BasisCurve() const
 {
   return basisCurve;
 }
 
-void StepGeom_PointOnCurve::SetPointParameter(const Standard_Real aPointParameter)
+void StepGeom_PointOnCurve::SetPointParameter(const double aPointParameter)
 {
   pointParameter = aPointParameter;
 }
 
-Standard_Real StepGeom_PointOnCurve::PointParameter() const
+double StepGeom_PointOnCurve::PointParameter() const
 {
   return pointParameter;
 }

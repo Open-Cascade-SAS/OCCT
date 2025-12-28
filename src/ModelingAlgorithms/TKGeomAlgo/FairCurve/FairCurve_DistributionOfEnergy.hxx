@@ -22,8 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt2d.hxx>
 #include <math_FunctionSet.hxx>
 
 //! Abstract class to use the Energy of an FairCurve
@@ -33,29 +34,28 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! returns the number of variables of the function.
-  Standard_EXPORT virtual Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbVariables() const override;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT virtual Standard_Integer NbEquations() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbEquations() const override;
 
-  Standard_EXPORT void SetDerivativeOrder(const Standard_Integer DerivativeOrder);
+  Standard_EXPORT void SetDerivativeOrder(const int DerivativeOrder);
 
 protected:
-  Standard_EXPORT FairCurve_DistributionOfEnergy(const Standard_Integer               BSplOrder,
-                                                 const Handle(TColStd_HArray1OfReal)& FlatKnots,
-                                                 const Handle(TColgp_HArray1OfPnt2d)& Poles,
-                                                 const Standard_Integer DerivativeOrder,
-                                                 const Standard_Integer NbValAux = 0);
+  Standard_EXPORT FairCurve_DistributionOfEnergy(
+    const int                                         BSplOrder,
+    const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
+    const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+    const int                                         DerivativeOrder,
+    const int                                         NbValAux = 0);
 
-  Standard_Integer              MyBSplOrder;
-  Handle(TColStd_HArray1OfReal) MyFlatKnots;
-  Handle(TColgp_HArray1OfPnt2d) MyPoles;
-  Standard_Integer              MyDerivativeOrder;
-  Standard_Integer              MyNbVar;
-  Standard_Integer              MyNbEqua;
-  Standard_Integer              MyNbValAux;
-
-private:
+  int                                        MyBSplOrder;
+  occ::handle<NCollection_HArray1<double>>   MyFlatKnots;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> MyPoles;
+  int                                        MyDerivativeOrder;
+  int                                        MyNbVar;
+  int                                        MyNbEqua;
+  int                                        MyNbValAux;
 };
 
 #endif // _FairCurve_DistributionOfEnergy_HeaderFile

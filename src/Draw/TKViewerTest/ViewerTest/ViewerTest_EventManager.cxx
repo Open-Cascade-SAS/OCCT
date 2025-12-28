@@ -42,13 +42,13 @@
 
 void ViewerTest_EventManager::onWasmRedrawView(void*)
 {
-  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  occ::handle<ViewerTest_EventManager> aViewCtrl = ViewerTest::CurrentEventManager();
   if (!aViewCtrl.IsNull())
   {
     aViewCtrl->myNbUpdateRequests = 0;
 
-    const Handle(V3d_View)&               aView = ViewerTest::CurrentView();
-    const Handle(AIS_InteractiveContext)& aCtx  = ViewerTest::GetAISContext();
+    const occ::handle<V3d_View>&               aView = ViewerTest::CurrentView();
+    const occ::handle<AIS_InteractiveContext>& aCtx  = ViewerTest::GetAISContext();
     if (!aView.IsNull() && !aCtx.IsNull())
     {
       aViewCtrl->ProcessExpose();
@@ -57,78 +57,75 @@ void ViewerTest_EventManager::onWasmRedrawView(void*)
 }
 #endif
 
-Standard_IMPORT Standard_Boolean Draw_Interprete(const char* theCommand);
+Standard_IMPORT bool Draw_Interprete(const char* theCommand);
 
 IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_EventManager, Standard_Transient)
 
 //=================================================================================================
 
-const Handle(AIS_AnimationCamera)& ViewerTest_EventManager::GlobalViewAnimation()
+const occ::handle<AIS_AnimationCamera>& ViewerTest_EventManager::GlobalViewAnimation()
 {
-  static Handle(AIS_AnimationCamera) THE_CAMERA_ANIM =
-    new AIS_AnimationCamera("ViewerTest_EventManager_ViewAnimation", Handle(V3d_View)());
+  static occ::handle<AIS_AnimationCamera> THE_CAMERA_ANIM =
+    new AIS_AnimationCamera("ViewerTest_EventManager_ViewAnimation", occ::handle<V3d_View>());
   THE_CAMERA_ANIM->SetOwnDuration(0.5);
   return THE_CAMERA_ANIM;
 }
 
 //=================================================================================================
 
-ViewerTest_EventManager::ViewerTest_EventManager(const Handle(V3d_View)&               theView,
-                                                 const Handle(AIS_InteractiveContext)& theCtx)
+ViewerTest_EventManager::ViewerTest_EventManager(const occ::handle<V3d_View>&               theView,
+                                                 const occ::handle<AIS_InteractiveContext>& theCtx)
     : myCtx(theCtx),
       myView(theView),
-      myToPickPnt(Standard_False),
-      myIsTmpContRedraw(Standard_False),
+      myToPickPnt(false),
+      myIsTmpContRedraw(false),
       myNbUpdateRequests(0)
 {
   myViewAnimation = GlobalViewAnimation();
 
   addActionHotKeys(Aspect_VKey_NavForward,
-                   (Standard_UInteger)Aspect_VKey_W,
-                   (Standard_UInteger)Aspect_VKey_W | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_W,
+                   (unsigned int)Aspect_VKey_W | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavBackward,
-                   (Standard_UInteger)Aspect_VKey_S,
-                   (Standard_UInteger)Aspect_VKey_S | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_S,
+                   (unsigned int)Aspect_VKey_S | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSlideLeft,
-                   (Standard_UInteger)Aspect_VKey_A,
-                   (Standard_UInteger)Aspect_VKey_A | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_A,
+                   (unsigned int)Aspect_VKey_A | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSlideRight,
-                   (Standard_UInteger)Aspect_VKey_D,
-                   (Standard_UInteger)Aspect_VKey_D | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_D,
+                   (unsigned int)Aspect_VKey_D | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavRollCCW,
-                   (Standard_UInteger)Aspect_VKey_Q,
-                   (Standard_UInteger)Aspect_VKey_Q | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_Q,
+                   (unsigned int)Aspect_VKey_Q | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavRollCW,
-                   (Standard_UInteger)Aspect_VKey_E,
-                   (Standard_UInteger)Aspect_VKey_E | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_E,
+                   (unsigned int)Aspect_VKey_E | (unsigned int)Aspect_VKeyFlags_SHIFT);
 
   addActionHotKeys(Aspect_VKey_NavSpeedIncrease,
-                   (Standard_UInteger)Aspect_VKey_Plus,
-                   (Standard_UInteger)Aspect_VKey_Plus | (Standard_UInteger)Aspect_VKeyFlags_SHIFT,
-                   (Standard_UInteger)Aspect_VKey_Equal,
-                   (Standard_UInteger)Aspect_VKey_NumpadAdd,
-                   (Standard_UInteger)Aspect_VKey_NumpadAdd
-                     | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_Plus,
+                   (unsigned int)Aspect_VKey_Plus | (unsigned int)Aspect_VKeyFlags_SHIFT,
+                   (unsigned int)Aspect_VKey_Equal,
+                   (unsigned int)Aspect_VKey_NumpadAdd,
+                   (unsigned int)Aspect_VKey_NumpadAdd | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSpeedDecrease,
-                   (Standard_UInteger)Aspect_VKey_Minus,
-                   (Standard_UInteger)Aspect_VKey_Minus | (Standard_UInteger)Aspect_VKeyFlags_SHIFT,
-                   (Standard_UInteger)Aspect_VKey_NumpadSubtract,
-                   (Standard_UInteger)Aspect_VKey_NumpadSubtract
-                     | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_Minus,
+                   (unsigned int)Aspect_VKey_Minus | (unsigned int)Aspect_VKeyFlags_SHIFT,
+                   (unsigned int)Aspect_VKey_NumpadSubtract,
+                   (unsigned int)Aspect_VKey_NumpadSubtract | (unsigned int)Aspect_VKeyFlags_SHIFT);
 
-  addActionHotKeys(Aspect_VKey_NavLookUp, (Standard_UInteger)Aspect_VKey_Up);
-  addActionHotKeys(Aspect_VKey_NavLookDown, (Standard_UInteger)Aspect_VKey_Down);
-  addActionHotKeys(Aspect_VKey_NavLookLeft, (Standard_UInteger)Aspect_VKey_Left);
-  addActionHotKeys(Aspect_VKey_NavLookRight, (Standard_UInteger)Aspect_VKey_Right);
+  addActionHotKeys(Aspect_VKey_NavLookUp, (unsigned int)Aspect_VKey_Up);
+  addActionHotKeys(Aspect_VKey_NavLookDown, (unsigned int)Aspect_VKey_Down);
+  addActionHotKeys(Aspect_VKey_NavLookLeft, (unsigned int)Aspect_VKey_Left);
+  addActionHotKeys(Aspect_VKey_NavLookRight, (unsigned int)Aspect_VKey_Right);
   addActionHotKeys(Aspect_VKey_NavSlideLeft,
-                   (Standard_UInteger)Aspect_VKey_Left | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_Left | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSlideRight,
-                   (Standard_UInteger)Aspect_VKey_Right
-                     | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_Right | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSlideUp,
-                   (Standard_UInteger)Aspect_VKey_Up | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_Up | (unsigned int)Aspect_VKeyFlags_SHIFT);
   addActionHotKeys(Aspect_VKey_NavSlideDown,
-                   (Standard_UInteger)Aspect_VKey_Down | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+                   (unsigned int)Aspect_VKey_Down | (unsigned int)Aspect_VKeyFlags_SHIFT);
 
   // window could be actually not yet set to the View
   // SetupWindowCallbacks (theView->Window());
@@ -141,16 +138,16 @@ ViewerTest_EventManager::~ViewerTest_EventManager()
   if (!myViewAnimation.IsNull() && myViewAnimation->View() == myView)
   {
     myViewAnimation->Stop();
-    myViewAnimation->SetView(Handle(V3d_View)());
+    myViewAnimation->SetView(occ::handle<V3d_View>());
   }
 }
 
 //=================================================================================================
 
-bool ViewerTest_EventManager::UpdateMouseClick(const Graphic3d_Vec2i& thePoint,
-                                               Aspect_VKeyMouse       theButton,
-                                               Aspect_VKeyFlags       theModifiers,
-                                               bool                   theIsDoubleClick)
+bool ViewerTest_EventManager::UpdateMouseClick(const NCollection_Vec2<int>& thePoint,
+                                               Aspect_VKeyMouse             theButton,
+                                               Aspect_VKeyFlags             theModifiers,
+                                               bool                         theIsDoubleClick)
 {
   if (theIsDoubleClick && !myView.IsNull() && !myCtx.IsNull())
   {
@@ -166,8 +163,8 @@ bool ViewerTest_EventManager::UpdateMouseScroll(const Aspect_ScrollDelta& theDel
 {
   if (!myView.IsNull() && (myView->IsSubview() || !myView->Subviews().IsEmpty()))
   {
-    Handle(V3d_View) aParent     = !myView->IsSubview() ? myView : myView->ParentView();
-    Handle(V3d_View) aPickedView = aParent->PickSubview(theDelta.Point);
+    occ::handle<V3d_View> aParent     = !myView->IsSubview() ? myView : myView->ParentView();
+    occ::handle<V3d_View> aPickedView = aParent->PickSubview(theDelta.Point);
     if (!aPickedView.IsNull() && aPickedView != myView)
     {
       // switch input focus to another subview
@@ -181,17 +178,17 @@ bool ViewerTest_EventManager::UpdateMouseScroll(const Aspect_ScrollDelta& theDel
 
 //=================================================================================================
 
-bool ViewerTest_EventManager::UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
-                                                 Aspect_VKeyMouse       theButtons,
-                                                 Aspect_VKeyFlags       theModifiers,
-                                                 bool                   theIsEmulated)
+bool ViewerTest_EventManager::UpdateMouseButtons(const NCollection_Vec2<int>& thePoint,
+                                                 Aspect_VKeyMouse             theButtons,
+                                                 Aspect_VKeyFlags             theModifiers,
+                                                 bool                         theIsEmulated)
 {
   if (!myView.IsNull() && myMousePressed == Aspect_VKeyMouse_NONE
       && theButtons != Aspect_VKeyMouse_NONE
       && (myView->IsSubview() || !myView->Subviews().IsEmpty()))
   {
-    Handle(V3d_View) aParent     = !myView->IsSubview() ? myView : myView->ParentView();
-    Handle(V3d_View) aPickedView = aParent->PickSubview(thePoint);
+    occ::handle<V3d_View> aParent     = !myView->IsSubview() ? myView : myView->ParentView();
+    occ::handle<V3d_View> aPickedView = aParent->PickSubview(thePoint);
     if (!aPickedView.IsNull() && aPickedView != myView)
     {
       // switch input focus to another subview
@@ -205,7 +202,7 @@ bool ViewerTest_EventManager::UpdateMouseButtons(const Graphic3d_Vec2i& thePoint
   {
     if (myToPickPnt && (theModifiers & Aspect_VKeyFlags_CTRL) != 0)
     {
-      Graphic3d_Vec3d anXYZ;
+      NCollection_Vec3<double> anXYZ;
       myView->Convert(thePoint.x(), thePoint.y(), anXYZ.x(), anXYZ.y(), anXYZ.z());
       Draw::Set(myPickPntArgVec[0].ToCString(), anXYZ.x());
       Draw::Set(myPickPntArgVec[1].ToCString(), anXYZ.y());
@@ -229,8 +226,8 @@ void ViewerTest_EventManager::ProcessExpose()
 
 //=================================================================================================
 
-void ViewerTest_EventManager::handleViewRedraw(const Handle(AIS_InteractiveContext)& theCtx,
-                                               const Handle(V3d_View)&               theView)
+void ViewerTest_EventManager::handleViewRedraw(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                               const occ::handle<V3d_View>&               theView)
 {
   AIS_ViewController::handleViewRedraw(theCtx, theView);
 
@@ -284,11 +281,11 @@ void ViewerTest_EventManager::ProcessConfigure(bool theIsResized)
     return;
   }
 
-  Handle(V3d_View) aParent = !myView->IsSubview() ? myView : myView->ParentView();
+  occ::handle<V3d_View> aParent = !myView->IsSubview() ? myView : myView->ParentView();
   aParent->Window()->DoResize();
   aParent->MustBeResized();
   aParent->Invalidate();
-  for (const Handle(V3d_View)& aChildIter : aParent->Subviews())
+  for (const occ::handle<V3d_View>& aChildIter : aParent->Subviews())
   {
     aChildIter->Window()->DoResize();
     aChildIter->MustBeResized();
@@ -300,9 +297,9 @@ void ViewerTest_EventManager::ProcessConfigure(bool theIsResized)
 
 //=================================================================================================
 
-void ViewerTest_EventManager::OnSubviewChanged(const Handle(AIS_InteractiveContext)&,
-                                               const Handle(V3d_View)&,
-                                               const Handle(V3d_View)& theNewView)
+void ViewerTest_EventManager::OnSubviewChanged(const occ::handle<AIS_InteractiveContext>&,
+                                               const occ::handle<V3d_View>&,
+                                               const occ::handle<V3d_View>& theNewView)
 {
   ViewerTest::ActivateView(theNewView, false);
 }
@@ -454,16 +451,17 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
                                              : Prs3d_TOH_Algo);
       if (myCtx->NbSelected() == 0)
       {
-        AIS_ListOfInteractive aListOfShapes;
+        NCollection_List<occ::handle<AIS_InteractiveObject>> aListOfShapes;
         myCtx->DisplayedObjects(aListOfShapes);
-        for (AIS_ListIteratorOfListOfInteractive anIter(aListOfShapes); anIter.More();
+        for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anIter(aListOfShapes);
+             anIter.More();
              anIter.Next())
         {
-          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anIter.Value()))
+          if (occ::handle<AIS_Shape> aShape = occ::down_cast<AIS_Shape>(anIter.Value()))
           {
             aShape->SetTypeOfHLR(aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo ? Prs3d_TOH_Algo
                                                                            : Prs3d_TOH_PolyAlgo);
-            myCtx->Redisplay(aShape, Standard_False);
+            myCtx->Redisplay(aShape, false);
           }
         }
       }
@@ -471,21 +469,22 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
       {
         for (myCtx->InitSelected(); myCtx->MoreSelected(); myCtx->NextSelected())
         {
-          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(myCtx->SelectedInteractive()))
+          if (occ::handle<AIS_Shape> aShape =
+                occ::down_cast<AIS_Shape>(myCtx->SelectedInteractive()))
           {
             aShape->SetTypeOfHLR(aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo ? Prs3d_TOH_Algo
                                                                            : Prs3d_TOH_PolyAlgo);
-            myCtx->Redisplay(aShape, Standard_False);
+            myCtx->Redisplay(aShape, false);
           }
         }
       }
       myCtx->UpdateCurrentViewer();
       break;
     }
-    case (Standard_UInteger)Aspect_VKey_S | (Standard_UInteger)Aspect_VKeyFlags_CTRL:
-    case (Standard_UInteger)Aspect_VKey_W | (Standard_UInteger)Aspect_VKeyFlags_CTRL: {
-      Standard_Integer aDispMode = AIS_Shaded;
-      if (theKey == ((Standard_UInteger)Aspect_VKey_S | (Standard_UInteger)Aspect_VKeyFlags_CTRL))
+    case (unsigned int)Aspect_VKey_S | (unsigned int)Aspect_VKeyFlags_CTRL:
+    case (unsigned int)Aspect_VKey_W | (unsigned int)Aspect_VKeyFlags_CTRL: {
+      int aDispMode = AIS_Shaded;
+      if (theKey == ((unsigned int)Aspect_VKey_S | (unsigned int)Aspect_VKeyFlags_CTRL))
       {
         aDispMode = AIS_Shaded;
         std::cout << "setup Shaded display mode\n";
@@ -565,7 +564,7 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
     }
     case Aspect_VKey_Slash:
     case Aspect_VKey_NumpadDivide: {
-      Handle(Graphic3d_Camera) aCamera = myView->Camera();
+      occ::handle<Graphic3d_Camera> aCamera = myView->Camera();
       if (aCamera->IsStereo())
       {
         aCamera->SetIOD(aCamera->GetIODType(), aCamera->IOD() - 0.01);
@@ -574,7 +573,7 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
       break;
     }
     case Aspect_VKey_NumpadMultiply: {
-      Handle(Graphic3d_Camera) aCamera = myView->Camera();
+      occ::handle<Graphic3d_Camera> aCamera = myView->Camera();
       if (aCamera->IsStereo())
       {
         aCamera->SetIOD(aCamera->GetIODType(), aCamera->IOD() + 0.01);
@@ -615,18 +614,19 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
 
   if (theKey >= Aspect_VKey_0 && theKey <= Aspect_VKey_7)
   {
-    const Standard_Integer aSelMode = theKey - Aspect_VKey_0;
-    bool                   toEnable = true;
+    const int aSelMode = theKey - Aspect_VKey_0;
+    bool      toEnable = true;
     if (!myCtx.IsNull())
     {
-      AIS_ListOfInteractive aPrsList;
+      NCollection_List<occ::handle<AIS_InteractiveObject>> aPrsList;
       myCtx->DisplayedObjects(aPrsList);
-      for (AIS_ListOfInteractive::Iterator aPrsIter(aPrsList); aPrsIter.More() && toEnable;
+      for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator aPrsIter(aPrsList);
+           aPrsIter.More() && toEnable;
            aPrsIter.Next())
       {
-        TColStd_ListOfInteger aModes;
+        NCollection_List<int> aModes;
         myCtx->ActivatedModes(aPrsIter.Value(), aModes);
-        for (TColStd_ListOfInteger::Iterator aModeIter(aModes); aModeIter.More() && toEnable;
+        for (NCollection_List<int>::Iterator aModeIter(aModes); aModeIter.More() && toEnable;
              aModeIter.Next())
         {
           if (aModeIter.Value() == aSelMode)
@@ -646,11 +646,11 @@ void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
 //! Handle browser window resize event.
 static EM_BOOL onResizeCallback(int theEventType, const EmscriptenUiEvent* theEvent, void*)
 {
-  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  occ::handle<ViewerTest_EventManager> aViewCtrl = ViewerTest::CurrentEventManager();
   if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow =
-      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    occ::handle<Wasm_Window> aWindow =
+      occ::down_cast<Wasm_Window>(ViewerTest::CurrentView()->Window());
     return aWindow->ProcessUiEvent(*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
@@ -670,11 +670,11 @@ EM_JS(int, occJSGetBoundingClientLeft, (), { return Math.round(Module._myCanvasR
 //! Handle mouse input event.
 static EM_BOOL onWasmMouseCallback(int theEventType, const EmscriptenMouseEvent* theEvent, void*)
 {
-  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  occ::handle<ViewerTest_EventManager> aViewCtrl = ViewerTest::CurrentEventManager();
   if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow =
-      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    occ::handle<Wasm_Window> aWindow =
+      occ::down_cast<Wasm_Window>(ViewerTest::CurrentView()->Window());
     if (theEventType == EMSCRIPTEN_EVENT_MOUSEMOVE || theEventType == EMSCRIPTEN_EVENT_MOUSEUP)
     {
       // these events are bound to EMSCRIPTEN_EVENT_TARGET_WINDOW, and coordinates should be
@@ -695,11 +695,11 @@ static EM_BOOL onWasmMouseCallback(int theEventType, const EmscriptenMouseEvent*
 //! Handle mouse wheel event.
 static EM_BOOL onWasmWheelCallback(int theEventType, const EmscriptenWheelEvent* theEvent, void*)
 {
-  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  occ::handle<ViewerTest_EventManager> aViewCtrl = ViewerTest::CurrentEventManager();
   if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow =
-      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    occ::handle<Wasm_Window> aWindow =
+      occ::down_cast<Wasm_Window>(ViewerTest::CurrentView()->Window());
     return aWindow->ProcessWheelEvent(*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
@@ -708,11 +708,11 @@ static EM_BOOL onWasmWheelCallback(int theEventType, const EmscriptenWheelEvent*
 //! Handle touch input event.
 static EM_BOOL onWasmTouchCallback(int theEventType, const EmscriptenTouchEvent* theEvent, void*)
 {
-  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  occ::handle<ViewerTest_EventManager> aViewCtrl = ViewerTest::CurrentEventManager();
   if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow =
-      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    occ::handle<Wasm_Window> aWindow =
+      occ::down_cast<Wasm_Window>(ViewerTest::CurrentView()->Window());
     return aWindow->ProcessTouchEvent(*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
@@ -721,11 +721,11 @@ static EM_BOOL onWasmTouchCallback(int theEventType, const EmscriptenTouchEvent*
 //! Handle keyboard input event.
 static EM_BOOL onWasmKeyCallback(int theEventType, const EmscriptenKeyboardEvent* theEvent, void*)
 {
-  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  occ::handle<ViewerTest_EventManager> aViewCtrl = ViewerTest::CurrentEventManager();
   if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow =
-      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    occ::handle<Wasm_Window> aWindow =
+      occ::down_cast<Wasm_Window>(ViewerTest::CurrentView()->Window());
     aWindow->ProcessKeyEvent(*aViewCtrl, theEventType, theEvent);
     return EM_TRUE;
   }
@@ -735,11 +735,11 @@ static EM_BOOL onWasmKeyCallback(int theEventType, const EmscriptenKeyboardEvent
 //! Handle focus change event.
 static EM_BOOL onWasmFocusCallback(int theEventType, const EmscriptenFocusEvent* theEvent, void*)
 {
-  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  occ::handle<ViewerTest_EventManager> aViewCtrl = ViewerTest::CurrentEventManager();
   if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow =
-      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    occ::handle<Wasm_Window> aWindow =
+      occ::down_cast<Wasm_Window>(ViewerTest::CurrentView()->Window());
     return aWindow->ProcessFocusEvent(*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
@@ -748,7 +748,7 @@ static EM_BOOL onWasmFocusCallback(int theEventType, const EmscriptenFocusEvent*
 
 //=================================================================================================
 
-void ViewerTest_EventManager::SetupWindowCallbacks(const Handle(Aspect_Window)& theWin)
+void ViewerTest_EventManager::SetupWindowCallbacks(const occ::handle<Aspect_Window>& theWin)
 {
 #ifdef _WIN32
   (void)theWin;
@@ -775,7 +775,7 @@ void ViewerTest_EventManager::SetupWindowCallbacks(const Handle(Aspect_Window)& 
 
   XSynchronize(anXDisplay, 0);
 #elif defined(__EMSCRIPTEN__)
-  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast(theWin);
+  occ::handle<Wasm_Window> aWindow = occ::down_cast<Wasm_Window>(theWin);
   if (aWindow->CanvasId().IsEmpty() || aWindow->CanvasId() == "#")
   {
     Message::SendFail("Error: unable registering callbacks to Module.canvas");

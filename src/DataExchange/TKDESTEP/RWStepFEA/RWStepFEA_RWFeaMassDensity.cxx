@@ -27,10 +27,10 @@ RWStepFEA_RWFeaMassDensity::RWStepFEA_RWFeaMassDensity() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaMassDensity::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepFEA_FeaMassDensity)&  ent) const
+void RWStepFEA_RWFeaMassDensity::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                                   num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepFEA_FeaMassDensity>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_mass_density"))
@@ -38,12 +38,12 @@ void RWStepFEA_RWFeaMassDensity::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of FeaMassDensity
 
-  Standard_Real aFeaConstant;
+  double aFeaConstant;
   data->ReadReal(num, 2, "fea_constant", ach, aFeaConstant);
 
   // Initialize entity
@@ -52,8 +52,8 @@ void RWStepFEA_RWFeaMassDensity::ReadStep(const Handle(StepData_StepReaderData)&
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaMassDensity::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepFEA_FeaMassDensity)& ent) const
+void RWStepFEA_RWFeaMassDensity::WriteStep(StepData_StepWriter&                       SW,
+                                           const occ::handle<StepFEA_FeaMassDensity>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -67,7 +67,7 @@ void RWStepFEA_RWFeaMassDensity::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaMassDensity::Share(const Handle(StepFEA_FeaMassDensity)&,
+void RWStepFEA_RWFeaMassDensity::Share(const occ::handle<StepFEA_FeaMassDensity>&,
                                        Interface_EntityIterator&) const
 {
   // Inherited fields of RepresentationItem

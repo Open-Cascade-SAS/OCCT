@@ -15,14 +15,14 @@
 
 //=================================================================================================
 
-inline void STEPCAFControl_ExternFile::SetWS(const Handle(XSControl_WorkSession)& WS)
+inline void STEPCAFControl_ExternFile::SetWS(const occ::handle<XSControl_WorkSession>& WS)
 {
   myWS = WS;
 }
 
 //=================================================================================================
 
-inline Handle(XSControl_WorkSession) STEPCAFControl_ExternFile::GetWS() const
+inline occ::handle<XSControl_WorkSession> STEPCAFControl_ExternFile::GetWS() const
 {
   return myWS;
 }
@@ -43,14 +43,14 @@ inline IFSelect_ReturnStatus STEPCAFControl_ExternFile::GetLoadStatus() const
 
 //=================================================================================================
 
-inline void STEPCAFControl_ExternFile::SetTransferStatus(const Standard_Boolean isok)
+inline void STEPCAFControl_ExternFile::SetTransferStatus(const bool isok)
 {
   myTransferStatus = isok;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean STEPCAFControl_ExternFile::GetTransferStatus() const
+inline bool STEPCAFControl_ExternFile::GetTransferStatus() const
 {
   return myTransferStatus;
 }
@@ -71,14 +71,14 @@ inline IFSelect_ReturnStatus STEPCAFControl_ExternFile::GetWriteStatus() const
 
 //=================================================================================================
 
-inline void STEPCAFControl_ExternFile::SetName(const Handle(TCollection_HAsciiString)& name)
+inline void STEPCAFControl_ExternFile::SetName(const occ::handle<TCollection_HAsciiString>& name)
 {
   myName = name;
 }
 
 //=================================================================================================
 
-inline Handle(TCollection_HAsciiString) STEPCAFControl_ExternFile::GetName() const
+inline occ::handle<TCollection_HAsciiString> STEPCAFControl_ExternFile::GetName() const
 {
   return myName;
 }
@@ -86,14 +86,12 @@ inline Handle(TCollection_HAsciiString) STEPCAFControl_ExternFile::GetName() con
 /*
 //=================================================================================================
 
-
 inline void STEPCAFControl_ExternFile::SetShape (const TopoDS_Shape &Shape)
 {
   myShape = Shape;
 }
 
 //=================================================================================================
-
 
 inline TopoDS_Shape STEPCAFControl_ExternFile::GetShape () const
 {

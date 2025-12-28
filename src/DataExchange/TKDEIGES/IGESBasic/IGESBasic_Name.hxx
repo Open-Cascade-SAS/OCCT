@@ -23,9 +23,6 @@
 #include <IGESData_NameEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESBasic_Name;
-DEFINE_STANDARD_HANDLE(IGESBasic_Name, IGESData_NameEntity)
-
 //! defines Name, Type <406> Form <15>
 //! in package IGESBasic
 //! Used to specify a user defined name
@@ -38,21 +35,20 @@ public:
   //! This method is used to set the fields of the class Name
   //! - nbPropVal  : Number of property values, always = 1
   //! - aName      : Stores the Name
-  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
-                            const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void Init(const int                                    nbPropVal,
+                            const occ::handle<TCollection_HAsciiString>& aName);
 
   //! returns the number of property values, which should be 1
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the user defined Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Value() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Value() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_Name, IGESData_NameEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbPropertyValues;
-  Handle(TCollection_HAsciiString) theName;
+  int                                   theNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> theName;
 };
 
 #endif // _IGESBasic_Name_HeaderFile

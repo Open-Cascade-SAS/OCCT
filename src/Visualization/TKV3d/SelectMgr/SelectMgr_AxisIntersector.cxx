@@ -46,14 +46,14 @@ void SelectMgr_AxisIntersector::Build() {}
 
 //=================================================================================================
 
-void SelectMgr_AxisIntersector::SetCamera(const Handle(Graphic3d_Camera)&) {}
+void SelectMgr_AxisIntersector::SetCamera(const occ::handle<Graphic3d_Camera>&) {}
 
 //=================================================================================================
 
-Handle(SelectMgr_BaseIntersector) SelectMgr_AxisIntersector::ScaleAndTransform(
-  const Standard_Integer                  theScaleFactor,
-  const gp_GTrsf&                         theTrsf,
-  const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
+occ::handle<SelectMgr_BaseIntersector> SelectMgr_AxisIntersector::ScaleAndTransform(
+  const int                                    theScaleFactor,
+  const gp_GTrsf&                              theTrsf,
+  const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::ScaleAndTransform() should be called "
@@ -73,9 +73,9 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_AxisIntersector::ScaleAndTransform(
   aTrsf.SetTranslationPart(gp_XYZ(0., 0., 0.));
   aTrsf.Transforms(aTransformedDir);
 
-  Handle(SelectMgr_AxisIntersector) aRes = new SelectMgr_AxisIntersector();
-  aRes->myAxis                           = gp_Ax1(aTransformedLoc, gp_Dir(aTransformedDir));
-  aRes->mySelectionType                  = mySelectionType;
+  occ::handle<SelectMgr_AxisIntersector> aRes = new SelectMgr_AxisIntersector();
+  aRes->myAxis                                = gp_Ax1(aTransformedLoc, gp_Dir(aTransformedDir));
+  aRes->mySelectionType                       = mySelectionType;
   return aRes;
 }
 
@@ -84,47 +84,46 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_AxisIntersector::ScaleAndTransform(
 // purpose  : Returns a copy of the frustum using the given frustum builder configuration.
 //            Returned frustum should be re-constructed before being used.
 //=======================================================================
-Handle(SelectMgr_BaseIntersector) SelectMgr_AxisIntersector::CopyWithBuilder(
-  const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
+occ::handle<SelectMgr_BaseIntersector> SelectMgr_AxisIntersector::CopyWithBuilder(
+  const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const
 {
   (void)theBuilder;
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::CopyWithBuilder() should be called "
                         "after selection axis initialization");
 
-  Handle(SelectMgr_AxisIntersector) aRes = new SelectMgr_AxisIntersector();
-  aRes->myAxis                           = myAxis;
-  aRes->mySelectionType                  = mySelectionType;
+  occ::handle<SelectMgr_AxisIntersector> aRes = new SelectMgr_AxisIntersector();
+  aRes->myAxis                                = myAxis;
+  aRes->mySelectionType                       = mySelectionType;
 
   return aRes;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::hasIntersection(const SelectMgr_Vec3& theBoxMin,
-                                                            const SelectMgr_Vec3& theBoxMax,
-                                                            Standard_Real&        theTimeEnter,
-                                                            Standard_Real& theTimeLeave) const
+bool SelectMgr_AxisIntersector::hasIntersection(const NCollection_Vec3<double>& theBoxMin,
+                                                const NCollection_Vec3<double>& theBoxMax,
+                                                double&                         theTimeEnter,
+                                                double&                         theTimeLeave) const
 {
-  const gp_Pnt&             anAxisLoc = myAxis.Location();
-  const gp_Dir&             anAxisDir = myAxis.Direction();
-  BVH_Ray<Standard_Real, 3> aRay(SelectMgr_Vec3(anAxisLoc.X(), anAxisLoc.Y(), anAxisLoc.Z()),
-                                 SelectMgr_Vec3(anAxisDir.X(), anAxisDir.Y(), anAxisDir.Z()));
-  if (!BVH_Tools<Standard_Real, 3>::RayBoxIntersection(aRay,
-                                                       theBoxMin,
-                                                       theBoxMax,
-                                                       theTimeEnter,
-                                                       theTimeLeave))
+  const gp_Pnt&      anAxisLoc = myAxis.Location();
+  const gp_Dir&      anAxisDir = myAxis.Direction();
+  BVH_Ray<double, 3> aRay(NCollection_Vec3<double>(anAxisLoc.X(), anAxisLoc.Y(), anAxisLoc.Z()),
+                          NCollection_Vec3<double>(anAxisDir.X(), anAxisDir.Y(), anAxisDir.Z()));
+  if (!BVH_Tools<double, 3>::RayBoxIntersection(aRay,
+                                                theBoxMin,
+                                                theBoxMax,
+                                                theTimeEnter,
+                                                theTimeLeave))
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::hasIntersection(const gp_Pnt&  thePnt,
-                                                            Standard_Real& theDepth) const
+bool SelectMgr_AxisIntersector::hasIntersection(const gp_Pnt& thePnt, double& theDepth) const
 {
   const gp_Pnt& anAxisLoc = myAxis.Location();
   const gp_Dir& anAxisDir = myAxis.Direction();
@@ -133,25 +132,24 @@ Standard_Boolean SelectMgr_AxisIntersector::hasIntersection(const gp_Pnt&  thePn
   gp_Dir aDirToPnt(thePnt.XYZ() - anAxisLoc.XYZ());
   if (!anAxisDir.IsEqual(aDirToPnt, Precision::Angular()))
   {
-    return Standard_False;
+    return false;
   }
   theDepth = anAxisLoc.Distance(thePnt);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::raySegmentDistance(
-  const gp_Pnt&            theSegPnt1,
-  const gp_Pnt&            theSegPnt2,
-  SelectBasics_PickResult& thePickResult) const
+bool SelectMgr_AxisIntersector::raySegmentDistance(const gp_Pnt&            theSegPnt1,
+                                                   const gp_Pnt&            theSegPnt2,
+                                                   SelectBasics_PickResult& thePickResult) const
 {
   const gp_XYZ anU = theSegPnt2.XYZ() - theSegPnt1.XYZ();
   const gp_XYZ aV  = myAxis.Direction().XYZ();
   const gp_XYZ aW  = theSegPnt1.XYZ() - myAxis.Location().XYZ();
 
-  const gp_XYZ        anUVNormVec    = aV.Crossed(anU);
-  const Standard_Real anUVNormVecMod = anUVNormVec.Modulus();
+  const gp_XYZ anUVNormVec    = aV.Crossed(anU);
+  const double anUVNormVecMod = anUVNormVec.Modulus();
   if (anUVNormVecMod <= Precision::Confusion())
   {
     // Lines have no intersection
@@ -159,8 +157,8 @@ Standard_Boolean SelectMgr_AxisIntersector::raySegmentDistance(
     return false;
   }
 
-  const gp_XYZ        anUWNormVec    = aW.Crossed(anU);
-  const Standard_Real anUWNormVecMod = anUWNormVec.Modulus();
+  const gp_XYZ anUWNormVec    = aW.Crossed(anU);
+  const double anUWNormVecMod = anUWNormVec.Modulus();
   if (anUWNormVecMod <= Precision::Confusion())
   {
     // Lines have no intersection
@@ -168,7 +166,7 @@ Standard_Boolean SelectMgr_AxisIntersector::raySegmentDistance(
     return false;
   }
 
-  const Standard_Real aParam = anUWNormVec.Dot(anUVNormVec) / anUVNormVec.SquareModulus();
+  const double aParam = anUWNormVec.Dot(anUVNormVec) / anUVNormVec.SquareModulus();
   if (aParam < 0.0)
   {
     // Intersection is out of axis start point
@@ -196,10 +194,10 @@ bool SelectMgr_AxisIntersector::rayPlaneIntersection(const gp_Vec&            th
                                                      const gp_Pnt&            thePntOnPlane,
                                                      SelectBasics_PickResult& thePickResult) const
 {
-  gp_XYZ        anU = myAxis.Direction().XYZ();
-  gp_XYZ        aW  = myAxis.Location().XYZ() - thePntOnPlane.XYZ();
-  Standard_Real aD  = thePlane.Dot(anU);
-  Standard_Real aN  = -thePlane.Dot(aW);
+  gp_XYZ anU = myAxis.Direction().XYZ();
+  gp_XYZ aW  = myAxis.Location().XYZ() - thePntOnPlane.XYZ();
+  double aD  = thePlane.Dot(anU);
+  double aN  = -thePlane.Dot(aW);
 
   if (std::abs(aD) < Precision::Confusion())
   {
@@ -207,7 +205,7 @@ bool SelectMgr_AxisIntersector::rayPlaneIntersection(const gp_Vec&            th
     return false;
   }
 
-  Standard_Real aParam = aN / aD;
+  double aParam = aN / aD;
   if (aParam < 0.0)
   {
     thePickResult.Invalidate();
@@ -222,74 +220,72 @@ bool SelectMgr_AxisIntersector::rayPlaneIntersection(const gp_Vec&            th
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsBox(const SelectMgr_Vec3& theBoxMin,
-                                                        const SelectMgr_Vec3& theBoxMax,
-                                                        Standard_Boolean*     theInside) const
+bool SelectMgr_AxisIntersector::OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
+                                            const NCollection_Vec3<double>& theBoxMax,
+                                            bool*                           theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsBox() should be called after "
                         "selection axis initialization");
 
   (void)theInside;
-  Standard_Real aTimeEnter, aTimeLeave;
+  double aTimeEnter, aTimeLeave;
   if (!hasIntersection(theBoxMin, theBoxMax, aTimeEnter, aTimeLeave))
   {
-    return Standard_False;
+    return false;
   }
   if (theInside != NULL)
   {
     *theInside &= (aTimeEnter >= 0.0);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsBox(
-  const SelectMgr_Vec3&          theBoxMin,
-  const SelectMgr_Vec3&          theBoxMax,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_AxisIntersector::OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
+                                            const NCollection_Vec3<double>& theBoxMax,
+                                            const SelectMgr_ViewClipRange&  theClipRange,
+                                            SelectBasics_PickResult&        thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsBox() should be called after "
                         "selection axis initialization");
 
-  Standard_Real aTimeEnter, aTimeLeave;
+  double aTimeEnter, aTimeLeave;
   if (!hasIntersection(theBoxMin, theBoxMax, aTimeEnter, aTimeLeave))
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Real aDepth = 0.0;
-  Bnd_Range     aRange(std::max(aTimeEnter, 0.0), aTimeLeave);
+  double    aDepth = 0.0;
+  Bnd_Range aRange(std::max(aTimeEnter, 0.0), aTimeLeave);
   aRange.GetMin(aDepth);
 
   if (!theClipRange.GetNearestDepth(aRange, aDepth))
   {
-    return Standard_False;
+    return false;
   }
 
   thePickResult.SetDepth(aDepth);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsPoint(
-  const gp_Pnt&                  thePnt,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_AxisIntersector::OverlapsPoint(const gp_Pnt&                  thePnt,
+                                              const SelectMgr_ViewClipRange& theClipRange,
+                                              SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsPoint() should be called after "
                         "selection axis initialization");
 
-  Standard_Real aDepth = 0.0;
+  double aDepth = 0.0;
   if (!hasIntersection(thePnt, aDepth))
   {
-    return Standard_False;
+    return false;
   }
 
   thePickResult.SetDepth(aDepth);
@@ -300,23 +296,22 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsPoint(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsPoint(const gp_Pnt& thePnt) const
+bool SelectMgr_AxisIntersector::OverlapsPoint(const gp_Pnt& thePnt) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsPoint() should be called after "
                         "selection axis initialization");
 
-  Standard_Real aDepth = 0.0;
+  double aDepth = 0.0;
   return hasIntersection(thePnt, aDepth);
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsSegment(
-  const gp_Pnt&                  thePnt1,
-  const gp_Pnt&                  thePnt2,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_AxisIntersector::OverlapsSegment(const gp_Pnt&                  thePnt1,
+                                                const gp_Pnt&                  thePnt2,
+                                                const SelectMgr_ViewClipRange& theClipRange,
+                                                SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsSegment() should be called "
@@ -324,7 +319,7 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsSegment(
 
   if (!raySegmentDistance(thePnt1, thePnt2, thePickResult))
   {
-    return Standard_False;
+    return false;
   }
 
   return !theClipRange.IsClipped(thePickResult.Depth());
@@ -332,11 +327,10 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsSegment(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsPolygon(
-  const TColgp_Array1OfPnt&      theArrayOfPnts,
-  Select3D_TypeOfSensitivity     theSensType,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_AxisIntersector::OverlapsPolygon(const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
+                                                Select3D_TypeOfSensitivity        theSensType,
+                                                const SelectMgr_ViewClipRange&    theClipRange,
+                                                SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsPolygon() should be called "
@@ -344,12 +338,12 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsPolygon(
 
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
-    Standard_Integer        aMatchingSegmentsNb = -1;
+    int                     aMatchingSegmentsNb = -1;
     SelectBasics_PickResult aPickResult;
     thePickResult.Invalidate();
-    const Standard_Integer aLower  = theArrayOfPnts.Lower();
-    const Standard_Integer anUpper = theArrayOfPnts.Upper();
-    for (Standard_Integer aPntIter = aLower; aPntIter <= anUpper; ++aPntIter)
+    const int aLower  = theArrayOfPnts.Lower();
+    const int anUpper = theArrayOfPnts.Upper();
+    for (int aPntIter = aLower; aPntIter <= anUpper; ++aPntIter)
     {
       const gp_Pnt& aStartPnt = theArrayOfPnts.Value(aPntIter);
       const gp_Pnt& aEndPnt   = theArrayOfPnts.Value(aPntIter == anUpper ? aLower : (aPntIter + 1));
@@ -362,18 +356,18 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsPolygon(
 
     if (aMatchingSegmentsNb == -1)
     {
-      return Standard_False;
+      return false;
     }
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
-    Standard_Integer aStartIdx = theArrayOfPnts.Lower();
-    const gp_XYZ&    aPnt1     = theArrayOfPnts.Value(aStartIdx).XYZ();
-    const gp_XYZ&    aPnt2     = theArrayOfPnts.Value(aStartIdx + 1).XYZ();
-    const gp_XYZ&    aPnt3     = theArrayOfPnts.Value(aStartIdx + 2).XYZ();
-    const gp_XYZ     aVec1     = aPnt1 - aPnt2;
-    const gp_XYZ     aVec2     = aPnt3 - aPnt2;
-    gp_Vec           aPolyNorm = aVec2.Crossed(aVec1);
+    int           aStartIdx = theArrayOfPnts.Lower();
+    const gp_XYZ& aPnt1     = theArrayOfPnts.Value(aStartIdx).XYZ();
+    const gp_XYZ& aPnt2     = theArrayOfPnts.Value(aStartIdx + 1).XYZ();
+    const gp_XYZ& aPnt3     = theArrayOfPnts.Value(aStartIdx + 2).XYZ();
+    const gp_XYZ  aVec1     = aPnt1 - aPnt2;
+    const gp_XYZ  aVec2     = aPnt3 - aPnt2;
+    gp_Vec        aPolyNorm = aVec2.Crossed(aVec1);
     if (aPolyNorm.Magnitude() <= Precision::Confusion())
     {
       // treat degenerated polygon as point
@@ -381,7 +375,7 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsPolygon(
     }
     else if (!rayPlaneIntersection(aPolyNorm, theArrayOfPnts.First(), thePickResult))
     {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -390,13 +384,12 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsPolygon(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle(
-  const gp_Pnt&                  thePnt1,
-  const gp_Pnt&                  thePnt2,
-  const gp_Pnt&                  thePnt3,
-  Select3D_TypeOfSensitivity     theSensType,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_AxisIntersector::OverlapsTriangle(const gp_Pnt&                  thePnt1,
+                                                 const gp_Pnt&                  thePnt2,
+                                                 const gp_Pnt&                  thePnt3,
+                                                 Select3D_TypeOfSensitivity     theSensType,
+                                                 const SelectMgr_ViewClipRange& theClipRange,
+                                                 SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsTriangle() should be called "
@@ -404,8 +397,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle(
 
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
-    const gp_Pnt             aPntsArrayBuf[4] = {thePnt1, thePnt2, thePnt3, thePnt1};
-    const TColgp_Array1OfPnt aPntsArray(aPntsArrayBuf[0], 1, 4);
+    const gp_Pnt                     aPntsArrayBuf[4] = {thePnt1, thePnt2, thePnt3, thePnt1};
+    const NCollection_Array1<gp_Pnt> aPntsArray(aPntsArrayBuf[0], 1, 4);
     return OverlapsPolygon(aPntsArray, Select3D_TOS_BOUNDARY, theClipRange, thePickResult);
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
@@ -425,14 +418,14 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle(
                     : OverlapsPoint(thePnt1, theClipRange, thePickResult));
     }
 
-    const gp_Pnt        aPnts[3] = {thePnt1, thePnt2, thePnt3};
-    const Standard_Real anAlpha  = aTriangleNormal.XYZ().Dot(myAxis.Direction().XYZ());
+    const gp_Pnt aPnts[3] = {thePnt1, thePnt2, thePnt3};
+    const double anAlpha  = aTriangleNormal.XYZ().Dot(myAxis.Direction().XYZ());
     if (std::abs(anAlpha) < gp::Resolution())
     {
       // handle the case when triangle normal and selecting frustum direction are orthogonal
       SelectBasics_PickResult aPickResult;
       thePickResult.Invalidate();
-      for (Standard_Integer anEdgeIter = 0; anEdgeIter < 3; ++anEdgeIter)
+      for (int anEdgeIter = 0; anEdgeIter < 3; ++anEdgeIter)
       {
         const gp_Pnt& aStartPnt = aPnts[anEdgeIter];
         const gp_Pnt& anEndPnt  = aPnts[anEdgeIter < 2 ? anEdgeIter + 1 : 0];
@@ -448,13 +441,12 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle(
     // check if intersection point belongs to triangle's interior part
     const gp_XYZ anEdge = (thePnt1.XYZ() - myAxis.Location().XYZ()) * (1.0 / anAlpha);
 
-    const Standard_Real aTime = aTriangleNormal.Dot(anEdge);
-    const gp_XYZ        aVec  = myAxis.Direction().XYZ().Crossed(anEdge);
-    const Standard_Real anU   = aVec.Dot(aTrEdges[2]);
-    const Standard_Real aV    = aVec.Dot(aTrEdges[0]);
+    const double aTime = aTriangleNormal.Dot(anEdge);
+    const gp_XYZ aVec  = myAxis.Direction().XYZ().Crossed(anEdge);
+    const double anU   = aVec.Dot(aTrEdges[2]);
+    const double aV    = aVec.Dot(aTrEdges[0]);
 
-    const Standard_Boolean isInterior =
-      (aTime >= 0.0) && (anU >= 0.0) && (aV >= 0.0) && (anU + aV <= 1.0);
+    const bool   isInterior = (aTime >= 0.0) && (anU >= 0.0) && (aV >= 0.0) && (anU + aV <= 1.0);
     const gp_Pnt aPtOnPlane = myAxis.Location().XYZ() + myAxis.Direction().XYZ() * aTime;
     if (isInterior)
     {
@@ -464,23 +456,21 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle(
       return !theClipRange.IsClipped(thePickResult.Depth());
     }
 
-    Standard_Real    aMinDist         = RealLast();
-    Standard_Integer aNearestEdgeIdx1 = -1;
-    for (Standard_Integer anEdgeIdx = 0; anEdgeIdx < 3; ++anEdgeIdx)
+    double aMinDist         = RealLast();
+    int    aNearestEdgeIdx1 = -1;
+    for (int anEdgeIdx = 0; anEdgeIdx < 3; ++anEdgeIdx)
     {
-      gp_XYZ        aW = aPtOnPlane.XYZ() - aPnts[anEdgeIdx].XYZ();
-      Standard_Real aCoef =
-        aTrEdges[anEdgeIdx].Dot(aW) / aTrEdges[anEdgeIdx].Dot(aTrEdges[anEdgeIdx]);
-      Standard_Real aDist =
-        aPtOnPlane.Distance(aPnts[anEdgeIdx].XYZ() + aCoef * aTrEdges[anEdgeIdx]);
+      gp_XYZ aW    = aPtOnPlane.XYZ() - aPnts[anEdgeIdx].XYZ();
+      double aCoef = aTrEdges[anEdgeIdx].Dot(aW) / aTrEdges[anEdgeIdx].Dot(aTrEdges[anEdgeIdx]);
+      double aDist = aPtOnPlane.Distance(aPnts[anEdgeIdx].XYZ() + aCoef * aTrEdges[anEdgeIdx]);
       if (aDist < aMinDist)
       {
         aMinDist         = aDist;
         aNearestEdgeIdx1 = anEdgeIdx;
       }
     }
-    Standard_Integer aNearestEdgeIdx2 = (aNearestEdgeIdx1 + 1) % 3;
-    const gp_Vec     aVec12(aPnts[aNearestEdgeIdx1], aPnts[aNearestEdgeIdx2]);
+    int          aNearestEdgeIdx2 = (aNearestEdgeIdx1 + 1) % 3;
+    const gp_Vec aVec12(aPnts[aNearestEdgeIdx1], aPnts[aNearestEdgeIdx2]);
     if (aVec12.SquareMagnitude() > gp::Resolution()
         && myAxis.Direction().IsParallel(aVec12, Precision::Angular()))
     {
@@ -497,15 +487,15 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsSphere(const gp_Pnt&       theCenter,
-                                                           const Standard_Real theRadius,
-                                                           Standard_Boolean*   theInside) const
+bool SelectMgr_AxisIntersector::OverlapsSphere(const gp_Pnt& theCenter,
+                                               const double  theRadius,
+                                               bool*         theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsSphere() should be called after "
                         "selection axis initialization");
   (void)theInside;
-  Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
+  double aTimeEnter = 0.0, aTimeLeave = 0.0;
   if (!RaySphereIntersection(theCenter,
                              theRadius,
                              myAxis.Location(),
@@ -513,27 +503,26 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsSphere(const gp_Pnt&       t
                              aTimeEnter,
                              aTimeLeave))
   {
-    return Standard_False;
+    return false;
   }
   if (theInside != NULL)
   {
     *theInside &= (aTimeEnter >= 0.0);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsSphere(
-  const gp_Pnt&                  theCenter,
-  const Standard_Real            theRadius,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_AxisIntersector::OverlapsSphere(const gp_Pnt&                  theCenter,
+                                               const double                   theRadius,
+                                               const SelectMgr_ViewClipRange& theClipRange,
+                                               SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsSphere() should be called after "
                         "selection axis initialization");
-  Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
+  double aTimeEnter = 0.0, aTimeLeave = 0.0;
   if (!RaySphereIntersection(theCenter,
                              theRadius,
                              myAxis.Location(),
@@ -541,15 +530,15 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsSphere(
                              aTimeEnter,
                              aTimeLeave))
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Real aDepth = 0.0;
-  Bnd_Range     aRange(std::max(aTimeEnter, 0.0), aTimeLeave);
+  double    aDepth = 0.0;
+  Bnd_Range aRange(std::max(aTimeEnter, 0.0), aTimeLeave);
   aRange.GetMin(aDepth);
   if (!theClipRange.GetNearestDepth(aRange, aDepth))
   {
-    return Standard_False;
+    return false;
   }
 
   const gp_Pnt aPntOnSphere(myAxis.Location().XYZ() + myAxis.Direction().XYZ() * aDepth);
@@ -557,27 +546,26 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsSphere(
   thePickResult.SetDepth(aDepth);
   thePickResult.SetPickedPoint(aPntOnSphere);
   thePickResult.SetSurfaceNormal(aNormal);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsCylinder(
-  const Standard_Real            theBottomRad,
-  const Standard_Real            theTopRad,
-  const Standard_Real            theHeight,
-  const gp_Trsf&                 theTrsf,
-  const Standard_Boolean         theIsHollow,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_AxisIntersector::OverlapsCylinder(const double                   theBottomRad,
+                                                 const double                   theTopRad,
+                                                 const double                   theHeight,
+                                                 const gp_Trsf&                 theTrsf,
+                                                 const bool                     theIsHollow,
+                                                 const SelectMgr_ViewClipRange& theClipRange,
+                                                 SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsCylinder() should be called "
                         "after selection axis initialization");
-  Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
-  gp_Trsf       aTrsfInv = theTrsf.Inverted();
-  gp_Pnt        aLoc     = myAxis.Location().Transformed(aTrsfInv);
-  gp_Dir        aRayDir  = myAxis.Direction().Transformed(aTrsfInv);
+  double  aTimeEnter = 0.0, aTimeLeave = 0.0;
+  gp_Trsf aTrsfInv = theTrsf.Inverted();
+  gp_Pnt  aLoc     = myAxis.Location().Transformed(aTrsfInv);
+  gp_Dir  aRayDir  = myAxis.Direction().Transformed(aTrsfInv);
   if (!RayCylinderIntersection(theBottomRad,
                                theTopRad,
                                theHeight,
@@ -590,8 +578,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsCylinder(
     return false;
   }
 
-  Standard_Real aDepth = 0.0;
-  Bnd_Range     aRange(std::max(aTimeEnter, 0.0), std::max(aTimeEnter, aTimeLeave));
+  double    aDepth = 0.0;
+  Bnd_Range aRange(std::max(aTimeEnter, 0.0), std::max(aTimeEnter, aTimeLeave));
   aRange.GetMin(aDepth);
   if (!theClipRange.GetNearestDepth(aRange, aDepth))
   {
@@ -619,20 +607,20 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsCylinder(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsCylinder(const Standard_Real    theBottomRad,
-                                                             const Standard_Real    theTopRad,
-                                                             const Standard_Real    theHeight,
-                                                             const gp_Trsf&         theTrsf,
-                                                             const Standard_Boolean theIsHollow,
-                                                             Standard_Boolean*      theInside) const
+bool SelectMgr_AxisIntersector::OverlapsCylinder(const double   theBottomRad,
+                                                 const double   theTopRad,
+                                                 const double   theHeight,
+                                                 const gp_Trsf& theTrsf,
+                                                 const bool     theIsHollow,
+                                                 bool*          theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsCylinder() should be called "
                         "after selection axis initialization");
-  Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
-  gp_Trsf       aTrsfInv = theTrsf.Inverted();
-  gp_Pnt        aLoc     = myAxis.Location().Transformed(aTrsfInv);
-  gp_Dir        aRayDir  = myAxis.Direction().Transformed(aTrsfInv);
+  double  aTimeEnter = 0.0, aTimeLeave = 0.0;
+  gp_Trsf aTrsfInv = theTrsf.Inverted();
+  gp_Pnt  aLoc     = myAxis.Location().Transformed(aTrsfInv);
+  gp_Dir  aRayDir  = myAxis.Direction().Transformed(aTrsfInv);
   if (!RayCylinderIntersection(theBottomRad,
                                theTopRad,
                                theHeight,
@@ -653,26 +641,25 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsCylinder(const Standard_Real
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsCircle(
-  const Standard_Real            theRadius,
-  const gp_Trsf&                 theTrsf,
-  const Standard_Boolean         theIsFilled,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_AxisIntersector::OverlapsCircle(const double                   theRadius,
+                                               const gp_Trsf&                 theTrsf,
+                                               const bool                     theIsFilled,
+                                               const SelectMgr_ViewClipRange& theClipRange,
+                                               SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsCircle() should be called after "
                         "selection axis initialization");
-  Standard_Real aTime    = 0.0;
-  gp_Trsf       aTrsfInv = theTrsf.Inverted();
-  gp_Pnt        aLoc     = myAxis.Location().Transformed(aTrsfInv);
-  gp_Dir        aRayDir  = myAxis.Direction().Transformed(aTrsfInv);
+  double  aTime    = 0.0;
+  gp_Trsf aTrsfInv = theTrsf.Inverted();
+  gp_Pnt  aLoc     = myAxis.Location().Transformed(aTrsfInv);
+  gp_Dir  aRayDir  = myAxis.Direction().Transformed(aTrsfInv);
   if (!RayCircleIntersection(theRadius, aLoc, aRayDir, theIsFilled, aTime))
   {
     return false;
   }
 
-  Standard_Real aDepth = std::max(aTime, 0.0);
+  double aDepth = std::max(aTime, 0.0);
   if (theClipRange.IsClipped(aDepth))
   {
     return false;
@@ -696,18 +683,18 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsCircle(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AxisIntersector::OverlapsCircle(const Standard_Real    theRadius,
-                                                           const gp_Trsf&         theTrsf,
-                                                           const Standard_Boolean theIsFilled,
-                                                           Standard_Boolean*      theInside) const
+bool SelectMgr_AxisIntersector::OverlapsCircle(const double   theRadius,
+                                               const gp_Trsf& theTrsf,
+                                               const bool     theIsFilled,
+                                               bool*          theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::OverlapsCircle() should be called after "
                         "selection axis initialization");
-  Standard_Real aTime    = 0.0;
-  gp_Trsf       aTrsfInv = theTrsf.Inverted();
-  gp_Pnt        aLoc     = myAxis.Location().Transformed(aTrsfInv);
-  gp_Dir        aRayDir  = myAxis.Direction().Transformed(aTrsfInv);
+  double  aTime    = 0.0;
+  gp_Trsf aTrsfInv = theTrsf.Inverted();
+  gp_Pnt  aLoc     = myAxis.Location().Transformed(aTrsfInv);
+  gp_Dir  aRayDir  = myAxis.Direction().Transformed(aTrsfInv);
   if (!RayCircleIntersection(theRadius, aLoc, aRayDir, theIsFilled, aTime))
   {
     return false;
@@ -755,7 +742,7 @@ const gp_Dir& SelectMgr_AxisIntersector::GetViewRayDirection() const
 
 //=================================================================================================
 
-Standard_Real SelectMgr_AxisIntersector::DistToGeometryCenter(const gp_Pnt& theCOG) const
+double SelectMgr_AxisIntersector::DistToGeometryCenter(const gp_Pnt& theCOG) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::DistToGeometryCenter() should be called "
@@ -766,7 +753,7 @@ Standard_Real SelectMgr_AxisIntersector::DistToGeometryCenter(const gp_Pnt& theC
 
 //=================================================================================================
 
-gp_Pnt SelectMgr_AxisIntersector::DetectedPoint(const Standard_Real theDepth) const
+gp_Pnt SelectMgr_AxisIntersector::DetectedPoint(const double theDepth) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
                         "Error! SelectMgr_AxisIntersector::DetectedPoint() should be called after "
@@ -777,8 +764,7 @@ gp_Pnt SelectMgr_AxisIntersector::DetectedPoint(const Standard_Real theDepth) co
 
 //=================================================================================================
 
-void SelectMgr_AxisIntersector::DumpJson(Standard_OStream& theOStream,
-                                         Standard_Integer  theDepth) const
+void SelectMgr_AxisIntersector::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, SelectMgr_AxisIntersector)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, SelectMgr_BaseIntersector)

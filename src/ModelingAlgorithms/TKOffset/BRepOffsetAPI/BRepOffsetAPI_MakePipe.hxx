@@ -63,28 +63,27 @@ public:
   Standard_EXPORT BRepOffsetAPI_MakePipe(const TopoDS_Wire&       Spine,
                                          const TopoDS_Shape&      Profile,
                                          const GeomFill_Trihedron aMode,
-                                         const Standard_Boolean   ForceApproxC1 = Standard_False);
+                                         const bool               ForceApproxC1 = false);
 
   Standard_EXPORT const BRepFill_Pipe& Pipe() const;
 
   //! Builds the resulting shape (redefined from MakeShape).
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the TopoDS Shape of the bottom of the prism.
-  Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
+  Standard_EXPORT TopoDS_Shape FirstShape() override;
 
   //! Returns the TopoDS Shape of the top of the prism.
-  Standard_EXPORT TopoDS_Shape LastShape() Standard_OVERRIDE;
+  Standard_EXPORT TopoDS_Shape LastShape() override;
 
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& S) override;
 
   Standard_EXPORT TopoDS_Shape Generated(const TopoDS_Shape& SSpine, const TopoDS_Shape& SProfile);
 
-  Standard_EXPORT Standard_Real ErrorOnSurface() const;
+  Standard_EXPORT double ErrorOnSurface() const;
 
-protected:
 private:
   BRepFill_Pipe myPipe;
 };

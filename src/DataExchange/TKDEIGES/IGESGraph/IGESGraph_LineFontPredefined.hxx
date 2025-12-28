@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESGraph_LineFontPredefined;
-DEFINE_STANDARD_HANDLE(IGESGraph_LineFontPredefined, IGESData_IGESEntity)
-
 //! defines IGESLineFontPredefined, Type <406> Form <19>
 //! in package IGESGraph
 //!
@@ -41,21 +38,19 @@ public:
   //! LineFontPredefined
   //! - nbProps              : Number of property values (NP = 1)
   //! - aLineFontPatternCode : Line Font Pattern Code
-  Standard_EXPORT void Init(const Standard_Integer nbProps,
-                            const Standard_Integer aLineFontPatternCode);
+  Standard_EXPORT void Init(const int nbProps, const int aLineFontPatternCode);
 
   //! returns the number of property values in <me>
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the Line Font Pattern Code of <me>
-  Standard_EXPORT Standard_Integer LineFontPatternCode() const;
+  Standard_EXPORT int LineFontPatternCode() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_LineFontPredefined, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Integer theLineFontPatternCode;
+  int theNbPropertyValues;
+  int theLineFontPatternCode;
 };
 
 #endif // _IGESGraph_LineFontPredefined_HeaderFile

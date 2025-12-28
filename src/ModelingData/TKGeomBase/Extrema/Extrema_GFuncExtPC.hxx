@@ -24,8 +24,8 @@
 #include <math_FunctionWithDerivative.hxx>
 #include <Precision.hxx>
 #include <Standard_TypeMismatch.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <cmath>
 
@@ -462,21 +462,21 @@ private:
   static constexpr double MinStep   = 1.e-7;
   static constexpr int    MaxOrder  = 3;
 
-  ThePoint                  myP;
-  TheCurve*                 myC;
-  double                    myU;
-  ThePoint                  myPc;
-  double                    myD1f;
-  TColStd_SequenceOfReal    mySqDist;
-  TColStd_SequenceOfInteger myIsMin;
-  TheSeqPOnC                myPoint;
-  bool                      myPinit;
-  bool                      myCinit;
-  bool                      myD1Init;
-  double                    myTol;
-  int                       myMaxDerivOrder;
-  double                    myUinfium;
-  double                    myUsupremum;
+  ThePoint                     myP;
+  TheCurve*                    myC;
+  double                       myU;
+  ThePoint                     myPc;
+  double                       myD1f;
+  NCollection_Sequence<double> mySqDist;
+  NCollection_Sequence<int>    myIsMin;
+  TheSeqPOnC                   myPoint;
+  bool                         myPinit;
+  bool                         myCinit;
+  bool                         myD1Init;
+  double                       myTol;
+  int                          myMaxDerivOrder;
+  double                       myUinfium;
+  double                       myUsupremum;
 };
 
 #endif // _Extrema_GFuncExtPC_HeaderFile

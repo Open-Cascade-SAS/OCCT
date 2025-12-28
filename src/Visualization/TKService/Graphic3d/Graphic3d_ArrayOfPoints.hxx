@@ -26,7 +26,7 @@ public:
   //! The array must be filled using the AddVertex(Point) method.
   //! @param theMaxVertexs maximum number of points
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfPoints(Standard_Integer theMaxVertexs, Graphic3d_ArrayFlags theArrayFlags)
+  Graphic3d_ArrayOfPoints(int theMaxVertexs, Graphic3d_ArrayFlags theArrayFlags)
       : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_POINTS, theMaxVertexs, 0, 0, theArrayFlags)
   {
   }
@@ -38,9 +38,9 @@ public:
   //! color
   //! @param theHasVNormals when TRUE, AddVertex(Point,Normal) should be used for specifying vertex
   //! normal
-  Graphic3d_ArrayOfPoints(Standard_Integer theMaxVertexs,
-                          Standard_Boolean theHasVColors  = Standard_False,
-                          Standard_Boolean theHasVNormals = Standard_False)
+  Graphic3d_ArrayOfPoints(int  theMaxVertexs,
+                          bool theHasVColors  = false,
+                          bool theHasVNormals = false)
       : Graphic3d_ArrayOfPrimitives(
           Graphic3d_TOPA_POINTS,
           theMaxVertexs,
@@ -51,7 +51,5 @@ public:
   {
   }
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfPoints, Graphic3d_ArrayOfPrimitives)
 
 #endif // _Graphic3d_ArrayOfPoints_HeaderFile

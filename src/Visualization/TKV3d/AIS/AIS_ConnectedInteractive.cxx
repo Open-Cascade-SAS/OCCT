@@ -44,8 +44,8 @@ AIS_ConnectedInteractive::AIS_ConnectedInteractive(
 
 //=================================================================================================
 
-void AIS_ConnectedInteractive::connect(const Handle(AIS_InteractiveObject)& theAnotherObj,
-                                       const Handle(TopLoc_Datum3D)&        theLocation)
+void AIS_ConnectedInteractive::connect(const occ::handle<AIS_InteractiveObject>& theAnotherObj,
+                                       const occ::handle<TopLoc_Datum3D>&        theLocation)
 {
   if (myReference == theAnotherObj)
   {
@@ -53,8 +53,8 @@ void AIS_ConnectedInteractive::connect(const Handle(AIS_InteractiveObject)& theA
     return;
   }
 
-  Handle(AIS_ConnectedInteractive) aConnected =
-    Handle(AIS_ConnectedInteractive)::DownCast(theAnotherObj);
+  occ::handle<AIS_ConnectedInteractive> aConnected =
+    occ::down_cast<AIS_ConnectedInteractive>(theAnotherObj);
   if (!aConnected.IsNull())
   {
     myReference = aConnected->myReference;
@@ -87,9 +87,11 @@ void AIS_ConnectedInteractive::connect(const Handle(AIS_InteractiveObject)& theA
 
 void AIS_ConnectedInteractive::Disconnect()
 {
-  for (PrsMgr_Presentations::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)& aPrs = aPrsIter.Value();
+    const occ::handle<PrsMgr_Presentation>& aPrs = aPrsIter.Value();
     if (!aPrs.IsNull())
     {
       aPrs->DisconnectAll(Graphic3d_TOC_DESCENDANT);
@@ -99,13 +101,13 @@ void AIS_ConnectedInteractive::Disconnect()
 
 //=================================================================================================
 
-void AIS_ConnectedInteractive::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer                    theMode)
+void AIS_ConnectedInteractive::Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int                                      theMode)
 {
   if (HasConnection())
   {
-    thePrs->Clear(Standard_False);
+    thePrs->Clear(false);
     thePrs->DisconnectAll(Graphic3d_TOC_DESCENDANT);
 
     if (!myReference->HasInteractiveContext())
@@ -127,9 +129,9 @@ void AIS_ConnectedInteractive::Compute(const Handle(PrsMgr_PresentationManager)&
 
 //=================================================================================================
 
-void AIS_ConnectedInteractive::computeHLR(const Handle(Graphic3d_Camera)&   theProjector,
-                                          const Handle(TopLoc_Datum3D)&     theTransformation,
-                                          const Handle(Prs3d_Presentation)& thePresentation)
+void AIS_ConnectedInteractive::computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
+                                          const occ::handle<TopLoc_Datum3D>&     theTransformation,
+                                          const occ::handle<Prs3d_Presentation>& thePresentation)
 {
   const bool hasTrsf = !theTransformation.IsNull() && theTransformation->Form() != gp_Identity;
   updateShape(!hasTrsf);
@@ -151,9 +153,9 @@ void AIS_ConnectedInteractive::computeHLR(const Handle(Graphic3d_Camera)&   theP
 
 //=================================================================================================
 
-void AIS_ConnectedInteractive::updateShape(const Standard_Boolean isWithLocation)
+void AIS_ConnectedInteractive::updateShape(const bool isWithLocation)
 {
-  Handle(AIS_Shape) anAisShape = Handle(AIS_Shape)::DownCast(myReference);
+  occ::handle<AIS_Shape> anAisShape = occ::down_cast<AIS_Shape>(myReference);
   if (anAisShape.IsNull())
   {
     return;
@@ -177,8 +179,9 @@ void AIS_ConnectedInteractive::updateShape(const Standard_Boolean isWithLocation
 
 //=================================================================================================
 
-void AIS_ConnectedInteractive::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer             theMode)
+void AIS_ConnectedInteractive::ComputeSelection(
+  const occ::handle<SelectMgr_Selection>& theSelection,
+  const int                               theMode)
 {
   if (!HasConnection())
   {
@@ -196,8 +199,8 @@ void AIS_ConnectedInteractive::ComputeSelection(const Handle(SelectMgr_Selection
     myReference->RecomputePrimitives(theMode);
   }
 
-  const Handle(SelectMgr_Selection)& TheRefSel = myReference->Selection(theMode);
-  Handle(SelectMgr_EntityOwner)      anOwner   = new SelectMgr_EntityOwner(this);
+  const occ::handle<SelectMgr_Selection>& TheRefSel = myReference->Selection(theMode);
+  occ::handle<SelectMgr_EntityOwner>      anOwner   = new SelectMgr_EntityOwner(this);
 
   TopLoc_Location aLocation(Transformation());
   anOwner->SetLocation(aLocation);
@@ -207,15 +210,16 @@ void AIS_ConnectedInteractive::ComputeSelection(const Handle(SelectMgr_Selection
     myReference->RecomputePrimitives(theMode);
   }
 
-  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          TheRefSel->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
   {
-    if (const Handle(Select3D_SensitiveEntity)& aSensitive = aSelEntIter.Value()->BaseSensitive())
+    if (const occ::handle<Select3D_SensitiveEntity>& aSensitive =
+          aSelEntIter.Value()->BaseSensitive())
     {
       // Get the copy of SE3D
-      if (Handle(Select3D_SensitiveEntity) aNewSensitive = aSensitive->GetConnected())
+      if (occ::handle<Select3D_SensitiveEntity> aNewSensitive = aSensitive->GetConnected())
       {
         aNewSensitive->Set(anOwner);
         theSelection->Add(aNewSensitive);
@@ -227,18 +231,18 @@ void AIS_ConnectedInteractive::ComputeSelection(const Handle(SelectMgr_Selection
 //=================================================================================================
 
 void AIS_ConnectedInteractive::computeSubShapeSelection(
-  const Handle(SelectMgr_Selection)& theSelection,
-  const Standard_Integer             theMode)
+  const occ::handle<SelectMgr_Selection>& theSelection,
+  const int                               theMode)
 {
-  typedef NCollection_List<Handle(Select3D_SensitiveEntity)> SensitiveList;
-  typedef NCollection_DataMap<TopoDS_Shape, SensitiveList>   Shapes2EntitiesMap;
+  typedef NCollection_List<occ::handle<Select3D_SensitiveEntity>> SensitiveList;
+  typedef NCollection_DataMap<TopoDS_Shape, SensitiveList>        Shapes2EntitiesMap;
 
   if (!myReference->HasSelection(theMode))
   {
     myReference->RecomputePrimitives(theMode);
   }
 
-  const Handle(SelectMgr_Selection)& aRefSel = myReference->Selection(theMode);
+  const occ::handle<SelectMgr_Selection>& aRefSel = myReference->Selection(theMode);
   if (aRefSel->IsEmpty() || aRefSel->UpdateStatus() == SelectMgr_TOU_Full)
   {
     myReference->RecomputePrimitives(theMode);
@@ -246,15 +250,15 @@ void AIS_ConnectedInteractive::computeSubShapeSelection(
 
   // Fill in the map of subshapes and corresponding sensitive entities associated with aMode
   Shapes2EntitiesMap aShapes2EntitiesMap;
-  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          aRefSel->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
   {
-    if (const Handle(Select3D_SensitiveEntity)& aSE = aSelEntIter.Value()->BaseSensitive())
+    if (const occ::handle<Select3D_SensitiveEntity>& aSE = aSelEntIter.Value()->BaseSensitive())
     {
-      if (Handle(StdSelect_BRepOwner) anOwner =
-            Handle(StdSelect_BRepOwner)::DownCast(aSE->OwnerId()))
+      if (occ::handle<StdSelect_BRepOwner> anOwner =
+            occ::down_cast<StdSelect_BRepOwner>(aSE->OwnerId()))
       {
         const TopoDS_Shape& aSubShape = anOwner->Shape();
         if (!aShapes2EntitiesMap.IsBound(aSubShape))
@@ -269,16 +273,13 @@ void AIS_ConnectedInteractive::computeSubShapeSelection(
   // Fill in selection from aShapes2EntitiesMap
   for (Shapes2EntitiesMap::Iterator aMapIt(aShapes2EntitiesMap); aMapIt.More(); aMapIt.Next())
   {
-    const SensitiveList&        aSEList = aMapIt.Value();
-    Handle(StdSelect_BRepOwner) anOwner =
-      new StdSelect_BRepOwner(aMapIt.Key(),
-                              this,
-                              aSEList.First()->OwnerId()->Priority(),
-                              Standard_True);
+    const SensitiveList&             aSEList = aMapIt.Value();
+    occ::handle<StdSelect_BRepOwner> anOwner =
+      new StdSelect_BRepOwner(aMapIt.Key(), this, aSEList.First()->OwnerId()->Priority(), true);
     anOwner->SetLocation(Transformation());
     for (SensitiveList::Iterator aListIt(aSEList); aListIt.More(); aListIt.Next())
     {
-      if (Handle(Select3D_SensitiveEntity) aNewSE = aListIt.Value()->GetConnected())
+      if (occ::handle<Select3D_SensitiveEntity> aNewSE = aListIt.Value()->GetConnected())
       {
         aNewSE->Set(anOwner);
         theSelection->Add(aNewSE);

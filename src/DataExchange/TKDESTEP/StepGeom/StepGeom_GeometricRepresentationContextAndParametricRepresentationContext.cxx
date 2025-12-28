@@ -28,10 +28,10 @@ StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
 }
 
 void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::Init(
-  const Handle(TCollection_HAsciiString)&                 aContextIdentifier,
-  const Handle(TCollection_HAsciiString)&                 aContextType,
-  const Handle(StepGeom_GeometricRepresentationContext)&  aGeometricRepresentationContext,
-  const Handle(StepRepr_ParametricRepresentationContext)& aParametricRepresentationContext)
+  const occ::handle<TCollection_HAsciiString>&                 aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>&                 aContextType,
+  const occ::handle<StepGeom_GeometricRepresentationContext>&  aGeometricRepresentationContext,
+  const occ::handle<StepRepr_ParametricRepresentationContext>& aParametricRepresentationContext)
 {
   // --- classe own fields ---
   geometricRepresentationContext  = aGeometricRepresentationContext;
@@ -41,9 +41,9 @@ void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
 }
 
 void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::Init(
-  const Handle(TCollection_HAsciiString)& aContextIdentifier,
-  const Handle(TCollection_HAsciiString)& aContextType,
-  const Standard_Integer                  aCoordinateSpaceDimension)
+  const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>& aContextType,
+  const int                                    aCoordinateSpaceDimension)
 {
   // --- classe inherited fields ---
 
@@ -62,12 +62,12 @@ void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
 
 void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
   SetGeometricRepresentationContext(
-    const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext)
+    const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext)
 {
   geometricRepresentationContext = aGeometricRepresentationContext;
 }
 
-Handle(StepGeom_GeometricRepresentationContext)
+occ::handle<StepGeom_GeometricRepresentationContext>
   StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
     GeometricRepresentationContext() const
 {
@@ -76,12 +76,12 @@ Handle(StepGeom_GeometricRepresentationContext)
 
 void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
   SetParametricRepresentationContext(
-    const Handle(StepRepr_ParametricRepresentationContext)& aParametricRepresentationContext)
+    const occ::handle<StepRepr_ParametricRepresentationContext>& aParametricRepresentationContext)
 {
   parametricRepresentationContext = aParametricRepresentationContext;
 }
 
-Handle(StepRepr_ParametricRepresentationContext)
+occ::handle<StepRepr_ParametricRepresentationContext>
   StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
     ParametricRepresentationContext() const
 {
@@ -91,12 +91,12 @@ Handle(StepRepr_ParametricRepresentationContext)
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
-  SetCoordinateSpaceDimension(const Standard_Integer aCoordinateSpaceDimension)
+  SetCoordinateSpaceDimension(const int aCoordinateSpaceDimension)
 {
   geometricRepresentationContext->SetCoordinateSpaceDimension(aCoordinateSpaceDimension);
 }
 
-Standard_Integer StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
+int StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
   CoordinateSpaceDimension() const
 {
   return geometricRepresentationContext->CoordinateSpaceDimension();

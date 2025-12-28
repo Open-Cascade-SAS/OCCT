@@ -21,7 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <Transfer_TransferMapOfProcessForTransient.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <Transfer_Binder.hxx>
 #include <Message_ProgressRange.hxx>
 
 class Standard_DomainError;
@@ -30,9 +31,6 @@ class Transfer_ProcessForTransient;
 class Transfer_IteratorOfProcessForTransient;
 class Transfer_Binder;
 class Transfer_SimpleBinderOfTransient;
-
-class Transfer_ActorOfProcessForTransient;
-DEFINE_STANDARD_HANDLE(Transfer_ActorOfProcessForTransient, Standard_Transient)
 
 class Transfer_ActorOfProcessForTransient : public Standard_Transient
 {
@@ -51,52 +49,51 @@ public:
   //! (afterwards rejection), the next actor is then invoked
   //!
   //! The provided default returns True, can be redefined
-  Standard_EXPORT virtual Standard_Boolean Recognize(const Handle(Standard_Transient)& start);
+  Standard_EXPORT virtual bool Recognize(const occ::handle<Standard_Transient>& start);
 
   //! Specific action of Transfer. The Result is stored in
   //! the returned Binder, or a Null Handle for "No result"
   //! (Default defined as doing nothing; should be deferred)
   //! "mutable" allows the Actor to record intermediate
   //! information, in addition to those of TransferProcess
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transferring(
-    const Handle(Standard_Transient)&           start,
-    const Handle(Transfer_ProcessForTransient)& TP,
-    const Message_ProgressRange&                theProgress = Message_ProgressRange());
+  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transferring(
+    const occ::handle<Standard_Transient>&           start,
+    const occ::handle<Transfer_ProcessForTransient>& TP,
+    const Message_ProgressRange&                     theProgress = Message_ProgressRange());
 
   //! Prepares and Returns a Binder for a Transient Result
   //! Returns a Null Handle if <res> is itself Null
-  Standard_EXPORT Handle(Transfer_SimpleBinderOfTransient) TransientResult(
-    const Handle(Standard_Transient)& res) const;
+  Standard_EXPORT occ::handle<Transfer_SimpleBinderOfTransient> TransientResult(
+    const occ::handle<Standard_Transient>& res) const;
 
   //! Returns a Binder for No Result, i.e. a Null Handle
-  Standard_EXPORT Handle(Transfer_Binder) NullResult() const;
+  Standard_EXPORT occ::handle<Transfer_Binder> NullResult() const;
 
   //! If <mode> is True, commands an Actor to be set at the
   //! end of the list of Actors (see SetNext)
   //! If it is False (creation default), each add Actor is
   //! set at the beginning of the list
   //! This allows to define default Actors (which are Last)
-  Standard_EXPORT void SetLast(const Standard_Boolean mode = Standard_True);
+  Standard_EXPORT void SetLast(const bool mode = true);
 
   //! Returns the Last status (see SetLast).
-  Standard_EXPORT Standard_Boolean IsLast() const;
+  Standard_EXPORT bool IsLast() const;
 
   //! Defines a Next Actor : it can then be asked to work if
   //! <me> produces no result for a given type of Object.
   //! If Next is already set and is not "Last", calls
   //! SetNext on it. If Next defined and "Last", the new
   //! actor is added before it in the list
-  Standard_EXPORT void SetNext(const Handle(Transfer_ActorOfProcessForTransient)& next);
+  Standard_EXPORT void SetNext(const occ::handle<Transfer_ActorOfProcessForTransient>& next);
 
   //! Returns the Actor defined as Next, or a Null Handle
-  Standard_EXPORT Handle(Transfer_ActorOfProcessForTransient) Next() const;
+  Standard_EXPORT occ::handle<Transfer_ActorOfProcessForTransient> Next() const;
 
   DEFINE_STANDARD_RTTI_INLINE(Transfer_ActorOfProcessForTransient, Standard_Transient)
 
-protected:
 private:
-  Handle(Transfer_ActorOfProcessForTransient) thenext;
-  Standard_Boolean                            thelast;
+  occ::handle<Transfer_ActorOfProcessForTransient> thenext;
+  bool                                             thelast;
 };
 
 #endif // _Transfer_ActorOfProcessForTransient_HeaderFile

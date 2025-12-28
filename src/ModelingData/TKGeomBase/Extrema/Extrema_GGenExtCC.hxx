@@ -31,10 +31,11 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Sequence.hxx>
 
 #ifndef M_SQRT2
   #define M_SQRT2 1.41421356237309504880168872420969808
@@ -89,19 +90,19 @@ public:
   void SetTolerance(const double theTol);
 
   //! Set flag for single extrema computation.
-  void SetSingleSolutionFlag(const Standard_Boolean theFlag);
+  void SetSingleSolutionFlag(const bool theFlag);
 
   //! Get flag for single extrema computation.
-  Standard_Boolean GetSingleSolutionFlag() const;
+  bool GetSingleSolutionFlag() const;
 
   //! Performs calculations.
   void Perform();
 
   //! Returns True if the distances are found.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns state of myParallel flag.
-  Standard_Boolean IsParallel() const;
+  bool IsParallel() const;
 
   //! Returns the number of extremum distances.
   int NbExt() const;
@@ -113,15 +114,15 @@ public:
   void Points(const int theN, ThePOnC& theP1, ThePOnC& theP2) const;
 
 private:
-  Standard_Boolean       myIsFindSingleSolution;
-  Standard_Boolean       myParallel;
-  double                 myCurveMinTol;
-  math_Vector            myLowBorder;
-  math_Vector            myUppBorder;
-  TColStd_SequenceOfReal myPoints1;
-  TColStd_SequenceOfReal myPoints2;
-  Standard_Address       myC[2];
-  Standard_Boolean       myDone;
+  bool                         myIsFindSingleSolution;
+  bool                         myParallel;
+  double                       myCurveMinTol;
+  math_Vector                  myLowBorder;
+  math_Vector                  myUppBorder;
+  NCollection_Sequence<double> myPoints1;
+  NCollection_Sequence<double> myPoints2;
+  void*                        myC[2];
+  bool                         myDone;
 };
 
 //==================================================================================================
@@ -131,31 +132,32 @@ private:
 namespace
 {
 // Comparator, used in std::sort.
-inline Standard_Boolean Extrema_GGenExtCC_comp(const gp_XY& theA, const gp_XY& theB)
+inline bool Extrema_GGenExtCC_comp(const gp_XY& theA, const gp_XY& theB)
 {
   if (theA.X() < theB.X())
   {
-    return Standard_True;
+    return true;
   }
   else
   {
     if (theA.X() == theB.X())
     {
       if (theA.Y() < theB.Y())
-        return Standard_True;
+        return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
-inline void Extrema_GGenExtCC_ChangeIntervals(Handle(TColStd_HArray1OfReal)& theInts,
-                                              const int                      theNbInts)
+inline void Extrema_GGenExtCC_ChangeIntervals(occ::handle<NCollection_HArray1<double>>& theInts,
+                                              const int                                 theNbInts)
 {
-  int                           aNbInts  = theInts->Length() - 1;
-  int                           aNbAdd   = theNbInts - aNbInts;
-  Handle(TColStd_HArray1OfReal) aNewInts = new TColStd_HArray1OfReal(1, theNbInts + 1);
-  int                           aNbLast  = theInts->Length();
-  int                           i;
+  int                                      aNbInts = theInts->Length() - 1;
+  int                                      aNbAdd  = theNbInts - aNbInts;
+  occ::handle<NCollection_HArray1<double>> aNewInts =
+    new NCollection_HArray1<double>(1, theNbInts + 1);
+  int aNbLast = theInts->Length();
+  int i;
   if (aNbInts == 1)
   {
     aNewInts->SetValue(1, theInts->First());
@@ -207,12 +209,12 @@ public:
   Extrema_GGenExtCC_PointsInspector(const double theTol)
   {
     myTol    = theTol * theTol;
-    myIsFind = Standard_False;
+    myIsFind = false;
   }
 
-  void ClearFind() { myIsFind = Standard_False; }
+  void ClearFind() { myIsFind = false; }
 
-  Standard_Boolean isFind() { return myIsFind; }
+  bool isFind() { return myIsFind; }
 
   void SetCurrent(const gp_XY& theCurPnt) { myCurrent = theCurPnt; }
 
@@ -222,15 +224,15 @@ public:
     const double aSQDist = aPt.SquareModulus();
     if (aSQDist < myTol)
     {
-      myIsFind = Standard_True;
+      myIsFind = true;
     }
     return CellFilter_Keep;
   }
 
 private:
-  double           myTol;
-  gp_XY            myCurrent;
-  Standard_Boolean myIsFind;
+  double myTol;
+  gp_XY  myCurrent;
+  bool   myIsFind;
 };
 
 template <typename TheCurve, typename TheExtPCType, typename ThePointType>
@@ -266,12 +268,12 @@ template <typename TheCurve1,
           typename TheExtPC>
 Extrema_GGenExtCC<TheCurve1, TheCurveTool1, TheCurve2, TheCurveTool2, ThePOnC, ThePoint, TheExtPC>::
   Extrema_GGenExtCC()
-    : myIsFindSingleSolution(Standard_False),
-      myParallel(Standard_False),
+    : myIsFindSingleSolution(false),
+      myParallel(false),
       myCurveMinTol(Precision::PConfusion()),
       myLowBorder(1, 2),
       myUppBorder(1, 2),
-      myDone(Standard_False)
+      myDone(false)
 {
   myC[0] = myC[1] = 0;
 }
@@ -287,15 +289,15 @@ template <typename TheCurve1,
           typename TheExtPC>
 Extrema_GGenExtCC<TheCurve1, TheCurveTool1, TheCurve2, TheCurveTool2, ThePOnC, ThePoint, TheExtPC>::
   Extrema_GGenExtCC(const TheCurve1& theC1, const TheCurve2& theC2)
-    : myIsFindSingleSolution(Standard_False),
-      myParallel(Standard_False),
+    : myIsFindSingleSolution(false),
+      myParallel(false),
       myCurveMinTol(Precision::PConfusion()),
       myLowBorder(1, 2),
       myUppBorder(1, 2),
-      myDone(Standard_False)
+      myDone(false)
 {
-  myC[0]         = (Standard_Address)&theC1;
-  myC[1]         = (Standard_Address)&theC2;
+  myC[0]         = (void*)&theC1;
+  myC[1]         = (void*)&theC2;
   myLowBorder(1) = theC1.FirstParameter();
   myLowBorder(2) = theC2.FirstParameter();
   myUppBorder(1) = theC1.LastParameter();
@@ -318,15 +320,15 @@ Extrema_GGenExtCC<TheCurve1, TheCurveTool1, TheCurve2, TheCurveTool2, ThePOnC, T
                     const double     theUsup,
                     const double     theVinf,
                     const double     theVsup)
-    : myIsFindSingleSolution(Standard_False),
-      myParallel(Standard_False),
+    : myIsFindSingleSolution(false),
+      myParallel(false),
       myCurveMinTol(Precision::PConfusion()),
       myLowBorder(1, 2),
       myUppBorder(1, 2),
-      myDone(Standard_False)
+      myDone(false)
 {
-  myC[0]         = (Standard_Address)&theC1;
-  myC[1]         = (Standard_Address)&theC2;
+  myC[0]         = (void*)&theC1;
+  myC[1]         = (void*)&theC2;
   myLowBorder(1) = theUinf;
   myLowBorder(2) = theVinf;
   myUppBorder(1) = theUsup;
@@ -355,8 +357,8 @@ void Extrema_GGenExtCC<TheCurve1,
                                             const double     theVinf,
                                             const double     theVsup)
 {
-  myC[0]         = (Standard_Address)&theC1;
-  myC[1]         = (Standard_Address)&theC2;
+  myC[0]         = (void*)&theC1;
+  myC[1]         = (void*)&theC2;
   myLowBorder(1) = theUinf;
   myLowBorder(2) = theVinf;
   myUppBorder(1) = theUsup;
@@ -398,7 +400,7 @@ void Extrema_GGenExtCC<TheCurve1,
                        TheCurveTool2,
                        ThePOnC,
                        ThePoint,
-                       TheExtPC>::SetSingleSolutionFlag(const Standard_Boolean theFlag)
+                       TheExtPC>::SetSingleSolutionFlag(const bool theFlag)
 {
   myIsFindSingleSolution = theFlag;
 }
@@ -412,13 +414,13 @@ template <typename TheCurve1,
           typename ThePOnC,
           typename ThePoint,
           typename TheExtPC>
-Standard_Boolean Extrema_GGenExtCC<TheCurve1,
-                                   TheCurveTool1,
-                                   TheCurve2,
-                                   TheCurveTool2,
-                                   ThePOnC,
-                                   ThePoint,
-                                   TheExtPC>::GetSingleSolutionFlag() const
+bool Extrema_GGenExtCC<TheCurve1,
+                       TheCurveTool1,
+                       TheCurve2,
+                       TheCurveTool2,
+                       ThePOnC,
+                       ThePoint,
+                       TheExtPC>::GetSingleSolutionFlag() const
 {
   return myIsFindSingleSolution;
 }
@@ -440,8 +442,8 @@ void Extrema_GGenExtCC<TheCurve1,
                        ThePoint,
                        TheExtPC>::Perform()
 {
-  myDone     = Standard_False;
-  myParallel = Standard_False;
+  myDone     = false;
+  myParallel = false;
 
   TheCurve1& C1 = *(TheCurve1*)myC[0];
   TheCurve2& C2 = *(TheCurve2*)myC[1];
@@ -498,8 +500,10 @@ void Extrema_GGenExtCC<TheCurve1,
     }
   }
 
-  Handle(TColStd_HArray1OfReal) anIntervals1 = new TColStd_HArray1OfReal(1, aNbInter[0] + 1);
-  Handle(TColStd_HArray1OfReal) anIntervals2 = new TColStd_HArray1OfReal(1, aNbInter[1] + 1);
+  occ::handle<NCollection_HArray1<double>> anIntervals1 =
+    new NCollection_HArray1<double>(1, aNbInter[0] + 1);
+  occ::handle<NCollection_HArray1<double>> anIntervals2 =
+    new NCollection_HArray1<double>(1, aNbInter[1] + 1);
   C1.Intervals(anIntervals1->ChangeArray1(), aContinuity);
   C2.Intervals(anIntervals2->ChangeArray1(), aContinuity);
   if (indmax >= 0)
@@ -534,23 +538,23 @@ void Extrema_GGenExtCC<TheCurve1,
   if (aLC > aMaxDer)
     aLC = aMaxDer;
 
-  Standard_Boolean isConstLockedFlag = Standard_False;
-  const double     aCR               = 0.001;
+  bool         isConstLockedFlag = false;
+  const double aCR               = 0.001;
   if (aMaxDer1 / aMaxDer < aCR || aMaxDer2 / aMaxDer < aCR)
   {
-    isConstLockedFlag = Standard_True;
+    isConstLockedFlag = true;
   }
   if (aMaxDer > aMaxLC)
   {
     aLC               = aMaxLC;
-    isConstLockedFlag = Standard_True;
+    isConstLockedFlag = true;
   }
   if (C1.GetType() == GeomAbs_Line)
   {
     aMaxDer = 1.0 / C2.Resolution(1.0);
     if (aLC > aMaxDer)
     {
-      isConstLockedFlag = Standard_True;
+      isConstLockedFlag = true;
       aLC               = aMaxDer;
     }
   }
@@ -559,7 +563,7 @@ void Extrema_GGenExtCC<TheCurve1,
     aMaxDer = 1.0 / C1.Resolution(1.0);
     if (aLC > aMaxDer)
     {
-      isConstLockedFlag = Standard_True;
+      isConstLockedFlag = true;
       aLC               = aMaxDer;
     }
   }
@@ -588,16 +592,16 @@ void Extrema_GGenExtCC<TheCurve1,
     if (aMaxG > aMaxDer)
     {
       aLC               = std::min(aMaxG, aMaxLC);
-      isConstLockedFlag = Standard_True;
+      isConstLockedFlag = true;
     }
     if (aMaxG > 100. * aMaxLC)
     {
       aLC               = 100. * aMaxLC;
-      isConstLockedFlag = Standard_True;
+      isConstLockedFlag = true;
     }
     else if (aMaxG < 0.1 * aMaxDer)
     {
-      isConstLockedFlag = Standard_True;
+      isConstLockedFlag = true;
     }
   }
   math_GlobOptMin aFinder(&aFunc, myLowBorder, myUppBorder, aLC);
@@ -676,11 +680,11 @@ void Extrema_GGenExtCC<TheCurve1,
   const int aNbSol = aPnts.Length();
   if (aNbSol == 0)
   {
-    myDone = Standard_False;
+    myDone = false;
     return;
   }
 
-  myDone = Standard_True;
+  myDone = true;
 
   if (aNbSol == 1)
   {
@@ -692,15 +696,15 @@ void Extrema_GGenExtCC<TheCurve1,
 
   std::sort(aPnts.begin(), aPnts.end(), Extrema_GGenExtCC_comp);
 
-  TColStd_ListOfInteger aSolutions;
+  NCollection_List<int> aSolutions;
 
-  Standard_Boolean bSaveSolution       = Standard_True;
-  Standard_Boolean bDirsCoinside       = Standard_True;
-  Standard_Boolean bDifferentSolutions = Standard_False;
+  bool bSaveSolution       = true;
+  bool bDirsCoinside       = true;
+  bool bDifferentSolutions = false;
 
-  Standard_Boolean isParallel = Standard_True;
-  double           aVal       = 0.0;
-  math_Vector      aVec(1, 2, 0.0);
+  bool        isParallel = true;
+  double      aVal       = 0.0;
+  math_Vector aVec(1, 2, 0.0);
 
   for (int anIdx = 0; anIdx < aNbSol - 1; anIdx++)
   {
@@ -716,14 +720,14 @@ void Extrema_GGenExtCC<TheCurve1,
       if (bSaveSolution)
       {
         aSolutions.Append(anIdx);
-        bSaveSolution = Standard_False;
+        bSaveSolution = false;
       }
     }
     else
     {
-      isParallel = Standard_False;
+      isParallel = false;
       aSolutions.Append(anIdx);
-      bSaveSolution = Standard_True;
+      bSaveSolution = true;
     }
 
     if (!bDifferentSolutions)
@@ -732,13 +736,13 @@ void Extrema_GGenExtCC<TheCurve1,
       {
         if (aNext.Y() > aCurrent.Y())
         {
-          bDifferentSolutions = Standard_True;
-          bDirsCoinside       = Standard_True;
+          bDifferentSolutions = true;
+          bDirsCoinside       = true;
         }
         else if (aNext.Y() < aCurrent.Y())
         {
-          bDifferentSolutions = Standard_True;
-          bDirsCoinside       = Standard_False;
+          bDifferentSolutions = true;
+          bDirsCoinside       = false;
         }
       }
     }
@@ -746,7 +750,7 @@ void Extrema_GGenExtCC<TheCurve1,
   aSolutions.Append(aNbSol - 1);
 
   if (!bDifferentSolutions)
-    isParallel = Standard_False;
+    isParallel = false;
 
   if (isParallel)
   {
@@ -773,11 +777,11 @@ void Extrema_GGenExtCC<TheCurve1,
     const gp_XY& aSol = aPnts.First();
     myPoints1.Append(aSol.X());
     myPoints2.Append(aSol.Y());
-    myParallel = Standard_True;
+    myParallel = true;
   }
   else
   {
-    TColStd_ListIteratorOfListOfInteger aItSol(aSolutions);
+    NCollection_List<int>::Iterator aItSol(aSolutions);
     for (; aItSol.More(); aItSol.Next())
     {
       const gp_XY& aSol = aPnts(aItSol.Value());
@@ -796,13 +800,13 @@ template <typename TheCurve1,
           typename ThePOnC,
           typename ThePoint,
           typename TheExtPC>
-Standard_Boolean Extrema_GGenExtCC<TheCurve1,
-                                   TheCurveTool1,
-                                   TheCurve2,
-                                   TheCurveTool2,
-                                   ThePOnC,
-                                   ThePoint,
-                                   TheExtPC>::IsDone() const
+bool Extrema_GGenExtCC<TheCurve1,
+                       TheCurveTool1,
+                       TheCurve2,
+                       TheCurveTool2,
+                       ThePOnC,
+                       ThePoint,
+                       TheExtPC>::IsDone() const
 {
   return myDone;
 }
@@ -816,13 +820,13 @@ template <typename TheCurve1,
           typename ThePOnC,
           typename ThePoint,
           typename TheExtPC>
-Standard_Boolean Extrema_GGenExtCC<TheCurve1,
-                                   TheCurveTool1,
-                                   TheCurve2,
-                                   TheCurveTool2,
-                                   ThePOnC,
-                                   ThePoint,
-                                   TheExtPC>::IsParallel() const
+bool Extrema_GGenExtCC<TheCurve1,
+                       TheCurveTool1,
+                       TheCurve2,
+                       TheCurveTool2,
+                       ThePOnC,
+                       ThePoint,
+                       TheExtPC>::IsParallel() const
 {
   if (!IsDone())
     throw StdFail_NotDone();

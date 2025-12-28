@@ -35,17 +35,17 @@ public:
 
   //! This constructor should be used in a sub-class to initialize
   //! correctly all the fields of this class.
-  Standard_EXPORT math_BrentMinimum(const Standard_Real    TolX,
-                                    const Standard_Integer NbIterations = 100,
-                                    const Standard_Real    ZEPS         = 1.0e-12);
+  Standard_EXPORT math_BrentMinimum(const double TolX,
+                                    const int    NbIterations = 100,
+                                    const double ZEPS         = 1.0e-12);
 
   //! This constructor should be used in a sub-class to initialize
   //! correctly all the fields of this class.
   //! It has to be used if F(Bx) is known.
-  Standard_EXPORT math_BrentMinimum(const Standard_Real    TolX,
-                                    const Standard_Real    Fbx,
-                                    const Standard_Integer NbIterations = 100,
-                                    const Standard_Real    ZEPS         = 1.0e-12);
+  Standard_EXPORT math_BrentMinimum(const double TolX,
+                                    const double Fbx,
+                                    const int    NbIterations = 100,
+                                    const double ZEPS         = 1.0e-12);
 
   //! Destructor
   Standard_EXPORT virtual ~math_BrentMinimum();
@@ -54,32 +54,29 @@ public:
   //! bracketing triplet of abscissas Ax, Bx, Cx (such that Bx is
   //! between Ax and Cx, F(Bx) is less than both F(Bx) and F(Cx))
   //! The solution is found when: abs(Xi - Xi-1) <= TolX * abs(Xi) + ZEPS;
-  Standard_EXPORT void Perform(math_Function&      F,
-                               const Standard_Real Ax,
-                               const Standard_Real Bx,
-                               const Standard_Real Cx);
+  Standard_EXPORT void Perform(math_Function& F, const double Ax, const double Bx, const double Cx);
 
   //! This method is called at the end of each iteration to check if the
   //! solution is found.
   //! It can be redefined in a sub-class to implement a specific test to
   //! stop the iterations.
-  virtual Standard_Boolean IsSolutionReached(math_Function& theFunction);
+  virtual bool IsSolutionReached(math_Function& theFunction);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the location value of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Location() const;
+  double Location() const;
 
   //! returns the value of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Minimum() const;
+  double Minimum() const;
 
   //! returns the number of iterations really done during the
   //! computation of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Integer NbIterations() const;
+  int NbIterations() const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
@@ -87,20 +84,20 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-  Standard_Real a;
-  Standard_Real b;
-  Standard_Real x;
-  Standard_Real fx;
-  Standard_Real fv;
-  Standard_Real fw;
-  Standard_Real XTol;
-  Standard_Real EPSZ;
+  double a;
+  double b;
+  double x;
+  double fx;
+  double fv;
+  double fw;
+  double XTol;
+  double EPSZ;
 
 private:
-  Standard_Boolean Done;
-  Standard_Integer iter;
-  Standard_Integer Itermax;
-  Standard_Boolean myF;
+  bool Done;
+  int  iter;
+  int  Itermax;
+  bool myF;
 };
 
 #include <math_BrentMinimum.lxx>

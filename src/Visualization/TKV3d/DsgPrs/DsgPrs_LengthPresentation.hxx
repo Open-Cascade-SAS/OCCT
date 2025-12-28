@@ -46,13 +46,13 @@ public:
   //! The text aText will be displayed at the offset point OffsetPoint.
   //! The line and text attributes are specified by the
   //! attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     AttachmentPoint1,
-                                  const gp_Pnt&                     AttachmentPoint2,
-                                  const gp_Dir&                     aDirection,
-                                  const gp_Pnt&                     OffsetPoint);
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          AttachmentPoint1,
+                                  const gp_Pnt&                          AttachmentPoint2,
+                                  const gp_Dir&                          aDirection,
+                                  const gp_Pnt&                          OffsetPoint);
 
   //! Draws a line segment representing a length in the
   //! display aPresentation.
@@ -64,14 +64,14 @@ public:
   //! both ends of the length.
   //! The line, text and arrow attributes are specified by the
   //! attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     AttachmentPoint1,
-                                  const gp_Pnt&                     AttachmentPoint2,
-                                  const gp_Dir&                     aDirection,
-                                  const gp_Pnt&                     OffsetPoint,
-                                  const DsgPrs_ArrowSide            ArrowSide);
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          AttachmentPoint1,
+                                  const gp_Pnt&                          AttachmentPoint2,
+                                  const gp_Dir&                          aDirection,
+                                  const gp_Pnt&                          OffsetPoint,
+                                  const DsgPrs_ArrowSide                 ArrowSide);
 
   //! Draws a line segment representing a length in the
   //! display aPresentation.
@@ -84,15 +84,15 @@ public:
   //! The plane PlaneOfFaces is used if length is null.
   //! The line, text and arrow attributes are specified by the
   //! attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     AttachmentPoint1,
-                                  const gp_Pnt&                     AttachmentPoint2,
-                                  const gp_Pln&                     PlaneOfFaces,
-                                  const gp_Dir&                     aDirection,
-                                  const gp_Pnt&                     OffsetPoint,
-                                  const DsgPrs_ArrowSide            ArrowSide);
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          AttachmentPoint1,
+                                  const gp_Pnt&                          AttachmentPoint2,
+                                  const gp_Pln&                          PlaneOfFaces,
+                                  const gp_Dir&                          aDirection,
+                                  const gp_Pnt&                          OffsetPoint,
+                                  const DsgPrs_ArrowSide                 ArrowSide);
 
   //! Draws a line segment representing a length in the
   //! display aPresentation.
@@ -105,15 +105,15 @@ public:
   //! be displayed at either or both ends of the length.
   //! The line, text and arrow attributes are specified by the
   //! attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const Handle(Geom_Surface)&       SecondSurf,
-                                  const gp_Pnt&                     AttachmentPoint1,
-                                  const gp_Pnt&                     AttachmentPoint2,
-                                  const gp_Dir&                     aDirection,
-                                  const gp_Pnt&                     OffsetPoint,
-                                  const DsgPrs_ArrowSide            ArrowSide);
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TCollection_ExtendedString&      aText,
+                                  const occ::handle<Geom_Surface>&       SecondSurf,
+                                  const gp_Pnt&                          AttachmentPoint1,
+                                  const gp_Pnt&                          AttachmentPoint2,
+                                  const gp_Dir&                          aDirection,
+                                  const gp_Pnt&                          OffsetPoint,
+                                  const DsgPrs_ArrowSide                 ArrowSide);
 
   //! Draws a line segment representing a length in the
   //! display aPresentation.
@@ -122,14 +122,11 @@ public:
   //! The value of the enumeration ArrowSide controls
   //! whether arrows will be displayed at either or both ends of the length.
   //! The line and arrow attributes are specified by the attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const gp_Pnt&                     Pt1,
-                                  const gp_Pnt&                     Pt2,
-                                  const DsgPrs_ArrowSide            ArrowSide);
-
-protected:
-private:
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const gp_Pnt&                          Pt1,
+                                  const gp_Pnt&                          Pt2,
+                                  const DsgPrs_ArrowSide                 ArrowSide);
 };
 
 #endif // _DsgPrs_LengthPresentation_HeaderFile

@@ -23,11 +23,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)
 //=================================================================================================
 
 Select3D_SensitiveTriangle::Select3D_SensitiveTriangle(
-  const Handle(SelectMgr_EntityOwner)& theOwnerId,
-  const gp_Pnt&                        thePnt0,
-  const gp_Pnt&                        thePnt1,
-  const gp_Pnt&                        thePnt2,
-  const Select3D_TypeOfSensitivity     theType)
+  const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+  const gp_Pnt&                             thePnt0,
+  const gp_Pnt&                             thePnt1,
+  const gp_Pnt&                             thePnt2,
+  const Select3D_TypeOfSensitivity          theType)
     : Select3D_SensitiveEntity(theOwnerId),
       mySensType(theType)
 {
@@ -42,8 +42,8 @@ Select3D_SensitiveTriangle::Select3D_SensitiveTriangle(
 // Purpose : Checks whether the triangle overlaps
 //           current selecting volume
 //==================================================
-Standard_Boolean Select3D_SensitiveTriangle::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                     SelectBasics_PickResult& thePickResult)
+bool Select3D_SensitiveTriangle::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                         SelectBasics_PickResult&             thePickResult)
 {
   if (!theMgr.IsOverlapAllowed())
   {
@@ -58,19 +58,19 @@ Standard_Boolean Select3D_SensitiveTriangle::Matches(SelectBasics_SelectingVolum
 
   if (!theMgr.OverlapsTriangle(myPoints[0], myPoints[1], myPoints[2], mySensType, thePickResult))
   {
-    return Standard_False;
+    return false;
   }
 
   thePickResult.SetDistToGeomCenter(theMgr.DistToGeometryCenter(myCentroid));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveTriangle::GetConnected()
+occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveTriangle::GetConnected()
 {
   // Create a copy of this
-  Handle(Select3D_SensitiveEntity) aNewEntity =
+  occ::handle<Select3D_SensitiveEntity> aNewEntity =
     new Select3D_SensitiveTriangle(myOwnerId, myPoints[0], myPoints[1], myPoints[2], mySensType);
 
   return aNewEntity;
@@ -84,21 +84,20 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveTriangle::GetConnected()
 //==================================================
 Select3D_BndBox3d Select3D_SensitiveTriangle::BoundingBox()
 {
-  const SelectMgr_Vec3 aMinPnt =
-    SelectMgr_Vec3(std::min(myPoints[0].X(), std::min(myPoints[1].X(), myPoints[2].X())),
-                   std::min(myPoints[0].Y(), std::min(myPoints[1].Y(), myPoints[2].Y())),
-                   std::min(myPoints[0].Z(), std::min(myPoints[1].Z(), myPoints[2].Z())));
-  const SelectMgr_Vec3 aMaxPnt =
-    SelectMgr_Vec3(std::max(myPoints[0].X(), std::max(myPoints[1].X(), myPoints[2].X())),
-                   std::max(myPoints[0].Y(), std::max(myPoints[1].Y(), myPoints[2].Y())),
-                   std::max(myPoints[0].Z(), std::max(myPoints[1].Z(), myPoints[2].Z())));
+  const NCollection_Vec3<double> aMinPnt =
+    NCollection_Vec3<double>(std::min(myPoints[0].X(), std::min(myPoints[1].X(), myPoints[2].X())),
+                             std::min(myPoints[0].Y(), std::min(myPoints[1].Y(), myPoints[2].Y())),
+                             std::min(myPoints[0].Z(), std::min(myPoints[1].Z(), myPoints[2].Z())));
+  const NCollection_Vec3<double> aMaxPnt =
+    NCollection_Vec3<double>(std::max(myPoints[0].X(), std::max(myPoints[1].X(), myPoints[2].X())),
+                             std::max(myPoints[0].Y(), std::max(myPoints[1].Y(), myPoints[2].Y())),
+                             std::max(myPoints[0].Z(), std::max(myPoints[1].Z(), myPoints[2].Z())));
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }
 
 //=================================================================================================
 
-void Select3D_SensitiveTriangle::DumpJson(Standard_OStream& theOStream,
-                                          Standard_Integer  theDepth) const
+void Select3D_SensitiveTriangle::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)

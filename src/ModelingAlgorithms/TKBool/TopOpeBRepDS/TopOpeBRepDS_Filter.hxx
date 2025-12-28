@@ -22,7 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <TopOpeBRepTool_PShapeClassifier.hxx>
-#include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
 class TopOpeBRepDS_HDataStructure;
 
@@ -31,30 +34,33 @@ class TopOpeBRepDS_Filter
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT TopOpeBRepDS_Filter(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                      const TopOpeBRepTool_PShapeClassifier&     pClassif = 0);
+  Standard_EXPORT TopOpeBRepDS_Filter(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                      const TopOpeBRepTool_PShapeClassifier&          pClassif = 0);
 
   Standard_EXPORT void ProcessInterferences();
 
   Standard_EXPORT void ProcessFaceInterferences(
-    const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp);
+    const NCollection_DataMap<TopoDS_Shape,
+                              TopOpeBRepDS_ListOfShapeOn1State,
+                              TopTools_ShapeMapHasher>& MEsp);
 
   Standard_EXPORT void ProcessFaceInterferences(
-    const Standard_Integer                                I,
-    const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp);
+    const int                                           I,
+    const NCollection_DataMap<TopoDS_Shape,
+                              TopOpeBRepDS_ListOfShapeOn1State,
+                              TopTools_ShapeMapHasher>& MEsp);
 
   Standard_EXPORT void ProcessEdgeInterferences();
 
-  Standard_EXPORT void ProcessEdgeInterferences(const Standard_Integer I);
+  Standard_EXPORT void ProcessEdgeInterferences(const int I);
 
   Standard_EXPORT void ProcessCurveInterferences();
 
-  Standard_EXPORT void ProcessCurveInterferences(const Standard_Integer I);
+  Standard_EXPORT void ProcessCurveInterferences(const int I);
 
-protected:
 private:
-  Handle(TopOpeBRepDS_HDataStructure) myHDS;
-  TopOpeBRepTool_PShapeClassifier     myPShapeClassif;
+  occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
+  TopOpeBRepTool_PShapeClassifier          myPShapeClassif;
 };
 
 #endif // _TopOpeBRepDS_Filter_HeaderFile

@@ -92,7 +92,7 @@ OSD_Thread::~OSD_Thread()
 // purpose  : Set the thread priority relative to the caller's priority
 //=============================================
 
-void OSD_Thread::SetPriority(const Standard_Integer thePriority)
+void OSD_Thread::SetPriority(const int thePriority)
 {
   myPriority = thePriority;
 #ifdef _WIN32
@@ -137,16 +137,16 @@ static DWORD WINAPI WNTthread_func(LPVOID data)
 }
 #endif
 
-Standard_Boolean OSD_Thread::Run(const Standard_Address data,
+bool OSD_Thread::Run(void* const data,
 #ifdef _WIN32
-                                 const Standard_Integer WNTStackSize
+                     const int WNTStackSize
 #else
-                                 const Standard_Integer
+                     const int
 #endif
 )
 {
   if (!myFunc)
-    return Standard_False;
+    return false;
 
   // detach current thread, if open
   Detach();
@@ -157,7 +157,7 @@ Standard_Boolean OSD_Thread::Run(const Standard_Address data,
   // of the real thread function to Windows thread wrapper function
   WNTthread_data* adata = (WNTthread_data*)malloc(sizeof(WNTthread_data));
   if (!adata)
-    return Standard_False;
+    return false;
   adata->data = data;
   adata->func = myFunc;
 
@@ -215,23 +215,23 @@ void OSD_Thread::Detach()
 // OSD_Thread::Wait
 //=============================================
 
-Standard_Boolean OSD_Thread::Wait(Standard_Address& theResult)
+bool OSD_Thread::Wait(void*& theResult)
 {
   // check that thread handle is not null
   theResult = 0;
   if (!myThread)
   {
-    return Standard_False;
+    return false;
   }
 
 #ifdef _WIN32
   // On Windows, wait for the thread handle to be signaled
   if (WaitForSingleObject(myThread, INFINITE) != WAIT_OBJECT_0)
   {
-    return Standard_False;
+    return false;
   }
 
-  // and convert result of the thread execution to Standard_Address
+  // and convert result of the thread execution to void*
   DWORD anExitCode;
   if (GetExitCodeThread(myThread, &anExitCode))
   {
@@ -241,17 +241,17 @@ Standard_Boolean OSD_Thread::Wait(Standard_Address& theResult)
   CloseHandle(myThread);
   myThread   = 0;
   myThreadId = 0;
-  return Standard_True;
+  return true;
 #else
   // On Unix/Linux, join the thread
   if (pthread_join(myThread, &theResult) != 0)
   {
-    return Standard_False;
+    return false;
   }
 
   myThread   = 0;
   myThreadId = 0;
-  return Standard_True;
+  return true;
 #endif
 }
 
@@ -259,13 +259,13 @@ Standard_Boolean OSD_Thread::Wait(Standard_Address& theResult)
 // OSD_Thread::Wait
 //=============================================
 
-Standard_Boolean OSD_Thread::Wait(const Standard_Integer theTimeMs, Standard_Address& theResult)
+bool OSD_Thread::Wait(const int theTimeMs, void*& theResult)
 {
   // check that thread handle is not null
   theResult = 0;
   if (!myThread)
   {
-    return Standard_False;
+    return false;
   }
 
 #ifdef _WIN32
@@ -282,14 +282,14 @@ Standard_Boolean OSD_Thread::Wait(const Standard_Integer theTimeMs, Standard_Add
     CloseHandle(myThread);
     myThread   = 0;
     myThreadId = 0;
-    return Standard_True;
+    return true;
   }
   else if (ret == WAIT_TIMEOUT)
   {
-    return Standard_False;
+    return false;
   }
 
-  return Standard_False;
+  return false;
 #else
   #if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
     #if __GLIBC_PREREQ(2, 4)
@@ -301,7 +301,7 @@ Standard_Boolean OSD_Thread::Wait(const Standard_Integer theTimeMs, Standard_Add
   struct timespec aTimeout;
   if (clock_gettime(CLOCK_REALTIME, &aTimeout) == -1)
   {
-    return Standard_False;
+    return false;
   }
 
   time_t aSeconds      = (theTimeMs / 1000);
@@ -311,7 +311,7 @@ Standard_Boolean OSD_Thread::Wait(const Standard_Integer theTimeMs, Standard_Add
 
   if (pthread_timedjoin_np(myThread, &theResult, &aTimeout) != 0)
   {
-    return Standard_False;
+    return false;
   }
 
   #else
@@ -319,12 +319,12 @@ Standard_Boolean OSD_Thread::Wait(const Standard_Integer theTimeMs, Standard_Add
   (void)theTimeMs;
   if (pthread_join(myThread, &theResult) != 0)
   {
-    return Standard_False;
+    return false;
   }
   #endif
   myThread   = 0;
   myThreadId = 0;
-  return Standard_True;
+  return true;
 #endif
 }
 

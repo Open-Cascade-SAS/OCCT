@@ -34,11 +34,11 @@ math_SVD::math_SVD(const math_Matrix& A)
   U.Init(0.0);
   RowA = A.RowNumber();
   U.Set(1, A.RowNumber(), 1, A.ColNumber(), A);
-  Standard_Integer Error = SVD_Decompose(U, Diag, V);
-  Done                   = (!Error) ? Standard_True : Standard_False;
+  int Error = SVD_Decompose(U, Diag, V);
+  Done      = (!Error) ? true : false;
 }
 
-void math_SVD::Solve(const math_Vector& B, math_Vector& X, const Standard_Real Eps)
+void math_SVD::Solve(const math_Vector& B, math_Vector& X, const double Eps)
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   Standard_DimensionError_Raise_if((RowA != B.Length()) || (X.Length() != Diag.Length()), " ");
@@ -46,8 +46,8 @@ void math_SVD::Solve(const math_Vector& B, math_Vector& X, const Standard_Real E
   math_Vector BB(1, U.RowNumber());
   BB.Init(0.0);
   BB.Set(1, B.Length(), B);
-  Standard_Real wmin = Eps * Diag(Diag.Max());
-  for (Standard_Integer I = 1; I <= Diag.Upper(); I++)
+  double wmin = Eps * Diag(Diag.Max());
+  for (int I = 1; I <= Diag.Upper(); I++)
   {
     if (Diag(I) < wmin)
       Diag(I) = 0.0;
@@ -65,22 +65,22 @@ void math_SVD::Solve(const math_Vector& B, math_Vector& X, const Standard_Real E
   }
 }
 
-void math_SVD::PseudoInverse(math_Matrix& Result, const Standard_Real Eps)
+void math_SVD::PseudoInverse(math_Matrix& Result, const double Eps)
 {
-  Standard_Integer i, j;
+  int i, j;
 
   StdFail_NotDone_Raise_if(!Done, " ");
 
-  Standard_Real wmin = Eps * Diag(Diag.Max());
+  double wmin = Eps * Diag(Diag.Max());
   for (i = 1; i <= Diag.Upper(); i++)
   {
     if (Diag(i) < wmin)
       Diag(i) = 0.0;
   }
 
-  Standard_Integer ColA = Diag.Length();
-  math_Vector      VNorme(1, U.RowNumber());
-  math_Vector      Column(1, ColA);
+  int         ColA = Diag.Length();
+  math_Vector VNorme(1, U.RowNumber());
+  math_Vector Column(1, ColA);
 
   for (j = 1; j <= RowA; j++)
   {

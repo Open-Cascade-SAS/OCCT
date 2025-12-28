@@ -29,7 +29,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 
@@ -40,15 +40,15 @@ IGESSolid_ToolPlaneSurface::IGESSolid_ToolPlaneSurface() {}
 
 //=================================================================================================
 
-void IGESSolid_ToolPlaneSurface::ReadOwnParams(const Handle(IGESSolid_PlaneSurface)&  ent,
-                                               const Handle(IGESData_IGESReaderData)& IR,
-                                               IGESData_ParamReader&                  PR) const
+void IGESSolid_ToolPlaneSurface::ReadOwnParams(const occ::handle<IGESSolid_PlaneSurface>&  ent,
+                                               const occ::handle<IGESData_IGESReaderData>& IR,
+                                               IGESData_ParamReader&                       PR) const
 {
-  Handle(IGESGeom_Point)     tempLocation;
-  Handle(IGESGeom_Direction) tempNormal;
-  Handle(IGESGeom_Direction) tempRefdir; // default Unparametrised
-  IGESData_Status            aStatus;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  occ::handle<IGESGeom_Point>     tempLocation;
+  occ::handle<IGESGeom_Direction> tempNormal;
+  occ::handle<IGESGeom_Direction> tempRefdir; // default Unparametrised
+  IGESData_Status                 aStatus;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESGeom_Point), tempLocation))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -153,8 +153,8 @@ void IGESSolid_ToolPlaneSurface::ReadOwnParams(const Handle(IGESSolid_PlaneSurfa
 
 //=================================================================================================
 
-void IGESSolid_ToolPlaneSurface::WriteOwnParams(const Handle(IGESSolid_PlaneSurface)& ent,
-                                                IGESData_IGESWriter&                  IW) const
+void IGESSolid_ToolPlaneSurface::WriteOwnParams(const occ::handle<IGESSolid_PlaneSurface>& ent,
+                                                IGESData_IGESWriter&                       IW) const
 {
   IW.Send(ent->LocationPoint());
   IW.Send(ent->Normal());
@@ -164,8 +164,8 @@ void IGESSolid_ToolPlaneSurface::WriteOwnParams(const Handle(IGESSolid_PlaneSurf
 
 //=================================================================================================
 
-void IGESSolid_ToolPlaneSurface::OwnShared(const Handle(IGESSolid_PlaneSurface)& ent,
-                                           Interface_EntityIterator&             iter) const
+void IGESSolid_ToolPlaneSurface::OwnShared(const occ::handle<IGESSolid_PlaneSurface>& ent,
+                                           Interface_EntityIterator&                  iter) const
 {
   iter.GetOneItem(ent->LocationPoint());
   iter.GetOneItem(ent->Normal());
@@ -174,9 +174,9 @@ void IGESSolid_ToolPlaneSurface::OwnShared(const Handle(IGESSolid_PlaneSurface)&
 
 //=================================================================================================
 
-void IGESSolid_ToolPlaneSurface::OwnCopy(const Handle(IGESSolid_PlaneSurface)& another,
-                                         const Handle(IGESSolid_PlaneSurface)& ent,
-                                         Interface_CopyTool&                   TC) const
+void IGESSolid_ToolPlaneSurface::OwnCopy(const occ::handle<IGESSolid_PlaneSurface>& another,
+                                         const occ::handle<IGESSolid_PlaneSurface>& ent,
+                                         Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESGeom_Point, tempLocation, TC.Transferred(another->LocationPoint()));
   DeclareAndCast(IGESGeom_Direction, tempNormal, TC.Transferred(another->Normal()));
@@ -187,7 +187,7 @@ void IGESSolid_ToolPlaneSurface::OwnCopy(const Handle(IGESSolid_PlaneSurface)& a
   }
   else
   {
-    Handle(IGESGeom_Direction) tempRefdir;
+    occ::handle<IGESGeom_Direction> tempRefdir;
     ent->Init(tempLocation, tempNormal, tempRefdir);
   }
 }
@@ -195,7 +195,7 @@ void IGESSolid_ToolPlaneSurface::OwnCopy(const Handle(IGESSolid_PlaneSurface)& a
 //=================================================================================================
 
 IGESData_DirChecker IGESSolid_ToolPlaneSurface::DirChecker(
-  const Handle(IGESSolid_PlaneSurface)& /*ent*/) const
+  const occ::handle<IGESSolid_PlaneSurface>& /*ent*/) const
 {
   IGESData_DirChecker DC(190, 0, 1);
 
@@ -210,9 +210,9 @@ IGESData_DirChecker IGESSolid_ToolPlaneSurface::DirChecker(
 
 //=================================================================================================
 
-void IGESSolid_ToolPlaneSurface::OwnCheck(const Handle(IGESSolid_PlaneSurface)& ent,
+void IGESSolid_ToolPlaneSurface::OwnCheck(const occ::handle<IGESSolid_PlaneSurface>& ent,
                                           const Interface_ShareTool&,
-                                          Handle(Interface_Check)& ach) const
+                                          occ::handle<Interface_Check>& ach) const
 {
 
   // MGE 31/07/98
@@ -221,7 +221,7 @@ void IGESSolid_ToolPlaneSurface::OwnCheck(const Handle(IGESSolid_PlaneSurface)& 
   // Message_Msg Msg177("XSTEP_177");
   //========================================
 
-  Standard_Integer fn = 0;
+  int fn = 0;
   if (ent->IsParametrised())
     fn = 1;
   if (fn != ent->FormNumber())
@@ -233,14 +233,14 @@ void IGESSolid_ToolPlaneSurface::OwnCheck(const Handle(IGESSolid_PlaneSurface)& 
 
 //=================================================================================================
 
-void IGESSolid_ToolPlaneSurface::OwnDump(const Handle(IGESSolid_PlaneSurface)& ent,
-                                         const IGESData_IGESDumper&            dumper,
-                                         Standard_OStream&                     S,
-                                         const Standard_Integer                level) const
+void IGESSolid_ToolPlaneSurface::OwnDump(const occ::handle<IGESSolid_PlaneSurface>& ent,
+                                         const IGESData_IGESDumper&                 dumper,
+                                         Standard_OStream&                          S,
+                                         const int                                  level) const
 {
   S << "IGESSolid_PlaneSurface\n";
 
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
   S << "Point on axis    : ";
   dumper.Dump(ent->LocationPoint(), S, sublevel);
   S << "\n"

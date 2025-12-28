@@ -32,16 +32,16 @@ ShapeFix_ShapeTolerance::ShapeFix_ShapeTolerance() {}
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    shape,
-                                                         const Standard_Real    tmin,
-                                                         const Standard_Real    tmax,
-                                                         const TopAbs_ShapeEnum styp) const
+bool ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    shape,
+                                             const double           tmin,
+                                             const double           tmax,
+                                             const TopAbs_ShapeEnum styp) const
 {
   if (shape.IsNull() || tmin < 0)
-    return Standard_False;
-  Standard_Boolean iamax = (tmax >= tmin);
-  Standard_Real    prec;
-  Standard_Boolean fait = Standard_False;
+    return false;
+  bool   iamax = (tmax >= tmin);
+  double prec;
+  bool   fait = false;
   if (styp == TopAbs_VERTEX || styp == TopAbs_EDGE || styp == TopAbs_FACE)
   {
     for (TopExp_Explorer ex(shape, styp); ex.More(); ex.Next())
@@ -58,9 +58,9 @@ Standard_Boolean ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    
           newtol = -1;
         if (newtol)
         {
-          const Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*)&V.TShape());
+          const occ::handle<BRep_TVertex>& TV = *((occ::handle<BRep_TVertex>*)&V.TShape());
           TV->Tolerance((newtol > 0 ? tmax : tmin));
-          fait = Standard_True;
+          fait = true;
         }
       }
       else if (styp == TopAbs_EDGE)
@@ -73,9 +73,9 @@ Standard_Boolean ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    
           newtol = -1;
         if (newtol)
         {
-          const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&E.TShape());
+          const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
           TE->Tolerance((newtol > 0 ? tmax : tmin));
-          fait = Standard_True;
+          fait = true;
         }
       }
       else if (styp == TopAbs_FACE)
@@ -88,9 +88,9 @@ Standard_Boolean ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    
           newtol = -1;
         if (newtol)
         {
-          const Handle(BRep_TFace)& TF = *((Handle(BRep_TFace)*)&F.TShape());
+          const occ::handle<BRep_TFace>& TF = *((occ::handle<BRep_TFace>*)&F.TShape());
           TF->Tolerance((newtol > 0 ? tmax : tmin));
-          fait = Standard_True;
+          fait = true;
         }
       }
     }
@@ -122,7 +122,7 @@ Standard_Boolean ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    
 //=================================================================================================
 
 void ShapeFix_ShapeTolerance::SetTolerance(const TopoDS_Shape&    shape,
-                                           const Standard_Real    preci,
+                                           const double           preci,
                                            const TopAbs_ShapeEnum styp) const
 {
   //   VERTEX ou EDGE ou FACE : ces types seulement
@@ -139,21 +139,21 @@ void ShapeFix_ShapeTolerance::SetTolerance(const TopoDS_Shape&    shape,
       {
         TopoDS_Vertex V = TopoDS::Vertex(sh);
         //	B.UpdateVertex (V,preci);
-        const Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*)&V.TShape());
+        const occ::handle<BRep_TVertex>& TV = *((occ::handle<BRep_TVertex>*)&V.TShape());
         TV->Tolerance(preci);
       }
       else if (styp == TopAbs_EDGE)
       {
         TopoDS_Edge E = TopoDS::Edge(sh);
         //	B.UpdateEdge   (E,preci);
-        const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&E.TShape());
+        const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
         TE->Tolerance(preci);
       }
       else if (styp == TopAbs_FACE)
       {
         TopoDS_Face F = TopoDS::Face(sh);
         //	B.UpdateFace   (F,preci);
-        const Handle(BRep_TFace)& TF = *((Handle(BRep_TFace)*)&F.TShape());
+        const occ::handle<BRep_TFace>& TF = *((occ::handle<BRep_TFace>*)&F.TShape());
         TF->Tolerance(preci);
       }
     }
@@ -165,20 +165,20 @@ void ShapeFix_ShapeTolerance::SetTolerance(const TopoDS_Shape&    shape,
       TopoDS_Shape sh = ex.Current();
       TopoDS_Edge  E  = TopoDS::Edge(sh);
       //      B.UpdateEdge   (E,preci);
-      const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&E.TShape());
+      const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
       TE->Tolerance(preci);
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(E, V1, V2);
       if (!V1.IsNull())
       {
         //	B.UpdateVertex (V1,preci);
-        const Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*)&V1.TShape());
+        const occ::handle<BRep_TVertex>& TV = *((occ::handle<BRep_TVertex>*)&V1.TShape());
         TV->Tolerance(preci);
       }
       if (!V2.IsNull())
       {
         //	B.UpdateVertex (V2,preci);
-        const Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*)&V2.TShape());
+        const occ::handle<BRep_TVertex>& TV = *((occ::handle<BRep_TVertex>*)&V2.TShape());
         TV->Tolerance(preci);
       }
     }

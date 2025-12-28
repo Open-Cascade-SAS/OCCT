@@ -28,10 +28,10 @@
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle,
-                             const gp_Ax2&       Position,
-                             const Standard_Real Height,
-                             const Standard_Real Radius)
+BRepPrim_Cone::BRepPrim_Cone(const double  Angle,
+                             const gp_Ax2& Position,
+                             const double  Height,
+                             const double  Radius)
     : BRepPrim_Revolution(Position, 0, 0),
       myHalfAngle(Angle),
       myRadius(Radius)
@@ -51,7 +51,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle,
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle)
+BRepPrim_Cone::BRepPrim_Cone(const double Angle)
     : BRepPrim_Revolution(gp::XOY(), 0, RealLast()),
       myHalfAngle(Angle),
       myRadius(0.)
@@ -64,7 +64,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle)
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle, const gp_Pnt& Apex)
+BRepPrim_Cone::BRepPrim_Cone(const double Angle, const gp_Pnt& Apex)
     : BRepPrim_Revolution(gp_Ax2(Apex, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 0, RealLast()),
       myHalfAngle(Angle),
       myRadius(0.)
@@ -77,7 +77,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle, const gp_Pnt& Apex)
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle, const gp_Ax2& Axes)
+BRepPrim_Cone::BRepPrim_Cone(const double Angle, const gp_Ax2& Axes)
     : BRepPrim_Revolution(Axes, 0, RealLast()),
       myHalfAngle(Angle)
 {
@@ -89,7 +89,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle, const gp_Ax2& Axes)
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const Standard_Real R1, const Standard_Real R2, const Standard_Real H)
+BRepPrim_Cone::BRepPrim_Cone(const double R1, const double R2, const double H)
     : BRepPrim_Revolution(gp::XOY(), 0, 0)
 {
   SetParameters(R1, R2, H);
@@ -98,10 +98,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real R1, const Standard_Real R2, con
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const gp_Pnt&       Center,
-                             const Standard_Real R1,
-                             const Standard_Real R2,
-                             const Standard_Real H)
+BRepPrim_Cone::BRepPrim_Cone(const gp_Pnt& Center, const double R1, const double R2, const double H)
     : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 0, 0)
 {
   SetParameters(R1, R2, H);
@@ -110,10 +107,7 @@ BRepPrim_Cone::BRepPrim_Cone(const gp_Pnt&       Center,
 
 //=================================================================================================
 
-BRepPrim_Cone::BRepPrim_Cone(const gp_Ax2&       Axes,
-                             const Standard_Real R1,
-                             const Standard_Real R2,
-                             const Standard_Real H)
+BRepPrim_Cone::BRepPrim_Cone(const gp_Ax2& Axes, const double R1, const double R2, const double H)
     : BRepPrim_Revolution(Axes, 0, 0)
 {
   SetParameters(R1, R2, H);
@@ -124,8 +118,8 @@ BRepPrim_Cone::BRepPrim_Cone(const gp_Ax2&       Axes,
 
 TopoDS_Face BRepPrim_Cone::MakeEmptyLateralFace() const
 {
-  Handle(Geom_ConicalSurface) C = new Geom_ConicalSurface(Axes(), myHalfAngle, myRadius);
-  TopoDS_Face                 F;
+  occ::handle<Geom_ConicalSurface> C = new Geom_ConicalSurface(Axes(), myHalfAngle, myRadius);
+  TopoDS_Face                      F;
   myBuilder.Builder().MakeFace(F, C, Precision::Confusion());
   return F;
 }
@@ -139,17 +133,15 @@ void BRepPrim_Cone::SetMeridian()
   gp_Vec V(Axes().XDirection());
   V *= myRadius;
   A.Translate(V);
-  Handle(Geom_Line)   L = new Geom_Line(A);
-  Handle(Geom2d_Line) L2d =
+  occ::handle<Geom_Line>   L = new Geom_Line(A);
+  occ::handle<Geom2d_Line> L2d =
     new Geom2d_Line(gp_Pnt2d(myRadius, 0), gp_Dir2d(std::sin(myHalfAngle), std::cos(myHalfAngle)));
   Meridian(L, L2d);
 }
 
 //=================================================================================================
 
-void BRepPrim_Cone::SetParameters(const Standard_Real R1,
-                                  const Standard_Real R2,
-                                  const Standard_Real H)
+void BRepPrim_Cone::SetParameters(const double R1, const double R2, const double H)
 {
   if (((R1 != 0) && (R1 < Precision::Confusion())) || ((R2 != 0) && (R2 < Precision::Confusion())))
     throw Standard_DomainError("cone with negative or too small radius");

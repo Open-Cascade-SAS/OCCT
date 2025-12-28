@@ -28,16 +28,17 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PipingFlow, IGESData_IGESEntity)
 
 IGESAppli_PipingFlow::IGESAppli_PipingFlow() {}
 
-void IGESAppli_PipingFlow::Init(const Standard_Integer                         nbContextFlags,
-                                const Standard_Integer                         aFlowType,
-                                const Handle(IGESData_HArray1OfIGESEntity)&    allFlowAssocs,
-                                const Handle(IGESDraw_HArray1OfConnectPoint)&  allConnectPoints,
-                                const Handle(IGESData_HArray1OfIGESEntity)&    allJoins,
-                                const Handle(Interface_HArray1OfHAsciiString)& allFlowNames,
-                                const Handle(IGESGraph_HArray1OfTextDisplayTemplate)& allTextDisps,
-                                const Handle(IGESData_HArray1OfIGESEntity)& allContFlowAssocs)
+void IGESAppli_PipingFlow::Init(
+  const int                                                                      nbContextFlags,
+  const int                                                                      aFlowType,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      allFlowAssocs,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>&    allConnectPoints,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      allJoins,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allFlowNames,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>& allTextDisps,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allContFlowAssocs)
 {
-  Standard_Integer num = allFlowAssocs->Length();
+  int num = allFlowAssocs->Length();
   if (allFlowAssocs->Lower() != 1 || allConnectPoints->Lower() != 1
       || allConnectPoints->Length() != num || allJoins->Lower() != 1 || allJoins->Length() != num
       || allFlowNames->Lower() != 1 || allFlowNames->Length() != num
@@ -54,83 +55,81 @@ void IGESAppli_PipingFlow::Init(const Standard_Integer                         n
   InitTypeAndForm(402, 20);
 }
 
-Standard_Boolean IGESAppli_PipingFlow::OwnCorrect()
+bool IGESAppli_PipingFlow::OwnCorrect()
 {
   if (theNbContextFlags == 1)
-    return Standard_False;
+    return false;
   theNbContextFlags = 1;
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer IGESAppli_PipingFlow::NbContextFlags() const
+int IGESAppli_PipingFlow::NbContextFlags() const
 {
   return theNbContextFlags;
 }
 
-Standard_Integer IGESAppli_PipingFlow::NbFlowAssociativities() const
+int IGESAppli_PipingFlow::NbFlowAssociativities() const
 {
   return theFlowAssociativities->Length();
 }
 
-Standard_Integer IGESAppli_PipingFlow::NbConnectPoints() const
+int IGESAppli_PipingFlow::NbConnectPoints() const
 {
   return theConnectPoints->Length();
 }
 
-Standard_Integer IGESAppli_PipingFlow::NbJoins() const
+int IGESAppli_PipingFlow::NbJoins() const
 {
   return theJoins->Length();
 }
 
-Standard_Integer IGESAppli_PipingFlow::NbFlowNames() const
+int IGESAppli_PipingFlow::NbFlowNames() const
 {
   return theFlowNames->Length();
 }
 
-Standard_Integer IGESAppli_PipingFlow::NbTextDisplayTemplates() const
+int IGESAppli_PipingFlow::NbTextDisplayTemplates() const
 {
   return theTextDisplayTemplates->Length();
 }
 
-Standard_Integer IGESAppli_PipingFlow::NbContFlowAssociativities() const
+int IGESAppli_PipingFlow::NbContFlowAssociativities() const
 {
   return theContFlowAssociativities->Length();
 }
 
-Standard_Integer IGESAppli_PipingFlow::TypeOfFlow() const
+int IGESAppli_PipingFlow::TypeOfFlow() const
 {
   return theTypeOfFlow;
 }
 
-Handle(IGESData_IGESEntity) IGESAppli_PipingFlow::FlowAssociativity(
-  const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESAppli_PipingFlow::FlowAssociativity(const int Index) const
 {
   return theFlowAssociativities->Value(Index);
 }
 
-Handle(IGESDraw_ConnectPoint) IGESAppli_PipingFlow::ConnectPoint(const Standard_Integer Index) const
+occ::handle<IGESDraw_ConnectPoint> IGESAppli_PipingFlow::ConnectPoint(const int Index) const
 {
   return theConnectPoints->Value(Index);
 }
 
-Handle(IGESData_IGESEntity) IGESAppli_PipingFlow::Join(const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESAppli_PipingFlow::Join(const int Index) const
 {
   return theJoins->Value(Index);
 }
 
-Handle(TCollection_HAsciiString) IGESAppli_PipingFlow::FlowName(const Standard_Integer Index) const
+occ::handle<TCollection_HAsciiString> IGESAppli_PipingFlow::FlowName(const int Index) const
 {
   return theFlowNames->Value(Index);
 }
 
-Handle(IGESGraph_TextDisplayTemplate) IGESAppli_PipingFlow::TextDisplayTemplate(
-  const Standard_Integer Index) const
+occ::handle<IGESGraph_TextDisplayTemplate> IGESAppli_PipingFlow::TextDisplayTemplate(
+  const int Index) const
 {
   return theTextDisplayTemplates->Value(Index);
 }
 
-Handle(IGESData_IGESEntity) IGESAppli_PipingFlow::ContFlowAssociativity(
-  const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESAppli_PipingFlow::ContFlowAssociativity(const int Index) const
 {
   return theContFlowAssociativities->Value(Index);
 }

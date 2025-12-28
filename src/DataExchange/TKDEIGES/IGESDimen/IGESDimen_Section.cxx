@@ -28,9 +28,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_Section, IGESData_IGESEntity)
 
 IGESDimen_Section::IGESDimen_Section() {}
 
-void IGESDimen_Section::Init(const Standard_Integer            dataType,
-                             const Standard_Real               aDisp,
-                             const Handle(TColgp_HArray1OfXY)& dataPoints)
+void IGESDimen_Section::Init(const int                                      dataType,
+                             const double                                   aDisp,
+                             const occ::handle<NCollection_HArray1<gp_XY>>& dataPoints)
 {
   if (dataPoints->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_Section : Init");
@@ -41,36 +41,36 @@ void IGESDimen_Section::Init(const Standard_Integer            dataType,
   //  FormNumber  precises the type of Hatches  (31-38)
 }
 
-void IGESDimen_Section::SetFormNumber(const Standard_Integer form)
+void IGESDimen_Section::SetFormNumber(const int form)
 {
   if (form < 31 || form > 38)
     throw Standard_OutOfRange("IGESDimen_Section : SetFormNumber");
   InitTypeAndForm(106, form);
 }
 
-Standard_Integer IGESDimen_Section::Datatype() const
+int IGESDimen_Section::Datatype() const
 {
   return theDatatype;
 }
 
-Standard_Integer IGESDimen_Section::NbPoints() const
+int IGESDimen_Section::NbPoints() const
 {
   return theDataPoints->Length();
 }
 
-Standard_Real IGESDimen_Section::ZDisplacement() const
+double IGESDimen_Section::ZDisplacement() const
 {
   return theZDisplacement;
 }
 
-gp_Pnt IGESDimen_Section::Point(const Standard_Integer Index) const
+gp_Pnt IGESDimen_Section::Point(const int Index) const
 {
   gp_XY  tempXY = theDataPoints->Value(Index);
   gp_Pnt point(tempXY.X(), tempXY.Y(), theZDisplacement);
   return point;
 }
 
-gp_Pnt IGESDimen_Section::TransformedPoint(const Standard_Integer Index) const
+gp_Pnt IGESDimen_Section::TransformedPoint(const int Index) const
 {
   gp_XY  point2d = theDataPoints->Value(Index);
   gp_XYZ point(point2d.X(), point2d.Y(), theZDisplacement);

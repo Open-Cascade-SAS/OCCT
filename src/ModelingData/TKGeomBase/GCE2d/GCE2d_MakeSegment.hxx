@@ -54,16 +54,14 @@ public:
   //! Make a segment of Line from the line <Line>
   //! between the two parameters U1 and U2.
   //! Status is "SameParameters" if <U1> is equal <U2>.
-  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d&     Line,
-                                    const Standard_Real U1,
-                                    const Standard_Real U2);
+  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d& Line, const double U1, const double U2);
 
   //! Make a segment of Line from the line <Line>
   //! between the point <Point> and the parameter Ulast.
   //! It returns NullObject if <U1> is equal <U2>.
-  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d&     Line,
-                                    const gp_Pnt2d&     Point,
-                                    const Standard_Real Ulast);
+  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d& Line,
+                                    const gp_Pnt2d& Point,
+                                    const double    Ulast);
 
   //! Make a segment of Line from the line <Line>
   //! between the two points <P1> and <P2>.
@@ -79,12 +77,12 @@ public:
 
   //! Returns the constructed line segment.
   //! Exceptions StdFail_NotDone if no line segment is constructed.
-  Standard_EXPORT const Handle(Geom2d_TrimmedCurve)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_TrimmedCurve>& Value() const;
 
-  operator const Handle(Geom2d_TrimmedCurve)&() const { return Value(); }
+  operator const occ::handle<Geom2d_TrimmedCurve>&() const { return Value(); }
 
 private:
-  Handle(Geom2d_TrimmedCurve) TheSegment;
+  occ::handle<Geom2d_TrimmedCurve> TheSegment;
 };
 
 #endif // _GCE2d_MakeSegment_HeaderFile

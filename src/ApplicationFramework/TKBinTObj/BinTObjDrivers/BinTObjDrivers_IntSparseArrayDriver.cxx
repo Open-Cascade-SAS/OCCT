@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_IntSparseArrayDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinTObjDrivers_IntSparseArrayDriver::BinTObjDrivers_IntSparseArrayDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : BinMDF_ADriver(theMessageDriver, NULL)
 {
 }
@@ -37,7 +37,7 @@ BinTObjDrivers_IntSparseArrayDriver::BinTObjDrivers_IntSparseArrayDriver(
 // purpose  : Creates a new attribute
 //=======================================================================
 
-Handle(TDF_Attribute) BinTObjDrivers_IntSparseArrayDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinTObjDrivers_IntSparseArrayDriver::NewEmpty() const
 {
   return new TObj_TIntSparseArray;
 }
@@ -48,32 +48,32 @@ Handle(TDF_Attribute) BinTObjDrivers_IntSparseArrayDriver::NewEmpty() const
 //           into <theTarget>.
 //=======================================================================
 
-Standard_Boolean BinTObjDrivers_IntSparseArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                            const Handle(TDF_Attribute)& theTarget,
-                                                            BinObjMgt_RRelocationTable&) const
+bool BinTObjDrivers_IntSparseArrayDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
+                                                BinObjMgt_RRelocationTable&) const
 {
-  Handle(TObj_TIntSparseArray) aTarget = Handle(TObj_TIntSparseArray)::DownCast(theTarget);
+  occ::handle<TObj_TIntSparseArray> aTarget = occ::down_cast<TObj_TIntSparseArray>(theTarget);
 
   // get pairs (ID, value) while ID != 0
-  Standard_Integer anId;
+  int anId;
   if (!(theSource >> anId) || anId < 0)
-    return Standard_False;
+    return false;
   while (anId)
   {
-    Standard_Integer aValue;
+    int aValue;
     if (!(theSource >> aValue) || aValue <= 0)
-      return Standard_False;
+      return false;
 
     // store the value in the target array
-    aTarget->SetDoBackup(Standard_False);
+    aTarget->SetDoBackup(false);
     aTarget->SetValue(anId, aValue);
-    aTarget->SetDoBackup(Standard_True);
+    aTarget->SetDoBackup(true);
 
     // get next ID
     if (!(theSource >> anId) || anId < 0)
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -82,24 +82,25 @@ Standard_Boolean BinTObjDrivers_IntSparseArrayDriver::Paste(const BinObjMgt_Pers
 //           into <theTarget>
 //=======================================================================
 
-void BinTObjDrivers_IntSparseArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                                BinObjMgt_Persistent&        theTarget,
-                                                BinObjMgt_SRelocationTable&) const
+void BinTObjDrivers_IntSparseArrayDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TObj_TIntSparseArray) aSource = Handle(TObj_TIntSparseArray)::DownCast(theSource);
+  occ::handle<TObj_TIntSparseArray> aSource = occ::down_cast<TObj_TIntSparseArray>(theSource);
 
   // put only non-null values as pairs (ID, value)
   // terminate the list by ID=0
   TObj_TIntSparseArray::Iterator anIt = aSource->GetIterator();
   for (; anIt.More(); anIt.Next())
   {
-    Standard_Integer aValue = anIt.Value();
+    int aValue = anIt.Value();
     if (aValue == 0)
       continue;
 
     // store ID and value
-    theTarget << (Standard_Integer)anIt.Index() << aValue;
+    theTarget << (int)anIt.Index() << aValue;
   }
   // zero indicates end of the entities
-  theTarget << (Standard_Integer)0;
+  theTarget << (int)0;
 }

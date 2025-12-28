@@ -24,18 +24,18 @@
 //! See class math_TrigonometricFunctionRoots
 class math_TrigonometricEquationFunction : public math_FunctionWithDerivative
 {
-  Standard_Real myAA;
-  Standard_Real myBB;
-  Standard_Real myCC;
-  Standard_Real myDD;
-  Standard_Real myEE;
+  double myAA;
+  double myBB;
+  double myCC;
+  double myDD;
+  double myEE;
 
 public:
-  math_TrigonometricEquationFunction(const Standard_Real A,
-                                     const Standard_Real B,
-                                     const Standard_Real C,
-                                     const Standard_Real D,
-                                     const Standard_Real E)
+  math_TrigonometricEquationFunction(const double A,
+                                     const double B,
+                                     const double C,
+                                     const double D,
+                                     const double E)
       : myAA(A),
         myBB(B),
         myCC(C),
@@ -44,37 +44,37 @@ public:
   {
   }
 
-  Standard_Boolean Value(const Standard_Real X, Standard_Real& F)
+  bool Value(const double X, double& F)
   {
-    Standard_Real CN = cos(X), SN = sin(X);
+    double CN = cos(X), SN = sin(X);
     //-- F= AA*CN*CN+2*BB*CN*SN+CC*CN+DD*SN+EE;
     F = CN * (myAA * CN + (myBB + myBB) * SN + myCC) + myDD * SN + myEE;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D)
+  bool Derivative(const double X, double& D)
   {
-    Standard_Real CN = std::cos(X), SN = std::sin(X);
+    double CN = std::cos(X), SN = std::sin(X);
     //-- D = -2*AA*CN*SN+2*BB*(CN*CN-SN*SN)-CC*SN+DD*CN;
     D = -myAA * CN * SN + myBB * (CN * CN - SN * SN);
     D += D;
     D += -myCC * SN + myDD * CN;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real X, Standard_Real& F, Standard_Real& D)
+  bool Values(const double X, double& F, double& D)
   {
-    Standard_Real CN = std::cos(X), SN = std::sin(X);
+    double CN = std::cos(X), SN = std::sin(X);
     //-- F= AA*CN*CN+2*BB*CN*SN+CC*CN+DD*SN+EE;
     //-- D = -2*AA*CN*SN+2*BB*(CN*CN-SN*SN)-CC*SN+DD*CN;
-    Standard_Real AACN = myAA * CN;
-    Standard_Real BBSN = myBB * SN;
+    double AACN = myAA * CN;
+    double BBSN = myBB * SN;
 
     F = AACN * CN + BBSN * (CN + CN) + myCC * CN + myDD * SN + myEE;
     D = -AACN * SN + myBB * (CN * CN - SN * SN);
     D += D;
     D += -myCC * SN + myDD * CN;
-    return Standard_True;
+    return true;
   }
 };
 

@@ -24,10 +24,10 @@
 RWStepVisual_RWPresentationStyleByContext::RWStepVisual_RWPresentationStyleByContext() {}
 
 void RWStepVisual_RWPresentationStyleByContext::ReadStep(
-  const Handle(StepData_StepReaderData)&               data,
-  const Standard_Integer                               num,
-  Handle(Interface_Check)&                             ach,
-  const Handle(StepVisual_PresentationStyleByContext)& ent) const
+  const occ::handle<StepData_StepReaderData>&               data,
+  const int                                                 num,
+  occ::handle<Interface_Check>&                             ach,
+  const occ::handle<StepVisual_PresentationStyleByContext>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -37,14 +37,14 @@ void RWStepVisual_RWPresentationStyleByContext::ReadStep(
 
   // --- inherited field : styles ---
 
-  Handle(StepVisual_HArray1OfPresentationStyleSelect) aStyles;
-  StepVisual_PresentationStyleSelect                  aStylesItem;
-  Standard_Integer                                    nsub1;
+  occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>> aStyles;
+  StepVisual_PresentationStyleSelect                                   aStylesItem;
+  int                                                                  nsub1;
   if (data->ReadSubList(num, 1, "styles", ach, nsub1))
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
-    aStyles              = new StepVisual_HArray1OfPresentationStyleSelect(1, nb1);
-    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    int nb1 = data->NbParams(nsub1);
+    aStyles = new NCollection_HArray1<StepVisual_PresentationStyleSelect>(1, nb1);
+    for (int i1 = 1; i1 <= nb1; i1++)
     {
       Interface_ParamType aType = data->ParamType(nsub1, i1);
       if (aType == Interface_ParamIdent)
@@ -53,10 +53,10 @@ void RWStepVisual_RWPresentationStyleByContext::ReadStep(
       }
       else
       {
-        Handle(StepData_SelectMember) aMember;
+        occ::handle<StepData_SelectMember> aMember;
         data->ReadMember(nsub1, i1, "null_style", ach, aMember);
-        Standard_CString                   anEnumText = aMember->EnumText();
-        Handle(StepVisual_NullStyleMember) aNullStyle = new StepVisual_NullStyleMember();
+        const char*                             anEnumText = aMember->EnumText();
+        occ::handle<StepVisual_NullStyleMember> aNullStyle = new StepVisual_NullStyleMember();
         aNullStyle->SetEnumText(0, anEnumText);
         aStylesItem.SetValue(aNullStyle);
       }
@@ -67,7 +67,7 @@ void RWStepVisual_RWPresentationStyleByContext::ReadStep(
   // --- own field : styleContext ---
 
   StepVisual_StyleContextSelect aStyleContext;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "style_context", ach, aStyleContext);
 
   //--- Initialisation of the read entity ---
@@ -76,14 +76,14 @@ void RWStepVisual_RWPresentationStyleByContext::ReadStep(
 }
 
 void RWStepVisual_RWPresentationStyleByContext::WriteStep(
-  StepData_StepWriter&                                 SW,
-  const Handle(StepVisual_PresentationStyleByContext)& ent) const
+  StepData_StepWriter&                                      SW,
+  const occ::handle<StepVisual_PresentationStyleByContext>& ent) const
 {
 
   // --- inherited field styles ---
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->NbStyles(); i1++)
+  for (int i1 = 1; i1 <= ent->NbStyles(); i1++)
   {
     StepVisual_PresentationStyleSelect aStyle = ent->StylesValue(i1);
     if (aStyle.Value()->IsKind(STANDARD_TYPE(StepVisual_NullStyleMember)))
@@ -103,12 +103,12 @@ void RWStepVisual_RWPresentationStyleByContext::WriteStep(
 }
 
 void RWStepVisual_RWPresentationStyleByContext::Share(
-  const Handle(StepVisual_PresentationStyleByContext)& ent,
-  Interface_EntityIterator&                            iter) const
+  const occ::handle<StepVisual_PresentationStyleByContext>& ent,
+  Interface_EntityIterator&                                 iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbStyles();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbStyles();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->StylesValue(is1).Value());
   }

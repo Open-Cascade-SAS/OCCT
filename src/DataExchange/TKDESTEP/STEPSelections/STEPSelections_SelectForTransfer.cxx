@@ -15,7 +15,9 @@
 #include <Interface_Graph.hxx>
 #include <Standard_Type.hxx>
 #include <STEPSelections_SelectForTransfer.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <XSControl_TransferReader.hxx>
 
@@ -28,7 +30,7 @@ STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer() {}
 //=================================================================================================
 
 STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer(
-  const Handle(XSControl_TransferReader)& TR)
+  const occ::handle<XSControl_TransferReader>& TR)
 {
   SetReader(TR);
 }
@@ -38,10 +40,11 @@ STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer(
 Interface_EntityIterator STEPSelections_SelectForTransfer::RootResult(
   const Interface_Graph& /*G*/) const
 {
-  Interface_EntityIterator             iter;
-  Handle(TColStd_HSequenceOfTransient) roots = Reader()->TransientProcess()->RootsForTransfer();
-  Standard_Integer                     nb    = roots->Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  Interface_EntityIterator                                            iter;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> roots =
+    Reader()->TransientProcess()->RootsForTransfer();
+  int nb = roots->Length();
+  for (int i = 1; i <= nb; i++)
     iter.GetOneItem(roots->Value(i));
   return iter;
 }

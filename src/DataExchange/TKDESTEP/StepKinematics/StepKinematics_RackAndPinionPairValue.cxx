@@ -25,9 +25,9 @@ StepKinematics_RackAndPinionPairValue::StepKinematics_RackAndPinionPairValue() {
 //=================================================================================================
 
 void StepKinematics_RackAndPinionPairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Standard_Real                         theActualDisplacement)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const double                                     theActualDisplacement)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -36,7 +36,7 @@ void StepKinematics_RackAndPinionPairValue::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_RackAndPinionPairValue::ActualDisplacement() const
+double StepKinematics_RackAndPinionPairValue::ActualDisplacement() const
 {
   return myActualDisplacement;
 }
@@ -44,7 +44,7 @@ Standard_Real StepKinematics_RackAndPinionPairValue::ActualDisplacement() const
 //=================================================================================================
 
 void StepKinematics_RackAndPinionPairValue::SetActualDisplacement(
-  const Standard_Real theActualDisplacement)
+  const double theActualDisplacement)
 {
   myActualDisplacement = theActualDisplacement;
 }

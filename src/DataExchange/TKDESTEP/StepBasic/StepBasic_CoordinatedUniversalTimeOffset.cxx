@@ -18,9 +18,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CoordinatedUniversalTimeOffset, Standard_Tr
 
 StepBasic_CoordinatedUniversalTimeOffset::StepBasic_CoordinatedUniversalTimeOffset() {}
 
-void StepBasic_CoordinatedUniversalTimeOffset::Init(const Standard_Integer        aHourOffset,
-                                                    const Standard_Boolean        hasAminuteOffset,
-                                                    const Standard_Integer        aMinuteOffset,
+void StepBasic_CoordinatedUniversalTimeOffset::Init(const int                     aHourOffset,
+                                                    const bool                    hasAminuteOffset,
+                                                    const int                     aMinuteOffset,
                                                     const StepBasic_AheadOrBehind aSense)
 {
   // --- classe own fields ---
@@ -30,33 +30,33 @@ void StepBasic_CoordinatedUniversalTimeOffset::Init(const Standard_Integer      
   sense           = aSense;
 }
 
-void StepBasic_CoordinatedUniversalTimeOffset::SetHourOffset(const Standard_Integer aHourOffset)
+void StepBasic_CoordinatedUniversalTimeOffset::SetHourOffset(const int aHourOffset)
 {
   hourOffset = aHourOffset;
 }
 
-Standard_Integer StepBasic_CoordinatedUniversalTimeOffset::HourOffset() const
+int StepBasic_CoordinatedUniversalTimeOffset::HourOffset() const
 {
   return hourOffset;
 }
 
-void StepBasic_CoordinatedUniversalTimeOffset::SetMinuteOffset(const Standard_Integer aMinuteOffset)
+void StepBasic_CoordinatedUniversalTimeOffset::SetMinuteOffset(const int aMinuteOffset)
 {
   minuteOffset    = aMinuteOffset;
-  hasMinuteOffset = Standard_True;
+  hasMinuteOffset = true;
 }
 
 void StepBasic_CoordinatedUniversalTimeOffset::UnSetMinuteOffset()
 {
-  hasMinuteOffset = Standard_False;
+  hasMinuteOffset = false;
 }
 
-Standard_Integer StepBasic_CoordinatedUniversalTimeOffset::MinuteOffset() const
+int StepBasic_CoordinatedUniversalTimeOffset::MinuteOffset() const
 {
   return minuteOffset;
 }
 
-Standard_Boolean StepBasic_CoordinatedUniversalTimeOffset::HasMinuteOffset() const
+bool StepBasic_CoordinatedUniversalTimeOffset::HasMinuteOffset() const
 {
   return hasMinuteOffset;
 }

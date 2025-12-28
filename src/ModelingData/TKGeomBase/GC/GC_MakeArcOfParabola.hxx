@@ -42,33 +42,33 @@ public:
   //! Creates an arc of Parabola (TrimmedCurve from Geom) from
   //! a Parabola between two parameters Alpha1 and Alpha2
   //! (given in radians).
-  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab&        Parab,
-                                       const Standard_Real    Alpha1,
-                                       const Standard_Real    Alpha2,
-                                       const Standard_Boolean Sense);
+  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& Parab,
+                                       const double    Alpha1,
+                                       const double    Alpha2,
+                                       const bool      Sense);
 
   //! Creates an arc of Parabola (TrimmedCurve from Geom) from
   //! a Parabola between point <P> and the parameter
   //! Alpha (given in radians).
-  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab&        Parab,
-                                       const gp_Pnt&          P,
-                                       const Standard_Real    Alpha,
-                                       const Standard_Boolean Sense);
+  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& Parab,
+                                       const gp_Pnt&   P,
+                                       const double    Alpha,
+                                       const bool      Sense);
 
   //! Creates an arc of Parabola (TrimmedCurve from Geom) from
   //! a Parabola between two points P1 and P2.
-  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab&        Parab,
-                                       const gp_Pnt&          P1,
-                                       const gp_Pnt&          P2,
-                                       const Standard_Boolean Sense);
+  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& Parab,
+                                       const gp_Pnt&   P1,
+                                       const gp_Pnt&   P2,
+                                       const bool      Sense);
 
   //! Returns the constructed arc of parabola.
-  Standard_EXPORT const Handle(Geom_TrimmedCurve)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_TrimmedCurve>& Value() const;
 
-  operator const Handle(Geom_TrimmedCurve)&() const { return Value(); }
+  operator const occ::handle<Geom_TrimmedCurve>&() const { return Value(); }
 
 private:
-  Handle(Geom_TrimmedCurve) TheArc;
+  occ::handle<Geom_TrimmedCurve> TheArc;
 };
 
 #endif // _GC_MakeArcOfParabola_HeaderFile

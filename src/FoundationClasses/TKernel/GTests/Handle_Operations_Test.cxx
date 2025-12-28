@@ -28,7 +28,6 @@ public:
   virtual ~TestBase() {}
   DEFINE_STANDARD_RTTI_INLINE(TestBase, Standard_Transient)
 };
-DEFINE_STANDARD_HANDLE(TestBase, Standard_Transient)
 
 class TestDerived : public TestBase
 {
@@ -38,7 +37,6 @@ public:
   virtual ~TestDerived() {}
   DEFINE_STANDARD_RTTI_INLINE(TestDerived, TestBase)
 };
-DEFINE_STANDARD_HANDLE(TestDerived, TestBase)
 
 class TestOther : public Standard_Transient
 {
@@ -48,7 +46,6 @@ public:
   virtual ~TestOther() {}
   DEFINE_STANDARD_RTTI_INLINE(TestOther, Standard_Transient)
 };
-DEFINE_STANDARD_HANDLE(TestOther, Standard_Transient)
 
 // Test fixture for Handle operations tests
 class HandleOperationsTest : public testing::Test
@@ -62,12 +59,12 @@ protected:
 TEST_F(HandleOperationsTest, BasicHandleOperations)
 {
   // Test basic handle creation and null checking
-  Handle(TestDerived) aDerived = new TestDerived();
+  occ::handle<TestDerived> aDerived = new TestDerived();
   EXPECT_FALSE(aDerived.IsNull());
 
   // Test various casting operations
-  const Handle(TestDerived)& aConstDerived = aDerived;
-  const Handle(TestBase)&    aConstBase    = aDerived;
+  const occ::handle<TestDerived>& aConstDerived = aDerived;
+  const occ::handle<TestBase>&    aConstBase    = aDerived;
   (void)aConstBase; // Avoid unused variable warning
 
   TestDerived*       aDerivedPtr      = aDerived.get();
@@ -83,7 +80,7 @@ TEST_F(HandleOperationsTest, BasicHandleOperations)
   EXPECT_EQ(&aConstDerivedRef, aConstDerivedPtr);
 
   // Test handle assignment to base type
-  Handle(TestBase) aBase = aDerived;
+  occ::handle<TestBase> aBase = aDerived;
   EXPECT_FALSE(aBase.IsNull());
   EXPECT_EQ(aBase.get(), aDerived.get());
 }
@@ -91,26 +88,26 @@ TEST_F(HandleOperationsTest, BasicHandleOperations)
 TEST_F(HandleOperationsTest, HandleDownCast)
 {
   // Test DownCast functionality
-  Handle(TestDerived) aDerived = new TestDerived();
-  Handle(TestBase)    aBase    = aDerived;
+  occ::handle<TestDerived> aDerived = new TestDerived();
+  occ::handle<TestBase>    aBase    = aDerived;
 
-  Handle(TestDerived) aDownCastDerived = Handle(TestDerived)::DownCast(aBase);
+  occ::handle<TestDerived> aDownCastDerived = occ::down_cast<TestDerived>(aBase);
   EXPECT_FALSE(aDownCastDerived.IsNull());
   EXPECT_EQ(aDownCastDerived.get(), aDerived.get());
 
   // Test failed downcast (different type)
-  Handle(TestOther)          anOther         = new TestOther();
-  Handle(Standard_Transient) aTransient      = anOther;
-  Handle(TestDerived)        aFailedDownCast = Handle(TestDerived)::DownCast(aTransient);
+  occ::handle<TestOther>          anOther         = new TestOther();
+  occ::handle<Standard_Transient> aTransient      = anOther;
+  occ::handle<TestDerived>        aFailedDownCast = occ::down_cast<TestDerived>(aTransient);
   EXPECT_TRUE(aFailedDownCast.IsNull());
 }
 
 TEST_F(HandleOperationsTest, HandleComparisons)
 {
-  Handle(TestDerived) aDerived  = new TestDerived();
-  Handle(TestDerived) aDerived2 = aDerived;          // Same object
-  Handle(TestDerived) aDerived3 = new TestDerived(); // Different object
-  Handle(TestBase)    aBase     = aDerived;
+  occ::handle<TestDerived> aDerived  = new TestDerived();
+  occ::handle<TestDerived> aDerived2 = aDerived;          // Same object
+  occ::handle<TestDerived> aDerived3 = new TestDerived(); // Different object
+  occ::handle<TestBase>    aBase     = aDerived;
 
   // Test equality operators
   EXPECT_TRUE(aDerived == aDerived);   // Self equality
@@ -132,43 +129,43 @@ TEST_F(HandleOperationsTest, HandleComparisons)
 
   // Test boolean conversion
   EXPECT_TRUE(static_cast<bool>(aDerived));
-  Handle(TestDerived) aNullDerived;
+  occ::handle<TestDerived> aNullDerived;
   EXPECT_FALSE(static_cast<bool>(aNullDerived));
 }
 
 TEST_F(HandleOperationsTest, AllocatorHandleCasting)
 {
   // Test Handle casting with allocator hierarchy
-  Handle(NCollection_BaseAllocator) aBasePtr = new NCollection_IncAllocator();
+  occ::handle<NCollection_BaseAllocator> aBasePtr = new NCollection_IncAllocator();
   EXPECT_FALSE(aBasePtr.IsNull());
 
   // Test successful downcast to IncAllocator
-  Handle(NCollection_IncAllocator) anIncAlloc =
-    Handle(NCollection_IncAllocator)::DownCast(aBasePtr);
+  occ::handle<NCollection_IncAllocator> anIncAlloc =
+    occ::down_cast<NCollection_IncAllocator>(aBasePtr);
   EXPECT_FALSE(anIncAlloc.IsNull());
 
   // Test upcast back to BaseAllocator
-  Handle(NCollection_BaseAllocator) aBaseAlloc = anIncAlloc;
+  occ::handle<NCollection_BaseAllocator> aBaseAlloc = anIncAlloc;
   EXPECT_FALSE(aBaseAlloc.IsNull());
   EXPECT_EQ(aBaseAlloc.get(), aBasePtr.get());
 
   // Test failed downcast to HeapAllocator
-  Handle(NCollection_HeapAllocator) aHeapAlloc =
-    Handle(NCollection_HeapAllocator)::DownCast(aBasePtr);
+  occ::handle<NCollection_HeapAllocator> aHeapAlloc =
+    occ::down_cast<NCollection_HeapAllocator>(aBasePtr);
   EXPECT_TRUE(aHeapAlloc.IsNull());
 }
 
 TEST_F(HandleOperationsTest, HandleCopyAndAssignment)
 {
-  Handle(TestDerived) aDerived1 = new TestDerived();
+  occ::handle<TestDerived> aDerived1 = new TestDerived();
 
   // Test copy constructor
-  Handle(TestDerived) aDerived2(aDerived1);
+  occ::handle<TestDerived> aDerived2(aDerived1);
   EXPECT_FALSE(aDerived2.IsNull());
   EXPECT_EQ(aDerived1.get(), aDerived2.get());
 
   // Test assignment operator
-  Handle(TestDerived) aDerived3;
+  occ::handle<TestDerived> aDerived3;
   EXPECT_TRUE(aDerived3.IsNull());
 
   aDerived3 = aDerived1;
@@ -182,21 +179,21 @@ TEST_F(HandleOperationsTest, HandleCopyAndAssignment)
   EXPECT_FALSE(aDerived1.IsNull());
 
   // Test assignment to null
-  aDerived3 = Handle(TestDerived)();
+  aDerived3 = occ::handle<TestDerived>();
   EXPECT_TRUE(aDerived3.IsNull());
 }
 
 TEST_F(HandleOperationsTest, HandleWithDifferentTypes)
 {
-  Handle(TestDerived) aDerived = new TestDerived();
-  Handle(TestOther)   anOther  = new TestOther();
+  occ::handle<TestDerived> aDerived = new TestDerived();
+  occ::handle<TestOther>   anOther  = new TestOther();
 
   // Note: Direct comparison between handles of different types is not allowed by the type system
   // This is actually a good thing as it prevents type errors at compile time
 
   // Test casting both to common base type
-  Handle(Standard_Transient) aDerivedTransient = aDerived;
-  Handle(Standard_Transient) anOtherTransient  = anOther;
+  occ::handle<Standard_Transient> aDerivedTransient = aDerived;
+  occ::handle<Standard_Transient> anOtherTransient  = anOther;
 
   // These should be different objects even when cast to base type
   EXPECT_FALSE(aDerivedTransient == anOtherTransient);
@@ -213,9 +210,9 @@ TEST_F(HandleOperationsTest, HandleWithDifferentTypes)
 
 TEST_F(HandleOperationsTest, HandleNullOperations)
 {
-  Handle(TestDerived) aNullHandle;
-  Handle(TestDerived) anotherNullHandle;
-  Handle(TestDerived) aValidHandle = new TestDerived();
+  occ::handle<TestDerived> aNullHandle;
+  occ::handle<TestDerived> anotherNullHandle;
+  occ::handle<TestDerived> aValidHandle = new TestDerived();
 
   // Test null handle properties
   EXPECT_TRUE(aNullHandle.IsNull());

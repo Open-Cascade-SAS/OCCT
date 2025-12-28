@@ -21,9 +21,6 @@
 #include <NCollection_SparseArray.hxx>
 #include <TDF_Label.hxx>
 
-typedef NCollection_SparseArray<Standard_Integer> TObj_TIntSparseArray_VecOfData;
-typedef NCollection_SparseArray<Standard_Integer> TObj_TIntSparseArray_MapOfData;
-
 class Standard_GUID;
 
 /**
@@ -42,36 +39,36 @@ public:
   static Standard_EXPORT const Standard_GUID& GetID();
 
   //! Returns the ID of this attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Creates TObj_TIntSparseArray attribute on given label.
-  static Standard_EXPORT Handle(TObj_TIntSparseArray) Set(const TDF_Label& theLabel);
+  static Standard_EXPORT occ::handle<TObj_TIntSparseArray> Set(const TDF_Label& theLabel);
 
 public:
   //! Methods for access to data
 
   //! Returns the number of stored values in the set
-  Standard_Size Size() const { return myVector.Size(); }
+  size_t Size() const { return myVector.Size(); }
 
-  typedef TObj_TIntSparseArray_VecOfData::ConstIterator Iterator;
+  typedef NCollection_SparseArray<int>::ConstIterator Iterator;
 
   //! Returns iterator on objects contained in the set
   Iterator GetIterator() const { return Iterator(myVector); }
 
   //! Returns true if the value with the given ID is present.
-  Standard_Boolean HasValue(const Standard_Size theId) const { return myVector.HasValue(theId); }
+  bool HasValue(const size_t theId) const { return myVector.HasValue(theId); }
 
   //! Returns the value by its ID.
   //! Raises an exception if no value is stored with this ID
-  Standard_Integer Value(const Standard_Size theId) const { return myVector.Value(theId); }
+  int Value(const size_t theId) const { return myVector.Value(theId); }
 
   //! Sets the value with the given ID.
   //! Raises an exception if theId is not positive
-  Standard_EXPORT void SetValue(const Standard_Size theId, const Standard_Integer theValue);
+  Standard_EXPORT void SetValue(const size_t theId, const int theValue);
 
   //! Unsets the value with the given ID.
   //! Raises an exception if theId is not positive
-  Standard_EXPORT void UnsetValue(const Standard_Size theId);
+  Standard_EXPORT void UnsetValue(const size_t theId);
 
   //! Clears the set
   Standard_EXPORT void Clear();
@@ -81,37 +78,37 @@ public:
 
   //! Returns an new empty TObj_TIntSparseArray attribute. It is used by the
   //! copy algorithm.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Moves this delta into a new other attribute.
-  Standard_EXPORT Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> BackupCopy() const override;
 
   //! Restores the set using info saved in backup attribute theDelta.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theDelta) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theDelta) override;
 
   //! This method is used when copying an attribute from a source structure
   //! into a target structure.
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theInto,
-                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theInto,
+                             const occ::handle<TDF_RelocationTable>& theRT) const override;
 
   //! It is called just before Commit or Abort transaction
   //! and does Backup() to create a delta
-  Standard_EXPORT void BeforeCommitTransaction() Standard_OVERRIDE;
+  Standard_EXPORT void BeforeCommitTransaction() override;
 
   //! Applies theDelta to this.
-  Standard_EXPORT void DeltaOnModification(const Handle(TDF_DeltaOnModification)& theDelta)
-    Standard_OVERRIDE;
+  Standard_EXPORT void DeltaOnModification(
+    const occ::handle<TDF_DeltaOnModification>& theDelta) override;
 
   //! Clears my modification delta; called after application of theDelta
-  Standard_EXPORT Standard_Boolean AfterUndo(const Handle(TDF_AttributeDelta)& theDelta,
-                                             const Standard_Boolean toForce) Standard_OVERRIDE;
+  Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
+                                 const bool                             toForce) override;
 
 public:
   //! Methods to handle the modification delta
 
   //! Sets the flag pointing to the necessity to maintain a modification delta.
   //! It is called by the retrieval driver
-  void SetDoBackup(const Standard_Boolean toDo) { myDoBackup = toDo; }
+  void SetDoBackup(const bool toDo) { myDoBackup = toDo; }
 
   void ClearDelta() { myOldMap.Clear(); }
 
@@ -124,13 +121,11 @@ private:
   };
 
   //! backup one value
-  void backupValue(const Standard_Size    theId,
-                   const Standard_Integer theCurrValue,
-                   const Standard_Integer theNewValue);
+  void backupValue(const size_t theId, const int theCurrValue, const int theNewValue);
 
-  TObj_TIntSparseArray_VecOfData myVector;
-  TObj_TIntSparseArray_MapOfData myOldMap;
-  Standard_Boolean               myDoBackup;
+  NCollection_SparseArray<int> myVector;
+  NCollection_SparseArray<int> myOldMap;
+  bool                         myDoBackup;
 
 public:
   //! CASCADE RTTI
@@ -138,8 +133,6 @@ public:
 };
 
 //! Define handle class for TObj_TIntSparseArray
-DEFINE_STANDARD_HANDLE(TObj_TIntSparseArray, TDF_Attribute)
-
 #endif
 
 #ifdef _MSC_VER

@@ -21,8 +21,9 @@
 
 //=================================================================================================
 
-GeomConvert_FuncConeLSDist::GeomConvert_FuncConeLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints,
-                                                       const gp_Dir&                      theDir)
+GeomConvert_FuncConeLSDist::GeomConvert_FuncConeLSDist(
+  const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
+  const gp_Dir&                                   theDir)
     : myPoints(thePoints),
       myDir(theDir)
 {
@@ -30,30 +31,30 @@ GeomConvert_FuncConeLSDist::GeomConvert_FuncConeLSDist(const Handle(TColgp_HArra
 
 //=================================================================================================
 
-Standard_Integer GeomConvert_FuncConeLSDist::NbVariables() const
+int GeomConvert_FuncConeLSDist::NbVariables() const
 {
   return 5;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomConvert_FuncConeLSDist::Value(const math_Vector& X, Standard_Real& F)
+bool GeomConvert_FuncConeLSDist::Value(const math_Vector& X, double& F)
 {
-  gp_Pnt        aLoc(X(1), X(2), X(3));
-  Standard_Real aSemiAngle = X(4), anR = X(5);
-  gp_Ax3        aPos(aLoc, myDir);
+  gp_Pnt aLoc(X(1), X(2), X(3));
+  double aSemiAngle = X(4), anR = X(5);
+  gp_Ax3 aPos(aLoc, myDir);
 
   F = 0.;
-  Standard_Integer i;
+  int i;
   for (i = myPoints->Lower(); i <= myPoints->Upper(); ++i)
   {
-    Standard_Real u, v;
-    gp_Pnt        aPi(myPoints->Value(i));
+    double u, v;
+    gp_Pnt aPi(myPoints->Value(i));
     ElSLib::ConeParameters(aPos, anR, aSemiAngle, aPi, u, v);
     gp_Pnt aPp;
     ElSLib::ConeD0(u, v, aPos, anR, aSemiAngle, aPp);
     F += aPi.SquareDistance(aPp);
   }
 
-  return Standard_True;
+  return true;
 }

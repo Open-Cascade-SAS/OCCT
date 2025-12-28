@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepData_ReadWriteModule.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -20,15 +20,15 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_ReadWriteModule, Interface_ReaderModule)
 
-Standard_Integer StepData_ReadWriteModule::CaseNum(const Handle(Interface_FileReaderData)& data,
-                                                   const Standard_Integer num) const
+int StepData_ReadWriteModule::CaseNum(const occ::handle<Interface_FileReaderData>& data,
+                                      const int                                    num) const
 {
   DeclareAndCast(StepData_StepReaderData, stepdat, data);
   if (stepdat.IsNull())
     return 0;
   if (stepdat->IsComplex(num))
   {
-    TColStd_SequenceOfAsciiString types;
+    NCollection_Sequence<TCollection_AsciiString> types;
     stepdat->ComplexType(num, types);
     if (types.IsEmpty())
       return 0;
@@ -40,34 +40,34 @@ Standard_Integer StepData_ReadWriteModule::CaseNum(const Handle(Interface_FileRe
   return CaseStep(stepdat->RecordType(num));
 }
 
-Standard_Integer StepData_ReadWriteModule::CaseStep(const TColStd_SequenceOfAsciiString&) const
+int StepData_ReadWriteModule::CaseStep(const NCollection_Sequence<TCollection_AsciiString>&) const
 {
   return 0;
 } // default
 
-Standard_Boolean StepData_ReadWriteModule::IsComplex(const Standard_Integer) const
+bool StepData_ReadWriteModule::IsComplex(const int) const
 {
-  return Standard_False;
+  return false;
 } // default
 
-TCollection_AsciiString StepData_ReadWriteModule::ShortType(const Standard_Integer) const
+TCollection_AsciiString StepData_ReadWriteModule::ShortType(const int) const
 {
   return TCollection_AsciiString("");
 } // default empty
 
-Standard_Boolean StepData_ReadWriteModule::ComplexType(const Standard_Integer,
-                                                       TColStd_SequenceOfAsciiString&) const
+bool StepData_ReadWriteModule::ComplexType(const int,
+                                           NCollection_Sequence<TCollection_AsciiString>&) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void StepData_ReadWriteModule::Read(const Standard_Integer                  CN,
-                                    const Handle(Interface_FileReaderData)& data,
-                                    const Standard_Integer                  num,
-                                    Handle(Interface_Check)&                ach,
-                                    const Handle(Standard_Transient)&       ent) const
+void StepData_ReadWriteModule::Read(const int                                    CN,
+                                    const occ::handle<Interface_FileReaderData>& data,
+                                    const int                                    num,
+                                    occ::handle<Interface_Check>&                ach,
+                                    const occ::handle<Standard_Transient>&       ent) const
 {
   DeclareAndCast(StepData_StepReaderData, stepdat, data);
   if (stepdat.IsNull())

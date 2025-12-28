@@ -52,9 +52,8 @@ public:
 
   //! Gives the geometrical 2d point of the intersection
   //! point at address <Index> in the interference.
-  Standard_EXPORT gp_Pnt2d Pnt2dValue(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt2d Pnt2dValue(const int Index) const;
 
-protected:
 private:
   Standard_EXPORT void Interference(const Intf_Polygon2d& Obje1, const Intf_Polygon2d& Obje2);
 
@@ -64,16 +63,16 @@ private:
 
   //! Computes the intersection between two segments
   //! <BegO><EndO> et <BegT><EndT>.
-  Standard_EXPORT void Intersect(const Standard_Integer iO,
-                                 const Standard_Integer iT,
-                                 const gp_Pnt2d&        BegO,
-                                 const gp_Pnt2d&        EndO,
-                                 const gp_Pnt2d&        BegT,
-                                 const gp_Pnt2d&        EndT);
+  Standard_EXPORT void Intersect(const int       iO,
+                                 const int       iT,
+                                 const gp_Pnt2d& BegO,
+                                 const gp_Pnt2d& EndO,
+                                 const gp_Pnt2d& BegT,
+                                 const gp_Pnt2d& EndT);
 
-  Standard_Boolean oClos;
-  Standard_Boolean tClos;
-  Standard_Integer nbso;
+  bool oClos;
+  bool tClos;
+  int  nbso;
 };
 
 #endif // _Intf_InterferencePolygon2d_HeaderFile

@@ -20,15 +20,15 @@
 
 //=================================================================================================
 
-HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const Handle(HLRTopoBRep_OutLiner)& S,
-                                         const Handle(Standard_Transient)&   SData,
-                                         const Standard_Integer              nbIso,
-                                         const Standard_Integer              V1,
-                                         const Standard_Integer              V2,
-                                         const Standard_Integer              E1,
-                                         const Standard_Integer              E2,
-                                         const Standard_Integer              F1,
-                                         const Standard_Integer              F2)
+HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const occ::handle<HLRTopoBRep_OutLiner>& S,
+                                         const occ::handle<Standard_Transient>&   SData,
+                                         const int                                nbIso,
+                                         const int                                V1,
+                                         const int                                V2,
+                                         const int                                E1,
+                                         const int                                E2,
+                                         const int                                F1,
+                                         const int                                F2)
     : myShape(S),
       myShapeData(SData),
       myNbIso(nbIso),
@@ -43,14 +43,14 @@ HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const Handle(HLRTopoBRep_OutLiner)& S,
 
 //=================================================================================================
 
-HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const Handle(HLRTopoBRep_OutLiner)& S,
-                                         const Standard_Integer              nbIso,
-                                         const Standard_Integer              V1,
-                                         const Standard_Integer              V2,
-                                         const Standard_Integer              E1,
-                                         const Standard_Integer              E2,
-                                         const Standard_Integer              F1,
-                                         const Standard_Integer              F2)
+HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const occ::handle<HLRTopoBRep_OutLiner>& S,
+                                         const int                                nbIso,
+                                         const int                                V1,
+                                         const int                                V2,
+                                         const int                                E1,
+                                         const int                                E2,
+                                         const int                                F1,
+                                         const int                                F2)
     : myShape(S),
       myNbIso(nbIso),
       myVertStart(V1),
@@ -64,9 +64,7 @@ HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const Handle(HLRTopoBRep_OutLiner)& S,
 
 //=================================================================================================
 
-void HLRBRep_ShapeBounds::Translate(const Standard_Integer NV,
-                                    const Standard_Integer NE,
-                                    const Standard_Integer NF)
+void HLRBRep_ShapeBounds::Translate(const int NV, const int NE, const int NF)
 {
   myVertStart += NV;
   myVertEnd += NV;
@@ -78,9 +76,7 @@ void HLRBRep_ShapeBounds::Translate(const Standard_Integer NV,
 
 //=================================================================================================
 
-void HLRBRep_ShapeBounds::Sizes(Standard_Integer& NV,
-                                Standard_Integer& NE,
-                                Standard_Integer& NF) const
+void HLRBRep_ShapeBounds::Sizes(int& NV, int& NE, int& NF) const
 {
   NV = myVertEnd + 1 - myVertStart;
   NE = myEdgeEnd + 1 - myEdgeStart;
@@ -89,12 +85,7 @@ void HLRBRep_ShapeBounds::Sizes(Standard_Integer& NV,
 
 //=================================================================================================
 
-void HLRBRep_ShapeBounds::Bounds(Standard_Integer& V1,
-                                 Standard_Integer& V2,
-                                 Standard_Integer& E1,
-                                 Standard_Integer& E2,
-                                 Standard_Integer& F1,
-                                 Standard_Integer& F2) const
+void HLRBRep_ShapeBounds::Bounds(int& V1, int& V2, int& E1, int& E2, int& F1, int& F2) const
 {
   V1 = myVertStart;
   V2 = myVertEnd;

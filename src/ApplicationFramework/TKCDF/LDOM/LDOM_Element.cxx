@@ -23,7 +23,8 @@
 
 //=================================================================================================
 
-LDOM_Element::LDOM_Element(const LDOM_BasicElement& anElem, const Handle(LDOM_MemManager)& aDoc)
+LDOM_Element::LDOM_Element(const LDOM_BasicElement&            anElem,
+                           const occ::handle<LDOM_MemManager>& aDoc)
     : LDOM_Node(anElem, aDoc)
 {
 }
@@ -91,7 +92,7 @@ LDOM_Attr LDOM_Element::getAttributeNode(const LDOMString& aName) const
 LDOM_NodeList LDOM_Element::getElementsByTagName(const LDOMString& theTagName) const
 {
   LDOM_NodeList aList(myDocument);
-  if (isNull() == Standard_False)
+  if (isNull() == false)
   {
     const LDOM_BasicElement& anElem = (const LDOM_BasicElement&)Origin();
     //    if (anElem.GetTagName().equals(theTagName))

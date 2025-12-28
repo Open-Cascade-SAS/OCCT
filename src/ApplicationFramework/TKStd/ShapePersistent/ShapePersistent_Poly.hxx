@@ -44,12 +44,12 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
 
     Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
 
-    inline Standard_CString PName() const { return "PPoly_Polygon2D"; }
+    inline const char* PName() const { return "PPoly_Polygon2D"; }
 
-    Handle(Poly_Polygon2D) Import() const;
+    occ::handle<Poly_Polygon2D> Import() const;
 
   private:
-    Standard_Real                          myDeflection;
+    double                                 myDeflection;
     Handle(ShapePersistent_HArray1::Pnt2d) myNodes;
   };
 
@@ -70,12 +70,12 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
 
     Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
 
-    inline Standard_CString PName() const { return "PPoly_Polygon3D"; }
+    inline const char* PName() const { return "PPoly_Polygon3D"; }
 
-    Handle(Poly_Polygon3D) Import() const;
+    occ::handle<Poly_Polygon3D> Import() const;
 
   private:
-    Standard_Real                        myDeflection;
+    double                               myDeflection;
     Handle(ShapePersistent_HArray1::Pnt) myNodes;
     Handle(StdLPersistent_HArray1::Real) myParameters;
   };
@@ -102,12 +102,12 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
 
     Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
 
-    inline Standard_CString PName() const { return "PPoly_PolygonOnTriangulation"; }
+    inline const char* PName() const { return "PPoly_PolygonOnTriangulation"; }
 
-    Handle(Poly_PolygonOnTriangulation) Import() const;
+    occ::handle<Poly_PolygonOnTriangulation> Import() const;
 
   private:
-    Standard_Real                           myDeflection;
+    double                                  myDeflection;
     Handle(StdLPersistent_HArray1::Integer) myNodes;
     Handle(StdLPersistent_HArray1::Real)    myParameters;
   };
@@ -134,12 +134,12 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
 
     Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
 
-    inline Standard_CString PName() const { return "PPoly_Triangulation"; }
+    inline const char* PName() const { return "PPoly_Triangulation"; }
 
-    Handle(Poly_Triangulation) Import() const;
+    occ::handle<Poly_Triangulation> Import() const;
 
   private:
-    Standard_Real                             myDeflection;
+    double                                    myDeflection;
     Handle(ShapePersistent_HArray1::Pnt)      myNodes;
     Handle(ShapePersistent_HArray1::Pnt2d)    myUVNodes;
     Handle(ShapePersistent_HArray1::Triangle) myTriangles;
@@ -158,19 +158,25 @@ public:
 
 public:
   //! Create a persistent object for a 2D polygon
-  Standard_EXPORT static Handle(Polygon2D) Translate(const Handle(Poly_Polygon2D)&     thePoly,
-                                                     StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Polygon2D> Translate(
+    const occ::handle<Poly_Polygon2D>& thePoly,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a 3D polygon
-  Standard_EXPORT static Handle(Polygon3D) Translate(const Handle(Poly_Polygon3D)&     thePoly,
-                                                     StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Polygon3D> Translate(
+    const occ::handle<Poly_Polygon3D>& thePoly,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a triangulation
-  Standard_EXPORT static Handle(PolygonOnTriangulation) Translate(
-    const Handle(Poly_PolygonOnTriangulation)& thePolyOnTriang,
-    StdObjMgt_TransientPersistentMap&          theMap);
+  Standard_EXPORT static occ::handle<PolygonOnTriangulation> Translate(
+    const occ::handle<Poly_PolygonOnTriangulation>& thePolyOnTriang,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a polygon on triangulation
-  Standard_EXPORT static Handle(Triangulation) Translate(
-    const Handle(Poly_Triangulation)& thePolyTriang,
-    StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<Triangulation> Translate(
+    const occ::handle<Poly_Triangulation>& thePolyTriang,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
 };
 
 #endif

@@ -25,23 +25,23 @@ public:
   Standard_EXPORT OpenGl_StencilTest();
 
   //! Render primitives to the window
-  Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void Render(
+    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
 
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
 
-  Standard_EXPORT void SetOptions(const Standard_Boolean theIsEnabled);
+  Standard_EXPORT void SetOptions(const bool theIsEnabled);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_StencilTest();
 
 private:
-  Standard_Boolean myIsEnabled;
+  bool myIsEnabled;
 
 public:
   DEFINE_STANDARD_ALLOC

@@ -19,10 +19,11 @@
 
 RWStepVisual_RWBackgroundColour::RWStepVisual_RWBackgroundColour() {}
 
-void RWStepVisual_RWBackgroundColour::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepVisual_BackgroundColour)& ent) const
+void RWStepVisual_RWBackgroundColour::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepVisual_BackgroundColour>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,7 +34,7 @@ void RWStepVisual_RWBackgroundColour::ReadStep(const Handle(StepData_StepReaderD
   // --- own field : presentation ---
 
   StepVisual_AreaOrView aPresentation;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "presentation", ach, aPresentation);
 
   //--- Initialisation of the read entity ---
@@ -42,8 +43,8 @@ void RWStepVisual_RWBackgroundColour::ReadStep(const Handle(StepData_StepReaderD
 }
 
 void RWStepVisual_RWBackgroundColour::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepVisual_BackgroundColour)& ent) const
+  StepData_StepWriter&                            SW,
+  const occ::handle<StepVisual_BackgroundColour>& ent) const
 {
 
   // --- own field : presentation ---
@@ -51,8 +52,8 @@ void RWStepVisual_RWBackgroundColour::WriteStep(
   SW.Send(ent->Presentation().Value());
 }
 
-void RWStepVisual_RWBackgroundColour::Share(const Handle(StepVisual_BackgroundColour)& ent,
-                                            Interface_EntityIterator&                  iter) const
+void RWStepVisual_RWBackgroundColour::Share(const occ::handle<StepVisual_BackgroundColour>& ent,
+                                            Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->Presentation().Value());

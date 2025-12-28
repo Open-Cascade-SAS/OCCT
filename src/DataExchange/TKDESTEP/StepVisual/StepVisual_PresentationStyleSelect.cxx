@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_FillAreaStyle.hxx>
@@ -22,8 +22,7 @@
 
 StepVisual_PresentationStyleSelect::StepVisual_PresentationStyleSelect() {}
 
-Standard_Integer StepVisual_PresentationStyleSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_PresentationStyleSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -41,22 +40,23 @@ Standard_Integer StepVisual_PresentationStyleSelect::CaseNum(
   return 0;
 }
 
-Handle(StepVisual_PointStyle) StepVisual_PresentationStyleSelect::PointStyle() const
+occ::handle<StepVisual_PointStyle> StepVisual_PresentationStyleSelect::PointStyle() const
 {
   return GetCasted(StepVisual_PointStyle, Value());
 }
 
-Handle(StepVisual_CurveStyle) StepVisual_PresentationStyleSelect::CurveStyle() const
+occ::handle<StepVisual_CurveStyle> StepVisual_PresentationStyleSelect::CurveStyle() const
 {
   return GetCasted(StepVisual_CurveStyle, Value());
 }
 
-Handle(StepVisual_NullStyleMember) StepVisual_PresentationStyleSelect::NullStyle() const
+occ::handle<StepVisual_NullStyleMember> StepVisual_PresentationStyleSelect::NullStyle() const
 {
   return GetCasted(StepVisual_NullStyleMember, Value());
 }
 
-Handle(StepVisual_SurfaceStyleUsage) StepVisual_PresentationStyleSelect::SurfaceStyleUsage() const
+occ::handle<StepVisual_SurfaceStyleUsage> StepVisual_PresentationStyleSelect::SurfaceStyleUsage()
+  const
 {
   return GetCasted(StepVisual_SurfaceStyleUsage, Value());
 }

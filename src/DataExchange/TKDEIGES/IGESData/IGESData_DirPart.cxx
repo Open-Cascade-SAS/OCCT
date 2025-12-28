@@ -17,27 +17,27 @@
 
 IGESData_DirPart::IGESData_DirPart() {}
 
-void IGESData_DirPart::Init(const Standard_Integer i1,
-                            const Standard_Integer i2,
-                            const Standard_Integer i3,
-                            const Standard_Integer i4,
-                            const Standard_Integer i5,
-                            const Standard_Integer i6,
-                            const Standard_Integer i7,
-                            const Standard_Integer i8,
-                            const Standard_Integer i9,
-                            const Standard_Integer i10,
-                            const Standard_Integer i11,
-                            const Standard_Integer i12,
-                            const Standard_Integer i13,
-                            const Standard_Integer i14,
-                            const Standard_Integer i15,
-                            const Standard_Integer i16,
-                            const Standard_Integer i17,
-                            const Standard_CString res1,
-                            const Standard_CString res2,
-                            const Standard_CString label,
-                            const Standard_CString subscript)
+void IGESData_DirPart::Init(const int   i1,
+                            const int   i2,
+                            const int   i3,
+                            const int   i4,
+                            const int   i5,
+                            const int   i6,
+                            const int   i7,
+                            const int   i8,
+                            const int   i9,
+                            const int   i10,
+                            const int   i11,
+                            const int   i12,
+                            const int   i13,
+                            const int   i14,
+                            const int   i15,
+                            const int   i16,
+                            const int   i17,
+                            const char* res1,
+                            const char* res2,
+                            const char* label,
+                            const char* subscript)
 {
   thevals[0]  = i1;
   thevals[1]  = i2;
@@ -56,7 +56,7 @@ void IGESData_DirPart::Init(const Standard_Integer i1,
   thevals[14] = i15;
   thevals[15] = i16;
   thevals[16] = i17;
-  for (Standard_Integer i = 0; i < 8; i++)
+  for (int i = 0; i < 8; i++)
   {
     theres1[i] = res1[i];
     theres2[i] = res2[i];
@@ -73,30 +73,30 @@ void IGESData_DirPart::Init(const Standard_Integer i1,
 
 //=================================================================================================
 
-void IGESData_DirPart::Values(Standard_Integer&      i1,
-                              Standard_Integer&      i2,
-                              Standard_Integer&      i3,
-                              Standard_Integer&      i4,
-                              Standard_Integer&      i5,
-                              Standard_Integer&      i6,
-                              Standard_Integer&      i7,
-                              Standard_Integer&      i8,
-                              Standard_Integer&      i9,
-                              Standard_Integer&      i10,
-                              Standard_Integer&      i11,
-                              Standard_Integer&      i12,
-                              Standard_Integer&      i13,
-                              Standard_Integer&      i14,
-                              Standard_Integer&      i15,
-                              Standard_Integer&      i16,
-                              Standard_Integer&      i17,
-                              const Standard_CString res1,
-                              const Standard_CString res2,
-                              const Standard_CString label,
-                              const Standard_CString subscript) const
+void IGESData_DirPart::Values(int&        i1,
+                              int&        i2,
+                              int&        i3,
+                              int&        i4,
+                              int&        i5,
+                              int&        i6,
+                              int&        i7,
+                              int&        i8,
+                              int&        i9,
+                              int&        i10,
+                              int&        i11,
+                              int&        i12,
+                              int&        i13,
+                              int&        i14,
+                              int&        i15,
+                              int&        i16,
+                              int&        i17,
+                              const char* res1,
+                              const char* res2,
+                              const char* label,
+                              const char* subscript) const
 {
   Standard_PCharacter pres1, pres2, plabel, psubscript;
-  Standard_Integer    i;
+  int                 i;
   //
   pres1      = (Standard_PCharacter)res1;
   pres2      = (Standard_PCharacter)res2;

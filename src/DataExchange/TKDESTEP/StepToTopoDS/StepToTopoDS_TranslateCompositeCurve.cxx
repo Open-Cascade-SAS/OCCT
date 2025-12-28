@@ -44,16 +44,16 @@
 //=================================================================================================
 
 StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve()
-    : myInfiniteSegment(Standard_False)
+    : myInfiniteSegment(false)
 {
 }
 
 //=================================================================================================
 
 StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve(
-  const Handle(StepGeom_CompositeCurve)&   CC,
-  const Handle(Transfer_TransientProcess)& TP,
-  const StepData_Factors&                  theLocalFactors)
+  const occ::handle<StepGeom_CompositeCurve>&   CC,
+  const occ::handle<Transfer_TransientProcess>& TP,
+  const StepData_Factors&                       theLocalFactors)
 {
   Init(CC, TP, theLocalFactors);
 }
@@ -61,68 +61,66 @@ StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve(
 //=================================================================================================
 
 StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve(
-  const Handle(StepGeom_CompositeCurve)&   CC,
-  const Handle(Transfer_TransientProcess)& TP,
-  const Handle(StepGeom_Surface)&          S,
-  const Handle(Geom_Surface)&              Surf,
-  const StepData_Factors&                  theLocalFactors)
+  const occ::handle<StepGeom_CompositeCurve>&   CC,
+  const occ::handle<Transfer_TransientProcess>& TP,
+  const occ::handle<StepGeom_Surface>&          S,
+  const occ::handle<Geom_Surface>&              Surf,
+  const StepData_Factors&                       theLocalFactors)
 {
   Init(CC, TP, S, Surf, theLocalFactors);
 }
 
 //=================================================================================================
 
-Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
-  const Handle(StepGeom_CompositeCurve)&   CC,
-  const Handle(Transfer_TransientProcess)& TP,
-  const StepData_Factors&                  theLocalFactors)
+bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_CompositeCurve>&   CC,
+                                                const occ::handle<Transfer_TransientProcess>& TP,
+                                                const StepData_Factors& theLocalFactors)
 {
-  Handle(StepGeom_Surface) S;
-  Handle(Geom_Surface)     Surf;
+  occ::handle<StepGeom_Surface> S;
+  occ::handle<Geom_Surface>     Surf;
   return Init(CC, TP, S, Surf, theLocalFactors);
 }
 
 //=================================================================================================
 
-Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
-  const Handle(StepGeom_CompositeCurve)&   CC,
-  const Handle(Transfer_TransientProcess)& TP,
-  const Handle(StepGeom_Surface)&          S,
-  const Handle(Geom_Surface)&              Surf,
-  const StepData_Factors&                  theLocalFactors)
+bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_CompositeCurve>&   CC,
+                                                const occ::handle<Transfer_TransientProcess>& TP,
+                                                const occ::handle<StepGeom_Surface>&          S,
+                                                const occ::handle<Geom_Surface>&              Surf,
+                                                const StepData_Factors& theLocalFactors)
 {
   myWire.Nullify();
-  myInfiniteSegment = Standard_False;
+  myInfiniteSegment = false;
   if (CC.IsNull())
-    return Standard_False;
+    return false;
 
-  Standard_Boolean SurfMode = (!S.IsNull() && !Surf.IsNull());
-  Standard_Boolean isClosed = Standard_False;
+  bool SurfMode = (!S.IsNull() && !Surf.IsNull());
+  bool isClosed = false;
 
-  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
+  occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(TP->Model());
 
   if (SurfMode)
   {
-    Standard_Integer modepcurve = aStepModel->InternalParameters.ReadSurfaceCurveMode;
+    int modepcurve = aStepModel->InternalParameters.ReadSurfaceCurveMode;
     if (modepcurve == -3)
-      SurfMode = Standard_False;
+      SurfMode = false;
   }
 
-  Handle(ShapeExtend_WireData) sbwd = new ShapeExtend_WireData;
-  Standard_Integer             nbs  = CC->NbSegments();
-  for (Standard_Integer i = 1; i <= nbs; i++)
+  occ::handle<ShapeExtend_WireData> sbwd = new ShapeExtend_WireData;
+  int                               nbs  = CC->NbSegments();
+  for (int i = 1; i <= nbs; i++)
   {
-    Handle(StepGeom_CompositeCurveSegment) ccs = CC->SegmentsValue(i);
+    occ::handle<StepGeom_CompositeCurveSegment> ccs = CC->SegmentsValue(i);
     if (ccs.IsNull())
     {
       TP->AddFail(CC, "Null segment");
-      return Standard_False;
+      return false;
     }
-    Handle(StepGeom_Curve) crv = ccs->ParentCurve();
+    occ::handle<StepGeom_Curve> crv = ccs->ParentCurve();
     if (crv.IsNull())
     {
       TP->AddFail(CC, "Segment has null parent curve");
-      return Standard_False;
+      return false;
     }
     isClosed = (ccs->Transition() != StepGeom_tcDiscontinuous);
 
@@ -134,10 +132,10 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
         TP->AddFail(ccs, "Cyclic reference; segment dropped");
         continue;
       }
-      Handle(StepGeom_CompositeCurve) cc = Handle(StepGeom_CompositeCurve)::DownCast(crv);
+      occ::handle<StepGeom_CompositeCurve> cc = occ::down_cast<StepGeom_CompositeCurve>(crv);
       if (!Init(cc, TP, S, Surf, theLocalFactors) || myWire.IsNull())
         continue;
-      Standard_Integer nb = sbwd->NbEdges() + 1;
+      int nb = sbwd->NbEdges() + 1;
       for (TopoDS_Iterator it(myWire); it.More(); it.Next())
       {
         TopoDS_Edge edge = TopoDS::Edge(it.Value());
@@ -156,19 +154,19 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
     // ordinary segment
 
     // detect pcurve and 3d curve
-    Handle(StepGeom_Pcurve) pcurve = Handle(StepGeom_Pcurve)::DownCast(crv);
+    occ::handle<StepGeom_Pcurve> pcurve = occ::down_cast<StepGeom_Pcurve>(crv);
     if (pcurve.IsNull())
     {
-      Handle(StepGeom_SurfaceCurve) sc = Handle(StepGeom_SurfaceCurve)::DownCast(crv);
+      occ::handle<StepGeom_SurfaceCurve> sc = occ::down_cast<StepGeom_SurfaceCurve>(crv);
       if (!sc.IsNull())
       {
         crv = sc->Curve3d();
         if (SurfMode)
         { // find proper pcurve
-          for (Standard_Integer j = 1; j <= sc->NbAssociatedGeometry(); j++)
+          for (int j = 1; j <= sc->NbAssociatedGeometry(); j++)
           {
-            StepGeom_PcurveOrSurface PCorS = sc->AssociatedGeometryValue(j);
-            Handle(StepGeom_Pcurve)  pc    = PCorS.Pcurve();
+            StepGeom_PcurveOrSurface     PCorS = sc->AssociatedGeometryValue(j);
+            occ::handle<StepGeom_Pcurve> pc    = PCorS.Pcurve();
             if (pc.IsNull() || pc->BasisSurface() != S)
               continue;
             pcurve = pc;
@@ -194,7 +192,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
       try
       {
         OCC_CATCH_SIGNALS
-        Handle(Geom_Curve) c3d = StepToGeom::MakeCurve(crv, theLocalFactors);
+        occ::handle<Geom_Curve> c3d = StepToGeom::MakeCurve(crv, theLocalFactors);
         if (!c3d.IsNull())
         {
           BRepBuilderAPI_MakeEdge MkEdge(c3d, c3d->FirstParameter(), c3d->LastParameter());
@@ -203,7 +201,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
             if (Precision::IsNegativeInfinite(c3d->FirstParameter())
                 || Precision::IsPositiveInfinite(c3d->LastParameter()))
             {
-              myInfiniteSegment = Standard_True;
+              myInfiniteSegment = true;
               TP->AddWarning(CC, "Segment with infinite parameters");
             }
             edge = MkEdge.Edge();
@@ -228,7 +226,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
       {
         OCC_CATCH_SIGNALS
         StepToTopoDS_TranslateEdge TrE;
-        Handle(Geom2d_Curve)       c2d = TrE.MakePCurve(pcurve, Surf, theLocalFactors);
+        occ::handle<Geom2d_Curve>  c2d = TrE.MakePCurve(pcurve, Surf, theLocalFactors);
         if (!c2d.IsNull())
         {
           if (edge.IsNull())
@@ -239,7 +237,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
               if (Precision::IsNegativeInfinite(c2d->FirstParameter())
                   || Precision::IsPositiveInfinite(c2d->LastParameter()))
               {
-                myInfiniteSegment = Standard_True;
+                myInfiniteSegment = true;
                 TP->AddWarning(CC, "Segment with infinite parameters");
               }
               edge = MkEdge.Edge();
@@ -251,8 +249,8 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
             TopLoc_Location L;
             B.UpdateEdge(edge, c2d, Surf, L, 0.);
             B.Range(edge, Surf, L, c2d->FirstParameter(), c2d->LastParameter());
-            B.SameRange(edge, Standard_False);
-            B.SameParameter(edge, Standard_False);
+            B.SameRange(edge, false);
+            B.SameParameter(edge, false);
           }
         }
       }
@@ -280,12 +278,12 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
   if (sbwd->NbEdges() <= 0)
   {
     TP->AddFail(CC, "Translation gives no result");
-    return Standard_False;
+    return false;
   }
 
   // connect wire; all other fixes are left for caller
-  Standard_Real         preci = Precision();
-  Handle(ShapeFix_Wire) sfw   = new ShapeFix_Wire;
+  double                     preci = Precision();
+  occ::handle<ShapeFix_Wire> sfw   = new ShapeFix_Wire;
   sfw->Load(sbwd);
   sfw->SetPrecision(preci);
   sfw->ClosedWireMode() = isClosed;
@@ -302,7 +300,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init(
 
   myWire = sbwd->Wire();
   done   = (sbwd->NbEdges() > 0);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================

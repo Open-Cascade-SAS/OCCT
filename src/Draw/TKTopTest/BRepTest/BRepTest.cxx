@@ -21,10 +21,10 @@
 
 void BRepTest::AllCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DBRep::BasicCommands(theCommands);
   BRepTest::BasicCommands(theCommands);

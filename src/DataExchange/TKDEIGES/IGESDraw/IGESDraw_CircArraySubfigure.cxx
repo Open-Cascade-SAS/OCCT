@@ -27,14 +27,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_CircArraySubfigure, IGESData_IGESEntity)
 
 IGESDraw_CircArraySubfigure::IGESDraw_CircArraySubfigure() {}
 
-void IGESDraw_CircArraySubfigure::Init(const Handle(IGESData_IGESEntity)&      aBase,
-                                       const Standard_Integer                  aNumLocs,
-                                       const gp_XYZ&                           aCenter,
-                                       const Standard_Real                     aRadius,
-                                       const Standard_Real                     aStAngle,
-                                       const Standard_Real                     aDelAngle,
-                                       const Standard_Integer                  aFlag,
-                                       const Handle(TColStd_HArray1OfInteger)& allNumPos)
+void IGESDraw_CircArraySubfigure::Init(const occ::handle<IGESData_IGESEntity>&      aBase,
+                                       const int                                    aNumLocs,
+                                       const gp_XYZ&                                aCenter,
+                                       const double                                 aRadius,
+                                       const double                                 aStAngle,
+                                       const double                                 aDelAngle,
+                                       const int                                    aFlag,
+                                       const occ::handle<NCollection_HArray1<int>>& allNumPos)
 {
   if (!allNumPos.IsNull())
     if (allNumPos->Lower() != 1)
@@ -50,12 +50,12 @@ void IGESDraw_CircArraySubfigure::Init(const Handle(IGESData_IGESEntity)&      a
   InitTypeAndForm(414, 0);
 }
 
-Handle(IGESData_IGESEntity) IGESDraw_CircArraySubfigure::BaseEntity() const
+occ::handle<IGESData_IGESEntity> IGESDraw_CircArraySubfigure::BaseEntity() const
 {
   return theBaseEntity;
 }
 
-Standard_Integer IGESDraw_CircArraySubfigure::NbLocations() const
+int IGESDraw_CircArraySubfigure::NbLocations() const
 {
   return theNbLocations;
 }
@@ -76,40 +76,40 @@ gp_Pnt IGESDraw_CircArraySubfigure::TransformedCenterPoint() const
   return tempRes;
 }
 
-Standard_Real IGESDraw_CircArraySubfigure::CircleRadius() const
+double IGESDraw_CircArraySubfigure::CircleRadius() const
 {
   return theRadius;
 }
 
-Standard_Real IGESDraw_CircArraySubfigure::StartAngle() const
+double IGESDraw_CircArraySubfigure::StartAngle() const
 {
   return theStartAngle;
 }
 
-Standard_Real IGESDraw_CircArraySubfigure::DeltaAngle() const
+double IGESDraw_CircArraySubfigure::DeltaAngle() const
 {
   return theDeltaAngle;
 }
 
-Standard_Boolean IGESDraw_CircArraySubfigure::DisplayFlag() const
+bool IGESDraw_CircArraySubfigure::DisplayFlag() const
 {
   return (thePositions.IsNull());
   // if LC == 0 then there is no allocation made for thePositions array
   // i.e., thePositions == Null Handle
 }
 
-Standard_Integer IGESDraw_CircArraySubfigure::ListCount() const
+int IGESDraw_CircArraySubfigure::ListCount() const
 {
   return (thePositions.IsNull() ? 0 : thePositions->Length());
   // Return 0 if HArray1 thePositions is NULL Handle
 }
 
-Standard_Boolean IGESDraw_CircArraySubfigure::DoDontFlag() const
+bool IGESDraw_CircArraySubfigure::DoDontFlag() const
 {
   return theDoDontFlag;
 }
 
-Standard_Boolean IGESDraw_CircArraySubfigure::PositionNum(const Standard_Integer Index) const
+bool IGESDraw_CircArraySubfigure::PositionNum(const int Index) const
 {
   // Method : If thePositions array length is Zero return theDoDontFlag;
   //          else Search Index in to the Array. If 'Index' found in the
@@ -120,8 +120,8 @@ Standard_Boolean IGESDraw_CircArraySubfigure::PositionNum(const Standard_Integer
 
   else
   {
-    Standard_Integer I;
-    Standard_Integer up = thePositions->Upper();
+    int I;
+    int up = thePositions->Upper();
     for (I = 1; I <= up; I++)
     {
       if (thePositions->Value(I) == Index)
@@ -131,7 +131,7 @@ Standard_Boolean IGESDraw_CircArraySubfigure::PositionNum(const Standard_Integer
   }
 }
 
-Standard_Integer IGESDraw_CircArraySubfigure::ListPosition(const Standard_Integer Index) const
+int IGESDraw_CircArraySubfigure::ListPosition(const int Index) const
 {
   return thePositions->Value(Index);
   // raise OutOfRange from Standard if Index is out-of-bound

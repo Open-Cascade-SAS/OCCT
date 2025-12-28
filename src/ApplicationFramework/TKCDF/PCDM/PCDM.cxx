@@ -27,8 +27,8 @@
 
 //=================================================================================================
 
-PCDM_TypeOfFileDriver PCDM::FileDriverType(const TCollection_AsciiString& aFileName,
-                                           Handle(Storage_BaseDriver)&    aBaseDriver)
+PCDM_TypeOfFileDriver PCDM::FileDriverType(const TCollection_AsciiString&   aFileName,
+                                           occ::handle<Storage_BaseDriver>& aBaseDriver)
 {
   if (FSD_CmpFile::IsGoodFileType(aFileName) == Storage_VSOk)
   {
@@ -54,8 +54,8 @@ PCDM_TypeOfFileDriver PCDM::FileDriverType(const TCollection_AsciiString& aFileN
 
 //=================================================================================================
 
-PCDM_TypeOfFileDriver PCDM::FileDriverType(Standard_IStream&           theIStream,
-                                           Handle(Storage_BaseDriver)& theBaseDriver)
+PCDM_TypeOfFileDriver PCDM::FileDriverType(Standard_IStream&                theIStream,
+                                           occ::handle<Storage_BaseDriver>& theBaseDriver)
 {
   TCollection_AsciiString aReadMagicNumber;
 

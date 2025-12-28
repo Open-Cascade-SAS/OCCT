@@ -23,15 +23,16 @@ IMPLEMENT_STANDARD_RTTIEXT(DDocStd_DrawDocument, DDF_Data)
 
 //=================================================================================================
 
-Handle(DDocStd_DrawDocument) DDocStd_DrawDocument::Find(const Handle(TDocStd_Document)& /*Doc*/)
+occ::handle<DDocStd_DrawDocument> DDocStd_DrawDocument::Find(
+  const occ::handle<TDocStd_Document>& /*Doc*/)
 {
-  Handle(DDocStd_DrawDocument) adoc;
+  occ::handle<DDocStd_DrawDocument> adoc;
   return adoc;
 }
 
 //=================================================================================================
 
-DDocStd_DrawDocument::DDocStd_DrawDocument(const Handle(TDocStd_Document)& Doc)
+DDocStd_DrawDocument::DDocStd_DrawDocument(const occ::handle<TDocStd_Document>& Doc)
     : DDF_Data(new TDF_Data), // Doc->GetData())
       myDocument(Doc)
 {
@@ -40,7 +41,7 @@ DDocStd_DrawDocument::DDocStd_DrawDocument(const Handle(TDocStd_Document)& Doc)
 
 //=================================================================================================
 
-Handle(TDocStd_Document) DDocStd_DrawDocument::GetDocument() const
+occ::handle<TDocStd_Document> DDocStd_DrawDocument::GetDocument() const
 {
   return myDocument;
 }
@@ -51,9 +52,9 @@ void DDocStd_DrawDocument::DrawOn(Draw_Display& /*dis*/) const {}
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DDocStd_DrawDocument::Copy() const
+occ::handle<Draw_Drawable3D> DDocStd_DrawDocument::Copy() const
 {
-  Handle(DDocStd_DrawDocument) D = new DDocStd_DrawDocument(myDocument);
+  occ::handle<DDocStd_DrawDocument> D = new DDocStd_DrawDocument(myDocument);
   return D;
 }
 
@@ -61,7 +62,7 @@ Handle(Draw_Drawable3D) DDocStd_DrawDocument::Copy() const
 
 void DDocStd_DrawDocument::Dump(Standard_OStream& S) const
 {
-  Handle(TDocStd_Document) STDDOC = myDocument;
+  occ::handle<TDocStd_Document> STDDOC = myDocument;
   if (!STDDOC.IsNull())
   {
     S << "TDocStd_Document\n";

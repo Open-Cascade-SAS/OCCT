@@ -21,11 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColgp_HArray1OfVec2d.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Vec2d.hxx>
 class Geom2d_BSplineCurve;
 class gp_Vec2d;
 
@@ -49,19 +48,19 @@ public:
   //! It is also used to check if the tangent vector is not too small.
   //! There should be at least 2 points
   //! if PeriodicFlag is True then the curve will be periodic.
-  Standard_EXPORT Geom2dAPI_Interpolate(const Handle(TColgp_HArray1OfPnt2d)& Points,
-                                        const Standard_Boolean               PeriodicFlag,
-                                        const Standard_Real                  Tolerance);
+  Standard_EXPORT Geom2dAPI_Interpolate(const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Points,
+                                        const bool   PeriodicFlag,
+                                        const double Tolerance);
 
   //! if PeriodicFlag is True then the curve will be periodic
   //! Warning:
   //! There should be as many parameters as there are points
   //! except if PeriodicFlag is True : then there should be one more
   //! parameter to close the curve
-  Standard_EXPORT Geom2dAPI_Interpolate(const Handle(TColgp_HArray1OfPnt2d)& Points,
-                                        const Handle(TColStd_HArray1OfReal)& Parameters,
-                                        const Standard_Boolean               PeriodicFlag,
-                                        const Standard_Real                  Tolerance);
+  Standard_EXPORT Geom2dAPI_Interpolate(const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Points,
+                                        const occ::handle<NCollection_HArray1<double>>& Parameters,
+                                        const bool   PeriodicFlag,
+                                        const double Tolerance);
 
   //! Assigns this constrained BSpline curve to be
   //! tangential to vectors InitialTangent and FinalTangent
@@ -71,9 +70,9 @@ public:
   //! defined at the time of initialization).
   //! <Scale> - boolean flag defining whether tangent vectors are to
   //! be scaled according to derivatives of lagrange interpolation.
-  Standard_EXPORT void Load(const gp_Vec2d&        InitialTangent,
-                            const gp_Vec2d&        FinalTangent,
-                            const Standard_Boolean Scale = Standard_True);
+  Standard_EXPORT void Load(const gp_Vec2d& InitialTangent,
+                            const gp_Vec2d& FinalTangent,
+                            const bool      Scale = true);
 
   //! Assigns this constrained BSpline curve to be
   //! tangential to vectors defined in the table Tangents,
@@ -86,9 +85,9 @@ public:
   //! are set as tangency constraints.
   //! <Scale> - boolean flag defining whether tangent vectors are to
   //! be scaled according to derivatives of lagrange interpolation.
-  Standard_EXPORT void Load(const TColgp_Array1OfVec2d&             Tangents,
-                            const Handle(TColStd_HArray1OfBoolean)& TangentFlags,
-                            const Standard_Boolean                  Scale = Standard_True);
+  Standard_EXPORT void Load(const NCollection_Array1<gp_Vec2d>&           Tangents,
+                            const occ::handle<NCollection_HArray1<bool>>& TangentFlags,
+                            const bool                                    Scale = true);
 
   //! Clears all tangency constraints on this
   //! constrained BSpline curve (as initialized by the function Load).
@@ -99,14 +98,13 @@ public:
   Standard_EXPORT void Perform();
 
   //! Returns the computed BSpline curve. Raises StdFail_NotDone if the interpolation fails.
-  Standard_EXPORT const Handle(Geom2d_BSplineCurve)& Curve() const;
-  Standard_EXPORT                                    operator Handle(Geom2d_BSplineCurve)() const;
+  Standard_EXPORT const occ::handle<Geom2d_BSplineCurve>& Curve() const;
+  Standard_EXPORT operator occ::handle<Geom2d_BSplineCurve>() const;
 
   //! Returns true if the constrained BSpline curve is successfully constructed.
   //! Note: in this case, the result is given by the function Curve.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-protected:
 private:
   //! Interpolates in a non periodic fashion
   Standard_EXPORT void PerformNonPeriodic();
@@ -114,15 +112,15 @@ private:
   //! Interpolates in a C1 periodic fashion
   Standard_EXPORT void PerformPeriodic();
 
-  Standard_Real                    myTolerance;
-  Handle(TColgp_HArray1OfPnt2d)    myPoints;
-  Standard_Boolean                 myIsDone;
-  Handle(Geom2d_BSplineCurve)      myCurve;
-  Handle(TColgp_HArray1OfVec2d)    myTangents;
-  Handle(TColStd_HArray1OfBoolean) myTangentFlags;
-  Handle(TColStd_HArray1OfReal)    myParameters;
-  Standard_Boolean                 myPeriodic;
-  Standard_Boolean                 myTangentRequest;
+  double                                     myTolerance;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> myPoints;
+  bool                                       myIsDone;
+  occ::handle<Geom2d_BSplineCurve>           myCurve;
+  occ::handle<NCollection_HArray1<gp_Vec2d>> myTangents;
+  occ::handle<NCollection_HArray1<bool>>     myTangentFlags;
+  occ::handle<NCollection_HArray1<double>>   myParameters;
+  bool                                       myPeriodic;
+  bool                                       myTangentRequest;
 };
 
 #endif // _Geom2dAPI_Interpolate_HeaderFile

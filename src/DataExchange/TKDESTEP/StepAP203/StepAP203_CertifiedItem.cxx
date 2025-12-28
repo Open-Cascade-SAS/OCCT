@@ -26,7 +26,7 @@ StepAP203_CertifiedItem::StepAP203_CertifiedItem() {}
 
 //=================================================================================================
 
-Standard_Integer StepAP203_CertifiedItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP203_CertifiedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -37,7 +37,8 @@ Standard_Integer StepAP203_CertifiedItem::CaseNum(const Handle(Standard_Transien
 
 //=================================================================================================
 
-Handle(StepRepr_SuppliedPartRelationship) StepAP203_CertifiedItem::SuppliedPartRelationship() const
+occ::handle<StepRepr_SuppliedPartRelationship> StepAP203_CertifiedItem::SuppliedPartRelationship()
+  const
 {
-  return Handle(StepRepr_SuppliedPartRelationship)::DownCast(Value());
+  return occ::down_cast<StepRepr_SuppliedPartRelationship>(Value());
 }

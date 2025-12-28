@@ -39,30 +39,30 @@ public:
   Standard_EXPORT AIS_CameraFrustum();
 
   //! Sets camera frustum.
-  Standard_EXPORT void SetCameraFrustum(const Handle(Graphic3d_Camera)& theCamera);
+  Standard_EXPORT void SetCameraFrustum(const occ::handle<Graphic3d_Camera>& theCamera);
 
   //! Setup custom color.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   //! Restore default color.
-  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetColor() override;
 
   //! Restore transparency setting.
-  Standard_EXPORT virtual void UnsetTransparency() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetTransparency() override;
 
   //! Return true if specified display mode is supported.
-  Standard_EXPORT virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool AcceptDisplayMode(const int theMode) const override;
 
 protected:
   //! Computes presentation of camera frustum.
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(
+    const occ::handle<SelectMgr_Selection>& theSelection,
+    const int                               theMode) override;
 
 private:
   //! Fills triangles primitive array for camera frustum filling.
@@ -72,9 +72,9 @@ private:
   void fillBorders();
 
 protected:
-  NCollection_Array1<Graphic3d_Vec3d> myPoints;    //!< Array of points
-  Handle(Graphic3d_ArrayOfTriangles)  myTriangles; //!< Triangles for camera frustum filling
-  Handle(Graphic3d_ArrayOfSegments)   myBorders;   //!< Segments for camera frustum borders
+  NCollection_Array1<NCollection_Vec3<double>> myPoints; //!< Array of points
+  occ::handle<Graphic3d_ArrayOfTriangles> myTriangles;   //!< Triangles for camera frustum filling
+  occ::handle<Graphic3d_ArrayOfSegments>  myBorders;     //!< Segments for camera frustum borders
 };
 
 #endif // _AIS_CameraFrustum_HeaderFile

@@ -27,10 +27,11 @@ RWStepBasic_RWGeneralProperty::RWStepBasic_RWGeneralProperty() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWGeneralProperty::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepBasic_GeneralProperty)& ent) const
+void RWStepBasic_RWGeneralProperty::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepBasic_GeneralProperty>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "general_property"))
@@ -38,21 +39,21 @@ void RWStepBasic_RWGeneralProperty::ReadStep(const Handle(StepData_StepReaderDat
 
   // Own fields of GeneralProperty
 
-  Handle(TCollection_HAsciiString) aId;
+  occ::handle<TCollection_HAsciiString> aId;
   data->ReadString(num, 1, "id", ach, aId);
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 2, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasDescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "description", ach, aDescription);
   }
   else
   {
-    hasDescription = Standard_False;
+    hasDescription = false;
   }
 
   // Initialize entity
@@ -61,8 +62,9 @@ void RWStepBasic_RWGeneralProperty::ReadStep(const Handle(StepData_StepReaderDat
 
 //=================================================================================================
 
-void RWStepBasic_RWGeneralProperty::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepBasic_GeneralProperty)& ent) const
+void RWStepBasic_RWGeneralProperty::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepBasic_GeneralProperty>& ent) const
 {
 
   // Own fields of GeneralProperty
@@ -81,7 +83,7 @@ void RWStepBasic_RWGeneralProperty::WriteStep(StepData_StepWriter&              
 
 //=================================================================================================
 
-void RWStepBasic_RWGeneralProperty::Share(const Handle(StepBasic_GeneralProperty)&,
+void RWStepBasic_RWGeneralProperty::Share(const occ::handle<StepBasic_GeneralProperty>&,
                                           Interface_EntityIterator&) const
 {
   // Own fields of GeneralProperty

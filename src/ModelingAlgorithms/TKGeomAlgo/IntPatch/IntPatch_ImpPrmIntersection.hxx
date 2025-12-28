@@ -18,8 +18,9 @@
 #define _IntPatch_ImpPrmIntersection_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <IntPatch_SequenceOfPoint.hxx>
-#include <IntPatch_SequenceOfLine.hxx>
+#include <IntPatch_Point.hxx>
+#include <NCollection_Sequence.hxx>
+#include <IntPatch_Line.hxx>
 #include <IntPatch_TheSOnBounds.hxx>
 #include <IntPatch_TheSearchInside.hxx>
 
@@ -35,58 +36,57 @@ public:
 
   Standard_EXPORT IntPatch_ImpPrmIntersection();
 
-  Standard_EXPORT IntPatch_ImpPrmIntersection(const Handle(Adaptor3d_Surface)&   Surf1,
-                                              const Handle(Adaptor3d_TopolTool)& D1,
-                                              const Handle(Adaptor3d_Surface)&   Surf2,
-                                              const Handle(Adaptor3d_TopolTool)& D2,
-                                              const Standard_Real                TolArc,
-                                              const Standard_Real                TolTang,
-                                              const Standard_Real                Fleche,
-                                              const Standard_Real                Pas);
+  Standard_EXPORT IntPatch_ImpPrmIntersection(const occ::handle<Adaptor3d_Surface>&   Surf1,
+                                              const occ::handle<Adaptor3d_TopolTool>& D1,
+                                              const occ::handle<Adaptor3d_Surface>&   Surf2,
+                                              const occ::handle<Adaptor3d_TopolTool>& D2,
+                                              const double                            TolArc,
+                                              const double                            TolTang,
+                                              const double                            Fleche,
+                                              const double                            Pas);
 
   //! to search for solution from the given point
-  Standard_EXPORT void SetStartPoint(const Standard_Real U, const Standard_Real V);
+  Standard_EXPORT void SetStartPoint(const double U, const double V);
 
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Surf1,
-                               const Handle(Adaptor3d_TopolTool)& D1,
-                               const Handle(Adaptor3d_Surface)&   Surf2,
-                               const Handle(Adaptor3d_TopolTool)& D2,
-                               const Standard_Real                TolArc,
-                               const Standard_Real                TolTang,
-                               const Standard_Real                Fleche,
-                               const Standard_Real                Pas);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Surf1,
+                               const occ::handle<Adaptor3d_TopolTool>& D1,
+                               const occ::handle<Adaptor3d_Surface>&   Surf2,
+                               const occ::handle<Adaptor3d_TopolTool>& D2,
+                               const double                            TolArc,
+                               const double                            TolTang,
+                               const double                            Fleche,
+                               const double                            Pas);
 
   //! Returns true if the calculus was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns true if the is no intersection.
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
   //! Returns the number of "single" points.
-  Standard_Integer NbPnts() const;
+  int NbPnts() const;
 
   //! Returns the point of range Index.
   //! An exception is raised if Index<=0 or Index>NbPnt.
-  const IntPatch_Point& Point(const Standard_Integer Index) const;
+  const IntPatch_Point& Point(const int Index) const;
 
   //! Returns the number of intersection lines.
-  Standard_Integer NbLines() const;
+  int NbLines() const;
 
   //! Returns the line of range Index.
   //! An exception is raised if Index<=0 or Index>NbLine.
-  const Handle(IntPatch_Line)& Line(const Standard_Integer Index) const;
+  const occ::handle<IntPatch_Line>& Line(const int Index) const;
 
-protected:
 private:
-  Standard_Boolean         done;
-  Standard_Boolean         empt;
-  IntPatch_SequenceOfPoint spnt;
-  IntPatch_SequenceOfLine  slin;
-  IntPatch_TheSOnBounds    solrst;
-  IntPatch_TheSearchInside solins;
-  Standard_Boolean         myIsStartPnt;
-  Standard_Real            myUStart;
-  Standard_Real            myVStart;
+  bool                                             done;
+  bool                                             empt;
+  NCollection_Sequence<IntPatch_Point>             spnt;
+  NCollection_Sequence<occ::handle<IntPatch_Line>> slin;
+  IntPatch_TheSOnBounds                            solrst;
+  IntPatch_TheSearchInside                         solins;
+  bool                                             myIsStartPnt;
+  double                                           myUStart;
+  double                                           myVStart;
 };
 
 #include <IntPatch_ImpPrmIntersection.lxx>

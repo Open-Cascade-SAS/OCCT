@@ -38,7 +38,7 @@ IGESData_DirChecker::IGESData_DirChecker()
 
 //=================================================================================================
 
-IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype)
+IGESData_DirChecker::IGESData_DirChecker(const int atype)
 {
   thetype      = atype;
   theform1     = 0;
@@ -50,7 +50,7 @@ IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype)
 
 //=================================================================================================
 
-IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype, const Standard_Integer aform)
+IGESData_DirChecker::IGESData_DirChecker(const int atype, const int aform)
 {
   thetype  = atype;
   theform1 = theform2 = aform; // form : required value
@@ -61,9 +61,7 @@ IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype, const Sta
 
 //=================================================================================================
 
-IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype,
-                                         const Standard_Integer aform1,
-                                         const Standard_Integer aform2)
+IGESData_DirChecker::IGESData_DirChecker(const int atype, const int aform1, const int aform2)
 {
   thetype      = atype;
   theform1     = aform1;
@@ -75,7 +73,7 @@ IGESData_DirChecker::IGESData_DirChecker(const Standard_Integer atype,
 
 //=================================================================================================
 
-Standard_Boolean IGESData_DirChecker::IsSet() const
+bool IGESData_DirChecker::IsSet() const
 {
   return isitset;
 }
@@ -91,7 +89,7 @@ void IGESData_DirChecker::SetDefault()
 
 void IGESData_DirChecker::Structure(const IGESData_DefType crit)
 {
-  isitset      = Standard_True;
+  isitset      = true;
   thestructure = crit;
 }
 
@@ -99,7 +97,7 @@ void IGESData_DirChecker::Structure(const IGESData_DefType crit)
 
 void IGESData_DirChecker::LineFont(const IGESData_DefType crit)
 {
-  isitset     = Standard_True;
+  isitset     = true;
   thelinefont = crit;
 }
 
@@ -107,7 +105,7 @@ void IGESData_DirChecker::LineFont(const IGESData_DefType crit)
 
 void IGESData_DirChecker::LineWeight(const IGESData_DefType crit)
 {
-  isitset     = Standard_True;
+  isitset     = true;
   thelineweig = crit;
 }
 
@@ -115,15 +113,15 @@ void IGESData_DirChecker::LineWeight(const IGESData_DefType crit)
 
 void IGESData_DirChecker::Color(const IGESData_DefType crit)
 {
-  isitset  = Standard_True;
+  isitset  = true;
   thecolor = crit;
 }
 
 //=================================================================================================
 
-void IGESData_DirChecker::GraphicsIgnored(const Standard_Integer hierarchy)
+void IGESData_DirChecker::GraphicsIgnored(const int hierarchy)
 {
-  isitset     = Standard_True;
+  isitset     = true;
   thegraphier = hierarchy;
 }
 
@@ -131,15 +129,15 @@ void IGESData_DirChecker::GraphicsIgnored(const Standard_Integer hierarchy)
 
 void IGESData_DirChecker::BlankStatusIgnored()
 {
-  isitset    = Standard_True;
+  isitset    = true;
   theblankst = -10;
 }
 
 //=================================================================================================
 
-void IGESData_DirChecker::BlankStatusRequired(const Standard_Integer val)
+void IGESData_DirChecker::BlankStatusRequired(const int val)
 {
-  isitset    = Standard_True;
+  isitset    = true;
   theblankst = val;
 }
 
@@ -147,15 +145,15 @@ void IGESData_DirChecker::BlankStatusRequired(const Standard_Integer val)
 
 void IGESData_DirChecker::SubordinateStatusIgnored()
 {
-  isitset     = Standard_True;
+  isitset     = true;
   thesubordst = -10;
 }
 
 //=================================================================================================
 
-void IGESData_DirChecker::SubordinateStatusRequired(const Standard_Integer val)
+void IGESData_DirChecker::SubordinateStatusRequired(const int val)
 {
-  isitset     = Standard_True;
+  isitset     = true;
   thesubordst = val;
 }
 
@@ -163,15 +161,15 @@ void IGESData_DirChecker::SubordinateStatusRequired(const Standard_Integer val)
 
 void IGESData_DirChecker::UseFlagIgnored()
 {
-  isitset    = Standard_True;
+  isitset    = true;
   theuseflag = -10;
 }
 
 //=================================================================================================
 
-void IGESData_DirChecker::UseFlagRequired(const Standard_Integer val)
+void IGESData_DirChecker::UseFlagRequired(const int val)
 {
-  isitset    = Standard_True;
+  isitset    = true;
   theuseflag = val;
 }
 
@@ -179,22 +177,22 @@ void IGESData_DirChecker::UseFlagRequired(const Standard_Integer val)
 
 void IGESData_DirChecker::HierarchyStatusIgnored()
 {
-  isitset   = Standard_True;
+  isitset   = true;
   thehierst = -10;
 }
 
 //=================================================================================================
 
-void IGESData_DirChecker::HierarchyStatusRequired(const Standard_Integer val)
+void IGESData_DirChecker::HierarchyStatusRequired(const int val)
 {
-  isitset   = Standard_True;
+  isitset   = true;
   thehierst = val;
 }
 
 //=================================================================================================
 
-void IGESData_DirChecker::Check(Handle(Interface_Check)&           ach,
-                                const Handle(IGESData_IGESEntity)& ent) const
+void IGESData_DirChecker::Check(occ::handle<Interface_Check>&           ach,
+                                const occ::handle<IGESData_IGESEntity>& ent) const
 {
   // MGE 23/07/98
   // =====================================
@@ -256,8 +254,8 @@ void IGESData_DirChecker::Check(Handle(Interface_Check)&           ach,
       ach->SendWarning(Msg60);
     }
 
-    Standard_Integer dlw = ent->LineWeightNumber();
-    Message_Msg      Msg69("XSTEP_69");
+    int         dlw = ent->LineWeightNumber();
+    Message_Msg Msg69("XSTEP_69");
     // Sending of message : Line Weight Number is undefined.
     if (thelineweig == IGESData_DefValue && dlw == 0)
     {
@@ -280,7 +278,7 @@ void IGESData_DirChecker::Check(Handle(Interface_Check)&           ach,
     }
   }
 
-  Standard_Integer st = ent->BlankStatus();
+  int st = ent->BlankStatus();
 
   // Sending of message : Blank Status field is incorrect.
   if (st < 0 || st > 1)
@@ -319,8 +317,8 @@ void IGESData_DirChecker::Check(Handle(Interface_Check)&           ach,
 
 //=================================================================================================
 
-void IGESData_DirChecker::CheckTypeAndForm(Handle(Interface_Check)&           ach,
-                                           const Handle(IGESData_IGESEntity)& ent) const
+void IGESData_DirChecker::CheckTypeAndForm(occ::handle<Interface_Check>&           ach,
+                                           const occ::handle<IGESData_IGESEntity>& ent) const
 {
   // CKY 30 NOV 2001 : This method is called for immediate check on reading
   //   But an entity which can be read has ben already recognized.
@@ -358,91 +356,91 @@ void IGESData_DirChecker::CheckTypeAndForm(Handle(Interface_Check)&           ac
 
 //=================================================================================================
 
-Standard_Boolean IGESData_DirChecker::Correct(const Handle(IGESData_IGESEntity)& ent) const
+bool IGESData_DirChecker::Correct(const occ::handle<IGESData_IGESEntity>& ent) const
 {
-  Standard_Boolean done = Standard_False;
-  Standard_Integer type = ent->TypeNumber();
-  Standard_Integer form = ent->FormNumber();
+  bool done = false;
+  int  type = ent->TypeNumber();
+  int  form = ent->FormNumber();
   if (thetype != 0)
   {
     if (theform1 >= 0 && theform1 == theform2 && theform1 != form)
     {
       ent->InitTypeAndForm(thetype, theform1);
-      done = Standard_True;
+      done = true;
     }
     else if (thetype != type)
     {
       ent->InitTypeAndForm(thetype, form);
-      done = Standard_True;
+      done = true;
     }
   }
 
-  Handle(IGESData_IGESEntity) structure; // by default Null
+  occ::handle<IGESData_IGESEntity> structure; // by default Null
   if (thestructure != IGESData_DefVoid)
     structure = ent->Structure();
-  Handle(IGESData_ViewKindEntity)     nulview;
-  Handle(IGESData_LineFontEntity)     nulfont;
-  Handle(IGESData_LevelListEntity)    nulevel;
-  Handle(IGESData_ColorEntity)        nulcolor;
-  Handle(IGESData_LabelDisplayEntity) label; // by default Null
+  occ::handle<IGESData_ViewKindEntity>     nulview;
+  occ::handle<IGESData_LineFontEntity>     nulfont;
+  occ::handle<IGESData_LevelListEntity>    nulevel;
+  occ::handle<IGESData_ColorEntity>        nulcolor;
+  occ::handle<IGESData_LabelDisplayEntity> label; // by default Null
   if (thegraphier != -1)
     label = ent->LabelDisplay();
-  Standard_Integer linew = 0;
+  int linew = 0;
   if (thegraphier != -1 && thelineweig != IGESData_DefVoid)
     linew = ent->LineWeightNumber();
 
   if (thegraphier == -1 || (ent->RankLineFont() != 0 && thelinefont == IGESData_DefVoid))
   {
     ent->InitLineFont(nulfont);
-    done = Standard_True;
+    done = true;
   }
   if (thegraphier == -1 || (ent->RankColor() != 0 && thecolor == IGESData_DefVoid))
   {
     ent->InitColor(nulcolor);
-    done = Standard_True;
+    done = true;
   }
   if (thegraphier == -1 && (!ent->View().IsNull() || ent->Level() != 0))
   {
     ent->InitView(nulview);
     ent->InitLevel(nulevel);
-    done = Standard_True;
+    done = true;
   }
   if ((thegraphier == -1 && (!ent->LabelDisplay().IsNull() || ent->LineWeightNumber() != 0))
       || (ent->HasStructure() && thestructure == IGESData_DefVoid)) // combines :
   {
     ent->InitMisc(structure, label, linew);
-    done = Standard_True;
+    done = true;
   }
 
-  Standard_Boolean force = Standard_False;
-  Standard_Integer stb   = ent->BlankStatus();
-  Standard_Integer sts   = ent->SubordinateStatus();
-  Standard_Integer stu   = ent->UseFlag();
-  Standard_Integer sth   = ent->HierarchyStatus();
+  bool force = false;
+  int  stb   = ent->BlankStatus();
+  int  sts   = ent->SubordinateStatus();
+  int  stu   = ent->UseFlag();
+  int  sth   = ent->HierarchyStatus();
   if (theblankst >= 0 && theblankst != stb)
   {
-    force = Standard_True;
+    force = true;
     stb   = theblankst;
   }
   if (thesubordst >= 0 && thesubordst != sts)
   {
-    force = Standard_True;
+    force = true;
     sts   = thesubordst;
   }
   if (theuseflag >= 0 && theuseflag != stu)
   {
-    force = Standard_True;
+    force = true;
     stu   = theuseflag;
   }
   if (thehierst >= 0 && thehierst != sth)
   {
-    force = Standard_True;
+    force = true;
     sth   = thehierst;
   }
   if (force)
   {
     ent->InitStatus(stb, sts, stu, sth);
-    done = Standard_True;
+    done = true;
   }
   return done;
 }

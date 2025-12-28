@@ -71,19 +71,15 @@ public:
   //! Constructs a non-initialized vector in the range [theLower..theUpper]
   //! "theLower" and "theUpper" are the indexes of the lower and upper bounds of the constructed
   //! vector.
-  inline math_VectorBase(const Standard_Integer theLower, const Standard_Integer theUpper);
+  inline math_VectorBase(const int theLower, const int theUpper);
 
   //! Constructs a vector in the range [theLower..theUpper]
   //! whose values are all initialized with the value "theInitialValue"
-  inline math_VectorBase(const Standard_Integer theLower,
-                         const Standard_Integer theUpper,
-                         const TheItemType      theInitialValue);
+  inline math_VectorBase(const int theLower, const int theUpper, const TheItemType theInitialValue);
 
   //! Constructs a vector in the range [theLower..theUpper]
   //! whose values are all initialized with the value "theInitialValue"
-  inline math_VectorBase(const TheItemType*     theTab,
-                         const Standard_Integer theLower,
-                         const Standard_Integer theUpper);
+  inline math_VectorBase(const TheItemType* theTab, const int theLower, const int theUpper);
 
   //! Constructor for converting gp_XY to math_VectorBase
   inline math_VectorBase(const gp_XY& Other);
@@ -101,39 +97,39 @@ public:
   inline math_VectorBase(math_VectorBase&& theOther) noexcept;
 
   //! Returns the length of a vector
-  inline Standard_Integer Length() const { return Array.Length(); }
+  inline int Length() const { return Array.Length(); }
 
   //! Returns the lower index of the vector
-  inline Standard_Integer Lower() const { return Array.Lower(); }
+  inline int Lower() const { return Array.Lower(); }
 
   //! Returns the upper index of the vector
-  inline Standard_Integer Upper() const { return Array.Upper(); }
+  inline int Upper() const { return Array.Upper(); }
 
   //! Returns the value or the square of the norm of this vector.
-  inline Standard_Real Norm() const;
+  inline double Norm() const;
 
   //! Returns the value of the square of the norm of a vector.
-  inline Standard_Real Norm2() const;
+  inline double Norm2() const;
 
   //! Returns the index of the maximum element of a vector. (first found)
-  inline Standard_Integer Max() const;
+  inline int Max() const;
 
   //! Returns the index of the minimum element of a vector. (first found)
-  inline Standard_Integer Min() const;
+  inline int Min() const;
 
   //! Normalizes this vector (the norm of the result
   //! is equal to 1.0) and assigns the result to this vector
   //! Exceptions
   //! Standard_NullValue if this vector is null (i.e. if its norm is
-  //! less than or equal to Standard_Real::RealEpsilon().
+  //! less than or equal to double::RealEpsilon().
   inline void Normalize();
 
   //! Normalizes this vector (the norm of the result
   //! is equal to 1.0) and creates a new vector
   //! Exceptions
   //! Standard_NullValue if this vector is null (i.e. if its norm is
-  //! less than or equal to Standard_Real::RealEpsilon().
-  Standard_NODISCARD inline math_VectorBase Normalized() const;
+  //! less than or equal to double::RealEpsilon().
+  [[nodiscard]] inline math_VectorBase Normalized() const;
 
   //! Inverts this vector and assigns the result to this vector.
   inline void Invert();
@@ -145,16 +141,14 @@ public:
   //! An exception is raised if "theI1" is less than "LowerIndex" or "theI2" is greater than
   //! "UpperIndex" or "theI1" is greater than "theI2". An exception is raised if "theI2-theI1+1" is
   //! different from the "Length" of "theV".
-  inline void Set(const Standard_Integer theI1,
-                  const Standard_Integer theI2,
-                  const math_VectorBase& theV);
+  inline void Set(const int theI1, const int theI2, const math_VectorBase& theV);
 
   //! Creates a new vector by inverting the values of this vector
   //!  between indexes "theI1" and "theI2".
   //!  If the values of this vector were (1., 2., 3., 4.,5., 6.),
   //!  by slicing it between indexes 2 and 5 the values
   //!  of the resulting vector are (1., 5., 4., 3., 2., 6.)
-  inline math_VectorBase Slice(const Standard_Integer theI1, const Standard_Integer theI2) const;
+  inline math_VectorBase Slice(const int theI1, const int theI2) const;
 
   //! Updates current vector by multiplying each element on current value.
   inline void Multiply(const TheItemType theRight);
@@ -162,15 +156,15 @@ public:
   void operator*=(const TheItemType theRight) { Multiply(theRight); }
 
   //! returns the product of a vector and a real value.
-  Standard_NODISCARD inline math_VectorBase Multiplied(const TheItemType theRight) const;
+  [[nodiscard]] inline math_VectorBase Multiplied(const TheItemType theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator*(const TheItemType theRight) const
+  [[nodiscard]] math_VectorBase operator*(const TheItemType theRight) const
   {
     return Multiplied(theRight);
   }
 
   //! returns the product of a vector and a real value.
-  Standard_NODISCARD inline math_VectorBase TMultiplied(const TheItemType theRight) const;
+  [[nodiscard]] inline math_VectorBase TMultiplied(const TheItemType theRight) const;
 
   friend inline math_VectorBase operator*(const TheItemType      theLeft,
                                           const math_VectorBase& theRight)
@@ -186,9 +180,9 @@ public:
 
   //! Returns new vector as dividing current vector with the value "theRight".
   //! An exception is raised if "theRight" = 0.
-  Standard_NODISCARD inline math_VectorBase Divided(const TheItemType theRight) const;
+  [[nodiscard]] inline math_VectorBase Divided(const TheItemType theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator/(const TheItemType theRight) const
+  [[nodiscard]] math_VectorBase operator/(const TheItemType theRight) const
   {
     return Divided(theRight);
   }
@@ -205,9 +199,9 @@ public:
   //! Returns new vector as adding current vector with the value "theRight".
   //! An exception is raised if the vectors do not have the same length.
   //! An exception is raised if the lengths are not equal.
-  Standard_NODISCARD inline math_VectorBase Added(const math_VectorBase& theRight) const;
+  [[nodiscard]] inline math_VectorBase Added(const math_VectorBase& theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator+(const math_VectorBase& theRight) const
+  [[nodiscard]] math_VectorBase operator+(const math_VectorBase& theRight) const
   {
     return Added(theRight);
   }
@@ -243,14 +237,14 @@ public:
   inline void Subtract(const math_VectorBase& theLeft, const math_VectorBase& theRight);
 
   //! accesses the value of index "theNum" of a vector.
-  const TheItemType& Value(const Standard_Integer theNum) const { return Array(theNum); }
+  const TheItemType& Value(const int theNum) const { return Array(theNum); }
 
   //! accesses (in read or write mode) the value of index "theNum" of a vector.
-  inline TheItemType& Value(const Standard_Integer theNum) { return Array(theNum); }
+  inline TheItemType& Value(const int theNum) { return Array(theNum); }
 
-  const TheItemType& operator()(const Standard_Integer theNum) const { return Value(theNum); }
+  const TheItemType& operator()(const int theNum) const { return Value(theNum); }
 
-  TheItemType& operator()(const Standard_Integer theNum) { return Value(theNum); }
+  TheItemType& operator()(const int theNum) { return Value(theNum); }
 
   //! Initialises a vector by copying "theOther".
   //! An exception is raised if the Lengths are different.
@@ -263,17 +257,17 @@ public:
 
   //! returns the inner product of 2 vectors.
   //! An exception is raised if the lengths are not equal.
-  Standard_NODISCARD inline TheItemType Multiplied(const math_VectorBase& theRight) const;
+  [[nodiscard]] inline TheItemType Multiplied(const math_VectorBase& theRight) const;
 
-  Standard_NODISCARD inline TheItemType operator*(const math_VectorBase& theRight) const
+  [[nodiscard]] inline TheItemType operator*(const math_VectorBase& theRight) const
   {
     return Multiplied(theRight);
   }
 
   //! returns the product of a vector by a matrix.
-  Standard_NODISCARD inline math_VectorBase Multiplied(const math_Matrix& theRight) const;
+  [[nodiscard]] inline math_VectorBase Multiplied(const math_Matrix& theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator*(const math_Matrix& theRight) const
+  [[nodiscard]] math_VectorBase operator*(const math_Matrix& theRight) const
   {
     return Multiplied(theRight);
   }
@@ -291,9 +285,9 @@ public:
 
   //! returns the subtraction of "theRight" from "me".
   //! An exception is raised if the vectors have not the same length.
-  Standard_NODISCARD inline math_VectorBase Subtracted(const math_VectorBase& theRight) const;
+  [[nodiscard]] inline math_VectorBase Subtracted(const math_VectorBase& theRight) const;
 
-  Standard_NODISCARD math_VectorBase operator-(const math_VectorBase& theRight) const
+  [[nodiscard]] math_VectorBase operator-(const math_VectorBase& theRight) const
   {
     return Subtracted(theRight);
   }
@@ -317,7 +311,7 @@ public:
   //! - If new size requires heap and was already on heap, resizes in place
   //! - Transitions between stack and heap as needed
   //! @param theSize new size of the vector
-  inline void Resize(const Standard_Integer theSize);
+  inline void Resize(const int theSize);
 
   friend inline Standard_OStream& operator<<(Standard_OStream& theO, const math_VectorBase& theVec)
   {
@@ -329,7 +323,7 @@ public:
 
 protected:
   //! Is used internally to set the "theLower" value of the vector.
-  inline void SetLower(const Standard_Integer theLower);
+  inline void SetLower(const int theLower);
 
 private:
   std::array<TheItemType, THE_BUFFER_SIZE> myBuffer;

@@ -48,16 +48,17 @@
 #include <ShapeFix_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <BRepLib.hxx>
 
 #include <ShapeBuild_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <ShapeBuild_ReShape.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <TopExp.hxx>
 
 #include <Message_ProgressScope.hxx>
@@ -66,35 +67,36 @@
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape&                            shape,
-                                         const Standard_Boolean                         enforce,
-                                         const Standard_Real                            preci,
-                                         const Message_ProgressRange&                   theProgress,
-                                         const Handle(ShapeExtend_BasicMsgRegistrator)& theMsgReg)
+bool ShapeFix::SameParameter(const TopoDS_Shape&                                 shape,
+                             const bool                                          enforce,
+                             const double                                        preci,
+                             const Message_ProgressRange&                        theProgress,
+                             const occ::handle<ShapeExtend_BasicMsgRegistrator>& theMsgReg)
 {
   // Calculate number of edges
-  Standard_Integer aNbEdges = 0;
+  int aNbEdges = 0;
   for (TopExp_Explorer anEdgeExp(shape, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
     ++aNbEdges;
 
   // Calculate number of faces
-  Standard_Integer aNbFaces = 0;
+  int aNbFaces = 0;
   for (TopExp_Explorer anEdgeExp(shape, TopAbs_FACE); anEdgeExp.More(); anEdgeExp.Next())
     ++aNbFaces;
 
-  TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aMapEF;
   TopExp::MapShapesAndAncestors(shape, TopAbs_EDGE, TopAbs_FACE, aMapEF);
 
   BRep_Builder B;
 #ifdef OCCT_DEBUG
-  Standard_Integer nbfail = 0, numedge = 0;
+  int nbfail = 0, numedge = 0;
 #endif
-  Standard_Boolean      status = Standard_True;
-  Standard_Real         tol    = preci;
-  Standard_Boolean      iatol  = (tol > 0);
-  Handle(ShapeFix_Edge) sfe    = new ShapeFix_Edge;
-  TopExp_Explorer       ex(shape, TopAbs_EDGE);
-  Message_Msg           doneMsg("FixEdge.SameParameter.MSG0");
+  bool                       status = true;
+  double                     tol    = preci;
+  bool                       iatol  = (tol > 0);
+  occ::handle<ShapeFix_Edge> sfe    = new ShapeFix_Edge;
+  TopExp_Explorer            ex(shape, TopAbs_EDGE);
+  Message_Msg                doneMsg("FixEdge.SameParameter.MSG0");
 
   // Start progress scope (no need to check if progress exists -- it is safe)
   Message_ProgressScope aPSForSameParam(theProgress, "Fixing same parameter problem", 2);
@@ -120,15 +122,15 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape&                    
           tol = BRep_Tool::Tolerance(E);
         if (enforce)
         {
-          B.SameRange(E, Standard_False);
-          B.SameParameter(E, Standard_False);
+          B.SameRange(E, false);
+          B.SameParameter(E, false);
         }
 
-        TopTools_ListOfShape aListOfFaces;
+        NCollection_List<TopoDS_Shape> aListOfFaces;
         aMapEF.FindFromKey(E, aListOfFaces);
         if (aListOfFaces.Extent() != 0)
         {
-          TopTools_ListOfShape::Iterator aListOfFacesIt(aListOfFaces);
+          NCollection_List<TopoDS_Shape>::Iterator aListOfFacesIt(aListOfFaces);
           for (; aListOfFacesIt.More(); aListOfFacesIt.Next())
           {
             TopoDS_Face aF = TopoDS::Face(aListOfFacesIt.Value());
@@ -150,9 +152,9 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape&                    
 
         if (ierr)
         {
-          status = Standard_False;
-          B.SameRange(E, Standard_False);
-          B.SameParameter(E, Standard_False);
+          status = false;
+          B.SameRange(E, false);
+          B.SameParameter(E, false);
         }
         else if (!theMsgReg.IsNull() && !sfe->Status(ShapeExtend_OK))
         {
@@ -165,7 +167,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape&                    
 
       // Halt algorithm in case of user's abort
       if (!aPS.More())
-        return Standard_False;
+        return false;
     }
   }
 
@@ -177,50 +179,50 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape&                    
     // Update tolerance of edges on planes (no pcurves are stored)
     for (TopExp_Explorer exp(shape, TopAbs_FACE); exp.More() && aPS.More(); exp.Next(), aPS.Next())
     {
-      TopoDS_Face          face = TopoDS::Face(exp.Current());
-      Handle(Geom_Surface) Surf = BRep_Tool::Surface(face);
+      TopoDS_Face               face = TopoDS::Face(exp.Current());
+      occ::handle<Geom_Surface> Surf = BRep_Tool::Surface(face);
 
-      Handle(Geom_Plane) plane = Handle(Geom_Plane)::DownCast(Surf);
+      occ::handle<Geom_Plane> plane = occ::down_cast<Geom_Plane>(Surf);
       if (plane.IsNull())
       {
-        Handle(Geom_RectangularTrimmedSurface) GRTS =
-          Handle(Geom_RectangularTrimmedSurface)::DownCast(Surf);
+        occ::handle<Geom_RectangularTrimmedSurface> GRTS =
+          occ::down_cast<Geom_RectangularTrimmedSurface>(Surf);
         if (!GRTS.IsNull())
-          plane = Handle(Geom_Plane)::DownCast(GRTS->BasisSurface());
+          plane = occ::down_cast<Geom_Plane>(GRTS->BasisSurface());
         if (plane.IsNull())
           continue;
       }
 
-      Handle(GeomAdaptor_Surface) AS = new GeomAdaptor_Surface(plane);
+      occ::handle<GeomAdaptor_Surface> AS = new GeomAdaptor_Surface(plane);
       for (TopExp_Explorer ed(face, TopAbs_EDGE); ed.More(); ed.Next())
       {
-        TopoDS_Edge        edge = TopoDS::Edge(ed.Current());
-        Standard_Real      f, l;
-        Handle(Geom_Curve) crv = BRep_Tool::Curve(edge, f, l);
+        TopoDS_Edge             edge = TopoDS::Edge(ed.Current());
+        double                  f, l;
+        occ::handle<Geom_Curve> crv = BRep_Tool::Curve(edge, f, l);
         if (crv.IsNull())
           continue;
 
-        Handle(Geom2d_Curve) c2d = BRep_Tool::CurveOnSurface(edge, face, f, l);
+        occ::handle<Geom2d_Curve> c2d = BRep_Tool::CurveOnSurface(edge, face, f, l);
         if (c2d.IsNull())
           continue;
-        Handle(Geom2dAdaptor_Curve) GHPC = new Geom2dAdaptor_Curve(c2d, f, l);
-        Adaptor3d_CurveOnSurface    ACS(GHPC, AS);
+        occ::handle<Geom2dAdaptor_Curve> GHPC = new Geom2dAdaptor_Curve(c2d, f, l);
+        Adaptor3d_CurveOnSurface         ACS(GHPC, AS);
 
-        Standard_Real tol0               = BRep_Tool::Tolerance(edge);
-        tol                              = tol0;
-        Standard_Real          tol2      = tol * tol;
-        Standard_Boolean       isChanged = Standard_False;
-        const Standard_Integer NCONTROL  = 23;
-        for (Standard_Integer i = 0; i < NCONTROL; i++)
+        double tol0         = BRep_Tool::Tolerance(edge);
+        tol                 = tol0;
+        double    tol2      = tol * tol;
+        bool      isChanged = false;
+        const int NCONTROL  = 23;
+        for (int i = 0; i < NCONTROL; i++)
         {
-          Standard_Real par  = (f * (NCONTROL - 1 - i) + l * i) / (NCONTROL - 1);
-          gp_Pnt        pnt  = crv->Value(par);
-          gp_Pnt        prj  = ACS.Value(par);
-          Standard_Real dist = pnt.SquareDistance(prj);
+          double par  = (f * (NCONTROL - 1 - i) + l * i) / (NCONTROL - 1);
+          gp_Pnt pnt  = crv->Value(par);
+          gp_Pnt prj  = ACS.Value(par);
+          double dist = pnt.SquareDistance(prj);
           if (tol2 < dist)
           {
             tol2      = dist;
-            isChanged = Standard_True;
+            isChanged = true;
           }
         }
         if (isChanged)
@@ -240,7 +242,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape&                    
     }
     // Halt algorithm in case of user's abort
     if (!aPS.More())
-      return Standard_False;
+      return false;
   }
 
   if (!status)
@@ -257,31 +259,31 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape&                    
 
 //=================================================================================================
 
-void ShapeFix::EncodeRegularity(const TopoDS_Shape& shape, const Standard_Real tolang)
+void ShapeFix::EncodeRegularity(const TopoDS_Shape& shape, const double tolang)
 {
   BRepLib::EncodeRegularity(shape, tolang);
 }
 
 //=================================================================================================
 
-TopoDS_Shape ShapeFix::RemoveSmallEdges(TopoDS_Shape&               Shape,
-                                        const Standard_Real         Tolerance,
-                                        Handle(ShapeBuild_ReShape)& context)
+TopoDS_Shape ShapeFix::RemoveSmallEdges(TopoDS_Shape&                    Shape,
+                                        const double                     Tolerance,
+                                        occ::handle<ShapeBuild_ReShape>& context)
 {
-  Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
+  occ::handle<ShapeFix_Shape> sfs = new ShapeFix_Shape;
   sfs->Init(Shape);
   sfs->SetPrecision(Tolerance);
-  sfs->FixFaceTool()->FixMissingSeamMode()   = Standard_False;
-  sfs->FixFaceTool()->FixOrientationMode()   = Standard_False;
-  sfs->FixFaceTool()->FixSmallAreaWireMode() = Standard_False;
-  sfs->FixWireTool()->ModifyTopologyMode()   = Standard_True;
-  // sfs.FixWireTool().FixReorderMode() = Standard_False;
-  sfs->FixWireTool()->FixConnectedMode()        = Standard_False;
-  sfs->FixWireTool()->FixEdgeCurvesMode()       = Standard_False;
-  sfs->FixWireTool()->FixDegeneratedMode()      = Standard_False;
-  sfs->FixWireTool()->FixSelfIntersectionMode() = Standard_False;
-  sfs->FixWireTool()->FixLackingMode()          = Standard_False;
-  sfs->FixWireTool()->FixSmallMode()            = Standard_True;
+  sfs->FixFaceTool()->FixMissingSeamMode()   = false;
+  sfs->FixFaceTool()->FixOrientationMode()   = false;
+  sfs->FixFaceTool()->FixSmallAreaWireMode() = false;
+  sfs->FixWireTool()->ModifyTopologyMode()   = true;
+  // sfs.FixWireTool().FixReorderMode() = false;
+  sfs->FixWireTool()->FixConnectedMode()        = false;
+  sfs->FixWireTool()->FixEdgeCurvesMode()       = false;
+  sfs->FixWireTool()->FixDegeneratedMode()      = false;
+  sfs->FixWireTool()->FixSelfIntersectionMode() = false;
+  sfs->FixWireTool()->FixLackingMode()          = false;
+  sfs->FixWireTool()->FixSmallMode()            = true;
   sfs->Perform();
   TopoDS_Shape result = sfs->Shape();
   context             = sfs->Context();
@@ -292,9 +294,7 @@ TopoDS_Shape ShapeFix::RemoveSmallEdges(TopoDS_Shape&               Shape,
 // function : ReplaceVertex
 // purpose  : auxiliary for FixVertexPosition
 //=======================================================================
-static TopoDS_Edge ReplaceVertex(const TopoDS_Edge&     theEdge,
-                                 const gp_Pnt&          theP,
-                                 const Standard_Boolean theFwd)
+static TopoDS_Edge ReplaceVertex(const TopoDS_Edge& theEdge, const gp_Pnt& theP, const bool theFwd)
 {
   TopoDS_Vertex aNewVertex;
   BRep_Builder  aB;
@@ -323,21 +323,21 @@ static TopoDS_Edge ReplaceVertex(const TopoDS_Edge&     theEdge,
 // function : getNearPoint
 // purpose  : auxiliary for FixVertexPosition
 //=======================================================================
-static Standard_Real getNearPoint(const TColgp_SequenceOfPnt& aSeq1,
-                                  const TColgp_SequenceOfPnt& aSeq2,
-                                  gp_XYZ&                     acent)
+static double getNearPoint(const NCollection_Sequence<gp_Pnt>& aSeq1,
+                           const NCollection_Sequence<gp_Pnt>& aSeq2,
+                           gp_XYZ&                             acent)
 {
-  Standard_Integer i    = 1;
-  Standard_Integer ind1 = 0, ind2 = 0;
-  Standard_Real    mindist = RealLast();
+  int    i    = 1;
+  int    ind1 = 0, ind2 = 0;
+  double mindist = RealLast();
   for (; i <= aSeq1.Length(); i++)
   {
-    gp_Pnt           p1 = aSeq1.Value(i);
-    Standard_Integer j  = 1;
+    gp_Pnt p1 = aSeq1.Value(i);
+    int    j  = 1;
     for (; j <= aSeq2.Length(); j++)
     {
-      gp_Pnt        p2 = aSeq2.Value(j);
-      Standard_Real d  = p1.Distance(p2);
+      gp_Pnt p2 = aSeq2.Value(j);
+      double d  = p1.Distance(p2);
       if (fabs(d - mindist) <= Precision::Confusion())
         continue;
       if (d < mindist)
@@ -357,32 +357,32 @@ static Standard_Real getNearPoint(const TColgp_SequenceOfPnt& aSeq1,
 // function : getNearestEdges
 // purpose  : auxiliary for FixVertexPosition
 //=======================================================================
-static Standard_Boolean getNearestEdges(TopTools_ListOfShape&     theLEdges,
-                                        const TopoDS_Vertex&      theVert,
-                                        TopTools_SequenceOfShape& theSuitEdges,
-                                        TopTools_SequenceOfShape& theRejectEdges,
-                                        const Standard_Real       theTolerance,
-                                        gp_XYZ&                   thecentersuit,
-                                        gp_XYZ&                   thecenterreject)
+static bool getNearestEdges(NCollection_List<TopoDS_Shape>&     theLEdges,
+                            const TopoDS_Vertex&                theVert,
+                            NCollection_Sequence<TopoDS_Shape>& theSuitEdges,
+                            NCollection_Sequence<TopoDS_Shape>& theRejectEdges,
+                            const double                        theTolerance,
+                            gp_XYZ&                             thecentersuit,
+                            gp_XYZ&                             thecenterreject)
 {
   if (theLEdges.IsEmpty())
-    return Standard_False;
-  TopTools_MapOfShape aMapEdges;
+    return false;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapEdges;
 
-  TopTools_ListOfShape atempList;
+  NCollection_List<TopoDS_Shape> atempList;
   atempList = theLEdges;
-  TopTools_ListIteratorOfListOfShape alIter(atempList);
+  NCollection_List<TopoDS_Shape>::Iterator alIter(atempList);
 
   TopoDS_Edge   aEdge1 = TopoDS::Edge(alIter.Value());
   TopoDS_Vertex aVert11, aVert12;
   TopExp::Vertices(aEdge1, aVert11, aVert12);
   aMapEdges.Add(aEdge1);
-  Standard_Real      aFirst1, aLast1;
-  Handle(Geom_Curve) aCurve1 = BRep_Tool::Curve(aEdge1, aFirst1, aLast1);
-  gp_Pnt             p11;
-  gp_Pnt             p12;
-  Standard_Boolean   isFirst1 = theVert.IsSame(aVert11);
-  Standard_Boolean   isSame1  = aVert11.IsSame(aVert12);
+  double                  aFirst1, aLast1;
+  occ::handle<Geom_Curve> aCurve1 = BRep_Tool::Curve(aEdge1, aFirst1, aLast1);
+  gp_Pnt                  p11;
+  gp_Pnt                  p12;
+  bool                    isFirst1 = theVert.IsSame(aVert11);
+  bool                    isSame1  = aVert11.IsSame(aVert12);
   if (!aCurve1.IsNull())
   {
     if (isFirst1)
@@ -393,12 +393,12 @@ static Standard_Boolean getNearestEdges(TopTools_ListOfShape&     theLEdges,
       p12 = aCurve1->Value(aLast1);
   }
   else
-    return Standard_False;
+    return false;
   alIter.Next();
-  TopTools_SequenceOfShape aseqreject;
-  TopTools_SequenceOfShape aseqsuit;
+  NCollection_Sequence<TopoDS_Shape> aseqreject;
+  NCollection_Sequence<TopoDS_Shape> aseqsuit;
 
-  Standard_Integer anumLoop = 0;
+  int anumLoop = 0;
   for (; alIter.More();)
   {
     TopoDS_Edge aEdge = TopoDS::Edge(alIter.Value());
@@ -410,11 +410,11 @@ static Standard_Boolean getNearestEdges(TopTools_ListOfShape&     theLEdges,
 
     TopoDS_Vertex aVert1, aVert2;
     TopExp::Vertices(aEdge, aVert1, aVert2);
-    Standard_Real    isFirst = theVert.IsSame(aVert1);
-    Standard_Boolean isSame  = aVert1.IsSame(aVert2);
+    double isFirst = theVert.IsSame(aVert1);
+    bool   isSame  = aVert1.IsSame(aVert2);
 
-    Standard_Boolean isLoop = ((aVert1.IsSame(aVert11) && aVert2.IsSame(aVert12))
-                               || (aVert1.IsSame(aVert12) && aVert2.IsSame(aVert11)));
+    bool isLoop = ((aVert1.IsSame(aVert11) && aVert2.IsSame(aVert12))
+                   || (aVert1.IsSame(aVert12) && aVert2.IsSame(aVert11)));
     if (isLoop /*&& !aseqsuit.Length()*/ && (atempList.Extent() > anumLoop))
     {
       atempList.Append(aEdge);
@@ -423,8 +423,8 @@ static Standard_Boolean getNearestEdges(TopTools_ListOfShape&     theLEdges,
       continue;
     }
     aMapEdges.Add(aEdge);
-    Standard_Real      aFirst, aLast;
-    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(aEdge, aFirst, aLast);
+    double                  aFirst, aLast;
+    occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(aEdge, aFirst, aLast);
     if (!aCurve.IsNull())
     {
       gp_Pnt p1;
@@ -435,8 +435,8 @@ static Standard_Boolean getNearestEdges(TopTools_ListOfShape&     theLEdges,
         p1 = aCurve->Value(aLast);
       if (isSame)
         p2 = aCurve->Value(aLast);
-      Standard_Real aMinDist = RealLast();
-      gp_XYZ        acent;
+      double aMinDist = RealLast();
+      gp_XYZ acent;
       if (!isSame && !isSame1)
       {
         aMinDist = p1.Distance(p11);
@@ -444,8 +444,8 @@ static Standard_Boolean getNearestEdges(TopTools_ListOfShape&     theLEdges,
       }
       else
       {
-        TColgp_SequenceOfPnt aSeq1;
-        TColgp_SequenceOfPnt aSeq2;
+        NCollection_Sequence<gp_Pnt> aSeq1;
+        NCollection_Sequence<gp_Pnt> aSeq2;
         aSeq1.Append(p11);
         if (isSame1)
           aSeq1.Append(p12);
@@ -479,7 +479,7 @@ static Standard_Boolean getNearestEdges(TopTools_ListOfShape&     theLEdges,
     atempList.Remove(alIter);
   }
 
-  Standard_Boolean isDone = (!aseqsuit.IsEmpty() || !aseqreject.IsEmpty());
+  bool isDone = (!aseqsuit.IsEmpty() || !aseqreject.IsEmpty());
   if (isDone)
   {
     if (aseqsuit.IsEmpty())
@@ -510,17 +510,18 @@ static Standard_Boolean getNearestEdges(TopTools_ListOfShape&     theLEdges,
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     theshape,
-                                             const Standard_Real               theTolerance,
-                                             const Handle(ShapeBuild_ReShape)& thecontext)
+bool ShapeFix::FixVertexPosition(TopoDS_Shape&                          theshape,
+                                 const double                           theTolerance,
+                                 const occ::handle<ShapeBuild_ReShape>& thecontext)
 {
-  TopTools_IndexedDataMapOfShapeListOfShape aMapVertEdges;
-  TopExp_Explorer                           aExp1(theshape, TopAbs_EDGE);
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                  aMapVertEdges;
+  TopExp_Explorer aExp1(theshape, TopAbs_EDGE);
   for (; aExp1.More(); aExp1.Next())
   {
-    TopoDS_Shape     aVert1;
-    Standard_Integer nV = 1;
-    TopoDS_Iterator  aExp3(aExp1.Current());
+    TopoDS_Shape    aVert1;
+    int             nV = 1;
+    TopoDS_Iterator aExp3(aExp1.Current());
     for (; aExp3.More(); aExp3.Next(), nV++)
     {
       const TopoDS_Shape& aVert = aExp3.Value();
@@ -532,18 +533,18 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
         aMapVertEdges.ChangeFromKey(aVert).Append(aExp1.Current());
       else
       {
-        TopTools_ListOfShape alEdges;
+        NCollection_List<TopoDS_Shape> alEdges;
         alEdges.Append(aExp1.Current());
         aMapVertEdges.Add(aVert, alEdges);
       }
     }
   }
-  Standard_Boolean isDone = Standard_False;
-  Standard_Integer i      = 1;
+  bool isDone = false;
+  int  i      = 1;
   for (; i <= aMapVertEdges.Extent(); i++)
   {
     TopoDS_Vertex aVert    = TopoDS::Vertex(aMapVertEdges.FindKey(i));
-    Standard_Real aTolVert = BRep_Tool::Tolerance(aVert);
+    double        aTolVert = BRep_Tool::Tolerance(aVert);
     if (aTolVert <= theTolerance)
       continue;
 
@@ -552,9 +553,9 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
     gp_Pnt aPvert = BRep_Tool::Pnt(aVert);
     gp_XYZ acenter(aPvert.XYZ()), acenterreject(aPvert.XYZ());
 
-    TopTools_SequenceOfShape aSuitEdges;
-    TopTools_SequenceOfShape aRejectEdges;
-    TopTools_ListOfShape     aledges;
+    NCollection_Sequence<TopoDS_Shape> aSuitEdges;
+    NCollection_Sequence<TopoDS_Shape> aRejectEdges;
+    NCollection_List<TopoDS_Shape>     aledges;
     aledges = aMapVertEdges.FindFromIndex(i);
     if (aledges.Extent() == 1)
       continue;
@@ -571,8 +572,8 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
       continue;
 
     // update vertex by nearest point
-    Standard_Boolean isAdd = Standard_False;
-    Standard_Integer k     = 1;
+    bool isAdd = false;
+    int  k     = 1;
     for (; k <= aSuitEdges.Length(); k++)
     {
 
@@ -580,13 +581,13 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
       TopoDS_Vertex aVert1, aVert2;
       TopExp::Vertices(aEdgeOld, aVert1, aVert2);
 
-      Standard_Boolean isFirst = (aVert1.IsSame(aVert));
-      Standard_Boolean isLast  = (aVert2.IsSame(aVert));
+      bool isFirst = (aVert1.IsSame(aVert));
+      bool isLast  = (aVert2.IsSame(aVert));
       if (!isFirst && !isLast)
         continue;
-      Standard_Real      aFirst, aLast;
-      Handle(Geom_Curve) aCurve;
-      TopoDS_Edge        aEdge = TopoDS::Edge(thecontext->Apply(aEdgeOld));
+      double                  aFirst, aLast;
+      occ::handle<Geom_Curve> aCurve;
+      TopoDS_Edge             aEdge = TopoDS::Edge(thecontext->Apply(aEdgeOld));
 
       TopoDS_Vertex aVert1n, aVert2n;
       TopExp::Vertices(aEdge, aVert1n, aVert2n);
@@ -599,10 +600,10 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
         // if distance between ends of curve more than specified tolerance
         // but vertices are the same that one of the vertex will be replaced.
 
-        Standard_Boolean isReplace = (aVert1n.IsSame(aVert2n) && p1.Distance(p2) > theTolerance);
+        bool isReplace = (aVert1n.IsSame(aVert2n) && p1.Distance(p2) > theTolerance);
 
-        // Standard_Real dd1 = (acenter - p1.XYZ()).Modulus();
-        // Standard_Real dd2 = (acenter - p2.XYZ()).Modulus();
+        // double dd1 = (acenter - p1.XYZ()).Modulus();
+        // double dd2 = (acenter - p2.XYZ()).Modulus();
         if (isFirst)
         {
           if (k > 2)
@@ -614,11 +615,11 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
           {
             TopoDS_Edge enew;
             if (p1.Distance(acenter) < p2.Distance(acenter))
-              enew = ReplaceVertex(aEdge, p2, Standard_False);
+              enew = ReplaceVertex(aEdge, p2, false);
             else
-              enew = ReplaceVertex(aEdge, p1, Standard_True);
+              enew = ReplaceVertex(aEdge, p1, true);
             thecontext->Replace(aEdge, enew);
-            isDone = Standard_True;
+            isDone = true;
           }
         }
         else
@@ -632,15 +633,15 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
           {
             TopoDS_Edge enew;
             if (p1.Distance(acenter) < p2.Distance(acenter))
-              enew = ReplaceVertex(aEdge, p2, Standard_False);
+              enew = ReplaceVertex(aEdge, p2, false);
             else
-              enew = ReplaceVertex(aEdge, p1, Standard_True);
+              enew = ReplaceVertex(aEdge, p1, true);
             thecontext->Replace(aEdge, enew);
-            isDone = Standard_True;
+            isDone = true;
           }
         }
 
-        isAdd = Standard_True;
+        isAdd = true;
       }
     }
 
@@ -651,7 +652,7 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
 
       //  aB.UpdateVertex(aVert,Precision::Confusion());
       // else {
-      isDone = Standard_True;
+      isDone = true;
       TopoDS_Vertex aNewVertex;
       aB.MakeVertex(aNewVertex, acenter, Precision::Confusion());
       aNewVertex.Orientation(aVert.Orientation());
@@ -664,18 +665,18 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
       TopoDS_Vertex aVert1, aVert2;
       TopExp::Vertices(aEdgeOld, aVert1, aVert2);
 
-      Standard_Boolean isFirst = (aVert1.IsSame(aVert));
-      Standard_Boolean isLast  = (aVert2.IsSame(aVert));
+      bool isFirst = (aVert1.IsSame(aVert));
+      bool isLast  = (aVert2.IsSame(aVert));
       if (!isFirst && !isLast)
         continue;
-      Standard_Boolean   isSame = aVert1.IsSame(aVert2);
-      Handle(Geom_Curve) aCurve;
-      TopoDS_Edge        aEdge = TopoDS::Edge(thecontext->Apply(aEdgeOld));
+      bool                    isSame = aVert1.IsSame(aVert2);
+      occ::handle<Geom_Curve> aCurve;
+      TopoDS_Edge             aEdge = TopoDS::Edge(thecontext->Apply(aEdgeOld));
 
       TopoDS_Vertex aVert1n, aVert2n;
       TopExp::Vertices(aEdge, aVert1n, aVert2n);
 
-      Standard_Real aFirst, aLast;
+      double aFirst, aLast;
       aCurve = BRep_Tool::Curve(aEdge, aFirst, aLast);
       if (!aCurve.IsNull())
       {
@@ -684,19 +685,19 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
         TopoDS_Edge enew;
         if (isFirst)
         {
-          enew = ReplaceVertex(aEdge, p1, Standard_True);
+          enew = ReplaceVertex(aEdge, p1, true);
           if (isSame)
-            enew = ReplaceVertex(enew, p2, Standard_False);
+            enew = ReplaceVertex(enew, p2, false);
         }
         else
         {
-          enew = ReplaceVertex(aEdge, p2, Standard_False);
+          enew = ReplaceVertex(aEdge, p2, false);
           if (isSame)
-            enew = ReplaceVertex(enew, p1, Standard_True);
+            enew = ReplaceVertex(enew, p1, true);
         }
 
         thecontext->Replace(aEdge, enew);
-        isDone = Standard_True;
+        isDone = true;
       }
     }
   }
@@ -707,21 +708,21 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape&                     t
 
 //=================================================================================================
 
-Standard_Real ShapeFix::LeastEdgeSize(TopoDS_Shape& theShape)
+double ShapeFix::LeastEdgeSize(TopoDS_Shape& theShape)
 {
-  Standard_Real aRes = RealLast();
+  double aRes = RealLast();
   for (TopExp_Explorer exp(theShape, TopAbs_EDGE); exp.More(); exp.Next())
   {
-    TopoDS_Edge        edge = TopoDS::Edge(exp.Current());
-    Standard_Real      first, last;
-    Handle(Geom_Curve) c3d = BRep_Tool::Curve(edge, first, last);
+    TopoDS_Edge             edge = TopoDS::Edge(exp.Current());
+    double                  first, last;
+    occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, first, last);
     if (!c3d.IsNull())
     {
       Bnd_Box bb;
       bb.Add(c3d->Value(first));
       bb.Add(c3d->Value(last));
       bb.Add(c3d->Value((last + first) / 2.));
-      Standard_Real x1, x2, y1, y2, z1, z2, size;
+      double x1, x2, y1, y2, z1, z2, size;
       bb.Get(x1, y1, z1, x2, y2, z2);
       size = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1);
       if (size < aRes)

@@ -18,7 +18,7 @@
 #include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -26,10 +26,10 @@ namespace
 {
 const double THE_TOLERANCE = 1e-10;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
-  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
+  NCollection_Array1<double> aParams(1, theNbPoints);
+  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -45,14 +45,14 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_TorusTest, GridBasicEvaluation)
 {
   // Torus: Major=10, Minor=2, Center(0,0,0), Z-axis
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
 
   GeomGridEval_Torus anEval(aTorus);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Major
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Minor
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Major
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Minor
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_EQ(aGrid.RowLength(), 9);
@@ -71,12 +71,12 @@ TEST(GeomGridEval_TorusTest, GridBasicEvaluation)
 
 TEST(GeomGridEval_TorusTest, GridDerivativeD1)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -96,12 +96,12 @@ TEST(GeomGridEval_TorusTest, GridDerivativeD1)
 
 TEST(GeomGridEval_TorusTest, GridDerivativeD2)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -124,12 +124,12 @@ TEST(GeomGridEval_TorusTest, GridDerivativeD2)
 
 TEST(GeomGridEval_TorusTest, GridDerivativeD3)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -167,12 +167,12 @@ TEST(GeomGridEval_TorusTest, GridDerivativeD3)
 
 TEST(GeomGridEval_TorusTest, GridDerivativeDN)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 4);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 2 * M_PI, 4);
 
   // Test D4U (4th derivative in U)
   NCollection_Array2<gp_Vec> aD4U = anEval.EvaluateGridDN(aUParams, aVParams, 4, 0);
@@ -192,7 +192,7 @@ TEST(GeomGridEval_TorusTest, GridDerivativeDN)
 
 TEST(GeomGridEval_TorusTest, PointsBasicEvaluation)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 
@@ -222,7 +222,7 @@ TEST(GeomGridEval_TorusTest, PointsBasicEvaluation)
 
 TEST(GeomGridEval_TorusTest, PointsDerivativeD1)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 
@@ -249,7 +249,7 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeD1)
 
 TEST(GeomGridEval_TorusTest, PointsDerivativeD2)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 
@@ -279,7 +279,7 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeD2)
 
 TEST(GeomGridEval_TorusTest, PointsDerivativeD3)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 
@@ -313,7 +313,7 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeD3)
 
 TEST(GeomGridEval_TorusTest, PointsDerivativeDN)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 
@@ -346,9 +346,9 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeDN)
 TEST(GeomGridEval_TorusTest, PointsTransformedTorus)
 {
   // Torus with offset center and tilted axis
-  gp_Ax3                       anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
-  Handle(Geom_ToroidalSurface) aTorus = new Geom_ToroidalSurface(anAxis, 8.0, 1.5);
-  GeomGridEval_Torus           anEval(aTorus);
+  gp_Ax3                            anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
+  occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(anAxis, 8.0, 1.5);
+  GeomGridEval_Torus                anEval(aTorus);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 8);
   for (int i = 1; i <= 8; ++i)
@@ -369,7 +369,7 @@ TEST(GeomGridEval_TorusTest, PointsTransformedTorus)
 TEST(GeomGridEval_TorusTest, PointsOnMajorCircle)
 {
   // Test points on major circle (V=0)
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   GeomGridEval_Torus anEval(aTorus);
 

@@ -28,82 +28,83 @@
 #include <IGESData_ViewKindEntity.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
-IGESData_BasicEditor::IGESData_BasicEditor(const Handle(IGESData_Protocol)& protocol)
+IGESData_BasicEditor::IGESData_BasicEditor(const occ::handle<IGESData_Protocol>& protocol)
 {
   Init(protocol);
 }
 
-IGESData_BasicEditor::IGESData_BasicEditor(const Handle(IGESData_IGESModel)& model,
-                                           const Handle(IGESData_Protocol)&  protocol)
+IGESData_BasicEditor::IGESData_BasicEditor(const occ::handle<IGESData_IGESModel>& model,
+                                           const occ::handle<IGESData_Protocol>&  protocol)
 {
   Init(model, protocol);
 }
 
 IGESData_BasicEditor::IGESData_BasicEditor() {}
 
-void IGESData_BasicEditor::Init(const Handle(IGESData_Protocol)& protocol)
+void IGESData_BasicEditor::Init(const occ::handle<IGESData_Protocol>& protocol)
 {
-  theunit  = Standard_False;
+  theunit  = false;
   theproto = protocol;
   themodel = GetCasted(IGESData_IGESModel, Interface_InterfaceModel::Template("iges"));
   theglib  = Interface_GeneralLib(protocol);
   theslib  = protocol;
 }
 
-void IGESData_BasicEditor::Init(const Handle(IGESData_IGESModel)& model,
-                                const Handle(IGESData_Protocol)&  protocol)
+void IGESData_BasicEditor::Init(const occ::handle<IGESData_IGESModel>& model,
+                                const occ::handle<IGESData_Protocol>&  protocol)
 {
-  theunit  = Standard_False;
+  theunit  = false;
   theproto = protocol;
   themodel = model;
   theglib  = Interface_GeneralLib(protocol);
   theslib  = protocol;
 }
 
-Handle(IGESData_IGESModel) IGESData_BasicEditor::Model() const
+occ::handle<IGESData_IGESModel> IGESData_BasicEditor::Model() const
 {
   return themodel;
 }
 
 // ####   Work on the Header (GlobalSection)    ####
 
-Standard_Boolean IGESData_BasicEditor::SetUnitFlag(const Standard_Integer flag)
+bool IGESData_BasicEditor::SetUnitFlag(const int flag)
 {
   if (themodel.IsNull())
-    return Standard_False;
+    return false;
   if (flag < 1 || flag > 11)
-    return Standard_False;
-  IGESData_GlobalSection           GS   = themodel->GlobalSection();
-  Handle(TCollection_HAsciiString) name = GS.UnitName();
-  Standard_CString                 nam  = IGESData_BasicEditor::UnitFlagName(flag);
+    return false;
+  IGESData_GlobalSection                GS   = themodel->GlobalSection();
+  occ::handle<TCollection_HAsciiString> name = GS.UnitName();
+  const char*                           nam  = IGESData_BasicEditor::UnitFlagName(flag);
   if (nam[0] != '\0')
     name = new TCollection_HAsciiString(nam);
   GS.SetUnitFlag(flag);
   GS.SetUnitName(name);
   themodel->SetGlobalSection(GS);
-  theunit = Standard_True;
-  return Standard_True;
+  theunit = true;
+  return true;
 }
 
-Standard_Boolean IGESData_BasicEditor::SetUnitValue(const Standard_Real val)
+bool IGESData_BasicEditor::SetUnitValue(const double val)
 {
   if (val <= 0.)
-    return Standard_False;
-  Standard_Real vmm = val * themodel->GlobalSection().CascadeUnit();
+    return false;
+  double vmm = val * themodel->GlobalSection().CascadeUnit();
   // #73 rln 10.03.99 S4135: "read.scale.unit" does not affect GlobalSection
   // if (Interface_Static::IVal("read.scale.unit") == 1) vmm = vmm * 1000.;
   // vmm is expressed in MILLIMETERS
-  Standard_Integer aFlag = GetFlagByValue(vmm);
-  return (aFlag > 0) ? SetUnitFlag(aFlag) : Standard_False;
+  int aFlag = GetFlagByValue(vmm);
+  return (aFlag > 0) ? SetUnitFlag(aFlag) : false;
 }
 
 //=================================================================================================
 
-Standard_Integer IGESData_BasicEditor::GetFlagByValue(const Standard_Real theValue)
+int IGESData_BasicEditor::GetFlagByValue(const double theValue)
 {
   if (theValue >= 25. && theValue <= 26.)
     return 1;
@@ -130,11 +131,11 @@ Standard_Integer IGESData_BasicEditor::GetFlagByValue(const Standard_Real theVal
 
 //=================================================================================================
 
-Standard_Boolean IGESData_BasicEditor::SetUnitName(const Standard_CString name)
+bool IGESData_BasicEditor::SetUnitName(const char* name)
 {
   if (themodel.IsNull())
-    return Standard_False;
-  Standard_Integer       flag = IGESData_BasicEditor::UnitNameFlag(name);
+    return false;
+  int                    flag = IGESData_BasicEditor::UnitNameFlag(name);
   IGESData_GlobalSection GS   = themodel->GlobalSection();
   if (GS.UnitFlag() == 3)
   {
@@ -143,21 +144,21 @@ Standard_Boolean IGESData_BasicEditor::SetUnitName(const Standard_CString name)
       nam = (char*)&name[2];
     GS.SetUnitName(new TCollection_HAsciiString(nam));
     themodel->SetGlobalSection(GS);
-    return Standard_True;
+    return true;
   }
   if (flag > 0)
     return SetUnitFlag(flag);
   return (flag > 0);
 }
 
-void IGESData_BasicEditor::ApplyUnit(const Standard_Boolean enforce)
+void IGESData_BasicEditor::ApplyUnit(const bool enforce)
 {
   if (themodel.IsNull())
     return;
   if (!enforce && !theunit)
     return;
   IGESData_GlobalSection GS   = themodel->GlobalSection();
-  Standard_Real          unit = GS.UnitValue();
+  double                 unit = GS.UnitValue();
   if (unit <= 0.)
     return;
   if (unit != 1.)
@@ -167,7 +168,7 @@ void IGESData_BasicEditor::ApplyUnit(const Standard_Boolean enforce)
     GS.SetMaxCoord(GS.MaxCoord() / unit);
     themodel->SetGlobalSection(GS);
   }
-  theunit = Standard_False;
+  theunit = false;
 }
 
 // ####   Global work on entities    ####
@@ -176,10 +177,10 @@ void IGESData_BasicEditor::ComputeStatus()
 {
   if (themodel.IsNull())
     return;
-  Standard_Integer nb = themodel->NbEntities();
+  int nb = themodel->NbEntities();
   if (nb == 0)
     return;
-  TColStd_Array1OfInteger subs(0, nb);
+  NCollection_Array1<int> subs(0, nb);
   subs.Init(0);                         // gere Subordinate Status
   Interface_Graph G(themodel, theglib); // gere & memorise UseFlag
   G.ResetStatus();
@@ -207,22 +208,22 @@ void IGESData_BasicEditor::ComputeStatus()
   //  Currently handled (necessary) :
   //  1(Annotation), also 4(for meshing). 5(ParamUV) handled by AutoCorrect
 
-  Standard_Integer CN;
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  int CN;
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nb; i++)
   {
     //  Subordinate (on direct descendants only)
-    Handle(IGESData_IGESEntity)     ent = themodel->Entity(i);
-    Standard_Integer                igt = ent->TypeNumber();
-    Handle(Interface_GeneralModule) gmodule;
+    occ::handle<IGESData_IGESEntity>     ent = themodel->Entity(i);
+    int                                  igt = ent->TypeNumber();
+    occ::handle<Interface_GeneralModule> gmodule;
     if (theglib.Select(ent, gmodule, CN))
     {
-      Handle(IGESData_GeneralModule) gmod = Handle(IGESData_GeneralModule)::DownCast(gmodule);
-      Interface_EntityIterator       sh;
+      occ::handle<IGESData_GeneralModule> gmod = occ::down_cast<IGESData_GeneralModule>(gmodule);
+      Interface_EntityIterator            sh;
       gmod->OwnSharedCase(CN, ent, sh);
       for (sh.Start(); sh.More(); sh.Next())
       {
-        Standard_Integer nums = themodel->Number(sh.Value());
+        int nums = themodel->Number(sh.Value());
         if (igt == 402 || igt == 404)
           subs.SetValue(nums, subs.Value(nums) | 2);
         else
@@ -233,26 +234,26 @@ void IGESData_BasicEditor::ComputeStatus()
     //  UseFlag (a propager)
     if (igt / 100 == 2)
     {
-      G.GetFromEntity(ent, Standard_True, 1); // Annotation
-      G.GetFromEntity(ent, Standard_False, ent->UseFlag());
+      G.GetFromEntity(ent, true, 1); // Annotation
+      G.GetFromEntity(ent, false, ent->UseFlag());
     }
     else if (igt == 134 || igt == 116 || igt == 132)
     {
       Interface_EntityIterator sh = G.Sharings(ent); // Maillage ...
       if (sh.NbEntities() > 0)
-        G.GetFromEntity(ent, Standard_True, 4);
+        G.GetFromEntity(ent, true, 4);
       //  UV : see AutoCorrect of concerned classes (Boundary and CurveOnSurface)
       /*
           } else if (ent->IsKind(STANDARD_TYPE(IGESGeom_CurveOnSurface))) {
             DeclareAndCast(IGESGeom_CurveOnSurface,cos,ent);    // Curve UV
-            G.GetFromEntity (cos->CurveUV(),Standard_True,5);
+            G.GetFromEntity (cos->CurveUV(),true,5);
           } else if (ent->IsKind(STANDARD_TYPE(IGESGeom_Boundary))) {
             DeclareAndCast(IGESGeom_Boundary,bnd,ent);          // Curve UV
-            Standard_Integer nc = bnd->NbModelSpaceCurves();
-            for (Standard_Integer ic = 1; ic <= nc; ic ++) {
-          Standard_Integer nuv = bnd->NbParameterCurves(ic);
-          for (Standard_Integer juv = 1; juv <= nuv; juv ++)
-            G.GetFromEntity(bnd->ParameterCurve(ic,juv),Standard_True,5);
+            int nc = bnd->NbModelSpaceCurves();
+            for (int ic = 1; ic <= nc; ic ++) {
+          int nuv = bnd->NbParameterCurves(ic);
+          for (int juv = 1; juv <= nuv; juv ++)
+            G.GetFromEntity(bnd->ParameterCurve(ic,juv),true,5);
             }
       */
     }
@@ -263,30 +264,30 @@ void IGESData_BasicEditor::ComputeStatus()
 
   for (i = 1; i <= nb; i++)
   {
-    Handle(IGESData_IGESEntity) ent = themodel->Entity(i);
-    Standard_Integer            bl  = ent->BlankStatus();
-    Standard_Integer            uf  = ent->UseFlag();
+    occ::handle<IGESData_IGESEntity> ent = themodel->Entity(i);
+    int                              bl  = ent->BlankStatus();
+    int                              uf  = ent->UseFlag();
     if (uf == 0)
       uf = G.Status(i);
-    Standard_Integer hy = ent->HierarchyStatus();
+    int hy = ent->HierarchyStatus();
     ////    std::cout<<" Ent.n0."<<i<<" Subord="<<subs.Value(i)<<" Use="<<uf<<std::endl;
     ent->InitStatus(bl, subs.Value(i), uf, hy);
   }
 }
 
-Standard_Boolean IGESData_BasicEditor::AutoCorrect(const Handle(IGESData_IGESEntity)& ent)
+bool IGESData_BasicEditor::AutoCorrect(const occ::handle<IGESData_IGESEntity>& ent)
 {
   if (themodel.IsNull())
-    return Standard_False;
-  Handle(IGESData_IGESEntity)         bof, subent;
-  Handle(IGESData_LineFontEntity)     linefont;
-  Handle(IGESData_LevelListEntity)    levelist;
-  Handle(IGESData_ViewKindEntity)     view;
-  Handle(IGESData_TransfEntity)       transf;
-  Handle(IGESData_LabelDisplayEntity) labdisp;
-  Handle(IGESData_ColorEntity)        color;
+    return false;
+  occ::handle<IGESData_IGESEntity>         bof, subent;
+  occ::handle<IGESData_LineFontEntity>     linefont;
+  occ::handle<IGESData_LevelListEntity>    levelist;
+  occ::handle<IGESData_ViewKindEntity>     view;
+  occ::handle<IGESData_TransfEntity>       transf;
+  occ::handle<IGESData_LabelDisplayEntity> labdisp;
+  occ::handle<IGESData_ColorEntity>        color;
 
-  Standard_Boolean done = Standard_False;
+  bool done = false;
   if (ent.IsNull())
     return done;
   //    Corrections in the header (present entities)
@@ -297,37 +298,37 @@ Standard_Boolean IGESData_BasicEditor::AutoCorrect(const Handle(IGESData_IGESEnt
     if (!linefont.IsNull() && themodel->Number(linefont) == 0) {
       linefont.Nullify();
       ent->InitLineFont(linefont,0);
-      done = Standard_True;
+      done = true;
     }
     levelist = ent->LevelList();
     if (!levelist.IsNull() && themodel->Number(levelist) == 0) {
       levelist.Nullify();
       ent->InitLevel(levelist,0);
-      done = Standard_True;
+      done = true;
     }
     view = ent->View();
     if (!view.IsNull() && themodel->Number(view) == 0) {
       view.Nullify();
       ent->InitView(view);
-      done = Standard_True;
+      done = true;
     }
     transf = ent->Transf();
     if (!transf.IsNull() && themodel->Number(transf) == 0) {
       transf.Nullify();
       ent->InitTransf(transf);
-      done = Standard_True;
+      done = true;
     }
     labdisp = ent->LabelDisplay();
     if (!labdisp.IsNull() && themodel->Number(labdisp) == 0) {
       labdisp.Nullify();
       ent->InitMisc (ent->Structure(),labdisp,ent->LineWeightNumber());
-      done = Standard_True;
+      done = true;
     }
     color = ent->Color();
     if (!color.IsNull() && themodel->Number(color) == 0) {
       color.Nullify();
       ent->InitColor(color,0);
-      done = Standard_True;
+      done = true;
     }
   */
 
@@ -339,32 +340,32 @@ Standard_Boolean IGESData_BasicEditor::AutoCorrect(const Handle(IGESData_IGESEnt
     if (!subent.IsNull() && themodel->Number(subent) == 0)
     {
       subent->Dissociate(ent);
-      done = Standard_True;
+      done = true;
     }
   }
 
   //    Corrections specifiques
-  Standard_Integer                CN;
-  Handle(Interface_GeneralModule) gmodule;
+  int                                  CN;
+  occ::handle<Interface_GeneralModule> gmodule;
   if (theglib.Select(ent, gmodule, CN))
   {
-    Handle(IGESData_GeneralModule) gmod = Handle(IGESData_GeneralModule)::DownCast(gmodule);
-    IGESData_DirChecker            DC   = gmod->DirChecker(CN, ent);
+    occ::handle<IGESData_GeneralModule> gmod = occ::down_cast<IGESData_GeneralModule>(gmodule);
+    IGESData_DirChecker                 DC   = gmod->DirChecker(CN, ent);
     done |= DC.Correct(ent);
   }
 
-  Handle(IGESData_SpecificModule) smod;
+  occ::handle<IGESData_SpecificModule> smod;
   if (theslib.Select(ent, smod, CN))
     done |= smod->OwnCorrect(CN, ent);
 
   return done;
 }
 
-Standard_Integer IGESData_BasicEditor::AutoCorrectModel()
+int IGESData_BasicEditor::AutoCorrectModel()
 {
-  Standard_Integer res = 0;
-  Standard_Integer nb  = themodel->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int res = 0;
+  int nb  = themodel->NbEntities();
+  for (int i = 1; i <= nb; i++)
   {
     if (AutoCorrect(themodel->Entity(i)))
       res++;
@@ -374,7 +375,7 @@ Standard_Integer IGESData_BasicEditor::AutoCorrectModel()
 
 //=================================================================================================
 
-Standard_Integer IGESData_BasicEditor::UnitNameFlag(const Standard_CString name)
+int IGESData_BasicEditor::UnitNameFlag(const char* name)
 {
   char* nam = (char*)&name[0];
   if (name[1] == 'H')
@@ -406,7 +407,7 @@ Standard_Integer IGESData_BasicEditor::UnitNameFlag(const Standard_CString name)
   return 0;
 }
 
-Standard_Real IGESData_BasicEditor::UnitFlagValue(const Standard_Integer flag)
+double IGESData_BasicEditor::UnitFlagValue(const int flag)
 {
   switch (flag)
   {
@@ -437,9 +438,9 @@ Standard_Real IGESData_BasicEditor::UnitFlagValue(const Standard_Integer flag)
   }
 }
 
-Standard_CString IGESData_BasicEditor::UnitFlagName(const Standard_Integer flag)
+const char* IGESData_BasicEditor::UnitFlagName(const int flag)
 {
-  Standard_CString name = "";
+  const char* name = "";
   switch (flag)
   {
     case 1:
@@ -478,7 +479,7 @@ Standard_CString IGESData_BasicEditor::UnitFlagName(const Standard_Integer flag)
   return name;
 }
 
-Standard_CString IGESData_BasicEditor::IGESVersionName(const Standard_Integer flag)
+const char* IGESData_BasicEditor::IGESVersionName(const int flag)
 {
   switch (flag)
   {
@@ -510,12 +511,12 @@ Standard_CString IGESData_BasicEditor::IGESVersionName(const Standard_Integer fl
   return "";
 }
 
-Standard_Integer IGESData_BasicEditor::IGESVersionMax()
+int IGESData_BasicEditor::IGESVersionMax()
 {
   return 11;
 }
 
-Standard_CString IGESData_BasicEditor::DraftingName(const Standard_Integer flag)
+const char* IGESData_BasicEditor::DraftingName(const int flag)
 {
   switch (flag)
   {
@@ -541,7 +542,7 @@ Standard_CString IGESData_BasicEditor::DraftingName(const Standard_Integer flag)
   return "";
 }
 
-Standard_Integer IGESData_BasicEditor::DraftingMax()
+int IGESData_BasicEditor::DraftingMax()
 {
   return 7;
 }

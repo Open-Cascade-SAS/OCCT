@@ -22,7 +22,7 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
 
-static const TopTools_ListOfShape anEmptyList;
+static const NCollection_List<TopoDS_Shape> anEmptyList;
 
 //=================================================================================================
 
@@ -33,12 +33,12 @@ BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved() {}
 BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved(const TopoDS_Shape&    Spine,
                                                      const TopoDS_Wire&     Profil,
                                                      const GeomAbs_JoinType Join,
-                                                     const Standard_Boolean AxeProf,
-                                                     const Standard_Boolean Solid,
-                                                     const Standard_Boolean ProfOnSpine,
-                                                     const Standard_Real    Tol,
-                                                     const Standard_Boolean theIsVolume,
-                                                     const Standard_Boolean theRunInParallel)
+                                                     const bool             AxeProf,
+                                                     const bool             Solid,
+                                                     const bool             ProfOnSpine,
+                                                     const double           Tol,
+                                                     const bool             theIsVolume,
+                                                     const bool             theRunInParallel)
     : myIsVolume(theIsVolume)
 {
   if (Spine.ShapeType() != TopAbs_WIRE && Spine.ShapeType() != TopAbs_FACE)
@@ -69,7 +69,7 @@ BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved(const TopoDS_Shape&    Spin
 
     if (!AxeProf)
     {
-      Standard_Boolean POS;
+      bool POS;
       BRepFill::Axe(Spine, Profil, Axis, POS, std::max(Tol, Precision::Confusion()));
       if (ProfOnSpine && !POS)
         return;
@@ -134,7 +134,7 @@ const TopoDS_Shape& BRepOffsetAPI_MakeEvolved::Bottom() const
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepOffsetAPI_MakeEvolved::GeneratedShapes(
+const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeEvolved::GeneratedShapes(
   const TopoDS_Shape& SpineShape,
   const TopoDS_Shape& ProfShape) const
 {

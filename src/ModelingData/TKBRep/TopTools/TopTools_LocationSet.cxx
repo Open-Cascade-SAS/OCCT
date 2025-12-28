@@ -16,7 +16,10 @@
 
 #include <GeomTools.hxx>
 #include <gp_Ax3.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <Message_ProgressScope.hxx>
 #include <TopTools_LocationSet.hxx>
 
@@ -33,11 +36,11 @@ void TopTools_LocationSet::Clear()
 
 //=================================================================================================
 
-Standard_Integer TopTools_LocationSet::Add(const TopLoc_Location& L)
+int TopTools_LocationSet::Add(const TopLoc_Location& L)
 {
   if (L.IsIdentity())
     return 0;
-  Standard_Integer n = myMap.FindIndex(L);
+  int n = myMap.FindIndex(L);
   if (n > 0)
     return n;
   TopLoc_Location N = L;
@@ -51,7 +54,7 @@ Standard_Integer TopTools_LocationSet::Add(const TopLoc_Location& L)
 
 //=================================================================================================
 
-const TopLoc_Location& TopTools_LocationSet::Location(const Standard_Integer I) const
+const TopLoc_Location& TopTools_LocationSet::Location(const int I) const
 {
   static TopLoc_Location identity;
   if (I <= 0 || I > myMap.Extent())
@@ -61,7 +64,7 @@ const TopLoc_Location& TopTools_LocationSet::Location(const Standard_Integer I) 
 
 //=================================================================================================
 
-Standard_Integer TopTools_LocationSet::Index(const TopLoc_Location& L) const
+int TopTools_LocationSet::Index(const TopLoc_Location& L) const
 {
   if (L.IsIdentity())
     return 0;
@@ -70,7 +73,7 @@ Standard_Integer TopTools_LocationSet::Index(const TopLoc_Location& L) const
 
 //=================================================================================================
 
-static void WriteTrsf(const gp_Trsf& T, Standard_OStream& OS, const Standard_Boolean compact)
+static void WriteTrsf(const gp_Trsf& T, Standard_OStream& OS, const bool compact)
 {
   gp_XYZ V = T.TranslationPart();
   gp_Mat M = T.VectorialPart();
@@ -108,7 +111,7 @@ static void WriteTrsf(const gp_Trsf& T, Standard_OStream& OS, const Standard_Boo
 
 void TopTools_LocationSet::Dump(Standard_OStream& OS) const
 {
-  Standard_Integer i, nbLoc = myMap.Extent();
+  int i, nbLoc = myMap.Extent();
 
   OS << "\n\n";
   OS << "\n -------";
@@ -120,11 +123,11 @@ void TopTools_LocationSet::Dump(Standard_OStream& OS) const
     TopLoc_Location L = myMap(i);
     OS << std::setw(5) << i << " : \n";
 
-    TopLoc_Location  L2         = L.NextLocation();
-    Standard_Boolean simple     = L2.IsIdentity();
-    Standard_Integer p          = L.FirstPower();
-    TopLoc_Location  L1         = L.FirstDatum();
-    Standard_Boolean elementary = (simple && p == 1);
+    TopLoc_Location L2         = L.NextLocation();
+    bool            simple     = L2.IsIdentity();
+    int             p          = L.FirstPower();
+    TopLoc_Location L1         = L.FirstDatum();
+    bool            elementary = (simple && p == 1);
     if (elementary)
     {
       OS << "Elementary location\n";
@@ -145,7 +148,7 @@ void TopTools_LocationSet::Dump(Standard_OStream& OS) const
       }
       OS << "\n";
     }
-    WriteTrsf(L.Transformation(), OS, Standard_False);
+    WriteTrsf(L.Transformation(), OS, false);
   }
 }
 
@@ -157,7 +160,7 @@ void TopTools_LocationSet::Write(Standard_OStream&            OS,
 
   std::streamsize prec = OS.precision(15);
 
-  Standard_Integer i, nbLoc = myMap.Extent();
+  int i, nbLoc = myMap.Extent();
   OS << "Locations " << nbLoc << "\n";
 
   // OCC19559
@@ -166,15 +169,15 @@ void TopTools_LocationSet::Write(Standard_OStream&            OS,
   {
     TopLoc_Location L = myMap(i);
 
-    TopLoc_Location  L2         = L.NextLocation();
-    Standard_Boolean simple     = L2.IsIdentity();
-    Standard_Integer p          = L.FirstPower();
-    TopLoc_Location  L1         = L.FirstDatum();
-    Standard_Boolean elementary = (simple && p == 1);
+    TopLoc_Location L2         = L.NextLocation();
+    bool            simple     = L2.IsIdentity();
+    int             p          = L.FirstPower();
+    TopLoc_Location L1         = L.FirstDatum();
+    bool            elementary = (simple && p == 1);
     if (elementary)
     {
       OS << "1\n";
-      WriteTrsf(L.Transformation(), OS, Standard_True);
+      WriteTrsf(L.Transformation(), OS, true);
     }
     else
     {
@@ -197,8 +200,8 @@ void TopTools_LocationSet::Write(Standard_OStream&            OS,
 
 static void ReadTrsf(gp_Trsf& T, Standard_IStream& IS)
 {
-  Standard_Real V1[3], V2[3], V3[3];
-  Standard_Real V[3];
+  double V1[3], V2[3], V3[3];
+  double V[3];
 
   GeomTools::GetReal(IS, V1[0]);
   GeomTools::GetReal(IS, V1[1]);
@@ -225,8 +228,8 @@ void TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRang
 {
   myMap.Clear();
 
-  char             buffer[255];
-  Standard_Integer l1, p;
+  char buffer[255];
+  int  l1, p;
 
   IS >> buffer;
   if (strcmp(buffer, "Locations"))
@@ -235,7 +238,7 @@ void TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRang
     return;
   }
 
-  Standard_Integer i, nbLoc;
+  int i, nbLoc;
   IS >> nbLoc;
 
   TopLoc_Location L;
@@ -245,7 +248,7 @@ void TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRang
   Message_ProgressScope PS(theProgress, "Locations", nbLoc);
   for (i = 1; i <= nbLoc && PS.More(); i++, PS.Next())
   {
-    Standard_Integer typLoc;
+    int typLoc;
     IS >> typLoc;
 
     if (typLoc == 1)

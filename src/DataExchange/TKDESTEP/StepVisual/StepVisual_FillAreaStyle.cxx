@@ -19,42 +19,43 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_FillAreaStyle, Standard_Transient)
 
 StepVisual_FillAreaStyle::StepVisual_FillAreaStyle() {}
 
-void StepVisual_FillAreaStyle::Init(const Handle(TCollection_HAsciiString)&            aName,
-                                    const Handle(StepVisual_HArray1OfFillStyleSelect)& aFillStyles)
+void StepVisual_FillAreaStyle::Init(
+  const occ::handle<TCollection_HAsciiString>&                        aName,
+  const occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>>& aFillStyles)
 {
   // --- classe own fields ---
   name       = aName;
   fillStyles = aFillStyles;
 }
 
-void StepVisual_FillAreaStyle::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepVisual_FillAreaStyle::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepVisual_FillAreaStyle::Name() const
+occ::handle<TCollection_HAsciiString> StepVisual_FillAreaStyle::Name() const
 {
   return name;
 }
 
 void StepVisual_FillAreaStyle::SetFillStyles(
-  const Handle(StepVisual_HArray1OfFillStyleSelect)& aFillStyles)
+  const occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>>& aFillStyles)
 {
   fillStyles = aFillStyles;
 }
 
-Handle(StepVisual_HArray1OfFillStyleSelect) StepVisual_FillAreaStyle::FillStyles() const
+occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>> StepVisual_FillAreaStyle::FillStyles()
+  const
 {
   return fillStyles;
 }
 
-StepVisual_FillStyleSelect StepVisual_FillAreaStyle::FillStylesValue(
-  const Standard_Integer num) const
+StepVisual_FillStyleSelect StepVisual_FillAreaStyle::FillStylesValue(const int num) const
 {
   return fillStyles->Value(num);
 }
 
-Standard_Integer StepVisual_FillAreaStyle::NbFillStyles() const
+int StepVisual_FillAreaStyle::NbFillStyles() const
 {
   return (fillStyles.IsNull() ? 0 : fillStyles->Length());
 }

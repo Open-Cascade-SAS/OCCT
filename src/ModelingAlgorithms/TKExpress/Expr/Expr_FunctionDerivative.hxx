@@ -24,13 +24,10 @@
 #include <Expr_GeneralFunction.hxx>
 #include <Standard_Real.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;
 class TCollection_AsciiString;
-
-class Expr_FunctionDerivative;
-DEFINE_STANDARD_HANDLE(Expr_FunctionDerivative, Expr_GeneralFunction)
 
 class Expr_FunctionDerivative : public Expr_GeneralFunction
 {
@@ -39,60 +36,56 @@ public:
   //! Creates a FunctionDerivative of degree <deg> relative
   //! to the <withX> variable.
   //! Raises OutOfRange if <deg> lower or equal to zero.
-  Standard_EXPORT Expr_FunctionDerivative(const Handle(Expr_GeneralFunction)& func,
-                                          const Handle(Expr_NamedUnknown)&    withX,
-                                          const Standard_Integer              deg);
+  Standard_EXPORT Expr_FunctionDerivative(const occ::handle<Expr_GeneralFunction>& func,
+                                          const occ::handle<Expr_NamedUnknown>&    withX,
+                                          const int                                deg);
 
   //! Returns the number of variables of <me>.
-  Standard_EXPORT Standard_Integer NbOfVariables() const Standard_OVERRIDE;
+  Standard_EXPORT int NbOfVariables() const override;
 
   //! Returns the variable denoted by <index> in <me>.
   //! Raises OutOfRange if <index> greater than
   //! NbOfVariables of <me>.
-  Standard_EXPORT Handle(Expr_NamedUnknown) Variable(const Standard_Integer index) const
-    Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Expr_NamedUnknown> Variable(const int index) const override;
 
   //! Computes the value of <me> with the given variables.
   //! Raises DimensionMismatch if Length(vars) is different from
   //! Length(values).
-  Standard_EXPORT Standard_Real
-    Evaluate(const Expr_Array1OfNamedUnknown& vars,
-             const TColStd_Array1OfReal&      values) const Standard_OVERRIDE;
+  Standard_EXPORT double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                  const NCollection_Array1<double>& values) const override;
 
   //! Returns a copy of <me> with the same form.
-  Standard_EXPORT Handle(Expr_GeneralFunction) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Expr_GeneralFunction> Copy() const override;
 
   //! Returns Derivative of <me> for variable <var>.
-  Standard_EXPORT Handle(Expr_GeneralFunction) Derivative(
-    const Handle(Expr_NamedUnknown)& var) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Expr_GeneralFunction> Derivative(
+    const occ::handle<Expr_NamedUnknown>& var) const override;
 
   //! Returns Derivative of <me> for variable <var> with
   //! degree <deg>.
-  Standard_EXPORT Handle(Expr_GeneralFunction) Derivative(const Handle(Expr_NamedUnknown)& var,
-                                                          const Standard_Integer deg) const
-    Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Expr_GeneralFunction> Derivative(
+    const occ::handle<Expr_NamedUnknown>& var,
+    const int                             deg) const override;
 
   //! Tests if <me> and <func> are similar functions (same
   //! name and same used expression).
-  Standard_EXPORT Standard_Boolean
-    IsIdentical(const Handle(Expr_GeneralFunction)& func) const Standard_OVERRIDE;
+  Standard_EXPORT bool IsIdentical(const occ::handle<Expr_GeneralFunction>& func) const override;
 
   //! Tests if <me> is linear on variable on range <index>
-  Standard_EXPORT Standard_Boolean
-    IsLinearOnVariable(const Standard_Integer index) const Standard_OVERRIDE;
+  Standard_EXPORT bool IsLinearOnVariable(const int index) const override;
 
   //! Returns the function of which <me> is the derivative.
-  Standard_EXPORT Handle(Expr_GeneralFunction) Function() const;
+  Standard_EXPORT occ::handle<Expr_GeneralFunction> Function() const;
 
   //! Returns the degree of derivation of <me>.
-  Standard_EXPORT Standard_Integer Degree() const;
+  Standard_EXPORT int Degree() const;
 
   //! Returns the derivation variable of <me>.
-  Standard_EXPORT Handle(Expr_NamedUnknown) DerivVariable() const;
+  Standard_EXPORT occ::handle<Expr_NamedUnknown> DerivVariable() const;
 
-  Standard_EXPORT TCollection_AsciiString GetStringName() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString GetStringName() const override;
 
-  Standard_EXPORT Handle(Expr_GeneralExpression) Expression() const;
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> Expression() const;
 
   Standard_EXPORT void UpdateExpression();
 
@@ -100,12 +93,11 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Expr_FunctionDerivative, Expr_GeneralFunction)
 
-protected:
 private:
-  Handle(Expr_GeneralFunction)   myFunction;
-  Handle(Expr_GeneralExpression) myExp;
-  Handle(Expr_NamedUnknown)      myDerivate;
-  Standard_Integer               myDegree;
+  occ::handle<Expr_GeneralFunction>   myFunction;
+  occ::handle<Expr_GeneralExpression> myExp;
+  occ::handle<Expr_NamedUnknown>      myDerivate;
+  int                                 myDegree;
 };
 
 #endif // _Expr_FunctionDerivative_HeaderFile

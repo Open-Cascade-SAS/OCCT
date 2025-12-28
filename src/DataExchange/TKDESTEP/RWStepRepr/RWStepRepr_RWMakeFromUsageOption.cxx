@@ -29,10 +29,10 @@ RWStepRepr_RWMakeFromUsageOption::RWStepRepr_RWMakeFromUsageOption() {}
 //=================================================================================================
 
 void RWStepRepr_RWMakeFromUsageOption::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepRepr_MakeFromUsageOption)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                                        num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepRepr_MakeFromUsageOption>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 8, ach, "make_from_usage_option"))
@@ -40,22 +40,22 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
 
   // Inherited fields of ProductDefinitionRelationship
 
-  Handle(TCollection_HAsciiString) aProductDefinitionRelationship_Id;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Id;
   data->ReadString(num,
                    1,
                    "product_definition_relationship.id",
                    ach,
                    aProductDefinitionRelationship_Id);
 
-  Handle(TCollection_HAsciiString) aProductDefinitionRelationship_Name;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Name;
   data->ReadString(num,
                    2,
                    "product_definition_relationship.name",
                    ach,
                    aProductDefinitionRelationship_Name);
 
-  Handle(TCollection_HAsciiString) aProductDefinitionRelationship_Description;
-  Standard_Boolean                 hasProductDefinitionRelationship_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Description;
+  bool                                  hasProductDefinitionRelationship_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num,
@@ -66,7 +66,7 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
   }
   else
   {
-    hasProductDefinitionRelationship_Description = Standard_False;
+    hasProductDefinitionRelationship_Description = false;
   }
 
   StepBasic_ProductDefinitionOrReference aProductDefinitionRelationship_RelatingProductDefinition;
@@ -85,13 +85,13 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
 
   // Own fields of MakeFromUsageOption
 
-  Standard_Integer aRanking;
+  int aRanking;
   data->ReadInteger(num, 6, "ranking", ach, aRanking);
 
-  Handle(TCollection_HAsciiString) aRankingRationale;
+  occ::handle<TCollection_HAsciiString> aRankingRationale;
   data->ReadString(num, 7, "ranking_rationale", ach, aRankingRationale);
 
-  Handle(Standard_Transient) aQuantity;
+  occ::handle<Standard_Transient> aQuantity;
   data->ReadEntity(num, 8, "quantity", ach, STANDARD_TYPE(Standard_Transient), aQuantity);
 
   // Initialize entity
@@ -109,8 +109,8 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWMakeFromUsageOption::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepRepr_MakeFromUsageOption)& ent) const
+  StepData_StepWriter&                             SW,
+  const occ::handle<StepRepr_MakeFromUsageOption>& ent) const
 {
 
   // Inherited fields of ProductDefinitionRelationship
@@ -141,8 +141,8 @@ void RWStepRepr_RWMakeFromUsageOption::WriteStep(
 
 //=================================================================================================
 
-void RWStepRepr_RWMakeFromUsageOption::Share(const Handle(StepRepr_MakeFromUsageOption)& ent,
-                                             Interface_EntityIterator&                   iter) const
+void RWStepRepr_RWMakeFromUsageOption::Share(const occ::handle<StepRepr_MakeFromUsageOption>& ent,
+                                             Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of ProductDefinitionRelationship

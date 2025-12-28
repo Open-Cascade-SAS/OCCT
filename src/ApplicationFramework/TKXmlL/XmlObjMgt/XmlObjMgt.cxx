@@ -47,7 +47,7 @@ const XmlObjMgt_DOMString& XmlObjMgt::IdString()
 
 void XmlObjMgt::SetStringValue(XmlObjMgt_Element&         theElement,
                                const XmlObjMgt_DOMString& theData,
-                               const Standard_Boolean     isClearText)
+                               const bool                 isClearText)
 {
   XmlObjMgt_Document aDocument = theElement.getOwnerDocument();
   LDOM_Text          aText     = aDocument.createTextNode(theData);
@@ -109,8 +109,8 @@ void SprintfExtStr(char* out, const TCollection_ExtendedString& theString)
 // purpose  : Add text node to element and initialize it with string
 //=======================================================================
 
-Standard_Boolean XmlObjMgt::SetExtendedString(XmlObjMgt_Element&                theElement,
-                                              const TCollection_ExtendedString& theString)
+bool XmlObjMgt::SetExtendedString(XmlObjMgt_Element&                theElement,
+                                  const TCollection_ExtendedString& theString)
 {
   TCollection_AsciiString anAString;
   if (theString.IsAscii())
@@ -120,12 +120,12 @@ Standard_Boolean XmlObjMgt::SetExtendedString(XmlObjMgt_Element&                
   }
   else
   {
-    const Standard_Integer aLen = theString.Length();
-    //    const Standard_ExtCharacter * aString = theString.ToExtString();
+    const int aLen = theString.Length();
+    //    const char16_t * aString = theString.ToExtString();
     char* buf0 = new char[4 * (aLen + 1) + 3];
     Sprintf(&buf0[0], "##%04x", 0xfeff); // set UNICODE header
     char* buf = &buf0[6];
-    //     Standard_Integer i = 0;
+    //     int i = 0;
     //     while (i <= (aLen - 4)) {
     //       Sprintf (&buf[i*4], "%04x%04x%04x%04x", aString[i], aString[i+1],
     //                aString[i+2], aString[i+3]);
@@ -141,7 +141,7 @@ Standard_Boolean XmlObjMgt::SetExtendedString(XmlObjMgt_Element&                
     SetStringValue(theElement, buf0);
     delete[] buf0;
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -149,11 +149,11 @@ Standard_Boolean XmlObjMgt::SetExtendedString(XmlObjMgt_Element&                
 // purpose  : Get the first text node in theElement and convert to ExtendedStr
 //=======================================================================
 
-Standard_Boolean XmlObjMgt::GetExtendedString(const XmlObjMgt_Element&    theElement,
-                                              TCollection_ExtendedString& theString)
+bool XmlObjMgt::GetExtendedString(const XmlObjMgt_Element&    theElement,
+                                  TCollection_ExtendedString& theString)
 {
   theString = GetStringValue(theElement);
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -162,14 +162,14 @@ Standard_Boolean XmlObjMgt::GetExtendedString(const XmlObjMgt_Element&    theEle
 //           Returns False on error
 //=======================================================================
 
-Standard_Boolean XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
-                                              TCollection_AsciiString&   theTagEntry)
+bool XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
+                                  TCollection_AsciiString&   theTagEntry)
 {
   //    Check the prefix
   const size_t aPrefixSize = sizeof(aRefPrefix) - 1;
   const char*  aSource     = theSource.GetString();
   if (strncmp(aSource, aRefPrefix, aPrefixSize))
-    return Standard_False;
+    return false;
 
   //    Begin aTagEntry string
   char* aTagEntry    = (char*)Standard::Allocate(strlen(aSource) / 2); // quite enough to hold it
@@ -184,32 +184,32 @@ Standard_Boolean XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSour
   {
     //  Check the first part of individual tag: "/label[@tag="
     if (strncmp(aSource, aRefElem1, anElem1Size))
-      return Standard_False;
+      return false;
     aSource += anElem1Size;
     const char aQuote = aSource[0];
     if (aQuote != '\'' && aQuote != '\"')
-      return Standard_False;
+      return false;
 
     //  Check the integer value of the tag
     errno = 0;
-    char*            aPtr;
-    long             aTagValue = strtol(&aSource[1], &aPtr, 10);
-    Standard_Integer aLen      = (Standard_Integer)(aPtr - &aSource[1]);
+    char* aPtr;
+    long  aTagValue = strtol(&aSource[1], &aPtr, 10);
+    int   aLen      = (int)(aPtr - &aSource[1]);
     if (aTagValue < 0 || aLen == 0 || aPtr[0] != aQuote || errno == ERANGE || errno == EINVAL)
-      return Standard_False;
+      return false;
     aTagEntryPtr[0] = ':';
     memcpy(&aTagEntryPtr[1], &aSource[1], aLen);
     aTagEntryPtr += (aLen + 1);
 
     //  Check the final part of individual tag : "]"
     if (strncmp(aPtr + 1, aRefElem2, anElem2Size))
-      return Standard_False;
+      return false;
     aSource = aPtr + 1 + anElem2Size;
   }
   aTagEntryPtr[0] = '\0';
   theTagEntry     = aTagEntry;
   Standard::Free(aTagEntry);
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -226,8 +226,8 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
     return;
 
   //    Count the number of tags in the label entry string
-  const char*      aPtr      = aTagEntry;
-  Standard_Integer aTagCount = 0;
+  const char* aPtr      = aTagEntry;
+  int         aTagCount = 0;
   while (*aPtr)
     if (*aPtr++ == ':')
       aTagCount++;
@@ -250,9 +250,9 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
 
     //  Find the range of characters for an integer number
     errno = 0;
-    char*            ptr;
-    long             aTagValue = strtol(aTagEntry, &ptr, 10);
-    Standard_Integer aTagSize  = (Standard_Integer)(ptr - aTagEntry);
+    char* ptr;
+    long  aTagValue = strtol(aTagEntry, &ptr, 10);
+    int   aTagSize  = (int)(ptr - aTagEntry);
     if (aTagValue < 0 || aTagSize == 0 || errno == ERANGE || errno == EINVAL)
       return; // error
 
@@ -271,11 +271,10 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
 
 //=================================================================================================
 
-XmlObjMgt_Element XmlObjMgt::FindChildElement(const XmlObjMgt_Element& theSource,
-                                              const Standard_Integer   theId)
+XmlObjMgt_Element XmlObjMgt::FindChildElement(const XmlObjMgt_Element& theSource, const int theId)
 {
-  LDOM_Node        aNode = theSource.getFirstChild();
-  Standard_Integer anId;
+  LDOM_Node aNode = theSource.getFirstChild();
+  int       anId;
   while (!aNode.isNull())
   {
     if (aNode.getNodeType() == LDOM_Node::ELEMENT_NODE)
@@ -299,7 +298,7 @@ XmlObjMgt_Element XmlObjMgt::FindChildElement(const XmlObjMgt_Element& theSource
 XmlObjMgt_Element XmlObjMgt::FindChildByRef(const XmlObjMgt_Element&   theSource,
                                             const XmlObjMgt_DOMString& theRefName)
 {
-  Standard_Integer anID;
+  int anID;
   if (theSource.getAttribute(theRefName).GetInteger(anID))
     return FindChildElement(theSource, anID);
   return LDOM_Element();
@@ -315,27 +314,27 @@ XmlObjMgt_Element XmlObjMgt::FindChildByName(const XmlObjMgt_Element&   theSourc
 
 //=================================================================================================
 
-Standard_Boolean XmlObjMgt::GetInteger(Standard_CString& theString, Standard_Integer& theValue)
+bool XmlObjMgt::GetInteger(const char*& theString, int& theValue)
 {
   char* ptr;
   errno       = 0;
   long aValue = strtol(theString, &ptr, 10);
   if (ptr == theString || errno == ERANGE || errno == EINVAL)
-    return Standard_False;
-  theValue  = Standard_Integer(aValue);
+    return false;
+  theValue  = int(aValue);
   theString = ptr;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlObjMgt::GetReal(Standard_CString& theString, Standard_Real& theValue)
+bool XmlObjMgt::GetReal(const char*& theString, double& theValue)
 {
   char* ptr;
   errno    = 0;
   theValue = Strtod(theString, &ptr);
   if (ptr == theString || errno == ERANGE || errno == EINVAL)
-    return Standard_False;
+    return false;
 
   theString = ptr;
 
@@ -347,41 +346,41 @@ Standard_Boolean XmlObjMgt::GetReal(Standard_CString& theString, Standard_Real& 
     {
       theString = ptr + 5;
       theValue  = std::numeric_limits<double>::quiet_NaN();
-      return Standard_True;
+      return true;
     }
     else if (!strncmp(ptr, "#INF", 4))
     {
       theString = ptr + 4;
       theValue  = (theValue < 0 ? -std::numeric_limits<double>::infinity()
                                 : std::numeric_limits<double>::infinity());
-      return Standard_True;
+      return true;
     }
     else
-      return Standard_False;
+      return false;
   }
   else if (*ptr && !IsSpace(*ptr))
   {
     // report failure if reading stopped not at the end of the string or space
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : GetReal
 // purpose  : Convert LDOMString to Real
 //=======================================================================
-Standard_Boolean XmlObjMgt::GetReal(const XmlObjMgt_DOMString& theString, Standard_Real& theValue)
+bool XmlObjMgt::GetReal(const XmlObjMgt_DOMString& theString, double& theValue)
 {
   switch (theString.Type())
   {
     case LDOMBasicString::LDOM_NULL:
-      return Standard_False;
+      return false;
     case LDOMBasicString::LDOM_Integer: {
-      Standard_Integer anIntValue;
+      int anIntValue;
       theString.GetInteger(anIntValue);
-      theValue = Standard_Real(anIntValue);
+      theValue = double(anIntValue);
       break;
     }
     default: // LDOM_Ascii*
@@ -390,5 +389,5 @@ Standard_Boolean XmlObjMgt::GetReal(const XmlObjMgt_DOMString& theString, Standa
       return GetReal(aString, theValue);
     }
   }
-  return Standard_True;
+  return true;
 }

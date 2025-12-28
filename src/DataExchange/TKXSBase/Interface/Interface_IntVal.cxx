@@ -21,12 +21,12 @@ Interface_IntVal::Interface_IntVal()
   theval = 0;
 }
 
-Standard_Integer Interface_IntVal::Value() const
+int Interface_IntVal::Value() const
 {
   return theval;
 }
 
-Standard_Integer& Interface_IntVal::CValue()
+int& Interface_IntVal::CValue()
 {
   return theval;
 }

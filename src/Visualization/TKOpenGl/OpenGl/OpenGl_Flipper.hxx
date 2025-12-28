@@ -36,25 +36,25 @@ public:
   //! Set options for the element.
   //! @param[in] theIsEnabled  flag indicates whether the flipper
   //! matrix modification should be set up or restored back.
-  void SetOptions(const Standard_Boolean theIsEnabled) { myIsEnabled = theIsEnabled; }
+  void SetOptions(const bool theIsEnabled) { myIsEnabled = theIsEnabled; }
 
-  Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
-    Standard_OVERRIDE;
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Render(
+    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 public:
   DEFINE_STANDARD_ALLOC
 
 protected:
-  OpenGl_Vec4      myReferenceOrigin;
-  OpenGl_Vec4      myReferenceX;
-  OpenGl_Vec4      myReferenceY;
-  OpenGl_Vec4      myReferenceZ;
-  Standard_Boolean myIsEnabled;
+  NCollection_Vec4<float> myReferenceOrigin;
+  NCollection_Vec4<float> myReferenceX;
+  NCollection_Vec4<float> myReferenceY;
+  NCollection_Vec4<float> myReferenceZ;
+  bool                    myIsEnabled;
 };
 
 #endif // OpenGl_Flipper_Header

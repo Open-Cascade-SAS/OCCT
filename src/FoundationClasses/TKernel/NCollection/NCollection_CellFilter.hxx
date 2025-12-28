@@ -88,13 +88,13 @@ enum NCollection_CellFilter_Action
  *
  * - method Coord() returning value of the i-th coordinate of the point:
  *
- *   static Standard_Real Coord (int i, const Point& thePnt);
+ *   static double Coord (int i, const Point& thePnt);
  *
  *   Note that index i is from 0 to Dimension-1.
  *
  * - method IsEqual() used by Remove() to identify objects to be removed:
  *
- *   Standard_Boolean IsEqual (const Target& theT1, const Target& theT2);
+ *   bool IsEqual (const Target& theT1, const Target& theT2);
  *
  * - method Inspect() performing necessary actions on the candidate target
  *   object (usially comparison with the currently checked bullet object):
@@ -127,9 +127,9 @@ public:
   //! constructor is used, the tool must be initialized later with
   //! appropriate cell size by call to Reset()
   //! Constructor when dimension count is unknown at compilation time.
-  NCollection_CellFilter(const Standard_Integer                  theDim,
-                         const Standard_Real                     theCellSize = 0,
-                         const Handle(NCollection_IncAllocator)& theAlloc    = 0)
+  NCollection_CellFilter(const int                                    theDim,
+                         const double                                 theCellSize = 0,
+                         const occ::handle<NCollection_IncAllocator>& theAlloc    = 0)
       : myCellSize(0, theDim - 1)
   {
     myDim = theDim;
@@ -137,8 +137,8 @@ public:
   }
 
   //! Constructor when dimension count is known at compilation time.
-  NCollection_CellFilter(const Standard_Real                     theCellSize = 0,
-                         const Handle(NCollection_IncAllocator)& theAlloc    = 0)
+  NCollection_CellFilter(const double                                 theCellSize = 0,
+                         const occ::handle<NCollection_IncAllocator>& theAlloc    = 0)
       : myCellSize(0, Inspector::Dimension - 1)
   {
     myDim = Inspector::Dimension;
@@ -146,7 +146,7 @@ public:
   }
 
   //! Clear the data structures, set new cell size and allocator
-  void Reset(Standard_Real theCellSize, const Handle(NCollection_IncAllocator)& theAlloc = 0)
+  void Reset(double theCellSize, const occ::handle<NCollection_IncAllocator>& theAlloc = 0)
   {
     for (int i = 0; i < myDim; i++)
       myCellSize(i) = theCellSize;
@@ -154,8 +154,8 @@ public:
   }
 
   //! Clear the data structures and set new cell sizes and allocator
-  void Reset(NCollection_Array1<Standard_Real>&      theCellSize,
-             const Handle(NCollection_IncAllocator)& theAlloc = 0)
+  void Reset(NCollection_Array1<double>&                  theCellSize,
+             const occ::handle<NCollection_IncAllocator>& theAlloc = 0)
   {
     myCellSize = theCellSize;
     resetAllocator(theAlloc);
@@ -246,7 +246,7 @@ protected:
   };
 
   //! Cell index type.
-  typedef Standard_Integer Cell_IndexType;
+  typedef int Cell_IndexType;
 
   /**
    * Auxiliary structure representing a cell in the space.
@@ -257,20 +257,19 @@ protected:
   {
   public:
     //! Constructor; computes cell indices
-    Cell(const Point& thePnt, const NCollection_Array1<Standard_Real>& theCellSize)
+    Cell(const Point& thePnt, const NCollection_Array1<double>& theCellSize)
         : index(theCellSize.Size()),
           Objects(0)
     {
       for (int i = 0; i < theCellSize.Size(); i++)
       {
-        Standard_Real aVal =
-          (Standard_Real)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
+        double aVal = (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
         // If the value of index is greater than
         // INT_MAX it is decreased correspondingly for the value of INT_MAX. If the value
         // of index is less than INT_MIN it is increased correspondingly for the absolute
         // value of INT_MIN.
-        index[i] = Cell_IndexType((aVal > INT_MAX - 1)   ? fmod(aVal, (Standard_Real)INT_MAX)
-                                  : (aVal < INT_MIN + 1) ? fmod(aVal, (Standard_Real)INT_MIN)
+        index[i] = Cell_IndexType((aVal > INT_MAX - 1)   ? fmod(aVal, (double)INT_MAX)
+                                  : (aVal < INT_MIN + 1) ? fmod(aVal, (double)INT_MIN)
                                                          : aVal);
       }
     }
@@ -285,8 +284,8 @@ protected:
     //! Assignment operator: ensure that list is not deleted twice
     void operator=(const Cell& theOther) noexcept
     {
-      Standard_Integer aDim = Standard_Integer(theOther.index.Size());
-      for (Standard_Integer anIdx = 0; anIdx < aDim; anIdx++)
+      int aDim = int(theOther.index.Size());
+      for (int anIdx = 0; anIdx < aDim; anIdx++)
         index[anIdx] = theOther.index[anIdx];
 
       Objects                   = theOther.Objects;
@@ -303,13 +302,13 @@ protected:
     }
 
     //! Compare cell with other one
-    Standard_Boolean IsEqual(const Cell& theOther) const noexcept
+    bool IsEqual(const Cell& theOther) const noexcept
     {
-      Standard_Integer aDim = Standard_Integer(theOther.index.Size());
+      int aDim = int(theOther.index.Size());
       for (int i = 0; i < aDim; i++)
         if (index[i] != theOther.index[i])
-          return Standard_False;
-      return Standard_True;
+          return false;
+      return true;
     }
 
     bool operator==(const Cell& theOther) const noexcept { return IsEqual(theOther); }
@@ -339,7 +338,7 @@ protected:
 
 protected:
   //! Reset allocator to the new one
-  void resetAllocator(const Handle(NCollection_IncAllocator)& theAlloc)
+  void resetAllocator(const occ::handle<NCollection_IncAllocator>& theAlloc)
   {
     if (theAlloc.IsNull())
       myAllocator = new NCollection_IncAllocator;
@@ -487,10 +486,10 @@ protected:
   }
 
 protected:
-  Standard_Integer                  myDim;
-  Handle(NCollection_BaseAllocator) myAllocator;
-  CellMap                           myCells;
-  NCollection_Array1<Standard_Real> myCellSize;
+  int                                    myDim;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
+  CellMap                                myCells;
+  NCollection_Array1<double>             myCellSize;
 };
 
 /**
@@ -512,11 +511,11 @@ struct NCollection_CellFilter_InspectorXYZ
   typedef gp_XYZ Point;
 
   //! Access to coordinate
-  static Standard_Real Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
+  static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
 
   //! Auxiliary method to shift point by each coordinate on given value;
   //! useful for preparing a points range for Inspect with tolerance
-  Point Shift(const Point& thePnt, Standard_Real theTol) const
+  Point Shift(const Point& thePnt, double theTol) const
   {
     return Point(thePnt.X() + theTol, thePnt.Y() + theTol, thePnt.Z() + theTol);
   }
@@ -541,11 +540,11 @@ struct NCollection_CellFilter_InspectorXY
   typedef gp_XY Point;
 
   //! Access to coordinate
-  static Standard_Real Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
+  static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
 
   //! Auxiliary method to shift point by each coordinate on given value;
   //! useful for preparing a points range for Inspect with tolerance
-  Point Shift(const Point& thePnt, Standard_Real theTol) const
+  Point Shift(const Point& thePnt, double theTol) const
   {
     return Point(thePnt.X() + theTol, thePnt.Y() + theTol);
   }

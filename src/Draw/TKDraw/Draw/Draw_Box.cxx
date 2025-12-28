@@ -32,10 +32,7 @@ Draw_Box::Draw_Box(const Bnd_OBB& theOBB, const Draw_Color& theColor)
 
 //=================================================================================================
 
-void Draw_Box::ToWCS(const Standard_Real theX,
-                     const Standard_Real theY,
-                     const Standard_Real theZ,
-                     gp_Pnt&             theP) const
+void Draw_Box::ToWCS(const double theX, const double theY, const double theZ, gp_Pnt& theP) const
 {
   const gp_XYZ& aC    = myOBB.Center();
   const gp_XYZ  aXDir = myOBB.XDirection(), aYDir = myOBB.YDirection(), aZDir = myOBB.ZDirection();
@@ -45,7 +42,7 @@ void Draw_Box::ToWCS(const Standard_Real theX,
 
 //=================================================================================================
 
-void Draw_Box::MoveX(const Standard_Real theShift, gp_Pnt& thePt) const
+void Draw_Box::MoveX(const double theShift, gp_Pnt& thePt) const
 {
   const gp_XYZ aXDir = myOBB.XDirection();
   thePt.SetXYZ(thePt.XYZ() + theShift * aXDir);
@@ -53,7 +50,7 @@ void Draw_Box::MoveX(const Standard_Real theShift, gp_Pnt& thePt) const
 
 //=================================================================================================
 
-void Draw_Box::MoveY(const Standard_Real theShift, gp_Pnt& thePt) const
+void Draw_Box::MoveY(const double theShift, gp_Pnt& thePt) const
 {
   const gp_XYZ aYDir = myOBB.YDirection();
   thePt.SetXYZ(thePt.XYZ() + theShift * aYDir);
@@ -61,7 +58,7 @@ void Draw_Box::MoveY(const Standard_Real theShift, gp_Pnt& thePt) const
 
 //=================================================================================================
 
-void Draw_Box::MoveZ(const Standard_Real theShift, gp_Pnt& thePt) const
+void Draw_Box::MoveZ(const double theShift, gp_Pnt& thePt) const
 {
   const gp_XYZ aZDir = myOBB.ZDirection();
   thePt.SetXYZ(thePt.XYZ() + theShift * aZDir);
@@ -78,13 +75,13 @@ void Draw_Box::DrawOn(Draw_Display& theDIS) const
 
   theDIS.SetColor(myColor);
 
-  const Standard_Real aHx = myOBB.XHSize(), aHy = myOBB.YHSize(), aHz = myOBB.ZHSize();
+  const double aHx = myOBB.XHSize(), aHy = myOBB.YHSize(), aHz = myOBB.ZHSize();
 
   gp_Pnt aP;
   ToWCS(-aHx, -aHy, -aHz, aP);
   theDIS.MoveTo(aP);
 
-  for (Standard_Integer i = 0; i < 2; i++)
+  for (int i = 0; i < 2; i++)
   {
     MoveX(2.0 * aHx, aP);
     theDIS.DrawTo(aP);
@@ -99,7 +96,7 @@ void Draw_Box::DrawOn(Draw_Display& theDIS) const
     theDIS.MoveTo(aP);
   }
 
-  for (Standard_Integer i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
   {
     switch (i)
     {

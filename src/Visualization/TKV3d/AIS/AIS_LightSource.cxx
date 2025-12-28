@@ -36,19 +36,19 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_LightSourceOwner, SelectMgr_EntityOwner)
 
 //=================================================================================================
 
-AIS_LightSourceOwner::AIS_LightSourceOwner(const Handle(AIS_LightSource)& theObject,
-                                           Standard_Integer               thePriority)
-    : SelectMgr_EntityOwner((const Handle(SelectMgr_SelectableObject)&)theObject, thePriority)
+AIS_LightSourceOwner::AIS_LightSourceOwner(const occ::handle<AIS_LightSource>& theObject,
+                                           int                                 thePriority)
+    : SelectMgr_EntityOwner((const occ::handle<SelectMgr_SelectableObject>&)theObject, thePriority)
 {
   //
 }
 
 //=================================================================================================
 
-Standard_Boolean AIS_LightSourceOwner::HandleMouseClick(const Graphic3d_Vec2i&,
-                                                        Aspect_VKeyMouse theKey,
-                                                        Aspect_VKeyFlags theFlags,
-                                                        bool)
+bool AIS_LightSourceOwner::HandleMouseClick(const NCollection_Vec2<int>&,
+                                            Aspect_VKeyMouse theKey,
+                                            Aspect_VKeyFlags theFlags,
+                                            bool)
 {
   AIS_LightSource* aLightSource = dynamic_cast<AIS_LightSource*>(mySelectable);
   if (aLightSource != NULL && aLightSource->ToSwitchOnClick()
@@ -63,11 +63,11 @@ Standard_Boolean AIS_LightSourceOwner::HandleMouseClick(const Graphic3d_Vec2i&,
 
 //=================================================================================================
 
-void AIS_LightSourceOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
-                                            const Handle(Prs3d_Drawer)&               theStyle,
-                                            const Standard_Integer                    theMode)
+void AIS_LightSourceOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                            const occ::handle<Prs3d_Drawer>&               theStyle,
+                                            const int                                      theMode)
 {
-  Handle(AIS_LightSource) aLightSource = Handle(AIS_LightSource)::DownCast(mySelectable);
+  occ::handle<AIS_LightSource> aLightSource = occ::down_cast<AIS_LightSource>(mySelectable);
   if (aLightSource.IsNull())
   {
     return;
@@ -76,60 +76,61 @@ void AIS_LightSourceOwner::HilightWithColor(const Handle(PrsMgr_PresentationMana
   if (aLightSource->Light()->Type() == Graphic3d_TypeOfLightSource_Directional
       && aLightSource->myIsDraggable)
   {
-    Handle(Prs3d_Presentation) aPrs = aLightSource->GetHilightPresentation(thePM);
-    const Graphic3d_ZLayerId   aZLayer =
+    occ::handle<Prs3d_Presentation> aPrs = aLightSource->GetHilightPresentation(thePM);
+    const Graphic3d_ZLayerId        aZLayer =
       theStyle->ZLayer() != -1
-          ? theStyle->ZLayer()
-          : (thePM->IsImmediateModeOn() ? Graphic3d_ZLayerId_Top : aLightSource->ZLayer());
+               ? theStyle->ZLayer()
+               : (thePM->IsImmediateModeOn() ? Graphic3d_ZLayerId_Top : aLightSource->ZLayer());
     aPrs->Clear();
     if (aPrs->GetZLayer() != aZLayer)
     {
       aPrs->SetZLayer(aZLayer);
     }
-    Handle(Graphic3d_ArrayOfPoints) aPoints = new Graphic3d_ArrayOfPoints(1);
-    const gp_Pnt                    aDetPnt = aLightSource->mySensSphere->LastDetectedPoint();
+    occ::handle<Graphic3d_ArrayOfPoints> aPoints = new Graphic3d_ArrayOfPoints(1);
+    const gp_Pnt                         aDetPnt = aLightSource->mySensSphere->LastDetectedPoint();
     if (aDetPnt.X() == RealLast())
     {
       return;
     }
     aPoints->AddVertex(aDetPnt);
-    Handle(Graphic3d_Group)         aGroup = aPrs->NewGroup();
-    const Handle(Prs3d_PointAspect) aPointAspect =
+    occ::handle<Graphic3d_Group>         aGroup = aPrs->NewGroup();
+    const occ::handle<Prs3d_PointAspect> aPointAspect =
       new Prs3d_PointAspect(Aspect_TOM_O_POINT, theStyle->Color(), 3.0f);
     aGroup->SetGroupPrimitivesAspect(aPointAspect->Aspect());
     aGroup->AddPrimitiveArray(aPoints);
 
-    const Standard_Real    aRadius = aLightSource->Size() * 0.5;
-    const Standard_Integer aNbPnts = int(aLightSource->ArcSize() * 180 / (M_PI * aRadius));
-    TColgp_Array1OfPnt     aCircPoints(0, aNbPnts);
-    const gp_Dir           aDirNorm(gp_Vec(gp::Origin(), aDetPnt));
-    gp_Dir                 aDirNormToPln(gp::DY());
+    const double               aRadius = aLightSource->Size() * 0.5;
+    const int                  aNbPnts = int(aLightSource->ArcSize() * 180 / (M_PI * aRadius));
+    NCollection_Array1<gp_Pnt> aCircPoints(0, aNbPnts);
+    const gp_Dir               aDirNorm(gp_Vec(gp::Origin(), aDetPnt));
+    gp_Dir                     aDirNormToPln(gp::DY());
     if (!gp::DX().IsParallel(aDirNorm, Precision::Angular()))
     {
       aDirNormToPln = gp::DX().Crossed(aDirNorm);
     }
-    for (Standard_Integer aStep = 0; aStep < aNbPnts; ++aStep)
+    for (int aStep = 0; aStep < aNbPnts; ++aStep)
     {
       aCircPoints.SetValue(
         aStep,
         (aDetPnt.Rotated(gp_Ax1(gp::Origin(), aDirNormToPln), M_PI / 90 * (aStep - aNbPnts / 2))));
     }
 
-    Handle(Graphic3d_Group)            aCircGroup = aPrs->NewGroup();
-    Handle(Graphic3d_ArrayOfPolylines) aPolylines = new Graphic3d_ArrayOfPolylines(aNbPnts * 2, 2);
+    occ::handle<Graphic3d_Group>            aCircGroup = aPrs->NewGroup();
+    occ::handle<Graphic3d_ArrayOfPolylines> aPolylines =
+      new Graphic3d_ArrayOfPolylines(aNbPnts * 2, 2);
     aPolylines->AddBound(aNbPnts);
 
-    for (Standard_Integer anIdx = 0; anIdx < aNbPnts; ++anIdx)
+    for (int anIdx = 0; anIdx < aNbPnts; ++anIdx)
     {
       aPolylines->AddVertex(
         aCircPoints.Value(anIdx).Rotated(gp_Ax1(gp::Origin(), aDirNorm), M_PI / 2));
     }
     aPolylines->AddBound(aNbPnts);
-    for (Standard_Integer anIdx = 0; anIdx < aNbPnts; ++anIdx)
+    for (int anIdx = 0; anIdx < aNbPnts; ++anIdx)
     {
       aPolylines->AddVertex(aCircPoints.Value(anIdx));
     }
-    aCircGroup->AddPrimitiveArray(aPolylines, Standard_False);
+    aCircGroup->AddPrimitiveArray(aPolylines, false);
     aCircGroup->SetGroupPrimitivesAspect(theStyle->ArrowAspect()->Aspect());
     if (thePM->IsImmediateModeOn())
     {
@@ -149,23 +150,23 @@ void AIS_LightSourceOwner::HilightWithColor(const Handle(PrsMgr_PresentationMana
 
 //=================================================================================================
 
-Standard_Boolean AIS_LightSourceOwner::IsForcedHilight() const
+bool AIS_LightSourceOwner::IsForcedHilight() const
 {
-  Handle(AIS_LightSource) aLightSource = Handle(AIS_LightSource)::DownCast(mySelectable);
+  occ::handle<AIS_LightSource> aLightSource = occ::down_cast<AIS_LightSource>(mySelectable);
   if (aLightSource.IsNull())
   {
-    return Standard_False;
+    return false;
   }
   if (aLightSource->Light()->Type() == Graphic3d_TypeOfLightSource_Directional)
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-AIS_LightSource::AIS_LightSource(const Handle(Graphic3d_CLight)& theLight)
+AIS_LightSource::AIS_LightSource(const occ::handle<Graphic3d_CLight>& theLight)
     : myLightSource(theLight),
       myCodirMarkerType(Aspect_TOM_X),
       myOpposMarkerType(Aspect_TOM_O_POINT),
@@ -234,26 +235,26 @@ AIS_LightSource::AIS_LightSource(const Handle(Graphic3d_CLight)& theLight)
 
 //=================================================================================================
 
-Standard_Boolean AIS_LightSource::ProcessDragging(const Handle(AIS_InteractiveContext)& theCtx,
-                                                  const Handle(V3d_View)&               theView,
-                                                  const Handle(SelectMgr_EntityOwner)&  theOwner,
-                                                  const Graphic3d_Vec2i&                theDragFrom,
-                                                  const Graphic3d_Vec2i&                theDragTo,
-                                                  const AIS_DragAction                  theAction)
+bool AIS_LightSource::ProcessDragging(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                      const occ::handle<V3d_View>&               theView,
+                                      const occ::handle<SelectMgr_EntityOwner>&  theOwner,
+                                      const NCollection_Vec2<int>&               theDragFrom,
+                                      const NCollection_Vec2<int>&               theDragTo,
+                                      const AIS_DragAction                       theAction)
 {
   if (Light()->Type() != Graphic3d_TypeOfLightSource_Directional)
   {
-    return Standard_False;
+    return false;
   }
 
   switch (theAction)
   {
     case AIS_DragAction_Start: {
       myLocTrsfStart = LocalTransformation();
-      return Standard_True;
+      return true;
     }
     case AIS_DragAction_Confirmed: {
-      return Standard_True;
+      return true;
     }
     case AIS_DragAction_Update: {
       mySensSphere->ResetLastDetectedPoint();
@@ -273,20 +274,20 @@ Standard_Boolean AIS_LightSource::ProcessDragging(const Handle(AIS_InteractiveCo
         gp_Trsf aTrsf;
         aTrsf.SetRotation(aQRot);
         SetLocalTransformation(myLocTrsfStart * aTrsf);
-        const Standard_Integer aHiMod = HasHilightMode() ? HilightMode() : 0;
+        const int aHiMod = HasHilightMode() ? HilightMode() : 0;
         theOwner->UpdateHighlightTrsf(theCtx->CurrentViewer(), theCtx->MainPrsMgr(), aHiMod);
       }
-      return Standard_True;
+      return true;
     }
     case AIS_DragAction_Abort: {
-      return Standard_True;
+      return true;
     }
     case AIS_DragAction_Stop: {
       GetHilightPresentation(theCtx->MainPrsMgr())->Clear();
       break;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -312,7 +313,7 @@ void AIS_LightSource::updateLightAspects()
 
   if (myLightSource->Type() == Graphic3d_TypeOfLightSource_Directional)
   {
-    const Standard_Real anAngleTol = 2.0 * M_PI / 180.0;
+    const double        anAngleTol = 2.0 * M_PI / 180.0;
     Aspect_TypeOfMarker aDirMark   = Aspect_TOM_EMPTY;
     if (myLightSource->IsEnabled() && myLightSource->IsHeadlight()
         && myLightSource->Direction().IsParallel(gp::DZ(), anAngleTol))
@@ -329,7 +330,7 @@ void AIS_LightSource::updateLightAspects()
 
 void AIS_LightSource::updateLightTransformPersistence()
 {
-  Handle(Graphic3d_TransformPers) aTrsfPers = myTransformPersistence;
+  occ::handle<Graphic3d_TransformPers> aTrsfPers = myTransformPersistence;
   switch (myLightSource->Type())
   {
     case Graphic3d_TypeOfLightSource_Ambient: {
@@ -339,7 +340,7 @@ void AIS_LightSource::updateLightTransformPersistence()
         {
           aTrsfPers = new Graphic3d_TransformPers(Graphic3d_TMF_TriedronPers,
                                                   Aspect_TOTP_LEFT_UPPER,
-                                                  Graphic3d_Vec2i(50));
+                                                  NCollection_Vec2<int>(50));
         }
       }
       else
@@ -366,7 +367,7 @@ void AIS_LightSource::updateLightTransformPersistence()
           else
           {
             aTrsfPers =
-              new Graphic3d_TransformPers(aMode, Aspect_TOTP_LEFT_UPPER, Graphic3d_Vec2i(50));
+              new Graphic3d_TransformPers(aMode, Aspect_TOTP_LEFT_UPPER, NCollection_Vec2<int>(50));
           }
         }
       }
@@ -460,7 +461,7 @@ void AIS_LightSource::updateLightLocalTransformation()
 
 //=================================================================================================
 
-void AIS_LightSource::setLocalTransformation(const Handle(TopLoc_Datum3D)& theTrsf)
+void AIS_LightSource::setLocalTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf)
 {
   const gp_Trsf aTrsf = !theTrsf.IsNull() ? theTrsf->Transformation() : gp_Trsf();
   switch (myLightSource->Type())
@@ -501,9 +502,9 @@ void AIS_LightSource::setLocalTransformation(const Handle(TopLoc_Datum3D)& theTr
 
 //=================================================================================================
 
-void AIS_LightSource::Compute(const Handle(PrsMgr_PresentationManager)&,
-                              const Handle(Prs3d_Presentation)& thePrs,
-                              const Standard_Integer            theMode)
+void AIS_LightSource::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                              const occ::handle<Prs3d_Presentation>& thePrs,
+                              const int                              theMode)
 {
   thePrs->SetInfiniteState(myInfiniteState);
   if (theMode != 0 && theMode != 1)
@@ -545,36 +546,37 @@ void AIS_LightSource::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void AIS_LightSource::computeAmbient(const Handle(Prs3d_Presentation)& thePrs,
-                                     const Standard_Integer            theMode)
+void AIS_LightSource::computeAmbient(const occ::handle<Prs3d_Presentation>& thePrs,
+                                     const int                              theMode)
 {
   const gp_XYZ aLightPos = gp::Origin().XYZ();
   if (theMode == 0)
   {
-    Handle(Graphic3d_ArrayOfTriangles) aSphereArray =
+    occ::handle<Graphic3d_ArrayOfTriangles> aSphereArray =
       Prs3d_ToolSphere::Create(mySize * 0.25, myNbSplitsQuadric, myNbSplitsQuadric, gp_Trsf());
-    Handle(Graphic3d_Group) aSphereGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aSphereGroup = thePrs->NewGroup();
     aSphereGroup->SetClosed(true);
     aSphereGroup->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
     aSphereGroup->AddPrimitiveArray(aSphereArray);
   }
   if (theMode == 0 || theMode == 1)
   {
-    const Standard_Real    aLen      = mySize * 0.25;
-    const Standard_Integer aNbArrows = 6;
+    const double aLen        = mySize * 0.25;
+    const int    aNbArrows   = 6;
     const gp_Dir aDirList[6] = {-gp::DX(), gp::DX(), -gp::DY(), gp::DY(), -gp::DZ(), gp::DZ()};
 
-    const Prs3d_ToolCylinder           aCylTool(mySize * 0.1,
+    const Prs3d_ToolCylinder                aCylTool(mySize * 0.1,
                                       0.0,
                                       mySize * 0.2,
                                       myNbSplitsArrow,
                                       myNbSplitsArrow);
-    Handle(Graphic3d_ArrayOfTriangles) aTrisArray =
+    occ::handle<Graphic3d_ArrayOfTriangles> aTrisArray =
       new Graphic3d_ArrayOfTriangles(aNbArrows * aCylTool.VerticesNb(),
                                      aNbArrows * aCylTool.TrianglesNb() * 3,
                                      Graphic3d_ArrayFlags_VertexNormal);
-    Handle(Graphic3d_ArrayOfSegments) aLineArray = new Graphic3d_ArrayOfSegments(aNbArrows * 2);
-    for (Standard_Integer anArrIter = 0; anArrIter < aNbArrows; ++anArrIter)
+    occ::handle<Graphic3d_ArrayOfSegments> aLineArray =
+      new Graphic3d_ArrayOfSegments(aNbArrows * 2);
+    for (int anArrIter = 0; anArrIter < aNbArrows; ++anArrIter)
     {
       const gp_Dir& aDir = aDirList[anArrIter];
       const gp_XYZ  aPnt = aLightPos + aDir.XYZ() * aLen;
@@ -594,13 +596,13 @@ void AIS_LightSource::computeAmbient(const Handle(Prs3d_Presentation)& thePrs,
 
     if (!aLineArray.IsNull())
     {
-      Handle(Graphic3d_Group) aDirGroupShadow = thePrs->NewGroup();
+      occ::handle<Graphic3d_Group> aDirGroupShadow = thePrs->NewGroup();
       aDirGroupShadow->SetGroupPrimitivesAspect(myArrowLineAspectShadow);
       aDirGroupShadow->AddPrimitiveArray(aLineArray);
     }
     if (!aTrisArray.IsNull())
     {
-      Handle(Graphic3d_Group) anArrowGroup = thePrs->NewGroup();
+      occ::handle<Graphic3d_Group> anArrowGroup = thePrs->NewGroup();
       anArrowGroup->SetClosed(true);
       anArrowGroup->SetGroupPrimitivesAspect(myDrawer->ArrowAspect()->Aspect());
       anArrowGroup->AddPrimitiveArray(aTrisArray);
@@ -608,9 +610,9 @@ void AIS_LightSource::computeAmbient(const Handle(Prs3d_Presentation)& thePrs,
   }
 
   {
-    Handle(Graphic3d_ArrayOfPoints) aPoints = new Graphic3d_ArrayOfPoints(1);
+    occ::handle<Graphic3d_ArrayOfPoints> aPoints = new Graphic3d_ArrayOfPoints(1);
     aPoints->AddVertex(aLightPos);
-    Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
     aGroup->SetGroupPrimitivesAspect(theMode == 1 ? myDrawer->PointAspect()->Aspect()
                                                   : myDisabledMarkerAspect);
     aGroup->AddPrimitiveArray(aPoints);
@@ -619,17 +621,17 @@ void AIS_LightSource::computeAmbient(const Handle(Prs3d_Presentation)& thePrs,
 
 //=================================================================================================
 
-void AIS_LightSource::computeDirectional(const Handle(Prs3d_Presentation)& thePrs,
-                                         const Standard_Integer            theMode)
+void AIS_LightSource::computeDirectional(const occ::handle<Prs3d_Presentation>& thePrs,
+                                         const int                              theMode)
 {
-  const Standard_Real aDistance = mySize * 0.5;
-  const Standard_Real aStep     = aDistance * 0.5;
+  const double aDistance = mySize * 0.5;
+  const double aStep     = aDistance * 0.5;
 
   // light source direction is set to local transformation
   const gp_Dir aLightDir = -gp::DZ();
   const gp_XYZ aLightPos = -aStep * aLightDir.XYZ();
 
-  Standard_Integer aNbArrows = 1;
+  int aNbArrows = 1;
   if (myNbArrows >= 9)
   {
     aNbArrows = 9;
@@ -642,7 +644,7 @@ void AIS_LightSource::computeDirectional(const Handle(Prs3d_Presentation)& thePr
   {
     aNbArrows = 3;
   }
-  TColgp_Array1OfPnt aPoints(1, aNbArrows);
+  NCollection_Array1<gp_Pnt> aPoints(1, aNbArrows);
   {
     const gp_Ax2 anAxes(gp::Origin(), aLightDir);
     const gp_XYZ aDY  = anAxes.YDirection().XYZ() * aStep;
@@ -656,17 +658,17 @@ void AIS_LightSource::computeDirectional(const Handle(Prs3d_Presentation)& thePr
         aPoints.SetValue(8, aLightPos - aDY);
         aPoints.SetValue(9, aLightPos - aDX);
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case 5: {
         aPoints.SetValue(4, aLightPos - aDY + aDX);
         aPoints.SetValue(5, aLightPos + aDY - aDX);
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case 3: {
         aPoints.SetValue(2, aLightPos + aDXY);
         aPoints.SetValue(3, aLightPos - aDXY);
       }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case 1: {
         aPoints.SetValue(1, aLightPos);
         break;
@@ -674,21 +676,21 @@ void AIS_LightSource::computeDirectional(const Handle(Prs3d_Presentation)& thePr
     }
   }
 
-  const Prs3d_ToolCylinder           aCylTool(aDistance * 0.1,
+  const Prs3d_ToolCylinder                aCylTool(aDistance * 0.1,
                                     0.0,
                                     aDistance * 0.2,
                                     myNbSplitsArrow,
                                     myNbSplitsArrow);
-  Handle(Graphic3d_ArrayOfTriangles) aTrisArray;
+  occ::handle<Graphic3d_ArrayOfTriangles> aTrisArray;
   if (theMode == 0)
   {
     aTrisArray = new Graphic3d_ArrayOfTriangles(aNbArrows * aCylTool.VerticesNb(),
                                                 aNbArrows * aCylTool.TrianglesNb() * 3,
                                                 Graphic3d_ArrayFlags_VertexNormal);
   }
-  Handle(Graphic3d_ArrayOfPoints)   aPntArray  = new Graphic3d_ArrayOfPoints(aNbArrows);
-  Handle(Graphic3d_ArrayOfSegments) aLineArray = new Graphic3d_ArrayOfSegments(aNbArrows * 2);
-  for (Standard_Integer aPntIter = aPoints.Lower(); aPntIter <= aPoints.Upper(); ++aPntIter)
+  occ::handle<Graphic3d_ArrayOfPoints>   aPntArray  = new Graphic3d_ArrayOfPoints(aNbArrows);
+  occ::handle<Graphic3d_ArrayOfSegments> aLineArray = new Graphic3d_ArrayOfSegments(aNbArrows * 2);
+  for (int aPntIter = aPoints.Lower(); aPntIter <= aPoints.Upper(); ++aPntIter)
   {
     const gp_Pnt aPnt = aPoints.Value(aPntIter);
     if (!aPntArray.IsNull())
@@ -711,33 +713,33 @@ void AIS_LightSource::computeDirectional(const Handle(Prs3d_Presentation)& thePr
 
   if (!aLineArray.IsNull() && theMode == 0)
   {
-    Handle(Graphic3d_Group) aDirGroupShadow = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aDirGroupShadow = thePrs->NewGroup();
     aDirGroupShadow->SetGroupPrimitivesAspect(myArrowLineAspectShadow);
     aDirGroupShadow->AddPrimitiveArray(aLineArray);
   }
   if (!aLineArray.IsNull())
   {
-    Handle(Graphic3d_Group) aDirGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aDirGroup = thePrs->NewGroup();
     aDirGroup->SetGroupPrimitivesAspect(myDrawer->ArrowAspect()->Aspect());
     aDirGroup->AddPrimitiveArray(aLineArray);
   }
   if (!aTrisArray.IsNull())
   {
-    Handle(Graphic3d_Group) anArrowGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> anArrowGroup = thePrs->NewGroup();
     anArrowGroup->SetClosed(true);
     anArrowGroup->SetGroupPrimitivesAspect(myDrawer->ArrowAspect()->Aspect());
     anArrowGroup->AddPrimitiveArray(aTrisArray);
   }
   if (!aPntArray.IsNull())
   {
-    Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
     aGroup->SetGroupPrimitivesAspect(myDrawer->ArrowAspect()->Aspect());
     aGroup->AddPrimitiveArray(aPntArray);
   }
   {
-    Handle(Graphic3d_ArrayOfPoints) aPntArray2 = new Graphic3d_ArrayOfPoints(1);
+    occ::handle<Graphic3d_ArrayOfPoints> aPntArray2 = new Graphic3d_ArrayOfPoints(1);
     aPntArray2->AddVertex(aLightPos);
-    Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
     aGroup->SetGroupPrimitivesAspect(myDisabledMarkerAspect);
     aGroup->AddPrimitiveArray(aPntArray2);
   }
@@ -745,26 +747,25 @@ void AIS_LightSource::computeDirectional(const Handle(Prs3d_Presentation)& thePr
 
 //=================================================================================================
 
-void AIS_LightSource::computePositional(const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer            theMode)
+void AIS_LightSource::computePositional(const occ::handle<Prs3d_Presentation>& thePrs,
+                                        const int                              theMode)
 {
   // light source position is set to local transformation
-  const gp_XYZ        aLightPos = gp::Origin().XYZ();
-  const Standard_Real aRadius =
-    (myIsZoomable && myLightSource->HasRange()) ? myLightSource->Range() : 0.0;
+  const gp_XYZ aLightPos = gp::Origin().XYZ();
+  const double aRadius = (myIsZoomable && myLightSource->HasRange()) ? myLightSource->Range() : 0.0;
   if (theMode == 0 && aRadius > 0.0 && myToDisplayRange)
   {
-    Handle(Graphic3d_ArrayOfTriangles) aPosRangeArray =
+    occ::handle<Graphic3d_ArrayOfTriangles> aPosRangeArray =
       Prs3d_ToolSphere::Create(aRadius, myNbSplitsQuadric, myNbSplitsQuadric, gp_Trsf());
-    Handle(Graphic3d_Group) aRangeGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aRangeGroup = thePrs->NewGroup();
     aRangeGroup->SetClosed(true);
     aRangeGroup->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
     aRangeGroup->AddPrimitiveArray(aPosRangeArray);
   }
   {
-    Handle(Graphic3d_ArrayOfPoints) aPoints = new Graphic3d_ArrayOfPoints(1);
+    occ::handle<Graphic3d_ArrayOfPoints> aPoints = new Graphic3d_ArrayOfPoints(1);
     aPoints->AddVertex(aLightPos);
-    Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
     aGroup->SetGroupPrimitivesAspect(myDrawer->PointAspect()->Aspect());
     aGroup->AddPrimitiveArray(aPoints);
   }
@@ -772,34 +773,33 @@ void AIS_LightSource::computePositional(const Handle(Prs3d_Presentation)& thePrs
 
 //=================================================================================================
 
-void AIS_LightSource::computeSpot(const Handle(Prs3d_Presentation)& thePrs,
-                                  const Standard_Integer            theMode)
+void AIS_LightSource::computeSpot(const occ::handle<Prs3d_Presentation>& thePrs, const int theMode)
 {
   // light source position and direction are set to local transformation
-  const gp_Dir        aLightDir = -gp::DZ();
-  const gp_XYZ        aLightPos = gp::Origin().XYZ();
-  const Standard_Real aDistance =
+  const gp_Dir aLightDir = -gp::DZ();
+  const gp_XYZ aLightPos = gp::Origin().XYZ();
+  const double aDistance =
     (myIsZoomable && myLightSource->HasRange()) ? myLightSource->Range() : mySize;
   {
-    Handle(Graphic3d_ArrayOfPoints) aPoints = new Graphic3d_ArrayOfPoints(1);
+    occ::handle<Graphic3d_ArrayOfPoints> aPoints = new Graphic3d_ArrayOfPoints(1);
     aPoints->AddVertex(aLightPos);
 
-    Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
     aGroup->SetGroupPrimitivesAspect(myDrawer->PointAspect()->Aspect());
     aGroup->AddPrimitiveArray(aPoints);
   }
 
   {
-    Handle(Graphic3d_ArrayOfSegments) aDirArray = new Graphic3d_ArrayOfSegments(2);
+    occ::handle<Graphic3d_ArrayOfSegments> aDirArray = new Graphic3d_ArrayOfSegments(2);
     aDirArray->AddVertex(aLightPos);
     aDirArray->AddVertex(gp_Pnt(aLightPos + aLightDir.XYZ() * aDistance));
 
-    Handle(Graphic3d_Group) aDirGroupShadow = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aDirGroupShadow = thePrs->NewGroup();
     aDirGroupShadow->SetClosed(true);
     aDirGroupShadow->SetGroupPrimitivesAspect(myArrowLineAspectShadow);
     aDirGroupShadow->AddPrimitiveArray(aDirArray);
 
-    Handle(Graphic3d_Group) aDirGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aDirGroup = thePrs->NewGroup();
     aDirGroup->SetClosed(true);
     aDirGroup->SetGroupPrimitivesAspect(myDrawer->ArrowAspect()->Aspect());
     aDirGroup->AddPrimitiveArray(aDirArray);
@@ -807,12 +807,12 @@ void AIS_LightSource::computeSpot(const Handle(Prs3d_Presentation)& thePrs,
 
   if (theMode == 0 && myToDisplayRange)
   {
-    const Standard_ShortReal aHalfAngle = myLightSource->Angle() / 2.0f;
-    const Standard_Real      aRadius    = aDistance * std::tan(aHalfAngle);
-    gp_Ax3                   aSystem(aLightPos + aLightDir.XYZ() * aDistance, -aLightDir);
-    gp_Trsf                  aTrsfCone;
+    const float  aHalfAngle = myLightSource->Angle() / 2.0f;
+    const double aRadius    = aDistance * std::tan(aHalfAngle);
+    gp_Ax3       aSystem(aLightPos + aLightDir.XYZ() * aDistance, -aLightDir);
+    gp_Trsf      aTrsfCone;
     aTrsfCone.SetTransformation(aSystem, gp_Ax3());
-    Handle(Graphic3d_ArrayOfTriangles) aSpotRangeArray =
+    occ::handle<Graphic3d_ArrayOfTriangles> aSpotRangeArray =
       Prs3d_ToolCylinder::Create(aRadius,
                                  0.0,
                                  aDistance,
@@ -820,7 +820,7 @@ void AIS_LightSource::computeSpot(const Handle(Prs3d_Presentation)& thePrs,
                                  myNbSplitsQuadric,
                                  aTrsfCone);
 
-    Handle(Graphic3d_Group) aRangeGroup = thePrs->NewGroup();
+    occ::handle<Graphic3d_Group> aRangeGroup = thePrs->NewGroup();
     aRangeGroup->SetClosed(true);
     aRangeGroup->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
     aRangeGroup->AddPrimitiveArray(aSpotRangeArray);
@@ -829,15 +829,15 @@ void AIS_LightSource::computeSpot(const Handle(Prs3d_Presentation)& thePrs,
 
 //=================================================================================================
 
-void AIS_LightSource::ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                       const Standard_Integer             theMode)
+void AIS_LightSource::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                       const int                               theMode)
 {
   if (theMode != 0)
   {
     return;
   }
 
-  Handle(AIS_LightSourceOwner) anEntityOwner = new AIS_LightSourceOwner(this, 15);
+  occ::handle<AIS_LightSourceOwner> anEntityOwner = new AIS_LightSourceOwner(this, 15);
   {
     if (myLightSource->Type() == Graphic3d_TypeOfLightSource_Directional)
     {
@@ -845,12 +845,12 @@ void AIS_LightSource::ComputeSelection(const Handle(SelectMgr_Selection)& theSel
       theSel->Add(mySensSphere);
     }
 
-    Handle(Select3D_SensitivePoint) aSensPosition =
+    occ::handle<Select3D_SensitivePoint> aSensPosition =
       new Select3D_SensitivePoint(anEntityOwner, gp::Origin());
     aSensPosition->SetSensitivityFactor(12);
     if (!myTransformPersistence.IsNull() && myTransformPersistence->IsTrihedronOr2d())
     {
-      aSensPosition->SetSensitivityFactor(std::max(12, Standard_Integer(mySize * 0.5)));
+      aSensPosition->SetSensitivityFactor(std::max(12, int(mySize * 0.5)));
     }
     theSel->Add(aSensPosition);
   }

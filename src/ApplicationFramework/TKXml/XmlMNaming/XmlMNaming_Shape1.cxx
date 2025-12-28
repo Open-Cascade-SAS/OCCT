@@ -70,8 +70,8 @@ XmlMNaming_Shape1::XmlMNaming_Shape1(const XmlObjMgt_Element& theEl)
         throw Standard_DomainError(
           "XmlMNaming_Shape1; orientation value without enum term equivalence");
     }
-    Standard_CString anIntPtr = (Standard_CString)&aPtr[1];
-    if (XmlObjMgt::GetInteger(anIntPtr, myTShapeID) == Standard_False)
+    const char* anIntPtr = (const char*)&aPtr[1];
+    if (XmlObjMgt::GetInteger(anIntPtr, myTShapeID) == false)
       throw Standard_DomainError(
         "XmlMNaming_Shape1; tshape value cannot be initialised by integer");
   }
@@ -93,14 +93,14 @@ XmlObjMgt_Element& XmlMNaming_Shape1::Element()
 
 //=================================================================================================
 
-Standard_Integer XmlMNaming_Shape1::TShapeId() const
+int XmlMNaming_Shape1::TShapeId() const
 {
   return myTShapeID;
 }
 
 //=================================================================================================
 
-Standard_Integer XmlMNaming_Shape1::LocId() const
+int XmlMNaming_Shape1::LocId() const
 {
   return myLocID;
 }
@@ -114,8 +114,8 @@ TopAbs_Orientation XmlMNaming_Shape1::Orientation() const
 
 //=================================================================================================
 
-void XmlMNaming_Shape1::SetShape(const Standard_Integer   theID,
-                                 const Standard_Integer   theLocID,
+void XmlMNaming_Shape1::SetShape(const int                theID,
+                                 const int                theLocID,
                                  const TopAbs_Orientation theOrient)
 {
   myTShapeID    = theID;

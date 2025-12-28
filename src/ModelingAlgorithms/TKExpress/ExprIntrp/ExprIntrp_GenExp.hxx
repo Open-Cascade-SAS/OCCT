@@ -24,9 +24,6 @@
 class Expr_GeneralExpression;
 class TCollection_AsciiString;
 
-class ExprIntrp_GenExp;
-DEFINE_STANDARD_HANDLE(ExprIntrp_GenExp, ExprIntrp_Generator)
-
 //! This class permits, from a string, to create any
 //! kind of expression of package Expr by using
 //! built-in functions such as Sin,Cos, etc, and by
@@ -35,28 +32,27 @@ class ExprIntrp_GenExp : public ExprIntrp_Generator
 {
 
 public:
-  Standard_EXPORT static Handle(ExprIntrp_GenExp) Create();
+  Standard_EXPORT static occ::handle<ExprIntrp_GenExp> Create();
 
   //! Processes given string.
   Standard_EXPORT void Process(const TCollection_AsciiString& str);
 
   //! Returns false if any syntax error has occurred during
   //! process.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns expression generated. Raises an exception if
   //! IsDone answers false.
-  Standard_EXPORT Handle(Expr_GeneralExpression) Expression() const;
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> Expression() const;
 
   DEFINE_STANDARD_RTTIEXT(ExprIntrp_GenExp, ExprIntrp_Generator)
 
-protected:
 private:
   //! Creates an empty generator
   Standard_EXPORT ExprIntrp_GenExp();
 
-  Standard_Boolean               done;
-  Handle(Expr_GeneralExpression) myExpression;
+  bool                                done;
+  occ::handle<Expr_GeneralExpression> myExpression;
 };
 
 #endif // _ExprIntrp_GenExp_HeaderFile

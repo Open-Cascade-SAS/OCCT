@@ -15,7 +15,7 @@
 #include <IGESSelect_SelectBypassGroup.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -24,24 +24,24 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectBypassGroup, IFSelect_SelectExplore)
 
 #define TypePourGroup 402
 
-IGESSelect_SelectBypassGroup::IGESSelect_SelectBypassGroup(const Standard_Integer level)
+IGESSelect_SelectBypassGroup::IGESSelect_SelectBypassGroup(const int level)
     : IFSelect_SelectExplore(level)
 {
 }
 
-Standard_Boolean IGESSelect_SelectBypassGroup::Explore(const Standard_Integer /*level*/,
-                                                       const Handle(Standard_Transient)& ent,
-                                                       const Interface_Graph& /*G*/,
-                                                       Interface_EntityIterator& explored) const
+bool IGESSelect_SelectBypassGroup::Explore(const int /*level*/,
+                                           const occ::handle<Standard_Transient>& ent,
+                                           const Interface_Graph& /*G*/,
+                                           Interface_EntityIterator& explored) const
 {
   DeclareAndCast(IGESBasic_Group, gr, ent); // Group groups them all
   if (gr.IsNull())
-    return Standard_True;
+    return true;
 
-  Standard_Integer i, nb = gr->NbEntities();
+  int i, nb = gr->NbEntities();
   for (i = 1; i <= nb; i++)
     explored.AddItem(gr->Entity(i));
-  return Standard_True;
+  return true;
 }
 
 TCollection_AsciiString IGESSelect_SelectBypassGroup::ExploreLabel() const

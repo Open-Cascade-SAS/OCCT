@@ -39,16 +39,16 @@ public:
         myArrColorInd(0L),
         myNbPolygons(0),
         myNbColors(0),
-        myColorPerVertex(Standard_True)
+        myColorPerVertex(true)
   {
   }
 
   /**
    * Constructor.
    */
-  inline VrmlData_IndexedLineSet(const VrmlData_Scene&  theScene,
-                                 const char*            theName,
-                                 const Standard_Boolean isColorPerVertex = Standard_True)
+  inline VrmlData_IndexedLineSet(const VrmlData_Scene& theScene,
+                                 const char*           theName,
+                                 const bool            isColorPerVertex = true)
       : VrmlData_Geometry(theScene, theName),
         myArrPolygons(0L),
         myArrColorInd(0L),
@@ -61,29 +61,32 @@ public:
   /**
    * Query the Coordinates.
    */
-  inline const Handle(VrmlData_Coordinate)& Coordinates() const { return myCoords; }
+  inline const occ::handle<VrmlData_Coordinate>& Coordinates() const { return myCoords; }
 
   /**
    * Set the nodes
    */
-  inline void SetCoordinates(const Handle(VrmlData_Coordinate)& theCoord) { myCoords = theCoord; }
+  inline void SetCoordinates(const occ::handle<VrmlData_Coordinate>& theCoord)
+  {
+    myCoords = theCoord;
+  }
 
   /**
    * Query the Colors.
    */
-  inline const Handle(VrmlData_Color)& Colors() const { return myColors; }
+  inline const occ::handle<VrmlData_Color>& Colors() const { return myColors; }
 
   /**
    * Set the Color node
    */
-  inline void SetColors(const Handle(VrmlData_Color)& theColors) { myColors = theColors; }
+  inline void SetColors(const occ::handle<VrmlData_Color>& theColors) { myColors = theColors; }
 
   // ========================================================================
   // =========================== POLYLINES  =================================
   /**
    * Query the array of polygons
    */
-  inline size_t Polygons(const Standard_Integer**& arrPolygons) const
+  inline size_t Polygons(const int**& arrPolygons) const
   {
     arrPolygons = myArrPolygons;
     return myNbPolygons;
@@ -98,8 +101,7 @@ public:
    * @return
    *   number of vertice in the polygon - the dimension of outIndice array
    */
-  inline Standard_Integer Polygon(const Standard_Integer   iPolygon,
-                                  const Standard_Integer*& outIndice)
+  inline int Polygon(const int iPolygon, const int*& outIndice)
   {
     return *(outIndice = myArrPolygons[iPolygon])++;
   }
@@ -107,7 +109,7 @@ public:
   /**
    * Set the polygons
    */
-  inline void SetPolygons(const Standard_Size nPolygons, const Standard_Integer** thePolygons)
+  inline void SetPolygons(const size_t nPolygons, const int** thePolygons)
   {
     myNbPolygons  = nPolygons;
     myArrPolygons = thePolygons;
@@ -122,7 +124,7 @@ public:
    * @return
    *   Number of integers in the array arrColorInd.
    */
-  inline size_t ArrayColorInd(const Standard_Integer**& arrColorInd) const
+  inline size_t ArrayColorInd(const int**& arrColorInd) const
   {
     arrColorInd = myArrColorInd;
     return myNbColors;
@@ -140,13 +142,12 @@ public:
    * @return
    *   Color value (RGB); if the color is indefinite then returns (0., 0., 0.)
    */
-  Standard_EXPORT Quantity_Color GetColor(const Standard_Integer iFace,
-                                          const Standard_Integer iVertex);
+  Standard_EXPORT Quantity_Color GetColor(const int iFace, const int iVertex);
 
   /**
    * Set the colors array of indice
    */
-  inline void SetColorInd(const Standard_Size nIndice, const Standard_Integer** theIndice)
+  inline void SetColorInd(const size_t nIndice, const int** theIndice)
   {
     myNbColors    = nIndice;
     myArrColorInd = theIndice;
@@ -155,7 +156,7 @@ public:
   /**
    * Set the boolean value "colorPerVertex"
    */
-  inline void SetColorPerVertex(const Standard_Boolean isColorPerVertex)
+  inline void SetColorPerVertex(const bool isColorPerVertex)
   {
     myColorPerVertex = isColorPerVertex;
   }
@@ -164,40 +165,40 @@ public:
    * Query the shape. This method checks the flag myIsModified; if True it
    * should rebuild the shape presentation.
    */
-  Standard_EXPORT virtual const Handle(TopoDS_TShape)& TShape() Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<TopoDS_TShape>& TShape() override;
 
   /**
    * Create a copy of this node.
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+    const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
 
   /**
    * Returns True if the node is default, so that it should not be written.
    */
-  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsDefault() const override;
 
 private:
   // ---------- PRIVATE FIELDS ----------
-  Handle(VrmlData_Coordinate) myCoords;
-  Handle(VrmlData_Color)      myColors;
-  const Standard_Integer**    myArrPolygons;
-  const Standard_Integer**    myArrColorInd;
-  Standard_Size               myNbPolygons;
-  Standard_Size               myNbColors;
-  Standard_Boolean            myColorPerVertex;
+  occ::handle<VrmlData_Coordinate> myCoords;
+  occ::handle<VrmlData_Color>      myColors;
+  const int**                      myArrPolygons;
+  const int**                      myArrColorInd;
+  size_t                           myNbPolygons;
+  size_t                           myNbColors;
+  bool                             myColorPerVertex;
 
 public:
   // Declaration of CASCADE RTTI
@@ -205,6 +206,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(VrmlData_IndexedLineSet, VrmlData_Geometry)
-
 #endif

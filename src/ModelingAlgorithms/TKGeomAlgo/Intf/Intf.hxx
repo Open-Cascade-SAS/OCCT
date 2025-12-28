@@ -41,17 +41,17 @@ public:
   //! line and a polyhedron. Points of intersection and zones
   //! of tangence.
   //! Give the plane equation of the triangle <P1> <P2> <P3>.
-  Standard_EXPORT static void PlaneEquation(const gp_Pnt&  P1,
-                                            const gp_Pnt&  P2,
-                                            const gp_Pnt&  P3,
-                                            gp_XYZ&        NormalVector,
-                                            Standard_Real& PolarDistance);
+  Standard_EXPORT static void PlaneEquation(const gp_Pnt& P1,
+                                            const gp_Pnt& P2,
+                                            const gp_Pnt& P3,
+                                            gp_XYZ&       NormalVector,
+                                            double&       PolarDistance);
 
   //! Compute if the triangle <P1> <P2> <P3> contain <ThePnt>.
-  Standard_EXPORT static Standard_Boolean Contain(const gp_Pnt& P1,
-                                                  const gp_Pnt& P2,
-                                                  const gp_Pnt& P3,
-                                                  const gp_Pnt& ThePnt);
+  Standard_EXPORT static bool Contain(const gp_Pnt& P1,
+                                      const gp_Pnt& P2,
+                                      const gp_Pnt& P3,
+                                      const gp_Pnt& ThePnt);
 };
 
 #endif // _Intf_HeaderFile

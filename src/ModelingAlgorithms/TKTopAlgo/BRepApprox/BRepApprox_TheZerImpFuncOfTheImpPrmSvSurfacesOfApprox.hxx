@@ -52,27 +52,27 @@ public:
 
   void SetImplicitSurface(const IntSurf_Quadric& IS);
 
-  void Set(const Standard_Real Tolerance);
+  void Set(const double Tolerance);
 
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
-  Standard_Real Root() const;
+  double Root() const;
 
   //! Returns the value Tol so that if std::abs(Func.Root())<Tol
   //! the function is considered null.
-  Standard_Real Tolerance() const;
+  double Tolerance() const;
 
   const gp_Pnt& Point() const;
 
-  Standard_EXPORT Standard_Boolean IsTangent();
+  Standard_EXPORT bool IsTangent();
 
   const gp_Vec& Direction3d();
 
@@ -82,25 +82,24 @@ public:
 
   const IntSurf_Quadric& ISurface() const;
 
-protected:
 private:
-  Standard_Address surf;
-  Standard_Address func;
-  Standard_Real    u;
-  Standard_Real    v;
-  Standard_Real    tol;
-  gp_Pnt           pntsol;
-  Standard_Real    valf;
-  Standard_Boolean computed;
-  Standard_Boolean tangent;
-  Standard_Real    tgdu;
-  Standard_Real    tgdv;
-  gp_Vec           gradient;
-  Standard_Boolean derived;
-  gp_Vec           d1u;
-  gp_Vec           d1v;
-  gp_Vec           d3d;
-  gp_Dir2d         d2d;
+  void*    surf;
+  void*    func;
+  double   u;
+  double   v;
+  double   tol;
+  gp_Pnt   pntsol;
+  double   valf;
+  bool     computed;
+  bool     tangent;
+  double   tgdu;
+  double   tgdv;
+  gp_Vec   gradient;
+  bool     derived;
+  gp_Vec   d1u;
+  gp_Vec   d1v;
+  gp_Vec   d3d;
+  gp_Dir2d d2d;
 };
 
 #define ThePSurface BRepAdaptor_Surface

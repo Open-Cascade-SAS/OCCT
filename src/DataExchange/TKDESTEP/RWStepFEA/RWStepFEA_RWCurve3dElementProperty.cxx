@@ -24,9 +24,8 @@
 #include <StepFEA_CurveElementEndOffset.hxx>
 #include <StepFEA_CurveElementEndRelease.hxx>
 #include <StepFEA_CurveElementInterval.hxx>
-#include <StepFEA_HArray1OfCurveElementEndOffset.hxx>
-#include <StepFEA_HArray1OfCurveElementEndRelease.hxx>
-#include <StepFEA_HArray1OfCurveElementInterval.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -35,10 +34,10 @@ RWStepFEA_RWCurve3dElementProperty::RWStepFEA_RWCurve3dElementProperty() {}
 //=================================================================================================
 
 void RWStepFEA_RWCurve3dElementProperty::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepFEA_Curve3dElementProperty)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepFEA_Curve3dElementProperty>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "curve3d_element_property"))
@@ -46,22 +45,23 @@ void RWStepFEA_RWCurve3dElementProperty::ReadStep(
 
   // Own fields of Curve3dElementProperty
 
-  Handle(TCollection_HAsciiString) aPropertyId;
+  occ::handle<TCollection_HAsciiString> aPropertyId;
   data->ReadString(num, 1, "property_id", ach, aPropertyId);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
 
-  Handle(StepFEA_HArray1OfCurveElementInterval) aIntervalDefinitions;
-  Standard_Integer                              sub3 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>> aIntervalDefinitions;
+  int                                                                         sub3 = 0;
   if (data->ReadSubList(num, 3, "interval_definitions", ach, sub3))
   {
-    Standard_Integer nb0  = data->NbParams(sub3);
-    aIntervalDefinitions  = new StepFEA_HArray1OfCurveElementInterval(1, nb0);
-    Standard_Integer num2 = sub3;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0 = data->NbParams(sub3);
+    aIntervalDefinitions =
+      new NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>(1, nb0);
+    int num2 = sub3;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepFEA_CurveElementInterval) anIt0;
+      occ::handle<StepFEA_CurveElementInterval> anIt0;
       data->ReadEntity(num2,
                        i0,
                        "curve_element_interval",
@@ -72,16 +72,16 @@ void RWStepFEA_RWCurve3dElementProperty::ReadStep(
     }
   }
 
-  Handle(StepFEA_HArray1OfCurveElementEndOffset) aEndOffsets;
-  Standard_Integer                               sub4 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementEndOffset>>> aEndOffsets;
+  int                                                                          sub4 = 0;
   if (data->ReadSubList(num, 4, "end_offsets", ach, sub4))
   {
-    Standard_Integer nb0  = data->NbParams(sub4);
-    aEndOffsets           = new StepFEA_HArray1OfCurveElementEndOffset(1, nb0);
-    Standard_Integer num2 = sub4;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0     = data->NbParams(sub4);
+    aEndOffsets = new NCollection_HArray1<occ::handle<StepFEA_CurveElementEndOffset>>(1, nb0);
+    int num2    = sub4;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepFEA_CurveElementEndOffset) anIt0;
+      occ::handle<StepFEA_CurveElementEndOffset> anIt0;
       data->ReadEntity(num2,
                        i0,
                        "curve_element_end_offset",
@@ -92,16 +92,16 @@ void RWStepFEA_RWCurve3dElementProperty::ReadStep(
     }
   }
 
-  Handle(StepFEA_HArray1OfCurveElementEndRelease) aEndReleases;
-  Standard_Integer                                sub5 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementEndRelease>>> aEndReleases;
+  int                                                                           sub5 = 0;
   if (data->ReadSubList(num, 5, "end_releases", ach, sub5))
   {
-    Standard_Integer nb0  = data->NbParams(sub5);
-    aEndReleases          = new StepFEA_HArray1OfCurveElementEndRelease(1, nb0);
-    Standard_Integer num2 = sub5;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0      = data->NbParams(sub5);
+    aEndReleases = new NCollection_HArray1<occ::handle<StepFEA_CurveElementEndRelease>>(1, nb0);
+    int num2     = sub5;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepFEA_CurveElementEndRelease) anIt0;
+      occ::handle<StepFEA_CurveElementEndRelease> anIt0;
       data->ReadEntity(num2,
                        i0,
                        "curve_element_end_release",
@@ -119,8 +119,8 @@ void RWStepFEA_RWCurve3dElementProperty::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurve3dElementProperty::WriteStep(
-  StepData_StepWriter&                          SW,
-  const Handle(StepFEA_Curve3dElementProperty)& ent) const
+  StepData_StepWriter&                               SW,
+  const occ::handle<StepFEA_Curve3dElementProperty>& ent) const
 {
 
   // Own fields of Curve3dElementProperty
@@ -130,25 +130,25 @@ void RWStepFEA_RWCurve3dElementProperty::WriteStep(
   SW.Send(ent->Description());
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->IntervalDefinitions()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->IntervalDefinitions()->Length(); i2++)
   {
-    Handle(StepFEA_CurveElementInterval) Var0 = ent->IntervalDefinitions()->Value(i2);
+    occ::handle<StepFEA_CurveElementInterval> Var0 = ent->IntervalDefinitions()->Value(i2);
     SW.Send(Var0);
   }
   SW.CloseSub();
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->EndOffsets()->Length(); i3++)
+  for (int i3 = 1; i3 <= ent->EndOffsets()->Length(); i3++)
   {
-    Handle(StepFEA_CurveElementEndOffset) Var0 = ent->EndOffsets()->Value(i3);
+    occ::handle<StepFEA_CurveElementEndOffset> Var0 = ent->EndOffsets()->Value(i3);
     SW.Send(Var0);
   }
   SW.CloseSub();
 
   SW.OpenSub();
-  for (Standard_Integer i4 = 1; i4 <= ent->EndReleases()->Length(); i4++)
+  for (int i4 = 1; i4 <= ent->EndReleases()->Length(); i4++)
   {
-    Handle(StepFEA_CurveElementEndRelease) Var0 = ent->EndReleases()->Value(i4);
+    occ::handle<StepFEA_CurveElementEndRelease> Var0 = ent->EndReleases()->Value(i4);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -156,27 +156,28 @@ void RWStepFEA_RWCurve3dElementProperty::WriteStep(
 
 //=================================================================================================
 
-void RWStepFEA_RWCurve3dElementProperty::Share(const Handle(StepFEA_Curve3dElementProperty)& ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepFEA_RWCurve3dElementProperty::Share(
+  const occ::handle<StepFEA_Curve3dElementProperty>& ent,
+  Interface_EntityIterator&                          iter) const
 {
 
   // Own fields of Curve3dElementProperty
 
-  for (Standard_Integer i1 = 1; i1 <= ent->IntervalDefinitions()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->IntervalDefinitions()->Length(); i1++)
   {
-    Handle(StepFEA_CurveElementInterval) Var0 = ent->IntervalDefinitions()->Value(i1);
+    occ::handle<StepFEA_CurveElementInterval> Var0 = ent->IntervalDefinitions()->Value(i1);
     iter.AddItem(Var0);
   }
 
-  for (Standard_Integer i2 = 1; i2 <= ent->EndOffsets()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->EndOffsets()->Length(); i2++)
   {
-    Handle(StepFEA_CurveElementEndOffset) Var0 = ent->EndOffsets()->Value(i2);
+    occ::handle<StepFEA_CurveElementEndOffset> Var0 = ent->EndOffsets()->Value(i2);
     iter.AddItem(Var0);
   }
 
-  for (Standard_Integer i3 = 1; i3 <= ent->EndReleases()->Length(); i3++)
+  for (int i3 = 1; i3 <= ent->EndReleases()->Length(); i3++)
   {
-    Handle(StepFEA_CurveElementEndRelease) Var0 = ent->EndReleases()->Value(i3);
+    occ::handle<StepFEA_CurveElementEndRelease> Var0 = ent->EndReleases()->Value(i3);
     iter.AddItem(Var0);
   }
 }

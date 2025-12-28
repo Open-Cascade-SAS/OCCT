@@ -4,7 +4,7 @@ set(OCCT_Intf_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_Intf_FILES
   Intf.cxx
   Intf.hxx
-  Intf_Array1OfLin.hxx
+
   Intf_Interference.cxx
   Intf_Interference.hxx
   Intf_Interference.lxx
@@ -21,9 +21,7 @@ set(OCCT_Intf_FILES
   Intf_SectionPoint.cxx
   Intf_SectionPoint.hxx
   Intf_SectionPoint.lxx
-  Intf_SeqOfSectionLine.hxx
-  Intf_SeqOfSectionPoint.hxx
-  Intf_SeqOfTangentZone.hxx
+
   Intf_TangentZone.cxx
   Intf_TangentZone.hxx
   Intf_TangentZone.lxx

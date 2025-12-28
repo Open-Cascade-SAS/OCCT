@@ -40,7 +40,7 @@
 #include <IGESDraw_View.hxx>
 #include <IGESDraw_ViewsVisible.hxx>
 #include <IGESDraw_ViewsVisibleWithAttr.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_SpecificModule, IGESData_SpecificModule)
@@ -50,11 +50,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_SpecificModule, IGESData_SpecificModule)
 //  the method TypeNumber from this Protocol
 IGESDraw_SpecificModule::IGESDraw_SpecificModule() {}
 
-void IGESDraw_SpecificModule::OwnDump(const Standard_Integer             CN,
-                                      const Handle(IGESData_IGESEntity)& ent,
-                                      const IGESData_IGESDumper&         dumper,
-                                      Standard_OStream&                  S,
-                                      const Standard_Integer             own) const
+void IGESDraw_SpecificModule::OwnDump(const int                               CN,
+                                      const occ::handle<IGESData_IGESEntity>& ent,
+                                      const IGESData_IGESDumper&              dumper,
+                                      Standard_OStream&                       S,
+                                      const int                               own) const
 {
   switch (CN)
   {
@@ -175,8 +175,8 @@ void IGESDraw_SpecificModule::OwnDump(const Standard_Integer             CN,
   }
 }
 
-Standard_Boolean IGESDraw_SpecificModule::OwnCorrect(const Standard_Integer             CN,
-                                                     const Handle(IGESData_IGESEntity)& ent) const
+bool IGESDraw_SpecificModule::OwnCorrect(const int                               CN,
+                                         const occ::handle<IGESData_IGESEntity>& ent) const
 {
   //   Applies only on some types
   switch (CN)
@@ -219,5 +219,5 @@ Standard_Boolean IGESDraw_SpecificModule::OwnCorrect(const Standard_Integer     
     default:
       break;
   }
-  return Standard_False;
+  return false;
 }

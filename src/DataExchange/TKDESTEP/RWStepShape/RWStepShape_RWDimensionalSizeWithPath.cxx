@@ -29,10 +29,10 @@ RWStepShape_RWDimensionalSizeWithPath::RWStepShape_RWDimensionalSizeWithPath() {
 //=================================================================================================
 
 void RWStepShape_RWDimensionalSizeWithPath::ReadStep(
-  const Handle(StepData_StepReaderData)&           data,
-  const Standard_Integer                           num,
-  Handle(Interface_Check)&                         ach,
-  const Handle(StepShape_DimensionalSizeWithPath)& ent) const
+  const occ::handle<StepData_StepReaderData>&           data,
+  const int                                             num,
+  occ::handle<Interface_Check>&                         ach,
+  const occ::handle<StepShape_DimensionalSizeWithPath>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "dimensional_size_with_path"))
@@ -40,7 +40,7 @@ void RWStepShape_RWDimensionalSizeWithPath::ReadStep(
 
   // Inherited fields of DimensionalSize
 
-  Handle(StepRepr_ShapeAspect) aDimensionalSize_AppliesTo;
+  occ::handle<StepRepr_ShapeAspect> aDimensionalSize_AppliesTo;
   data->ReadEntity(num,
                    1,
                    "dimensional_size.applies_to",
@@ -48,12 +48,12 @@ void RWStepShape_RWDimensionalSizeWithPath::ReadStep(
                    STANDARD_TYPE(StepRepr_ShapeAspect),
                    aDimensionalSize_AppliesTo);
 
-  Handle(TCollection_HAsciiString) aDimensionalSize_Name;
+  occ::handle<TCollection_HAsciiString> aDimensionalSize_Name;
   data->ReadString(num, 2, "dimensional_size.name", ach, aDimensionalSize_Name);
 
   // Own fields of DimensionalSizeWithPath
 
-  Handle(StepRepr_ShapeAspect) aPath;
+  occ::handle<StepRepr_ShapeAspect> aPath;
   data->ReadEntity(num, 3, "path", ach, STANDARD_TYPE(StepRepr_ShapeAspect), aPath);
 
   // Initialize entity
@@ -63,8 +63,8 @@ void RWStepShape_RWDimensionalSizeWithPath::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWDimensionalSizeWithPath::WriteStep(
-  StepData_StepWriter&                             SW,
-  const Handle(StepShape_DimensionalSizeWithPath)& ent) const
+  StepData_StepWriter&                                  SW,
+  const occ::handle<StepShape_DimensionalSizeWithPath>& ent) const
 {
 
   // Inherited fields of DimensionalSize
@@ -81,8 +81,8 @@ void RWStepShape_RWDimensionalSizeWithPath::WriteStep(
 //=================================================================================================
 
 void RWStepShape_RWDimensionalSizeWithPath::Share(
-  const Handle(StepShape_DimensionalSizeWithPath)& ent,
-  Interface_EntityIterator&                        iter) const
+  const occ::handle<StepShape_DimensionalSizeWithPath>& ent,
+  Interface_EntityIterator&                             iter) const
 {
 
   // Inherited fields of DimensionalSize

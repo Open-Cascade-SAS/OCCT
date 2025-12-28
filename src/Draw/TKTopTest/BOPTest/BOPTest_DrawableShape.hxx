@@ -26,38 +26,34 @@ class TopoDS_Shape;
 class gp_Pnt;
 class Draw_Display;
 
-class BOPTest_DrawableShape;
-DEFINE_STANDARD_HANDLE(BOPTest_DrawableShape, DBRep_DrawableShape)
-
 class BOPTest_DrawableShape : public DBRep_DrawableShape
 {
 
 public:
-  Standard_EXPORT BOPTest_DrawableShape(const TopoDS_Shape&    S,
-                                        const Draw_Color&      FreeCol,
-                                        const Draw_Color&      ConnCol,
-                                        const Draw_Color&      EdgeCol,
-                                        const Draw_Color&      IsosCol,
-                                        const Standard_Real    size,
-                                        const Standard_Integer nbisos,
-                                        const Standard_Integer discret,
-                                        const Standard_CString Text,
-                                        const Draw_Color&      TextColor);
+  Standard_EXPORT BOPTest_DrawableShape(const TopoDS_Shape& S,
+                                        const Draw_Color&   FreeCol,
+                                        const Draw_Color&   ConnCol,
+                                        const Draw_Color&   EdgeCol,
+                                        const Draw_Color&   IsosCol,
+                                        const double        size,
+                                        const int           nbisos,
+                                        const int           discret,
+                                        const char*         Text,
+                                        const Draw_Color&   TextColor);
 
-  Standard_EXPORT BOPTest_DrawableShape(const TopoDS_Shape&    S,
-                                        const Standard_CString Text,
-                                        const Draw_Color&      TextColor);
+  Standard_EXPORT BOPTest_DrawableShape(const TopoDS_Shape& S,
+                                        const char*         Text,
+                                        const Draw_Color&   TextColor);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
   DEFINE_STANDARD_RTTIEXT(BOPTest_DrawableShape, DBRep_DrawableShape)
 
-protected:
 private:
   Standard_EXPORT gp_Pnt Pnt() const;
 
-  Handle(Draw_Text3D) myText;
-  Draw_Color          myTextColor;
+  occ::handle<Draw_Text3D> myText;
+  Draw_Color               myTextColor;
 };
 
 #endif // _BOPTest_DrawableShape_HeaderFile

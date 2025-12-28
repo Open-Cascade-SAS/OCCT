@@ -40,13 +40,10 @@ public:
   //! mode determines whether the first or the last point of
   //! the normal is given to the presentation object. If the
   //! first point: 0; if the last point, 1.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& prs,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
-                                  const TopoDS_Shape&               shape,
-                                  const Standard_Integer            mode);
-
-protected:
-private:
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& prs,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                  const TopoDS_Shape&                    shape,
+                                  const int                              mode);
 };
 
 #endif // _DsgPrs_ShapeDirPresentation_HeaderFile

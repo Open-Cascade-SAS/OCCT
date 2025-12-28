@@ -43,20 +43,20 @@ public:
   //! lower bound of the inner integral. This value is fixed for
   //! any integral. And the value of tolerance of inner integral
   //! computation.
-  //! If IsByPoint is equal to Standard_True, the number of the
+  //! If IsByPoint is equal to true, the number of the
   //! coefficients is equal to 3 and they represent X, Y and Z
   //! coordinates (theCoeff[0], theCoeff[1] and theCoeff[2]
   //! correspondingly) of the shift if the inertia is computed
   //! with respect to the point different then the location.
-  //! If IsByPoint is equal to Standard_False, the number of the
+  //! If IsByPoint is equal to false, the number of the
   //! coefficients is 4 and they represent the combination of
   //! plane parameters and shift values.
-  Standard_EXPORT BRepGProp_TFunction(const BRepGProp_Face&  theSurface,
-                                      const gp_Pnt&          theVertex,
-                                      const Standard_Boolean IsByPoint,
-                                      const Standard_Real*   theCoeffs,
-                                      const Standard_Real    theUMin,
-                                      const Standard_Real    theTolerance);
+  Standard_EXPORT BRepGProp_TFunction(const BRepGProp_Face& theSurface,
+                                      const gp_Pnt&         theVertex,
+                                      const bool            IsByPoint,
+                                      const double*         theCoeffs,
+                                      const double          theUMin,
+                                      const double          theTolerance);
 
   Standard_EXPORT void Init();
 
@@ -70,28 +70,27 @@ public:
   //! current number. If the law in math_KronrodSingleIntegration
   //! is changed, the modification algo should be modified
   //! accordingly.
-  void SetNbKronrodPoints(const Standard_Integer theNbPoints);
+  void SetNbKronrodPoints(const int theNbPoints);
 
   //! Setting the type of the value to be returned. This
   //! parameter is directly passed to the UFunction.
   void SetValueType(const GProp_ValueType aType);
 
   //! Setting the tolerance for inner integration
-  void SetTolerance(const Standard_Real aTol);
+  void SetTolerance(const double aTol);
 
   //! Returns the relative reached error of all values computation since
   //! the last call of GetStateNumber method.
-  Standard_Real ErrorReached() const;
+  double ErrorReached() const;
 
   //! Returns the absolut reached error of all values computation since
   //! the last call of GetStateNumber method.
-  Standard_Real AbsolutError() const;
+  double AbsolutError() const;
 
   //! Returns a value of the function. The value represents an
   //! integral of UFunction. It is computed with the predefined
   //! tolerance using the adaptive Gauss-Kronrod method.
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X,
-                                                 Standard_Real&      F) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Value(const double X, double& F) override;
 
   //! Redefined method. Remembers the error reached during
   //! computation of integral values since the object creation
@@ -99,20 +98,19 @@ public:
   //! algorithm from the package math. Particularly in the
   //! algorithm math_KronrodSingleIntegration that is used to
   //! compute the integral of TFunction.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
+  Standard_EXPORT virtual int GetStateNumber() override;
 
-protected:
 private:
   BRepGProp_Face      mySurface;
   BRepGProp_UFunction myUFunction;
-  Standard_Real       myUMin;
-  Standard_Real       myTolerance;
-  Standard_Real       myTolReached;
-  Standard_Real       myErrReached;
-  Standard_Real       myAbsError;
+  double              myUMin;
+  double              myTolerance;
+  double              myTolReached;
+  double              myErrReached;
+  double              myAbsError;
   GProp_ValueType     myValueType;
-  Standard_Boolean    myIsByPoint;
-  Standard_Integer    myNbPntOuter;
+  bool                myIsByPoint;
+  int                 myNbPntOuter;
 };
 
 #include <BRepGProp_TFunction.lxx>

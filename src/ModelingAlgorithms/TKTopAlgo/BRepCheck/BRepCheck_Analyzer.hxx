@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <BRepCheck_IndexedDataMapOfShapeResult.hxx>
+#include <BRepCheck_Result.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class BRepCheck_Result;
 
@@ -55,10 +56,10 @@ public:
   //! BRepCheck_InvalidToleranceValue NYI
   //! For a wire:
   //! BRepCheck_SelfIntersectingWire
-  BRepCheck_Analyzer(const TopoDS_Shape&    S,
-                     const Standard_Boolean GeomControls  = Standard_True,
-                     const Standard_Boolean theIsParallel = Standard_False,
-                     const Standard_Boolean theIsExact    = Standard_False)
+  BRepCheck_Analyzer(const TopoDS_Shape& S,
+                     const bool          GeomControls  = true,
+                     const bool          theIsParallel = false,
+                     const bool          theIsExact    = false)
       : myIsParallel(theIsParallel),
         myIsExact(theIsExact)
   {
@@ -81,29 +82,28 @@ public:
   //! BRepCheck_InvalidTolerance NYI
   //! For a wire:
   //! BRepCheck_SelfIntersectingWire
-  Standard_EXPORT void Init(const TopoDS_Shape&    S,
-                            const Standard_Boolean GeomControls = Standard_True);
+  Standard_EXPORT void Init(const TopoDS_Shape& S, const bool GeomControls = true);
 
   //! Sets method to calculate distance: Calculating in finite number of points (if theIsExact
   //! is false, faster, but possible not correct result) or exact calculating by using
   //! BRepLib_CheckCurveOnSurface class (if theIsExact is true, slowly, but more correctly).
   //! Exact method is used only when edge is SameParameter.
   //! Default method is calculating in finite number of points
-  void SetExactMethod(const Standard_Boolean theIsExact) { myIsExact = theIsExact; }
+  void SetExactMethod(const bool theIsExact) { myIsExact = theIsExact; }
 
   //! Returns true if exact method selected
-  Standard_Boolean IsExactMethod() { return myIsExact; }
+  bool IsExactMethod() { return myIsExact; }
 
   //! Sets parallel flag
-  void SetParallel(const Standard_Boolean theIsParallel) { myIsParallel = theIsParallel; }
+  void SetParallel(const bool theIsParallel) { myIsParallel = theIsParallel; }
 
   //! Returns true if parallel flag is set
-  Standard_Boolean IsParallel() { return myIsParallel; }
+  bool IsParallel() { return myIsParallel; }
 
   //! <S> is a subshape of the original shape. Returns
   //! <STandard_True> if no default has been detected on
   //! <S> and any of its subshape.
-  Standard_EXPORT Standard_Boolean IsValid(const TopoDS_Shape& S) const;
+  Standard_EXPORT bool IsValid(const TopoDS_Shape& S) const;
 
   //! Returns true if no defect is
   //! detected on the shape S or any of its subshapes.
@@ -130,13 +130,13 @@ public:
   //! of a wire or a compound, its parameterization is defined by
   //! the parameterization of its 3D curve and is considered as valid.
   //! -      If the edge is in the context of a face, it should
-  //! have SameParameter and SameRange flags set to Standard_True. To
+  //! have SameParameter and SameRange flags set to true. To
   //! check these flags, you should call the function
   //! BRep_Tool::SameParameter and BRep_Tool::SameRange for an
-  //! edge. If at least one of these flags is set to Standard_False,
+  //! edge. If at least one of these flags is set to false,
   //! the edge is considered as invalid without any additional check.
   //! If the edge is contained by a face, and it has SameParameter and
-  //! SameRange flags set to Standard_True, IsValid checks
+  //! SameRange flags set to true, IsValid checks
   //! whether representation of the edge on face, in context of which the
   //! edge is considered, has the same parameterization up to the
   //! tolerance value coded on the edge. For a given parameter t on the edge
@@ -144,26 +144,25 @@ public:
   //! surface of the reference face), this checks that |C(t) - S(P(t))|
   //! is less than or equal to tolerance, where tolerance is the tolerance
   //! value coded on the edge.
-  Standard_Boolean IsValid() const { return IsValid(myShape); }
+  bool IsValid() const { return IsValid(myShape); }
 
-  const Handle(BRepCheck_Result)& Result(const TopoDS_Shape& theSubS) const
+  const occ::handle<BRepCheck_Result>& Result(const TopoDS_Shape& theSubS) const
   {
     return myMap.FindFromKey(theSubS);
   }
 
 private:
-  Standard_EXPORT void Put(const TopoDS_Shape& S, const Standard_Boolean Gctrl);
+  Standard_EXPORT void Put(const TopoDS_Shape& S, const bool Gctrl);
 
   Standard_EXPORT void Perform();
 
-  Standard_EXPORT Standard_Boolean ValidSub(const TopoDS_Shape&    S,
-                                            const TopAbs_ShapeEnum SubType) const;
+  Standard_EXPORT bool ValidSub(const TopoDS_Shape& S, const TopAbs_ShapeEnum SubType) const;
 
 private:
-  TopoDS_Shape                          myShape;
-  BRepCheck_IndexedDataMapOfShapeResult myMap;
-  Standard_Boolean                      myIsParallel;
-  Standard_Boolean                      myIsExact;
+  TopoDS_Shape                                                            myShape;
+  NCollection_IndexedDataMap<TopoDS_Shape, occ::handle<BRepCheck_Result>> myMap;
+  bool                                                                    myIsParallel;
+  bool                                                                    myIsExact;
 };
 
 #endif // _BRepCheck_Analyzer_HeaderFile

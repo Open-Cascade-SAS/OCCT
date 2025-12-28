@@ -21,9 +21,10 @@
 
 //=================================================================================================
 
-BRepBlend_SurfPointEvolRadInv::BRepBlend_SurfPointEvolRadInv(const Handle(Adaptor3d_Surface)& S,
-                                                             const Handle(Adaptor3d_Curve)&   C,
-                                                             const Handle(Law_Function)&      Evol)
+BRepBlend_SurfPointEvolRadInv::BRepBlend_SurfPointEvolRadInv(
+  const occ::handle<Adaptor3d_Surface>& S,
+  const occ::handle<Adaptor3d_Curve>&   C,
+  const occ::handle<Law_Function>&      Evol)
     : surf(S),
       curv(C)
 {
@@ -32,7 +33,7 @@ BRepBlend_SurfPointEvolRadInv::BRepBlend_SurfPointEvolRadInv(const Handle(Adapto
 
 //=================================================================================================
 
-void BRepBlend_SurfPointEvolRadInv::Set(const Standard_Integer Choix)
+void BRepBlend_SurfPointEvolRadInv::Set(const int Choix)
 {
   choix = Choix;
   switch (choix)
@@ -53,19 +54,19 @@ void BRepBlend_SurfPointEvolRadInv::Set(const Standard_Integer Choix)
 
 //=================================================================================================
 
-Standard_Integer BRepBlend_SurfPointEvolRadInv::NbEquations() const
+int BRepBlend_SurfPointEvolRadInv::NbEquations() const
 {
   return 3;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_SurfPointEvolRadInv::Value(const math_Vector& X, math_Vector& F)
+bool BRepBlend_SurfPointEvolRadInv::Value(const math_Vector& X, math_Vector& F)
 {
-  Standard_Real theD, norm, unsurnorm;
-  gp_Pnt        ptcur, pts;
-  gp_Vec        d1cur, d1u, d1v;
-  gp_XYZ        nplan(0., 0., 0.), ns(0., 0., 0.), ref(0., 0., 0.);
+  double theD, norm, unsurnorm;
+  gp_Pnt ptcur, pts;
+  gp_Vec d1cur, d1u, d1v;
+  gp_XYZ nplan(0., 0., 0.), ns(0., 0., 0.), ref(0., 0., 0.);
   curv->D1(X(1), ptcur, d1cur);
   ray   = sg1 * tevol->Value(X(1));
   nplan = d1cur.Normalized().XYZ();
@@ -81,16 +82,16 @@ Standard_Boolean BRepBlend_SurfPointEvolRadInv::Value(const math_Vector& X, math
   ref = pts.XYZ() - point.XYZ();
   ref.SetLinearForm(ray, ns, ref);
   F(3) = ref.SquareModulus() - ray * ray;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_SurfPointEvolRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BRepBlend_SurfPointEvolRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  gp_Pnt        ptcur, pts;
-  gp_Vec        d1cur, d2cur, nplan, dnplan, d1u, d1v, d2u, d2v, duv;
-  Standard_Real dtheD, normd1cur, unsurnormd1cur, dray;
+  gp_Pnt ptcur, pts;
+  gp_Vec d1cur, d2cur, nplan, dnplan, d1u, d1v, d2u, d2v, duv;
+  double dtheD, normd1cur, unsurnormd1cur, dray;
 
   curv->D2(X(1), ptcur, d1cur, d2cur);
   tevol->D1(X(1), ray, dray);
@@ -118,20 +119,20 @@ Standard_Boolean BRepBlend_SurfPointEvolRadInv::Derivatives(const math_Vector& X
   gp_Vec dunplancrosnsurf = nplan.Crossed(dunsurf);
   gp_Vec dvnplancrosnsurf = nplan.Crossed(dvnsurf);
 
-  Standard_Real norm2       = nplancrosnsurf.SquareMagnitude();
-  Standard_Real norm        = sqrt(norm2);
-  Standard_Real unsurnorm   = 1. / norm;
-  Standard_Real raysurnorm  = ray * unsurnorm;
-  Standard_Real unsurnorm2  = unsurnorm * unsurnorm;
-  Standard_Real raysurnorm2 = ray * unsurnorm2;
-  Standard_Real dwnorm      = unsurnorm * nplancrosnsurf.Dot(dwnplancrosnsurf);
-  Standard_Real dunorm      = unsurnorm * nplancrosnsurf.Dot(dunplancrosnsurf);
-  Standard_Real dvnorm      = unsurnorm * nplancrosnsurf.Dot(dvnplancrosnsurf);
+  double norm2       = nplancrosnsurf.SquareMagnitude();
+  double norm        = sqrt(norm2);
+  double unsurnorm   = 1. / norm;
+  double raysurnorm  = ray * unsurnorm;
+  double unsurnorm2  = unsurnorm * unsurnorm;
+  double raysurnorm2 = ray * unsurnorm2;
+  double dwnorm      = unsurnorm * nplancrosnsurf.Dot(dwnplancrosnsurf);
+  double dunorm      = unsurnorm * nplancrosnsurf.Dot(dunplancrosnsurf);
+  double dvnorm      = unsurnorm * nplancrosnsurf.Dot(dvnplancrosnsurf);
 
-  Standard_Real nplandotnsurf   = nplan.Dot(nsurf);
-  Standard_Real dwnplandotnsurf = dnplan.Dot(nsurf);
-  Standard_Real dunplandotnsurf = nplan.Dot(dunsurf);
-  Standard_Real dvnplandotnsurf = nplan.Dot(dvnsurf);
+  double nplandotnsurf   = nplan.Dot(nsurf);
+  double dwnplandotnsurf = dnplan.Dot(nsurf);
+  double dunplandotnsurf = nplan.Dot(dunsurf);
+  double dvnplandotnsurf = nplan.Dot(dvnsurf);
 
   gp_Vec temp, dwtemp, dutemp, dvtemp;
   temp.SetLinearForm(nplandotnsurf, nplan, -1., nsurf);
@@ -151,18 +152,16 @@ Standard_Boolean BRepBlend_SurfPointEvolRadInv::Derivatives(const math_Vector& X
   D(3, 2) = ref.Dot(duref);
   D(3, 3) = ref.Dot(dvref);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_SurfPointEvolRadInv::Values(const math_Vector& X,
-                                                       math_Vector&       F,
-                                                       math_Matrix&       D)
+bool BRepBlend_SurfPointEvolRadInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
-  gp_Pnt        ptcur, pts;
-  gp_Vec        d1cur, d2cur, nplan, dnplan, d1u, d1v, d2u, d2v, duv;
-  Standard_Real theD, dtheD, normd1cur, unsurnormd1cur, dray;
+  gp_Pnt ptcur, pts;
+  gp_Vec d1cur, d2cur, nplan, dnplan, d1u, d1v, d2u, d2v, duv;
+  double theD, dtheD, normd1cur, unsurnormd1cur, dray;
 
   curv->D2(X(1), ptcur, d1cur, d2cur);
   tevol->D1(X(1), ray, dray);
@@ -194,20 +193,20 @@ Standard_Boolean BRepBlend_SurfPointEvolRadInv::Values(const math_Vector& X,
   gp_Vec dunplancrosnsurf = nplan.Crossed(dunsurf);
   gp_Vec dvnplancrosnsurf = nplan.Crossed(dvnsurf);
 
-  Standard_Real norm2       = nplancrosnsurf.SquareMagnitude();
-  Standard_Real norm        = sqrt(norm2);
-  Standard_Real unsurnorm   = 1. / norm;
-  Standard_Real raysurnorm  = ray * unsurnorm;
-  Standard_Real unsurnorm2  = unsurnorm * unsurnorm;
-  Standard_Real raysurnorm2 = ray * unsurnorm2;
-  Standard_Real dwnorm      = unsurnorm * nplancrosnsurf.Dot(dwnplancrosnsurf);
-  Standard_Real dunorm      = unsurnorm * nplancrosnsurf.Dot(dunplancrosnsurf);
-  Standard_Real dvnorm      = unsurnorm * nplancrosnsurf.Dot(dvnplancrosnsurf);
+  double norm2       = nplancrosnsurf.SquareMagnitude();
+  double norm        = sqrt(norm2);
+  double unsurnorm   = 1. / norm;
+  double raysurnorm  = ray * unsurnorm;
+  double unsurnorm2  = unsurnorm * unsurnorm;
+  double raysurnorm2 = ray * unsurnorm2;
+  double dwnorm      = unsurnorm * nplancrosnsurf.Dot(dwnplancrosnsurf);
+  double dunorm      = unsurnorm * nplancrosnsurf.Dot(dunplancrosnsurf);
+  double dvnorm      = unsurnorm * nplancrosnsurf.Dot(dvnplancrosnsurf);
 
-  Standard_Real nplandotnsurf   = nplan.Dot(nsurf);
-  Standard_Real dwnplandotnsurf = dnplan.Dot(nsurf);
-  Standard_Real dunplandotnsurf = nplan.Dot(dunsurf);
-  Standard_Real dvnplandotnsurf = nplan.Dot(dvnsurf);
+  double nplandotnsurf   = nplan.Dot(nsurf);
+  double dwnplandotnsurf = dnplan.Dot(nsurf);
+  double dunplandotnsurf = nplan.Dot(dunsurf);
+  double dvnplandotnsurf = nplan.Dot(dvnsurf);
 
   gp_Vec temp, dwtemp, dutemp, dvtemp;
   temp.SetLinearForm(nplandotnsurf, nplan, -1., nsurf);
@@ -228,7 +227,7 @@ Standard_Boolean BRepBlend_SurfPointEvolRadInv::Values(const math_Vector& X,
   D(3, 2) = ref.Dot(duref);
   D(3, 3) = ref.Dot(dvref);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -240,8 +239,7 @@ void BRepBlend_SurfPointEvolRadInv::Set(const gp_Pnt& P)
 
 //=================================================================================================
 
-void BRepBlend_SurfPointEvolRadInv::GetTolerance(math_Vector&        Tolerance,
-                                                 const Standard_Real Tol) const
+void BRepBlend_SurfPointEvolRadInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = curv->Resolution(Tol);
   Tolerance(2) = surf->UResolution(Tol);
@@ -262,15 +260,14 @@ void BRepBlend_SurfPointEvolRadInv::GetBounds(math_Vector& InfBound, math_Vector
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_SurfPointEvolRadInv::IsSolution(const math_Vector&  Sol,
-                                                           const Standard_Real Tol)
+bool BRepBlend_SurfPointEvolRadInv::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector valsol(1, 3);
   Value(Sol, valsol);
   if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol
       && std::abs(valsol(3)) <= 2 * Tol * std::abs(ray))
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }

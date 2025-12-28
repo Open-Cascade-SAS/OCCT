@@ -38,13 +38,13 @@ public:
   //! 1 -> Plane
   //! 2 -> CameraModelD3MultiClippingUnion
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Plane (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Plane) Plane() const;
+  Standard_EXPORT occ::handle<StepGeom_Plane> Plane() const;
 
   //! returns Value as a CameraModelD3MultiClippingUnion (Null if another type)
-  Standard_EXPORT Handle(StepVisual_CameraModelD3MultiClippingUnion)
-    CameraModelD3MultiClippingUnion() const;
+  Standard_EXPORT occ::handle<StepVisual_CameraModelD3MultiClippingUnion>
+                  CameraModelD3MultiClippingUnion() const;
 };
 #endif // StepVisual_CameraModelD3MultiClippingInterectionSelect

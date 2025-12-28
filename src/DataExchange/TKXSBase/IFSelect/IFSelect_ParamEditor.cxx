@@ -23,8 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ParamEditor, IFSelect_Editor)
 
-IFSelect_ParamEditor::IFSelect_ParamEditor(const Standard_Integer nbmax,
-                                           const Standard_CString label)
+IFSelect_ParamEditor::IFSelect_ParamEditor(const int nbmax, const char* label)
     : IFSelect_Editor(nbmax),
       thelabel(label)
 {
@@ -33,18 +32,18 @@ IFSelect_ParamEditor::IFSelect_ParamEditor(const Standard_Integer nbmax,
     thelabel.AssignCat("Param Editor");
 }
 
-void IFSelect_ParamEditor::AddValue(const Handle(Interface_TypedValue)& val,
-                                    const Standard_CString              shortname)
+void IFSelect_ParamEditor::AddValue(const occ::handle<Interface_TypedValue>& val,
+                                    const char*                              shortname)
 {
   SetNbValues(NbValues() + 1);
   SetValue(NbValues(), val, shortname);
 }
 
-void IFSelect_ParamEditor::AddConstantText(const Standard_CString val,
-                                           const Standard_CString shortname,
-                                           const Standard_CString longname)
+void IFSelect_ParamEditor::AddConstantText(const char* val,
+                                           const char* shortname,
+                                           const char* longname)
 {
-  Handle(Interface_TypedValue) tv =
+  occ::handle<Interface_TypedValue> tv =
     new Interface_TypedValue(longname[0] == '\0' ? shortname : longname);
   tv->SetCStringValue(val);
   SetNbValues(NbValues() + 1);
@@ -56,55 +55,54 @@ TCollection_AsciiString IFSelect_ParamEditor::Label() const
   return thelabel;
 }
 
-Standard_Boolean IFSelect_ParamEditor::Recognize(const Handle(IFSelect_EditForm)& /*form*/) const
+bool IFSelect_ParamEditor::Recognize(const occ::handle<IFSelect_EditForm>& /*form*/) const
 {
-  return Standard_True;
+  return true;
 } // no constraint
 
-Handle(TCollection_HAsciiString) IFSelect_ParamEditor::StringValue(
-  const Handle(IFSelect_EditForm)& /*form*/,
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> IFSelect_ParamEditor::StringValue(
+  const occ::handle<IFSelect_EditForm>& /*form*/,
+  const int num) const
 {
   return TypedValue(num)->HStringValue();
 }
 
-Standard_Boolean IFSelect_ParamEditor::Load(const Handle(IFSelect_EditForm)& form,
-                                            const Handle(Standard_Transient)& /*ent*/,
-                                            const Handle(Interface_InterfaceModel)& /*model*/) const
+bool IFSelect_ParamEditor::Load(const occ::handle<IFSelect_EditForm>& form,
+                                const occ::handle<Standard_Transient>& /*ent*/,
+                                const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
-  Standard_Integer i, nb = NbValues();
+  int i, nb = NbValues();
   for (i = 1; i <= nb; i++)
     form->LoadValue(i, TypedValue(i)->HStringValue());
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_ParamEditor::Apply(
-  const Handle(IFSelect_EditForm)& form,
-  const Handle(Standard_Transient)& /*ent*/,
-  const Handle(Interface_InterfaceModel)& /*model*/) const
+bool IFSelect_ParamEditor::Apply(const occ::handle<IFSelect_EditForm>& form,
+                                 const occ::handle<Standard_Transient>& /*ent*/,
+                                 const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
-  Standard_Integer i, nb = NbValues();
+  int i, nb = NbValues();
   for (i = 1; i <= nb; i++)
     if (form->IsModified(i))
       TypedValue(i)->SetHStringValue(form->EditedValue(i));
 
-  return Standard_True;
+  return true;
 }
 
-Handle(IFSelect_ParamEditor) IFSelect_ParamEditor::StaticEditor(
-  const Handle(TColStd_HSequenceOfHAsciiString)& list,
-  const Standard_CString                         label)
+occ::handle<IFSelect_ParamEditor> IFSelect_ParamEditor::StaticEditor(
+  const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
+  const char*                                                                      label)
 {
-  Handle(IFSelect_ParamEditor) editor;
+  occ::handle<IFSelect_ParamEditor> editor;
   if (list.IsNull())
     return editor;
-  Standard_Integer i, nb = list->Length();
+  int i, nb = list->Length();
   //  if (nb == 0) return editor;
   editor = new IFSelect_ParamEditor(nb + 10, label);
   for (i = 1; i <= nb; i++)
   {
-    Handle(Interface_Static) val = Interface_Static::Static(list->Value(i)->ToCString());
+    occ::handle<Interface_Static> val = Interface_Static::Static(list->Value(i)->ToCString());
     if (!val.IsNull())
       editor->AddValue(val);
   }

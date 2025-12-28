@@ -26,10 +26,10 @@ RWStepDimTol_RWToleranceZoneForm::RWStepDimTol_RWToleranceZoneForm() {}
 //=================================================================================================
 
 void RWStepDimTol_RWToleranceZoneForm::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepDimTol_ToleranceZoneForm)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                                        num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepDimTol_ToleranceZoneForm>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "tolerance_zone_form"))
@@ -37,7 +37,7 @@ void RWStepDimTol_RWToleranceZoneForm::ReadStep(
 
   // Own fields of ToleranceZoneForm
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   // Initialize entity
@@ -47,8 +47,8 @@ void RWStepDimTol_RWToleranceZoneForm::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWToleranceZoneForm::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepDimTol_ToleranceZoneForm)& ent) const
+  StepData_StepWriter&                             SW,
+  const occ::handle<StepDimTol_ToleranceZoneForm>& ent) const
 {
   SW.Send(ent->Name());
 }

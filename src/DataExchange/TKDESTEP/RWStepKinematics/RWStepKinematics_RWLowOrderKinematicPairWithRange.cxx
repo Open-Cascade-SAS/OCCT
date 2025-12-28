@@ -36,10 +36,10 @@ RWStepKinematics_RWLowOrderKinematicPairWithRange::
 //=================================================================================================
 
 void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
-  const Handle(StepData_StepReaderData)&                       theData,
-  const Standard_Integer                                       theNum,
-  Handle(Interface_Check)&                                     theArch,
-  const Handle(StepKinematics_LowOrderKinematicPairWithRange)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                       theData,
+  const int                                                         theNum,
+  occ::handle<Interface_Check>&                                     theArch,
+  const occ::handle<StepKinematics_LowOrderKinematicPairWithRange>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 24, theArch, "low_order_kinematic_pair_with_range"))
@@ -47,20 +47,20 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -71,11 +71,11 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -83,7 +83,7 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -93,7 +93,7 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -103,42 +103,42 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
 
   // Inherited fields of LowOrderKinematicPair
 
-  Standard_Boolean aLowOrderKinematicPair_TX;
+  bool aLowOrderKinematicPair_TX;
   theData->ReadBoolean(theNum,
                        7,
                        "low_order_kinematic_pair.t_x",
                        theArch,
                        aLowOrderKinematicPair_TX);
 
-  Standard_Boolean aLowOrderKinematicPair_TY;
+  bool aLowOrderKinematicPair_TY;
   theData->ReadBoolean(theNum,
                        8,
                        "low_order_kinematic_pair.t_y",
                        theArch,
                        aLowOrderKinematicPair_TY);
 
-  Standard_Boolean aLowOrderKinematicPair_TZ;
+  bool aLowOrderKinematicPair_TZ;
   theData->ReadBoolean(theNum,
                        9,
                        "low_order_kinematic_pair.t_z",
                        theArch,
                        aLowOrderKinematicPair_TZ);
 
-  Standard_Boolean aLowOrderKinematicPair_RX;
+  bool aLowOrderKinematicPair_RX;
   theData->ReadBoolean(theNum,
                        10,
                        "low_order_kinematic_pair.r_x",
                        theArch,
                        aLowOrderKinematicPair_RX);
 
-  Standard_Boolean aLowOrderKinematicPair_RY;
+  bool aLowOrderKinematicPair_RY;
   theData->ReadBoolean(theNum,
                        11,
                        "low_order_kinematic_pair.r_y",
                        theArch,
                        aLowOrderKinematicPair_RY);
 
-  Standard_Boolean aLowOrderKinematicPair_RZ;
+  bool aLowOrderKinematicPair_RZ;
   theData->ReadBoolean(theNum,
                        12,
                        "low_order_kinematic_pair.r_z",
@@ -147,8 +147,8 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
 
   // Own fields of LowOrderKinematicPairWithRange
 
-  Standard_Real    aLowerLimitActualRotationX;
-  Standard_Boolean hasLowerLimitActualRotationX = Standard_True;
+  double aLowerLimitActualRotationX;
+  bool   hasLowerLimitActualRotationX = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum,
@@ -159,12 +159,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasLowerLimitActualRotationX = Standard_False;
+    hasLowerLimitActualRotationX = false;
     aLowerLimitActualRotationX   = 0;
   }
 
-  Standard_Real    aUpperLimitActualRotationX;
-  Standard_Boolean hasUpperLimitActualRotationX = Standard_True;
+  double aUpperLimitActualRotationX;
+  bool   hasUpperLimitActualRotationX = true;
   if (theData->IsParamDefined(theNum, 14))
   {
     theData->ReadReal(theNum,
@@ -175,12 +175,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasUpperLimitActualRotationX = Standard_False;
+    hasUpperLimitActualRotationX = false;
     aUpperLimitActualRotationX   = 0;
   }
 
-  Standard_Real    aLowerLimitActualRotationY;
-  Standard_Boolean hasLowerLimitActualRotationY = Standard_True;
+  double aLowerLimitActualRotationY;
+  bool   hasLowerLimitActualRotationY = true;
   if (theData->IsParamDefined(theNum, 15))
   {
     theData->ReadReal(theNum,
@@ -191,12 +191,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasLowerLimitActualRotationY = Standard_False;
+    hasLowerLimitActualRotationY = false;
     aLowerLimitActualRotationY   = 0;
   }
 
-  Standard_Real    aUpperLimitActualRotationY;
-  Standard_Boolean hasUpperLimitActualRotationY = Standard_True;
+  double aUpperLimitActualRotationY;
+  bool   hasUpperLimitActualRotationY = true;
   if (theData->IsParamDefined(theNum, 16))
   {
     theData->ReadReal(theNum,
@@ -207,12 +207,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasUpperLimitActualRotationY = Standard_False;
+    hasUpperLimitActualRotationY = false;
     aUpperLimitActualRotationY   = 0;
   }
 
-  Standard_Real    aLowerLimitActualRotationZ;
-  Standard_Boolean hasLowerLimitActualRotationZ = Standard_True;
+  double aLowerLimitActualRotationZ;
+  bool   hasLowerLimitActualRotationZ = true;
   if (theData->IsParamDefined(theNum, 17))
   {
     theData->ReadReal(theNum,
@@ -223,12 +223,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasLowerLimitActualRotationZ = Standard_False;
+    hasLowerLimitActualRotationZ = false;
     aLowerLimitActualRotationZ   = 0;
   }
 
-  Standard_Real    aUpperLimitActualRotationZ;
-  Standard_Boolean hasUpperLimitActualRotationZ = Standard_True;
+  double aUpperLimitActualRotationZ;
+  bool   hasUpperLimitActualRotationZ = true;
   if (theData->IsParamDefined(theNum, 18))
   {
     theData->ReadReal(theNum,
@@ -239,12 +239,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasUpperLimitActualRotationZ = Standard_False;
+    hasUpperLimitActualRotationZ = false;
     aUpperLimitActualRotationZ   = 0;
   }
 
-  Standard_Real    aLowerLimitActualTranslationX;
-  Standard_Boolean hasLowerLimitActualTranslationX = Standard_True;
+  double aLowerLimitActualTranslationX;
+  bool   hasLowerLimitActualTranslationX = true;
   if (theData->IsParamDefined(theNum, 19))
   {
     theData->ReadReal(theNum,
@@ -255,12 +255,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasLowerLimitActualTranslationX = Standard_False;
+    hasLowerLimitActualTranslationX = false;
     aLowerLimitActualTranslationX   = 0;
   }
 
-  Standard_Real    aUpperLimitActualTranslationX;
-  Standard_Boolean hasUpperLimitActualTranslationX = Standard_True;
+  double aUpperLimitActualTranslationX;
+  bool   hasUpperLimitActualTranslationX = true;
   if (theData->IsParamDefined(theNum, 20))
   {
     theData->ReadReal(theNum,
@@ -271,12 +271,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasUpperLimitActualTranslationX = Standard_False;
+    hasUpperLimitActualTranslationX = false;
     aUpperLimitActualTranslationX   = 0;
   }
 
-  Standard_Real    aLowerLimitActualTranslationY;
-  Standard_Boolean hasLowerLimitActualTranslationY = Standard_True;
+  double aLowerLimitActualTranslationY;
+  bool   hasLowerLimitActualTranslationY = true;
   if (theData->IsParamDefined(theNum, 21))
   {
     theData->ReadReal(theNum,
@@ -287,12 +287,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasLowerLimitActualTranslationY = Standard_False;
+    hasLowerLimitActualTranslationY = false;
     aLowerLimitActualTranslationY   = 0;
   }
 
-  Standard_Real    aUpperLimitActualTranslationY;
-  Standard_Boolean hasUpperLimitActualTranslationY = Standard_True;
+  double aUpperLimitActualTranslationY;
+  bool   hasUpperLimitActualTranslationY = true;
   if (theData->IsParamDefined(theNum, 22))
   {
     theData->ReadReal(theNum,
@@ -303,12 +303,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasUpperLimitActualTranslationY = Standard_False;
+    hasUpperLimitActualTranslationY = false;
     aUpperLimitActualTranslationY   = 0;
   }
 
-  Standard_Real    aLowerLimitActualTranslationZ;
-  Standard_Boolean hasLowerLimitActualTranslationZ = Standard_True;
+  double aLowerLimitActualTranslationZ;
+  bool   hasLowerLimitActualTranslationZ = true;
   if (theData->IsParamDefined(theNum, 23))
   {
     theData->ReadReal(theNum,
@@ -319,12 +319,12 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasLowerLimitActualTranslationZ = Standard_False;
+    hasLowerLimitActualTranslationZ = false;
     aLowerLimitActualTranslationZ   = 0;
   }
 
-  Standard_Real    aUpperLimitActualTranslationZ;
-  Standard_Boolean hasUpperLimitActualTranslationZ = Standard_True;
+  double aUpperLimitActualTranslationZ;
+  bool   hasUpperLimitActualTranslationZ = true;
   if (theData->IsParamDefined(theNum, 24))
   {
     theData->ReadReal(theNum,
@@ -335,7 +335,7 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
   }
   else
   {
-    hasUpperLimitActualTranslationZ = Standard_False;
+    hasUpperLimitActualTranslationZ = false;
     aUpperLimitActualTranslationZ   = 0;
   }
 
@@ -382,8 +382,8 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWLowOrderKinematicPairWithRange::WriteStep(
-  StepData_StepWriter&                                         theSW,
-  const Handle(StepKinematics_LowOrderKinematicPairWithRange)& theEnt) const
+  StepData_StepWriter&                                              theSW,
+  const occ::handle<StepKinematics_LowOrderKinematicPairWithRange>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -513,8 +513,8 @@ void RWStepKinematics_RWLowOrderKinematicPairWithRange::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWLowOrderKinematicPairWithRange::Share(
-  const Handle(StepKinematics_LowOrderKinematicPairWithRange)& theEnt,
-  Interface_EntityIterator&                                    iter) const
+  const occ::handle<StepKinematics_LowOrderKinematicPairWithRange>& theEnt,
+  Interface_EntityIterator&                                         iter) const
 {
 
   // Inherited fields of RepresentationItem

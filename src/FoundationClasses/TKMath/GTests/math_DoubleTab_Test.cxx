@@ -29,9 +29,9 @@ TEST(MathDoubleTabTest, DefaultConstructor)
   aTab.Init(5.0);
 
   // Check all values are set to 5.0
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       EXPECT_DOUBLE_EQ(aTab.Value(anI, aJ), 5.0);
       EXPECT_DOUBLE_EQ(aTab(anI, aJ), 5.0); // Test operator()
@@ -42,16 +42,16 @@ TEST(MathDoubleTabTest, DefaultConstructor)
 TEST(MathDoubleTabTest, ExternalArrayConstructor)
 {
   // Create external array
-  Standard_Real anArray[9] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
+  double anArray[9] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
 
   // Create math_DoubleTab from external array
   math_DoubleTab aTab(anArray, 1, 3, 1, 3);
 
   // Check values are correctly accessed
-  Standard_Integer anIndex = 0;
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  int anIndex = 0;
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       EXPECT_DOUBLE_EQ(aTab.Value(anI, aJ), anArray[anIndex]);
       anIndex++;
@@ -89,9 +89,9 @@ TEST(MathDoubleTabTest, InitOperation)
   aTab.Init(7.5);
 
   // Check all elements are set
-  for (Standard_Integer anI = 0; anI <= 2; anI++)
+  for (int anI = 0; anI <= 2; anI++)
   {
-    for (Standard_Integer aJ = 0; aJ <= 2; aJ++)
+    for (int aJ = 0; aJ <= 2; aJ++)
     {
       EXPECT_DOUBLE_EQ(aTab.Value(anI, aJ), 7.5);
     }

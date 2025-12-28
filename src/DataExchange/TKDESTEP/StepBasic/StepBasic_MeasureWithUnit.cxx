@@ -24,8 +24,9 @@ StepBasic_MeasureWithUnit::StepBasic_MeasureWithUnit() {}
 
 //=================================================================================================
 
-void StepBasic_MeasureWithUnit::Init(const Handle(StepBasic_MeasureValueMember)& aValueComponent,
-                                     const StepBasic_Unit&                       aUnitComponent)
+void StepBasic_MeasureWithUnit::Init(
+  const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
+  const StepBasic_Unit&                            aUnitComponent)
 {
   // --- classe own fields ---
   valueComponent = aValueComponent;
@@ -34,7 +35,7 @@ void StepBasic_MeasureWithUnit::Init(const Handle(StepBasic_MeasureValueMember)&
 
 //=================================================================================================
 
-void StepBasic_MeasureWithUnit::SetValueComponent(const Standard_Real aValueComponent)
+void StepBasic_MeasureWithUnit::SetValueComponent(const double aValueComponent)
 {
   if (valueComponent.IsNull())
     valueComponent = new StepBasic_MeasureValueMember;
@@ -43,14 +44,14 @@ void StepBasic_MeasureWithUnit::SetValueComponent(const Standard_Real aValueComp
 
 //=================================================================================================
 
-Standard_Real StepBasic_MeasureWithUnit::ValueComponent() const
+double StepBasic_MeasureWithUnit::ValueComponent() const
 {
   return (valueComponent.IsNull() ? 0.0 : valueComponent->Real());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_MeasureValueMember) StepBasic_MeasureWithUnit::ValueComponentMember() const
+occ::handle<StepBasic_MeasureValueMember> StepBasic_MeasureWithUnit::ValueComponentMember() const
 {
   return valueComponent;
 }
@@ -58,7 +59,7 @@ Handle(StepBasic_MeasureValueMember) StepBasic_MeasureWithUnit::ValueComponentMe
 //=================================================================================================
 
 void StepBasic_MeasureWithUnit::SetValueComponentMember(
-  const Handle(StepBasic_MeasureValueMember)& val)
+  const occ::handle<StepBasic_MeasureValueMember>& val)
 {
   valueComponent = val;
 }

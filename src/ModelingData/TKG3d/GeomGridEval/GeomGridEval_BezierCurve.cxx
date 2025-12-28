@@ -22,16 +22,16 @@ namespace
 //! Creates a BSplCLib_Cache for a Bezier curve.
 //! @param theCurve the Bezier curve geometry
 //! @return initialized cache ready for evaluation
-Handle(BSplCLib_Cache) CreateBezierCache(const Handle(Geom_BezierCurve)& theCurve)
+occ::handle<BSplCLib_Cache> CreateBezierCache(const occ::handle<Geom_BezierCurve>& theCurve)
 {
-  const int            aDegree = theCurve->Degree();
-  TColStd_Array1OfReal aFlatKnots(BSplCLib::FlatBezierKnots(aDegree), 1, 2 * (aDegree + 1));
+  const int                  aDegree = theCurve->Degree();
+  NCollection_Array1<double> aFlatKnots(BSplCLib::FlatBezierKnots(aDegree), 1, 2 * (aDegree + 1));
 
-  Handle(BSplCLib_Cache) aCache = new BSplCLib_Cache(aDegree,
-                                                     theCurve->IsPeriodic(),
-                                                     aFlatKnots,
-                                                     theCurve->Poles(),
-                                                     theCurve->Weights());
+  occ::handle<BSplCLib_Cache> aCache = new BSplCLib_Cache(aDegree,
+                                                          theCurve->IsPeriodic(),
+                                                          aFlatKnots,
+                                                          theCurve->Poles(),
+                                                          theCurve->Weights());
   aCache->BuildCache(0.5, aFlatKnots, theCurve->Poles(), theCurve->Weights());
   return aCache;
 }
@@ -40,7 +40,7 @@ Handle(BSplCLib_Cache) CreateBezierCache(const Handle(Geom_BezierCurve)& theCurv
 //==================================================================================================
 
 NCollection_Array1<gp_Pnt> GeomGridEval_BezierCurve::EvaluateGrid(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
@@ -50,7 +50,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BezierCurve::EvaluateGrid(
   const int                  aNb = theParams.Size();
   NCollection_Array1<gp_Pnt> aResult(1, aNb);
 
-  Handle(BSplCLib_Cache) aCache = CreateBezierCache(myGeom);
+  occ::handle<BSplCLib_Cache> aCache = CreateBezierCache(myGeom);
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
@@ -64,7 +64,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BezierCurve::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BezierCurve::EvaluateGridD1(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
@@ -74,7 +74,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BezierCurve::EvaluateGrid
   const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
-  Handle(BSplCLib_Cache) aCache = CreateBezierCache(myGeom);
+  occ::handle<BSplCLib_Cache> aCache = CreateBezierCache(myGeom);
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
@@ -89,7 +89,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BezierCurve::EvaluateGrid
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BezierCurve::EvaluateGridD2(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
@@ -99,7 +99,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BezierCurve::EvaluateGrid
   const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
-  Handle(BSplCLib_Cache) aCache = CreateBezierCache(myGeom);
+  occ::handle<BSplCLib_Cache> aCache = CreateBezierCache(myGeom);
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
@@ -114,7 +114,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BezierCurve::EvaluateGrid
 //==================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BezierCurve::EvaluateGridD3(
-  const TColStd_Array1OfReal& theParams) const
+  const NCollection_Array1<double>& theParams) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty())
   {
@@ -124,7 +124,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BezierCurve::EvaluateGrid
   const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
-  Handle(BSplCLib_Cache) aCache = CreateBezierCache(myGeom);
+  occ::handle<BSplCLib_Cache> aCache = CreateBezierCache(myGeom);
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
@@ -139,8 +139,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BezierCurve::EvaluateGrid
 //==================================================================================================
 
 NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(
-  const TColStd_Array1OfReal& theParams,
-  int                         theN) const
+  const NCollection_Array1<double>& theParams,
+  int                               theN) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
   {
@@ -163,11 +163,11 @@ NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(
   }
 
   // Get poles and weights from geometry
-  const TColgp_Array1OfPnt&   aPoles   = myGeom->Poles();
-  const TColStd_Array1OfReal* aWeights = myGeom->Weights();
+  const NCollection_Array1<gp_Pnt>& aPoles   = myGeom->Poles();
+  const NCollection_Array1<double>* aWeights = myGeom->Weights();
 
   // Use pre-defined flat knots from BSplCLib
-  TColStd_Array1OfReal aFlatKnots(BSplCLib::FlatBezierKnots(aDegree), 1, 2 * (aDegree + 1));
+  NCollection_Array1<double> aFlatKnots(BSplCLib::FlatBezierKnots(aDegree), 1, 2 * (aDegree + 1));
 
   // Bezier has a single span (index 0 with flat knots), non-periodic
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)

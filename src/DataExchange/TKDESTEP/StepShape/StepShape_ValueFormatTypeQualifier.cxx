@@ -23,7 +23,8 @@ StepShape_ValueFormatTypeQualifier::StepShape_ValueFormatTypeQualifier() {}
 
 //=================================================================================================
 
-void StepShape_ValueFormatTypeQualifier::Init(const Handle(TCollection_HAsciiString)& theFormatType)
+void StepShape_ValueFormatTypeQualifier::Init(
+  const occ::handle<TCollection_HAsciiString>& theFormatType)
 {
   // --- classe own fields ---
   formatType = theFormatType;

@@ -28,21 +28,22 @@ const Standard_GUID& XCAFDoc_NoteBalloon::GetID()
 
 //=================================================================================================
 
-Handle(XCAFDoc_NoteBalloon) XCAFDoc_NoteBalloon::Get(const TDF_Label& theLabel)
+occ::handle<XCAFDoc_NoteBalloon> XCAFDoc_NoteBalloon::Get(const TDF_Label& theLabel)
 {
-  Handle(XCAFDoc_NoteBalloon) aThis;
+  occ::handle<XCAFDoc_NoteBalloon> aThis;
   theLabel.FindAttribute(XCAFDoc_NoteBalloon::GetID(), aThis);
   return aThis;
 }
 
 //=================================================================================================
 
-Handle(XCAFDoc_NoteBalloon) XCAFDoc_NoteBalloon::Set(const TDF_Label&                  theLabel,
-                                                     const TCollection_ExtendedString& theUserName,
-                                                     const TCollection_ExtendedString& theTimeStamp,
-                                                     const TCollection_ExtendedString& theComment)
+occ::handle<XCAFDoc_NoteBalloon> XCAFDoc_NoteBalloon::Set(
+  const TDF_Label&                  theLabel,
+  const TCollection_ExtendedString& theUserName,
+  const TCollection_ExtendedString& theTimeStamp,
+  const TCollection_ExtendedString& theComment)
 {
-  Handle(XCAFDoc_NoteBalloon) aNoteBalloon;
+  occ::handle<XCAFDoc_NoteBalloon> aNoteBalloon;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_NoteBalloon::GetID(), aNoteBalloon))
   {
     aNoteBalloon = new XCAFDoc_NoteBalloon();

@@ -29,7 +29,7 @@ void StepElement_UniformSurfaceSection::Init(
   const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_Offset,
   const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMass,
   const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMassOffset,
-  const Standard_Real                          aThickness,
+  const double                                 aThickness,
   const StepElement_MeasureOrUnspecifiedValue& aBendingThickness,
   const StepElement_MeasureOrUnspecifiedValue& aShearThickness)
 {
@@ -46,14 +46,14 @@ void StepElement_UniformSurfaceSection::Init(
 
 //=================================================================================================
 
-Standard_Real StepElement_UniformSurfaceSection::Thickness() const
+double StepElement_UniformSurfaceSection::Thickness() const
 {
   return theThickness;
 }
 
 //=================================================================================================
 
-void StepElement_UniformSurfaceSection::SetThickness(const Standard_Real aThickness)
+void StepElement_UniformSurfaceSection::SetThickness(const double aThickness)
 {
   theThickness = aThickness;
 }

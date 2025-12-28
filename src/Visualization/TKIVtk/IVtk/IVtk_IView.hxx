@@ -20,10 +20,8 @@
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_Mat4d.hxx>
-
-class IVtk_IView;
-DEFINE_STANDARD_HANDLE(IVtk_IView, IVtk_Interface)
+#include <NCollection_Mat4.hxx>
+#include <Standard_TypeDef.hxx>
 
 //! @class IVtk_IView
 //! @brief Interface for obtaining view transformation parameters.
@@ -34,7 +32,7 @@ class IVtk_IView : public IVtk_Interface
 {
 
 public:
-  typedef Handle(IVtk_IView) Handle;
+  typedef occ::handle<IVtk_IView> Handle;
 
   //! Destructor
   virtual ~IVtk_IView() {}
@@ -79,9 +77,9 @@ public:
   virtual void GetWindowSize(int& theX, int& theY) const = 0;
 
   //! Gets camera projection and orientation matrices
-  virtual void GetCamera(Graphic3d_Mat4d&  theProj,
-                         Graphic3d_Mat4d&  theOrient,
-                         Standard_Boolean& theIsOrtho) const = 0;
+  virtual void GetCamera(NCollection_Mat4<double>& theProj,
+                         NCollection_Mat4<double>& theOrient,
+                         bool&                     theIsOrtho) const = 0;
 
   //! Converts 3D display coordinates into 3D world coordinates.
   //! @param[in]  theDisplayPnt 2d point of display coordinates
@@ -90,10 +88,10 @@ public:
   virtual bool DisplayToWorld(const gp_XY& theDisplayPnt, gp_XYZ& theWorldPnt) const = 0;
 
   //! Gets viewport coordinates
-  virtual void GetViewport(Standard_Real& theX,
-                           Standard_Real& theY,
-                           Standard_Real& theWidth,
-                           Standard_Real& theHeight) const = 0;
+  virtual void GetViewport(double& theX,
+                           double& theY,
+                           double& theWidth,
+                           double& theHeight) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IVtk_IView, IVtk_Interface)
 };

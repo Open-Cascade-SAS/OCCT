@@ -19,11 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepVisual_TessellatedShapeRepresentation.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters,
-                       StepVisual_TessellatedShapeRepresentation)
 
 //! Representation of STEP entity TessellatedShapeRepresentationWithAccuracyParameters
 class StepVisual_TessellatedShapeRepresentationWithAccuracyParameters
@@ -36,30 +34,30 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&             theRepresentation_Name,
-    const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
-    const Handle(StepRepr_RepresentationContext)&       theRepresentation_ContextOfItems,
-    const Handle(TColStd_HArray1OfReal)&                theTessellationAccuracyParameters);
+    const occ::handle<TCollection_HAsciiString>& theRepresentation_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
+                                                       theRepresentation_Items,
+    const occ::handle<StepRepr_RepresentationContext>& theRepresentation_ContextOfItems,
+    const occ::handle<NCollection_HArray1<double>>&    theTessellationAccuracyParameters);
 
   //! Returns field TessellationAccuracyParameters
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) TessellationAccuracyParameters() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> TessellationAccuracyParameters() const;
 
   //! Sets field TessellationAccuracyParameters
   Standard_EXPORT void SetTessellationAccuracyParameters(
-    const Handle(TColStd_HArray1OfReal)& theTessellationAccuracyParameters);
+    const occ::handle<NCollection_HArray1<double>>& theTessellationAccuracyParameters);
 
   //! Returns number of TessellationAccuracyParameters
-  Standard_EXPORT Standard_Integer NbTessellationAccuracyParameters() const;
+  Standard_EXPORT int NbTessellationAccuracyParameters() const;
 
   //! Returns value of TessellationAccuracyParameters by its num
-  Standard_EXPORT const Standard_Real& TessellationAccuracyParametersValue(
-    const Standard_Integer theNum) const;
+  Standard_EXPORT const double& TessellationAccuracyParametersValue(const int theNum) const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters,
                           StepVisual_TessellatedShapeRepresentation)
 
 private:
-  Handle(TColStd_HArray1OfReal) myTessellationAccuracyParameters;
+  occ::handle<NCollection_HArray1<double>> myTessellationAccuracyParameters;
 };
 
 #endif // _StepVisual_TessellatedShapeRepresentationWithAccuracyParameters_HeaderFile_

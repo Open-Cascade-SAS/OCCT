@@ -25,7 +25,7 @@ TEST(BVH_RayTest, ConstructorBasic)
   BVH_Vec3d aOrigin(1.0, 2.0, 3.0);
   BVH_Vec3d aDirection(0.0, 1.0, 0.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Origin.x(), 1.0);
   EXPECT_EQ(aRay.Origin.y(), 2.0);
@@ -41,7 +41,7 @@ TEST(BVH_RayTest, DirectionStorage)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(2.0, 4.0, 8.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   // Verify direction is stored correctly
   EXPECT_EQ(aRay.Direct.x(), 2.0);
@@ -54,7 +54,7 @@ TEST(BVH_RayTest, NegativeDirection)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(-2.0, -4.0, -1.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), -2.0);
   EXPECT_EQ(aRay.Direct.y(), -4.0);
@@ -66,7 +66,7 @@ TEST(BVH_RayTest, ZeroComponent)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(1.0, 0.0, 1.0); // Zero Y component
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), 1.0);
   EXPECT_EQ(aRay.Direct.y(), 0.0);
@@ -78,7 +78,7 @@ TEST(BVH_RayTest, AllZeroDirection)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(0.0, 0.0, 0.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   // All components should be zero
   EXPECT_EQ(aRay.Direct.x(), 0.0);
@@ -88,7 +88,7 @@ TEST(BVH_RayTest, AllZeroDirection)
 
 TEST(BVH_RayTest, DefaultConstructor)
 {
-  BVH_Ray<Standard_Real, 3> aRay;
+  BVH_Ray<double, 3> aRay;
 
   // Default constructed ray should have zero origin and direction
   EXPECT_EQ(aRay.Origin.x(), 0.0);
@@ -105,7 +105,7 @@ TEST(BVH_RayTest, Ray2D)
   BVH_Vec2d aOrigin(1.0, 2.0);
   BVH_Vec2d aDirection(3.0, 4.0);
 
-  BVH_Ray<Standard_Real, 2> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 2> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Origin.x(), 1.0);
   EXPECT_EQ(aRay.Origin.y(), 2.0);
@@ -119,7 +119,7 @@ TEST(BVH_RayTest, NormalizedDirection)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(1.0, 0.0, 0.0); // Unit vector along X
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), 1.0);
   EXPECT_EQ(aRay.Direct.y(), 0.0);
@@ -131,7 +131,7 @@ TEST(BVH_RayTest, VerySmallDirection)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(1e-20, 1e-20, 1e-20);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   // Should handle very small values correctly
   EXPECT_EQ(aRay.Direct.x(), 1e-20);
@@ -144,7 +144,7 @@ TEST(BVH_RayTest, MixedZeroNonZero)
   BVH_Vec3d aOrigin(1.0, 2.0, 3.0);
   BVH_Vec3d aDirection(0.0, 2.0, 0.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), 0.0);
   EXPECT_EQ(aRay.Direct.y(), 2.0);
@@ -156,7 +156,7 @@ TEST(BVH_RayTest, FloatPrecision)
   BVH_Vec3f aOrigin(1.0f, 2.0f, 3.0f);
   BVH_Vec3f aDirection(2.0f, 4.0f, 8.0f);
 
-  BVH_Ray<Standard_ShortReal, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<float, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), 2.0f);
   EXPECT_EQ(aRay.Direct.y(), 4.0f);
@@ -166,9 +166,9 @@ TEST(BVH_RayTest, FloatPrecision)
 TEST(BVH_RayTest, ConstexprConstructor)
 {
   // This test verifies that the constructor is truly constexpr
-  constexpr BVH_Vec3d                 aOrigin(1.0, 2.0, 3.0);
-  constexpr BVH_Vec3d                 aDirection(1.0, 1.0, 1.0);
-  constexpr BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  constexpr BVH_Vec3d          aOrigin(1.0, 2.0, 3.0);
+  constexpr BVH_Vec3d          aDirection(1.0, 1.0, 1.0);
+  constexpr BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   // If this compiles, constexpr works
   EXPECT_EQ(aRay.Origin.x(), 1.0);
@@ -179,7 +179,7 @@ TEST(BVH_RayTest, DiagonalRay)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(1.0, 1.0, 1.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), 1.0);
   EXPECT_EQ(aRay.Direct.y(), 1.0);
@@ -191,7 +191,7 @@ TEST(BVH_RayTest, NegativeOrigin)
   BVH_Vec3d aOrigin(-10.0, -20.0, -30.0);
   BVH_Vec3d aDirection(1.0, 2.0, 3.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Origin.x(), -10.0);
   EXPECT_EQ(aRay.Origin.y(), -20.0);
@@ -207,7 +207,7 @@ TEST(BVH_RayTest, AxisAlignedX)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(1.0, 0.0, 0.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), 1.0);
   EXPECT_EQ(aRay.Direct.y(), 0.0);
@@ -219,7 +219,7 @@ TEST(BVH_RayTest, AxisAlignedY)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(0.0, 1.0, 0.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), 0.0);
   EXPECT_EQ(aRay.Direct.y(), 1.0);
@@ -231,7 +231,7 @@ TEST(BVH_RayTest, AxisAlignedZ)
   BVH_Vec3d aOrigin(0.0, 0.0, 0.0);
   BVH_Vec3d aDirection(0.0, 0.0, 1.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), 0.0);
   EXPECT_EQ(aRay.Direct.y(), 0.0);
@@ -243,7 +243,7 @@ TEST(BVH_RayTest, LargeValues)
   BVH_Vec3d aOrigin(1e6, 2e6, 3e6);
   BVH_Vec3d aDirection(1e3, 2e3, 4e3);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   EXPECT_EQ(aRay.Direct.x(), 1e3);
   EXPECT_EQ(aRay.Direct.y(), 2e3);
@@ -255,7 +255,7 @@ TEST(BVH_RayTest, OriginAndDirectionPreservation)
   BVH_Vec3d aOrigin(1.0, 2.0, 3.0);
   BVH_Vec3d aDirection(2.0, 4.0, 8.0);
 
-  BVH_Ray<Standard_Real, 3> aRay(aOrigin, aDirection);
+  BVH_Ray<double, 3> aRay(aOrigin, aDirection);
 
   // Verify that both origin and direction are preserved exactly
   EXPECT_EQ(aRay.Origin.x(), aOrigin.x());

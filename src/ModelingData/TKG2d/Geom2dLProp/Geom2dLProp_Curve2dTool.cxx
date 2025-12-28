@@ -20,41 +20,39 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 
-void Geom2dLProp_Curve2dTool::Value(const Handle(Geom2d_Curve)& C,
-                                    const Standard_Real         U,
-                                    gp_Pnt2d&                   P)
+void Geom2dLProp_Curve2dTool::Value(const occ::handle<Geom2d_Curve>& C, const double U, gp_Pnt2d& P)
 {
   P = C->Value(U);
 }
 
-void Geom2dLProp_Curve2dTool::D1(const Handle(Geom2d_Curve)& C,
-                                 const Standard_Real         U,
-                                 gp_Pnt2d&                   P,
-                                 gp_Vec2d&                   V1)
+void Geom2dLProp_Curve2dTool::D1(const occ::handle<Geom2d_Curve>& C,
+                                 const double                     U,
+                                 gp_Pnt2d&                        P,
+                                 gp_Vec2d&                        V1)
 {
   C->D1(U, P, V1);
 }
 
-void Geom2dLProp_Curve2dTool::D2(const Handle(Geom2d_Curve)& C,
-                                 const Standard_Real         U,
-                                 gp_Pnt2d&                   P,
-                                 gp_Vec2d&                   V1,
-                                 gp_Vec2d&                   V2)
+void Geom2dLProp_Curve2dTool::D2(const occ::handle<Geom2d_Curve>& C,
+                                 const double                     U,
+                                 gp_Pnt2d&                        P,
+                                 gp_Vec2d&                        V1,
+                                 gp_Vec2d&                        V2)
 {
   C->D2(U, P, V1, V2);
 }
 
-void Geom2dLProp_Curve2dTool::D3(const Handle(Geom2d_Curve)& C,
-                                 const Standard_Real         U,
-                                 gp_Pnt2d&                   P,
-                                 gp_Vec2d&                   V1,
-                                 gp_Vec2d&                   V2,
-                                 gp_Vec2d&                   V3)
+void Geom2dLProp_Curve2dTool::D3(const occ::handle<Geom2d_Curve>& C,
+                                 const double                     U,
+                                 gp_Pnt2d&                        P,
+                                 gp_Vec2d&                        V1,
+                                 gp_Vec2d&                        V2,
+                                 gp_Vec2d&                        V3)
 {
   C->D3(U, P, V1, V2, V3);
 }
 
-Standard_Integer Geom2dLProp_Curve2dTool::Continuity(const Handle(Geom2d_Curve)& C)
+int Geom2dLProp_Curve2dTool::Continuity(const occ::handle<Geom2d_Curve>& C)
 {
   GeomAbs_Shape s = C->Continuity();
   switch (s)
@@ -77,12 +75,12 @@ Standard_Integer Geom2dLProp_Curve2dTool::Continuity(const Handle(Geom2d_Curve)&
   return 0;
 }
 
-Standard_Real Geom2dLProp_Curve2dTool::FirstParameter(const Handle(Geom2d_Curve)& C)
+double Geom2dLProp_Curve2dTool::FirstParameter(const occ::handle<Geom2d_Curve>& C)
 {
   return C->FirstParameter();
 }
 
-Standard_Real Geom2dLProp_Curve2dTool::LastParameter(const Handle(Geom2d_Curve)& C)
+double Geom2dLProp_Curve2dTool::LastParameter(const occ::handle<Geom2d_Curve>& C)
 {
   return C->LastParameter();
 }

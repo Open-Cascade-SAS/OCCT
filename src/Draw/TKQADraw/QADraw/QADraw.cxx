@@ -29,16 +29,14 @@
 #include <Draw_PluginMacro.hxx>
 #include <OSD_Timer.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_XYZ.hxx>
 
 #include <stdio.h>
 
 //=================================================================================================
 
-static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
-                                        Standard_Integer  theArgNb,
-                                        const char**      theArgs)
+static int QATestExtremaSS(Draw_Interpretor& theInterpretor, int theArgNb, const char** theArgs)
 {
   if (theArgNb < 3 || theArgNb > 4)
   {
@@ -55,7 +53,7 @@ static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
   }
 
   // Get step value
-  const Standard_Real aStep = Draw::Atof(theArgs[2]);
+  const double aStep = Draw::Atof(theArgs[2]);
   if (aStep <= 1e-5)
   {
     std::cerr << "Error: Step " << aStep << " is too small\n";
@@ -65,7 +63,7 @@ static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
   Extrema_ExtFlag aFlag = Extrema_ExtFlag_MIN;
   if (theArgNb > 3)
   {
-    Standard_Integer aVal = Draw::Atoi(theArgs[3]);
+    int aVal = Draw::Atoi(theArgs[3]);
     if (aVal > 0)
     {
       aFlag = aVal == 1 ? Extrema_ExtFlag_MAX : Extrema_ExtFlag_MINMAX;
@@ -76,11 +74,11 @@ static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
   Bnd_Box aBounds;
   BRepBndLib::Add(aShape, aBounds);
 
-  Standard_Real aXmin, aYmin, aZmin;
-  Standard_Real aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin;
+  double aXmax, aYmax, aZmax;
   aBounds.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
-  const Standard_Real aScaleFactor = 1.5;
+  const double aScaleFactor = 1.5;
   aXmin *= aScaleFactor;
   aYmin *= aScaleFactor;
   aZmin *= aScaleFactor;
@@ -88,11 +86,11 @@ static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
   aYmax *= aScaleFactor;
   aZmax *= aScaleFactor;
 
-  TopTools_SequenceOfShape aList;
-  TColgp_SequenceOfXYZ     aPoints;
-  for (Standard_Real aX = aXmin + 0.5 * aStep; aX < aXmax; aX += aStep)
+  NCollection_Sequence<TopoDS_Shape> aList;
+  NCollection_Sequence<gp_XYZ>       aPoints;
+  for (double aX = aXmin + 0.5 * aStep; aX < aXmax; aX += aStep)
   {
-    for (Standard_Real aY = aYmin + 0.5 * aStep; aY < aYmax; aY += aStep)
+    for (double aY = aYmin + 0.5 * aStep; aY < aYmax; aY += aStep)
     {
       aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aX, aY, aZmin)));
       aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aX, aY, aZmax)));
@@ -101,7 +99,7 @@ static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
       aPoints.Append(gp_XYZ(aX, aY, aZmax));
     }
 
-    for (Standard_Real aZ = aZmin + 0.5 * aStep; aZ < aZmax; aZ += aStep)
+    for (double aZ = aZmin + 0.5 * aStep; aZ < aZmax; aZ += aStep)
     {
       aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aX, aYmin, aZ)));
       aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aX, aYmax, aZ)));
@@ -111,9 +109,9 @@ static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
     }
   }
 
-  for (Standard_Real aY = aYmin + 0.5 * aStep; aY < aYmax; aY += aStep)
+  for (double aY = aYmin + 0.5 * aStep; aY < aYmax; aY += aStep)
   {
-    for (Standard_Real aZ = aZmin + 0.5 * aStep; aZ < aZmax; aZ += aStep)
+    for (double aZ = aZmin + 0.5 * aStep; aZ < aZmax; aZ += aStep)
     {
       aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aXmin, aY, aZ)));
       aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aXmax, aY, aZ)));
@@ -123,7 +121,7 @@ static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
     }
   }
 
-  const Standard_Integer aNbPoints = aList.Length();
+  const int aNbPoints = aList.Length();
   theInterpretor << "Number of sampled points: " << aNbPoints << "\n";
 
   // Perform projection of points
@@ -134,7 +132,7 @@ static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
   BRepExtrema_DistShapeShape aTool;
   aTool.SetFlag(aFlag);
   aTool.LoadS1(aShape);
-  for (Standard_Integer anIdx = 1; anIdx <= aNbPoints; ++anIdx)
+  for (int anIdx = 1; anIdx <= aNbPoints; ++anIdx)
   {
     aTool.LoadS2(aList(anIdx));
     aTool.Perform();

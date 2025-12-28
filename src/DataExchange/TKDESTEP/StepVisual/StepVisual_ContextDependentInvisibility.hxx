@@ -21,10 +21,9 @@
 
 #include <StepVisual_InvisibilityContext.hxx>
 #include <StepVisual_Invisibility.hxx>
-#include <StepVisual_HArray1OfInvisibleItem.hxx>
-
-class StepVisual_ContextDependentInvisibility;
-DEFINE_STANDARD_HANDLE(StepVisual_ContextDependentInvisibility, StepVisual_Invisibility)
+#include <StepVisual_InvisibleItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class StepVisual_ContextDependentInvisibility : public StepVisual_Invisibility
 {
@@ -33,8 +32,9 @@ public:
   //! Returns a ContextDependentInvisibility
   Standard_EXPORT StepVisual_ContextDependentInvisibility();
 
-  Standard_EXPORT void Init(const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems,
-                            const StepVisual_InvisibilityContext&            aPresentationContext);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>>& aInvisibleItems,
+    const StepVisual_InvisibilityContext&                             aPresentationContext);
 
   Standard_EXPORT void SetPresentationContext(
     const StepVisual_InvisibilityContext& aPresentationContext);
@@ -43,7 +43,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_ContextDependentInvisibility, StepVisual_Invisibility)
 
-protected:
 private:
   StepVisual_InvisibilityContext presentationContext;
 };

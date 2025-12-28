@@ -24,7 +24,7 @@
 #include <gp_Pnt.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <NCollection_Array1.hxx>
 
 GC_MakePlane::GC_MakePlane(const gp_Pln& Pl)
 {
@@ -38,10 +38,7 @@ GC_MakePlane::GC_MakePlane(const gp_Pnt& P, const gp_Dir& V)
   ThePlane = new Geom_Plane(P, V);
 }
 
-GC_MakePlane::GC_MakePlane(const Standard_Real A,
-                           const Standard_Real B,
-                           const Standard_Real C,
-                           const Standard_Real D)
+GC_MakePlane::GC_MakePlane(const double A, const double B, const double C, const double D)
 {
   if (std::sqrt(A * A + B * B + C * C) <= gp::Resolution())
   {
@@ -72,7 +69,7 @@ GC_MakePlane::GC_MakePlane(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
 //   Creation d un Geom_Plane parallele a un pln a une distance donnee.   +
 //=========================================================================
 
-GC_MakePlane::GC_MakePlane(const gp_Pln& Pl, const Standard_Real Dist)
+GC_MakePlane::GC_MakePlane(const gp_Pln& Pl, const double Dist)
 {
   gp_Pln Pln = gce_MakePln(Pl, Dist);
   TheError   = gce_Done;
@@ -106,9 +103,9 @@ GC_MakePlane::GC_MakePlane(const gp_Ax1& Axis)
 //  Creation d un Geom_Plane par un tableau de points.                    +
 //=========================================================================
 
-/*GC_MakePlane::GC_MakePlane(const TColgp_Array1OfPnt&    Pts     ,
-                       Standard_Real            ErrMax  ,
-                       Standard_Real            ErrMean ) {
+/*GC_MakePlane::GC_MakePlane(const NCollection_Array1<gp_Pnt>&    Pts     ,
+                       double            ErrMax  ,
+                       double            ErrMean ) {
   GC_MakePln Pln(Pts,ErrMax,ErrMean);
   TheError = Pln.Status();
   if (TheError == GC_Done) {
@@ -117,7 +114,7 @@ GC_MakePlane::GC_MakePlane(const gp_Ax1& Axis)
 }
 */
 
-const Handle(Geom_Plane)& GC_MakePlane::Value() const
+const occ::handle<Geom_Plane>& GC_MakePlane::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakePlane::Value() - no result");
   return ThePlane;

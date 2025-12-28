@@ -34,34 +34,30 @@ public:
   Standard_EXPORT Graphic3d_BvhCStructureSet();
 
   //! Returns total number of structures.
-  Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int Size() const override;
 
   //! Returns AABB of the structure.
-  Standard_EXPORT virtual Graphic3d_BndBox3d Box(const Standard_Integer theIdx) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual Graphic3d_BndBox3d Box(const int theIdx) const override;
 
   //! Calculates center of the AABB along given axis.
-  Standard_EXPORT virtual Standard_Real Center(const Standard_Integer theIdx,
-                                               const Standard_Integer theAxis) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double Center(const int theIdx, const int theAxis) const override;
 
   //! Swaps structures with the given indices.
-  Standard_EXPORT virtual void Swap(const Standard_Integer theIdx1,
-                                    const Standard_Integer theIdx2) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Swap(const int theIdx1, const int theIdx2) override;
 
   //! Adds structure to the set.
   //! @return true if structure added, otherwise returns false (structure already in the set).
-  Standard_EXPORT Standard_Boolean Add(const Graphic3d_CStructure* theStruct);
+  Standard_EXPORT bool Add(const Graphic3d_CStructure* theStruct);
 
   //! Removes the given structure from the set.
   //! @return true if structure removed, otherwise returns false (structure is not in the set).
-  Standard_EXPORT Standard_Boolean Remove(const Graphic3d_CStructure* theStruct);
+  Standard_EXPORT bool Remove(const Graphic3d_CStructure* theStruct);
 
   //! Cleans the whole primitive set.
   Standard_EXPORT void Clear();
 
   //! Returns the structure corresponding to the given ID.
-  Standard_EXPORT const Graphic3d_CStructure* GetStructureById(Standard_Integer theId);
+  Standard_EXPORT const Graphic3d_CStructure* GetStructureById(int theId);
 
   //! Access directly a collection of structures.
   const NCollection_IndexedMap<const Graphic3d_CStructure*>& Structures() const

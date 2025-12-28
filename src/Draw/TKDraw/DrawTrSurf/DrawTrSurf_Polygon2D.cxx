@@ -26,9 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Polygon2D, Draw_Drawable2D)
 
 //=================================================================================================
 
-DrawTrSurf_Polygon2D::DrawTrSurf_Polygon2D(const Handle(Poly_Polygon2D)& P)
+DrawTrSurf_Polygon2D::DrawTrSurf_Polygon2D(const occ::handle<Poly_Polygon2D>& P)
     : myPolygon2D(P),
-      myNodes(Standard_False)
+      myNodes(false)
 {
 }
 
@@ -38,15 +38,15 @@ void DrawTrSurf_Polygon2D::DrawOn(Draw_Display& dis) const
 {
   dis.SetColor(Draw_jaune);
 
-  const TColgp_Array1OfPnt2d& Points = myPolygon2D->Nodes();
-  for (Standard_Integer i = Points.Lower(); i <= Points.Upper() - 1; i++)
+  const NCollection_Array1<gp_Pnt2d>& Points = myPolygon2D->Nodes();
+  for (int i = Points.Lower(); i <= Points.Upper() - 1; i++)
   {
     dis.Draw(Points(i), Points(i + 1));
   }
 
   if (myNodes)
   {
-    for (Standard_Integer i = Points.Lower(); i <= Points.Upper(); i++)
+    for (int i = Points.Lower(); i <= Points.Upper(); i++)
     {
       dis.DrawMarker(Points(i), Draw_X);
     }
@@ -55,7 +55,7 @@ void DrawTrSurf_Polygon2D::DrawOn(Draw_Display& dis) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DrawTrSurf_Polygon2D::Copy() const
+occ::handle<Draw_Drawable3D> DrawTrSurf_Polygon2D::Copy() const
 {
   return new DrawTrSurf_Polygon2D(myPolygon2D);
 }
@@ -90,7 +90,7 @@ void DrawTrSurf_Polygon2D::Save(Standard_OStream& theStream) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DrawTrSurf_Polygon2D::Restore(Standard_IStream& theStream)
+occ::handle<Draw_Drawable3D> DrawTrSurf_Polygon2D::Restore(Standard_IStream& theStream)
 {
   return new DrawTrSurf_Polygon2D(Poly::ReadPolygon2D(theStream));
 }

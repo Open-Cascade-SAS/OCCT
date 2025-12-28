@@ -29,13 +29,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigure, IGESData_IGESEntity)
 
 IGESDraw_NetworkSubfigure::IGESDraw_NetworkSubfigure() {}
 
-void IGESDraw_NetworkSubfigure::Init(const Handle(IGESDraw_NetworkSubfigureDef)&   aDefinition,
-                                     const gp_XYZ&                                 aTranslation,
-                                     const gp_XYZ&                                 aScaleFactor,
-                                     const Standard_Integer                        aTypeFlag,
-                                     const Handle(TCollection_HAsciiString)&       aDesignator,
-                                     const Handle(IGESGraph_TextDisplayTemplate)&  aTemplate,
-                                     const Handle(IGESDraw_HArray1OfConnectPoint)& allConnectPoints)
+void IGESDraw_NetworkSubfigure::Init(
+  const occ::handle<IGESDraw_NetworkSubfigureDef>&                            aDefinition,
+  const gp_XYZ&                                                               aTranslation,
+  const gp_XYZ&                                                               aScaleFactor,
+  const int                                                                   aTypeFlag,
+  const occ::handle<TCollection_HAsciiString>&                                aDesignator,
+  const occ::handle<IGESGraph_TextDisplayTemplate>&                           aTemplate,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allConnectPoints)
 {
   if (!allConnectPoints.IsNull())
     if (allConnectPoints->Lower() != 1)
@@ -50,7 +51,7 @@ void IGESDraw_NetworkSubfigure::Init(const Handle(IGESDraw_NetworkSubfigureDef)&
   InitTypeAndForm(420, 0);
 }
 
-Handle(IGESDraw_NetworkSubfigureDef) IGESDraw_NetworkSubfigure::SubfigureDefinition() const
+occ::handle<IGESDraw_NetworkSubfigureDef> IGESDraw_NetworkSubfigure::SubfigureDefinition() const
 {
   return theSubfigureDefinition;
 }
@@ -73,33 +74,32 @@ gp_XYZ IGESDraw_NetworkSubfigure::ScaleFactors() const
   return theScaleFactor;
 }
 
-Standard_Integer IGESDraw_NetworkSubfigure::TypeFlag() const
+int IGESDraw_NetworkSubfigure::TypeFlag() const
 {
   return theTypeFlag;
 }
 
-Handle(TCollection_HAsciiString) IGESDraw_NetworkSubfigure::ReferenceDesignator() const
+occ::handle<TCollection_HAsciiString> IGESDraw_NetworkSubfigure::ReferenceDesignator() const
 {
   return theDesignator;
 }
 
-Standard_Boolean IGESDraw_NetworkSubfigure::HasDesignatorTemplate() const
+bool IGESDraw_NetworkSubfigure::HasDesignatorTemplate() const
 {
   return (!theDesignatorTemplate.IsNull());
 }
 
-Handle(IGESGraph_TextDisplayTemplate) IGESDraw_NetworkSubfigure::DesignatorTemplate() const
+occ::handle<IGESGraph_TextDisplayTemplate> IGESDraw_NetworkSubfigure::DesignatorTemplate() const
 {
   return theDesignatorTemplate;
 }
 
-Standard_Integer IGESDraw_NetworkSubfigure::NbConnectPoints() const
+int IGESDraw_NetworkSubfigure::NbConnectPoints() const
 {
   return (theConnectPoints.IsNull() ? 0 : theConnectPoints->Length());
 }
 
-Handle(IGESDraw_ConnectPoint) IGESDraw_NetworkSubfigure::ConnectPoint(
-  const Standard_Integer Index) const
+occ::handle<IGESDraw_ConnectPoint> IGESDraw_NetworkSubfigure::ConnectPoint(const int Index) const
 {
   return (theConnectPoints->Value(Index));
 }

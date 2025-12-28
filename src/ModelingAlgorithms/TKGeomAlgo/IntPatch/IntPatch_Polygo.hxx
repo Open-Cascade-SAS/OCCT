@@ -29,31 +29,27 @@ class IntPatch_Polygo : public Intf_Polygon2d
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_Real Error() const;
+  double Error() const;
 
-  Standard_EXPORT virtual Standard_Integer NbPoints() const = 0;
+  Standard_EXPORT virtual int NbPoints() const = 0;
 
-  Standard_EXPORT virtual gp_Pnt2d Point(const Standard_Integer Index) const = 0;
+  Standard_EXPORT virtual gp_Pnt2d Point(const int Index) const = 0;
 
   //! Returns the tolerance of the polygon.
-  virtual Standard_Real DeflectionOverEstimation() const Standard_OVERRIDE;
+  virtual double DeflectionOverEstimation() const override;
 
   //! Returns the number of Segments in the polyline.
-  virtual Standard_Integer NbSegments() const Standard_OVERRIDE;
+  virtual int NbSegments() const override;
 
   //! Returns the points of the segment <Index> in the Polygon.
-  virtual void Segment(const Standard_Integer theIndex,
-                       gp_Pnt2d&              theBegin,
-                       gp_Pnt2d&              theEnd) const Standard_OVERRIDE;
+  virtual void Segment(const int theIndex, gp_Pnt2d& theBegin, gp_Pnt2d& theEnd) const override;
 
   Standard_EXPORT void Dump() const;
 
 protected:
-  Standard_EXPORT IntPatch_Polygo(const Standard_Real theError = 0.0);
+  Standard_EXPORT IntPatch_Polygo(const double theError = 0.0);
 
-  Standard_Real myError;
-
-private:
+  double myError;
 };
 
 #include <IntPatch_Polygo.lxx>

@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_DraftTrihedron, GeomFill_TrihedronLaw)
 //=======================================================================
 static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 {
-  Standard_Real Norma = F.Magnitude();
+  double Norma = F.Magnitude();
 
   gp_Vec Result =
     (D2F - 2 * DF * (F * DF) / (Norma * Norma)) / Norma
@@ -44,7 +44,7 @@ static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 
 //=================================================================================================
 
-GeomFill_DraftTrihedron::GeomFill_DraftTrihedron(const gp_Vec& BiNormal, const Standard_Real Angle)
+GeomFill_DraftTrihedron::GeomFill_DraftTrihedron(const gp_Vec& BiNormal, const double Angle)
 {
   B = BiNormal;
   B.Normalize();
@@ -53,7 +53,7 @@ GeomFill_DraftTrihedron::GeomFill_DraftTrihedron(const gp_Vec& BiNormal, const S
 
 //=================================================================================================
 
-void GeomFill_DraftTrihedron::SetAngle(const Standard_Real Angle)
+void GeomFill_DraftTrihedron::SetAngle(const double Angle)
 {
   myAngle = M_PI / 2 + Angle;
   myCos   = std::cos(myAngle);
@@ -63,27 +63,27 @@ void GeomFill_DraftTrihedron::SetAngle(const Standard_Real Angle)
 // function : D0
 // purpose  : calculation of trihedron
 //=======================================================================
-Standard_Boolean GeomFill_DraftTrihedron::D0(const Standard_Real Param,
-                                             gp_Vec&             Tangent,
-                                             gp_Vec&             Normal,
-                                             gp_Vec&             BiNormal)
+bool GeomFill_DraftTrihedron::D0(const double Param,
+                                 gp_Vec&      Tangent,
+                                 gp_Vec&      Normal,
+                                 gp_Vec&      BiNormal)
 {
   gp_Pnt P;
   gp_Vec T;
   myTrimmed->D1(Param, P, T);
   T.Normalize();
 
-  gp_Vec        b     = T.Crossed(B);
-  Standard_Real normb = b.Magnitude();
+  gp_Vec b     = T.Crossed(B);
+  double normb = b.Magnitude();
 
   b /= normb;
   if (normb < 1.e-12)
-    return Standard_False;
+    return false;
 
   gp_Vec v = b.Crossed(T);
 
-  Standard_Real mu = myCos;
-  mu               = myCos;
+  double mu = myCos;
+  mu        = myCos;
 
   // La Normal est portee par la regle
   Normal.SetLinearForm(std::sqrt(1 - mu * mu), b, mu, v);
@@ -96,27 +96,27 @@ Standard_Boolean GeomFill_DraftTrihedron::D0(const Standard_Real Param,
   BiNormal = Tangent;
   BiNormal.Cross(Normal);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : D1
 // purpose  :  calculation of trihedron and first derivative
 //=======================================================================
-Standard_Boolean GeomFill_DraftTrihedron::D1(const Standard_Real Param,
-                                             gp_Vec&             Tangent,
-                                             gp_Vec&             DTangent,
-                                             gp_Vec&             Normal,
-                                             gp_Vec&             DNormal,
-                                             gp_Vec&             BiNormal,
-                                             gp_Vec&             DBiNormal)
+bool GeomFill_DraftTrihedron::D1(const double Param,
+                                 gp_Vec&      Tangent,
+                                 gp_Vec&      DTangent,
+                                 gp_Vec&      Normal,
+                                 gp_Vec&      DNormal,
+                                 gp_Vec&      BiNormal,
+                                 gp_Vec&      DBiNormal)
 {
   gp_Pnt P;
   gp_Vec T, DT, aux;
 
   myTrimmed->D2(Param, P, T, aux);
 
-  Standard_Real normT, normb;
+  double normT, normb;
   normT = T.Magnitude();
   T /= normT;
   DT.SetLinearForm(-(T.Dot(aux)), T, aux);
@@ -125,7 +125,7 @@ Standard_Boolean GeomFill_DraftTrihedron::D1(const Standard_Real Param,
   gp_Vec db, b = T.Crossed(B);
   normb = b.Magnitude();
   if (normb < 1.e-12)
-    return Standard_False;
+    return false;
   b /= normb;
   aux = DT.Crossed(B);
   db.SetLinearForm(-(b.Dot(aux)), b, aux);
@@ -134,7 +134,7 @@ Standard_Boolean GeomFill_DraftTrihedron::D1(const Standard_Real Param,
   gp_Vec v  = b.Crossed(T);
   gp_Vec dv = db.Crossed(T) + b.Crossed(DT);
 
-  Standard_Real mu = myCos;
+  double mu = myCos;
 
   Normal.SetLinearForm(std::sqrt(1 - mu * mu), b, mu, v);
   DNormal.SetLinearForm(std::sqrt(1 - mu * mu), db, mu, dv);
@@ -150,31 +150,31 @@ Standard_Boolean GeomFill_DraftTrihedron::D1(const Standard_Real Param,
   BiNormal.Cross(Normal);
   DBiNormal.SetLinearForm(DTangent.Crossed(Normal), Tangent.Crossed(DNormal));
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : D2
 // purpose  : calculation of trihedron and derivatives 1 et 2
 //=======================================================================
-Standard_Boolean GeomFill_DraftTrihedron::D2(const Standard_Real Param,
-                                             gp_Vec&             Tangent,
-                                             gp_Vec&             DTangent,
-                                             gp_Vec&             D2Tangent,
-                                             gp_Vec&             Normal,
-                                             gp_Vec&             DNormal,
-                                             gp_Vec&             D2Normal,
-                                             gp_Vec&             BiNormal,
-                                             gp_Vec&             DBiNormal,
-                                             gp_Vec&             D2BiNormal)
+bool GeomFill_DraftTrihedron::D2(const double Param,
+                                 gp_Vec&      Tangent,
+                                 gp_Vec&      DTangent,
+                                 gp_Vec&      D2Tangent,
+                                 gp_Vec&      Normal,
+                                 gp_Vec&      DNormal,
+                                 gp_Vec&      D2Normal,
+                                 gp_Vec&      BiNormal,
+                                 gp_Vec&      DBiNormal,
+                                 gp_Vec&      D2BiNormal)
 {
-  gp_Pnt        P;
-  gp_Vec        T, DT, D2T, aux, aux2;
-  Standard_Real dot;
+  gp_Pnt P;
+  gp_Vec T, DT, D2T, aux, aux2;
+  double dot;
 
   myTrimmed->D3(Param, P, T, aux, aux2);
 
-  Standard_Real normT, normb;
+  double normT, normb;
 
   D2T   = DDeriv(T, aux, aux2);
   normT = T.Magnitude();
@@ -186,7 +186,7 @@ Standard_Boolean GeomFill_DraftTrihedron::D2(const Standard_Real Param,
   gp_Vec db, d2b, b = T.Crossed(B);
   normb = b.Magnitude();
   if (normb < 1.e-12)
-    return Standard_False;
+    return false;
 
   aux  = DT.Crossed(B);
   aux2 = D2T.Crossed(B);
@@ -200,8 +200,8 @@ Standard_Boolean GeomFill_DraftTrihedron::D2(const Standard_Real Param,
   gp_Vec dv  = db.Crossed(T) + b.Crossed(DT);
   gp_Vec d2v = d2b.Crossed(T) + 2 * db.Crossed(DT) + b.Crossed(D2T);
 
-  Standard_Real mu = myCos, rac;
-  rac              = std::sqrt(1 - mu * mu);
+  double mu = myCos, rac;
+  rac       = std::sqrt(1 - mu * mu);
 
   Normal.SetLinearForm(rac, b, mu, v);
   DNormal.SetLinearForm(rac, db, mu, dv);
@@ -227,21 +227,21 @@ Standard_Boolean GeomFill_DraftTrihedron::D2(const Standard_Real Param,
                            DTangent.Crossed(DNormal),
                            Tangent.Crossed(D2Normal));
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(GeomFill_TrihedronLaw) GeomFill_DraftTrihedron::Copy() const
+occ::handle<GeomFill_TrihedronLaw> GeomFill_DraftTrihedron::Copy() const
 {
-  Handle(GeomFill_DraftTrihedron) copy = new (GeomFill_DraftTrihedron)(B, myAngle - M_PI / 2);
+  occ::handle<GeomFill_DraftTrihedron> copy = new (GeomFill_DraftTrihedron)(B, myAngle - M_PI / 2);
   copy->SetCurve(myCurve);
   return copy;
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_DraftTrihedron::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_DraftTrihedron::NbIntervals(const GeomAbs_Shape S) const
 {
   GeomAbs_Shape tmpS = GeomAbs_C0;
   switch (S)
@@ -266,7 +266,7 @@ Standard_Integer GeomFill_DraftTrihedron::NbIntervals(const GeomAbs_Shape S) con
 
 //=================================================================================================
 
-void GeomFill_DraftTrihedron::Intervals(TColStd_Array1OfReal& TT, const GeomAbs_Shape S) const
+void GeomFill_DraftTrihedron::Intervals(NCollection_Array1<double>& TT, const GeomAbs_Shape S) const
 {
   GeomAbs_Shape tmpS = GeomAbs_C0;
   switch (S)
@@ -293,15 +293,15 @@ void GeomFill_DraftTrihedron::Intervals(TColStd_Array1OfReal& TT, const GeomAbs_
 
 void GeomFill_DraftTrihedron::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal)
 {
-  Standard_Integer Num = 20; // order of digitalization
-  gp_Vec           T, N, BN;
+  int    Num = 20; // order of digitalization
+  gp_Vec T, N, BN;
   ATangent  = gp_Vec(0, 0, 0);
   ANormal   = gp_Vec(0, 0, 0);
   ABiNormal = gp_Vec(0, 0, 0);
 
-  Standard_Real Step = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / Num;
-  Standard_Real Param;
-  for (Standard_Integer i = 0; i <= Num; i++)
+  double Step = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / Num;
+  double Param;
+  for (int i = 0; i <= Num; i++)
   {
     Param = myTrimmed->FirstParameter() + i * Step;
     if (Param > myTrimmed->LastParameter())
@@ -319,14 +319,14 @@ void GeomFill_DraftTrihedron::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, g
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_DraftTrihedron::IsConstant() const
+bool GeomFill_DraftTrihedron::IsConstant() const
 {
   return (myCurve->GetType() == GeomAbs_Line);
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_DraftTrihedron::IsOnlyBy3dCurve() const
+bool GeomFill_DraftTrihedron::IsOnlyBy3dCurve() const
 {
   GeomAbs_CurveType TheType = myCurve->GetType();
   gp_Ax1            TheAxe;
@@ -355,7 +355,7 @@ Standard_Boolean GeomFill_DraftTrihedron::IsOnlyBy3dCurve() const
       return V.IsParallel(B, Precision::Angular());
     }
     default:
-      return Standard_False; // pas de risques
+      return false; // pas de risques
   }
 
   // La normale du plan de la courbe est il // a la BiNormale ?

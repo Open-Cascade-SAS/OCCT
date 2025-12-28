@@ -22,9 +22,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
 
-class TopoDS_TFace;
-DEFINE_STANDARD_HANDLE(TopoDS_TFace, TopoDS_TShape)
-
 //! A topological part of a surface or of the 2D
 //! space. The boundary is a set of wires and
 //! vertices.
@@ -38,10 +35,10 @@ public:
   }
 
   //! returns FACE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
 
   //! Returns an empty TFace.
-  Standard_EXPORT virtual Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TFace, TopoDS_TShape)
 };

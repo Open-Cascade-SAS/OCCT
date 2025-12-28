@@ -23,7 +23,8 @@
 
 #include <gp_Lin2d.hxx>
 #include <Hatch_LineForm.hxx>
-#include <Hatch_SequenceOfParameter.hxx>
+#include <Hatch_Parameter.hxx>
+#include <NCollection_Sequence.hxx>
 
 //! Stores a Line in the Hatcher. Represented by:
 //!
@@ -43,19 +44,18 @@ public:
   Standard_EXPORT Hatch_Line(const gp_Lin2d& L, const Hatch_LineForm T);
 
   //! Insert a new intersection in the sorted list.
-  Standard_EXPORT void AddIntersection(const Standard_Real    Par1,
-                                       const Standard_Boolean Start,
-                                       const Standard_Integer Index,
-                                       const Standard_Real    Par2,
-                                       const Standard_Real    theToler);
+  Standard_EXPORT void AddIntersection(const double Par1,
+                                       const bool   Start,
+                                       const int    Index,
+                                       const double Par2,
+                                       const double theToler);
 
   friend class Hatch_Hatcher;
 
-protected:
 private:
-  gp_Lin2d                  myLin;
-  Hatch_LineForm            myForm;
-  Hatch_SequenceOfParameter myInters;
+  gp_Lin2d                              myLin;
+  Hatch_LineForm                        myForm;
+  NCollection_Sequence<Hatch_Parameter> myInters;
 };
 
 #endif // _Hatch_Line_HeaderFile

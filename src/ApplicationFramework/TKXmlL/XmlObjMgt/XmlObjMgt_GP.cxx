@@ -58,18 +58,18 @@ XmlObjMgt_DOMString XmlObjMgt_GP::Translate(const gp_XYZ& anXYZ)
 
 //=================================================================================================
 
-Standard_Boolean XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_Trsf& T)
+bool XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_Trsf& T)
 {
-  Standard_Boolean aResult = Standard_False;
-  const char*      aStr    = theStr.GetString();
-  char*            ptr;
-  errno                      = 0;
-  Standard_Real aScaleFactor = Standard_Real(Strtod(aStr, &ptr));
+  bool        aResult = false;
+  const char* aStr    = theStr.GetString();
+  char*       ptr;
+  errno               = 0;
+  double aScaleFactor = double(Strtod(aStr, &ptr));
   if (ptr != aStr && errno != ERANGE && errno != EINVAL)
   {
     T.SetScaleFactor(aScaleFactor);
-    aStr                   = ptr;
-    Standard_Integer aForm = Standard_Integer(strtol(aStr, &ptr, 10));
+    aStr      = ptr;
+    int aForm = int(strtol(aStr, &ptr, 10));
     if (ptr != aStr && errno != ERANGE && errno != EINVAL)
     {
       T.SetForm((gp_TrsfForm)aForm);
@@ -82,7 +82,7 @@ Standard_Boolean XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_T
 
         //  gp_XYZ aTransl;
         ::Translate(aStr, (gp_XYZ&)T.TranslationPart());
-        aResult = Standard_True;
+        aResult = true;
       }
     }
   }
@@ -91,14 +91,14 @@ Standard_Boolean XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_T
 
 //=================================================================================================
 
-Standard_Boolean XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_Mat& M)
+bool XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_Mat& M)
 {
   return (::Translate(theStr.GetString(), M) != 0);
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_XYZ& P)
+bool XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_XYZ& P)
 {
   return (::Translate(theStr.GetString(), P) != 0);
 }
@@ -132,8 +132,8 @@ static const char* Translate(const char* theStr, gp_XYZ& P)
   char* ptr;
   if (theStr)
   {
-    errno            = 0;
-    Standard_Real aC = Strtod(theStr, &ptr);
+    errno     = 0;
+    double aC = Strtod(theStr, &ptr);
     if (ptr != theStr && errno != ERANGE && errno != EINVAL)
     {
       P.SetX(aC);

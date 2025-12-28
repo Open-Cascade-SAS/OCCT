@@ -30,10 +30,11 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class IntTools_Context;
 class TopoDS_Shape;
@@ -80,10 +81,10 @@ public:
   Standard_EXPORT BOPAlgo_Builder();
   Standard_EXPORT virtual ~BOPAlgo_Builder();
 
-  Standard_EXPORT BOPAlgo_Builder(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPAlgo_Builder(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Clears the content of the algorithm.
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
   //! Returns the PaveFiller, algorithm for sub-shapes intersection.
   BOPAlgo_PPaveFiller PPaveFiller() { return myPaveFiller; }
@@ -92,17 +93,17 @@ public:
   BOPDS_PDS PDS() { return myDS; }
 
   //! Returns the Context, tool for cashing heavy algorithms.
-  Handle(IntTools_Context) Context() const { return myContext; }
+  occ::handle<IntTools_Context> Context() const { return myContext; }
 
 public: //! @name Arguments
   //! Adds the argument to the operation.
   Standard_EXPORT virtual void AddArgument(const TopoDS_Shape& theShape);
 
   //! Sets the list of arguments for the operation.
-  Standard_EXPORT virtual void SetArguments(const TopTools_ListOfShape& theLS);
+  Standard_EXPORT virtual void SetArguments(const NCollection_List<TopoDS_Shape>& theLS);
 
   //! Returns the list of arguments.
-  const TopTools_ListOfShape& Arguments() const { return myArguments; }
+  const NCollection_List<TopoDS_Shape>& Arguments() const { return myArguments; }
 
 public: //! @name Options
   //! Sets the flag that defines the mode of treatment.
@@ -111,12 +112,12 @@ public: //! @name Options
   //! This flag is taken into account if internal PaveFiller is used only.
   //! In the case of calling PerformWithFiller the corresponding flag of that PaveFiller
   //! is in force.
-  void SetNonDestructive(const Standard_Boolean theFlag) { myNonDestructive = theFlag; }
+  void SetNonDestructive(const bool theFlag) { myNonDestructive = theFlag; }
 
   //! Returns the flag that defines the mode of treatment.
   //! In non-destructive mode the argument shapes are not modified. Instead
   //! a copy of a sub-shape is created in the result if it is needed to be updated.
-  Standard_Boolean NonDestructive() const { return myNonDestructive; }
+  bool NonDestructive() const { return myNonDestructive; }
 
   //! Sets the glue option for the algorithm
   void SetGlue(const BOPAlgo_GlueEnum theGlue) { myGlue = theGlue; }
@@ -125,17 +126,17 @@ public: //! @name Options
   BOPAlgo_GlueEnum Glue() const { return myGlue; }
 
   //! Enables/Disables the check of the input solids for inverted status
-  void SetCheckInverted(const Standard_Boolean theCheck) { myCheckInverted = theCheck; }
+  void SetCheckInverted(const bool theCheck) { myCheckInverted = theCheck; }
 
   //! Returns the flag defining whether the check for input solids on inverted status
   //! should be performed or not.
-  Standard_Boolean CheckInverted() const { return myCheckInverted; }
+  bool CheckInverted() const { return myCheckInverted; }
 
 public: //! @name Performing the operation
   //! Performs the operation.
   //! The intersection will be performed also.
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Performs the operation with the prepared filler.
   //! The intersection will not be performed in this case.
@@ -183,12 +184,12 @@ public: //! @name BOPs on open solids
   //! @param theTools       - The group of Tools for BOP;
   //! @param theToolsState  - State for tools faces to pass into result;
   //! @param theReport      - The alternative report to avoid pollution of the main one.
-  Standard_EXPORT virtual void BuildBOP(const TopTools_ListOfShape&  theObjects,
-                                        const TopAbs_State           theObjState,
-                                        const TopTools_ListOfShape&  theTools,
-                                        const TopAbs_State           theToolsState,
-                                        const Message_ProgressRange& theRange,
-                                        Handle(Message_Report)       theReport = NULL);
+  Standard_EXPORT virtual void BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
+                                        const TopAbs_State                    theObjState,
+                                        const NCollection_List<TopoDS_Shape>& theTools,
+                                        const TopAbs_State                    theToolsState,
+                                        const Message_ProgressRange&          theRange,
+                                        occ::handle<Message_Report>           theReport = NULL);
 
   //! Builds the result of Boolean operation of given type
   //! basing on the result of Builder operation (GF or any other).
@@ -210,11 +211,11 @@ public: //! @name BOPs on open solids
   //! @param theOperation - The BOP type;
   //! @param theRange     - The parameter to progressIndicator
   //! @param theReport    - The alternative report to avoid pollution of the global one.
-  void BuildBOP(const TopTools_ListOfShape&  theObjects,
-                const TopTools_ListOfShape&  theTools,
-                const BOPAlgo_Operation      theOperation,
-                const Message_ProgressRange& theRange,
-                Handle(Message_Report)       theReport = NULL)
+  void BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
+                const NCollection_List<TopoDS_Shape>& theTools,
+                const BOPAlgo_Operation               theOperation,
+                const Message_ProgressRange&          theRange,
+                occ::handle<Message_Report>           theReport = NULL)
   {
     TopAbs_State anObjState, aToolsState;
     switch (theOperation)
@@ -269,23 +270,36 @@ protected: //! @name History methods
   //! The General Fuse operation does not perform any other modification than splitting the input
   //! shapes basing on their intersection information. This information is contained in myImages
   //! map. Thus, here the method returns only splits (if any) contained in this map.
-  Standard_EXPORT virtual const TopTools_ListOfShape* LocModified(const TopoDS_Shape& theS);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>* LocModified(
+    const TopoDS_Shape& theS);
 
   //! Returns the list of shapes generated from the shape theS.
   //! Similarly to *LocModified* must be redefined for specific operations,
   //! obtaining Generated elements differently.
-  Standard_EXPORT virtual const TopTools_ListOfShape& LocGenerated(const TopoDS_Shape& theS);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& LocGenerated(
+    const TopoDS_Shape& theS);
 
 public: //! @name Images/Origins
   //! Returns the map of images.
-  const TopTools_DataMapOfShapeListOfShape& Images() const { return myImages; }
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    Images() const
+  {
+    return myImages;
+  }
 
   //! Returns the map of origins.
-  const TopTools_DataMapOfShapeListOfShape& Origins() const { return myOrigins; }
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    Origins() const
+  {
+    return myOrigins;
+  }
 
   //! Returns the map of Same Domain (SD) shapes - coinciding shapes
   //! from different arguments.
-  const TopTools_DataMapOfShapeShape& ShapesSD() const { return myShapesSD; }
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& ShapesSD() const
+  {
+    return myShapesSD;
+  }
 
 protected: //! @name Analyze progress of the operation
   //! List of operations to be supported by the Progress Indicator
@@ -311,46 +325,46 @@ protected: //! @name Analyze progress of the operation
   public:
     NbShapes()
     {
-      for (Standard_Integer i = 0; i < 8; ++i)
+      for (int i = 0; i < 8; ++i)
       {
         myNbShapesArr[i] = 0;
       }
     }
 
-    Standard_Integer NbVertices() const { return myNbShapesArr[0]; }
+    int NbVertices() const { return myNbShapesArr[0]; }
 
-    Standard_Integer NbEdges() const { return myNbShapesArr[1]; }
+    int NbEdges() const { return myNbShapesArr[1]; }
 
-    Standard_Integer NbWires() const { return myNbShapesArr[2]; }
+    int NbWires() const { return myNbShapesArr[2]; }
 
-    Standard_Integer NbFaces() const { return myNbShapesArr[3]; }
+    int NbFaces() const { return myNbShapesArr[3]; }
 
-    Standard_Integer NbShells() const { return myNbShapesArr[4]; }
+    int NbShells() const { return myNbShapesArr[4]; }
 
-    Standard_Integer NbSolids() const { return myNbShapesArr[5]; }
+    int NbSolids() const { return myNbShapesArr[5]; }
 
-    Standard_Integer NbCompsolids() const { return myNbShapesArr[6]; }
+    int NbCompsolids() const { return myNbShapesArr[6]; }
 
-    Standard_Integer NbCompounds() const { return myNbShapesArr[7]; }
+    int NbCompounds() const { return myNbShapesArr[7]; }
 
-    Standard_Integer& NbVertices() { return myNbShapesArr[0]; }
+    int& NbVertices() { return myNbShapesArr[0]; }
 
-    Standard_Integer& NbEdges() { return myNbShapesArr[1]; }
+    int& NbEdges() { return myNbShapesArr[1]; }
 
-    Standard_Integer& NbWires() { return myNbShapesArr[2]; }
+    int& NbWires() { return myNbShapesArr[2]; }
 
-    Standard_Integer& NbFaces() { return myNbShapesArr[3]; }
+    int& NbFaces() { return myNbShapesArr[3]; }
 
-    Standard_Integer& NbShells() { return myNbShapesArr[4]; }
+    int& NbShells() { return myNbShapesArr[4]; }
 
-    Standard_Integer& NbSolids() { return myNbShapesArr[5]; }
+    int& NbSolids() { return myNbShapesArr[5]; }
 
-    Standard_Integer& NbCompsolids() { return myNbShapesArr[6]; }
+    int& NbCompsolids() { return myNbShapesArr[6]; }
 
-    Standard_Integer& NbCompounds() { return myNbShapesArr[7]; }
+    int& NbCompounds() { return myNbShapesArr[7]; }
 
   private:
-    Standard_Integer myNbShapesArr[8];
+    int myNbShapesArr[8];
   };
 
 protected:
@@ -358,11 +372,11 @@ protected:
   Standard_EXPORT NbShapes getNbShapes() const;
 
   //! Filling steps for constant operations
-  Standard_EXPORT void fillPIConstants(const Standard_Real theWhole,
-                                       BOPAlgo_PISteps&    theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT void fillPIConstants(const double     theWhole,
+                                       BOPAlgo_PISteps& theSteps) const override;
 
   //! Filling steps for all other operations
-  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const override;
 
 protected: //! @name Methods for building the result
   //! Performs the building of the result.
@@ -383,7 +397,7 @@ protected: //! @name Methods for building the result
 
 protected: //! @name Checking input arguments
   //! Checks the input data.
-  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckData() override;
 
   //! Checks if the intersection algorithm has Errors/Warnings.
   Standard_EXPORT void CheckFiller();
@@ -440,18 +454,20 @@ protected: //! @name Fill Images of SOLIDS
 
   //! Builds the draft solid by rebuilding the shells of the solid
   //! with the splits of faces.
-  Standard_EXPORT void BuildDraftSolid(const TopoDS_Shape&   theSolid,
-                                       TopoDS_Shape&         theDraftSolid,
-                                       TopTools_ListOfShape& theLIF);
+  Standard_EXPORT void BuildDraftSolid(const TopoDS_Shape&             theSolid,
+                                       TopoDS_Shape&                   theDraftSolid,
+                                       NCollection_List<TopoDS_Shape>& theLIF);
 
   //! Finds faces located inside each solid.
-  Standard_EXPORT virtual void FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids,
-                                             const Message_ProgressRange&  theRange);
+  Standard_EXPORT virtual void FillIn3DParts(
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
+    const Message_ProgressRange&                                              theRange);
 
   //! Builds the splits of the solids using their draft versions
   //! and faces located inside.
-  Standard_EXPORT void BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSolids,
-                                        const Message_ProgressRange&  theRange);
+  Standard_EXPORT void BuildSplitSolids(
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
+    const Message_ProgressRange&                                              theRange);
 
   //! Classifies the vertices and edges from the arguments relatively
   //! splits of solids and makes them INTERNAL for solids.
@@ -462,7 +478,9 @@ protected: //! @name Fill Images of COMPOUNDS
   Standard_EXPORT void FillImagesCompounds(const Message_ProgressRange& theRange);
 
   //! Builds the image of the given compound.
-  Standard_EXPORT void FillImagesCompound(const TopoDS_Shape& theS, TopTools_MapOfShape& theMF);
+  Standard_EXPORT void FillImagesCompound(
+    const TopoDS_Shape&                                     theS,
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMF);
 
 protected: //! @name Post treatment
   //! Post treatment of the result of the operation.
@@ -470,21 +488,21 @@ protected: //! @name Post treatment
   //! and updates the tolerances to make them valid.
   Standard_EXPORT virtual void PostTreat(const Message_ProgressRange& theRange);
 
-protected:                          //! @name Fields
-  TopTools_ListOfShape myArguments; //!< Arguments of the operation
+protected:                                    //! @name Fields
+  NCollection_List<TopoDS_Shape> myArguments; //!< Arguments of the operation
   // clang-format off
-  TopTools_MapOfShape myMapFence;               //!< Fence map providing the uniqueness of the shapes in the list of arguments
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMapFence;               //!< Fence map providing the uniqueness of the shapes in the list of arguments
   BOPAlgo_PPaveFiller myPaveFiller;             //!< Pave Filler - algorithm for sub-shapes intersection
   BOPDS_PDS myDS;                               //!< Data Structure - holder of intersection information
-  Handle(IntTools_Context) myContext;           //!< Context - tool for cashing heavy algorithms such as Projectors and Classifiers
-  Standard_Integer myEntryPoint;                //!< EntryPoint - controls the deletion of the PaveFiller, which could live longer than the Builder
-  TopTools_DataMapOfShapeListOfShape myImages;  //!< Images - map of Images of the sub-shapes of arguments
-  TopTools_DataMapOfShapeShape myShapesSD;      //!< ShapesSD - map of SD Shapes
-  TopTools_DataMapOfShapeListOfShape myOrigins; //!< Origins - map of Origins, back map of Images
-  TopTools_DataMapOfShapeListOfShape myInParts; //!< InParts - map of own and acquired IN faces of the arguments solids
-  Standard_Boolean myNonDestructive;            //!< Safe processing option allows avoiding modification of the input shapes
+  occ::handle<IntTools_Context> myContext;           //!< Context - tool for cashing heavy algorithms such as Projectors and Classifiers
+  int myEntryPoint;                //!< EntryPoint - controls the deletion of the PaveFiller, which could live longer than the Builder
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myImages;  //!< Images - map of Images of the sub-shapes of arguments
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myShapesSD;      //!< ShapesSD - map of SD Shapes
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myOrigins; //!< Origins - map of Origins, back map of Images
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myInParts; //!< InParts - map of own and acquired IN faces of the arguments solids
+  bool myNonDestructive;            //!< Safe processing option allows avoiding modification of the input shapes
   BOPAlgo_GlueEnum myGlue;                      //!< Gluing option allows speeding up the intersection of the input shapes
-  Standard_Boolean myCheckInverted;             //!< Check inverted option allows disabling the check of input solids on inverted status
+  bool myCheckInverted;             //!< Check inverted option allows disabling the check of input solids on inverted status
   // clang-format on
 };
 

@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnit, StepBasic_NamedUnit)
 
 StepBasic_SiUnit::StepBasic_SiUnit() {}
 
-void StepBasic_SiUnit::Init(const Standard_Boolean     hasAprefix,
+void StepBasic_SiUnit::Init(const bool                 hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName)
 {
@@ -28,7 +28,7 @@ void StepBasic_SiUnit::Init(const Standard_Boolean     hasAprefix,
   prefix    = aPrefix;
   name      = aName;
   // --- classe inherited fields ---
-  Handle(StepBasic_DimensionalExponents) aDimensions;
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
   aDimensions.Nullify();
   StepBasic_NamedUnit::Init(aDimensions);
 }
@@ -36,12 +36,12 @@ void StepBasic_SiUnit::Init(const Standard_Boolean     hasAprefix,
 void StepBasic_SiUnit::SetPrefix(const StepBasic_SiPrefix aPrefix)
 {
   prefix    = aPrefix;
-  hasPrefix = Standard_True;
+  hasPrefix = true;
 }
 
 void StepBasic_SiUnit::UnSetPrefix()
 {
-  hasPrefix = Standard_False;
+  hasPrefix = false;
 }
 
 StepBasic_SiPrefix StepBasic_SiUnit::Prefix() const
@@ -49,7 +49,7 @@ StepBasic_SiPrefix StepBasic_SiUnit::Prefix() const
   return prefix;
 }
 
-Standard_Boolean StepBasic_SiUnit::HasPrefix() const
+bool StepBasic_SiUnit::HasPrefix() const
 {
   return hasPrefix;
 }
@@ -64,7 +64,8 @@ StepBasic_SiUnitName StepBasic_SiUnit::Name() const
   return name;
 }
 
-void StepBasic_SiUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents)& /*aDimensions*/)
+void StepBasic_SiUnit::SetDimensions(
+  const occ::handle<StepBasic_DimensionalExponents>& /*aDimensions*/)
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
@@ -73,7 +74,7 @@ void StepBasic_SiUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents
 #endif
 }
 
-Handle(StepBasic_DimensionalExponents) StepBasic_SiUnit::Dimensions() const
+occ::handle<StepBasic_DimensionalExponents> StepBasic_SiUnit::Dimensions() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
@@ -82,7 +83,7 @@ Handle(StepBasic_DimensionalExponents) StepBasic_SiUnit::Dimensions() const
   // on devrait, en fonction du nom de l unite SI, construire un dimensional
   // exponents coherent. (du style .METRE. => (1,0,0,0,0,0) ... )
 
-  Handle(StepBasic_DimensionalExponents) aDimensions;
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
   aDimensions.Nullify();
   return aDimensions;
 }

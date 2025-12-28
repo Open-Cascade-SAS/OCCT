@@ -34,14 +34,11 @@ public:
 
   Standard_EXPORT static XmlObjMgt_DOMString Translate(const gp_XYZ& anXYZ);
 
-  Standard_EXPORT static Standard_Boolean Translate(const XmlObjMgt_DOMString& aStr, gp_Trsf& T);
+  Standard_EXPORT static bool Translate(const XmlObjMgt_DOMString& aStr, gp_Trsf& T);
 
-  Standard_EXPORT static Standard_Boolean Translate(const XmlObjMgt_DOMString& aStr, gp_Mat& T);
+  Standard_EXPORT static bool Translate(const XmlObjMgt_DOMString& aStr, gp_Mat& T);
 
-  Standard_EXPORT static Standard_Boolean Translate(const XmlObjMgt_DOMString& aStr, gp_XYZ& T);
-
-protected:
-private:
+  Standard_EXPORT static bool Translate(const XmlObjMgt_DOMString& aStr, gp_XYZ& T);
 };
 
 #endif // _XmlObjMgt_GP_HeaderFile

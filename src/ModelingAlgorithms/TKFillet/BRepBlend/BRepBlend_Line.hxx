@@ -17,15 +17,13 @@
 #ifndef _BRepBlend_Line_HeaderFile
 #define _BRepBlend_Line_HeaderFile
 
-#include <Blend_SequenceOfPoint.hxx>
+#include <Blend_Point.hxx>
+#include <NCollection_Sequence.hxx>
 #include <BRepBlend_Extremity.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 
 class Blend_Point;
-
-class BRepBlend_Line;
-DEFINE_STANDARD_HANDLE(BRepBlend_Line, Standard_Transient)
 
 class BRepBlend_Line : public Standard_Transient
 {
@@ -43,12 +41,12 @@ public:
   void Prepend(const Blend_Point& P);
 
   //! Adds a point in the line at the first place.
-  void InsertBefore(const Standard_Integer Index, const Blend_Point& P);
+  void InsertBefore(const int Index, const Blend_Point& P);
 
   //! Removes from <me> all the items of
   //! positions between <FromIndex> and <ToIndex>.
   //! Raises an exception if the indices are out of bounds.
-  void Remove(const Standard_Integer FromIndex, const Standard_Integer ToIndex);
+  void Remove(const int FromIndex, const int ToIndex);
 
   //! Sets the value of the transition of the line on S1 and
   //! the line on S2.
@@ -64,10 +62,10 @@ public:
   void SetEndPoints(const BRepBlend_Extremity& EndPt1, const BRepBlend_Extremity& EndPt2);
 
   //! Returns the number of points in the line.
-  Standard_Integer NbPoints() const;
+  int NbPoints() const;
 
   //! Returns the point of range Index.
-  const Blend_Point& Point(const Standard_Integer Index) const;
+  const Blend_Point& Point(const int Index) const;
 
   //! Returns the type of the transition of the line defined
   //! on the first surface. The transition is "constant"
@@ -106,17 +104,16 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BRepBlend_Line, Standard_Transient)
 
-protected:
 private:
-  Blend_SequenceOfPoint seqpt;
-  IntSurf_TypeTrans     tras1;
-  IntSurf_TypeTrans     tras2;
-  BRepBlend_Extremity   stp1;
-  BRepBlend_Extremity   stp2;
-  BRepBlend_Extremity   endp1;
-  BRepBlend_Extremity   endp2;
-  Standard_Boolean      hass1;
-  Standard_Boolean      hass2;
+  NCollection_Sequence<Blend_Point> seqpt;
+  IntSurf_TypeTrans                 tras1;
+  IntSurf_TypeTrans                 tras2;
+  BRepBlend_Extremity               stp1;
+  BRepBlend_Extremity               stp2;
+  BRepBlend_Extremity               endp1;
+  BRepBlend_Extremity               endp2;
+  bool                              hass1;
+  bool                              hass2;
 };
 
 #include <BRepBlend_Line.lxx>

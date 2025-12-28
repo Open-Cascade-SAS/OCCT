@@ -20,13 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HArray1OfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Vrml_AsciiTextJustification.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
-
-class Vrml_AsciiText;
-DEFINE_STANDARD_HANDLE(Vrml_AsciiText, Standard_Transient)
 
 //! defines a AsciiText node of VRML specifying geometry shapes.
 //! This node represents strings of text characters from ASCII coded
@@ -44,37 +43,38 @@ class Vrml_AsciiText : public Standard_Transient
 public:
   Standard_EXPORT Vrml_AsciiText();
 
-  Standard_EXPORT Vrml_AsciiText(const Handle(TColStd_HArray1OfAsciiString)& aString,
-                                 const Standard_Real                         aSpacing,
-                                 const Vrml_AsciiTextJustification           aJustification,
-                                 const Standard_Real                         aWidth);
+  Standard_EXPORT Vrml_AsciiText(
+    const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString,
+    const double                                                     aSpacing,
+    const Vrml_AsciiTextJustification                                aJustification,
+    const double                                                     aWidth);
 
-  Standard_EXPORT void SetString(const Handle(TColStd_HArray1OfAsciiString)& aString);
+  Standard_EXPORT void SetString(
+    const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfAsciiString) String() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<TCollection_AsciiString>> String() const;
 
-  Standard_EXPORT void SetSpacing(const Standard_Real aSpacing);
+  Standard_EXPORT void SetSpacing(const double aSpacing);
 
-  Standard_EXPORT Standard_Real Spacing() const;
+  Standard_EXPORT double Spacing() const;
 
   Standard_EXPORT void SetJustification(const Vrml_AsciiTextJustification aJustification);
 
   Standard_EXPORT Vrml_AsciiTextJustification Justification() const;
 
-  Standard_EXPORT void SetWidth(const Standard_Real aWidth);
+  Standard_EXPORT void SetWidth(const double aWidth);
 
-  Standard_EXPORT Standard_Real Width() const;
+  Standard_EXPORT double Width() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
   DEFINE_STANDARD_RTTIEXT(Vrml_AsciiText, Standard_Transient)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfAsciiString) myString;
-  Standard_Real                        mySpacing;
-  Vrml_AsciiTextJustification          myJustification;
-  Standard_Real                        myWidth;
+  occ::handle<NCollection_HArray1<TCollection_AsciiString>> myString;
+  double                                                    mySpacing;
+  Vrml_AsciiTextJustification                               myJustification;
+  double                                                    myWidth;
 };
 
 #endif // _Vrml_AsciiText_HeaderFile

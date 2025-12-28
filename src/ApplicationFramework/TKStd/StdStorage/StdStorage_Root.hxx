@@ -22,8 +22,6 @@
 #include <Standard_Transient.hxx>
 class StdObjMgt_Persistent;
 
-DEFINE_STANDARD_HANDLE(StdStorage_Root, Standard_Transient)
-
 //! Describes a named persistent root
 class StdStorage_Root : public Standard_Transient
 {
@@ -36,8 +34,8 @@ public:
   Standard_EXPORT StdStorage_Root();
 
   //! Creates a root for writing
-  Standard_EXPORT StdStorage_Root(const TCollection_AsciiString&      theName,
-                                  const Handle(StdObjMgt_Persistent)& theObject);
+  Standard_EXPORT StdStorage_Root(const TCollection_AsciiString&           theName,
+                                  const occ::handle<StdObjMgt_Persistent>& theObject);
 
   //! Returns a name of the root
   Standard_EXPORT TCollection_AsciiString Name() const;
@@ -46,10 +44,10 @@ public:
   Standard_EXPORT void SetName(const TCollection_AsciiString& theName);
 
   //! Returns a root's persistent object
-  Standard_EXPORT Handle(StdObjMgt_Persistent) Object() const;
+  Standard_EXPORT occ::handle<StdObjMgt_Persistent> Object() const;
 
   //! Sets a root's persistent object
-  Standard_EXPORT void SetObject(const Handle(StdObjMgt_Persistent)& anObject);
+  Standard_EXPORT void SetObject(const occ::handle<StdObjMgt_Persistent>& anObject);
 
   //! Returns a root's persistent type
   Standard_EXPORT TCollection_AsciiString Type() const;
@@ -58,19 +56,19 @@ public:
   Standard_EXPORT void SetType(const TCollection_AsciiString& aType);
 
   //! Returns root's position in the root data section
-  Standard_EXPORT Standard_Integer Reference() const;
+  Standard_EXPORT int Reference() const;
 
 private:
   Standard_EXPORT StdStorage_Root(const TCollection_AsciiString& theName,
-                                  const Standard_Integer         theRef,
+                                  const int                      theRef,
                                   const TCollection_AsciiString& theType);
 
-  Standard_EXPORT void SetReference(const Standard_Integer aRef);
+  Standard_EXPORT void SetReference(const int aRef);
 
-  TCollection_AsciiString      myName;
-  TCollection_AsciiString      myType;
-  Handle(StdObjMgt_Persistent) myObject;
-  Standard_Integer             myRef;
+  TCollection_AsciiString           myName;
+  TCollection_AsciiString           myType;
+  occ::handle<StdObjMgt_Persistent> myObject;
+  int                               myRef;
 };
 
 #endif // _StdStorage_Root_HeaderFile

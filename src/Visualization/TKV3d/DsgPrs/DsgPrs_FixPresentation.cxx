@@ -31,17 +31,17 @@
 
 //=================================================================================================
 
-void DsgPrs_FixPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                 const Handle(Prs3d_Drawer)&       aDrawer,
-                                 const gp_Pnt&                     aPntAttach,
-                                 const gp_Pnt&                     aPntEnd,
-                                 const gp_Dir&                     aNormPln,
-                                 const Standard_Real               symbsize)
+void DsgPrs_FixPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                 const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                 const gp_Pnt&                          aPntAttach,
+                                 const gp_Pnt&                          aPntEnd,
+                                 const gp_Dir&                          aNormPln,
+                                 const double                           symbsize)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(10);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(10);
 
   // Trace du segment de raccordement
   aPrims->AddVertex(aPntAttach);
@@ -90,11 +90,11 @@ void DsgPrs_FixPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation
 
   aPresentation->NewGroup();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Quantity_Color                   aColor = LA->LineAspect()->Aspect()->Color();
-  Handle(Graphic3d_AspectMarker3d) aMarkerAsp =
+  Quantity_Color                        aColor = LA->LineAspect()->Aspect()->Color();
+  occ::handle<Graphic3d_AspectMarker3d> aMarkerAsp =
     new Graphic3d_AspectMarker3d(Aspect_TOM_O, aColor, 1.0);
   aPresentation->CurrentGroup()->SetPrimitivesAspect(aMarkerAsp);
-  Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
+  occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
   anArrayOfPoints->AddVertex(aPntAttach.X(), aPntAttach.Y(), aPntAttach.Z());
   aPresentation->CurrentGroup()->AddPrimitiveArray(anArrayOfPoints);
 }

@@ -23,9 +23,6 @@
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESGraph_DrawingSize;
-DEFINE_STANDARD_HANDLE(IGESGraph_DrawingSize, IGESData_IGESEntity)
-
 //! defines IGESDrawingSize, Type <406> Form <16>
 //! in package IGESGraph
 //!
@@ -43,26 +40,23 @@ public:
   //! - nbProps : Number of property values (NP = 2)
   //! - aXSize  : Extent of Drawing along positive XD axis
   //! - aYSize  : Extent of Drawing along positive YD axis
-  Standard_EXPORT void Init(const Standard_Integer nbProps,
-                            const Standard_Real    aXSize,
-                            const Standard_Real    aYSize);
+  Standard_EXPORT void Init(const int nbProps, const double aXSize, const double aYSize);
 
   //! returns the number of property values in <me> (NP = 2)
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the extent of Drawing along positive XD axis
-  Standard_EXPORT Standard_Real XSize() const;
+  Standard_EXPORT double XSize() const;
 
   //! returns the extent of Drawing along positive YD axis
-  Standard_EXPORT Standard_Real YSize() const;
+  Standard_EXPORT double YSize() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_DrawingSize, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Real    theXSize;
-  Standard_Real    theYSize;
+  int    theNbPropertyValues;
+  double theXSize;
+  double theYSize;
 };
 
 #endif // _IGESGraph_DrawingSize_HeaderFile

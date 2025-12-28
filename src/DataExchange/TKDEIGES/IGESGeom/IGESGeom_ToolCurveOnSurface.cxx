@@ -27,7 +27,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 
@@ -38,20 +38,20 @@ IGESGeom_ToolCurveOnSurface::IGESGeom_ToolCurveOnSurface() {}
 
 //=================================================================================================
 
-void IGESGeom_ToolCurveOnSurface::ReadOwnParams(const Handle(IGESGeom_CurveOnSurface)& ent,
-                                                const Handle(IGESData_IGESReaderData)& IR,
-                                                IGESData_ParamReader&                  PR) const
+void IGESGeom_ToolCurveOnSurface::ReadOwnParams(const occ::handle<IGESGeom_CurveOnSurface>& ent,
+                                                const occ::handle<IGESData_IGESReaderData>& IR,
+                                                IGESData_ParamReader& PR) const
 {
 
   // MGE 30/07/98
 
-  Standard_Integer            aMode, aPreference;
-  Handle(IGESData_IGESEntity) aSurface;
-  Handle(IGESData_IGESEntity) aCurveUV;
-  Handle(IGESData_IGESEntity) aCurve3D;
-  IGESData_Status             aStatus;
+  int                              aMode, aPreference;
+  occ::handle<IGESData_IGESEntity> aSurface;
+  occ::handle<IGESData_IGESEntity> aCurveUV;
+  occ::handle<IGESData_IGESEntity> aCurve3D;
+  IGESData_Status                  aStatus;
 
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   if (!PR.ReadInteger(PR.Current(), aMode))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -80,7 +80,7 @@ void IGESGeom_ToolCurveOnSurface::ReadOwnParams(const Handle(IGESGeom_CurveOnSur
     }
   } // szv#4:S4163:12Mar99 `st=` not needed
 
-  if (!PR.ReadEntity(IR, PR.Current(), aStatus, aCurveUV, Standard_True))
+  if (!PR.ReadEntity(IR, PR.Current(), aStatus, aCurveUV, true))
   {
     Message_Msg Msg132("XSTEP_132");
     switch (aStatus)
@@ -102,7 +102,7 @@ void IGESGeom_ToolCurveOnSurface::ReadOwnParams(const Handle(IGESGeom_CurveOnSur
     }
   } // szv#4:S4163:12Mar99 `st=` not needed
   // clang-format off
-  if (!PR.ReadEntity(IR, PR.Current(), aStatus, aCurve3D, Standard_True)){; //szv#4:S4163:12Mar99 `st=` not needed
+  if (!PR.ReadEntity(IR, PR.Current(), aStatus, aCurve3D, true)){; //szv#4:S4163:12Mar99 `st=` not needed
     // clang-format on
     Message_Msg Msg133("XSTEP_133");
     switch (aStatus)
@@ -131,8 +131,8 @@ void IGESGeom_ToolCurveOnSurface::ReadOwnParams(const Handle(IGESGeom_CurveOnSur
   /*
     st = PR.ReadInteger(PR.Current(), "Creation mode of curve", aMode);
     st = PR.ReadEntity(IR, PR.Current(), "Surface (on which curve lies)", aSurface);
-    st = PR.ReadEntity(IR, PR.Current(), "Curve UV", aCurveUV, Standard_True);
-    st = PR.ReadEntity(IR, PR.Current(), "Curve 3D", aCurve3D, Standard_True);
+    st = PR.ReadEntity(IR, PR.Current(), "Curve UV", aCurveUV, true);
+    st = PR.ReadEntity(IR, PR.Current(), "Curve 3D", aCurve3D, true);
     st = PR.ReadInteger(PR.Current(), "Preferred representation", aPreference);
   */
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -141,8 +141,8 @@ void IGESGeom_ToolCurveOnSurface::ReadOwnParams(const Handle(IGESGeom_CurveOnSur
 
 //=================================================================================================
 
-void IGESGeom_ToolCurveOnSurface::WriteOwnParams(const Handle(IGESGeom_CurveOnSurface)& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+void IGESGeom_ToolCurveOnSurface::WriteOwnParams(const occ::handle<IGESGeom_CurveOnSurface>& ent,
+                                                 IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->CreationMode());
   IW.Send(ent->Surface());
@@ -153,8 +153,8 @@ void IGESGeom_ToolCurveOnSurface::WriteOwnParams(const Handle(IGESGeom_CurveOnSu
 
 //=================================================================================================
 
-void IGESGeom_ToolCurveOnSurface::OwnShared(const Handle(IGESGeom_CurveOnSurface)& ent,
-                                            Interface_EntityIterator&              iter) const
+void IGESGeom_ToolCurveOnSurface::OwnShared(const occ::handle<IGESGeom_CurveOnSurface>& ent,
+                                            Interface_EntityIterator&                   iter) const
 {
   iter.GetOneItem(ent->Surface());
   iter.GetOneItem(ent->CurveUV());
@@ -163,39 +163,38 @@ void IGESGeom_ToolCurveOnSurface::OwnShared(const Handle(IGESGeom_CurveOnSurface
 
 //=================================================================================================
 
-void IGESGeom_ToolCurveOnSurface::OwnCopy(const Handle(IGESGeom_CurveOnSurface)& another,
-                                          const Handle(IGESGeom_CurveOnSurface)& ent,
-                                          Interface_CopyTool&                    TC) const
+void IGESGeom_ToolCurveOnSurface::OwnCopy(const occ::handle<IGESGeom_CurveOnSurface>& another,
+                                          const occ::handle<IGESGeom_CurveOnSurface>& ent,
+                                          Interface_CopyTool&                         TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, aSurface, TC.Transferred(another->Surface()));
   DeclareAndCast(IGESData_IGESEntity, aCurveUV, TC.Transferred(another->CurveUV()));
   DeclareAndCast(IGESData_IGESEntity, aCurve3D, TC.Transferred(another->Curve3D()));
 
-  Standard_Integer aMode       = another->CreationMode();
-  Standard_Integer aPreference = another->PreferenceMode();
+  int aMode       = another->CreationMode();
+  int aPreference = another->PreferenceMode();
 
   ent->Init(aMode, aSurface, aCurveUV, aCurve3D, aPreference);
 }
 
 //=================================================================================================
 
-Standard_Boolean IGESGeom_ToolCurveOnSurface::OwnCorrect(
-  const Handle(IGESGeom_CurveOnSurface)& ent) const
+bool IGESGeom_ToolCurveOnSurface::OwnCorrect(const occ::handle<IGESGeom_CurveOnSurface>& ent) const
 {
-  Handle(IGESData_IGESEntity) c2d = ent->CurveUV();
+  occ::handle<IGESData_IGESEntity> c2d = ent->CurveUV();
   if (c2d.IsNull())
-    return Standard_False;
-  Standard_Integer uf = c2d->UseFlag();
+    return false;
+  int uf = c2d->UseFlag();
   if (uf == 5)
-    return Standard_False;
+    return false;
   c2d->InitStatus(c2d->BlankStatus(), c2d->SubordinateStatus(), 5, c2d->HierarchyStatus());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 IGESData_DirChecker IGESGeom_ToolCurveOnSurface::DirChecker(
-  const Handle(IGESGeom_CurveOnSurface)& /* ent */) const
+  const occ::handle<IGESGeom_CurveOnSurface>& /* ent */) const
 {
   IGESData_DirChecker DC(142, 0);
   DC.Structure(IGESData_DefVoid);
@@ -210,9 +209,9 @@ IGESData_DirChecker IGESGeom_ToolCurveOnSurface::DirChecker(
 
 //=================================================================================================
 
-void IGESGeom_ToolCurveOnSurface::OwnCheck(const Handle(IGESGeom_CurveOnSurface)& ent,
+void IGESGeom_ToolCurveOnSurface::OwnCheck(const occ::handle<IGESGeom_CurveOnSurface>& ent,
                                            const Interface_ShareTool&,
-                                           Handle(Interface_Check)& ach) const
+                                           occ::handle<Interface_Check>& ach) const
 {
   // MGE 30/07/98
   // Building of messages
@@ -222,7 +221,7 @@ void IGESGeom_ToolCurveOnSurface::OwnCheck(const Handle(IGESGeom_CurveOnSurface)
 
   //  if (ent->CreationMode() < 0 || ent->CreationMode() > 3)
   //    ach.SendFail("Incorrect value for the Creation Mode");
-  //  Standard_Integer pref = ent->PreferenceMode();
+  //  int pref = ent->PreferenceMode();
   //  if (pref < 0 || pref > 3)
   //    ach.SendFail("Incorrect value for the Preference Mode");
   //  tolerance to the standard
@@ -239,15 +238,15 @@ void IGESGeom_ToolCurveOnSurface::OwnCheck(const Handle(IGESGeom_CurveOnSurface)
 
 //=================================================================================================
 
-void IGESGeom_ToolCurveOnSurface::OwnDump(const Handle(IGESGeom_CurveOnSurface)& ent,
-                                          const IGESData_IGESDumper&             dumper,
-                                          Standard_OStream&                      S,
-                                          const Standard_Integer                 level) const
+void IGESGeom_ToolCurveOnSurface::OwnDump(const occ::handle<IGESGeom_CurveOnSurface>& ent,
+                                          const IGESData_IGESDumper&                  dumper,
+                                          Standard_OStream&                           S,
+                                          const int                                   level) const
 {
   S << "IGESGeom_CurveOnSurface\n\n";
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
-  Standard_Integer crem = ent->CreationMode();
+  int crem = ent->CreationMode();
   S << "Creation Mode : " << crem << "  i.e. ";
   if (crem == 0)
     S << " <Unspecified>\n";
@@ -268,7 +267,7 @@ void IGESGeom_ToolCurveOnSurface::OwnDump(const Handle(IGESGeom_CurveOnSurface)&
        "The curve C (in the 3D Space) : ";
   dumper.Dump(ent->Curve3D(), S, sublevel);
   S << "\n";
-  Standard_Integer pref = ent->PreferenceMode();
+  int pref = ent->PreferenceMode();
   S << "Preferred representation mode : " << pref << "  i.e. ";
   if (pref == 0)
     S << " <Unspecified>\n";

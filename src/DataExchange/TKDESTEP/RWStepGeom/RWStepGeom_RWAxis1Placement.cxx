@@ -21,10 +21,10 @@
 
 RWStepGeom_RWAxis1Placement::RWStepGeom_RWAxis1Placement() {}
 
-void RWStepGeom_RWAxis1Placement::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepGeom_Axis1Placement)& ent) const
+void RWStepGeom_RWAxis1Placement::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                                   num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepGeom_Axis1Placement>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,28 +34,28 @@ void RWStepGeom_RWAxis1Placement::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : location ---
 
-  Handle(StepGeom_CartesianPoint) aLocation;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_CartesianPoint> aLocation;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "location", ach, STANDARD_TYPE(StepGeom_CartesianPoint), aLocation);
 
   // --- own field : axis ---
 
-  Handle(StepGeom_Direction) aAxis;
-  Standard_Boolean           hasAaxis = Standard_True;
+  occ::handle<StepGeom_Direction> aAxis;
+  bool                            hasAaxis = true;
   if (data->IsParamDefined(num, 3))
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat3 =` not needed
     data->ReadEntity(num, 3, "axis", ach, STANDARD_TYPE(StepGeom_Direction), aAxis);
   }
   else
   {
-    hasAaxis = Standard_False;
+    hasAaxis = false;
     aAxis.Nullify();
   }
 
@@ -64,8 +64,8 @@ void RWStepGeom_RWAxis1Placement::ReadStep(const Handle(StepData_StepReaderData)
   ent->Init(aName, aLocation, hasAaxis, aAxis);
 }
 
-void RWStepGeom_RWAxis1Placement::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepGeom_Axis1Placement)& ent) const
+void RWStepGeom_RWAxis1Placement::WriteStep(StepData_StepWriter&                        SW,
+                                            const occ::handle<StepGeom_Axis1Placement>& ent) const
 {
 
   // --- inherited field name ---
@@ -78,7 +78,7 @@ void RWStepGeom_RWAxis1Placement::WriteStep(StepData_StepWriter&                
 
   // --- own field : axis ---
 
-  Standard_Boolean hasAaxis = ent->HasAxis();
+  bool hasAaxis = ent->HasAxis();
   if (hasAaxis)
   {
     SW.Send(ent->Axis());
@@ -89,8 +89,8 @@ void RWStepGeom_RWAxis1Placement::WriteStep(StepData_StepWriter&                
   }
 }
 
-void RWStepGeom_RWAxis1Placement::Share(const Handle(StepGeom_Axis1Placement)& ent,
-                                        Interface_EntityIterator&              iter) const
+void RWStepGeom_RWAxis1Placement::Share(const occ::handle<StepGeom_Axis1Placement>& ent,
+                                        Interface_EntityIterator&                   iter) const
 {
 
   iter.GetOneItem(ent->Location());

@@ -38,8 +38,8 @@ void DrawDim_PlanarDistance::Draw(const gp_Pnt&      point,
                                   const TopoDS_Edge& edge,
                                   Draw_Display&      dis) const
 {
-  Standard_Real               f, l;
-  Handle(Geom_Curve)          line = BRep_Tool::Curve(edge, f, l);
+  double                      f, l;
+  occ::handle<Geom_Curve>     line = BRep_Tool::Curve(edge, f, l);
   GeomAPI_ProjectPointOnCurve pj(point, line);
   if (pj.NbPoints() == 1)
   {
@@ -102,11 +102,11 @@ void DrawDim_PlanarDistance::DrawOn(Draw_Display& dis) const
 
   else if (myGeom1.ShapeType() == TopAbs_EDGE && myGeom2.ShapeType() == TopAbs_EDGE)
   {
-    Standard_Real      f, l;
-    Handle(Geom_Curve) C = BRep_Tool::Curve(TopoDS::Edge(myGeom1), f, l);
+    double                  f, l;
+    occ::handle<Geom_Curve> C = BRep_Tool::Curve(TopoDS::Edge(myGeom1), f, l);
     if (!C.IsNull())
     {
-      Handle(Geom_Line) L = Handle(Geom_Line)::DownCast(C);
+      occ::handle<Geom_Line> L = occ::down_cast<Geom_Line>(C);
       if (!L.IsNull())
       {
         gp_Pnt      point = L->Lin().Location();

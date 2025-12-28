@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepData_SelectMember.hxx>
 #include <StepGeom_CartesianPoint.hxx>
@@ -20,7 +20,7 @@
 
 StepGeom_TrimmingSelect::StepGeom_TrimmingSelect() {}
 
-Standard_Integer StepGeom_TrimmingSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepGeom_TrimmingSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -29,12 +29,12 @@ Standard_Integer StepGeom_TrimmingSelect::CaseNum(const Handle(Standard_Transien
   return 0;
 }
 
-Handle(StepData_SelectMember) StepGeom_TrimmingSelect::NewMember() const
+occ::handle<StepData_SelectMember> StepGeom_TrimmingSelect::NewMember() const
 {
   return new StepGeom_TrimmingMember;
 }
 
-Standard_Integer StepGeom_TrimmingSelect::CaseMem(const Handle(StepData_SelectMember)& ent) const
+int StepGeom_TrimmingSelect::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -47,17 +47,17 @@ Standard_Integer StepGeom_TrimmingSelect::CaseMem(const Handle(StepData_SelectMe
   return 0;
 }
 
-Handle(StepGeom_CartesianPoint) StepGeom_TrimmingSelect::CartesianPoint() const
+occ::handle<StepGeom_CartesianPoint> StepGeom_TrimmingSelect::CartesianPoint() const
 {
   return GetCasted(StepGeom_CartesianPoint, Value());
 }
 
-void StepGeom_TrimmingSelect::SetParameterValue(const Standard_Real aParameterValue)
+void StepGeom_TrimmingSelect::SetParameterValue(const double aParameterValue)
 {
   SetReal(aParameterValue, "PARAMETER_VALUE");
 }
 
-Standard_Real StepGeom_TrimmingSelect::ParameterValue() const
+double StepGeom_TrimmingSelect::ParameterValue() const
 {
   return Real();
 }

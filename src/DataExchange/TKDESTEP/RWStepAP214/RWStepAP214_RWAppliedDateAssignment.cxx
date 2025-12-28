@@ -16,7 +16,8 @@
 #include "RWStepAP214_RWAppliedDateAssignment.pxx"
 #include <StepAP214_AppliedDateAssignment.hxx>
 #include <StepAP214_DateItem.hxx>
-#include <StepAP214_HArray1OfDateItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_Date.hxx>
 #include <StepBasic_DateRole.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -25,10 +26,10 @@
 RWStepAP214_RWAppliedDateAssignment::RWStepAP214_RWAppliedDateAssignment() {}
 
 void RWStepAP214_RWAppliedDateAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&         data,
-  const Standard_Integer                         num,
-  Handle(Interface_Check)&                       ach,
-  const Handle(StepAP214_AppliedDateAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&         data,
+  const int                                           num,
+  occ::handle<Interface_Check>&                       ach,
+  const occ::handle<StepAP214_AppliedDateAssignment>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -38,26 +39,26 @@ void RWStepAP214_RWAppliedDateAssignment::ReadStep(
 
   // --- inherited field : assignedDate ---
 
-  Handle(StepBasic_Date) aAssignedDate;
+  occ::handle<StepBasic_Date> aAssignedDate;
   data->ReadEntity(num, 1, "assigned_date", ach, STANDARD_TYPE(StepBasic_Date), aAssignedDate);
 
   // --- inherited field : role ---
 
-  Handle(StepBasic_DateRole) aRole;
+  occ::handle<StepBasic_DateRole> aRole;
   data->ReadEntity(num, 2, "role", ach, STANDARD_TYPE(StepBasic_DateRole), aRole);
 
   // --- own field : items ---
 
-  Handle(StepAP214_HArray1OfDateItem) aItems;
-  StepAP214_DateItem                  aItemsItem;
-  Standard_Integer                    nsub3;
+  occ::handle<NCollection_HArray1<StepAP214_DateItem>> aItems;
+  StepAP214_DateItem                                   aItemsItem;
+  int                                                  nsub3;
   if (data->ReadSubList(num, 3, "items", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aItems               = new StepAP214_HArray1OfDateItem(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aItems  = new NCollection_HArray1<StepAP214_DateItem>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      Standard_Boolean stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
+      bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
       if (stat3)
         aItems->SetValue(i3, aItemsItem);
     }
@@ -69,8 +70,8 @@ void RWStepAP214_RWAppliedDateAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAppliedDateAssignment::WriteStep(
-  StepData_StepWriter&                           SW,
-  const Handle(StepAP214_AppliedDateAssignment)& ent) const
+  StepData_StepWriter&                                SW,
+  const occ::handle<StepAP214_AppliedDateAssignment>& ent) const
 {
 
   // --- inherited field assignedDate ---
@@ -84,21 +85,22 @@ void RWStepAP214_RWAppliedDateAssignment::WriteStep(
   // --- own field : items ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbItems(); i3++)
+  for (int i3 = 1; i3 <= ent->NbItems(); i3++)
   {
     SW.Send(ent->ItemsValue(i3).Value());
   }
   SW.CloseSub();
 }
 
-void RWStepAP214_RWAppliedDateAssignment::Share(const Handle(StepAP214_AppliedDateAssignment)& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepAP214_RWAppliedDateAssignment::Share(
+  const occ::handle<StepAP214_AppliedDateAssignment>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   iter.GetOneItem(ent->AssignedDate());
   iter.GetOneItem(ent->Role());
-  Standard_Integer nbElem3 = ent->NbItems();
-  for (Standard_Integer is3 = 1; is3 <= nbElem3; is3++)
+  int nbElem3 = ent->NbItems();
+  for (int is3 = 1; is3 <= nbElem3; is3++)
   {
     iter.GetOneItem(ent->ItemsValue(is3).Value());
   }

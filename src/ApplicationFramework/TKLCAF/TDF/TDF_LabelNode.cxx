@@ -45,7 +45,7 @@ TDF_LabelNode::TDF_LabelNode(TDF_Data* aDataPtr)
 
 //=================================================================================================
 
-TDF_LabelNode::TDF_LabelNode(const Standard_Integer aTag, TDF_LabelNode* aFather)
+TDF_LabelNode::TDF_LabelNode(const int aTag, TDF_LabelNode* aFather)
     : myFather(aFather),
       myBrother(NULL),
       myFirstChild(NULL),
@@ -95,8 +95,8 @@ void TDF_LabelNode::Destroy(const TDF_HAllocator& theAllocator)
 // purpose  : Adds an attribute at the first or the specified position.
 //=======================================================================
 
-void TDF_LabelNode::AddAttribute(const Handle(TDF_Attribute)& afterAtt,
-                                 const Handle(TDF_Attribute)& newAtt)
+void TDF_LabelNode::AddAttribute(const occ::handle<TDF_Attribute>& afterAtt,
+                                 const occ::handle<TDF_Attribute>& newAtt)
 {
   newAtt->myFlags     = 1; // Valid.
   newAtt->myLabelNode = this;
@@ -117,8 +117,8 @@ void TDF_LabelNode::AddAttribute(const Handle(TDF_Attribute)& afterAtt,
 // purpose  : Removes an attribute from the first or the specified position.
 //=======================================================================
 
-void TDF_LabelNode::RemoveAttribute(const Handle(TDF_Attribute)& afterAtt,
-                                    const Handle(TDF_Attribute)& oldAtt)
+void TDF_LabelNode::RemoveAttribute(const occ::handle<TDF_Attribute>& afterAtt,
+                                    const occ::handle<TDF_Attribute>& oldAtt)
 {
   oldAtt->myFlags     = 0; // Invalid.
   oldAtt->myLabelNode = NULL;
@@ -184,7 +184,7 @@ TDF_Data* TDF_LabelNode::Data() const
 
 void TDF_LabelNode::AllMayBeModified()
 {
-  MayBeModified(Standard_True);
+  MayBeModified(true);
   if (myFather && !myFather->MayBeModified())
     myFather->AllMayBeModified();
 }

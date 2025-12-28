@@ -22,9 +22,6 @@
 
 #include <StepShape_FaceSurface.hxx>
 
-class StepShape_AdvancedFace;
-DEFINE_STANDARD_HANDLE(StepShape_AdvancedFace, StepShape_FaceSurface)
-
 class StepShape_AdvancedFace : public StepShape_FaceSurface
 {
 
@@ -33,9 +30,6 @@ public:
   Standard_EXPORT StepShape_AdvancedFace();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_AdvancedFace, StepShape_FaceSurface)
-
-protected:
-private:
 };
 
 #endif // _StepShape_AdvancedFace_HeaderFile

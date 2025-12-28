@@ -19,12 +19,12 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveQuad, Select3D_SensitiveEntity)
 
 //=================================================================================================
 
-MeshVS_SensitiveQuad::MeshVS_SensitiveQuad(const Handle(SelectMgr_EntityOwner)& theOwner,
-                                           const TColgp_Array1OfPnt&            theQuadVerts)
+MeshVS_SensitiveQuad::MeshVS_SensitiveQuad(const occ::handle<SelectMgr_EntityOwner>& theOwner,
+                                           const NCollection_Array1<gp_Pnt>&         theQuadVerts)
     : Select3D_SensitiveEntity(theOwner)
 {
-  const Standard_Integer aLowerIdx = theQuadVerts.Lower();
-  for (Standard_Integer aVertIdx = 0; aVertIdx < 4; ++aVertIdx)
+  const int aLowerIdx = theQuadVerts.Lower();
+  for (int aVertIdx = 0; aVertIdx < 4; ++aVertIdx)
   {
     myVertices[aVertIdx] = theQuadVerts.Value(aLowerIdx + aVertIdx);
   }
@@ -32,11 +32,11 @@ MeshVS_SensitiveQuad::MeshVS_SensitiveQuad(const Handle(SelectMgr_EntityOwner)& 
 
 //=================================================================================================
 
-MeshVS_SensitiveQuad::MeshVS_SensitiveQuad(const Handle(SelectMgr_EntityOwner)& theOwner,
-                                           const gp_Pnt&                        thePnt1,
-                                           const gp_Pnt&                        thePnt2,
-                                           const gp_Pnt&                        thePnt3,
-                                           const gp_Pnt&                        thePnt4)
+MeshVS_SensitiveQuad::MeshVS_SensitiveQuad(const occ::handle<SelectMgr_EntityOwner>& theOwner,
+                                           const gp_Pnt&                             thePnt1,
+                                           const gp_Pnt&                             thePnt2,
+                                           const gp_Pnt&                             thePnt3,
+                                           const gp_Pnt&                             thePnt4)
     : Select3D_SensitiveEntity(theOwner)
 {
   myVertices[0] = thePnt1;
@@ -47,7 +47,7 @@ MeshVS_SensitiveQuad::MeshVS_SensitiveQuad(const Handle(SelectMgr_EntityOwner)& 
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) MeshVS_SensitiveQuad::GetConnected()
+occ::handle<Select3D_SensitiveEntity> MeshVS_SensitiveQuad::GetConnected()
 {
   return new MeshVS_SensitiveQuad(myOwnerId,
                                   myVertices[0],
@@ -60,8 +60,8 @@ Handle(Select3D_SensitiveEntity) MeshVS_SensitiveQuad::GetConnected()
 // function : Matches
 // purpose  : Checks whether the box overlaps current selecting volume
 //=======================================================================
-Standard_Boolean MeshVS_SensitiveQuad::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                               SelectBasics_PickResult&             thePickResult)
+bool MeshVS_SensitiveQuad::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                   SelectBasics_PickResult&             thePickResult)
 {
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
@@ -79,13 +79,13 @@ Standard_Boolean MeshVS_SensitiveQuad::Matches(SelectBasics_SelectingVolumeManag
                                         Select3D_TOS_INTERIOR,
                                         aDummy);
     }
-    for (Standard_Integer aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
+    for (int aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
     {
       if (!theMgr.OverlapsPoint(myVertices[aPntIdx]))
-        return Standard_False;
+        return false;
     }
 
-    return Standard_True;
+    return true;
   }
 
   // check for overlap
@@ -101,12 +101,12 @@ Standard_Boolean MeshVS_SensitiveQuad::Matches(SelectBasics_SelectingVolumeManag
                                   Select3D_TOS_INTERIOR,
                                   aPickResult2))
   {
-    return Standard_False;
+    return false;
   }
 
   thePickResult = SelectBasics_PickResult::Min(aPickResult1, aPickResult2);
   thePickResult.SetDistToGeomCenter(theMgr.DistToGeometryCenter(CenterOfGeometry()));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -114,7 +114,7 @@ Standard_Boolean MeshVS_SensitiveQuad::Matches(SelectBasics_SelectingVolumeManag
 gp_Pnt MeshVS_SensitiveQuad::CenterOfGeometry() const
 {
   gp_XYZ aSum(0.0, 0.0, 0.0);
-  for (Standard_Integer aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
+  for (int aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
   {
     aSum += myVertices[aPntIdx].XYZ();
   }
@@ -127,10 +127,11 @@ gp_Pnt MeshVS_SensitiveQuad::CenterOfGeometry() const
 Select3D_BndBox3d MeshVS_SensitiveQuad::BoundingBox()
 {
   Select3D_BndBox3d aBox;
-  for (Standard_Integer aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
+  for (int aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
   {
-    aBox.Add(
-      SelectMgr_Vec3(myVertices[aPntIdx].X(), myVertices[aPntIdx].Y(), myVertices[aPntIdx].Z()));
+    aBox.Add(NCollection_Vec3<double>(myVertices[aPntIdx].X(),
+                                      myVertices[aPntIdx].Y(),
+                                      myVertices[aPntIdx].Z()));
   }
 
   return aBox;

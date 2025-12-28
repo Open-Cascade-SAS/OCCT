@@ -21,8 +21,9 @@
 #include <gp_Vec.hxx>
 #include <PLib.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 #define NullAngle 1.e-6
 
@@ -52,7 +53,7 @@
 //     with gamma = alpha / 2
 
 GeomFill_QuasiAngularConvertor::GeomFill_QuasiAngularConvertor()
-    : myinit(Standard_False),
+    : myinit(false),
       B(1, 7, 1, 7),
       Px(1, 7),
       Py(1, 7),
@@ -63,7 +64,7 @@ GeomFill_QuasiAngularConvertor::GeomFill_QuasiAngularConvertor()
 {
 }
 
-Standard_Boolean GeomFill_QuasiAngularConvertor::Initialized() const
+bool GeomFill_QuasiAngularConvertor::Initialized() const
 {
   return myinit;
 }
@@ -72,10 +73,11 @@ void GeomFill_QuasiAngularConvertor::Init()
 {
   if (myinit)
     return; // On n'initialise qu'une fois
-  Standard_Integer              ii, jj, Ordre = 7;
-  Standard_Real                 terme;
-  TColStd_Array1OfReal          Coeffs(1, Ordre * Ordre), TrueInter(1, 2), Inter(1, 2);
-  Handle(TColStd_HArray2OfReal) Poles1d = new (TColStd_HArray2OfReal)(1, Ordre, 1, Ordre);
+  int                                      ii, jj, Ordre = 7;
+  double                                   terme;
+  NCollection_Array1<double>               Coeffs(1, Ordre * Ordre), TrueInter(1, 2), Inter(1, 2);
+  occ::handle<NCollection_HArray2<double>> Poles1d =
+    new (NCollection_HArray2<double>)(1, Ordre, 1, Ordre);
 
   // Calcul de B
   Inter.SetValue(1, -1);
@@ -113,21 +115,21 @@ void GeomFill_QuasiAngularConvertor::Init()
   Vy(2) = 2;
   Vw.Init(0);
   Vw(1)  = 1;
-  myinit = Standard_True;
+  myinit = true;
 }
 
-void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
-                                             const gp_Pnt&         Center,
-                                             const gp_Vec&         Dir,
-                                             const Standard_Real   Angle,
-                                             TColgp_Array1OfPnt&   Poles,
-                                             TColStd_Array1OfReal& Weights)
+void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&               FirstPnt,
+                                             const gp_Pnt&               Center,
+                                             const gp_Vec&               Dir,
+                                             const double                Angle,
+                                             NCollection_Array1<gp_Pnt>& Poles,
+                                             NCollection_Array1<double>& Weights)
 {
-  Standard_Real    b, b2, c, c2, tan_b;
-  Standard_Integer ii;
-  Standard_Real    beta, beta2, beta3, beta4, beta5, beta6, wi;
-  gp_XYZ           aux;
-  gp_Mat           Rot;
+  double b, b2, c, c2, tan_b;
+  int    ii;
+  double beta, beta2, beta3, beta4, beta5, beta6, wi;
+  gp_XYZ aux;
+  gp_Mat Rot;
   // Calcul de la transformation
   gp_Vec V1(Center, FirstPnt), V2;
   Rot.SetRotation(Dir.XYZ(), Angle / 2);
@@ -150,8 +152,8 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   {
     if (std::abs(beta) < NullAngle)
     {
-      Standard_Real cf = 2.0 / (3 * 5 * 7);
-      b                = -(0.2 + cf * beta2) / (1 + 0.2 * beta2);
+      double cf = 2.0 / (3 * 5 * 7);
+      b         = -(0.2 + cf * beta2) / (1 + 0.2 * beta2);
       //     b = beta5 / cf;
     }
     else
@@ -162,8 +164,8 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
     }
   }
   else
-    b = ((Standard_Real)-1) / beta2;
-  c  = ((Standard_Real)1) / 3 + b;
+    b = ((double)-1) / beta2;
+  c  = ((double)1) / 3 + b;
   b2 = b * b;
   c2 = c * c;
 
@@ -200,32 +202,32 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   }
 }
 
-void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
-                                             const gp_Vec&         DFirstPnt,
-                                             const gp_Pnt&         Center,
-                                             const gp_Vec&         DCenter,
-                                             const gp_Vec&         Dir,
-                                             const gp_Vec&         DDir,
-                                             const Standard_Real   Angle,
-                                             const Standard_Real   DAngle,
-                                             TColgp_Array1OfPnt&   Poles,
-                                             TColgp_Array1OfVec&   DPoles,
-                                             TColStd_Array1OfReal& Weights,
-                                             TColStd_Array1OfReal& DWeights)
+void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&               FirstPnt,
+                                             const gp_Vec&               DFirstPnt,
+                                             const gp_Pnt&               Center,
+                                             const gp_Vec&               DCenter,
+                                             const gp_Vec&               Dir,
+                                             const gp_Vec&               DDir,
+                                             const double                Angle,
+                                             const double                DAngle,
+                                             NCollection_Array1<gp_Pnt>& Poles,
+                                             NCollection_Array1<gp_Vec>& DPoles,
+                                             NCollection_Array1<double>& Weights,
+                                             NCollection_Array1<double>& DWeights)
 {
-  Standard_Integer Ordre = 7;
-  math_Vector      DVx(1, Ordre), DVy(1, Ordre), DVw(1, Ordre), DPx(1, Ordre), DPy(1, Ordre),
+  int         Ordre = 7;
+  math_Vector DVx(1, Ordre), DVy(1, Ordre), DVw(1, Ordre), DPx(1, Ordre), DPy(1, Ordre),
     DW(1, Ordre);
-  Standard_Real    b, b2, c, c2, tan_b;
-  Standard_Real    bpr, dtan_b;
-  Standard_Integer ii;
-  Standard_Real    beta, beta2, beta3, beta4, beta5, beta6, betaprim;
-  gp_Vec           V1(Center, FirstPnt), V1Prim, V2;
+  double b, b2, c, c2, tan_b;
+  double bpr, dtan_b;
+  int    ii;
+  double beta, beta2, beta3, beta4, beta5, beta6, betaprim;
+  gp_Vec V1(Center, FirstPnt), V1Prim, V2;
 
   // Calcul des  transformations
-  gp_XYZ        aux;
-  Standard_Real Sina, Cosa;
-  gp_Mat        Rot, RotPrim, D, DPrim;
+  gp_XYZ aux;
+  double Sina, Cosa;
+  gp_Mat Rot, RotPrim, D, DPrim;
   // La rotation s'ecrit I +  sin(Ang) * D + (1. - cos(Ang)) * D*D
   // ou D est l'application x -> Dir ^ x
   Rot.SetRotation(Dir.XYZ(), Angle / 2);
@@ -266,8 +268,8 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   if (std::abs(beta) < NullAngle)
   {
     // On calcul b par D.L
-    Standard_Real cf = 2.0 / (3 * 5 * 7);
-    Standard_Real Num, Denom;
+    double cf = 2.0 / (3 * 5 * 7);
+    double Num, Denom;
     Num   = 0.2 + cf * beta2;
     Denom = 1 + 0.2 * beta2;
     b     = -Num / Denom;
@@ -275,7 +277,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   }
   else
   {
-    b   = ((Standard_Real)-1) / beta2;
+    b   = ((double)-1) / beta2;
     bpr = (2 * betaprim) / beta3;
     if ((M_PI / 2 - beta) > NullAngle)
     {
@@ -287,7 +289,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
     }
   }
 
-  c  = ((Standard_Real)1) / 3 + b;
+  c  = ((double)1) / 3 + b;
   b2 = b * b;
   c2 = c * c;
 
@@ -329,8 +331,8 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   DPy.Multiply(B, DVy);
   DW.Multiply(B, DVw);
 
-  gp_XYZ        P, DP;
-  Standard_Real wi;
+  gp_XYZ P, DP;
+  double wi;
 
   for (ii = 1; ii <= Ordre; ii++)
   {
@@ -349,39 +351,39 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   }
 }
 
-void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
-                                             const gp_Vec&         DFirstPnt,
-                                             const gp_Vec&         D2FirstPnt,
-                                             const gp_Pnt&         Center,
-                                             const gp_Vec&         DCenter,
-                                             const gp_Vec&         D2Center,
-                                             const gp_Vec&         Dir,
-                                             const gp_Vec&         DDir,
-                                             const gp_Vec&         D2Dir,
-                                             const Standard_Real   Angle,
-                                             const Standard_Real   DAngle,
-                                             const Standard_Real   D2Angle,
-                                             TColgp_Array1OfPnt&   Poles,
-                                             TColgp_Array1OfVec&   DPoles,
-                                             TColgp_Array1OfVec&   D2Poles,
-                                             TColStd_Array1OfReal& Weights,
-                                             TColStd_Array1OfReal& DWeights,
-                                             TColStd_Array1OfReal& D2Weights)
+void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&               FirstPnt,
+                                             const gp_Vec&               DFirstPnt,
+                                             const gp_Vec&               D2FirstPnt,
+                                             const gp_Pnt&               Center,
+                                             const gp_Vec&               DCenter,
+                                             const gp_Vec&               D2Center,
+                                             const gp_Vec&               Dir,
+                                             const gp_Vec&               DDir,
+                                             const gp_Vec&               D2Dir,
+                                             const double                Angle,
+                                             const double                DAngle,
+                                             const double                D2Angle,
+                                             NCollection_Array1<gp_Pnt>& Poles,
+                                             NCollection_Array1<gp_Vec>& DPoles,
+                                             NCollection_Array1<gp_Vec>& D2Poles,
+                                             NCollection_Array1<double>& Weights,
+                                             NCollection_Array1<double>& DWeights,
+                                             NCollection_Array1<double>& D2Weights)
 {
-  Standard_Integer Ordre = 7;
-  math_Vector      DVx(1, Ordre), DVy(1, Ordre), DVw(1, Ordre), D2Vx(1, Ordre), D2Vy(1, Ordre),
+  int         Ordre = 7;
+  math_Vector DVx(1, Ordre), DVy(1, Ordre), DVw(1, Ordre), D2Vx(1, Ordre), D2Vy(1, Ordre),
     D2Vw(1, Ordre);
   math_Vector DPx(1, Ordre), DPy(1, Ordre), DW(1, Ordre), D2Px(1, Ordre), D2Py(1, Ordre),
     D2W(1, Ordre);
 
-  Standard_Integer ii;
-  Standard_Real    daux, b, b2, c, c2, bpr, bsc;
-  gp_Vec           V1(Center, FirstPnt), V1Prim, V1Secn, V2;
+  int    ii;
+  double daux, b, b2, c, c2, bpr, bsc;
+  gp_Vec V1(Center, FirstPnt), V1Prim, V1Secn, V2;
 
   // Calcul des  transformations
-  gp_XYZ        auxyz;
-  Standard_Real Sina, Cosa;
-  gp_Mat        Rot, RotPrim, RotSecn, D, DPrim, DSecn, DDP, Maux;
+  gp_XYZ auxyz;
+  double Sina, Cosa;
+  gp_Mat Rot, RotPrim, RotSecn, D, DPrim, DSecn, DDP, Maux;
   // La rotation s'ecrit I +  sin(Ang) * D + (1. - cos(Ang)) * D*D
   // ou D est l'application x -> Dir ^ x
   Rot.SetRotation(Dir.XYZ(), Angle / 2);
@@ -440,9 +442,9 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   gp_Mat MSecn(V1Secn.X(), V2.X(), 0, V1Secn.Y(), V2.Y(), 0, V1Secn.Z(), V2.Z(), 0);
 
   // Calcul des coeff  -----------
-  Standard_Real tan_b, dtan_b, d2tan_b;
-  Standard_Real beta, beta2, beta3, beta4, beta5, beta6, betaprim, betasecn;
-  Standard_Real betaprim2, bpr2;
+  double tan_b, dtan_b, d2tan_b;
+  double beta, beta2, beta3, beta4, beta5, beta6, betaprim, betasecn;
+  double betaprim2, bpr2;
   beta      = Angle / 4;
   betaprim  = DAngle / 4;
   betasecn  = D2Angle / 4;
@@ -456,8 +458,8 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   if (std::abs(beta) < NullAngle)
   {
     // On calcul b par D.L
-    Standard_Real cf = -2.0 / 21;
-    Standard_Real Num, Denom, aux;
+    double cf = -2.0 / 21;
+    double Num, Denom, aux;
     Num   = 0.2 + cf * beta2;
     Denom = 1 + 0.2 * beta2;
     aux   = (cf * Denom - 0.2 * Num) / (Denom * Denom);
@@ -467,7 +469,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   }
   else
   {
-    b   = ((Standard_Real)-1) / beta2;
+    b   = ((double)-1) / beta2;
     bpr = (2 * betaprim) / beta3;
     bsc = (2 * betasecn - 6 * betaprim * (betaprim / beta)) / beta3;
     if ((M_PI / 2 - beta) > NullAngle)
@@ -477,14 +479,14 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
       d2tan_b = betasecn * (1 + tan_b * tan_b) + 2 * betaprim * tan_b * dtan_b;
       b2      = tan_b - beta;
       b += beta / (3 * b2);
-      Standard_Real aux = betaprim * tan_b - beta * dtan_b;
+      double aux = betaprim * tan_b - beta * dtan_b;
       bpr += aux / (3 * b2 * b2);
       daux = betasecn * tan_b - beta * d2tan_b;
       bsc += (daux - 2 * aux * betaprim * tan_b * tan_b / b2) / (3 * b2 * b2);
     }
   }
 
-  c    = ((Standard_Real)1) / 3 + b;
+  c    = ((double)1) / 3 + b;
   b2   = b * b;
   c2   = c * c;
   bpr2 = bpr * bpr;
@@ -547,8 +549,8 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&         FirstPnt,
   D2Py = B * D2Vy;
   D2W.Multiply(B, D2Vw);
 
-  gp_XYZ        P, DP, D2P;
-  Standard_Real wi, dwi;
+  gp_XYZ P, DP, D2P;
+  double wi, dwi;
   for (ii = 1; ii <= Ordre; ii++)
   {
     wi  = W(ii);

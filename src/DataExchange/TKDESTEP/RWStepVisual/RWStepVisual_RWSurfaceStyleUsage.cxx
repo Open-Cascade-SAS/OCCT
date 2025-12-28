@@ -24,10 +24,10 @@
 RWStepVisual_RWSurfaceStyleUsage::RWStepVisual_RWSurfaceStyleUsage() {}
 
 void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepVisual_SurfaceStyleUsage)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                                        num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepVisual_SurfaceStyleUsage>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -40,7 +40,7 @@ void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
   StepVisual_SurfaceSide aSide = StepVisual_ssNegative;
   if (data->ParamType(num, 1) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 1);
+    const char* text = data->ParamCValue(num, 1);
     if (!RWStepVisual_RWSurfaceSide::ConvertToEnum(text, aSide))
     {
       ach->AddFail("Enumeration surface_side has not an allowed value");
@@ -51,8 +51,8 @@ void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
 
   // --- own field : style ---
 
-  Handle(StepVisual_SurfaceSideStyle) aStyle;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepVisual_SurfaceSideStyle> aStyle;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "style", ach, STANDARD_TYPE(StepVisual_SurfaceSideStyle), aStyle);
 
   //--- Initialisation of the read entity ---
@@ -61,8 +61,8 @@ void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleUsage::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepVisual_SurfaceStyleUsage)& ent) const
+  StepData_StepWriter&                             SW,
+  const occ::handle<StepVisual_SurfaceStyleUsage>& ent) const
 {
 
   // --- own field : side ---
@@ -74,8 +74,8 @@ void RWStepVisual_RWSurfaceStyleUsage::WriteStep(
   SW.Send(ent->Style());
 }
 
-void RWStepVisual_RWSurfaceStyleUsage::Share(const Handle(StepVisual_SurfaceStyleUsage)& ent,
-                                             Interface_EntityIterator&                   iter) const
+void RWStepVisual_RWSurfaceStyleUsage::Share(const occ::handle<StepVisual_SurfaceStyleUsage>& ent,
+                                             Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->Style());

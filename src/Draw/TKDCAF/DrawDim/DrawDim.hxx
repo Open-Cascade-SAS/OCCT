@@ -48,8 +48,7 @@ public:
 
   //! Commands
   //! ========
-  Standard_EXPORT static void DrawShapeName(const TopoDS_Shape&    ashape,
-                                            const Standard_CString aname);
+  Standard_EXPORT static void DrawShapeName(const TopoDS_Shape& ashape, const char* aname);
 
   Standard_EXPORT static void AllCommands(Draw_Interpretor& I);
 
@@ -60,20 +59,17 @@ public:
   Standard_EXPORT static gp_Pnt Nearest(const TopoDS_Shape& aShape, const gp_Pnt& apoint);
 
   //! false if <e> is not a linear edge
-  Standard_EXPORT static Standard_Boolean Lin(const TopoDS_Edge& e,
-                                              gp_Lin&            l,
-                                              Standard_Boolean&  infinite,
-                                              Standard_Real&     first,
-                                              Standard_Real&     last);
+  Standard_EXPORT static bool Lin(const TopoDS_Edge& e,
+                                  gp_Lin&            l,
+                                  bool&              infinite,
+                                  double&            first,
+                                  double&            last);
 
   //! false if <e> is not a circular edge
-  Standard_EXPORT static Standard_Boolean Circ(const TopoDS_Edge& e,
-                                               gp_Circ&           l,
-                                               Standard_Real&     first,
-                                               Standard_Real&     last);
+  Standard_EXPORT static bool Circ(const TopoDS_Edge& e, gp_Circ& l, double& first, double& last);
 
   //! false if <f> is not a planar face
-  Standard_EXPORT static Standard_Boolean Pln(const TopoDS_Face& f, gp_Pln& p);
+  Standard_EXPORT static bool Pln(const TopoDS_Face& f, gp_Pln& p);
 };
 
 #endif // _DrawDim_HeaderFile

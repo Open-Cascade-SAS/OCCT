@@ -23,7 +23,7 @@
 #include <Transfer_IteratorOfProcessForTransient.hxx>
 #include <Transfer_ProcessForTransient.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
-#include <Transfer_TransferMapOfProcessForTransient.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 //=================================================================================================
 
@@ -31,17 +31,17 @@ Transfer_ActorOfProcessForTransient::Transfer_ActorOfProcessForTransient() {}
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ActorOfProcessForTransient::Recognize(
-  const Handle(Standard_Transient)& /*start*/)
+bool Transfer_ActorOfProcessForTransient::Recognize(
+  const occ::handle<Standard_Transient>& /*start*/)
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ActorOfProcessForTransient::Transferring(
-  const Handle(Standard_Transient)& /*start*/,
-  const Handle(Transfer_ProcessForTransient)& /*TP*/,
+occ::handle<Transfer_Binder> Transfer_ActorOfProcessForTransient::Transferring(
+  const occ::handle<Standard_Transient>& /*start*/,
+  const occ::handle<Transfer_ProcessForTransient>& /*TP*/,
   const Message_ProgressRange& /*theProgress*/)
 {
   return NullResult();
@@ -49,10 +49,10 @@ Handle(Transfer_Binder) Transfer_ActorOfProcessForTransient::Transferring(
 
 //=================================================================================================
 
-Handle(Transfer_SimpleBinderOfTransient) Transfer_ActorOfProcessForTransient::TransientResult(
-  const Handle(Standard_Transient)& res) const
+occ::handle<Transfer_SimpleBinderOfTransient> Transfer_ActorOfProcessForTransient::TransientResult(
+  const occ::handle<Standard_Transient>& res) const
 {
-  Handle(Transfer_SimpleBinderOfTransient) binder;
+  occ::handle<Transfer_SimpleBinderOfTransient> binder;
   if (res.IsNull())
     return binder;
   binder = new Transfer_SimpleBinderOfTransient;
@@ -62,16 +62,16 @@ Handle(Transfer_SimpleBinderOfTransient) Transfer_ActorOfProcessForTransient::Tr
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ActorOfProcessForTransient::NullResult() const
+occ::handle<Transfer_Binder> Transfer_ActorOfProcessForTransient::NullResult() const
 {
-  Handle(Transfer_Binder) binder;
+  occ::handle<Transfer_Binder> binder;
   return binder;
 }
 
 //=================================================================================================
 
 void Transfer_ActorOfProcessForTransient::SetNext(
-  const Handle(Transfer_ActorOfProcessForTransient)& next)
+  const occ::handle<Transfer_ActorOfProcessForTransient>& next)
 {
   if (thenext == next)
     return;
@@ -88,21 +88,21 @@ void Transfer_ActorOfProcessForTransient::SetNext(
 
 //=================================================================================================
 
-Handle(Transfer_ActorOfProcessForTransient) Transfer_ActorOfProcessForTransient::Next() const
+occ::handle<Transfer_ActorOfProcessForTransient> Transfer_ActorOfProcessForTransient::Next() const
 {
   return thenext;
 }
 
 //=================================================================================================
 
-void Transfer_ActorOfProcessForTransient::SetLast(const Standard_Boolean mode)
+void Transfer_ActorOfProcessForTransient::SetLast(const bool mode)
 {
   thelast = mode;
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ActorOfProcessForTransient::IsLast() const
+bool Transfer_ActorOfProcessForTransient::IsLast() const
 {
   return thelast;
 }

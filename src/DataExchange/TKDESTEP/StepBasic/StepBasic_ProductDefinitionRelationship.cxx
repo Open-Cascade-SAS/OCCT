@@ -25,18 +25,18 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionRelationship, Standard_Tra
 
 StepBasic_ProductDefinitionRelationship::StepBasic_ProductDefinitionRelationship()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
 void StepBasic_ProductDefinitionRelationship::Init(
-  const Handle(TCollection_HAsciiString)&    aId,
-  const Handle(TCollection_HAsciiString)&    aName,
-  const Standard_Boolean                     hasDescription,
-  const Handle(TCollection_HAsciiString)&    aDescription,
-  const Handle(StepBasic_ProductDefinition)& aRelatingProductDefinition,
-  const Handle(StepBasic_ProductDefinition)& aRelatedProductDefinition)
+  const occ::handle<TCollection_HAsciiString>&    aId,
+  const occ::handle<TCollection_HAsciiString>&    aName,
+  const bool                                      hasDescription,
+  const occ::handle<TCollection_HAsciiString>&    aDescription,
+  const occ::handle<StepBasic_ProductDefinition>& aRelatingProductDefinition,
+  const occ::handle<StepBasic_ProductDefinition>& aRelatedProductDefinition)
 {
 
   theId = aId;
@@ -59,10 +59,10 @@ void StepBasic_ProductDefinitionRelationship::Init(
 //=================================================================================================
 
 void StepBasic_ProductDefinitionRelationship::Init(
-  const Handle(TCollection_HAsciiString)&       aId,
-  const Handle(TCollection_HAsciiString)&       aName,
-  const Standard_Boolean                        hasDescription,
-  const Handle(TCollection_HAsciiString)&       aDescription,
+  const occ::handle<TCollection_HAsciiString>&  aId,
+  const occ::handle<TCollection_HAsciiString>&  aName,
+  const bool                                    hasDescription,
+  const occ::handle<TCollection_HAsciiString>&  aDescription,
   const StepBasic_ProductDefinitionOrReference& aRelatingProductDefinition,
   const StepBasic_ProductDefinitionOrReference& aRelatedProductDefinition)
 {
@@ -82,35 +82,37 @@ void StepBasic_ProductDefinitionRelationship::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Id() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinitionRelationship::Id() const
 {
   return theId;
 }
 
 //=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::SetId(const Handle(TCollection_HAsciiString)& aId)
+void StepBasic_ProductDefinitionRelationship::SetId(
+  const occ::handle<TCollection_HAsciiString>& aId)
 {
   theId = aId;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinitionRelationship::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_ProductDefinitionRelationship::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinitionRelationship::Description() const
 {
   return theDescription;
 }
@@ -118,21 +120,21 @@ Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Descri
 //=================================================================================================
 
 void StepBasic_ProductDefinitionRelationship::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_ProductDefinitionRelationship::HasDescription() const
+bool StepBasic_ProductDefinitionRelationship::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionRelationship::
+occ::handle<StepBasic_ProductDefinition> StepBasic_ProductDefinitionRelationship::
   RelatingProductDefinition() const
 {
   return theRelatingProductDefinition.ProductDefinition();
@@ -149,7 +151,7 @@ StepBasic_ProductDefinitionOrReference StepBasic_ProductDefinitionRelationship::
 //=================================================================================================
 
 void StepBasic_ProductDefinitionRelationship::SetRelatingProductDefinition(
-  const Handle(StepBasic_ProductDefinition)& aRelatingProductDefinition)
+  const occ::handle<StepBasic_ProductDefinition>& aRelatingProductDefinition)
 {
   theRelatingProductDefinition.SetValue(aRelatingProductDefinition);
 }
@@ -164,7 +166,7 @@ void StepBasic_ProductDefinitionRelationship::SetRelatingProductDefinition(
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionRelationship::
+occ::handle<StepBasic_ProductDefinition> StepBasic_ProductDefinitionRelationship::
   RelatedProductDefinition() const
 {
   return theRelatedProductDefinition.ProductDefinition();
@@ -181,7 +183,7 @@ StepBasic_ProductDefinitionOrReference StepBasic_ProductDefinitionRelationship::
 //=================================================================================================
 
 void StepBasic_ProductDefinitionRelationship::SetRelatedProductDefinition(
-  const Handle(StepBasic_ProductDefinition)& aRelatedProductDefinition)
+  const occ::handle<StepBasic_ProductDefinition>& aRelatedProductDefinition)
 {
   theRelatedProductDefinition.SetValue(aRelatedProductDefinition);
 }

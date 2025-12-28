@@ -17,7 +17,8 @@
 
 #include <BOPAlgo_Algo.hxx>
 
-#include <TColStd_MapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
 
 //=================================================================================================
 
@@ -28,7 +29,7 @@ BOPAlgo_Algo::BOPAlgo_Algo()
 
 //=================================================================================================
 
-BOPAlgo_Algo::BOPAlgo_Algo(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_Algo::BOPAlgo_Algo(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Options(theAllocator)
 {
 }
@@ -53,16 +54,16 @@ void BOPAlgo_Algo::CheckResult()
 
 //=================================================================================================
 
-void BOPAlgo_Algo::analyzeProgress(const Standard_Real theWhole, BOPAlgo_PISteps& theSteps) const
+void BOPAlgo_Algo::analyzeProgress(const double theWhole, BOPAlgo_PISteps& theSteps) const
 {
-  Standard_Real aWhole = theWhole;
+  double aWhole = theWhole;
 
   // Fill progress steps for constant operations
   fillPIConstants(theWhole, theSteps);
 
-  TColStd_Array1OfReal& aSteps = theSteps.ChangeSteps();
-  TColStd_MapOfInteger  aMIConst;
-  for (Standard_Integer i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
+  NCollection_Array1<double>& aSteps = theSteps.ChangeSteps();
+  NCollection_Map<int>        aMIConst;
+  for (int i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
   {
     if (aSteps(i) > 0.)
     {
@@ -74,8 +75,8 @@ void BOPAlgo_Algo::analyzeProgress(const Standard_Real theWhole, BOPAlgo_PISteps
   // Fill progress steps for other operations
   fillPISteps(theSteps);
 
-  Standard_Real aSum = 0.;
-  for (Standard_Integer i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
+  double aSum = 0.;
+  for (int i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
   {
     if (!aMIConst.Contains(i))
     {
@@ -86,7 +87,7 @@ void BOPAlgo_Algo::analyzeProgress(const Standard_Real theWhole, BOPAlgo_PISteps
   // Normalize steps
   if (aSum > 0.)
   {
-    for (Standard_Integer i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
+    for (int i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
     {
       if (!aMIConst.Contains(i))
       {
@@ -98,7 +99,7 @@ void BOPAlgo_Algo::analyzeProgress(const Standard_Real theWhole, BOPAlgo_PISteps
 
 //=================================================================================================
 
-void BOPAlgo_Algo::fillPIConstants(const Standard_Real, BOPAlgo_PISteps&) const {}
+void BOPAlgo_Algo::fillPIConstants(const double, BOPAlgo_PISteps&) const {}
 
 //=================================================================================================
 

@@ -24,9 +24,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-class StepBasic_ActionMethod;
-DEFINE_STANDARD_HANDLE(StepBasic_ActionMethod, Standard_Transient)
-
 //! Representation of STEP entity ActionMethod
 class StepBasic_ActionMethod : public Standard_Transient
 {
@@ -36,48 +33,47 @@ public:
   Standard_EXPORT StepBasic_ActionMethod();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Standard_Boolean                  hasDescription,
-                            const Handle(TCollection_HAsciiString)& aDescription,
-                            const Handle(TCollection_HAsciiString)& aConsequence,
-                            const Handle(TCollection_HAsciiString)& aPurpose);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const bool                                   hasDescription,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
+                            const occ::handle<TCollection_HAsciiString>& aConsequence,
+                            const occ::handle<TCollection_HAsciiString>& aPurpose);
 
   //! Returns field Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   //! Set field Name
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& Name);
 
   //! Returns field Description
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   //! Set field Description
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns True if optional field Description is defined
-  Standard_EXPORT Standard_Boolean HasDescription() const;
+  Standard_EXPORT bool HasDescription() const;
 
   //! Returns field Consequence
-  Standard_EXPORT Handle(TCollection_HAsciiString) Consequence() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Consequence() const;
 
   //! Set field Consequence
-  Standard_EXPORT void SetConsequence(const Handle(TCollection_HAsciiString)& Consequence);
+  Standard_EXPORT void SetConsequence(const occ::handle<TCollection_HAsciiString>& Consequence);
 
   //! Returns field Purpose
-  Standard_EXPORT Handle(TCollection_HAsciiString) Purpose() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Purpose() const;
 
   //! Set field Purpose
-  Standard_EXPORT void SetPurpose(const Handle(TCollection_HAsciiString)& Purpose);
+  Standard_EXPORT void SetPurpose(const occ::handle<TCollection_HAsciiString>& Purpose);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ActionMethod, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TCollection_HAsciiString) theDescription;
-  Handle(TCollection_HAsciiString) theConsequence;
-  Handle(TCollection_HAsciiString) thePurpose;
-  Standard_Boolean                 defDescription;
+  occ::handle<TCollection_HAsciiString> theName;
+  occ::handle<TCollection_HAsciiString> theDescription;
+  occ::handle<TCollection_HAsciiString> theConsequence;
+  occ::handle<TCollection_HAsciiString> thePurpose;
+  bool                                  defDescription;
 };
 
 #endif // _StepBasic_ActionMethod_HeaderFile

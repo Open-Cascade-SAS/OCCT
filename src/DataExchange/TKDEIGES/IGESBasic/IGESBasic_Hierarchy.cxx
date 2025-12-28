@@ -23,13 +23,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_Hierarchy, IGESData_IGESEntity)
 
 IGESBasic_Hierarchy::IGESBasic_Hierarchy() {}
 
-void IGESBasic_Hierarchy::Init(const Standard_Integer nbPropVal,
-                               const Standard_Integer aLineFont,
-                               const Standard_Integer aView,
-                               const Standard_Integer anEntityLevel,
-                               const Standard_Integer aBlankStatus,
-                               const Standard_Integer aLineWt,
-                               const Standard_Integer aColorNum)
+void IGESBasic_Hierarchy::Init(const int nbPropVal,
+                               const int aLineFont,
+                               const int aView,
+                               const int anEntityLevel,
+                               const int aBlankStatus,
+                               const int aLineWt,
+                               const int aColorNum)
 {
   theLineFont         = aLineFont;
   theView             = aView;
@@ -41,37 +41,37 @@ void IGESBasic_Hierarchy::Init(const Standard_Integer nbPropVal,
   InitTypeAndForm(406, 10);
 }
 
-Standard_Integer IGESBasic_Hierarchy::NbPropertyValues() const
+int IGESBasic_Hierarchy::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Standard_Integer IGESBasic_Hierarchy::NewLineFont() const
+int IGESBasic_Hierarchy::NewLineFont() const
 {
   return theLineFont;
 }
 
-Standard_Integer IGESBasic_Hierarchy::NewView() const
+int IGESBasic_Hierarchy::NewView() const
 {
   return theView;
 }
 
-Standard_Integer IGESBasic_Hierarchy::NewEntityLevel() const
+int IGESBasic_Hierarchy::NewEntityLevel() const
 {
   return theEntityLevel;
 }
 
-Standard_Integer IGESBasic_Hierarchy::NewBlankStatus() const
+int IGESBasic_Hierarchy::NewBlankStatus() const
 {
   return theBlankStatus;
 }
 
-Standard_Integer IGESBasic_Hierarchy::NewLineWeight() const
+int IGESBasic_Hierarchy::NewLineWeight() const
 {
   return theLineWeight;
 }
 
-Standard_Integer IGESBasic_Hierarchy::NewColorNum() const
+int IGESBasic_Hierarchy::NewColorNum() const
 {
   return theColorNum;
 }

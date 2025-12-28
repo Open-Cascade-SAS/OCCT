@@ -22,7 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 #include <BRepBuilderAPI_Command.hxx>
 #include <Message_ProgressRange.hxx>
 
@@ -48,22 +48,20 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S);
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S);
 
   //! Returns true if the shape S has been deleted.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S);
+  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S);
 
 protected:
   Standard_EXPORT BRepBuilderAPI_MakeShape();
 
-  TopoDS_Shape         myShape;
-  TopTools_ListOfShape myGenerated;
-
-private:
+  TopoDS_Shape                   myShape;
+  NCollection_List<TopoDS_Shape> myGenerated;
 };
 
 #endif // _BRepBuilderAPI_MakeShape_HeaderFile

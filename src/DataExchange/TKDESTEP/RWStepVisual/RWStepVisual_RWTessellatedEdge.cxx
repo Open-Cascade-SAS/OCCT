@@ -22,8 +22,9 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepVisual_CoordinatesList.hxx>
 #include <StepVisual_EdgeOrCurve.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -32,10 +33,10 @@ RWStepVisual_RWTessellatedEdge::RWStepVisual_RWTessellatedEdge() {}
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedEdge::ReadStep(
-  const Handle(StepData_StepReaderData)&    theData,
-  const Standard_Integer                    theNum,
-  Handle(Interface_Check)&                  theCheck,
-  const Handle(StepVisual_TessellatedEdge)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&    theData,
+  const int                                      theNum,
+  occ::handle<Interface_Check>&                  theCheck,
+  const occ::handle<StepVisual_TessellatedEdge>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theCheck, "tessellated_edge"))
@@ -45,12 +46,12 @@ void RWStepVisual_RWTessellatedEdge::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theCheck, aRepresentationItem_Name);
 
   // Own fields of TessellatedEdge
 
-  Handle(StepVisual_CoordinatesList) aCoordinates;
+  occ::handle<StepVisual_CoordinatesList> aCoordinates;
   theData->ReadEntity(theNum,
                       2,
                       "coordinates",
@@ -59,27 +60,27 @@ void RWStepVisual_RWTessellatedEdge::ReadStep(
                       aCoordinates);
 
   StepVisual_EdgeOrCurve aGeometricLink;
-  Standard_Boolean       hasGeometricLink = Standard_True;
+  bool                   hasGeometricLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum, 3, "geometric_link", theCheck, aGeometricLink);
   }
   else
   {
-    hasGeometricLink = Standard_False;
+    hasGeometricLink = false;
     aGeometricLink   = StepVisual_EdgeOrCurve();
   }
 
-  Handle(TColStd_HArray1OfInteger) aLineStrip;
-  Standard_Integer                 sub4 = 0;
+  occ::handle<NCollection_HArray1<int>> aLineStrip;
+  int                                   sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "line_strip", theCheck, sub4))
   {
-    Standard_Integer nb0  = theData->NbParams(sub4);
-    aLineStrip            = new TColStd_HArray1OfInteger(1, nb0);
-    Standard_Integer num2 = sub4;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0    = theData->NbParams(sub4);
+    aLineStrip = new NCollection_HArray1<int>(1, nb0);
+    int num2   = sub4;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Standard_Integer anIt0;
+      int anIt0;
       theData->ReadInteger(num2, i0, "integer", theCheck, anIt0);
       aLineStrip->SetValue(i0, anIt0);
     }
@@ -96,8 +97,8 @@ void RWStepVisual_RWTessellatedEdge::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedEdge::WriteStep(
-  StepData_StepWriter&                      theSW,
-  const Handle(StepVisual_TessellatedEdge)& theEnt) const
+  StepData_StepWriter&                           theSW,
+  const occ::handle<StepVisual_TessellatedEdge>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -118,9 +119,9 @@ void RWStepVisual_RWTessellatedEdge::WriteStep(
   }
 
   theSW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= theEnt->LineStrip()->Length(); i3++)
+  for (int i3 = 1; i3 <= theEnt->LineStrip()->Length(); i3++)
   {
-    Standard_Integer Var0 = theEnt->LineStrip()->Value(i3);
+    int Var0 = theEnt->LineStrip()->Value(i3);
     theSW.Send(Var0);
   }
   theSW.CloseSub();
@@ -128,8 +129,8 @@ void RWStepVisual_RWTessellatedEdge::WriteStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedEdge::Share(const Handle(StepVisual_TessellatedEdge)& theEnt,
-                                           Interface_EntityIterator&                 theIter) const
+void RWStepVisual_RWTessellatedEdge::Share(const occ::handle<StepVisual_TessellatedEdge>& theEnt,
+                                           Interface_EntityIterator& theIter) const
 {
 
   // Inherited fields of RepresentationItem

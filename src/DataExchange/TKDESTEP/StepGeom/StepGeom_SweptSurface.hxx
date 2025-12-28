@@ -24,9 +24,6 @@
 class StepGeom_Curve;
 class TCollection_HAsciiString;
 
-class StepGeom_SweptSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_SweptSurface, StepGeom_Surface)
-
 class StepGeom_SweptSurface : public StepGeom_Surface
 {
 
@@ -34,18 +31,17 @@ public:
   //! Returns a SweptSurface
   Standard_EXPORT StepGeom_SweptSurface();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepGeom_Curve)&           aSweptCurve);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepGeom_Curve>&           aSweptCurve);
 
-  Standard_EXPORT void SetSweptCurve(const Handle(StepGeom_Curve)& aSweptCurve);
+  Standard_EXPORT void SetSweptCurve(const occ::handle<StepGeom_Curve>& aSweptCurve);
 
-  Standard_EXPORT Handle(StepGeom_Curve) SweptCurve() const;
+  Standard_EXPORT occ::handle<StepGeom_Curve> SweptCurve() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_SweptSurface, StepGeom_Surface)
 
-protected:
 private:
-  Handle(StepGeom_Curve) sweptCurve;
+  occ::handle<StepGeom_Curve> sweptCurve;
 };
 
 #endif // _StepGeom_SweptSurface_HeaderFile

@@ -34,20 +34,21 @@
 
 //=================================================================================================
 
-void BinMXCAFDoc::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
-                             const Handle(Message_Messenger)&   theMsgDrv)
+void BinMXCAFDoc::AddDrivers(const occ::handle<BinMDF_ADriverTable>& theDriverTable,
+                             const occ::handle<Message_Messenger>&   theMsgDrv)
 {
   theDriverTable->AddDriver(new BinMXCAFDoc_CentroidDriver(theMsgDrv));
   theDriverTable->AddDriver(new BinMXCAFDoc_ColorDriver(theMsgDrv));
   theDriverTable->AddDriver(new BinMXCAFDoc_GraphNodeDriver(theMsgDrv));
 
   // oan: changes for sharing locations map
-  Handle(BinMDF_ADriver) aNSDriver;
+  occ::handle<BinMDF_ADriver> aNSDriver;
   theDriverTable->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aNSDriver);
-  Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
-    Handle(BinMNaming_NamedShapeDriver)::DownCast(aNSDriver);
+  occ::handle<BinMNaming_NamedShapeDriver> aNamedShapeDriver =
+    occ::down_cast<BinMNaming_NamedShapeDriver>(aNSDriver);
 
-  Handle(BinMXCAFDoc_LocationDriver) aLocationDriver = new BinMXCAFDoc_LocationDriver(theMsgDrv);
+  occ::handle<BinMXCAFDoc_LocationDriver> aLocationDriver =
+    new BinMXCAFDoc_LocationDriver(theMsgDrv);
   if (!aNamedShapeDriver.IsNull())
   {
     aLocationDriver->SetNSDriver(aNamedShapeDriver);

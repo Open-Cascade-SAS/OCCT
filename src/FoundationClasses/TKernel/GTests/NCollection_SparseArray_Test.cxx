@@ -16,7 +16,7 @@
 #include <gtest/gtest.h>
 
 // Basic test type for the SparseArray
-typedef Standard_Integer ItemType;
+typedef int ItemType;
 
 // Custom class for testing complex types in the SparseArray
 class TestClass
@@ -88,8 +88,8 @@ TEST(NCollection_SparseArrayTest, LargeIndices)
   NCollection_SparseArray<ItemType> anArray(10);
 
   // Test with large indices
-  const Standard_Size largeIndex1 = 1000;
-  const Standard_Size largeIndex2 = 10000;
+  const size_t largeIndex1 = 1000;
+  const size_t largeIndex2 = 10000;
 
   anArray.SetValue(largeIndex1, 1000);
   anArray.SetValue(largeIndex2, 10000);
@@ -139,25 +139,25 @@ TEST(NCollection_SparseArrayTest, IteratorFunctions)
   NCollection_SparseArray<ItemType>::ConstIterator anIt(anArray);
 
   // Check that iterator finds all values in some order
-  Standard_Boolean found5  = Standard_False;
-  Standard_Boolean found10 = Standard_False;
-  Standard_Boolean found20 = Standard_False;
-  Standard_Boolean found30 = Standard_False;
-  Standard_Size    count   = 0;
+  bool   found5  = false;
+  bool   found10 = false;
+  bool   found20 = false;
+  bool   found30 = false;
+  size_t count   = 0;
 
   for (; anIt.More(); anIt.Next(), ++count)
   {
-    Standard_Size index = anIt.Index();
-    ItemType      value = anIt.Value();
+    size_t   index = anIt.Index();
+    ItemType value = anIt.Value();
 
     if (index == 5 && value == 50)
-      found5 = Standard_True;
+      found5 = true;
     else if (index == 10 && value == 100)
-      found10 = Standard_True;
+      found10 = true;
     else if (index == 20 && value == 200)
-      found20 = Standard_True;
+      found20 = true;
     else if (index == 30 && value == 300)
-      found30 = Standard_True;
+      found30 = true;
   }
 
   EXPECT_EQ(count, 4);

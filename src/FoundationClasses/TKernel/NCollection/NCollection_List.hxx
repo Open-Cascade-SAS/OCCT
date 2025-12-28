@@ -61,12 +61,12 @@ public:
 
   //! Empty constructor.
   NCollection_List()
-      : NCollection_BaseList(Handle(NCollection_BaseAllocator)())
+      : NCollection_BaseList(occ::handle<NCollection_BaseAllocator>())
   {
   }
 
   //! Constructor
-  explicit NCollection_List(const Handle(NCollection_BaseAllocator)& theAllocator)
+  explicit NCollection_List(const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : NCollection_BaseList(theAllocator)
   {
   }
@@ -86,7 +86,7 @@ public:
   }
 
   //! Size - Number of items
-  Standard_Integer Size(void) const noexcept { return Extent(); }
+  int Size(void) const noexcept { return Extent(); }
 
   //! Replace this list by the items of another list (theOther parameter).
   //! This method does not change the internal allocator.
@@ -120,7 +120,7 @@ public:
   }
 
   //! Clear this list
-  void Clear(const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
+  void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
   {
     PClear(ListNode::delNode);
     if (!theAllocator.IsNull())
@@ -253,17 +253,17 @@ public:
   //! Remove the first occurrence of the object.
   template <typename TheValueType> // instantiate this method on first call only for types defining
                                    // equality operator
-  Standard_Boolean Remove(const TheValueType& theObject)
+  bool Remove(const TheValueType& theObject)
   {
     for (Iterator anIter(*this); anIter.More(); anIter.Next())
     {
       if (anIter.Value() == theObject)
       {
         Remove(anIter);
-        return Standard_True;
+        return true;
       }
     }
-    return Standard_False;
+    return false;
   }
 
   //! InsertBefore
@@ -349,16 +349,16 @@ public:
   //! Return true if object is stored in the list.
   template <typename TheValueType> // instantiate this method on first call only for types defining
                                    // equality operator
-  Standard_Boolean Contains(const TheValueType& theObject) const
+  bool Contains(const TheValueType& theObject) const
   {
     for (Iterator anIter(*this); anIter.More(); anIter.Next())
     {
       if (anIter.Value() == theObject)
       {
-        return Standard_True;
+        return true;
       }
     }
-    return Standard_False;
+    return false;
   }
 
   //! Destructor - clears the List

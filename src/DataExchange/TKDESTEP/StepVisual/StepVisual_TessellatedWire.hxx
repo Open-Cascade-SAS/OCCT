@@ -21,10 +21,9 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_TessellatedItem.hxx>
 
-#include <StepVisual_HArray1OfTessellatedEdgeOrVertex.hxx>
+#include <StepVisual_TessellatedEdgeOrVertex.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepVisual_PathOrCompositeCurve.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedWire, StepVisual_TessellatedItem)
 
 //! Representation of STEP entity TessellatedWire
 class StepVisual_TessellatedWire : public StepVisual_TessellatedItem
@@ -35,24 +34,25 @@ public:
   Standard_EXPORT StepVisual_TessellatedWire();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                            const Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex)& theItems,
-                            const Standard_Boolean                 theHasGeometricModelLink,
-                            const StepVisual_PathOrCompositeCurve& theGeometricModelLink);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+    const occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>>& theItems,
+    const bool                             theHasGeometricModelLink,
+    const StepVisual_PathOrCompositeCurve& theGeometricModelLink);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>> Items()
+    const;
 
   //! Sets field Items
   Standard_EXPORT void SetItems(
-    const Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex)& theItems);
+    const occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>>& theItems);
 
   //! Returns number of Items
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   //! Returns value of Items by its num
-  Standard_EXPORT const StepVisual_TessellatedEdgeOrVertex& ItemsValue(
-    const Standard_Integer theNum) const;
+  Standard_EXPORT const StepVisual_TessellatedEdgeOrVertex& ItemsValue(const int theNum) const;
 
   //! Returns field GeometricModelLink
   Standard_EXPORT StepVisual_PathOrCompositeCurve GeometricModelLink() const;
@@ -62,14 +62,14 @@ public:
     const StepVisual_PathOrCompositeCurve& theGeometricModelLink);
 
   //! Returns True if optional field GeometricModelLink is defined
-  Standard_EXPORT Standard_Boolean HasGeometricModelLink() const;
+  Standard_EXPORT bool HasGeometricModelLink() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedWire, StepVisual_TessellatedItem)
 
 private:
-  Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex) myItems;
-  StepVisual_PathOrCompositeCurve                     myGeometricModelLink; //!< optional
-  Standard_Boolean myHasGeometricModelLink; //!< flag "is GeometricModelLink defined"
+  occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>> myItems;
+  StepVisual_PathOrCompositeCurve myGeometricModelLink;    //!< optional
+  bool                            myHasGeometricModelLink; //!< flag "is GeometricModelLink defined"
 };
 
 #endif // _StepVisual_TessellatedWire_HeaderFile_

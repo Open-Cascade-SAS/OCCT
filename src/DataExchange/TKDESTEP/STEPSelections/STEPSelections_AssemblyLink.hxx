@@ -24,9 +24,6 @@
 class StepRepr_NextAssemblyUsageOccurrence;
 class STEPSelections_AssemblyComponent;
 
-class STEPSelections_AssemblyLink;
-DEFINE_STANDARD_HANDLE(STEPSelections_AssemblyLink, Standard_Transient)
-
 class STEPSelections_AssemblyLink : public Standard_Transient
 {
 
@@ -34,29 +31,28 @@ public:
   Standard_EXPORT STEPSelections_AssemblyLink();
 
   Standard_EXPORT STEPSelections_AssemblyLink(
-    const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo,
-    const Handle(Standard_Transient)&                   item,
-    const Handle(STEPSelections_AssemblyComponent)&     part);
+    const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& nauo,
+    const occ::handle<Standard_Transient>&                   item,
+    const occ::handle<STEPSelections_AssemblyComponent>&     part);
 
-  Handle(StepRepr_NextAssemblyUsageOccurrence) GetNAUO() const;
+  occ::handle<StepRepr_NextAssemblyUsageOccurrence> GetNAUO() const;
 
-  Handle(Standard_Transient) GetItem() const;
+  occ::handle<Standard_Transient> GetItem() const;
 
-  Handle(STEPSelections_AssemblyComponent) GetComponent() const;
+  occ::handle<STEPSelections_AssemblyComponent> GetComponent() const;
 
-  void SetNAUO(const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo);
+  void SetNAUO(const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& nauo);
 
-  void SetItem(const Handle(Standard_Transient)& item);
+  void SetItem(const occ::handle<Standard_Transient>& item);
 
-  void SetComponent(const Handle(STEPSelections_AssemblyComponent)& part);
+  void SetComponent(const occ::handle<STEPSelections_AssemblyComponent>& part);
 
   DEFINE_STANDARD_RTTIEXT(STEPSelections_AssemblyLink, Standard_Transient)
 
-protected:
 private:
-  Handle(StepRepr_NextAssemblyUsageOccurrence) myNAUO;
-  Handle(Standard_Transient)                   myItem;
-  Handle(STEPSelections_AssemblyComponent)     myComponent;
+  occ::handle<StepRepr_NextAssemblyUsageOccurrence> myNAUO;
+  occ::handle<Standard_Transient>                   myItem;
+  occ::handle<STEPSelections_AssemblyComponent>     myComponent;
 };
 
 #include <STEPSelections_AssemblyLink.lxx>

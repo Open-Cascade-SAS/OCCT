@@ -34,23 +34,24 @@ public:
   //!                            will be set to the corresponding values.
   //! @param theId OpenGl_Resource name
   //! @return handle to created PBR environment or NULL handle in case of fail
-  Standard_EXPORT static Handle(OpenGl_PBREnvironment) Create(
-    const Handle(OpenGl_Context)&  theCtx,
-    unsigned int                   thePow2Size         = 9,
-    unsigned int                   theSpecMapLevelsNum = 6,
-    const TCollection_AsciiString& theId               = "PBREnvironment");
+  Standard_EXPORT static occ::handle<OpenGl_PBREnvironment> Create(
+    const occ::handle<OpenGl_Context>& theCtx,
+    unsigned int                       thePow2Size         = 9,
+    unsigned int                       theSpecMapLevelsNum = 6,
+    const TCollection_AsciiString&     theId               = "PBREnvironment");
 
 public:
   //! Binds diffuse and specular IBL maps to the corresponding texture units.
-  Standard_EXPORT void Bind(const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT void Bind(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Unbinds diffuse and specular IBL maps.
-  Standard_EXPORT void Unbind(const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT void Unbind(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Fills all mipmaps of specular IBL map and diffuse IBL map with one color.
   //! So that environment illumination will be constant.
-  Standard_EXPORT void Clear(const Handle(OpenGl_Context)& theCtx,
-                             const Graphic3d_Vec3&         theColor = Graphic3d_Vec3(1.f));
+  Standard_EXPORT void Clear(
+    const occ::handle<OpenGl_Context>& theCtx,
+    const NCollection_Vec3<float>&     theColor = NCollection_Vec3<float>(1.f));
 
   //! Generates specular and diffuse (irradiance) IBL maps.
   //! @param theCtx OpenGL context
@@ -66,13 +67,13 @@ public:
   //! IBL map baking (see 'SpecIBLMapSamplesFactor' for details) theZIsInverted and theIsTopDown can
   //! be taken from Graphic3d_CubeMap source of environment cubemap. theDiffMapNbSamples and
   //! theSpecMapNbSamples is the main parameter directly affected to performance.
-  Standard_EXPORT void Bake(const Handle(OpenGl_Context)& theCtx,
-                            const Handle(OpenGl_Texture)& theEnvMap,
-                            Standard_Boolean              theZIsInverted      = Standard_False,
-                            Standard_Boolean              theIsTopDown        = Standard_True,
-                            Standard_Size                 theDiffMapNbSamples = 1024,
-                            Standard_Size                 theSpecMapNbSamples = 256,
-                            Standard_ShortReal            theProbability      = 0.99f);
+  Standard_EXPORT void Bake(const occ::handle<OpenGl_Context>& theCtx,
+                            const occ::handle<OpenGl_Texture>& theEnvMap,
+                            bool                               theZIsInverted      = false,
+                            bool                               theIsTopDown        = true,
+                            size_t                             theDiffMapNbSamples = 1024,
+                            size_t                             theSpecMapNbSamples = 256,
+                            float                              theProbability      = 0.99f);
 
   //! Returns number of mipmap levels used in specular IBL map.
   //! It can be different from value passed to creation method.
@@ -96,15 +97,15 @@ public:
 
   //! Releases all OpenGL resources.
   //! It must be called before destruction.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE
+  virtual size_t EstimatedDataSize() const override
   {
     unsigned int aDiffIBLMapSidePixelsCount = 1 << myPow2Size;
     aDiffIBLMapSidePixelsCount *= aDiffIBLMapSidePixelsCount;
-    Standard_Size anEstimatedDataSize = aDiffIBLMapSidePixelsCount;
+    size_t anEstimatedDataSize = aDiffIBLMapSidePixelsCount;
     for (unsigned int i = 0; i < mySpecMapLevelsNumber; ++i)
     {
       anEstimatedDataSize += aDiffIBLMapSidePixelsCount >> (2 * i);
@@ -116,7 +117,7 @@ public:
 
   //! Checks completeness of PBR environment.
   //! Creation method returns only completed objects or null handles otherwise.
-  Standard_Boolean IsComplete() const { return myIsComplete; }
+  bool IsComplete() const { return myIsComplete; }
 
   //! Destructor.
   //! Warning! 'Release' method must be called before destruction.
@@ -126,8 +127,8 @@ public:
 private:
   //! Creates new PBR environment.
   //! Parameters and logic are described in 'Create' method documentation.
-  Standard_EXPORT OpenGl_PBREnvironment(const Handle(OpenGl_Context)&  theCtx,
-                                        unsigned int                   thePowOf2Size          = 9,
+  Standard_EXPORT OpenGl_PBREnvironment(const occ::handle<OpenGl_Context>& theCtx,
+                                        unsigned int                       thePowOf2Size      = 9,
                                         unsigned int                   theSpecMapLevelsNumber = 6,
                                         const TCollection_AsciiString& theId = "PBREnvironment");
 
@@ -143,12 +144,12 @@ private:
   //! Parameters for baking IBL.
   struct BakingParams
   {
-    Standard_Size      NbSpecSamples;
-    Standard_Size      NbDiffSamples;
-    Standard_Integer   EnvMapSize;
-    Standard_ShortReal Probability;
-    Standard_Boolean   IsZInverted;
-    Standard_Boolean   IsTopDown;
+    size_t NbSpecSamples;
+    size_t NbDiffSamples;
+    int    EnvMapSize;
+    float  Probability;
+    bool   IsZInverted;
+    bool   IsTopDown;
 
     BakingParams()
         : NbSpecSamples(0),
@@ -164,48 +165,50 @@ private:
   //! Initializes all textures.
   //! @return false in case of failed texture initialization
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  bool initTextures(const Handle(OpenGl_Context)& theCtx);
+  bool initTextures(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Creates frame buffer object for IBL maps generation.
   //! @return false in case of failed FBO initialization
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  bool initFBO(const Handle(OpenGl_Context)& theCtx);
+  bool initFBO(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Initializes vertex buffer object of screen rectangle.
   //! @return false in case of failed creation
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  bool initVAO(const Handle(OpenGl_Context)& theCtx);
+  bool initVAO(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Responses for diffuse (irradiance) IBL map processing.
   //! @return false in case of failed baking or clearing
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  bool processDiffIBLMap(const Handle(OpenGl_Context)& theCtx, const BakingParams* theDrawParams);
+  bool processDiffIBLMap(const occ::handle<OpenGl_Context>& theCtx,
+                         const BakingParams*                theDrawParams);
 
   //! Responses for specular IBL map processing.
   //! @return false in case of failed baking or clearing
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  bool processSpecIBLMap(const Handle(OpenGl_Context)& theCtx, const BakingParams* theDrawParams);
+  bool processSpecIBLMap(const occ::handle<OpenGl_Context>& theCtx,
+                         const BakingParams*                theDrawParams);
 
   //! Checks completeness of frame buffer object for all targets
   //! (all cube map sides and levels of IBL maps).
   //! @return false in case of uncompleted frame buffer object.
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  bool checkFBOComplentess(const Handle(OpenGl_Context)& theCtx);
+  bool checkFBOComplentess(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Version of 'Bake' without OpenGl_PBREnvironmentSetnry.
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  void bake(const Handle(OpenGl_Context)& theCtx,
-            const Handle(OpenGl_Texture)& theEnvMap,
-            Standard_Boolean              theZIsInverted      = Standard_False,
-            Standard_Boolean              theIsTopDown        = Standard_True,
-            Standard_Size                 theDiffMapNbSamples = 1024,
-            Standard_Size                 theSpecMapNbSamples = 256,
-            Standard_ShortReal            theProbability      = 1.f);
+  void bake(const occ::handle<OpenGl_Context>& theCtx,
+            const occ::handle<OpenGl_Texture>& theEnvMap,
+            bool                               theZIsInverted      = false,
+            bool                               theIsTopDown        = true,
+            size_t                             theDiffMapNbSamples = 1024,
+            size_t                             theSpecMapNbSamples = 256,
+            float                              theProbability      = 1.f);
 
   //! Version of 'Clear' without OpenGl_PBREnvironmentSetnry.
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  void clear(const Handle(OpenGl_Context)& theCtx,
-             const Graphic3d_Vec3&         theColor = Graphic3d_Vec3(1.f));
+  void clear(const occ::handle<OpenGl_Context>& theCtx,
+             const NCollection_Vec3<float>&     theColor = NCollection_Vec3<float>(1.f));
 
 private:
   // clang-format off
@@ -216,9 +219,9 @@ private:
   OpenGl_VertexBuffer myVBO;                 //!< vertex buffer object of screen rectangular
   GLuint              myFBO;                 //!< frame buffer object to generate or clear IBL maps
 
-  Standard_Boolean    myIsComplete;          //!< completeness of PBR environment
-  Standard_Boolean    myIsNeededToBeBound;   //!< indicates whether IBL map's textures have to be bound or it is not obligate
-  Standard_Boolean    myCanRenderFloat;      //!< indicates whether driver supports rendering into floating point texture or not
+  bool    myIsComplete;          //!< completeness of PBR environment
+  bool    myIsNeededToBeBound;   //!< indicates whether IBL map's textures have to be bound or it is not obligate
+  bool    myCanRenderFloat;      //!< indicates whether driver supports rendering into floating point texture or not
   // clang-format on
 };
 

@@ -43,19 +43,20 @@ public:
   //! 3 -> MeasureRepresentationItem
   //! 4 -> Placement
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a CompoundRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_CompoundRepresentationItem) CompoundRepresentationItem() const;
-
-  //! returns Value as a DescriptiveRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_DescriptiveRepresentationItem) DescriptiveRepresentationItem()
+  Standard_EXPORT occ::handle<StepRepr_CompoundRepresentationItem> CompoundRepresentationItem()
     const;
 
+  //! returns Value as a DescriptiveRepresentationItem (Null if another type)
+  Standard_EXPORT occ::handle<StepRepr_DescriptiveRepresentationItem>
+                  DescriptiveRepresentationItem() const;
+
   //! returns Value as a MeasureRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_MeasureRepresentationItem) MeasureRepresentationItem() const;
+  Standard_EXPORT occ::handle<StepRepr_MeasureRepresentationItem> MeasureRepresentationItem() const;
 
   //! returns Value as a Placement (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Placement) Placement() const;
+  Standard_EXPORT occ::handle<StepGeom_Placement> Placement() const;
 };
 #endif // _StepShape_ShapeDimensionRepresentationItem_HeaderFile

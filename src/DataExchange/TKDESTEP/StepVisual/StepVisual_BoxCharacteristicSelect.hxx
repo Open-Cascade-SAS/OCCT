@@ -30,18 +30,17 @@ public:
 
   Standard_EXPORT StepVisual_BoxCharacteristicSelect();
 
-  Standard_EXPORT Standard_Integer TypeOfContent() const;
+  Standard_EXPORT int TypeOfContent() const;
 
-  Standard_EXPORT void SetTypeOfContent(const Standard_Integer aType);
+  Standard_EXPORT void SetTypeOfContent(const int aType);
 
-  Standard_EXPORT Standard_Real RealValue() const;
+  Standard_EXPORT double RealValue() const;
 
-  Standard_EXPORT void SetRealValue(const Standard_Real aValue);
+  Standard_EXPORT void SetRealValue(const double aValue);
 
-protected:
 private:
-  Standard_Real    theRealValue;
-  Standard_Integer theTypeOfContent;
+  double theRealValue;
+  int    theTypeOfContent;
 };
 
 #endif // _StepVisual_BoxCharacteristicSelect_HeaderFile

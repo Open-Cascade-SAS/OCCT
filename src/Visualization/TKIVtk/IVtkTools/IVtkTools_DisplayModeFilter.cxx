@@ -42,7 +42,7 @@ vtkStandardNewMacro(IVtkTools_DisplayModeFilter)
   // Filter according to values in subshapes types array.
   myIdsArrayName = IVtkVTK_ShapeData::ARRNAME_MESH_TYPES();
 
-  IVtk_IdTypeMap aTypes;
+  NCollection_Map<IVtk_IdType> aTypes;
 
   aTypes.Add(MT_IsoLine);
   aTypes.Add(MT_FreeVertex);
@@ -102,7 +102,7 @@ void IVtkTools_DisplayModeFilter::SetDisplaySharedVertices(const bool theDoDispl
   if (myDoDisplaySharedVertices != theDoDisplay)
   {
     myDoDisplaySharedVertices = theDoDisplay;
-    IVtk_IdTypeMap aModeTypes;
+    NCollection_Map<IVtk_IdType> aModeTypes;
     for (int i = 0; i < 2; i++)
     {
       aModeTypes = myModesDefinition[i];
@@ -140,15 +140,17 @@ IVtk_DisplayMode IVtkTools_DisplayModeFilter::GetDisplayMode() const
 
 //=================================================================================================
 
-const IVtk_IdTypeMap& IVtkTools_DisplayModeFilter::MeshTypesForMode(IVtk_DisplayMode theMode) const
+const NCollection_Map<IVtk_IdType>& IVtkTools_DisplayModeFilter::MeshTypesForMode(
+  IVtk_DisplayMode theMode) const
 {
   return myModesDefinition[theMode];
 }
 
 //=================================================================================================
 
-void IVtkTools_DisplayModeFilter::SetMeshTypesForMode(IVtk_DisplayMode      theMode,
-                                                      const IVtk_IdTypeMap& theMeshTypes)
+void IVtkTools_DisplayModeFilter::SetMeshTypesForMode(
+  IVtk_DisplayMode                    theMode,
+  const NCollection_Map<IVtk_IdType>& theMeshTypes)
 {
   myModesDefinition[theMode] = theMeshTypes;
   Modified();

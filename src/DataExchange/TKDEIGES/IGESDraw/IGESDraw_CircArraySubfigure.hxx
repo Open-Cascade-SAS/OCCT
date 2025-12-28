@@ -22,12 +22,10 @@
 
 #include <Standard_Integer.hxx>
 #include <gp_XYZ.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
-
-class IGESDraw_CircArraySubfigure;
-DEFINE_STANDARD_HANDLE(IGESDraw_CircArraySubfigure, IGESData_IGESEntity)
 
 //! Defines IGES Circular Array Subfigure Instance Entity,
 //! Type <414> Form Number <0> in package IGESDraw
@@ -52,20 +50,20 @@ public:
   //! - aFlag     : DO-DON'T flag to control which portion to
   //! display
   //! - allNumPos : All position to be or not to be processed
-  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)&      aBase,
-                            const Standard_Integer                  aNumLocs,
-                            const gp_XYZ&                           aCenter,
-                            const Standard_Real                     aRadius,
-                            const Standard_Real                     aStAngle,
-                            const Standard_Real                     aDelAngle,
-                            const Standard_Integer                  aFlag,
-                            const Handle(TColStd_HArray1OfInteger)& allNumPos);
+  Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>&      aBase,
+                            const int                                    aNumLocs,
+                            const gp_XYZ&                                aCenter,
+                            const double                                 aRadius,
+                            const double                                 aStAngle,
+                            const double                                 aDelAngle,
+                            const int                                    aFlag,
+                            const occ::handle<NCollection_HArray1<int>>& allNumPos);
 
   //! returns the base entity, copies of which are produced
-  Standard_EXPORT Handle(IGESData_IGESEntity) BaseEntity() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> BaseEntity() const;
 
   //! returns total number of possible instance locations
-  Standard_EXPORT Standard_Integer NbLocations() const;
+  Standard_EXPORT int NbLocations() const;
 
   //! returns the center of the imaginary circle
   Standard_EXPORT gp_Pnt CenterPoint() const;
@@ -74,46 +72,45 @@ public:
   Standard_EXPORT gp_Pnt TransformedCenterPoint() const;
 
   //! returns the radius of the imaginary circle
-  Standard_EXPORT Standard_Real CircleRadius() const;
+  Standard_EXPORT double CircleRadius() const;
 
   //! returns the start angle in radians
-  Standard_EXPORT Standard_Real StartAngle() const;
+  Standard_EXPORT double StartAngle() const;
 
   //! returns the delta angle in radians
-  Standard_EXPORT Standard_Real DeltaAngle() const;
+  Standard_EXPORT double DeltaAngle() const;
 
   //! returns 0 if all elements to be displayed
-  Standard_EXPORT Standard_Integer ListCount() const;
+  Standard_EXPORT int ListCount() const;
 
   //! returns True if (ListCount = 0) all elements are to be displayed
-  Standard_EXPORT Standard_Boolean DisplayFlag() const;
+  Standard_EXPORT bool DisplayFlag() const;
 
   //! returns 0 if half or fewer of the elements of the array are defined
   //! returns 1 if half or more of the elements are defined
-  Standard_EXPORT Standard_Boolean DoDontFlag() const;
+  Standard_EXPORT bool DoDontFlag() const;
 
   //! returns whether Index is to be processed (DO)
   //! or not to be processed(DON'T)
   //! if (ListCount = 0) return theDoDontFlag
   //! raises exception if Index <= 0 or Index > ListCount().
-  Standard_EXPORT Standard_Boolean PositionNum(const Standard_Integer Index) const;
+  Standard_EXPORT bool PositionNum(const int Index) const;
 
   //! returns the Index'th value position
   //! raises exception if Index <= 0 or Index > ListCount().
-  Standard_EXPORT Standard_Integer ListPosition(const Standard_Integer Index) const;
+  Standard_EXPORT int ListPosition(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_CircArraySubfigure, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_IGESEntity)      theBaseEntity;
-  Standard_Integer                 theNbLocations;
-  gp_XYZ                           theCenter;
-  Standard_Real                    theRadius;
-  Standard_Real                    theStartAngle;
-  Standard_Real                    theDeltaAngle;
-  Standard_Boolean                 theDoDontFlag;
-  Handle(TColStd_HArray1OfInteger) thePositions;
+  occ::handle<IGESData_IGESEntity>      theBaseEntity;
+  int                                   theNbLocations;
+  gp_XYZ                                theCenter;
+  double                                theRadius;
+  double                                theStartAngle;
+  double                                theDeltaAngle;
+  bool                                  theDoDontFlag;
+  occ::handle<NCollection_HArray1<int>> thePositions;
 };
 
 #endif // _IGESDraw_CircArraySubfigure_HeaderFile

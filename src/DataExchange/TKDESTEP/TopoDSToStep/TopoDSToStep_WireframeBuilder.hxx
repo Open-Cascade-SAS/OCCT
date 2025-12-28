@@ -21,10 +21,14 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <TopoDSToStep_BuilderError.hxx>
 #include <TopoDSToStep_Root.hxx>
-#include <MoniTool_DataMapOfShapeTransient.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class TopoDS_Shape;
 class TopoDSToStep_Tool;
 class Transfer_FinderProcess;
@@ -51,37 +55,37 @@ public:
 
   Standard_EXPORT TopoDSToStep_BuilderError Error() const;
 
-  Standard_EXPORT const Handle(TColStd_HSequenceOfTransient)& Value() const;
+  Standard_EXPORT const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& Value()
+    const;
 
   //! Extraction of Trimmed Curves from TopoDS_Edge for the
   //! Creation of a GeometricallyBoundedWireframeRepresentation
-  Standard_EXPORT Standard_Boolean
-    GetTrimmedCurveFromEdge(const TopoDS_Edge&                    E,
-                            const TopoDS_Face&                    F,
-                            MoniTool_DataMapOfShapeTransient&     M,
-                            Handle(TColStd_HSequenceOfTransient)& L,
-                            const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+  Standard_EXPORT bool GetTrimmedCurveFromEdge(
+    const TopoDS_Edge&                                                                           E,
+    const TopoDS_Face&                                                                           F,
+    NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& M,
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>&                         L,
+    const StepData_Factors& theLocalFactors = StepData_Factors()) const;
 
   //! Extraction of Trimmed Curves from TopoDS_Face for the
   //! Creation of a GeometricallyBoundedWireframeRepresentation
-  Standard_EXPORT Standard_Boolean
-    GetTrimmedCurveFromFace(const TopoDS_Face&                    F,
-                            MoniTool_DataMapOfShapeTransient&     M,
-                            Handle(TColStd_HSequenceOfTransient)& L,
-                            const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+  Standard_EXPORT bool GetTrimmedCurveFromFace(
+    const TopoDS_Face&                                                                           F,
+    NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& M,
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>&                         L,
+    const StepData_Factors& theLocalFactors = StepData_Factors()) const;
 
   //! Extraction of Trimmed Curves from any TopoDS_Shape for the
   //! Creation of a GeometricallyBoundedWireframeRepresentation
-  Standard_EXPORT Standard_Boolean
-    GetTrimmedCurveFromShape(const TopoDS_Shape&                   S,
-                             MoniTool_DataMapOfShapeTransient&     M,
-                             Handle(TColStd_HSequenceOfTransient)& L,
-                             const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+  Standard_EXPORT bool GetTrimmedCurveFromShape(
+    const TopoDS_Shape&                                                                          S,
+    NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& M,
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>&                         L,
+    const StepData_Factors& theLocalFactors = StepData_Factors()) const;
 
-protected:
 private:
-  Handle(TColStd_HSequenceOfTransient) myResult;
-  TopoDSToStep_BuilderError            myError;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> myResult;
+  TopoDSToStep_BuilderError                                           myError;
 };
 
 #endif // _TopoDSToStep_WireframeBuilder_HeaderFile

@@ -35,8 +35,8 @@ extern void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitApp
 #endif
 
 #ifndef _WIN32
-extern Draw_Viewer      dout;
-extern Standard_Boolean Draw_Batch;
+extern Draw_Viewer dout;
+extern bool        Draw_Batch;
 #endif
 
 #endif

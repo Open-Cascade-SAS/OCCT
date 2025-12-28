@@ -33,10 +33,10 @@ RWStepFEA_RWCurveElementIntervalLinearlyVarying::RWStepFEA_RWCurveElementInterva
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementIntervalLinearlyVarying::ReadStep(
-  const Handle(StepData_StepReaderData)&                     data,
-  const Standard_Integer                                     num,
-  Handle(Interface_Check)&                                   ach,
-  const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent) const
+  const occ::handle<StepData_StepReaderData>&                     data,
+  const int                                                       num,
+  occ::handle<Interface_Check>&                                   ach,
+  const occ::handle<StepFEA_CurveElementIntervalLinearlyVarying>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "curve_element_interval_linearly_varying"))
@@ -44,7 +44,7 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::ReadStep(
 
   // Inherited fields of CurveElementInterval
 
-  Handle(StepFEA_CurveElementLocation) aCurveElementInterval_FinishPosition;
+  occ::handle<StepFEA_CurveElementLocation> aCurveElementInterval_FinishPosition;
   data->ReadEntity(num,
                    1,
                    "curve_element_interval.finish_position",
@@ -52,7 +52,7 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::ReadStep(
                    STANDARD_TYPE(StepFEA_CurveElementLocation),
                    aCurveElementInterval_FinishPosition);
 
-  Handle(StepBasic_EulerAngles) aCurveElementInterval_EuAngles;
+  occ::handle<StepBasic_EulerAngles> aCurveElementInterval_EuAngles;
   data->ReadEntity(num,
                    2,
                    "curve_element_interval.eu_angles",
@@ -62,16 +62,18 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::ReadStep(
 
   // Own fields of CurveElementIntervalLinearlyVarying
 
-  Handle(StepElement_HArray1OfCurveElementSectionDefinition) aSections;
-  Standard_Integer                                           sub3 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>
+      aSections;
+  int sub3 = 0;
   if (data->ReadSubList(num, 3, "sections", ach, sub3))
   {
-    Standard_Integer nb0  = data->NbParams(sub3);
-    aSections             = new StepElement_HArray1OfCurveElementSectionDefinition(1, nb0);
-    Standard_Integer num2 = sub3;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0 = data->NbParams(sub3);
+    aSections =
+      new NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>(1, nb0);
+    int num2 = sub3;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepElement_CurveElementSectionDefinition) anIt0;
+      occ::handle<StepElement_CurveElementSectionDefinition> anIt0;
       data->ReadEntity(num2,
                        i0,
                        "curve_element_section_definition",
@@ -89,8 +91,8 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementIntervalLinearlyVarying::WriteStep(
-  StepData_StepWriter&                                       SW,
-  const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent) const
+  StepData_StepWriter&                                            SW,
+  const occ::handle<StepFEA_CurveElementIntervalLinearlyVarying>& ent) const
 {
 
   // Inherited fields of CurveElementInterval
@@ -102,9 +104,9 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::WriteStep(
   // Own fields of CurveElementIntervalLinearlyVarying
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->Sections()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Sections()->Length(); i2++)
   {
-    Handle(StepElement_CurveElementSectionDefinition) Var0 = ent->Sections()->Value(i2);
+    occ::handle<StepElement_CurveElementSectionDefinition> Var0 = ent->Sections()->Value(i2);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -113,8 +115,8 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementIntervalLinearlyVarying::Share(
-  const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent,
-  Interface_EntityIterator&                                  iter) const
+  const occ::handle<StepFEA_CurveElementIntervalLinearlyVarying>& ent,
+  Interface_EntityIterator&                                       iter) const
 {
 
   // Inherited fields of CurveElementInterval
@@ -125,9 +127,9 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::Share(
 
   // Own fields of CurveElementIntervalLinearlyVarying
 
-  for (Standard_Integer i3 = 1; i3 <= ent->Sections()->Length(); i3++)
+  for (int i3 = 1; i3 <= ent->Sections()->Length(); i3++)
   {
-    Handle(StepElement_CurveElementSectionDefinition) Var0 = ent->Sections()->Value(i3);
+    occ::handle<StepElement_CurveElementSectionDefinition> Var0 = ent->Sections()->Value(i3);
     iter.AddItem(Var0);
   }
 }

@@ -17,7 +17,7 @@
 #include <gp_Pnt.hxx>
 #include <Standard_NotImplemented.hxx>
 
-Standard_Integer Blend_CSFunction::NbVariables() const
+int Blend_CSFunction::NbVariables() const
 {
   return 3;
 }
@@ -32,21 +32,21 @@ const gp_Pnt& Blend_CSFunction::Pnt2() const
   return PointOnS();
 }
 
-Standard_Boolean Blend_CSFunction::Section(const Blend_Point& /*P*/,
-                                           TColgp_Array1OfPnt& /*Poles*/,
-                                           TColgp_Array1OfVec& /*DPoles*/,
-                                           TColgp_Array1OfVec& /*D2Poles*/,
-                                           TColgp_Array1OfPnt2d& /*Poles2d*/,
-                                           TColgp_Array1OfVec2d& /*DPoles2d*/,
-                                           TColgp_Array1OfVec2d& /*D2Poles2d*/,
-                                           TColStd_Array1OfReal& /*Weigths*/,
-                                           TColStd_Array1OfReal& /*DWeigths*/,
-                                           TColStd_Array1OfReal& /*D2Weigths*/)
+bool Blend_CSFunction::Section(const Blend_Point& /*P*/,
+                               NCollection_Array1<gp_Pnt>& /*Poles*/,
+                               NCollection_Array1<gp_Vec>& /*DPoles*/,
+                               NCollection_Array1<gp_Vec>& /*D2Poles*/,
+                               NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
+                               NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
+                               NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
+                               NCollection_Array1<double>& /*Weigths*/,
+                               NCollection_Array1<double>& /*DWeigths*/,
+                               NCollection_Array1<double>& /*D2Weigths*/)
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Real Blend_CSFunction::GetMinimalDistance() const
+double Blend_CSFunction::GetMinimalDistance() const
 {
   throw Standard_NotImplemented("Blend_CSFunction::GetMinimalDistance");
 }

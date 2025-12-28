@@ -29,10 +29,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_RadiusDimension, IGESData_IGESEntity)
 
 IGESDimen_RadiusDimension::IGESDimen_RadiusDimension() {}
 
-void IGESDimen_RadiusDimension::Init(const Handle(IGESDimen_GeneralNote)& aNote,
-                                     const Handle(IGESDimen_LeaderArrow)& anArrow,
-                                     const gp_XY&                         arcCenter,
-                                     const Handle(IGESDimen_LeaderArrow)& anotherArrow)
+void IGESDimen_RadiusDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
+                                     const occ::handle<IGESDimen_LeaderArrow>& anArrow,
+                                     const gp_XY&                              arcCenter,
+                                     const occ::handle<IGESDimen_LeaderArrow>& anotherArrow)
 {
   theNote        = aNote;
   theLeaderArrow = anArrow;
@@ -44,22 +44,22 @@ void IGESDimen_RadiusDimension::Init(const Handle(IGESDimen_GeneralNote)& aNote,
     InitTypeAndForm(222, FormNumber());
 }
 
-void IGESDimen_RadiusDimension::InitForm(const Standard_Integer form)
+void IGESDimen_RadiusDimension::InitForm(const int form)
 {
   InitTypeAndForm(222, form);
 }
 
-Handle(IGESDimen_GeneralNote) IGESDimen_RadiusDimension::Note() const
+occ::handle<IGESDimen_GeneralNote> IGESDimen_RadiusDimension::Note() const
 {
   return theNote;
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_RadiusDimension::Leader() const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_RadiusDimension::Leader() const
 {
   return theLeaderArrow;
 }
 
-Standard_Boolean IGESDimen_RadiusDimension::HasLeader2() const
+bool IGESDimen_RadiusDimension::HasLeader2() const
 {
   return (!theLeader2.IsNull());
 }
@@ -78,7 +78,7 @@ gp_Pnt IGESDimen_RadiusDimension::TransformedCenter() const
   return gp_Pnt(tmpXYZ);
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_RadiusDimension::Leader2() const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_RadiusDimension::Leader2() const
 {
   return theLeader2;
 }

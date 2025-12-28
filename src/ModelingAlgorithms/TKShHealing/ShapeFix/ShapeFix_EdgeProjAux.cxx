@@ -49,8 +49,8 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_EdgeProjAux, Standard_Transient)
 ShapeFix_EdgeProjAux::ShapeFix_EdgeProjAux()
     : myFirstParam(0.0),
       myLastParam(0.0),
-      myFirstDone(Standard_False),
-      myLastDone(Standard_False)
+      myFirstDone(false),
+      myLastDone(false)
 {
 }
 
@@ -68,14 +68,14 @@ void ShapeFix_EdgeProjAux::Init(const TopoDS_Face& F, const TopoDS_Edge& E)
   myFace       = F;
   myEdge       = E;
   myFirstParam = myLastParam = 0.;
-  myFirstDone = myLastDone = Standard_False;
+  myFirstDone = myLastDone = false;
 }
 
 //=================================================================================================
 
-void ShapeFix_EdgeProjAux::Compute(const Standard_Real preci)
+void ShapeFix_EdgeProjAux::Compute(const double preci)
 {
-  myFirstDone = myLastDone = Standard_False;
+  myFirstDone = myLastDone = false;
 
   // Project Point3d on Surface
   // TEMPORARY Call ShapeFix_EdgeProjAux
@@ -84,60 +84,60 @@ void ShapeFix_EdgeProjAux::Compute(const Standard_Real preci)
   Init2d(preci);
   if (IsFirstDone() && IsLastDone())
   {
-    Standard_Real U1 = FirstParam();
-    Standard_Real U2 = LastParam();
+    double U1 = FirstParam();
+    double U2 = LastParam();
     if (U1 >= U2)
     {
 #ifdef OCCT_DEBUG
       std::cout << "Parametres inverses ... " << std::endl;
 #endif
-      Standard_Real tmp = U1;
-      U1                = U2;
-      U2                = tmp;
+      double tmp = U1;
+      U1         = U2;
+      U2         = tmp;
     }
     myFirstParam = U1;
-    myFirstDone  = Standard_True;
+    myFirstDone  = true;
     myLastParam  = U2;
-    myLastDone   = Standard_True;
+    myLastDone   = true;
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_EdgeProjAux::IsFirstDone() const
+bool ShapeFix_EdgeProjAux::IsFirstDone() const
 {
   return myFirstDone;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_EdgeProjAux::IsLastDone() const
+bool ShapeFix_EdgeProjAux::IsLastDone() const
 {
   return myLastDone;
 }
 
 //=================================================================================================
 
-Standard_Real ShapeFix_EdgeProjAux::FirstParam() const
+double ShapeFix_EdgeProjAux::FirstParam() const
 {
   return myFirstParam;
 }
 
 //=================================================================================================
 
-Standard_Real ShapeFix_EdgeProjAux::LastParam() const
+double ShapeFix_EdgeProjAux::LastParam() const
 {
   return myLastParam;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_EdgeProjAux::IsIso(const Handle(Geom2d_Curve)& /*theCurve2d*/)
+bool ShapeFix_EdgeProjAux::IsIso(const occ::handle<Geom2d_Curve>& /*theCurve2d*/)
 {
   // Until an ISO is recognized by Adaptor3d_Curve
   /*
     if (theCurve2d->IsKind(STANDARD_TYPE(Geom2d_Line))) {
-      Handle(Geom2d_Line) theLine2d = Handle(Geom2d_Line)::DownCast(theCurve2d);
+      occ::handle<Geom2d_Line> theLine2d = occ::down_cast<Geom2d_Line>(theCurve2d);
       gp_Dir2d theDir2d = theLine2d->Direction();
 
       gp_Dir2d dir1(gp_Dir2d::D::Y);
@@ -149,7 +149,7 @@ Standard_Boolean ShapeFix_EdgeProjAux::IsIso(const Handle(Geom2d_Curve)& /*theCu
           theDir2d.IsNormal(dir2,Precision::Angular()) );
     }
   */
-  return Standard_False;
+  return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -157,12 +157,12 @@ Standard_Boolean ShapeFix_EdgeProjAux::IsIso(const Handle(Geom2d_Curve)& /*theCu
 // Purpose : Computes the trimming parameter of Pt1 on COnS
 // ----------------------------------------------------------------------------
 
-static Standard_Boolean FindParameterWithExt(const gp_Pnt&                   Pt1,
-                                             const Adaptor3d_CurveOnSurface& COnS,
-                                             const Standard_Real             Uinf,
-                                             const Standard_Real             Usup,
-                                             const Standard_Real             preci,
-                                             Standard_Real&                  w1)
+static bool FindParameterWithExt(const gp_Pnt&                   Pt1,
+                                 const Adaptor3d_CurveOnSurface& COnS,
+                                 const double                    Uinf,
+                                 const double                    Usup,
+                                 const double                    preci,
+                                 double&                         w1)
 {
   try
   { // et allez donc !
@@ -174,19 +174,19 @@ static Standard_Boolean FindParameterWithExt(const gp_Pnt&                   Pt1
 
     if (myExtPC.IsDone())
     {
-      Standard_Integer NbExt1 = myExtPC.NbExt();
-      for (Standard_Integer i = 1; i <= NbExt1; i++)
+      int NbExt1 = myExtPC.NbExt();
+      for (int i = 1; i <= NbExt1; i++)
       {
         if (myExtPC.IsMin(i))
         {
-          // Standard_Real dist = myExtPC.Value(i); //szv#4:S4163:12Mar99 debug mode only
+          // double dist = myExtPC.Value(i); //szv#4:S4163:12Mar99 debug mode only
           w1 = myExtPC.Point(i).Parameter();
         }
       }
-      return Standard_True;
+      return true;
     }
     else
-      return Standard_False;
+      return false;
   } // end try
   catch (Standard_Failure const& anException)
   {
@@ -197,19 +197,19 @@ static Standard_Boolean FindParameterWithExt(const gp_Pnt&                   Pt1
     std::cout << std::endl;
 #endif
     (void)anException;
-    return Standard_False;
+    return false;
   }
 }
 
 //=================================================================================================
 
-void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
+void ShapeFix_EdgeProjAux::Init2d(const double preci)
 {
-  Standard_Real cl = 0., cf = 0.;
+  double cl = 0., cf = 0.;
   // Extract Geometries
-  myFirstDone = myLastDone        = Standard_False;
-  Handle(Geom_Surface) theSurface = BRep_Tool::Surface(myFace);
-  Handle(Geom2d_Curve) theCurve2d = BRep_Tool::CurveOnSurface(myEdge, myFace, cf, cl);
+  myFirstDone = myLastDone             = false;
+  occ::handle<Geom_Surface> theSurface = BRep_Tool::Surface(myFace);
+  occ::handle<Geom2d_Curve> theCurve2d = BRep_Tool::CurveOnSurface(myEdge, myFace, cf, cl);
   if (theCurve2d.IsNull())
     return; //: r5 abv 6 Apr 99:  ec_turbine-A.stp, #4313
   myFirstParam = 0.;
@@ -218,10 +218,10 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
   TopExp::Vertices(myEdge, V1, V2);
   gp_Pnt Pt1, Pt2;
   // pdn 28.12.98: r_39-db.stp #605: use ends of 3d curve instead of vertices
-  ShapeAnalysis_Edge sae;
-  Standard_Real      a, b;
-  Handle(Geom_Curve) C3d;
-  if (sae.Curve3d(myEdge, C3d, a, b, Standard_False))
+  ShapeAnalysis_Edge      sae;
+  double                  a, b;
+  occ::handle<Geom_Curve> C3d;
+  if (sae.Curve3d(myEdge, C3d, a, b, false))
   {
     Pt1 = C3d->Value(a);
     Pt2 = C3d->Value(b);
@@ -231,13 +231,13 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
     Pt1 = BRep_Tool::Pnt(V1);
     Pt2 = BRep_Tool::Pnt(V2);
   }
-  //: S4136  Standard_Real preci = BRepAPI::Precision();
+  //: S4136  double preci = BRepAPI::Precision();
   // pdn to manage degenerated case
   if (V1.IsSame(V2))
   {
-    Handle(ShapeAnalysis_Surface) stsu = new ShapeAnalysis_Surface(theSurface);
-    gp_Pnt2d                      aPt1, aPt2;
-    Standard_Real                 firstpar, lastpar;
+    occ::handle<ShapeAnalysis_Surface> stsu = new ShapeAnalysis_Surface(theSurface);
+    gp_Pnt2d                           aPt1, aPt2;
+    double                             firstpar, lastpar;
     if (stsu->DegeneratedValues(Pt1, preci, aPt1, aPt2, firstpar, lastpar))
     {
 
@@ -248,7 +248,7 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
         {
           myFirstParam = firstpar;
           myLastParam  = lastpar;
-          myFirstDone = myLastDone = Standard_True;
+          myFirstDone = myLastDone = true;
           return;
         }
       }
@@ -259,9 +259,9 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
     }
   }
 
-  Standard_Boolean            parU = Standard_False, parV = Standard_False;
-  GeomAdaptor_Surface         SA     = GeomAdaptor_Surface(theSurface);
-  Handle(GeomAdaptor_Surface) myHSur = new GeomAdaptor_Surface(SA);
+  bool                             parU = false, parV = false;
+  GeomAdaptor_Surface              SA     = GeomAdaptor_Surface(theSurface);
+  occ::handle<GeomAdaptor_Surface> myHSur = new GeomAdaptor_Surface(SA);
 
   cf = theCurve2d->FirstParameter();
   cl = theCurve2d->LastParameter();
@@ -270,7 +270,7 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
   {
     if (theCurve2d->IsKind(STANDARD_TYPE(Geom2d_Line)))
     {
-      Standard_Real uf, ul, vf, vl;
+      double uf, ul, vf, vl;
       theSurface->Bounds(uf, ul, vf, vl);
       // Correct surface limits for extrusion/revolution surfaces based on hyperbola
       // 23 is ln(1.0e+10)
@@ -293,25 +293,25 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
       if (!Precision::IsInfinite(uf) && !Precision::IsInfinite(ul) && !Precision::IsInfinite(vf)
           && !Precision::IsInfinite(vl))
       {
-        Standard_Real       cfi, cli;
-        Handle(Geom2d_Line) lin = Handle(Geom2d_Line)::DownCast(theCurve2d);
-        gp_Pnt2d            pnt = lin->Location();
-        gp_Dir2d            dir = lin->Direction();
+        double                   cfi, cli;
+        occ::handle<Geom2d_Line> lin = occ::down_cast<Geom2d_Line>(theCurve2d);
+        gp_Pnt2d                 pnt = lin->Location();
+        gp_Dir2d                 dir = lin->Direction();
         if (dir.Y() == 0)
         {
-          parU = Standard_True;
+          parU = true;
           cfi  = (uf - pnt.X()) / dir.X();
           cli  = (ul - pnt.X()) / dir.X();
         }
         else if (dir.X() == 0)
         {
-          parV = Standard_True;
+          parV = true;
           cfi  = (vf - pnt.Y()) / dir.Y();
           cli  = (vl - pnt.Y()) / dir.Y();
         }
         else
         { // common case
-          Standard_Real xfi, xli, yfi, yli;
+          double xfi, xli, yfi, yli;
           xfi = (uf - pnt.X()) / dir.X();
           xli = (ul - pnt.X()) / dir.X();
           yfi = (vf - pnt.Y()) / dir.Y();
@@ -340,15 +340,15 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
       }
       else if (!Precision::IsInfinite(uf) && !Precision::IsInfinite(ul))
       {
-        Handle(Geom2d_Line) lin = Handle(Geom2d_Line)::DownCast(theCurve2d);
-        gp_Dir2d            dir = lin->Direction();
+        occ::handle<Geom2d_Line> lin = occ::down_cast<Geom2d_Line>(theCurve2d);
+        gp_Dir2d                 dir = lin->Direction();
         if (dir.X() != 0)
         {
           if (dir.Y() == 0)
-            parU = Standard_True;
-          gp_Pnt2d      pnt = lin->Location(); // szv#4:S4163:12Mar99 moved
-          Standard_Real cfi = (uf - pnt.X()) / dir.X();
-          Standard_Real cli = (ul - pnt.X()) / dir.X();
+            parU = true;
+          gp_Pnt2d pnt = lin->Location(); // szv#4:S4163:12Mar99 moved
+          double   cfi = (uf - pnt.X()) / dir.X();
+          double   cli = (ul - pnt.X()) / dir.X();
           if (cfi < cli)
           {
             cf = cfi;
@@ -384,9 +384,9 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
       if (theCurve2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
       {
         // Try to reparametrize (CASE dxf read bug25899)
-        Handle(Geom2d_BSplineCurve) aBspl =
-          Handle(Geom2d_BSplineCurve)::DownCast(theCurve2d->Copy());
-        TColStd_Array1OfReal aNewKnots(1, aBspl->NbKnots());
+        occ::handle<Geom2d_BSplineCurve> aBspl =
+          occ::down_cast<Geom2d_BSplineCurve>(theCurve2d->Copy());
+        NCollection_Array1<double> aNewKnots(1, aBspl->NbKnots());
         aBspl->Knots(aNewKnots);
         BSplCLib::Reparametrize(cf, cl, aNewKnots);
         aBspl->SetKnots(aNewKnots);
@@ -399,34 +399,34 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
     }
   }
 
-  Geom2dAdaptor_Curve         CA     = Geom2dAdaptor_Curve(theCurve2d, cf, cl);
-  Handle(Geom2dAdaptor_Curve) myHCur = new Geom2dAdaptor_Curve(CA);
+  Geom2dAdaptor_Curve              CA     = Geom2dAdaptor_Curve(theCurve2d, cf, cl);
+  occ::handle<Geom2dAdaptor_Curve> myHCur = new Geom2dAdaptor_Curve(CA);
 
   Adaptor3d_CurveOnSurface COnS = Adaptor3d_CurveOnSurface(myHCur, myHSur);
 
   // ----------------------------------------------
   // --- topological limit == geometric limit ? ---
   // ----------------------------------------------
-  Standard_Real Uinf = COnS.FirstParameter();
-  Standard_Real Usup = COnS.LastParameter();
+  double Uinf = COnS.FirstParameter();
+  double Usup = COnS.LastParameter();
 
-  Standard_Real       w1 = 0., w2 = 0.;
+  double              w1 = 0., w2 = 0.;
   ShapeAnalysis_Curve sac;
   gp_Pnt              pnt;
-  Standard_Real       dist = sac.Project(COnS, Pt1, preci, pnt, w1, Standard_False);
+  double              dist = sac.Project(COnS, Pt1, preci, pnt, w1, false);
   // if distance is infinite then projection is not performed
   if (Precision::IsInfinite(dist))
     return;
 
-  myFirstDone  = Standard_True;
+  myFirstDone  = true;
   myFirstParam = w1;
 
-  dist = sac.Project(COnS, Pt2, preci, pnt, w2, Standard_False);
+  dist = sac.Project(COnS, Pt2, preci, pnt, w2, false);
 
   if (Precision::IsInfinite(dist))
     return;
 
-  myLastDone  = Standard_True;
+  myLastDone  = true;
   myLastParam = w2;
 
   if (fabs(w1 - w2) < Precision::PConfusion())
@@ -463,22 +463,22 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
   // pdn adjust parameters in periodic case
   if (parU || parV)
   {
-    Standard_Real uf, ul, vf, vl;
+    double uf, ul, vf, vl;
     theSurface->Bounds(uf, ul, vf, vl);
-    Standard_Real period = (parU ? ul - uf : vl - vf);
+    double period = (parU ? ul - uf : vl - vf);
     w1 += ShapeAnalysis::AdjustToPeriod(w1, 0, period);
     myFirstParam = w1;
     w2 += ShapeAnalysis::AdjustToPeriod(w2, 0, period);
     myLastParam = w2;
-    Handle(Geom_Curve) C3d1;
-    if (!sae.Curve3d(myEdge, C3d1, cf, cl, Standard_False))
+    occ::handle<Geom_Curve> C3d1;
+    if (!sae.Curve3d(myEdge, C3d1, cf, cl, false))
     {
       UpdateParam2d(theCurve2d);
       return;
     }
-    gp_Pnt        mid = C3d1->Value((cf + cl) / 2);
-    Standard_Real wmid;
-    sac.Project(COnS, mid, preci, pnt, wmid, Standard_False);
+    gp_Pnt mid = C3d1->Value((cf + cl) / 2);
+    double wmid;
+    sac.Project(COnS, mid, preci, pnt, wmid, false);
     wmid += ShapeAnalysis::AdjustToPeriod(wmid, 0, period);
     if (w1 >= w2)
     {
@@ -517,13 +517,13 @@ void ShapeFix_EdgeProjAux::Init2d(const Standard_Real preci)
 
 //=================================================================================================
 
-void ShapeFix_EdgeProjAux::Init3d(const Standard_Real preci)
+void ShapeFix_EdgeProjAux::Init3d(const double preci)
 {
-  Standard_Real cl, cf;
+  double cl, cf;
 
   // Extract Geometries
-  Handle(Geom_Surface) theSurface = BRep_Tool::Surface(myFace);
-  Handle(Geom2d_Curve) theCurve2d = BRep_Tool::CurveOnSurface(myEdge, myFace, cf, cl);
+  occ::handle<Geom_Surface> theSurface = BRep_Tool::Surface(myFace);
+  occ::handle<Geom2d_Curve> theCurve2d = BRep_Tool::CurveOnSurface(myEdge, myFace, cf, cl);
   if (theCurve2d.IsNull())
     return; //: r5 abv 6 Apr 99:  ec_turbine-A.stp, #4313
   TopoDS_Vertex V1, V2;
@@ -533,17 +533,17 @@ void ShapeFix_EdgeProjAux::Init3d(const Standard_Real preci)
   gp_Pnt Pt1 = BRep_Tool::Pnt(V1);
   gp_Pnt Pt2 = BRep_Tool::Pnt(V2);
 
-  GeomAdaptor_Surface         SA     = GeomAdaptor_Surface(theSurface);
-  Handle(GeomAdaptor_Surface) myHSur = new GeomAdaptor_Surface(SA);
+  GeomAdaptor_Surface              SA     = GeomAdaptor_Surface(theSurface);
+  occ::handle<GeomAdaptor_Surface> myHSur = new GeomAdaptor_Surface(SA);
 
-  Geom2dAdaptor_Curve         CA     = Geom2dAdaptor_Curve(theCurve2d);
-  Handle(Geom2dAdaptor_Curve) myHCur = new Geom2dAdaptor_Curve(CA);
+  Geom2dAdaptor_Curve              CA     = Geom2dAdaptor_Curve(theCurve2d);
+  occ::handle<Geom2dAdaptor_Curve> myHCur = new Geom2dAdaptor_Curve(CA);
 
   Adaptor3d_CurveOnSurface COnS = Adaptor3d_CurveOnSurface(myHCur, myHSur);
 
-  //: S4136  Standard_Real preci = BRepAPI::Precision();
-  Standard_Real Uinf = theCurve2d->FirstParameter();
-  Standard_Real Usup = theCurve2d->LastParameter();
+  //: S4136  double preci = BRepAPI::Precision();
+  double Uinf = theCurve2d->FirstParameter();
+  double Usup = theCurve2d->LastParameter();
 
   // ----------------------------------------------
   // --- topological limit == geometric limit ? ---
@@ -560,7 +560,7 @@ void ShapeFix_EdgeProjAux::Init3d(const Standard_Real preci)
     {
       myFirstParam = Uinf;
       myLastParam  = Usup;
-      myFirstDone = myLastDone = Standard_True;
+      myFirstDone = myLastDone = true;
       return;
     }
   }
@@ -570,8 +570,8 @@ void ShapeFix_EdgeProjAux::Init3d(const Standard_Real preci)
   // ---          Try with Extrema          ---
   // ------------------------------------------
 
-  Standard_Real w1 = COnS.FirstParameter();
-  Standard_Real w2 = COnS.LastParameter();
+  double w1 = COnS.FirstParameter();
+  double w2 = COnS.LastParameter();
 
   if ((!Precision::IsInfinite(w1) && !Precision::IsInfinite(w2)
        && theCurve2d->Continuity() != GeomAbs_C0)
@@ -585,24 +585,24 @@ void ShapeFix_EdgeProjAux::Init3d(const Standard_Real preci)
       myFirstParam = w1;
       myLastParam  = w2;
       UpdateParam2d(theCurve2d);
-      myFirstDone = myLastDone = Standard_True;
+      myFirstDone = myLastDone = true;
       return;
     }
   }
-  myFirstDone = myLastDone = Standard_True;
+  myFirstDone = myLastDone = true;
 }
 
 //=================================================================================================
 
-void ShapeFix_EdgeProjAux::UpdateParam2d(const Handle(Geom2d_Curve)& theCurve2d)
+void ShapeFix_EdgeProjAux::UpdateParam2d(const occ::handle<Geom2d_Curve>& theCurve2d)
 {
   if (myFirstParam < myLastParam)
     return;
 
-  Standard_Real cf = theCurve2d->FirstParameter();
-  Standard_Real cl = theCurve2d->LastParameter();
-  //: S4136  Standard_Real preci = BRepAPI::Precision();
-  constexpr Standard_Real preci2d = Precision::PConfusion(); //: S4136: Parametric(preci, 0.01);
+  double cf = theCurve2d->FirstParameter();
+  double cl = theCurve2d->LastParameter();
+  //: S4136  double preci = BRepAPI::Precision();
+  constexpr double preci2d = Precision::PConfusion(); //: S4136: Parametric(preci, 0.01);
 
   // 15.11.2002 PTV OCC966
   if (ShapeAnalysis_Curve::IsPeriodic(theCurve2d))
@@ -629,7 +629,7 @@ void ShapeFix_EdgeProjAux::UpdateParam2d(const Handle(Geom2d_Curve)& theCurve2d)
   // the curve is closed within the 'file' 2D tolerance
   else if (theCurve2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
-    Handle(Geom2d_BSplineCurve) aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(theCurve2d);
+    occ::handle<Geom2d_BSplineCurve> aBSpline2d = occ::down_cast<Geom2d_BSplineCurve>(theCurve2d);
     if (aBSpline2d->StartPoint().Distance(aBSpline2d->EndPoint()) <= preci2d)
     {
       if (std::abs(myFirstParam - cl) <= preci2d)
@@ -644,7 +644,7 @@ void ShapeFix_EdgeProjAux::UpdateParam2d(const Handle(Geom2d_Curve)& theCurve2d)
     std::cout << "Warning : non increasing parameters for 2d curve." << std::endl;
     std::cout << "          update parameter 2d uncertain." << std::endl;
 #endif
-    Standard_Real tmp1 = myFirstParam, tmp2 = myLastParam;
+    double tmp1 = myFirstParam, tmp2 = myLastParam;
     myFirstParam = theCurve2d->ReversedParameter(tmp1);
     myLastParam  = theCurve2d->ReversedParameter(tmp2);
     theCurve2d->Reverse();

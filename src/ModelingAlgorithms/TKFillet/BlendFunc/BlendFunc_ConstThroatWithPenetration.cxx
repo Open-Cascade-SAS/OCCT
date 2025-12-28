@@ -25,17 +25,16 @@
 //=================================================================================================
 
 BlendFunc_ConstThroatWithPenetration::BlendFunc_ConstThroatWithPenetration(
-  const Handle(Adaptor3d_Surface)& S1,
-  const Handle(Adaptor3d_Surface)& S2,
-  const Handle(Adaptor3d_Curve)&   C)
+  const occ::handle<Adaptor3d_Surface>& S1,
+  const occ::handle<Adaptor3d_Surface>& S2,
+  const occ::handle<Adaptor3d_Curve>&   C)
     : BlendFunc_ConstThroat(S1, S2, C)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroatWithPenetration::IsSolution(const math_Vector&  Sol,
-                                                                  const Standard_Real Tol)
+bool BlendFunc_ConstThroatWithPenetration::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector secmember(1, 4), valsol(1, 4);
   math_Matrix gradsol(1, 4, 1, 4);
@@ -71,24 +70,24 @@ Standard_Boolean BlendFunc_ConstThroatWithPenetration::IsSolution(const math_Vec
       tg2.SetLinearForm(secmember(3), d1u2, secmember(4), d1v2);
       tg12d.SetCoord(secmember(1), secmember(2));
       tg22d.SetCoord(secmember(3), secmember(4));
-      istangent = Standard_False;
+      istangent = false;
     }
     else
     {
-      istangent = Standard_True;
+      istangent = true;
     }
 
     distmin = std::min(distmin, pts1.Distance(pts2));
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroatWithPenetration::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_ConstThroatWithPenetration::Value(const math_Vector& X, math_Vector& F)
 {
   surf1->D0(X(1), X(2), pts1);
   surf2->D0(X(3), X(4), pts2);
@@ -104,13 +103,12 @@ Standard_Boolean BlendFunc_ConstThroatWithPenetration::Value(const math_Vector& 
 
   F(4) = vref.Dot(vec12);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ConstThroatWithPenetration::Derivatives(const math_Vector& X,
-                                                                   math_Matrix&       D)
+bool BlendFunc_ConstThroatWithPenetration::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   surf1->D1(X(1), X(2), pts1, d1u1, d1v1);
   surf2->D1(X(3), X(4), pts2, d1u2, d1v2);
@@ -132,7 +130,7 @@ Standard_Boolean BlendFunc_ConstThroatWithPenetration::Derivatives(const math_Ve
   D(4, 3) = gp_Vec(ptgui, pts1).Dot(d1u2);
   D(4, 4) = gp_Vec(ptgui, pts1).Dot(d1v2);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -173,7 +171,7 @@ const gp_Vec2d& BlendFunc_ConstThroatWithPenetration::Tangent2dOnS2() const
 
 //=================================================================================================
 
-Standard_Real BlendFunc_ConstThroatWithPenetration::GetSectionSize() const
+double BlendFunc_ConstThroatWithPenetration::GetSectionSize() const
 {
   throw Standard_NotImplemented("BlendFunc_ConstThroatWithPenetration::GetSectionSize()");
 }

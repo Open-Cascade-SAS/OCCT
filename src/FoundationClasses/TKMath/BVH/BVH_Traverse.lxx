@@ -18,7 +18,7 @@
 //=================================================================================================
 
 template <class NumType, int Dimension, class BVHSetType, class MetricType>
-Standard_Integer BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Select(
+int BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Select(
   const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH)
 {
   if (theBVH.IsNull())
@@ -36,8 +36,8 @@ Standard_Integer BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Selec
   // clang-format on
   BVH_NodeInStack aPrevNode = aNode; // Previously processed node
 
-  Standard_Integer aHead       = -1; // End of the stack
-  Standard_Integer aNbAccepted = 0;  // Counter for accepted elements
+  int aHead       = -1; // End of the stack
+  int aNbAccepted = 0;  // Counter for accepted elements
 
   for (;;)
   {
@@ -52,15 +52,15 @@ Standard_Integer BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Selec
       if (!this->AcceptMetric(aNode.Metric))
       {
         // Test the left branch
-        MetricType       aMetricLft;
-        Standard_Boolean isGoodLft =
+        MetricType aMetricLft;
+        bool       isGoodLft =
           !RejectNode(theBVH->MinPoint(aData.y()), theBVH->MaxPoint(aData.y()), aMetricLft);
         if (this->Stop())
           return aNbAccepted;
 
         // Test the right branch
-        MetricType       aMetricRgh;
-        Standard_Boolean isGoodRgh =
+        MetricType aMetricRgh;
+        bool       isGoodRgh =
           !RejectNode(theBVH->MinPoint(aData.z()), theBVH->MaxPoint(aData.z()), aMetricRgh);
         if (this->Stop())
           return aNbAccepted;
@@ -100,7 +100,7 @@ Standard_Integer BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Selec
     else
     {
       // Leaf node - apply the leaf node operation to each element
-      for (Standard_Integer iN = aData.y(); iN <= aData.z(); ++iN)
+      for (int iN = aData.y(); iN <= aData.z(); ++iN)
       {
         if (Accept(iN, aNode.Metric))
           ++aNbAccepted;
@@ -132,7 +132,7 @@ Standard_Integer BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Selec
 //=================================================================================================
 
 template <class NumType, int Dimension, class BVHSetType, class MetricType>
-Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
+int BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
   const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH1,
   const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH2)
 {
@@ -148,7 +148,7 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
   // One of these pairs goes directly to processing, while others
   // are put in the stack. So the max number of pairs in the stack is
   // the max tree depth multiplied by 3.
-  const Standard_Integer aMaxNbPairsInStack = 3 * BVH_Constants_MaxTreeDepth;
+  const int aMaxNbPairsInStack = 3 * BVH_Constants_MaxTreeDepth;
 
   // Stack of pairs of nodes to process
   BVH_PairNodesInStack aStack[aMaxNbPairsInStack];
@@ -158,9 +158,9 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
   // Previously processed pair
   BVH_PairNodesInStack aPrevNode = aNode;
   // End of the stack
-  Standard_Integer aHead = -1;
+  int aHead = -1;
   // Counter for accepted elements
-  Standard_Integer aNbAccepted = 0;
+  int aNbAccepted = 0;
 
   for (;;)
   {
@@ -171,19 +171,19 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
     {
       // Outer/Outer - both nodes are leaves
       // Check if the leaf node bounding boxes overlap before testing elements
-      MetricType       aMetric;
-      Standard_Boolean isRejected = RejectNode(theBVH1->MinPoint(aNode.NodeID1),
-                                               theBVH1->MaxPoint(aNode.NodeID1),
-                                               theBVH2->MinPoint(aNode.NodeID2),
-                                               theBVH2->MaxPoint(aNode.NodeID2),
-                                               aMetric);
+      MetricType aMetric;
+      bool       isRejected = RejectNode(theBVH1->MinPoint(aNode.NodeID1),
+                                   theBVH1->MaxPoint(aNode.NodeID1),
+                                   theBVH2->MinPoint(aNode.NodeID2),
+                                   theBVH2->MaxPoint(aNode.NodeID2),
+                                   aMetric);
 
       if (!isRejected)
       {
         // Bounding boxes overlap, test all element pairs
-        for (Standard_Integer iN1 = aData1.y(); iN1 <= aData1.z(); ++iN1)
+        for (int iN1 = aData1.y(); iN1 <= aData1.z(); ++iN1)
         {
-          for (Standard_Integer iN2 = aData2.y(); iN2 <= aData2.z(); ++iN2)
+          for (int iN2 = aData2.y(); iN2 <= aData2.z(); ++iN2)
           {
             if (Accept(iN1, iN2))
               ++aNbAccepted;
@@ -197,7 +197,7 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
     else
     {
       BVH_PairNodesInStack aPairs[4];
-      Standard_Integer     aNbPairs = 0;
+      int                  aNbPairs = 0;
 
       if (aData1.x() == 0 && aData2.x() == 0)
       {
@@ -221,19 +221,19 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
       }
 
       BVH_PairNodesInStack aKeptPairs[4];
-      Standard_Integer     aNbKept = 0;
+      int                  aNbKept = 0;
       // Compute metrics for the nodes
-      for (Standard_Integer iPair = 0; iPair < aNbPairs; ++iPair)
+      for (int iPair = 0; iPair < aNbPairs; ++iPair)
       {
-        const Standard_Boolean isPairRejected = RejectNode(theBVH1->MinPoint(aPairs[iPair].NodeID1),
-                                                           theBVH1->MaxPoint(aPairs[iPair].NodeID1),
-                                                           theBVH2->MinPoint(aPairs[iPair].NodeID2),
-                                                           theBVH2->MaxPoint(aPairs[iPair].NodeID2),
-                                                           aPairs[iPair].Metric);
+        const bool isPairRejected = RejectNode(theBVH1->MinPoint(aPairs[iPair].NodeID1),
+                                               theBVH1->MaxPoint(aPairs[iPair].NodeID1),
+                                               theBVH2->MinPoint(aPairs[iPair].NodeID2),
+                                               theBVH2->MaxPoint(aPairs[iPair].NodeID2),
+                                               aPairs[iPair].Metric);
         if (!isPairRejected)
         {
           // Put the item into the sorted array of pairs
-          Standard_Integer iSort = aNbKept;
+          int iSort = aNbKept;
           while (iSort > 0
                  && this->IsMetricBetter(aPairs[iPair].Metric, aKeptPairs[iSort - 1].Metric))
           {
@@ -249,7 +249,7 @@ Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::S
       {
         aNode = aKeptPairs[0];
 
-        for (Standard_Integer iPair = 1; iPair < aNbKept; ++iPair)
+        for (int iPair = 1; iPair < aNbKept; ++iPair)
         {
           Standard_ASSERT_RAISE(aHead < aMaxNbPairsInStack - 1, "Error! BVH pair stack overflow");
           aStack[++aHead] = aKeptPairs[iPair];

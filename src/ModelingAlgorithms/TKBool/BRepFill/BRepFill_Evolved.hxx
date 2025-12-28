@@ -24,9 +24,9 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
 #include <GeomAbs_JoinType.hxx>
-#include <BRepFill_DataMapOfShapeDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class gp_Ax3;
 class BRepMAT2d_BisectingLocus;
 class BRepMAT2d_LinkTopoBilo;
@@ -54,7 +54,7 @@ public:
                                    const TopoDS_Wire&     Profile,
                                    const gp_Ax3&          AxeProf,
                                    const GeomAbs_JoinType Join  = GeomAbs_Arc,
-                                   const Standard_Boolean Solid = Standard_False);
+                                   const bool             Solid = false);
 
   //! Creates an evolved shape by sweeping the <Profile>
   //! along the <Spine>
@@ -62,7 +62,7 @@ public:
                                    const TopoDS_Wire&     Profile,
                                    const gp_Ax3&          AxeProf,
                                    const GeomAbs_JoinType Join  = GeomAbs_Arc,
-                                   const Standard_Boolean Solid = Standard_False);
+                                   const bool             Solid = false);
 
   //! Performs an evolved shape by sweeping the <Profile>
   //! along the <Spine>
@@ -70,7 +70,7 @@ public:
                                const TopoDS_Wire&     Profile,
                                const gp_Ax3&          AxeProf,
                                const GeomAbs_JoinType Join  = GeomAbs_Arc,
-                               const Standard_Boolean Solid = Standard_False);
+                               const bool             Solid = false);
 
   //! Performs an evolved shape by sweeping the <Profile>
   //! along the <Spine>
@@ -78,9 +78,9 @@ public:
                                const TopoDS_Wire&     Profile,
                                const gp_Ax3&          AxeProf,
                                const GeomAbs_JoinType Join  = GeomAbs_Arc,
-                               const Standard_Boolean Solid = Standard_False);
+                               const bool             Solid = false);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! returns the generated shape.
   Standard_EXPORT const TopoDS_Shape& Shape() const;
@@ -88,8 +88,9 @@ public:
   //! Returns the shapes created from a subshape
   //! <SpineShape> of the spine and a subshape
   //! <ProfShape> on the profile.
-  Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Shape& SpineShape,
-                                                              const TopoDS_Shape& ProfShape) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(
+    const TopoDS_Shape& SpineShape,
+    const TopoDS_Shape& ProfShape) const;
 
   Standard_EXPORT GeomAbs_JoinType JoinType() const;
 
@@ -99,13 +100,12 @@ public:
   //! Return the face Bottom if <Solid> is True in the constructor.
   Standard_EXPORT const TopoDS_Shape& Bottom() const;
 
-protected:
 private:
   Standard_EXPORT void PrivatePerform(const TopoDS_Face&     Spine,
                                       const TopoDS_Wire&     Profile,
                                       const gp_Ax3&          AxeProf,
                                       const GeomAbs_JoinType Join  = GeomAbs_Arc,
-                                      const Standard_Boolean Solid = Standard_False);
+                                      const bool             Solid = false);
 
   Standard_EXPORT void SetWork(const TopoDS_Face& Spine, const TopoDS_Wire& Profile);
 
@@ -127,32 +127,39 @@ private:
                                        BRepMAT2d_LinkTopoBilo&         Link,
                                        const GeomAbs_JoinType          Join = GeomAbs_Arc);
 
-  Standard_EXPORT BRepFill_DataMapOfShapeDataMapOfShapeListOfShape& Generated();
+  Standard_EXPORT NCollection_DataMap<
+    TopoDS_Shape,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>,
+    TopTools_ShapeMapHasher>&
+    Generated();
 
   Standard_EXPORT void Add(BRepFill_Evolved& Vevo, const TopoDS_Wire& Prof, BRepTools_Quilt& Glue);
 
   Standard_EXPORT TopoDS_Shape& ChangeShape();
 
-  Standard_EXPORT void Transfert(BRepFill_Evolved&                   Vevo,
-                                 const TopTools_DataMapOfShapeShape& MapProf,
-                                 const TopTools_DataMapOfShapeShape& MapSpine,
-                                 const TopLoc_Location&              LS,
-                                 const TopLoc_Location&              InitLS,
-                                 const TopLoc_Location&              InitLP);
+  Standard_EXPORT void Transfert(
+    BRepFill_Evolved&                                                               Vevo,
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& MapProf,
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& MapSpine,
+    const TopLoc_Location&                                                          LS,
+    const TopLoc_Location&                                                          InitLS,
+    const TopLoc_Location&                                                          InitLP);
 
   //! Prepare the profil as follow
   //! - Project the profile in the yOz Plane
   //! - Cut the profile at the extrema of distance from the
   //! Profile to the Oz Axis.
   //! - building the new wires with the cutting edges.
-  Standard_EXPORT void PrepareProfile(TopTools_ListOfShape&         WorkProf,
-                                      TopTools_DataMapOfShapeShape& MapProf) const;
+  Standard_EXPORT void PrepareProfile(
+    NCollection_List<TopoDS_Shape>&                                           WorkProf,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& MapProf) const;
 
   //! Prepare the spine as follow
   //! - Cut the spine-Edges at the extrema of curvature and
   //! at the inflexion points.
-  Standard_EXPORT void PrepareSpine(TopoDS_Face&                  WorkSpine,
-                                    TopTools_DataMapOfShapeShape& SpineProf) const;
+  Standard_EXPORT void PrepareSpine(
+    TopoDS_Face&                                                              WorkSpine,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& SpineProf) const;
 
   Standard_EXPORT void MakePipe(const TopoDS_Edge& SpineEdge, const gp_Ax3& ProfRef);
 
@@ -170,21 +177,25 @@ private:
   //! in order to set the Shapes in the work space.
   Standard_EXPORT void TransformInitWork(const TopLoc_Location& LS, const TopLoc_Location& LP);
 
-  Standard_EXPORT void ContinuityOnOffsetEdge(const TopTools_ListOfShape& WorkProf);
+  Standard_EXPORT void ContinuityOnOffsetEdge(const NCollection_List<TopoDS_Shape>& WorkProf);
 
   Standard_EXPORT void AddTopAndBottom(BRepTools_Quilt& Glue);
 
   Standard_EXPORT void MakeSolid();
 
-  TopoDS_Face                                      mySpine;
-  TopoDS_Wire                                      myProfile;
-  TopoDS_Shape                                     myShape;
-  Standard_Boolean                                 myIsDone;
-  Standard_Boolean                                 mySpineType;
-  GeomAbs_JoinType                                 myJoinType;
-  BRepFill_DataMapOfShapeDataMapOfShapeListOfShape myMap;
-  TopoDS_Shape                                     myTop;
-  TopoDS_Shape                                     myBottom;
+  TopoDS_Face      mySpine;
+  TopoDS_Wire      myProfile;
+  TopoDS_Shape     myShape;
+  bool             myIsDone;
+  bool             mySpineType;
+  GeomAbs_JoinType myJoinType;
+  NCollection_DataMap<
+    TopoDS_Shape,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>,
+    TopTools_ShapeMapHasher>
+               myMap;
+  TopoDS_Shape myTop;
+  TopoDS_Shape myBottom;
 };
 
 #endif // _BRepFill_Evolved_HeaderFile

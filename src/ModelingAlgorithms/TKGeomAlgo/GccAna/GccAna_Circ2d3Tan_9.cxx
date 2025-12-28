@@ -37,10 +37,10 @@
 //      3/ The three points are distinct.                                +
 //      ----------------------------------                                +
 //=========================================================================
-GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const gp_Pnt2d&     Point1,
-                                     const gp_Pnt2d&     Point2,
-                                     const gp_Pnt2d&     Point3,
-                                     const Standard_Real Tolerance)
+GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const gp_Pnt2d& Point1,
+                                     const gp_Pnt2d& Point2,
+                                     const gp_Pnt2d& Point3,
+                                     const double    Tolerance)
     :
 
       //=========================================================================
@@ -66,16 +66,16 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const gp_Pnt2d&     Point1,
 {
 
   gp_Dir2d dirx(gp_Dir2d::D::X);
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
 
   //=========================================================================
   //   Processing.                                                          +
   //=========================================================================
 
-  Standard_Real dist1 = Point1.Distance(Point2);
-  Standard_Real dist2 = Point1.Distance(Point3);
-  Standard_Real dist3 = Point2.Distance(Point3);
+  double dist1 = Point1.Distance(Point2);
+  double dist2 = Point1.Distance(Point3);
+  double dist3 = Point2.Distance(Point3);
 
   qualifier1(1) = GccEnt_noqualifier;
   qualifier2(1) = GccEnt_noqualifier;
@@ -84,7 +84,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const gp_Pnt2d&     Point1,
   if ((dist1 < Tolerance) && (dist2 < Tolerance) && (dist3 < Tolerance))
   {
     NbrSol++;
-    WellDone  = Standard_True;
+    WellDone  = true;
     cirsol(1) = gp_Circ2d(gp_Ax2d(Point1, dirx), 0.0);
     //   ===============================================
     TheSame1(1)  = 0;
@@ -131,7 +131,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const gp_Pnt2d&     Point1,
     {
       if (!Intp.IsEmpty())
       {
-        for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+        for (int i = 1; i <= Intp.NbPoints(); i++)
         {
           NbrSol++;
           cirsol(NbrSol) =
@@ -154,7 +154,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const gp_Pnt2d&     Point1,
           pararg3(NbrSol)   = 0.0;
         }
       }
-      WellDone = Standard_True;
+      WellDone = true;
     }
   }
 }

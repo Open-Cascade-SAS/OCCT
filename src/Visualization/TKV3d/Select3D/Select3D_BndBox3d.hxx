@@ -20,7 +20,6 @@
 
 #include <gp_Trsf.hxx>
 
-typedef BVH_Box<Standard_Real, 3>       Select3D_BndBox3d;
-typedef NCollection_Vec3<Standard_Real> Select3D_Vec3;
+typedef BVH_Box<double, 3> Select3D_BndBox3d;
 
 #endif // _Select3D_BndBox3d_Header

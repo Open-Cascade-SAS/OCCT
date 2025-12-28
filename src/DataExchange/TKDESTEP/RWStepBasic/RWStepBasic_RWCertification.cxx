@@ -29,10 +29,10 @@ RWStepBasic_RWCertification::RWStepBasic_RWCertification() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWCertification::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepBasic_Certification)& ent) const
+void RWStepBasic_RWCertification::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                                   num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepBasic_Certification>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "certification"))
@@ -40,13 +40,13 @@ void RWStepBasic_RWCertification::ReadStep(const Handle(StepData_StepReaderData)
 
   // Own fields of Certification
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aPurpose;
+  occ::handle<TCollection_HAsciiString> aPurpose;
   data->ReadString(num, 2, "purpose", ach, aPurpose);
 
-  Handle(StepBasic_CertificationType) aKind;
+  occ::handle<StepBasic_CertificationType> aKind;
   data->ReadEntity(num, 3, "kind", ach, STANDARD_TYPE(StepBasic_CertificationType), aKind);
 
   // Initialize entity
@@ -55,8 +55,8 @@ void RWStepBasic_RWCertification::ReadStep(const Handle(StepData_StepReaderData)
 
 //=================================================================================================
 
-void RWStepBasic_RWCertification::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepBasic_Certification)& ent) const
+void RWStepBasic_RWCertification::WriteStep(StepData_StepWriter&                        SW,
+                                            const occ::handle<StepBasic_Certification>& ent) const
 {
 
   // Own fields of Certification
@@ -70,8 +70,8 @@ void RWStepBasic_RWCertification::WriteStep(StepData_StepWriter&                
 
 //=================================================================================================
 
-void RWStepBasic_RWCertification::Share(const Handle(StepBasic_Certification)& ent,
-                                        Interface_EntityIterator&              iter) const
+void RWStepBasic_RWCertification::Share(const occ::handle<StepBasic_Certification>& ent,
+                                        Interface_EntityIterator&                   iter) const
 {
 
   // Own fields of Certification

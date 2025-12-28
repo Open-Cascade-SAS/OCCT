@@ -19,7 +19,7 @@
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <NCollection_Array2.hxx>
 
 #include <array>
 
@@ -29,32 +29,28 @@ namespace
 #include "PLib_JacobiPolynomial_Coeffs.pxx"
 
 // The possible values for NbGaussPoints
-constexpr Standard_Integer THE_NB_GAUSS_POINTS_8 = 8, THE_NB_GAUSS_POINTS_10 = 10,
-                           THE_NB_GAUSS_POINTS_15 = 15, THE_NB_GAUSS_POINTS_20 = 20,
-                           THE_NB_GAUSS_POINTS_25 = 25, THE_NB_GAUSS_POINTS_30 = 30,
-                           THE_NB_GAUSS_POINTS_40 = 40, THE_NB_GAUSS_POINTS_50 = 50,
-                           THE_NB_GAUSS_POINTS_61 = 61;
+constexpr int THE_NB_GAUSS_POINTS_8 = 8, THE_NB_GAUSS_POINTS_10 = 10, THE_NB_GAUSS_POINTS_15 = 15,
+              THE_NB_GAUSS_POINTS_20 = 20, THE_NB_GAUSS_POINTS_25 = 25, THE_NB_GAUSS_POINTS_30 = 30,
+              THE_NB_GAUSS_POINTS_40 = 40, THE_NB_GAUSS_POINTS_50 = 50, THE_NB_GAUSS_POINTS_61 = 61;
 
-constexpr Standard_Integer THE_INVALID_VALUE = -999;
+constexpr int THE_INVALID_VALUE = -999;
 
 // Maximum supported polynomial degree
-constexpr Standard_Integer THE_MAX_DEGREE = 30;
+constexpr int THE_MAX_DEGREE = 30;
 
 // Lookup tables for database pointers indexed by myNivConstr (constraint level)
-constexpr Standard_Real const* THE_WEIGHTS_DB[3]    = {WeightsDB_C0, WeightsDB_C1, WeightsDB_C2};
-constexpr Standard_Real const* THE_WEIGHTS_DB0[3]   = {WeightsDB0_C0, WeightsDB0_C1, WeightsDB0_C2};
-constexpr Standard_Real const* THE_MAX_VALUES_DB[3] = {MaxValuesDB_C0,
-                                                       MaxValuesDB_C1,
-                                                       MaxValuesDB_C2};
-constexpr Standard_Real const* THE_TRANS_MATRIX[3]  = {&TransMatrix_C0[0][0],
-                                                       &TransMatrix_C1[0][0],
-                                                       &TransMatrix_C2[0][0]};
+constexpr double const* THE_WEIGHTS_DB[3]    = {WeightsDB_C0, WeightsDB_C1, WeightsDB_C2};
+constexpr double const* THE_WEIGHTS_DB0[3]   = {WeightsDB0_C0, WeightsDB0_C1, WeightsDB0_C2};
+constexpr double const* THE_MAX_VALUES_DB[3] = {MaxValuesDB_C0, MaxValuesDB_C1, MaxValuesDB_C2};
+constexpr double const* THE_TRANS_MATRIX[3]  = {&TransMatrix_C0[0][0],
+                                                &TransMatrix_C1[0][0],
+                                                &TransMatrix_C2[0][0]};
 } // namespace
 
 //=================================================================================================
 
-PLib_JacobiPolynomial::PLib_JacobiPolynomial(const Standard_Integer theWorkDegree,
-                                             const GeomAbs_Shape    theConstraintOrder)
+PLib_JacobiPolynomial::PLib_JacobiPolynomial(const int           theWorkDegree,
+                                             const GeomAbs_Shape theConstraintOrder)
     : myWorkDegree(theWorkDegree),
       myNivConstr(PLib::NivConstr(theConstraintOrder)),
       myDegree(theWorkDegree - 2 * (myNivConstr + 1))
@@ -71,8 +67,8 @@ PLib_JacobiPolynomial::PLib_JacobiPolynomial(const Standard_Integer theWorkDegre
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::Points(const Standard_Integer theNbGaussPoints,
-                                   TColStd_Array1OfReal&  theTabPoints) const
+void PLib_JacobiPolynomial::Points(const int                   theNbGaussPoints,
+                                   NCollection_Array1<double>& theTabPoints) const
 {
   if ((theNbGaussPoints != THE_NB_GAUSS_POINTS_8 && theNbGaussPoints != THE_NB_GAUSS_POINTS_10
        && theNbGaussPoints != THE_NB_GAUSS_POINTS_15 && theNbGaussPoints != THE_NB_GAUSS_POINTS_20
@@ -89,7 +85,7 @@ void PLib_JacobiPolynomial::Points(const Standard_Integer theNbGaussPoints,
   math::GaussPoints(theNbGaussPoints, aDecreasingPoints);
 
   // theTabPoints consist of only positive increasing values
-  for (Standard_Integer i = 1; i <= theNbGaussPoints / 2; i++)
+  for (int i = 1; i <= theNbGaussPoints / 2; i++)
   {
     theTabPoints(i) = aDecreasingPoints(theNbGaussPoints / 2 - i + 1);
   }
@@ -105,11 +101,11 @@ void PLib_JacobiPolynomial::Points(const Standard_Integer theNbGaussPoints,
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::Weights(const Standard_Integer theNbGaussPoints,
-                                    TColStd_Array2OfReal&  theTabWeights) const
+void PLib_JacobiPolynomial::Weights(const int                   theNbGaussPoints,
+                                    NCollection_Array2<double>& theTabWeights) const
 {
-  Standard_Real const*   aDbPointer = THE_WEIGHTS_DB[myNivConstr];
-  const Standard_Integer aMinDegree = 2 * (myNivConstr + 1);
+  double const* aDbPointer = THE_WEIGHTS_DB[myNivConstr];
+  const int     aMinDegree = 2 * (myNivConstr + 1);
 
   // Calculate offset into the weights database
   if (theNbGaussPoints > THE_NB_GAUSS_POINTS_8)
@@ -146,10 +142,10 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer theNbGaussPoints,
   }
 
   // Copy TabWeightsDB into theTabWeights (explicit loops for safe 2D array access)
-  const Standard_Integer aHalfPoints = theNbGaussPoints / 2;
-  for (Standard_Integer j = 0; j <= myDegree; j++)
+  const int aHalfPoints = theNbGaussPoints / 2;
+  for (int j = 0; j <= myDegree; j++)
   {
-    for (Standard_Integer i = 1; i <= aHalfPoints; i++)
+    for (int i = 1; i <= aHalfPoints; i++)
     {
       theTabWeights.ChangeValue(i, j) = *aDbPointer++;
     }
@@ -158,7 +154,7 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer theNbGaussPoints,
   if (theNbGaussPoints % 2 == 1)
   {
     // theNbGaussPoints is odd - fill row 0 with special values
-    Standard_Real const* aDbPointer0 = THE_WEIGHTS_DB0[myNivConstr];
+    double const* aDbPointer0 = THE_WEIGHTS_DB0[myNivConstr];
 
     if (theNbGaussPoints > THE_NB_GAUSS_POINTS_15)
     {
@@ -170,13 +166,13 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer theNbGaussPoints,
     }
 
     // Fill row 0: zeros everywhere (explicit column loop for proper 2D array access)
-    for (Standard_Integer j = 0; j <= myDegree; j++)
+    for (int j = 0; j <= myDegree; j++)
     {
       theTabWeights.ChangeValue(0, j) = 0.0;
     }
 
     // Overwrite even columns with data from database
-    for (Standard_Integer j = 0; j <= myDegree; j += 2)
+    for (int j = 0; j <= myDegree; j += 2)
     {
       theTabWeights.ChangeValue(0, j) = *aDbPointer0++;
     }
@@ -184,7 +180,7 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer theNbGaussPoints,
   else
   {
     // Fill row 0 with THE_INVALID_VALUE for even theNbGaussPoints (explicit column loop)
-    for (Standard_Integer j = 0; j <= myDegree; j++)
+    for (int j = 0; j <= myDegree; j++)
     {
       theTabWeights.ChangeValue(0, j) = THE_INVALID_VALUE;
     }
@@ -193,10 +189,10 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer theNbGaussPoints,
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::MaxValue(TColStd_Array1OfReal& theTabMax) const
+void PLib_JacobiPolynomial::MaxValue(NCollection_Array1<double>& theTabMax) const
 {
-  Standard_Real const* aDbPointer = THE_MAX_VALUES_DB[myNivConstr];
-  for (Standard_Integer i = theTabMax.Lower(); i <= theTabMax.Upper(); i++)
+  double const* aDbPointer = THE_MAX_VALUES_DB[myNivConstr];
+  for (int i = theTabMax.Lower(); i <= theTabMax.Upper(); i++)
   {
     theTabMax.ChangeValue(i) = *aDbPointer++;
   }
@@ -204,27 +200,27 @@ void PLib_JacobiPolynomial::MaxValue(TColStd_Array1OfReal& theTabMax) const
 
 //=================================================================================================
 
-Standard_Real PLib_JacobiPolynomial::MaxError(const Standard_Integer theDimension,
-                                              Standard_Real&         theJacCoeff,
-                                              const Standard_Integer theNewDegree) const
+double PLib_JacobiPolynomial::MaxError(const int theDimension,
+                                       double&   theJacCoeff,
+                                       const int theNewDegree) const
 {
   // Buffering on stack to avoid dynamic allocation in this frequently called method
-  std::array<Standard_Real, THE_MAX_DEGREE + 2> aMaxErrBuffer;
-  TColStd_Array1OfReal                          aTabMax(aMaxErrBuffer.front(), 0, myDegree + 1);
+  std::array<double, THE_MAX_DEGREE + 2> aMaxErrBuffer;
+  NCollection_Array1<double>             aTabMax(aMaxErrBuffer.front(), 0, myDegree + 1);
   MaxValue(aTabMax);
 
-  const Standard_Integer aBegIdx = 2 * (myNivConstr + 1);
-  const Standard_Integer aCutIdx = std::max(aBegIdx, theNewDegree + 1);
+  const int aBegIdx = 2 * (myNivConstr + 1);
+  const int aCutIdx = std::max(aBegIdx, theNewDegree + 1);
 
-  math_Vector    aMaxErrDim(1, theDimension, 0.);
-  Standard_Real* aJacArray = &theJacCoeff;
+  math_Vector aMaxErrDim(1, theDimension, 0.);
+  double*     aJacArray = &theJacCoeff;
 
-  for (Standard_Integer aDimIdx = 1; aDimIdx <= theDimension; aDimIdx++)
+  for (int aDimIdx = 1; aDimIdx <= theDimension; aDimIdx++)
   {
-    for (Standard_Integer aCoeffIdx = aCutIdx; aCoeffIdx <= myWorkDegree; aCoeffIdx++)
+    for (int aCoeffIdx = aCutIdx; aCoeffIdx <= myWorkDegree; aCoeffIdx++)
     {
-      const Standard_Real aCoeffValue = aJacArray[aCoeffIdx * theDimension + aDimIdx - 1];
-      const Standard_Real aBasisMax   = aTabMax(aCoeffIdx - aBegIdx);
+      const double aCoeffValue = aJacArray[aCoeffIdx * theDimension + aDimIdx - 1];
+      const double aBasisMax   = aTabMax(aCoeffIdx - aBegIdx);
       aMaxErrDim(aDimIdx) += std::abs(aCoeffValue) * aBasisMax;
     }
   }
@@ -234,35 +230,35 @@ Standard_Real PLib_JacobiPolynomial::MaxError(const Standard_Integer theDimensio
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::ReduceDegree(const Standard_Integer theDimension,
-                                         const Standard_Integer theMaxDegree,
-                                         const Standard_Real    theTol,
-                                         Standard_Real&         theJacCoeff,
-                                         Standard_Integer&      theNewDegree,
-                                         Standard_Real&         theMaxError) const
+void PLib_JacobiPolynomial::ReduceDegree(const int    theDimension,
+                                         const int    theMaxDegree,
+                                         const double theTol,
+                                         double&      theJacCoeff,
+                                         int&         theNewDegree,
+                                         double&      theMaxError) const
 {
-  const Standard_Integer anIdx   = 2 * (myNivConstr + 1) - 1;
-  const Standard_Integer aCutIdx = anIdx + 1;
+  const int anIdx   = 2 * (myNivConstr + 1) - 1;
+  const int aCutIdx = anIdx + 1;
 
-  math_Vector          aMaxErrDim(1, theDimension, 0.);
-  TColStd_Array1OfReal aTabMax(0, myDegree + 1);
+  math_Vector                aMaxErrDim(1, theDimension, 0.);
+  NCollection_Array1<double> aTabMax(0, myDegree + 1);
   MaxValue(aTabMax);
 
-  Standard_Real* const aJacArray = &theJacCoeff;
-  theNewDegree                   = anIdx;
-  theMaxError                    = 0.;
+  double* const aJacArray = &theJacCoeff;
+  theNewDegree            = anIdx;
+  theMaxError             = 0.;
 
   // Search for theNewDegree from high degree to low
-  for (Standard_Integer i = myWorkDegree; i >= aCutIdx; i--)
+  for (int i = myWorkDegree; i >= aCutIdx; i--)
   {
     // Accumulate error contribution for all dimensions
-    const Standard_Integer iOffset = i * theDimension;
-    for (Standard_Integer idim = 1; idim <= theDimension; idim++)
+    const int iOffset = i * theDimension;
+    for (int idim = 1; idim <= theDimension; idim++)
     {
       aMaxErrDim(idim) += std::abs(aJacArray[iOffset + idim - 1]) * aTabMax(i - aCutIdx);
     }
 
-    const Standard_Real anError = aMaxErrDim.Norm();
+    const double anError = aMaxErrDim.Norm();
     if (anError > theTol && i <= theMaxDegree)
     {
       theNewDegree = i;
@@ -274,14 +270,14 @@ void PLib_JacobiPolynomial::ReduceDegree(const Standard_Integer theDimension,
   // Fallback: find last non-negligible coefficient
   if (theNewDegree == anIdx)
   {
-    constexpr Standard_Real anEps = 1.0e-9;
-    theNewDegree                  = 0;
+    constexpr double anEps = 1.0e-9;
+    theNewDegree           = 0;
 
-    for (Standard_Integer i = anIdx; i >= 1; i--)
+    for (int i = anIdx; i >= 1; i--)
     {
-      Standard_Real          aBid    = 0.;
-      const Standard_Integer iOffset = i * theDimension;
-      for (Standard_Integer idim = 1; idim <= theDimension; idim++)
+      double    aBid    = 0.;
+      const int iOffset = i * theDimension;
+      for (int idim = 1; idim <= theDimension; idim++)
       {
         aBid += std::abs(aJacArray[iOffset + idim - 1]);
       }
@@ -296,20 +292,20 @@ void PLib_JacobiPolynomial::ReduceDegree(const Standard_Integer theDimension,
 
 //=================================================================================================
 
-Standard_Real PLib_JacobiPolynomial::AverageError(const Standard_Integer theDimension,
-                                                  Standard_Real&         theJacCoeff,
-                                                  const Standard_Integer theNewDegree) const
+double PLib_JacobiPolynomial::AverageError(const int theDimension,
+                                           double&   theJacCoeff,
+                                           const int theNewDegree) const
 {
-  const Standard_Integer aCutIdx      = std::max(2 * (myNivConstr + 1) + 1, theNewDegree + 1);
-  Standard_Real* const   aJacArray    = &theJacCoeff;
-  Standard_Real          anAverageErr = 0.;
+  const int     aCutIdx      = std::max(2 * (myNivConstr + 1) + 1, theNewDegree + 1);
+  double* const aJacArray    = &theJacCoeff;
+  double        anAverageErr = 0.;
 
   // Compute sum of squares of coefficients beyond theNewDegree
-  for (Standard_Integer idim = 1; idim <= theDimension; idim++)
+  for (int idim = 1; idim <= theDimension; idim++)
   {
-    for (Standard_Integer i = aCutIdx; i <= myDegree; i++)
+    for (int i = aCutIdx; i <= myDegree; i++)
     {
-      const Standard_Real aJacCoeff = aJacArray[i * theDimension + idim - 1];
+      const double aJacCoeff = aJacArray[i * theDimension + idim - 1];
       anAverageErr += aJacCoeff * aJacCoeff;
     }
   }
@@ -319,28 +315,28 @@ Standard_Real PLib_JacobiPolynomial::AverageError(const Standard_Integer theDime
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::ToCoefficients(const Standard_Integer      theDimension,
-                                           const Standard_Integer      theDegree,
-                                           const TColStd_Array1OfReal& theJacCoeff,
-                                           TColStd_Array1OfReal&       theCoefficients) const
+void PLib_JacobiPolynomial::ToCoefficients(const int                         theDimension,
+                                           const int                         theDegree,
+                                           const NCollection_Array1<double>& theJacCoeff,
+                                           NCollection_Array1<double>&       theCoefficients) const
 {
-  constexpr Standard_Integer aMaxM       = THE_MAX_DEGREE + 1;
-  const Standard_Integer     aHalfDegree = theDegree / 2;
-  const Standard_Integer     aDoubleDim  = 2 * theDimension;
-  const Standard_Integer     aBegJC      = theJacCoeff.Lower();
-  const Standard_Integer     aBegC       = theCoefficients.Lower();
-  Standard_Real const*       aTrPointer  = THE_TRANS_MATRIX[myNivConstr];
+  constexpr int aMaxM       = THE_MAX_DEGREE + 1;
+  const int     aHalfDegree = theDegree / 2;
+  const int     aDoubleDim  = 2 * theDimension;
+  const int     aBegJC      = theJacCoeff.Lower();
+  const int     aBegC       = theCoefficients.Lower();
+  double const* aTrPointer  = THE_TRANS_MATRIX[myNivConstr];
 
   // Convert even elements of theJacCoeff
-  for (Standard_Integer i = 0; i <= aHalfDegree; i++)
+  for (int i = 0; i <= aHalfDegree; i++)
   {
-    const Standard_Integer iPtrIdx      = i * aMaxM - (i + 1) * i / 2;
-    const Standard_Integer iCoeffOffset = aBegC + aDoubleDim * i;
+    const int iPtrIdx      = i * aMaxM - (i + 1) * i / 2;
+    const int iCoeffOffset = aBegC + aDoubleDim * i;
 
-    for (Standard_Integer idim = 1; idim <= theDimension; idim++)
+    for (int idim = 1; idim <= theDimension; idim++)
     {
-      Standard_Real aValue = 0.;
-      for (Standard_Integer j = i; j <= aHalfDegree; j++)
+      double aValue = 0.;
+      for (int j = i; j <= aHalfDegree; j++)
       {
         aValue += aTrPointer[iPtrIdx + j] * theJacCoeff(aBegJC + aDoubleDim * j + idim - 1);
       }
@@ -355,20 +351,20 @@ void PLib_JacobiPolynomial::ToCoefficients(const Standard_Integer      theDimens
 
   // Convert odd elements of theJacCoeff
   aTrPointer += aMaxM * (aMaxM + 1) / 2;
-  const Standard_Integer aHalfDegreeMinus1 = (theDegree - 1) / 2;
+  const int aHalfDegreeMinus1 = (theDegree - 1) / 2;
 
-  for (Standard_Integer i = 0; i <= aHalfDegreeMinus1; i++)
+  for (int i = 0; i <= aHalfDegreeMinus1; i++)
   {
-    const Standard_Integer iPtrIdx  = i * aMaxM - (i + 1) * i / 2;
-    const Standard_Integer iBaseIdx = aBegC + (2 * i + 1) * theDimension;
-    const Standard_Integer jBaseIdx = aBegJC + (2 * i + 1) * theDimension;
+    const int iPtrIdx  = i * aMaxM - (i + 1) * i / 2;
+    const int iBaseIdx = aBegC + (2 * i + 1) * theDimension;
+    const int jBaseIdx = aBegJC + (2 * i + 1) * theDimension;
 
-    for (Standard_Integer idim = 1; idim <= theDimension; idim++)
+    for (int idim = 1; idim <= theDimension; idim++)
     {
-      Standard_Real    aValue = 0.;
-      Standard_Integer jj     = jBaseIdx + idim - 1;
+      double aValue = 0.;
+      int    jj     = jBaseIdx + idim - 1;
 
-      for (Standard_Integer j = i; j <= aHalfDegreeMinus1; j++, jj += aDoubleDim)
+      for (int j = i; j <= aHalfDegreeMinus1; j++, jj += aDoubleDim)
       {
         aValue += aTrPointer[iPtrIdx + j] * theJacCoeff(jj);
       }
@@ -382,26 +378,26 @@ void PLib_JacobiPolynomial::ToCoefficients(const Standard_Integer      theDimens
 // purpose  : common part of D0,D1,D2,D3 (FORTRAN subroutine MPOJAC)
 //=======================================================================
 
-void PLib_JacobiPolynomial::D0123(const Standard_Integer theNDeriv,
-                                  const Standard_Real    theU,
-                                  TColStd_Array1OfReal&  theBasisValue,
-                                  TColStd_Array1OfReal&  theBasisD1,
-                                  TColStd_Array1OfReal&  theBasisD2,
-                                  TColStd_Array1OfReal&  theBasisD3) const
+void PLib_JacobiPolynomial::D0123(const int                   theNDeriv,
+                                  const double                theU,
+                                  NCollection_Array1<double>& theBasisValue,
+                                  NCollection_Array1<double>& theBasisD1,
+                                  NCollection_Array1<double>& theBasisD2,
+                                  NCollection_Array1<double>& theBasisD3) const
 {
-  const Standard_Integer aHermitNivConstr = 2 * (myNivConstr + 1);
-  Standard_Integer       i;
-  Standard_Real          anAux;
+  const int aHermitNivConstr = 2 * (myNivConstr + 1);
+  int       i;
+  double    anAux;
 
   // Get pre-computed coefficients from static cache (zero per-instance overhead!)
   const JacobiCoefficientsCache& aCoeffs = GetJacobiCoefficients(myNivConstr, myDegree);
 
   //  --- Positionements triviaux -----
-  Standard_Integer aBeg0 = theBasisValue.Lower();
-  Standard_Integer aBeg1 = theBasisD1.Lower();
-  Standard_Integer aBeg2 = theBasisD2.Lower();
-  Standard_Integer aBeg3 = theBasisD3.Lower();
-  Standard_Integer i0, i1, i2, i3;
+  int aBeg0 = theBasisValue.Lower();
+  int aBeg1 = theBasisD1.Lower();
+  int aBeg2 = theBasisD2.Lower();
+  int aBeg3 = theBasisD3.Lower();
+  int i0, i1, i2, i3;
 
   if (myDegree == 0)
   {
@@ -446,10 +442,10 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer theNDeriv,
   {
     if (theNDeriv == 0)
     {
-      Standard_Real*       aBV    = &theBasisValue(aBeg0);
-      const Standard_Real* aCofA  = aCoeffs.CofA;
-      const Standard_Real* aCofB  = aCoeffs.CofB;
-      const Standard_Real* aDenom = aCoeffs.Denom;
+      double*       aBV    = &theBasisValue(aBeg0);
+      const double* aCofA  = aCoeffs.CofA;
+      const double* aCofB  = aCoeffs.CofB;
+      const double* aDenom = aCoeffs.Denom;
       for (i = 2; i <= myDegree; i++)
       {
         aBV[i] = (aCofA[i] * theU * aBV[i - 1] + aCofB[i] * aBV[i - 2]) * aDenom[i];
@@ -458,7 +454,7 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer theNDeriv,
 
     else
     {
-      Standard_Real aCofA, aCofB, aDenom;
+      double aCofA, aCofB, aDenom;
       for (i = 2; i <= myDegree; i++)
       {
         i0     = i + aBeg0;
@@ -493,8 +489,8 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer theNDeriv,
   // Normalization
   if (theNDeriv == 0)
   {
-    Standard_Real*       aBV   = &theBasisValue(aBeg0);
-    const Standard_Real* aNorm = aCoeffs.TNorm;
+    double*       aBV   = &theBasisValue(aBeg0);
+    const double* aNorm = aCoeffs.TNorm;
     for (i = 0; i <= myDegree; i++)
     {
       aBV[i] *= aNorm[i];
@@ -502,10 +498,10 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer theNDeriv,
   }
   else
   {
-    const Standard_Real* aNorm = aCoeffs.TNorm;
+    const double* aNorm = aCoeffs.TNorm;
     for (i = 0; i <= myDegree; i++)
     {
-      const Standard_Real aNormValue = aNorm[i];
+      const double aNormValue = aNorm[i];
       theBasisValue(i + aBeg0) *= aNormValue;
       theBasisD1(i + aBeg1) *= aNormValue;
       if (theNDeriv >= 2)
@@ -522,37 +518,37 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer theNDeriv,
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::D0(const Standard_Real theU, TColStd_Array1OfReal& theBasisValue) const
+void PLib_JacobiPolynomial::D0(const double theU, NCollection_Array1<double>& theBasisValue) const
 {
   D0123(0, theU, theBasisValue, theBasisValue, theBasisValue, theBasisValue);
 }
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::D1(const Standard_Real   theU,
-                               TColStd_Array1OfReal& theBasisValue,
-                               TColStd_Array1OfReal& theBasisD1) const
+void PLib_JacobiPolynomial::D1(const double                theU,
+                               NCollection_Array1<double>& theBasisValue,
+                               NCollection_Array1<double>& theBasisD1) const
 {
   D0123(1, theU, theBasisValue, theBasisD1, theBasisD1, theBasisD1);
 }
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::D2(const Standard_Real   theU,
-                               TColStd_Array1OfReal& theBasisValue,
-                               TColStd_Array1OfReal& theBasisD1,
-                               TColStd_Array1OfReal& theBasisD2) const
+void PLib_JacobiPolynomial::D2(const double                theU,
+                               NCollection_Array1<double>& theBasisValue,
+                               NCollection_Array1<double>& theBasisD1,
+                               NCollection_Array1<double>& theBasisD2) const
 {
   D0123(2, theU, theBasisValue, theBasisD1, theBasisD2, theBasisD2);
 }
 
 //=================================================================================================
 
-void PLib_JacobiPolynomial::D3(const Standard_Real   theU,
-                               TColStd_Array1OfReal& theBasisValue,
-                               TColStd_Array1OfReal& theBasisD1,
-                               TColStd_Array1OfReal& theBasisD2,
-                               TColStd_Array1OfReal& theBasisD3) const
+void PLib_JacobiPolynomial::D3(const double                theU,
+                               NCollection_Array1<double>& theBasisValue,
+                               NCollection_Array1<double>& theBasisD1,
+                               NCollection_Array1<double>& theBasisD2,
+                               NCollection_Array1<double>& theBasisD3) const
 {
   D0123(3, theU, theBasisValue, theBasisD1, theBasisD2, theBasisD3);
 }

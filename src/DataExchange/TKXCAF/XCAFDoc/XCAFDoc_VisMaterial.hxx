@@ -71,10 +71,10 @@ public:
   Standard_EXPORT void FillMaterialAspect(Graphic3d_MaterialAspect& theAspect) const;
 
   //! Fill in graphic aspects.
-  Standard_EXPORT void FillAspect(const Handle(Graphic3d_Aspects)& theAspect) const;
+  Standard_EXPORT void FillAspect(const occ::handle<Graphic3d_Aspects>& theAspect) const;
 
   //! Return TRUE if metal-roughness PBR material is defined; FALSE by default.
-  Standard_Boolean HasPbrMaterial() const { return myPbrMat.IsDefined; }
+  bool HasPbrMaterial() const { return myPbrMat.IsDefined; }
 
   //! Return metal-roughness PBR material.
   //! Note that default constructor creates an empty material (@sa
@@ -93,7 +93,7 @@ public:
   }
 
   //! Return TRUE if common material is defined; FALSE by default.
-  Standard_Boolean HasCommonMaterial() const { return myCommonMat.IsDefined; }
+  bool HasCommonMaterial() const { return myCommonMat.IsDefined; }
 
   //! Return common material.
   //! Note that default constructor creates an empty material (@sa
@@ -118,11 +118,10 @@ public:
   Graphic3d_AlphaMode AlphaMode() const { return myAlphaMode; }
 
   //! Return alpha cutoff value; 0.5 by default.
-  Standard_ShortReal AlphaCutOff() const { return myAlphaCutOff; }
+  float AlphaCutOff() const { return myAlphaCutOff; }
 
   //! Set alpha mode.
-  Standard_EXPORT void SetAlphaMode(Graphic3d_AlphaMode theMode,
-                                    Standard_ShortReal  theCutOff = 0.5f);
+  Standard_EXPORT void SetAlphaMode(Graphic3d_AlphaMode theMode, float theCutOff = 0.5f);
 
   //! Returns if the material is double or single sided; Graphic3d_TypeOfBackfacingModel_Auto by
   //! default.
@@ -132,28 +131,28 @@ public:
   Standard_EXPORT void SetFaceCulling(Graphic3d_TypeOfBackfacingModel theFaceCulling);
 
   Standard_DEPRECATED("Deprecated method, FaceCulling() should be used instead")
-  Standard_Boolean IsDoubleSided() const
+  bool IsDoubleSided() const
   {
     return myFaceCulling == Graphic3d_TypeOfBackfacingModel_DoubleSided;
   }
 
   Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used "
                       "instead")
-  void SetDoubleSided(Standard_Boolean theIsDoubleSided)
+  void SetDoubleSided(bool theIsDoubleSided)
   {
     SetFaceCulling(theIsDoubleSided ? Graphic3d_TypeOfBackfacingModel_DoubleSided
                                     : Graphic3d_TypeOfBackfacingModel_Auto);
   }
 
   //! Return material name / tag (transient data, not stored in the document).
-  const Handle(TCollection_HAsciiString)& RawName() const { return myRawName; }
+  const occ::handle<TCollection_HAsciiString>& RawName() const { return myRawName; }
 
   //! Set material name / tag (transient data, not stored in the document).
-  void SetRawName(const Handle(TCollection_HAsciiString)& theName) { myRawName = theName; }
+  void SetRawName(const occ::handle<TCollection_HAsciiString>& theName) { myRawName = theName; }
 
   //! Compare two materials.
   //! Performs deep comparison by actual values - e.g. can be useful for merging materials.
-  Standard_Boolean IsEqual(const Handle(XCAFDoc_VisMaterial)& theOther) const
+  bool IsEqual(const occ::handle<XCAFDoc_VisMaterial>& theOther) const
   {
     if (theOther.get() == this)
     {
@@ -172,37 +171,35 @@ public:
 
 public: //! @name interface implementation
   //! Return GUID of this attribute type.
-  virtual const Standard_GUID& ID() const Standard_OVERRIDE { return GetID(); }
+  virtual const Standard_GUID& ID() const override { return GetID(); }
 
   //! Restore attribute from specified state.
   //! @param[in] theWith  attribute state to restore (copy into this)
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Restore(const occ::handle<TDF_Attribute>& theWith) override;
 
   //! Create a new empty attribute.
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Paste this attribute into another one.
   //! @param theInto [in/out] target attribute to copy this into
   //! @param[in] theRelTable  relocation table
-  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       theInto,
-                                     const Handle(TDF_RelocationTable)& theRelTable) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void Paste(
+    const occ::handle<TDF_Attribute>&       theInto,
+    const occ::handle<TDF_RelocationTable>& theRelTable) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
 private:
-  Handle(TCollection_HAsciiString) myRawName;   //!< material name / tag (transient data)
-  XCAFDoc_VisMaterialPBR           myPbrMat;    //!< metal-roughness material definition
-  XCAFDoc_VisMaterialCommon        myCommonMat; //!< common material definition
+  occ::handle<TCollection_HAsciiString> myRawName;   //!< material name / tag (transient data)
+  XCAFDoc_VisMaterialPBR                myPbrMat;    //!< metal-roughness material definition
+  XCAFDoc_VisMaterialCommon             myCommonMat; //!< common material definition
   // clang-format off
   Graphic3d_AlphaMode              myAlphaMode;     //!< alpha mode; Graphic3d_AlphaMode_BlendAuto by default
-  Standard_ShortReal               myAlphaCutOff;   //!< alpha cutoff value; 0.5 by default
+  float               myAlphaCutOff;   //!< alpha cutoff value; 0.5 by default
   Graphic3d_TypeOfBackfacingModel  myFaceCulling;   //!< specifies whether the material is double/single sided
   // clang-format on
 };
-
-DEFINE_STANDARD_HANDLE(XCAFDoc_VisMaterial, TDF_Attribute)
 
 #endif // _XCAFDoc_VisMaterial_HeaderFile

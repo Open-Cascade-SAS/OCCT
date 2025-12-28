@@ -16,15 +16,17 @@
 
 #include <Select3D_SensitiveCurve.hxx>
 
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCurve, Select3D_SensitivePoly)
 
 //=================================================================================================
 
-Select3D_SensitiveCurve::Select3D_SensitiveCurve(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                                 const Handle(TColgp_HArray1OfPnt)&   thePoints)
-    : Select3D_SensitivePoly(theOwnerId, thePoints, Standard_True)
+Select3D_SensitiveCurve::Select3D_SensitiveCurve(
+  const occ::handle<SelectMgr_EntityOwner>&       theOwnerId,
+  const occ::handle<NCollection_HArray1<gp_Pnt>>& thePoints)
+    : Select3D_SensitivePoly(theOwnerId, thePoints, true)
 
 {
   SetSensitivityFactor(3);
@@ -32,22 +34,25 @@ Select3D_SensitiveCurve::Select3D_SensitiveCurve(const Handle(SelectMgr_EntityOw
 
 //=================================================================================================
 
-Select3D_SensitiveCurve::Select3D_SensitiveCurve(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                                 const TColgp_Array1OfPnt&            thePoints)
-    : Select3D_SensitivePoly(theOwnerId, thePoints, Standard_True)
+Select3D_SensitiveCurve::Select3D_SensitiveCurve(
+  const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+  const NCollection_Array1<gp_Pnt>&         thePoints)
+    : Select3D_SensitivePoly(theOwnerId, thePoints, true)
 {
   SetSensitivityFactor(3);
 }
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveCurve::GetConnected()
+occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveCurve::GetConnected()
 {
-  Handle(TColgp_HArray1OfPnt) aPoints = new TColgp_HArray1OfPnt(1, myPolyg.Size());
-  for (Standard_Integer anIndex = 1; anIndex <= myPolyg.Size(); ++anIndex)
+  occ::handle<NCollection_HArray1<gp_Pnt>> aPoints =
+    new NCollection_HArray1<gp_Pnt>(1, myPolyg.Size());
+  for (int anIndex = 1; anIndex <= myPolyg.Size(); ++anIndex)
   {
     aPoints->SetValue(anIndex, myPolyg.Pnt(anIndex - 1));
   }
-  Handle(Select3D_SensitiveEntity) aNewEntity = new Select3D_SensitiveCurve(myOwnerId, aPoints);
+  occ::handle<Select3D_SensitiveEntity> aNewEntity =
+    new Select3D_SensitiveCurve(myOwnerId, aPoints);
   return aNewEntity;
 }

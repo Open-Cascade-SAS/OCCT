@@ -45,22 +45,22 @@
 //              Ellipse    - Hyperbola
 //              Hyperbola - Hyperbola
 //=======================================================================
-static const Standard_Real PARAM_MAX_ON_PARABOLA  = 100000000.0;
-static const Standard_Real PARAM_MAX_ON_HYPERBOLA = 10000.0;
-static const Standard_Real TOL_EXACT_INTER        = 1.e-7;
+static const double PARAM_MAX_ON_PARABOLA  = 100000000.0;
+static const double PARAM_MAX_ON_HYPERBOLA = 10000.0;
+static const double TOL_EXACT_INTER        = 1.e-7;
 
-static inline Standard_Boolean BOUNDED_DOMAIN(const IntRes2d_Domain& domain)
+static inline bool BOUNDED_DOMAIN(const IntRes2d_Domain& domain)
 {
   return (domain.HasFirstPoint() && domain.HasLastPoint());
 }
 
-static Standard_Boolean SET_BOUNDED_DOMAIN(const IntRes2d_Domain& domain,
-                                           Standard_Real&         binf,
-                                           Standard_Real&         tolinf,
-                                           gp_Pnt2d&              Pntinf,
-                                           Standard_Real&         bsup,
-                                           Standard_Real&         tolsup,
-                                           gp_Pnt2d&              Pntsup)
+static bool SET_BOUNDED_DOMAIN(const IntRes2d_Domain& domain,
+                               double&                binf,
+                               double&                tolinf,
+                               gp_Pnt2d&              Pntinf,
+                               double&                bsup,
+                               double&                tolsup,
+                               gp_Pnt2d&              Pntsup)
 {
   if (domain.HasFirstPoint())
   {
@@ -80,29 +80,29 @@ static Standard_Boolean SET_BOUNDED_DOMAIN(const IntRes2d_Domain& domain,
       tolsup = domain.LastTolerance();
     }
   }
-  Standard_Boolean result = (bsup <= binf) ? Standard_False : Standard_True;
-  //   if(bsup<=binf) return(Standard_False);
-  //   return(Standard_True);
+  bool result = (bsup <= binf) ? false : true;
+  //   if(bsup<=binf) return(false);
+  //   return(true);
   return result;
 }
 
 void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
-                             Standard_Real&                  binf,
+                             double&                         binf,
                              gp_Pnt2d&                       pntinf,
-                             Standard_Real&                  bsup,
+                             double&                         bsup,
                              gp_Pnt2d&                       pntsup,
                              const gp_Hypr2d&                H,
-                             const Standard_Real             maxtol,
-                             const Standard_Real             LIMITE);
+                             const double                    maxtol,
+                             const double                    LIMITE);
 
 void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
-                             Standard_Real&                  binf,
+                             double&                         binf,
                              gp_Pnt2d&                       pntinf,
-                             Standard_Real&                  bsup,
+                             double&                         bsup,
                              gp_Pnt2d&                       pntsup,
                              const gp_Parab2d&               PR,
-                             const Standard_Real             maxtol,
-                             const Standard_Real             LIMITE);
+                             const double                    maxtol,
+                             const double                    LIMITE);
 
 //=======================================================================
 // function : Perform
@@ -112,8 +112,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
                                      const IntRes2d_Domain& DL,
                                      const gp_Parab2d&      P,
                                      const IntRes2d_Domain& DP,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
 
   this->ResetFields();
@@ -123,12 +123,12 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   PCurve.SetAccuracy(20);
   Inter.SetReversedParameters(ReversedParameters());
 
-  Standard_Real binf   = Precision::Infinite();
-  Standard_Real bsup   = -Precision::Infinite();
-  Standard_Real maxtol = (Tol > TolConf) ? Tol : TolConf;
+  double binf   = Precision::Infinite();
+  double bsup   = -Precision::Infinite();
+  double maxtol = (Tol > TolConf) ? Tol : TolConf;
   if (maxtol < 1.e-7)
     maxtol = 1.e-7;
-  Standard_Boolean wasSet = Standard_False;
+  bool wasSet = false;
 
   gp_Pnt2d                 Pntinf, Pntsup;
   IntAna2d_AnaIntersection theIntAna2d;
@@ -164,8 +164,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   {
     if (!BOUNDED_DOMAIN(DP))
     {
-      Standard_Real tolinf = 0.0;
-      Standard_Real tolsup = 0.0;
+      double tolinf = 0.0;
+      double tolsup = 0.0;
       if (SET_BOUNDED_DOMAIN(DP, binf, tolinf, Pntinf, bsup, tolsup, Pntsup))
       {
         IntRes2d_Domain DPModif(Pntinf, binf, tolinf, Pntsup, bsup, tolsup);
@@ -173,13 +173,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
       }
       else
       {
-        done = Standard_True;
+        done = true;
         return;
       }
     }
     else
     {
-      Standard_Real ft = 0.0, lt = 0.0;
+      double ft = 0.0, lt = 0.0;
       if (binf < DP.FirstParameter())
       {
         binf   = DP.FirstParameter();
@@ -187,7 +187,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
         ft     = DP.FirstTolerance();
         if (bsup < DP.FirstParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -198,7 +198,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
         lt     = DP.LastTolerance();
         if (binf > DP.LastParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -206,12 +206,12 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
       //      Inter.Perform(ITool,DL,PCurve,DPModif,TolConf,Tol);
       Inter.Perform(ITool, DL, PCurve, DPModif, TOL_EXACT_INTER, TOL_EXACT_INTER);
       this->SetValues(Inter);
-      wasSet = Standard_True;
+      wasSet = true;
       if (this->IsDone() && this->NbPoints() == 0)
       {
         this->ResetFields();
         Inter.Perform(ITool, DL, PCurve, DPModif, TolConf, Tol);
-        wasSet = Standard_False;
+        wasSet = false;
       }
     }
     if (!wasSet)
@@ -219,7 +219,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   }
   else
   {
-    done = Standard_True;
+    done = true;
   }
 }
 
@@ -231,8 +231,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
                                      const IntRes2d_Domain& DL,
                                      const gp_Hypr2d&       H,
                                      const IntRes2d_Domain& DH,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(L);
@@ -241,8 +241,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
 
   Inter.SetReversedParameters(ReversedParameters());
 
-  Standard_Real binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -277,8 +277,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   {
     if (!BOUNDED_DOMAIN(DH))
     {
-      Standard_Real tolinf = 0.0;
-      Standard_Real tolsup = 0.0;
+      double tolinf = 0.0;
+      double tolsup = 0.0;
       if (SET_BOUNDED_DOMAIN(DH, binf, tolinf, Pntinf, bsup, tolsup, Pntsup))
       {
         IntRes2d_Domain DHModif(Pntinf, binf, tolinf, Pntsup, bsup, tolsup);
@@ -286,13 +286,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
       }
       else
       {
-        done = Standard_True;
+        done = true;
         return;
       }
     }
     else
     {
-      Standard_Real ft = 0.0, lt = 0.0;
+      double ft = 0.0, lt = 0.0;
       if (binf < DH.FirstParameter())
       {
         binf   = DH.FirstParameter();
@@ -300,7 +300,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
         ft     = DH.FirstTolerance();
         if (bsup < DH.FirstParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -311,7 +311,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
         lt     = DH.LastTolerance();
         if (binf > DH.LastParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -322,7 +322,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   }
   else
   {
-    done = Standard_True;
+    done = true;
   }
 }
 
@@ -334,8 +334,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
                                      const IntRes2d_Domain& DC,
                                      const gp_Parab2d&      P,
                                      const IntRes2d_Domain& DP,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(C);
@@ -349,8 +349,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
     D.SetEquivalentParameters(DC.FirstParameter(), DC.FirstParameter() + M_PI + M_PI);
   }
 
-  Standard_Real binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   maxtol = C.Radius() / 10.0;
   gp_Circ2d Cp(C);
   Cp.SetRadius(C.Radius() + maxtol);
@@ -381,8 +381,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
   {
     if (!BOUNDED_DOMAIN(DP))
     {
-      Standard_Real tolinf = 0.0;
-      Standard_Real tolsup = 0.0;
+      double tolinf = 0.0;
+      double tolsup = 0.0;
       if (SET_BOUNDED_DOMAIN(DP, binf, tolinf, Pntinf, bsup, tolsup, Pntsup))
       {
         IntRes2d_Domain DPModif(Pntinf, binf, tolinf, Pntsup, bsup, tolsup);
@@ -390,13 +390,13 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
       }
       else
       {
-        done = Standard_True;
+        done = true;
         return;
       }
     }
     else
     {
-      Standard_Real ft = 0.0, lt = 0.0;
+      double ft = 0.0, lt = 0.0;
       if (binf < DP.FirstParameter())
       {
         binf   = DP.FirstParameter();
@@ -404,7 +404,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
         ft     = DP.FirstTolerance();
         if (bsup < DP.FirstParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -415,7 +415,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
         lt     = DP.LastTolerance();
         if (binf > DP.LastParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -426,7 +426,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
   }
   else
   {
-    done = Standard_True;
+    done = true;
   }
 }
 
@@ -438,8 +438,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
                                      const IntRes2d_Domain& DC,
                                      const gp_Elips2d&      E,
                                      const IntRes2d_Domain& DE,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(C);
@@ -487,8 +487,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
                                      const IntRes2d_Domain& DC,
                                      const gp_Hypr2d&       H,
                                      const IntRes2d_Domain& DH,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(C);
@@ -501,8 +501,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
   {
     D.SetEquivalentParameters(DC.FirstParameter(), DC.FirstParameter() + M_PI + M_PI);
   }
-  Standard_Real binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   maxtol = C.Radius() / 10.0;
   gp_Vec2d  Offset(maxtol * H.XAxis().Direction().X(), maxtol * H.XAxis().Direction().Y());
   gp_Hypr2d Hp(H.Translated(Offset));
@@ -531,8 +531,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
   {
     if (!BOUNDED_DOMAIN(DH))
     {
-      Standard_Real tolinf = 0.0;
-      Standard_Real tolsup = 0.0;
+      double tolinf = 0.0;
+      double tolsup = 0.0;
       if (SET_BOUNDED_DOMAIN(DH, binf, tolinf, Pntinf, bsup, tolsup, Pntsup))
       {
         IntRes2d_Domain DHModif(Pntinf, binf, tolinf, Pntsup, bsup, tolsup);
@@ -540,13 +540,13 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
       }
       else
       {
-        done = Standard_True;
+        done = true;
         return;
       }
     }
     else
     {
-      Standard_Real ft = 0.0, lt = 0.0;
+      double ft = 0.0, lt = 0.0;
       if (binf < DH.FirstParameter())
       {
         binf   = DH.FirstParameter();
@@ -554,7 +554,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
         ft     = DH.FirstTolerance();
         if (bsup < DH.FirstParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -565,7 +565,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
         lt     = DH.LastTolerance();
         if (binf > DH.LastParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -576,7 +576,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
   }
   else
   {
-    done = Standard_True;
+    done = true;
   }
 }
 
@@ -588,8 +588,8 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
                                      const IntRes2d_Domain& DP1,
                                      const gp_Parab2d&      P2,
                                      const IntRes2d_Domain& DP2,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(P1);
@@ -597,8 +597,8 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
   PCurve.SetAccuracy(20);
   Inter.SetReversedParameters(ReversedParameters());
 
-  Standard_Real binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -634,8 +634,8 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
   {
     if (!BOUNDED_DOMAIN(DP2))
     {
-      Standard_Real tolinf = 0.0;
-      Standard_Real tolsup = 0.0;
+      double tolinf = 0.0;
+      double tolsup = 0.0;
       if (SET_BOUNDED_DOMAIN(DP2, binf, tolinf, Pntinf, bsup, tolsup, Pntsup))
       {
         IntRes2d_Domain DPModif(Pntinf, binf, tolinf, Pntsup, bsup, tolsup);
@@ -643,13 +643,13 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
       }
       else
       {
-        done = Standard_True;
+        done = true;
         return;
       }
     }
     else
     {
-      Standard_Real ft = 0.0, lt = 0.0;
+      double ft = 0.0, lt = 0.0;
       if (binf < DP2.FirstParameter())
       {
         binf   = DP2.FirstParameter();
@@ -657,7 +657,7 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
         ft     = DP2.FirstTolerance();
         if (bsup < DP2.FirstParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -668,7 +668,7 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
         lt     = DP2.LastTolerance();
         if (binf > DP2.LastParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -679,7 +679,7 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
   }
   else
   {
-    done = Standard_True;
+    done = true;
   }
 }
 
@@ -691,8 +691,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
                                      const IntRes2d_Domain& DE,
                                      const gp_Parab2d&      P,
                                      const IntRes2d_Domain& DP,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(E);
@@ -708,8 +708,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
 
   //-- std::cout<<" Parab Elips "<<std::endl;
 
-  Standard_Real binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -748,8 +748,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
   {
     if (!BOUNDED_DOMAIN(DP))
     {
-      Standard_Real tolinf = 0.0;
-      Standard_Real tolsup = 0.0;
+      double tolinf = 0.0;
+      double tolsup = 0.0;
       if (SET_BOUNDED_DOMAIN(DP, binf, tolinf, Pntinf, bsup, tolsup, Pntsup))
       {
         IntRes2d_Domain DPModif(Pntinf, binf, tolinf, Pntsup, bsup, tolsup);
@@ -757,13 +757,13 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
       }
       else
       {
-        done = Standard_True;
+        done = true;
         return;
       }
     }
     else
     {
-      Standard_Real ft = 0.0, lt = 0.0;
+      double ft = 0.0, lt = 0.0;
       if (binf < DP.FirstParameter())
       {
         binf   = DP.FirstParameter();
@@ -771,7 +771,7 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
         ft     = DP.FirstTolerance();
         if (bsup < DP.FirstParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -782,7 +782,7 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
         lt     = DP.LastTolerance();
         if (binf > DP.LastParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -795,7 +795,7 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
   }
   else
   {
-    done = Standard_True;
+    done = true;
   }
 }
 
@@ -807,16 +807,16 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
                                      const IntRes2d_Domain& DP,
                                      const gp_Hypr2d&       H,
                                      const IntRes2d_Domain& DH,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(P);
   IntCurve_PConic     PCurve(H);
   Inter.SetReversedParameters(ReversedParameters());
 
-  Standard_Real binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -851,8 +851,8 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
   {
     if (!BOUNDED_DOMAIN(DH))
     {
-      Standard_Real tolinf = 0.0;
-      Standard_Real tolsup = 0.0;
+      double tolinf = 0.0;
+      double tolsup = 0.0;
       if (SET_BOUNDED_DOMAIN(DH, binf, tolinf, Pntinf, bsup, tolsup, Pntsup))
       {
         IntRes2d_Domain DHModif(Pntinf, binf, tolinf, Pntsup, bsup, tolsup);
@@ -860,13 +860,13 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
       }
       else
       {
-        done = Standard_True;
+        done = true;
         return;
       }
     }
     else
     {
-      Standard_Real ft = 0.0, lt = 0.0;
+      double ft = 0.0, lt = 0.0;
       if (binf < DH.FirstParameter())
       {
         binf   = DH.FirstParameter();
@@ -874,7 +874,7 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
         ft     = DH.FirstTolerance();
         if (bsup < DH.FirstParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -885,7 +885,7 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
         lt     = DH.LastTolerance();
         if (binf > DH.LastParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -896,7 +896,7 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
   }
   else
   {
-    done = Standard_True;
+    done = true;
   }
 }
 
@@ -909,8 +909,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E1,
                                      const IntRes2d_Domain& DE1,
                                      const gp_Elips2d&      E2,
                                      const IntRes2d_Domain& DE2,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(E1);
@@ -958,8 +958,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
                                      const IntRes2d_Domain& DE,
                                      const gp_Hypr2d&       H,
                                      const IntRes2d_Domain& DH,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(E);
@@ -973,8 +973,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
     DEModif.SetEquivalentParameters(DE.FirstParameter(), DE.FirstParameter() + M_PI + M_PI);
   }
 
-  Standard_Real binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   maxtol = E.MinorRadius() / 10.0;
   gp_Vec2d  Offset(maxtol * H.XAxis().Direction().X(), maxtol * H.XAxis().Direction().Y());
   gp_Hypr2d Hp(H.Translated(Offset));
@@ -1003,8 +1003,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
   {
     if (!BOUNDED_DOMAIN(DH))
     {
-      Standard_Real tolinf = 0.0;
-      Standard_Real tolsup = 0.0;
+      double tolinf = 0.0;
+      double tolsup = 0.0;
       if (SET_BOUNDED_DOMAIN(DH, binf, tolinf, Pntinf, bsup, tolsup, Pntsup))
       {
         IntRes2d_Domain DHModif(Pntinf, binf, tolinf, Pntsup, bsup, tolsup);
@@ -1012,13 +1012,13 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
       }
       else
       {
-        done = Standard_True;
+        done = true;
         return;
       }
     }
     else
     {
-      Standard_Real ft = 0.0, lt = 0.0;
+      double ft = 0.0, lt = 0.0;
       if (binf < DH.FirstParameter())
       {
         binf   = DH.FirstParameter();
@@ -1026,7 +1026,7 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
         ft     = DH.FirstTolerance();
         if (bsup < DH.FirstParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
@@ -1037,13 +1037,13 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
         lt     = DH.LastTolerance();
         if (binf > DH.LastParameter())
         {
-          done = Standard_True;
+          done = true;
           return;
         }
       }
       if (binf >= bsup)
       {
-        done = Standard_True;
+        done = true;
         return;
       }
       IntRes2d_Domain DHModif(Pntinf, binf, ft, Pntsup, bsup, lt);
@@ -1053,7 +1053,7 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
   }
   else
   {
-    done = Standard_True;
+    done = true;
   }
 }
 
@@ -1066,8 +1066,8 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
                                      const IntRes2d_Domain& DH1,
                                      const gp_Hypr2d&       H2,
                                      const IntRes2d_Domain& DH2,
-                                     const Standard_Real    TolConf,
-                                     const Standard_Real    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(H1);
@@ -1076,8 +1076,8 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
 
   Inter.SetReversedParameters(ReversedParameters());
 
-  Standard_Real binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -1112,8 +1112,8 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
   {
     if (!BOUNDED_DOMAIN(DH2))
     {
-      Standard_Real tolinf = 0.0;
-      Standard_Real tolsup = 0.0;
+      double tolinf = 0.0;
+      double tolsup = 0.0;
       if (SET_BOUNDED_DOMAIN(DH2, binf, tolinf, Pntinf, bsup, tolsup, Pntsup))
       {
         IntRes2d_Domain DHModif(Pntinf, binf, tolinf, Pntsup, bsup, tolsup);
@@ -1121,13 +1121,13 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
       }
       else
       {
-        done = Standard_True;
+        done = true;
         return;
       }
     }
     else
     {
-      Standard_Real ft = 0.0, lt = 0.0;
+      double ft = 0.0, lt = 0.0;
       if (binf < DH2.FirstParameter())
       {
         binf   = DH2.FirstParameter();
@@ -1145,7 +1145,7 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
       //-- binf=-5.6 bsup=-5.3 DH2=(5.6,5.7) -> binf=+5.6 bsup=-5.3
       if (binf >= bsup)
       {
-        done = Standard_True;
+        done = true;
         return;
       }
       IntRes2d_Domain DHModif(Pntinf, binf, ft, Pntsup, bsup, lt);
@@ -1155,37 +1155,37 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
   }
   else
   {
-    done = Standard_True;
+    done = true;
   }
 }
 
 //----------------------------------------------------------------------
 
 void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
-                             Standard_Real&                  binf,
+                             double&                         binf,
                              gp_Pnt2d&                       Pntinf,
-                             Standard_Real&                  bsup,
+                             double&                         bsup,
                              gp_Pnt2d&                       Pntsup,
                              const gp_Parab2d&               PR,
-                             const Standard_Real             maxtol,
-                             const Standard_Real             LIMITE)
+                             const double                    maxtol,
+                             const double                    LIMITE)
 {
 
   if (theIntAna2d.IsDone())
   {
     if (!theIntAna2d.IsEmpty())
     {
-      for (Standard_Integer p = 1; p <= theIntAna2d.NbPoints(); p++)
+      for (int p = 1; p <= theIntAna2d.NbPoints(); p++)
       {
-        Standard_Real param = theIntAna2d.Point(p).ParamOnFirst();
+        double param = theIntAna2d.Point(p).ParamOnFirst();
 
         if (std::abs(param) < LIMITE)
         {
           gp_Vec2d V;
           gp_Pnt2d P;
           ElCLib::D1(param, PR, P, V);
-          Standard_Real NormeD1 = V.Magnitude();
-          Standard_Real dparam  = 100.0 * maxtol / NormeD1;
+          double NormeD1 = V.Magnitude();
+          double dparam  = 100.0 * maxtol / NormeD1;
           if (dparam < 1e-3)
             dparam = 1e-3;
           param -= dparam;
@@ -1208,30 +1208,30 @@ void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
 }
 
 void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
-                             Standard_Real&                  binf,
+                             double&                         binf,
                              gp_Pnt2d&                       Pntinf,
-                             Standard_Real&                  bsup,
+                             double&                         bsup,
                              gp_Pnt2d&                       Pntsup,
                              const gp_Hypr2d&                H,
-                             const Standard_Real             maxtol,
-                             const Standard_Real             LIMITE)
+                             const double                    maxtol,
+                             const double                    LIMITE)
 {
 
   if (theIntAna2d.IsDone())
   {
     if (!theIntAna2d.IsEmpty())
     {
-      for (Standard_Integer p = 1; p <= theIntAna2d.NbPoints(); p++)
+      for (int p = 1; p <= theIntAna2d.NbPoints(); p++)
       {
-        Standard_Real param = theIntAna2d.Point(p).ParamOnFirst();
+        double param = theIntAna2d.Point(p).ParamOnFirst();
 
         if (std::abs(param) < LIMITE)
         {
           gp_Vec2d V;
           gp_Pnt2d P;
           ElCLib::D1(param, H, P, V);
-          Standard_Real NormeD1 = V.Magnitude();
-          Standard_Real dparam  = 100.0 * maxtol / NormeD1;
+          double NormeD1 = V.Magnitude();
+          double dparam  = 100.0 * maxtol / NormeD1;
           if (dparam < 1e-3)
             dparam = 1e-3;
           param -= dparam;

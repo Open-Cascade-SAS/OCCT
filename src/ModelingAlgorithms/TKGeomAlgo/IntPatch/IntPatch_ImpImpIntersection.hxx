@@ -18,8 +18,9 @@
 #define _IntPatch_ImpImpIntersection_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <IntPatch_SequenceOfPoint.hxx>
-#include <IntPatch_SequenceOfLine.hxx>
+#include <IntPatch_Point.hxx>
+#include <NCollection_Sequence.hxx>
+#include <IntPatch_Line.hxx>
 #include <IntPatch_TheSOnBounds.hxx>
 
 class Adaptor3d_TopolTool;
@@ -55,14 +56,13 @@ public:
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  Standard_EXPORT IntPatch_ImpImpIntersection(
-    const Handle(Adaptor3d_Surface)&   S1,
-    const Handle(Adaptor3d_TopolTool)& D1,
-    const Handle(Adaptor3d_Surface)&   S2,
-    const Handle(Adaptor3d_TopolTool)& D2,
-    const Standard_Real                TolArc,
-    const Standard_Real                TolTang,
-    const Standard_Boolean             theIsReqToKeepRLine = Standard_False);
+  Standard_EXPORT IntPatch_ImpImpIntersection(const occ::handle<Adaptor3d_Surface>&   S1,
+                                              const occ::handle<Adaptor3d_TopolTool>& D1,
+                                              const occ::handle<Adaptor3d_Surface>&   S2,
+                                              const occ::handle<Adaptor3d_TopolTool>& D2,
+                                              const double                            TolArc,
+                                              const double                            TolTang,
+                                              const bool theIsReqToKeepRLine = false);
 
   //! Flag theIsReqToKeepRLine has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
@@ -70,58 +70,57 @@ public:
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   S1,
-                               const Handle(Adaptor3d_TopolTool)& D1,
-                               const Handle(Adaptor3d_Surface)&   S2,
-                               const Handle(Adaptor3d_TopolTool)& D2,
-                               const Standard_Real                TolArc,
-                               const Standard_Real                TolTang,
-                               const Standard_Boolean theIsReqToKeepRLine = Standard_False);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   S1,
+                               const occ::handle<Adaptor3d_TopolTool>& D1,
+                               const occ::handle<Adaptor3d_Surface>&   S2,
+                               const occ::handle<Adaptor3d_TopolTool>& D2,
+                               const double                            TolArc,
+                               const double                            TolTang,
+                               const bool                              theIsReqToKeepRLine = false);
 
   //! Returns True if the calculus was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns status
   IntStatus GetStatus() const;
 
   //! Returns true if the is no intersection.
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
   //! Returns True if the two patches are considered as
   //! entirely tangent, i.e every restriction arc of one
   //! patch is inside the geometric base of the other patch.
-  Standard_Boolean TangentFaces() const;
+  bool TangentFaces() const;
 
   //! Returns True when the TangentFaces returns True and the
   //! normal vectors evaluated at a point on the first and the
   //! second surface are opposite.
   //! The exception DomainError is raised if TangentFaces
   //! returns False.
-  Standard_Boolean OppositeFaces() const;
+  bool OppositeFaces() const;
 
   //! Returns the number of "single" points.
-  Standard_Integer NbPnts() const;
+  int NbPnts() const;
 
   //! Returns the point of range Index.
   //! An exception is raised if Index<=0 or Index>NbPnt.
-  const IntPatch_Point& Point(const Standard_Integer Index) const;
+  const IntPatch_Point& Point(const int Index) const;
 
   //! Returns the number of intersection lines.
-  Standard_Integer NbLines() const;
+  int NbLines() const;
 
   //! Returns the line of range Index.
   //! An exception is raised if Index<=0 or Index>NbLine.
-  const Handle(IntPatch_Line)& Line(const Standard_Integer Index) const;
+  const occ::handle<IntPatch_Line>& Line(const int Index) const;
 
-protected:
 private:
-  IntStatus                myDone;
-  Standard_Boolean         empt;
-  Standard_Boolean         tgte;
-  Standard_Boolean         oppo;
-  IntPatch_SequenceOfPoint spnt;
-  IntPatch_SequenceOfLine  slin;
-  IntPatch_TheSOnBounds    solrst;
+  IntStatus                                        myDone;
+  bool                                             empt;
+  bool                                             tgte;
+  bool                                             oppo;
+  NCollection_Sequence<IntPatch_Point>             spnt;
+  NCollection_Sequence<occ::handle<IntPatch_Line>> slin;
+  IntPatch_TheSOnBounds                            solrst;
 };
 
 #include <IntPatch_ImpImpIntersection.lxx>

@@ -9,7 +9,7 @@ set(OCCT_VrmlData_FILES
   VrmlData_Cone.hxx
   VrmlData_Coordinate.hxx
   VrmlData_Cylinder.hxx
-  VrmlData_DataMapOfShapeAppearance.hxx
+
   VrmlData_ErrorStatus.hxx
   VrmlData_Faceted.hxx
   VrmlData_Geometry.cxx
@@ -22,8 +22,7 @@ set(OCCT_VrmlData_FILES
   VrmlData_IndexedFaceSet.hxx
   VrmlData_IndexedLineSet.cxx
   VrmlData_IndexedLineSet.hxx
-  VrmlData_ListOfNode.hxx
-  VrmlData_MapOfNode.hxx
+
   VrmlData_Material.cxx
   VrmlData_Material.hxx
   VrmlData_Node.cxx

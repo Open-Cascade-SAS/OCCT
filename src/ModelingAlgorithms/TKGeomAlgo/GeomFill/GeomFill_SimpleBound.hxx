@@ -26,9 +26,6 @@ class Law_Function;
 class gp_Pnt;
 class gp_Vec;
 
-class GeomFill_SimpleBound;
-DEFINE_STANDARD_HANDLE(GeomFill_SimpleBound, GeomFill_Boundary)
-
 //! Defines a 3d curve as a boundary for a
 //! GeomFill_ConstrainedFilling algorithm.
 //! This curve is unattached to an existing surface.D
@@ -50,51 +47,50 @@ public:
   //! algorithm which uses it.
   //! The adapted curve is created in one of the following ways:
   //! -   First sequence:
-  //! Handle(Geom_Curve) myCurve = ... ;
-  //! Handle(GeomAdaptor_Curve)
+  //! occ::handle<Geom_Curve> myCurve = ... ;
+  //! occ::handle<GeomAdaptor_Curve>
   //! Curve = new
   //! GeomAdaptor_Curve(myCurve);
   //! -   Second sequence:
   //! // Step 1
-  //! Handle(Geom_Curve) myCurve = ... ;
+  //! occ::handle<Geom_Curve> myCurve = ... ;
   //! GeomAdaptor_Curve Crv (myCurve);
   //! // Step 2
-  //! Handle(GeomAdaptor_Curve)
+  //! occ::handle<GeomAdaptor_Curve>
   //! Curve = new
   //! GeomAdaptor_Curve(Crv);
   //! You use the second part of this sequence if you already
   //! have the adapted curve Crv.
   //! The boundary is then constructed with the Curve object:
-  //! Standard_Real Tol = ... ;
-  //! Standard_Real dummy = 0. ;
+  //! double Tol = ... ;
+  //! double dummy = 0. ;
   //! myBoundary = GeomFill_SimpleBound
   //! (Curve,Tol,dummy);
-  Standard_EXPORT GeomFill_SimpleBound(const Handle(Adaptor3d_Curve)& Curve,
-                                       const Standard_Real            Tol3d,
-                                       const Standard_Real            Tolang);
+  Standard_EXPORT GeomFill_SimpleBound(const occ::handle<Adaptor3d_Curve>& Curve,
+                                       const double                        Tol3d,
+                                       const double                        Tolang);
 
-  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pnt Value(const double U) const override;
 
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V) const override;
 
-  Standard_EXPORT void Reparametrize(const Standard_Real    First,
-                                     const Standard_Real    Last,
-                                     const Standard_Boolean HasDF,
-                                     const Standard_Boolean HasDL,
-                                     const Standard_Real    DF,
-                                     const Standard_Real    DL,
-                                     const Standard_Boolean Rev) Standard_OVERRIDE;
+  Standard_EXPORT void Reparametrize(const double First,
+                                     const double Last,
+                                     const bool   HasDF,
+                                     const bool   HasDL,
+                                     const double DF,
+                                     const double DL,
+                                     const bool   Rev) override;
 
-  Standard_EXPORT void Bounds(Standard_Real& First, Standard_Real& Last) const Standard_OVERRIDE;
+  Standard_EXPORT void Bounds(double& First, double& Last) const override;
 
-  Standard_EXPORT Standard_Boolean IsDegenerated() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsDegenerated() const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_SimpleBound, GeomFill_Boundary)
 
-protected:
 private:
-  Handle(Adaptor3d_Curve) myC3d;
-  Handle(Law_Function)    myPar;
+  occ::handle<Adaptor3d_Curve> myC3d;
+  occ::handle<Law_Function>    myPar;
 };
 
 #endif // _GeomFill_SimpleBound_HeaderFile

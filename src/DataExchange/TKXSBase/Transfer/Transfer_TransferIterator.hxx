@@ -21,8 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Transfer_HSequenceOfBinder.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
+#include <Transfer_Binder.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
 #include <Transfer_StatusExec.hxx>
@@ -48,13 +49,12 @@ public:
   Standard_EXPORT Transfer_TransferIterator();
 
   //! Adds a Binder to the iteration list (construction)
-  Standard_EXPORT void AddItem(const Handle(Transfer_Binder)& atr);
+  Standard_EXPORT void AddItem(const occ::handle<Transfer_Binder>& atr);
 
   //! Selects Items on the Type of Binder : keep only
   //! Binders which are of a given Type (if keep is True) or
   //! reject only them (if keep is False)
-  Standard_EXPORT void SelectBinder(const Handle(Standard_Type)& atype,
-                                    const Standard_Boolean       keep);
+  Standard_EXPORT void SelectBinder(const occ::handle<Standard_Type>& atype, const bool keep);
 
   //! Selects Items on the Type of Result. Considers only Unique
   //! Results. Considers Dynamic Type for Transient Result,
@@ -62,58 +62,57 @@ public:
   //!
   //! Results which are of a given Type (if keep is True) or reject
   //! only them (if keep is False)
-  Standard_EXPORT void SelectResult(const Handle(Standard_Type)& atype,
-                                    const Standard_Boolean       keep);
+  Standard_EXPORT void SelectResult(const occ::handle<Standard_Type>& atype, const bool keep);
 
   //! Select Items according Unicity : keep only Unique Results (if
   //! keep is True) or keep only Multiple Results (if keep is False)
-  Standard_EXPORT void SelectUnique(const Standard_Boolean keep);
+  Standard_EXPORT void SelectUnique(const bool keep);
 
   //! Selects/Unselect (according to <keep> an item designated by
   //! its rank <num> in the list
   //! Used by sub-classes which have specific criteria
-  Standard_EXPORT void SelectItem(const Standard_Integer num, const Standard_Boolean keep);
+  Standard_EXPORT void SelectItem(const int num, const bool keep);
 
   //! Returns count of Binders to be iterated
-  Standard_EXPORT Standard_Integer Number() const;
+  Standard_EXPORT int Number() const;
 
   //! Clears Iteration in progress, to allow it to be restarted
   Standard_EXPORT void Start();
 
   //! Returns True if there are other Items to iterate
-  Standard_EXPORT Standard_Boolean More();
+  Standard_EXPORT bool More();
 
   //! Sets Iteration to the next Item
   Standard_EXPORT void Next();
 
   //! Returns the current Binder
-  Standard_EXPORT const Handle(Transfer_Binder)& Value() const;
+  Standard_EXPORT const occ::handle<Transfer_Binder>& Value() const;
 
   //! Returns True if current Item brings a Result, Transient
   //! (Handle) or not or Multiple. That is to say, if it corresponds
   //! to a normally achieved Transfer, Transient Result is read by
   //! specific TransientResult below.
   //! Other kind of Result must be read specifically from its Binder
-  Standard_EXPORT Standard_Boolean HasResult() const;
+  Standard_EXPORT bool HasResult() const;
 
   //! Returns True if Current Item has a Unique Result
-  Standard_EXPORT Standard_Boolean HasUniqueResult() const;
+  Standard_EXPORT bool HasUniqueResult() const;
 
   //! Returns the Type of the Result of the current Item, if Unique.
   //! If No Unique Result (Error Transfer or Multiple Result),
   //! returns a Null Handle
   //! The Type is : the Dynamic Type for a Transient Result,
   //! the Type defined by the Binder Class else
-  Standard_EXPORT Handle(Standard_Type) ResultType() const;
+  Standard_EXPORT occ::handle<Standard_Type> ResultType() const;
 
   //! Returns True if the current Item has a Transient Unique
   //! Result (if yes, use TransientResult to get it)
-  Standard_EXPORT Standard_Boolean HasTransientResult() const;
+  Standard_EXPORT bool HasTransientResult() const;
 
   //! Returns the Transient Result of the current Item if there is
   //! (else, returns a null Handle)
   //! Supposes that Binding is done by a SimpleBinderOfTransient
-  Standard_EXPORT const Handle(Standard_Transient)& TransientResult() const;
+  Standard_EXPORT const occ::handle<Standard_Transient>& TransientResult() const;
 
   //! Returns Execution Status of current Binder
   //! Normal transfer corresponds to StatusDone
@@ -121,24 +120,24 @@ public:
 
   //! Returns True if Fail Messages are recorded with the current
   //! Binder. They can then be read through Check (see below)
-  Standard_EXPORT Standard_Boolean HasFails() const;
+  Standard_EXPORT bool HasFails() const;
 
   //! Returns True if Warning Messages are recorded with the current
   //! Binder. They can then be read through Check (see below)
-  Standard_EXPORT Standard_Boolean HasWarnings() const;
+  Standard_EXPORT bool HasWarnings() const;
 
   //! Returns Check associated to current Binder
   //! (in case of error, it brings Fail messages)
   //! (in case of warnings, it brings Warning messages)
-  Standard_EXPORT const Handle(Interface_Check) Check() const;
+  Standard_EXPORT const occ::handle<Interface_Check> Check() const;
 
 protected:
-  Standard_Integer thecurr;
+  int thecurr;
 
 private:
-  Handle(Transfer_HSequenceOfBinder) theitems;
-  Handle(TColStd_HSequenceOfInteger) theselect;
-  Standard_Integer                   themaxi;
+  occ::handle<NCollection_HSequence<occ::handle<Transfer_Binder>>> theitems;
+  occ::handle<NCollection_HSequence<int>>                          theselect;
+  int                                                              themaxi;
 };
 
 #endif // _Transfer_TransferIterator_HeaderFile

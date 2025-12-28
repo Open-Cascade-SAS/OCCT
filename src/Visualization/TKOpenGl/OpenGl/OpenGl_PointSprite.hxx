@@ -17,9 +17,6 @@
 
 #include <OpenGl_Texture.hxx>
 
-class OpenGl_PointSprite;
-DEFINE_STANDARD_HANDLE(OpenGl_PointSprite, OpenGl_Texture)
-
 //! Point sprite resource. On modern hardware it will be texture with extra parameters.
 //! On ancient hardware sprites will be drawn using bitmaps.
 class OpenGl_PointSprite : public OpenGl_Texture
@@ -33,27 +30,24 @@ public:
   Standard_EXPORT virtual ~OpenGl_PointSprite();
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Returns TRUE for point sprite texture.
-  virtual bool IsPointSprite() const Standard_OVERRIDE { return true; }
+  virtual bool IsPointSprite() const override { return true; }
 
   //! @return true if current object was initialized
-  virtual bool IsValid() const Standard_OVERRIDE
-  {
-    return myBitmapList != 0 || myTextureId != NO_TEXTURE;
-  }
+  virtual bool IsValid() const override { return myBitmapList != 0 || myTextureId != NO_TEXTURE; }
 
   //! @return true if this is display list bitmap
-  inline Standard_Boolean IsDisplayList() const { return myBitmapList != 0; }
+  inline bool IsDisplayList() const { return myBitmapList != 0; }
 
   //! Draw sprite using glBitmap.
   //! Please call glRasterPos3fv() before to setup sprite position.
-  Standard_EXPORT void DrawBitmap(const Handle(OpenGl_Context)& theCtx) const;
+  Standard_EXPORT void DrawBitmap(const occ::handle<OpenGl_Context>& theCtx) const;
 
   //! Initialize point sprite as display list
-  Standard_EXPORT void SetDisplayList(const Handle(OpenGl_Context)& theCtx,
-                                      const GLuint                  theBitmapList);
+  Standard_EXPORT void SetDisplayList(const occ::handle<OpenGl_Context>& theCtx,
+                                      const GLuint                       theBitmapList);
 
 protected:
   // clang-format off

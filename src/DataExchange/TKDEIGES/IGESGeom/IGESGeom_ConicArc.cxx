@@ -29,15 +29,15 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_ConicArc, IGESData_IGESEntity)
 
 IGESGeom_ConicArc::IGESGeom_ConicArc() {}
 
-void IGESGeom_ConicArc::Init(const Standard_Real A,
-                             const Standard_Real B,
-                             const Standard_Real C,
-                             const Standard_Real D,
-                             const Standard_Real E,
-                             const Standard_Real F,
-                             const Standard_Real ZT,
-                             const gp_XY&        aStart,
-                             const gp_XY&        anEnd)
+void IGESGeom_ConicArc::Init(const double A,
+                             const double B,
+                             const double C,
+                             const double D,
+                             const double E,
+                             const double F,
+                             const double ZT,
+                             const gp_XY& aStart,
+                             const gp_XY& anEnd)
 {
   theA     = A;
   theB     = B;
@@ -49,27 +49,23 @@ void IGESGeom_ConicArc::Init(const Standard_Real A,
   theStart = aStart;
   theEnd   = anEnd;
 
-  Standard_Integer fn = FormNumber();
+  int fn = FormNumber();
   if (fn == 0)
     fn = ComputedFormNumber();
   InitTypeAndForm(104, fn);
 }
 
-Standard_Boolean IGESGeom_ConicArc::OwnCorrect()
+bool IGESGeom_ConicArc::OwnCorrect()
 {
-  Standard_Integer cfn = ComputedFormNumber();
+  int cfn = ComputedFormNumber();
   if (FormNumber() == cfn)
-    return Standard_False;
+    return false;
   InitTypeAndForm(104, cfn);
-  return Standard_True;
+  return true;
 }
 
-void IGESGeom_ConicArc::Equation(Standard_Real& A,
-                                 Standard_Real& B,
-                                 Standard_Real& C,
-                                 Standard_Real& D,
-                                 Standard_Real& E,
-                                 Standard_Real& F) const
+void IGESGeom_ConicArc::Equation(double& A, double& B, double& C, double& D, double& E, double& F)
+  const
 {
   A = theA;
   B = theB;
@@ -79,7 +75,7 @@ void IGESGeom_ConicArc::Equation(Standard_Real& A,
   F = theF;
 }
 
-Standard_Real IGESGeom_ConicArc::ZPlane() const
+double IGESGeom_ConicArc::ZPlane() const
 {
   return theZT;
 }
@@ -114,17 +110,17 @@ gp_Pnt IGESGeom_ConicArc::TransformedEndPoint() const
   return transEnd;
 }
 
-Standard_Integer IGESGeom_ConicArc::ComputedFormNumber() const
+int IGESGeom_ConicArc::ComputedFormNumber() const
 {
-  Standard_Real eps, eps2, eps4;
-  eps              = 1.E-08;
-  eps2             = eps * eps;
-  eps4             = eps2 * eps2; // #59 rln
-  Standard_Real Q1 = theA * (theC * theF - theE * theE / 4.)
-                     + theB / 2. * (theE * theD / 4. - theB * theF / 2.)
-                     + theD / 2. * (theB * theE / 4. - theC * theD / 2.);
-  Standard_Real Q2 = theA * theC - theB * theB / 4;
-  Standard_Real Q3 = theA + theC;
+  double eps, eps2, eps4;
+  eps       = 1.E-08;
+  eps2      = eps * eps;
+  eps4      = eps2 * eps2; // #59 rln
+  double Q1 = theA * (theC * theF - theE * theE / 4.)
+              + theB / 2. * (theE * theD / 4. - theB * theF / 2.)
+              + theD / 2. * (theB * theE / 4. - theC * theD / 2.);
+  double Q2 = theA * theC - theB * theB / 4;
+  double Q3 = theA + theC;
 
   //  Resultats
   // #59 rln 29.12.98 PRO17015 face#67, ellipse
@@ -139,31 +135,31 @@ Standard_Integer IGESGeom_ConicArc::ComputedFormNumber() const
   return 0;
 }
 
-Standard_Boolean IGESGeom_ConicArc::IsFromParabola() const
+bool IGESGeom_ConicArc::IsFromParabola() const
 {
-  Standard_Integer fn = FormNumber();
+  int fn = FormNumber();
   if (fn == 0)
     fn = ComputedFormNumber();
   return (fn == 3);
 }
 
-Standard_Boolean IGESGeom_ConicArc::IsFromEllipse() const
+bool IGESGeom_ConicArc::IsFromEllipse() const
 {
-  Standard_Integer fn = FormNumber();
+  int fn = FormNumber();
   if (fn == 0)
     fn = ComputedFormNumber();
   return (fn == 1);
 }
 
-Standard_Boolean IGESGeom_ConicArc::IsFromHyperbola() const
+bool IGESGeom_ConicArc::IsFromHyperbola() const
 {
-  Standard_Integer fn = FormNumber();
+  int fn = FormNumber();
   if (fn == 0)
     fn = ComputedFormNumber();
   return (fn == 2);
 }
 
-Standard_Boolean IGESGeom_ConicArc::IsClosed() const
+bool IGESGeom_ConicArc::IsClosed() const
 {
   return ((theStart.X() == theEnd.X()) && (theStart.Y() == theEnd.Y()));
 }
@@ -187,28 +183,28 @@ gp_Dir IGESGeom_ConicArc::TransformedAxis() const
   return gp_Dir(axis);
 }
 
-void IGESGeom_ConicArc::Definition(gp_Pnt&        Center,
-                                   gp_Dir&        MainAxis,
-                                   Standard_Real& Rmin,
-                                   Standard_Real& Rmax) const
+void IGESGeom_ConicArc::Definition(gp_Pnt& Center,
+                                   gp_Dir& MainAxis,
+                                   double& Rmin,
+                                   double& Rmax) const
 {
-  Standard_Real Xcen, Ycen, Xax, Yax;
+  double Xcen, Ycen, Xax, Yax;
   ComputedDefinition(Xcen, Ycen, Xax, Yax, Rmin, Rmax);
   Center.SetCoord(Xcen, Ycen, theZT);
   MainAxis.SetCoord(Xax, Yax, 0.);
 }
 
-void IGESGeom_ConicArc::TransformedDefinition(gp_Pnt&        Center,
-                                              gp_Dir&        MainAxis,
-                                              Standard_Real& Rmin,
-                                              Standard_Real& Rmax) const
+void IGESGeom_ConicArc::TransformedDefinition(gp_Pnt& Center,
+                                              gp_Dir& MainAxis,
+                                              double& Rmin,
+                                              double& Rmax) const
 {
   if (!HasTransf())
   {
     Definition(Center, MainAxis, Rmin, Rmax);
     return;
   }
-  Standard_Real Xcen, Ycen, Xax, Yax;
+  double Xcen, Ycen, Xax, Yax;
   ComputedDefinition(Xcen, Ycen, Xax, Yax, Rmin, Rmax);
   gp_GTrsf loc = Location();
   gp_XYZ   cen(Xcen, Ycen, theZT);
@@ -220,47 +216,47 @@ void IGESGeom_ConicArc::TransformedDefinition(gp_Pnt&        Center,
   MainAxis.SetCoord(axis.X(), axis.Y(), axis.Z());
 }
 
-void IGESGeom_ConicArc::ComputedDefinition(Standard_Real& Xcen,
-                                           Standard_Real& Ycen,
-                                           Standard_Real& Xax,
-                                           Standard_Real& Yax,
-                                           Standard_Real& Rmin,
-                                           Standard_Real& Rmax) const
+void IGESGeom_ConicArc::ComputedDefinition(double& Xcen,
+                                           double& Ycen,
+                                           double& Xax,
+                                           double& Yax,
+                                           double& Rmin,
+                                           double& Rmax) const
 {
-  Standard_Real a, b, c, d, e, f;
+  double a, b, c, d, e, f;
   //  conic : a*x2 + 2*b*x*y + c*y2 + 2*d*x + 2*e*y + f = 0.
   Equation(a, b, c, d, e, f);
   b = b / 2.;
   d = d / 2.;
   e = e / 2.; // chgt de variable
 
-  Standard_Real eps = 1.E-08; // ?? comme ComputedForm
+  double eps = 1.E-08; // ?? comme ComputedForm
 
   if (IsFromParabola())
   {
     Rmin = Rmax = -1.; // radii : there are none
     if ((std::abs(a) <= eps) && (std::abs(b) <= eps))
     {
-      Xcen                = (f * c - e * e) / c / d / 2.;
-      Ycen                = e / c;
-      Standard_Real focal = -d / c;
-      Xax                 = (focal >= 0 ? 1. : -1.);
-      Yax                 = 0.;
+      Xcen         = (f * c - e * e) / c / d / 2.;
+      Ycen         = e / c;
+      double focal = -d / c;
+      Xax          = (focal >= 0 ? 1. : -1.);
+      Yax          = 0.;
       Rmin = Rmax = std::abs(focal);
     }
     else
     {
-      Standard_Real ss = a + c;
-      Standard_Real cc = -(a * d + b * e) / ss;
-      Standard_Real dd = d + (c * d - b * e) / ss;
-      Standard_Real fc = (a * e - b * d) / ss;
-      Standard_Real ee = e + fc;
+      double ss = a + c;
+      double cc = -(a * d + b * e) / ss;
+      double dd = d + (c * d - b * e) / ss;
+      double fc = (a * e - b * d) / ss;
+      double ee = e + fc;
 
-      Standard_Real dn = a * ee - dd * b;
-      Xcen             = (cc * ee + f * b) / dn;
-      Ycen             = (-cc * dd - f * a) / dn;
+      double dn = a * ee - dd * b;
+      Xcen      = (cc * ee + f * b) / dn;
+      Ycen      = (-cc * dd - f * a) / dn;
 
-      Standard_Real teta = M_PI / 2.;
+      double teta = M_PI / 2.;
       if (std::abs(b) > eps)
         teta = std::atan(-a / b);
       if (fc < 0)
@@ -280,16 +276,16 @@ void IGESGeom_ConicArc::ComputedDefinition(Standard_Real& Xcen,
     //  gdet (3x3) = | b c e |  and pdet (2X2) = | a b |
     //               | d e f |                   | b c |
 
-    Standard_Real gdet = a * c * f + 2 * b * d * e - c * d * d - a * e * e - b * b * f;
-    Standard_Real pdet = a * c - b * b;
+    double gdet = a * c * f + 2 * b * d * e - c * d * d - a * e * e - b * b * f;
+    double pdet = a * c - b * b;
 
     Xcen = (b * e - c * d) / pdet;
     Ycen = (b * d - a * e) / pdet;
 
-    Standard_Real term1 = a - c;
-    Standard_Real term2 = 2 * b;
-    Standard_Real cos2t;
-    Standard_Real auxil;
+    double term1 = a - c;
+    double term2 = 2 * b;
+    double cos2t;
+    double auxil;
 
     if (std::abs(term1) < gp::Resolution())
     {
@@ -298,16 +294,16 @@ void IGESGeom_ConicArc::ComputedDefinition(Standard_Real& Xcen,
     }
     else
     {
-      Standard_Real t2d = term2 / term1; // skl 28.12.2001
-      cos2t             = 1. / sqrt(1 + t2d * t2d);
-      auxil             = sqrt(term1 * term1 + term2 * term2);
+      double t2d = term2 / term1; // skl 28.12.2001
+      cos2t      = 1. / sqrt(1 + t2d * t2d);
+      auxil      = sqrt(term1 * term1 + term2 * term2);
     }
 
-    Standard_Real cost = sqrt((1 + cos2t) / 2.);
-    Standard_Real sint = sqrt((1 - cos2t) / 2.);
+    double cost = sqrt((1 + cos2t) / 2.);
+    double sint = sqrt((1 - cos2t) / 2.);
 
-    Standard_Real aprim = (a + c + auxil) / 2.;
-    Standard_Real cprim = (a + c - auxil) / 2.;
+    double aprim = (a + c + auxil) / 2.;
+    double cprim = (a + c - auxil) / 2.;
 
     term1 = -gdet / (aprim * pdet);
     term2 = -gdet / (cprim * pdet);

@@ -21,24 +21,24 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_GraphCounter, IFSelect_SignCounter)
 
-IFSelect_GraphCounter::IFSelect_GraphCounter(const Standard_Boolean withmap,
-                                             const Standard_Boolean withlist)
+IFSelect_GraphCounter::IFSelect_GraphCounter(const bool withmap, const bool withlist)
     : IFSelect_SignCounter(withmap, withlist)
 {
 }
 
-Handle(IFSelect_SelectDeduct) IFSelect_GraphCounter::Applied() const
+occ::handle<IFSelect_SelectDeduct> IFSelect_GraphCounter::Applied() const
 {
   return theapplied;
 }
 
-void IFSelect_GraphCounter::SetApplied(const Handle(IFSelect_SelectDeduct)& applied)
+void IFSelect_GraphCounter::SetApplied(const occ::handle<IFSelect_SelectDeduct>& applied)
 {
   theapplied = applied;
 }
 
-void IFSelect_GraphCounter::AddWithGraph(const Handle(TColStd_HSequenceOfTransient)& list,
-                                         const Interface_Graph&                      graph)
+void IFSelect_GraphCounter::AddWithGraph(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  const Interface_Graph&                                                     graph)
 {
   if (theapplied.IsNull())
   {
@@ -47,14 +47,14 @@ void IFSelect_GraphCounter::AddWithGraph(const Handle(TColStd_HSequenceOfTransie
   }
   if (list.IsNull())
     return;
-  Standard_Integer i, nb = list->Length();
+  int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
   {
-    char                       val[12];
-    Handle(Standard_Transient) ent = list->Value(i);
+    char                            val[12];
+    occ::handle<Standard_Transient> ent = list->Value(i);
     theapplied->Alternate()->SetEntity(ent);
     Interface_EntityIterator iter = theapplied->UniqueResult(graph);
-    Standard_Integer         n    = iter.NbEntities();
+    int                      n    = iter.NbEntities();
     switch (n)
     {
       case 0:

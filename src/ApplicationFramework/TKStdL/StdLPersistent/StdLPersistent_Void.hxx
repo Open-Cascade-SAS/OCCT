@@ -37,7 +37,7 @@ protected:
     inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
 
     //! Returns persistent type name
-    Standard_CString PName() const;
+    const char* PName() const;
 
     //! Import transient attribute from the persistent data
     virtual void ImportAttribute() {}
@@ -50,19 +50,19 @@ public:
 };
 
 template <>
-inline Standard_CString StdLPersistent_Void::instance<TDataStd_Directory>::PName() const
+inline const char* StdLPersistent_Void::instance<TDataStd_Directory>::PName() const
 {
   return "PDataStd_Directory";
 }
 
 template <>
-inline Standard_CString StdLPersistent_Void::instance<TDataStd_Tick>::PName() const
+inline const char* StdLPersistent_Void::instance<TDataStd_Tick>::PName() const
 {
   return "PDataStd_Tick";
 }
 
 template <>
-inline Standard_CString StdLPersistent_Void::instance<TDataStd_NoteBook>::PName() const
+inline const char* StdLPersistent_Void::instance<TDataStd_NoteBook>::PName() const
 {
   return "PDataStd_Notebook";
 }

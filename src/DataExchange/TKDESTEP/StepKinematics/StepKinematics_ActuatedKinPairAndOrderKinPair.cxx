@@ -28,15 +28,15 @@ StepKinematics_ActuatedKinPairAndOrderKinPair::StepKinematics_ActuatedKinPairAnd
 //=================================================================================================
 
 void StepKinematics_ActuatedKinPairAndOrderKinPair::Init(
-  const Handle(TCollection_HAsciiString)&             theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&             theItemDefinedTransformation_Name,
-  const Standard_Boolean                              hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&             theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&          theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&          theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)&        theJoint,
-  const Handle(StepKinematics_ActuatedKinematicPair)& theActuatedKinematicPair,
-  const Handle(StepKinematics_KinematicPair)&         theOrderKinematicPair)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                                        hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theJoint,
+  const occ::handle<StepKinematics_ActuatedKinematicPair>& theActuatedKinematicPair,
+  const occ::handle<StepKinematics_KinematicPair>&         theOrderKinematicPair)
 {
   StepKinematics_KinematicPair::Init(theRepresentationItem_Name,
                                      theItemDefinedTransformation_Name,

@@ -22,10 +22,10 @@
 RWStepBasic_RWPersonAndOrganization::RWStepBasic_RWPersonAndOrganization() {}
 
 void RWStepBasic_RWPersonAndOrganization::ReadStep(
-  const Handle(StepData_StepReaderData)&         data,
-  const Standard_Integer                         num,
-  Handle(Interface_Check)&                       ach,
-  const Handle(StepBasic_PersonAndOrganization)& ent) const
+  const occ::handle<StepData_StepReaderData>&         data,
+  const int                                           num,
+  occ::handle<Interface_Check>&                       ach,
+  const occ::handle<StepBasic_PersonAndOrganization>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,14 +35,14 @@ void RWStepBasic_RWPersonAndOrganization::ReadStep(
 
   // --- own field : thePerson ---
 
-  Handle(StepBasic_Person) aThePerson;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepBasic_Person> aThePerson;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "the_person", ach, STANDARD_TYPE(StepBasic_Person), aThePerson);
 
   // --- own field : theOrganization ---
 
-  Handle(StepBasic_Organization) aTheOrganization;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepBasic_Organization> aTheOrganization;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    2,
                    "the_organization",
@@ -56,8 +56,8 @@ void RWStepBasic_RWPersonAndOrganization::ReadStep(
 }
 
 void RWStepBasic_RWPersonAndOrganization::WriteStep(
-  StepData_StepWriter&                           SW,
-  const Handle(StepBasic_PersonAndOrganization)& ent) const
+  StepData_StepWriter&                                SW,
+  const occ::handle<StepBasic_PersonAndOrganization>& ent) const
 {
 
   // --- own field : thePerson ---
@@ -69,8 +69,9 @@ void RWStepBasic_RWPersonAndOrganization::WriteStep(
   SW.Send(ent->TheOrganization());
 }
 
-void RWStepBasic_RWPersonAndOrganization::Share(const Handle(StepBasic_PersonAndOrganization)& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepBasic_RWPersonAndOrganization::Share(
+  const occ::handle<StepBasic_PersonAndOrganization>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   iter.GetOneItem(ent->ThePerson());

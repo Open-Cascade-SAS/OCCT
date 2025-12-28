@@ -40,12 +40,10 @@ public:
   Standard_EXPORT const gp_Ax2& Position() const;
 
   //! Performs calculations
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform() override;
 
 protected:
   gp_Ax2 myPosition;
-
-private:
 };
 
 #endif // _HelixGeom_BuilderHelix_HeaderFile

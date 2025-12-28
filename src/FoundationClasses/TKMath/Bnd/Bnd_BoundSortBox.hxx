@@ -22,11 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <Bnd_Box.hxx>
-#include <Bnd_HArray1OfBox.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 
 #include <array>
 
@@ -53,7 +54,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
 private:
-  using VectorInt = NCollection_Vector<Standard_Integer>;
+  using VectorInt = NCollection_Vector<int>;
 
 public:
   //! Constructs an empty comparison algorithm for bounding boxes.
@@ -62,27 +63,26 @@ public:
 
   //! Initializes this comparison algorithm with the set of boxes.
   //! @param theSetOfBoxes The set of bounding boxes to be used by this algorithm.
-  Standard_EXPORT void Initialize(const Handle(Bnd_HArray1OfBox)& theSetOfBoxes);
+  Standard_EXPORT void Initialize(const occ::handle<NCollection_HArray1<Bnd_Box>>& theSetOfBoxes);
 
   //! Initializes this comparison algorithm with the set of boxes and the bounding box
   //! that encloses all those boxes. This version of initialization can be used if complete
   //! box is known in advance to avoid calculating it again inside the algorithm.
   //! @param theEnclosingBox The bounding box that contains all the boxes in @p theSetOfBoxes.
   //! @param theSetOfBoxes The set of bounding boxes to be used by this algorithm.
-  Standard_EXPORT void Initialize(const Bnd_Box&                  theEnclosingBox,
-                                  const Handle(Bnd_HArray1OfBox)& theSetOfBoxes);
+  Standard_EXPORT void Initialize(const Bnd_Box&                                   theEnclosingBox,
+                                  const occ::handle<NCollection_HArray1<Bnd_Box>>& theSetOfBoxes);
 
   //! Initializes this comparison algorithm with the bounding box that encloses all the boxes
   //! that will be used by this algorithm. and the expected number of those boxes.
   //! Boxes to be considered can then be added using the Add() method.
   //! @param theEnclosingBox The bounding box that contains all the boxes to be sorted.
   //! @param theNbComponents The number of components to be added.
-  Standard_EXPORT void Initialize(const Bnd_Box&         theEnclosingBox,
-                                  const Standard_Integer theNbBoxes);
+  Standard_EXPORT void Initialize(const Bnd_Box& theEnclosingBox, const int theNbBoxes);
 
   //! Adds the bounding box theBox at position boxIndex in the internal array of boxes
   //! to be sorted by this comparison algorithm. This function is used only in
-  //! conjunction with the Initialize(const Bnd_Box&, const Standard_Integer) method.
+  //! conjunction with the Initialize(const Bnd_Box&, const int) method.
   //! Exceptions:
   //! - Standard_OutOfRange if boxIndex is not in the range [ 1,nbComponents ] where
   //!   nbComponents is the maximum number of bounding boxes declared for this algorithm at
@@ -92,7 +92,7 @@ public:
   //! @param theBox The bounding box to be added.
   //! @param theIndex The index of the bounding box in the internal array where the box
   //!        will be added. The index is 1-based.
-  Standard_EXPORT void Add(const Bnd_Box& theBox, const Standard_Integer theIndex);
+  Standard_EXPORT void Add(const Bnd_Box& theBox, const int theIndex);
 
   //! Compares the bounding box theBox, with the set of bounding boxes provided to this
   //! algorithm at initialization, and returns the list of indices of bounding boxes
@@ -102,7 +102,7 @@ public:
   //! @param theBox The bounding box to be compared.
   //! @return The list of indices of bounding boxes that intersect the bounding box theBox
   //!         or are inside it.
-  Standard_EXPORT const TColStd_ListOfInteger& Compare(const Bnd_Box& theBox);
+  Standard_EXPORT const NCollection_List<int>& Compare(const Bnd_Box& theBox);
 
   //! Compares the plane @p thePlane with the set of bounding boxes provided to this
   //! algorithm at initialization, and returns the list of indices of bounding boxes
@@ -111,7 +111,7 @@ public:
   //! to this algorithm at initialization.
   //! @param thePlane The plane to be compared.
   //! @return The list of indices of bounding boxes that intersect the plane thePlane.
-  Standard_EXPORT const TColStd_ListOfInteger& Compare(const gp_Pln& thePlane);
+  Standard_EXPORT const NCollection_List<int>& Compare(const gp_Pln& thePlane);
 
 private:
   //! Precalculates the coefficients for the voxel grid based on the enclosing box dimensions.
@@ -129,22 +129,22 @@ private:
   //! @param theBox The bounding box to be compared.
   //! @return The indices of the voxels that contain the minimum and maximum points of the box
   //!         in the order: [minX, minY, minZ, maxX, maxY, maxZ].
-  std::array<Standard_Integer, 6> getBoundingVoxels(const Bnd_Box& theBox) const;
+  std::array<int, 6> getBoundingVoxels(const Bnd_Box& theBox) const;
 
   //! Adds the box stored in myBoxes to the voxel map.
   //! @param theBox The bounding box to be added.
   //! @param theIndex The index of the bounding box in myBoxes.
-  void addBox(const Bnd_Box& theBox, const Standard_Integer theIndex);
+  void addBox(const Bnd_Box& theBox, const int theIndex);
 
-  Bnd_Box myEnclosingBox;            //!< The bounding box that contains all the boxes to be sorted.
-  Handle(Bnd_HArray1OfBox) myBoxes;  //!< The set of bounding boxes to be sorted.
-  Standard_Real            myCoeffX; //!< Coefficient for X direction.
-  Standard_Real            myCoeffY; //!< Coefficient for Y direction.
-  Standard_Real            myCoeffZ; //!< Coefficient for Z direction.
-  Standard_Integer         myResolution; //!< The number of voxels in each direction.
-  TColStd_ListOfInteger    myLastResult; //!< The last result of the Compare() method.
-  VectorInt                myLargeBoxes; //!< The list of large boxes.
-  Handle(Bnd_VoxelGrid)    myVoxelGrid;  //!< The voxel grid used for sorting the boxes.
+  Bnd_Box myEnclosingBox; //!< The bounding box that contains all the boxes to be sorted.
+  occ::handle<NCollection_HArray1<Bnd_Box>> myBoxes;  //!< The set of bounding boxes to be sorted.
+  double                                    myCoeffX; //!< Coefficient for X direction.
+  double                                    myCoeffY; //!< Coefficient for Y direction.
+  double                                    myCoeffZ; //!< Coefficient for Z direction.
+  int                        myResolution;            //!< The number of voxels in each direction.
+  NCollection_List<int>      myLastResult;            //!< The last result of the Compare() method.
+  VectorInt                  myLargeBoxes;            //!< The list of large boxes.
+  occ::handle<Bnd_VoxelGrid> myVoxelGrid; //!< The voxel grid used for sorting the boxes.
 };
 
 #endif // _Bnd_BoundSortBox_HeaderFile

@@ -62,14 +62,14 @@ void BiTgte_CurveOnVertex::Init(const TopoDS_Edge& EonF, const TopoDS_Vertex& V)
 
 //=================================================================================================
 
-Standard_Real BiTgte_CurveOnVertex::FirstParameter() const
+double BiTgte_CurveOnVertex::FirstParameter() const
 {
   return myFirst;
 }
 
 //=================================================================================================
 
-Standard_Real BiTgte_CurveOnVertex::LastParameter() const
+double BiTgte_CurveOnVertex::LastParameter() const
 {
   return myLast;
 }
@@ -83,93 +83,93 @@ GeomAbs_Shape BiTgte_CurveOnVertex::Continuity() const
 
 //=================================================================================================
 
-Standard_Integer BiTgte_CurveOnVertex::NbIntervals(const GeomAbs_Shape) const
+int BiTgte_CurveOnVertex::NbIntervals(const GeomAbs_Shape) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-void BiTgte_CurveOnVertex::Intervals(TColStd_Array1OfReal&, const GeomAbs_Shape) const
+void BiTgte_CurveOnVertex::Intervals(NCollection_Array1<double>&, const GeomAbs_Shape) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) BiTgte_CurveOnVertex::Trim(const Standard_Real,
-                                                   const Standard_Real,
-                                                   const Standard_Real) const
+occ::handle<Adaptor3d_Curve> BiTgte_CurveOnVertex::Trim(const double,
+                                                        const double,
+                                                        const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Standard_Boolean BiTgte_CurveOnVertex::IsClosed() const
+bool BiTgte_CurveOnVertex::IsClosed() const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Standard_Boolean BiTgte_CurveOnVertex::IsPeriodic() const
+bool BiTgte_CurveOnVertex::IsPeriodic() const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Standard_Real BiTgte_CurveOnVertex::Period() const
+double BiTgte_CurveOnVertex::Period() const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-gp_Pnt BiTgte_CurveOnVertex::Value(const Standard_Real) const
+gp_Pnt BiTgte_CurveOnVertex::Value(const double) const
 {
   return myPnt;
 }
 
 //=================================================================================================
 
-void BiTgte_CurveOnVertex::D0(const Standard_Real /*U*/, gp_Pnt& P) const
+void BiTgte_CurveOnVertex::D0(const double /*U*/, gp_Pnt& P) const
 {
   P = myPnt;
 }
 
 //=================================================================================================
 
-void BiTgte_CurveOnVertex::D1(const Standard_Real, gp_Pnt&, gp_Vec&) const
+void BiTgte_CurveOnVertex::D1(const double, gp_Pnt&, gp_Vec&) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-void BiTgte_CurveOnVertex::D2(const Standard_Real, gp_Pnt&, gp_Vec&, gp_Vec&) const
+void BiTgte_CurveOnVertex::D2(const double, gp_Pnt&, gp_Vec&, gp_Vec&) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-void BiTgte_CurveOnVertex::D3(const Standard_Real, gp_Pnt&, gp_Vec&, gp_Vec&, gp_Vec&) const
+void BiTgte_CurveOnVertex::D3(const double, gp_Pnt&, gp_Vec&, gp_Vec&, gp_Vec&) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-gp_Vec BiTgte_CurveOnVertex::DN(const Standard_Real, const Standard_Integer) const
+gp_Vec BiTgte_CurveOnVertex::DN(const double, const int) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Standard_Real BiTgte_CurveOnVertex::Resolution(const Standard_Real) const
+double BiTgte_CurveOnVertex::Resolution(const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
@@ -218,42 +218,42 @@ gp_Parab BiTgte_CurveOnVertex::Parabola() const
 
 //=================================================================================================
 
-Standard_Integer BiTgte_CurveOnVertex::Degree() const
+int BiTgte_CurveOnVertex::Degree() const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Standard_Boolean BiTgte_CurveOnVertex::IsRational() const
+bool BiTgte_CurveOnVertex::IsRational() const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Standard_Integer BiTgte_CurveOnVertex::NbPoles() const
+int BiTgte_CurveOnVertex::NbPoles() const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Standard_Integer BiTgte_CurveOnVertex::NbKnots() const
+int BiTgte_CurveOnVertex::NbKnots() const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Handle(Geom_BezierCurve) BiTgte_CurveOnVertex::Bezier() const
+occ::handle<Geom_BezierCurve> BiTgte_CurveOnVertex::Bezier() const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) BiTgte_CurveOnVertex::BSpline() const
+occ::handle<Geom_BSplineCurve> BiTgte_CurveOnVertex::BSpline() const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }

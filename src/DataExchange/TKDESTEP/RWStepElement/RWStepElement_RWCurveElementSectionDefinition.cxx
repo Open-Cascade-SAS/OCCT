@@ -28,10 +28,10 @@ RWStepElement_RWCurveElementSectionDefinition::RWStepElement_RWCurveElementSecti
 //=================================================================================================
 
 void RWStepElement_RWCurveElementSectionDefinition::ReadStep(
-  const Handle(StepData_StepReaderData)&                   data,
-  const Standard_Integer                                   num,
-  Handle(Interface_Check)&                                 ach,
-  const Handle(StepElement_CurveElementSectionDefinition)& ent) const
+  const occ::handle<StepData_StepReaderData>&                   data,
+  const int                                                     num,
+  occ::handle<Interface_Check>&                                 ach,
+  const occ::handle<StepElement_CurveElementSectionDefinition>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "curve_element_section_definition"))
@@ -39,10 +39,10 @@ void RWStepElement_RWCurveElementSectionDefinition::ReadStep(
 
   // Own fields of CurveElementSectionDefinition
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 1, "description", ach, aDescription);
 
-  Standard_Real aSectionAngle;
+  double aSectionAngle;
   data->ReadReal(num, 2, "section_angle", ach, aSectionAngle);
 
   // Initialize entity
@@ -52,8 +52,8 @@ void RWStepElement_RWCurveElementSectionDefinition::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWCurveElementSectionDefinition::WriteStep(
-  StepData_StepWriter&                                     SW,
-  const Handle(StepElement_CurveElementSectionDefinition)& ent) const
+  StepData_StepWriter&                                          SW,
+  const occ::handle<StepElement_CurveElementSectionDefinition>& ent) const
 {
 
   // Own fields of CurveElementSectionDefinition
@@ -66,7 +66,7 @@ void RWStepElement_RWCurveElementSectionDefinition::WriteStep(
 //=================================================================================================
 
 void RWStepElement_RWCurveElementSectionDefinition::Share(
-  const Handle(StepElement_CurveElementSectionDefinition)&,
+  const occ::handle<StepElement_CurveElementSectionDefinition>&,
   Interface_EntityIterator&) const
 {
   // Own fields of CurveElementSectionDefinition

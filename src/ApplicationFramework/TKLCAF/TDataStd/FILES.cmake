@@ -22,16 +22,7 @@ set(OCCT_TDataStd_FILES
   TDataStd_GenericEmpty.hxx
   TDataStd_GenericExtString.cxx
   TDataStd_GenericExtString.hxx
-  TDataStd_DataMapIteratorOfDataMapOfStringByte.hxx
-  TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger.hxx
-  TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal.hxx
-  TDataStd_DataMapIteratorOfDataMapOfStringReal.hxx
-  TDataStd_DataMapIteratorOfDataMapOfStringString.hxx
-  TDataStd_DataMapOfStringByte.hxx
-  TDataStd_DataMapOfStringHArray1OfInteger.hxx
-  TDataStd_DataMapOfStringHArray1OfReal.hxx
-  TDataStd_DataMapOfStringReal.hxx
-  TDataStd_DataMapOfStringString.hxx
+
   TDataStd_DeltaOnModificationOfByteArray.cxx
   TDataStd_DeltaOnModificationOfByteArray.hxx
   TDataStd_DeltaOnModificationOfExtStringArray.cxx
@@ -62,7 +53,7 @@ set(OCCT_TDataStd_FILES
   TDataStd_HDataMapOfStringReal.hxx
   TDataStd_HDataMapOfStringString.cxx
   TDataStd_HDataMapOfStringString.hxx
-  TDataStd_HLabelArray1.hxx
+
   TDataStd_Integer.cxx
   TDataStd_Integer.hxx
   TDataStd_IntegerArray.cxx
@@ -71,11 +62,7 @@ set(OCCT_TDataStd_FILES
   TDataStd_IntegerList.hxx
   TDataStd_IntPackedMap.cxx
   TDataStd_IntPackedMap.hxx
-  TDataStd_LabelArray1.hxx
-  TDataStd_ListIteratorOfListOfByte.hxx
-  TDataStd_ListIteratorOfListOfExtendedString.hxx
-  TDataStd_ListOfByte.hxx
-  TDataStd_ListOfExtendedString.hxx
+
   TDataStd_Name.cxx
   TDataStd_Name.hxx
   TDataStd_NamedData.cxx

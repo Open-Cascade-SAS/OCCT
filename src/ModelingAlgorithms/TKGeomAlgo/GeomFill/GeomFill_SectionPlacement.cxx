@@ -46,19 +46,17 @@
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
-static void Tangente(const Adaptor3d_Curve& Path,
-                     const Standard_Real    Param,
-                     gp_Pnt&                P,
-                     gp_Vec&                Tang)
+static void Tangente(const Adaptor3d_Curve& Path, const double Param, gp_Pnt& P, gp_Vec& Tang)
 {
   Path.D1(Param, P, Tang);
-  Standard_Real Norm = Tang.Magnitude();
+  double Norm = Tang.Magnitude();
 
-  for (Standard_Integer ii = 2; (ii < 12) && (Norm < Precision::Confusion()); ii++)
+  for (int ii = 2; (ii < 12) && (Norm < Precision::Confusion()); ii++)
   {
     Tang = Path.DN(Param, ii);
     Norm = Tang.Magnitude();
@@ -68,9 +66,9 @@ static void Tangente(const Adaptor3d_Curve& Path,
     Tang /= Norm;
 }
 
-static Standard_Real Penalite(const Standard_Real angle, const Standard_Real dist)
+static double Penalite(const double angle, const double dist)
 {
-  Standard_Real penal;
+  double penal;
 
   if (dist < 1)
     penal = std::sqrt(dist);
@@ -91,9 +89,9 @@ static Standard_Real Penalite(const Standard_Real angle, const Standard_Real dis
   return penal;
 }
 
-static Standard_Real EvalAngle(const gp_Vec& V1, const gp_Vec& V2)
+static double EvalAngle(const gp_Vec& V1, const gp_Vec& V2)
 {
-  Standard_Real angle;
+  double angle;
   angle = V1.Angle(V2);
   if (angle > M_PI / 2)
     angle = M_PI - angle;
@@ -106,13 +104,13 @@ static Standard_Real EvalAngle(const gp_Vec& V1, const gp_Vec& V2)
 //===============================================================
 static void DistMini(const Extrema_ExtPC&   Ext,
                      const Adaptor3d_Curve& C,
-                     Standard_Real&         Dist,
-                     Standard_Real&         Param)
+                     double&                Dist,
+                     double&                Param)
 {
-  Standard_Real    dist1, dist2;
-  Standard_Integer ii;
-  gp_Pnt           P1, P2;
-  Standard_Real    Dist2 = RealLast();
+  double dist1, dist2;
+  int    ii;
+  gp_Pnt P1, P2;
+  double Dist2 = RealLast();
 
   Ext.TrimmedSquareDistances(dist1, dist2, P1, P2);
   if ((dist1 < Dist2) || (dist2 < Dist2))
@@ -145,8 +143,8 @@ static void DistMini(const Extrema_ExtPC&   Ext,
 
 //=================================================================================================
 
-GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_LocationLaw)& L,
-                                                     const Handle(Geom_Geometry)&        Section)
+GeomFill_SectionPlacement::GeomFill_SectionPlacement(const occ::handle<GeomFill_LocationLaw>& L,
+                                                     const occ::handle<Geom_Geometry>& Section)
     : myLaw(L), /* myAdpSection(Section),  mySection(Section), */
       SecParam(0.0),
       PathParam(0.0),
@@ -154,25 +152,25 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
       AngleMax(0.)
 {
 
-  done      = Standard_False;
-  isplan    = Standard_False;
-  myIsPoint = Standard_False;
+  done      = false;
+  isplan    = false;
+  myIsPoint = false;
 
   if (Section->IsInstance(STANDARD_TYPE(Geom_CartesianPoint)))
   {
-    myIsPoint = Standard_True;
-    myPoint   = Handle(Geom_CartesianPoint)::DownCast(Section)->Pnt();
-    isplan    = Standard_True;
+    myIsPoint = true;
+    myPoint   = occ::down_cast<Geom_CartesianPoint>(Section)->Pnt();
+    isplan    = true;
   }
   else
   {
-    Handle(Geom_Curve) CurveSection = Handle(Geom_Curve)::DownCast(Section);
+    occ::handle<Geom_Curve> CurveSection = occ::down_cast<Geom_Curve>(Section);
     myAdpSection.Load(CurveSection);
     mySection = CurveSection;
   }
 
-  Standard_Integer i, j, NbPoles = 0;
-  Standard_Real    aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  int    i, j, NbPoles = 0;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
 
   // Boite d'encombrement de la section pour en deduire le gabarit
   Bnd_Box box;
@@ -182,10 +180,10 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
     BndLib_Add3dCurve::Add(myAdpSection, 1.e-4, box);
   box.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
-  Standard_Real DX = aXmax - aXmin;
-  Standard_Real DY = aYmax - aYmin;
-  Standard_Real DZ = aZmax - aZmin;
-  Gabarit          = std::sqrt(DX * DX + DY * DY + DZ * DZ) / 2.;
+  double DX = aXmax - aXmin;
+  double DY = aYmax - aYmin;
+  double DZ = aZmax - aZmin;
+  Gabarit   = std::sqrt(DX * DX + DY * DY + DZ * DZ) / 2.;
 
   Gabarit += Precision::Confusion(); // Cas des toute petite
 
@@ -206,22 +204,22 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
     switch (TheType)
     {
       case GeomAbs_Circle: {
-        isplan = Standard_True;
+        isplan = true;
         TheAxe = myAdpSection.Circle().Axis();
         break;
       }
       case GeomAbs_Ellipse: {
-        isplan = Standard_True;
+        isplan = true;
         TheAxe = myAdpSection.Ellipse().Axis();
         break;
       }
       case GeomAbs_Hyperbola: {
-        isplan = Standard_True;
+        isplan = true;
         TheAxe = myAdpSection.Hyperbola().Axis();
         break;
       }
       case GeomAbs_Parabola: {
-        isplan = Standard_True;
+        isplan = true;
         TheAxe = myAdpSection.Parabola().Axis();
         break;
       }
@@ -241,35 +239,35 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
     if (!isplan && NbPoles > 2)
     {
       // Calcul d'un plan moyen.
-      Handle(TColgp_HArray1OfPnt) Pnts;
-      Standard_Real               first = myAdpSection.FirstParameter();
-      Standard_Real               last  = myAdpSection.LastParameter();
+      occ::handle<NCollection_HArray1<gp_Pnt>> Pnts;
+      double                                   first = myAdpSection.FirstParameter();
+      double                                   last  = myAdpSection.LastParameter();
       if (myAdpSection.IsPeriodic())
       {
         // Correct boundaries to avoid mistake of LocateU
-        Handle(Geom_Curve) aCurve = myAdpSection.Curve();
+        occ::handle<Geom_Curve> aCurve = myAdpSection.Curve();
         if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-          aCurve = (Handle(Geom_TrimmedCurve)::DownCast(aCurve))->BasisCurve();
-        Standard_Real Ufirst  = aCurve->FirstParameter();
-        Standard_Real aPeriod = aCurve->Period();
-        Standard_Real U1      = Ufirst + std::floor((first - Ufirst) / aPeriod) * aPeriod;
-        Standard_Real U2      = U1 + aPeriod;
+          aCurve = (occ::down_cast<Geom_TrimmedCurve>(aCurve))->BasisCurve();
+        double Ufirst  = aCurve->FirstParameter();
+        double aPeriod = aCurve->Period();
+        double U1      = Ufirst + std::floor((first - Ufirst) / aPeriod) * aPeriod;
+        double U2      = U1 + aPeriod;
         if (std::abs(first - U1) <= Precision::PConfusion())
           first = U1;
         if (std::abs(last - U2) <= Precision::PConfusion())
           last = U2;
       }
-      Standard_Real t, delta;
+      double t, delta;
       if (myAdpSection.GetType() == GeomAbs_BSplineCurve)
       {
-        Handle(Geom_BSplineCurve) BC = Handle(Geom_BSplineCurve)::DownCast(myAdpSection.Curve());
-        Standard_Integer          I1, I2, I3, I4;
+        occ::handle<Geom_BSplineCurve> BC = occ::down_cast<Geom_BSplineCurve>(myAdpSection.Curve());
+        int                            I1, I2, I3, I4;
         BC->LocateU(first, Precision::Confusion(), I1, I2);
         BC->LocateU(last, Precision::Confusion(), I3, I4);
-        Standard_Integer NbKnots = I3 - I2 + 1;
+        int NbKnots = I3 - I2 + 1;
 
-        Standard_Integer NbLocalPnts = 10;
-        Standard_Integer NbPnts      = (NbKnots - 1) * NbLocalPnts;
+        int NbLocalPnts = 10;
+        int NbPnts      = (NbKnots - 1) * NbLocalPnts;
         if (NbPnts < 0)
           NbPnts = 0;
         if (I1 != I2)
@@ -278,12 +276,12 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
           NbPnts += NbLocalPnts;
         if (!myAdpSection.IsClosed())
           NbPnts++;
-        Pnts                = new TColgp_HArray1OfPnt(1, NbPnts);
-        Standard_Integer nb = 1;
+        Pnts   = new NCollection_HArray1<gp_Pnt>(1, NbPnts);
+        int nb = 1;
         if (I1 != I2)
         {
-          Standard_Real locallast = (BC->Knot(I2) < last) ? BC->Knot(I2) : last;
-          delta                   = (locallast - first) / NbLocalPnts;
+          double locallast = (BC->Knot(I2) < last) ? BC->Knot(I2) : last;
+          delta            = (locallast - first) / NbLocalPnts;
           for (j = 0; j < NbLocalPnts; j++)
           {
             t = first + j * delta;
@@ -315,10 +313,10 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
       }
       else // other type
       {
-        Standard_Integer NbPnts = NbPoles - 1;
+        int NbPnts = NbPoles - 1;
         if (!myAdpSection.IsClosed())
           NbPnts++;
-        Pnts  = new TColgp_HArray1OfPnt(1, NbPnts);
+        Pnts  = new NCollection_HArray1<gp_Pnt>(1, NbPnts);
         delta = (last - first) / (NbPoles - 1);
         for (i = 0; i < NbPoles - 1; i++)
         {
@@ -329,12 +327,12 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
           Pnts->SetValue(NbPnts, myAdpSection.Value(last));
       }
 
-      Standard_Boolean issing;
-      gp_Ax2           axe;
+      bool   issing;
+      gp_Ax2 axe;
       GeomLib::AxeOfInertia(Pnts->Array1(), axe, issing, Precision::Confusion());
       if (!issing)
       {
-        isplan = Standard_True;
+        isplan = true;
         TheAxe.SetLocation(axe.Location());
         TheAxe.SetDirection(axe.Direction());
       }
@@ -349,27 +347,26 @@ GeomFill_SectionPlacement::GeomFill_SectionPlacement(const Handle(GeomFill_Locat
 
 //=================================================================================================
 
-void GeomFill_SectionPlacement::SetLocation(const Handle(GeomFill_LocationLaw)& L)
+void GeomFill_SectionPlacement::SetLocation(const occ::handle<GeomFill_LocationLaw>& L)
 {
   myLaw = L;
 }
 
 //=================================================================================================
 
-void GeomFill_SectionPlacement::Perform(const Standard_Real Tol)
+void GeomFill_SectionPlacement::Perform(const double Tol)
 {
-  Handle(Adaptor3d_Curve) Path;
+  occ::handle<Adaptor3d_Curve> Path;
   Path = myLaw->GetCurve();
   Perform(Path, Tol);
 }
 
 //=================================================================================================
 
-void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
-                                        const Standard_Real            Tol)
+void GeomFill_SectionPlacement::Perform(const occ::handle<Adaptor3d_Curve>& Path, const double Tol)
 {
-  Standard_Real IntTol     = 1.e-5;
-  Standard_Real DistCenter = Precision::Infinite();
+  double IntTol     = 1.e-5;
+  double DistCenter = Precision::Infinite();
 
   if (myIsPoint)
   {
@@ -382,9 +379,9 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
     PathParam = Path->FirstParameter();
     SecParam  = myAdpSection.FirstParameter();
 
-    Standard_Real distaux, taux = 0.0, alpha;
-    gp_Pnt        PonPath, PonSec, P;
-    gp_Vec        VRef, dp1;
+    double distaux, taux = 0.0, alpha;
+    gp_Pnt PonPath, PonSec, P;
+    gp_Vec VRef, dp1;
     VRef.SetXYZ(TheAxe.Direction().XYZ());
 
     Tangente(*Path, PathParam, PonPath, dp1);
@@ -403,14 +400,14 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
     if (isplan)
       AngleMax = M_PI / 2 - AngleMax;
 
-    Standard_Boolean Trouve = Standard_False;
-    Standard_Integer ii;
+    bool Trouve = false;
+    int  ii;
 
     if (isplan)
     {
       // (1.1) Distances Point-Plan
-      Standard_Real DistPlan;
-      gp_Vec        V1(PonPath, TheAxe.Location());
+      double DistPlan;
+      gp_Vec V1(PonPath, TheAxe.Location());
       DistPlan = std::abs(V1.Dot(VRef));
       if (DistPlan <= IntTol)
         DistCenter = V1.Magnitude();
@@ -420,7 +417,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
       DistPlan = std::abs(V1.Dot(VRef));
       if (DistPlan <= IntTol)
       {
-        Standard_Real aDist = V1.Magnitude();
+        double aDist = V1.Magnitude();
         if (aDist < DistCenter)
         {
           DistCenter = aDist;
@@ -430,15 +427,15 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
       }
 
       // (1.2) Intersection Plan-courbe
-      gp_Ax3                      axe(TheAxe.Location(), TheAxe.Direction());
-      Handle(Geom_Plane)          plan   = new (Geom_Plane)(axe);
-      Handle(GeomAdaptor_Surface) adplan = new (GeomAdaptor_Surface)(plan);
-      IntCurveSurface_HInter      Intersector;
+      gp_Ax3                           axe(TheAxe.Location(), TheAxe.Direction());
+      occ::handle<Geom_Plane>          plan   = new (Geom_Plane)(axe);
+      occ::handle<GeomAdaptor_Surface> adplan = new (GeomAdaptor_Surface)(plan);
+      IntCurveSurface_HInter           Intersector;
       Intersector.Perform(Path, adplan);
       if (Intersector.IsDone())
       {
-        Standard_Real w;
-        Standard_Real aDist;
+        double w;
+        double aDist;
         for (ii = 1; ii <= Intersector.NbPoints(); ii++)
         {
           w     = Intersector.Point(ii).W();
@@ -456,11 +453,11 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
       {
         // Comparing the distances from the path's endpoints to the best matching plane of the
         // profile.
-        const gp_Pnt  firstPoint    = Path->Value(Path->FirstParameter());
-        const gp_Pnt  lastPoint     = Path->Value(Path->LastParameter());
-        const gp_Pln  plane         = plan->Pln();
-        Standard_Real firstDistance = plane.SquareDistance(firstPoint);
-        Standard_Real lastDistance  = plane.SquareDistance(lastPoint);
+        const gp_Pnt firstPoint    = Path->Value(Path->FirstParameter());
+        const gp_Pnt lastPoint     = Path->Value(Path->LastParameter());
+        const gp_Pln plane         = plan->Pln();
+        double       firstDistance = plane.SquareDistance(firstPoint);
+        double       lastDistance  = plane.SquareDistance(lastPoint);
 
         if (((std::abs(firstDistance) < Precision::SquareConfusion())
              && std::abs(lastDistance) < Precision::SquareConfusion())
@@ -490,7 +487,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
 
       /*
          // (1.1) Distances Point-Plan
-         Standard_Real DistPlan;
+         double DistPlan;
          gp_Vec V1 (PonPath, TheAxe.Location());
          DistPlan = std::abs(V1.Dot(VRef));
 
@@ -519,13 +516,13 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
 
          // (1.2) Intersection Plan-courbe
          gp_Ax3 axe (TheAxe.Location(), TheAxe.Direction());
-         Handle(Geom_Plane) plan = new (Geom_Plane)(axe);
-         Handle(GeomAdaptor_Surface) adplan =
+         occ::handle<Geom_Plane> plan = new (Geom_Plane)(axe);
+         occ::handle<GeomAdaptor_Surface> adplan =
          new (GeomAdaptor_Surface)(plan);
          IntCurveSurface_HInter Intersector;
          Intersector.Perform(Path, adplan);
          if (Intersector.IsDone()) {
-         Standard_Real w;
+         double w;
          gp_Vec V;
          for (ii=1; ii<=Intersector.NbPoints(); ii++) {
          w = Intersector.Point(ii).W();
@@ -625,7 +622,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
             alpha = EvalAngle(VRef, dp1);
             if (Choix(distaux, alpha))
             {
-              Trouve    = Standard_True;
+              Trouve    = true;
               Dist      = distaux;
               PathParam = P1.Parameter();
               SecParam  = P2.Parameter();
@@ -666,17 +663,17 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
     }
   }
 
-  done = Standard_True;
+  done = true;
 }
 
 //===============================================================
 // Function : Perform
 // Purpose : Calcul le placement pour un parametre donne.
 //===============================================================
-void GeomFill_SectionPlacement::Perform(const Standard_Real Param, const Standard_Real Tol)
+void GeomFill_SectionPlacement::Perform(const double Param, const double Tol)
 {
-  done = Standard_True;
-  Handle(Adaptor3d_Curve) Path;
+  done = true;
+  occ::handle<Adaptor3d_Curve> Path;
   Path = myLaw->GetCurve();
 
   PathParam = Param;
@@ -690,7 +687,7 @@ void GeomFill_SectionPlacement::Perform(const Standard_Real Param, const Standar
   {
     SecParam = myAdpSection.FirstParameter();
 
-    //  Standard_Real distaux, taux, alpha;
+    //  double distaux, taux, alpha;
     //  gp_Pnt PonPath, PonSec, P;
     gp_Pnt PonPath, PonSec;
     gp_Vec VRef, dp1;
@@ -713,48 +710,48 @@ void GeomFill_SectionPlacement::Perform(const Standard_Real Param, const Standar
       AngleMax = M_PI / 2 - AngleMax;
   }
 
-  done = Standard_True;
+  done = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_SectionPlacement::IsDone() const
+bool GeomFill_SectionPlacement::IsDone() const
 {
   return done;
 }
 
 //=================================================================================================
 
-Standard_Real GeomFill_SectionPlacement::ParameterOnPath() const
+double GeomFill_SectionPlacement::ParameterOnPath() const
 {
   return PathParam;
 }
 
 //=================================================================================================
 
-Standard_Real GeomFill_SectionPlacement::ParameterOnSection() const
+double GeomFill_SectionPlacement::ParameterOnSection() const
 {
   return SecParam;
 }
 
 //=================================================================================================
 
-Standard_Real GeomFill_SectionPlacement::Distance() const
+double GeomFill_SectionPlacement::Distance() const
 {
   return Dist;
 }
 
 //=================================================================================================
 
-Standard_Real GeomFill_SectionPlacement::Angle() const
+double GeomFill_SectionPlacement::Angle() const
 {
   return AngleMax;
 }
 
 //=================================================================================================
 
-gp_Trsf GeomFill_SectionPlacement::Transformation(const Standard_Boolean WithTranslation,
-                                                  const Standard_Boolean WithCorrection) const
+gp_Trsf GeomFill_SectionPlacement::Transformation(const bool WithTranslation,
+                                                  const bool WithCorrection) const
 {
   gp_Vec V;
   gp_Mat M;
@@ -782,7 +779,7 @@ gp_Trsf GeomFill_SectionPlacement::Transformation(const Standard_Boolean WithTra
 
   if (WithCorrection && !myIsPoint)
   {
-    Standard_Real angle;
+    double angle;
 
     if (!isplan)
       throw Standard_Failure("Illegal usage: can't rotate non-planar profile");
@@ -819,7 +816,7 @@ gp_Trsf GeomFill_SectionPlacement::Transformation(const Standard_Boolean WithTra
   if (WithCorrection)
   {
     // modified by NIZHNY-MKK  Fri Oct 17 15:26:36 2003.BEGIN
-    //     Standard_Real angle;
+    //     double angle;
     //     gp_Trsf Rot;
 
     //     if (!isplan)
@@ -844,20 +841,19 @@ gp_Trsf GeomFill_SectionPlacement::Transformation(const Standard_Boolean WithTra
 
 //=================================================================================================
 
-Handle(Geom_Curve) GeomFill_SectionPlacement::Section(const Standard_Boolean WithTranslation) const
+occ::handle<Geom_Curve> GeomFill_SectionPlacement::Section(const bool WithTranslation) const
 {
-  Handle(Geom_Curve) TheSection = Handle(Geom_Curve)::DownCast(mySection->Copy());
-  TheSection->Transform(Transformation(WithTranslation, Standard_False));
+  occ::handle<Geom_Curve> TheSection = occ::down_cast<Geom_Curve>(mySection->Copy());
+  TheSection->Transform(Transformation(WithTranslation, false));
   return TheSection;
 }
 
 //=================================================================================================
 
-Handle(Geom_Curve) GeomFill_SectionPlacement::ModifiedSection(
-  const Standard_Boolean WithTranslation) const
+occ::handle<Geom_Curve> GeomFill_SectionPlacement::ModifiedSection(const bool WithTranslation) const
 {
-  Handle(Geom_Curve) TheSection = Handle(Geom_Curve)::DownCast(mySection->Copy());
-  TheSection->Transform(Transformation(WithTranslation, Standard_True));
+  occ::handle<Geom_Curve> TheSection = occ::down_cast<Geom_Curve>(mySection->Copy());
+  TheSection->Transform(Transformation(WithTranslation, true));
   return TheSection;
 }
 
@@ -865,7 +861,7 @@ Handle(Geom_Curve) GeomFill_SectionPlacement::ModifiedSection(
 
 void GeomFill_SectionPlacement::SectionAxis(const gp_Mat& M, gp_Vec& T, gp_Vec& N, gp_Vec& BN) const
 {
-  Standard_Real     Eps = 1.e-10;
+  double            Eps = 1.e-10;
   gp_Dir            D;
   gp_Vec            PathNormal;
   GeomLProp_CLProps CP(mySection, SecParam, 2, Eps);
@@ -910,27 +906,26 @@ void GeomFill_SectionPlacement::SectionAxis(const gp_Mat& M, gp_Vec& T, gp_Vec& 
 // Purpose : Decide si le couple (dist, angle) est "meilleur" que
 // couple courrant.
 //===============================================================
-Standard_Boolean GeomFill_SectionPlacement::Choix(const Standard_Real dist,
-                                                  const Standard_Real angle) const
+bool GeomFill_SectionPlacement::Choix(const double dist, const double angle) const
 {
-  Standard_Real evoldist, evolangle;
+  double evoldist, evolangle;
   evoldist  = dist - Dist;
   evolangle = angle - AngleMax;
   // (1) Si la gain en distance est > que le gabarit, on prend
   if (evoldist < -Gabarit)
-    return Standard_True;
+    return true;
 
   //  (2) si l'ecart en distance est de l'ordre du gabarit
   if (std::abs(evoldist) < Gabarit)
   {
     //  (2.1) si le gain en angle est important on garde
     if (evolangle > 0.5)
-      return Standard_True;
+      return true;
     //  (2.2) si la variation d'angle est moderee on evalue
     //  une fonction de penalite
     if (Penalite(angle, dist / Gabarit) < Penalite(AngleMax, Dist / Gabarit))
-      return Standard_True;
+      return true;
   }
 
-  return Standard_False;
+  return false;
 }

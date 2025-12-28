@@ -26,39 +26,35 @@ class Geom_Surface;
 class TopLoc_Location;
 class BRep_CurveRepresentation;
 
-class BRep_PolygonOnClosedSurface;
-DEFINE_STANDARD_HANDLE(BRep_PolygonOnClosedSurface, BRep_PolygonOnSurface)
-
 //! Representation by two 2d polygons in the parametric
 //! space of a surface.
 class BRep_PolygonOnClosedSurface : public BRep_PolygonOnSurface
 {
 
 public:
-  Standard_EXPORT BRep_PolygonOnClosedSurface(const Handle(Poly_Polygon2D)& P1,
-                                              const Handle(Poly_Polygon2D)& P2,
-                                              const Handle(Geom_Surface)&   S,
-                                              const TopLoc_Location&        L);
+  Standard_EXPORT BRep_PolygonOnClosedSurface(const occ::handle<Poly_Polygon2D>& P1,
+                                              const occ::handle<Poly_Polygon2D>& P2,
+                                              const occ::handle<Geom_Surface>&   S,
+                                              const TopLoc_Location&             L);
 
   //! returns True.
-  Standard_EXPORT virtual Standard_Boolean IsPolygonOnClosedSurface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsPolygonOnClosedSurface() const override;
 
-  Standard_EXPORT virtual const Handle(Poly_Polygon2D)& Polygon2() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<Poly_Polygon2D>& Polygon2() const override;
 
-  Standard_EXPORT virtual void Polygon2(const Handle(Poly_Polygon2D)& P) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Polygon2(const occ::handle<Poly_Polygon2D>& P) override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnClosedSurface, BRep_PolygonOnSurface)
 
-protected:
 private:
-  Handle(Poly_Polygon2D) myPolygon2;
+  occ::handle<Poly_Polygon2D> myPolygon2;
 };
 
 #endif // _BRep_PolygonOnClosedSurface_HeaderFile

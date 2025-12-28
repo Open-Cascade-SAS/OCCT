@@ -47,50 +47,50 @@ public:
   Standard_EXPORT IntRes2d_Domain();
 
   //! Creates a bounded Domain.
-  Standard_EXPORT IntRes2d_Domain(const gp_Pnt2d&     Pnt1,
-                                  const Standard_Real Par1,
-                                  const Standard_Real Tol1,
-                                  const gp_Pnt2d&     Pnt2,
-                                  const Standard_Real Par2,
-                                  const Standard_Real Tol2);
+  Standard_EXPORT IntRes2d_Domain(const gp_Pnt2d& Pnt1,
+                                  const double    Par1,
+                                  const double    Tol1,
+                                  const gp_Pnt2d& Pnt2,
+                                  const double    Par2,
+                                  const double    Tol2);
 
   //! Creates a semi-infinite Domain. If First is set to
   //! True, the given point is the first point of the domain,
   //! otherwise it is the last point.
-  Standard_EXPORT IntRes2d_Domain(const gp_Pnt2d&        Pnt,
-                                  const Standard_Real    Par,
-                                  const Standard_Real    Tol,
-                                  const Standard_Boolean First);
+  Standard_EXPORT IntRes2d_Domain(const gp_Pnt2d& Pnt,
+                                  const double    Par,
+                                  const double    Tol,
+                                  const bool      First);
 
   //! Sets the values for a bounded domain.
-  Standard_EXPORT void SetValues(const gp_Pnt2d&     Pnt1,
-                                 const Standard_Real Par1,
-                                 const Standard_Real Tol1,
-                                 const gp_Pnt2d&     Pnt2,
-                                 const Standard_Real Par2,
-                                 const Standard_Real Tol2);
+  Standard_EXPORT void SetValues(const gp_Pnt2d& Pnt1,
+                                 const double    Par1,
+                                 const double    Tol1,
+                                 const gp_Pnt2d& Pnt2,
+                                 const double    Par2,
+                                 const double    Tol2);
 
   //! Sets the values for an infinite domain.
   Standard_EXPORT void SetValues();
 
   //! Sets the values for a semi-infinite domain.
-  Standard_EXPORT void SetValues(const gp_Pnt2d&        Pnt,
-                                 const Standard_Real    Par,
-                                 const Standard_Real    Tol,
-                                 const Standard_Boolean First);
+  Standard_EXPORT void SetValues(const gp_Pnt2d& Pnt,
+                                 const double    Par,
+                                 const double    Tol,
+                                 const bool      First);
 
   //! Defines a closed domain.
-  void SetEquivalentParameters(const Standard_Real zero, const Standard_Real period);
+  void SetEquivalentParameters(const double zero, const double period);
 
   //! Returns True if the domain has a first point, i-e
   //! a point defining the lowest admitted parameter on the
   //! curve.
-  Standard_Boolean HasFirstPoint() const;
+  bool HasFirstPoint() const;
 
   //! Returns the parameter of the first point of the domain
   //! The exception DomainError is raised if HasFirstPoint
   //! returns False.
-  Standard_Real FirstParameter() const;
+  double FirstParameter() const;
 
   //! Returns the first point of the domain.
   //! The exception DomainError is raised if HasFirstPoint
@@ -100,17 +100,17 @@ public:
   //! Returns the tolerance of the first (left) bound.
   //! The exception DomainError is raised if HasFirstPoint
   //! returns False.
-  Standard_Real FirstTolerance() const;
+  double FirstTolerance() const;
 
   //! Returns True if the domain has a last point, i-e
   //! a point defining the highest admitted parameter on the
   //! curve.
-  Standard_Boolean HasLastPoint() const;
+  bool HasLastPoint() const;
 
   //! Returns the parameter of the last point of the domain.
   //! The exception DomainError is raised if HasLastPoint
   //! returns False.
-  Standard_Real LastParameter() const;
+  double LastParameter() const;
 
   //! Returns the last point of the domain.
   //! The exception DomainError is raised if HasLastPoint
@@ -120,26 +120,25 @@ public:
   //! Returns the tolerance of the last (right) bound.
   //! The exception DomainError is raised if HasLastPoint
   //! returns False.
-  Standard_Real LastTolerance() const;
+  double LastTolerance() const;
 
   //! Returns True if the domain is closed.
-  Standard_Boolean IsClosed() const;
+  bool IsClosed() const;
 
   //! Returns Equivalent parameters if the domain is closed.
   //! Otherwise, the exception DomainError is raised.
-  void EquivalentParameters(Standard_Real& zero, Standard_Real& zeroplusperiod) const;
+  void EquivalentParameters(double& zero, double& zeroplusperiod) const;
 
-protected:
 private:
-  Standard_Integer status;
-  Standard_Real    first_param;
-  Standard_Real    last_param;
-  Standard_Real    first_tol;
-  Standard_Real    last_tol;
-  gp_Pnt2d         first_point;
-  gp_Pnt2d         last_point;
-  Standard_Real    periodfirst;
-  Standard_Real    periodlast;
+  int      status;
+  double   first_param;
+  double   last_param;
+  double   first_tol;
+  double   last_tol;
+  gp_Pnt2d first_point;
+  gp_Pnt2d last_point;
+  double   periodfirst;
+  double   periodlast;
 };
 
 #include <IntRes2d_Domain.lxx>

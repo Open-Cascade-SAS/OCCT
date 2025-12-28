@@ -20,10 +20,10 @@
 
 RWStepVisual_RWCameraModelD2::RWStepVisual_RWCameraModelD2() {}
 
-void RWStepVisual_RWCameraModelD2::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepVisual_CameraModelD2)& ent) const
+void RWStepVisual_RWCameraModelD2::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                                    num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepVisual_CameraModelD2>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,20 +33,20 @@ void RWStepVisual_RWCameraModelD2::ReadStep(const Handle(StepData_StepReaderData
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : viewWindow ---
 
-  Handle(StepVisual_PlanarBox) aViewWindow;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepVisual_PlanarBox> aViewWindow;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "view_window", ach, STANDARD_TYPE(StepVisual_PlanarBox), aViewWindow);
 
   // --- own field : viewWindowClipping ---
 
-  Standard_Boolean aViewWindowClipping;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  bool aViewWindowClipping;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadBoolean(num, 3, "view_window_clipping", ach, aViewWindowClipping);
 
   //--- Initialisation of the read entity ---
@@ -54,8 +54,8 @@ void RWStepVisual_RWCameraModelD2::ReadStep(const Handle(StepData_StepReaderData
   ent->Init(aName, aViewWindow, aViewWindowClipping);
 }
 
-void RWStepVisual_RWCameraModelD2::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepVisual_CameraModelD2)& ent) const
+void RWStepVisual_RWCameraModelD2::WriteStep(StepData_StepWriter&                         SW,
+                                             const occ::handle<StepVisual_CameraModelD2>& ent) const
 {
 
   // --- inherited field name ---
@@ -71,8 +71,8 @@ void RWStepVisual_RWCameraModelD2::WriteStep(StepData_StepWriter&               
   SW.SendBoolean(ent->ViewWindowClipping());
 }
 
-void RWStepVisual_RWCameraModelD2::Share(const Handle(StepVisual_CameraModelD2)& ent,
-                                         Interface_EntityIterator&               iter) const
+void RWStepVisual_RWCameraModelD2::Share(const occ::handle<StepVisual_CameraModelD2>& ent,
+                                         Interface_EntityIterator&                    iter) const
 {
 
   iter.GetOneItem(ent->ViewWindow());

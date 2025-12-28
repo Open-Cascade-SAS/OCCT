@@ -69,163 +69,165 @@ public:
   //! Transfer a GeometryEntity which answer True to the
   //! member : BRepToIGES::IsGeomSurface(Geometry). If this
   //! Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(const Handle(Geom_Surface)& start,
-                                                              const Standard_Real         Udeb,
-                                                              const Standard_Real         Ufin,
-                                                              const Standard_Real         Vdeb,
-                                                              const Standard_Real         Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_Surface>& start,
+    const double                     Udeb,
+    const double                     Ufin,
+    const double                     Vdeb,
+    const double                     Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_BoundedSurface)& start,
-    const Standard_Real                Udeb,
-    const Standard_Real                Ufin,
-    const Standard_Real                Vdeb,
-    const Standard_Real                Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_BoundedSurface>& start,
+    const double                            Udeb,
+    const double                            Ufin,
+    const double                            Vdeb,
+    const double                            Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_BSplineSurface)& start,
-    const Standard_Real                Udeb,
-    const Standard_Real                Ufin,
-    const Standard_Real                Vdeb,
-    const Standard_Real                Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_BSplineSurface>& start,
+    const double                            Udeb,
+    const double                            Ufin,
+    const double                            Vdeb,
+    const double                            Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_BezierSurface)& start,
-    const Standard_Real               Udeb,
-    const Standard_Real               Ufin,
-    const Standard_Real               Vdeb,
-    const Standard_Real               Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_BezierSurface>& start,
+    const double                           Udeb,
+    const double                           Ufin,
+    const double                           Vdeb,
+    const double                           Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_RectangularTrimmedSurface)& start,
-    const Standard_Real                           Udeb,
-    const Standard_Real                           Ufin,
-    const Standard_Real                           Vdeb,
-    const Standard_Real                           Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_RectangularTrimmedSurface>& start,
+    const double                                       Udeb,
+    const double                                       Ufin,
+    const double                                       Vdeb,
+    const double                                       Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_ElementarySurface)& start,
-    const Standard_Real                   Udeb,
-    const Standard_Real                   Ufin,
-    const Standard_Real                   Vdeb,
-    const Standard_Real                   Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_ElementarySurface>& start,
+    const double                               Udeb,
+    const double                               Ufin,
+    const double                               Vdeb,
+    const double                               Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(const Handle(Geom_Plane)& start,
-                                                              const Standard_Real       Udeb,
-                                                              const Standard_Real       Ufin,
-                                                              const Standard_Real       Vdeb,
-                                                              const Standard_Real       Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_Plane>& start,
+    const double                   Udeb,
+    const double                   Ufin,
+    const double                   Vdeb,
+    const double                   Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_CylindricalSurface)& start,
-    const Standard_Real                    Udeb,
-    const Standard_Real                    Ufin,
-    const Standard_Real                    Vdeb,
-    const Standard_Real                    Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_CylindricalSurface>& start,
+    const double                                Udeb,
+    const double                                Ufin,
+    const double                                Vdeb,
+    const double                                Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_ConicalSurface)& start,
-    const Standard_Real                Udeb,
-    const Standard_Real                Ufin,
-    const Standard_Real                Vdeb,
-    const Standard_Real                Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_ConicalSurface>& start,
+    const double                            Udeb,
+    const double                            Ufin,
+    const double                            Vdeb,
+    const double                            Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_SphericalSurface)& start,
-    const Standard_Real                  Udeb,
-    const Standard_Real                  Ufin,
-    const Standard_Real                  Vdeb,
-    const Standard_Real                  Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_SphericalSurface>& start,
+    const double                              Udeb,
+    const double                              Ufin,
+    const double                              Vdeb,
+    const double                              Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_ToroidalSurface)& start,
-    const Standard_Real                 Udeb,
-    const Standard_Real                 Ufin,
-    const Standard_Real                 Vdeb,
-    const Standard_Real                 Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_ToroidalSurface>& start,
+    const double                             Udeb,
+    const double                             Ufin,
+    const double                             Vdeb,
+    const double                             Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_SweptSurface)& start,
-    const Standard_Real              Udeb,
-    const Standard_Real              Ufin,
-    const Standard_Real              Vdeb,
-    const Standard_Real              Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_SweptSurface>& start,
+    const double                          Udeb,
+    const double                          Ufin,
+    const double                          Vdeb,
+    const double                          Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_SurfaceOfLinearExtrusion)& start,
-    const Standard_Real                          Udeb,
-    const Standard_Real                          Ufin,
-    const Standard_Real                          Vdeb,
-    const Standard_Real                          Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_SurfaceOfLinearExtrusion>& start,
+    const double                                      Udeb,
+    const double                                      Ufin,
+    const double                                      Vdeb,
+    const double                                      Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_SurfaceOfRevolution)& start,
-    const Standard_Real                     Udeb,
-    const Standard_Real                     Ufin,
-    const Standard_Real                     Vdeb,
-    const Standard_Real                     Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_SurfaceOfRevolution>& start,
+    const double                                 Udeb,
+    const double                                 Ufin,
+    const double                                 Vdeb,
+    const double                                 Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSurface(
-    const Handle(Geom_OffsetSurface)& start,
-    const Standard_Real               Udeb,
-    const Standard_Real               Ufin,
-    const Standard_Real               Vdeb,
-    const Standard_Real               Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSurface(
+    const occ::handle<Geom_OffsetSurface>& start,
+    const double                           Udeb,
+    const double                           Ufin,
+    const double                           Vdeb,
+    const double                           Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferPlaneSurface(const Handle(Geom_Plane)& start,
-                                                                   const Standard_Real       Udeb,
-                                                                   const Standard_Real       Ufin,
-                                                                   const Standard_Real       Vdeb,
-                                                                   const Standard_Real       Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferPlaneSurface(
+    const occ::handle<Geom_Plane>& start,
+    const double                   Udeb,
+    const double                   Ufin,
+    const double                   Vdeb,
+    const double                   Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCylindricalSurface(
-    const Handle(Geom_CylindricalSurface)& start,
-    const Standard_Real                    Udeb,
-    const Standard_Real                    Ufin,
-    const Standard_Real                    Vdeb,
-    const Standard_Real                    Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCylindricalSurface(
+    const occ::handle<Geom_CylindricalSurface>& start,
+    const double                                Udeb,
+    const double                                Ufin,
+    const double                                Vdeb,
+    const double                                Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferConicalSurface(
-    const Handle(Geom_ConicalSurface)& start,
-    const Standard_Real                Udeb,
-    const Standard_Real                Ufin,
-    const Standard_Real                Vdeb,
-    const Standard_Real                Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferConicalSurface(
+    const occ::handle<Geom_ConicalSurface>& start,
+    const double                            Udeb,
+    const double                            Ufin,
+    const double                            Vdeb,
+    const double                            Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferSphericalSurface(
-    const Handle(Geom_SphericalSurface)& start,
-    const Standard_Real                  Udeb,
-    const Standard_Real                  Ufin,
-    const Standard_Real                  Vdeb,
-    const Standard_Real                  Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferSphericalSurface(
+    const occ::handle<Geom_SphericalSurface>& start,
+    const double                              Udeb,
+    const double                              Ufin,
+    const double                              Vdeb,
+    const double                              Vfin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferToroidalSurface(
-    const Handle(Geom_ToroidalSurface)& start,
-    const Standard_Real                 Udeb,
-    const Standard_Real                 Ufin,
-    const Standard_Real                 Vdeb,
-    const Standard_Real                 Vfin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferToroidalSurface(
+    const occ::handle<Geom_ToroidalSurface>& start,
+    const double                             Udeb,
+    const double                             Ufin,
+    const double                             Vdeb,
+    const double                             Vfin);
 
   //! Returns the value of "TheLength"
-  Standard_EXPORT Standard_Real Length() const;
+  Standard_EXPORT double Length() const;
 
   //! Returns Brep mode flag.
-  Standard_EXPORT Standard_Boolean GetBRepMode() const;
+  Standard_EXPORT bool GetBRepMode() const;
 
   //! Sets BRep mode flag.
-  Standard_EXPORT void SetBRepMode(const Standard_Boolean flag);
+  Standard_EXPORT void SetBRepMode(const bool flag);
 
   //! Returns flag for writing elementary surfaces
-  Standard_EXPORT Standard_Boolean GetAnalyticMode() const;
+  Standard_EXPORT bool GetAnalyticMode() const;
 
   //! Setst flag for writing elementary surfaces
-  Standard_EXPORT void SetAnalyticMode(const Standard_Boolean flag);
+  Standard_EXPORT void SetAnalyticMode(const bool flag);
 
-protected:
 private:
-  Standard_Real    TheLength;
-  Standard_Boolean myBRepMode;
-  Standard_Boolean myAnalytic;
+  double TheLength;
+  bool   myBRepMode;
+  bool   myAnalytic;
 };
 
 #endif // _GeomToIGES_GeomSurface_HeaderFile

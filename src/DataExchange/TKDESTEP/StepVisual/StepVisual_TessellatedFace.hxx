@@ -22,10 +22,9 @@
 #include <StepVisual_TessellatedStructuredItem.hxx>
 
 #include <StepVisual_CoordinatesList.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <StepVisual_FaceOrSurface.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedFace, StepVisual_TessellatedStructuredItem)
 
 //! Representation of STEP entity TessellatedFace
 class StepVisual_TessellatedFace : public StepVisual_TessellatedStructuredItem
@@ -36,33 +35,34 @@ public:
   Standard_EXPORT StepVisual_TessellatedFace();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-                            const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                            const Standard_Integer                    thePnmax,
-                            const Handle(TColStd_HArray2OfReal)&      theNormals,
-                            const Standard_Boolean                    theHasGeometricLink,
-                            const StepVisual_FaceOrSurface&           theGeometricLink);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+                            const occ::handle<StepVisual_CoordinatesList>&  theCoordinates,
+                            const int                                       thePnmax,
+                            const occ::handle<NCollection_HArray2<double>>& theNormals,
+                            const bool                                      theHasGeometricLink,
+                            const StepVisual_FaceOrSurface&                 theGeometricLink);
 
   //! Returns field Coordinates
-  Standard_EXPORT Handle(StepVisual_CoordinatesList) Coordinates() const;
+  Standard_EXPORT occ::handle<StepVisual_CoordinatesList> Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates);
+  Standard_EXPORT void SetCoordinates(
+    const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
 
   //! Returns field Pnmax
-  Standard_EXPORT Standard_Integer Pnmax() const;
+  Standard_EXPORT int Pnmax() const;
 
   //! Sets field Pnmax
-  Standard_EXPORT void SetPnmax(const Standard_Integer thePnmax);
+  Standard_EXPORT void SetPnmax(const int thePnmax);
 
   //! Returns field Normals
-  Standard_EXPORT Handle(TColStd_HArray2OfReal) Normals() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<double>> Normals() const;
 
   //! Sets field Normals
-  Standard_EXPORT void SetNormals(const Handle(TColStd_HArray2OfReal)& theNormals);
+  Standard_EXPORT void SetNormals(const occ::handle<NCollection_HArray2<double>>& theNormals);
 
   //! Returns number of Normals
-  Standard_EXPORT Standard_Integer NbNormals() const;
+  Standard_EXPORT int NbNormals() const;
 
   //! Returns field GeometricLink
   Standard_EXPORT StepVisual_FaceOrSurface GeometricLink() const;
@@ -71,16 +71,16 @@ public:
   Standard_EXPORT void SetGeometricLink(const StepVisual_FaceOrSurface& theGeometricLink);
 
   //! Returns True if optional field GeometricLink is defined
-  Standard_EXPORT Standard_Boolean HasGeometricLink() const;
+  Standard_EXPORT bool HasGeometricLink() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedFace, StepVisual_TessellatedStructuredItem)
 
 private:
-  Handle(StepVisual_CoordinatesList) myCoordinates;
-  Standard_Integer                   myPnmax;
-  Handle(TColStd_HArray2OfReal)      myNormals;
-  StepVisual_FaceOrSurface           myGeometricLink;    //!< optional
-  Standard_Boolean                   myHasGeometricLink; //!< flag "is GeometricLink defined"
+  occ::handle<StepVisual_CoordinatesList>  myCoordinates;
+  int                                      myPnmax;
+  occ::handle<NCollection_HArray2<double>> myNormals;
+  StepVisual_FaceOrSurface                 myGeometricLink;    //!< optional
+  bool                                     myHasGeometricLink; //!< flag "is GeometricLink defined"
 };
 
 #endif // _StepVisual_TessellatedFace_HeaderFile_

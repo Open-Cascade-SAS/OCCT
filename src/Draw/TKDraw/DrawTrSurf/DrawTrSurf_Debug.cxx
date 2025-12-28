@@ -35,14 +35,15 @@ Standard_EXPORT const char* DrawTrSurf_Set(const char* theNameStr, void* theHand
   }
   try
   {
-    const Handle(Standard_Transient)& aHandle = *(Handle(Standard_Transient)*)theHandlePtr;
-    Handle(Geom_Geometry)             aGeom3d = Handle(Geom_Geometry)::DownCast(aHandle);
+    const occ::handle<Standard_Transient>& aHandle =
+      *(occ::handle<Standard_Transient>*)theHandlePtr;
+    occ::handle<Geom_Geometry> aGeom3d = occ::down_cast<Geom_Geometry>(aHandle);
     if (!aGeom3d.IsNull())
     {
       DrawTrSurf::Set(theNameStr, aGeom3d);
       return theNameStr;
     }
-    Handle(Geom2d_Curve) aGeom2d = Handle(Geom2d_Curve)::DownCast(aHandle);
+    occ::handle<Geom2d_Curve> aGeom2d = occ::down_cast<Geom2d_Curve>(aHandle);
     if (!aGeom2d.IsNull())
     {
       DrawTrSurf::Set(theNameStr, aGeom2d);
@@ -110,7 +111,8 @@ Standard_EXPORT const char* DrawTrSurf_SetPnt2d(const char* theNameStr, void* th
 // work with them (DBX could, on SUN Solaris).
 #ifndef _MSC_VER
 
-Standard_EXPORT const char* DrawTrSurf_Set(const char* name, const Handle(Standard_Transient)& G)
+Standard_EXPORT const char* DrawTrSurf_Set(const char*                            name,
+                                           const occ::handle<Standard_Transient>& G)
 {
   return DrawTrSurf_Set(name, (void*)&G);
 }
@@ -129,16 +131,16 @@ Standard_EXPORT const char* DrawTrSurf_Set(const char* theName, const gp_Pnt2d& 
 
 // old function, looks too dangerous to be used
 /*
-void DrawTrSurf_Get(const char* name, Handle(Standard_Transient)& G)
+void DrawTrSurf_Get(const char* name, occ::handle<Standard_Transient>& G)
 {
-  Handle(Geom_Geometry) GG = DrawTrSurf::Get(name);
+  occ::handle<Geom_Geometry> GG = DrawTrSurf::Get(name);
   std::cout << "Nom : " << name << std::endl;
   if (!GG.IsNull()) {
     G = GG;
     return;
   }
 
-  Handle(Geom2d_Curve) GC = DrawTrSurf::GetCurve2d(name);
+  occ::handle<Geom2d_Curve> GC = DrawTrSurf::GetCurve2d(name);
   if (!GC.IsNull()) {
     G = GC;
     return;

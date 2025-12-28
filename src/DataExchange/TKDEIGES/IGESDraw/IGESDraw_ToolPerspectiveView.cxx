@@ -38,19 +38,19 @@
 
 IGESDraw_ToolPerspectiveView::IGESDraw_ToolPerspectiveView() {}
 
-void IGESDraw_ToolPerspectiveView::ReadOwnParams(const Handle(IGESDraw_PerspectiveView)& ent,
-                                                 const Handle(IGESData_IGESReaderData)& /*IR*/,
+void IGESDraw_ToolPerspectiveView::ReadOwnParams(const occ::handle<IGESDraw_PerspectiveView>& ent,
+                                                 const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                                  IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
-  gp_XY            tempTopLeft, tempBottomRight;
-  Standard_Real    tempLeft, tempRight, tempTop, tempBottom;
-  gp_XYZ           tempCenterOfProjection, tempViewUpVector;
-  gp_XYZ           tempViewNormalVector, tempViewReferencePoint;
-  Standard_Integer tempViewNumber, tempDepthClip;
-  Standard_Real    tempScaleFactor, tempViewPlaneDistance;
-  Standard_Real    tempBackPlaneDistance, tempFrontPlaneDistance;
+  gp_XY  tempTopLeft, tempBottomRight;
+  double tempLeft, tempRight, tempTop, tempBottom;
+  gp_XYZ tempCenterOfProjection, tempViewUpVector;
+  gp_XYZ tempViewNormalVector, tempViewReferencePoint;
+  int    tempViewNumber, tempDepthClip;
+  double tempScaleFactor, tempViewPlaneDistance;
+  double tempBackPlaneDistance, tempFrontPlaneDistance;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "View Number", tempViewNumber);
@@ -101,8 +101,8 @@ void IGESDraw_ToolPerspectiveView::ReadOwnParams(const Handle(IGESDraw_Perspecti
             tempFrontPlaneDistance);
 }
 
-void IGESDraw_ToolPerspectiveView::WriteOwnParams(const Handle(IGESDraw_PerspectiveView)& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+void IGESDraw_ToolPerspectiveView::WriteOwnParams(const occ::handle<IGESDraw_PerspectiveView>& ent,
+                                                  IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->ViewNumber());
   IW.Send(ent->ScaleFactor());
@@ -128,13 +128,13 @@ void IGESDraw_ToolPerspectiveView::WriteOwnParams(const Handle(IGESDraw_Perspect
   IW.Send(ent->FrontPlaneDistance());
 }
 
-void IGESDraw_ToolPerspectiveView::OwnShared(const Handle(IGESDraw_PerspectiveView)& /*ent*/,
+void IGESDraw_ToolPerspectiveView::OwnShared(const occ::handle<IGESDraw_PerspectiveView>& /*ent*/,
                                              Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESDraw_ToolPerspectiveView::OwnCopy(const Handle(IGESDraw_PerspectiveView)& another,
-                                           const Handle(IGESDraw_PerspectiveView)& ent,
+void IGESDraw_ToolPerspectiveView::OwnCopy(const occ::handle<IGESDraw_PerspectiveView>& another,
+                                           const occ::handle<IGESDraw_PerspectiveView>& ent,
                                            Interface_CopyTool& /*TC*/) const
 {
   ent->Init(another->ViewNumber(),
@@ -152,7 +152,7 @@ void IGESDraw_ToolPerspectiveView::OwnCopy(const Handle(IGESDraw_PerspectiveView
 }
 
 IGESData_DirChecker IGESDraw_ToolPerspectiveView::DirChecker(
-  const Handle(IGESDraw_PerspectiveView)& /*ent*/) const
+  const occ::handle<IGESDraw_PerspectiveView>& /*ent*/) const
 {
   IGESData_DirChecker DC(410, 1);
   DC.Structure(IGESData_DefVoid);
@@ -166,9 +166,9 @@ IGESData_DirChecker IGESDraw_ToolPerspectiveView::DirChecker(
   return DC;
 }
 
-void IGESDraw_ToolPerspectiveView::OwnCheck(const Handle(IGESDraw_PerspectiveView)& ent,
+void IGESDraw_ToolPerspectiveView::OwnCheck(const occ::handle<IGESDraw_PerspectiveView>& ent,
                                             const Interface_ShareTool&,
-                                            Handle(Interface_Check)& ach) const
+                                            occ::handle<Interface_Check>& ach) const
 {
   if ((ent->DepthClip() < 0) || (ent->DepthClip() > 3))
     ach->AddFail("DepthClip has invalid value");
@@ -179,10 +179,10 @@ void IGESDraw_ToolPerspectiveView::OwnCheck(const Handle(IGESDraw_PerspectiveVie
   }
 }
 
-void IGESDraw_ToolPerspectiveView::OwnDump(const Handle(IGESDraw_PerspectiveView)& ent,
+void IGESDraw_ToolPerspectiveView::OwnDump(const occ::handle<IGESDraw_PerspectiveView>& ent,
                                            const IGESData_IGESDumper& /*dumper*/,
-                                           Standard_OStream&      S,
-                                           const Standard_Integer level) const
+                                           Standard_OStream& S,
+                                           const int         level) const
 {
   S << "IGESDraw_PerspectiveView\n"
     << "View Number  : " << ent->ViewNumber() << "  "

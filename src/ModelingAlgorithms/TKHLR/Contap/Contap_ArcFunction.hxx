@@ -22,7 +22,7 @@
 #include <Contap_TFunction.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <math_FunctionWithDerivative.hxx>
 
@@ -33,54 +33,50 @@ public:
 
   Standard_EXPORT Contap_ArcFunction();
 
-  Standard_EXPORT void Set(const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT void Set(const occ::handle<Adaptor3d_Surface>& S);
 
   void Set(const gp_Dir& Direction);
 
-  void Set(const gp_Dir& Direction, const Standard_Real Angle);
+  void Set(const gp_Dir& Direction, const double Angle);
 
   void Set(const gp_Pnt& Eye);
 
-  void Set(const gp_Pnt& Eye, const Standard_Real Angle);
+  void Set(const gp_Pnt& Eye, const double Angle);
 
-  void Set(const Handle(Adaptor2d_Curve2d)& A);
+  void Set(const occ::handle<Adaptor2d_Curve2d>& A);
 
-  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F) Standard_OVERRIDE;
+  Standard_EXPORT bool Value(const double X, double& F) override;
 
-  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real X,
-                                              Standard_Real&      D) Standard_OVERRIDE;
+  Standard_EXPORT bool Derivative(const double X, double& D) override;
 
-  Standard_EXPORT Standard_Boolean Values(const Standard_Real X,
-                                          Standard_Real&      F,
-                                          Standard_Real&      D) Standard_OVERRIDE;
+  Standard_EXPORT bool Values(const double X, double& F, double& D) override;
 
-  Standard_EXPORT Standard_Integer NbSamples() const;
+  Standard_EXPORT int NbSamples() const;
 
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
+  Standard_EXPORT virtual int GetStateNumber() override;
 
-  const gp_Pnt& Valpoint(const Standard_Integer Index) const;
+  const gp_Pnt& Valpoint(const int Index) const;
 
   Standard_EXPORT const IntSurf_Quadric& Quadric() const;
 
   //! Returns mySurf field
-  const Handle(Adaptor3d_Surface)& Surface() const;
+  const occ::handle<Adaptor3d_Surface>& Surface() const;
 
   //! Returns the point, which has been computed
   //! while the last calling Value() method
   const gp_Pnt& LastComputedPoint() const;
 
-protected:
 private:
-  Handle(Adaptor2d_Curve2d) myArc;
-  Handle(Adaptor3d_Surface) mySurf;
-  Standard_Real             myMean;
-  Contap_TFunction          myType;
-  gp_Dir                    myDir;
-  Standard_Real             myCosAng;
-  gp_Pnt                    myEye;
-  gp_Pnt                    solpt;
-  TColgp_SequenceOfPnt      seqpt;
-  IntSurf_Quadric           myQuad;
+  occ::handle<Adaptor2d_Curve2d> myArc;
+  occ::handle<Adaptor3d_Surface> mySurf;
+  double                         myMean;
+  Contap_TFunction               myType;
+  gp_Dir                         myDir;
+  double                         myCosAng;
+  gp_Pnt                         myEye;
+  gp_Pnt                         solpt;
+  NCollection_Sequence<gp_Pnt>   seqpt;
+  IntSurf_Quadric                myQuad;
 };
 
 #include <Contap_ArcFunction.lxx>

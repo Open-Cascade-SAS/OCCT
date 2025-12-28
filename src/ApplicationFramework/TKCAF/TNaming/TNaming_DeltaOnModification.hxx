@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TopTools_HArray1OfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TDF_DeltaOnModification.hxx>
 class TNaming_NamedShape;
-
-class TNaming_DeltaOnModification;
-DEFINE_STANDARD_HANDLE(TNaming_DeltaOnModification, TDF_DeltaOnModification)
 
 //! This class provides default services for an
 //! AttributeDelta on a MODIFICATION action.
@@ -37,17 +36,16 @@ class TNaming_DeltaOnModification : public TDF_DeltaOnModification
 
 public:
   //! Initializes a TDF_DeltaOnModification.
-  Standard_EXPORT TNaming_DeltaOnModification(const Handle(TNaming_NamedShape)& NS);
+  Standard_EXPORT TNaming_DeltaOnModification(const occ::handle<TNaming_NamedShape>& NS);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TNaming_DeltaOnModification, TDF_DeltaOnModification)
 
-protected:
 private:
-  Handle(TopTools_HArray1OfShape) myOld;
-  Handle(TopTools_HArray1OfShape) myNew;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> myOld;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> myNew;
 };
 
 #endif // _TNaming_DeltaOnModification_HeaderFile

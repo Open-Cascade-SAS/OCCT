@@ -30,7 +30,7 @@
 //==================================================================================================
 
 StepTidy_CartesianPointReducer::StepTidy_CartesianPointReducer(
-  const Handle(XSControl_WorkSession)& theWS)
+  const occ::handle<XSControl_WorkSession>& theWS)
     : StepTidy_EntityReducer<StepGeom_CartesianPoint, StepTidy_CartesianPointHasher>(theWS)
 {
   registerReplacer(STANDARD_TYPE(StepGeom_Axis1Placement), replaceAxis1Placement);
@@ -53,12 +53,12 @@ StepTidy_CartesianPointReducer::StepTidy_CartesianPointReducer(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceAxis2Placement3d(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepGeom_Axis2Placement3d) aSharing =
-    Handle(StepGeom_Axis2Placement3d)::DownCast(theSharing);
+  occ::handle<StepGeom_Axis2Placement3d> aSharing =
+    occ::down_cast<StepGeom_Axis2Placement3d>(theSharing);
   if (aSharing->Location() == theOldEntity)
   {
     aSharing->SetLocation(theNewEntity);
@@ -70,11 +70,11 @@ bool StepTidy_CartesianPointReducer::replaceAxis2Placement3d(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceVertexPoint(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepShape_VertexPoint) aSharing = Handle(StepShape_VertexPoint)::DownCast(theSharing);
+  occ::handle<StepShape_VertexPoint> aSharing = occ::down_cast<StepShape_VertexPoint>(theSharing);
   if (aSharing->VertexGeometry() == theOldEntity)
   {
     aSharing->SetVertexGeometry(theNewEntity);
@@ -86,15 +86,15 @@ bool StepTidy_CartesianPointReducer::replaceVertexPoint(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceGeometricCurveSet(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepShape_GeometricSet) aSharing   = Handle(StepShape_GeometricSet)::DownCast(theSharing);
-  bool                           isReplaced = false;
+  occ::handle<StepShape_GeometricSet> aSharing = occ::down_cast<StepShape_GeometricSet>(theSharing);
+  bool                                isReplaced = false;
   for (auto& anElement : *aSharing->Elements())
   {
-    const Handle(StepGeom_Point) aCurrentPoint = anElement.Point();
+    const occ::handle<StepGeom_Point> aCurrentPoint = anElement.Point();
     if (aCurrentPoint && aCurrentPoint == theOldEntity)
     {
       anElement.SetValue(theNewEntity);
@@ -107,16 +107,16 @@ bool StepTidy_CartesianPointReducer::replaceGeometricCurveSet(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replacePresentationLayerAssignment(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepVisual_PresentationLayerAssignment) aSharing =
-    Handle(StepVisual_PresentationLayerAssignment)::DownCast(theSharing);
+  occ::handle<StepVisual_PresentationLayerAssignment> aSharing =
+    occ::down_cast<StepVisual_PresentationLayerAssignment>(theSharing);
   bool isReplaced = false;
   for (auto& anAssignedItem : *aSharing->AssignedItems())
   {
-    const Handle(StepRepr_RepresentationItem) aRepItem = anAssignedItem.RepresentationItem();
+    const occ::handle<StepRepr_RepresentationItem> aRepItem = anAssignedItem.RepresentationItem();
     if (aRepItem == theOldEntity)
     {
       anAssignedItem.SetValue(theNewEntity);
@@ -129,11 +129,11 @@ bool StepTidy_CartesianPointReducer::replacePresentationLayerAssignment(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceStyledItem(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepVisual_StyledItem) aSharing = Handle(StepVisual_StyledItem)::DownCast(theSharing);
+  occ::handle<StepVisual_StyledItem> aSharing = occ::down_cast<StepVisual_StyledItem>(theSharing);
   if (aSharing->Item() == theOldEntity)
   {
     aSharing->SetItem(theNewEntity);
@@ -145,16 +145,16 @@ bool StepTidy_CartesianPointReducer::replaceStyledItem(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnots(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepGeom_BSplineCurveWithKnots) aSharing =
-    Handle(StepGeom_BSplineCurveWithKnots)::DownCast(theSharing);
-  bool                                     isReplaced     = false;
-  Handle(StepGeom_HArray1OfCartesianPoint) aControlPoints = aSharing->ControlPointsList();
-  for (Standard_Integer anIndex = aControlPoints->Lower(); anIndex <= aControlPoints->Upper();
-       ++anIndex)
+  occ::handle<StepGeom_BSplineCurveWithKnots> aSharing =
+    occ::down_cast<StepGeom_BSplineCurveWithKnots>(theSharing);
+  bool                                                                   isReplaced = false;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPoints =
+    aSharing->ControlPointsList();
+  for (int anIndex = aControlPoints->Lower(); anIndex <= aControlPoints->Upper(); ++anIndex)
   {
     if (aControlPoints->Value(anIndex) == theOldEntity)
     {
@@ -168,11 +168,11 @@ bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnots(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceLine(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepGeom_Line) aSharing = Handle(StepGeom_Line)::DownCast(theSharing);
+  occ::handle<StepGeom_Line> aSharing = occ::down_cast<StepGeom_Line>(theSharing);
   if (aSharing->Pnt() == theOldEntity)
   {
     aSharing->SetPnt(theNewEntity);
@@ -184,20 +184,19 @@ bool StepTidy_CartesianPointReducer::replaceLine(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnots(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepGeom_BSplineSurfaceWithKnots) aSharing =
-    Handle(StepGeom_BSplineSurfaceWithKnots)::DownCast(theSharing);
-  bool                                     isReplaced     = false;
-  Handle(StepGeom_HArray2OfCartesianPoint) aControlPoints = aSharing->ControlPointsList();
-  for (Standard_Integer anIndexI = aControlPoints->LowerRow();
-       anIndexI <= aControlPoints->UpperRow();
+  occ::handle<StepGeom_BSplineSurfaceWithKnots> aSharing =
+    occ::down_cast<StepGeom_BSplineSurfaceWithKnots>(theSharing);
+  bool                                                                   isReplaced = false;
+  occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPoints =
+    aSharing->ControlPointsList();
+  for (int anIndexI = aControlPoints->LowerRow(); anIndexI <= aControlPoints->UpperRow();
        ++anIndexI)
   {
-    for (Standard_Integer anIndexJ = aControlPoints->LowerCol();
-         anIndexJ <= aControlPoints->UpperCol();
+    for (int anIndexJ = aControlPoints->LowerCol(); anIndexJ <= aControlPoints->UpperCol();
          ++anIndexJ)
     {
       if (aControlPoints->Value(anIndexI, anIndexJ) == theOldEntity)
@@ -213,11 +212,12 @@ bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnots(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceAxis1Placement(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepGeom_Axis1Placement) aSharing = Handle(StepGeom_Axis1Placement)::DownCast(theSharing);
+  occ::handle<StepGeom_Axis1Placement> aSharing =
+    occ::down_cast<StepGeom_Axis1Placement>(theSharing);
   if (aSharing->Location() == theOldEntity)
   {
     aSharing->SetLocation(theNewEntity);
@@ -229,16 +229,18 @@ bool StepTidy_CartesianPointReducer::replaceAxis1Placement(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceRepresentation(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepRepr_Representation) aSharing = Handle(StepRepr_Representation)::DownCast(theSharing);
-  bool                            isReplaced           = false;
-  Handle(StepRepr_HArray1OfRepresentationItem) anItems = aSharing->Items();
-  for (Standard_Integer anIndex = 1; anIndex <= aSharing->NbItems(); ++anIndex)
+  occ::handle<StepRepr_Representation> aSharing =
+    occ::down_cast<StepRepr_Representation>(theSharing);
+  bool                                                                       isReplaced = false;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems =
+    aSharing->Items();
+  for (int anIndex = 1; anIndex <= aSharing->NbItems(); ++anIndex)
   {
-    const Handle(StepRepr_RepresentationItem) aRepItem = anItems->Value(anIndex);
+    const occ::handle<StepRepr_RepresentationItem> aRepItem = anItems->Value(anIndex);
     if (aRepItem == theOldEntity)
     {
       anItems->SetValue(anIndex, theNewEntity);
@@ -251,16 +253,16 @@ bool StepTidy_CartesianPointReducer::replaceRepresentation(
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnotsAndRationalBSplineCurve(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) aSharing =
-    Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)::DownCast(theSharing);
-  bool                                     isReplaced     = false;
-  Handle(StepGeom_HArray1OfCartesianPoint) aControlPoints = aSharing->ControlPointsList();
-  for (Standard_Integer anIndex = aControlPoints->Lower(); anIndex <= aControlPoints->Upper();
-       ++anIndex)
+  occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> aSharing =
+    occ::down_cast<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>(theSharing);
+  bool                                                                   isReplaced = false;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPoints =
+    aSharing->ControlPointsList();
+  for (int anIndex = aControlPoints->Lower(); anIndex <= aControlPoints->Upper(); ++anIndex)
   {
     if (aControlPoints->Value(anIndex) == theOldEntity)
     {
@@ -274,20 +276,19 @@ bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnotsAndRationalBSpl
 //==================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnotsAndRationalBSplineSurface(
-  const Handle(StepGeom_CartesianPoint)& theOldEntity,
-  const Handle(StepGeom_CartesianPoint)& theNewEntity,
-  Handle(Standard_Transient)             theSharing)
+  const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
+  const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
+  occ::handle<Standard_Transient>             theSharing)
 {
-  Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface) aSharing =
-    Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)::DownCast(theSharing);
-  bool                                     isReplaced     = false;
-  Handle(StepGeom_HArray2OfCartesianPoint) aControlPoints = aSharing->ControlPointsList();
-  for (Standard_Integer anIndexI = aControlPoints->LowerRow();
-       anIndexI <= aControlPoints->UpperRow();
+  occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface> aSharing =
+    occ::down_cast<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>(theSharing);
+  bool                                                                   isReplaced = false;
+  occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPoints =
+    aSharing->ControlPointsList();
+  for (int anIndexI = aControlPoints->LowerRow(); anIndexI <= aControlPoints->UpperRow();
        ++anIndexI)
   {
-    for (Standard_Integer anIndexJ = aControlPoints->LowerCol();
-         anIndexJ <= aControlPoints->UpperCol();
+    for (int anIndexJ = aControlPoints->LowerCol(); anIndexJ <= aControlPoints->UpperCol();
          ++anIndexJ)
     {
       if (aControlPoints->Value(anIndexI, anIndexJ) == theOldEntity)

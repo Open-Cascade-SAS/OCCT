@@ -24,38 +24,34 @@
 class StepBasic_Document;
 class TCollection_HAsciiString;
 
-class StepBasic_DocumentUsageConstraint;
-DEFINE_STANDARD_HANDLE(StepBasic_DocumentUsageConstraint, Standard_Transient)
-
 class StepBasic_DocumentUsageConstraint : public Standard_Transient
 {
 
 public:
   Standard_EXPORT StepBasic_DocumentUsageConstraint();
 
-  Standard_EXPORT void Init(const Handle(StepBasic_Document)&       aSource,
-                            const Handle(TCollection_HAsciiString)& ase,
-                            const Handle(TCollection_HAsciiString)& asev);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Document>&       aSource,
+                            const occ::handle<TCollection_HAsciiString>& ase,
+                            const occ::handle<TCollection_HAsciiString>& asev);
 
-  Standard_EXPORT Handle(StepBasic_Document) Source() const;
+  Standard_EXPORT occ::handle<StepBasic_Document> Source() const;
 
-  Standard_EXPORT void SetSource(const Handle(StepBasic_Document)& aSource);
+  Standard_EXPORT void SetSource(const occ::handle<StepBasic_Document>& aSource);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) SubjectElement() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> SubjectElement() const;
 
-  Standard_EXPORT void SetSubjectElement(const Handle(TCollection_HAsciiString)& ase);
+  Standard_EXPORT void SetSubjectElement(const occ::handle<TCollection_HAsciiString>& ase);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) SubjectElementValue() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> SubjectElementValue() const;
 
-  Standard_EXPORT void SetSubjectElementValue(const Handle(TCollection_HAsciiString)& asev);
+  Standard_EXPORT void SetSubjectElementValue(const occ::handle<TCollection_HAsciiString>& asev);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentUsageConstraint, Standard_Transient)
 
-protected:
 private:
-  Handle(StepBasic_Document)       theSource;
-  Handle(TCollection_HAsciiString) theSE;
-  Handle(TCollection_HAsciiString) theSEV;
+  occ::handle<StepBasic_Document>       theSource;
+  occ::handle<TCollection_HAsciiString> theSE;
+  occ::handle<TCollection_HAsciiString> theSEV;
 };
 
 #endif // _StepBasic_DocumentUsageConstraint_HeaderFile

@@ -25,9 +25,6 @@
 class Standard_GUID;
 class TDF_Label;
 
-class XCAFDoc_Area;
-DEFINE_STANDARD_HANDLE(XCAFDoc_Area, TDataStd_Real)
-
 //! attribute to store area
 class XCAFDoc_Area : public TDataStd_Real
 {
@@ -39,25 +36,25 @@ public:
 
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Sets a value of volume
-  Standard_EXPORT void Set(const Standard_Real vol);
+  Standard_EXPORT void Set(const double vol);
 
   //! Find, or create, an Area attribute and set its value
-  Standard_EXPORT static Handle(XCAFDoc_Area) Set(const TDF_Label& label, const Standard_Real area);
+  Standard_EXPORT static occ::handle<XCAFDoc_Area> Set(const TDF_Label& label, const double area);
 
-  Standard_EXPORT Standard_Real Get() const;
+  Standard_EXPORT double Get() const;
 
   //! Returns volume of area as argument and success status
   //! returns false if no such attribute at the <label>
-  Standard_EXPORT static Standard_Boolean Get(const TDF_Label& label, Standard_Real& area);
+  Standard_EXPORT static bool Get(const TDF_Label& label, double& area);
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int               theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_Area, TDataStd_Real)
 };

@@ -33,12 +33,9 @@ public:
   Standard_EXPORT LProp_AnalyticCurInf();
 
   Standard_EXPORT void Perform(const GeomAbs_CurveType T,
-                               const Standard_Real     UFirst,
-                               const Standard_Real     ULast,
+                               const double            UFirst,
+                               const double            ULast,
                                LProp_CurAndInf&        Result);
-
-protected:
-private:
 };
 
 #endif // _LProp_AnalyticCurInf_HeaderFile

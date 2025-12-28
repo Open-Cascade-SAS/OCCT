@@ -25,11 +25,11 @@ StepRepr_RepresentationRelationshipWithTransformation::
 }
 
 void StepRepr_RepresentationRelationshipWithTransformation::Init(
-  const Handle(TCollection_HAsciiString)& aName,
-  const Handle(TCollection_HAsciiString)& aDescription,
-  const Handle(StepRepr_Representation)&  aRep1,
-  const Handle(StepRepr_Representation)&  aRep2,
-  const StepRepr_Transformation&          aTrans)
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const occ::handle<TCollection_HAsciiString>& aDescription,
+  const occ::handle<StepRepr_Representation>&  aRep1,
+  const occ::handle<StepRepr_Representation>&  aRep2,
+  const StepRepr_Transformation&               aTrans)
 {
   StepRepr_RepresentationRelationship::Init(aName, aDescription, aRep1, aRep2);
   theTrans = aTrans;

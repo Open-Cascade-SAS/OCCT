@@ -22,23 +22,23 @@ Contap_Point::Contap_Point()
     : uparam(0.0),
       vparam(0.0),
       paraline(0.0),
-      onarc(Standard_False),
+      onarc(false),
       prmarc(0.0),
-      isvtx(Standard_False),
-      ismult(Standard_False),
-      myInternal(Standard_False)
+      isvtx(false),
+      ismult(false),
+      myInternal(false)
 {
 }
 
-Contap_Point::Contap_Point(const gp_Pnt& Pt, const Standard_Real U, const Standard_Real V)
+Contap_Point::Contap_Point(const gp_Pnt& Pt, const double U, const double V)
     : pt(Pt),
       uparam(U),
       vparam(V),
       paraline(0.0),
-      onarc(Standard_False),
+      onarc(false),
       prmarc(0.0),
-      isvtx(Standard_False),
-      ismult(Standard_False),
-      myInternal(Standard_False)
+      isvtx(false),
+      ismult(false),
+      myInternal(false)
 {
 }

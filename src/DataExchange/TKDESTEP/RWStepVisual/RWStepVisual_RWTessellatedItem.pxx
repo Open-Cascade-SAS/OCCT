@@ -34,12 +34,12 @@ public:
 
   Standard_HIDDEN RWStepVisual_RWTessellatedItem();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&    data,
-                                const Standard_Integer                    num,
-                                Handle(Interface_Check)&                  ach,
-                                const Handle(StepVisual_TessellatedItem)& ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&    data,
+                                const int                                      num,
+                                occ::handle<Interface_Check>&                  ach,
+                                const occ::handle<StepVisual_TessellatedItem>& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                      SW,
-                                 const Handle(StepVisual_TessellatedItem)& ent) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                           SW,
+                                 const occ::handle<StepVisual_TessellatedItem>& ent) const;
 };
 #endif // _RWStepVisual_RWTessellatedItem_HeaderFile
